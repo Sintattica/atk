@@ -11,7 +11,7 @@
      */
     require_once(dirname(__FILE__) . '/browser.php');
     require_once(dirname(__FILE__) . '/xml.php');
-    require_once(dirname(__FILE__) . '/simple_test.php');
+    require_once(dirname(__FILE__) . '/test_case.php');
     /**#@-*/
 
     /**
@@ -75,7 +75,8 @@
          *    @access protected
          */
         function &_createBrowser() {
-            return new SimpleBrowser();
+            $browser = &new SimpleBrowser();
+            return $browser;
         }
         
         /**
@@ -85,7 +86,8 @@
          *    @access protected
          */
         function &_createParser(&$reporter) {
-            return new SimpleTestXmlParser($reporter);
+            $parser = &new SimpleTestXmlParser($reporter);
+            return $parser;
         }
         
         /**

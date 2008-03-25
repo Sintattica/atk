@@ -10,6 +10,7 @@
      * include SimpleTest files
      */
     require_once(dirname(__FILE__) . '/parser.php');
+    require_once(dirname(__FILE__) . '/encoding.php');
     /**#@-*/
    
     /**
@@ -31,7 +32,7 @@
          *                               converted to lower case.
          */
         function SimpleTag($name, $attributes) {
-            $this->_name = $name;
+            $this->_name = strtolower(trim($name));
             $this->_attributes = $attributes;
             $this->_content = '';
         }
@@ -46,6 +47,19 @@
             return true;
         }
         
+        /**
+         *    The current tag should not swallow all content for
+         *    itself as it's searchable page content. Private
+         *    content tags are usually widgets that contain default
+         *    values.
+         *    @return boolean        False as content is available
+         *                           to other tags by default.
+         *    @access public
+         */
+        function isPrivateContent() {
+            return false;
+        }
+
         /**
          *    Appends string content to the current content.
          *    @param string $content        Additional text.
@@ -73,7 +87,7 @@
         }
         
         /**
-         *    List oflegal child elements.
+         *    List of legal child elements.
          *    @return array        List of element names.
          *    @access public
          */
@@ -91,9 +105,6 @@
             $label = strtolower($label);
             if (! isset($this->_attributes[$label])) {
                 return false;
-            }
-            if ($this->_attributes[$label] === '') {
-                return true;
             }
             return (string)$this->_attributes[$label];
         }
@@ -125,7 +136,7 @@
          *    @access public
          */
         function getText() {
-            return SimpleSaxParser::normalise($this->_content);
+            return SimpleHtmlSaxParser::normalise($this->_content);
         }
         
         /**
@@ -136,6 +147,32 @@
          */
         function isId($id) {
             return ($this->getAttribute('id') == $id);
+        }
+    }
+    
+    /**
+     *    Base url.
+	 *    @package SimpleTest
+	 *    @subpackage WebTester
+     */
+    class SimpleBaseTag extends SimpleTag {
+        
+        /**
+         *    Starts with a named tag with attributes only.
+         *    @param hash $attributes    Attribute names and
+         *                               string values.
+         */
+        function SimpleBaseTag($attributes) {
+            $this->SimpleTag('base', $attributes);
+        }
+
+		/**
+		 *    Base tag is not a block tag.
+		 *    @return boolean		false
+		 *    @access public
+		 */
+        function expectEndTag() {
+            return false;
         }
     }
     
@@ -193,6 +230,7 @@
      */
     class SimpleWidget extends SimpleTag {
         var $_value;
+        var $_label;
         var $_is_set;
         
         /**
@@ -204,6 +242,7 @@
         function SimpleWidget($name, $attributes) {
             $this->SimpleTag($name, $attributes);
             $this->_value = false;
+            $this->_label = false;
             $this->_is_set = false;
         }
         
@@ -223,14 +262,7 @@
          *    @access public
          */
         function getDefault() {
-            $default = $this->getAttribute('value');
-            if ($default === true) {
-                $default = '';
-            }
-            if ($default === false) {
-                $default = '';
-            }
-            return $default;
+            return $this->getAttribute('value');
         }
         
         /**
@@ -266,6 +298,37 @@
          */
         function resetValue() {
             $this->_is_set = false;
+        }
+        
+        /**
+         *    Allows setting of a label externally, say by a
+         *    label tag.
+         *    @param string $label    Label to attach.
+         *    @access public
+         */
+        function setLabel($label) {
+            $this->_label = trim($label);
+        }
+        
+        /**
+         *    Reads external or internal label.
+         *    @param string $label    Label to test.
+         *    @return boolean         True is match.
+         *    @access public
+         */
+        function isLabel($label) {
+            return $this->_label == trim($label);
+        }
+        
+        /**
+         *    Dispatches the value into the form encoded packet.
+         *    @param SimpleEncoding $encoding    Form packet.
+         *    @access public
+         */
+        function write(&$encoding) {
+            if ($this->getName()) {
+                $encoding->add($this->getName(), $this->getValue());
+            }
         }
     }
     
@@ -326,9 +389,6 @@
          */
         function SimpleSubmitTag($attributes) {
             $this->SimpleWidget('input', $attributes);
-            if ($this->getAttribute('name') === false) {
-                $this->_setAttribute('name', 'submit');
-            }
             if ($this->getAttribute('value') === false) {
                 $this->_setAttribute('value', 'Submit');
             }
@@ -363,12 +423,13 @@
         }
         
         /**
-         *    Gets the values submitted as a form.
-         *    @return array    Hash of name and values.
+         *    Test for a label match when searching.
+         *    @param string $label     Label to test.
+         *    @return boolean          True on match.
          *    @access public
          */
-        function getSubmitValues() {
-            return array($this->getName() => $this->getValue());
+        function isLabel($label) {
+            return trim($label) == trim($this->getLabel());
         }
     }
       
@@ -420,14 +481,30 @@
         }
         
         /**
-         *    Gets the values submitted as a form.
-         *    @return array    Hash of name and values.
+         *    Test for a label match when searching.
+         *    @param string $label     Label to test.
+         *    @return boolean          True on match.
          *    @access public
          */
-        function getSubmitValues($x, $y) {
-            return array(
-                    $this->getName() . '.x' => $x,
-                    $this->getName() . '.y' => $y);
+        function isLabel($label) {
+            return trim($label) == trim($this->getLabel());
+        }
+        
+        /**
+         *    Dispatches the value into the form encoded packet.
+         *    @param SimpleEncoding $encoding    Form packet.
+         *    @param integer $x                  X coordinate of click.
+         *    @param integer $y                  Y coordinate of click.
+         *    @access public
+         */
+        function write(&$encoding, $x, $y) {
+            if ($this->getName()) {
+                $encoding->add($this->getName() . '.x', $x);
+                $encoding->add($this->getName() . '.y', $y);
+            } else {
+                $encoding->add('x', $x);
+                $encoding->add('y', $y);
+            }
         }
     }
       
@@ -478,19 +555,13 @@
         }
         
         /**
-         *    Gets the values submitted as a form. Gone
-         *    for the Mozilla defaults values.
-         *    @return array    Hash of name and values.
+         *    Test for a label match when searching.
+         *    @param string $label     Label to test.
+         *    @return boolean          True on match.
          *    @access public
          */
-        function getSubmitValues() {
-            if ($this->getAttribute('name') === false) {
-                return array();
-            }
-            if ($this->getAttribute('value') === false) {
-                return array($this->getName() => '');
-            }
-            return array($this->getName() => $this->getValue());
+        function isLabel($label) {
+            return trim($label) == trim($this->getLabel());
         }
     }
   
@@ -516,13 +587,7 @@
          *    @access public
          */
         function getDefault() {
-            if ($this->_wrapIsEnabled()) {
-                return wordwrap(
-                        $this->getContent(),
-                        (integer)$this->getAttribute('cols'),
-                        "\n");
-            }
-            return $this->getContent();
+            return $this->_wrap(SimpleHtmlSaxParser::decodeHtml($this->getContent()));
         }
         
         /**
@@ -532,13 +597,7 @@
          *    @access public
          */
         function setValue($value) {
-            if ($this->_wrapIsEnabled()) {
-                $value = wordwrap(
-                        $value,
-                        (integer)$this->getAttribute('cols'),
-                        "\n");
-            }
-            return parent::setValue($value);
+            return parent::setValue($this->_wrap($value));
         }
         
         /**
@@ -555,25 +614,56 @@
             }
             return false;
         }
+        
+        /**
+         *    Performs the formatting that is peculiar to
+         *    this tag. There is strange behaviour in this
+         *    one, including stripping a leading new line.
+         *    Go figure. I am using Firefox as a guide.
+         *    @param string $text    Text to wrap.
+         *    @return string         Text wrapped with carriage
+         *                           returns and line feeds
+         *    @access private
+         */
+        function _wrap($text) {
+            $text = str_replace("\r\r\n", "\r\n", str_replace("\n", "\r\n", $text));
+            $text = str_replace("\r\n\n", "\r\n", str_replace("\r", "\r\n", $text));
+            if (strncmp($text, "\r\n", strlen("\r\n")) == 0) {
+                $text = substr($text, strlen("\r\n"));
+            }
+            if ($this->_wrapIsEnabled()) {
+                return wordwrap(
+                        $text,
+                        (integer)$this->getAttribute('cols'),
+                        "\r\n");
+            }
+            return $text;
+        }
+        
+        /**
+         *    The content of textarea is not part of the page.
+         *    @return boolean        True.
+         *    @access public
+         */
+        function isPrivateContent() {
+            return true;
+        }
     }
     
     /**
-     *    Checkbox widget.
+     *    File upload widget.
 	 *    @package SimpleTest
 	 *    @subpackage WebTester
      */
-    class SimpleCheckboxTag extends SimpleWidget {
+    class SimpleUploadTag extends SimpleWidget {
         
         /**
          *    Starts with attributes only.
          *    @param hash $attributes    Attribute names and
          *                               string values.
          */
-        function SimpleCheckboxTag($attributes) {
+        function SimpleUploadTag($attributes) {
             $this->SimpleWidget('input', $attributes);
-            if ($this->getAttribute('value') === false) {
-                $this->_setAttribute('value', 'on');
-            }
         }
         
         /**
@@ -586,34 +676,18 @@
         }
         
         /**
-         *    The only allowed value in the one in the
-         *    "value" attribute. The default for this
-         *    attribute is "on".
-         *    @param string $value      New value.
-         *    @return boolean           True if allowed.
+         *    Dispatches the value into the form encoded packet.
+         *    @param SimpleEncoding $encoding    Form packet.
          *    @access public
          */
-        function setValue($value) {
-            if ($value === false) {
-                return parent::setValue($value);
+        function write(&$encoding) {
+            if (! file_exists($this->getValue())) {
+                return;
             }
-            if ($value != $this->getAttribute('value')) {
-                return false;
-            }
-            return parent::setValue($value);
-        }
-        
-        /**
-         *    Accessor for starting value. The default
-         *    value is "on".
-         *    @return string        Parsed value.
-         *    @access public
-         */
-        function getDefault() {
-            if ($this->getAttribute('checked')) {
-                return $this->getAttribute('value');
-            }
-            return false;
+            $encoding->attach(
+                    $this->getName(),
+                    implode('', file($this->getValue())),
+                    basename($this->getValue()));
         }
     }
     
@@ -664,7 +738,7 @@
          */
         function getDefault() {
             for ($i = 0, $count = count($this->_options); $i < $count; $i++) {
-                if ($this->_options[$i]->getAttribute('selected')) {
+                if ($this->_options[$i]->getAttribute('selected') !== false) {
                     return $this->_options[$i]->getDefault();
                 }
             }
@@ -682,7 +756,7 @@
          */
         function setValue($value) {
             for ($i = 0, $count = count($this->_options); $i < $count; $i++) {
-                if (trim($this->_options[$i]->getContent()) == trim($value)) {
+                if ($this->_options[$i]->isValue($value)) {
                     $this->_choice = $i;
                     return true;
                 }
@@ -752,7 +826,7 @@
         function getDefault() {
             $default = array();
             for ($i = 0, $count = count($this->_options); $i < $count; $i++) {
-                if ($this->_options[$i]->getAttribute('selected')) {
+                if ($this->_options[$i]->getAttribute('selected') !== false) {
                     $default[] = $this->_options[$i]->getDefault();
                 }
             }
@@ -760,25 +834,29 @@
         }
         
         /**
-         *    Can only set allowed values.
-         *    @param array $values       New choices.
-         *    @return boolean            True if allowed.
+         *    Can only set allowed values. Any illegal value
+         *    will result in a failure, but all correct values
+         *    will be set.
+         *    @param array $desired      New choices.
+         *    @return boolean            True if all allowed.
          *    @access public
          */
-        function setValue($values) {
-            foreach ($values as $value) {
-                $is_option = false;
+        function setValue($desired) {
+            $achieved = array();
+            foreach ($desired as $value) {
+                $success = false;
                 for ($i = 0, $count = count($this->_options); $i < $count; $i++) {
-                    if (trim($this->_options[$i]->getContent()) == trim($value)) {
-                        $is_option = true;
+                    if ($this->_options[$i]->isValue($value)) {
+                        $achieved[] = $this->_options[$i]->getValue();
+                        $success = true;
                         break;
                     }
                 }
-                if (! $is_option) {
+                if (! $success) {
                     return false;
                 }
             }
-            $this->_values = $values;
+            $this->_values = $achieved;
             return true;
         }
         
@@ -820,6 +898,20 @@
         }
         
         /**
+         *    Test to see if a value matches the option.
+         *    @param string $compare    Value to compare with.
+         *    @return boolean           True if possible match.
+         *    @access public
+         */
+        function isValue($compare) {
+            $compare = trim($compare);
+            if (trim($this->getValue()) == $compare) {
+                return true;
+            }
+            return trim($this->getContent()) == $compare;
+        }
+        
+        /**
          *    Accessor for starting value. Will be set to
          *    the option label if no value exists.
          *    @return string        Parsed value.
@@ -830,6 +922,15 @@
                 return $this->getContent();
             }
             return $this->getAttribute('value');
+        }
+        
+        /**
+         *    The content of options is not part of the page.
+         *    @return boolean        True.
+         *    @access public
+         */
+        function isPrivateContent() {
+            return true;
         }
     }
     
@@ -861,7 +962,7 @@
         }
         
         /**
-         *    The only allowed value in the one in the
+         *    The only allowed value sn the one in the
          *    "value" attribute.
          *    @param string $value      New value.
          *    @return boolean           True if allowed.
@@ -871,7 +972,7 @@
             if ($value === false) {
                 return parent::setValue($value);
             }
-            if ($value != $this->getAttribute('value')) {
+            if ($value !== $this->getAttribute('value')) {
                 return false;
             }
             return parent::setValue($value);
@@ -883,27 +984,101 @@
          *    @access public
          */
         function getDefault() {
-            if ($this->getAttribute('checked')) {
+            if ($this->getAttribute('checked') !== false) {
                 return $this->getAttribute('value');
             }
             return false;
         }
     }
-
+    
     /**
-     *    A group of tags with the same name within a form.
+     *    Checkbox widget.
 	 *    @package SimpleTest
 	 *    @subpackage WebTester
      */
-    class SimpleCheckboxGroup {
-        var $_widgets;
+    class SimpleCheckboxTag extends SimpleWidget {
         
         /**
-         *    Starts empty.
+         *    Starts with attributes only.
+         *    @param hash $attributes    Attribute names and
+         *                               string values.
+         */
+        function SimpleCheckboxTag($attributes) {
+            $this->SimpleWidget('input', $attributes);
+            if ($this->getAttribute('value') === false) {
+                $this->_setAttribute('value', 'on');
+            }
+        }
+        
+        /**
+         *    Tag contains no content.
+         *    @return boolean        False.
          *    @access public
          */
-        function SimpleCheckboxGroup() {
-            $this->_widgets = array();
+        function expectEndTag() {
+            return false;
+        }
+        
+        /**
+         *    The only allowed value in the one in the
+         *    "value" attribute. The default for this
+         *    attribute is "on". If this widget is set to
+         *    true, then the usual value will be taken.
+         *    @param string $value      New value.
+         *    @return boolean           True if allowed.
+         *    @access public
+         */
+        function setValue($value) {
+            if ($value === false) {
+                return parent::setValue($value);
+            }
+            if ($value === true) {
+                return parent::setValue($this->getAttribute('value'));
+            }
+            if ($value != $this->getAttribute('value')) {
+                return false;
+            }
+            return parent::setValue($value);
+        }
+        
+        /**
+         *    Accessor for starting value. The default
+         *    value is "on".
+         *    @return string        Parsed value.
+         *    @access public
+         */
+        function getDefault() {
+            if ($this->getAttribute('checked') !== false) {
+                return $this->getAttribute('value');
+            }
+            return false;
+        }
+    }
+    
+    /**
+     *    A group of multiple widgets with some shared behaviour.
+	 *    @package SimpleTest
+	 *    @subpackage WebTester
+     */
+    class SimpleTagGroup {
+        var $_widgets = array();
+
+        /**
+         *    Adds a tag to the group.
+         *    @param SimpleWidget $widget
+         *    @access public
+         */
+        function addWidget(&$widget) {
+            $this->_widgets[] = &$widget;
+        }
+        
+        /**
+         *    Accessor to widget set.
+         *    @return array        All widgets.
+         *    @access protected
+         */
+        function &_getWidgets() {
+            return $this->_widgets;
         }
 
         /**
@@ -914,31 +1089,6 @@
          */
         function getAttribute($label) {
             return false;
-        }
-        
-        /**
-         *    Scans the checkboxes for one with the appropriate
-         *    ID field.
-         *    @param string $id        ID value to try.
-         *    @return boolean          True if matched.
-         *    @access public
-         */
-        function isId($id) {
-            for ($i = 0, $count = count($this->_widgets); $i < $count; $i++) {
-                if ($this->_widgets[$i]->isId($id)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /**
-         *    Adds a tag to the group.
-         *    @param SimpleWidget $widget
-         *    @access public
-         */
-        function addWidget(&$widget) {
-            $this->_widgets[] = &$widget;
         }
         
         /**
@@ -954,6 +1104,55 @@
         }
         
         /**
+         *    Scans the widgets for one with the appropriate
+         *    ID field.
+         *    @param string $id        ID value to try.
+         *    @return boolean          True if matched.
+         *    @access public
+         */
+        function isId($id) {
+            for ($i = 0, $count = count($this->_widgets); $i < $count; $i++) {
+                if ($this->_widgets[$i]->isId($id)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        /**
+         *    Scans the widgets for one with the appropriate
+         *    attached label.
+         *    @param string $label     Attached label to try.
+         *    @return boolean          True if matched.
+         *    @access public
+         */
+        function isLabel($label) {
+            for ($i = 0, $count = count($this->_widgets); $i < $count; $i++) {
+                if ($this->_widgets[$i]->isLabel($label)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        /**
+         *    Dispatches the value into the form encoded packet.
+         *    @param SimpleEncoding $encoding    Form packet.
+         *    @access public
+         */
+        function write(&$encoding) {
+            $encoding->add($this->getName(), $this->getValue());
+        }
+    }
+
+    /**
+     *    A group of tags with the same name within a form.
+	 *    @package SimpleTest
+	 *    @subpackage WebTester
+     */
+    class SimpleCheckboxGroup extends SimpleTagGroup {
+        
+        /**
          *    Accessor for current selected widget or false
          *    if none.
          *    @return string/array     Widget values or false if none.
@@ -961,9 +1160,10 @@
          */
         function getValue() {
             $values = array();
-            for ($i = 0, $count = count($this->_widgets); $i < $count; $i++) {
-                if ($this->_widgets[$i]->getValue()) {
-                    $values[] = $this->_widgets[$i]->getValue();
+            $widgets = &$this->_getWidgets();
+            for ($i = 0, $count = count($widgets); $i < $count; $i++) {
+                if ($widgets[$i]->getValue() !== false) {
+                    $values[] = $widgets[$i]->getValue();
                 }
             }
             return $this->_coerceValues($values);
@@ -976,9 +1176,10 @@
          */
         function getDefault() {
             $values = array();
-            for ($i = 0, $count = count($this->_widgets); $i < $count; $i++) {
-                if ($this->_widgets[$i]->getDefault()) {
-                    $values[] = $this->_widgets[$i]->getDefault();
+            $widgets = &$this->_getWidgets();
+            for ($i = 0, $count = count($widgets); $i < $count; $i++) {
+                if ($widgets[$i]->getDefault() !== false) {
+                    $values[] = $widgets[$i]->getDefault();
                 }
             }
             return $this->_coerceValues($values);
@@ -996,12 +1197,13 @@
             if (! $this->_valuesArePossible($values)) {
                 return false;
             }
-            for ($i = 0, $count = count($this->_widgets); $i < $count; $i++) {
-                $possible = $this->_widgets[$i]->getAttribute('value');
-                if (in_array($this->_widgets[$i]->getAttribute('value'), $values)) {
-                    $this->_widgets[$i]->setValue($possible);
+            $widgets = &$this->_getWidgets();
+            for ($i = 0, $count = count($widgets); $i < $count; $i++) {
+                $possible = $widgets[$i]->getAttribute('value');
+                if (in_array($widgets[$i]->getAttribute('value'), $values)) {
+                    $widgets[$i]->setValue($possible);
                 } else {
-                    $this->_widgets[$i]->setValue(false);
+                    $widgets[$i]->setValue(false);
                 }
             }
             return true;
@@ -1017,8 +1219,9 @@
          */
         function _valuesArePossible($values) {
             $matches = array();
-            for ($i = 0, $count = count($this->_widgets); $i < $count; $i++) {
-                $possible = $this->_widgets[$i]->getAttribute('value');
+            $widgets = &$this->_getWidgets();
+            for ($i = 0, $count = count($widgets); $i < $count; $i++) {
+                $possible = $widgets[$i]->getAttribute('value');
                 if (in_array($possible, $values)) {
                     $matches[] = $possible;
                 }
@@ -1070,63 +1273,7 @@
 	 *    @package SimpleTest
 	 *    @subpackage WebTester
      */
-    class SimpleRadioGroup {
-        var $_widgets;
-        
-        /**
-         *    Starts empty.
-         *    @access public
-         */
-        function SimpleRadioGroup() {
-            $this->_widgets = array();
-        }
-        
-        /**
-         *    Accessor for an attribute.
-         *    @param string $label    Attribute name.
-         *    @return boolean         Always false.
-         *    @access public
-         */
-        function getAttribute($label) {
-            return false;
-        }
-        
-        /**
-         *    Scans the checkboxes for one with the appropriate
-         *    ID field.
-         *    @param string $id        ID value to try.
-         *    @return boolean          True if matched.
-         *    @access public
-         */
-        function isId($id) {
-            for ($i = 0, $count = count($this->_widgets); $i < $count; $i++) {
-                if ($this->_widgets[$i]->isId($id)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        
-        /**
-         *    Adds a tag to the group.
-         *    @param SimpleWidget $widget
-         *    @access public
-         */
-        function addWidget(&$widget) {
-            $this->_widgets[] = &$widget;
-        }
-        
-        /**
-         *    Fetches the name for the widget from the first
-         *    member.
-         *    @return string        Name of widget.
-         *    @access public
-         */
-        function getName() {
-            if (count($this->_widgets) > 0) {
-                return $this->_widgets[0]->getName();
-            }
-        }
+    class SimpleRadioGroup extends SimpleTagGroup {
         
         /**
          *    Each tag is tried in turn until one is
@@ -1141,9 +1288,10 @@
                 return false;
             }
             $index = false;
-            for ($i = 0, $count = count($this->_widgets); $i < $count; $i++) {
-                if (! $this->_widgets[$i]->setValue($value)) {
-                    $this->_widgets[$i]->setValue(false);
+            $widgets = &$this->_getWidgets();
+            for ($i = 0, $count = count($widgets); $i < $count; $i++) {
+                if (! $widgets[$i]->setValue($value)) {
+                    $widgets[$i]->setValue(false);
                 }
             }
             return true;
@@ -1156,8 +1304,9 @@
          *    @access private
          */
         function _valueIsPossible($value) {
-            for ($i = 0, $count = count($this->_widgets); $i < $count; $i++) {
-                if ($this->_widgets[$i]->getAttribute('value') == $value) {
+            $widgets = &$this->_getWidgets();
+            for ($i = 0, $count = count($widgets); $i < $count; $i++) {
+                if ($widgets[$i]->getAttribute('value') == $value) {
                     return true;
                 }
             }
@@ -1172,9 +1321,10 @@
          *    @access public
          */
         function getValue() {
-            for ($i = 0, $count = count($this->_widgets); $i < $count; $i++) {
-                if ($this->_widgets[$i]->getValue()) {
-                    return $this->_widgets[$i]->getValue();
+            $widgets = &$this->_getWidgets();
+            for ($i = 0, $count = count($widgets); $i < $count; $i++) {
+                if ($widgets[$i]->getValue() !== false) {
+                    return $widgets[$i]->getValue();
                 }
             }
             return false;
@@ -1187,12 +1337,39 @@
          *    @access public
          */
         function getDefault() {
-            for ($i = 0, $count = count($this->_widgets); $i < $count; $i++) {
-                if ($this->_widgets[$i]->getDefault()) {
-                    return $this->_widgets[$i]->getDefault();
+            $widgets = &$this->_getWidgets();
+            for ($i = 0, $count = count($widgets); $i < $count; $i++) {
+                if ($widgets[$i]->getDefault() !== false) {
+                    return $widgets[$i]->getDefault();
                 }
             }
             return false;
+        }
+    }
+    
+    /**
+     *    Tag to keep track of labels.
+	 *    @package SimpleTest
+	 *    @subpackage WebTester
+     */
+    class SimpleLabelTag extends SimpleTag {
+        
+        /**
+         *    Starts with a named tag with attributes only.
+         *    @param hash $attributes    Attribute names and
+         *                               string values.
+         */
+        function SimpleLabelTag($attributes) {
+            $this->SimpleTag('label', $attributes);
+        }
+        
+        /**
+         *    Access for the ID to attach the label to.
+         *    @return string        For attribute.
+         *    @access public
+         */
+        function getFor() {
+            return $this->getAttribute('for');
         }
     }
     

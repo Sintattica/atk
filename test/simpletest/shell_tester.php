@@ -9,7 +9,7 @@
     /**#@+
      *	include other SimpleTest class files
      */
-    require_once(dirname(__FILE__) . '/simple_test.php');
+    require_once(dirname(__FILE__) . '/test_case.php');
     /**#@-*/
 
     /**
@@ -63,7 +63,7 @@
 
     /**
      *    Test case for testing of command line scripts and
-     *    utilities. Usually scripts taht are external to the
+     *    utilities. Usually scripts that are external to the
      *    PHP code, but support it in some way.
 	 *	  @package SimpleTest
 	 *	  @subpackage UnitTester
@@ -129,6 +129,67 @@
 		}
 
         /**
+         *    Called from within the test methods to register
+         *    passes and failures.
+         *    @param boolean $result    Pass on true.
+         *    @param string $message    Message to display describing
+         *                              the test state.
+         *    @return boolean           True on pass
+         *    @access public
+         */
+        function assertTrue($result, $message = false) {
+            return $this->assert(new TrueExpectation(), $result, $message);
+        }
+
+        /**
+         *    Will be true on false and vice versa. False
+         *    is the PHP definition of false, so that null,
+         *    empty strings, zero and an empty array all count
+         *    as false.
+         *    @param boolean $result    Pass on false.
+         *    @param string $message    Message to display.
+         *    @return boolean           True on pass
+         *    @access public
+         */
+        function assertFalse($result, $message = '%s') {
+            return $this->assert(new FalseExpectation(), $result, $message);
+        }
+        
+        /**
+         *    Will trigger a pass if the two parameters have
+         *    the same value only. Otherwise a fail. This
+         *    is for testing hand extracted text, etc.
+         *    @param mixed $first          Value to compare.
+         *    @param mixed $second         Value to compare.
+         *    @param string $message       Message to display.
+         *    @return boolean              True on pass
+         *    @access public
+         */
+        function assertEqual($first, $second, $message = "%s") {
+            return $this->assert(
+                    new EqualExpectation($first),
+                    $second,
+                    $message);
+        }
+        
+        /**
+         *    Will trigger a pass if the two parameters have
+         *    a different value. Otherwise a fail. This
+         *    is for testing hand extracted text, etc.
+         *    @param mixed $first           Value to compare.
+         *    @param mixed $second          Value to compare.
+         *    @param string $message        Message to display.
+         *    @return boolean               True on pass
+         *    @access public
+         */
+        function assertNotEqual($first, $second, $message = "%s") {
+            return $this->assert(
+                    new NotEqualExpectation($first),
+                    $second,
+                    $message);
+        }
+
+        /**
          *    Tests the last status code from the shell.
          *    @param integer $status   Expected status of last
          *                             command.
@@ -153,7 +214,7 @@
          */
         function assertOutput($expected, $message = "%s") {
             $shell = &$this->_getShell();
-            return $this->assertExpectation(
+            return $this->assert(
                     new EqualExpectation($expected),
                     $shell->getOutput(),
                     $message);
@@ -169,8 +230,8 @@
          */
         function assertOutputPattern($pattern, $message = "%s") {
             $shell = &$this->_getShell();
-            return $this->assertExpectation(
-                    new WantedPatternExpectation($pattern),
+            return $this->assert(
+                    new PatternExpectation($pattern),
                     $shell->getOutput(),
                     $message);
         }
@@ -185,8 +246,8 @@
          */
         function assertNoOutputPattern($pattern, $message = "%s") {
             $shell = &$this->_getShell();
-            return $this->assertExpectation(
-                    new UnwantedPatternExpectation($pattern),
+            return $this->assert(
+                    new NoPatternExpectation($pattern),
                     $shell->getOutput(),
                     $message);
         }
@@ -226,8 +287,8 @@
          */
         function assertFilePattern($pattern, $path, $message = "%s") {
             $shell = &$this->_getShell();
-            return $this->assertExpectation(
-                    new WantedPatternExpectation($pattern),
+            return $this->assert(
+                    new PatternExpectation($pattern),
                     implode('', file($path)),
                     $message);
         }
@@ -243,8 +304,8 @@
          */
         function assertNoFilePattern($pattern, $path, $message = "%s") {
             $shell = &$this->_getShell();
-            return $this->assertExpectation(
-                    new UnwantedPatternExpectation($pattern),
+            return $this->assert(
+                    new NoPatternExpectation($pattern),
                     implode('', file($path)),
                     $message);
         }
@@ -265,7 +326,8 @@
          *    @access protected
          */
         function &_createShell() {
-            return new SimpleShell();
+            $shell = &new SimpleShell();
+            return $shell;
         }
     }
 ?>

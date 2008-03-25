@@ -8,7 +8,9 @@
     /**
      * does type matter
      */
-    define('TYPE_MATTERS', true);
+    if (! defined('TYPE_MATTERS')) {
+        define('TYPE_MATTERS', true);
+    }
     
     /**
      *    Displays variables as text and does diffs.
@@ -35,7 +37,7 @@
                 case "Object":
                     return "Object: of " . get_class($value);
                 case "String":
-                    return "String: " . $this->clipString($value, 100);
+                    return "String: " . $this->clipString($value, 200);
                 default:
                     return "$type: $value";
             }
@@ -184,8 +186,8 @@
             $position = $this->_stringDiffersAt($first, $second);
             $message = "at character $position";
             $message .= " with [" .
-                    $this->clipString($first, 100, $position) . "] and [" .
-                    $this->clipString($second, 100, $position) . "]";
+                    $this->clipString($first, 200, $position) . "] and [" .
+                    $this->clipString($second, 200, $position) . "]";
             return $message;
         }
         
@@ -221,9 +223,10 @@
             if (is_object($second) || is_array($second)) {
                 return $this->_describeGenericDifference($first, $second);
             }
-            return "because " . $this->describeValue($first) .
+            return "because [" . $this->describeValue($first) .
                     "] differs from [" .
-                    $this->describeValue($second) . "]";
+                    $this->describeValue($second) . "] by " .
+                    abs($first - $second);
         }
         
         /**
@@ -331,7 +334,7 @@
             $position = 0;
             $step = strlen($first);
             while ($step > 1) {
-                $step = (integer)(($step + 1)/2);
+                $step = (integer)(($step + 1) / 2);
                 if (strncmp($first, $second, $position + $step) == 0) {
                     $position += $step;
                 }
@@ -352,29 +355,6 @@
             $formatted = ob_get_contents();
             ob_end_clean();
             return $formatted;
-        }
-
-        /**
-         *    Extracts the last assertion that was not within
-         *    Simpletest itself. The name must start with "assert".
-         *    @param array $stack      List of stack frames.
-         *    @param string $format    String formatting.
-         *    @param string $prefix    Prefix of method to search for.
-         *    @access public
-         *    @static
-         */
-        function getFormattedAssertionLine($stack, $format = '%d', $prefix = 'assert') {
-            foreach ($stack as $frame) {
-                if (isset($frame['file']) && strpos($frame['file'], 'simpletest') !== false) {     // dirname() is a bit slow.
-                    if (substr(dirname($frame['file']), -10) == 'simpletest') {
-                        continue;
-                    }
-                }
-                if (strncmp($frame['function'], $prefix, strlen($prefix)) == 0) {
-                    return sprintf($format, $frame['line']);
-                }
-            }
-            return '';
         }
     }
 ?>
