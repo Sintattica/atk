@@ -531,27 +531,16 @@
     {
       $this->m_usesFixture = $value;
     }
-    
-    function run(&$reporter)
+
+    /**
+     * When the testdatabase isn't configured or acceptable and the
+     * test uses the testdatabase then skip it.
+     *
+     */
+    public function skip()
     {
-      if(!$this->useTestDatabase() && $this->useFixture())
-      {
-        $reporter->paintCaseStart($this->getLabel());
-        $reporter->paintFail("test database didn't configure");
-        $reporter->paintCaseEnd($this->getLabel());
-
-        return false;
-      }
-      elseif($this->useTestDatabase() && $this->useFixture() && !$this->_checkFixtureDb())
-      {
-        $reporter->paintCaseStart($this->getLabel());
-        $reporter->paintFail("test database is not acceptable");
-        $reporter->paintCaseEnd($this->getLabel());
-
-        return false;
-      }
-      
-      return parent::run($reporter);
+      $this->skipIf(!$this->useTestDatabase() && $this->useFixture(),'Test database isn\'t configured');
+      $this->skipIf($this->useTestDatabase() && $this->useFixture() && !$this->_checkFixtureDb(),'Test database is not acceptable');
     }
     
     /**
