@@ -8,11 +8,12 @@ ATK.Dialog.prototype = {
   /**
    * Constructor.
    */
-  initialize: function(title, url, theme, options) {
+  initialize: function(title, url, theme, options, windowOptions) {
     this.title = title;
     this.url = url;
     this.theme = theme || 'alphacube';
     this.options  = options || {};
+    this.windowOptions = windowOptions || {};
  },
 
   /**
@@ -88,6 +89,7 @@ ATK.Dialog.prototype = {
       windowParameters['width'] = this.options.width;
     if (this.options.height)
       windowParameters['height'] = this.options.height;
+    windowParameters = Object.extend(windowParameters, this.windowOptions);
 
     var options = {};
     options['onSuccess'] = this.onShow.bind(this);

@@ -303,6 +303,7 @@
 
 					atkimport('atk.ui.atkdialog');
 					$dialog = new atkDialog($this->m_node->atkNodeType(), $action, 'dialog');
+					$dialog->setModifierObject($this->m_node);
 					$onClick = $dialog->getCall();
 
 					return '

@@ -127,6 +127,10 @@ Changed in ATK 6.2
 + Added support for caching database table meta data. This is in addition
   to the AtkMetaNode caching. [Martin]
 + Added support for specifying the character set for the atkOci9Db driver. [Peter] 
++ Added support for modifying add / add-or-copy dialogs from inside the node by
+  implementing a modifyDialog method. [Peter]
++ Added support for specifying more dialog window options on a per-theme basis 
+  by setting the new theme attribute 'dialog_window_options'. [Peter]
 * Fixed issue with atkDateAttribute when date is obligatory. [Marc/Martijn]
 * Fix re-aliassen with multiple sortfields in atkManyToOneRelation. [Martijn]
 * Fixed issue with adding o2m relation with a set filter. [Peter/Tjeerd]

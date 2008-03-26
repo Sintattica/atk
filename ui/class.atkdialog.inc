@@ -24,32 +24,35 @@
  */
 class atkDialog
 {
-  var $m_nodeType;
-  var $m_action;
-  var $m_partial;
-  var $m_params;
+  protected $m_nodeType;
+  
+  protected $m_action;
+  protected $m_partial;
+  protected $m_params;
 
-  var $m_title;
+  protected $m_title;
 
-  var $m_themeName;
-  var $m_themeLoad;
+  protected $m_themeName;
+  protected $m_themeLoad;
 
-  var $m_width = null;
-  var $m_height = null;
+  protected $m_width = null;
+  protected $m_height = null;
 
-  var $m_serializeForm = null;
+  protected $m_serializeForm = null;
+  
+  protected $m_modifierObject = null;
 
   /**
    * Constructor.
    *
-   * @param string $nodeType node name
+   * @param string $nodeType node type
    * @param string $action   node action
    * @param string $partial  partial name
-   * @param array $params    url parameters
+   * @param array  $params   url parameters
    *
    * @return atkDialog
    */
-  function atkDialog($nodeType, $action, $partial='dialog', $params=array())
+  function __construct($nodeType, $action, $partial='dialog', $params=array())
   {
     $this->m_nodeType = $nodeType;
     $this->m_action = $action;
@@ -57,15 +60,47 @@ class atkDialog
     $this->m_params = $params;
 
     atkimport('atk.ui.atkui');
-    $ui = &atkUI::getInstance();
-    $node = &atkGetNode($this->m_nodeType);
-    $this->m_title = $ui->title($node->m_module, $node->m_type, $action);
+    $ui = atkUI::getInstance();
+    $module = getNodeModule($nodeType);
+    $type = getNodeType($nodeType);
+    $this->m_title = $ui->title($module, $type, $action);
 
-    $theme = &atkTheme::getInstance();
+    $theme = atkTheme::getInstance();
     $this->m_themeName = $theme->getAttribute('dialog_theme_name', 'alphacube');
     $this->m_themeLoad = $theme->getAttribute('dialog_theme_load', true);
   }
+  
+  /**
+   * Returns the dialog node type.
+   *
+   * @return string node type
+   */
+  public function getNodeType()
+  {
+    return $this->m_nodeType;
+  }
+  
+  /**
+   * Returns the dialog action.
+   *
+   * @return string action
+   */
+  public function getAction()
+  {
+    return $this->m_action;
+  }
+  
+  /**
+   * Returns the dialog partial.
+   * 
+   * @return string partial
+   */
+  public function getPartial()
+  {
+    return $this->m_partial;
+  }
 
+  
   /**
    * Sets the dialog title.
    *
@@ -108,6 +143,26 @@ class atkDialog
     $this->m_width = $width;
     $this->m_height = $height;
   }
+  
+  /**
+   * Set width.
+   *
+   * @param int $width
+   */
+  public function setWidth($width)
+  {
+    $this->m_width = $width;
+  }
+  
+  /**
+   * Set height.
+   *
+   * @param int $height
+   */
+  public function setHeight($height)
+  {
+    $this->m_height = $height;
+  }
 
   /**
    * Serialize the form with the given name.
@@ -118,6 +173,29 @@ class atkDialog
   function setSerializeForm($form='entryform')
   {
     $this->m_serializeForm = $form;
+  }
+  
+  /**
+   * Returns the modifier object.
+   * 
+   * @return mixed modifier object
+   */
+  public function getModifierObject()
+  {
+    return $this->m_modifierObject;
+  }
+  
+  /**
+   * Sets an object which modifyObject method will be called (if exists) just
+   * before showing the dialog. This method is allowed to alter the dialog.
+   * 
+   * @see atkDialog::getCall
+   *
+   * @param mixed $object modifier object
+   */
+  public function setModifierObject($object)
+  {
+    $this->m_modifierObject = $object;
   }
 
   /**
@@ -146,7 +224,7 @@ class atkDialog
    */
   function getUrl()
   {
-    return partial_url($this->m_nodeType, $this->m_action, $this->m_partial, $this->m_params);
+    return partial_url($this->getNodeType(), $this->m_action, $this->m_partial, $this->m_params);
   }
 
   /**
@@ -165,33 +243,59 @@ class atkDialog
       $options['height'] = $this->m_height;
     if ($this->m_serializeForm != null)
       $options['serializeForm'] = $this->m_serializeForm;
-
+      
     return $options;
+  }
+  
+  /**
+   * Window options like the show effect etc. These options can be controlled
+   * by setting the special theme attribute 'dialog_window_options'. This
+   * attribute should contain a JavaScript object with the window options.
+   *
+   * @return unknown
+   */
+  protected function getWindowOptions()
+  {
+    if (atkTheme::getInstance()->getAttribute('dialog_window_options', null) != null)
+      return atkTheme::getInstance()->getAttribute('dialog_window_options');    
+    else return '{}';
   }
 
   /**
    * Returns the JavaScript call to open the dialog.
    *
-   * @param boolean $load   load JavaScript and stylesheets needed to show this dialog?
-   * @param boolean $encode encode using htmlentities (needed to use in links etc.)
+   * @param boolean $load         load JavaScript and stylesheets needed to show this dialog?
+   * @param boolean $encode       encode using htmlentities (needed to use in links etc.)
+   * @param boolean $callModifier call node's dialog modifier (modifyDialog method)?
    *
    * @return string JavaScript call for opening the dialog
    */
-  function getCall($load=true, $encode=true)
+  function getCall($load=true, $encode=true, $callModifier=true)
   {
     if ($load)
     {
       $this->load();
     }
+    
+    if ($callModifier)
+    {
+      $method = 'modifyDialog';
+      if ($this->getModifierObject() != null && 
+          method_exists($this->getModifierObject(), $method))
+      {
+        $this->getModifierObject()->$method($this);
+      }
+    }
 
     atkimport('atk.utils.atkjson');
 
-    $call = "(new ATK.Dialog(%s, %s, %s, %s)).show();";
+    $call = "(new ATK.Dialog(%s, %s, %s, %s, %s)).show();";
     $params = array(
       atkJSON::encode($this->m_title),
       atkJSON::encode($this->getUrl()),
       atkJSON::encode($this->m_themeName),
-      count($this->getOptions()) == 0 ? '{}' : atkJSON::encode($this->getOptions())
+      count($this->getOptions()) == 0 ? '{}' : atkJSON::encode($this->getOptions()),
+      $this->getWindowOptions()
     );
 
     $result = vsprintf($call, $params);
@@ -209,10 +313,8 @@ class atkDialog
    * @param boolean $encode    encode using htmlentities (needed to use in links etc.)
    *
    * @return string JavaScript call for saving the current dialog
-   *
-   * @static
    */
-  function getSaveCall($url, $formName='dialogform', $extraParams=array(), $encode=true)
+  public static function getSaveCall($url, $formName='dialogform', $extraParams=array(), $encode=true)
   {
     atkimport('atk.utils.atkjson');
 
@@ -231,10 +333,8 @@ class atkDialog
    * Returns JavaScript code to close the current ATK dialog.
    *
    * @return string JavaScript call for closing the current dialog
-   *
-   * @static
    */
-  function getCloseCall()
+  public static function getCloseCall()
   {
     return 'ATK.Dialog.getCurrent().close();';
   }
@@ -250,10 +350,8 @@ class atkDialog
    * @param boolean $encode    encode using htmlentities (needed to use in links etc.)
    *
    * @return string JavaScript call for saving the current dialog and closing it immediately
-   *
-   * @static
    */
-  function getSaveAndCloseCall($url, $formName='dialogform', $extraParams=array(), $encode=true)
+  public static function getSaveAndCloseCall($url, $formName='dialogform', $extraParams=array(), $encode=true)
   {
     atkimport('atk.utils.atkjson');
 
@@ -276,7 +374,7 @@ class atkDialog
    *
    * @return string JavaScript call for updating the dialog contents
    */
-  function getUpdateCall($content, $encode=true)
+  public static function getUpdateCall($content, $encode=true)
   {
     atkimport('atk.utils.atkjson');
 
@@ -295,7 +393,7 @@ class atkDialog
    *
    * @return string JavaScript call for updating the dialog contents
    */
-  function getAjaxUpdateCall($url)
+  public static function getAjaxUpdateCall($url)
   {
     $call = "ATK.Dialog.getCurrent().ajaxUpdate('%s');";
     $result = sprintf($call, addslashes($url));
@@ -307,7 +405,7 @@ class atkDialog
    *
    * @return string JavaScript call for reloading the dialog contents
    */
-  function getReloadCall()
+  public static function getReloadCall()
   {
     return "ATK.Dialog.getCurrent().reload();";
   }
