@@ -5,10 +5,11 @@ if (!window.ATK) {
 
 ATK.AttributeEditHandler = {
   refreshvalues: function(url) {
-    var list = $('dialogform').elements['atkselector[]'];        
+    var list = $('dialogform').elements['atkselector[]']; 
+
     var realList = [];
     if (typeof(list.length) == 'undefined') {
-      realList.push(list);
+      realList.push($F(list));
     } else {
       for (var i = 0; i < list.length; i++) {
         realList[i] = $F(list[i]);
