@@ -70,13 +70,21 @@ ATK.UnloadHelper.prototype = {
   },
   
   /**
+   * Is element excluded?
+   */
+  isElementExcluded: function(el) {
+    var container = $(el).up('.atkdatagrid-container');
+    return container != null;
+  },
+  
+  /**
    * Is the form changed?
    */
   isFormChanged: function() {
     // detect if the form is changed
     var elements = this.form.getElements();
     for (i = 0; i < elements.length; i++) {
-      if (this.isElementChanged(elements[i])) {
+      if (this.isElementChanged(elements[i]) && !this.isElementExcluded(elements[i])) {
         return true;
       }
     }

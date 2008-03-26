@@ -36,7 +36,7 @@ class atkDGRenderer extends atkDGComponent
     if (!$this->getGrid()->isUpdate())
     {
       $result = 
-        '<div id="'.$this->getGrid()->getName().'_container">'.
+        '<div id="'.$this->getGrid()->getName().'_container" class="atkdatagrid-container">'.
           $result.
         '</div>';
     }
