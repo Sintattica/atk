@@ -35,6 +35,11 @@
     {
       $this->m_name = $name;
     }
+    
+    public function getShuttle()
+    {
+      return $this->m_shuttle;
+    }
 
     public function setShuttle($shuttle)
     {

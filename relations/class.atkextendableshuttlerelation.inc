@@ -102,19 +102,29 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     if ($side=='available')
     {
       $rs = $this->getAvailableFields($record, $mode);
-      $name  = $this->getHtmlId($prefix)."[available]";
-      $opp   = $this->getHtmlId($prefix).'[cselected][]['.$this->getRemoteKey().']';
+      $name  = $this->getAvailableSelectName($prefix);
+      $opp   = $this->getSelectedSelectName($prefix);
       $sel   = 0;
     }
     else
     {
       $rs = $this->getSelectedFields($record);
-      $opp   = $this->getHtmlId($prefix)."[available]";
-      $name  = $this->getHtmlId($prefix).'[cselected][]['.$this->getRemoteKey().']';
+      $opp   = $this->getAvailableSelectName($prefix);
+      $name  = $this->getSelectedSelectName($prefix);
       $sel   = 1;
     }
 
     return $this->_renderSelect($name,$rs,$opp,$prefix,$sel);
+  }
+  
+  public function getSelectedSelectName($prefix)
+  {
+    return $this->getHtmlId($prefix).'[cselected][]['.$this->getRemoteKey().']';
+  }
+  
+  public function getAvailableSelectName($prefix)
+  {
+    return $this->getHtmlId($prefix)."[available]";
   }
 
   /**
@@ -136,10 +146,8 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     $mode   = $ATK_VARS["atkaction"];
     $prefix = $this->getOwnerInstance()->m_postvars['atkfieldprefix'];
 
-    // Also add filters after a selection has been made
-    $res = $this->partial_filter();
 
-    $res.= "<script language=\"text/javascript\">";
+    $res = "<script language=\"text/javascript\">";
     foreach ($this->m_controlsBySection[atkShuttleControl::AVAILABLE] as $control)
     {
       if ($control->needsRefresh('selection', $record))
@@ -382,5 +390,31 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     }
             
     return $this->m_availableFields;
+  }
+  
+  /**
+   * Returns the selected field count.
+   *
+   * @param array $record record
+   * 
+   * @return int selected field count
+   */
+  public function getSelectedFieldCount($record)
+  {
+    $selectedFields = $this->getSelectedFieldsFromRecord($record);
+    return count($selectedFields);
+  }
+  
+  /**
+   * Returns the available field count.
+   *
+   * @param array $record record
+   * 
+   * @return int available field count
+   */  
+  public function getAvailableFieldCount($record, $mode='add')
+  {
+    $count = $this->_getSelectableRecordCount($record, $mode);
+    return $count;
   }
 }

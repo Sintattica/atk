@@ -333,6 +333,7 @@ Changed in ATK 6.2
   node's module into account (module_ prefix). [Peter]
 * Improved detection of source/destination attributes for relations, we take
   the class hierarchy and the node's module into account. [Peter]
+* Improved speed of atkExtendableShuttleRelation for large datasets. [Peter]
 - Removed atkMetaHandler because it wasn't very useful. [Peter]
 - Removed support for regexes in atkMetaPolicy's setIncludes/setExcludes 
   because it wasn't very useful and wasn't used anyway. [Peter]

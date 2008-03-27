@@ -65,7 +65,15 @@
       $this->atkRelation($name, $destination, $flags|AF_CASCADE_DELETE|AF_NO_SORT);
     }
 
-
+    /**
+     * Returns the selectable records. Checks for an override in the owner instance
+     * with name <attribname>_selection.
+     *
+     * @param array  $record
+     * @param string $mode
+     * 
+     * @return array
+     */
     function _getSelectableRecords($record=array(), $mode="")
     {
       $method = $this->fieldName()."_selection";
@@ -73,25 +81,79 @@
         return $this->m_ownerInstance->$method($record, $mode);
       else return $this->getSelectableRecords($record, $mode);
     }
+    
+    /**
+     * Parse destination filter and return the result.
+     *
+     * @param array $record record
+     * 
+     * @return string parsed filter
+     */
+    private function parseDestinationFilter($record)
+    {
+      $filter = "";
 
-    function getSelectableRecords($record=array(), $mode="",$force=false)
+      if ($this->m_destinationFilter!="")
+      {
+        $filter = $this->parseFilter($this->m_destinationFilter, $record);      
+      }
+     
+      return $filter; 
+    }
+    
+    /**
+     * Returns the selectable record count.
+     *
+     * @param array  $record
+     * @param string $mode
+     * 
+     * @return int
+     */
+    protected function _getSelectableRecordCount($record=array(), $mode="")
+    {
+      $method = $this->fieldName()."_selection";
+      if (method_exists($this->m_ownerInstance, $method))
+        return count($this->_getSelectableRecords($record, $mode));
+      
+      static $resultList = array();
+
+      if ($this->createDestination())
+      {
+        $filter = $this->parseDestinationFilter($record);
+
+        $filterkey = md5($this->m_destInstance->atkNodeType().".".$filter);
+        if (!array_key_exists($filterkey, $resultList))
+        {
+          $resultList[$filterkey] = $this->m_destInstance->countDb($filter,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+        }
+
+        return $resultList[$filterkey];
+      }
+      
+      return 0;
+    }    
+
+    /**
+     * Returns the selectable records for this relation.
+     *
+     * @param array $record
+     * @param string $mode
+     * @param boolean $force
+     * 
+     * @return array selectable records
+     */
+    public function getSelectableRecords($record=array(), $mode="",$force=false)
     {
       static $resultList = array();
 
       if ($this->createDestination())
       {
-        $filter = "";
+        $filter = $this->parseDestinationFilter($record);
 
-        if ($this->m_destinationFilter!="")
-        {
-          $filter = $this->parseFilter($this->m_destinationFilter, $record);
-          $this->m_destInstance->addFilter($filter);
-        }
-
-        $filterkey = md5($this->m_destInstance->m_type.".".$filter);
+        $filterkey = md5($this->m_destInstance->atkNodeType().".".$filter);
         if (!array_key_exists($filterkey, $resultList))
         {
-          $resultList[$filterkey] = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+          $resultList[$filterkey] = $this->m_destInstance->selectDb($filter,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
         }
 
         return $resultList[$filterkey];

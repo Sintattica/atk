@@ -15,26 +15,44 @@ function shuttle_move(id1, id2, action, el)
   var el1 = document.getElementById(id1);
   var el2 = document.getElementById(id2);
 
-  var newel = el1.cloneNode(false);
-  newel.options.length=0;
-
-  for(var i=0; i<el1.options.length; i++)
+  var values = [];
+  var unset = [];
+  
+  el2.selectedIndex = -1;    
+  
+  for (var i = 0; i < el1.options.length; i++)
   {
     if (el1.options[i].selected)
     {
       el2.options[el2.options.length] = new Option(el1.options[i].text, el1.options[i].value);
-      saveValue(el1.options[i].value, action, el);
-    }
-    else
-    {
-      newel.options[newel.options.length] = new Option(el1.options[i].text, el1.options[i].value);
+      el2.options[el2.options.length - 1].selected = true;
+      values.push(el1.options[i].value);
+      unset.unshift(i);
     }
   }
-
-  el1.options.length=0;
-  for (i=0; i<newel.options.length; i++)
+   
+  for (var i = 0; i < unset.length; i++)
   {
-    el1.options[el1.options.length] = new Option(newel.options[i].text, newel.options[i].value);
+    el1.options[unset[i]] = null;
+  }
+
+  el1.selectedIndex = -1;  
+  
+  shuttle_save(values, action, el)
+
+  // trigger on change event  
+  if (document.createEventObject)
+  {
+    // dispatch for IE
+    var evt = document.createEventObject();
+    el2.fireEvent('onchange',evt)
+  }
+  else
+  {
+    // dispatch for firefox + others
+    var evt = document.createEvent("HTMLEvents");
+    evt.initEvent('change', true, true ); // event type,bubbling,cancelable
+    el2.dispatchEvent(evt);
   }
 }
 
@@ -43,31 +61,45 @@ function shuttle_moveall(id1, id2, action, el)
   var el1 = document.getElementById(id1);
   var el2 = document.getElementById(id2);
 
+  var values = [];  
+  
   for(var i=0; i<el1.options.length; i++)
   {
     el2.options[el2.options.length] = new Option(el1.options[i].text, el1.options[i].value);
-    saveValue(el1.options[i].value, action, el);
+    values.push(el1.options[i].value);
   }
 
   el1.options.length=0;
+  
+  shuttle_save(values, action, el); 
 }
 
 function getParams(url, selectEl)
 {
-    shuttle_selectAll(selectEl);
+  var elements = Form.getElements('entryform');
+  var queryComponents = new Array();
 
-    var elements = Form.getElements('entryform');
-    var queryComponents = new Array();
-
-    for (var i = 0; i < elements.length; i++) {
-      if (elements[i].name && elements[i].name.substring(0, 3) != 'atk') {
-        var queryComponent = Form.Element.serialize(elements[i]);
-        if (queryComponent)
-          queryComponents.push(queryComponent);
-      }
+  for (var i = 0; i < elements.length; i++) {
+    if (elements[i].name && elements[i].name.substring(0, 3) != 'atk') {
+      var queryComponent = Form.Element.serialize(elements[i]);
+      if (queryComponent)
+        queryComponents.push(queryComponent);
     }
+  }
+  
+  // add non-selected options
+  var selectEl = $(selectEl);
+  for (var i = 0; i < selectEl.options.length; i++)
+  {
+    if (!selectEl.options[i].selected)
+    {
+      var pair = {};
+      pair[selectEl.name] = selectEl.options[i].value;
+      queryComponents.push(Hash.toQueryString(pair));
+    }
+  }
 
-    return queryComponents.join('&');
+  return queryComponents.join('&');
 }
 
 function shuttle_refresh(url, selectEl, parent, side)
@@ -76,23 +108,23 @@ function shuttle_refresh(url, selectEl, parent, side)
   new Ajax.Request(url, { method: 'post', parameters: getParams(url, selectEl), onComplete: function(transport) { transport.responseText.evalScripts(); }});
 }
 
-function saveValue(value, action, el)
+function shuttle_save(values, action, el)
 {
-  if (action=='add')
+  var current = $F(el);
+  current = current.length > 0 ? current.parseJSON() : [];
+  
+  if (action == 'add')
   {
-    if ($F(el))
-      val = $F(el).parseJSON();
-    else
-      val = [];
-    val[val.length] = value;
-    $(el).value = val.toJSONString();
+    current = current.concat(values)
   }
   else
   {
-    if ($F(el))
+    for (var i = 0; i < values.length; i++)
     {
-      val = $F(el).parseJSON();
-      $(el).value = val.without(value).toJSONString();
+      var index = current.indexOf(values[i]);
+      current.splice(index, 1);
     }
   }
+  
+  $(el).value = current.toJSONString();
 }
