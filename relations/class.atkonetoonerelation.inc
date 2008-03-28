@@ -1064,7 +1064,6 @@
           if ($val==="" || $val===null) continue;
 
           $p_attrib = &$this->m_destInstance->m_attribList[$key];
-          $searchmode = $this->getChildSearchMode($searchmode, $p_attrib->formName());
 
           if (is_object($p_attrib))
           {
@@ -1082,7 +1081,7 @@
               // (don't worry ATK won't add it when it's already there)
               $query->addJoin($new_table,$new_table,($this->getJoinCondition()),false);
             }
-            $p_attrib->searchCondition($query,$new_table,$val,$searchmode);
+            $p_attrib->searchCondition($query,$new_table,$val,$this->getChildSearchMode($searchmode, $p_attrib->formName()));
           }
           else
           {
@@ -1092,7 +1091,7 @@
             $p_attrib = &$this->m_ownerInstance->m_attribList[$key];
             if (is_object($p_attrib))
             {
-              $p_attrib->searchCondition($query,$p_attrib->getTable($key),$val,$searchmode);
+              $p_attrib->searchCondition($query,$p_attrib->getTable($key),$val,$this->getChildSearchMode($searchmode, $p_attrib->formName()));
             }
             else atkdebug("Field $key was not found in this relation (this is very weird)");
           }
