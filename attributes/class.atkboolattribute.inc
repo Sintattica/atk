@@ -19,10 +19,10 @@
    * Make bool attribute obligatory (normal AF_OBLIGATORY flag is always removed).
    */
   define("AF_BOOL_OBLIGATORY", AF_SPECIFIC_1);
-  
+
   /**
-   * Show an extra label right next to the checkbox. ATK searches the language 
-   * file for the following variants <attribute>_label, <attribute> (next to 
+   * Show an extra label right next to the checkbox. ATK searches the language
+   * file for the following variants <attribute>_label, <attribute> (next to
    * the module/node prefixes). Don't forget to add the AF_BLANK_LABEL flag
    * if you don't want to show the normal label.
    */
@@ -53,21 +53,21 @@
         $this->addFlag(AF_OBLIGATORY);
       }
     }
-    
+
     function addFlag($flags)
     {
       // setting AF_OBLIGATORY has no use, so prevent setting it.
-      if (hasFlag($flags, AF_OBLIGATORY)) 
+      if (hasFlag($flags, AF_OBLIGATORY))
       {
-        $flags &= (~AF_OBLIGATORY);     
+        $flags &= (~AF_OBLIGATORY);
       }
 
       // except if someone really really really wants to show this attribute is obligatory
       if (hasFlag($flags, AF_BOOL_OBLIGATORY))
       {
         $flags |= AF_OBLIGATORY;
-      } 
-      
+      }
+
       parent::addFlag($flags);
     }
 
@@ -106,18 +106,18 @@
       $checked = "";
       if (isset($record[$this->fieldName()]) && $record[$this->fieldName()]>0) $checked="checked";
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_CURSOR);
-      
+
       $result = '<input type="checkbox" id="'.$id.'" name="'.$id.'" value="1" '.$onchange.$checked.' '.$this->getCSSClassAttribute("atkcheckbox").' />';
-      
+
       if ($this->hasFlag(AF_BOOL_INLINE_LABEL))
       {
         $result .= '&nbsp;<label for="'.$id.'">'.$this->text(array($this->fieldName().'_label', $this->getLabel($record))).'</label>';
       }
-      
+
       return $result;
     }
 
-    
+
 
     /**
      * Get the value if it exits, otherwise return 0
@@ -138,27 +138,16 @@
      */
     function search($record="", $extended=false, $fieldprefix="")
     {
-      $result = '<select name="atksearch'.$fieldprefix.'['.$this->formName().']">';
-      $result.= '<option value="">'.atktext("search_all", "atk");
+      $result = '<select name="'.$this->getSearchFieldName($fieldprefix).'">';
+      $result.= '<option value="">'.atktext("search_all", "atk").'</option>';
       $result.= '<option value="0" ';
-      if($record[$this->fieldName()]==='0' && !empty($record)) $result.="selected";
-      $result.= '>'.atktext("no", "atk");
+      if ($record[$this->fieldName()]==='0' && !empty($record)) $result.="selected";
+      $result.= '>'.atktext("no", "atk").'</option>';
       $result.= '<option value="1" ';
       if($record[$this->fieldName()]==='1') $result.="selected";
-      $result.= '>'.atktext("yes", "atk");
+      $result.= '>'.atktext("yes", "atk").'</option>';
       $result.='</select>';
       return $result;
-    }
-
-   /**
-     * Creates an search condition for a given search value
-     * @param $table the table name
-     * @param $value the search value
-     * @return a piece of the SQL where clause
-     */
-    function searchCondition(&$query, $table, $value, $searchmode)
-    {
-      $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
     }
 
     function getSearchCondition(&$query, $table, $value, $searchmode)
@@ -174,11 +163,11 @@
      */
     function display($record)
     {
-	    // We display true (1) as 'Yes' and false as 'No'
-	    if ($record[$this->fieldName()]>0) return atktext("yes", "atk");
-	    return atktext("no", "atk");
+      // We display true (1) as 'Yes' and false as 'No'
+      if ($record[$this->fieldName()]>0) return atktext("yes", "atk");
+      return atktext("no", "atk");
     }
-    
+
     /**
      * Get the HTML label of the attribute.
      *
@@ -197,11 +186,11 @@
       {
         return $this->label($record);
       }
-      else 
+      else
       {
         return parent::getLabel($record);
       }
-    }    
+    }
 
     function fetchValue($postvars)
     {

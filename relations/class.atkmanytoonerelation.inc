@@ -414,8 +414,8 @@
         if (count($result) == 0)
         {
           return null;
-        }        
-        
+        }
+
         // add descriptor fields, this means they can be shown in the title
         // bar etc. when updating failed for example
         $record = array($this->fieldName() => $result);
@@ -885,11 +885,11 @@
       {
         $parts = explode('.', $field);
         $ref = &$result;
- 
+
         foreach ($parts as $part)
         {
           $ref = &$ref[$part];
-        } 
+        }
 
         $ref = $value;
       }
@@ -906,12 +906,6 @@
      */
     function search($record=array(), $extended=false, $fieldprefix="", $grid=null)
     {
-      // ugly workaround in addToListArrayHeader we define the prefix with
-      // _AE_ at the end, this is correct, unfortuanately the search field needs
-      // it at the beginning to work properly, so we reverse it here
-      if (substr($fieldprefix, -4) == "_AE_")
-        $fieldprefix = "_AE_".substr($fieldprefix, 0, -4);
-
       $useautocompletion = atkConfig("manytoone_search_autocomplete", true) && $this->hasFlag(AF_RELATION_AUTOCOMPLETE);
       if (!$this->hasFlag(AF_LARGE) && !$useautocompletion)
       {
@@ -940,7 +934,7 @@
                 $filterRecord = array_merge($filterRecord, $arr);
               }
             }
-   
+
             $record = array_merge($filterRecord, is_array($record) ? $record : array());
           }
 
@@ -952,16 +946,13 @@
             $result.='multiple size="'.min(5,count($recordset)+1).'"';
           }
 
-          if (strstr($fieldprefix,"]["))
-            $result.='name="atksearch['. $fieldprefix.$this->fieldName().'][]">';
-          else
-            $result.='name="atksearch'.$fieldprefix.'['. $this->fieldName().'][]">';
+          $result.='name="'.$this->getSearchFieldName($fieldprefix).'[]">';
 
           $pkfield = $this->m_destInstance->primaryKeyField();
 
-          $result.= '<option value="">'.atktext('search_all');
+          $result.= '<option value="">'.atktext('search_all').'</option>';
           if (!$this->hasFlag(AF_OBLIGATORY))
-            $result.= '<option value="__NONE__"'.(isset($record[$this->fieldName()]) && atk_in_array('__NONE__', $record[$this->fieldName()]) ? ' selected="selected"' : '').'>'.atktext('search_none');
+            $result.= '<option value="__NONE__"'.(isset($record[$this->fieldName()]) && atk_in_array('__NONE__', $record[$this->fieldName()]) ? ' selected="selected"' : '').'>'.atktext('search_none').'</option>';
 
           for ($i=0;$i<count($recordset);$i++)
           {
@@ -969,7 +960,7 @@
 
             if (is_array($record)&&isset($record[$this->fieldName()])&&
                        atk_in_array($pk, $record[$this->fieldName()])) $sel = "selected"; else $sel = "";
-            $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
+            $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]).'</option>';
           }
           $result.='</select>';
           return $result;
@@ -978,9 +969,7 @@
       }
       else
       {
-        if (strstr($fieldprefix,"]["))
-          $id ='atksearch['.$fieldprefix.$this->fieldName().']';
-        else $id ='atksearch'.$fieldprefix.'['. $this->fieldName().']';
+        $id = $this->getSearchFieldName($fieldprefix);
 
         $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
         $result = '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
@@ -1004,18 +993,21 @@
     }
 
     /**
-     * Retrieve the default searchmode of an attribute
+     * Retrieve the list of searchmodes supported by the attribute.
      *
-     * @param boolean $extended Whether extended search is being used
-     * @return String the default searchmode for this attribute.
+     * Note that not all modes may be supported by the database driver.
+     * Compare this list to the one returned by the databasedriver, to
+     * determine which searchmodes may be used.
+     *
+     * @return array List of supported searchmodes
      */
-    function getSearchMode($extended = false)
+    function getSearchModes()
     {
-      if ($this->hasFlag(AF_LARGE))
+      if ($this->hasFlag(AF_LARGE) || $this->hasFlag(AF_MANYTOONE_AUTOCOMPLETE))
       {
-        return parent::getSearchMode($extended);
+        return array("substring","exact","wildcard","regex");
       }
-      return "exact"; // only support exact search when searching with dropdowns
+      return array("exact"); // only support exact search when searching with dropdowns
     }
 
     /**
@@ -1058,54 +1050,44 @@
       }
     }
 
-    /**
-     * Creates an search condition for a given search value
-     * @param  atkQuery $query      query to hook ourselves in to
-     * @param  string   $table      the table name
-     * @param  string   $value      the search value
-     * @param  string   $searchmode the searchmode for the search (e.g. substring)
-     * @return string          a piece of the SQL where clause
-     */
-    function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix='')
-    {
-      $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
-      if (!empty($searchcondition))
-        $query->addSearchCondition($searchcondition);
-    }
-
-    function getSearchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix)
+    function getSearchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix='')
     {
       if (!$this->createDestination()) return;
 
-    	if (!$this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_RELATION_AUTOCOMPLETE))
-    	{
-    		// We only support 'exact' matches.
-    		// But you can select more than one value, which we search using the IN() statement,
-    		// which should work in any ansi compatible database.
-    		if (is_array($value)) // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
-    		{
-  		    foreach ($this->m_listColumns as $attr)
-  		    {
-  		      $attrValue = $value[$attr];
-  		      if (!empty($attrValue))
-  		      {
-  		        $p_attrib = &$this->m_destInstance->m_attribList[$attr];
-  		        if (!$p_attrib == NULL)
-  		          $p_attrib->searchCondition($query, $this->fieldName(), $attrValue, $searchmode);
-  		      }
-  		    }
+      if (is_array($value))
+      {
+        foreach ($this->m_listColumns as $attr)
+        {
+          $attrValue = $value[$attr];
+          if (!empty($attrValue))
+          {
+            $p_attrib = &$this->m_destInstance->m_attribList[$attr];
+            if (!$p_attrib == NULL)
+            {
+              $p_attrib->searchCondition($query, $this->fieldName(), $attrValue, $this->getChildSearchMode($searchmode, $p_attrib->formName()));
+            }
+          }
+        }
+      }
 
-  		    $value = isset($value[0]) ? $value : $value[$this->fieldName()];
+      if (!$this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_RELATION_AUTOCOMPLETE))
+      {
+        // We only support 'exact' matches.
+        // But you can select more than one value, which we search using the IN() statement,
+        // which should work in any ansi compatible database.
+        if (is_array($value)) // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+        {
+          $value = isset($value[0]) ? $value : $value[$this->fieldName()];
 
-  		    if (!is_array($value)) return '';
+          if (!is_array($value)) return '';
 
-    			if (count($value)==1) // exactly one value
-    			{
-    			  if ($value[0] == "__NONE__")
-    			  {
-    			    return $query->nullCondition($table.".".$this->fieldName(), true);
-    			  }
-    			  elseif ($value[0] != "")
+          if (count($value)==1) // exactly one value
+          {
+            if ($value[0] == "__NONE__")
+            {
+              return $query->nullCondition($table.".".$this->fieldName(), true);
+            }
+            elseif ($value[0] != "")
             {
               return $query->exactCondition($table.".".$this->fieldName(),$this->escapeSQL($value[0]));
             }
@@ -1117,9 +1099,7 @@
         }
         else
         {
-          $cond= $query->exactCondition($table.".".$this->fieldName(),$this->escapeSQL($value));
-          atkdebug($cond, "condition");
-          return $cond;
+          return $query->exactCondition($table.".".$this->fieldName(),$this->escapeSQL($value));
         }
       }
       else if (empty($value)) // nothing to search for
@@ -1130,7 +1110,7 @@
       {
         // ask the destination node for it's search condition
         $alias = $fieldaliasprefix . $this->fieldName();
-        return $this->m_destInstance->getSearchCondition($query, $alias, $fieldaliasprefix, $value, $searchmode);
+        return $this->m_destInstance->getSearchCondition($query, $alias, $fieldaliasprefix, $value, $this->getChildSearchMode($searchmode, $this->formName()));
       }
     }
 
@@ -1520,15 +1500,18 @@
         // check for multiple order fields
         $orderfields = explode(",",$order);
         $neworderfields = array();
-        
-        foreach ($orderfields as $field) 
+
+        foreach ($orderfields as $field)
         {
           // realias if destination order contains a tablename.
-          if (strpos($field, $this->m_destInstance->m_table.'.') !== FALSE)
+          if (strpos($field, $this->m_destInstance->m_table.'.') !== false)
             $neworderfields[] = str_replace($this->m_destInstance->m_table.'.', $this->fieldName().'.', $field);
-          else $neworderfields[] = str_replace(trim($field), $this->fieldName().".".trim($field), $field);
+          else if (strpos($field, '.') === false)
+            $neworderfields[] = str_replace(trim($field), $this->fieldName().".".trim($field), $field);
+          else
+            $neworderfields[] = $field;
         }
-        
+
         return implode(",",$neworderfields);
       }
       else
@@ -1599,15 +1582,6 @@
               $arr['heading'][$key]['order'] = $order;
             }
           }
-
-          // fix search box
-          $fieldPointer = &$arr["search"][$key];
-          $fieldPointer =
-            str_replace(
-              "atksearch[".$p_attrib->fieldName()."]",
-              "atksearch_".$prefix."[" . $p_attrib->fieldName()."]",
-              $fieldPointer
-            );
         }
       }
     }
@@ -1660,9 +1634,9 @@
      */
     function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "")
     {
-      $prefix = "_AE_".$fieldprefix.$this->fieldName();
+      $prefix = $fieldprefix.$this->fieldName()."_AE_";
 
-      parent::addToSearchformFields($fields,$node,$record, $prefix);
+      parent::addToSearchformFields($fields, $node, $record, $prefix);
 
       // only add extra columns when needed
       if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) return;
@@ -1676,14 +1650,7 @@
 
         if (!$p_attrib->hasFlag(AF_HIDE_SEARCH))
         {
-          // TODO: This is an ugly way to make sure date attributes are changed as well
-          //       Furthermore it does nothing to save the javascript functionality
-          //       (which completely breaks) in searching a onetoone something like a 'searchname' should
-          //       be implemented and used.
-          if (method_exists($p_attrib, "atkDateAttribute"))
-            $p_attrib->addToSearchformFields($fields,$node,$record[$this->fieldName()], "{$prefix}_AE_");
-          else
-            $p_attrib->addToSearchformFields($fields,$node,$record[$this->fieldName()], $prefix);
+          $p_attrib->addToSearchformFields($fields,$node,$record[$this->fieldName()], $prefix);
         }
       }
     }

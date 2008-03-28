@@ -113,13 +113,13 @@
         $entry["id"] = $this->getHtmlId($fieldprefix);
         $entry["tabs"] = $this->m_tabs;
         $entry["sections"] = $this->m_sections;
-        
+
         /* first language of other languages */
         $entry["html"] = '<input type="text" name="'.$fieldprefix.$this->formName().'['.(count($this->m_languages)==2 ? $curlng : "multilanguage").']"'.
                    ' value="'.htmlspecialchars($defaults[$this->fieldName()][$curlng]).'"'.
                    ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
                    ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
-                   
+
         $arr["fields"][] = $entry;
         $this->m_edited = false;
       }
@@ -133,16 +133,11 @@
      */
     function search($record="", $extended=false, $fieldprefix="")
     {
-      // Evil bit to get searching in one-to-manys to work alongside
-      // searching on normal recordlists.
-      if (strstr($fieldprefix, "]["))
-        $id = "atksearch[".$fieldprefix.$this->formName();
-      else
-        $id = "atksearch$fieldprefix"."[".$this->formName();
-
-      $id .= (!$this->isMlNode()?'_'.$languages[0]:'')."]";
-
       $languages = $this->getLanguages();
+
+      $id  =  $this->getSearchFieldName($prefix);
+      $id .= !$this->isMlNode()?'_'.$languages[0]:'';
+
       $result= '<input type="text" name="'.$id.'"'.
                ' value="'.$record[$this->fieldName().(!$this->isMlNode()?'_'.$languages[0]:'')].'"'.
                ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
@@ -315,17 +310,6 @@
       $this->m_size = min($metadata[$attribname]['len'], $this->maxInputSize());
       $this->m_searchsize = min($metadata[$attribname]['len'], 20);
       $this->m_maxsize = $metadata[$attribname]['len'];
-    }
-
-     /**
-     * Creates an search condition for a given search value
-     * @param $table the table name
-     * @param $value the search value
-     * @return a piece of the SQL where clause
-     */
-    function searchCondition(&$query, $table, $value, $searchmode)
-    {
-      $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
     }
 
     function getSearchCondition(&$query, $table, $value, $searchmode)

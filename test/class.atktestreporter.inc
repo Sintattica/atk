@@ -39,7 +39,7 @@
         "<tr class=\"$result\">".
           "<td valign=\"top\" class=\"date\" nowrap=\"nowrap\" width=\"5%\">".date('Y-m-d H:i:s')."</td>".
           "<td valign=\"top\" class=\"method\" nowrap=\"nowrap\" width=\"5%\">".implode("-&gt;", $breadcrumb)."</td>".
-          "<td valign=\"top\" class=\"message\">".$message."</td>".
+          "<td valign=\"top\" class=\"message\">".htmlentities($message)."</td>".
           "<td valign=\"top\" class=\"result\" nowrap=\"nowrap\" width=\"5%\">[".strtoupper($result)."]</td>".
         "</tr>";
 
@@ -126,63 +126,63 @@
    */
   class ArrayHtmlReporter extends HtmlReporter
   {
-   	var $_results;
-   	function arrayHtmlReporter()
-   	{
-   	  $this->_results = array();
-   	}
+     var $_results;
+     function arrayHtmlReporter()
+     {
+       $this->_results = array();
+     }
 
-   	function paintException($message)
-   	{
-   	  SimpleReporter::paintException($message);
+     function paintException($message)
+     {
+       SimpleReporter::paintException($message);
         print "<span class=\"fail\">Exception</span>: ";
         $breadcrumb = $this->getTestList();
         array_shift($breadcrumb);
         print implode(" -&gt; ", $breadcrumb);
         print " -&gt; " . $message . "<br />\n";
-   	}
+     }
 
-   	function paintPass($message)
-   	{
-   		SimpleReporter::paintPass($message);
-  		$breadcrumb = $this->getTestList();
-  		array_shift($breadcrumb);
-  		$test = implode("->", $breadcrumb);
+     function paintPass($message)
+     {
+       SimpleReporter::paintPass($message);
+      $breadcrumb = $this->getTestList();
+      array_shift($breadcrumb);
+      $test = implode("->", $breadcrumb);
 
-  		$result["time"] = date('Y-m-d H:i:s');
-  		$result["status"] = "Passed";
-  		$result["test"] = $test;
-  		$result["message"] = $message;
-  		$this->_results[] = $result;
-  		echo str_pad(nl2br("  [<span class=\"pass\">Passed</span>] ".$result['time']." | ".$result['test']." : ".$result['message'] ." \n"), 4096);
-  		flush();
-   	}
+      $result["time"] = date('Y-m-d H:i:s');
+      $result["status"] = "Passed";
+      $result["test"] = $test;
+      $result["message"] = $message;
+      $this->_results[] = $result;
+      echo str_pad(nl2br("  [<span class=\"pass\">Passed</span>] ".$result['time']." | ".$result['test']." : ".$result['message'] ." \n"), 4096);
+      flush();
+     }
 
-   	function paintFail($message)
-   	{
-   		SimpleReporter::paintFail($message);
-  		$breadcrumb = $this->getTestList();
-  		array_shift($breadcrumb);
-  		$test = implode("->", $breadcrumb);
+     function paintFail($message)
+     {
+       SimpleReporter::paintFail($message);
+      $breadcrumb = $this->getTestList();
+      array_shift($breadcrumb);
+      $test = implode("->", $breadcrumb);
 
-  		$result["time"] = date('Y-m-d H:i:s');
-  		$result["status"] = "Failed";
-  		$result["test"] = $test;
-  		$result["message"] = $message;
-  		$this->_results[] = $result;
-  		echo str_pad(nl2br("  [<span class=\"fail\">Failed</span>] ".$result['time']." | ".$result['test']." : ".$result['message'] ." \n"), 4096);
-  		flush();
-   	}
+      $result["time"] = date('Y-m-d H:i:s');
+      $result["status"] = "Failed";
+      $result["test"] = $test;
+      $result["message"] = $message;
+      $this->_results[] = $result;
+      echo str_pad(nl2br("  [<span class=\"fail\">Failed</span>] ".$result['time']." | ".$result['test']." : ".$result['message'] ." \n"), 4096);
+      flush();
+     }
 
-   	function _getCss()
+     function _getCss()
       {
         return '.fail {color: red; font-family: courier; } .pass { color: green; font-family: courier;}';
       }
 
-   	function getStatus()
-   	{
-   		return $this->_results;
-   	}
+     function getStatus()
+     {
+       return $this->_results;
+     }
   }
 
   /**
@@ -196,56 +196,56 @@
    */
   class ArrayTextReporter extends SimpleReporter
   {
-   	var $_results;
-   	function arrayTextReporter()
-   	{
-   		$this->SimpleReporter();
-   		$this->_results = array();
-   	}
+     var $_results;
+     function arrayTextReporter()
+     {
+       $this->SimpleReporter();
+       $this->_results = array();
+     }
 
-   	function paintPass($message)
-   	{
-   		parent::paintPass($message);
-  		$breadcrumb = $this->getTestList();
-  		array_shift($breadcrumb);
-  		$test = implode("->", $breadcrumb);
+     function paintPass($message)
+     {
+       parent::paintPass($message);
+      $breadcrumb = $this->getTestList();
+      array_shift($breadcrumb);
+      $test = implode("->", $breadcrumb);
 
-  		$result["time"] = date('Y-m-d H:i:s');
-  		$result["status"] = "Passed";
-  		$result["test"] = $test;
-  		$result["message"] = $message;
-  		$this->_results[] = $result;
-  		echo ("  [".$result['status']."] ".$result['time']." | ".$result['test']." : ".$result['message'] ." \n");
-   	}
+      $result["time"] = date('Y-m-d H:i:s');
+      $result["status"] = "Passed";
+      $result["test"] = $test;
+      $result["message"] = $message;
+      $this->_results[] = $result;
+      echo ("  [".$result['status']."] ".$result['time']." | ".$result['test']." : ".$result['message'] ." \n");
+     }
 
-   	function paintFail($message)
-   	{
-   		parent::paintFail($message);
-  		$breadcrumb = $this->getTestList();
-  		array_shift($breadcrumb);
-  		$test = implode("->", $breadcrumb);
+     function paintFail($message)
+     {
+       parent::paintFail($message);
+      $breadcrumb = $this->getTestList();
+      array_shift($breadcrumb);
+      $test = implode("->", $breadcrumb);
 
-  		$result["time"] = date('Y-m-d H:i:s');
-  		$result["status"] = "Failed";
-  		$result["test"] = $test;
-  		$result["message"] = $message;
-  		$this->_results[] = $result;
-  		echo ("  [".$result['status']."] ".$result['time']." | ".$result['test']." : ".$result['message'] ." \n");
-   	}
+      $result["time"] = date('Y-m-d H:i:s');
+      $result["status"] = "Failed";
+      $result["test"] = $test;
+      $result["message"] = $message;
+      $this->_results[] = $result;
+      echo ("  [".$result['status']."] ".$result['time']." | ".$result['test']." : ".$result['message'] ." \n");
+     }
 
-   	function paintFooter($test_name)
-   	{
-   		echo $this->getTestCaseProgress() . "/" . $this->getTestCaseCount();
+     function paintFooter($test_name)
+     {
+       echo $this->getTestCaseProgress() . "/" . $this->getTestCaseCount();
       echo " test cases complete:\n";
       echo $this->getPassCount() . " passes, ";
       echo $this->getFailCount() . " fails and ";
       echo $this->getExceptionCount() . " exceptions.";
-   	}
+     }
 
-   	function getStatus()
-   	{
-   		return $this->_results;
-   	}
+     function getStatus()
+     {
+       return $this->_results;
+     }
   }
 
 ?>

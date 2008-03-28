@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -15,9 +15,9 @@
    * @version $Revision$
    * $Id$
    */
-  
+
   /** @internal include base class. */
-  useattrib("atkmultiselectattribute"); 
+  useattrib("atkmultiselectattribute");
 
   /**
    * The atkFlagAttribute class offers an way to edit bitmask flags.
@@ -39,7 +39,7 @@
     {
       $this->atkMultiSelectAttribute($name, $optionArray, $valueArray, $cols, $flags, $size);
       $this->m_dbfieldtype = "number";
-    }      
+    }
 
     function value2db($rec)
     {
@@ -55,7 +55,7 @@
       }
       else return 0;
     }
-    
+
     function db2value($rec)
     {
       if($rec[$this->fieldName()]>0)
@@ -68,24 +68,19 @@
             $newrec[] = $value;
           }
         }
-        return $newrec;  
+        return $newrec;
       }
       return array();
     }
-    
+
     function dbFieldType()
     {
       return $this->m_dbfieldtype;
     }
 
-    function searchCondition(&$query, $table, $value, $searchmode)
-    {
-      $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
-    }
-    
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
-    	if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+      if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
       {
         $field = $table.".".$this->fieldName();
         if (count($value)==1) // exactly one value
@@ -94,30 +89,30 @@
         }
         else
         {
-        	$mask = "(".implode("|",$value).")";
-        	$searchcondition = $field."&".$mask."=".$mask;
+          $mask = "(".implode("|",$value).")";
+          $searchcondition = $field."&".$mask."=".$mask;
         }
       }
       return $searchcondition;
     }
-    
+
     /**
-     * Convert values from an HTML form posting to an internal value for 
-     * this attribute. 
+     * Convert values from an HTML form posting to an internal value for
+     * this attribute.
      *
      * For the regular atkAttribute, this means getting the field with the
-     * same name as the attribute from the html posting. 
+     * same name as the attribute from the html posting.
      *
-     * @param array $postvars The array with html posted values ($_POST, for 
+     * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
      * @return String The internal value
      */
     function fetchValue($postvars)
     {
-			$vars = atkArrayNvl($postvars, $this->fieldName());
-			if(!is_array($vars))
-			{
-				$result = array();
+      $vars = atkArrayNvl($postvars, $this->fieldName());
+      if(!is_array($vars))
+      {
+        $result = array();
         foreach($this->m_values as $value)
         {
           if(hasFlag($vars, $value))
@@ -125,23 +120,23 @@
             $result[] = $value;
           }
         }
-	      return $result;
-			}
-			else return $vars;
+        return $result;
+      }
+      else return $vars;
     }
 
     function hide($record="", $fieldprefix="")
     {
       $values = 0;
-    	$name = $this->fieldName();
+      $name = $this->fieldName();
       if(is_array($record[$name]))
       {
         foreach ($record[$name] as $var) $values |=$var;
-      } 
+      }
       else $values = $record[$name];
       return '<input type="hidden" name="'.$fieldprefix.$name.'"
                       value="'.$values.'">';
-    }    
+    }
 
     function getSearchModes()
     {

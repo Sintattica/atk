@@ -104,6 +104,11 @@
       $this->m_date = new atkDateattribute($name,'','',0,0,$flags);
 
       $this->atkAttribute($name,$flags); // base class constructor
+
+      if ($this->hasFlag(AF_OBLIGATORY))
+      {
+       $this->setInitialValue(atkDateTimeAttribute::datetimeArray());
+      }
     }
 
     function setDateMin($min=0)

@@ -377,6 +377,18 @@
     }
 
     /**
+     * Initialize this destinations attribute sizes.
+     */
+    function fetchMeta()
+    {
+      if ($this->hasFlag(AF_ONETOONE_INTEGRATE))
+      {
+        $this->createDestination();
+        $this->getDestination()->setAttribSizes();
+      }
+    }
+
+    /**
      * Convert values from an HTML form posting to an internal value for
      * this attribute.
      *
@@ -490,7 +502,7 @@
           // we put the vars in the postvars, because there is information
           // like atkorgkey in it that is vital.
           // but we restore the postvars after we're done updating
-	         $oldpost = $this->m_destInstance->m_postvars;
+           $oldpost = $this->m_destInstance->m_postvars;
           $this->m_destInstance->m_postvars = $vars;
           $res = $this->m_destInstance->updateDb($vars);
           $this->m_destInstance->m_postvars = $oldpost;
@@ -879,7 +891,7 @@
       if ($this->hasFlag(AF_ONETOONE_ERROR)&&($mode!="add" || !$this->hasFlag(AF_HIDE_ADD)))
       {
         if ($this->createDestination())
-	      {
+        {
           $this->m_destInstance->validate($record[$this->fieldName()], $mode, array($this->m_refKey));
 
           // only add 'atkerror' record when 1:1 relation contains error
@@ -887,7 +899,7 @@
           {
             $record["atkerror"] = array_merge((array)$record["atkerror"], (array)$record[$this->fieldName()]["atkerror"]);
           }
-	      }
+        }
       }
     }
 
@@ -990,19 +1002,11 @@
         // integrated version, don't add ourselves, but add all columns from the destination.
         if ($this->createDestination())
         {
+          $prefix = $fieldprefix.$this->fieldName()."_AE_";
           foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
           {
             $p_attrib = &$this->m_destInstance->getAttribute($attribname);
-            $pref = $fieldprefix . "_AE_" .$this->fieldName();
-            $p_attrib->addToListArrayHeader($action, $arr, $pref, $flags, $atksearch[$this->fieldName()], $atkorderby);
-
-            $fieldPointer = &$arr["search"][$pref.$p_attrib->fieldName()];
-            $fieldPointer =
-              str_replace(
-                "atksearch[".$p_attrib->fieldName()."]",
-                "atksearch_" . $pref . "[" . $p_attrib->fieldName()."]",
-                $fieldPointer
-              );
+            $p_attrib->addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby);
           }
         }
       }
@@ -1047,11 +1051,6 @@
       }
     }
 
-    function searchCondition(&$query, $table, $value, $searchmode)
-    {
-      $this->getSearchCondition($query, $table, $value, $searchmode);
-    }
-
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       if (is_array($value))
@@ -1062,9 +1061,11 @@
         {
           // if we aren't searching for anything in this field, there is no need
           // to look any further:
-          if (!$val) continue;
+          if ($val==="" || $val===null) continue;
 
           $p_attrib = &$this->m_destInstance->m_attribList[$key];
+          $searchmode = $this->getChildSearchMode($searchmode, $p_attrib->formName());
+
           if (is_object($p_attrib))
           {
             if ($this->m_refKey && $this->createDestination())
@@ -1138,7 +1139,7 @@
      */
     function getJoinCondition(&$query, $tablename="",$fieldalias="")
     {
-      $condition = $this->m_ownerInstance->m_table . "." . $this->fieldName();
+      $condition  = $this->m_ownerInstance->m_table . "." . $this->fieldName();
       $condition .= "=";
       $condition .= $this->m_destInstance->m_table . "." . $this->m_destInstance->primaryKeyField();
       return $condition;
@@ -1157,20 +1158,14 @@
 
       if ($this->hasFlag(AF_ONETOONE_INTEGRATE) && $this->createDestination())
       {
+        $prefix = $fieldprefix.$this->fieldName()."_AE_";
         foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_destInstance->m_attribList[$attribname];
 
           if (!$p_attrib->hasFlag(AF_HIDE_SEARCH))
           {
-            // TODO: This is an ugly way to make sure date attributes are changed as well
-            //       Furthermore it does nothing to save the javascript functionality
-            //       (which completely breaks) in searching a onetoone something like a 'searchname' should
-            //       be implemented and used.
-            if (method_exists($p_attrib, "atkDateAttribute"))
-              $p_attrib->addToSearchformFields($fields,$node,$record[$this->fieldName()], "_AE_".$this->fieldName()."_AE_", $currentSearchMode[$this->fieldName()]);
-            else
-              $p_attrib->addToSearchformFields($fields,$node,$record[$this->fieldName()], "_AE_".$this->fieldName(), $currentSearchMode[$this->fieldName()]);
+            $p_attrib->addToSearchformFields($fields, $node, $record[$this->fieldName()], $prefix, $currentSearchMode[$this->fieldName()]);
           }
         }
       }

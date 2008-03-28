@@ -7,6 +7,8 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
++ Added support for searching with a '/' as seperator for from/to values in a
+  free text search for atkDateAttribute. [Tjeerd, Peter]
 + Added node, nodetitle, action and actiontitle as separate entries to
   the stack-trace array. (Achievo Bug 942) [Peter]
 + Added support for objects tat implement the ArrayAccess interface in
@@ -99,7 +101,7 @@ Changed in ATK 6.2
   the attribute's edit() method to paint it on screen. [Ivo, Sandy]
 + Added setText function to atkDummyAttribute to change the text. [Sandy]
 + Added setClickableLabel to the atkRadioAttribute to turn it of
-  (default this is on). [Sandy]  
+  (default this is on). [Sandy]
 + Added validation of tags, they may not contain HTML or linefeeds. Also
   added testcase for validation. [Dennis]
 + Added the atkDataGrid which replaces atkRecordList for the admin and
@@ -107,30 +109,35 @@ Changed in ATK 6.2
   browsing through records without page reloads. [Peter]
 + Added atkTextAttribute::setWrapMode to specify the wrap mode for
   the textarea (by default "soft"). [Peter]
-+ Added support for caching of the meta node code. This makes the meta node 
-  just as fast as an ordinary node. Caching is automatically turned on for meta 
-  nodes which either don't have a meta method defined or have their meta method 
++ Added support for caching of the meta node code. This makes the meta node
+  just as fast as an ordinary node. Caching is automatically turned on for meta
+  nodes which either don't have a meta method defined or have their meta method
   defined as being static. During development the caching can be turned of
   by setting the new $config_meta_cache configuration option to false. [Peter]
 + Added the atkMetaCompiler which transforms the meta policy contents to code.
-  If you want to use your own compiler class you can override the new 
+  If you want to use your own compiler class you can override the new
   $config_meta_compiler configuration option. [Peter]
-+ Added support for setting the default value for meta node attributes using 
++ Added support for setting the default value for meta node attributes using
   atkMetaPolicy's new setDefaultValue method. [Peter]
 + Added support for forcing the insertion of meta node attributes using
-  atkMetaPolicy's new setForceInsert/removeForceInsert methods. [Peter]  
-+ Added support for setting a handler/callback for the atkMetaPolicy which 
+  atkMetaPolicy's new setForceInsert/removeForceInsert methods. [Peter]
++ Added support for setting a handler/callback for the atkMetaPolicy which
   should be called instead of the meta node's meta method, this supercedes
-  the atkMetaHandler class. You can set the handler for a node by specifying   
+  the atkMetaHandler class. You can set the handler for a node by specifying
   it as a meta option either by passing it to the parent constructor or
   creating a protected instance variable called $handler. [Peter]
 + Added support for caching database table meta data. This is in addition
   to the AtkMetaNode caching. [Martin]
-+ Added support for specifying the character set for the atkOci9Db driver. [Peter] 
++ Added support for specifying the character set for the atkOci9Db driver. [Peter]
 + Added support for modifying add / add-or-copy dialogs from inside the node by
   implementing a modifyDialog method. [Peter]
-+ Added support for specifying more dialog window options on a per-theme basis 
++ Added support for specifying more dialog window options on a per-theme basis
   by setting the new theme attribute 'dialog_window_options'. [Peter]
+* Refactored and fixed searching in attributes and relations. Custom attributes/
+  relations which override the search method and take prefixes into account
+  might break because the way the atkSearch(Mode) array is now handled.
+  [Tjeerd, Peter]
+* Fixed initial value of obligatory atkDate(Time)Attribute. [Tjeerd, Peter]
 * Fixed issue with atkDateAttribute when date is obligatory. [Marc/Martijn]
 * Fix re-aliassen with multiple sortfields in atkManyToOneRelation. [Martijn]
 * Fixed issue with adding o2m relation with a set filter. [Peter/Tjeerd]
@@ -335,7 +342,7 @@ Changed in ATK 6.2
   the class hierarchy and the node's module into account. [Peter]
 * Improved speed of atkExtendableShuttleRelation for large datasets. [Peter]
 - Removed atkMetaHandler because it wasn't very useful. [Peter]
-- Removed support for regexes in atkMetaPolicy's setIncludes/setExcludes 
+- Removed support for regexes in atkMetaPolicy's setIncludes/setExcludes
   because it wasn't very useful and wasn't used anyway. [Peter]
 
 Changed in ATK 6.1

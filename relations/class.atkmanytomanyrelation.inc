@@ -209,8 +209,8 @@
 
         // Validate if destination was created succesfully
         if (!is_object($this->m_linkInstance))
-      	{
-	        atkerror("Relation with unknown nodetype '".$this->m_link."' (in node '".$this->m_owner."')");
+        {
+          atkerror("Relation with unknown nodetype '".$this->m_link."' (in node '".$this->m_owner."')");
           $this->m_linkInstance = NULL;
           return false;
         }
@@ -548,29 +548,26 @@
 
       // now select all records
       $recordset = $this->m_destInstance->selectDb("","","","*",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
-        $result = '<select ';
-        if ($extended)
-        {
-          $result.='multiple size="'.min(5,count($recordset)+1).'"';
-        }
+      $result = '<select ';
+      if ($extended)
+      {
+        $result.='multiple="multiple" size="'.min(5,count($recordset)+1).'"';
+      }
 
-        if (strstr($fieldprefix,"]["))
-          $result.='name="atksearch['. $fieldprefix.$this->fieldName().'][]">';
-        else
-          $result.='name="atksearch'.$fieldprefix.'['. $this->fieldName().'][]">';
+      $result.='name="'.$this->getSearchFieldName($fieldprefix).'[]">';
 
-        $pkfield = $this->m_destInstance->primaryKeyField();
+      $pkfield = $this->m_destInstance->primaryKeyField();
 
-        $result.= '<option value="">'.atktext("search_all", "atk");
+      $result.= '<option value="">'.atktext("search_all", "atk").'</option>';
 
-        for ($i=0;$i<count($recordset);$i++)
-        {
-          $pk = $recordset[$i][$pkfield];
-          if (atk_in_array($pk, $record[$this->fieldName()])) $sel = "selected"; else $sel = "";
-          $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
-        }
-        $result.='</select>';
-        return $result;
+      for ($i=0;$i<count($recordset);$i++)
+      {
+        $pk = $recordset[$i][$pkfield];
+        if (atk_in_array($pk, $record[$this->fieldName()])) $sel = ' selected="selected"'; else $sel = "";
+        $result.= '<option value="'.$pk.'"'.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]).'</option>';
+      }
+      $result.='</select>';
+      return $result;
     }
 
     /**
@@ -586,9 +583,9 @@
       // which should work in any ansi compatible database.
       if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
       {
-    		$this->createLink();
-    		$query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), $table.".".$this->m_ownerInstance->primaryKeyField()."=".$this->fieldName().".".$this->getLocalKey(),FALSE );
-    		$query->setDistinct(TRUE);
+        $this->createLink();
+        $query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), $table.".".$this->m_ownerInstance->primaryKeyField()."=".$this->fieldName().".".$this->getLocalKey(),FALSE );
+        $query->setDistinct(TRUE);
 
         if (count($value)==1) // exactly one value
         {

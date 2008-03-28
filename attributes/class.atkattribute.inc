@@ -1001,17 +1001,17 @@
     {
       if(!$this->hasFlag(AF_HIDE_VIEW))
       {
-	    	$entry = array("name" => $this->m_name, "attribute" => &$this);
+        $entry = array("name" => $this->m_name, "attribute" => &$this);
 
-	      /* label? */
-	      $entry["label"] = $this->getLabel($defaults, $mode);
-	      // on which tab?
-	      $entry["tabs"] = $this->getTabs($mode);
-	      //on which sections?
-	      $entry["sections"] = $this->getSections();
-	      /* the actual edit contents */
-	      $entry["html"] = $this->getView($mode, $defaults);
-	      $arr["fields"][] = $entry;
+        /* label? */
+        $entry["label"] = $this->getLabel($defaults, $mode);
+        // on which tab?
+        $entry["tabs"] = $this->getTabs($mode);
+        //on which sections?
+        $entry["sections"] = $this->getSections();
+        /* the actual edit contents */
+        $entry["html"] = $this->getView($mode, $defaults);
+        $arr["fields"][] = $entry;
       }
     }
 
@@ -1163,24 +1163,24 @@
      */
     function getToolTip()
     {
-  	  $module = $this->getModule();
-  	  if (!$module) $module = "atk";
+      $module = $this->getModule();
+      if (!$module) $module = "atk";
 
-  	  $node = &$this->m_ownerInstance;
-  	  $ttip = atktext($node->m_type."_".$this->fieldName()."_tooltip", $module, "", "", "", true);
+      $node = &$this->m_ownerInstance;
+      $ttip = atktext($node->m_type."_".$this->fieldName()."_tooltip", $module, "", "", "", true);
 
-  	  $tooltip = '';
+      $tooltip = '';
 
       if ($ttip)
-  	  {
-  	    $theme = &atkinstance("atk.ui.atktheme");
-  	    $tipimg = $theme->imgPath("help.gif");
+      {
+        $theme = &atkinstance("atk.ui.atktheme");
+        $tipimg = $theme->imgPath("help.gif");
 
-  	    $onelinetip = preg_replace('/([\r\n])/e',"",$ttip);
-  	    $tooltip = '<img align="top" src="'.$tipimg.'" border="0" alt="'.$onelinetip.'" onClick="javascript:alert(\''.str_replace("\n", '\n', addslashes($ttip)).
-  	    '\')" onMouseOver="javascript:window.status=\''. addslashes($onelinetip).'\';">';
-  	  }
-  	  return $tooltip;
+        $onelinetip = preg_replace('/([\r\n])/e',"",$ttip);
+        $tooltip = '<img align="top" src="'.$tipimg.'" border="0" alt="'.$onelinetip.'" onClick="javascript:alert(\''.str_replace("\n", '\n', addslashes($ttip)).
+        '\')" onMouseOver="javascript:window.status=\''. addslashes($onelinetip).'\';">';
+      }
+      return $tooltip;
     }
 
     /**
@@ -1293,7 +1293,7 @@
           {
             $arr["search"][$key] = $this->search($atksearch, false, $fieldprefix, $grid);
           }
-          $arr["search"][$key].='<input type="hidden" name="'.$fieldprefix.'atksearchmode['.$this->formName().']" value="'.$this->getSearchMode(false).'">';
+          $arr["search"][$key] .= $this->searchMode(false, $fieldprefix);
         }
       }
     }
@@ -1331,7 +1331,7 @@
           $sum = $this->sum($arr["totalraw"], $arr["rows"][$nr]["record"], $fieldprefix);
           $arr["totalraw"][$this->fieldName()] = $sum[$this->fieldName()];
           $arr["total"][$fieldprefix.$this->fieldName()] =
-            $this->getView('list', $sum);                     
+            $this->getView('list', $sum);
         }
       }
     }
@@ -1358,9 +1358,9 @@
      *
      * @return String A piece of html-code
      */
-    function search($record=array(), $extended=false, $fieldprefix="")
+    public function search($record=array(), $extended=false, $fieldprefix="")
     {
-      $id = "{$fieldprefix}atksearch[".$this->formName()."]";
+      $id = $this->getSearchFieldName($fieldprefix);
 
       $value="";
       if (is_array($record)&&isset($record[$this->fieldName()]))
@@ -1377,7 +1377,51 @@
     }
 
     /**
-     * Retrieve the default searchmode of an attribute
+     * Returns piece of html which is used for setting/selecting the search
+     * mode for this attribute.
+     *
+     * It will show a pulldown if using extended search and multiple
+     * searchmodes are supported otherwise the default searchmode is selected.
+     *
+     * @param  boolean $extended using extended search?
+     * @param  string  $fieldprefix optional fieldprefix
+     * @return string  html which is used for selecting searchmode
+     */
+    public function searchMode($extended=false, $fieldprefix='')
+    {
+      $searchModes = $this->getSearchModes();
+      $dbSearchModes = $this->getDb()->getSearchModes();
+      $searchModes = array_values(array_intersect($searchModes, $dbSearchModes));
+
+      $searchMode = $this->getSearchMode($extended);
+      // Set current searchmode to first searchmode if not searching in extended form or no searchmode is set
+      if (!$extended || empty($searchMode) || !in_array($searchMode, $searchModes))
+        $searchMode = $searchModes[0];
+
+      if ($extended && count($searchModes) > 1)
+      {
+        $field = '<select name="'.$this->getSearchModeFieldname($fieldprefix).'">';
+
+        foreach ($searchModes as $value)
+        {
+          $selected = $searchMode == $value ? ' selected="selected"' : '';
+          $field .= '<option value="'.$value.'"'.$selected.'>'.htmlentities($this->text("search_".$value)).'</option>';
+        }
+
+        $field .= '</select>';
+      }
+      else
+      {
+        $field =
+          '<input type="hidden" name="'.$this->getSearchModeFieldname($fieldprefix).'" value="'.$searchMode.'">'.
+          ($extended ? atktext("search_".$searchMode) : '');
+      }
+
+      return $field;
+    }
+
+    /**
+     * Retrieve the current set or default searchmode of this attribute
      *
      * @param boolean $extended Whether extended search is being used
      * @return String the default searchmode for this attribute.
@@ -1429,24 +1473,14 @@
      * @param String $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
+     * @param string $fieldaliasprefix optional prefix for the fiedalias in the table
      */
-    function searchCondition(&$query, $table, $value, $searchmode)
+    function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix='')
     {
-      /** @todo Move this to a higher level */
-      if (strpos($value, "*")!==false && strlen($value)>1)
-      {
-      	// auto wildcard detection
-      	$searchmode = "wildcard";
-      }
-
-      $searchCondition = &$this->getSearchCondition($query, $table, $value, $searchmode);
+      $searchCondition = $this->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
       if ($searchCondition)
       {
         $query->addSearchCondition($searchCondition);
-      }
-      else
-      {
-        atkdebug("Database doesn't support searchmode '$searchmode' for ".$this->fieldName().", ignoring condition.");
       }
     }
 
@@ -1471,15 +1505,23 @@
 
       if ($this->m_searchmode) $searchmode = $this->m_searchmode;
 
+      // @todo Is this really needed?
+      if (strpos($value, "*")!==false && strlen($value)>1)
+      {
+        // auto wildcard detection
+        $searchmode = "wildcard";
+      }
+
       $func = $searchmode."Condition";
       if (method_exists($query,$func) && ($value || ($value == 0)))
       {
         return $query->$func($table.".".$this->fieldName(),$this->escapeSQL($value));
       }
-      else
+      elseif(!method_exists($query,$func))
       {
-        return false;
+        atkdebug("Database doesn't support searchmode '$searchmode' for ".$this->fieldName().", ignoring condition.");
       }
+      return false;
     }
 
     /**
@@ -1803,7 +1845,7 @@
       // exact match and substring search should be supported by any database.
       // (the LIKE function is ANSI standard SQL, and both substring and wildcard
       // searches can be implemented using LIKE)
-      return array("exact","substring","wildcard","regexp");
+      return array("substring","exact","wildcard","regexp");
     }
 
     /**
@@ -2033,14 +2075,14 @@
      *                          called (attribute can not be stored in the
      *                          database)
      */
-    function storageType($mode = null)
+    function storageType($mode=null)
     {
       // Mode specific storage type.
       if (isset($this->m_storageType[$mode]) && $this->m_storageType[$mode] !== null)
         return $this->m_storageType[$mode];
       // Global storage type (key null is special!)
       else if (isset($this->m_storageType[null]) && $this->m_storageType[null] !== null)
-        return $this->m_storageType[null];        
+        return $this->m_storageType[null];
       // Default backwardscompatible behaviour:
       else if (method_exists($this,"store"))
         return POSTSTORE;
@@ -2211,51 +2253,39 @@
       $field = array();
       $defaults = $record;
 
-      $db = &$node->getDb();
-      $dbSearchModes = $db->getSearchModes();
-      $attribSearchModes = $this->getSearchModes();
-      $searchModes = array_values(array_intersect($attribSearchModes, $dbSearchModes));
-
       // set "widget" value:
       $funcname = $this->m_name."_search";
 
       if (method_exists($node,$funcname))
-      $field["widget"] = $node->$funcname($defaults, true, $fieldprefix);
+      {
+        $field["widget"] = $node->$funcname($defaults, true, $fieldprefix);
+      }
       else
       {
         $field["widget"] = $this->search($defaults, true, $fieldprefix); // second param indicates extended search.
       }
 
-
       // pre-emptive set "full" value:
       $field["full"] = $field["widget"]; // lateron, we might add more to full
 
       // set "searchmode" value:
-      if(count($searchModes)==1)
-      {
-        $field["searchmode"] = '<input type="hidden" name="atksearchmode'.$fieldprefix.'['.$this->m_name.']" value="'.$searchModes[0].'">'.atktext("search_".$searchModes[0]);
-      }
-      else if (count($searchModes)>1)
-      {
-        $sel = '<select name="atksearchmode'.$fieldprefix.'['.$this->m_name.']">';
-        foreach (array_values($searchModes) as $searchMode)
-        {
-          // if supported, we select the 'like' searchmode by default
-          $selected="";
-          if ($currentSearchMode[$this->m_name]==$searchMode||
-          ((!is_array($currentSearchMode) || $currentSearchMode[$this->m_name]=="")&&
-          $searchMode=="substring")) $selected="selected";
-          $sel.= '<option value="'.$searchMode.'" '.$selected.'>'.atktext("search_".$searchMode);
-        }
-        $sel.= '</select>';
-        $field["searchmode"] = $sel;
-      }
+      $field['searchmode'] = $this->searchmode(true, $fieldprefix);
 
       // set "label" value:
       $field['label'] = $this->label($record);
 
       // add $field to fields array
       $fields[] = $field;
+    }
+
+    function getSearchFieldName($prefix)
+    {
+       return 'atksearch_AE_'.$prefix.$this->formName();
+    }
+
+    function getSearchModeFieldname($prefix)
+    {
+       return 'atksearchmode_AE_'.$prefix.$this->formName();
     }
 
     function extendedSort(&$columnConfig, $fieldprefix='', $grid=null)
@@ -2277,11 +2307,11 @@
         {
           return href(getDispatchFile().'?'.$columnConfig->getUrlCommand($this->fieldName(), $cmd), atktext("column_".$cmd)).' ';
         }
-        else 
+        else
         {
           $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($this->fieldName(), $cmd));
           $res = '<a href="javascript:void(0)" onclick="'.htmlentities($call).'">'.$this->text("column_".$direction).'</a>';
-        }          
+        }
       }
       return "";
     }

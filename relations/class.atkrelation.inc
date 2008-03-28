@@ -100,23 +100,23 @@
       $quotes = array("'",'"','`');
       $quoteStack = array();
       $lastChar = '';
-      
+
       for ($i = 0; $i < $filter_length; $i++)
       {
         $currentChar = $filter[$i];
-        
+
         if(in_array($currentChar,$quotes))
         {
           if(sizeof($quoteStack) > 0 && $currentChar == $quoteStack[sizeof($quoteStack) - 1])
           {
             array_pop($quoteStack);
-          } 
+          }
           else
           {
             array_push($quoteStack,$currentChar);
           }
         }
-        
+
         // not between quotes
         if(!($currentChar === ' ' && $lastChar === ' ' && sizeof($quoteStack) == 0))
         {
@@ -124,7 +124,7 @@
         }
         $lastChar = $currentChar;
       }
-      return $result;      
+      return $result;
     }
     /**
      * Adds a filter value to the destination filter.
@@ -204,11 +204,11 @@
 
         // Validate if destination was created succesfully
         if (!is_object($this->m_destInstance))
-	      {
-	        atkerror("Relation with unknown nodetype '".$this->m_destination."' (in node '".$this->m_owner."')");
-	        $this->m_destInstance = NULL;
-	        return false;
-	      }
+        {
+          atkerror("Relation with unknown nodetype '".$this->m_destination."' (in node '".$this->m_owner."')");
+          $this->m_destInstance = NULL;
+          return false;
+        }
 
         if ($this->hasFlag(AF_NO_FILTER))
           $this->m_destInstance->m_flags |= NF_NO_FILTER;
@@ -286,6 +286,20 @@
       // Possible values
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array("exact");
+    }
+
+    /**
+     * Get the searchmode for nested/child attributes.
+     *
+     * @param $searchmode string|array searchmode
+     * @param $childname  string       the child attribute's name
+     * @return string|array the child searchmode
+     */
+    protected function getChildSearchMode($searchmode, $childname)
+    {
+      if (is_array($searchmode) && isset($searchmode[$childname]))
+        return $searchmode[$childname];
+      return $searchmode;
     }
 
     /**

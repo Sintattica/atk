@@ -167,7 +167,7 @@
      * @return Piece of htmlcode
      */
     function edit($record="", $fieldprefix="")
-    { 
+    {
       $id = $this->getHtmlId($fieldprefix);
       if (count($this->m_onchangecode))
       {
@@ -177,7 +177,7 @@
       else
       {
         $onchange = '';
-      }      
+      }
 
       $maxsize = $this->m_maxsize;
       if ($this->m_decimals>0)
@@ -228,13 +228,13 @@
       }
       else
       {
-        $id = "atksearch".$fieldprefix."[".$this->formName()."][from]";
+        $id = $this->getSearchFieldName($fieldprefix).'[from]';
         $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
         $result= '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.$value.'"'.
                   ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
                   ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
 
-        $id = "atksearch".$fieldprefix."[".$this->formName()."][to]";
+        $id = $this->getSearchFieldName($fieldprefix).'[to]';
         $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
         $result.= " (".atktext("until").' <input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.$value.'"'.
                   ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
@@ -243,17 +243,6 @@
       }
     }
 
-   /**
-     * Creates an search condition for a given search value
-     * @param $table the table name
-     * @param $value the search value
-     * @return a piece of the SQL where clause
-     */
-    function searchCondition(&$query, $table, $value, $searchmode)
-    {
-      $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
-    }
-    
     function processSearchValue($value)
     {
       if (!is_array($value))
@@ -276,11 +265,11 @@
 
       return $value;
     }
-    
+
     function getBetweenCondition(&$query, $fieldname, $value)
     {
       $searchcondition = "";
-      
+
       if ($value["from"]!="" && $value["to"]!="")
       {
         if ($value["from"]>$value["to"])
@@ -298,16 +287,16 @@
       {
         $searchcondition = $query->lessthanequalCondition($fieldname, $value["to"]);
       }
-      
+
       return $searchcondition;
     }
 
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       $searchcondition = "";
-      
+
       $value = $this->processSearchValue($value);
-      
+
       if ($searchmode!="between")
       {
         // Use default handler, and use only the first field.
@@ -315,7 +304,7 @@
       }
       else
       {
-        $fieldname = $table.".".$this->fieldName();        
+        $fieldname = $table.".".$this->fieldName();
         return $this->getBetweenCondition($query, $fieldname, $value);
       }
     }

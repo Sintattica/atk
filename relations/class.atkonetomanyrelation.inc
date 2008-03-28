@@ -131,7 +131,7 @@
      * </code>
      *
      * @param String $name The unique name of this relation within a node.
-     *                     In contrast with moth other attributes, the name
+     *                     In contrast with most other attributes, the name
      *                     does not correspond to a database field. (Because
      *                     in one2many relations, the databasefield that
      *                     stores the link, is in the destination node and not
@@ -198,11 +198,11 @@
     {
       $this->m_useFilterForEditLink = $useFilter;
     }
-    
+
     /**
      * Create the datagrid for the edit and display actions. The datagrid is
-     * configured with the correct node filter, excludes etc. 
-     * 
+     * configured with the correct node filter, excludes etc.
+     *
      * The datagrid uses for both the edit and display actions the partial_grid
      * method to update it's view.
      *
@@ -210,30 +210,29 @@
      * @param string  $mode       the mode
      * @param string  $action     the action
      * @param boolean $useSession use session?
-     * 
+     *
      * @return atkDataGrid grid
      */
     protected function createGrid($record, $mode, $action, $useSession=true)
     {
       $this->createDestination();
-      
+
       atkimport('atk.datagrid.atkdatagrid');
-      
+
       $grid = atkDataGrid::create($this->m_destInstance, null, null, true, $useSession);
       $grid->setMode($mode);
-      
+
       $grid->removeFlag(atkDataGrid::EXTENDED_SEARCH);
       if ($mode == 'view')
       {
         $grid->removeFlag(atkDataGrid::MULTI_RECORD_ACTIONS);
         $grid->removeFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS);
         $grid->removeFlag(atkDataGrid::LOCKING);
-      }      
-      
+      }
+
       $grid->setBaseUrl(partial_url($this->getOwnerInstance()->atkNodeType(), $action, 'attribute.'.$this->fieldName().'.grid'));
 
-      if ($mode != 'copy') // don't exclude ref key in copy mode, we use it for atkorgrec!
-        $grid->setExcludes($this->m_refKey); 
+      $grid->setExcludes($this->m_refKey);
 
       $grid->addFilter($this->_getLoadWhereClause($record));
       if ($this->m_destinationFilter != '')
@@ -241,9 +240,9 @@
         $grid->addFilter($this->parseFilter($this->m_destinationFilter, $record));
       }
 
-      return $grid;     
+      return $grid;
     }
-    
+
     /**
      * Updates the datagrid for the edit and display actions.
      *
@@ -253,10 +252,10 @@
     {
       $this->createDestination();
       $node = $this->getDestination();
-      atkimport('atk.datagrid.atkdatagrid');      
+      atkimport('atk.datagrid.atkdatagrid');
       return atkDataGrid::resume($node)->render();
-    }    
-      
+    }
+
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
@@ -280,16 +279,16 @@
         // no records
         if ($grid->getCount() == 0)
         {
-          if (!in_array($mode, array("csv", "plain"))) 
-          { 
-            return $this->text("none"); 
-          } 
-          else 
-          { 
+          if (!in_array($mode, array("csv", "plain")))
+          {
+            return $this->text("none");
+          }
+          else
+          {
             return '';
           }
-        }        
-        
+        }
+
         $actions = array();
         if (!$this->m_destInstance->hasFlag(NF_NO_VIEW))
         {
@@ -299,41 +298,41 @@
         $grid->setDefaultActions($actions);
         return $grid->render();
       }
-  
+
       // records should be loaded inside the load method
       $records = $record[$this->fieldName()];
-      
+
       // no records
       if (count($records) == 0)
       {
         return $this->text('none');
       }
-      
+
       // list mode
       if ($mode == "list")
       {
         $result = "<ul>";
-        
+
         foreach ($records as $current)
         {
           $result .= sprintf("<li>%s</li>", $this->m_destInstance->descriptor($current));
         }
-        
+
         $result .= "</ul>";
-        
+
         return $result;
       }
 
       // cvs / plain mode
-      else 
+      else
       {
         $result = "";
-        
+
         foreach ($records as $i => $current)
         {
           $result .= ($i > 0 ? ', ' : '').$this->m_destInstance->descriptor($current);
         }
-        
+
         return $result;
       }
     }
@@ -348,29 +347,29 @@
      * @param array $record The record that holds the value for this attribute.
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * 
+     *
      * @return String A piece of htmlcode for editing this attribute
      */
     public function edit($record="", $fieldprefix="", $mode='')
     {
       $grid = $this->createGrid($record, $mode, $mode);
-      
+
       $params = array();
       if ($this->m_useFilterForEditLink && $this->m_destinationFilter != "")
       {
         $params["atkfilter"] = $this->m_destinationFilter;
       }
 
-      $actions = $this->m_destInstance->defaultActions("relation", $params);      
-      $grid->setDefaultActions($actions);      
-      
+      $actions = $this->m_destInstance->defaultActions("relation", $params);
+      $grid->setDefaultActions($actions);
+
       $grid->loadRecords(); // force early load of records
 
-      $output = 
+      $output =
         $this->editHeader($record, $grid->getRecords()).
         ($grid->getCount() > 0 ? $grid->render() : "").
         $this->editFooter($record, $grid->getRecords());
-        
+
       if ($this->m_destInstance->allowed("add"))
       {
         $this->_addAddToEditOutput($output, $grid->getRecords(), $record);
@@ -492,7 +491,7 @@
     function _getNestedAddLink($myrecords, $record,$saveform=true)
     {
       $url = "";
-      if (($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))&&$this->createDestination() && !$this->m_destInstance->hasFlag(NF_NO_ADD))
+      if (($this->m_maxRecords==0 || $this->m_maxRecords > count($myrecords)) && $this->createDestination() && !$this->m_destInstance->hasFlag(NF_NO_ADD))
       {
         $strfilter = $this->getAddFilterString($record);
         $add_url = dispatch_url($this->m_destination,"add", array("atkfilter"=>$strfilter));
@@ -635,7 +634,7 @@
       }
 
       $result = implode(" AND ", $whereelems);
-      return $result == '' ? '1=0' : $result;      
+      return $result == '' ? '1=0' : $result;
     }
 
     /**
@@ -657,7 +656,7 @@
     function load(&$db, $record, $mode="", $paging=false)
     {
       $result = null;
-      
+
       // for edit and view mode we don't load any records unless a display override exists
       // we use the grid to load records because it makes things easier
       if (($mode != 'add' && $mode != 'edit' && $mode != 'view') ||
@@ -668,9 +667,9 @@
         $grid->setCountHandler(create_function('', '')); // don't count
         $grid->loadRecords();
         $result = $grid->getRecords();
-        $grid->destroy(); // clean-up    
-      }      
-      
+        $grid->destroy(); // clean-up
+      }
+
       return $result;
     }
 
@@ -685,7 +684,7 @@
     function isEmpty($record)
     {
       if (!isset($record[$this->fieldName()])
-              || (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()])==0))
+             || (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()])==0))
       {
         // empty. It might be that the record has not yet been fetched. In this case, we do
         // a forced load to see if it's really empty.
@@ -754,8 +753,8 @@
             {
               // original record
               $original = $onetomanyrecs[$i];
-              $onetomanyrecs[$i]['atkorgrec'] = $original; 
-              
+              $onetomanyrecs[$i]['atkorgrec'] = $original;
+
               // the referential key of the onetomanyrecs could be wrong, if we
               // are called for example from a copy function. So just in case,
               // we reset the correct key.
@@ -802,36 +801,18 @@
     }
 
     /**
-     * Returns a piece of html code that can be used to get search terms input
-     * from the user.
+     * Retrieve the list of searchmodes supported by the attribute.
      *
-     * The framework calls this method to display the searchbox
-     * in the search bar of the recordlist, and to display a more extensive
-     * search in the 'extended' search screen.
-     * The regular atkAttributes returns a simple text input box for entering
-     * a keyword to search for.
+     * Note that not all modes may be supported by the database driver.
+     * Compare this list to the one returned by the databasedriver, to
+     * determine which searchmodes may be used.
      *
-     * @param array   $record   Array with values
-     * @param boolean $extended if set to false, a simple search input is
-     *                          returned for use in the searchbar of the
-     *                          recordlist. If set to true, a more extended
-     *                          search may be returned for the 'extended'
-     *                          search page. The atkAttribute does not
-     *                          make a difference for $extended is true, but
-     *                          derived attributes may reimplement this.
-     *
-     * @return String A piece of html-code
+     * @return array List of supported searchmodes
      */
-    function search($record="", $extended=false, $fieldprefix="")
+    function getSearchModes()
     {
-      $id = "atksearch[".$fieldprefix.$this->formName()."]";
-      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
-      $result= '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
-                ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
-                ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
-      return $result;
+      return array('substring');
     }
-
 
     /**
      * Returns the condition (SQL) that should be used when we want to join an owner
@@ -915,13 +896,19 @@
      */
      function searchCondition(&$query, $table, $value, $searchmode)
      {
-       if ($this->createDestination()) {
+       if ($this->createDestination())
+       {
          $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode);
-         if(isset($searchcondition) && !empty($searchcondition)) {
-           if ($this->m_ownerInstance->m_postvars["atkselector"]) {
+
+         if(!empty($searchcondition))
+         {
+           $query->addSearchCondition($searchcondition);
+
+           // @todo: is this still needed?
+           if ($this->m_ownerInstance->m_postvars["atkselector"])
+           {
              $query->addTable($this->m_destInstance->m_table);
              $query->addCondition($this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']));
-             $query->addSearchCondition($searchcondition);
            }
          }
        }
@@ -930,13 +917,17 @@
      function getSearchCondition(&$query, $table, $value, $searchmode)
      {
        $usedfields = array();
+       $searchconditions = array();
+
        if (!is_array($value))
        {
          foreach ($this->m_destInstance->descriptorFields() as $field)
          {
            if (!in_array($field, $usedfields))
            {
-             $this->_callSearchConditionOnDestField($query, $this->m_destInstance->m_table, $value, $searchmode, $field);
+             $sc = $this->_callSearchConditionOnDestField($query, $this->m_destInstance->m_table, $value, $searchmode, $field, $table);
+             if (!empty($sc))
+              $searchconditions[] = $sc;
              $usedfields[] = $field;
            }
          }
@@ -947,10 +938,17 @@
          {
            if ($val)
            {
-             $this->_callSearchConditionOnDestField($query, $this->m_destInstance->m_table, $val, $searchmode, $key);
+             $sc = $this->_callSearchConditionOnDestField($query, $this->m_destInstance->m_table, $val, $searchmode, $key, $table);
+             if (!empty($sc))
+              $searchconditions[] = $sc;
            }
          }
        }
+
+       if (count($searchconditions)>0)
+        return "(".implode(" OR ",$searchconditions).")";
+       else
+        return false;
      }
 
      /**
@@ -962,22 +960,16 @@
       * @param mixed    $searchmode The mode used when searching
       * @param String   $field      The name of the attribute
       */
-     function _callSearchConditionOnDestField(&$query, $table, $value, $searchmode, $field)
+     function _callSearchConditionOnDestField(&$query, $table, $value, $searchmode, $field, $reftable)
      {
        if ($this->createDestination())
        {
          $alias = $this->fieldName() . "_AE_" . $this->m_destInstance->m_table;
          $attr = &$this->m_destInstance->getAttribute($field);
-         $attr->searchCondition($query, $alias, $value, $searchmode);
 
-         $condition = array();
-         $ownerfields = $this->getOwnerFields();
-         for ($i = 0; $i < sizeof($ownerfields); $i++)
-         {
-            $condition[] = $this->m_ownerInstance->m_table . "." . $ownerfields[$i] . "=". $alias . "." . $this->m_refKey[$i];
-         }
+         $query->addJoin($table, $alias, $this->getJoinCondition($query, $reftable, $alias), false);
 
-         $query->addJoin($table,$alias,implode(" AND ",$condition),false);
+         return $attr->getSearchCondition($query, $alias, $value, $searchmode);
        }
      }
 
@@ -1091,7 +1083,7 @@
       $this->createDestination();
       $handler = &$this->m_destInstance->getHandler('save');
       $handler->m_postvars = $this->m_ownerInstance->m_postvars;
-       $handler->setDialogSaveUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.add_process'));
+      $handler->setDialogSaveUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.add_process'));
       $handler->handleSave(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.refresh'));
     }
 
@@ -1187,7 +1179,7 @@
     function setHeader($name)
     {
       $this->m_headerName = $name;
-    }
+  }
 
     /**
      * Set footer generation function name.

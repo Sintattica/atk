@@ -41,10 +41,35 @@
      */
     function action_search()
     {
+      if (!empty($this->m_partial))
+      {
+        $this->partial($this->m_partial);
+        return;
+      }
+
       $page = &$this->getPage();
       $searcharray = array();
       if (isset($this->m_postvars["atksearch"])) $searcharray = $this->m_postvars["atksearch"];
       $page->addcontent($this->m_node->renderActionPage("search", $this->invoke("searchPage", $searcharray)));
+    }
+
+    /**
+     * Attribute handler.
+     *
+     * @param string $partial full partial
+     */
+    function partial_attribute($partial)
+    {
+      list($type, $attribute, $partial) = explode('.', $partial);
+
+      $attr = &$this->m_node->getAttribute($attribute);
+      if ($attr == NULL)
+      {
+        atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeType()."'");
+        return '';
+      }
+
+      return $attr->partial($partial, 'add');
     }
 
     /**

@@ -158,19 +158,19 @@
      * m_values and m_lookup.
      */
     function getOptions($rec=null) {
-    	if(!isset($this->m_types["options"]) || count($this->m_types["options"]) == 0)
-    		return $this->m_options;
-    	return $this->_get("options",$rec);
+      if(!isset($this->m_types["options"]) || count($this->m_types["options"]) == 0)
+        return $this->m_options;
+      return $this->_get("options",$rec);
     }
     function getValues($rec=null) {
-    	if(!isset($this->m_types["values"]) || count($this->m_types["values"]) == 0)
-    		return $this->m_values;
-    	return $this->_get("values",$rec);
+      if(!isset($this->m_types["values"]) || count($this->m_types["values"]) == 0)
+        return $this->m_values;
+      return $this->_get("values",$rec);
     }
     function getLookup($rec=null) {
-    	if(!isset($this->m_types["lookup"]) || count($this->m_types["lookup"]) == 0)
-    		return $this->m_lookup;
-    	return $this->_get("lookup",$rec);
+      if(!isset($this->m_types["lookup"]) || count($this->m_types["lookup"]) == 0)
+        return $this->m_lookup;
+      return $this->_get("lookup",$rec);
     }
 
     /**
@@ -275,10 +275,10 @@
     function _addEmptyListOption()
     {
       $ret='';
-      
+
       // use a different (more descriptive) text for obligatory items
       $text_key = $this->hasFlag(AF_OBLIGATORY) ? "list_null_value_obligatory" : "list_null_value";
-      
+
       if (!$this->hasFlag(AF_LIST_NO_NULL_ITEM) ||
            ($this->hasFlag(AF_OBLIGATORY) &&
            // CONFIG IS DEPRECATED
@@ -306,12 +306,9 @@
         $result.='multiple size="'.min(5,count($values)+1).'"';
       }
 
-      if (strstr($fieldprefix,"]["))
-        $result.='name="atksearch['. $fieldprefix.$this->fieldName().'][]">';
-      else
-        $result.='name="atksearch'.$fieldprefix.'['.$this->formName().'][]">';
+      $result .= 'name="'.$this->getSearchFieldName($fieldprefix).'[]">';
 
-      $result.= '<option value="">'.atktext('search_all');
+      $result .= '<option value="">'.atktext('search_all');
 
       for ($i=0,$_i=count($values);$i<$_i;$i++)
       {
@@ -327,17 +324,6 @@
       }
       $result.='</select>';
       return $result;
-    }
-
-    /**
-     * Creates an search condition for a given search value
-     * @param $table the table name
-     * @param $value the search value
-     * @return a piece of the SQL where clause
-     */
-    function searchCondition(&$query, $table, $value, $searchmode)
-    {
-      $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
     }
 
     function getSearchCondition(&$query, $table, $value, $searchmode)
@@ -388,10 +374,10 @@
 
     /**
      * Sets the selected listitem
-     * 
+     *
      * @param string $selected the listitem you want to have selected
-     * 
-     * @deprecated 
+     *
+     * @deprecated
      * @see atkNode::initial_values
      */
     function setSelected($selected)
@@ -401,10 +387,10 @@
 
     /**
      * Gets the selected listattribute
-     * 
+     *
      * @return string the selected listitem
-     * 
-     * @deprecated 
+     *
+     * @deprecated
      * @see atkNode::initial_values
      */
     function getSelected()
@@ -480,7 +466,7 @@
     {
       return $this->m_width;
     }
-    
+
     /**
      * Add option/value to dropdown
      *
@@ -493,15 +479,15 @@
       $currentOptions = $this->_get("options");
       $currentOptions[] = $option;
       $this->_set("options", $currentOptions);
-            
+
       $currentValues = $this->_get("values");
       $currentValues[] = $value;
       $this->_set("values", $currentValues);
-      
+
       $this->createLookupArray($currentOptions,$currentValues);
       return $this;
     }
-    
+
     /**
      * Remove option from dropdown
      *
@@ -510,14 +496,14 @@
     function removeOption($option)
     {
       $currentOptions = $this->_get("options");
-      $currentValues = $this->_get("values");      
-      
+      $currentValues = $this->_get("values");
+
       $index = array_search($option, $currentOptions);
       $value = $currentValues[$index];
-      
+
       array_splice($currentOptions, $index, 1); // remove option
       array_splice($currentValues, $index, 1);  // remove value
-      
+
       $this->_set("options",$currentOptions);
       $this->_set("values",$currentValues);
       return $this;

@@ -134,13 +134,13 @@
       $result .="\n<table><tr>\n";
 
 
-      
-      $values = $this->getValues($record);     
+
+      $values = $this->getValues($record);
       if(!is_array($record[$this->fieldname()]))
         $recordvalue = $this->db2value($record);
-      else 
+      else
         $recordvalue = $record[$this->fieldName()];
-      
+
       for ($i=0;$i<count($values);$i++)
       {
         if (!$this->hasFlag(AF_CHECK_ALL))
@@ -161,11 +161,6 @@
       if ($this->hasFlag(AF_LINKS_BOTTOM))$result.=$this->_addLinks($fieldprefix);
 
       return $result;
-    }
-
-    function searchCondition(&$query, $table, $value, $searchmode)
-    {
-      $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
     }
 
     function getSearchCondition(&$query, $table, $value, $searchmode)
@@ -212,7 +207,7 @@
                        atktext("invert_selection").'</a>]</font></div>';
       }
     }
-    
+
     /**
      * Check if a record has an empty value for this attribute.
      * @param array $record The record that holds this attribute's value.
