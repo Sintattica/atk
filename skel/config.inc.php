@@ -298,5 +298,15 @@
 
   $config_supported_languages = array("EN","NL","DE");
   $config_defaultlanguage="EN";
+  
+  // ----------- CACHING CONFIGURATION ------------
+  // For the configuration of atkCache
+  // See: http://www.achievo.org/wiki/ATK_Cache
+  
+  // Cache method
+  $config_cache_method = 'var';  
+  // Cache namespace, change this when you are hosting your application on a 
+  // shared hosting.
+  $config_cache_namespace = 'default';
 
 ?>
