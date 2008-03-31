@@ -26,27 +26,28 @@ ATK.Tools = {
       ATK.Tools.scripts.push(url);
       new ATK.Tools.ScriptRequest(url);
     }
+  },
+  
+  loadStyle: function(url, media) {
+    var head = document.getElementsByTagName("head")[0];         
+    var css = document.createElement('link');
+    css.type = 'text/css';
+    css.rel = 'stylesheet';
+    css.media = media || 'all';
+    css.href = url;
+    head.appendChild(css);    
   }
 };
 
 ATK.Tools.ScriptRequest = Class.create();
 Object.extend(Object.extend(ATK.Tools.ScriptRequest.prototype, Ajax.Request.prototype), {
   initialize: function(url) {
-    Ajax.Request.prototype.initialize.apply(this, [url, { asynchronous: false, method: 'get' }]);
-  },
-
-  onSuccess: function() {
-    if ((this.getHeader('Content-type') || 'text/javascript').strip().
-      match(/^(text|application)\/(x-)?(java|ecma)script(;.*)?$/i)) {
-      return;
-    }
-    
-    this.evalResponse();
+    Ajax.Request.prototype.initialize.apply(this, [url, { asynchronous: false, method: 'get', onSuccess: this.evalResponse.bind(this) }]);
   },
   
-  evalResponse: function() {
+  evalResponse: function(transport) {
     try {
-      var script = this.transport.responseText + "\n";
+      var script = transport.responseText + "\n";
       if (window.execScript) {
         window.execScript(script);
       } else if (navigator.userAgent.indexOf('Safari') != -1) {

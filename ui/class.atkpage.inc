@@ -350,7 +350,6 @@
       }
       else 
       {
-        
         $files = '';
         for ($i = 0; $i < count($this->m_scriptfiles); $i++)
         {
@@ -442,15 +441,31 @@
      *
      * @param String $res Reference to the HTML output
      */
-    function addStyles(&$res)
+    function addStyles(&$res, $partial=false)
     {
-      foreach ($this->m_stylesheets as $file => $media)
+      if (!$partial)
       {
-        $res.='  <link href="'.$file.'" rel="stylesheet" type="text/css" media="'.$media.'" />'."\n";
+        foreach ($this->m_stylesheets as $file => $media)
+        {
+          $res.='  <link href="'.$file.'" rel="stylesheet" type="text/css" media="'.$media.'" />'."\n";
+        }
+  
+        for ($i = 0; $i < count($this->m_stylecode); $i++)
+          $res.= '<style type="text/css"> '.$this->m_stylecode[$i].' </style>'."\n";
       }
-
-      for ($i = 0; $i < count($this->m_stylecode); $i++)
-        $res.= '<style type="text/css"> '.$this->m_stylecode[$i].' </style>'."\n";
+      else 
+      {
+        $files = '';
+        foreach ($this->m_stylesheets as $file => $media)
+        {
+          $files .= "ATK.Tools.loadStyle('{$file}', '{$media}');\n";
+        }          
+        
+        if (!empty($files))
+        {
+          $res .= '<script type="text/javascript">'.$files.'</script>';
+        }        
+      }
     }
 
     /**
@@ -554,6 +569,7 @@
     {
       $result = $this->m_content;
       $this->addScripts($result, true);
+      $this->addStyles($result, true);
       return $result;
     }
 

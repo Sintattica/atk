@@ -1123,6 +1123,15 @@ class atkMetaPolicy
 
       if (!$toMany && nodeExists("$module.".$this->getGrammar()->pluralize($node)))
         return "$module.".$this->getGrammar()->pluralize($node);
+        
+      if (nodeExists("{$module}.{$module}_{$node}"))
+        return "{$module}.{$module}_{$node}";
+
+      if ($toMany && nodeExists("{$module}.{$module}_".$this->getGrammar()->singularize($node)))
+        return "{$module}.{$module}_".$this->getGrammar()->singularize($node);
+
+      if (!$toMany && nodeExists("{$module}.{$module}_".$this->getGrammar()->pluralize($node)))
+        return "{$module}.{$module}_".$this->getGrammar()->pluralize($node);        
     }
 
     if (nodeExists($node))
@@ -1198,23 +1207,24 @@ class atkMetaPolicy
     
     $prefixes = $module == null ? array('') : array('', "{$module}_");
 
-    foreach ($prefixes as $prefix)
+    foreach ($prefixes as $leftPrefix)
     {
-      foreach (array_keys($this->m_attrs) as $name)
+      foreach ($prefixes as $rightPrefix)
       {
-        if ($name == "{$prefix}{$type}_id")
-          return "{$prefix}{$type}_id";
-        else if ($name == "{$prefix}{$type}id")
-          return "{$prefix}{$type}id";
-        else if ($name == $prefix.$this->getGrammar()->singularize($type)."_id")
-          return $prefix.$this->getGrammar()->singularize($type)."_id";
-        else if ($name == $prefix.$this->getGrammar()->singularize($type)."id")
-          return $prefix.$this->getGrammar()->singularize($type)."id";
-        else if ($name == $prefix.$type)
-          return $prefix.$type;
-        else if ($name == $prefix.$this->getGrammar()->singularize($type))
-          return $prefix.$this->getGrammar()->singularize($type);
-      } 
+        foreach (array_keys($this->m_attrs) as $name)
+        {
+          switch ($leftPrefix.$name)
+          {
+            case "{$rightPrefix}{$type}_id":
+            case "{$rightPrefix}{$type}id":
+            case $rightPrefix.$this->getGrammar()->singularize($type)."_id":
+            case $rightPrefix.$this->getGrammar()->singularize($type)."id":
+            case $rightPrefix.$type:
+            case $rightPrefix.$this->getGrammar()->singularize($type):
+              return $name;
+          }
+        } 
+      }
     }
     
     return null;   

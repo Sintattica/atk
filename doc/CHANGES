@@ -133,12 +133,12 @@ Changed in ATK 6.2
   implementing a modifyDialog method. [Peter]
 + Added support for specifying more dialog window options on a per-theme basis
   by setting the new theme attribute 'dialog_window_options'. [Peter]
++ Added support for dynamically loading stylesheets (for Ajax requests). [Peter]
 * Refactored and fixed searching in attributes and relations. Custom attributes/
   relations which override the search method and take prefixes into account
   might break because the way the atkSearch(Mode) array is now handled.
   [Tjeerd, Peter]
 * Fixed initial value of obligatory atkDate(Time)Attribute. [Tjeerd, Peter]
-* Fixed issue with atkDateAttribute when date is obligatory. [Marc/Martijn]
 * Fix re-aliassen with multiple sortfields in atkManyToOneRelation. [Martijn]
 * Fixed issue with adding o2m relation with a set filter. [Peter/Tjeerd]
 * Fixed issue with ordering in recordlist when multiple ordercolumns were
@@ -341,6 +341,7 @@ Changed in ATK 6.2
 * Improved detection of source/destination attributes for relations, we take
   the class hierarchy and the node's module into account. [Peter]
 * Improved speed of atkExtendableShuttleRelation for large datasets. [Peter]
+* Fixed bug in Ajax script load mechanism. [Peter]
 - Removed atkMetaHandler because it wasn't very useful. [Peter]
 - Removed support for regexes in atkMetaPolicy's setIncludes/setExcludes
   because it wasn't very useful and wasn't used anyway. [Peter]
