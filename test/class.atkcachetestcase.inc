@@ -83,13 +83,25 @@ class atkCacheTestCase extends UnitTestCase
     
     // wait until just before the lifetime,
     // we should still get data
-    sleep($this->m_cache->getLifetime() - 1);
+    sleep($this->m_cache->getLifetime() - 2);
     $this->assertEqual($this->m_cache->get($id), $data);
     
     // wait until just after the lifetime,
     // we should get nothing
     sleep(3);
     $this->assertFalse($this->m_cache->get($id));
+    
+    // with custom lifetime on the set function
+    $this->assertTrue($this->m_cache->set($id, $data, 8),'Save data');
+    $this->assertEqual($this->m_cache->get($id), $data);
+    
+    //make sure that the default time isn't used
+    sleep(5); 
+    $this->assertEqual($this->m_cache->get($id), $data);
+    
+    sleep(3);
+    $this->assertFalse($this->m_cache->get($id));
+ 
   }
 
   /**
