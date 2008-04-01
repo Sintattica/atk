@@ -134,6 +134,8 @@ Changed in ATK 6.2
 + Added support for specifying more dialog window options on a per-theme basis
   by setting the new theme attribute 'dialog_window_options'. [Peter]
 + Added support for dynamically loading stylesheets (for Ajax requests). [Peter]
++ Added $config_application_dir which can be used to separate ATK from your
+  application code. [Boy]
 * Refactored and fixed searching in attributes and relations. Custom attributes/
   relations which override the search method and take prefixes into account
   might break because the way the atkSearch(Mode) array is now handled.

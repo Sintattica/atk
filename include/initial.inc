@@ -48,7 +48,7 @@
   if (file_exists("$config_module_path/config.modules.inc"))
     include_once("$config_module_path/config.modules.inc");
 
-  include_once($config_atkroot."config.inc.php");
+  require_once($config_application_dir."config.inc.php");
   require_once($config_atkroot."atk/atktools.inc");
 
   /**

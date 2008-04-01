@@ -167,6 +167,7 @@
       $this->m_smarty->assign("themedir", $this->m_theme->themeDir());
 
       $this->m_smarty->assign("atkroot", atkconfig("atkroot"));
+      $this->m_smarty->assign("application_dir", atkconfig("application_dir"));
 
       $this->m_smarty->assign($vars);
 

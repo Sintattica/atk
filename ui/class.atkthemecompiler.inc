@@ -45,6 +45,7 @@
     {
       // Process theme directory structure into data array.
       $data = $this->readStructure($name);
+      
       // Write it to the compiled theme file
       if (count($data))
       {
@@ -100,7 +101,7 @@
         }
       }
 
-      $abspath = atkTheme::absPath($path);
+      $abspath = atkTheme::absPath($path,$location);
 
       // First parse the themedef file for attributes
       if ($path!="" && file_exists($abspath."themedef.inc"))
@@ -131,7 +132,7 @@
         }
 
         // Second scan all files in the theme path
-        $this->scanThemePath($path, $data);
+        $this->scanThemePath($path, $abspath, $data);
         $this->scanModulePath($name, $data);
 
         $data["attributes"]["basepath"] = $path;
@@ -160,7 +161,7 @@
           return "module/$module/themes/$name/";
         }
       }
-      else if ($location!="atk"&&file_exists(atkconfig("atkroot")."themes/$name/themedef.inc"))
+      else if ($location!="atk"&&file_exists(atkconfig("application_dir")."themes/$name/themedef.inc"))
       {
         $location = "app";
         return "themes/$name/";
@@ -183,10 +184,9 @@
      * @param String $path The path of the theme, relative to atkroot.
      * @param String $data Reference to the data array in which to report the file locations
      */
-    function scanThemePath($path, &$data)
+    function scanThemePath($path, $abspath, &$data)
     {
       $traverser = &atknew("atk.utils.atkdirectorytraverser");
-      $abspath = atkTheme::absPath($path);
       $subitems = $traverser->getDirContents($abspath);
       foreach($subitems as $name)
       {

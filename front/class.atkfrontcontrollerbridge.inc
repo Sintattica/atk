@@ -99,6 +99,6 @@
 
     public function getApplicationRoot()
     {
-      return atkconfig('atkroot');
+      return atkconfig('application_dir');
     }
   }

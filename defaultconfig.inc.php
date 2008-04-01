@@ -24,19 +24,34 @@
   /********************* FILE LOCATIONS & PATHS ******************************/
 
   /**
-   * The application root
+   * The application root, used to set the cookiepath when using PHP sessions.
+   * 
+   * If you're using urlrewrites within your httpd or htaccess configuration this should be '/'
+   * be careful with this setting because it could create a security vulnerability.
+   * 
    * @var String The application root
-   * @todo update this bit of documentation as it doesn't really say much
    */
   $config_application_root = "/";
 
-  if ($config_atkroot == "" || isset($_REQUEST["config_atkroot"])) // may not be passed in request (register_globals danger) 
+  if ($config_atkroot == "" || (ini_get('register_globals') && isset($_REQUEST['config_atkroot']))) // may not be passed in request (register_globals danger) 
   {
     /**
      * The root of the ATK application, where the atk/ directory resides
      * @var String The root
      */
      $config_atkroot = "./";
+  }
+  
+  if (!$config_application_dir || (ini_get('register_globals') && isset($_REQUEST['config_application_dir'])))
+  {
+    /**
+     * Root directory of your application code (modules/themes/configuration files/etc)
+     * relative to the script calling ATK.
+     * Defaults to the atkroot.
+     * 
+     * @var String Directory where the application code can be found
+     */
+    $config_application_dir = $config_atkroot;
   }
 
   /**
@@ -45,7 +60,7 @@
    * the application root
    * @var String
    */
-  $config_module_path = $config_atkroot."modules";
+  $config_module_path = $config_application_dir."modules";
 
   $config_corporate_node_base = "";
   $config_corporate_module_base = "";
@@ -55,13 +70,13 @@
    * store it's temporary files in.
    * @var String
    */
-  $config_atktempdir = $config_atkroot."atktmp/";
+  $config_atktempdir = $config_application_dir."atktmp/";
 
   /**
    * The location of the module specific configuration files.
    * @var String
    */
-  $config_configdir = $config_atkroot."configs/";
+  $config_configdir = $config_application_dir."configs/";
 
   /**
    * Use the given meta policy as the default meta policy.
@@ -649,7 +664,7 @@
    * path, relative to the applications' root dir.
    * @var String
    */
-  $config_tplroot = $config_atkroot;
+  $config_tplroot = $config_application_dir;
 
   /**
    *

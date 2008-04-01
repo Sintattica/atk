@@ -75,7 +75,7 @@
      * @param String $relpath The relative path to convert
      * @return String The absolute path
      */
-    function absPath($relpath)
+    function absPath($relpath, $location='')
     {
       if ($relpath=="") return "";
 
@@ -83,8 +83,11 @@
       {
         return moduleDir($matches[1]).$matches[2];
       }
+      
+      if      (substr($relpath,0,4)==='atk/')    $location='atk';
+      else if (substr($relpath,0,7)==='themes/') $location='app';
 
-      return atkconfig("atkroot").$relpath;
+      return ($location==='app'?atkconfig('application_dir'):atkconfig("atkroot")).$relpath;
     }
 
     /**

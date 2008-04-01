@@ -140,7 +140,7 @@
         }
         else
         {
-          $page->register_style((file_exists(atkconfig("atkroot")."./style.css") ? "." : atkconfig("atkroot")."atk").'/style.css');
+          $page->register_style((file_exists(atkconfig("application_dir")."./style.css") ? "." : atkconfig("atkroot")."atk").'/style.css');
         }
       }
     }
