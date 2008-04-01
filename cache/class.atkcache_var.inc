@@ -45,17 +45,19 @@ class atkCache_var extends atkCache
    * 
    * @param string $key The entry ID.
    * @param mixed $data The data to write into the entry.
+   * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
    * @return bool True on success, false on failure.
    */
-  public function set($key, $data)
+  public function set($key,$data,$lifetime=false)
   {
     if (!$this->m_active) 
     {
       return;
     }
-     
+    
+    if($lifetime === false) $lifetime = $this->m_lifetime;
     $this->m_entry[$this->getRealKey($key)] = $data;
-    $this->m_expires[$this->getRealKey($key)] = time() + $this->m_lifetime;
+    $this->m_expires[$this->getRealKey($key)] = time() + $lifetime;
     return true;
   }
     
@@ -66,7 +68,7 @@ class atkCache_var extends atkCache
    * @param mixed $data The data to write into the entry.
    * @return bool True on success, false on failure.
    */
-  public function add($key, $data)
+  public function add($key,$data,$lifetime=false)
   {
     if (!$this->m_active) 
     {
@@ -75,7 +77,7 @@ class atkCache_var extends atkCache
         
     if (empty($this->m_entry[$this->getRealKey($key)])) 
     {
-      return $this->set($key, $data);
+      return $this->set($key,$data,$lifetime);
     } 
     else 
     {

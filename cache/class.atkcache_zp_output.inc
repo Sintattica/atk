@@ -60,14 +60,17 @@ class atkCache_zp_output extends atkCache
    * 
    * @param string $key The entry ID.
    * @param mixed $data The data to write into the entry.
+   * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
    * @return bool True on success, false on failure.
    */
-  public function add($key,$data)
+  public function add($key,$data,$lifetime=false)
   {   
      if (! $this->m_active)
      {
        return;
      }
+  
+     if($lifetime !== false) atkwarning("Lifetime setting is not supported in this type of cache :".$this->getType().". Instead default lifetime is used");
         
      if (output_cache_get($key,$this->m_lifetime) !== false) 
      {
@@ -83,14 +86,17 @@ class atkCache_zp_output extends atkCache
    * 
    * @param string $key The entry ID.
    * @param mixed $data The data to write into the entry.
+   * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
    * @return bool True on success, false on failure.
    */
-  public function set($key,$data)
+  public function set($key,$data,$lifetime=false)
   {
      if (! $this->m_active) 
      {
        return;
      }
+     
+     if($lifetime !== false) atkwarning("Lifetime setting is not supported in this type of cache :".$this->getType().". Instead default lifetime is used");
         
      output_cache_put($key, serialize($data));
      return true;

@@ -214,9 +214,10 @@ abstract class atkCache implements ArrayAccess
     *
     * @param string $key Entry Id
     * @param mixed $data The data we want to add
+    * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
     * @return boolean True on success, false on failure.
     */
-   abstract public function add($key, $data);
+   abstract public function add($key,$data,$lifetime=false);
    
    /**
     * Set cache entry, if it not exists then
@@ -224,9 +225,10 @@ abstract class atkCache implements ArrayAccess
     *
     * @param string $key Entry ID
     * @param mixed $data The data we want to set
+    * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
     * @return True on success, false on failure.
     */
-   abstract public function set($key, $data);
+   abstract public function set($key,$data,$lifetime=false);
    
    /**
     * get cache entry by key

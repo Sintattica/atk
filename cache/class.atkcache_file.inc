@@ -64,9 +64,10 @@ class atkCache_file extends atkCache
    * 
    * @param string $key The entry ID.
    * @param mixed $data The data to write into the entry.
+   * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
    * @return bool True on success, false on failure.
    */ 
-  public function add($key,$data)
+  public function add($key,$data,$lifetime=false)
   {
     if (!$this->m_active) 
     {
@@ -78,14 +79,16 @@ class atkCache_file extends atkCache
     // if the file does not exists or is unreadable, key is available
     if (! file_exists($file) || ! is_readable($file)) 
     {
-      return $this->set($key, $data);
+      return $this->set($key, $data, $lifetime);
     }
     
     // if the file has expired, key is available
-    $expire_time = filemtime($file) + $this->m_lifetime;
+    
+    if($lifetime === false) $lifetime = $this->m_lifetime;
+    $expire_time = filemtime($file) + $lifetime;
     if (time() > $expire_time) 
     {
-      return $this->set($key, $data);
+      return $this->set($key, $data, $lifetime);
     }
     
     // key already exists
@@ -99,14 +102,17 @@ class atkCache_file extends atkCache
    * 
    * @param string $key The entry ID.
    * @param mixed $data The data to write into the entry.
+   * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
    * @return bool True on success, false on failure.
    */
-  public function set($key,$data)
+  public function set($key,$data,$lifetime=false)
   {
     if (!$this->m_active) 
     {
       return;
     }
+    
+    if($lifetime === false) $lifetime = $this->m_lifetime;
     
     // serialize all non-scalar data
     if (! is_scalar($data)) 
@@ -141,6 +147,9 @@ class atkCache_file extends atkCache
         // with the same name
         @unlink($file . '.serial', $this->m_context);
       }
+      
+      // create a .lifetime file to handle the lifetime of the cached item
+      file_put_contents($file . '.lifetime',$lifetime, LOCK_EX, $this->m_context);
             
       // unlock and close, then done.
       flock($fp, LOCK_UN);
@@ -172,8 +181,11 @@ class atkCache_file extends atkCache
     // make sure the file exists and is readable,
     if (file_exists($file) && is_readable($file)) 
     {
+      // get the lifetime of the entry
+      $lifetime = file_get_contents($file.".lifetime");
+      
       // has the file expired?
-      $expire_time = filemtime($file) + $this->m_lifetime;
+      $expire_time = filemtime($file) + $lifetime;
       if (time() > $expire_time) 
       {
          // expired, remove it
@@ -236,6 +248,7 @@ class atkCache_file extends atkCache
     
     @unlink($file, $this->m_context);
     @unlink($file . '.serial', $this->m_context);
+    @unlink($file . '.lifetime', $this->m_context);
     
   }
 

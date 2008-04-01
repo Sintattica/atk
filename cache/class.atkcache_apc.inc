@@ -36,16 +36,18 @@ class atkCache_apc extends atkCache
    * 
    * @param string $key The entry ID.
    * @param mixed $data The data to write into the entry.
+   * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
    * @return bool True on success, false on failure.
    */
-  public function add($key,$data)
+  public function add($key,$data,$lifetime=false)
   {
     if (!$this->m_active) 
     {
       return;
     }
-
-    return apc_add($this->getRealKey($key), serialize($data), $this->m_lifetime);
+    
+    if($lifetime === false) $lifetime = $this->m_lifetime;
+    return apc_add($this->getRealKey($key), serialize($data), $lifetime);
   }
 
   /**
@@ -53,16 +55,18 @@ class atkCache_apc extends atkCache
    * 
    * @param string $key The entry ID.
    * @param mixed $data The data to write into the entry.
+   * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
    * @return bool True on success, false on failure.
    */
-  public function set($key,$data)
+  public function set($key,$data,$lifetime=false)
   {
     if (!$this->m_active) 
     {
       return;
     }
-        
-    return apc_store($this->getRealKey($key), serialize($data), $this->m_lifetime);
+    
+    if($lifetime === false) $lifetime = $this->m_lifetime;
+    return apc_store($this->getRealKey($key), serialize($data), $lifetime);
   }
   
   /**
