@@ -43,7 +43,7 @@ class atkCache_apc extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     }
     
     if($lifetime === false) $lifetime = $this->m_lifetime;
@@ -62,7 +62,7 @@ class atkCache_apc extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     }
     
     if($lifetime === false) $lifetime = $this->m_lifetime;
@@ -80,7 +80,7 @@ class atkCache_apc extends atkCache
   public function get($key)
   {
     if (!$this->m_active) {
-      return;
+      return false;
     }
      
     $rawCacheValue = apc_fetch($this->getRealKey($key));
@@ -98,7 +98,7 @@ class atkCache_apc extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     }
         
     return apc_delete($this->getRealKey($key));
@@ -112,7 +112,7 @@ class atkCache_apc extends atkCache
   public function deleteAll()
   {
     if (! $this->m_active) {
-      return;
+      return false;
     }
     
     apc_clear_cache('user');

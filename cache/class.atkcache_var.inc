@@ -52,7 +52,7 @@ class atkCache_var extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     }
     
     if($lifetime === false) $lifetime = $this->m_lifetime;
@@ -72,7 +72,7 @@ class atkCache_var extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     }
         
     if (empty($this->m_entry[$this->getRealKey($key)])) 
@@ -95,7 +95,7 @@ class atkCache_var extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     }
     
     if (!empty($this->m_entry[$this->getRealKey($key)]) && $this->m_expires[$this->getRealKey($key)] >= time()) 
@@ -122,7 +122,7 @@ class atkCache_var extends atkCache
   {
     if (! $this->m_active) 
     {
-      return;
+      return false;
     }
       
     unset($this->m_entry[$this->getRealKey($key)]);
@@ -138,7 +138,7 @@ class atkCache_var extends atkCache
   {
     if (! $this->m_active) 
     {
-      return;
+      return false;
     }
     $this->m_entry = array();
     $this->m_expires = array();

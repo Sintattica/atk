@@ -58,7 +58,7 @@ class atkCache_memcache extends atkCache
   {
     if (! $this->m_active)
     {
-      return;
+      return false;
     }
     
     if($lifetime === false) $lifetime = $this->m_lifetime;
@@ -77,7 +77,7 @@ class atkCache_memcache extends atkCache
   {
     if (! $this->m_active)
     {
-      return;
+      return false;
     }
     
     if($lifetime === false) $lifetime = $this->m_lifetime;
@@ -94,7 +94,7 @@ class atkCache_memcache extends atkCache
   {
     if (! $this->m_active)
     {
-      return;
+      return false;
     }
     return $this->m_memcache->get($key);
   }
@@ -109,7 +109,7 @@ class atkCache_memcache extends atkCache
   {
     if (! $this->m_active)
     {
-      return;
+      return false;
     }
     $this->m_memcache->delete($key);
   }
@@ -123,7 +123,7 @@ class atkCache_memcache extends atkCache
   {
     if (! $this->m_active)
     {
-      return;
+      return false;
     }
     $this->m_memcache->flush();
   }

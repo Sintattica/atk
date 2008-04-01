@@ -42,7 +42,7 @@ class atkCache_xcache extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     }  
     
     if (xcache_isset($this->getRealKey($key))) 
@@ -66,7 +66,7 @@ class atkCache_xcache extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     }  
   
     if($lifetime === false) $lifetime = $this->m_lifetime;
@@ -83,7 +83,7 @@ class atkCache_xcache extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     }  
      return xcache_get($this->getRealKey($key));
   }
@@ -98,7 +98,7 @@ class atkCache_xcache extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     } 
     
     return xcache_unset($this->getRealKey($key)); 
@@ -117,7 +117,7 @@ class atkCache_xcache extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     }  
     /*
     

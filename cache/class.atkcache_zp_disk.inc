@@ -53,7 +53,7 @@ class atkCache_zp_disk extends atkCache
   {   
      if (! $this->m_active)
      {
-       return;
+       return false;
      }
         
      if (zend_disk_cache_fetch($this->getRealKey($key)) !== null) 
@@ -78,7 +78,7 @@ class atkCache_zp_disk extends atkCache
   {
      if (! $this->m_active) 
      {
-       return;
+       return false;
      }
      
      if($lifetime === false) $lifetime = $this->m_lifetime;
@@ -96,7 +96,7 @@ class atkCache_zp_disk extends atkCache
   {
      if (! $this->m_active) 
      {
-       return;
+       return false;
      }
      
      $rawCacheValue =zend_disk_cache_fetch($this->getRealKey($key));
@@ -114,7 +114,7 @@ class atkCache_zp_disk extends atkCache
   { 
     if (! $this->m_active) 
     {
-      return;
+      return false;
     }
     return zend_disk_cache_delete($this->getRealKey($key));
   }
@@ -128,7 +128,7 @@ class atkCache_zp_disk extends atkCache
   {
     if (! $this->m_active) 
     {
-      return;
+      return false;
     }
     return zend_disk_cache_clear($this->m_namespace);
   }

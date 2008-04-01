@@ -67,7 +67,7 @@ class atkCache_zp_output extends atkCache
   {   
      if (! $this->m_active)
      {
-       return;
+       return false;
      }
   
      if($lifetime !== false) atkwarning("Lifetime setting is not supported in this type of cache :".$this->getType().". Instead default lifetime is used");
@@ -93,7 +93,7 @@ class atkCache_zp_output extends atkCache
   {
      if (! $this->m_active) 
      {
-       return;
+       return false;
      }
      
      if($lifetime !== false) atkwarning("Lifetime setting is not supported in this type of cache :".$this->getType().". Instead default lifetime is used");
@@ -112,7 +112,7 @@ class atkCache_zp_output extends atkCache
   {
      if (! $this->m_active) 
      {
-       return;
+       return false;
      }
         
      $rawCacheValue = output_cache_get($key, $this->m_lifetime);
@@ -130,7 +130,7 @@ class atkCache_zp_output extends atkCache
   { 
     if (! $this->m_active) 
     {
-      return;
+      return false;
     }
     return output_cache_remove_key($key);
   }

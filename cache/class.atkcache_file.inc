@@ -71,7 +71,7 @@ class atkCache_file extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     }
     // what file should we look for?
     $file = $this->getRealKey($key);
@@ -109,7 +109,7 @@ class atkCache_file extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     }
     
     if($lifetime === false) $lifetime = $this->m_lifetime;
@@ -171,7 +171,7 @@ class atkCache_file extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     }
     
     // get the entry filename *before* validating;
@@ -242,7 +242,7 @@ class atkCache_file extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     }
     $file = $this->getRealKey($key);
     
@@ -261,7 +261,7 @@ class atkCache_file extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     }
     
     $list = (array) @scandir($this->m_path, null, $this->m_context);

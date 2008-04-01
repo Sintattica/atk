@@ -42,7 +42,7 @@ class atkCache_eaccelerator extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     }
     
     if (eaccelerator_get($this->getRealKey($key)) !== null) 
@@ -66,7 +66,7 @@ class atkCache_eaccelerator extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     }
     
     if($lifetime === false) $lifetime = $this->m_lifetime;
@@ -82,7 +82,7 @@ class atkCache_eaccelerator extends atkCache
   public function get($key)
   {
     if (!$this->m_active) {
-      return;
+      return false;
     }
     
     $rawCacheValue = eaccelerator_get($this->getRealKey($key));
@@ -100,7 +100,7 @@ class atkCache_eaccelerator extends atkCache
   {
     if (!$this->m_active) 
     {
-      return;
+      return false;
     }
         
     return eaccelerator_rm($this->getRealKey($key));
@@ -115,7 +115,7 @@ class atkCache_eaccelerator extends atkCache
   public function deleteAll()
   {
     if (! $this->m_active) {
-      return;
+      return false;
     }
     
     return eaccelerator_clean();
