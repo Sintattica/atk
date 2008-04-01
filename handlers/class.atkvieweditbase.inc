@@ -206,6 +206,23 @@
         $perTpl[$tabTpl[$tab]][$fields[$i]["attribute"]] = $fields[$i];//make field available in associative array
       }
       
+      // Add 'alltab' fields to all templates
+      foreach ($fields as $field)
+      {
+        if (in_array('alltabs', explode(' ', $field["tab"])))
+        {
+          $templates = array_keys($perTpl);
+          foreach ($templates as $tpl)
+          {
+            if (!$perTpl[$tpl][$field['attribute']])
+            {
+              $perTpl[$tpl]['fields'][] = $field;
+              $perTpl[$tpl][$field['attribute']] = $field;
+            }
+          }
+        }
+      }
+      
       $tpls = array_unique(array_values($tabTpl));
       foreach ($tpls as $tpl)
       {
