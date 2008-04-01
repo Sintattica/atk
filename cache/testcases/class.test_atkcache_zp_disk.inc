@@ -26,7 +26,7 @@ class test_atkcache_zp_disk extends atkCacheTestCase
    public function skip()
    {
      $this->skipIf(!function_exists('accelerator_license_info'),'The Zend Platform extension is not loaded');
-     if (!function_exists('accelerator_get_configuration')) 
+     if (function_exists('accelerator_license_info') && !function_exists('accelerator_get_configuration')) 
      {
        $licenseInfo = accelerator_license_info();
        $this->skipIf(!function_exists('accelerator_get_configuration'),'The Zend Platform extension is not loaded correctly: '.$licenseInfo['failure_reason']); 

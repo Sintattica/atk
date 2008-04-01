@@ -26,13 +26,21 @@ class test_atkcache_zp_output extends atkCacheTestCase
    public function skip()
    {
      $this->skipIf(!function_exists('accelerator_license_info'),'The Zend Platform extension is not loaded');
-     $licenseInfo = accelerator_license_info();
-     $this->skipIf(!function_exists('accelerator_get_configuration'),'The Zend Platform extension is not loaded correctly: '.$licenseInfo['failure_reason']); 
-     $acceleratorConfig = accelerator_get_configuration();
-     $this->skipIf(@!$acceleratorConfig['output_cache_licensed'],'The Zend Platform extension does not have the proper license to use content caching features.');
-     $this->skipIf(@!$acceleratorConfig['output_cache_enabled'],'The Zend Platform content caching feature must be enabled for using this backend, set the \'zend_accelerator.output_cache_enabled\' directive to On !');
-     $this->skipIf(!is_writable($acceleratorConfig['output_cache_dir']),'The cache copies directory \''. ini_get('zend_accelerator.output_cache_dir') .'\' must be writable !');
-     $this->skipIf(!function_exists('output_cache_put'),'The Zend Platform doesn\'t support the ouput cache anymore (version 3.0 and lower only)');
+     
+     if(function_exists('accelerator_license_info')) 
+     {
+       $licenseInfo = accelerator_license_info();
+       $this->skipIf(!function_exists('accelerator_get_configuration'),'The Zend Platform extension is not loaded correctly: '.$licenseInfo['failure_reason']); 
+     }
+     
+     if(function_exists('accelerator_get_configuration'))
+     {
+       $acceleratorConfig = accelerator_get_configuration();
+       $this->skipIf(@!$acceleratorConfig['output_cache_licensed'],'The Zend Platform extension does not have the proper license to use content caching features.');
+       $this->skipIf(@!$acceleratorConfig['output_cache_enabled'],'The Zend Platform content caching feature must be enabled for using this backend, set the \'zend_accelerator.output_cache_enabled\' directive to On !');
+       $this->skipIf(!is_writable($acceleratorConfig['output_cache_dir']),'The cache copies directory \''. ini_get('zend_accelerator.output_cache_dir') .'\' must be writable !');
+       $this->skipIf(!function_exists('output_cache_put'),'The Zend Platform doesn\'t support the ouput cache anymore (version 3.0 and lower only)');
+     }
    }
   
   /**
