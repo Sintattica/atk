@@ -340,7 +340,7 @@
      *
      * @return atkTmpFile
      */
-    private function getActionCacheFile()
+    protected function getActionCacheFile()
     {
       atkimport('atk.utils.atktmpfile');
       $path = 'frontcontrollers/'.$this->m_module.'/'.$this->m_name.'/'.$this->m_action;
@@ -352,7 +352,7 @@
     /**
      * Is this action cached?
      */
-    private function isActionCached()
+    protected function isActionCached()
     {
       // action is never cached
       if (!in_array($this->m_action, $this->m_cacheableActions)) return false;
@@ -364,7 +364,7 @@
     /**
      * Load from action cache.
      */
-    private function loadFromActionCache()
+    protected function loadFromActionCache()
     {
       $file = $this->getActionCacheFile();
 
@@ -381,7 +381,7 @@
     /**
      * Store current action results in cache.
      */
-    private function storeInActionCache()
+    protected function storeInActionCache()
     {
       // action is never cached
       if (!in_array($this->m_action, $this->m_cacheableActions)) return;
