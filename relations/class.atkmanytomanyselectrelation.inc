@@ -18,6 +18,8 @@
 userelation("atkmanytomanyrelation");
 userelation('atkmanytoonerelation');
 
+define('AF_MANYTOMANYSELECT_DETAILEDIT', AF_SPECIFIC_1);
+
 /**
  * Many-to-many select relation.
  *
@@ -75,7 +77,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
    */
   public function init()
   {
-    $this->getOwnerInstance()->add($this->getManyTOOneRelation());    
+    $this->getOwnerInstance()->add($this->getManyToOneRelation());    
   }
   
   /**
@@ -101,6 +103,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     $this->createDestination();
     $this->createLink();
     
+    $this->getOwnerInstance()->getPage()->register_script(atkconfig('atkroot').'atk/javascript/class.'.strtolower(__CLASS__).'.js');
     $this->getOwnerInstance()->addStyle('atkmanytomanyselectrelation.css');
     
     $selectedKeys = $this->getSelectedRecords($record);
@@ -151,11 +154,20 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     $name = $this->getHtmlId($fieldprefix).'[]['.$this->getRemoteKey().']';
     $key = $record[$this->getDestination()->primaryKeyField()];
     
+    $actions = array();
+    
+    if ($this->hasFlag(AF_MANYTOMANYSELECT_DETAILEDIT) && $this->getDestination()->allowed('edit', $record))
+    {
+      $actions[] = href(dispatch_url($this->getDestination()->atkNodeType(), 'edit', array('atkselector' => $this->getDestination()->primaryKey($record))), $this->text('edit'), SESSION_NESTED, true);
+    }
+
+    $actions[] = '<a href="javascript:void(0)" onclick="ATK.ManyToManySelectRelation.delete(this); return false;">'.$this->text('delete').'</a>';    
+    
     $result = '
       <li class="atkmanytomanyselectrelation-selected">
         <input type="hidden" name="'.$name.'" value="'.htmlentities($key).'"/>
         <span>'.htmlentities($this->getDestination()->descriptor($record)).'</span>
-        (<a href="javascript:void(0)" onclick="var li = $(this).up(\'li\'); li.parentNode.removeChild(li); return false;">'. $this->text('delete').'</a>)
+        ('.implode(' / ', $actions).')
       </li>
     ';
 
@@ -173,11 +185,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     
     $relation = $this->getManyToOneRelation();
     $relation->addOnChangeHandler("
-      var params = { selector: \$F(el) };
-      var li = $(el).up('li');
-      new Ajax.Updater(li, '{$url}', { parameters: params, insertion: Insertion.Before });
-      $(el.name + '_search').value = '';
-      el.value = '';      
+      ATK.ManyToManySelectRelation.add(el, '{$url}');
     ");
     
     return '
