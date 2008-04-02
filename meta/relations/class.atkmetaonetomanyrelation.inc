@@ -29,6 +29,8 @@ userelation("atkonetomanyrelation");
  */
 class atkMetaOneToManyRelation extends atkOneToManyRelation
 {
+  private $m_variants = null;
+  
   /**
    * Default constructor.
    */

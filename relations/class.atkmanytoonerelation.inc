@@ -53,6 +53,10 @@
    */
   class atkManyToOneRelation extends atkRelation
   {
+    const SEARCH_MODE_EXACT       = "exact";
+    const SEARCH_MODE_STARTSWITH  = "startswith";
+    const SEARCH_MODE_CONTAINS    = "contains";
+    
     /**
      * By default, we do a left join. this means that records that don't have
      * a record in this relation, will be displayed anyway. NOTE: set  this to
@@ -1735,7 +1739,7 @@
 
       $result =
         '<input type="hidden" id="'.$id.'" name="'.$id.'" value="'.$value.'" />
-         <input type="text" id="'.$id.'_search" value="'.atk_htmlentities($label).'" class="atkmanytoonerelation_search" size="40" onfocus="this.select()" />
+         <input type="text" id="'.$id.'_search" value="'.atk_htmlentities($label).'" class="atkmanytoonerelation_search" size="30" onfocus="this.select()" />
          <img id="'.$id.'_spinner" src="atk/images/spinner.gif" style="vertical-align: middle; display: none"> '.$links.'<br />
          <div id="'.$id.'_result" style="display: none" class="atkmanytoonerelation_result"></div>';
 
@@ -1857,19 +1861,19 @@
 
           switch($this->m_autocomplete_searchmode)
           {
-            case "exact":
+            case self::SEARCH_MODE_EXACT:
               if(!$this->m_autocomplete_search_case_sensitive)
                 $tmp.= " = LOWER('{$part}')";
               else
                 $tmp.= " = '{$part}'";
               break;
-            case "startswith":
+            case self::SEARCH_MODE_STARTSWITH:
               if(!$this->m_autocomplete_search_case_sensitive)
                 $tmp.= " LIKE LOWER('{$part}%')";
               else
                 $tmp.= " LIKE '{$part}%'";
               break;
-            case "contains":
+            case self::SEARCH_MODE_CONTAINS:
               if(!$this->m_autocomplete_search_case_sensitive)
                 $tmp.= " LIKE LOWER('%{$part}%')";
               else

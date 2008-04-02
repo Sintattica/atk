@@ -11,14 +11,14 @@
  * @copyright (c) 2005 Peter C. Verhage <peter@achievo.org>
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
- * @version $Revision$
- * $Id$
+ * @version $Revision: 5810 $
+ * $Id: class.atkmetamanytomanylistrelation.inc 5810 2008-03-18 11:11:35Z peter $
  */
 
 /**
  * @internal Include the base class.
  */
-userelation("atkmanyboolrelation");
+userelation("atkmanytomanyselectrelation");
   
 /**
  * Implementation of many-to-many relationships using checkboxes for meta nodes.
@@ -27,10 +27,10 @@ userelation("atkmanyboolrelation");
  * @package atk
  * @subpackage meta.relations
  */        
-class atkMetaManyBoolRelation extends atkManyBoolRelation
+class atkMetaManyToManySelectRelation extends atkManyToManySelectRelation
 {
   private $m_localVariants = null;
-  private $m_remoteVariants = null;  
+  private $m_remoteVariants = null;
   
   /**
    * Default constructor.    
@@ -42,10 +42,6 @@ class atkMetaManyBoolRelation extends atkManyBoolRelation
     $this->setDescriptorTemplate($template);
     if (isset($options["filter"])) 
       $this->setDestinationFilter($options["filter"]);
-    if (isset($options["cols"]))
-      $this->setCols($options["cols"]);
-    if (isset($options["columns"]))
-      $this->setCols($options["columns"]);
     if (isset($options["local"]))
       $this->setLocalKey($options["local"]);      
     if (isset($options["localVariants"]))
@@ -97,5 +93,5 @@ class atkMetaManyBoolRelation extends atkManyBoolRelation
     }
 
     return $result;
-  }  
+  }    
 }

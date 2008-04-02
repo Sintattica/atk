@@ -29,6 +29,9 @@ userelation("atkextendableshuttlerelation");
  */        
 class atkMetaExtendableShuttleRelation extends atkExtendableShuttleRelation
 {
+  private $m_localVariants = null;
+  private $m_remoteVariants = null;  
+    
   /**
    * Default constructor.    
    */
@@ -39,9 +42,56 @@ class atkMetaExtendableShuttleRelation extends atkExtendableShuttleRelation
     $this->setDescriptorTemplate($template);
     if (isset($options["filter"])) 
       $this->setDestinationFilter($options["filter"]);
-    if (isset($options["source"]))
-      $this->setLocalKey($options["source"]);      
+    if (isset($options["local"]))
+      $this->setLocalKey($options["local"]);      
+    if (isset($options["localVariants"]))
+      $this->m_localVariants = $options['localVariants'];          
     if (isset($options["remote"]))
       $this->setRemoteKey($options["remote"]);      
+    if (isset($options["remoteVariants"]))
+      $this->m_remoteVariants = $options['remoteVariants'];          
   }
+  
+  /**
+   * Create the instance of the intermedinary link node.
+   *
+   * If succesful, the instance is stored in the m_linkInstance member variable.
+   *
+   * @return boolean true if succesful, false if something went wrong.
+   */
+  public function createLink()
+  {
+    $result = parent::createLink();
+    
+    if ($result && is_array($this->m_localVariants))
+    {
+      foreach ($this->m_localVariants as $variant)
+      { 
+        if ($this->m_linkInstance->getAttribute($variant) != null)
+        {
+          $this->setLocalKey($variant);
+          break;
+        }
+      }
+      
+      $this->m_localVariants = null;
+    }
+    
+    if ($result && is_array($this->m_remoteVariants))
+    {
+      foreach ($this->m_remoteVariants as $variant)
+      { 
+        // we *must* use $this->m_linkInstance (not $this->getLink()) else we will create an infinite loop    
+        if ($this->m_linkInstance->getAttribute($variant) != null)
+        {
+          $this->setRemoteKey($variant);
+          break;
+        }
+      }
+      
+      $this->m_remoteVariants = null;
+    }
+
+    return $result;
+  }  
 }

@@ -1147,31 +1147,57 @@ class atkMetaPolicy
   }
   
   /**
-   * Returns a list of possible attribute variants in the destination relation
-   * of one-to-many relations which reference back to this node.
+   * Returns a list of possible attribute name variants for relations 
+   * which reference this node or the given destination node.
    *
+   * @param string $destination destination node
+   * 
    * @return array list of attribute variants
    */
-  protected function _getDestinationAttributeVariants()
+  protected function _getDestinationAttributeVariants($destination=null)
   {
-    $base = array();
-    $base[] = $this->getNodeTable();
-    $base[] = getNodeType($this->getNode()->atkNodeType());
+    $base = array();    
     
-    for ($class = get_class($this->getNode()); stripos($class, 'metanode') === false; $class = get_parent_class($class))
+    // no destination given, self is assumed, we also add the table name 
+    // and parent classes as base for the different variants
+    if ($destination == null)
     {
-      $base[] = strtolower($class);
+      $module = getNodeModule($this->getNode()->atkNodeType());
+      
+      $base[] = $this->getNodeTable();
+      $base[] = getNodeType($this->getNode()->atkNodeType());
+  
+      for ($class = get_class($this->getNode()); stripos($class, 'metanode') === false; $class = get_parent_class($class))
+      {
+        $base[] = strtolower($class);
+      }
+      
+      $base = array_unique($base);
+    }
+    else 
+    {
+      $module = getNodeModule($destination);
+      $base[] = getNodeType($destination);
     }
     
-    $base = array_unique($base);
-    
-    if ($this->getNode()->getModule() != null)
+    if ($module != null)
     {
-      // add variants for each base with the module as prefix, explicitly 
-      // make copy of base so that new entries don't mess up the loop
+      // add variants for each base with the module as prefix or with the module
+      // prefix stripped out (if it was already part of base), we explicitly 
+      // make a copy of base so that new entries don't mess up the loop
       foreach (array_values($base) as $entry)
       {
-        $base[] = $this->getNode()->getModule()."_".$entry;
+        // entry already contains module prefix, strip it
+        if (substr($entry, 0, strlen($module) + 1) == $module.'_')
+        {
+          $base[] = substr($entry, strlen($module) + 1);
+        }       
+        
+        // entry doesn't contain prefix yet, add it
+        else 
+        {
+          $base[] = $module."_".$entry;
+        }
       }
     }
 
@@ -1274,6 +1300,11 @@ class atkMetaPolicy
     {
       $name = getNodeType($accessor);    
     }
+    
+    if (isset($options['source']))
+    {
+      $options['local'] = $options['source'];
+    }
 
     $destination = $this->_findDestination($accessor, true);
     
@@ -1288,6 +1319,9 @@ class atkMetaPolicy
         case 'list':
           $type = "atk.meta.relations.atkmetamanytomanylistrelation";
           break;
+        case 'select':
+          $type = "atk.meta.relations.atkmetamanytomanyselectrelation";
+          break;
         case 'eshuttle':
         case 'extendableshuttle':
           $type = "atk.meta.relations.atkmetaextendableshuttlerelation";
@@ -1298,6 +1332,16 @@ class atkMetaPolicy
       }
       
       $through = $this->_findDestination($options['through'], true);
+      
+      if (!isset($options['local']))
+      {
+        $options['localVariants'] = $this->_getDestinationAttributeVariants();
+      }
+      
+      if (!isset($options['remote']))
+      {
+        $options['remoteVariants'] = $this->_getDestinationAttributeVariants($destination);
+      }
       
       $params = array($destination, $through, $template, $options);
     }
