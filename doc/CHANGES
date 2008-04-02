@@ -139,6 +139,9 @@ Changed in ATK 6.2
 + Added atkManyToManySelectRelation, a new variant of the many to many relation
   which allows you to add items to the relation using auto-completion. Useful 
   for many-to-many relations which have many selectable options. [Peter]
++ Added atkRadioDetailsAttribute, displays radio buttons with options to choose
+  from just like the atkRadioAttribute but allows you to use other attributes 
+  for detail selections once certain options are selected. [Peter]
 * Refactored and fixed searching in attributes and relations. Custom attributes/
   relations which override the search method and take prefixes into account
   might break because the way the atkSearch(Mode) array is now handled.
