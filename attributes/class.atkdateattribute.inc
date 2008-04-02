@@ -237,12 +237,21 @@
 
       /* base class constructor */
       $this->atkAttribute($name, $flags);
-
-     // If this attribute is obligatory set the initial value to the current timestamp
-     if ($this->hasFlag(AF_OBLIGATORY))
-     {
-       $this->setInitialValue(atkDateAttribute::dateArray(date('Ymd')));
-     }
+    }
+    
+    /**
+     * Override add flag so that we can set the initial value.
+     *
+     * @param int $flags
+     */
+    public function addFlag($flags)
+    {
+      parent::addFlag($flags);
+      
+      if ($this->hasFlag(AF_OBLIGATORY))
+      {
+        $this->setInitialValue(atkDateAttribute::dateArray(date('Ymd')));
+      }
     }
 
     /**
