@@ -589,6 +589,7 @@
     
     function getTabLink(&$node, $error)
     {
+      if (count($node->getTabs($node->m_action)) < 2) return '';
       return '<a href="javascript:void(0)" onclick="showTab(\''.$error["tab"].'\'); return false;">'.$this->getTabLabel($node, $error["tab"]).'</a>';
     }
 

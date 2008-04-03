@@ -1162,12 +1162,14 @@
       }
 
       $tab = $attrib[0]->m_tabs[0];
+      $message = $attrib[0]->text($error);      
     }
     else
     {
       $attribName = $attrib->fieldName();
       $label = $attrib->getLabel($record);
       $tab = $attrib->m_tabs[0];
+      $message = $attrib->text($error);
     }
 
     triggerError($record, $attribName, $error, $message, $tab, $label);
