@@ -6,7 +6,7 @@
  * included in the distribution.
  *
  * Test class for varaible (in-memory)
- * 
+ *
  * @package atk
  * @subpackage cache
  *
@@ -17,13 +17,15 @@
  * @version $Revision$
  * $Id$
  */
-class test_atkcache_var extends atkCacheTestCase 
+atkimport("atk.test.atkcachetestcase");
+
+class test_atkcache_var extends atkCacheTestCase
 {
    protected $m_cache;
-    
+
    protected $m_type= "var";
-    
-   
-  
+
+
+
 }
 ?>

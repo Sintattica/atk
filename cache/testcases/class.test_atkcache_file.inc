@@ -6,7 +6,7 @@
  * included in the distribution.
  *
  * Test class for file based caching
- * 
+ *
  * @package atk
  * @subpackage cache
  *
@@ -17,10 +17,12 @@
  * @version $Revision$
  * $Id$
  */
-class test_atkcache_file extends atkCacheTestCase 
+atkimport("atk.test.atkcachetestcase");
+
+class test_atkcache_file extends atkCacheTestCase
 {
    protected $m_cache;
-    
+
    protected $m_type= "file";
 }
 ?>

@@ -6,7 +6,7 @@
  * included in the distribution.
  *
  * Test class for Zend Platform (output)
- * 
+ *
  * @package atk
  * @subpackage cache
  *
@@ -17,22 +17,24 @@
  * @version $Revision$
  * $Id$
  */
-class test_atkcache_zp_output extends atkCacheTestCase 
+atkimport("atk.test.atkcachetestcase");
+
+class test_atkcache_zp_output extends atkCacheTestCase
 {
    protected $m_cache;
-    
+
    protected $m_type= "zp_output";
-  
+
    public function skip()
    {
      $this->skipIf(!function_exists('accelerator_license_info'),'The Zend Platform extension is not loaded');
-     
-     if(function_exists('accelerator_license_info')) 
+
+     if(function_exists('accelerator_license_info'))
      {
        $licenseInfo = accelerator_license_info();
-       $this->skipIf(!function_exists('accelerator_get_configuration'),'The Zend Platform extension is not loaded correctly: '.$licenseInfo['failure_reason']); 
+       $this->skipIf(!function_exists('accelerator_get_configuration'),'The Zend Platform extension is not loaded correctly: '.$licenseInfo['failure_reason']);
      }
-     
+
      if(function_exists('accelerator_get_configuration'))
      {
        $acceleratorConfig = accelerator_get_configuration();
@@ -42,7 +44,7 @@ class test_atkcache_zp_output extends atkCacheTestCase
        $this->skipIf(!function_exists('output_cache_put'),'The Zend Platform doesn\'t support the ouput cache anymore (version 3.0 and lower only)');
      }
    }
-  
+
   /**
    * Zend platform doesn't support the deleteAll function
    * so we remove the test_add key before starting the
@@ -59,6 +61,6 @@ class test_atkcache_zp_output extends atkCacheTestCase
    * so we skip this test
    */
   public function test_deleteAll() {}
-   
+
 }
 ?>

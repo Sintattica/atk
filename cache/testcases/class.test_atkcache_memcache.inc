@@ -6,7 +6,7 @@
  * included in the distribution.
  *
  * Test class for memcache
- * 
+ *
  * @package atk
  * @subpackage cache
  *
@@ -17,16 +17,18 @@
  * @version $Revision$
  * $Id$
  */
-class test_atkcache_memcache extends atkCacheTestCase 
+atkimport("atk.test.atkcachetestcase");
+
+class test_atkcache_memcache extends atkCacheTestCase
 {
    protected $m_cache;
-    
+
    protected $m_type= "memcache";
-    
+
   public function skip()
   {
     $this->skipIf(!extension_loaded('memcache'),'The memcache extension is not loaded');
   }
-  
+
 }
 ?>

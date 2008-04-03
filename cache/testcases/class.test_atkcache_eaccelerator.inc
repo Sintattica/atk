@@ -6,7 +6,7 @@
  * included in the distribution.
  *
  * Test class for eaccelerator
- * 
+ *
  * @package atk
  * @subpackage cache
  *
@@ -17,16 +17,18 @@
  * @version $Revision$
  * $Id$
  */
-class test_atkcache_eaccelerator extends atkCacheTestCase 
+atkimport("atk.test.atkcachetestcase");
+
+class test_atkcache_eaccelerator extends atkCacheTestCase
 {
    protected $m_cache;
-    
+
    protected $m_type= "eaccelerator";
-    
+
    public function skip()
    {
      $this->skipIf(!(extension_loaded('eaccelerator') && ini_get('eaccelerator.enable')), "The eAccelerator extension is not loaded or disabled");
    }
-   
+
 }
 ?>

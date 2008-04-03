@@ -6,7 +6,7 @@
  * included in the distribution.
  *
  * Cache class for Zend Platform 3.6 and higher (http://www.zend.com/en/products/platform/)
- * 
+ *
  * @package atk
  * @subpackage cache
  *
@@ -17,19 +17,21 @@
  * @version $Revision$
  * $Id$
  */
+atkimport("atk.cache.atkcache");
+
 class atkCache_zp_disk extends atkCache
 {
-  
+
   /**
    * constructor
    */
   public function __construct()
   {
-    if (!function_exists('accelerator_license_info')) 
+    if (!function_exists('accelerator_license_info'))
     {
       throw new Exception('The Zend Platform extension is not loaded');
     }
-    if (!function_exists('accelerator_get_configuration')) 
+    if (!function_exists('accelerator_get_configuration'))
     {
       $licenseInfo = accelerator_license_info();
       throw new Exception('The Zend Platform extension is not loaded correctly: '.$licenseInfo['failure_reason']);
@@ -39,28 +41,28 @@ class atkCache_zp_disk extends atkCache
       throw new Exception('The Zend Platform doesn\'t support the shared memory cache (version 3.6 and higher only)');
     }
   }
-  
-  
+
+
   /**
    * Inserts cache entry data, but only if the entry does not already exist.
-   * 
+   *
    * @param string $key The entry ID.
    * @param mixed $data The data to write into the entry.
    * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
    * @return bool True on success, false on failure.
    */
   public function add($key,$data,$lifetime=false)
-  {   
+  {
      if (! $this->m_active)
      {
        return false;
      }
-        
-     if (zend_disk_cache_fetch($this->getRealKey($key)) !== null) 
+
+     if (zend_disk_cache_fetch($this->getRealKey($key)) !== null)
      {
        return false;
      }
-     
+
      if($lifetime === false) $lifetime = $this->m_lifetime;
      zend_disk_cache_store($this->getRealKey($key), serialize($data),$lifetime);
      return true;
@@ -68,7 +70,7 @@ class atkCache_zp_disk extends atkCache
 
   /**
    * Sets cache entry data.
-   * 
+   *
    * @param string $key The entry ID.
    * @param mixed $data The data to write into the entry.
    * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
@@ -76,11 +78,11 @@ class atkCache_zp_disk extends atkCache
    */
   public function set($key,$data,$lifetime=false)
   {
-     if (! $this->m_active) 
+     if (! $this->m_active)
      {
        return false;
      }
-     
+
      if($lifetime === false) $lifetime = $this->m_lifetime;
      zend_disk_cache_store($this->getRealKey($key), serialize($data),$lifetime);
      return true;
@@ -88,17 +90,17 @@ class atkCache_zp_disk extends atkCache
 
   /**
    * Gets cache entry data.
-   * 
+   *
    * @param string $key The entry ID.
    * @return mixed Boolean false on failure, cache data on success.
    */
   public function get($key)
   {
-     if (! $this->m_active) 
+     if (! $this->m_active)
      {
        return false;
      }
-     
+
      $rawCacheValue =zend_disk_cache_fetch($this->getRealKey($key));
      $cacheValue = is_string($rawCacheValue) ? unserialize($rawCacheValue) : $rawCacheValue;
      return $cacheValue;
@@ -106,13 +108,13 @@ class atkCache_zp_disk extends atkCache
 
   /**
    * Deletes a cache entry.
-   * 
+   *
    * @param string $key The entry ID.
    * @return void
    */
   public function delete($key)
-  { 
-    if (! $this->m_active) 
+  {
+    if (! $this->m_active)
     {
       return false;
     }
@@ -121,18 +123,18 @@ class atkCache_zp_disk extends atkCache
 
   /**
    * Removes all cache entries.
-   * 
+   *
    * @return void
    */
   public function deleteAll()
   {
-    if (! $this->m_active) 
+    if (! $this->m_active)
     {
       return false;
     }
     return zend_disk_cache_clear($this->m_namespace);
   }
-  
+
   /**
    * Get the current cache type
    *
@@ -142,8 +144,8 @@ class atkCache_zp_disk extends atkCache
   {
     return 'zp_disk';
   }
-  
-  
+
+
 }
 
 ?>

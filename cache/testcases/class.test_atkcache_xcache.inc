@@ -6,7 +6,7 @@
  * included in the distribution.
  *
  * Test class for xcache
- * 
+ *
  * @package atk
  * @subpackage cache
  *
@@ -17,23 +17,25 @@
  * @version $Revision$
  * $Id$
  */
-class test_atkcache_xcache extends atkCacheTestCase 
+atkimport("atk.test.atkcachetestcase");
+
+class test_atkcache_xcache extends atkCacheTestCase
 {
    protected $m_cache;
-    
+
    protected $m_type= "xcache";
-    
+
   public function skip()
   {
     $this->skipIf(!(extension_loaded('xcache') && ini_get('xcache.cacher')),'The xCache extension is not loaded');
   }
-  
-  
+
+
   /**
    * Currently turned off because I can't get the xCache
    * working with logging in
    */
   public function test_deleteAll() {}
-  
+
 }
 ?>

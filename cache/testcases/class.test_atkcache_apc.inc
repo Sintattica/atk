@@ -6,7 +6,7 @@
  * included in the distribution.
  *
  * Test class for apc
- * 
+ *
  * @package atk
  * @subpackage cache
  *
@@ -17,16 +17,18 @@
  * @version $Revision$
  * $Id$
  */
-class test_atkcache_apc extends atkCacheTestCase 
+atkimport("atk.test.atkcachetestcase");
+
+class test_atkcache_apc extends atkCacheTestCase
 {
    protected $m_cache;
-    
+
    protected $m_type= "apc";
-    
+
    public function skip()
    {
      $this->skipIf(!(extension_loaded('apc') && ini_get('apc.enabled')), "The APC extension is not loaded or disabled");
    }
-   
+
 }
 ?>

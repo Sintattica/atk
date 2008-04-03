@@ -6,7 +6,7 @@
  * included in the distribution.
  *
  * Cache class for eaccelerator (http://eaccelerator.net/)
- * 
+ *
  * @package atk
  * @subpackage cache
  *
@@ -17,6 +17,8 @@
  * @version $Revision$
  * $Id$
  */
+atkimport("atk.cache.atkcache");
+
 class atkCache_eaccelerator extends atkCache
 {
   /**
@@ -29,10 +31,10 @@ class atkCache_eaccelerator extends atkCache
       throw new Exception('The eAccelerator extension is not loaded or disabled');
     }
   }
-  
+
   /**
    * Inserts cache entry data, but only if the entry does not already exist.
-   * 
+   *
    * @param string $key The entry ID.
    * @param mixed $data The data to write into the entry.
    * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
@@ -40,23 +42,23 @@ class atkCache_eaccelerator extends atkCache
    */
   public function add($key,$data,$lifetime=false)
   {
-    if (!$this->m_active) 
+    if (!$this->m_active)
     {
       return false;
     }
-    
-    if (eaccelerator_get($this->getRealKey($key)) !== null) 
+
+    if (eaccelerator_get($this->getRealKey($key)) !== null)
     {
       return false;
     }
-    
+
     if($lifetime === false) $lifetime = $this->m_lifetime;
     return eaccelerator_put($this->getRealKey($key), serialize($data), $lifetime);
   }
-  
+
   /**
    * Sets cache entry data.
-   * 
+   *
    * @param string $key The entry ID.
    * @param mixed $data The data to write into the entry.
    * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
@@ -64,18 +66,18 @@ class atkCache_eaccelerator extends atkCache
    */
   public function set($key,$data,$lifetime=false)
   {
-    if (!$this->m_active) 
+    if (!$this->m_active)
     {
       return false;
     }
-    
+
     if($lifetime === false) $lifetime = $this->m_lifetime;
     return eaccelerator_put($this->getRealKey($key), serialize($data), $lifetime);
   }
 
   /**
    * Gets cache entry data.
-   * 
+   *
    * @param string $key The entry ID.
    * @return mixed Boolean false on failure, cache data on success.
    */
@@ -84,32 +86,32 @@ class atkCache_eaccelerator extends atkCache
     if (!$this->m_active) {
       return false;
     }
-    
+
     $rawCacheValue = eaccelerator_get($this->getRealKey($key));
     $cacheValue = is_string($rawCacheValue) ? unserialize($rawCacheValue) : $rawCacheValue;
     return $cacheValue;
   }
-  
+
   /**
    * Deletes a cache entry.
-   * 
+   *
    * @param string $key The entry ID.
    * @return void
    */
   public function delete($key)
   {
-    if (!$this->m_active) 
+    if (!$this->m_active)
     {
       return false;
     }
-        
+
     return eaccelerator_rm($this->getRealKey($key));
   }
-  
-   
+
+
   /**
    * Removes all cache entries.
-   * 
+   *
    * @return void
    */
   public function deleteAll()
@@ -117,15 +119,15 @@ class atkCache_eaccelerator extends atkCache
     if (! $this->m_active) {
       return false;
     }
-    
+
     return eaccelerator_clean();
   }
-  
+
   public function getType()
   {
     return 'eaccelerator';
   }
-  
+
 }
 
 ?>
