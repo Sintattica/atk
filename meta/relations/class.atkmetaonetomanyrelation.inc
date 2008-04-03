@@ -36,7 +36,7 @@ class atkMetaOneToManyRelation extends atkOneToManyRelation
    */
   public function __construct($name, $destination, $template, $options, $flags=0)
   {
-    $refKey = isset($options['dest']) ? $options['dest'] : isset($options['destination']) ? $options['destination'] : '?';
+    $refKey = isset($options['dest']) ? $options['dest'] : (isset($options['destination']) ? $options['destination'] : '?');
 
     parent::__construct($name, $destination, $refKey, $flags);
     
