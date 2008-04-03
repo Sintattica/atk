@@ -40,8 +40,9 @@
       }
 
       // set type
-      parent::atkmysqldb();
       $this->m_type = "mysqli";
+      $this->m_vendor = "mysql";
+      $this->m_user_error=array(1451);
     }
 
    /**
