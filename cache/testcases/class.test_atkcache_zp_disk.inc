@@ -33,7 +33,7 @@ class test_atkcache_zp_disk extends atkCacheTestCase
        $licenseInfo = accelerator_license_info();
        $this->skipIf(!function_exists('accelerator_get_configuration'),'The Zend Platform extension is not loaded correctly: '.$licenseInfo['failure_reason']);
      }
-     $this->skipIf(!function_exists('zend_disk_cache_store'),'The Zend Platform doesn\'t support the shared memory cache (version 3.6 and higher only)');
+     $this->skipIf(!function_exists('zend_disk_cache_store'),'The Zend Platform doesn\'t support the disk cache (version 3.6 and higher only)');
    }
 }
 ?>

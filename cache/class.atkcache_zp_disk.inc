@@ -38,7 +38,7 @@ class atkCache_zp_disk extends atkCache
     }
     if(!function_exists('zend_disk_cache_store'))
     {
-      throw new Exception('The Zend Platform doesn\'t support the shared memory cache (version 3.6 and higher only)');
+      throw new Exception('The Zend Platform doesn\'t support the disk cache (version 3.6 and higher only)');
     }
   }
 
