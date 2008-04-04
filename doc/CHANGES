@@ -7,6 +7,7 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
++ Added atkEcho() function for making echo output only from cron. [Yury]
 + Added support for searching with a '/' as seperator for from/to values in a
   free text search for atkDateAttribute. [Tjeerd, Peter]
 + Added node, nodetitle, action and actiontitle as separate entries to
