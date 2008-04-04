@@ -2206,4 +2206,12 @@
 
     return null;
   }
+  
+  function atkEcho($message)
+  {
+    if(strpos(atkSelf(),"runcron.php"))
+    {
+      echo $message;
+    }
+  }
 ?>
