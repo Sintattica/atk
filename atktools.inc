@@ -2209,7 +2209,7 @@
   
   function atkEcho($message)
   {
-    if(strpos(atkSelf(),"runcron.php"))
+    if(strpos(atkSelf(),"runcron"))
     {
       echo $message;
     }
