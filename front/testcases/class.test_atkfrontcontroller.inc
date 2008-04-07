@@ -5,13 +5,11 @@
    * @package atk
    * @subpackage testcases
    *
-   * @author guido <guido@ibuildings.nl>
+   * @author M. Roest <martin@ibuildings.nl>
    *
    * @copyright (c) 2006 Ibuildings.nl BV
    * @license http://www.achievo.org/atk/licensing/ ATK open source license
    *
-   * @version $Revision: 5016 $
-   * $Id: class.test_atknode.inc 5016 2007-06-27 04:47:20Z guido $
    */
 
 
