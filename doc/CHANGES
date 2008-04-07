@@ -147,6 +147,8 @@ Changed in ATK 6.2
   relations which override the search method and take prefixes into account
   might break because the way the atkSearch(Mode) array is now handled.
   [Tjeerd, Peter]
+* Refactored a small part of the frontcrontroller which allows you to re-use
+  the logic. [Martin]
 * Fixed initial value of obligatory atkDate(Time)Attribute. [Tjeerd, Peter]
 * Fix re-aliassen with multiple sortfields in atkManyToOneRelation. [Martijn]
 * Fixed issue with adding o2m relation with a set filter. [Peter/Tjeerd]

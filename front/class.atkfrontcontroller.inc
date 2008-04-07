@@ -114,6 +114,21 @@
     }
 
     /**
+     * Returns the parts from the uri like
+     * module, controller and action
+     *
+     * @param string $uri
+     * @return array array(module,controller,action)
+     */
+    protected static function uriParts($uri)
+    {
+      if ($uri{0} == '/')
+        $uri = substr($uri, 1);
+
+      return explode('/', $uri);
+    }
+
+    /**
      * Create controller based on the given URI.
      *
      * @param string $uri uri string
@@ -122,10 +137,7 @@
      */
     protected static function create($uri, $parent=NULL)
     {
-      if ($uri{0} == '/')
-        $uri = substr($uri, 1);
-
-      list($module, $name, $action) = explode('/', $uri);
+      list($module, $name, $action) = self::uriParts($uri);
 
       if ($action == NULL)
         $action = 'index';
