@@ -25,6 +25,7 @@ function placeFocus(inEditForm)
   for (i = 0; i < fields.length; i++) 
   { 
     var field = fields[i];
+    if (!field.type) continue;
     var type = field.type.toLowerCase();  
      
     if (type == "text" || type == "textarea" || type.toString().charAt(0) == "s") 
