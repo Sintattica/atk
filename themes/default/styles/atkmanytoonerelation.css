@@ -64,3 +64,9 @@ div.atkmanytoonerelation_result {
   overflow-y: expression(this.scrollHeight > 132 ? "scroll" : "");
   height: expression(this.scrollHeight > 132 ? "132px" : "");
 }
+
+
+span.atkmanytoone_highlite {
+  font-weight: bold;
+  text-decoration: underline;
+}

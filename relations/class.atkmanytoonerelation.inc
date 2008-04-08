@@ -1789,12 +1789,13 @@
       $result = '';
       foreach ($records as $rec)
       {
-        $option = $this->m_destInstance->descriptor($rec);
+        $option = atk_htmlentities($this->m_destInstance->descriptor($rec));
+        $highlightedOption = preg_replace('/('.preg_quote($searchvalue).')/i', '<span class="atkmanytoone_highlite">\\1</span>', $option);
         $value = $this->m_destInstance->primaryKey($rec);
         $result .= '
-          <li title="'.atk_htmlentities($option).'">
-            '.atk_htmlentities($option).'
-            <span class="selection" style="display: none">'.atk_htmlentities($option).'</span>
+          <li title="'.$option.'">
+            '.$highlightedOption.'
+            <span class="selection" style="display: none">'.$option.'</span>
             <span class="value" style="display: none">'.$value.'</span>
           </li>';
       }

@@ -19,6 +19,7 @@ userelation("atkmanytomanyrelation");
 userelation('atkmanytoonerelation');
 
 define('AF_MANYTOMANYSELECT_DETAILEDIT', AF_SPECIFIC_1);
+define('AF_MANYTOMANYSELECT_DETAILADD',    AF_SPECIFIC_2);
 
 /**
  * Many-to-many select relation.
@@ -108,12 +109,9 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     
     $selectedKeys = $this->getSelectedRecords($record);
     
-    // check for record returned from select action
-    $returnKey = $this->getManyToOneRelation()->getHtmlId($fieldprefix);
-    if (isset($this->getOwnerInstance()->m_postvars[$returnKey]) && 
-        !empty($this->getOwnerInstance()->m_postvars[$returnKey]))
+    if (isset($record[$this->getManyToOneRelation()->fieldName()]) && is_array($record[$this->getManyToOneRelation()->fieldName()]))
     {
-      $selectedKeys[] = $this->getOwnerInstance()->m_postvars[$returnKey];    
+      $selectedKeys[] = $this->getDestination()->primaryKey($record[$this->getManyToOneRelation()->fieldName()]);
     }
     
     $selectedRecords = array();
@@ -131,7 +129,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     
     foreach ($selectedRecords as $selectedRecord)
     {
-      $result .= $this->renderSelectedRecord($selectedRecord, $fieldprefx);
+      $result .= $this->renderSelectedRecord($selectedRecord, $fieldprefix);
     }
 
     $result .= $this->renderAdditionField($fieldprefix, $mode);
@@ -139,6 +137,9 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     $result .= '
         </ul>
       </div>';
+    
+    if (($this->hasFlag(AF_MANYTOMANYSELECT_DETAILADD)) && ($this->m_destInstance->allowed("add")))
+      $result.= href(dispatch_url($this->m_destination, "add"), $this->getAddLabel(), SESSION_NESTED) . "\n";
     
     return $result;
   }

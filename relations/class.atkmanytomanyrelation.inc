@@ -26,6 +26,10 @@
    * relations, like the manyboolrelation. Note that most many-to-many
    * relationships can be normalized to a combination of one-to-many and
    * many-to-one relations.
+   * 
+   * @todo Improve multi-field support. For example setOwnerFields with multiple fields
+   *       doesn't work properly at the moment. But it seems more code does not take
+   *       multi-field support into account.
    *
    * @abstract
    * @author Ivo Jansch <ivo@achievo.org>
@@ -41,6 +45,8 @@
     var $m_linkInstance = NULL;
     var $m_store_deletion_filter = "";
     var $m_localFilter = NULL;
+    
+    protected $m_ownerFields = null;
 
     /**
      * Constructor
@@ -259,6 +265,33 @@
       }
       return $this->m_remoteKey;
     }
+    
+    /**
+     * Sets the owner fields in the owner instance. The owner fields are
+     * the attribute(s) of the owner instance which map to the local key
+     * of the link node.
+     *
+     * @param unknown_type $ownerfields
+     */
+    public function setOwnerFields($ownerfields)
+    {
+      $this->m_ownerFields = $ownerfields;
+    }
+
+    /**
+     * Returns the owner fields. The owners fields are the attribute(s)
+     * of the owner instance which map to the local key of the link node.
+     *
+     * @return array owner fields
+     */
+    public function getOwnerFields()
+    {
+      if (is_array($this->m_ownerFields) && count($this->m_ownerFields)>0)
+      {
+        return $this->m_ownerFields;
+      }
+      return $this->m_ownerInstance->m_primaryKey;
+    }
 
     /**
      * Determine the name of the foreign key based on the name of the
@@ -372,7 +405,7 @@
       $localkey = $this->getLocalKey();
       if(!is_array($localkey)) $localkey = array($localkey);
 
-      $ownerfields = $this->m_ownerInstance->m_primaryKey;
+      $ownerfields = $this->getOwnerFields();
 
       for ($i=0, $_i = count($localkey); $i<$_i; $i++)
       {
@@ -457,19 +490,22 @@
           {
             $newrecord[$this->getRemoteKey()] = $remKey;
           }
+          
+          $ownerFields = $this->getOwnerFields();
           $localKey = $this->getLocalKey();
+          
           if(is_array($localKey))
           {
             for($j=0;$j<count($localKey);$j++)
             {
-              $locKey    = $this->checkKeyDimension($record[$this->m_ownerInstance->m_primaryKey[$j]]);
-              $newrecord[$localKey[0]][$this->m_ownerInstance->m_primaryKey[$j]] = $locKey;
+              $locKey    = $this->checkKeyDimension($record[$ownerFields[$j]]);
+              $newrecord[$localKey[0]][$ownerFields[$j]] = $locKey;
             }
           }
           else
           {
-            $locKey    = $this->checkKeyDimension($record[$this->m_ownerInstance->primaryKeyField()]);
-            $newrecord[$localKey][$this->m_ownerInstance->primaryKeyField()] = $locKey;
+            $locKey    = $this->checkKeyDimension($record[$ownerFields[0]]);
+            $newrecord[$localKey] = $locKey;
           }
 
           // First check if the record does not exist yet.
@@ -517,13 +553,14 @@
       $result = "";
       if(is_array(atkArrayNvl($record,$this->fieldName())) && $this->createDestination())
       {
+        $ownerFields = $this->getOwnerFields();
         for($i=0,$_i=count($record[$this->fieldName()]);$i<$_i;$i++)
         {
           if(atkArrayNvl($record[$this->fieldName()][$i],$this->getLocalKey()))
             $result .= '<input type="hidden" name="'.$fieldprefix.$this->formName().
                        '['.$i.']['.$this->getLocalKey().']" value="'.
                        $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getLocalKey()],
-                         $this->m_ownerInstance->primaryKeyField()).'">';
+                         $ownerFields[0]).'">';
 
           if(atkArrayNvl($record[$this->fieldName()][$i],$this->getRemoteKey()))
             $result .= '<input type="hidden" name="'.$fieldprefix.$this->formName().
@@ -578,13 +615,15 @@
      */
     function searchCondition(&$query, $table, $value, $searchmode)
     {
+      $ownerFields = $this->getOwnerFields();
+      
       // We only support 'exact' matches.
       // But you can select more than one value, which we search using the IN() statement,
       // which should work in any ansi compatible database.
       if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
       {
         $this->createLink();
-        $query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), $table.".".$this->m_ownerInstance->primaryKeyField()."=".$this->fieldName().".".$this->getLocalKey(),FALSE );
+        $query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), $table.".".$ownerFields[0]."=".$this->fieldName().".".$this->getLocalKey(),FALSE );
         $query->setDistinct(TRUE);
 
         if (count($value)==1) // exactly one value
