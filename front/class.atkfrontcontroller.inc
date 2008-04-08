@@ -496,7 +496,8 @@
 
           echo $this->m_result;
 
-          echo atkDebugger::getInstance()->renderDebugAndErrorMessages();
+          if (!isset($this->m_contentType) || $this->m_contentType == 'text/html')
+            echo atkDebugger::getInstance()->renderDebugAndErrorMessages();
 
           die;
         }

@@ -147,6 +147,8 @@ Changed in ATK 6.2
   relations which override the search method and take prefixes into account
   might break because the way the atkSearch(Mode) array is now handled.
   [Tjeerd, Peter]
+* Output debugger info in partial rendering only if you use a content type
+  like HTML. [Martin]
 * Refactored a small part of the frontcrontroller which allows you to re-use
   the logic. [Martin]
 * Fixed initial value of obligatory atkDate(Time)Attribute. [Tjeerd, Peter]
