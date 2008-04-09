@@ -190,11 +190,11 @@
 
       foreach ($mapping as $normal => $test)
       {
-      	$db = &$this->_getTestDb($normal);
+      	$db = &$this->_getTestDb($test);
         
       	if($db->getDbStatus() <> DB_SUCCESS)
         {
-          atkerror("test db '$normal' is not acceptable");
+          atkerror("test db '$test' is not acceptable");
           break;
         }
 
