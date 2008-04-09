@@ -412,11 +412,8 @@
       if ($maximum != 0) $str_max = adodb_date("Ymd", $maximum);
       else $str_max = 0;
 
-      /* did we select a valid date? */
-      if ($current === NULL && !$this->hasFlag(AF_OBLIGATORY)); // NULL date selection; ignore this if statement
-      elseif (!empty($current) && !empty($minimum) && $current < $minimum) $current = $minimum;
-      elseif (!empty($current) && !empty($maximum) && $current > $maximum) $current = $maximum;
-
+      $current = $this->getValidCurrentDate($current, $minimum, $maximum);
+      
       /* get dates in array format */
       if ($current !== NULL) $current = adodb_getdate($current);
       if (!empty($minimum))  $minimum = adodb_getdate($minimum);
@@ -591,6 +588,23 @@
       return $result;
     }
 
+    /**
+     * Check the given $current date and return a current date that fits in the allowed range
+     *
+     * @param date $current
+     * @param date $minimum
+     * @param date $maximum
+     */
+    function getValidCurrentDate($current, $minimum, $maximum)
+    {
+      if ($current === NULL && !$this->hasFlag(AF_OBLIGATORY))         return $current;
+      if (!empty($current) && !empty($minimum) && $current < $minimum) return $minimum;        
+      if (!empty($current) && !empty($maximum) && $current > $maximum) return $maximum;        
+      if (empty($current)  && !empty($minimum) && time() < $minimum)   return $minimum; 	         
+      if (empty($current)  && !empty($maximum) && time() > $maximum)   return $maximum;                
+      if (empty($current)) return time();          
+    }
+    
     /**
      * Registers the scripts and styles for the date attribute. Can be used
      * to load the scripts beforehand from another location.
