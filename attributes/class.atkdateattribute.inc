@@ -412,8 +412,8 @@
       if ($maximum != 0) $str_max = adodb_date("Ymd", $maximum);
       else $str_max = 0;
 
-      $current = $this->getValidCurrentDate($current, $minimum, $maximum);
-      
+      $current = $this->getValidCurrentDate($current, $minimum, $maximum);        
+     
       /* get dates in array format */
       if ($current !== NULL) $current = adodb_getdate($current);
       if (!empty($minimum))  $minimum = adodb_getdate($minimum);
@@ -479,10 +479,12 @@
             $result .= '<select id="'.$fieldname.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute" onChange="'.$str_script.'">';
             if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
               $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
+
+            if(empty($current["mon"]) && !$emptyfield) $current["mon"] = 1;
+            if(empty($current["mday"]) && !$emptyfield) $current["mday"] = 1;
+
             for($j = $current["y_min"]; $j <= $current["y_max"]; $j++)
             {
-              if(empty($current["mon"])) $current["mon"] = 1;
-              if(empty($current["mday"])) $current["mday"] = 1;
               $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $current["mday"], $j));
               $str_year = $this->formatDate($tmp_date, $str_format[$i]);
               $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["year"] ? "selected" : "").'>'.$str_year.'</option>';
@@ -596,13 +598,14 @@
      * @param date $maximum
      */
     function getValidCurrentDate($current, $minimum, $maximum)
-    {
-      if ($current === NULL && !$this->hasFlag(AF_OBLIGATORY))         return $current;
-      if (!empty($current) && !empty($minimum) && $current < $minimum) return $minimum;        
-      if (!empty($current) && !empty($maximum) && $current > $maximum) return $maximum;        
-      if (empty($current)  && !empty($minimum) && time() < $minimum)   return $minimum; 	         
-      if (empty($current)  && !empty($maximum) && time() > $maximum)   return $maximum;                
-      if (empty($current)) return time();          
+    {      
+      if ($current === NULL && !$this->hasFlag(AF_OBLIGATORY));
+      elseif (!empty($current) && !empty($minimum) && $current < $minimum) $current = $minimum;
+      elseif (!empty($current) && !empty($maximum) && $current > $maximum) $current = $maximum;
+      elseif (empty($current)  && !empty($minimum) && time() < $minimum) $current = $minimum;
+      elseif (empty($current)  && !empty($maximum) && time() > $maximum) $current = $maximum;
+      elseif (empty($current)) $current = time();
+      return $current;  
     }
     
     /**
