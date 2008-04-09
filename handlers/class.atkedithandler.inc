@@ -463,7 +463,10 @@
             $type = (empty($error["node"]) ? $node->m_type : $error["node"]);
 
             if (count($tabs) > 1 && $error["tab"])
-              $error_tab = ' ('.atktext("error_tab").' '.$this->getTabLink($node, $error).' )';
+            {
+              $tabLink = $this->getTabLink($node, $error);
+              $error_tab = ' ('.atktext("error_tab").' '.$tabLink.' )';
+            }
             else $error_tab = "";
 
             if (is_array($error['label']))
@@ -490,7 +493,7 @@
             }
 
             /* Error messages should be rendered in templates using message, label and the link to the tab. */
-            $err = array("message"=>$error['msg'], "tablink"=>$this->getTabLink($node, $error), "label"=>$label);
+            $err = array("message"=>$error['msg'], "tablink"=>$tabLink, "label"=>$label);
             
             /** 
              * @deprecated: For backwards compatibility, we still support the msg variable as well. 
