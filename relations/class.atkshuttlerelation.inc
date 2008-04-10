@@ -32,6 +32,8 @@
     */
   class atkShuttleRelation extends atkManyToManyRelation
   {
+    var $m_maxlistwidth = null;
+    
     /**
      * Return a piece of html code to edit the attribute
      * @param $record Current record
@@ -60,7 +62,7 @@
         
       $left = array();
       $right = array();
-      $width=100;
+      $width = 100;
       for ($i=0;$i<count($recordset);$i++)
       {
         if (in_array($this->m_destInstance->primaryKey($recordset[$i]),$selectedPk))
@@ -73,7 +75,12 @@
         }
 
         // fancy autowidth detection
-        $width = max(strlen($this->m_destInstance->descriptor($recordset[$i]))*10, $width);
+        $width = max(strlen($this->m_destInstance->descriptor($recordset[$i]))*10, $width);  
+      }
+      
+      if ($this->m_maxlistwidth)
+      {
+        $width = min($this->m_maxlistwidth, $width);
       }
 
       $result = '<table border="0"><tr><td>'.atktext('available', 'atk').':<br/>';
@@ -122,6 +129,17 @@
       }
       $result.= '</select>';
       return $result;
+    }
+    
+    /**
+     * Set the maximum width of the listboxes.
+     *
+     * @param int $width
+     */
+    function setMaxListWidth($width)
+    {
+      $this->m_maxlistwidth = $width;
+      
     }
 
   }
