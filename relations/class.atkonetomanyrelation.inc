@@ -163,8 +163,6 @@
       {
         $this->m_refKey[] = $refKey;
       }
-      
-      atk_var_dump($this->m_refKey, "REFKEY CONSTRUCTOR");
     }
 
     function setOwnerFields($ownerfields)
@@ -473,11 +471,11 @@
       $ui = &$this->m_ownerInstance->getUi();
 
       $params = array();
-      
+
       $filter = $this->getAddFilterString($record);
       if (!empty($filter))
         $params['atkfilter'] = $filter;
-        
+
       $dialog = new atkDialog($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.'.$action.'_dialog', $params);
       $title = $ui->title($this->m_destInstance->m_module, $this->m_destInstance->m_type, $action);
       $dialog->setTitle($title);
@@ -500,7 +498,7 @@
       if (($this->m_maxRecords==0 || $this->m_maxRecords > count($myrecords)) && $this->createDestination() && !$this->m_destInstance->hasFlag(NF_NO_ADD))
       {
         $params = array();
-        
+
         $filter = $this->getAddFilterString($record);
         if (!empty($filter))
           $params['atkfilter'] = $filter;
@@ -525,7 +523,7 @@
     function _getFilterElements($record)
     {
       $filterelems = array();
-      
+
       $ownerfields = $this->getOwnerFields();
       if ($this->destinationHasRelation())
       {
@@ -546,7 +544,7 @@
           $filterelems[] = $this->m_destInstance->getTable().".".$this->m_refKey[$i]."='".$this->escapeSQL($record[$ownerfields[$i]])."'";
         }
       }
-      
+
       return $filterelems;
     }
 
