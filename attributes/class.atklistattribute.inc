@@ -520,6 +520,27 @@
       $this->createLookupArray($optionArray,$valueArray);
       return $this;
     }
+    
+    /**
+     * Remove value from dropdown
+     *
+     * @param string $value
+     */
+    function removeValue($value)
+    {
+      $currentOptions = $this->_get("options");
+      $currentValues = $this->_get("values");
+
+      $v = array_search($value, $currentValues);
+
+      array_splice($currentOptions, $v, 1); // remove option
+      array_splice($currentValues, $v, 1);  // remove value
+
+      $this->_set("options",$currentOptions);
+      $this->_set("values",$currentValues);
+      return $this;
+    }
+
   }
 
 ?>
