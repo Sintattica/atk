@@ -193,6 +193,28 @@
 
       return $this;
     }
+    
+    
+    /**
+     * Add multiple fields at once
+     *
+     * @param array $fields array with field value pairs
+     * @param $table String Table name
+     * @param $fieldaliasprefix String Field alias prefix
+     * @param $quote bool If this parameter is true, stuff is inserted into the db
+     *               using quotes, e.g. SET name = 'piet'. If it is false, it's
+     *               done without quotes, e.d. SET number = 4.
+     * @param $quotefield bool Wether or not to quote the fieldname
+     * @return atkQuery The query object itself (for fluent usage)
+     */
+    function addFields(array $fields, $table="", $fieldaliasprefix="", $quote=true, $quotefield=false)
+    {
+      foreach ($fields as $name => $value)
+      {
+        $this->addField($name,$value,$table,$fieldaliasprefix,$quote,$quotefield);
+      }
+      return $this;
+    }
 
     /**
      * Add's an expression to the select query
