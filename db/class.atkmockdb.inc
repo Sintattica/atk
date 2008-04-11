@@ -32,6 +32,8 @@
     var $m_results = array();
     var $m_regex_results = array();
     var $m_query_history = array();
+    var $m_next_ids = array();
+    
 
     /**
      * Connect to the database.
@@ -120,6 +122,34 @@
     function clearQueryHistory()
     {
       $this->m_query_history = array();
+    }
+    
+    function setNextId($sequence, $nextid)
+    {
+      $this->m_next_ids[$sequence] = $nextid;
+    }
+    
+    /**
+     * returns nextid
+     * When the sequence isn't set the value 1 is returned.
+     *
+     * @param integer
+     */
+    function nextid($sequence)
+    {
+      if(array_key_exists($sequence, $this->m_next_ids))
+      {
+        return $this->m_next_ids[$sequence];
+      }
+      else
+      {
+        return 1;
+      }
+    }
+    
+    function clearNextId()
+    {
+      $this->m_next_ids = array();
     }
   }
 

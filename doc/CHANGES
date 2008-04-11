@@ -7,6 +7,7 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
++ Added setNextId, nextid, clearNextId on atkMockDb to simulate nextid functionality [Martijn]
 + Added addFields on atkQuery to add multiple fields (with values) at once [Martijn]
 + Allow setting ownerfields for ManytoMany relations [Erik, Peter]
 + Added atkEcho() function for making echo output only from cron. [Yury]
