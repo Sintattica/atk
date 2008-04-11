@@ -145,10 +145,11 @@
      */
     function createLookupArray($optionArray,$valueArray)
     {
-      for ($i=0, $_i=count($optionArray); $i<$_i; $i++)
+      foreach ($optionArray AS $id => $option)
       {
-        $this->m_lookup[$valueArray[$i]] = $optionArray[$i];
+        $this->m_lookup[$valueArray[$id]] = $option;
       }
+
       $this->_set("lookup",$this->m_lookup);
     }
 
@@ -243,8 +244,9 @@
 
       $result.=$this->_addEmptyListOption();
 
-      $values = $this->getValues($record);
+      $values   = $this->getValues($record);
       $recvalue = atkArrayNvl($record,$this->fieldName());
+
       for ($i=0;$i<count($values);$i++)
       {
         // If the current value is selected or occurs in the record
@@ -260,6 +262,7 @@
 
         $result.= '<option value="'.$values[$i].'" '.$sel.'>'.$this->_translateValue($values[$i],$record);
       }
+
       $result.='</select>';
       return $result;
     }
@@ -310,9 +313,9 @@
 
       $result .= '<option value="">'.atktext('search_all');
 
-      for ($i=0,$_i=count($values);$i<$_i;$i++)
+      foreach ($values AS $value)
       {
-        if (atk_in_array(((string)$values[$i]),$record[$this->fieldName()], true) && $record[$this->fieldName()]!=="")
+        if (atk_in_array(((string)$value),$record[$this->fieldName()], true) && $record[$this->fieldName()]!=="")
         {
           $sel = "selected";
         }
@@ -320,8 +323,10 @@
         {
           $sel = "";
         }
-        $result.= '<option value="'.$values[$i].'" '.$sel.'>'.$this->_translateValue($values[$i],$record);
+
+        $result.= '<option value="'.$value.'" '.$sel.'>'.$this->_translateValue($value,$record);
       }
+
       $result.='</select>';
       return $result;
     }
