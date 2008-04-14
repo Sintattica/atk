@@ -94,7 +94,7 @@ class atkCache_apc extends atkCache
    * Deletes a cache entry.
    *
    * @param string $key The entry ID.
-   * @return void
+   * @return boolean Succes
    */
   public function delete($key)
   {
@@ -109,7 +109,7 @@ class atkCache_apc extends atkCache
   /**
    * Removes all cache entries.
    *
-   * @return void
+   * @return boolean Succes
    */
   public function deleteAll()
   {
@@ -118,6 +118,7 @@ class atkCache_apc extends atkCache
     }
 
     apc_clear_cache('user');
+    return true;
   }
 
   /**

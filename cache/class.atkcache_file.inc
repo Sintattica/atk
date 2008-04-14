@@ -238,7 +238,7 @@ class atkCache_file extends atkCache
 
   /**
    * Deletes all cache entries
-   * @return void
+   * @return boolean Succes
    */
   public function delete($key)
   {
@@ -251,13 +251,13 @@ class atkCache_file extends atkCache
     @unlink($file, $this->m_context);
     @unlink($file . '.serial', $this->m_context);
     @unlink($file . '.lifetime', $this->m_context);
-
+    return true;
   }
 
   /**
    * Removes all cache entries.
    *
-   * @return void
+   * @return boolean success
    */
   public function deleteAll()
   {
@@ -275,7 +275,7 @@ class atkCache_file extends atkCache
      if ($file[0]=='.') continue;
      @unlink($this->m_path . $file, $this->m_context);
    }
-
+   return true;
   }
 
   /**

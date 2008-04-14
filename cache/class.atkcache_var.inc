@@ -118,7 +118,7 @@ class atkCache_var extends atkCache
    * Deletes a cache entry.
    *
    * @param string $key The entry ID.
-   * @return void
+   * @return boolean Succes
    */
   public function delete($key)
   {
@@ -129,12 +129,13 @@ class atkCache_var extends atkCache
 
     unset($this->m_entry[$this->getRealKey($key)]);
     unset($this->m_expires[$this->getRealKey($key)]);
+    return true;
   }
 
   /**
    * Removes all cache entries.
    *
-   * @return void
+   * @return boolean Succes
    */
   public function deleteAll()
   {
@@ -144,6 +145,7 @@ class atkCache_var extends atkCache
     }
     $this->m_entry = array();
     $this->m_expires = array();
+    return true;
   }
 
   /**

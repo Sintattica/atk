@@ -98,7 +98,6 @@ abstract class atkCache implements ArrayAccess
      }
      // Default return var cache
      atkdebug("atkcache::getInstance() -> Using var cache");
-     $cache = atknew("atk.cache.atkcache_var");
      self::$m_instances['var'] = atknew("atk.cache.atkcache_var");
      self::$m_instances['var']->setNamespace(atkconfig('cache_namespace','default'));
      self::$m_instances['var']->setLifetime(self::$m_instances['var']->getCacheConfig('lifetime',3600));

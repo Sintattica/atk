@@ -126,7 +126,7 @@ class atkCache_zp_output extends atkCache
    * Deletes a cache entry.
    *
    * @param string $key The entry ID.
-   * @return void
+   * @return boolean Succes
    */
   public function delete($key)
   {

@@ -96,7 +96,7 @@ class atkCache_eaccelerator extends atkCache
    * Deletes a cache entry.
    *
    * @param string $key The entry ID.
-   * @return void
+   * @return boolean Succes
    */
   public function delete($key)
   {
@@ -112,7 +112,7 @@ class atkCache_eaccelerator extends atkCache
   /**
    * Removes all cache entries.
    *
-   * @return void
+   * @return boolean Succes
    */
   public function deleteAll()
   {

@@ -111,9 +111,10 @@ class atkCache_xcache extends atkCache
    * Removes all cache entries.
    *
    * @todo Test this feature, on my server this didn't work
-   *       for some reason
+   *       for some reason. Don't forget to return 'true' after
+   *       fixing this.
    *
-   * @return void
+   * @return boolean Succes
    */
   public function deleteAll()
   {
@@ -166,6 +167,8 @@ class atkCache_xcache extends atkCache
         $_SERVER['PHP_AUTH_PW'] = null;
     }
     */
+    //TODO Change this to true 
+    return false;
   }
 
 

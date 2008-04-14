@@ -105,7 +105,7 @@ class atkCache_memcache extends atkCache
    * Deletes a cache entry.
    *
    * @param string $key The entry ID.
-   * @return void
+   * @return boolean Succes
    */
   public function delete($key)
   {
@@ -114,20 +114,22 @@ class atkCache_memcache extends atkCache
       return false;
     }
     $this->m_memcache->delete($key);
+    return true;
   }
 
   /**
    * Removes all cache entries.
    *
-   * @return void
+   * @return boolean Succes
    */
   public function deleteAll()
   {
-    if (! $this->m_active)
+    if (!$this->m_active)
     {
       return false;
     }
     $this->m_memcache->flush();
+    return true;
   }
 
   /**
