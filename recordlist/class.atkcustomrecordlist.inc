@@ -153,7 +153,7 @@
         {
           $p_attrib = &$this->m_node->m_attribList[$attribname];
         $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
-          if (!$this->isHidden(($p_attrib) && !$musthide)
+          if (!$this->isHidden($p_attrib) && !$musthide)
           {
             if ($p_attrib->hasFlag(AF_TOTAL))
             {
