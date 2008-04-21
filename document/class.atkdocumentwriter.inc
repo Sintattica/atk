@@ -261,22 +261,36 @@
      */
     function &getInstance($format = "opendocument")
     {
-      static $s_instance = NULL;
+      static $s_oo_instance = NULL;
+      static $s_docx_instance = NULL;
 
-      if ($s_instance == NULL)
+      if ($format == "opendocument") 
       {
-        if ($format == "opendocument") {
+        if ($s_oo_instance == NULL)
+        {
           atkdebug("Creating a new atkOpenDocumentWriter instance");
           atkimport("atk.document.atkopendocumentwriter");
-          $s_instance = new atkOpenDocumentWriter();
+          $s_oo_instance = new atkOpenDocumentWriter();
         }
-        else {
-          atkdebug(sprintf("Failed to create atkDocumentWriter instance (unknown format: %s)", $format));
-        }
+        
+        return $s_oo_instance;
       }
-      return $s_instance;
+      else if ($format == "docx") 
+      {
+        if ($s_docx_instance == NULL)
+        {
+          atkdebug("Creating a new atkDocxWriter instance");
+          atkimport("atk.document.atkdocxwriter");
+          $s_docx_instance = new atkDocxWriter();
+        }
+        
+        return $s_docx_instance;
+      }
+      else 
+      {
+        atkdebug(sprintf("Failed to create atkDocumentWriter instance (unknown format: %s)", $format));
+      }
     }
-
   }
 
 ?>
