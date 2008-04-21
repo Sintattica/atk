@@ -150,7 +150,9 @@ Changed in ATK 6.2
 + tbsooo|Changes for DocX support. SaveXmlToDoc: specify filepath, 
   ClearProcessDir: remove recursivly [Jeroen]
 + Added atkDocxWriter for Word2007 .docx templates. Enhancement: Create output 
-  dir if it doesn't exist [Jeroen]
+  dir if it doesn't exist. 
+  Please check: http://www.achievo.org/wiki/AtkDocumentWriter for tips and
+  limitations [Jeroen]
 * Improved attribute detection in the Metanode caching. [Peter/Martin]
 * Fixed bug in atktestcase, when using a testdatabase the normal database
   would be emptied. [Lineke]
