@@ -205,19 +205,31 @@
 			return false;
     }
 
-    function add($archive, $filename)
+    /**
+     * Add file to archive with optional filepath
+     *
+     * @param string $archive archive-path
+     * @param string $filename file to add
+     * @param string $filepath path where file will be placed in (optional, and only for zipmode "internal")
+     * @return boolean $result
+     */
+    function add($archive, $filename, $filepath="")
     {
       if (!$this->test())
       	atkError("atkZip->add: Could not add, system is not capable of add to a ZIP archive");
-
+     	
       if ($this->m_zipmode == "internal")
       {
         $zip = new ZipArchive;
-			  if ($zip->open($archive) === TRUE) {
-			     $zip->addFile($filename, basename($filename));
+			  if ($zip->open($archive) === TRUE) 
+			  {
+     	     atkdebug("AtkZip::add|adding ".$filepath.basename($filename)." to $archive");			    
+			     $zip->addFile($filename, $filepath.basename($filename));
 			     $zip->close();
 			     return true;
-			  } else {
+			  } 
+			  else 
+			  {
 			     atkError("atkZip->add: Error while opening the zip archive ($archive)");
 			     return false;
 			  }
