@@ -18,8 +18,9 @@
 userelation("atkmanytomanyrelation");
 userelation('atkmanytoonerelation');
 
-define('AF_MANYTOMANYSELECT_DETAILEDIT', AF_SPECIFIC_1);
-define('AF_MANYTOMANYSELECT_DETAILADD',    AF_SPECIFIC_2);
+define('AF_MANYTOMANYSELECT_DETAILEDIT',      AF_SPECIFIC_1);
+define('AF_MANYTOMANYSELECT_DETAILADD',       AF_SPECIFIC_2);
+define('AF_MANYTOMANYSELECT_NO_AUTOCOMPLETE', AF_SPECIFIC_3);
 
 /**
  * Many-to-many select relation.
@@ -101,6 +102,11 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
    */
   public function edit($record, $fieldprefix="", $mode="")
   {
+    if ($this->hasFlag(AF_MANYTOMANYSELECT_NO_AUTOCOMPLETE))
+    {
+      $this->getManyToOneRelation()->removeFlag(AF_MANYTOONE_AUTOCOMPLETE);
+    }  
+    
     $this->createDestination();
     $this->createLink();
     
