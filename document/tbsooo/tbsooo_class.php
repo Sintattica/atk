@@ -165,7 +165,8 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 
     // zip and remove the file
     $atkzip = &atkNew("atk.utils.atkzip");
-    $added = $atkzip->add($ooofilename, $xmlfilename);
+    $path_parts = pathinfo($this->_xml_filename);
+    $added = $atkzip->add($ooofilename, $xmlfilename, $path_parts['dirname']."/");
     unlink($xmlfilename);
 
     if (!$added) {
@@ -209,6 +210,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
       case 'odf': return 'application/vnd.oasis.opendocument.formula'; break;
       case 'odb': return 'application/vnd.oasis.opendocument.database'; break;
       case 'odi': return 'application/vnd.oasis.opendocument.image'; break;
+      case 'docx': return 'application/vnd.openxmlformats '; break;
       default:    return ''; break;
     }
   }
@@ -231,13 +233,15 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 
   function ClearProcessDir($hour = '2', $minut = '0')
   {
+    atkimport('atk.utils.atkfileutils');
     clearstatcache();
     $now = mktime(date("H")-abs((int)$hour), date("i")-abs((int)$minut), date("s"), date("m"), date("d"), date("Y"));
     if ($dir = @opendir($this->_process_path)) {
       while (($file = readdir($dir)) !== false)  {
         if ($file != ".." && $file != ".") {
           if (filemtime($this->_process_path.$file) < $now) {
-            if (!(is_dir($this->_process_path.$file) ? @rmdir($this->_process_path.'/'.$file) : @unlink($this->_process_path.$file))) {
+            if (!(is_dir($this->_process_path.$file) ? @atkFileUtils::rmdirRecursive($this->_process_path.'/'.$file) : @unlink($this->_process_path.$file))) 
+            {
               atkdebug('clsTinyButStrongOOo->ClearProcessDir: Can\'t remove directory or file : '.$this->_process_path.$file);
             }
           }
