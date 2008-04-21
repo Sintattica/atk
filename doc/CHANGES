@@ -146,6 +146,7 @@ Changed in ATK 6.2
 + Added atkRadioDetailsAttribute, displays radio buttons with options to choose
   from just like the atkRadioAttribute but allows you to use other attributes 
   for detail selections once certain options are selected. [Peter]
++ AtkZip: added parameter to add files to specified filepath [Jeroen]
 * Improved attribute detection in the Metanode caching. [Peter/Martin]
 * Fixed bug in atktestcase, when using a testdatabase the normal database
   would be emptied. [Lineke]
