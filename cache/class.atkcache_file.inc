@@ -18,6 +18,7 @@
  * $Id$
  */
 atkimport("atk.cache.atkcache");
+useattrib('atkFileAttribute');
 
 class atkCache_file extends atkCache
 {
