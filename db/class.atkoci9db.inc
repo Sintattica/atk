@@ -73,7 +73,16 @@
           $this->m_charset = null;
         }    
         
-        $this->m_link_id = $connectfunc($this->m_user, $this->m_password, $db, $this->m_charset);
+        if( $this->m_charset != "" )
+        {
+          // Use the specified charset.
+          $this->m_link_id = $connectfunc($this->m_user, $this->m_password, $db, $this->m_charset);
+        }
+        else
+        {
+          // Don't specify the charset.
+          $this->m_link_id = $connectfunc($this->m_user, $this->m_password, $db);
+        }
         
         if (!$this->m_link_id)
         {

@@ -153,6 +153,8 @@ Changed in ATK 6.2
   dir if it doesn't exist. 
   Please check: http://www.achievo.org/wiki/AtkDocumentWriter for tips and
   limitations [Jeroen]
+* Added support for charset in oci9db driver. Uses the charset that is specified
+  in the configfile [PeterB]
 * Improved attribute detection in the Metanode caching. [Peter/Martin]
 * Fixed bug in atktestcase, when using a testdatabase the normal database
   would be emptied. [Lineke]
