@@ -11,8 +11,8 @@
  * @copyright (c) 2000-2007 Ivo Jansch
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
- * @version $Revision: 5798 $
- * $Id: class.atkmanytomanylistrelation.inc 5798 2008-03-05 13:41:26Z guido $
+ * @version $Revision$
+ * $Id$
  */
 
 userelation("atkmanytomanyrelation");

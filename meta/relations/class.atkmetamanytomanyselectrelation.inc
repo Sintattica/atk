@@ -11,8 +11,8 @@
  * @copyright (c) 2005 Peter C. Verhage <peter@achievo.org>
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
- * @version $Revision: 5810 $
- * $Id: class.atkmetamanytomanylistrelation.inc 5810 2008-03-18 11:11:35Z peter $
+ * @version $Revision$
+ * $Id$
  */
 
 /**

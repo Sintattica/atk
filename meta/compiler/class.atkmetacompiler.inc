@@ -11,8 +11,8 @@
  * @copyright (c) 2004-2005 Peter C. Verhage
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
- * @version $Revision: 3864 $
- * $Id: class.atkmetagrammar.inc 3864 2006-06-26 14:29:18Z boy $
+ * @version $Revision$
+ * $Id$
  */
  
 /**
