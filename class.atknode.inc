@@ -981,6 +981,7 @@
         $this->m_relations[strtolower(get_class($attribute))][$attribute->fieldName()]=&$attribute;
       }
       $attribute->setTabs($this->m_attributeTabs[$attribute->fieldName()]);
+      $attribute->setSections($this->m_attribIndexList[$attribute->m_index]['sections']);
 
 
       return $attribute;
