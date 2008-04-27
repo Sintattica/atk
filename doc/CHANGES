@@ -361,8 +361,17 @@ Changed in ATK 6.2
   instead of using include_once, causing less file I/O [Harrie]
 * Fixed issue with htmlencoding in the old recordlist. [Tjeerd]
 * Fixed issue with copying records. [Tjeerd]
-* Removed executable bit (svn:executable property in svn) from files that
-  aren't executable. [Guido]
+* Fixed svn properties. [Guido]
+  * Property svn:executable should be set on *.sh files only. Other files
+    should not have this attribute.
+  * Property svn:eol-style should be set to native on all plain text files,
+    binary files however should not have this property set.
+  * Property svn:mime-type should be set to application/octet-stream on all
+    binary files. Plain text files should not have this property set.
+  * Property svn:keywords should be set to "Author Date Id Revision" on all
+    plain text files, unless good reason exists not to do so. Binary files
+    should never have this property set.
+* Fixed broken images caused by EOL manipulation by CVS or SVN. [Guido]
 * Improved atkMetaPolicy's table detection; we now search the class hierarchy
   and check for a table based on parent class names too and also take the
   node's module into account (module_ prefix). [Peter]
