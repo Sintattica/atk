@@ -1957,6 +1957,9 @@
       /* default values */
       if (!empty($record)) $defaults = $record;
       else $defaults = array();
+      
+      $result['hide'] = array();
+      $result['fields'] = array();
 
       /* edit mode */
       if ($mode == "edit")

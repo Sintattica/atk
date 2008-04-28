@@ -437,7 +437,15 @@
      */
     function storageType($mode)
     {
-      if ($this->m_refKey!="")
+      // Mode specific storage type.
+      if (isset($this->m_storageType[$mode]) && $this->m_storageType[$mode] !== null)
+        return $this->m_storageType[$mode];
+        
+      // Global storage type (key null is special!)
+      else if (isset($this->m_storageType[null]) && $this->m_storageType[null] !== null)
+        return $this->m_storageType[null];
+      
+      else if ($this->m_refKey!="")
       {
         // foreign key is in destination node, so we must store the
         // destination AFTER we stored the master record.
@@ -473,14 +481,14 @@
      */
     function loadType($mode)
     {
-      if ($this->hasFlag(AF_ONETOONE_LAZY))
-      {
+      if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null)
+        return $this->m_loadType[$mode];
+      else if (isset($this->m_loadType[null]) && $this->m_loadType[null] !== null)
+        return $this->m_loadType[null];      
+      else if ($this->hasFlag(AF_ONETOONE_LAZY))
         return POSTLOAD|ADDTOQUERY;
-      }
       else
-      {
         return ADDTOQUERY;
-      }
     }
 
     /**
