@@ -2361,7 +2361,7 @@
       return $order;
     }
 
-    function getOrderByStatement()
+    function getOrderByStatement($extra='', $tableprefix='')
     {
       return $this->m_ownerInstance->m_table.".".$this->fieldName();
     }

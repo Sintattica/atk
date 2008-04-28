@@ -274,6 +274,8 @@
       }
       else if (isset($this->m_node->m_postvars["atkorderby"]) && ($this->m_node->m_postvars["atkorderby"]!=""))
       {
+        $this->clearOrder(); // clear existing order
+        
         // oldfashioned order by.
         $this->m_custom_atkorderby = $this->m_node->m_postvars["atkorderby"];
 

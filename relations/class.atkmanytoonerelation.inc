@@ -1488,14 +1488,14 @@
       return parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
     }
 
-    function getOrderByStatement($extra='')
+    function getOrderByStatement($extra='', $tableprefix='')
     {
       if (!$this->createDestination())
         return parent::getOrderByStatement();
 
       if (!empty($extra) && in_array($extra, $this->m_listColumns))
       {
-        return $this->fieldName().".".$extra;
+        return $this->getDestination()->getAttribute($extra)->getOrderByStatement('', $tableprefix.$this->fieldName().'_AE_');
       }
 
       $order = $this->m_destInstance->getOrder();
@@ -1509,11 +1509,11 @@
         {
           // realias if destination order contains a tablename.
           if (strpos($field, $this->m_destInstance->m_table.'.') !== false)
-            $neworderfields[] = str_replace($this->m_destInstance->m_table.'.', $this->fieldName().'.', $field);
+            $neworderfields[] = str_replace($this->m_destInstance->m_table.'.', $tableprefix.$this->fieldName().'.', $field);
           else if (strpos($field, '.') === false)
-            $neworderfields[] = str_replace(trim($field), $this->fieldName().".".trim($field), $field);
+            $neworderfields[] = str_replace(trim($field), $tableprefix.$this->fieldName().".".trim($field), $field);
           else
-            $neworderfields[] = $field;
+            $neworderfields[] = $tableprefix.'.'.$field;
         }
 
         return implode(",",$neworderfields);
@@ -1526,7 +1526,7 @@
 
         $order = "";
         foreach ($fields as $field)
-          $order .= (empty($order) ? '' : ', ').$this->fieldName().".".$field;
+          $order .= (empty($order) ? '' : ', ').$tableprefix.'.'.$this->fieldName().".".$field;
 
         return $order;
       }
