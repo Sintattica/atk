@@ -107,7 +107,8 @@ class atkSelectHandler extends atkActionHandler
    */
   protected function autoSelectRecord($grid)
   {
-    if (!$this->getNode()->hasFlag(NF_AUTOSELECT))
+    $node = $this->getNode();
+    if (!$node->hasFlag(NF_AUTOSELECT))
     {
       return false;
     }
