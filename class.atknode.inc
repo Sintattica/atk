@@ -750,7 +750,7 @@
       $this->m_type = $type;
       $this->m_flags = $flags;
       $this->m_module = atkModule::getModuleScope();
-      
+
       $this->setEditFieldPrefix(atkconfig('edit_fieldprefix', ''));
     }
 
@@ -1073,7 +1073,7 @@
 
     /**
      * Returns the table name for this node.
-     * 
+     *
      * @return string table name
      */
     function getTable()
@@ -1188,7 +1188,7 @@
     {
       return $this->m_flags;
     }
-    
+
     /**
      * Set node flags.
      *
@@ -1259,7 +1259,7 @@
         $primKey.=$this->m_table.".".$this->m_primaryKey[$i]."='".$p_attrib->value2db($rec)."'";
         if ($i<($nrOfElements-1)) $primKey.=" AND ";
       }
-      
+
       return $primKey;
     }
 
@@ -1350,8 +1350,8 @@
     public function setDb($db)
     {
       $this->m_db = $db;
-    }    
-    
+    }
+
     /**
      * Get the database connection for this node.
      * @return atkDb Database connection instance
@@ -1508,7 +1508,7 @@
         foreach ($this->m_sectionList[$action] as $element)
         {
           list($tab,$sec) = (strpos($element, ".") !== false) ? explode(".",$element) : array($element, null);
-  
+
           //if this section is on an active tab, we return it.
           if($tab == $this->getActiveTab() && $sec!==NULL)
             $sections[] = $sec;
@@ -2583,7 +2583,7 @@
           $formstart.='<input type="hidden" name="atkselector[]" value="'.$selector.'">';
       }
 
-      $buttons = $this->getFormButtons($action, array());      
+      $buttons = $this->getFormButtons($action, array());
       if (count($buttons) == 0)
       {
         $buttons[] = '<input name="confirm" type="submit" class="btn_ok" value="'.$this->text('yes').'">';
@@ -3328,14 +3328,14 @@
     */
     function isAllowedQueryList($attribname,$excludeList="",$includeList="", $mode = "")
     {
-      
+
       return (in_array($attribname, $this->m_primaryKey)
               || ((is_array($includeList) && in_array($attribname,$includeList))
               || (is_array($excludeList) && !in_array($attribname,$excludeList)))
               || (!is_array($excludeList) && !is_array($includeList))
               || ($this->m_attribList[$attribname]->hasFlag(AF_FORCE_LOAD))
-            );  
-      
+            );
+
     }
 
     /**
@@ -3520,8 +3520,8 @@
     {
       // add original record
       $original = $record; // force copy
-      $record['atkorgrec'] = $original;      
-      
+      $record['atkorgrec'] = $original;
+
       //notify precopy listeners
       $this->preNotify("precopy", $record);
 
@@ -3639,9 +3639,9 @@
           $searching = true;
         }
       }
-      
+
       if (array_key_exists("atkfilter", $this->m_postvars))
-       $query->addCondition($this->validateFilter($this->m_postvars["atkfilter"]));      
+       $query->addCondition($this->validateFilter($this->m_postvars["atkfilter"]));
 
       if (!$this->hasFlag(NF_NO_FILTER))
       {
@@ -3844,7 +3844,7 @@
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];
-          
+
           if ($this->isAllowedQueryList($attribname,$excludeList,$includeList,$mode))
           {
             if(in_array($attribname, $cpylist))
@@ -4272,8 +4272,10 @@
         }
       }
 
-      $db = &$this->getDb();
-      if ($db->query("DELETE FROM ".$this->m_table." WHERE ".$selector))
+      $query = $this->getDb()->createQuery();
+      $query->addTable($this->m_table);
+      $query->addCondition($selector);
+      if ($query->executeDelete())
       {
         if($exectrigger)
         {
@@ -4477,24 +4479,24 @@
 
     /**
      * Returns the type of this node (this is *not* the full ATK node type!)
-     * 
+     *
      * @return string type
      */
     public function getType()
     {
       return $this->m_type;
     }
-    
+
     /**
      * Returns the module for this node.
-     * 
+     *
      * @return string node
      */
     public function getModule()
     {
       return $this->m_module;
     }
-    
+
     /**
      * Get the full atknodetype of this node (module.nodetype notation).
      * @return String The atknodetype of the node.
@@ -5123,7 +5125,7 @@
     {
       return $this->atkNodeType();
     }
-    
+
     /**
      * Set the edit fieldprefix to use in atk
      *
@@ -5133,7 +5135,7 @@
     {
       $this->m_edit_fieldprefix = $prefix;
     }
-    
+
     /**
      * Get the edit fieldprefix to use
      *
