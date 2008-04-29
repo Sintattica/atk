@@ -386,6 +386,8 @@ Changed in ATK 6.2
 * Fixed broken if-statement in atkCustomRecordlist. [JorgeG]
 * Fixed storageType/loadType of atkOneToOneRelation so that it respects
   a custom set storage and/or load type. [Peter]
+* In atknode, used createQuery() function to build the delete query (instead 
+  of manually) to prevent problems with table name aliases. [Patrick]
 - Removed atkMetaHandler because it wasn't very useful. [Peter]
 - Removed support for regexes in atkMetaPolicy's setIncludes/setExcludes
   because it wasn't very useful and wasn't used anyway. [Peter]
