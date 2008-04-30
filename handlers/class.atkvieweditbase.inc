@@ -186,6 +186,8 @@
     
     /**
      * Render tabs using templates
+     * 
+     * @todo this method seems broken by design, read comments for more info!
      *
      * @param array $fields
      * @param array $tabTpl
@@ -194,14 +196,15 @@
     function _renderTabs($fields, $tabTpl)
     {
       $ui = &$this->getUi();
-      
       $tabs = array();
       $perTpl = array();//per template array
       
       for($i=0,$_i=count($fields);$i<$_i;$i++)
       {
         $allTabs = explode(' ', $fields[$i]["tab"]); // should not use "tab" here, because it actually contains the CSS class names and not only the tab names
-        $tab = $allTabs[0]; // attributes can be part of one, more than one or all tabs, at the moment it seems only one or all are supported
+        $allMatchingTabs = array_values(array_intersect($allTabs, array_keys($tabTpl))); // because of the CSS thingee above we search for the first matching tab
+        if (count($allMatchingTabs) == 0) $allMatchingTabs = array_keys($tabTpl); // again a workaround for this horribly broken method
+        $tab = $allMatchingTabs[0]; // attributes can be part of one, more than one or all tabs, at the moment it seems only one or all are supported
         $perTpl[$tabTpl[$tab]]['fields'][] = $fields[$i];//make field available in numeric array
         $perTpl[$tabTpl[$tab]][$fields[$i]["attribute"]] = $fields[$i];//make field available in associative array
       }

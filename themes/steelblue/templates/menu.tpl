@@ -2,7 +2,7 @@
 {foreach from=$menuitems item=menuitem}
 {if !isset($firstmenuitem)}{assign var='firstmenuitem' value=$menuitem.name}{/if}
   {if $menuitem.name!=='-' && $menuitem.enable}
-    <a href="#" onclick="showSubMenu('{$menuitem.name}'); window.open('{$menuitem.url}','main','');" onmouseover="this.style.cursor = 'pointer'" class="menuitem_link">
+    <a href="#" onclick="showSubMenu('{$menuitem.name|addslashes}'); window.open('{$menuitem.url}','main','');" onmouseover="this.style.cursor = 'pointer'" class="menuitem_link">
       <div id="mi_{$menuitem.name}" class="menuItemLevel1">
         <span class="menu-menuitem">{$menuitem.name}</span>
       </div>
