@@ -131,7 +131,7 @@
   "export" => "Exporteren",
   "export_config_explanation" => "Selecteer de opties voor de CSV export.",
   "export_generatetitlerow" => "Voeg een rij met kolom titels toe",
-  "export_selectcolumns" => "Selecteer de kolommen die geexporteerd worden",
+  "export_selectcolumns" => "Selecteer de kolommen die ge&euml;xporteerd worden",
   "feb" => "feb",
   "february" => "februari",
   "feedback" => "Bevestiging",
