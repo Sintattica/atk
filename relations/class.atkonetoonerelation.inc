@@ -1061,7 +1061,7 @@
 
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
-      if (is_array($value))
+      if ($this->createDestination() && is_array($value))
       {
         // we are a relation, so instead of hooking ourselves into the
         // query, hook the attributes in the destination node onto the query
