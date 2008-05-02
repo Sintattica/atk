@@ -1087,7 +1087,7 @@
 
               // we need to left join the destination table into the query
               // (don't worry ATK won't add it when it's already there)
-              $query->addJoin($new_table,$new_table,($this->getJoinCondition()),false);
+              $query->addJoin($new_table,$new_table,($this->getJoinCondition($query)),false);
             }
             $p_attrib->searchCondition($query,$new_table,$val,$this->getChildSearchMode($searchmode, $p_attrib->formName()));
           }
