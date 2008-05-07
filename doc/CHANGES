@@ -388,6 +388,7 @@ Changed in ATK 6.2
   a custom set storage and/or load type. [Peter]
 * In atknode, used createQuery() function to build the delete query (instead 
   of manually) to prevent problems with table name aliases. [Patrick]
+* Fixed empty value for atkDateAttribute when it's obligatory. [Sandy]
 - Removed atkMetaHandler because it wasn't very useful. [Peter]
 - Removed support for regexes in atkMetaPolicy's setIncludes/setExcludes
   because it wasn't very useful and wasn't used anyway. [Peter]

@@ -238,7 +238,7 @@
       /* base class constructor */
       $this->atkAttribute($name, $flags);
     }
-    
+
     /**
      * Override add flag so that we can set the initial value.
      *
@@ -247,10 +247,10 @@
     public function addFlag($flags)
     {
       parent::addFlag($flags);
-      
+
       if ($this->hasFlag(AF_OBLIGATORY))
       {
-        $this->setInitialValue(atkDateAttribute::dateArray(date('Ymd')));
+         $this->setInitialValue(atkDateAttribute::dateArray(date('Ymd')));
       }
     }
 
@@ -412,8 +412,8 @@
       if ($maximum != 0) $str_max = adodb_date("Ymd", $maximum);
       else $str_max = 0;
 
-      $current = $this->getValidCurrentDate($current, $minimum, $maximum);        
-     
+      $current = $this->getValidCurrentDate($current, $minimum, $maximum,$mode);
+
       /* get dates in array format */
       if ($current !== NULL) $current = adodb_getdate($current);
       if (!empty($minimum))  $minimum = adodb_getdate($minimum);
@@ -455,6 +455,7 @@
 
       atkimport('atk.utils.atkjson');
       if (!$pda) $result .= '<script language="javascript">var atkdateattribute_'.$fieldname.' = '.atkJSON::encode($info).';</script>';
+
 
       /* other date selections */
       $weekdayFormat = NULL;
@@ -597,17 +598,17 @@
      * @param date $minimum
      * @param date $maximum
      */
-    function getValidCurrentDate($current, $minimum, $maximum)
-    {      
-      if ($current === NULL && !$this->hasFlag(AF_OBLIGATORY));
+    function getValidCurrentDate($current, $minimum, $maximum,$mode)
+    {
+      if ($current === NULL && (!$this->hasFlag(AF_OBLIGATORY) || $mode=='add'));
       elseif (!empty($current) && !empty($minimum) && $current < $minimum) $current = $minimum;
       elseif (!empty($current) && !empty($maximum) && $current > $maximum) $current = $maximum;
       elseif (empty($current)  && !empty($minimum) && time() < $minimum) $current = $minimum;
       elseif (empty($current)  && !empty($maximum) && time() > $maximum) $current = $maximum;
       elseif (empty($current)) $current = time();
-      return $current;  
+      return $current;
     }
-    
+
     /**
      * Registers the scripts and styles for the date attribute. Can be used
      * to load the scripts beforehand from another location.
