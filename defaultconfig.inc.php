@@ -42,7 +42,7 @@
      $config_atkroot = "./";
   }
   
-  if (!$config_application_dir || (ini_get('register_globals') && isset($_REQUEST['config_application_dir'])))
+  if (!isset($config_application_dir) || empty($config_application_dir) || (ini_get('register_globals') && isset($_REQUEST['config_application_dir'])))
   {
     /**
      * Root directory of your application code (modules/themes/configuration files/etc)
