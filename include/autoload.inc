@@ -41,7 +41,7 @@
        * This fraks up the autoloader.
        * If anyone has a better way to prevent this, please be my guest...
        */
-      if (!in_array($classname,array('Smarty','Services_JSON','pear','PEAR_Error')))
+      if (!empty($classname) && !in_array($classname,array('Smarty','Services_JSON','pear','PEAR_Error')))
       {
         $classpath = atkClassLoader::findClass($classname);
         
