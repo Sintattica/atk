@@ -39,9 +39,8 @@
      * @param array $vars Request vars.
      * @return string url
      */
-    public function buildUrl($uri, $vars)
+    public function buildUrl($vars)
     {
-      $vars['uri'] = $uri;
       $url = atkSelf().'?'.http_build_query($vars);
       return $url;
     }

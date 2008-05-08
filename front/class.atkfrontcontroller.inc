@@ -83,10 +83,14 @@
     {
       $parent = self::getCurrent();
 
+      // UriParam can be used to change the default key value of the uri in url's and forms.
+      // This is useful to have multiple controllers on one page.
+      $uriParam = (isset($vars['uri_param'])) ? $vars['uri_param'] : "uri";
+
       // If this is the root controller we first look if a request variable named URI
       // is set, if so we use this URI, else we fallback to the custom (default) URI. If
       // this is a nested controller, we should always respect the custom given URI.
-      $uri = $parent == null && isset($_REQUEST['uri']) ? $_REQUEST['uri'] : $vars['uri'];
+      $uri = $parent == null && isset($_REQUEST[$uriParam]) ? $_REQUEST[$uriParam] : $vars[$uriParam];
 
       if ($merge)
       {
@@ -97,6 +101,7 @@
         else
         {
           $request = $_REQUEST;
+          unset($request['uri_param']);
         }
 
         $vars = array_merge($request, $vars);
@@ -279,7 +284,7 @@
      *
      * @return string controller name
      */
-    protected function getName()
+    protected function getname()
     {
       return $this->m_name;
     }
@@ -518,11 +523,11 @@
      */
     protected function getActionMethod()
     {
-      $methodName = str_replace('_', '', $this->m_action).'Action';
-      if (!method_exists($this, $methodName))
+      $methodname = str_replace('_', '', $this->m_action).'Action';
+      if (!method_exists($this, $methodname))
         throw new Exception("Action method not found!");
 
-      $method = new ReflectionMethod(get_class($this), $methodName);
+      $method = new ReflectionMethod(get_class($this), $methodname);
       if (!$method->isPublic())
         throw new Exception("Action method is not public!");
 
@@ -752,7 +757,19 @@
      */
     protected function buildUrl($uri, $vars)
     {
-      return $this->m_bridge->buildUrl($uri, $vars);
+      $vars[$this->getUriParam()] = $uri;
+      return $this->m_bridge->buildUrl($vars);
+    }
+
+    /**
+     * Returns the correct key value for the uri in forms and url's
+     * Defaults to 'uri'
+     *
+     * @return string uri_key
+     */
+    protected function getUriParam()
+    {
+      return isset($this->request->uri_param) ? $this->request->uri_param : 'uri';
     }
 
     /**
@@ -805,12 +822,13 @@
       $action = isset($params['action']) ? $params['action'] : NULL;
       $vars = isset($params['vars']) ? $params['vars'] : array();
 
+
       unset($params['controller']);
       unset($params['action']);
       unset($params['vars']);
 
       $uri = $this->uri($controller, $action);
-      $vars = array_merge($vars, $params, array('uri' => $uri));
+      $vars = array_merge($vars, $params, array($this->getUriParam() => $uri));
 
       $result = '';
       foreach ($vars as $name => $value)
@@ -1021,6 +1039,7 @@
         $this->registerStyleSheet(moduleDir($this->m_module)."styles/{$this->m_name}.js");
       }
 
+
       $this->m_partial = $partial;
       $this->m_result = $this->_render($template, $vars, $partial);
       $this->m_rendered = true;
@@ -1144,6 +1163,6 @@
      */
     public function __toString()
     {
-      return (!$this->isRoot() ? $this->getParent()->__toString().'/' : '').$this->getName();
+      return (!$this->isRoot() ? $this->getParent()->__toString().'/' : '').$this->getname();
     }
   }

@@ -7,6 +7,10 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
++ Added the ability to use multiple atkFrontControllers by defining a different uri key in
+  the atkFrontController tag. This is done as shown in the following example:
+  {atkfrontcontroller uri_param=myuri myuri="/module/control/action"} 
+  [Erik]
 + Added setNextId, nextid, clearNextId on atkMockDb to simulate nextid functionality [Martijn]
 + Added addFields on atkQuery to add multiple fields (with values) at once [Martijn]
 + Allow setting ownerfields for ManytoMany relations [Erik, Peter]
