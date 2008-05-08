@@ -35,7 +35,7 @@
     var $m_benelux_countries   = array( 'NL','BE','LU');
 
 
-    var $m_world_countries_shortlist = array( 'AT', 'BE', 'CA', 'DK', 'FI', 'FR', 'DE', 'GR', 'IE', 'IT', 'LU', 'NL', 'PT', 'ES', 'SE', 'UK', 'US' );
+    var $m_world_countries_shortlist = array( 'AT', 'BE', 'CA', 'DK', 'FI', 'FR', 'DE', 'GR', 'IE', 'IT', 'LU', 'NL', 'PT', 'ES', 'SE', 'GB', 'US' );
 
     var $m_world_countries     = array( 'AF', 'AL', 'DZ', 'AS', 'AD', 'AO', 'AI', 'AQ', 'AG', 'AR', 'AM', 'AW', 'AU', 'AT', 'AZ',
                                         'BS', 'BH', 'BD', 'BB', 'BY', 'BE', 'BZ', 'BJ', 'BM', 'BO', 'BA', 'BW', 'BV', 'BR', 'IO', 'BN',
