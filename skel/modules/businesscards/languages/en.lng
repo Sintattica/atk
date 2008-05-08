@@ -1,0 +1,21 @@
+<?php
+  $en = array(
+    "menu_businesscards"         => "Businesscard admin",
+      
+    // businesscards admin
+    "name"                    => "Businesscard name",
+    "business_card_pdf_path"  => "PDF Template file",
+    "company_id"              => "Company",
+    "obs_template_code"       => "iCode of this PDF-template in the OBS",
+    
+    // business card fields
+    "bc_fields"               => "Fields on the businesscard",
+    "page_nr"                 => "Page",
+    "field_nr"                => "Field nr.",
+    "field_blockname"         => "Fieldname",
+    "field_multiline"         => "Multiline",
+    "field_desc"              => "Field description",
+    "obligatory"              => "Obligatory field",
+    "additional_information"  => "Additional information for customer",
+  );
+?>

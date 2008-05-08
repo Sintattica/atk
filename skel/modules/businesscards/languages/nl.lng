@@ -1,0 +1,21 @@
+<?php
+  $nl = array(
+    "menu_businesscards"         => "Visitekaartjes beheer",
+      
+    // businesscards admin
+    "name"                    => "Naam visitekaartje",
+    "business_card_pdf_path"  => "PDF Template file",
+    "company_id"              => "Bedrijf",
+    "obs_template_code"       => "Vaste iCode van deze PDF-template in het OBS",
+    
+    // business card fields
+    "bc_fields"               => "Velden op dit visitekaartje",
+    "page_nr"                 => "Pagina",
+    "field_nr"                => "Veld nr.",
+    "field_blockname"         => "Veldnaam",
+    "field_multiline"         => "Meerdere regels",
+    "field_desc"              => "Beschrijving veld",
+    "obligatory"              => "Verplicht veld",
+    "additional_information"  => "Toelichting bij veld voor klant",
+  );
+?>
