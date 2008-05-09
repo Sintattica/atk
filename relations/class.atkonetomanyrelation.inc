@@ -273,7 +273,7 @@
       // for the view mode we use the datagrid and load the records ourselves
       if ($mode == 'view')
       {
-        $grid = $this->createGrid($record, $mode, 'view');
+        $grid = $this->createGrid($record, 'admin', 'view');
         $grid->loadRecords(); // load records early
 
         // no records
@@ -352,7 +352,7 @@
      */
     public function edit($record="", $fieldprefix="", $mode='')
     {
-      $grid = $this->createGrid($record, $mode, $mode);
+      $grid = $this->createGrid($record, 'admin', $mode);
 
       $params = array();
       if ($this->m_useFilterForEditLink && $this->m_destinationFilter != "")
@@ -674,7 +674,7 @@
       if (($mode != 'add' && $mode != 'edit' && $mode != 'view') ||
           ($mode == 'view' && method_exists($this->getOwnerInstance(), $this->fieldName()."_display")))
       {
-        $grid = $this->createGrid($record, $mode, $mode, false);
+        $grid = $this->createGrid($record, $mode == 'copy' ? 'copy' : 'admin', $mode, false);
         $grid->setPostvar('atklimit', -1); // all records
         $grid->setCountHandler(create_function('', '')); // don't count
         $grid->loadRecords();

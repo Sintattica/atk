@@ -113,7 +113,21 @@ class atkDataNode extends atkNode
       'selector' => $selector
     );
 
-    return count($this->findData($params));
+    return $this->countData($params);
+  }
+  
+  /**
+   * Count "rows".
+   *
+   * Supported parameters are: selector, limit, offset and order.
+   * 
+   * @param array $params parameters
+   * 
+   * @return int number of "records"
+   */
+  protected function countData($params=array())
+  {
+    return count($this->findData($params));    
   }
 
   /**
@@ -270,8 +284,6 @@ class atkDataNode extends atkNode
   protected function translateOrder($order)
   {
     if (empty($order)) return false;
-
-    $order = strtolower($order);
 
     list($column, $direction) = explode(' ', $order);
 
