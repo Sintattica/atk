@@ -157,6 +157,7 @@ Changed in ATK 6.2
   dir if it doesn't exist. 
   Please check: http://www.achievo.org/wiki/AtkDocumentWriter for tips and
   limitations [Jeroen]
++ Added addHeader support [Peter]
 * Fixed sorting on an atkManyToOneRelation field in a destination table. For this 
   fix we had also to clear the sorting fields passed by the session in 
   atkColumnConfig [Peter/Martijn]

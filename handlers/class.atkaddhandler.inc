@@ -115,11 +115,24 @@
       }
 
       $params               = $node->getDefaultActionParams();
+      $params["header"]     = $this->invoke("addHeader", $record);      
       $params["formstart"]  = $this->getFormStart();
       $params["content"]    = $this->getContent($record);
       $params["buttons"]    = $this->getFormButtons($record);
       $params["formend"]    = $this->getFormEnd();
       return $params;
+    }
+    
+    /**
+     * Allows you to add an header above the addition form.
+     *
+     * @param array $record initial values
+     * 
+     * @return string
+     */
+    public function addHeader($record=null)
+    {
+      return '';
     }
 
     function getFormStart()
