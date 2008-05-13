@@ -166,7 +166,11 @@
         
         if(is_object($p_attrib))
         {
-          $searchconditions[] = $p_attrib->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
+          $condition = $p_attrib->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
+          if (!empty($condition))
+          {
+            $searchconditions[] = $condition;
+          }
         }
       }
       return "(".implode(" OR ",$searchconditions).")";
