@@ -74,9 +74,9 @@ class atkDGRenderer extends atkDGComponent
   {
     $vars = array();
     
-    foreach ($this->getGrid()->getComponents() as $name => $info)
+    foreach ($this->getGrid()->getComponentInstances() as $name => $comp)
     {
-      $vars[$name] = atknew($info['class'], $this->getGrid(), $info['options'])->render();
+      $vars[$name] = $comp->render();
     }
 
     return $this->getUi()->render($this->getGrid()->getTemplate(), $vars);

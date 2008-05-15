@@ -50,8 +50,6 @@
       
       if (!is_numeric($searchTypeOrFlags))
         $this->setSearchType($searchTypeOrFlags);
-        
-      $this->m_searchType = "number";
     }
     
     /**

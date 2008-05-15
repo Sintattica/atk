@@ -31,12 +31,12 @@ class atkDGPaginator extends atkDGComponent
    *
    * @var int
    */
-  var $m_maxLinks = 10;
+  protected $m_maxLinks = 10;
   
   /**
    * Returns an array with pagination links.
    */
-  function getLinks()
+  protected function getLinks()
   {
     $grid = $this->getGrid();
     $links = array();
@@ -112,11 +112,10 @@ class atkDGPaginator extends atkDGComponent
    * @param atkDataGrid $grid the data grid
    * @return string rendered HTML
    */
-  function render()
+  public function render()
   {
     $links = $this->getLinks();
     $result = $this->getUi()->render('dgpaginator.tpl', array('links' => $links));
     return $result;
   }
 }
-?>
