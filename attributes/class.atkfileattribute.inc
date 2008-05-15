@@ -214,6 +214,7 @@
       }
       else
       {
+        atkwarning('atkFileAttribute: ' . $this->m_dir . ' does not exist or is not writeable'); 
         return atktext("no_valid_directory", "atk");
       }
 
