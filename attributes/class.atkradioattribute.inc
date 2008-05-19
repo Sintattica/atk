@@ -153,7 +153,7 @@
       
       for ($i=0;$i<$total_items;$i++)
       {
-        if ($values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()]!="")
+        if ($values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()]!=="")
         {
           $sel = "checked";
         }

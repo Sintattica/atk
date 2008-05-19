@@ -397,6 +397,8 @@ Changed in ATK 6.2
 * Fixed PHP notices. [Guido]
 * Fixed unnecesary call to atkClassLoader::getAllClasses() when php tries to
   find a class with empty name (such classes don't exists). [Guido]
+* Fixed atkRadioAttribute. When using the value 0 in an option, it was never
+  evaluated as being CHECKED. [Arjen Tebbenhof, Dennis]
 - Removed atkMetaHandler because it wasn't very useful. [Peter]
 - Removed support for regexes in atkMetaPolicy's setIncludes/setExcludes
   because it wasn't very useful and wasn't used anyway. [Peter]
