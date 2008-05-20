@@ -200,6 +200,8 @@
   "language_en" => "Englisch",
   "language_fr" => "Franz&ouml;sisch",
   "language_nl" => "Holl&auml;ndisch",
+  'language_pl' => 'Polnisch',
+  'language_sp' => 'Spanisch',  
   "list_null_value" => "kein Wert",
   "list_null_value_obligatory" => "(Select a value...)", // Missing string!!!
   "load_criteria" => "Load saved search", // Missing string!!!

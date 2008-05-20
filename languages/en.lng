@@ -198,6 +198,8 @@
   "language_en" => "English",
   "language_fr" => "French",
   "language_nl" => "Dutch",
+  'language_pl' => 'Polish',
+  'language_sp' => 'Spanish',
   "list_null_value" => "No value",
   "list_null_value_obligatory" => "(Select a value...)",
   "load_criteria" => "Load saved search",

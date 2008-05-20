@@ -197,6 +197,8 @@
   "language_en" => "Engels",
   "language_fr" => "Frans",
   "language_nl" => "Nederlands",
+  'language_pl' => 'Pools',
+  'language_sp' => 'Spaans',  
   "list_null_value" => "Geen waarde",
   "list_null_value_obligatory" => "(Maak een keuze...)",
   "load_criteria" => "Laden opgeslagen zoekopdracht",
