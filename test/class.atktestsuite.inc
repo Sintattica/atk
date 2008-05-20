@@ -23,79 +23,12 @@
   require_once(atkconfig("atkroot")."atk/atktools.inc");
   require_once(atkconfig("atkroot")."atk/test/simpletest/unit_tester.php");
   require_once(atkconfig("atkroot")."atk/test/simpletest/reporter.php");
+  atkimport("atk.test.atksimpletesttestcasecollector");
   atkimport("atk.test.atktestreporter");
   atkimport("atk.test.atkattributetestcase");
   atkimport("atk.test.atktestcase");
   atkimport("atk.db.atkdb");
   atkimport("atk.db.atkddl");
-
-  /**
-   * atkTestCaseCollector is a visitor that can be passed to an
-   * atkDirecoryTraverser. It detects if a file is a suitable testcase and if
-   * so, adds it to the testsuite.
-   * This class is used by the atkTestSuite. It should not be necessary to use
-   * this class directly.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage test
-   *
-   */
-  class atkTestCaseCollector
-  {
-    var $m_grouptest = null;
-
-    function atkTestCaseCollector(&$grouptest)
-    {
-      $this->m_grouptest = &$grouptest;
-    }
-
-    function visitFile($fullpath)
-    {
-      $include = atkArrayNvl($_REQUEST, "include");
-      $includefiles = explode("|",$include);
-      $filename = basename($fullpath);
-      if (substr($filename, 0, 11)=="class.test_" && (!$include ||($include && in_array($filename,$includefiles))) && strpos($fullpath,"/testcases/")!==false && substr($filename, -4) == '.inc')
-      {
-        $elems = explode(".", $filename); // leads to 'class' 'test_...' and '.inc'
-        $testclassname = $elems[1];
-        $fullpath = atkCleanPath($fullpath);
-        $module_dirs = atkconfig("module_dirs");
-
-        if (is_array($module_dirs) && count($module_dirs) > 0)
-        {
-          $testcase_in_module_dir = false;
-          foreach ($module_dirs as $dir)
-          {
-            $dirBegin = substr($fullpath, 0, strlen($dir));
-            if($dirBegin == $dir)
-            {
-              $testcase_in_module_dir = true;
-              $module_array = explode("/", substr($fullpath, strlen($dir)));
-              $module = $module_array[1];
-              break;
-            }
-          }
-
-          if ($testcase_in_module_dir && !moduleExists($module))
-          {
-            return; // testcase found but it is in a module that is not active
-          }
-        }
-
-        if (isset($_REQUEST['list']))
-        {
-          $ret ='<tr><td>'.$fullpath.'</td><td><a href="'.atkSelf().'?showpassed&atkclass='.getClassName($fullpath).'">Test</a><br></td></tr>';
-    	    echo $ret;
-        }
-        else
-        {
-          include_once($fullpath);
-          $this->m_grouptest->addTestClass($testclassname);
-        }
-      }
-    }
-  }
 
   /**
    * The atkTestSuite is a SimpleTest framework wrapper that auto-detects
@@ -156,8 +89,21 @@
       }
       $test = &new GroupTest("Test Page");
 
-      $this->runTestCases($test, $module);
-     
+      if($_REQUEST['class']) $class = $_REQUEST['class'];
+      else $class = $_REQUEST['atkclass'];
+
+      if(file_exists(getClassPath($class)) && strpos($class, "test_")!=false) $testclass = $class;
+      else $testclass = $this->getTestCaseLocationForClass($class);
+
+      if ($class && file_exists(getClassPath($testclass)))
+      {
+        $this->_runTestCase($test,$testclass);
+      }
+      else
+      {
+        $traverser = new atkTestTraverser(new atkSimpleTestTestCaseCollector($test));
+        $traverser->addTestsByTraversing($module);
+      }
       if (isset($_REQUEST['list'])) return;
 
       if($reporttype=="html")
@@ -266,95 +212,6 @@
     {
       atkimport($testcase,true);
       $test->addTestClass(array_pop(explode(".", $testcase)));
-    }
-
-    function _addTestsByTraversing(&$test, $module)
-    {
-      $traverser = &atknew("atk.utils.atkdirectorytraverser");
-      $traverser->addCallbackObject(new atkTestCaseCollector($test));
-      if ($module!="")
-      {
-        if ($module=="atk") // make it possible to only test atk.
-        {
-          $dir = atkconfig("atkroot")."atk/";
-        }
-        //make it possible to run all tests from another dir than the root dir. EE.g. i case test.php isn't used.
-        elseif ($module=="all")
-        {
-        	$dir = atkconfig("atkroot")."..";
-        }
-        else
-        {
-          $dir = moduleDir($module);
-          if (($dir == "") and (in_array($module, atkconfig("module_dirs")))){
-            $dir = $module;
-          }
-        }
-        $this->traverse($traverser, $dir);
-      }
-      else
-      {
-        $this->traverse($traverser, ".", true);
-      }
-    }
-
-    function traverse($traverser, $dir, $extramods=false)
-    {
-      // pre-traverse code
-      if (isset($_REQUEST['list']))
-      {
-        $ret = "<h1>Testcase list ($dir)</h1>";
-    	  $ret .='<table border="1" cellspacing="0" cellpadding="5">';
-    	  $ret .='<tr><th>Path</th><th>&nbsp;</th></tr>';
-      	echo $ret;
-      }
-
-      // traverse
-      $traverser->traverse($dir);
-      if ($extramods) $this->_traverseExtraModules($traverser);
-
-      // post-traverse code
-      if (isset($_REQUEST['list']))
-      {
-    	  $ret ='</table>';
-      	echo $ret;
-      }
-    }
-
-    /**
-     * Traverse modules that are outside the root
-     *
-     * Here we actually change directories to all the module directories
-     * then check if the directory is inside the application root.
-     * If it is, we leave it alone, otherwise we traverse that too.
-     *
-     * @param object $traverser Object of the Traverser
-     */
-    function _traverseExtraModules(&$traverser)
-    {
-      global $g_modules;
-      $curdir = getcwd();
-      if (chdir(atkconfig('module_path')))
-      {
-        $modulepath = getcwd();
-        if (chdir($curdir))
-        {
-          foreach ($g_modules as $name => $path)
-          {
-            if (chdir($path))
-            {
-              $fullpath = getcwd();
-              if (chdir($curdir))
-              {
-                if (substr($fullpath,0,strlen($curdir))!==$curdir)
-                {
-                  $traverser->traverse($path);
-                }
-              }
-            }
-          }
-        }
-      }
     }
   }
 
