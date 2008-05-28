@@ -137,9 +137,13 @@
         }
         $record["atkprimkey"] = $node->primaryKey($record)." AND ".$node->m_table.".".$node->m_lngfield."='$language' ";
 
-        if($atklngrecordmodes[$language]["mode"]=="add") $mode="add"; // override the mode in case of missing lngrecords
+        $editMode = $mode;
+        if($atklngrecordmodes[$language]["mode"]=="add") 
+        {
+          $editMode="add"; // override the mode in case of missing lngrecords
+        }
 
-        switch($mode)
+        switch($editMode)
         {
           case "update":
             $node->updateDb($record);
