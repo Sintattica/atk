@@ -731,6 +731,14 @@
      */
     var $m_edit_fieldprefix = '';
 
+	  /** 
+    * 
+    * Multiple line attribute grouping
+    * @access private  
+    * @var Array
+    */
+    var $m_attributeGrouping = array();
+
     /**
      * Constructor.
      *
@@ -5146,6 +5154,30 @@
     {
       if ($this->m_edit_fieldprefix == '') return '';
       else return $this->m_edit_fieldprefix.($atk_layout ? '_AE_' : '');
+    }
+		
+		
+	 /**
+    * Groups several attributes on a single line
+	  *
+	  *	
+    * @param String 	$groupName 		name of the group.
+    * @param Array 		$attributes 	array containing the members of that group.
+    * @param Boolean 	$box 					draws a <fieldset> box around the grouped attributes with the group name in the <legend> 
+		* @param string 	$tab					place the attributes on this tab
+    */
+		
+    function addGroup($groupName,$attributes,$box=false,$tab='default')
+    {
+      $groupname =  atktext("group_".$groupName,$this->m_module,$this->m_type);
+      if (is_array($attributes))
+        {
+          $this->m_attributeGrouping[$groupName] = array("attributes"=>$attributes,"box"=>$box,"name"=>$groupname,"tab"=>$tab);
+        }
+      else
+        {
+          $this->m_attributeGrouping[$groupName] = array("attributes"=>array($attributes),"box"=>$box,"name"=>$groupname,"tab"=>$tab);
+        }
     }
   }
 ?>
