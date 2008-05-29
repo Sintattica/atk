@@ -219,7 +219,7 @@
 
       atkimport('atk.datagrid.atkdatagrid');
 
-      $grid = atkDataGrid::create($this->m_destInstance, null, null, true, $useSession);
+      $grid = atkDataGrid::create($this->m_destInstance, null, null, false, $useSession);
       $grid->setMode($mode);
 
       $grid->removeFlag(atkDataGrid::EXTENDED_SEARCH);
