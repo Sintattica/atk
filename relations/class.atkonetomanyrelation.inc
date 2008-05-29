@@ -219,7 +219,7 @@
 
       atkimport('atk.datagrid.atkdatagrid');
 
-      $grid = atkDataGrid::create($this->m_destInstance, null, null, false, $useSession);
+      $grid = atkDataGrid::create($this->m_destInstance, null, null, true, $useSession);
       $grid->setMode($mode);
 
       $grid->removeFlag(atkDataGrid::EXTENDED_SEARCH);
@@ -275,6 +275,7 @@
       {
         $grid = $this->createGrid($record, 'admin', 'view');
         $grid->loadRecords(); // load records early
+	$grid->setEmbedded(false);
 
         // no records
         if ($grid->getCount() == 0)
