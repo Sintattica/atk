@@ -650,6 +650,11 @@
     }
 
     /**
+     * Define a dummy function to use as a dummy handler function in load() below
+     */
+    public function ___dummyCount() {}
+
+    /**
      * Retrieve detail records from the database.
      *
      * Called by the framework to load the detail records.
@@ -676,7 +681,7 @@
       {
         $grid = $this->createGrid($record, $mode == 'copy' ? 'copy' : 'admin', $mode, false);
         $grid->setPostvar('atklimit', -1); // all records
-        $grid->setCountHandler(create_function('', '')); // don't count
+        $grid->setCountHandler(array(get_class(), '___dummyCount')); // don't count
         $grid->loadRecords();
         $result = $grid->getRecords();
         $grid->destroy(); // clean-up

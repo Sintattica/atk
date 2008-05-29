@@ -7,11 +7,12 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
-+ Added the ability to use multiple atkFrontControllers by defining a different uri key in
-  the atkFrontController tag. This is done as shown in the following example:
-  {atkfrontcontroller uri_param=myuri myuri="/module/control/action"} 
++ Added the ability to use multiple atkFrontControllers by defining a different
+  uri key in the atkFrontController tag. This is done as shown in the following
+  example: {atkfrontcontroller uri_param=myuri myuri="/module/control/action"}
   [Erik]
-+ Added setNextId, nextid, clearNextId on atkMockDb to simulate nextid functionality [Martijn]
++ Added setNextId, nextid, clearNextId on atkMockDb to simulate nextid
+  functionality [Martijn]
 + Added addFields on atkQuery to add multiple fields (with values) at once [Martijn]
 + Allow setting ownerfields for ManytoMany relations [Erik, Peter]
 + Added atkEcho() function for making echo output only from cron. [Yury]
@@ -145,22 +146,22 @@ Changed in ATK 6.2
 + Added $config_application_dir which can be used to separate ATK from your
   application code. [Boy]
 + Added atkManyToManySelectRelation, a new variant of the many to many relation
-  which allows you to add items to the relation using auto-completion. Useful 
+  which allows you to add items to the relation using auto-completion. Useful
   for many-to-many relations which have many selectable options. [Peter]
 + Added atkRadioDetailsAttribute, displays radio buttons with options to choose
-  from just like the atkRadioAttribute but allows you to use other attributes 
+  from just like the atkRadioAttribute but allows you to use other attributes
   for detail selections once certain options are selected. [Peter]
 + AtkZip: added parameter to add files to specified filepath [Jeroen]
-+ tbsooo|Changes for DocX support. SaveXmlToDoc: specify filepath, 
++ tbsooo|Changes for DocX support. SaveXmlToDoc: specify filepath,
   ClearProcessDir: remove recursivly [Jeroen]
-+ Added atkDocxWriter for Word2007 .docx templates. Enhancement: Create output 
-  dir if it doesn't exist. 
++ Added atkDocxWriter for Word2007 .docx templates. Enhancement: Create output
+  dir if it doesn't exist.
   Please check: http://www.achievo.org/wiki/AtkDocumentWriter for tips and
   limitations [Jeroen]
 + Added addHeader support [Peter]
 + Added atkCache, see http://www.achievo.org/wiki/ATK_Cache. [Sandy]
-* Fixed sorting on an atkManyToOneRelation field in a destination table. For this 
-  fix we had also to clear the sorting fields passed by the session in 
+* Fixed sorting on an atkManyToOneRelation field in a destination table. For this
+  fix we had also to clear the sorting fields passed by the session in
   atkColumnConfig [Peter/Martijn]
 * Added support for charset in oci9db driver. Uses the charset that is specified
   in the configfile [PeterB]
@@ -392,7 +393,7 @@ Changed in ATK 6.2
 * Fixed broken if-statement in atkCustomRecordlist. [JorgeG]
 * Fixed storageType/loadType of atkOneToOneRelation so that it respects
   a custom set storage and/or load type. [Peter]
-* In atknode, used createQuery() function to build the delete query (instead 
+* In atknode, used createQuery() function to build the delete query (instead
   of manually) to prevent problems with table name aliases. [Patrick]
 * Fixed empty value for atkDateAttribute when it's obligatory. [Sandy]
 * Fixed PHP notices. [Guido]
@@ -400,6 +401,8 @@ Changed in ATK 6.2
   find a class with empty name (such classes don't exists). [Guido]
 * Fixed atkRadioAttribute. When using the value 0 in an option, it was never
   evaluated as being CHECKED. [Arjen Tebbenhof, Dennis]
+* Fixed (possible) memory leak in atkOneToManyRelation (avoid creation of
+  an anonymous function using create_function() in load()). [Patrick]
 - Removed atkMetaHandler because it wasn't very useful. [Peter]
 - Removed support for regexes in atkMetaPolicy's setIncludes/setExcludes
   because it wasn't very useful and wasn't used anyway. [Peter]
