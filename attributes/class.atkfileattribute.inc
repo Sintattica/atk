@@ -116,6 +116,16 @@
 
       // Call base class constructor.
       $this->atkAttribute($name,$flags|AF_CASCADE_DELETE, $size);
+      $this->setDir($dir);
+    }
+
+    /**
+     * Allows (re)setting the dir property
+     * whenever needed.
+     * @param mixed $dir string with directory path or array with directory path and display url (see constructor)
+     */
+    public function setDir($dir)
+    {
       if(is_array($dir))
       {
         $this->m_dir = $this->AddSlash($dir[0]);

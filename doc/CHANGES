@@ -160,6 +160,13 @@ Changed in ATK 6.2
   limitations [Jeroen]
 + Added addHeader support [Peter]
 + Added atkCache, see http://www.achievo.org/wiki/ATK_Cache. [Sandy]
+* Added setDir() to the fileattrib which allows setting the dir path
+  after initialisation. Due to some issues with metanode caching the path
+  was parsed incorrectly in the cached file. Set the path in postMeta()
+  will resolve the issue but it still needs to be fixed in the metanode
+  compiler. [Martin]
+* Fixed the exact search mode when using the atknumberattribute. It now uses
+  the equal operator correctly for exact number searches. [Martin]
 * Fixed sorting on an atkManyToOneRelation field in a destination table. For this
   fix we had also to clear the sorting fields passed by the session in
   atkColumnConfig [Peter/Martijn]

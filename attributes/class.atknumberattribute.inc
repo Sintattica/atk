@@ -145,7 +145,7 @@
       // searches can be implemented using LIKE)
       // Possible values
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-      return array("between", "exact","greaterthan","greaterthanequal","lessthan","lessthanequal");
+      return array("exact","between", "greaterthan","greaterthanequal","lessthan","lessthanequal");
     }
 
     function dbFieldType()
@@ -243,23 +243,23 @@
       }
     }
 
-    function processSearchValue($value)
+    function processSearchValue($value,&$searchmode)
     {
       if (!is_array($value))
       {
-        $slash = strpos($value, "/"); // Support for 'from/to' searches.
+        $slash = strpos($value, '/'); // Support for 'from/to' searches.
         $str = $value;
         if ($slash!==false)
         {
           $value = array();
-          $value["from"]=substr($str, 0, $slash);
-          $value["to"]=substr($str,$slash+1);
-          $searchmode="between";
+          $value["from"]=$this->standardiseSeparator(substr($str, 0, $slash));
+          $value["to"]=$this->standardiseSeparator(substr($str,$slash+1));
+	  $searchmode = 'between';
         }
         else
         {
           $value = array();
-          $value["from"] = $str; // quicksearch doesn't use an array.
+          $value["from"] = $this->standardiseSeparator($str); // quicksearch doesn't use an array.
         }
       }
 
@@ -294,8 +294,7 @@
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       $searchcondition = "";
-
-      $value = $this->processSearchValue($value);
+      $value = $this->processSearchValue($value,$searchmode);
 
       if ($searchmode!="between")
       {
