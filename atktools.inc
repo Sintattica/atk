@@ -1687,32 +1687,37 @@
    */
   function atkimport($fullclassname, $failsafe=true, $path = false)
   {
-    if (!$path)
-      $filename = getClassPath($fullclassname);
-    else
-      $filename = $fullclassname;
+    $filename = ($path === false) ? getClassPath($fullclassname) : $fullclassname;
 
     static $alreadyHad = array();
-    if (!in_array($filename,$alreadyHad))
+
+    if (array_key_exists($filename, $alreadyHad) === true)
     {
-      $alreadyHad[] = $filename;
-      
-      if (file_exists($filename))
-      {
-        if ($failsafe)
-          require_once($filename);
-        else
-          include_once($filename);
-        return true;
-      }
-      else
-        return false;
+      return $alreadyHad[$filename];
     }
     else 
     {
-      // we already included this file
-      return true;
+      if (is_readable($filename) === true)
+      {
+        $alreadyHad[$filename] = true;
+        
+        if ($failsafe === true)
+        {
+          require_once($filename);
+        }
+        else
+        {
+          include_once($filename);
+        }
+        return true;
+      }
+      else 
+      {
+        $alreadyHad[$filename] = false;
+      }
     }
+
+    return false;
   }
 
   /**
