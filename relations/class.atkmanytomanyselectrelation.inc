@@ -25,7 +25,7 @@ define('AF_MANYTOMANYSELECT_NO_AUTOCOMPLETE', AF_SPECIFIC_3);
 /**
  * Many-to-many select relation.
  *
- * The relation shows allows you to add one record at a time to a 
+ * The relation shows allows you to add one record at a time to a
  * many-to-many relation using auto-completion or a select page.
  *
  * @author Peter C. Verhage <peter@achievo.org>
@@ -37,17 +37,17 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   const SEARCH_MODE_EXACT      = atkManyToOneRelation::SEARCH_MODE_EXACT;
   const SEARCH_MODE_STARTSWITH = atkManyToOneRelation::SEARCH_MODE_STARTSWITH;
   const SEARCH_MODE_CONTAINS   = atkManyToOneRelation::SEARCH_MODE_CONTAINS;
-  
+
   /**
    * The many-to-one relation.
-   * 
+   *
    * @var atkManyToOneRelation
    */
   private $m_manyToOneRelation = null;
-  
+
   /**
    * Constructs a new many-to-many select relation.
-   * 
+   *
    * @param string $name        The name of the relation
    * @param string $link         The full name of the node that is used as
    *                            intermediairy node. The intermediairy node is
@@ -66,38 +66,38 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   public function __construct($name, $link, $destination, $flags=0)
   {
     parent::__construct($name, $link, $destination, $flags);
-    
+
     $relation = new atkManyToOneRelation($this->fieldName().'_m2msr_add', $this->m_destination, AF_MANYTOONE_AUTOCOMPLETE|AF_HIDE);
     $relation->setDisabledModes(DISABLED_VIEW|DISABLED_EDIT);
     $relation->setLoadType(NOLOAD);
     $relation->setStorageType(NOSTORE);
-    $this->m_manyToOneRelation = $relation;      
+    $this->m_manyToOneRelation = $relation;
   }
-  
+
   /**
    * Initialize.
    */
   public function init()
   {
-    $this->getOwnerInstance()->add($this->getManyToOneRelation());    
+    $this->getOwnerInstance()->add($this->getManyToOneRelation());
   }
-  
+
   /**
    * Return the many-to-one relation we will use for the selection
    * of new records etc.
-   * 
+   *
    * @return atkManyToOneRelation
    */
   protected function getManyToOneRelation()
   {
     return $this->m_manyToOneRelation;
   }
-  
+
   /**
    * Return a piece of html code to edit the attribute.
-   * 
+   *
    * @param $record current record
-   * 
+   *
    * @return string piece of html code
    */
   public function edit($record, $fieldprefix="", $mode="")
@@ -105,51 +105,51 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     if ($this->hasFlag(AF_MANYTOMANYSELECT_NO_AUTOCOMPLETE))
     {
       $this->getManyToOneRelation()->removeFlag(AF_MANYTOONE_AUTOCOMPLETE);
-    }  
-    
+    }
+
     $this->createDestination();
     $this->createLink();
-    
+
     $this->getOwnerInstance()->getPage()->register_script(atkconfig('atkroot').'atk/javascript/class.'.strtolower(__CLASS__).'.js');
     $this->getOwnerInstance()->addStyle('atkmanytomanyselectrelation.css');
-    
+
     $selectedKeys = $this->getSelectedRecords($record);
-    
+
     if (isset($record[$this->getManyToOneRelation()->fieldName()]) && is_array($record[$this->getManyToOneRelation()->fieldName()]))
     {
       $selectedKeys[] = $this->getDestination()->primaryKey($record[$this->getManyToOneRelation()->fieldName()]);
     }
-    
+
     $selectedRecords = array();
     if (count($selectedKeys) > 0)
     {
       $selector = '('.implode(') OR (', $selectedKeys).')';
       $selectedRecords = $this->getDestination()->selectDb($selector);
     }
-    
+
     $id = $this->getHtmlId($fieldprefix);
-    
-    $result = 
+
+    $result =
       '<div class="atkmanytomanyselectrelation">
          <ul id="'.$id.'_selection" class="atkmanytomanyselectrelation-selection">';
-    
+
     foreach ($selectedRecords as $selectedRecord)
     {
       $result .= $this->renderSelectedRecord($selectedRecord, $fieldprefix);
     }
 
     $result .= $this->renderAdditionField($fieldprefix, $mode);
-    
+
     $result .= '
         </ul>
       </div>';
-    
+
     if (($this->hasFlag(AF_MANYTOMANYSELECT_DETAILADD)) && ($this->m_destInstance->allowed("add")))
       $result.= href(dispatch_url($this->m_destination, "add"), $this->getAddLabel(), SESSION_NESTED) . "\n";
-    
+
     return $result;
   }
-  
+
   /**
    * Render selected record.
    *
@@ -160,16 +160,16 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   {
     $name = $this->getHtmlId($fieldprefix).'[]['.$this->getRemoteKey().']';
     $key = $record[$this->getDestination()->primaryKeyField()];
-    
+
     $actions = array();
-    
+
     if ($this->hasFlag(AF_MANYTOMANYSELECT_DETAILEDIT) && $this->getDestination()->allowed('edit', $record))
     {
       $actions[] = href(dispatch_url($this->getDestination()->atkNodeType(), 'edit', array('atkselector' => $this->getDestination()->primaryKey($record))), $this->text('edit'), SESSION_NESTED, true);
     }
 
-    $actions[] = '<a href="javascript:void(0)" onclick="ATK.ManyToManySelectRelation.delete(this); return false;">'.$this->text('delete').'</a>';    
-    
+    $actions[] = '<a href="javascript:void(0)" onclick="ATK.ManyToManySelectRelation.delete(this); return false;">'.$this->text('delete').'</a>';
+
     $result = '
       <li class="atkmanytomanyselectrelation-selected">
         <input type="hidden" name="'.$name.'" value="'.htmlentities($key).'"/>
@@ -178,47 +178,47 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
       </li>
     ';
 
-    return $result;   
+    return $result;
   }
-  
+
   /**
    * Render addition field.
-   * 
+   *
    * @param string $fieldprefix field prefix
    */
   protected function renderAdditionField($fieldprefix, $mode)
   {
     $url = partial_url($this->getOwnerInstance()->atkNodeType(), $mode, 'attribute.'.$this->fieldName().'.selectedrecord', array('fieldprefix' => $fieldprefix));
-    
+
     $relation = $this->getManyToOneRelation();
     $relation->addOnChangeHandler("
       ATK.ManyToManySelectRelation.add(el, '{$url}');
     ");
-    
+
     return '
       <li class="atkmanytomanyselectrelation-addition">
         '.$relation->edit(array(), $fieldprefix, $mode).'
       </li>';
   }
-  
+
   /**
    * Partial selected record.
    */
   public function partial_selectedrecord()
   {
     $this->createDestination();
-    $this->createLink();    
-    
+    $this->createLink();
+
     $fieldprefix = $this->getOwnerInstance()->m_postvars['fieldprefix'];
     $selector = $this->getOwnerInstance()->m_postvars['selector'];
-    
+
     if (empty($selector)) return '';
-    
-    $record = $this->getDestination()->select($selector)->firstRow();    
-    
-    return $this->renderSelectedRecord($record, $fieldprefix);    
+
+    $record = $this->getDestination()->select($selector)->firstRow();
+
+    return $this->renderSelectedRecord($record, $fieldprefix);
   }
-  
+
   /**
    * Set the searchfields for the autocompletion. By default the
    * descriptor fields are used.
@@ -259,5 +259,25 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   public function setAutoCompleteMinChars($chars)
   {
     $this->getManyToOneRelation()->setAutoCompleteMinChars($chars);
+  }
+
+  /**
+   * Adds a filter value to the destination filter.
+   *
+   * @param string $filter
+   */
+  public function addDestinationFilter($filter)
+  {
+    return $this->getManyToOneRelation()->addDestinationFilter($filter);
+  }
+
+  /**
+   * Sets the destination filter.
+   *
+   * @param string $filter
+   */
+  public function setDestinationFilter($filter)
+  {
+    return $this->getManyToOneRelation()->setDestinationFilter($filter);
   }
 }
