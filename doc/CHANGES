@@ -7,7 +7,8 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
-* Minor speedup in atkimport and changed file_exists to is_readable which makes more sense [mvdvelden]
++ Added support for muliple dependant attributes in a radiodetails attribute
+  and added support for labels for the detail attributes. [Tjeerd]
 + Added support for destination filters in atkManyToManySelectRelation. [Tjeerd]
 + Added the ability to use multiple atkFrontControllers by defining a different
   uri key in the atkFrontController tag. This is done as shown in the following
@@ -15,7 +16,8 @@ Changed in ATK 6.2
   [Erik]
 + Added setNextId, nextid, clearNextId on atkMockDb to simulate nextid
   functionality [Martijn]
-+ Added addFields on atkQuery to add multiple fields (with values) at once [Martijn]
++ Added addFields on atkQuery to add multiple fields (with values) at once.
+  [Martijn]
 + Allow setting ownerfields for ManytoMany relations [Erik, Peter]
 + Added atkEcho() function for making echo output only from cron. [Yury]
 + Added support for searching with a '/' as seperator for from/to values in a
@@ -162,6 +164,8 @@ Changed in ATK 6.2
   limitations [Jeroen]
 + Added addHeader support [Peter]
 + Added atkCache, see http://www.achievo.org/wiki/ATK_Cache. [Sandy]
+* Minor speedup in atkimport and changed file_exists to is_readable which makes
+  more sense [mvdvelden]
 * Added setDir() to the fileattrib which allows setting the dir path
   after initialisation. Due to some issues with metanode caching the path
   was parsed incorrectly in the cached file. Set the path in postMeta()
