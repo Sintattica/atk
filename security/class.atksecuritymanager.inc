@@ -135,11 +135,11 @@
       $authentication = $this->_getAuthTypes($authentication_type);
       foreach($authentication as $class)
       {
-        if(!$obj = &atknew($class))
+        if(!$obj = atknew($class))
         {
           atkdebug("atkSecurityManager() unsupported authentication type or type no found for $class");
         }
-        else $this->m_authentication[$class] = &$obj;
+        else $this->m_authentication[$class] = $obj;
       }
 
       /* authorization class */
