@@ -254,7 +254,7 @@
           $value = array();
           $value["from"]=$this->standardiseSeparator(substr($str, 0, $slash));
           $value["to"]=$this->standardiseSeparator(substr($str,$slash+1));
-	  $searchmode = 'between';
+	        $searchmode = 'between';
         }
         else
         {
@@ -277,28 +277,30 @@
           // User entered fields in wrong order. Let's fix that.
           $tmp = $value["from"]; $value["from"] = $value["to"]; $value["to"] = $tmp;
         }
-        $searchcondition = $query->betweenCondition($fieldname,$this->escapeSQL($value["from"]), $this->escapeSQL($value["to"]));
+        return $query->betweenCondition($fieldname,$this->escapeSQL($value["from"]), $this->escapeSQL($value["to"]));
       }
       else if ($value["from"]!="" && $value["to"]=="")
       {
-        $searchcondition = $query->greaterthanequalCondition($fieldname, $value["from"]);
+        return $query->greaterthanequalCondition($fieldname, $value["from"]);
       }
       else if ($value["from"]=="" && $value["to"]!="")
       {
-        $searchcondition = $query->lessthanequalCondition($fieldname, $value["to"]);
+        return $query->lessthanequalCondition($fieldname, $value["to"]);
       }
 
-      return $searchcondition;
+      return false;
     }
 
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       $searchcondition = "";
+      
       $value = $this->processSearchValue($value,$searchmode);
 
       if ($searchmode!="between")
       {
         // Use default handler, and use only the first field.
+        if(empty($value['from'])) return false;
         return parent::getSearchCondition($query, $table, $value["from"], $searchmode);
       }
       else

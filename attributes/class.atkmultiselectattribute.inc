@@ -36,7 +36,14 @@
   {
 
     // number of cols
-    var $m_cols;
+    public $m_cols;
+    
+    /**
+     * Default field separator
+     *
+     * @var string separator
+     */
+    protected $m_fieldSeparator = "|";
 
     /**
      * Constructor
@@ -87,7 +94,7 @@
       //atkdebug("multiselectattribute::value2db()");
       if(is_array($rec[$this->fieldName()]) && count($rec[$this->fieldName()]>=1))
       {
-        return $this->escapeSQL(implode("|",$rec[$this->fieldName()]));
+        return $this->escapeSQL(implode($this->m_fieldSeparator,$rec[$this->fieldName()]));
       }
       else return "";
     }
@@ -95,8 +102,22 @@
     function db2value($rec)
     {
       if (isset($rec[$this->fieldName()]) && $rec[$this->fieldName()]!=='')
-        return explode("|",$rec[$this->fieldName()]);
+        return explode($this->m_fieldSeparator,$rec[$this->fieldName()]);
       else return array();
+    }
+    
+    /**
+     * Allows you to set the field separator
+     * which is used to separate values in the
+     * database. i.e use a comma separator for
+     * mysql set datatype
+     *
+     * @param string $separator 
+     * @return void
+     */
+    public function setFieldSeparator($separator)
+    {
+      $this->m_fieldSeparator = $separator;
     }
 
     function display($record)
@@ -163,6 +184,16 @@
       return $result;
     }
 
+    /**
+     * @todo code below can't possibly work.
+     *  really needs to be fixed.
+     *
+     * @param atkquery $query 
+     * @param string $table 
+     * @param mixed $value 
+     * @param string $searchmode 
+     * @return string condition to use in a where clause
+     */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       // Multiselect attribute has only 1 searchmode, and that is substring.
