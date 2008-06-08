@@ -18,7 +18,7 @@
 
   // Include /config.inc.php to retrieve
   // language and theme
-  global $config_platformroot, $config_atkroot;
+  global $config_platformroot, $config_atkroot, $config_language;
 
   $config_platformroot = "../../../../../../../";
   $config_atkroot      = $config_platformroot;
@@ -28,14 +28,13 @@
 
   $editingurl  = sessionLoad("editingurl", "admin");
   $theme       = &atkinstance('atk.ui.atktheme');
-  $themeDir    = $theme->themeDir();
-  $cssFile     = "styles/fck_mcpuk_browser.css";
+  $cssFile    = $theme->stylePath('fck_mcpuk_browser.css');
   
   // add trailingslash to editingurl when needed
   if (strlen($editingurl) > 1 && substr($editingurl,-1) != "/")
     $editingurl .= "/";
   
-  $frameParams = "?lng=".$config_language."&themecss=".urlencode($themeDir.$cssFile)."&editingurl=".urlencode($editingurl);
+  $frameParams = "?lng=".$config_language."&themecss=".urlencode($cssFile)."&editingurl=".urlencode($editingurl);
   
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
