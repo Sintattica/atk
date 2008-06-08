@@ -33,7 +33,6 @@
   {
     var $m_dialogSaveUrl = null;
     var $m_buttonsource = null;
-		var $m_attributeGrouping = array();
 
 
     /**
@@ -286,9 +285,9 @@
     {
       $field = &$fields[$index];
 
-	    // visible sections, both the active sections and the tab names (attribute that are
-	    // part of the anonymous section of the tab)
-	    $visibleSections = array_merge($this->m_node->getActiveSections($tab, $mode), $this->m_node->getTabs($mode));
+            // visible sections, both the active sections and the tab names (attribute that are
+            // part of the anonymous section of the tab)
+            $visibleSections = array_merge($this->m_node->getActiveSections($tab, $mode), $this->m_node->getTabs($mode));
 
       $tplfield = array();
 
@@ -317,18 +316,18 @@
       }
 
       $tplfield["class"] = implode(" ", $classes);
-	    $tplfield["tab"] = $tplfield["class"]; // for backwards compatibility
+            $tplfield["tab"] = $tplfield["class"]; // for backwards compatibility
 
-	    // Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
-	    // maar, let op, die showTab kan pas worden aangeroepen aan het begin.
-  		$tplfield["initial_on_tab"] =
-  		   ($field["tabs"] == "*" || in_array($tab, $field["tabs"])) &&
+            // Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
+            // maar, let op, die showTab kan pas worden aangeroepen aan het begin.
+                $tplfield["initial_on_tab"] =
+                   ($field["tabs"] == "*" || in_array($tab, $field["tabs"])) &&
          (!is_array($field["sections"]) || count(array_intersect($field['sections'], $visibleSections)) > 0);
 
       // ar_ stands voor 'attribrow'.
-	    $tplfield["rowid"] = "ar_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
+            $tplfield["rowid"] = "ar_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
 
-	    /* check for separator */
+            /* check for separator */
       if ($field["html"] == "-" && $index > 0 && $data["fields"][$index-1]["html"] != "-")
       {
         $tplfield["type"] = "line";
@@ -380,7 +379,7 @@
         }
         else
         {
-        	$tplfield["label"]="AF_NO_LABEL";
+                $tplfield["label"]="AF_NO_LABEL";
         }
 
         /* obligatory indicator */
@@ -440,8 +439,6 @@
 
       /* get data, transform into form, return */
       $data = $node->editArray($mode, $record, $forceList, $suppressList, $fieldprefix, $ignoreTab);
-			$this->m_attributeGrouping = $data["fields"][0]["attribute"]->m_ownerInstance->m_attributeGrouping;
-			
       // Format some things for use in tpl.
       /* check for errors and display them */
       $tab = $node->getActiveTab();
@@ -590,7 +587,7 @@
         }
       }
       
-	    return $result;
+            return $result;
     }
     
     function getTabLink(&$node, $error)
@@ -612,87 +609,6 @@
     {
       return $this->renderEditDialog();
     }
-
-
-    /**
-    * extend the _renderTabs function to render the attribute grouping per tab
-    */
-    function _renderTabs($fields, $tabTpl)
-    {
-      $ui = &$this->getUi();
-      
-      $tabs = array();
-      $perTpl = array();//per template array
-             
-      for($i=0,$_i=count($fields);$i<$_i;$i++)
-      {
-        $allTabs = explode(' ', $fields[$i]["tab"]); // should not use "tab" here, because it actually contains the CSS class names and not only the tab names
-        $tab = $allTabs[0]; // attributes can be part of one, more than one or all tabs, at the moment it seems only one or all are supported
-        $perTpl[$tabTpl[$tab]]['fields'][] = $fields[$i];//make field available in numeric array
-        $perTpl[$tabTpl[$tab]][$fields[$i]["attribute"]] = $fields[$i];//make field available in associative array
-      }
-      
-      foreach($this->m_attributeGrouping as $groupName=>$groupFields)
-      {
-			 $perTpl[$tabTpl[$tab]]["groups"][$groupName]["name"] = $groupName;
-       $perTpl[$tabTpl[$tab]]["groups"][$groupName]["label"] = $groupFields["name"];
-       $perTpl[$tabTpl[$tab]]["groups"][$groupName]["box"] = $groupFields["box"];          
-       $perTpl[$tabTpl[$tab]]["groups"][$groupName]["tab"] = "section_".$groupFields["tab"];          
-      
-				for ($i=0;$i<count($groupFields["attributes"]);$i++)
-        { 
-          $attrib = "ar_".$groupFields["attributes"][$i];
-          $removeFields[] = $attrib;                      
-          
-          foreach ($fields as $p_id => $p_fields)
-          {
-            if ($p_fields["rowid"] == $attrib)
-            {
-              $perTpl[$tabTpl[$tab]]["groups"][$groupName]["fields"][] = $p_fields;
-              $initial_on_tab = $p_fields["initial_on_tab"];
-            }
-          }
-        }
-        $perTpl[$tabTpl[$tab]]["groups"][$groupName]["initial_on_tab"] = $initial_on_tab;
-      }
-		 
-		 if (is_array($removeFields))
-		 {
-			 /* remove items grouped from the normal edit screens */     
-			 foreach($perTpl["editform.tpl"]["fields"] as $fieldNumber => $fieldData)
-			 {
-			  $current = $fieldData["rowid"];
-				 if (in_array($current,$removeFields))
-					{
-					 unset ($perTpl["editform.tpl"]["fields"][$fieldNumber]);
-					}
-			 }
-			 
-			 /*
-			 for ($i=0;$i<count($perTpl["editform.tpl"]["fields"]);$i++)
-			 {
-			  $cur = $current = $perTpl["editform.tpl"]["fields"][$i];
-				
-				$current = $cur["rowid"];                    
-				atkDebug("Rene $current");
-				
-				if (in_array($current,$removeFields))
-				{
-				 unset($perTpl["editform.tpl"]["fields"][$i]);
-				}
-			 }
-			 */
-		 }
-				$tpls = array_unique(array_values($tabTpl));
-				foreach ($tpls as $tpl)
-				{
-					$tabs[] = $ui->render($tpl,$perTpl[$tpl]);  
-				}
-      return $tabs;
-    }
-
-
-
 
     /**
      * Render add dialog.
