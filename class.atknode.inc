@@ -3204,6 +3204,37 @@
       if(!in_array($fieldArr, $this->m_uniqueFieldSets))
         $this->m_uniqueFieldSets[] = $fieldArr;
     }
+    
+    /**
+     * Called by updateDb to load the original record inside the record if the
+     * NF_TRACK_CHANGES flag is set.
+     *
+     * NOTE: this method is made public because it's called from the update handler
+     * 
+     * @param array $record
+     * @param array $excludes
+     * @param array $includes
+     */
+    public function trackChangesIfNeeded(&$record, $excludes='', $includes='')
+    {
+      if (!$this->hasFlag(NF_TRACK_CHANGES) || isset($record['atkorgrec'])) return;
+      
+      // We need to add the NO_FILTER flag in case the new values would filter the record.
+      $flags = $this->m_flags;
+      
+      $this->addFlag(NF_NO_FILTER);
+      
+      $record["atkorgrec"] = 
+        $this->select()
+             ->where($record['atkprimkey'])
+             ->excludes($excludes)
+             ->includes($includes)
+             ->mode('edit')
+             ->firstRow();
+
+      // Need to restore the NO_FILTER bit back to its original value.
+      $this->m_flags = $flags;
+    }      
 
     /**
      * Update a record in the database.
@@ -3223,28 +3254,17 @@
 
       $query->addTable($this->m_table);
 
-      // The record that must be updated is indicated by 'atkorgkey'
+      // The record that must be updated is indicated by 'atkprimkey'
       // (not by atkselector, since the primary key might have
-      // changed, so we use the atkorgkey, which is the value before
+      // changed, so we use the atkprimkey, which is the value before
       // any update happened.)
       if ($record['atkprimkey']!="")
       {
-        $pk = $record['atkprimkey'];
-
-        // If we need to track changes, we first load the original values..
-        if ($this->hasFlag(NF_TRACK_CHANGES))
-        {
-          //We need to add the NO_FILTER flag in case the new values would filter the record.
-          //Need to restore the NO_FILTER bit back to its original value.
-          $flags = $this->m_flags;
-          $this->addFlag(NF_NO_FILTER);
-          $recordset = $this->selectDb($pk,"","",$excludes,$includes,"edit"); // we need the same record we got when editing.
-          $this->m_flags = $flags;
-          $record["atkorgrec"] = $recordset[0];
-        }
+        $this->trackChangesIfNeeded($record, $excludes, $includes);
 
         if($exectrigger) $this->executeTrigger("preUpdate",$record);
 
+        $pk = $record['atkprimkey'];
         $query->addCondition($pk);
 
         $storelist = array("pre"=>array(), "post"=>array(), "query"=>array());

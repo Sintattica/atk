@@ -422,6 +422,8 @@ Changed in ATK 6.2
   an anonymous function using create_function() in load()). [Patrick]
 * Fixed support for multiple authentication types on PHP5 platforms.
   [Guido,Dennis]
+* Fixed bug in NF_TRACK_CHANGES mechanism which wasn't triggered properly
+  before preUpdate was called from inside the atkUpdateHandler. [Peter]
 - Removed atkMetaHandler because it wasn't very useful. [Peter]
 - Removed support for regexes in atkMetaPolicy's setIncludes/setExcludes
   because it wasn't very useful and wasn't used anyway. [Peter]

@@ -178,6 +178,10 @@
     function handleProcessDialog($record, $attrRefreshUrl=null)
     {
       $db = &$this->m_node->getDb();
+      
+      // load original record if needed
+      $this->getNode()->trackChangesIfNeeded($record);
+      
       if (!$this->m_node->executeTrigger("preUpdate", $record) ||
           !$this->m_node->validate($record, "update") ||
           !$this->m_node->updateDb($record))
@@ -285,6 +289,9 @@
      */
     function handleProcess($record)
     {
+      // load original record if needed
+      $this->getNode()->trackChangesIfNeeded($record);
+
       // just before we validate the record we call the preUpdate() to check if the record needs to be modified
       $this->m_node->executeTrigger("preUpdate", $record);
 

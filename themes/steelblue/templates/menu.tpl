@@ -88,5 +88,5 @@ function hideAllSubMenus()
 	}
 }
 {/literal}
-showSubMenu('{if $atkmenutop!=="main"}{$atkmenutopname}{else}{$firstmenuitem}{/if}');
+showSubMenu('{if $atkmenutop!=="main"}{$atkmenutopname|addslashes}{else}{$firstmenuitem|addslashes}{/if}');
 </script>
