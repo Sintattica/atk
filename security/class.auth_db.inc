@@ -118,6 +118,7 @@
        $grouptable = atkconfig("auth_grouptable");
        $groupfield = atkconfig("auth_groupfield");
        $groupparentfield = atkconfig("auth_groupparentfield");
+       $accountenableexpression = atkconfig("auth_accountenableexpression");
 
        $db = &atkGetDb(atkconfig("auth_database"));
        if ($usertable==$leveltable||$leveltable=="")
@@ -146,6 +147,7 @@
 	       $query = $qryobj->buildSelect();
        }
 
+       if ($accountenableexpression) $query .= " AND $accountenableexpression";
        $recs = $db->getrows($query);
        return $recs;
      }
@@ -258,7 +260,7 @@
        $field = atkconfig("auth_accessfield");
        if (empty($field))
          $field = atkconfig("auth_levelfield");
-         
+
        for ($i=0, $_i=count($rights); $i<$_i; $i++)
        {
          if ($rights[$i]['action'] == $action)
@@ -266,7 +268,7 @@
 	         $result[] = $rights[$i][$field];
          }
        }
-       
+
        return $result;
      }
 
