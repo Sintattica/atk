@@ -84,7 +84,7 @@
 
         $params["content"] = $node->tabulate("view", $innerform);
 
-        $params["formstart"] = '<form name="entryform" action="'.getDispatchFile().'" method="get">'.session_form(SESSION_NESTED).
+        $params["formstart"] = '<form name="entryform" id="entryform" action="'.getDispatchFile().'" method="get">'.session_form(SESSION_NESTED).
                                '<input type="hidden" name="atkselector" value="'.$node->primaryKey($record).'">';
         $params["buttons"]   = $node->getFormButtons("view", $record);
         $params["formend"] = '</form>';
