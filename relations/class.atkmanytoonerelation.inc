@@ -1740,7 +1740,7 @@
       $result =
         '<input type="hidden" id="'.$id.'" name="'.$id.'" value="'.$value.'" />
          <input type="text" id="'.$id.'_search" value="'.atk_htmlentities($label).'" class="atkmanytoonerelation_search" size="30" onfocus="this.select()" />
-         <img id="'.$id.'_spinner" src="atk/images/spinner.gif" style="vertical-align: middle; display: none"> '.$links.'<br />
+         <img id="'.$id.'_spinner" src="atk/images/spinner.gif" style="vertical-align: middle; display: none"> '.$links.'
          <div id="'.$id.'_result" style="display: none" class="atkmanytoonerelation_result"></div>';
 
       // register JavaScript code that attaches the auto-complete behaviour to the search box
