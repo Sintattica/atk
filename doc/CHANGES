@@ -165,8 +165,9 @@ Changed in ATK 6.2
 + Added addHeader support [Peter]
 + Added atkCache, see http://www.achievo.org/wiki/ATK_Cache. [Sandy]
 + Added yubikey authentication (depends on pear Yubikey module). [Gerco, Sandy]
-+ Added atkFieldSet which can be used to combine attributes in 
++ Added atkFieldSet which can be used to combine attributes in
   edit/view mode. [Peter]
+* Fixed issue with O2M relation and persistent filters. [Tjeerd/Peter]
 * Added support for setting a field separator on the multiselectattrib.
   This allows the attribute to be used with the mysql set datatype. [Martin]
 * Fixed extended search with number attributes. It gave me an SQL error. [Martin]

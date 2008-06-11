@@ -275,7 +275,7 @@
       {
         $grid = $this->createGrid($record, 'admin', 'view');
         $grid->loadRecords(); // load records early
-	$grid->setEmbedded(false);
+        $grid->setEmbedded(false);
 
         // no records
         if ($grid->getCount() == 0)
@@ -535,14 +535,14 @@
         for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
         {
           $primkeyattr = &$this->m_ownerInstance->m_attribList[$ownerfields[$i]];
-          $filterelems[] = $this->m_destInstance->getTable().".".$this->m_refKey[$i]."='".$this->escapeSQL($primkeyattr->value2db($record))."'";
+          $filterelems[] = $this->m_refKey[0].".".$ownerfields[$i]."='".$this->escapeSQL($primkeyattr->value2db($record))."'";
         }
       }
       else
       {
         for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
         {
-          $filterelems[] = $this->m_destInstance->getTable().".".$this->m_refKey[$i]."='".$this->escapeSQL($record[$ownerfields[$i]])."'";
+          $filterelems[] = $this->m_refKey[$i]."='".$this->escapeSQL($record[$ownerfields[$i]])."'";
         }
       }
 
@@ -1083,10 +1083,15 @@
      */
     function partial_add_dialog()
     {
-       $this->createDestination();
+      $this->createDestination();
       $this->m_destInstance->m_partial = 'dialog';
       $handler = &$this->m_destInstance->getHandler('add');
       $handler->m_postvars = $this->m_ownerInstance->m_postvars;
+
+      // Reset postvars of ownerinstance because it might interfere with relations
+      // which point back to this ownerinstance and it doesn't need them anymore anyway.
+      $this->m_ownerInstance->m_postvars = array();
+
       $handler->setDialogSaveUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.add_process'));
       $result = $handler->renderAddDialog();
       $page = &$this->m_ownerInstance->getPage();
@@ -1101,6 +1106,11 @@
       $this->createDestination();
       $handler = &$this->m_destInstance->getHandler('save');
       $handler->m_postvars = $this->m_ownerInstance->m_postvars;
+
+      // Reset postvars of ownerinstance because it might interfere with relations
+      // which point back to this ownerinstance and it doesn't need them anymore anyway.
+      $this->m_ownerInstance->m_postvars = array();
+
       $handler->setDialogSaveUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.add_process'));
       $handler->handleSave(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.refresh'));
     }
@@ -1131,6 +1141,11 @@
       {
         $handler = &$this->m_destInstance->getHandler('addorcopy');
         $handler->m_postvars = $this->m_ownerInstance->m_postvars;
+
+        // Reset postvars of ownerinstance because it might interfere with relations
+        // which point back to this ownerinstance and it doesn't need them anymore anyway.
+        $this->m_ownerInstance->m_postvars = array();
+
         $handler->handleCopy(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.refresh'));
       }
 
@@ -1172,6 +1187,11 @@
       $this->m_destInstance->m_partial = 'dialog';
       $handler = &$this->m_destInstance->getHandler('edit');
       $handler->m_postvars = $this->m_ownerInstance->m_postvars;
+
+      // Reset postvars of ownerinstance because it might interfere with relations
+      // which point back to this ownerinstance and it doesn't need them anymore anyway.
+      $this->m_ownerInstance->m_postvars = array();
+
       $handler->setDialogSaveUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.edit_process'));
       $result = $handler->renderEditDialog();
       $page = &$this->m_ownerInstance->getPage();
@@ -1186,6 +1206,11 @@
       $this->createDestination();
       $handler = &$this->m_destInstance->getHandler('update');
       $handler->m_postvars = $this->m_ownerInstance->m_postvars;
+
+      // Reset postvars of ownerinstance because it might interfere with relations
+      // which point back to this ownerinstance and it doesn't need them anymore anyway.
+      $this->m_ownerInstance->m_postvars = array();
+
       $handler->setDialogSaveUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.edit_process'));
       $handler->handleUpdate(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.refresh'));
     }
