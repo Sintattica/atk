@@ -164,7 +164,6 @@ Changed in ATK 6.2
   limitations [Jeroen]
 + Added addHeader support [Peter]
 + Added atkCache, see http://www.achievo.org/wiki/ATK_Cache. [Sandy]
-+ Added yubikey authentication (depends on pear Yubikey module). [Gerco, Sandy]
 + Added atkFieldSet which can be used to combine attributes in
   edit/view mode. [Peter]
 * Fixed issue with O2M relation and persistent filters. [Tjeerd/Peter]
