@@ -731,14 +731,6 @@
      */
     var $m_edit_fieldprefix = '';
 
-	  /** 
-    * 
-    * Multiple line attribute grouping
-    * @access private  
-    * @var Array
-    */
-    var $m_attributeGrouping = array();
-
     /**
      * Constructor.
      *
@@ -854,7 +846,7 @@
      *                   is added.
      * @return atkAttribute the attribute just added
      */
-    function add($attribute,$sections=NULL,$order=0)
+    public function add($attribute,$sections=NULL,$order=0)
     {
       static $attrib_order = 100;
       static $attrib_index = 0;
@@ -994,7 +986,23 @@
 
       return $attribute;
     }
-
+    
+    /**
+     * Add fieldset.
+     * 
+     * To include an attribute label use [attribute.label] inside your
+     * template. To include an attribute edit/display field use 
+     * [attribute.field] inside your template.
+     *
+     * @param string $name     name
+     * @param string $template template string
+     * @param int    $flags    attribute flags
+     */
+    public function addFieldSet($name, $template, $flags=0, $sections=NULL, $order=0)
+    {
+      useattrib('atkfieldset');
+      $this->add(new atkFieldSet($name, $template, $flags), $sections, $order); 
+    }
 
     /**
      * Retrieve the tabnames from the sections string (tab.section).
@@ -5174,30 +5182,6 @@
     {
       if ($this->m_edit_fieldprefix == '') return '';
       else return $this->m_edit_fieldprefix.($atk_layout ? '_AE_' : '');
-    }
-		
-		
-	 /**
-    * Groups several attributes on a single line
-	  *
-	  *	
-    * @param String 	$groupName 		name of the group.
-    * @param Array 		$attributes 	array containing the members of that group.
-    * @param Boolean 	$box 					draws a <fieldset> box around the grouped attributes with the group name in the <legend> 
-		* @param string 	$tab					place the attributes on this tab
-    */
-		
-    function addGroup($groupName,$attributes,$box=false,$tab='default')
-    {
-      $groupname =  atktext("group_".$groupName,$this->m_module,$this->m_type);
-      if (is_array($attributes))
-        {
-          $this->m_attributeGrouping[$groupName] = array("attributes"=>$attributes,"box"=>$box,"name"=>$groupname,"tab"=>$tab);
-        }
-      else
-        {
-          $this->m_attributeGrouping[$groupName] = array("attributes"=>array($attributes),"box"=>$box,"name"=>$groupname,"tab"=>$tab);
-        }
     }
   }
 ?>

@@ -1451,15 +1451,15 @@ class atkMetaPolicy
   /**
    * Add / replace (custom) attribute.
    *
-   * @param string|array $name    attribute name or list of attributes
-   * @param string       $type    attribute type
-   * @param array        $params  attribute parameters, excluding flags (optional)
-   * @param int          $flags   attribute flags (optional)
-   * @param string|array $tabs    tabs to display the attribute on
-   * @param int          $order   order of the attribute
-   * @param mixed        $default default value
+   * @param string|array $name     attribute name or list of attributes
+   * @param string       $type     attribute type
+   * @param array        $params   attribute parameters, excluding flags (optional)
+   * @param int          $flags    attribute flags (optional)
+   * @param string|array $sections sections/tabs to display the attribute on
+   * @param int          $order    order of the attribute
+   * @param mixed        $default  default value
    */
-  public function add($name, $type, $params=array(), $flags=0, $tabs=NULL, $order=NULL, $default=self::NO_DEFAULT_VALUE)
+  public function add($name, $type, $params=array(), $flags=0, $sections=NULL, $order=NULL, $default=self::NO_DEFAULT_VALUE)
   {
     $names = is_array($name) ? $name : array($name);
     foreach ($names as $name)
@@ -1474,7 +1474,7 @@ class atkMetaPolicy
           "type" => $type,
           "params" => $params,
           "flags" => $flags,
-          "tabs" => $tabs,
+          "tabs" => $sections,
           "order" => $order
         );
 
@@ -1484,6 +1484,24 @@ class atkMetaPolicy
       }
     }
   }
+  
+  /**
+   * Add fieldset.
+   * 
+   * To include an attribute label use [attribute.label] inside your
+   * template. To include an attribute edit/display field use 
+   * [attribute.field] inside your template.
+   *
+   * @param string       $name     name
+   * @param string       $template template string
+   * @param int          $flags    attribute flags
+   * @param string|array $sections sections/tabs to display the attribute on
+   * @param int          $order    order of the attribute
+   */
+  public function addFieldSet($name, $template, $flags=0, $sections=NULL, $order=NULL)
+  {
+    $this->add($name, 'atk.attributes.atkfieldset', array($template), $flags, $sections, $order);
+  }  
 
   /**
    * Remove attribute.
