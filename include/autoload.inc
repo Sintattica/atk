@@ -14,44 +14,42 @@
    * @version $Revision$
    * $Id$
    */
-  
-  if (atkconfig('autoload_classes', true))
+
+  atkimport('atk.utils.atkclassloader');
+
+  /**
+   * The autoloader, autoloads classes that PHP can't find.
+   * PHP 5 only.
+   *
+   * @param string $classname The name of the class PHP can't find
+   */
+  function ATK_autoload($classname)
   {
-    atkimport('atk.utils.atkclassloader');
-    
     /**
-     * The autoloader, autoloads classes that PHP can't find.
-     * PHP 5 only.
+     * We exempt some external libraries from autoloading because
+     * they create a loop by checking for their own existance
+     * in the following manner:
      *
-     * @param string $classname The name of the class PHP can't find
+     * if (!class_exists('Smarty'))
+     * {
+     *   class Smarty
+     *   ....
+     * }
+     *
+     * This fraks up the autoloader.
+     * If anyone has a better way to prevent this, please be my guest...
      */
-    function ATK_autoload($classname)
+    if (!empty($classname) && !in_array($classname,array('Smarty','Services_JSON','pear','PEAR_Error')))
     {
-      /**
-       * We exempt some external libraries from autoloading because 
-       * they create a loop by checking for their own existance 
-       * in the following manner:
-       * 
-       * if (!class_exists('Smarty'))
-       * {
-       *   class Smarty
-       *   ....
-       * }
-       * 
-       * This fraks up the autoloader.
-       * If anyone has a better way to prevent this, please be my guest...
-       */
-      if (!empty($classname) && !in_array($classname,array('Smarty','Services_JSON','pear','PEAR_Error')))
+      $classpath = atkClassLoader::findClass($classname);
+
+      if ($classpath && atkimport($classpath))
       {
-        $classpath = atkClassLoader::findClass($classname);
-        
-        if ($classpath && atkimport($classpath)) 
-        {
-          atkdebug("Autoloaded: ".$classname);
-        } 
+        atkdebug("Autoloaded: ".$classname);
       }
     }
-
-    spl_autoload_register('ATK_autoload');
   }
+
+  spl_autoload_register('ATK_autoload');
+
 ?>

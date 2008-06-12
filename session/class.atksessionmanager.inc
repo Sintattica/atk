@@ -15,45 +15,19 @@
    * $Id$
    */
 
-  /**
-   * @internal some session initialization.
-   */
-  $cookie_params = session_get_cookie_params();
-
   $config_identifier = atkconfig("identifier");
   if (empty($config_identifier)) $config_identifier = "default";
 
-  $cookiepath   = atkconfig("application_root");
-  $cookiedomain = (atkconfig("cookiedomain") != "") ? atkconfig("cookiedomain") : NULL;
-  session_set_cookie_params($cookie_params["lifetime"],$cookiepath, $cookiedomain);
-
-  // set cache expire (if function exists, or show upgrade hint if not)
-  if (function_exists("session_cache_expire"))
-    session_cache_expire(atkconfig("session_cache_expire"));
-  else
-    atkdebug("session_cache_expire function does not exist, please upgrade to the latest stable php version (at least 4.2.x)", DEBUG_WARNING);
-
-  // set the cache limiter (used for caching)
-  session_cache_limiter(atkconfig("session_cache_limiter"));
-
-  // If somehow the sessionid is unclean (searchengine bots have been known to mangle sessionids)
-  // we don't have a session...
-  if (isValidSessionId())
+  if (atkconfig('session_init',true) && atksession_init())
   {
-    $sessionName = atkconfig("session_name");
-    if (empty($sessionName))
-      $sessionName = atkconfig("identifier");
-    
-    session_name($sessionName);
-    session_start();
-
-  // backwardscompatibility hacks. g_sessionData and g_sessionData are obsolete actually.
-  // You can use $session = &atkSessionManager::getSession() now, and you'll have a
-  // session enabled, multi-app array in which you can store whatever you like.
-  // There are old applications however that still use $g_sessionData, so I'll
-  // leave it in place for now.
-    $g_sessionData = &$_SESSION[$config_identifier];
+    // backwardscompatibility hacks. g_sessionData and g_sessionData are obsolete actually.
+    // You can use $session = &atkSessionManager::getSession() now, and you'll have a
+    // session enabled, multi-app array in which you can store whatever you like.
+    // There are old applications however that still use $g_sessionData, so I'll
+    // leave it in place for now.
+    $g_sessionData = &$_SESSION[atkconfig('identifier')];
   }
+
   define("SESSION_DEFAULT",0); // stay at current stacklevel
   define("SESSION_NEW",1);     // new stack
   define("SESSION_NESTED",2);  // new item on current stack
@@ -469,7 +443,7 @@
           {
             $recursive = $var{strlen($var) - 1} == '*';
             $var = $recursive ? substr($var, 0, -1) : $var;
-            
+
             if (isset($postvars[$var])&&$postvars[$var]!="")
             {
               if ($postvars[$var]=="clear")
@@ -482,7 +456,7 @@
                 {
                   $currentitem[$var] = array_merge_recursive($currentitem[$var], $postvars[$var]);
                 }
-                else 
+                else
                 {
                   $currentitem[$var] = $postvars[$var];
                 }
@@ -506,17 +480,17 @@
           {
             $recursive = $var{strlen($var) - 1} == '*';
             $var = $recursive ? substr($var, 0, -1) : $var;
-                        
+
             if (isset($postvars[$var])&&count($postvars[$var])>0 && (!$partial || !in_array($var, $lockedVars)))
             {
               if ($recursive && is_array($currentitem[$var]) && is_array($postvars[$var]))
               {
                 $currentitem[$var] = atk_array_merge_recursive($currentitem[$var], $postvars[$var]);
               }
-              else 
+              else
               {
                 $currentitem[$var] = $postvars[$var];
-              }              
+              }
             }
           }
 
@@ -562,7 +536,7 @@
           foreach($currentitem as $var => $value)
           {
             $recursive = in_array("{$var}*", $pageVars);
-            
+
             // don't override what was passed in the url except for
             // recursive mergeable pagevars
             if ($recursive || !isset($postvars[$var]))
@@ -596,10 +570,10 @@
         $node = $stack[$i]["atknodetype"];
         $module = getNodeModule($node);
         $type = getNodeType($node);
-        $action = $stack[$i]["atkaction"];        
+        $action = $stack[$i]["atkaction"];
         $title = $ui->title($module, $type, $action);
         $descriptor = atkArrayNvl($stack[$i], "descriptor", "");
-        
+
         $entry = array(
           'url' => '',
           'title' => $title,
@@ -609,12 +583,12 @@
           'action' => $action,
           'actiontitle' => atktext($action, $type, $module)
         );
-        
+
         if ($i<count($stack)-1)
         {
           $entry['url'] = session_url(getDispatchFile().'?atklevel='.$i);
         }
-        
+
         $res[] = $entry;
       }
 
@@ -935,7 +909,40 @@
   }
 
   /**
-   * Initializes the session.
+   * Initialize and start a PHP session.
+   * Without this smart debugging and the securitymanager will not function correctly.
+   */
+  function atksession_init()
+  {
+    global $g_sessionData;
+    atkdebug("ATKSESSION_INIT");
+    $cookie_params = session_get_cookie_params();
+    $cookiepath   = atkconfig("application_root");
+    $cookiedomain = (atkconfig("cookiedomain") != "") ? atkconfig("cookiedomain") : NULL;
+    session_set_cookie_params($cookie_params["lifetime"], $cookiepath, $cookiedomain);
+
+    // set cache expire (if function exists, or show upgrade hint if not)
+    if (function_exists("session_cache_expire")) session_cache_expire(atkconfig("session_cache_expire"));
+    else atkdebug("session_cache_expire function does not exist, please upgrade to the latest stable php version (at least 4.2.x)", DEBUG_WARNING);
+
+    // set the cache limiter (used for caching)
+    session_cache_limiter(atkconfig("session_cache_limiter"));
+
+    // If somehow the sessionid is unclean (searchengine bots have been known to mangle sessionids)
+    // we don't have a session...
+    if (isValidSessionId())
+    {
+      $sessionname = atkconfig("session_name");
+      if (!$sessionname) $sessionname = atkconfig('identifier');
+      session_name($sessionname);
+      session_start();
+      return true;
+    } else atkwarning("Not a valid session!");
+    return false;
+  }
+
+  /**
+   * Initializes the sessionmanager.
    *
    * After the session has been initialised with atksession(), the session
    * manager can be used using the global variable $g_sessionManager.
@@ -954,8 +961,7 @@
    */
   function atksession($namespace = "default", $usestack=true)
   {
-    global $ATK_VARS, $g_sessionManager;
-    global $atkprevlevel;
+    global $ATK_VARS, $g_sessionManager, $g_sessionData, $atkprevlevel;
 
     $g_sessionManager = new atkSessionManager($namespace, $usestack);
 
@@ -986,7 +992,6 @@
       $output->outputFlush();
       exit;
     }
-
   }
 
   /**
@@ -1127,7 +1132,7 @@
     $name = atkconfig("session_name");
     if (empty($name))
       $name = atkconfig("identifier");
-      
+
     $sessionid = "";
     global ${$name};
 

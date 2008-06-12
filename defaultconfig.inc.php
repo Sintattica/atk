@@ -25,15 +25,15 @@
 
   /**
    * The application root, used to set the cookiepath when using PHP sessions.
-   * 
+   *
    * If you're using urlrewrites within your httpd or htaccess configuration this should be '/'
    * be careful with this setting because it could create a security vulnerability.
-   * 
+   *
    * @var String The application root
    */
   $config_application_root = "/";
 
-  if ($config_atkroot == "" || (ini_get('register_globals') && isset($_REQUEST['config_atkroot']))) // may not be passed in request (register_globals danger) 
+  if ($config_atkroot == "" || (ini_get('register_globals') && isset($_REQUEST['config_atkroot']))) // may not be passed in request (register_globals danger)
   {
     /**
      * The root of the ATK application, where the atk/ directory resides
@@ -41,14 +41,14 @@
      */
      $config_atkroot = "./";
   }
-  
+
   if (!isset($config_application_dir) || empty($config_application_dir) || (ini_get('register_globals') && isset($_REQUEST['config_application_dir'])))
   {
     /**
      * Root directory of your application code (modules/themes/configuration files/etc)
      * relative to the script calling ATK.
      * Defaults to the atkroot.
-     * 
+     *
      * @var String Directory where the application code can be found
      */
     $config_application_dir = $config_atkroot;
@@ -95,13 +95,13 @@
    * @var String
    */
   $config_meta_compiler = "atk.meta.compiler.atkmetacompiler";
-  
+
   /**
    * Cache compiled meta node code?
    * @var bool
    */
   $config_meta_caching = true;
-  
+
   /**
    * Use the given class for creating datagrids.
    */
@@ -305,11 +305,11 @@
 
   /**
    * If left empty auth_levelfield is used.
-   * 
+   *
    * @var String
    */
   $config_auth_accessfield = "";
-  
+
   /**
    *
    * @var String
@@ -703,16 +703,16 @@
   /****************** MISCELLANEOUS CONFIGURATION OPTIONS ********************/
 
   /**
-   * The session name. If this configuration option is not set the 
+   * The session name. If this configuration option is not set the
    * $config_identifier option is used instead.
-   * 
+   *
    * @var string
    */
   $config_session_name = "";
-  
+
   /**
-   * The application identifier. 
-   *  
+   * The application identifier.
+   *
    * @var String
    * @todo update this bit of documentation as it doesn't really say much
    */
@@ -753,7 +753,7 @@
    * @var Array
    */
   $config_allowed_includes = array("atk/lock/lock.php", "atk/lock/lock.js.php",
-                                   "atk/popups/help.inc", "atk/popups/colorpicker.inc", 
+                                   "atk/popups/help.inc", "atk/popups/colorpicker.inc",
                                    "atk/ext/captcha/img/captcha.jpg.php");
 
   /**
@@ -791,6 +791,20 @@
    * @var String
    */
   $config_session_cache_limiter = "nocache";
+
+  /**
+   * Initialize sessions by default.
+   *
+   * When atksessionmanager is included, if this configuration value is true (by default),
+   * ATK will configure and start a PHP session for you.
+   * When you do not want this (in CLI environnements?) you can disable this in your script.
+   * 
+   * DO NOT ENABLE IN THIS CONFIG or you won't be able to set it in your script.
+   * Appears here for documentation purposes only.
+   *
+   * @var bool
+   */
+  //$config_session_init = true;
 
   /**
    * Default sequence prefix.

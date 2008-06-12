@@ -185,7 +185,7 @@
 
       $db = &$usernode->getDB();
       $db->commit();
-      
+
       // Send an email containing the new password to user
       $subject = atktext("auth_passwordmail_subjectnew_password", "atk");
       $body = atktext("auth_passwordmail_explanation", "atk") . "\n\n";
@@ -445,7 +445,7 @@
         {
           $location.= (strpos($location,'?')===false) ? '?' : '&';
           $location.='login='.$auth_user.'&error='.$response;
-                    
+
           if (atkconfig("debug")>=2)
           {
             $debugger = &atkinstance('atk.utils.atkdebugger');
