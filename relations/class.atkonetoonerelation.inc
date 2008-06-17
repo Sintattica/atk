@@ -791,8 +791,19 @@
             if ($arr['fields'][count($arr['fields'])-1]['html']!=='-') $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs,'sections'=>$this->getSections());
             $arr["fields"][] = array("line"=>"<b>".atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type)."</b>", "tabs"=>$this->m_tabs,'sections'=>$this->getSections());
           }
+          
           if (is_array($a["fields"]))
           {
+            // in non-integration mode we move all the fields to the one-to-one relations tabs/sections
+            if (!$this->hasFlag(AF_ONETOONE_INTEGRATE))
+            {
+              foreach (array_keys($a['fields']) as $key)
+              {
+                $a['fields'][$key]['tabs'] = $this->m_tabs;
+                $a['fields'][$key]['sections'] = $this->getSections();
+              }
+            }
+                        
             $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
           }
 
