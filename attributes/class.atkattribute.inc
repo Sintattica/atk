@@ -344,18 +344,19 @@
 
   /**
    * Attribute is disable in view mode
-   *
-   * Used now only with atkTabbedPane attribute to disable default display behaviour of attribute
    */
   define("DISABLED_VIEW",1);
 
   /**
    * Attribute is disable in edit mode
-   *
-   * Used now only with atkTabbedPane attribute to disable default edit behaviour of attribute
    */
   define("DISABLED_EDIT",2);
 
+  /**
+   * Attribute is disabled in view and edit mode
+   */  
+  define("DISABLED_ALL", DISABLED_VIEW|DISABLED_EDIT);
+  
   /**
    * The atkAttribute class represents an attribute of an atkNode.
    * An atkAttribute has a name and a set of parameters that
