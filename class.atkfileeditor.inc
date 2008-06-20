@@ -42,8 +42,9 @@
   class atkFileEditor extends atkNode
   {
     var $m_dir;
+    var $m_basedir;
     var $m_filefilter;
-
+    
     /**
      * Constructor
      *
@@ -72,6 +73,7 @@
     {
       $this->atkNode($name, $flags|NF_ADD_LINK);
       $this->m_dir = $dir;
+      $this->m_basedir = $dir;
       if ($dir=="") $this->m_dir = "./";
 
       // dir must have a trailing slash.
@@ -86,11 +88,23 @@
       $this->setTable("dummy");
     }
 
+   /**
+    * This function is used to change the node directory
+    *
+    * @param String $dir The name of the dir to change to
+    */
     function setDir($dir)
     {
       $this->m_dir = $dir;
     }
 
+   /**
+    * This function reads the contents of the directory
+    *
+    * @param String $selector The selected item in the directory list
+    * @return array The array containing the directory and file names
+    *               from the currently selected directory
+    */
     function countDb($selector)
     {
       $d = dir($this->m_dir);
@@ -103,6 +117,13 @@
       return count($arr);
     }
 
+   /**
+    * This function adds a file or directory to the list in the node
+    *
+    * @param String $entry The directory that is added to the list
+    * @param array $arr The array containing the result of the
+    *                   added item
+    */
     function addFileEntry($entry,&$arr)
     {
       // First we check if we are about to search and set a few things
@@ -116,7 +137,7 @@
         $searching = true;
       }
 
-      // list only regular files.
+      // list only regular files or directories
       if (is_file($this->m_dir.$entry) && ($this->m_filefilter=="" || ereg($this->m_filefilter,$entry)))
       {
         if($searching===true && (ereg($searchArray["filename"],$entry)))
@@ -128,10 +149,36 @@
           $arr[] = $entry;
         }
       }
+      elseif(is_dir($this->m_dir.$entry))
+      {
+        if (!($entry == '.' || $entry == 'CVS' || $entry == '.svn'))
+        {
+          if(!($this->stripDir($this->m_basedir) == $this->stripDir($this->m_dir) && $entry == '..'))
+          {
+            $arr[] = $entry;
+          }
+        }
+      }
     }
 
+   /**
+    * This function sets the actions of the items in the list
+    *
+    * @param String $record Identifier for the record
+    * @param  array $actions Result array containing the options
+    * @param  unknow $mraactions 
+    */
     function recordActions($record, &$actions, &$mraactions)
     {
+      $this->m_dir = $this->stripDir($this->m_dir);
+      if (is_dir($this->m_dir."/".$record["filename"]))
+      {        
+        $actions['view'] = dispatch_url($this->atkNodeType(), "dirchange", array('atkselector' => $this->m_dir.$record["filename"]));
+        unset($actions["edit"]);
+        unset($actions["delete"]);
+        return;
+      }
+      
       // Remove edit/delete actions when a file is not writeable.
       if(!is_writeable($this->m_dir."/".$record["filename"]))
       {
@@ -140,12 +187,21 @@
       }
     }
 
+   /**
+    * This function loops through the items in a directory and
+    * and calls functions to print the results
+    *
+    * @param String $selector Identifier for the selected item
+    * @param String $orderby The list of items is ordered by the item type
+    *                        mentioned in this variable
+    * @param unknown $limit
+    * @return unknown
+    */
     function selectDb($selector="", $orderby="", $limit="")
-    {
+    { 
       if ($selector=="")
       {
         // no file selected, generate list..
-
         $start=0;
         $max=-1; // no max
 
@@ -219,6 +275,12 @@
       return $res;
     }
 
+   /**
+    * This function controls actions on the selected file is allowed
+    *
+    * @param Array $rec Array that contains the identifier of the record
+    * @param unknown_type $mode
+    */
     function validate(&$rec, $mode)
     {
       if (!ereg($this->m_filefilter, $rec['filename']))
@@ -231,12 +293,32 @@
       }
     }
 
+   /**
+    * This function prints the current directory at the top of the list
+    *
+    * @return String The text containing the directory name
+    */
+    function adminHeader()
+    {
+      return "<p><b>".$this->text('current_dir').": ".substr_replace($this->m_dir,'',0,strlen($this->m_basedir))."</b></p>";
+    }
+
+   /**
+    * This function overrides the addDb function to add 
+    * a file to the selected directory
+    *
+    * @param Array $record Array that contains the name of the new file
+    * @return Boolean The result of the file addition
+    */
     function addDb($record)
     {
+      $sessmngr = atkGetSessionManager();
+      $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
       $fp = @fopen($this->m_dir.$record['filename'],"wb");
       if ($fp==NULL)
       {
         atkerror("Unable to open file ".$record['filename']." for writing. (Is directory '".$this->m_dir."' readable by webserver?");
+        return false;
       }
       else
       {
@@ -247,18 +329,27 @@
       return true;
     }
 
+   /**
+    * This function overrides the updateDb function to update 
+    * the contents of a file
+    *
+    * @param array $record Array that contains the name of the file that
+    *                      is updated
+    * @return Boolean The result of the file update 
+    */
     function updateDb(&$record)
     {
       // The record that must be updated is indicated by 'atkorgkey'
       // (not by atkselector, since the primary key might have
       // changed, so we use the atkorgkey, which is the value before
       // any update happened.)
-
+      $sessmngr = atkGetSessionManager();
+      $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
+     
       if ($record['atkprimkey']!="")
       {
         if ($record['atkprimkey']!=$this->primaryKey($record))
         {
-
           $decodedprimkey = decodeKeyValuePair($record['atkprimkey']);
           $filename = $this->m_dir.$decodedprimkey["dummy.filename"];
 
@@ -286,8 +377,17 @@
       }
     }
 
+   /**
+    * This function overrides the deleteDb function to delete a file
+    * from the selected directory
+    *
+    * @param String $selector The identifier of the file that should be deleted
+    * @return boolean The result of the file deletion
+    */
     function deleteDb($selector)
     {
+      $sessmngr = atkGetSessionManager();
+      $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
       $decodedselector = decodeKeyValuePair($selector);
       $filename = $decodedselector["dummy.filename"];
       if (strpos($filename, "..")===false)
@@ -300,6 +400,45 @@
         atkerror("Cannot unlink relative files. Possible hack attempt detected!");
       }
       return true;
+    }
+    
+   /**
+    * This function implements the functionality to move up 
+    * and down directories
+    *
+    */
+    function action_dirchange()
+    { 
+      $selectedDir = $this->stripDir($this->m_postvars['atkselector']);
+      $sessmngr = atkGetSessionManager();
+      ($sessmngr->stackVar('dirname', $selectedDir));
+              
+      $this->m_dir = $selectedDir;
+      $this->callHandler('admin');
+    }
+   
+   /**
+    * This function strips a given directory to a valid relative path
+    *
+    * @param String $dirname Path of the dir to change to
+    * @return String Stripped directory path
+    */
+    function stripDir($dirname)
+    {
+      // normalizes the given string to a relative dir that should always start with the base directory
+      if (strpos(realpath($dirname), realpath($this->m_basedir))===0)
+      {
+        $resultdir = rtrim(str_replace(realpath($this->m_basedir), $this->m_basedir, realpath($dirname)),'/').'/';
+        if ($resultdir == '' || !is_dir($resultdir))
+        {
+          $resultdir = rtrim($this->m_basedir,'/').'/';
+        }
+      }
+      else
+      {
+        $resultdir = rtrim($this->m_basedir,'/').'/';
+      }
+      return $resultdir;
     }
   }
 
