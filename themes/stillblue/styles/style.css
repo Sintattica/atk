@@ -1,0 +1,17 @@
+@import '../../steelblue/styles/style.css';
+
+.panel, #mainMenu
+{
+  float: left;
+}
+
+.panelTitleRight 
+{
+  Height: 26px;
+}
+
+
+.clearfloat
+{
+  clear: both;
+}

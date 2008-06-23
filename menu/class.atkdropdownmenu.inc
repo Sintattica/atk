@@ -35,6 +35,7 @@
       return $page->render("Menu", true);
     }
 
+    function getMenu() { return $this->load(); }
     function load()
     {
       global $ATK_VARS,$g_menu;
