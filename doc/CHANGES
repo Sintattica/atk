@@ -169,7 +169,7 @@ Changed in ATK 6.2
 + Added atkCache, see http://www.achievo.org/wiki/ATK_Cache. [Sandy]
 + Added atkFieldSet which can be used to combine attributes in
   edit/view mode. [Peter]
-* Added a getTheme method to the atkdropdownmenu. The method simply calls and
+* Added a getMenu method to the atkdropdownmenu. The method simply calls and
   return $this->load(). [Erik]
 * Fixed support for multi referential keys in meta M2O relation. [Tjeerd]
 * Fixed issue with O2M relation and persistent filters. [Tjeerd/Peter]
