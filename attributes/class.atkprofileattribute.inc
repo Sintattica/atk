@@ -38,7 +38,7 @@
         $parentAttrName = "";
       }
 
-      $this->atkAttribute($name, $flags);
+      $this->atkAttribute($name, $flags|AF_HIDE_SEARCH|AF_HIDE_LIST);
       $this->m_parentAttrName = $parentAttrName;
       
       $this->m_accessField = atkconfig('auth_accessfield');
