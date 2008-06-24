@@ -43,9 +43,9 @@
   color: #FFFFFF;
 }
 
-input,
-select,
-textarea
+#banner input,
+#banner select,
+#banner textarea
 {
   background-color: #ffffff;
   color: #000000;
@@ -53,7 +53,7 @@ textarea
   font-size: 11px;
 }
 
-input
+#banner input
 {
   height: 12px;
 }

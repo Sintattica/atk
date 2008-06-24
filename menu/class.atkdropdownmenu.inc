@@ -80,7 +80,7 @@
       $enable = $this->isEnabled($menuitem);
       if ($enable)
       {
-        if (!$menuitem['url'] && $g_menu[$menuitem['name']])
+        if ($g_menu[$menuitem['name']])
         {
           $submenu=$indentation."<ul>\n";
           foreach ($g_menu[$menuitem['name']] as $submenuitem)

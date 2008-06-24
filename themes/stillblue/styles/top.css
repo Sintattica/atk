@@ -9,7 +9,7 @@
 
 #bannerLogo
 {
-  top: 0px;;
+  top: 0px;
   height: auto;
   width: auto;
   background-color: white;
@@ -19,9 +19,4 @@
 #bannerCustomImage
 {
   display: none;
-}
-
-input
-{
-  height: auto;
 }

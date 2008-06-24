@@ -15,3 +15,9 @@
 {
   clear: both;
 }
+
+div.stacktrace
+{
+	margin-left: 18px;
+	margin-bottom: 8px;
+}
