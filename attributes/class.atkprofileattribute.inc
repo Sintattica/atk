@@ -38,7 +38,7 @@
         $parentAttrName = "";
       }
 
-      $this->atkAttribute($name, $flags|AF_HIDE_SEARCH|AF_HIDE_LIST);
+      $this->atkAttribute($name, $flags);
       $this->m_parentAttrName = $parentAttrName;
       
       $this->m_accessField = atkconfig('auth_accessfield');
@@ -282,6 +282,101 @@
       return $result;
     }
 
+    /**
+     * Display rights.
+     * It will only display the rights & nodes that are selected for the user.
+     *
+     * @param string $record
+     *
+     * @return string
+     */
+    public function display($record)
+    {
+      $user = getUser();
+      $page = &atkPage::getInstance();
+      $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkprofileattribute.js.php");
+      $this->_restoreDivStates($page);
+
+      $result  = '';
+      $isAdmin =  ($user['name']=='administrator' || $this->canGrantAll());
+      
+      $allActions      = $this->getAllActions($record);
+      $editableActions = $this->getEditableActions($record);
+      $selectedActions = $this->getSelectedActions($record);
+
+      $showModule = count($allActions) > 1 && ($isAdmin || count($editableActions) > 1);
+
+      $firstModule = true;
+
+      foreach ($allActions as $module => $nodes)
+      {
+        // If we have more then one module, split up the module results by collapsable div's
+        if ($showModule)
+        {
+          $result .= "<br><hr>";
+          if ($firstModule)
+            $firstModule = false;
+          else
+            $result .= "</div><br>";
+          $result .= "<b><a href=\"javascript:void(0)\" onclick=\"profile_swapProfileDiv('div_$module','".atkConfig("atkroot")."'); return false;\"><img src='".atkConfig("atkroot")."atk/images/plus.gif' border='0' id='img_div_$module'></a>&nbsp;</b>".atktext(array("title_$module", $module), $module)."<br>";
+          $result .= "<div id='div_$module' name='div_$module' style='display: none;'>";
+          $result .= "<input type='hidden' name=\"divstate['div_$module']\" id=\"divstate['div_$module']\" value='closed' />";
+          $result .= "<br>";
+        }
+        
+        foreach ($nodes as $node => $actions)
+        {
+          $showBox = $isAdmin || count(array_intersect($actions, (is_array($editableActions[$module][$node])?$editableActions[$module][$node]:array()))) > 0;
+          $display_node_str       = false;
+          $display_tabs_str       = false;
+          $node_result            = '';
+          $permissions_string     = '';
+          $tab_permissions_string = '';
+
+          foreach ($actions as $action)
+          {
+            $isSelected = isset($selectedActions[$module][$node]) && in_array($action, $selectedActions[$module][$node]);
+
+            // If the action of a node is selected for this user we will show the node,
+            // otherwise we won't
+            if ($isSelected) 
+            {
+              $display_node_str = true;
+              if (substr($action,0,4) == "tab_")
+              {
+                $display_tabs_str = true;
+                $tab_permissions_string .= $this->permissionName($action, $node, $module) . '&nbsp;&nbsp;&nbsp;';
+              }
+              else
+              {
+                $permissions_string     .= $this->permissionName($action, $node, $module) . '&nbsp;&nbsp;&nbsp;';
+              }
+            }
+          }
+          
+          if ($showBox)
+          {
+            $node_result .= "<b>".atktext($node, $module)."</b><br>";
+            $node_result .=   $permissions_string;
+            if ($display_tabs_str)
+              $node_result .= "<br>Tabs:&nbsp;".$tab_permissions_string;
+            $node_result .= "<br /><br />\n";
+          }else{
+            $node_result .= $permissions_string;
+            if ($display_tabs_str)
+              $node_result .= "<br>Tabs:&nbsp;".$tab_permissions_string;
+          }
+            
+          if ($display_node_str)
+            $result .= $node_result;
+        }
+      }
+
+      return $result;
+    }
+    
+    
+    
     function edit($record)
     {
       $user = getUser();
