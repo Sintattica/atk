@@ -109,14 +109,16 @@
       $content = '<br />'.$loggedin.' &nbsp; <a href="index.php?atklogout=1">'.ucfirst(atkText("logout")).' </a>&nbsp;<br /><br />';
 
       $top = $this->m_ui->renderBox(array("content"=> $content,
-      "logintext" => atktext("logged_in_as"),
-      "logouttext" => ucfirst(atkText("logout", "atk")),
-      "logoutlink" => "index.php?atklogout=1",
-      "logouttarget"=>"_top",
-      "centerpiece_links"=>$this->m_topcenterpiecelinks,
-      "searchpiece"=>$this->m_topsearchpiece,
-      "title" => ($this->m_title!=""?$this->m_title:atkText("app_title")),
-      "user"   => ($this->m_username?$this->m_username:$this->m_user["name"])),
+        "logintext" => atktext("logged_in_as"),
+        "logouttext" => ucfirst(atkText("logout", "atk")),
+        "logoutlink" => "index.php?atklogout=1",
+        "logouttarget"=>"_top",
+        "centerpiece_links"=>$this->m_topcenterpiecelinks,
+        "searchpiece"=>$this->m_topsearchpiece,
+        "title" => ($this->m_title!=""?$this->m_title:atkText("app_title")),
+        "user"   => ($this->m_username?$this->m_username:$this->m_user["name"]),
+        "fulluser" => $this->m_user
+       ),
       "top");
       $this->m_page->addContent($top);
     }
