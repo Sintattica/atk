@@ -31,6 +31,8 @@
 
   define("AF_MANYTOONE_LAZY", AF_SPECIFIC_4);        // lazy load
 
+  define("AF_MANYTOONE_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_5); // Add a default null option to obligatory relations
+
   /**
    * @internal include base class
    */
@@ -56,7 +58,7 @@
     const SEARCH_MODE_EXACT       = "exact";
     const SEARCH_MODE_STARTSWITH  = "startswith";
     const SEARCH_MODE_CONTAINS    = "contains";
-    
+
     /**
      * By default, we do a left join. this means that records that don't have
      * a record in this relation, will be displayed anyway. NOTE: set  this to
@@ -659,7 +661,7 @@
           {
             $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);
             $result.= '<select id="'.$id.'" name="'.$id.'" class="atkmanytoonerelation" '.$onchange.'>';
-            if ((!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) || (atkconfig("list_obligatory_null_item")&&!is_array($value)))
+            if ($this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) || (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) || (atkconfig("list_obligatory_null_item")&&!is_array($value)))
             {
               // Relation may be empty, so we must provide an empty selectable..
               $result.= '<option value="">'.$this->getNoneLabel();
