@@ -165,6 +165,21 @@
       // Utility.
       $edithandler = &$node->getHandler("edit");
 
+      $forceList = $this->invoke("createForceList");
+      $form = $edithandler->editForm("add",$record,$forceList,'',$node->getEditFieldPrefix());
+
+      return $node->tabulate("add", $form);
+    }
+    
+    /**
+     * Based on information provided in the url (atkfilter), this function creates an array with
+     * field values that are used as the initial values of a record in an add page.
+     *
+     * @return Array Values of the newly created record.
+     */
+    function createForceList()
+    {
+      $node = &$this->m_node;
       $forceList = array();
       $filterList = (isset($node->m_postvars['atkfilter'])) ? decodeKeyValueSet($node->m_postvars['atkfilter']) : array();
       foreach ($filterList as $field => $value)
@@ -182,10 +197,8 @@
          {
            $forceList[$table][$column] = $value;
          }
-      }   
-      $form = $edithandler->editForm("add",$record,$forceList,'',$node->getEditFieldPrefix());
-
-      return $node->tabulate("add", $form);
+      }
+      return $forceList;   
     }
 
     /**
