@@ -266,9 +266,16 @@
 
       if ($label=="")
       {
+        $actionKeys = array(
+          'action_'.$module.'_'.$nodetype.'_'.$action,
+          'action_'.$nodetype.'_'.$action,
+          'action_'.$action,
+          $action
+        );
+        
         if ($actiononly)
         {
-          return atktext($action, $module);
+          return atktext($actionKeys, $module);
         }
         else
         {
@@ -277,7 +284,7 @@
           if ($label == "")
             $label = $node->text($nodetype);
           if ($action != NULL)
-            $label .= " - ".atktext($action, $module);
+            $label .= " - ".atktext($actionKeys, $module);
         }
       }
       return $label;

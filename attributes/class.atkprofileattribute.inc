@@ -478,7 +478,17 @@
      */
     function permissionName($action, $nodename="", $modulename="")
     {
-      $label = atktext(array("permission_".$action, $action), $modulename, $nodename);
+      $keys = array(
+        'permission_'.$modulename.'_'.$nodename.'_'.$action,
+        'action_'.$modulename.'_'.$nodename.'_'.$action,
+        'permission_'.$nodename.'_'.$action,
+        'action_'.$nodename.'_'.$action,
+        'permission_'.$action,
+        'action_'.$action,
+        $action
+      );
+      
+      $label = $this->text($keys);
       return $label;
     }
 
