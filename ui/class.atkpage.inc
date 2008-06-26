@@ -102,6 +102,13 @@
      * @var Array
      */
     var $m_hiddenvars = array();
+    
+    /**
+     * Page title.
+     * 
+     * @var string
+     */
+    protected $m_title = '';
 
     /**
      * Retrieve the one-and-only atkPage instance.
@@ -516,6 +523,16 @@
     }
 
     /**
+     * Sets the page title.
+     * 
+     * @param string $title page title
+     */
+    public function setTitle($title)
+    {
+      $this->m_title = $title;
+    }
+    
+    /**
      * Render the complete page, including head and body.
      * @param String $title Title of the HTML page.
      * @param boolean $flags Set to true to generate <body> tags. It is useful
@@ -527,8 +544,13 @@
      * @param string $extrabodyprops  Extra attributes to add to the <body> tag.
      * @return String The HTML page, including <html> and </html> tags.
      */
-    function render($title, $flags=HTML_STRICT,$extrabodyprops="", $extra_header="")
+    function render($title=null, $flags=HTML_STRICT,$extrabodyprops="", $extra_header="")
     {
+      if ($title == null)
+      {
+        $title = $this->m_title;
+      }
+      
       $ui = &atkinstance('atk.ui.atkui');
       $theme = &atkinstance('atk.ui.atktheme');
 

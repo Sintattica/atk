@@ -2612,6 +2612,7 @@
       {
         // 1 record, put it in the page title (with the actionTitle call, a few lines below)
         $record = $recs[0];
+        $this->getPage()->setTitle(atktext('app_shorttitle')." - ".$this->actionTitle($action, $record));
       }
       else
       {
@@ -2892,6 +2893,17 @@
     {
       $page = &atkinstance("atk.ui.atkpage");
       return $page;
+    }
+    
+    /**
+     * Returns a new page builder instance.
+     *
+     * @return atkPageBuilder
+     */
+    public function newPageBuilder()
+    {
+      atkimport('atk.ui.atkpagebuilder');
+      return new atkPageBuilder($this);
     }
 
     /**

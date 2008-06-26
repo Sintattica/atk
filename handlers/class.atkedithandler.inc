@@ -197,6 +197,8 @@
 
       if (is_object($ui))
       {
+        $this->getPage()->setTitle(atktext('app_shorttitle')." - ".$node->actionTitle('edit', $record));
+        
         $output = $ui->renderAction("edit", $params, $node->m_module);
         $this->addRenderBoxVar("title", $node->actionTitle('edit', $record));
         $this->addRenderBoxVar("content", $output);

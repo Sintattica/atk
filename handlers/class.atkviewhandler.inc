@@ -96,6 +96,8 @@
           return $output;
         }
 
+        $this->getPage()->setTitle(atktext('app_shorttitle')." - ".$node->actionTitle('view', $record));
+        
         $vars = array("title"=>$node->actionTitle('view', $record), "content"=>$output);        
         
         if ($this->getRenderMode() == "dialog")

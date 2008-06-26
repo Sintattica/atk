@@ -169,6 +169,11 @@ Changed in ATK 6.2
 + Added atkCache, see http://www.achievo.org/wiki/ATK_Cache. [Sandy]
 + Added atkFieldSet which can be used to combine attributes in
   edit/view mode. [Peter]
++ Added atkPageBuilder (can be instantiated using $node->newPageBuilder())
+  which provides a fluent interface for building generalized ATK pages.
+  [Peter]
+* Improved page title support which makes it possible to set the title of
+  the page from within an action. [Peter]
 * Added a display method to the atkprofileattribute, it will now list the
   rights that a user has per node and module. [Erik]
 * Added a getMenu method to the atkdropdownmenu. The method simply calls and

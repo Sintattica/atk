@@ -136,7 +136,7 @@
       $screen = '';
       if (!$page->isEmpty() || hasFlag($flags, HTML_PARTIAL)) // Only output an html output if there is anything to output.
       {
-        $screen = $page->render(atktext('app_shorttitle')." - ".$ui->title($node->m_module, $node->m_type,$node->m_postvars['atkaction']), $flags);
+        $screen = $page->render(null, $flags);
       }
 
       if(!$this->m_return_output)
@@ -234,6 +234,7 @@
       }
 
       $page = &$node->getPage();
+      $page->setTitle(atktext('app_shorttitle')." - ".$this->getUi()->title($node->m_module, $node->m_type, $node->m_action));
 
       $page->register_script(atkconfig("atkroot")."atk/javascript/prototype/prototype.js");
       $page->register_script(atkconfig("atkroot")."atk/javascript/prototype-ext.js");

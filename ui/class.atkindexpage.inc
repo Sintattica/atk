@@ -82,7 +82,7 @@
 
       $this->atkGenerateDispatcher();
 
-      $this->m_output->output($this->m_page->render(($this->m_title!=""?$this->m_title:atkText("app_title")), $this->m_flags));
+      $this->m_output->output($this->m_page->render($this->m_title != "" ? $this->m_title : null, $this->m_flags));
       $this->m_output->outputFlush();
     }
 
