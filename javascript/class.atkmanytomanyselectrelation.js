@@ -17,7 +17,7 @@ ATK.ManyToManySelectRelation = {
   add: function(el, url) {
     var params = { selector: $F(el) };
     var li = $(el).up('li');
-    new Ajax.Updater(li, url, { parameters: params, insertion: Insertion.Before });
+    new Ajax.Updater(li, url, { parameters: params, insertion: Insertion.Before, evalScripts: true });
     
     if (el.type == 'select-one')
     {

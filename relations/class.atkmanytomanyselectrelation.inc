@@ -191,14 +191,9 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     $url = partial_url($this->getOwnerInstance()->atkNodeType(), $mode, 'attribute.'.$this->fieldName().'.selectedrecord', array('fieldprefix' => $fieldprefix));
 
     $relation = $this->getManyToOneRelation();
-    $relation->addOnChangeHandler("
-      ATK.ManyToManySelectRelation.add(el, '{$url}');
-    ");
+    $relation->addOnChangeHandler("ATK.ManyToManySelectRelation.add(el, '{$url}');");
 
-    return '
-      <li class="atkmanytomanyselectrelation-addition">
-        '.$relation->edit(array(), $fieldprefix, $mode).'
-      </li>';
+    return '<li class="atkmanytomanyselectrelation-addition">'.$relation->edit(array(), $fieldprefix, $mode).'</li>';
   }
 
   /**
@@ -214,7 +209,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
 
     if (empty($selector)) return '';
 
-    $record = $this->getDestination()->select($selector)->firstRow();
+    $record = $this->getDestination()->select($selector)->includes($this->getDestination()->descriptorFields())->firstRow();
 
     return $this->renderSelectedRecord($record, $fieldprefix);
   }
