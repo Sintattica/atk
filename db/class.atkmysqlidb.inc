@@ -475,17 +475,37 @@
      }
      return true;
    }
+   
+   /**
+    * Set savepoint with the given name.
+    *
+    * @param $name savepoint name
+    */
+   function savepoint($name)
+   {
+     atkdebug(get_class($this)."::savepoint $name");
+     $this->query('SAVEPOINT '.$name);
+   }
 
-   /*
+   /**
     * Rollback the the current transaction.
     */
-   function rollback()
+   function rollback($savepoint="")
    {
-     if($this->m_link_id)
-     {
-       atkdebug("Rollback");
-       mysqli_rollback($this->m_link_id);
+     if ($this->m_link_id)
+     { 
+       if (!empty($savepoint))
+       {
+         atkdebug(get_class($this)."::rollback (rollback to savepoint $savepoint)");        
+         $this->query('ROLLBACK TO SAVEPOINT '.$savepoint);
+       } 
+       else 
+       {
+         atkdebug("Rollback");
+         mysqli_rollback($this->m_link_id);
+       }
      }
+      
      return true;
    }
 

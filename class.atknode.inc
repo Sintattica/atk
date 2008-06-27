@@ -2625,13 +2625,13 @@
           $content.= "<ul>";
           for ($i=0, $_i=count($recs); $i<$_i; $i++)
           {
-            $content.="<li> ".$this->descriptor($recs[$i]);
+            $content.="<li>".str_replace(' ', '&nbsp;', htmlentities($this->descriptor($recs[$i])));
           }
           $content.= "</ul>";
         }
       }
 
-      $content.= '<br>'.$this->confirmActionText($atkselector, $action, $checkoverride);
+      $content.= '<br>'.$this->confirmActionText($atkselector, $action, true);
 
       $output=$ui->renderAction($action, array("content"=>$content,
                                                 "formstart"=>$formstart,
@@ -5194,6 +5194,18 @@
     {
       if ($this->m_edit_fieldprefix == '') return '';
       else return $this->m_edit_fieldprefix.($atk_layout ? '_AE_' : '');
+    }
+    
+    /**
+     * Escape SQL string, uses the node's database to do the escaping.
+     * 
+     * @param string $string string to escape
+     * 
+     * @return string escaped string
+     */
+    public function escapeSQL($string)
+    {
+      return $this->getDb()->escapeSQL($string);
     }
   }
 ?>

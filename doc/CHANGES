@@ -447,6 +447,8 @@ Changed in ATK 6.2
   and introduced $config_session_init (true by default), setting this config
   to false will make sure no session is initialized by ATK. [Boy,Peter] 
 * Improved translation options for node actions. [Peter]
+* Added support for savepoints to MySQLi driver. [Peter]
+* Fixed displaying of descriptors in confirm action. [Peter]
 - Removed atkMetaHandler because it wasn't very useful. [Peter]
 - Removed support for regexes in atkMetaPolicy's setIncludes/setExcludes
   because it wasn't very useful and wasn't used anyway. [Peter]
