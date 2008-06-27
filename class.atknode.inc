@@ -2900,7 +2900,7 @@
      *
      * @return atkPageBuilder
      */
-    public function newPageBuilder()
+    public function createPageBuilder()
     {
       atkimport('atk.ui.atkpagebuilder');
       return new atkPageBuilder($this);
