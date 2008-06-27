@@ -102,12 +102,12 @@ class atkPageBuilder
   /**
    * Add box.
    *
-   * @param string $title
    * @param string $content
+   * @param string $title
    * 
    * @return atkPageBuilder
    */
-  public function box($title, $content)
+  public function box($content, $title=null)
   {
     $this->m_boxes[] = array('type' => 'box', 'title' => $title, 'content' => $content);
     return $this;
@@ -116,12 +116,12 @@ class atkPageBuilder
   /**
    * Add action box.
    *
-   * @param string $title 
    * @param array  $params
+   * @param string $title 
    * 
    * @return atkPageBuilder
    */
-  public function actionBox($title, $params)
+  public function actionBox($params, $title=null)
   {
     $this->m_boxes[] = array('type' => 'action', 'title' => $title, 'params' => $params);
     return $this;
@@ -132,10 +132,19 @@ class atkPageBuilder
    */
   public function render()
   {
+    if ($this->m_title == null)
+    {
+      $this->m_title = $this->getNode()->actionTitle($this->m_action, $this->m_record);
+    }    
+    
     $boxes = array();
     foreach ($this->m_boxes as $box)
     {
-      $title = $box['title'];
+      $title = $box['title'];      
+      if ($title == null)
+      {
+        $title = $this->m_title;
+      }
       
       if ($box['type'] == 'action')
       {
@@ -147,11 +156,6 @@ class atkPageBuilder
       }
       
       $boxes[] = $this->getNode()->getUi()->renderBox(array('title' => $title, 'content' => $content));
-    }
-    
-    if ($this->m_title == null)
-    {
-      $this->m_title = $this->getNode()->actionTitle($this->m_action, $this->m_record);
     }
 
     $this->getNode()->getPage()->setTitle(atktext('app_shorttitle')." - ".$this->m_title);

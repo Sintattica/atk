@@ -112,7 +112,7 @@
     {
       $ui = &$this->getUi();
 
-      $vars = array("title"=>$this->m_node->actionTitle('admin'),
+      $vars = array("title"=>$this->m_node->actionTitle($this->getNode()->m_action),
                     "content"=>$this->renderAdminList());
 
       if ($this->getRenderMode() == 'dialog')
