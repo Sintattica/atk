@@ -143,7 +143,7 @@ class atkPageBuilder
       $title = $box['title'];      
       if ($title == null)
       {
-        $title = $this->m_title;
+        $title = $this->getNode()->getUi()->nodeTitle($this->getNode(), $this->m_action, true);
       }
       
       if ($box['type'] == 'action')
