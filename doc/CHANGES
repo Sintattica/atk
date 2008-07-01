@@ -169,7 +169,7 @@ Changed in ATK 6.2
 + Added atkCache, see http://www.achievo.org/wiki/ATK_Cache. [Sandy]
 + Added atkFieldSet which can be used to combine attributes in
   edit/view mode. [Peter]
-+ Added atkPageBuilder (can be instantiated using $node->newPageBuilder())
++ Added atkPageBuilder (can be instantiated using $node->createPageBuilder())
   which provides a fluent interface for building generalized ATK pages.
   [Peter]
 * Improved page title support which makes it possible to set the title of
