@@ -78,13 +78,7 @@
      * @var integer
      */
     protected $m_year_sorting = self::SORT_YEAR_ASC ;
-    
-    /**
-     * Enter description here...
-     *
-     * @var unknown_type
-     */
-    
+   
     var $m_date_min;
     var $m_date_max;
     var $m_date_format_edit;
