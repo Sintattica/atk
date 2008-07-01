@@ -44,6 +44,11 @@
    */
   class atkDateAttribute extends atkAttribute
   {
+    /**
+     * Possible values for sorting the year dropdown
+     */
+    const SORT_YEAR_ASC   = 1;
+    const SORT_YEAR_DESC  = 2;
     
     /**
      * Static var to keep track if js scripts are already registered.
@@ -66,6 +71,19 @@
      * @var bool
      */
     protected $m_yeardropdown = false;
+    
+    /**
+     * sorting of the year dropdown
+     *
+     * @var integer
+     */
+    protected $m_year_sorting = self::SORT_YEAR_ASC ;
+    
+    /**
+     * Enter description here...
+     *
+     * @var unknown_type
+     */
     
     var $m_date_min;
     var $m_date_max;
@@ -363,13 +381,27 @@
 
         if(empty($current["mon"]) && !$emptyfield) $current["mon"] = 1;
         if(empty($current["mday"]) && !$emptyfield) $current["mday"] = 1;
-
-        for($j = $current["y_min"]; $j <= $current["y_max"]; $j++)
+        
+        if($this->m_year_sorting == self::SORT_YEAR_DESC)
         {
-          $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $current["mday"], $j));
-          $str_year = $this->formatDate($tmp_date, $format);
-          $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["year"] ? "selected" : "").'>'.$str_year.'</option>';
+          for($j = $current["y_max"]; $j >= $current["y_min"]; $j--)
+          {
+            $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $current["mday"], $j));
+            $str_year = $this->formatDate($tmp_date, $format);
+            $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["year"] ? "selected" : "").'>'.$str_year.'</option>';
+          }
+        } 
+        else
+        {
+          for($j = $current["y_min"]; $j <= $current["y_max"]; $j++)
+          {
+            $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $current["mday"], $j));
+            $str_year = $this->formatDate($tmp_date, $format);
+            $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["year"] ? "selected" : "").'>'.$str_year.'</option>';
+          }
         }
+        
+        
         $result .= '</select>';
         $this->yeardropdown = true;
       }
@@ -1295,7 +1327,19 @@
     {
       return $this->m_simplemode;
     }
-   
+    
+    public function setYearSorting($sorting)
+    {
+      if($sorting == self::SORT_YEAR_ASC || $sorting == self::SORT_YEAR_DESC )
+      {
+        $this->m_year_sorting = $sorting;
+      }
+    }
+    
+    public function getYearSorting()
+    {
+      return $this->m_year_sorting;
+    }
     
   }
 ?>

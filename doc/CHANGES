@@ -7,6 +7,8 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
++ Added year sorting on the atkDateAttribute. Use setYearSorting()
+  to change the sorting order of the years dropdown. [Martijn]
 + Added simple mode on the atkDateAttribute. With the simple mode enabled
   no javascript is used to update the dropdowns [Martijn]
 + Added a new theme called stillblue, which is based on steelblue but with

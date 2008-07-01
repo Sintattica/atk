@@ -179,4 +179,32 @@ class test_atkDateAttribute extends atkTestCase
     $this->attr->draw();
     $this->assertFalse($this->attr->getBaseScriptsRegistered());
   }
+  
+  public function test_sortyear_default()
+  {
+    $this->assertEqual(atkDateAttribute::SORT_YEAR_ASC,$this->attr->getYearSorting());
+  }
+  
+  public function test_sortyear_set()
+  {
+    $this->attr->setYearSorting(atkDateAttribute::SORT_YEAR_ASC);
+    $this->assertEqual(atkDateAttribute::SORT_YEAR_ASC,$this->attr->getYearSorting());
+    $this->attr->setYearSorting(atkDateAttribute::SORT_YEAR_DESC);
+    $this->assertEqual(atkDateAttribute::SORT_YEAR_DESC,$this->attr->getYearSorting());
+    $this->attr->setYearSorting('bogus');
+    $this->assertEqual(atkDateAttribute::SORT_YEAR_DESC,$this->attr->getYearSorting());
+  }
+  
+  public function test_sortyear_draw()
+  {
+    $this->attr->addFlag(AF_DATE_NO_CALENDAR);
+    $this->attr->setFormatEdit('Y');
+    
+    $this->attr->setYearSorting(atkDateAttribute::SORT_YEAR_ASC);
+    $this->assertEqual('<script language="javascript">var atkdateattribute_xyz = {"format":"Y","min":"20080101","max":"20100101","emptyfield":true,"weekday":true};</script><select id="xyz[year]" name="xyz[year]" class="atkdateattribute" onChange="AdjustDate(this, \'xyz\');"><option value="0"></option><option value="2008" >2008</option><option value="2009" >2009</option><option value="2010" >2010</option></select>',$this->attr->draw());
+    $this->attr->setYearSorting(atkDateAttribute::SORT_YEAR_DESC);    
+    $this->assertEqual('<script language="javascript">var atkdateattribute_xyz = {"format":"Y","min":"20080101","max":"20100101","emptyfield":true,"weekday":true};</script><select id="xyz[year]" name="xyz[year]" class="atkdateattribute" onChange="AdjustDate(this, \'xyz\');"><option value="0"></option><option value="2010" >2010</option><option value="2009" >2009</option><option value="2008" >2008</option></select>',$this->attr->draw());
+  }
+  
+  
 }
