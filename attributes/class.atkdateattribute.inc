@@ -397,7 +397,7 @@
         
         
         $result .= '</select>';
-        $this->yeardropdown = true;
+        $this->m_yeardropdown = true;
       }
 
       /* normal input box */
@@ -675,7 +675,7 @@
         else $result .= $str_format[$i];
       }
 
-      if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && !$yeardropdown && !$this->m_simplemode && $mode != 'list')
+      if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && !$this->m_yeardropdown && !$this->m_simplemode && $mode != 'list')
       {
         $result.=' <input '.$this->getCSSClassAttribute(array("button", "atkbutton")).' type="reset" value="..." onclick="return showCalendar(\''.$fieldname.'\', \''.$fieldname.'[year]\', \'y-mm-dd\', true);">';
       }
