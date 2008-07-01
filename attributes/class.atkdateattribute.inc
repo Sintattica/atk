@@ -439,7 +439,7 @@
       {
         for ($j = 1; $j <= 12; $j++)
         {
-          $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mon"] ? "selected" : "").'>'.sprintf("%2d",$j).'</option>';
+          $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mon"] ? "selected" : "").'>'.sprintf("%02d",$j).'</option>';
         }
       }
       $result .= '</select>';
@@ -481,16 +481,7 @@
       {
         for ($j = 1; $j <= 31; $j++)
         {
-          $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $j, $current["year"]));
-          if (($current['year']!="") && ($current['mon']!=""))
-          {
-            $str_day = $this->formatDate($tmp_date, $format, !$this->hasFlag(AF_DATE_EDIT_NO_DAY));
-          }
-          else
-          {
-            $str_day = $this->formatDate($tmp_date, $format,0);
-          }
-          $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mday"] ? "selected" : "").'>'.$str_day.'</option>';
+          $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mday"] ? "selected" : "").'>'.sprintf("%02d",$j).'</option>';
         }
       }
       $result .= '</select>'; 
