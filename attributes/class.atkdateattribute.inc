@@ -44,19 +44,36 @@
    */
   class atkDateAttribute extends atkAttribute
   {
+    
     /**
      * Static var to keep track if js scripts are already registered.
      *
      * @var bool
      */
     protected static $s_baseScriptsRegistered = false;
-
+    
+    /**
+     * Are we in simple mode?
+     * 
+     * @see atkDateAttribute::setSimpleMode()
+     * @var bool
+     */
+    protected $m_simplemode = false;
+    
+    /**
+     * Do we have a year dropdown 
+     *
+     * @var bool
+     */
+    protected $m_yeardropdown = false;
+    
     var $m_date_min;
     var $m_date_max;
     var $m_date_format_edit;
     var $m_date_format_view;
     var $m_onchangecode = array();
     var $m_maxyears = 25;
+    
 
     /**
      * Format date according to a format string
@@ -321,7 +338,139 @@
     {
       return $this->draw($record, $fieldprefix, "", $mode, $this->hasFlag(AF_OBLIGATORY));
     }
+    
+    /**
+     * Renders a year dropdown or text box
+     *
+     * @param string $fieldname current fieldname
+     * @param string $str_script onchange script
+     * @param array $current current array
+     * @param string $format current format
+     * @param bool $obligatory 
+     * @return string
+     */
+    protected function renderYear($fieldname, $str_script, $current, $format, $obligatory)
+    {
+      $result = "";
+      
+      /* date must be within specified (default: 25) years */
+      if(!empty($current["y_max"]) && !empty($current["y_min"]) && $current["y_max"] - $current["y_min"] <= $this->m_maxyears)
+      {
+        $this->registerKeyListener($fieldname.'[year]', KB_CTRLCURSOR|KB_LEFTRIGHT);
+        $result .= '<select id="'.$fieldname.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute" onChange="'.$str_script.'">';
+        if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
+          $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
 
+        if(empty($current["mon"]) && !$emptyfield) $current["mon"] = 1;
+        if(empty($current["mday"]) && !$emptyfield) $current["mday"] = 1;
+
+        for($j = $current["y_min"]; $j <= $current["y_max"]; $j++)
+        {
+          $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $current["mday"], $j));
+          $str_year = $this->formatDate($tmp_date, $format);
+          $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["year"] ? "selected" : "").'>'.$str_year.'</option>';
+        }
+        $result .= '</select>';
+        $this->yeardropdown = true;
+      }
+
+      /* normal input box */
+      else
+      {
+        $this->registerKeyListener($fieldname.'[year]', KB_CTRLCURSOR|KB_UPDOWN);
+        $result .= '<input type="text" id="'.$fieldname.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute" size="4" maxlength="4" onChange="'.$str_script.'" value="'.(isset($current["year"])?$current["year"]:"").'">';
+      }
+      
+      return $result;
+    }
+    
+    /**
+     * Renders month combo
+     *
+     * @param string $fieldname current fieldname
+     * @param string $str_script onchange script
+     * @param array $current current array
+     * @param string $format current format
+     * @param bool $obligatory 
+     * @return string
+     */
+    protected function renderMonth($fieldname, $str_script, $current, $format, $obligatory)
+    {
+      $this->registerKeyListener($fieldname.'[month]', KB_CTRLCURSOR|KB_LEFTRIGHT);
+      $result = '<select id="'.$fieldname.'[month]" name="'.$fieldname.'[month]" class="atkdateattribute" onChange="'.$str_script.'">';
+      if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
+        $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
+      if (!$this->m_simplemode)
+      {
+        for ($j = $current["m_min"]; $j <= $current["m_max"]; $j++)
+        {
+          $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $j,1, (isset($current["year"])?$current["year"]:0)));
+          $str_month = $this->formatDate($tmp_date, $format);
+          $result .= '<option value="'.$j.'" '.(isset($current["mon"]) && $j == $current["mon"] ? "selected" : "").'>'.$str_month.'</option>';
+        }
+      }
+      else
+      {
+        for ($j = 1; $j <= 12; $j++)
+        {
+          $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mon"] ? "selected" : "").'>'.sprintf("%2d",$j).'</option>';
+        }
+      }
+      $result .= '</select>';
+      return $result;
+    }
+    
+    /**
+     * Renders the day dropdown
+     * @param string $fieldname current fieldname
+     * @param string $str_script onchange script
+     * @param array $current current array
+     * @param string $format current format
+     * @param bool $obligatory 
+     * @return string
+     **/
+    protected function renderDay($fieldname, $str_script, $current, $format, $obligatory, $weekdayFormat)
+    {
+      $this->registerKeyListener($fieldname.'[day]', KB_CTRLCURSOR|KB_LEFTRIGHT);
+      $result = '<select id="'.$fieldname.'[day]" name="'.$fieldname.'[day]" class="atkdateattribute" onChange="'.$str_script.'">';
+      if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
+        $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
+      if (!$this->m_simplemode)
+      {
+        for ($j = $current["d_min"]; $j <= $current["d_max"]; $j++)
+        {
+          $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $j, $current["year"]));
+          if (($current['year']!="") && ($current['mon']!=""))
+          {
+            $str_day = $this->formatDate($tmp_date, (empty($weekdayFormat) ? $format : "$weekdayFormat {$format}"), !$this->hasFlag(AF_DATE_EDIT_NO_DAY));
+          }
+          else
+          {
+            $str_day = $this->formatDate($tmp_date, (empty($weekdayFormat) ? $format : "$weekdayFormat {$format}"), 0);
+          }
+          $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mday"] ? "selected" : "").'>'.$str_day.'</option>';
+        }
+      }
+      else
+      {
+        for ($j = 1; $j <= 31; $j++)
+        {
+          $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $j, $current["year"]));
+          if (($current['year']!="") && ($current['mon']!=""))
+          {
+            $str_day = $this->formatDate($tmp_date, $format, !$this->hasFlag(AF_DATE_EDIT_NO_DAY));
+          }
+          else
+          {
+            $str_day = $this->formatDate($tmp_date, $format,0);
+          }
+          $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mday"] ? "selected" : "").'>'.$str_day.'</option>';
+        }
+      }
+      $result .= '</select>'; 
+      return $result; 
+    }
+    
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value. (Month will be a dropdownbox, year and day text fields)
@@ -334,10 +483,12 @@
     {
       $result = "";
 
-      $pda = browserInfo::detectPDA();
-      $yeardropdown = false;
+      // go in simplemode when a pda is detected
+      if(browserInfo::detectPDA()) $this->setSimpleMode(true);
+      
+      $this->m_yeardropdown = false;
 
-      if (!$pda)
+      if (!$this->m_simplemode)
       {
         self::registerScriptsAndStyles(!$this->hasFlag(AF_DATE_NO_CALENDAR));
       }
@@ -454,7 +605,7 @@
       );
 
       atkimport('atk.utils.atkjson');
-      if (!$pda) $result .= '<script language="javascript">var atkdateattribute_'.$fieldname.' = '.atkJSON::encode($info).';</script>';
+      if (!$this->m_simplemode) $result .= '<script language="javascript">var atkdateattribute_'.$fieldname.' = '.atkJSON::encode($info).';</script>';
 
 
       /* other date selections */
@@ -462,7 +613,7 @@
       for($i = 0; $i < strlen($str_format); $i++)
       {
         /* javascript method */
-        if (!$pda) $str_script = "AdjustDate(this, '".$fieldname."');";
+        if (!$this->m_simplemode) $str_script = "AdjustDate(this, '".$fieldname."');";
 
         if (count($this->m_onchangecode))
         {
@@ -473,33 +624,7 @@
         /* year input box */
         if ($str_format[$i] == "y" || $str_format[$i] == "Y")
         {
-          /* date must be within specified (default: 25) years */
-          if(!empty($current["y_max"]) && !empty($current["y_min"]) && $current["y_max"] - $current["y_min"] <= $this->m_maxyears)
-          {
-            $this->registerKeyListener($fieldname.'[year]', KB_CTRLCURSOR|KB_LEFTRIGHT);
-            $result .= '<select id="'.$fieldname.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute" onChange="'.$str_script.'">';
-            if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
-              $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
-
-            if(empty($current["mon"]) && !$emptyfield) $current["mon"] = 1;
-            if(empty($current["mday"]) && !$emptyfield) $current["mday"] = 1;
-
-            for($j = $current["y_min"]; $j <= $current["y_max"]; $j++)
-            {
-              $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $current["mday"], $j));
-              $str_year = $this->formatDate($tmp_date, $str_format[$i]);
-              $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["year"] ? "selected" : "").'>'.$str_year.'</option>';
-            }
-            $result .= '</select>';
-            $yeardropdown = true;
-          }
-
-          /* normal input box */
-          else
-          {
-            $this->registerKeyListener($fieldname.'[year]', KB_CTRLCURSOR|KB_UPDOWN);
-            $result .= '<input type="text" id="'.$fieldname.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute" size="4" maxlength="4" onChange="'.$str_script.'" value="'.(isset($current["year"])?$current["year"]:"").'">';
-          }
+          $result .= $this->renderYear($fieldname,$str_script,$current,$str_format[$i],$obligatory);
         }
 
         /* weekday format */
@@ -511,78 +636,20 @@
         /* day input box */
         elseif ($str_format[$i] == "j" || $str_format[$i] == "d")
         {
-          $this->registerKeyListener($fieldname.'[day]', KB_CTRLCURSOR|KB_LEFTRIGHT);
-          $result .= '<select id="'.$fieldname.'[day]" name="'.$fieldname.'[day]" class="atkdateattribute" onChange="'.$str_script.'">';
-          if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
-            $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
-          if (!$pda)
-          {
-            for ($j = $current["d_min"]; $j <= $current["d_max"]; $j++)
-            {
-              $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $j, $current["year"]));
-              if (($current['year']!="") && ($current['mon']!=""))
-              {
-                $str_day = $this->formatDate($tmp_date, (empty($weekdayFormat) ? $str_format[$i] : "$weekdayFormat {$str_format[$i]}"), !$this->hasFlag(AF_DATE_EDIT_NO_DAY));
-              }
-              else
-              {
-                $str_day = $this->formatDate($tmp_date, (empty($weekdayFormat) ? $str_format[$i] : "$weekdayFormat {$str_format[$i]}"), 0);
-              }
-              $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mday"] ? "selected" : "").'>'.$str_day.'</option>';
-            }
-          }
-          else
-          {
-            for ($j = 0; $j <= 31; $j++)
-            {
-              $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $j, $current["year"]));
-              if (($current['year']!="") && ($current['mon']!=""))
-              {
-                $str_day = $this->formatDate($tmp_date, $str_format[$i], !$this->hasFlag(AF_DATE_EDIT_NO_DAY));
-              }
-              else
-              {
-                $str_day = $this->formatDate($tmp_date, $str_format[$i],0);
-              }
-              $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mday"] ? "selected" : "").'>'.$str_day.'</option>';
-            }
-          }
-          $result .= '</select>';
+          $result .= $this->renderDay($fieldname,$str_script,$current,$str_format[$i],$obligatory,$weekdayFormat);
         }
 
         /* month input box */
         elseif($str_format[$i] == "m" || $str_format[$i] == "n" || $str_format[$i] == "M" || $str_format[$i] == "F")
         {
-          $this->registerKeyListener($fieldname.'[month]', KB_CTRLCURSOR|KB_LEFTRIGHT);
-          $result .= '<select id="'.$fieldname.'[month]" name="'.$fieldname.'[month]" class="atkdateattribute" onChange="'.$str_script.'">';
-          if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
-            $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
-          if (!$pda)
-          {
-            for ($j = $current["m_min"]; $j <= $current["m_max"]; $j++)
-            {
-              $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $j,1, (isset($current["year"])?$current["year"]:0)));
-              $str_month = $this->formatDate($tmp_date, $str_format[$i]);
-              $result .= '<option value="'.$j.'" '.(isset($current["mon"]) && $j == $current["mon"] ? "selected" : "").'>'.$str_month.'</option>';
-            }
-          }
-          else
-          {
-            for ($j = 0; $j <= 12; $j++)
-            {
-              $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $j,1, $current["year"]));
-              $str_month = $this->formatDate($tmp_date, $str_format[$i]);
-              $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mon"] ? "selected" : "").'>'.$str_month.'</option>';
-            }
-          }
-          $result .= '</select>';
+          $result .= $this->renderMonth($fieldname,$str_script,$current,$str_format[$i],$obligatory);
         }
 
         /* other characters */
         else $result .= $str_format[$i];
       }
 
-      if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && !$yeardropdown && !$pda && $mode != 'list')
+      if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && !$yeardropdown && !$this->m_simplemode && $mode != 'list')
       {
         $result.=' <input '.$this->getCSSClassAttribute(array("button", "atkbutton")).' type="reset" value="..." onclick="return showCalendar(\''.$fieldname.'\', \''.$fieldname.'[year]\', \'y-mm-dd\', true);">';
       }
@@ -1206,5 +1273,29 @@
     {
       return $this->m_maxyears;
     }
+    
+    /**
+     * Setter to enable simplemode of the atkDateAttribute
+     * In simplemode only the dropdowns are visible and no javascript is used to update these dropdowns
+     * The date is only validated by saving the form
+     * @param bool $simplemode
+     */
+    public function setSimpleMode($simplemode)
+    {
+      $this->m_simplemode = (bool) $simplemode;
+      $this->addFlag(AF_DATE_EDIT_NO_DAY|AF_DATE_NO_CALENDAR|AF_DATE_EMPTYFIELD);
+    }
+    
+    /**
+     * Are we in simplemode
+     *
+     * @return bool
+     */
+    public function getSimpleMode()
+    {
+      return $this->m_simplemode;
+    }
+   
+    
   }
 ?>
