@@ -7,6 +7,8 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
++ Added simple mode on the atkDateAttribute. With the simple mode enabled
+  no javascript is used to update the dropdowns [Martijn]
 + Added a new theme called stillblue, which is based on steelblue but with
   more workspace and frameless [Erik]
 + atkFileEditor is now able to browse through subdirectories. [Bjorn]
@@ -172,6 +174,8 @@ Changed in ATK 6.2
 + Added atkPageBuilder (can be instantiated using $node->createPageBuilder())
   which provides a fluent interface for building generalized ATK pages.
   [Peter]
+* Did some internal refactoring on the atkDateAttribute draw method.[Martijn]
+* Fixed pda format in atkDateAttribute. [Martijn]
 * Improved page title support which makes it possible to set the title of
   the page from within an action. [Peter]
 * Added a display method to the atkprofileattribute, it will now list the
