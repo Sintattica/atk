@@ -117,7 +117,7 @@
 
         if (!hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(AF_SEARCHABLE))
         {
-          $arr["search"][$fieldprefix.$this->fieldName()] = $this->search($atksearch);
+          $arr["search"][$fieldprefix.$this->fieldName()] = $this->search($atksearch,false,$fieldprefix);
           $arr["search"][$fieldprefix.$this->fieldName()].='<input type="hidden" name="atksearchmode['.$this->formName().']" value="'.$this->getSearchMode(false).'">';
         }
       }
