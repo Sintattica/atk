@@ -105,4 +105,15 @@
      * @return string HTML string
      */
     public abstract function render($record, $mode, $prefix);
+    
+    /**
+     * Text proxy. Forwards translations to the shuttle attribute.
+     *
+     * @param string $string
+     * @return string
+     */
+    public function text($string)
+    {
+      return $this->m_shuttle->text($string);
+    }
   }

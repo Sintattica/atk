@@ -239,6 +239,8 @@
       {
         $grid->addFilter($this->parseFilter($this->m_destinationFilter, $record));
       }
+      
+      $this->modifyDataGrid($grid, atkDataGrid::CREATE);
 
       return $grid;
     }
@@ -253,7 +255,30 @@
       $this->createDestination();
       $node = $this->getDestination();
       atkimport('atk.datagrid.atkdatagrid');
-      return atkDataGrid::resume($node)->render();
+      $grid = atkDataGrid::resume($node);
+      $this->modifyDataGrid($grid, atkDataGrid::RESUME);
+      return $grid->render();
+    }
+    
+    /**
+     * Modify grid.
+     * 
+     * @param atkDataGrid $grid grid
+     * @param int         $mode CREATE or RESUME
+     */
+    protected function modifyDataGrid(atkDataGrid $grid, $mode)
+    {
+      $method = 'modifyDataGrid';
+      if (method_exists($this->getDestination(), $method))
+      {
+        $this->getDestination()->$method($grid, $mode);
+      }
+      
+      $method = $this->fieldName().'_modifyDataGrid';
+      if (method_exists($this->getOwnerInstance(), $method))
+      {
+        $this->getOwnerInstance()->$method($grid, $mode);
+      }      
     }
 
     /**

@@ -139,11 +139,13 @@
 
       atkimport('atk.datagrid.atkdatagrid');
       $grid = atkDataGrid::create($this->getNode(), 'admin');
-
+      
       if (is_array($actions))
       {
         $grid->setDefaultActions($actions);
       }
+      
+      $this->modifyDataGrid($grid, atkDataGrid::CREATE);
 
       if ($this->redirectToSearchAction($grid))
       {
@@ -167,6 +169,8 @@
     {
       atkimport('atk.datagrid.atkdatagrid');
       $grid = atkDataGrid::resume($this->getNode());
+      
+      $this->modifyDataGrid($grid, atkDataGrid::RESUME);      
 
       if ($this->redirectToSearchAction($grid))
       {
@@ -174,6 +178,21 @@
       }
 
       return $grid->render();
+    }
+     
+    /**
+     * Modify grid.
+     * 
+     * @param atkDataGrid $grid grid
+     * @param int         $mode CREATE or RESUME
+     */
+    protected function modifyDataGrid(atkDataGrid $grid, $mode)
+    {    
+      $method = 'modifyDataGrid';
+      if (method_exists($this->getNode(), $method))
+      {
+        $this->getNode()->$method($grid, $mode);
+      }
     }
 
     /**

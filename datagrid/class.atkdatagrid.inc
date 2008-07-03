@@ -188,6 +188,13 @@ class atkDataGrid
    * @var atkNode
    */
   private $m_actionNode;
+  
+  /**
+   * Multi-record-action selection mode.
+   * 
+   * @var int
+   */
+  private $m_mraSelectionMode;
 
   /**
    * Action session status for record actions.
@@ -409,6 +416,7 @@ class atkDataGrid
     $this->setTemplate('datagrid.tpl');
     $this->setActionSessionStatus(SESSION_NESTED);
     $this->setMode('admin');
+    $this->setMRASelectionMode($this->getNode()->getMRASelectionMode());    
 
     $this->addComponent('list', 'atk.datagrid.atkdglist');
     $this->addComponent('summary', 'atk.datagrid.atkdgsummary');
@@ -547,7 +555,7 @@ class atkDataGrid
   {
     $this->m_session['system'] = array();
 
-    $vars = array('flags', 'formName', 'embedded', 'baseUrl', 'components', 'excludes', 'defaultActions', 'defaultLimit', 'template', 'actionSessionStatus', 'filters', 'mode');
+    $vars = array('flags', 'formName', 'embedded', 'baseUrl', 'components', 'excludes', 'defaultActions', 'defaultLimit', 'template', 'actionSessionStatus', 'filters', 'mode', 'mraSelectionMode');
     foreach ($vars as $var)
     {
       $fullVar = "m_{$var}";
@@ -1014,6 +1022,27 @@ class atkDataGrid
   {
     $this->m_actionNode = $node;
   }
+  
+  /**
+   * Returns the multi-record-action selection mode.
+   * 
+   * @return int multi-record-action selection mode
+   */
+  public function getMRASelectionMode()
+  {
+    return $this->m_mraSelectionMode;
+  }
+  
+  /**
+   * Sets the multi-record-action selection mode.
+   * 
+   * @param int multi-record-action selection mode
+   */
+  public function setMRASelectionMode($mode)
+  {
+    $this->m_mraSelectionMode = $mode;
+  }
+  
 
   /**
    * Returns the record action session status.

@@ -1506,11 +1506,16 @@ class atkMetaPolicy
   /**
    * Remove attribute.
    *
-   * @param string $name attribute name
+   * @param string|array $name attribute name
    */
   public function remove($name)
   {
-    unset($this->m_attrs[$name]);
+    $names = is_array($name) ? $name : func_get_args();
+    
+    foreach ($names as $name)
+    {
+      unset($this->m_attrs[$name]);
+    }
   }
 
   /**

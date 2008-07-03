@@ -80,12 +80,12 @@
      * 
      * @return array
      */
-    function _getSelectableRecords($record=array(), $mode="")
+    function _getSelectableRecords($record=array(), $mode="", $force=false)
     {
       $method = $this->fieldName()."_selection";
       if (method_exists($this->m_ownerInstance, $method))
         return $this->m_ownerInstance->$method($record, $mode);
-      else return $this->getSelectableRecords($record, $mode);
+      else return $this->getSelectableRecords($record, $mode, $force);
     }
     
     /**
@@ -157,7 +157,7 @@
         $filter = $this->parseDestinationFilter($record);
 
         $filterkey = md5($this->m_destInstance->atkNodeType().".".$filter);
-        if (!array_key_exists($filterkey, $resultList))
+        if (!array_key_exists($filterkey, $resultList) || $force)
         {
           $resultList[$filterkey] = $this->m_destInstance->selectDb($filter,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
         }

@@ -314,11 +314,34 @@ class atkDGList extends atkDGComponent
       elseif ($grid->hasFlag(atkDataGrid::MULTI_RECORD_ACTIONS))
       {
         if (count($list["rows"][$i]["mra"]) > 0)
+        {
+          $inputHTML = '';
+          
+          switch ($grid->getMRASelectionMode())
+          {
+            case MRA_SINGLE_SELECT:
+              $inputHTML = '<input type="radio" name="'.$listName.'_atkselector[]" value="'.$list["rows"][$i]["selector"].'" class="atkradiobutton" onclick="if (this.disabled) this.checked = false">';                
+              break;
+            case MRA_NO_SELECT:
+              $inputHTML = 
+                '<input type="checkbox" disabled="disabled" checked="checked">'.
+                '<input type="hidden" name="'.$listName.'_atkselector[]" value="'.$list["rows"][$i]["selector"].'">';
+              break;
+            case MRA_MULTI_SELECT:
+            default:
+              $inputHTML = '<input type="checkbox" name="'.$listName.'_atkselector[]" value="'.$list["rows"][$i]["selector"].'" class="atkcheckbox" onclick="if (this.disabled) this.checked = false">';                
+          }              
+          
           $record["cols"][] = array(
-                       "content"=>'<input type="checkbox" name="'.$listName.'_atkselector[]" value="'.htmlentities($list["rows"][$i]["selector"]).'" class="atkcheckbox" onclick="if (this.disabled) this.checked = false">'.
-                                  '<script language="javascript"  type="text/javascript">'.$listName.'["'.htmlentities($list["rows"][$i]["selector"]).'"] = new Array("'.implode($list["rows"][$i]["mra"], '","').'");</script>',
-                        "type" => "mra");
-
+            "content" =>
+              $inputHTML.'
+              <script language="javascript"  type="text/javascript">'.
+                $listName.'["'.htmlentities($list["rows"][$i]["selector"]).'"] = 
+                  new Array("'.implode($list["rows"][$i]["mra"], '","').'");
+              </script>',
+            "type" => "mra"
+          );
+        }
         else $record["cols"][] = array("content"=>"");
       }
 
@@ -461,7 +484,7 @@ class atkDGList extends atkDGComponent
     {
       $target = session_url(atkSelf().'?atknodetype='.$grid->getNode()->atkNodeType().'&atktarget='.$grid->getNode()->m_postvars['atktarget'].'&atktargetvar='.$grid->getNode()->m_postvars['atktargetvar'].'&atktargetvartpl='.$grid->getNode()->m_postvars['atktargetvartpl'], SESSION_NESTED);
 
-      $mra = (count($list["rows"]) > 1 ?
+      $mra = (count($list["rows"]) > 1 && $grid->getMRASelectionMode() == MRA_MULTI_SELECT ?
                   '<a href="javascript:void(0)" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'all\')">'.atktext("select_all").'</a> / '.
                   '<a href="javascript:void(0)" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'none\')">'.atktext("deselect_all").'</a> / '.
                   '<a href="javascript:void(0)" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'invert\')">'.atktext("select_invert").'</a> '

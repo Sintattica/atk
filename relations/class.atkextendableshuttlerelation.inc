@@ -67,13 +67,20 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     $record = $this->getOwnerInstance()->updateRecord();
     $mode   = $ATK_VARS["atkaction"];
     $prefix = $this->getOwnerInstance()->m_postvars['atkfieldprefix'];
-
+    
     foreach ($this->m_controlsBySection[$record[$this->fieldName()]["section"]] as $control)
     {
       if (is_a($control, 'atkShuttleFilter'))
       {
         $redraw = true;
-        $control->getFilter($record);
+
+        $filter = $control->getFilter($record);
+        if (!empty($filter))
+        {
+          // add filter immediately because we are only refreshing a single section
+          $this->createDestination();          
+          $this->getDestination()->addFilter($filter);
+        } 
       }
     }
 
@@ -175,7 +182,31 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     $this->addOnChangeHandler("shuttle_refresh('$url', '".$this->getHtmlId($fieldprefix).'[cselected][]['.$this->getRemoteKey().']'."', '".$prefix.$this->fieldName()."[section]', el);");
     $this->_renderChangeHandler($fieldprefix);
     
-    $this->loadFieldData($record, $mode);
+    $filtersBySection = array();
+    foreach (array(atkShuttleControl::AVAILABLE, atkShuttleControl::SELECTED) as $section)
+    {
+      foreach ($this->m_controlsBySection[$section] as $control)
+      {
+        if (is_a($control, 'atkShuttleFilter'))
+        {
+          $filter = $control->getFilter($record);
+          if (!empty($filter)) 
+          {
+            $filtersBySection[$section][] = $filter;
+          }
+        }
+      }
+    }   
+
+    $availableFilter = '';
+    if (count($filtersBySection[atkShuttleControl::AVAILABLE]) > 0)
+      $availableFilter = '('.implode(') AND (', $filtersBySection[atkShuttleControl::AVAILABLE]).')';
+
+    $selectedFilter = '';
+    if (count($filtersBySection[atkShuttleControl::SELECTED]) > 0)
+      $selectedFilter = '('.implode(') AND (', $filtersBySection[atkShuttleControl::SELECTED]).')';
+
+    $this->loadFieldData($record, $mode, $availableFilter, $selectedFilter);
     
     // Get controls for 'available' side
     foreach ($this->m_controlsBySection[atkShuttleControl::AVAILABLE] as $control)
@@ -339,23 +370,52 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
    * @param Array $record The record
    * @param String $mode The current mode.
    */
-  private function loadFieldData($record, $mode)
+  private function loadFieldData($record, $mode, $availableFilter='', $selectedFilter='')
   {        
-    $this->m_availableFields = array();
-    $this->m_selectedFields = array();
+    $selectedFields = $this->getSelectedFieldsFromRecord($record);    
     
-    $recs = $this->_getSelectableRecords($record, $mode);
-    $selectedFields = $this->getSelectedFieldsFromRecord($record);
-          
+    // available fields
+    if (!empty($availableFilter))
+    {
+      $this->getDestination()->addFilter($availableFilter);  
+      $recs = $this->_getSelectableRecords($record, $mode, true);
+      $this->getDestination()->removeFilter($availableFilter);
+    }
+    else 
+    {
+      $recs = $this->_getSelectableRecords($record, $mode, true);
+    }
+
+    $this->m_availableFields = array();    
+    foreach ($recs as $rec)
+    {
+      if (!in_array($this->m_destInstance->primaryKey($rec),$selectedFields))
+      {
+        $this->m_availableFields[] = $rec;
+      }
+    }  
+
+    // selected fields
+    if ($availableFilter != $selectedFilter)
+    {
+      if (!empty($selectedFilter))
+      {
+        $this->getDestination()->addFilter($selectedFilter);  
+        $recs = $this->_getSelectableRecords($record, $mode, true);
+        $this->getDestination()->removeFilter($selectedFilter);
+      }
+      else 
+      {
+        $recs = $this->_getSelectableRecords($record, $mode, true);
+      }
+    }
+    
+    $this->m_selectedFields = array();    
     foreach ($recs as $rec)
     {
       if (in_array($this->m_destInstance->primaryKey($rec),$selectedFields))
       {
         $this->m_selectedFields[] = $rec;
-      }
-      else 
-      {
-        $this->m_availableFields[] = $rec;
       }
     }
   }

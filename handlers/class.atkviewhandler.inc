@@ -81,7 +81,7 @@
         $innerform = $this->viewForm($record, "view");
 
         $params["activeTab"] = $tab;
-
+        $params["header"] = $this->invoke("viewHeader", $record);
         $params["content"] = $node->tabulate("view", $innerform);
 
         $params["formstart"] = '<form name="entryform" id="entryform" action="'.getDispatchFile().'" method="get">'.session_form(SESSION_NESTED).
@@ -96,9 +96,9 @@
           return $output;
         }
 
-        $this->getPage()->setTitle(atktext('app_shorttitle')." - ".$node->actionTitle('view', $record));
+        $this->getPage()->setTitle(atktext('app_shorttitle')." - ".$node->actionTitle($this->m_action, $record));
         
-        $vars = array("title"=>$node->actionTitle('view', $record), "content"=>$output);        
+        $vars = array("title"=>$node->actionTitle($this->m_action, $record), "content"=>$output);        
         
         if ($this->getRenderMode() == "dialog")
         {
@@ -116,6 +116,15 @@
         atkerror("ui object error");
       }
     }
+    
+    /**
+     * Overrideable function to create a header for view mode.
+     * Similar to the admin header functionality.
+     */
+    function viewHeader()
+    {
+      return "";
+    }    
 
     function viewForm($record, $mode="view")
     {

@@ -30,24 +30,61 @@
    */
   abstract class atkShuttleFilter extends atkShuttleControl
   {
-    public function render($record, $mode, $prefix)
+    /**
+     * Returns the change handler name.
+     *
+     * @param string $prefix
+     * 
+     * @return string
+     */
+    protected function getChangeHandlerName($prefix)
     {
-        $mode == "add" ? "add" : "edit";
-        $url = addslashes(partial_url($this->m_shuttle->m_ownerInstance->atkNodeType(), $mode, "attribute.".$this->m_shuttle->getHtmlId($prefix).".filter", array("atkfieldprefix" => $prefix)));
+      return $prefix.$this->getName()."_onChange";      
+    }
+    
+    /**
+     * Register change handler
+     *
+     * @param string $mode
+     * @param string $prefix
+     */
+    protected function registerChangeHandler($mode, $prefix)
+    {
+      $mode == "add" ? "add" : "edit";
+      $url = addslashes(partial_url($this->m_shuttle->m_ownerInstance->atkNodeType(), $mode, "attribute.".$this->m_shuttle->getHtmlId($prefix).".filter", array("atkfieldprefix" => $prefix)));
 
-        $page = $this->m_shuttle->m_ownerInstance->getPage();
-        $page->register_scriptcode("function ".$prefix.$this->getName()."_onChange(el)
-                                    {
-                                      shuttle_refresh('".$url."', '".$this->m_shuttle->getHtmlId($prefix).'[cselected][]['.$this->m_shuttle->getRemoteKey().']'."', '".$prefix.$this->m_shuttle->fieldName()."[section]', '".$this->m_section."')
-                                    }\n");
+      $page = $this->m_shuttle->m_ownerInstance->getPage();
+      $page->register_scriptcode("function ".$this->getChangeHandlerName($prefix)."(el)
+                                  {
+                                    shuttle_refresh('".$url."', '".$this->m_shuttle->getHtmlId($prefix).'[cselected][]['.$this->m_shuttle->getRemoteKey().']'."', '".$prefix.$this->m_shuttle->fieldName()."[section]', '".$this->m_section."')
+                                  }\n");      
     }
 
     /**
-     * Returns a filter clause for this filter's current value.
-     * The current value can be retrieved from the record using
-     * the getValue method.
+     * Renders the shuttle filter control.
+     *
+     * @param array $record
+     * @param string $mode
+     * @param string $prefix
+     * 
+     * @return string control
+     */
+    public function render($record, $mode, $prefix)
+    {
+      $this->registerChangeHandler($mode, $prefix);
+      return '';
+    }
+
+    /**
+     * Applies a filter clause to the destination node for this filter's current value.
+     * 
+     * The current value can be retrieved from the record using $this->getValue(...).
      *
      * @param array $record full record
+     * 
+     * @return string filter
      */
-    public abstract function getFilter(&$record);
+    public function getFilter(&$record)
+    {
+    }
   }

@@ -126,6 +126,8 @@
      */
     public function includes($includes)
     {
+      if (!is_array($includes))
+        $includes = func_get_args();      
       $this->m_includes = $includes;
       return $this;
     }
@@ -139,6 +141,8 @@
      */
     public function excludes($excludes)
     {
+      if (!is_array($excludes))
+        $excludes = func_get_args();
       $this->m_excludes = $excludes;
       return $this;
     }

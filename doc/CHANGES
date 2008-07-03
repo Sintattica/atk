@@ -176,6 +176,20 @@ Changed in ATK 6.2
 + Added atkPageBuilder (can be instantiated using $node->createPageBuilder())
   which provides a fluent interface for building generalized ATK pages.
   [Peter]
+* Admin datagrids can now be modified from within the node by implementing 
+  the modifyDataGrid($grid) method. [Peter]
+* One-to-many relation datagrid can now be modified by implementing the
+  modifyDataGrid($grid) method inside the destination node or by
+  implementing an <attribute>_modifyDataGrid($grid) method inside the
+  owner node. [Peter]
+* The default datagrid template now reserves space for components named top
+  or bottom, which makes it easy to add your own custom components 
+  without having the need to create a custom template. [Peter]
+* Multi-record-action modes MRA_SINGLE_SELECT and MRA_NO_SELECT 
+  are now properly supported by the datagrid. [Peter]
+* atkMetaPolicy's remove method now takes multiple arguments. [Peter]
+* Extendable shuttle relation filters are now taken into account when
+  initlally  rendering the shuttle. [Peter]
 * Did some internal refactoring on the atkDateAttribute draw method.[Martijn]
 * Fixed pda format in atkDateAttribute. [Martijn]
 * Improved page title support which makes it possible to set the title of
