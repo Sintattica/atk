@@ -101,8 +101,8 @@
       // Something is wrong here, the deleteDb failed
       else
       {
+        $location = $this->m_node->feedbackUrl("delete",ACTION_FAILED,null,$db->getErrorMsg());
         $db->rollback();
-        $location = $this->m_node->feedbackUrl("delete",ACTION_FAILED,$db->getErrorMsg());
         $this->m_node->redirect($location);
       }
     }

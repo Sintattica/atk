@@ -5,4 +5,5 @@ $txt_db["1130"] = "Host heeft geen rechten om verbinding te maken met de MySQL s
 $txt_db["1146"] = "Tabel bestaat niet";
 $txt_db["1054"] = "Onbekende kolom naam";
 $txt_db['1369'] = "Ingevoegde waarde is ongeldig";
+$txt_db['1451'] = "Check constraint geschonden";
 ?>
