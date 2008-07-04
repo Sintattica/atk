@@ -199,6 +199,7 @@
     */
     function selectDb($selector="", $orderby="", $limit="")
     { 
+      atkGetSessionManager()->stackVar('dirname', $this->m_dir);
       if ($selector=="")
       {
         // no file selected, generate list..
@@ -403,6 +404,30 @@
     }
     
    /**
+    * This function overrides the edit action to first set the directory
+    * before actually editing a file.
+    *
+    * @param atkActionHandler $handler
+    */
+    function action_edit(atkEditHandler $handler)
+    {
+      $this->m_dir = atkGetSessionManager()->stackVar('dirname');
+      $handler->action_edit();           
+    }
+    
+   /**
+    * This function overrides the delete action to set the directory
+    * before actually deleting a file. 
+    *
+    * @param atkActionHandler $handler
+    */
+    function action_delete(atkDeleteHandler $handler)
+    {
+      $this->m_dir = atkGetSessionManager()->stackVar('dirname');
+      $handler->action_delete();           
+    }
+    
+   /**
     * This function implements the functionality to move up 
     * and down directories
     *
@@ -410,8 +435,7 @@
     function action_dirchange()
     { 
       $selectedDir = $this->stripDir($this->m_postvars['atkselector']);
-      $sessmngr = atkGetSessionManager();
-      ($sessmngr->stackVar('dirname', $selectedDir));
+      atkGetSessionManager()->stackVar('dirname', $selectedDir);
               
       $this->m_dir = $selectedDir;
       $this->callHandler('admin');
@@ -441,5 +465,3 @@
       return $resultdir;
     }
   }
-
-?>
