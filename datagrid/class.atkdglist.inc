@@ -375,17 +375,22 @@ class atkDGList extends atkDGComponent
         {
           $actionloader.="\nrl_a['{$listName}'][{$i}]['{$name}'] = '$url';";
         }
-
-        $link = $name;
-
-        if($icons == true)
+        
+        $module = $grid->getNode()->m_module;
+        $nodetype = $grid->getNode()->m_type;
+        $actionKeys = array(
+          'action_'.$module.'_'.$nodetype.'_'.$name,
+          'action_'.$nodetype.'_'.$name,
+          'action_'.$name,
+          $name
+        );
+        
+        $link = atk_htmlentities($this->text($actionKeys));
+          
+        if ($icons == true)
         {
           $icon = $theme->iconPath(strtolower($name),"recordlist", $grid->getNode()->m_module);
-          $link = sprintf('<img class="recordlist" border="0" src="%1$s" alt="%2$s" title="%2$s">', $icon, atktext($name, $grid->getNode()->m_module, $grid->getNode()->m_type));
-        }
-        else
-        {
-          $link = atktext($name, $grid->getNode()->m_module, $grid->getNode()->m_type);
+          $link = sprintf('<img class="recordlist" border="0" src="%1$s" alt="%2$s" title="%2$s">', $icon, $link);
         }
 
         $confirmtext= "false";
