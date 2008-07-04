@@ -7,6 +7,13 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
++ added a function setUseThousandsSeparator to enable the thousandsseparator
+  when display the number. Default no thousandsseperator is displayed. [Martijn]
++ The atkNumberAttribute and atkCurrency now supports the thousands separator. 
+  It's possible to add a number with a thousand seperator included. According 
+  to the language settings the number is converted to right format. 
+  The functions standardiseSeparator and translateSeparator in 
+  atkNumberAttribute are deprecated. [Martijn]
 + Added year sorting on the atkDateAttribute. Use setYearSorting()
   to change the sorting order of the years dropdown. [Martijn]
 + Added simple mode on the atkDateAttribute. With the simple mode enabled

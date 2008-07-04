@@ -26,8 +26,6 @@ useattrib("atknumberattribute");
 class atkCurrencyAttribute extends atkNumberAttribute
 {
   var $m_currencysymbol;
-  var $m_decimalseparator;
-  var $m_thousandsseparator;
 
   /**
     * Constructor
@@ -45,12 +43,12 @@ class atkCurrencyAttribute extends atkNumberAttribute
     $this->atkNumberAttribute($name,$flags,$size,$decimals); // base class constructor
 
     if($currencysymbol=="") $currencysymbol=atktext("currencysymbol","atk","","","",true);
-    if($decimalseparator=="") $decimalseparator=atktext("decimal_separator","atk","","","",true);
-    if($thousandsseparator=="") $thousandsseparator=atktext("thousands_separator","atk","","","",true);
-
+    
     $this->m_currencysymbol = $currencysymbol;
     $this->m_decimalseparator = ($decimalseparator!=""?$decimalseparator:".");
     $this->m_thousandsseparator = ($thousandsseparator!=""?$thousandsseparator:",");
+    
+    $this->setUseThousandsSeparator(true);
   }
 
   /**
@@ -67,7 +65,7 @@ class atkCurrencyAttribute extends atkNumberAttribute
   function display($record, $mode="")
   {
     $result = empty($this->m_currencysymbol) ? "" : $this->m_currencysymbol." ";
-    $result .= number_format($record[$this->fieldName()],$this->m_decimals,$this->m_decimalseparator,$this->m_thousandsseparator);
+    $result .= parent::display($record,$fieldprefix);
     return $result;
   }
 }

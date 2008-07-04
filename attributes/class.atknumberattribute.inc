@@ -29,6 +29,16 @@
     var $m_decimals=0; // The number of decimals of the number.
     var $m_minvalue=false; // The minimum value of the number.
     var $m_maxvalue=false; // The maximum value of the number.
+    var $m_use_thousands_separator=false; // use the thousands separator when formatting a number
+    var $m_decimalseparator;
+    var $m_thousandsseparator;
+    
+    // ids of separators in atk language file
+    const SEPARATOR_DECIMAL  = 'decimal_separator';
+    const SEPARATOR_THOUSAND = 'thousands_separator';
+    
+    // default separator
+    const DEFAULT_SEPARATOR = '.';
 
     /**
      * Constructor
@@ -42,6 +52,9 @@
     {
       $this->atkAttribute($name,$flags|AF_NO_QUOTES, $size); // base class constructor
       $this->m_decimals = $decimals;
+      
+      $this->m_decimalseparator = atktext(self::SEPARATOR_DECIMAL,'atk');
+      $this->m_thousandsseparator = atktext(self::SEPARATOR_THOUSAND,'atk');
     }
 
     /**
@@ -59,16 +72,17 @@
     {
       if (isset($record[$this->fieldName()]) && $record[$this->fieldName()]!=="")
       {
-        return atkNumberAttribute::translateSeparator(sprintf("%0.".$this->m_decimals."f", $record[$this->fieldName()]));
+        return $this->formatNumber($record[$this->fieldName()]);
       }
       return "";
     }
-
+    
     /**
      * Replace decimal separator (from the language file "decimal_separator")
      * with the standard separator ('.') so, for instance,  99,95 would become
      * 99.95 when language is set to 'nl'.
      * @static
+     * @deprecated 
      * @param String $number The number that needs to be converted
      * @return String The converted number
      */
@@ -78,10 +92,114 @@
     }
 
     /**
+     * convert a formatted number to a real number
+     * @param String $number The number that needs to be converted
+     * @param String $decimal_separator override decimal separator
+     * @param String $thousands_separator override thousands separator
+     * @return String The converted number
+     */
+    function removeSeparators($number, $decimal_separator="", $thousands_separator="")
+    { 
+      if(empty($decimal_separator))   $decimal_separator = $this->m_decimalseparator;
+      if(empty($thousands_separator)) $thousands_separator = $this->m_thousandsseparator;
+     
+      if($decimal_separator == $thousands_separator)
+      {
+        atkwarning('invalid thousandsseparator. identical to the decimal_separator');
+        $thousands_separator = '';
+      }
+           
+      if(strstr($number,$decimal_separator) !== false)
+  	  {
+  	    // check invalid input
+        if(substr_count($number,$decimal_separator) > 2) return $number; 
+        
+        $number = str_replace($thousands_separator,'',$number);
+  	    $number = str_replace($decimal_separator,self::DEFAULT_SEPARATOR,$number);
+  	    
+  	    if(substr_count($number,self::DEFAULT_SEPARATOR) > 1)
+  	    {
+  	      $parts = explode(self::DEFAULT_SEPARATOR,$number);
+  	      $decimals = array_pop($parts);
+  	      $number = implode('',$parts).self::DEFAULT_SEPARATOR.$decimals;
+  	    }
+  	  } else {
+  	    $number = str_replace($thousands_separator,'',$number);
+  	  }
+  	  
+  	  return $number;
+    }
+    
+    /**
+     * Use the thousands separator when formatting a number
+     * 
+     * @param bool $use_separator 
+     * @return bool 
+     */
+    public function setUseThousandsSeparator($use_separator)
+    {
+      $this->m_use_thousands_separator = (bool) $use_separator;
+    }
+    
+    /**
+     * Returns true if we 're using the thousands separator 
+     * when formatting the number
+     * 
+     * @return bool 
+     */
+    public function getUseThousandsSeparator()
+    {
+      return $this->m_use_thousands_separator;
+    }
+    
+    public function getThousandsSeparator()
+    {
+      return $this->m_thousandsseparator;
+    }
+    
+    public function setThousandsSeparator($separator)
+    {
+      $this->m_thousandsseparator = $separator;
+    }
+    
+    public function getDecimalSeparator()
+    {
+      return $this->m_decimalseparator;
+    }
+    
+    public function setDecimalSeparator($separator)
+    {
+      $this->m_decimalseparator = $separator;
+    }
+    
+    /**
+     * Formats the number based on setting in the language file
+     *
+     * @param string $number
+     * @param String $decimal_separator override decimal separator
+     * @param String $thousands_separator override thousands separator
+     * @return string nicely formatted number
+     */
+    protected function formatNumber($number, $decimal_separator="", $thousands_separator="")
+    {
+      if(empty($decimal_separator))   $decimal_separator = $this->m_decimalseparator;
+      if(empty($thousands_separator)) $thousands_separator = $this->m_thousandsseparator;
+      
+      if($decimal_separator == $thousands_separator)
+      {
+        atkwarning('invalid thousandsseparator. identical to the decimal_separator');
+        $thousands_separator = '';
+      }
+      
+      return number_format($number,$this->m_decimals,$decimal_separator,($this->m_use_thousands_separator) ? $thousands_separator : '');
+    }
+
+    /**
      * Replace standard decimal separator ('.') with the one from the language
      * file so, for instance, 99.95 would be converted to 99,95 when language
      * is set to 'nl'.
      * @static
+     * @deprecated 
      * @param String $number The number that needs to be converted
      * @return String The converted number
      */
@@ -123,7 +241,7 @@
     {
       if (is_array($postvars))
       {
-        return atkNumberAttribute::standardiseSeparator(atkArrayNvl($postvars, $this->fieldName(), ""));
+        return $this->removeSeparators(atkArrayNvl($postvars, $this->fieldName(), ""));
       }
     }
 
@@ -187,7 +305,7 @@
 
       $value = "";
       if (isset($record[$this->fieldName()]) && strlen($record[$this->fieldName()]) > 0)
-        $value = atkNumberAttribute::translateSeparator(sprintf("%0.".$this->m_decimals."f", $record[$this->fieldName()]));
+        $value = $this->formatNumber($record[$this->fieldName()]);
 
       $id = $fieldprefix.$this->fieldName();
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
@@ -252,14 +370,14 @@
         if ($slash!==false)
         {
           $value = array();
-          $value["from"]=$this->standardiseSeparator(substr($str, 0, $slash));
-          $value["to"]=$this->standardiseSeparator(substr($str,$slash+1));
+          $value["from"]=$this->removeSeparator(substr($str, 0, $slash));
+          $value["to"]=$this->removeSeparators(substr($str,$slash+1));
 	        $searchmode = 'between';
         }
         else
         {
           $value = array();
-          $value["from"] = $this->standardiseSeparator($str); // quicksearch doesn't use an array.
+          $value["from"] = $this->removeSeparators($str); // quicksearch doesn't use an array.
         }
       }
 
