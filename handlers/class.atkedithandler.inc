@@ -62,7 +62,7 @@
       $this->notify("edit", $record);
       if ($node->hasFlag(NF_LOCK))
       {
-        if ($node->m_lock->lock($node->primaryKey($record), $node->m_table))
+        if ($node->m_lock->lock($node->primaryKey($record), $node->m_table, $node->getLockMode()))
         {
           $res = $this->invoke("editPage", $record, true);
         }

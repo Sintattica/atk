@@ -117,7 +117,8 @@ class atkDGList extends atkDGComponent
     }
     if ($grid->hasFlag(atkDataGrid::LOCKING))
     {
-      $headercols[] = array("content"=>'<img src="'.atkconfig("atkroot").'atk/images/lock_head.gif">');
+      $lockHeadIcon = atkTheme::getInstance()->iconPath('lock_'.$grid->getNode()->getLockMode().'_head', 'lock', $grid->getNode()->m_module);      
+      $headercols[] = array("content"=>'<img src="'.$lockHeadIcon.'">');
     }
     if (($orientation == "left" || $orientation == "both") && ($this->_hasActionColumn($list) && count($list["rows"]) > 0))
     {
@@ -350,8 +351,10 @@ class atkDGList extends atkDGComponent
       {
         if (is_array($list["rows"][$i]["lock"]))
         {
-          $alt = $list["rows"][$i]["lock"]["user_id"]." / ".$list["rows"][$i]["lock"]["user_ip"];
-          $record["cols"][] = array("content"=>'<img src="'.atkconfig("atkroot").'atk/images/lock.gif" alt="'.$alt.'" border="0">', "type" => "lock");
+          $this->getPage()->register_script(atkconfig('atkroot').'atk/javascript/overlibmws/overlibmws.js');
+          $lockIcon = atkTheme::getInstance()->iconPath('lock_'.$grid->getNode()->getLockMode(), 'lock', $grid->getNode()->m_module);
+          $lockInfo = addslashes(str_replace(array("\r\n", "\r", "\n"), " ", atk_htmlentities($this->getLockInfo($list["rows"][$i]["lock"]))));          
+          $record["cols"][] = array("content"=>'<img src="'.$lockIcon.'" onmouseover="return overlib(\''.$lockInfo.'\', NOFOLLOW, FULLHTML);" onmouseout="nd();" border="0">', "type" => "lock");
         }
         else $record["cols"][] = array("content"=>"");
       }
@@ -546,6 +549,17 @@ class atkDGList extends atkDGComponent
 
     return $recordListData;
   }
+  
+  /**
+   * Returns an HTML snippet which is used to display information about locks
+   * on a certain record in a small popup.
+   *
+   * @param array $locks lock(s) array
+   */
+  protected function getLockInfo($locks)
+  {
+    return $this->getUi()->render('lockinfo.tpl', array('locks' => $locks), $this->getNode()->m_module);
+  }
 
   /**
    * Checks wether the recordlist should display a column which holds the actions.
@@ -685,8 +699,8 @@ class atkDGList extends atkDGComponent
       /* locked */
       if ($grid->hasFlag(atkDataGrid::LOCKING))
       {
-        $result["rows"][$i]["lock"] = $grid->getNode()->m_lock->isLocked($result["rows"][$i]["selector"], $grid->getNode()->m_table);
-        if (is_array($result["rows"][$i]["lock"]))
+        $result["rows"][$i]["lock"] = $grid->getNode()->m_lock->isLocked($result["rows"][$i]["selector"], $grid->getNode()->m_table, $grid->getNode()->getLockMode());
+        if (is_array($result["rows"][$i]["lock"]) && $grid->getNode()->getLockMode() == atkLock::EXCLUSIVE)
         {
           unset($row["actions"]["edit"]);
           unset($row["actions"]["delete"]);

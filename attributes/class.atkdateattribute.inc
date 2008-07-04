@@ -94,49 +94,9 @@
      * @param $weekday include day-of-week or not
      * @return string with formatted date
      */
-    function formatDate($date, $format, $weekday=1)
+    function formatDate($date, $format, $weekday=true)
     {
-      static $langcache = array();
-
-      /* format month */
-      $format = str_replace("M", "%-%",   $format);
-      $format = str_replace("F", "%=%",   $format);
-
-      /* format day */
-      $format = str_replace("D", "%&%", $format);
-      $format = str_replace("l", "%*%", $format);
-
-      if ($weekday && strpos($format, '%&%') === FALSE && strpos($format, '%*%') === FALSE)
-      {
-        $format = str_replace("d", "%*% d", $format);
-        $format = str_replace("j", "%*% j", $format);
-      }
-
-      /* get date string */
-      $str_date = adodb_date($format, $date[0]);
-
-      $month = $date['month'];
-      $shortmonth = substr(strtolower($date["month"]), 0, 3);
-
-      /* store the text calls */
-      if(!isset($langcache[$month]))
-      {
-        $langcache[$month]= atktext(strtolower($month),"atk");
-      }
-
-      if(!isset($langcache[$shortmonth]))
-      {
-        $langcache[$shortmonth] = atktext($shortmonth);
-      }
-
-      /* replace month/week name */
-      $str_date = str_replace("%-%", $langcache[$shortmonth], $str_date);
-      $str_date = str_replace("%=%", $langcache[$month], $str_date);
-      $str_date = str_replace("%*%", atktext(strtolower($date["weekday"]),"atk"), $str_date);
-      $str_date = str_replace("%&%", atktext(substr(strtolower($date["weekday"]), 0, 3),"atk"), $str_date);
-
-      /* return string */
-      return $str_date;
+      return atkFormatDate($date, $format, $weekday);
     }
 
     /**

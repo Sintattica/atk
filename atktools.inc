@@ -2219,4 +2219,65 @@
       echo $message;
     }
   }
+  
+  /**
+   * Format date according to a format string, uses ATK's language files to translate
+   * months, weekdays etc.
+   * 
+   * @param $date    timestamp or date array (gotten with getdate())
+   * @param $format  format string, compatible with PHP's date format functions
+   * @param $weekday always include day-of-week or not
+   * 
+   * @return string formatted date
+   */
+  function atkFormatDate($date, $format, $weekday=false)
+  {
+    static $langcache = array();
+    
+    if (!is_array($date))
+    {
+      $date = getdate($date);
+    }
+
+    /* format month */
+    $format = str_replace("M", "%-%",   $format);
+    $format = str_replace("F", "%=%",   $format);
+
+    /* format day */
+    $format = str_replace("D", "%&%", $format);
+    $format = str_replace("l", "%*%", $format);
+
+    if ($weekday && strpos($format, '%&%') === FALSE && strpos($format, '%*%') === FALSE)
+    {
+      $format = str_replace("d", "%*% d", $format);
+      $format = str_replace("j", "%*% j", $format);
+    }
+
+    /* get date string */
+    require_once(atkconfig('atkroot')."atk/utils/adodb-time.inc.php");    
+    $str_date = adodb_date($format, $date[0]);
+
+    $month = $date['month'];
+    $shortmonth = substr(strtolower($date["month"]), 0, 3);
+
+    /* store the text calls */
+    if(!isset($langcache[$month]))
+    {
+      $langcache[$month]= atktext(strtolower($month),"atk");
+    }
+
+    if(!isset($langcache[$shortmonth]))
+    {
+      $langcache[$shortmonth] = atktext($shortmonth);
+    }
+
+    /* replace month/week name */
+    $str_date = str_replace("%-%", $langcache[$shortmonth], $str_date);
+    $str_date = str_replace("%=%", $langcache[$month], $str_date);
+    $str_date = str_replace("%*%", atktext(strtolower($date["weekday"]),"atk"), $str_date);
+    $str_date = str_replace("%&%", atktext(substr(strtolower($date["weekday"]), 0, 3),"atk"), $str_date);
+
+    /* return string */
+    return $str_date;
+  }  
 ?>

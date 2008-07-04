@@ -29,6 +29,9 @@
    */
   class atkLock
   {
+    const EXCLUSIVE = 'exclusive';
+    const SHARED    = 'shared';
+    
     var $m_id = NULL;
   
     /**
@@ -37,7 +40,7 @@
      *
      * @return reference to the *only* lock instance
      */
-    function &getInstance()
+    public static function getInstance()
     {
       static $_instance = NULL;
   
@@ -78,7 +81,7 @@
      *
      * @return success / failure of operation
      */
-    function lock($selector, $table)
+    function lock($selector, $table, $mode=self::EXCLUSIVE)
     {}
   
     /**
@@ -118,9 +121,11 @@
   
   /**
    * Start / initialize the lock.
+   * 
+   * @return atkLock
    */
   function atklock()
   {
-    atkLock::getInstance();
+    return atkLock::getInstance();
   }
 ?>

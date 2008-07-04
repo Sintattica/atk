@@ -176,6 +176,9 @@ Changed in ATK 6.2
 + Added atkPageBuilder (can be instantiated using $node->createPageBuilder())
   which provides a fluent interface for building generalized ATK pages.
   [Peter]
++ Added support for different node lock modes (exclusive and shared). [Peter]
++ Added atkDateFormat function which can be used to do localized formatting
+  of a time stamp, compatible with PHP's date function. [Peter]
 * Admin datagrids can now be modified from within the node by implementing 
   the modifyDataGrid($grid) method. [Peter]
 * One-to-many relation datagrid can now be modified by implementing the

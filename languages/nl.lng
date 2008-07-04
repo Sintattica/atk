@@ -382,6 +382,8 @@
   "datagrid_norecordsfound_general" => "Er zijn geen bestaande records gevonden.",
   "datagrid_norecordsfound_search"  => "Er zijn geen resultaten gevonden voor de huidige zoekopdracht.",  
   "currencysymbol"=>'EUR',
+  "in_use_by" => "In gebruik door",
+  "lock_info_line" => "[user_id] (ip: [user_ip]) sinds [lock_date]",
 );
 
 ?>

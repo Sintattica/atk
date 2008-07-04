@@ -730,6 +730,13 @@
      * @var String
      */
     var $m_edit_fieldprefix = '';
+    
+    /**
+     * Lock mode.
+     * 
+     * @var int
+     */
+    private $m_lockMode = atkLock::EXCLUSIVE;
 
     /**
      * Constructor.
@@ -3183,6 +3190,26 @@
     }
 
     /**
+     * Sets the lock mode.
+     *
+     * @param int $lockMode lock mode (atkLock::EXCLUSIVE, atkLock::SHARED)
+     */
+    public function setLockMode($lockMode)
+    {
+      $this->m_lockMode = $lockMode;
+    }
+    
+    /**
+     * Returns the lock mode.
+     *
+     * @return int lock mode (atkLock::EXCLUSIVE, atkLock::SHARED)
+     */
+    public function getLockMode()
+    {
+      return $this->m_lockMode;
+    }
+
+    /**
      * Validates a record.
      *
      * Validates unique fields, required fields, dataformat etc.
@@ -4727,7 +4754,9 @@
     {
       if ($lockstatus)
       {
-        return '<img src="'.atkconfig("atkroot").'atk/images/lock.gif" name="_lock_">';
+        atkimport('atk.ui.atktheme');
+        $icon = atkTheme::getInstance()->iconPath('lock_'.$this->getLockMode(), 'lock', $this->m_module);
+        return '<img src="'.$icon.'" border="0" name="_lock_">';
       }
       return "";
     }

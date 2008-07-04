@@ -123,9 +123,9 @@
         if (is_array($this->m_postvars['atkselector']))
         {
           foreach ($this->m_postvars['atkselector'] as $selector)
-           if (!$this->m_node->m_lock->lock($selector, $this->m_node->m_table)) $locked = FALSE;
+           if (!$this->m_node->m_lock->lock($selector, $this->m_node->m_table, $this->m_node->getLockMode())) $locked = FALSE;
         }
-        elseif (!$this->m_node->m_lock->lock($this->m_postvars['atkselector'], $this->m_node->m_table)) $locked = FALSE;
+        elseif (!$this->m_node->m_lock->lock($this->m_postvars['atkselector'], $this->m_node->m_table, $this->m_node->getLockMode())) $locked = FALSE;
 
         // If the node is locked, we proceed to display the 'locked' page
         if (!$locked)
