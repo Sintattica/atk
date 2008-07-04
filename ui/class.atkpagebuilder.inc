@@ -18,12 +18,13 @@
 /**
  * Page builder. Provides a fluent interface to create standardized ATK pages.
  * 
- * Example (inside a node method):
- * 
- * $this->newPageBuilder()
- *      ->title($this->text('add_and_admin'))
- *      ->actionBox($this->text('add'), $addParams)
- *      ->box($this->text('admin'), $adminContent)
+ * $node->createPageBuilder()
+ *      ->title('...')
+ *      ->beginActionBox()
+ *        ->formStart('...')
+ *        ->content('...')
+ *      ->endActionBox()
+ *      ->box('...')
  *      ->render();
  *
  * @author Peter C. Verhage <peter@achievo.org>
@@ -125,6 +126,17 @@ class atkPageBuilder
   {
     $this->m_boxes[] = array('type' => 'action', 'title' => $title, 'params' => $params);
     return $this;
+  }  
+  
+  /**
+   * Begins building a new action box.
+   *
+   * @return atkActionBoxBuilder
+   */
+  public function beginActionBox()
+  {
+    atkimport('atk.ui.atkactionboxbuilder');
+    return new atkActionBoxBuilder($this);
   }
   
   /**
