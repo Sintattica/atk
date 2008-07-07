@@ -915,7 +915,7 @@
   function atksession_init()
   {
     global $g_sessionData;
-    atkdebug("ATKSESSION_INIT");
+
     $cookie_params = session_get_cookie_params();
     $cookiepath   = atkconfig("application_root");
     $cookiedomain = (atkconfig("cookiedomain") != "") ? atkconfig("cookiedomain") : NULL;
