@@ -168,7 +168,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
       $actions[] = href(dispatch_url($this->getDestination()->atkNodeType(), 'edit', array('atkselector' => $this->getDestination()->primaryKey($record))), $this->text('edit'), SESSION_NESTED, true);
     }
 
-    $actions[] = '<a href="javascript:void(0)" onclick="ATK.ManyToManySelectRelation.delete(this); return false;">'.$this->text('delete').'</a>';
+    $actions[] = '<a href="javascript:void(0)" onclick="ATK.ManyToManySelectRelation.deleteItem(this); return false;">'.$this->text('delete').'</a>';
 
     $result = '
       <li class="atkmanytomanyselectrelation-selected">

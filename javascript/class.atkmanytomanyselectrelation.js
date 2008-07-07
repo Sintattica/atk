@@ -6,7 +6,7 @@ ATK.ManyToManySelectRelation = {
   /**
    * Delete.
    */
-  delete: function(el) {
+  deleteItem: function(el) {
     var li = $(el).up('li');
     li.parentNode.removeChild(li);
   },
