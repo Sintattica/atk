@@ -736,7 +736,7 @@
      * 
      * @var int
      */
-    private $m_lockMode = atkLock::EXCLUSIVE;
+    private $m_lockMode = 'exclusive'; // atkLock::EXCLUSIVE (would mean atkLock needs to be available!)
 
     /**
      * Constructor.
