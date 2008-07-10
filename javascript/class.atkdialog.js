@@ -22,13 +22,13 @@ ATK.Dialog.prototype = {
   evalResponse: function(transport) {
     var dialog = this;
     
-    setTimeout(function() { 
+    (function() { 
       transport.responseText.evalScripts();
       
       if (!dialog.options.width && !dialog.options.height) {
         dialog.delayedResize();
       }
-    }, 10);
+    }).defer();
   },
 
   /**
@@ -43,7 +43,7 @@ ATK.Dialog.prototype = {
    * fully updated yet (you don't always know how long it takes to update the DOM).
    */
   delayedResize: function() {
-    setTimeout(this.resize.bind(this), 100);
+    setTimeout(this.resize.bind(this), 800);
   },
 
   /**

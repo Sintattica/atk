@@ -111,7 +111,7 @@ function shuttle_refresh(url, selectEl, parent, side)
 function shuttle_save(values, action, el)
 {
   var current = $F(el);
-  current = current.length > 0 ? current.parseJSON() : [];
+  current = current.length > 0 ? current.evalJSON(true) : [];
   
   if (action == 'add')
   {
@@ -126,5 +126,5 @@ function shuttle_save(values, action, el)
     }
   }
   
-  $(el).value = current.toJSONString();
+  $(el).value = current.toJSON();
 }

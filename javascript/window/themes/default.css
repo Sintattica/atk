@@ -99,6 +99,7 @@
 .dialog_title {
 	float:left;
 	height:14px;
+	font-family: Tahoma, Arial, sans-serif;
 	font-size:12px;
 	text-align:center;
 	width:100%;
@@ -123,6 +124,13 @@
 .status_bar input{
   font-size:12px;
 }
+
+.wired_frame {
+	display: block;
+  position: absolute;
+  border: 1px #000 dashed;
+}
+
 /* DO NOT CHANGE THESE VALUES*/
 .dialog {
 	display: block;
@@ -143,4 +151,5 @@
 
 .dialog .title_window {
   -moz-user-select:none;
-}
+}                                                    
+

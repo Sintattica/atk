@@ -42,7 +42,7 @@ ATK.Tools = {
 ATK.Tools.ScriptRequest = Class.create();
 Object.extend(Object.extend(ATK.Tools.ScriptRequest.prototype, Ajax.Request.prototype), {
   initialize: function(url) {
-    Ajax.Request.prototype.initialize.apply(this, [url, { asynchronous: false, method: 'get', onSuccess: this.evalResponse.bind(this) }]);
+    Ajax.Request.prototype.initialize.apply(this, [url, { asynchronous: false, method: 'get', evalJS: false, onSuccess: this.evalResponse.bind(this) }]);
   },
   
   evalResponse: function(transport) {

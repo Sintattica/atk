@@ -86,11 +86,3 @@ table.alert_lite_header  {
   background:#FFF
 }
 
-.alert_lite_nw,
-.alert_lite_n,
-.alert_lite_ne,
-.alert_lite_sw,
-.alert_lite_s,
-.alert_lite_se {
-  display: none;
-}
