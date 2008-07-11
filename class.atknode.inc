@@ -1113,7 +1113,11 @@
     {
       if (isset($this->m_attribList[$name]))
         return $this->m_attribList[$name];
-      else return NULL;
+      else
+      {
+        $return = NULL;
+        return $return;
+      }
     }
 
     /**

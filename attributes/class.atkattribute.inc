@@ -2388,8 +2388,15 @@
     function &getDb()
     {
       if (is_object($this->m_ownerInstance))
-        return $this->m_ownerInstance->getDb();
-      else return atkGetDb();
+      {
+        $return = $this->m_ownerInstance->getDb();
+      }
+      else
+      {
+        $return = atkGetDb();
+      }
+
+      return $return;
     }
 
     /**

@@ -642,7 +642,7 @@ class atkMetaPolicy
    */
   protected function _getDefaultValue($name, $meta)
   {
-    if ($meta['default'] == "NOW" && in_array($meta['gentype'], array('date', 'time', 'datetime')))
+    if (array_key_exists('default', $meta) && $meta['default'] == "NOW" && in_array($meta['gentype'], array('date', 'time', 'datetime')))
     {
       $stamp = getdate();
       $date = array('day' => $stamp['yday'], 'month' => $stamp['mon'], 'year' => $stamp['year']);
@@ -1310,6 +1310,7 @@ class atkMetaPolicy
 
     if (isset($options['through']))
     {
+      array_key_exists('type', $options) OR $options['type']  = '';
       switch ($options['type'])
       {
         case 'bool':
@@ -1603,13 +1604,20 @@ class atkMetaPolicy
   {
     $db = atkGetDb($this->getNodeDatabase());
     $cols = $this->getMetaData();
+    $sequence = NULL;
 
     foreach ($cols as $name => $meta)
+    {
       if (isset($meta['sequence']) && strlen($meta['sequence']) > 0)
+      {
         $sequence = $meta['sequence'];
+      }
+    }
 
-    if ($sequence == NULL)
+    if ($sequence === NULL)
+    {
       $sequence = atkConfig("database_sequenceprefix").$this->getNodeTable();
+    }
 
     return $sequence;
   }
