@@ -1310,8 +1310,7 @@ class atkMetaPolicy
 
     if (isset($options['through']))
     {
-      array_key_exists('type', $options) OR $options['type']  = '';
-      switch ($options['type'])
+      switch (@$options['type'])
       {
         case 'bool':
         case 'boolean':
@@ -1614,7 +1613,7 @@ class atkMetaPolicy
       }
     }
 
-    if ($sequence === NULL)
+    if ($sequence == NULL)
     {
       $sequence = atkConfig("database_sequenceprefix").$this->getNodeTable();
     }

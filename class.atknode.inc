@@ -1109,15 +1109,9 @@
      * @param String $name The name of the attribute to retrieve.
      * @return atkAttribute The attribute.
      */
-    function &getAttribute($name)
+    function getAttribute($name)
     {
-      if (isset($this->m_attribList[$name]))
-        return $this->m_attribList[$name];
-      else
-      {
-        $return = NULL;
-        return $return;
-      }
+      return @$this->m_attribList[$name];
     }
 
     /**

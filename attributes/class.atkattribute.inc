@@ -2385,18 +2385,16 @@
      *
      * @return atkDb database instance
      */
-    function &getDb()
+    function getDb()
     {
-      if (is_object($this->m_ownerInstance))
+      if (is_object($this->getOwnerInstance()))
       {
-        $return = $this->m_ownerInstance->getDb();
+        return $this->getOwnerInstance()->getDb();
       }
       else
       {
-        $return = atkGetDb();
+        return atkGetDb();
       }
-
-      return $return;
     }
 
     /**

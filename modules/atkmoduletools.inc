@@ -174,7 +174,7 @@
     return $g_moduleRepository[$modname];
   }
 
-  function &getModule($modname)
+  function getModule($modname)
   {
     return atkGetModule($modname);
   }
@@ -255,20 +255,12 @@
       return $existence[$node];
 
     $module = getNodeModule($node);
-    if ($module == "") $module = &new atkModule();
-    else $module = &getModule(getNodeModule($node));
+    if ($module == "") $module = new atkModule();
+    else $module = getModule(getNodeModule($node));
 
-    $exists = false;
-    if (is_object($module) && method_exists($module, 'nodeExists'))
-    {
-      $exists = $module->nodeExists($node);
-      $existence[$node] = $exists;
-      atkdebug("Node $node exists? ".($exists ? 'yes' : 'no'));
-    }
-    else
-    {
-      atkdebug('Bad node detected');
-    }
+    $exists = is_object($module) && $module->nodeExists($node);
+    $existence[$node] = $exists;
+    atkdebug("Node $node exists? ".($exists ? 'yes' : 'no'));
     
     return $exists;
   }
