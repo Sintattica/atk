@@ -140,7 +140,7 @@ Changed in ATK 6.2
   just as fast as an ordinary node. Caching is automatically turned on for meta
   nodes which either don't have a meta method defined or have their meta method
   defined as being static. During development the caching can be turned of
-  by setting the new $config_meta_cache configuration option to false. [Peter]
+  by setting the new $config_meta_caching configuration option to false. [Peter]
 + Added the atkMetaCompiler which transforms the meta policy contents to code.
   If you want to use your own compiler class you can override the new
   $config_meta_compiler configuration option. [Peter]
