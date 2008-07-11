@@ -486,6 +486,8 @@ Changed in ATK 6.2
   because it wasn't very useful and wasn't used anyway. [Peter]
 - Deleted Thumbs.db files from winxp theme. [Guido]
 - Removed Rico.js because it was almost never used and outdated. [Peter]
+- Removed web20 theme, we now have stillblue as a good pratical
+  demo of creating themes without frames. [Peter]
 
 Changed in ATK 6.1
 ------------------
