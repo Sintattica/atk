@@ -3286,13 +3286,17 @@
      *
      * The record should already exist in the database, or this method will
      * fail.
+     *
+     * NOTE: Does not commit your transaction! If you are using a database that uses
+     * transactions you will need to call 'atkGetDb()->commit()' manually.
+     *
      * @param array $record The record to update in the database.
      * @param bool wether to execute the pre/post update triggers
      * @param array $excludes exclude list (these attribute will *not* be updated)
      * @param array $includes include list (only these attributes will be updated)
      * @return boolean True if succesful, false if not.
      */
-	  function updateDb(&$record, $exectrigger=true, $excludes="", $includes="")
+    function updateDb(&$record, $exectrigger=true, $excludes="", $includes="")
     {
       $db = &$this->getDb();
       $query = &$db->createQuery();
@@ -4166,6 +4170,9 @@
      * its value when stored to the database. The record is updated, so after
      * the call to addDb you can use access the primary key fields.
      *
+     * NOTE: Does not commit your transaction! If you are using a database that uses
+     * transactions you will need to call 'atkGetDb()->commit()' manually.
+     *
      * @param array $record The record to save.
      * @param boolean $exectrigger Indicates whether the postAdd trigger
      *                             should be fired.
@@ -4299,6 +4306,9 @@
      * After deletion, the postDel() trigger in the node method is called, and
      * on any attribute that has the AF_CASCADE_DELETE flag set, the delete()
      * method is invoked.
+     *
+     * NOTE: Does not commit your transaction! If you are using a database that uses
+     * transactions you will need to call 'atkGetDb()->commit()' manually.
      *
      * @todo There's a discrepancy between updateDb, addDb and deleteDb:
      *       There should be a deleteDb which accepts a record, instead
