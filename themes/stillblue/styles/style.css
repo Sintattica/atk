@@ -22,9 +22,10 @@ div.stacktrace
 	margin-bottom: 8px;
 }
 
-.overlay_alphacube
+.alphacube_overlay
 {
-	background-color: #ddd !important;
+	background-color: #888 !important;
+	opacity: 0.3 !important;
 }
 
 .actionpageWrapper 

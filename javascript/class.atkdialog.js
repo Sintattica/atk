@@ -12,71 +12,18 @@ ATK.Dialog.prototype = {
     this.title = title;
     this.url = url;
     this.theme = theme || 'alphacube';
-    this.options  = options || {};
+    this.options = options || {};
     this.windowOptions = windowOptions || {};
-  },
-
-  /**
-   * Eval JavaScripts and optionally resizes afterwards.
-   */
-  evalScripts: function(resize) {
-    var dialog = this;
-    
-    (function() {
-      dialog.scripts.map(function(script) { 
-        atkEval(script);
-      });
-      
-      if (resize && !dialog.options.width && !dialog.options.height) {
-        dialog.delayedResize();
-      }
-    }).defer();
-  },
-  
-  /**
-   * Used internally.
-   */
-  onUpdate: function(transport) {
-    this.scripts = transport.responseText.extractScripts();
-    this.evalScripts(true);
-  },
-
-  /**
-   * Used internally.
-   */
-  onShow: function(transport) {
-    var windowParameters = { className: this.theme, title: this.title, onShow: this.evalScripts.bind(this, true) };
-    if (this.options.width)
-      windowParameters['width'] = this.options.width;
-    if (this.options.height)
-      windowParameters['height'] = this.options.height;
-    windowParameters = Object.extend(windowParameters, this.windowOptions);
-    
-    this.scripts = transport.responseText.extractScripts();
-    Dialog.info(transport.responseText.stripScripts(), { windowParameters: windowParameters });
-  },
-
-  /**
-   * Delayed auto-resize. Sometimes needed because the content is not always
-   * fully updated yet (you don't always know how long it takes to update the DOM).
-   */
-  delayedResize: function() {
-    setTimeout(this.resize.bind(this), 800);
   },
 
   /**
    * Auto-resize the dialog.
    */
   resize: function() {
-    var element = $('modal_dialog_message');
-    if (!element) return;
-
-    var d = Element.getDimensions(element);
-    var p = Position.cumulativeOffset(element);
-
-    var window = Windows.getWindow(Dialog.dialogId);
-    window.setSize(d.width, d.height);
-    window.setLocation(p[1] - window.heightN, p[0] - window.widthW);
+    if (!this.window) return;
+	  var dimensions = this.window.content.getScrollDimensions();
+	  this.window.setSize(dimensions.width, dimensions.height, true); 
+	  this.window.center({ auto: true });
   },
 
   /**
@@ -98,19 +45,55 @@ ATK.Dialog.prototype = {
   },
 
   /**
+   * Now the content is loaded into the dialog content element we
+   * can finally show it to the user.
+   */
+  handleComplete: function() {
+    this.window.content.setStyle({ visibility: 'hidden' });
+    this.window.show(true);
+    
+    if (this.options.width && this.options.height) {
+      this.window.setSize(this.options.width, this.options.height);
+      this.window.center({ auto: true });      
+    } else {
+      this.resize();
+    }
+
+    this.window.content.setStyle({ visibility: '' });
+    this.window.focus();      
+  },
+
+  /**
    * Show dialog.
    */
   show: function() {
     ATK.Dialog.stack.push(this);
-
-    var options = {};
-    options['evalJS'] = false;
-    options['onSuccess'] = this.onShow.bind(this);
-    if (this.options.serializeForm) {
-      options['parameters'] = this.serializeForm();
+    
+    var windowOptions = { 
+      theme: this.theme, 
+      shadow: false, 
+      shadowTheme: 'mac_shadow',
+      superflousEffects: false,
+      minimize: false,
+      maximize: false,
+      close: false,
+      resizable: false,
+      draggable: false
     }
 
-    new Ajax.Request(this.url, options);
+    this.window = new UI.Window(windowOptions);
+    this.window.setZIndex(1000);
+    this.window.header.setStyle({ paddingRight: '0px' });
+    this.window.header.removeClassName('move_handle');
+    this.window.header.update(this.title.escapeHTML());
+    
+    var updaterOptions = {
+      evalScripts: true,
+      parameters: this.options.serializeForm ? this.serializeForm : null,
+      onComplete: this.handleComplete.bind(this)
+    }
+    
+    new Ajax.Updater(this.window.content, this.url, updaterOptions);
   },
 
   /**
@@ -129,12 +112,17 @@ ATK.Dialog.prototype = {
 
     var options = options || {};
 
-    var updateFunc = this.onUpdate.bind(this);
-    var successFunc = options['onSuccess'] || function() { };
+    var dummyFunc = function() {};
+    var resizeFunc = this.options.width && this.options.height ? dummyFunc : this.resize.bind(this);
+    var completeFunc = options['onComplete'] || dummyFunc;
 
     var options = options || {};
     options['parameters'] = params;
-    options['onSuccess'] = function(transport) { updateFunc(transport); successFunc(transport); };
+    options['onComplete'] = function(transport) {
+      transport.responseText.evalScripts(); 
+      resizeFunc();
+      completeFunc(transport); 
+    };
 
     new Ajax.Request(url, options);
   },
@@ -143,7 +131,7 @@ ATK.Dialog.prototype = {
    * Save dialog contents and closes the dialog immediately.
    */
   saveAndClose: function(url, form, extraParams) {
-    this.save(url, form, extraParams, { onSuccess: this.close.bind(this) });
+    this.save(url, form, extraParams, { onComplete: this.close.bind(this) });
     this.close();
   },
 
@@ -152,15 +140,16 @@ ATK.Dialog.prototype = {
    */
   close: function() {
     ATK.Dialog.stack.pop();
-    Dialog.closeInfo();
+    if (!this.window) return;
+    this.window.hide();    
+    this.window = null;
   },
 
   /**
    * Update dialog contents.
    */
   update: function(content) {
-    var element = $('modal_dialog_message');
-    element.update(content);
+    this.window.content.update(content);
     this.resize();
   },
 
@@ -169,13 +158,13 @@ ATK.Dialog.prototype = {
    */
   ajaxUpdate: function(url) {
     var options = {};   
-    options['evalJS'] = false;
-    options['onSuccess'] = this.onUpdate.bind(this);
+    options['evalScripts'] = true;
+    options['onSuccess'] = this.resize.bind(this);
     if (this.options.serializeForm) {
       options['parameters'] = this.serializeForm();
     }
 	
-    new Ajax.Updater('modal_dialog_message', url, options);
+    new Ajax.Updater(this.window.content, url, options);
   },
 
   /**
