@@ -359,7 +359,7 @@ class atkDialog
     $params = array(
       atkJSON::encode($url),
       atkJSON::encode($formName),
-      atkJSON::encode($extraParams)
+      count($extraParams) == 0 ? '{}' : atkJSON::encode($extraParams)
     );
 
     $result = vsprintf($call, $params);

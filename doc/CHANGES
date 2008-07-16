@@ -193,6 +193,8 @@ Changed in ATK 6.2
   cannot be NULL and made the language key always uppercase [Yannick]
 + Added atkthemeicon Smarty plug-in for including theme icons inside
   templates. [Peter]
++ Added UI resource for Smarty which makes it easier to include templates
+  somehwere inside your ATK root e.g. {include file="ui:modules/..."} [Peter]
 * Upgraded Prototype to 1.6.0.2, Scriptaculous to 1.8.1 and Window.js to
   1.3.2. Might cause certain backwards incompatiblities! [Peter]
 * Admin datagrids can now be modified from within the node by implementing 

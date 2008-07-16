@@ -14,28 +14,46 @@ ATK.Dialog.prototype = {
     this.theme = theme || 'alphacube';
     this.options  = options || {};
     this.windowOptions = windowOptions || {};
- },
+  },
 
   /**
-   * Eval JavaScript in response.
+   * Eval JavaScripts and optionally resizes afterwards.
    */
-  evalResponse: function(transport) {
+  evalScripts: function(resize) {
     var dialog = this;
     
-    (function() { 
-      transport.responseText.evalScripts();
+    (function() {
+      dialog.scripts.map(function(script) { 
+        atkEval(script);
+      });
       
-      if (!dialog.options.width && !dialog.options.height) {
+      if (resize && !dialog.options.width && !dialog.options.height) {
         dialog.delayedResize();
       }
     }).defer();
+  },
+  
+  /**
+   * Used internally.
+   */
+  onUpdate: function(transport) {
+    this.scripts = transport.responseText.extractScripts();
+    this.evalScripts(true);
   },
 
   /**
    * Used internally.
    */
   onShow: function(transport) {
-    this.evalResponse(transport);
+    var windowParameters = { className: this.theme, title: this.title, onShow: this.evalScripts.bind(this, true) };
+    if (this.options.width)
+      windowParameters['width'] = this.options.width;
+    if (this.options.height)
+      windowParameters['height'] = this.options.height;
+    windowParameters = Object.extend(windowParameters, this.windowOptions);
+    
+    this.scripts = transport.responseText.extractScripts();
+    Dialog.info(transport.responseText.stripScripts(), { windowParameters: windowParameters });
   },
 
   /**
@@ -51,6 +69,7 @@ ATK.Dialog.prototype = {
    */
   resize: function() {
     var element = $('modal_dialog_message');
+    if (!element) return;
 
     var d = Element.getDimensions(element);
     var p = Position.cumulativeOffset(element);
@@ -84,23 +103,14 @@ ATK.Dialog.prototype = {
   show: function() {
     ATK.Dialog.stack.push(this);
 
-    var windowParameters = { className: this.theme, title: this.title };
-    if (this.options.width)
-      windowParameters['width'] = this.options.width;
-    if (this.options.height)
-      windowParameters['height'] = this.options.height;
-    windowParameters = Object.extend(windowParameters, this.windowOptions);
-
     var options = {};
+    options['evalJS'] = false;
     options['onSuccess'] = this.onShow.bind(this);
     if (this.options.serializeForm) {
       options['parameters'] = this.serializeForm();
     }
 
-    Dialog.info(
-      { url: this.url, options: options },
-      { windowParameters: windowParameters }
-    );
+    new Ajax.Request(this.url, options);
   },
 
   /**
@@ -119,12 +129,12 @@ ATK.Dialog.prototype = {
 
     var options = options || {};
 
-    var evalFunc = this.evalResponse.bind(this);
+    var updateFunc = this.onUpdate.bind(this);
     var successFunc = options['onSuccess'] || function() { };
 
     var options = options || {};
     options['parameters'] = params;
-    options['onSuccess'] = function(transport) { evalFunc(transport); successFunc(transport); };
+    options['onSuccess'] = function(transport) { updateFunc(transport); successFunc(transport); };
 
     new Ajax.Request(url, options);
   },
@@ -158,8 +168,9 @@ ATK.Dialog.prototype = {
    * Update dialog contents with the results of the given URL.
    */
   ajaxUpdate: function(url) {
-    var options = {};
-    options['onSuccess'] = this.onShow.bind(this);
+    var options = {};   
+    options['evalJS'] = false;
+    options['onSuccess'] = this.onUpdate.bind(this);
     if (this.options.serializeForm) {
       options['parameters'] = this.serializeForm();
     }

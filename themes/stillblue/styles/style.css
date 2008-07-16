@@ -21,3 +21,13 @@ div.stacktrace
 	margin-left: 18px;
 	margin-bottom: 8px;
 }
+
+.overlay_alphacube
+{
+	background-color: #ddd !important;
+}
+
+.actionpageWrapper 
+{
+  width:100%;
+}
