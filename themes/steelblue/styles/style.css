@@ -530,7 +530,8 @@ p img
 .atkdialog .content {
   background-color:#FDFDFD;
   color:#000;
-  font:normal 12px/1em Tahoma, Arial, sans-serif;
+  font-size: 12px;
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
   overflow:auto;
 }
 
