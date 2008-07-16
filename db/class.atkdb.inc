@@ -989,7 +989,9 @@
 
         foreach($tables as $table)
         {
-          if (!$this->query("DELETE FROM ".$table['table_name']))
+          $query = $this->createQuery();
+          $query->addTable($table['table_name']);
+          if (!$query->executeDelete())
           {
             $count++;
           }

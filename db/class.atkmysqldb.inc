@@ -425,6 +425,20 @@
       }
     }
 
+    
+      /**
+     * Drop all database tables.
+     */
+    function dropAll()
+    {
+      $tables = $this->table_names();
+      foreach($tables as $table)
+      {
+        
+        $this->query("DROP TABLE `".$table['table_name']."`");
+      }
+    }
+    
     /**
      * Returns the table type.
      *

@@ -186,6 +186,9 @@ Changed in ATK 6.2
 + Added support for different node lock modes (exclusive and shared). [Peter]
 + Added atkDateFormat function which can be used to do localized formatting
   of a time stamp, compatible with PHP's date function. [Peter]
+* modified the deleteAll method to use the query builder, this fixes a issue
+  which needed escaping of table names. Also added a dropAll method to the 
+  mysqldb that does table escaping. [Erik] 
 * Added empty string check at the atkMlSplitter for primary key values that 
   cannot be NULL and made the language key always uppercase [Yannick]
 + Added atkthemeicon Smarty plug-in for including theme icons inside
