@@ -71,7 +71,7 @@ ATK.Dialog.prototype = {
     
     var windowOptions = { 
       theme: this.theme, 
-      shadow: false, 
+      shadow: true, 
       shadowTheme: 'mac_shadow',
       superflousEffects: false,
       minimize: false,

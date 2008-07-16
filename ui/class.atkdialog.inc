@@ -206,7 +206,8 @@ class atkDialog
     atkimport('atk.ui.atkpage');
 
     $page = &atkPage::getInstance();
-    $page->register_script(atkconfig('atkroot').'atk/javascript/prototype-ui/window/window.js');
+    $page->register_script(atkconfig('atkroot').'atk/javascript/prototype-ui/window/window.packed.js');
+    $page->register_script(atkconfig('atkroot').'atk/javascript/prototype-ui-ext.js');    
     $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkdialog.js');
     $page->register_style(atkconfig('atkroot').'atk/javascript/prototype-ui/window/themes/window/window.css');
     $page->register_style(atkconfig('atkroot').'atk/javascript/prototype-ui/window/themes/shadow/mac_shadow.css');    

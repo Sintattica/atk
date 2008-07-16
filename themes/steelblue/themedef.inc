@@ -24,4 +24,6 @@
   $theme['modern_menu_compat'] = true;
   $theme['frame_top_height']=149;
   $theme['frame_menu_width']=210;
+  $theme['dialog_theme_name'] = 'atkdialog';
+  $theme['dialog_theme_load'] = false;
 ?>
