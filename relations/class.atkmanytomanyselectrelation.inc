@@ -73,6 +73,19 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     $relation->setStorageType(NOSTORE);
     $this->m_manyToOneRelation = $relation;
   }
+  
+  /**
+   * If the many-to-many select relation is made obligatory, so should
+   * the internal many-to-one relationship.
+   *
+   * @param int $flags flags
+   */
+  public function addFlag($flags)
+  {
+    parent::addFlag($flags);
+    if ($this->hasFlag(AF_OBLIGATORY))
+      $this->getManyToOneRelation()->addFlag(AF_OBLIGATORY);
+  }
 
   /**
    * Initialize.
