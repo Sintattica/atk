@@ -1,7 +1,9 @@
 {atkmessages}
-<div id="action-helplink" style="border: 0px solid red">
-{if isset($helplink)}{$helplink}<br />{/if}
-</div>
+{if isset($helplink)}
+	<div id="action-helplink" style="border: 0px solid red">
+  	{$helplink}<br />
+	</div>
+{/if}
 {if count($atkmessages)}
 <div class="atkmessages">
   {foreach from=$atkmessages item=message}

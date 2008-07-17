@@ -220,13 +220,22 @@ ul, ol, li
 /* EDIT FORM */
 /* ------------------------------------------------------------------ */
 
-input,
+input[type="text"],
 select,
 textarea
 {
   font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
   font-size: 12px;
   padding: 1px;
+}
+
+input {
+	font-size: 12px;
+}
+
+textarea
+{
+	padding: 2px;
 }
 
 input.btn,
@@ -236,9 +245,7 @@ input.btn_saveandclose,
 input.btn_saveandcontinue,
 input.btn_saveandnext
 {
-  color: #000000;
-  height: 25px;
-  padding: 1px;
+  color: #000;
 }
 
 input.btn_saveandclose
@@ -250,22 +257,6 @@ input.btn_saveandclose
 {
   padding-right: 12px;
   /* white-space: nowrap; */
-}
-
-#editform input[type="text"],
-#editform textarea,
-#editform select,
-.contentBlock input[type="text"],
-.contentBlock textarea,
-.contentBlock select
-{
-  padding: 1px;
-}
-
-.atkcheckbox, .atkradio, .atkbutton, #editform .atkbutton, .contentBlock .atkbutton
-{
-  border: auto !important;
-  padding: 1px;
 }
 
 #changeView
@@ -390,12 +381,6 @@ input.btn_saveandclose
 #action-buttons
 {
   text-align: center;
-}
-
-.btn_saveandclose, .btn_save, .btn_ok, .btn_cancel
-{
-  padding: 2px !important;
-  margin: 0px !important;
 }
 
 #editform td.field

@@ -23,7 +23,7 @@ ATK.Dialog.prototype = {
     if (!this.window) return;
 	  var dimensions = this.window.content.getScrollDimensions();
 	  this.window.setSize(dimensions.width, dimensions.height, true); 
-	  this.window.center({ auto: true });
+	  this.window.center({ auto: false });
   },
 
   /**
@@ -54,7 +54,7 @@ ATK.Dialog.prototype = {
     
     if (this.options.width && this.options.height) {
       this.window.setSize(this.options.width, this.options.height);
-      this.window.center({ auto: true });      
+      this.window.center({ auto: false });      
     } else {
       this.resize();
     }
@@ -77,14 +77,12 @@ ATK.Dialog.prototype = {
       minimize: false,
       maximize: false,
       close: false,
-      resizable: false,
-      draggable: false
+      resizable: false
     }
 
     this.window = new UI.Window(windowOptions);
     this.window.setZIndex(1000);
     this.window.header.setStyle({ paddingRight: '0px' });
-    this.window.header.removeClassName('move_handle');
     this.window.header.update(this.title.escapeHTML());
     
     var updaterOptions = {

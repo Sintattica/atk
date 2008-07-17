@@ -61,6 +61,7 @@ table.recordlist .row2
 .recordList
 {
   border: 0px solid #d7d7d7;
+  border-left: 1px solid #eee;  
 }
 
 .recordListSearch
