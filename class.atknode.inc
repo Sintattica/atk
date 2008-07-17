@@ -1726,6 +1726,7 @@
         if (is_numeric($key))
         {
           unset($this->m_fuzzyFilters[$key]);
+          $this->m_fuzzyFilters = array_values($this->m_fuzzyFilters);
           return true;
         }
       }

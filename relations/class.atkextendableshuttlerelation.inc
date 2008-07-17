@@ -34,6 +34,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
   protected $m_controlsBySection = array();
   protected $m_selectedFields = null;
   protected $m_availableFields = null;
+  protected $m_limit = null;
 
   public function __construct($name, $link, $destination, $flags=0)
   {
@@ -81,6 +82,9 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
           $this->createDestination();          
           $this->getDestination()->addFilter($filter);
         } 
+        
+        $limit = $control->getLimit();
+        if ($limit!==null) $this->m_limit = $limit;
       }
     }
 
@@ -194,6 +198,9 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
           {
             $filtersBySection[$section][] = $filter;
           }
+          
+          $limit = $control->getLimit();
+          if ($limit!==null) $this->m_limit = $limit;
         }
       }
     }   
@@ -205,7 +212,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     $selectedFilter = '';
     if (count($filtersBySection[atkShuttleControl::SELECTED]) > 0)
       $selectedFilter = '('.implode(') AND (', $filtersBySection[atkShuttleControl::SELECTED]).')';
-
+      
     $this->loadFieldData($record, $mode, $availableFilter, $selectedFilter);
     
     // Get controls for 'available' side
@@ -397,18 +404,20 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     // selected fields
     if ($availableFilter != $selectedFilter)
     {
-      if (!empty($selectedFilter))
+      if (count($selectedFields)>0)
       {
-        $this->getDestination()->addFilter($selectedFilter);  
+        if (empty($selectedFilter))
+          $selectedFilter = " (".implode(') OR (',$selectedFields).")  "; 
+
+        $this->getDestination()->addFilter($selectedFilter);
         $recs = $this->_getSelectableRecords($record, $mode, true);
         $this->getDestination()->removeFilter($selectedFilter);
       }
-      else 
+      else
       {
-        $recs = $this->_getSelectableRecords($record, $mode, true);
+        $recs = array();
       }
     }
-    
     $this->m_selectedFields = array();    
     foreach ($recs as $rec)
     {

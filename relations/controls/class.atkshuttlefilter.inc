@@ -76,6 +76,18 @@
     }
 
     /**
+     * This method gets called to set a hard limit to the amount of records that can 
+     * get returned.
+     *
+     * @param array $record full record
+     * @return int 
+     */
+    public function getLimit()
+    {
+      return null;
+    }
+      
+    /**
      * Applies a filter clause to the destination node for this filter's current value.
      * 
      * The current value can be retrieved from the record using $this->getValue(...).

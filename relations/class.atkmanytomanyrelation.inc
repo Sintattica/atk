@@ -159,7 +159,7 @@
         $filterkey = md5($this->m_destInstance->atkNodeType().".".$filter);
         if (!array_key_exists($filterkey, $resultList) || $force)
         {
-          $resultList[$filterkey] = $this->m_destInstance->selectDb($filter,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+          $resultList[$filterkey] = $this->m_destInstance->selectDb($filter,"",(is_numeric($this->m_limit) ? $this->m_limit : "" ),"",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
         }
 
         return $resultList[$filterkey];

@@ -7,6 +7,8 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
++ Added a way to set a limit to the amount of elements that will be returned 
+  with the atkshuttle attribute. [Erik]
 + added a function setUseThousandsSeparator to enable the thousandsseparator
   when display the number. Default no thousandsseperator is displayed. [Martijn]
 + The atkNumberAttribute and atkCurrency now supports the thousands separator. 
@@ -188,6 +190,9 @@ Changed in ATK 6.2
   of a time stamp, compatible with PHP's date function. [Peter]
 + Added Prototype UI window library which will eventually replace window.js
   and improves stability for atkDialog. [Peter]
+* Fixed a small bug with the fuzzy filters. [Erik]
+* Made the gathering of selected records in extendableshuttle a bit more 
+  efficient [Erik]
 * modified the deleteAll method to use the query builder, this fixes a issue
   which needed escaping of table names. Also added a dropAll method to the 
   mysqldb that does table escaping. [Erik] 
