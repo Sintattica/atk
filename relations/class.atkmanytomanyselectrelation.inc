@@ -44,7 +44,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
    * @var atkManyToOneRelation
    */
   private $m_manyToOneRelation = null;
-
+  
   /**
    * Constructs a new many-to-many select relation.
    *
@@ -174,24 +174,92 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     $name = $this->getHtmlId($fieldprefix).'[]['.$this->getRemoteKey().']';
     $key = $record[$this->getDestination()->primaryKeyField()];
 
+    // Define what actions need to be shown.
     $actions = array();
-
     if ($this->hasFlag(AF_MANYTOMANYSELECT_DETAILEDIT) && $this->getDestination()->allowed('edit', $record))
     {
-      $actions[] = href(dispatch_url($this->getDestination()->atkNodeType(), 'edit', array('atkselector' => $this->getDestination()->primaryKey($record))), $this->text('edit'), SESSION_NESTED, true);
+      $actions[] = 'edit';
     }
+    
+    $actions[] = 'delete';
+    $this->recordActions($record, $actions);
 
-    $actions[] = '<a href="javascript:void(0)" onclick="ATK.ManyToManySelectRelation.deleteItem(this); return false;">'.$this->text('delete').'</a>';
-
+    // Call the renderButton action for those actions
+    $actionLinks = array();
+    foreach ($actions as $action)
+    {
+      $actionLink = $this->getActionLink($action, $record);
+      if ($actionLink != null)
+        $actionLinks[] = $actionLink; 
+    }
+    
+    // Build the record
     $result = '
       <li class="atkmanytomanyselectrelation-selected">
         <input type="hidden" name="'.$name.'" value="'.htmlentities($key).'"/>
         <span>'.htmlentities($this->getDestination()->descriptor($record)).'</span>
-        ('.implode(' / ', $actions).')
+        ('.implode(' / ', $actionLinks).')
       </li>
     ';
 
     return $result;
+  }
+  
+  /**
+   * This method returns the HTML for the link of a certain action
+   *
+   * @param string $action
+   * @param array $record
+   * @return string
+   */
+  protected function getActionLink($action, $record)
+  {
+      $actionMethod = "get{$action}ActionLink";
+      
+      if (method_exists($this,$actionMethod))
+      {
+        return $this->$actionMethod($record);
+      }
+      else
+      {
+        atkwarning('Missing '.$actionMethod.' method on manytomanyselectrelation. ');
+      }
+      
+  }
+  
+  /**
+   * The default edit link
+   *
+   * @param array $record
+   * @return string
+   */
+  protected function getEditActionLink($record)
+  {
+    return href(dispatch_url($this->getDestination()->atkNodeType(), 'edit', array('atkselector' => $this->getDestination()->primaryKey($record))), $this->text('edit'), SESSION_NESTED, true);
+  }
+  
+  /**
+   * The default delete link
+   *
+   * @param array $record
+   * @return string
+   */
+  protected function getDeleteActionLink($record)
+  {
+    return '<a href="javascript:void(0)" onclick="ATK.ManyToManySelectRelation.deleteItem(this); return false;">'.$this->text('delete').'</a>';
+  }
+  
+  /**
+   * Function that is called for each record in a recordlist, to determine
+   * what actions may be performed on the record.
+   *
+   * @param array $record The record for which the actions need to be
+   *                      determined.
+   * @param &$actions Reference to an array with the already defined
+   *                  actions.
+   */
+  function recordActions($record, &$actions)
+  {
   }
 
   /**

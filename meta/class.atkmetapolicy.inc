@@ -1305,30 +1305,38 @@ class atkMetaPolicy
     {
       $options['local'] = $options['source'];
     }
+    
+    if (isset($options['class']))
+    {
+      $type = $options['class'];
+    }
 
     $destination = $this->_findDestination($accessor, true);
 
     if (isset($options['through']))
     {
-      switch (@$options['type'])
+      if (!isset($type))
       {
-        case 'bool':
-        case 'boolean':
-          $type = "atk.meta.relations.atkmetamanyboolrelation";
-          break;
-        case 'list':
-          $type = "atk.meta.relations.atkmetamanytomanylistrelation";
-          break;
-        case 'select':
-          $type = "atk.meta.relations.atkmetamanytomanyselectrelation";
-          break;
-        case 'eshuttle':
-        case 'extendableshuttle':
-          $type = "atk.meta.relations.atkmetaextendableshuttlerelation";
-          break;
-        case 'shuttle':
-        default:
-          $type = "atk.meta.relations.atkmetashuttlerelation";
+        switch (@$options['type'])
+        {
+          case 'bool':
+          case 'boolean':
+            $type = "atk.meta.relations.atkmetamanyboolrelation";
+            break;
+          case 'list':
+            $type = "atk.meta.relations.atkmetamanytomanylistrelation";
+            break;
+          case 'select':
+            $type = "atk.meta.relations.atkmetamanytomanyselectrelation";
+            break;
+          case 'eshuttle':
+          case 'extendableshuttle':
+            $type = "atk.meta.relations.atkmetaextendableshuttlerelation";
+            break;
+          case 'shuttle':
+          default:
+            $type = "atk.meta.relations.atkmetashuttlerelation";
+        }
       }
 
       $through = $this->_findDestination($options['through'], true);
@@ -1350,8 +1358,11 @@ class atkMetaPolicy
     }
     else
     {
-      $type = "atk.meta.relations.atkmetaonetomanyrelation";
-
+      if (!isset($type))
+      {
+        $type = "atk.meta.relations.atkmetaonetomanyrelation";
+      }
+      
       $variants = $this->_getDestinationAttributeVariants();
       $options['variants'] = $variants;
 
