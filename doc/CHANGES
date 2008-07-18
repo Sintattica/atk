@@ -497,6 +497,7 @@ Changed in ATK 6.2
 * Improved translation options for node actions. [Peter]
 * Added support for savepoints to MySQLi driver. [Peter]
 * Fixed displaying of descriptors in confirm action. [Peter]
+* Added appendToFile method to atkTmpFile and fixed documentation. [Boy]
 - Removed atkMetaHandler because it wasn't very useful. [Peter]
 - Removed support for regexes in atkMetaPolicy's setIncludes/setExcludes
   because it wasn't very useful and wasn't used anyway. [Peter]
