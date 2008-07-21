@@ -431,7 +431,7 @@ class atkDGList extends atkDGComponent
 
     }
 
-    $page->register_loadscript($actionloader);
+    $page->register_scriptcode($actionloader);
     $this->m_actionloader = $actionloader;
 
     /*************/
