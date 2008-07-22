@@ -105,7 +105,7 @@
             $this->clearCache();
 
             $location="";
-            if ($this->m_node->hasFlag(NF_EDITAFTERADD))
+            if ($this->m_node->hasFlag(NF_EDITAFTERADD) && $this->m_node->allowed('edit'))
             {
               // forward atkpkret for newly added records
               $extra = "";

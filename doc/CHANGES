@@ -193,6 +193,9 @@ Changed in ATK 6.2
   of a time stamp, compatible with PHP's date function. [Peter]
 + Added Prototype UI window library which will eventually replace window.js
   and improves stability for atkDialog. [Peter]
++ Added atkthemeicon Smarty plug-in for including theme icons inside
+  templates. [Peter]
+* Added check for edit privilege when NF_EDITAFTERADD is set [Yannick]
 * Fixed a small bug with the fuzzy filters. [Erik]
 * Made the gathering of selected records in extendableshuttle a bit more 
   efficient [Erik]
@@ -201,8 +204,6 @@ Changed in ATK 6.2
   mysqldb that does table escaping. [Erik] 
 * Added empty string check at the atkMlSplitter for primary key values that 
   cannot be NULL and made the language key always uppercase [Yannick]
-+ Added atkthemeicon Smarty plug-in for including theme icons inside
-  templates. [Peter]
 + Added UI resource for Smarty which makes it easier to include templates
   somehwere inside your ATK root e.g. {include file="ui:modules/..."} [Peter]
 * Upgraded Prototype to 1.6.0.2, Scriptaculous to 1.8.1 and Window.js to

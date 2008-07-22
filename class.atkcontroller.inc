@@ -432,7 +432,18 @@
       }
       elseif ($mode == "add")
       {
-        $result[] = ($node->hasFlag(NF_EDITAFTERADD) === TRUE ) ? $this->getButton('saveandedit') : $this->getButton('save');
+        if($node->hasFlag(NF_EDITAFTERADD) === true && $node->allowed('edit'))
+        {
+          $result[] = $this->getButton('saveandedit');
+        }
+        else
+        {
+          if($node->hasFlag(NF_EDITAFTERADD) === true)
+          {
+            atkwarning("NF_EDITAFTERADD found but no 'edit' privalage.");
+          }
+          $result[] = $this->getButton('save');
+        }
 
         // if action is admin, we don't show the cancelbutton or the add next button
         if ($node->hasFlag(NF_ADDAFTERADD) && !$node->hasFlag(NF_EDITAFTERADD))
