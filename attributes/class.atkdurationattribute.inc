@@ -194,12 +194,12 @@
 
       if(atkconfig("durationformat",0)==DURATIONFORMAT_DECIMAL)
       {
-        $decimalvalue = $this->_getHourPart($minutes) + ($this->_getMinutePart($minutes)/60);
+        $decimalvalue = $this->_getHourPart($minutes) + (self::_getMinutePart($minutes)/60);
         return $prefix.sprintf("%02.02f", $decimalvalue);
       }
       elseif(atkconfig("durationformat",0)==DURATIONFORMAT_TIME)
       {
-        return $prefix.sprintf("%02d:%02d",$this->_getHourPart($minutes), $this->_getMinutePart($minutes));
+        return $prefix.sprintf("%02d:%02d",self::_getHourPart($minutes), self::_getMinutePart($minutes));
       }
     }
 
