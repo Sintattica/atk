@@ -217,12 +217,13 @@ class atkDataNode extends atkNode
    */
   protected function getCriteria($selector)
   {
+    $criteria = $this->m_filters;
+    
     if (empty($selector))
     {
-      return array();
+      return $criteria;
     }
 
-    $criteria = array();
     $keyValueSet = decodeKeyValueSet($selector);
 
     foreach ($keyValueSet as $column => $value)
