@@ -73,7 +73,7 @@
       $this->m_id = (int)$atklock["id"];
       $this->storeLockList($atklockList);
 
-      if ($this->m_id > 0)
+      if (!isset($ATK_VARS['atkpartial']) && $this->m_id > 0)
       {
         $page = &atkinstance("atk.ui.atkpage");
         $page->register_script(atkconfig("atkroot")."atk/javascript/xml.js");

@@ -8,9 +8,10 @@ ATK.Dialog.prototype = {
   /**
    * Constructor.
    */
-  initialize: function(title, url, theme, options, windowOptions) {
+  initialize: function(title, url, params, theme, options, windowOptions) {
     this.title = title;
     this.url = url;
+    this.params = params || {};
     this.theme = theme || 'alphacube';
     this.options = options || {};
     this.windowOptions = windowOptions || {};
@@ -85,9 +86,13 @@ ATK.Dialog.prototype = {
     this.window.header.setStyle({ paddingRight: '0px' });
     this.window.header.update(this.title.escapeHTML());
     
+    var params = 
+      $H(this.params).toQueryString() + '&' +
+      (this.options.serializeForm ? this.serializeForm() : '');
+
     var updaterOptions = {
       evalScripts: true,
-      parameters: this.options.serializeForm ? this.serializeForm : null,
+      parameters: params,
       onComplete: this.handleComplete.bind(this)
     }
     
@@ -154,13 +159,15 @@ ATK.Dialog.prototype = {
   /**
    * Update dialog contents with the results of the given URL.
    */
-  ajaxUpdate: function(url) {
+  ajaxUpdate: function(url, params) {
+    var params = 
+      $H(params || {}).toQueryString() + '&' +
+      (this.options.serializeForm ? this.serializeForm() : '');  
+  
     var options = {};   
     options['evalScripts'] = true;
-    options['onSuccess'] = this.resize.bind(this);
-    if (this.options.serializeForm) {
-      options['parameters'] = this.serializeForm();
-    }
+    options['onComplete'] = this.resize.bind(this);
+    options['parameters'] = params;
 	
     new Ajax.Updater(this.window.content, url, options);
   },
@@ -169,7 +176,7 @@ ATK.Dialog.prototype = {
    * Reload dialog contents.
    */
   reload: function() {
-	  this.ajaxUpdate(this.url);
+	  this.ajaxUpdate(this.url, this.params);
   }
 };
 

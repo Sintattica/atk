@@ -272,7 +272,7 @@ class atkDialog
    *
    * @return string JavaScript call for opening the dialog
    */
-  function getCall($load=true, $encode=true, $callModifier=true)
+  function getCall($load=true, $encode=true, $callModifier=true, $lateParamBinding=false)
   {
     if ($load)
     {
@@ -291,7 +291,7 @@ class atkDialog
 
     atkimport('atk.utils.atkjson');
 
-    $call = "(new ATK.Dialog(%s, %s, %s, %s, %s)).show();";
+    $call = "(new ATK.Dialog(%s, %s, ".($lateParamBinding ? 'params' : '{}').", %s, %s, %s)).show();";
     $params = array(
       atkJSON::encode($this->m_title),
       atkJSON::encode($this->getUrl()),
@@ -301,7 +301,10 @@ class atkDialog
     );
 
     $result = vsprintf($call, $params);
-    return $encode ? htmlentities($result) : $result;
+    $result = $encode ? htmlentities($result) : $result;
+    $result = $lateParamBinding ? "function(params) { $result }" : $result;
+        
+    return $result;
   }
 
   /**

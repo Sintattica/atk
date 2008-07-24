@@ -196,6 +196,8 @@ Changed in ATK 6.2
 + Added atkthemeicon Smarty plug-in for including theme icons inside
   templates. [Peter]
 + Added fetchByPk to atkNode. [Michael]
++ Added atknavigator and atknavigatorinfo Smarty block plug-ins, which make it
+  to create page navigation bars or show navigation info. [Peter]
 * Added check for edit privilege when NF_EDITAFTERADD is set [Yannick]
 * Fixed a small bug with the fuzzy filters. [Erik]
 * Made the gathering of selected records in extendableshuttle a bit more 
@@ -503,6 +505,7 @@ Changed in ATK 6.2
 * Added support for savepoints to MySQLi driver. [Peter]
 * Fixed displaying of descriptors in confirm action. [Peter]
 * Added appendToFile method to atkTmpFile and fixed documentation. [Boy]
+* Extended atkDialog with late parameter binding support. [Peter]
 - Removed atkMetaHandler because it wasn't very useful. [Peter]
 - Removed support for regexes in atkMetaPolicy's setIncludes/setExcludes
   because it wasn't very useful and wasn't used anyway. [Peter]
