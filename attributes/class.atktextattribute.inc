@@ -48,7 +48,8 @@
      *
      * @param $name  Name of the attribute
      * @param $size  Can be an array with cols and rows key for size and
-     *               an autoadjust value or just the rows size
+     *               an autoadjust value or just the rows size (in which case
+     *               $flags is mandatory).
      * @param $flags Flags for this attribute
      */
     function atkTextAttribute($name,$size=0,$flags=0)

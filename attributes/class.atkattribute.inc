@@ -2542,7 +2542,7 @@
     }
 
     /**
-     * Set whether initially hidden or not
+     * Set whether initially hidden or not.  A field is "hidden" by adding the class atkAttrRowHidden.
      *
      * @param boolean $bool
      */

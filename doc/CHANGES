@@ -195,6 +195,7 @@ Changed in ATK 6.2
   and improves stability for atkDialog. [Peter]
 + Added atkthemeicon Smarty plug-in for including theme icons inside
   templates. [Peter]
++ Added fetchByPk to atkNode. [Michael]
 * Added check for edit privilege when NF_EDITAFTERADD is set [Yannick]
 * Fixed a small bug with the fuzzy filters. [Erik]
 * Made the gathering of selected records in extendableshuttle a bit more 

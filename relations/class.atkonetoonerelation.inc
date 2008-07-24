@@ -31,7 +31,9 @@
   define("AF_ONETOONE_ERROR",           AF_SPECIFIC_2);
 
   /**
-   * Invisibly integrate a onetoonerelation as if the fields where part of the current node.
+   * Invisibly integrate a onetoonerelation as if the fields where part of the current node.  
+   * If the relation is integrated, no divider is drawn, and the section heading is suppressed.
+   * (Integration does not affect the way data is stored or manipulated, only how it is displayed.)
    */
   define("AF_ONETOONE_INTEGRATE",       AF_SPECIFIC_3);
 
@@ -91,7 +93,8 @@
      *
      * @param String $name The unique name of the attribute. In slave mode,
      *                     this corresponds to the foreign key field in the
-     *                     database table.
+     *                     database table.  (The name is also used as the section 
+     *                     heading.)
      * @param String $destination the destination node (in module.nodename
      *                            notation)
      * @param String $refKey In master mode, this specifies the foreign key

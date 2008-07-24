@@ -3961,7 +3961,20 @@
       }
       return $recordset;
     }
-
+    
+	/**
+     * Returns a record (array) as identified by a primary key (usually an "id" column),
+     * including applicable relations.
+     *
+     * @param int $pk primary key identifying the record
+     * @return array the associated record, or null if no such record exists
+     */
+  
+	public function fetchByPk($pk) 
+	{
+	  return $this->select($this->getTable().".".$this->primaryKeyField().'='.$pk)->firstRow();
+	}
+  
     /**
      * Apply the given search criteria to the given query object.
      *
