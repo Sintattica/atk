@@ -206,19 +206,29 @@
   $config_guestpassword = "";
 
   /**
+   * The method to use for user/password validation.
+   *
+   * Currently supported are:
+   * - "none": No authentication
+   * - "db"  : the credentials are stored in the database.
+   * - "pop3": the passwords are validated against a pop3 server.
+   * - "config": the credentials are stored in the configurationfile.
+   * - "imap": the passwords are validated against an IMAP server.
+   * - "ldap": the passwords are validated against an LDAP server.
+   * - "server": Authentication is done through the webserver.
    *
    * @var String
    */
   $config_authentication = "none";
 
   /**
-   *
+   * Wether your authentication method supports MD5 passwords
    * @var boolean
    */
   $config_authentication_md5 = true;
 
   /**
-   *
+   * Use a cookie to store authentication information.
    * @var boolean
    */
   $config_authentication_cookie = false;
@@ -236,12 +246,18 @@
   $config_state_cookie_expire = 10080;
 
   /**
-   *
+   * Use the session to store authentication information.
    * @var boolean
    */
   $config_authentication_session = true;
 
   /**
+   * The scheme to use for security.
+   *
+   * Currently supported are:
+   * - "none": No security scheme is used.
+   * - "group": Use group-based security.
+   * - "level": Use level-based security.
    *
    * @var String
    */
@@ -798,7 +814,7 @@
    * When atksessionmanager is included, if this configuration value is true (by default),
    * ATK will configure and start a PHP session for you.
    * When you do not want this (in CLI environnements?) you can disable this in your script.
-   * 
+   *
    * DO NOT ENABLE IN THIS CONFIG or you won't be able to set it in your script.
    * Appears here for documentation purposes only.
    *
