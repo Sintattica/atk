@@ -65,7 +65,7 @@
     {
       if ($mode == "csv")
         return parent::display($record, $mode);
-      
+
       if ($record[$this->fieldName()]!="")
       {
         return '<a href="mailto:'.$record[$this->fieldName()].'">'.$record[$this->fieldName()].'</a>';
@@ -101,35 +101,35 @@
         }
       }
     }
-    
+
     /**
      * Checks e-mail address syntax against a regular expression.
-     * 
+     *
      * @param string email e-mail address.
      * @return boolean e-mailaddress syntactically valid or not.
-     * @static 
+     * @static
      */
     function validateAddressSyntax($email)
     {
-      if ((eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,4}$", $email, $check)))
+      if (eregi("^[-_a-z0-9+]+(\.[-_a-z0-9+]+)*@([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,4}$", $email))
       {
         return true;
-      }      
+      }
       else
       {
         return false;
       }
     }
-    
+
     /**
      * Check if the domain is valid and exists.
      *
      * The strict parameter decides if the MX record gets checked.
-     * 
+     *
      * @param unknown_type $domain
      * @param boolean $strict
-     * @return boolean $result 
-     * @static 
+     * @return boolean $result
+     * @static
      */
     function validateAddressDomain($domain, $strict=false)
     {

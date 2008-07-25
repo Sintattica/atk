@@ -198,6 +198,8 @@ Changed in ATK 6.2
 + Added fetchByPk to atkNode. [Michael]
 + Added atknavigator and atknavigatorinfo Smarty block plug-ins, which make it
   to create page navigation bars or show navigation info. [Peter]
+* atkEmailAttribute now also allows '+' chars into the part before the @. 
+  [Tjeerd]
 * Added check for edit privilege when NF_EDITAFTERADD is set [Yannick]
 * Fixed a small bug with the fuzzy filters. [Erik]
 * Made the gathering of selected records in extendableshuttle a bit more 
