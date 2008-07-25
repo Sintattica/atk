@@ -236,12 +236,6 @@
       $page = &$node->getPage();
       $page->setTitle(atktext('app_shorttitle')." - ".$this->getUi()->title($node->m_module, $node->m_type, $node->m_action));
 
-      $page->register_script(atkconfig("atkroot")."atk/javascript/prototype/prototype.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/prototype-ext.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/scriptaculous/scriptaculous.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/class.atktools.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/atkbusy.js");
-
       if ($node->allowed($node->m_action))
       {
         $secMgr = &atkGetSecurityManager();

@@ -124,6 +124,19 @@
       }
       return $s_page;
     }
+    
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+      // register default scripts
+      $this->register_script(atkconfig("atkroot")."atk/javascript/prototype/prototype.js");
+      $this->register_script(atkconfig("atkroot")."atk/javascript/prototype-ext.js");
+      $this->register_script(atkconfig("atkroot")."atk/javascript/scriptaculous/scriptaculous.js");
+      $this->register_script(atkconfig("atkroot")."atk/javascript/class.atktools.js");
+      $this->register_script(atkconfig("atkroot")."atk/javascript/atkbusy.js");            
+    }
 
     /**
      * Register a javascript file to be included.

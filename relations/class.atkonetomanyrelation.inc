@@ -147,10 +147,6 @@
      */
     function atkOneToManyRelation($name, $destination, $refKey="", $flags=0)
     {
-      $page = &atkinstance('atk.ui.atkpage');
-      $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkonetomanyrelation.js");
-
       $this->atkRelation($name, $destination, $flags|AF_HIDE_ADD|AF_NO_SORT);
       // 1toM Relations are NEVER edited when adding a rec. And for now, we
       // cannot search or sort them.
@@ -378,6 +374,10 @@
      */
     public function edit($record="", $fieldprefix="", $mode='')
     {
+      $page = &atkinstance('atk.ui.atkpage');
+      $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
+      $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkonetomanyrelation.js");
+
       $grid = $this->createGrid($record, 'admin', $mode);
 
       $params = array();
