@@ -53,7 +53,7 @@ class atkConsoleController
    * @return void
    */
 
-  public static function run($argv=null)
+  public static function run($argv = null)
   {
 
     $className;
@@ -67,20 +67,20 @@ class atkConsoleController
     else
     {
       $className = $argv[1];
-      if((stripos($argv[2],"=")) OR ($argv[2]===null))
+      if((stripos($argv[2],"=")) || ($argv[2]===null))
       {
         $actionName="default";
         $firstParam = explode("=", $argv[2]);
-        $paramArray[$firstParam[0]]=$firstParam[1];
+        $paramArray[$firstParam[0]] = $firstParam[1];
       }
       else
       {
-        $actionName=$argv[2];
+        $actionName = $argv[2];
       }
       for($i=3;$i<sizeof($argv);$i++)
       {
         $tempParam = explode("=", $argv[$i]);
-        $paramArray[$tempParam[0]]=$tempParam[1];
+        $paramArray[$tempParam[0]] = $tempParam[1];
       }
 
     }
@@ -141,7 +141,7 @@ class atkConsoleController
   
   protected function error($message, $data=null)
   {
-    $tempDir = atkconfig(atktempdir);
+    $tempDir = atkconfig("atktempdir");
 
     $controllerName = strtolower(get_class($this));
 
@@ -158,3 +158,4 @@ class atkConsoleController
       echo "Error writing Console Log File";
     }
   }
+}
