@@ -2474,6 +2474,21 @@
     {
       return $this->m_dependees;
     }
+    
+    /**
+     * Returns a JavaScript call for refreshing this attribute.
+     */
+    protected function getRefreshCall($mode='edit', $fieldprefix='', $focusFirstFormEl=false, $registerScript=true)
+    {
+      if ($registerScript) 
+      {
+        $this->getOwnerInstance()->getPage()->register_script(atkconfig('atkroot').'atk/javascript/class.atkattribute.js');
+      }
+      
+      $url = addslashes(partial_url($this->getOwnerInstance()->atkNodeType(), $mode == "add" ? "add" : "edit", "attribute.".$this->fieldName().".refresh", array("atkfieldprefix" => $fieldprefix)));
+      $code = "ATK.Attribute.refresh('$url', '".($focusFirstFormEl ? 'true' : 'false')."');";
+      return $code;
+    }
 
     /**
      * Register change handlers for dependees.
@@ -2482,20 +2497,15 @@
     {
       if(!empty($this->m_dependees))
       {
-        $page = &$this->m_ownerInstance->getPage();
-        $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkattribute.js');
-
         foreach ($this->m_dependees as $attribName)
         {
-          $url = addslashes(partial_url($this->m_ownerInstance->atkNodeType(), $mode == "add" ? "add" : "edit", "attribute.$attribName.refresh", array("atkfieldprefix" => $fieldprefix)));
-
-          $code = "ATK.Attribute.refresh('$url');";
+          $code = $this->getOwnerInstance()->getAttribute($attribName)->getRefreshCall($mode, $fieldprefix);
           $this->addOnChangeHandler($code);
 
           $isPartial = $this->m_ownerInstance->m_partial != NULL;
           if (!$isPartial)
           {
-            $code = "ATK.Attribute.refresh('$url', true);";
+            $code = $this->getOwnerInstance()->getAttribute($attribName)->getRefreshCall($mode, $fieldprefix, true);
           }
 
           // only register the initial refresh on attribute load if this attribute
