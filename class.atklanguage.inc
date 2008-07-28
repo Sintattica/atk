@@ -196,14 +196,18 @@
     function getLanguage()
     {
       global $ATK_VARS;
-      if (isset($ATK_VARS["atklng"])) { $lng = $ATK_VARS["atklng"]; } // we first check for an atklng variable
+
+      if (isset($ATK_VARS["atklng"]) && in_array($ATK_VARS["atklng"],atkLanguage::getSupportedLanguages()))
+      {
+        $lng = $ATK_VARS["atklng"];
+      } // we first check for an atklng variable
       else { $lng = atkLanguage::getUserLanguage(); }
       return strtolower($lng);
     }
-    
+
     /**
      * Change the current language.
-     * Note that his only remains set for the current request, it's not 
+     * Note that his only remains set for the current request, it's not
      * session based.
      * @static
      * @param String $lng The language to set
@@ -367,7 +371,7 @@
       {
         if (atkconfig("debug_translations", false))
           atkdebug("atkLanguage: translation for '$key' with module: '$module' and node: '$node' and language: '$lng' not found, returning default text");
-          
+
         // Still nothing found. return default string
         return $this->defaultText($key);
       }

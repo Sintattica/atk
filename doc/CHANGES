@@ -10,14 +10,14 @@ Changed in ATK 6.2
 + Added support for custom actions to the atkmanytomanyselectrelation, also
   added the posibility to define a custom relation class for hasMany relations.
   [Erik,Peter]
-+ Added a way to set a limit to the amount of elements that will be returned 
++ Added a way to set a limit to the amount of elements that will be returned
   with the atkshuttle attribute. [Erik]
 + added a function setUseThousandsSeparator to enable the thousandsseparator
   when display the number. Default no thousandsseperator is displayed. [Martijn]
-+ The atkNumberAttribute and atkCurrency now supports the thousands separator. 
-  It's possible to add a number with a thousand seperator included. According 
-  to the language settings the number is converted to right format. 
-  The functions standardiseSeparator and translateSeparator in 
++ The atkNumberAttribute and atkCurrency now supports the thousands separator.
+  It's possible to add a number with a thousand seperator included. According
+  to the language settings the number is converted to right format.
+  The functions standardiseSeparator and translateSeparator in
   atkNumberAttribute are deprecated. [Martijn]
 + Added year sorting on the atkDateAttribute. Use setYearSorting()
   to change the sorting order of the years dropdown. [Martijn]
@@ -198,31 +198,31 @@ Changed in ATK 6.2
 + Added fetchByPk to atkNode. [Michael]
 + Added atknavigator and atknavigatorinfo Smarty block plug-ins, which make it
   to create page navigation bars or show navigation info. [Peter]
-* atkEmailAttribute now also allows '+' chars into the part before the @. 
+* atkEmailAttribute now also allows '+' chars into the part before the @.
   [Tjeerd]
 * Added check for edit privilege when NF_EDITAFTERADD is set [Yannick]
 * Fixed a small bug with the fuzzy filters. [Erik]
-* Made the gathering of selected records in extendableshuttle a bit more 
+* Made the gathering of selected records in extendableshuttle a bit more
   efficient [Erik]
 * modified the deleteAll method to use the query builder, this fixes a issue
-  which needed escaping of table names. Also added a dropAll method to the 
-  mysqldb that does table escaping. [Erik] 
-* Added empty string check at the atkMlSplitter for primary key values that 
+  which needed escaping of table names. Also added a dropAll method to the
+  mysqldb that does table escaping. [Erik]
+* Added empty string check at the atkMlSplitter for primary key values that
   cannot be NULL and made the language key always uppercase [Yannick]
 + Added UI resource for Smarty which makes it easier to include templates
   somehwere inside your ATK root e.g. {include file="ui:modules/..."} [Peter]
 * Upgraded Prototype to 1.6.0.2, Scriptaculous to 1.8.1 and Window.js to
   1.3.2. Might cause certain backwards incompatiblities! [Peter]
-* Admin datagrids can now be modified from within the node by implementing 
+* Admin datagrids can now be modified from within the node by implementing
   the modifyDataGrid($grid) method. [Peter]
 * One-to-many relation datagrid can now be modified by implementing the
   modifyDataGrid($grid) method inside the destination node or by
   implementing an <attribute>_modifyDataGrid($grid) method inside the
   owner node. [Peter]
 * The default datagrid template now reserves space for components named top
-  or bottom, which makes it easy to add your own custom components 
+  or bottom, which makes it easy to add your own custom components
   without having the need to create a custom template. [Peter]
-* Multi-record-action modes MRA_SINGLE_SELECT and MRA_NO_SELECT 
+* Multi-record-action modes MRA_SINGLE_SELECT and MRA_NO_SELECT
   are now properly supported by the datagrid. [Peter]
 * atkMetaPolicy's remove method now takes multiple arguments. [Peter]
 * Extendable shuttle relation filters are now taken into account when
@@ -498,17 +498,19 @@ Changed in ATK 6.2
 * Fixed bug in NF_TRACK_CHANGES mechanism which wasn't triggered properly
   before preUpdate was called from inside the atkUpdateHandler. [Peter]
 * Fixed using an embedded datagrid in view action [Arjen Tebbenhof, Dennis]
-* Moved a lot of atk/include/initial.inc includes to sperate files, 
+* Moved a lot of atk/include/initial.inc includes to sperate files,
   introducing include/basics.inc for the basics of an ATK app. [Boy,Peter]
 * Moved session initialisation code to atksession_init function,
   and introduced $config_session_init (true by default), setting this config
-  to false will make sure no session is initialized by ATK. [Boy,Peter] 
+  to false will make sure no session is initialized by ATK. [Boy,Peter]
 * Improved translation options for node actions. [Peter]
 * Added support for savepoints to MySQLi driver. [Peter]
 * Fixed displaying of descriptors in confirm action. [Peter]
 * Added appendToFile method to atkTmpFile and fixed documentation. [Boy]
 * Extended atkDialog with late parameter binding support. [Peter]
 * atkDataNode now takes simple key/value filters into account. [Peter]
+* Added validation of the ATK_VARS['atklng'] variable, the given language
+  must be supported. [Dennis]
 - Removed atkMetaHandler because it wasn't very useful. [Peter]
 - Removed support for regexes in atkMetaPolicy's setIncludes/setExcludes
   because it wasn't very useful and wasn't used anyway. [Peter]
