@@ -2612,6 +2612,7 @@
           // itself doesn't depend on any other attribute or this is a partial request
           if ($isPartial || !$this->isDepending())
           {
+            $page = &$this->m_ownerInstance->getPage();
             $page->register_loadscript($code);
           }
         }
