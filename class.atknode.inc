@@ -1680,9 +1680,16 @@
       {
         foreach ($this->m_sectionList[$mode] as $section)
         {
-          if (substr($section,0,strlen($tab))==$tab && in_array($section, $this->m_default_expanded_sections))
+          if (substr($section, 0, strlen($tab)) == $tab)
           {
-            $activeSections[] = $section;
+            atkimport("atk.session.atkstate");                
+            $sectionName = 'section_'.str_replace('.', '_', $section);
+            $key = array("nodetype" => $this->atknodetype(), "section" => $sectionName);
+            $defaultOpen = in_array($section, $this->m_default_expanded_sections);
+            if (atkState::get($key, $defaultOpen ? 'opened' : 'closed') != 'closed')
+            {
+              $activeSections[] = $section;
+            }
           }
         }
       }

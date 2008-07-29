@@ -198,6 +198,8 @@ Changed in ATK 6.2
 + Added fetchByPk to atkNode. [Michael]
 + Added atknavigator and atknavigatorinfo Smarty block plug-ins, which make it
   to create page navigation bars or show navigation info. [Peter]
+* Improved early state detection of sections to get a smooth display when
+  showing a tab with opened/closed sections. [Peter]
 * partial_url now supports a $sessionStatus parameter so that partial URLs
   can also be executed in a separate session stack using SESSION_NEW [Peter]
 * Dialogs are now executed in a separate session stack. [Peter]

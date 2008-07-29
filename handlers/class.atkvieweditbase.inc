@@ -86,10 +86,11 @@
       $initClass = "openedSection";
 
       //if the section is not active, we close it on load.
-      $state = atknew("atk.session.atkstate");
-	    $sectionstate = $state->get(array("nodetype"=>$this->m_node->atknodetype(),"section"=>$name));
+      atkimport("atk.session.atkstate");
+      $default = in_array($field["name"], $this->m_node->getActiveSections($tab, $mode)) ? 'opened' : 'closed';
+      $sectionstate = atkState::get(array("nodetype"=>$this->m_node->atknodetype(),"section"=>$name), $default);
 			
-      if( $sectionstate == 'closed' || ($sectionstate == null && !in_array($field["name"],$this->m_node->getActiveSections($tab, $mode))))  
+      if ($sectionstate == 'closed')  
       {
         $initClass =  "closedSection";
         $page = &$this->getPage();

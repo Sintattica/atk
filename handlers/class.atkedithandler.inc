@@ -287,9 +287,9 @@
     {
       $field = &$fields[$index];
 
-            // visible sections, both the active sections and the tab names (attribute that are
-            // part of the anonymous section of the tab)
-            $visibleSections = array_merge($this->m_node->getActiveSections($tab, $mode), $this->m_node->getTabs($mode));
+      // visible sections, both the active sections and the tab names (attribute that are
+      // part of the anonymous section of the tab)
+      $visibleSections = array_merge($this->m_node->getActiveSections($tab, $mode), $this->m_node->getTabs($mode));
 
       $tplfield = array();
 
@@ -318,19 +318,19 @@
       }
 
       $tplfield["class"] = implode(" ", $classes);
-            $tplfield["tab"] = $tplfield["class"]; // for backwards compatibility
+      $tplfield["tab"] = $tplfield["class"]; // for backwards compatibility
 
-            // Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
-            // maar, let op, die showTab kan pas worden aangeroepen aan het begin.
-                $tplfield["initial_on_tab"] =
-                   ($field["tabs"] == "*" || in_array($tab, $field["tabs"])) &&
+      // Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
+      // maar, let op, die showTab kan pas worden aangeroepen aan het begin.
+      $tplfield["initial_on_tab"] =
+         ($field["tabs"] == "*" || in_array($tab, $field["tabs"])) &&
          (!is_array($field["sections"]) || count(array_intersect($field['sections'], $visibleSections)) > 0);
 
       // ar_ stands voor 'attribrow'.
-            $tplfield["rowid"] = "ar_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
+      $tplfield["rowid"] = "ar_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
 
-            /* check for separator */
-      if ($field["html"] == "-" && $index > 0 && $data["fields"][$index-1]["html"] != "-")
+      // check for separator 
+      if ($field["html"] == "-" && $index > 0 && $fields[$index-1]["html"] != "-")
       {
         $tplfield["type"] = "line";
         $tplfield["line"] = "<hr>";
@@ -381,7 +381,7 @@
         }
         else
         {
-                $tplfield["label"]="AF_NO_LABEL";
+          $tplfield["label"]="AF_NO_LABEL";
         }
 
         /* obligatory indicator */
