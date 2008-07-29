@@ -64,6 +64,19 @@
       /** @todo: add validation if flag OBLIGATORY is set. */
       /** @todo: add setDestinationFilter */
     }
+    
+    /**
+     * Fetch value.
+     * 
+     * @param array $vars post vars
+     * 
+     * @return string fetched value
+     */
+    public function fetchValue($vars)
+    {
+      $value = parent::fetchValue($vars);
+      return trim($value, ' ,');
+    }
 
     /**
      * Creates an instance of the node we are searching on and stores it

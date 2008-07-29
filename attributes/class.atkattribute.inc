@@ -2515,7 +2515,7 @@
     function partial_refresh($mode)
     {
       $record = $this->m_ownerInstance->updateRecord();
-      $fieldprefix = $this->m_ownerInstance->m_postvars['atkfieldprefix'];
+      $fieldprefix = $this->m_ownerInstance->m_postvars['atkfp'];
       $this->_registerDependees($mode, $fieldprefix);
 
       $arr = array('fields' => array());
@@ -2530,7 +2530,7 @@
       {
         //atkJSON::encode expect string in in ASCII or UTF-8 format, so convert data to UTF-8
         $value = atk_iconv(atktext("charset"),"UTF-8",$field['html']);
-        $script .= "\$('".str_replace('.', '_', $this->m_ownerInstance->atkNodeType().'_'.$field['id'])."').innerHTML = ".atkJSON::encode($value).";\r\n";
+        $script .= "\$('".str_replace('.', '_', $this->m_ownerInstance->atkNodeType().'_'.$field['id'])."').update(".atkJSON::encode($value).");\r\n";
       }
 
       $this->_registerDependees($mode, $fieldprefix);
@@ -2578,7 +2578,7 @@
         $this->getOwnerInstance()->getPage()->register_script(atkconfig('atkroot').'atk/javascript/class.atkattribute.js');
       }
 
-      $url = addslashes(partial_url($this->getOwnerInstance()->atkNodeType(), $mode == "add" ? "add" : "edit", "attribute.".$this->fieldName().".refresh", array("atkfieldprefix" => $fieldprefix)));
+      $url = addslashes(partial_url($this->getOwnerInstance()->atkNodeType(), $mode == "add" ? "add" : "edit", "attribute.".$this->fieldName().".refresh", array("atkfp" => $fieldprefix)));
       $code = "ATK.Attribute.refresh('$url', '".($focusFirstFormEl ? 'true' : 'false')."');";
       return $code;
     }

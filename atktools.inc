@@ -1594,15 +1594,16 @@
    * @param string $action the atkaction
    * @param string $partial the partial name
    * @param array $params a key/value array with extra params
+   * @param int $sessionStatus session status (default SESSION_PARTIAL)
    * @return string url for the partial action
    */
-  function partial_url($node, $action, $partial, $params=array())
+  function partial_url($node, $action, $partial, $params=array(), $sessionStatus=SESSION_PARTIAL)
   {
     if (!is_array($params))
       $params = array();
     $params['atkpartial'] = $partial;
 
-    return session_url(dispatch_url($node, $action, $params), SESSION_PARTIAL);
+    return session_url(dispatch_url($node, $action, $params), $sessionStatus);
   }
 
   /**

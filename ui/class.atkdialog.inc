@@ -226,7 +226,7 @@ class atkDialog
    */
   function getUrl()
   {
-    return partial_url($this->getNodeType(), $this->m_action, $this->m_partial, $this->m_params);
+    return partial_url($this->getNodeType(), $this->m_action, $this->m_partial, $this->m_params, SESSION_NEW);
   }
 
   /**

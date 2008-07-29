@@ -198,6 +198,12 @@ Changed in ATK 6.2
 + Added fetchByPk to atkNode. [Michael]
 + Added atknavigator and atknavigatorinfo Smarty block plug-ins, which make it
   to create page navigation bars or show navigation info. [Peter]
+* partial_url now supports a $sessionStatus parameter so that partial URLs
+  can also be executed in a separate session stack using SESSION_NEW [Peter]
+* Dialogs are now executed in a separate session stack. [Peter]
+* Improved order of items in partial page output; stylesheets are now
+  loaded first, then script files, then the content (including possible
+  script tags) and last script code and load scripts. [Peter]
 * atkEmailAttribute now also allows '+' chars into the part before the @.
   [Tjeerd]
 * Added check for edit privilege when NF_EDITAFTERADD is set [Yannick]

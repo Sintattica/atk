@@ -356,7 +356,6 @@
      */
     function addScripts(&$res, $partial=false)
     {
-      
       $count_scriptcode = count($this->m_scriptcode['before']);
       if($count_scriptcode>0) $res .= '  <script type="text/javascript">'."\n";
       $res.= $this->renderScriptCode("before");
@@ -378,7 +377,8 @@
         
         if (!empty($files))
         {
-          $res .= '<script type="text/javascript">'.$files.'</script>';
+          // prepend script files
+          $res = '<script type="text/javascript">'.$files.'</script>'.$res;
         }
       }
 
@@ -483,7 +483,8 @@
         
         if (!empty($files))
         {
-          $res .= '<script type="text/javascript">'.$files.'</script>';
+          // prepend stylesheets
+          $res = '<script type="text/javascript">'.$files.'</script>'.$res;
         }        
       }
     }
@@ -602,9 +603,9 @@
      */
     function renderPartial()
     {
-      $result = $this->m_content;
+      $result = $this->m_content;     
       $this->addScripts($result, true);
-      $this->addStyles($result, true);
+      $this->addStyles($result, true);      
       return $result;
     }
 
