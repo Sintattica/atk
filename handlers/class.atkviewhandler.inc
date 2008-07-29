@@ -39,9 +39,9 @@
         $this->partial($this->m_partial);
         return;
       }
-        
+
       $record = $this->getRecord();
-      
+
       // allowed to view record?
       if (!$this->allowed($record))
       {
@@ -53,14 +53,14 @@
       $this->notify("view", $record);
       $page->addContent($this->m_node->renderActionPage("admin", $this->invoke("viewPage", $record, $this->m_node, $renderbox)));
     }
-    
+
     /**
      * Returns the view record.
      */
     function getRecord()
     {
       list($record) = $this->m_node->selectDb($this->m_postvars['atkselector'],"","",$this->m_node->m_viewExcludes,"","view");
-      return $record;      
+      return $record;
     }
 
     /**
@@ -97,9 +97,9 @@
         }
 
         $this->getPage()->setTitle(atktext('app_shorttitle')." - ".$node->actionTitle($this->m_action, $record));
-        
-        $vars = array("title"=>$node->actionTitle($this->m_action, $record), "content"=>$output);        
-        
+
+        $vars = array("title"=>$node->actionTitle($this->m_action, $record), "content"=>$output);
+
         if ($this->getRenderMode() == "dialog")
         {
           $total = $ui->renderDialog($vars);
@@ -116,7 +116,7 @@
         atkerror("ui object error");
       }
     }
-    
+
     /**
      * Overrideable function to create a header for view mode.
      * Similar to the admin header functionality.
@@ -124,7 +124,7 @@
     function viewHeader()
     {
       return "";
-    }    
+    }
 
     function viewForm($record, $mode="view")
     {
@@ -248,26 +248,30 @@
           $tplfield['id']=str_replace('.','_',$node->atknodetype().'_'.$field["id"]);
 
           $tplfield["full"] = $editsrc;
+
+          $column = (($node->m_columnAttributes[$tplfield['attribute']]) ? 1 : 0);
+          $tplfield["column"] = $column;
         }
         $fields[] = $tplfield; // make field available in numeric array
         $params[$field["name"]] = $tplfield; // make field available in associative array
+
       }
       $ui = &$this->getUi();
 
       $tabTpl = $this->_getTabTpl($node, $tabs,$mode,$record);
-      
+
       if(count(array_unique($tabTpl))>1)
       {
         $tabForm = $this->_renderTabs($fields, $tabTpl);
         $innerform = implode(null,$tabForm);
       }
-      else 
+      else
       {
         $innerform = $ui->render($node->getTemplate("view", $record, $tab), array("fields"=>$fields));
       }
       return $innerform;
     }
-    
+
     function partial_dialog()
     {
       return $this->renderViewDialog();
@@ -289,6 +293,6 @@
       $this->setRenderMode('dialog');
       $result = $this->m_node->renderActionPage("view", $this->invoke("viewPage", $record, $this->m_node));
       return $result;
-    }    
+    }
   }
 ?>

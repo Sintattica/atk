@@ -730,13 +730,21 @@
      * @var String
      */
     var $m_edit_fieldprefix = '';
-    
+
     /**
      * Lock mode.
-     * 
+     *
      * @var int
      */
     private $m_lockMode = 'exclusive'; // atkLock::EXCLUSIVE (would mean atkLock needs to be available!)
+
+    /**
+     * Multiple columns.
+     *
+     * @var array
+     */
+    var $m_columnAttributes = array();
+
 
     /**
      * Constructor.
@@ -993,12 +1001,12 @@
 
       return $attribute;
     }
-    
+
     /**
      * Add fieldset.
-     * 
+     *
      * To include an attribute label use [attribute.label] inside your
-     * template. To include an attribute edit/display field use 
+     * template. To include an attribute edit/display field use
      * [attribute.field] inside your template.
      *
      * @param string $name     name
@@ -1008,7 +1016,7 @@
     public function addFieldSet($name, $template, $flags=0, $sections=NULL, $order=0)
     {
       useattrib('atkfieldset');
-      $this->add(new atkFieldSet($name, $template, $flags), $sections, $order); 
+      $this->add(new atkFieldSet($name, $template, $flags), $sections, $order);
     }
 
     /**
@@ -1986,7 +1994,7 @@
       /* default values */
       if (!empty($record)) $defaults = $record;
       else $defaults = array();
-      
+
       $result['hide'] = array();
       $result['fields'] = array();
 
@@ -2907,7 +2915,7 @@
       $page = &atkinstance("atk.ui.atkpage");
       return $page;
     }
-    
+
     /**
      * Returns a new page builder instance.
      *
@@ -3204,7 +3212,7 @@
     {
       $this->m_lockMode = $lockMode;
     }
-    
+
     /**
      * Returns the lock mode.
      *
@@ -3257,13 +3265,13 @@
       if(!in_array($fieldArr, $this->m_uniqueFieldSets))
         $this->m_uniqueFieldSets[] = $fieldArr;
     }
-    
+
     /**
      * Called by updateDb to load the original record inside the record if the
      * NF_TRACK_CHANGES flag is set.
      *
      * NOTE: this method is made public because it's called from the update handler
-     * 
+     *
      * @param array $record
      * @param array $excludes
      * @param array $includes
@@ -3271,13 +3279,13 @@
     public function trackChangesIfNeeded(&$record, $excludes='', $includes='')
     {
       if (!$this->hasFlag(NF_TRACK_CHANGES) || isset($record['atkorgrec'])) return;
-      
+
       // We need to add the NO_FILTER flag in case the new values would filter the record.
       $flags = $this->m_flags;
-      
+
       $this->addFlag(NF_NO_FILTER);
-      
-      $record["atkorgrec"] = 
+
+      $record["atkorgrec"] =
         $this->select()
              ->where($record['atkprimkey'])
              ->excludes($excludes)
@@ -3287,7 +3295,7 @@
 
       // Need to restore the NO_FILTER bit back to its original value.
       $this->m_flags = $flags;
-    }      
+    }
 
     /**
      * Update a record in the database.
@@ -3968,7 +3976,7 @@
       }
       return $recordset;
     }
-    
+
 	/**
      * Returns a record (array) as identified by a primary key (usually an "id" column),
      * including applicable relations.
@@ -3976,12 +3984,12 @@
      * @param int $pk primary key identifying the record
      * @return array the associated record, or null if no such record exists
      */
-  
-	public function fetchByPk($pk) 
+
+	public function fetchByPk($pk)
 	{
 	  return $this->select($this->getTable().".".$this->primaryKeyField().'='.$pk)->firstRow();
 	}
-  
+
     /**
      * Apply the given search criteria to the given query object.
      *
@@ -5253,17 +5261,32 @@
       if ($this->m_edit_fieldprefix == '') return '';
       else return $this->m_edit_fieldprefix.($atk_layout ? '_AE_' : '');
     }
-    
+
     /**
      * Escape SQL string, uses the node's database to do the escaping.
-     * 
+     *
      * @param string $string string to escape
-     * 
+     *
      * @return string escaped string
      */
     public function escapeSQL($string)
     {
       return $this->getDb()->escapeSQL($string);
     }
+
+    /**
+     * Set column attributes
+     *
+     * @param array $attributes
+     */
+    public function setColumnAttribs($attributes=array())
+    {
+      foreach ( $attributes as $attribute )
+      {
+        $this->m_columnAttributes[$attribute] = 1;
+      }
+    }
+
   }
+
 ?>

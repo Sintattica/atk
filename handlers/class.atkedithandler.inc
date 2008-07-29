@@ -44,8 +44,8 @@
       {
         $this->partial($this->m_partial);
         return;
-      }      
-      
+      }
+
       $node = &$this->m_node;
 
       $record = $this->getRecord();
@@ -85,7 +85,7 @@
       $node = &$this->m_node;
 
       $record = $this->getRejectInfo(); // Check reject info first
-      
+
       if($record == null) //If reject info not set -  do select
       {
         list($record) = $node->selectDb(atkArrayNvl($this->m_postvars, 'atkselector', ""),"","","","","edit");
@@ -198,7 +198,7 @@
       if (is_object($ui))
       {
         $this->getPage()->setTitle(atktext('app_shorttitle')." - ".$node->actionTitle('edit', $record));
-        
+
         $output = $ui->renderAction("edit", $params, $node->m_module);
         $this->addRenderBoxVar("title", $node->actionTitle('edit', $record));
         $this->addRenderBoxVar("content", $output);
@@ -415,6 +415,9 @@
         $tplfield['id']=str_replace('.','_',$this->m_node->atknodetype().'_'.$field["id"]);
 
         $tplfield["full"] = $editsrc;
+
+        $column = (($this->m_node->m_columnAttributes[$field['id']]) ? 1 : 0);
+        $tplfield["column"] = $column;
       }
 
       return $tplfield;
@@ -496,14 +499,14 @@
 
             /* Error messages should be rendered in templates using message, label and the link to the tab. */
             $err = array("message"=>$error['msg'], "tablink"=>$tabLink, "label"=>$label);
-            
-            /** 
-             * @deprecated: For backwards compatibility, we still support the msg variable as well. 
+
+            /**
+             * @deprecated: For backwards compatibility, we still support the msg variable as well.
              * Although the message, tablink variables should be used instead of msg and tab.
              */
             $err = array_merge($err, array("msg"=>$error['msg'].$error_tab));
-            
-            $errors[] = $err;            
+
+            $errors[] = $err;
           }
         }
         if (count($pk_err_attrib)>0) // Make primary key error message
@@ -583,15 +586,15 @@
           $params['fieldspart'] = $this->_renderTabs($fields, $tabTpl);
           $result .= $ui->render("editform_common.tpl",$params);
         }
-        else 
+        else
         {
           $result .= $ui->render($node->getTemplate($mode, $record, $tab), $params);
         }
       }
-      
+
             return $result;
     }
-    
+
     function getTabLink(&$node, $error)
     {
       if (count($node->getTabs($node->m_action)) < 2) return '';
