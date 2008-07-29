@@ -71,20 +71,8 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     $relation->setDisabledModes(DISABLED_VIEW|DISABLED_EDIT);
     $relation->setLoadType(NOLOAD);
     $relation->setStorageType(NOSTORE);
+    $relation->setNoneLabel($this->text('list_null_value_obligatory'));
     $this->m_manyToOneRelation = $relation;
-  }
-  
-  /**
-   * If the many-to-many select relation is made obligatory, so should
-   * the internal many-to-one relationship.
-   *
-   * @param int $flags flags
-   */
-  public function addFlag($flags)
-  {
-    parent::addFlag($flags);
-    if ($this->hasFlag(AF_OBLIGATORY))
-      $this->getManyToOneRelation()->addFlag(AF_OBLIGATORY);
   }
 
   /**

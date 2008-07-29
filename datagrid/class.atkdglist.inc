@@ -498,6 +498,9 @@ class atkDGList extends atkDGComponent
                   '<a href="javascript:void(0)" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'invert\')">'.atktext("select_invert").'</a> '
                  :
                   '');
+                 
+      $module = $grid->getNode()->m_module;
+      $nodetype = $grid->getNode()->m_type;
 
       /* multiple actions -> dropdown */
       if (count($list["mra"]) > 1)
@@ -509,7 +512,14 @@ class atkDGList extends atkDGComponent
         {
           if ($grid->getNode()->allowed($name))
           {
-            $mra .= '<option value="'.$name.'">'.atktext($name, $grid->getNode()->m_module, $grid->getNode()->m_type).'</option>';
+            $actionKeys = array(
+              'action_'.$module.'_'.$nodetype.'_'.$name,
+              'action_'.$nodetype.'_'.$name,
+              'action_'.$name,
+              $name
+            );            
+            
+            $mra .= '<option value="'.$name.'">'.atktext($actionKeys, $grid->getNode()->m_module, $grid->getNode()->m_type).'</option>';
           }
         }
         
@@ -523,10 +533,19 @@ class atkDGList extends atkDGComponent
       {
         if ($grid->getNode()->allowed($list["mra"][0]))
         {
+          $name = $list["mra"][0];
+          
+          $actionKeys = array(
+            'action_'.$module.'_'.$nodetype.'_'.$name,
+            'action_'.$nodetype.'_'.$name,
+            'action_'.$name,
+            $name
+          );            
+          
           $embedded = $this->getGrid()->isEmbedded() ? 'true' : 'false';
-          $mra .= '&nbsp; <input type="hidden" name="'.$listName.'_atkaction" value="'.$list["mra"][0].'">'.
+          $mra .= '&nbsp; <input type="hidden" name="'.$listName.'_atkaction" value="'.$name.'">'.
           $this->getCustomMraHtml().
-                     '<input type="button" class="btn" value="'.atktext($list["mra"][0],$grid->getNode()->m_module, $grid->getNode()->m_type).'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\', '.$embedded.', false)">';
+                     '<input type="button" class="btn" value="'.atktext($actionKeys,$grid->getNode()->m_module, $grid->getNode()->m_type).'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\', '.$embedded.', false)">';
         }
       }
     }
