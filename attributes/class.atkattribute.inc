@@ -1819,7 +1819,7 @@
      *
      * @param array $record The record that is going to be saved
      * @return boolean True if this attribute should participate in the add
-     &                 query; false if not.
+     *                 query; false if not.
      */
     function needsInsert($record)
     {
