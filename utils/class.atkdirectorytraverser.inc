@@ -64,6 +64,7 @@
 
     /**
      * Remove all callback objects.
+     * @see addCallbackObject()
      */
     function clearCallbackObjects()
     {

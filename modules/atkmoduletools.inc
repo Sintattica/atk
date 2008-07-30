@@ -22,25 +22,45 @@
    * @internal Includes, global definitions etc.
    */
 
-  // A repository of node instances..
+  /**
+   * A repository of node instances..
+   * @access private
+   * @var Array
+   */
   $g_nodeRepository = array();
 
-  // A repository of module instances..
+  /**
+   * A repository of module instances..
+   * @access private
+   * @var Array
+   */
   $g_moduleRepository = array();
 
-  // registered node action handlers
+  /**
+   * registered node action handlers
+   * @access private
+   * @var Array
+   */
   $g_nodeHandlers = array();
 
-  // registered node listeners
+  /**
+   * registered node listeners
+   * @access private
+   * @var Array
+   */
   $g_nodeListeners = array();
 
-  // registered node controllers
+  /**
+   * registered node controllers
+   * @access private
+   * @var Array
+   */
   $g_nodeControllers = array();
 
   /**
    * Gets the node type of a node string
-   * @param $node the node string
-   * @return the node type
+   * @param String $node the node name
+   * @return String the node type
    */
   function getNodeType($node)
   {
@@ -51,8 +71,8 @@
 
   /**
    * Gets the module of the node
-   * @param $node the node string
-   * @return the node's module
+   * @param String $node the node name
+   * @return String the node's module
    */
   function getNodeModule($node)
   {
@@ -114,12 +134,23 @@
     return $org;
   }
 
+  /**
+   * Retrieves all the registered atkModules
+   *
+   * @return Array with modules
+   */
   function atkGetModules()
   {
     global $g_modules;
     return $g_modules;
   }
 
+  /**
+   * Retrieve the atkModule with the given name.
+   *
+   * @param String $modname The name of the module
+   * @return atkModule An instance of the atkModule
+   */
   function &atkGetModule($modname)
   {
     global $g_moduleRepository;
@@ -174,11 +205,24 @@
     return $g_moduleRepository[$modname];
   }
 
+  /**
+   * Retrieve the atkModule with the given name.
+   *
+   * @deprecated Use atkGetModule instead.
+   * @param String $modname The name of the module
+   * @return atkModule an instance of the atkModule
+   */
   function getModule($modname)
   {
     return atkGetModule($modname);
   }
 
+  /**
+   * Retrieve the full filename containing the given node.
+   *
+   * @param String $node The name of the node (nodename or module.nodename)
+   * @return String The filename
+   */
   function nodeFile($node)
   {
     global $config_classroot, $config_module_path;
@@ -212,9 +256,9 @@
 
   /**
    * Construct a new node
-   * @param $node the node type
-   * @param $init initialize the node?
-   * @return new node object
+   * @param String $node the node type
+   * @param bool $init initialize the node?
+   * @return atkNode new node object
    */
   function &newNode($node, $init=TRUE)
   {
@@ -245,8 +289,8 @@
 
   /**
    * Checks if a certain node exists.
-   * @param $node the node type
-   * @return node exists?
+   * @param String $node the node type
+   * @return bool node exists?
    */
   function nodeExists($node)
   {
@@ -261,12 +305,14 @@
     $exists = is_object($module) && $module->nodeExists($node);
     $existence[$node] = $exists;
     atkdebug("Node $node exists? ".($exists ? 'yes' : 'no'));
-    
+
     return $exists;
   }
 
   /**
    * Return the physical directory of a module..
+   * @param String name of the module.
+   * @return String The path to the module.
    */
   function moduleDir($module)
   {
@@ -292,6 +338,11 @@
     return "$config_module_path/$module/$file";
   }
 
+  /**
+   * Check wether a module is installed
+   * @param String $module The modulename.
+   * @return bool True if it is, false otherwise
+   */
   function moduleExists($module)
   {
     $modules = atkGetModules();
@@ -342,10 +393,10 @@
 
   /**
    * Registers a new node action handler.
-   * @param $node the name of the node (* matches all)
-   * @param $action the node action
-   * @param $handler handler functionname or object (is_subclass_of atkActionHandler)
-   * @return true if there is no known handler
+   * @param String $node the name of the node (* matches all)
+   * @param String $action the node action
+   * @param String/atkActionHandler $handler handler functionname or object (is_subclass_of atkActionHandler)
+   * @return bool true if there is no known handler
    */
   function atkRegisterNodeHandler($node, $action, &$handler)
   {
@@ -358,21 +409,21 @@
 
   /**
    * Registers a new node action handler.
-   * 
+   *
    * @param string $node the name of the node (* matches all)
    * @param string $action the node action
    * @param string $class node handler class ATK path
-   * 
-   * @return true if there is no known handler
+   *
+   * @return bool true if there is no known handler
    */
   function atkRegisterNodeHandlerClass($node, $action, $class)
   {
     atkRegisterNodeHandler($node, $action, $class);
-  }  
-  
+  }
+
   /**
    * Returns a registered node controller.
-   * @param $node the name of the node
+   * @param String $node the name of the node
    * @return object (is_subclass_of atkController)
    *         NULL if no controller exists for the specified node
    */
@@ -386,9 +437,9 @@
 
   /**
    * Registers a new node controller.
-   * @param $node the name of the node (* matches all)
-   * @param $controller object (is_subclass_of atkController)
-   * @return true if there is no known handler
+   * @param String $node the name of the node (* matches all)
+   * @param atkController $controller object (is_subclass_of atkController)
+   * @return bool true if there is no known handler
    */
   function atkRegisterNodeController($node, &$controller)
   {
@@ -489,6 +540,12 @@
     }
   }
 
+  /**
+   * Preload the module
+   * @see atkPreloadModules()
+   * @param String $modname The modulename
+   * @param String $modpath The path to the module.
+   */
   function atkPreloadModule($modname, $modpath)
   {
     global $g_modifiers, $g_overloaders, $g_nodeListeners;

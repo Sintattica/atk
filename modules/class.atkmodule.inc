@@ -73,7 +73,7 @@
      *
      * Both main menu items, separators, submenus or submenu items can be
      * created, depending on the parameters passed.
-     * 
+     *
      * Function that adds a menuitem to the menu. This function can be called
      * from inside the getMenuItems() function, to register a menuitem.
      *
@@ -109,7 +109,7 @@
      *                   the items appear in the order in which they are added
      *                   to the menu, with steps of 100. So, if you have a menu
      *                   with default ordering and you want to place a new
-     *                   menuitem at the third position, pass 250 for $order. 
+     *                   menuitem at the third position, pass 250 for $order.
      */
     function menuitem($name="", $url="", $parent="main", $enable=1, $order=0)
     {
@@ -161,10 +161,11 @@
         return $tmp;
       }
     }
-    
+
     /**
      * Returns the node file for the given node.
      *
+     * @see nodeFile()
      * @param string $node the node type
      * @return string node filename
      */
@@ -172,10 +173,10 @@
     {
       return nodeFile($node);
     }
-    
+
     /**
      * Returns the fixture path for the given fixture.
-     * 
+     *
      * @param string $fixture <module.fixture> string
      * @return string path to fixture without extension
      */
@@ -230,8 +231,8 @@
 
       // set the current module scope, this will be retrieved in atkNode
       // to set it's $this->m_module instance variable in an early stage
-      atkModule::setModuleScope($module);  
-      
+      atkModule::setModuleScope($module);
+
       /* now that we have included the node source file, we check
        * for overloaders (because overloaders might need the included file!)
        */
@@ -239,7 +240,7 @@
       if ($overloader != NULL)
       {
         $overloader->m_module = $module;
-        atkModule::resetModuleScope(); 
+        atkModule::resetModuleScope();
         return $overloader;
       }
 
@@ -247,10 +248,10 @@
       $type = getNodeType($node);
       $node =& new $type();
       $node->m_module = $module;
-      atkModule::resetModuleScope(); 
+      atkModule::resetModuleScope();
       return $node;
     }
-    
+
     /**
      * Set current module scope.
      *
@@ -262,7 +263,7 @@
       global $g_atkModuleScope;
       $g_atkModuleScope = $module;
     }
-    
+
     /**
      * Returns the current module scope.
      *
@@ -274,10 +275,10 @@
       global $g_atkModuleScope;
       return $g_atkModuleScope;
     }
-    
+
     /**
      * Resets the current module scope.
-     * 
+     *
      * @static
      */
     function resetModuleScope()
