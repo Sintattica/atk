@@ -54,7 +54,7 @@ class atkConsoleController
    * @return void
    */
 
-  public static function run()
+  public static function run($argv=null)
   {
 
     $className;
