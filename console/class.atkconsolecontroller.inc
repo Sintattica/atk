@@ -54,36 +54,33 @@ class atkConsoleController
    * @return void
    */
 
-  public static function run($argv = null)
+  public static function run()
   {
 
     $className;
     $actionName;
     $paramArray = array();
-
+    
     if($argv==null)
     {
       $argv = $_SERVER['argv'];
     }
+    
+    $className = $argv[1];
+    if((stripos($argv[2],"=")) || ($argv[2]===null))
+    {
+      $actionName="default";
+      $firstParam = explode("=", $argv[2]);
+      $paramArray[$firstParam[0]] = $firstParam[1];
+    }
     else
     {
-      $className = $argv[1];
-      if((stripos($argv[2],"=")) || ($argv[2]===null))
-      {
-        $actionName="default";
-        $firstParam = explode("=", $argv[2]);
-        $paramArray[$firstParam[0]] = $firstParam[1];
-      }
-      else
-      {
-        $actionName = $argv[2];
-      }
-      for($i=3;$i<sizeof($argv);$i++)
-      {
-        $tempParam = explode("=", $argv[$i]);
-        $paramArray[$tempParam[0]] = $tempParam[1];
-      }
-
+      $actionName = $argv[2];
+    }
+    for($i=3;$i<sizeof($argv);$i++)
+    {
+      $tempParam = explode("=", $argv[$i]);
+      $paramArray[$tempParam[0]] = $tempParam[1];
     }
 
     $consoleClass = atknew($className);
