@@ -6,15 +6,15 @@
    * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
-   * @todo: The rgb color support in check_color() only works if another argument 'rgb' 
+   * @todo The rgb color support in check_color() only works if another argument 'rgb' 
    * is passed, which never  happens because only 1 argument is passed to that method from the 
    * atkColorPickerAttribute. 
    * 
-   * @todo: The colorpicker appears to support values such as 'red' to be entered in the popup 
+   * @todo The colorpicker appears to support values such as 'red' to be entered in the popup 
    * (the edit of the attribute shows the correct color) although the value never passes the 
    * validation.
    * 
-   * @todo: The colorpicker supports the first # to be optionally entered, but the edit of
+   * @todo The colorpicker supports the first # to be optionally entered, but the edit of
    * the attribute does not show the correct color.
    * 
    * @package atk
@@ -27,6 +27,7 @@
    * $Id$
    */
 
+  /** @internal includes and defines **/
   useattrib("atkattribute");
 
   define("CP_COLORMODE_DEFAULT"  ,0);

@@ -232,7 +232,8 @@
     /**
      * Get the complete path of the file
      * 
-     * @example $file->getPath(); => ./atktmp/tempdir/tempfile.inc
+     * Example: 
+     * <code>$file->getPath(); => ./atktmp/tempdir/tempfile.inc</code>
      *
      * @return string Path for the file
      */

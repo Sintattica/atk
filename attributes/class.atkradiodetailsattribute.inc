@@ -6,9 +6,9 @@
  * included in the distribution.
  *
  * @package atk
- * @subpackage relations
+ * @subpackage attributes
  *
- * @copyright (c) 2000-2007 Ivo Jansch
+ * @copyright (c) 2007-2008 Ibuildings.nl BV
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
  * @version $Revision$
@@ -22,7 +22,7 @@
  *
  * @author Peter C. Verhage <peter@achievo.org>
  * @package atk
- * @subpackage relations
+ * @subpackage attributes
  */
 class atkRadioDetailsAttribute extends atkAttribute
 {

@@ -1094,7 +1094,7 @@
     /**
      * Transform the template to use to a filename
      *
-     * @example getFileForTemplate('tekno'): module/controller/tekno.tpl
+     * example: getFileForTemplate('tekno'): module/controller/tekno.tpl
      *
      * @param string $template
      * @param bool   $partial

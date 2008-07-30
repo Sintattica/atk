@@ -15,6 +15,7 @@
    * $Id$
    */
 
+  /** @internal includes */
   require_once($config_atkroot.'atk/include/basics.inc');
 
   require_once($config_atkroot.'atk/include/compatibility.inc');

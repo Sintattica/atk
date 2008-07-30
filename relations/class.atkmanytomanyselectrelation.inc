@@ -15,6 +15,7 @@
  * $Id$
  */
 
+/** @internal includes and defines **/
 userelation("atkmanytomanyrelation");
 userelation('atkmanytoonerelation');
 

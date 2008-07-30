@@ -1,4 +1,32 @@
 <?php
+ /**
+  * This file is part of the Achievo ATK distribution.
+  * Detailed copyright and licensing information can be found
+  * in the doc/COPYRIGHT and doc/LICENSE files which should be
+  * included in the distribution.
+  *
+  * @package atk
+  * @subpackage interface
+  *
+  * @copyright (c)2007-2008 Ivo Jansch
+  * @copyright (c)2007-2008 Ibuildings.nl BV
+  * @license http://www.achievo.org/atk/licensing ATK Open Source License
+  *
+  * @version $Revision$
+  */
+
+ /**
+  * @todo Replace this with Marks's interface importer.
+  */
+ include_once(atkconfig("atkroot")."atk/interface/interface.atkserverinterface.inc");
+
+
+ /**
+  * The SOAP implementation for the ATK webservices layer.
+  * @author Ivo Jansch <ivo@achievo.org>
+  * @package atk
+  * @subpackage interface
+  */
 
   class atkSoapServer implements atkServerInterface
   {

@@ -9,17 +9,18 @@
  * @package atk
  * @subpackage console
  *
- * @copyright (c)2000-2008 Ibuildings.nl BV
+ * @copyright (c)2008 Ibuildings.nl BV
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
  * @version $Revision$
- * $Id$
  */
 
 /**
  * ATK console controller base class. Useful for creating command line
  * scripts. Has out of the box support for key/value parameters and
  * supports multiple actions that can be handled by a single controller.
+ * @package atk
+ * @subpackage console
  */
 
 class atkConsoleController

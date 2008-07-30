@@ -2138,7 +2138,7 @@
      *
      * @param String $mode The type of load (view,admin,edit etc)
      * @param boolean $searching ???
-     * @todo: add documentation about the searching argument. What does it do?
+     * @todo add documentation about the searching argument. What does it do?
      *
      * @return int Bitmask containing information about load requirements.
      *             Note that since it is a bitmask, multiple load types
@@ -2563,7 +2563,7 @@
     /**
      * Returns a JavaScript call for refreshing this attribute.
      *
-     * @todo: add documentation for $focusFirstFormEl.
+     * @todo add documentation for $focusFirstFormEl.
      *
      * @param String $mode add/edit mode
      * @param String $fieldprefix The prefix for this attribute in an HTML form

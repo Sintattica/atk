@@ -9,12 +9,19 @@
    * @package atk
    * @subpackage skel
    *
-   * @copyright (c)2005 Ivo Jansch
+   * @copyright (c)2008 Ibuildings
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision: 5798 $
-   * $Id: test.php 5798 2008-03-05 13:41:26Z guido $
    */
+
+  /**
+   * @internal includes and initialization
+   */
+  ini_set('display_errors',true);
+
+  require_once 'PHPUnit/Framework.php';
+  require_once 'PHPUnit/TextUI/TestRunner.php';
 
   /**
    * Example testsuite for PHPUnit testcases.
@@ -28,14 +35,10 @@
    * To run this testsuite in it's default configuration,
    * just make sure this file is located in the application root and run:
    *
+   * @package atk
+   * @subpackage skel
    * phpunit atkappsuite
    */
-
-  ini_set('display_errors',true);
-
-  require_once 'PHPUnit/Framework.php';
-  require_once 'PHPUnit/TextUI/TestRunner.php';
-
   class atkAppSuite extends PHPUnit_Framework_TestCase
   {
     /**

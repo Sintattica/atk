@@ -22,8 +22,8 @@
  * This class provide functions to create, copy or check files or directories.
  *
  * @author dennisjan <dennisjan@ibuildings.nl>
- * @package ATK
- * @subpackage Utils
+ * @package atk
+ * @subpackage utils
  *
  */
 class atkFileUtils

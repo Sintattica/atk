@@ -1,29 +1,29 @@
 <?php
 
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage testcases
+   *
+   * @copyright (c)2007-2008 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   */
+
     /**
-     * This file is part of the Achievo ATK distribution.
-     * Detailed copyright and licensing information can be found
-     * in the doc/COPYRIGHT and doc/LICENSE files which should be 
-     * included in the distribution.
-     *
-     * @package atk
-     * @subpackage attributes
-     * @access private
-     *
-     * @copyright (c)2005 Ivo Jansch
-     * @license http://www.achievo.org/atk/licensing ATK Open Source License
-     *
-     * @version $Revision$
-     * $Id$
-     */
-  
-    /**
-     * Include the class we are about to test.
+     * @internal Include the class we are about to test.
      */
     atkimport("atk.attributes.atktagattribute");
   
     /**
      * Dummy class for the testcases
+     * @package atk
+     * @subpackage testcases
      */
     class dummyTagAttribute extends atkTagAttribute 
     {
@@ -71,12 +71,11 @@
     }
     
     /**
-     * Testcases for class atkattribute.
+     * Testcases for class atktagattribute.
      *
-     * @author Ivo Jansch <ivo@achievo.org>
      * @package atk
-     * @subpackage attributes
-     * @access private
+     * @subpackage testcases
+     * @internal
      */
     class test_atktagattribute extends atkAttributeTestCase
     {

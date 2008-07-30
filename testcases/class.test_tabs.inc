@@ -7,7 +7,8 @@
    * included in the distribution.
    *
    * @package atk
-   * @access private
+   * @subpackage testcases
+   * @internal
    *
    * @copyright (c)2005 Ibuildings
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
@@ -21,7 +22,9 @@
   /**
    * Tests the tabs      
    *
-   * @access private
+   * @internal
+   * @package atk
+   * @subpackage testcases
    * @author dennis <dennis@ibuildings.nl>
    */
   class test_tabs extends atkTestCase

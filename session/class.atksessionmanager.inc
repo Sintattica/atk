@@ -15,6 +15,9 @@
    * $Id$
    */
 
+  /**
+   * @internal initialization
+   */
   $config_identifier = atkconfig("identifier");
   if (empty($config_identifier)) $config_identifier = "default";
 
@@ -51,7 +54,6 @@
    * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
    * @subpackage session
-   *
    */
   class atkSessionManager
   {

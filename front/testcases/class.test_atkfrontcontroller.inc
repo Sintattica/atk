@@ -1,23 +1,31 @@
 <?php
+
   /**
-   * test_atkfrontcontroller class file
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
+   * included in the distribution.
    *
    * @package atk
    * @subpackage testcases
    *
-   * @author M. Roest <martin@ibuildings.nl>
+   * @copyright (c)2008 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
-   * @copyright (c) 2006 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing/ ATK open source license
-   *
+   * @version $Revision$
    */
-
 
   /**
    * Only used for the testcases due to the protectedness of the
    * uriParts method.
    */
   atkimport('atk.front.atkfrontcontroller');
+
+  /** 
+   * @internal
+   * @package atk
+   * @subpackage testcases
+   */
   class uriPartsFrontControllerMock extends atkFrontController
   {
     public static function uriPartsProxy($uri)
@@ -28,7 +36,7 @@
 
   /**
    * Testcases for atkNode
-   *
+   * @internal
    * @author guido <guido@ibuildings.nl>
    * @package atk
    * @subpackage testcases

@@ -9,11 +9,10 @@
    * @package atk
    *
    * @copyright (c)2000-2007 Ivo Jansch
-   * @copyright (c)2000-2007 Ibuildings.nl BV
+   * @copyright (c)2000-2008 Ibuildings.nl BV
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision$
-   * $Id$
    */
 
   /**
