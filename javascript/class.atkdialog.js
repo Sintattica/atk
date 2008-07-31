@@ -18,14 +18,25 @@ ATK.Dialog.prototype = {
   },
 
   /**
-   * Auto-resize the dialog.
+   * Resize the dialog to the given dimensions.
+   *
+   * If no width and or height is given the dialog tries to determine the optimal
+   * dimensions by itself.
    */
-  resize: function() {
+  resize: function(width, height) {
     if (!this.window) return;
-	  var dimensions = this.window.content.getScrollDimensions();
-	  this.window.setSize(dimensions.width, dimensions.height, true); 
-	  this.window.center({ auto: false });
-  },
+
+    if (width && height)
+      this.window.content.setStyle({ width: width + 'px', height: height + 'px' });    
+    else if (width)
+      this.window.content.setStyle({ width: width + 'px', height: 'auto' });
+    else if (height)
+      this.window.content.setStyle({ width: 'auto', height: height + 'px' });
+      
+    var dimensions = this.window.content.getScrollDimensions();
+    this.window.setSize(dimensions.width, dimensions.height, true);
+    this.window.center({ auto: false });
+  },  
 
   /**
    * Serialize form.
@@ -53,12 +64,7 @@ ATK.Dialog.prototype = {
     this.window.content.setStyle({ visibility: 'hidden' });
     this.window.show(true);
     
-    if (this.options.width && this.options.height) {
-      this.window.setSize(this.options.width, this.options.height);
-      this.window.center({ auto: false });      
-    } else {
-      this.resize();
-    }
+    this.resize(this.options.width, this.options.height);
 
     this.window.content.setStyle({ visibility: '' });
     this.window.focus();      
@@ -116,7 +122,7 @@ ATK.Dialog.prototype = {
     var options = options || {};
 
     var dummyFunc = function() {};
-    var resizeFunc = this.options.width && this.options.height ? dummyFunc : this.resize.bind(this);
+    var resizeFunc = this.resize.bind(this, this.options.width, this.options.height);
     var completeFunc = options['onComplete'] || dummyFunc;
 
     var options = options || {};
@@ -153,7 +159,7 @@ ATK.Dialog.prototype = {
    */
   update: function(content) {
     this.window.content.update(content);
-    this.resize();
+    this.resize(this.options.width, this.options.height);
   },
 
   /**
@@ -166,7 +172,7 @@ ATK.Dialog.prototype = {
   
     var options = {};   
     options['evalScripts'] = true;
-    options['onComplete'] = this.resize.bind(this);
+    options['onComplete'] = this.resize.bind(this, this.options.width, this.options.height);
     options['parameters'] = params;
 	
     new Ajax.Updater(this.window.content, url, options);

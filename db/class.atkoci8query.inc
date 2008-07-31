@@ -59,6 +59,31 @@
             $query.") XX) YY  WHERE YY.rid >= ".($this->m_offset+1)." AND YY.rid <= ".($this->m_offset + $this->m_limit);
       }
     }
-  }
+    
 
+   /**
+    * Generate a searchcondition that checks whether $field contains $value .
+    * 
+    * This override adds special support for comparisons using a subquery instead
+    * of a table field. Oracle doesn't allow direct UPPER(...) calls on the subquery
+    * result so we need to wrap it inside a select query from dual. To prevent 
+    * perform loss we try to detect if the comparison field is a subquery or not.  
+    */
+   function substringCondition($field, $value)
+   {
+     if (ltrim(strtoupper($field), ' (') != "SELECT ")
+     {
+       return parent::substringCondition($field, $value);
+     }
+     
+     if($value[0]=='!')
+     {
+       return "(SELECT UPPER((".$field.")) FROM dual) NOT LIKE '%".strtoupper(substr($value,1,strlen($value)))."%'";
+     }
+     else
+     {
+       return "(SELECT UPPER((".$field.")) FROM dual) LIKE '%".strtoupper($value)."%'";
+     }
+   }     
+ }
 ?>
