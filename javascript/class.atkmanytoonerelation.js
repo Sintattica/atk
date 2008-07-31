@@ -100,7 +100,7 @@ Object.extend(Object.extend(ATK.ManyToOneRelation.Autocompleter.prototype, Ajax.
   },
 
   onComplete: function(request) {
-    this.updateChoices(request.responseText);
+    this.updateChoices(request.responseText.stripScripts());
     request.responseText.evalScripts();
   }
 });
