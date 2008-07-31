@@ -199,6 +199,10 @@ Changed in ATK 6.2
 + Added fetchByPk to atkNode. [Michael]
 + Added atknavigator and atknavigatorinfo Smarty block plug-ins, which make it
   to create page navigation bars or show navigation info. [Peter]
++ Added UI resource for Smarty which makes it easier to include templates
+  somehwere inside your ATK root e.g. {include file="ui:modules/..."} [Peter]
+* In formfocus.js, the inital text selection is cleared to prevent data loss
+  on a key event. [Patrick]
 * Oci8 and Oci9 drivers now support substring conditions for subqueries.
   [Peter]
 * Improved early state detection of sections to get a smooth display when
@@ -220,8 +224,6 @@ Changed in ATK 6.2
   mysqldb that does table escaping. [Erik]
 * Added empty string check at the atkMlSplitter for primary key values that
   cannot be NULL and made the language key always uppercase [Yannick]
-+ Added UI resource for Smarty which makes it easier to include templates
-  somehwere inside your ATK root e.g. {include file="ui:modules/..."} [Peter]
 * Upgraded Prototype to 1.6.0.2, Scriptaculous to 1.8.1 and Window.js to
   1.3.2. Might cause certain backwards incompatiblities! [Peter]
 * Admin datagrids can now be modified from within the node by implementing
