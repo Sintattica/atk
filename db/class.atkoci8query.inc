@@ -71,7 +71,7 @@
     */
    function substringCondition($field, $value)
    {
-     if (ltrim(strtoupper($field), ' (') != "SELECT ")
+     if (substr(ltrim(strtoupper($field), ' ('), 0, 7) != "SELECT ")
      {
        return parent::substringCondition($field, $value);
      }
