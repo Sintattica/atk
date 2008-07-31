@@ -415,7 +415,7 @@
         // the 'saveandclose' and 'cancel' button. Unless, a feedback screen is configured.
         if (atkLevel() >0 || hasFlag(atkArrayNvl($node->m_feedback, "update", 0), ACTION_SUCCESS))
         {
-          $result[] = $this->getButton('saveandclose');
+          $result[] = $this->getButton('saveandclose', true);
         }
         $result[] = $this->getButton('save');
 
@@ -428,20 +428,20 @@
       {
         if($node->hasFlag(NF_EDITAFTERADD) === true && $node->allowed('edit'))
         {
-          $result[] = $this->getButton('saveandedit');
+          $result[] = $this->getButton('saveandedit', true);
         }
         else
         {
           if($node->hasFlag(NF_EDITAFTERADD) === true)
           {
-            atkwarning("NF_EDITAFTERADD found but no 'edit' privalage.");
+            atkwarning("NF_EDITAFTERADD found but no 'edit' privilege.");
           }
-          $result[] = $this->getButton('save');
+          $result[] = $this->getButton('saveandclose', true);
         }
 
         // if action is admin, we don't show the cancelbutton or the add next button
         if ($node->hasFlag(NF_ADDAFTERADD) && !$node->hasFlag(NF_EDITAFTERADD))
-          $result[] = $this->getButton('saveandnext');
+          $result[] = $this->getButton('saveandnext', true);
 
         $result[] = $this->getButton('cancel');
       }
@@ -473,7 +473,7 @@
       * @param String $action
       * @return HTML
       */
-    function getButton($action)
+    function getButton($action, $default=false)
      {
        $name = "";
        $class = "";
@@ -515,6 +515,9 @@
       if (!isset($value))
         $value = atktext($action, "atk");
 
+      if ($default) 
+        $class .= (!empty($class) ? ' ' : '').'atkdefaultbutton';
+        
       if ($class != "")
         $class = "class=\"$class\" ";
 

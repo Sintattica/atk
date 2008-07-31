@@ -199,6 +199,12 @@ Changed in ATK 6.2
 + Added fetchByPk to atkNode. [Michael]
 + Added atknavigator and atknavigatorinfo Smarty block plug-ins, which make it
   to create page navigation bars or show navigation info. [Peter]
+* Fixed bug that caused FCK editor to loose it's changes when the user 
+  switched tabs. [Peter]
+* Save button for add action is now called "Save and close" instead of "Save".
+  This makes it more in-line with the edit action. [Peter]
+* Default button in add and edit action has now special atkdefaultbutton
+  class which makes styling it possible to style it differently. [Peter]
 + Added UI resource for Smarty which makes it easier to include templates
   somehwere inside your ATK root e.g. {include file="ui:modules/..."} [Peter]
 * In formfocus.js, the inital text selection is cleared to prevent data loss

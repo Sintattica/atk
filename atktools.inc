@@ -1167,7 +1167,7 @@
     else
     {
       $attribName = $attrib->fieldName();
-      $label = $attrib->getLabel($record);
+      $label = $attrib->label($record);
       $tab = $attrib->m_tabs[0];
       $message = $attrib->text($error);
     }
