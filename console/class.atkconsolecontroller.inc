@@ -103,7 +103,7 @@ class atkConsoleController
    * @param mixed  $data    data that should be logged (will be outputted using print_r)
    */
   
-  protected function info($message, $data=null)
+  public function info($message, $data=null)
   {
     $tempDir = atkconfig(atktempdir);
 
@@ -137,7 +137,7 @@ class atkConsoleController
    * @param mixed  $data    data that should be logged (will be outputted using print_r)
    */
   
-  protected function error($message, $data=null)
+  public function error($message, $data=null)
   {
     $tempDir = atkconfig("atktempdir");
 
