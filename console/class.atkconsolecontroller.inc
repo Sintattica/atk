@@ -83,6 +83,11 @@ class atkConsoleController
       $paramArray[$tempParam[0]] = $tempParam[1];
     }
 
+    if (!atkimport($className))
+    {
+      die('Unknown console controller "'.$className.'".'."\n");
+    }
+
     $consoleClass = atknew($className);
     $funcName = $actionName."Action";
     $consoleClass->$funcName($paramArray);
