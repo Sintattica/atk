@@ -114,7 +114,7 @@ class atkConsoleController
 
     $controllerName = strtolower(get_class($this));
 
-    mkdir($tempDir."console",0777);
+    @mkdir($tempDir."console",0777);
     $today = date("Ymd");
     $lcn = $tempDir."/console//".$controllerName."_".$today."_info.log";
 
@@ -148,7 +148,7 @@ class atkConsoleController
 
     $controllerName = strtolower(get_class($this));
 
-    mkdir($tempDir."console",0777);
+    @mkdir($tempDir."console",0777);
     $today = date("Ymd");
     $lcn = $tempDir."/console//".$controllerName."_".$today."_error.log";
 
