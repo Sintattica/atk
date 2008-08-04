@@ -45,7 +45,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
    * @var atkManyToOneRelation
    */
   private $m_manyToOneRelation = null;
-  
+
   /**
    * Constructs a new many-to-many select relation.
    *
@@ -115,11 +115,16 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     $this->getOwnerInstance()->getPage()->register_script(atkconfig('atkroot').'atk/javascript/class.'.strtolower(__CLASS__).'.js');
     $this->getOwnerInstance()->addStyle('atkmanytomanyselectrelation.css');
 
+    $id = $this->getHtmlId($fieldprefix);
     $selectedKeys = $this->getSelectedRecords($record);
 
     if (isset($record[$this->getManyToOneRelation()->fieldName()]) && is_array($record[$this->getManyToOneRelation()->fieldName()]))
     {
       $selectedKeys[] = $this->getDestination()->primaryKey($record[$this->getManyToOneRelation()->fieldName()]);
+    }
+    if (isset($this->getOwnerInstance()->m_postvars[$id.'_newsel']))
+    {
+      $selectedKeys[] = $this->getOwnerInstance()->m_postvars[$id.'_newsel'];
     }
 
     $selectedRecords = array();
@@ -128,8 +133,6 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
       $selector = '('.implode(') OR (', $selectedKeys).')';
       $selectedRecords = $this->getDestination()->selectDb($selector);
     }
-
-    $id = $this->getHtmlId($fieldprefix);
 
     $result =
       '<div class="atkmanytomanyselectrelation">
@@ -147,7 +150,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
       </div>';
 
     if (($this->hasFlag(AF_MANYTOMANYSELECT_DETAILADD)) && ($this->m_destInstance->allowed("add")))
-      $result.= href(dispatch_url($this->m_destination, "add"), $this->getAddLabel(), SESSION_NESTED) . "\n";
+      $result.= href(dispatch_url($this->m_destination, "add", array('atkfilter' => 'clear', "atkpkret"=>$id."_newsel")), $this->getAddLabel(), SESSION_NESTED) . "\n";
 
     return $result;
   }
@@ -169,7 +172,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     {
       $actions[] = 'edit';
     }
-    
+
     $actions[] = 'delete';
     $this->recordActions($record, $actions);
 
@@ -179,9 +182,9 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     {
       $actionLink = $this->getActionLink($action, $record);
       if ($actionLink != null)
-        $actionLinks[] = $actionLink; 
+        $actionLinks[] = $actionLink;
     }
-    
+
     // Build the record
     $result = '
       <li class="atkmanytomanyselectrelation-selected">
@@ -193,7 +196,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
 
     return $result;
   }
-  
+
   /**
    * This method returns the HTML for the link of a certain action
    *
@@ -204,7 +207,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   protected function getActionLink($action, $record)
   {
       $actionMethod = "get{$action}ActionLink";
-      
+
       if (method_exists($this,$actionMethod))
       {
         return $this->$actionMethod($record);
@@ -213,9 +216,9 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
       {
         atkwarning('Missing '.$actionMethod.' method on manytomanyselectrelation. ');
       }
-      
+
   }
-  
+
   /**
    * The default edit link
    *
@@ -226,7 +229,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   {
     return href(dispatch_url($this->getDestination()->atkNodeType(), 'edit', array('atkselector' => $this->getDestination()->primaryKey($record))), $this->text('edit'), SESSION_NESTED, true);
   }
-  
+
   /**
    * The default delete link
    *
@@ -237,7 +240,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   {
     return '<a href="javascript:void(0)" onclick="ATK.ManyToManySelectRelation.deleteItem(this); return false;">'.$this->text('delete').'</a>';
   }
-  
+
   /**
    * Function that is called for each record in a recordlist, to determine
    * what actions may be performed on the record.

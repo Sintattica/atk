@@ -199,6 +199,9 @@ Changed in ATK 6.2
 + Added fetchByPk to atkNode. [Michael]
 + Added atknavigator and atknavigatorinfo Smarty block plug-ins, which make it
   to create page navigation bars or show navigation info. [Peter]
+* Fixed atkManyToManySelectRelation: 'atkfilter' value of the source was 
+  wrongfully passed to the destination + newly created destination record is 
+  directly added to the selected records now. [Patrick]
 * Fixed bug that caused FCK editor to loose it's changes when the user 
   switched tabs. [Peter]
 * Save button for add action is now called "Save and close" instead of "Save".
