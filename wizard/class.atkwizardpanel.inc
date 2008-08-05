@@ -34,7 +34,8 @@
   define("FINISH_BUTTON_DONT_SHOW", 3);
 
   /**
-   * Wizardpanel which binds to a atknodes
+   * Wizardpanel which binds to a atknode. This class makes
+   * it possible to add atkNodeListeners and override actionhandlers.
    *
    * @author maurice <maurice@ibuildings.nl>
    * @package atk
@@ -122,7 +123,14 @@
       $this->m_showFinishButton = $finishButton;
     }
 
-    function getPanelNode()
+    /**
+     * Return the atkNode object for this panel. If it didn't exist yet, this method 
+     * will create it and add actionlistener or actionhandlers. The session will also
+     * be manipulated so that the controller knows which atknodetype to render.
+     *
+     * @return object of type atknode
+     */
+    public function getPanelNode()
     {
       if (!is_object($this->m_node))
       {
@@ -134,11 +142,6 @@
           atkerror("atkWizardPanel::getPanelNode() Node could not be created. Node name: " . $this->m_nodeName);
           return NULL;
         }
-
-        //Set wizard specific controller
-        atkdebug("atkWizardPanel::getPanelNode() Register controller for. Node: " . getNodeType($this->m_nodeName));
-        //$wizardcontrollerclass = $this->m_wizard->m_wizardcontroller;
-        //atkRegisterNodeController(getNodeType($this->m_nodeName), new $wizardcontrollerclass($this->m_node, $this));
 
         //Add listeners to node
         for($i=0, $_i=count($this->m_listeners); $i<$_i; $i++)
@@ -152,31 +155,33 @@
           $handlerName = $this->m_actionHandlers[$i]['name'];
           $handlerAction = $this->m_actionHandlers[$i]['action'];
 
-          atkdebug("atkWizardPanel::getPanelNode() atkRegisterNodeHandler for. Node: " . getNodeType($this->m_nodeName). " name: ".$handlerName. " action ". $handlerAction);
-
           $handler = &new $handlerName();
           atkRegisterNodeHandler($this->m_node->m_type, $handlerAction, $handler);
         }
 
-        //todo: not sure if this needed
-        //Add postvars to node manually
-        //$this->m_node->m_postvars = atkGetPostVar();
-
         //All nodes should return the output and not try to fill the screen themselves
         $controller = &atkController::getInstance();
         $controller->setNode($this->m_node);
-        $controller->setReturnOutput(true);
-        $controller->setPhpFile("index.php");
+             
+        //Make session aware of the fact that we are rendering a node which has been
+        //created by a wizard panel and is not posted as a variable
+        global $g_sessionManager;
+        /* @var $g_sessionManager atkSessionManager  */
+        $g_sessionManager->stackVar("atknodetype", $this->m_nodeName);
+        $g_sessionManager->stackVar("atkaction", $this->m_defaultAction);
+                   
         //We set how we want the atk page to be returned
-        atkdebug("getPanelNode flags" . $this->m_wizard->m_page_flags . " controller ".$controller->m_page_flags);
-        $this->m_wizard->setPageFlags(HTML_ALL);
-        atkdebug("getPanelNode flags" . $this->m_wizard->m_page_flags . " controller ".$controller->m_page_flags);
-
+        $this->m_wizard->setPageFlags(HTML_ALL);                        
       }
       return $this->m_node;
     }
 
-    function getPanelName()
+    /**
+     * Return the panel name
+     *
+     * @return unknown
+     */
+    public function getPanelName()
     {
       return $this->m_panelName;
     }
@@ -203,34 +208,36 @@
      *
      * @param atkActionHandler $listener
      */
-    function addActionHandler($handlerName, $handlerAction)
+    public function addActionHandler($handlerName, $handlerAction)
     {
       $this->m_actionHandlers[] = array("name" => $handlerName, "action" => $handlerAction);
     }
 
-    function dispatchForm($params)
+    /**
+     * Do some session manipulations
+     *
+     * @return unknown
+     */
+    function dispatchForm()
     {
-      atkdebug("atkWizardPanel::dispatchForm() panel=".$this->getPanelName() . " atknode=".$this->m_nodeName);
       $node = &$this->getPanelNode();
       if(!is_object($node)) return "";
 
-      $controller = &atkController::getInstance();
-
-      if(count($params))
-      {
-        foreach($params as $hiddenVarName => $hiddenVarValue)
-        {
-          $controller->setHiddenVar($hiddenVarName, $hiddenVarValue);
-        }
-      }
-
-	    global $ATK_VARS;
+      /* @var $g_sessionManager atkSessionManager  */
+      global $ATK_VARS, $g_sessionManager;      
+	    
 	    if(!isset($ATK_VARS['atkaction']) || $ATK_VARS['atkaction'] == "")
 	    {
 	      if(!isset($this->m_defaultAction) || $this->m_defaultAction == "")
-	        $ATK_VARS['atkaction'] = 'add';
+	      {
+	        $ATK_VARS['atkaction'] = "add";
+	        $g_sessionManager->stackVar("atkaction", "add");
+	      }
 	      else
+	      {
 	        $ATK_VARS['atkaction'] = $this->m_defaultAction;
+	        $g_sessionManager->stackVar("atkaction", $this->m_defaultAction);
+	      }
 	    }
 
 	    //Load some smarty vars
@@ -238,43 +245,29 @@
 	    {
 	      $this->loadRenderBoxVars($ATK_VARS['atkaction'] );
 	      if($ATK_VARS['atkaction'] == 'admin') $this->loadRenderBoxVars("add");
-
-	      //TODO Fixme: Somehow we can't save the Renderboxvars in this object
-	      //why doesn't this work for override classes. Some kind of reference problem
-	      //$handler = &$this->m_node->getHandler($ATK_VARS['atkaction']);
 	    }
-
-	    //If atk renders the page itself the return value is empty
-	    $output = $controller->dispatch($ATK_VARS, NULL);
-
-      return $output;
     }
 
-    //Rename to more generic name
+    /**
+     * We are saving a newly added record. On success or failure ATK will redirect.
+     * On failure the session stack of the previous level is loaded to show the 
+     * same wizardpanel again (now with error message). On succes we need to set
+     * some redirect vars to make sure we go to the next wizardpanel.     
+     *
+     * @return bool on successfully executing this function
+     */    
     function save()
     {
-      atkdebug("atkWizardPanel::save node: " . $this->m_nodeName);
       $node = &$this->getPanelNode();
-      if(!is_object($node)) return false;
-
-      $controller = &atkController::getInstance();
-      $hiddenVars = $controller->m_redirectParams;
-      if(count($hiddenVars))
-      {
-        foreach($hiddenVars as $hiddenVarName => $hiddenVarValue)
-          $controller->setHiddenVar($hiddenVarName, $hiddenVarValue);
-      }
+      if(!is_object($node)) return;
 
       //Little dirty, we have to do this to make sure that in case
       //of an error the paneltitle and intro text are known
       //in the template
-      $this->loadRenderBoxVars("add");
-      if($node->m_action == 'admin') $this->loadRenderBoxVars("admin");
-
-      //Save, on succes dispatch() will redirect
-      //else it will return an 'add form' with error messages
-      atkdebug("atkwizardpanel::save call controller_dispatch()");
-      return $controller->dispatch(atkGetPostVar(), NULL);
+      //$this->loadRenderBoxVars("add");
+      //if($node->m_action == 'admin') $this->loadRenderBoxVars("admin");
+      
+      return true;
     }
 
     /**
@@ -292,11 +285,23 @@
       return $this->m_showFinishButton;
     }
 
+    /**
+     * Check to see if this wizardpanel is the last panel before the finish screen.
+     *
+     * @return bool
+     */
     function isFinishPanel()
     {
       return $this->m_wizard->isFinishPanel($this->getPanelName());
     }
 
+    /**
+     * Return a translation from the language file with a fallback option.
+     *
+     * @param string $key
+     * @param string $fallbackKey
+     * @return string
+     */
     function _getText($key, $fallbackKey)
     {
 
@@ -307,10 +312,9 @@
                      "",
                      "",
                      true);
-      atkdebug("_getText key: " .$key." text: ".$text);
+      
       if($text != "") return $text;
-      atkdebug("_getText key: " .$key." fallbackKey: ".$fallbackKey);
-
+      
       return  atktext($fallbackKey,
                      $panelNode->m_module,
                      "",

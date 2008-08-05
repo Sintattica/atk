@@ -381,6 +381,8 @@
   "datagrid_summary" => "(Records [start] - [end] of [count])",
   "datagrid_norecordsfound_general" => "No records found.",
   "datagrid_norecordsfound_search"  => "No results found for the current search query.",
+  "title_wizard_finished" => "Wizard finished",
+  "content_wizard_finished" => "Wizard was finished successfully!",
   "in_use_by" => "In use by",
   "lock_info_line" => "[user_id] (ip: [user_ip]) since [lock_date]",  
 );

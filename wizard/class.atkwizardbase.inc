@@ -30,56 +30,20 @@ atkimport("atk.atkcontroller");
  */
   class atkWizardBase extends atkController
   {
-    /**
-     * This is the wrapper method for all http requests on a node.
-     *
-     * The method looks at the atkaction from the postvars and determines what
-     * should be done. If possible, it instantiates actionHandlers for
-     * handling the actual action.
-     *
-     * @param array $postvars The request variables for the node.
-     * @param boolean $fullpage If true (default), the dispatch function
-     *                          renders a complete html page, including
-     *                          <html><head><body> etc. If you set this to
-     *                          false, plain output is generated. Warning: If
-     *                          you set this to false, you are responsible for
-     *                          loading all the required scripts, stylesheets
-     *                          etc. (When $fullpage is true, these are
-     *                          automatically included in the page header.
-     */
-    function dispatch($postvars, $fullpage=true)
-    {
-      // Use invoke to be backwards compatible with overrides 
-      // of loadDispatchPage in atknode.
-      atkdebug("atkWizardBase::dispatch");
-      $this->invoke("loadDispatchPage", $postvars);
-      $panel = &$this->getCurrentPanel();
-      $node = &$panel->getPanelNode();
-      $ui = &$this->getUi();
-      $page = &$this->getPage();
-      atkdebug("atkWizardBase::dispatch page->render flags: " . $this->m_page_flags);
-      $screen = $page->render(atktext('app_shorttitle')." - ".$ui->title($node->m_module, $node->m_type, $node->m_postvars['atkaction'], true), $this->m_page_flags);
-      //atkdebug("screen $screen return output ". ($this->m_return_output ? "true":"false"));
-      if(!$this->m_return_output)
-      {
-        $output = &atkOutput::getInstance();
-        $output->output($screen);
-      }
-
-      // This is the end of all things for this page..
-      // so we clean up some resources..
-      $db = &$node->getDb();
-      if (is_object($db)) $db->disconnect();
-      atkdebug("disconnected from the database");
-      
-      if($this->m_return_output)
-      {
-        atkdebug("atkController::dispatch Return output ");
-        return $screen;
-      }
-      return "";
-    }
     
+    
+    /**
+     * Constructor of atkWizardBase
+     *
+     * @param string $controllerName
+     * @param string $moduleName
+     * @return atkController object
+     */
+    function atkWizardBase()
+    {       
+       $this->atkController();
+    }
+     
     /**
      * Returns the form buttons for a certain page.
      *
@@ -88,6 +52,9 @@ atkimport("atk.atkcontroller");
      * @param array $record The record currently displayed/edited in the form.
      *                      This param can be used to define record specific
      *                      buttons.
+     * 
+     * ToDo/Fixme this function has been refactored in atkController. 
+     * It should be refactored in the same way.
      */
     function getFormButtons($action, $record)
     {

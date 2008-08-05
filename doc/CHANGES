@@ -7,6 +7,10 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
++ Added atkcontroller var which can be used to load a custom 
+  controller. [Maurice]
+* Fixed navigation problems and error handling in AtkWizard for use within 
+  ATK application environment. [Maurice]
 + Added support for using multiple columns [RikW,Danny]
 + Added support for custom actions to the atkmanytomanyselectrelation, also
   added the posibility to define a custom relation class for hasMany relations.

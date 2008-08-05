@@ -52,7 +52,8 @@
       $record = $this->getRejectInfo();
 
       $page = &$this->getPage();
-      $page->addContent($this->m_node->renderActionPage("add", $this->invoke("addPage", $record)));
+      $controller = &atkcontroller::getInstance();
+      $page->addContent($controller->renderActionPage("add", $this->invoke("addPage", $record)));
     }
 
     /**

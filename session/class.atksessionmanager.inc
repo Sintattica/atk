@@ -306,7 +306,7 @@
 
       // session vars are valid until they are set to something else. if you go a session level higher,
       // the next level will still contain these vars (unless overriden in the url)
-      $sessionVars = array("atknodetype","atkfilter","atkaction","atkpkret");
+      $sessionVars = array("atknodetype","atkfilter","atkaction","atkpkret", "atkcontroller", "atkwizardpanelindex", "atkwizardaction");
 
       // pagevars are valid on a page. if you go a session level higher, the pagevars are no longer
       // visible until you return. if the name ends in a * the pagevar is treated as an array that
