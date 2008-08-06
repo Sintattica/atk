@@ -538,6 +538,8 @@ Changed in ATK 6.2
 * atkDataNode now takes simple key/value filters into account. [Peter]
 * Added validation of the ATK_VARS['atklng'] variable, the given language
   must be supported. [Dennis]
+* atkCaptchaAttribute no longer requires the field to be called captcha.
+  [JorgeG]
 - Removed atkMetaHandler because it wasn't very useful. [Peter]
 - Removed support for regexes in atkMetaPolicy's setIncludes/setExcludes
   because it wasn't very useful and wasn't used anyway. [Peter]

@@ -83,7 +83,7 @@
 
     function validate(&$record, $mode)
     {
-      $sCaptchaCode = $record["captcha"];
+      $sCaptchaCode = $record[$this->fieldName()];
       if (md5(strtoupper($sCaptchaCode)) != $_SESSION['php_captcha'])
       {
         triggerError($record, $this->fieldName(), 'error_captchafield');
