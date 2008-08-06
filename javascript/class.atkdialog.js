@@ -36,7 +36,7 @@ ATK.Dialog.prototype = {
       this.window.content.setStyle({ width: 'auto', height: 'auto' });      
       
     var dimensions = this.window.content.getScrollDimensions();
-    this.window.setSize(dimensions.width, dimensions.height, true);
+    this.window.setSize(width || dimensions.width, height || dimensions.height, true);
     this.window.center({ auto: false });
   },  
 
