@@ -7,10 +7,6 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
-+ Added atkcontroller var which can be used to load a custom 
-  controller. [Maurice]
-* Fixed navigation problems and error handling in AtkWizard for use within 
-  ATK application environment. [Maurice]
 + Added support for using multiple columns [RikW,Danny]
 + Added support for custom actions to the atkmanytomanyselectrelation, also
   added the posibility to define a custom relation class for hasMany relations.
@@ -165,7 +161,8 @@ Changed in ATK 6.2
   creating a protected instance variable called $handler. [Peter]
 + Added support for caching database table meta data. This is in addition
   to the AtkMetaNode caching. [Martin]
-+ Added support for specifying the character set for the atkOci9Db driver. [Peter]
++ Added support for specifying the character set for the atkOci9Db driver. 
+  [Peter]
 + Added support for modifying add / add-or-copy dialogs from inside the node by
   implementing a modifyDialog method. [Peter]
 + Added support for specifying more dialog window options on a per-theme basis
@@ -203,6 +200,13 @@ Changed in ATK 6.2
 + Added fetchByPk to atkNode. [Michael]
 + Added atknavigator and atknavigatorinfo Smarty block plug-ins, which make it
   to create page navigation bars or show navigation info. [Peter]
++ Added AF_MANYTOONE_OBLIGATORY_NULL_ITEM flag to atkManyToOneRelation. [Guido]
++ Added UI resource for Smarty which makes it easier to include templates
+  somewhere inside your ATK root e.g. {include file="ui:modules/..."} [Peter]
++ Added atkcontroller var which can be used to load a custom
+  controller. [Maurice]
+* Fixed navigation problems and error handling in atkWizard for use within
+  ATK application environment. [Maurice]
 * Fixed atkManyToManySelectRelation: 'atkfilter' value of the source was 
   wrongfully passed to the destination + newly created destination record is 
   directly added to the selected records now. [Patrick]
@@ -212,8 +216,6 @@ Changed in ATK 6.2
   This makes it more in-line with the edit action. [Peter]
 * Default button in add and edit action has now special atkdefaultbutton
   class which makes styling it possible to style it differently. [Peter]
-+ Added UI resource for Smarty which makes it easier to include templates
-  somehwere inside your ATK root e.g. {include file="ui:modules/..."} [Peter]
 * In formfocus.js, the inital text selection is cleared to prevent data loss
   on a key event. [Patrick]
 * Oci8 and Oci9 drivers now support substring conditions for subqueries.
@@ -265,7 +267,7 @@ Changed in ATK 6.2
 * Fixed issue with O2M relation and persistent filters. [Tjeerd/Peter]
 * Added support for setting a field separator on the multiselectattrib.
   This allows the attribute to be used with the mysql set datatype. [Martin]
-* Fixed extended search with number attributes. It gave me an SQL error. [Martin]
+* Fixed SQL error in extended search with atkNumberAttributes. [Martin]
 * Minor speedup in atkimport and changed file_exists to is_readable which makes
   more sense [mvdvelden]
 * Added setDir() to the fileattrib which allows setting the dir path
@@ -275,12 +277,11 @@ Changed in ATK 6.2
   compiler. [Martin]
 * Fixed the exact search mode when using the atknumberattribute. It now uses
   the equal operator correctly for exact number searches. [Martin]
-* Fixed sorting on an atkManyToOneRelation field in a destination table. For this
-  fix we had also to clear the sorting fields passed by the session in
-  atkColumnConfig [Peter/Martijn]
+* Fixed sorting on an atkManyToOneRelation field in a destination table. 
+  For this fix we had also to clear the sorting fields passed by the session in
+  atkColumnConfig [Peter, Martijn]
 * Added support for charset in oci9db driver. Uses the charset that is specified
   in the configfile [PeterB]
-+ Added AF_MANYTOONE_OBLIGATORY_NULL_ITEM flag to atkManyToOneRelation. [Guido]
 * Improved attribute detection in the Metanode caching. [Peter/Martin]
 * Fixed bug in atktestcase, when using a testdatabase the normal database
   would be emptied. [Lineke]
@@ -457,7 +458,7 @@ Changed in ATK 6.2
 * Fixed label retrieval for error messages. [Peter]
 * Fixed detection of order direction for default order by statements
   which use a combination of table name and field name. [Peter]
-* Moved buttons from confirmAction to getFormButtons function. [Peter Bottenberg]
+* Moved buttons from confirmAction to getFormButtons function. [PeterB]
 * Improved the atkRadioAttribute so it can use the same functions like the list
   attribute to fill the items dynamicly (with the addOption function) [Sandy]
 * Added dutch, english, german and french translations. [Boy]
