@@ -101,7 +101,6 @@
     function atkGenerateTop()
     {
       $this->m_page->register_style($this->m_theme->stylePath("style.css"));
-      $this->m_page->register_stylecode("form{display: inline;}");
       $this->m_page->register_style($this->m_theme->stylePath("top.css"));
 
       //Backwards compatible $content, that is what will render when the box.tpl is used instead of a top.tpl
