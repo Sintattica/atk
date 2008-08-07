@@ -318,7 +318,7 @@
      */
     function &addCondition($condition)
     {
-      if ($condition!="") $this->m_conditions[] = $condition;
+      if ($condition!="" && !in_array($condition,$this->m_conditions)) $this->m_conditions[] = $condition;
       return $this;
     }
 
