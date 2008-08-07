@@ -36,8 +36,7 @@ class atkMetaOneToOneRelation extends atkOneToOneRelation
    */
   public function __construct($name, $destination, $template, $options, $flags=0)
   {
-    $refKey = isset($options['dest']) ? $options['dest'] : isset($options['destination']) ? $options['destination'] : '?';
-    
+    $refKey = isset($options['dest']) ? $options['dest'] : (isset($options['destination']) ? $options['destination'] : '?');
     parent::__construct($name, $destination, $refKey, $flags);
 
     $this->m_variants = (array)@$options['variants'];
@@ -60,7 +59,7 @@ class atkMetaOneToOneRelation extends atkOneToOneRelation
     $result = parent::createDestination();
     
     if ($result && is_array($this->m_refKey) && in_array('?', $this->m_refKey))
-    {
+    { 
       foreach ($this->m_variants as $variant)
       {
         // we *must* use $this->m_destInstance (not $this->getDestination()) else we will create an infinite loop    

@@ -205,6 +205,7 @@ Changed in ATK 6.2
   somewhere inside your ATK root e.g. {include file="ui:modules/..."} [Peter]
 + Added atkcontroller var which can be used to load a custom
   controller. [Maurice]
+* Fixed wrong if-validation order in atkmetaonetoonerelation. [Bjorn]
 * Fixed navigation problems and error handling in atkWizard for use within
   ATK application environment. [Maurice]
 * Fixed atkManyToManySelectRelation: 'atkfilter' value of the source was 
