@@ -594,7 +594,10 @@
 
       if (!isset($value))
         $value = atktext($action, "atk");
-
+        
+      if ($default)
+        $class .= (!empty($class) ? ' ' : '').'atkdefaultbutton';
+        
       if ($class != "")
         $class = "class=\"$class\" ";
 
