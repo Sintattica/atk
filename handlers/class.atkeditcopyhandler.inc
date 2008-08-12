@@ -33,31 +33,43 @@
     function action_editcopy()
     {
       atkdebug("atknode::action_editcopy()");
-      $recordset = $this->m_node->selectDb($this->m_postvars['atkselector'],"","","","","copy");
-
+      
+      $record = $this->getCopyRecord();
+      // allowed to editcopy record?
+      if (!$this->allowed($recordset))
+      {
+        $this->renderAccessDeniedPage();
+        return;
+      }
+      
+      $db = &$this->m_node->getDb();
+      if(!$this->m_node->copyDb($record))
+      {
+        $db->rollback();
+        $location = $this->m_node->feedbackUrl("editcopy", ACTION_FAILED, $record, $db->getErrorMsg());
+        $this->m_node->redirect($location);
+      }
+      else
+      {
+        $db->commit();
+        $this->clearCache();
+        $location = session_url(dispatch_url($this->m_node->atknodetype(), "edit", array("atkselector" => $this->m_node->primaryKey($record))), SESSION_REPLACE);
+        $this->m_node->redirect($location);
+      }
+    }
+    
+    /**
+     * Get the selected record from 
+     *
+     * @return the record to be copied
+     */
+    protected function getCopyRecord()
+    {
+      $selector = $this->m_postvars['atkselector'];
+      $recordset = $this->m_node->selectDb($selector,"","","","","copy");
       if(count($recordset) > 0)
       {
-        // allowed to editcopy record?
-        if (!$this->allowed($recordset[0]))
-        {
-          $this->renderAccessDeniedPage();
-          return;
-        }
-        
-        $db = &$this->m_node->getDb();
-        if(!$this->m_node->copyDb($recordset[0]))
-        {
-          $db->rollback();
-          $location = $this->m_node->feedbackUrl("editcopy", ACTION_FAILED, $recordset[0], $db->getErrorMsg());
-          $this->m_node->redirect($location);
-        }
-        else
-        {
-          $db->commit();
-          $this->clearCache();
-          $location = session_url(dispatch_url($this->m_node->atknodetype(), "edit", array("atkselector" => $this->m_node->primaryKey($recordset[0]))), SESSION_REPLACE);
-          $this->m_node->redirect($location);
-        }
+        return $recordset[0];
       }
 
       else
@@ -66,6 +78,7 @@
         $this->m_node->redirect();
       }
     }
+
   }
 
 ?>
