@@ -74,9 +74,10 @@ class atkDGRenderer extends atkDGComponent
   {
     $vars = array();
     
+    // $this->getGrid() is an atkdatagrid instance
     foreach ($this->getGrid()->getComponentInstances() as $name => $comp)
     {
-      $vars[$name] = $comp->render();
+      $vars[$name] = $comp->render(); // when $name == "list", $comp->render() results in a call to atkDGList::render()
     }
 
     return $this->getUi()->render($this->getGrid()->getTemplate(), $vars);

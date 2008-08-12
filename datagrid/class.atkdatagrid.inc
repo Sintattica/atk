@@ -1546,9 +1546,9 @@ class atkDataGrid
     // have access to the atksearch, atkfilter, atklimit etc. parameters
     $this->overrideNodePostvars();
 
-    // load records
+    // load records from database
     $this->loadRecords();
-
+    
     // render the grid
     atkimport('atk.datagrid.atkdgrenderer');
     $renderer = new atkDGRenderer($this);
