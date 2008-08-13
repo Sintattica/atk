@@ -73,9 +73,10 @@ class atkDGList extends atkDGComponent
     $list = $this->listArray($recordset, "", $actions, $suppressList, $embedprefix);
 
     /* Check if some flags are still valid or not... */
-    if ($grid->hasFlag(atkDataGrid::MULTI_RECORD_ACTIONS) && (count($list["mra"]) == 0 || count($list["rows"]) == 0))
+    $hasMRA = $grid->hasFlag(atkDataGrid::MULTI_RECORD_ACTIONS);
+    if ($hasMRA && (count($list["mra"]) == 0 || count($list["rows"]) == 0))
     {
-      $grid->removeFlag(atkDataGrid::MULTI_RECORD_ACTIONS);
+      $hasMRA = false;
     }
     
     if ($grid->hasFlag(atkDataGrid::SEARCH) && count($list["search"]) == 0) 
@@ -111,7 +112,7 @@ class atkDGList extends atkDGComponent
         $headercols[] = array("content"=>"&nbsp;");
       }
     }
-    if ($grid->hasFlag(atkDataGrid::MULTI_RECORD_ACTIONS) || $grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS))
+    if ($hasMRA || $grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS))
     {
       $headercols[] = array("content"=>""); // Empty leader on top of mra action list.
     }
@@ -165,7 +166,7 @@ class atkDGList extends atkDGComponent
     {
       $call = htmlentities($grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractExtendedSortOverrides'));
       $button = '<input type="button" value="'.atktext("sort").'" onclick="'.$call.'">';
-      if ($grid->hasFlag(atkDataGrid::MULTI_RECORD_ACTIONS) || $grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS))
+      if ($hasMRA || $grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS))
       {
         $sortcols[] = array("content"=>""); // Empty leader on top of mra action list.
       }
@@ -209,7 +210,7 @@ class atkDGList extends atkDGComponent
      // $searchstart = '<a name="searchform"></a>';
      $searchstart = "";
 
-      if ($grid->hasFlag(atkDataGrid::MULTI_RECORD_ACTIONS) || $grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS))
+      if ($hasMRA || $grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS))
       {
         $searchcols[] = array("content"=>"");
       }
@@ -244,11 +245,11 @@ class atkDGList extends atkDGComponent
     /*******************************************/
     $liststart = "";
     $listend = "";
-    if ($grid->hasFlag(atkDataGrid::MULTI_RECORD_ACTIONS) || $grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS))
+    if ($hasMRA || $grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS))
     {
       $page->register_script(atkconfig("atkroot")."atk/javascript/formselect.js");
 
-      if ($grid->hasFlag(atkDataGrid::MULTI_RECORD_ACTIONS))
+      if ($hasMRA)
       {
         $liststart.= '<script language="javascript" type="text/javascript">var '.$listName.' = new Object();</script>';
       }
@@ -312,7 +313,7 @@ class atkDGList extends atkDGComponent
       }
 
       /* multi-record-actions -> checkbox */
-      elseif ($grid->hasFlag(atkDataGrid::MULTI_RECORD_ACTIONS))
+      elseif ($hasMRA)
       {
         if (count($list["rows"][$i]["mra"]) > 0)
         {
@@ -441,7 +442,7 @@ class atkDGList extends atkDGComponent
 
     if (count($list["total"]) > 0)
     {
-      if ($grid->hasFlag(atkDataGrid::MULTI_RECORD_ACTIONS) || $grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS)) $totalcols[] = array("content"=>"");
+      if ($hasMRA || $grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS)) $totalcols[] = array("content"=>"");
       if ($grid->hasFlag(atkDataGrid::LOCKING)) $totalcols[] = array("content"=>"");
       if (($orientation == "left" || $orientation == "both") && ($this->_hasActionColumn($list) && count($list["rows"]) > 0))
         $totalcols[] = array("content"=>"");
@@ -488,7 +489,7 @@ class atkDGList extends atkDGComponent
     /****************************************/
     /* MULTI-RECORD-ACTION FORM (CONTINUED) */
     /****************************************/
-    elseif ($grid->hasFlag(atkDataGrid::MULTI_RECORD_ACTIONS))
+    elseif ($hasMRA)
     {
       $target = session_url(atkSelf().'?atknodetype='.$grid->getNode()->atkNodeType().'&atktarget='.$grid->getNode()->m_postvars['atktarget'].'&atktargetvar='.$grid->getNode()->m_postvars['atktargetvar'].'&atktargetvartpl='.$grid->getNode()->m_postvars['atktargetvartpl'], SESSION_NESTED);
 
