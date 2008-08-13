@@ -1679,12 +1679,12 @@
   /**
    * Imports a file
    * @param string $fullclassname Name of class in atkformat (map1.map2.classfile)
-   * @param bool   $failsafe      Determines wether a class is included
-   *                                or made required. Defaults to true.
-   * @param bool   $path          Wether or not it is NOT an ATK classname
+   * @param bool   $failsafe      If $failsafe is true (default), the class is required.  Otherwise, the
+   *                                class is included.
+   * @param bool   $path          Whether or not it is NOT an ATK classname
    *                                 ("map.class"), if true it will interpret classname
    *                                 as: "map/class.classname.inc", default false.
-   * @return bool wether the file we want to import was actually imported or not
+   * @return bool whether the file we want to import was actually imported or not
    */
   function atkimport($fullclassname, $failsafe=true, $path = false)
   {
