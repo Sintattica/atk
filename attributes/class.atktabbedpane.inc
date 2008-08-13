@@ -479,7 +479,7 @@
     {
       $activeTabName = "tabbedPaneTab".$this->getDefaultTab();
       $list = $this->getPaneTabs($action);
-      if (count($list) > 1)
+      if (count($list) > 0)
       {
         $node = &$this->m_ownerInstance;
         $node->addStyle("tabs.css");
