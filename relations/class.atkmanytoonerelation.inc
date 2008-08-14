@@ -1509,6 +1509,10 @@
 
         foreach ($orderfields as $field)
         {
+          list($field, $direction) = explode(' ', $field);
+          
+          // @todo what can we do with $direction here? or should we simply ignore it anyway?
+          
           // realias if destination order contains a tablename.
           if (strpos($field, $this->m_destInstance->m_table.'.') !== false)
             $neworderfields[] = str_replace($this->m_destInstance->m_table.'.', $tableprefix.$this->fieldName().'.', $field);

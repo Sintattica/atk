@@ -205,6 +205,9 @@ Changed in ATK 6.2
   somewhere inside your ATK root e.g. {include file="ui:modules/..."} [Peter]
 + Added atkcontroller var which can be used to load a custom
   controller. [Maurice]
+* Fixed sorting for atkManyToOneRelations. Errors occurred when a column was $
+  selected to order by and the destination node already had an order by $
+  directive. [Peter, Bjorn]$
 * Always show tabs in atktabbedpane, even when there is only one. [Patrick]
 * Moved record fetching in editcopy handler to seperate method. [Maurice]
 * Fixed wrong if-validation order in atkmetaonetoonerelation. [Bjorn]
