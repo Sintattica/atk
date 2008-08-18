@@ -919,4 +919,10 @@
  */
 
 //  $config_module_dirs = array("/modules");
+
+// --------- FCK Image Upload Option ---------
+
+$config_fck_filemanager_enabled = false;
+$config_fck_upload_path = '../atktmp/';
+
 ?>
