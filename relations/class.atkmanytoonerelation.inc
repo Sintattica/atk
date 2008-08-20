@@ -1150,7 +1150,7 @@
         {
           for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
           {
-            if ($rec[$this->fieldName()]==NULL)
+            if ($rec[$this->fieldName()]===NULL)
             {
               $query->addField($this->m_refKey[$i],"NULL","","",false);
             }
