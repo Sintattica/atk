@@ -13,6 +13,8 @@ Changed in ATK 6.2
 + Added atkDataGrid::setDefaultOrderBy which makes it possible to set 
   a different default order by clause then is defined for the node. [Peter]
 * Moved atknew, atkinstance, atkimport etc. to atkClassLoader. [Peter]
+* Added $includeViews parameter to atkDb::table_names, at the moment only
+  implemented for the ATK MySQLi DB driver. [Peter]
 + Added support for using multiple columns [RikW,Danny]
 + Added support for custom actions to the atkmanytomanyselectrelation, also
   added the posibility to define a custom relation class for hasMany relations.
