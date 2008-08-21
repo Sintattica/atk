@@ -286,7 +286,7 @@
     function _getPath()
     {
       static $s_path = array();
-      $class = get_class($this);
+      $class = strtolower(get_class($this));
 
       if (!isset($s_path[$class]))
       {
