@@ -272,7 +272,7 @@
 
 		    $tplfield["initial_on_tab"] = $tplfield["tab"]==$tab;
 
-		    $tplfield["class"] = "tabbedPaneAttr tabbedPaneTab{$field[tabs]}";
+		    $tplfield["class"] = "tabbedPaneAttr tabbedPaneTab{$field['tabs']}";
 
 		    // Check if there are attributes initially hidden on this tabbedpane
 		    if ($field["attribute"]->isInitialHidden($defaults))
