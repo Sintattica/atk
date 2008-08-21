@@ -86,6 +86,9 @@
     {
       $this->atkTableRenderer($flags, $style, $module);
       $this->setClass('groupheader', 0, 'firstcol');
+      // Include tools.js for the toggleDisplay function
+      $page = &atkPage::getInstance();
+      $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
     }
 
     /**
@@ -110,7 +113,7 @@
         $entryData = $data[$entry];
 
         // render a group or a single row
-        if ($this->_isGroup($entryData))
+        if (is_array($entryData) && $this->_isGroup($entryData))
         {
           if ($tbodyOpened)
           {
@@ -265,9 +268,10 @@
     function _getMaxCols($data)
     {
       $max = 0;
+
       for($i=0, $_i=count($data); $i<$_i; $i++)
       {
-        if ($this->_isGroup($data[$i]))
+      	if (is_array($data[$i]) && $this->_isGroup($data[$i]))
         {
           // check the group's rows
           for($j=0, $_j=count($data[$i]['rows']); $j<$_j; $j++)
