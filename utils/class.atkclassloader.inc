@@ -22,13 +22,259 @@
    *
    * @package atk
    * @subpackage utils
-   *
-   * @todo atknew() and atkimport() function should be moved to this
-   *       class.
-   *
    */
   class atkClassLoader
   {
+    /**
+     * Class path mounts.
+     *
+     * @var array
+     */
+    static $s_classPaths = array();
+    
+    /**
+     * Imports a file
+     * @param string $fullclassname Name of class in atkformat (map1.map2.classfile)
+     * @param bool   $failsafe      If $failsafe is true (default), the class is required.  Otherwise, the
+     *                                class is included.
+     * @param bool   $path          Whether or not it is NOT an ATK classname
+     *                                 ("map.class"), if true it will interpret classname
+     *                                 as: "map/class.classname.inc", default false.
+     * @return bool whether the file we want to import was actually imported or not
+     */
+    static function import($fullclassname, $failsafe=true, $path = false)
+    {
+      $filename = ($path === false) ? self::getClassPath($fullclassname) : $fullclassname;
+  
+      static $alreadyHad = array();
+  
+      if (array_key_exists($filename, $alreadyHad) === true)
+      {
+        return $alreadyHad[$filename];
+      }
+      else 
+      {
+        if (is_readable($filename) === true)
+        {
+          $alreadyHad[$filename] = true;
+          
+          if ($failsafe === true)
+          {
+            require_once($filename);
+          }
+          else
+          {
+            include_once($filename);
+          }
+          return true;
+        }
+        else 
+        {
+          $alreadyHad[$filename] = false;
+        }
+      }
+  
+      return false;
+    }    
+    
+    /**
+     * Clean-up the given path.
+     *
+     * @param string $path
+     * @return cleaned-up path
+     *
+     * @see http://nl2.php.net/manual/en/function.realpath.php (comment of 21st of September 2005)
+     */
+    static function cleanPath($path)
+    {
+      $result = array();
+  
+      $pathArray = explode('/', $path);
+      if (empty($pathArray[0]))
+        $result[] = '';
+  
+      foreach ($pathArray AS $key => $dir)
+      {
+        if ($dir == '..')
+        {
+          if (end($result) == '..' || !array_pop($result))
+          {
+            $result[] = '..';
+          }
+        }
+        elseif ($dir && $dir != '.')
+        {
+          $result[] = $dir;
+        }
+      }
+  
+      if (!end($pathArray))
+        $result[] = '';
+  
+      return implode('/', $result);
+    }
+    
+    /**
+     * Mount a certain (class) path on a certain prefix. After this you can
+     * simply load the classes on the given path using the prefix. This makes
+     * it for example possible to load classes outside your atkroot.
+     *  
+     * Note: at the moment only single element prefixes are allowed!
+     * 
+     * Example:
+     * atkClassLoader::mountClassPath('frontend', atkconfig('atkroot').'../frontend/');
+     * atkClassLoader::newInstance('frontend.helloworld');
+     *
+     * @param string $prefix prefix
+     * @param string $path   class path
+     */
+    static function mountClassPath($prefix, $path)
+    {
+      self::$s_classPaths[$prefix] = $path;
+    }
+  
+    /**
+     * Converts an ATK classname ("map1.map2.classname")
+     * to a pathname ("/map1/map2/class.classname.inc")
+     * @param string $fullclassname  ATK classname to be converted
+     * @param bool $class            is the file a class? defaults to true
+     * @return string converted filename
+     */
+    static function getClassPath($fullclassname, $class = true)
+    {
+      $elems = explode(".", strtolower($fullclassname));
+      if($elems[0] == "module")
+      {
+        array_shift($elems);
+        $prefix = moduleDir(array_shift($elems));
+      }
+      else if (isset(self::$s_classPaths[$elems[0]]))
+      {
+        $prefix = self::$s_classPaths[$elems[0]];
+        array_shift($elems);                
+      }
+      else
+      {
+       $prefix = atkconfig("atkroot");
+      }
+  
+      $last = &$elems[count($elems)-1];
+      if ($class) {$last = "class.".$last.".inc";}
+  
+      $filename = $prefix.implode("/", $elems);
+  
+      return $filename;
+    }
+  
+    /**
+     * Converts a pathname ("/map1/map2/class.classname.inc")
+     * to an ATK classname ("map1.map2.classname")
+     * @param string $classpath pathname to be converted
+     * @param bool $class       is the file a class? defaults to true
+     * @return string converted filename
+     */
+    static function getClassName($classpath, $class=true)
+    {
+      $classpath = self::cleanPath($classpath);
+      $elems = explode("/", strtolower($classpath));
+      for($counter=0; $counter<=count($elems);$counter++)
+      {
+        if(isset($elems[$counter]) && $elems[$counter] == "../")
+        {
+          array_shift($elems);
+        }
+      }
+  
+      if($class)
+      {
+        $last = &$elems[count($elems)-1];
+        $last = substr($last, 6, -4);
+      }
+      else
+      {
+        $last = &$elems[count($elems)-2].$elems[count($elems)-1];
+      }
+  
+      $classname = implode(".", $elems);
+  
+      return $classname;
+    }
+  
+    /**
+     * Returns a new instance of a class
+     * 
+     * @param string $fullclassname the ATK classname of the class ("map1.map2.classname")
+     * @param mixed  ...            all arguments after the class name will be passed to the
+     *                              class constructor
+     * 
+     * @return object instance of the class
+     */
+    static function newInstance($fullclassname)
+    {
+      $args = func_get_args();
+      array_shift($args);
+      $args = array_values($args);
+      return self::newInstanceArgs($fullclassname, $args);
+    }
+    
+    /**
+     * Returns a new instance of a class
+     * 
+     * @param string $fullclassname the ATK classname of the class ("map1.map2.classname")
+     * @param array  $args          arguments for the new instance
+     * 
+     * @return object instance of the class
+     */
+    static function newInstanceArgs($fullclassname, $args=array())
+    {
+      $fullclassname = self::resolveClass($fullclassname);
+      self::import($fullclassname, true);
+  
+      $elems = explode(".", strtolower($fullclassname));
+      $classname = $elems[count($elems)-1];
+  
+      if (class_exists($classname))
+      {
+        if (count($args) == 0)
+        {
+          return new $classname();
+        }
+        else 
+        {
+          $class = new ReflectionClass($classname);      
+          return $class->newInstanceArgs($args);
+        }
+      }
+      else
+      {
+        atkerror("Class $fullclassname not found.");
+        return null;
+      }
+    }    
+  
+    /**
+     * Return a singleton instance of the specified class.
+     *
+     * This works for all singletons that implement the getInstance() method.
+     *
+     * @param string $fullclassname the ATK classname of the class ("map1.map2.classname")
+     * @return obj instance of the class
+     * */
+    static function getSingletonInstance($fullclassname, $reset=false)
+    {
+      static $s_instances = array();
+      $fullclassname = self::resolveClass($fullclassname);
+      if (!isset($s_instances[$fullclassname]) || $reset)
+      {
+        self::import($fullclassname);
+        $elems = explode(".", strtolower($fullclassname));
+        $classname = $elems[count($elems)-1];
+        atkdebug("Getting singleton instance $fullclassname");
+        eval("\$s_instances[\$fullclassname] = &".$classname."::getInstance($reset);");
+      }
+      return $s_instances[$fullclassname];
+    }    
+    
     /**
      * Resolve a classname to its final classname.
      *
@@ -40,7 +286,7 @@
      * @param String $class The name of the class to resolve
      * @return String The resolved classname
      */
-    function resolveClass($class)
+    static function resolveClass($class)
     {
       global $g_overloaders;
       if (isset($g_overloaders[$class])) return $g_overloaders[$class];

@@ -7,6 +7,12 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
++ Added atkClassLoader::mountClassPath($prefix, $path) which makes it
+  possible to mount paths outside the atkroot inside the class loader using
+  a special prefix. [Peter]
++ Added atkDataGrid::setDefaultOrderBy which makes it possible to set 
+  a different default order by clause then is defined for the node. [Peter]
+* Moved atknew, atkinstance, atkimport etc. to atkClassLoader. [Peter]
 + Added support for using multiple columns [RikW,Danny]
 + Added support for custom actions to the atkmanytomanyselectrelation, also
   added the posibility to define a custom relation class for hasMany relations.

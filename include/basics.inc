@@ -21,5 +21,5 @@
   require_once($config_atkroot.'atk/include/globals.inc');
   require_once($config_atkroot.'atk/include/configs.inc');
   require_once($config_atkroot."atk/atktools.inc");
-
+  require_once($config_atkroot."atk/utils/class.atkclassloader.inc");
 ?>

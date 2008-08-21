@@ -26,6 +26,7 @@
   atkimport("atk.test.atksimpletesttestcasecollector");
   atkimport("atk.test.atktestreporter");
   atkimport("atk.test.atkattributetestcase");
+  atkimport("atk.test.atktesttraverser");  
   atkimport("atk.test.atktestcase");
   atkimport("atk.db.atkdb");
   atkimport("atk.db.atkddl");
@@ -89,21 +90,8 @@
       }
       $test = &new GroupTest("Test Page");
 
-      if($_REQUEST['class']) $class = $_REQUEST['class'];
-      else $class = $_REQUEST['atkclass'];
-
-      if(file_exists(getClassPath($class)) && strpos($class, "test_")!=false) $testclass = $class;
-      else $testclass = $this->getTestCaseLocationForClass($class);
-
-      if ($class && file_exists(getClassPath($testclass)))
-      {
-        $this->_runTestCase($test,$testclass);
-      }
-      else
-      {
-        $traverser = new atkTestTraverser(new atkSimpleTestTestCaseCollector($test));
-        $traverser->addTestsByTraversing($module);
-      }
+      $this->runTestCases($test, $module);
+      
       if (isset($_REQUEST['list'])) return;
 
       if($reporttype=="html")
@@ -141,14 +129,15 @@
       if(file_exists(getClassPath($class)) && strpos($class, "test_")!=false) $testclass = $class;
       else $testclass = $this->getTestCaseLocationForClass($class);
 
-      if ($class)
+      if ($class && file_exists(getClassPath($testclass)))
       {
         $this->_runTestCase($test,$testclass);
       }
       else
       {
-        $this->_addTestsByTraversing($test,$module);
-      }      
+        $traverser = new atkTestTraverser(new atkSimpleTestTestCaseCollector($test));
+        $traverser->addTestsByTraversing($module);
+      } 
     }
 
     /**

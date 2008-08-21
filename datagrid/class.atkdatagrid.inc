@@ -175,6 +175,13 @@ class atkDataGrid
   private $m_defaultLimit;
 
   /**
+   * Default order by.
+   * 
+   * @var string
+   */
+  private $m_defaultOrderBy;
+  
+  /**
    * Main datagrid template.
    *
    * @var string
@@ -413,6 +420,7 @@ class atkDataGrid
 
     $this->setDefaultLimit(atkconfig('recordsperpage'));
     $this->setDefaultActions($this->getNode()->defaultActions("admin"));
+    $this->setDefaultOrderBy($this->getNode()->getOrder());
     $this->setTemplate('datagrid.tpl');
     $this->setActionSessionStatus(SESSION_NESTED);
     $this->setMode('admin');
@@ -555,7 +563,7 @@ class atkDataGrid
   {
     $this->m_session['system'] = array();
 
-    $vars = array('flags', 'formName', 'embedded', 'baseUrl', 'components', 'excludes', 'defaultActions', 'defaultLimit', 'template', 'actionSessionStatus', 'filters', 'mode', 'mraSelectionMode');
+    $vars = array('flags', 'formName', 'embedded', 'baseUrl', 'components', 'excludes', 'defaultActions', 'defaultLimit', 'defaultOrderBy', 'template', 'actionSessionStatus', 'filters', 'mode', 'mraSelectionMode');
     foreach ($vars as $var)
     {
       $fullVar = "m_{$var}";
@@ -977,7 +985,27 @@ class atkDataGrid
   {
     $this->m_defaultLimit = $limit;
   }
+  
+  /**
+   * Returns the default order by.
+   *
+   * @return string default order by
+   */
+  public function getDefaultOrderBy()
+  {
+    return $this->m_defaultOrderBy;
+  }
 
+  /**
+   * Sets the default order by.
+   *
+   * @param string $orderBy default order by
+   */
+  public function setDefaultOrderBy($orderBy)
+  {
+    $this->m_defaultOrderBy = $orderBy;
+  }
+  
   /**
    * Returns the template name.
    *
@@ -1159,7 +1187,10 @@ class atkDataGrid
    */
   public function getOrderBy()
   {
-    return $this->getNode()->getColumnConfig()->getOrderByStatement();
+    $orderBy = $this->getNode()->getColumnConfig()->getOrderByStatement();
+    if (empty($orderBy))
+      $orderBy = $this->getDefaultOrderBy();
+    return $orderBy;
   }
 
   /**

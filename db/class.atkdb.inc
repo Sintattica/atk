@@ -723,8 +723,10 @@
     /**
      * Return the available table names
      * @return array with table names etc.
+     * 
+     * @param boolean $includeViews include views?
      */
-    function table_names()
+    function table_names($includeViews=true)
     {
       return array();
     }
@@ -979,7 +981,7 @@
      */
     function deleteAll()
     {
-      $tables = $this->table_names();
+      $tables = $this->table_names(false);
       $count = count($tables);
 
       do

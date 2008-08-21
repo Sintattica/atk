@@ -15,8 +15,6 @@
    * $Id$
    */
 
-  atkimport('atk.utils.atkclassloader');
-
   /**
    * The autoloader, autoloads classes that PHP can't find.
    * PHP 5 only.

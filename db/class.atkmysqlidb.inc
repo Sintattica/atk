@@ -445,21 +445,24 @@
     * Return the available table names
     * @return array with table names etc.
     */
-   function table_names()
+   function table_names($includeViews=true)
    {
-     /* query */
-     $this->query("SHOW TABLES");
+     // query 
+     $this->query("SHOW ".(!$includeViews ? "FULL" : "")." TABLES");
 
-     /* get table names */
+     // get table names
      $result = array();
      for ($i=0; $info = mysqli_fetch_row($this->m_query_id); $i++)
      {
+       // ignore views?
+       if (!$includeViews && strtoupper($info[1]) == 'VIEW') continue;
+       
        $result[$i]["table_name"]      = $info[0];
        $result[$i]["tablespace_name"] = $this->m_database;
        $result[$i]["database"]        = $this->m_database;
      }
 
-     /* return result */
+     // return result
      return $result;
    }
 

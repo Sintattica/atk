@@ -91,6 +91,22 @@
     }    
     
     /**
+     * Test if we can mount a class path.
+     */
+    function test_mount_class_path()
+    {
+      $path = atkconfig('atkroot').'../fake/path/';
+
+      $this->assertEqual(atkClassLoader::getClassPath('test_prefix.myclass'), atkconfig('atkroot').'test_prefix/class.myclass.inc'); 
+      $this->assertEqual(atkClassLoader::getClassPath('test_prefix.nested.myclass'), atkconfig('atkroot').'test_prefix/nested/class.myclass.inc');      
+      
+      atkClassLoader::mountClassPath('test_prefix', $path);
+      
+      $this->assertEqual(atkClassLoader::getClassPath('test_prefix.myclass'), $path.'class.myclass.inc'); 
+      $this->assertEqual(atkClassLoader::getClassPath('test_prefix.nested.myclass'), $path.'nested/class.myclass.inc');      
+    }
+    
+    /**
      * Utility method for classloader test.
      */
     function methodtrue()

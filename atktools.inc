@@ -1688,37 +1688,7 @@
    */
   function atkimport($fullclassname, $failsafe=true, $path = false)
   {
-    $filename = ($path === false) ? getClassPath($fullclassname) : $fullclassname;
-
-    static $alreadyHad = array();
-
-    if (array_key_exists($filename, $alreadyHad) === true)
-    {
-      return $alreadyHad[$filename];
-    }
-    else 
-    {
-      if (is_readable($filename) === true)
-      {
-        $alreadyHad[$filename] = true;
-        
-        if ($failsafe === true)
-        {
-          require_once($filename);
-        }
-        else
-        {
-          include_once($filename);
-        }
-        return true;
-      }
-      else 
-      {
-        $alreadyHad[$filename] = false;
-      }
-    }
-
-    return false;
+    return atkClassLoader::import($fullclassname, $failsafe, $path);
   }
 
   /**
@@ -1750,31 +1720,7 @@
    */
   function atkCleanPath($path)
   {
-    $result = array();
-
-    $pathArray = explode('/', $path);
-    if (empty($pathArray[0]))
-      $result[] = '';
-
-    foreach ($pathArray AS $key => $dir)
-    {
-      if ($dir == '..')
-      {
-        if (end($result) == '..' || !array_pop($result))
-        {
-          $result[] = '..';
-        }
-      }
-      elseif ($dir && $dir != '.')
-      {
-        $result[] = $dir;
-      }
-    }
-
-    if (!end($pathArray))
-      $result[] = '';
-
-    return implode('/', $result);
+    return atkClassLoader::cleanPath($path);
   }
 
   /**
@@ -1786,21 +1732,7 @@
    */
   function getClassPath($fullclassname, $class = true)
   {
-    $elems = explode(".", strtolower($fullclassname));
-    if($elems[0] == "module")
-    {
-      array_shift($elems);
-      $prefix = moduleDir(array_shift($elems));
-    }
-    else
-     $prefix = atkconfig("atkroot");
-
-    $last = &$elems[count($elems)-1];
-    if ($class) {$last = "class.".$last.".inc";}
-
-    $filename = $prefix.implode("/", $elems);
-
-    return $filename;
+    return atkClassLoader::getClassPath($fullclassname, $class);
   }
 
   /**
@@ -1812,29 +1744,7 @@
    */
   function getClassName($classpath, $class=true)
   {
-    $classpath = atkCleanPath($classpath);
-    $elems = explode("/", strtolower($classpath));
-    for($counter=0; $counter<=count($elems);$counter++)
-    {
-      if(isset($elems[$counter]) && $elems[$counter] == "../")
-      {
-        array_shift($elems);
-      }
-    }
-
-    if($class)
-    {
-      $last = &$elems[count($elems)-1];
-      $last = substr($last, 6, -4);
-    }
-    else
-    {
-      $last = &$elems[count($elems)-2].$elems[count($elems)-1];
-    }
-
-    $classname = implode(".", $elems);
-
-    return $classname;
+    return atkClassLoader::getClassName($classpath, $class);
   }
 
   /**
@@ -1844,32 +1754,10 @@
    */
   function atknew($fullclassname)
   {
-    $fullclassname = atkResolveClass($fullclassname);
-    atkimport($fullclassname, true);
-
-    $elems = explode(".", strtolower($fullclassname));
-    $classname = $elems[count($elems)-1];
-
-    if (class_exists($classname))
-    {
-      $args = func_get_args();
-      array_shift($args);
-
-      if (count($args) == 0)
-      {
-        return new $classname();
-      }
-      else 
-      {
-        $class = new ReflectionClass($classname);      
-        return $class->newInstanceArgs($args);
-      }
-    }
-    else
-    {
-      atkerror("Class $fullclassname not found.");
-      return null;
-    }
+    $args = func_get_args();
+    array_shift($args);
+    $args = array_values($args);
+    return atkClassLoader::newInstanceArgs($fullclassname, $args);
   }
 
   /**
@@ -1880,19 +1768,9 @@
    * @param string $fullclassname the ATK classname of the class ("map1.map2.classname")
    * @return obj instance of the class
    * */
-  function &atkinstance($fullclassname, $reset=false)
+  function atkinstance($fullclassname, $reset=false)
   {
-    static $s_instances = array();
-    $fullclassname = atkResolveClass($fullclassname);
-    if (!isset($s_instances[$fullclassname]) || $reset)
-    {
-      atkimport($fullclassname);
-      $elems = explode(".", strtolower($fullclassname));
-      $classname = $elems[count($elems)-1];
-      atkdebug("Getting singleton instance $fullclassname");
-      eval("\$s_instances[\$fullclassname] = &".$classname."::getInstance($reset);");
-    }
-    return $s_instances[$fullclassname];
+    return atkClassLoader::getSingletonInstance($fullclassname, $reset);    
   }
 
   /**
