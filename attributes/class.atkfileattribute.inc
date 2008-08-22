@@ -113,15 +113,16 @@
     {
       // We use 255 as default filename size if no size specified.
       if ($size==0) $size = 255;
-
+      
       // Call base class constructor.
       $this->atkAttribute($name,$flags|AF_CASCADE_DELETE, $size);
       $this->setDir($dir);
     }
 
     /**
-     * Allows (re)setting the dir property
-     * whenever needed.
+     * Sets the directory into which uploaded files are saved.  (See setAutonumbering() and setFilenameTemplate()
+     * for some other ways of manipulating the names of uploaded files.)
+     * 
      * @param mixed $dir string with directory path or array with directory path and display url (see constructor)
      */
     public function setDir($dir)
@@ -137,7 +138,7 @@
         $this->m_url = $this->AddSlash($dir);
       }
     }
-
+    
     /**
      * Turn auto-numbering of filenames on/off.
      *

@@ -3325,7 +3325,7 @@
       if ($record['atkprimkey']!="")
       {
         $this->trackChangesIfNeeded($record, $excludes, $includes);
-
+        
         if($exectrigger) $this->executeTrigger("preUpdate",$record);
 
         $pk = $record['atkprimkey'];
@@ -4589,7 +4589,8 @@
     }
 
     /**
-     * Returns the type of this node (this is *not* the full ATK node type!)
+     * Returns the type of this node.  (This is *not* the full ATK node type; 
+     * see atkNodeType() for the full node type.)
      *
      * @return string type
      */
@@ -4609,7 +4610,9 @@
     }
 
     /**
-     * Get the full atknodetype of this node (module.nodetype notation).
+     * Get the full atknodetype of this node (module.nodetype notation).  This is sometimes
+     * referred to as the node name (or nodename) or node string.
+     * 
      * @return String The atknodetype of the node.
      */
     function atkNodeType()
