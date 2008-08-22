@@ -152,12 +152,12 @@
           $this->registerKeyListener($id.'[new]', KB_CTRLCURSOR|KB_UPDOWN);
           $this->registerKeyListener($id.'[again]', KB_CTRLCURSOR|KB_UPDOWN);
           $result = atktext("password_new", "atk").':<br>'.
-                    '<input type="password" id="'.$id.'[new]" name="'.$id.'[new]"'.
+                    '<input autocomplete="off" type="password" id="'.$id.'[new]" name="'.$id.'[new]"'.
                     ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                     ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '')."><br><br>".
 
                     atktext("password_again", "atk").':<br>'.
-                    '<input type="password" id="'.$id.'[again]" name="'.$id.'[again]"'.
+                    '<input autocomplete="off" type="password" id="'.$id.'[again]" name="'.$id.'[again]"'.
                     ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                     ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').">";
         }
@@ -185,19 +185,19 @@
         {
           $this->registerKeyListener($id.'[current]', KB_CTRLCURSOR|KB_UPDOWN);
           $result .= atktext("password_current", "atk").':<br>'.
-                     '<input type="password" id="'.$id.'[current]" name="'.$id.'[current]"'.
+                     '<input autocomplete="off" type="password" id="'.$id.'[current]" name="'.$id.'[current]"'.
                      ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                      ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>';
         }
         $this->registerKeyListener($id.'[new]', KB_CTRLCURSOR|KB_UPDOWN);
         $this->registerKeyListener($id.'[again]', KB_CTRLCURSOR|KB_UPDOWN);
         $result .= atktext("password_new", "atk").':<br>'.
-                   '<input type="password" id="'.$id.'[new]" name="'.$id.'[new]"'.
+                   '<input autocomplete="off" type="password" id="'.$id.'[new]" name="'.$id.'[new]"'.
                    ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                    ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>'.
 
                    atktext("password_again", "atk").':<br>'.
-                   '<input type="password" id="'.$id.'[again]" name="'.$id.'[again]"'.
+                   '<input autocomplete="off" type="password" id="'.$id.'[again]" name="'.$id.'[again]"'.
                    ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                    ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';
       }
