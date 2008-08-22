@@ -671,6 +671,26 @@ class atkMetaPolicy
   {
     return call_user_func_array(array($this, $method), $params);
   }
+  
+  /**
+   * Import attribute of the given type, we do this as soon as attributes
+   * are added to the meta node or the type has been changed so that the
+   * flags for the attribute are available.
+   * 
+   * @param string $type attribute type
+   */
+  public function importAttribute($type)
+  {
+    if (strpos($type, '.') === false && atkexists("attribute", $this->getNode()->getModule().'.'.$type))
+      atkuse("attribute", $this->getNode()->getModule().'.'.$type);
+    elseif (strpos($type, '.') === false && atkexists("relation", $this->getNode()->getModule().'.'.$type))
+      atkuse("relation", $this->getNode()->getModule().'.'.$type);
+    elseif (atkexists("attribute", $type))
+      atkuse("attribute", $type);
+    elseif (atkexists("relation", $type))
+      atkuse("relation", $type);
+    else atkimport($type);    
+  }
 
   /**
    * Returns the currently set includes (if applicable).
@@ -1069,6 +1089,8 @@ class atkMetaPolicy
    */
   public function setTypeAndParams($attr, $type, $params=array())
   {
+    $this->importAttribute($type);
+    
     $attrs = is_array($attr) ? $attr : array($attr);
     foreach ($attrs as $attr)
     {
@@ -1472,6 +1494,8 @@ class atkMetaPolicy
    */
   public function add($name, $type, $params=array(), $flags=0, $sections=NULL, $order=NULL, $default=self::NO_DEFAULT_VALUE)
   {
+    $this->importAttribute($type);
+    
     $names = is_array($name) ? $name : array($name);
     foreach ($names as $name)
     {

@@ -166,8 +166,12 @@ class atkMetaCompiler
     $order = $data['order'];
 
     $code = "// attribute: {$name}\n";
-    
-    if (atkexists("attribute", $type))
+
+    if (strpos($type, '.') === false && atkexists("attribute", $policy->getNode()->getModule().'.'.$type))
+      $code .= 'atkuse("attribute", '.var_export($policy->getNode()->getModule().'.'.$type, true).");\n";
+    elseif (strpos($type, '.') === false && atkexists("relation", $policy->getNode()->getModule().'.'.$type))
+      $code .= 'atkuse("relation", '.var_export($policy->getNode()->getModule().'.'.$type, true).");\n";
+    elseif (atkexists("attribute", $type))
       $code .= 'atkuse("attribute", '.var_export($type, true).");\n";
     elseif (atkexists("relation", $type))
       $code .= 'atkuse("relation", '.var_export($type, true).");\n";
