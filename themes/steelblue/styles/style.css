@@ -7,6 +7,11 @@ body
   font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
 }
 
+.clickable 
+{
+	cursor: pointer;
+}
+
 a:link, a:visited, a:active
 {
   color: #414141;
