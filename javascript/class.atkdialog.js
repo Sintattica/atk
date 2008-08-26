@@ -16,6 +16,27 @@ ATK.Dialog.prototype = {
     this.options = options || {};
     this.windowOptions = windowOptions || {};
   },
+  
+  /**
+   * Calculate exact scroll dimensions, better than window.js own
+   * getScrollDimensions because it takes padding etc. into account.
+   */
+  getScrollDimensions: function(element) {
+    var els = element.style;
+    var originalVisibility = els.visibility;
+    var originalPosition = els.position;
+    var originalDisplay = els.display;
+    els.visibility = 'hidden';
+    els.position = 'absolute';
+    els.display = 'block';
+    var originalWidth = element.scrollWidth;
+    var originalHeight = element.scrollHeight;
+    els.display = originalDisplay;
+    els.position = originalPosition;
+    els.visibility = originalVisibility;
+
+    return { width: originalWidth, height: originalHeight };  
+  },
 
   /**
    * Resize the dialog to the given dimensions.
@@ -35,7 +56,7 @@ ATK.Dialog.prototype = {
     else
       this.window.content.setStyle({ width: 'auto', height: 'auto' });      
       
-    var dimensions = this.window.content.getScrollDimensions();
+    var dimensions = this.getScrollDimensions(this.window.content);
     this.window.setSize(width || dimensions.width, height || dimensions.height, true);
     this.window.center({ auto: false });
   },  
