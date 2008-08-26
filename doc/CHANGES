@@ -12,9 +12,6 @@ Changed in ATK 6.2
   a special prefix. [Peter]
 + Added atkDataGrid::setDefaultOrderBy which makes it possible to set 
   a different default order by clause then is defined for the node. [Peter]
-* Moved atknew, atkinstance, atkimport etc. to atkClassLoader. [Peter]
-* Added $includeViews parameter to atkDb::table_names, at the moment only
-  implemented for the ATK MySQLi DB driver. [Peter]
 + Added support for using multiple columns [RikW,Danny]
 + Added support for custom actions to the atkmanytomanyselectrelation, also
   added the posibility to define a custom relation class for hasMany relations.
@@ -554,8 +551,12 @@ Changed in ATK 6.2
   must be supported. [Dennis]
 * atkCaptchaAttribute no longer requires the field to be called captcha.
   [JorgeG]
-* Fixed erronuous adding of console links if MB] is used 
-  in debugging. [Boy]
+* Fixed erroneous adding of console links if MB] is used in debugging. [Boy]
+* Moved atknew, atkinstance, atkimport etc. to atkClassLoader. [Peter]
+* Added $includeViews parameter to atkDb::table_names, at the moment only
+  implemented for the ATK MySQLi DB driver. [Peter]
+* Steelblue theme no longer displays 'log out' and 'logged in as' in 
+  applications without authentication. [Ivo]
 - Removed atkMetaHandler because it wasn't very useful. [Peter]
 - Removed support for regexes in atkMetaPolicy's setIncludes/setExcludes
   because it wasn't very useful and wasn't used anyway. [Peter]
