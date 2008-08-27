@@ -465,6 +465,13 @@ p img
   clear: both;
 }
 
+form
+{
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+
 #atkbusy
 {
   position: absolute;
