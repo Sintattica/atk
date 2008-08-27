@@ -221,7 +221,7 @@
     /**
      * Save fixture data to the database in the given table.
      *
-     * @param array  $database database name
+     * @param atkDb  $database database instance
      * @param string $table    table name
      * @param array  $data     fixture data
      *
@@ -241,7 +241,14 @@
 
         foreach($record as $field => $value)
         {
-          $query->addField($field, $value);
+          if ($value === null)
+          {
+            $query->addField($field, 'null', '', '', false);
+          }
+          else
+          {
+            $query->addField($field, $value);
+          }
         }
 
         if (!$query->executeInsert())
