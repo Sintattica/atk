@@ -183,9 +183,10 @@
      * @param string $ext    the extension of the file,
      *                       if this is empty, atkTheme will check several
      *                       extensions.
+     * @param boolean $useDefault use default icon fallback if not found?
      * @return string the full path of the icon file
      */
-    function iconPath($icon, $type, $module="",$ext='')
+    function iconPath($icon, $type, $module="",$ext='',$useDefault=true)
     {
       // Check module themes for icon
       $iconfile = $this->getIconFileFromModuleTheme($icon,$type,$ext);
@@ -195,9 +196,12 @@
       $iconfile = $this->getIconFileFromTheme($icon,$type, $this->m_theme['files'],$ext);
       if ($iconfile) return atkTheme::absPath($iconfile);
 
-      // Check the default theme for default icon
-      $iconfile = $this->getIconFileFromTheme('default',$type,$this->m_theme['files'],$ext);
-      if ($iconfile) return atkTheme::absPath($iconfile);
+      if ($useDefault)
+      {
+        // Check the default theme for default icon
+        $iconfile = $this->getIconFileFromTheme('default',$type,$this->m_theme['files'],$ext);
+        if ($iconfile) return atkTheme::absPath($iconfile);
+      }
 
       return false;
     }

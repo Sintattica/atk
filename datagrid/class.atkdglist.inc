@@ -390,7 +390,11 @@ class atkDGList extends atkDGComponent
           
         if ($icons == true)
         {
-          $icon = $theme->iconPath(strtolower($name),"recordlist", $grid->getNode()->m_module);
+          $icon = $theme->iconPath($module.'_'.$nodetype.'_'.strtolower($name),"recordlist", $module, '', false);
+          if (!$icon)          
+            $icon = $theme->iconPath($module.'_'.strtolower($name),"recordlist", $module, '', false);
+          if (!$icon)          
+            $icon = $theme->iconPath(strtolower($name),"recordlist", $grid->getNode()->m_module);
           $link = sprintf('<img class="recordlist" border="0" src="%1$s" alt="%2$s" title="%2$s">', $icon, $link);
         }
 
