@@ -524,6 +524,8 @@ p img
   font-size: 12px;
   font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
   overflow:auto;
+  padding: 0px;
+  margin: 0px;
 }
 
 .atkdialog .w {

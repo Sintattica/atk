@@ -134,6 +134,7 @@
       $this->register_script(atkconfig("atkroot")."atk/javascript/prototype/prototype.js");
       $this->register_script(atkconfig("atkroot")."atk/javascript/prototype-ext.js");
       $this->register_script(atkconfig("atkroot")."atk/javascript/scriptaculous/scriptaculous.js");
+      $this->register_script(atkconfig("atkroot")."atk/javascript/scriptaculous-ext.js");      
       $this->register_script(atkconfig("atkroot")."atk/javascript/class.atktools.js");
       $this->register_script(atkconfig("atkroot")."atk/javascript/atkbusy.js");            
     }

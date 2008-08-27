@@ -90,7 +90,7 @@ ATK.Dialog.prototype = {
     this.resize(this.options.width, this.options.height);
 
     this.window.content.setStyle({ visibility: '' });
-    this.window.focus();      
+    this.window.activate();      
   },
 
   /**
@@ -173,7 +173,7 @@ ATK.Dialog.prototype = {
   close: function() {
     ATK.Dialog.stack.pop();
     if (!this.window) return;
-    this.window.hide();    
+    this.window.destroy();  
     this.window = null;
   },
 
