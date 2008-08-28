@@ -417,10 +417,7 @@
         return 'r';
       }
       
-      if (atkconfig('debug') > 2)
-      {
-        atkdebug('Query mode not detected! Using write mode.');
-      }
+      atknotice('Query mode not detected! Using write mode.');
       
       return 'w';
     }
