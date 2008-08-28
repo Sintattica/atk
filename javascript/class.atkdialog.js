@@ -173,7 +173,10 @@ ATK.Dialog.prototype = {
   close: function() {
     ATK.Dialog.stack.pop();
     if (!this.window) return;
-    this.window.destroy();  
+    this.window.destroy(); 
+    if (Prototype.Browser.IE) {
+      $(document.body).setStyle({ overflow: 'hidden' });
+    }
     this.window = null;
   },
 
