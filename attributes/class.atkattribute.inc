@@ -2539,7 +2539,10 @@
     }
 
     /**
-     * Add the dependee for this attribute.
+     * Indicate that another attribute depends on this attribute, and that if
+     * this attribute is updated, the dependent attribute needs to be updated as well.
+     * (This is mostly relevant to Ajax calls.)
+     * 
      * @see _registerDependees()
      * @param String $attribName The attribute you wish to update.
      * @return atkAttribute Returns the current instance of the attribute
@@ -2552,6 +2555,7 @@
 
     /**
      * Retrieve the dependees for this attribute.
+     * 
      * @see _registerDependees()
      * @return Array $m_dependees Returns the list of dependees.
      */
@@ -2620,9 +2624,9 @@
     }
 
     /**
-     * Check wether this attribute depends on other attributes.
+     * Check whether this attribute depends on other attributes.
      *
-     * @return this attribute depends on other attribute(s)?
+     * @return boolean whether the attribute depends on other attribute(s)
      */
     function isDepending()
     {
