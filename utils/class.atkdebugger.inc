@@ -82,7 +82,7 @@
       }
       else
       {
-        atkdebug($query);
+        atkdebug(atk_htmlentities($query));
         return true;
       }
       return false;
@@ -111,7 +111,7 @@
 
         $data["queries"][] = array("query"=>$query, "trace"=>atk_get_trace());
 
-        atkdebug("[".$this->consoleLink("query&nbsp;details", "query", array("query_id"=>count($data["queries"])-1), true)."] ".$query);
+        atkdebug("[".$this->consoleLink("query&nbsp;details", "query", array("query_id"=>count($data["queries"])-1), true)."] ".atk_htmlentities($query));
 
         return true;
       }
