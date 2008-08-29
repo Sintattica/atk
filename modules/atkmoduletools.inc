@@ -96,12 +96,15 @@
   }
 
   /**
-   * Get an instance of a node. If an instance doesn't exist, it is created.
+   * Get an instance of a node. If an instance doesn't exist, it is created.  Note that nodes
+   * are cached (unless $reset is true); multiple requests for the same node will return exactly 
+   * the same node object.  
+   * 
    * @param String $node     The node string
    * @param bool   $init     Initialize the node?
    * @param String $cache_id The cache id in the node repository
-   * @param bool   $reset    Wether or not to reset the particulair node in the repository
-   * @return atkNode the created instance
+   * @param bool   $reset    Whether or not to reset the particular node in the repository
+   * @return atkNode the node
    */
   function &atkGetNode($node, $init=TRUE, $cache_id="default", $reset=false)
   {
