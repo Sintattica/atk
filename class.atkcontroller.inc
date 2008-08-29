@@ -521,7 +521,7 @@
 
         // if action is admin, we don't show the cancelbutton or the add next button
         if ($node->hasFlag(NF_ADDAFTERADD) && !$node->hasFlag(NF_EDITAFTERADD))
-          $result[] = $this->getButton('saveandnext', true);
+          $result[] = $this->getButton('saveandnext', false);
 
         $result[] = $this->getButton('cancel');
       }
