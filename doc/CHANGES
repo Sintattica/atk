@@ -8,7 +8,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
-
+* Fixed bug where column configs of different datagrids could effect each
+  other which could result in order by clauses to be applied to the
+  incorrect datagrid. [Peter]
 
 Changes in prior versions
 -------------------------

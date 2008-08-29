@@ -693,7 +693,7 @@ class atkDGList extends atkDGComponent
     $result = array("heading" => array(), "search" => array(), "rows" => array(),
                     "totalraw" => array(), "total" => array(), "mra" => array());
 
-    $columnConfig = &$grid->getNode()->getColumnConfig();
+    $columnConfig = &$grid->getNode()->getColumnConfig($grid->getName());
 
     /* get the heading and search columns */
     $atksearchpostvar = $grid->getPostvar("atksearch");

@@ -54,12 +54,13 @@
       return $this->m_node;
     }
 
-    function &getConfig(&$node)
+    function &getConfig(&$node, $id=null)
     {
       global $g_sessionManager;
       static $s_instances = array();
 
-      $id = $node->atkNodeType();
+      if ($id == null)
+        $id = $node->atkNodeType();
 
       if (!isset($s_instances[$id]))
       {

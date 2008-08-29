@@ -1187,7 +1187,7 @@ class atkDataGrid
    */
   public function getOrderBy()
   {
-    $orderBy = $this->getNode()->getColumnConfig()->getOrderByStatement();
+    $orderBy = $this->getNode()->getColumnConfig($this->getName())->getOrderByStatement();
     if (empty($orderBy))
       $orderBy = $this->getDefaultOrderBy();
     return $orderBy;

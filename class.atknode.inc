@@ -5214,12 +5214,14 @@
     /**
      * Get the column configuration object
      *
+     * @param string $id optional column config id
+     * 
      * @return atkColumnConfig
      */
-    function &getColumnConfig()
+    function &getColumnConfig($id)
     {
       atkimport("atk.recordlist.atkcolumnconfig");
-      $columnConfig = &atkColumnConfig::getConfig($this);
+      $columnConfig = &atkColumnConfig::getConfig($this, $id);
       return $columnConfig;
     }
 
