@@ -57,7 +57,8 @@ class atkMetaNode extends atkNode
    * - filter         filter
    * - securityAlias  security alias for this node
    * - securityMap    security map for this node (will be added to the existing security map!)
-
+   * - cacheable      control whatever this meta node is cacheable (by default if the meta method is
+   *                  defined static or there is no meta method defined the meta node is cacheable)
    *
    * All of these variables can also be specified by creating a class variable with
    * the same name. If you do so for flags, and have to use multiple flags, use
@@ -117,12 +118,14 @@ class atkMetaNode extends atkNode
   }  
   
   /**
-   * Is the node structure cachable?
+   * Is the node structure cacheable?
    * 
-   * @return boolean cachable?
+   * @return boolean cacheable?
    */
   public function isCacheable()
   {
+    $cacheable = $this->getMetaOption('cacheable');
+    if ($cacheable !== null) return $cacheable;
     if (!atkconfig('meta_caching', true)) return false;
     if (strtolower(get_class($this)) == 'atkmetanode') return false;
     if (!method_exists($this, 'meta')) return true;    
@@ -139,10 +142,11 @@ class atkMetaNode extends atkNode
   private function _constructFromCache()
   {
     if (!$this->isCacheable()) return false;
-    
+
     atkimport('atk.utils.atktmpfile');
     $file = new atkTmpFile("meta/".$this->getModule()."/".$this->getType().".php");
-    if ($file->exists())
+    $module = getModule($this->getModule());
+    if ($file->exists() && ($module == null || filemtime($file->getPath()) > filemtime($module->getNodeFile($this->atkNodeType()))))
     {
       $node = $this;
       include($file->getPath());

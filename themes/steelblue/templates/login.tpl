@@ -1,4 +1,7 @@
-{atkconfig var="theme_logo" smartyvar="theme_logo"}
+{atkconfig var="theme_login_logo" smartyvar="login_logo"}
+{if !$login_logo}{atkconfig var="theme_logo" smartyvar="login_logo"}{/if}
+{if !$login_logo}{capture assign="login_logo"}{atkthemeimg login_logo.jpg}{/capture}{/if}
+{if !$login_logo}{capture assign="login_logo"}{atkthemeimg logo.jpg}{/capture}{/if}
 {literal}
 <style type="text/css">
 body
@@ -14,7 +17,7 @@ body
 
 <div class="LoginHeader"><img src="{atkthemeimg contentheaderright.jpg}" align="right"></div>
 <div id='loginform'>
-<div id='logologin'><img src="{if empty($theme_logo)}{atkthemeimg logo.jpg}{else}{$theme_logo}{/if}" alt="Logo"></div>
+<div id='logologin'><img src="{$login_logo}" alt="Logo"></div>
 <form action="{$formurl}" method="post">
   <div id="loginform-title">{atktext login_form}</div>
   <div id="loginform-content">
@@ -30,7 +33,7 @@ body
     <td class="loginformLabel">{atktext password}:</td><td class="loginformField"><input class="loginform" type="password" size="15" name="auth_pw" value=""></td>
     </tr><tr>
     <td class="loginformLabel"></td><td>
-    <input name="login" class="button" type="submit" value="{atktext login}">
+    <input name="login" class="button atkdefaultbutton" type="submit" value="{atktext login}">
     {if $auth_enablepasswordmailer}<input name="login" class="button" type="submit" value="{atktext password_forgotten}">{/if}
     </td>
     </tr></table>

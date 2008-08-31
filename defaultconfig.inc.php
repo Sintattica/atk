@@ -546,11 +546,12 @@
   $config_menu_align = "center";
 
   /**
-   * Auto-include logout link in menu?
+   * Auto-include logout link in menu? (only supported for atkDropDownMenu 
+   * at the moment).
    *
    * @var Boolean
    */
-  $config_menu_logout_link = true;
+  $config_menu_logout_link = false;
 
   /**
    * 0 = no   - 1 = yes
@@ -562,7 +563,7 @@
    *
    * @var String
    */
-  $config_defaulttheme = "default";
+  $config_defaulttheme = "stillblue";
 
   /**
    * Fullscreen mode (IE only)

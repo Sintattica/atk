@@ -103,7 +103,7 @@
       $delimiter = atkconfig("menu_delimiter");
 
       $name = $this->getMenuTranslation($menuitem['name'],$menuitem['module']);
-      if ($menuitem['name']=='-') return "<li><a href=\"#\">-</a></li>\n";
+      if ($menuitem['name']=='-') return "<li class=\"separator\"><div></div></li>\n";
       if ($menuitem['url']) $href = href($menuitem['url'],$this->getMenuTranslation($menuitem['name'],$menuitem['module']), SESSION_NEW);
       else $href = '<a href="#">'.$name.'</a>';
 

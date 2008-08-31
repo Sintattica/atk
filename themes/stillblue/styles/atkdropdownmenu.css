@@ -156,3 +156,10 @@ li>ul {
   top: auto;
   left: auto;
 }
+
+#nav li.separator div
+{
+  height: 0px;
+  width: 142px;
+  border-bottom: 1px dashed #96c7f4;
+}

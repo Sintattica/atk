@@ -84,7 +84,7 @@
 
   // The theme defines the layout of your application. You can see which
   // themes there are in the directory atk/themes.
-  $config_defaulttheme = "steelblue";
+  $config_defaulttheme = "stillblue";
 
   // The language of the application. You can use any language for which
   // a language file is present in the atk/languages directory.

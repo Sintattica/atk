@@ -7,7 +7,7 @@
     <table id="topLinkTable" cellpadding="0" cellspacing="0">
       <tr>
         <td><span id="top-center">{foreach  from=$centerpiece_links item=link}{$link}&nbsp;&nbsp;|&nbsp;&nbsp;{/foreach}</span></td>
-        <td><span id="top-logout"><a href="index.php?atklogout=1" target="{$logouttarget}">{atktext logout} {$user}</a></span>&nbsp;&nbsp;</td>
+        {if $user}<td><span id="top-logout"><a href="index.php?atklogout=1" target="{$logouttarget}">{atktext logout} {$user}</a></span>&nbsp;&nbsp;</td>{/if}
         {if $searchpiece}<td id="topLinkSearch"><span id="top-search">{$searchpiece}</span></td>{/if}
       </tr> 
     </table>
