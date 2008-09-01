@@ -5218,7 +5218,7 @@
      * 
      * @return atkColumnConfig
      */
-    function &getColumnConfig($id)
+    function &getColumnConfig($id=NULL)
     {
       atkimport("atk.recordlist.atkcolumnconfig");
       $columnConfig = &atkColumnConfig::getConfig($this, $id);
