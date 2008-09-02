@@ -9,6 +9,10 @@ Latest changes go on top, different types of changes may be mixed.
 Changes in ATK 6.3
 ------------------
 
++ Added configuration option 'mail_redirect' to defaultconfig.inc.php. See
+  defaultconfig.inc.php for more details. [patrick]
+
+
 Changes in prior versions
 -------------------------
 Changes in older ATK versions can be found at:

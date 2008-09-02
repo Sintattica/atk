@@ -63,6 +63,13 @@
         // make sure Sender is set so the Return-Path header will have a decent value
         if ($this->Sender == "") $this->Sender = $this->From;
 
+        $mail_redirect = atkconfig("mail_redirect");
+        if (!empty($mail_redirect))
+        {
+          $this->ClearAllRecipients();
+          $this->AddAddress($mail_redirect, 'mail_redirect');
+        }
+
         return parent::Send();
       }
       else return true;

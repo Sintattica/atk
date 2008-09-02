@@ -546,7 +546,7 @@
   $config_menu_align = "center";
 
   /**
-   * Auto-include logout link in menu? (only supported for atkDropDownMenu 
+   * Auto-include logout link in menu? (only supported for atkDropDownMenu
    * at the moment).
    *
    * @var Boolean
@@ -846,11 +846,19 @@
   $config_enable_ssl_encryption = false;
 
   /**
-   * Enable / disable sending of e-mails (works only if the atk.utils.atkMail::mail
+   * Enable / disable sending of e-mails (works only if the atk.utils.atkMailer::Send
    * function has been used for sending e-mails).
+   * Note: atk.utils.atkMail::mail is deprecated but is still enabled/disabled by this setting.
    * @var boolean
    */
   $config_mail_enabled = true;
+
+  /**
+   * Redirect e-mails to a specified address (works only if the atk.utils.atkMailer::Send
+   * function has been used for sending e-mails).
+   * @var string
+   */
+  $config_mail_redirect = "";
 
   /**
    * Default extended search action. This action can always be overriden
