@@ -3,47 +3,121 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
-   * @package atk  
+   * @package atk
    *
    * @copyright (c)2000-2004 Ivo Jansch
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision$
    * $Id$
-   */       
+   */
 
   /**
    * Config class for loading config files and retrieving config options.
    * Also contains misc. methods for use in config files.
    *
-   *
    * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
-   *
    */
   class atkConfig
-  {      
-    function get($section, $tag, $default="")
+  {
+    /**
+     * Get a configuration value for a section (typically a module)
+     *
+     * Can be overridden with a global function config_$section_$tag.
+     * Relies on your configurations being in configs/ (or wherever $config_configdir says).
+     * Also gets $section.*.inc.php.
+     * If the section is a module and has a skel/configs/ it will get those configs too
+     * and use them as defaults.
+     *
+     * @example atkConfig::get('color','mymodule','FF0000');
+     *
+     * @param string $section Section to check (typically a module)
+     * @param string $tag     Name of configuration to get
+     * @param mixed  $default Default to use if configuration value does not exist
+     * @return mixed Configuration value
+     */
+    public static function get($section, $tag, $default="")
     {
       static $s_configs = array();
+
       $fn = 'config_'.$section.'_'.$tag;
-      if (function_exists($fn)) return $fn();
+      if (function_exists($fn))
+      {
+        return $fn();
+      }
+
       if (!isset($s_configs[$section]))
       {
-        $s_configs[$section] = array();
-        atkdebug("Loading config file for section $section");
-        $config = array();
-        @include(atkconfig("configdir").$section.".inc.php");        
-        $other = glob(atkconfig("configdir")."{$section}.*.inc.php");
-        if (is_array($other)) foreach ($other as $file) { @include($file); }
-        if (isset($config)) $s_configs[$section] = $config;
+        $config = self::getConfigForSection($section);
+        if (!is_array($config))
+        {
+          $config = array();
+        }
+        $s_configs[$section] = $config;
       }
-      return (isset($s_configs[$section][$tag])&&$s_configs[$section][$tag]!==""?$s_configs[$section][$tag]:$default);
+
+      if (isset($s_configs[$section][$tag]) && $s_configs[$section][$tag]!=="")
+      {
+        return $s_configs[$section][$tag];
+      }
+      else
+      {
+        return $default;
+      }
     }
-    
+
+    /**
+     * Get the configuration values for a section and if the section
+     * turns out to be a module, try to get the module configs
+     * and merge them as fallbacks.
+     *
+     * @param string $section Name of the section to get configs for
+     * @return array Configuration values
+     */
+    protected static function getConfigForSection($section)
+    {
+      $config = self::getDirConfigForSection(atkconfig('configdir'), $section);
+      if (moduleExists($section))
+      {
+        $dir = moduleDir($section).'skel/configs/';
+        if (file_exists($dir))
+        {
+          $module_configs = self::getDirConfigForSection($dir, $section);
+          $config = atk_array_merge_recursive($module_configs, $config);
+        }
+      }
+      return $config;
+    }
+
+    /**
+     * Get all configuration values from all configuration files for
+     * a specific directory and a specific section.
+     *
+     * @param string $dir     Directory where the configuration files are
+     * @param string $section Section to get configuration values for
+     * @return array Configuration values
+     */
+    protected static function getDirConfigForSection($dir, $section)
+    {
+      atkdebug("Loading config file for section $section");
+      $config=array();
+      @include($dir.$section.".inc.php");
+
+      $other = glob(atkconfig("configdir")."{$section}.*.inc.php");
+      if (is_array($other))
+      {
+        foreach ($other as $file)
+        {
+          include($file);
+        }
+      }
+      return $config;
+    }
+
     /**
      * Is debugging enabled for client IP?
      *
@@ -54,7 +128,7 @@
       $ip = atkGetClientIp();
       return in_array($ip, $params["list"]);
     }
-    
+
     /**
      * Is debugging enabled by special request variable?
      *
@@ -62,8 +136,8 @@
      */
     function requestDebugEnabled($params)
     {
-      $session = &atkSessionManager::getSession();      
-      
+      $session = &atkSessionManager::getSession();
+
       if (isset($_REQUEST["atkdebug"]["key"]))
         $session["debug"]["key"] = $_REQUEST["atkdebug"]["key"];
       return (isset($session["debug"]["key"]) && $session["debug"]["key"] == $params["key"]);
@@ -81,7 +155,7 @@
       $session = &atkSessionManager::getSession();
 
       $enabled = $default > 0;
-      
+
       foreach ($options as $option)
       {
         $method = $option["type"]."DebugEnabled";
@@ -93,7 +167,7 @@
       {
         if (isset($_REQUEST["atkdebug"]["level"]))
           $session["debug"]["level"] = $_REQUEST["atkdebug"]["level"];
-          
+
         if (isset($session["debug"]["level"]))
           return $session["debug"]["level"];
         else return max($default, 1);
@@ -101,7 +175,7 @@
 
       return $default;
     }
-    
+
     /**
      * Restrict access to an attribute to a certain entity (group or level)
      *
@@ -124,7 +198,7 @@
     {
       $GLOBALS["config_attribrestrict"][$node][$attrib][$mode] = $entity;
     }
-  
+
     /**
      * Grants acces to an entity (group or level)
      *
@@ -133,19 +207,19 @@
      *
      * @param String $node The node on which to grant a privilege.
      * @param String $action The action (privilege) that is granted.
-     * @param mixed $entity The entity (securitylevel or group) to which the 
+     * @param mixed $entity The entity (securitylevel or group) to which the
      *                      privilege is granted.
      */
     function grant($node,$action,$entity)
     {
       $GLOBALS["config_access"][$node][] = Array($action=>$entity);
     }
-    
+
     /**
      * Translate pop3 server responses to user readable error messages.
      *
      * This function is only of use when using pop3 as authentication method.
-     * Some pop3 servers give specific error messages that may be of interest 
+     * Some pop3 servers give specific error messages that may be of interest
      * to the user. If you use this function (in the config file) and atk
      * encounters the specified substring in a server response, the specified
      * message is displayed.
@@ -160,28 +234,28 @@
       global $g_pop3_responses;
       $g_pop3_responses[$substring] = $message;
     }
-    
+
     /**
      * Create a new user.
      *
-     * When $config_authentication is set to "config", this method can be used 
+     * When $config_authentication is set to "config", this method can be used
      * in the configfile to create users. Mind you that anybody who has read
-     * access on the config file, can read the passwords. It is advisable to 
+     * access on the config file, can read the passwords. It is advisable to
      * use a more secure authentication method like "db" or "pop3".
      *
      * @param String $name The login name.
      * @param String $password The password of the user.
      * @param mixed $securitylevel The securitylevel or group of the user.
      *                             Permissions are granted on level/group basis,
-     *                             depending on the setting of 
+     *                             depending on the setting of
      *                             $config_security_scheme
      */
     function addUser($name, $password, $securitylevel=0)
     {
       $GLOBALS["config_user"][$name] = Array("password"=>$password,"level"=>$securitylevel);
-    }  
+    }
   }
-  
+
   /**
    * Retrieve a configuration value.
    *
@@ -191,9 +265,9 @@
    *
    * @param String $tag The name of the configuration variable (without the
    *                    '$config_' prefix!
-   * @param mixed $default The default variable you want to use when the 
+   * @param mixed $default The default variable you want to use when the
    *                       configuration variable is missing from the
-   *                       config file.   
+   *                       config file.
    *
    * @deprecated Use atkConfig::get() instead.
    * @return mixed The value of the configuration variable.
@@ -203,23 +277,41 @@
     $fn = 'config_'.$tag;
     if (function_exists($fn)) return $fn();
     return (isset($GLOBALS["config_".$tag])?$GLOBALS["config_".$tag]:$default);
-  }    
-  
-  /** @todo module() and the MF_ flags should be moved to moduletools, but these are
+  }
+
+  /**
+   * @todo module() and the MF_ flags should be moved to moduletools, but these are
    * not present yet at configfile load time.
    */
-  
+
   /**
-   * Module flags 
+   * Module flags
    */
-  define("MF_NOMENU",                          1); // don't use the menuitems from this module
-  define("MF_NORIGHTS",                        2); // don't use the rights of this module
+
+  /**
+   * Don't use the menuitems from this module
+   */
+  define("MF_NOMENU",                          1);
+
+  /**
+   * Don't use the rights of this module
+   */
+  define("MF_NORIGHTS",                        2);
+
+  /**
+   * Use this module only as a reference
+   */
+  define("MF_REFERENCE",   MF_NOMENU|MF_NORIGHTS);
+
   define("MF_SPECIFIC_1",                      4);
   define("MF_SPECIFIC_2",                      8);
   define("MF_SPECIFIC_3",                     16);
-  define("MF_REFERENCE",   MF_NOMENU|MF_NORIGHTS); // use this module only as a reference
+
+  /**
+   * Don't preload this module (module_preload.inc)
+   */
   define("MF_NO_PRELOAD",                     32);
-  
+
   /**
    * Load a module.
    *
@@ -229,7 +321,7 @@
    * @param String $name The name of the module to load.
    * @param String path The path where the module is located (relative or
    *                    absolute). If omitted, ATK assumes that the module is
-   *                    installed in the default module dir (identified by 
+   *                    installed in the default module dir (identified by
    *                    $config_module_path).
    * @param int flags The module (MF_*) flags that influence how the module is
    *                  loaded.
@@ -241,5 +333,5 @@
     $g_modules[$name] = $path;
     if ($flags>0) $g_moduleflags[$name] = $flags;
   }
-  
+
 ?>

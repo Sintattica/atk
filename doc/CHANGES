@@ -8,7 +8,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
-
+* Implemented fallback for atkConfig::get to skel/configs/.
+  If a section corresponds to a module, configs from module/skel/configs
+  will be used as fallbacks. [Boy, Tjeerd]   
 + Added configuration option 'mail_redirect' to defaultconfig.inc.php. See
   defaultconfig.inc.php for more details. [patrick]
 
