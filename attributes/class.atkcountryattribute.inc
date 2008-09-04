@@ -30,7 +30,7 @@
   class atkCountryAttribute extends atkListAttribute
   {
     var $m_countries           = array();
-    var $m_europe_countries    = array( 'AL','AT','BE','BA','BG','HR','CY','CZ','CS','DK','DE','FI','FR','GB','GR','HU','IE','IT','LI',
+    var $m_europe_countries    = array( 'AL','AT','BE','BA','BG','HR','CY','CZ','DK','DE','FI','FR','GB','GR','HU','IE','IT','LI',
                                         'LU','MC','NL','NO','PL','PT','RO','SK','SI','ES','SE','CH','TR');
     var $m_benelux_countries   = array( 'NL','BE','LU');
 
@@ -40,7 +40,7 @@
     var $m_world_countries     = array( 'AF', 'AL', 'DZ', 'AS', 'AD', 'AO', 'AI', 'AQ', 'AG', 'AR', 'AM', 'AW', 'AU', 'AT', 'AZ',
                                         'BS', 'BH', 'BD', 'BB', 'BY', 'BE', 'BZ', 'BJ', 'BM', 'BO', 'BA', 'BW', 'BV', 'BR', 'IO', 'BN',
                                         'BG', 'BF', 'BI', 'BT', 'KH', 'CM', 'CA', 'CV', 'KY', 'CF', 'TD', 'CL', 'CN', 'CX', 'CC', 'CO',
-                                        'KM', 'CG', 'CK', 'CR', 'HR', 'CU', 'CY', 'CZ', 'CS', 'DK', 'DE', 'DJ', 'DM', 'DO', 'TP', 'EC',
+                                        'KM', 'CG', 'CK', 'CR', 'HR', 'CU', 'CY', 'CZ', 'DK', 'DE', 'DJ', 'DM', 'DO', 'TP', 'EC',
                                         'EG', 'SV', 'GQ', 'EE', 'ET', 'FK', 'FO', 'FJ', 'FI', 'FR', 'FX', 'TF', 'GA', 'GM', 'GE', 'GH',
                                         'GI', 'GB', 'GR', 'GL', 'GD', 'GP', 'GU', 'GT', 'GN', 'GW', 'GY', 'GF', 'HT', 'HM', 'HN', 'HK',
                                         'HU', 'IS', 'IN', 'ID', 'IR', 'IQ', 'IE', 'IL', 'IT', 'CI', 'JM', 'JP', 'JO', 'KZ', 'KE', 'KG',
@@ -591,7 +591,7 @@
       $this->m_country["CZ"]["de"] ="Czech Republic";
       $this->m_country["CZ"]["en"] ="Czech Republic";
 
-      $this->m_country["CS"]["nl"] ="Slowakije";
+      $this->m_country["CS"]["nl"] ="Tsjechoslowakije";
       $this->m_country["CS"]["de"] ="Czechoslovakia";
       $this->m_country["CS"]["en"] ="Czechoslovakia";
 
@@ -1043,7 +1043,7 @@
       $this->m_country["PL"]["de"] ="Poland";
       $this->m_country["PL"]["en"] ="Poland";
 
-      $this->m_country["PF"]["nl"] ="Frans-Polynesië";
+      $this->m_country["PF"]["nl"] =html_entity_decode("Frans-Polynesi&euml;");
       $this->m_country["PF"]["de"] ="Polynesia (Fr.)";
       $this->m_country["PF"]["en"] ="Polynesia (Fr.)";
 
@@ -1107,7 +1107,7 @@
       $this->m_country["SG"]["de"] ="Singapore";
       $this->m_country["SG"]["en"] ="Singapore";
 
-      $this->m_country["SK"]["nl"] ="Slowakije";
+      $this->m_country["SK"]["nl"] =html_entity_decode("Slowakij&euml;");
       $this->m_country["SK"]["de"] ="Slovak Republic";
       $this->m_country["SK"]["en"] ="Slovak Republic";
 

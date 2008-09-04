@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* Removed Czechoslovakia (CS) from the country definition list in 
+  atkCountryAttribute. [mvdvelden]
 * Implemented fallback for atkConfig::get to skel/configs/.
   If a section corresponds to a module, configs from module/skel/configs
   will be used as fallbacks. [Boy, Tjeerd]   
