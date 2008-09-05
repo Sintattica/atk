@@ -46,11 +46,13 @@ function remoteUpdate(a, imgPrefix)
   {
     img.src = imgPrefix+"select_color_on.gif"; 
     img.alt = color;
+    img.style.backgroundColor = color;
   }
   else
   {
     img.src = imgPrefix+"select_color_off.gif";
     img.alt = "Geen kleur geselecteerd";
+    img.style.backgroundColor = '#FFFFFF';
   }
 
   eval(formname);
