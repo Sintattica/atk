@@ -197,7 +197,7 @@
     {
       global $ATK_VARS;
 
-      if (isset($ATK_VARS["atklng"]) && in_array($ATK_VARS["atklng"],atkLanguage::getSupportedLanguages()))
+      if (isset($ATK_VARS["atklng"]) && (in_array($ATK_VARS["atklng"], atkLanguage::getSupportedLanguages()) || in_array($ATK_VARS["atklng"], atkconfig('supported_languages'))))
       {
         $lng = $ATK_VARS["atklng"];
       } // we first check for an atklng variable
