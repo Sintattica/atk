@@ -9,7 +9,7 @@ Latest changes go on top, different types of changes may be mixed.
 Changes in ATK 6.3
 ------------------
 * Fixed setting the supported languages by using the config 
-  supported_languages. [Dennis] 
+  supported_languages. [Arjen, Dennis] 
 * Removed Czechoslovakia (CS) from the country definition list in 
   atkCountryAttribute. [mvdvelden]
 * Implemented fallback for atkConfig::get to skel/configs/.
