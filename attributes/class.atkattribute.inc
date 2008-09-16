@@ -1069,7 +1069,7 @@
         /* error? */
         $entry["error"] = $this->getError($error) || (isset($ATK_VARS["atkerrorfields"]) && atk_in_array($entry['id'], $ATK_VARS['atkerrorfields']));
         // on which tab?
-        $entry["tabs"] = $this->getTabs($mode);
+        $entry["tabs"] = $this->getTabs();
         //on which sections?
         $entry["sections"] = $this->getSections();
         // the actual edit contents
@@ -2542,7 +2542,7 @@
      * Indicate that another attribute depends on this attribute, and that if
      * this attribute is updated, the dependent attribute needs to be updated as well.
      * (This is mostly relevant to Ajax calls.)
-     * 
+     *
      * @see _registerDependees()
      * @param String $attribName The attribute you wish to update.
      * @return atkAttribute Returns the current instance of the attribute
@@ -2555,7 +2555,7 @@
 
     /**
      * Retrieve the dependees for this attribute.
-     * 
+     *
      * @see _registerDependees()
      * @return Array $m_dependees Returns the list of dependees.
      */
