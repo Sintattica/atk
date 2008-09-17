@@ -1069,7 +1069,7 @@
         /* error? */
         $entry["error"] = $this->getError($error) || (isset($ATK_VARS["atkerrorfields"]) && atk_in_array($entry['id'], $ATK_VARS['atkerrorfields']));
         // on which tab?
-        $entry["tabs"] = $this->getTabs();
+        $entry["tabs"] = $this->getTabs($mode);
         //on which sections?
         $entry["sections"] = $this->getSections();
         // the actual edit contents
@@ -1101,10 +1101,10 @@
 
     /**
      * retrieve the tabs for this attribute.
-     *
+     * @param string $mode
      * @return array
      */
-    function getTabs()
+    function getTabs($mode="")
     {
       return $this->m_tabs;
     }
