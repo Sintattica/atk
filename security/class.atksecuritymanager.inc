@@ -231,8 +231,11 @@
         $this->notifyListeners("preLogout", $auth_user);
 
         session_destroy();
+
         $cookie_params = session_get_cookie_params();
-        session_set_cookie_params($cookie_params["lifetime"], dirname($_SERVER["SCRIPT_NAME"]));
+        $cookiepath   = atkconfig("application_root");
+        $cookiedomain = (atkconfig("cookiedomain") != "") ? atkconfig("cookiedomain") : NULL;
+        session_set_cookie_params($cookie_params["lifetime"], $cookiepath, $cookiedomain);
         @session_start();
         $session = array();
         $session["relogin"]=1;
