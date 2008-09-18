@@ -17,7 +17,12 @@
 function atkSubmit(target)
 {
   if(target=='-1') return;
-  document.entryform.atkescape.value = target;
+  
+  // Set ALL <input name="atkescape"> to target--for some reason
+  // there are multiple atkescape inputs on some pages, as it's
+  // possible to set the wrong one, which means atksession() in
+  // class.atksessionmanager.inc gets a blank atkescape.
+  $$('input[name="atkescape"]').each(function (n) { n.value = target; }); 
   
   // call global submit function, which doesn't get called automatically
   // when we call entryform.submit manually.
