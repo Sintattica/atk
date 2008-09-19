@@ -488,7 +488,9 @@
         $action
       );
       
-      $label = $this->text($keys);
+      // don't use text() function of attribute, because of auto module detection
+      $label = atktext($keys, $modulename, $nodename);
+      
       return $label;
     }
 

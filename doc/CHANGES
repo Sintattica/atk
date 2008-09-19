@@ -19,6 +19,8 @@ Changes in ATK 6.3
 * Implemented fallback for atkConfig::get to skel/configs/.
   If a section corresponds to a module, configs from module/skel/configs
   will be used as fallbacks. [Boy, Tjeerd]   
+* ProfileAttribute: don't use text() function of attribute, because of auto 
+  module detection (e.g. actions won't translate) [Jeroen]
 + Added configuration option 'mail_redirect' to defaultconfig.inc.php. See
   defaultconfig.inc.php for more details. [patrick]
 
