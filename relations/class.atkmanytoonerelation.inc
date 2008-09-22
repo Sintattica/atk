@@ -18,20 +18,44 @@
    */
 
   /**
-   * flag(s) specific for atkManyToOneRelation
+   * Create edit/view links for the items in a manytoonerelation dropdown.
    */
-  define("AF_RELATION_AUTOLINK",  AF_SPECIFIC_1);     // create edit/view links for the items in a manytoonerelation dropdown.
-  define("AF_MANYTOONE_AUTOLINK", AF_RELATION_AUTOLINK);     // create edit/view links for the items in a manytoonerelation dropdown.
+  define("AF_RELATION_AUTOLINK",  AF_SPECIFIC_1);
 
-  define("AF_RELATION_NO_NULL_ITEM",  AF_SPECIFIC_2); // do not add null option ever
-  define("AF_MANYTOONE_NO_NULL_ITEM", AF_RELATION_NO_NULL_ITEM); // do not add null option ever
+  /**
+   * Create edit/view links for the items in a manytoonerelation dropdown.
+   */
+  define("AF_MANYTOONE_AUTOLINK", AF_RELATION_AUTOLINK);
 
-  define("AF_RELATION_AUTOCOMPLETE",  AF_SPECIFIC_3); // use auto-completition instead of drop-down / selection page
+  /**
+   * Do not add null option under any circumstance
+   */
+  define("AF_RELATION_NO_NULL_ITEM",  AF_SPECIFIC_2);
+
+  /**
+   * Do not add null option ever
+   */
+  define("AF_MANYTOONE_NO_NULL_ITEM", AF_RELATION_NO_NULL_ITEM);
+
+  /**
+   * Use auto-completition instead of drop-down / selection page
+   */
+  define("AF_RELATION_AUTOCOMPLETE",  AF_SPECIFIC_3);
+
+  /**
+   * Use auto-completition instead of drop-down / selection page
+   */
   define("AF_MANYTOONE_AUTOCOMPLETE", AF_RELATION_AUTOCOMPLETE);
 
-  define("AF_MANYTOONE_LAZY", AF_SPECIFIC_4);        // lazy load
+  /**
+   * Lazy load
+   */
+  define("AF_MANYTOONE_LAZY", AF_SPECIFIC_4);
 
-  define("AF_MANYTOONE_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_5); // Add a default null option to obligatory relations
+  /**
+   * Add a default null option to obligatory relations
+   */
+  define("AF_MANYTOONE_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_5);
 
   /**
    * @internal include base class
