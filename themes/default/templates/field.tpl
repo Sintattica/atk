@@ -5,8 +5,7 @@
     {if $field.label != "AF_NO_LABEL"}
       <td valign="top" class="{if isset($field.error)}errorlabel{else}fieldlabel{/if}">
         {if $field.label!=""}
-          {$field.label}
-          {if isset($field.obligatory)}{$field.obligatory}{/if}:
+          {$field.label}&nbsp;{if isset($field.obligatory)}{$field.obligatory}{/if}:
         {/if}
       </td>
     {/if}
