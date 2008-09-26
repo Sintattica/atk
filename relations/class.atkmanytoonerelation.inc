@@ -746,7 +746,8 @@
       // we use the current level to automatically return to this page
       // when we come from the select..
       $atktarget = getDispatchFile()."?atklevel=".atkLevel()."&".$selname."=[atkprimkey]";
-      $linkname = atktext("link_select_".getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination),'','',true);
+      $linkname = atktext("link_select_".getNodeType($this->m_destination), $this->getOwnerInstance()->getModule(), $this->getOwnerInstance()->getType(),'','',true);
+      if (!$linkname) $linkname = atktext("link_select_".getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination),'','',true);
       if (!$linkname) $linkname = atktext("select_a").' '.strtolower(atktext(getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination)));
       if ($this->m_destinationFilter!="")
       {

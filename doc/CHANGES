@@ -8,6 +8,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* Disabled multi-record-actions in select handler. [Peter]
 * Fixed strange bug with sessions where atkSecurityManager would set
   a session with a different cookiepath and repeatedly logging in
   and logging out would cause the user to lose the ability to 
