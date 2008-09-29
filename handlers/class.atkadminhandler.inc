@@ -323,6 +323,7 @@
 					atkimport('atk.ui.atkdialog');
 					$dialog = new atkDialog($this->m_node->atkNodeType(), $action, 'dialog');
 					$dialog->setModifierObject($this->m_node);
+					$dialog->setSessionStatus(SESSION_PARTIAL);
 					$onClick = $dialog->getCall();
 
 					return '

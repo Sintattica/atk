@@ -8,19 +8,22 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
++ Added setter and getter for sessionStatus in atkDialog. [Arjen]
+* Set session status for (onetomany) add (-or-copy) dialog to session_partial.
+  [Arjen]
 * Disabled multi-record-actions in select handler. [Peter]
 * Fixed strange bug with sessions where atkSecurityManager would set
   a session with a different cookiepath and repeatedly logging in
-  and logging out would cause the user to lose the ability to 
+  and logging out would cause the user to lose the ability to
   log in at all. [Boy, Harrie]
-* Fixed setting the supported languages by using the config 
-  supported_languages. [Arjen, Dennis] 
-* Removed Czechoslovakia (CS) from the country definition list in 
+* Fixed setting the supported languages by using the config
+  supported_languages. [Arjen, Dennis]
+* Removed Czechoslovakia (CS) from the country definition list in
   atkCountryAttribute. [mvdvelden]
 * Implemented fallback for atkConfig::get to skel/configs/.
   If a section corresponds to a module, configs from module/skel/configs
-  will be used as fallbacks. [Boy, Tjeerd]   
-* ProfileAttribute: don't use text() function of attribute, because of auto 
+  will be used as fallbacks. [Boy, Tjeerd]
+* ProfileAttribute: don't use text() function of attribute, because of auto
   module detection (e.g. actions won't translate) [Jeroen]
 + Added configuration option 'mail_redirect' to defaultconfig.inc.php. See
   defaultconfig.inc.php for more details. [patrick]

@@ -186,6 +186,7 @@
       if ($this->m_node->hasFlag(NF_ADD_DIALOG))
       {
         $dialog = new atkDialog($this->m_node->atkNodeType(), 'add', 'dialog');
+        $dialog->setSessionStatus(SESSION_PARTIAL);
         $script .= $dialog->getCall(true, false);
       }
       else

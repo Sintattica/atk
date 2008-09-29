@@ -29,6 +29,7 @@ class atkDialog
   protected $m_action;
   protected $m_partial;
   protected $m_params;
+  protected $m_sessionStatus = SESSION_NEW;
 
   protected $m_title;
 
@@ -100,7 +101,26 @@ class atkDialog
     return $this->m_partial;
   }
 
-  
+  /**
+   * Returns the dialog sessionStatus.
+   *
+   * @return int sessionStatus (SESSION_BACK=3, SESSION_DEFAULT=0, SESSION_NESTED=2, SESSION_NEW=1, SESSION_PARTIAL=5, SESSION_REPLACE=4)
+   */
+  public function getSessionStatus()
+  {
+    return $this->m_sessionStatus;
+  }
+
+  /**
+   * Sets the dialog sessionStatus.
+   *
+   * @param int sessionStatus (SESSION_BACK=3, SESSION_DEFAULT=0, SESSION_NESTED=2, SESSION_NEW=1, SESSION_PARTIAL=5, SESSION_REPLACE=4)
+   */
+  public function setSessionStatus($sessionStatus)
+  {
+    $this->m_sessionStatus = (int) $sessionStatus;
+  }
+
   /**
    * Sets the dialog title.
    *
@@ -226,7 +246,7 @@ class atkDialog
    */
   function getUrl()
   {
-    return partial_url($this->getNodeType(), $this->m_action, $this->m_partial, $this->m_params, SESSION_NEW);
+    return partial_url($this->getNodeType(), $this->m_action, $this->m_partial, $this->m_params, $this->m_sessionStatus);
   }
 
   /**

@@ -506,6 +506,7 @@
       $title = $ui->title($this->m_destInstance->m_module, $this->m_destInstance->m_type, $action);
       $dialog->setTitle($title);
       $dialog->setModifierObject($this->m_destInstance);
+      $dialog->setSessionStatus(SESSION_PARTIAL);
       $onClick = $dialog->getCall();
 
       return '<a href="javascript:void(0)" onclick="'.$onClick.'" class="valignMiddle">'.$this->getAddLabel().'</a>';
@@ -1190,6 +1191,7 @@
           $dialog = new atkDialog($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.add_dialog', array('atkfilter' => $filter));
           $title = $ui->title($this->m_destInstance->m_module, $this->m_destInstance->m_type, 'add');
           $dialog->setTitle($title);
+          $dialog->setSessionStatus(SESSION_PARTIAL);
           $script .= $dialog->getCall(true, false);
         }
         else
