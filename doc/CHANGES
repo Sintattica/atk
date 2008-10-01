@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* Warn user for calls to atkNode::primaryKeyField if there is no primary key
+  defined or the primary key consists of more than one field. [Max, Peter]
 + Added setter and getter for sessionStatus in atkDialog. [Arjen]
 * Set session status for (onetomany) add (-or-copy) dialog to session_partial.
   [Arjen]

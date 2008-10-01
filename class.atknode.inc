@@ -1300,6 +1300,16 @@
      */
     function primaryKeyField()
     {
+    	if (count($this->m_primaryKey) == 0)
+    	{
+    		atkwarning($this->atkNodeType()."::primaryKeyField() called, but there are no primary key fields defined!");
+    		return null;
+    	}
+    	else if (count($this->m_primaryKey) > 1)
+    	{
+        atkwarning($this->atkNodeType()."::primaryKeyField() called, but there is more than one primary key field defined (returning the first one)!");
+    	}
+    	
       return $this->m_primaryKey[0];
     }
 
