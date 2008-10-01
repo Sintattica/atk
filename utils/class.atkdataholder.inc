@@ -17,8 +17,8 @@
    */
 
   /**
-   * The atkBoolAttribute class represents an attribute of a node
-   * that can either be true or false.
+   * The atkDataHolder class represents a class
+   * that contains a key-value array .
    *
    * @author Peter Verhage <peter@ibuildings.nl>
    * @package atk
