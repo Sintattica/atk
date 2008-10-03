@@ -156,9 +156,9 @@
       $this->registerKeyListener($id.'[hours]', KB_CTRLCURSOR|KB_LEFTRIGHT);
       $this->registerKeyListener($id.'[minutes]', KB_CTRLCURSOR|KB_LEFTRIGHT);
       $this->registerKeyListener($id.'[seconds]', KB_CTRLCURSOR|KB_LEFTRIGHT);
-      $m_hourBox = '<select id="'.$id.'[hours]" name="'.$id."[hours]\">\n";
-      $m_minBox  = '<select id="'.$id.'[minutes]" name="'.$id."[minutes]\">\n";
-      $m_secBox  = '<select id="'.$id.'[seconds]" name="'.$id."[seconds]\">\n";
+      $m_hourBox = '<select id="'.$id.'[hours]" name="'.$id."[hours]\" class=\"atktimeattribute\">\n";
+      $m_minBox  = '<select id="'.$id.'[minutes]" name="'.$id."[minutes]\" class=\"atktimeattribute\">\n";
+      $m_secBox  = '<select id="'.$id.'[seconds]" name="'.$id."[seconds]\" class=\"atktimeattribute\">\n";
       // set default values for both boxes
       // depends upon atkaction
       // if add/admin, use $default param, else use time in $record
