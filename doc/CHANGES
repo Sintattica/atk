@@ -31,6 +31,8 @@ Changes in ATK 6.3
   module detection (e.g. actions won't translate) [Jeroen]
 * Fixed atkAggregatedColumn attribute and added extra searchcondition
   when searchmode is substring. [Sandy]
+* Replaced htmlentities with atk_htmlentities in atkManyToOneRelation to 
+  account for the default charset in de configuration file. [Patrick]
 
 Changes in prior versions
 -------------------------
