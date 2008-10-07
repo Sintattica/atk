@@ -76,7 +76,6 @@
     }
 
     function display($record, $mode="")
-
     {
       $rec = array();
       foreach ($this->m_displayfields as $field)
@@ -84,7 +83,7 @@
 
         $p_attrib = $this->m_ownerInstance->getAttribute($field);
 
-        $rec[$field] = $p_attrib->display($record, $mode);
+        $rec[$field] = $p_attrib->display($record[$this->fieldName()], $mode);
 
       }
       atkimport("atk.utils.atkstringparser");
@@ -131,10 +130,11 @@
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
     {
       $allfields = atk_array_merge($this->m_displayfields,$this->m_searchfields);
+      $alias = $fieldaliasprefix.$this->fieldName()."_AE_";
       foreach ($allfields as $field)
       {
         $p_attrib = $this->m_ownerInstance->m_attribList[$field];
-        $p_attrib->addToQuery($query, $tablename, $fieldaliasprefix,$rec, $level,$mode);
+        $p_attrib->addToQuery($query, $tablename, $alias,$rec, $level,$mode);
       }
     }
 
@@ -160,10 +160,11 @@
      */
     function getSearchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix='')
     {
+      // Get search condition for all searchFields
       foreach ($this->m_searchfields as $field)
       {
         $p_attrib = &$this->m_ownerInstance->getAttribute($field);
-        
+
         if(is_object($p_attrib))
         {
           $condition = $p_attrib->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
@@ -172,6 +173,14 @@
             $searchconditions[] = $condition;
           }
         }
+      }
+      // When searchmode is substring also search the value in a concat of all searchfields
+      if($searchmode=='substring')
+      {
+        $value = $this->escapeSQL(trim($value));
+        $fieldstr = implode(", ", $this->m_searchfields);
+        $condition = "UPPER(CONCAT_WS(' ', ".$fieldstr.")) LIKE UPPER('%".$value."%')";
+        $searchconditions[] = $condition;
       }
       return "(".implode(" OR ",$searchconditions).")";
     }
