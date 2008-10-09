@@ -134,6 +134,52 @@
 
 
     /**
+     * Get all fields from a string
+     *
+     * @example: [voorvoegsel], [naam] [wwoonplaats]
+     * would return array('[voorvoegsel]',', ','[naam]',' ','[wwoonplaats]')
+     *
+     * @return array
+     */
+    function getAllFieldsAsArray()
+    {
+      $matches = array();
+      preg_match_all("/\[[^\]]*\]|[^[]+/",$this->m_string,$matches);
+      return $matches;
+    }
+
+    /**
+     * Parse data into the string and return all fields as an array
+     *
+     * @param array $data
+     * @return array
+     */
+    function getAllParsedFieldsAsArray($data)
+    {
+      $matches = $this->getAllFieldsAsArray();
+      atk_var_dump($matches,"MATCHES");
+      $fields=array();
+      if(is_array($matches))
+      {
+        foreach ($matches[0] as $match)
+        {
+          // Check if need to parse the match
+          if(strpos($match,'[')!==false && strpos($match,']')!==false)
+          {
+            $parser = new atkStringParser($match);
+            $fields[] = $parser->parse($data);
+          }
+          else
+          {
+            $fields[] = "'".$match."'";
+          }
+        }
+      }
+      return $fields;
+    }
+
+
+    /**
      * Same as getFields but if a relation is referenced using
      * a dot only returns the attribute name before the dot.
      *

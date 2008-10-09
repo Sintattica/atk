@@ -177,9 +177,22 @@
       // When searchmode is substring also search the value in a concat of all searchfields
       if($searchmode=='substring')
       {
+
         $value = $this->escapeSQL(trim($value));
-        $fieldstr = implode(", ", $this->m_searchfields);
-        $condition = "UPPER(CONCAT_WS(' ', ".$fieldstr.")) LIKE UPPER('%".$value."%')";
+
+        $data = array();
+        foreach($this->m_searchfields as $field)
+        {
+          if(strpos($field,'.')==false) $data[$field]=$table.".".$field;
+          else $data[$field]=$field;
+        }
+
+        atkimport("atk.utils.atkstringparser");
+        $parser = new atkStringParser($this->m_template);
+        $concatFields = $parser->getAllParsedFieldsAsArray($data);
+
+        $db = $this->getDb();
+        $condition = "UPPER(".$db->func_concat($concatFields).") LIKE UPPER('%".$value."%')";
         $searchconditions[] = $condition;
       }
       return "(".implode(" OR ",$searchconditions).")";

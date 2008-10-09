@@ -701,7 +701,7 @@
             {
               $pk = $this->m_destInstance->primaryKey($recordset[$i]);
               if (($newlyadded!="" && $newlyadded==$pk) || ($newlyadded=="" && $pk==$currentPk)) $sel = "selected"; else $sel = "";
-              $result.= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', atk_htmlentities($this->m_destInstance->descriptor($recordset[$i])));
+              $result.= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', htmlentities($this->m_destInstance->descriptor($recordset[$i])));
             }
             $result.='</select>';
           }
@@ -991,7 +991,7 @@
 
             if (is_array($record)&&isset($record[$this->fieldName()])&&
                        atk_in_array($pk, $record[$this->fieldName()])) $sel = "selected"; else $sel = "";
-            $result.= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', atk_htmlentities($this->m_destInstance->descriptor($recordset[$i]))).'</option>';
+            $result.= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', htmlentities($this->m_destInstance->descriptor($recordset[$i]))).'</option>';
           }
           $result.='</select>';
           return $result;
@@ -1139,9 +1139,19 @@
       }
       else // AF_LARGE || AF_RELATION_AUTOCOMPLETE
       {
-        // ask the destination node for it's search condition
-        $alias = $fieldaliasprefix . $this->fieldName();
-        return $this->m_destInstance->getSearchCondition($query, $alias, $fieldaliasprefix, $value, $this->getChildSearchMode($searchmode, $this->formName()));
+        // If we have a descriptor with multiple fields, use CONCAT
+        $attribs = $this->m_destInstance->descriptorFields();
+        if(count($attribs)>1)
+        {
+          $alias = $fieldaliasprefix . $this->fieldName();
+          $searchcondition = $this->getConcatFilter($value,$alias);
+        }
+        else
+        {
+          // ask the destination node for it's search condition
+          $searchcondition = $this->m_destInstance->getSearchCondition($query, $alias, $fieldaliasprefix, $value, $this->getChildSearchMode($searchmode, $this->formName()));
+        }
+        return $searchcondition;
       }
     }
 
@@ -1922,8 +1932,72 @@
       }
 
       if (count($mainFilter) > 0)
-        return "(".implode(") AND (", $mainFilter).")";
-      else return "";
+        $searchFilter =  "(".implode(") AND (", $mainFilter).")";
+      else $searchFilter = "";
+
+      // When no searchfields are specified and we use the CONTAINS mode
+      // add a concat filter
+      if($this->m_autocomplete_searchmode == self::SEARCH_MODE_CONTAINS && $this->m_autocomplete_searchfields=="")
+      {
+         if($searchFilter!='') $searchFilter.= " OR ";
+
+         $filter = $this->getConcatFilter($searchvalue);
+         if($filter) $searchFilter = $filter;
+      }
+      return $searchFilter;
+   }
+
+
+   /**
+    * Get Concat filter
+    *
+    * @param string $searchValue Search value
+    * @param string $fieldaliasprefix Field alias prefix
+    * @return string|boolean
+    */
+    function getConcatFilter($searchValue,$fieldaliasprefix="")
+    {
+      // If we have a descriptor with multiple fields, use CONCAT
+      $attribs = $this->m_destInstance->descriptorFields();
+      if(count($attribs)>1)
+      {
+        $fields = array();
+        foreach($attribs as $attribname)
+        {
+          if (strstr($attribname, '.')) $table = '';
+          elseif($fieldaliasprefix!='') $table = $fieldaliasprefix.".";
+          else $table = $this->m_destInstance->m_table.".";
+
+          $p_attrib = $this->m_destInstance->m_attribList[$attribname];
+          $fields[$p_attrib->fieldName()] = $table.$p_attrib->fieldName();
+        }
+        $value = $this->escapeSQL(trim($searchValue));
+        $value = str_replace("  " , " ", $value);
+  		  if(!$value)
+  		  {
+    	    return false;
+        }
+        else
+        {
+  	      if ($this->m_destInstance->m_descTemplate != NULL)
+  	      {
+             $descriptordef = $this->m_destInstance->m_descTemplate;
+  	      }
+          else
+          {
+            $descriptordef = $this->m_destInstance->descriptor_def();
+          }
+
+          atkimport("atk.utils.atkstringparser");
+          $parser = new atkStringParser($descriptordef);
+          $concatFields = $parser->getAllParsedFieldsAsArray($fields);
+
+          $db = $this->m_destInstance->getDb();
+         	$searchcondition = "(UPPER(".$db->func_concat($concatFields).") LIKE UPPER('%".$value."%'))";
+  		    }
+  		    return $searchcondition;
+      }
+      return false;
     }
 
   }

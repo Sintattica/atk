@@ -11,6 +11,7 @@ Changes in ATK 6.3
 + Added configuration option 'mail_redirect' to defaultconfig.inc.php. See
   defaultconfig.inc.php for more details. [patrick]
 + Added setter and getter for sessionStatus in atkDialog. [Arjen]
++ Added concat function in atkDb. [Sandy]
 * Warn user for calls to atkNode::primaryKeyField if there is no primary key
   defined or the primary key consists of more than one field. [Max, Peter]
 * Set session status for (onetomany) add (-or-copy) dialog to session_partial.
@@ -31,8 +32,10 @@ Changes in ATK 6.3
   module detection (e.g. actions won't translate) [Jeroen]
 * Fixed atkAggregatedColumn attribute and added extra searchcondition
   when searchmode is substring. [Sandy]
-* Replaced htmlentities with atk_htmlentities in atkManyToOneRelation to 
-  account for the default charset in de configuration file. [Patrick]
+* atkManyToOne relation now also searches with concat of the descriptor
+  template. [Sandy]
+
+
 
 Changes in prior versions
 -------------------------
