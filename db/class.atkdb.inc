@@ -416,9 +416,9 @@
       {
         return 'r';
       }
-      
+
       atknotice('Query mode not detected! Using write mode.');
-      
+
       return 'w';
     }
 
@@ -725,7 +725,7 @@
     /**
      * Return the available table names
      * @return array with table names etc.
-     * 
+     *
      * @param boolean $includeViews include views?
      */
     function table_names($includeViews=true)
@@ -904,6 +904,19 @@
     {
       if ($format=="") $format = atkconfig("date_to_char", "Y-m-d");
       return "TO_CHAR($fieldname, '".$this->vendorDateFormat($format)."')";
+    }
+
+    /**
+     * Get CONCAT() equivalent for the current database.
+     *
+     * @param array $fields
+     * @return unknown
+     */
+    function func_concat($fields)
+    {
+      if(count($fields)==0 or !is_array($fields)) return '';
+      elseif(count($fields)==1) return $fields[0];
+      return "CONCAT(".implode(',',$fields).")";
     }
 
     /**
