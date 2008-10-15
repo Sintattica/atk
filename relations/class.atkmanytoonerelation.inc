@@ -1939,10 +1939,12 @@
       // add a concat filter
       if($this->m_autocomplete_searchmode == self::SEARCH_MODE_CONTAINS && $this->m_autocomplete_searchfields=="")
       {
-         if($searchFilter!='') $searchFilter.= " OR ";
-
          $filter = $this->getConcatFilter($searchvalue);
-         if($filter) $searchFilter = $filter;
+         if($filter) 
+         {
+           if($searchFilter!='') $searchFilter.= " OR ";
+           $searchFilter = $filter;
+         }
       }
       return $searchFilter;
    }
@@ -1964,7 +1966,11 @@
         $fields = array();
         foreach($attribs as $attribname)
         {
-          if (strstr($attribname, '.')) $table = '';
+          if (strstr($attribname, '.')) 
+          {
+            $table = '';
+            $attribname = substr($attribname,0,strpos($attribname,'.'));
+          }
           elseif($fieldaliasprefix!='') $table = $fieldaliasprefix.".";
           else $table = $this->m_destInstance->m_table.".";
 
