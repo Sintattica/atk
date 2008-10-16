@@ -40,6 +40,7 @@
    * PHP4 doesn't support static class members.
    */
   global $g_dbinstances;
+  $g_dbinstances = array();
 
 
   /**
@@ -111,13 +112,6 @@
      * @var String
      */
     var $m_connection = "";
-
-    /**
-     * The current cluster name.
-     * @access private
-     * @var String
-     */
-    var $m_dbcluster = "";
 
     /**
      * Contains the current record from the result set.
@@ -396,7 +390,7 @@
      */
     function setUserError($errno)
     {
-      atkdebug("atkdb::setUserError() -> ".$errno);
+      atkdebug(__CLASS__."::setUserError() -> ".$errno);
       $this->m_user_error[]=$errno;
     }
 
@@ -491,16 +485,16 @@
     {
       if ($this->m_haltonerror)
       {
-        if($this->getErrorType()=="system")
+        if($this->getErrorType()==="system")
         {
-          atkdebug("atkdb::halt() on system error");
+          atkdebug(__CLASS__."::halt() on system error");
           if(!in_array($this->m_errno,$this->m_user_error)) $level='critical';
           atkerror($this->getErrorMsg());
           halt($this->getErrorMsg(),$level);
         }
         else
         {
-          atkdebug("atkdb::halt() on user error (not halting)");
+          atkdebug(__CLASS__."::halt() on user error (not halting)");
         }
       }
     }
@@ -521,30 +515,12 @@
      */
     function connect($mode="rw")
     {
-      atknotice("atkdb::connect -> request mode = $mode | current mode: ".$this->m_mode);
-      if($this->m_mode=="r" &&
-         ($mode=="w" || $mode=="rw"))
-      {
-        atkdebug("atkdb::connect -> Switch connection from ".$this->m_mode." TO ".$mode);
-        $this->disconnect();
-        $tmp_db = &$this->getInstance(($this->m_dbcluster!=""?$this->m_dbcluster:$this->m_connection),true,$mode);
-        $this->m_connection = $tmp_db->m_connection;
-        $this->m_host = $tmp_db->m_host;
-        $this->m_user = $tmp_db->m_user;
-        $this->m_password = $tmp_db->m_password;
-        $this->m_port = $tmp_db->m_port;
-        $this->m_charset = $tmp_db->m_charset;
-        $this->m_mode = $tmp_db->m_mode;
-        $this->m_dbcluster = $tmp_db->m_dbcluster;
-        atkdebug("atkdb::connect -> New mode = ".$this->m_mode);
-
-        return $this->doConnect($this->m_host,$this->m_user,$this->m_password,$this->m_database,$this->m_port,$this->m_charset);
-      }
-      elseif($this->m_link_id==NULL)
+      if($this->m_link_id==NULL)
       {
         atkdebug("atkdb::connect -> Don't switch use current db");
         return $this->doConnect($this->m_host,$this->m_user,$this->m_password,$this->m_database,$this->m_port,$this->m_charset);
       }
+      return DB_SUCCESS;
     }
 
     /**
@@ -1018,7 +994,7 @@
 
       if ($count > 0)
       {
-        atkerror('atkDb::deleteAll failed, probably because of circular dependencies');
+        atkerror(__CLASS__.'::deleteAll failed, probably because of circular dependencies');
       }
     }
 
@@ -1078,39 +1054,50 @@
      *                     config.inc.php file (defaults to 'default')
      * @return atkDb Instance of the database class.
      */
-    function &getInstance($conn="default", $reset=false, $mode="rw")
+    public function &getInstance($conn="default", $reset=false, $mode="rw")
     {
       global $g_dbinstances;
 
-      // translate connection name
-      $conn = atkDb::getTranslatedDatabaseName($conn);
+      // Resolve any potential aliases
+      $conn = self::getTranslatedDatabaseName($conn);
 
-      if (!isset($g_dbinstances[$conn]) || $reset || !atkdb::hasMode($g_dbinstances[$conn],$mode))
+      if ($reset || !isset($g_dbinstances[$conn]) || !$g_dbinstances[$conn]->hasMode($mode))
       {
-        $new_conn= atkdb::getDbConfig($conn,$mode);
         $dbconfig = atkconfig("db");
-        atkdebug("Creating new db instance for connection $new_conn (".$dbconfig[$new_conn]["driver"].")");
+        $driver = "atk{$dbconfig[$conn]["driver"]}db";
 
-        $g_dbinstances[$conn] = &atknew("atk.db.atk".$dbconfig[$new_conn]["driver"]."db");
-        $g_dbinstances[$conn]->m_connection = $new_conn;
-        $g_dbinstances[$conn]->m_mode = (isset($dbconfig[$new_conn]["mode"])?$dbconfig[$new_conn]["mode"]:"rw");
-        if (isset($dbconfig[$new_conn]["db"]))
-        {
-          $g_dbinstances[$conn]->m_database = $dbconfig[$new_conn]["db"];
-          $g_dbinstances[$conn]->m_user     = $dbconfig[$new_conn]["user"];
-          $g_dbinstances[$conn]->m_password = $dbconfig[$new_conn]["password"];
-          $g_dbinstances[$conn]->m_host     = $dbconfig[$new_conn]["host"];
-          if (isset($dbconfig[$new_conn]["port"]))
-            $g_dbinstances[$conn]->m_port = $dbconfig[$new_conn]["port"];
-          if (isset($dbconfig[$new_conn]["charset"]))
-            $g_dbinstances[$conn]->m_charset = $dbconfig[$new_conn]["charset"];
-          $dbcluster = atkconfig("db_cluster");
-          if(is_array($dbcluster) && isset($dbcluster[$conn]))
-            $g_dbinstances[$conn]->m_dbcluster = $conn;
-        }
+        atkdebug("Creating new database instance with '{$driver}' driver");
+        $dbinstance = atknew("atk.db.{$driver}")->init($conn, $mode);
+
+        $g_dbinstances[$conn] = $dbinstance;
       }
-
       return $g_dbinstances[$conn];
+    }
+
+    /**
+     * (Re)Initialise a database driver with a connection
+     *
+     * @param unknown_type $connectionname
+     * @param unknown_type $mode
+     * @return unknown
+     */
+    public function init($connectionname='default', $mode='r')
+    {
+      atkdebug("(Re)Initialising database instance with connection name '$connectionname' and mode '$mode'");
+
+      $config = atkconfig("db");
+      $this->m_connection = $connectionname;
+      $this->m_mode = (isset($config[$connectionname]["mode"])?$config[$connectionname]["mode"]:"rw");
+      if (isset($config[$connectionname]["db"]))
+      {
+        $this->m_database = $config[$connectionname]["db"];
+        $this->m_user     = $config[$connectionname]["user"];
+        $this->m_password = $config[$connectionname]["password"];
+        $this->m_host     = $config[$connectionname]["host"];
+        if (isset($config[$connectionname]["port"]))      $this->m_port =    $config[$connectionname]["port"];
+        if (isset($config[$connectionname]["charset"]))   $this->m_charset = $config[$connectionname]["charset"];
+      }
+      return $this;
     }
 
     /**
@@ -1120,68 +1107,13 @@
      * @param string $mode The mode we want to check
      * @return boolean True or False
      */
-    function hasMode($dbinstance,$mode)
+    public function hasMode($mode)
     {
-      if(is_object($dbinstance) && strpos($dbinstance->m_mode,$mode)!==false)
+      if(strpos($this->m_mode,$mode)!==false)
       {
         return true;
       }
       return false;
-    }
-
-    /**
-     * Get the right connection by checking if the
-     * @param string $conn Connection name
-     * @param string $mode The mode we want, default Read only
-     * @return string The connection name
-     */
-    function getDbConfig($conn,$mode="r")
-    {
-      $dbconfig = atkconfig("db");
-      $dbcluster = atkconfig("db_cluster");
-      $connections = array();
-
-      if(is_array($dbcluster) && isset($dbcluster[$conn]))
-      {
-         atkdebug("Database Cluster found with name: $conn");
-         foreach($dbcluster[$conn] as $db)
-         {
-           if($dbconfig[$db]["mode"]==$mode)
-           {
-            $connections[] = $db;
-           }
-         }
-         $total_connections = count($connections);
-         if($total_connections==0 && $mode!="rw")
-         {
-           // No readonly or writeonly nodes found
-           // now add all read/write nodes
-           atkdebug("NO readonly / writeonly nodes found, try read/write nodes");
-           foreach($dbcluster[$conn] as $db)
-           {
-             if($dbconfig[$db]["mode"]=="rw")
-             {
-               $connections[] = $db;
-             }
-           }
-           $total_connections = count($connections);
-         }
-         if($total_connections>0)
-         {
-           $random = rand(0,($total_connections-1));
-           atkdebug("Random server (".$connections[$random].") choosen from cluster $conn for mode: $mode");
-           return $connections[$random];
-         }
-         else
-         {
-           atkdebug("No Database connection found in the cluster $conn");
-           return false;
-         }
-      }
-      else
-      {
-        return $conn;
-      }
     }
 
     /**
@@ -1208,37 +1140,6 @@
     {
       $this->m_haltonerror = $state;
     }
-
-    /**
-     * Check if current db is present and acceptable for current user
-     *
-     * @return DB_SUCCESS if
-     */
-    function getDbStatus()
-    {
-      // We don't want the db class to display error messages, because
-      // we handle the error ourselves.
-      $curhaltval = $this->m_haltonerror;
-      $this->m_haltonerror = false;
-
-      $res = $this->connect();
-
-      $dbconfig = atkconfig("db");
-
-      if ($res==DB_SUCCESS && (strpos($this->m_type, "mysql") === 0))
-      {
-        // This can't be trusted. Mysql returns DB_SUCCESS even
-        // if the user doesn't have access to the database. We only get an
-        // error for this after we performed the first query.
-        $this->table_names();  // this triggers a query
-        $res = $this->_translateError($db->m_errno);
-      }
-
-      $this->m_haltonerror = $curhaltval;
-
-      return $res;
-    }
-
   }
 
 ?>
