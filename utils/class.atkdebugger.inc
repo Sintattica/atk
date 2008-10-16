@@ -41,7 +41,7 @@
       return $s_instance;
     }
 
-    function atkDebugger()
+    public function __construct()
     {
       $this->m_isconsole = (strpos($_SERVER['SCRIPT_NAME'], "debugger.php")!==false);
       if (!$this->m_isconsole)
@@ -54,7 +54,7 @@
       }
     }
 
-    function addStatement($txt)
+    public function addStatement($txt)
     {
       if (atkGetSessionManager())
       {
@@ -67,7 +67,7 @@
       return false;
     }
 
-    function addQuery($query)
+    public function addQuery($query)
     {
       if (atkconfig('debug') > 2)
       {
@@ -88,7 +88,7 @@
       return false;
     }
 
-    function _addStatement($txt)
+    protected function _addStatement($txt)
     {
       if (!$this->m_isconsole)
       {
@@ -103,7 +103,7 @@
       return false;
     }
 
-    function _addQuery($query)
+    protected function _addQuery($query)
     {
       if (!$this->m_isconsole) // don't add queries executed by the console itself
       {
@@ -118,7 +118,7 @@
       return false;
     }
 
-    function consoleLink($text, $action="", $params=array(), $popup=false, $stackId=NULL)
+    public function consoleLink($text, $action="", $params=array(), $popup=false, $stackId=NULL)
     {
       if ($stackId == NULL)
       {
@@ -145,7 +145,7 @@
       return $res;
     }
 
-    function urlParams($params)
+    public function urlParams($params)
     {
       if (count($params))
       {
@@ -159,7 +159,7 @@
       return "";
     }
 
-    function renderConsole()
+    public function renderConsole()
     {
       $page = &atkinstance("atk.ui.atkpage");
       $theme = &atkinstance("atk.ui.atktheme");
@@ -180,12 +180,12 @@
       return $page->render('Console');
     }
 
-    function consoleControls()
+    public function consoleControls()
     {
       return '<div id="console"><table width="100%" border="0"><tr><td align="left">ATK Debug Console</td><td align="right">'.$this->consoleLink('Console index', '', array(), false, $_REQUEST['atkstackid']).' | <a href="javascript:window.close()">Close console</a></td></tr></table></div>';
     }
 
-    function queryDetails($queries, $id)
+    public function queryDetails($queries, $id)
     {
       $output = "<h1>Query</h1>";
       $query = $queries[$id]["query"];
@@ -215,7 +215,7 @@
       return $output;
     }
 
-    function statementDetails($stmts, $id)
+    public function statementDetails($stmts, $id)
     {
       $output = "<h1>Debug Statement</h1>";
       $stmt = $stmts[$id]["statement"];
@@ -229,7 +229,7 @@
       return $output;
     }
 
-    function arrToTable($result, $full=true, $id="")
+    public function arrToTable($result, $full=true, $id="")
     {
       if (count($result))
       {
@@ -254,7 +254,7 @@
       return "";
     }
 
-    function highlightQuery($query)
+    public function highlightQuery($query)
     {
       $query = strtolower($query);
       $query = str_replace('select', '<b>SELECT</b>', $query);
@@ -272,7 +272,7 @@
     }
 
 
-    function &getDebuggerData($clean=false, $stackId=NULL)
+    public function &getDebuggerData($clean=false, $stackId=NULL)
     {
       if ($stackId == NULL)
       {
@@ -291,7 +291,7 @@
       return $data;
     }
 
-    function renderQueryList($queries)
+    public function renderQueryList($queries)
     {
       $output = 'Number of queries performed: '.count($queries);
       if (count($queries))
@@ -317,7 +317,7 @@
       }
     }
 
-    function renderStatementList($statements)
+    public function renderStatementList($statements)
     {
       $output = 'Number of debug statements: '.count($statements);
       if (count($statements))
@@ -342,7 +342,7 @@
      * @return string error messages string
      * @private
      */
-    function renderPlainErrorMessages()
+    public function renderPlainErrorMessages()
     {
       global $g_error_msg;
       $output = '<br><div style="font-family: monospace; font-size: 11px; color: #FF0000" align="left">error: '.implode("<br>\nerror: ",$g_error_msg).'</div>';
@@ -355,7 +355,7 @@
      * @return string debug block string
      * @private
      */
-    function renderDebugBlock($expanded)
+    public function renderDebugBlock($expanded)
     {
       global $g_debug_msg, $g_error_msg, $g_startTime;
 
@@ -384,7 +384,7 @@
     /**
      * Set redirect URL.
      */
-    function setRedirectUrl($url, $force=false)
+    public function setRedirectUrl($url, $force=false)
     {
       // normally we only save the first redirect url, but using the force
       // parameter you can force setting another redirect url
@@ -397,7 +397,7 @@
     /**
      * Renders the redirect link if applicable.
      */
-    function renderRedirectLink()
+    public function renderRedirectLink()
     {
       if ($this->m_redirectUrl == null) return '';
 
@@ -414,7 +414,7 @@
      *
      * @return string html string
      */
-    function renderDebugAndErrorMessages()
+    public function renderDebugAndErrorMessages()
     {
       global $ATK_VARS, $g_debug_msg, $g_error_msg, $g_startTime;
 
@@ -478,13 +478,13 @@
      * @static
      * @return int the microtime
      */
-    function getMicroTime()
+    public static function getMicroTime()
     {
       list($usec, $sec) = explode(" ",microtime());
       return ((float)$usec + (float)$sec);
     }
 
-    function elapsed()
+    public static function elapsed()
     {
       global $g_startTime;
 
