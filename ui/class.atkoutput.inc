@@ -54,7 +54,7 @@
      * Retrieve the one-and-only atkOutput instance.
      * @return atkOutput The instance.
      */
-    function &getInstance()
+    public static function &getInstance()
     {
       static $s_instance = NULL;
       if ($s_instance == NULL)
@@ -65,7 +65,7 @@
       return $s_instance;
     }
     
-    function sendCachingHeaders($lastmodificationstamp='',$nocache=true)
+    public function sendCachingHeaders($lastmodificationstamp='',$nocache=true)
     {
       // Since atk pages are always dynamic, we have to prevent that some browsers cache
       // the pages, unless $nocache was set to true.
@@ -93,7 +93,7 @@
      * Send no cache headers to the browser.
      * @static
      */
-    function sendNoCacheHeaders()
+    public static function sendNoCacheHeaders()
     {
       atkdebug("Sending no-cache headers (lmd: ".gmdate("D, d M Y H:i:s")." GMT)");
       header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
@@ -114,7 +114,7 @@
      *                                   the browser. If $nocache is true,
      *                                   this parameter is ignored.
      */
-    function outputFlush($nocache=true, $lastmodificationstamp="", $charset="")
+    public function outputFlush($nocache=true, $lastmodificationstamp="", $charset="")
     {
       global $g_error_msg;
       $res = "";
@@ -158,7 +158,7 @@
       }
     }
     
-    function getDebugging()
+    public function getDebugging()
     {
       global $g_debug_msg;
       if (atkconfig("debug")>0)
@@ -176,7 +176,7 @@
      *
      * @param String $txt The text to output.
      */
-    function rawoutput($txt)
+    public function rawoutput($txt)
     {
       $this->m_raw.= $txt."\n";
     }
@@ -185,7 +185,7 @@
      * Output regular text to the browser.
      * @param String $txt The text to output.
      */
-    function output($txt)
+    public function output($txt)
     {
       $this->m_content.= $txt."\n";
     }
@@ -198,7 +198,7 @@
      * @param String $contents The string to gzip.
      * @return String The gzipped string.
      */
-    function gzip($contents)
+    public function gzip($contents)
     {
       $gzip_size = strlen($contents);
       $gzip_crc  = crc32($contents);
