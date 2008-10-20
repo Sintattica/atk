@@ -449,10 +449,29 @@
       }
       else
       {
+        /*
+        * Yury's comment:
+          See $this->fetchCriteria() method:
+          $criteriaValues = $this->m_postvars['atksearch']['criteria'];
+          $criteriaModes  = $this->m_postvars['atksearchmode']['criteria'];
+          ....
+          $field = array_merge($field, array('value' => reset($criteriaValues[$id])));
 
-        $prefix = "_AE_criteria_AE_{$id}";
-        if (is_a($attr, 'atkdateattribute') || is_a($attr, 'atkdatetimeattribute')) // workaround for bug in atkDateAttribute
-          $prefix = "criteria_AE_{$id}_AE_";
+          See atkAttribute->getSearchFieldName()
+          return 'atksearch_AE_'.$prefix.$this->formName();
+
+          In fetchCriteria we expect the following:
+          $criteriaValues - array with values for search for attribute(array index - attribute index
+          $criteriaModes -  array with search mode for each attribute
+          example: $atksearch['criteria'][0]['blabla'];
+
+          For obtain this result, field index must be:
+          atksearch_AE_criteria_AE_0_AE_
+          and field prefix must be:
+          criteria_AE_0_AE_
+        */
+
+        $prefix = "criteria_AE_{$id}_AE_";
 
         $valueArray = $value == NULL ? NULL : array($attr->fieldName() => $value);
         $modeArray = $mode == NULL ? NULL : array($attr->fieldName() => $mode);
