@@ -231,7 +231,7 @@
 
     function fillCountriesArray()
     {
-      $this->m_country["AL"]["nl"] = html_entity_decode("Albani&euml;");
+      $this->m_country["AL"]["nl"] = html_entity_decode("Albani&euml;", null, atktext('charset'));
       $this->m_country["AL"]["de"] = "Albania";
       $this->m_country["AL"]["en"] = "Albania";
 
@@ -239,11 +239,11 @@
       $this->m_country["AT"]["de"] = "Austria";
       $this->m_country["AT"]["en"] = "Austria";
 
-      $this->m_country['BE']['nl'] = html_entity_decode("Belgi&euml;");
+      $this->m_country['BE']['nl'] = html_entity_decode("Belgi&euml;", null, atktext('charset'));
       $this->m_country['BE']['de'] = "Belgien";
       $this->m_country['BE']['en'] = "Belgium";
 
-      $this->m_country["BA"]["nl"] = html_entity_decode("Bosni&euml;-Herzegovina");
+      $this->m_country["BA"]["nl"] = html_entity_decode("Bosni&euml;-Herzegovina", null, atktext('charset'));
       $this->m_country["BA"]["de"] = "Bosnia-Herzegovina";
       $this->m_country["BA"]["en"] = "Bosnia-Herzegovina";
 
@@ -259,7 +259,7 @@
       $this->m_country["CY"]["de"] = "Cyprus";
       $this->m_country["CY"]["en"] = "Cyprus";
 
-      $this->m_country["CZ"]["nl"] = html_entity_decode("Tsjechi&euml;");
+      $this->m_country["CZ"]["nl"] = html_entity_decode("Tsjechi&euml;", null, atktext('charset'));
       $this->m_country["CZ"]["de"] = "Czech Republic";
       $this->m_country["CZ"]["en"] = "Czech Republic";
 
@@ -287,7 +287,7 @@
       $this->m_country['FR']['de'] = "Frankreich";
       $this->m_country['FR']['en'] = "France";
 
-      $this->m_country['GB']['nl'] = html_entity_decode("Groot-Brittanni&euml;");
+      $this->m_country['GB']['nl'] = html_entity_decode("Groot-Brittanni&euml;", null, atktext('charset'));
       $this->m_country['GB']['de'] = "England";
       $this->m_country['GB']['en'] = "Great Britain";
 
@@ -295,7 +295,7 @@
       $this->m_country["GR"]["de"] = "Greece";
       $this->m_country["GR"]["en"] = "Greece";
 
-      $this->m_country["HR"]["nl"] = html_entity_decode("Kroati&euml;");
+      $this->m_country["HR"]["nl"] = html_entity_decode("Kroati&euml;", null, atktext('charset'));
       $this->m_country["HR"]["de"] = "Croatia";
       $this->m_country["HR"]["en"] = "Croatia";
 
@@ -311,7 +311,7 @@
       $this->m_country['IE']['de'] = "Irland";
       $this->m_country['IE']['en'] = "Ireland";
 
-      $this->m_country['IT']['nl'] = html_entity_decode("Itali&euml;");
+      $this->m_country['IT']['nl'] = html_entity_decode("Itali&euml;", null, atktext('charset'));
       $this->m_country['IT']['de'] = "Italien";
       $this->m_country['IT']['en'] = "Italy";
 
@@ -343,7 +343,7 @@
       $this->m_country["PT"]["de"] = "Portugal";
       $this->m_country["PT"]["en"] = "Portugal";
 
-      $this->m_country["RO"]["nl"] = html_entity_decode("Roemeni&euml;");
+      $this->m_country["RO"]["nl"] = html_entity_decode("Roemeni&euml;", null, atktext('charset'));
       $this->m_country["RO"]["de"] = "Romania";
       $this->m_country["RO"]["en"] = "Romania";
 
@@ -351,11 +351,11 @@
       $this->m_country['SE']['de'] = "Schweden";
       $this->m_country['SE']['en'] = "Sweden";
 
-      $this->m_country["SK"]["nl"] = html_entity_decode("Slowakij&euml;");
+      $this->m_country["SK"]["nl"] = html_entity_decode("Slowakij&euml;", null, atktext('charset'));
       $this->m_country["SK"]["de"] = "Slovak Republic";
       $this->m_country["SK"]["en"] = "Slovak Republic";
 
-      $this->m_country["SI"]["nl"] = html_entity_decode("Sloveni&euml;");
+      $this->m_country["SI"]["nl"] = html_entity_decode("Sloveni&euml;", null, atktext('charset'));
       $this->m_country["SI"]["de"] = "Slovenia";
       $this->m_country["SI"]["en"] = "Slovenia";
 
@@ -363,7 +363,7 @@
       $this->m_country["TR"]["de"] = "Turkey";
       $this->m_country["TR"]["en"] = "Turkey";
 
-      $this->m_country['YU']['nl'] = html_entity_decode("Joegoslavi&euml;");
+      $this->m_country['YU']['nl'] = html_entity_decode("Joegoslavi&euml;", null, atktext('charset'));
       $this->m_country['YU']['de'] = "Jugoslawien";
       $this->m_country['YU']['en'] = "Yugoslavia";
     }
@@ -375,7 +375,7 @@
       $this->m_country["AF"]["de"] ="Afghanistan";
       $this->m_country["AF"]["en"] ="Afghanistan";
 
-      $this->m_country["AL"]["nl"] = html_entity_decode("Albani&euml;");
+      $this->m_country["AL"]["nl"] = html_entity_decode("Albani&euml;", null, atktext('charset'));
       $this->m_country["AL"]["de"] ="Albania";
       $this->m_country["AL"]["en"] ="Albania";
 
@@ -407,11 +407,11 @@
       $this->m_country["AG"]["de"] ="Antigua and Barbuda";
       $this->m_country["AG"]["en"] ="Antigua and Barbuda";
 
-      $this->m_country["AR"]["nl"] = html_entity_decode("Argentini&euml;");
+      $this->m_country["AR"]["nl"] = html_entity_decode("Argentini&euml;", null, atktext('charset'));
       $this->m_country["AR"]["de"] ="Argentina";
       $this->m_country["AR"]["en"] ="Argentina";
 
-      $this->m_country["AM"]["nl"] = html_entity_decode("Armeni&euml;");
+      $this->m_country["AM"]["nl"] = html_entity_decode("Armeni&euml;", null, atktext('charset'));
       $this->m_country["AM"]["de"] ="Armenia";
       $this->m_country["AM"]["en"] ="Armenia";
 
@@ -419,7 +419,7 @@
       $this->m_country["AW"]["de"] ="Aruba";
       $this->m_country["AW"]["en"] ="Aruba";
 
-      $this->m_country["AU"]["nl"] = html_entity_decode("Australi&euml;");
+      $this->m_country["AU"]["nl"] = html_entity_decode("Australi&euml;", null, atktext('charset'));
       $this->m_country["AU"]["de"] ="Australia";
       $this->m_country["AU"]["en"] ="Australia";
 
@@ -451,7 +451,7 @@
       $this->m_country["BY"]["de"] ="Belarus";
       $this->m_country["BY"]["en"] ="Belarus";
 
-      $this->m_country['BE']['nl'] = html_entity_decode("Belgi&euml;");
+      $this->m_country['BE']['nl'] = html_entity_decode("Belgi&euml;", null, atktext('charset'));
       $this->m_country['BE']['de'] = "Belgien";
       $this->m_country['BE']['en'] = "Belgium";
 
@@ -471,7 +471,7 @@
       $this->m_country["BO"]["de"] ="Bolivia";
       $this->m_country["BO"]["en"] ="Bolivia";
 
-      $this->m_country["BA"]["nl"] = html_entity_decode("Bosni&euml;-Herzegovina");
+      $this->m_country["BA"]["nl"] = html_entity_decode("Bosni&euml;-Herzegovina", null, atktext('charset'));
       $this->m_country["BA"]["de"] ="Bosnia-Herzegovina";
       $this->m_country["BA"]["en"] ="Bosnia-Herzegovina";
 
@@ -483,7 +483,7 @@
       $this->m_country["BV"]["de"] ="Bouvet Island";
       $this->m_country["BV"]["en"] ="Bouvet Island";
 
-      $this->m_country["BR"]["nl"] = html_entity_decode("Brazili&euml;");
+      $this->m_country["BR"]["nl"] = html_entity_decode("Brazili&euml;", null, atktext('charset'));
       $this->m_country["BR"]["de"] ="Brazil";
       $this->m_country["BR"]["en"] ="Brazil";
 
@@ -523,7 +523,7 @@
       $this->m_country["CA"]["de"] ="Canada";
       $this->m_country["CA"]["en"] ="Canada";
 
-      $this->m_country["CV"]["nl"] = html_entity_decode("Kaapverdi&euml;");
+      $this->m_country["CV"]["nl"] = html_entity_decode("Kaapverdi&euml;", null, atktext('charset'));
       $this->m_country["CV"]["de"] ="Cape Verde";
       $this->m_country["CV"]["en"] ="Cape Verde";
 
@@ -575,7 +575,7 @@
       $this->m_country["CR"]["de"] ="Costa Rica";
       $this->m_country["CR"]["en"] ="Costa Rica";
 
-      $this->m_country["HR"]["nl"] = html_entity_decode("Kroati&euml;");
+      $this->m_country["HR"]["nl"] = html_entity_decode("Kroati&euml;", null, atktext('charset'));
       $this->m_country["HR"]["de"] ="Croatia";
       $this->m_country["HR"]["en"] ="Croatia";
 
@@ -587,7 +587,7 @@
       $this->m_country["CY"]["de"] ="Cyprus";
       $this->m_country["CY"]["en"] ="Cyprus";
 
-      $this->m_country["CZ"]["nl"] =html_entity_decode("Tsjechi&euml;");
+      $this->m_country["CZ"]["nl"] =html_entity_decode("Tsjechi&euml;", null, atktext('charset'));
       $this->m_country["CZ"]["de"] ="Czech Republic";
       $this->m_country["CZ"]["en"] ="Czech Republic";
 
@@ -639,7 +639,7 @@
       $this->m_country["EE"]["de"] ="Estonia";
       $this->m_country["EE"]["en"] ="Estonia";
 
-      $this->m_country["ET"]["nl"] =html_entity_decode("Ethiopi&euml;");
+      $this->m_country["ET"]["nl"] =html_entity_decode("Ethiopi&euml;", null, atktext('charset'));
       $this->m_country["ET"]["de"] ="Ethiopia";
       $this->m_country["ET"]["en"] ="Ethiopia";
 
@@ -647,7 +647,7 @@
       $this->m_country["FK"]["de"] ="Falkland Isl.(Malvinas)";
       $this->m_country["FK"]["en"] ="Falkland Isl.(Malvinas)";
 
-      $this->m_country["FO"]["nl"] = html_entity_decode("Faer&ouml;er");
+      $this->m_country["FO"]["nl"] = html_entity_decode("Faer&ouml;er", null, atktext('charset'));
       $this->m_country["FO"]["de"] ="Faroe Islands";
       $this->m_country["FO"]["en"] ="Faroe Islands";
 
@@ -679,7 +679,7 @@
       $this->m_country["GM"]["de"] ="Gambia";
       $this->m_country["GM"]["en"] ="Gambia";
 
-      $this->m_country["GE"]["nl"] =html_entity_decode("Georgi&euml;");
+      $this->m_country["GE"]["nl"] =html_entity_decode("Georgi&euml;", null, atktext('charset'));
       $this->m_country["GE"]["de"] ="Georgia";
       $this->m_country["GE"]["en"] ="Georgia";
 
@@ -735,7 +735,7 @@
       $this->m_country["GF"]["de"] ="Guyana (Fr.)";
       $this->m_country["GF"]["en"] ="Guyana (Fr.)";
 
-      $this->m_country["HT"]["nl"] = html_entity_decode("Ha&iuml;ti");
+      $this->m_country["HT"]["nl"] = html_entity_decode("Ha&iuml;ti", null, atktext('charset'));
       $this->m_country["HT"]["de"] ="Haiti";
       $this->m_country["HT"]["en"] ="Haiti";
 
@@ -763,7 +763,7 @@
       $this->m_country["IN"]["de"] ="India";
       $this->m_country["IN"]["en"] ="India";
 
-      $this->m_country["ID"]["nl"] =html_entity_decode("Indonesi&euml;");
+      $this->m_country["ID"]["nl"] =html_entity_decode("Indonesi&euml;", null, atktext('charset'));
       $this->m_country["ID"]["de"] ="Indonesia";
       $this->m_country["ID"]["en"] ="Indonesia";
 
@@ -779,11 +779,11 @@
       $this->m_country["IE"]["de"] ="Ireland";
       $this->m_country["IE"]["en"] ="Ireland";
 
-      $this->m_country["IL"]["nl"] = html_entity_decode("Isra&euml;l");
+      $this->m_country["IL"]["nl"] = html_entity_decode("Isra&euml;l", null, atktext('charset'));
       $this->m_country["IL"]["de"] ="Israel";
       $this->m_country["IL"]["en"] ="Israel";
 
-      $this->m_country["IT"]["nl"] = html_entity_decode("Itali&euml;");
+      $this->m_country["IT"]["nl"] = html_entity_decode("Itali&euml;", null, atktext('charset'));
       $this->m_country["IT"]["de"] ="Italy";
       $this->m_country["IT"]["en"] ="Italy";
 
@@ -799,7 +799,7 @@
       $this->m_country["JP"]["de"] ="Japan";
       $this->m_country["JP"]["en"] ="Japan";
 
-      $this->m_country["JO"]["nl"] = html_entity_decode("Jordani&euml;");
+      $this->m_country["JO"]["nl"] = html_entity_decode("Jordani&euml;", null, atktext('charset'));
       $this->m_country["JO"]["de"] ="Jordan";
       $this->m_country["JO"]["en"] ="Jordan";
 
@@ -811,7 +811,7 @@
       $this->m_country["KE"]["de"] ="Kenya";
       $this->m_country["KE"]["en"] ="Kenya";
 
-      $this->m_country["KG"]["nl"] = html_entity_decode("Kirgizi&euml;");
+      $this->m_country["KG"]["nl"] = html_entity_decode("Kirgizi&euml;", null, atktext('charset'));
       $this->m_country["KG"]["de"] ="Kirgistan";
       $this->m_country["KG"]["en"] ="Kirgistan";
 
@@ -851,7 +851,7 @@
       $this->m_country["LR"]["de"] ="Liberia";
       $this->m_country["LR"]["en"] ="Liberia";
 
-      $this->m_country["LY"]["nl"] = html_entity_decode("Libi&euml;");
+      $this->m_country["LY"]["nl"] = html_entity_decode("Libi&euml;", null, atktext('charset'));
       $this->m_country["LY"]["de"] ="Libya";
       $this->m_country["LY"]["en"] ="Libya";
 
@@ -879,7 +879,7 @@
       $this->m_country["MW"]["de"] ="Malawi";
       $this->m_country["MW"]["en"] ="Malawi";
 
-      $this->m_country["MY"]["nl"] =html_entity_decode("Maleisi&euml;");
+      $this->m_country["MY"]["nl"] =html_entity_decode("Maleisi&euml;", null, atktext('charset'));
       $this->m_country["MY"]["de"] ="Malaysia";
       $this->m_country["MY"]["en"] ="Malaysia";
 
@@ -903,7 +903,7 @@
       $this->m_country["MQ"]["de"] ="Martinique (Fr.)";
       $this->m_country["MQ"]["en"] ="Martinique (Fr.)";
 
-      $this->m_country["MR"]["nl"] =html_entity_decode("Mauritani&euml;");
+      $this->m_country["MR"]["nl"] =html_entity_decode("Mauritani&euml;", null, atktext('charset'));
       $this->m_country["MR"]["de"] ="Mauritania";
       $this->m_country["MR"]["en"] ="Mauritania";
 
@@ -919,7 +919,7 @@
       $this->m_country["FM"]["de"] ="Micronesia";
       $this->m_country["FM"]["en"] ="Micronesia";
 
-      $this->m_country["MD"]["nl"] =html_entity_decode("Moldavi&euml;");
+      $this->m_country["MD"]["nl"] =html_entity_decode("Moldavi&euml;", null, atktext('charset'));
       $this->m_country["MD"]["de"] ="Moldavia";
       $this->m_country["MD"]["en"] ="Moldavia";
 
@@ -927,7 +927,7 @@
       $this->m_country["MC"]["de"] ="Monaco";
       $this->m_country["MC"]["en"] ="Monaco";
 
-      $this->m_country["MN"]["nl"] =html_entity_decode("Mongoli&euml;");
+      $this->m_country["MN"]["nl"] =html_entity_decode("Mongoli&euml;", null, atktext('charset'));
       $this->m_country["MN"]["de"] ="Mongolia";
       $this->m_country["MN"]["en"] ="Mongolia";
 
@@ -947,7 +947,7 @@
       $this->m_country["MM"]["de"] ="Myanmar";
       $this->m_country["MM"]["en"] ="Myanmar";
 
-      $this->m_country["NA"]["nl"] =html_entity_decode("Namibi&euml;");
+      $this->m_country["NA"]["nl"] =html_entity_decode("Namibi&euml;", null, atktext('charset'));
       $this->m_country["NA"]["de"] ="Namibia";
       $this->m_country["NA"]["en"] ="Namibia";
 
@@ -1043,7 +1043,7 @@
       $this->m_country["PL"]["de"] ="Poland";
       $this->m_country["PL"]["en"] ="Poland";
 
-      $this->m_country["PF"]["nl"] =html_entity_decode("Frans-Polynesi&euml;");
+      $this->m_country["PF"]["nl"] =html_entity_decode("Frans-Polynesi&euml;", null, atktext('charset'));
       $this->m_country["PF"]["de"] ="Polynesia (Fr.)";
       $this->m_country["PF"]["en"] ="Polynesia (Fr.)";
 
@@ -1063,7 +1063,7 @@
       $this->m_country["RE"]["de"] ="Reunion (Fr.)";
       $this->m_country["RE"]["en"] ="Reunion (Fr.)";
 
-      $this->m_country["RO"]["nl"] = html_entity_decode("Roemeni&euml;");
+      $this->m_country["RO"]["nl"] = html_entity_decode("Roemeni&euml;", null, atktext('charset'));
       $this->m_country["RO"]["de"] ="Romania";
       $this->m_country["RO"]["en"] ="Romania";
 
@@ -1087,7 +1087,7 @@
       $this->m_country["SM"]["de"] ="San Marino";
       $this->m_country["SM"]["en"] ="San Marino";
 
-      $this->m_country["SA"]["nl"] = html_entity_decode("Saoedi-Arabi&euml;");
+      $this->m_country["SA"]["nl"] = html_entity_decode("Saoedi-Arabi&euml;", null, atktext('charset'));
       $this->m_country["SA"]["de"] ="Saudi Arabia";
       $this->m_country["SA"]["en"] ="Saudi Arabia";
 
@@ -1107,7 +1107,7 @@
       $this->m_country["SG"]["de"] ="Singapore";
       $this->m_country["SG"]["en"] ="Singapore";
 
-      $this->m_country["SK"]["nl"] =html_entity_decode("Slowakij&euml;");
+      $this->m_country["SK"]["nl"] =html_entity_decode("Slowakij&euml;", null, atktext('charset'));
       $this->m_country["SK"]["de"] ="Slovak Republic";
       $this->m_country["SK"]["en"] ="Slovak Republic";
 
@@ -1119,7 +1119,7 @@
       $this->m_country["SB"]["de"] ="Solomon Islands";
       $this->m_country["SB"]["en"] ="Solomon Islands";
 
-      $this->m_country["SO"]["nl"] = html_entity_decode("Somali&euml;");
+      $this->m_country["SO"]["nl"] = html_entity_decode("Somali&euml;", null, atktext('charset'));
       $this->m_country["SO"]["de"] ="Somalia";
       $this->m_country["SO"]["en"] ="Somalia";
 
@@ -1179,7 +1179,7 @@
       $this->m_country["CH"]["de"] ="Switzerland";
       $this->m_country["CH"]["en"] ="Switzerland";
 
-      $this->m_country["SY"]["nl"] =html_entity_decode("Syri&euml;");
+      $this->m_country["SY"]["nl"] =html_entity_decode("Syri&euml;", null, atktext('charset'));
       $this->m_country["SY"]["de"] ="Syria";
       $this->m_country["SY"]["en"] ="Syria";
 
@@ -1243,7 +1243,7 @@
       $this->m_country["UG"]["de"] ="Uganda";
       $this->m_country["UG"]["en"] ="Uganda";
 
-      $this->m_country["UA"]["nl"] = html_entity_decode("Oekra&iuml;ne");
+      $this->m_country["UA"]["nl"] = html_entity_decode("Oekra&iuml;ne", null, atktext('charset'));
       $this->m_country["UA"]["de"] ="Ukraine";
       $this->m_country["UA"]["en"] ="Ukraine";
 
