@@ -34,10 +34,9 @@
    */
   class atkMultiSelectAttribute extends atkListAttribute
   {
-
     // number of cols
     public $m_cols;
-    
+
     /**
      * Default field separator
      *
@@ -70,7 +69,6 @@
         }
       }
       $this->atkListAttribute($name, $optionArray, $valueArray, $flags, $size); // base class constructor
-      $this->m_dbfieldtype = "text"; // since we store the selection labels as values separated by '|', we always store as text.
       ($cols<1)?$this->m_cols=3:$this->m_cols=$cols;
     }
 
@@ -105,14 +103,14 @@
         return explode($this->m_fieldSeparator,$rec[$this->fieldName()]);
       else return array();
     }
-    
+
     /**
      * Allows you to set the field separator
      * which is used to separate values in the
      * database. i.e use a comma separator for
      * mysql set datatype
      *
-     * @param string $separator 
+     * @param string $separator
      * @return void
      */
     public function setFieldSeparator($separator)
@@ -154,8 +152,6 @@
 
       $result .="\n<table><tr>\n";
 
-
-
       $values = $this->getValues($record);
       if(!is_array($record[$this->fieldname()]))
         $recordvalue = $this->db2value($record);
@@ -188,10 +184,10 @@
      * @todo code below can't possibly work.
      *  really needs to be fixed.
      *
-     * @param atkquery $query 
-     * @param string $table 
-     * @param mixed $value 
-     * @param string $searchmode 
+     * @param atkquery $query
+     * @param string $table
+     * @param mixed $value
+     * @param string $searchmode
      * @return string condition to use in a where clause
      */
     function getSearchCondition(&$query, $table, $value, $searchmode)
@@ -206,13 +202,28 @@
         }
         else
         {
-          foreach($value as $str)
-          {
-            $searchcondition = $query->substringCondition($table.".".$this->fieldName(),$this->escapeSQL($str));
-          }
+        foreach($value as $str)
+        {
+          $searchcondition = $query->substringCondition($table.".".$this->fieldName(),$this->escapeSQL($str));
         }
       }
+      }
       return $searchcondition;
+    }
+
+    /**
+     * Return the database field type of the attribute.
+     *
+     * @return String The 'generic' type of the database field for this
+     *                attribute.
+     */
+    function dbFieldType()
+    {
+      if (empty($this->m_dbfieldtype))
+      {
+        return 'text';
+      }
+      return $this->m_dbfieldtype;
     }
 
     function getSearchModes()
