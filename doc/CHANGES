@@ -8,10 +8,17 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
++ Added 'save criteria' functionality to the atkSearchHandler. This 
+  functionality only works when the table atk_searchcriteria is present in 
+  your database. Note: When you are using the atkSmartSearchHandler, please 
+  rename your atk_smartsearchcriteria table to atk_searchcriteria and 
+  add `handlertype` VARCHAR(100) NOT NULL to your new table and fill this 
+  new field with the value 'atksmartsearchhandler'.[Martijn]
 + Added configuration option 'mail_redirect' to defaultconfig.inc.php. See
   defaultconfig.inc.php for more details. [patrick]
 + Added setter and getter for sessionStatus in atkDialog. [Arjen]
 + Added concat function in atkDb. [Sandy]
+* Fixed searching in atkManyToOneRelation in extended mode. [Martijn]
 * Warn user for calls to atkNode::primaryKeyField if there is no primary key
   defined or the primary key consists of more than one field. [Max, Peter]
 * Set session status for (onetomany) add (-or-copy) dialog to session_partial.

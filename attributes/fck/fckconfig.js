@@ -119,6 +119,20 @@ FCKConfig.ToolbarSets["Basic"] = [
 	['Bold','Italic','-','OrderedList','UnorderedList','-','Link','Unlink','-','About']
 ] ;
 
+FCKConfig.Plugins.Add('Tekstfragment',null,FCKConfig.PluginsPath + '../../../../../fckplugins/');
+FCKConfig.Plugins.Add('Offertetekstfragment',null,FCKConfig.PluginsPath + '../../../../../fckplugins/');
+FCKConfig.Plugins.Add('Artikel',null,FCKConfig.PluginsPath + '../../../../../fckplugins/');
+FCKConfig.Plugins.Add('Voornaam',null,FCKConfig.PluginsPath + '../../../../../fckplugins/');
+FCKConfig.Plugins.Add('denonkeydown',null,FCKConfig.PluginsPath + '../../../../../fckplugins/');
+
+FCKConfig.ToolbarSets["IJdoc"] = [
+	['Bold','Italic','Underline','-','UnorderedList','OrderedList','-','Cut','Copy','Paste','PasteText','PasteWord','-','Find','Replace','-','Tekstfragment', 'Artikel','-','Voornaam','Source']
+];
+
+FCKConfig.ToolbarSets["IJmis"] = [
+	['Bold','Italic','Underline','-','UnorderedList','-','Cut','Copy','Paste','PasteText','PasteWord','-','Find','Replace','-','Offertetekstfragment', '-','Source']
+];
+
 FCKConfig.EnterMode = 'p' ;			// p | div | br
 FCKConfig.ShiftEnterMode = 'br' ;	// p | div | br
 

@@ -5,12 +5,12 @@
   
   <br />
   
-  {if $load_criteria}
+  {if $saved_criteria.load_criteria}
     <div id="load_criteria" style="text-align: left">
-      {$label.load_criteria}:<br />
-      {$load_criteria}
-      {if $forget_criteria}
-        <a href="{$forget_criteria}" title="{$label.forget_criteria}">X</a>
+      {$saved_criteria.label_load_criteria}:<br />
+      {$saved_criteria.load_criteria}
+      {if $saved_criteria.forget_criteria}
+        <a href="{$saved_criteria.forget_criteria}" title="{$saved_criteria.label_forget_criteria}"><img class="recordlist" border="0" title="Verwijder" alt="Verwijder" src="{atkthemeicon name='delete' type='recordlist'}" /></a>
       {/if}
     </div>
     
@@ -31,6 +31,6 @@
   <br />
   
   <div id="save_criteria" style="text-align: left">
-    {$toggle_save_criteria} {$label.save_criteria} {$save_criteria}
+    {$saved_criteria.toggle_save_criteria} {$saved_criteria.label_save_criteria} {$saved_criteria.save_criteria}
   </div>
 </div>

@@ -135,3 +135,25 @@ INPUT.btn_saveandclose
 {
   display: none !important;
 }
+.load_criteria {
+  font-family: verdana, helvetica, arial;
+  font-size: 12px;
+  color: #000000;
+  text-align: left;
+  vertical-align: middle;
+  padding: 3px 0px 10px 3px;
+}
+.load_criteria img {
+  vertical-align: middle;
+}
+
+.save_criteria {
+  font-family: verdana, helvetica, arial;
+  font-size: 12px;
+  color: #000000;
+  text-align: left;
+  padding: 10px 0px 0px 3px;
+}
+.save_criteria #save_criteria {
+  margin-left: 21px;
+}

@@ -644,3 +644,28 @@ form
   position:absolute;
   -moz-opacity:0.6;
 } 
+
+.load_criteria {
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  font-size: 12px;
+  color: #414141;
+  text-align: left;
+  padding-left: 12px;
+  padding: 3px 0px 15px 0px;
+  vertical-align: middle;
+}
+.load_criteria img {
+  vertical-align: middle;
+}
+
+.save_criteria {
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  font-size: 12px;
+  color: #414141;
+  text-align: left;
+  padding-left: 12px;
+  padding: 15px 0px 3px 0px;
+}
+.save_criteria #save_criteria {
+  margin-left: 21px;
+}

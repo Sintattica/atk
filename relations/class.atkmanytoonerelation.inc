@@ -975,6 +975,11 @@
           if ($extended)
           {
             $result.='multiple size="'.min(5,count($recordset)+1).'"';
+            
+            if(isset($record[$this->fieldName()][$this->fieldName()]))
+              $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
+              
+            atkdebug($fieldprefix.'martijn');
           }
 
           $result.='name="'.$this->getSearchFieldName($fieldprefix).'[]">';
