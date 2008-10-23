@@ -1306,7 +1306,6 @@
           }
           else
           {
-            atk_var_dump($atksearch, 'addToListArrayRow atksearch');
             $arr["search"][$key] = $this->search($atksearch, false, $fieldprefix, $grid);
           }
           $arr["search"][$key] .= $this->searchMode(false, $fieldprefix);
@@ -1377,8 +1376,6 @@
      */
     public function search($record=array(), $extended=false, $fieldprefix="")
     {
-      
-      atk_var_dump($record, 'search att');
       $id = $this->getSearchFieldName($fieldprefix);
 
       $value="";
