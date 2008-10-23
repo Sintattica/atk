@@ -53,7 +53,6 @@
     function atkFckAttribute($name, $size='', $flags=0,$opt=array())
     {
       $config_fck=atkconfig('fck');
-      
       if(is_array($config_fck))
       {
         $this->fck_opt=array_merge($this->fck_opt,$config_fck);
