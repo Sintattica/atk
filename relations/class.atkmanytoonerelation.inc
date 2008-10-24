@@ -745,7 +745,7 @@
       $result = "";
       // we use the current level to automatically return to this page
       // when we come from the select..
-      $atktarget = getDispatchFile()."?atklevel=".atkLevel()."&".$selname."=[atkprimkey]";
+      $atktarget = atkurlencode(getDispatchFile()."?atklevel=".atkLevel()."&".$selname."=[atkprimkey]");
       $linkname = atktext("link_select_".getNodeType($this->m_destination), $this->getOwnerInstance()->getModule(), $this->getOwnerInstance()->getType(),'','',true);
       if (!$linkname) $linkname = atktext("link_select_".getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination),'','',true);
       if (!$linkname) $linkname = atktext("select_a").' '.strtolower(atktext(getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination)));
@@ -975,10 +975,10 @@
           if ($extended)
           {
             $result.='multiple size="'.min(5,count($recordset)+1).'"';
-            
+
             if(isset($record[$this->fieldName()][$this->fieldName()]))
               $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
-              
+
             atkdebug($fieldprefix.'martijn');
           }
 
@@ -1945,7 +1945,7 @@
       if($this->m_autocomplete_searchmode == self::SEARCH_MODE_CONTAINS && $this->m_autocomplete_searchfields=="")
       {
          $filter = $this->getConcatFilter($searchvalue);
-         if($filter) 
+         if($filter)
          {
            if($searchFilter!='') $searchFilter.= " OR ";
            $searchFilter = $filter;
@@ -1971,7 +1971,7 @@
         $fields = array();
         foreach($attribs as $attribname)
         {
-          if (strstr($attribname, '.')) 
+          if (strstr($attribname, '.'))
           {
             $table = '';
             $attribname = substr($attribname,0,strpos($attribname,'.'));

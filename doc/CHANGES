@@ -45,6 +45,8 @@ Changes in ATK 6.3
   atkrecordlist functionality. [Lineke]
 * atkCountryAttribute now also takes charset into account for dutch 
   translations. [Lineke]
+* Target url for the select link of an atkManyToOnerelation is now encoded
+  so it also works for proxy servers the decode the url. [Sandy] 
 
 
 Changes in prior versions
