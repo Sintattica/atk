@@ -267,7 +267,10 @@ class atkConsoleController
         $lines = '';
         foreach (explode("\n", $comment) as $line)
         {
-          $lines .= preg_replace("!^\s*/?\*+/?\s*!", "", $line);
+          if (!preg_match('/@[a-z]+/', $line))
+          {
+            $lines .= preg_replace("!^\s*/?\*+/?\s*!", "", $line);
+          }
         }
         
         $lines = trim($lines, " \r\n");
