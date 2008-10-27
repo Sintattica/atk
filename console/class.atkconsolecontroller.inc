@@ -269,7 +269,7 @@ class atkConsoleController
         {
           if (!preg_match('/@[a-z]+/', $line))
           {
-            $lines .= preg_replace("!^\s*/?\*+/?\s*!", "", $line);
+            $lines .= preg_replace("!^\s*/?\*+/?\s*!", "", $line)."\n";
           }
         }
         
