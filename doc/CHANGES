@@ -8,6 +8,10 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* atkManytoManySelectRelation now doesn't load the complete record anymore
+  when displaying the current value. [Peter]
+* Generated code for a meta node is now only displayed when debug level
+  is set to 3 (and caching is turned off). [Peter]
 + atkConsoleController can now be started with --list to get a list of
   controller actions or with --debug followed by the action name to
   output log information directly on the command line. [Peter]

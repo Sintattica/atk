@@ -131,7 +131,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     if (count($selectedKeys) > 0)
     {
       $selector = '('.implode(') OR (', $selectedKeys).')';
-      $selectedRecords = $this->getDestination()->selectDb($selector);
+      $selectedRecords = $this->getDestination()->select($selector)->includes($this->getDestination()->descriptorFields());
     }
 
     $result =
