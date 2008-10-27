@@ -189,6 +189,13 @@
      * @var integer
      */
     var $m_autocomplete_minrecords = -1;
+    
+    /**
+     * Destination node for auto links (edit, new)
+     *
+     * @var string
+     */
+    protected $m_autolink_destination = "";
 
     // override onchangehandler init
     var $m_onchangehandler_init = "newvalue = el.options[el.selectedIndex].value;\n";
@@ -598,12 +605,11 @@
       $newsel = $id;
       $filter = $this->parseFilter($this->m_destinationFilter, $record);
       $links[] = $this->_getSelectLink($newsel, $filter);
-
       if ($this->hasFlag(AF_RELATION_AUTOLINK)) // auto edit/view link
       {
         if ($this->m_destInstance->allowed("add"))
         {
-          $links[] = href(dispatch_url($this->m_destination,"add",array("atkpkret"=>$id."_newsel","atkfilter"=>($filter!=""?$filter:""))),
+          $links[] = href(dispatch_url($this->getAutoLinkDestination(),"add",array("atkpkret"=>$id."_newsel","atkfilter"=>($filter!=""?$filter:""))),
                           atktext("new"),SESSION_NESTED,true);
         }
 
@@ -611,12 +617,37 @@
         {
           //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
           //de app crasht als er geen waarde is ingevuld.
-          $editUrl = session_url(dispatch_url($this->m_destination,"edit",array("atkselector"=>"REPLACEME")),SESSION_NESTED);
+          $editUrl = session_url(dispatch_url($this->getAutoLinkDestination(),"edit",array("atkselector"=>"REPLACEME")),SESSION_NESTED);
           $links[] = "<span id=\"".$id."_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editUrl)."\", document.entryform.".$id.".value))'>".atktext('edit')."</a></span>";
         }
       }
 
       return implode("&nbsp;", $links);
+    }
+    
+    
+    /**
+     * Set destination node for the Autolink links (new/edit)
+     *
+     * @param string $node
+     */
+    function setAutoLinkDestination($node)
+    {
+      $this->m_autolink_destination = $node;
+    }
+    
+    /**
+     * Get destination node for the Autolink links (new/edit)
+     *
+     * @return string
+     */
+    function getAutoLinkDestination()
+    {
+      if(!empty($this->m_autolink_destination))
+      {
+        return $this->m_autolink_destination;
+      }
+      return $this->m_destination;
     }
 
     /**
@@ -824,12 +855,12 @@
 
         if ($this->m_destInstance->allowed("edit"))
         {
-          $editlink = session_url(dispatch_url($this->m_destination,"edit",array("atkselector"=>"REPLACEME")),SESSION_NESTED);
+          $editlink = session_url(dispatch_url($this->getAutoLinkDestination(),"edit",array("atkselector"=>"REPLACEME")),SESSION_NESTED);
           $autolink['edit'] = "&nbsp;<a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editlink)."\", document.entryform.".$id.".value))'>".atktext('edit')."</a>";
         }
         if ($this->m_destInstance->allowed("add"))
         {
-          $autolink['add'] = "&nbsp;".href(dispatch_url($this->m_destination,"add",array("atkpkret"=>$id."_ret","atkfilter"=>($this->m_useFilterForAddLink && $filter != "" ? $filter : ""))),
+          $autolink['add'] = "&nbsp;".href(dispatch_url($this->getAutoLinkDestination(),"add",array("atkpkret"=>$id."_ret","atkfilter"=>($this->m_useFilterForAddLink && $filter != "" ? $filter : ""))),
                                                         atktext("new"),SESSION_NESTED,true);
         }
       }
@@ -979,7 +1010,6 @@
             if(isset($record[$this->fieldName()][$this->fieldName()]))
               $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
 
-            atkdebug($fieldprefix.'martijn');
           }
 
           $result.='name="'.$this->getSearchFieldName($fieldprefix).'[]">';
@@ -1948,7 +1978,7 @@
          if($filter)
          {
            if($searchFilter!='') $searchFilter.= " OR ";
-           $searchFilter = $filter;
+           $searchFilter.= $filter;
          }
       }
       return $searchFilter;
@@ -1994,9 +2024,13 @@
   	      {
              $descriptordef = $this->m_destInstance->m_descTemplate;
   	      }
-          else
+          elseif(method_exists($this->m_destInstance,"descriptor_def"))
           {
             $descriptordef = $this->m_destInstance->descriptor_def();
+          }
+          else 
+          {
+            $descriptordef = $this->m_destInstance->descriptor();
           }
 
           atkimport("atk.utils.atkstringparser");
