@@ -31,6 +31,11 @@ Changes in ATK 6.3
   defaultconfig.inc.php for more details. [patrick]
 + Added setter and getter for sessionStatus in atkDialog. [Arjen]
 + Added concat function in atkDb. [Sandy]
++ Added setGridExcludes and getGridExcludes functions to atkonetomanyrelation.
+  Using these functions it is possible to set the fields that should be 
+  excluded in the datagrid of the relation even if these fields don't have the
+  AF_HIDE_LIST flag. The refkeys are excluded by default. Using the 
+  setGridExcludes function will overrule the default. [Lineke]
 * Fixed searching in atkManyToOneRelation in extended mode. [Martijn]
 * Warn user for calls to atkNode::primaryKeyField if there is no primary key
   defined. [Max, Peter]
@@ -60,6 +65,11 @@ Changes in ATK 6.3
   translations. [Lineke]
 * Target url for the select link of an atkManyToOnerelation is now encoded
   so it also works for proxy servers the decode the url. [Sandy] 
+* Added dropdown menu to the supported menu classes in the atkmenuclass. 
+  [Lineke]
+* atkManyToOneRelation now uses the getOrderByStatement function of the
+  columnconfig class to determine the order by clause in the selectDb 
+  functions. [Lineke]
 
 
 Changes in prior versions
