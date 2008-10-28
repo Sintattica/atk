@@ -9,7 +9,7 @@
 				      {if isset($field.line)}
 				        <td colspan="2" valign="top" class="field">{$field.line}</td>
 				      {else}
-				        {if $field.label!=="AF_NO_LABEL"}<td valign="top" class="fieldlabel">{if $field.label!=""}{$field.label}: {/if}</td>{/if}
+				        {if $field.label!=="AF_NO_LABEL"}<td valign="top" class="fieldlabel">{if $field.label!=""}<b>{$field.label}:</b> {/if}</td>{/if}
 				        <td valign="top" class="field" {if $field.label==="AF_NO_LABEL"}colspan="2"{/if}>{$field.full}</td>
 				      {/if}
 				    </tr>
@@ -25,7 +25,7 @@
 			        {if isset($field.line)}
 			          <td colspan="2" valign="top" class="field">{$field.line}</td>
 			        {else}
-			          {if $field.label!=="AF_NO_LABEL"}<td valign="top" class="fieldlabel">{if $field.label!=""}{$field.label}: {/if}</td>{/if}
+			          {if $field.label!=="AF_NO_LABEL"}<td valign="top" class="fieldlabel">{if $field.label!=""}<b>{$field.label}:</b> {/if}</td>{/if}
 			          <td valign="top" class="field" {if $field.label==="AF_NO_LABEL"}colspan="2"{/if}>{$field.full}</td>
 			        {/if}
 			      </tr>

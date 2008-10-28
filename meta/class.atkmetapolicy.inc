@@ -1798,7 +1798,7 @@ class atkMetaPolicy
     $this->_meta();
     $code = $this->_compile();
 
-    if (atkconfig('atkdebug') > 2)
+    if (atkconfig('debug') > 2)
     {
       atk_var_dump("\n\n$code", "atkMetaPolicy::apply - ".$this->getNode()->atkNodeType());
     }
