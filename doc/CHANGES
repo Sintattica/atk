@@ -8,6 +8,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
++ Implemented display functionality for atkRadioDetailsAttribute. [Peter]
 * atkManytoManySelectRelation now doesn't load the complete record anymore
   when displaying the current value. [Peter]
 * Generated code for a meta node is now only displayed when debug level
