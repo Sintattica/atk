@@ -584,7 +584,7 @@
       else if (!$fullOrFields)
         $includes = $this->m_destInstance->descriptorFields();
 
-      $result = $this->m_destInstance->selectDb($this->m_destInstance->primaryKey($record[$this->fieldName()]), "", "", "", $includes);
+      $result = $this->m_destInstance->selectDb($this->m_destInstance->primaryKey($record[$this->fieldName()]), $this->m_destInstance->getColumnConfig()->getOrderByStatement(), "", "", $includes);
       if (count($result))
       {
         list($record[$this->fieldName()]) = $result;
@@ -1498,7 +1498,7 @@
       $this->createDestination();
 
       $selector = $this->createFilter($record);
-      $result = $this->m_destInstance->selectDb($selector,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey),$mode);
+      $result = $this->m_destInstance->selectDb($selector,$this->m_destInstance->getColumnConfig()->getOrderByStatement(),"","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey),$mode);
 
       return $result;
     }
@@ -1580,6 +1580,8 @@
         foreach ($orderfields as $field)
         {
           list($field, $direction) = explode(' ', trim($field));
+          list($table, $fld) = explode('.', $field);
+          $field = $this->m_destInstance->m_attribList[$fld]->getOrderByStatement();
           // @todo what can we do with $direction here? or should we simply ignore it anyway?
 
           // realias if destination order contains a tablename.

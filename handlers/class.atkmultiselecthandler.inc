@@ -121,9 +121,9 @@
 
       atkimport('atk.datagrid.atkdatagrid');
       $grid = atkDataGrid::create($this->getNode(), 'multiselect');
-      //$recordlist = &atknew("atk.recordlist.atkrecordlist");
       $grid->setDefaultActions($actions);
-      $grid->addFlag(RL_MRA);
+      $grid->removeFlag(atkDataGrid::EXTENDED_SEARCH);
+      $grid->addFlag(atkDataGrid::MULTI_RECORD_ACTIONS);
       $params["list"] = $grid->render();
 
       if(atkLevel() > 0)

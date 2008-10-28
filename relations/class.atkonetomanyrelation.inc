@@ -120,6 +120,15 @@
      */
     var $m_headerName = "";
     var $m_footerName = "";
+    
+    /**
+     * Fields to exclude in the grid
+     *
+     * @access private
+     * @var array
+     */
+    var $m_excludes = array();
+    
     /**
      * Default constructor.
      *
@@ -159,6 +168,7 @@
       {
         $this->m_refKey[] = $refKey;
       }
+      $this->setGridExcludes($this->m_refKey);
     }
 
     function setOwnerFields($ownerfields)
@@ -178,7 +188,7 @@
     /**
      * Use destination filter for auto add link?
      *
-     * @param boolean $useFilter use destnation filter for add link?
+     * @param boolean $useFilter use destination filter for add link?
      */
     function setUseFilterForAddLink($useFilter)
     {
@@ -228,7 +238,7 @@
 
       $grid->setBaseUrl(partial_url($this->getOwnerInstance()->atkNodeType(), $action, 'attribute.'.$this->fieldName().'.grid'));
 
-      $grid->setExcludes($this->m_refKey);
+      $grid->setExcludes($this->getGridExcludes());
 
       $grid->addFilter($this->_getLoadWhereClause($record));
       if ($this->m_destinationFilter != '')
@@ -1258,6 +1268,26 @@
     function setFooter($name)
     {
       $this->m_footerName = $name;
+    }
+    
+    /**
+     * Set the exclude fields for the grid
+     *
+     * @param array $excludes
+     */
+    function setGridExcludes($excludes)
+    {
+      $this->m_excludes = $excludes;
+    }
+    
+    /**
+     * Get the exclude fields for the grid
+     *
+     * @return array with exclude fields
+     */
+    function getGridExcludes()
+    {
+      return $this->m_excludes;
     }
   }
 ?>

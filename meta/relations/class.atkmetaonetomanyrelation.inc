@@ -71,6 +71,7 @@ class atkMetaOneToManyRelation extends atkOneToManyRelation
         }
       }
     }
+    $this->setGridExcludes($this->m_refKey);
 
     return $result && $this->m_refKey != NULL;
   }
