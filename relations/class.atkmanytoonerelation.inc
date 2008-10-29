@@ -189,7 +189,7 @@
      * @var integer
      */
     var $m_autocomplete_minrecords = -1;
-    
+
     /**
      * Destination node for auto links (edit, new)
      *
@@ -624,8 +624,8 @@
 
       return implode("&nbsp;", $links);
     }
-    
-    
+
+
     /**
      * Set destination node for the Autolink links (new/edit)
      *
@@ -635,7 +635,7 @@
     {
       $this->m_autolink_destination = $node;
     }
-    
+
     /**
      * Get destination node for the Autolink links (new/edit)
      *
@@ -1580,7 +1580,10 @@
         foreach ($orderfields as $field)
         {
           list($field, $direction) = explode(' ', trim($field));
-          list($table, $fld) = explode('.', $field);
+          if(strstr($field, "."))
+            list($table, $fld) = explode('.', $field);
+          else
+            $fld = $field;
           $field = $this->m_destInstance->m_attribList[$fld]->getOrderByStatement();
           // @todo what can we do with $direction here? or should we simply ignore it anyway?
 
@@ -2016,21 +2019,21 @@
         }
         $value = $this->escapeSQL(trim($searchValue));
         $value = str_replace("  " , " ", $value);
-  		  if(!$value)
-  		  {
-    	    return false;
+        if(!$value)
+        {
+          return false;
         }
         else
         {
-  	      if ($this->m_destInstance->m_descTemplate != NULL)
-  	      {
+          if ($this->m_destInstance->m_descTemplate != NULL)
+          {
              $descriptordef = $this->m_destInstance->m_descTemplate;
-  	      }
+          }
           elseif(method_exists($this->m_destInstance,"descriptor_def"))
           {
             $descriptordef = $this->m_destInstance->descriptor_def();
           }
-          else 
+          else
           {
             $descriptordef = $this->m_destInstance->descriptor();
           }
@@ -2040,9 +2043,9 @@
           $concatFields = $parser->getAllParsedFieldsAsArray($fields);
 
           $db = $this->m_destInstance->getDb();
-         	$searchcondition = "(UPPER(".$db->func_concat($concatFields).") LIKE UPPER('%".$value."%'))";
-  		    }
-  		    return $searchcondition;
+           $searchcondition = "(UPPER(".$db->func_concat($concatFields).") LIKE UPPER('%".$value."%'))";
+          }
+          return $searchcondition;
       }
       return false;
     }
