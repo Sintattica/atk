@@ -8,6 +8,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
++ Added atkManyToManyListRelation::setAutoCalculateRows which makes it
+  possible to turn off the default behavior of calculating the displayed
+  number of rows in the list based on the available selection size. [Peter]
 * Show option title in tooltip for atkExtendableShuttleRelation. [Peter]
 + Implemented display functionality for atkRadioDetailsAttribute. [Peter]
 * atkManytoManySelectRelation now doesn't load the complete record anymore
