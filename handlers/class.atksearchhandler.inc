@@ -34,6 +34,7 @@
    *       should be customizable in the future.
    *
    */
+   atkimport("atk.handlers.atkabstractsearchhandler");
   class atkSearchHandler extends atkAbstractSearchHandler
   {
     

@@ -25,6 +25,7 @@
    * @package atk
    * @subpackage handlers
    */
+   atkimport("atk.handlers.atkabstractsearchhandler");
   class atkSmartSearchHandler extends atkAbstractSearchHandler
   {    
     /**
