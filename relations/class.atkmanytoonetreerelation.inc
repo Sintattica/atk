@@ -24,7 +24,8 @@
   /**
    * Extension of the atkManyToOneRelation, that is aware of the treestructure
    * (parent/child relation) in the destination node, and renders items in the
-   * dropdown accordingly.
+   * dropdown accordingly. You need to set the AF_PARENT flag to the parent 
+   * column in the destination node in order to make the tree rendering work.
    *
    * @author Sandy Pleyte <sandy@ibuildings.nl>
    * @package atk
@@ -40,11 +41,11 @@
 
     /**
      * Constructor
-     * @param $name ?
-     * @param $destination ?
+     * @param $name Name of the attribute
+     * @param $destination Destination node for this relation
      * @param $flags Flags for the relation
      */
-    function atkTreeManyToOneRelation($name, $destination, $flags=0)
+    function atkManyToOneTreeRelation($name, $destination, $flags=0)
     {
       $this->atkManyToOneRelation($name, $destination, $flags);
     }
