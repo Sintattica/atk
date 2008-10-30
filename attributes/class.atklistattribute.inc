@@ -288,7 +288,7 @@
           ((atkconfig("list_obligatory_null_item")&&!$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM))||
            ($this->hasFlag(AF_LIST_OBLIGATORY_NULL_ITEM)))))
       {
-        $ret = '<option value="'.$this->m_emptyvalue.'">'.atktext($text_key, "", is_object($this->m_ownerInstance) ? $this->m_ownerInstance->m_type : "");
+        $ret = '<option value="'.$this->m_emptyvalue.'">'.atk_htmlentities($this->text(array($this->fieldName().'_'.$text_key, $text_key))).'</option>';
       }
       return $ret;
     }
