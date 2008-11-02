@@ -11,6 +11,7 @@ Changes in ATK 6.3
 * The atkNode::editArray may now return an "extra" column for fields with
   arbitrary data that needs to be passed to the edit template. [Peter]
 * Empty list option can now be configured on a per node field basis. [Peter]
+* Fixed searching in fields with autocompletion in  m2o relations. [Martin] 
 + Added atkManyToManyListRelation::setAutoCalculateRows which makes it
   possible to turn off the default behavior of calculating the displayed
   number of rows in the list based on the available selection size. [Peter]
