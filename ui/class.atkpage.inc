@@ -329,9 +329,7 @@
     {
       $res = "<head>\n  <title>$title</title>\n";
 
-      // $Name$ is the CVS tag.
       $version = atkversion();
-      if ("\$Name$"!="\$"."Name:  $") $version.=" ($Name$)";
       $res.= '  <meta name="atkversion" content="'.$version.'" />'."\n";
 
       $res.= '  <meta http-equiv="Content-Type" content="text/html; charset='.atktext("charset","atk").'" />'."\n";
