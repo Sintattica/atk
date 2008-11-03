@@ -1184,7 +1184,6 @@
         else
         {
           // ask the destination node for it's search condition
-          $alias = $fieldaliasprefix . $this->fieldName();
           $searchcondition = $this->m_destInstance->getSearchCondition($query, $alias, $fieldaliasprefix, $value, $this->getChildSearchMode($searchmode, $this->formName()));
         }
         return $searchcondition;
