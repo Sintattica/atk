@@ -1176,9 +1176,9 @@
       {
         // If we have a descriptor with multiple fields, use CONCAT
         $attribs = $this->m_destInstance->descriptorFields();
+        $alias = $fieldaliasprefix . $this->fieldName();
         if(count($attribs)>1)
         {
-          $alias = $fieldaliasprefix . $this->fieldName();
           $searchcondition = $this->getConcatFilter($value,$alias);
         }
         else
