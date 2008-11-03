@@ -905,7 +905,8 @@
 
     /**
      * Convert date array to database value
-     * @param $rec array with 3 fields (year, month, day)
+     * @param $rec database record with a date attribute
+     *             field $rec[{name of the date attribute}]
      * @return database value for date
      */
     function value2db($rec)
