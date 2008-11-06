@@ -288,7 +288,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 
     // remove the temporary directory
     if (is_dir($this->_ooo_basename) && !rmdir ($this->_ooo_basename)) {
-      atkterror('clsTinyButStrongOOo->_RemoveTmpBasenameDir: Can\'t remove directory : '.$this->_ooo_basename);
+      atkerror('clsTinyButStrongOOo->_RemoveTmpBasenameDir: Can\'t remove directory : '.$this->_ooo_basename);
     }
   }
 }
