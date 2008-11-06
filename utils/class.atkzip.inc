@@ -175,7 +175,14 @@
         $zip = new ZipArchive;
         if ($zip->open($archive) === TRUE) 
         {
-          $zip->extractTo($destination, $entries);
+          if ($entries === NULL)
+          {
+            $zip->extractTo($destination);
+          }
+          else 
+          {
+            $zip->extractTo($destination, $entries);
+          }
           $zip->close();
           return true;
 			  } 

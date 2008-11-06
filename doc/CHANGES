@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* atkZip::extract no longer throws warnings when $entries is omitted when
+  using 'internal' mode. This is a PHP bug work around. [mvdvelden]
 * The atkNode::editArray may now return an "extra" column for fields with
   arbitrary data that needs to be passed to the edit template. [Peter]
 * Empty list option can now be configured on a per node field basis. [Peter]
