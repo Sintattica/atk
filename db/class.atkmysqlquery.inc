@@ -128,7 +128,7 @@
 
       if (count($this->m_conditions)>0)
       {
-        $result.= " WHERE ".implode(" AND ",$this->m_conditions);
+         $result.= " WHERE (".implode(") AND (",$this->m_conditions).")";
       }
 
       if (count($this->m_searchconditions)>0)
