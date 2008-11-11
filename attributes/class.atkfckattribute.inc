@@ -131,6 +131,21 @@
       }
       return NULL;
     }
+    
+    /**
+     * Check if a record has an empty value for this attribute.
+     * 
+     * If the record only contains tags or spaces, we consider it empty. We exclude the div
+     * tag, since it is often used as (for instance) a placeholder for script results.
+     * 
+     * @param array $record The record that holds this attribute's value.
+     * @return boolean
+     */
+    function isEmpty($record)
+    { 
+      $record[$this->fieldName()] = trim(strip_tags($record[$this->fieldName()], '<div>'));
+      return parent::isEmpty($record);
+    }
   }
 
 ?>
