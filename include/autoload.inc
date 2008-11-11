@@ -39,6 +39,7 @@
      */
     if (!empty($classname) && !in_array($classname,array('Smarty','Services_JSON','pear','PEAR_Error')))
     {
+      atkwarning("AUTOLOAD TRIGGERED BY {$classname}");
       $classpath = atkClassLoader::findClass($classname);
 
       if ($classpath && atkimport($classpath))
