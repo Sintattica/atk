@@ -111,6 +111,13 @@
      * @var boolean
      */
     var $m_useFilterForEditLink = true;
+    
+    /**
+     * Use referential key for load filter?
+     *
+     * @var boolean
+     */
+    protected $m_useRefKeyForFilter = true;
 
     /**
      * Function names for recordlist header/footer generation
@@ -164,6 +171,10 @@
       {
         $this->m_refKey = $refKey;
       }
+      else if (empty($refKey))
+      {
+        $this->m_refKey = array();
+      }
       else
       {
         $this->m_refKey[] = $refKey;
@@ -203,6 +214,17 @@
     function setUseFilterForEditLink($useFilter)
     {
       $this->m_useFilterForEditLink = $useFilter;
+    }
+    
+    /**
+     * Use referential key for filtering the records. If you disable this only the
+     * explicitly set destination filter will be used.
+     *
+     * @param bool $useRefKey
+     */
+    public function setUseRefKeyForFilter($useRefKey)
+    {
+      $this->m_useRefKeyForFilter = $useRefKey;
     }
 
     /**
@@ -667,6 +689,8 @@
      */
     function _getLoadWhereClause($record)
     {
+      if (!$this->m_useRefKeyForFilter) return '';
+      
       $whereelems = array();
 
       if (count($this->m_refKey)==0||$this->m_refKey[0]=="") $this->m_refKey[0]=$this->m_owner;

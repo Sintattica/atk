@@ -8,6 +8,10 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
++ Added atkOneToManyRelation::setUseRefKeyForFilter which can be used
+  to disable the usage of the ref key as filter for the grid. This allows
+  you to use a atkOneToManyRelations inside a node which has no direct
+  link with the parent node (mainly for displaying stuff). [Peter]
 * Fixed brackets in the count query, they are now the same as the select
   query uses. [Sandy]
 * atkZip::extract no longer throws warnings when $entries is omitted when
