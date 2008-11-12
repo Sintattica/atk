@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* Fixed forgetCriteria() and saveCriteria() from abstractsearchhandler, 
+  when we use transact sql db. [Yury]
 * Attribute values from the request will be used by initial_values. [Peter]
 + Added atkOneToManyRelation::setUseRefKeyForFilter which can be used
   to disable the usage of the ref key as filter for the grid. This allows
