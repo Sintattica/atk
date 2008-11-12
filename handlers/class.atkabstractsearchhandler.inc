@@ -112,6 +112,7 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
     $query = "DELETE FROM {$this->m_table} WHERE nodetype = '%s' AND UPPER(name) = UPPER('%s') AND handlertype = '%s'";
         
     $db->query(sprintf($query, $this->m_node->atkNodeType(), escapeSQL($name), $this->getSearchHandlerType()));
+    $db->commit();
   }
 
   /**
@@ -131,6 +132,7 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
     $db = &$this->m_node->getDb();
     $query = "INSERT INTO {$this->m_table} (nodetype, name, criteria, handlertype) VALUES('%s', '%s', '%s', '%s')";
     $db->query(sprintf($query, $this->m_node->atkNodeType(), escapeSQL($name), escapeSQL(serialize($criteria)), $this->getSearchHandlerType()));
+    $db->commit();
   }
 
   /**
