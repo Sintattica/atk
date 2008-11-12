@@ -2314,11 +2314,20 @@
     function initial_values()
     {
       $record = array();
-
+      
       foreach (array_keys($this->m_attribList) as $attrName)
       {
         $attr = &$this->getAttribute($attrName);
-        $value = $attr->initialValue();
+        
+        if (is_array($this->m_postvars) && isset($this->m_postvars[$attrName])) 
+        {
+          $value = $attr->fetchValue($this->m_postvars);
+        }
+        else 
+        {
+          $value = $attr->initialValue();
+        }
+        
         if ($value !== NULL)
           $record[$attr->fieldName()] = $value;
       }

@@ -239,7 +239,7 @@
      */
     function fetchValue($postvars)
     {
-      if (is_array($postvars))
+      if ($this->isPosted($postvars))
       {
         return $this->removeSeparators(atkArrayNvl($postvars, $this->fieldName(), ""));
       }
