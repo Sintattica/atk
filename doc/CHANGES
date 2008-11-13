@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* In atkQuery, the join condition in addJoin is moved from the where clause 
+  to the join clause where it belongs. [Patrick]
 * Fixed forgetCriteria() and saveCriteria() from abstractsearchhandler, 
   when we use transact sql db. [Yury]
 * Attribute values from the request will be used by initial_values. [Peter]

@@ -193,8 +193,8 @@
 
       return $this;
     }
-    
-    
+
+
     /**
      * Add multiple fields at once
      *
@@ -277,10 +277,10 @@
       {
         $jointype="JOIN ";
         $join = " ".$jointype.$this->quoteField($table)." ".$this->quoteField($alias);
+        $join .= " ON (".$condition.")";
         if (!in_array($join, $this->m_joins))
         {
           $this->m_joins[]= $join;
-          $this->addCondition($condition);
         }
       }
 
