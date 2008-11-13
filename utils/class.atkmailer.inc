@@ -69,9 +69,9 @@
           $n = (strpos(strtolower($this->ContentType), 'html') !== false ? "<br/>" : "\n");
           $bodyPrefix =
             "--".$n.
-            "To: ".$this->_recipientFieldToString($this->to).$n.
-            "Cc: ".$this->_recipientFieldToString($this->cc).$n.
-            "Bcc: ".$this->_recipientFieldToString($this->bcc).$n.
+            "To: ".$this->recipientFieldToString($this->to).$n.
+            "Cc: ".$this->recipientFieldToString($this->cc).$n.
+            "Bcc: ".$this->recipientFieldToString($this->bcc).$n.
             "--".$n;
           $this->Body = $bodyPrefix.$this->Body;
           $this->ClearAllRecipients();
@@ -83,7 +83,7 @@
       else return true;
     }
 
-    private function _recipientFieldToString($field)
+    function recipientFieldToString($field)
     {
       $str = '';
       foreach ($field as $i => $recipient)
