@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
++ When using the configuration option "mail_redirect" in atkMailer, prefix
+  the mail body to show the original recipients [Patrick]
 * In atkQuery, the join condition in addJoin is moved from the where clause 
   to the join clause where it belongs. [Patrick]
 * Fixed forgetCriteria() and saveCriteria() from abstractsearchhandler, 

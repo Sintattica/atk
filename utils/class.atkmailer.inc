@@ -66,6 +66,14 @@
         $mail_redirect = atkconfig("mail_redirect");
         if (!empty($mail_redirect))
         {
+          $n = (strpos(strtolower($this->ContentType), 'html') !== false ? "<br/>" : "\n");
+          $bodyPrefix =
+            "--".$n.
+            "To: ".$this->_recipientFieldToString($this->to).$n.
+            "Cc: ".$this->_recipientFieldToString($this->cc).$n.
+            "Bcc: ".$this->_recipientFieldToString($this->bcc).$n.
+            "--".$n;
+          $this->Body = $bodyPrefix.$this->Body;
           $this->ClearAllRecipients();
           $this->AddAddress($mail_redirect, 'mail_redirect');
         }
@@ -75,6 +83,17 @@
       else return true;
     }
 
+    private function _recipientFieldToString($field)
+    {
+      $str = '';
+      foreach ($field as $i => $recipient)
+      {
+        if ($i > 0) $str .= ', ';
+        $str .= $recipient[0];
+        if (strlen($recipient['1']) > 0) $str .= ' ('.$recipient[1].')';
+      }
+      return $str;
+    }
   }
 
 ?>
