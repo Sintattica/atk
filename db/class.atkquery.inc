@@ -266,24 +266,8 @@
     */
     function &addJoin($table, $alias, $condition, $outer=false)
     {
-      if ($outer)
-      {
-        $jointype="LEFT JOIN ";
-        $join = " ".$jointype.$this->quoteField($table)." ".$this->quoteField($alias)." ON ".$condition." ";
-
-        if (!in_array($join, $this->m_joins)) $this->m_joins[]= $join;
-      }
-      else
-      {
-        $jointype="JOIN ";
-        $join = " ".$jointype.$this->quoteField($table)." ".$this->quoteField($alias);
-        $join .= " ON (".$condition.")";
-        if (!in_array($join, $this->m_joins))
-        {
-          $this->m_joins[]= $join;
-        }
-      }
-
+      $join = " ".($outer ? "LEFT JOIN " : "JOIN ").$this->quoteField($table)." ".$this->quoteField($alias)." ON (".$condition.") ";
+      if (!in_array($join, $this->m_joins)) $this->m_joins[] = $join;
       return $this;
     }
 
