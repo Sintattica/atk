@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
++ Added ability to set a different template for the tooltip for each record
+  in an atkExtendableShuttleRelation. [Dennis]
 * Improved support for more complex selectors in atkDataNode::getCriteria() 
   [Peter, Dennis]
 + When using the configuration option "mail_redirect" in atkMailer, prefix

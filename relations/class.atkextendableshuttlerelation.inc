@@ -35,6 +35,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
   protected $m_selectedFields = null;
   protected $m_availableFields = null;
   protected $m_limit = null;
+  protected $m_descriptor_tooltip_template = null;
 
   public function __construct($name, $link, $destination, $flags=0)
   {
@@ -334,13 +335,31 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
 
     $valName = $this->getHtmlId($fieldprefix).'[selected][]['.$this->getRemoteKey().']';
     $result = '<select class="shuttle_select" id="'.$name.'" name="'.$name.'" multiple size="10" onDblClick="shuttle_move(\''.$name.'\', \''.$opposite.'\',\''.$action.'\',\''.$valName.'\');'.$onchangecode.'">';
+    
+    $parser = null;
+    // Only import the stringparser once.
+    if (isset($this->m_descriptor_tooltip_template)) 
+    {
+      atkimport("atk.utils.atkstringparser");
+      $parser = new atkStringParser($this->m_descriptor_tooltip_template);
+    }
+    
     for($i=0, $_i=count($recordset); $i<$_i; $i++)
     {
       $title = $this->m_destInstance->descriptor($recordset[$i]);
-      $result.= '<option value="'.$recordset[$i][$this->m_destInstance->primaryKeyField()].'" title="'.atk_htmlentities($title).'">'.atk_htmlentities($title).'</option>';
+      $ttip = isset($this->m_descriptor_tooltip_template) ? $parser->parse($recordset[$i]) : $title; 
+      
+      $ttip = str_replace('\r\n',' ',strip_tags($ttip));
+      
+      $result.= '<option value="'.$recordset[$i][$this->m_destInstance->primaryKeyField()].'" title="'.$ttip.'">'.atk_htmlentities($title).'</option>';
     }
     $result.= '</select>';
     return $result;
+  }
+  
+  public function setDescriptorTooltipTemplate($template)
+  { 
+    $this->m_descriptor_tooltip_template = $template;
   }
 
   /**
