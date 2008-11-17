@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* Changed the tbsooo interface to be more compatible with odt file generation
+  when using the zip extension. [mvdvelden]
 + Added ability to set a different template for the tooltip for each record
   in an atkExtendableShuttleRelation. [Dennis]
 * Improved support for more complex selectors in atkDataNode::getCriteria() 

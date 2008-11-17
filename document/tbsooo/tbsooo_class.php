@@ -163,10 +163,20 @@ class clsTinyButStrongOOo extends clsTinyButStrong
       return false;
     }
 
+    // Fix the dirname to be more compatible with ODT files
+    $path_parts = pathinfo($this->_xml_filename);
+    if ($path_parts['dirname'] === '.')
+    {
+      $path_parts['dirname'] = '';
+    }
+    else 
+    {
+      $path_parts['dirname'] .= '/';
+    }
+    
     // zip and remove the file
     $atkzip = &atkNew("atk.utils.atkzip");
-    $path_parts = pathinfo($this->_xml_filename);
-    $added = $atkzip->add($ooofilename, $xmlfilename, $path_parts['dirname']."/");
+    $added  = $atkzip->add($ooofilename, $xmlfilename, $path_parts['dirname']);
     unlink($xmlfilename);
 
     if (!$added) {
