@@ -8,17 +8,19 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
++ Added the possibility to add regex exclude patterns to atkDirectoryTraverser
+  and used this feature in atkThemeCompiler. [Patrick]
 * Changed the tbsooo interface to be more compatible with odt file generation
   when using the zip extension. [mvdvelden]
 + Added ability to set a different template for the tooltip for each record
   in an atkExtendableShuttleRelation. [Dennis]
-* Improved support for more complex selectors in atkDataNode::getCriteria() 
+* Improved support for more complex selectors in atkDataNode::getCriteria()
   [Peter, Dennis]
 + When using the configuration option "mail_redirect" in atkMailer, prefix
   the mail body to show the original recipients [Patrick]
-* In atkQuery, the join condition in addJoin is moved from the where clause 
+* In atkQuery, the join condition in addJoin is moved from the where clause
   to the join clause where it belongs. [Patrick]
-* Fixed forgetCriteria() and saveCriteria() from abstractsearchhandler, 
+* Fixed forgetCriteria() and saveCriteria() from abstractsearchhandler,
   when we use transact sql db. [Yury]
 * Attribute values from the request will be used by initial_values. [Peter]
 + Added atkOneToManyRelation::setUseRefKeyForFilter which can be used
@@ -32,7 +34,7 @@ Changes in ATK 6.3
 * The atkNode::editArray may now return an "extra" column for fields with
   arbitrary data that needs to be passed to the edit template. [Peter]
 * Empty list option can now be configured on a per node field basis. [Peter]
-* Fixed searching in fields with autocompletion in  m2o relations. [Martin] 
+* Fixed searching in fields with autocompletion in  m2o relations. [Martin]
 + Added atkManyToManyListRelation::setAutoCalculateRows which makes it
   possible to turn off the default behavior of calculating the displayed
   number of rows in the list based on the available selection size. [Peter]
@@ -50,11 +52,11 @@ Changes in ATK 6.3
   command line). [Peter]
 * Improved atkConsoleController log file output, and now logging to
   a single file per controller per day (no distinction between types). [Peter]
-+ Added 'save criteria' functionality to the atkSearchHandler. This 
-  functionality only works when the table atk_searchcriteria is present in 
-  your database. Note: When you are using the atkSmartSearchHandler, please 
-  rename your atk_smartsearchcriteria table to atk_searchcriteria and 
-  add `handlertype` VARCHAR(100) NOT NULL to your new table and fill this 
++ Added 'save criteria' functionality to the atkSearchHandler. This
+  functionality only works when the table atk_searchcriteria is present in
+  your database. Note: When you are using the atkSmartSearchHandler, please
+  rename your atk_smartsearchcriteria table to atk_searchcriteria and
+  add `handlertype` VARCHAR(100) NOT NULL to your new table and fill this
   new field with the value 'atksmartsearchhandler'.[Martijn]
 + Added configuration option 'mail_redirect' to defaultconfig.inc.php. See
   defaultconfig.inc.php for more details. [patrick]
@@ -63,9 +65,9 @@ Changes in ATK 6.3
 + Added method for setting the destination node of Auto links in the
   atkManyToOneRelation. [Sandy]
 + Added setGridExcludes and getGridExcludes functions to atkonetomanyrelation.
-  Using these functions it is possible to set the fields that should be 
+  Using these functions it is possible to set the fields that should be
   excluded in the datagrid of the relation even if these fields don't have the
-  AF_HIDE_LIST flag. The refkeys are excluded by default. Using the 
+  AF_HIDE_LIST flag. The refkeys are excluded by default. Using the
   setGridExcludes function will overrule the default. [Lineke]
 * Fixed searching in atkManyToOneRelation in extended mode. [Martijn]
 * Warn user for calls to atkNode::primaryKeyField if there is no primary key
@@ -92,14 +94,14 @@ Changes in ATK 6.3
   template. [Sandy]
 * Changed atkMultiselectHandler to use the atkdatagrid in stead of the
   atkrecordlist functionality. [Lineke]
-* atkCountryAttribute now also takes charset into account for dutch 
+* atkCountryAttribute now also takes charset into account for dutch
   translations. [Lineke]
 * Target url for the select link of an atkManyToOnerelation is now encoded
-  so it also works for proxy servers the decode the url. [Sandy] 
-* Added dropdown menu to the supported menu classes in the atkmenuclass. 
+  so it also works for proxy servers the decode the url. [Sandy]
+* Added dropdown menu to the supported menu classes in the atkmenuclass.
   [Lineke]
 * atkManyToOneRelation now uses the getOrderByStatement function of the
-  columnconfig class to determine the order by clause in the selectDb 
+  columnconfig class to determine the order by clause in the selectDb
   functions. [Lineke]
 
 

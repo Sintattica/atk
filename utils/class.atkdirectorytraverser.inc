@@ -32,7 +32,10 @@
    */
   class atkDirectoryTraverser
   {
-    var $m_callbackObjects = array();
+    public $m_callbackObjects = array();
+    public $m_excludes = array();
+
+
 
     /**
      * Constructor
@@ -115,7 +118,13 @@
     {
       $result = array();
       $dir = opendir($path);
-      while (($file = readdir($dir)) !== false) $result[] = $file;
+      while (($file = readdir($dir)) !== false)
+      {
+        if (!$this->isExcluded($file))
+        {
+          $result[] = $file;
+        }
+      }
       closedir($dir);
       sort($result);
       return $result;
@@ -138,6 +147,41 @@
         }
       }
     }
-  }
 
-?>
+    /**
+     * Add a regex expression to prevent detection of certain files/directories
+     *
+     * @param string $regex
+     */
+    function addExclude($regex)
+    {
+      $this->m_excludes[] = $regex;
+    }
+
+    /**
+     * Clear the excluding regex expressions
+     *
+     */
+    function clearExcludes()
+    {
+      $this->m_excludes = array();
+    }
+
+    /**
+     * Check whether a file is excluded or not
+     *
+     * @param unknown_type $file
+     */
+    function isExcluded($file)
+    {
+      $excluded = false;
+      $i = 0;
+      $count = count($this->m_excludes);
+      while (!$excluded && $i < $count)
+      {
+        $excluded = (preg_match($this->m_excludes[$i], $file) > 0);
+        $i++;
+      }
+      return $excluded;
+    }
+  }

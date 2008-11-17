@@ -45,7 +45,7 @@
     {
       // Process theme directory structure into data array.
       $data = $this->readStructure($name);
-      
+
       // Write it to the compiled theme file
       if (count($data))
       {
@@ -263,16 +263,12 @@
 
     function _dirContents($path)
     {
-      $result = array();
+      $files = array();
       $traverser = &atknew("atk.utils.atkdirectorytraverser");
+      $traverser->addExclude('/^\.(.*)/'); // ignore everything starting with a '.'
+      $traverser->addExclude('/^CVS$/');   // ignore CVS directories
       $files = $traverser->getDirContents($path);
-      foreach($files as $file)
-      {
-        if (!in_array($file, array(".", "..", "CVS"))) $result[] = $file;
-      }
-      return $result;
+      return $files;
     }
 
   }
-
-?>
