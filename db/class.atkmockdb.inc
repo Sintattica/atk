@@ -61,7 +61,6 @@
      */
     function query($query, $offset=-1, $limit=-1)
     {
-      atk_var_dump($query,'inatkmockdb teh query');
       $this->m_query_history[] = $query;
       
       if (isset($this->m_results[$offset][$limit][$query])) return $this->m_results[$offset][$limit][$query];
