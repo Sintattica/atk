@@ -59,7 +59,7 @@
      */
     function getRecord()
     {
-      list($record) = $this->m_node->selectDb($this->m_postvars['atkselector'],"","",$this->m_node->m_viewExcludes,"","view");
+      list($record) = $this->m_node->selectDb($this->m_postvars['atkselector'],$this->getNode()->getColumnConfig()->getOrderByStatement(),"",$this->m_node->m_viewExcludes,"","view");
       return $record;
     }
 

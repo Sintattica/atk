@@ -674,6 +674,7 @@ class atkDGList extends atkDGComponent
    * @param String  $embedprefix  The prefix for embeded fields
    *
    * The result array contains the following information:
+   *  "name"     => the name of the recordlist
    *  "heading"  => for each visible column an array containing: "title" {, "url"}
    *  "search"   => for each visible column HTML input field(s) for searching
    *  "rows"     => list of rows, per row: "data", "actions", "mra", "record"
@@ -690,7 +691,7 @@ class atkDGList extends atkDGComponent
     $flags = $this->convertDataGridFlags();
     
     if (!is_array($suppress)) $suppress = array();
-    $result = array("heading" => array(), "search" => array(), "rows" => array(),
+    $result = array("name"=>$grid->getName(), "heading" => array(), "search" => array(), "rows" => array(),
                     "totalraw" => array(), "total" => array(), "mra" => array());
 
     $columnConfig = &$grid->getNode()->getColumnConfig($grid->getName());

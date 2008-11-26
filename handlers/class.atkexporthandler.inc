@@ -218,9 +218,9 @@
       foreach($atts as $name => $object)
       {
         $att = &$node_bk->getAttribute($name);
-        if(in_array($name, $list_includes))
+        if(in_array($name, $list_includes) && $att->hasFlag(AF_HIDE_LIST))
           $att->removeFlag(AF_HIDE_LIST);
-        else
+        elseif (!in_array($name, $list_includes))
           $att->addFlag(AF_HIDE_LIST);
       }
 
@@ -231,7 +231,8 @@
       $rl = &atknew("atk.recordlist.atkcustomrecordlist");
       $flags = ($node_bk->hasFlag(NF_MRA) ? RL_MRA : 0) | ($node_bk->hasFlag(NF_MRPA) ? RL_MRPA : 0) | ($node_bk->hasFlag(NF_LOCK) ? RL_LOCK : 0);
       $node_bk->m_postvars = $session_back;
-      $recordset = $node_bk->selectDb($session_back['atkselector'], $atkorderby, "", "", $list_includes, "export");
+      $atkfilter = atkArrayNvl($source, 'atkfilter', "");
+      $recordset = $node_bk->selectDb($session_back['atkselector'].($session_back['atkselector'] != '' && $atkfilter != '' ? ' AND ' : '').$atkfilter, $atkorderby, "", "", $list_includes, "export");
       if (method_exists($this->m_node, "assignExportData")) $this->m_node->assignExportData($list_includes, $recordset);
       $recordset_new = array();
 

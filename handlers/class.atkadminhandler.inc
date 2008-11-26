@@ -294,7 +294,13 @@
       $link = "";
       if ($this->m_node->allowed("view") && $this->m_node->allowed("export") && $this->m_node->hasFlag(NF_EXPORT))
       {
-        $link.= href(dispatch_url($this->m_node->atkNodeType(), "export"), atktext("export", "atk", $this->m_node->m_type), SESSION_NESTED);
+        $filter = '';    
+        if(count($this->m_node->m_fuzzyFilters) > 0)
+        {
+          $filter = implode(' AND ', $this->m_node->m_fuzzyFilters); 
+        }
+
+        $link.= href(dispatch_url($this->m_node->atkNodeType(), "export", array('atkfilter'=>$filter)), atktext("export", "atk", $this->m_node->m_type), SESSION_NESTED);
       }
       return $link;
     }

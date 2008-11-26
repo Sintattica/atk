@@ -103,7 +103,11 @@ Changes in ATK 6.3
 * atkManyToOneRelation now uses the getOrderByStatement function of the
   columnconfig class to determine the order by clause in the selectDb
   functions. [Lineke]
-
+* Export now also takes filters from the node into account. [Lineke]
+* Atkdatagrid listarray function also returns the name of the datagrid, 
+  fixes problem with inline editing in the datagrid. [Lineke]
+* Use the getOrderByStatement function of the columnconfig class in the 
+  selectDb call in the view action. [Lineke] 
 
 
 Changes in prior versions
