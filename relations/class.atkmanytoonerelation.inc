@@ -2006,16 +2006,19 @@
         $fields = array();
         foreach($attribs as $attribname)
         {
+          $post = '';
           if (strstr($attribname, '.'))
           {
-            $table = '';
+            if ($fieldaliasprefix != '') $table = $fieldaliasprefix.'_AE_';
+            else $table = '';
+            $post = substr($attribname,strpos($attribname,'.'));
             $attribname = substr($attribname,0,strpos($attribname,'.'));
           }
           elseif($fieldaliasprefix!='') $table = $fieldaliasprefix.".";
           else $table = $this->m_destInstance->m_table.".";
 
           $p_attrib = $this->m_destInstance->m_attribList[$attribname];
-          $fields[$p_attrib->fieldName()] = $table.$p_attrib->fieldName();
+          $fields[$p_attrib->fieldName()] = $table.$p_attrib->fieldName().$post;
         }
         $value = $this->escapeSQL(trim($searchValue));
         $value = str_replace("  " , " ", $value);
@@ -2025,25 +2028,12 @@
         }
         else
         {
-          if ($this->m_destInstance->m_descTemplate != NULL)
-          {
-             $descriptordef = $this->m_destInstance->m_descTemplate;
-          }
-          elseif(method_exists($this->m_destInstance,"descriptor_def"))
-          {
-            $descriptordef = $this->m_destInstance->descriptor_def();
-          }
-          else
-          {
-            $descriptordef = $this->m_destInstance->descriptor();
-          }
-
           atkimport("atk.utils.atkstringparser");
-          $parser = new atkStringParser($descriptordef);
+          $parser = new atkStringParser($this->m_destInstance->descriptor());
           $concatFields = $parser->getAllParsedFieldsAsArray($fields);
 
           $db = $this->m_destInstance->getDb();
-           $searchcondition = "(UPPER(".$db->func_concat($concatFields).") LIKE UPPER('%".$value."%'))";
+          $searchcondition = "(UPPER(".$db->func_concat($concatFields).") LIKE UPPER('%".$value."%'))";
           }
           return $searchcondition;
       }
