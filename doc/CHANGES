@@ -8,6 +8,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* Fixed atkManyToManyRelation clean-up of old selected records. [Peter]
 + Added the possibility to add regex exclude patterns to atkDirectoryTraverser
   and used this feature in atkThemeCompiler. [Patrick]
 * Changed the tbsooo interface to be more compatible with odt file generation

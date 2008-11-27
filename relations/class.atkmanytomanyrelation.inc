@@ -464,7 +464,9 @@
         $filter = "NOT IN ('".implode("','",$checked)."')";
 
       $selector = "(".$this->_getLoadWhereClause($record).")".($filter!=""?" AND ".$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()." $filter":"");
-
+      $selector .= " AND ".$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()." IS NOT NULL";
+      
+      
       //append the store deletion filter (if set)
       if($this->m_store_deletion_filter!="")
       {
