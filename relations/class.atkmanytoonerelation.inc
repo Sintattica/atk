@@ -2028,8 +2028,21 @@
         }
         else
         {
+          if ($this->m_destInstance->m_descTemplate != NULL)
+          {
+            $descriptordef = $this->m_destInstance->m_descTemplate;
+          }
+          elseif(method_exists($this->m_destInstance,"descriptor_def"))
+          {
+            $descriptordef = $this->m_destInstance->descriptor_def();
+          }
+          else
+          {
+            $descriptordef = $this->m_destInstance->descriptor();
+          }
+
           atkimport("atk.utils.atkstringparser");
-          $parser = new atkStringParser($this->m_destInstance->descriptor());
+          $parser = new atkStringParser($descriptordef);
           $concatFields = $parser->getAllParsedFieldsAsArray($fields);
 
           $db = $this->m_destInstance->getDb();
