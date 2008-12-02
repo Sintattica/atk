@@ -245,7 +245,7 @@ class atkMetaCompiler
     {
       $code .= 
         "useattrib('atkmlselectorattribute');\n".
-        "\$node->add(new atkMlSelectorAttribute())\n\n";
+        "\$node->add(new atkMlSelectorAttribute());\n\n";
     }       
     
     foreach ($attrs as $name => $data) 
