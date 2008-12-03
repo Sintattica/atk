@@ -109,7 +109,8 @@ Changes in ATK 6.3
   fixes problem with inline editing in the datagrid. [Lineke]
 * Use the getOrderByStatement function of the columnconfig class in the 
   selectDb call in the view action. [Lineke] 
-
++ Added support for multiple error handlers and added a Zend Platform 
+  error handler. [MarkW]
 
 Changes in prior versions
 -------------------------

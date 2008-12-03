@@ -112,8 +112,8 @@
       atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
 
       // we must die. we can't even output anything anymore..
-      // we can mail though.
-      mailreport();
+      // we can do something with the info though.
+      handleError();
       $output = atkOutput::getInstance()->outputFlush();
       die;
     }
@@ -266,7 +266,7 @@
    * The difference is, that this is also displayed when debugging is turned
    * off.
    *
-   * If errorreporting by email is turned on, the errormessages are also mailed
+   * If errorreporting by email is turned on, the errormessages are also handled (from atkOutput)
    *
    * @param string $txt the text to display
    */
@@ -920,155 +920,33 @@
 
   /**
    * Send a detailed error report to the maintainer.
+   * 
    */
   function mailreport()
   {
-    global $g_error_msg, $g_debug_msg, $g_sessionManager, $g_sessionData, $g_user, $g_modules;
-    $config_mailreport = atkconfig("mailreport");
-    $txt_app_title = atktext("app_title");
-
-    if ($config_mailreport!="") // only if enabled..
+    global $g_error_msg, $g_debug_msg;
+    include_once(atkconfig('atkroot'). 'atk/errors/class.atkerrorhandlerbase.inc');
+    $errorHandlerObject = atkErrorHandlerBase::get('mail', array('mailto'=>atkconfig('mailreport')));
+    $errorHandlerObject->handle($g_error_msg, $g_debug_msg);
+  }
+  
+  /**
+   * Handle errors that occurred in ATK, available handlers from /atk/errors/ can be added to 
+   * the error_handlers config.
+   *
+   */
+  function handleError()
+  {
+    global $g_error_msg, $g_debug_msg;
+    include_once(atkconfig('atkroot'). 'atk/errors/class.atkerrorhandlerbase.inc');
+    $errorHandlers = atkconfig('error_handlers', array('mail'=>array('mailto' => atkconfig('mailreport'))));
+    foreach ($errorHandlers as $key => $value)
     {
-      $subject = "[".$_SERVER["SERVER_NAME"]."] $txt_app_title error";
-
-      $defaultfrom = sprintf("%s <%s@%s>", $txt_app_title, atkconfig("identifier", "atk"), $_SERVER["SERVER_NAME"]);
-      $from = atkconfig("mail_sender", $defaultfrom);
-
-      $body = "Hello,\n\nAn error seems to have occurred in the atk application named '$txt_app_title'.\n";
-      $body.= "\nThe errormessage was:\n\n".implode("\n",is_array($g_error_msg)?$g_error_msg:array())."\n";
-      $body.= "\nA detailed report follows:\n";
-      $body.= "\nPHP Version: ".phpversion()."\n\n";
-
-      $body.= "\nDEBUGMESSAGES\n".str_repeat("-",70)."\n";
-
-      $lines = array();
-      for($i=0, $_=count($g_debug_msg);$i<$_;$i++)
-      {
-        $lines[] = _wordwrap(html_entity_decode(preg_replace('(\[<a.*</a>\])','',$g_debug_msg[$i])));
-      }
-      $body.= implode("\n",$lines);
-
-      if (is_array($_GET))
-      {
-        $body.= "\n\n_GET\n".str_repeat("-",70)."\n";
-        foreach ($_GET as $key=>$value)
-        {
-          $body.=_wordwrap($key.str_repeat(" ",max(1,20-strlen($key)))." = ".var_export($value,1))."\n";
-        }
-      }
-
-      if (function_exists("getallheaders"))
-      {
-        $request = getallheaders();
-        if (count($request)>0)
-        {
-          $body.= "\n\nREQUEST INFORMATION\n".str_repeat("-",70)."\n";
-          foreach($request as $key=>$value)
-          {
-            $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
-          }
-        }
-      }
-
-      if (is_array($_POST))
-      {
-        $body.= "\n\n_POST\n".str_repeat("-",70)."\n";
-        foreach ($_POST as $key=>$value)
-        {
-          $body.=_wordwrap($key.str_repeat(" ",max(1,20-strlen($key)))." = ".var_export($value,1))."\n";
-        }
-      }
-
-      if (is_array($_COOKIE))
-      {
-        $body.= "\n\n_COOKIE\n".str_repeat("-",70)."\n";
-        foreach ($_COOKIE as $key=>$value)
-        {
-          $body.=_wordwrap($key.str_repeat(" ",max(1,20-strlen($key)))." = ".var_export($value,1))."\n";
-        }
-      }
-
-      $body.= "\n\nATK CONFIGURATION\n".str_repeat("-",70)."\n";
-      foreach ($GLOBALS as $key=>$value)
-      {
-        if (substr($key,0,7)=="config_")
-        {
-          $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
-        }
-      }
-
-      $body.= "\n\nMODULE CONFIGURATION\n".str_repeat("-",70)."\n";
-      foreach ($g_modules as $modname => $modpath)
-      {
-        $modexists = file_exists($modpath) ? " (path exists)" : " (PATH DOES NOT EXIST!)";
-        $body.=_wordwrap($modname.":".str_repeat(" ",max(1,20-strlen($modname))).var_export($modpath,1).$modexists)."\n";
-      }
-
-      $body.= "\n\nCurrent User:\n".str_repeat("-",70)."\n";
-      if (is_array($g_user) && count($g_user))
-      {
-        foreach($g_user as $key => $value)
-        {
-          $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
-        }
-      }
-      else $body.= "Not known\n";
-
-      if (is_object($g_sessionManager))
-      {
-        $body.= "\n\nATK SESSION\n".str_repeat("-",70);
-        $body.= "\nNamespace: ".$g_sessionManager->m_namespace."\n";
-        if (isset($g_sessionData[$g_sessionManager->m_namespace]["stack"]))
-        {
-          $stack = $g_sessionData[$g_sessionManager->m_namespace]["stack"];
-          for($i=0;$i<count($stack);$i++)
-          {
-            $body.="\nStack level $i:\n";
-            $item = isset($stack[$i]) ? $stack[$i] : null;
-            if (is_array($item))
-            {
-              foreach ($item as $key=>$value)
-              {
-                $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
-              }
-            }
-          }
-        }
-        if (isset($g_sessionData[$g_sessionManager->m_namespace]["globals"]))
-        {
-          $ns_globals = $g_sessionData[$g_sessionManager->m_namespace]["globals"];
-          if(count($ns_globals)>0)
-          {
-            $body.="\nNamespace globals:\n";
-            foreach ($ns_globals as $key=>$value)
-            {
-              $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
-            }
-          }
-        }
-        if (isset($g_sessionData["globals"]))
-        {
-          $globals = $g_sessionData["globals"];
-          if (count($globals)>0)
-          {
-            $body.="\nGlobals:\n";
-            foreach ($globals as $key=>$value)
-            {
-              $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
-            }
-          }
-        }
-      }
-
-      $body.= "\n\nSERVER INFORMATION\n".str_repeat("-",70)."\n";
-
-      foreach ($_SERVER as $key=>$value)
-      {
-        $body.=_wordwrap($key.str_repeat(" ",max(1,20-strlen($key)))." = ".var_export($value,1))."\n";
-      }
-
-      mail($config_mailreport,$subject,$body,"From: $from");
-    }
+      if (is_numeric($key))
+        $key = $value;
+      $errorHandlerObject = atkErrorHandlerBase::get($key, $value);
+      $errorHandlerObject->handle($g_error_msg, $g_debug_msg);
+    }    
   }
 
 
