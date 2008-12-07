@@ -1,6 +1,6 @@
 {atkconfig var="theme_logo" smartyvar="theme_logo"}
 <div id="banner">
-  <div id="bannerLogo"><img src="{if empty($theme_logo)}{atkthemeimg logo.jpg}{else}{$theme_logo}{/if}" alt="Logo" /></div>
+  <div id="bannerLogo"><a href="index.php"><img border="0" src="{if empty($theme_logo)}{atkthemeimg logo.jpg}{else}{$theme_logo}{/if}" alt="Logo" /></a></div>
   <div id="bannerCustomImage"></div>
   <div id="topLinks">
   

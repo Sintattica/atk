@@ -2583,7 +2583,7 @@
       }
 
       $url = addslashes(partial_url($this->getOwnerInstance()->atkNodeType(), $mode == "add" ? "add" : "edit", "attribute.".$this->fieldName().".refresh", array("atkfp" => $fieldprefix)));
-      $code = "ATK.Attribute.refresh('$url', '".($focusFirstFormEl ? 'true' : 'false')."');";
+      $code = "ATK.Attribute.refresh('$url', ".($focusFirstFormEl ? 'true' : 'false').");";
       return $code;
     }
 
