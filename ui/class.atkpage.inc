@@ -178,6 +178,17 @@
         }
       }
     }
+    
+    
+    /**
+     * Unregister all registered javascripts
+     *
+     */
+    function unregister_all_scripts()
+    {
+      $this->m_scriptfiles=array();
+    }
+    
 
     /**
      * Return all javascript files
@@ -628,13 +639,6 @@
       return $page;
     }
 
-    /**
-     * Default constructor.
-     * @access private
-     */
-    function atkPage()
-    {
-    }
 
     /**
      * Check if the page is empty (no content).
