@@ -146,7 +146,7 @@ class atkMetaNode extends atkNode
     atkimport('atk.utils.atktmpfile');
     $file = new atkTmpFile("meta/".$this->getModule()."/".$this->getType().".php");
     $module = getModule($this->getModule());
-    if ($file->exists() && ($module == null || filemtime($file->getPath()) > filemtime($module->getNodeFile($this->atkNodeType()))))
+    if ($file->exists() && ($module == null || !file_exists($module->getNodeFile($this->atkNodeType())) || filemtime($file->getPath()) > filemtime($module->getNodeFile($this->atkNodeType()))))
     {
       $node = $this;
       include($file->getPath());
