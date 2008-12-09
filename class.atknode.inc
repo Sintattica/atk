@@ -4107,7 +4107,7 @@
       // If allfields is set, we load the entire record.. otherwise, we only
       // load the important fields (descriptor and primary key fields)
       // this is mainly used by onetoonerelation.
-      if ($allfields || $mode=="copy")
+      if ($allfields)
       {
         $usedFields = array_keys($this->m_attribList);
       }

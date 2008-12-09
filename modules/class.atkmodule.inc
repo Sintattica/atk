@@ -29,6 +29,14 @@
    */
   class atkModule
   {
+    /**
+     * We keep track if the node currently being instantiated is an
+     * overloader or not.
+     *
+     * @var boolean
+     */
+    static $s_isOverloader = false;
+    
     var $m_name;
 
     /**
@@ -143,7 +151,7 @@
      * @param $node module/node string
      * @return (overloader) module/node string
      */
-    function &nodeOverloader($node)
+    function nodeOverloader($node)
     {
       global $g_overloaders;
 
@@ -151,14 +159,16 @@
       if (!empty($g_overloaders[$node]))
       {
         atkdebug("Using overloader '".$g_overloaders[$node]."' for class '".$node."'");
-        return newNode($g_overloaders[$node], FALSE);
+        self::$s_isOverloader = true;
+        $node = newNode($g_overloaders[$node], FALSE);
+        self::$s_isOverloader = false;        
+        return $node;
       }
 
       /* no overloader */
       else
       {
-        $tmp = NULL;
-        return $tmp;
+        return null;
       }
     }
 
@@ -231,7 +241,10 @@
 
       // set the current module scope, this will be retrieved in atkNode
       // to set it's $this->m_module instance variable in an early stage
-      atkModule::setModuleScope($module);
+      if (!self::$s_isOverloader)
+      {
+        atkModule::setModuleScope($module);
+      }
 
       /* now that we have included the node source file, we check
        * for overloaders (because overloaders might need the included file!)
@@ -240,7 +253,12 @@
       if ($overloader != NULL)
       {
         $overloader->m_module = $module;
-        atkModule::resetModuleScope();
+        
+        if (!self::$s_isOverloader)
+        {
+          atkModule::resetModuleScope();
+        }
+        
         return $overloader;
       }
 
@@ -248,7 +266,12 @@
       $type = getNodeType($node);
       $node =& new $type();
       $node->m_module = $module;
-      atkModule::resetModuleScope();
+      
+      if (!self::$s_isOverloader)
+      {
+        atkModule::resetModuleScope();
+      }
+      
       return $node;
     }
 

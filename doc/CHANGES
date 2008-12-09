@@ -113,6 +113,14 @@ Changes in ATK 6.3
   selectDb call in the view action. [Lineke] 
 + Added support for multiple error handlers and added a Zend Platform 
   error handler. [MarkW]
++ Added support for a custom function to determine the descriptor def in the
+  getConcatFilter function in the atkmanytoonerelation. This can be used if the
+  destination node overrides the descriptor function. [Lineke]
+* Removed check for mode copy in the addToQuery function in the atknode. This
+  can cause problems when copying a record with a onetomanyrelation.
+  [Lineke]
+* Changes in atkmodule to correctly determine the destination for a 
+  onetomanyrelation in an overloader of a metanode. [Peter,Lineke]
 
 Changes in prior versions
 -------------------------

@@ -207,6 +207,14 @@
      * @var boolean
      */
     var $m_useFilterForAddLink = true;
+    
+    /**
+     * Set a function to use for determining the descriptor in the getConcatFilter function
+     *
+     * @access private
+     * @var string
+     */
+    var $m_concatDescriptorFunction = '';
 
     /**
      * Constructor.
@@ -351,6 +359,27 @@
     function setUseFilterForAddLink($useFilter)
     {
       $this->m_useFilterForAddLink = $useFilter;
+    }
+    
+    /**
+     * Set the function for determining the descriptor in the getConcatFilter function
+     * This function should be implemented in the destination node
+     *
+     * @param string $function
+     */
+    function setConcatDescriptorFunction($function)
+    {
+      $this->m_concatDescriptorFunction = $function;
+    }
+    
+    /**
+     * Return the function for determining the descriptor in the getConcatFilter function
+     *
+     * @return string
+     */
+    function getConcatDescriptorFunction()
+    {
+      return $this->m_concatDescriptorFunction;
     }
 
     /**
@@ -2028,7 +2057,12 @@
         }
         else
         {
-          if ($this->m_destInstance->m_descTemplate != NULL)
+          $function = $this->getConcatDescriptorFunction();
+          if ($function != '' && method_exists($this->m_destInstance, $function))
+          {
+            $descriptordef = $this->m_destInstance->$function();
+          }
+          elseif ($this->m_destInstance->m_descTemplate != NULL)
           {
             $descriptordef = $this->m_destInstance->m_descTemplate;
           }
@@ -2047,8 +2081,8 @@
 
           $db = $this->m_destInstance->getDb();
           $searchcondition = "(UPPER(".$db->func_concat($concatFields).") LIKE UPPER('%".$value."%'))";
-          }
-          return $searchcondition;
+        }
+        return $searchcondition;
       }
       return false;
     }
