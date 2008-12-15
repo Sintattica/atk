@@ -47,6 +47,10 @@
         if ($this->_checkLocked()) return;
 
         if (!$this->checkAttributes()) return;
+
+        // Clear the atkfilter postvar, if we don't it will hold filters from previous actions and it will break stuff.
+        unset($this->m_postvars['atkfilter']);
+
         // If we got here, then the node is not locked and we haven't displayed the
         // confirmation page yet, so we display it
         $page = &$this->getPage();

@@ -593,20 +593,37 @@
         for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
         {
           $primkeyattr = &$this->m_ownerInstance->m_attribList[$ownerfields[$i]];
-          $filterelems[] = $this->m_refKey[0].".".$ownerfields[$i]."='".$this->escapeSQL($primkeyattr->value2db($record))."'";
+          $filterelems[] = $this->m_refKey[0].".".$ownerfields[$i]."='".$this->escapeSQL($primkeyattr->value2db($record))."'";         
         }
       }
       else
       {
         for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
         {
-          $filterelems[] = $this->m_refKey[$i]."='".$this->escapeSQL($record[$ownerfields[$i]])."'";
+          $filterelems[] = $this->_addTablePrefix($this->m_refKey[$i])."='".$this->escapeSQL($record[$ownerfields[$i]])."'";
         }
       }
 
       return $filterelems;
     }
 
+    /**
+     * Prefix the passed column name with the table name if there is no prefix in the column name yet.
+     *
+     * @param string $columnName
+     * @param string $destAlias
+     * @return string
+     */
+    function _addTablePrefix($columnName, $destAlias = '')
+    {
+      $prefix = '';
+      if (strpos($columnName, '.') === false)
+      {
+        $prefix = $destAlias ? $destAlias : ($this->m_destInstance->getTable()) . ".";
+      }
+      return $prefix.$columnName;
+    }
+    
     /**
      * Attempts to get a translated label which can be used when composing an "add" link
      *
@@ -702,7 +719,7 @@
 
         if (!$primkeyattr->isEmpty($record))
         {
-          $whereelems[] = $this->m_destInstance->m_table.".".$this->m_refKey[$i]."='".$primkeyattr->value2db($record)."'";
+          $whereelems[] = $this->_addTablePrefix($this->m_refKey[$i])."='".$primkeyattr->value2db($record)."'";
         }
       }
 
@@ -793,7 +810,7 @@
       for ($i=0, $_i = count($this->m_refKey); $i<$_i; $i++)
       {
          $primkeyattr = &$this->m_ownerInstance->m_attribList[$ownerfields[$i]];
-         $whereelems[] = $rel->m_table.".".$this->m_refKey[$i]."='".$primkeyattr->value2db($record)."'";
+         $whereelems[] = $this->_addTablePrefix($this->m_refKey[$i])."='".$primkeyattr->value2db($record)."'";
       }
       $where = implode(" AND ", $whereelems);
 
@@ -909,15 +926,12 @@
       if ($ownerAlias == "")
         $ownerAlias = $this->m_ownerInstance->m_table;
 
-      if ($destAlias == "")
-        $destAlias = $this->m_destInstance->m_table;
-
       $conditions = array();
       $ownerfields = $this->getOwnerFields();
 
       for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++)
       {
-        $conditions[] = $destAlias.".".$this->m_refKey[$i]."=".$ownerAlias.".".$ownerfields[$i];
+        $conditions[] = $this->_addTablePrefix($this->m_refKey[$i], $destAlias)."=".$ownerAlias.".".$ownerfields[$i];
       }
 
       return implode(" AND ", $conditions);
