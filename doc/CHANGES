@@ -121,6 +121,9 @@ Changes in ATK 6.3
   [Lineke]
 * Changes in atkmodule to correctly determine the destination for a 
   onetomanyrelation in an overloader of a metanode. [Peter,Lineke]
+* Bugfix in atkmanytoonerelation autocomplete. Unescape the value of the 
+  innerHTML of the selection, because charaters like & would be displayed
+  as &amp; in the textfield. [Peter,Lineke]
 
 Changes in prior versions
 -------------------------

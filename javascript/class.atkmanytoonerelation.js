@@ -170,7 +170,7 @@ Object.extend(Object.extend(ATK.ManyToOneRelation.AdvancedAutocompleter.prototyp
     var label = labelEl != null ? labelEl.innerHTML : '';
 
     this.valueElement.value = value;
-    this.element.value = label;
+    this.element.value = label.unescapeHTML();
     this.element.focus();
     this.element.select();
 
