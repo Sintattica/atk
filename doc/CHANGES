@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* Fixed column length support for the decimal, double and float types in the 
+  mysql driver. [Mvdvelden]
 * Fixed the missing getDbStatus method in atkDb. [Mvdvelden]
 * Fixed bug which caused the first field always to be selected after
   depended attribute refresh. [Peter]

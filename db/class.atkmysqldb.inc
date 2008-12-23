@@ -495,7 +495,9 @@
         $result = array();
 
         if ($full)
+        {
           $result["num_fields"] = $count;
+        }
 
         for ($i=0; $i<$count; $i++)
         {
@@ -504,17 +506,26 @@
           $result[$i]["name"]       = @mysql_field_name($id, $i);
           $result[$i]["type"]       = @mysql_field_type($id, $i);
           $result[$i]["gentype"]    = $ddl->getGenericType($result[$i]['type']);
-          $result[$i]["len"]        = @mysql_field_len($id, $i);
-          $result[$i]["flags"]      = explode(' ', @mysql_field_flags($id, $i));
+          
+          $len = $this->getColumnLength($table, $result[$i]["name"], $result[$i]["gentype"]);
+          if ($len === false)
+          {
+            $len = @mysql_field_len($id, $i);
+          }
 
-          $result[$i]["flags"] =
+          $result[$i]["len"]        = $len; 
+          
+          $result[$i]["flags"]      = explode(' ', @mysql_field_flags($id, $i));
+          $result[$i]["flags"]      =
             (in_array('primary_key',    $result[$i]["flags"]) ? MF_PRIMARY        : 0) |
             (in_array('unique_key',     $result[$i]["flags"]) ? MF_UNIQUE         : 0) |
             (in_array('not_null',       $result[$i]["flags"]) ? MF_NOT_NULL       : 0) |
             (in_array('auto_increment', $result[$i]["flags"]) ? MF_AUTO_INCREMENT : 0);
 
           if ($full)
+          {
             $result["meta"][$result[$i]["name"]] = $i;
+          }
         }
 
         /* free result */
@@ -523,6 +534,59 @@
         return $result;
       }
       return array();
+    }
+    
+    /**
+     * Mysql_field_len returns unusable results for decimal,float and double column types.
+     * This method returns a number format, e.g.: '6,2' or false in case of failure OR 
+     * if the field type does not support a floating point (e.g. for integer fields) so it can
+     * fall back on mysql_field_len()
+     *
+     * @param string $tableName
+     * @param string $columnName
+     * @param string $columnType
+     * @return false|string e.g. '6,2'
+     */
+    public function getColumnLength($tableName, $columnName, $columnType)
+    {
+      // Lookup cache
+      static $metaData  = array();
+      
+      // We check for a ATK normalized column type !
+      if ($columnType === 'decimal')
+      {
+        $columnName = strtolower($columnName);
+
+        // Check for 'cached' results, to avoid query lookups
+        if (!isset($metaData[ $tableName ][ $columnName ]))
+        {
+          $metaQuery  = mysql_query('SHOW COLUMNS FROM '. $tableName, $this->m_link_id);
+          while (($metaResult = mysql_fetch_assoc($metaQuery)) !== false)
+          {
+            $metaData[ $tableName ][ strtolower($metaResult['Field']) ] = $metaResult;
+          }
+        }
+        
+        // If this would return false, we query for a non-existant column name
+        if (isset($metaData[ $tableName ][ $columnName ]['Type']))
+        {
+          $type = $metaData[ $tableName ][ $columnName ]['Type'];
+
+          // Figuring out the length output.
+          if (($open = strpos($type, '(')) !== false)
+          {
+            $close  = strpos($type, ')', $open) - 1;
+            return substr($type, $open + 1, $close - $open);
+          }
+          else 
+          {
+            atkwarning('Unexpected column type format, falling back on mysql_field_len()');
+          }
+        }
+      }
+
+      // Returning false, expecting a fall back on mysql_field_len()
+      return false;
     }
 
     /**

@@ -135,8 +135,7 @@
       list($tmp_size, $decimals) = split(",", $size);
       $tmp_size+=intval($decimals); // we should add the decimals to the size, since
                             // size is specified including the decimals.
-      $size = $tmp_size.",".$decimals;
-      return $size;
+      return sprintf('%d,%d', $tmp_size, $decimals);
     }
 
     /**

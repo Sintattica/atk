@@ -71,6 +71,7 @@
           return "number";
         case "float":
         case "real":
+        case "double":
           return "decimal";
         case "varchar":
         case "char":
