@@ -36,7 +36,9 @@ function showCalendar(id, bindname, format, dateattr)
   {
     // get current value from dateattribute widgets
     var val = ATK.DateAttribute.getValue(id);
-    calendar.parseDate(val.year + '-' + val.month + '-' + val.day);
+	var year = val.year;
+	if(year=='') year = new Date().getFullYear();
+    calendar.parseDate(year + '-' + val.month + '-' + val.day);
   }
   else
   {
