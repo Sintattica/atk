@@ -1140,6 +1140,35 @@
     {
       $this->m_haltonerror = $state;
     }
+    
+    /**
+     * Check if current db is present and acceptable for current user
+     *
+     * @return DB_SUCCESS if
+     */
+    function getDbStatus()
+    {
+      // We don't want the db class to display error messages, because
+      // we handle the error ourselves.
+      $curhaltval = $this->m_haltonerror;
+      $this->m_haltonerror = false;
+    
+      $res = $this->connect();
+    
+      if ($res === DB_SUCCESS && (strpos($this->m_type, "mysql") === 0))
+      {
+        // This can't be trusted. Mysql returns DB_SUCCESS even
+        // if the user doesn't have access to the database. We only get an
+        // error for this after we performed the first query.
+        $this->table_names();  // this triggers a query
+        $res = $this->_translateError( $this->getDbErrno() );
+      }
+    
+      $this->m_haltonerror = $curhaltval;
+    
+      return $res;
+    }
+    
   }
 
 ?>

@@ -8,6 +8,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* Fixed the missing getDbStatus method in atkDb. [Mvdvelden]
 * Fixed bug which caused the first field always to be selected after
   depended attribute refresh. [Peter]
 * Fixed atkManyToManyRelation clean-up of old selected records. [Peter]
