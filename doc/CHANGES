@@ -125,8 +125,10 @@ Changes in ATK 6.3
 * Changes in atkmodule to correctly determine the destination for a 
   onetomanyrelation in an overloader of a metanode. [Peter,Lineke]
 * Bugfix in atkmanytoonerelation autocomplete. Unescape the value of the 
-  innerHTML of the selection, because charaters like & would be displayed
+  innerHTML of the selection, because characters like & would be displayed
   as &amp; in the textfield. [Peter,Lineke]
+* Bugfix in updatehandler when using the NF_TRACK_CHANGES flag. The select
+  query to select the original record should not use the postvars. [Lineke]
 
 Changes in prior versions
 -------------------------

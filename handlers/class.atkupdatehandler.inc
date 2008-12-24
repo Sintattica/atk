@@ -179,8 +179,13 @@
     {
       $db = &$this->m_node->getDb();
       
+      // empty the postvars because we don't want to use these
+      $postvars = $this->getNode()->m_postvars;
+      $this->getNode()->m_postvars = array();
       // load original record if needed
       $this->getNode()->trackChangesIfNeeded($record);
+      // put the postvars back
+      $this->getNode()->m_postvars = $postvars;
       
       if (!$this->m_node->executeTrigger("preUpdate", $record) ||
           !$this->m_node->validate($record, "update") ||
@@ -289,8 +294,13 @@
      */
     function handleProcess($record)
     {
+      // empty the postvars because we don't want to use these
+      $postvars = $this->getNode()->m_postvars;
+      $this->getNode()->m_postvars = array();
       // load original record if needed
       $this->getNode()->trackChangesIfNeeded($record);
+      // put the postvars back
+      $this->getNode()->m_postvars = $postvars;
 
       // just before we validate the record we call the preUpdate() to check if the record needs to be modified
       $this->m_node->executeTrigger("preUpdate", $record);
