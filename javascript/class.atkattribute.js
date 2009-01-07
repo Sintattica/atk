@@ -15,7 +15,15 @@ ATK.Attribute = {
 
     for (var i = 0; i < elements.length; i++) {
       if (elements[i].name && elements[i].name.substring(0, 3) != 'atk') {
-        var queryComponent = Form.Element.serialize(elements[i]);
+        if (elements[i].className=='shuttle_select') {
+          if (elements[i].name.substring(elements[i].name.length-4) != '_sel') {
+            var queryComponent = this.serializeShuttle(elements[i]);
+          } else {
+            var queryComponent = null;
+          }
+        } else {
+          var queryComponent = Form.Element.serialize(elements[i]);
+        }
         if (queryComponent)
           queryComponents.push(queryComponent);
       }
@@ -60,6 +68,19 @@ ATK.Attribute = {
     */
 
     new Ajax.Request(url, { method: 'post', parameters: params, evalScripts: true, onComplete: func });
+  },
+
+  serializeShuttle: function(element) {
+    var values, length = element.length;
+    if (!length) return null;
+
+    for (var i = 0, values = []; i < length; i++) {
+      var opt = element.options[i];
+      values.push(Form.Element.Serializers.optionValue(opt));
+    }
+    var pair = {};
+    pair[element.name] = values;
+    return Object.toQueryString( pair );
   },
 
   refreshDisplay: function(url) {

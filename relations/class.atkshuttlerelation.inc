@@ -33,7 +33,28 @@
   class atkShuttleRelation extends atkManyToManyRelation
   {
     var $m_maxlistwidth = null;
-    
+
+    /**
+     * Renders the onchange code on the page.
+     *
+     * @access private
+     * @param String $fieldprefix The prefix to the field
+     */
+    function _renderChangeHandler($fieldprefix)
+    {
+      if (count($this->m_onchangecode))
+      {
+        $page = &$this->m_ownerInstance->getPage();
+        $page->register_scriptcode("
+    function ".$this->getHtmlId($fieldprefix)."_onChange()
+    {
+      el = $('".$this->getHtmlId($fieldprefix).'[]['.$this->getRemoteKey().']'."');
+      {$this->m_onchangehandler_init}
+      ".implode("\n      ", $this->m_onchangecode)."
+    }\n");
+      }
+    }
+
     /**
      * Return a piece of html code to edit the attribute
      * @param $record Current record
@@ -43,6 +64,8 @@
     {
       $this->createDestination();
       $this->createLink();
+
+      $this->_renderChangeHandler($fieldprefix);
 
       $selectedPk = array();
 
@@ -59,7 +82,7 @@
       }
 
       $recordset = $this->_getSelectableRecords($record, $mode);
-        
+
       $left = array();
       $right = array();
       $width = 100;
@@ -77,7 +100,7 @@
         // fancy autowidth detection
         $width = max(strlen($this->m_destInstance->descriptor($recordset[$i]))*10, $width);  
       }
-      
+
       if ($this->m_maxlistwidth)
       {
         $width = min($this->m_maxlistwidth, $width);
@@ -85,20 +108,21 @@
 
       $result = '<table border="0"><tr><td>'.atktext('available', 'atk').':<br/>';
 
-      $leftname = $fieldprefix.$this->fieldName()."_sel";
-      $rightname = $fieldprefix.$this->fieldName().'[]['.$this->getRemoteKey().']';
-      $result.= $this->_renderSelect($leftname, $left, $width, $rightname);
+      $fieldname = $fieldprefix.$this->fieldName();
+      $leftname = $fieldname."_sel";
+      $rightname = $fieldname.'[]['.$this->getRemoteKey().']';
+      $result.= $this->_renderSelect($leftname, $left, $width, $rightname, $fieldname);
 
       $result.= '</td><td valign="center" align="center">';
 
-      $result.= '<input type="button" value="&gt;" onClick="shuttle_move(\''.$leftname.'\', \''.$rightname.'\');"><br/>';
-      $result.= '<input type="button" value="&lt;" onClick="shuttle_move(\''.$rightname.'\', \''.$leftname.'\');"><br/><br/>';
-      $result.= '<input type="button" value="&gt;&gt;" onClick="shuttle_moveall(\''.$leftname.'\', \''.$rightname.'\');"><br/>';
-      $result.= '<input type="button" value="&lt;&lt;" onClick="shuttle_moveall(\''.$rightname.'\', \''.$leftname.'\');">';
+      $result.= '<input type="button" value="&gt;" onClick="shuttle_move(\''.$leftname.'\', \''.$rightname.'\', \''.$fieldname.'\');"><br/>';
+      $result.= '<input type="button" value="&lt;" onClick="shuttle_move(\''.$rightname.'\', \''.$leftname.'\', \''.$fieldname.'\');"><br/><br/>';
+      $result.= '<input type="button" value="&gt;&gt;" onClick="shuttle_moveall(\''.$leftname.'\', \''.$rightname.'\', \''.$fieldname.'\');"><br/>';
+      $result.= '<input type="button" value="&lt;&lt;" onClick="shuttle_moveall(\''.$rightname.'\', \''.$leftname.'\', \''.$fieldname.'\');">';
 
       $result.= '</td><td>'.atktext('selected', 'atk').':<br/>';
 
-      $result.= $this->_renderSelect($rightname, $right, $width, $leftname);
+      $result.= $this->_renderSelect($rightname, $right, $width, $leftname, $fieldname);
 
       // on submit, we must select all items in the right selector, as unselected items
       // will not be posted.
@@ -120,9 +144,9 @@
      * @param String $opposite The name of the list control connected to this list control for shuttle actions
      * @return String piece of html code
      */
-    function _renderSelect($name, $recordset, $width, $opposite)
+    function _renderSelect($name, $recordset, $width, $opposite, $fieldname)
     {
-      $result = '<select class="shuttle_select" id="'.$name.'" name="'.$name.'" multiple size="10" style="width: '.$width.'px;" onDblClick="shuttle_move(\''.$name.'\', \''.$opposite.'\')">';
+      $result = '<select class="shuttle_select" id="'.$name.'" name="'.$name.'" multiple size="10" style="width: '.$width.'px;" onDblClick="shuttle_move(\''.$name.'\', \''.$opposite.'\', \''.$fieldname.'\')">';
       for($i=0, $_i=count($recordset); $i<$_i; $i++)
       {
         $result.= '<option value="'.$recordset[$i][$this->m_destInstance->primaryKeyField()].'">'.$this->m_destInstance->descriptor($recordset[$i]);
@@ -130,7 +154,7 @@
       $result.= '</select>';
       return $result;
     }
-    
+
     /**
      * Set the maximum width of the listboxes.
      *
@@ -139,7 +163,6 @@
     function setMaxListWidth($width)
     {
       $this->m_maxlistwidth = $width;
-      
     }
 
   }

@@ -10,7 +10,13 @@ function shuttle_selectAll(id)
   return true;
 }
 
-function shuttle_move(id1, id2)
+function shuttle_change(name)
+{
+  changefunction = name+'_onChange';
+  eval('if (window.'+changefunction+') window.'+changefunction+'();');
+}
+
+function shuttle_move(id1, id2, name)
 {
   var el1 = document.getElementById(id1);
   var el2 = document.getElementById(id2);
@@ -35,9 +41,10 @@ function shuttle_move(id1, id2)
   {
     el1.options[el1.options.length] = new Option(newel.options[i].text, newel.options[i].value);
   }
+  shuttle_change(name);
 }
 
-function shuttle_moveall(id1, id2)
+function shuttle_moveall(id1, id2, name)
 {
   var el1 = document.getElementById(id1);
   var el2 = document.getElementById(id2);
@@ -48,5 +55,6 @@ function shuttle_moveall(id1, id2)
   }
 
   el1.options.length=0;
+  shuttle_change(name);
 }
 
