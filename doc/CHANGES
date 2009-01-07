@@ -75,6 +75,7 @@ Changes in ATK 6.3
   excluded in the datagrid of the relation even if these fields don't have the
   AF_HIDE_LIST flag. The refkeys are excluded by default. Using the
   setGridExcludes function will overrule the default. [Lineke]
++ Added javascript onchange handler support to shuttle relation. [Guido]
 * Fixed searching in atkManyToOneRelation in extended mode. [Martijn]
 * Warn user for calls to atkNode::primaryKeyField if there is no primary key
   defined. [Max, Peter]
