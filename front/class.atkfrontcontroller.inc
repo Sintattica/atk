@@ -1134,11 +1134,9 @@
       $oldVars = $smarty->get_template_vars();
       $oldSerials = $smarty->_cache_serials;
       $oldCaching = $smarty->caching;
-      $oldForceCompile = $smarty->force_compile;
 
       $smarty->assign($vars);
       $smarty->caching = false;
-      $smarty->force_compile = true;
 
       $result = $smarty->fetch($this->getTemplatePath($template));
 
@@ -1150,7 +1148,6 @@
         $result = $smarty->fetch($layoutTemplatePath);
       }
 
-      $smarty->force_compile = $oldForceCompile;
       $smarty->caching = $oldCaching;
       $smarty->_cache_serials = $oldSerials;
       $smarty->assign($oldVars);

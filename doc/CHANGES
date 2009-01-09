@@ -8,7 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
-* Fixed column length support for the decimal, double and float types in the 
+* Do not force template compilation in the frontcontroller. [Tjeerd]
+* Fixed column length support for the decimal, double and float types in the
   mysql driver. [Mvdvelden]
 * Fixed the missing getDbStatus method in atkDb. [Mvdvelden]
 * Fixed bug which caused the first field always to be selected after
@@ -111,11 +112,11 @@ Changes in ATK 6.3
   columnconfig class to determine the order by clause in the selectDb
   functions. [Lineke]
 * Export now also takes filters from the node into account. [Lineke]
-* Atkdatagrid listarray function also returns the name of the datagrid, 
+* Atkdatagrid listarray function also returns the name of the datagrid,
   fixes problem with inline editing in the datagrid. [Lineke]
-* Use the getOrderByStatement function of the columnconfig class in the 
-  selectDb call in the view action. [Lineke] 
-+ Added support for multiple error handlers and added a Zend Platform 
+* Use the getOrderByStatement function of the columnconfig class in the
+  selectDb call in the view action. [Lineke]
++ Added support for multiple error handlers and added a Zend Platform
   error handler. [MarkW]
 + Added support for a custom function to determine the descriptor def in the
   getConcatFilter function in the atkmanytoonerelation. This can be used if the
@@ -123,9 +124,9 @@ Changes in ATK 6.3
 * Removed check for mode copy in the addToQuery function in the atknode. This
   can cause problems when copying a record with a onetomanyrelation.
   [Lineke]
-* Changes in atkmodule to correctly determine the destination for a 
+* Changes in atkmodule to correctly determine the destination for a
   onetomanyrelation in an overloader of a metanode. [Peter,Lineke]
-* Bugfix in atkmanytoonerelation autocomplete. Unescape the value of the 
+* Bugfix in atkmanytoonerelation autocomplete. Unescape the value of the
   innerHTML of the selection, because characters like & would be displayed
   as &amp; in the textfield. [Peter,Lineke]
 * Bugfix in updatehandler when using the NF_TRACK_CHANGES flag. The select
