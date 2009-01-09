@@ -56,6 +56,23 @@
     }
 
     /**
+     * AtkShuttleRelation expect or an array whith primary keys of the destionation node
+     * or a single value that contains the primary key of the destination node.
+     * 
+     * @param mixed $value
+     */
+    
+    function setInitialValue($value)
+    {
+      if(!is_array($value))
+      {
+        $this->m_initialValue = array($value);
+      }
+      
+      $this->m_initialValue = $value;
+    }
+    
+    /**
      * Return a piece of html code to edit the attribute
      * @param $record Current record
      * @return String piece of html code
@@ -72,7 +89,6 @@
       // first the selected records..
       for ($i=0;$i<count($record[$this->m_name]);$i++)
       {
-
         if(is_array($record[$this->fieldName()][$i][$this->getRemoteKey()]))
           $newselected = $this->m_destInstance->primaryKey($record[$this->m_name][$i][$this->getRemoteKey()]);
         else{
@@ -86,9 +102,11 @@
       $left = array();
       $right = array();
       $width = 100;
+      
+    
       for ($i=0;$i<count($recordset);$i++)
       {
-        if (in_array($this->m_destInstance->primaryKey($recordset[$i]),$selectedPk))
+        if (in_array($this->m_destInstance->primaryKey($recordset[$i]),$selectedPk) || (in_array($recordset[$i][$this->m_destInstance->primaryKeyField()],$this->initialValue()) && $mode=='add'))
         {
           $right[] = $recordset[$i];
         }
