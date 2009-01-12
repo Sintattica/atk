@@ -72,6 +72,22 @@
       $this->m_initialValue = $value;
     }
     
+     /**
+     * Initial value. Returns the initial value for this attribute
+     * which will be used in the add form etc.
+     *
+     * @return mixed initial value for this attribute
+     */
+    function initialValue()
+    {
+      if(!is_array($this->m_initialValue))
+      {
+        return array();
+      }
+      return $this->m_initialValue;
+    }
+    
+    
     /**
      * Return a piece of html code to edit the attribute
      * @param $record Current record
@@ -85,7 +101,6 @@
       $this->_renderChangeHandler($fieldprefix);
 
       $selectedPk = array();
-
       // first the selected records..
       for ($i=0;$i<count($record[$this->m_name]);$i++)
       {
