@@ -132,6 +132,8 @@ Changes in ATK 6.3
   as &amp; in the textfield. [Peter,Lineke]
 * Bugfix in updatehandler when using the NF_TRACK_CHANGES flag. The select
   query to select the original record should not use the postvars. [Lineke]
+* Changed atkExportHandler to use atkUi::renderAction so it uses action.tpl.
+  [Guido]
 
 Changes in prior versions
 -------------------------

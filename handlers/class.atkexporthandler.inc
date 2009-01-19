@@ -70,17 +70,18 @@
     function _getInitHtml()
     {
       $action = dispatch_url($this->m_node->m_module.'.'.$this->m_node->m_type, "export");
-      $content = atktext("export_config_explanation", "atk", $this->m_node->m_type);
-      $content.= '<br><br><form name="entryform" enctype="multipart/form-data" action="'.$action.'" method="post">';
-      $content.= session_form();
-      $content.= '<input type="hidden" name="phase" value="process">';
-      $content.= $this->_getOptions();
 
-      $content.= '<br><br><input type="submit" value="'.atktext("export","atk").'"> ';
-      $content.= atkButton(atktext("back","atk"), "", SESSION_BACK, true);
+      $params = array();
+      $params["formstart"] = '<form name="entryform" enctype="multipart/form-data" action="'.$action.'" method="post">';
+      $params["formstart"] .= session_form();
+      $params["formstart"] .= '<input type="hidden" name="phase" value="process"/>';
+      $params["buttons"][] = '<input class="btn" type="submit" value="'.atkText("export", "atk").'"/>';
+      $params["buttons"][] = atkButton(atktext("back", "atk"), "", SESSION_BACK, true);
+      $params["content"] = atkText("export_config_explanation", "atk", $this->m_node->m_type).'<br/><br/>';
+      $params["content"] .= $this->_getOptions();
+      $params["formend"] = '</form>';
 
-      $content.= '</form><br><br>';
-      return $content;
+      return atkInstance("atk.ui.atkui")->renderAction("export", $params, $this->m_node->m_module);
     }
 
     /**
