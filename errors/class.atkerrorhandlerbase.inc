@@ -1,4 +1,4 @@
-<?
+<?php
 
   /**
    * The atkErrorHandlerObject handles the creation of the error handlers and

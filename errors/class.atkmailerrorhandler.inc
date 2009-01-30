@@ -1,4 +1,4 @@
-<?
+<?php
 
   /**
    * Handles errors by sending them to a specified email address
