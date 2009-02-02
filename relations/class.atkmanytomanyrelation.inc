@@ -477,6 +477,9 @@
 
       if (is_object($rel) && $rel->deleteDb($selector))
       {
+        if (!is_array($record[$this->fieldName()]))
+          return true;
+          
         for ($i=0;$i<count($record[$this->fieldName()]);$i++)
         {
           // magical stuff..
