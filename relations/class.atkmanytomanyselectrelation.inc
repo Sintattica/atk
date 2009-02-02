@@ -135,6 +135,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     }
 
     $result =
+      '<input type="hidden" name="'.$this->getHtmlId($fieldprefix).'" value="" />'.       // Post an empty value if none selected (instead of not posting anything)
       '<div class="atkmanytomanyselectrelation">
          <ul id="'.$id.'_selection" class="atkmanytomanyselectrelation-selection">';
 
