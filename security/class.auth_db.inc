@@ -366,6 +366,11 @@
        return $userlist;
 
      }
+     
+     function setPasswordAllowed()
+     {
+       return true;
+     }
    }
 
 ?>
