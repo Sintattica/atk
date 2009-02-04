@@ -88,7 +88,7 @@
      * Specific implementations of the method may add more information if
      * necessary.
      *
-     * @param String The login of the user to retrieve.
+     * @param String $user The login of the user to retrieve.
      * @return array Information about a user.
      */
     function getUser($user)

@@ -31,7 +31,16 @@
      * Validate user.
      * @param String $user the username
      * @param String $passwd the password
-     * @return boolean True if login is valid, false if not.
+     * @return int AUTH_SUCCESS - Authentication succesful
+     *             AUTH_MISMATCH - Authentication failed, wrong 
+     *                             user/password combination
+     *             AUTH_LOCKED - Account is locked, can not login
+     *                           with current username.
+     *             AUTH_ERROR - Authentication failed due to some 
+     *                          error which cannot be solved by 
+     *                          just trying again. If you return 
+     *                          this value, you *must* also 
+     *                          fill the m_fatalError variable.
      */
     function validateUser($user, $passwd)
     {
