@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* Fixed issue where in some rare occasions the selection was remembered for a
+  MRA action. [Tjeerd]
 + Added initialvalue support to atkshuttlerelation. [Melvin]
 * Do not force template compilation in the frontcontroller. [Tjeerd]
 * Fixed column length support for the decimal, double and float types in the

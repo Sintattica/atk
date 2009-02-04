@@ -128,6 +128,11 @@ function atkSubmitMRA(name, form, target, embedded, ignoreHandler)
   /* count selected selectors */
   var selectorLength = 0;
   
+  // Container for the hidden elements we are about to submit
+  var hiddenInputContainer = document.createElement('span');
+  hiddenInputContainer.style.display = 'none';
+  form.appendChild(hiddenInputContainer);
+  
   for (var i = 0; i < list.length; i++)
   {
     if (list[i].type == 'hidden' || (!list[i].disabled && list[i].checked))
@@ -150,7 +155,7 @@ function atkSubmitMRA(name, form, target, embedded, ignoreHandler)
         input.setAttribute('type', 'hidden');
         input.setAttribute('name', key);
         input.setAttribute('value', value);
-        form.appendChild(input);    
+        hiddenInputContainer.appendChild(input);    
       }
       
       selectorLength++;
@@ -170,7 +175,7 @@ function atkSubmitMRA(name, form, target, embedded, ignoreHandler)
       input.setAttribute('type', 'hidden');
       input.setAttribute('name', 'atkaction');      
       input.setAttribute('value', atkaction);
-      form.appendChild(input);    
+      hiddenInputContainer.appendChild(input);    
     }
     else 
     {
@@ -187,7 +192,7 @@ function atkSubmitMRA(name, form, target, embedded, ignoreHandler)
       input.setAttribute('type', 'hidden');
       input.setAttribute('name', 'atkrecordlist');      
       input.setAttribute('value', name);
-      form.appendChild(input);    
+      hiddenInputContainer.appendChild(input);    
     }
     else 
     {
@@ -205,7 +210,7 @@ function atkSubmitMRA(name, form, target, embedded, ignoreHandler)
       input.setAttribute('type', 'hidden');
       input.setAttribute('name', 'atklevel');      
       input.setAttribute('value', 1);
-      form.appendChild(input);    
+      hiddenInputContainer.appendChild(input);    
     }
     else 
     {
@@ -219,6 +224,11 @@ function atkSubmitMRA(name, form, target, embedded, ignoreHandler)
     
     globalSubmit(form);
     form.submit();
+    
+    // In some rare occasions we have to remove the hidden elements from the 
+    // form because otherwise they are resubmitted eventhough the selection could 
+    // be changed.
+    form.removeChild(hiddenInputContainer);
   }
 }
 
