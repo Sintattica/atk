@@ -619,9 +619,10 @@
       $prefix = '';
       if (strpos($columnName, '.') === false)
       {
-        $prefix = $destAlias ? $destAlias : ($this->m_destInstance->getTable()) . ".";
+        $prefix = $destAlias ? $destAlias : ($this->m_destInstance->getTable());
       }
-      return $prefix.$columnName;
+
+      return $prefix . '.' . $columnName;
     }
     
     /**
