@@ -1163,43 +1163,42 @@
             }
           }
         }
+        
+        if (isset($value[$this->fieldName()]))
+        {
+          $value = $value[$this->fieldName()];
+        }
       }
 
-      if (!$this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_RELATION_AUTOCOMPLETE))
+      if (empty($value))
+      {
+        return '';
+      }
+      else if (!$this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_RELATION_AUTOCOMPLETE))
       {
         // We only support 'exact' matches.
         // But you can select more than one value, which we search using the IN() statement,
         // which should work in any ansi compatible database.
-        if (is_array($value)) // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+        if (!is_array($value)) // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
         {
-          $value = isset($value[0]) ? $value : $value[$this->fieldName()];
-
-          if (!is_array($value)) return '';
-
-          if (count($value)==1) // exactly one value
+          $value = array($value);
+        }
+        
+        if (count($value)==1) // exactly one value
+        {
+          if ($value[0] == "__NONE__")
           {
-            if ($value[0] == "__NONE__")
-            {
-              return $query->nullCondition($table.".".$this->fieldName(), true);
-            }
-            elseif ($value[0] != "")
-            {
-              return $query->exactCondition($table.".".$this->fieldName(),$this->escapeSQL($value[0]));
-            }
+            return $query->nullCondition($table.".".$this->fieldName(), true);
           }
-          else // search for more values using IN()
+          elseif ($value[0] != "")
           {
-            return $table.".".$this->fieldName()." IN ('".implode("','",$value)."')";
+            return $query->exactCondition($table.".".$this->fieldName(),$this->escapeSQL($value[0]));
           }
         }
-        else
+        else // search for more values using IN()
         {
-          return $query->exactCondition($table.".".$this->fieldName(),$this->escapeSQL($value));
+          return $table.".".$this->fieldName()." IN ('".implode("','",$value)."')";
         }
-      }
-      else if (empty($value)) // nothing to search for
-      {
-        return '';
       }
       else // AF_LARGE || AF_RELATION_AUTOCOMPLETE
       {
@@ -1589,43 +1588,67 @@
       return parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
     }
 
-    function getOrderByStatement($extra='', $tableprefix='')
+    /**
+     * Retrieves the ORDER BY statement for the relation.   
+     *
+     * @param Array $extra A list of attribute names to add to the order by
+     *                     statement
+     * @param String $table The table name (if not given uses the owner node's table name)
+     * @param String $direction Sorting direction (ASC or DESC)
+     * @return String The ORDER BY statement for this attribute
+     */
+    function getOrderByStatement($extra='', $table='', $direction='ASC')
     {
       if (!$this->createDestination())
         return parent::getOrderByStatement();
 
+      if (!empty($table))
+      {
+        $table = $table.'_AE_'.$this->fieldName();  
+      }
+      else 
+      {
+        $table = $this->fieldName();
+      }       
+        
       if (!empty($extra) && in_array($extra, $this->m_listColumns))
       {
-        return $this->getDestination()->getAttribute($extra)->getOrderByStatement('', $tableprefix.$this->fieldName().'_AE_');
+        return $this->getDestination()->getAttribute($extra)->getOrderByStatement('', $table, $direction);
       }
 
       $order = $this->m_destInstance->getOrder();
       if (!empty($order))
       {
-        // check for multiple order fields
-        $orderfields = explode(",",$order);
-        $neworderfields = array();
-
-        foreach ($orderfields as $field)
+        $newParts = array();
+        $parts = explode(',', $order);
+        
+        foreach ($parts as $part)
         {
-          list($field, $direction) = explode(' ', trim($field));
-          if(strstr($field, "."))
-            list($table, $fld) = explode('.', $field);
-          else
-            $fld = $field;
-          $field = $this->m_destInstance->m_attribList[$fld]->getOrderByStatement();
-          // @todo what can we do with $direction here? or should we simply ignore it anyway?
+          $part = trim($part);
+          list($field, $fieldDirection) = preg_split('/\s+/', $part);
+          
+          $fieldDirection = strtoupper($fieldDirection);
+          $fieldDirection = empty($fieldDirection) ? 'ASC' : $fieldDirection;
 
-          // realias if destination order contains a tablename.
-          if (strpos($field, $this->m_destInstance->m_table.'.') !== false)
-            $neworderfields[] = str_replace($this->m_destInstance->m_table.'.', $tableprefix.$this->fieldName().'.', $field);
-          else if (strpos($field, '.') === false)
-            $neworderfields[] = str_replace(trim($field), $tableprefix.$this->fieldName().".".trim($field), $field);
-          else
-            $neworderfields[] = $tableprefix.'.'.$field;
+          // if our default direction is DESC (the opposite of the default ASC)
+          // we always have to switch the given direction to be the opposite, e.g.
+          // DESC => ASC and ASC => DESC, this way we respect the default ordering
+          // in the destination node even if the default is descending
+          if ($fieldDirection == 'DESC')
+          {
+            $fieldDirection = $direction == 'DESC' ? 'ASC' : 'DESC';
+          }
+          
+          if (strpos($field, '.') !== false)
+          {
+            list(,$field) = explode('.', $field);
+          }
+          
+          $newPart = $this->getDestination()->getAttribute($field)->getOrderByStatement('', $table, $fieldDirection);
+          $newParts[] = $newPart;
         }
-
-        return implode(",",$neworderfields);
+        
+        return implode(', ', $newParts);
       }
       else
       {
@@ -1635,7 +1658,7 @@
 
         $order = "";
         foreach ($fields as $field)
-          $order .= (empty($order) ? '' : ', ').$tableprefix.'.'.$this->fieldName().".".$field;
+          $order .= (empty($order) ? '' : ', ').$table.".".$field;
 
         return $order;
       }

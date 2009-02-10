@@ -2423,20 +2423,26 @@
 
       return $order;
     }
-
+    
     /**
-     * Retrieves the ORDER BY statement for this attribute's node.     *
+     * Retrieves the ORDER BY statement for this attribute's node.   
      * Derived attributes may override this functionality to implement other
      * ordering statements using the given parameters.
      *
      * @param Array $extra A list of attribute names to add to the order by
      *                     statement
-     * @param String $tableprefix The tableprefix
+     * @param String $table The table name (if not given uses the owner node's table name)
+     * @param String $direction Sorting direction (ASC or DESC)
      * @return String The ORDER BY statement for this attribute
      */
-    function getOrderByStatement($extra='', $tableprefix='')
+    function getOrderByStatement($extra='', $table='', $direction='ASC')
     {
-      return $this->m_ownerInstance->m_table.".".$this->fieldName();
+      if (empty($table))
+      {
+        $table = $this->m_ownerInstance->m_table;
+      }
+      
+      return $table.".".$this->fieldName().($direction ? " {$direction}" : "");
     }
 
     /**

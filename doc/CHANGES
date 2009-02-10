@@ -138,6 +138,10 @@ Changes in ATK 6.3
   query to select the original record should not use the postvars. [Lineke]
 * Changed atkExportHandler to use atkUi::renderAction so it uses action.tpl.
   [Guido]
+* Fixed sorting in atkcolumnconfig, atkattribute and atkmanytoonerelation to
+  take direction into account and sorting of listcolumns in the 
+  manytoonerelation. [Peter, Lineke]
+* Fixed searching on listcolumns in atkmanytoonerelation.[Peter, Lineke]
 
 Changes in prior versions
 -------------------------

@@ -74,15 +74,18 @@ class test_atkManyToOneRelation extends atkTestCase
     $this->assertEqual($attr->getOrderByStatement("name"), "test.id");
     
     $attr->m_destInstance->setOrder("name");
-    $this->assertEqual($attr->getOrderByStatement(), "test.name");
+    $this->assertEqual($attr->getOrderByStatement(), "test.name ASC");
     
     $attr->m_destInstance->setOrder("sortorder desc");
-    $this->assertEqual($attr->getOrderByStatement(), "test.sortorder desc");
+    $this->assertEqual($attr->getOrderByStatement(), "test.sortorder DESC");
+    
+    $attr->m_destInstance->setOrder("sortorder  desc");
+    $this->assertEqual($attr->getOrderByStatement(), "test.sortorder DESC");
     
     $attr->m_destInstance->setOrder("sortorder, name");
-    $this->assertEqual($attr->getOrderByStatement(), "test.sortorder, test.name");
+    $this->assertEqual($attr->getOrderByStatement(), "test.sortorder ASC, test.name ASC");
     
     $attr->m_destInstance->setOrder("sortorder asc , name desc");
-    $this->assertEqual($attr->getOrderByStatement(), "test.sortorder asc , test.name desc");
+    $this->assertEqual($attr->getOrderByStatement(), "test.sortorder ASC, test.name DESC");
   }
 }
