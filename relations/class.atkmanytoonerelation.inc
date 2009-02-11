@@ -1645,6 +1645,12 @@
           }
           
           $newPart = $this->getDestination()->getAttribute($field)->getOrderByStatement('', $table, $fieldDirection);
+          
+          // realias if destination order contains the wrong tablename.
+          if (strpos($newPart, $this->m_destInstance->m_table.'.') !== false)
+          {
+            $newPart= str_replace($this->m_destInstance->m_table.'.', $table.'.', $newPart);
+          }
           $newParts[] = $newPart;
         }
         
