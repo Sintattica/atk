@@ -199,7 +199,7 @@
     if ($level>=0)
     {
       if (hasFlag($flags, DEBUG_HTML))
-        $txt = htmlentities($txt);
+        $txt = atk_htmlentities($txt);
       if (hasFlag($flags, DEBUG_WARNING))
         $txt = "<b>" . $txt . "</b>";
 
@@ -1373,7 +1373,7 @@
       foreach ($ATK_VARS as $key => $val)
       {
         if (!in_array($key, $excludes))
-          $str .= "<input type='hidden' name=\"$key\" value=\"".htmlentities(strval($val))."\">\n";
+          $str .= "<input type='hidden' name=\"$key\" value=\"".atk_htmlentities(strval($val))."\">\n";
       }
       return $str;
     }

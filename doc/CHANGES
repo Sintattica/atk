@@ -142,6 +142,8 @@ Changes in ATK 6.3
   take direction into account and sorting of listcolumns in the 
   manytoonerelation. [Peter, Lineke]
 * Fixed searching on listcolumns in atkmanytoonerelation.[Peter, Lineke]
+* Changed htmlentities into atk_htmlentities. [Sandy]
+* Fixed encoding bug in atkopendocumentwriter (bug #1231) [Mykhaylo,Sandy]
 
 Changes in prior versions
 -------------------------

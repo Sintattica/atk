@@ -2661,7 +2661,7 @@
           $content.= "<ul>";
           for ($i=0, $_i=count($recs); $i<$_i; $i++)
           {
-            $content.="<li>".str_replace(' ', '&nbsp;', htmlentities($this->descriptor($recs[$i])));
+            $content.="<li>".str_replace(' ', '&nbsp;', atk_htmlentities($this->descriptor($recs[$i])));
           }
           $content.= "</ul>";
         }

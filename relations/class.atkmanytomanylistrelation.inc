@@ -127,7 +127,7 @@ class atkManyToManyListRelation extends atkManyToManyRelation
       $selectedStr = in_array($key, $selected) ? ' selected="selected"' : '';
       $value = $row[$this->m_destInstance->primaryKeyField()];
       
-      $result.= '<option value="'.htmlentities($value).'"'.$selectedStr.'>'.$label.'</option>';
+      $result.= '<option value="'.atk_htmlentities($value).'"'.$selectedStr.'>'.$label.'</option>';
     }
     
     $result .= '</select>';

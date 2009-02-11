@@ -82,7 +82,7 @@
       }
       else
       {
-        atkdebug(atk_htmlentities($query));
+        atkdebug(htmlentities($query));
         return true;
       }
       return false;

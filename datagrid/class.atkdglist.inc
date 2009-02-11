@@ -134,7 +134,7 @@ class atkDGList extends atkDGComponent
       }
       else
       {
-        $call = htmlentities($grid->getUpdateCall(array('atkorderby' => $head['order'])));
+        $call = atk_htmlentities($grid->getUpdateCall(array('atkorderby' => $head['order'])));
         $link = '<a href="javascript:void(0)" onclick="'.$call.'">'.$head["title"].'</a>';
         $headercols[] = array("content" => $link);
       }
@@ -164,7 +164,7 @@ class atkDGList extends atkDGComponent
     $sortend="";
     if ($grid->hasFlag(atkDataGrid::EXTENDED_SORT))
     {
-      $call = htmlentities($grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractExtendedSortOverrides'));
+      $call = atk_htmlentities($grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractExtendedSortOverrides'));
       $button = '<input type="button" value="'.atktext("sort").'" onclick="'.$call.'">';
       if ($hasMRA || $grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS))
       {
@@ -199,7 +199,7 @@ class atkDGList extends atkDGComponent
     $searchend="";
     if ($grid->hasFlag(atkDataGrid::SEARCH))
     {
-      $call = htmlentities($grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractSearchOverrides'));
+      $call = atk_htmlentities($grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractSearchOverrides'));
       $buttonType = $grid->isEmbedded() ? "button" : "submit";
       $button = '<input type="'.$buttonType.'" class="btn_search" value="'.atktext("search").'" onclick="'.$call.' return false;">';
       if ($grid->hasFlag(atkDataGrid::EXTENDED_SEARCH))
@@ -305,7 +305,7 @@ class atkDGList extends atkDGComponent
       if ($grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS))
       {
         $select = '<select name="'.$listName.'_atkselector[]">'.
-                    '<option value="'.htmlentities($list["rows"][$i]["selector"]).'"></option>';
+                    '<option value="'.atk_htmlentities($list["rows"][$i]["selector"]).'"></option>';
         for ($j = $grid->getNode()->m_priority_min; $j <= $grid->getNode()->m_priority_max; $j++)
           $select .= '<option value="'.$j.'">'.$j.'</option>';
         $select .= '</select>';
@@ -338,7 +338,7 @@ class atkDGList extends atkDGComponent
             "content" =>
               $inputHTML.'
               <script language="javascript"  type="text/javascript">'.
-                $listName.'["'.htmlentities($list["rows"][$i]["selector"]).'"] = 
+                $listName.'["'.atk_htmlentities($list["rows"][$i]["selector"]).'"] = 
                   new Array("'.implode($list["rows"][$i]["mra"], '","').'");
               </script>',
             "type" => "mra"

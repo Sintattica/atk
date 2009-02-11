@@ -129,7 +129,7 @@
               // is called.
               $value = $this->eolreplace($p_attrib->display($recordset[$i], $mode), $rfeplace);
             }
-            if (atktext("charset") != "" && $decode) $value = html_entity_decode(htmlentities($value, ENT_NOQUOTES, atktext("charset")), ENT_NOQUOTES, atktext("charset"));
+            if (atktext("charset") != "" && $decode) $value = atk_html_entity_decode(atk_htmlentities($value, ENT_NOQUOTES, atktext("charset")), ENT_NOQUOTES, atktext("charset"));
             $output.=$sof.($value==""?$empty:$value).$eof.$fsep;
 
             // Calculate totals..

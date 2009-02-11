@@ -405,8 +405,8 @@
           {
             if (count($list["rows"][$i]["mra"]) > 0)
               $record["cols"][] = array(
-                           "content"=>'<input type="checkbox" name="'.$listName.'_atkselector[]" value="'.htmlentities($list["rows"][$i]["selector"]).'" class="atkcheckbox" onclick="if (this.disabled) this.checked = false">'.
-                                      '<script language="javascript"  type="text/javascript">'.$listName.'["'.htmlentities($list["rows"][$i]["selector"]).'"] = new Array("'.implode($list["rows"][$i]["mra"], '","').'");</script>',
+                           "content"=>'<input type="checkbox" name="'.$listName.'_atkselector[]" value="'.atk_htmlentities($list["rows"][$i]["selector"]).'" class="atkcheckbox" onclick="if (this.disabled) this.checked = false">'.
+                                      '<script language="javascript"  type="text/javascript">'.$listName.'["'.atk_htmlentities($list["rows"][$i]["selector"]).'"] = new Array("'.implode($list["rows"][$i]["mra"], '","').'");</script>',
                             "type" => "mra");
 
             else $record["cols"][] = array("content"=>"");

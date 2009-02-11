@@ -48,6 +48,7 @@
       $processdir = atkconfig("atktempdir") . "documents";
       if (!is_dir($processdir)) mkdir($processdir);
       $this->m_tbsooo->SetProcessDir($processdir);
+			$this->m_tbsooo->SetDataCharset("UTF8");
     }
 
     /**
@@ -75,10 +76,13 @@
       foreach($use_vars as $key => $value)
       {
         if (is_array($value)) {
+        	foreach ($value as $key => &$txtval) 
+					  $txtval = atk_iconv(atktext("charset"),"UTF-8",$txtval);
           $this->m_tbsooo->MergeBlock($key, $value);
         }
         else
         {
+        	$value = atk_iconv(atktext("charset"),"UTF-8",$value);
           $this->m_tbsooo->MergeField($key, $value);
         }
       }

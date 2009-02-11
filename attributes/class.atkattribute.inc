@@ -1421,7 +1421,7 @@
         foreach ($searchModes as $value)
         {
           $selected = $searchMode == $value ? ' selected="selected"' : '';
-          $field .= '<option value="'.$value.'"'.$selected.'>'.htmlentities($this->text("search_".$value)).'</option>';
+          $field .= '<option value="'.$value.'"'.$selected.'>'.atk_htmlentities($this->text("search_".$value)).'</option>';
         }
 
         $field .= '</select>';
@@ -2370,7 +2370,7 @@
         else
         {
           $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($this->fieldName(), $cmd));
-          $res = '<a href="javascript:void(0)" onclick="'.htmlentities($call).'">'.$this->text("column_".$direction).'</a>';
+          $res = '<a href="javascript:void(0)" onclick="'.atk_htmlentities($call).'">'.$this->text("column_".$direction).'</a>';
         }
       }
       return "";
@@ -2403,7 +2403,7 @@
         else
         {
           $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($fieldname, $direction));
-          $res = '<a href="javascript:void(0)" onclick="'.htmlentities($call).'">'.$this->text("column_".$direction).'</a>';
+          $res = '<a href="javascript:void(0)" onclick="'.atk_htmlentities($call).'">'.$this->text("column_".$direction).'</a>';
         }
       }
 
