@@ -146,7 +146,7 @@
      * the file of another record, will result in the file getting a unique
      * sequence number.
      *
-     * @param unknown_type $autonumbering
+     * @param bool $autonumbering
      */
     function setAutonumbering($autonumbering=true)
     {
@@ -506,6 +506,18 @@
                    "filename"=>$rec[$this->fieldName()],"filesize"=>"?");
     }
 
+    /**
+     * Checks if the file has a valid filetype.
+     *
+     * Note that obligatory and unique fields are checked by the
+     * atkNodeValidator, and not by the validate() method itself.
+     *
+     * @param array $record The record that holds the value for this
+     *                      attribute. If an error occurs, the error will
+     *                      be stored in the 'atkerror' field of the record.
+     * @param String $mode The mode for which should be validated ("add" or
+     *                     "update")
+     */
     function validate(&$record, $mode)
     {
       parent::validate($record, $mode);
@@ -719,6 +731,11 @@
       return '';
     }
 
+    /**
+     * Retrieve the list of searchmodes which are supported.
+     *
+     * @return array List of supported searchmodes
+     */
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
@@ -731,6 +748,8 @@
 
     /**
      * Set filename template.
+     * 
+     * @param string $template
      */
     function setFilenameTemplate($template)
     {
@@ -746,6 +765,9 @@
      * filename is returned.
      *
      * @access private
+     * @param array $rec The record
+     * @param string $default The default filename
+     * @return The real filename
      */
     function _filenameMangle($rec, $default)
     {
@@ -758,6 +780,9 @@
     /**
      * Determine the real filename of a file (based on m_filenameTpl).
      * @access public
+     * @param array $rec The record
+     * @param string $default The default filename
+     * @return The real filename based on the filename template
      */
     function filenameMangle($rec, $default)
     {
@@ -842,6 +867,8 @@
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
      * @param array $record Array with values
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
      * @return string Piece of htmlcode
      */
     function hide($record="", $fieldprefix)
@@ -858,6 +885,11 @@
       return $result;
     }
 
+    /**
+     * Return the database field type of the attribute.
+     * @return "string" which is the 'generic' type of the database field for 
+     *         this attribute.
+     */
     function dbFieldType()
     {
       return "string";

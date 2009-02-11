@@ -1627,7 +1627,7 @@
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
-     * @param Array The record that contains the value of this attribute.
+     * @param Array $rec The record that contains the value of this attribute.
      * @param int $level Recursion level if relations point to eachother, an
      *                   endless loop could occur if they keep loading
      *                   eachothers data. The $level is used to detect this
@@ -1994,6 +1994,11 @@
       return ($this->m_label!=""?$this->m_label:$this->text($this->fieldName()));
     }
 
+    /**
+     * Set the label of the attribute
+     *
+     * @param string $label
+     */
     function setLabel($label)
     {
       $this->m_label = $label;
@@ -2022,6 +2027,7 @@
      * taking the AF_NOLABEL and AF_BLANKLABEL flags into account.
      *
      * @param array $record The record holding the value for this attribute.
+     * @param string $mode The mode ("add", "edit" or "view") 
      * @return String The HTML compatible label for this attribute, or an
      *                empty string if the label should be blank, or NULL if no
      *                label at all should be displayed.
@@ -2042,6 +2048,7 @@
      *
      * It can be overridden to determine when to use store() and when not to
      * use it.
+     * @param string $mode The storage mode ("add", "update" or null for all)
      * @return boolean true if it has a store method or false if it hasn't.
      * @deprecated Use storageType($mode) instead, which has more detailed
      *             information about storage.
@@ -2068,7 +2075,7 @@
       $this->m_storageType[$mode] = $type;
     }
 
-    /*
+    /**
      * Determine the storage type of this attribute.
      *
      * With this method, the attribute tells the framework whether it wants
@@ -2323,6 +2330,16 @@
        return 'atksearchmode_AE_'.$prefix.$this->formName();
     }
 
+    /**
+     * Retrieves the sort options and sort order.
+     *
+     * @param atkColumnConfig $columnConfig The config that contains options for
+     *                                      extended sorting and grouping to a
+     *                                      recordlist.
+     * @param String $fieldprefix The prefix of the attribute
+     * @param atkDataGrid $grid The grid that this attribute lives on.
+     * @return String HTML
+     */
     function extendedSort(&$columnConfig, $fieldprefix='', $grid=null)
     {
       $result = $this->sortOptions($columnConfig, $fieldprefix, $grid).' '.$this->sortOrder($columnConfig, $fieldprefix, $grid);
@@ -2481,8 +2498,8 @@
     /**
      * Escape string for use in a query.
      *
-     * @param string value value to escape
-     * @param boolean escape wildcards too?
+     * @param string $value value to escape
+     * @param boolean $wildcards escape wildcards too?
      * @return String The escaped value.
      */
     function escapeSQL($value, $wildcards=false)
@@ -2691,7 +2708,7 @@
     /**
      * check whether initially hidden or not
      *
-     * @param array the record
+     * @param array $record the record
      *
      * @return initially hidden
      */

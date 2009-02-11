@@ -62,14 +62,16 @@
     * Constructor
     *
     * <b>Example:</b>
-    *        $this->add(new atkCountryAttribute("zipcode","country",AF_OBLIGATORY));
-    * @param $name Name of the attribute
-    * @param $switch Can be benelux, europe, world, user
-                     If user, it will use the option and value Array.
-    * @param $optionArray Array with options
-    * @param $valueArray Array with values. If you don't use this parameter,
+    *        $this->add(new atkCountryAttribute("zipcode","world","","",AF_OBLIGATORY));
+    * @param string $name Name of the attribute
+    * @param string $switch Can be "benelux", "europe", "world", "world_shortlist", "user"
+                            If user, it will use the option and value Array.
+    * @param array $optionArray Array with options
+    * @param array $valueArray Array with values. If you don't use this parameter,
     *                    values are assumed to be the same as the options.
-    * @param $flags Flags for the attribute
+    * @param int $flags Flags for the attribute
+    * @param bool $defaulttocurrent Set the default selected country to the 
+    *                               current country based on the atk language
     */
     function atkCountryAttribute($name,$switch="world",$optionArray="", $valueArray="", $flags = 0,$defaulttocurrent=true)
     {
@@ -135,12 +137,28 @@
       return true;
     }
 
-    function edit($record="",$fieldprefix="")
+    /**
+     * Returns a piece of html code that can be used in a form to edit this
+     * attribute's value.
+     *
+     * @param array $record The record that holds the value for this attribute.
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
+     * @return String A piece of htmlcode for editing this attribute
+     */
+    function edit($record="",$fieldprefix="", $mode)
     {
       if ($this->m_defaulttocurrent && !$record[$this->fieldName()]) $record[$this->fieldName()] = strtoupper(atkLanguage::getLanguage());
       return parent::edit($record,$fieldprefix);
     }
 
+    /**
+     * Get the country options based on the switch
+     *
+     * @param string $switch
+     * @return array with country options
+     */
     function getCountryOptionArray($switch)
     {
       $tmp_array = array();
@@ -177,6 +195,12 @@
       return $tmp_array;
     }
 
+    /**
+     * Get the country values based on the switch
+     *
+     * @param string $switch
+     * @return array with country values
+     */
     function getCountryValueArray($switch)
     {
       if($switch=="benelux")
@@ -229,6 +253,10 @@
       }
     }
 
+    /**
+     * Fill the countries array
+     *
+     */
     function fillCountriesArray()
     {
       $this->m_country["AL"]["nl"] = html_entity_decode("Albani&euml;", null, atktext('charset'));
@@ -368,6 +396,10 @@
       $this->m_country['YU']['en'] = "Yugoslavia";
     }
 
+    /**
+     * Fill the countries array with all the world countries
+     *
+     */
     function fillWorldCountriesArray()
     {
 

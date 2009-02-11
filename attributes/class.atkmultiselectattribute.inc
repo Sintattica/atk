@@ -46,12 +46,13 @@
 
     /**
      * Constructor
-     * @param $name Name of the attribute
-     * @param $optionArray Array with options
-     * @param $valueArray Array with values. If you don't use this parameter,
+     * @param string $name Name of the attribute
+     * @param array $optionArray Array with options
+     * @param array $valueArray Array with values. If you don't use this parameter,
      *                    values are assumed to be the same as the options.
-     * @param $flags Flags for this attribute
-     * @param $size  Size of the attribute.
+     * @param int $cols Number of columns
+     * @param int $flags Flags for this attribute
+     * @param int $size  Size of the attribute.
      */
     function atkMultiSelectAttribute($name, $optionArray, $valueArray="", $cols="", $flags=0, $size="")
     {
@@ -72,6 +73,16 @@
       ($cols<1)?$this->m_cols=3:$this->m_cols=$cols;
     }
 
+    /**
+     * Returns a piece of html code for hiding this attribute in an HTML form,
+     * while still posting its value. (<input type="hidden">)
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @return String A piece of htmlcode with hidden form elements that post
+     *                this attribute's value without showing it.
+     */
     function hide($record="", $fieldprefix="")
     {
       if(is_array($record[$this->fieldName()]))
@@ -87,6 +98,13 @@
       return $result;
     }
 
+    /**
+     * Converts the internal attribute value to one that is understood by the
+     * database.
+     *
+     * @param array $rec The record that holds this attribute's value.
+     * @return String The database compatible value
+     */
     function value2db($rec)
     {
       //atkdebug("multiselectattribute::value2db()");
@@ -97,6 +115,12 @@
       else return "";
     }
 
+    /**
+     * Converts a database value to an internal value.
+     *
+     * @param array $rec The database record that holds this attribute's value
+     * @return mixed The internal value
+     */
     function db2value($rec)
     {
       if (isset($rec[$this->fieldName()]) && $rec[$this->fieldName()]!=='')
@@ -118,7 +142,18 @@
       $this->m_fieldSeparator = $separator;
     }
 
-    function display($record)
+    /**
+     * Returns a displayable string for this value, to be used in HTML pages.
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $mode The display mode ("view" for viewpages, or "list"
+     *                     for displaying in recordlists, "edit" for
+     *                     displaying in editscreens, "add" for displaying in
+     *                     add screens. "csv" for csv files. Applications can
+     *                     use additional modes.
+     * @return String HTML String
+     */
+    function display($record, $mode="")
     {
        $values = $record[$this->fieldName()];
        $res=array();
@@ -133,9 +168,12 @@
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      * @param $record Array with fields
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
      * @return piece of html code with radioboxes
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record="", $fieldprefix="", $mode="")
     {
       global $config_atkroot;
       $this->m_record = $record;
@@ -226,6 +264,11 @@
       return $this->m_dbfieldtype;
     }
 
+    /**
+     * Retrieve the list of searchmodes supported by the attribute.
+     *
+     * @return array List of supported searchmodes
+     */
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
@@ -236,6 +279,12 @@
       return array("substring");
     }
 
+    /**
+     * Add the checkall, checknone and checkinvert links
+     *
+     * @param string $fieldprefix The fieldprefix
+     * @return a piece of htmlcode with the links
+     */
     function _addLinks($fieldprefix)
     {
       if (count($this->m_values)>4 && !hasFlag($this->m_flags,AF_NO_TOGGLELINKS))

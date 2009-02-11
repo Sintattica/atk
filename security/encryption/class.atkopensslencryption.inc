@@ -104,8 +104,8 @@
     /**
       * This function makes a public key, a private key and a certificate from a single key
       *
-      * @param string $key   an key on which the information is based
-      * @returns array       a array with 'privatekey','publickey' and
+      * @param string $privkeypass a key on which the information is based
+      * @returns array             an array with 'private' and 'public' keys
       */
     function getNewKeys($privkeypass)
     {
@@ -140,6 +140,8 @@
     /**
      * Creates a random key for tableencryption
      * This implentation of this function returns a public and private key pair together in one string
+     * @param string $pass   This implementation does nothing with this param
+     * @return string        A random key
      */
     function getRandomKey($pass)
     {
@@ -150,9 +152,9 @@
     /**
      * Decryptionmethod for a key.
      * This implementation get the private key with a password and export it without password
-     * @param string key      The encrypted key
-     * @param string password The password to decrypt de key
-     * @return string         The decrypted key
+     * @param string $key  The encrypted key
+     * @param string $pass The password to decrypt de key
+     * @return string      The decrypted key
      */
     function decryptKey($key,$pass)
     {
@@ -164,9 +166,9 @@
     /**
      * Encryptionmethod for a key.
      * This implementation get the private key without a password and export is with a password
-     * @param string key      The decrypted key
-     * @param string password The password to encrypt de key
-     * @return string         The encrypted key
+     * @param string $key  The decrypted key
+     * @param string $pass The password to encrypt de key
+     * @return string      The encrypted key
      */
     function encryptKey($key,$pass)
     {
@@ -177,8 +179,8 @@
     
     /**
      * This is a help function to get the private and the public key from one string in an array
-     * @param string key    The string containing the private, and the public key
-     * @return array        The privatekey (private) and the public key (public)
+     * @param string $key The string containing the private, and the public key
+     * @return array      The privatekey (private) and the public key (public)
      */
     function getKeys($key)
     {
@@ -199,7 +201,7 @@
     
     /**
      * This help function make one string from an array with private an public key in it
-     * @param array keys  The private and public keys in one array
+     * @param array $keys The private and public keys in one array
      * @return string     The private and public keys in one string
      */
     function putKeys($keys)

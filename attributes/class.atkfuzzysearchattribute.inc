@@ -94,6 +94,8 @@
     /**
      * Creates an instance of the node we are searching on and stores it
      * in a member variable ($this->m_searchnodeInstance)
+     * 
+     * @return boolean
      */
     function createSearchNodeInstance()
     {
@@ -105,6 +107,18 @@
       return true;
     }
 
+    /**
+     * Checks if a value is valid.
+     *
+     * Note that obligatory and unique fields are checked by the
+     * atkNodeValidator, and not by the validate() method itself.
+     *
+     * @param array $rec    The record that holds the value for this
+     *                      attribute. If an error occurs, the error will
+     *                      be stored in the 'atkerror' field of the record.
+     * @param String $mode The mode for which should be validated ("add" or
+     *                     "update")
+     */
     function validate(&$rec, $mode)
     {
       if (is_array($rec[$this->fieldName()]))
@@ -154,7 +168,17 @@
       return true;
     }
 
-    function edit($rec="", $prefix="")
+    /**
+     * Returns a piece of html code that can be used in a form to edit this
+     * attribute's value.
+     *
+     * @param array $rec The record that holds the value for this attribute.
+     * @param String $prefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
+     * @return String A piece of htmlcode for editing this attribute
+     */
+    function edit($rec="", $prefix="", $mode="")
     {
       // There are 2 possibilities. Either we are going to search,
       // in which case we show a searchbox.
@@ -280,6 +304,14 @@
       return $result;
     }
 
+    /**
+     * Override the store method of this attribute to search
+     *
+     * @param atkDb $db
+     * @param array $rec The record
+     * @param string $mode
+     * @return boolean
+     */
     function store($db, $rec, $mode)
     {
       $resultset = array();

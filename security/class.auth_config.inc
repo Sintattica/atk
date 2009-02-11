@@ -149,6 +149,13 @@
        return $entity;
      }
      
+     /**
+      * This function returns a boolean that is true when the class allows the
+      * resetting of the password of a user.
+      * @deprecated Seems like this function is not used anymore
+      *
+      * @return false
+      */
      function setPasswordAllowed()
      {
        return false;

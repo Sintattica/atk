@@ -32,18 +32,25 @@
 
     /**
      * Constructor
-     * @param $name name of the attribute
-     * @param $flags flags for the attribute
+     * @param string $name name of the attribute
+     * @param int $flags flags for the attribute
+     * @param int $size The size of the attribute
      */
     function atkMlAttribute($name, $flags = 0, $size = 0)
     {
       global $config_atkroot;
       /* base class constructor */
-      //$this->atkAttribute($name, ($flags|AF_MULTILANGUAGE|(AF_PRIMARY^AF_OBLIGATORY))^(AF_PRIMARY^AF_OBLIGATORY), $size);
       $this->atkAttribute($name,$flags,$size);
       $this->m_language = strtoupper(atkconfig("defaultlanguage"));
     }
 
+    /**
+     * Get the value of this attribute for the given language
+     *
+     * @param array $rec The record
+     * @param string $language The language
+     * @return the value of this attribute for the given languager
+     */
     function getValue($rec,$language="")
     {
       ($language=="")?$language=$this->m_language:$language=strtoupper($language);
@@ -51,16 +58,20 @@
     }
 
     /**
-    *
-    */
+     * Is the node an multilanguage node?
+     *
+     * @return boolean
+     */
     function isMlNode()
     {
       return ($this->m_ownerInstance->hasFlag(NF_ML));
     }
 
     /**
-    * return possible languages
-    */
+     * Return the possible languages
+     *
+     * @return array with supported languages
+     */
     function getLanguages()
     {
       return atkconfig("supported_languages");
@@ -69,10 +80,12 @@
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value (one box which can be used for all the languages).
-     * @param $record array with values
+     * @param array $record array with values
+     * @param string $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
      * @return piece of html code
      */
-    function edit($record="",$fieldprefix="")
+    function edit($record="",$fieldprefix="",$mode="")
     {
       $this->m_edited = true;
       /* register javascript */
@@ -98,6 +111,18 @@
       return $result;
     }
 
+    /**
+     * Adds the attribute's edit / hide HTML code to the edit array.
+     *
+     * This method is called by the node if it wants the data needed to create
+     * an edit form.
+     *
+     * @param String $mode     the edit mode ("add" or "edit")
+     * @param array  $arr      pointer to the edit array
+     * @param array  $defaults pointer to the default values array
+     * @param array  $error    pointer to the error array
+     * @param String $fieldprefix   the fieldprefix
+     */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
       parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
@@ -129,6 +154,14 @@
      * Returns a piece of html code that can be used to search the attribute.
      * We will use the default language for this!
      * @param $record array with values
+     * @param boolean $extended if set to false, a simple search input is
+     *                          returned for use in the searchbar of the
+     *                          recordlist. If set to true, a more extended
+     *                          search may be returned for the 'extended'
+     *                          search page. The atkAttribute does not
+     *                          make a difference for $extended is true, but
+     *                          derived attributes may reimplement this.
+     * @param $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return piece of htmlcode
      */
     function search($record="", $extended=false, $fieldprefix="")
@@ -146,7 +179,7 @@
       return $result;
     }
 
-   /**
+    /**
      * Check if the attribute is empty for all languages
      * @param array $record Current record
      * @return boolean true if it's empty
@@ -161,7 +194,6 @@
 
       return 1;
     }
-
 
     /**
      * Returns a displayable string for this value.
@@ -201,8 +233,12 @@
     }
 
     /**
-    *
-    */
+     * Converts the internal attribute value to one that is understood by the
+     * database.
+     *
+     * @param array $rec The record that holds this attribute's value.
+     * @return String The database compatible value
+     */
     function value2db($rec)
     {
       if($this->isMlNode())
@@ -264,13 +300,26 @@
     }
 
     /**
-     * Add's fields to query
-     * @param $query the SQL query
-     * @param $tablename tablename
-     * @param $fieldaliasprefix field alias prefix
-     * @param $level ?
-     * @param String $mode select/add/edit mode
-     * @return new SQL query
+     * Adds this attribute to database queries.
+     *
+     * Database queries (select, insert and update) are passed to this method
+     * so the attribute can 'hook' itself into the query.
+     *
+     * @param atkQuery $query The SQL query object
+     * @param String $tablename The name of the table of this attribute
+     * @param String $fieldaliasprefix Prefix to use in front of the alias
+     *                                 in the query.
+     * @param Array $rec The record that contains the value of this attribute.
+     * @param int $level Recursion level if relations point to eachother, an
+     *                   endless loop could occur if they keep loading
+     *                   eachothers data. The $level is used to detect this
+     *                   loop. If overriden in a derived class, any subcall to
+     *                   an addToQuery method should pass the $level+1.
+     * @param String $mode Indicates what kind of query is being processing:
+     *                     This can be any action performed on a node (edit,
+     *                     add, etc) Mind you that "add" and "update" are the
+     *                     actions that store something in the database,
+     *                     whereas the rest are probably select queries.
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec, $level, $mode)
     {
@@ -302,6 +351,9 @@
 
     /**
      * Fetch the metadata about this attrib from the table metadata
+     * 
+     * @param array $metadata The table metadata from the table for this
+     *                        attribute.
      */
     function fetchMeta($metadata)
     {
@@ -312,6 +364,20 @@
       $this->m_maxsize = $metadata[$attribname]['len'];
     }
 
+    /**
+     * Creates a searchcondition for the field,
+     * was once part of searchCondition, however,
+     * searchcondition() also immediately adds the search condition.
+     *
+     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param String $table       The name of the table in which this attribute
+     *                              is stored
+     * @param mixed $value        The value the user has entered in the searchbox
+     * @param String $searchmode  The searchmode to use. This can be any one
+     *                              of the supported modes, as returned by this
+     *                              attribute's getSearchModes() method.
+     * @return String The searchcondition to use.
+     */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       $languages = $this->getLanguages();

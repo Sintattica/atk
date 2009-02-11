@@ -37,10 +37,11 @@
     /**
      * Default Constructor, sets up atkAttribute
      *
-     * @param $name
-     * @param $resolution
-     * @param $maxtime
-     * @param $flags
+     * @param string $name The name of this attribute
+     * @param string $resolution
+     * @param string $maxtime
+     * @param int $flags The falgs of this attribute
+     * @param int $size This attributes size
      * @see atkAttribute
      */
     function atkDurationAttribute($name, $resolution="1m", $maxtime="10h", $flags=0, $size=0)
@@ -62,6 +63,16 @@
       $this->m_maxtime_min = $maxtime*$factor;
     }
 
+    /**
+     * Returns a piece of html code for hiding this attribute in an HTML form,
+     * while still posting its value. (<input type="hidden">)
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @return String A piece of htmlcode with hidden form elements that post
+     *                this attribute's value without showing it.
+     */
     function hide($record, $fieldprefix="")
     {
       // hide as a parseable string
@@ -72,10 +83,13 @@
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value. (hours, minutes and seconds will be a dropdownbox)
-     * @param array $record
+     * @param array $record The record that holds the value for this attribute.
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
      * @return String Piece a of HTML Code
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record="", $fieldprefix="", $mode="")
     {
       $id = $fieldprefix.$this->formName();
       $fieldvalue = atkArrayNvl($record, $this->fieldName(), "");
@@ -147,25 +161,51 @@
     }
 
     /**
-     * Function display's the time
-     * @param $record Array with time
+     * This function displays the time
+     *
+     * The regular atkAttribute uses PHP's nl2br() and htmlspecialchars()
+     * methods to prepare a value for display, unless $mode is "cvs".
+     *
+     * @param array $rec   The record that holds the value for this attribute
+     * @param String $mode The display mode ("view" for viewpages, or "list"
+     *                     for displaying in recordlists, "edit" for
+     *                     displaying in editscreens, "add" for displaying in
+     *                     add screens. "csv" for csv files. Applications can
+     *                     use additional modes.
      * @return String with YYYY-MM-DD
      */
-    function display($rec)
+    function display($rec, $mode="")
     {
       return $this->_minutes2string($rec[$this->fieldName()]);
     }
 
+    /**
+     * Retrieve the list of searchmodes supported by the attribute.
+     *
+     * @return array List of supported searchmodes
+     */
     function getSearchModes()
     {
       return array("exact");
     }
 
+    /**
+     * Return the database field type of the attribute.
+     *
+     * @return String The 'generic' type of the database field for this
+     *                attribute.
+     */
     function dbFieldType()
     {
       return "number";
     }
 
+    /**
+     * Convert the value into minutes
+     *
+     * @param string $value
+     * @return integer with number of minutes
+     */
     function _string2minutes($value)
     {
       if(strpos($value,':')===false)
@@ -183,6 +223,12 @@
       }
     }
 
+    /**
+     * Convert minutes to string
+     *
+     * @param mixed $minutes
+     * @return string with minutes
+     */
     function _minutes2string($minutes)
     {
       $prefix = "";
@@ -203,6 +249,12 @@
       }
     }
 
+    /**
+     * Get the hour part from the number of minutes
+     *
+     * @param mixed $minutes
+     * @return string with hours
+     */
     function _getHourPart($minutes)
     {
       if(!is_array($minutes))
@@ -215,6 +267,12 @@
       }
     }
 
+    /**
+     * Get the minute part from the number of minutes
+     *
+     * @param mixed $minutes
+     * @return string with minutes
+     */
     function _getMinutePart($minutes)
     {
       if(!is_array($minutes))

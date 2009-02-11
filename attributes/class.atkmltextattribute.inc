@@ -34,25 +34,29 @@
 
     /**
      * Constructor
-     * @param $name name of the attribute
-     * @param $flags flags for this attribute
+     * @param string $name name of the attribute
+     * @param int $flags flags for this attribute
+     * @param int $size The size of the attribute
      */
-    function atkMlTextAttribute($name, $flags=0)
+    function atkMlTextAttribute($name, $flags=0, $size=0)
     {
-      $this->atkMlAttribute($name, $flags); // base class constructor
+      $this->atkMlAttribute($name, $flags, $size); // base class constructor
     }
 
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
-     * @param $record array with fields
+     * @param Array $record array with fields
+     * @param String $prefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
      * @return piece of html code with a textarea
      */
-    function edit($record="", $prefix="")
+    function edit($record="", $prefix="", $mode="")
     {
       $this->m_edited=true;
       $languages = $this->getLanguages();
-      $id = $this->getHtmlId($fieldprefix);
+      $id = $this->getHtmlId($prefix);
       $this->m_languages = $languages;
       /* register javascript */
       $page = &atkPage::getInstance();
@@ -77,6 +81,18 @@
       return $result;
     }
 
+    /**
+     * Adds the attribute's edit / hide HTML code to the edit array.
+     *
+     * This method is called by the node if it wants the data needed to create
+     * an edit form.
+     *
+     * @param String $mode     the edit mode ("add" or "edit")
+     * @param array  $arr      pointer to the edit array
+     * @param array  $defaults pointer to the default values array
+     * @param array  $error    pointer to the error array
+     * @param String $fieldprefix   the fieldprefix
+     */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
       atkAttribute::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);

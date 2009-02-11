@@ -37,6 +37,7 @@
      * @param $name Name of the attribute
      * @param $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
      * @param $flags Flags for this attribute
+     * @param int $size Filename size
      */
     function atkMultipleFileAttribute($name, $dir, $flags=0, $size=0)
     {            
@@ -183,6 +184,11 @@
       return $r;
     }
     
+    /**
+     * Return the database field type of the attribute.
+     * @return "string" which is the 'generic' type of the database field for 
+     *         this attribute.
+     */
     function dbFieldType()
     {
       return "string";

@@ -47,6 +47,7 @@
     /**
      * Constructor
      * @param String $name Name of the attribute
+     * @param int $size The size of this attribute
      * @param int $flags Flags for the attribute
      * @param array $opt Extra fckeditor configuration options.
      */
@@ -80,6 +81,18 @@
       $this->fck_opt['ToolbarSet'] = $toolbarset;
     }
 
+    
+    /**
+     * Returns a displayable string for this value, to be used in HTML pages
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $mode The display mode ("view" for viewpages, or "list"
+     *                     for displaying in recordlists, "edit" for
+     *                     displaying in editscreens, "add" for displaying in
+     *                     add screens. "csv" for csv files. Applications can
+     *                     use additional modes.
+     * @return String HTML String
+     */
     function display($record="", $mode="")
     {
       return atkArrayNvl($record, $this->fieldName(), "");
@@ -89,9 +102,12 @@
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      * @param $record Array with fields
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
      * @return piece of html code with a textarea
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record="", $fieldprefix="", $mode="")
     {
       global $config_atkroot;
 
@@ -99,6 +115,14 @@
       return $this->editFck($record, $fieldprefix);
     }
 
+    /**
+     * Returns the html code to edit the value of this attribute
+     *
+     * @param array $record Array with fields
+     * @param string $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @return unknown
+     */
     function editFck($record="", $fieldprefix="")
     {
       $id = $fieldprefix.$this->fieldName();
@@ -122,6 +146,13 @@
       return $oFCKeditor->CreateHtml();
     }
 
+    /**
+     * Converts the internal attribute value to one that is understood by the
+     * database.
+     *
+     * @param array $rec The record that holds this attribute's value.
+     * @return String The database compatible value
+     */
     function value2db($rec)
     {
       if (is_array($rec)&&isset($rec[$this->fieldName()]))

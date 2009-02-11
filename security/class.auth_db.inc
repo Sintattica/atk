@@ -115,6 +115,10 @@
       * is true, they are only considered a match if $dbpassword is equal to the
       * crypt() of $userpasswd, where $dbpassword itself is used as the 'salt'.
       * (This method is used by Bugzilla, among other apps)
+      * 
+      * @param string $dbpasswd The password from the database
+      * @param string $userpasswd The password the user provided
+      * @return boolean which indicates if the passwords are equal
       */
      function matchPasswords($dbpasswd, $userpasswd)
      {
@@ -145,6 +149,12 @@
        return atkconfig("authentication_md5");
      }
 
+     /**
+      * Select the user record from the database
+      *
+      * @param string $user
+      * @return array with user information
+      */
      function selectUser($user)
      {
        $usertable = atkconfig("auth_usertable");
@@ -190,6 +200,12 @@
        return $recs;
      }
 
+     /**
+      * Get the parent groups 
+      *
+      * @param array $parents
+      * @return array with records of the parent groups
+      */
      function getParentGroups($parents)
      {
        $db = &atkGetDb(atkconfig("auth_database"));
@@ -205,7 +221,21 @@
        $recs = $db->getrows($query->buildSelect(TRUE));
        return $recs;
      }
-
+     
+     /** 
+     * This function returns information about a user in an associative
+     * array with the following elements (minimal):
+     * "name" -> the userid (should normally be the same as the $user 
+     *           variable that gets passed to it.
+     * "level" -> The level/group(s) to which this user belongs.
+     * "groups" -> The groups this user belongs to
+     * "access_level" -> The user's access level
+     * The other elemens of the returning array depend on the structure of
+     * the user table
+     *
+     * @param String $user The login of the user to retrieve.
+     * @return array Information about a user.
+     */
      function getUser($user)
      {
        $grouptable = atkconfig("auth_grouptable");
@@ -256,6 +286,12 @@
        return $userinfo;
      }
 
+     /**
+      * Get the access level from the user
+      *
+      * @param array $recs The records that are returned by the selectUser function
+      * @return the access level
+      */
      function getAccessLevel($recs)
      {
        // We might have more then one access level, so we loop the result.
@@ -266,7 +302,6 @@
          {
            if($i==0) $access = $recs[$i][atkconfig("auth_accesslevelfield")];
            if($recs[$i][atkconfig("auth_accesslevelfield")]>$access) $access = $recs[$i][atkconfig("auth_accesslevelfield")];
-//           $access[] = $recs[$i][atkconfig("auth_accesslevelfield")];
          }
        }
        else
@@ -280,6 +315,15 @@
        return $access;
      }
 
+     /**
+      * This function returns the level/group(s) that are allowed to perform
+      * the given action on a node.
+      * @param String $node The full nodename of the node for which to check
+      *                     the privilege. (modulename.nodename)
+      * @param String $action The privilege to check.
+      * @return mixed One (int) or more (array) entities that are allowed to
+      *               perform the action.
+      */
      function getEntity($node, $action)
      {
        $db = &atkGetDb(atkconfig("auth_database"));
@@ -310,6 +354,16 @@
        return $result;
      }
 
+     /** 
+      * This function returns the level/group(s) that are allowed to 
+      * view/edit a certain attribute of a given node.
+      * @param String $node The full nodename of the node for which to check
+      *                     attribute access.
+      * @param String $attrib The name of the attribute to check
+      * @param String $mode "view" or "edit"
+      * @param mixed One (int) or more (array) entities that are allowed to 
+      *              view/edit the attribute. 
+      */
      function getAttribEntity($node, $attrib, $mode)
      {
        $db = &atkGetDb(atkconfig("auth_database"));
@@ -331,11 +385,26 @@
        return $result;
      }
 
+     /**
+      * Compare function for sorting users on their username
+      *
+      * @param array $a
+      * @param array $b
+      * @return boolean 
+      */
      function userListCompare($a, $b)
      {
      	 return strcmp($a["username"], $b["username"]);
      }
 
+     /**
+      * This function returns the list of users that may login. This can be
+      * used to display a dropdown of users from which to choose.
+      *
+      * @return array List of users as an associative array with the following 
+      *               format: array of records, each record is an associative
+      *               array with a userid and a username field.
+      */
      function getUserList()
      {
        $db = &atkGetDb(atkconfig("auth_database"));
@@ -364,9 +433,15 @@
        }
        usort($userlist, array("auth_db", "userListCompare"));
        return $userlist;
-
      }
      
+     /**
+      * This function returns a boolean that is true when the class allows the
+      * resetting of the password of a user.
+      * @deprecated Seems like this function is not used anymore
+      *
+      * @return true
+      */
      function setPasswordAllowed()
      {
        return true;

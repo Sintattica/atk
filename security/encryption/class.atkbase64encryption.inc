@@ -66,9 +66,9 @@
     
     /**
      * Decryptionmethod for a key. This implementation decrypt the key with de base64 algoritm
-     * @param string key      The encrypted key
-     * @param string password The password to decrypt de key
-     * @return string         The decrypted key
+     * @param string $key  The encrypted key
+     * @param string $pass The password to decrypt de key
+     * @return string      The decrypted key
      */
     function decryptKey($key,$pass)
     {
@@ -77,9 +77,9 @@
     
     /**
      * Encryptionmethod for a key. This implementation encrypt the key with de base64 algoritm
-     * @param string key      The decrypted key
-     * @param string password The password to encrypt de key
-     * @return string         The encrypted key
+     * @param string $key  The decrypted key
+     * @param string $pass The password to encrypt de key
+     * @return string      The encrypted key
      */
     function encryptKey($key,$pass)
     {

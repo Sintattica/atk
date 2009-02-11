@@ -97,7 +97,9 @@
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      * @param $record Array with fields
-     * @param $size Array with field rows and cols for additional size of the text box
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
      * @return piece of html code with a textarea
      */
     function edit($record="", $fieldprefix="", $mode='add')
@@ -169,17 +171,26 @@
     }
 
     /**
-     * Add's fields to query
-     * @param $query The SQL query
-     * @param $tablename Tablename
-     * @param $fieldaliasprefix Field alias prefix
-     * @param $level ?
-     * @param $mode Indicates what kind of query is being processing:
-     *              This can be any action performed on a node (edit, add, etc)
-     *              Mind you that "add" and "update" are the actions that store
-     *              something in the database, whereas the rest are probably
-     *              select queries.
-     * @return New SQL Query
+     * Adds this attribute to database queries.
+     *
+     * Database queries (select, insert and update) are passed to this method
+     * so the attribute can 'hook' itself into the query.
+     *
+     * @param atkQuery $query The SQL query object
+     * @param String $tablename The name of the table of this attribute
+     * @param String $fieldaliasprefix Prefix to use in front of the alias
+     *                                 in the query.
+     * @param Array $rec The record that contains the value of this attribute.
+     * @param int $level Recursion level if relations point to eachother, an
+     *                   endless loop could occur if they keep loading
+     *                   eachothers data. The $level is used to detect this
+     *                   loop. If overriden in a derived class, any subcall to
+     *                   an addToQuery method should pass the $level+1.
+     * @param String $mode Indicates what kind of query is being processing:
+     *                     This can be any action performed on a node (edit,
+     *                     add, etc) Mind you that "add" and "update" are the
+     *                     actions that store something in the database,
+     *                     whereas the rest are probably select queries.
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
     {
@@ -221,6 +232,12 @@
       return NULL;
     }
 
+    /**
+     * Return the database field type of the attribute.
+     *
+     * @return String The 'generic' type of the database field for this
+     *                attribute.
+     */
     function dbFieldType()
     {
       // make sure our metadata is set
@@ -233,6 +250,13 @@
       return $this->m_dbfieldtype;
     }
 
+    /**
+     * Fetch the metadata about this attrib from the table metadata, and
+     * process it.
+     *
+     * @param array $metadata The table metadata from the table for this
+     *                        attribute.
+     */
     function fetchMeta($metadata)
     {
       $this->m_dbfieldtype = $metadata[$this->fieldName()]["gentype"];
@@ -242,7 +266,7 @@
      * Parses the data that we are going to display in the textfield
      * and adjust rows to ensure that all the data is actually displayed
      * @param string $data	Data we want to display
-     * @param int 	 &$rows	Rows of the textarea
+     * @param int 	 $rows	Rows of the textarea
      * @param int		 $cols	Columns of the textarea
      */
     function doAutoAdjust($data, &$rows, &$cols)

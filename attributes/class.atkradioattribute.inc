@@ -121,9 +121,12 @@
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      * @param array $record Array with fields
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
      * @return String piece of html code with radioboxes
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record="", $fieldprefix="", $mode="")
     {
       $values = $this->getValues($record);
       

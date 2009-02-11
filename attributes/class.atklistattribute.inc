@@ -154,21 +154,39 @@
     }
 
     /**
-     * get functions to access member variables.
-     * For backwards compatibility we also check the old member variables m_options,
-     * m_values and m_lookup.
+     * Get function to access the member variable for options.
+     * For backwards compatibility we also check the old member variable m_options
+     * 
+     * @param array $rec The record
      */
-    function getOptions($rec=null) {
+    function getOptions($rec=null) 
+    {
       if(!isset($this->m_types["options"]) || count($this->m_types["options"]) == 0)
         return $this->m_options;
       return $this->_get("options",$rec);
     }
-    function getValues($rec=null) {
+    
+    /**
+     * Get functions to access the member variable for values
+     * For backwards compatibility we also check the old member variable m_values
+     * 
+     * @param array $rec The record
+     */
+    function getValues($rec=null) 
+    {
       if(!isset($this->m_types["values"]) || count($this->m_types["values"]) == 0)
         return $this->m_values;
       return $this->_get("values",$rec);
     }
-    function getLookup($rec=null) {
+    
+    /**
+     * Get functions to access the member variable for lookup.
+     * For backwards compatibility we also check the old member variable m_lookup
+     * 
+     * @param array $rec The record
+     */
+    function getLookup($rec=null) 
+    {
       if(!isset($this->m_types["lookup"]) || count($this->m_types["lookup"]) == 0)
         return $this->m_lookup;
       return $this->_get("lookup",$rec);
@@ -180,13 +198,25 @@
      * values => valuearray
      * lookup => lookuparray
      *
-     * @param string $type
+     * @param string $type ("options", "values" or "lookup")
+     * @param array $rec The record
+     * @return array with options, values or lookup
      */
     function _get($type,$rec=null)
     {
       return $this->m_types[$type];
     }
 
+    /**
+     * Set's one of the following arrays
+     * options => optionarray
+     * values => valuearray
+     * lookup => lookuparray
+     *
+     * @param string $type ("options", "values" or "lookup)
+     * @param array $value
+     * @return true
+     */
     function _set($type,$value)
     {
       $this->m_types[$type]=$value;
@@ -207,6 +237,7 @@
      * Translates the database value
      *
      * @param string $value
+     * @param array $rec The record
      * @return string
      */
     function _translateValue($value,$rec=null)
@@ -225,9 +256,12 @@
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      * @param $record Array with fields
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
      * @return piece of html code with a checkbox
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record="", $fieldprefix="", $mode="")
     {
       // todo: configurable rows
       $id = $this->getHtmlId($fieldprefix);
@@ -294,14 +328,28 @@
     }
 
     /**
-     * Returns a piece of html code that can be used in a form to search values
-     * @param $record Array with fields
-     * @return piece of html code with a checkbox
+     * Returns a piece of html code that can be used to get search terms input
+     * from the user.
+     *
+     * The framework calls this method to display the searchbox
+     * in the search bar of the recordlist, and to display a more extensive
+     * search in the 'extended' search screen.
+     * 
+     * @todo Configurable rows
+     * @param array $record Array with values
+     * @param boolean $extended if set to false, a simple search input is
+     *                          returned for use in the searchbar of the
+     *                          recordlist. If set to true, a more extended
+     *                          search may be returned for the 'extended'
+     *                          search page. The atkAttribute does not
+     *                          make a difference for $extended is true, but
+     *                          derived attributes may reimplement this.
+     * @param $fieldprefix The fieldprefix of this attribute's HTML element.
+     *
+     * @return String A piece of html-code with a checkbox
      */
     function search($record="", $extended=false, $fieldprefix="")
     {
-      // todo: configurable rows
-
       $values = $this->getValues($record);
       $result = '<select ';
       if ($extended)
@@ -331,6 +379,20 @@
       return $result;
     }
 
+    /**
+     * Creates a searchcondition for the field,
+     * was once part of searchCondition, however,
+     * searchcondition() also immediately adds the search condition.
+     *
+     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param String $table       The name of the table in which this attribute
+     *                              is stored
+     * @param mixed $value        The value the user has entered in the searchbox
+     * @param String $searchmode  The searchmode to use. This can be any one
+     *                              of the supported modes, as returned by this
+     *                              attribute's getSearchModes() method.
+     * @return String The searchcondition to use.
+     */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       // We only support 'exact' matches.
@@ -351,6 +413,11 @@
       return $searchcondition;
     }
 
+    /**
+     * Retrieve the list of searchmodes supported by the attribute.
+     *
+     * @return array List of supported searchmodes
+     */
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
@@ -361,12 +428,24 @@
       return array("exact");
     }
 
+    /**
+     * Return the database field type of the attribute.
+     *
+     * @return String The 'generic' type of the database field for this
+     *                attribute.
+     */
     function dbFieldType()
     {
       // Fieldtype was determined in the constructor.
       return $this->m_dbfieldtype;
     }
 
+    /**
+     * Set autohide for the given attribute
+     *
+     * @param string $attrib
+     * @param array $valuearr
+     */
     function setAutoHide($attrib, $valuearr)
     {
       $conditions = array();
@@ -514,6 +593,13 @@
       return $this;
     }
 
+    /**
+     * Set the option and value array
+     *
+     * @param array $optionArray array with options
+     * @param array $valueArray array with values
+     * @return object reference to this attribute
+     */
     function setOptions($optionArray, $valueArray)
     {
       // m_options and m_values array are still here for backwardscompatibility
