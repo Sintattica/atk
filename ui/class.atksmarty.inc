@@ -56,6 +56,14 @@ class atkSmarty
       // Initialize..
 
       $s_smarty->template_dir    = atkconfig("tplroot"); // name of directory for templates
+      //Try to create the template compile directory if it not already exists.
+      if (!file_exists(atkconfig("tplcompiledir")))
+      {
+        if (!mkdir(atkconfig("tplcompiledir"),0755,true))
+        {
+          atkerror("Unable to create template compile directory: ".atkconfig("tplcompiledir"));
+        }
+      }
       $s_smarty->compile_dir     = atkconfig("tplcompiledir"); // name of directory for compiled templates
 
       $s_smarty->autoload_filters = array();    // indicates which filters will be auto-loaded
