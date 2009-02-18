@@ -38,14 +38,16 @@ function smarty_core_write_file($params, &$smarty)
     fwrite($fd, $params['contents']);
     fclose($fd);
 
+    if (!is_dir($params['filename'])) // SANDY / MARK HACK: Check if the passed filename is a real file and not a dir.
+    {
     // Delete the file if it allready exists (this is needed on Win,
     // because it cannot overwrite files with rename()
-    if (file_exists($params['filename'])) {
-        @unlink($params['filename']);
+      if (file_exists($params['filename'])) {
+          @unlink($params['filename']);
+      }
+      @rename($_tmp_file, $params['filename']);
+      @chmod($params['filename'], $smarty->_file_perms);
     }
-    @rename($_tmp_file, $params['filename']);
-    @chmod($params['filename'], $smarty->_file_perms);
-
     return true;
 }
 
