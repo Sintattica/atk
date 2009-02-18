@@ -29,6 +29,7 @@
   {
     var $m_isconsole = true;
     var $m_redirectUrl = null;
+    static $s_querycount = 0;
 
     function &getInstance()
     {
@@ -69,6 +70,8 @@
 
     public function addQuery($query)
     {
+      self::$s_querycount++;
+
       if (atkconfig('debug') > 2)
       {
         if (atkGetSessionManager())
@@ -366,7 +369,7 @@
       $protocol = empty($_SERVER['HTTPS']) || strtolower($_SERVER['HTTPS']) == 'off' ? 'http' : 'https';
       $url = $protocol.'://'.$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] != 80 ? ':'.$_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI'];
 
-      $label = "[{$time}h / {$duration}s / {$usage}MB] $method $url";
+      $label = "[{$time}h / {$duration}s / {$usage}MB / ".self::$s_querycount." Queries] $method $url";
 
       $output = '
         <div class="atkDebugBlock'.(count($g_error_msg) > 0 ? " atkDebugBlockContainsErrors" : "").' atkDebug'.($expanded ? 'Expanded' : 'Collapsed').'">

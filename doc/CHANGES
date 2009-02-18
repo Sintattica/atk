@@ -8,6 +8,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
++ Added querycounter to atkDebugger. [Tjeerd]
 * ATK now tries to create the compiled templates directory when it did not
   already exist. [Marc]
 * Fixed issue where in some rare occasions the selection was remembered for a
@@ -141,7 +142,7 @@ Changes in ATK 6.3
 * Changed atkExportHandler to use atkUi::renderAction so it uses action.tpl.
   [Guido]
 * Fixed sorting in atkcolumnconfig, atkattribute and atkmanytoonerelation to
-  take direction into account and sorting of listcolumns in the 
+  take direction into account and sorting of listcolumns in the
   manytoonerelation. [Peter, Lineke]
 * Fixed searching on listcolumns in atkmanytoonerelation.[Peter, Lineke]
 * Changed htmlentities into atk_htmlentities. [Sandy]
