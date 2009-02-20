@@ -43,6 +43,13 @@
     var $Mailer   = "mail";
     var $WordWrap = 75;
 
+
+    public function __construct()
+    {
+      $charset = strtoupper(atkconfig('default_charset', atktext('charset', 'atk')));
+      $this->CharSet = ($charset ? $charset : $this->CharSet);
+    }
+
     /**
      * Override error handler.
      *

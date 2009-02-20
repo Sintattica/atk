@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* atkMailer class now uses atk's default charset as it's own default charset
+  [Patrick] 
 + Added querycounter to atkDebugger. [Tjeerd]
 * ATK now tries to create the compiled templates directory when it did not
   already exist. [Marc]
