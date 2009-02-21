@@ -5067,6 +5067,7 @@
      */
     function validateFilter($filter)
     {
+    	if($filter=='') return '';
       // Get the field that it applies to
       // $relation holds the tablename and $field holds the field
       list($relation, $field) = explode('.', $filter);
@@ -5088,8 +5089,8 @@
       foreach ($sqloperators as $sqloperator)
       {
         // split the fieldname from the fieldvalue
+				atkdebug("RELATION: |$relation|");
         list($relation_new, $dummy) = explode($sqloperator, $relation);
-
         // check if the fieldname is in the attriblist
         if (in_array(trim($relation_new), array_keys($this->m_attribList))) return $filter;
       }

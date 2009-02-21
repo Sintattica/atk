@@ -970,7 +970,7 @@
     atkDataDecode($_REQUEST);
     $ATK_VARS = array_merge($_GET, $_POST);
     atkDataDecode($ATK_VARS);
-    if ($ATK_VARS['atkfieldprefix'] != '') $ATK_VARS = $ATK_VARS[$ATK_VARS['atkfieldprefix']];
+    if (array_key_exists('atkfieldprefix',$ATK_VARS) && $ATK_VARS['atkfieldprefix'] != '') $ATK_VARS = $ATK_VARS[$ATK_VARS['atkfieldprefix']];
 
     $g_sessionManager->session_read($ATK_VARS);
 

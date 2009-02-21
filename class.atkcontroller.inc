@@ -408,7 +408,7 @@
     {
       $node = &$this->getNode();
       $ui = &$node->getUi();
-      return $ui->title($node->m_module, $node->m_type, $action);
+      return $ui->title($node->m_module, $node->m_type);
     }
 
     /**

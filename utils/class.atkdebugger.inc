@@ -437,7 +437,7 @@
       }
 
       $expanded = !$isPartial;
-      if ($expanded && @$_COOKIE['atkdebugstate'] == 'collapsed')
+      if ($expanded && array_key_exists('atkdebugstate',$_COOKIE) && @$_COOKIE['atkdebugstate'] == 'collapsed')
       {
         $expanded = false;
       }
