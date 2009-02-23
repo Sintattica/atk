@@ -92,12 +92,13 @@
 
     function recipientFieldToString($field)
     {
+      $ishtml = (strpos(strtolower($this->ContentType), 'html') > 0);
       $str = '';
       foreach ($field as $i => $recipient)
       {
         if ($i > 0) $str .= ', ';
-        $str .= $recipient[0];
-        if (strlen($recipient['1']) > 0) $str .= ' ('.$recipient[1].')';
+        $str .= ($ishtml ? htmlentities($recipient[0]) : $recipient[0]);
+        if (strlen($recipient['1']) > 0) $str .= ' ('.($ishtml ? htmlentities($recipient[1]) : $recipient[1]).')';
       }
       return $str;
     }
