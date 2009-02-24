@@ -57,7 +57,7 @@
 
     public function addStatement($txt)
     {
-      if (atkGetSessionManager())
+      if (function_exists('atkGetSessionManager') && atkGetSessionManager())
       {
         $instance = &atkDebugger::getInstance();
         if (is_object($instance))
@@ -85,7 +85,7 @@
       }
       else
       {
-        atkdebug(htmlentities($query));
+        atkdebug(atk_htmlentities($query));
         return true;
       }
       return false;

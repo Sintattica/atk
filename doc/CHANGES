@@ -8,6 +8,17 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
++ Added atkGetCharset() function to atkTools, it first checks the config 
+  default_charset and has a fallback to the charset in the language 
+  file. [Sandy]
+* Changed all atktext('charset') calls into atkGetCharset() [Sandy]
+* Fixed displaying of special chars in atkmanytoonerelation 
+  dropdowns [Sandy,Jeroen] 
++ Added atkString class in the utils which is always loaded. It contains string
+  functions that will use the mbstring extension if it's detected. If you have the
+  extension and don't want to use it, you can use the config use_mbstring to turn
+  it off. atkString contains at the moment functions for: strlen, substr, charAt
+  strpos, strtolower, strtoupper. [Sandy]
 * atkMailer class now uses atk's default charset as it's own default charset
   [Patrick] 
 + Added querycounter to atkDebugger. [Tjeerd]

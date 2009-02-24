@@ -833,7 +833,7 @@
       $result = '';
       foreach ($vars as $name => $value)
       {
-        $value = htmlentities($value);
+        $value = atk_htmlentities($value);
         $result .= "<input type=\"hidden\" name=\"{$name}\" value=\"{$value}\">\n";
       }
 

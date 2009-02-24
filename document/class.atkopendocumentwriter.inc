@@ -77,12 +77,12 @@
       {
         if (is_array($value)) {
         	foreach ($value as $key => &$txtval) 
-					  $txtval = atk_iconv(atktext("charset"),"UTF-8",$txtval);
+					  $txtval = atk_iconv(atkGetCharset(),"UTF-8",$txtval);
           $this->m_tbsooo->MergeBlock($key, $value);
         }
         else
         {
-        	$value = atk_iconv(atktext("charset"),"UTF-8",$value);
+        	$value = atk_iconv(atkGetCharset(),"UTF-8",$value);
           $this->m_tbsooo->MergeField($key, $value);
         }
       }

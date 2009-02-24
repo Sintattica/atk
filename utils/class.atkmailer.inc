@@ -46,7 +46,7 @@
 
     public function __construct()
     {
-      $charset = strtoupper(atkconfig('default_charset', atktext('charset', 'atk')));
+      $charset = strtoupper(atkGetCharset());
       $this->CharSet = ($charset ? $charset : $this->CharSet);
     }
 

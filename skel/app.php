@@ -32,7 +32,7 @@
   atksecure();
   $output='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">';
   $output.="\n<html>\n <head>\n";
-  $output.='  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset='.atktext("charset","","atk").'">';
+  $output.='  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset='.atkGetCharset().'">';
   $output.="\n  <title>".atktext('app_title')."</title>\n </head>\n";
 
   atkimport("atk.menu.atkmenu");

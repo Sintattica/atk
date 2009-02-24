@@ -189,8 +189,8 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     // Build the record
     $result = '
       <li class="atkmanytomanyselectrelation-selected">
-        <input type="hidden" name="'.$name.'" value="'.htmlentities($key).'"/>
-        <span>'.htmlentities($this->getDestination()->descriptor($record)).'</span>
+        <input type="hidden" name="'.$name.'" value="'.atk_htmlentities($key).'"/>
+        <span>'.atk_htmlentities($this->getDestination()->descriptor($record)).'</span>
         ('.implode(' / ', $actionLinks).')
       </li>
     ';

@@ -229,8 +229,8 @@
     public static function getUserLanguage()
     {
       $supported = atkLanguage::getSupportedLanguages();
-
-      $sessionmanager = &atkGetSessionManager();
+      $sessionmanager=null;
+      if(function_exists('atkGetSessionManager')) $sessionmanager = &atkGetSessionManager();
       if (!empty($sessionmanager))
       {
         if (function_exists("getUser"))

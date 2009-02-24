@@ -23,6 +23,7 @@
   if (atkconfig('use_atkerrorhandler', true)) require_once($config_atkroot.'atk/include/errorhandler.inc');
   require_once($config_atkroot.'atk/ui/class.atkoutput.inc');
   require_once($config_atkroot.'atk/session/class.atksessionmanager.inc');
+  require_once($config_atkroot."atk/utils/class.atkstring.inc");
   require_once($config_atkroot.'atk/include/security.inc');
   require_once($config_atkroot.'atk/modules/atkmoduletools.inc');
   require_once($config_atkroot.'atk/include/debugging.inc');

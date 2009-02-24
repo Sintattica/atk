@@ -129,7 +129,7 @@
               // is called.
               $value = $this->eolreplace($p_attrib->display($recordset[$i], $mode), $rfeplace);
             }
-            if (atktext("charset") != "" && $decode) $value = atk_html_entity_decode(atk_htmlentities($value, ENT_NOQUOTES, atktext("charset")), ENT_NOQUOTES, atktext("charset"));
+            if (atkGetCharset() != "" && $decode) $value = atk_html_entity_decode(atk_htmlentities($value, ENT_NOQUOTES), ENT_NOQUOTES);
             $output.=$sof.($value==""?$empty:$value).$eof.$fsep;
 
             // Calculate totals..
@@ -180,7 +180,7 @@
         $output = '<table border="1" cellspacing="0" cellpadding="2">'.$output."</table>";
       }
 
-      atkdebug(html_entity_decode($output));
+      atkdebug(atk_html_entity_decode($output));
 
       // To a File
       if (!array_key_exists("filename", $outputparams))

@@ -39,7 +39,7 @@
         "<tr class=\"$result\">".
           "<td valign=\"top\" class=\"date\" nowrap=\"nowrap\" width=\"5%\">".date('Y-m-d H:i:s')."</td>".
           "<td valign=\"top\" class=\"method\" nowrap=\"nowrap\" width=\"5%\">".implode("-&gt;", $breadcrumb)."</td>".
-          "<td valign=\"top\" class=\"message\">".htmlentities($message)."</td>".
+          "<td valign=\"top\" class=\"message\">".atk_htmlentities($message)."</td>".
           "<td valign=\"top\" class=\"result\" nowrap=\"nowrap\" width=\"5%\">[".strtoupper($result)."]</td>".
         "</tr>";
 

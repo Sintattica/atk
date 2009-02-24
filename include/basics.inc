@@ -12,14 +12,15 @@
    * @copyright (c)2000-2004 Ibuildings.nl BV
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
-   * @version $Revision: $
-   * $Id: $
+   * @version $Revision$
+   * $Id$
    */
 
   /** BASIC ATK INCLUDES **/
   /** Gives you configs and the atktools **/
   require_once($config_atkroot.'atk/include/globals.inc');
   require_once($config_atkroot.'atk/include/configs.inc');
+  require_once($config_atkroot."atk/utils/class.atkstring.inc");
   require_once($config_atkroot."atk/atktools.inc");
   require_once($config_atkroot."atk/utils/class.atkclassloader.inc");
 ?>

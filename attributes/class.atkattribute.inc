@@ -2552,7 +2552,7 @@
       foreach ($arr['fields'] as $field)
       {
         //atkJSON::encode expect string in in ASCII or UTF-8 format, so convert data to UTF-8
-        $value = atk_iconv(atktext("charset"),"UTF-8",$field['html']);
+        $value = atk_iconv(atkGetCharset(),"UTF-8",$field['html']);
         $script .= "\$('".str_replace('.', '_', $this->m_ownerInstance->atkNodeType().'_'.$field['id'])."').update(".atkJSON::encode($value).");\r\n";
       }
 

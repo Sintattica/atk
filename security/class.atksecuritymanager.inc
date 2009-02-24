@@ -682,7 +682,7 @@
       }
       else
       {
-        return '<input class="loginform" type="text" size="15" name="auth_user" value="'.htmlentities($defaultname).'" />';
+        return '<input class="loginform" type="text" size="15" name="auth_user" value="'.atk_htmlentities($defaultname).'" />';
       }
     }
 

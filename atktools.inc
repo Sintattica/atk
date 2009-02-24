@@ -1816,31 +1816,46 @@
 
   /**
    * ATK version of the PHP htmlentities function. Works just like PHP's
-   * htmlentities function, but falls back to the in the language file
-   * configured charset instead of PHP's default charset, if no
-   * charset is given.
+   * htmlentities function, but falls back to atkGetCharset() instead of
+   * PHP's default charset, if no charset is given.
    *
    * @param String $string    string to convert
    * @param int $quote_style  quote style (defaults to ENT_COMPAT)
-   * @param String $charset   character set to use (default to atktext('charset', 'atk'))
+   * @param String $charset   character set to use (default to atkGetCharset())
    *
    * @return String encoded string
    */
   function atk_htmlentities($string, $quote_style=ENT_COMPAT, $charset=null)
   {
-    $acceptedCharsets = array('iso-8859-1', 'iso-8859-15', 'utf-8', 'cp866', 'ibm866', '866',
-                              'cp1251', 'windows-1251', 'win-1251', '1251', 'cp1252', 'windows-1252', '1252',
-                              'koi8-r', 'koi8-ru', 'koi8r', 'big5', '950', 'gb2312', '936', 'big5-hkscs',
-                              'shift_jis', 'sjis', '932', 'euc-jp', 'eucjp');
-    if (empty($charset))
-    {
-      $charset = atktext('charset', 'atk');
-    }
-    // check if charset is allowed, else use default charset for this function
-    if(!in_array(strtolower($charset),$acceptedCharsets)) $charset = 'iso-8859-1';
-
-    return htmlentities($string, $quote_style, $charset);
+    return atkString::htmlentities($string, $quote_style, $charset);
   }
+	
+	 /**
+   * ATK version of the PHP html_entity_decode function. Works just like PHP's
+   * html_entity_decode function, but falls back to atkGetCharset() instead of 
+   * PHP's default charset, if no charset is given.
+   *
+   * @param String $string    string to convert
+   * @param int $quote_style  quote style (defaults to ENT_COMPAT)
+   * @param String $charset   character set to use (default to atkGetCharset())
+   *
+   * @return String encoded string
+   */  
+  function atk_html_entity_decode($string, $quote_style=ENT_COMPAT, $charset=null)
+  {
+    return atkString::html_entity_decode($string, $quote_style, $charset);
+  }
+	
+	/**
+	 * Return the default charset, first we look if the 
+	 * config_default_charset is set, else we use the 
+	 * charset in the languge file;
+	 * @return string
+	 */
+	function atkGetCharset()
+	{
+		return atkconfig('default_charset',atktext('charset','atk'));
+	}
 
   /**
    * Looks up a value using the given key in the given array and returns
@@ -1922,7 +1937,7 @@
   {
     $self = $_SERVER['PHP_SELF'];
     if (strpos($self, '"')!==false) $self = substr($self, 0, strpos($self, '"')); //XSS attempt
-    return htmlentities(strip_tags($self)); // just in case..
+    return atk_htmlentities(strip_tags($self)); // just in case..
   }
 
   /**
@@ -1938,15 +1953,7 @@
    */
   function atk_iconv($in_charset, $out_charset, $str)
   {
-    if(function_exists("iconv"))
-    {
-      $str = iconv($in_charset,$out_charset,$str);
-    }
-    else
-    {
-      atkwarning(atktext("error_iconv_not_install"));
-    }
-    return $str;
+  	return atkString::iconv($in_charset,$out_charset,$str);
   }
 
   /**

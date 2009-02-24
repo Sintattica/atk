@@ -38,7 +38,7 @@
         $lines = array();
         for($i=0, $_=count($debugMessage);$i<$_;$i++)
         {
-          $lines[] = _wordwrap(html_entity_decode(preg_replace('(\[<a.*</a>\])','',$debugMessage[$i])));
+          $lines[] = _wordwrap(atk_html_entity_decode(preg_replace('(\[<a.*</a>\])','',$debugMessage[$i])));
         }
         $body.= implode("\n",$lines);
   

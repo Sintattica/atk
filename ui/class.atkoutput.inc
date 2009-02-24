@@ -128,7 +128,7 @@
         $this->sendCachingHeaders($lastmodificationstamp,$nocache);
         
         // Set the content type and the character set (as defined in the language files)
-        header ("Content-Type: text/html; charset=".($charset==""?atktext("charset","atk"):$charset)); 
+        header ("Content-Type: text/html; charset=".($charset==""?atkGetCharset():$charset)); 
 
         $res = $this->m_content;
 
