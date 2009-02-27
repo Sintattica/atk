@@ -114,7 +114,7 @@
       // we must die. we can't even output anything anymore..
       // we can do something with the info though.
       handleError();
-      $output = atkOutput::getInstance()->outputFlush();
+      atkOutput::getInstance()->outputFlush();
       die;
     }
   }
@@ -239,7 +239,7 @@
    */
   function atknotice($txt)
   {
-    return atkdebug($txt,DEBUG_NOTICE);
+    atkdebug($txt,DEBUG_NOTICE);
   }
 
   /**
@@ -253,7 +253,7 @@
    */
   function atkwarning($txt)
   {
-    return atkdebug($txt,DEBUG_WARNING);
+    atkdebug($txt,DEBUG_WARNING);
   }
 
   function atkGetTimingInfo()
@@ -1775,28 +1775,6 @@
     return $escaped;
   }
 
-  if (!function_exists('html_entity_decode'))
-  {
-    /**
-     * Convert all HTML entities to their applicable characters.
-     * Reverse of htmlspecialchars.
-     * Standard PHP function in PHP >= 4.3.0.
-     * Taken from http://www.php.net/manual/en/function.html-entity-decode.php.
-     *
-     * @param String $str The string to translate the characters of
-     * @return String The translated String
-     */
-    function html_entity_decode($str)
-    {
-      // replace numeric entities
-      $str = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $str);
-      $str = preg_replace('~&#([0-9]+);~e', 'chr(\\1)', $str);
-      // replace literal entities
-      $trans_table = array_flip(get_html_translation_table(HTML_ENTITIES));
-      return strtr($str, $trans_table);
-    }
-  }
-
   /*
    * Returns the postvars
    * Returns a value or an array with all values
@@ -1830,7 +1808,7 @@
     return atkString::htmlentities($string, $quote_style, $charset);
   }
 	
-	 /**
+  /**
    * ATK version of the PHP html_entity_decode function. Works just like PHP's
    * html_entity_decode function, but falls back to atkGetCharset() instead of 
    * PHP's default charset, if no charset is given.
@@ -1845,17 +1823,72 @@
   {
     return atkString::html_entity_decode($string, $quote_style, $charset);
   }
+  
+  /**
+   * Get string length
+   * @param string $str The string being checked for length
+   * @return int
+   */
+  function atk_strlen($str)
+  {
+  	return atkString::strlen($str);
+  }
+  
+  /**
+   * Get part of string
+   * @param string $str The string being checked. 
+   * @param int $start The first position used in $str 
+   * @param int $length[optional] The maximum length of the returned string
+   * @return string
+   */
+   function atk_substr($str,$start,$length='')
+   {
+	 return atkString::substr($str,$start,$length);
+   }
+		
+   /**
+	*  Find position of first occurrence of string in a string
+	* @param object $haystack The string being checked. 
+	* @param object $needle The position counted from the beginning of haystack . 
+	* @param object $offset[optional] The search offset. If it is not specified, 0 is used. 
+	* @return int|boolean
+	*/
+   function atk_strpos($haystack,$needle,$offset=0)
+   {
+ 	 return atkString::strpos($haystack,$needle,$offset);
+   }
+		
+   /**
+	* Make a string lowercase
+	* @param string $str The string being lowercased. 
+	* @return string 
+	*/
+   function atk_strtolower($str)
+   {
+     return atkString::strtolower($str);	
+   }
+		
+  /** 
+   * 
+   * Make a string uppercase
+   * @param string $str The string being uppercased. 
+   * @return string 
+   */
+   function atk_strtoupper($str)
+   {
+	 return atkString::strtoupper($str);
+   }
 	
-	/**
-	 * Return the default charset, first we look if the 
-	 * config_default_charset is set, else we use the 
-	 * charset in the languge file;
-	 * @return string
-	 */
-	function atkGetCharset()
-	{
-		return atkconfig('default_charset',atktext('charset','atk'));
-	}
+  /**
+   * Return the default charset, first we look if the 
+   * config_default_charset is set, else we use the 
+   * charset in the languge file;
+   * @return string
+   */
+  function atkGetCharset()
+  {
+	return atkconfig('default_charset',atktext('charset','atk'));
+  }
 
   /**
    * Looks up a value using the given key in the given array and returns
