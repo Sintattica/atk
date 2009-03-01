@@ -761,7 +761,7 @@
             {
               $pk = $this->m_destInstance->primaryKey($recordset[$i]);
               if (($newlyadded!="" && $newlyadded==$pk) || ($newlyadded=="" && $pk==$currentPk)) $sel = "selected"; else $sel = "";
-              $result.= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', atk_html_entity_decode($this->m_destInstance->descriptor($recordset[$i])));
+              $result.= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', atk_htmlentities($this->m_destInstance->descriptor($recordset[$i])));
             }
             $result.='</select>';
           }
@@ -1055,7 +1055,7 @@
 
             if (is_array($record)&&isset($record[$this->fieldName()])&&
                        atk_in_array($pk, $record[$this->fieldName()])) $sel = "selected"; else $sel = "";
-            $result.= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', atk_html_entity_decode($this->m_destInstance->descriptor($recordset[$i]))).'</option>';
+            $result.= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', atk_htmlentities($this->m_destInstance->descriptor($recordset[$i]))).'</option>';
           }
           $result.='</select>';
           return $result;
