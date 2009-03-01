@@ -153,7 +153,7 @@
     function isValidKeyWord($keyword)
     {
       $replaced = strip_tags(str_replace("\n",'', str_replace("\r\n",'',$keyword)));      
-      return (strlen($keyword) == strlen($replaced));    
+      return (atk_strlen($keyword) == atk_strlen($replaced));    
     }
 
     function edit($rec="", $prefix="", $mode="")

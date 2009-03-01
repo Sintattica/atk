@@ -667,7 +667,7 @@
 
       if($value[0]=='!')
       {
-        return "UPPER(".$field.")!=UPPER('".substr($value,1,strlen($value))."')";
+        return "UPPER(".$field.")!=UPPER('".substr($value,1,atk_strlen($value))."')";
       }
       else
       {
@@ -693,7 +693,7 @@
     {
       if($value[0]=='!')
       {
-        return "UPPER(".$field.") NOT LIKE UPPER('%".substr($value,1,strlen($value))."%')";
+        return "UPPER(".$field.") NOT LIKE UPPER('%".substr($value,1,atk_strlen($value))."%')";
       }
       else
       {
@@ -708,7 +708,7 @@
     {
       if($value[0]=='!')
       {
-        return "UPPER(".$field.") NOT LIKE UPPER('".str_replace("*","%",substr($value,1,strlen($value)))."')";
+        return "UPPER(".$field.") NOT LIKE UPPER('".str_replace("*","%",substr($value,1,atk_strlen($value)))."')";
       }
       else
       {
@@ -723,7 +723,7 @@
     {
       if($value[0]=='!')
       {
-        return $field." < '".substr($value,1,strlen($value))."'";
+        return $field." < '".substr($value,1,atk_strlen($value))."'";
       }
       else
       {
@@ -738,7 +738,7 @@
     {
       if($value[0]=='!')
       {
-        return $field." < '".substr($value,1,strlen($value))."'";
+        return $field." < '".substr($value,1,atk_strlen($value))."'";
       }
       else
       {
@@ -753,7 +753,7 @@
     {
       if($value[0]=='!')
       {
-        return $field." > '".substr($value,1,strlen($value))."'";
+        return $field." > '".substr($value,1,atk_strlen($value))."'";
       }
       else
       {
@@ -768,7 +768,7 @@
     {
       if($value[0]=='!')
       {
-        return $field." > '".substr($value,1,strlen($value))."'";
+        return $field." > '".substr($value,1,atk_strlen($value))."'";
       }
       else
       {

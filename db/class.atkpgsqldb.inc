@@ -379,7 +379,7 @@
         if ($row['is_auto_inc'] == 1)
           $meta[$i]['sequence'] = $row['sequence'];
 
-        else if (strlen($row['default']) > 0)
+        else if (atk_strlen($row['default']) > 0)
         {
           // date/time/datetime
           if (strtolower($row['default']) == "now" && in_array($meta[$i]['gentype'], array("date", "time", "datetime")))

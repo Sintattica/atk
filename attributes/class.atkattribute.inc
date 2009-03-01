@@ -1523,7 +1523,7 @@
       if ($this->m_searchmode) $searchmode = $this->m_searchmode;
 
       // @todo Is this really needed?
-      if (strpos($value, "*")!==false && strlen($value)>1)
+      if (strpos($value, "*")!==false && atk_strlen($value)>1)
       {
         // auto wildcard detection
         $searchmode = "wildcard";

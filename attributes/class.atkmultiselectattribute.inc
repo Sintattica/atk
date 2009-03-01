@@ -66,7 +66,7 @@
         $size=0;
         for ($i=0, $_i=count($valueArray); $i<$_i; $i++)
         {
-          $size+=(strlen($valueArray[$i])+1); // 1 extra for the '|' symbol
+          $size+=(atk_strlen($valueArray[$i])+1); // 1 extra for the '|' symbol
         }
       }
       $this->atkListAttribute($name, $optionArray, $valueArray, $flags, $size); // base class constructor

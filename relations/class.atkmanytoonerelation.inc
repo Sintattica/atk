@@ -1898,7 +1898,7 @@
     function partial_autocomplete($mode)
     {
       $searchvalue = $this->m_ownerInstance->m_postvars['value'];
-      if (strlen($searchvalue) < $this->m_autocomplete_minchars)
+      if (atk_strlen($searchvalue) < $this->m_autocomplete_minchars)
       {
         return '<ul><li class="minimum_chars">'.sprintf($this->text('autocomplete_minimum_chars'), $this->m_autocomplete_minchars).'</li></ul>';
       }

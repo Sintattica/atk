@@ -48,7 +48,7 @@
     {
       if($value[0]=='!') 
       {
-        return $field." NOT REGEXP '".substr($value,1,strlen($value))."'";
+        return $field." NOT REGEXP '".substr($value,1,atk_strlen($value))."'";
       }
       else
       {
@@ -71,7 +71,7 @@
     {
       if($value[0]=='!') 
       {
-        return "soundex($field) NOT like concat('%',substring(soundex('".substr($value,1,strlen($value))."') from 2),'%')";
+        return "soundex($field) NOT like concat('%',substring(soundex('".substr($value,1,atk_strlen($value))."') from 2),'%')";
       }
       else
       {

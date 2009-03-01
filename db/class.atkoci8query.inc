@@ -78,7 +78,7 @@
      
      if($value[0]=='!')
      {
-       return "(SELECT UPPER((".$field.")) FROM dual) NOT LIKE '%".strtoupper(substr($value,1,strlen($value)))."%'";
+       return "(SELECT UPPER((".$field.")) FROM dual) NOT LIKE '%".strtoupper(substr($value,1,atk_strlen($value)))."%'";
      }
      else
      {

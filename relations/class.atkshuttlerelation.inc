@@ -131,7 +131,7 @@
         }
 
         // fancy autowidth detection
-        $width = max(strlen($this->m_destInstance->descriptor($recordset[$i]))*10, $width);  
+        $width = max(atk_strlen($this->m_destInstance->descriptor($recordset[$i]))*10, $width);  
       }
 
       if ($this->m_maxlistwidth)

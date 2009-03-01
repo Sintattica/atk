@@ -335,7 +335,7 @@
       $value = $record[$this->fieldName()];
 
       if ($mode == 'update'
-          && (strlen($value["new"]) > 0 || strlen($value["again"]) > 0)
+          && (atk_strlen($value["new"]) > 0 || atk_strlen($value["again"]) > 0)
           && !$this->hasFlag(AF_PASSWORD_NOVALIDATE)
           && $value["current"] != $value["hash"])
       {
@@ -349,7 +349,7 @@
         triggerError($record, $this->fieldName(), 'error_password_nomatch');
       }
 
-      if ($mode =="add" && $this->hasFlag(AF_OBLIGATORY) && strlen($value["new"]) == 0)
+      if ($mode =="add" && $this->hasFlag(AF_OBLIGATORY) && atk_strlen($value["new"]) == 0)
       {
         $error = TRUE;
         triggerError($record, $this->fieldName(), 'error_obligatoryfield');
@@ -357,14 +357,14 @@
 
       // Check if the password meets the restrictions. If not, set error to true and
       // triger an error with the human readable form of the restrictions as message.
-      if ((strlen($value["new"]) > 0) && (!$this->validateRestrictions($value["newplain"])))
+      if ((atk_strlen($value["new"]) > 0) && (!$this->validateRestrictions($value["newplain"])))
       {
         $error = TRUE;
         triggerError($record, $this->fieldName(), $this->getRestrictionsText());
       }
 
       // new password?
-      if (!$error && strlen($value["new"]) > 0)
+      if (!$error && atk_strlen($value["new"]) > 0)
       $record[$this->fieldName()]["hash"] = $record[$this->fieldName()]["new"];
     }
 

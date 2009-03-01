@@ -274,7 +274,7 @@
     	$browser = new browserInfo;
     	$maxlinechars = 0;
     	for ($counter = 0, $linecharacters=0, $rowsrequired=1;
-    	     $counter<strlen($data);
+    	     $counter<atk_strlen($data);
     	     $counter++, $linecharacters++)
     	{
     		// Current character we are parsing

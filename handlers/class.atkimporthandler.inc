@@ -661,7 +661,7 @@
       if ($enclosureChar!='')
       {
         $start = (($line[0]==$enclosureChar)?1:0);
-        $end = (($line[strlen($line)-1]==$enclosureChar)?-1:NULL);
+        $end = (($line[atk_strlen($line)-1]==$enclosureChar)?-1:NULL);
         $line = substr($line, $start, $end);
       }
 
@@ -1035,7 +1035,7 @@
           if(strstr($allFieldValue,"="))
           {
             $allFieldValue = substr(strstr($allFieldValue,"="),2);
-            $allFieldValue = substr($allFieldValue,0,strlen($allFieldValue)-1);
+            $allFieldValue = substr($allFieldValue,0,atk_strlen($allFieldValue)-1);
           }
           $allFieldsValues[$allField] = $allFieldValue;
         }

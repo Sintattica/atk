@@ -128,7 +128,7 @@
       {
         for ($i=0, $_i=count($valueArray); $i<$_i; $i++)
         {
-          $size = max($size, strlen($valueArray[$i]));
+          $size = max($size, atk_strlen($valueArray[$i]));
         }
       }
 

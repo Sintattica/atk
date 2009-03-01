@@ -98,7 +98,7 @@
       {
         if ($i > 0) $str .= ', ';
         $str .= ($ishtml ? htmlentities($recipient[0]) : $recipient[0]);
-        if (strlen($recipient['1']) > 0) $str .= ' ('.($ishtml ? htmlentities($recipient[1]) : $recipient[1]).')';
+        if (atk_strlen($recipient['1']) > 0) $str .= ' ('.($ishtml ? atk_htmlentities($recipient[1]) : $recipient[1]).')';
       }
       return $str;
     }
