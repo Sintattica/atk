@@ -86,7 +86,7 @@
       //first check complete string
       if (!atkEmailAttribute::validateAddressSyntax($email))
       {
-        triggerError($record, $this->fieldName(), 'error_invalid_email');
+        atkTriggerError($record, $this, 'error_invalid_email');
       }
       else
       {
