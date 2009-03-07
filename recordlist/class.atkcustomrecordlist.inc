@@ -31,6 +31,7 @@
   {
 
   	var $m_exportcsv = true;
+  	protected $m_mode;
 
     /**
      * Creates a special Recordlist that can be used for exporting to files or to make it printable
@@ -56,6 +57,7 @@
                     $outputparams=array(), $mode="list", $titlerow=true, $decode=false, $fsep="", $rfeplace=null)
     {
       $this->setNode($node);
+      $this->m_mode = $mode;
       // example      html         csv
 
       // $sol     = '<tr>'         or  ''
@@ -121,13 +123,13 @@
 
             if (method_exists($this->m_node,$funcname))
             {
-              $value=$this->eolreplace($this->m_node->$funcname($recordset[$i], $mode), $rfeplace);
+              $value=$this->eolreplace($this->m_node->$funcname($recordset[$i], $this->m_mode), $rfeplace);
             }
             else
             {
               // otherwise, the display function of the particular attribute
               // is called.
-              $value = $this->eolreplace($p_attrib->display($recordset[$i], $mode), $rfeplace);
+              $value = $this->eolreplace($p_attrib->display($recordset[$i], $this->m_mode), $rfeplace);
             }
             if (atkGetCharset() != "" && $decode) $value = atk_html_entity_decode(atk_htmlentities($value, ENT_NOQUOTES), ENT_NOQUOTES);
             $output.=$sof.($value==""?$empty:$value).$eof.$fsep;
@@ -157,7 +159,7 @@
           {
             if ($p_attrib->hasFlag(AF_TOTAL))
             {
-              $value = $this->eolreplace($p_attrib->display($totals[$attribname], $mode), $rfeplace);
+              $value = $this->eolreplace($p_attrib->display($totals[$attribname], $this->m_mode), $rfeplace);
               $totalRow.=$sof.($value=="" ? $empty : $value).$eof.$fsep;
 
             }
@@ -202,7 +204,7 @@
     {
       if ($attribute->hasFlag(AF_HIDE)) return true;
       if ($attribute->hasFlag(AF_HIDE_SELECT) && $this->m_node->m_action==='select') return true;
-      if ($attribute->hasFlag(AF_HIDE_LIST) && $this->m_node->m_action==='export') return true;
+      if ($attribute->hasFlag(AF_HIDE_LIST) && ($this->m_node->m_action==='export' || $this->m_mode==='export')) return true;
       return false;
     }
 
