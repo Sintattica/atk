@@ -114,7 +114,7 @@ class atkDialog
   /**
    * Sets the dialog sessionStatus.
    *
-   * @param int sessionStatus (SESSION_BACK=3, SESSION_DEFAULT=0, SESSION_NESTED=2, SESSION_NEW=1, SESSION_PARTIAL=5, SESSION_REPLACE=4)
+   * @param int $sessionStatus (SESSION_BACK=3, SESSION_DEFAULT=0, SESSION_NESTED=2, SESSION_NEW=1, SESSION_PARTIAL=5, SESSION_REPLACE=4)
    */
   public function setSessionStatus($sessionStatus)
   {
@@ -124,7 +124,7 @@ class atkDialog
   /**
    * Sets the dialog title.
    *
-   * @param string title
+   * @param string $title
    */
   function setTitle($title)
   {
@@ -289,6 +289,7 @@ class atkDialog
    * @param boolean $load         load JavaScript and stylesheets needed to show this dialog?
    * @param boolean $encode       encode using htmlentities (needed to use in links etc.)
    * @param boolean $callModifier call node's dialog modifier (modifyDialog method)?
+   * @param boolean $lateParamBinding 
    *
    * @return string JavaScript call for opening the dialog
    */

@@ -1370,7 +1370,7 @@
      *                          search page. The atkAttribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
-     * @param $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      *
      * @return String A piece of html-code
      */
@@ -1489,7 +1489,7 @@
      * @param String $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
-     * @param string $fieldaliasprefix optional prefix for the fiedalias in the table
+     * @param string $fieldaliasprefix optional prefix for the fieldalias in the table
      */
     function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix='')
     {

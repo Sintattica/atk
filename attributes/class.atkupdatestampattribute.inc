@@ -56,6 +56,9 @@
 
     /**
      * Value to DB.
+     * 
+     * @param array $record The record
+     * @return The value to store in the database
      */
     function value2db($record)
     {

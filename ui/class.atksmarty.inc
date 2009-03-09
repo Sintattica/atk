@@ -154,6 +154,12 @@ class atkSmarty
    *
    * NOTE: you should only use this function for
    *       tags with special names!
+   * 
+   * @param string $moduleOrPath
+   * @param string $tag
+   * @param string $name
+   * @param bool $cacheable
+   * @param string $cache_attrs
    */
   function addFunction($moduleOrPath, $tag, $name="", $cacheable=true, $cache_attrs=null)
   {
@@ -177,6 +183,10 @@ class atkSmarty
 
   /**
    * Register dynamic function / tag.
+   * 
+   * @param string $moduleOrPath
+   * @param string $tag
+   * @param string $cache_attrs
    */
   function addDynamicFunction($moduleOrPath, $tag, $cache_attrs=null)
   {
@@ -188,6 +198,11 @@ class atkSmarty
    *
    * NOTE: you should only use this function for
    *       tags with special names!
+   * 
+   * @param string $moduleOrPath
+   * @param string $tag
+   * @param string $name
+   * @param string $cacheable
    */
   function addCompilerFunction($moduleOrPath, $tag, $name="", $cacheable=true)
   {
@@ -214,6 +229,11 @@ class atkSmarty
    *
    * NOTE: you should only use this function for
    *       tags with special names!
+   * 
+   * @param string $moduleOrPath
+   * @param string $tag
+   * @param string $name
+   * @param bool $cacheable
    */
   function addBlock($moduleOrPath, $tag, $name="", $cacheable=true)
   {
@@ -237,6 +257,9 @@ class atkSmarty
 
   /**
    * Register dynamic function / tag.
+   * 
+   * @param string $moduleOrPath
+   * @param string $tag
    */
   function addDynamicBlock($moduleOrPath, $tag)
   {
@@ -245,6 +268,10 @@ class atkSmarty
 
   /**
    * Register modifier
+   * 
+   * @param string $moduleOrPath
+   * @param string $tag
+   * @param string $name
    */
   function addModifier($moduleOrPath, $tag, $name="")
   {
@@ -266,6 +293,11 @@ class atkSmarty
     $smarty->register_modifier($tag, $function);
   }
 
+  /**
+   * Add output filter
+   *
+   * @param string $function The function to use as outputfilter
+   */
   function addOutputFilter($function)
   {
     $smarty = &atkSmarty::getInstance();

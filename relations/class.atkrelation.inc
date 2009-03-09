@@ -179,6 +179,10 @@
     /**
      * Descriptor handler. Forwards description handler calls
      * to the real description handler.
+     * 
+     * @param array $record The record
+     * @param atkNode $node The atknode object
+     * @return String with the descriptor
      */
     function descriptor($record, &$node)
     {
@@ -361,7 +365,7 @@
     /**
      * Parses the destination filter
      *
-     * @param $destfilter sting filter to parse
+     * @param $destFilter sting filter to parse
      * @param $record the current record
      * @return $filter string filter.
      */

@@ -53,14 +53,31 @@ class atkCurrencyAttribute extends atkNumberAttribute
 
   /**
    * overrides the edit function to put the currencysymbol in front of the input field
+   * 
+   * @param array $record The record that holds the value for this attribute.
+   * @param String $fieldprefix The fieldprefix to put in front of the name
+   *                            of any html form element for this attribute.
+   * @param String $mode The mode we're in ('add' or 'edit')
+   * @return String A piece of htmlcode for editing this attribute
    */
-  function edit($record="", $fieldprefix="")
+  function edit($record="", $fieldprefix="", $mode='')
   {
     return $this->m_currencysymbol." ".parent::edit($record,$fieldprefix);
   }
 
   /**
    * overrides the display function to put the currencysymbol in front of the input field
+   *
+   * The regular atkAttribute uses PHP's nl2br() and htmlspecialchars()
+   * methods to prepare a value for display, unless $mode is "cvs".
+   *
+   * @param array $record The record that holds the value for this attribute
+   * @param String $mode The display mode ("view" for viewpages, or "list"
+   *                     for displaying in recordlists, "edit" for
+   *                     displaying in editscreens, "add" for displaying in
+   *                     add screens. "csv" for csv files. Applications can
+   *                     use additional modes.
+   * @return String HTML String
    */
   function display($record, $mode="")
   {

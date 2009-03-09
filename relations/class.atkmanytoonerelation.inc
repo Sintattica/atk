@@ -303,7 +303,7 @@
      * Set the searchmode for the autocompletion:
      * exact, startswith(default) or contains.
      *
-     * @param array $searchmode
+     * @param array $mode
      */
     function setAutoCompleteSearchMode($mode)
     {
@@ -385,6 +385,8 @@
     /**
      * Add list column. An attribute of the destination node
      * that (only) will be displayed in the recordlist.
+     * 
+     * @param string $attr The attribute to add to the listcolumn
      */
     function addListColumn($attr)
     {
@@ -540,6 +542,8 @@
 
     /**
      * Set none label.
+     * 
+     * @param string $label The label to use for the "none" option
      */
     function setNoneLabel($label)
     {
@@ -548,6 +552,8 @@
 
     /**
      * Get none label.
+     * 
+     * @return Strign The label for the "none" option
      */
     function getNoneLabel()
     {
@@ -560,7 +566,13 @@
 
     /**
      * Returns a displayable string for this value.
-     * @param $record Record
+     * 
+     * @param array $record The record that holds the value for this attribute
+     * @param String $mode The display mode ("view" for viewpages, or "list"
+     *                     for displaying in recordlists, "edit" for
+     *                     displaying in editscreens, "add" for displaying in
+     *                     add screens. "csv" for csv files. Applications can
+     *                     use additional modes.
      * @return a displayable string
      */
     function display($record, $mode='list')
@@ -682,9 +694,11 @@
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
-     * @param array  $record       The edit record
-     * @param String $fieldprefix  Prefix for the fieldname
-     * @return Piece of html code that can  be used in a form to edit this
+     * @param array $record The record that holds the value for this attribute.
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
+     * @return Piece of html code that can be used in a form to edit this
      */
     function edit($record, $fieldprefix="", $mode="edit")
     {
@@ -799,7 +813,13 @@
       return atkerror("Could not create destination for destination: $this->m_destination!");
     }
 
-
+    /**
+     * Get the select link to select the value using a select action on the destination node
+     *
+     * @param string $selname
+     * @param string $filter
+     * @return String HTML-code with the select link
+     */
     function _getSelectLink($selname, $filter)
     {
       $result = "";
@@ -897,10 +917,14 @@
     }
 
     /**
-     * Returns a piece of html code that can be used in a form to display
-     * hidden values for this attribute.
-     * @param $record Array with values
-     * @return Piece of htmlcode
+     * Returns a piece of html code for hiding this attribute in an HTML form,
+     * while still posting its value. (<input type="hidden">)
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @return String A piece of htmlcode with hidden form elements that post
+     *                this attribute's value without showing it.
      */
     function hide($record="", $fieldprefix="")
     {
@@ -924,6 +948,8 @@
     /**
      * Support for destination "records" where only the id is set and the
      * record itself isn't converted to a real record (array) yet
+     * 
+     * @param array $record The record to fix
      */
     function fixDestinationRecord(&$record)
     {
@@ -989,11 +1015,21 @@
     }
 
     /**
-     * Returns a piece of html code that can be used in a form to search
-     * @param $record Record
-     * @param $size Size of the editbox
-     * @param $maxsize Maxsize of the editbox
-     * @return Piece of html code that can  be used in a form to edit this
+     * Returns a piece of html code that can be used to get search terms input
+     * from the user.
+     *
+     * @param array $record Array with values
+     * @param boolean $extended if set to false, a simple search input is
+     *                          returned for use in the searchbar of the
+     *                          recordlist. If set to true, a more extended
+     *                          search may be returned for the 'extended'
+     *                          search page. The atkAttribute does not
+     *                          make a difference for $extended is true, but
+     *                          derived attributes may reimplement this.
+     * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param atkDataGrid $grid The datagrid
+     *
+     * @return String A piece of html-code
      */
     function search($record=array(), $extended=false, $fieldprefix="", $grid=null)
     {
@@ -1145,6 +1181,21 @@
       }
     }
 
+    /**
+     * Creates a searchcondition for the field,
+     * was once part of searchCondition, however,
+     * searchcondition() also immediately adds the search condition.
+     *
+     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param String $table       The name of the table in which this attribute
+     *                              is stored
+     * @param mixed $value        The value the user has entered in the searchbox
+     * @param String $searchmode  The searchmode to use. This can be any one
+     *                              of the supported modes, as returned by this
+     *                              attribute's getSearchModes() method.
+     * @param string $fieldaliasprefix The prefix for the field
+     * @return String The searchcondition to use.
+     */
     function getSearchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix='')
     {
       if (!$this->createDestination()) return;
@@ -1219,11 +1270,26 @@
     }
 
     /**
-     * Function to add values to query
-     * @param $query
-     * @param $tablename Table name
-     * @param $fieldaliasprefix Field alias prefix
-     * @param $level Level
+     * Adds this attribute to database queries.
+     *
+     * Database queries (select, insert and update) are passed to this method
+     * so the attribute can 'hook' itself into the query.
+     *
+     * @param atkQuery $query The SQL query object
+     * @param String $tablename The name of the table of this attribute
+     * @param String $fieldaliasprefix Prefix to use in front of the alias
+     *                                 in the query.
+     * @param Array $rec The record that contains the value of this attribute.
+     * @param int $level Recursion level if relations point to eachother, an
+     *                   endless loop could occur if they keep loading
+     *                   eachothers data. The $level is used to detect this
+     *                   loop. If overriden in a derived class, any subcall to
+     *                   an addToQuery method should pass the $level+1.
+     * @param String $mode Indicates what kind of query is being processing:
+     *                     This can be any action performed on a node (edit,
+     *                     add, etc) Mind you that "add" and "update" are the
+     *                     actions that store something in the database,
+     *                     whereas the rest are probably select queries.
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level=0, $mode="")
     {
@@ -1334,6 +1400,13 @@
       }
     }
 
+    /**
+     * Check if two records have the same value for this attribute
+     *
+     * @param array $recA Record A
+     * @param array $recB Record B
+     * @return boolean to indicate if the records are equal
+     */
     function equal($recA, $recB)
     {
       if ($this->createDestination())
@@ -1349,6 +1422,21 @@
       return false;
     }
 
+    /**
+     * Return the database field type of the attribute.
+     *
+     * Note that the type returned is a 'generic' type. Each database
+     * vendor might have his own types, therefor, the type should be
+     * converted to a database specific type using $db->fieldType().
+     *
+     * If the type was read from the table metadata, that value will
+     * be used. Else, the attribute will analyze its flags to guess
+     * what type it should be. If AF_AUTO_INCREMENT is set, the field
+     * is probaly "number". If not, it's probably "string".
+     *
+     * @return String The 'generic' type of the database field for this
+     *                attribute.
+     */
     function dbFieldType()
     {
       // The type of field that we need to store the foreign key, is equal to
@@ -1371,6 +1459,19 @@
       return "";
     }
 
+    /**
+     * Return the size of the field in the database.
+     *
+     * If 0 is returned, the size is unknown. In this case, the
+     * return value should not be used to create table columns.
+     *
+     * Ofcourse, the size does not make sense for every field type.
+     * So only interpret the result if a size has meaning for
+     * the field type of this attribute. (For example, if the
+     * database field is of type 'date', the size has no meaning)
+     *
+     * @return int The database field size
+     */
     function dbFieldSize()
     {
       // The size of the field we need to store the foreign key, is equal to
@@ -1396,6 +1497,10 @@
     /**
      * Returns the selected record for this many-to-one relation. Uses
      * the owner instance $this->fieldName()."_selected" method if it exists.
+     * 
+     * @param array $record The record
+     * @param string $mode The mode we're in
+     * @return Array with the selected record
      */
     function _getSelectedRecord($record=array(), $mode="select")
     {
@@ -1407,6 +1512,10 @@
 
     /**
      * Returns the currently selected record.
+     * 
+     * @param array $record The record
+     * @param string $mode The mode we're in
+     * @return Array with the selected record
      */
     function getSelectedRecord($record=array(), $mode="select")
     {
@@ -1428,6 +1537,10 @@
     /**
      * Returns the selectable records for this many-to-one relation. Uses
      * the owner instance $this->fieldName()."_selection" method if it exists.
+     * 
+     * @param array $record The record
+     * @param string $mode The mode we're in
+     * @return Array with the selectable records
      */
     function _getSelectableRecords($record=array(), $mode="select")
     {
@@ -1440,6 +1553,10 @@
     /**
      * Is selectable record? Uses the owner instance $this->fieldName()."_selectable"
      * method if it exists.
+     * 
+     * @param array $record The record
+     * @param string $mode The mode we're in
+     * @return Boolean to indicate if the record is selectable
      */
     function _isSelectableRecord($record=array(), $mode="select")
     {
@@ -1473,6 +1590,10 @@
      * Is selectable record?
      *
      * Use this one from your selectable override when needed.
+     * 
+     * @param array $record The record
+     * @param string $mode The mode we're in
+     * @return Boolean to indicate if the record is selectable
      */
     function isSelectableRecord($record=array(), $mode="select")
     {
@@ -1520,6 +1641,10 @@
      * Returns the selectable records.
      *
      * Use this one from your selection override when needed.
+     * 
+     * @param array $record The record
+     * @param string $mode The mode we're in
+     * @return Array with the selectable records
      */
     function getSelectableRecords($record=array(), $mode="select")
     {
@@ -1534,8 +1659,10 @@
    /**
     * Returns the condition (SQL) that should be used when we want to join a relation's
     * owner node with the parent node.
-    * @param String $tablename=""  the tablename on which
-    * @param String $fieldalias=""
+    * 
+    * @param atkQuery $query The query object
+    * @param String $tablename  The tablename on which to join
+    * @param String $fieldalias The fieldalias
     * @return String SQL string for joining the owner with the destination.
     *                Returns false when impossible (f.e. attrib is not a relation).
     */
@@ -1566,6 +1693,7 @@
 
     /**
      * Make this relation hide itself from the form when there are no items to select
+     * 
      * @param boolean $hidewhenempty true - hide when empty, false - always show
      */
     function setHideWhenEmpty($hidewhenempty)
@@ -1573,6 +1701,20 @@
       $this->m_hidewhenempty = $hidewhenempty;
     }
 
+    /**
+     * Adds the attribute's edit / hide HTML code to the edit array.
+     *
+     * This method is called by the node if it wants the data needed to create
+     * an edit form.
+     *
+     * This is a framework method, it should never be called directly.
+     *
+     * @param String $mode     the edit mode ("add" or "edit")
+     * @param array  $arr      pointer to the edit array
+     * @param array  $defaults pointer to the default values array
+     * @param array  $error    pointer to the error array
+     * @param String $fieldprefix   the fieldprefix
+     */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
       if ($this->createDestination())
@@ -1670,7 +1812,6 @@
       }
     }
 
-
     /**
      * Adds the attribute / field to the list header. This includes the column name and search field.
      *
@@ -1682,6 +1823,7 @@
      * @param int    $flags the recordlist flags
      * @param array  $atksearch the current ATK search list (if not empty)
      * @param String $atkorderby the current ATK orderby string (if not empty)
+     * @param atkDataGrid $grid The datagrid
      * @see atkNode::listArray
      */
     function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby, $grid=null)
@@ -1767,13 +1909,21 @@
       $arr["rows"][$nr]["record"] = $backup;
     }
 
-
     /**
-     * Overridden method; in the integrated version, we should let the destination
-     * attributes hook themselves into the fieldlist instead of hooking the relation
-     * in it.
-     * For original documentation for this method, please see the atkAttribute class
-     */
+    * Adds the needed searchbox(es) for this attribute to the fields array. This
+    * method should only be called by the atkSearchHandler.
+    * Overridden method; in the integrated version, we should let the destination
+    * attributes hook themselves into the fieldlist instead of hooking the relation
+    * in it.
+    *
+    * @param array   $fields            The array containing fields to use in the
+    *                                   extended search
+    * @param atkNode $node              The node where the field is in
+    * @param array   $record            A record containing default values to put
+    *                                   into the search fields.
+    * @param array   $fieldprefix       search / mode field prefix
+    * @param array   $currentSearchMode current search mode
+    */
     function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "")
     {
       $prefix = $fieldprefix.$this->fieldName()."_AE_";
@@ -1797,6 +1947,15 @@
       }
     }
 
+    /**
+     * Retrieve the sortorder for the listheader based on the
+     * atkColumnConfig
+     *
+     * @param atkColumnConfig $columnConfig The config that contains options for
+     *                                      extended sorting and grouping to a
+     *                                      recordlist.
+     * @return String Returns sort order ASC or DESC
+     */
     function listHeaderSortOrder(&$columnConfig)
     {
       $order = $this->fieldName();
@@ -1815,6 +1974,11 @@
      * Creates and registers the on change handler caller function.
      * This method will be used to message listeners for a change
      * event as soon as a new value is selected.
+     * 
+     * @param string $fieldId
+     * @param string $fieldPrefix
+     * @param string $none
+     * @return String function name
      */
     function createOnChangeCaller($fieldId, $fieldPrefix, $none='null')
     {
@@ -1840,6 +2004,10 @@
 
     /**
      * Draw the auto-complete box.
+     * 
+     * @param array $record The record
+     * @param string $fieldPrefix The fieldprefix
+     * @param string $mode The mode we're in
      */
     function drawAutoCompleteBox($record, $fieldPrefix, $mode)
     {
@@ -1893,7 +2061,7 @@
     /**
      * Auto-complete partial.
      *
-     * @param $mode add/edit mode?
+     * @param string $mode add/edit mode?
      */
     function partial_autocomplete($mode)
     {
@@ -1943,6 +2111,8 @@
 
     /**
      * Auto-complete search partial.
+     * 
+     * @return HTML code with autocomplete result
      */
     function partial_autocomplete_search()
     {

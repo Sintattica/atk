@@ -30,13 +30,9 @@ atkimport("atk.atkcontroller");
  */
   class atkWizardBase extends atkController
   {
-    
-    
     /**
      * Constructor of atkWizardBase
      *
-     * @param string $controllerName
-     * @param string $moduleName
      * @return atkController object
      */
     function atkWizardBase()
@@ -52,6 +48,7 @@ atkimport("atk.atkcontroller");
      * @param array $record The record currently displayed/edited in the form.
      *                      This param can be used to define record specific
      *                      buttons.
+     * @return Array with html code elements with buttons
      * 
      * ToDo/Fixme this function has been refactored in atkController. 
      * It should be refactored in the same way.
@@ -114,6 +111,8 @@ atkimport("atk.atkcontroller");
 
     /**
      * Determine if this panel should show a finish button
+     * 
+     * @return Boolean
      */
     function showFinishButton()
     {

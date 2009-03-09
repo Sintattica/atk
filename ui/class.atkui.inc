@@ -70,6 +70,7 @@
      * Currently only the view action is implemented
      * @param String $action the action for which to render the template
      * @param array  $vars   the template variables
+     * @param string $module the name of the module requesting to render a template
      * @return String the rendered template
      */
     function renderAction($action, $vars, $module="")
@@ -88,6 +89,7 @@
      * Renders a list template
      * @param String $action not used (deprecated?)
      * @param array  $vars   the variables with which to parse the list template
+     * @param string $module the name of the module requesting to render a template 
      */
     function renderList($action, $vars, $module="")
     {
@@ -98,6 +100,8 @@
      * Renders top template
      * @deprecated Use renderBox($vars, "top") instead
      * @param array $vars the variables for the template
+     * @param string $module the name of the module requesting to render a template
+     * @return String with the rendered box
      */
     function renderTop($vars, $module="")
     {
@@ -113,6 +117,10 @@
      * For instance, calling renderBox($smartyvars, "menu")
      * will make it search for a menu.tpl first and use that
      * if it's available, otherwise it will just use box.tpl
+     * 
+     * @param array $vars the variables for the template
+     * @param string $name The name of the template
+     * @param string $module the name of the module requesting to render a template
      */
     function renderBox($vars, $name="", $module="")
     {
@@ -127,6 +135,7 @@
      * Renders the insides of a dialog.
      * 
      * @param array $vars template variables
+     * @param string $module the name of the module requesting to render a template
      * @return string rendered dialog
      */
     function renderDialog($vars, $module="")
@@ -138,7 +147,8 @@
      * Renders a tabulated template
      * Registers some scriptcode too when the tabtype is set to dhtml
      * @param array $vars the variables with which to render the template
-     * @param String the rendered template
+     * @param string $module the name of the module requesting to render a template
+     * @return String the rendered template
      */
     function renderTabs($vars, $module="")
     {
@@ -228,6 +238,16 @@
       return $this->m_theme->stylePath($style, $module);
     }
     
+    /**
+     * Return the title to render
+     *
+     * @param String $module   the module in which to look
+     * @param String $nodetype the nodetype of the action
+     * @param String $action   the action that we are trying to find a title for
+     * @param bool   $actiononly wether or not to return a name of the node
+     *                          if we couldn't find a specific title
+     * @return String the title for the action
+     */
     function title($module, $nodetype, $action=null, $actiononly=false)
     {
       if ($module == NULL || $nodetype == NULL) return "";
@@ -238,8 +258,7 @@
      * This function returns a suitable title text for an action.
      * Example: echo $ui->title("users", "employee", "edit"); might return:
      *          'Edit an existing employee'
-     * @param String $module   the module in which to look
-     * @param String $nodetype the nodetype of the action
+     * @param atkNode $node the node to get the title from
      * @param String $action   the action that we are trying to find a title for
      * @param bool   $actiononly wether or not to return a name of the node
      *                          if we couldn't find a specific title

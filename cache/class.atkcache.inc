@@ -55,7 +55,7 @@ abstract class atkCache implements ArrayAccess
     * Get atkCache instance, default when no type
     * is configured it will use var cache.
     *
-    * @param string $type Cache type
+    * @param string $types Cache type
     * @return object atkCache object of the request type
     */
    public static function getInstance($types="")

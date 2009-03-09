@@ -123,6 +123,11 @@ class atkCache_eaccelerator extends atkCache
     return eaccelerator_clean();
   }
 
+  /**
+   * Get Current cache type
+   *
+   * @return string Current cache
+   */
   public function getType()
   {
     return 'eaccelerator';

@@ -182,6 +182,7 @@
      * Traverses the theme path and remembers the physical location of all theme files.
      *
      * @param String $path The path of the theme, relative to atkroot.
+     * @param String $abspath The absolute path of the theme
      * @param String $data Reference to the data array in which to report the file locations
      */
     function scanThemePath($path, $abspath, &$data)
@@ -222,6 +223,14 @@
       }
     }
 
+    /**
+     * Traverse module path.
+     *
+     * Traverses the module path and remembers the physical location of all theme files.
+     *
+     * @param String $theme The name of the theme
+     * @param String $data Reference to the data array in which to report the file locations
+     */
     function scanModulePath($theme, &$data)
     {
       global $g_modules;
@@ -261,6 +270,12 @@
       }
     }
 
+    /**
+     * Get files for a directory
+     *
+     * @param string $path The directory to traverse
+     * @return Array with files from the traversed directory
+     */
     function _dirContents($path)
     {
       $files = array();

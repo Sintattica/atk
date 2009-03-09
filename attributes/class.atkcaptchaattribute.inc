@@ -52,10 +52,12 @@
      * Edit  record
      * Here it will only return the text, no edit box.
      * @param $record Array with fields
-     * @param $fieldprefix 
+     * @param $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
      * @return Parsed string
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record="", $fieldprefix="", $mode="")
     {
       $target = "atk/ext/captcha/img/captcha.jpg.php";
       $img    = session_url("include.php?file=".$target);
@@ -81,6 +83,13 @@
      */
     function loadType() { return NOLOAD; }
 
+    /**
+     * Validate the value fo this attribute
+     *
+     * @param array $record The record that contains the value for this attribute
+     * @param string $mode The mode for which should be validated ("add" or
+     *                     "update") 
+     */
     function validate(&$record, $mode)
     {
       $sCaptchaCode = $record[$this->fieldName()];

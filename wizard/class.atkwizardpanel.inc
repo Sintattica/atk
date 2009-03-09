@@ -109,9 +109,11 @@
      * probably don't need the node in most pageloads because we only use one
      * wizardpanel at a time.
      *
-     * @param unknown_type $wizard
-     * @param unknown_type $panelName
-     * @param unknown_type $nodeName
+     * @param atkWizard $wizard The wizard
+     * @param string $panelName The panelname
+     * @param string $nodeName The nodename
+     * @param string $defaultAction The default action
+     * @param integer $finishButton The finish button to use
      * @return atkWizardPanel
      */
     function atkWizardPanel(&$wizard, $panelName, $nodeName, $defaultAction="", $finishButton=FINISH_BUTTON_DEFAULT)
@@ -206,7 +208,8 @@
      * Handlers are created and added to the atkNode when the
      * node is created.
      *
-     * @param atkActionHandler $listener
+     * @param string $handlerName Name of the handler to add
+     * @param string $handlerAction The action
      */
     public function addActionHandler($handlerName, $handlerAction)
     {

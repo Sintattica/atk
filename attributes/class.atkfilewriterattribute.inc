@@ -56,6 +56,15 @@
       $this->atkTextAttribute($name,$size,$flags); // base class constructor      
     }
 
+    /**
+     * Converts the internal attribute value to one that is understood by the
+     * database.
+     *
+     * For this attribute the data is not written to a database but to a file
+     *
+     * @param array $record The record that holds this attribute's value.
+     * @return String The database compatible value
+     */
     function value2db($record)
     {
       // Note1 : regardless of mode (update or add), we always overwrite the 
@@ -93,6 +102,14 @@
       return $this->escapeSQL($contents);
     }
     
+    /**
+     * Converts a database value to an internal value.
+     *
+     * For this attribute the value will be read from a file (if possible)
+     *
+     * @param array $record The database record that holds this attribute's value
+     * @return mixed The internal value
+     */
     function db2value($record)
     {
       // determine filename.
@@ -120,7 +137,12 @@
       }      
     }
     
-     function getSearchModes()
+    /**
+     * This attribute does not support any search modes
+     *
+     * @return empty array
+     */
+    function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
       // (the LIKE function is ANSI standard SQL, and both substring and wildcard
@@ -129,8 +151,6 @@
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array();
     }
-  
-    
   }
   
 ?>

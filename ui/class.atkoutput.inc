@@ -65,6 +65,12 @@
       return $s_instance;
     }
     
+    /**
+     * Send the caching headers
+     *
+     * @param timestamp $lastmodificationstamp Timestamp of the last modification
+     * @param bool $nocache Send cache headers?
+     */
     public function sendCachingHeaders($lastmodificationstamp='',$nocache=true)
     {
       // Since atk pages are always dynamic, we have to prevent that some browsers cache
@@ -113,6 +119,7 @@
      *                                   containing this stamp will be sent to
      *                                   the browser. If $nocache is true,
      *                                   this parameter is ignored.
+     * @param string $charset The character set
      */
     public function outputFlush($nocache=true, $lastmodificationstamp="", $charset="")
     {
@@ -158,6 +165,11 @@
       }
     }
     
+    /**
+     * Display the debug statements
+     *
+     * @return String htmlcode with debugging
+     */
     public function getDebugging()
     {
       global $g_debug_msg;

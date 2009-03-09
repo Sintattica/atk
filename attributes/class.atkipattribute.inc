@@ -91,7 +91,15 @@
       return implode('.', $inputs);
     }
 
-
+    /**
+     * Checks if the value is a valid IP address
+     *
+     * @param array $record The record that holds the value for this
+     *                      attribute. If an error occurs, the error will
+     *                      be stored in the 'atkerror' field of the record.
+     * @param String $mode The mode for which should be validated ("add" or
+     *                     "update")
+     */
     function validate(&$record, $mode)
     {
       // Check for valid ip string

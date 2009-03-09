@@ -79,8 +79,6 @@
     /**
      * Constructor of atkController
      *
-     * @param string $controllerName
-     * @param string $moduleName
      * @return atkController object
      */
     function atkController()
@@ -140,7 +138,8 @@
    /**
     * Return the one and only instance of the class
     *
-    * @return unknown
+    * @param string $controller The class of the controller to instanciate
+    * @return object
     */
     function &createInstance($controller)
     {
@@ -232,8 +231,8 @@
      * Therefore each node can define it's own dispatch function
      * The default dispatch function of the atkNode will call the handleRequest function of the controller
      *
-     * @param unknown_type $postvars
-     * @param unknown_type $flags
+     * @param array $postvars
+     * @param integer $flags
      */
     function dispatch($postvars, $flags=NULL)
     {
@@ -428,6 +427,7 @@
      * @param String $message An optional message to pass to the feedbackpage,
      *                        for example to explain the reason why an action
      *                        failed.
+     * @param integer $levelskip The number of levels to skip
      * @return String The feedback url.
      */
     function feedbackUrl($action, $status, $record="", $message="", $levelskip=1)
@@ -452,10 +452,9 @@
     /**
      * Generate a dispatch menu URL for use with nodes
      * and their specific actions.
-     * @param string $node the (module.)node name
-     * @param string $action the atk action the link will perform
      * @param string $params: A key/value array with extra options for the url
-     * @param string $phpfile The php file to use for dispatching, defaults to dispatch.php
+     * @param string $atknodetype The atknodetype (modulename.nodename)
+     * @param string $file The php file to use for dispatching, defaults to dispatch.php
      * @return string url for the node with the action
      */
     function dispatchUrl($params=array(), $atknodetype="", $file="")
@@ -551,6 +550,7 @@
       * Create a button.
       *
       * @param String $action
+      * @param Bool $default Add the atkdefaultbutton class?
       * @return HTML
       */
     function getButton($action, $default=false)
@@ -610,8 +610,9 @@
      /**
       * Create a dialog button.
       *
-      * @param String $action
-      * @param String $url
+      * @param String $action The action ('save' or 'cancel')
+      * @param String $label The label for this button
+      * @param String $url 
       * @param array  $extraParams
       * @return HTML
       */

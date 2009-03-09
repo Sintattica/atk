@@ -54,6 +54,12 @@
       }
     }
 
+    /**
+     * Adds the AF_OBLIGATORY flag to the attribute.
+     * 
+     * @param int $flags The flag to add to the attribute
+     * @return atkAttribute The instance of this atkAttribute
+     */
     function addFlag($flags)
     {
       // setting AF_OBLIGATORY has no use, so prevent setting it.
@@ -68,7 +74,7 @@
         $flags |= AF_OBLIGATORY;
       }
 
-      parent::addFlag($flags);
+      return parent::addFlag($flags);
     }
 
     /**
@@ -91,10 +97,14 @@
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
-     * @param $record Array with fields
+     * 
+     * @param array $record The record that holds the value for this attribute.
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
      * @return piece of html code with a checkbox
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record="", $fieldprefix="", $mode="")
     {
       $id = $this->getHtmlId($fieldprefix);
       $onchange='';
@@ -117,8 +127,6 @@
       return $result;
     }
 
-
-
     /**
      * Get the value if it exits, otherwise return 0
      * @param $rec Array with values
@@ -130,10 +138,18 @@
       return $ret;
     }
 
-
     /**
      * Returns a piece of html code that can be used in a form to search for values
-     * @param $record Array with fields
+     * 
+     * @param array $record Array with values
+     * @param boolean $extended if set to false, a simple search input is
+     *                          returned for use in the searchbar of the
+     *                          recordlist. If set to true, a more extended
+     *                          search may be returned for the 'extended'
+     *                          search page. The atkAttribute does not
+     *                          make a difference for $extended is true, but
+     *                          derived attributes may reimplement this.
+     * @param $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return piece of html code with a checkbox
      */
     function search($record="", $extended=false, $fieldprefix="")
@@ -150,6 +166,18 @@
       return $result;
     }
 
+    /**
+     * Creates a searchcondition for the field
+     *
+     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param String $table       The name of the table in which this attribute
+     *                              is stored
+     * @param mixed $value        The value the user has entered in the searchbox
+     * @param String $searchmode  The searchmode to use. This can be any one
+     *                              of the supported modes, as returned by this
+     *                              attribute's getSearchModes() method.
+     * @return String The searchcondition to use.
+     */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       if (is_array($value)) $value = $value[$this->fieldName()];
@@ -176,6 +204,7 @@
      * taking the AF_NOLABEL and AF_BLANKLABEL flags into account.
      *
      * @param array $record The record holding the value for this attribute.
+     * @param string $mode The mode ("add", "edit" or "view") 
      * @return String The HTML compatible label for this attribute, or an
      *                empty string if the label should be blank, or NULL if no
      *                label at all should be displayed.
@@ -192,6 +221,14 @@
       }
     }
 
+    /**
+     * Convert values from an HTML form posting to an internal value for
+     * this attribute.
+     *
+     * @param array $postvars The array with html posted values ($_POST, for
+     *                        example) that holds this attribute's value.
+     * @return String The internal value
+     */
     function fetchValue($postvars)
     {
       if (is_array($postvars)&&isset($postvars[$this->fieldName()]))
@@ -204,6 +241,11 @@
       }
     }
 
+    /**
+     * Retrieve the list of searchmodes supported by the attribute.
+     *
+     * @return array List of supported searchmodes
+     */
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
@@ -214,6 +256,12 @@
       return array("exact");
     }
 
+    /**
+     * Return the database field type of the attribute.
+     *
+     * @return String The 'generic' type of the database field for this
+     *                attribute.
+     */
     function dbFieldType()
     {
       return "number";
@@ -221,6 +269,9 @@
 
     /**
      * Return the label of the field.
+     * 
+     * @param array $record The record that holds the value of this attribute
+     * @return The label for this attribute
      */
     function label($record = array())
     {
@@ -243,7 +294,16 @@
       return 0;
     }
 
-
+    /**
+     * Returns a piece of html code for hiding this attribute in an HTML form,
+     * while still posting its value. (<input type="hidden">)
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @return String A piece of htmlcode with hidden form elements that post
+     *                this attribute's value without showing it.
+     */
     function hide($record="", $fieldprefix="")
     {
       // the next if-statement is a workaround for derived attributes which do

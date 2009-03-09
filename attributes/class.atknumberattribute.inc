@@ -68,6 +68,20 @@
       $this->m_maxvalue = $maxvalue;
     }
 
+    /**
+     * Returns a displayable string for this value, to be used in HTML pages.
+     *
+     * The regular atkAttribute uses PHP's nl2br() and htmlspecialchars()
+     * methods to prepare a value for display, unless $mode is "cvs".
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $mode The display mode ("view" for viewpages, or "list"
+     *                     for displaying in recordlists, "edit" for
+     *                     displaying in editscreens, "add" for displaying in
+     *                     add screens. "csv" for csv files. Applications can
+     *                     use additional modes.
+     * @return String HTML String
+     */
     function display($record, $mode="")
     {
       if (isset($record[$this->fieldName()]) && $record[$this->fieldName()]!=="")
@@ -152,21 +166,41 @@
       return $this->m_use_thousands_separator;
     }
     
+    /**
+     * Get the thousands separator
+     *
+     * @return String with the thousands separator
+     */
     public function getThousandsSeparator()
     {
       return $this->m_thousandsseparator;
     }
     
+    /**
+     * Set the thousands separator
+     *
+     * @param string $separator The thousands separator
+     */
     public function setThousandsSeparator($separator)
     {
       $this->m_thousandsseparator = $separator;
     }
     
+    /**
+     * Get the decimal separator
+     *
+     * @return String with the decimal separator
+     */
     public function getDecimalSeparator()
     {
       return $this->m_decimalseparator;
     }
     
+    /**
+     * Set the decimal separator
+     *
+     * @param string $separator The decimal separator
+     */
     public function setDecimalSeparator($separator)
     {
       $this->m_decimalseparator = $separator;
@@ -210,7 +244,7 @@
 
     /**
      * Validates if value is numeric
-     * @param &$record Record that contains value to be validated.
+     * @param $record Record that contains value to be validated.
      *                 Errors are saved in this record
      * @param $mode can be either "add" or "update"
      * @return $record
@@ -245,7 +279,18 @@
       }
     }
 
-
+    /**
+     * Converts the internal attribute value to one that is understood by the
+     * database.
+     *
+     * For the regular atkAttribute, this means escaping things like
+     * quotes and slashes. Derived attributes may reimplement this for their
+     * own conversion.
+     * This is the exact opposite of the db2value method.
+     *
+     * @param array $rec The record that holds this attribute's value.
+     * @return String The database compatible value
+     */
     function value2db($rec)
     {
       if((!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()])==0) && !$this->hasFlag(AF_OBLIGATORY))
@@ -256,6 +301,15 @@
         return (int) $rec[$this->fieldName()];
     }
 
+    /**
+     * Retrieve the list of searchmodes supported by the attribute.
+     *
+     * Note that not all modes may be supported by the database driver.
+     * Compare this list to the one returned by the databasedriver, to
+     * determine which searchmodes may be used.
+     *
+     * @return array List of supported searchmodes
+     */
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
@@ -266,11 +320,38 @@
       return array("exact","between", "greaterthan","greaterthanequal","lessthan","lessthanequal");
     }
 
+    /**
+     * Return the database field type of the attribute.
+     *
+     * Note that the type returned is a 'generic' type. Each database
+     * vendor might have his own types, therefor, the type should be
+     * converted to a database specific type using $db->fieldType().
+     *
+     * @return String The 'generic' type of the database field for this
+     *                attribute.
+     */
     function dbFieldType()
     {
       return ($this->m_decimals>0?"decimal":"number");
     }
 
+    /**
+     * Return the size of the field in the database.
+     *
+     * If 0 is returned, the size is unknown. In this case, the
+     * return value should not be used to create table columns.
+     *
+     * Ofcourse, the size does not make sense for every field type.
+     * So only interpret the result if a size has meaning for
+     * the field type of this attribute. (For example, if the
+     * database field is of type 'date', the size has no meaning)
+     *
+     * Note that derived attributes might set a dot separated size,
+     * for example to store decimal numbers. The number after the dot
+     * should be interpreted as the number of decimals.
+     *
+     * @return int The database field size
+     */
     function dbFieldSize()
     {
       return $this->m_maxsize.($this->m_decimals>0?",".$this->m_decimals:"");
@@ -279,12 +360,13 @@
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
-     * @param $record Array with values
-     * @param $fieldprefix The attribute must use this to prefix its form elements (used for
+     * @param array $record Array with values
+     * @param string $fieldprefix The attribute must use this to prefix its form elements (used for
      *                     embedded forms)
+     * @param string $mode The mode we're in ('add' or 'edit')
      * @return Piece of htmlcode
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record="", $fieldprefix="", $mode="")
     {
       $id = $this->getHtmlId($fieldprefix);
       if (count($this->m_onchangecode))
@@ -317,11 +399,21 @@
       return $result;
     }
 
-   /**
+    /**
      * Returns a piece of html code that can be used to search for an
      * attribute's value.
-     * @param $record Array with values
-     * @return Piece of htmlcode
+     * 
+     * @param array $record Array with values
+     * @param boolean $extended if set to false, a simple search input is
+     *                          returned for use in the searchbar of the
+     *                          recordlist. If set to true, a more extended
+     *                          search may be returned for the 'extended'
+     *                          search page. The atkAttribute does not
+     *                          make a difference for $extended is true, but
+     *                          derived attributes may reimplement this.
+     * @param $fieldprefix The fieldprefix of this attribute's HTML element.
+     *
+     * @return String A piece of html-code
      */
     function search($record="", $extended=false, $fieldprefix="")
     {
@@ -361,6 +453,15 @@
       }
     }
 
+    /**
+     * Process the search value
+     * 
+     * @param string $value The search value
+     * @param string $searchmode The searchmode to use. This can be any one
+     *                              of the supported modes, as returned by this
+     *                              attribute's getSearchModes() method.
+     * @return string with the processed search value
+     */
     function processSearchValue($value,&$searchmode)
     {
       if (!is_array($value))
@@ -384,6 +485,14 @@
       return $value;
     }
 
+    /**
+     * Get the between search condition
+     *
+     * @param atkQuery $query The query object where the search condition should be placed on
+     * @param string $fieldname The name of the field in the database
+     * @param string $value The processed search value
+     * @return query where clause for searching
+     */
     function getBetweenCondition(&$query, $fieldname, $value)
     {
       $searchcondition = "";
@@ -409,6 +518,20 @@
       return false;
     }
 
+    /**
+     * Creates a searchcondition for the field,
+     * was once part of searchCondition, however,
+     * searchcondition() also immediately adds the search condition.
+     *
+     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param String $table       The name of the table in which this attribute
+     *                              is stored
+     * @param mixed $value        The value the user has entered in the searchbox
+     * @param String $searchmode  The searchmode to use. This can be any one
+     *                              of the supported modes, as returned by this
+     *                              attribute's getSearchModes() method.
+     * @return String The searchcondition to use.
+     */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       $searchcondition = "";

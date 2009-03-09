@@ -58,9 +58,9 @@
      * Constructor
      * @param String $name         Name of the attribute
      * @param String $template     Display/sort template.
-     * @param Array  $searchfields Array with fileds, in which search will be perform
-     *                             If ommited, fields from $template will be used
      * @param $flags Flags for this attribute
+     * @param Array  $searchfields Array with fields, in which search will be perform
+     *                             If ommited, fields from $template will be used
      */
     function atkAggregatedColumn($name, $template, $flags=0, $searchfields = "")
     {
@@ -75,6 +75,17 @@
       else $this->m_searchfields = $searchfields;
     }
 
+    /**
+     * The display function for this attribute
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $mode The display mode ("view" for viewpages, or "list"
+     *                     for displaying in recordlists, "edit" for
+     *                     displaying in editscreens, "add" for displaying in
+     *                     add screens. "csv" for csv files. Applications can
+     *                     use additional modes.
+     * @return html code to display the value of this attribute
+     */
     function display($record, $mode="")
     {
       $rec = array();
@@ -91,6 +102,17 @@
       return $parser->parse($rec);
     }
 
+    /**
+     * Adds the attribute / field to the list header. This includes the column name and search field.
+     *
+     * @param String $action the action that is being performed on the node
+     * @param array  $arr reference to the the recordlist array
+     * @param String $fieldprefix the fieldprefix
+     * @param int    $flags the recordlist flags
+     * @param array  $atksearch the current ATK search list (if not empty)
+     * @param string $atkorderby Order by string
+     * @see atkNode::listArray
+     */
     function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
     {
       if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select"))
@@ -122,11 +144,38 @@
       }
     }
 
-    function store($a, $b)
+    /**
+     * We do not want this attribute to store anything in the database, so we implement an empty store function
+     *
+     * @param atkDb $db
+     * @param array $record 
+     * @param string $mode
+     * @return boolean to indicate if store went succesfull
+     */
+    function store($db, $record, $mode)
     {
       return true;
     }
 
+    /**
+     * Adds this attribute to database queries.
+     *
+     * @param atkQuery $query The SQL query object
+     * @param String $tablename The name of the table of this attribute
+     * @param String $fieldaliasprefix Prefix to use in front of the alias
+     *                                 in the query.
+     * @param Array $rec The record that contains the value of this attribute.
+     * @param int $level Recursion level if relations point to eachother, an
+     *                   endless loop could occur if they keep loading
+     *                   eachothers data. The $level is used to detect this
+     *                   loop. If overriden in a derived class, any subcall to
+     *                   an addToQuery method should pass the $level+1.
+     * @param String $mode Indicates what kind of query is being processing:
+     *                     This can be any action performed on a node (edit,
+     *                     add, etc) Mind you that "add" and "update" are the
+     *                     actions that store something in the database,
+     *                     whereas the rest are probably select queries.
+     */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
     {
       $allfields = atk_array_merge($this->m_displayfields,$this->m_searchfields);
@@ -138,6 +187,19 @@
       }
     }
 
+    /**
+     * Creates a search condition for a given search value, and adds it to the
+     * query that will be used for performing the actual search.
+     *
+     * @param atkQuery $query The query to which the condition will be added.
+     * @param String $table The name of the table in which this attribute
+     *                      is stored
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param String $searchmode The searchmode to use. This can be any one
+     *                           of the supported modes, as returned by this
+     *                           attribute's getSearchModes() method.
+     * @param string $fieldaliasprefix optional prefix for the fiedalias in the table
+     */
     function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix='')
     {
       $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix='');
@@ -158,7 +220,7 @@
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      */
-    function getSearchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix='')
+    function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       // Get search condition for all searchFields
       foreach ($this->m_searchfields as $field)
@@ -167,7 +229,7 @@
 
         if(is_object($p_attrib))
         {
-          $condition = $p_attrib->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
+          $condition = $p_attrib->getSearchCondition($query, $table, $value, $searchmode);
           if (!empty($condition))
           {
             $searchconditions[] = $condition;
@@ -198,11 +260,22 @@
       return "(".implode(" OR ",$searchconditions).")";
     }
 
+    /**
+     * Retrieve the list of searchmodes supported by the attribute.
+     *
+     * @return array List of supported searchmodes
+     */
     function getSearchModes()
     {
       return array("exact","substring","wildcard","regexp");
     }
 
+    /**
+     * Return the database field type of the attribute.
+     *
+     * @return String The 'generic' type of the database field for this
+     *                attribute.
+     */
     function dbFieldType()
     {
       return "";

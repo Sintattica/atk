@@ -54,6 +54,8 @@
     
     /**
      * No storage.
+     * 
+     * @param string $mode The type of storage ("add" or "update")
      */
     function storageType($mode='')
     {
@@ -67,6 +69,7 @@
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
+     * @param Array $rec The record that contains the value of this attribute.
      * @param int $level Recursion level if relations point to eachother, an
      *                   endless loop could occur if they keep loading
      *                   eachothers data. The $level is used to detect this
@@ -140,6 +143,18 @@
     
    /**
      * Returns a piece of html code that can be used to search for an attribute's value.
+     * 
+     * @param array $record Array with values
+     * @param boolean $extended if set to false, a simple search input is
+     *                          returned for use in the searchbar of the
+     *                          recordlist. If set to true, a more extended
+     *                          search may be returned for the 'extended'
+     *                          search page. The atkAttribute does not
+     *                          make a difference for $extended is true, but
+     *                          derived attributes may reimplement this.
+     * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
+     *
+     * @return String A piece of html-code
      */
     function search($record="", $extended=false, $fieldprefix="")
     {
@@ -150,6 +165,15 @@
     
     /**
      * Creates a search condition for this attribute.
+     * 
+     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param String $table       The name of the table in which this attribute
+     *                              is stored
+     * @param mixed $value        The value the user has entered in the searchbox
+     * @param String $searchmode  The searchmode to use. This can be any one
+     *                              of the supported modes, as returned by this
+     *                              attribute's getSearchModes() method.
+     * @return String The searchcondition to use.
      */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {

@@ -37,6 +37,13 @@
   {
     var $m_childList = array();
     
+    /**
+     * Constructor
+     *
+     * @param object $attribute
+     * @param integer $flags
+     * @return atkMlWrapper
+     */
     function atkMlWrapper(&$attribute, $flags = 0)
     {
       // first highjack the containing attribute
@@ -53,7 +60,9 @@
     }
 
     /**
-     * return possible languages
+     * Return possible languages
+     * 
+     * @return array with supported languages
      */
     function getLanguages()
     {
@@ -72,6 +81,10 @@
       return false;
     }
 
+    /**
+     * Initialize the attribute
+     *
+     */
     function init()
     {
       // propagate ownerInstance to childs
@@ -130,10 +143,13 @@
     }
 
 
-    // Register a piece of script to execute upon language change
+    /**
+     * Register a piece of script to execute upon language change
+     * 
+     * @return string with script code
+     */ 
     function getMlSwitchCode()
     {
-     // return "alert('hello world from ".$this->fieldName().":'+newlang)";
        return "hideAttrib('".$this->fieldName()."_'+oldlng); showAttrib('".$this->fieldName()."_'+newlng);";
     }
 
@@ -183,6 +199,18 @@
       return $this->m_childList[$lng]->display($rec);
     }
 
+    /**
+     * Adds the attribute's edit / hide HTML code to the edit array.
+     *
+     * This method is called by the node if it wants the data needed to create
+     * an edit form.
+     *
+     * @param String $mode     the edit mode ("add" or "edit")
+     * @param array  $arr      pointer to the edit array
+     * @param array  $defaults pointer to the default values array
+     * @param array  $error    pointer to the error array
+     * @param String $fieldprefix   the fieldprefix
+     */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
       $defaultlng = $this->getDefaultLng();
@@ -217,12 +245,24 @@
       }
     }
 
+    /**
+     * Get the record for this language
+     *
+     * @param array $masterrecord The masterrecord with values for all languages
+     * @param string $lng The language we want the record for
+     * @return array with value for the language
+     */
     function getRecordForLng($masterrecord, $lng)
     {
       if (empty($masterrecord)) return array();
       return array($this->m_childList[$lng]->m_name=>$masterrecord[$this->fieldName()][$lng]);
     }
 
+    /**
+     * Get the default language
+     *
+     * @return string with the default language
+     */
     function getDefaultLng()
     {
       $lngs = array_keys($this->m_childList);
@@ -263,6 +303,7 @@
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
+     * @param Array $rec The record that contains the value of this attribute.
      * @param int $level Recursion level if relations point to eachother, an
      *                   endless loop could occur if they keep loading
      *                   eachothers data. The $level is used to detect this
@@ -303,7 +344,6 @@
         $attr->fetchMeta($metadata);
       }
     }
-
 
 
     /**
@@ -353,7 +393,7 @@
       atkdebug("mlwrap dbfieldsize");
     }
 
-    /*
+    /**
      * Determine the storage type of this attribute.
      *
      * With this method, the attribute tells the framework whether it wants
@@ -385,7 +425,7 @@
       return $this->m_childList[$this->getDefaultLng()]->storageType($mode);
     }
 
-    /*
+    /**
      * Determine the load type of this attribute.
      *
      * With this method, the attribute tells the framework whether it wants
@@ -398,6 +438,7 @@
      * directly.
      *
      * @param String $mode The type of load (view,admin,edit etc)
+     * @param boolean $searching
      *
      * @return int Bitmask containing information about load requirements.
      *             Note that since it is a bitmask, multiple load types
@@ -417,17 +458,34 @@
       return $this->m_childList[$this->getDefaultLng()]->loadType($mode, $searching);
     }
 
+    /**
+     * Get the order by statment for this attribute
+     *
+     * @return string with the order by statement
+     */
     function getOrderByStatement()
     {
       return $this->m_childList[$this->getDefaultLng()]->getOrderByStatement();
     }
 
+    /**
+     * Creates a searchcondition for the field,
+     * was once part of searchCondition, however,
+     * searchcondition() also immediately adds the search condition.
+     *
+     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param String $table       The name of the table in which this attribute
+     *                              is stored
+     * @param mixed $value        The value the user has entered in the searchbox
+     * @param String $searchmode  The searchmode to use. This can be any one
+     *                              of the supported modes, as returned by this
+     *                              attribute's getSearchModes() method.
+     * @return String The searchcondition to use.
+     */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       return $this->m_childList[$this->getDefaultLng()]->getSearchCondition($query, $table, $value, $searchmode);
     }
-
-
   }
 
 ?>

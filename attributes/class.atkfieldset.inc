@@ -155,7 +155,7 @@ class atkFieldSet extends atkAttribute
    * Display fieldset.
    *
    * @param string $record
-   * @param string $fieldprefix
+   * @param string $mode
    * 
    * @return string
    */

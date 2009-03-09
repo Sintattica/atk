@@ -209,7 +209,7 @@ class atkWizard extends atkWizardBase
   /**
    * Set the wizard mode. Options: WIZARD_MODE_ADD (default), WIZARD_MODE_EDIT
    *
-   * @param define value $mode
+   * @param integer $mode
    */
   public function setMode($mode = WIZARD_MODE_ADD)
   {
@@ -348,6 +348,7 @@ class atkWizard extends atkWizardBase
    * same wizardpanel again (now with error message). On succes we need to set
    * some redirect vars to make sure we go to the next wizardpanel.     
    *
+   * @param string $atkwizardaction The wizard action for redirecting
    * @return bool on successfully executing this function
    */
   protected function save($atkwizardaction)

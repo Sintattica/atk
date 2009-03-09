@@ -59,6 +59,11 @@
     /**
      * Returns a displayable string for this value.
      * @param array $record The record to display
+     * @param String $mode The display mode ("view" for viewpages, or "list"
+     *                     for displaying in recordlists, "edit" for
+     *                     displaying in editscreens, "add" for displaying in
+     *                     add screens. "csv" for csv files. Applications can
+     *                     use additional modes.
      * @return String
      */
     function display($record, $mode="")
@@ -105,7 +110,7 @@
     /**
      * Checks e-mail address syntax against a regular expression.
      *
-     * @param string email e-mail address.
+     * @param string $email e-mail address.
      * @return boolean e-mailaddress syntactically valid or not.
      * @static
      */
@@ -126,7 +131,7 @@
      *
      * The strict parameter decides if the MX record gets checked.
      *
-     * @param unknown_type $domain
+     * @param string $domain
      * @param boolean $strict
      * @return boolean $result
      * @static

@@ -42,10 +42,14 @@
 
     /**
      * Parses a record
-     * @param $record Array with fields
+     * 
+     * @param array $record The record that holds the value for this attribute.
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
      * @return Parsed string
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record="", $fieldprefix="", $mode="")
     {
       return $this->display($record);
     }
@@ -73,21 +77,43 @@
 
     /**
      * No function, but is neccesary
+     * 
+     * @param atkDb $db The database object
+     * @param array $record The record
+     * @param string $mode 
      */
-    function store($a, $b)
+    function store($db, $record, $mode)
     {
       return true;
     }
 
     /**
      * No function, but is neccesary
+     * 
+     * @param atkQuery $query The SQL query object
+     * @param String $tablename The name of the table of this attribute
+     * @param String $fieldaliasprefix Prefix to use in front of the alias
+     *                                 in the query.
+     * @param Array $rec The record that contains the value of this attribute.
+     * @param int $level Recursion level if relations point to eachother, an
+     *                   endless loop could occur if they keep loading
+     *                   eachothers data. The $level is used to detect this
+     *                   loop. If overriden in a derived class, any subcall to
+     *                   an addToQuery method should pass the $level+1.
+     * @param String $mode Indicates what kind of query is being processing:
+     *                     This can be any action performed on a node (edit,
+     *                     add, etc) Mind you that "add" and "update" are the
+     *                     actions that store something in the database,
+     *                     whereas the rest are probably select queries.
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec, $level, $mode)
     {
     }
 
     /**
-     * Dummy imp
+     * Dummy implementation
+     * 
+     * @return Empty string
      */
     function dbFieldType()
     {

@@ -334,6 +334,7 @@
      * Generate the HTML header (<head></head>) statement for the page,
      * including all scripts and styles.
      * @param String $title Title of the html page.
+     * @param String $extra_header HTML code of extra headers to add to the head section
      * @return String The HTML pageheader, including <head> and </head> tags.
      */
     function head($title, $extra_header="")
@@ -363,6 +364,7 @@
     /**
      * Adds javascripts from the member variables to HTML output
      * @param String $res Reference to the HTML output
+     * @param Bool $partial Is this a partial request or a complete request
      */
     function addScripts(&$res, $partial=false)
     {
@@ -421,6 +423,12 @@
       return $res;
     }
 
+    /**
+     * Get the globalSubmit javascript code
+     *
+     * @param bool $partial Is this a partial request or a complete request
+     * @return String with javascript code
+     */
     function _getGlobalSubmitScriptCode($partial=false)
     {
       // global submit script can only be registered in the original request
@@ -444,6 +452,12 @@
       return $res;
     }
 
+    /**
+     * Get the globalLoad javascript code
+     *
+     * @param bool $partial Is this a partial request or a complete request
+     * @return String with javascript code
+     */
     function _getGlobalLoadScriptCode($partial=false)
     {
       $res = '';
@@ -470,6 +484,7 @@
      * Add stylesheets and stylecodes to the HMTL output
      *
      * @param String $res Reference to the HTML output
+     * @param Bool $partial Is this a partial request or a complete request
      */
     function addStyles(&$res, $partial=false)
     {
@@ -566,6 +581,7 @@
      *                      statements, like a frameset. (DEPRICATED !!)
      * @param int $flags Flags for the render function
      * @param string $extrabodyprops  Extra attributes to add to the <body> tag.
+     * @param string $extra_header HTML code of extra headers to add to the head section
      * @return String The HTML page, including <html> and </html> tags.
      */
     function render($title=null, $flags=HTML_STRICT,$extrabodyprops="", $extra_header="")

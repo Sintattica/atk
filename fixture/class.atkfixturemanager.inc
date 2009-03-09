@@ -59,7 +59,7 @@
      * Register fixture loader.
      *
      * @param string $class ATK class path
-     * @param mixed  array of extension names (without dot) this loader supports
+     * @param mixed $extensions array of extension names (without dot) this loader supports
      */
     function registerLoader($class, $extensions)
     {

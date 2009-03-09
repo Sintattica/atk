@@ -83,6 +83,7 @@
      * @param array $record array with values
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
+     * @param string $mode The mode we're in ('add' or 'edit')
      * @return piece of html code
      */
     function edit($record="",$fieldprefix="",$mode="")

@@ -111,16 +111,43 @@
       }
     }
 
+    /**
+     * Set the minimum date that may be select (0 means unlimited).
+     * It can be set in 3 formats:
+     * 1. Unix timestamp.
+     * 2. String (parsed by strtotime)
+     * 3. Array (with year,month,day,hour,min,sec)
+     *
+     * @param mixed $min The minimum date that may be selected.
+     */
     function setDateMin($min=0)
     {
       $this->m_date->setDateMin($min);
     }
 
+    /**
+     * Set the maximum date that may be select (0 means unlimited).
+     * It can be set in 3 formats:
+     * 1. Unix timestamp.
+     * 2. String (parsed by strtotime)
+     * 3. Array (with year,month,day,hour,min,sec)
+     *
+     * @param mixed $max The maximum date that may be selected.
+     */
     function setDateMax($max=0)
     {
       $this->m_date->setDateMax($max);
     }
 
+    /**
+     * Validate the value of this attribute
+     *
+     * @param array $record The record that holds the value for this
+     *                      attribute. If an error occurs, the error will
+     *                      be stored in the 'atkerror' field of the record.
+     * @param String $mode The mode for which should be validated ("add" or
+     *                     "update")
+     */
     function validate(&$record, $mode)
     {
       //if the datetime string is not an array, make it one to make sure the
@@ -153,16 +180,28 @@
       return array_merge(atkDateAttribute::dateArray($date), atkTimeAttribute::timeArray($time));
     }
 
+    /**
+     * Init this attribute
+     *
+     */
     function init()
     {
-
       $this->m_time->m_owner=$this->m_owner;
       $this->m_date->m_owner=$this->m_owner;
       $this->m_time->m_ownerInstance=&$this->m_ownerInstance;
       $this->m_date->m_ownerInstance=&$this->m_ownerInstance;
     }
 
-
+    /**
+     * Fetch the metadata about this attrib from the table metadata, and
+     * process it.
+     *
+     * Lengths for the edit and searchboxes, and maximum lengths are retrieved
+     * from the table metadata by this method.
+     *
+     * @param array $metadata The table metadata from the table for this
+     *                        attribute.
+     */
     function fetchMeta($metadata)
     {
       $this->m_date->fetchMeta($metadata);
@@ -171,7 +210,12 @@
 
     /**
      * Display's html version of Record
-     * @param $record
+     * @param array $record The record
+     * @param String $mode The display mode ("view" for viewpages, or "list"
+     *                     for displaying in recordlists, "edit" for
+     *                     displaying in editscreens, "add" for displaying in
+     *                     add screens. "csv" for csv files. Applications can
+     *                     use additional modes.
      * @return text string of $record
      */
     function display($record, $mode="")
@@ -184,6 +228,17 @@
         return "";
     }
 
+    /**
+     * Convert values from an HTML form posting to an internal value for
+     * this attribute.
+     *
+     * For the regular atkAttribute, this means getting the field with the
+     * same name as the attribute from the html posting.
+     *
+     * @param array $postvars The array with html posted values ($_POST, for
+     *                        example) that holds this attribute's value.
+     * @return String The internal value
+     */
     function fetchValue($postvars)
     {
       $date = $this->m_date->fetchValue($postvars);
@@ -199,16 +254,27 @@
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
-     * @param $record Array with fields
-     * @return piece of html code with a checkbox
+     *
+     * @param array $record The record that holds the value for this attribute.
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
+     * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record="", $fieldprefix="", $mode="")
     {
       $dateEdit = $this->m_date->edit($record,$fieldprefix);
       $timeEdit = $this->m_time->edit($record,$fieldprefix);
       return $dateEdit."&nbsp;&nbsp;-&nbsp;&nbsp;".$timeEdit;
     }
 
+     /**
+     * Converts the internal attribute value to one that is understood by the
+     * database.
+     *
+     * @param array $rec The record that holds this attribute's value.
+     * @return String The database compatible value
+     */
     function value2db($rec)
     {
       if (is_array($rec[$this->fieldName()]))
@@ -273,13 +339,23 @@
     }
 
     /**
-     * Add's fields to query
-     * @param $query The SQL query
-     * @param $tablename Tablename
-     * @param $fieldaliasprefix Field alias prefix
-     * @param $level ?
-     * @param $mode select/admin/copy/edit
-     * @return New SQL Query
+     * Adds this attribute to database queries.
+     *
+     * @param atkQuery $query The SQL query object
+     * @param String $tablename The name of the table of this attribute
+     * @param String $fieldaliasprefix Prefix to use in front of the alias
+     *                                 in the query.
+     * @param Array $rec The record that contains the value of this attribute.
+     * @param int $level Recursion level if relations point to eachother, an
+     *                   endless loop could occur if they keep loading
+     *                   eachothers data. The $level is used to detect this
+     *                   loop. If overriden in a derived class, any subcall to
+     *                   an addToQuery method should pass the $level+1.
+     * @param String $mode Indicates what kind of query is being processing:
+     *                     This can be any action performed on a node (edit,
+     *                     add, etc) Mind you that "add" and "update" are the
+     *                     actions that store something in the database,
+     *                     whereas the rest are probably select queries.
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
     {
@@ -313,21 +389,54 @@
     }
 
     /**
-     * Returns a piece of html code that can be used in a form to search values
-     * @param $record Array with fields
-     * @return piece of html code with a checkbox
+     * Returns a piece of html code that can be used to get search terms input
+     * from the user.
+     *
+     * @param array $record Array with values
+     * @param boolean $extended if set to false, a simple search input is
+     *                          returned for use in the searchbar of the
+     *                          recordlist. If set to true, a more extended
+     *                          search may be returned for the 'extended'
+     *                          search page. The atkAttribute does not
+     *                          make a difference for $extended is true, but
+     *                          derived attributes may reimplement this.
+     * @param $fieldprefix The fieldprefix of this attribute's HTML element.
+     *
+     * @return String A piece of html-code
      */
     function search($record="", $extended=false, $fieldprefix="")
     {
      return $this->m_date->search($record, $extended, $fieldprefix);
     }
 
-    function searchCondition(&$query, $table, $value, $searchmode)
+    /**
+     * Creates a search condition for a given search value, and adds it to the
+     * query that will be used for performing the actual search.
+     *
+     * @param atkQuery $query The query to which the condition will be added.
+     * @param String $table The name of the table in which this attribute
+     *                      is stored
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param String $searchmode The searchmode to use. This can be any one
+     *                           of the supported modes, as returned by this
+     *                           attribute's getSearchModes() method.
+     * @param string $fieldaliasprefix optional prefix for the fieldalias in the table
+     */
+    function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix='')
     {
       $this->m_date->searchCondition($query, $table, $value, $searchmode);
     }
 
-
+    /**
+     * Returns a piece of html code for hiding this attribute in an HTML form,
+     * while still posting its value. (<input type="hidden">)
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @return String A piece of htmlcode with hidden form elements that post
+     *                this attribute's value without showing it.
+     */
     function hide($record="", $fieldprefix="")
     {
       // we only need to return the date part, because the dateattribute also
@@ -336,17 +445,34 @@
       return $this->m_date->hide($record, $fieldprefix);
     }
 
+    /**
+     * Retrieve the list of searchmodes supported by the attribute.
+     *
+     * @return array List of supported searchmodes
+     */
     function getSearchModes()
     {
       return $this->m_date->getSearchModes();
     }
 
+    /**
+     * Return the database field type of the attribute.
+     *
+     * @return String The 'generic' type of the database field for this
+     *                attribute.
+     */
     function dbFieldType()
     {
       // TODO FIXME: Is this correct? Or does the datetimeattribute currently only support varchar fields?
       return "datetime";
     }
 
+    /**
+     * Parse the string to convert a datetime string to an array
+     *
+     * @param string $stringvalue
+     * @return array with date and time information
+     */
     function parseStringValue($stringvalue)
     {
       $datetime = split(" ",$stringvalue);
@@ -355,7 +481,6 @@
                           atkTimeAttribute::parseTime($datetime[1]));
       return $retval;
     }
-
 
     /**
      * Sets the timezone attribute. This can also be a timezone
@@ -382,7 +507,7 @@
     /**
      * Sets the UTF offset in seconds.
      *
-     * @param int UTC offset in seconds
+     * @param int $offset UTC offset in seconds
      */
     function setUTCOffset($offset)
     {
@@ -415,6 +540,7 @@
      * an offset of 0 is returned.
      *
      * @param array $record record
+     * @param string $stamp timestamp
      * @return int UTC offset in seconds
      */
     function _getUTCOffset(&$record, $stamp=null)
@@ -470,7 +596,7 @@
     /**
      * Convert the given ATK date/time array to a UTC date/time array.
      *
-     * @param int|array $value UNIX timestamp or ATK date/time array
+     * @param mixed $value UNIX timestamp or ATK date/time array
      * @param array $record record
      *
      * @return int|array UNIX timestamp or ATK date/time array (depending on input)
@@ -487,7 +613,7 @@
     /**
      * Convert the given UTC ATK date/time array to a date/time array in a certain timezone.
      *
-     * @param int|array $value UNIX timestamp or ATK date/time array
+     * @param mixed $value UNIX timestamp or ATK date/time array
      * @param array $record record
      *
      * @return int|array UNIX timestamp or ATK date/time array (depending on input)

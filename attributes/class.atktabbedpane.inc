@@ -71,7 +71,7 @@
 
     /**
      * Add attribute to tabbedpane
-     * @param String $name The name of the attribute
+     * @param String $attrib The name of the attribute
      * @param String  $tab The name of tab. If empty, attribute name used
      */
     function add($attrib, $tab="")
@@ -94,6 +94,7 @@
 	      }
       }
     }
+    
     /**
      * Return list of all tabs, having in this attribute
      * @param String $action An action name. Don't use now
@@ -103,16 +104,21 @@
     {
       return $this->m_tabsList;
     }
+    
     /**
      * Return default tab, now simply first tab
      * @return String The default tab name.
      */
-   function getDefaultTab()
-   {
-     //return first tab
-     return $this->m_tabsList[0];
-   }
+    function getDefaultTab()
+    {
+      //return first tab
+      return $this->m_tabsList[0];
+    }
 
+    /**
+     * Post init function
+     *
+     */
     function postInit()
     {
       foreach (array_keys($this->m_attribsList) as $attrib)

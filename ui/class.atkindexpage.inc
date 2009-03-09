@@ -56,6 +56,11 @@
     var $m_defaultDestination;
     var $m_flags;
 
+    /**
+     * Constructor
+     *
+     * @return atkIndexPage
+     */
     function atkIndexPage()
     {
       global $ATK_VARS;
@@ -67,11 +72,21 @@
       $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL : HTML_STRICT;
     }
 
+    /**
+     * Does the atkIndexPage has this flag?
+     *
+     * @param integer $flag The flag
+     * @return Boolean
+     */
     function hasFlag($flag)
     {
       return hasFlag($this->m_flags, $flag);
     }
 
+    /**
+     * Generate the indexpage
+     *
+     */
     function generate()
     {
       if (!$this->hasFlag(HTML_PARTIAL))
@@ -86,6 +101,10 @@
       $this->m_output->outputFlush();
     }
 
+    /**
+     * Generate the menu
+     *
+     */
     function atkGenerateMenu()
     {
       /* general menu stuff */
@@ -93,11 +112,14 @@
       atkimport("atk.menu.atkmenu");
       $menu = &atkMenu::getMenu();
 
-
       if (is_object($menu)) $this->m_page->addContent($menu->getMenu());
       else atkerror("no menu object created!");
     }
 
+    /**
+     * Generate the top with login text, logout link, etc.
+     *
+     */
     function atkGenerateTop()
     {
       $this->m_page->register_style($this->m_theme->stylePath("style.css"));
@@ -122,26 +144,50 @@
       $this->m_page->addContent($top);
     }
 
+    /**
+     * Set the top center piece links
+     *
+     * @param string $centerpiecelinks
+     */
     function setTopCenterPieceLinks($centerpiecelinks)
     {
       $this->m_topcenterpiecelinks=$centerpiecelinks;
     }
 
+    /**
+     * Set the top search piece
+     *
+     * @param string $searchpiece
+     */
     function setTopSearchPiece($searchpiece)
     {
       $this->m_topsearchpiece = $searchpiece;
     }
 
+    /**
+     * Set the title of the page
+     *
+     * @param string $title
+     */
     function setTitle($title)
     {
       $this->m_title = $title;
     }
 
+    /**
+     * Set the username
+     *
+     * @param string $username
+     */
     function setUsername($username)
     {
       $this->m_username = $username;
     }
 
+    /**
+     * Generate the dispatcher
+     *
+     */
     function atkGenerateDispatcher()
     {
       global $ATK_VARS;
@@ -207,6 +253,11 @@
       }
     }
 
+    /**
+     * Set the default destination
+     *
+     * @param string $destination The default destination
+     */
     function setDefaultDestination($destination)
     {
       if(is_array($destination))

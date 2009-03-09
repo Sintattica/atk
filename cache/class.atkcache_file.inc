@@ -69,6 +69,11 @@ class atkCache_file extends atkCache
     atkFileAttribute::mkdir($this->m_path);
   }
 
+  /**
+   * Set the namespace for the current cache
+   *
+   * @param string $namespace
+   */
   public function setNamespace($namespace)
   {
     parent::setNamespace($namespace);
@@ -261,6 +266,8 @@ class atkCache_file extends atkCache
 
   /**
    * Deletes all cache entries
+   * 
+   * @param string $key Entry ID
    * @return boolean Succes
    */
   public function delete($key)

@@ -63,9 +63,14 @@
 
     /**
      * Constructor
-     * @param $name Name of the attribute
-     * @param $generate Generate password (boolean)
-     * @param $flags Flags for this attribute
+     * @param string $name Name of the attribute
+     * @param bool $generate Generate password (boolean)
+     * @param integer $flags Flags for this attribute
+     * @param mixed $size  The size(s) of the attribute. See the $size
+     *                     parameter of the setAttribSize() method for more
+     *                     information on the possible values of this
+     *                     parameter.
+     * @param array $restrictions  
      */
     function atkPasswordAttribute($name, $generate, $flags=0, $size=0, $restrictions="")
     {
@@ -325,7 +330,7 @@
 
     /**
      * Validates the supplied passwords
-     * @param &$record Record that contains value to be validated.
+     * @param $record Record that contains value to be validated.
      *                 Errors are saved in this record
      * @param $mode can be either "add" or "update"
      */
@@ -370,9 +375,11 @@
 
     /**
      * Check if the attribute is empty
+     * 
+     * @param array $record The record that holds this attribute's value.
      * @return true if it's empty
      */
-    function isEmpty($postvars)
+    function isEmpty($record)
     {
       /* unfortunately we cannot check this here */
       return FALSE;
@@ -511,8 +518,11 @@
     }
 
     /**
-    * Overwriting the fetchValue to ensure all passwords are hashed
-    */
+     * Overwriting the fetchValue to ensure all passwords are hashed
+     * 
+     * @param array $rec The array with html posted values ($_POST, for
+     *                        example) that holds this attribute's value.
+     */
     function fetchValue($rec)
     {
       if (isset($rec[$this->fieldName()]["current"]) && !empty($rec[$this->fieldName()]["current"]))
@@ -532,11 +542,14 @@
     }
 
 
-    // Due to the new storeType functions
-    // password field is not allways saved from within the password attrib
-    //
-    // Added a "dynamic" needsUpdate to cancel updates if no password fields where used
-    // to alter the password. This overcomes the overwriting with an empty password.
+    /** Due to the new storeType functions
+     * password field is not allways saved from within the password attrib
+     *
+     * Added a "dynamic" needsUpdate to cancel updates if no password fields where used
+     * to alter the password. This overcomes the overwriting with an empty password.
+     * 
+     * @param array $record The record that contains this attribute's value
+     */
     function needsUpdate($record)
     {
       $value = $record[$this->fieldName()];

@@ -33,6 +33,8 @@
     /**
      * Function to get an Instance of the atkTheme class,
      * ensures that there is never more than one instance (Singleton pattern)
+     * 
+     * @param bool $reset Always reset and return a new instance
      * @return atkTheme theme instance
      */
     function &getInstance($reset=false)
@@ -73,6 +75,7 @@
      *
      * @static
      * @param String $relpath The relative path to convert
+     * @param String $location 
      * @return String The absolute path
      */
     function absPath($relpath, $location='')
@@ -116,6 +119,7 @@
      * Example: getAttribute("highlight");
      *          returns "#eeeeee"
      * @param string $attribname the name of the attribute in the themedefinition
+     * @param string $default the default to fall back on
      * @return var the value of the attribute in the themedefinition
      */
     function getAttribute($attribname,$default="")
@@ -126,6 +130,9 @@
     /**
      * Retrieve the location of a file
      * @access private
+     * 
+     * @param string $type the type of the file
+     * @param string $name the name of the themefile
      * @param string $module the name of the module requesting the file
      */
     function getFileLocation($type, $name, $module="")
@@ -206,6 +213,14 @@
       return false;
     }
 
+    /**
+     * Get the icon file from the module theme
+     *
+     * @param string $icon the name of the icon
+     * @param string $type the type of the icon
+     * @param string $ext the file extension
+     * @return String iconfile
+     */
     function getIconFileFromModuleTheme($icon,$type,$ext="")
     {
       if (!isset($this->m_theme['modulefiles']))
@@ -223,6 +238,15 @@
       return false;
     }
 
+    /**
+     * Get the icon file from the theme
+     *
+     * @param string $iconname the name of the icon
+     * @param string $type the type of the icon
+     * @param array $theme the theme array containing all files
+     * @param string $ext the file extension
+     * @return String iconfile
+     */
     function getIconFileFromTheme($iconname, $type, $theme,$ext="")
     {
       if ($ext) return $this->_getIconFileWithExtFromTheme($iconname,$ext,$type,$theme);
@@ -236,6 +260,15 @@
       return false;
     }
 
+    /**
+     * Get the icon file from this theme
+     *
+     * @param string $iconname the iconname
+     * @param string $ext the file extension
+     * @param string $type the icon type
+     * @param array $theme the theme array containing all files
+     * @return String iconfile
+     */
     function _getIconFileWithExtFromTheme($iconname,$ext,$type,$theme)
     {
       if (isset($theme['icons'][$type][$iconname.".".$ext]))

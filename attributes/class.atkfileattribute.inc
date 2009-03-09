@@ -204,9 +204,10 @@
      * attribute's value.
      * @param array $record Record
      * @param string $fieldprefix Field prefix
+     * @param String $mode The mode we're in ('add' or 'edit')
      * @return string piece of html code with a browsebox
      */
-    function edit($record="", $fieldprefix="", $regex="")
+    function edit($record="", $fieldprefix="", $mode="")
     {
       if (method_exists($this->getOwnerInstance(), $this->fieldName().'_display'))
       {

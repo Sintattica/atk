@@ -89,9 +89,9 @@
 
     /**
      * Format date according to a format string
-     * @param $date date array (gotten with getdate())
-     * @param $format format string, compatible with PHP's date format functions
-     * @param $weekday include day-of-week or not
+     * @param array $date date array (gotten with getdate())
+     * @param string $format format string, compatible with PHP's date format functions
+     * @param bool $weekday include day-of-week or not
      * @return string with formatted date
      */
     function formatDate($date, $format, $weekday=true)
@@ -101,7 +101,7 @@
 
     /**
      * Returns the days in a certain month in a certain year
-     * @param $date date array (gotten with getdate())
+     * @param array $date date array (gotten with getdate())
      * @return integer with number of days
      */
     function getDays($date)
@@ -118,7 +118,7 @@
     /**
      * Converts a date string (YYYYMMDD) to an
      * array with 3 fields (day, month, year).
-     * @param date the date string
+     * @param string $date the date string
      * @return array with 3 fields (day, month, year)
      */
     function dateArray($date)
@@ -151,7 +151,7 @@
 
     /**
      * Validates a given date array
-     * @param array Array with 3 fields (day, month, year)
+     * @param array $datearray Array with 3 fields (day, month, year)
      * @return boolean True if valid, false if not.
      */
     function checkDateArray($datearray)
@@ -192,12 +192,12 @@
      * The API of this method has changed, but is has been made
      * backwards compatible with existing modules!
      *
-     * @param $name the attribute's name
-     * @param $format_edit the format the edit/add box(es) will look like
-     * @param $format_view the format in which dates are listed
-     * @param $min the minimum date that has to be selected (0 is unlimited)
-     * @param $max the maximum date that may be selected (0 is unlimited)
-     * @param $flags the attribute's flags
+     * @param string $name the attribute's name
+     * @param string $format_edit the format the edit/add box(es) will look like
+     * @param string $format_view the format in which dates are listed
+     * @param mixed $min the minimum date that has to be selected (0 is unlimited)
+     * @param mixed $max the maximum date that may be selected (0 is unlimited)
+     * @param integer $flags the attribute's flags
      *
      * @see atkAttribute
      */
@@ -306,6 +306,16 @@
       else                        $this->m_date_min = strtotime($min);
     }
 
+    /**
+     * Returns a piece of html code that can be used in a form to edit this
+     * attribute's value.
+     *
+     * @param array $record The record that holds the value for this attribute.
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
+     * @return String A piece of htmlcode for editing this attribute
+     */
     function edit($record="", $fieldprefix="", $mode="")
     {
       return $this->draw($record, $fieldprefix, "", $mode, $this->hasFlag(AF_OBLIGATORY));
@@ -413,6 +423,7 @@
      * @param array $current current array
      * @param string $format current format
      * @param bool $obligatory 
+     * @param string $weekdayFormat
      * @return string
      **/
     protected function renderDay($fieldname, $str_script, $current, $format, $obligatory, $weekdayFormat)
@@ -453,7 +464,12 @@
      * attribute's value. (Month will be a dropdownbox, year and day text fields)
      * @todo We can't show a calendar when we have a year dropdown?
      * @todo The calendar doesn't use the min/max values?
+     * 
      * @param array $record Array with 3 fields (year, month, day)
+     * @param string $fieldprefix The fieldprefix
+     * @param string $postfix 
+     * @param string $mode The mode ('add' or 'edit')
+     * @param bool $obligatory Is this field obligatory or not
      * @return Piece a of HTML Code
      */
     function draw($record="", $fieldprefix="", $postfix="", $mode="", $obligatory=false)
@@ -641,8 +657,9 @@
      * @param date $current
      * @param date $minimum
      * @param date $maximum
+     * @param string $mode The mode
      */
-    function getValidCurrentDate($current, $minimum, $maximum,$mode)
+    function getValidCurrentDate($current, $minimum, $maximum, $mode)
     {
       if ($current === NULL && (!$this->hasFlag(AF_OBLIGATORY) || $mode=='add'));
       elseif (!empty($current) && !empty($minimum) && $current < $minimum) $current = $minimum;
@@ -702,7 +719,8 @@
     /**
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
-     * @param $record Array with values
+     * @param array $record Array with values
+     * @param string $fieldprefix The fieldprefix
      * @return Piece of htmlcode
      */
     function hide($record="", $fieldprefix="")
@@ -723,7 +741,16 @@
     /**
      * Returns a piece of html code that can be used in a form to search values.
      * Searching is disabled for the date attribute, we only return a space.
+     * 
      * @param array $record array with 3 fields (year, month, day)
+     * @param boolean $extended if set to false, a simple search input is
+     *                          returned for use in the searchbar of the
+     *                          recordlist. If set to true, a more extended
+     *                          search may be returned for the 'extended'
+     *                          search page. The atkAttribute does not
+     *                          make a difference for $extended is true, but
+     *                          derived attributes may reimplement this.
+     * @param $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return piece of HTML code
      */
     function search($record="", $extended=false, $fieldprefix="")
@@ -753,6 +780,20 @@
       return $res;
     }
 
+    /**
+     * Creates a searchcondition for the field,
+     * was once part of searchCondition, however,
+     * searchcondition() also immediately adds the search condition.
+     *
+     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param String $table       The name of the table in which this attribute
+     *                              is stored
+     * @param mixed $value        The value the user has entered in the searchbox
+     * @param String $searchmode  The searchmode to use. This can be any one
+     *                              of the supported modes, as returned by this
+     *                              attribute's getSearchModes() method.
+     * @return String The searchcondition to use.
+     */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       $db = &$this->getDb();
@@ -836,7 +877,7 @@
      * @todo make this suitable for other date formats like
      *       YYYY-MM-DD
      * @todo change this code when it's approaching 2050 :-)
-     * @param $value String A date in String format (like 9-12-2005)
+     * @param string $value String A date in String format (like 9-12-2005)
      * @return String The auto-completed date String
      */
     function _autoCompleteDateString($value)
@@ -993,7 +1034,7 @@
 
     /**
      * Validate's dates
-     * @param &$record Record that contains value to be validated.
+     * @param $record Record that contains value to be validated.
      *                 Errors are saved in this record
      * @param $mode can be either "add" or "update"
      * @return $record
@@ -1084,19 +1125,41 @@
       else return "&nbsp;";
     }
 
+    /**
+     * Retrieve the list of searchmodes supported by the attribute.
+     *
+     * Note that not all modes may be supported by the database driver.
+     * Compare this list to the one returned by the databasedriver, to
+     * determine which searchmodes may be used.
+     *
+     * @return array List of supported searchmodes
+     */
     function getSearchModes()
     {
       return array("between");
     }
 
     /**
-     * Add's fields to query
-     * @param $query The SQL query
-     * @param $tablename Tablename
-     * @param $fieldaliasprefix Field alias prefix
-     * @param $level ?
-     * @param $mode select/admin/copy/edit
-     * @return New SQL Query
+     * Adds this attribute to database queries.
+     *
+     * Database queries (select, insert and update) are passed to this method
+     * so the attribute can 'hook' itself into the query.
+     *
+     * @param atkQuery $query The SQL query object
+     * @param String $tablename The name of the table of this attribute
+     * @param String $fieldaliasprefix Prefix to use in front of the alias
+     *                                 in the query.
+     * @param Array $rec The record that contains the value of this attribute.
+     * @param int $level Recursion level if relations point to eachother, an
+     *                   endless loop could occur if they keep loading
+     *                   eachothers data. The $level is used to detect this
+     *                   loop. If overriden in a derived class, any subcall to
+     *                   an addToQuery method should pass the $level+1.
+     * @param String $mode Indicates what kind of query is being processing:
+     *                     This can be any action performed on a node (edit,
+     *                     add, etc) Mind you that "add" and "update" are the
+     *                     actions that store something in the database,
+     *                     whereas the rest are probably select queries.
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
     {
@@ -1117,6 +1180,16 @@
       }
     }
 
+    /**
+     * Return the database field type of the attribute.
+     *
+     * Note that the type returned is a 'generic' type. Each database
+     * vendor might have his own types, therefor, the type should be
+     * converted to a database specific type using $db->fieldType().
+     *
+     * @return String The 'generic' type of the database field for this
+     *                attribute.
+     */
     function dbFieldType()
     {
       return "date";
@@ -1131,6 +1204,11 @@
       $this->m_onchangecode[] = $jscode;
     }
 
+    /**
+     * Render the onchange handler code
+     *
+     * @param string $fieldprefix
+     */
     function renderChangeHandler($fieldprefix)
     {
       if (count($this->m_onchangecode))
@@ -1159,8 +1237,15 @@
       return $this->parseDate($stringvalue,$formats);
     }
 
+    /**
+     * Parse a string to a date array
+     *
+     * @param string $stringvalue The value to parse
+     * @param array $formats The formats
+     * @return array with day, month and year of the parsed datestring
+     */
     function parseDate($stringvalue, $formats){
-      //looking in witch format the stringvalue match and then get the data
+      //looking in which format the stringvalue match and then get the data
       foreach($formats as $format){
         //make vars to know te position of the d,m and y symbols
         $dayBegin = strpos($format,'d');
@@ -1274,6 +1359,11 @@
       return $this->m_simplemode;
     }
     
+    /**
+     * Set year sorting
+     *
+     * @param bool $sorting
+     */
     public function setYearSorting($sorting)
     {
       if($sorting == self::SORT_YEAR_ASC || $sorting == self::SORT_YEAR_DESC )
@@ -1282,6 +1372,11 @@
       }
     }
     
+    /**
+     * Get year sorting
+     *
+     * @return bool
+     */
     public function getYearSorting()
     {
       return $this->m_year_sorting;

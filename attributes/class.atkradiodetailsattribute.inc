@@ -155,6 +155,14 @@ class atkRadioDetailsAttribute extends atkAttribute
   
   /**
    * Display.
+   * 
+   * @param array $record The record that holds the value for this attribute
+   * @param String $mode The display mode ("view" for viewpages, or "list"
+   *                     for displaying in recordlists, "edit" for
+   *                     displaying in editscreens, "add" for displaying in
+   *                     add screens. "csv" for csv files. Applications can
+   *                     use additional modes.
+   * @return String HTML String
    */
   public function display($record, $mode='list')
   {
@@ -186,7 +194,10 @@ class atkRadioDetailsAttribute extends atkAttribute
   }
 
   /**
-   * Partial details.
+   * Partial details
+   *
+   * @param string $mode
+   * @return html code
    */
   public function partial_details($mode)
   {
