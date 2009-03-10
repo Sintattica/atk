@@ -46,6 +46,7 @@ class atkDGList extends atkDGComponent
 
   /**
    * Get records for a recordlist without actually rendering the recordlist.
+   * @param atkNode $node					the atknode of the grid
    * @param Array   $recordset    the list of records
    * @param Array   $actions      the default actions array
    * @param Integer $flags        recordlist flags (see the top of this file)
@@ -642,6 +643,11 @@ class atkDGList extends atkDGComponent
     return $this->m_hasActionColumn;
   }
 
+  /**
+   * Get custom mra html
+   *
+   * @return string The custom mra html
+   */
   function getCustomMraHtml()
   {
     $grid = $this;

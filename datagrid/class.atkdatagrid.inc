@@ -350,6 +350,7 @@ class atkDataGrid
    * even more by adjusting options on the object returned. If the session
    * manager does not exist, this method will fail!
    *
+   * @param atkNode $node datagrid node
    * @return atkDataGrid datagrid instance
    */
   public static function resume($node)
@@ -365,8 +366,8 @@ class atkDataGrid
   /**
    * Constructor.
    *
-   * @param string  $name       datagrid name
    * @param atkNode $node       datagrid node
+   * @param string  $name       datagrid name
    * @param int     $mode       creation mode
    * @param boolean $isEmbedded is embedded?
    * @param boolean $useSession use session?
@@ -629,7 +630,7 @@ class atkDataGrid
   /**
    * Converts node flags to datagrid flags.
    *
-   * @param int $flags
+   * @param int $nodeFlags The nodeflags to convert
    */
   protected function convertNodeFlags($nodeFlags)
   {
@@ -667,7 +668,7 @@ class atkDataGrid
   /**
    * Adds the given grid flag(s).
    *
-   * @param int $flags grid flag(s)
+   * @param int $flag grid flag(s)
    */
   public function addFlag($flag)
   {
@@ -677,7 +678,7 @@ class atkDataGrid
   /**
    * Removes the given grid flag(s).
    *
-   * @param int $flags grid flag(s)
+   * @param int $flag grid flag(s)
    */
   public function removeFlag($flag)
   {
@@ -851,6 +852,7 @@ class atkDataGrid
    * 'class' which contains the component's full ATK class name
    * and 'options' containg the component options.
    *
+   * @param string $name The name of the component
    * @return array component information
    */
   public function getComponent($name)
@@ -1064,7 +1066,7 @@ class atkDataGrid
   /**
    * Sets the multi-record-action selection mode.
    * 
-   * @param int multi-record-action selection mode
+   * @param int $mode multi-record-action selection mode
    */
   public function setMRASelectionMode($mode)
   {
@@ -1089,7 +1091,7 @@ class atkDataGrid
    *
    * Normally record actions are nested.
    *
-   * @param int status session status (e.g. SESSION_NESTED etc.)
+   * @param int $status session status (e.g. SESSION_NESTED etc.)
    */
   public function setActionSessionStatus($status)
   {
@@ -1509,7 +1511,7 @@ class atkDataGrid
    * 
    * @see atkDGListener
    * 
-   * @param string event identifier
+   * @param string $event identifier
    */
   protected function notify($event)
   {

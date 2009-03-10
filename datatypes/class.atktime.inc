@@ -82,6 +82,11 @@
       return new atkTime($time);
     }
 
+    /**
+     * Get the time
+     *
+     * @return int The time
+     */
     protected function getData()
     {
       return $this->m_time;

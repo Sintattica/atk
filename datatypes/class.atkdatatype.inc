@@ -35,6 +35,8 @@
     /**
      * Factory method, creates a new atkDatatype object.
      * Override this where possible!
+     * 
+     * @param array $arguments
      * @return atkDataType
      */
     public function create($arguments=array())
