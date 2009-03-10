@@ -30,10 +30,20 @@
   */
 class atkMsSqlDDL extends atkDDL
 {
+  /**
+   * Constructor
+   *
+   * @return atkMsSqlDDL
+   */
   function atkMsSqlDDL()
   {
   }
 
+  /**
+   * Convert an ATK generic datatype to a database specific type.
+   *
+   * @param $generictype  The datatype to convert.
+   */
   function getType($generictype)
   {
     switch ($generictype)
@@ -58,6 +68,11 @@ class atkMsSqlDDL extends atkDDL
     return ""; // in case we have an unsupported type.
   }
 
+  /**
+   * Convert an database specific type to an ATK generic datatype.
+   *
+   * @param $type  The database specific datatype to convert.
+   */
   function getGenericType($type)
   {
     $type = strtolower($type);

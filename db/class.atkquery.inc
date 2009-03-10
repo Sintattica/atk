@@ -160,17 +160,17 @@
     }
 
     /**
-    * Add's a field to the query
-    * @param $name String Field name
-    * @param $value String Field value
-    * @param $table String Table name
-    * @param $fieldaliasprefix String Field alias prefix
-    * @param $quote bool If this parameter is true, stuff is inserted into the db
-    *               using quotes, e.g. SET name = 'piet'. If it is false, it's
-    *               done without quotes, e.d. SET number = 4.
-    * @param $quotefield bool Wether or not to quote the fieldname
-    * @return atkQuery The query object itself (for fluent usage)
-    */
+     * Add's a field to the query
+     * @param string $name Field name
+     * @param string $value Field value
+     * @param string $table Table name
+     * @param string $fieldaliasprefix Field alias prefix
+     * @param bool $quote If this parameter is true, stuff is inserted into the db
+     *               using quotes, e.g. SET name = 'piet'. If it is false, it's
+     *               done without quotes, e.d. SET number = 4.
+     * @param bool $quotefield Wether or not to quote the fieldname
+     * @return atkQuery The query object itself (for fluent usage)
+     */
     function &addField($name, $value="", $table="", $fieldaliasprefix="", $quote=true, $quotefield=false)
     {
       if ($table!="") $fieldname = $table.".".$name;
@@ -258,10 +258,10 @@
 
     /**
     * Add join to Join Array
-    * @param $table Table name
-    * @param $alias Alias of table
-    * @param $condition Condition for the Join
-    * @param $outer Wether to use an outer (left) join or an inner join
+    * @param string $table Table name
+    * @param string $alias Alias of table
+    * @param string $condition Condition for the Join
+    * @param bool $outer Wether to use an outer (left) join or an inner join
     * @return atkQuery The query object itself (for fluent usage)
     */
     function &addJoin($table, $alias, $condition, $outer=false)
@@ -324,6 +324,9 @@
      * Set the 'distinct' mode for the query.
      * If set to true, a 'SELECT DISTINCT' will be performed. If set to false,
      * a regular 'SELECT' will be performed.
+     * 
+     * @param Bool $distinct Set to true to perform a distinct select,
+     *                          false for a regular select.
      * @return atkQuery The query object itself (for fluent usage)
      */
     function &setDistinct($distinct)
@@ -419,6 +422,8 @@
 
     /**
      * Add FROM clause to query.
+     * 
+     * @param String $query The query
      */
     function _addFrom(&$query)
     {
@@ -446,14 +451,21 @@
     }
 
     /**
-      * Add limiting clauses to the query.
-      * Default implementation: no limit supported. Derived classes should implement this.
-      */
+     * Add limiting clauses to the query.
+     * Default implementation: no limit supported. Derived classes should implement this.
+     * 
+     * @param string $query The query to add the limiter to
+     */
     function _addLimiter(&$query)
     {
       // not supported..
     }
 
+    /**
+     * Add the ORDER BY clause
+     *
+     * @param String $query The query
+     */
     function _addOrderBy(&$query)
     {
       if (count($this->m_orderbys)>0)
@@ -467,7 +479,7 @@
      * because we do joins, like in a select, but we don't really select the
      * fields.
      *
-     * @param boolean $distinct distinct rows?
+     * @param bool $distinct distinct rows?
      *
      * @return String a SQL Select COUNT(*) Query
      */
@@ -632,6 +644,9 @@
 
     /**
      * Generate a searchcondition that checks if the field is null.
+     * 
+     * @param String $field
+     * @param Bool $emptyStringIsNull
      */
     function nullCondition($field, $emptyStringIsNull=false)
     {
@@ -641,9 +656,11 @@
       return $result;
     }
 
-
     /**
      * Generate a searchcondition that checks if the field is not null.
+     * 
+     * @param String $field
+     * @param Bool $emptyStringIsNull
      */
     function notNullCondition($field, $emptyStringIsNull=false)
     {
@@ -655,8 +672,8 @@
 
     /**
      * Generate a searchcondition that checks whether $value matches $field exactly.
-     * @param string full qualified table column
-     * @param mixed string/number/decimal expected column value
+     * @param string $field full qualified table column
+     * @param mixed $value string/number/decimal expected column value
      * @param string $dbFieldType help determine exact search method
      * @return string piece of where clause to use in your SQL statement
      */
@@ -678,7 +695,7 @@
     /**
      * Generate a searchcondition that check number/decimal literal values
      * @param string $field full qualified table column
-     * @param mixed integer/float/double etc.
+     * @param mixed $value integer/float/double etc.
      * @return string piece of where clause to use in your SQL statement
      */
     public static function exactNumberCondition($field, $value)
@@ -688,6 +705,10 @@
 
     /**
      * Generate a searchcondition that checks whether $field contains $value .
+     * 
+     * @param String $field The field
+     * @param String $value The value
+     * @return String The substring condition
      */
     function substringCondition($field, $value)
     {
@@ -703,6 +724,9 @@
 
     /**
      * Generate a searchcondition that accepts '*' as wildcard character.
+     * 
+     * @param String $field
+     * @param String $value
      */
     function wildcardCondition($field, $value)
     {
@@ -717,8 +741,11 @@
     }
 
     /**
-        *  generate searchcondition with greater than
-        */
+     * Generate searchcondition with greater than
+     * 
+     * @param String $field The database field
+     * @param String $value The value
+     */
     function greaterthanCondition($field, $value)
     {
       if($value[0]=='!')
@@ -731,9 +758,12 @@
       }
     }
 
-   /**
-        *  generate searchcondition with greater than
-        */
+    /**
+     * Generate searchcondition with greater than
+     * 
+     * @param String $field The database field
+     * @param String $value The value
+     */
     function greaterthanequalCondition($field, $value)
     {
       if($value[0]=='!')
@@ -747,8 +777,11 @@
     }
 
     /**
-        *  generate searchcondition with less than
-        */
+     * Generate searchcondition with less than
+     * 
+     * @param String $field The database field
+     * @param String $value The value
+     */
     function lessthanCondition($field, $value)
     {
       if($value[0]=='!')
@@ -762,7 +795,10 @@
     }
 
     /**
-     *  generate searchcondition with less than
+     * Generate searchcondition with less than
+     * 
+     * @param String $field The database field
+     * @param String $value The value
      */
     function lessthanequalCondition($field, $value)
     {
@@ -776,6 +812,15 @@
       }
     }
 
+    /**
+     * Get the between condition
+     *
+     * @param String $field The database field
+     * @param Mixed $value1 The first value
+     * @param Mixed $value2 The second value
+     * @param Bool $quote Add quotes?
+     * @return unknown
+     */
     function betweenCondition($field, $value1, $value2, $quote=true)
     {
       if($quote)

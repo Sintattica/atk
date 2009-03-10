@@ -30,10 +30,20 @@
   {
     var $m_table_type = NULL;
 
+    /**
+     * Constructor
+     *
+     * @return atkMysqlDDL
+     */
     function atkMysqlDDL()
     {
     }
 
+    /**
+     * Convert an ATK generic datatype to a database specific type.
+     *
+     * @param $generictype  The datatype to convert.
+     */
     function getType($generictype)
     {
       $config_db_mysql_default_text_columntype = "longtext";
@@ -62,6 +72,11 @@
       return ""; // in case we have an unsupported type.
     }
 
+    /**
+     * Convert an database specific type to an ATK generic datatype.
+     *
+     * @param $type  The database specific datatype to convert.
+     */
     function getGenericType($type)
     {
       $type = strtolower($type);
@@ -137,7 +152,7 @@
      * Sets the table type (for databases that support different
      * table types).
      *
-     * @param string $tableType
+     * @param string $type
      */
     function setTableType($type)
     {

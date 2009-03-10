@@ -59,6 +59,9 @@
      * @param string $host Hostname
      * @param string $user Username
      * @param string $password Password
+     * @param string $database The database to connect to
+     * @param int $port The portnumber to use for connecting
+     * @param string $charset The charset to use
      * @return mixed Connection status
      */
     function doConnect($host,$user,$password,$database,$port,$charset)
@@ -615,7 +618,7 @@
      * This function checks the database for a table with
      * the provide name
      *
-     * @param String $tableName the table to find
+     * @param String $table the table to find
      * @return boolean true if found, false if not found
      */
     function tableExists($table)
@@ -674,7 +677,11 @@
     /**
      * Get TO_CHAR() equivalent for the current database.
      *
-     * TODO/FIXME: add format paramater. Current format is always yyyy-mm-dd hh:mi.
+     * TODO/FIXME: add format parameter. Current format is always yyyy-mm-dd hh:mi.
+     * 
+     * @param String $fieldname The field to generate the to_char for.
+     * @return String Piece of sql query that converts a datetime field to char
+     *                for the current database
      */
     function func_datetimetochar($fieldname)
     {

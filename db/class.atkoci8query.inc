@@ -36,9 +36,10 @@
     /**
     * Makes a Join SQL query for Oracle
     *
-    * @param $table Table name
-    * @param $alias Alias for the table
-    * @param $condition Condition for the join
+    * @param string $table Table name
+    * @param string $alias Alias for the table
+    * @param string $condition Condition for the join
+    * @param bool $outer Wether to use an outer (left) join or an inner join
     * @return atkQuery The query object (for fluent usage).
     */
     function &addJoin($table, $alias, $condition, $outer)
@@ -49,6 +50,12 @@
       return $this;
     }
 
+    /**
+     * Add limiting clauses to the query.
+     * Default implementation: no limit supported. Derived classes should implement this.
+     *
+     * @param String $query The query
+     */
     function _addLimiter(&$query)
     {
       /* limit? */
@@ -68,6 +75,10 @@
     * of a table field. Oracle doesn't allow direct UPPER(...) calls on the subquery
     * result so we need to wrap it inside a select query from dual. To prevent 
     * perform loss we try to detect if the comparison field is a subquery or not.  
+    * 
+    * @param String $field The field
+    * @param String $value The value
+    * @return String The substring condition
     */
    function substringCondition($field, $value)
    {

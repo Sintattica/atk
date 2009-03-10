@@ -35,16 +35,18 @@
                                // Like CLOB fields
 
     /**
-    * Add's a field to the query
-    * @param $name Field name
-    * @param $value Field value
-    * @param $table Table name
-    * @param $fieldaliasprefix Field alias prefix
-    * @param $quote If this parameter is true, stuff is inserted into the db
-    *               using quotes, e.g. SET name = 'piet'. If it is false, it's
-    *               done without quotes, e.d. SET number = 4.
-    * @return atkQuery The query object, for fluent usage.
-    */
+     * Add's a field to the query
+     * @param string $name Field name
+     * @param string $value Field value
+     * @param string $table Table name
+     * @param string $fieldaliasprefix Field alias prefix
+     * @param string $quote If this parameter is true, stuff is inserted into the db
+     *               using quotes, e.g. SET name = 'piet'. If it is false, it's
+     *               done without quotes, e.d. SET number = 4.
+     * @param string $mode
+     * @param string $fieldType
+     * @return atkQuery The query object, for fluent usage.
+     */
     function &addField($name, $value="", $table="", $fieldaliasprefix="", $quote=true, $mode="", $fieldType="")
     {
       //$this->m_fields[] = strtr($name,"_",".");
@@ -88,16 +90,15 @@
       return $this;
     }
 
-
- /**
-    * Makes a Join SQL query for Oracle
-    *
-    * @param $table Table name
-    * @param $alias Alias for the table
-    * @param $condition Condition for the join
-    * @return atkQuery The query object (for fluent usage)
-    */
-
+    /**
+     * Makes a Join SQL query for Oracle
+     *
+     * @param $table Table name
+     * @param $alias Alias for the table
+     * @param $condition Condition for the join
+     * @param bool $outer Wether to use an outer (left) join or an inner join
+     * @return atkQuery The query object (for fluent usage)
+     */
     function &addJoin($table, $alias, $condition, $outer)
     {
       // $this->m_joins[]= ", ".$table." ".$alias." WHERE ".$condition." ";

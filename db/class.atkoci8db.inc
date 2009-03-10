@@ -101,6 +101,8 @@
     /**
      * Translate a driver specific error to a generic ATK db error code.
      * @access private
+     * 
+     * @param Array $err Error code.
      * @return int One of the generic DB_* constants
      */
     function _translateError($err)
@@ -173,8 +175,11 @@
       $this->query('SAVEPOINT '.$name);
     }
 
-    /*
+    /**
      * Rollback the the current transaction.
+     * 
+     * @param String $savepoint
+     * @return Bool true 
      */
     function rollback($savepoint="")
     {
@@ -620,7 +625,7 @@
     /**
      * This function checks in the database if a table exists.
      *
-     * @param String $tableName The name of the table to check.
+     * @param String $table The name of the table to check.
      * @return boolean True if the table exists, false if not.
      */
     function tableExists($table)

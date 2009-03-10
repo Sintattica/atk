@@ -28,11 +28,20 @@
    */
   class atkOci8DDL extends atkDDL
   {
-    
+    /**
+     * Constructor
+     *
+     * @return atkOci8DDL
+     */
     function atkOci8DDL()
     {
     }
     
+    /**
+     * Convert an ATK generic datatype to a database specific type.
+     *
+     * @param $generictype  The datatype to convert.
+     */
     function getType($generictype)
     {
       switch ($generictype)

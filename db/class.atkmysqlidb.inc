@@ -47,7 +47,14 @@
 
    /**
     * Connect to the database
-    * @return connection status
+    * 
+    * @param string $host Hostname
+    * @param string $user Username
+    * @param string $password Password
+    * @param string $database The database to connect to
+    * @param int $port The portnumber to use for connecting
+    * @param string $charset The charset to use
+    * @return mixed Connection status
     */
    function doConnect($host,$user,$password,$database,$port,$charset)
    {
@@ -443,6 +450,8 @@
 
    /**
     * Return the available table names
+    * 
+    * @param bool $includeViews Include views?
     * @return array with table names etc.
     */
    function table_names($includeViews=true)
@@ -468,6 +477,8 @@
 
    /**
     * Commit the current transaction.
+    * 
+    * @return bool true
     */
    function commit()
    {
@@ -492,6 +503,8 @@
 
    /**
     * Rollback the the current transaction.
+    * 
+    * @param string $savepoint The savepoint to rollback to
     */
    function rollback($savepoint="")
    {

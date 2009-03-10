@@ -57,6 +57,7 @@
      * method will determine the database type (mysql, oci, etc) and
      * instantiate the correct DDL class.
      *
+     * @param String $database The database driver to use
      * @return atkDDL instance of db specific DDL driver
      */
     function &create($database=NULL)
@@ -382,7 +383,7 @@
      *
      * @param $generictype The type of field.
      * @return true  if a size should be specified for the given field type.
-     *         flase if a size does not have to be specified.
+     *         false if a size does not have to be specified.
      */
     function needsSize($generictype)
     {

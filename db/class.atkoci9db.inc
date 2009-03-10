@@ -118,9 +118,11 @@
 
     /**
      * Performs a query
-     * @param $query the query
-     * @param $offset offset in record list
-     * @param $limit maximum number of records
+     * @param String $query the query
+     * @param Integer $offset offset in record list
+     * @param Integer $limit maximum number of records
+     * @param Array $bindLobs
+     * @param Array $bindVars
      */
     function query($query, $offset=-1, $limit=-1, $bindLobs=array(), $bindVars=array())
     {

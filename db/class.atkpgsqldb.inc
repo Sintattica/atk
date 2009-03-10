@@ -78,6 +78,9 @@
     /**
      * TODO FIXME: I don't know what errormessges postgresql gives,
      * so this function only returns DB_UNKNOWNERROR for now.
+     * 
+     * @param mixed $error
+     * @return int The ATK error code
      */
     function _translateError($error="")
     {
@@ -94,9 +97,9 @@
 
     /**
      * Performs a query
-     * @param $query the query
-     * @param $offset offset in record list
-     * @param $limit maximum number of records
+     * @param string $query the query
+     * @param int $offset offset in record list
+     * @param int $limit maximum number of records
      */
     function query($query, $offset=-1, $limit=-1)
     {
@@ -432,6 +435,9 @@
 
     /**
      * Check if table exists.
+     * 
+     * @param string $table the table to find
+     * @return bool true if found, false if not found
      */
     function tableExists($table)
     {

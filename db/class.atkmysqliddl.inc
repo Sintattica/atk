@@ -35,7 +35,11 @@
   */
  class atkMysqliDDL extends atkMysqlDDL
  {
-   
+   /**
+    * Convert an database specific type to an ATK generic datatype.
+    *
+    * @param $type  The database specific datatype to convert.
+    */
    function getGenericType($type)
     {
       $type = strtolower($type);

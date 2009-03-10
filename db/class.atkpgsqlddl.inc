@@ -26,11 +26,21 @@
    */  
   class atkPgsqlDDL extends atkDDL
   {
+    /**
+     * Constructor
+     *
+     * @return atkPgsqlDDL
+     */
     function atkPgsqlDDL()
     {
       $this->atkDDL();
     }
     
+    /**
+     * Convert an ATK generic datatype to a database specific type.
+     *
+     * @param $generictype  The datatype to convert.
+     */
     function getType($generictype)
     {  
       switch ($generictype)
@@ -55,6 +65,11 @@
       return ""; // in case we have an unsupported type.      
     }
     
+    /**
+     * Convert an database specific type to an ATK generic datatype.
+     *
+     * @param $type  The database specific datatype to convert.
+     */
     function getGenericType($type)
     {
       $type = strtolower($type);
@@ -88,6 +103,14 @@
       return ""; // in case we have an unsupported type.      
     }
 
+    /**
+     * Method to determine whether a given generic field type needs
+     * to have a size defined.
+     *
+     * @param $generictype The type of field.
+     * @return bool true  if a size should be specified for the given field type.
+     *         false if a size does not have to be specified.
+     */
     function needsSize($generictype)
     {
       switch($generictype)
@@ -101,6 +124,12 @@
       return false; // in case we have an unsupported type.
     }
 
+    /**
+     * Build one or more ALTER TABLE queries and return them as an array of
+     * strings.
+     *
+     * @return An array of ALTER TABLE queries.
+     */
     function buildAlter()
     {
       $result = array();

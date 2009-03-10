@@ -86,7 +86,15 @@
      return DB_SUCCESS;
    }
 
-   function _translateError()
+   /**
+     * Translate database-vendor dependent error messages into an ATK generic
+     * error code.
+     *
+     * @access private
+     * @param mixed $errno Vendor-dependent error code.
+     * @return int ATK error code
+     */
+   function _translateError($errno)
    {
      // The MSSQL interface can not return detailed error information
      $this->m_errno = 1;
@@ -175,7 +183,8 @@
     * Goto a certain position in result set.
     * Not specifying a position will set the pointer
     * at the beginning of the result set.
-    * @param $position the position
+    * @param int $position the position
+    * @param bool $haltOnError 
     */
    function seek($position=0, $haltOnError=true)
    {
@@ -395,8 +404,10 @@
      return true;
    }
 
-   /*
+   /**
     * Rollback the the current transaction.
+    * 
+    * @return bool true
     */
    function rollback()
    {
@@ -408,6 +419,10 @@
      return true;
    }
    
+   /**
+     * Get localized error message (for display in the application)
+     * @return String Error message
+     */
    function getErrorMsg()
    {
      return atktext("db_unknown_mssql_error");
@@ -423,8 +438,10 @@
      * array into memory. If you retrieve a lot of records,
      * you might hit the memory_limit and your script will die.
      *
-     * @param $query the query
-     * @return array with rows
+     * @param string $query the query
+     * @param int $offset The offset to use
+     * @param int $limit The limit to use
+     * @return array array with rows
      */
     function getrows($query, $offset=-1, $limit=-1)
     {

@@ -348,7 +348,7 @@
       return "system";
     }
 
-    /*
+    /**
      * Get generic atk errorccode
      * @return int One of the ATK DB_* codes.
      */
@@ -386,7 +386,7 @@
      *
      * Error codes passed to this method will be treated as recoverable user
      * errors.
-     * @param mixed Vendor-dependent database error code
+     * @param mixed $errno Vendor-dependent database error code
      */
     function setUserError($errno)
     {
@@ -480,6 +480,8 @@
      * If haltonerror is set, this will raise an atkerror. If not, it will
      * place the error in atkdebug and continue.
      * @access protected
+     * 
+     * @param String $message
      */
     function halt($message="")
     {
@@ -510,6 +512,8 @@
 
     /**
      * Connect to the database.
+     * 
+     * @param String $mode The mode to connect
      * @return int Connection status
      * @abstract
      */
@@ -525,6 +529,12 @@
 
     /**
      * Connect to the database
+     * @param string $host The host to connect to
+     * @param string $user The user to connect with
+     * @param string $password The password to connect with
+     * @param string $database The database to connect to
+     * @param int $port The portnumber to use for connecting
+     * @param string $charset The charset to use
      * @abstract
      */
     function doConnect($host, $user, $password, $database, $port, $charset)
@@ -539,7 +549,7 @@
      * Derived classes should implement this method and translate their error
      * codes.
      * @access private
-     * @param mixed Vendor-dependent error code.
+     * @param mixed $errno Vendor-dependent error code.
      * @return int ATK error code
      */
     function _translateError($errno)
@@ -713,8 +723,8 @@
      * This function checks the database for a table with
      * the provide name
      *
-     * @param String $tableName the table to find
-     * @return boolean true if found, false if not found
+     * @param string $tableName the table to find
+     * @return bool true if found, false if not found
      */
     function tableExists($tableName)
     {
@@ -730,8 +740,10 @@
      * array into memory. If you retrieve a lot of records,
      * you might hit the memory_limit and your script will die.
      *
-     * @param $query the query
-     * @return array with rows
+     * @param string $query The query
+     * @param int $offset The offset to use
+     * @param int $limit The limit to use
+     * @return array array with rows
      */
     function getrows($query, $offset=-1, $limit=-1)
     {
@@ -856,6 +868,10 @@
 
     /**
       * get SUBSTRING() equivalent for the current database.
+      * 
+      * @param String $fieldname The database fieldname
+      * @param Integer $startat The position to start from
+      * @param Integer $length The number of characters 
       */
     function func_substring($fieldname, $startat=0, $length=0)
     {
@@ -919,7 +935,11 @@
     /**
      * Get TO_CHAR() equivalent for the current database.
      *
-     * TODO/FIXME: add format paramater. Current format is always yyyy-mm-dd hh:mi.
+     * TODO/FIXME: add format parameter. Current format is always yyyy-mm-dd hh:mi.
+     * 
+     * @param String $fieldname The field to generate the to_char for.
+     * @return String Piece of sql query that converts a datetime field to char
+     *                for the current database
      */
     function func_datetimetochar($fieldname)
     {
@@ -929,6 +949,7 @@
     /**
       * Returns the maximum length an identifier (tablename, columnname, etc) may have
       *
+      * @return Integer The maximum identifier length 
       */
     function maxIdentifierLength()
     {
@@ -937,6 +958,10 @@
 
     /**
      * escapes quotes for use in SQL: ' -> '' (and sometimes % -> %%)
+     * 
+     * @param String $string The string to escape
+     * @param Bool $wildcard Use wildcards?
+     * @return String The escaped SQL string
      */
     function escapeSQL($string, $wildcard=false)
     {
@@ -1052,6 +1077,8 @@
      * @static
      * @param String $conn The name of the connection as defined in the
      *                     config.inc.php file (defaults to 'default')
+     * @param Bool $reset Reset the instance to force the creation of a new instance
+     * @param String $mode The mode to connect with the database
      * @return atkDb Instance of the database class.
      */
     public function &getInstance($conn="default", $reset=false, $mode="rw")
@@ -1077,9 +1104,9 @@
     /**
      * (Re)Initialise a database driver with a connection
      *
-     * @param unknown_type $connectionname
-     * @param unknown_type $mode
-     * @return unknown
+     * @param String $connectionname The connectionname
+     * @param String $mode The mode to connect with
+     * @return atkDb
      */
     public function init($connectionname='default', $mode='r')
     {
@@ -1136,6 +1163,11 @@
       return $olddb;
     }
 
+    /**
+     * Halt on error or not?
+     *
+     * @param Bool $state
+     */
     function setHaltOnError($state=true)
     {
       $this->m_haltonerror = $state;

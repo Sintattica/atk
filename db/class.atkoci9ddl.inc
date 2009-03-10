@@ -31,6 +31,11 @@
    */  
   class atkOci9DDL extends atkOci8DDL
   {
+    /**
+     * Constructor
+     *
+     * @return atkOci9DDL
+     */
     function atkOci9DDL()
     {
     }

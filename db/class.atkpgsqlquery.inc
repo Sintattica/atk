@@ -33,9 +33,10 @@
   {
     /**
      * Makes a join SQL query for PostgreSQL
-     * @param $table the table name
-     * @param $alias alias for the table
-     * @param $condition join condition
+     * @param string $table the table name
+     * @param string $alias alias for the table
+     * @param string $condition join condition
+     * @param bool $outer Wether to use an outer (left) join or an inner join
      * @return atkQuery The query object (for fluent usage)
      */
     function &addJoin($table, $alias, $condition, $outer)
@@ -51,6 +52,12 @@
       $this->m_joins[]= " ".$join.$table." ".$alias." ON ".$condition." ";
     }
 
+    /**
+     * Add limiting clauses to the query.
+     * Default implementation: no limit supported. Derived classes should implement this.
+     * 
+     * @param string $query The query to add the limiter to
+     */
     function _addLimiter(&$query)
     {
       if ($this->m_offset >= 0 && $this->m_limit > 0)
