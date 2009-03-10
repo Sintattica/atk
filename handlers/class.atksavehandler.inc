@@ -167,6 +167,11 @@
       }
     }
 
+    /**
+     * Get the number of levels to skip
+     *
+     * @return Integer The number of levels to skip
+     */
     function _getSkip()
     {
       if (isset($this->m_postvars["atkreturnbehaviour"]) &&
@@ -177,6 +182,11 @@
       return 1;
     }
 
+    /**
+     * Go back to the add page
+     *
+     * @param Array $record The record with reject info
+     */
     function goBack($record)
     {
       $this->setRejectInfo($record);
@@ -185,6 +195,8 @@
 
     /**
      * Validate record.
+     * 
+     * @param Array &$record The record to validate
      */
     function validate(&$record)
     {

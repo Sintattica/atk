@@ -56,7 +56,6 @@
     /**
      * Parse atkselectors in postvars into atktarget using atktargetvartpl and atktargetvar
      * Then redirect to atktarget
-     *
      */
     function handleMultiselect()
     {
@@ -83,6 +82,13 @@
       $node->redirect($atktarget);
     }
 
+    /**
+     * Parse the target string
+     *
+     * @param String $string The string to parse
+     * @param Array $recordset The recordset to use for parsing the string
+     * @return String The parsed string
+     */
     function parseString($string, $recordset)
     {
       atkimport("atk.utils.atkstringparser");

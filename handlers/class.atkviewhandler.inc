@@ -31,6 +31,8 @@
   {
     /**
      * The action handler method.
+     * 
+     * @param Bool $renderbox Render this action in a renderbox or just output the HTML
      */
     function action_view($renderbox=true)
     {
@@ -67,6 +69,7 @@
      * Returns an htmlpage displaying all displayable attributes.
      * @param array $record The record to display.
      * @param atkNode $node The node for which a viewPage is displayed.
+     * @param Bool $renderbox Render this action in a renderbox or just output the HTML
      * @return String The html page with a reaonly view of relevant fields.
      */
     function viewPage($record, $node, $renderbox=true)
@@ -126,6 +129,13 @@
       return "";
     }
 
+    /**
+     * Get the view page
+     *
+     * @param Array $record The record
+     * @param String $mode The mode we're in (defaults to "view")
+     * @return String HTML code of the page
+     */
     function viewForm($record, $mode="view")
     {
       $node = &$this->m_node;
@@ -272,13 +282,18 @@
       return $innerform;
     }
 
+    /**
+     * The dialog partial
+     *
+     * @return String HTML code for the view dialog
+     */
     function partial_dialog()
     {
       return $this->renderViewDialog();
     }
 
     /**
-     * Render add dialog.
+     * Render view dialog.
      *
      * @param array $record
      * @return string html

@@ -485,6 +485,8 @@
      * @param String $doupdate          Wether or not to do an update
      * @param String $updatekey1        The key to update on
      * @param String $onfalseidentifier What to do on a false identifier
+     * @param String $allFields					The fields to import
+     * @param Bool	 $novalidatefirst 	Validate before the import 
      * @return String The HTML with the extra options
      */
     function _getAnalyseExtraOptions($skipfirstrow, $doupdate, $updatekey1, $onfalseidentifier, $allFields, $novalidatefirst)
@@ -589,6 +591,7 @@
     /**
      * Counts the number of columns in the first row
      * @param Array $rows     The rows from the csv-file
+     * @param String $delimiter The char which seperate the fields
      * @return int  The number of columns
      */
     function estimateColumnCount($rows, $delimiter)
@@ -624,6 +627,7 @@
      * Returns the CSV line count.
      *
      * @param string $file the path to the csv-file
+     * @param bool $skipFirstRow Skip the first row?
      * @return int row count
      */
     function getRowCount($file, $skipFirstRow)
@@ -972,6 +976,7 @@
     /**
      * Tries to make a default col_map with the first record of the csv-file
      * @param Array $firstRecord The first record of the CSV file
+     * @param Bool &$matchFound Found a match?
      * @return Array The default col_map
      */
     function initColmap($firstRecord, &$matchFound)
@@ -1045,6 +1050,8 @@
 
     /**
      * The real import function actually imports the importfile
+     * 
+     * @param Bool $nopost 
      */
     function doImport($nopost=false)
     {
@@ -1098,6 +1105,12 @@
       $this->m_node->redirect();
     }
 
+    /**
+     * Get the validated records
+     *
+     * @param String $file The import csv file
+     * @return Array with importerrors and validatedrecs
+     */
     function getValidatedRecords($file)
     {
       $enclosure =    $this->m_postvars["enclosure"];
@@ -1177,11 +1190,14 @@
 
     /**
      * Gets the ATK value of the attribute
+     * 
      * @param String $attributename The name of the attribute
-     * @param String $allField      The allfield attribute name
+     * @param Array $allFields      Array with all the fields
      * @param mixed $value          The value from the CSV file
-     * @param Array $rec            The record
      * @param Array  &$importerrors  Any import errors which may occur or may have occured
+     * @param Integer $counter			The counter of the validatedrecords
+     * @param Array $rec            The record
+     * 
      * @return mixed The ATK value of the field
      */
     function _getAttributeValue($attributename, $allFields, $value, &$importerrors, $counter, $rec)
@@ -1421,8 +1437,8 @@
 
     /**
      * Checks the allfield for correct data
-     * @param String  $field  The fieldname
-     * @param mixed   &$value The value of the field
+     * @param Array  $fields  The fields
+     * @param Array  &$values The values of the fields
      * @return Array An array with an error message, if an error occurred
      */
     function checkAllFields($fields, &$values)

@@ -171,6 +171,7 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
    * Returns a select list of loadable criteria which will on-selection
    * refresh the smart search page with the loaded criteria.
    *
+   * @param String $current The current load criteria
    * @return String criteria load HTML
    */
   function getLoadCriteria($current)
@@ -194,7 +195,7 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
    * posted variables. 
    * Returns the name of the saved criteria
    *
-   * @param array array with the current cirteria
+   * @param array $criteria array with the current criteria
    * @return string name of the saved criteria
    */
   function handleSavedCriteria($criteria)

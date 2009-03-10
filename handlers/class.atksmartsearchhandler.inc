@@ -200,6 +200,8 @@
 
     /**
      * Redirect to search results based on the given criteria.
+     * 
+     * @param Array $criteria
      */
     function redirectToResults($criteria)
     {
@@ -276,8 +278,7 @@
      * Returns a select element with searchable attributes for
      * a certain node.
      *
-     * @param String  $name name of the select element
-     * @param atkNode $node reference to the node
+     * @param Array  $entry
      */
     function getAttributeList($entry)
     {
@@ -587,6 +588,8 @@
     /**
      * This method returns a form that the user can use to search records.
      *
+     * @param String $name
+     * @param Array $criteria
      * @return String The searchform in html form.
      */
     function smartSearchForm($name="", $criteria=array())
@@ -619,6 +622,8 @@
     /**
      * This method returns an html page that can be used as a search form.
      *
+     * @param String $name
+     * @param Array $criteria
      * @return String The html search page.
      */
     function smartSearchPage($name="", $criteria=array())

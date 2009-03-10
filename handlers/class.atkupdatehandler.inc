@@ -49,6 +49,11 @@
       }
     }
 
+    /**
+     * Get the record for updating
+     *
+     * @return Array The record to update
+     */
     function getRecord()
     {
       return $this->m_node->updateRecord();
@@ -121,6 +126,10 @@
       }
     }
 
+    /**
+     * Perform the update action
+     *
+     */
     function doUpdate()
     {
        $record = $this->getRecord();
@@ -153,6 +162,7 @@
     /**
      * Handle the update of a dialog.
      *
+     * @param String $attrRefreshUrl
      */
     function handleUpdate($attrRefreshUrl=null)
     {
@@ -174,6 +184,7 @@
      * Handle action when user has clicked atksaveandclose in a dialog.
      *
      * @param array $record
+     * @param String $attrRefreshUrl
      */
     function handleProcessDialog($record, $attrRefreshUrl=null)
     {
@@ -222,6 +233,7 @@
      *
      * @param atkDb $db
      * @param array $record
+     * @param String $attrRefreshUrl
      */
     function handleUpdateSuccessDialog(&$db, $record, $attrRefreshUrl=null)
     {
@@ -367,11 +379,11 @@
     }
 	 
     /**
-    * This method is obsolete. Do not use it. It is only here for backward
+    * This method is obsolete. Do not use it. It is only here for backwards
     * compatibility...
     *
-    * @param unknown_type $record
-    * @return unknown
+    * @param Array $record
+    * @return String HTML code for the edit page
     * @deprecated
     */
     function getEditPage(&$record)

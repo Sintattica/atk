@@ -68,6 +68,7 @@
      * Create the clickable label for the section.
      *
      * @param array $field
+     * @param string $mode
      * @return string Html
      */
     function getSectionControl($field, $mode)

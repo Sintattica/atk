@@ -121,6 +121,13 @@
       return $this->m_node;
     }
     
+    /**
+     * Get the reject info from the session
+     * This is used by the atkAddHandler and atkEditHandler to
+     * show the validation errors
+     *
+     * @return Array The reject info
+     */
     function getRejectInfo()
     {      
       global $atklevel;
@@ -138,6 +145,13 @@
       return NULL;
     }
     
+    /**
+     * Store the reject info in the session
+     * This is used by the atkSaveHandler and atkUpdateHandler to 
+     * store the record if the record is not validated
+     *
+     * @param array $data The reject information
+     */
     function setRejectInfo($data)
     {
       global $atklevel;
@@ -304,6 +318,11 @@
       }
     }
 
+    /**
+     * Get the cached recordlist
+     *
+     * @return atkRecordListCache object
+     */
     function getRecordlistCache()
     {
       static $recordlistcache;
@@ -316,6 +335,10 @@
       return $recordlistcache;
     }
 
+    /**
+     * Clear the recordlist cache
+     *
+     */
     function clearCache()
     {
       if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST))
@@ -326,21 +349,43 @@
       }
     }
 
+    /**
+     * Notify the node that an action has occured
+     *
+     * @param string $action The action that occurred
+     * @param array $record The record on which the action was performed
+     */
     function notify($action, $record)
     {
       $this->m_node->notify($action, $record);
     }
     
+    /**
+     * Add a variable to the renderbox
+     *
+     * @param string $key
+     * @param string $value
+     */
     function addRenderBoxVar($key, $value)
     {
       $this->m_renderBoxVars[$key] = $value;
     }
     
+    /**
+     * Set the returnbehaviour of this action
+     *
+     * @param Integer $returnbehaviour The return behaviour (possible values: ATK_ACTION_BACK and ATK_ACTION_STAY)
+     */
     function setReturnBehaviour($returnbehaviour)
     {
       $this->m_returnbehaviour = $returnbehaviour;
     }
     
+    /**
+     * Get the returnbehaviour of this action
+     *
+     * @return String the return behaviour
+     */
     function getReturnBehaviour()
     {
       return $this->m_returnbehaviour;
@@ -366,6 +411,11 @@
       $page->addContent($this->_getAccessDeniedPage());
     }
     
+    /**
+     * Get the access denied page
+     *
+     * @return String the HTML code of the access denied page
+     */
     function _getAccessDeniedPage()
     {
     	$controller = &atkController::getInstance();
@@ -375,6 +425,8 @@
     
     /**
      * Render access denied dialog contents.
+     * 
+     * @return String The access denied page in a dialog
      */
     function renderAccessDeniedDialog()
     {
@@ -388,6 +440,9 @@
     
     /**
      * Render message dialog contents.
+     * 
+     * @param String $message The message to render in a dialog
+     * @return String The message dialog
      */
     function renderMessageDialog($message)
     {

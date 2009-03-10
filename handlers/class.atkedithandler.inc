@@ -80,6 +80,11 @@
       $page->addContent($node->renderActionPage("edit", $res));
     }
 
+    /**
+     * Get the record for editing
+     *
+     * @return Array The record for editing
+     */
     function getRecord()
     {
       $node = &$this->m_node;
@@ -110,6 +115,10 @@
       return $record;
     }
 
+    /**
+     * Register external files
+     *
+     */
     function registerExternalFiles()
     {
       $page = &$this->getPage();
@@ -121,6 +130,14 @@
       $page->register_style($ui->stylePath("style.css"));
     }
 
+    /**
+     * Render the edit page
+     *
+     * @param Array $record The record to edit
+     * @param Bool $locked Indicates whether the record is locked by the
+     *                        current user.
+     * @return String HTML code for the edit page
+     */
     function editPage($record, $locked=FALSE)
     {
       $result = $this->getEditPage($record, $locked);
@@ -129,6 +146,14 @@
         return $result;
     }
 
+    /**
+     * Get the params for the edit page
+     *
+     * @param Array $record The record to edit
+     * @param Bool $locked Indicates whether the record is locked by the
+     *                        current user.
+     * @return Array Array with parameters
+     */
     function getEditParams($record, $locked=FALSE)
     {
       $node = &$this->m_node;
@@ -169,6 +194,12 @@
       return $this->renderEditPage($record, $params);
     }
 
+    /**
+     * Get the content
+     *
+     * @param Array $record
+     * @return String The content
+     */
     function getContent($record)
     {
       $node = &$this->m_node;
@@ -190,6 +221,13 @@
       return $node->tabulate("edit", $form);
     }
 
+    /**
+     * Render the edit page
+     *
+     * @param Array $record
+     * @param Array $params
+     * @return String The rendered edit page
+     */
     function renderEditPage($record, $params)
     {
       $node = &$this->m_node;
@@ -435,12 +473,13 @@
      *
      * @param String $mode         The edit mode ("add" or "edit").
      * @param array $record        The record to edit.
-     * @param array $forcelist     A key-value array used to preset certain
+     * @param array $forceList     A key-value array used to preset certain
      *                             fields to a certain value.
-     * @param array $suppresslist  An array of fields that will be hidden.
+     * @param array $suppressList  An array of fields that will be hidden.
      * @param String $fieldprefix  If set, each form element is prefixed with
      *                             the specified prefix (used in embedded
      *                             forms)
+     * @param String $template		 The template to use for the edit form
      * @param boolean $ignoreTab   Ignore the tabs an attribute should be shown on.
      *
      * @return String the edit form as a string
@@ -602,6 +641,13 @@
             return $result;
     }
 
+    /**
+     * Get the link fo a tab
+     *
+     * @param atkNode $node The node
+     * @param Array $error
+     * @return String HTML code with link
+     */
     function getTabLink(&$node, $error)
     {
       if (count($node->getTabs($node->m_action)) < 2) return '';
@@ -617,6 +663,11 @@
       return "";
     }
 
+    /**
+     * The edit dialog
+     *
+     * @return String The edit dialog
+     */
     function partial_dialog()
     {
       return $this->renderEditDialog();

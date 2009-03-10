@@ -31,6 +31,11 @@
     var $m_buttonsource = null;
     var $m_dialogSaveUrl = null;
 
+    /**
+     * Constructor
+     *
+     * @return atkAddHandler
+     */
     function atkAddHandler()
     {
       $this->atkActionHandler();

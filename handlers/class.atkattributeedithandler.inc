@@ -44,6 +44,11 @@
     var $m_processUrl = null;
     var $m_masterNode = null;
     
+    /**
+     * Set the maste node
+     *
+     * @param atkNode $node The master node
+     */
     function setMasterNode($node)
     {
       $this->m_masterNode = $node;
@@ -189,6 +194,8 @@
      * Handle errors of different types.
      *
      * @param int $error The AttributeEditHandler error type.
+     * @param array $record The record
+     * @param bool $reload Reload the page?
      */
     function handleError($error, $record=null, $reload=false)
     {
@@ -215,6 +222,8 @@
      * Get a page indicating an error has occurred.
      *
      * @param Int $error
+     * @param array $record The record
+     * @param String $customerror
      * @return String HTML Error page
      */
     function getErrorPage($error, $record=null, $customerror='')
@@ -265,6 +274,8 @@
 
     /**
      * AttributeEdit page.
+     * 
+     * @return String The attribute edit page
      */
     function attributeEditPage()
     {
@@ -293,6 +304,10 @@
       return $this->renderAttributeEditPage($params);
     }
 
+    /**
+     * Register external files
+     *
+     */
     function registerExternalFiles()
     {
       $page = &$this->getPage();
@@ -340,6 +355,12 @@
       return $content;
     }
 
+    /**
+     * Get dropdown attributes
+     *
+     * @param string $selectedAttribute
+     * @return String Dropdown with attributenames
+     */
     function _getDropDownAttributes($selectedAttribute="")
     {
       $fieldprefix = $this->m_node->m_postvars['atkfieldprefix'];
@@ -374,6 +395,11 @@
       return $list->edit($record,$fieldprefix);
     }
 
+    /**
+     * Return the onchange code
+     *
+     * @return String The onchange javascript code
+     */
     function onChange()
     {
       $url = partial_url($this->m_masterNode->atkNodeType(), 'attributeedit', 'refreshvaluefield');
@@ -388,7 +414,7 @@
      * Get the dropdown with the possible values for
      * the selected attribute.
      *
-     * @param unknown_type $selectedAttribute
+     * @param String $selectedAttribute
      * @return unknown
      */
     function _getDropDownValues($selectedAttribute="")
@@ -524,7 +550,10 @@
       return $formstart;
     }
 
-
+    /**
+     * Handle refresh values
+     *
+     */
     function handleRefreshValuesField()
     {
       $page = &$this->getPage();

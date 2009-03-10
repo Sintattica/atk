@@ -52,6 +52,8 @@
     /**
      * Sets the action session status for actions in the recordlist.
      * (Defaults to SESSION_NESTED).
+     * 
+     * @param Integer $sessionStatus The sessionstatus (for example SESSION_REPLACE)
      */
     function setActionSessionStatus($sessionStatus)
     {
@@ -61,7 +63,6 @@
     /**
      * Render the adminpage, including addpage if necessary
      *
-     * @param array $record
      * @return array with result of adminPage and addPage
      */
     function renderAdminPage()
@@ -86,6 +87,7 @@
      *
      * The implementation delegates drawing of the form to the atkAddHandler.
      *
+     * @param array $record The record 
      * @return String A box containing the add page.
      */
     function addPage($record=NULL)
@@ -279,6 +281,11 @@
       return "";
     }
 
+    /**
+     * Get the importlink to add to the admin header
+     *
+     * @return String HTML code with link to the import action of the node (if allowed)
+     */
     function getImportLink()
     {
       $link = "";
@@ -289,6 +296,11 @@
       return $link;
     }
 
+    /**
+     * Get the exportlink to add to the admin header
+     *
+     * @return String HTML code with link to the export action of the node (if allowed)
+     */
     function getExportLink()
     {
       $link = "";
@@ -305,6 +317,11 @@
       return $link;
     }
 
+    /**
+     * Get the add link to add to the admin header
+     *
+     * @return String HTML code with link to the add action of the node (if allowed)
+     */
     function getAddLink()
     {
 			if (!$this->m_node->hasFlag(NF_NO_ADD) && $this->m_node->allowed("add"))
@@ -347,6 +364,11 @@
 			return "";
     }
 
+    /**
+     * Get all links to add to the admin header
+     *
+     * @return String String with the HTML code of the links (each link separated with |)
+     */
     function getHeaderLinks()
     {
       $links = array();

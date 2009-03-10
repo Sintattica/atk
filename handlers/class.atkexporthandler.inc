@@ -93,6 +93,11 @@
       return $this->doExport();
     }
 
+    /**
+     * Get the options for the export
+     *
+     * @return unknown
+     */
     function _getOptions()
     {
       $content = '<table border="0" width="100%">';
@@ -106,6 +111,11 @@
       return $content;
     }
 
+    /**
+     * Get all attributes to select for the export
+     *
+     * @return String HTML code with checkboxes for each attribute to select
+     */
     function getAttributeSelect()
     {
       $cols = 5;
