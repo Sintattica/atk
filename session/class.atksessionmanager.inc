@@ -665,8 +665,8 @@
         // What we think we came from (as indicated in the url by atkprevlevel)
         // and what the REAL situation on the stack was when we got here (prevlevelfromstack)
         // is different. Let's fork the stack.
-        // @FIXME: If an error occurs and forking is required, the rejection info is not forked right, since it is currently stored
-        //         in session['atkreject'] and not directly in the stack. See also atk/handlers/class.atkactionhandler.inc.
+        // @TODO: If an error occurs and forking is required, the rejection info is not forked right, since it is currently stored
+        //        in session['atkreject'] and not directly in the stack. See also atk/handlers/class.atkactionhandler.inc.
         atkdebug("Multiple windows detected: levelstack forked (atkprevlevel=$atkprevlevel, real: $prevlevelfromstack)");
         $newid = atkStackID(true);
 
