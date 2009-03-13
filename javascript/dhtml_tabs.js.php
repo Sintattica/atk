@@ -55,13 +55,13 @@ function handleSectionToggle(element, expand, url)
       closedSections.push(element.id);
     }
   });
-  
+
   if(expand)
    var param = 'opened'
   else
    var param = 'closed'
-   
-  new Ajax.Request(url, { method: 'get', parameters: 'atksectionstate='+param });        
+
+  new Ajax.Request(url, { method: 'get', parameters: 'atksectionstate='+param });
 }
 
 function isAttributeTr(tr) {
@@ -125,8 +125,6 @@ function showTab(tab)
 	 }
 	}
 
-	makeFCKEditable();
-
 	// make tabs visible (to avoid reload quirks, they load invisible from the html
 	wrapper = document.getElementById('tabtable');
 	if (wrapper)
@@ -135,28 +133,6 @@ function showTab(tab)
 	}
 }
 
-
-/**
- * Because the FCK editor does not always agree with
- * tabbing and no longer becomes editable if you switch
- */
-function makeFCKEditable()
-{
-  iframes = document.getElementsByTagName("iframe");
-	for (i = 0; i < iframes.length; i++)
-	{
-	  obj = frames[iframes[i].id];
-	  if (obj && obj.FCK && obj.FCK.MakeEditable) 
-	  {
-      if (obj.FCK.Status == 0) {
-        // we are too fast, FCK hasn't started yet, start it up first
-	      obj.FCK.StartEditor(); 
-      }
-      
-	    obj.FCK.MakeEditable();
-	  }
-	}
-}
 
 function getCurrentTab()
 {

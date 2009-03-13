@@ -8,6 +8,10 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* Removed function MakeFCKEditable from javascript/dhtml_tabs.js.php. It 
+  caused FCK keylistener to be registered twice on page load, and the purpose
+  of the function seems to be obsolete due to the newer FCK version. 
+  Tested in FF3 and IE7. [Patrick]
 * Make use of newer atkTriggerError in emailAttribute for triggering attribute
   errors so labels are filled correctly. [Tjeerd]
 + Added atkGetCharset() function to atkTools, it first checks the config
