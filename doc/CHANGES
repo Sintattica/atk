@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* Add dt suffix datatype classes: datatypes/atkstring -> datatypes/atkstringdt etc.
+  [Marc]
 * Removed function MakeFCKEditable from javascript/dhtml_tabs.js.php. It 
   caused FCK keylistener to be registered twice on page load, and the purpose
   of the function seems to be obsolete due to the newer FCK version. 

@@ -25,7 +25,7 @@
    * @package atk
    * @subpackage datatypes
    */
-  class atkArray extends atkDataType
+  class atkArrayDt extends atkDataType
   {
     /**
      * @var array The internal value of the current array object

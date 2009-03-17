@@ -131,7 +131,7 @@
      */
     public function setTemplate($template)
     {
-      $this->m_template= atknew('atk.datatypes.atkstring',$template);
+      $this->m_template= atknew('atk.datatypes.atkstringdt',$template);
       return $this;
     }
 

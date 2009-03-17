@@ -25,7 +25,7 @@
    * @package atk
    * @subpackage datatypes
    */
-  class atkString extends atkDataType
+  class atkStringDt extends atkDataType
   {
     /**
      * @var string The internal value of the current string object
