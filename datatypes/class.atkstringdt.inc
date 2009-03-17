@@ -21,6 +21,7 @@
    * The 'string' datatype.
    * Useful for performing various small operations on strings fluently.
    *
+   * @deprecated Scheduled for removal.
    * @author Boy Baukema <boy@achievo.org>
    * @package atk
    * @subpackage datatypes

@@ -26,6 +26,7 @@
    * for converting one format into another and doing simple operations
    * on various datatypes.
    *
+   * @deprecated Scheduled for removal.
    * @author Boy Baukema <boy@achievo.org>
    * @package atk
    * @subpackage datatypes

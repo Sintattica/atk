@@ -21,6 +21,7 @@
    * The 'array' datatype.
    * Useful for performing various small operations on arrays fluently.
    *
+   * @deprecated Scheduled for removal.
    * @author Patrick van der Velden <patrick@achievo.org>
    * @package atk
    * @subpackage datatypes

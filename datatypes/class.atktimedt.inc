@@ -24,6 +24,7 @@
    * Accepts ATK time format (an array) and timestamps.
    * Created for easily and fluently calculating durations.
    *
+   * @deprecated Scheduled for removal.
    * @author Boy Baukema <boy@achievo.org>
    * @package atk
    * @subpackage datatypes
