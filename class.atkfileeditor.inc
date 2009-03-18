@@ -44,7 +44,8 @@
     var $m_dir;
     var $m_basedir;
     var $m_filefilter;
-    
+    var $m_showdirs;
+
     /**
      * Constructor
      *
@@ -80,6 +81,7 @@
       if (substr($this->m_dir,-1)!="/") $this->m_dir.="/";
 
       $this->m_filefilter = $filter;
+      $this->m_showdirs = true;
 
       $this->add(new atkAttribute("filename",AF_PRIMARY|AF_SEARCHABLE));
       $this->add(new atkTextAttribute("filecontent",30,AF_HIDE_LIST));
@@ -166,19 +168,19 @@
     *
     * @param String $record Identifier for the record
     * @param  array $actions Result array containing the options
-    * @param  unknow $mraactions 
+    * @param  unknow $mraactions
     */
     function recordActions($record, &$actions, &$mraactions)
     {
       $this->m_dir = $this->stripDir($this->m_dir);
       if (is_dir($this->m_dir."/".$record["filename"]))
-      {        
+      {
         $actions['view'] = dispatch_url($this->atkNodeType(), "dirchange", array('atkselector' => $this->m_dir.$record["filename"]));
         unset($actions["edit"]);
         unset($actions["delete"]);
         return;
       }
-      
+
       // Remove edit/delete actions when a file is not writeable.
       if(!is_writeable($this->m_dir."/".$record["filename"]))
       {
@@ -198,7 +200,7 @@
     * @return unknown
     */
     function selectDb($selector="", $orderby="", $limit="")
-    { 
+    {
       atkGetSessionManager()->stackVar('dirname', $this->m_dir);
       if ($selector=="")
       {
@@ -218,7 +220,10 @@
           $arr=array();
           while (false !== ($entry = $d->read()))
           {
-            $this->addFileEntry($entry,$arr);
+            if ($this->m_showdirs || !is_dir($d->path.DIRECTORY_SEPARATOR.$entry))
+            {
+              $this->addFileEntry($entry,$arr);
+            }
           }
           $d->close();
 
@@ -305,7 +310,7 @@
     }
 
    /**
-    * This function overrides the addDb function to add 
+    * This function overrides the addDb function to add
     * a file to the selected directory
     *
     * @param Array $record Array that contains the name of the new file
@@ -331,12 +336,12 @@
     }
 
    /**
-    * This function overrides the updateDb function to update 
+    * This function overrides the updateDb function to update
     * the contents of a file
     *
     * @param array $record Array that contains the name of the file that
     *                      is updated
-    * @return Boolean The result of the file update 
+    * @return Boolean The result of the file update
     */
     function updateDb(&$record)
     {
@@ -346,7 +351,7 @@
       // any update happened.)
       $sessmngr = atkGetSessionManager();
       $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
-     
+
       if ($record['atkprimkey']!="")
       {
         if ($record['atkprimkey']!=$this->primaryKey($record))
@@ -391,6 +396,10 @@
       $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
       $decodedselector = decodeKeyValuePair($selector);
       $filename = $decodedselector["dummy.filename"];
+
+      atk_var_dump($this->m_dir, 'm_dir');
+      atk_var_dump($filename, 'filename');
+
       if (strpos($filename, "..")===false)
       {
         unlink($this->m_dir.$filename);
@@ -402,7 +411,7 @@
       }
       return true;
     }
-    
+
    /**
     * This function overrides the edit action to first set the directory
     * before actually editing a file.
@@ -412,35 +421,35 @@
     function action_edit(atkEditHandler $handler)
     {
       $this->m_dir = atkGetSessionManager()->stackVar('dirname');
-      $handler->action_edit();           
+      $handler->action_edit();
     }
-    
+
    /**
     * This function overrides the delete action to set the directory
-    * before actually deleting a file. 
+    * before actually deleting a file.
     *
     * @param atkActionHandler $handler
     */
     function action_delete(atkDeleteHandler $handler)
     {
       $this->m_dir = atkGetSessionManager()->stackVar('dirname');
-      $handler->action_delete();           
+      $handler->action_delete();
     }
-    
+
    /**
-    * This function implements the functionality to move up 
+    * This function implements the functionality to move up
     * and down directories
     *
     */
     function action_dirchange()
-    { 
+    {
       $selectedDir = $this->stripDir($this->m_postvars['atkselector']);
       atkGetSessionManager()->stackVar('dirname', $selectedDir);
-              
+
       $this->m_dir = $selectedDir;
       $this->callHandler('admin');
     }
-   
+
    /**
     * This function strips a given directory to a valid relative path
     *
@@ -463,5 +472,15 @@
         $resultdir = rtrim($this->m_basedir,'/').'/';
       }
       return $resultdir;
+    }
+
+    /**
+     * Show or hide the subdirectories
+     *
+     * @param boolean $bool
+     */
+    function showDirs($bool)
+    {
+      $this->m_showdirs = (bool) $bool;
     }
   }

@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
++ Added function showDirs(boolean b) to class.atkfileeditor.inc. Default 
+  configuration is true. [Patrick]
 - Mark datatypes/ classes deprecated.
 * Add dt suffix datatype classes: datatypes/atkstring -> datatypes/atkstringdt etc.
   [Marc]
