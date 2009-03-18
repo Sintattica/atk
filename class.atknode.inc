@@ -1306,7 +1306,7 @@
     		atkwarning($this->atkNodeType()."::primaryKeyField() called, but there are no primary key fields defined!");
     		return null;
     	}
-    	
+
       return $this->m_primaryKey[0];
     }
 
@@ -1696,7 +1696,7 @@
         {
           if (substr($section, 0, strlen($tab)) == $tab)
           {
-            atkimport("atk.session.atkstate");                
+            atkimport("atk.session.atkstate");
             $sectionName = 'section_'.str_replace('.', '_', $section);
             $key = array("nodetype" => $this->atknodetype(), "section" => $sectionName);
             $defaultOpen = in_array($section, $this->m_default_expanded_sections);
@@ -2314,20 +2314,20 @@
     function initial_values()
     {
       $record = array();
-      
+
       foreach (array_keys($this->m_attribList) as $attrName)
       {
         $attr = &$this->getAttribute($attrName);
-        
-        if (is_array($this->m_postvars) && isset($this->m_postvars[$attrName])) 
+
+        if (is_array($this->m_postvars) && isset($this->m_postvars[$attrName]))
         {
           $value = $attr->fetchValue($this->m_postvars);
         }
-        else 
+        else
         {
           $value = $attr->initialValue();
         }
-        
+
         if ($value !== NULL)
           $record[$attr->fieldName()] = $value;
       }
@@ -3341,7 +3341,7 @@
       if ($record['atkprimkey']!="")
       {
         $this->trackChangesIfNeeded($record, $excludes, $includes);
-        
+
         if($exectrigger) $this->executeTrigger("preUpdate",$record);
 
         $pk = $record['atkprimkey'];
@@ -4258,7 +4258,7 @@
           $record[$p_attrib->fieldName()]=$db->nextid($this->m_seq);
         }
 
-        $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"add"); // start at level 1
+        $p_attrib->addToQuery($query,$this->m_table,"",$record,1,'add'); // start at level 1
       }
 
       if (!$query->executeInsert())
@@ -4274,7 +4274,7 @@
       {
         $record["atkmlsplit"]=1;
         $mltool = &atkinstance("atk.utils.atkmlsplitter");
-        $mltool->updateMlRecords($this, $record,"add");
+        $mltool->updateMlRecords($this, $record, $copy);
       }
 
       if (!$this->_storeAttributes($storelist["post"], $record, $mode))
@@ -4605,7 +4605,7 @@
     }
 
     /**
-     * Returns the type of this node.  (This is *not* the full ATK node type; 
+     * Returns the type of this node.  (This is *not* the full ATK node type;
      * see atkNodeType() for the full node type.)
      *
      * @return string type
@@ -4628,7 +4628,7 @@
     /**
      * Get the full atknodetype of this node (module.nodetype notation).  This is sometimes
      * referred to as the node name (or nodename) or node string.
-     * 
+     *
      * @return String The atknodetype of the node.
      */
     function atkNodeType()
@@ -5232,7 +5232,7 @@
      * Get the column configuration object
      *
      * @param string $id optional column config id
-     * 
+     *
      * @return atkColumnConfig
      */
     function &getColumnConfig($id=NULL)
