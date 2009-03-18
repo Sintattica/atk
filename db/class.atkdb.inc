@@ -576,7 +576,7 @@
     /**
      * Set savepoint with the given name.
      *
-     * @param $name savepoint name
+     * @param string $name savepoint name
      * @abstract
      */
     function savepoint($name)
@@ -587,7 +587,7 @@
      * Rollback the current transaction.
      * (If a savepoint is given to the given savepoint.)
      *
-     * @param $savepoint savepoint name
+     * @param string $savepoint savepoint name
      *
      * @abstract
      */
@@ -668,7 +668,7 @@
      *
      * If the sequence does not exist, it is created automatically.
      *
-     * @param $sequence The sequence name
+     * @param string $sequence The sequence name
      * @return int The next sequence value
      * @abstract
      */
@@ -699,8 +699,8 @@
      *     ["meta"][field name] index of field named "field name"
      *     The last one is used, if you have a field name, but no index.
      *
-     * @param $table the table name
-     * @param $full all meta data or not
+     * @param string $table the table name
+     * @param bool $full all meta data or not
      * @return array with meta data
      */
     function metadata($table, $full=false)
@@ -1130,9 +1130,8 @@
     /**
      * Check if the current instance has the given mode
      *
-     * @param object $dbinstance Current db instance
      * @param string $mode The mode we want to check
-     * @return boolean True or False
+     * @return bool True or False
      */
     public function hasMode($mode)
     {

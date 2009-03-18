@@ -413,8 +413,8 @@
 
     /**
      * load function
-     * @param $notused
-     * @param $record
+     * @param atkDb $notused
+     * @param array $record
      */
     function load($notused, $record)
     {
@@ -476,9 +476,9 @@
 
     /**
      * Stores the values in the database
-     * @param $notused Not used
-     * @param $record Current record
-     * @param $mode
+     * @param atkDb $notused Not used
+     * @param array $record Current record
+     * @param string $mode
      */
     function store($notused, $record, $mode)
     {
@@ -670,7 +670,7 @@
      *                           attribute's getSearchModes() method.
      * @param string $fieldaliasprefix optional prefix for the fieldalias in the table
      */
-    function searchCondition(&$query, $table, $value, $searchmode)
+    function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix='')
     {
       $ownerFields = $this->getOwnerFields();
       
@@ -696,8 +696,8 @@
 
     /**
      * Checks if a key is not an array
-     * @param $key   field containing the key values
-     * @param $field field to return if an array
+     * @param string $key   field containing the key values
+     * @param string $field field to return if an array
      * @return value of $field
      */
     function checkKeyDimension($key, $field="id")

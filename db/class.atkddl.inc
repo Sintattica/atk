@@ -84,7 +84,7 @@
      * Set all table data at once using the given table meta data,
      * retrieved using the metadata function of the db instance.
      *
-     * @param $tablemeta table meta data array
+     * @param array $tablemeta table meta data array
      */
     function loadMetaData($tablemeta)
     {
@@ -95,13 +95,13 @@
     /**
      * Add a field to the table definition.
      *
-     * @param $name        The name of the field
-     * @param $generictype The datatype of the field (should be one of the
-     *                     generic types supported by ATK).
-     * @param $size        The size of the field (if appropriate)
-     * @param $flags       The DDL_ flags for this field.
-     * @param $default     The default value to be used when inserting new
-     *                     rows.
+     * @param string $name        The name of the field
+     * @param string $generictype The datatype of the field (should be one of the
+     *                            generic types supported by ATK).
+     * @param int $size        The size of the field (if appropriate)
+     * @param int $flags       The DDL_ flags for this field.
+     * @param mixed $default   The default value to be used when inserting new
+     *                         rows.
      */
     function addField($name, $generictype, $size=0, $flags=0, $default=NULL)
     {
@@ -142,7 +142,7 @@
     /**
      * Drop a field from the table definition.
      *
-     * @param $name        The name of the field
+     * @param string $name The name of the field
      */
     function dropField($name)
     {
@@ -154,7 +154,7 @@
      *
      * NOTE: defaults are not supported yet!
      *
-     * @param $meta   The fields meta data.
+     * @param array $meta   The fields meta data.
      */
     function addFields($meta)
     {
@@ -180,7 +180,7 @@
      * If the database does not have a proper field type, consider using
      * a varchar or number to store the value.
      *
-     * @param $generictype  The datatype to convert.
+     * @param string $generictype  The datatype to convert.
      * @abstract
      */
     function getType($generictype)
@@ -194,7 +194,7 @@
      * This function will be overrided by the database specific subclasses of
      * atkDb.
      *
-     * @param $type  The database specific datatype to convert.
+     * @param string $type  The database specific datatype to convert.
      * @abstract
      */
     function getGenericType($type)
@@ -205,7 +205,7 @@
     /**
      * Set the name of the table.
      *
-     * @param $tablename  The name of the table
+     * @param string $tablename  The name of the table
      */
     function setTable($tablename)
     {
@@ -314,13 +314,13 @@
      * number of databases. Databases that won't work with this syntax,
      * should override this method in the database specific ddl class.
      *
-     * @param $name        The name of the field
-     * @param $generictype The datatype of the field (should be one of the
-     *                     generic types supported by ATK).
-     * @param $size        The size of the field (if appropriate)
-     * @param $flags       The DDL_ flags for this field.
-     * @param $default     The default value to be used when inserting new
-     *                     rows.
+     * @param string $name        The name of the field
+     * @param string $generictype The datatype of the field (should be one of the
+     *                            generic types supported by ATK).
+     * @param int $size        The size of the field (if appropriate)
+     * @param int $flags       The DDL_ flags for this field.
+     * @param mixed $default   The default value to be used when inserting new
+     *                         rows.
      */
     function buildField($name, $generictype, $size=0, $flags=0, $default=NULL)
     {
@@ -352,7 +352,7 @@
      * This function will be overrided by the database specific subclasses of
      * atkDDL.
      *
-     * @param $fieldlist  An array of fields that define the primary key.
+     * @param array $fieldlist  An array of fields that define the primary key.
      */
     function buildPrimaryKey($fieldlist=array())
     {
@@ -367,7 +367,7 @@
      * Method to determine whether quotes are needed around the values
      * for a given generic datatype.
      *
-     * @param $generictype  The type of field.
+     * @param string $generictype  The type of field.
      * @return true  if quotes should be put around values for the given type
      *               of field.
      *         false if quotes should not be used.
@@ -381,7 +381,7 @@
      * Method to determine whether a given generic field type needs
      * to have a size defined.
      *
-     * @param $generictype The type of field.
+     * @param string $generictype The type of field.
      * @return true  if a size should be specified for the given field type.
      *         false if a size does not have to be specified.
      */
@@ -591,8 +591,6 @@
      * Build and execute DROP VIEW query
      *
      * @param string $name - name of view
-     * @param string $select - SQL SELECT statement
-     * @param string $with_check_option - use SQL WITH CHECK OPTION
      * @return  true  if view create successfully
      *          false if error take place
      */

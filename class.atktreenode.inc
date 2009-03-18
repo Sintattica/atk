@@ -75,6 +75,9 @@
      * Action "admin" handler method, we override this method because we don't want
      * an add form when the flag NF_TREE_NO_ROOT_ADD. Because the add form is only
      * used to add root elements.
+     * 
+     * @param atkActionHandler $handler
+     * @param array $record
      */
     function action_admin(&$handler, $record="")
     {
@@ -82,6 +85,11 @@
       return $handler->action_admin($record);
     }
 
+    /**
+     * Build the tree
+     *
+     * @return tree Tree object
+     */
     function buildTree()
     {
       atkdebug("atktreenode::buildtree() ".$this->m_parent);
@@ -97,6 +105,8 @@
     /**
      * Admin page displays records and the actions that can be performed on
      * them (edit, delete) in a Treeview
+     * 
+     * @param atkActionHandler $handler The action handler object
      */
     function adminPage(&$handler)
     {
@@ -167,8 +177,8 @@
     /**
      * Recursive funtion whitch fills an array with all the items of the tree.
      * DEPRECATED, use treeToArray instead.
-     * @param $tree Tree
-     * @param $level Level
+     * @param tree $tree Tree
+     * @param int $level Level
      */
     function Fill_tree($tree="", $level=0)
     {
@@ -178,8 +188,8 @@
 
     /**
      * Recursive funtion whitch fills an array with all the items of the tree.
-     * @param $tree Tree
-     * @param $level Level
+     * @param tree $tree Tree
+     * @param int $level Level
      */
     function treeToArray($tree="",$level=0)
     {
@@ -210,7 +220,7 @@
     /**
      * Returns the full path to a tree icon from the current theme
      *
-     * @param $name string Name of the icon (for example "expand" or "leaf")
+     * @param string $name Name of the icon (for example "expand" or "leaf")
      * @return string Path to the icon file
      */
     function getIcon($name)
@@ -221,8 +231,10 @@
 
     /**
      * Recursive funtion which fills an array with all the items of the tree.
-     * @param $tree Tree
-     * @param $level Level
+     * 
+     * @param bool $showactions Show actions?
+     * @param bool $expandAll Expand all leafs?
+     * @param bool $foldable Is this tree foldable?
      */
     function GraphTreeRender($showactions=true, $expandAll=false, $foldable=true)
     {
@@ -646,7 +658,8 @@
     /**
      * Copies a record and the Childs if there are any
      *
-     *@param $selector The 'where' clause that indicates which records to select.
+     * @param array $record The record to copy
+     * @param string $mode The mode we're in (usually "copy")
      */
     function copyDb($record, $mode="copy")
     {
@@ -669,8 +682,9 @@
      *
      * @todo shouldn't we recursively call copyDb here? instead of ourselves
      *
-     * @param $selector Selector
-     * @param $parent Parent ID
+     * @param string $selector Selector
+     * @param int $parent Parent ID
+     * @param string $mode The mode we're in
      */
     function copyChildren($selector, $parent="", $mode="copy")
     {
@@ -700,7 +714,8 @@
     /**
      * delete record from the database also the childrecords.
      * todo: instead of delete, set the deleted flag.
-     * @param $selector Selector
+     * 
+     * @param string $selector Selector
      */
     function deleteDb($selector)
     {
@@ -747,8 +762,8 @@
     /**
      * Recursive function whitch deletes all the child records of a parent
      *
-     * @param $selector Selector
-     * @param $parent Parent
+     * @param string $selector Selector
+     * @param int $parent Id of the parent
      */
     function deleteChildren($selector,$parent)
     {

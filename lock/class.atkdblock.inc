@@ -94,7 +94,7 @@
     /**
      * Store lock data in session.
      * 
-     * @param $list The lock list
+     * @param array $list The lock list
      */
     function storeLockList($list)
     {
@@ -198,8 +198,8 @@
      * method will fail if the lock isn't entirely ours. We also try
      * to remove any old expired locks.
      *
-     * @param $selector the ATK primary key / selector
-     * @param $table    the (unique) table name
+     * @param string $selector the ATK primary key / selector
+     * @param string $table    the (unique) table name
      */
     function unlock($selector, $table)
     {
@@ -238,7 +238,7 @@
      * Extends the lock lease with the given ID. (This can mean multiple lock
      * leases will be extended, if there are multiple locks with the given ID!)
      *
-     * @param $identifier the unique lock ID
+     * @param int $identifier the unique lock ID
      *
      * @return success / failure of operation
      */

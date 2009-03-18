@@ -92,7 +92,6 @@
      * @param bool $quote If this parameter is true, stuff is inserted into the db
      *               using quotes, e.g. SET name = 'piet'. If it is false, it's
      *               done without quotes, e.d. SET number = 4.
-     * @param bool $quotefield Wether or not to quote the fieldname
      * @return atkQuery The query object itself (for fluent usage)
      */
     function &addField($name, $value="", $table="", $fieldaliasprefix="", $quote=true)

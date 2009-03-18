@@ -139,7 +139,7 @@
      * This method is similar to the getPreferenceLinks() method but instead
      * will return links to (an) admin page(s) for this module. The array which
      * will be returned have to be created with the adminlink() method.
-     * @return array with admin links for thid module
+     * @return array with admin links for this module
      */
     function getAdminLinks()
     {
@@ -148,8 +148,8 @@
     /**
      * Returns the node overloader if it exists. Else it
      * will just return the module/node name of the given node.
-     * @param $node module/node string
-     * @return (overloader) module/node string
+     * @param string $node module/node string
+     * @return string (overloader) module/node string
      */
     function nodeOverloader($node)
     {
@@ -200,7 +200,7 @@
 
     /**
      * Construct a new node. A module can override this method for it's own nodes.
-     * @param $node the node type
+     * @param atkNode $node the node type
      * @return new node object
      */
     function &newNode($node)
@@ -311,7 +311,7 @@
 
     /**
      * Checks if a certain node exists for this module.
-     * @param $node the node type
+     * @param string $node the node type
      * @return node exists?
      */
     function nodeExists($node)

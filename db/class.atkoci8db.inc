@@ -135,7 +135,7 @@
     /**
      * Enable/disable all foreign key constraints.
      *
-     * @param boolean $enable enable/disable foreign keys?
+     * @param bool $enable enable/disable foreign keys?
      */
     function toggleForeignKeys($enable)
     {
@@ -166,7 +166,7 @@
     /**
      * Set savepoint with the given name.
      *
-     * @param $name savepoint name
+     * @param string $name savepoint name
      * @abstract
      */
     function savepoint($name)
@@ -420,7 +420,7 @@
      *   $id = $db->nextid("employees");
      * </code>
      *
-     * @param $sequence The sequence name
+     * @param string $sequence The sequence name
      * @return int The next sequence value
      */
     function nextid($sequence)

@@ -152,7 +152,7 @@
     /**
      * Partial criterium value / mode.
      *
-     * @param $type 'value' or 'mode' partial?
+     * @param string $type 'value' or 'mode' partial?
      */
     function _partialCriteriumValueOrMode($type)
     {

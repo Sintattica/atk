@@ -28,7 +28,6 @@ class atkDGSummary extends atkDGComponent
   /**
    * Renders the summary for the given data grid.
    *
-   * @param atkDataGrid $grid the data grid
    * @return string rendered HTML
    */
   public function render()

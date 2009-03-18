@@ -192,7 +192,6 @@
     /**
      * Return all attributes that can be exported
      *
-     * @param object $handler atkExport
      * @return array Array with attribs that needs to be exported
      */
     function getExportAttributes()

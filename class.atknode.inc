@@ -1030,7 +1030,6 @@
      * Retrieve the tabnames from the sections string (tab.section).
      *
      * @param mixed $sections An array with sections or a section string
-     * @param string $str A section string.
      */
     function getTabsFromSections($sections)
     {
@@ -1258,7 +1257,7 @@
      * with one or more string arguments, all arguments are collected in
      * an array. Else the first parameter will be used.
      *
-     * @param $attrs Array list of attribute names
+     * @param array $attrs list of attribute names
      */
     function setEditableListAttributes($attrs)
     {
@@ -1272,7 +1271,7 @@
      * MRA_MULTI_SELECT (default), MRA_SINGLE_SELECT or
      * MRA_NO_SELECT.
      *
-     * @param $mode selection mode
+     * @param string $mode selection mode
      */
     function setMRASelectionMode($mode)
     {
@@ -2590,7 +2589,7 @@
     /**
      * Set extended search action.
      *
-     * @param $action extended search action
+     * @param string $action extended search action
      */
     function setExtendedSearchAction($action)
     {
@@ -4600,12 +4599,12 @@
      *
      * @param array $record The record for which the actions need to be
      *                      determined.
-     * @param &$actions Reference to an array with the already defined
-     *                  actions. This is an associative array with the action
-     *                  identifier as key, and an url as value. Actions can be
-     *                  removed from it, or added to the array.
-     * @param &$mraactions List of multirecordactions that are supported for
-     *                     the passed record.
+     * @param array &$actions Reference to an array with the already defined
+     *                        actions. This is an associative array with the action
+     *                        identifier as key, and an url as value. Actions can be
+     *                        removed from it, or added to the array.
+     * @param array &$mraactions List of multirecordactions that are supported for
+     *                           the passed record.
      */
     function recordActions($record, &$actions, &$mraactions)
     {
@@ -5276,7 +5275,6 @@
      *                                the first one isn't found, and so forth
      * @param String $module          module in which the language file should be looked for,
      *                                defaults to core module with fallback to ATK
-     * @param String $node            the node to which the string belongs
      * @param String $lng             ISO 639-1 language code, defaults to config variable
      * @param String $firstfallback   the first module to check as part of the fallback
      * @param boolean $nodefaulttext  if true, then it doesn't return a default text

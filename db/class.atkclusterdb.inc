@@ -279,16 +279,35 @@
       return isset($this->m_current_clusternode->$name);
     }
 
+    /**
+     * Magic unset function
+     *
+     * @param string $name
+     */
     public function __unset($name)
     {
       unset($this->m_current_clusternode->$name);
     }
 
+    /**
+     * Magic call function
+     *
+     * @param string $name
+     * @param array $arguments
+     * @return mixed
+     */
     public function __call($name, $arguments)
     {
       return call_user_method_array($name,$this->m_current_clusternode,$arguments);
     }
 
+    /**
+     * Magic callstatic function
+     *
+     * @param string $name
+     * @param array $arguments
+     * @return mixed
+     */
     public static function __callStatic($name, $arguments)
     {
       return call_user_func_array(array(__NAMESPACE__ .'::'.get_class($this->m_current_clusternode), $name), $arguments);

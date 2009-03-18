@@ -42,14 +42,14 @@
 
    /**
     * Constructor
-    * @param $name            Name of the matrix table
-    * @param $name1           row field name
-    * @param $destination1    row table
-    * @param $fk1             foreignkey in row table
-    * @param $name2           colum field name
-    * @param $destination2    colum table
-    * @param $fk2             foreignkey in colum table
-    * @param $flags           AF_MATRIX_ACYCLIC if input must be acyclic
+    * @param string $name            Name of the matrix table
+    * @param string $name1           row field name
+    * @param string $destination1    row table
+    * @param string $fk1             foreignkey in row table
+    * @param string $name2           colum field name
+    * @param string $destination2    colum table
+    * @param string $fk2             foreignkey in colum table
+    * @param int    $flags           AF_MATRIX_ACYCLIC if input must be acyclic
     */
     function atkMatrixRelation($name, $name1, $destination1, $fk1, $name2, $destination2, $fk2, $flags=0)
     {

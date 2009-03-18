@@ -562,7 +562,7 @@
     /**
      * Handle exception.
      *
-     * @param $exception exception
+     * @param Exception $exception exception
      */
     protected function handleException($exception)
     {
@@ -866,7 +866,7 @@
     /**
      * Smarty partial function, render partial template.
      *
-     * @param $params parameters
+     * @param array $params parameters
      * @param Smarty $smarty smarty instance
      * @return string rendered partial
      */

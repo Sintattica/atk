@@ -114,9 +114,9 @@
 
    /**
     * Performs a query
-    * @param $query the query
-    * @param $offset offset in record list
-    * @param $limit maximum number of records
+    * @param string $query the query
+    * @param int $offset offset in record list
+    * @param int $limit maximum number of records
     * @todo implement limit and offset support
     */
    function query($query, $offset=-1, $limit=-1)
@@ -196,8 +196,8 @@
 
    /**
     * Lock a certain table in the database
-    * @param $table the table name
-    * @param $mode the type of locking
+    * @param string $table the table name
+    * @param string $mode the type of locking
     * @return result of locking
     */
    function lock($table, $mode="write")
@@ -267,7 +267,7 @@
    /**
     * Get the next sequence number
     * of a certain sequence.
-    * @param $sequence the sequence name
+    * @param string $sequence the sequence name
     * @return the next sequence id
     */
    function nextid($sequence)
@@ -316,8 +316,8 @@
 
    /**
     * Return the meta data of a certain table
-    * @param $table the table name
-    * @param $full all meta data or not
+    * @param string $table the table name
+    * @param bool $full all meta data or not
     * @return array with meta data
     */
    function metadata($table, $full=false)

@@ -35,7 +35,6 @@
     /**
      * Build url using the given URI and variables.
      *
-     * @param string $uri The controller URI.
      * @param array $vars Request vars.
      * @return string url
      */

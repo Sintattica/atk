@@ -199,12 +199,12 @@
      * Add multiple fields at once
      *
      * @param array $fields array with field value pairs
-     * @param $table String Table name
-     * @param $fieldaliasprefix String Field alias prefix
-     * @param $quote bool If this parameter is true, stuff is inserted into the db
+     * @param string $table Table name
+     * @param string $fieldaliasprefix Field alias prefix
+     * @param bool $quote If this parameter is true, stuff is inserted into the db
      *               using quotes, e.g. SET name = 'piet'. If it is false, it's
      *               done without quotes, e.d. SET number = 4.
-     * @param $quotefield bool Wether or not to quote the fieldname
+     * @param bool $quotefield Wether or not to quote the fieldname
      * @return atkQuery The query object itself (for fluent usage)
      */
     function addFields(array $fields, $table="", $fieldaliasprefix="", $quote=true, $quotefield=false)
@@ -219,11 +219,10 @@
     /**
      * Add's an expression to the select query
      *
-     * @param $fieldName        string expression field name
-     * @param $expression       string expression value
-     * @param $table            string table name
-     * @param $fieldAliasPrefix string field alias prefix
-     * @param $quoteFieldName   bool   wether or not to quote the expression field name
+     * @param string $fieldName         expression field name
+     * @param string $expression        expression value
+     * @param string $fieldAliasPrefix  field alias prefix
+     * @param bool $quoteFieldName      wether or not to quote the expression field name
      * @return atkQuery The query object itself (for fluent usage)
      */
     function &addExpression($fieldName, $expression, $fieldAliasPrefix="", $quoteFieldName=false)
@@ -245,8 +244,8 @@
 
     /**
     * Add table to Tables array
-    * @param $name Table name
-    * @param $alias Alias of table
+    * @param string $name Table name
+    * @param string $alias Alias of table
     * @return atkQuery The query object itself (for fluent usage)
     */
     function &addTable($name, $alias = "")
@@ -297,7 +296,8 @@
 
     /**
      * Add a query condition (conditions are where-expressions that are AND-ed)
-     * @param $condition Condition
+     * 
+     * @param string $condition Condition
      * @return atkQuery The query object itself (for fluent usage)
      */
     function &addCondition($condition)
@@ -311,7 +311,8 @@
     * Add search condition to the query. Basically similar to addCondition, but
     * searchconditions make use of the searchmode setting to determine whether the
     * different searchconditions should be and'ed or or'ed.
-    * @param $condition Condition
+    * 
+    * @param string $condition Condition
     * @return atkQuery The query object itself (for fluent usage)
     */
     function &addSearchCondition($condition)
@@ -351,7 +352,7 @@
 
     /**
      * Builds the SQL Select query
-     * @param $distinct distinct records?
+     * @param bool $distinct distinct records?
      * @return String a SQL Select Query
      */
     function buildSelect($distinct = FALSE)
@@ -832,7 +833,7 @@
     /**
      * Static factory method. This method returns a new instance of a query
      * object for the current database.
-     * @param $basepath The basepath for the database object (defaults to 'atk.db')
+     * @param string $basepath The basepath for the database object (defaults to 'atk.db')
      * @return atkQuery A Query object for the appropriate database
      */
     function &create($basepath="atk.db.")

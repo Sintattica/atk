@@ -42,7 +42,7 @@
     /**
      * Convert an ATK generic datatype to a database specific type.
      *
-     * @param $generictype  The datatype to convert.
+     * @param string $generictype  The datatype to convert.
      */
     function getType($generictype)
     {
@@ -75,7 +75,7 @@
     /**
      * Convert an database specific type to an ATK generic datatype.
      *
-     * @param $type  The database specific datatype to convert.
+     * @param string $type  The database specific datatype to convert.
      */
     function getGenericType($type)
     {
@@ -113,13 +113,13 @@
      * number of databases. Databases that won't work with this syntax,
      * should override this method in the database specific ddl class.
      *
-     * @param $name        The name of the field
-     * @param $generictype The datatype of the field (should be one of the
-     *                     generic types supported by ATK).
-     * @param $size        The size of the field (if appropriate)
-     * @param $flags       The DDL_ flags for this field.
-     * @param $default     The default value to be used when inserting new
-     *                     rows.
+     * @param string $name        The name of the field
+     * @param string $generictype The datatype of the field (should be one of the
+     *                            generic types supported by ATK).
+     * @param int $size        The size of the field (if appropriate)
+     * @param int $flags       The DDL_ flags for this field.
+     * @param mixed $default   The default value to be used when inserting new
+     *                         rows.
      */
     function buildField($name, $generictype, $size=0, $flags=0, $default=NULL)
     {
@@ -140,7 +140,7 @@
      * Set all table data at once using the given table meta data,
      * retrieved using the metadata function of the db instance.
      *
-     * @param $tablemeta table meta data array
+     * @param array $tablemeta table meta data array
      */
     function loadMetaData($tablemeta)
     {

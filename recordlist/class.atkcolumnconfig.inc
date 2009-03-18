@@ -386,6 +386,10 @@
       }
     }
 
+    /**
+     * Do url commands
+     *
+     */
     function doUrlCommands()
     {
       if (isset($this->m_node->m_postvars["atkcolcmd"]) && is_array($this->m_node->m_postvars["atkcolcmd"]))
@@ -411,16 +415,34 @@
 
     }
 
+    /**
+     * Get order
+     *
+     * @param string $attribute
+     * @return string
+     */
     function getOrder($attribute)
     {
       return isset($this->m_colcfg[$attribute]["sortorder"]) ? $this->m_colcfg[$attribute]["sortorder"] : 0;
     }
 
+    /**
+     * Get direction
+     *
+     * @param string $attribute
+     * @return string
+     */
     function getDirection($attribute)
     {
       return (array_key_exists("direction", $this->m_colcfg[$attribute])?$this->m_colcfg[$attribute]["direction"]:"desc");
     }
 
+    /**
+     * Get attribute by order
+     *
+     * @param int $order
+     * @return atkAttribute
+     */
     function getAttributeByOrder($order)
     {
       foreach($this->m_colcfg as $attrib=>$info)
@@ -433,6 +455,11 @@
       return "";
     }
 
+    /**
+     * Count sort attributes
+     *
+     * @return int
+     */
     function countSortAttribs()
     {
       $total = 0;
@@ -443,6 +470,12 @@
       return $total;
     }
 
+    /**
+     * Get direction by order
+     *
+     * @param int $order
+     * @return string
+     */
     function getDirectionByOrder($order)
     {
       foreach($this->m_colcfg as $attrib=>$info)
@@ -452,11 +485,20 @@
       return "asc";
     }
 
+    /**
+     * Clear order
+     *
+     */
     function clearOrder()
     {
       $this->m_colcfg = array();
     }
 
+    /**
+     * Has subtotals?
+     *
+     * @return bool True or false
+     */
     function hasSubTotals()
     {
       foreach(array_keys($this->m_colcfg) as $attribute)
@@ -466,11 +508,23 @@
       return false;
     }
 
+    /**
+     * Has subtotal?
+     *
+     * @param string $attribute
+     * @return bool True or false
+     */
     function hasSubTotal($attribute)
     {
       return ((isset($this->m_colcfg[$attribute]["subtotal"]) ? $this->m_colcfg[$attribute]["subtotal"] : 0)==1);
     }
 
+    /**
+     * Has subtotal by order?
+     *
+     * @param int $order
+     * @return bool True or false
+     */
     function hasSubTotalByOrder($order)
     {
       foreach($this->m_colcfg as $attrib=>$info)
@@ -480,16 +534,34 @@
       return false;
     }
 
+    /**
+     * Set subtotal
+     *
+     * @param string $attribute
+     * @param bool $active
+     */
     function setSubTotal($attribute, $active)
     {
       $this->m_colcfg[$attribute]["subtotal"] = ($active?1:0);
     }
 
+    /**
+     * Compare sortorder of two attributes
+     *
+     * @param array $a
+     * @param array $b
+     * @return int
+     */
     function _compareSortAttrs($a, $b)
     {
       return (atkArrayNvl($a, "sortorder", 0) <= atkArrayNvl($b, "sortorder", 0) ? -1 : 1);
     }
 
+    /**
+     * Totalizable?
+     *
+     * @return bool True or false
+     */
     function totalizable()
     {
       foreach(array_keys($this->m_node->m_attribList) as $attribname)
@@ -500,6 +572,11 @@
       return false;
     }
 
+    /**
+     * Get the totalizable columns
+     *
+     * @return array
+     */
     function totalizableColumns()
     {
       $result = array();
@@ -511,6 +588,11 @@
       return $result;
     }
 
+    /**
+     * Get the subtotal columns
+     *
+     * @return array
+     */
     function subtotalColumns()
     {
       $result = array();
@@ -521,6 +603,11 @@
       return $result;
     }
 
+    /**
+     * Add orderby statement
+     *
+     * @param string $orderby
+     */
     function _addOrderByStatement($orderby)
     {
       if (strpos($orderby, '(') !== false) return; // can't do anything with complex order by's

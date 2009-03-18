@@ -38,7 +38,7 @@
    /**
     * Convert an database specific type to an ATK generic datatype.
     *
-    * @param $type  The database specific datatype to convert.
+    * @param string $type  The database specific datatype to convert.
     */
    function getGenericType($type)
     {

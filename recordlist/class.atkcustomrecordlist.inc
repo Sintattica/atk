@@ -42,7 +42,7 @@
      * @param String $eof         String to use at end of each field
      * @param String $eol         String to use at end of each row
      * @param int $type           0=Render rows in simple html tabl; 1= raw export
-     * @param $compression        Compression technique (bzip / gzip)
+     * @param string $compression        Compression technique (bzip / gzip)
      * @param array $suppressList List of attributes from $node that should be ignored
      * @param array $outputparams Key-Value parameters for output. Currently existing:
      *                               filename - the name of the file (without extension .csv)

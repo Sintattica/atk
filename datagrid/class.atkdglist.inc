@@ -51,7 +51,6 @@ class atkDGList extends atkDGComponent
    * @param Array   $actions      the default actions array
    * @param Integer $flags        recordlist flags (see the top of this file)
    * @param Array   $suppressList fields we don't display
-   * @param String  $formName     if embedded the form name in which we are embedded
    * @param Array   $navigation   Navigation links
    * @param String  $embedprefix  The prefix for embeded fields
    * @return String The rendered recordlist

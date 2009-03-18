@@ -71,7 +71,7 @@
      * because we do joins, like in a select, but we don't really select the
      * fields.
      *
-     * @param $distinct distinct rows?
+     * @param bool $distinct distinct rows?
      *
      * @return String a SQL Select COUNT(*) Query
      */

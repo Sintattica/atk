@@ -41,31 +41,68 @@
 
     ////////////////////////////// OVERLOADING METHODS //////////////////////////////
 
+    /**
+     * Magic set method
+     *
+     * @param string $name
+     * @param mixed $value
+     */
     public function __set($name, $value)
     {
       $this->m_query->$name = $value;
     }
 
+    /**
+     * Magic get function
+     *
+     * @param string $name
+     * @return mized
+     */
     public function __get($name)
     {
       return $this->m_query->$name;
     }
 
+    /**
+     * Magic isset function
+     *
+     * @param string $name
+     * @return bool
+     */
     public function __isset($name)
     {
       return isset($this->m_query->$name);
     }
 
+    /**
+     * Magic unset method
+     *
+     * @param string $name
+     */
     public function __unset($name)
     {
       unset($this->m_query->$name);
     }
 
+    /**
+     * Magic call function
+     *
+     * @param string $name
+     * @param array $arguments
+     * @return mixed
+     */
     public function __call($name, $arguments)
     {
       return call_user_method_array($name,$this->m_query,$arguments);
     }
 
+    /**
+     * Magic callstatic function
+     *
+     * @param string $name
+     * @param array $arguments
+     * @return mixed
+     */
     public static function __callStatic($name, $arguments)
     {
       return call_user_func_array(array(__NAMESPACE__ .'::'.get_class($this->m_query), $name), $arguments);

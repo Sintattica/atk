@@ -42,7 +42,7 @@ class atkMsSqlDDL extends atkDDL
   /**
    * Convert an ATK generic datatype to a database specific type.
    *
-   * @param $generictype  The datatype to convert.
+   * @param string $generictype  The datatype to convert.
    */
   function getType($generictype)
   {
@@ -71,7 +71,7 @@ class atkMsSqlDDL extends atkDDL
   /**
    * Convert an database specific type to an ATK generic datatype.
    *
-   * @param $type  The database specific datatype to convert.
+   * @param string $type  The database specific datatype to convert.
    */
   function getGenericType($type)
   {

@@ -358,7 +358,6 @@
     /**
      * Handle the dialog partial.
      *
-     * @param String $mode
      * @return String HTML add dialog
      */
     function partial_dialog()

@@ -39,7 +39,7 @@
     /**
      * Convert an ATK generic datatype to a database specific type.
      *
-     * @param $generictype  The datatype to convert.
+     * @param string $generictype  The datatype to convert.
      */
     function getType($generictype)
     {  
@@ -68,7 +68,7 @@
     /**
      * Convert an database specific type to an ATK generic datatype.
      *
-     * @param $type  The database specific datatype to convert.
+     * @param string $type  The database specific datatype to convert.
      */
     function getGenericType($type)
     {
@@ -107,7 +107,7 @@
      * Method to determine whether a given generic field type needs
      * to have a size defined.
      *
-     * @param $generictype The type of field.
+     * @param string $generictype The type of field.
      * @return bool true  if a size should be specified for the given field type.
      *         false if a size does not have to be specified.
      */

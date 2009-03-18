@@ -489,7 +489,7 @@
     /**
      * Handle partial.
      *
-     * @param $partial full partial
+     * @param string $partial full partial
      */
     function partial($partial)
     {

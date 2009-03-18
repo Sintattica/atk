@@ -118,9 +118,9 @@
 
    /**
     * Performs a query
-    * @param $query the query
-    * @param $offset offset in record list
-    * @param $limit maximum number of records
+    * @param string $query the query
+    * @param int $offset offset in record list
+    * @param int $limit maximum number of records
     */
    function query($query, $offset=-1, $limit=-1)
    {
@@ -243,7 +243,7 @@
     * Goto a certain position in result set.
     * Not specifying a position will set the pointer
     * at the beginning of the result set.
-    * @param $position the position
+    * @param int $position the position
     */
    function seek($position=0)
    {
@@ -254,8 +254,8 @@
 
    /**
     * Lock a certain table in the database
-    * @param $table the table name
-    * @param $mode the type of locking
+    * @param string $table the table name
+    * @param string $mode the type of locking
     * @return result of locking
     */
    function lock($table, $mode="write")
@@ -334,7 +334,7 @@
    /**
     * Get the next sequence number
     * of a certain sequence.
-    * @param $sequence the sequence name
+    * @param string $sequence the sequence name
     * @return the next sequence id
     */
    function nextid($sequence)
@@ -383,8 +383,8 @@
 
    /**
     * Return the meta data of a certain table
-    * @param $table the table name
-    * @param $full all meta data or not
+    * @param string $table the table name
+    * @param bool $full all meta data or not
     * @return array with meta data
     */
    function metadata($table, $full=false)
@@ -493,7 +493,7 @@
    /**
     * Set savepoint with the given name.
     *
-    * @param $name savepoint name
+    * @param string $name savepoint name
     */
    function savepoint($name)
    {

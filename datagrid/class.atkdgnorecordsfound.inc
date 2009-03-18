@@ -29,7 +29,6 @@ class atkDGNoRecordsFound extends atkDGComponent
   /**
    * Renders the no records found message for the given data grid.
    *
-   * @param atkDataGrid $grid the data grid
    * @return string rendered HTML
    */
   public function render()

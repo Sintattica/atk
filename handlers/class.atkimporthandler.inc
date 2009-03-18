@@ -133,7 +133,7 @@
     /**
      * Import header.
      *
-     * @param $phase import phase ('init', 'upload', 'process', 'analyze')
+     * @param string $phase import phase ('init', 'upload', 'process', 'analyze')
      */
     function importHeader($phase)
     {
@@ -143,7 +143,7 @@
     /**
      * Get import buttons.
      *
-     * @param $phase
+     * @param string $phase import phase ('init', 'upload', 'process', 'analyze')
      */
     function getImportButtons($phase)
     {
@@ -228,8 +228,8 @@
      * This function shows a form where the user can choose the mapping of the column,
      * an allfield and if the first record must be past over
      *
-     * @param $fileid      string  the id of the uploaded file
-     * @param $importerrors Array   An array with the import errors
+     * @param string $fileid       the id of the uploaded file
+     * @param array $importerrors  An array with the import errors
      */
     function doAnalyze($fileid,$importerrors=array())
     {
@@ -536,7 +536,7 @@
 
     /**
      * Get the destination of the uploaded csv-file
-     * @param $fileid string  The id of the file
+     * @param string $fileid  The id of the file
      * @return string         The path of the file
      */
     function getTmpFileDestination($fileid)
@@ -1353,7 +1353,7 @@
 
     /**
      * Check whether the record if valide to import
-     * @param $record array   the record
+     * @param array $record   the record
      * @return bool Wether or not there were errors
      */
     function validate(&$record)
@@ -1382,8 +1382,9 @@
      * Checks the import by the col_map and the initial_values
      * Check if all obligatory fields are used in the col_map or the initial_values
      * Check if there are no fields used twice
-     * @param $col_map        The use of the fields for the columns in the csv
-     * @param $initial_values The initial_values of the importnode
+     * 
+     * @param array $col_map        The use of the fields for the columns in the csv
+     * @param array $initial_values The initial_values of the importnode
      * @return array          An array with errors, if there are any
      */
     function checkImport($col_map,$initial_values)
@@ -1422,7 +1423,7 @@
     /**
      * Array with columns
      * @param Array $array  The array the columns to check
-     * @param Array $result the duplicate columns
+     * @return Array The duplicate columns
      */
     function _getDuplicateColumns($array)
     {

@@ -176,8 +176,8 @@
     /**
      * Validate attribute value.
      * 
-     * @param $p_attrib pointer to the attribute
-     * @param $record   record
+     * @param atkAttribute $p_attrib pointer to the attribute
+     * @param array        $record   record
      */
     function validateAttributeValue(&$p_attrib, &$record)
     {

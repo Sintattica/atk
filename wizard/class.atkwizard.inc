@@ -138,8 +138,6 @@ class atkWizard extends atkWizardBase
   /**
      * Constructor
      *
-     * @param string $controllerName
-     * @param string $moduleName
      * @return atkWizard
      */    
   function atkWizard()

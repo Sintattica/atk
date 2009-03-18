@@ -109,7 +109,6 @@ class atkDGPaginator extends atkDGComponent
   /**
    * Renders the paginator for the given data grid.
    *
-   * @param atkDataGrid $grid the data grid
    * @return string rendered HTML
    */
   public function render()

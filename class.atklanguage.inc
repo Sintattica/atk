@@ -119,7 +119,11 @@
 
     /**
      * Calculate the list of fallbackmodules.
+     * 
      * @access protected
+     * @param bool $modulefallback  Wether or not to use all the modules of the application in the fallback,
+     *                              when looking for strings
+     * @return array Array of fallback modules
      */
     protected function _getFallbackModules($modulefallback)
     {
@@ -158,8 +162,8 @@
      * @param String $node            the node to which the string belongs
      * @param String $lng             ISO 639-1 language code, defaults to config variable
      * @param String $firstfallback   the first module to check as part of the fallback
-     * @param boolean $nodefaulttext  if true, then it doesn't returns false when it can't find a translation
-     * @param boolean $modulefallback Wether or not to use all the modules of the application in the fallback,
+     * @param bool   $nodefaulttext   if true, then it doesn't returns false when it can't find a translation
+     * @param bool   $modulefallback  Wether or not to use all the modules of the application in the fallback,
      *                                when looking for strings
      * @return String the string from the languagefile
      */
@@ -328,12 +332,16 @@
      * And if all that fails we look for a general string in the module.
      *
      * @access protected
-     * @param string $string        the name of the string to return
-     * @param string $module        module in which the language file should be looked for,
-     *                              defaults to core module with fallback to ATK
-     * @param string $node          the node to which the string belongs
-     * @param string $lng           ISO 639-1 language code, defaults to config variable
-     * @param bool  &$nodefaulttext wether or not to pass a default text back
+     * 
+     * @param string $key             the name of the string to return
+     * @param string $module          module in which the language file should be looked for,
+     *                                defaults to core module with fallback to ATK
+     * @param string $lng             ISO 639-1 language code, defaults to config variable
+     * @param string $node            the node to which the string belongs
+     * @param bool   $nodefaulttext   wether or not to pass a default text back
+     * @param string $firstfallback   the first module to check as part of the fallback
+     * @param bool   $modulefallback  Wether or not to use all the modules of the application in the fallback,
+     *                                when looking for strings
      * @return string the name with which to call the string we want from the languagefile
      */
     protected function _getString($key, $module, $lng, $node="", $nodefaulttext=false, $firstfallback="", $modulefallback=false)
@@ -385,7 +393,6 @@
      * otherwise it sets it
      *
      * @access protected
-     * @param string $file    file to import
      * @param string $module  the module to import the language file from
      * @param string $lng     language of file to import
      * @return bool true if everything went okay
@@ -456,11 +463,9 @@
      * Gets the string from the languagefile or, if we failed, returns ""
      *
      * @access protected
-     * @param string $string        the name which was given when the text function was called
+     * @param string $key           the name which was given when the text function was called
      * @param string $module        the name of the module to which the text function belongs
-     * @param string $node          the name of the node to which the text function belongs
      * @param string $lng           the current language
-     * @param bool  &$nodefaulttext wether or not to pass a default text back
      * @return var the true name by which the txt is called or "" if we can't find any entry
      */
     protected function _getStringFromFile($key, $module, $lng)

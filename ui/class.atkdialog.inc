@@ -188,7 +188,7 @@ class atkDialog
    * Serialize the form with the given name.
    * Defaults to the entryform.
    *
-   * @param $form form name
+   * @param string $form form name
    */
   function setSerializeForm($form='entryform')
   {

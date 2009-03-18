@@ -64,7 +64,7 @@ class atkMetaNode extends atkNode
    * the same name. If you do so for flags, and have to use multiple flags, use
    * an array of flags.
    * 
-   * @param $options meta node options
+   * @param array $options meta node options
    * 
    * @return atkMetaNode
    */

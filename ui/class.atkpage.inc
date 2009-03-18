@@ -574,12 +574,12 @@
     /**
      * Render the complete page, including head and body.
      * @param String $title Title of the HTML page.
-     * @param boolean $flags Set to true to generate <body> tags. It is useful
-     *                      to set this to false only when rendering content
-     *                      that either already had its own <body></body>
-     *                      statement, or content that needs no body
-     *                      statements, like a frameset. (DEPRICATED !!)
-     * @param int $flags Flags for the render function
+     * @param bool|int $flags (bool) Set to true to generate <body> tags. It is useful
+     *                      	to set this to false only when rendering content
+     *                      	that either already had its own <body></body>
+     *                      	statement, or content that needs no body
+     *                      	statements, like a frameset. (DEPRICATED !!)
+     * 											  (int) Flags for the render function
      * @param string $extrabodyprops  Extra attributes to add to the <body> tag.
      * @param string $extra_header HTML code of extra headers to add to the head section
      * @return String The HTML page, including <html> and </html> tags.

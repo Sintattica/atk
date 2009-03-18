@@ -93,9 +93,9 @@
     /**
      * Makes a Join SQL query for Oracle
      *
-     * @param $table Table name
-     * @param $alias Alias for the table
-     * @param $condition Condition for the join
+     * @param string $table Table name
+     * @param string $alias Alias for the table
+     * @param string $condition Condition for the join
      * @param bool $outer Wether to use an outer (left) join or an inner join
      * @return atkQuery The query object (for fluent usage)
      */
@@ -135,7 +135,7 @@
 
     /**
      * Builds the SQL Select query
-     * @param $distinct distinct records?
+     * @param bool $distinct distinct records?
      * @return String SQL Query
      */
     function buildSelect($distinct = FALSE)
@@ -155,7 +155,7 @@
       * because we do joins, like in a select, but we don't really select the
       * fields.
       *
-      * @param $distinct distinct rows?
+      * @param bool $distinct distinct rows?
       *
       * @return String a SQL Select COUNT(*) Query
       */
@@ -170,7 +170,7 @@
     * have been added with addJoin are replaced with
     * generated aliases
     * bug #137
-    * @param $query query string
+    * @param string $query query string
     * @return String SQL query
     */
     function convertQuery($query)
@@ -186,10 +186,10 @@
       return $result;
     }
 
- /**
+   /**
     * Search patterns which are aliases and replace patterns
-    * @param $str to search
-    * @return $new str
+    * @param string $str to search
+    * @return string 
     */
     function replaceAliases($str)
     {
@@ -216,9 +216,9 @@
       return $str;
     }
 
-  /**
-    * Wrapper function to execute a query
-    */
+    /**
+     * Wrapper function to execute a query
+     */
     function executeUpdate()
     {
       if (!isset($this->m_db)) $this->m_db = &atkGetDb();
@@ -226,9 +226,9 @@
       return $this->m_db->query($query, 0, 0, $this->m_bind_vars);
     }
 
- /**
-    * Wrapper function to execute a query
-    */
+    /**
+     * Wrapper function to execute a query
+     */
     function executeInsert()
     {
       if (!isset($this->m_db)) $this->m_db = &atkGetDb();

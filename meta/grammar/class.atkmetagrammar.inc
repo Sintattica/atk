@@ -20,7 +20,7 @@
  *
  * The singularize and pluralize methods are inspired by the methods with
  * the same name in the Inflector module of the Ruby on Rails framework
- * (Copyright © 2004 David Heinemeier Hansson). The Ruby on Rails framework
+ * (Copyright ï¿½ 2004 David Heinemeier Hansson). The Ruby on Rails framework
  * can be found at http://www.rubyonrails.com
  *
  * @author Peter C. Verhage <peter@achievo.org>
@@ -66,8 +66,8 @@ class atkMetaGrammar
    * a rule matches the given word, the word, transformed using 
    * the replacement, is returned.
    *
-   * @param $word  word to be transformed
-   * @param $rules list of rules
+   * @param string $word  word to be transformed
+   * @param array $rules list of rules
    *
    * @return transformed word
    */
@@ -133,7 +133,7 @@ class atkMetaGrammar
   /**
    * Singularize the given word using the singular rules.
    *
-   * @param $word word to be singularized 
+   * @param string $word word to be singularized 
    *
    * @return singularized word
    */
@@ -148,7 +148,7 @@ class atkMetaGrammar
   /**
    * Pluralize the given word using the plural rules.
    *
-   * @param $word word to be pluralized
+   * @param string $word word to be pluralized
    *
    * @return pluralized word
    */
