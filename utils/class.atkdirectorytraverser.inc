@@ -170,7 +170,7 @@
     /**
      * Check whether a file is excluded or not
      *
-     * @param unknown_type $file
+     * @param string $file
      */
     function isExcluded($file)
     {

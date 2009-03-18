@@ -321,6 +321,12 @@
       return file_exists($file);
     }
 
+    /**
+     * Get the modifier functions for this node
+     *
+     * @param atkNode $node
+     * @return array Array with modifier function names
+     */
     function getModifierFunctions(&$node)
     {
       return array($node->m_type . "_modifier", str_replace(".", "_", $node->atknodetype()) . "_modifier");

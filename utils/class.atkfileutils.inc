@@ -153,6 +153,7 @@ class atkFileUtils
    * @static
    * @param string $dir the fullpath
    * @param octal  $privileges  octal number for the rights of the written
+   * @param bool $recursive 
    * @return bool returns true if the destination is written.
    */
   function mkdirRecursive($dir, $privileges=0777, $recursive=true)

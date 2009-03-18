@@ -30,6 +30,8 @@
 
     /**
      * Create a new stringparser
+     * 
+     * @param string $string The string to parse
      */
     function atkStringParser($string)
     {
@@ -38,8 +40,8 @@
 
     /**
      * Parse data into the string.
-     * @param array The data to parse in the string
-     * @param bool Wether or not to do a rawurlencode
+     * @param array $data The data to parse in the string
+     * @param bool $encode Wether or not to do a rawurlencode
      * @return String The parsed string
      */
     function parse($data, $encode=false)
@@ -83,6 +85,8 @@
 
     /**
      * Does the data contains everything needed to be parsed into the string?
+     * 
+     * @param array $data
      */
     function isComplete($data)
     {

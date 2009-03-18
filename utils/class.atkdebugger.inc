@@ -31,6 +31,11 @@
     var $m_redirectUrl = null;
     static $s_querycount = 0;
 
+    /**
+     * Get an instance of this class
+     *
+     * @return atkDebugger Instance of atkDebugger
+     */
     function &getInstance()
     {
       static $s_instance = NULL;
@@ -42,6 +47,10 @@
       return $s_instance;
     }
 
+    /**
+     * Constructor
+     *
+     */
     public function __construct()
     {
       $this->m_isconsole = (strpos($_SERVER['SCRIPT_NAME'], "debugger.php")!==false);
@@ -55,6 +64,12 @@
       }
     }
 
+    /**
+     * Add a debug statement
+     *
+     * @param string $txt The debug statement
+     * @return bool Indication if statement is added
+     */
     public function addStatement($txt)
     {
       if (function_exists('atkGetSessionManager') && atkGetSessionManager())
@@ -68,6 +83,12 @@
       return false;
     }
 
+    /**
+     * Add a query string to the debugger
+     *
+     * @param string $query
+     * @return bool Indication if query is added
+     */
     public function addQuery($query)
     {
       self::$s_querycount++;
@@ -91,6 +112,12 @@
       return false;
     }
 
+    /**
+     * Add a debug statement
+     *
+     * @param string $txt The debug statement
+     * @return bool Indication if statement is added
+     */
     protected function _addStatement($txt)
     {
       if (!$this->m_isconsole)
@@ -106,6 +133,12 @@
       return false;
     }
 
+    /**
+     * Add a query string to the debugger
+     *
+     * @param string $query
+     * @return bool Indication if query is added
+     */
     protected function _addQuery($query)
     {
       if (!$this->m_isconsole) // don't add queries executed by the console itself
@@ -121,6 +154,16 @@
       return false;
     }
 
+    /**
+     * Create the console link
+     *
+     * @param string $text The name of the link
+     * @param string $action The action
+     * @param array $params Array with parameters to add to the url
+     * @param bool $popup IS this a popup link?
+     * @param int $stackId The stack id
+     * @return string HTML code with the console link
+     */
     public function consoleLink($text, $action="", $params=array(), $popup=false, $stackId=NULL)
     {
       if ($stackId == NULL)
@@ -148,6 +191,12 @@
       return $res;
     }
 
+    /**
+     * Convert a params array to a querystring to add to the url
+     *
+     * @param array $params
+     * @return string
+     */
     public function urlParams($params)
     {
       if (count($params))
@@ -162,6 +211,11 @@
       return "";
     }
 
+    /**
+     * Render the console
+     *
+     * @return string The HTML code
+     */
     public function renderConsole()
     {
       $page = &atkinstance("atk.ui.atkpage");
@@ -183,11 +237,23 @@
       return $page->render('Console');
     }
 
+    /**
+     * Get the HTML code for the console controls
+     *
+     * @return string The HTML code
+     */
     public function consoleControls()
     {
       return '<div id="console"><table width="100%" border="0"><tr><td align="left">ATK Debug Console</td><td align="right">'.$this->consoleLink('Console index', '', array(), false, $_REQUEST['atkstackid']).' | <a href="javascript:window.close()">Close console</a></td></tr></table></div>';
     }
 
+    /**
+     * Get details for the query
+     *
+     * @param array $queries Array with queries
+     * @param int $id The index in the queries array we want the details from
+     * @return string The query details
+     */
     public function queryDetails($queries, $id)
     {
       $output = "<h1>Query</h1>";
@@ -218,6 +284,13 @@
       return $output;
     }
 
+    /**
+     * Get the statement details
+     *
+     * @param array $stmts Array with statements
+     * @param int $id The index in the statements array we want the details from
+     * @return string The statement details
+     */
     public function statementDetails($stmts, $id)
     {
       $output = "<h1>Debug Statement</h1>";
@@ -232,6 +305,14 @@
       return $output;
     }
 
+    /**
+     * Convert an array to a table
+     *
+     * @param array $result The array to convert
+     * @param bool $full All results?
+     * @param int $id
+     * @return string HTML table
+     */
     public function arrToTable($result, $full=true, $id="")
     {
       if (count($result))
@@ -257,6 +338,12 @@
       return "";
     }
 
+    /**
+     * Highlight a query
+     *
+     * @param string $query The query to highlight
+     * @return string The highlighted query
+     */
     public function highlightQuery($query)
     {
       $query = strtolower($query);
@@ -274,7 +361,13 @@
       return '<span class="query">'.nl2br($query).'</span>';
     }
 
-
+    /**
+     * Get debugger data
+     *
+     * @param bool $clean
+     * @param int $stackId
+     * @return array Array with data
+     */
     public function &getDebuggerData($clean=false, $stackId=NULL)
     {
       if ($stackId == NULL)
@@ -294,6 +387,12 @@
       return $data;
     }
 
+    /**
+     * Render query list
+     *
+     * @param array $queries
+     * @return string HTML code with the query list
+     */
     public function renderQueryList($queries)
     {
       $output = 'Number of queries performed: '.count($queries);
@@ -320,6 +419,12 @@
       }
     }
 
+    /**
+     * Render statement list
+     *
+     * @param array $statements
+     * @return string HTML code with the statement list
+     */
     public function renderStatementList($statements)
     {
       $output = 'Number of debug statements: '.count($statements);
@@ -355,6 +460,7 @@
     /**
      * Render debug block for the current debug information.
      *
+     * @param bool $expanded Display debugblock expanded?
      * @return string debug block string
      * @private
      */
@@ -386,6 +492,9 @@
 
     /**
      * Set redirect URL.
+     * 
+     * @param string $url The redirect url
+     * @param bool $force Force to set this redirect url
      */
     public function setRedirectUrl($url, $force=false)
     {
@@ -487,6 +596,11 @@
       return ((float)$usec + (float)$sec);
     }
 
+    /**
+     * Gets the elapsed time 
+     *
+     * @return string The elapsed time
+     */
     public static function elapsed()
     {
       global $g_startTime;

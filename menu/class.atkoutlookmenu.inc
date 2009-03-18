@@ -26,10 +26,20 @@
    */
   class atkOutlookMenu extends atkmenuinterface
   {
+    /**
+     * Constructor
+     *
+     * @return atkOutlookMenu
+     */
     function atkOutlookMenu()
     {
     }
 
+    /**
+     * Render the menu
+     *
+     * @return string The rendered menu
+     */
     function render()
     {
       global $g_menu,$ATK_VARS,$g_modules;
@@ -188,16 +198,31 @@
 
     }
 
+    /**
+     * Get the position of this menu
+     *
+     * @return int Left position
+     */
     function getPosition()
     {
       return MENU_LEFT;
     }
 
+    /**
+     * Is this menu scrollable?
+     *
+     * @return int Menu is not scrollable
+     */
     function getScrollable()
     {
       return MENU_UNSCROLLABLE;
     }
 
+    /**
+     * Is this menu multilevel?
+     *
+     * @return int Menu is not multilevel
+     */
 		function getMultilevel()
 		{
 			return MENU_NOMULTILEVEL;

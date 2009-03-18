@@ -288,6 +288,8 @@ class atkConsoleController
    * Executes the action with logging on the console. You can access this
    * method by using --debug as the console controller action followed by the
    * normal action name (or none if default) and parameters.
+   * 
+   * @param array $params
    */
   public function __debugAction($params)
   {

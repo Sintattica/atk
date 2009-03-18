@@ -246,8 +246,8 @@
 
     /**
      * Formats the identifiers in a '_keyvalue' way
-     * @param Array The identifiers to format
-     * @param Array The formatted identifiers so far
+     * @param Array $identifiers The identifiers to format
+     * @param Array $output The formatted identifiers so far
      * @return Array The formatted identifiers
      */
     function _formatIdentifiers($identifiers, &$output)

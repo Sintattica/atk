@@ -91,7 +91,7 @@
      * of the original array. If $copy is set to false
      * will return a reference to the internal array.
      *
-     * @param return a copy or the original array?
+     * @param bool $copy return a copy or the original array?
      *
      * @return array array
      */

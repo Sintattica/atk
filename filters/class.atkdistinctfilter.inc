@@ -41,8 +41,9 @@
     }
 
     /**
-    * add the group by statement to the query
+    * add the distinct statement to the query
     *
+    * @param atkQuery $query The SQL query object
     * @return void
     */
     function addToQuery(&$query)

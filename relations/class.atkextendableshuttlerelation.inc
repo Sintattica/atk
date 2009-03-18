@@ -37,6 +37,23 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
   protected $m_limit = null;
   protected $m_descriptor_tooltip_template = null;
 
+  /**
+   * Constructor
+   * @param String $name The name of the relation
+   * @param String $link The full name of the node that is used as
+   *                     intermediairy node. The intermediairy node is
+   *                     assumed to have 2 attributes that are named
+   *                     after the nodes at both ends of the relation.
+   *                     For example, if node 'project' has a M2M relation
+   *                     with 'activity', then the intermediairy node
+   *                     'project_activity' is assumed to have an attribute
+   *                     named 'project' and one that is named 'activity'.
+   *                     You can set your own keys by calling setLocalKey()
+   *                     and setRemoteKey()
+   * @param String $destination The full name of the node that is the other
+   *                            end of the relation.
+   * @param int $flags Flags for the relation.
+   */
   public function __construct($name, $link, $destination, $flags=0)
   {
     parent::__construct($name, $link, $destination, $flags);
@@ -44,6 +61,12 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     $this->m_controlsBySection[atkShuttleControl::SELECTED] = array();
   }
 
+  /**
+   * Add control
+   *
+   * @param atkShuttleControl $control
+   * @param string $section
+   */
   public function addControl($control, $section)
   {
     $control->setSection($section);
@@ -106,7 +129,16 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
 
     return $res;
   }
-
+  
+  /**
+   * Render select boxes
+   *
+   * @param string $side
+   * @param array $record
+   * @param string $mode
+   * @param string $prefix
+   * @return string piece of html code
+   */
   private function renderSelectBoxes($side,$record,$mode,$prefix)
   {
     $this->loadFieldData($record, $mode);
@@ -129,11 +161,23 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     return $this->_renderSelect($name,$rs,$opp,$prefix,$sel);
   }
   
+  /**
+   * Get selected name
+   *
+   * @param string $prefix
+   * @return string The name
+   */
   public function getSelectedSelectName($prefix)
   {
     return $this->getHtmlId($prefix).'[cselected][]['.$this->getRemoteKey().']';
   }
   
+  /**
+   * Get available name
+   *
+   * @param string $prefix
+   * @return string The name
+   */
   public function getAvailableSelectName($prefix)
   {
     return $this->getHtmlId($prefix)."[available]";
@@ -179,7 +223,17 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     return $res;
   }
 
-  public function edit($record, $fieldprefix, $mode)
+  /**
+   * Returns a piece of html code that can be used in a form to edit this
+   * attribute's value.
+   *
+   * @param array $record The record that holds the value for this attribute.
+   * @param String $fieldprefix The fieldprefix to put in front of the name
+   *                            of any html form element for this attribute.
+   * @param String $mode The mode we're in ('add' or 'edit')
+   * @return String A piece of htmlcode for editing this attribute
+   */
+  public function edit($record, $fieldprefix="", $mode="")
   {
     // Add onchange handler
     $mode == "add" ? "add" : "edit";
@@ -276,6 +330,13 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     return $result;
   }
 
+  /**
+   * Load the records for this relation
+   *
+   * @param atkDb $notused The database object
+   * @param array $record The record
+   * @return array Array with records
+   */
   public function load($notused, $record)
   {
     $res = parent::load($notused, $record);
@@ -283,6 +344,12 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     return $ret;
   }
 
+  /**
+   * Fetch value for this relation based on the postvars
+   *
+   * @param array $postvars
+   * @return mixed The value of this relation
+   */
   public function fetchValue($postvars)
   {
     $ret = array();
@@ -298,6 +365,14 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     return $postvars[$this->fieldName()];
   }
 
+  /**
+   * Store the value of this relation
+   *
+   * @param mixed $notused
+   * @param array $record
+   * @param string $mode
+   * @return bool Did the store went successfull?
+   */
   public function store($notused, &$record, $mode)
   {
     $rec = $record[$this->fieldName()];
@@ -307,6 +382,13 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     return $res;
   }
 
+  /**
+   * Display the value of this relation
+   *
+   * @param array $record
+   * @param string $mode
+   * @return string piece of html code
+   */
   public function display($record, $mode="")
   {
     $record[$this->fieldName()] = $record[$this->fieldName()]['selected'];
@@ -357,6 +439,11 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     return $result;
   }
   
+  /**
+   * Set the template for the descriptor tooltip
+   *
+   * @param string $template
+   */
   public function setDescriptorTooltipTemplate($template)
   { 
     $this->m_descriptor_tooltip_template = $template;
@@ -395,6 +482,8 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
    *
    * @param Array $record The record
    * @param String $mode The current mode.
+   * @param string $availableFilter
+   * @param string $selectedFilter
    */
   private function loadFieldData($record, $mode, $availableFilter='', $selectedFilter='')
   {        
@@ -497,6 +586,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
    * Returns the available field count.
    *
    * @param array $record record
+   * @param string $mode The mode we're in
    * 
    * @return int available field count
    */  

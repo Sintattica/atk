@@ -255,6 +255,12 @@
      * Validation method. Empty implementation. Derived classes may override
      * this function.
      * @abstract
+     * 
+     * @param array $record The record that holds the value for this
+     *                      attribute. If an error occurs, the error will
+     *                      be stored in the 'atkerror' field of the record.
+     * @param String $mode The mode for which should be validated ("add" or
+     *                     "update")
      */
     function validate(&$record, $mode)
     {
@@ -321,6 +327,10 @@
     /**
      * Returns the condition (SQL) that should be used when we want to join a relation's
      * owner node with the parent node.
+     * 
+     * @param atkQuery $query The query object
+     * @param string $tablename The tablename
+     * @param string $fieldalias
      * @return String SQL string for joining the owner with the destination.
      *                Defaults to false.
      */

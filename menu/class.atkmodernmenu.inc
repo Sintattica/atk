@@ -29,11 +29,21 @@
    */
   class atkModernMenu extends atkPlainMenu
   {
+    /**
+     * Constructor
+     *
+     * @return atkModernMenu
+     */
     function atkModernMenu()
     {
       $this->m_height = "130";
     }
 
+    /**
+     * Render the menu
+     *
+     * @return unknown
+     */
     function render()
     {
       $page = &atkinstance('atk.ui.atkpage');
@@ -50,6 +60,11 @@
       }
     }
 
+    /**
+     * Get the menu
+     *
+     * @return string The menu
+     */
     function getMenu()
     {
       $theme = &atkinstance("atk.ui.atktheme");
@@ -85,6 +100,13 @@
       }
     }
 
+    /**
+     * Get the menu top name
+     *
+     * @param array $menuitems
+     * @param string $menutop
+     * @return string The name of the menu top item
+     */
     function getMenuTopName($menuitems,$menutop)
     {
       foreach ($menuitems as $menuitem)
@@ -93,6 +115,13 @@
       }
     }
 
+    /**
+     * Get menuitems
+     *
+     * @param array $menu
+     * @param string $menutop
+     * @return array Array with menu items
+     */
     function getMenuItems($menu, $menutop)
     {
       $menuitems = array();
@@ -130,6 +159,12 @@
       return $menuitems;
     }
 
+    /**
+     * Add submenu for menu item
+     *
+     * @param array $menu
+     * @param array $menuitem
+     */
     function addSubMenuForMenuItem($menu,&$menuitem)
     {
       // submenu
@@ -169,6 +204,12 @@
       }
     }
 
+    /**
+     * Get the header
+     *
+     * @param string $atkmenutop
+     * @return string Empty string
+     */
     function getHeader($atkmenutop)
     {
       return '';

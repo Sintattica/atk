@@ -39,6 +39,11 @@
     var $m_zipmode = "auto"; // can be auto, internal or infozip
     var $m_testok = false;
 
+    /**
+     * Constructor
+     *
+     * @return atkZip
+     */
     function atkZip()
     {
     	$this->m_zipmode = atkconfig("zipmode", "auto");
@@ -48,6 +53,13 @@
     		atkError("atkZip: Error while testing");
     }
 
+    /**
+     * Get the (un)zip command
+     *
+     * @param int $type The type of zip (ATK_ZIP or ATK_UNZIP)
+     * @param string $params The parameters for zippping or unzipping
+     * @return string The command to execute
+     */
     function getInfozipCommand($type, $params)
     {
     	if ($type==ATKZIP_ZIP) $command = $this->m_zip_bin;
@@ -56,6 +68,13 @@
     	return $command;
     }
 
+    /**
+     * Run the (un)zip command
+     *
+     * @param int $type The type of zip (ATK_ZIP or ATK_UNZIP)
+     * @param string $params The parameters for zipping or unzipping
+     * @return string The return code
+     */
     function runInfozipCommand($type, $params)
     {
     	$command = $this->getInfozipCommand($type, $params);
@@ -68,6 +87,13 @@
     	return $returncode;
     }
 
+    /**
+     * Get the error message based on the errorcode
+     *
+     * @param int $type The type of zip (ATK_ZIP or ATK_UNZIP)
+     * @param int $errorcode The errorcode
+     * @return string The errormessage
+     */
     function getInfozipError($type, $errorcode)
     {
       if ($type == ATKZIP_UNZIP)
@@ -116,6 +142,11 @@
       return atkArrayNvl($codes, $errorcode, "Unknown error code returned by Infozip");
     }
 
+    /**
+     * Test if we can zip/unzip
+     *
+     * @return bool True if test was successfull or false if not
+     */
     function test()
     {
     	if ($this->m_testok)
@@ -165,6 +196,14 @@
   		return false;
     }
 
+    /**
+     * Extract a zipfile
+     *
+     * @param string $archive The zip file
+     * @param string $destination The destination folder
+     * @param array $entries The entries
+     * @return bool True if extract went successfull or false if not
+     */
     function extract($archive, $destination, $entries=null)
     {
       if (!$this->test())

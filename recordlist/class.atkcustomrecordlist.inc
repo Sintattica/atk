@@ -51,7 +51,7 @@
      * @param Boolean $titlerow   Should titlerow be rendered or not
      * @param Boolean $decode     Should data be decoded or not (for exports)
      * @param String $fsep        String to use between fields
-     * @param String $lfreplace   String for replacing line feeds in recordset field values (null = do not replace)
+     * @param String $rfeplace   String for replacing line feeds in recordset field values (null = do not replace)
     */
     function render(&$node, $recordset, $sol, $sof, $eof, $eol, $type="0", $compression="", $suppressList="",
                     $outputparams=array(), $mode="list", $titlerow=true, $decode=false, $fsep="", $rfeplace=null)
@@ -200,6 +200,12 @@
       }
     }
     
+    /**
+     * Is this attribute hidden?
+     *
+     * @param atkAttribute $attribute
+     * @return bool Boolean to indicate if attribute is hidden or not
+     */
     protected function isHidden(atkAttribute $attribute)
     {
       if ($attribute->hasFlag(AF_HIDE)) return true;
@@ -208,6 +214,11 @@
       return false;
     }
 
+    /**
+     * Set exporting csv to file
+     *
+     * @param bool $export
+     */
     function setExportingCSVToFile($export=true)
     {
     	if (is_bool($export)) $this->m_exportcsv = $export;

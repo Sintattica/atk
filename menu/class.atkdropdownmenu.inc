@@ -26,6 +26,10 @@
    */
   class atkDropdownMenu extends atkPlainMenu
   {
+    /**
+	   * Render the menu
+	   * @return String HTML fragment containing the menu.
+	   */
     function render()
     {
       $page = &atkinstance("atk.ui.atkpage");
@@ -35,7 +39,18 @@
       return $page->render("Menu", true);
     }
 
+    /**
+     * Get the menu
+     *
+     * @return string The menu
+     */
     function getMenu() { return $this->load(); }
+    
+    /**
+     * Load the menu
+     *
+     * @return string The menu
+     */
     function load()
     {
       global $ATK_VARS,$g_menu;
@@ -73,6 +88,13 @@
       return $menu;
     }
 
+    /**
+     * Get a menu item
+     *
+     * @param string $menuitem
+     * @param string $indentation
+     * @return string The menu item
+     */
     function getMenuItem($menuitem, $indentation="")
     {
       global $g_menu;
@@ -98,6 +120,14 @@
       return $menu;
     }
 
+    /**
+     * Get the HTML for a menu item
+     *
+     * @param string $menuitem
+     * @param string $submenu
+     * @param string $submenuname
+     * @return string The HTML for a menu item
+     */
     function getItemHtml($menuitem, $submenu="",$submenuname='')
     {
       $delimiter = atkconfig("menu_delimiter");

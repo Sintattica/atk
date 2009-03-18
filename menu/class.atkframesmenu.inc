@@ -25,6 +25,11 @@
   atkimport("atk.menu.atkplainmenu");
   class atkFramesMenu extends atkPlainMenu
   {
+    /**
+     * Render the menu
+     *
+     * @return string The rendered menu
+     */
     function render()
     {
        global $ATK_VARS,$g_menu, $g_menu_parent;

@@ -31,7 +31,7 @@
     /**
      * Get the wizard action
      *
-     * @param array/string $wizardAction The wizard action
+     * @param array|string $wizardAction The wizard action
      * @return String the wizard action
      */
     function getWizardAction($wizardAction)

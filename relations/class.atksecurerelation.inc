@@ -56,11 +56,13 @@
      *                            notation)
      * @param string $linktable   The table we link to
      * @param string $linkfield   The field we link to
+     * @param string $linkbackfield  
      * @param int $keylength      The length of the encryption key
      * @param string $refKey=""   In master mode, this specifies the foreign 
      *                            key field from the destination node that 
      *                            points to the master record. In slave mode, 
      *                            this parameter should be empty.
+     * @param string $encryption  The encryption to use
      * @param int $flags          Attribute flags that influence this 
      *                            attributes' behavior.     
      */
@@ -76,11 +78,28 @@
       $this->m_linkbackfield = $linkbackfield;
     }
     
+    /**
+     * Set the name of the cache field
+     *
+     * @param string $fieldname The cache fieldname
+     */
     function setCacheField($fieldname="cache")
     {
       $this->m_cachefield = $fieldname;
     }
   
+    /**
+     * Adds the attribute / field to the list header. This includes the column name and search field.
+     *
+     * Framework method. It should not be necessary to call this method directly.
+     *
+     * @param String $action the action that is being performed on the node
+     * @param array  $arr reference to the the recordlist array
+     * @param String $fieldprefix the fieldprefix
+     * @param int    $flags the recordlist flags
+     * @param array  $atksearch the current ATK search list (if not empty)
+     * @param String $atkorderby the current ATK orderby string (if not empty)
+     */
     function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
     {
       if ($this->hasFlag(AF_ONETOONE_INTEGRATE))
@@ -98,13 +117,13 @@
       parent::addToListArrayHeader($action, $arr, $fieldprefix, $flags, $atksearch, $atkorderby);
     }
     
-    
     /**
      * Gets the password for the link
      * for more security the administrator gets a random password. You have to capture in your application that
      * the administrator is only able to insert the first record in this relation and make also a useracount with it.
      * @param string $linktable the table where we find the linkpass
      * @param string $linkfield the field where we find the encrypted linkpass
+     * @param string $encryption The encryption to use
      * @return string           the password for the link
      */
     function getLinkPassword($linktable,$linkfield,$encryption="")
@@ -152,6 +171,22 @@
      * with the reference key of the other table. 
      * So we encrypt the reference key before we call the method.
      * For more documentation see the atkOneToOneRelation
+     * 
+     * @param atkQuery $query The SQL query object
+     * @param String $tablename The name of the table of this attribute
+     * @param String $fieldaliasprefix Prefix to use in front of the alias
+     *                                 in the query.
+     * @param Array $rec The record that contains the value of this attribute.
+     * @param int $level Recursion level if relations point to eachother, an
+     *                   endless loop could occur if they keep loading
+     *                   eachothers data. The $level is used to detect this
+     *                   loop. If overriden in a derived class, any subcall to
+     *                   an addToQuery method should pass the $level+1.
+     * @param String $mode Indicates what kind of query is being processing:
+     *                     This can be any action performed on a node (edit,
+     *                     add, etc) Mind you that "add" and "update" are the
+     *                     actions that store something in the database,
+     *                     whereas the rest are probably select queries.
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level=0, $mode="")
     {
@@ -187,6 +222,11 @@
      * with the the id from de reference key in childnode. 
      * So we decrypt the reference key before we call the method. 
      * For more documentation see the atkOneToOneRelation
+     * 
+     * @param atkDb $db The database object
+     * @param array $record The record
+     * @param string $mode The mode we're in ("add", "edit", "copy")
+     * @return array The loaded records
      */
     function load(&$db, $record, $mode)
     {                 
@@ -289,6 +329,13 @@
       }
     }
     
+    /**
+     * Decrypt the field
+     *
+     * @param array $record
+     * @param array $field
+     * @return string The decrypted value
+     */
     function decrypt($record, $field)
     { 
       global $g_encryption;
@@ -372,6 +419,16 @@
       return $condition;
     }
     
+    /**
+     * Determine the load type of this attribute.
+     *
+     * @param String $mode The type of load (view,admin,edit etc)
+     * @param bool $searching Is this a search?
+     *
+     * @return int Bitmask containing information about load requirements.
+     *             POSTLOAD|ADDTOQUERY when AF_ONETOONE_LAZY is set.
+     *             ADDTOQUERY when AF_ONETOONE_LAZY is not set.
+     */
     function loadType($mode, $searching=false)
     {
       if ($searching) 
@@ -385,11 +442,38 @@
       }
     }    
     
-    function searchCondition(&$query, $table, $value, $searchmode)
+    /**
+     * Creates a search condition for a given search value, and adds it to the
+     * query that will be used for performing the actual search.
+     *
+     * @param atkQuery $query The query to which the condition will be added.
+     * @param String $table The name of the table in which this attribute
+     *                      is stored
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param String $searchmode The searchmode to use. This can be any one
+     *                           of the supported modes, as returned by this
+     *                           attribute's getSearchModes() method.
+     * @param string $fieldaliasprefix optional prefix for the fieldalias in the table
+     */
+    function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix='')
     {
       //dummy implementation, we handle our own search in the destination node.
     }
     
+    /**
+     * Creates a searchcondition for the field,
+     * was once part of searchCondition, however,
+     * searchcondition() also immediately adds the search condition.
+     *
+     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param String $table       The name of the table in which this attribute
+     *                              is stored
+     * @param mixed $value        The value the user has entered in the searchbox
+     * @param String $searchmode  The searchmode to use. This can be any one
+     *                              of the supported modes, as returned by this
+     *                              attribute's getSearchModes() method.
+     * @return String The searchcondition to use.
+     */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       // Off course, the secure relation has to have a special search condition
@@ -455,10 +539,5 @@
       if (!empty($destresults) && $table)
         return $table.".".$this->m_ownerInstance->primaryKeyField()." IN (".implode(",",$destresults).")";
     }
-    
-//    function getJoinCondition(&$query, $tablename="",$fieldalias="")
-//    {
-//      // Dummy implementation... we can't join a secured relation
-//    }
   }
 ?>

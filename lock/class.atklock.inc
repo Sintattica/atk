@@ -76,8 +76,9 @@
      * Locks the record with the given primary key / selector. If the
      * record is already locked the method will fail!
      *
-     * @param $selector the ATK primary key / selector
-     * @param $table    the (unique) table name
+     * @param string $selector the ATK primary key / selector
+     * @param string $table    the (unique) table name
+     * @param string $mode 		 mode of the lock (self::EXCLUSIVE or self::SHARED)
      *
      * @return success / failure of operation
      */

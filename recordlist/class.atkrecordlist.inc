@@ -47,6 +47,7 @@
 
     /**
      * @access private
+     * @param atkNode $node
      */
     function setNode(&$node)
     {
@@ -56,6 +57,8 @@
     /**
      * Sets the action session status for actions in the recordlist.
      * (Defaults to SESSION_NESTED).
+     * 
+     * @param int $sessionStatus The session status (one of the SESSION_* constants)
      */
     function setActionSessionStatus($sessionStatus)
     {
@@ -64,6 +67,8 @@
 
     /**
      * Make the recordlist use a different masternode than the node than it is rendering.
+     * 
+     * @param atkNode $masternode 
      */
     function setMasterNode(&$masternode)
     {
@@ -73,7 +78,7 @@
     /**
      * Converts the given node flags to recordlist flags where possible.
      *
-     * @param Integer $flags
+     * @param int $flags
      * @static
      */
     function convertFlags($flags)
@@ -87,6 +92,19 @@
       return $result;
     }
 
+    /**
+     * Render the recordlist
+     *
+     * @param atkNode $node         the node
+     * @param Array   $recordset    the list of records
+     * @param Array   $actions      the default actions array
+     * @param Integer $flags        recordlist flags (see the top of this file)
+     * @param Array   $suppressList fields we don't display
+     * @param String  $formName     if embedded the form name in which we are embedded
+     * @param Array   $navigation   Navigation links
+     * @param String  $embedprefix  The prefix for embeded fields
+     * @return String The rendered recordlist
+     */
     function render(&$node, $recordset, $actions, $flags=0, $suppressList="", $formName="", $navigation=array(),$embedprefix="")
     {
         $data = $this->getRecordlistData($node, $recordset, $actions, $flags, $suppressList, $formName, $navigation,$embedprefix);
@@ -110,6 +128,7 @@
 
     /**
      * Get records for a recordlist without actually rendering the recordlist.
+     * @param atkNode $node         the node
      * @param Array   $recordset    the list of records
      * @param Array   $actions      the default actions array
      * @param Integer $flags        recordlist flags (see the top of this file)
@@ -651,6 +670,11 @@
       return $this->m_hasActionColumn;
     }
 
+    /**
+     * Get custom mra HTML code
+     *
+     * @return string The custom HTML
+     */
     function getCustomMraHtml()
     {
       if (method_exists($this->m_node, "getcustommrahtml"))
@@ -788,12 +812,22 @@
       return $result;
     }
 
+    /**
+     * Get the masternode
+     *
+     * @return atkNode The master node
+     */
     function getMasterNode()
     {
       if (is_object($this->m_masternode)) return $this->m_masternode;
       return $this->m_node; // treat rendered node as master
     }
 
+    /**
+     * Get the nodetype of the master node
+     *
+     * @return string Modulename.nodename of the master node
+     */
     function getMasterNodeType()
     {
       $node = &$this->getMasterNode();

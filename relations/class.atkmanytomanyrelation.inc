@@ -77,6 +77,7 @@
      *
      * @param array  $record
      * @param string $mode
+     * @param bool $force
      * 
      * @return array
      */
@@ -271,7 +272,7 @@
      * the attribute(s) of the owner instance which map to the local key
      * of the link node.
      *
-     * @param unknown_type $ownerfields
+     * @param array $ownerfields
      */
     public function setOwnerFields($ownerfields)
     {
@@ -333,7 +334,13 @@
 
     /**
      * Returns a displayable string for this value.
-     * @param $record
+     * 
+     * @param array $record The record that holds the value for this attribute
+     * @param String $mode The display mode ("view" for viewpages, or "list"
+     *                     for displaying in recordlists, "edit" for
+     *                     displaying in editscreens, "add" for displaying in
+     *                     add screens. "csv" for csv files. Applications can
+     *                     use additional modes.
      * @return a displayable string for this value
      */
     function display($record, $mode="")
@@ -370,13 +377,34 @@
 
     /**
      * Dummy function
+     * 
+     * @param array $record The record that holds the value for this attribute.
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
+     * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record="", $fieldprefix="", $mode="")
     {
     }
 
     /**
-     *Dummy function (we don't add ourselves to the query)
+     * Dummy function (we don't add ourselves to the query)
+     * @param atkQuery $query The SQL query object
+     * @param String $tablename The name of the table of this attribute
+     * @param String $fieldaliasprefix Prefix to use in front of the alias
+     *                                 in the query.
+     * @param Array $rec The record that contains the value of this attribute.
+     * @param int $level Recursion level if relations point to eachother, an
+     *                   endless loop could occur if they keep loading
+     *                   eachothers data. The $level is used to detect this
+     *                   loop. If overriden in a derived class, any subcall to
+     *                   an addToQuery method should pass the $level+1.
+     * @param String $mode Indicates what kind of query is being processing:
+     *                     This can be any action performed on a node (edit,
+     *                     add, etc) Mind you that "add" and "update" are the
+     *                     actions that store something in the database,
+     *                     whereas the rest are probably select queries.
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec, $level, $mode)
     {
@@ -399,6 +427,12 @@
       return array();
     }
 
+    /**
+     * Get where clause for loading the record
+     *
+     * @param array $record The record
+     * @return string The where clause
+     */
     function _getLoadWhereClause($record)
     {
       $whereelems = array();
@@ -425,6 +459,8 @@
 
     /**
      * delete relational records..
+     * 
+     * @param array $record The record
      */
     function delete($record)
     {
@@ -442,6 +478,7 @@
      * Stores the values in the database
      * @param $notused Not used
      * @param $record Current record
+     * @param $mode
      */
     function store($notused, $record, $mode)
     {
@@ -535,13 +572,14 @@
 
     /**
      * Check if the attribute is empty
+     * 
+     * @param array $postvars
      * @return true if it's empty
      */
     function isEmpty($postvars)
     {
       return (!is_array($postvars[$this->fieldName()]) || count($postvars[$this->fieldName()])==0);
     }
-
 
     /**
      * Returns a piece of html code for hiding this attribute in an HTML form,
@@ -579,10 +617,18 @@
 
     /**
      * Returns a piece of html code that can be used in a form to search
-     * @param $record Record
-     * @param $size Size of the editbox
-     * @param $maxsize Maxsize of the editbox
-     * @return Piece of html code that can  be used in a form to edit this
+     * 
+     * @param array $record Array with values
+     * @param boolean $extended if set to false, a simple search input is
+     *                          returned for use in the searchbar of the
+     *                          recordlist. If set to true, a more extended
+     *                          search may be returned for the 'extended'
+     *                          search page. The atkAttribute does not
+     *                          make a difference for $extended is true, but
+     *                          derived attributes may reimplement this.
+     * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
+     *
+     * @return string Piece of html code
      */
     function search($record="", $extended=false, $fieldprefix="")
     {
@@ -614,9 +660,15 @@
 
     /**
      * Creates an search condition for a given search value
-     * @param $table the table name
-     * @param $value the search value
-     * @return a piece of the SQL where clause
+     * 
+     * @param atkQuery $query The query to which the condition will be added.
+     * @param String $table The name of the table in which this attribute
+     *                      is stored
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param String $searchmode The searchmode to use. This can be any one
+     *                           of the supported modes, as returned by this
+     *                           attribute's getSearchModes() method.
+     * @param string $fieldaliasprefix optional prefix for the fieldalias in the table
      */
     function searchCondition(&$query, $table, $value, $searchmode)
     {

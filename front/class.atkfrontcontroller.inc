@@ -71,7 +71,6 @@
      * Dispatch request. Find the right controller, let it handle the request
      * and return it's result.
      *
-     * @param string $uri controller request uri
      * @param array $vars custom variables, will be merged with the request variables
      *                    and overwrite existing (request) variables with the same name
      *                    unless $merge is set to false
@@ -205,6 +204,8 @@
      *
      * @param string $module module name
      * @param string $name   controller name
+     * @param string $action
+     * @param atkFrontController $parent 
      */
     protected function __construct($module, $name, $action, $parent = NULL)
     {
@@ -313,6 +314,8 @@
      * Add response header. (Will only be outputted when
      * renderPartial or renderContent is called for the
      * root controller).
+     * 
+     * @param string $header The header to add
      */
     protected function addHeader($header)
     {
@@ -639,6 +642,8 @@
 
     /**
      * Is template variable set?
+     * 
+     * @param string $name 
      */
     public function __isset($name)
     {
@@ -888,6 +893,7 @@
      * @param string $controller controller name (uses current if empty)
      * @param string $action action name (uses current if empty and controller isn't changed, uses index if empty and other controller)
      * @param array $vars request vars
+     * @param bool $force Force redirect?
      * @return string url
      */
     protected function redirect($controller=NULL, $action=NULL, $vars=array(), $force=FALSE)
@@ -1097,6 +1103,7 @@
      * example: getFileForTemplate('tekno'): module/controller/tekno.tpl
      *
      * @param string $template
+     * @param array $vars
      * @param bool   $partial
      * @return string Filename for the template
      */

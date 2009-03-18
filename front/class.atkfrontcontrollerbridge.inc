@@ -96,6 +96,11 @@
       atkinstance('atk.ui.atkpage')->register_scriptcode($code);
     }
 
+    /**
+     * Get the application root
+     *
+     * @return string The path to the application root
+     */
     public function getApplicationRoot()
     {
       return atkconfig('application_dir');

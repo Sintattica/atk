@@ -87,10 +87,12 @@
       return $this->m_initialValue;
     }
     
-    
     /**
      * Return a piece of html code to edit the attribute
-     * @param $record Current record
+     * @param array $record The record that holds the value for this attribute.
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
      * @return String piece of html code
      */
     function edit($record, $fieldprefix, $mode)
@@ -175,6 +177,7 @@
      * @param array $recordset The list of records to render in the control
      * @param int $width The width of the control in pixels
      * @param String $opposite The name of the list control connected to this list control for shuttle actions
+     * @param String $fieldname The fieldname
      * @return String piece of html code
      */
     function _renderSelect($name, $recordset, $width, $opposite, $fieldname)

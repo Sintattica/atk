@@ -32,7 +32,18 @@ class atkMetaOneToOneRelation extends atkOneToOneRelation
   private $m_variants;
   
   /**
-   * Default constructor.    
+   * Default constructor. 
+   * 
+   * @param String $name The unique name of the attribute. In slave mode,
+   *                     this corresponds to the foreign key field in the
+   *                     database table.  (The name is also used as the section 
+   *                     heading.)
+   * @param String $destination the destination node (in module.nodename
+   *                            notation)
+   * @param string $template The descriptor template
+   * @param array $options Array with options 
+   * @param int $flags Attribute flags that influence this attributes'
+   *                   behavior.   
    */
   public function __construct($name, $destination, $template, $options, $flags=0)
   {

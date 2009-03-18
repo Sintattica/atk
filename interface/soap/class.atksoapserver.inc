@@ -32,18 +32,34 @@
   {
   	private $m_server = NULL;
   	
+  	/**
+  	 * Constructor
+  	 *
+  	 */
   	public function __construct()
   	{
   	  $this->m_server = new SoapServer(null,array("uri"=>"http://".$_SERVER['HTTP_HOST']."/atkdemo/"));
   	  $this->m_server->setObject($this);
   	}
   	
+  	/**
+  	 * Handle request
+  	 *
+  	 * @param string $request
+  	 * @return String
+  	 */
   	public function handleRequest($request)
   	{
   	   return "Hello Soap World";
   	   
   	}
   	
+  	/**
+  	 * Call the soap function
+  	 *
+  	 * @param string $method
+  	 * @param array $args
+  	 */
   	public function __call($method, $args)
   	{
   	  atkdebug("Function $method called with args: ".var_export($args, true));

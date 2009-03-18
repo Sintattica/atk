@@ -58,6 +58,7 @@
      * @param string $tpl_file Template file to parse
      * @param mixed $tpl_vars Array of template variables to merge into the template or null if you want to use the template vars set by calling Assign (which is default behaviour).
      * @param string $content_file default content.xml (open office), or word/document.xml for .docx
+     * @return bool Indication if parsing was succesfull
      */
     function _parse($tpl_file, $tpl_vars = null, $content_file="content.xml")
     {
@@ -182,6 +183,8 @@
     /**
      * Add predefined text-styles to xml file
      * And replace html style tags by xml style-tags
+     * 
+     * @param string $inputString
      */
     function addAndApplyStyles($inputString)
     {
@@ -196,6 +199,12 @@
       return $inputString;
     }
 
+    /**
+     * Add predefined styles
+     *
+     * @param string $inputString
+     * @return string The inputstring including the predefined styles
+     */
     function addPredefinedStyles($inputString)
     {
       // Add predefined styles to xml-file
@@ -210,6 +219,12 @@
       return $inputString;
     }
 
+    /**
+     * Convert firefox-html tags to xml tags
+     *
+     * @param string $inputString
+     * @return string The converted inputstring
+     */
     function convertFirefoxHtmlToXML($inputString)
     {
       /*****************************************
@@ -262,6 +277,12 @@
       return $inputString;
     }
 
+    /**
+     * Convert internet explorer-html tags to xml tags
+     *
+     * @param string $inputString
+     * @return string The converted inputstring
+     */
     function convertIEHtmlToXML($inputString)
     {
       /***************************************************
@@ -295,6 +316,12 @@
       return $inputString;
     }
     
+    /**
+     * Convert general-html tags to xml tags (same for IE and Firefox)
+     *
+     * @param string $inputString
+     * @return string The converted inputstring
+     */
     function convertGeneralHtmlToXML($inputString)
     {
       /**************************************************************

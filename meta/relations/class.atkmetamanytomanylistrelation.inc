@@ -33,7 +33,24 @@ class atkMetaManyToManyListRelation extends atkManyToManyListRelation
   private $m_remoteVariants = null;    
   
   /**
-   * Default constructor.    
+   * Default constructor
+   *     
+   * @param String $name The name of the relation
+   * @param String $destination The full name of the node that is the other
+   *                            end of the relation.
+   * @param String $through The full name of the node that is used as
+   *                     intermediairy node. The intermediairy node is
+   *                     assumed to have 2 attributes that are named
+   *                     after the nodes at both ends of the relation.
+   *                     For example, if node 'project' has a M2M relation
+   *                     with 'activity', then the intermediairy node
+   *                     'project_activity' is assumed to have an attribute
+   *                     named 'project' and one that is named 'activity'.
+   *                     You can set your own keys by calling setLocalKey()
+   *                     and setRemoteKey()
+   * @param string $template The descriptor template
+   * @param array $options Array with options
+   * @param int $flags Flags for the relation.
    */
   public function __construct($name, $destination, $through, $template, $options, $flags=0)
   {

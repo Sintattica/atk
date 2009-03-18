@@ -40,7 +40,10 @@
 
     /**
      * Return a piece of html code to edit the attribute
-     * @param $record Current record
+     * @param array $record Current record
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
      * @return String piece of html code
      */
     function edit($record="", $fieldprefix="", $mode="")
@@ -118,6 +121,11 @@
       return $result;
     }
 
+    /**
+     * Set the number of columns
+     *
+     * @param int $cols
+     */
     function setCols($cols)
     {
       $this->m_cols = $cols;

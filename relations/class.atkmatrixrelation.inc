@@ -40,19 +40,17 @@
    var $m_destination2;
    var $m_fk2;
 
-/**
+   /**
     * Constructor
-    * @param $name                 matrix table
-    * @param $name1               row field name
-    * @param $destination1     row table
-    * @param $fk1                      forenkey in row table
-    * @param $name2               colum field name
+    * @param $name            Name of the matrix table
+    * @param $name1           row field name
+    * @param $destination1    row table
+    * @param $fk1             foreignkey in row table
+    * @param $name2           colum field name
     * @param $destination2    colum table
-     * @param $fk2                     forenkey in colum table
-    * @param $flags                  AF_ACYCLIC if input must be acyclic
+    * @param $fk2             foreignkey in colum table
+    * @param $flags           AF_MATRIX_ACYCLIC if input must be acyclic
     */
-
-    // 1 = row , 2 = col
     function atkMatrixRelation($name, $name1, $destination1, $fk1, $name2, $destination2, $fk2, $flags=0)
     {
       $this->atkRelation($name, $destination1, $flags);
@@ -65,13 +63,22 @@
       $this->m_fk2 = $fk2;
     }
 
-
+    /**
+     * Empty display function
+     *
+     * @param array $record
+     */
     function display($record)
     {
-
     }
 
-
+    /**
+     * Load the values of this relation
+     *
+     * @param atkDb $db The database object
+     * @param array $record
+     * @return array Array with values
+     */
     function load($db, $record)
     {
 
@@ -87,8 +94,17 @@
       return $checkedArray;
     }
 
-
-    function edit($record="")
+    /**
+     * Returns a piece of html code that can be used in a form to edit this
+     * attribute's value.
+     *
+     * @param array $record The record that holds the value for this attribute.
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
+     * @return String A piece of htmlcode for editing this attribute
+     */
+    function edit($record="", $fieldprefix="", $mode="")
     {
 
       $checkedArray = $record[$this->fieldName()];
@@ -192,10 +208,15 @@
       }
 
       return $form;
-  }
+    }
 
-
-    // check if the input is acyclic when flag is set
+    /**
+     * Validate this relation
+     * @todo Check if the input is acyclic when flag is set
+     *
+     * @param array $record The record that holds the value for this relation
+     * @param string $mode The mode we're in
+     */
     function validate(&$record, $mode)
     {
       if ($this->hasFlag(AF_MATRIX_ACYCLIC))
@@ -204,13 +225,23 @@
       }
     }
 
-
+    /**
+     * Check if the relation is empty
+     *
+     * @param array $notused
+     * @return bool false
+     */
     function isEmpty($notused)
     {
       return false;
     }
 
-
+    /**
+     * Delete the records before storage
+     *
+     * @param atkDb $db The database object
+     * @param array $record The record
+     */
     function delete_before_store($db, $record)
     {
       if ($this->m_fk1=="" && $this->m_fk2!="") // manybool
@@ -243,6 +274,13 @@
       }
     }
 
+    /**
+     * Store the value(s) of this relation
+     *
+     * @param atkDb $db The database object
+     * @param array $record The record
+     * @return bool true
+     */
     function store($db, $record)
     {
       $this->delete_before_store($db, $record);

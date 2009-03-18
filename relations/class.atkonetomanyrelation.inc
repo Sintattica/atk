@@ -182,11 +182,21 @@
       $this->setGridExcludes($this->m_refKey);
     }
 
+    /**
+     * Set the ownerfields
+     *
+     * @param array $ownerfields
+     */
     function setOwnerFields($ownerfields)
     {
       $this->m_ownerFields = $ownerfields;
     }
 
+    /**
+     * Get the owner fields
+     *
+     * @return mixed Array or String with ownerfield(s)
+     */
     function getOwnerFields()
     {
       if (is_array($this->m_ownerFields) && count($this->m_ownerFields)>0)
@@ -401,6 +411,7 @@
      * @param array $record The record that holds the value for this attribute.
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
      *
      * @return String A piece of htmlcode for editing this attribute
      */
@@ -473,6 +484,7 @@
      * Internal function to get the add link for a atkOneToManyRelation
      * @param Array $myrecords  The load of all attributes (see comment in edit() code)
      * @param Array $record     The record that holds the value for this attribute.
+     * @param bool $saveform    Save the form values?
      * @return String  The link to add records to the onetomany
      */
     function _getAddLink($myrecords, $record,$saveform=true)
@@ -522,6 +534,13 @@
       return $strfilter;
     }
 
+    /**
+     * Get the add link when using a dialog
+     *
+     * @param array $record
+     * @param string $action
+     * @return string The dialog add link html-code
+     */
     function _getDialogAddLink($record, $action)
     {
       atkimport("atk.ui.atkdialog");
@@ -549,6 +568,7 @@
      *
      * @param Array $myrecords  The load of all attributes (see comment in edit() code)
      * @param Array $record     The record that holds the value for this attribute.
+     * @param bool $saveform    Save the values of the form?
      * @return String  The link to add records to the onetomany
      */
     function _getNestedAddLink($myrecords, $record,$saveform=true)
@@ -579,6 +599,12 @@
       return $url;
     }
 
+    /**
+     * Get filter elements
+     *
+     * @param array $record
+     * @return array Array with filter elements
+     */
     function _getFilterElements($record)
     {
       $filterelems = array();
@@ -834,6 +860,7 @@
      * @param atkDb $db The database used by the node.
      * @param array $record The master record which has the detail records
      *                      embedded.
+     * @param string $mode The mode we're in ("add", "edit", "copy")
      * @return boolean true if store was successful, false otherwise.
      */
     function store(&$db, $record, $mode)
@@ -984,11 +1011,17 @@
 
     /**
      * Adds a search condition for a given search value
-     * @param $table the table name
-     * @param $value the search value
-     * @return a piece of the SQL where clause
+     * 
+     * @param atkQuery $query The query to which the condition will be added.
+     * @param String $table The name of the table in which this attribute
+     *                      is stored
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param String $searchmode The searchmode to use. This can be any one
+     *                           of the supported modes, as returned by this
+     *                           attribute's getSearchModes() method.
+     * @param string $fieldaliasprefix optional prefix for the fieldalias in the table
      */
-     function searchCondition(&$query, $table, $value, $searchmode)
+     function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix='')
      {
        if ($this->createDestination())
        {
@@ -1008,6 +1041,20 @@
        }
      }
 
+     /**
+     * Creates a searchcondition for the field,
+     * was once part of searchCondition, however,
+     * searchcondition() also immediately adds the search condition.
+     *
+     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param String $table       The name of the table in which this attribute
+     *                              is stored
+     * @param mixed $value        The value the user has entered in the searchbox
+     * @param String $searchmode  The searchmode to use. This can be any one
+     *                              of the supported modes, as returned by this
+     *                              attribute's getSearchModes() method.
+     * @return String The searchcondition to use.
+     */
      function getSearchCondition(&$query, $table, $value, $searchmode)
      {
        $usedfields = array();
@@ -1053,6 +1100,7 @@
       * @param mixed    $value      The value to search
       * @param mixed    $searchmode The mode used when searching
       * @param String   $field      The name of the attribute
+      * @param String   $reftable   
       */
      function _callSearchConditionOnDestField(&$query, $table, $value, $searchmode, $field, $reftable)
      {
@@ -1088,6 +1136,11 @@
       return false;
     }
 
+    /**
+     * Are we allowed to delete a record?
+     *
+     * @return mixed bool if allowed or string with not allowed message
+     */
     function deleteAllowed()
     {
       if ($this->hasFlag(AF_RESTRICTED_DELETE))

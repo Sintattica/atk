@@ -98,7 +98,10 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   /**
    * Return a piece of html code to edit the attribute.
    *
-   * @param $record current record
+   * @param array $record The record that holds the value for this attribute.
+   * @param String $fieldprefix The fieldprefix to put in front of the name
+   *                            of any html form element for this attribute.
+   * @param String $mode The mode we're in ('add' or 'edit')
    *
    * @return string piece of html code
    */
@@ -259,6 +262,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
    * Render addition field.
    *
    * @param string $fieldprefix field prefix
+   * @param string $mode 
    */
   protected function renderAdditionField($fieldprefix, $mode)
   {
@@ -303,7 +307,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
    * Set the searchmode for the autocompletion:
    * exact, startswith(default) or contains.
    *
-   * @param array $searchmode
+   * @param array $mode
    */
   public function setAutoCompleteSearchMode($mode)
   {

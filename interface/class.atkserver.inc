@@ -35,6 +35,11 @@
   {
   	private $m_protocol = "";
   	
+  	/**
+  	 * Get an instance of this class
+  	 *
+  	 * @return atkServer
+  	 */
   	public function getInstance()
   	{
   	  static $s_instance = NULL;
@@ -45,11 +50,19 @@
   	  return $s_instance;
   	}
   	
+  	/**
+  	 * Constructor
+  	 *
+  	 */
   	private function __construct()
   	{
   	  atkdebug("Created a new atkServer instance.");
   	}
   	
+  	/**
+  	 * Run the server
+  	 *
+  	 */
   	public function run()
   	{
   	  $output = atkinstance("atk.ui.atkoutput");
@@ -66,21 +79,42 @@
   	  $output->outputFlush();
   	}
   	
+  	/**
+  	 * Get protocol
+  	 *
+  	 * @return string
+  	 */
   	public function getProtocol()
   	{
   	  return isset($this->m_protocol)&&$this->m_protocol!=""?$this->m_protocol:$this->getDefaultProtocol();
   	}
   	
+  	/**
+  	 * Set protocol
+  	 *
+  	 * @param string $protocol
+  	 */
   	public function setProtocol($protocol)
   	{
   	  $this->m_protocol = $protocol;
   	}
   	
+  	/**
+  	 * Get default protocol
+  	 *
+  	 * @return string
+  	 */
   	public function getDefaultProtocol()
   	{
   	  return (isset($_REQUEST["protocol"])?$_REQUEST["protocol"]:atkconfig("server_default_protocol"));
   	}
   	
+  	/**
+  	 * Is valid protocol?
+  	 *
+  	 * @param string $protocol
+  	 * @return bool
+  	 */
   	public function isValidProtocol($protocol)
   	{
   	  return in_array($protocol, array("soap"));

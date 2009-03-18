@@ -121,6 +121,7 @@
     /**
      * Is debugging enabled for client IP?
      *
+     * @param array $params
      * @static
      */
     function ipDebugEnabled($params)
@@ -132,6 +133,7 @@
     /**
      * Is debugging enabled by special request variable?
      *
+     * @param array $params
      * @static
      */
     function requestDebugEnabled($params)
@@ -148,6 +150,8 @@
      * dynamically checking/setting the debug level. If nothing
      * found returns the default level.
      *
+     * @param int $default The default debug level
+     * @param array $options  
      * @static
      */
     function smartDebugLevel($default, $options=array())

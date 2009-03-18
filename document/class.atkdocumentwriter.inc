@@ -152,7 +152,7 @@
      *
      * @param atkNode $node Node to be used when displaying the records
      * @param Array $records Array of records that should be assigned to the documentwriter
-     * @param String$prefix Prefix to be used when assigning the variables (used to avoid conflicting names)
+     * @param String $prefix Prefix to be used when assigning the variables (used to avoid conflicting names)
      */
     function assignDocumentMultiRecord(&$node, $records, $prefix = "")
     {
@@ -237,7 +237,7 @@
     /**
      * Assigns commonly used variables to a documentWriter
      *
-     * @param unknown_type $prefix Prefix to be used when assigning the variables (used to avoid conflicting names)
+     * @param string $prefix Prefix to be used when assigning the variables (used to avoid conflicting names)
      */
     function assignDocumentGenericVars($prefix = "")
     {

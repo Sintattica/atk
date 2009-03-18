@@ -62,6 +62,12 @@ class atkState
     return $value;
   }
   
+  /**
+   * Get value from cookie
+   *
+   * @param mixed $key The keyname
+   * @return string The value
+   */
   protected static function _getFromCookie($key)
   {
     if(isset($_COOKIE[$key]))
@@ -74,6 +80,12 @@ class atkState
     }
   }
   
+  /**
+   * Get value from session
+   *
+   * @param mixed $key The keyname
+   * @return string The value
+   */
   protected static function _getFromSession($key)
   {
     if(isset($_SESSION[$key]))
@@ -99,7 +111,7 @@ class atkState
    * the user and doesn't get too big.
    * @param mixed $key The key name
    * @param String $value The value of key
-   * @param String $type The namespace from which to retrieve the
+   * @param String $type The namespace from which to retrieve the value
    * @return mixed The storage method type.
    */
   public static function set($key, $value, $type='cookie')
@@ -119,16 +131,34 @@ class atkState
     }
   }
   
+  /**
+   * Set value in cookie
+   *
+   * @param mixed $key
+   * @param string $value
+   */
   protected static function _set_using_cookie($key,$value)
   {
     setcookie($key, $value, time()+60*(atkconfig("state_cookie_expire")));
   }
 
+  /**
+   * Set value in session
+   *
+   * @param mixed $key
+   * @param string $value
+   */
   protected static function _set_using_session($key,$value)
   {
     $_SESSION[$key] = $value;
   }
   
+  /**
+   * Get the key
+   *
+   * @param string $key
+   * @return string An md5 hash of the key
+   */
   protected static function getKey($key)
   {
     return md5(print_r($key,true));

@@ -28,12 +28,25 @@
     var $m_node = NULL;
     var $m_columnConfig = NULL;
 
+    /**
+     * Constructor
+     *
+     * @param atkNode $node
+     * @param atkColumnConfig $columnConfig
+     * @return atkTotalizer
+     */
     function atkTotalizer(&$node, &$columnConfig)
     {
       $this->m_node = &$node;
       $this->m_columnConfig = &$columnConfig;
     }
 
+    /**
+     * Totalize the recordset
+     *
+     * @param array $rowset
+     * @return array
+     */
     function totalize($rowset)
     {
       $result = array();
@@ -83,6 +96,15 @@
       return $result;
     }
 
+    /**
+     * Totalize one row
+     *
+     * @param array $row
+     * @param array $totals
+     * @param string $fieldforsubtotal
+     * @param array $totalizers
+     * @return array
+     */
     function _subTotalRow($row, &$totals, $fieldforsubtotal, $totalizers)
     {
       $subtotalcols = array();
@@ -99,6 +121,14 @@
       return $this->_createSubTotalRowFromRow($row, $fieldforsubtotal, $subtotalcols);
     }
 
+    /**
+     * Create subtotal row from row
+     *
+     * @param array $row
+     * @param string $fieldname
+     * @param array $subtotalcolumns
+     * @return array
+     */
     function _createSubTotalRowFromRow($row, $fieldname, $subtotalcolumns)
     {
       // fix type

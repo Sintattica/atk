@@ -28,12 +28,21 @@
   {
     var $m_height;
 
+    /**
+     * Constructor
+     *
+     * @return atkDhtmlMenu
+     */
     function atkDhtmlMenu()
     {
       $this->m_height = "50";
     }
 
-
+    /**
+     * Render the menu
+     *
+     * @return string The rendered menu
+     */
     function render()
     {
 
@@ -145,21 +154,41 @@
       return $string;
     }
 
+    /**
+     * Get the menu height
+     *
+     * @return int The height of the menu
+     */
     function getHeight()
     {
       return $this->m_height;
     }
 
+    /**
+     * Get the menu position
+     *
+     * @return int Menu is positioned at the top
+     */
     function getPosition()
     {
       return MENU_TOP;
     }
 
+    /**
+     * Is this menu scrollable?
+     *
+     * @return int Menu is not scrollable
+     */
     function getScrollable()
     {
       return MENU_UNSCROLLABLE;
     }
 
+    /**
+     * Is this menu multilevel?
+     *
+     * @return int This menu is not multilevel
+     */
 		function getMultilevel()
 		{
 			return MENU_NOMULTILEVEL;

@@ -52,6 +52,9 @@
 
 		/**
 		 * Return the menu header
+		 * 
+		 * @param string $atkmenutop
+		 * @return string The menu header
 		 */
 	  function getHeader($atkmenutop)
 	  {
@@ -59,6 +62,9 @@
 
 	  /**
 	   * Return the menu footer
+	   * 
+	   * @param string $atkmenutop
+	   * @return string The menu footer
 	   */
 		function getFooter($atkmenutop)
 		{

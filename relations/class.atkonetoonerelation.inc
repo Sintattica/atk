@@ -155,6 +155,11 @@
     {
     }
 
+    /**
+     * Set the initial values of this attribute
+     *
+     * @return array Array with initial values
+     */
     function initialValue()
     {
       if ($this->m_initialValue!==null) return parent::initialValue();
@@ -184,6 +189,7 @@
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
+     * @param Array $rec The record that contains the value of this attribute.
      * @param int $level Recursion level if relations point to eachother, an
      *                   endless loop could occur if they keep loading
      *                   eachothers data. The $level is used to detect this
@@ -286,6 +292,7 @@
      * Construct the filter statement for filters that are set for the
      * destination node (m_destinationFilter).
      * @access private
+     * @param string $fieldaliasprefix
      * @return String A where clause condition.
      */
     function getDestinationFilterCondition($fieldaliasprefix="")
@@ -420,7 +427,7 @@
       }
     }
 
-    /*
+    /**
      * Determine the storage type of this attribute.
      *
      * With this method, the attribute tells the framework whether it wants
@@ -464,7 +471,7 @@
       }
     }
 
-      /*
+    /**
      * Determine the load type of this attribute.
      *
      * With this method, the attribute tells the framework whether it wants
@@ -500,6 +507,7 @@
      * @param atkDb $db The database used by the node.
      * @param array $record The master record which has the detail records
      *                      embedded.
+     * @param string $mode The mode we're in ("add", "edit", "copy")
      * @return boolean true if store was successful, false otherwise.
      */
     function store(&$db, &$record, $mode)
@@ -690,11 +698,11 @@
      *
      * This is a framework method, it should never be called directly.
      *
-     * @param String $mode     the edit mode ("add" or "edit")
-     * @param array  $arr      pointer to the edit array
-     * @param array  $defaults pointer to the default values array
-     * @param array  $error    pointer to the error array
-     * @param String $prefix   the fieldprefix
+     * @param String $mode     		the edit mode ("add" or "edit")
+     * @param array  $arr     		pointer to the edit array
+     * @param array  $defaults 		pointer to the default values array
+     * @param array  $error    		pointer to the error array
+     * @param String $fieldprefix the fieldprefix
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
@@ -1073,6 +1081,20 @@
       }
     }
 
+    /**
+     * Creates a searchcondition for the field,
+     * was once part of searchCondition, however,
+     * searchcondition() also immediately adds the search condition.
+     *
+     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param String $table       The name of the table in which this attribute
+     *                              is stored
+     * @param mixed $value        The value the user has entered in the searchbox
+     * @param String $searchmode  The searchmode to use. This can be any one
+     *                              of the supported modes, as returned by this
+     *                              attribute's getSearchModes() method.
+     * @return String The searchcondition to use.
+     */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       if ($this->createDestination() && is_array($value))
@@ -1156,6 +1178,10 @@
     /**
      * Returns the condition which can be used when calling atkQuery's addJoin() method
      * Joins the relation's owner with the destination
+     * 
+     * @param atkQuery $query The query object
+     * @param string $tablename The name of the table
+     * @param string $fieldalias The field alias
      * @return  string  condition the condition that can be pasted into the query
      */
     function getJoinCondition(&$query, $tablename="",$fieldalias="")
@@ -1171,6 +1197,14 @@
      * attributes hook themselves into the fieldlist instead of hooking the relation
      * in it.
      * For original documentation for this method, please see the atkAttribute class
+     * 
+     * @param array   $fields            The array containing fields to use in the
+     *                                   extended search
+     * @param atkNode $node              The node where the field is in
+     * @param array   $record            A record containing default values to put
+     *                                   into the search fields.
+     * @param array   $fieldprefix       search / mode field prefix
+     * @param array   $currentSearchMode current search mode
      */
     function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "", $currentSearchMode=array())
     {
@@ -1196,6 +1230,12 @@
       }
     }
 
+    /**
+     * Convert the internal value to the database value
+     *
+     * @param array $rec The record that holds the value for this attribute
+     * @return mixed The database value
+     */
     function value2db($rec)
     {
       if (is_array($rec)&&isset($rec[$this->fieldName()]))

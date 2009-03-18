@@ -43,7 +43,10 @@
     var $Mailer   = "mail";
     var $WordWrap = 75;
 
-
+    /**
+     * Constructor
+     *
+     */
     public function __construct()
     {
       $charset = strtoupper(atkGetCharset());
@@ -90,6 +93,12 @@
       else return true;
     }
 
+    /**
+     * Convert the recipient to a correct string
+     *
+     * @param string $field
+     * @return string 
+     */
     function recipientFieldToString($field)
     {
       $ishtml = (strpos(strtolower($this->ContentType), 'html') > 0);

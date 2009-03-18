@@ -258,6 +258,7 @@
      * This works for all singletons that implement the getInstance() method.
      *
      * @param string $fullclassname the ATK classname of the class ("map1.map2.classname")
+     * @param bool $reset Force resetting of the instance
      * @return obj instance of the class
      * */
     static function getSingletonInstance($fullclassname, $reset=false)

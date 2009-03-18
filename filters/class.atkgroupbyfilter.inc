@@ -44,9 +44,9 @@
     /**
     * constructor
     *
-    * @param string name
-    * @param string groupbystmt
-    * @param int flags
+    * @param string $name
+    * @param string $groupbystmt
+    * @param int $flags
     */
     function atkGroupByFilter($name, $groupbystmt, $flags=0)
     {	
@@ -57,6 +57,7 @@
     /**
     * add the group by statement to the query
     *
+    * @param atkQuery $query The SQL query object
     * @return void
     */
     function addToQuery(&$query)

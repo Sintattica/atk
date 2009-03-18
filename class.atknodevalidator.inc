@@ -196,7 +196,9 @@
     }
     
     /**
-     * @deprecated 
+     * @deprecated
+     * 
+     * @param array $record 
      */
     function validateAttributes(&$record)
     {

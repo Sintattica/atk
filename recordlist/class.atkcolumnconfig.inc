@@ -40,20 +40,42 @@
     var $m_orderbyindex = 0;
     var $m_custom_atkorderby;
 
+    /**
+     * Constructor
+     *
+     * @return atkColumnConfig
+     */
     function atkColumnConfig()
     {
     }
 
+    /**
+     * Set the node
+     *
+     * @param atkNode $node
+     */
     function setNode(&$node)
     {
       $this->m_node = &$node;
     }
 
+    /**
+     * Get the node
+     *
+     * @return atkNode The node
+     */
     function &getNode()
     {
       return $this->m_node;
     }
 
+    /**
+     * Get an instance of the columnconfig class
+     *
+     * @param atkNode $node
+     * @param string $id
+     * @return atkColumnConfig An instance of the columnconfig class
+     */
     function &getConfig(&$node, $id=null)
     {
       global $g_sessionManager;
@@ -93,26 +115,52 @@
       return $s_instances[$id];
     }
 
+    /**
+     * Is this attribute last?
+     *
+     * @param string $attribute
+     * @return bool False
+     */
     function isLast($attribute)
     {
       return false;
     }
 
+    /**
+     * Is this attribute first?
+     *
+     * @param string $attribute
+     * @return bool False
+     */
     function isFirst($attribute)
     {
       return false;
     }
 
+    /**
+     * Move left
+     *
+     * @param string $attribute
+     */
     function moveLeft($attribute)
     {
       // ??
     }
 
+    /**
+     * Move right
+     *
+     * @param string $attribute
+     */
     function moveRight($attribute)
     {
       // ??
     }
 
+    /**
+     * Initialize
+     *
+     */
     function init()
     {
       foreach (array_keys($this->m_node->m_attribIndexList) as $i)
@@ -126,21 +174,43 @@
       if($this->m_node->getOrder() != "") $this->_addOrderByStatement($this->m_node->getOrder());
     }
 
+    /**
+     * Hide a column
+     *
+     * @param string $attribute
+     */
     function hideCol($attribute)
     {
       $this->m_colcfg[$attribute]["show"]=0;
     }
 
+    /**
+     * Show a column
+     *
+     * @param string $attribute
+     */
     function showCol($attribute)
     {
       $this->m_colcfg[$attribute]["show"]=1;
     }
 
+    /**
+     * Set sort direction
+     *
+     * @param string $attribute
+     * @param string $direction
+     */
     function setSortDirection($attribute, $direction)
     {
       $this->m_colcfg[$attribute]["direction"] = $direction;
     }
 
+    /**
+     * Set sort order
+     *
+     * @param string $attribute
+     * @param string $value
+     */
     function setSortOrder($attribute, $value)
     {
       if ($value>0)
@@ -153,6 +223,14 @@
       }
     }
 
+    /**
+     * Add orderby field
+     *
+     * @param string $field
+     * @param string $direction
+     * @param string $extra
+     * @param string $sortorder
+     */
     function addOrderByField($field, $direction, $extra="", $sortorder=NULL)
     {
       if (is_null($sortorder) && $this->getMinSort()<=1)
@@ -171,6 +249,10 @@
       $this->m_colcfg[$field]["extra"] = $extra;
     }
 
+    /**
+     * Flatten
+     *
+     */
     function flatten()
     {
       $result = uasort($this->m_colcfg, array("atkColumnConfig", "_compareSortAttrs"));
@@ -186,6 +268,11 @@
       }
     }
 
+    /**
+     * Get min sort
+     *
+     * @return int
+     */
     function getMinSort()
     {
       $min = 999;
@@ -199,6 +286,11 @@
       return $min;
     }
 
+    /**
+     * Get orderby statement
+     *
+     * @return string Orderby statement
+     */
     function getOrderByStatement()
     {
       $result = array();
@@ -215,6 +307,11 @@
       return implode(", ", $result);
     }
 
+    /**
+     * Get order fields
+     *
+     * @return array
+     */
     function getOrderFields()
     {
       $result = array();
@@ -228,21 +325,46 @@
       return $result;
     }
 
+    /**
+     * Get sort direction
+     *
+     * @param string $attribute
+     * @return string The sort direction
+     */
     function getSortDirection($attribute)
     {
       return $this->m_colcfg[$attribute]["direction"];
     }
 
+    /**
+     * Get url command
+     *
+     * @param string $attribute
+     * @param string $command
+     * @return string
+     */
     function getUrlCommand($attribute, $command)
     {
       return "atkcolcmd[][$command]=".$attribute;
     }
 
+    /**
+     * Get url command params
+     *
+     * @param string $attribute
+     * @param string $command
+     * @return string
+     */
     function getUrlCommandParams($attribute, $command)
     {
       return array("atkcolcmd[][$command]" => $attribute);
     }
 
+    /**
+     * Do url command
+     *
+     * @param array $cmd
+     */
     function doUrlCommand($cmd)
     {
       if (is_array($cmd))

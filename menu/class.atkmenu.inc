@@ -45,7 +45,12 @@
    */
   class atkMenu
   {
-
+    /**
+     * Convert the layout name to a classname
+     *
+     * @param string $layout The layout name
+     * @return string The classname
+     */
     function layoutToClass($layout)
     {
       // Check if the menu config is one of the default atk menus (deprecated)
@@ -68,6 +73,11 @@
       return $classname;
     }
 
+    /**
+     * Get the menu class
+     *
+     * @return string The menu classname
+     */
     function getMenuClass()
     {
       // Get the configured layout class

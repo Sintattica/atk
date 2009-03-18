@@ -47,6 +47,7 @@
      * Get JSON service object. This method should never
      * be called directly!
      *
+     * @param bool $assoc return as associative array (instead of objects)
      * @return Services_JSON JSON service object
      *
      * @static

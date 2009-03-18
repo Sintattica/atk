@@ -67,7 +67,7 @@ class atkManyToManyListRelation extends atkManyToManyRelation
   /**
    * Set rows.
    * 
-   * @param int rows
+   * @param int $rows
    */
   public function setRows($rows)
   {
@@ -97,7 +97,10 @@ class atkManyToManyListRelation extends atkManyToManyRelation
   /**
    * Return a piece of html code to edit the attribute.
    * 
-   * @param $record current record
+   * @param array $record The record that holds the value for this attribute.
+   * @param String $fieldprefix The fieldprefix to put in front of the name
+   *                            of any html form element for this attribute.
+   * @param String $mode The mode we're in ('add' or 'edit')
    * 
    * @return string piece of html code
    */

@@ -39,6 +39,16 @@
      * @param $suppresslist
      * obsolete by specialRecordList
      */
+    /**
+     * Creates printableRecordlist
+     * obsolete by specialRecordList
+     *
+     * @param atkNode $node         the node
+     * @param Array   $recordset    the list of records
+     * @param Array   $suppressList fields we don't display
+     * @param int  		$flags  			The prefix for embeded fields
+     * @return String The rendered recordlist
+     */
     function render(&$node, $recordset, $suppressList="", $flags=0)
     {
       $this->setNode($node);

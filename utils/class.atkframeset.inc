@@ -201,6 +201,8 @@
     
     /**
      * Default constructor
+     * 
+     * @param string $dimension
      */
     function atkAbstractFrame($dimension="*")
     {

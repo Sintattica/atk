@@ -192,7 +192,7 @@ class atkString
    * htmlentities function, but falls back to atkGetCharset() instead of
    * PHP's default charset, if no charset is given.
    *
-   * @param String $string    string to convert
+   * @param String $str       string to convert
    * @param int $quote_style  quote style (defaults to ENT_COMPAT)
    * @param String $charset   character set to use (default to atkGetCharset())
    *
@@ -213,10 +213,9 @@ class atkString
    * html_entity_decode function, but falls back to atkGetCharset() instead of 
    * PHP's default charset, if no charset is given.
    *
-   * @param String $string    string to convert
-   * @param int $quote_style  quote style (defaults to ENT_COMPAT)
-   * @param String $charset   character set to use (default to atkGetCharset())
-   *
+   * @param string $in_charset The input charset
+   * @param string $out_charset The output charset
+   * @param string $str The string to convert
    * @return String encoded string
    */ 
   function iconv($in_charset, $out_charset, $str)
@@ -231,6 +230,4 @@ class atkString
     }
     return $str;
   }
-	
-	
 }
