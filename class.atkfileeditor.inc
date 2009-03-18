@@ -280,7 +280,7 @@
     * This function controls actions on the selected file is allowed
     *
     * @param Array $rec Array that contains the identifier of the record
-    * @param unknown_type $mode
+    * @param string $mode The mode we're in
     */
     function validate(&$rec, $mode)
     {

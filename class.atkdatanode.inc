@@ -61,7 +61,7 @@ class atkDataNode extends atkNode
   /**
    * Returns the internal data.
    *
-   * @param array criteria (can be ignored in which case filterData will filter the data)
+   * @param array $criteria criteria (can be ignored in which case filterData will filter the data)
    *
    * @return array data list
    */

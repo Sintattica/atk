@@ -773,7 +773,7 @@
      * a dot this means we need to add the default tab
      * before the dot.
      *
-     * @param string section name
+     * @param string $section section name
      * @return resolved section name
      */
     function resolveSection($section)
@@ -850,7 +850,7 @@
     /**
      * Add an atkAttribute (or one of its derivatives) to the node.
      * @param atkAttribute $attribute The attribute you want to add
-     * @param mixed $tab The tab(s) on which the attribute should be
+     * @param mixed $sections The sections/tab(s) on which the attribute should be
      *                   displayed. Can be a tabname (String) or a list of
      *                   tabs (array) or "*" if the attribute should be
      *                   displayed on all tabs.
@@ -1011,6 +1011,14 @@
      * @param string $name     name
      * @param string $template template string
      * @param int    $flags    attribute flags
+     * @param mixed $sections The sections/tab(s) on which the attribute should be
+     *                   displayed. Can be a tabname (String) or a list of
+     *                   tabs (array) or "*" if the attribute should be
+     *                   displayed on all tabs.
+     * @param int $order The order at which the attribute should be displayed.
+     *                   If ommitted, this defaults to 100 for the first
+     *                   attribute, and 100 more for each next attribute that
+     *                   is added.
      */
     public function addFieldSet($name, $template, $flags=0, $sections=NULL, $order=0)
     {
@@ -1021,7 +1029,7 @@
     /**
      * Retrieve the tabnames from the sections string (tab.section).
      *
-     * @param mixed An array with sections or a section string
+     * @param mixed $sections An array with sections or a section string
      * @param string $str A section string.
      */
     function getTabsFromSections($sections)
@@ -1050,6 +1058,8 @@
      * Strip section part from a section and return the tab.
      *
      * If no tab name is provided, the default tab is returned.
+     * 
+     * @param string $section The section to get the tab from
      */
     function getTabFromSection($section)
     {
@@ -1165,6 +1175,8 @@
 
     /**
      * Gets the attribute order.
+     * 
+     * @param string $name The name of the attribute
      */
     function getAttributeOrder($name)
     {
@@ -1173,6 +1185,9 @@
 
     /**
      * Sets an attributes order
+     * 
+     * @param string $name The name of the attribute
+     * @param int $order The order of the attribute
      */
     function setAttributeOrder($name, $order)
     {
@@ -1978,14 +1993,15 @@
      *       form, instead of an array with an overly complex structure.
      * @param String $mode        The edit mode ("add" or "edit")
      * @param array $record       The record currently being edited.
-     * @param array $forcelist    A key-value array used to preset certain
+     * @param array $forceList    A key-value array used to preset certain
      *                            fields to a certain value, regardless of the
      *                            value in the record.
-     * @param array $suppresslist List of attributenames that you want to hide
+     * @param array $suppressList List of attributenames that you want to hide
      * @param String $fieldprefix Of set, each form element is prefixed with
      *                            the specified prefix (used in embedded form
      *                            fields)
-     * @param boolean $ignoreTab  Ignore the tabs an attribute should be shown on.
+     * @param bool $ignoreTab  Ignore the tabs an attribute should be shown on.
+     * @param bool $injectSections Inject sections?
      * @return array List of edit fields (per field ( name, html, obligatory,
      *               error, label })
      */
@@ -2169,6 +2185,7 @@
      *       form, instead of an array with an overly complex structure.
      * @param String $mode        The edit mode ("view")
      * @param array $record       The record currently being viewed.
+     * @param bool $injectSections Inject sections?
      * @return array List of edit fields (per field ( name, html, obligatory,
      *               error, label })
      */
@@ -2393,7 +2410,7 @@
      *
      * @param String $mode        The edit mode ("add" or "edit")
      * @param array $record       The record that should be hidden.
-     * @param array $forcelist    A key-value array used to preset certain
+     * @param array $forceList    A key-value array used to preset certain
      *                            fields to a certain value, regardless of the
      *                            value in the record.
      * @param String $fieldprefix Of set, each form element is prefixed with
@@ -2696,6 +2713,9 @@
     /**
      * Small compare function for sorting attribs on order field
      * @access private
+     * @param array $a The first attribute
+     * @param array $b The second attribute
+     * @return int 
      */
     function attrib_cmp($a,$b)
     {
@@ -3247,8 +3267,8 @@
      *           delegates validation to that object.
      *
      * @param array $record The record to validate
-     * @param String mode The mode for which validation is performed ('add' or 'update')
-     * @param array ignoreList The list of attributes that should not be
+     * @param String $mode The mode for which validation is performed ('add' or 'update')
+     * @param array $ignoreList The list of attributes that should not be
      *                         validated
      */
     function validate(&$record, $mode, $ignoreList=array())
@@ -3322,7 +3342,7 @@
      * transactions you will need to call 'atkGetDb()->commit()' manually.
      *
      * @param array $record The record to update in the database.
-     * @param bool wether to execute the pre/post update triggers
+     * @param bool $exectrigger wether to execute the pre/post update triggers
      * @param array $excludes exclude list (these attribute will *not* be updated)
      * @param array $includes include list (only these attributes will be updated)
      * @return boolean True if succesful, false if not.
@@ -3428,10 +3448,10 @@
     /**
     * Checks if the attribute is needed in a select query
     *
-    * @param string attribname name of the attribute
-    * @param array list of exclueded attribs
-    * @param array list of inclueded attribs
-    * @param string the action for which the selectDb is called
+    * @param string $attribname name of the attribute
+    * @param array $excludeList list of exclueded attribs
+    * @param array $includeList list of inclueded attribs
+    * @param string $mode the mode for which the selectDb is called
     * @return bool true in case the attribute needs to be in the select
     */
     function isAllowedQueryList($attribname,$excludeList="",$includeList="", $mode = "")
@@ -3622,6 +3642,7 @@
      * manytoonerelation) are not copied.
      *
      * @param array $record The record to copy.
+     * @param string $mode The mode we're in (mostly "copy")
      * @return boolean True if succesful, false if not.
      */
     function copyDb(&$record, $mode="copy")
@@ -4088,6 +4109,8 @@
      *                           added to the query. If set to false, only
      *                           the primary key and fields from the desriptor
      *                           are added.
+     * @param string $mode The mode we're in
+     * @param array $includes List of fields that should be included
      */
     function addToQuery(&$query, $alias="", $level=0, $allfields=false, $mode="select", $includes=array())
     {
@@ -4145,11 +4168,11 @@
      * Get search condition for this node.
      *
      * @param atkQuery $query
-     * @param unknown_type $table
-     * @param unknown_type $alias
-     * @param unknown_type $value
-     * @param unknown_type $searchmode
-     * @return unknown
+     * @param string $table
+     * @param string $alias
+     * @param string $value
+     * @param string $searchmode
+     * @return string The search condition
      */
     function getSearchCondition(&$query, $table, $alias, $value, $searchmode)
     {
@@ -4220,6 +4243,7 @@
      * @param array $record The record to save.
      * @param boolean $exectrigger Indicates whether the postAdd trigger
      *                             should be fired.
+     * @param string $mode The mode we're in
      * @param array $excludelist List of attributenames that should be ignored
      *                           and not stored in the database.
      * @return boolean True if succesful, false if not.
@@ -4993,7 +5017,8 @@
      * Currently, searchDb only searches those attributes that are of type
      * string or text.
      *
-     * @param String $epxression The keyword to search for.
+     * @param String $expression The keyword to search for.
+     * @param string $searchmethod
      * @return array Set of records matching the keyword.
      */
     function searchDb($expression, $searchmethod="OR")
@@ -5044,6 +5069,7 @@
      * @param String $message An optional message to pass to the feedbackpage,
      *                        for example to explain the reason why an action
      *                        failed.
+     * @param int $levelskip Number of levels to skip
      * @return String The feedback url.
      */
     function feedbackUrl($action, $status, $record="", $message="", $levelskip=1)
@@ -5244,6 +5270,18 @@
 
     /**
      * Translate using this node's module and type.
+     * 
+     * @param mixed $string           string or array of strings containing the name(s) of the string to return
+     *                                when an array of strings is passed, the second will be the fallback if
+     *                                the first one isn't found, and so forth
+     * @param String $module          module in which the language file should be looked for,
+     *                                defaults to core module with fallback to ATK
+     * @param String $node            the node to which the string belongs
+     * @param String $lng             ISO 639-1 language code, defaults to config variable
+     * @param String $firstfallback   the first module to check as part of the fallback
+     * @param boolean $nodefaulttext  if true, then it doesn't return a default text
+     *                                when it can't find a translation
+     * @return String the string from the languagefile
      */
     function text($string, $module=NULL, $lng="", $firstfallback="", $nodefaulttext=false)
     {
