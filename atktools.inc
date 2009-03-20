@@ -410,7 +410,7 @@
     $fp = @fopen($file, "a");
     if ($fp)
     {
-      fwrite($fp,atkGetTimingInfo()." ".$text."\n");
+      fwrite($fp, $text."\n");
       fclose($fp);
     }
   }
@@ -426,7 +426,7 @@
   {
     if (atkconfig("debug") > 0 && atkconfig("debuglog"))
     {
-      atkWriteToFile($text, atkconfig("debuglog"));
+      atkWriteToFile(atkGetTimingInfo()." ".$text, atkconfig("debuglog"));
     }
   }
 
