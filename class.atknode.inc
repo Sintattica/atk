@@ -1057,7 +1057,7 @@
      * Strip section part from a section and return the tab.
      *
      * If no tab name is provided, the default tab is returned.
-     * 
+     *
      * @param string $section The section to get the tab from
      */
     function getTabFromSection($section)
@@ -1174,7 +1174,7 @@
 
     /**
      * Gets the attribute order.
-     * 
+     *
      * @param string $name The name of the attribute
      */
     function getAttributeOrder($name)
@@ -1184,7 +1184,7 @@
 
     /**
      * Sets an attributes order
-     * 
+     *
      * @param string $name The name of the attribute
      * @param int $order The order of the attribute
      */
@@ -2714,7 +2714,7 @@
      * @access private
      * @param array $a The first attribute
      * @param array $b The second attribute
-     * @return int 
+     * @return int
      */
     function attrib_cmp($a,$b)
     {
@@ -3039,6 +3039,12 @@
         if (substr($location,-1)=="?")
         {
           $location=substr($location,0,-1);
+        }
+
+        global $g_error_msg;
+        if (count($g_error_msg)>0)
+        {
+          mailreport();
         }
 
         header('Location: '.$location);
@@ -5269,7 +5275,7 @@
 
     /**
      * Translate using this node's module and type.
-     * 
+     *
      * @param mixed $string           string or array of strings containing the name(s) of the string to return
      *                                when an array of strings is passed, the second will be the fallback if
      *                                the first one isn't found, and so forth
