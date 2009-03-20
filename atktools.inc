@@ -400,21 +400,33 @@
   }
 
   /**
-   * Writes info to the optional debug logfile. Please notice
-   * this feature will heavily decrease the performance and should
-   * therefore only be used for debugging and development purposes
+   * Writes info to a given file.
+   * Useful for writing to any log files.
+   * @param String $text text to write to the logfile
+   * @param String $file the file name
+   */
+  function atkWriteToFile($text, $file="")
+  {
+    $fp = @fopen($file, "a");
+    if ($fp)
+    {
+      fwrite($fp,atkGetTimingInfo()." ".$text."\n");
+      fclose($fp);
+    }
+  }
+
+  /**
+   * Writes info to the optional debug logfile.
+   * Please notice this feature will heavily decrease the performance
+   * and should therefore only be used for debugging and development
+   * purposes.
    * @param String $text text to write to the logfile
    */
-  function atkWriteLog(&$text)
+  function atkWriteLog($text)
   {
     if (atkconfig("debug") > 0 && atkconfig("debuglog"))
     {
-      $fp = @fopen(atkconfig("debuglog"),"a");
-      if ($fp)
-      {
-        fwrite($fp,atkGetTimingInfo()." ".$text."\n");
-        fclose($fp);
-      }
+      atkWriteToFile($text, atkconfig("debuglog"));
     }
   }
 
@@ -544,22 +556,22 @@
 
     return $res;
   }
-  
+
   /**
    * Same as array_merge_recursive from PHP but without duplicates.
    * Supports unlimited number of arrays as arguments.
    *
    * @param array $array1 first array
    * @param array $array2 second array
-   * 
+   *
    * @return array merged arrays
    */
   function atk_array_merge_recursive($array1, $array2)
   {
     $arrays = func_get_args();
-    
+
     $result = array();
-    
+
     foreach ($arrays as $array)
     {
       foreach ($array as $key => $value)
@@ -568,15 +580,15 @@
         {
           $result[$key] = atk_array_merge_recursive($result[$key], $value);
         }
-        else 
+        else
         {
-          $result[$key] = $value; 
+          $result[$key] = $value;
         }
       }
     }
-    
+
     return $result;
-  }    
+  }
 
   /**
    * Same as array_merge from php, but this function preserves key=>index
@@ -785,14 +797,14 @@
   {
     $items = explode("_AE_", $var);
     if (count($items) <= 1) return;
-    
+
     $current = &$dest;
-    foreach ($items as $key) 
+    foreach ($items as $key)
     {
       $current = &$current[$key];
     }
-    
-    if (is_array($dest[$var])) 
+
+    if (is_array($dest[$var]))
     {
       $current = atk_array_merge_recursive((array)$current, $dest[$var]);
     }
@@ -800,7 +812,7 @@
     {
       $current = $dest[$var];
     }
-    
+
     unset($dest[$var]);
   }
 
@@ -920,7 +932,7 @@
 
   /**
    * Send a detailed error report to the maintainer.
-   * 
+   *
    */
   function mailreport()
   {
@@ -929,9 +941,9 @@
     $errorHandlerObject = atkErrorHandlerBase::get('mail', array('mailto'=>atkconfig('mailreport')));
     $errorHandlerObject->handle($g_error_msg, $g_debug_msg);
   }
-  
+
   /**
-   * Handle errors that occurred in ATK, available handlers from /atk/errors/ can be added to 
+   * Handle errors that occurred in ATK, available handlers from /atk/errors/ can be added to
    * the error_handlers config.
    *
    */
@@ -946,7 +958,7 @@
         $key = $value;
       $errorHandlerObject = atkErrorHandlerBase::get($key, $value);
       $errorHandlerObject->handle($g_error_msg, $g_debug_msg);
-    }    
+    }
   }
 
 
@@ -1040,7 +1052,7 @@
       }
 
       $tab = $attrib[0]->m_tabs[0];
-      $message = $attrib[0]->text($error);      
+      $message = $attrib[0]->text($error);
     }
     else
     {
@@ -1648,7 +1660,7 @@
    * */
   function atkinstance($fullclassname, $reset=false)
   {
-    return atkClassLoader::getSingletonInstance($fullclassname, $reset);    
+    return atkClassLoader::getSingletonInstance($fullclassname, $reset);
   }
 
   /**
@@ -1807,10 +1819,10 @@
   {
     return atkString::htmlentities($string, $quote_style, $charset);
   }
-	
+
   /**
    * ATK version of the PHP html_entity_decode function. Works just like PHP's
-   * html_entity_decode function, but falls back to atkGetCharset() instead of 
+   * html_entity_decode function, but falls back to atkGetCharset() instead of
    * PHP's default charset, if no charset is given.
    *
    * @param String $string    string to convert
@@ -1818,12 +1830,12 @@
    * @param String $charset   character set to use (default to atkGetCharset())
    *
    * @return String encoded string
-   */  
+   */
   function atk_html_entity_decode($string, $quote_style=ENT_COMPAT, $charset=null)
   {
     return atkString::html_entity_decode($string, $quote_style, $charset);
   }
-  
+
   /**
    * Get string length
    * @param string $str The string being checked for length
@@ -1833,11 +1845,11 @@
   {
   	return atkString::strlen($str);
   }
-  
+
   /**
    * Get part of string
-   * @param string $str The string being checked. 
-   * @param int $start The first position used in $str 
+   * @param string $str The string being checked.
+   * @param int $start The first position used in $str
    * @param int $length[optional] The maximum length of the returned string
    * @return string
    */
@@ -1845,43 +1857,43 @@
    {
 	 return atkString::substr($str,$start,$length);
    }
-		
+
    /**
 	*  Find position of first occurrence of string in a string
-	* @param object $haystack The string being checked. 
-	* @param object $needle The position counted from the beginning of haystack . 
-	* @param object $offset[optional] The search offset. If it is not specified, 0 is used. 
+	* @param object $haystack The string being checked.
+	* @param object $needle The position counted from the beginning of haystack .
+	* @param object $offset[optional] The search offset. If it is not specified, 0 is used.
 	* @return int|boolean
 	*/
    function atk_strpos($haystack,$needle,$offset=0)
    {
  	 return atkString::strpos($haystack,$needle,$offset);
    }
-		
+
    /**
 	* Make a string lowercase
-	* @param string $str The string being lowercased. 
-	* @return string 
+	* @param string $str The string being lowercased.
+	* @return string
 	*/
    function atk_strtolower($str)
    {
-     return atkString::strtolower($str);	
+     return atkString::strtolower($str);
    }
-		
-  /** 
-   * 
+
+  /**
+   *
    * Make a string uppercase
-   * @param string $str The string being uppercased. 
-   * @return string 
+   * @param string $str The string being uppercased.
+   * @return string
    */
    function atk_strtoupper($str)
    {
 	 return atkString::strtoupper($str);
    }
-	
+
   /**
-   * Return the default charset, first we look if the 
-   * config_default_charset is set, else we use the 
+   * Return the default charset, first we look if the
+   * config_default_charset is set, else we use the
    * charset in the languge file;
    * @return string
    */
@@ -2008,7 +2020,7 @@
 
     return null;
   }
-  
+
   function atkEcho($message)
   {
     if(strpos(atkSelf(),"runcron"))
@@ -2016,21 +2028,21 @@
       echo $message;
     }
   }
-  
+
   /**
    * Format date according to a format string, uses ATK's language files to translate
    * months, weekdays etc.
-   * 
+   *
    * @param $date    timestamp or date array (gotten with getdate())
    * @param $format  format string, compatible with PHP's date format functions
    * @param $weekday always include day-of-week or not
-   * 
+   *
    * @return string formatted date
    */
   function atkFormatDate($date, $format, $weekday=false)
   {
     static $langcache = array();
-    
+
     if (!is_array($date))
     {
       $date = getdate($date);
@@ -2051,7 +2063,7 @@
     }
 
     /* get date string */
-    require_once(atkconfig('atkroot')."atk/utils/adodb-time.inc.php");    
+    require_once(atkconfig('atkroot')."atk/utils/adodb-time.inc.php");
     $str_date = adodb_date($format, $date[0]);
 
     $month = $date['month'];
@@ -2076,5 +2088,5 @@
 
     /* return string */
     return $str_date;
-  }  
+  }
 ?>
