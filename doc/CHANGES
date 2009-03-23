@@ -8,6 +8,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* The 'cancel' button on the extended search screen now works. [Tjeerd]
 + Decomposed atkWriteLog into 2 functions atkWriteLog and atkWriteToFile,
   so the latter becomes an extra tool in atktools.inc. [Patrick]
 + Errormails are now also send before a redirect header if debug level < 2.

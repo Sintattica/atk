@@ -37,7 +37,7 @@
    atkimport("atk.handlers.atkabstractsearchhandler");
   class atkSearchHandler extends atkAbstractSearchHandler
   {
-    
+
     /**
      * The action handler method.
      */
@@ -48,11 +48,11 @@
         $this->partial($this->m_partial);
         return;
       }
-      
+
       // save criteria
       $criteria = $this->fetchCriteria();
       $name = $this->handleSavedCriteria($criteria);
-      
+
       // redirect to search results and return
       $doSearch = isset($this->m_postvars['atkdosearch']);
       if ($doSearch)
@@ -60,10 +60,14 @@
         $this->redirectToResults();
         return;
       }
-      
+      elseif (!empty($this->m_postvars['atkcancel']))
+      {
+        $this->m_node->redirect(session_url(dispatch_url($this->m_node->atkNodeType(), 'admin'), SESSION_BACK));
+      }
+
       $page = &$this->getPage();
       $searcharray = array();
-      
+
       // load criteria
       if(isset($this->m_postvars['load_criteria']))
       {
@@ -72,14 +76,14 @@
           $criteria = $this->loadCriteria($name);
           $searcharray = $criteria['atksearch'];
         }
-      } 
+      }
       elseif (isset($this->m_postvars["atksearch"]))
       {
         $searcharray = $this->m_postvars["atksearch"];
       }
       $page->addcontent($this->m_node->renderActionPage("search", $this->invoke("searchPage", $searcharray)));
     }
-    
+
     /**
      * Redirect to search results based on the given criteria.
      */
@@ -134,16 +138,16 @@
 
         $params["formstart"].= session_form(SESSION_REPLACE);
         $params["formstart"].='<input type="hidden" name="atkaction" value="search">';
-        
+
         $params["formstart"].='<input type="hidden" name="atknodetype" value="'.$node->atknodetype().'">';
         $params["formstart"].='<input type="hidden" name="atkstartat" value="0">'; // start at first page after new search
 
         $params["content"] = $this->invoke("searchForm", $record);
-        
+
         $params["buttons"][] = '<input type="submit" class="btn_search atkdefaultbutton" value="'.atktext("search", "atk").'" name="atkdosearch" >';
         $params["buttons"][] = '<input class="btn_cancel" type="submit" value="'.atktext("cancel", "atk").'" name="atkcancel"/>';
-        
-        
+
+
         $params["formend"] = '</form>';
 
         $output = $ui->renderAction("search", $params);
@@ -174,16 +178,16 @@
       if (is_object($ui))
       {
         $node->setAttribSizes();
-        
+
         $criteria = $this->fetchCriteria();
         $name = $this->handleSavedCriteria($criteria);
-        
+
         $params = array();
         $params['searchmode_title'] = atktext("search_mode", "atk");
         $params['searchmode_and']   = '<input type="radio" name="atksearchmethod" class="atkradio" value="AND" checked>'.atktext("search_and", "atk");
         $params['searchmode_or']    = '<input type="radio" name="atksearchmethod" class="atkradio" value="OR">'.atktext("search_or", "atk");
         $params['saved_criteria']   = $this->getSavedCriteria($name);
-        
+
         $params["fields"] = array();
 
         foreach (array_keys($node->m_attribList) as $attribname)
@@ -197,18 +201,18 @@
       }
       else atkerror("ui object error");
     }
-    
+
     /**
      * Fetch posted criteria.
      *
      * @return Array fetched criteria
      */
     function fetchCriteria()
-    { 
+    {
       return array('atksearchmethod' => $this->m_postvars['atksearchmethod'],
                    'atksearch'       => $this->m_postvars['atksearch'],
                    'atksearchmode'   => $this->m_postvars['atksearchmode']);
     }
-    
+
   }
 ?>
