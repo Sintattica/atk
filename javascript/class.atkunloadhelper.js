@@ -38,6 +38,11 @@ ATK.UnloadHelper.prototype = {
       case 'text':
       case 'textarea':
       case 'hidden':
+        if( el.hasClassName('atkfckattribute') ) // check if the field is a fckeditorfield, call IsDirty if it is
+        {
+          return FCKeditorAPI.GetInstance( el.id ).IsDirty();
+        }
+        
         return el.value != el.defaultValue;
         
       case 'checkbox':

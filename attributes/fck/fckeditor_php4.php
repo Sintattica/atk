@@ -177,7 +177,7 @@ class FCKeditor
 				$Link .= "&amp;Toolbar={$this->ToolbarSet}" ;
 
 			// Render the linked hidden field.
-			$Html .= "<input type=\"hidden\" id=\"{$this->InstanceName}\" name=\"{$this->InstanceName}\" value=\"{$HtmlValue}\" style=\"display:none\" />" ;
+			$Html .= "<input type=\"hidden\" id=\"{$this->InstanceName}\" name=\"{$this->InstanceName}\" value=\"{$HtmlValue}\" class=\"atkfckattribute\" style=\"display:none\" />" ;
 
 			// Render the configurations hidden field.
 			$Html .= "<input type=\"hidden\" id=\"{$this->InstanceName}___Config\" value=\"" . $this->GetConfigFieldString() . "\" style=\"display:none\" />" ;
