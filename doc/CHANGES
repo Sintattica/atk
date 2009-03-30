@@ -8,6 +8,10 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* The atkDatagrid now also adds filters that are set in the node. When setting 
+  a filter in for example the adminPage function it would not be set again
+  when the datagrid was refreshed (navigating through the records or changing 
+  the "show" box). This would cause all records to be shown again. [Lineke]
 * Added classname to atkfckattribute and made a change to 
   class.atkunloadhelper.js to make sure that changes in a fckfield
   will be picked up and display a warning message when one leaves the page

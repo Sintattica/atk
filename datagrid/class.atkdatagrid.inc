@@ -427,6 +427,21 @@ class atkDataGrid
     $this->setMode('admin');
     $this->setMRASelectionMode($this->getNode()->getMRASelectionMode());    
 
+    if (!$this->getNode()->hasFlag(NF_NO_FILTER))
+    {
+      foreach ($this->getNode()->m_filters as $key => $value)
+      {
+        $this->addFilter($key."=".$value);
+      }
+      
+      foreach ($this->getNode()->m_fuzzyFilters as $filter)
+      {
+        $parser = new atkStringParser($filter);
+        $filter = $parser->parse(array('table' => $this->getNode()->getTable()));
+        $this->addFilter($filter);      
+      }
+    }
+
     $this->addComponent('list', 'atk.datagrid.atkdglist');
     $this->addComponent('summary', 'atk.datagrid.atkdgsummary');
     $this->addComponent('limit', 'atk.datagrid.atkdglimit');
