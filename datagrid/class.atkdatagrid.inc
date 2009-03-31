@@ -431,7 +431,7 @@ class atkDataGrid
     {
       foreach ($this->getNode()->m_filters as $key => $value)
       {
-        $this->addFilter($key."=".$value);
+        $this->addFilter($key."='".$value."'");
       }
 
       atkimport('atk.utils.atkstringparser');
