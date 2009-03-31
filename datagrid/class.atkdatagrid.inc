@@ -145,10 +145,10 @@ class atkDataGrid
    * @var array
    */
   private $m_components = array();
-  
+
   /**
    * List of datagrid component instances.
-   * 
+   *
    * @var array
    */
   private $m_componentInstances = array();
@@ -176,11 +176,11 @@ class atkDataGrid
 
   /**
    * Default order by.
-   * 
+   *
    * @var string
    */
   private $m_defaultOrderBy;
-  
+
   /**
    * Main datagrid template.
    *
@@ -195,10 +195,10 @@ class atkDataGrid
    * @var atkNode
    */
   private $m_actionNode;
-  
+
   /**
    * Multi-record-action selection mode.
-   * 
+   *
    * @var int
    */
   private $m_mraSelectionMode;
@@ -242,11 +242,11 @@ class atkDataGrid
 
   /**
    * Records loaded?
-   * 
+   *
    * @var boolean
    */
   private $m_recordsLoaded;
-  
+
   /**
    * Records (for the current page).
    *
@@ -260,10 +260,10 @@ class atkDataGrid
    * @var int
    */
   private $m_count;
-  
+
   /**
    * Grid listeners.
-   * 
+   *
    * @var array
    */
   private $m_listeners = array();
@@ -325,7 +325,7 @@ class atkDataGrid
    * @param string  $class      class (by default the atkDataGrid class)
    * @param boolean $isEmbedded is embedded?
    * @param boolean $useSession use session
-   * 
+   *
    * @return atkDataGrid datagrid instance
    */
   public static function create($node, $name=null, $class=null, $isEmbedded=false, $useSession=true)
@@ -425,7 +425,7 @@ class atkDataGrid
     $this->setTemplate('datagrid.tpl');
     $this->setActionSessionStatus(SESSION_NESTED);
     $this->setMode('admin');
-    $this->setMRASelectionMode($this->getNode()->getMRASelectionMode());    
+    $this->setMRASelectionMode($this->getNode()->getMRASelectionMode());
 
     if (!$this->getNode()->hasFlag(NF_NO_FILTER))
     {
@@ -433,12 +433,13 @@ class atkDataGrid
       {
         $this->addFilter($key."=".$value);
       }
-      
+
+      atkimport('atk.utils.atkstringparser');
       foreach ($this->getNode()->m_fuzzyFilters as $filter)
       {
         $parser = new atkStringParser($filter);
         $filter = $parser->parse(array('table' => $this->getNode()->getTable()));
-        $this->addFilter($filter);      
+        $this->addFilter($filter);
       }
     }
 
@@ -900,47 +901,47 @@ class atkDataGrid
   {
     unset($this->m_components[$name]);
   }
-  
+
   /**
    * Instantiates the components.
    */
   protected function loadComponentInstances()
   {
     $this->m_componentInstances = array();
-    
+
     foreach ($this->getComponents() as $name => $info)
     {
       $comp = atknew($info['class'], $this, $info['options']);
-      $this->m_componentInstances[$name] = $comp;      
+      $this->m_componentInstances[$name] = $comp;
       if ($comp instanceof atkDGListener)
         $this->addListener($comp);
-    }  
+    }
   }
-  
+
   /**
    * Returns the component instances as key/component array. If the
    * component are not loaded yet an empty array will be returned.
-   * 
+   *
    * @return array
    */
   public function getComponentInstances()
   {
     return $this->m_componentInstances;
   }
-  
+
   /**
    * Returns the component with the given name. If the component doesn't
    * exist or hasn't been loaded yet, null will be returned.
    *
    * @param string $name component name
-   * 
+   *
    * @return atkDGComponent
    */
-  public function getComponentInstance($name) 
+  public function getComponentInstance($name)
   {
     return @$this->m_componentInstances[$name];
   }
-  
+
   /**
    * Returns the attributes that should be excluded from the list
    * next to the attributes that already have an AF_HIDE_LIST flag.
@@ -1002,7 +1003,7 @@ class atkDataGrid
   {
     $this->m_defaultLimit = $limit;
   }
-  
+
   /**
    * Returns the default order by.
    *
@@ -1022,7 +1023,7 @@ class atkDataGrid
   {
     $this->m_defaultOrderBy = $orderBy;
   }
-  
+
   /**
    * Returns the template name.
    *
@@ -1067,27 +1068,27 @@ class atkDataGrid
   {
     $this->m_actionNode = $node;
   }
-  
+
   /**
    * Returns the multi-record-action selection mode.
-   * 
+   *
    * @return int multi-record-action selection mode
    */
   public function getMRASelectionMode()
   {
     return $this->m_mraSelectionMode;
   }
-  
+
   /**
    * Sets the multi-record-action selection mode.
-   * 
+   *
    * @param int $mode multi-record-action selection mode
    */
   public function setMRASelectionMode($mode)
   {
     $this->m_mraSelectionMode = $mode;
   }
-  
+
 
   /**
    * Returns the record action session status.
@@ -1398,10 +1399,10 @@ class atkDataGrid
   {
     // records already loaded?
     if ($this->m_recordsLoaded && !$force) return;
-    
+
     // notify listeners
     $this->notify(atkDGEvent::PRE_LOAD);
-    
+
     // temporarily overwrite the node postvars so that selectDb and countDb
     // have access to the atksearch, atkfilter, atklimit etc. parameters
     $this->overrideNodePostvars();
@@ -1436,10 +1437,10 @@ class atkDataGrid
 
     // restore previous postvars
     $this->restoreNodePostvars();
-    
+
     // done loading
     $this->m_recordsLoaded = true;
-    
+
     // notify listeners
     $this->notify(atkDGEvent::POST_LOAD);
   }
@@ -1489,18 +1490,18 @@ class atkDataGrid
   {
     return $this->getNode()->text($string, null, '', $fallback, !$useDefault);
   }
-  
+
   /**
    * Add the given listener to this grid.
    *
    * @param atkDGListener $listener
-   */  
+   */
   public function addListener(atkDGListener $listener)
   {
     $this->m_listeners[] = $listener;
     $this->m_listeners = array_unique($this->m_listeners);
   }
-  
+
   /**
    * Removes the given listener from this grid.
    *
@@ -1510,28 +1511,28 @@ class atkDataGrid
   {
     $this->m_listeners = array_diff($this->m_listeners, array($listener));
   }
-  
+
   /**
    * Returns the listeners for this grid.
-   * 
+   *
    * @return atkDataGrid
    */
   protected function getListeners()
   {
     return $this->m_listeners;
   }
-  
+
   /**
    * Notify listeners of the given event.
-   * 
+   *
    * @see atkDGListener
-   * 
+   *
    * @param string $event identifier
    */
   protected function notify($event)
   {
     $event = new atkDGEvent($this, $event);
-    
+
     foreach ($this->getListeners() as $listener)
     {
       $listener->notify($event);
@@ -1578,11 +1579,11 @@ class atkDataGrid
   public function render()
   {
     // load component instances
-    $this->loadComponentInstances();  
-    
+    $this->loadComponentInstances();
+
     // notify listeners
-    $this->notify(atkDGEvent::PRE_RENDER);  
-    
+    $this->notify(atkDGEvent::PRE_RENDER);
+
     // if we are not embedded in an edit form we generate
     // the form name based on the grid name
     if (!$this->isEmbedded())
@@ -1596,18 +1597,18 @@ class atkDataGrid
 
     // load records from database
     $this->loadRecords();
-    
+
     // render the grid
     atkimport('atk.datagrid.atkdgrenderer');
     $renderer = new atkDGRenderer($this);
     $result = $renderer->render();
-    
+
     // restore previous postvars
     $this->restoreNodePostvars();
 
     // notify listeners
-    $this->notify(atkDGEvent::POST_RENDER);     
-    
+    $this->notify(atkDGEvent::POST_RENDER);
+
     return $result;
   }
 }
