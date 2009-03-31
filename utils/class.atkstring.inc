@@ -198,7 +198,7 @@ class atkString
    *
    * @return String encoded string
    */
-  function htmlentities($str, $quote_style=ENT_COMPAT, $charset=null)
+  public static function htmlentities($str, $quote_style=ENT_COMPAT, $charset=null)
   {
     if ($charset===null) $charset = atkGetCharset();
 		
