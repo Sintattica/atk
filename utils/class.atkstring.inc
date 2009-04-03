@@ -177,7 +177,7 @@ class atkString
    *
    * @return String encoded string
    */  
-	function html_entity_decode($str, $quote_style=ENT_COMPAT, $charset=null)
+	public static function html_entity_decode($str, $quote_style=ENT_COMPAT, $charset=null)
   {
     if ($charset===null) $charset = atkGetCharset();
 		
@@ -218,7 +218,7 @@ class atkString
    * @param string $str The string to convert
    * @return String encoded string
    */ 
-  function iconv($in_charset, $out_charset, $str)
+  public static function iconv($in_charset, $out_charset, $str)
   {
     if(function_exists("iconv"))
     {
