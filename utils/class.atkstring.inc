@@ -230,4 +230,26 @@ class atkString
     }
     return $str;
   }
+
+  /**
+   * ATK version of the Smarty truncate function, multibyte safe.
+   *
+   * @param  string  $string text to truncate
+   * @param  integer $max Maximum length of the total result string
+   * @param  string  text to append to the end of the truncated string 
+   * @return string  truncated sting
+   *
+   */
+  public static function truncate($string, $max, $replace)
+  {
+    if (self::strlen($string) <= $max)
+    {
+      return $string;
+    }
+    else
+    {
+      $length = $max - self::strlen($replace);
+      return self::substr($string, 0, $length) . $replace;
+    }
+  }
 }
