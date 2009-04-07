@@ -235,7 +235,7 @@
 			if ($this->m_zipmode == "infozip")
 			{
 			  $entriesstring = is_array($entries) ? implode(" ", $entries) : $entries;
-			  $params = "$archive $entriesstring -d $destination";
+			  $params = "'$archive' $entriesstring -d '$destination'";
 			  $returncode = $this->runInfozipCommand(ATKZIP_UNZIP, $params);
 			  if ($returncode <= 0)
 			  {
