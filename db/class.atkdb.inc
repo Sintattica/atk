@@ -772,6 +772,33 @@
       else
         return $default;
     }
+    
+    /**
+     * Get an array with all the values in the (first) column.
+     * 
+     * Note: This is not an efficient way to retrieve
+     * records, as this will load all records into one
+     * array into memory. If you retrieve a lot of records,
+     * you might hit the memory_limit and your script will die.
+     *
+     * @param string $query The query
+     * @param string $key You can change the returning column using this parameter
+     * @param int $offset The offset to use
+     * @param int $limit The limit to use
+     * @return array array with rows
+     */
+    function getValues($query, $key=0, $offset=-1, $limit=-1)
+    {
+      $result = array();
+
+      $this->query($query, $offset, $limit);
+      while ($this->next_record())
+      {
+        $result[] = atkArrayNvl(array_values($this->m_record), $key);
+      }
+
+      return $result;
+    }
 
     /**
      * This function indicates what searchmodes the database supports.

@@ -19,6 +19,8 @@ Changes in ATK 6.3
   will be picked up and display a warning message when one leaves the page
   [Ruud]
 * The 'cancel' button on the extended search screen now works. [Tjeerd]
++ Added function getValues to class.atkdb.inc. With this function it's 
+  possible to retrieve all values in a single column of a resultset. [Martijn]
 + Decomposed atkWriteLog into 2 functions atkWriteLog and atkWriteToFile,
   so the latter becomes an extra tool in atktools.inc. [Patrick]
 + Errormails are now also send before a redirect header if debug level < 2.
