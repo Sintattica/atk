@@ -94,6 +94,21 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   {
     return $this->m_manyToOneRelation;
   }
+  
+  /**
+   * Create the instance of the destination and copy the destination to
+   * the the many to one relation
+   *
+   * If succesful, the instance is stored in the m_destInstance member variable.
+   *
+   * @return boolean true if succesful, false if something went wrong.
+   */
+  public function createDestination()
+  {
+    $result = parent::createDestination();
+    $this->getManyToOneRelation()->m_destInstance = $this->m_destInstance;
+    return $result;
+  }
 
   /**
    * Return a piece of html code to edit the attribute.
@@ -113,6 +128,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     }
 
     $this->createDestination();
+    
     $this->createLink();
 
     $this->getOwnerInstance()->getPage()->register_script(atkconfig('atkroot').'atk/javascript/class.'.strtolower(__CLASS__).'.js');
