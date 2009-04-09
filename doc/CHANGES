@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* Added MySQL config for setting the collate that is used for
+  creating tables true the atkddl. [Sandy]
 + Added function for quoting of table and fieldnames. [Sandy]
 + Added Create and Drop index functions to the atkddl. [Sandy]
 - Removed MySQL41 driver, use MySQLi instead. [Sandy]

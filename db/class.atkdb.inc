@@ -100,6 +100,13 @@
     var $m_charset = "";
 
     /**
+     * The collate.
+     * @access private
+     * @var String
+     */
+    var $m_collate = "";
+    
+    /**
      * The mode for the connection.
      * @access private
      * @var String
@@ -1157,6 +1164,7 @@
         $this->m_host     = $config[$connectionname]["host"];
         if (isset($config[$connectionname]["port"]))      $this->m_port =    $config[$connectionname]["port"];
         if (isset($config[$connectionname]["charset"]))   $this->m_charset = $config[$connectionname]["charset"];
+        if (isset($config[$connectionname]["collate"]))   $this->m_collate = $config[$connectionname]["collate"];
       }
       return $this;
     }

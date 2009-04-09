@@ -166,6 +166,14 @@
     function buildCreate()
     {
       $query = parent::buildCreate();
+      
+      if (!empty($this->m_db->m_charset)) {
+            $query.= ' DEFAULT CHARACTER SET '.$this->m_db->m_charset;
+            if (!empty($this->m_db->m_collate)) {
+                $query.= ' COLLATE '.$this->m_db->m_collate;
+            }
+        }
+      
       if (!empty($query) && !empty($this->m_table_type))
       {
         $query .= " TYPE=" .$this->m_table_type;
