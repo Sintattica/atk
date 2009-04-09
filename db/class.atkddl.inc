@@ -44,6 +44,16 @@
     var $m_indexes = array(); // not yet implemented
     var $m_primarykey = array();
     var $m_db;
+    
+    /**
+     * Postfix for index names                                                      
+     *                                                                              
+     * @access private                                                              
+     * @var string                                                                  
+     */                                                                             
+    protected $m_idxnameFormat = "%s_idx";     
+    
+     
 
     /**
      * Default constructor
@@ -256,19 +266,17 @@
      */
     function buildAlter()
     {
-      atkimport('atk.db.atkquery');
-      $query = &atkQuery::create();
       if ($this->m_table!="")
       {
         $fields = $this->buildFields();
 
         if ($fields!="" || $this->m_remove_field)
         {
-          $q = "ALTER TABLE ".$this->m_table;
+          $q = "ALTER TABLE ".$this->m_db->quoteIdentifier($this->m_table);
 
           if ($this->m_remove_field)
           {
-            $q.=" DROP\n {$query->m_fieldquote}$this->m_remove_field{$query->m_fieldquote}";
+            $q.=" DROP\n ".$this->m_db->quoteIdentifier($this->m_remove_field);
           }
           else
           {
@@ -301,7 +309,8 @@
     {
       if ($this->m_table!="")
       {
-        $q = "DROP TABLE `".$this->m_table."`";
+      	
+        $q = "DROP TABLE ".$this->m_db->quoteIdentifier($this->m_table)."";
         return $q;
       }
       return "";
@@ -621,6 +630,88 @@
       atkerror("dropView don't support by this db or by this db driver");
       return "";
     }
+    
+   /**                                                                                                                                       
+     * Create an index                                                                                                                        
+     *                                                                                                                                        
+     * @param string $table Table name                                                                                                        
+     * @param string $name Index name                                                                                                         
+     * @param array $definition associative array that defines properties of the index to be created.                                         
+     *                                                                                                                                        
+     *                          example                                                                                                       
+     *                          array('fields' => array('user_id' => array('sorting' => 'ascending'                                           
+     *                                                                     'length' => 3                                                      
+     *                                                                      ),                                                                
+     *                                                  'lastname' => array()                                                                 
+     *                                                  )                                                                                     
+     *                               )                                                                                                        
+     * @return boolean                                                                                                                        
+     */                                                                                                                                       
+    function createIndex($name,$definition)                                                                                                   
+    {                                                                                                                                         
+      $table = $this->m_db->quoteIdentifier($this->m_table);                                                                            
+      $name = $this->m_db->quoteIdentifier($this->getIndexName($name));                                                           
+                                                                                                                                              
+      $query = "CREATE INDEX $name ON $table";                                                                                                
+      $fields = array();                                                                                                                      
+      foreach ($definition['fields'] as $field => $fieldinfo)                                                                                 
+      {                                                                                                                                       
+        if (!empty($fieldinfo['length']))                                                                                                     
+        {                                                                                                                                     
+          $fields[] = $this->m_db->quoteIdentifier($field)."(".$fieldinfo['length'].")";                                                 
+        }                                                                                                                                     
+        else                                                                                                                                  
+        {                                                                                                                                     
+          $fields[] = $this->m_db->quoteIdentifier($field);                                                                              
+        }                                                                                                                                     
+      }                                                                                                                                       
+      $query .= ' ('. implode(', ', $fields) . ')';                                                                                           
+      return $this->m_db->query($query);                                                                                                      
+    }                                                                                                                                         
+        
+
+   /**                                                                                                                                       
+    * Drop an existing index                                                                                                                 
+    *                                                                                                                                        
+    * @param string $table Table name                                                                                                        
+    * @param string $name Index name                                                                                                         
+    * @return boolean                                                                                                                        
+    */                                                                                                                                       
+    function dropIndex($name)                                                                                                                 
+    {                                                                                                                                         
+      $table = $this->m_db->quoteIdentifier($this->m_table);                                                                            
+      $name = $this->m_db->quoteIdentifier($this->getIndexName($name));                                                           
+      return $this->m_db->query("DROP INDEX $name ON $table");                                                                                
+    }     
+    
+    
+    /**
+     * Get Indexname
+     *
+     * @param string $name Indexname
+     * @return string
+     */
+    function getIndexName($name)                                                                                                              
+    {                                                                                                                                         
+      return sprintf($this->m_idxnameFormat, preg_replace('/[^a-z0-9_\$]/i', '_', $name));                                                                                     
+    }  
+    
+    
+    function renameSequence($name,$new_name)                                                                                                  
+    {                                                                                                                                         
+      return true;                                                                                                                            
+    }                                                                                                                                         
+                                                                                                                                              
+    function dropSequence($name)                                                                                                              
+    {                                                                                                                                         
+      return true;                                                                                                                            
+    }                                                                                                                                         
+                                                                                                                                              
+    function renameTable($name,$new_name)                                                                                                     
+    {                                                                                                                                         
+      return true;                                                                                                                            
+    }          
+    
     
   }
 

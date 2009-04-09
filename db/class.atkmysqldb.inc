@@ -34,6 +34,8 @@
     var $m_seq_namefield = "seq_name";
 
     var $m_type = "mysql";
+    
+    protected $m_identifierQuoting = array('start' => '`', 'end' => '`', 'escape' => '`');
 
 
     /**
@@ -203,7 +205,7 @@
         if (mysql_errno($this->m_link_id) == 1100)
         {
           $this->locktables_fallback_on_error($query, $mode);
-          $unlock = true;
+          $unlock_table = true;
         }
         else
         {

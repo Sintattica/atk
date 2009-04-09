@@ -228,7 +228,14 @@
      * @access private
      */
     var $m_errorLookup = array();
-
+   
+    /**
+     * Indentifier Quoting
+     *
+     * @var unknown_type
+     */
+    protected $m_identifierQuoting = array('start' => '"', 'end' => '"', 'escape' => '"');
+    
     /**
      * Set database sequence value.
      *
@@ -1226,6 +1233,18 @@
     
       return $res;
     }
+    
+   /**
+    * Quote Indentifier
+    *
+    * @param string $str
+    * @return string
+    */
+   function quoteIdentifier($str)                           
+   {                                                                               
+     $str = str_replace($this->m_identifierQuoting['end'], $this->m_identifierQuoting['escape'] . $this->m_identifierQuoting['end'], $str);
+     return $this->m_identifierQuoting['start'] . $str . $this->m_identifierQuoting['end'];                                                
+   } 
     
   }
 

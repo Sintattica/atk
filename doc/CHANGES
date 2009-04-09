@@ -8,6 +8,10 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
++ Added function for quoting of table and fieldnames. [Sandy]
++ Added Create and Drop index functions to the atkddl. [Sandy]
+- Removed MySQL41 driver, use MySQLi instead. [Sandy]
+* Fixed locking problem in MySQL Driver. [Sandy]
 * atkColorPickerAttribute popup is now 1000 pixels wide in stead of 600. It
   would not show the "select" button because the popup was too small. [Lineke] 
 * The atkDatagrid now also adds filters that are set in the node. When setting 

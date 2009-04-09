@@ -46,7 +46,6 @@
      */
     function getType($generictype)
     {
-      $config_db_mysql_default_text_columntype = "longtext";
       $config = atkconfig('db_mysql_default_'.$generictype.'_columntype');
       if ($config) return $config;
 
@@ -173,5 +172,47 @@
       }
       return $query;
     }
+    
+    /**
+     * Drop sequence
+     *
+     * @param string $name Sequence name
+     * @return boolean
+     */
+    function dropSequence($name)
+    {
+      $table = $this->m_db->quoteIdentifier($this->db->m_seq_table);
+      return $this->m_db->query("DELETE FROM $table WHERE ".$this->m_db->quoteIdentifier($this->m_db->m_seq_namefield)." = '".$this->escapeSQL($name)."'");
+    }
+
+    /**
+     * Rename sequence
+     *
+     * @param string $name Sequence name
+     * @param string $new_name New sequence name
+     * @return boolean
+     */
+    function renameSequence($name,$new_name)
+    {
+      $name = $this->m_db->escapeSQL($name);
+      $new_name = $this->m_db->escapeSQL($new_name);
+      return $this->m_db->query("UPDATE db_sequence SET seq_name='$new_name'
+                WHERE seq_name='$name'");
+    }
+
+    /**
+     * Rename table name
+     *
+     * @param string $name Table name
+     * @param string $new_name New table name
+     * @return boolean
+     */
+    function renameTable($name,$new_name)
+    {
+      $name = $this->m_db->quoteIdentifier($name);
+      $new_name = $this->m_db->quoteIdentifier($new_name);
+      return $this->m_db->query("ALTER TABLE $name RENAME $new_name");
+    }
+    
   }
 ?>
