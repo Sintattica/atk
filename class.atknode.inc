@@ -4303,7 +4303,7 @@
       {
         $record["atkmlsplit"]=1;
         $mltool = &atkinstance("atk.utils.atkmlsplitter");
-        $mltool->updateMlRecords($this, $record, $copy);
+        $mltool->updateMlRecords($this, $record, $mode);
       }
 
       if (!$this->_storeAttributes($storelist["post"], $record, $mode))
