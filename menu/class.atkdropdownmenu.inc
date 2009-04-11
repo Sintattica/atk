@@ -61,13 +61,12 @@
       $page->register_style($theme->stylePath("atkdropdownmenu.css"));
       $page->m_loadscripts[] = "new DHTMLListMenu('nav');";
 
-      $atkmenutop = $ATK_VARS["atkmenutop"];
-      if($atkmenutop=="") $atkmenutop="main";
+      $atkmenutop = array_key_exists('atkmenutop',$ATK_VARS)?$ATK_VARS["atkmenutop"]:'main';
       if (!is_array($g_menu[$atkmenutop]))
         $g_menu[$atkmenutop] = array();
       usort($g_menu[$atkmenutop],array("atkplainmenu","menu_cmp"));
 
-      $menu.= "<div id=\"nav\">\n";
+      $menu= "<div id=\"nav\">\n";
       $menu.=$this->getHeader($atkmenutop);
 
       $menu.="  <ul>\n";
@@ -98,11 +97,11 @@
     function getMenuItem($menuitem, $indentation="")
     {
       global $g_menu;
-
       $enable = $this->isEnabled($menuitem);
+      $menu = '';
       if ($enable)
       {
-        if ($g_menu[$menuitem['name']])
+        if (array_key_exists($menuitem['name'],$g_menu) && $g_menu[$menuitem['name']])
         {
           $submenu=$indentation."<ul>\n";
           foreach ($g_menu[$menuitem['name']] as $submenuitem)

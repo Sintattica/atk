@@ -136,7 +136,7 @@
         }
         $enable = $enabled;
       }
-      else if (is_array($g_menu[$menuitem['name']]))
+      else if (array_key_exists($menuitem['name'],$g_menu) && is_array($g_menu[$menuitem['name']]))
       {
         $enabled = false;
         foreach ($g_menu[$menuitem['name']] as $item)
