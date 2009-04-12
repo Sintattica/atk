@@ -9,12 +9,12 @@
     </a>
   {/if}
 
-  {if (count($menuitem.submenu)>0)}
+  {if (array_key_exists('submenu',$menuitem) && count($menuitem.submenu)>0)}
     <div id="smi_{$menuitem.name}" class="submenuHover">
       {$menuitem.header}
       {foreach from=$menuitem.submenu item=submenuitem}
          {if $submenuitem.enable && $submenuitem.name!=='-'}
-           <a class="menuItemLevel2" onclick="window.open('{$submenuitem.url}','main','')" onmouseover="this.style.cursor = 'pointer'; this.style.color = '#9a1010';" onmouseout="this.style.color = '#414141';">
+           <a class="menuItemLevel2" onclick="window.open('{$submenuitem.url}','main','');" onmouseover="this.style.cursor = 'pointer'; this.style.color = '#9a1010';" onmouseout="this.style.color = '#414141';">
              {$submenuitem.name}
            </a>
          {/if}
