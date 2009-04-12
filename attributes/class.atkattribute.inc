@@ -2015,8 +2015,15 @@
      */
     function getModule()
     {
-      if ($this->m_module!="") return $this->m_module;
-      return $this->m_ownerInstance->m_module;
+      if ($this->m_module!="") 
+      {
+        return $this->m_module;
+      }
+      elseif(is_object($this->m_ownerInstance))
+      {
+        return $this->m_ownerInstance->m_module;
+      }
+      return '';
     }
 
     /**
@@ -2370,7 +2377,7 @@
         else
         {
           $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($this->fieldName(), $cmd));
-          $res = '<a href="javascript:void(0)" onclick="'.atk_htmlentities($call).'">'.$this->text("column_".$direction).'</a>';
+          $res = '<a href="javascript:void(0)" onclick="'.atk_htmlentities($call).'">'.$this->text("column_".$cmd).'</a>';
         }
       }
       return "";
