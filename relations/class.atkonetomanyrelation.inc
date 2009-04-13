@@ -111,7 +111,7 @@
      * @var boolean
      */
     var $m_useFilterForEditLink = true;
-    
+
     /**
      * Use referential key for load filter?
      *
@@ -127,7 +127,7 @@
      */
     var $m_headerName = "";
     var $m_footerName = "";
-    
+
     /**
      * Fields to exclude in the grid
      *
@@ -135,7 +135,7 @@
      * @var array
      */
     var $m_excludes = array();
-    
+
     /**
      * Default constructor.
      *
@@ -225,7 +225,7 @@
     {
       $this->m_useFilterForEditLink = $useFilter;
     }
-    
+
     /**
      * Use referential key for filtering the records. If you disable this only the
      * explicitly set destination filter will be used.
@@ -277,7 +277,7 @@
       {
         $grid->addFilter($this->parseFilter($this->m_destinationFilter, $record));
       }
-      
+
       $this->modifyDataGrid($grid, atkDataGrid::CREATE);
 
       return $grid;
@@ -297,10 +297,10 @@
       $this->modifyDataGrid($grid, atkDataGrid::RESUME);
       return $grid->render();
     }
-    
+
     /**
      * Modify grid.
-     * 
+     *
      * @param atkDataGrid $grid grid
      * @param int         $mode CREATE or RESUME
      */
@@ -311,12 +311,12 @@
       {
         $this->getDestination()->$method($grid, $mode);
       }
-      
+
       $method = $this->fieldName().'_modifyDataGrid';
       if (method_exists($this->getOwnerInstance(), $method))
       {
         $this->getOwnerInstance()->$method($grid, $mode);
-      }      
+      }
     }
 
     /**
@@ -619,7 +619,7 @@
         for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
         {
           $primkeyattr = &$this->m_ownerInstance->m_attribList[$ownerfields[$i]];
-          $filterelems[] = $this->m_refKey[0].".".$ownerfields[$i]."='".$this->escapeSQL($primkeyattr->value2db($record))."'";         
+          $filterelems[] = $this->m_refKey[0].".".$ownerfields[$i]."='".$this->escapeSQL($primkeyattr->value2db($record))."'";
         }
       }
       else
@@ -651,7 +651,7 @@
 
       return $prefix . $columnName;
     }
-    
+
     /**
      * Attempts to get a translated label which can be used when composing an "add" link
      *
@@ -735,7 +735,7 @@
     function _getLoadWhereClause($record)
     {
       if (!$this->m_useRefKeyForFilter) return '';
-      
+
       $whereelems = array();
 
       if (count($this->m_refKey)==0||$this->m_refKey[0]=="") $this->m_refKey[0]=$this->m_owner;
@@ -1011,7 +1011,7 @@
 
     /**
      * Adds a search condition for a given search value
-     * 
+     *
      * @param atkQuery $query The query to which the condition will be added.
      * @param String $table The name of the table in which this attribute
      *                      is stored
@@ -1100,7 +1100,7 @@
       * @param mixed    $value      The value to search
       * @param mixed    $searchmode The mode used when searching
       * @param String   $field      The name of the attribute
-      * @param String   $reftable   
+      * @param String   $reftable
       */
      function _callSearchConditionOnDestField(&$query, $table, $value, $searchmode, $field, $reftable)
      {
@@ -1241,7 +1241,22 @@
       $this->m_ownerInstance->m_postvars = array();
 
       $handler->setDialogSaveUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.add_process'));
-      $handler->handleSave(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.refresh'));
+      $handler->handleSave($this->getPartialSaveUrl());
+    }
+
+    /**
+     * assamble the partial save handler url
+     * this allows dynamically updating the attribute
+     */
+    public function getPartialSaveUrl()
+    {
+      return partial_url(
+        $this->m_ownerInstance->atkNodeType(),
+        'edit',
+        'attribute.' .
+        $this->fieldName() .
+        '.refresh'
+      );
     }
 
     /**
@@ -1362,7 +1377,7 @@
     {
       $this->m_footerName = $name;
     }
-    
+
     /**
      * Set the exclude fields for the grid
      *
@@ -1372,7 +1387,7 @@
     {
       $this->m_excludes = $excludes;
     }
-    
+
     /**
      * Get the exclude fields for the grid
      *

@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* Decomposed the partial_add_process to allow customization in the savehandler
+  url. [Martin]
 * Added MySQL config for setting the collate that is used for
   creating tables true the atkddl. [Sandy]
 + Added function for quoting of table and fieldnames. [Sandy]
@@ -15,17 +17,17 @@ Changes in ATK 6.3
 - Removed MySQL41 driver, use MySQLi instead. [Sandy]
 * Fixed locking problem in MySQL Driver. [Sandy]
 * atkColorPickerAttribute popup is now 1000 pixels wide in stead of 600. It
-  would not show the "select" button because the popup was too small. [Lineke] 
-* The atkDatagrid now also adds filters that are set in the node. When setting 
+  would not show the "select" button because the popup was too small. [Lineke]
+* The atkDatagrid now also adds filters that are set in the node. When setting
   a filter in for example the adminPage function it would not be set again
-  when the datagrid was refreshed (navigating through the records or changing 
+  when the datagrid was refreshed (navigating through the records or changing
   the "show" box). This would cause all records to be shown again. [Lineke]
-* Added classname to atkfckattribute and made a change to 
+* Added classname to atkfckattribute and made a change to
   class.atkunloadhelper.js to make sure that changes in a fckfield
   will be picked up and display a warning message when one leaves the page
   [Ruud]
 * The 'cancel' button on the extended search screen now works. [Tjeerd]
-+ Added function getValues to class.atkdb.inc. With this function it's 
++ Added function getValues to class.atkdb.inc. With this function it's
   possible to retrieve all values in a single column of a resultset. [Martijn]
 + Decomposed atkWriteLog into 2 functions atkWriteLog and atkWriteToFile,
   so the latter becomes an extra tool in atktools.inc. [Patrick]
