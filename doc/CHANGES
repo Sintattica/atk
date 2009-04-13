@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* Fixed cleaning/filtering numeric values in the number attribute which
+  caused critical database errors when searching for illegal chars. [Martin]
 * Decomposed the partial_add_process to allow customization in the savehandler
   url. [Martin]
 * Added MySQL config for setting the collate that is used for

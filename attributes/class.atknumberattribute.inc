@@ -32,11 +32,11 @@
     var $m_use_thousands_separator=false; // use the thousands separator when formatting a number
     var $m_decimalseparator;
     var $m_thousandsseparator;
-    
+
     // ids of separators in atk language file
     const SEPARATOR_DECIMAL  = 'decimal_separator';
     const SEPARATOR_THOUSAND = 'thousands_separator';
-    
+
     // default separator
     const DEFAULT_SEPARATOR = '.';
 
@@ -52,7 +52,7 @@
     {
       $this->atkAttribute($name,$flags|AF_NO_QUOTES, $size); // base class constructor
       $this->m_decimals = $decimals;
-      
+
       $this->m_decimalseparator = atktext(self::SEPARATOR_DECIMAL,'atk');
       $this->m_thousandsseparator = atktext(self::SEPARATOR_THOUSAND,'atk');
     }
@@ -90,13 +90,13 @@
       }
       return "";
     }
-    
+
     /**
      * Replace decimal separator (from the language file "decimal_separator")
      * with the standard separator ('.') so, for instance,  99,95 would become
      * 99.95 when language is set to 'nl'.
      * @static
-     * @deprecated 
+     * @deprecated
      * @param String $number The number that needs to be converted
      * @return String The converted number
      */
@@ -113,24 +113,24 @@
      * @return String The converted number
      */
     function removeSeparators($number, $decimal_separator="", $thousands_separator="")
-    { 
+    {
       if(empty($decimal_separator))   $decimal_separator = $this->m_decimalseparator;
       if(empty($thousands_separator)) $thousands_separator = $this->m_thousandsseparator;
-     
+
       if($decimal_separator == $thousands_separator)
       {
         atkwarning('invalid thousandsseparator. identical to the decimal_separator');
         $thousands_separator = '';
       }
-           
+
       if(strstr($number,$decimal_separator) !== false)
   	  {
   	    // check invalid input
-        if(substr_count($number,$decimal_separator) > 2) return $number; 
-        
+        if(substr_count($number,$decimal_separator) > 2) return $number;
+
         $number = str_replace($thousands_separator,'',$number);
   	    $number = str_replace($decimal_separator,self::DEFAULT_SEPARATOR,$number);
-  	    
+
   	    if(substr_count($number,self::DEFAULT_SEPARATOR) > 1)
   	    {
   	      $parts = explode(self::DEFAULT_SEPARATOR,$number);
@@ -140,32 +140,40 @@
   	  } else {
   	    $number = str_replace($thousands_separator,'',$number);
   	  }
-  	  
+
+      /** cast the number if there are still any illegal chars **/
+      if(!is_numeric($number))
+      {
+        $number = ($this->m_decimals>0)
+          ? (float) $number
+          : (int) $number;
+      }
+
   	  return $number;
     }
-    
+
     /**
      * Use the thousands separator when formatting a number
-     * 
-     * @param bool $use_separator 
-     * @return bool 
+     *
+     * @param bool $use_separator
+     * @return bool
      */
     public function setUseThousandsSeparator($use_separator)
     {
       $this->m_use_thousands_separator = (bool) $use_separator;
     }
-    
+
     /**
-     * Returns true if we 're using the thousands separator 
+     * Returns true if we 're using the thousands separator
      * when formatting the number
-     * 
-     * @return bool 
+     *
+     * @return bool
      */
     public function getUseThousandsSeparator()
     {
       return $this->m_use_thousands_separator;
     }
-    
+
     /**
      * Get the thousands separator
      *
@@ -175,7 +183,7 @@
     {
       return $this->m_thousandsseparator;
     }
-    
+
     /**
      * Set the thousands separator
      *
@@ -185,7 +193,7 @@
     {
       $this->m_thousandsseparator = $separator;
     }
-    
+
     /**
      * Get the decimal separator
      *
@@ -195,7 +203,7 @@
     {
       return $this->m_decimalseparator;
     }
-    
+
     /**
      * Set the decimal separator
      *
@@ -205,7 +213,7 @@
     {
       $this->m_decimalseparator = $separator;
     }
-    
+
     /**
      * Formats the number based on setting in the language file
      *
@@ -218,13 +226,13 @@
     {
       if(empty($decimal_separator))   $decimal_separator = $this->m_decimalseparator;
       if(empty($thousands_separator)) $thousands_separator = $this->m_thousandsseparator;
-      
+
       if($decimal_separator == $thousands_separator)
       {
         atkwarning('invalid thousandsseparator. identical to the decimal_separator');
         $thousands_separator = '';
       }
-      
+
       return number_format($number,$this->m_decimals,$decimal_separator,($this->m_use_thousands_separator) ? $thousands_separator : '');
     }
 
@@ -233,7 +241,7 @@
      * file so, for instance, 99.95 would be converted to 99,95 when language
      * is set to 'nl'.
      * @static
-     * @deprecated 
+     * @deprecated
      * @param String $number The number that needs to be converted
      * @return String The converted number
      */
@@ -402,7 +410,7 @@
     /**
      * Returns a piece of html code that can be used to search for an
      * attribute's value.
-     * 
+     *
      * @param array $record Array with values
      * @param boolean $extended if set to false, a simple search input is
      *                          returned for use in the searchbar of the
@@ -455,7 +463,7 @@
 
     /**
      * Process the search value
-     * 
+     *
      * @param string $value The search value
      * @param string $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
@@ -467,7 +475,7 @@
       if (!is_array($value))
       {
         $slash = strpos($value, '/'); // Support for 'from/to' searches.
-        $str = $value;
+        $str = trim($value);
         if ($slash!==false)
         {
           $value = array();
@@ -535,7 +543,7 @@
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       $searchcondition = "";
-      
+
       $value = $this->processSearchValue($value,$searchmode);
 
       if ($searchmode!="between")
