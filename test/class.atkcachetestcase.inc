@@ -13,7 +13,7 @@
  * 
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
- * @version $Revision$
+ * @version $Revision: 5898 $
  * $Id$
  */     
 class atkCacheTestCase extends UnitTestCase

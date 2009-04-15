@@ -12,7 +12,7 @@
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
  * @version $Revision: 5230 $
- * $Id: resource.ui.php 5230 2007-08-30 08:08:05Z ivo $
+ * $Id$
  */
 
 /**

@@ -13,7 +13,7 @@
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision: $
-   * $Id: $
+   * $Id$
    */
 
   require_once($config_atkroot."atk/class.atkconfig.inc");

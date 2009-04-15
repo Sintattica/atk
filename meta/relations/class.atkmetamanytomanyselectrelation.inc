@@ -11,7 +11,7 @@
  * @copyright (c) 2005 Peter C. Verhage <peter@achievo.org>
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
- * @version $Revision$
+ * @version $Revision: 6320 $
  * $Id$
  */
 

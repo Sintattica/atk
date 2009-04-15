@@ -13,7 +13,7 @@
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision: 5149 $
-   * $Id: class.atktesttraverser.inc 5149 2007-08-08 15:59:28Z boy $
+   * $Id$
    */
 
   /**

@@ -13,7 +13,7 @@
  * @copyright (c) 2006 Ibuildings.nl BV
  * @license see doc/LICENSE
  *
- * @version $Revision$
+ * @version $Revision: 6320 $
  * $Id$
  */
 

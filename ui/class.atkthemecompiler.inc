@@ -12,7 +12,7 @@
    * @copyright (c)2004-2006 Ivo Jansch
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
-   * @version $Revision$
+   * @version $Revision: 6309 $
    * $Id$
    */
   atkimport('atk.ui.atktheme');

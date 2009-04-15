@@ -12,7 +12,7 @@
    * @author Edgar van Ispelen <edgar@ibuildings.nl>
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
-   * @version $Revision$
+   * @version $Revision: 6107 $
    * $Id $
    */
 

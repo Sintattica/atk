@@ -14,7 +14,7 @@
  * @author Sandy Pleyte <sandy@achievo.org>
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
- * @version $Revision$
+ * @version $Revision: 6309 $
  * $Id$
  */
 abstract class atkCache implements ArrayAccess 

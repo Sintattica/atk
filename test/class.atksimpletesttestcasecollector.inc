@@ -12,7 +12,7 @@
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision: 5195 $
-   * $Id: class.atksimpletesttestcasecollector.inc 5195 2007-08-24 13:10:56Z marc $
+   * $Id$
    */
 
   atkimport("atk.test.atktestcasecollector");

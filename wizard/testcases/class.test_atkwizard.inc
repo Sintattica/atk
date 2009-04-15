@@ -15,7 +15,7 @@ atkimport('atk.wizard.atkwizardpanel');
    * @license http://www.achievo.org/atk/licensing/ ATK open source license
    *
    * @version $Revision: $
-   * $Id:  $
+   * $Id$
    */
   
   /**

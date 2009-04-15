@@ -12,7 +12,7 @@
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
  * @version $Revision: 4362 $
- * $Id: function.atkthemeimg.php 4362 2006-11-30 16:06:25Z lineke $
+ * $Id$
  */
 
 /**

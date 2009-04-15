@@ -33,7 +33,7 @@
    * environments that shouldn't actually send the mails)
    *
    * @author Peter C. Verhage <peter@ibuildings.nl>
-   * @version $Revision$
+   * @version $Revision: 6320 $
    *
    * @package atk
    * @subpackage utils

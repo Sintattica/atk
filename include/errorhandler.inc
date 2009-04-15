@@ -13,7 +13,7 @@
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision: $
-   * $Id: $
+   * $Id$
    */
 
   set_error_handler('atkErrorHandler');

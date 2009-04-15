@@ -4,7 +4,7 @@
  * Makes the CSS based list menu work in Internet Explorer.
  *
  * @author Peter C. Verhage <peter@ibuildings.nl>
- * @version $Revision$
+ * @version $Revision: 4893 $
  */
 DHTMLListMenu = function(element) {
   this.initialize(element);

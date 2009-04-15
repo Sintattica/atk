@@ -3,7 +3,7 @@
    * @package atk
    * @subpackage javascript
    *
-   * @version $Revision$
+   * @version $Revision: 1684 $
    * $Id$
    */
 

@@ -12,7 +12,7 @@
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
  * @version $Revision: 5835 $
- * $Id: class.atkpage.inc 5835 2008-03-31 15:21:19Z peter $
+ * $Id$
  */
 
 /**

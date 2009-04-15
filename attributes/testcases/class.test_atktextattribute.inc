@@ -13,7 +13,7 @@
      * @copyright (c)2005 Ivo Jansch
      * @license http://www.achievo.org/atk/licensing ATK Open Source License
      *
-     * @version $Revision$
+     * @version $Revision: 5798 $
      * $Id$
      */
   

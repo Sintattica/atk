@@ -15,7 +15,7 @@
    *
    * $Id$
    * @author Yury Golovnya  <ygolovnya@ccenter.utel.com.ua>
-   * @version $Revision$
+   * @version $Revision: 4362 $
    */
 
 

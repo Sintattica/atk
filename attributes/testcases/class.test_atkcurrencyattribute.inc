@@ -13,7 +13,7 @@
    * @copyright (c)2007 Ibuildings
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
-   * $Id: class.test_atknumberattribute.inc 5272 2007-09-10 21:06:19Z yury $
+   * $Id$
    * @author Yury Golovnya  <ygolovnya@achievo.org>
    * @version $Revision: 5272 $
    */

@@ -13,7 +13,7 @@
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision: $
-   * $Id: $
+   * $Id$
    */
 
   if (atk_value_in_array($config_smart_debug))

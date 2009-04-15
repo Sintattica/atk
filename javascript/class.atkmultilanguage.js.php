@@ -11,7 +11,7 @@
    * @copyright (c)2000-2004 Ibuildings.nl BV
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
-   * @version $Revision$
+   * @version $Revision: 4173 $
    * $Id$
    */
 
@@ -54,7 +54,7 @@
    *
    * @author Peter Verhage <peter@ibuildings.nl>
    * @author Ivo Jansch <ivo@ibuildings.nl>
-   * @version $Revision$
+   * @version $Revision: 4173 $
    *
    * $Id$
    */

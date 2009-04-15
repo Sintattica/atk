@@ -15,7 +15,7 @@
    *
    * $Id$
    * @author Yury Golovnya  <ygolovnya@achievo.org>
-   * @version $Revision$
+   * @version $Revision: 5997 $
    */
 
 

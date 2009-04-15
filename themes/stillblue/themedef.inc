@@ -12,7 +12,7 @@
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision: 5798 $
-   * $Id: themedef.inc 5798 2008-03-05 13:41:26Z guido $
+   * $Id$
    */
 
   /**
