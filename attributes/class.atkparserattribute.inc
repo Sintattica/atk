@@ -30,9 +30,9 @@
 
     /**
      * Constructor
-     * @param $name Name of the attribute
-     * @param $text text field
-     * @param $flags Flags for this attribute
+     * @param string $name Name of the attribute
+     * @param string $text text field
+     * @param int $flags Flags for this attribute
      */
     function atkParserAttribute($name, $text, $flags=0)
     {
@@ -56,7 +56,7 @@
 
     /**
      * VOID implementation.. parserAttribute has no data associated with it, so you can't search it.
-     * @param $record Array with fields
+     * @param array $record Array with fields
      */
     function search($record="")
     {
@@ -65,7 +65,7 @@
 
     /**
      * Parses a record
-     * @param $record  Array with fields
+     * @param array $record  Array with fields
      * @return Parsed string
      */
     function display($record)

@@ -301,8 +301,8 @@
     /**
      * Get the searchmode for nested/child attributes.
      *
-     * @param $searchmode string|array searchmode
-     * @param $childname  string       the child attribute's name
+     * @param string|array $searchmode searchmode
+     * @param string       $childname  the child attribute's name
      * @return string|array the child searchmode
      */
     protected function getChildSearchMode($searchmode, $childname)
@@ -375,8 +375,8 @@
     /**
      * Parses the destination filter
      *
-     * @param $destFilter sting filter to parse
-     * @param $record the current record
+     * @param string $destFilter filter to parse
+     * @param array $record the current record
      * @return $filter string filter.
      */
     function parseFilter($destFilter,$record)

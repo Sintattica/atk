@@ -41,8 +41,8 @@
   {
     /**
      * Constructor
-     * @param $name Name of the attribute
-     * @param $flags Flags for this attribute
+     * @param string $name Name of the attribute
+     * @param int $flags Flags for this attribute
      */
     function atkBoolAttribute($name, $flags=0)
     {
@@ -129,7 +129,7 @@
 
     /**
      * Get the value if it exits, otherwise return 0
-     * @param $rec Array with values
+     * @param array $rec Array with values
      * @return String with slashes
      */
     function value2db($rec)
@@ -149,7 +149,7 @@
      *                          search page. The atkAttribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
-     * @param $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return piece of html code with a checkbox
      */
     function search($record="", $extended=false, $fieldprefix="")
@@ -186,7 +186,7 @@
 
     /**
      * Returns a displayable string for this value.
-     * @param $record Array with boolean field
+     * @param array $record Array with boolean field
      * @return yes or no
      */
     function display($record)

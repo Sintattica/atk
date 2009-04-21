@@ -50,6 +50,13 @@
       $this->m_results[$function] = $result;
     }
 
+    /**
+     * Call the function
+     *
+     * @param string $function
+     * @param array $params
+     * @return mixed The result
+     */
     function call($function, $params)
     {            
       if (isset($this->m_results[$function]))
@@ -66,6 +73,13 @@
     
     // ===============================  MOCKED METHODS ===================================/
     
+    /**
+     * Get a list of tabs for a certain action.
+     * @param String $action The action for which you want to retrieve the
+     *                       list of tabs.
+     * @return array The list of tabnames.
+     *
+     */
     function getTabs($action) 
     { 
       if (isset($this->m_results["getTabs"])) 
@@ -73,6 +87,13 @@
       return parent::getTabs($action);
     }
 
+    /**
+     * Check if the user has the rights to access existing tabs and
+     * removes tabs from the list that may not be accessed
+     *
+     * @param array $tablist Array containing the current tablist
+     * @return array with disable tabs
+     */
     function checkTabRights(&$tablist)
     { 
       if (isset($this->m_results["checkTabRights"]))
@@ -85,6 +106,34 @@
       }
     }
     
+    /**
+     * Retrieve records from the database.
+     *
+     * Note that if 'atksearch' is set in the request vars, the search
+     * expressions are automatically added as extra where-clauses.
+     *
+     * @todo Handling atksearch in this method is dirty, this should be
+     *       controlable with parameters.
+     *
+     * @param String $selector Sql expression used as a where-condition, to
+     *                         retrieve only records that match the
+     *                         expression.
+     * @param String $order The order in which to retrieve the records.
+     * @param array $limit Array containing an "offset" and a "limit" to
+     *                     retrieve only part of the resultset. (Pass NULL or
+     *                     an empty string to retrieve all records.)
+     * @param array $excludeList List of attributes to be excluded from the
+     *                           query. By default, the attributes that should
+     *                           be loaded are determined by the $mode
+     *                           parameter. Using $excludeList, you can
+     *                           explicitly exclude attributes.
+     * @param array $includeList List of attributes to include in the query,
+     *                           regardless of the $mode parameter.
+     * @param String $mode The action for which the selectDb is called.
+     *                     This param is used to determine which attributes
+     *                     to include in the query and which not to include.
+     * @return array Array containing the retrieved records
+     */
     function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="", $mode="")
     {
       if(isset($this->m_results["selectDb"]))

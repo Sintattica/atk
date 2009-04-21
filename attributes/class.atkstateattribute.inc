@@ -50,12 +50,12 @@
     * state_abbrev is the database attribute that holds state abbrevation data as AK,CA,NY
     * It will display the full state name.
     *
-    * @param $name Name of the attribute
-    * @param $switch Choose usa for USA states
-    * @param $optionArray Array with options
-    * @param $valueArray Array with values. If you don't use this parameter,
+    * @param string $name Name of the attribute
+    * @param string $switch Choose usa for USA states
+    * @param array $optionArray Array with options
+    * @param array $valueArray Array with values. If you don't use this parameter,
     *                    values are assumed to be the same as the options.
-    * @param $flags Flags for the attribute
+    * @param int $flags Flags for the attribute
     * @param bool $defaulttocurrent Set the default selected state to the 
     *                               current state based on the atk language
     */

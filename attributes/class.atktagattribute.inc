@@ -11,8 +11,8 @@
    * @copyright (c)2006 Ibuildings.nl BV
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
-   * @version $Revision: 6305 $_COOKIE
-   * $id$
+   * @version $Revision: 6305 $
+   * $Id$
    */
 
   /**
@@ -29,7 +29,9 @@
   atkimport("atk.attributes.atktextattribute");
 
   /**
-   * ...
+   * This attribute is used for adding tags to a node
+   * For example: This attribute can be used in a blog node
+   * for adding tags to the blogpost.
    *
    * @author Dennis Luitwieler <dennis@ibuildings.nl>
    * @package atk
@@ -46,6 +48,18 @@
     var $m_localKey = "";
     var $m_nonematching = array();
 
+    /**
+     * Constructor
+     *
+     * @param string $name
+     * @param string $destination
+     * @param string $destinationfield
+     * @param string $link
+     * @param int $mode
+     * @param int $flags
+     * @param int $size
+     * @return atkTagAttribute
+     */
     function atkTagAttribute($name, $destination, $destinationfield ,$link, $mode=TA_ADD, $flags=0, $size=0)
     {
       if ($size==0)
@@ -81,6 +95,7 @@
     /**
      * Creates an instance of the node we are searching on and stores it
      * in a member variable ($this->m_destInstance)
+     * @return bool True if successful, false if not.
      */
     function createDestinationInstance()
     {
@@ -113,8 +128,8 @@
     /**
      * Validate the input based on the current mode.
      *
-     * @param Array $rec
-     * @param String $mode
+     * @param Array $rec The record which holds the values to validate
+     * @param String $mode The mode we're in
      * @return True on validation, False otherwise.
      */
     function validate(&$rec, $mode)
@@ -156,6 +171,16 @@
       return (atk_strlen($keyword) == atk_strlen($replaced));    
     }
 
+    /**
+     * Returns a piece of html code that can be used in a form to edit this
+     * attribute's value.
+     *
+     * @param array $rec The record that holds the value for this attribute.
+     * @param String $prefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
+     * @return String A piece of htmlcode for editing this attribute
+     */
     function edit($rec="", $prefix="", $mode="")
     {
       atkdebug("edit of attribute '$this->fieldName()'");
@@ -181,6 +206,12 @@
       }
     }
 
+    /**
+     * Display default tags
+     *
+     * @param string $prefix
+     * @return string The HTML code to display the default tags
+     */
     function displayDefaultTags($prefix='')
     {
       $id = $this->getHtmlid($prefix);
@@ -213,6 +244,12 @@
       return $html;
     }
 
+    /**
+     * Refill record
+     *
+     * @param array $orgrec
+     * @return string
+     */
     function refillRecord($orgrec)
     {
       if(!$this->createLink())
@@ -260,6 +297,12 @@
       return $html.nl2br(htmlspecialchars($record[$this->fieldName()]));
     }
 
+    /**
+     * Convert array to string
+     *
+     * @param array $array The array to convert
+     * @return string String representation of the array
+     */
     function arrayToString($array)
     {
       $values=array();
@@ -269,6 +312,7 @@
       }
       return implode(", ",$values);
     }
+    
     /**
      * The actual function that does the searching
      * @param String $searchstring The string to search for
@@ -294,6 +338,12 @@
       return $result;
     }
     
+    /**
+     * Get destination records
+     *
+     * @param mixed $token The value of the destinationfield to select
+     * @return array Array with records that match the token
+     */
     function getDestinationRecords($token)
     {
       $selector = $this->m_destInstance->m_table.".".$this->m_destinationfield."='".escapeSQL($token)."'";
@@ -319,6 +369,11 @@
       return $no_match;
     }
 
+    /**
+     * Get default tags from the database
+     *
+     * @return array Array with default tag records
+     */
     function _getDefaultTags()
     {
       if($this->createDestinationInstance())
@@ -328,6 +383,14 @@
       return array();
     }
 
+    /**
+     * Store the value of this attribute
+     *
+     * @param atkDb $db The database object
+     * @param array $rec The record to store
+     * @param string $mode The mode we're in
+     * @return bool True if succesfull, false if not
+     */
     function store($db, $rec, $mode)
     {
       $resultset = array();
@@ -437,11 +500,10 @@
       return true;
     }   
     
-
     /**
      * load function
-     * @param $notused
-     * @param $record
+     * @param atkDb $notused
+     * @param array $record
      */
     function load($notused, $record)
     {
@@ -453,14 +515,58 @@
       return array();
     }
 
+    /**
+     * Dummy implementation
+     *
+     */
     function addToQuery() {}
+    
+    /**
+     * Dummy implementation
+     *
+     */
     function hide() {}
+    
+    /**
+     * Dummy implementation
+     *
+     */
     function search() {}
+    
+    /**
+     * Dummy implementation
+     *
+     */
     function getSearchModes() { return array();}
+    
+    /**
+     * Dummy implementation
+     *
+     */
     function searchCondition() {}
+    
+    /**
+     * Dummy implementation
+     *
+     */
     function getSearchCondition() {}
+    
+    /**
+     * Dummy implementation
+     *
+     */
     function fetchMeta() {}
+    
+    /**
+     * Dummy implementation
+     *
+     */
     function dbFieldSize() {}
+    
+    /**
+     * Dummy implementation
+     *
+     */
     function dbFieldType() {}
 
     /**
@@ -565,9 +671,9 @@
 
     /**
      * Checks if a key is not an array
-     * @param $key   field containing the key values
-     * @param $field field to return if an array
-     * @return value of $field
+     * @param array $key   field containing the key values
+     * @param string $field field to return if an array
+     * @return mixed value of $field
      */
     function checkKeyDimension($key, $field="id")
     {

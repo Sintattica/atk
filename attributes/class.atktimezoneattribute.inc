@@ -34,8 +34,8 @@
     *
     * <b>Example:</b>
     *        $this->add(new atkTimeZoneAttribute("timezone",AF_OBLIGATORY));
-    * @param $name Name of the attribute
-    * @param $flags Flags for the attribute
+    * @param string $name Name of the attribute
+    * @param int $flags Flags for the attribute
     */
     function atkTimeZoneAttribute($name, $flags = 0)
     {

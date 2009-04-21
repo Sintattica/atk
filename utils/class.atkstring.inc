@@ -236,7 +236,7 @@ class atkString
    *
    * @param  string  $string text to truncate
    * @param  integer $max Maximum length of the total result string
-   * @param  string  text to append to the end of the truncated string 
+   * @param  string  $replace text to append to the end of the truncated string 
    * @return string  truncated sting
    *
    */

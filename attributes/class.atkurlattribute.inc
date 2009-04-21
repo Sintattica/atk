@@ -59,6 +59,19 @@
   	var $m_allowWrap = false;
   	var $m_stripHttp = false;
 
+  	/**
+  	 * The atk url attribute
+  	 *
+  	 * @param String $name Name of the attribute (unique within a node, and
+     *                     for most attributes, corresponds to a field in
+     *                     the database.
+     * @param int $flags Flags for the attribute.
+     * @param mixed $size  The size(s) of the attribute. See the $size
+     *                     parameter of the setAttribSize() method for more
+     *                     information on the possible values of this
+     *                     parameter.
+  	 * @return atkUrlAttribute
+  	 */
   	function atkUrlAttribute($name, $flags = 0, $size=0)
   	{
   		if (AF_POPUP === ($flags & AF_POPUP)) 
@@ -82,7 +95,18 @@
   		$this->atkAttribute($name, $flags, $size);
   	}
 
-  	function display($record)
+  	/**
+     * Returns a displayable string for this value, to be used in HTML pages.
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $mode The display mode ("view" for viewpages, or "list"
+     *                     for displaying in recordlists, "edit" for
+     *                     displaying in editscreens, "add" for displaying in
+     *                     add screens. "csv" for csv files. Applications can
+     *                     use additional modes.
+     * @return String HTML String
+     */
+  	function display($record, $mode="")
   	{
   		$output = '';
 
@@ -122,6 +146,15 @@
       $this->m_accepts_url_flag = $accepts_flag;
   	}
   	
+  	/**
+     * Checks if a value is valid.
+     *
+     * @param array $record The record that holds the value for this
+     *                      attribute. If an error occurs, the error will
+     *                      be stored in the 'atkerror' field of the record.
+     * @param String $mode The mode for which should be validated ("add" or
+     *                     "update")
+     */
   	function validate(&$record, $mode)
   	{
   	   $this->validateUrl($record, $mode, true);

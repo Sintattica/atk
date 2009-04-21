@@ -73,9 +73,9 @@
 
     /**
      * Constructor
-     * @param $name Name of the attribute
-     * @param $editflags These define what buttons the toolbar contains.
-     * @param $flags Flags for this attribute
+     * @param string $name Name of the attribute
+     * @param int $editflags These define what buttons the toolbar contains.
+     * @param int $flags Flags for this attribute
      */
     function atkWysiwygAttribute($name, $editflags=WW_ALL, $flags=0)
     {
@@ -83,6 +83,12 @@
       $this->atkTextAttribute($name,12,$flags); // base class constructor
     }
 
+    /**
+     * Do we support the given flag
+     *
+     * @param int $flag
+     * @return bool True if supported, false if not
+     */
     function editmode($flag)
     {
       // first check special WW_ALL flag, which is zero, but results
@@ -92,11 +98,11 @@
       return (($flags & $flag) == $flag);
     }
 
-
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
-     * @param $record Array with fields
+     * @param array $record Array with fields
+     * @param string $fieldprefix The prefix for this field
      * @return piece of html code with a textarea
      */
     function edit($record="", $fieldprefix="")
@@ -141,12 +147,32 @@
       }
     }
 
-    function display($record)
+    /**
+     * Returns a displayable string for this value, to be used in HTML pages.
+     *
+     * The regular atkAttribute uses PHP's nl2br() and htmlspecialchars()
+     * methods to prepare a value for display, unless $mode is "cvs".
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $mode The display mode ("view" for viewpages, or "list"
+     *                     for displaying in recordlists, "edit" for
+     *                     displaying in editscreens, "add" for displaying in
+     *                     add screens. "csv" for csv files. Applications can
+     *                     use additional modes.
+     * @return String HTML String
+     */
+    function display($record, $mode="")
     {
       return $record[$this->fieldName()];
     }
 
-    // overide the fetchValue function to perform some content cleaning
+    /**
+     * overide the fetchValue function to perform some content cleaning
+     *
+     * @param array $rec The array with html posted values ($_POST, for
+     *                        example) that holds this attribute's value.
+     * @return String The internal value
+     */
     function fetchValue($rec)
     {
      // TODO: value is replaced in the DB
@@ -172,6 +198,13 @@
     return $content;
     }
 
+    /**
+     * Strip tags
+     *
+     * @param string $ostring The string to strip the tags from
+     * @param array $syntax Array with tags to strip
+     * @return String The stripped string
+     */
     function stripTags($ostring, $syntax)
     {
       foreach ($syntax as $toreplace => $replaceby)
@@ -182,6 +215,14 @@
      return $ostring;
     }
 
+    /**
+     * Render the editor
+     *
+     * @param string $fieldname
+     * @param string $current_value
+     * @param string $viewselectbox
+     * @return string The HTML code for the editor
+     */
     function renderEditor($fieldname, $current_value="", $viewselectbox)
     {
       global $HTTP_USER_AGENT, $insertat_editor, $navegador;
@@ -217,7 +258,7 @@
       // Save function:
       $result.= "\n function ".$this->m_editorname."_save() { ";
 
-      // Contingut: (la funció contingut_html ja fa strip_body si cal)
+      // Contingut: (la funciï¿½ contingut_html ja fa strip_body si cal)
       $result.= "\n var cont = get_html('".$this->m_editorname."');";
       // Posem el valor al input hidden:
       $result.= "\n document.entryform.".$fieldname.".value = cont; ";
@@ -277,7 +318,7 @@
       {
         if( !strcmp($navegador,"NS") )
         {
-          $result.= "<!-- Accessor de propietats a través del plug-in de Esker -->";
+          $result.= "<!-- Accessor de propietats a travï¿½s del plug-in de Esker -->";
           $result.= "<EMBED type=\"application/x-eskerplus\" id=PropertyAccessor  classid=\"clsid:BB356E70-A100-11D4-8AF1-00104B4228F5\" codebase=\"accessor.ocx#Version=1,0,0,1\" width=2 height=2 >";
 
           $result.= "<!-- DEInsertTableParam Object -->";
@@ -304,19 +345,19 @@
       $result.= "</td></tr></table>";
 
       $result.= "\n <script language =javascript >";
-      // Pel contingut i els settings inicials: cal intents asíncrons i recurrents ...
+      // Pel contingut i els settings inicials: cal intents asï¿½ncrons i recurrents ...
       // Farem:
       // 		Lletra: Arial
       // 		Referenciat de la variable JS (que senyala a l'objecte Java del <embed del editor )
       //		Posem contingut inicial
 
-      // Preparació del $content_inicial:
+      // Preparaciï¿½ del $content_inicial:
       $current_value = str_replace('"',"'",$current_value);
       $car_aux = "\r\n";
       $current_value = ereg_replace($car_aux,'',$current_value);
       $current_value_aux = '"'.$current_value.'"';
 
-      //  Es farà d'una forma o d'altre en funció del navegador:
+      //  Es farï¿½ d'una forma o d'altre en funciï¿½ del navegador:
       if( !strcmp($navegador,"NS") ){
       $result.= "\n ".$this->m_editorname."_timerID=setInterval(\"".$this->m_editorname."_inicial()\",100);";
       $result.= "\n function ".$this->m_editorname."_inicial(){ ";
@@ -347,6 +388,11 @@
       return $result;
     }
 
+    /**
+     * Get the buttons for the editor
+     *
+     * @return array with buttons
+     */
     function getButtons()
     {
       $buttons = array();
@@ -474,16 +520,27 @@
       return $buttons;
     }
 
+    /**
+     * Get the edit flags
+     *
+     * @return int The edit flags
+     */
     function getEditFlags()
     {
       return $this->m_editflags;
     }
 
+    /**
+     * Create a button for the editor
+     *
+     * @param string $name
+     * @param string $function Function name
+     * @return string the HTML code for the button
+     */
     function button($name, $function)
     {
       return "<a href='' onclick=\"obj_editor=".$this->m_editorname.";  $function(); return false;\" onmouseover=\"load_image('".$this->m_editorname."_$name','".$this->m_urlpath."images/$name"."_focus.gif');\" onmouseout=\"load_image('".$this->m_editorname."_$name','".$this->m_urlpath."images/$name.gif')\" ><img name='".$this->m_editorname."_$name' src='".$this->m_urlpath."images/$name.gif' alt='".atktext("wysiwyg_$name")."' border=0 align=absmiddle ></a> ";
     }
-
   }
 
 ?>

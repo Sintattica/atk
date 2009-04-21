@@ -33,6 +33,8 @@
 
     /**
      * Returns the language selector
+     * 
+     * @param string $prefix
      * @return html select box ready for displaying
      */
     function getSelector($prefix="")
@@ -75,8 +77,8 @@
 
     /**
      * Constructor
-     * @param $name Name of the attribute
-     * @param $flags Flags for this attribute
+     * @param string $name Name of the attribute
+     * @param int $flags Flags for this attribute
      */
     function atkMlSelectorAttribute($name="", $flags=0)
     {
@@ -87,11 +89,16 @@
     }
 
     /**
-     * Returns a piece of html code which can be used to select a language
-     * @param $record array with fields
-     * @return piece of html code with a textarea
+     * Returns a piece of html code that can be used in a form to edit this
+     * attribute's value.
+     *
+     * @param array $record The record that holds the value for this attribute.
+     * @param String $prefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
+     * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record="", $prefix="")
+    function edit($record="", $prefix="", $mode="")
     {
       /* register javascript */
       $page = &atkPage::getInstance();
@@ -120,7 +127,7 @@
 
     /**
      * Search language selector
-     * @param $record array with fields
+     * @param array $record array with fields
      * @return search field
      */
     function search($record="")
@@ -131,7 +138,7 @@
     /**
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
-     * @param $record Array with values
+     * @param array $record Array with values
      * @return Piece of htmlcode
      */
     function hide($record="")
@@ -142,7 +149,7 @@
     /**
      * No function, but is necessary
      */
-    function store($a, $b)
+    function store()
     {
       return true;
     }
@@ -150,7 +157,7 @@
     /**
      * No function, but is necessary
      */
-    function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec, $level, $mode)
+    function addToQuery()
     {}
 
     /**
@@ -161,6 +168,20 @@
       return "";
     }
 
+    /**
+     * Adds the attribute's edit / hide HTML code to the edit array.
+     *
+     * This method is called by the node if it wants the data needed to create
+     * an edit form.
+     *
+     * This is a framework method, it should never be called directly.
+     *
+     * @param String $mode     the edit mode ("add" or "edit")
+     * @param array  $arr      pointer to the edit array
+     * @param array  $defaults pointer to the default values array
+     * @param array  $error    pointer to the error array
+     * @param String $fieldprefix   the fieldprefix
+     */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
       $lngs = $this->getLanguages();

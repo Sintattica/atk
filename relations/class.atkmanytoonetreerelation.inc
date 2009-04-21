@@ -41,9 +41,9 @@
 
     /**
      * Constructor
-     * @param $name Name of the attribute
-     * @param $destination Destination node for this relation
-     * @param $flags Flags for the relation
+     * @param string $name Name of the attribute
+     * @param string $destination Destination node for this relation
+     * @param int $flags Flags for the relation
      */
     function atkManyToOneTreeRelation($name, $destination, $flags=0)
     {
@@ -86,9 +86,7 @@
 
     /**
      * Returns a piece of html code that can be used in a form to search
-     * @param $record Record
-     * @param $size Size of the editbox
-     * @param $maxsize Maxsize of the editbox
+     * @param array $record Record
      * @return Piece of html code that can  be used in a form to edit this
      */
     function search($record="")

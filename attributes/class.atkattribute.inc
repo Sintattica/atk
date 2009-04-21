@@ -918,7 +918,7 @@
 
     /**
      * Add a javascript onchange event handler.
-     * @param $jscode A block of valid javascript code.
+     * @param string $jscode A block of valid javascript code.
      * @return atkAttribute Returns the instance of this attribute.
      */
     function addOnChangeHandler($jscode)

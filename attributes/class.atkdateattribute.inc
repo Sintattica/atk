@@ -750,7 +750,7 @@
      *                          search page. The atkAttribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
-     * @param $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return piece of HTML code
      */
     function search($record="", $extended=false, $fieldprefix="")
@@ -892,9 +892,9 @@
      * Makes the search conditions if the normal conditions are
      * not met and if given date is an array,
      * for example when only the year or year-month is given
-     * @param $query Query which is given in getSearchCondition
-     * @param $table Table on which the condition must be executed
-     * @param $value Array with values given for the search
+     * @param atkQuery $query Query which is given in getSearchCondition
+     * @param string $table Table on which the condition must be executed
+     * @param array $value Array with values given for the search
      * @return String YYYY-MM or YYYY
      */
     function _getDateArraySearchCondition($query,$table,$value)
@@ -921,7 +921,7 @@
     /**
      * Checks which of the two values are filled in the array
      * and returns them
-     * @param $value Array with 3 fields (year, month, day)
+     * @param array $value Array with 3 fields (year, month, day)
      * @return String YYYY-MM or YYYY
      */
     function _MakeDateForCondition($value)
@@ -934,7 +934,7 @@
     /**
     * Checks which of the two values are filled in the array
     * and returns the DATE_FORMAT for the database
-    * @param $value Array with 3 fields (year, month, day)
+    * @param array $value Array with 3 fields (year, month, day)
     * @return String DATE_FORMAT
     */
     function _SetDateFormat($value)
@@ -946,7 +946,7 @@
 
     /**
      * Convert date array to database value
-     * @param $rec database record with a date attribute
+     * @param array $rec database record with a date attribute
      *             field $rec[{name of the date attribute}]
      * @return database value for date
      */
@@ -968,7 +968,7 @@
 
     /**
      * Convert database value to date array
-     * @param $rec database record with date field
+     * @param array $rec database record with date field
      * @return array with 3 fields (year, month, day)
      */
     function db2value($rec)
@@ -981,7 +981,7 @@
 
     /**
      * Return the HTTP post values for this attribute
-     * @param $postvars the HTTP post vars
+     * @param array $postvars the HTTP post vars
      * @return array with 3 fields (year, month, day)
      */
     function fetchValue($postvars)
@@ -1034,9 +1034,9 @@
 
     /**
      * Validate's dates
-     * @param $record Record that contains value to be validated.
+     * @param array $record Record that contains value to be validated.
      *                 Errors are saved in this record
-     * @param $mode can be either "add" or "update"
+     * @param string $mode can be either "add" or "update"
      * @return $record
      */
     function validate(&$record, $mode)
@@ -1109,7 +1109,7 @@
 
     /**
      * Function display's the date
-     * @param $record array with date
+     * @param array $record array with date
      * @return formatted date string
      */
     function display($record)
@@ -1197,7 +1197,7 @@
 
     /**
      * Add a javascript onchange event handler.
-     * @param $jscode A block of valid javascript code.
+     * @param string $jscode A block of valid javascript code.
      */
     function addOnChangeHandler($jscode)
     {

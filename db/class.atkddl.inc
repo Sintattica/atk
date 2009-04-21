@@ -634,7 +634,6 @@
    /**                                                                                                                                       
      * Create an index                                                                                                                        
      *                                                                                                                                        
-     * @param string $table Table name                                                                                                        
      * @param string $name Index name                                                                                                         
      * @param array $definition associative array that defines properties of the index to be created.                                         
      *                                                                                                                                        
@@ -673,7 +672,6 @@
    /**                                                                                                                                       
     * Drop an existing index                                                                                                                 
     *                                                                                                                                        
-    * @param string $table Table name                                                                                                        
     * @param string $name Index name                                                                                                         
     * @return boolean                                                                                                                        
     */                                                                                                                                       
@@ -696,23 +694,40 @@
       return sprintf($this->m_idxnameFormat, preg_replace('/[^a-z0-9_\$]/i', '_', $name));                                                                                     
     }  
     
-    
+    /**
+     * Rename sequence
+     *
+     * @param string $name The current sequence name
+     * @param string $new_name The new sequence name
+     * @return bool
+     */
     function renameSequence($name,$new_name)                                                                                                  
     {                                                                                                                                         
       return true;                                                                                                                            
     }                                                                                                                                         
-                                                                                                                                              
+
+    /**
+     * Drop sequence
+     *
+     * @param string $name Sequence name
+     * @return bool
+     */
     function dropSequence($name)                                                                                                              
     {                                                                                                                                         
       return true;                                                                                                                            
     }                                                                                                                                         
-                                                                                                                                              
+
+    /**
+     * Rename table name
+     *
+     * @param string $name Table name
+     * @param string $new_name New table name
+     * @return bool
+     */
     function renameTable($name,$new_name)                                                                                                     
     {                                                                                                                                         
       return true;                                                                                                                            
     }          
-    
-    
   }
 
 ?>

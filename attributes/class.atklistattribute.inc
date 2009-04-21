@@ -97,12 +97,12 @@
      * implemented, but it has now been removed. Keep this in mind
      * when upgrading from a very old ATK version (pre ATK4).
      *
-     * @param $name Name of the attribute
-     * @param $optionArray Array with options
-     * @param $valueArray Array with values. If you don't use this parameter,
+     * @param string $name Name of the attribute
+     * @param array $optionArray Array with options
+     * @param array $valueArray Array with values. If you don't use this parameter,
      *                    values are assumed to be the same as the options.
-     * @param $flags Flags for this attribute
-     * @param $size  Size of the attribute.
+     * @param int $flags Flags for this attribute
+     * @param int $size  Size of the attribute.
      */
     function atkListAttribute($name, $optionArray, $valueArray="", $flags=0, $size=0)
     {
@@ -225,7 +225,7 @@
 
     /**
      * Display's text version of Record
-     * @param $record
+     * @param array $record
      * @return text string of $record
      */
     function display($record)
@@ -255,7 +255,7 @@
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
-     * @param $record Array with fields
+     * @param array $record Array with fields
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @param String $mode The mode we're in ('add' or 'edit')
@@ -344,7 +344,7 @@
      *                          search page. The atkAttribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
-     * @param $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      *
      * @return String A piece of html-code with a checkbox
      */

@@ -141,9 +141,9 @@
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
-     * @param $record array with fields
-     * @param $fieldprefix the field's prefix
-     * @param $mode the mode (add, edit etc.)
+     * @param array $record array with fields
+     * @param string $fieldprefix the field's prefix
+     * @param string $mode the mode (add, edit etc.)
      * @return piece of html code with a textarea
      */
     function edit($record="", $fieldprefix="", $mode="")
@@ -212,7 +212,7 @@
 
     /**
      * We don't support searching for passwords!
-     * @param $record array with fields
+     * @param array $record array with fields
      * @return search field
      */
     function search($record="")
@@ -222,7 +222,7 @@
 
     /**
      * Add's slashes to the string for the database
-     * @param $rec Array with values
+     * @param array $rec Array with values
      * @return String with slashes
      */
     function value2db($rec)
@@ -232,7 +232,7 @@
 
     /**
      * Removes slashes from the string and save to array
-     * @param $rec array with values
+     * @param array $rec array with values
      * @return array with hash field without slashes
      */
     function db2value($rec)
@@ -330,9 +330,9 @@
 
     /**
      * Validates the supplied passwords
-     * @param $record Record that contains value to be validated.
+     * @param array $record Record that contains value to be validated.
      *                 Errors are saved in this record
-     * @param $mode can be either "add" or "update"
+     * @param string $mode can be either "add" or "update"
      */
     function validate(&$record, $mode)
     {
@@ -388,7 +388,7 @@
     /**
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
-     * @param $record Array with values
+     * @param array $record Array with values
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @return Piece of htmlcode
@@ -402,7 +402,7 @@
 
     /**
      * We don't display the password
-     * @param $rec the record with display data
+     * @param array $rec the record with display data
      * @return string with value to display
      */
     function display($rec)
@@ -421,7 +421,7 @@
     /**
      * Generates a random string using the given character set
      *
-     * @param string/array $chars String or array of strings containing the available characters to use
+     * @param string|array $chars String or array of strings containing the available characters to use
      * @param int $count Length of the resulting string
      * @return Generated random string
      */

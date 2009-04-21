@@ -267,7 +267,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
    *
    * @param array $record The record for which the actions need to be
    *                      determined.
-   * @param &$actions Reference to an array with the already defined
+   * @param array &$actions Reference to an array with the already defined
    *                  actions.
    */
   function recordActions($record, &$actions)

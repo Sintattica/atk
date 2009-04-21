@@ -36,8 +36,8 @@
 
     /**
      * Constructor
-     * @param $name   The name of the attribute
-     * @param $flags  The attribute flags
+     * @param string $name   The name of the attribute
+     * @param int    $flags  The attribute flags
      * @return -
      */
     function atkCaptchaAttribute($name, $flags=0) 
@@ -51,8 +51,8 @@
     /**
      * Edit  record
      * Here it will only return the text, no edit box.
-     * @param $record Array with fields
-     * @param $fieldprefix The fieldprefix to put in front of the name
+     * @param array $record Array with fields
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @param String $mode The mode we're in ('add' or 'edit')
      * @return Parsed string

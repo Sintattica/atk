@@ -72,6 +72,12 @@
       $this->m_noframes = $noframes;      
     }
 		
+    /**
+     * Set the id of the frameset
+     *
+     * @param string $id
+     * @return atkFrameSet
+     */
 		function setId($id)
 		{
 			$this->m_id = $id;

@@ -417,16 +417,55 @@
       return true;
     }
 
-    // Dummy methods to prevent loading/storing of data.
+    /**
+     * Dummy method to prevent loading/storing of data.
+     */ 
     function load() {}
+    
+    /**
+     * Dummy method to prevent loading/storing of data.
+     */
     function addToQuery() {}
+    
+    /**
+     * Dummy method to prevent loading/storing of data.
+     */
     function hide() {}
+    
+    /**
+     * Dummy method to prevent loading/storing of data.
+     */
     function search() {}
+    
+    /**
+     * Dummy method to prevent loading/storing of data.
+     * @return Array empty array
+     */
     function getSearchModes() { return array();}
+    
+    /**
+     * Dummy method to prevent loading/storing of data.
+     */
     function searchCondition() {}
+    
+    /**
+     * Dummy method to prevent loading/storing of data.
+     */
     function getSearchCondition() {}
+    
+    /**
+     * Dummy method to prevent loading/storing of data.
+     */
     function fetchMeta() {}
+    
+    /**
+     * Dummy method to prevent loading/storing of data.
+     */
     function dbFieldSize() {}
+    
+    /**
+     * Dummy method to prevent loading/storing of data.
+     */
     function dbFieldType() {}
 
     /**

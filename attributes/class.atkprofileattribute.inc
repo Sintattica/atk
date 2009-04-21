@@ -30,6 +30,14 @@
     var $m_parentAttrName;
     var $m_accessField;
 
+    /**
+     * Constructor
+     *
+     * @param string $name The name of the attribute
+     * @param string $parentAttrName
+     * @param int $flags The flags of this attribute
+     * @return atkProfileAttribute
+     */
     function atkProfileAttribute($name, $parentAttrName="", $flags=0)
     {
       if (is_numeric($parentAttrName))
@@ -46,6 +54,13 @@
         $this->m_accessField = atkconfig('auth_levelfield');
     }
 
+    /**
+     * Load this record
+     *
+     * @param atkDb $db The database object
+     * @param array $record The record
+     * @return array Array with loaded values
+     */
     function load(&$db, $record)
     {
       $query = "SELECT *
@@ -61,6 +76,13 @@
       return $result;
     }
 
+    /**
+     * Get child groups
+     *
+     * @param atkDb $db The database object
+     * @param int $id The id to search for
+     * @return array
+     */
     function getChildGroups(&$db, $id)
     {
       $result = array();
@@ -82,6 +104,14 @@
       return $result;
     }
 
+    /**
+     * Store the value of this attribute in the database
+     *
+     * @param atkDb $db The database object
+     * @param array $record The record which holds the values to store
+     * @param string $mode The mode we're in
+     * @return bool True if succesfull, false if not
+     */
     function store(&$db, $record, $mode)
     {
       global $g_user;
@@ -150,6 +180,16 @@
       return true;
     }
 
+    /**
+     * Returns a piece of html code for hiding this attribute in an HTML form,
+     * while still posting its value. (<input type="hidden">)
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @return String A piece of htmlcode with hidden form elements that post
+     *                this attribute's value without showing it.
+     */
     function hide($record="", $fieldprefix="")
     {
       // get checks
@@ -171,6 +211,9 @@
 
     /**
      * Retrieve all possible module/node actions.
+     * 
+     * @param array $record The record
+     * @return array Array with actions
      */
     function getAllActions($record)
     {
@@ -229,6 +272,9 @@
 
     /**
      * Returns a list of actions that should be edittable by the user.
+     * 
+     * @param array $record The record
+     * @return array Array with editable actions
      */
     function getEditableActions($record)
     {
@@ -266,6 +312,9 @@
     
     /**
      * Returns the currently selected actions.
+     * 
+     * @param array $record The record
+     * @return array array with selected actions
      */
     function getSelectedActions($record)
     {
@@ -286,9 +335,9 @@
      * Display rights.
      * It will only display the rights & nodes that are selected for the user.
      *
-     * @param string $record
+     * @param array $record
      *
-     * @return string
+     * @return string Displayable string
      */
     public function display($record)
     {
@@ -375,9 +424,17 @@
       return $result;
     }
     
-    
-    
-    function edit($record)
+    /**
+     * Returns a piece of html code that can be used in a form to edit this
+     * attribute's value.
+     *
+     * @param array $record The record that holds the value for this attribute.
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
+     * @return String A piece of htmlcode for editing this attribute
+     */
+    function edit($record="", $fieldprefix="", $mode="")
     {
       $user = getUser();
       $page = &atkPage::getInstance();
@@ -466,15 +523,17 @@
           if ($showBox)
             $result .= "<br /><br />\n";
         }
-
-
       }
-
       return $result;
     }
 
     /**
      * Return the translated name of a permission.
+     * 
+     * @param string $action The name of the action
+     * @param string $nodename The name of the node
+     * @param string $modulename The name of the module
+     * @return String The translated permission name
      */
     function permissionName($action, $nodename="", $modulename="")
     {
@@ -494,6 +553,17 @@
       return $label;
     }
 
+    /**
+     * Convert values from an HTML form posting to an internal value for
+     * this attribute.
+     *
+     * For the regular atkAttribute, this means getting the field with the
+     * same name as the attribute from the html posting.
+     *
+     * @param array $postvars The array with html posted values ($_POST, for
+     *                        example) that holds this attribute's value.
+     * @return String The internal value
+     */
     function fetchValue($postvars)
     {
       $checkboxes = array();
@@ -525,6 +595,15 @@
       return $actions;
     }
 
+    /**
+     * Retrieve the list of searchmodes supported by the attribute.
+     *
+     * Note that not all modes may be supported by the database driver.
+     * Compare this list to the one returned by the databasedriver, to
+     * determine which searchmodes may be used.
+     *
+     * @return array List of supported searchmodes
+     */
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
@@ -535,6 +614,21 @@
       return array();
     }
 
+    /**
+     * Return the database field type of the attribute.
+     *
+     * Note that the type returned is a 'generic' type. Each database
+     * vendor might have his own types, therefor, the type should be
+     * converted to a database specific type using $db->fieldType().
+     *
+     * If the type was read from the table metadata, that value will
+     * be used. Else, the attribute will analyze its flags to guess
+     * what type it should be. If AF_AUTO_INCREMENT is set, the field
+     * is probaly "number". If not, it's probably "string".
+     *
+     * @return String The 'generic' type of the database field for this
+     *                attribute.
+     */
     function dbFieldType()
     {
       return "";
@@ -560,6 +654,11 @@
       return false;
     }
 
+    /**
+     * Restore divs states
+     *
+     * @param atkPage $page
+     */
     function _restoreDivStates(&$page)
     {
       $postvars = &$this->m_ownerInstance->m_postvars;

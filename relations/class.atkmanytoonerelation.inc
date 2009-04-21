@@ -409,7 +409,7 @@
      * Always show list columns in list view,
      * even if the attribute itself is hidden?
      *
-     * @param $value always show list columns?
+     * @param bool $value always show list columns?
      */
     function setAlwaysShowListColumns($value)
     {
@@ -452,7 +452,7 @@
 
     /**
      * Fetch value out of record
-     * @param $postvars Postvars
+     * @param array $postvars Postvars
      * @return decoded value
      */
     function fetchValue($postvars)
@@ -498,7 +498,7 @@
 
     /**
      * Converts DataBase value to normal value
-     * @param $rec Record
+     * @param array $rec Record
      * @return decoded value
      */
     function db2value($rec)
@@ -1922,7 +1922,6 @@
     * @param array   $record            A record containing default values to put
     *                                   into the search fields.
     * @param array   $fieldprefix       search / mode field prefix
-    * @param array   $currentSearchMode current search mode
     */
     function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "")
     {

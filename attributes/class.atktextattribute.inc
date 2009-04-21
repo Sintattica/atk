@@ -46,11 +46,11 @@
      * parameters and the second one is not an array, the attribute assumes
      * the second parameters is the $flags param, not the $size param.
      *
-     * @param $name  Name of the attribute
-     * @param $size  Can be an array with cols and rows key for size and
+     * @param string $name  Name of the attribute
+     * @param int|array $size  Can be an array with cols and rows key for size and
      *               an autoadjust value or just the rows size (in which case
      *               $flags is mandatory).
-     * @param $flags Flags for this attribute
+     * @param int $flags Flags for this attribute
      */
     function atkTextAttribute($name,$size=0,$flags=0)
     {
@@ -96,7 +96,7 @@
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
-     * @param $record Array with fields
+     * @param array $record Array with fields
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @param String $mode The mode we're in ('add' or 'edit')
@@ -206,7 +206,7 @@
 
     /**
      * Add's slashes to the string for the database
-     * @param $rec Array with values
+     * @param array $rec Array with values
      * @return String with slashes
      */
     function value2db($rec)
@@ -220,7 +220,7 @@
 
     /**
      * Removes slashes from the string
-     * @param $rec Array with values
+     * @param array $rec Array with values
      * @return String without slashes
      */
     function db2value($rec)

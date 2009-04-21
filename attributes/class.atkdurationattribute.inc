@@ -287,7 +287,7 @@
 
     /**
      * Fetch values
-     * @param $rec Array with values
+     * @param array $rec Array with values
      * @return String without slashes
      */
     function fetchValue($rec)

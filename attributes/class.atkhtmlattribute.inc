@@ -42,9 +42,9 @@
 
     /**
      * Constructor
-     * @param $name Name of the attribute
-     * @param $flags Flags of the attribute
-     * @param $nl2br nl2br boolean
+     * @param string $name Name of the attribute
+     * @param int $flags Flags of the attribute
+     * @param bool $nl2br nl2br boolean
      */
     function atkHtmlAttribute($name, $flags=0, $nl2br = false)
     {
@@ -54,7 +54,7 @@
 
     /**
      * Returns a displayable string for this value.
-     * @param $record Array wit fields
+     * @param array $record Array wit fields
      * @return Formatted string
      */
     function display($record)

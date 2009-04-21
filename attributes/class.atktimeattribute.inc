@@ -38,15 +38,15 @@
 
     /**
      * Constructor
-     * @param $name        Name of the attribute
-     * @param $beginTime   Time to start with (eg 8)
-     * @param $endTime     Time to end with (eg 24)
-     * @param $steps       int|Array containing possible minute or seconds values (eg array("00","15","30","45"))
-     *                               or the interval (eg 5 for 00,05,10,15, etc.)
-     *                               if the flag AF_TIME_SECONDS is set, this is for seconds, the minutes will be range(0, 59)
-     *                               else this is for the minutes and the seconds will not be displayed
-	   * @param $default  Start Time (exp: 20:30)
-     * @param $flags Flags for this attribute
+     * @param string $name      Name of the attribute
+     * @param int $beginTime    Time to start with (eg 8)
+     * @param int $endTime      Time to end with (eg 24)
+     * @param int|array $steps  containing possible minute or seconds values (eg array("00","15","30","45"))
+     *                          or the interval (eg 5 for 00,05,10,15, etc.)
+     *                          if the flag AF_TIME_SECONDS is set, this is for seconds, the minutes will be range(0, 59)
+     *                          else this is for the minutes and the seconds will not be displayed
+	   * @param string $default   Start Time (exp: 20:30)
+     * @param int $flags        Flags for this attribute
      */
     function atkTimeAttribute($name, $beginTime=0, $endTime=23, $steps=array("00","15","30","45"), $default="", $flags=0)
     {
@@ -80,7 +80,7 @@
     /**
      * Converts a date string (HHMISS) to an
      * array with 2 fields (hours, minutes, seconds).
-     * @param $time the time string
+     * @param string $time the time string
      * @return array with 3 fields (hours, minutes, seconds)
      */
     function timeArray($time)
@@ -93,7 +93,7 @@
 
     /**
      * Display's text version of Record
-     * @param $record
+     * @param array $record
      * @return text string of $record
      */
     function display($record)
@@ -105,6 +105,17 @@
       return $tmp_time;
     }
 
+    /**
+     * Convert values from an HTML form posting to an internal value for
+     * this attribute.
+     *
+     * For the regular atkAttribute, this means getting the field with the
+     * same name as the attribute from the html posting.
+     *
+     * @param array $postvars The array with html posted values ($_POST, for
+     *                        example) that holds this attribute's value.
+     * @return String The internal value
+     */
     function fetchValue($postvars)
     {
       $result = $postvars[$this->fieldName()];
@@ -137,10 +148,14 @@
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
-     * @param $record Array with fields
-     * @return piece of html code with a checkbox
+     *
+     * @param array $record The record that holds the value for this attribute.
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
+     * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record="", $fieldprefix="", $mode="")
     {
       if(($this->m_default=="NOW" && $this->m_ownerInstance->m_action=="add") ||
          ($this->m_default=="" && $this->hasFlag(AF_OBLIGATORY)))
@@ -259,7 +274,13 @@
       return $m_hourBox.":".$m_minBox.$m_secBox;
     }
 
-
+    /**
+     * Converts the internal attribute value to one that is understood by the
+     * database.
+     *
+     * @param array $rec The record that holds this attribute's value.
+     * @return String The database compatible value
+     */
     function value2db($rec)
     {
       $hours = $rec[$this->fieldName()]["hours"];
@@ -275,7 +296,7 @@
 
 		/**
      * Convert database value to time array
-     * @param $rec database record with date field
+     * @param array $rec database record with date field
      * @return array with 3 fields (hours:minutes:seconds)
      */
     function db2value($rec)
@@ -295,7 +316,15 @@
 
     /**
      * Returns a piece of html code that can be used in a form to search values
-     * @param $record Array with fields
+     * @param array $record Array with fields
+     * @param boolean $extended if set to false, a simple search input is
+     *                          returned for use in the searchbar of the
+     *                          recordlist. If set to true, a more extended
+     *                          search may be returned for the 'extended'
+     *                          search page. The atkAttribute does not
+     *                          make a difference for $extended is true, but
+     *                          derived attributes may reimplement this.
+     * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return piece of html code with a checkbox
      */
     function search($record="", $extended=false, $fieldprefix="")
@@ -303,7 +332,12 @@
      return parent::search($record, $extended, $fieldprefix);
     }
 
-     function getSearchModes()
+    /**
+     * Retrieve the list of searchmodes supported by the attribute.
+     *
+     * @return array List of supported searchmodes
+     */
+    function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
       // (the LIKE function is ANSI standard SQL, and both substring and wildcard
@@ -313,6 +347,15 @@
       return array("exact");
     }
 
+    /**
+     * Checks if a value is valid.
+     *
+     * @param array $rec    The record that holds the value for this
+     *                      attribute. If an error occurs, the error will
+     *                      be stored in the 'atkerror' field of the record.
+     * @param String $mode The mode for which should be validated ("add" or
+     *                     "update")
+     */
     function validate(&$rec, $mode)
     {
       $value = $rec[$this->fieldName()];
@@ -323,18 +366,27 @@
 
     }
 
-   /**
-     * Add's fields to query
-     * @param atkQuery $query The SQL query
-     * @param $tablename Tablename
-     * @param $fieldaliasprefix Field alias prefix
-     * @param $level ?
-     * @param $mode Indicates what kind of query is being processing:
-     *              This can be any action performed on a node (edit, add, etc)
-     *              Mind you that "add" and "update" are the actions that store
-     *              something in the database, whereas the rest are probably
-     *              select queries.
-     * @return New SQL Query
+    /**
+     * Adds this attribute to database queries.
+     *
+     * Database queries (select, insert and update) are passed to this method
+     * so the attribute can 'hook' itself into the query.
+     * 
+     * @param atkQuery $query The SQL query object
+     * @param String $tablename The name of the table of this attribute
+     * @param String $fieldaliasprefix Prefix to use in front of the alias
+     *                                 in the query.
+     * @param Array $rec The record that contains the value of this attribute.
+     * @param int $level Recursion level if relations point to eachother, an
+     *                   endless loop could occur if they keep loading
+     *                   eachothers data. The $level is used to detect this
+     *                   loop. If overriden in a derived class, any subcall to
+     *                   an addToQuery method should pass the $level+1.
+     * @param String $mode Indicates what kind of query is being processing:
+     *                     This can be any action performed on a node (edit,
+     *                     add, etc) Mind you that "add" and "update" are the
+     *                     actions that store something in the database,
+     *                     whereas the rest are probably select queries.
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
     {
@@ -350,6 +402,12 @@
         $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
     }
 
+    /**
+     * Return the database field type of the attribute.
+     *
+     * @return String The 'generic' type of the database field for this
+     *                attribute.
+     */
     function dbFieldType()
     {
       return "time";
@@ -358,7 +416,9 @@
     /**
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
-     * @param $record Array with values
+     * @param array $record Array with values
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
      * @return Piece of htmlcode
      */
     function hide($record="", $fieldprefix)
@@ -375,6 +435,20 @@
       return $result;
     }
 
+    /**
+     * Creates a searchcondition for the field,
+     * was once part of searchCondition, however,
+     * searchcondition() also immediately adds the search condition.
+     *
+     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param String $table       The name of the table in which this attribute
+     *                              is stored
+     * @param mixed $value        The value the user has entered in the searchbox
+     * @param String $searchmode  The searchmode to use. This can be any one
+     *                              of the supported modes, as returned by this
+     *                              attribute's getSearchModes() method.
+     * @return String The searchcondition to use.
+     */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       // When we get $value as a substring, we autocomplete the time
@@ -397,6 +471,12 @@
       return parent::getSearchCondition($query, $table, $value, $searchmode);
     }
 
+    /**
+     * Parse a timestring to an array
+     *
+     * @param string $stringvalue The time to parse
+     * @return array array with hours, minutes and seconds
+     */
     function parseTime($stringvalue)
     {
   		//Assuming hh:mm:ss

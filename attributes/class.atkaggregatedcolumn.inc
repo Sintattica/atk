@@ -58,7 +58,7 @@
      * Constructor
      * @param String $name         Name of the attribute
      * @param String $template     Display/sort template.
-     * @param $flags Flags for this attribute
+     * @param int $flags Flags for this attribute
      * @param Array  $searchfields Array with fields, in which search will be perform
      *                             If ommited, fields from $template will be used
      */

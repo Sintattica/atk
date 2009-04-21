@@ -42,10 +42,10 @@
 
     /**
      * Constructor
-     * @param $name  Name of the attribute
-     * @param $flags Flags for this attribute
-     * @param $size  The size(s) for this attribute (default 10)
-     * @param $decimals The number of decimals to use.
+     * @param string $name  Name of the attribute
+     * @param int $flags Flags for this attribute
+     * @param int $size  The size(s) for this attribute (default 10)
+     * @param int $decimals The number of decimals to use.
      *
      */
     function atkNumberAttribute($name, $flags=0, $size=10, $decimals=0)
@@ -59,8 +59,8 @@
 
     /**
      * Set the minimum and maximum value of the number. Violations of this range
-     * @param $minvalue Minimum value of the number.
-     * @param $maxvalue Maximum value of the number.
+     * @param int $minvalue Minimum value of the number.
+     * @param int $maxvalue Maximum value of the number.
      */
     function setRange($minvalue, $maxvalue)
     {
@@ -252,9 +252,9 @@
 
     /**
      * Validates if value is numeric
-     * @param $record Record that contains value to be validated.
+     * @param array $record Record that contains value to be validated.
      *                 Errors are saved in this record
-     * @param $mode can be either "add" or "update"
+     * @param string $mode can be either "add" or "update"
      * @return $record
      */
     function validate(&$record, $mode)
@@ -419,7 +419,7 @@
      *                          search page. The atkAttribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
-     * @param $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      *
      * @return String A piece of html-code
      */

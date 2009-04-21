@@ -79,7 +79,6 @@
      * This method gets called to set a hard limit to the amount of records that can 
      * get returned.
      *
-     * @param array $record full record
      * @return int 
      */
     public function getLimit()

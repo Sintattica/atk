@@ -150,6 +150,15 @@
       return $result;
     }
 
+    /**
+     * Adds the attribute's edit / hide HTML code to the edit array.
+     *
+     * @param String $mode     the edit mode ("add" or "edit")
+     * @param array  $arr      pointer to the edit array
+     * @param array  $defaults pointer to the default values array
+     * @param array  $error    pointer to the error array
+     * @param String $fieldprefix   the fieldprefix
+     */
     function _addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
       $node = &$this->m_ownerInstance;
@@ -198,6 +207,16 @@
       return $fields;
     }
 
+    /**
+     * Returns a piece of html code that can be used in a form to edit this
+     * attribute's value.
+     *
+     * @param array $defaults The record that holds the value for this attribute.
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
+     * @return String A piece of htmlcode for editing this attribute
+     */
     function edit($defaults="", $fieldprefix="", $mode="")
     {
       $node = &$this->m_ownerInstance;
@@ -391,7 +410,8 @@
 
     /**
     * Display a tabbed pane with attributes
-    * @param $record  Array with fields
+    * @param array $record  Array with fields
+    * @param string $mode The mode
     * @return html code
     */
     function display($record, $mode="")
@@ -481,6 +501,14 @@
       return $this->tabulate("view", $innerform);
     }
 
+    /**
+     * Tabulate
+     *
+     * @param string $action
+     * @param string $content
+     * @param string $fieldprefix
+     * @return String The HTML content
+     */
     function tabulate($action, $content, $fieldprefix="")
     {
       $activeTabName = "tabbedPaneTab".$this->getDefaultTab();
@@ -513,6 +541,7 @@
      * the tabs (title, selected, urls that should be loaded upon click of the
      * tab etc).
      * @param String $action The action for which the tabs should be generated.
+     * @param string $fieldprefix The fieldprefix
      * @return array List of tabs
      * @todo Make translation of tabs module aware
      */
@@ -537,33 +566,64 @@
     }
 
     /**
-    * No function, but is neccesary
-    */
-
+     * No function, but is neccesary
+     * @param array $record
+     * @return NULL
+     */
     function db2value($record)
     {
       return NULL;
     }
 
+    /**
+     * No function, but is necessary
+     *
+     * @param array $record
+     * @param string $fieldprefix
+     * @return empty string
+     */
     function hide($record="", $fieldprefix="")
     {
       return '';
     }
 
+    /**
+     * Return the database field type of the attribute.
+     * @return string empty string
+     */
     function dbFieldType()
     {
       return "";
     }
 
+    /**
+     * Determine the load type of this attribute.
+     *
+     * @param String $mode The type of load (view,admin,edit etc)
+     * @param boolean $searching 
+     *
+     * @return int NOLOAD     - nor load(), nor addtoquery() should be
+     *                          called (attribute can not be loaded from the
+     *                          database)
+     *
+     */
     function loadType($mode, $searching=false)
     {
       return NOLOAD;
     }
 
+    /**
+     * Determine the storage type of this attribute.
+     *
+     * @param String $mode The type of storage ("add" or "update")
+     *
+     * @return int NOSTORE    - nor store(), nor addtoquery() should be
+     *                          called (attribute can not be stored in the
+     *                          database)
+     */
     function storageType($mode)
     {
       return NOSTORE;
     }
-
   }
 ?>

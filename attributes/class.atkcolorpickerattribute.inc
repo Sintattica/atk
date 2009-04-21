@@ -177,9 +177,9 @@
      *
      * <b>Example:</b>
      * $this->add(new atkColorPickerAttribute("naam",Array,AF_OBLIGATORY|AF_POPUP));
-     * @param $name Name of the attribute
-     * @param $array   Array with max. 12 user defined colors
-     * @param $flags Flags for the attribute
+     * @param string $name Name of the attribute
+     * @param array $userColors Array with max. 12 user defined colors
+     * @param int $flags Flags for the attribute
      */
 
     function atkColorPickerAttribute($name, $userColors="", $flags = 0)
@@ -192,6 +192,11 @@
       $this->m_userColors = $userColors;
     }
 
+    /**
+     * Retrieve the list of searchmodes supported by the attribute.
+     *
+     * @return array List of supported searchmodes
+     */
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
@@ -231,7 +236,17 @@
       return $this->m_colorMode;
     }
 
-    function edit($record="", $fieldprefix="")
+    /**
+     * Returns a piece of html code that can be used in a form to edit this
+     * attribute's value.
+     *
+     * @param array $record The record that holds the value for this attribute.
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
+     * @return String A piece of htmlcode for editing this attribute
+     */
+    function edit($record="", $fieldprefix="", $mode="")
     {
       $page = &atkPage::getInstance();
       $page->register_script(atkconfig("atkroot")."atk/javascript/newwindow.js");
@@ -286,6 +301,15 @@
       return $result;
     }
 
+    /**
+     * Checks if a value is valid.
+     *
+     * @param array $record The record that holds the value for this
+     *                      attribute. If an error occurs, the error will
+     *                      be stored in the 'atkerror' field of the record.
+     * @param String $mode The mode for which should be validated ("add" or
+     *                     "update")
+     */
     function validate(&$record, $mode)
     {
       $color = $record[$this->fieldName()];
@@ -418,7 +442,7 @@
     /**
      * Check the hex color (also based on the mode).
      *
-     * @param String $color
+     * @param String $colors
      * @return True if valid, false otherwise
      */
     function checkHexColor($colors)
@@ -441,7 +465,21 @@
       return $isHex6;
     }
 
-
+    /**
+     * Return the database field type of the attribute.
+     *
+     * Note that the type returned is a 'generic' type. Each database
+     * vendor might have his own types, therefor, the type should be
+     * converted to a database specific type using $db->fieldType().
+     *
+     * If the type was read from the table metadata, that value will
+     * be used. Else, the attribute will analyze its flags to guess
+     * what type it should be. If AF_AUTO_INCREMENT is set, the field
+     * is probaly "number". If not, it's probably "string".
+     *
+     * @return String The 'generic' type of the database field for this
+     *                attribute.
+     */
     function dbFieldType()
     {
       return "string";

@@ -78,10 +78,10 @@
      *       But can we keep this backwards compatible somehow? At least now we
      *       are certain it doesn't work. ;) (PCV)
      *
-     * @param $name        Name of the attribute
-     * @param $default_date   start date
-     * @param $default_time     start time
-     * @param $flags Flags for this attribute
+     * @param string $name        Name of the attribute
+     * @param string|int $default_date   start date
+     * @param string $default_time     start time
+     * @param int $flags Flags for this attribute
      */
     function atkDateTimeAttribute($name, $default_date="",$default_time="",$flags=0)
     {
@@ -168,7 +168,7 @@
      * array with 5 fields (day, month, year, hours, minutes, seconds).
      * Defaults to current date/time.
      *
-     * @param $datetime the time string
+     * @param string $datetime the time string
      * @return array with 6 fields (day, month, year, hours, minutes, seconds)
      */
     function datetimeArray($datetime=NULL)
@@ -300,7 +300,7 @@
 
     /**
      * Convert database value to datetime array
-     * @param $rec database record with date field
+     * @param array $rec database record with date field
      * @return array with 3 fields (hours:minutes:seconds)
      */
     function db2value($rec)
@@ -400,7 +400,7 @@
      *                          search page. The atkAttribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
-     * @param $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      *
      * @return String A piece of html-code
      */

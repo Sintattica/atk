@@ -154,7 +154,7 @@
     /**
      * Returns a piece of html code that can be used to search the attribute.
      * We will use the default language for this!
-     * @param $record array with values
+     * @param array $record array with values
      * @param boolean $extended if set to false, a simple search input is
      *                          returned for use in the searchbar of the
      *                          recordlist. If set to true, a more extended
@@ -162,7 +162,7 @@
      *                          search page. The atkAttribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
-     * @param $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return piece of htmlcode
      */
     function search($record="", $extended=false, $fieldprefix="")
@@ -199,7 +199,7 @@
     /**
      * Returns a displayable string for this value.
      * We always display the first language only.
-     * @param $record array with values
+     * @param array $record array with values
      * @return string ready for displaying
      */
     function display($record)
@@ -218,7 +218,7 @@
     /**
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
-     * @param $record Array with values
+     * @param array $record Array with values
      * @return Piece of htmlcode
      */
     function hide($record="")
@@ -251,7 +251,7 @@
 
     /**
      * Removes slashes from the strings
-     * @param $rec array with values
+     * @param array $rec array with values
      * @return array with string without slashes
      */
     function db2value($rec)
@@ -279,7 +279,7 @@
 
     /**
      * Fetch values
-     * @param $rec array with values
+     * @param array $rec array with values
      * @return array with values
      */
     function fetchValue($rec)

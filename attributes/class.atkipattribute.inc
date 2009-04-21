@@ -36,8 +36,8 @@
     /**
      * Constructor.
      *
-     * @param $name attribute name
-     * @param $flags attribute flags.
+     * @param string $name attribute name
+     * @param int $flags attribute flags.
      */
     function atkIpAttribute($name, $flags)
     {
