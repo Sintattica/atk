@@ -9,7 +9,14 @@ ATK.DataGrid = {
    * Registers a data grid.
    */
   register: function(name, baseUrl, embedded) {
-    this.grids[name] = { name: name, baseUrl: baseUrl, embedded: embedded, locked: false };
+    this.grids[name] = { name: name, baseUrl: baseUrl, embedded: embedded, locked: false, updateCompletedListeners: [] };
+  },
+  
+  /**
+   * Add update completed listener.
+   */
+  addUpdateCompletedListener: function(name, listener) {
+    this.get(name).updateCompletedListeners.push(listener);
   },
   
   /**
@@ -98,8 +105,13 @@ ATK.DataGrid = {
   /**
    * After update of the grid has successfully completed.
    */
-  updateCompleted: function(name) {
+  updateCompleted: function(name) {   
     this.getContainer(name).setOpacity(1.0);
+    
+    this.get(name).updateCompletedListeners.each(function(listener) {
+      listener.defer(name);
+    });   
+    
     this.get(name).locked = false;    
   },
   
