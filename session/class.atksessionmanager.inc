@@ -61,19 +61,19 @@
      * @access private
      * @var String
      */
-    var $m_namespace;
+    private $m_namespace;
 
     /**
      * @access private
      * @var boolean
      */
-    var $m_escapemode = false; // are we escaping?
+    private $m_escapemode = false; // are we escaping?
 
     /**
      * @access private
      * @var boolean
      */
-    var $m_usestack = true; // should we use a session stack?
+    private $m_usestack = true; // should we use a session stack?
 
     /**
      * Default constructor.
@@ -88,7 +88,7 @@
      *                          performance impact, so scripts not using
      *                          the stack should pass false here.
      */
-    function atkSessionManager($namespace, $usestack=true)
+    public function atkSessionManager($namespace, $usestack=true)
     {
       $this->m_namespace = $namespace;
       $this->m_usestack = $usestack;
@@ -101,7 +101,7 @@
      * Get the name of the current session (as was passed to atksession())
      * @return String namespace
      */
-    function getNameSpace()
+    public function getNameSpace()
     {
       return $this->m_namespace;
     }
@@ -111,7 +111,7 @@
      * @access private
      * @param array $postvars Any variables passed in the http request.
      */
-    function session_read(&$postvars)
+    public function session_read(&$postvars)
     {
       $this->_globalscope($postvars);
       if ($this->m_usestack)
@@ -132,15 +132,16 @@
      *                              the variable is available in all
      *                              namespaces.
      */
-    function globalVar($var, $value="", $no_namespace=false)
+    public function globalVar($var, $value="", $no_namespace=false)
     {
       global $g_sessionData;
 
       if ($value=="" && isset($_REQUEST[$var])) $value = $_REQUEST[$var];
 
       if ($no_namespace) $g_sessionData["globals"][$var] = $value;
-      else $g_sessionData[$this->m_namespace]["globals"][$var] = $value;
+      else               $g_sessionData[$this->m_namespace]["globals"][$var] = $value;
 
+      return $value;
     }
 
     /**
@@ -152,7 +153,7 @@
      *                          needs to be retrieved.
      * @return mixed The retrieved value.
      */
-    function getValue($var, $namespace="")
+    public function getValue($var, $namespace="")
     {
       global $g_sessionData;
       if ($namespace=="globals")
@@ -167,49 +168,87 @@
      * Store a variable in the session stack. The variable is available in the
      * current page (even after reload), and any screen that is deeper on the
      * session stack.
+     *
      * The method can be used to transparantly both store and retrieve the value.
      * If a value gets passed in a url, the following statement is useful:
+     *
      * <code>
      *   $view = $g_sessionManager->stackVar("view");
      * </code>
+     *
      * This statement makes sure that $view is always filled. If view is passed
      * in the url, it is stored as the new default stack value. If it's not
      * passed in the url, the last known value is retrieved from the session.
+     *
+     * Also note that if you set a stackvar to A in level 0, then in level 1
+     * reset it to B, when you return to level 0, the stackvar will still be A.
+     * However for level 1 and deeper it will be B.
      *
      * @param String $var The name of the variable to store.
      * @param mixed $value The value to store. If omitted, the session manager
      *                     tries to read the value from the http request.
      * @return mixed The current value in the session stack.
      */
-    function stackVar($var, $value="")
+    public function stackVar($var, $value="")
     {
-      if (!$this->m_escapemode)
+      if ($this->m_escapemode) return null;
+
+      $sessionData = &$this->getSession();
+      $currentitem = &$sessionData[$this->m_namespace]["stack"][atkStackID()][atkLevel()];
+      if (!is_array($currentitem)) return atkerror("Current level is not properly initialised!");
+
+      if ($value==="" && atkarraynvl($_REQUEST, $var, "")!=="")
       {
-        global $g_sessionData;
+        $value = $_REQUEST[$var];
+      }
 
-        $currentitem = &$g_sessionData[$this->m_namespace]["stack"][atkStackID()][atkLevel()];
+      if ($value!=="") $currentitem[$var] = $value;
 
-        if (is_array($currentitem))
+      if (!is_array(atkArrayNvl($currentitem, "defined_stackvars")) || !in_array($var, $currentitem["defined_stackvars"]))
+      {
+        $currentitem["defined_stackvars"][] = $var;
+      }
+      // We always return the current value..
+      return atkarraynvl($currentitem, $var);
+    }
+
+    /**
+     * Store a global variable for the current stack in the session.
+     * Unlike stackvars, this variable occurs only once for a given stack.
+     *
+     * For example with a stackvar, if you store a variable x in level 0,
+     * then in level 1 you modify that variable, the variable in level 0
+     * will not be modified. With a globalStackVar it will.
+     *
+     * @param string $var   Variable name
+     * @param mixed  $value Variable value
+     * @return mixed Value of the global stackvar
+     */
+    public function globalStackVar($var, $value="")
+    {
+      if (!$var || $this->m_escapemode) return null;
+
+      $sessionData = &$this->getSession();
+      $top_stack_level = &$sessionData[$this->m_namespace]['globals']['#STACK#'][atkStackID()];
+      if (!is_array($top_stack_level)) $top_stack_level = array();
+
+      if ($value==="")
+      {
+        if (atkarraynvl($_REQUEST, $var, "")!=="")
         {
-          if ($value=="")
-          {
-            if (atkarraynvl($_REQUEST, $var, "")!="")
-            {
-              $currentitem[$var] = $_REQUEST[$var];
-            }
-          }
-          else
-          {
-            $currentitem[$var] = $value;
-          }
-          if (!is_array(atkArrayNvl($currentitem, "defined_stackvars"))||!in_array($var, $currentitem["defined_stackvars"]))
-          {
-            $currentitem["defined_stackvars"][] = $var;
-          }
-          // We always return the current value..
-          return atkarraynvl($currentitem, $var);
+          $value = $_REQUEST[$var];
+        }
+        else if ($this->stackVar($var))
+        {
+          $value = $this->stackVar($var);
         }
       }
+
+      if ($value!=="")
+      {
+        $top_stack_level[$var] = $value;
+      }
+      return atkarraynvl($top_stack_level, $var);
     }
 
     /**
@@ -231,7 +270,7 @@
      *                     tries to read the value from the http request.
      * @return mixed The current value in the session stack.
      */
-    function pageVar($var, $value="")
+    public function pageVar($var, $value="")
     {
       if (!$this->m_escapemode)
       {
@@ -269,7 +308,7 @@
      * @access private
      * @param array $postvars The http request variables.
      */
-    function _globalscope(&$postvars)
+    protected function _globalscope(&$postvars)
     {
       global $g_sessionData;
 
@@ -300,18 +339,23 @@
      * @access private
      * @param array $postvars The http request variables.
      */
-    function _stackscope(&$postvars)
+    protected function _stackscope(&$postvars)
     {
       global $g_sessionData, $atklevel;
 
       // session vars are valid until they are set to something else. if you go a session level higher,
       // the next level will still contain these vars (unless overriden in the url)
-      $sessionVars = array("atknodetype","atkfilter","atkaction","atkpkret", "atkcontroller", "atkwizardpanelindex", "atkwizardaction");
+      $sessionVars = array("atknodetype","atkfilter","atkaction","atkpkret",
+                           "atkcontroller", "atkwizardpanelindex", "atkwizardaction",
+                           'atkstore', 'atkstore_key');
 
       // pagevars are valid on a page. if you go a session level higher, the pagevars are no longer
       // visible until you return. if the name ends in a * the pagevar is treated as an array that
       // needs to be merged recursive with new postvar values
-      $pageVars = array("atkdg*","atkdgsession","atksearch","atkselector","atksearchmode","atkorderby","atkstartat","atklimit","atktarget","atkformdata","atktree","atksuppress","atktab","atksmartsearch","atkindex");
+      $pageVars = array("atkdg*","atkdgsession","atksearch","atkselector",
+                        "atksearchmode","atkorderby","atkstartat",
+                        "atklimit","atktarget","atkformdata","atktree",
+                        "atksuppress","atktab","atksmartsearch","atkindex");
 
       // lockedvars are session or page vars that will not be overwritten in partial mode
       // e.g., the values that are already known in the session will be used
@@ -419,24 +463,24 @@
           // Initialise
           $currentitem = array();
           // new level.. always based on the previous level
-          //$newstackitem = array();
-          //$currentitem = $stack[count($stack)-1];
           if (isset($stack[count($stack)-1])) $copieditem = $stack[count($stack)-1];
 
           if (isset($copieditem) && is_array($copieditem))
           {
             foreach($copieditem as $key=>$value)
             {
-              if(in_array($key, $sessionVars)||
-                 (isset($copieditem["defined_stackvars"])&&is_array($copieditem["defined_stackvars"])
-                  &&in_array($key,$copieditem["defined_stackvars"])))
+              if (in_array($key, $sessionVars) ||
+                  (isset($copieditem["defined_stackvars"]) &&
+                   is_array($copieditem["defined_stackvars"]) &&
+                   in_array($key, $copieditem["defined_stackvars"])))
               {
                 $currentitem[$key] = $value;
               }
             }
+
             if (isset($copieditem["defined_stackvars"]))
             {
-              $currentitem["defined_stackvars"]= $copieditem["defined_stackvars"];
+              $currentitem["defined_stackvars"] = $copieditem["defined_stackvars"];
             }
           }
 
@@ -446,7 +490,7 @@
             $recursive = $var{strlen($var) - 1} == '*';
             $var = $recursive ? substr($var, 0, -1) : $var;
 
-            if (isset($postvars[$var])&&$postvars[$var]!="")
+            if (isset($postvars[$var]) && $postvars[$var]!="")
             {
               if ($postvars[$var]=="clear")
               {
@@ -483,7 +527,7 @@
             $recursive = $var{strlen($var) - 1} == '*';
             $var = $recursive ? substr($var, 0, -1) : $var;
 
-            if (isset($postvars[$var])&&count($postvars[$var])>0 && (!$partial || !in_array($var, $lockedVars)))
+            if (isset($postvars[$var]) && count($postvars[$var])>0 && (!$partial || !in_array($var, $lockedVars)))
             {
               if ($recursive && is_array($currentitem[$var]) && is_array($postvars[$var]))
               {
@@ -502,7 +546,7 @@
           // session vars need not be remembered..
           foreach ($sessionVars as $var)
           {
-            if (isset($postvars[$var])&&count($postvars[$var])>0 && (!$partial || !in_array($var, $lockedVars)))
+            if (isset($postvars[$var]) && count($postvars[$var])>0 && (!$partial || !in_array($var, $lockedVars)))
             {
               $currentitem[$var] = $postvars[$var];
             }
@@ -556,7 +600,7 @@
      *               The url can be used to directly move back on the session
      *               stack.
      */
-    function stackTrace()
+    public function stackTrace()
     {
       global $g_sessionData;
 
@@ -606,7 +650,7 @@
      * Student [ Teknoman ] - Grade [ A+ ]
      * @return String The descriptortrace
      */
-    function descriptorTrace()
+    public function descriptorTrace()
     {
       global $g_sessionData;
 
@@ -650,7 +694,7 @@
      * stacks.
      * @access private
      */
-    function _verifyStackIntegrity()
+    protected function _verifyStackIntegrity()
     {
       global $g_sessionData, $atklevel, $atkprevlevel;
       $stack = "";
@@ -698,7 +742,7 @@
      * @static
      * @return array The application aware php session.
      */
-    function &getSession()
+    public function &getSession()
     {
       if (!isset($_SESSION[atkconfig("identifier")]) || !is_array($_SESSION[atkconfig("identifier")]))
         $_SESSION[atkconfig("identifier")] = array();
@@ -716,7 +760,7 @@
      * @static
      * @return int the new session level
      */
-    function newLevel($sessionstatus=SESSION_DEFAULT, $levelskip=1)
+    public function newLevel($sessionstatus=SESSION_DEFAULT, $levelskip=1)
     {
       $currentlevel = atkLevel();
 
@@ -768,7 +812,7 @@
      * @param string $fieldprefix
      * @return string the HTML formcode with the session info
      */
-    function formState($sessionstatus=SESSION_DEFAULT, $returnbehaviour=NULL, $fieldprefix='')
+    public function formState($sessionstatus=SESSION_DEFAULT, $returnbehaviour=NULL, $fieldprefix='')
     {
       global $g_stickyurl;
 
@@ -816,7 +860,7 @@
      * @param string $url         the URL
      * @return array the vars of the session
      */
-    function sessionVars($sessionstatus=SESSION_DEFAULT, $levelskip=1, $url="")
+    public function sessionVars($sessionstatus=SESSION_DEFAULT, $levelskip=1, $url="")
     {
       global $g_stickyurl;
 
@@ -857,7 +901,7 @@
      * @static
      * @return string the session aware URL
      */
-    function sessionUrl($url,$sessionstatus=SESSION_DEFAULT, $levelskip=1)
+    public function sessionUrl($url,$sessionstatus=SESSION_DEFAULT, $levelskip=1)
     {
       if (strpos($url,"?")!==false)
       {
@@ -892,7 +936,7 @@
      * @static
      * @return string the HTML link for the session aware URI
      */
-    function href($url,$name="",$sessionstatus=SESSION_DEFAULT, $saveform=false, $extraprops="")
+    public function href($url,$name="",$sessionstatus=SESSION_DEFAULT, $saveform=false, $extraprops="")
     {
       if ($saveform)
       {
@@ -908,8 +952,6 @@
       // javascript parser..
       return "<a href='".$str."' ".$extraprops.">".$name."</a>";
     }
-
-
   }
 
   /**
@@ -918,8 +960,6 @@
    */
   function atksession_init()
   {
-    global $g_sessionData;
-
     $cookie_params = session_get_cookie_params();
     $cookiepath   = atkconfig("application_root");
     $cookiedomain = (atkconfig("cookiedomain") != "") ? atkconfig("cookiedomain") : NULL;
@@ -1160,7 +1200,7 @@
 
   /**
    * Returns the sessionmanager.
-   * @return atkSessionManager  session manager
+   * @return atkSessionManager Session manager
    */
   function &atkGetSessionManager()
   {
