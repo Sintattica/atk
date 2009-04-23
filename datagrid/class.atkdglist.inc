@@ -125,10 +125,10 @@ class atkDGList extends atkDGComponent
     {
       $headercols[] = array("content"=>"");
     }
-    //Todo: For speedup we must move hasFlag($this->m_flags, RL_EMBED out of cycle or to listArray()
+
     foreach (array_values($list["heading"]) as $head)
     {
-      if (empty($head["order"]))
+      if (!$grid->hasFlag(atkDataGrid::SORT) || empty($head["order"]))
       {
         $headercols[] = array("content"=>$head["title"]);
       }
