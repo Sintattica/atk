@@ -42,6 +42,21 @@
   define("AF_ONETOMANY_ADDORCOPY_DIALOG", AF_SPECIFIC_3);
 
   /**
+   * Show the OTM in add mode.
+   * Warning! Not on by default because this only works in simple cases.
+   *
+   * What ATK does is, when you are in OTM add mode, it stores everything you add
+   * in the session, then when you're actually saving, it persists everything to
+   * the database.
+   *
+   * However, as you may guess, not having an id will lead to strange results for:
+   * - Nodes that use the foreign key in their descriptor
+   * - Nodes with unique records (AF_UNIQUE always just checks the database)
+   * - Combined primary keys
+   */
+  define("AF_ONETOMANY_SHOW_ADD", AF_SPECIFIC_4);
+
+  /**
    * Implementation of one-to-many relationships.
    *
    * Can be used to create one to many relations ('1 library has N books').
@@ -163,9 +178,7 @@
      */
     function atkOneToManyRelation($name, $destination, $refKey="", $flags=0)
     {
-      $this->atkRelation($name, $destination, $flags|AF_HIDE_ADD|AF_NO_SORT);
-      // 1toM Relations are NEVER edited when adding a rec. And for now, we
-      // cannot search or sort them.
+      $this->atkRelation($name, $destination, $flags|AF_NO_SORT|AF_HIDE_ADD);
 
       if (is_array($refKey))
       {
@@ -180,6 +193,16 @@
         $this->m_refKey[] = $refKey;
       }
       $this->setGridExcludes($this->m_refKey);
+    }
+
+    public function addFlag($flag)
+    {
+      $ret = parent::addFlag($flag);
+      if (hasFlag($this->m_flags, AF_ONETOMANY_SHOW_ADD))
+      {
+        $this->removeFlag(AF_HIDE_ADD);
+      }
+      return $ret;
     }
 
     /**
@@ -244,7 +267,7 @@
      * The datagrid uses for both the edit and display actions the partial_grid
      * method to update it's view.
      *
-     * @param array  $record      the record
+     * @param array   $record     the record
      * @param string  $mode       the mode
      * @param string  $action     the action
      * @param boolean $useSession use session?
@@ -256,8 +279,8 @@
       $this->createDestination();
 
       atkimport('atk.datagrid.atkdatagrid');
-
       $grid = atkDataGrid::create($this->m_destInstance, null, null, true, $useSession);
+
       $grid->setMode($mode);
 
       $grid->removeFlag(atkDataGrid::EXTENDED_SEARCH);
@@ -372,8 +395,7 @@
         return $this->text('none');
       }
 
-      // list mode
-      if ($mode == "list")
+      if ($mode == "list") // list mode
       {
         $result = "<ul>";
 
@@ -386,9 +408,7 @@
 
         return $result;
       }
-
-      // cvs / plain mode
-      else
+      else // cvs / plain mode
       {
         $result = "";
 
@@ -429,6 +449,24 @@
         $params["atkfilter"] = $this->m_destinationFilter;
       }
 
+      if ($mode==='add')
+      {
+        //All actions in the grid should be done in session store mode
+        $params['atkstore']='session';
+        $params['atkstore_key']=$this->getSessionStoreKey();
+
+        // Make the grid use the OTM Session Grid Handler
+        // which makes the grid get it's records from the session.
+        $handler = new atkOneToManyRelationSessionGridHandler($this->getSessionStoreKey());
+
+        $grid->setCountHandler( array($handler, 'countHandlerForAdd'));
+        $grid->setSelectHandler(array($handler, 'selectHandlerForAdd'));
+        // No searching and sorting on session data... for now...
+        $grid->removeFlag(atkDataGrid::SEARCH);
+        $grid->removeFlag(atkDataGrid::SORT);
+        $grid->removeFlag(atkDataGrid::EXTENDED_SORT);
+      }
+
       $actions = $this->m_destInstance->defaultActions("relation", $params);
       $grid->setDefaultActions($actions);
 
@@ -441,7 +479,7 @@
 
       if ($this->m_destInstance->allowed("add"))
       {
-        $this->_addAddToEditOutput($output, $grid->getRecords(), $record);
+        $this->_addAddToEditOutput($output, $grid->getRecords(), $record, $mode, $fieldprefix);
       }
 
       return $output;
@@ -454,15 +492,16 @@
      * @param Array $myrecords The records that are loaded into the recordlist
      * @param array $record The master record that is being edited.
      */
-    function _addAddToEditOutput(&$output, $myrecords, $record)
+    function _addAddToEditOutput(&$output, $myrecords, $record, $mode="", $fieldprefix="")
     {
+      $add_link = $this->_getAddLink($myrecords, $record, true, $mode, $fieldprefix)."<br />";
       if (atkconfig("onetomany_addlink_position","bottom") == "top")
       {
-        $output = $this->_getAddLink($myrecords, $record)."<br />".$output;
+        $output = $add_link.$output;
       }
       else if (atkconfig("onetomany_addlink_position","bottom") == "bottom")
       {
-        $output .= $this->_getAddLink($myrecords, $record)."<br />";
+        $output .= $add_link;
       }
     }
 
@@ -487,33 +526,69 @@
      * @param bool $saveform    Save the form values?
      * @return String  The link to add records to the onetomany
      */
-    function _getAddLink($myrecords, $record,$saveform=true)
+    function _getAddLink($myrecords, $record, $saveform=true, $mode="", $fieldprefix="")
     {
-      $filter = $this->getAddFilterString($record);
-
-      $addorcopy = $this->hasFlag(AF_ONETOMANY_ADDORCOPY_DIALOG) ||
-                   $this->m_destInstance->hasFlag(NF_ADDORCOPY_DIALOG);
-
-      $add = $this->hasFlag(AF_ONETOMANY_ADD_DIALOG) ||
-             $this->m_destInstance->hasFlag(NF_ADD_DIALOG);
-
-      if ($addorcopy)
+      $params=array();
+      if ($mode==='add')
       {
+        $ownerfields = $this->getOwnerFields();
+        foreach ($ownerfields as $ownerfield)
+        {
+          $record[$ownerfield] = $this->getSessionAddFakeId();
+        }
+        $params['atkstore'] = 'session';
+        $params['atkstore_key'] = $this->getSessionStoreKey();
+      }
+
+      $is_addorcopy_mode = $this->hasFlag(AF_ONETOMANY_ADDORCOPY_DIALOG) ||
+                           $this->m_destInstance->hasFlag(NF_ADDORCOPY_DIALOG);
+
+      if ($is_addorcopy_mode)
+      {
+        $filter = $this->getAddFilterString($record);
+
         atkimport('atk.handlers.atkaddorcopyhandler');
         $showDialog = atkAddOrCopyHandler::hasCopyableRecords($this->m_destInstance, $filter);
 
         if ($showDialog)
-          return $this->_getDialogAddLink($record, 'addorcopy');
+        {
+          return $this->_getDialogAddLink($record, 'addorcopy', $params);
+        }
       }
 
-      if ($add)
-      {
-        return $this->_getDialogAddLink($record, 'add');
-      }
-      else
-      {
-        return $this->_getNestedAddLink($myrecords, $record, $saveform);
-      }
+      $is_dialog_mode = $this->hasFlag(AF_ONETOMANY_ADD_DIALOG) ||
+                        $this->m_destInstance->hasFlag(NF_ADD_DIALOG);
+
+      if ($is_dialog_mode) return $this->_getDialogAddLink($record, 'add', $params);
+      else                 return $this->_getNestedAddLink($myrecords, $record, $saveform, $fieldprefix, $params);
+    }
+
+    /**
+     * Return a fake ID for adding to the session.
+     *
+     * We use a high negative number because we have to sneak this in
+     * as if it's a REAL id for the owner, tricking MTOs in the destination
+     * that point back to us into thinking they already have an id.
+     * But we also have to make sure it's recognizable, so when we
+     * persist the records from the session to the database, then
+     * we can set the proper id.
+     *
+     * @return string
+     */
+    private function getSessionAddFakeId()
+    {
+      return "-999999";
+    }
+
+    /**
+     * Return the key to use when storing records for the OTM destination
+     * in the session if the OTM is used in add mode.
+     *
+     * @return string
+     */
+    private function getSessionStoreKey()
+    {
+      return $this->getOwnerInstance()->atkNodeType().':'.$this->fieldName();
     }
 
     /**
@@ -541,17 +616,17 @@
      * @param string $action
      * @return string The dialog add link html-code
      */
-    function _getDialogAddLink($record, $action)
+    function _getDialogAddLink($record, $action, $params=array())
     {
       atkimport("atk.ui.atkdialog");
 
       $ui = &$this->m_ownerInstance->getUi();
 
-      $params = array();
-
       $filter = $this->getAddFilterString($record);
       if (!empty($filter))
+      {
         $params['atkfilter'] = $filter;
+      }
 
       $dialog = new atkDialog($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.'.$action.'_dialog', $params);
       $title = $ui->title($this->m_destInstance->m_module, $this->m_destInstance->m_type, $action);
@@ -571,31 +646,26 @@
      * @param bool $saveform    Save the values of the form?
      * @return String  The link to add records to the onetomany
      */
-    function _getNestedAddLink($myrecords, $record,$saveform=true)
+    function _getNestedAddLink($myrecords, $record, $saveform=true, $fieldprefix='', $params=array())
     {
       $url = "";
-      if (($this->m_maxRecords==0 || $this->m_maxRecords > count($myrecords)) && $this->createDestination() && !$this->m_destInstance->hasFlag(NF_NO_ADD))
+      if ((int)$this->m_maxRecords!==0 && count($myrecords) > $this->m_maxRecords) return $url;
+      if (!$this->createDestination()) return $url;
+      if ($this->m_destInstance->hasFlag(NF_NO_ADD)) return $url;
+
+      $filter = $this->getAddFilterString($record);
+      if (!empty($filter)) $params['atkfilter'] = $filter;
+
+      $add_url = dispatch_url($this->m_destination, "add", $params);
+      $label = $this->getAddLabel();
+
+      $onchange = '';
+      if (count($this->m_onchangecode))
       {
-        $params = array();
-
-        $filter = $this->getAddFilterString($record);
-        if (!empty($filter))
-          $params['atkfilter'] = $filter;
-
-        $add_url = dispatch_url($this->m_destination,"add", $params);
-        $label = $this->getAddLabel();
-
-        if (count($this->m_onchangecode))
-        {
-          $onchange = 'onChange="'.$this->fieldName().'_onChange(this);"';
-          $this->_renderChangeHandler($fieldprefix);
-        }
-        else
-        {
-          $onchange = '';
-        }
-        $url = href($add_url,$label,SESSION_NESTED,$saveform,$onchange.' class="atkonetomanyrelation"');
+        $onchange = 'onChange="'.$this->fieldName().'_onChange(this);"';
+        $this->_renderChangeHandler($fieldprefix);
       }
+      $url = href($add_url, $label, SESSION_NESTED, $saveform, $onchange.' class="atkonetomanyrelation"');
       return $url;
     }
 
@@ -619,14 +689,20 @@
         for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
         {
           $primkeyattr = &$this->m_ownerInstance->m_attribList[$ownerfields[$i]];
-          $filterelems[] = $this->m_refKey[0].".".$ownerfields[$i]."='".$this->escapeSQL($primkeyattr->value2db($record))."'";
+          $value = $primkeyattr->value2db($record);
+          if (!$value) continue;
+
+          $filterelems[] = $this->m_refKey[0].".".$ownerfields[$i]."='".$this->escapeSQL($value)."'";
         }
       }
       else
       {
         for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
         {
-          $filterelems[] = $this->_addTablePrefix($this->m_refKey[$i])."='".$this->escapeSQL($record[$ownerfields[$i]])."'";
+          $value = $record[$ownerfields[$i]];
+          if (!$value) continue;
+
+          $filterelems[] = $this->_addTablePrefix($this->m_refKey[$i])."='".$this->escapeSQL($value)."'";
         }
       }
 
@@ -853,9 +929,15 @@
      * Store detail records in the database.
      *
      * For onetomanyrelation, this function does not have much use, since it
-     * stores records using its 'add link'. Thehe copyDb function however uses
-     * this method to clone detail records.
-     * If mode is anything other than "copy" this method does not do anything.
+     * stores records using its 'add link'.
+     * There are however two modes that use this:
+     * - 'copy' mode
+     *   The copyDb function, to clone detail records.
+     * - 'add' mode
+     *   When the OTM was used in add mode, we have to transfer
+     *   the records stored in the session to the database.
+     *
+     * other than those this method does not do anything.
      *
      * @param atkDb $db The database used by the node.
      * @param array $record The master record which has the detail records
@@ -863,48 +945,107 @@
      * @param string $mode The mode we're in ("add", "edit", "copy")
      * @return boolean true if store was successful, false otherwise.
      */
-    function store(&$db, $record, $mode)
+    function store(atkDb $db, $record, $mode)
     {
-      if ($mode=="copy") // when copying, mode is "copy".
+      switch ($mode)
       {
-        $onetomanyrecs = $record[$this->fieldName()];
-        if (is_array($onetomanyrecs)&&count($onetomanyrecs)>0)
+        case 'add' : return $this->storeAdd($db, $record, $mode);
+        case 'copy': return $this->storeCopy($db, $record, $mode);
+        default:     return true;
+      }
+    }
+
+    /**
+     * Persist records from the session (in add mode) to the database.
+     *
+     * @param atkDb $db
+     * @param array $record
+     * @param string $mode
+     * @return bool
+     */
+    private function storeAdd(atkDb $db, $record, $mode)
+    {
+      if (!$this->createDestination()) return false;
+
+      atkimport('atk.session.atksessionstore');
+      $rows = atkSessionStore::getInstance($this->getSessionStoreKey())->getData();
+
+      foreach ($rows as $row)
+      {
+        $this->updateSessionAddFakeId($row, $this->getSessionAddFakeId(), $record);
+        $this->m_destInstance->addDb($row);
+      }
+      return true;
+    }
+
+    /**
+     * Recursive method to look for the fake id in the record and replace it
+     * with the proper id.
+     *
+     * @param array $row    Destination record
+     * @param mixed $id     Fake id to look for
+     * @param array $record Owner record
+     */
+    private function updateSessionAddFakeId(&$row, $id, $record)
+    {
+      $row_keys = array_keys($row);
+      foreach ($row_keys as $key)
+      {
+        if (is_array($row[$key]))
         {
-          if ($this->createDestination())
+          $this->updateSessionAddFakeId($row[$key], $id, $record);
+        }
+        else
+        {
+          if ($row[$key]===$id) $row[$key] = $record[$key];
+        }
+      }
+    }
+
+    /**
+     * Copy detail records.
+     *
+     * @param atkDb  $db     Datbase connection to use
+     * @param array  $record Owner record
+     * @param string $mode   Mode ('copy')
+     * @return bool
+     */
+    private function storeCopy(atkDb $db, $record, $mode)
+    {
+      $onetomanyrecs = $record[$this->fieldName()];
+      if (!is_array($onetomanyrecs) || count($onetomanyrecs)<=0) return true;
+
+      if (!$this->createDestination()) return true;
+
+      $ownerfields = $this->getOwnerFields();
+      for ($i=0;$i<count($onetomanyrecs);$i++)
+      {
+        // original record
+        $original = $onetomanyrecs[$i];
+        $onetomanyrecs[$i]['atkorgrec'] = $original;
+
+        // the referential key of the onetomanyrecs could be wrong, if we
+        // are called for example from a copy function. So just in case,
+        // we reset the correct key.
+        if (!$this->destinationHasRelation())
+        {
+          for ($j=0, $_j = count($this->m_refKey); $j<$_j; $j++)
           {
-            $ownerfields = $this->getOwnerFields();
-            for ($i=0;$i<count($onetomanyrecs);$i++)
-            {
-              // original record
-              $original = $onetomanyrecs[$i];
-              $onetomanyrecs[$i]['atkorgrec'] = $original;
-
-              // the referential key of the onetomanyrecs could be wrong, if we
-              // are called for example from a copy function. So just in case,
-              // we reset the correct key.
-              if(!$this->destinationHasRelation())
-              {
-                for ($j=0, $_j = count($this->m_refKey); $j<$_j; $j++)
-                {
-                  $onetomanyrecs[$i][$this->m_refKey[$j]] = $record[$ownerfields[$j]];
-                }
-              }
-              else
-              {
-                for ($j=0, $_j = count($this->m_refKey); $j<$_j; $j++)
-                {
-                   $onetomanyrecs[$i][$this->m_refKey[0]][$ownerfields[$j]] = $record[$ownerfields[$j]];
-                }
-              }
-
-              if (!$this->m_destInstance->addDb($onetomanyrecs[$i], true, $mode))
-              {
-                // error
-                return false;
-              }
-
-            }
+            $onetomanyrecs[$i][$this->m_refKey[$j]] = $record[$ownerfields[$j]];
           }
+        }
+        else
+        {
+          for ($j=0, $_j = count($this->m_refKey); $j<$_j; $j++)
+          {
+            $onetomanyrecs[$i][$this->m_refKey[0]][$ownerfields[$j]] = $record[$ownerfields[$j]];
+          }
+        }
+
+        if (!$this->m_destInstance->addDb($onetomanyrecs[$i], true, $mode))
+        {
+          // error
+          return false;
         }
       }
       return true;
@@ -1398,4 +1539,78 @@
       return $this->m_excludes;
     }
   }
-?>
+
+  /**
+   * The OTM Session Grid Handler
+   * Provides the OTM grid with data from the session,
+   * when the OTM is in add mode.
+   */
+  class atkOneToManyRelationSessionGridHandler
+  {
+    private $_key;
+
+    /**
+     * Create a OTM session grid handler
+     *
+     * @param string $key
+     */
+    public function __construct($key)
+    {
+      $this->_key = $key;
+    }
+
+    /**
+     * Select handler, returns the records for the grid
+     *
+     * @param atkDataGrid $grid
+     * @return array Records for the grid
+     */
+    public function selectHandlerForAdd(atkDataGrid $grid)
+    {
+      $records = $this->getRecordsFromSession();
+
+      $limit = $grid->getLimit();
+      $offset = $grid->getOffset();
+      $records_count = count($records);
+
+      // If we don't need to limit the result, then we don't
+      if ((int)$offset===0 && $limit>=$records_count)
+      {
+        // We have to sort the data first, because the datagrid
+        // is very sensitive with regards to it's numerical keys
+        // being sequential
+        sort($records);
+        return $records;
+      }
+
+      // Limit the search results and return the limited results
+      $ret = array();
+      $records_keys = array_keys($records);
+      for ($i=$offset,$j=0;$i<$records_count && $j<$limit;$i++,$j++)
+      {
+        $ret[] = $records[$records_keys[$i]];
+      }
+      return $ret;
+    }
+
+    /**
+     * Count handler, return the number of records there are in the session
+     *
+     * @return int
+     */
+    public function countHandlerForAdd()
+    {
+      return count($this->getRecordsFromSession());
+    }
+
+    /**
+     * Get all records for the current key from the session
+     *
+     * @return array
+     */
+    private function getRecordsFromSession()
+    {
+      atkimport('atk.session.atksessionstore');
+      return atkSessionStore::getInstance($this->_key)->getData();
+    }
+  }

@@ -198,6 +198,12 @@ Changes in ATK 6.3
 * Fixed searching on listcolumns in atkmanytoonerelation.[Peter, Lineke]
 * Changed htmlentities into atk_htmlentities. [Sandy]
 * Fixed encoding bug in atkopendocumentwriter (bug #1231) [Mykhaylo,Sandy]
++ Added AF_ONETOMANY_SHOW_ADD flag to use atkOneToManyRelation in add mode.
+  Using it in this way will store the detail records in the session.
+  Note this will not always work, however it should be usable for
+  simple nodes. [Boy]
++ Added globalStackVar method to atkSessionManager, which always occurs
+  once for a given stack. [Boy]
 
 Changes in prior versions
 -------------------------

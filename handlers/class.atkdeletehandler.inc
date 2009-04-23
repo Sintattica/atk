@@ -89,26 +89,57 @@
     }
 
     /**
-     * We have a confirmed delete, so we proceed to delete
+     * Given an confirmed delete, determine where the record
+     * needs to be deleted (session or dabase), delete it
+     * and redirect to the feedback url.
      */
     function _doDelete()
     {
-      $db = &$this->m_node->getDb();
+      $atkstoretype = "";
+      $sessionmanager = atkGetSessionManager();
+      if ($sessionmanager) $atkstoretype = $sessionmanager->stackVar('atkstore');
+      switch ($atkstoretype)
+      {
+        case 'session': $result = $this->_doDeleteSession(); break;
+        default:        $result = $this->_doDeleteDb(); break;
+      }
 
-      if($this->m_node->deleteDb($this->m_postvars['atkselector']))
+      if ($result===true) $location = $this->m_node->feedbackUrl("delete", ACTION_SUCCESS);
+      else                $location = $this->m_node->feedbackUrl("delete", ACTION_FAILED, null, $result);
+
+      $this->m_node->redirect($location);
+    }
+
+    /**
+     * Delete the record in the database
+     *
+     * @return mixed Results, true or string with errormessage
+     */
+    private function _doDeleteDb()
+    {
+      $db = &$this->m_node->getDb();
+      if ($this->m_node->deleteDb($this->m_postvars['atkselector']))
       {
         $db->commit();
         $this->clearCache();
-        $location = $this->m_node->feedbackUrl("delete", ACTION_SUCCESS);
-        $this->m_node->redirect($location);
+        return true;
       }
-      // Something is wrong here, the deleteDb failed
-      else
+      else // Something is wrong here, the deleteDb failed
       {
-        $location = $this->m_node->feedbackUrl("delete",ACTION_FAILED,null,$db->getErrorMsg());
         $db->rollback();
-        $this->m_node->redirect($location);
+        return $db->getErrorMsg();
       }
+    }
+
+    /**
+     * Delete the database in the session
+     *
+     * @return bool Results, true or false
+     */
+    private function _doDeleteSession()
+    {
+      $selector = atkArrayNvl($this->m_postvars, 'atkselector','');
+      return atkinstance('atk.session.atksessionstore')->deleteDataRowForSelector($selector);
     }
 
     /**

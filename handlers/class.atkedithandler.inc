@@ -81,25 +81,6 @@
     }
 
     /**
-     * Get the record for editing
-     *
-     * @return Array The record for editing
-     */
-    function getRecord()
-    {
-      $node = &$this->m_node;
-
-      $record = $this->getRejectInfo(); // Check reject info first
-
-      if($record == null) //If reject info not set -  do select
-      {
-        list($record) = $node->selectDb(atkArrayNvl($this->m_postvars, 'atkselector', ""),"","","","","edit");
-      }
-
-      return $record;
-    }
-
-    /**
      * check if there are postvars set that overwrite the record contents, this can
      * happen when a new selection is made using the select handler etc.
      *
@@ -367,7 +348,7 @@
       // ar_ stands voor 'attribrow'.
       $tplfield["rowid"] = "ar_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
 
-      // check for separator 
+      // check for separator
       if ($field["html"] == "-" && $index > 0 && $fields[$index-1]["html"] != "-")
       {
         $tplfield["type"] = "line";
@@ -449,7 +430,7 @@
           $tplfield["tooltip"] = $tooltip;
           $editsrc.=$tooltip."&nbsp;";
         }
-        
+
         $tplfield['id']=str_replace('.','_',$this->m_node->atknodetype().'_'.$field["id"]);
 
         $tplfield["full"] = $editsrc;
@@ -457,13 +438,13 @@
         $column = ((array_key_exists($field['id'],$this->m_node->m_columnAttributes) && $this->m_node->m_columnAttributes[$field['id']]) ? 1 : 0);
         $tplfield["column"] = $column;
       }
-      
+
       // allow passing of extra arbitrary data, for example if a user overloads the editArray method
-      // to pass custom extra data per attribute to the template      
+      // to pass custom extra data per attribute to the template
       if (isset($field['extra']))
       {
         $tplfield['extra'] = $field['extra'];
-      }        
+      }
 
       return $tplfield;
     }

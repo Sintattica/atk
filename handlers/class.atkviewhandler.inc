@@ -31,7 +31,7 @@
   {
     /**
      * The action handler method.
-     * 
+     *
      * @param Bool $renderbox Render this action in a renderbox or just output the HTML
      */
     function action_view($renderbox=true)
@@ -59,9 +59,14 @@
     /**
      * Returns the view record.
      */
-    function getRecord()
+    function getRecordFromDb()
     {
-      list($record) = $this->m_node->selectDb($this->m_postvars['atkselector'],$this->getNode()->getColumnConfig()->getOrderByStatement(),"",$this->m_node->m_viewExcludes,"","view");
+      list($record) = $this->m_node->selectDb($this->m_postvars['atkselector'],
+                                              $this->getNode()->getColumnConfig()->getOrderByStatement(),
+                                              "",
+                                              $this->m_node->m_viewExcludes,
+                                              "",
+                                              "view");
       return $record;
     }
 

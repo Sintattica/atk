@@ -82,54 +82,23 @@
 
         $error = count($record['atkerror']) > 0;
 
+        $db = $this->m_node->getDb();
         if ($error)
         {
           // something went wrong, back to where we came from
-          $db = &$this->m_node->getDb();
           $db->rollback();
           return $this->goBack($record);
         }
         else
         {
-          $db = &$this->m_node->getDb();
-
-          if(!$this->m_node->addDb($record, true, "add"))
+          if (!$this->storeRecord($record))
           {
             $this->handleAddError($record);
             return;
           }
           else
           {
-            $db->commit();
-            $this->notify("save", $record);
-            $this->clearCache();
-
-            $location="";
-            if ($this->m_node->hasFlag(NF_EDITAFTERADD) && $this->m_node->allowed('edit'))
-            {
-              // forward atkpkret for newly added records
-              $extra = "";
-              if (isset($this->m_postvars["atkpkret"]))
-                $extra = "&atkpkret=".rawurlencode($this->m_postvars["atkpkret"]);
-
-              $back = SESSION_BACK;
-              if ($this->_getSkip()==1) $back = SESSION_REPLACE;
-
-              $location = session_url(atkSelf().'?atknodetype='.$this->m_node->atknodetype().'&atkaction=edit&atkselector='.rawurlencode($this->m_node->primaryKey($record)).$extra, $back);
-            }
-            else if ($this->m_node->hasFlag(NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext']))
-            {
-              $back = SESSION_BACK;
-              if ($this->_getSkip()==1) $back = SESSION_DEFAULT;
-
-              $filter = isset($this->m_node->m_postvars['atkfilter']) ? "&atkfilter=".rawurlencode($this->m_node->m_postvars['atkfilter']) : "";
-              $location = session_url(atkSelf().'?atknodetype='.$this->m_node->atknodetype().'&atkaction=add'.$filter, $back);
-            }
-            else
-            {
-              // normal succesful save
-              $location = $this->m_node->feedbackUrl("save", ACTION_SUCCESS, $record, "", $this->_getSkip());
-            }
+            $location = $this->getSuccessReturnURL($record);
             $this->m_node->redirect($location, $record);
           }
         }
@@ -140,6 +109,101 @@
         $location = $this->m_node->feedbackUrl("save", ACTION_CANCELLED, $record, "", $this->_getSkip());
         $this->m_node->redirect($location);
       }
+    }
+
+    /**
+     * Get the URL to redirect to after successfully saving a record.
+     *
+     * @param array $record Saved record
+     * @return string Location to redirect to
+     */
+    private function getSuccessReturnURL($record)
+    {
+      $location="";
+      if ($this->m_node->hasFlag(NF_EDITAFTERADD) && $this->m_node->allowed('edit'))
+      {
+        // forward atkpkret for newly added records
+        $extra = "";
+        if (isset($this->m_postvars["atkpkret"]))
+        {
+          $extra = "&atkpkret=".rawurlencode($this->m_postvars["atkpkret"]);
+        }
+
+        $back = SESSION_BACK;
+        if ($this->_getSkip()==1) $back = SESSION_REPLACE;
+
+        $url = atkSelf().'?atknodetype='.$this->m_node->atknodetype();
+        $url.= '&atkaction=edit';
+        $url.= '&atkselector='.rawurlencode($this->m_node->primaryKey($record));
+        $location = session_url($url.$extra, $back);
+      }
+      else if ($this->m_node->hasFlag(NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext']))
+      {
+        $back = SESSION_BACK;
+        if ($this->_getSkip()==1) $back = SESSION_DEFAULT;
+
+        $filter = "";
+        if (isset($this->m_node->m_postvars['atkfilter']))
+        {
+          $filter = "&atkfilter=".rawurlencode($this->m_node->m_postvars['atkfilter']);
+        }
+        $url = atkSelf().'?atknodetype='.$this->m_node->atknodetype().'&atkaction=add';
+        $location = session_url($url.$filter, $back);
+      }
+      else
+      {
+        // normal succesful save
+        $location = $this->m_node->feedbackUrl("save", ACTION_SUCCESS, $record, "", $this->_getSkip());
+      }
+      return $location;
+    }
+
+    /**
+     * Store a record, either in the database or in the session
+     *
+     * @param array $record Record to store
+     * @return bool Successfull save?
+     */
+    private function storeRecord(&$record)
+    {
+      $atkstoretype = "";
+      $sessionmanager = atkGetSessionManager();
+      if ($sessionmanager) $atkstoretype = $sessionmanager->stackVar('atkstore');
+      switch ($atkstoretype)
+      {
+        case 'session': return $this->storeRecordInSession($record);
+        default:        return $this->storeRecordInDb($record);
+      }
+    }
+
+    /**
+     * Store a record in the session
+     *
+     * @param array $record Record to store in the session
+     * @return bool Successfull save?
+     */
+    private function storeRecordInSession(&$record)
+    {
+      atkdebug("STORING RECORD IN SESSION");
+      $result = atkinstance('atk.session.atksessionstore')->addDataRow($record, $this->m_node->primaryKeyField());
+      return ($result!==false);
+    }
+
+    /**
+     * Store a record in the database
+     *
+     * @param array $record Record to store in the database
+     * @return bool Successfull save?
+     */
+    private function storeRecordInDb(&$record)
+    {
+      if (!$this->m_node->addDb($record, true, "add")) return false;
+
+      $this->m_node->getDb()->commit();
+      $this->notify("save", $record);
+      $this->clearCache();
+
+      return true;
     }
 
     /**
@@ -195,7 +259,7 @@
 
     /**
      * Validate record.
-     * 
+     *
      * @param Array &$record The record to validate
      */
     function validate(&$record)

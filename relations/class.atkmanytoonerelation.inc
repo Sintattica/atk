@@ -207,7 +207,7 @@
      * @var boolean
      */
     var $m_useFilterForAddLink = true;
-    
+
     /**
      * Set a function to use for determining the descriptor in the getConcatFilter function
      *
@@ -360,7 +360,7 @@
     {
       $this->m_useFilterForAddLink = $useFilter;
     }
-    
+
     /**
      * Set the function for determining the descriptor in the getConcatFilter function
      * This function should be implemented in the destination node
@@ -371,7 +371,7 @@
     {
       $this->m_concatDescriptorFunction = $function;
     }
-    
+
     /**
      * Return the function for determining the descriptor in the getConcatFilter function
      *
@@ -385,7 +385,7 @@
     /**
      * Add list column. An attribute of the destination node
      * that (only) will be displayed in the recordlist.
-     * 
+     *
      * @param string $attr The attribute to add to the listcolumn
      */
     function addListColumn($attr)
@@ -542,7 +542,7 @@
 
     /**
      * Set none label.
-     * 
+     *
      * @param string $label The label to use for the "none" option
      */
     function setNoneLabel($label)
@@ -552,7 +552,7 @@
 
     /**
      * Get none label.
-     * 
+     *
      * @return Strign The label for the "none" option
      */
     function getNoneLabel()
@@ -566,7 +566,7 @@
 
     /**
      * Returns a displayable string for this value.
-     * 
+     *
      * @param array $record The record that holds the value for this attribute
      * @param String $mode The display mode ("view" for viewpages, or "list"
      *                     for displaying in recordlists, "edit" for
@@ -948,7 +948,7 @@
     /**
      * Support for destination "records" where only the id is set and the
      * record itself isn't converted to a real record (array) yet
-     * 
+     *
      * @param array $record The record to fix
      */
     function fixDestinationRecord(&$record)
@@ -1214,7 +1214,7 @@
             }
           }
         }
-        
+
         if (isset($value[$this->fieldName()]))
         {
           $value = $value[$this->fieldName()];
@@ -1234,7 +1234,7 @@
         {
           $value = array($value);
         }
-        
+
         if (count($value)==1) // exactly one value
         {
           if ($value[0] == "__NONE__")
@@ -1394,7 +1394,9 @@
      */
     function validate(&$record, $mode)
     {
-      if (!$this->_isSelectableRecord($record))
+      $sessionmanager = atkGetSessionManager();
+      if ($sessionmanager) $storetype =  $sessionmanager->stackVar('atkstore');
+      if ($storetype!=='session' && !$this->_isSelectableRecord($record))
       {
         triggerError($record, $this->fieldName(), 'error_integrity_violation');
       }
@@ -1497,7 +1499,7 @@
     /**
      * Returns the selected record for this many-to-one relation. Uses
      * the owner instance $this->fieldName()."_selected" method if it exists.
-     * 
+     *
      * @param array $record The record
      * @param string $mode The mode we're in
      * @return Array with the selected record
@@ -1512,7 +1514,7 @@
 
     /**
      * Returns the currently selected record.
-     * 
+     *
      * @param array $record The record
      * @param string $mode The mode we're in
      * @return Array with the selected record
@@ -1537,7 +1539,7 @@
     /**
      * Returns the selectable records for this many-to-one relation. Uses
      * the owner instance $this->fieldName()."_selection" method if it exists.
-     * 
+     *
      * @param array $record The record
      * @param string $mode The mode we're in
      * @return Array with the selectable records
@@ -1553,7 +1555,7 @@
     /**
      * Is selectable record? Uses the owner instance $this->fieldName()."_selectable"
      * method if it exists.
-     * 
+     *
      * @param array $record The record
      * @param string $mode The mode we're in
      * @return Boolean to indicate if the record is selectable
@@ -1590,7 +1592,7 @@
      * Is selectable record?
      *
      * Use this one from your selectable override when needed.
-     * 
+     *
      * @param array $record The record
      * @param string $mode The mode we're in
      * @return Boolean to indicate if the record is selectable
@@ -1641,7 +1643,7 @@
      * Returns the selectable records.
      *
      * Use this one from your selection override when needed.
-     * 
+     *
      * @param array $record The record
      * @param string $mode The mode we're in
      * @return Array with the selectable records
@@ -1659,7 +1661,7 @@
    /**
     * Returns the condition (SQL) that should be used when we want to join a relation's
     * owner node with the parent node.
-    * 
+    *
     * @param atkQuery $query The query object
     * @param String $tablename  The tablename on which to join
     * @param String $fieldalias The fieldalias
@@ -1693,7 +1695,7 @@
 
     /**
      * Make this relation hide itself from the form when there are no items to select
-     * 
+     *
      * @param boolean $hidewhenempty true - hide when empty, false - always show
      */
     function setHideWhenEmpty($hidewhenempty)
@@ -1731,7 +1733,7 @@
     }
 
     /**
-     * Retrieves the ORDER BY statement for the relation.   
+     * Retrieves the ORDER BY statement for the relation.
      *
      * @param Array $extra A list of attribute names to add to the order by
      *                     statement
@@ -1746,13 +1748,13 @@
 
       if (!empty($table))
       {
-        $table = $table.'_AE_'.$this->fieldName();  
+        $table = $table.'_AE_'.$this->fieldName();
       }
-      else 
+      else
       {
         $table = $this->fieldName();
-      }       
-        
+      }
+
       if (!empty($extra) && in_array($extra, $this->m_listColumns))
       {
         return $this->getDestination()->getAttribute($extra)->getOrderByStatement('', $table, $direction);
@@ -1763,12 +1765,12 @@
       {
         $newParts = array();
         $parts = explode(',', $order);
-        
+
         foreach ($parts as $part)
         {
           $part = trim($part);
           list($field, $fieldDirection) = preg_split('/\s+/', $part);
-          
+
           $fieldDirection = strtoupper($fieldDirection);
           $fieldDirection = empty($fieldDirection) ? 'ASC' : $fieldDirection;
 
@@ -1780,14 +1782,14 @@
           {
             $fieldDirection = $direction == 'DESC' ? 'ASC' : 'DESC';
           }
-          
+
           if (strpos($field, '.') !== false)
           {
             list(,$field) = explode('.', $field);
           }
-          
+
           $newPart = $this->getDestination()->getAttribute($field)->getOrderByStatement('', $table, $fieldDirection);
-          
+
           // realias if destination order contains the wrong tablename.
           if (strpos($newPart, $this->m_destInstance->m_table.'.') !== false)
           {
@@ -1795,7 +1797,7 @@
           }
           $newParts[] = $newPart;
         }
-        
+
         return implode(', ', $newParts);
       }
       else
@@ -1973,7 +1975,7 @@
      * Creates and registers the on change handler caller function.
      * This method will be used to message listeners for a change
      * event as soon as a new value is selected.
-     * 
+     *
      * @param string $fieldId
      * @param string $fieldPrefix
      * @param string $none
@@ -2003,7 +2005,7 @@
 
     /**
      * Draw the auto-complete box.
-     * 
+     *
      * @param array $record The record
      * @param string $fieldPrefix The fieldprefix
      * @param string $mode The mode we're in
@@ -2110,7 +2112,7 @@
 
     /**
      * Auto-complete search partial.
-     * 
+     *
      * @return HTML code with autocomplete result
      */
     function partial_autocomplete_search()

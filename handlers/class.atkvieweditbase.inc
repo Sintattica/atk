@@ -32,14 +32,60 @@
   class atkViewEditBase extends atkActionHandler
   {
     /**
+     * Get the record to view/edit
+     *
+     * @return Array The record for viewing/editting
+     */
+    public function getRecord()
+    {
+      $record = $this->getRejectInfo(); // Check reject info first
+
+      if ($record == null) //If reject info not set -  do select
+      {
+        $atkstoretype = "";
+        $sessionmanager = atkGetSessionManager();
+        if ($sessionmanager) $atkstoretype = $sessionmanager->stackVar('atkstore');
+        switch ($atkstoretype)
+        {
+          case 'session': $record = $this->getRecordFromSession(); break;
+          default:        $record = $this->getRecordFromDb(); break;
+        }
+      }
+      return $record;
+    }
+
+    /**
+     * Get the record for the database with the current selector
+     *
+     * @return array
+     */
+    protected function getRecordFromDb()
+    {
+      $selector = atkArrayNvl($this->m_node->m_postvars, 'atkselector', "");
+      list($record) = $this->m_node->selectDb($selector,"","","","","edit");
+      return $record;
+    }
+
+    /**
+     * Get the current record from the database with the current selector
+     *
+     * @return array
+     */
+    protected function getRecordFromSession()
+    {
+      $selector = atkArrayNvl($this->m_node->m_postvars, 'atkselector','');
+      return atkinstance('atk.session.atksessionstore')->getDataRowForSelector($selector);
+    }
+
+    /**
      * Get section label.
-     * 
+     *
      * @param atkNode $node
      * @param string $rawName
-     * 
+     *
      * @return string label
-     * 
-     * @static 
+     *
+     * @static
      */
     function getSectionLabel($node, $rawName)
     {
@@ -47,23 +93,23 @@
       $strings = array("section_{$tab}_{$section}", "{$tab}_{$section}", "section_{$section}", $section);
       return $node->text($strings);
     }
-    
+
     /**
      * Get tab label.
      *
      * @param atkNode $node
      * @param string $tab
-     * 
+     *
      * @return string label
-     * 
-     * @static 
+     *
+     * @static
      */
     function getTabLabel($node, $tab)
     {
       $strings = array("tab_{$tab}", $tab);
       return $node->text($strings);
-    }    
-    
+    }
+
     /**
      * Create the clickable label for the section.
      *
@@ -75,7 +121,7 @@
     {
       // label
       $label = atkViewEditBase::getSectionLabel($this->m_node, $field['name']);
-      
+
       // our name
       list($tab, $section) = explode('.', $field["name"]);
       $name = "section_{$tab}_{$section}";
@@ -90,8 +136,8 @@
       atkimport("atk.session.atkstate");
       $default = in_array($field["name"], $this->m_node->getActiveSections($tab, $mode)) ? 'opened' : 'closed';
       $sectionstate = atkState::get(array("nodetype"=>$this->m_node->atknodetype(),"section"=>$name), $default);
-			
-      if ($sectionstate == 'closed')  
+
+      if ($sectionstate == 'closed')
       {
         $initClass =  "closedSection";
         $page = &$this->getPage();
@@ -185,10 +231,10 @@
       }
       return $tabTpl;
     }
-    
+
     /**
      * Render tabs using templates
-     * 
+     *
      * @todo this method seems broken by design, read comments for more info!
      *
      * @param array $fields
@@ -200,7 +246,7 @@
       $ui = &$this->getUi();
       $tabs = array();
       $perTpl = array();//per template array
-      
+
       for($i=0,$_i=count($fields);$i<$_i;$i++)
       {
         $allTabs = explode(' ', $fields[$i]["tab"]); // should not use "tab" here, because it actually contains the CSS class names and not only the tab names
@@ -210,7 +256,7 @@
         $perTpl[$tabTpl[$tab]]['fields'][] = $fields[$i];//make field available in numeric array
         $perTpl[$tabTpl[$tab]][$fields[$i]["attribute"]] = $fields[$i];//make field available in associative array
       }
-      
+
       // Add 'alltab' fields to all templates
       foreach ($fields as $field)
       {
@@ -227,16 +273,16 @@
           }
         }
       }
-      
+
       $tpls = array_unique(array_values($tabTpl));
       foreach ($tpls as $tpl)
       {
-        $tabs[] = $ui->render($tpl,$perTpl[$tpl]);  
+        $tabs[] = $ui->render($tpl,$perTpl[$tpl]);
       }
-      
+
       return $tabs;
     }
-    
+
     /**
      * Attribute handler.
      *
@@ -254,6 +300,6 @@
       }
 
       return $attr->partial($partial, $this->m_action);
-    }    
+    }
   }
 ?>
