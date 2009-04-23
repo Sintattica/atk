@@ -195,7 +195,7 @@
 
       $sessionData = &$this->getSession();
       $currentitem = &$sessionData[$this->m_namespace]["stack"][atkStackID()][atkLevel()];
-      if (!is_array($currentitem)) return atkerror("Current level is not properly initialised!");
+      if (!is_array($currentitem)) return null;
 
       if ($value==="" && atkarraynvl($_REQUEST, $var, "")!=="")
       {
