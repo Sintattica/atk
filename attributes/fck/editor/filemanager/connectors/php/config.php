@@ -22,7 +22,8 @@
  * Configuration file for the File Manager Connector for PHP.
  */
 $config_atkroot = ("../../../../../../../");
-include_once("../../../../../../../atk.inc");
+
+include_once($config_atkroot."atk/include/initial.inc");
 
 global $Config ;
 
@@ -38,8 +39,7 @@ $Config['UserFilesPath'] = atkconfig('fck_upload_path');
 // user files directory. Useful if you are using a virtual directory, symbolic
 // link or alias. Examples: 'C:\\MySite\\userfiles\\' or '/root/mysite/userfiles/'.
 // Attention: The above 'UserFilesPath' must point to the same directory.
-//$Config['UserFilesAbsolutePath'] = '' ;
-
+$Config['UserFilesAbsolutePath'] = atkconfig('fck_upload_absolute_path','');
 
 // Due to security issues with Apache modules, it is recommended to leave the
 // following setting enabled.
