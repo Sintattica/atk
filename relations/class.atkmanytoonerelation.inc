@@ -271,12 +271,14 @@
      * constructor time.
      *
      * @param int $flag The flag to add to the attribute
+     * @return atkManyToOneRelation The instance of this atkManyToOneRelation
      */
     function addFlag($flag)
     {
       parent::addFlag($flag);
       if (atkconfig("manytoone_autocomplete_large", true) && hasFlag($flag, AF_LARGE))
         $this->m_flags |= AF_RELATION_AUTOCOMPLETE;
+      return $this;
     }
 
     /**
@@ -387,21 +389,25 @@
      * that (only) will be displayed in the recordlist.
      *
      * @param string $attr The attribute to add to the listcolumn
+     * @return atkManyToOneRelation The instance of this atkManyToOneRelation
      */
     function addListColumn($attr)
     {
       $this->m_listColumns[] = $attr;
+      return $this;
     }
 
     /**
      * Add multiple list columns. Attributes of the destination node
      * that (only) will be displayed in the recordlist.
+     * @return atkManyToOneRelation The instance of this atkManyToOneRelation
      */
     function addListColumns()
     {
       $attrs = func_get_args();
       foreach ($attrs as $attr)
         $this->m_listColumns[] = $attr;
+      return $this;
     }
 
 
@@ -410,12 +416,14 @@
      * even if the attribute itself is hidden?
      *
      * @param bool $value always show list columns?
+     * @return atkManyToOneRelation The instance of this atkManyToOneRelation
      */
     function setAlwaysShowListColumns($value)
     {
       $this->m_alwaysShowListColumns = $value;
       if($this->m_alwaysShowListColumns)
         $this->addFlag(AF_FORCE_LOAD);
+      return $this;
     }
 
     /**
