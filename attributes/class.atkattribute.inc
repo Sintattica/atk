@@ -1998,10 +1998,12 @@
      * Set the label of the attribute
      *
      * @param string $label
+     * @return atkAttribute The instance of this atkAttribute
      */
     function setLabel($label)
     {
       $this->m_label = $label;
+      return $this;
     }
 
     /**
