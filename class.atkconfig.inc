@@ -87,7 +87,7 @@
         if (file_exists($dir))
         {
           $module_configs = self::getDirConfigForSection($dir, $section);
-          $config = atk_array_merge_recursive($module_configs, $config);
+          $config = array_merge($module_configs, $config);
         }
       }
       return $config;
