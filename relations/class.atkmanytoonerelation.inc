@@ -561,15 +561,19 @@
     /**
      * Get none label.
      *
-     * @return Strign The label for the "none" option
+     * @return String The label for the "none" option
      */
     function getNoneLabel()
     {
       if ($this->m_noneLabel !== NULL)
         return $this->m_noneLabel;
       $nodename = $this->m_destInstance->m_type;
-      $modulename = $this->m_destInstance->m_module;;
-      return atktext('select_none', $modulename, $nodename);
+      $modulename = $this->m_destInstance->m_module;
+      $label = atktext($this->fieldName() . '_select_none', $modulename, $this->m_owner, "", "", true);
+      if ($label == "")
+        $label = atktext('select_none', $modulename, $nodename);
+
+      return $label;
     }
 
     /**
