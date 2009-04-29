@@ -569,7 +569,8 @@
         return $this->m_noneLabel;
       $nodename = $this->m_destInstance->m_type;
       $modulename = $this->m_destInstance->m_module;
-      $label = atktext($this->fieldName() . '_select_none', $modulename, $this->m_owner, "", "", true);
+      $ownermodulename = $this->m_ownerInstance->m_module;
+      $label = atktext($this->fieldName() . '_select_none', $ownermodulename, $this->m_owner, "", "", true);
       if ($label == "")
         $label = atktext('select_none', $modulename, $nodename);
 
