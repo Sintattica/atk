@@ -90,13 +90,22 @@
     /**
      * Returns the order by statement for this attribute.
      *
+     * @param Array $extra A list of attribute names to add to the order by
+     *                     statement
+     * @param String $table The table name (if not given uses the owner node's table name)
+     * @param String $direction Sorting direction (ASC or DESC)
      * @return order by statement
      */
-    function getOrderByStatement()
+    function getOrderByStatement($extra='', $table='', $direction='ASC')
     {
-      $expression = str_replace("[table]", $this->m_ownerInstance->m_table, $this->m_expression);
-      return "($expression)";
-    }    
+      if (empty($table))
+       {
+         $table = $this->m_ownerInstance->m_table;
+       }
+      
+      $expression = str_replace("[table]", $table, $this->m_expression);
+      return "($expression)".($direction ? " {$direction}" : "");
+    }
 
     /**
      * Sets the search type.
