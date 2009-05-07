@@ -31,6 +31,8 @@
  */
 class atkDGList extends atkDGComponent
 {
+  protected $m_hasActionColumn = 0;
+  
   /**
    * Render the list.
    *

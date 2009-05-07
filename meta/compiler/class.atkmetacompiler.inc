@@ -247,11 +247,12 @@ class atkMetaCompiler
         "useattrib('atkmlselectorattribute');\n".
         "\$node->add(new atkMlSelectorAttribute());\n\n";
     }       
-    
+   
     foreach ($attrs as $name => $data) 
     {
-      if ($data['type'] == null || !$this->_isIncluded($policy, $name))
+      if (!array_key_exists('type',$data) || $data['type'] == null || !$this->_isIncluded($policy, $name))
       {
+        atkdebug('Name: '.$name.' has no type!');
         continue;
       }
       
