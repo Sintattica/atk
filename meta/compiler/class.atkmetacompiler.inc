@@ -252,7 +252,6 @@ class atkMetaCompiler
     {
       if (!array_key_exists('type',$data) || $data['type'] == null || !$this->_isIncluded($policy, $name))
       {
-        atkdebug('Name: '.$name.' has no type!');
         continue;
       }
       
