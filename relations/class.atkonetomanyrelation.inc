@@ -494,7 +494,21 @@
      */
     function _addAddToEditOutput(&$output, $myrecords, $record, $mode="", $fieldprefix="")
     {
-      $add_link = $this->_getAddLink($myrecords, $record, true, $mode, $fieldprefix)."<br />";
+      $add_link = '';
+
+      if(! $this->getDestination()->hasFlag(NF_NO_ADD) )
+      {
+        $add_link = $this->_getAddLink(
+          $myrecords,
+          $record,
+          true,
+          $mode,
+          $fieldprefix
+        );
+      }
+
+      $add_link .=  '<br />';
+
       if (atkconfig("onetomany_addlink_position","bottom") == "top")
       {
         $output = $add_link.$output;

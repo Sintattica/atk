@@ -179,7 +179,7 @@
     /**
      * Descriptor handler. Forwards description handler calls
      * to the real description handler.
-     * 
+     *
      * @param array $record The record
      * @param atkNode $node The atknode object
      * @return String with the descriptor
@@ -255,7 +255,7 @@
      * Validation method. Empty implementation. Derived classes may override
      * this function.
      * @abstract
-     * 
+     *
      * @param array $record The record that holds the value for this
      *                      attribute. If an error occurs, the error will
      *                      be stored in the 'atkerror' field of the record.
@@ -327,7 +327,7 @@
     /**
      * Returns the condition (SQL) that should be used when we want to join a relation's
      * owner node with the parent node.
-     * 
+     *
      * @param atkQuery $query The query object
      * @param string $tablename The tablename
      * @param string $fieldalias

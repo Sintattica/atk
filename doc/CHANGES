@@ -8,7 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
-* Label select_none can now be specified on attribute level with an 
+* Fixed the o2m relation to respect the NF_NO_ADD flag. [Martin]
+* Label select_none can now be specified on attribute level with an
   atkmanytoone relation. [Max]
 * Do not merge local & skel config values, only keys. [Patrick/Tjeerd]
 * Fixed cleaning/filtering numeric values in the number attribute which
