@@ -33,7 +33,8 @@
      * If the section is a module and has a skel/configs/ it will get those configs too
      * and use them as defaults.
      *
-     * @example atkConfig::get('color','mymodule','FF0000');
+     * <b>Example:</b>
+     *        atkConfig::get('color','mymodule','FF0000');
      *
      * @param string $section Section to check (typically a module)
      * @param string $tag     Name of configuration to get
