@@ -140,8 +140,9 @@
     /**
      * Get all fields from a string
      *
-     * @example: [voorvoegsel], [naam] [wwoonplaats]
-     * would return array('[voorvoegsel]',', ','[naam]',' ','[wwoonplaats]')
+     * <b>Example:</b>
+     *        string: [firstname], [lastname] [city]
+     *        would return array('[firstname]',', ','[lastname]',' ','[city]')
      *
      * @return array
      */
