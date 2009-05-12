@@ -214,6 +214,7 @@ Changes in ATK 6.3
   converted to '0' after update [Jeroen]
 + Added addDefaultFlags to atkMetaPolicy. Adds default flag(s) to all attributes, 
   except to the specifed attribute or list of attributes [Jeroen]
+* Added translation for 'invalid_absolute_no_anchor_url' (atkUrlAttribute) [Jeroen]
 
 Changes in prior versions
 -------------------------

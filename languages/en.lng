@@ -190,6 +190,7 @@
   "intro_addorcopy" => "Do you want to create a new record or copy an existing record?",
   "invalid_relative_url" => "Invalid relative URL, please use this format: '/mysite/guestbook'",
   "invalid_url_anchor" => "Invalid URL anchor, please use this format: '#internal_bookmark'",
+  "invalid_absolute_no_anchor_url" => "Invalid absolute URL, please use this format: 'http://www.achievo.org/'",
   "invert_selection" => "Invert selection",
   "in_use_by" => "In use by",
   "jan" => "Jan",

@@ -190,6 +190,7 @@
   "intro_addorcopy" => "Wil je een nieuw record maken of een bestaande kopieeren?",
   "invalid_relative_url" => "Ongeldig relatief URL, gebruik het formaat: '/mypage/guestbook'",
   "invalid_url_anchor" => "Ongeldig URL anchor, gebruik het formaat: '#internal_bookmark'",
+  "invalid_absolute_no_anchor_url" => "Ongeldig absoluut URL, gebruik het formaat: 'http://www.achievo.org/'",
   "invert_selection" => "Selectie omkeren",
   "in_use_by" => "In gebruik door",
   "jan" => "jan",
