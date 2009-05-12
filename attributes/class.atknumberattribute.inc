@@ -114,42 +114,44 @@
      */
     function removeSeparators($number, $decimal_separator="", $thousands_separator="")
     {
-      if(empty($decimal_separator))   $decimal_separator = $this->m_decimalseparator;
-      if(empty($thousands_separator)) $thousands_separator = $this->m_thousandsseparator;
+      if (empty($decimal_separator))   $decimal_separator = $this->m_decimalseparator;
+      if (empty($thousands_separator)) $thousands_separator = $this->m_thousandsseparator;
 
-      if($decimal_separator == $thousands_separator)
+      if ($decimal_separator == $thousands_separator)
       {
         atkwarning('invalid thousandsseparator. identical to the decimal_separator');
         $thousands_separator = '';
       }
 
-      if(strstr($number,$decimal_separator) !== false)
-  	  {
-  	    // check invalid input
+      if (strstr($number,$decimal_separator) !== false)
+      {
+        // check invalid input
         if(substr_count($number,$decimal_separator) > 2) return $number;
 
         $number = str_replace($thousands_separator,'',$number);
-  	    $number = str_replace($decimal_separator,self::DEFAULT_SEPARATOR,$number);
+        $number = str_replace($decimal_separator,self::DEFAULT_SEPARATOR,$number);
 
-  	    if(substr_count($number,self::DEFAULT_SEPARATOR) > 1)
-  	    {
-  	      $parts = explode(self::DEFAULT_SEPARATOR,$number);
-  	      $decimals = array_pop($parts);
-  	      $number = implode('',$parts).self::DEFAULT_SEPARATOR.$decimals;
-  	    }
-  	  } else {
-  	    $number = str_replace($thousands_separator,'',$number);
-  	  }
+        if(substr_count($number,self::DEFAULT_SEPARATOR) > 1)
+        {
+          $parts = explode(self::DEFAULT_SEPARATOR,$number);
+          $decimals = array_pop($parts);
+          $number = implode('',$parts).self::DEFAULT_SEPARATOR.$decimals;
+        }
+      }
+      else
+      {
+        $number = str_replace($thousands_separator,'',$number);
+      }
 
-      /** cast the number if there are still any illegal chars **/
-      if(!is_numeric($number))
+      /** cast the number if there are still any illegal charsm but only if field is not empty **/
+      if(!is_numeric($number) && (strlen($number) > 0))
       {
         $number = ($this->m_decimals>0)
           ? (float) $number
           : (int) $number;
       }
 
-  	  return $number;
+      return $number;
     }
 
     /**
