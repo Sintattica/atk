@@ -8,8 +8,6 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
-* Fixed removeSeparators in atkNumberAttribute. Empty fields were
-  converted to '0' after update [Jeroen]
 * Fixed the o2m relation to respect the NF_NO_ADD flag. [Martin]
 * Label select_none can now be specified on attribute level with an
   atkmanytoone relation. [Max]
@@ -211,6 +209,10 @@ Changes in ATK 6.3
   simple nodes. [Boy]
 + Added globalStackVar method to atkSessionManager, which always occurs
   once for a given stack. [Boy]
+* Fixed removeSeparators in atkNumberAttribute. Empty fields were
+  converted to '0' after update [Jeroen]
++ Added addDefaultFlags to atkMetaPolicy. Adds default flag(s) to all attributes, 
+  except to the specifed attribute or list of attributes [Jeroen]
 
 Changes in prior versions
 -------------------------

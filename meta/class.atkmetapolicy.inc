@@ -886,6 +886,34 @@ class atkMetaPolicy
   }
 
   /**
+   * Add default flag(s) to all attributes, except the specifed attribute or list of attributes.
+   *
+   * This method can also be called with multiple attribute string arguments
+   * as long as the last argument contains the flag(s).
+   *
+   * @param array|string $exclude_attrs  list of attribute names or single attribute name to exclude
+   * @param int          $flags          flag(s)
+   */
+  public function addDefaultFlags($exclude_attrs, $flags=0)
+  {
+    if ((func_num_args() == 1) || (func_num_args() > 2))
+    {
+      $exclude_attrs = func_get_args();
+      $flags = array_pop($exclude_attrs);
+    }
+    else if (!is_array($exclude_attrs))
+      $exclude_attrs = array($exclude_attrs);
+      
+    foreach (array_keys($this->m_attrs) as $key)
+    {
+      if (!in_array($key, $exclude_attrs))
+      {
+        $this->m_attrs[$key]["flags"] |= $flags;
+      }
+    }
+  }
+
+  /**
    * Remove flag(s) from the given attribute or list of attributes.
    *
    * This method can also be called with multiple attribute string arguments
