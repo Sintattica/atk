@@ -241,7 +241,7 @@ class atkDataNode extends atkNode
   
         $value = stripslashes(stripQuotes($value));
   
-        if (isset($criteria[$column]))
+        if (isset($criteria[$column]) && $criteria[$column] != $value)
         {
           $criteria[$column] = array_merge((array)$criteria[$column], (array)$value);
         }
