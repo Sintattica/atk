@@ -86,6 +86,8 @@
       $this->add(new atkAttribute("filename",AF_PRIMARY|AF_SEARCHABLE));
       $this->add(new atkTextAttribute("filecontent",30,AF_HIDE_LIST));
 
+      $this->addSecurityMap('dirchange', 'admin');
+
       $this->setOrder("dummy.filename");
       $this->setTable("dummy");
     }
