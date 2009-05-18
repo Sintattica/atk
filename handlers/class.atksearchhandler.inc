@@ -34,7 +34,8 @@
    *       should be customizable in the future.
    *
    */
-   atkimport("atk.handlers.atkabstractsearchhandler");
+
+  atkimport("atk.handlers.atkabstractsearchhandler");
   class atkSearchHandler extends atkAbstractSearchHandler
   {
 
@@ -62,7 +63,10 @@
       }
       elseif (!empty($this->m_postvars['atkcancel']))
       {
-        $this->m_node->redirect(session_url(dispatch_url($this->m_node->atkNodeType(), 'admin'), SESSION_BACK));
+        $url = dispatch_url($this->getPreviousNode(), $this->getPreviousAction());
+        $url = session_url($url, atkLevel() > 0 ? SESSION_BACK : SESSION_REPLACE);
+
+        $this->m_node->redirect($url);
       }
 
       $page = &$this->getPage();
@@ -89,8 +93,30 @@
      */
     function redirectToResults()
     {
-      $url = dispatch_url($this->m_node->atkNodeType(), 'admin', $this->fetchCriteria(), atkSelf());
-      $this->m_node->redirect(session_url($url, atkLevel() == 0 ? SESSION_REPLACE : SESSION_BACK));
+      $url = dispatch_url($this->getPreviousNode(), $this->getPreviousAction(), $this->fetchCriteria(), atkSelf());
+      $url = session_url($url, atkLevel() > 0 ? SESSION_BACK : SESSION_REPLACE);
+
+      $this->m_node->redirect($url);
+    }
+
+    /**
+     * Returns the node from which the search action was called
+     *
+     * @return string previous node
+     */
+    function getPreviousNode()
+    {
+      return atkLevel() > 0 ? atkGetSessionManager()->stackVar('atknodetype', '', atkLevel()-1) : $this->m_node->atkNodeType();
+    }
+
+    /**
+     * Returns the action from which the search action was called
+     *
+     * @return string previous action
+     */
+    function getPreviousAction()
+    {
+      return atkLevel() > 0 ? atkGetSessionManager()->stackVar('atkaction', '', atkLevel()-1) : 'admin';
     }
 
     /**

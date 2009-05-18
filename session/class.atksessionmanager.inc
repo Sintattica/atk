@@ -184,20 +184,26 @@
      * reset it to B, when you return to level 0, the stackvar will still be A.
      * However for level 1 and deeper it will be B.
      *
-     * @param String $var The name of the variable to store.
-     * @param mixed $value The value to store. If omitted, the session manager
-     *                     tries to read the value from the http request.
+     * @param String $var   The name of the variable to store.
+     * @param mixed  $value The value to store. If omitted, the session manager
+     *                      tries to read the value from the http request.
+     * @param int    $level Get/Set var on this level, will be current level by
+     *                      default.
      * @return mixed The current value in the session stack.
      */
-    public function stackVar($var, $value="")
+    public function stackVar($var, $value = '', $level = null)
     {
       if ($this->m_escapemode) return null;
 
+      // If no level is supplied we use the var from the current level
+      if ($level === null)
+        $level = atkLevel();
+
       $sessionData = &$this->getSession();
-      $currentitem = &$sessionData[$this->m_namespace]["stack"][atkStackID()][atkLevel()];
+      $currentitem = &$sessionData[$this->m_namespace]["stack"][atkStackID()][$level];
       if (!is_array($currentitem)) return null;
 
-      if ($value==="" && atkarraynvl($_REQUEST, $var, "")!=="")
+      if ($level === atkLevel() && $value==="" && atkarraynvl($_REQUEST, $var, "")!=="")
       {
         $value = $_REQUEST[$var];
       }
