@@ -284,7 +284,7 @@
       $grid->setMode($mode);
 
       $grid->removeFlag(atkDataGrid::EXTENDED_SEARCH);
-      if ($mode == 'view')
+      if ($action == 'view')
       {
         $grid->removeFlag(atkDataGrid::MULTI_RECORD_ACTIONS);
         $grid->removeFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS);

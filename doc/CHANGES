@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* Bugfix in the one2many relation to remove the MRA flag of the grid in display
+  mode. [Lineke]
 * Added support for getting/setting a stackVar for a specified level. [Tjeerd]
 * SearchHandler now redirects back to previous node/action after
   submitting/cancelling an extended search. [Tjeerd]
