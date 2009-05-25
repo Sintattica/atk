@@ -333,7 +333,7 @@
      */
     function buildField($name, $generictype, $size=0, $flags=0, $default=NULL)
     {
-      $res = $name." ".$this->getType($generictype);
+      $res = $this->m_db->quoteIdentifier($name)." ".$this->getType($generictype);
       if ($size>0 && $this->needsSize($generictype))
       {
         $res.="(".$size.")";
