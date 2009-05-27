@@ -139,7 +139,7 @@
   "export_generatetitlerow" => "Include a title row",
   "export_selectcolumns" => "Select which columns to export",
   "export_selections" => "Standard selections",
-  "export_selections_name => "Standard selections name",
+  "export_selections_name" => "Standard selections name",
   "feb" => "Feb",
   "february" => "February",
   "feedback" => "Feedback",
