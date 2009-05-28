@@ -535,7 +535,7 @@
      */
     function loginForm($defaultname, $lastresponse)
     {
-      $loginattempts = sessionLoad('loginattempts');
+      $loginattempts = sessionLoad('loginattempts'); // Note: not actually how many authentication attempts, but how many times the login form has been displayed.
       if($loginattempts=="") $loginattempts = 0;
 
       if($loginattempts=="")
