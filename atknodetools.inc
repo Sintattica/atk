@@ -19,7 +19,11 @@
    
 
   /**
-   * Register a node in the main application
+   * Tells ATK that a node exists, and what actions are available to
+   * perform on that node.  Note that registerNode() is not involved in 
+   * deciding which users can do what, only in establishing the full set 
+   * of actions that can potentially be performed on the node.
+   * 
    * @param $node name of the node
    * @param $action array with actions that can be performed on the node
    * @param $tabs array of tabnames for which security should be handled.

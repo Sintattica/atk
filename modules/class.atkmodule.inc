@@ -77,13 +77,8 @@
     }
 
     /**
-     * Create a new menu item
-     *
-     * Both main menu items, separators, submenus or submenu items can be
-     * created, depending on the parameters passed.
-     *
-     * Function that adds a menuitem to the menu. This function can be called
-     * from inside the getMenuItems() function, to register a menuitem.
+     * Create a new menu item, optionally configuring access control.  This 
+     * function can also be used to create separators, submenus and submenu items.
      *
      * @param String $name The menuitem name. The name that is displayed in the
      *                     userinterface can be influenced by putting
