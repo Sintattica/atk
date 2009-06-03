@@ -101,7 +101,7 @@
       $parser = new atkStringParser($this->m_template);
       return $parser->parse($rec);
     }
-
+    
     /**
      * Adds the attribute / field to the list header. This includes the column name and search field.
      *
@@ -178,12 +178,15 @@
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
     {
-      $allfields = atk_array_merge($this->m_displayfields,$this->m_searchfields);
-      $alias = $fieldaliasprefix.$this->fieldName()."_AE_";
-      foreach ($allfields as $field)
+      if($mode!=='add' && $mode!='edit')
       {
-        $p_attrib = $this->m_ownerInstance->m_attribList[$field];
-        $p_attrib->addToQuery($query, $tablename, $alias,$rec, $level,$mode);
+        $allfields = atk_array_merge($this->m_displayfields,$this->m_searchfields);
+        $alias = $fieldaliasprefix.$this->fieldName()."_AE_";
+        foreach ($allfields as $field)
+        {
+          $p_attrib = $this->m_ownerInstance->m_attribList[$field];
+          $p_attrib->addToQuery($query, $tablename, $alias,$rec, $level,$mode);
+        }
       }
     }
 
