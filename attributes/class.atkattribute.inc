@@ -1639,10 +1639,16 @@
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
+    function addToQuery(&$query, $tablename="", $fieldaliasprefix="", &$rec="", $level, $mode)
     {
       if ($mode == "add" || $mode == "update")
       {
+        if ($mode == 'add' && $this->hasFlag(AF_AUTO_INCREMENT))
+        {
+          $query->addSequenceField($this->fieldName(), $rec[$this->fieldName()], $this->getOwnerInstance()->m_seq);
+          return;
+        }        
+        
         if ($this->isEmpty($rec) && !$this->hasFlag(AF_OBLIGATORY) && !$this->isNotNullInDb())
         {
           $query->addField($this->fieldName(),'NULL',"","",false,true);

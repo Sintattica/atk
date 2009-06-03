@@ -32,6 +32,29 @@
   class atkMysqliQuery extends atkMysqlQuery
   {
     /**
+     * Reference to the field where the new sequence
+     * value should be stored.
+     * 
+     * @var int
+     */
+    protected $m_seqValue;
+    
+    /**
+     * Sequence field name.
+     * 
+     * @var string
+     */
+    protected $m_seqField;
+    
+    /**
+     * Should we return a sequence value by setting
+     * $this->m_seqValue?
+     * 
+     * @var boolean
+     */
+    protected $m_returnSeqValue = false;
+    
+    /**
      * Overriding the _addFrom function to support a change that was made in
      * MySQL 5.0.15 to make MySQL more compliant with the standard.
      *
@@ -84,6 +107,47 @@
       return $result;
     }
     
+    /**
+     * Add's a sequence field to the query.
+     * 
+     * @param string $fieldName field name
+     * @param int    $value     field to store the new sequence value in, note certain drivers
+     *                          might populate this field only after the insert query has been 
+     *                          executed
+     * @param string $seqName   sequence name (optional for certain drivers)
+     * 
+     * @return atkQuery
+     */  
+    public function addSequenceField($fieldName, &$value, $seqName=null)
+    {
+      $meta = $this->getDb()->tableMeta($this->m_tables[0]);
+      if (!hasFlag($meta[$fieldName]['flags'], MF_AUTO_INCREMENT))
+      {
+        return parent::addSequenceField($fieldName, $value, $seqName);
+      }
+      
+      $this->m_seqValue = &$value;
+      $this->m_seqValue = -1;
+      $this->m_seqField = $fieldName;
+      $this->m_returnSeqValue = true;
+      
+      return $this;
+    }     
+    
+    /**
+     * Wrapper function to execute an insert query
+     */
+    public function executeInsert()
+    {
+      $result = parent::executeInsert();
+      
+      if ($result && $this->m_returnSeqValue)
+      {
+        $this->m_seqValue = $this->getDb()->getInsertId();
+        atkdebug("Value for sequence column {$this->m_tables[0]}.{$this->m_seqField}: {$this->m_seqValue}");
+      }
+      
+      return $result;
+    }    
   }
-
 ?>

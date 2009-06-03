@@ -3564,8 +3564,9 @@
 
       for ($i = 0, $_i = count($loadlist["query"]); $i < $_i; $i++)
       {
+        $dummy = array();
         $p_attrib = &$this->m_attribList[$loadlist["query"][$i]];
-        $p_attrib->addToQuery($query,$this->m_table,"","",1,$mode); // start at level 1
+        $p_attrib->addToQuery($query,$this->m_table,"",$dummy,1,$mode); // start at level 1
       }
 
       //handle index navigation
@@ -3846,7 +3847,8 @@
       for ($i=0, $_i=count($querylist); $i<$_i; $i++)
       {
         $p_attrib = &$this->m_attribList[$querylist[$i]];
-        $p_attrib->addToQuery($query,$this->m_table,"",(isset($recordset[0])?$recordset[0]:array()),1,$mode); // start at level 1
+        $rec = isset($recordset[0]) ? $recordset[0] : array();
+        $p_attrib->addToQuery($query,$this->m_table,"",$rec,1,$mode); // start at level 1
       }
 
       if (!atkReadOptimizer())
@@ -4159,7 +4161,8 @@
           {
             if ($usefieldalias) $fieldaliasprefix = $alias."_AE_";
 
-            $p_attrib->addToQuery($query,$alias, $fieldaliasprefix,"",$level, $mode);
+            $dummy = array();
+            $p_attrib->addToQuery($query,$alias, $fieldaliasprefix,$dummy,$level, $mode);
           }
         }
         else atkdebug("$attribname is not an object?! Check your descriptor_def for non-existant fields");
@@ -4282,11 +4285,6 @@
       for ($i = 0, $_i = count($storelist["query"]); $i < $_i; $i++)
       {
         $p_attrib = &$this->m_attribList[$storelist["query"][$i]];
-        if ($p_attrib->hasFlag(AF_AUTO_INCREMENT))
-        {
-          $record[$p_attrib->fieldName()]=$db->nextid($this->m_seq);
-        }
-
         $p_attrib->addToQuery($query,$this->m_table,"",$record,1,'add'); // start at level 1
       }
 

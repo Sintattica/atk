@@ -8,6 +8,11 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* ATK now fully supports AUTO_INCREMENT columns in MySQL (e.g. no need for
+  db_sequence table anymore). This change should be backwards compatible, 
+  e.g. ATK automatically detects if it can use MySQL's  auto-increment feature
+  or if it should use it's own sequences, however atkAttribute::addToQuery
+  has a minor change  which can cause errors in certain rare cases! [Peter]
 * Bugfix in the one2many relation to remove the MRA flag of the grid in display
   mode. [Lineke]
 * Added support for getting/setting a stackVar for a specified level. [Tjeerd]

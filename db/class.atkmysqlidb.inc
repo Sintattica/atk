@@ -534,5 +534,15 @@
    {
      $this->query("SET FOREIGN_KEY_CHECKS = ".($enable ? 1 : 0));
    }
+   
+   /**
+    * Returns the last inserted auto increment value.
+    * 
+    * @return int auto increment value of latest insert query
+    */
+   public function getInsertId()
+   {
+     return mysqli_insert_id($this->m_link_id);
+   }
  }
 ?>

@@ -158,6 +158,31 @@
 
       $this->m_aliasLookup = array();
     }
+    
+    /**
+     * Sets the database instance.
+     * 
+     * @var atkDb $db database instance
+     */
+    public function setDb($db)
+    {
+      $this->m_db = $db;
+    }
+    
+    /**
+     * Returns the database instance.
+
+     * @return atkDb database instance
+     */
+    public function getDb()
+    {
+      if (!isset($this->m_db)) 
+      {
+        $this->m_db = atkGetDb();
+      }
+      
+      return $this->m_db;
+    }
 
     /**
      * Add's a field to the query
@@ -193,7 +218,24 @@
 
       return $this;
     }
-
+    
+    /**
+     * Add's a sequence field to the query.
+     * 
+     * @param string $fieldName field name
+     * @param int    $value     field to store the new sequence value in, note certain drivers
+     *                          might populate this field only after the insert query has been 
+     *                          executed
+     * @param string $seqName   sequence name (optional for certain drivers)
+     * 
+     * @return atkQuery
+     */  
+    public function addSequenceField($fieldName, &$value, $seqName=null)
+    {
+      $value = $this->getDb()->nextid($seqName);
+      $this->addField($fieldName, $value, null, null, false, true);
+      return $this;
+    }    
 
     /**
      * Add multiple fields at once
@@ -446,9 +488,8 @@
      */
     function executeSelect($distinct = FALSE)
     {
-      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
       $query = $this->buildSelect($distinct);
-      return $this->m_db->getrows($query);
+      return $this->getDb()->getrows($query);
     }
 
     /**
@@ -558,9 +599,8 @@
      */
     function executeUpdate()
     {
-      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
       $query = $this->buildUpdate();
-      return $this->m_db->query($query);
+      return $this->getDb()->query($query);
     }
 
     /**
@@ -568,9 +608,8 @@
      */
     function executeInsert()
     {
-      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
       $query = $this->buildInsert(true);
-      return $this->m_db->query($query);
+      return $this->getDb()->query($query);
     }
 
     /**
@@ -622,9 +661,8 @@
      */
     function executeDelete()
     {
-      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
       $query = $this->buildDelete();
-      return $this->m_db->query($query);
+      return $this->getDb()->query($query);
     }
 
     /**

@@ -332,8 +332,9 @@
       if(!in_array($node->m_index,$querylist)) $querylist[] = $node->m_index;
       for ($i = 0, $_i = count($querylist); $i < $_i; $i++)
       {
+        $dummy = array();        
         $p_attrib = &$node->m_attribList[$querylist[$i]];
-        $p_attrib->addToQuery($query,$node->m_table,"","",1,$mode); // start at level 1
+        $p_attrib->addToQuery($query,$node->m_table,"",$dummy,1,$mode); // start at level 1
       }
       
       //We call addToQuery() as usual, but must clear the field list and rest only index field,
