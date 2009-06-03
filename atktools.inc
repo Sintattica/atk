@@ -203,8 +203,8 @@
       if (hasFlag($flags, DEBUG_WARNING))
         $txt = "<b>" . $txt . "</b>";
 
-      atkWriteLog($txt);
       $line = atkGetTimingInfo().$txt;
+      atkWriteLog($line);
 
       if (hasFlag($flags, DEBUG_ERROR))
       {
@@ -426,7 +426,7 @@
   {
     if (atkconfig("debug") > 0 && atkconfig("debuglog"))
     {
-      atkWriteToFile(atkGetTimingInfo()." ".$text, atkconfig("debuglog"));
+      atkWriteToFile($text, atkconfig("debuglog"));
     }
   }
 
