@@ -59,6 +59,7 @@
     var $m_maxWidth = 0;
     var $m_flags = 0;
     var $m_style = '';
+		var $m_tableMatrix = null;
 
     /**
      * Constructs a new table renderer
@@ -244,14 +245,48 @@
      * @param aray $data table data
      * @return int max number of rows
      */
-    function _getMaxCols($data)
+    function _getMaxCols($data,$rownr='')
     {
-      $max = 0;
-      for($i=0, $_i=count($data); $i<$_i; $i++)
-      {
-        $max = max(count($data[$i]), $max);
-      }
-      return $max;
+    	if(is_null($this->m_tableMatrix))
+			{
+	    	$this->m_tableMatrix = array();
+				
+				foreach ($data as $row => $entry)
+				{
+				  foreach ($entry as $cell => $text)
+					{
+						$colspan = isset($this->m_span[$row][$cell]['colspan']) ? $this->m_span[$row][$cell]['colspan'] : 1;
+						$rowspan = isset($this->m_span[$row][$cell]['rowspan']) ? $this->m_span[$row][$cell]['rowspan'] : 1;;
+						
+						$x = $cell;
+						$y = $row;
+						
+						for ($i = $x; $i < $x + $colspan; $i++)
+						{
+							for ($j = $y; $j < $y + $rowspan; $j++)
+							{
+								$this->m_tableMatrix[$j][] = true;
+							}
+						}
+					}
+				}
+			}
+				
+			
+			$max = 0;
+			if($rownr!='')
+			{
+        $max = max(array_keys($this->m_tableMatrix[$rownr]));				
+			}
+			else
+			{
+				foreach ($this->m_tableMatrix as $row)
+				{
+					$max = max($max, max(array_keys($row)));
+				}
+			}
+			
+			return $max;
     }
 
     /**
@@ -341,6 +376,7 @@
       $rowOffset=0;
       
       $this->m_maxWidth = $this->_getMaxCols($data);
+			
       $class = $this->_getTableStyleStr();
 
       $output = "\n<table {$class}>";
@@ -494,13 +530,14 @@
 
       // render all cells inside
       $colCount = count($data);
+			
       for ($col=0; $col<$colCount; $col++)
       {
         $output .= $this->_renderCell($data[$col], $row, $col, $columntype);
       }
 
       // fill up remaining space
-      $filling = $this->m_maxWidth - $colCount;
+      $filling = $this->m_maxWidth - ($this->_getMaxCols(array(),$row));
       if ($filling > 0)
       {
         $output .= $this->_renderFillingCell($filling, $columntype);
