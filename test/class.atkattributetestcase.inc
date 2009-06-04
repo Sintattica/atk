@@ -104,7 +104,7 @@
       $this->assertBoolean($this->m_attribute->deleteAllowed(), "deleteAllowed");      
       $this->assertBoolean($this->m_attribute->needsInsert(array()), "needsinsert");      
       $this->assertBoolean($this->m_attribute->needsUpdate(array()), "needsupdate");      
-      $this->assertNumeric($this->m_attribute->dbFieldSize(), "dbfieldsize");
+      $this->assertDbFieldSize($this->m_attribute->dbFieldSize(), "dbfieldsize");
       $this->assertInteger($this->m_attribute->loadType("edit"), "loadtype");
       $this->assertInteger($this->m_attribute->storageType("edit"), "storagetype");
     }
@@ -137,7 +137,18 @@
      */     
     function assertInteger($value, $msg="")
     {
-      $this->assertTrue((is_integer($value)), "is_numeric ".$msg);
+      $this->assertTrue((is_integer($value)), "is_integer ".$msg);
+    }
+    
+    /**
+     * Assert if a value matches the dbFieldSize() output, which can be int or 'x,x'
+     *
+     * @param mixed $value Value to check
+     * @param String $msg Message to display for test
+     */
+    function assertDbFieldSize($value, $msg="")
+    {
+      $this->assertPattern('/[(\d,\d)|(\d)]/', $value, 'dbFieldSize '. $msg);
     }
     
     /**
