@@ -219,13 +219,8 @@
         $result=$this->display($record, 'view');
       }
 
-      if(is_dir($this->m_dir) && is_writable($this->m_dir))
-      {
-        $file_arr = $this->getFiles($this->m_dir);
-        if(count($file_arr)>0) natcasesort($file_arr);
-      }
-      else
-      {
+      if(!is_dir($this->m_dir) || !is_writable($this->m_dir))
+			{
         atkwarning('atkFileAttribute: ' . $this->m_dir . ' does not exist or is not writeable'); 
         return atktext("no_valid_directory", "atk");
       }
@@ -246,22 +241,30 @@
         $result .= '<input type="file" id="'.$id.'" name="'.$id.'">';
       }
 
-      if(!$this->hasFlag(AF_FILE_NO_SELECT) AND count($file_arr) > 0)
+      if(!$this->hasFlag(AF_FILE_NO_SELECT))
       {
-        $this->registerKeyListener($id.'_select', KB_CTRLCURSOR|KB_LEFTRIGHT);
-        $result .= '<select id="'.$id.'_select" name="'.$id.'[select]">';
-        $result .= "<option value=\"\" selected>".atktext('selection', 'atk');                    // Zorg voor een default met waarde NULL
-        while (list ($key, $val) = each ($file_arr))
-        {
-          (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename']==$val) ? $selected = "selected" : $selected = '';
-          if(is_file($this->m_dir.$val)) $result .= "<option value=\"".$val."\" $selected>".$val;
-        }
-        if(count($file_arr) > 0) $result .= "</select>";
+      	$file_arr = $this->getFiles($this->m_dir);
+        if(count($file_arr)>0)
+				{
+  				natcasesort($file_arr);
+					
+	        $this->registerKeyListener($id.'_select', KB_CTRLCURSOR|KB_LEFTRIGHT);
+	        $result .= '<select id="'.$id.'_select" name="'.$id.'[select]">';
+					// Add default option with value NULL
+	        $result .= "<option value=\"\" selected>".atktext('selection', 'atk');                    
+	        while (list ($key, $val) = each ($file_arr))
+	        {
+	          (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename']==$val) ? $selected = "selected" : $selected = '';
+	          if(is_file($this->m_dir.$val)) $result .= "<option value=\"".$val."\" $selected>".$val;
+	        }
+	        $result .= "</select>";
+				}
       }
       else if (isset($record[$this->fieldName()]['filename']) && !empty($record[$this->fieldName()]['filename']))
       {
         $result .= '<input type="hidden" name="'.$id.'[select]" value="'.$record[$this->fieldName()]['filename'].'">';
       }
+			
       if(!$this->hasFlag(AF_FILE_NO_DELETE)
          && isset($record[$this->fieldname()]['orgfilename'])
          && $record[$this->fieldname()]['orgfilename']!='')
