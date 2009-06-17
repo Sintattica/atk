@@ -231,6 +231,8 @@ Changes in ATK 6.3
 + Added addDefaultFlags to atkMetaPolicy. Adds default flag(s) to all attributes,
   except to the specifed attribute or list of attributes [Jeroen]
 * Added translation for 'invalid_absolute_no_anchor_url' (atkUrlAttribute) [Jeroen]
+* Fixed searching in atkAggregatedColumn, so we can search independent of characters
+  between tags, like spaces and comma's [Jeroen]
 
 Changes in prior versions
 -------------------------

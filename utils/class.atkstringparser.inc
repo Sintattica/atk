@@ -143,7 +143,7 @@
      * <b>Example:</b>
      *        string: [firstname], [lastname] [city]
      *        would return array('[firstname]',', ','[lastname]',' ','[city]')
-     *
+     *        
      * @return array
      */
     function getAllFieldsAsArray()
@@ -157,12 +157,14 @@
      * Parse data into the string and return all fields as an array
      *
      * @param array $data
+     * @param boolean $split_tags_and_fields return fields and separators separated in resultarray (separators are not used in query, so quotes aren't used)
      * @return array
      */
-    function getAllParsedFieldsAsArray($data)
+    function getAllParsedFieldsAsArray($data, $split_tags_and_fields = false)
     {
       $matches = $this->getAllFieldsAsArray();
-      atk_var_dump($matches,"MATCHES");
+      atk_var_dump($matches,"MATCHES".($split_tags_and_fields?" (split tags and separators)":""));
+            
       $fields=array();
       if(is_array($matches))
       {
@@ -172,11 +174,26 @@
           if(strpos($match,'[')!==false && strpos($match,']')!==false)
           {
             $parser = new atkStringParser($match);
-            $fields[] = $parser->parse($data);
+            
+            if ($split_tags_and_fields)
+            {
+              $fields['tags'][] = $parser->parse($data);
+            }
+            else
+            {
+              $fields[] = $parser->parse($data);
+            }
           }
           else
           {
-            $fields[] = "'".$match."'";
+            if ($split_tags_and_fields)
+            {
+              $fields['separators'][] = $match;
+            }
+            else
+            {
+              $fields[] = "'".$match."'";
+            }
           }
         }
       }

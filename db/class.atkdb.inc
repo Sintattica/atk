@@ -953,6 +953,21 @@
     }
 
     /**
+     * Get CONCAT_WS() equivalent for the current database.
+     *
+     * @param array $fields
+     * @param string $separator
+     * @return string $query_part
+     */
+    function func_concat_ws($fields, $separator)
+    {
+      if(count($fields)==0 or !is_array($fields)) return '';
+      elseif(count($fields)==1)                   return $fields[0];
+      
+      return "CONCAT_WS('$separator', ".implode(',',$fields).")";
+    }
+
+    /**
      * Convert a php date() format specifier to a vendor specific format
      * specifier.
      * The default implementation returns the format as used by many

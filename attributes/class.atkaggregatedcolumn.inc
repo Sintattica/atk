@@ -239,10 +239,10 @@
           }
         }
       }
+      
       // When searchmode is substring also search the value in a concat of all searchfields
       if($searchmode=='substring')
       {
-
         $value = $this->escapeSQL(trim($value));
 
         $data = array();
@@ -251,13 +251,24 @@
           if(strpos($field,'.')==false) $data[$field]=$table.".".$field;
           else $data[$field]=$field;
         }
-
+        
         atkimport("atk.utils.atkstringparser");
         $parser = new atkStringParser($this->m_template);
-        $concatFields = $parser->getAllParsedFieldsAsArray($data);
-
+        $concatFields = $parser->getAllParsedFieldsAsArray($data, true);
+        $concatTags       = $concatFields['tags'];
+        $concatSeparators = $concatFields['separators'];
+        
+        // to search independent of characters between tags, like spaces and comma's,
+        // we remove all these separators (defined in the node with new atkAggregatedColumn)
+        // so we can search for just the concatenated tags in concat_ws [Jeroen]
+        foreach ($concatSeparators as $separator)
+        {
+          $value = str_replace($separator, "", $value);
+        }
+        
         $db = $this->getDb();
-        $condition = "UPPER(".$db->func_concat($concatFields).") LIKE UPPER('%".$value."%')";
+        $condition = "UPPER(".$db->func_concat_ws($concatTags, "").") LIKE UPPER('%".$value."%')";
+        
         $searchconditions[] = $condition;
       }
       return "(".implode(" OR ",$searchconditions).")";
