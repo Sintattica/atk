@@ -30,6 +30,7 @@ Changes in ATK 6.3
   url. [Martin]
 * Added MySQL config for setting the collate that is used for
   creating tables true the atkddl. [Sandy]
+* Fixed the fatal error when using  $config_supported_languages_module. [Max]
 + Added save export selection functionality.
   Set $config_enable_export_save_selection to true to enable this functionality.
   Also add the atk_exportcriteria table to your database, the mysql table
