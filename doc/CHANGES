@@ -233,6 +233,8 @@ Changes in ATK 6.3
 * Added translation for 'invalid_absolute_no_anchor_url' (atkUrlAttribute) [Jeroen]
 * Fixed searching in atkAggregatedColumn, so we can search independent of characters
   between tags, like spaces and comma's [Jeroen]
++ Added support for ATK debughelper FireFox plugin:
+  http://www.achievo.org/wiki/Debughelper [Jeroen]
 
 Changes in prior versions
 -------------------------

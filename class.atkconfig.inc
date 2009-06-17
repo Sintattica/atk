@@ -142,7 +142,14 @@
       $session = &atkSessionManager::getSession();
 
       if (isset($_REQUEST["atkdebug"]["key"]))
+      {
         $session["debug"]["key"] = $_REQUEST["atkdebug"]["key"];
+      }
+      else if (isset($_COOKIE['ATKDEBUG_KEY']) && !empty($_COOKIE['ATKDEBUG_KEY']))
+      {
+        $session["debug"]["key"] = $_COOKIE['ATKDEBUG_KEY'];
+      }
+      
       return (isset($session["debug"]["key"]) && $session["debug"]["key"] == $params["key"]);
     }
 
@@ -171,8 +178,14 @@
       if ($enabled)
       {
         if (isset($_REQUEST["atkdebug"]["level"]))
+        {
           $session["debug"]["level"] = $_REQUEST["atkdebug"]["level"];
-
+        }
+        else if (isset($_COOKIE['ATKDEBUG_LEVEL']))
+        {
+          $session["debug"]["level"] = $_COOKIE['ATKDEBUG_LEVEL'];
+        }
+        
         if (isset($session["debug"]["level"]))
           return $session["debug"]["level"];
         else return max($default, 1);
