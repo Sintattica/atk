@@ -118,7 +118,7 @@
 
       // Read the current actions available/editable and user rights before changing them
       $isAdmin = ($g_user['name']=='administrator' || $this->canGrantAll());
-      $allActions = $this->getAllActions($record);
+      $allActions = $this->getAllActions($record, false);
       $editableActions = $this->getEditableActions($record);
 
       $delquery = "DELETE FROM ".atkconfig("auth_accesstable")."
@@ -215,7 +215,7 @@
      * @param array $record The record
      * @return array Array with actions
      */
-    function getAllActions($record)
+    function getAllActions($record, $splitPerSection=false)
     {
       global $g_modules, $g_moduleflags, $g_nodes;
 
@@ -234,7 +234,7 @@
         {
           $module = getNodeModule($row['node']);
           $node = getNodeType($row['node']);
-          $result[$module][$node][] = $row['action'];
+          $result[$module][$module][$node][] = $row['action'];
         }
       }
 
@@ -256,14 +256,27 @@
               $instance->getNodes();
           }
         }
+        
         // retrieve all actions after we registered all actions
-        foreach (array_keys($g_modules) as $module)
+        $result = $g_nodes;
+        
+        if (!$splitPerSection)
         {
-          // retrieve actions for each node
-          $nodes = isset($g_nodes[$module]) ? $g_nodes[$module] : array();
-          foreach ($nodes as $node => $actions)
-            if (is_array($actions))
-              $result[$module][$node] = $actions;
+          $temp = array();
+          foreach ($result as $section => $modules)
+          {
+            foreach ($modules as $module => $nodes)
+            {
+              if (!is_array($temp[$module]))
+              {
+                $temp[$module] = array();
+              }
+              
+              $temp[$module] = array_merge($temp[$module], $nodes);
+            }
+          }
+          
+          $result = $temp;
         }
       }
 
@@ -349,7 +362,7 @@
       $result  = '';
       $isAdmin =  ($user['name']=='administrator' || $this->canGrantAll());
       
-      $allActions      = $this->getAllActions($record);
+      $allActions      = $this->getAllActions($record, false);
       $editableActions = $this->getEditableActions($record);
       $selectedActions = $this->getSelectedActions($record);
 
@@ -445,85 +458,90 @@
       $result='<div align="right">
                   [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->fieldName().'\'); return false;">'.
                     atktext("check_all").
-             '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->fieldName().'\'); return false;">'.
+             '</a> | <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->fieldName().'\'); return false;">'.
                     atktext("check_none").
-             '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->fieldName().'\'); return false;">'.
+             '</a> | <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->fieldName().'\'); return false;">'.
                     atktext("invert_selection").'</a>]</div>';
 
       $isAdmin =  ($user['name']=='administrator' || $this->canGrantAll());
-      $allActions = $this->getAllActions($record);
+      $allActions = $this->getAllActions($record, true);
       $editableActions = $this->getEditableActions($record);
       $selectedActions = $this->getSelectedActions($record);
 
-      $showModule = count($allActions) > 1 && ($isAdmin || count($editableActions) > 1);
+      $showSection = count($allActions) > 1 && ($isAdmin || count($editableActions) > 1);
 
       $firstModule = true;
-
-      foreach ($allActions as $module => $nodes)
+      
+      foreach ($allActions as $section => $modules)
       {
-        if ($showModule)
+        if ($showSection)
         {
-          $result .= "<br><hr>";
-          if ($firstModule)
-            $firstModule = false;
+          if ($firstSection)
+            $firstSection = false;
           else
             $result .= "</div><br>";
-          $result .= "<b><a href=\"javascript:void(0)\" onclick=\"profile_swapProfileDiv('div_$module','".atkConfig("atkroot")."'); return false;\"><img src='".atkConfig("atkroot")."atk/images/plus.gif' border='0' id='img_div_$module'></a>&nbsp;</b>".atktext(array("title_$module", $module), $module)."<br>";
-          $result .= "<div id='div_$module' name='div_$module' style='display: none;'>";
-          $result .= "<input type='hidden' name=\"divstate['div_$module']\" id=\"divstate['div_$module']\" value='closed' />";
-          $result.='<div>
-                  [<a href="javascript:void(0)" onclick="profile_checkAllByValue(\''.$this->fieldName().'\',\''.$module.'.\'); return false;">'.
+          $result .= "<span style=\"font-size: 120%; font-weight: bold\"><a href=\"javascript:void(0)\" onclick=\"profile_swapProfileDiv('div_$section','".atkConfig("atkroot")."'); return false;\"><img src='".atkConfig("atkroot")."atk/images/plus.gif' border='0' id='img_div_$section'></a>&nbsp;".atktext(array("title_$section", $section), $section)."</span><br/>";
+          $result .= "<div id='div_$section' name='div_$section' style='display: none; padding-left: 15px'>";
+          $result .= "<input type='hidden' name=\"divstate['div_$section']\" id=\"divstate['div_$section']\" value='closed' />";
+          $result.='<div style="font-size: 80%; margin-top: 4px; margin-bottom: 4px" >
+                  [<a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkAllByValue(\''.$this->fieldName().'\',\''.$section.'.\'); return false;">'.
                     atktext("check_all", "atk").
-             '</a> <a href="javascript:void(0)" onclick="profile_checkNoneByValue(\''.$this->fieldName().'\',\''.$module.'.\'); return false;">'.
+             '</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkNoneByValue(\''.$this->fieldName().'\',\''.$section.'.\'); return false;">'.
                     atktext("check_none", "atk").
-             '</a> <a href="javascript:void(0)" onclick="profile_checkInvertByValue(\''.$this->fieldName().'\',\''.$module.'.\'); return false;">'.
+             '</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkInvertByValue(\''.$this->fieldName().'\',\''.$section.'.\'); return false;">'.
                     atktext("invert_selection", "atk").'</a>]</div>';
           $result .= "<br>";
         }
-
-        foreach ($nodes as $node => $actions)
+                  
+        foreach ($modules as $module => $nodes)
         {
-          $showBox = $isAdmin || count(array_intersect($actions, (is_array($editableActions[$module][$node])?$editableActions[$module][$node]:array()))) > 0;
-
-          if ($showBox)
-            $result .= "<b>".atktext($node, $module)."</b><br>";
-
-          $tabs_str = "";
-          $display_tabs_str = false;
-
-          // Draw action checkboxes
-          foreach ($actions as $action)
+          foreach ($nodes as $node => $actions)
           {
-            $temp_str = "";
-
-            $isEditable = $isAdmin || atk_in_array($action, $editableActions[$module][$node]);
-            $isSelected = isset($selectedActions[$module][$node]) && in_array($action, $selectedActions[$module][$node]);
-
-            if ($isEditable)
+            $showBox = $isAdmin || count(array_intersect($actions, (is_array($editableActions[$module][$node])?$editableActions[$module][$node]:array()))) > 0;
+  
+            if ($showBox)
+              $result .= "<b>".atktext($node, $module)."</b><br>";
+  
+            $tabs_str = "";
+            $display_tabs_str = false;
+  
+            // Draw action checkboxes
+            foreach ($actions as $action)
             {
+              $temp_str = "";
+  
+              $isEditable = $isAdmin || atk_in_array($action, $editableActions[$module][$node]);
+              $isSelected = isset($selectedActions[$module][$node]) && in_array($action, $selectedActions[$module][$node]);
+  
+              if ($isEditable)
+              {
+                if (substr($action,0,4) == "tab_")
+                  $display_tabs_str = true;
+  
+                $temp_str .= '<input type="checkbox" name="'.$this->formName().'[]" '.$this->getCSSClassAttribute("atkcheckbox").' value="'.$section.".".$module.".".$node.".".$action.'" ';
+                $temp_str .= ($isSelected ? ' checked="checked"' : '').'></input> ';
+                $temp_str .= $this->permissionName($action, $node, $module).'&nbsp;&nbsp;&nbsp;';
+              }
+  
               if (substr($action,0,4) == "tab_")
-                $display_tabs_str = true;
-
-              $temp_str .= '<input type="checkbox" name="'.$this->formName().'[]" '.$this->getCSSClassAttribute("atkcheckbox").' value="'.$module.".".$node.".".$action.'" ';
-              $temp_str .= ($isSelected ? ' checked="checked"' : '').'></input> ';
-              $temp_str .= $this->permissionName($action, $node, $module).'&nbsp;&nbsp;&nbsp;';
+                $tabs_str .= $temp_str;
+              else
+                $result .= $temp_str;
             }
-
-            if (substr($action,0,4) == "tab_")
-              $tabs_str .= $temp_str;
-            else
-              $result .= $temp_str;
+  
+            if ($display_tabs_str)
+              $result .= "<br>Tabs:&nbsp;";
+  
+            $result .= $tabs_str;
+  
+            if ($showBox)
+              $result .= "<br /><br />\n";
           }
-
-          if ($display_tabs_str)
-            $result .= "<br>Tabs:&nbsp;";
-
-          $result .= $tabs_str;
-
-          if ($showBox)
-            $result .= "<br /><br />\n";
         }
       }
+      
+      $result = '<div style="min-width: 700px">'.$result.'</div>';
+      
       return $result;
     }
 
@@ -571,19 +589,20 @@
       {
         $checkboxes = $postvars[$this->fieldName()];
       }
+
       $actions = Array();
       for($i=0;$i<count($checkboxes);$i++)
       {
         $elems = split("\.",$checkboxes[$i]);
-        if (count($elems)==3)
+        if (count($elems)==4)
         {
-          $node = $elems[0].".".$elems[1];
-          $action = $elems[2];
+          $node = $elems[1].".".$elems[2];
+          $action = $elems[3];
         }
-        else if (count($elems)==2)
+        else if (count($elems)==3)
         {
-          $node = $elems[0];
-          $action = $elems[1];
+          $node = $elems[1];
+          $action = $elems[2];
         }
         else
         {
@@ -592,6 +611,7 @@
         }
         $actions[$node][] = $action;
       }
+
       return $actions;
     }
 

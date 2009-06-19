@@ -163,7 +163,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
       $result .= $this->renderSelectedRecord($selectedRecord, $fieldprefix);
     }
 
-    $result .= $this->renderAdditionField($fieldprefix, $mode);
+    $result .= $this->renderAdditionField($record, $fieldprefix, $mode);
 
     $result .= '
         </ul>
@@ -280,14 +280,14 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
    * @param string $fieldprefix field prefix
    * @param string $mode 
    */
-  protected function renderAdditionField($fieldprefix, $mode)
+  protected function renderAdditionField($record, $fieldprefix, $mode)
   {
     $url = partial_url($this->getOwnerInstance()->atkNodeType(), $mode, 'attribute.'.$this->fieldName().'.selectedrecord', array('fieldprefix' => $fieldprefix));
 
     $relation = $this->getManyToOneRelation();
     $relation->addOnChangeHandler("ATK.ManyToManySelectRelation.add(el, '{$url}');");
 
-    return '<li class="atkmanytomanyselectrelation-addition">'.$relation->edit(array(), $fieldprefix, $mode).'</li>';
+    return '<li class="atkmanytomanyselectrelation-addition">'.$relation->edit($record, $fieldprefix, $mode).'</li>';
   }
 
   /**

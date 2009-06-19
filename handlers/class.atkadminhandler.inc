@@ -326,11 +326,11 @@
     {
 			if (!$this->m_node->hasFlag(NF_NO_ADD) && $this->m_node->allowed("add"))
 			{
-				$label = atktext("link_".$this->m_node->m_type."_add", $this->m_node->m_module, "", "", "", true);
+				$label = $this->m_node->text("link_".$this->m_node->m_type."_add", null, "", "", true);
         if (empty($label))
         {
           // generic text
-          $label = atktext(getNodeType($this->m_node->m_type),$this->m_node->m_module,$this->m_node->m_type)." ".atktext("add","atk","");
+          $label = $this->m_node->text($this->m_node->m_type)." ".atktext("add","atk","");
         }
 
         atkimport('atk.handlers.atkaddorcopyhandler');

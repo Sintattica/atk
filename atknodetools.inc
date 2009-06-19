@@ -30,8 +30,14 @@
    *              Note that tabs that every user may see need not be
    *              registered.
    */
-  function registerNode($node, $action, $tabs=array())
+  function registerNode($node, $action, $tabs=array(), $section=null)
   {
+    if (!is_array($tabs))
+    {
+      $section = $tabs;
+      $tabs = array();
+    }
+    
     global $g_nodes;
     $module = getNodeModule($node);
     $type = getNodeType($node);
@@ -40,8 +46,9 @@
     for($i=0, $_i=count($tabs); $i<$_i; $i++)
       $tabs[$i] = "tab_" . $tabs[$i];
     
-    if ($module=="") $module="main"; 
-    $g_nodes[$module][$type] = array_merge($action,$tabs);
+    if ($module=="") $module="main";
+    if ($section == null) $section = $module; 
+    $g_nodes[$section][$module][$type] = array_merge($action,$tabs);
   }
 
 ?>

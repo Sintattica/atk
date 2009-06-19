@@ -28,9 +28,9 @@ function placeFocus(inEditForm)
     if (!field.type) continue;
     var type = field.type.toLowerCase();
 
-    if (type == "text" || type == "textarea" || type.toString().charAt(0) == "s")
+    if (type == "text" || type == "textarea" || type == "checkbox" || type == "radio" || type.toString().charAt(0) == "s")
     {
-      if (!inEditForm)
+      if (!inEditForm && type.toString().charAt(0) != "s")
       {
         field.focus();
         var value = field.value;
@@ -53,9 +53,12 @@ function placeFocus(inEditForm)
             try
             {
               field.focus();
-              var value = field.value;
-              field.value = '';
-              field.value = value;
+              if (field.type.toLowerCase().charAt(0) != "s")
+              {
+                var value = field.value;
+                field.value = '';
+                field.value = value;
+              }
             }
             catch (err)
             {
