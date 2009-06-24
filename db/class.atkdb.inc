@@ -957,14 +957,23 @@
      *
      * @param array $fields
      * @param string $separator
+     * @param boolean $remove_all_spaces remove all spaces in result (atkAggrecatedColumns searches for string without spaces)
+     * 
      * @return string $query_part
      */
-    function func_concat_ws($fields, $separator)
+    function func_concat_ws($fields, $separator, $remove_all_spaces = false)
     {
       if(count($fields)==0 or !is_array($fields)) return '';
       elseif(count($fields)==1)                   return $fields[0];
       
-      return "CONCAT_WS('$separator', ".implode(',',$fields).")";
+      if ($remove_all_spaces)
+      {
+        return "REPLACE ( CONCAT_WS('$separator', ".implode(',',$fields)."), ' ', '') ";
+      }
+      else
+      {
+        return "CONCAT_WS('$separator', ".implode(',',$fields).")";        
+      }
     }
 
     /**

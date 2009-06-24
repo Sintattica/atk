@@ -240,6 +240,8 @@ Changes in ATK 6.3
   between tags, like spaces and comma's [Jeroen]
 + Added support for ATK debughelper FireFox plugin:
   http://www.achievo.org/wiki/Debughelper [Jeroen]
+* Fixed searching when db-fields contain spaces, like 'van der' in lastname
+  (atkAggregatedColumn) [Jeroen]
 
 Changes in prior versions
 -------------------------

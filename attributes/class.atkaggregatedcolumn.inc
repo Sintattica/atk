@@ -267,7 +267,7 @@
         }
         
         $db = $this->getDb();
-        $condition = "UPPER(".$db->func_concat_ws($concatTags, "").") LIKE UPPER('%".$value."%')";
+        $condition = "UPPER(".$db->func_concat_ws($concatTags, "", true).") LIKE UPPER('%".$value."%')";
         
         $searchconditions[] = $condition;
       }
