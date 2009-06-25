@@ -1486,6 +1486,7 @@
      */
     function getTabs($action)
     {
+  				
       $list = &$this->m_tabList[$action];
 
       $disable = $this->checkTabRights($list);
@@ -1507,28 +1508,30 @@
 
         // Only display the attribute if the attribute
         // resides on at least on visible tab
-        $hideme = true;
         for($i=0, $_i=sizeof($p_attrib->m_tabs); $i<$_i; $i++)
         {
           if ((is_array($list) && in_array($p_attrib->m_tabs[$i],$list)) || (!is_array($disable) || !in_array($p_attrib->m_tabs[$i],$disable)))
           {
-            $hideme = false;
             break;
           }
         }
-        //if ($hideme)
-        //  $p_attrib->m_flags |= AF_HIDE_LIST;
 
         if(is_object($p_attrib))
         {
           $additional = $p_attrib->getAdditionalTabs($action);
-          $list = atk_array_merge($list, $additional);
-
+          if(is_array($additional) && count($additional)>0) 
+					{
+						$list = atk_array_merge($list, $additional);
+            $this->m_filledTabs = atk_array_merge($this->m_filledTabs, $additional);
+					}
+					
           // Keep track of the tabs that containg attribs
           // so we only display none-empty tabs
           $tabCode = $this->m_attributeTabs[$attribname][0];
-          $this->m_filledTabs = atk_array_merge($this->m_filledTabs, array($tabCode));
-          $this->m_filledTabs = atk_array_merge($this->m_filledTabs, $additional);
+					if(!in_array($tabCode,$this->m_filledTabs))
+					{
+						$this->m_filledTabs[]=$tabCode;
+					}
         }
         else
         {
@@ -1538,8 +1541,7 @@
 
       // Check if the currently known tabs all containg attributes
       // so we don't end up with empty tabs
-      $tabList = $this->checkEmptyTabs($list);
-      return $tabList;
+      return  $this->checkEmptyTabs($list);
     }
 
     /**
@@ -2205,18 +2207,6 @@
         if ($p_attrib!=NULL)
         {
           if($p_attrib->hasDisabledMode(DISABLED_VIEW)) continue;
-          $field = array("name" => $attribname);
-
-          /* sometimes a field is hidden although not specified by the field itself */
-          $theme = &atkinstance("atk.ui.atktheme");
-          if ($theme->getAttribute("tabtype") == "dhtml" || $ignoreTab)
-          {
-            $notOnTab = FALSE;
-          }
-          else
-          {
-            $notOnTab = !$p_attrib->showOnTab($tab);
-          }
 
           /* we let the attribute add itself to the view array */
           $p_attrib->addToViewArray($mode, $result, $record);
@@ -3520,7 +3510,6 @@
               || !empty($indexValue) )
 
         {
-          $searching = true;
           //The searchmode of an index should be used only once, therefore it uses atksinglesearchmode instead of atksearchmode.
           $searchmode = isset($this->m_postvars["atksinglesearchmode"]) ? $this->m_postvars["atksinglesearchmode"] : (isset($this->m_postvars["atksearchmode"]) ? $this->m_postvars["atksearchmode"] : "");
 
@@ -3742,7 +3731,6 @@
     function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="", $mode="", $distinct=false)
     {
       $searching=false;
-      $selectlist = array();
       $loadlist = array();
 
       if ($order === false)
