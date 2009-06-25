@@ -291,10 +291,10 @@
     {
       if (is_array($record[$this->fieldName()]))
       {
-        return $html.$this->arrayToString($record[$this->fieldName()]);
+        return $this->arrayToString($record[$this->fieldName()]);
       }
 
-      return $html.nl2br(htmlspecialchars($record[$this->fieldName()]));
+      return nl2br(htmlspecialchars($record[$this->fieldName()]));
     }
 
     /**

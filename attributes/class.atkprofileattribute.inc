@@ -470,16 +470,11 @@
 
       $showSection = count($allActions) > 1 && ($isAdmin || count($editableActions) > 1);
 
-      $firstModule = true;
-      
       foreach ($allActions as $section => $modules)
       {
         if ($showSection)
         {
-          if ($firstSection)
-            $firstSection = false;
-          else
-            $result .= "</div><br>";
+          $result .= "</div><br>";
           $result .= "<span style=\"font-size: 120%; font-weight: bold\"><a href=\"javascript:void(0)\" onclick=\"profile_swapProfileDiv('div_$section','".atkConfig("atkroot")."'); return false;\"><img src='".atkConfig("atkroot")."atk/images/plus.gif' border='0' id='img_div_$section'></a>&nbsp;".atktext(array("title_$section", $section), $section)."</span><br/>";
           $result .= "<div id='div_$section' name='div_$section' style='display: none; padding-left: 15px'>";
           $result .= "<input type='hidden' name=\"divstate['div_$section']\" id=\"divstate['div_$section']\" value='closed' />";

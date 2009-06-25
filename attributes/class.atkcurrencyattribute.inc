@@ -62,7 +62,7 @@ class atkCurrencyAttribute extends atkNumberAttribute
    */
   function edit($record="", $fieldprefix="", $mode='')
   {
-    return $this->m_currencysymbol." ".parent::edit($record,$fieldprefix);
+    return $this->m_currencysymbol." ".parent::edit($record,$fieldprefix,$mode);
   }
 
   /**
@@ -82,7 +82,7 @@ class atkCurrencyAttribute extends atkNumberAttribute
   function display($record, $mode="")
   {
     $result = empty($this->m_currencysymbol) ? "" : $this->m_currencysymbol." ";
-    $result .= parent::display($record,$fieldprefix);
+    $result .= parent::display($record,$mode);
     return $result;
   }
 }
