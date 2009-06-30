@@ -270,17 +270,17 @@
     if ($module=="")
     {
       // No module, use the default instance.
-      $module_inst = &new atkModule();
+      $module_inst = new atkModule();
     }
     else
     {
-      $module_inst = &getModule($module);
+      $module_inst = getModule($module);
     }
     if (is_object($module_inst))
     {
       if (method_exists($module_inst,'newNode'))
       {
-        $node = &$module_inst->newNode($node);
+        $node = $module_inst->newNode($node);
         if ($init && $node != NULL) $node->init();
         return $node;
       }
