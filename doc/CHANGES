@@ -246,6 +246,10 @@ Changes in ATK 6.3
   http://www.achievo.org/wiki/Debughelper [Jeroen]
 * Fixed searching when db-fields contain spaces, like 'van der' in lastname
   (atkAggregatedColumn) [Jeroen]
+* Fixed searching (after pressing 'search' in combination with a value in AF_LARGE
+  autocomplete-field) when db-fields contain spaces, like 'van der' in lastname
+  (atkManyToOneRelation) [Jeroen]
+  
 
 Changes in prior versions
 -------------------------

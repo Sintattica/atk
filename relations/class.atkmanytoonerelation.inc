@@ -2292,10 +2292,20 @@
 
           atkimport("atk.utils.atkstringparser");
           $parser = new atkStringParser($descriptordef);
-          $concatFields = $parser->getAllParsedFieldsAsArray($fields);
-
-          $db = $this->m_destInstance->getDb();
-          $searchcondition = "(UPPER(".$db->func_concat($concatFields).") LIKE UPPER('%".$value."%'))";
+          $concatFields = $parser->getAllParsedFieldsAsArray($fields, true);
+          $concatTags       = $concatFields['tags'];
+          $concatSeparators = $concatFields['separators'];
+          
+          // to search independent of characters between tags, like spaces and comma's,
+          // we remove all these separators so we can search for just the concatenated tags in concat_ws [Jeroen]
+          foreach ($concatSeparators as $separator)
+          {
+            $value = str_replace($separator, "", $value);
+          }
+          
+          $db = $this->getDb();
+          $searchcondition = "UPPER(".$db->func_concat_ws($concatTags, "", true).") LIKE UPPER('%".$value."%')";
+          
         }
         return $searchcondition;
       }
