@@ -134,7 +134,6 @@
 				 */
 				if(($this->getBaseUrl()) && (($this->m_accepts_url_flag & RELATIVE) == RELATIVE)) {
 					$base = $this->getBaseUrl();
-					atk_var_dump($base);
 					$url = $base . $url;
 				}
 
