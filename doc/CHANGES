@@ -8,13 +8,17 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
++ Added a NO_AUTOLOAD flag that causes the attribute not to load the
+  available records on a initial page load. You should use this with
+  a search control and let the user search for available records. It'll
+  speed-up the edit page considerably when using large recordsets. [Martin]
 * Nodes can now be registered in sections so that they can be displayed
   in groups in atkProfileAttribute which don't necessarily have to be the
   modules they are part of. [Peter]
-* First field focus now also supports radio buttons and checkboxes plus 
+* First field focus now also supports radio buttons and checkboxes plus
   fixed a bug in the handeling of selects. [Peter]
 * ATK now fully supports AUTO_INCREMENT columns in MySQL (e.g. no need for
-  db_sequence table anymore). This change should be backwards compatible, 
+  db_sequence table anymore). This change should be backwards compatible,
   e.g. ATK automatically detects if it can use MySQL's  auto-increment feature
   or if it should use it's own sequences, however atkAttribute::addToQuery
   has a minor change  which can cause errors in certain rare cases! [Peter]
