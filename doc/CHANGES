@@ -8,6 +8,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
++ Added base url helper for the display function in the urlattribute.
+  call the setBaseUrl() to prepend a base url like http://my.domain.com
+  when using relative urls and you want to link to a different domain. [Martin]
 + Added a NO_AUTOLOAD flag that causes the attribute not to load the
   available records on a initial page load. You should use this with
   a search control and let the user search for available records. It'll
