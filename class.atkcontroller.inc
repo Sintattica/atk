@@ -22,7 +22,7 @@
    */
   class atkController
   {
-    
+
     /**
      * The name of the wizard.
      * @access protected
@@ -30,14 +30,14 @@
      */
     var $m_name;
 
-    
+
     /**
      * The module of the wizard.
      * @access protected
      * @var String
      */
     var $m_module_name;
-    
+
     /**
      * Reference to the instance of currently selected atkNode
      *
@@ -82,15 +82,18 @@
      * @return atkController object
      */
     function atkController()
-    {   
-    	global $g_sessionManager;    
-    	$atkControllerClass = $g_sessionManager->stackVar("atkcontroller");
+    {
+      global $g_sessionManager;
+      if(is_object($g_sessionManager))
+      {
+        $atkControllerClass = $g_sessionManager->stackVar("atkcontroller");
 
-      //Its not so nice to use the getNodeModule and getNodeType functions, 
-      //because the name suggests they work with atkNodes. But they also do 
-      //the job when using other class names.
-      $this->m_name = getNodeType($atkControllerClass);
-      $this->m_module_name = getNodeModule($atkControllerClass);
+        //Its not so nice to use the getNodeModule and getNodeType functions,
+        //because the name suggests they work with atkNodes. But they also do
+        //the job when using other class names.
+        $this->m_name = getNodeType($atkControllerClass);
+        $this->m_module_name = getNodeModule($atkControllerClass);
+      }
     }
 
     /**
@@ -111,14 +114,17 @@
           $class = $ATK_VARS['atkcontroller'];
         if (empty($class))
           $class = "atk.atkcontroller";
-          
+
         //We save the controller in stack, so the controller constructor
         //can store the Controller name and module. It is also saved for other
         //atk levels if we move down the stack.
         global $g_sessionManager;
-        $g_sessionManager->stackVar("atkcontroller", $class);
+        if(is_object($g_sessionManager))
+        {
+          $g_sessionManager->stackVar("atkcontroller", $class);
+        }
 
-        $s_object = atknew($class);      
+        $s_object = atknew($class);
       }
       return $s_object;
     }
@@ -144,12 +150,12 @@
     function &createInstance($controller)
     {
       atkdebug("atkcontroller::createInstance() ".$controller);
-      //First check if another controller is active. If so make sure this 
+      //First check if another controller is active. If so make sure this
       //controller will use atkOutput to return output
       $currentController = atkController::getInstance();
       if(is_object($currentController))
         $currentController->setReturnOutput(true);
-        
+
       //Now create new controller
       $controller = &atkController::_instance($controller, true);
       return $controller;
@@ -174,7 +180,7 @@
       $node = &$this->getNode();
       $node->m_postvars = $postvars;
       if(!is_object($node) || !method_exists($node,'getUi')) return "";
-      
+
       $page = &$node->getPage();
 
       // backwards compatibility mode
@@ -215,9 +221,9 @@
       }
       return "";
     }
-    
+
     /**
-     * Return the html title for the content frame. Default we show node name and action. 
+     * Return the html title for the content frame. Default we show node name and action.
      */
     protected function getHtmlTitle()
     {
@@ -327,13 +333,13 @@
     function accessDeniedPage()
     {
       $node = &$this->getNode();
-      
+
       $content = "<br><br>".atktext("error_node_action_access_denied", "", $node->m_type)."<br><br><br>";
-      
+
       // Add a cancel button to an error page if it is a dialog.
-      if ($node->m_partial == 'dialog')      
-        $content.= $this->getDialogButton('cancel', 'close');      
-      
+      if ($node->m_partial == 'dialog')
+        $content.= $this->getDialogButton('cancel', 'close');
+
       return $this->genericPage(atktext('access_denied'), $content);
     }
 
@@ -363,7 +369,7 @@
         else
           $blocks[] = $ui->renderBox(array("title"=>$itemtitle, "content"=>$itemcontent), 'dispatch');
       }
-      
+
       /**
        * @todo Don't use renderActionPage here because it tries to determine
        *       it's own title based on the title which is passed as action.
@@ -392,12 +398,12 @@
       }
       $node = &$this->getNode();
       $ui = &$node->getUi();
-      
+
       // todo: overridable action templates
       return $ui->render("actionpage.tpl", array("blocks"=>$blocks,
                                                  "title"=>$this->actionPageTitle()));
     }
-    
+
     /**
      * Return the title to be show on top of an Action Page
      *
@@ -594,10 +600,10 @@
 
       if (!isset($value))
         $value = atktext($action, "atk");
-        
+
       if ($default)
         $class .= (!empty($class) ? ' ' : '').'atkdefaultbutton';
-        
+
       if ($class != "")
         $class = "class=\"$class\" ";
 
@@ -612,7 +618,7 @@
       *
       * @param String $action The action ('save' or 'cancel')
       * @param String $label The label for this button
-      * @param String $url 
+      * @param String $url
       * @param array  $extraParams
       * @return HTML
       */
@@ -622,11 +628,11 @@
 
       // Disable the button when clicked to prevent javascript errors.
       $onClick = 'this.disabled=\'true\';';
-      
+
       switch($action)
       {
         case "save":
-          $class = "btn_save";          
+          $class = "btn_save";
           $onClick.= atkDialog::getSaveCall($url, 'dialogform', $extraParams);
           break;
         case "cancel":
@@ -798,7 +804,7 @@
       }
       atkerror("atkcontroller::invoke() Undefined method '$methodname' in atkController");
     }
-    
+
     /**
      * Return module name of controller
      *
@@ -806,9 +812,9 @@
      */
     function getModuleName()
     {
-      return $this->m_module_name;      
+      return $this->m_module_name;
     }
-    
+
     /**
      * Return controller name
      *
@@ -818,6 +824,6 @@
     {
       return $this->m_name;
     }
-    
+
   }
 ?>
