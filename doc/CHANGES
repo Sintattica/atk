@@ -8,6 +8,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
++ When submitting an mra action in a datagrid, the posted array of selectors 
+  of the selected rows is now indexed with the corresponding row indexes. 
+  [Patrick]
 + Added base url helper for the display function in the urlattribute.
   call the setBaseUrl() to prepend a base url like http://my.domain.com
   when using relative urls and you want to link to a different domain. [Martin]
