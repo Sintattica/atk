@@ -145,6 +145,10 @@ function atkSubmitMRA(name, form, target, embedded, ignoreHandler)
       // will act like a multi-select
       if (list[i].type == 'radio') key+='['+i+']';
       
+      // For multi-selects, we index the selectors with the record number to
+      // be able to link the selector to the record after submit
+      if (list[i].type == 'checkbox') key = key.replace('[]', '['+i+']');
+
       if (embedded)
       {
         target += '&' + key + '=' + value;

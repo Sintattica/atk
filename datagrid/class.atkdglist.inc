@@ -333,7 +333,7 @@ class atkDGList extends atkDGComponent
               break;
             case MRA_MULTI_SELECT:
             default:
-              $inputHTML = '<input type="checkbox" name="'.$listName.'_atkselector[]" value="'.$list["rows"][$i]["selector"].'" class="atkcheckbox" onclick="if (this.disabled) this.checked = false">';
+              $inputHTML = '<input type="checkbox" name="'.$listName.'_atkselector['.$i.']" value="'.$list["rows"][$i]["selector"].'" class="atkcheckbox" onclick="if (this.disabled) this.checked = false">';
           }
 
           $record["cols"][] = array(
