@@ -8,6 +8,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
++ You're now able to set a basedirectory with atktmpfile util class.
+  It allows you to specify a custom directory for writing files. It
+  still defaults to the atktempdir config. [Martin]
 * When we dont have a session in atkController we wont try to get the stackvar
   as we get errors then [Melvin]
 + When submitting an mra action in a datagrid, the posted array of selectors

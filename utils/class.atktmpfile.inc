@@ -17,12 +17,12 @@
 
   /**
    * Temporary file handler.
-   * 
+   *
    * This class can be used to create, read and remove temporary files.
    * The files are stored in ATK's temporary directory.
    * An ideal application of this class is writing small php include files
    * with cached data.
-   * 
+   *
    * Note: superseded for caching by atkCache.
    *
    * @author Ivo Jansch <ivo@achievo.org>
@@ -32,14 +32,14 @@
    */
   class atkTmpFile
   {
-  	/**
-  	 * Filename as given to constructor.
-  	 * Don't use this! Public because of bwc.
-  	 *
-  	 * @var string
-  	 */
+    /**
+     * Filename as given to constructor.
+     * Don't use this! Public because of bwc.
+     *
+     * @var string
+     */
     public $m_filename;
-    
+
     /**
      * Internal file pointer.
      * Don't use this! Public because of bwc.
@@ -47,7 +47,7 @@
      * @var resource
      */
     public $m_fp;
-    
+
     /**
      * Mode the file is opened in.
      * Don't use this! Public because of bwc.
@@ -55,6 +55,16 @@
      * @var string
      */
     public $m_mode;
+
+    /**
+     * base directory. This allows
+     * you to set a different directory
+     * then the default atktmp dir for
+     * writing tmp files
+     *
+     * @var string
+     */
+    protected $m_basedir;
 
     /**
      * Create a new temporary file handler.
@@ -66,20 +76,28 @@
     {
       $this->m_filename = $filename;
     }
-    
+
     /**
      * Create a new temporary file handler.
-     * 
+     *
      * Factory method, allowing a shorter syntax.
      *
      * @param string $filename
+     * @param string $base directory for writing (default atktempdir)
      * @return atkTmpFile
      */
-    public function create($filename)
+    public function create($filename, $baseDirectory = null)
     {
-    	return new atkTmpFile($filename);
+    	$obj = new atkTmpFile($filename);
+
+      if(null !== $baseDirectory)
+      {
+        $obj->setBasedir($baseDirectory);
+      }
+
+      return $obj;
     }
-    
+
     ////////////////// COMPLETE FILE ACTIONS (READ/WRITE/REMOVE) ///////////////////////
 
     /**
@@ -96,7 +114,7 @@
       }
       return false;
     }
-    
+
     /**
      * Returns the contents of the file in a string.
      * Returns false if the file does not exist.
@@ -115,7 +133,7 @@
       }
       return false;
     }
-    
+
     /**
      * Send the file contents directly to the browser.
      *
@@ -148,7 +166,7 @@
       }
       return false;
     }
-    
+
     /**
      * Exports a PHP variable to a file, makes the file a PHP file.
      *
@@ -163,8 +181,8 @@
       $res.= "\n?>";
 
       return $this->writeFile($res);
-    }    
-    
+    }
+
     /**
      * Append data to a file.
      *
@@ -173,18 +191,18 @@
      */
     public function appendToFile($data)
     {
-    	if ($this->open('a'))
-    	{
-    		$this->write($data);
-    		$this->close();
-    		return true;
-    	}
-    	return false;
+      if ($this->open('a'))
+      {
+        $this->write($data);
+        $this->close();
+        return true;
+      }
+      return false;
     }
-    
+
     /**
      * Removes a file.
-     * 
+     *
      * @return bool Wether removing succeeded
      */
     public function remove()
@@ -192,9 +210,9 @@
       $this->close();
       return unlink($this->getPath());
     }
-    
+
     ////////////////// GETTING FILE INFO ///////////////////////
-    
+
     /**
      * Wether or not the file exists.
      *
@@ -204,7 +222,7 @@
     {
       return file_exists($this->getPath());
     }
-    
+
     /**
      * Returns the time the file was last changed, or FALSE in case of an error.
      * The time is returned as a Unix timestamp.
@@ -231,17 +249,52 @@
 
     /**
      * Get the complete path of the file
-     * 
-     * Example: 
+     *
+     * Example:
      * <code>$file->getPath(); => ./atktmp/tempdir/tempfile.inc</code>
      *
      * @return string Path for the file
      */
     public function getPath()
     {
-      return atkconfig("atktempdir").$this->m_filename;
+      return $this->getBasedir().$this->m_filename;
     }
-    
+
+    /**
+     * Set the base directory for writing
+     * instead of the default atktmp dir
+     *
+     * @param string base directory
+     * @return bool
+     */
+    public function setBasedir($dir)
+    {
+      if(!is_dir($dir) || !is_writable($dir))
+      {
+        $err = 'atkTmpFile:: Unable to set ' . $dir .
+          'as basedir. Directory does not exists or isnot writable';
+
+        atkwarning($err);
+        return false;
+      }
+      $this->m_basedir = $dir;
+      return true;
+    }
+
+    /**
+     * Get the base directory for writing
+     * Will default to the atktmp dir
+     *
+     */
+    public function getBasedir()
+    {
+      if(!$this->m_basedir)
+      {
+        $this->m_basedir = atkconfig('atktempdir');
+      }
+      return $this->m_basedir;
+    }
+
     ////////////////// SIMPLE FILE OPERATIONS ///////////////////////
 
     /**
@@ -263,9 +316,9 @@
       {
         if ($mode != 'r' && $mode != 'r+')
         {
-          $this->createDirectoryStructure();  
+          $this->createDirectoryStructure();
         }
-        
+
         $this->m_fp = fopen($this->getPath(), $mode);
         $this->m_mode = $mode;
       }
@@ -299,12 +352,12 @@
       }
       return false;
     }
-    
+
     ////////////////// MISC ///////////////////////
-    
+
     /**
      * Recursively creates the directory structure for this file.
-     * 
+     *
      * @return bool Wether we succeeded
      */
     public function createDirectoryStructure()
@@ -313,5 +366,4 @@
       return atkFileAttribute::mkdir(dirname($this->getPath()));
     }
   }
-
-  ?>
+?>
