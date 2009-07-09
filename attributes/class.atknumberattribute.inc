@@ -474,25 +474,32 @@
      */
     function processSearchValue($value,&$searchmode)
     {
+      $processed = array();
       if (!is_array($value))
       {
         $slash = strpos($value, '/'); // Support for 'from/to' searches.
         $str = trim($value);
         if ($slash!==false)
         {
-          $value = array();
-          $value["from"]=$this->removeSeparator(substr($str, 0, $slash));
-          $value["to"]=$this->removeSeparators(substr($str,$slash+1));
-	        $searchmode = 'between';
+          $processed["from"]=$this->removeSeparator(substr($str, 0, $slash));
+          $processed["to"]=$this->removeSeparators(substr($str,$slash+1));
+          $searchmode = 'between';
         }
         else
         {
-          $value = array();
-          $value["from"] = $this->removeSeparators($str); // quicksearch doesn't use an array.
+          $processed["from"] = $this->removeSeparators($str); // quicksearch doesn't use an array.
+        }
+      }
+      else
+      {
+        /** assumes array('from'=><intval>, 'to'=><intval>) **/
+        foreach($value as $key => $search)
+        {
+          $processed[$key] = $this->removeSeparators($search);
         }
       }
 
-      return $value;
+      return $processed;
     }
 
     /**

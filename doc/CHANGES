@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* Fixed bug/crash in searching non numeric values with the numberattribute.
+  [Martin]
 + You're now able to set a basedirectory with atktmpfile util class.
   It allows you to specify a custom directory for writing files. It
   still defaults to the atktempdir config. [Martin]
