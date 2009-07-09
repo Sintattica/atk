@@ -92,7 +92,8 @@ class atkDataNode extends atkNode
       'selector' => $selector,
       'order' => $order,
       'offset' => isset($limit['offset']) ? $limit['offset'] : 0,
-      'limit' => isset($limit['limit']) ? $limit['limit'] : -1
+      'limit' => isset($limit['limit']) ? $limit['limit'] : -1,
+      'search' => isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null
     );
 
     $result = $this->findData($params);
@@ -110,7 +111,8 @@ class atkDataNode extends atkNode
   public function countDb($selector=null)
   {
     $params = array(
-      'selector' => $selector
+      'selector' => $selector,
+      'search' => isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null    
     );
 
     return $this->countData($params);
@@ -144,13 +146,14 @@ class atkDataNode extends atkNode
     $limit = @$params['limit'] ? $params['limit'] : -1;
     $offset = @$params['offset'] ? $params['offset'] : 0;
     $order = @$params['order'] ? $params['order'] : null;
+    $search = @$params['search'] ? $params['search'] : array();
 
     $selector = $this->getSelector($selector);
     $criteria = $this->getCriteria($selector);
 
     $data = $this->getData($criteria);
     $data = $this->filterColumns($data);
-    $data = $this->filterData($data, $criteria);
+    $data = $this->filterData($data, $criteria, $search);
     $data = $this->sortData($data, $order);
     $data = $this->limitData($data, $limit, $offset);
     return $data;
@@ -258,31 +261,49 @@ class atkDataNode extends atkNode
   /**
    * Filter data using the given selector.
    *
-   * @param array  $data     data list
-   * @param string $criteria criteria list
+   * @param array $data     data list
+   * @param array $criteria selector criteria list
+   * @param array $search   search fields / values 
    *
    * @return array filtered data
    */
-  protected function filterData($data, $criteria)
+  protected function filterData($data, $criteria, $search)
   {
     $result = array();
 
-    foreach ($data as $item)
+    foreach ($data as $record)
     {
-      $valid = true;
-      foreach ($criteria as $key => $value)
+      if ($this->isValidRecord($record, $criteria, $search))
       {
-        $valid = $valid && $item[$key] == $value;
-        if (!$valid) break;
-      }
-
-      if ($valid)
-      {
-        $result[] = $item;
+        $result[] = $record;
       }
     }
 
     return $result;
+  }
+  
+  /**
+   * Check if record is valid using the given selector criteria and search params.
+   *
+   * @param array $record   record
+   * @param array $criteria selector criteria list
+   * @param array $search   search fields / values 
+   *
+   * @return boolean is valid?
+   */  
+  protected function isValidRecord($record, $criteria, $search)
+  {
+    foreach ($criteria as $key => $value)
+    {
+      if ($record[$key] != $value) return false;
+    }
+    
+    foreach ($search as $key => $value)
+    {
+      if (!empty($value) && stripos($record[$key], $value) === false) return false;
+    }
+
+    return true; 
   }
 
   /**
@@ -296,8 +317,7 @@ class atkDataNode extends atkNode
   {
     if (empty($order)) return false;
 
-    list($column, $direction) = explode(' ', $order);
-
+    list($column, $direction) = preg_split('/[ ]+/', $order);
     if (strpos($column, '.') !== false)
     {
       list($table,$column) = explode('.', $column);
@@ -308,7 +328,7 @@ class atkDataNode extends atkNode
     }
 
     $column = trim($column);
-    $direction = trim($direction);
+    $direction = strtolower(trim($direction));
 
     $asc = $direction != 'desc';
 
