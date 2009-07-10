@@ -8,6 +8,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.3
 ------------------
+* Improved translations of actions and node/action titles (you can
+  now prefix the title/action with the node name just like other
+  translations). [Peter]
 * Fixed bug/crash in searching non numeric values with the numberattribute.
   [Martin]
 + You're now able to set a basedirectory with atktmpfile util class.

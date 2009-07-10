@@ -274,7 +274,8 @@
       if ($action != NULL)
       {
         $keys = array('title_'.$module.'_'.$nodetype.'_'.$action,
-                      'title_'.$nodetype.'_'.$action);
+                      'title_'.$nodetype.'_'.$action,
+                      'title_'.$action);
 
         $label = $node->text($keys, NULL, "", "", true);
       }
@@ -294,16 +295,14 @@
         
         if ($actiononly)
         {
-          return atktext($actionKeys, $module);
+          return $node->text($actionKeys);
         }
         else
         {
-          $keys = array('title_'.$module.'_'.$nodetype, 'title_'.$nodetype);
-          $label = $node->text($keys, NULL, "", "", true);
-          if ($label == "")
-            $label = $node->text($nodetype);
+          $keys = array('title_'.$module.'_'.$nodetype, 'title_'.$nodetype, $nodetype);
+          $label = $node->text($keys);
           if ($action != NULL)
-            $label .= " - ".atktext($actionKeys, $module);
+            $label .= " - ".$node->text($actionKeys);
         }
       }
       return $label;

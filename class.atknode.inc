@@ -2696,7 +2696,7 @@
     {
       $method = 'confirm'.$action.'text';
       if ($checkoverride && method_exists($this, $method)) return $this->$method($atkselector);
-      else return atktext("confirm_$action".(is_array($atkselector) && count($atkselector) > 1 ? '_multi' : ''), $this->m_module, $this->m_type);
+      else return $this->text("confirm_$action".(is_array($atkselector) && count($atkselector) > 1 ? '_multi' : ''));
     }
 
     /**
