@@ -1668,7 +1668,7 @@
       $this->createDestination();
 
       $selector = $this->createFilter($record);
-      $result = $this->m_destInstance->selectDb($selector,$this->m_destInstance->getColumnConfig()->getOrderByStatement(),"","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey),$mode);
+      $result = $this->m_destInstance->selectDb($selector,$this->getDestination()->getOrder(),"","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey),$mode);
 
       return $result;
     }
