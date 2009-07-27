@@ -591,6 +591,12 @@
   $config_recordsperpage=25;
 
   /**
+   * Add a 'show all' option to the records per page selector.
+   * @var boolean
+   */
+  $config_enable_showall=true;
+
+  /**
    * Display a 'stack' of the user activities in the top right corner.
    * @var boolean
    */

@@ -60,7 +60,11 @@ class atkDGLimit extends atkDGComponent
       $options[] = array('title' => $value, 'value' => $value, 'current' => $current);
     }   
     
-    $options[] = array('title' => $this->text('all'), 'value' => -1, 'current' => $limit == -1);
+    //Add 'show all' option.
+    if (atkconfig('enable_showall', true))
+    {
+      $options[] = array('title' => $this->text('all'), 'value' => -1, 'current' => $limit == -1);
+    }
     
     return $options;
   }    
