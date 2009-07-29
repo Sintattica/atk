@@ -167,13 +167,20 @@
       $id = $fieldprefix.$this->fieldName();
       $field = $record[$this->fieldName()];
 
+      $onChangeCode = '';
+      if(count($this->m_onchangecode))
+      {
+        $this->_renderChangeHandler($fieldprefix);
+        $onChangeCode = ' onChange="' . $this->getHtmlId($fieldprefix) . '_onChange(this);"';
+      }
+
       // set vars for hour / minutes dropdowns
       $this->registerKeyListener($id.'[hours]', KB_CTRLCURSOR|KB_LEFTRIGHT);
       $this->registerKeyListener($id.'[minutes]', KB_CTRLCURSOR|KB_LEFTRIGHT);
       $this->registerKeyListener($id.'[seconds]', KB_CTRLCURSOR|KB_LEFTRIGHT);
-      $m_hourBox = '<select id="'.$id.'[hours]" name="'.$id."[hours]\" class=\"atktimeattribute\">\n";
-      $m_minBox  = '<select id="'.$id.'[minutes]" name="'.$id."[minutes]\" class=\"atktimeattribute\">\n";
-      $m_secBox  = '<select id="'.$id.'[seconds]" name="'.$id."[seconds]\" class=\"atktimeattribute\">\n";
+      $m_hourBox = '<select id="'.$id.'[hours]" name="'.$id."[hours]\" class=\"atktimeattribute\"{$onChangeCode}>\n";
+      $m_minBox  = '<select id="'.$id.'[minutes]" name="'.$id."[minutes]\" class=\"atktimeattribute\"{$onChangeCode}>\n";
+      $m_secBox  = '<select id="'.$id.'[seconds]" name="'.$id."[seconds]\" class=\"atktimeattribute\"{$onChangeCode}>\n";
       // set default values for both boxes
       // depends upon atkaction
       // if add/admin, use $default param, else use time in $record
@@ -286,11 +293,11 @@
       $hours = $rec[$this->fieldName()]["hours"];
       $minutes = $rec[$this->fieldName()]["minutes"];
       $seconds = $rec[$this->fieldName()]["seconds"];
-      
+
       if ($hours=="" || $minutes=="" || ($this->hasFlag(AF_TIME_SECONDS) && $seconds=="")) return NULL;
 
       $result = sprintf("%02d",$hours).":".sprintf("%02d",$minutes).":".sprintf("%02d",$seconds);
-      
+
       return $result;
     }
 
@@ -371,7 +378,7 @@
      *
      * Database queries (select, insert and update) are passed to this method
      * so the attribute can 'hook' itself into the query.
-     * 
+     *
      * @param atkQuery $query The SQL query object
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias

@@ -8,6 +8,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
++ Added OnChangeHandler support for the atktimeattribute. [Martin]
 + Add 'enable_showall' config option. When true, the 'records per page'
   option will have an 'all' option.
   This is the default behaviour. [Marc]
