@@ -825,7 +825,7 @@
 
       return atkerror("Could not create destination for destination: $this->m_destination!");
     }
-    
+
     /**
      * Get the select link to select the value using a select action on the destination node
      *
@@ -1776,6 +1776,7 @@
       }
 
       $order = $this->m_destInstance->getOrder();
+
       if (!empty($order))
       {
         $newParts = array();
@@ -1783,7 +1784,9 @@
 
         foreach ($parts as $part)
         {
+
           $part = trim($part);
+
           list($field, $fieldDirection) = preg_split('/\s+/', $part);
 
           $fieldDirection = strtoupper($fieldDirection);
@@ -1796,6 +1799,10 @@
           if ($fieldDirection == 'DESC')
           {
             $fieldDirection = $direction == 'DESC' ? 'ASC' : 'DESC';
+          }
+          else
+          {
+            $fieldDirection = $direction;
           }
 
           if (strpos($field, '.') !== false)
@@ -2295,17 +2302,17 @@
           $concatFields = $parser->getAllParsedFieldsAsArray($fields, true);
           $concatTags       = $concatFields['tags'];
           $concatSeparators = $concatFields['separators'];
-          
+
           // to search independent of characters between tags, like spaces and comma's,
           // we remove all these separators so we can search for just the concatenated tags in concat_ws [Jeroen]
           foreach ($concatSeparators as $separator)
           {
             $value = str_replace($separator, "", $value);
           }
-          
+
           $db = $this->getDb();
           $searchcondition = "UPPER(".$db->func_concat_ws($concatTags, "", true).") LIKE UPPER('%".$value."%')";
-          
+
         }
         return $searchcondition;
       }

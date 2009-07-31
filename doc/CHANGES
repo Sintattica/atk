@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
+* Fixed sorting m2one relations. Switching between sort orders didn't
+  work. Sorting was only possible in asc order. [Martin]
 + Added OnChangeHandler support for the atktimeattribute. [Martin]
 + Add 'enable_showall' config option. When true, the 'records per page'
   option will have an 'all' option.
