@@ -113,7 +113,7 @@
     {
       // We use 255 as default filename size if no size specified.
       if ($size==0) $size = 255;
-      
+
       // Call base class constructor.
       $this->atkAttribute($name,$flags|AF_CASCADE_DELETE, $size);
       $this->setDir($dir);
@@ -122,7 +122,7 @@
     /**
      * Sets the directory into which uploaded files are saved.  (See setAutonumbering() and setFilenameTemplate()
      * for some other ways of manipulating the names of uploaded files.)
-     * 
+     *
      * @param mixed $dir string with directory path or array with directory path and display url (see constructor)
      */
     public function setDir($dir)
@@ -138,7 +138,7 @@
         $this->m_url = $this->AddSlash($dir);
       }
     }
-    
+
     /**
      * Turn auto-numbering of filenames on/off.
      *
@@ -169,7 +169,7 @@
     /**
      * Returns an array containing files in specified directory
      * optionally filtered by settings from setAllowedFileTypes method.
-     * 
+     *
      * @param string $dir Directory to read files from
      * @return array Array with files in specified dir
      */
@@ -177,7 +177,7 @@
     {
       $dirHandle = dir($this->m_dir);
       $file_arr  = array();
- 
+
       while($item = $dirHandle->read())
       {
         if (count($this->m_allowedFileTypes) == 0)
@@ -195,7 +195,7 @@
         }
       }
       $dirHandle->close();
-      return $file_arr;       
+      return $file_arr;
     }
 
 
@@ -220,8 +220,8 @@
       }
 
       if(!is_dir($this->m_dir) || !is_writable($this->m_dir))
-			{
-        atkwarning('atkFileAttribute: ' . $this->m_dir . ' does not exist or is not writeable'); 
+      {
+        atkwarning('atkFileAttribute: ' . $this->m_dir . ' does not exist or is not writeable');
         return atktext("no_valid_directory", "atk");
       }
 
@@ -235,36 +235,43 @@
 
       $result.='<input type="hidden" name="'.$id.'_postfileskey" value="'.$id.'">';
 
+      $onchange = '';
+      if (count($this->m_onchangecode))
+      {
+        $onchange = ' onchange="'.$id.'_onChange(this);"';
+        $this->_renderChangeHandler($fieldprefix);
+      }
+
       if(!$this->hasFlag(AF_FILE_NO_UPLOAD))
       {
         $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
-        $result .= '<input type="file" id="'.$id.'" name="'.$id.'">';
+        $result .= '<input type="file" id="'.$id.'" name="'.$id.'" '.$onchange.'">';
       }
 
       if(!$this->hasFlag(AF_FILE_NO_SELECT))
       {
-      	$file_arr = $this->getFiles($this->m_dir);
+        $file_arr = $this->getFiles($this->m_dir);
         if(count($file_arr)>0)
-				{
-  				natcasesort($file_arr);
-					
-	        $this->registerKeyListener($id.'_select', KB_CTRLCURSOR|KB_LEFTRIGHT);
-	        $result .= '<select id="'.$id.'_select" name="'.$id.'[select]">';
-					// Add default option with value NULL
-	        $result .= "<option value=\"\" selected>".atktext('selection', 'atk');                    
-	        while (list ($key, $val) = each ($file_arr))
-	        {
-	          (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename']==$val) ? $selected = "selected" : $selected = '';
-	          if(is_file($this->m_dir.$val)) $result .= "<option value=\"".$val."\" $selected>".$val;
-	        }
-	        $result .= "</select>";
-				}
+        {
+          natcasesort($file_arr);
+
+          $this->registerKeyListener($id.'_select', KB_CTRLCURSOR|KB_LEFTRIGHT);
+          $result .= '<select id="'.$id.'_select" name="'.$id.'[select]" '.$onchange.'>';
+          // Add default option with value NULL
+          $result .= "<option value=\"\" selected>".atktext('selection', 'atk');
+          while (list ($key, $val) = each ($file_arr))
+          {
+            (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename']==$val) ? $selected = "selected" : $selected = '';
+            if(is_file($this->m_dir.$val)) $result .= "<option value=\"".$val."\" $selected>".$val;
+          }
+          $result .= "</select>";
+        }
       }
       else if (isset($record[$this->fieldName()]['filename']) && !empty($record[$this->fieldName()]['filename']))
       {
         $result .= '<input type="hidden" name="'.$id.'[select]" value="'.$record[$this->fieldName()]['filename'].'">';
       }
-			
+
       if(!$this->hasFlag(AF_FILE_NO_DELETE)
          && isset($record[$this->fieldname()]['orgfilename'])
          && $record[$this->fieldname()]['orgfilename']!='')
@@ -752,7 +759,7 @@
 
     /**
      * Set filename template.
-     * 
+     *
      * @param string $template
      */
     function setFilenameTemplate($template)
@@ -891,7 +898,7 @@
 
     /**
      * Return the database field type of the attribute.
-     * @return "string" which is the 'generic' type of the database field for 
+     * @return "string" which is the 'generic' type of the database field for
      *         this attribute.
      */
     function dbFieldType()
