@@ -145,14 +145,6 @@
         $number = str_replace($thousands_separator,'',$number);
       }
 
-      /** cast the number if there are still any illegal charsm but only if field is not empty **/
-      if(!is_numeric($number) && (strlen($number) > 0))
-      {
-        $number = ($this->m_decimals>0)
-          ? (float) $number
-          : (int) $number;
-      }
-
       return $number;
     }
 
@@ -310,7 +302,7 @@
       if($this->m_decimals>0)
         return round((float) $rec[$this->fieldName()], $this->m_decimals);
       else
-        return (int) $rec[$this->fieldName()];
+        return $rec[$this->fieldName()];
     }
 
     /**
@@ -485,13 +477,13 @@
         $str = trim($value);
         if ($slash!==false)
         {
-          $processed["from"]=$this->removeSeparator(substr($str, 0, $slash));
-          $processed["to"]=$this->removeSeparators(substr($str,$slash+1));
+          $processed["from"]=(float)$this->removeSeparator(substr($str, 0, $slash));
+          $processed["to"]=(float)$this->removeSeparators(substr($str,$slash+1));
           $searchmode = 'between';
         }
         else
         {
-          $processed["from"] = $this->removeSeparators($str); // quicksearch doesn't use an array.
+          $processed["from"] = (float)$this->removeSeparators($str); // quicksearch doesn't use an array.
         }
       }
       else
@@ -499,7 +491,7 @@
         /** assumes array('from'=><intval>, 'to'=><intval>) **/
         foreach($value as $key => $search)
         {
-          $processed[$key] = $this->removeSeparators($search);
+          $processed[$key] = (float)$this->removeSeparators($search);
         }
       }
 

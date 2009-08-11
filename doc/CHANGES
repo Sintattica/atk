@@ -31,6 +31,8 @@ Changes in ATK 6.4
   option will have an 'all' option. This is the default behaviour. [Marc]
 * Fixed displaying of 'size' (integral part) of atkNumberAttribute. [Paul 
   Reid, Boy]
+* Fixed displaying of large integer (non-decimals) numbers of 
+  atkNumberAttribute (larger than 2147483647). [Paul Reid, Boy]
 
 Changes in prior versions
 -------------------------
