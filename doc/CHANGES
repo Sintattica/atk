@@ -28,10 +28,9 @@ Changes in ATK 6.4
   work. Sorting was only possible in asc order. [Martin]
 + Added OnChangeHandler support for the atktimeattribute. [Martin]
 + Add 'enable_showall' config option. When true, the 'records per page'
-  option will have an 'all' option.
-  This is the default behaviour. [Marc]
-* Fixed displaying of 'size' (integral part) of 
-  atkNumberAttribute. [Paul Reid, Boy]
+  option will have an 'all' option. This is the default behaviour. [Marc]
+* Fixed displaying of 'size' (integral part) of atkNumberAttribute. [Paul 
+  Reid, Boy]
 
 Changes in prior versions
 -------------------------
