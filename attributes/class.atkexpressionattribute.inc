@@ -104,7 +104,17 @@
        }
       
       $expression = str_replace("[table]", $table, $this->m_expression);
-      return "($expression)".($direction ? " {$direction}" : "");
+      
+      $result = "($expression)";
+      
+      if ($this->getSearchType() == 'string')
+      {
+      	$result = "LOWER({$result})";
+      }
+      
+      $result .= ($direction ? " {$direction}" : "");
+      
+      return $result;
     }
 
     /**

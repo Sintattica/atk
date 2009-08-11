@@ -2501,7 +2501,7 @@
         $table = $this->m_ownerInstance->m_table;
       }
 
-      return $table.".".$this->fieldName().($direction ? " {$direction}" : "");
+      return "LOWER(".$table.".".$this->fieldName().")".($direction ? " {$direction}" : "");
     }
 
     /**

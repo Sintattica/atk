@@ -691,7 +691,18 @@
       if ($wildcard == true) $result = str_replace("%","%%",$result);
       return $result;
     }
-
+    
+    /**
+     * Retrieve this drivers' specific SQL implementation of a concat() function.
+     *
+     * @param array $fields
+     * @return unknown
+     */
+    public function func_concat($fields)
+    {
+      if(count($fields)==0 or !is_array($fields)) return '';
+      elseif(count($fields)==1) return $fields[0];
+      return implode('||',$fields);
+    }
   }
-
 ?>
