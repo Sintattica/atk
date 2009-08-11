@@ -26,6 +26,7 @@
    */
   class atkNumberAttribute extends atkAttribute
   {
+    var $m_size; // Integral part of number (before decimal separator)
     var $m_decimals=0; // The number of decimals of the number.
     var $m_minvalue=false; // The minimum value of the number.
     var $m_maxvalue=false; // The maximum value of the number.
@@ -42,10 +43,11 @@
 
     /**
      * Constructor
-     * @param string $name  Name of the attribute
-     * @param int $flags Flags for this attribute
-     * @param int $size  The size(s) for this attribute (default 10)
-     * @param int $decimals The number of decimals to use.
+     * @param string $name      Name of the attribute
+     * @param int    $flags     Flags for this attribute
+     * @param mixed  $size      The size(s) of integral part (before seperator) for this attribute (default 10)
+     *                          also accepts an array. See setAttribSize for format.
+     * @param int     $decimals The number of decimals to use.
      *
      */
     function atkNumberAttribute($name, $flags=0, $size=10, $decimals=0)
@@ -389,9 +391,11 @@
         $onchange = '';
       }
 
+      $size    = $this->m_size;
       $maxsize = $this->m_maxsize;
       if ($this->m_decimals>0)
       {
+        $size    += ($this->m_decimals+1);
         $maxsize += ($this->m_decimals+1); // make room for the number of decimals
       }
 
@@ -403,7 +407,7 @@
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
       $result = '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.
                 '" value="'.$value.'"'.
-                ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
+                ($size    > 0 ? ' size="'.$size.'"' : '').
                 ($maxsize > 0 ? ' maxlength="'.$maxsize.'"' : '').' '.$onchange.' />';
 
       return $result;

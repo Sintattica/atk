@@ -22,6 +22,8 @@ Changes in ATK 6.4
 + Add 'enable_showall' config option. When true, the 'records per page'
   option will have an 'all' option.
   This is the default behaviour. [Marc]
+* Fixed displaying of 'size' (integral part) of 
+  atkNumberAttribute. [Paul Reid, Boy]
 
 Changes in prior versions
 -------------------------
