@@ -644,52 +644,10 @@
       return $count - ($count > 0 && $skipFirstRow ? 1 : 0);
     }
 
-    /**
-     * Gets the csvdata from one line
-     *
-     * source: http://bu.orbitel.bg/fgetcsvfromline.php (bu@orbitel.bg)
-     *
-     * @param String $line           One line from the csv-file
-     * @param int    $columncount    Number of columns in the cvs-file
-     * @param String $delimiterChar  The char which seperate the fields
-     * @param String $enclosureChar  The char which is in front and after each field
-     * @return Array The fields
-     */
     function fgetcsvfromline ($line, $columncount, $delimiterChar = ',', $enclosureChar = '"')
     {
       $line = trim($line);
-
-      if (substr($line, -1) == $delimiterChar)
-        $line .= $enclosureChar.$enclosureChar;
-
-      if ($enclosureChar!='')
-      {
-        $start = (($line[0]==$enclosureChar)?1:0);
-        $end = (($line[atk_strlen($line)-1]==$enclosureChar)?-1:NULL);
-        $line = substr($line, $start, $end);
-      }
-
-      $regExpSpecialChars = array
-      (
-          "|" => "\\|",
-          "&" => "\\&",
-          "$" => "\\$",
-          "(" => "\\(",
-          ")" => "\\)",
-          "^" => "\\^",
-          "[" => "\\[",
-          "]" => "\\]",
-          "{" => "\\{",
-          "}" => "\\}",
-          "." => "\\.",
-          "*" => "\\*",
-          "\\" => "\\\\",
-          "/" => "\\/"
-      );
-
-      $delimiterChar = strtr($delimiterChar, $regExpSpecialChars);
-      $enclosureChar = strtr($enclosureChar, $regExpSpecialChars);
-
+      
       // if we haven't got an enclosure char, the only thing we can do is
       // splitting it using the delimiterChar - no further action needed
       if (!$enclosureChar)
@@ -697,20 +655,44 @@
         return explode($delimiterChar,$line);
       }
 
+      if ($line{0} == $delimiterChar) 
+      {
+        $line = $enclosureChar.$enclosureChar.$line;
+      }
+      
+      if (substr($line, -1) == $delimiterChar)
+        $line .= $enclosureChar.$enclosureChar;
+        
+      $reDelimiterChar = preg_quote($delimiterChar, '/');
+      $reEnclosureChar = preg_quote($enclosureChar, '/');
+        
       // Some exports don't enclose empty or numeric fields with the enclosureChar. Let's fix
       // that first so we can use one preg_split statement that works in those cases too.
       // loop until all occurrences are replaced. Contains an infinite loop prevention.
-      for ($fix="", $i=0, $_i=substr_count($line, $enclosureChar); $fix!=$line && $i<$_i;$i++)
+      for ($fix="", $i=0, $_i=substr_count($line, $delimiterChar); $fix!=$line && $i<$_i;$i++)
       {
         if ($fix!="") $line = $fix;
-        $fix = preg_replace('/'.$delimiterChar.'(\d*)'.$delimiterChar.'/',
-                           $delimiterChar.$enclosureChar.'\\1'.$enclosureChar.$delimiterChar, $line);
+        $pattern = '/'.$reDelimiterChar.'([^\\\\'.$reDelimiterChar.$reEnclosureChar.']*)'.$reDelimiterChar.'/';
+        $fix = preg_replace($pattern , $delimiterChar.$enclosureChar.'\\1'.$enclosureChar.$delimiterChar, $line);
+      }        
+      $line = $fix;
+      // fix an unquoted string at line end, if any
+      $pattern = '/'.$reDelimiterChar.'([^\\\\'.$reDelimiterChar.$reEnclosureChar.']*)$/';
+      $line = preg_replace($pattern ,
+                           $delimiterChar.$enclosureChar.'\\1'.$enclosureChar,$line);
+      
+      // chop the first and last enclosures so they aren't split at
+      $start = (($line[0]==$enclosureChar)?1:0);
+      if($line[strlen($line)-1]==$enclosureChar) {
+        $line = substr($line, $start, -1);
+      } else {
+        $line = substr($line, $start);
       }
       // now split by delimiter
-      $expression = '#'.$enclosureChar.' *'.$delimiterChar.' *'.$enclosureChar.'#';
+      $expression = '/'.$reEnclosureChar.' *'.$reDelimiterChar.'*'.$reEnclosureChar.'/';
       return preg_split($expression, $line);
     }
-
+    
     /**
      * Gives all the attributes that can be used for the import
      * @param bool $obligatoryOnly    if false then give all attributes, if true then give only the obligatory ones
