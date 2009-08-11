@@ -149,7 +149,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
    * @param string $prefix
    * @return string piece of html code
    */
-  private function renderSelectBoxes($side,$record,$mode,$prefix)
+  protected function renderSelectBoxes($side,$record,$mode,$prefix)
   {
     if ($side=='available')
     {
@@ -414,7 +414,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
    * @param bool $isSelected Whether or not this is the selectbox with the selectedItems (needed for onchangecode)
    * @return String piece of html code
    */
-  private function _renderSelect($name, $recordset, $opposite, $prefix, $isSelected)
+  protected function _renderSelect($name, $recordset, $opposite, $prefix, $isSelected)
   {
     if ($isSelected) {
       $onchangecode = $this->getHtmlId($prefix).'_onChange(\'selected\');';
