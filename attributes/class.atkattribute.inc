@@ -574,6 +574,13 @@
      * for calling the attribute's edit() method to paint it on screen.
      */
     var $m_manual_paint = false;
+    
+    /**
+     * Column.
+     * 
+     * @var string
+     */
+    private $m_column;
 
     /**
      * Constructor
@@ -1139,7 +1146,27 @@
     {
       return $this->m_sections;
     }
+    
+    /**
+     * Get column.
+     * 
+     * @return string column name
+     */
+    public function getColumn()
+    {
+    	return $this->m_column;
+    }
 
+    /**
+     * Set column.
+     * 
+     * @param string $name column name
+     */
+    public function setColumn($name)
+    {
+    	$this->m_column = $name;
+    }
+    
 
     /**
      * Retrieve the html code for placing this attribute in a view page.

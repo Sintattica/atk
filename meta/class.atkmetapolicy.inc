@@ -1090,7 +1090,32 @@ class atkMetaPolicy
     $params = func_get_args();
     $this->_call("setTabs", $params);
   }
+  
+  /**
+   * Set the column for the given attribute or list of attributes.
+   *
+   * This method can also be called with multiple attribute string arguments
+   * as long as the last argument contains the section name(s).
+   *
+   * @param array|string $attrs  list of attribute names or single attribute name
+   * @param array|string $column colum name
+   */
+  public function setColumn($attrs, $column)
+  {
+    if (func_num_args() > 2)
+    {
+      $attrs = func_get_args();
+      $column = array_pop($attrs);
+    }
 
+    else if (!is_array($attrs))
+      $attrs = array($attrs);
+
+    foreach ($attrs as $attr)
+      if (array_key_exists($attr, $this->m_attrs))
+        $this->m_attrs[$attr]["column"] = $column;
+  }
+  
   /**
    * Sets the attribute type. All extra arguments after the two
    * standard arguments will be threated as parameters for the
@@ -1538,6 +1563,7 @@ class atkMetaPolicy
           "params" => $params,
           "flags" => $flags,
           "tabs" => $sections,
+          "column" => null,
           "order" => $order
         );
 

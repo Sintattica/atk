@@ -207,6 +207,11 @@ class atkMetaCompiler
       $code .= '$attr->setInitialValue('.var_export($data['default'], true).");\n";
     }
     
+    if (isset($data['column']))
+    {
+    	$code .= '$attr->setColumn('.var_export($data['column'], true).");\n";
+    }
+    
     $code .= '$node->add($attr, '.var_export($tabs, true).', '.var_export($order, true).");\n\n";
       
     return $code;

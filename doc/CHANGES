@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
++ Added support for specifying columns for attributes which can be used in
+  the theme to show attributes in different columns (bug #1017) [Rik, Peter]
 + Added specific template for view actions in Steelblue theme, because IE was
   having some troubles with nested forms in the view action. [Tjeerd]
 + Added OnChangeHandler support for the atkfileattribute. [Tjeerd]

@@ -435,7 +435,7 @@
 
         $tplfield["full"] = $editsrc;
 
-        $column = ((array_key_exists($field['id'],$this->m_node->m_columnAttributes) && $this->m_node->m_columnAttributes[$field['id']]) ? 1 : 0);
+        $column = $field['attribute']->getColumn();
         $tplfield["column"] = $column;
       }
 

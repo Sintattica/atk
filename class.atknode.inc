@@ -737,14 +737,14 @@
      */
     private $m_lockMode = 'exclusive'; // atkLock::EXCLUSIVE (would mean atkLock needs to be available!)
 
+
     /**
-     * Multiple columns.
-     *
-     * @var array
+     * Default column name (null means across all columns)
+     * 
+     * @var string
      */
-    var $m_columnAttributes = array();
-
-
+    private $m_defaultColumn = null;
+    
     /**
      * Constructor.
      *
@@ -805,6 +805,57 @@
 
       return $result;
     }
+    
+    /**
+     * Returns the default column name.
+     * 
+     * @return string default column name
+     */
+    public function getDefaultColumn()
+    {
+    	return $this->m_defaultColumn;
+    }
+    
+    /**
+     * Set default column name.
+     * 
+     * @param string name default column name
+     */
+    public function setDefaultColumn($name)
+    {
+    	$this->m_defaultColumn = $name;
+    }
+    
+    /**
+     * Resolve column for sections. 
+     * 
+     * If one of the sections contains something after a double 
+     * colon (:) than that's used as column name, else the default 
+     * column name will be used.
+     *
+     * @param array $sections sections
+     * 
+     * @return string column name
+     */
+    protected function resolveColumn(&$sections)
+    {
+    	$column = $this->getDefaultColumn();
+    	
+      if (!is_array($sections))
+      {
+      	return $column;
+      }
+    	
+    	foreach ($sections as &$section)
+    	{
+    		if (strpos($section, ":") !== false)
+    		{
+    			list($section, $column) = explode(':', $section);
+    		}
+    	}
+    	
+    	return $column;
+    }
 
     /**
      * Resolve sections, tabs and the order based on the given
@@ -814,7 +865,7 @@
      * @param mixed $tabs
      * @param mixed $order
      */
-    function resolveSectionsTabsOrder(&$sections, &$tabs, &$order)
+    function resolveSectionsTabsOrder(&$sections, &$tabs, &$column, &$order)
     {
       // Because sections/tabs will probably be used more than the order override option
       // the API for this method now favours the $sections argument. For backwards
@@ -838,11 +889,13 @@
         $sections = array($sections);
       }
 
+      $column = $this->resolveColumn($sections);
+      
       if (is_array($sections))
       {
         $sections = $this->resolveSections($sections);
       }
-
+      
       // Filter tabs from section names.
       $tabs = $this->getTabsFromSections($sections);
     }
@@ -875,7 +928,7 @@
 
       if (!atkReadOptimizer())
       {
-        $this->resolveSectionsTabsOrder($sections, $tabs, $order);
+        $this->resolveSectionsTabsOrder($sections, $tabs, $column, $order);
 
         // check for parent fieldname (treeview)
         if($attribute->hasFlag(AF_PARENT))
@@ -914,6 +967,7 @@
           $order = $sections;
         $tabs = "*";
         $sections = "*";
+        $column = $this->getDefaultColumn();
       }
 
 
@@ -996,6 +1050,7 @@
       }
       $attribute->setTabs($this->m_attributeTabs[$attribute->fieldName()]);
       $attribute->setSections($this->m_attribIndexList[$attribute->m_index]['sections']);
+      $attribute->setColumn($column);
 
 
       return $attribute;
@@ -5322,20 +5377,5 @@
     {
       return $this->getDb()->escapeSQL($string);
     }
-
-    /**
-     * Set column attributes
-     *
-     * @param array $attributes
-     */
-    public function setColumnAttribs($attributes=array())
-    {
-      foreach ( $attributes as $attribute )
-      {
-        $this->m_columnAttributes[$attribute] = 1;
-      }
-    }
-
   }
-
 ?>

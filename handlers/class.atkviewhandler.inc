@@ -264,7 +264,7 @@
 
           $tplfield["full"] = $editsrc;
 
-          $column = (($node->m_columnAttributes[$tplfield['attribute']]) ? 1 : 0);
+          $column = $field['attribute']->getColumn();
           $tplfield["column"] = $column;
         }
         $fields[] = $tplfield; // make field available in numeric array
