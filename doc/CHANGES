@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
++ Added support for Microsoft's Security Support Provider Interface (SSPI) 
+  authentication  (bug #978). [Matthieu, Ivo]
 + Added support for displaying boolean fields as checkboxes in list/view
   mode (bug #682) [MichaelZ, Peter]
 * Fixed import of certain CSV import files (bug #796). [Alfred]
