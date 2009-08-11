@@ -235,9 +235,9 @@
      */
     function fetchCriteria()
     {
-      return array('atksearchmethod' => $this->m_postvars['atksearchmethod'],
-                   'atksearch'       => $this->m_postvars['atksearch'],
-                   'atksearchmode'   => $this->m_postvars['atksearchmode']);
+      return array('atksearchmethod' => array_key_exists('atksearchmethod',$this->m_postvars)?$this->m_postvars['atksearchmethod']:'',
+                   'atksearch'       => array_key_exists('atksearch',$this->m_postvars)?$this->m_postvars['atksearch']:'',
+                   'atksearchmode'   => array_key_exists('atksearchmode',$this->m_postvars)?$this->m_postvars['atksearchmode']:'');
     }
 
   }

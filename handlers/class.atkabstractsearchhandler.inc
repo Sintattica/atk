@@ -23,17 +23,17 @@ atkimport('atk.handlers.atkactionhandler');
  * @package atk
  * @subpackage testcases
  */
-abstract class atkAbstractSearchHandler extends atkActionHandler 
+abstract class atkAbstractSearchHandler extends atkActionHandler
 {
   /**
-   * Holds the table name of the searchcriteria 
+   * Holds the table name of the searchcriteria
    * table. Due some BC issues of the atkSmartSearchHandler
    * this value can be overwritten by the checkTable function
    *
    * @var string
    */
   protected $m_table = 'atk_searchcriteria';
-  
+
   /**
    * Indicates if the table
    * atk_searchcriteria exists
@@ -42,7 +42,7 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
    * @var boolean
    */
   protected $m_table_exists = null;
-  
+
   /**
    * Return the criteria based on the postvarse
    * used for storing
@@ -50,7 +50,7 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
    * @return array
    */
   abstract function fetchCriteria();
-  
+
   /**
    * Return the type of the atkSmartSearchHandler
    *
@@ -68,17 +68,17 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
    */
   protected function tableExist()
   {
-    if($this->m_table_exists !== null) 
+    if($this->m_table_exists !== null)
       return $this->m_table_exists;
-      
+
     $db = $this->m_node->getDb();
     $this->m_table_exists = $db->tableExists($this->m_table);
-    
+
     atkdebug('tableExists checking table: '.$this->m_table.' exists : '. print_r($this->m_table_exists,true));
-    
+
     return $this->m_table_exists;
   }
-  
+
   /**
    * List criteria.
    *
@@ -87,7 +87,7 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
   function listCriteria()
   {
     if(!$this->tableExist()) return array();
-    
+
     $db = &$this->m_node->getDb();
     $query = "SELECT c.name FROM {$this->m_table} c WHERE c.nodetype = '%s' ORDER BY UPPER(c.name) AND handlertype = '%s'";
     $rows = $db->getRows(sprintf($query, $this->m_node->atkNodeType(), $this->getSearchHandlerType()));
@@ -107,10 +107,10 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
   function forgetCriteria($name)
   {
     if(!$this->tableExist()) return false;
-    
+
     $db = &$this->m_node->getDb();
     $query = "DELETE FROM {$this->m_table} WHERE nodetype = '%s' AND UPPER(name) = UPPER('%s') AND handlertype = '%s'";
-        
+
     $db->query(sprintf($query, $this->m_node->atkNodeType(), escapeSQL($name), $this->getSearchHandlerType()));
     $db->commit();
   }
@@ -127,7 +127,7 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
   function saveCriteria($name, $criteria)
   {
     if(!$this->tableExist()) return false;
-    
+
     $this->forgetCriteria($name);
     $db = &$this->m_node->getDb();
     $query = "INSERT INTO {$this->m_table} (nodetype, name, criteria, handlertype) VALUES('%s', '%s', '%s', '%s')";
@@ -144,19 +144,19 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
   function loadCriteria($name)
   {
     if(!$this->tableExist()) return array();
-    
+
     $db = &$this->m_node->getDb();
     $query = "SELECT c.criteria FROM {$this->m_table} c WHERE c.nodetype = '%s' AND UPPER(c.name) = UPPER('%s') AND handlertype = '%s'";
-    
+
     atk_var_dump(sprintf($query, $this->m_node->atkNodeType(), escapeSQL($name), $this->getSearchHandlerType()), 'loadCriteria query');
-    
+
     list($row) = $db->getRows(sprintf($query, $this->m_node->atkNodeType(), escapeSQL($name), $this->getSearchHandlerType()));
     $criteria = $row == NULL ? NULL : unserialize($row['criteria']);
-    
+
     atk_var_dump($criteria, 'loadCriteria criteria');
     return $criteria;
   }
-  
+
   /**
    * Load base criteria.
    *
@@ -189,10 +189,10 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
     $result .= '</select>';
     return $result;
   }
-  
+
   /**
    * Take the necessary 'saved criteria' actions based on the
-   * posted variables. 
+   * posted variables.
    * Returns the name of the saved criteria
    *
    * @param array $criteria array with the current criteria
@@ -200,7 +200,7 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
    */
   function handleSavedCriteria($criteria)
   {
-    $name = $this->m_postvars['load_criteria'];
+    $name = array_key_exists('load_criteria',$this->m_postvars)?$this->m_postvars['load_criteria']:'';
     if (!empty($this->m_postvars['forget_criteria']))
     {
       $forget = $this->m_postvars['forget_criteria'];
@@ -215,21 +215,21 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
     }
     return $name;
   }
-  
-  
+
+
   /**
    * Returns an array with all the saved criteria
    * information. This information will be parsed
-   * to the different 
+   * to the different
    *
-   * @param string $current 
+   * @param string $current
    * @return array
    */
   function getSavedCriteria($current)
   {
     // check if table is present
     if(!$this->tableExist()) return array();
-    
+
     return array('load_criteria'        => $this->getLoadCriteria($current),
                  'forget_criteria'      => $this->getForgetCriteria($current),
                  'toggle_save_criteria' => $this->getToggleSaveCriteria(),
@@ -239,8 +239,8 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
                  'label_save_criteria'  => '<label for="toggle_save_criteria">'.atk_htmlentities(atktext('save_criteria', 'atk')).'</label>'
                  );
   }
-  
-  
+
+
   /**
    * Returns a link for removing the currently selected criteria. If
    * nothing (valid) is selected nothing is returned.
@@ -274,8 +274,8 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
   {
     return '<input id="save_criteria" type="text" size="30" name="save_criteria" value="'.atk_htmlentities($current).'" disabled="disabled">';
   }
-  
 
 
-  
+
+
 }
