@@ -1412,7 +1412,7 @@
       }
 
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
-      $result= '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.$value.'"'.
+      $result= '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.htmlentities($value).'"'.
                 ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
 
@@ -1674,8 +1674,8 @@
         {
           $query->addSequenceField($this->fieldName(), $rec[$this->fieldName()], $this->getOwnerInstance()->m_seq);
           return;
-        }        
-        
+        }
+
         if ($this->isEmpty($rec) && !$this->hasFlag(AF_OBLIGATORY) && !$this->isNotNullInDb())
         {
           $query->addField($this->fieldName(),'NULL',"","",false,true);
@@ -2050,7 +2050,7 @@
      */
     function getModule()
     {
-      if ($this->m_module!="") 
+      if ($this->m_module!="")
       {
         return $this->m_module;
       }
@@ -2069,7 +2069,7 @@
      * taking the AF_NOLABEL and AF_BLANKLABEL flags into account.
      *
      * @param array $record The record holding the value for this attribute.
-     * @param string $mode The mode ("add", "edit" or "view") 
+     * @param string $mode The mode ("add", "edit" or "view")
      * @return String The HTML compatible label for this attribute, or an
      *                empty string if the label should be blank, or NULL if no
      *                label at all should be displayed.
@@ -2482,9 +2482,9 @@
 
       return $order;
     }
-    
+
     /**
-     * Retrieves the ORDER BY statement for this attribute's node.   
+     * Retrieves the ORDER BY statement for this attribute's node.
      * Derived attributes may override this functionality to implement other
      * ordering statements using the given parameters.
      *
@@ -2500,7 +2500,7 @@
       {
         $table = $this->m_ownerInstance->m_table;
       }
-      
+
       return $table.".".$this->fieldName().($direction ? " {$direction}" : "");
     }
 
