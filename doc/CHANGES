@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
+* Export handler now respects the current search parameters 
+  (bug #1251). [Arjen, Peter]
 * Fixed func_concat for OCI8 driver (bug #571) [Arjen]
 * Lower attribute columns or expressions when sorting (bug #1311)
   [Arjen, Peter]
