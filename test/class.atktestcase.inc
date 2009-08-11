@@ -16,6 +16,11 @@
    */
 
   /**
+   * @internal includes
+   */
+  require_once(atkconfig("atkroot")."atk/test/simpletest/unit_tester.php");
+
+  /**
    * atkTestCase is a specialization of SimpleTest's UnitTestCase. It
    * contains utility methods that can be used by testcases, such as
    * the ability to swap the default database driver with a mock
