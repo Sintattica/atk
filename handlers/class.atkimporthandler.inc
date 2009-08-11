@@ -1124,6 +1124,22 @@
         return array('importerrors'=>&$importerrors, 'validatedrecs'=>array());
       }
 
+      static $mb_converting_exists = null;
+      if(!isset($mb_converting_exists))
+      {
+        $mb_converting_exists = function_exists("mb_convert_encoding");
+        atkdebug('Checking function_exists("mb_convert_encoding")');
+      }
+
+      static $atkCharset = null;
+      if(!isset($atkCharset))
+      {
+        $atkCharset = atkGetCharset();
+        atkdebug('setting atkcharset static!');
+      }
+
+      atkimport("atk.utils.atkstringparser");
+
       //copy the csv in a record and add it to the db
       $fp = fopen($file, "r");
       if($skipfirstrow == "1") $line = fgets($fp);
@@ -1139,12 +1155,11 @@
         set_time_limit(60);
         atkdebug('set_time_limit(60)');
 
-        if (atkGetCharset() != '' && function_exists("mb_convert_encoding")) $line = mb_convert_encoding($line, atkGetCharset());
+        if ($atkCharset != '' && $mb_converting_exists) $line = mb_convert_encoding($line, $atkCharset);
 
         $data = $this->fgetcsvfromline($line, $columncount, $delimiter, $enclosure);
 
         $rec = $initial_values;
-        atkimport("atk.utils.atkstringparser");
 
         for ($i=0, $_i=count($col_map); $i<$_i; $i++)
         {
@@ -1202,10 +1217,16 @@
 
         if (count($relationselect)==0 || count($relationselect)>1)
         {
-          $searchresults = $attr->m_destInstance->searchDb($value);
-          if (count($searchresults)==1)
+          static $searchresults = array();
+          if (!array_key_exists($attributename, $searchresults) || (array_key_exists($attributename, $searchresults) && !array_key_exists($value, $searchresults[$attributename])))
           {
-            $value = array($attr->m_destInstance->primaryKeyField()=>$searchresults[0][$attr->m_destInstance->primaryKeyField()]);
+            atkdebug("Caching attributeValue result for $attributename ($value)");
+            $searchresults[$attributename][$value] = $attr->m_destInstance->searchDb($value);
+          }
+
+          if (count($searchresults[$attributename][$value])==1)
+          {
+            $value = array($attr->m_destInstance->primaryKeyField()=>$searchresults[$attributename][$value][0][$attr->m_destInstance->primaryKeyField()]);
           }
           else
           {
