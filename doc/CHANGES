@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
++ Added support for displaying boolean fields as checkboxes in list/view
+  mode (bug #682) [MichaelZ, Peter]
 * Fixed import of certain CSV import files (bug #796). [Alfred]
 + Added support for specifying columns for attributes which can be used in
   the theme to show attributes in different columns (bug #1017) [Rik, Peter]

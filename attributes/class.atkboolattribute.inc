@@ -27,6 +27,11 @@
    * if you don't want to show the normal label.
    */
   define("AF_BOOL_INLINE_LABEL", AF_SPECIFIC_2);
+  
+  /**
+   * Display checkbox in view / list mode instead of "yes" or "no".
+   */
+  define("AF_BOOL_DISPLAY_CHECKBOX", AF_SPECIFIC_3);
 
   /**
    * The atkBoolAttribute class represents an attribute of a node
@@ -191,9 +196,18 @@
      */
     function display($record)
     {
-      // We display true (1) as 'Yes' and false as 'No'
-      if ($record[$this->fieldName()]>0) return atktext("yes", "atk");
-      return atktext("no", "atk");
+    	if ($this->hasFlag(AF_BOOL_DISPLAY_CHECKBOX))
+    	{
+    		return '
+    		  <div align="center">
+    		    <input type="checkbox" disabled="disabled" '.($record[$this->fieldName()] ? 'checked="checked"' : '').' />
+    		  </div>
+    		';
+    	}
+    	else
+    	{
+	      return $this->text($record[$this->fieldName()] ? "yes" : "no");
+    	}
     }
 
     /**
