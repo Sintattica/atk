@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
+- Remove 'enable_showall' config option. 
+  Replace with 'showAll constructor option [Marc]
 * Improved the speed of CSV imports (bug #1271) [Arjen]
 * atkExportHandler now respects the current search parameters 
   (bug #1251). [Arjen, Peter]
