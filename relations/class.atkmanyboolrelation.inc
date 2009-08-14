@@ -22,6 +22,11 @@
    * Attribute flag. When used the atkManyBoolRelation shows add links to add records for the related table
    */
   define("AF_MANYBOOL_AUTOLINK", AF_SPECIFIC_1);
+  
+  /**
+   * Hides the select all, select none and inverse links.
+   */
+  define("AF_MANYBOOL_NO_TOOLBAR", AF_SPECIFIC_2);
 
   /**
    * Many-to-many relation.
@@ -63,13 +68,16 @@
         $page = &atkPage::getInstance();
         $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkprofileattribute.js.php");
   
-        $result .='<div align="left"><font size="-2">
-                  [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
-                       atktext("check_all", "atk").
-                  '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
-                       atktext("check_none", "atk").
-                  '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
-                       atktext("invert_selection", "atk").'</a>]</font></div>';
+        if (!$this->hasFlag(AF_MANYBOOL_NO_TOOLBAR))
+        {
+	        $result .='<div align="left"><font size="-2">
+	                  [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
+	                       atktext("check_all", "atk").
+	                  '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
+	                       atktext("check_none", "atk").
+	                  '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
+	                       atktext("invert_selection", "atk").'</a>]</font></div>';
+        }
       
         $result.= '<table border="0"><tr>';
         for ($i=0;$i<$total_records;$i++)

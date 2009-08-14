@@ -136,7 +136,7 @@ class atkDGList extends atkDGComponent
       }
       else
       {
-        $call = atk_htmlentities($grid->getUpdateCall(array('atkorderby' => $head['order'])));
+        $call = atk_htmlentities($grid->getUpdateCall(array('atkorderby' => $head['order'], 'atkstartat' => 0)));
         $link = '<a href="javascript:void(0)" onclick="'.$call.'">'.$head["title"].'</a>';
         $headercols[] = array("content" => $link);
       }

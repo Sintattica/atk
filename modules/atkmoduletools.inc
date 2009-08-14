@@ -245,8 +245,14 @@
     {
       if (is_array($modules)&&in_array($module, array_keys($modules)))
       {
-
-        $file = $modules[$module]."/class.$type.inc";
+        if (file_exists("{$modules[$module]}/nodes/class.{$type}.inc"))
+        {
+          $file = "{$modules[$module]}/nodes/class.{$type}.inc";
+        }
+        else 
+        {
+          $file = "{$modules[$module]}/class.{$type}.inc";          
+        }
       }
       else
       {

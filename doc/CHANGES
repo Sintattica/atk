@@ -8,8 +8,12 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
-- Remove 'enable_showall' config option. 
-  Replace with 'showAll constructor option [Marc]
+* Make sure if someone resorts a grid on a certain column the 
+  current record offset is reset to 0. [Peter]
+* Added AF_BOOL_HIDE_TOOLBAR flag for atkBoolAttribute which can be
+  used to hide the select all, none etc. links. [Peter]
+* ATK now first searches for nodes in <module>/nodes/ and only 
+  falls back to <module>/ if necessary. [Peter]
 * Improved the speed of CSV imports (bug #1271) [Arjen]
 * atkExportHandler now respects the current search parameters 
   (bug #1251). [Arjen, Peter]
@@ -29,8 +33,8 @@ Changes in ATK 6.4
 * Fixed sorting m2one relations. Switching between sort orders didn't
   work. Sorting was only possible in asc order. [Martin]
 + Added OnChangeHandler support for the atktimeattribute. [Martin]
-+ Add 'enable_showall' config option. When true, the 'records per page'
-  option will have an 'all' option. This is the default behaviour. [Marc]
++ Add 'showAll' atkDGList option. When true (default), the 'records per 
+  page' option will have an 'all' option. [Marc]
 * Fixed displaying of 'size' (integral part) of atkNumberAttribute. [Paul 
   Reid, Boy]
 * Fixed displaying of large integer (non-decimals) numbers of 

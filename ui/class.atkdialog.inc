@@ -223,6 +223,23 @@ class atkDialog
    */
   function load()
   {
+    self::loadScriptsAndStyles($this->m_themeLoad ? $this->m_themeName : false);
+  }
+
+  /**
+   * Load JavaScript and stylesheets.
+   *
+   * @param string|boolean $theme uses the given window theme, by default checks the current ATK theme
+   *                              which window theme should be used, if set explicitly to false no
+   *                              theme will be loaded 
+   */
+  public static function loadScriptsAndStyles($theme=null)
+  {
+    if ($theme === null && atkTheme::getInstance()->getAttribute('dialog_theme_load', true))
+    {
+      $theme = atkTheme::getInstance()->getAttribute('dialog_theme_name', 'alphacube');
+    }
+    
     atkimport('atk.ui.atkpage');
 
     $page = &atkPage::getInstance();
@@ -232,10 +249,10 @@ class atkDialog
     $page->register_style(atkconfig('atkroot').'atk/javascript/prototype-ui/window/themes/window/window.css');
     $page->register_style(atkconfig('atkroot').'atk/javascript/prototype-ui/window/themes/shadow/mac_shadow.css');    
       
-    if ($this->m_themeLoad)
+    if ($theme)
     {
-      $page->register_style(atkconfig('atkroot').'atk/javascript/prototype-ui/window/themes/window/'.$this->m_themeName.'.css');
-    }
+      $page->register_style(atkconfig('atkroot').'atk/javascript/prototype-ui/window/themes/window/'.$theme.'.css');
+    }    
   }
 
   /**

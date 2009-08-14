@@ -599,7 +599,8 @@
        }
 
       if (!isset($value))
-        $value = atktext($action, "atk");
+        $value = $this->m_node->text($action);
+      $value = atk_htmlentities($value);
 
       if ($default)
         $class .= (!empty($class) ? ' ' : '').'atkdefaultbutton';
