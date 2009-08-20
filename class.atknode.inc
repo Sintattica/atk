@@ -554,6 +554,7 @@
      */
     var $m_securityMap = array("save"=>"add",
                                "update"=>"edit",
+                               "multiupdate"=>"edit",
                                "copy"=>"add",
                                "import"=>"add",
                                "editcopy"=>"add",

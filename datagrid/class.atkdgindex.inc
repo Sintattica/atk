@@ -78,6 +78,11 @@ class atkDGIndex extends atkDGComponent
    */
   public function render()
   {
+    if ($this->getGrid()->isEditing())
+    {
+      return '';
+    }
+  
     $links = $this->getLinks();
     $result = $this->getUi()->render('dgindex.tpl', array('links' => $links));
     return $result;

@@ -559,7 +559,7 @@
       * @param Bool $default Add the atkdefaultbutton class?
       * @return HTML
       */
-    function getButton($action, $default=false)
+    function getButton($action, $default=false, $label=null)
      {
        $name = "";
        $class = "";
@@ -600,6 +600,8 @@
 
       if (!isset($value))
         $value = $this->m_node->text($action);
+      if (isset($label))
+        $value = $label;
       $value = atk_htmlentities($value);
 
       if ($default)

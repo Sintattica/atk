@@ -56,6 +56,7 @@
               {/section}
             </tr>
             {/foreach}
+            {$listend}
 
             {if count($total)}
             <!-- totals row -->
@@ -73,15 +74,19 @@
   {if $mra!=""}
   <!-- multirecord actions -->
    <tr>
-     <td>
-       <table border="0" cellspacing="0" cellpadding="0">
-         <tr>
-           <td valign="top"><img src="{$atkroot}atk/images/arrow.gif" border="0"></td>
-           <td>
-             {$mra} {$listend}
-           </td>
-         </tr>
-       </table>
+     <td valign="top">
+       {if $editing}
+         {$mra}
+       {else}
+         <table border="0" cellspacing="0" cellpadding="0">
+           <tr>
+             <td valign="top"><img src="{$atkroot}atk/images/arrow.gif" border="0"></td>
+             <td>
+               {$mra}
+             </td>
+           </tr>
+         </table>
+       {/if}
      </td>
    </tr>
   {/if}

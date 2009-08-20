@@ -225,6 +225,13 @@ class atkDataGrid
    * @var string
    */
   private $m_mode;
+  
+  /**
+   * Master record.
+   * 
+   * @var array
+   */
+  private $m_masterRecord;
 
   /**
    * Method/function for retrieving the records for the current page.
@@ -452,6 +459,11 @@ class atkDataGrid
     if (!empty($this->getNode()->m_index))
     {
       $this->addComponent('index', 'atk.datagrid.atkdgindex');
+    }
+    
+    if (count($this->getNode()->m_editableListAttributes) > 0)
+    {
+      $this->addComponent('editcontrol', 'atk.datagrid.atkdgeditcontrol');
     }
   }
 
@@ -850,6 +862,41 @@ class atkDataGrid
     return isset($this->m_postvars[$name]) ? $this->m_postvars[$name] : $fallback;
   }
 
+  /**
+   * Are we currently in edit mode?
+   * 
+   * @return boolean are we in edit mode?
+   */
+  public function isEditing()
+  {
+    return $this->getPostvar('atkgridedit', false);
+  }  
+  
+  /**
+   * Returns the master record.
+   * 
+   * @see atkDataGrid::setMasterRecord
+   * 
+   * @return array master record
+   */
+  public function getMasterRecord()
+  {
+  	return $this->m_masterRecord;
+  }
+  
+  /**
+   * Sets the master record if the grid is used in a 1:n relationship. 
+   * 
+   * This record is not directly used by the datagrid itself, but 
+   * components might.
+   * 
+   * @param array $record master record
+   */
+  public function setMasterRecord($record)
+  {
+  	$this->m_masterRecord = $record;
+  }
+  
   /**
    * Returns the grid components.
    *
@@ -1476,6 +1523,18 @@ class atkDataGrid
     atkimport('atk.utils.atkjson');
     return 'ATK.DataGrid.update('.atkJSON::encode($this->getName()).', '.atkJSON::encode($overrides).', {'.$overridesJsStr.'}, '.$overridesJsCallback.');';
   }
+  
+  /**
+   * Returns a JavaScript call to save the current grid's contents when in edit mode.
+   *
+   * @return string JavaScript call (might need escaping when used in HTML code)
+   */
+  public function getSaveCall()
+  {
+    $url = session_url(dispatch_url($this->getNode()->atkNodeType(), 'multiupdate', array('output' => 'json')), SESSION_PARTIAL);
+    atkimport('atk.utils.atkjson');
+    return 'ATK.DataGrid.save('.atkJSON::encode($this->getName()).', '.atkJSON::encode($url).');';
+  }  
 
   /**
    * Translate the given string using the grid node.

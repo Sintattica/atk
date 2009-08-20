@@ -84,6 +84,7 @@
   "criterium_mode" => "Mode",
   "criterium_value" => "Waarde",
   "critical" => "Kritiek",
+  'cancel_edit' => 'Bewerken annuleren',
   "datagrid_norecordsfound_general" => "Er zijn geen bestaande records gevonden.",
   "datagrid_norecordsfound_search" => "Er zijn geen resultaten gevonden voor de huidige zoekopdracht.",
   "datagrid_summary" => "(Records [start] - [end] van [count])",

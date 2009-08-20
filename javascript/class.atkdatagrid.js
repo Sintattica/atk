@@ -152,5 +152,26 @@ ATK.DataGrid = {
    */  
   extractExtendedSortOverrides: function(name) {
     return ATK.DataGrid.extractOverrides(name, 'atkcolcmd');
+  },
+  
+  /**
+   * Save a datagrid which is in edit mode.
+   */
+  save: function(name, url) {
+    var prefix ='atkdatagriddata_AE_';
+    var elements = ATK.DataGrid.getElements(name);
+    var queryComponents = [];
+    for (var i = 0; i < elements.length; i++) {
+      if (elements[i].name && elements[i].name.substring(0, prefix.length) == prefix) {
+        var queryComponent = Form.Element.serialize(elements[i]);
+        if (queryComponent)
+          queryComponents.push(queryComponent);
+      }
+    }
+    
+    var params = queryComponents.join('&');
+    var success = function() { ATK.DataGrid.update(name, { atkgridedit: 0 }, {}, null); };
+
+    new Ajax.Request(url, { parameters: params, onSuccess: success });
   }
 }

@@ -8,6 +8,10 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
++ Added support for editing records in-line in a datagrid. Note: This feature 
+  is still EXPERIMENTAL, at the moment there is no good validation/error 
+  handeling yet. To enable this feature simply set some attributes as editable 
+  using $node->setEditableListAttributes(...). [Peter]
 * Make sure if someone resorts a grid on a certain column the 
   current record offset is reset to 0. [Peter]
 * Added AF_BOOL_HIDE_TOOLBAR flag for atkBoolAttribute which can be

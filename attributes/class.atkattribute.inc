@@ -1352,14 +1352,14 @@
      * @param int    $flags the recordlist flags
      * @see atkNode::listArray
      */
-    function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags)
+    function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags, $edit=false)
     {
       if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select"))
       {
-        if (in_array($this->fieldName(), $this->m_ownerInstance->m_editableListAttributes) && $this->m_ownerInstance->allowed('edit', $arr["rows"][$nr]["record"]))
+        if ($edit)
         {
           $arr["rows"][$nr]["data"][$fieldprefix.$this->fieldName()] =
-            $this->getEdit('list', $arr["rows"][$nr]["record"], 'atkrecordlistdata_AE_'.$arr['name'].'_AE_'.$nr.'_AE_');
+            $this->getEdit('list', $arr["rows"][$nr]["record"], 'atkdatagriddata_AE_'.$nr.'_AE_');
         }
         else
         {

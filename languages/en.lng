@@ -84,6 +84,7 @@
   "criterium_mode" => "Mode",
   "criterium_value" => "Value",
   "critical" => "Critical",
+  'cancel_edit' => 'Cancel edit',
   "datagrid_norecordsfound_general" => "No records found.",
   "datagrid_norecordsfound_search" => "No results found for the current search query.",
   "datagrid_summary" => "(Records [start] - [end] of [count])",

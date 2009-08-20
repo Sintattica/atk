@@ -282,6 +282,7 @@
       $grid = atkDataGrid::create($this->m_destInstance, null, null, true, $useSession);
 
       $grid->setMode($mode);
+      $grid->setMasterRecord($record);
 
       $grid->removeFlag(atkDataGrid::EXTENDED_SEARCH);
       if ($action == 'view')
@@ -474,7 +475,7 @@
 
       $output =
         $this->editHeader($record, $grid->getRecords()).
-        ($grid->getCount() > 0 ? $grid->render() : "").
+        $grid->render().
         $this->editFooter($record, $grid->getRecords());
 
       if ($this->m_destInstance->allowed("add"))

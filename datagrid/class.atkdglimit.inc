@@ -78,7 +78,7 @@ class atkDGLimit extends atkDGComponent
   {
     $values = $this->getValues();
     
-    if ($this->getGrid()->getCount() <= $values[0])
+    if ($this->getGrid()->getCount() <= $values[0] || $this->getGrid()->isEditing())
     {
       return '';
     }

@@ -134,7 +134,7 @@
         ");
 
         $html =
-          '<textarea id="'.$id.'" name="'.$id.'" wrap="soft" rows="1" cols="20">'."\n".htmlspecialchars($record[$this->fieldName()]).'</textarea>'.
+          '<textarea id="'.$id.'" name="'.$id.'" wrap="soft" rows="1" cols="20" style="overflow: hidden">'."\n".htmlspecialchars($record[$this->fieldName()]).'</textarea>'.
           '<textarea id="'.$id.'_textarea" wrap="'.$this->getWrapMode().'" rows="5" cols="40" style="display: none"></textarea>';
 
         return $html;
