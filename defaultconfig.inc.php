@@ -77,6 +77,12 @@
    * @var String
    */
   $config_configdir = $config_application_dir."configs/";
+  
+  /**
+   * Use the built-in ATK error handler (highly recommended!)
+   * @var Bool
+   */
+  $config_use_atkerrorhandler = true;
 
   /**
    * Use the given meta policy as the default meta policy.
