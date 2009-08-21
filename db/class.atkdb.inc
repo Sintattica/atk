@@ -1,5 +1,4 @@
 <?php
-
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
@@ -15,6 +14,11 @@
    * @version $Revision: 6345 $
    * $Id$
    */
+
+  if (!atkconfig('meta_caching'))
+  {
+    atkwarning("Table metadata caching is disabled. Turn on \$config_meta_caching to improve your application's performance!");
+  }
 
   /**
    * Some defines used for connection statusses, generic error messages, etc.

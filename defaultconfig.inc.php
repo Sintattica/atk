@@ -106,7 +106,7 @@
    * 
    * @var bool
    */
-  $config_meta_caching = false;
+  $config_meta_caching = true;
 
   /**
    * Use the given class for creating datagrids.

@@ -47,6 +47,18 @@
   $config_db["default"]["db"]       = "";
   $config_db["default"]["user"]     = "";
   $config_db["default"]["password"] = "";
+  
+  /**
+   * Cache table meta data and compiled meta node code.
+   *
+   * On development environments this option should be set to false, but 
+   * on production environments you should really enable it. If you enable
+   * this option and your table structure changes you should manually clear
+   * the cache in the atktmp directory!
+   * 
+   * @var bool
+   */
+  $config_meta_caching = false;
 
   // In admin pages, atk shows you a number of records with previous and
   // next buttons. You can specify the number of records to show on a page.
