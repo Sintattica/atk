@@ -1199,7 +1199,7 @@
 
     for ($position=0; $position<strlen($sessionid); $position++)
     {
-      if (!eregi('[a-zA-Z0-9:-]', $sessionid[$position])) return false;
+      if (!preg_match('/[a-zA-Z0-9:-]/i', $sessionid[$position])) return false;
     }
     return true;
   }

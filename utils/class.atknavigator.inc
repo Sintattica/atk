@@ -74,7 +74,7 @@
       $end = min($start+atkconfig("recordsperpage")-1, $count);
 
       atkimport("atk.utils.atkstringparser");
-      $str = &new atkStringParser(atktext("recordlistsummary", "atk"));
+      $str = new atkStringParser(atktext("recordlistsummary", "atk"));
       return "(".$str->parse(array("start"=>$start, "end"=>$end, "count"=>$count)).") ";
     }
 

@@ -824,7 +824,7 @@ class atkDGList extends atkDGComponent
     if (hasFlag($flags, RL_EXT_SORT) && $columnConfig->hasSubTotals())
     {
       atkimport("atk.recordlist.atktotalizer");
-      $totalizer = &new atkTotalizer($grid->getNode(), $columnConfig);
+      $totalizer = new atkTotalizer($grid->getNode(), $columnConfig);
       $result["rows"] = $totalizer->totalize($result["rows"]);
     }
 

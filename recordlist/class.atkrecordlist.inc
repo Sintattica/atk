@@ -802,7 +802,7 @@
       if (hasFlag($flags, RL_EXT_SORT) && $columnConfig->hasSubTotals())
       {
         atkimport("atk.recordlist.atktotalizer");
-        $totalizer = &new atkTotalizer($this->m_node, $columnConfig);
+        $totalizer = new atkTotalizer($this->m_node, $columnConfig);
         $result["rows"] = $totalizer->totalize($result["rows"]);
       }
 

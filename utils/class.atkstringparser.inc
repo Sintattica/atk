@@ -52,7 +52,7 @@
 
       for ($i=0;$i<count($fields);$i++)
       {
-        $elements = split("\.",$fields[$i]);
+        $elements = explode(".",$fields[$i]);
         $databin = $data;
         for($j=0;$j<count($elements);$j++)
         {

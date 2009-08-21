@@ -259,7 +259,7 @@
 
       /* initialize node and return */
       $type = getNodeType($node);
-      $node =& new $type();
+      $node = new $type();
       $node->m_module = $module;
       
       if (!self::$s_isOverloader)

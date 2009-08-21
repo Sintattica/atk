@@ -86,7 +86,7 @@
 
       if (!isset($s_instances[$id]))
       {
-        $s_instances[$id] = &new atkColumnConfig();
+        $s_instances[$id] = new atkColumnConfig();
         $s_instances[$id]->setNode($node);
 
         $colcfg = $g_sessionManager != null ? $g_sessionManager->pageVar("atkcolcfg_".$id) : null;

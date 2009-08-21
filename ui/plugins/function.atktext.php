@@ -57,7 +57,7 @@
 
    // parse the rest of the params in the string
    atkimport("atk.utils.atkstringparser");
-   $parser = &new atkStringParser($str);
+   $parser = new atkStringParser($str);
    return $parser->parse($params);
   }
 
