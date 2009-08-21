@@ -97,10 +97,16 @@
   $config_meta_compiler = "atk.meta.compiler.atkmetacompiler";
 
   /**
-   * Cache compiled meta node code?
+   * Cache table meta data and compiled meta node code.
+   *
+   * On development environments this option should be set to false, but 
+   * on production environments you should really enable it. If you enable
+   * this option and your table structure changes you should manually clear
+   * the cache in the atktmp directory!
+   * 
    * @var bool
    */
-  $config_meta_caching = true;
+  $config_meta_caching = false;
 
   /**
    * Use the given class for creating datagrids.

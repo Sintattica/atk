@@ -673,7 +673,7 @@
    */
   function decodeKeyValuePair($pair)
   {
-    list($key,$value)=split("==|!=|<>|>=|<=|=|<|>",$pair);
+    list($key,$value) = explode(array("==", "!=", "<>", ">=", "<=", "=", "<", ">"), $pair);
     return array($key=>stripQuotes($value));
   }
 
@@ -686,7 +686,7 @@
   function decodeKeyValueSet($set)
   {
     $result = array();
-    $items=split(" AND ",$set);
+    $items = explode(" AND ",$set);
     for ($i=0;$i<count($items);$i++)
     {
       if (strstr($items[$i], '!=') !== false)
@@ -701,7 +701,7 @@
       }
       elseif (stristr($items[$i], 'IS NULL') !== false)
       {
-        list($key) = spliti('IS NULL', $items[$i]);
+        list($key) = preg_split('/IS NULL/i', $items[$i]);
         $result[trim($key)] = NULL;
       }
     }
@@ -772,7 +772,7 @@
                                     // encoded var, we do nothing with it.
       {
         // This string is encoded.
-        list($dimension1,$dimension2) = split("_AMDAE_",strtoupper($varname));
+        list($dimension1,$dimension2) = explode("_AMDAE_",strtoupper($varname));
         if (is_array($value))
         {
           // Multidimensional thing
@@ -863,7 +863,7 @@
     $fields = stringfields($string);
     for ($i=0;$i<count($fields);$i++)
     {
-      $elements = split("\.",$fields[$i]);
+      $elements = explode(".",$fields[$i]);
       $databin = $data;
       for($j=0;$j<count($elements);$j++)
       {
@@ -1131,12 +1131,12 @@
   function exportData($data, $filename, $compression="")
   {
     $browser = getBrowserInfo();
-    if (eregi("ie", $browser["browser"]))
+    if (preg_match("/ie/i", $browser["browser"]))
     {
       $mime = "application/octetstream";
       $disp = 'inline';
     }
-    else if (eregi("opera",$browser["browser"]))
+    else if (preg_match("/opera/i", $browser["browser"]))
     {
       $mime = "application/octetstream";
       $disp = 'attachment';
@@ -1165,7 +1165,7 @@
 
     header('Content-Type: '. $mime);
     header('Content-Disposition:  '.$disp.'; filename="'.$filename.'"');
-    if(eregi("ie", $browser["browser"])) header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    if(preg_match("/ie/i", $browser["browser"])) header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
     header('Pragma: no-cache');
     header('Expires: 0');
 
@@ -1212,12 +1212,12 @@
   {
     include_once(atkconfig("atkroot")."atk/atkbrowsertools.inc");
     $browser = getBrowserInfo();
-    if (eregi("ie", $browser["browser"]))
+    if (preg_match("/ie/i", $browser["browser"]))
     {
       $mime = "application/octetstream";
       $disp = 'attachment';
     }
-    else if (eregi("opera",$browser["browser"]))
+    else if (preg_match("/opera/i",$browser["browser"]))
     {
       $mime = "application/octetstream";
       $disp = 'inline';
@@ -1237,8 +1237,8 @@
       header('Content-Type: '. $mime);
       header("Content-Length: ".filesize($file));
       header('Content-Disposition:  '.$disp.'; filename="'.$filename.'"');
-      if(eregi("ie", $browser["browser"])) header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-      if (($_SERVER["SERVER_PORT"] == "443" || $_SERVER['HTTP_X_FORWARDED_PROTO' ]==='https') && eregi("msie", $_SERVER["HTTP_USER_AGENT"]))
+      if(preg_match("/ie/i", $browser["browser"])) header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+      if (($_SERVER["SERVER_PORT"] == "443" || $_SERVER['HTTP_X_FORWARDED_PROTO' ]==='https') && preg_match("/msie/i", $_SERVER["HTTP_USER_AGENT"]))
       {
         header('Pragma: public');
       }

@@ -8,6 +8,12 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
+* $config_meta_caching is by default disabled because if you start
+  developing, your tables are still in flux. Having this option enabled
+  by default causes a lot of confusion. Next to this the performance
+  impact isn't huge, so even if people forget to enable it it isn't a
+  huge deal (but if you are reading this, you should set this option
+  on true on production environments!) [Peter]
 * PHP 5.3 compatibility fixes. [Peter]
 + Added support for editing records in-line in a datagrid. Note: This feature 
   is still EXPERIMENTAL, at the moment there is no good validation/error 
