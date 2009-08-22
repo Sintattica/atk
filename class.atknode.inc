@@ -2121,7 +2121,7 @@
           {
             if (strpos($forcedvarname,'.')>0)
             {
-              list($firstpart,$field) = split('\.',$forcedvarname);
+              list($firstpart,$field) = explode('.',$forcedvarname);
               if ($firstpart==$this->m_table)
               {
                 // this is a filter on the current table.

@@ -162,7 +162,7 @@
       {
 	     $this->m_default=date("H:i:s");
       }
-      $default = split(":",$this->m_default);
+      $default = explode(":",$this->m_default);
 
       $id = $fieldprefix.$this->fieldName();
       $field = $record[$this->fieldName()];

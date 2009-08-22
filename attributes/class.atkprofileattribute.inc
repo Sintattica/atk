@@ -588,7 +588,7 @@
       $actions = Array();
       for($i=0;$i<count($checkboxes);$i++)
       {
-        $elems = split("\.",$checkboxes[$i]);
+        $elems = explode(".",$checkboxes[$i]);
         if (count($elems)==4)
         {
           $node = $elems[1].".".$elems[2];

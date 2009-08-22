@@ -123,7 +123,7 @@
       {
         $matrix_fields_row[$i] = $this->m_destInstance->descriptor($recordset[$i]);
 
-        $primaryKeyValue = split("'",$this->m_destInstance->primaryKey($recordset[$i]));
+        $primaryKeyValue = explode("'",$this->m_destInstance->primaryKey($recordset[$i]));
         $matrix_values_row[$i] = $primaryKeyValue[1];
       }
 
@@ -139,7 +139,7 @@
       {
         $matrix_fields_col[$i] = $this->m_destInstance->descriptor($recordset[$i]);
 
-        $primaryKeyValue = split("'",$this->m_destInstance->primaryKey($recordset[$i]));
+        $primaryKeyValue = explode("'",$this->m_destInstance->primaryKey($recordset[$i]));
         $matrix_values_col[$i] = $primaryKeyValue[1];
       }
 
@@ -267,7 +267,7 @@
 
         for ($i=0;$i<count($recordset);$i++)
         {
-          $primaryKeyValue = split("'",$this->m_destInstance->primaryKey($recordset[$i]));
+          $primaryKeyValue = explode("'",$this->m_destInstance->primaryKey($recordset[$i]));
           $query = 'DELETE FROM '.$this->m_name.' WHERE '.$this->m_name1.' = '.$primaryKeyValue[1];
           $db->query($query);
         }
@@ -291,7 +291,7 @@
       {
          while (list($key,$value)=each($matrixcheckbox))
          {
-            $phases = split('_',$key);
+            $phases = explode('_',$key);
             $query = 'INSERT INTO '.$this->m_name.' ('.$this->m_name1.','.$this->m_name2.') VALUES ('.$phases[0].','.$phases[1].')';
             $db->query($query);
          }

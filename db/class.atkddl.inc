@@ -143,7 +143,7 @@
      */
     function calculateDecimalFieldSize($size)
     {
-      list($tmp_size, $decimals) = split(",", $size);
+      list($tmp_size, $decimals) = explode(",", $size);
       $tmp_size+=intval($decimals); // we should add the decimals to the size, since
                             // size is specified including the decimals.
       return sprintf('%d,%d', $tmp_size, $decimals);

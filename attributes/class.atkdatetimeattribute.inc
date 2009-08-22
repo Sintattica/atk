@@ -318,7 +318,7 @@
         if ($rec[$this->fieldName()] == "0000-00-00 00:00:00")
           return "";
 
-        $datetime = split(" ",$rec[$this->fieldname()]);
+        $datetime = explode(" ",$rec[$this->fieldname()]);
 
         $tmp_rec = $rec;
         $tmp_rec[$this->fieldname()]=$datetime[0];
@@ -475,7 +475,7 @@
      */
     function parseStringValue($stringvalue)
     {
-      $datetime = split(" ",$stringvalue);
+      $datetime = explode(" ",$stringvalue);
       $formatsdate = array("dd-mm-yyyy","dd-mm-yy","d-mm-yyyy","dd-m-yyyy","d-m-yyyy","yyyy-mm-dd","yyyy-mm-d","yyyy-m-dd","yyyy-m-d");
       $retval=array_merge(atkDateAttribute::parseDate($datetime[0],$formatsdate),
                           atkTimeAttribute::parseTime($datetime[1]));

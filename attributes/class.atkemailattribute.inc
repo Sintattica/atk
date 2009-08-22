@@ -98,7 +98,7 @@
         if ($this->m_dnsSearch)
         {
           //now check if domain exists, searches DNS for MX records
-          list($username, $domain) = split('@',$email,2);
+          list($username, $domain) = explode('@',$email,2);
           if ( !(atkEmailAttribute::validateAddressDomain( $domain, false)) )
           {
             triggerError($record, $this->fieldName(), 'error_unkown_domain', text('error_unkown_domain')." ".$domain);
