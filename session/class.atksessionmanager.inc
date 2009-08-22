@@ -1197,10 +1197,8 @@
 
     if ($sessionid=="") return true;
 
-    for ($position=0; $position<strlen($sessionid); $position++)
-    {
-      if (!preg_match('/[a-zA-Z0-9:-]/i', $sessionid[$position])) return false;
-    }
+    if (!preg_match('/^[a-z0-9:-]$/i', $sessionid)) return false;
+
     return true;
   }
 
