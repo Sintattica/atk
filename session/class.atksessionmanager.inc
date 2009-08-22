@@ -1197,7 +1197,7 @@
 
     if ($sessionid=="") return true;
 
-    if (!preg_match('/^[a-z0-9:-]$/i', $sessionid)) return false;
+    if (!preg_match('/^[a-z0-9:-]+$/i', $sessionid)) return false;
 
     return true;
   }
