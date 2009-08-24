@@ -40,46 +40,62 @@
 
     /**
      * Parse data into the string.
-     * @param array $data The data to parse in the string
-     * @param bool $encode Wether or not to do a rawurlencode
+     * 
+     * @param array $data                The data to parse in the string
+     * @param bool  $encode              Wether or not to do a rawurlencode
+     * @param bool  $ignoreUnknownFields Replace unknown fields with an empty string,
+     *                                   if set to false unknown fields will be left
+     *                                   untouched.
+     * 
      * @return String The parsed string
      */
-    function parse($data, $encode=false)
+    function parse($data, $encode=false, $replaceUnknownFields=true)
     {
-      $fields = $this->getFields();
-
       $string = $this->m_string;
-
-      for ($i=0;$i<count($fields);$i++)
+      
+      $fields = $this->getFields();
+      foreach ($fields as $field)
       {
-        $elements = explode(".",$fields[$i]);
-        $databin = $data;
-        for($j=0;$j<count($elements);$j++)
+      	$value = $data;
+      	
+        $elements = explode(".", $field);
+        foreach ($elements as $i => $el)
         {
-          if (is_array($databin) || $databin instanceof ArrayAccess)
+          if (is_array($value) || $value instanceof ArrayAccess)
           {
-            if (@!isset($databin[$elements[$j]]))
-            {
-              atknotice("atkStringparser({$this->m_string})->parse(): Attempting to get element '{$elements[$j]}', but ".$elements[$j-1]." is not an array!");
-              $databin[$elements[$j]] = '';
+          	if (isset($value[$el]))
+          	{
+          		$value = $value[$el];
+          	}
+          	else if ($replaceUnknownFields)
+          	{
+              atknotice("atkStringparser({$this->m_string})->parse(): Attempting to get element '{$el}', but {$elements[$i - 1]} is not an array!");
               $value = '';
-            }
-            else
-            {
-              $value = $databin[$elements[$j]];
-              $databin = $databin[$elements[$j]];
-            }
+              break;
+          	}
+           	else
+           	{
+           		// field not found, continue with next field without 
+           		// replacing the field in the template
+           		continue 2;
+           	}
+          }
+          else if (!$replaceUnknownFields)
+          {
+            // field not found, continue with next field without 
+            // replacing the field in the template          	
+          	continue 2;
           }
         }
+        
         if ($encode)
         {
-          $string = str_replace("[".$fields[$i]."]",rawurlencode($value),$string);
+        	$value = rawurlencode($value);
         }
-        else
-        {
-          $string = str_replace("[".$fields[$i]."]",$value,$string);
-        }
+        
+        $string = str_replace("[".$field."]", $value, $string);
       }
+      
       return $string;
     }
 

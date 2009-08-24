@@ -797,7 +797,7 @@ class atkDGList extends atkDGComponent
           else $url = str_replace('[pk]', rawurlencode($row["selector"]), $url);
 
           $parser = new atkStringParser($url);
-          $url = $parser->parse($row["record"],true);
+          $url = $parser->parse($row["record"], true, false);
           $row["actions"][$name] = $url;
         }
         else

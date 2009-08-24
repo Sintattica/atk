@@ -34,39 +34,50 @@
     public function test_array()
     {
       // without encoding
-      $this->runParserTest("[color] [fruit]", array("color"=>"blue", "fruit"=>"apple"), "blue apple");
-      $this->runParserTest("[color] [fruit]", array("color"=>"blue"), "blue ");
-      $this->runParserTest("[color] [fruit]", array(), " ");
-      $this->runParserTest("[color] [user]", array("color"=>"blue", "fruit"=>"apple"), "blue ");
-      $this->runParserTest("untouched", array("color"=>"blue", "fruit"=>"apple"), "untouched");
-      $this->runParserTest("untouched", array(), "untouched");
-      $this->runParserTest('[fruit.banana.color.hex]',array('fruit'=>array('banana'=>array('color'=>'yellow'))),'yellow');
+      $this->assertParserResult("[color] [fruit]", array("color"=>"blue", "fruit"=>"apple"), "blue apple");
+      $this->assertParserResult("[color] [fruit]", array("color"=>"blue"), "blue ");
+      $this->assertParserResult("[color] [fruit]", array("color"=>"blue"), "blue [fruit]", false, false);      
+      $this->assertParserResult("[color] [fruit]", array(), " ");
+      $this->assertParserResult("[color] [fruit]", array(), "[color] [fruit]", false, false);
+      
+      $this->assertParserResult("[color] [user]", array("color"=>"blue", "fruit"=>"apple"), "blue ");
+      $this->assertParserResult("untouched", array("color"=>"blue", "fruit"=>"apple"), "untouched");
+      $this->assertParserResult("untouched", array(), "untouched");
+      $this->assertParserResult('[fruit.banana.color]',array('fruit'=>array('banana'=>array('color'=>'yellow'))),'yellow');
+      $this->assertParserResult('[fruit.banana.color.hex]',array('fruit'=>array('banana'=>array('color'=>'yellow'))),'yellow');
+      $this->assertParserResult('[fruit.banana.color.hex]',array('fruit'=>array('banana'=>array('color'=>'yellow'))),'[fruit.banana.color.hex]', false, false);
+      
       
       // with encoding      
-      $this->runParserTest("[color] [fruit]", array("color"=>"thing with spaces", "fruit"=>"thing with '"), "thing%20with%20spaces thing%20with%20%27", true);
+      $this->assertParserResult("[color] [fruit]", array("color"=>"thing with spaces", "fruit"=>"thing with '"), "thing%20with%20spaces thing%20with%20%27", true);
     }
     
     public function test_arrayaccess()
     {
       // only array objects
-      $this->runParserTest("[color] [fruit]", new ArrayObject(array("color"=>"blue", "fruit"=>"apple")), "blue apple");
-      $this->runParserTest("[color] [fruit]", new ArrayObject(array("color"=>"blue")), "blue ");
-      $this->runParserTest("[color] [fruit]", new ArrayObject(), " ");
-      $this->runParserTest("[color] [user]", new ArrayObject(array("color"=>"blue", "fruit"=>"apple")), "blue ");
-      $this->runParserTest("untouched", new ArrayObject(array("color"=>"blue", "fruit"=>"apple")), "untouched");
-      $this->runParserTest("untouched", new ArrayObject(array()), "untouched");      
+      $this->assertParserResult("[color] [fruit]", new ArrayObject(array("color"=>"blue", "fruit"=>"apple")), "blue apple");
+      $this->assertParserResult("[color] [fruit]", new ArrayObject(array("color"=>"blue")), "blue ");
+      $this->assertParserResult("[color] [fruit]", new ArrayObject(array("color"=>"blue")), "blue [fruit]", false, false);
+      $this->assertParserResult("[color] [fruit]", new ArrayObject(), " ");
+      $this->assertParserResult("[color] [fruit]", new ArrayObject(), "[color] [fruit]", false, false);
+      $this->assertParserResult("[color] [user]", new ArrayObject(array("color"=>"blue", "fruit"=>"apple")), "blue ");
+      $this->assertParserResult("untouched", new ArrayObject(array("color"=>"blue", "fruit"=>"apple")), "untouched");
+      $this->assertParserResult("untouched", new ArrayObject(array()), "untouched");      
       $data = new ArrayObject(array('fruit' => new ArrayObject(array('banana' => new ArrayObject(array('color' => 'yellow'))))));
-      $this->runParserTest('[fruit.banana.color.hex]', $data, 'yellow');      
+      $this->assertParserResult('[fruit.banana.color]', $data, 'yellow');      
+      $this->assertParserResult('[fruit.banana.color.hex]', $data, 'yellow');      
+      $this->assertParserResult('[fruit.banana.color.hex]', $data, '[fruit.banana.color.hex]', false, false);      
+      
       
       // combination of arrays and array objects
       $data = array('fruit' => new ArrayObject(array('banana' => array('color' => 'yellow'))));
-      $this->runParserTest('[fruit.banana.color.hex]', $data, 'yellow');
+      $this->assertParserResult('[fruit.banana.color.hex]', $data, 'yellow');
     }
     
-    private function runParserTest($input, $data, $expected, $encode=false)
+    private function assertParserResult($input, $data, $expected, $encode=false, $replaceUnknownFields=true)
     {
       $parser = new atkStringParser($input);
-      $result = $parser->parse($data, $encode);      
+      $result = $parser->parse($data, $encode, $replaceUnknownFields);      
       $this->assertEqual($result, $expected);
     }
   }

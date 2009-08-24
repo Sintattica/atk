@@ -70,23 +70,18 @@
       E_COMPILE_WARNING    => "Compile Warning",
       E_USER_ERROR         => "User Error",
       E_USER_WARNING       => "User Warning",
-      E_USER_NOTICE        => "User Notice"
+      E_USER_NOTICE        => "User Notice",
+      E_STRICT             => "Strict Notice"
     );
 
-    // E_STRICT is available since 5.0.0
-    if (version_compare(phpversion(), "5.0.0") >= 0)
+    // E_RECOVERABLE_ERROR is available since 5.2.0
+    if (defined('E_RECOVERABLE_ERROR'))
     {
-      $errortype[E_STRICT] = "Strict Notice";
-    }
-
-    // E_RECOVERABLE is available since 5.2.0
-    if (version_compare(phpversion(), "5.2.0") >= 0)
-    {
-      $errortype[E_RECOVERABLE_ERROR] = "Catchable Fatal Error";
+      $errortype[E_RECOVERABLE_ERROR] = "Recoverable Error";
     }
 
     // E_DEPRECATED / E_USER_DEPRECATED are available since 5.3.0
-    if (version_compare(phpversion(), "5.3.0") >= 0)
+    if (defined('E_DEPRECATED'))
     {
       $errortype[E_DEPRECATED] = "Deprecated";
       $errortype[E_USER_DEPRECATED] = "User Deprecated";
@@ -95,18 +90,24 @@
     // Translate the given errortype into a string
     $errortypestring = $errortype[$errtype];
 
-    if ((version_compare(phpversion(), "5.0.0") >= 0) && $errtype==E_STRICT)
+    if ($errtype == E_STRICT)
     {
-      // Ignore strict notices for now.
-      return;
+    	// ignore strict notices for now, there is too much stuff that needs to be fixed
+    	return;
     }
-
-    if (($errtype & (E_NOTICE|E_DEPRECATED|E_USER_DEPRECATED)) > 0 || error_reporting() == 0)
+    else if ($errtype == E_NOTICE || error_reporting() == 0)
     {
-      // Just show notices / deprecation warnings in the debug log, but don't influence the program flow
+      // Just show notices
       atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", DEBUG_NOTICE);
       return;
     }
+    else if (defined('E_DEPRECATED') && ($errtype & (E_DEPRECATED|E_USER_DEPRECATED)) > 0 || error_reporting() == 0)
+    {
+      // Just show deprecation warnings in the debug log, but don't influence the program flow
+      atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", DEBUG_NOTICE);
+      return;
+    }
+    
     else if (($errtype & (E_WARNING|E_USER_WARNING)) > 0)
     {
       // This is something we should pay attention to, but we don't need to die.

@@ -1292,7 +1292,7 @@ class atkDataGrid
    *
    * @param array $records records
    */
-  protected function setRecords($records)
+  public function setRecords($records)
   {
     $this->m_records = $records;
   }
