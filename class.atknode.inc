@@ -3535,9 +3535,10 @@
      *                     to include in the query and which not to include.
      * @param boolean $distinct Perform a distinct selection (no duplicate
      *                          records). Defaults to true.
+     * @param boolean $ignoreDefaultFilter Ignore default node filters.                          
      * @return int Number of records
      */
-    function countDb($selector="", $excludeList="", $includeList="", $mode="", $distinct=false)
+    function countDb($selector="", $excludeList="", $includeList="", $mode="", $distinct=false, $ignoreDefaultFilters=false)
     {
       $searching = false;
       $loadlist = array();
@@ -3576,7 +3577,7 @@
       if(array_key_exists("atkfilter", $this->m_postvars))
        $query->addCondition($this->validateFilter($this->m_postvars["atkfilter"]));
 
-      if (!$this->hasFlag(NF_NO_FILTER))
+      if (!$this->hasFlag(NF_NO_FILTER) && !$ignoreDefaultFilters)
       {
         /* hard filters may be set */
         foreach ($this->m_filters as $key => $value)
@@ -3782,9 +3783,10 @@
      *                     to include in the query and which not to include.
      * @param boolean $distinct Perform a distinct selection (no duplicate
      *                          records). Defaults to true.
+     * @param boolean $ignoreDefaultFilters Ignore default node filters.                          
      * @return array Array containing the retrieved records
      */
-    function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="", $mode="", $distinct=false)
+    function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="", $mode="", $distinct=false, $ignoreDefaultFilters=false)
     {
       $searching=false;
       $loadlist = array();
@@ -3822,7 +3824,7 @@
       if (array_key_exists("atkfilter", $this->m_postvars))
        $query->addCondition($this->validateFilter($this->m_postvars["atkfilter"]));
 
-      if (!$this->hasFlag(NF_NO_FILTER))
+      if (!$this->hasFlag(NF_NO_FILTER) && !$ignoreDefaultFilters)
       {
         /* hard filters may be set */
         foreach($this->m_filters as $key => $value)

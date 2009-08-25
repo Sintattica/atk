@@ -1411,6 +1411,7 @@ class atkDataGrid
            ->orderBy($this->getOrderBy())
            ->limit($this->getLimit(), $this->getOffset())
            ->mode($this->getMode())
+           ->ignoreDefaultFilters()           
            ->allRows();
   }
 
@@ -1432,6 +1433,7 @@ class atkDataGrid
            ->excludes($excludes)
            ->where($this->getFilter())
            ->mode($this->getMode())
+           ->ignoreDefaultFilters()           
            ->rowCount();
   }
 

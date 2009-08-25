@@ -8,6 +8,11 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
++ Added an option to atkNode::countDb, atkNode::selectDb and atkSelector
+  to ignore the default filters that have been set on a node. [Peter]
+* atkDataGrid now makes sure that it doesn't set filters twice, when 
+  creating retrieving data for the grid, by using the new 
+  ingoreDefaultFilters() switch in atkSelector. [Peter]
 * atkStringParser now has an option to disable the replacing of unknown
   fields with an empty string. This is used for record action URL's which
   can otherwise not easily contain array-based parameters. [Peter]

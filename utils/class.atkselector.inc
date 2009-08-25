@@ -40,6 +40,7 @@
     protected $m_offset = 0;
     protected $m_excludes = '';
     protected $m_includes = '';
+    protected $m_ignoreDefaultFilters = false;
 
     protected $m_rows = null;
     protected $m_rowCount = null;
@@ -66,6 +67,18 @@
     {
       $this->m_selector = $selector;
       return $this;
+    }
+    
+    /**
+     * Ignore default node filters.
+     * 
+     * @param boolean $ignore ignore default node filterS?
+     * @return atkSelector
+     */
+    public function ignoreDefaultFilters($ignore=true)
+    {
+    	$this->m_ignoreDefaultFilters = $ignore;
+    	return $this;
     }
 
     /**
@@ -167,7 +180,7 @@
     {
       if ($this->m_rows === null)
       {
-        $this->m_rows = $this->m_node->selectDb($this->m_selector, $this->m_order, array('limit' => $this->m_limit, 'offset' => $this->m_offset), $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct);
+        $this->m_rows = $this->m_node->selectDb($this->m_selector, $this->m_order, array('limit' => $this->m_limit, 'offset' => $this->m_offset), $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct, $this->m_ignoreDefaultFilters);
       }
 
       return $this->m_rows;
@@ -182,7 +195,7 @@
     {
       if ($this->m_rowCount === null)
       {
-        $this->m_rowCount = (int)$this->m_node->countDb($this->m_selector, $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct);
+        $this->m_rowCount = (int)$this->m_node->countDb($this->m_selector, $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct, $this->m_ignoreDefaultFilters);
       }
 
       return $this->m_rowCount;
