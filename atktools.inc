@@ -674,8 +674,17 @@
    */
   function decodeKeyValuePair($pair)
   {
-    list($key,$value) = explode(array("==", "!=", "<>", ">=", "<=", "=", "<", ">"), $pair);
-    return array($key=>stripQuotes($value));
+  	$operators = array("==", "!=", "<>", ">=", "<=", "=", "<", ">");
+  	
+  	static $s_regex = null;
+  	if ($s_regex === null)
+  	{
+  	  $s_regex = '/'.implode('|', array_map('preg_quote', $operators)).'/';
+  	}
+  	
+    list($key, $value) = preg_split($s_regex, $pair);
+
+    return array($key => stripQuotes($value));
   }
 
   /**
