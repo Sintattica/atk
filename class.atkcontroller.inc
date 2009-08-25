@@ -589,7 +589,7 @@
          case "back":
            $name = "atkback";
            $class = "btn_cancel";
-           $value = '&lt;&lt; '.atktext($action, 'atk');
+           $value = '<< '.atktext($action, 'atk');
            break;
          case "edit":
            $class = "btn_save";
