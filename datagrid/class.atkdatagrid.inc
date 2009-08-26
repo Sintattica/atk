@@ -1174,9 +1174,27 @@ class atkDataGrid
   {
     return $this->m_filters;
   }
+  
+  /**
+   * Remove filters.
+   */
+  public function removeFilters()
+  {
+  	$this->m_filters = array();
+  }
+  
+  /**
+   * Remove filter.
+   * 
+   * @param string $filter
+   */
+  public function removeFilter($filter)
+  {
+  	$this->m_filters = array_diff($this->m_filters, array($filter));
+  }
 
   /**
-   * Add node filter  (only used if no custom select and
+   * Add node filter (only used if no custom select and
    * count handlers are used!).
    *
    * @param string $filter

@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
++ Added methods for removing filters to atkDataGrid, e.g.
+  atkDataGrid::removeFilter and atkDataGrid::removeFilters. [Peter]
 + Added an option to atkNode::countDb, atkNode::selectDb and atkSelector
   to ignore the default filters that have been set on a node. [Peter]
 * atkDataGrid now makes sure that it doesn't set filters twice, when
