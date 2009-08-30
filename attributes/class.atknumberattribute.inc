@@ -446,13 +446,13 @@
       {
         $id = $this->getSearchFieldName($fieldprefix).'[from]';
         $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
-        $result= '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.htmlentities($value).'"'.
+        $result= '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.atk_htmlentities($value).'"'.
                   ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
                   ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
 
         $id = $this->getSearchFieldName($fieldprefix).'[to]';
         $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
-        $result.= " (".atktext("until").' <input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.htmlentities($value).'"'.
+        $result.= " (".atktext("until").' <input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.atk_htmlentities($value).'"'.
                   ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
                   ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>)';
         return $result;
