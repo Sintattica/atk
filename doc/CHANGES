@@ -8,6 +8,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
++ Added AF_ONETOONE_RESPECT_TABS flag for the atkOneToOneRelation which
+  makes it possible to respect the tabs set in the master node for the
+  1:1 relation in integration mode. [Peter]
 + Added methods for removing filters to atkDataGrid, e.g.
   atkDataGrid::removeFilter and atkDataGrid::removeFilters. [Peter]
 + Added an option to atkNode::countDb, atkNode::selectDb and atkSelector

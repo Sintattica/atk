@@ -43,6 +43,13 @@
   define("AF_ONETOONE_LAZY",            AF_SPECIFIC_4);
 
   /**
+   * Respects tab/sections that have been assigned to this attribute instead of using the
+   * tabs assigned for the attributes in the destination node. This flag is only useful in
+   * integration mode.
+   */
+  define("AF_ONETOONE_RESPECT_TABS",  AF_SPECIFIC_5);  
+  
+  /**
    * @internal Include the base class.
    */
   userelation("atkrelation");
@@ -806,7 +813,7 @@
           if (is_array($a["fields"]))
           {
             // in non-integration mode we move all the fields to the one-to-one relations tabs/sections
-            if (!$this->hasFlag(AF_ONETOONE_INTEGRATE))
+            if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) || $this->hasFlag(AF_ONETOONE_RESPECT_TABS))
             {
               foreach (array_keys($a['fields']) as $key)
               {
