@@ -513,7 +513,7 @@ class atkMetaPolicy
     if (in_array($name, array("passw", "password")))
     {
       $type = "atk.attributes.atkpasswordattribute";
-      $params = array(true);
+      $params = array(false, 0);
     }
     else if (in_array($name, array("email", "e-mail")))
     {

@@ -8,6 +8,15 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
+* Fixed bug in atkModule::menuitem which caused menu items with an explicit
+  null parent menu, not to be added to the main menu. [Peter]
+* Fixed bug in meta node handeling of password attributes, which incorrectly
+  always were made obligatory. [Peter]
++ Added "alwaysShowGrid" option to the atkDGList component to always show
+  the list header in embed mode, even if there are no records. [Peter]
++ Added atkDataGrid::setComponentOption method to set an option for
+  an existing datagrid component without having to overwrite the
+  entire component definition. [Peter]
 + Added AF_ONETOONE_RESPECT_TABS flag for the atkOneToOneRelation which
   makes it possible to respect the tabs set in the master node for the
   1:1 relation in integration mode. [Peter]

@@ -942,6 +942,19 @@ class atkDataGrid
   {
     $this->m_components[$name] = array('class' => $class, 'options' => $options);
   }
+  
+  /**
+   * Sets a component option for the given component. Only works when the
+   * components haven't been instantiated  yet.
+   * 
+   * @param string $component component name
+   * @param string $option    option name
+   * @param string $value     value
+   */
+  public function setComponentOption($component, $option, $value)
+  {
+  	$this->m_components[$component]['options'][$option] = $value;
+  }
 
   /**
    * Remove a component from the grid.

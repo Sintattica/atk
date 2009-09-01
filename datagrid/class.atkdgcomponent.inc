@@ -56,9 +56,9 @@ abstract class atkDGComponent
    * 
    * @return mixed option value
    */
-  protected function getOption($name)
+  protected function getOption($name, $fallback=null)
   {
-    return $this->m_options[$name];
+    return isset($this->m_options[$name]) ? $this->m_options[$name] : $fallback;
   }
   
   /**

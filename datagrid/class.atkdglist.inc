@@ -15,6 +15,11 @@
 
 /**
  * The data grid list component renders the recordlist.
+ * 
+ * Options:
+ * - alwaysShowGrid: always show datagrid, even if there are no records?
+ *                   by default the grid won't display the grid headers
+ *                   in embedded mode when there are no existing records
  *
  * @author Peter C. Verhage <peter@achievo.org>
  * @package atk
@@ -40,7 +45,12 @@ class atkDGList extends atkDGComponent
    */
   function render()
   {
-  	if ($this->getGrid()->isEmbedded() && count($this->getGrid()->getRecords()) == 0)
+  	$alwaysShowGrid = $this->getOption('alwaysShowGrid', false);
+  	
+  	if (!$alwaysShowGrid &&
+  	    $this->getGrid()->isEmbedded() &&
+  	    !$this->getGrid()->isUpdate() && 
+  	    count($this->getGrid()->getRecords()) == 0)
   	{
   		return '';
   	}

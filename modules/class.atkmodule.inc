@@ -117,6 +117,7 @@
     function menuitem($name="", $url="", $parent="main", $enable=1, $order=0)
     {
       /* call basic menuitem */
+    	if (empty($parent)) $parent = 'main';
       menuitem($name, $url, $parent, $enable, $order, $this->m_name);
     }
 
