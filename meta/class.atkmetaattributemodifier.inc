@@ -92,11 +92,11 @@ class atkMetaAttributeModifier
 		
 		if ($include)
 		{
-      $this->getPolicy()->setIncludes(array_merge($this->getPolicy->getIncludes(), $this->getAttributes()));
+      $this->getPolicy()->setIncludes(array_merge($this->getPolicy()->getIncludes(), $this->getAttributes()));
 		}
 		else
 		{
-      $this->getPolicy()->setIncludes(array_diff($this->getPolicy->getIncludes(), $this->getAttributes()));			
+      $this->getPolicy()->setIncludes(array_diff($this->getPolicy()->getIncludes(), $this->getAttributes()));			
 		}
 		
 		$this->setOrder($order);
@@ -115,11 +115,11 @@ class atkMetaAttributeModifier
 	{
 	  if ($exclude)
     {
-      $this->getPolicy()->setExcludes(array_merge($this->getPolicy->getExcludes(), $this->getAttributes()));
+      $this->getPolicy()->setExcludes(array_merge($this->getPolicy()->getExcludes(), $this->getAttributes()));
     }
     else
     {
-      $this->getPolicy()->setExcludes(array_diff($this->getPolicy->getExcludes(), $this->getAttributes()));     
+      $this->getPolicy()->setExcludes(array_diff($this->getPolicy()->getExcludes(), $this->getAttributes()));     
     }		
     
     return $this;
@@ -231,7 +231,7 @@ class atkMetaAttributeModifier
    */
   public function setTab($tabs)
   {
-  	$this->getPolicy->setTab($this->getAttributes(), $tabs);
+  	$this->getPolicy()->setTab($this->getAttributes(), $tabs);
   	return $this;
   }
 
@@ -244,7 +244,7 @@ class atkMetaAttributeModifier
    */
   public function setSection($sections)
   {
-    $this->getPolicy->setSection($this->getAttributes(), $sections);
+    $this->getPolicy()->setSection($this->getAttributes(), $sections);
     return $this;
   }
   
@@ -306,7 +306,7 @@ class atkMetaAttributeModifier
   	$allAttrs = $this->getPolicy()->getAttributeNames();
   	
   	// all attributes, without the attributes we want to insert
-  	$attrs = array_diff($allAttrs, $this->getAttributes());
+  	$attrs = array_values(array_diff($allAttrs, $this->getAttributes()));
   	
   	if ($position == self::TOP)
   	{
@@ -319,7 +319,7 @@ class atkMetaAttributeModifier
   	else
   	{
   		$index = array_search($attr, $attrs);
-  		$offset = $position == self::BEFORE && $index > 0 ? $index - 1 : $index;
+  		$offset = $position == self::BEFORE ? $index : $index + 1;
   		array_splice($attrs, $offset, 0, $this->getAttributes());
   	}
   	
