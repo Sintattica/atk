@@ -245,7 +245,7 @@
       if(!$this->hasFlag(AF_FILE_NO_UPLOAD))
       {
         $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
-        $result .= '<input type="file" id="'.$id.'" name="'.$id.'" '.$onchange.'">';
+        $result .= '<input type="file" id="'.$id.'" name="'.$id.'" '.$onchange.'>';
       }
 
       if(!$this->hasFlag(AF_FILE_NO_SELECT))
