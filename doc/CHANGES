@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
+* Fixed input field size in atkNumberAttribute and atkMySQLi driver for
+  numeric columns with decimals. [Peter]
 + Added new fluent interface for setting meta policy attribute properties.
   The interface allows you to modify attributes in all ways the normal meta
   policy supports, but also adds support for inserting attributes before/after

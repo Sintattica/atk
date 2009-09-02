@@ -362,6 +362,19 @@
     }
 
     /**
+     * Apply database metadata for setting the attribute size.
+     */
+    function fetchMeta($metadata)
+    {
+    	parent::fetchMeta($metadata);
+    	
+    	if (strpos($this->m_size, ',') !== false)
+    	{
+    		list($this->m_size, $this->m_decimals) = explode(',', $this->m_size);
+    	}
+    }    
+    
+    /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      * @param array $record Array with values

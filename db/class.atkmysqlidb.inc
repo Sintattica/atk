@@ -423,7 +423,7 @@
 	       
 	        if ($result[$i]["gentype"] == "decimal")
 	        {
-	          $result[$i]["len"] -= ($finfo->decimals * 2);
+	          $result[$i]["len"] -= $finfo->decimals + 1;
 	          $result[$i]["len"] .= "," . $finfo->decimals;
 	        }
 	         
