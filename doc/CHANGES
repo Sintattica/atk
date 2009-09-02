@@ -8,6 +8,15 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
++ Added new fluent interface for setting meta policy attribute properties.
+  The interface allows you to modify attributes in all ways the normal meta
+  policy supports, but also adds support for inserting attributes before/after
+  (insertBefore/insertAfter) attributes or at the top/bottom 
+  (insertAtTop/insertAtBottom) of all attributes. The interface is returned
+  when calling atkMetaPolicy::get with one or more attribute names or as the
+  result of a call to add, addFieldSet, hasOne and hasMany. [Peter]
+* Fixed bug in atkEditHandler which allowed you to edit non-existing records
+  without giving any warning whatsoever. [Peter]
 * Fixed bug in atkModule::menuitem which caused menu items with an explicit
   null parent menu, not to be added to the main menu. [Peter]
 * Fixed bug in meta node handeling of password attributes, which incorrectly

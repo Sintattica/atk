@@ -376,6 +376,7 @@
   "wysiwyg_merge_cell" => "Merge cells",
   "wysiwyg_split_cell" => "Split cells",
   "yes" => "Yes",
+   "feedback_edit_failed" => 'Editing is not possible. Item doesn\'t exist (anymore).'  
 );
 
 ?>

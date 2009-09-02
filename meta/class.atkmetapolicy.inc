@@ -691,6 +691,23 @@ class atkMetaPolicy
       atkuse("relation", $type);
     else atkimport($type);    
   }
+  
+  /**
+   * Returns the attribute modifier for the given attributes. The modifier allows
+   * you to add flags, set tabs etc. through a fluent interface.
+   *
+   * This method can also be called with multiple attribute string arguments.
+   * 
+   * @param string|array $attrs attribute name(s)
+   * 
+   * @return atkMetaAttributeModifier
+   */
+  public function get($attrs)
+  {
+    if (!is_array($attrs))
+      $attrs = func_get_args();
+    return atknew('atk.meta.atkmetaattributemodifier', $this, $attrs);
+  }
 
   /**
    * Returns the currently set includes (if applicable).
@@ -755,6 +772,29 @@ class atkMetaPolicy
   }
 
   /**
+   * Compares two attributes based on their order.
+   * 
+   * @param array $a attribute
+   * @param array $b attribute
+   *
+   * @return int order (a == b ? 0 : (a < b ? -1 : 1))
+   */
+  public static function cmpAttributes($a, $b)
+  {
+  	if ($a['order'] < $b['order']) return -1;
+  	elseif ($a['order'] == $b['order']) return 0;
+  	else return 1;
+  }
+  
+  /**
+   * Sort the attributes based on their order.
+   */
+  protected function sortAttributes()
+  {
+  	uasort($this->m_attrs, array('atkMetaPolicy', 'cmpAttributes'));
+  }
+
+  /**
    * Sets the attribute order. All attributes not mentioned will be moved to
    * the bottom using their current order.
    *
@@ -773,6 +813,8 @@ class atkMetaPolicy
 
     foreach ($order as $i => $key)
       $this->m_attrs[$key]['order'] = ($i + 1) * 100;
+      
+    $this->sortAttributes();      
   }
 
   /**
@@ -1359,6 +1401,8 @@ class atkMetaPolicy
    * @param string|array $templateOrOptions template or list of options (complete description is given above)
    * @param array        $options           list op options (complete description is given above)
    * @param int          $flags 	          the flags for the relation
+   * 
+   * @return atkMetaAttributeModifier
    */
   public function hasMany($accessor, $templateOrOptions=array(), $options=array(), $flags=0)
   {
@@ -1448,7 +1492,7 @@ class atkMetaPolicy
     $tabs   = NULL;
     $order  = $this->_getMaxOrder() + 100 ;
 
-    $this->add($name, $type, $params, $flags, $tabs, $order);
+    return $this->add($name, $type, $params, $flags, $tabs, $order);
   }
 
   /**
@@ -1486,6 +1530,8 @@ class atkMetaPolicy
    * @param string|array $templateOrOptions template or list of options (complete description is given above)
    * @param array        $options           list op options (complete description is given above)
    * @param int          $flags 	          the flags for the relation
+   * 
+   * @return atkMetaAttributeModifier
    */
   public function hasOne($accessor, $templateOrOptions=array(), $options=array(), $flags=0)
   {
@@ -1531,7 +1577,7 @@ class atkMetaPolicy
     $tabs   = $attr != NULL ? $this->m_attrs[$attr]["tabs"] : NULL;
     $order  = $attr != NULL ? $this->m_attrs[$attr]["order"] : $this->_getMaxOrder() + 100;
 
-    $this->add($name, $type, $params, $flags, $tabs, $order);
+    return $this->add($name, $type, $params, $flags, $tabs, $order);
   }
 
   /**
@@ -1544,6 +1590,8 @@ class atkMetaPolicy
    * @param string|array $sections sections/tabs to display the attribute on
    * @param int          $order    order of the attribute
    * @param mixed        $default  default value
+   * 
+   * @return atkMetaAttributeModifier
    */
   public function add($name, $type, $params=array(), $flags=0, $sections=NULL, $order=NULL, $default=self::NO_DEFAULT_VALUE)
   {
@@ -1553,9 +1601,13 @@ class atkMetaPolicy
     foreach ($names as $name)
     {
       if ($order === NULL && isset($this->m_attrs[$name]))
+      {
         $order = $this->m_attrs[$name]['order'];
+      }
       else if ($order === NULL)
+      {
         $order = $this->_getMaxOrder() + 100;
+      }
 
       $this->m_attrs[$name] =
         array(
@@ -1572,6 +1624,10 @@ class atkMetaPolicy
         $this->m_attrs[$name]['default'] = $default;
       }
     }
+    
+    $this->sortAttributes();
+    
+    return atknew('atk.meta.atkmetaattributemodifier', $this, $names);
   }
   
   /**
@@ -1586,10 +1642,12 @@ class atkMetaPolicy
    * @param int          $flags    attribute flags
    * @param string|array $sections sections/tabs to display the attribute on
    * @param int          $order    order of the attribute
+   * 
+   * @return atkMetaAttributeModifier
    */
   public function addFieldSet($name, $template, $flags=0, $sections=NULL, $order=NULL)
   {
-    $this->add($name, 'atk.attributes.atkfieldset', array($template), $flags, $sections, $order);
+    return $this->add($name, 'atk.attributes.atkfieldset', array($template), $flags, $sections, $order);
   }  
 
   /**
@@ -1684,11 +1742,17 @@ class atkMetaPolicy
     foreach ($base as $entry)
     {
       if ($db->tableExists($entry))
+      {
         return $entry;
+      }
       else if ($db->tableExists($this->getGrammar()->singularize($entry)))
-        return $this->getGrammar()->singularize($table);
+      {
+        return $this->getGrammar()->singularize($entry);
+      }
       else if ($db->tableExists($this->getGrammar()->pluralize($entry)))
+      {
         return $this->getGrammar()->pluralize($entry);
+      }
     }
 
     return null;
@@ -1701,11 +1765,10 @@ class atkMetaPolicy
    */
   protected function _detectNodeSequence()
   {
-    $db = atkGetDb($this->getNodeDatabase());
     $cols = $this->getMetaData();
     $sequence = NULL;
 
-    foreach ($cols as $name => $meta)
+    foreach ($cols as $meta)
     {
       if (isset($meta['sequence']) && strlen($meta['sequence']) > 0)
       {
@@ -1848,7 +1911,6 @@ class atkMetaPolicy
   protected function _cache($code)
   {
     atkimport('atk.utils.atktmpfile');
-    $node = $this->getNode();
     $file = new atkTmpFile("meta/".$this->getNode()->getModule()."/".$this->getNode()->getType().".php");
     $file->writeFile("<?php\n$code");
     return $file->getPath();
@@ -1868,8 +1930,9 @@ class atkMetaPolicy
       atk_var_dump("\n\n$code", "atkMetaPolicy::apply - ".$this->getNode()->atkNodeType());
     }
 
+    // needed for included and eval'ed code!
     $node = $this->getNode();
-
+    
     if ($this->getNode()->isCacheable())
     {
       $file = $this->_cache($code);
