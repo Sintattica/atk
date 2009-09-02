@@ -121,8 +121,13 @@
      * @param string $date the date string
      * @return array with 3 fields (day, month, year)
      */
-    function dateArray($date)
+    function dateArray($date=null)
     {
+    	if ($date == null)
+    	{
+    	  $date = date('Ymd');	
+    	}
+    	
       if(strstr($date,'-'))
       {
         return array("day" => substr($date, 8, 2),

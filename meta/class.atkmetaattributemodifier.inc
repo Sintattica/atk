@@ -148,11 +148,38 @@ class atkMetaAttributeModifier
    * 
    * @return atkMetaAttributeModifier
    */
+  public function setFlag($flags)
+  {
+    return $this->setFlags($flags);   
+  }  
+  
+  /**
+   * Set flag(s).
+   * 
+   * NOTE: this method will overwrite all currently set flags, including
+   *       automatically detected flags!
+   *
+   * @param int $flags flag(s)
+   * 
+   * @return atkMetaAttributeModifier
+   */
   public function setFlags($flags)
   {
     $this->getPolicy()->setFlag($this->getAttributes(), $flags);
     return $this;   
   }
+  
+  /**
+   * Add flag(s) .
+   *
+   * @param int $flags flag(s)
+   *  
+   * @return atkMetaAttributeModifier
+   */
+  public function addFlag($flags)
+  {
+  	return $this->addFlags($flags);
+  }  
 
   /**
    * Add flag(s) .
@@ -166,7 +193,19 @@ class atkMetaAttributeModifier
     $this->getPolicy()->addFlags($this->getAttributes(), $flags);
     return $this;   
   }
+  
+  /**
+   * Remove flag(s).
 
+   * @param int $flags flag(s)
+   *  
+   * @return atkMetaAttributeModifier
+   */
+  public function removeFlag($flags)
+  {
+  	return $this->removeFlags($flags);
+  }
+  
   /**
    * Remove flag(s).
 
