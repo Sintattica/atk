@@ -8,6 +8,10 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
++ Added the possibility to implement the methods handleUpdateSuccess
+  and/or handleUpdateError in your node to override the normal behavior
+  of atkUpdateHandler after updating a record. For example to redirect
+  to something else. [Peter]
 * Fixed input field size in atkNumberAttribute and atkMySQLi driver for
   numeric columns with decimals. [Peter]
 + Added new fluent interface for setting meta policy attribute properties.

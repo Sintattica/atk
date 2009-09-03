@@ -114,13 +114,13 @@
     /**
      * Process a record (preUpdate/validate/store)
      *
-     * @param array  $record                 Record to store
-     * @param string $error_handler_method   Error handler method to call on current handler
-     * @param string $success_handler_method Success handler method to call on current handler
-     * @param array  $extra_params           Extra params to pass along to error/success handler methods
+     * @param array  $record         Record to store
+     * @param string $errorHandler   Error handler method to call on current handler
+     * @param string $successHandler Success handler method to call on current handler
+     * @param array  $extraParams   Extra params to pass along to error/success handler methods
      * @return bool Wether the process succeeded in storing the record
      */
-    public function handleProcess($record, $error_handler_method='handleError', $success_handler_method="redirectForUpdateResult", $extra_params=array())
+    public function handleProcess($record, $errorHandler='handleUpdateError', $successHandler="handleUpdateSuccess", $extraParams=array())
     {
       // empty the postvars because we don't want to use these
       $postvars = $this->getNode()->m_postvars;
@@ -139,12 +139,21 @@
 
       if ($error)
       {
-        $this->$error_handler_method($record, $extra_params);
+        $this->invoke($errorHandler, $record, null, $extraParams);
         return false;
       }
 
       $result = $this->updateRecord($record);
-      $this->$success_handler_method($record, $result, $extra_params);
+      if ($result)
+      {
+        $this->invoke($successHandler, $record, $extraParams);
+      }
+      else
+      {
+      	$error = $result;
+      	$this->invoke($errorHandler, $record, $error, $extraParams);
+      }
+      
       return true;
     }
 
@@ -228,67 +237,58 @@
       $selector = atkArrayNvl($this->m_postvars, 'atkselector','');
       return (atkinstance('atk.session.atksessionstore')->updateDataRowForSelector($selector, $record)!==false);
     }
-
+    
     /**
-     * Called when an error has occurred.
+     * Handle update error. This can either be an error in the record data the user
+     * can correct or a fatal error when saving the record in the database. If the
+     * latter is the case the $error parameter is set.
+     * 
+     * This method can be overriden inside your node.
+     * 
+     * @param array  $record the record
+     * @param string $error  error string (only on fatal errors)
      *
      * @param array $record
      */
-    public function handleError($record)
+    public function handleUpdateError($record, $error=null)
     {
-      $this->setRejectInfo($record);
-      $location = session_url(dispatch_url($this->m_node->atknodetype(),"edit",array("atkselector"=>$this->m_node->primaryKey($record))),SESSION_REPLACE);
-      $this->m_node->redirect($location);
-    }
-
-    /**
-     * Given a record and a result from the update redirects to a new location, if necessary
-     *
-     * @param array $record Record that was possibly saved
-     * @param mixed $result Result of the update, true, false or string with error
-     */
-    private function redirectForUpdateResult($record, $result)
-    {
-      $location = false;
-      if ($result===true)
+      if ($this->hasError($record))
       {
-        if (!isset($this->m_postvars['atknoclose']))
-        {
-          // 'save and close' was clicked
-          $location = $this->m_node->feedbackUrl("update", ACTION_SUCCESS, $record, "");
-        }
-        else
-        {
-          // 'save' was clicked
-          $params = array("atkselector"=>$this->m_node->primaryKey($record),"atktab"=>$this->m_node->getActiveTab());
-          $location = session_url(dispatch_url($this->m_node->atknodetype(), "edit", $params), SESSION_REPLACE);
-        }
+        $this->setRejectInfo($record);
+        $location = session_url(dispatch_url($this->m_node->atknodetype(),"edit",array("atkselector"=>$this->m_node->primaryKey($record))),SESSION_REPLACE);
+        $this->m_node->redirect($location);
+      }      	
+      else
+      {
+        $location = $this->m_node->feedbackUrl("update", ACTION_FAILED, $record, $error);
+        $this->m_node->redirect($location);
       }
-      // We got an error back
-      else if ($result!==false)
+    }
+    
+    /**
+     * Handle update success. Normally redirects the user either back to the edit form
+     * (when the user only saved) or back to the previous action if the user choose save
+     * and close.
+     *
+     * This method can be overriden inside your node.
+     *
+     * @param array $record the record
+     */
+    public function handleUpdateSuccess($record)
+    {
+      if (isset($this->m_postvars['atknoclose']))
       {
-        $location = $this->m_node->feedbackUrl("update", ACTION_FAILED, $record, $result);
+        // 'save' was clicked
+        $params = array("atkselector" => $this->m_node->primaryKey($record), "atktab" => $this->m_node->getActiveTab());
+        $location = session_url(dispatch_url($this->m_node->atknodetype(), "edit", $params), SESSION_REPLACE);
       }
       else
       {
-        $this->loadEditPageWithError($record);
+        // 'save and close' was clicked
+        $location = $this->m_node->feedbackUrl("update", ACTION_SUCCESS, $record, "");
       }
-      if ($location) $this->m_node->redirect($location);
-    }
-
-    /**
-     * Load up a page with the error for a given record that failed to update
-     *
-     * @param array $record Record to use with the error page
-     */
-    private function loadEditPageWithError($record)
-    {
-      global $ATK_VARS;
-      $ATK_VARS["atkaction"] = "edit";
-      $this->m_node->m_action = "edit";
-
-      $edithandler = $this->m_node->getHandler("edit");
-      $this->getPage()->addContent($edithandler->invoke("editPage", $record));
+      
+      $this->m_node->redirect($location);      
     }
 
     //=================== PARTIAL / DIALOG METHODS ===================\\
@@ -342,7 +342,7 @@
      *
      * @param unknown_type $attrRefreshUrl
      */
-    private function loadSuccessDialog($record, $result, $extra_params)
+    private function loadSuccessDialog($record, $extraParams)
     {
       atkimport("atk.ui.atkdialog");
       $script = atkDialog::getCloseCall();
