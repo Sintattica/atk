@@ -259,27 +259,27 @@
         
         // retrieve all actions after we registered all actions
         $result = $g_nodes;
-        
-        if (!$splitPerSection)
-        {
-          $temp = array();
-          foreach ($result as $section => $modules)
-          {
-            foreach ($modules as $module => $nodes)
-            {
-              if (!is_array($temp[$module]))
-              {
-                $temp[$module] = array();
-              }
-              
-              $temp[$module] = array_merge($temp[$module], $nodes);
-            }
-          }
-          
-          $result = $temp;
-        }
       }
-
+      
+      if (!$splitPerSection)
+      {
+        $temp = array();
+        foreach ($result as $section => $modules)
+        {
+          foreach ($modules as $module => $nodes)
+          {
+            if (!is_array($temp[$module]))
+            {
+              $temp[$module] = array();
+            }
+            
+            $temp[$module] = array_merge($temp[$module], $nodes);
+          }
+        }
+        
+        $result = $temp;
+      }
+      
       return $result;
     }
 

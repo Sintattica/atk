@@ -88,6 +88,7 @@ Changes in ATK 6.4
   Reid, Boy]
 * Fixed displaying of large integer (non-decimals) numbers of 
   atkNumberAttribute (larger than 2147483647). [Paul Reid, Boy]
+* Fixed (de)selecting rights in subgroups [Jeroen]
 
 Changes in prior versions
 -------------------------
