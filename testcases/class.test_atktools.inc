@@ -34,9 +34,9 @@
     {
       // Encode + decode characters that have a special meaning in this encoding
       $patterns = array(
-        'item_0', // This sthould work because _0 has isn't used
-        'item_1', // This sthould work becaus _1 becomes _2 when encoded and _1 again after decoding
-        'item_8', // This sthould work becaus _8 becomes _9 when encoded and _8 again after decoding
+        'item_0', // This should work because _0 isn't used
+        'item_1', // This should work because _1 becomes _2 when encoded and _1 again after decoding
+        'item_8', // This should work because _8 becomes _9 when encoded and _8 again after decoding
         //'item_9', // This would FAIL because _9 stays _9 when encoding, but becomes _8 after decoding
       );
       foreach($patterns as $pattern)
