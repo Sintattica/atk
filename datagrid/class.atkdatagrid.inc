@@ -596,7 +596,9 @@ class atkDataGrid
                   'components', 'excludes', 'defaultActions',
                   'defaultLimit', 'defaultOrderBy', 'template',
                   'actionSessionStatus', 'filters', 'mode',
-                  'mraSelectionMode', 'countHandler', 'selectHandler');
+                  'mraSelectionMode', 'countHandler', 'selectHandler',
+                  'masterRecord');
+    
     foreach ($vars as $var)
     {
       $fullVar = "m_{$var}";
