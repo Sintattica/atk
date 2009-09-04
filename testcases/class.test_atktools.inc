@@ -28,6 +28,29 @@
   class test_atktools extends atkTestCase
   {
     /**
+     * Test encoding of ur
+     */
+    function test_urlencoding()
+    {
+      // Encode + decode characters that have a special meaning in this encoding
+      $patterns = array(
+        'item_0', // This sthould work because _0 has isn't used
+        'item_1', // This sthould work becaus _1 becomes _2 when encoded and _1 again after decoding
+        'item_8', // This sthould work becaus _8 becomes _9 when encoded and _8 again after decoding
+        //'item_9', // This would FAIL because _9 stays _9 when encoding, but becomes _8 after decoding
+      );
+      foreach($patterns as $pattern)
+      {
+        $this->assertEqual($pattern, atkurldecode(atkurlencode($pattern)), "atkUrlEncode + atkUrlDecode is expected not to alter [String: $pattern]");
+      }
+
+      // Double encoding
+      $first = atkurlencode('var[0]="value"') . '&var[1]="anothervalue"';
+      $second = atkurlencode($first);
+      $this->assertEqual($first, atkurldecode($second), 'atkUrlDecode is expected to decode parameters from last encoding run only');
+    }
+
+    /**
      * Test instantiation of classes using atknew.
      */
     function test_atknew()

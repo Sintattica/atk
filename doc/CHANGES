@@ -89,6 +89,9 @@ Changes in ATK 6.4
 * Fixed displaying of large integer (non-decimals) numbers of 
   atkNumberAttribute (larger than 2147483647). [Paul Reid, Boy]
 * Fixed (de)selecting rights in subgroups [Jeroen]
+* Changed atkUrlEncode and atkUrlDecode functions to allow encoding a string
+  9 times instead of 4. Also added some testcases to verify the expected
+  behaviour of these functions. [Guido]
 
 Changes in prior versions
 -------------------------

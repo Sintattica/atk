@@ -897,8 +897,8 @@
 
   /**
    * Safe urlencode function. Note, you can reencode already encoded strings, but
-   * not more than 4 times!
-   * If you encode a string more than 4 times, you won't be able to decode it
+   * not more than 9 times!
+   * If you encode a string more than 9 times, you won't be able to decode it
    * anymore
    *
    * An atkurlencoded string is normaly prefixed with '__', so atkurldecode can
@@ -908,6 +908,8 @@
    * that you can't atkurldecode that string anymore, so only use this on
    * substrings of already encoded strings)
    *
+   * @todo Fix a problem where a string containing "_9" will be altered after encoding + decoding it.
+   *
    * @param string $string  the url to encode
    * @param bool $pref      wether or not to use a prefix, default true
    * @return string the encoded url
@@ -915,7 +917,7 @@
   function atkurlencode($string, $pref=true)
   {
     $string = rawurlencode($string);
-    for ($i=3;$i>=1;$i--)
+    for ($i=8;$i>=1;$i--)
     {
       $string = str_replace("_".$i,"_".($i+1),$string);
     }
@@ -928,7 +930,7 @@
     else
     {
       $string = str_replace("_1","%",substr($string,2));
-      for ($i=1;$i<=3;$i++)
+      for ($i=1;$i<=8;$i++)
       {
         $string = str_replace("_".($i+1),"_".$i,$string);
       }
