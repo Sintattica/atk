@@ -8,6 +8,12 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
+* Changed the behaviour of the dateattribute. I can't expain why, nothing
+  has changed recently but it suddenly returned the current date when
+  you left it blank while using extended search or adding records. Causing
+  the search to break and new records always contain the current date.
+  Hope this change doesn't break things. If you have any issues let
+  me know. [Martin]
 + Added the possibility to implement the methods handleUpdateSuccess
   and/or handleUpdateError in your node to override the normal behavior
   of atkUpdateHandler after updating a record. For example to redirect
