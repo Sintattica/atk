@@ -958,7 +958,7 @@
     function value2db($rec)
     {
       if (!is_array($rec[$this->fieldName()]))
-        $rec[$this->fieldName()] = $this->dateArray($rec[$this->fieldName()]);
+        return NULL;
 
       $year = $rec[$this->fieldName()]["year"];
       $month = $rec[$this->fieldName()]["month"];
@@ -1000,12 +1000,6 @@
       if (is_array($value) && array_key_exists('date', $value))
       {
         $value = $postvars[$this->fieldName()]['date'];
-      }
-
-      // null
-      if (is_array($value) && $this->value2db($postvars) == null)
-      {
-        return null;
       }
 
       // array with year / month / day
