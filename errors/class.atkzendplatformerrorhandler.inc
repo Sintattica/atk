@@ -52,7 +52,7 @@
         return false;
       }
       
-      if($testForFunction != '' && !function_exists('monitor_custom_event'))
+      if(!function_exists('monitor_custom_event'))
       {
         atkdebug('Zend Platform seems to be there, but the function \'monitor_custom_event\' could not be found');
         return false;
