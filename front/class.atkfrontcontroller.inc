@@ -505,8 +505,10 @@
           echo $this->m_result;
 
           if (!isset($this->m_contentType) || $this->m_contentType == 'text/html')
+          {
+             atkimport("atk.utils.atkdebugger");
             echo atkDebugger::getInstance()->renderDebugAndErrorMessages();
-
+          }
           die;
         }
       }
