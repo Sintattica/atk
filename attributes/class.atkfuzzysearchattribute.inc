@@ -60,6 +60,11 @@
     var $m_searchnodeInstance = NULL;
 
     /**
+     * @var String Filter for destination records.
+     */
+    var $m_destinationFilter="";
+
+    /**
      * The fuzzySearchAttribute, with this you can search a node for certain keywords
      * and get a selectable list of records that match the keywords.
      * Possible modes:
@@ -294,6 +299,7 @@
 
       if ($this->createSearchNodeInstance() && $searchstring!="")
       {
+        $this->m_searchnodeInstance->addFilter($this->getDestinationFilter());
         $tokens = explode(",", $searchstring);
         foreach ($tokens as $token)
         {
@@ -480,6 +486,25 @@
       if (!$this->m_searchnodeInstance) $this->createSearchNodeInstance();
       $this->m_searchnodeInstance->addFilter($filter, $value);
     }
+    
+    /**
+     * Returns the destination filter.
+     * @return String The destination filter.
+     */
+    function getDestinationFilter()
+    {
+      return $this->m_destinationFilter;
+    }
+
+    /**
+     * Sets the destination filter.
+     * @param String $filter The destination filter.
+     */
+    function setDestinationFilter($filter)
+    {
+      $this->m_destinationFilter = $filter;
+    }
+
   }
 
 ?>
