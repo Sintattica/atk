@@ -122,6 +122,12 @@ a:hover
 	padding: 3px;
 }
 
+.atkmessages_general
+{
+	background-color: yellow;
+	color: #000;
+}
+
 .atkmessages_success
 {
 	background-color: #339900;
