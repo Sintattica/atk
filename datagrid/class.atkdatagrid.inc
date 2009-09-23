@@ -325,6 +325,13 @@ class atkDataGrid
   private $m_destroyed = false;
 
   /**
+   * Default Multi Record Action
+   *
+   * @var string
+   */
+   private $m_mraDefaultAction = null;
+
+  /**
    * Create a new atkDataGrid instance.
    *
    * @param atkNode $node       node
@@ -1155,6 +1162,25 @@ class atkDataGrid
     $this->m_mraSelectionMode = $mode;
   }
 
+  /**
+   * Returns the default multi-record-action.
+   *
+   * @return string default multi-record-action
+   */
+  public function getMRADefaultAction()
+  {
+    return $this->m_mraDefaultAction;
+  }
+
+  /**
+   * Sets the default multi-record-action.
+   *
+   * @param string $action the default action
+   */
+  public function setMRADefaultAction($action)
+  {
+    $this->m_mraDefaultAction = $action;
+  }
 
   /**
    * Returns the record action session status.
