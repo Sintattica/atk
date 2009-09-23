@@ -5306,14 +5306,15 @@
     /**
      * Get the column configuration object
      *
-     * @param string $id optional column config id
+     * @param string   $id      optional column config id
+     * @param boolean $forceNew force new instance?
      *
      * @return atkColumnConfig
      */
-    function &getColumnConfig($id=NULL)
+    function &getColumnConfig($id=NULL, $forceNew=false)
     {
       atkimport("atk.recordlist.atkcolumnconfig");
-      $columnConfig = &atkColumnConfig::getConfig($this, $id);
+      $columnConfig = &atkColumnConfig::getConfig($this, $id, $forceNew);
       return $columnConfig;
     }
 

@@ -74,9 +74,11 @@
      *
      * @param atkNode $node
      * @param string $id
+     * @param boolean $forceNew force new instance?
+     * 
      * @return atkColumnConfig An instance of the columnconfig class
      */
-    function &getConfig(&$node, $id=null)
+    function &getConfig(&$node, $id=null, $forceNew=false)
     {
       global $g_sessionManager;
       static $s_instances = array();
@@ -84,14 +86,14 @@
       if ($id == null)
         $id = $node->atkNodeType();
 
-      if (!isset($s_instances[$id]))
+      if (!isset($s_instances[$id]) || $forceNew)
       {
         $s_instances[$id] = new atkColumnConfig();
         $s_instances[$id]->setNode($node);
 
         $colcfg = $g_sessionManager != null ? $g_sessionManager->pageVar("atkcolcfg_".$id) : null;
 
-        if (!is_array($colcfg))
+        if (!is_array($colcfg) || $forceNew)
         {
           // create new
           atkdebug("New colconfig initialising");
@@ -245,7 +247,7 @@
       }
 
       $this->m_colcfg[$field]["sortorder"] = $sortorder === NULL ? 1 : $sortorder;
-      $this->m_colcfg[$field]["direction"] = $direction;
+      $this->m_colcfg[$field]["direction"] = strtolower($direction);
       $this->m_colcfg[$field]["extra"] = $extra;
     }
 
@@ -299,7 +301,7 @@
       {
         if (atkArrayNvl($config, "sortorder", 0)>0 && is_object($this->m_node->m_attribList[$field]))
         {
-          $direction = ($config["direction"]=="desc"?" DESC":"ASC");
+          $direction = $config["direction"] == "desc" ? "DESC" : "ASC";
           $res = $this->m_node->m_attribList[$field]->getOrderByStatement($config['extra'], '', $direction);
           if ($res) $result[] = $res;
         }
@@ -610,58 +612,50 @@
      */
     function _addOrderByStatement($orderby)
     {
-      if (strpos($orderby, '(') !== false) return; // can't do anything with complex order by's
-
-      $elems = explode(" ", $orderby);
-      $lastattr="";
-      $i = 0;
-      foreach ($elems as $elem)
+      if (strpos($orderby, '(') !== false) 
       {
-        $elem = trim($elem,",");
-        $part1 = "";
-        $part2 = "";
+      	return; // can't do anything with complex order by's
+      }
 
-        if(strpos($elem,".")!==false)
-          list($part1, $part2) = explode(".", $elem, 2);
-
-        if (isset($this->m_node->m_attribList[$elem]))
-        {
-          // attribute reference
-          $lastattr=$elem;
-          $this->addOrderByField($elem, "asc", "", ++$i);
-        }
-        else if (isset($this->m_node->m_attribList[$part1]))
-        {
-          // attribute reference
-          $lastattr=$part1;
-          $this->addOrderByField($part1, "asc", $part2, ++$i);
-        }
-        else if (strtolower($this->m_node->m_table) == $part1 && isset($this->m_node->m_attribList[$part2]))
-        {
-          // attribute reference
-          $lastattr=$part2;
-          $this->addOrderByField($part2, "asc", "", ++$i);
-        }
-        else if (strtolower($elem)=="asc"||strtolower($elem)=="desc")
-        {
-          // direction modifier for previous statement
-          if ($lastattr!="")
-          {
-            $this->setSortDirection($lastattr, strtolower($elem));
-          }
-        }
+      $i = 0;
+      $expressions = explode(",", $orderby);
+      foreach ($expressions as $expression)
+      {
+      	$expression = trim($expression);
+      	$expressionParts = preg_split("/\\s+/", $expression);
+      	
+      	if (count($expressionParts) == 2)
+      	{
+	        list($column, $direction) = $expressionParts;
+      	}
+      	else
+      	{
+      		$column = $expression;
+      		$direction = 'ASC';
+      	}
+	      
+	      $direction = strtoupper($direction) == 'DESC' ? 'DESC' : 'ASC';
+      
+	      $part1 = $column;
+	      $part2 = null;
+	      
+	      if (strpos($column, '.') !== false)
+	      {
+	      	list($part1, $part2) = explode('.', $column);
+	      }
+	      
+	      if ($this->getNode()->getAttribute($part1) != null)
+	      {
+	      	$this->addOrderByField($part1, $direction, $part2, ++$i);
+	      }
+	      else if ($part1 == $this->getNode()->getTable() && $this->getNode()->getAttribute($part2) != null)
+	      {
+	      	$this->addOrderByField($part2, $direction, null, ++$i);
+	      }
         else
         {
           // custom order by
-          $lastattr="";
-          list($table, $field) = explode(".", $elem);
-
-          //echo $table."-".$field;
-          if (($table == $this->m_node->m_type) && isset($this->m_node->m_attribList[$field]))
-          {
-            //echo 'yes';
-            $this->addOrderByField($field, "asc", "", ++$i);
-          }
+          $this->addOrderByField($column, $direction, "", ++$i);
         }
       }
     }

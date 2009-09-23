@@ -8,6 +8,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
+* Bug fix atkColumnConfig order by statement parser. [Peter]
 * Changed the behaviour of the dateattribute. I can't expain why, nothing
   has changed recently but it suddenly returned the current date when
   you left it blank while using extended search or adding records. Causing

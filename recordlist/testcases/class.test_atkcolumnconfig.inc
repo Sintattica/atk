@@ -38,9 +38,9 @@
     function testNode()
     {
       $this->atkNode("testNode");
-      $this->add(new atkAttribute("id", AF_AUTOKEY));
+      $this->add(new atkNumberAttribute("id", AF_AUTOKEY));
+      $this->add(new atkAttribute("name", AF_AUTOKEY));
 
-      $this->setOrder("id DESC");
       $this->setTable("__test__");
     }
   }
@@ -75,11 +75,38 @@
       $this->m_columnConfig->setNode($this->m_node);
       $this->assertReference($this->m_node, $this->m_columnConfig->m_node);
     }
+    
+    protected function assertOrder($order)
+    {
+      $columnConfig = $this->m_node->getColumnConfig(null, true);      
+      $this->assertEqual($order, $columnConfig->getOrderbyStatement());
+    }
 
     function test_getOrderByStatement()
     {
-      $columnConfig = &$this->m_node->getColumnConfig();
-      $this->assertEqual("__test__.id DESC",$columnConfig->getOrderbyStatement());
+      $this->m_node->setOrder('name');
+      $this->assertOrder("LOWER(__test__.name) ASC");
+      
+    	$this->m_node->setOrder('name DESC');
+      $this->assertOrder("LOWER(__test__.name) DESC");
+      
+      $this->m_node->setOrder('__test__.name asc');
+      $this->assertOrder("LOWER(__test__.name) ASC");
+      
+      $this->m_node->setOrder('__test__.name desc');
+      $this->assertOrder("LOWER(__test__.name) DESC");
+      
+      $this->m_node->setOrder('id ASC');
+      $this->assertOrder("__test__.id ASC");
+      
+      $this->m_node->setOrder('id DESC');
+      $this->assertOrder("__test__.id DESC");
+      
+      $this->m_node->setOrder('id, name');
+      $this->assertOrder("__test__.id ASC, LOWER(__test__.name) ASC");
+      
+      $this->m_node->setOrder('id DESC, name  DESC');
+      $this->assertOrder("__test__.id DESC, LOWER(__test__.name) DESC");
     }
   }
 ?>

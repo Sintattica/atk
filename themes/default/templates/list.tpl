@@ -4,7 +4,6 @@
   {if count($atkmessages)}
     <tr>
       <td align="center" valign="top">
-        <br>  
         <div class="atkmessages">
           {foreach from=$atkmessages item=message}
             <div class="atkmessages_{$message.type}">{$message.message}</div>
