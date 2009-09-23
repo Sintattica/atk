@@ -466,16 +466,20 @@
         $res = "";
         if (!$partial)
         {
-          $res .= "    function globalLoad()\n";
-          $res .= "    {\n";
+          $res .= "function globalLoad()\n";
+          $res .= "{\n";
         }
 
         for ($i=0, $_i=count($this->m_loadscripts); $i<$_i; $i++)
         {
-          $res .= "      {$this->m_loadscripts[$i]}\n";
+          $res .= "{$this->m_loadscripts[$i]}\n";
         }
 
-        if (!$partial)  $res.= "    }\n";
+        if (!$partial)
+        {
+          $res.= "}\n";
+          $res .= "document.observe('dom:loaded', globalLoad);\n";
+        }
       }
       return $res;
     }
@@ -553,10 +557,6 @@
       global $ATK_VARS;
 
       $res = '<body ';
-      if (count($this->m_loadscripts))
-      {
-        $res.='onload="globalLoad();" ';
-      }
       $res.= $extraprops.">\n";
       return $res;
     }
