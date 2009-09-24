@@ -128,7 +128,7 @@
      *
      * @return Array The reject info
      */
-    function getRejectInfo()
+    function getRejectInfo($clear=true)
     {
       global $atklevel;
       atkdebug("looking for rejectinfo");
@@ -139,7 +139,12 @@
       {
         atkdebug("rejectinfo found");
         $result = $session["atkreject"][$sm->getNameSpace()][$stackid][atkLevel()];
-        unset($session["atkreject"][$sm->getNameSpace()][$stackid][atkLevel()]);
+        
+        if ($clear)
+        {
+          unset($session["atkreject"][$sm->getNameSpace()][$stackid][atkLevel()]);
+        }
+        
         return $result;
       }
       return NULL;

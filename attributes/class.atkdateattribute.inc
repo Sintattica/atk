@@ -400,7 +400,7 @@
       $this->registerKeyListener($fieldname.'[month]', KB_CTRLCURSOR|KB_LEFTRIGHT);
       $result = '<select id="'.$fieldname.'[month]" name="'.$fieldname.'[month]" class="atkdateattribute" onChange="'.$str_script.'">';
       if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
-        $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
+        $result .= '<option value=""'.($current === NULL ? ' selected' : '').'></option>';
       if (!$this->m_simplemode)
       {
         for ($j = $current["m_min"]; $j <= $current["m_max"]; $j++)
@@ -436,7 +436,7 @@
       $this->registerKeyListener($fieldname.'[day]', KB_CTRLCURSOR|KB_LEFTRIGHT);
       $result = '<select id="'.$fieldname.'[day]" name="'.$fieldname.'[day]" class="atkdateattribute" onChange="'.$str_script.'">';
       if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
-        $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
+        $result .= '<option value=""'.($current === NULL ? ' selected' : '').'></option>';
       if (!$this->m_simplemode)
       {
         for ($j = $current["d_min"]; $j <= $current["d_max"]; $j++)
@@ -1005,7 +1005,14 @@
       // array with year / month / day
       else if (is_array($value))
       {
-        return $value;
+      	if (empty($value['year']) || empty($value['month']) || empty($value['day']))
+      	{
+      		return null;
+      	}
+      	else
+      	{
+          return $value;
+      	}
       }
 
       // text format

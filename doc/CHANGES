@@ -8,6 +8,12 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
+* atkAddHandler::getRejectInfo now accepts a parameter which you can use to
+  specify that you don't want the reject info to be removed from the
+  session. [Peter]
+* Fixed atkDateAttribute/atkDateTimeAttribute null value selection. [Peter]
+* atkSessionManager stack fork now also copies the global stack vars for the
+  current stack. [Peter]
 * Bug fix atkColumnConfig order by statement parser. [Peter]
 * Changed the behaviour of the dateattribute. I can't expain why, nothing
   has changed recently but it suddenly returned the current date when
