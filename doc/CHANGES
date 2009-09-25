@@ -8,6 +8,11 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
+* Fix atkActionHandler::setRejectInfo/getRejectInfo so that the reject info
+  is still available when the stack gets forked and don't clear the reject
+  info anymore after reading it. This makes it possible to refresh your
+  browser when you get redirect back to the add/edit action after an error
+  occured. [Peter]
 * atkAddHandler::getRejectInfo now accepts a parameter which you can use to
   specify that you don't want the reject info to be removed from the
   session. [Peter]

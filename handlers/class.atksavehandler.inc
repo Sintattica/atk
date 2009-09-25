@@ -39,6 +39,9 @@
      */
     function action_save()
     {
+      // clear old reject info
+      $this->setRejectInfo(null);
+      
       $page = &$this->getPage();
 
       if (isset($this->m_partial) && !empty($this->m_partial))

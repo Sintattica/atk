@@ -128,26 +128,9 @@
      *
      * @return Array The reject info
      */
-    function getRejectInfo($clear=true)
+    function getRejectInfo()
     {
-      global $atklevel;
-      atkdebug("looking for rejectinfo");
-      $sm = &atkGetSessionManager();
-      $session = &$sm->getSession();
-      $stackid = atkStackID(($atklevel==-1));
-      if (isset($session["atkreject"][$sm->getNameSpace()][$stackid][atkLevel()]))
-      {
-        atkdebug("rejectinfo found");
-        $result = $session["atkreject"][$sm->getNameSpace()][$stackid][atkLevel()];
-        
-        if ($clear)
-        {
-          unset($session["atkreject"][$sm->getNameSpace()][$stackid][atkLevel()]);
-        }
-        
-        return $result;
-      }
-      return NULL;
+    	return atkGetSessionManager()->stackVar('atkreject'); 
     }
 
     /**
@@ -159,13 +142,8 @@
      */
     function setRejectInfo($data)
     {
-      global $atklevel;
-      atkdebug("setting rejectinfo");
-      $sm = &atkGetSessionManager();
-      $session = &$sm->getSession();
-      $stackid = atkStackID(($atklevel==-1));
-      $session["atkreject"][$sm->getNameSpace()][$stackid][atkPrevLevel()] = $data;
-      $this->m_rejecting = true;
+    	atkGetSessionManager()->stackVar('atkreject', $data, atkPrevLevel());
+    	$this->m_rejecting = true;
     }
 
     /**

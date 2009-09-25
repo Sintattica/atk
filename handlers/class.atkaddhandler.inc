@@ -55,7 +55,7 @@
 
       // we could get here because of a reject.
       $record = $this->getRejectInfo();
-
+      
       $page = &$this->getPage();
       $controller = &atkcontroller::getInstance();
       $page->addContent($controller->renderActionPage("add", $this->invoke("addPage", $record)));

@@ -38,6 +38,9 @@
      */
     public function action_update()
     {
+      // clear old reject info
+      $this->setRejectInfo(null);
+    	
       if (isset($this->m_partial) && $this->m_partial!="")
       {
         $this->partial($this->m_partial);
