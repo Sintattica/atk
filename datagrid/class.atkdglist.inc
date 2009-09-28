@@ -796,7 +796,8 @@ class atkDGList extends atkDGComponent
 
       /* actions / mra */
       $grid->getNode()->recordActions($row["record"], $row["actions"], $row["mra"]);
-      $result["mra"] = array_merge($result["mra"], $row["mra"]);
+      
+      // filter actions we are allowed to execute
       foreach($row["actions"] as $name => $url)
       {
         if (!empty($url) && $grid->getNode()->allowed($name, $row["record"]))
@@ -821,6 +822,18 @@ class atkDGList extends atkDGComponent
           unset($row["actions"][$name]);
         }
       }
+      
+      // filter multi-record-actions we are allowed to execute
+      foreach ($row["mra"] as $j => $name)
+      {
+        if (!$grid->getNode()->allowed($name, $row["record"]))
+        {
+          unset($row["mra"][$j]);
+        }
+      }
+
+      $row['mra'] = array_values($row['mra']);
+      $result["mra"] = array_merge($result["mra"], $row["mra"]);
 
       /* columns */
       $editAllowed = $grid->getPostvar('atkgridedit', false) && $grid->getNode()->allowed('edit', $result["rows"][$i]["record"]);

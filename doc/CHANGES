@@ -8,6 +8,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
+* Validate with atkNode::allowed if certain MRA actions are valid for a
+  certain record for atkDGList. [Peter]
 * Fix atkActionHandler::setRejectInfo/getRejectInfo so that the reject info
   is still available when the stack gets forked and don't clear the reject
   info anymore after reading it. This makes it possible to refresh your
