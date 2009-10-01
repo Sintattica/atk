@@ -23,7 +23,7 @@
    * @package atk
    * @subpackage db
    */
-  class atkClusterDb
+  class atkClusterDb extends atkDb
   {
     protected $m_name;
 
@@ -312,6 +312,72 @@
     {
       return call_user_func_array(array(__NAMESPACE__ .'::'.get_class($this->m_current_clusternode), $name), $arguments);
     }
+    
+    /**
+     * Because we extend atkDb __call won't be called for the atkDb public methods as they
+     * are already implemented. We can't not-extend atkDb because this would break typehinting
+     * (people are using atkDb as typehints everywhere). The most decent way to fix this issue
+     * would be to make atkDb into an interface and then have atkClusterDb and atkDb implement it
+     * (and use 'atkDbInterface' for typehinting instead of atkDb), but this would break backward
+     * compatibility (maybe other people use atkDb in their code as well for typehinting) and since 
+     * atkClusterDb doesn't seem to be used very often anyway for now we just solved this issue 
+     * using some vogon poetry. Continue reading at your own risk.
+     */
+    
+    public function setSequenceValue() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function useMapping() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function getMapping() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function clearMapping() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function getTranslatedDatabaseName() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function _getOrUseMapping() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function getType() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function link_id() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function hasError() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function getErrorType() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function getAtkDbErrno() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function getDbErrno() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function getDbError() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function setUserError() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function getQueryMode() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function errorLookup() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function getErrorMsg() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function halt() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function query_id() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function doConnect($host, $user, $password, $database, $port, $charset)  { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function _translateError() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function disconnect() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function commit() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function savepoint() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function rollback() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function next_record() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function lock() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function unlock() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function affected_rows() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function metadata() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function table_names() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function tableExists() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function getrows() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function getValue() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function getValues() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function getSearchModes() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function tableMeta() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function func_now() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function func_substring() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function func_datetochar() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function func_concat() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function func_concat_ws() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function vendorDateFormat() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function func_datetimetochar() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function maxIdentifierLength() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function escapeSQL() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function toggleForeignKeys() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function deleteAll() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function dropAll() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function cloneAll() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function &getInstance() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function &setInstance() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function setHaltOnError() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function getDbStatus() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
+    public function quoteIdentifier() { $args = func_get_args(); return $this->__call(__FUNCTION__, $args); }
   }
-
 ?>
