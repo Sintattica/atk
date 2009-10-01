@@ -1512,6 +1512,9 @@ class atkDataGrid
     // records already loaded?
     if ($this->m_recordsLoaded && !$force) return;
 
+    // load component instances, because they might be listeners
+    $this->loadComponentInstances();    
+    
     // notify listeners
     $this->notify(atkDGEvent::PRE_LOAD);
 
