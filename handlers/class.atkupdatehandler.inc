@@ -110,7 +110,7 @@
      */
     public function handleCancel($record)
     {
-      $location = $this->m_node->feedbackUrl("update", ACTION_CANCELLED, $record);
+      $location = $this->m_node->feedbackUrl("update", ACTION_CANCELLED, $record, '', 2);
       $this->m_node->redirect($location);
     }
 
@@ -258,7 +258,7 @@
       if ($this->hasError($record))
       {
         $this->setRejectInfo($record);
-        $location = session_url(dispatch_url($this->m_node->atknodetype(),"edit",array("atkselector"=>$this->m_node->primaryKey($record))),SESSION_REPLACE);
+        $location = session_url(dispatch_url($this->m_node->atknodetype(),"edit",array("atkselector"=>$this->m_node->primaryKey($record))),SESSION_BACK);
         $this->m_node->redirect($location);
       }      	
       else
@@ -283,12 +283,12 @@
       {
         // 'save' was clicked
         $params = array("atkselector" => $this->m_node->primaryKey($record), "atktab" => $this->m_node->getActiveTab());
-        $location = session_url(dispatch_url($this->m_node->atknodetype(), "edit", $params), SESSION_REPLACE);
+        $location = session_url(dispatch_url($this->m_node->atknodetype(), "edit", $params), SESSION_BACK);
       }
       else
       {
         // 'save and close' was clicked
-        $location = $this->m_node->feedbackUrl("update", ACTION_SUCCESS, $record, "");
+        $location = $this->m_node->feedbackUrl("update", ACTION_SUCCESS, $record, "", 2);
       }
       
       $this->m_node->redirect($location);      

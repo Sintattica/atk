@@ -1625,8 +1625,10 @@ class atkDataGrid
    */
   public function addListener(atkDGListener $listener)
   {
-    $this->m_listeners[] = $listener;
-    $this->m_listeners = array_unique($this->m_listeners);
+  	if (!in_array($listener, $this->m_listeners))
+  	{
+      $this->m_listeners[] = $listener;
+  	}
   }
 
   /**
