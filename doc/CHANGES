@@ -8,6 +8,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.4
 ------------------
+* atkUI::render now supports PHP-based templates. If the template has the
+  extension ".tpl.php" PHP will be used to render the template, if the 
+  extension is ".tpl" Smarty will be used. [Peter]
 * Updates are now nested in the session stack just like save actions. [Peter]
 * Validate with atkNode::allowed if certain MRA actions are valid for a
   certain record for atkDGList. [Peter]

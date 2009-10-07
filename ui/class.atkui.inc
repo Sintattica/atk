@@ -161,14 +161,56 @@
     }
 
     /**
-     * Handler for Smarty rendering.
-     * Uses smarty to render a template.
-     * @param String $tplname the name of the template to render
-     * @param array $vars     the variables with which to render the template
-     * @param String $module  the name of the module requesting to render a template
+     * Renders the given template. Automatically detects (based on the extension)
+     * whatever this is a Smarty template (*.tpl) or PHP template (*.tpl.php).
+     * 
+     * @param String $name   the name of the template to render
+     * @param array  $vars   the variables with which to render the template
+     * @param String $module the name of the module requesting to render a template
+     * 
      * @return String rendered template
      */
-    function render($tplname, $vars=array(), $module="")
+    public function render($name, $vars=array(), $module="")
+    {
+    	$path = $this->templatePath($name, $module);
+    	
+    	if (file_exists($path.'.php'))
+    	{
+    		return $this->renderPhp($path.'.php', $vars);
+    	}
+    	else
+    	{
+    		return $this->renderSmarty($path, $vars);
+    	}
+    }
+    
+    /**
+     * Render PHP-based template.
+     * 
+     * @param string $path template path
+     * @param array  $vars template variables
+     * 
+     * @return string rendered template
+     */
+    private function renderPhp($path, $vars)
+    {
+    	unset($path);
+    	unset($vars);
+    	extract(func_get_arg(1));
+    	ob_start();
+    	include func_get_arg(0);
+    	return ob_get_clean();
+    }
+    
+    /**
+     * Render Smarty-based template.
+     * 
+     * @param string $path template path
+     * @param array  $vars template variables
+     * 
+     * @return string rendered template
+     */
+    private function renderSmarty($path, $vars)
     {
       // First clear any existing smarty var.
       $this->m_smarty->clear_all_assign();
@@ -181,8 +223,6 @@
 
       $this->m_smarty->assign($vars);
 
-      $tplname = $this->templatePath($tplname, $module);
-
       // Smarty fetches templates relative from the template_dir setting.
       // Since that is an application directory, and themes reside in
       // a different directory, we have to hack the template_dir
@@ -193,7 +233,7 @@
       $old_caching = $this->m_smarty->caching;
       $this->m_smarty->caching = false;
       $this->m_smarty->template_dir = "./"; // current dir, because tplname already contains full relative path.
-      $res = &$this->m_smarty->fetch($tplname);
+      $res = &$this->m_smarty->fetch($path);
       $this->m_smarty->template_dir = $old;
       $this->m_smarty->caching = $old_caching;
 
