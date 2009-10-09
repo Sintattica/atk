@@ -161,8 +161,11 @@
     }
 
     /**
-     * Renders the given template. Automatically detects (based on the extension)
-     * whatever this is a Smarty template (*.tpl) or PHP template (*.tpl.php).
+     * Renders the given template. 
+     * 
+     * If the name ends with ".php" PHP will be used to render the template. If
+     * the name ends with ".tpl" and a file with the extension ".tpl.php" exists
+     * PHP will be used, otherwise Smarty will be used to render the template. 
      * 
      * @param String $name   the name of the template to render
      * @param array  $vars   the variables with which to render the template
@@ -174,9 +177,14 @@
     {
     	$path = $this->templatePath($name, $module);
     	
-    	if (file_exists($path.'.php'))
+    	if (substr($path, -4) != '.php' && file_exists($path.'.php'))
     	{
-    		return $this->renderPhp($path.'.php', $vars);
+    		$path .= '.php';
+    	}
+    	
+    	if (substr($path, -4) == '.php')
+    	{
+    		return $this->renderPhp($path, $vars);
     	}
     	else
     	{
