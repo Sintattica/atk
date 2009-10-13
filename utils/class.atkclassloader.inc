@@ -179,7 +179,7 @@
       $elems = explode("/", strtolower($classpath));
       for($counter=0; $counter<=count($elems);$counter++)
       {
-        if(isset($elems[$counter]) && $elems[$counter] == "../")
+        if(isset($elems[$counter]) && $elems[$counter] === "../")
         {
           array_shift($elems);
         }
@@ -235,7 +235,7 @@
   
       if (class_exists($classname))
       {
-        if (count($args) == 0)
+        if (count($args) === 0)
         {
           return new $classname();
         }
@@ -268,11 +268,11 @@
       if (!isset($s_instances[$fullclassname]) || $reset)
       {
         self::import($fullclassname);
-        $elems = explode(".", strtolower($fullclassname));
-        $classname = $elems[count($elems)-1];
+        $classname = substr(strrchr('.'. $fullclassname, '.'), 1);
         atkdebug("Getting singleton instance $fullclassname");
-        eval("\$s_instances[\$fullclassname] = &".$classname."::getInstance($reset);");
+        $s_instances[ $fullclassname ] = call_user_func(array($classname, 'getInstance'), $reset);
       }
+
       return $s_instances[$fullclassname];
     }    
     
@@ -290,7 +290,11 @@
     static function resolveClass($class)
     {
       global $g_overloaders;
-      if (isset($g_overloaders[$class])) return $g_overloaders[$class];
+      if (isset($g_overloaders[$class]))
+      {
+        return $g_overloaders[$class];
+      }
+
       return $class;
     }
 
@@ -427,7 +431,11 @@
         atkimport('atk.utils.atktmpfile');
         $cache = new atkTmpFile('classes.inc.php');
         $classes = array();
-        @include($cache->getPath());
+
+        if (is_readable($cache->getPath())) 
+        {
+          include($cache->getPath());
+        }
 
         if (empty($classes) || $force)
         {
@@ -492,4 +500,3 @@
       return $this->m_classes;
     }
   }
-?>

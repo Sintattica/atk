@@ -8,7 +8,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
-
+* Removed two eval calls. [mvdvelden]
 
 Changes in prior versions
 -------------------------
