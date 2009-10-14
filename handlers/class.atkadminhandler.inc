@@ -170,9 +170,18 @@
     public function partial_datagrid()
     {
       atkimport('atk.datagrid.atkdatagrid');
+      try
+      {
       $grid = atkDataGrid::resume($this->getNode());
       
       $this->modifyDataGrid($grid, atkDataGrid::RESUME);      
+      }
+      catch (Exception $e)
+      {
+        $grid = atkDataGrid::create($this->getNode());
+
+        $this->modifyDataGrid($grid, atkDataGrid::CREATE);
+      }
 
       if ($this->redirectToSearchAction($grid))
       {

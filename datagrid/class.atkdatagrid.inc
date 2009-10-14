@@ -350,7 +350,9 @@ class atkDataGrid
     $sessions = &$GLOBALS['ATK_VARS']['atkdgsession'];
     $sessions[$name] = array('class' => $class, 'custom' => array(), 'system' => array());
     if ($useSession)
+    {
       atkGetSessionManager()->pageVar('atkdgsession', $sessions);
+    }
     atkimport($class);
     $class = substr($class, strrpos($class, '.') + 1);
     return new $class($node, $name, self::CREATE, $isEmbedded, $useSession);
@@ -369,9 +371,22 @@ class atkDataGrid
    */
   public static function resume($node)
   {
+    // Cannot resume from session.
+    if (!isset($GLOBALS['ATK_VARS']['atkdatagrid']))
+    {
+      throw new Exception('No last known datagrid!');
+    }
+
     $name = $GLOBALS['ATK_VARS']['atkdatagrid'];
+
+    if (!isset($GLOBALS['ATK_VARS']['atkdgsession'][$name]))
+    {
+      throw new Exception('No session data for grid: '.$name);
+    }
     $session = $GLOBALS['ATK_VARS']['atkdgsession'][$name];
+
     $class = $session['class'];
+
     atkimport($class);
     $class = substr($class, strrpos($class, '.') + 1);
     return new $class($node, $name, self::RESUME);
@@ -1256,6 +1271,7 @@ class atkDataGrid
   {
     return count($this->m_filters) == 0 ? '' : '('.implode(') AND (', $this->getFilters()).')';
   }
+
 
   /**
    * Returns the mode.
