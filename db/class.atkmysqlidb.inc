@@ -174,7 +174,7 @@
        if ($unlock_table)
          $this->unlock();
 
-       if (atkconfig('debug')>=0)
+       if (atkconfig('debug')>=1)
        {
          $this->_debugWarnings();
        }
