@@ -12,6 +12,8 @@ Changes in ATK 6.5
 * atkDataGrid::resume now throws Exceptions if it is unable to resume.
   If a grid cannot be resumed by atkAdminHandler, atkSelectHandler & 
   atkOneToManyRelation a new one will be created. [Boy]
++ atkMySQLiDriver now retrieves and shows MySQL warnings, 
+  if the query has warnings and debugging is on. [Boy]
 
 Changes in prior versions
 -------------------------

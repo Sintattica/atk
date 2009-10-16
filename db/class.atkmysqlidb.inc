@@ -47,7 +47,7 @@
 
    /**
     * Connect to the database
-    * 
+    *
     * @param string $host Hostname
     * @param string $user Username
     * @param string $password Password
@@ -174,10 +174,34 @@
        if ($unlock_table)
          $this->unlock();
 
-       /* return query id */
+       if (atkconfig('debug')>=0)
+       {
+         $this->_debugWarnings();
+       }
+
        return true;
      }
      return false;
+   }
+
+   /**
+    * Get all MySQL warnings for the previously executed query
+    * and make atkwarnings of them.
+    */
+   private function _debugWarnings()
+   {
+     $warning_statement = mysqli_query($this->m_link_id, 'SHOW WARNINGS');
+
+     $warnings = array();
+     while ($warning = $warning_statement->fetch_assoc())
+     {
+       $warnings[] = $warning;
+     }
+
+     foreach ($warnings as $warning)
+     {
+       atkwarning("MYSQL warning '{$warning['Level']}' (Code: {$warning['Code']}): {$warning['Message']}");
+     }
    }
 
    /**
@@ -420,13 +444,13 @@
 	        $result[$i]["gentype"]    = $ddl->getGenericType($finfo->type);
 	        $result[$i]["len"]        = $finfo->length;
 	        $result[$i]["flags"]      = 0;
-	       
+
 	        if ($result[$i]["gentype"] == "decimal")
 	        {
 	          $result[$i]["len"] -= $finfo->decimals + 1;
 	          $result[$i]["len"] .= "," . $finfo->decimals;
 	        }
-	         
+
 	        if($finfo->flags & MYSQLI_PRI_KEY_FLAG) $result[$i]["flags"]|= MF_PRIMARY;
 	        if($finfo->flags & MYSQLI_UNIQUE_KEY_FLAG) $result[$i]["flags"]|= MF_UNIQUE;
 	        if($finfo->flags & MYSQLI_NOT_NULL_FLAG ) $result[$i]["flags"]|= MF_NOT_NULL;
@@ -450,13 +474,13 @@
 
    /**
     * Return the available table names
-    * 
+    *
     * @param bool $includeViews Include views?
     * @return array with table names etc.
     */
    function table_names($includeViews=true)
    {
-     // query 
+     // query
      $this->query("SHOW ".(!$includeViews ? "FULL" : "")." TABLES");
 
      // get table names
@@ -465,7 +489,7 @@
      {
        // ignore views?
        if (!$includeViews && strtoupper($info[1]) == 'VIEW') continue;
-       
+
        $result[$i]["table_name"]      = $info[0];
        $result[$i]["tablespace_name"] = $this->m_database;
        $result[$i]["database"]        = $this->m_database;
@@ -477,7 +501,7 @@
 
    /**
     * Commit the current transaction.
-    * 
+    *
     * @return bool true
     */
    function commit()
@@ -489,7 +513,7 @@
      }
      return true;
    }
-   
+
    /**
     * Set savepoint with the given name.
     *
@@ -503,25 +527,25 @@
 
    /**
     * Rollback the the current transaction.
-    * 
+    *
     * @param string $savepoint The savepoint to rollback to
     */
    function rollback($savepoint="")
    {
      if ($this->m_link_id)
-     { 
+     {
        if (!empty($savepoint))
        {
-         atkdebug(get_class($this)."::rollback (rollback to savepoint $savepoint)");        
+         atkdebug(get_class($this)."::rollback (rollback to savepoint $savepoint)");
          $this->query('ROLLBACK TO SAVEPOINT '.$savepoint);
-       } 
-       else 
+       }
+       else
        {
          atkdebug("Rollback");
          mysqli_rollback($this->m_link_id);
        }
      }
-      
+
      return true;
    }
 
@@ -534,10 +558,10 @@
    {
      $this->query("SET FOREIGN_KEY_CHECKS = ".($enable ? 1 : 0));
    }
-   
+
    /**
     * Returns the last inserted auto increment value.
-    * 
+    *
     * @return int auto increment value of latest insert query
     */
    public function getInsertId()
