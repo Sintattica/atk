@@ -459,7 +459,10 @@
       $traverser = atknew('atk.utils.atkdirectorytraverser');
       $classfinder = new atkClassFinder();
       $traverser->addCallbackObject($classfinder);
-      $traverser->traverse(atkconfig('atkroot').'atk/');
+      $cwd = getcwd();
+      chdir(atkconfig('atkroot'));
+      $traverser->traverse('atk');
+      chdir($cwd);
       $classes = $classfinder->getClasses();
       atkdebug("atkClassLoader::findAllClasses(): Found ".count($classes).' classes');
       return $classes;
