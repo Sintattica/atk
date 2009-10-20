@@ -711,7 +711,7 @@
       else $prevlevelfromstack = count($stack)-1;
 
       $oldStackId = atkStackId();
-      
+
       if ($atkprevlevel!=$prevlevelfromstack)
       {
         // What we think we came from (as indicated in the url by atkprevlevel)
@@ -734,11 +734,11 @@
         }
 
         $g_sessionData[$this->m_namespace]["stack"][$newid] = $stack;
-        
+
         // Copy the global stackvars for the stack too.
         $g_sessionData[$this->m_namespace]['globals']['#STACK#'][$newid] =
           $g_sessionData[$this->m_namespace]['globals']['#STACK#'][$oldStackId];
-        
+
         return;
       }
     }
@@ -1061,6 +1061,7 @@
   function sessionStore($var, $value)
   {
     global $g_sessionManager;
+    if (!isset($g_sessionManager)) throw new Exception("Trying to store '$var' in session, but no sessionmanager present! Did you start a session (atksession())?");
     $g_sessionManager->globalVar($var, $value);
   }
 
@@ -1073,6 +1074,7 @@
   function sessionLoad($var, $namespace="")
   {
     global $g_sessionManager;
+    if (!isset($g_sessionManager)) throw new Exception("Trying to load '$var' (namespace: '$namespace') from session, but no sessionmanager present! Did you start a session (atksession())?");
     return $g_sessionManager->getValue($var, $namespace);
   }
 

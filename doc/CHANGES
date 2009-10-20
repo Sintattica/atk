@@ -9,7 +9,10 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
-* Fixed atkClassLaoder class detection for non-standard ATK roots. [Peter]
+* Made atkDataGrid only accept objects with atkNode as their parent. [Boy]
+* Improved error handling for sessions, sessionLoad and sessionSave 
+  now throw an exception if there is no atkSessionManager loaded. [Boy]
+* Fixed atkClassLoader class detection for non-standard ATK roots. [Peter]
 + atkMySQLiDriver now retrieves and shows MySQL warnings,
   if the query has warnings and debugging is on. [Boy]
 * atkDataGrid::resume now throws Exceptions if it is unable to resume.
