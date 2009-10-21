@@ -32,6 +32,7 @@
   class atkUpdatehandler extends atkActionHandler
   {
     public $m_dialogSaveUrl;
+    private $m_successURL;
 
     /**
      * The action handler method.
@@ -40,7 +41,7 @@
     {
       // clear old reject info
       $this->setRejectInfo(null);
-    	
+
       if (isset($this->m_partial) && $this->m_partial!="")
       {
         $this->partial($this->m_partial);
@@ -156,7 +157,7 @@
       	$error = $result;
       	$this->invoke($errorHandler, $record, $error, $extraParams);
       }
-      
+
       return true;
     }
 
@@ -240,14 +241,14 @@
       $selector = atkArrayNvl($this->m_postvars, 'atkselector','');
       return (atkinstance('atk.session.atksessionstore')->updateDataRowForSelector($selector, $record)!==false);
     }
-    
+
     /**
      * Handle update error. This can either be an error in the record data the user
      * can correct or a fatal error when saving the record in the database. If the
      * latter is the case the $error parameter is set.
-     * 
+     *
      * This method can be overriden inside your node.
-     * 
+     *
      * @param array  $record the record
      * @param string $error  error string (only on fatal errors)
      *
@@ -260,14 +261,14 @@
         $this->setRejectInfo($record);
         $location = session_url(dispatch_url($this->m_node->atknodetype(),"edit",array("atkselector"=>$this->m_node->primaryKey($record))),SESSION_BACK);
         $this->m_node->redirect($location);
-      }      	
+      }
       else
       {
         $location = $this->m_node->feedbackUrl("update", ACTION_FAILED, $record, $error);
         $this->m_node->redirect($location);
       }
     }
-    
+
     /**
      * Handle update success. Normally redirects the user either back to the edit form
      * (when the user only saved) or back to the previous action if the user choose save
@@ -279,19 +280,24 @@
      */
     public function handleUpdateSuccess($record)
     {
+      if ($this->m_successURL)
+      {
+        $location = $this->m_successURL;
+      }
       if (isset($this->m_postvars['atknoclose']))
       {
         // 'save' was clicked
-        $params = array("atkselector" => $this->m_node->primaryKey($record), "atktab" => $this->m_node->getActiveTab());
-        $location = session_url(dispatch_url($this->m_node->atknodetype(), "edit", $params), SESSION_BACK);
+        $url_params = array("atkselector" => $this->m_node->primaryKey($record),
+                            "atktab"      => $this->m_node->getActiveTab());
+        $location = session_url(dispatch_url($this->m_node->atknodetype(), "edit", $url_params), SESSION_BACK);
       }
       else
       {
         // 'save and close' was clicked
         $location = $this->m_node->feedbackUrl("update", ACTION_SUCCESS, $record, "", 2);
       }
-      
-      $this->m_node->redirect($location);      
+
+      $this->m_node->redirect($location);
     }
 
     //=================== PARTIAL / DIALOG METHODS ===================\\
@@ -431,5 +437,17 @@
       global $ATK_VARS; $ATK_VARS["atkaction"]="edit";
       $edithandler = $this->m_node->getHandler("edit");
       return $edithandler->invoke("editPage", $record, $locked);
+    }
+
+    /**
+     * Set the URL to go to after a succesful save.
+     *
+     * @param string $url
+     * @return atkSaveHandler
+     */
+    public function setSuccessURL($url)
+    {
+      $this->m_successURL = $url;
+      return $this;
     }
   }

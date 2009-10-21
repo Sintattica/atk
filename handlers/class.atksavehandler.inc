@@ -35,13 +35,20 @@
     var $m_dialogSaveUrl;
 
     /**
+     * URL that should be used to redirect to after a successful saved record.
+     *
+     * @var string
+     */
+    private $m_successURL;
+
+    /**
      * The action handler method
      */
     function action_save()
     {
       // clear old reject info
       $this->setRejectInfo(null);
-      
+
       $page = &$this->getPage();
 
       if (isset($this->m_partial) && !empty($this->m_partial))
@@ -122,43 +129,65 @@
      */
     private function getSuccessReturnURL($record)
     {
-      $location="";
+      if ($this->m_successURL)
+      {
+        return $this->m_successURL;
+      }
       if ($this->m_node->hasFlag(NF_EDITAFTERADD) && $this->m_node->allowed('edit'))
       {
-        // forward atkpkret for newly added records
-        $extra = "";
-        if (isset($this->m_postvars["atkpkret"]))
-        {
-          $extra = "&atkpkret=".rawurlencode($this->m_postvars["atkpkret"]);
-        }
-
-        $back = SESSION_BACK;
-        if ($this->_getSkip()==1) $back = SESSION_REPLACE;
-
-        $url = atkSelf().'?atknodetype='.$this->m_node->atknodetype();
-        $url.= '&atkaction=edit';
-        $url.= '&atkselector='.rawurlencode($this->m_node->primaryKey($record));
-        $location = session_url($url.$extra, $back);
+        return $this->getEditAfterAddURL($record);
       }
       else if ($this->m_node->hasFlag(NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext']))
       {
-        $back = SESSION_BACK;
-        if ($this->_getSkip()==1) $back = SESSION_DEFAULT;
-
-        $filter = "";
-        if (isset($this->m_node->m_postvars['atkfilter']))
-        {
-          $filter = "&atkfilter=".rawurlencode($this->m_node->m_postvars['atkfilter']);
-        }
-        $url = atkSelf().'?atknodetype='.$this->m_node->atknodetype().'&atkaction=add';
-        $location = session_url($url.$filter, $back);
+        return $this->getAddAfterAddURL();
       }
       else
       {
         // normal succesful save
-        $location = $this->m_node->feedbackUrl("save", ACTION_SUCCESS, $record, "", $this->_getSkip());
+        return $this->m_node->feedbackUrl("save", ACTION_SUCCESS, $record, "", $this->_getSkip());
       }
-      return $location;
+    }
+
+    /**
+     * Given a saved record, return the URL that should be redirected to
+     * for 'edit after add'.
+     *
+     * @param array $record
+     * @return string
+     */
+    private function getEditAfterAddURL(array $record)
+    {
+      // forward atkpkret for newly added records
+        $url_params = array();
+        if (isset($this->m_postvars["atkpkret"]))
+        {
+          $url_params['atkpkret'] = $this->m_postvars["atkpkret"];
+        }
+        $url_params['atkselector'] = $this->m_node->primaryKey($record);
+
+        if ($this->_getSkip()==1) $sessionstatus = SESSION_REPLACE;
+        else                      $sessionstatus = SESSION_BACK;
+
+        return session_url(dispatch_url($this->m_node->atkNodeType(), 'edit'), $sessionstatus);
+    }
+
+    /**
+     * Return the URL that should be redirected to for 'add after add'.
+     *
+     * @return string
+     */
+    private function getAddAfterAddURL()
+    {
+      $url_params = array();
+      if (isset($this->m_node->m_postvars['atkfilter']))
+      {
+        $url_params['atkfilter'] = $this->m_node->m_postvars['atkfilter'];
+      }
+
+      if ($this->_getSkip()==1) $sessionstatus = SESSION_DEFAULT;
+      else                      $sessionstatus = SESSION_BACK;
+
+      return session_url(dispatch_url($this->m_node->atkNodeType(), 'add', $url_params), $sessionstatus);
     }
 
     /**
@@ -368,6 +397,22 @@
     function setDialogSaveUrl($url)
     {
       $this->m_dialogSaveUrl = $url;
+    }
+
+    /**
+     * Set the URL to go to after a succesful save.
+     *
+     * If you want to get the ID of the newly saved record,
+     * then be sure 'atkpkret' is set in the postvars
+     * to the variable name you want to get a selector in.
+     *
+     * @param string $url
+     * @return atkSaveHandler
+     */
+    public function setSuccessURL($url)
+    {
+      $this->m_successURL = $url;
+      return $this;
     }
   }
 ?>
