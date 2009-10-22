@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
++ Added atkEditHandler::setUpdateSessionStatus to control on which level of
+  the stack the update action will be executed. [Peter]
 + Added 'setSuccessURL' method to atkSaveHandler and atkUpdateHandler,
   allowing you to override the location that is being redirected to
   after a successful save/update. [Boy]
