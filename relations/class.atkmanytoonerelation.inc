@@ -467,24 +467,33 @@
     {
       if ($this->isPosted($postvars))
       {
-        // Split the primary key of the selected record into its
-        // referential key elements.
-        $keyelements = decodeKeyValueSet($postvars[$this->fieldName()]);
-
         $result = array();
-
-        foreach ($keyelements as $key=>$value)
+        
+        // support specifying the value as a single number if the
+        // destination's primary key consists of a single field
+        if (is_numeric($postvars[$this->fieldName()]))
         {
-          // Tablename must be stripped out because it is in the way..
-          if (strpos($key,'.')>0)
+          $result[$this->getDestination()->primaryKeyField()] = $postvars[$this->fieldName()];
+        }
+        
+        else
+        {
+          // Split the primary key of the selected record into its
+          // referential key elements.
+          $keyelements = decodeKeyValueSet($postvars[$this->fieldName()]);
+          foreach ($keyelements as $key=>$value)
           {
-            $field = substr($key,strrpos($key,'.')+1);
+            // Tablename must be stripped out because it is in the way..
+            if (strpos($key,'.')>0)
+            {
+              $field = substr($key,strrpos($key,'.')+1);
+            }
+            else
+            {
+              $field = $key;
+            }
+            $result[$field] = $value;
           }
-          else
-          {
-            $field = $key;
-          }
-          $result[$field] = $value;
         }
 
         if (count($result) == 0)

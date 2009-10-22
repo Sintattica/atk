@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Allow specifying a default value as a numeric value in the URL for 
+  atkManyToOneRelations with a single field primary key destination. [Peter]
 + Added atkEditHandler::setUpdateSessionStatus to control on which level of
   the stack the update action will be executed. [Peter]
 + Added 'setSuccessURL' method to atkSaveHandler and atkUpdateHandler,
