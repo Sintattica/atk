@@ -9,6 +9,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Bug fix for script error in Internet Explorer in dhtml_tabs.js.php. [Peter]
 * Allow specifying a default value as a numeric value in the URL for 
   atkManyToOneRelations with a single field primary key destination. [Peter]
 + Added atkEditHandler::setUpdateSessionStatus to control on which level of

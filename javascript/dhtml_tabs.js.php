@@ -165,7 +165,6 @@ function setCurrentTab(value)
       input.setAttribute('value', value);
       input.defaultValue = value;
       form.appendChild(input);
-      form.atktab = input;
     }
   }
 }
