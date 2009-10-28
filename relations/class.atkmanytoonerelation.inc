@@ -1915,11 +1915,11 @@
      * @param int    $flags the recordlist flags
      * @see atkNode::listArray
      */
-    function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags)
+    function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags, $edit=false)
     {
       $prefix = $fieldprefix.$this->fieldName()."_AE_";
 
-      parent::addToListArrayRow($action, $arr, $nr, $prefix, $flags);
+      parent::addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit);
 
       // only add extra columns when needed
       if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) return;
@@ -1936,7 +1936,7 @@
         $p_attrib = &$this->m_destInstance->getAttribute($attribname);
         $p_attrib->m_flags |= AF_HIDE_LIST;
         $p_attrib->m_flags ^= AF_HIDE_LIST;
-        $p_attrib->addToListArrayRow($action, $arr, $nr, $prefix, $flags);
+        $p_attrib->addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit);
       }
 
       $arr["rows"][$nr]["record"] = $backup;

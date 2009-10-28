@@ -231,26 +231,41 @@
       $this->m_decimalseparator = $separator;
     }
 
+    
     /**
      * Formats the number based on setting in the language file
      *
-     * @param string $number
-     * @param String $decimal_separator override decimal separator
-     * @param String $thousands_separator override thousands separator
+     * @param float  $number             number
+     * @param string $decimalSeparator   override decimal separator
+     * @param string $thousandsSeparator override thousands separator
+     * 
      * @return string nicely formatted number
      */
-    protected function formatNumber($number, $decimal_separator="", $thousands_separator="")
+    protected function formatNumber($number, $decimalSeparator="", $thousandsSeparator="")
     {
-      if(empty($decimal_separator))   $decimal_separator = $this->m_decimalseparator;
-      if(empty($thousands_separator)) $thousands_separator = $this->m_thousandsseparator;
+      $decimalSeparator = $decimalSeparator == null ? $this->m_decimalseparator : $decimalSeparator;
+      $thousandsSeparator = $thousandsSeparator == null ? $this->m_thousandsseparator : $thousandsSeparator;
+      $thousandsSeparator = $this->m_use_thousands_separator ? $thousandsSeparator : '';
 
-      if($decimal_separator == $thousands_separator)
+      if ($decimalSeparator == $thousandsSeparator)
       {
         atkwarning('invalid thousandsseparator. identical to the decimal_separator');
-        $thousands_separator = '';
+        $thousandsSeparator = '';
       }
 
-      return number_format($number,$this->m_decimals,$decimal_separator,($this->m_use_thousands_separator) ? $thousands_separator : '');
+      // NOTE: we don't use number_format because this sometimes causes rounding issues
+      //       if a float can not be properly represented (see http://nl.php.net/manual/en/function.number-format.php#93893)
+       
+      $tmp1 = round((float)$number, $this->m_decimals);
+      $tmp1 .= $this->m_decimals > 0 && strpos($tmp1, '.') === false ? '.' : '';
+      $tmp1 .= str_repeat('0', max($this->m_decimals - strlen(substr($tmp1, strpos($tmp1, '.') + 1)), 0));
+      
+      while (($tmp2 = preg_replace('/(?<!.)(\d+)(\d\d\d)/', '\1 \2', $tmp1)) != $tmp1)
+      {
+        $tmp1 = $tmp2;
+      }
+
+      return strtr($tmp1, array(' ' => $thousandsSeparator, '.' => $decimalSeparator));
     }
 
     /**
@@ -588,7 +603,7 @@
       if ($searchmode!="between")
       {
         // Use default handler, and use only the first field.
-        if(empty($value['from'])) return false;
+        if (!array_key_exists('from', $value)) return false;
         return parent::getSearchCondition($query, $table, $value["from"], $searchmode);
       }
       else

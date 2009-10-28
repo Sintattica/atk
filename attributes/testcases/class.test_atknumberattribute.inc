@@ -145,10 +145,12 @@
       $this->assertEqual('200,00',$this->attr->display(array('name' => '200')));
       $this->assertEqual('2000,00',$this->attr->display(array('name' => '2000')));
       $this->assertEqual('2000,83',$this->attr->display(array('name' => '2000.832892389')));
+      $this->assertEqual('2123000,83',$this->attr->display(array('name' => '2123000.832892389')));
       
       $this->attr->setUseThousandsSeparator(true);
       $this->assertEqual('2.000,00',$this->attr->display(array('name' => '2000')));
       $this->assertEqual('2.000,83',$this->attr->display(array('name' => '2000.832892389')));
+      $this->assertEqual('2.123.000,83',$this->attr->display(array('name' => '2123000.832892389')));
     }
     
     function test_decimal_seperator()
@@ -163,5 +165,37 @@
       $this->assertTrue($this->attr->getThousandsSeparator());
     }
     
+    function test_decimals()
+    {
+      $attr = new atkNumberAttribute("name",0,10,0);
+      $attr->setUseThousandsSeparator(true);      
+      $this->assertEqual('200', $attr->display(array('name' => '200')));
+      $this->assertEqual('2.001', $attr->display(array('name' => '2000.832892389')));
+      $this->assertEqual('2.123.001', $attr->display(array('name' => '2123000.832892389')));
+      
+      $attr = new atkNumberAttribute("name",0,10,2);
+      $attr->setUseThousandsSeparator(true);      
+      $this->assertEqual('200,00', $attr->display(array('name' => '200')));
+      $this->assertEqual('2.000,83', $attr->display(array('name' => '2000.832892389')));
+      $this->assertEqual('2.123.000,83', $attr->display(array('name' => '2123000.832892389')));
+      
+      $attr = new atkNumberAttribute("name",0,10,3);
+      $attr->setUseThousandsSeparator(true);      
+      $this->assertEqual('200,000', $attr->display(array('name' => '200')));
+      $this->assertEqual('2.000,833', $attr->display(array('name' => '2000.832892389')));
+      $this->assertEqual('2.123.000,833', $attr->display(array('name' => '2123000.832892389')));
+      
+      $attr = new atkNumberAttribute("name",0,10,5);
+      $attr->setUseThousandsSeparator(true);
+      $this->assertEqual('200,00000', $attr->display(array('name' => '200')));
+      $this->assertEqual('2.000,83289', $attr->display(array('name' => '2000.832892389')));
+      $this->assertEqual('2.123.000,83289', $attr->display(array('name' => '2123000.832892389')));
+      
+      $attr = new atkNumberAttribute("name",0,10,7);
+      $attr->setUseThousandsSeparator(true);
+      $this->assertEqual('200,0000000', $attr->display(array('name' => '200')));
+      $this->assertEqual('2.000,8328924', $attr->display(array('name' => '2000.832892389')));
+      $this->assertEqual('2.123.000,8328900', $attr->display(array('name' => '2123000.832892389')));
+    }
   }
 ?>

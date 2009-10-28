@@ -9,6 +9,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Fix for making aktManyToOneRelations editable in the grid. [Peter]
+* Fix formatting/rounding issue in atkNumberAttribute which caused values
+  to be represented incorrectly. [Peter]
 * Bug fix for script error in Internet Explorer in dhtml_tabs.js.php. [Peter]
 * Allow specifying a default value as a numeric value in the URL for 
   atkManyToOneRelations with a single field primary key destination. [Peter]

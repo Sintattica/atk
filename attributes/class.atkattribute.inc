@@ -1306,8 +1306,6 @@
      */
     function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, &$columnConfig, $grid=null)
     {
-      global $g_sessionManager, $ATK_VARS;
-
       if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select"))
       {
         $key = $fieldprefix.$this->fieldName();
