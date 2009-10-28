@@ -252,16 +252,12 @@
     /**
      * Return the database field type of the attribute.
      *
-     * @return String The 'generic' type of the database field for this
+     * @return String The 'text' type of the database field for this
      *                attribute.
      */
     function dbFieldType()
     {
-      if (empty($this->m_dbfieldtype))
-      {
-        return 'text';
-      }
-      return $this->m_dbfieldtype;
+       return 'text';
     }
 
     /**

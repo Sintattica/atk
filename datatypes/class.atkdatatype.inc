@@ -42,10 +42,8 @@
      */
     public function create($arguments=array())
     {
-      $class=null;
-      eval("\$class = new ".get_class($this).
-           "(".implode(',',$arguments).")");
-      return $class;
+      $class = new ReflectionClass( get_class($this) );      
+      return $class->newInstanceArgs($arguments);
     }
     
     /**

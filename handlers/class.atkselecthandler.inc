@@ -96,8 +96,15 @@ class atkSelectHandler extends atkActionHandler
   public function partial_datagrid()
   {
     atkimport('atk.datagrid.atkdatagrid');
+    try
+    {
     return atkDataGrid::resume($this->getNode())->render();
   }      
+    catch (Exception $e)
+    {
+      return atkDataGrid::create($this->getNode())->render();
+    }
+  }
 
   /**
    * If the auto-select flag is set and only one record exists we immediately

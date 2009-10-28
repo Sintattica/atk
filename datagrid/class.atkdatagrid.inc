@@ -225,10 +225,10 @@ class atkDataGrid
    * @var string
    */
   private $m_mode;
-  
+
   /**
    * Master record.
-   * 
+   *
    * @var array
    */
   private $m_masterRecord;
@@ -342,7 +342,7 @@ class atkDataGrid
    *
    * @return atkDataGrid datagrid instance
    */
-  public static function create($node, $name=null, $class=null, $isEmbedded=false, $useSession=true)
+  public static function create(atkNode $node, $name=null, $class=null, $isEmbedded=false, $useSession=true)
   {
     $useSession = $useSession && atkGetSessionManager() != null;
     $name = $name == null ? uniqid('atkdatagrid') : $name;
@@ -350,7 +350,9 @@ class atkDataGrid
     $sessions = &$GLOBALS['ATK_VARS']['atkdgsession'];
     $sessions[$name] = array('class' => $class, 'custom' => array(), 'system' => array());
     if ($useSession)
+    {
       atkGetSessionManager()->pageVar('atkdgsession', $sessions);
+    }
     atkimport($class);
     $class = substr($class, strrpos($class, '.') + 1);
     return new $class($node, $name, self::CREATE, $isEmbedded, $useSession);
@@ -367,11 +369,24 @@ class atkDataGrid
    * @param atkNode $node datagrid node
    * @return atkDataGrid datagrid instance
    */
-  public static function resume($node)
+  public static function resume(atkNode $node)
   {
+    // Cannot resume from session.
+    if (!isset($GLOBALS['ATK_VARS']['atkdatagrid']))
+    {
+      throw new Exception('No last known datagrid!');
+    }
+
     $name = $GLOBALS['ATK_VARS']['atkdatagrid'];
+
+    if (!isset($GLOBALS['ATK_VARS']['atkdgsession'][$name]))
+    {
+      throw new Exception('No session data for grid: '.$name);
+    }
     $session = $GLOBALS['ATK_VARS']['atkdgsession'][$name];
+
     $class = $session['class'];
+
     atkimport($class);
     $class = substr($class, strrpos($class, '.') + 1);
     return new $class($node, $name, self::RESUME);
@@ -386,7 +401,7 @@ class atkDataGrid
    * @param boolean $isEmbedded is embedded?
    * @param boolean $useSession use session?
    */
-  protected function __construct($node, $name, $mode=self::CREATE, $isEmbedded=false, $useSession=true)
+  protected function __construct(atkNode $node, $name, $mode=self::CREATE, $isEmbedded=false, $useSession=true)
   {
     $this->setName($name);
     $this->setNode($node);
@@ -467,7 +482,7 @@ class atkDataGrid
     {
       $this->addComponent('index', 'atk.datagrid.atkdgindex');
     }
-    
+
     if (count($this->getNode()->m_editableListAttributes) > 0)
     {
       $this->addComponent('editcontrol', 'atk.datagrid.atkdgeditcontrol');
@@ -605,7 +620,7 @@ class atkDataGrid
                   'actionSessionStatus', 'filters', 'mode',
                   'mraSelectionMode', 'countHandler', 'selectHandler',
                   'masterRecord');
-    
+
     foreach ($vars as $var)
     {
       $fullVar = "m_{$var}";
@@ -873,39 +888,39 @@ class atkDataGrid
 
   /**
    * Are we currently in edit mode?
-   * 
+   *
    * @return boolean are we in edit mode?
    */
   public function isEditing()
   {
     return $this->getPostvar('atkgridedit', false);
-  }  
-  
+  }
+
   /**
    * Returns the master record.
-   * 
+   *
    * @see atkDataGrid::setMasterRecord
-   * 
+   *
    * @return array master record
    */
   public function getMasterRecord()
   {
   	return $this->m_masterRecord;
   }
-  
+
   /**
-   * Sets the master record if the grid is used in a 1:n relationship. 
-   * 
-   * This record is not directly used by the datagrid itself, but 
+   * Sets the master record if the grid is used in a 1:n relationship.
+   *
+   * This record is not directly used by the datagrid itself, but
    * components might.
-   * 
+   *
    * @param array $record master record
    */
   public function setMasterRecord($record)
   {
   	$this->m_masterRecord = $record;
   }
-  
+
   /**
    * Returns the grid components.
    *
@@ -951,11 +966,11 @@ class atkDataGrid
   {
     $this->m_components[$name] = array('class' => $class, 'options' => $options);
   }
-  
+
   /**
    * Sets a component option for the given component. Only works when the
    * components haven't been instantiated  yet.
-   * 
+   *
    * @param string $component component name
    * @param string $option    option name
    * @param string $value     value
@@ -1215,7 +1230,7 @@ class atkDataGrid
   {
     return $this->m_filters;
   }
-  
+
   /**
    * Remove filters.
    */
@@ -1223,10 +1238,10 @@ class atkDataGrid
   {
   	$this->m_filters = array();
   }
-  
+
   /**
    * Remove filter.
-   * 
+   *
    * @param string $filter
    */
   public function removeFilter($filter)
@@ -1256,6 +1271,7 @@ class atkDataGrid
   {
     return count($this->m_filters) == 0 ? '' : '('.implode(') AND (', $this->getFilters()).')';
   }
+
 
   /**
    * Returns the mode.
@@ -1470,7 +1486,7 @@ class atkDataGrid
            ->orderBy($this->getOrderBy())
            ->limit($this->getLimit(), $this->getOffset())
            ->mode($this->getMode())
-           ->ignoreDefaultFilters()           
+           ->ignoreDefaultFilters()
            ->allRows();
   }
 
@@ -1492,7 +1508,7 @@ class atkDataGrid
            ->excludes($excludes)
            ->where($this->getFilter())
            ->mode($this->getMode())
-           ->ignoreDefaultFilters()           
+           ->ignoreDefaultFilters()
            ->rowCount();
   }
 
@@ -1513,8 +1529,8 @@ class atkDataGrid
     if ($this->m_recordsLoaded && !$force) return;
 
     // load component instances, because they might be listeners
-    $this->loadComponentInstances();    
-    
+    $this->loadComponentInstances();
+
     // notify listeners
     $this->notify(atkDGEvent::PRE_LOAD);
 
@@ -1587,7 +1603,7 @@ class atkDataGrid
     atkimport('atk.utils.atkjson');
     return 'ATK.DataGrid.update('.atkJSON::encode($this->getName()).', '.atkJSON::encode($overrides).', {'.$overridesJsStr.'}, '.$overridesJsCallback.');';
   }
-  
+
   /**
    * Returns a JavaScript call to save the current grid's contents when in edit mode.
    *
@@ -1598,7 +1614,7 @@ class atkDataGrid
     $url = session_url(dispatch_url($this->getNode()->atkNodeType(), 'multiupdate', array('output' => 'json')), SESSION_PARTIAL);
     atkimport('atk.utils.atkjson');
     return 'ATK.DataGrid.save('.atkJSON::encode($this->getName()).', '.atkJSON::encode($url).');';
-  }  
+  }
 
   /**
    * Translate the given string using the grid node.

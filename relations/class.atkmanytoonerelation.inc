@@ -467,24 +467,33 @@
     {
       if ($this->isPosted($postvars))
       {
-        // Split the primary key of the selected record into its
-        // referential key elements.
-        $keyelements = decodeKeyValueSet($postvars[$this->fieldName()]);
-
         $result = array();
-
-        foreach ($keyelements as $key=>$value)
+        
+        // support specifying the value as a single number if the
+        // destination's primary key consists of a single field
+        if (is_numeric($postvars[$this->fieldName()]))
         {
-          // Tablename must be stripped out because it is in the way..
-          if (strpos($key,'.')>0)
+          $result[$this->getDestination()->primaryKeyField()] = $postvars[$this->fieldName()];
+        }
+        
+        else
+        {
+          // Split the primary key of the selected record into its
+          // referential key elements.
+          $keyelements = decodeKeyValueSet($postvars[$this->fieldName()]);
+          foreach ($keyelements as $key=>$value)
           {
-            $field = substr($key,strrpos($key,'.')+1);
+            // Tablename must be stripped out because it is in the way..
+            if (strpos($key,'.')>0)
+            {
+              $field = substr($key,strrpos($key,'.')+1);
+            }
+            else
+            {
+              $field = $key;
+            }
+            $result[$field] = $value;
           }
-          else
-          {
-            $field = $key;
-          }
-          $result[$field] = $value;
         }
 
         if (count($result) == 0)
@@ -1906,11 +1915,11 @@
      * @param int    $flags the recordlist flags
      * @see atkNode::listArray
      */
-    function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags)
+    function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags, $edit=false)
     {
       $prefix = $fieldprefix.$this->fieldName()."_AE_";
 
-      parent::addToListArrayRow($action, $arr, $nr, $prefix, $flags);
+      parent::addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit);
 
       // only add extra columns when needed
       if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) return;
@@ -1927,7 +1936,7 @@
         $p_attrib = &$this->m_destInstance->getAttribute($attribname);
         $p_attrib->m_flags |= AF_HIDE_LIST;
         $p_attrib->m_flags ^= AF_HIDE_LIST;
-        $p_attrib->addToListArrayRow($action, $arr, $nr, $prefix, $flags);
+        $p_attrib->addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit);
       }
 
       $arr["rows"][$nr]["record"] = $backup;

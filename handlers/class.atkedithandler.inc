@@ -34,6 +34,7 @@
     var $m_dialogSaveUrl = null;
     var $m_buttonsource = null;
 
+    private $m_updateSessionStatus = SESSION_NESTED;
 
     /**
      * The action handler method.
@@ -240,8 +241,30 @@
         return $total;
       }
     }
+    
+    /**
+     * Returns the current update session status.
+     * 
+     * @see atkEditHandler::setUpdateSessionStatus
+     * 
+     * @return int session status
+     */
+    public function getUpdateSessionStatus()
+    {
+      return $this->m_updateSessionStatus;
+    }
 
-
+    /**
+     * Sets the session status in which the update action gets executed.
+     * By default the update action is called nested in the session stack.
+     * 
+     * @param int $sessionStatus session status (e.g. SESSION_NESTED, SESSION_DEFAULT etc.)
+     */
+    public function setUpdateSessionStatus($sessionStatus)
+    {
+      $this->m_updateSessionStatus = $sessionStatus;
+    }
+    
     /**
      * Get the start of the form.
      *
@@ -255,7 +278,7 @@
       $formIdentifier = ((isset($this->m_partial) && $this->m_partial!="")) ? "dialogform" : "entryform";
       $formstart = '<form id="'.$formIdentifier.'" name="'.$formIdentifier.'" enctype="multipart/form-data" action="'.$controller->getPhpFile().'?'.SID.'"'.
                                    ' method="post" onsubmit="return globalSubmit(this)">'.
-                                   session_form(SESSION_NESTED);
+                                   session_form($this->getUpdateSessionStatus());
 
       $formstart .= $controller->getHiddenVarsString();
 

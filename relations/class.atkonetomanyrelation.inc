@@ -316,9 +316,19 @@
     {
       $this->createDestination();
       $node = $this->getDestination();
+
       atkimport('atk.datagrid.atkdatagrid');
+      try
+      {
       $grid = atkDataGrid::resume($node);
       $this->modifyDataGrid($grid, atkDataGrid::RESUME);
+      }
+      catch (Exception $e)
+      {
+        $grid = atkDataGrid::create($node);
+        $this->modifyDataGrid($grid, atkDataGrid::CREATE);
+      }
+
       return $grid->render();
     }
 
