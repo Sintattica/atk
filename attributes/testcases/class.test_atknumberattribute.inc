@@ -197,5 +197,49 @@
       $this->assertEqual('2.000,8328924', $attr->display(array('name' => '2000.832892389')));
       $this->assertEqual('2.123.000,8328900', $attr->display(array('name' => '2123000.832892389')));
     }
+    
+    function test_metdata()
+    {
+      // metadata specifies 3 decimals      
+      $metadata = array('name' => array('gentype' => 'decimal', 'len' => '8,3'));
+      $attr = new atkNumberAttribute("name");
+      $attr->fetchMeta($metadata);      
+      $attr->setUseThousandsSeparator(true);      
+      $this->assertEqual('200,000', $attr->display(array('name' => '200')));
+      $this->assertEqual('2.000,833', $attr->display(array('name' => '2000.832892389')));
+      $this->assertEqual('2.123.000,833', $attr->display(array('name' => '2123000.832892389')));      
+      
+      // metadata specifies 5 decimals
+      $metadata = array('name' => array('gentype' => 'decimal', 'len' => '8,5'));
+      $attr = new atkNumberAttribute("name");
+      $attr->fetchMeta($metadata);
+      $attr->setUseThousandsSeparator(true);
+      $this->assertEqual('200,00000', $attr->display(array('name' => '200')));
+      $this->assertEqual('2.000,83289', $attr->display(array('name' => '2000.832892389')));
+
+      // metadata specifies more decimals than we specify in the attribute, use the lowest value      
+      $metadata = array('name' => array('gentype' => 'decimal', 'len' => '8,3'));
+      $attr = new atkNumberAttribute("name", 0, 10, 2);
+      $attr->fetchMeta($metadata);      
+      $attr->setUseThousandsSeparator(true);      
+      $this->assertEqual('200,00', $attr->display(array('name' => '200')));
+      $this->assertEqual('2.000,83', $attr->display(array('name' => '2000.832892389')));
+      $this->assertEqual('2.123.000,83', $attr->display(array('name' => '2123000.832892389')));      
+      
+      // metadata specifies less decimals than we specify in the attribute, use the lowest value
+      $metadata = array('name' => array('gentype' => 'decimal', 'len' => '8,4'));
+      $attr = new atkNumberAttribute("name", 0, 10, 6);
+      $attr->fetchMeta($metadata);
+      $attr->setUseThousandsSeparator(true);
+      $this->assertEqual('200,0000', $attr->display(array('name' => '200')));
+      $this->assertEqual('2.000,8329', $attr->display(array('name' => '2000.832892389')));
+      
+      // no metadata given, use the default decimals which is null and will be threated as 0
+      $attr = new atkNumberAttribute("name");
+      $attr->setUseThousandsSeparator(true);      
+      $this->assertEqual('200', $attr->display(array('name' => '200')));
+      $this->assertEqual('2.001', $attr->display(array('name' => '2000.832892389')));
+      $this->assertEqual('2.123.001', $attr->display(array('name' => '2123000.832892389')));            
+    }
   }
 ?>
