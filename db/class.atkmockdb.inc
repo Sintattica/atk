@@ -34,6 +34,8 @@
     var $m_query_history = array();
     var $m_next_ids = array();
     
+    private $m_currentResult = null;
+    
 
     /**
      * Connect to the database.
@@ -63,40 +65,62 @@
     {
       $this->m_query_history[] = $query;
       
-      if (isset($this->m_results[$offset][$limit][$query])) return $this->m_results[$offset][$limit][$query];
-      if (!empty($this->m_regex_results))
+      $this->m_row = 0;
+      $this->m_currentResult = null;
+      $result = null;
+      
+      if (isset($this->m_results[$offset][$limit][$query])) 
       {
-        foreach ($this->m_regex_results[$offset][$limit] as $regex => $result)
+        $result = $this->m_results[$offset][$limit][$query];
+      }
+      else if (!empty($this->m_regex_results))
+      {
+        foreach ($this->m_regex_results[$offset][$limit] as $regex => $res)
         {         
-          if (preg_match($regex, $query)) return $result;        
+          if (preg_match($regex, $query)) 
+          {
+            $result = $res;
+            break;
+          }
         }
       }
-      return true;
+      
+      if (is_array($result))
+      {
+        $this->m_currentResult = $result;
+      }
+      else if (isset($result))
+      {
+        return $result;
+      }
+      else
+      {
+        return true;
+      }
     }
 
 
     /**
-     * Get all rows that are the result
-     * of a certain specified query
-     *
-     * Note: This is not an efficient way to retrieve
-     * records, as this will load all records into one
-     * array into memory. If you retrieve a lot of records,
-     * you might hit the memory_limit and your script will die.
-     *
-     * @param string $query the query
-     * @param int $offset The offset to use
-     * @param int $limit The limit to use
-     * @return array with rows
+     * Retrieve the next record in the resultset.
+     * 
+     * @return mixed An array containing the record, or false if there are no more
+     *               records to retrieve.
      */
-    function getrows($query, $offset=-1, $limit=-1)
+    public function next_record()
     {
-      $res = $this->query($query, $offset, $limit);
-      if (is_array($res))
-        return $res;
-      return array();
+      if ($this->m_currentResult !== null && count($this->m_currentResult) > 0)
+      {
+        $record = array_shift($this->m_currentResult);
+        $this->m_record = $record;
+        $this->m_row++;
+        return $record;
+      }
+      else
+      {
+        return false;
+      }
     }
-
+    
     /**
      * Set the result for the query (to mock executing a query)
      *

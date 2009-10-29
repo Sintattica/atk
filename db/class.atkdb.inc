@@ -750,72 +750,166 @@
     }
 
     /**
-     * Get all rows that are the result
-     * of a certain specified query
-     *
-     * Note: This is not an efficient way to retrieve
-     * records, as this will load all records into one
-     * array into memory. If you retrieve a lot of records,
-     * you might hit the memory_limit and your script will die.
-     *
-     * @param string $query The query
-     * @param int $offset The offset to use
-     * @param int $limit The limit to use
-     * @return array array with rows
+     * Returns the first row for the given query.
+     * 
+     * Please note: this method does *not* add a limit to the query
+     * 
+     * @param string  $query    query
+     * @param boolean $useLimit add limit to the query (if you have your own limit specify false!)
+     * 
+     * @return array row
      */
-    function getrows($query, $offset=-1, $limit=-1)
+    public function getRow($query, $useLimit=true)
     {
-      $result = array();
-
-      $this->query($query, $offset, $limit);
-      while ($this->next_record())
-        $result[] = $this->m_record;
-
-      return $result;
-    }
-
-    /**
-     * Get a single value (first row, first column) from a
-     * certain specified query
-     *
-     * @param string $query The query
-     * @param mixed $default A default value which will be returned if the query doesn't return a result
-     * @return mixed Either the result of the query or the default value
-     */
-    function getValue($query, $default=null)
-    {
-      $this->query($query, -1, 1);
-      if ($this->next_record() && count($this->m_record)>0)
-        return atkArrayNvl(array_values($this->m_record), 0);
-      else
-        return $default;
+      $rows = $this->getRows($query, $useLimit ? 0 : -1, $useLimit ? 1 : -1);
+      return count($rows) > 0 ? $rows[0] : null;
     }
     
     /**
-     * Get an array with all the values in the (first) column.
-     * 
-     * Note: This is not an efficient way to retrieve
-     * records, as this will load all records into one
-     * array into memory. If you retrieve a lot of records,
-     * you might hit the memory_limit and your script will die.
+     * Get all rows for the given query.
      *
-     * @param string $query The query
-     * @param string $key You can change the returning column using this parameter
-     * @param int $offset The offset to use
-     * @param int $limit The limit to use
-     * @return array array with rows
+     * NOTE: 
+     * This is not an efficient way to retrieve records, as this 
+     * will load all records into one array into memory. If you 
+     * retrieve a lot of records, you might hit the memory_limit 
+     * and your script will die.
+     *
+     * @param string $query  query
+     * @param int    $offset offset
+     * @param int    $limit  limit
+     * 
+     * @return array rows
      */
-    function getValues($query, $key=0, $offset=-1, $limit=-1)
+    public function getRows($query, $offset=-1, $limit=-1)
+    {
+      return $this->getRowsAssoc($query, null, $offset, $limit);
+    }
+    
+    /**
+     * Get rows in an associative array with the given column used as key for the rows.
+     * 
+     * NOTE: 
+     * This is not an efficient way to retrieve records, as this 
+     * will load all records into one array into memory. If you 
+     * retrieve a lot of records, you might hit the memory_limit 
+     * and your script will die.
+     *
+     * @param string     $query     query
+     * @param int|string $keyColumn column index / name (default first column) to be used as key
+     * @param int        $offset    offset
+     * @param int        $limit     limit
+     * 
+     * @return array rows
+     */
+    public function getRowsAssoc($query, $keyColumn=0, $offset=-1, $limit=-1)
     {
       $result = array();
 
       $this->query($query, $offset, $limit);
-      while ($this->next_record())
+      for ($i = 0; $this->next_record(); $i++)
       {
-        $result[] = atkArrayNvl(array_values($this->m_record), $key);
+        if ($keyColumn === null)
+        {
+          $key = $i;
+        }
+        else if (is_numeric($keyColumn))
+        {
+          $key = atkArrayNvl(array_values($this->m_record), $keyColumn);
+        }
+        else
+        {
+          $key = $this->m_record[$keyColumn];
+        }        
+        
+        $result[$key] = $this->m_record;
       }
 
       return $result;
+    }
+
+    /**
+     * Get a single value from a certain specified query
+     *
+     * @param string     $query       query
+     * @param mixed      $default     fallback value if the query doesn't return a result
+     * @param int|string $valueColumn column index / name (default first column) to be used as value
+     * @param boolean    $useLimit    add limit to the query (if you have your own limit specify false!)
+     * 
+     * @return mixed first value or default fallback value
+     */
+    public function getValue($query, $default=null, $valueColumn=0, $useLimit=true)
+    {
+      $row = $this->getRow($query, $useLimit);
+      
+      if ($row == null)
+      {
+        return $default;
+      }
+      else if (is_numeric($valueColumn))
+      {
+        return atkArrayNvl(array_values($row), $valueColumn);
+      }
+      else
+      {
+        return $row[$valueColumn];
+      }
+    }
+    
+    /**
+     * Get an array with all the values in the specified column.
+     *
+     * NOTE: 
+     * This is not an efficient way to retrieve records, as this 
+     * will load all records into one array into memory. If you 
+     * retrieve a lot of records, you might hit the memory_limit 
+     * and your script will die.
+     *
+     * @param string     $query       query
+     * @param int|string $valueColumn column index / name (default first column) to be used as value
+     * @param int        $offset      offset
+     * @param int        $limit       limit
+     * 
+     * @return array with values
+     */
+    function getValues($query, $valueColumn=0, $offset=-1, $limit=-1)
+    {
+      return $this->getValuesAssoc($query, null, $valueColumn, $offset, $limit);
+    }    
+    
+    /**
+     * Get rows in an associative array with the given key column used as
+     * key and the given value column used as value.
+     * 
+     * NOTE: 
+     * This is not an efficient way to retrieve records, as this 
+     * will load all records into one array into memory. If you 
+     * retrieve a lot of records, you might hit the memory_limit 
+     * and your script will die.
+     *
+     * @param string     $query       query
+     * @param int|string $keyColumn   column index / name (default first column) to be used as key
+     * @param int|string $valueColumn column index / name (default first column) to be used as value
+     * @param int        $offset      offset
+     * @param int        $limit       limit
+     * 
+     * @return array rows
+     */
+    public function getValuesAssoc($query, $keyColumn=0, $valueColumn=1, $offset=-1, $limit=-1)
+    {
+      $rows = $this->getRowsAssoc($query, $keyColumn, $offset, $limit);
+      foreach ($rows as $key => &$value)
+      {
+        if (is_numeric($valueColumn))
+        {
+          $value = atkArrayNvl(array_values($value), $valueColumn);
+        }
+        else
+        {
+          $value = $value[$valueColumn];
+        }
+      }
+      
+      return $rows;
     }
 
     /**
