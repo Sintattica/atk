@@ -27,7 +27,7 @@
   class atkNumberAttribute extends atkAttribute
   {
     var $m_size; // Integral part of number (before decimal separator)
-    var $m_decimals=0; // The number of decimals of the number.
+    var $m_decimals=null; // The number of decimals of the number.
     var $m_minvalue=false; // The minimum value of the number.
     var $m_maxvalue=false; // The maximum value of the number.
     var $m_use_thousands_separator=false; // use the thousands separator when formatting a number
@@ -50,7 +50,7 @@
      * @param int     $decimals The number of decimals to use.
      *
      */
-    function atkNumberAttribute($name, $flags=0, $size=10, $decimals=0)
+    function atkNumberAttribute($name, $flags=0, $size=10, $decimals=null)
     {
       $this->atkAttribute($name,$flags|AF_NO_QUOTES, $size); // base class constructor
       $this->m_decimals = $decimals;
@@ -58,13 +58,34 @@
       $this->m_decimalseparator = atktext(self::SEPARATOR_DECIMAL,'atk');
       $this->m_thousandsseparator = atktext(self::SEPARATOR_THOUSAND,'atk');
     }
+    
+    /**
+     * Returns the number of decimals.
+     * 
+     * @return int decimals
+     */
+    public function getDecimals()
+    {
+      return (int)$this->m_decimals;
+    }
+    
+    /**
+     * Sets the number of decimals.
+     * 
+     * @param int $decimals number of decimals
+     */
+    public function setDecimals($decimals)
+    {
+      $this->m_decimals = $decimals;
+    }
 
     /**
      * Set the minimum and maximum value of the number. Violations of this range
+     * 
      * @param int $minvalue Minimum value of the number.
      * @param int $maxvalue Maximum value of the number.
      */
-    function setRange($minvalue, $maxvalue)
+    public function setRange($minvalue, $maxvalue)
     {
       $this->m_minvalue = $minvalue;
       $this->m_maxvalue = $maxvalue;
@@ -256,9 +277,9 @@
       // NOTE: we don't use number_format because this sometimes causes rounding issues
       //       if a float can not be properly represented (see http://nl.php.net/manual/en/function.number-format.php#93893)
        
-      $tmp1 = round((float)$number, $this->m_decimals);
-      $tmp1 .= $this->m_decimals > 0 && strpos($tmp1, '.') === false ? '.' : '';
-      $tmp1 .= str_repeat('0', max($this->m_decimals - strlen(substr($tmp1, strpos($tmp1, '.') + 1)), 0));
+      $tmp1 = round((float)$number, $this->getDecimals());
+      $tmp1 .= $this->getDecimals() > 0 && strpos($tmp1, '.') === false ? '.' : '';
+      $tmp1 .= str_repeat('0', max($this->getDecimals() - strlen(substr($tmp1, strpos($tmp1, '.') + 1)), 0));
       
       while (($tmp2 = preg_replace('/(?<!.)(\d+)(\d\d\d)/', '\1 \2', $tmp1)) != $tmp1)
       {
@@ -335,8 +356,8 @@
     {
       if((!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()])==0) && !$this->hasFlag(AF_OBLIGATORY))
         return NULL;
-      if($this->m_decimals>0)
-        return round((float) $rec[$this->fieldName()], $this->m_decimals);
+      if($this->getDecimals()>0)
+        return round((float) $rec[$this->fieldName()], $this->getDecimals());
       else
         return $rec[$this->fieldName()];
     }
@@ -372,7 +393,7 @@
      */
     function dbFieldType()
     {
-      return ($this->m_decimals>0?"decimal":"number");
+      return ($this->getDecimals()>0?"decimal":"number");
     }
 
     /**
@@ -394,7 +415,7 @@
      */
     function dbFieldSize()
     {
-      return $this->m_maxsize.($this->m_decimals>0?",".$this->m_decimals:"");
+      return $this->m_maxsize.($this->getDecimals()>0?",".$this->getDecimals():"");
     }
 
     /**
@@ -406,7 +427,20 @@
     	
     	if (strpos($this->m_size, ',') !== false)
     	{
-    		list($this->m_size, $this->m_decimals) = explode(',', $this->m_size);
+    		list($this->m_size, $decimals) = explode(',', $this->m_size);
+    		
+    		if ($this->m_decimals === null)
+    		{
+    		  // no decimals explicitly set, so use the one we 
+    		  // retrieved from the database
+    		  $this->m_decimals = $decimals;
+    		}
+    		else
+    		{
+    		  // if the number of decimals are explicitly set, but the database
+    		  // simply can't handle it, we use the lowest value
+    		  $this->m_decimals = min($this->m_decimals, $decimals);
+    		}
     	}
     }    
     
@@ -434,10 +468,10 @@
 
       $size    = $this->m_size;
       $maxsize = $this->m_maxsize;
-      if ($this->m_decimals>0)
+      if ($this->getDecimals()>0)
       {
-        $size    += ($this->m_decimals+1);
-        $maxsize += ($this->m_decimals+1); // make room for the number of decimals
+        $size    += ($this->getDecimals()+1);
+        $maxsize += ($this->getDecimals()+1); // make room for the number of decimals
       }
 
       $value = "";
