@@ -1003,7 +1003,7 @@
       }
 
       // array with year / month / day
-      else if (is_array($value))
+      if (is_array($value))
       {
       	if (empty($value['year']) || empty($value['month']) || empty($value['day']))
       	{

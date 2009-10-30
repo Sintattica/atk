@@ -9,6 +9,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Fixed AF_DATE_STRING support in the dateattribute. Reported by
+  Arjen Tebbenhof. Thanks Arjen for providing a patch and reporting this
+  issue! [Arjen Tebbenhof, Martin]
 + Added data retrieval convenience methods to atkDb (getRow, getRowsAssoc,
   getValuesAssoc) which support specifying columns to use for the key 
   (or value) in the result set. [Peter, Tjeerd]
