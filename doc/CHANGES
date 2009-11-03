@@ -9,11 +9,12 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Updated PrototypeJS to version 1.6.1. [Tjeerd]
 * Fixed AF_DATE_STRING support in the dateattribute. Reported by
   Arjen Tebbenhof. Thanks Arjen for providing a patch and reporting this
   issue! [Arjen Tebbenhof, Martin]
 + Added data retrieval convenience methods to atkDb (getRow, getRowsAssoc,
-  getValuesAssoc) which support specifying columns to use for the key 
+  getValuesAssoc) which support specifying columns to use for the key
   (or value) in the result set. [Peter, Tjeerd]
 * Improved getValue and getValues methods in atkDb, now support
   both numerical and string column names. [Peter, Tjeerd]
