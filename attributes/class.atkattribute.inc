@@ -581,6 +581,14 @@
      * @var string
      */
     private $m_column;
+    
+    /**
+     * JavaScript observers. Key is the event name
+     * value is an array with event handlers.
+     * 
+     * @var array
+     */
+    private $m_jsObservers = array();
 
     /**
      * Constructor
@@ -883,6 +891,23 @@
         return $postvars[$this->fieldName()];
       }
     }
+    
+    /**
+     * Register JavaScript event handlers.
+     * 
+     * @param string $fieldId field identifier
+     */
+    protected function registerJavaScriptObservers($fieldId)
+    {
+      foreach ($this->m_jsObservers as $event => $handlers)
+      {
+        foreach ($handlers as $handler)
+        {
+          $code = '$(\''.$fieldId.'\').observe(\''.$event.'\', function(event) { var fieldId = \''.$fieldId.'\'; '.$handler.' });';
+          $this->getOwnerInstance()->getPage()->register_loadscript($code);
+        }
+      }
+    }
 
     /**
      * Returns a piece of html code that can be used in a form to edit this
@@ -908,6 +933,8 @@
       {
         $onchange = '';
       }
+      
+      $this->registerJavaScriptObservers($id);
 
       $size = $this->m_size;
       if ($mode == 'list' && $size > 20)
@@ -2776,6 +2803,23 @@
      * @return bool Manually painted?
      */
     function isManualPaint() { return $this->m_manual_paint; }
+    
+    /**
+     * Observe the given JavaScript event and execute the given JavaScript
+     * statements when the event occurs. 
+     * 
+     * Inside the JavaScript body the event is available in the variable 
+     * "event" and the field identifier is available in the variable 
+     * "fieldId". To cancel an event you can use Prototype's event 
+     * mechanism for this.
+     * 
+     * @param string event JavaScript event name (e.g. 'change', 'click', etc.)
+     * @param string body  JavaScript body
+     */
+    public function observeJS($event, $body)
+    {
+      $this->m_jsObservers[$event][] = $body; 
+    }
 
     /**
      * String representation for this attribute (PHP5 only).

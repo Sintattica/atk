@@ -161,6 +161,8 @@
       {
         $this->doAutoAdjust(htmlspecialchars($text), $rows, $cols);
       }
+      
+      $this->registerJavaScriptObservers($id);      
 
       $result= "<textarea id='$id' name='$id' wrap='".$this->getWrapMode()."' ";
       if ($rows) $result.= "rows='$rows' ";

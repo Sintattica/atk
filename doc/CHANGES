@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
++ [EXPERIMENTAL] Added atkAttribute::observeJS($event, $body) method which 
+  can be used to observe JavaScript events on attribute fields. [Peter]  
 * Updated PrototypeJS to version 1.6.1. [Tjeerd]
 * Fixed AF_DATE_STRING support in the dateattribute. Reported by
   Arjen Tebbenhof. Thanks Arjen for providing a patch and reporting this

@@ -465,6 +465,8 @@
       {
         $onchange = '';
       }
+      
+      $this->registerJavaScriptObservers($id);
 
       $size    = $this->m_size;
       $maxsize = $this->m_maxsize;

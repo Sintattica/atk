@@ -780,6 +780,7 @@
           else
           {
             $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);
+            $this->registerJavaScriptObservers($id);            
             $result.= '<select id="'.$id.'" name="'.$id.'" class="atkmanytoonerelation" '.$onchange.'>';
             if ($this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) || (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) || (atkconfig("list_obligatory_null_item")&&!is_array($value)))
             {
