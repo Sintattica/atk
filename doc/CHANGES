@@ -9,6 +9,10 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Fixed extended search. Search was broken for nodes with numberattribute
+  the attribute always called the getsearchcondition which resulted
+  in including a search for 0 values. Also fixed a typo that caused
+  a fatal error. [Martin]
 + [EXPERIMENTAL] Added atkAttribute::observeJS($event, $body) method which 
   can be used to observe JavaScript events on attribute fields. [Peter]  
 * Updated PrototypeJS to version 1.6.1. [Tjeerd]

@@ -562,7 +562,7 @@
         $str = trim($value);
         if ($slash!==false)
         {
-          $processed["from"]=(float)$this->removeSeparator(substr($str, 0, $slash));
+          $processed["from"]=(float)$this->removeSeparators(substr($str, 0, $slash));
           $processed["to"]=(float)$this->removeSeparators(substr($str,$slash+1));
           $searchmode = 'between';
         }
@@ -639,7 +639,7 @@
       if ($searchmode!="between")
       {
         // Use default handler, and use only the first field.
-        if (!array_key_exists('from', $value)) return false;
+        if (!array_key_exists('from', $value) || empty($value['from'])) return false;
         return parent::getSearchCondition($query, $table, $value["from"], $searchmode);
       }
       else
