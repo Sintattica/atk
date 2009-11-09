@@ -34,6 +34,13 @@
     public $m_dialogSaveUrl;
 
     /**
+     * Edit action.
+     * 
+     * @var string
+     */
+    private $m_editAction = 'edit';        
+    
+    /**
      * The action handler method.
      */
     public function action_update()
@@ -51,6 +58,30 @@
         $this->doUpdate();
       }
     }
+
+    /**
+     * Returns the edit action, which is called when we want to return
+     * the user to the edit form.
+     * 
+     * Defaults to the 'edit' action.
+     * 
+     * @return string edit action
+     */
+    public function getEditAction()
+    {
+      return $this->m_editAction;
+    }
+    
+    /**
+     * Sets the edit action which should be called when we need to return
+     * the user to the edit form.
+     * 
+     * @param string $action action name
+     */
+    public function setEditAction($action)
+    {
+      $this->m_editAction = $action;
+    }      
 
     /**
      * Perform the update action
@@ -79,7 +110,7 @@
       else
       {
         // something other than one of the three buttons was pressed. Let's just refresh.
-        $location = session_url(dispatch_url($this->m_node->atknodetype(),"edit", array("atkselector"=>$this->m_node->primaryKey($record),"atktab"=>$this->m_node->getActiveTab())), SESSION_REPLACE);
+        $location = session_url(dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), array("atkselector"=>$this->m_node->primaryKey($record),"atktab"=>$this->m_node->getActiveTab())), SESSION_REPLACE);
         $this->m_node->redirect($location);
       }
     }
@@ -258,7 +289,7 @@
       if ($this->hasError($record))
       {
         $this->setRejectInfo($record);
-        $location = session_url(dispatch_url($this->m_node->atknodetype(),"edit",array("atkselector"=>$this->m_node->primaryKey($record))),SESSION_BACK);
+        $location = session_url(dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), array("atkselector"=>$this->m_node->primaryKey($record))),SESSION_BACK);
         $this->m_node->redirect($location);
       }      	
       else
@@ -283,7 +314,7 @@
       {
         // 'save' was clicked
         $params = array("atkselector" => $this->m_node->primaryKey($record), "atktab" => $this->m_node->getActiveTab());
-        $location = session_url(dispatch_url($this->m_node->atknodetype(), "edit", $params), SESSION_BACK);
+        $location = session_url(dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), $params), SESSION_BACK);
       }
       else
       {

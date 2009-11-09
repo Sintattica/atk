@@ -35,6 +35,13 @@
     var $m_dialogSaveUrl;
 
     /**
+     * Add action.
+     * 
+     * @var string
+     */
+    private $m_addAction = 'add';        
+    
+    /**
      * The action handler method
      */
     function action_save()
@@ -54,6 +61,30 @@
         $this->doSave();
       }
     }
+
+    /**
+     * Returns the add action, which is called when we want to return
+     * the user to the add form.
+     * 
+     * Defaults to the 'add' action.
+     * 
+     * @return string add action
+     */
+    public function getAddAction()
+    {
+      return $this->m_addAction;
+    }
+    
+    /**
+     * Sets the add action which should be called when we need to return
+     * the user to the add form.
+     * 
+     * @param string $action action name
+     */
+    public function setAddAction($action)
+    {
+      $this->m_addAction = $action;
+    }      
 
     /**
      * Save record.
@@ -150,7 +181,7 @@
         {
           $filter = "&atkfilter=".rawurlencode($this->m_node->m_postvars['atkfilter']);
         }
-        $url = atkSelf().'?atknodetype='.$this->m_node->atknodetype().'&atkaction=add';
+        $url = atkSelf().'?atknodetype='.$this->m_node->atknodetype().'&atkaction='.$this->getAddAction();
         $location = session_url($url.$filter, $back);
       }
       else

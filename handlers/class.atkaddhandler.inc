@@ -30,6 +30,13 @@
   {
     var $m_buttonsource = null;
     var $m_dialogSaveUrl = null;
+    
+    /**
+     * Save action.
+     * 
+     * @var string
+     */
+    private $m_saveAction = 'save';     
 
     /**
      * Constructor
@@ -61,6 +68,28 @@
       $page->addContent($controller->renderActionPage("add", $this->invoke("addPage", $record)));
     }
 
+    /**
+     * Returns the save action, which is called when posting the edit form.
+     * 
+     * Defaults to the 'save' action.
+     * 
+     * @return string save action
+     */
+    public function getSaveAction()
+    {
+      return $this->m_saveAction;
+    }
+    
+    /**
+     * Sets the save action which should be called when posting the edit form.
+     * 
+     * @param string $action action name
+     */
+    public function setSaveAction($action)
+    {
+      $this->m_saveAction = $action;
+    }    
+    
     /**
      * Creates an add page or null, of it cannot be created.
      *
@@ -186,6 +215,8 @@
 
 
       $formstart .= session_form(SESSION_NESTED, $this->getReturnBehaviour(), $node->getEditFieldPrefix());
+      $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkaction" value="'.$this->getSaveAction().'" />';
+      $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkprevaction" value="'.$this->getNode()->m_action.'" />';
       $formstart .= $controller->getHiddenVarsString();
 
       if (isset($node->m_postvars['atkfilter']))

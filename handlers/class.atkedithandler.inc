@@ -34,6 +34,13 @@
     var $m_dialogSaveUrl = null;
     var $m_buttonsource = null;
 
+    /**
+     * Update action.
+     * 
+     * @var string
+     */
+    private $m_updateAction = 'update'; 
+    
     private $m_updateSessionStatus = SESSION_NESTED;
 
     /**
@@ -85,6 +92,28 @@
 
       $page = &$this->getPage();
       $page->addContent($node->renderActionPage("edit", $res));
+    }
+
+    /**
+     * Returns the update action, which is called when posting the edit form.
+     * 
+     * Defaults to the 'update' action.
+     * 
+     * @return string update action
+     */
+    public function getUpdateAction()
+    {
+      return $this->m_updateAction;
+    }
+    
+    /**
+     * Sets the update action which should be called when posting the edit form.
+     * 
+     * @param string $action action name
+     */
+    public function setUpdateAction($action)
+    {
+      $this->m_updateAction = $action;
     }
 
     /**
@@ -280,6 +309,9 @@
                                    ' method="post" onsubmit="return globalSubmit(this)">'.
                                    session_form($this->getUpdateSessionStatus());
 
+      $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkaction" value="'.$this->getUpdateAction().'" />';
+      $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkprevaction" value="'.$this->getNode()->m_action.'" />';
+                                                                         
       $formstart .= $controller->getHiddenVarsString();
 
       return $formstart;

@@ -639,7 +639,7 @@
       if ($searchmode!="between")
       {
         // Use default handler, and use only the first field.
-        if (!array_key_exists('from', $value) || empty($value['from'])) return false;
+        if (!array_key_exists('from', $value) || strlen(trim($value['from'])) == 0) return false;
         return parent::getSearchCondition($query, $table, $value["from"], $searchmode);
       }
       else
