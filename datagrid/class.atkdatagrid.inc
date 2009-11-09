@@ -1641,10 +1641,10 @@ class atkDataGrid
    */
   public function addListener(atkDGListener $listener)
   {
-  	if (!in_array($listener, $this->m_listeners))
-  	{
-      $this->m_listeners[] = $listener;
-  	}
+    if (!array_key_exists(spl_object_hash($listener), $this->m_listeners))
+    {
+      $this->m_listeners[spl_object_hash($listener)] = $listener;
+    }
   }
 
   /**
@@ -1654,7 +1654,7 @@ class atkDataGrid
    */
   public function removeListener(atkDGListener $listener)
   {
-    $this->m_listeners = array_diff($this->m_listeners, array($listener));
+    unset($this->m_listeners[spl_object_hash($listener)]);
   }
 
   /**
@@ -1664,7 +1664,7 @@ class atkDataGrid
    */
   protected function getListeners()
   {
-    return $this->m_listeners;
+    return array_values($this->m_listeners);
   }
 
   /**
