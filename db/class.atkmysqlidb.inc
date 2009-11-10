@@ -30,6 +30,13 @@
   class atkMysqliDb extends atkMysqlDb
   {
     /**
+     * The last insert id from the last query
+     * @var integer
+     * @access protected
+     */
+    var $m_insert_id;
+      
+    /**
      * Base constructor
      */
     function atkmysqlidb()
@@ -150,6 +157,12 @@
 
        /* query database */
        $this->m_query_id = @mysqli_query($this->m_link_id, $query);
+       
+       /* get the last insert id
+        * this is harmless and returns 0 if the query wasn't
+        * an insert or update or if the table has no autoincrement
+        */
+       $this->m_insert_id = mysqli_insert_id($this->m_link_id);
 
        $unlock_table = false;
        if (mysqli_errno($this->m_link_id) == 1100)
@@ -566,7 +579,7 @@
     */
    public function getInsertId()
    {
-     return mysqli_insert_id($this->m_link_id);
+     return $this->m_insert_id;
    }
  }
 ?>
