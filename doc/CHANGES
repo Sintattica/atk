@@ -18,8 +18,9 @@ Changes in ATK 6.5
   class.atkonetomanyrelation.inc and put it into its own file. 
   Otherwise the classloader couldn't properly cache this class and 
   would rebuild the class list every time. [Matthijs]
-* changed the MySQLi db driver: updated the way the last insert id is retrieved
-  for tables with autoincrement columns. [Matthijs]
+* Fixed retrieval of last insert id for the MySQLi db driver. 
+  In certain situations where a table with an autoincrement column is used, the
+  driver would return 0 instead of the newly incremented id. [Matthijs]
 + Added atkAddHandler::setSaveAction, atkSaveHandler::setAddAction, 
   atkEditHandler::setUpdateAction and atkUpdatehandler::setEditAction to
   make it more easy to use these handlers inside custom actions. [Peter]
