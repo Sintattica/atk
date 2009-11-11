@@ -13,6 +13,13 @@ Changes in ATK 6.5
 * Improved tooltip support (reminder, if you add a <node>_<column>_tooltip
   entry in your text file it will be displayed as a help text when hovering
   a special help icon). [Peter]
+* small optimization to AtkStringParser->getFields(). [Matthijs]
+* removed class AtkOneToManyRelationSessionGridHandler from file 
+  class.atkonetomanyrelation.inc and put it into its own file. 
+  Otherwise the classloader couldn't properly cache this class and 
+  would rebuild the class list every time. [Matthijs]
+* changed the MySQLi db driver: updated the way the last insert id is retrieved
+  for tables with autoincrement columns. [Matthijs]
 + Added atkAddHandler::setSaveAction, atkSaveHandler::setAddAction, 
   atkEditHandler::setUpdateAction and atkUpdatehandler::setEditAction to
   make it more easy to use these handlers inside custom actions. [Peter]
