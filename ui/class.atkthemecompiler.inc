@@ -196,7 +196,13 @@
           $files = $this->_dirContents($abspath.$name);
           foreach($files as $file)
           {
-            $data["files"][$name][$file] = $path.$name."/".$file;
+            $key = $file;
+            if (substr($key, -8) == '.tpl.php')
+            {
+              $key = substr($key, 0, -4);
+            }
+            
+            $data["files"][$name][$key] = $path.$name."/".$file;
           }
         }
         else if ($name=="icons") // New ATK5 style icon theme dirs

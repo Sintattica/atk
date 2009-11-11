@@ -9,6 +9,10 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Themes now support the new PHP style templates too. [Peter]
+* Improved tooltip support (reminder, if you add a <node>_<column>_tooltip
+  entry in your text file it will be displayed as a help text when hovering
+  a special help icon). [Peter]
 + Added atkAddHandler::setSaveAction, atkSaveHandler::setAddAction, 
   atkEditHandler::setUpdateAction and atkUpdatehandler::setEditAction to
   make it more easy to use these handlers inside custom actions. [Peter]

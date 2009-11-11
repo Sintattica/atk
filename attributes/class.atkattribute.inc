@@ -1231,24 +1231,17 @@
      */
     function getToolTip()
     {
-      $module = $this->getModule();
-      if (!$module) $module = "atk";
-
-      $node = &$this->m_ownerInstance;
-      $ttip = atktext($node->m_type."_".$this->fieldName()."_tooltip", $module, "", "", "", true);
-
-      $tooltip = '';
-
-      if ($ttip)
+      $tooltip = $this->text($this->fieldName().'_tooltip', false);
+      if (!$tooltip) 
       {
-        $theme = &atkinstance("atk.ui.atktheme");
-        $tipimg = $theme->imgPath("help.gif");
-
-        $onelinetip = preg_replace('/([\r\n])/e',"",$ttip);
-        $tooltip = '<img align="top" src="'.$tipimg.'" border="0" alt="'.$onelinetip.'" onClick="javascript:alert(\''.str_replace("\n", '\n', addslashes($ttip)).
-        '\')" onMouseOver="javascript:window.status=\''. addslashes($onelinetip).'\';">';
+        return '';
       }
-      return $tooltip;
+      
+      $template = atkTheme::getInstance()->tplPath('tooltip.tpl', $this->getModule());
+      $vars = array('tooltip' => $tooltip, 'attribute' => $this);
+      
+      $result = $this->getOwnerInstance()->getUi()->render($template, $vars, $this->getModule());
+      return $result;
     }
 
     /**
@@ -2535,12 +2528,16 @@
      * @param String $string The string to be translated
      * @return String The translated string.
      */
-    function text($string)
+    public function text($string, $fallback=true)
     {
-      if (is_object($this->m_ownerInstance))
-        return $this->m_ownerInstance->text($string, $this->getModule());
+      if (is_object($this->getOwnerInstance()))
+      {
+        return $this->getOwnerInstance()->text($string, null, '', '', !$fallback);
+      }
       else
-        return atktext($string, $this->getModule());
+      {
+        return atktext($string, $this->getModule(), '', '', '', !$fallback);
+      }
     }
 
     /**

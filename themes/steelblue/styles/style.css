@@ -675,3 +675,16 @@ form
 .save_criteria #save_criteria {
   margin-left: 21px;
 }
+
+.overlib_txt {
+  font-size: 11px;
+  color: #222;
+}
+
+.overlib_bg {
+  background-color: #ddd;
+}
+
+.overlib_fg {
+  background-color: #ffffcc;	
+}

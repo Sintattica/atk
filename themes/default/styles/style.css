@@ -157,3 +157,15 @@ INPUT.btn_saveandclose
 .save_criteria #save_criteria {
   margin-left: 21px;
 }
+
+.overlib_txt {
+	font-size: 10px;
+}
+
+.overlib_bg {
+	background-color: #ffffcc;
+}
+
+.overlib_fg {
+	
+}

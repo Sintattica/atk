@@ -168,7 +168,18 @@
      */
     function imgPath($img, $module="")
     {
-      return $this->getFileLocation("images", $img, $module);
+      $exts = array('', '.png', '.gif', '.jpg');
+      
+      foreach ($exts as $ext)
+      {      
+        $location = $this->getFileLocation("images", $img.$ext, $module);
+        if ($location != null)
+        {
+          return $location;
+        }
+      }
+      
+      return null;
     }
 
     /**
