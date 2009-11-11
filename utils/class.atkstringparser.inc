@@ -30,7 +30,7 @@
 
     /**
      * Create a new stringparser
-     * 
+     *
      * @param string $string The string to parse
      */
     function atkStringParser($string)
@@ -40,13 +40,13 @@
 
     /**
      * Parse data into the string.
-     * 
+     *
      * @param array $data                The data to parse in the string
      * @param bool  $encode              Wether or not to do a rawurlencode
      * @param bool  $ignoreUnknownFields Replace unknown fields with an empty string,
      *                                   if set to false unknown fields will be left
      *                                   untouched.
-     * 
+     *
      * @return String The parsed string
      */
     function parse($data, $encode=false, $replaceUnknownFields=true)
@@ -75,15 +75,15 @@
           	}
            	else
            	{
-           		// field not found, continue with next field without 
+           		// field not found, continue with next field without
            		// replacing the field in the template
            		continue 2;
            	}
           }
           else if (!$replaceUnknownFields)
           {
-            // field not found, continue with next field without 
-            // replacing the field in the template          	
+            // field not found, continue with next field without
+            // replacing the field in the template
           	continue 2;
           }
         }
@@ -101,7 +101,7 @@
 
     /**
      * Does the data contains everything needed to be parsed into the string?
-     * 
+     *
      * @param array $data
      */
     function isComplete($data)
@@ -131,7 +131,9 @@
       {
         $tmp = "";
         $adding = false;
-        for ($i=0;$i<strlen($this->m_string);$i++)
+        
+        $strlen = strlen($this->m_string);
+        for ($i=0;$i<$strlen;$i++)
         {
           if ($this->m_string[$i]=="]")
           {
@@ -159,7 +161,7 @@
      * <b>Example:</b>
      *        string: [firstname], [lastname] [city]
      *        would return array('[firstname]',', ','[lastname]',' ','[city]')
-     *        
+     *
      * @return array
      */
     function getAllFieldsAsArray()
