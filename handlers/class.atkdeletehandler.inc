@@ -178,19 +178,15 @@
      * @return bool wether or not the attributes have allowed deletion
      */
     function checkAttributes()
-    {
-      for ($counter=0; $counter<count($this->m_node->m_attribIndexList); $counter++)
+    {   
+      foreach ($this->m_node->getAttributes() as $attrib)
       {
-      	// Check with every attribute
-      	$p_attrib = &$this->m_node->m_attribList[$this->m_node->m_attribIndexList[$counter]["name"]];
-      	$allowed= $p_attrib->deleteAllowed();
-
       	// If allowed !=== true, then it returned an error message
-      	if ($allowed!==true)
+      	if ($attrib->deleteAllowed()!==true)
       	{
       	  $db = &$this->m_node->getDb();
-      		$db->rollback();
-          $location = $this->m_node->feedbackUrl("delete",ACTION_FAILED,null,sprintf(atktext("attrib_delete_not_allowed"),atktext($this->m_node->m_attribIndexList[$counter]["name"],$this->m_node->m_module,$this->m_node->m_type),$allowed));
+          $db->rollback();
+          $location = $this->m_node->feedbackUrl("delete",ACTION_FAILED,null,sprintf(atktext("attrib_delete_not_allowed"),atktext($attrib->m_name,$this->m_node->m_module,$this->m_node->m_type),$allowed));
           $this->m_node->redirect($location);
       	  return;
       	}
