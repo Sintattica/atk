@@ -1034,19 +1034,24 @@
     {
       atkimport("atk.atknode");
       atkNode::redirect(atkurldecode($_REQUEST["atkescape"]));
-
-      $output = &atkOutput::getInstance();
-      $output->outputFlush();
+      atkOutput::getInstance()->outputFlush();
       exit;
     }
+    // Nested URL check
+    else if (isset($_REQUEST["atknested"]) && $_REQUEST["atknested"] != "")
+    {
+      atkimport("atk.atknode");
+      atkNode::redirect(session_url($_REQUEST["atknested"], SESSION_NESTED));
+      atkOutput::getInstance()->outputFlush();
+      exit;
+    }    
     // Back check
     else if (isset($ATK_VARS["atkback"]) && $ATK_VARS["atkback"]!="")
     {
       // When we go back, we go one level deeper than the level we came from.
       atkimport("atk.atknode");
       atkNode::redirect(session_url(atkSelf()."?atklevel=".($atkprevlevel-1)));
-      $output = &atkOutput::getInstance();
-      $output->outputFlush();
+      atkOutput::getInstance()->outputFlush();
       exit;
     }
   }

@@ -439,7 +439,7 @@
        $tableType = $this->_getTableType($table);
 
        /* get meta data */
-       $id = @mysqli_query( $this->m_link_id, "SELECT * FROM {$table} LIMIT 1");
+       $id = @mysqli_query( $this->m_link_id, "SELECT * FROM `{$table}` LIMIT 1");
        if (!$id)
        {
          	atkdebug("Metadata query failed.");

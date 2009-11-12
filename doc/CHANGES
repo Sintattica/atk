@@ -9,6 +9,15 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
++ Added special 'atknested' request parameter which causes ATK to instantly
+  redirect to the given URL with session mode SESSION_NESTED. This can be
+  used to prepend something on the stack. For example, a direct add link in
+  the menu which prepends the admin action so that after the user is done
+  adding the record, the user is redirected to the admin screen instead of
+  getting a new empty form. [Peter]
+* Fixed bug in atkMySQLiDb driver which caused problems with special table
+  names that need to be escaped when retrieving metadata. [Peter]
+  when retrieving table metadata. [Peter]
 * Themes now support the new PHP style templates too. [Peter]
 * Improved tooltip support (reminder, if you add a <node>_<column>_tooltip
   entry in your text file it will be displayed as a help text when hovering
