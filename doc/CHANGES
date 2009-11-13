@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Improved behaviour of atkDummyAttribute when setting flags in the 
+  meta node. [Peter]
 + Added special 'atknested' request parameter which causes ATK to instantly
   redirect to the given URL with session mode SESSION_NESTED. This can be
   used to prepend something on the stack. For example, a direct add link in

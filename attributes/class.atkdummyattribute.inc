@@ -57,6 +57,21 @@
       $this->atkAttribute($name,$flags); // base class constructor
       $this->m_text = $text;
     }
+    
+    /**
+     * Add flag.
+     * 
+     * @param int $flag flag
+     */
+    public function addFlag($flag)
+    {
+      parent::addFlag($flag);
+      
+      if ($this->hasFlag(AF_DUMMY_SHOW_LABEL))
+      {
+        $this->removeFlag(AF_BLANK_LABEL);
+      }
+    }
 
     /**
      * Returns a piece of html code that can be used in a form to edit this
