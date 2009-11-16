@@ -744,6 +744,16 @@
    * @var string
    */
   $config_session_name = "";
+  
+  /**
+   * The maximum inactivity period for a stack in the session manager before
+   * it expires. 
+   * 
+   * Set to a value <= 0 to disable. 
+   * 
+   * @var int
+   */
+  $config_session_max_stack_inactivity_period = 3600; // 1 hour
 
   /**
    * The application identifier.

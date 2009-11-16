@@ -339,6 +339,62 @@
       }
 
     }
+    
+    /**
+     * Update the last modified timestamp for the curren stack.
+     */
+    protected function _touchCurrentStack()
+    {
+      global $g_sessionData;
+      $g_sessionData[$this->m_namespace]["stack_stamp"][atkStackId()] = mktime();
+    }
+    
+    /**
+     * Removes any stacks which have been inactive for a period >
+     * atkconfig('session_max_stack_inactivity_period').
+     */
+    protected function _removeExpiredStacks()
+    {
+      global $g_sessionData;
+            
+      $maxAge = atkconfig('session_max_stack_inactivity_period', 0);
+      if ($maxAge <= 0)
+      {
+        atkwarning(__METHOD__.': removing expired stacks disabled, enable by setting $config_session_max_stack_inactivity_period to a value > 0');
+        return;
+      }
+      
+      $now = mktime();
+      $stacks = &$g_sessionData[$this->m_namespace]['stack'];
+      $stackStamps = $g_sessionData[$this->m_namespace]["stack_stamp"];
+      $stackIds = array_keys($stacks);
+      $removed = false;
+
+      foreach ($stackIds as $stackId)
+      {
+        // don't remove the current stack or stacks that are, for some reason, not stamped
+        if ($stackId == atkStackId() || !isset($stackStamps[$stackId]))
+        {
+          continue;
+        }
+
+        $stamp = $stackStamps[$stackId];
+        $age = $now - $stamp;
+        
+        if ($age > $maxAge)
+        {
+          atkdebug(__METHOD__.': removing expired stack "'.$stackId.'" (age '.$age.'s)');
+          unset($stacks[$stackId]);
+          unset($stackStamps[$stackId]);
+          $removed = true;
+        }
+      }
+      
+      if (!$removed)
+      {
+        atkdebug(__METHOD__.': no expired stacks, nothing removed');
+      }
+    }
 
     /**
      * Process the variable stack scope (pagevars, stackvars).
@@ -375,12 +431,21 @@
 
       atkdebug("ATKLevel: ".$atklevel);
 
-      $this->_verifyStackIntegrity();
-
-      // New stack, new stackid, if level = -1.
-      $stackid = atkStackID(($atklevel==-1));
+      if ($this->_verifyStackIntegrity() && $atklevel == -1)
+      {
+        // New stack, new stackid, if level = -1.
+        $stackid = atkStackID($atklevel == -1);
+      }
+      else
+      {
+        $stackid = atkStackID();
+      }
 
       $stack = &$g_sessionData[$this->m_namespace]["stack"][$stackid];
+      
+      // garbage collect
+      $this->_touchCurrentStack();
+      $this->_removeExpiredStacks();
 
       // Prevent going more than 1 level above the current stack top which
       // causes a new stackitem to be pushed onto the stack at the wrong
@@ -698,7 +763,10 @@
      * normally confuse the session manager. In the case we detect a new
      * window, we fork the session stack so both windows have their own
      * stacks.
+     * 
      * @access private
+     * 
+     * @return boolean stack integrity ok? (false means we created a new stack)
      */
     protected function _verifyStackIntegrity()
     {
@@ -739,8 +807,10 @@
         $g_sessionData[$this->m_namespace]['globals']['#STACK#'][$newid] =
           $g_sessionData[$this->m_namespace]['globals']['#STACK#'][$oldStackId];
 
-        return;
+        return false;
       }
+      
+      return true;
     }
 
     /**

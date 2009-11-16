@@ -279,7 +279,7 @@
       $this->createDestination();
 
       atkimport('atk.datagrid.atkdatagrid');
-      $grid = atkDataGrid::create($this->m_destInstance, null, null, true, $useSession);
+      $grid = atkDataGrid::create($this->m_destInstance, str_replace('.', '_', $this->getOwnerInstance()->atkNodeType()).'_'.$this->fieldName(), null, true, $useSession);
 
       $grid->setMode($mode);
       $grid->setMasterRecord($record);
@@ -320,8 +320,8 @@
       atkimport('atk.datagrid.atkdatagrid');
       try
       {
-      $grid = atkDataGrid::resume($node);
-      $this->modifyDataGrid($grid, atkDataGrid::RESUME);
+        $grid = atkDataGrid::resume($node);
+        $this->modifyDataGrid($grid, atkDataGrid::RESUME);
       }
       catch (Exception $e)
       {
