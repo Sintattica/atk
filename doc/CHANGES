@@ -10,8 +10,8 @@ Latest changes go on top, different types of changes may be mixed.
 Changes in ATK 6.5
 ------------------
 + Added session manager stack garbage collector which automatically removes
-  stack that hasn't been touched for a certain time period (controlled by
-  $config_session_max_stack_age, defaults to 3600 seconds == 1 hour). [Peter]
+  stacks that haven't been used for a certain time period (controlled by
+  $config_session_max_stack_inactivity_period, default: 3600s == 1h). [Peter]
 * Bug fixed session leak in atkOneToManyRelation's datagrid usage. [Peter]
 * Changed the behavior of smart debugging. By default if you turn smart
   debugging on by ip or by a request key the debug level will be 0 until
