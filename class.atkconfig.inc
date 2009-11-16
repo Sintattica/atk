@@ -174,6 +174,9 @@
         if (is_callable(array("atkconfig", $method)))
           $enabled = $enabled || atkconfig::$method($option);
       }
+      
+      global $config_debug_enabled;
+      $config_debug_enabled = $enabled;
 
       if ($enabled)
       {
@@ -188,7 +191,7 @@
         
         if (isset($session["debug"]["level"]))
           return $session["debug"]["level"];
-        else return max($default, 1);
+        else return max($default, 0);
       }
 
       return $default;

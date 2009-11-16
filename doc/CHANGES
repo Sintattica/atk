@@ -9,6 +9,13 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Changed the behavior of smart debugging. By default if you turn smart
+  debugging on by ip or by a request key the debug level will be 0 until
+  you specify a different level in the URL. [Peter]
++ Added special configuration variable "debug_enabled" which can be used to
+  check if debugging is enabled even though the current level might be 0.
+  This can come in handy if you want to create a debug menu which you can
+  use to change the different debug levels. [Peter]
 * Improved behaviour of atkDummyAttribute when setting flags in the 
   meta node. [Peter]
 + Added special 'atknested' request parameter which causes ATK to instantly
