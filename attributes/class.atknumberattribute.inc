@@ -635,7 +635,7 @@
       $searchcondition = "";
 
       $value = $this->processSearchValue($value,$searchmode);
-atk_var_dump($value);
+
       if ($searchmode!="between")
       {
         // Use default handler, and use only the first field.
