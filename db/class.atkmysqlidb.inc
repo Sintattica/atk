@@ -435,11 +435,23 @@
        /* list fields */
        atkdebug("Retrieving metadata for $table");
 
-       // table type
-       $tableType = $this->_getTableType($table);
+       /* The tablename may also contain a schema. If so we check for it. */
+       if (strpos($table, ".") !== false)
+       {
+         list($dbname, $tablename) = explode(".", $table);
+         
+         /* get meta data */
+         $id = @mysqli_query( $this->m_link_id, "SELECT * FROM `{$dbname}`.`{$tablename}` LIMIT 1");
+       }
+       else
+       {
+         /* get meta data */
+         $id = @mysqli_query( $this->m_link_id, "SELECT * FROM `{$table}` LIMIT 1");
+       }
 
-       /* get meta data */
-       $id = @mysqli_query( $this->m_link_id, "SELECT * FROM `{$table}` LIMIT 1");
+       // table type
+       $tableType = $this->_getTableType($tablename? $tablename : $table);
+       
        if (!$id)
        {
          	atkdebug("Metadata query failed.");

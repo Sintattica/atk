@@ -9,6 +9,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Fixed bug in atkMySQLiDb driver which caused problems when retrieving metadata
+  for tables names that contain schema information. The table and schema were
+  incorrectly escaped with backticks when retrieving metadata. [Matthijs]
 + Added session manager stack garbage collector which automatically removes
   stacks that haven't been used for a certain time period (controlled by
   $config_session_max_stack_inactivity_period, default: 3600s == 1h). [Peter]
