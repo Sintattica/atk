@@ -450,7 +450,7 @@
        }
 
        // table type
-       $tableType = $this->_getTableType($tablename? $tablename : $table);
+       $tableType = $this->_getTableType(isset($tablename)? $tablename : $table);
        
        if (!$id)
        {
