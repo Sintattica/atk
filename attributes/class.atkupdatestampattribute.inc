@@ -118,6 +118,14 @@
       return array("exact");
     }
 
+    /**
+     * We always have a value, even if we're not even in the record
+     * @return boolean false
+     * */
+    function isEmpty($record)
+    {
+      return false;
+    }    
   }
 
 ?>
