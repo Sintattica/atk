@@ -53,10 +53,6 @@ Changes in ATK 6.5
 + Added atkAddHandler::setSaveAction, atkSaveHandler::setAddAction, 
   atkEditHandler::setUpdateAction and atkUpdatehandler::setEditAction to
   make it more easy to use these handlers inside custom actions. [Peter]
-* Fixed extended search. Search was broken for nodes with numberattribute
-  the attribute always called the getsearchcondition which resulted
-  in including a search for 0 values. Also fixed a typo that caused
-  a fatal error. [Martin, Peter]
 + [EXPERIMENTAL] Added atkAttribute::observeJS($event, $body) method which 
   can be used to observe JavaScript events on attribute fields. [Peter]  
 * Updated PrototypeJS to version 1.6.1. [Tjeerd]
@@ -77,4 +73,4 @@ Changes in ATK 6.5
 Changes in prior versions
 -------------------------
 Changes in older ATK versions can be found at:
-http://websvn.ibuildings.nl/wsvn/atk/atk/tags/release_6_4_2/doc/CHANGES
+http://websvn.ibuildings.nl/wsvn/atk/atk/tags/release_6_4_3/doc/CHANGES
