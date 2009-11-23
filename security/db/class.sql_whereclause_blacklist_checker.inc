@@ -11,11 +11,16 @@ function filter_request_where_clause($variable)
 {
   if (isset($_REQUEST[$variable]))
   {
-    $checker = new sql_whereclause_blacklist_checker($_REQUEST[$variable]);
-    if (!$checker->isSafe())
+    $values = (array)$_REQUEST[$variable];
+    foreach ($values as $value)
     {
-      atkerror("Unsafe WHERE clause in REQUEST variable: ".$variable);
-      $_REQUEST[$variable] = $_GET[$variable] = $_POST[$variable] = '';
+      $checker = new sql_whereclause_blacklist_checker($value);
+	    if (!$checker->isSafe())
+	    {
+	      atkerror("Unsafe WHERE clause in REQUEST variable: ".$variable);
+	      $_REQUEST[$variable] = $_GET[$variable] = $_POST[$variable] = '';
+	      break;
+	    }
     }
   }
 }
