@@ -7,16 +7,13 @@ Please do not exceed 80 characters per line.
 Latest changes go on top, different types of changes may be mixed.
 
 
-Changes in ATK 6.4.2
+Changes in ATK 6.4.3
 --------------------
-* Fixed another issue with displaying the correct number of decimals for
-  number attributes. The database metadata now only overwrites the number of
-  decimals if they aren't explicitly set. If the database metdata specifies
-  a different value than is specified in the attribute the lowest number of
-  decimals is used. [Peter, Sandy]
-
+* Fixed atkNumberAttribute's extended search. The attribute always called
+  getSearchCondition which resulted in including a search for the value 0. 
+  [Martin, Peter]
 
 Changes in prior versions
 -------------------------
 Changes in older ATK versions can be found at:
-http://websvn.ibuildings.nl/wsvn/atk/atk/tags/release_6_4_1/doc/CHANGES
+http://websvn.ibuildings.nl/wsvn/atk/atk/tags/release_6_4_2/doc/CHANGES

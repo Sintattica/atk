@@ -465,7 +465,7 @@
       {
         $onchange = '';
       }
-
+      
       $size    = $this->m_size;
       $maxsize = $this->m_maxsize;
       if ($this->getDecimals()>0)
@@ -560,8 +560,8 @@
         $str = trim($value);
         if ($slash!==false)
         {
-          $processed["from"]=(float)$this->removeSeparator(substr($str, 0, $slash));
-          $processed["to"]=(float)$this->removeSeparators(substr($str,$slash+1));
+          $processed["from"] = $this->removeSeparators(substr($str, 0, $slash));
+          $processed["to"] = $this->removeSeparators(substr($str,$slash+1));
           $searchmode = 'between';
         }
         else
@@ -571,10 +571,10 @@
       }
       else
       {
-        /** assumes array('from'=><intval>, 'to'=><intval>) **/
+        // assumes array('from'=><intval>, 'to'=><intval>)
         foreach($value as $key => $search)
         {
-          $processed[$key] = (float)$this->removeSeparators($search);
+          $processed[$key] = $this->removeSeparators($search);
         }
       }
 
@@ -637,7 +637,7 @@
       if ($searchmode!="between")
       {
         // Use default handler, and use only the first field.
-        if (!array_key_exists('from', $value)) return false;
+        if (!array_key_exists('from', $value) || strlen(trim($value['from'])) == 0) return false;
         return parent::getSearchCondition($query, $table, $value["from"], $searchmode);
       }
       else
