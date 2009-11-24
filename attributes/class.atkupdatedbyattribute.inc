@@ -45,49 +45,25 @@
     function atkUpdatedByAttribute($name, $flags=0)
     {
       $this->atkManyToOneRelation($name, atkconfig("auth_usernode"), $flags|AF_READONLY|AF_HIDE_ADD);
+      $this->setForceInsert(true);
+      $this->setForceUpdate(true);
     }
-
+    
     /**
-     * needsUpdate always returns true for this attribute.
-     * @return true
-     */
-    function needsUpdate() { return true; }
-
-    /**
-     * needsInsert always returns true for this attribute.
-     * @return true
-     */
-    function needsInsert() { return true; }
-
-    /**
-     * This method is overriden to make sure that upon each save, the
-     * current user is retrieved.
-     * 
-     * @param atkQuery $query The SQL query object
-     * @param String $tablename The name of the table of this attribute
-     * @param String $fieldaliasprefix Prefix to use in front of the alias
-     *                                 in the query.
-     * @param Array $rec The record that contains the value of this attribute.
-     * @param int $level Recursion level if relations point to eachother, an
-     *                   endless loop could occur if they keep loading
-     *                   eachothers data. The $level is used to detect this
-     *                   loop. If overriden in a derived class, any subcall to
-     *                   an addToQuery method should pass the $level+1.
-     * @param String $mode Indicates what kind of query is being processing:
-     *                     This can be any action performed on a node (edit,
-     *                     add, etc) Mind you that "add" and "update" are the
-     *                     actions that store something in the database,
-     *                     whereas the rest are probably select queries.
+     * Adds this attribute to database queries.
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level=0, $mode="")
     {
-      if ($mode=="update"||$mode=="add")
+      if ($mode == 'add' || $mode == 'update')
       {
-        $rec[$this->fieldName()] = getUser();
+        atkAttribute::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
       }
-      return parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level,  $mode);
+      else
+      {
+        parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
+      }
     }
-
+    
     /**
      * This method is overriden to make sure that when a form is posted ('save' button), the
      * current record is refreshed so the output on screen is accurate.
@@ -96,7 +72,9 @@
      */    
     function initialValue()
     {
-      return getUser();
+      $fakeRecord = array($this->fieldName() => getUser());
+      $this->populate($fakeRecord);
+      return $fakeRecord[$this->fieldName()];
     }
     
     /**
@@ -108,11 +86,8 @@
      */
     function value2db($record)
     {
-      // if record not created using a form this situation can occur, so set the value here
-      if (!is_array($record[$this->fieldName()]))
-        $record[$this->fieldName()] = $this->initialValue();
+      $record[$this->fieldName()] = $this->initialValue();
       return parent::value2db($record);
     }
   }
-
 ?>

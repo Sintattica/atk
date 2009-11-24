@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Fixed bug in atkUpdatedByAttribute for displaying the correct user in
+  add/edit display mode. [Peter]
 * Made SQL where clause checker aware that some parameters might be arrays
   instead of a single value. [Peter]
 * Bug fixed that caused atkUpdateStampAttribute and atkCreatedStampAttribute to
