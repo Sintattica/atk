@@ -55,6 +55,13 @@
     var $m_username;
     var $m_defaultDestination;
     var $m_flags;
+    
+    /**
+     * Hide top / menu?
+     * 
+     * @var boolean
+     */
+    private $m_noNav;
 
     /**
      * Constructor
@@ -70,6 +77,7 @@
       $this->m_output = &atkinstance('atk.ui.atkoutput');
       $this->m_user =   getUser();
       $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL : HTML_STRICT;
+      $this->m_noNav = isset($ATK_VARS['atknonav']);
     }
 
     /**
@@ -89,7 +97,7 @@
      */
     function generate()
     {
-      if (!$this->hasFlag(HTML_PARTIAL))
+      if (!$this->hasFlag(HTML_PARTIAL) && !$this->m_noNav)
       {
         $this->atkGenerateTop();
         $this->atkGenerateMenu();
