@@ -759,7 +759,7 @@
      * 
      * @return array row
      */
-    public function getRow($query, $useLimit=true)
+    public function getRow($query, $useLimit=false)
     {
       $rows = $this->getRows($query, $useLimit ? 0 : -1, $useLimit ? 1 : -1);
       return count($rows) > 0 ? $rows[0] : null;
@@ -837,7 +837,7 @@
      * 
      * @return mixed first value or default fallback value
      */
-    public function getValue($query, $default=null, $valueColumn=0, $useLimit=true)
+    public function getValue($query, $default=null, $valueColumn=0, $useLimit=false)
     {
       $row = $this->getRow($query, $useLimit);
       

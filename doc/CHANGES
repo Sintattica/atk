@@ -69,10 +69,8 @@ Changes in ATK 6.5
 * Improved getValue and getValues methods in atkDb, now support
   both numerical and string column names. [Peter, Tjeerd]
 * Fixed bug in atkDb::getValue which might have caused the retrieval of
-  more rows than necessary. Please note: if you use a custom limit
-  expression in your getValue query you might run into trouble because
-  of this change, please specify false for the $useLimit parameter or
-  remove your custom limit. [Peter, Tjeerd]
+  more rows than necessary. Please specify either you own limit in the query
+  or use the new $useLimit parameter and set it to true. [Peter, Tjeerd]
 
 Changes in prior versions
 -------------------------

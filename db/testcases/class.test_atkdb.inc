@@ -71,11 +71,11 @@ class test_atkdb extends UnitTestCase
     $this->assertEqual($this->getMockDb()->getRows($query), $rows);
     $this->assertEqual($this->getMockDb()->getRow($query, true), $rows[2]); // explicit limit
     $this->assertEqual($this->getMockDb()->getRow($query, false), $rows[0]); // no limit
-    $this->assertEqual($this->getMockDb()->getValue($query), 3); // explicit limit
-    $this->assertEqual($this->getMockDb()->getValue($query, null, 1), 'mies'); // explicit limit
-    $this->assertEqual($this->getMockDb()->getValue($query, null, 1, false), 'aap'); // no limit
-    $this->assertEqual($this->getMockDb()->getValue($query, null, 'en'), 'mies'); // explicit limit
-    $this->assertEqual($this->getMockDb()->getValue($query, null, 'en', false), 'monkey'); // no limit    
+    $this->assertEqual($this->getMockDb()->getValue($query, null, 0, true), 3); // explicit limit
+    $this->assertEqual($this->getMockDb()->getValue($query, null, 1), 'aap'); // no limit
+    $this->assertEqual($this->getMockDb()->getValue($query, null, 1, true), 'mies'); // explicit limit
+    $this->assertEqual($this->getMockDb()->getValue($query, null, 'en', true), 'mies'); // explicit limit
+    $this->assertEqual($this->getMockDb()->getValue($query, null, 'en'), 'monkey'); // no limit    
     $this->assertEqual($this->getMockDb()->getValue($query, null, 0, false), 1); // no limit
     $this->assertEqual($this->getMockDb()->getValues($query), array(1, 2, 3));
     $this->assertEqual($this->getMockDb()->getValues($query, 'nl'), array('aap', 'noot', 'mies'));
@@ -118,8 +118,8 @@ class test_atkdb extends UnitTestCase
 
     $this->getMockDb()->setResult(array(array('y' => 'y')), $query); // no limit
     $this->getMockDb()->setResult(array(array('z' => 'z')), $query, 0, 1); // when an explicit limit of 0,1 is given we use the 3rd row!
-    $this->assertEqual($this->getMockDb()->getValue($query, 'x'), 'z');
-    $this->assertEqual($this->getMockDb()->getValue($query, 'x', 0, false), 'y');
+    $this->assertEqual($this->getMockDb()->getValue($query, 'x'), 'y');
+    $this->assertEqual($this->getMockDb()->getValue($query, 'x', 0, true), 'z');
   }
 }
 ?>
