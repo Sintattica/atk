@@ -29,7 +29,9 @@
   {
     var $m_isconsole = true;
     var $m_redirectUrl = null;
-    static $s_querycount = 0;
+    
+    private static $s_queryCount = 0;
+    private static $s_systemQueryCount = 0;
 
     /**
      * Get an instance of this class
@@ -86,12 +88,15 @@
     /**
      * Add a query string to the debugger
      *
-     * @param string $query
+     * @param string  $query
+     * @param boolean $system is system query? (e.g. for retrieving metadata, warnings, setting locks etc.)
+     * 
      * @return bool Indication if query is added
      */
-    public function addQuery($query)
+    public function addQuery($query, $isSystemQuery=false)
     {
-      self::$s_querycount++;
+      self::$s_queryCount += !$isSystemQuery ? 1 : 0;
+      self::$s_systemQueryCount += $isSystemQuery ? 1 :0;
 
       if (atkconfig('debug') > 2)
       {
@@ -475,7 +480,7 @@
       $protocol = empty($_SERVER['HTTPS']) || strtolower($_SERVER['HTTPS']) == 'off' ? 'http' : 'https';
       $url = $protocol.'://'.$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] != 80 ? ':'.$_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI'];
 
-      $label = "[{$time}h / {$duration}s / {$usage}MB / ".self::$s_querycount." Queries] $method $url";
+      $label = "[{$time}h / {$duration}s / {$usage}MB / ".self::$s_queryCount." Queries / ".self::$s_systemQueryCount." System Queries] $method $url";
 
       $output = '
         <div class="atkDebugBlock'.(count($g_error_msg) > 0 ? " atkDebugBlockContainsErrors" : "").' atkDebug'.($expanded ? 'Expanded' : 'Collapsed').'">

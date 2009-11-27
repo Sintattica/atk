@@ -80,7 +80,7 @@
        if (!empty($charset))
        {
          atkdebug("Set database character set to: {$charset}");
-         @mysqli_query($this->m_link_id, "SET NAMES '{$charset}'");
+         $this->_query("SET NAMES '{$charset}'", true);
        }
 
        /* set autoCommit to off */
@@ -135,12 +135,6 @@
      if ($offset >= 0 && $limit > 0)
        $query .= " LIMIT $offset, $limit";
 
-     if (atkconfig("debug")>=0)
-     {
-       atkimport("atk.utils.atkdebugger");
-       atkDebugger::addQuery($query);
-     }
-
      /* connect to database */
      $mode = $this->getQueryMode($query);
      if ($this->connect($mode)==DB_SUCCESS)
@@ -156,7 +150,7 @@
        $this->m_affected_rows = 0;
 
        /* query database */
-       $this->m_query_id = @mysqli_query($this->m_link_id, $query);
+       $this->m_query_id = $this->_query($query, false);
        
        /* get the last insert id
         * this is harmless and returns 0 if the query wasn't
@@ -187,7 +181,7 @@
        if ($unlock_table)
          $this->unlock();
 
-       if (atkconfig('debug')>=1)
+       if (atkconfig('debug') >= 1)
        {
          $this->_debugWarnings();
        }
@@ -196,6 +190,23 @@
      }
      return false;
    }
+   
+   /**
+    * Execute and log query.
+    * 
+    * @param string  $query          query
+    * @param boolean $isSystemQuery  is system query? (e.g. for retrieving metadata, warnings, setting locks etc.)
+    */
+   protected function _query($query, $isSystemQuery)
+   {
+     if (atkconfig("debug") >= 0)
+     {
+       atkimport("atk.utils.atkdebugger");
+       atkDebugger::addQuery($query, $isSystemQuery);
+     }
+          
+     return @mysqli_query($this->m_link_id, $query);
+   }
 
    /**
     * Get all MySQL warnings for the previously executed query
@@ -203,10 +214,10 @@
     */
    private function _debugWarnings()
    {
-     $warning_statement = mysqli_query($this->m_link_id, 'SHOW WARNINGS');
+     $stmt = $this->_query('SHOW WARNINGS', true);
 
      $warnings = array();
-     while ($warning = $warning_statement->fetch_assoc())
+     while ($warning = $stmt->fetch_assoc())
      {
        $warnings[] = $warning;
      }
@@ -246,7 +257,7 @@
        $this->m_affected_rows = 0;
 
        $this->lock($table,($querymode == 'r' ? 'read' : 'write'));
-       $this->m_query_id = @mysqli_query($this->m_link_id, $query);
+       $this->m_query_id = $this->_query($query, true);
 
        $this->m_affected_rows = mysqli_affected_rows($this->m_link_id);
      }
@@ -301,7 +312,7 @@
      if ($this->connect('w')==DB_SUCCESS)
      {
        /* lock */
-       $query = "lock tables $table $mode";
+       $query = "LOCK TABLES $table $mode";
 
        if (atkconfig("debug")>=0)
        {
@@ -309,7 +320,7 @@
          atkDebugger::addQuery($query);
        }
 
-       $result = @mysqli_query($this->m_link_id, $query);
+       $result = $this->_query($query, true);
        if (!$result) $this->halt("$mode lock on $table failed.");
 
        /* return result */
@@ -329,7 +340,7 @@
      {
        /* unlock */
        atkdebug("unlock tables");
-       $result = @mysqli_query($this->m_link_id, "unlock tables");
+       $result = $this->_query("UNLOCK TABLES", true);
        if (!$result) $this->halt("unlock tables failed.");
 
        /* return result */
@@ -385,14 +396,14 @@
          /* get sequence number (locked) and increment */
          $query = "SELECT ".$this->m_seq_field." FROM ".$this->m_seq_table." WHERE ".$this->m_seq_namefield." = '$sequence'";
 
-         $id = @mysqli_query($this->m_link_id, $query);
+         $id = $this->_query($query, true);
          $result = @mysqli_fetch_array($id);
 
          /* no current value, make one */
          if (!is_array($result))
          {
            $query = "INSERT INTO ".$this->m_seq_table." VALUES('$sequence', 1)";
-           $id = @mysqli_query( $this->m_link_id, $query);
+           $id = $this->_query($query, true);
            $this->unlock();
            return 1;
          }
@@ -403,7 +414,7 @@
            $nextid = $result[$this->m_seq_field] + 1;
            $query = "UPDATE ".$this->m_seq_table." SET ".$this->m_seq_field." = '$nextid' WHERE ".$this->m_seq_namefield." = '$sequence'";
 
-           $id = @mysqli_query( $this->m_link_id, $query);
+           $id = $this->_query($query, true);
            $this->unlock();
            return $nextid;
          }
@@ -417,7 +428,40 @@
        $this->halt("cannot connect to ".$this->m_host);
      }
    }
+   
+  
+   /**
+    * This function checks the database for a table with
+    * the provide name
+    *
+    * @param String $table the table to find
+    * @return boolean true if found, false if not found
+    */
+   function tableExists($table)
+   {
+     $this->connect('r');
+     $id = $this->_query("SHOW TABLES LIKE '" .$table ."'", true);
+     $result = @mysqli_num_rows($id) > 0;
+     atkdebug("Table exists? $table => ".($result ? 'yes' : 'no'));
+     return $result;
+   }   
 
+   /**
+    * Returns the table type.
+    *
+    * @param string $table table name
+    * @return string table type
+    */
+   function _getTableType($table)
+   {
+     $this->connect('r');
+     $id = $this->_query("SHOW TABLE STATUS LIKE '" .$table ."'", true);
+     $status = @mysqli_fetch_array($id, MYSQLI_ASSOC|atkconfig("mysqlfetchmode"));
+     $result = $status != NULL && isset($status['Engine']) ? $status['Engine'] : NULL;
+     atkdebug("Table type? $table => $result");
+     return $result;
+   }   
+   
    /**
     * Return the meta data of a certain table
     * @param string $table the table name
@@ -441,12 +485,12 @@
          list($dbname, $tablename) = explode(".", $table);
          
          /* get meta data */
-         $id = @mysqli_query( $this->m_link_id, "SELECT * FROM `{$dbname}`.`{$tablename}` LIMIT 1");
+         $id = @$this->_query("SELECT * FROM `{$dbname}`.`{$tablename}` LIMIT 1", true);
        }
        else
        {
          /* get meta data */
-         $id = @mysqli_query( $this->m_link_id, "SELECT * FROM `{$table}` LIMIT 1");
+         $id = $this->_query("SELECT * FROM `{$table}` LIMIT 1", true);
        }
 
        // table type
