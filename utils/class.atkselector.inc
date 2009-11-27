@@ -32,7 +32,7 @@
      */
     protected $m_node;
 
-    protected $m_selector = null;
+    protected $m_selectors = array();
     protected $m_distinct = false;
     protected $m_mode = '';
     protected $m_order = '';
@@ -54,18 +54,22 @@
     public function __construct($node, $selector=null)
     {
       $this->m_node = $node;
-      $this->m_selector = $selector;
+      $this->where($selector);
     }
 
     /**
-     * Sets the selector.
+     * Adds an (extra)e selector.
      *
      * @param string $selector where clause
      * @return atkSelector
      */
     public function where($selector)
     {
-      $this->m_selector = $selector;
+      if (strlen(trim($selector)) > 0)
+      {
+        $this->m_selectors[] = $selector;
+      }
+      
       return $this;
     }
     
@@ -180,7 +184,17 @@
     {
       if ($this->m_rows === null)
       {
-        $this->m_rows = $this->m_node->selectDb($this->m_selector, $this->m_order, array('limit' => $this->m_limit, 'offset' => $this->m_offset), $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct, $this->m_ignoreDefaultFilters);
+        $selector = '';
+        if (count($this->m_selectors) == 1)
+        {
+          $selector = $this->m_selectors[0];
+        }
+        else if (count($this->m_selectors) > 1)
+        {
+          $selector = '('.implode(') AND (', $this->m_selectors).')';
+        }
+                
+        $this->m_rows = $this->m_node->selectDb($selector, $this->m_order, array('limit' => $this->m_limit, 'offset' => $this->m_offset), $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct, $this->m_ignoreDefaultFilters);
       }
 
       return $this->m_rows;
@@ -195,7 +209,17 @@
     {
       if ($this->m_rowCount === null)
       {
-        $this->m_rowCount = (int)$this->m_node->countDb($this->m_selector, $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct, $this->m_ignoreDefaultFilters);
+        $selector = '';
+        if (count($this->m_selectors) == 1)
+        {
+          $selector = $this->m_selectors[0];
+        }
+        else if (count($this->m_selectors) > 1)
+        {
+          $selector = '('.implode(') AND (', $this->m_selectors).')';
+        }
+        
+        $this->m_rowCount = (int)$this->m_node->countDb($selector, $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct, $this->m_ignoreDefaultFilters);
       }
 
       return $this->m_rowCount;
