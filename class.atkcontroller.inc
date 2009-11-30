@@ -595,7 +595,8 @@
            $class = "btn_save";
            break;
          default:
-           return "";
+           $name = $action;
+           $class = "atkbutton";
        }
 
       if (!isset($value))

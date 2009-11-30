@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Generalized atkController::getButton so you can use it for undefined
+  actions (in which case the button name will be the actio name). [Peter]
 * Improved atkSelector::where so that multiple calls will be ANDed together
   (something you would expect it to do anyway). [Peter]
 * Log system queries (like locks, metadata retrieval etc.) separately so we
