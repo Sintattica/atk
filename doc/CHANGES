@@ -9,6 +9,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Fixed bug where atkNode::updateDb() did not pass its includes and exludes on 
+  to atkMlSplitter::updateMlRecords(). atkMlSplitter::updateMlRecords() now 
+  correctly handles provided includes and excludes. [Matthijs]  
 + atkDropDownMenu now supports JavaScript calls for menuitems, simply start
   your URL with "javascript:". [Peter]
 * Correctly escape atkHref url's. Please note that this change might be
