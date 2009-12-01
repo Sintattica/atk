@@ -1030,10 +1030,7 @@
         $str = atkSessionManager::sessionUrl($url,$sessionstatus);
       }
 
-      // note, we use single quotes instead of doublequotes in the href='',
-      // because we otherwise have a problem with internet explorers buggy
-      // javascript parser..
-      return "<a href='".$str."' ".$extraprops.">".$name."</a>";
+      return "<a href=\"".atk_htmlentities($str)."\" ".$extraprops.">".$name."</a>";
     }
   }
 

@@ -133,10 +133,17 @@
 
       $name = $this->getMenuTranslation($menuitem['name'],$menuitem['module']);
       if ($menuitem['name']=='-') return "<li class=\"separator\"><div></div></li>\n";
-      if ($menuitem['url']) $href = href($menuitem['url'],$this->getMenuTranslation($menuitem['name'],$menuitem['module']), SESSION_NEW);
+      if ($menuitem['url'] && substr($menuitem['url'], 0, 11) == 'javascript:') 
+      {
+        $href = '<a href="javascript:void(0)" onclick="'.atk_htmlentities($menuitem['url']).'; return false;">'.atk_htmlentities($this->getMenuTranslation($menuitem['name'],$menuitem['module'])).'</a>'; 
+      }
+      else if ($menuitem['url'])
+      {
+        $href = href($menuitem['url'],$this->getMenuTranslation($menuitem['name'],$menuitem['module']), SESSION_NEW);
+      }
       else $href = '<a href="#">'.$name.'</a>';
 
-      return "<li id='{$menuitem['module']}.{$menuitem['name']}' class='$submenuname'>".$href.$delimiter.$submenu."</li>\n";
+      return "<li id=\"{$menuitem['module']}.{$menuitem['name']}\" class=\"$submenuname\">".$href.$delimiter.$submenu."</li>\n";
     }
   }
 
