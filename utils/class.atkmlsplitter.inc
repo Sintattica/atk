@@ -94,11 +94,12 @@
      *
      * @param atkNode $node
      * @param array $record
-     * @param string $mode 
+     * @param string $mode
      */
-    function updateMlRecords($node, $record, $mode="add")
+    function updateMlRecords($node, $record, $mode="add", $excludes = '', $includes = '')
     {
       atkdebug("atkmlsplitter::updateMlRecords() for mode $mode");
+      
       $excludelist = array();
       $relations = array();
 
@@ -163,13 +164,23 @@
           $editMode="add"; // override the mode in case of missing lngrecords
         }
 
+        // check if we have any locally generated excludes. If needed we merge
+        // them with the parameter excludes
+        if (count($excludelist)) {
+            if (is_array($excludes)) {
+                $excludes = array_unique(array_merge($excludes, $excludelist));
+            } else {
+                $excludes = $excludelist;
+            }
+        }
+        
         switch($editMode)
         {
           case "update":
-            $node->updateDb($record);
+            $node->updateDb($record, true, $excludes, $includes);
             break;
           default:
-            $node->addDb($record,false,$mode, $excludelist);
+            $node->addDb($record,false,$mode, $excludes);
         }
         $record["atkprimkey"]=$oldprimkey;
       }
@@ -200,7 +211,7 @@
 
     /**
      * Adds language condition
-     * 
+     *
      * @param atkQuery $query
      * @param atkNode $node
      * @param string $mode
@@ -222,7 +233,7 @@
 
     /**
     * merges multiple multilanguage records to one record with fields containing arrays needed by mlattributes
-    * 
+    *
     * @param atkNode $node
     * @param array $recordset
     * @param atkQuery $query
@@ -243,7 +254,7 @@
     * this is used to find 1:1 relations with multilanguage support
     * we need these relation because the recordlist will have them included
     * when editting a record we have to combine these records
-    * 
+    *
     * @param atkNode $node
     * @return array Array with relationnames
     */
