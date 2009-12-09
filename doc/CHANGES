@@ -89,6 +89,8 @@ Changes in ATK 6.5
 * Fixed bug in atkDb::getValue which might have caused the retrieval of
   more rows than necessary. Please specify either you own limit in the query
   or use the new $useLimit parameter and set it to true. [Peter, Tjeerd]
+* Fixed parameter order in atkText call inside the sessionmanager::stacktrace
+  function. [Guido]
 
 Changes in prior versions
 -------------------------

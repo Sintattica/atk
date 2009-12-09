@@ -696,9 +696,9 @@
           'title' => $title,
           'descriptor' => $descriptor,
           'node' => $node,
-          'nodetitle' => atktext($type, $type, $module),
+          'nodetitle' => atktext($type, $module, $type),
           'action' => $action,
-          'actiontitle' => atktext($action, $type, $module)
+          'actiontitle' => atktext($action, $module, $type)
         );
 
         if ($i<count($stack)-1)
