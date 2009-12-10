@@ -36,11 +36,11 @@
 
     /**
      * Add action.
-     * 
+     *
      * @var string
      */
-    private $m_addAction = 'add';        
-    
+    private $m_addAction = 'add';
+
     /**
      * The action handler method
      */
@@ -48,7 +48,7 @@
     {
       // clear old reject info
       $this->setRejectInfo(null);
-      
+
       $page = &$this->getPage();
 
       if (isset($this->m_partial) && !empty($this->m_partial))
@@ -65,26 +65,26 @@
     /**
      * Returns the add action, which is called when we want to return
      * the user to the add form.
-     * 
+     *
      * Defaults to the 'add' action.
-     * 
+     *
      * @return string add action
      */
     public function getAddAction()
     {
       return $this->m_addAction;
     }
-    
+
     /**
      * Sets the add action which should be called when we need to return
      * the user to the add form.
-     * 
+     *
      * @param string $action action name
      */
     public function setAddAction($action)
     {
       $this->m_addAction = $action;
-    }      
+    }
 
     /**
      * Save record.
@@ -163,26 +163,20 @@
           $extra = "&atkpkret=".rawurlencode($this->m_postvars["atkpkret"]);
         }
 
-        $back = SESSION_BACK;
-        if ($this->_getSkip()==1) $back = SESSION_REPLACE;
-
         $url = atkSelf().'?atknodetype='.$this->m_node->atknodetype();
         $url.= '&atkaction=edit';
         $url.= '&atkselector='.rawurlencode($this->m_node->primaryKey($record));
-        $location = session_url($url.$extra, $back);
+        $location = session_url($url.$extra, SESSION_REPLACE, $this->_getSkip() - 1);
       }
       else if ($this->m_node->hasFlag(NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext']))
       {
-        $back = SESSION_BACK;
-        if ($this->_getSkip()==1) $back = SESSION_DEFAULT;
-
         $filter = "";
         if (isset($this->m_node->m_postvars['atkfilter']))
         {
           $filter = "&atkfilter=".rawurlencode($this->m_node->m_postvars['atkfilter']);
         }
         $url = atkSelf().'?atknodetype='.$this->m_node->atknodetype().'&atkaction='.$this->getAddAction();
-        $location = session_url($url.$filter, $back);
+        $location = session_url($url.$filter, SESSION_REPLACE, $this->_getSkip() - 1);
       }
       else
       {

@@ -107,7 +107,7 @@
       atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", DEBUG_NOTICE);
       return;
     }
-    
+
     else if (($errtype & (E_WARNING|E_USER_WARNING)) > 0)
     {
       // This is something we should pay attention to, but we don't need to die.
@@ -489,7 +489,7 @@
   /**
    * @deprecated Use atkSession::newLevel() instead
    */
-  function session_level($sessionstatus=SESSION_DEFAULT, $levelskip=1)
+  function session_level($sessionstatus=SESSION_DEFAULT, $levelskip=null)
   {
     return atkSessionManager::newLevel($sessionstatus, $levelskip);
   }
@@ -497,7 +497,7 @@
   /**
    * @deprecated Use atkSessionManager::formState instead.
    */
-  function session_form($sessionstatus=SESSION_DEFAULT, $returnbehaviour=NULL, $fieldprefix='')
+  function session_form($sessionstatus=SESSION_DEFAULT, $returnbehaviour=null, $fieldprefix='')
   {
     return atkSessionManager::formState($sessionstatus, $returnbehaviour, $fieldprefix);
   }
@@ -505,7 +505,7 @@
   /**
    * @deprecated Use atkSessionManager::sessionVars() instead.
    */
-  function session_vars($sessionstatus=SESSION_DEFAULT, $levelskip=1, $url="")
+  function session_vars($sessionstatus=SESSION_DEFAULT, $levelskip=null, $url="")
   {
     return atkSessionManager::sessionVars($sessionstatus, $levelskip, $url);
   }
@@ -513,7 +513,7 @@
   /**
    * @deprecated use atkSessionManager::sessionUrl() instead.
    */
-  function session_url($url,$sessionstatus=SESSION_DEFAULT, $levelskip=1)
+  function session_url($url, $sessionstatus=SESSION_DEFAULT, $levelskip=null)
   {
     return atkSessionManager::sessionUrl($url, $sessionstatus, $levelskip);
 
@@ -675,13 +675,13 @@
   function decodeKeyValuePair($pair)
   {
   	$operators = array("==", "!=", "<>", ">=", "<=", "=", "<", ">");
-  	
+
   	static $s_regex = null;
   	if ($s_regex === null)
   	{
   	  $s_regex = '/'.implode('|', array_map('preg_quote', $operators)).'/';
   	}
-  	
+
     list($key, $value) = preg_split($s_regex, $pair);
 
     return array($key => stripQuotes($value));

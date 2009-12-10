@@ -339,7 +339,7 @@
       }
 
     }
-    
+
     /**
      * Update the last modified timestamp for the curren stack.
      */
@@ -348,7 +348,7 @@
       global $g_sessionData;
       $g_sessionData[$this->m_namespace]["stack_stamp"][atkStackId()] = mktime();
     }
-    
+
     /**
      * Removes any stacks which have been inactive for a period >
      * atkconfig('session_max_stack_inactivity_period').
@@ -356,14 +356,14 @@
     protected function _removeExpiredStacks()
     {
       global $g_sessionData;
-            
+
       $maxAge = atkconfig('session_max_stack_inactivity_period', 0);
       if ($maxAge <= 0)
       {
         atkwarning(__METHOD__.': removing expired stacks disabled, enable by setting $config_session_max_stack_inactivity_period to a value > 0');
         return;
       }
-      
+
       $now = mktime();
       $stacks = &$g_sessionData[$this->m_namespace]['stack'];
       $stackStamps = $g_sessionData[$this->m_namespace]["stack_stamp"];
@@ -380,7 +380,7 @@
 
         $stamp = $stackStamps[$stackId];
         $age = $now - $stamp;
-        
+
         if ($age > $maxAge)
         {
           atkdebug(__METHOD__.': removing expired stack "'.$stackId.'" (age '.$age.'s)');
@@ -389,7 +389,7 @@
           $removed = true;
         }
       }
-      
+
       if (!$removed)
       {
         atkdebug(__METHOD__.': no expired stacks, nothing removed');
@@ -442,7 +442,7 @@
       }
 
       $stack = &$g_sessionData[$this->m_namespace]["stack"][$stackid];
-      
+
       // garbage collect
       $this->_touchCurrentStack();
       $this->_removeExpiredStacks();
@@ -464,6 +464,8 @@
         $currentitem = &$stack[count($stack)-1];
 
         atkdebug("Saving formdata in session");
+
+        unset($currentitem['atkreject']); // clear old reject info
 
         $atkformdata = array();
         foreach(array_keys($postvars) as $varname)
@@ -763,9 +765,9 @@
      * normally confuse the session manager. In the case we detect a new
      * window, we fork the session stack so both windows have their own
      * stacks.
-     * 
+     *
      * @access private
-     * 
+     *
      * @return boolean stack integrity ok? (false means we created a new stack)
      */
     protected function _verifyStackIntegrity()
@@ -809,7 +811,7 @@
 
         return false;
       }
-      
+
       return true;
     }
 
@@ -843,7 +845,7 @@
      * @static
      * @return int the new session level
      */
-    public function newLevel($sessionstatus=SESSION_DEFAULT, $levelskip=1)
+    public function newLevel($sessionstatus=SESSION_DEFAULT, $levelskip=null)
     {
       $currentlevel = atkLevel();
 
@@ -873,7 +875,10 @@
         }
         case SESSION_BACK:
         {
-          $newlevel = max(0,$currentlevel-$levelskip);
+          if ($levelskip === null)
+            $levelskip = 1;
+
+          $newlevel = max(0, $currentlevel-$levelskip);
           break;
         }
         default:
@@ -882,6 +887,27 @@
         }
       }
       return $newlevel;
+    }
+
+    /**
+     * Calculate old session level based on current level and
+     * a passed sessionstatus.
+     * @param var $sessionstatus the session flags
+     *            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
+     *             SESSION_NESTED|SESSION_BACK)
+     * @param int $levelskip how many levels to skip when we use SESSION_REPLACE,
+     * @static
+     * @return int the new session level
+     */
+    public function oldLevel($sessionstatus = SESSION_DEFAULT, $levelskip = null)
+    {
+      $level = atkLevel();
+      if ($sessionstatus == SESSION_REPLACE && $levelskip !== null)
+      {
+        $level = $level - $levelskip;
+      }
+
+      return max($level, 1);
     }
 
     /**
@@ -943,18 +969,20 @@
      * @param string $url         the URL
      * @return array the vars of the session
      */
-    public function sessionVars($sessionstatus=SESSION_DEFAULT, $levelskip=1, $url="")
+    public function sessionVars($sessionstatus=SESSION_DEFAULT, $levelskip=null, $url="")
     {
       global $g_stickyurl;
 
       $newlevel = atkSessionManager::newLevel($sessionstatus, $levelskip);
+      $oldlevel = atkSessionManager::oldLevel($sessionstatus, $levelskip);
+
       $vars="";
      // atklevel is already set manually, we don't append it..
       if ($newlevel!=0 && !strpos($url,"atklevel=")>0)
       {
         $vars.= "atklevel=".$newlevel."&";
       }
-      $vars.= "atkprevlevel=".atkLevel();
+      $vars.= "atkprevlevel=".$oldlevel;
       if ($sessionstatus!=SESSION_NEW)
       {
         $vars.="&atkstackid=".atkStackID();
@@ -984,7 +1012,7 @@
      * @static
      * @return string the session aware URL
      */
-    public function sessionUrl($url,$sessionstatus=SESSION_DEFAULT, $levelskip=1)
+    public function sessionUrl($url,$sessionstatus=SESSION_DEFAULT, $levelskip=null)
     {
       if (strpos($url,"?")!==false)
       {
@@ -1111,7 +1139,7 @@
       atkNode::redirect(session_url($_REQUEST["atknested"], SESSION_NESTED));
       atkOutput::getInstance()->outputFlush();
       exit;
-    }    
+    }
     // Back check
     else if (isset($ATK_VARS["atkback"]) && $ATK_VARS["atkback"]!="")
     {

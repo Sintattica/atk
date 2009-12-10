@@ -9,10 +9,12 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* SESSION_REPLACE now supports levelskips, so we can replace multiple levels
+  on the sessionstack. [Tjeerd/Peter]
 + Added Zend Framework release 1.9 branche. [Peter]
-* Fixed bug where atkNode::updateDb() did not pass its includes and exludes on 
-  to atkMlSplitter::updateMlRecords(). atkMlSplitter::updateMlRecords() now 
-  correctly handles provided includes and excludes. [Matthijs]  
+* Fixed bug where atkNode::updateDb() did not pass its includes and exludes on
+  to atkMlSplitter::updateMlRecords(). atkMlSplitter::updateMlRecords() now
+  correctly handles provided includes and excludes. [Matthijs]
 + atkDropDownMenu now supports JavaScript calls for menuitems, simply start
   your URL with "javascript:". [Peter]
 * Correctly escape atkHref url's. Please note that this change might be
@@ -33,7 +35,7 @@ Changes in ATK 6.5
   instead of a single value. [Peter]
 * Bug fixed that caused atkUpdateStampAttribute and atkCreatedStampAttribute to
   cause 'field is required' errors when the AF_OBLIGATORY flag was set [Harrie]
-+ Added atkPolymorphicOneToOneRelation to atk/relations. The usage of this 
++ Added atkPolymorphicOneToOneRelation to atk/relations. The usage of this
   relation type is described in a HOWTO, but wasn't available in ATK [Matthijs]
 * Fixed bug in atkMySQLiDb driver which caused problems when retrieving metadata
   for tables names that contain schema information. The table and schema were
@@ -49,7 +51,7 @@ Changes in ATK 6.5
   check if debugging is enabled even though the current level might be 0.
   This can come in handy if you want to create a debug menu which you can
   use to change the different debug levels. [Peter]
-* Improved behaviour of atkDummyAttribute when setting flags in the 
+* Improved behaviour of atkDummyAttribute when setting flags in the
   meta node. [Peter]
 + Added special 'atknested' request parameter which causes ATK to instantly
   redirect to the given URL with session mode SESSION_NESTED. This can be
@@ -65,18 +67,18 @@ Changes in ATK 6.5
   entry in your text file it will be displayed as a help text when hovering
   a special help icon). [Peter]
 * small optimization to AtkStringParser->getFields(). [Matthijs]
-* removed class AtkOneToManyRelationSessionGridHandler from file 
-  class.atkonetomanyrelation.inc and put it into its own file. 
-  Otherwise the classloader couldn't properly cache this class and 
+* removed class AtkOneToManyRelationSessionGridHandler from file
+  class.atkonetomanyrelation.inc and put it into its own file.
+  Otherwise the classloader couldn't properly cache this class and
   would rebuild the class list every time. [Matthijs]
-* Fixed retrieval of last insert id for the MySQLi db driver. 
+* Fixed retrieval of last insert id for the MySQLi db driver.
   In certain situations where a table with an autoincrement column is used, the
   driver would return 0 instead of the newly incremented id. [Matthijs]
-+ Added atkAddHandler::setSaveAction, atkSaveHandler::setAddAction, 
++ Added atkAddHandler::setSaveAction, atkSaveHandler::setAddAction,
   atkEditHandler::setUpdateAction and atkUpdatehandler::setEditAction to
   make it more easy to use these handlers inside custom actions. [Peter]
-+ [EXPERIMENTAL] Added atkAttribute::observeJS($event, $body) method which 
-  can be used to observe JavaScript events on attribute fields. [Peter]  
++ [EXPERIMENTAL] Added atkAttribute::observeJS($event, $body) method which
+  can be used to observe JavaScript events on attribute fields. [Peter]
 * Updated PrototypeJS to version 1.6.1. [Tjeerd]
 * Fixed AF_DATE_STRING support in the dateattribute. Reported by
   Arjen Tebbenhof. Thanks Arjen for providing a patch and reporting this
