@@ -741,11 +741,11 @@
 
     /**
      * Default column name (null means across all columns)
-     * 
+     *
      * @var string
      */
     private $m_defaultColumn = null;
-    
+
     /**
      * Constructor.
      *
@@ -806,47 +806,47 @@
 
       return $result;
     }
-    
+
     /**
      * Returns the default column name.
-     * 
+     *
      * @return string default column name
      */
     public function getDefaultColumn()
     {
     	return $this->m_defaultColumn;
     }
-    
+
     /**
      * Set default column name.
-     * 
+     *
      * @param string name default column name
      */
     public function setDefaultColumn($name)
     {
     	$this->m_defaultColumn = $name;
     }
-    
+
     /**
-     * Resolve column for sections. 
-     * 
-     * If one of the sections contains something after a double 
-     * colon (:) than that's used as column name, else the default 
+     * Resolve column for sections.
+     *
+     * If one of the sections contains something after a double
+     * colon (:) than that's used as column name, else the default
      * column name will be used.
      *
      * @param array $sections sections
-     * 
+     *
      * @return string column name
      */
     protected function resolveColumn(&$sections)
     {
     	$column = $this->getDefaultColumn();
-    	
+
       if (!is_array($sections))
       {
       	return $column;
       }
-    	
+
     	foreach ($sections as &$section)
     	{
     		if (strpos($section, ":") !== false)
@@ -854,7 +854,7 @@
     			list($section, $column) = explode(':', $section);
     		}
     	}
-    	
+
     	return $column;
     }
 
@@ -891,12 +891,12 @@
       }
 
       $column = $this->resolveColumn($sections);
-      
+
       if (is_array($sections))
       {
         $sections = $this->resolveSections($sections);
       }
-      
+
       // Filter tabs from section names.
       $tabs = $this->getTabsFromSections($sections);
     }
@@ -1542,7 +1542,7 @@
      */
     function getTabs($action)
     {
-  				
+
       $list = &$this->m_tabList[$action];
 
       $disable = $this->checkTabRights($list);
@@ -1575,12 +1575,12 @@
         if(is_object($p_attrib))
         {
           $additional = $p_attrib->getAdditionalTabs($action);
-          if(is_array($additional) && count($additional)>0) 
+          if(is_array($additional) && count($additional)>0)
 					{
 						$list = atk_array_merge($list, $additional);
             $this->m_filledTabs = atk_array_merge($this->m_filledTabs, $additional);
 					}
-					
+
           // Keep track of the tabs that containg attribs
           // so we only display none-empty tabs
           $tabCode = $this->m_attributeTabs[$attribname][0];
@@ -3445,7 +3445,7 @@
           $record["atkmlsplit"]=1;
 
           $mltool = &atkinstance("atk.utils.atkmlsplitter");
-          $mltool->updateMlRecords($this, $record,"update");
+          $mltool->updateMlRecords($this, $record, "update", $excludes, $includes);
         }
 
         if (!$this->_storeAttributes($storelist["post"], $record, "update")) return false;
@@ -3529,7 +3529,7 @@
      *                     to include in the query and which not to include.
      * @param boolean $distinct Perform a distinct selection (no duplicate
      *                          records). Defaults to true.
-     * @param boolean $ignoreDefaultFilter Ignore default node filters.                          
+     * @param boolean $ignoreDefaultFilter Ignore default node filters.
      * @return int Number of records
      */
     function countDb($selector="", $excludeList="", $includeList="", $mode="", $distinct=false, $ignoreDefaultFilters=false)
@@ -3777,7 +3777,7 @@
      *                     to include in the query and which not to include.
      * @param boolean $distinct Perform a distinct selection (no duplicate
      *                          records). Defaults to true.
-     * @param boolean $ignoreDefaultFilters Ignore default node filters.                          
+     * @param boolean $ignoreDefaultFilters Ignore default node filters.
      * @return array Array containing the retrieved records
      */
     function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="", $mode="", $distinct=false, $ignoreDefaultFilters=false)
