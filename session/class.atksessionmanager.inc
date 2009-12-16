@@ -907,7 +907,7 @@
         $level = $level - $levelskip;
       }
 
-      return max($level, 1);
+      return max($level, 0);
     }
 
     /**
