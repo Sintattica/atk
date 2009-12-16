@@ -74,14 +74,14 @@
   {if $mra!=""}
   <!-- multirecord actions -->
    <tr>
-     <td valign="top">
+     <td valign="top" style="padding-top: 0px">
        {if $editing}
          {$mra}
        {else}
          <table border="0" cellspacing="0" cellpadding="0">
            <tr>
-             <td valign="top"><img src="{$atkroot}atk/images/arrow.gif" border="0"></td>
-             <td>
+             <td valign="top" style="padding-top: 0px; padding-left: 2px"><img src="{$atkroot}atk/images/arrow.gif" border="0"></td>
+             <td style="padding-top: 6px; padding-left: 5px">
                {$mra}
              </td>
            </tr>

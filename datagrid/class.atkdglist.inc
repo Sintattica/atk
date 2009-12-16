@@ -530,9 +530,10 @@ class atkDGList extends atkDGComponent
       $target = session_url(atkSelf().'?atknodetype='.$grid->getNode()->atkNodeType().'&atktarget='.$grid->getNode()->m_postvars['atktarget'].'&atktargetvar='.$grid->getNode()->m_postvars['atktargetvar'].'&atktargetvartpl='.$grid->getNode()->m_postvars['atktargetvartpl'], SESSION_NESTED);
 
       $mra = (count($list["rows"]) > 1 && $grid->getMRASelectionMode() == MRA_MULTI_SELECT ?
-                  '<a href="javascript:void(0)" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'all\')">'.atktext("select_all").'</a> / '.
-                  '<a href="javascript:void(0)" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'none\')">'.atktext("deselect_all").'</a> / '.
-                  '<a href="javascript:void(0)" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'invert\')">'.atktext("select_invert").'</a> '
+                  '<a href="javascript:void(0)" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'all\')">'.atktext("select_all").'</a> | '.
+                  '<a href="javascript:void(0)" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'none\')">'.atktext("deselect_all").'</a> | '.
+                  '<a href="javascript:void(0)" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'invert\')">'.atktext("select_invert").'</a> '.
+                  '<div style="height: 8px"></div>'
                  :
                   '');
 
@@ -586,7 +587,7 @@ class atkDGList extends atkDGComponent
           );
 
           $embedded = $this->getGrid()->isEmbedded() ? 'true' : 'false';
-          $mra .= '&nbsp; <input type="hidden" name="'.$listName.'_atkaction" value="'.$name.'">'.
+          $mra .= '<input type="hidden" name="'.$listName.'_atkaction" value="'.$name.'">'.
           $this->getCustomMraHtml().
                      '<input type="button" class="btn" value="'.atktext($actionKeys,$grid->getNode()->m_module, $grid->getNode()->m_type).'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\', '.$embedded.', false)">';
         }
