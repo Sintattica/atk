@@ -36,11 +36,11 @@
 
     /**
      * Update action.
-     * 
+     *
      * @var string
      */
-    private $m_updateAction = 'update'; 
-    
+    private $m_updateAction = 'update';
+
     private $m_updateSessionStatus = SESSION_NESTED;
 
     /**
@@ -96,19 +96,19 @@
 
     /**
      * Returns the update action, which is called when posting the edit form.
-     * 
+     *
      * Defaults to the 'update' action.
-     * 
+     *
      * @return string update action
      */
     public function getUpdateAction()
     {
       return $this->m_updateAction;
     }
-    
+
     /**
      * Sets the update action which should be called when posting the edit form.
-     * 
+     *
      * @param string $action action name
      */
     public function setUpdateAction($action)
@@ -264,18 +264,18 @@
         }
         else
         {
-          $total = $ui->renderBox($this->m_renderBoxVars);
+          $total = $ui->renderBox($this->m_renderBoxVars, $this->m_boxTemplate);
         }
 
         return $total;
       }
     }
-    
+
     /**
      * Returns the current update session status.
-     * 
+     *
      * @see atkEditHandler::setUpdateSessionStatus
-     * 
+     *
      * @return int session status
      */
     public function getUpdateSessionStatus()
@@ -286,14 +286,14 @@
     /**
      * Sets the session status in which the update action gets executed.
      * By default the update action is called nested in the session stack.
-     * 
+     *
      * @param int $sessionStatus session status (e.g. SESSION_NESTED, SESSION_DEFAULT etc.)
      */
     public function setUpdateSessionStatus($sessionStatus)
     {
       $this->m_updateSessionStatus = $sessionStatus;
     }
-    
+
     /**
      * Get the start of the form.
      *
@@ -311,7 +311,7 @@
 
       $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkaction" value="'.$this->getUpdateAction().'" />';
       $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkprevaction" value="'.$this->getNode()->m_action.'" />';
-                                                                         
+
       $formstart .= $controller->getHiddenVarsString();
 
       return $formstart;
@@ -657,7 +657,8 @@
       }
 
       $params["activeTab"] = $tab;
-      $params["fields"] = $fields; // add all fields as an numeric array.
+      $params["fields"] = $fields; // add all fields as a numeric array.
+
       $params["errortitle"] = $error_title;
       $params["errors"] = $errors; // Add the list of errors.
 
@@ -680,7 +681,7 @@
         }
       }
 
-            return $result;
+      return $result;
     }
 
     /**

@@ -65,6 +65,9 @@
     /** @access private */
     var $m_returnbehaviour = ATK_ACTION_STAY;
 
+    /** @access protected */
+    protected $m_boxTemplate = "box.tpl";
+
     /**
      * Render mode, defaults to "box" but can be changed to "dialog".
      *
@@ -130,7 +133,7 @@
      */
     function getRejectInfo()
     {
-    	return atkGetSessionManager()->stackVar('atkreject'); 
+    	return atkGetSessionManager()->stackVar('atkreject');
     }
 
     /**
@@ -193,6 +196,11 @@
     function getRenderMode()
     {
       return $this->m_renderMode;
+    }
+
+    function setBoxTemplate($tpl)
+    {
+        $this->m_boxTemplate = $tpl;
     }
 
     /**

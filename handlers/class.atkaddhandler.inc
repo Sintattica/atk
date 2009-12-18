@@ -30,13 +30,13 @@
   {
     var $m_buttonsource = null;
     var $m_dialogSaveUrl = null;
-    
+
     /**
      * Save action.
-     * 
+     *
      * @var string
      */
-    private $m_saveAction = 'save';     
+    private $m_saveAction = 'save';
 
     /**
      * Constructor
@@ -62,7 +62,7 @@
 
       // we could get here because of a reject.
       $record = $this->getRejectInfo();
-      
+
       $page = &$this->getPage();
       $controller = &atkcontroller::getInstance();
       $page->addContent($controller->renderActionPage("add", $this->invoke("addPage", $record)));
@@ -70,26 +70,26 @@
 
     /**
      * Returns the save action, which is called when posting the edit form.
-     * 
+     *
      * Defaults to the 'save' action.
-     * 
+     *
      * @return string save action
      */
     public function getSaveAction()
     {
       return $this->m_saveAction;
     }
-    
+
     /**
      * Sets the save action which should be called when posting the edit form.
-     * 
+     *
      * @param string $action action name
      */
     public function setSaveAction($action)
     {
       $this->m_saveAction = $action;
-    }    
-    
+    }
+
     /**
      * Creates an add page or null, of it cannot be created.
      *
@@ -337,7 +337,7 @@
         }
         else
         {
-          $total = $ui->renderBox($this->m_renderBoxVars);
+          $total = $ui->renderBox($this->m_renderBoxVars, $this->m_boxTemplate);
         }
 
         return $total;

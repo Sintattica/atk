@@ -9,6 +9,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
++ atkActionHandlers now have a setBoxTemplate to set the template from your
+  custom theme that renders the action.tpl. Currently only implemented in the
+  add and edit handlers. [Sandy]
 * SESSION_REPLACE now supports levelskips, so we can replace multiple levels
   on the sessionstack. [Tjeerd/Peter]
 + Added Zend Framework release 1.9 branche. [Peter]
