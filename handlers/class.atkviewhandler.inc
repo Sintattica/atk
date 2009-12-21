@@ -154,6 +154,7 @@
       $tabs = $node->getTabs($mode);
 
       $fields = array();
+      $attributes = array();
 
       // For all attributes we use the display() function to display the
       // attributes current value. This may be overridden by supplying
@@ -269,6 +270,7 @@
         }
         $fields[] = $tplfield; // make field available in numeric array
         $params[$field["name"]] = $tplfield; // make field available in associative array
+        $attributes[$field["name"]] = $tplfield; // make field available in associative array
 
       }
       $ui = &$this->getUi();
@@ -282,7 +284,7 @@
       }
       else
       {
-        $innerform = $ui->render($node->getTemplate("view", $record, $tab), array("fields"=>$fields));
+        $innerform = $ui->render($node->getTemplate("view", $record, $tab), array("fields"=>$fields,'attributes'=>$attributes));
       }
       return $innerform;
     }

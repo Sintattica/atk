@@ -9,6 +9,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
++ made a new array available in the edit/view form template. You can 
+  now use $attributes which contains all attributes by their name. The 
+  <attributename> notation will be depricated. [Sandy]
 + atkActionHandlers now have a setBoxTemplate to set the template from your
   custom theme that renders the action.tpl. Currently only implemented in the
   add and edit handlers. [Sandy]
