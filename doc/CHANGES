@@ -9,6 +9,10 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Fixed a bug in atkUpdateHandler::handleUpdateSuccess() where a
+  redirect would be made to the previous stack level without replacing the 
+  session data. This resulted in displaying old data for some relations. This
+  fix makes use of SESSION_REPLACE with levelskip 1 [Matthijs]
 + made a new array available in the edit/view form template. You can 
   now use $attributes which contains all attributes by their name. The 
   <attributename> notation will be depricated. [Sandy]

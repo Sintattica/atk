@@ -35,11 +35,11 @@
 
     /**
      * Edit action.
-     * 
+     *
      * @var string
      */
-    private $m_editAction = 'edit';        
-    
+    private $m_editAction = 'edit';
+
     /**
      * The action handler method.
      */
@@ -47,7 +47,7 @@
     {
       // clear old reject info
       $this->setRejectInfo(null);
-    	
+
       if (isset($this->m_partial) && $this->m_partial!="")
       {
         $this->partial($this->m_partial);
@@ -62,26 +62,26 @@
     /**
      * Returns the edit action, which is called when we want to return
      * the user to the edit form.
-     * 
+     *
      * Defaults to the 'edit' action.
-     * 
+     *
      * @return string edit action
      */
     public function getEditAction()
     {
       return $this->m_editAction;
     }
-    
+
     /**
      * Sets the edit action which should be called when we need to return
      * the user to the edit form.
-     * 
+     *
      * @param string $action action name
      */
     public function setEditAction($action)
     {
       $this->m_editAction = $action;
-    }      
+    }
 
     /**
      * Perform the update action
@@ -187,7 +187,7 @@
       	$error = $result;
       	$this->invoke($errorHandler, $record, $error, $extraParams);
       }
-      
+
       return true;
     }
 
@@ -271,14 +271,14 @@
       $selector = atkArrayNvl($this->m_postvars, 'atkselector','');
       return (atkinstance('atk.session.atksessionstore')->updateDataRowForSelector($selector, $record)!==false);
     }
-    
+
     /**
      * Handle update error. This can either be an error in the record data the user
      * can correct or a fatal error when saving the record in the database. If the
      * latter is the case the $error parameter is set.
-     * 
+     *
      * This method can be overriden inside your node.
-     * 
+     *
      * @param array  $record the record
      * @param string $error  error string (only on fatal errors)
      *
@@ -291,14 +291,14 @@
         $this->setRejectInfo($record);
         $location = session_url(dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), array("atkselector"=>$this->m_node->primaryKey($record))),SESSION_BACK);
         $this->m_node->redirect($location);
-      }      	
+      }
       else
       {
         $location = $this->m_node->feedbackUrl("update", ACTION_FAILED, $record, $error);
         $this->m_node->redirect($location);
       }
     }
-    
+
     /**
      * Handle update success. Normally redirects the user either back to the edit form
      * (when the user only saved) or back to the previous action if the user choose save
@@ -314,15 +314,15 @@
       {
         // 'save' was clicked
         $params = array("atkselector" => $this->m_node->primaryKey($record), "atktab" => $this->m_node->getActiveTab());
-        $location = session_url(dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), $params), SESSION_BACK);
+        $location = session_url(dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), $params), SESSION_REPLACE, 1);
       }
       else
       {
         // 'save and close' was clicked
         $location = $this->m_node->feedbackUrl("update", ACTION_SUCCESS, $record, "", 2);
       }
-      
-      $this->m_node->redirect($location);      
+
+      $this->m_node->redirect($location);
     }
 
     //=================== PARTIAL / DIALOG METHODS ===================\\
