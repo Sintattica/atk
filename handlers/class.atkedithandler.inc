@@ -133,9 +133,8 @@
        */
       foreach ($fetchedRecord as $attrName => $value) {
         if ($attr = $this->m_node->getAttribute($attrName)) {
-            atk_var_dump($attr, 'ATTR');
             if ($attr->needsReload($record)) {
-              unset($fetchedRecord[$attrName]);
+                unset($fetchedRecord[$attrName]);
             }
 
         }
