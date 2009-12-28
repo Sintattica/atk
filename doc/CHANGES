@@ -9,6 +9,11 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
++ added method atkAttribute::setForceReload(). If set to true, the 
+  fetched/calculated attribute value is not overwritten by the value from
+  the session. Example: an expression attribute is calculated based on data 
+  from a relation. If the relation is updated, we don't want the attribute value
+  to be overwritten by outdated session data. [Matthijs]
 * Fixed a bug in atkUpdateHandler::handleUpdateSuccess() where a
   redirect would be made to the previous stack level without replacing the 
   session data. This resulted in displaying old data for some relations. This

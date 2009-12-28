@@ -126,8 +126,24 @@
     function mergeWithPostvars($record)
     {
       $fetchedRecord = $this->m_node->updateRecord('', NULL, NULL, true);
-      if (is_array($record))
+
+      /*
+       * If any of the attributes is set to need a reload, we don't merge
+       * with te postvars for that attribute
+       */
+      foreach ($fetchedRecord as $attrName => $value) {
+        if ($attr = $this->m_node->getAttribute($attrName)) {
+            atk_var_dump($attr, 'ATTR');
+            if ($attr->needsReload($record)) {
+              unset($fetchedRecord[$attrName]);
+            }
+
+        }
+      }
+
+      if (is_array($record)) {
         $record = array_merge($record, $fetchedRecord);
+      }
 
       return $record;
     }

@@ -502,6 +502,14 @@
     var $m_forceinsert=false;
 
     /**
+     * Wether to force a reload of the attribute ignoring the saved session data
+     *
+     * @access private
+     * @var bool
+     */
+    var $m_forcereload = false;
+
+    /**
      * Wether to force an update of the attribute
      * @access private
      * @var bool
@@ -581,11 +589,11 @@
      * @var string
      */
     private $m_column;
-    
+
     /**
      * JavaScript observers. Key is the event name
      * value is an array with event handlers.
-     * 
+     *
      * @var array
      */
     private $m_jsObservers = array();
@@ -891,10 +899,10 @@
         return $postvars[$this->fieldName()];
       }
     }
-    
+
     /**
      * Register JavaScript event handlers.
-     * 
+     *
      * @param string $fieldId field identifier
      */
     protected function registerJavaScriptObservers($fieldId)
@@ -933,7 +941,7 @@
       {
         $onchange = '';
       }
-      
+
       $this->registerJavaScriptObservers($id);
 
       $size = $this->m_size;
@@ -1232,14 +1240,14 @@
     function getToolTip()
     {
       $tooltip = $this->text($this->fieldName().'_tooltip', false);
-      if (!$tooltip) 
+      if (!$tooltip)
       {
         return '';
       }
-      
+
       $template = atkTheme::getInstance()->tplPath('tooltip.tpl', $this->getModule());
       $vars = array('tooltip' => $tooltip, 'attribute' => $this);
-      
+
       $result = $this->getOwnerInstance()->getUi()->render($template, $vars, $this->getModule());
       return $result;
     }
@@ -1840,6 +1848,18 @@
     }
 
     /**
+     * Used to force an attribute to update from the db regardless of the
+     * attribute being present in the postvars/session
+     * @param bool $force Wether or not to force the attribute to reload
+     * @return atkAttribute Returns the instance of this attribute
+     */
+    function setForceReload($force)
+    {
+      $this->m_forcereload = $force;
+      return $this;
+    }
+
+    /**
      * Used to force an attribute to update with every updateDb() call
      * @param bool $force Wether or not to force the attribute to update
      * @return atkAttribute Returns the instance of this attribute
@@ -1901,6 +1921,20 @@
     {
       return ((!$this->hasFlag(AF_READONLY_EDIT) && !$this->hasFlag(AF_HIDE_EDIT)) || $this->m_forceupdate);
     }
+
+    /**
+     * This function is called by the framework to determine if the attribute
+     * needs to be updated from the db regardless of the attribute being present
+     * in the postvars/session
+     *
+     * @param array $record The record that is going to be saved.
+     * @return boolean True if this attribute should be reloaded; false if not.
+     */
+    function needsReload($record)
+    {
+      return $this->m_forcereload;
+    }
+
 
     /**
      * Retrieve the list of searchmodes supported by the attribute.
@@ -2800,22 +2834,22 @@
      * @return bool Manually painted?
      */
     function isManualPaint() { return $this->m_manual_paint; }
-    
+
     /**
      * Observe the given JavaScript event and execute the given JavaScript
-     * statements when the event occurs. 
-     * 
-     * Inside the JavaScript body the event is available in the variable 
-     * "event" and the field identifier is available in the variable 
-     * "fieldId". To cancel an event you can use Prototype's event 
+     * statements when the event occurs.
+     *
+     * Inside the JavaScript body the event is available in the variable
+     * "event" and the field identifier is available in the variable
+     * "fieldId". To cancel an event you can use Prototype's event
      * mechanism for this.
-     * 
+     *
      * @param string event JavaScript event name (e.g. 'change', 'click', etc.)
      * @param string body  JavaScript body
      */
     public function observeJS($event, $body)
     {
-      $this->m_jsObservers[$event][] = $body; 
+      $this->m_jsObservers[$event][] = $body;
     }
 
     /**
