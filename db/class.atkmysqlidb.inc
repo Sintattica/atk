@@ -183,7 +183,7 @@
 
        if (atkconfig('debug') >= 1)
        {
-         $this->_debugWarnings();
+         $this->debugWarnings();
        }
 
        return true;
@@ -212,7 +212,7 @@
     * Get all MySQL warnings for the previously executed query
     * and make atkwarnings of them.
     */
-   private function _debugWarnings()
+   public function debugWarnings()
    {
      $stmt = $this->_query('SHOW WARNINGS', true);
 
@@ -356,7 +356,7 @@
     */
    function affected_rows()
    {
-     return @mysqli_affected_rows($this->m_link_id);
+     return $this->m_affected_rows;
    }
 
    /**

@@ -520,6 +520,36 @@
     }
 
     /**
+     * Returns the current query resource.
+     * 
+     * @return mixed query resource
+     */
+    public function getQueryId()
+    {
+      return $this->m_query_id;
+    }
+    
+    /**
+     * Sets the current query identifier used for next_record() etc.
+     * 
+     * @param mixed $queryId query resource
+     */
+    public function setQueryId($queryId)
+    {
+      $this->m_query_id = $queryId;
+    }
+    
+    /**
+     * Rests the query resource. 
+     * 
+     * NOTE: this doesn't close the query/statement!
+     */
+    public function resetQueryId()
+    {
+      $this->m_query_id = null;
+    }
+
+    /**
      * Get the current query statement resource id.
      * @return Resource Query statement resource id.
      */
@@ -613,6 +643,33 @@
     {
     }
 
+    /**
+     * Creates a new statement for the given query.
+     * 
+     * @see atkStatement
+     * 
+     * @param string $query SQL query
+     * 
+     * @return atkStatement statement
+     */
+    public function prepare($query)
+    {
+      atkimport('atk.db.statement.atkstatement');
+      
+      if (atkimport("atk.db.statement.atk".$this->m_type."statement"))
+      {
+        $class = "atk".$this->m_type."statement";
+      }
+      else
+      {
+        atkimport("atk.db.statement.atkcompatstatement");
+        $class = "atkCompatStatement";
+      }
+      
+      $stmt = new $class($this, $query);
+      return $stmt;
+    }    
+    
     /**
      * Parse and execute a query.
      *
@@ -1335,6 +1392,16 @@
       return $olddb;
     }
 
+    /**
+     * Halt on error?
+     * 
+     * @return boolean halt on error?
+     */
+    public function getHaltOnError()
+    {
+      return $this->m_haltonerror;
+    }
+    
     /**
      * Halt on error or not?
      *

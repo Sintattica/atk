@@ -44,7 +44,7 @@
      */
     function connect()
     {
-      return true;
+      return DB_SUCCESS;
     }
 
     /**
