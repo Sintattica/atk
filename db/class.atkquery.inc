@@ -22,6 +22,8 @@
    *
    * All db drivers should derive a class from this baseclass and implement
    * the necessary methods.
+   * 
+   * @todo add bind parameter support
    *
    * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
@@ -342,21 +344,37 @@
      * @param string $condition Condition
      * @return atkQuery The query object itself (for fluent usage)
      */
-    function &addCondition($condition)
+    public function addCondition($condition)
     {
-      if ($condition!="" && !in_array($condition,$this->m_conditions)) $this->m_conditions[] = $condition;
+      if ($condition != '') 
+      {
+        // NOTE: previous code tried to make sure a condition wasn't added
+        // twice, however when supporting bind params you can't do this anymore
+        $this->m_conditions[] = $condition;
+      }
+      
       return $this;
     }
 
-
-   /**
-    * Add search condition to the query. Basically similar to addCondition, but
-    * searchconditions make use of the searchmode setting to determine whether the
-    * different searchconditions should be and'ed or or'ed.
-    * 
-    * @param string $condition Condition
-    * @return atkQuery The query object itself (for fluent usage)
-    */
+    /**
+     * Sets this queries search method.
+     * 
+     * @param string $searchMethod search method
+     */
+    public function setSearchMethod($searchMethod)
+    {
+      $this->m_searchmethod = $searchMethod;
+      return $this;
+    }
+    
+    /**
+     * Add search condition to the query. Basically similar to addCondition, but
+     * searchconditions make use of the searchmode setting to determine whether the
+     * different searchconditions should be and'ed or or'ed.
+     * 
+     * @param string $condition Condition
+     * @return atkQuery The query object itself (for fluent usage)
+     */
     function &addSearchCondition($condition)
     {
       if ($condition!="") $this->m_searchconditions[] = $condition;
@@ -486,10 +504,10 @@
      *                          false for a regular select.
      * @return array The set of records returned by the database.
      */
-    function executeSelect($distinct = FALSE)
+    public function executeSelect($distinct = FALSE)
     {
       $query = $this->buildSelect($distinct);
-      return $this->getDb()->getrows($query);
+      return $this->getDb()->getrows($query); 
     }
 
     /**
@@ -572,7 +590,6 @@
        }
        return $result;
      }
-
 
     /**
      * Builds the SQL Update query

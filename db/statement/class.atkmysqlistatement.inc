@@ -65,6 +65,23 @@ class atkMySQLiStatement extends atkStatement
       throw new atkStatementException("Cannot prepare statement (ERROR: {$conn->errno} - {$conn->error}).", atkStatementException::PREPARE_STATEMENT_ERROR);
     }
   }  
+  
+  /**
+   * Moves the cursor back to the beginning of the result set.
+   * 
+   * NOTE:
+   * Depending on the database driver, using this method might result in the
+   * query to be executed again.
+   */
+  public function rewind()
+  {
+    if ($this->_getLatestParams() === null)
+    {
+      throw new atkStatementException("Statement has not been executed yet.", atkStatementException::STATEMENT_NOT_EXECUTED);
+    }
+    
+    $this->m_stmt->data_seek(0);
+  }   
  
   /**
    * Bind statement parameters.
@@ -96,7 +113,7 @@ class atkMySQLiStatement extends atkStatement
    */
   private function _storeColumnNames()
   {
-    if ($this->m_columNames !== null)
+    if ($this->m_columnNames !== null)
     {
       // already stored on previous execution
       return;

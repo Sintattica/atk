@@ -59,6 +59,12 @@
    */
   function atkErrorHandler($errtype, $errstr, $errfile, $errline)
   {
+    // probably suppressed error using the @ operator, simply ignore
+    if (error_reporting() == 0)
+    {
+      return;
+    }
+    
     $errortype = array (
       E_ERROR              => "Error",
       E_WARNING            => "Warning",
@@ -95,13 +101,13 @@
     	// ignore strict notices for now, there is too much stuff that needs to be fixed
     	return;
     }
-    else if ($errtype == E_NOTICE || error_reporting() == 0)
+    else if ($errtype == E_NOTICE)
     {
       // Just show notices
       atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", DEBUG_NOTICE);
       return;
     }
-    else if (defined('E_DEPRECATED') && ($errtype & (E_DEPRECATED|E_USER_DEPRECATED)) > 0 || error_reporting() == 0)
+    else if (defined('E_DEPRECATED') && ($errtype & (E_DEPRECATED|E_USER_DEPRECATED)) > 0)
     {
       // Just show deprecation warnings in the debug log, but don't influence the program flow
       atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", DEBUG_NOTICE);

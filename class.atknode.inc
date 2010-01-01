@@ -3491,196 +3491,6 @@
     }
 
     /**
-    * Checks if the attribute is needed in a select query
-    *
-    * @param string $attribname name of the attribute
-    * @param array $excludeList list of exclueded attribs
-    * @param array $includeList list of inclueded attribs
-    * @param string $mode the mode for which the selectDb is called
-    * @return bool true in case the attribute needs to be in the select
-    */
-    function isAllowedQueryList($attribname,$excludeList="",$includeList="", $mode = "")
-    {
-
-      return (in_array($attribname, $this->m_primaryKey)
-              || ((is_array($includeList) && in_array($attribname,$includeList))
-              || (is_array($excludeList) && !in_array($attribname,$excludeList)))
-              || (!is_array($excludeList) && !is_array($includeList))
-              || ($this->m_attribList[$attribname]->hasFlag(AF_FORCE_LOAD))
-            );
-
-    }
-
-    /**
-     * Count the number of records in the database that a call to selectDb
-     * would return.
-     *
-     * @param String $selector Sql expression used as a where-condition, to
-     *                         count only records that match the expression.
-     * @param array $excludeList List of attributes to be excluded from the
-     *                           query. By default, the attributes that should
-     *                           be loaded are determined by the $mode
-     *                           parameter. Using $excludeList, you can
-     *                           explicitly exclude attributes.
-     * @param array $includeList List of attributes to include in the query,
-     *                           regardless of the $mode parameter.
-     * @param String $mode The action for which the selectDb is called.
-     *                     This param is used to determine which attributes
-     *                     to include in the query and which not to include.
-     * @param boolean $distinct Perform a distinct selection (no duplicate
-     *                          records). Defaults to true.
-     * @param boolean $ignoreDefaultFilter Ignore default node filters.
-     * @return int Number of records
-     */
-    function countDb($selector="", $excludeList="", $includeList="", $mode="", $distinct=false, $ignoreDefaultFilters=false)
-    {
-      $searching = false;
-      $loadlist = array();
-
-      $db = &$this->getDb();
-      $query = &$db->createQuery();
-
-      $query->addTable($this->m_table);
-      $query->addCondition($selector);
-      if (isset($this->m_postvars['atksearchmethod']))
-      {
-        $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
-      }
-
-      // First we check if we are about to search and set a few things
-      // if we are
-      if (!atkReadOptimizer())
-      {
-        /* there may be search criteria, which we also filter */
-        $searchArray = atkArrayNvl($this->m_postvars,'atksearch');
-        $smartSearchCriteria = atkArrayNvl($this->m_postvars,'atksmartsearch');
-        $indexValue = $this->m_index != "" ? atkArrayNvl($this->m_postvars,'atkindex',"") : "";
-
-        if ( (is_array($searchArray) && count($searchArray)>0)
-              || (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
-              || !empty($indexValue) )
-
-        {
-          //The searchmode of an index should be used only once, therefore it uses atksinglesearchmode instead of atksearchmode.
-          $searchmode = isset($this->m_postvars["atksinglesearchmode"]) ? $this->m_postvars["atksinglesearchmode"] : (isset($this->m_postvars["atksearchmode"]) ? $this->m_postvars["atksearchmode"] : "");
-
-          if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
-        }
-      }
-
-      if(array_key_exists("atkfilter", $this->m_postvars))
-       $query->addCondition($this->validateFilter($this->m_postvars["atkfilter"]));
-
-      if (!$this->hasFlag(NF_NO_FILTER) && !$ignoreDefaultFilters)
-      {
-        /* hard filters may be set */
-        foreach ($this->m_filters as $key => $value)
-        {
-          $query->addCondition($key."='".$value."'");
-        }
-
-        if(count($this->m_fuzzyFilters))
-        {
-          atkimport("atk.utils.atkstringparser");
-          /* fuzzy filters may be set */
-          for ($i = 0, $_i = count($this->m_fuzzyFilters); $i < $_i; $i++)
-          {
-            $parser = new atkStringParser($this->m_fuzzyFilters[$i]);
-            $filter = $parser->parse(array('table' => $this->m_table));
-            $query->addCondition($filter);
-          }
-        }
-      }
-
-      foreach (array_keys($this->m_attribList) as $attribname)
-      {
-        $p_attrib = &$this->m_attribList[$attribname];
-        if (is_object($p_attrib) && $this->isAllowedQueryList($attribname,$excludeList,$includeList))
-        {
-          $loadmode = $p_attrib->loadType($mode);
-          if (hasFlag($loadmode, ADDTOQUERY)) $loadlist["query"][]=$attribname;
-        }
-      }
-
-      for ($i = 0, $_i = count($loadlist["query"]); $i < $_i; $i++)
-      {
-        $dummy = array();
-        $p_attrib = &$this->m_attribList[$loadlist["query"][$i]];
-        $p_attrib->addToQuery($query,$this->m_table,"",$dummy,1,$mode); // start at level 1
-      }
-
-      //handle index navigation
-      if($indexValue !="")
-      {
-        $p_attrib = &$this->getAttribute($this->m_index);
-        if(is_object($p_attrib))
-        {
-           $p_attrib->searchCondition($query, $this->m_table, $indexValue, "wildcard", "");
-        }
-        else
-        {
-          atkerror("Wrong_index_field");
-        }
-      }
-
-      if (is_array($searchArray) && count($searchArray) > 0)
-      {
-        while (list($key,$value) = each($searchArray))
-        {
-          if( (($value!="") && ($mode=="admin" || $mode=="export")) || (($value!="") && in_array($key,$loadlist["query"])) )
-          {
-            $p_attrib = &$this->getAttribute($key);
-
-            if (is_object($p_attrib))
-            {
-              if (is_array($value) && isset($value[$key]) && count($value) == 1)
-              {
-                $value = $value[$key];
-              }
-
-              $searchmode = $this->getSearchMode();
-              if(is_array($searchmode))
-              {
-                $search = $searchmode[$key];
-                if ($search=="") $search = atkconfig("search_defaultmode");
-                $p_attrib->searchCondition($query, $this->m_table, $value, $search, "");
-              }
-              else
-              {
-                $p_attrib->searchCondition($query, $this->m_table, $value, $searchmode, "");
-              }
-            }
-            else
-            {
-              atkdebug("Using default search method for $key");
-              $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
-              $query->addSearchCondition($condition);
-            }
-          }
-        }
-      }
-
-      // there may be smart search criteria which we need to apply
-      if (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
-      {
-        $this->applySmartSearchCriteria($query, $smartSearchCriteria);
-      }
-
-      $mltool = &atkinstance("atk.utils.atkmlsplitter");
-      $mltool->addMlCondition($query,$this,$mode,$this->m_table);
-
-      $querystring = $query->buildCount($distinct);
-      $result = $db->getrows($querystring);
-
-      // group by fix:
-      // if there exists a group by (added by atk/filters) the 'else' situation occurs
-      if(count($result)==1)
-        return $result[0]["count"];
-      else
-        return count($result);
-    }
-
-    /**
      * Copy a record in the database.
      *
      * Primarykeys are automatically regenerated for the copied record. Any
@@ -3735,410 +3545,66 @@
       }
       return atkconfig("search_defaultmode");
     }
+    
+    /**
+     * Set some default for the selector.
+     * 
+     * @param atkSelector $selector  selector
+     * @param string      $condition condition
+     * @param array       $params    condition bind parameters
+     */
+    protected function _initSelector(atkSelector $selector, $condition=null, $params=array())
+    {
+      $selector->orderBy($this->getOrder());
+      $selector->ignoreDefaultFilters($this->hasFlag(NF_NO_FILTER));
+      $selector->ignorePostvars(atkReadOptimizer());
+      
+      if ($condition != null)
+      {
+        $condition = $params[0];
+        $params = array_slice($params, 1);
+        $selector->where($condition, $params);
+      }
+    }
 
     /**
-     * Retrieve records from the database using a handy helper class. PHP5 only.
+     * Retrieve records from the database using a handy helper class.
      *
-     * @param string $selector (optional) selector string (will be used in the where clause)
+     * @param string $condition condition
+     * @param array  $params    condition bind parameters
      *
      * @return atkSelector
      */
-    function select($selector='')
+    public function select($condition=null, $params=array())
     {
-      atkimport('atk.utils.atkselector');
-      return new atkSelector($this, $selector);
+      $class = 'atkselector';
+      
+      if (method_exists($this, 'selectDb') || method_exists($this, 'countDb'))
+      {
+        $class = 'atkbwcselector';
+      }
+      else if ($this->hasFlag(NF_ML))
+      {
+        $class = 'atkmlselector';
+      }
+      
+    
+      $selector = atknew('atk.utils.'.$class, $this);
+      $this->_initSelector($selector, $condition, $params);
+      
+      return $selector;
     }
 
     /**
-     * Retrieve records from the database.
-     *
-     * Note that if 'atksearch' is set in the request vars, the search
-     * expressions are automatically added as extra where-clauses.
-     *
-     * @todo Handling atksearch in this method is dirty, this should be
-     *       controlable with parameters.
-     *
-     * @param String $selector Sql expression used as a where-condition, to
-     *                         retrieve only records that match the
-     *                         expression.
-     * @param String $order The order in which to retrieve the records.
-     * @param array $limit Array containing an "offset" and a "limit" to
-     *                     retrieve only part of the resultset. (Pass NULL or
-     *                     an empty string to retrieve all records.)
-     * @param array $excludeList List of attributes to be excluded from the
-     *                           query. By default, the attributes that should
-     *                           be loaded are determined by the $mode
-     *                           parameter. Using $excludeList, you can
-     *                           explicitly exclude attributes.
-     * @param array $includeList List of attributes to include in the query,
-     *                           regardless of the $mode parameter.
-     * @param String $mode The action for which the selectDb is called.
-     *                     This param is used to determine which attributes
-     *                     to include in the query and which not to include.
-     * @param boolean $distinct Perform a distinct selection (no duplicate
-     *                          records). Defaults to true.
-     * @param boolean $ignoreDefaultFilters Ignore default node filters.
-     * @return array Array containing the retrieved records
-     */
-    function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="", $mode="", $distinct=false, $ignoreDefaultFilters=false)
-    {
-      $searching=false;
-      $loadlist = array();
-
-      if ($order === false)
-        $order = "";
-      else if($order=="" && $this->m_default_order!="")
-        $order=$this->m_default_order;
-
-      $db = &$this->getDb();
-      $query = &$db->createQuery();
-
-      $query->addTable($this->m_table);
-      $query->addCondition($selector);
-
-      $query->m_searchmethod = isset($this->m_postvars['atksearchmethod']) ? $this->m_postvars['atksearchmethod'] : null;
-
-      // First we check if we are about to search and set a few things
-      // if we are
-      if (!atkReadOptimizer())
-      {
-        /* there may be search criteria, which we also filter */
-        $searchArray = atkArrayNvl($this->m_postvars,'atksearch');
-        $smartSearchCriteria = atkArrayNvl($this->m_postvars,'atksmartsearch');
-        $indexValue = $this->m_index != "" ? atkArrayNvl($this->m_postvars,'atkindex',"") : "";
-
-        if ( (is_array($searchArray) && count($searchArray)>0)
-              || (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
-              || !empty($indexValue) )
-        {
-          $searching = true;
-        }
-      }
-
-      if (array_key_exists("atkfilter", $this->m_postvars))
-       $query->addCondition($this->validateFilter($this->m_postvars["atkfilter"]));
-
-      if (!$this->hasFlag(NF_NO_FILTER) && !$ignoreDefaultFilters)
-      {
-        /* hard filters may be set */
-        foreach($this->m_filters as $key => $value)
-        {
-          $query->addCondition($key."='".$value."'");
-        }
-
-        if(count($this->m_fuzzyFilters))
-        {
-          atkimport("atk.utils.atkstringparser");
-          /* fuzzy filters may be set */
-          for ($i = 0, $_i = count($this->m_fuzzyFilters); $i < $_i; $i++)
-          {
-            $parser = new atkStringParser($this->m_fuzzyFilters[$i]);
-            $filter = $parser->parse(array('table' => $this->m_table));
-            $query->addCondition($filter);
-          }
-        }
-      }
-
-      $preloadlist = array();
-      $loadlist = array();
-      $postloadlist = array();
-      $cpylist = array();
-      $querylist = array();
-      foreach (array_keys($this->m_attribList) as $attribname)
-      {
-        $p_attrib = &$this->m_attribList[$attribname];
-        if (is_object($p_attrib) && $this->isAllowedQueryList($attribname,$excludeList,$includeList))
-        {
-          $loadmode = $p_attrib->loadType($mode, $searching);
-          if (hasFlag($loadmode, POSTLOAD))
-          {
-            $postloadlist[]=$attribname;
-          }
-          if (hasFlag($loadmode, PRELOAD))
-          {
-            $preloadlist[]=$attribname;
-          }
-          if (hasFlag($loadmode, ADDTOQUERY))
-          {
-            $querylist[]=$attribname;
-          }
-
-          // ML hack
-          if(is_subclass_of($p_attrib,"atkrelation") && $p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
-          {
-            $cpylist[]=$attribname;
-          }
-        }
-      }
-
-      $recordset = array();
-      // First load PRELOAD attribs
-      for ($j = 0, $_j = count($preloadlist); $j < $_j; $j++)
-      {
-        $p_attrib = &$this->m_attribList[$preloadlist[$j]];
-
-        $preloadedrecs = $p_attrib->load($db, $recordset[$i], $mode);
-
-        // todo, dirty hack, if preload returns x records, we treat them as 1 record now.
-        $recordset[0][$preloadlist[$j]] = $preloadedrecs;
-      }
-
-      // Add attributes to query
-      for ($i=0, $_i=count($querylist); $i<$_i; $i++)
-      {
-        $p_attrib = &$this->m_attribList[$querylist[$i]];
-        $rec = isset($recordset[0]) ? $recordset[0] : array();
-        $p_attrib->addToQuery($query,$this->m_table,"",$rec,1,$mode); // start at level 1
-      }
-
-      if (!atkReadOptimizer())
-      {
-        //handle index navigation
-        if($indexValue !="")
-        {
-          $p_attrib = &$this->getAttribute($this->m_index);
-          if(is_object($p_attrib))
-          {
-             $p_attrib->searchCondition($query, $this->m_table, $indexValue, "wildcard", "");
-          }
-          else
-          {
-            atkerror("Wrong_index_field");
-          }
-        }
-
-        // there may be search criteria, which we also filter
-        if (is_array($searchArray) && count($searchArray)>0)
-        {
-          while (list($key,$value) = each($searchArray))
-          {
-            if( (($value!="") && ($mode=="admin" || $mode=="export")) || (($value!="") && in_array($key,$querylist)) )
-            {
-              $p_attrib = &$this->getAttribute($key);
-
-              if (is_object($p_attrib))
-              {
-                if (is_array($value) && isset($value[$key]) && count($value) == 1)
-                {
-                  $value = $value[$key];
-                }
-
-                $searchmode = $this->getSearchMode();
-                if(is_array($searchmode))
-                {
-                  $search = $searchmode[$key];
-                  if ($search=="") $search = atkconfig("search_defaultmode");
-                  $p_attrib->searchCondition($query, $this->m_table, $value, $search, "");
-                }
-                else
-                {
-                  $p_attrib->searchCondition($query, $this->m_table, $value, $searchmode, "");
-                }
-              }
-              else
-              {
-                atkdebug("Using default search method for $key");
-                $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
-                $query->addSearchCondition($condition);
-              }
-            }
-          }
-        }
-
-        // there may be smart search criteria which we need to apply
-        if (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
-        {
-          $this->applySmartSearchCriteria($query, $smartSearchCriteria);
-        }
-      }
-
-      $mltool = &atkinstance("atk.utils.atkmlsplitter");
-      $mltool->addMlCondition($query,$this,$mode,$this->m_table);
-
-      if ($order!="") $query->addOrderBy($order);
-
-      if (is_array($limit))
-      {
-        if (count($limit) == 2)
-        {
-          $query->setLimit($limit["offset"], $limit["limit"]);
-        }
-      }
-      else if (!empty($limit))
-      {
-        $query->setLimit(0, $limit);
-      }
-
-      $querystring = $query->buildSelect($distinct);
-      if (!$querystring) return array();
-
-      $dbrecords = $db->getrows($querystring);
-
-      if($mode=="copy" && $this->hasFlag(NF_ML)) // do we have mlrecords?
-      {
-        // When copying there could be more than one multilanguage record in the dbrecords array.
-        // So we split this before sending it to the multilanguage splitter.
-        // This only happens in case of an atkonetomanyrelation.
-        $result = array();
-        $ids = array();
-        $indexes =array();
-        for ($i=0;$i<count($dbrecords);$i++)
-        {
-          if (!in_array($dbrecords[$i][$this->primaryKeyField()], $ids))
-          {
-            $j = count($result);
-            $result[$j][] = $dbrecords[$i];
-            $ids[] = $dbrecords[$i][$this->primaryKeyField()];
-            $indexes[] = $j;
-          }
-          else
-          {
-            $index = array_search($dbrecords[$i][$this->primaryKeyField()], $ids);
-            $result[$indexes[$index]][] = $dbrecords[$i];
-          }
-        }
-        // Combine the multilanguage records and put them in the dbrecords array.
-        $dbrecords = array();
-        for ($i=0;$i<count($result);$i++)
-        {
-          $mltool->combineMlRecordSet($this, $result[$i],$query);
-          $dbrecords[$i] = $result[$i][0];
-        }
-      }
-      if($mode=="edit" && $this->hasFlag(NF_ML)) // do we have mlrecords?
-      {
-        $mltool->combineMlRecordSet($this, $dbrecords,$query);
-      }
-
-      $recordset = array();
-      for ($i = 0, $_i = count($dbrecords); $i < $_i; $i++)
-      {
-        $therecord = array();
-        $query->deAlias($dbrecords[$i]); // dereference aliases..
-        atkDataDecode($dbrecords[$i]);
-        $recordcopy = $dbrecords[$i];
-        foreach (array_keys($this->m_attribList) as $attribname)
-        {
-          $p_attrib = &$this->m_attribList[$attribname];
-
-          if ($this->isAllowedQueryList($attribname,$excludeList,$includeList,$mode))
-          {
-            if(in_array($attribname, $cpylist))
-            {
-              $therecord[$attribname] = $recordcopy[$attribname];
-            }
-            else if ($p_attrib)
-            {
-              $therecord[$attribname] = $p_attrib->db2value($dbrecords[$i]);
-            }
-            else
-            {
-              atkerror("Attribute with name: $attribname and node: ".$this->m_type." is empty in attributelist or does not support db2value method");
-            }
-          }
-        }
-
-        // We now have a semi-complete record. We can now calculate it's primarykey, assuming
-        // that attributes with load() functions can never be part of the primary key.
-        // They can't be, because load() might *depend* on a primary key.
-        // so the primary key must always be known before we start loading
-        // attributes with load() functions.
-        $therecord["atkprimkey"] = $this->primaryKey($therecord);
-
-        $recordset[] = $therecord;
-      }
-
-      // also load special storage attributes. (POST)
-      for ($j = 0, $_j = count($postloadlist); $j < $_j; $j++)
-      {
-        $p_attrib = &$this->getAttribute($postloadlist[$j]);
-        for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
-        {
-          $recordset[$i][$postloadlist[$j]] = $p_attrib->load($db, $recordset[$i], $mode);
-        }
-      }
-      return $recordset;
-    }
-
-	/**
      * Returns a record (array) as identified by a primary key (usually an "id" column),
      * including applicable relations.
      *
      * @param int $pk primary key identifying the record
      * @return array the associated record, or null if no such record exists
      */
-
-	public function fetchByPk($pk)
-	{
-	  return $this->select($this->getTable().".".$this->primaryKeyField().'='.$pk)->firstRow();
-	}
-
-    /**
-     * Apply the given search criteria to the given query object.
-     *
-     * @param atkQuery $query    The query object.
-     * @param array    $searchArray The search criteria.
-     */
-    function applySearchCriteria(&$query, $searchArray)
+    public function fetchByPk($pk)
     {
-      $searchmode = $this->getSearchMode();
-      // there may be search criteria, which we also filter
-
-      foreach ($searchArray as $key=>$value)
-      {
-        if( $value!="")
-        {
-          $p_attrib = &$this->getAttribute($key);
-
-          if (is_object($p_attrib))
-          {
-            if (is_array($value) && isset($value[$key]))
-            {
-              $value = $value[$key];
-            }
-
-            if(is_array($searchmode))
-            {
-              $search = $searchmode[$key];
-              if ($search=="") $search = atkconfig("search_defaultmode");
-              $p_attrib->searchCondition($query, $this->m_table, $value, $search);
-            }
-            else
-            {
-              $p_attrib->searchCondition($query, $this->m_table, $value, $searchmode);
-            }
-          }
-          else
-          {
-            $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
-            $query->addSearchCondition($condition);
-          }
-        }
-      }
-    }
-
-    /**
-     * Apply the given smart search criteria to the given query object.
-     *
-     * @param atkQuery $query    The query object.
-     * @param Array    $criteria The smart search criteria.
-     */
-    function applySmartSearchCriteria(&$query, $criteria)
-    {
-      foreach ($criteria as $id => $criterium)
-      {
-        $path = $criterium['attrs'];
-        $value = $criterium['value'];
-        $mode = $criterium['mode'];
-
-        $attrName = array_shift($path);
-        $attr = &$this->getAttribute($attrName);
-
-        if (is_object($attr))
-        {
-          $attr->smartSearchCondition($id, 0, $path, $query, $this->m_table, $value, $mode, "");
-        }
-      }
+      return $this->select($this->getTable().".".$this->primaryKeyField().'='.$pk)->firstRow();
     }
 
     /**
@@ -4208,8 +3674,11 @@
         else atkdebug("$attribname is not an object?! Check your descriptor_def for non-existant fields");
       }
 
-      $mltool = &atkinstance("atk.utils.atkmlsplitter");
-      $mltool->addMlCondition($query,$this,$mode,$alias);
+      if ($this->hasFlag(NF_ML))
+      {
+        $mltool = &atkinstance("atk.utils.atkmlsplitter");
+        $mltool->addMlCondition($query,$this,$mode,$alias);
+      }
     }
 
     /**
@@ -5374,6 +4843,79 @@
     public function escapeSQL($string)
     {
       return $this->getDb()->escapeSQL($string);
+    }
+    
+    /**
+     * Catch missing methods.
+     * 
+     * @param string $method method name
+     * @param array  $params method parameters
+     */
+    public function __call($method, $params)
+    {
+      // Catch use of deprecated selectDb and countDb methods. We implement 
+      // this here instead of keeping wrapper methods because if someone has
+      // overridden these methods the atkBWCSelector will be used instead of
+      // the normal atkSelector which will call the overridden selectDb and/or
+      // countDb methods which might call parent::selectDb(...) which would
+      // call the select() method which would again instantiate an 
+      // atkBWCSelector etc. This way we can make sure the atkBWCSelector is
+      // only instantiated on the first call after which we use a normal 
+      // selector if a call to parent::selectDb(...) is made.
+      if (strtolower($method) == 'selectdb')
+      {
+        atkwarning("Use of deprecated selectDb method on node ".$this->atkNodeType());
+        
+        $condition = array_key_exists(0, $params) ? $params[0] : '';
+        $order = array_key_exists(1, $params) ? $params[1] : '';
+        $limit = array_key_exists(2, $params) ? $params[2] : '';
+        $excludes = array_key_exists(3, $params) ? $params[3] : '';
+        $includes = array_key_exists(4, $params) ? $params[4] : '';
+        $mode = array_key_exists(5, $params) ? $params[5] : '';
+        $distinct = array_key_exists(5, $params) ? $params[5] : false;
+        $ignoreDefaultFilters = array_key_exists(6, $params) ? $params[6] : false;
+        
+        $selector = atknew('atk.utils.atkselector', $this);
+        $this->_initSelector($selector);
+        $selector->where($condition);
+        if ($order === false || $order != '') 
+          $selector->orderBy($order);
+        if ($limit != null && !is_array($limit))
+          $selector->limit($limit, 0);
+        else if ($limit != null)
+          $selector->limit($limit['limit'], $limit['offset']);
+        $selector->excludes($excludes);
+        $selector->includes($includes);
+        $selector->mode($mode);
+        $selector->distinct($distinct);
+        $selector->ignoreDefaultFilters($ignoreDefaultFilters);
+        return $selector->allRows();
+      }
+      else if (strtolower($method) == 'countdb')
+      {
+        atkwarning("Use of deprecated countDb method on node ".$this->atkNodeType());
+        
+        $condition = array_key_exists(0, $params) ? $params[0] : '';
+        $excludes = array_key_exists(1, $params) ? $params[1] : '';
+        $includes = array_key_exists(2, $params) ? $params[2] : '';
+        $mode = array_key_exists(3, $params) ? $params[3] : '';        
+        $distinct = array_key_exists(4, $params) ? $params[4] : false;
+        $ignoreDefaultFilters = array_key_exists(5, $params) ? $params[5] : false;
+        
+        $selector = atknew('atk.utils.atkselector', $this);
+        $this->_initSelector($selector);
+        $selector->where($condition);
+        $selector->excludes($excludes);
+        $selector->includes($includes);
+        $selector->mode($mode);
+        $selector->distinct($distinct);
+        $selector->ignoreDefaultFilters($ignoreDefaultFilters);
+        return $selector->rowCount();
+      }
+      else
+      {
+        throw new Exception("Call to undefined method ".get_class($this)."::{$method}()", E_USER_ERROR);
+      }
     }
   }
 ?>

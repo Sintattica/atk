@@ -153,11 +153,21 @@ abstract class atkStatement implements IteratorAggregate
    * The key of the array contains the character position, the value 
    * contains the bind parameter name or offset.
    * 
-   * @return array
+   * @return array bind positions
    */
   protected function _getBindPositions()
   {
     return $this->m_bindPositions;
+  }
+  
+  /**
+   * Get latest execution parameters.
+   * 
+   * @return array execution parameters
+   */
+  protected function _getLatestParams()
+  {
+    return $this->m_latestParams;
   }
   
   /**
@@ -229,7 +239,7 @@ abstract class atkStatement implements IteratorAggregate
    */
   public function rewind()
   {
-    if ($this->m_latestParams === null)
+    if ($this->_getLatestParams() === null)
     {
       throw new atkStatementException("Statement has not been executed yet.", atkStatementException::STATEMENT_NOT_EXECUTED);
     }
@@ -237,7 +247,7 @@ abstract class atkStatement implements IteratorAggregate
     if ($this->m_position !== false)
     {
       $this->m_position = false;
-      $this->execute($this->m_latestParams);
+      $this->execute($this->_getLatestParams());
     }
   }  
   
@@ -278,7 +288,7 @@ abstract class atkStatement implements IteratorAggregate
    */
   public function fetch()
   {
-    if ($this->m_latestParams === null)
+    if ($this->_getLatestParams() === null)
     {
       throw new atkStatementException("Statement has not been executed yet.", atkStatementException::STATEMENT_NOT_EXECUTED);
     }
@@ -488,7 +498,7 @@ abstract class atkStatement implements IteratorAggregate
    */
   public function getAffectedRowCount()
   {
-    if ($this->m_latestParams === null)
+    if ($this->_getLatestParams() === null)
     {
       throw new atkStatementException("Statement has not been executed yet.", atkStatementException::STATEMENT_NOT_EXECUTED);
     }    

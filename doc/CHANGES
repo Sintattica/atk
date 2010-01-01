@@ -9,6 +9,16 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* atkErrorHandler now ignores suppressed warnings (e.g. using the @
+  operator). If you explicitly ignore them in your code, it's your choice
+  so ATK shouldn't display them in the debug output. [Peter]
++ Added support for bind parameters and fetching rows one-by-one to 
+  atkSelector. Also refactored the atkNode::selectDb/countDb code into this
+  class. These methods are now deprecated in favor of atkNode::select()
+  which uses the atkSelector fluent interface. Made sure that if these methods
+  are still being used that the calls get transformed to calls to 
+  atkNode::select() and if they are overridden that the overridden methods
+  will be used by atkSelector. [Peter]
 + Added support for prepared statements. atkDb::prepare($query) let's you create
   a prepared statement which can use either anonymous ("id = ?") or named 
   ("id = :id") bind parameters. By default the bind parameters are handled by 
