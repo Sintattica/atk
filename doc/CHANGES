@@ -9,12 +9,18 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
++ Added atkExceptionHandler which handles uncaught exceptions with a call 
+  to atkHalt. [Peter]
 - Removed atkNavigator because it isn't used anymore for a while now and
   contains old obsolete code. If you still need it make a copy and use
   an overloader. [Peter]
 * atkErrorHandler now ignores suppressed warnings (e.g. using the @
   operator). If you explicitly ignore them in your code, it's your choice
   so ATK shouldn't display them in the debug output. [Peter]
++ Added atkSelector::getIndices() which returns the indices for the index
+  field that are available for the currently set conditions. [Peter]
+* atkSelector now supports ignoring primary key and/or force load fields
+  and supports ignoring postvars (e.g. search criteria etc.) [Peter]
 + Added support for bind parameters and fetching rows one-by-one to 
   atkSelector. Also refactored the atkNode::selectDb/countDb code into this
   class. These methods are now deprecated in favor of atkNode::select()

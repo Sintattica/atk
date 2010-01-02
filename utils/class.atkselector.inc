@@ -45,6 +45,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
   protected $m_ignoreDefaultFilters = false;
   protected $m_ignorePostvars = false;
   protected $m_ignoreForceLoad = false;
+  protected $m_ignorePrimaryKey = false;
   
   /**
    * Rows cache.
@@ -59,6 +60,13 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
    * @var int
    */
   protected $m_rowCount = null;
+  
+  /**
+   * Indices cache.
+   *
+   * @var array
+   */
+  protected $m_indices = null;
   
   /**
    * Statement.
@@ -148,6 +156,19 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
   public function ignoreForceLoad($ignore=true)
   {
     $this->m_ignoreForceLoad = $ignore;
+    return $this;
+  }
+  
+  /**
+   * Don't forcefully load the primary key. The result records also won't
+   * contain the special "atkprimkey" entry.
+   *
+   * @param boolean $ignore ignore primary key
+   * @return atkSelector
+   */
+  public function ignorePrimaryKey($ignore=true)
+  {
+    $this->m_ignorePrimaryKey = $ignore;
     return $this;
   }
 
@@ -463,7 +484,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
     $attrName = $attr->fieldName();
     
     return
-      in_array($attrName, $this->_getNode()->m_primaryKey) ||
+      (!$this->m_ignorePrimaryKey && in_array($attrName, $this->_getNode()->m_primaryKey)) ||
       (!$this->m_ignoreForceLoad && $attr->hasFlag(AF_FORCE_LOAD)) ||
       (($this->m_includes != null && in_array($attrName, $this->m_includes)) || ($this->m_excludes != null && !in_array($attrName, $this->m_excludes))) ||
       ($this->m_excludes == null && $this->m_includes == null);
@@ -621,7 +642,10 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
       $result[$attr->fieldName()] = $attr->db2value($row);
     }
     
-    $result['atkprimkey'] = $this->_getNode()->primaryKey($result);
+    if (!$this->m_ignorePrimaryKey)
+    {
+      $result['atkprimkey'] = $this->_getNode()->primaryKey($result);
+    }
     
     foreach ($attrsByLoadType[POSTLOAD] as $attr)
     {
@@ -655,7 +679,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
    *
    * @return array first row
    */
-  public function firstRow()
+  public function getFirstRow()
   {
     $this->limit(1, $this->m_offset);
     $rows = $this->allRows();
@@ -667,7 +691,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
    *
    * @return array all rows
    */
-  public function allRows()
+  public function getAllRows()
   {
     if ($this->m_rows === null)
     {
@@ -696,7 +720,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
    *
    * @return int row count
    */
-  public function rowCount()
+  public function getRowCount()
   {
     if ($this->m_rowCount === null)
     {
@@ -710,6 +734,83 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
     }
 
     return $this->m_rowCount;
+  }
+  
+  /**
+   * Returns the available indices for the index field based on the criteria.
+   *
+   * @return array available indices
+   */
+  public function getIndices()
+  {
+    if ($this->_getNode()->m_index == null)
+    {
+      return array();
+    }
+    else if ($this->m_indices != null)
+    {
+      return $this->m_indices;
+    }
+    
+    $attrsByLoadType = $this->_getAttributesByLoadType();    
+    
+    $query = $this->_getNode()->getDb()->createQuery();
+    $query->setDistinct($this->m_distinct);
+    $query->addTable($this->_getNode()->getTable());
+    
+    $this->_applyConditionsToQuery($query);
+    $this->_applyFiltersToQuery($query);
+    
+    $index = $this->_getNode()->m_index;
+    $this->_getNode()->m_index = null;
+    $this->_applyPostvarsToQuery($query, $attrsByLoadType);
+    $this->_getNode()->m_index = $index;
+  
+    $indexColumn = $this->_getDb()->quoteIdentifier($this->_getNode()->getTable()).'.'.$this->_getDb()->quoteIdentifier($index);
+    $expression = "UPPER(".$this->_getDb()->func_substring($indexColumn, 1, 1).")";
+    $query->addExpression('index', $expression);
+    $query->addGroupBy($expression);
+    $query->addOrderBy($expression);
+    
+    $stmt = $this->_getDb()->prepare($query->buildSelect());
+    $stmt->execute($this->_getBindParameters());
+    $this->m_indices = $stmt->getAllValues();
+    $stmt->close();
+    
+    return $this->m_indices;
+  } 
+   
+  /**
+   * Deprecated alias for atkSelector::getFirstRow().
+   *
+   * @see atkSelector::getFirstRow
+   * @deprecated   
+   */
+  public function firstRow()
+  {
+    return $this->getFirstRow();
+  }  
+  
+  /**
+   * Deprecated alias for atkSelector::getAllRows().
+   *
+   * @see atkSelector::getAllRows
+   * @deprecated   
+   */
+  public function allRows()
+  {
+    return $this->getAllRows();
+  }  
+  
+  /**
+   * Deprecated alias for atkSelector::getRowCount().
+   *
+   * @see atkSelector::getRowCount
+   * @deprecated   
+   */
+  public function rowCount()
+  {
+    return $this->getRowCount();
   }
 
   /**
@@ -790,6 +891,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
     
     $this->m_rows = null;
     $this->m_rowCount = null;
+    $this->m_indices = null;
   }
   
   /**

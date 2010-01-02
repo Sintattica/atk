@@ -29,16 +29,10 @@ class atkDGIndex extends atkDGComponent
    * Returns the available indices.
    * 
    * @return array available indices
-   * 
-   * @todo Implement retrieval of available indices ourselves either
-   *       part of this class or atkDataGrid. But first selectDb and
-   *       countDb of atkNode should be refactored so we can create
-   *       a small clean implementation.
    */
   protected function getAvailableIndices()
   {
-    atkimport('atk.utils.atknavigator');
-    return atkNavigator::getAvailableIndices($this->getNode());  
+    return $this->getNode()->select()->mode($this->getGrid()->getMode())->getIndices();
   }
   
   /**

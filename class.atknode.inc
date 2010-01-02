@@ -4889,7 +4889,7 @@
         $selector->mode($mode);
         $selector->distinct($distinct);
         $selector->ignoreDefaultFilters($ignoreDefaultFilters);
-        return $selector->allRows();
+        return $selector->getAllRows();
       }
       else if (strtolower($method) == 'countdb')
       {
@@ -4910,7 +4910,7 @@
         $selector->mode($mode);
         $selector->distinct($distinct);
         $selector->ignoreDefaultFilters($ignoreDefaultFilters);
-        return $selector->rowCount();
+        return $selector->getRowCount();
       }
       else
       {

@@ -453,7 +453,7 @@ abstract class atkStatement implements IteratorAggregate
    */
   public function getAllValues($valueColumn=0)
   {
-    return $this->getValuesAssoc(null, $valueColumn);
+    return $this->getAllValuesAssoc(null, $valueColumn);
   }    
     
   /**

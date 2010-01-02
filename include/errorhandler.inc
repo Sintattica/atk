@@ -18,5 +18,7 @@
 
   set_error_handler('atkErrorHandler');
   error_reporting(E_ALL);
+  
+  set_exception_handler('atkExceptionHandler');
 
 ?>

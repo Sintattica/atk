@@ -131,6 +131,16 @@
       die;
     }
   }
+  
+  /**
+   * Default ATK exception handler, handles uncaught exceptions and calls atkHalt.
+   * 
+   * @param Exception $exception uncaught exception
+   */
+  function atkExceptionHandler($exception)
+  {
+    atkhalt("Uncaught exception: " . $exception->getMessage(), 'critical');
+  }  
 
   /**
    * @deprecated Use atkhalt instead.

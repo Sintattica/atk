@@ -1487,7 +1487,7 @@ class atkDataGrid
            ->limit($this->getLimit(), $this->getOffset())
            ->mode($this->getMode())
            ->ignoreDefaultFilters()
-           ->allRows();
+           ->getAllRows();
   }
 
   /**
@@ -1509,7 +1509,7 @@ class atkDataGrid
            ->where($this->getFilter())
            ->mode($this->getMode())
            ->ignoreDefaultFilters()
-           ->rowCount();
+           ->getRowCount();
   }
 
   /**

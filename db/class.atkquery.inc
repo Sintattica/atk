@@ -134,7 +134,7 @@
      * @var Array
      * @access private
      */
-    var $m_reservedNames=array('from','select','order','group','release');
+    var $m_reservedNames=array('from','select','order','group','release', 'index', 'table');
 
     /**
     * Initialize all variables
