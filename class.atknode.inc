@@ -3581,7 +3581,7 @@
       
       if (method_exists($this, 'selectDb') || method_exists($this, 'countDb'))
       {
-        $class = 'atkbwcselector';
+        $class = 'atkcompatselector';
       }
       else if ($this->hasFlag(NF_ML))
       {
@@ -4855,11 +4855,11 @@
     {
       // Catch use of deprecated selectDb and countDb methods. We implement 
       // this here instead of keeping wrapper methods because if someone has
-      // overridden these methods the atkBWCSelector will be used instead of
+      // overridden these methods the atkCompatSelector will be used instead of
       // the normal atkSelector which will call the overridden selectDb and/or
       // countDb methods which might call parent::selectDb(...) which would
       // call the select() method which would again instantiate an 
-      // atkBWCSelector etc. This way we can make sure the atkBWCSelector is
+      // atkCompatSelector etc. This way we can make sure the atkCompatSelector is
       // only instantiated on the first call after which we use a normal 
       // selector if a call to parent::selectDb(...) is made.
       if (strtolower($method) == 'selectdb')

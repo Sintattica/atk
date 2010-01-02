@@ -8,7 +8,7 @@
  * @package atk
  * @subpackage utils
  *
- * @copyright (c) 2009 Peter C. Verhage <peter@achievo.org>
+ * @copyright (c) 2010 Peter C. Verhage <peter@achievo.org>
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
  * @version $Revision$
@@ -682,7 +682,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
   public function getFirstRow()
   {
     $this->limit(1, $this->m_offset);
-    $rows = $this->allRows();
+    $rows = $this->getAllRows();
     return count($rows) == 1 ? $rows[0] : null;
   }
 
@@ -821,7 +821,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
    */
   public function offsetExists($key)
   {
-    $this->allRows();
+    $this->getAllRows();
     return isset($this->m_rows[$key]);
   }
 
@@ -833,7 +833,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
    */
   public function offsetGet($key)
   {
-    $this->allRows();
+    $this->getAllRows();
     return $this->m_rows[$key];
   }
 
@@ -845,7 +845,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
    */
   public function offsetSet($key, $value)
   {
-    $this->allRows();
+    $this->getAllRows();
     return $this->m_rows[$key] = $value;
   }
 
@@ -856,7 +856,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
    */
   public function offsetUnset($key)
   {
-    $this->allRows();
+    $this->getAllRows();
     unset($this->m_rows[$key]);
   }
 
@@ -903,7 +903,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
    */
   public function count()
   {
-    $this->allRows();
+    $this->getAllRows();
     return count($this->m_rows);
   }
 }

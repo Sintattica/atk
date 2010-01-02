@@ -9,7 +9,7 @@
  * @package atk
  * @subpackage utils
  *
- * @copyright (c) 2009 Peter C. Verhage <peter@achievo.org>
+ * @copyright (c) 2010 Peter C. Verhage <peter@achievo.org>
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
  * @version $Revision$
@@ -25,14 +25,14 @@
  * @package atk
  * @subpackage utils
  */
-class atkBWCSelector extends atkSelector
+class atkCompatSelector extends atkSelector
 {
   /**
    * Return all rows.
    *
    * @return array all rows
    */
-  public function allRows()
+  public function getAllRows()
   {
     if ($this->m_rows === null)
     {
@@ -65,7 +65,7 @@ class atkBWCSelector extends atkSelector
    *
    * @return int row count
    */
-  public function rowCount()
+  public function getRowCount()
   {
     if ($this->m_rowCount === null)
     {
@@ -93,7 +93,7 @@ class atkBWCSelector extends atkSelector
    */
   public function getIterator()
   {
-    $rows = $this->allRows();
+    $rows = $this->getAllRows();
     return new ArrayIterator($rows);
   }
 }

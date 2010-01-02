@@ -8,7 +8,7 @@
  * @package atk
  * @subpackage utils
  *
- * @copyright (c) 2009 Peter C. Verhage <peter@achievo.org>
+ * @copyright (c) 2010 Peter C. Verhage <peter@achievo.org>
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
  * @version $Revision$
@@ -115,7 +115,7 @@ class atkMLSelector extends atkSelector
    */
   public function getIterator()
   {
-    $rows = $this->allRows();
+    $rows = $this->getAllRows();
     return new ArrayIterator($rows);
   }
 }
