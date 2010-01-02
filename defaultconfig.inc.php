@@ -951,15 +951,21 @@
    */
   $config_lose_changes_warning = false;
 
-/**
- * Directories that contains modules (needed for testcases)
- */
+  /**
+   * Directories that contains modules (needed for testcases)
+   */
+  //  $config_module_dirs = array("/modules");
 
-//  $config_module_dirs = array("/modules");
+  // --------- FCK Image Upload Option ---------
 
-// --------- FCK Image Upload Option ---------
+  $config_fck_filemanager_enabled = false;
+  $config_fck_upload_path = '../atktmp/';
 
-$config_fck_filemanager_enabled = false;
-$config_fck_upload_path = '../atktmp/';
+  /**
+   * Zend framework path (relative to ATK root).
+   *
+   * Example: "../library/Zend/";
+   */
+  $config_zend_framework_path = null;
 
 ?>

@@ -1606,15 +1606,21 @@
   }
 
   /**
-   * Imports a zend-file
-   * @param string $classname Name of class in zend-format (starting with a Capital)
+   * Imports a Zend Framework class.
+
+   * @param string $classname name of class in zend-format (starting with a Capital)
    */
   function zendimport($classname)
   {
-    $current_path = getcwd();
-    chdir(atkConfig('atkroot')."atk/ext/zend/");
+    if (atkconfig("zend_framework_path") == null)
+    {
+      throw new Exception("Zend Framework path not set ($config_zend_framework_path)!");
+    }
 
-    $filename = 'Zend/'.$classname.'.php';
+    $current_path = getcwd();
+    chdir(atkConfig('atkroot').atkconfig("zend_framework_path")."/");
+
+    $filename = $classname.'.php';
 
     if (file_exists($filename))
     {
