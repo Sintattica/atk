@@ -64,7 +64,7 @@
     {
       return;
     }
-    
+
     $errortype = array (
       E_ERROR              => "Error",
       E_WARNING            => "Warning",
@@ -131,16 +131,18 @@
       die;
     }
   }
-  
+
   /**
    * Default ATK exception handler, handles uncaught exceptions and calls atkHalt.
-   * 
+   *
    * @param Exception $exception uncaught exception
    */
-  function atkExceptionHandler($exception)
+  function atkExceptionHandler(Exception $exception)
   {
+    atkdebug($exception->getMessage(), DEBUG_ERROR);
+    atkdebug("Trace:<br/>".nl2br($exception->getTraceAsString()), DEBUG_ERROR);
     atkhalt("Uncaught exception: " . $exception->getMessage(), 'critical');
-  }  
+  }
 
   /**
    * @deprecated Use atkhalt instead.

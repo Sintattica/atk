@@ -1244,34 +1244,29 @@ class atkDataGrid
    *
    * @param string $filter
    */
-  public function removeFilter($filter)
+  public function removeFilter($filter, $params=array())
   {
-  	$this->m_filters = array_diff($this->m_filters, array($filter));
+    $key = array_search(array('filter' => $filter, 'params' => $params), $this->m_filters);
+
+    if ($key !== false)
+    {
+      unset($this->m_filters[$key]);
+      $this->m_filters = array_values($this->m_filters);
+    }
   }
 
   /**
    * Add node filter (only used if no custom select and
    * count handlers are used!).
    *
-   * @param string $filter
+   * @param string $filter filter / condition
+   * @param array  $params bind parameters
    */
-  public function addFilter($filter)
+  public function addFilter($filter, $params=array())
   {
     if (!empty($filter))
-      $this->m_filters[] = $filter;
+      $this->m_filters[] = array('filter' => $filter, 'params' => $params);
   }
-
-  /**
-   * Returns the complete filter string based on the different
-   * filters set on the grid.
-   *
-   * @return string filter string
-   */
-  protected function getFilter()
-  {
-    return count($this->m_filters) == 0 ? '' : '('.implode(') AND (', $this->getFilters()).')';
-  }
-
 
   /**
    * Returns the mode.
@@ -1478,16 +1473,21 @@ class atkDataGrid
       $excludes = array_merge($excludes, $this->getExcludes());
     }
 
-    return
+    $selector =
       $this->getNode()
            ->select()
            ->excludes($excludes)
-           ->where($this->getFilter())
            ->orderBy($this->getOrderBy())
            ->limit($this->getLimit(), $this->getOffset())
            ->mode($this->getMode())
-           ->ignoreDefaultFilters()
-           ->getAllRows();
+           ->ignoreDefaultFilters();
+
+    foreach ($this->m_filters as $filter)
+    {
+      $selector->where($filter['filter'], $filter['params']);
+    }
+
+    return $selector->getAllRows();
   }
 
   /**
@@ -1502,14 +1502,19 @@ class atkDataGrid
     $excludes = $this->getMode() == 'copy' ? array() :  $this->getNode()->m_listExcludes;
     $excludes = array_merge($excludes, $this->getExcludes());
 
-    return
+    $selector =
       $this->getNode()
            ->select()
            ->excludes($excludes)
-           ->where($this->getFilter())
            ->mode($this->getMode())
-           ->ignoreDefaultFilters()
-           ->getRowCount();
+           ->ignoreDefaultFilters();
+
+    foreach ($this->m_filters as $filter)
+    {
+      $selector->where($filter['filter'], $filter['params']);
+    }
+
+    return $selector->getRowCount();
   }
 
   /**

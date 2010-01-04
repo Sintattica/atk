@@ -9,15 +9,16 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
++ Added support for bind parameters to atkDatagrid::addFilter. [Peter/Tjeerd]
 + Added atkMetaPolicy::getAll() which can be used to easily add flags etc.
   to all attributes at once. [Peter]
-* atkNode::getSearchCondition() now checks itself for the existence of 
+* atkNode::getSearchCondition() now checks itself for the existence of
   a <attributename>_searchcondition() method for each attribute. If it exists,
-  it gets called instead of <attribute>::getSearchCondition(). Until now it was 
-  only possible to change the render behaviour of an attribute search field with 
+  it gets called instead of <attribute>::getSearchCondition(). Until now it was
+  only possible to change the render behaviour of an attribute search field with
   <attributename>_search, now we can also change the actual search condition
-  that is generated for each attribute. [Matthijs] 
-+ Added atkExceptionHandler which handles uncaught exceptions with a call 
+  that is generated for each attribute. [Matthijs]
++ Added atkExceptionHandler which handles uncaught exceptions with a call
   to atkHalt. [Peter]
 - Removed atkNavigator because it isn't used anymore for a while now and
   contains old obsolete code. If you still need it make a copy and use
@@ -29,31 +30,31 @@ Changes in ATK 6.5
   field that are available for the currently set conditions. [Peter]
 * atkSelector now supports ignoring primary key and/or force load fields
   and supports ignoring postvars (e.g. search criteria etc.) [Peter]
-+ Added support for bind parameters and fetching rows one-by-one to 
++ Added support for bind parameters and fetching rows one-by-one to
   atkSelector. Also refactored the atkNode::selectDb/countDb code into this
   class. These methods are now deprecated in favor of atkNode::select()
   which uses the atkSelector fluent interface. Made sure that if these methods
-  are still being used that the calls get transformed to calls to 
+  are still being used that the calls get transformed to calls to
   atkNode::select() and if they are overridden that the overridden methods
   will be used by atkSelector. [Peter]
 + Added support for prepared statements. atkDb::prepare($query) let's you create
-  a prepared statement which can use either anonymous ("id = ?") or named 
-  ("id = :id") bind parameters. By default the bind parameters are handled by 
-  ATK (e.g. replaced in the query with the proper values) but drivers with 
+  a prepared statement which can use either anonymous ("id = ?") or named
+  ("id = :id") bind parameters. By default the bind parameters are handled by
+  ATK (e.g. replaced in the query with the proper values) but drivers with
   native bind parameter support can use real bind parameters. [Peter]
-+ Added native support for bind parameters in prepared statements for the 
++ Added native support for bind parameters in prepared statements for the
   atkMySQLi driver. [Peter]
-+ Added method atkAttribute::setForceReload(). If set to true, the 
++ Added method atkAttribute::setForceReload(). If set to true, the
   fetched/calculated attribute value is not overwritten by the value from
-  the session. Example: an expression attribute is calculated based on data 
+  the session. Example: an expression attribute is calculated based on data
   from a relation. If the relation is updated, we don't want the attribute value
   to be overwritten by outdated session data. [Matthijs]
 * Fixed a bug in atkUpdateHandler::handleUpdateSuccess() where a
-  redirect would be made to the previous stack level without replacing the 
+  redirect would be made to the previous stack level without replacing the
   session data. This resulted in displaying old data for some relations. This
   fix makes use of SESSION_REPLACE with levelskip 1 [Matthijs]
-+ made a new array available in the edit/view form template. You can 
-  now use $attributes which contains all attributes by their name. The 
++ made a new array available in the edit/view form template. You can
+  now use $attributes which contains all attributes by their name. The
   <attributename> notation will be depricated. [Sandy]
 + atkActionHandlers now have a setBoxTemplate to set the template from your
   custom theme that renders the action.tpl. Currently only implemented in the
