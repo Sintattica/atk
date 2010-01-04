@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
++ Added atkHiddenAttribute for convenient addition of hidden fields to
+  forms. [Ivo]
 + Added support for bind parameters to atkDatagrid::addFilter. [Peter/Tjeerd]
 + Added atkMetaPolicy::getAll() which can be used to easily add flags etc.
   to all attributes at once. [Peter]
