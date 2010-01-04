@@ -3716,24 +3716,33 @@
 
         if ($usefieldalias) $fieldaliasprefix = $alias."_AE_";
 
-        // checking for the getSearchCondition for backwards compatibility
-        if (method_exists($p_attrib, "getSearchCondition"))
-        {
-          $attribsearchmode = $searchmode;
-          if (is_array($searchmode))
-          {
-            $attribsearchmode = $attribsearchmode[$p_attrib->m_name];
-          }
-          atkdebug("getSearchCondition: $table - $fieldaliasprefix");
-          $searchCondition = $p_attrib->getSearchCondition($query,$table,$value,$searchmode,$fieldaliasprefix);
-          if ($searchCondition != "")
-            $searchConditions[] = $searchCondition;
-        }
-        else
-        {
-          // if the attrib can't return it's searchcondition, we'll just add it to the query
-          // and hope for the best
-          $p_attrib->searchCondition($query,$table,$value,$searchmode,$fieldaliasprefix);
+        // check if the node has a searchcondition method defined for this attr
+        $methodName = $field . '_searchcondition';
+        if (method_exists($this, $methodName)) {
+            $searchCondition = $this->$methodName($query, $table, $value, $searchmode);
+            if ($searchCondition != "") {
+                $searchConditions[] = $searchCondition;
+            }
+        } else {
+            // checking for the getSearchCondition for backwards compatibility
+            if (method_exists($p_attrib, "getSearchCondition"))
+            {
+              $attribsearchmode = $searchmode;
+              if (is_array($searchmode))
+              {
+                $attribsearchmode = $attribsearchmode[$p_attrib->m_name];
+              }
+              atkdebug("getSearchCondition: $table - $fieldaliasprefix");
+              $searchCondition = $p_attrib->getSearchCondition($query,$table,$value,$searchmode,$fieldaliasprefix);
+              if ($searchCondition != "")
+                $searchConditions[] = $searchCondition;
+            }
+            else
+            {
+              // if the attrib can't return it's searchcondition, we'll just add it to the query
+              // and hope for the best
+              $p_attrib->searchCondition($query,$table,$value,$searchmode,$fieldaliasprefix);
+            }
         }
       }
 

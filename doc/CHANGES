@@ -9,6 +9,12 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* atkNode::getSearchCondition() now checks itself for the existence of 
+  a <attributename>_searchcondition() method for each attribute. If it exists,
+  it gets called instead of <attribute>::getSearchCondition(). Until now it was 
+  only possible to change the render behaviour of an attribute search field with 
+  <attributename>_search, now we can also change the actual search condition
+  that is generated for each attribute. [Matthijs] 
 + Added atkExceptionHandler which handles uncaught exceptions with a call 
   to atkHalt. [Peter]
 - Removed atkNavigator because it isn't used anymore for a while now and
