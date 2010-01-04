@@ -708,6 +708,17 @@ class atkMetaPolicy
       $attrs = func_get_args();
     return atknew('atk.meta.atkmetaattributemodifier', $this, $attrs);
   }
+  
+  /**
+   * Returns an attribute modifier for all attributes.The modifier allows
+   * you to add flags, set tabs etc. through a fluent interface.
+   * 
+   * @return atkMetaAttributeModifier
+   */
+  public function getAll()
+  {
+    return $this->get($this->getAttributeNames());
+  }
 
   /**
    * Returns the currently set includes (if applicable).
