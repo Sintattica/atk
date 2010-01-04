@@ -134,7 +134,7 @@ class atkMySQLiStatement extends atkStatement
     $this->m_columnNames = array();
     foreach ($metadata->fetch_fields() as $column) 
     {
-      $this->m_columnNames[] = strtolower($column->name);
+      $this->m_columnNames[] = $column->name;
     }
   }
   
