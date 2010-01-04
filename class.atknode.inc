@@ -3545,10 +3545,10 @@
       }
       return atkconfig("search_defaultmode");
     }
-    
+
     /**
      * Set some default for the selector.
-     * 
+     *
      * @param atkSelector $selector  selector
      * @param string      $condition condition
      * @param array       $params    condition bind parameters
@@ -3558,11 +3558,9 @@
       $selector->orderBy($this->getOrder());
       $selector->ignoreDefaultFilters($this->hasFlag(NF_NO_FILTER));
       $selector->ignorePostvars(atkReadOptimizer());
-      
+
       if ($condition != null)
       {
-        $condition = $params[0];
-        $params = array_slice($params, 1);
         $selector->where($condition, $params);
       }
     }
@@ -3578,7 +3576,7 @@
     public function select($condition=null, $params=array())
     {
       $class = 'atkselector';
-      
+
       if (method_exists($this, 'selectDb') || method_exists($this, 'countDb'))
       {
         $class = 'atkcompatselector';
@@ -3587,11 +3585,11 @@
       {
         $class = 'atkmlselector';
       }
-      
-    
+
+
       $selector = atknew('atk.utils.'.$class, $this);
       $this->_initSelector($selector, $condition, $params);
-      
+
       return $selector;
     }
 
@@ -4853,28 +4851,28 @@
     {
       return $this->getDb()->escapeSQL($string);
     }
-    
+
     /**
      * Catch missing methods.
-     * 
+     *
      * @param string $method method name
      * @param array  $params method parameters
      */
     public function __call($method, $params)
     {
-      // Catch use of deprecated selectDb and countDb methods. We implement 
+      // Catch use of deprecated selectDb and countDb methods. We implement
       // this here instead of keeping wrapper methods because if someone has
       // overridden these methods the atkCompatSelector will be used instead of
       // the normal atkSelector which will call the overridden selectDb and/or
       // countDb methods which might call parent::selectDb(...) which would
-      // call the select() method which would again instantiate an 
+      // call the select() method which would again instantiate an
       // atkCompatSelector etc. This way we can make sure the atkCompatSelector is
-      // only instantiated on the first call after which we use a normal 
+      // only instantiated on the first call after which we use a normal
       // selector if a call to parent::selectDb(...) is made.
       if (strtolower($method) == 'selectdb')
       {
         atkwarning("Use of deprecated selectDb method on node ".$this->atkNodeType());
-        
+
         $condition = array_key_exists(0, $params) ? $params[0] : '';
         $order = array_key_exists(1, $params) ? $params[1] : '';
         $limit = array_key_exists(2, $params) ? $params[2] : '';
@@ -4883,11 +4881,11 @@
         $mode = array_key_exists(5, $params) ? $params[5] : '';
         $distinct = array_key_exists(5, $params) ? $params[5] : false;
         $ignoreDefaultFilters = array_key_exists(6, $params) ? $params[6] : false;
-        
+
         $selector = atknew('atk.utils.atk'.($this->hasFlag(NF_ML) ? 'ml' : '').'selector', $this);
         $this->_initSelector($selector);
         $selector->where($condition);
-        if ($order === false || $order != '') 
+        if ($order === false || $order != '')
           $selector->orderBy($order);
         if ($limit != null && !is_array($limit))
           $selector->limit($limit, 0);
@@ -4903,14 +4901,14 @@
       else if (strtolower($method) == 'countdb')
       {
         atkwarning("Use of deprecated countDb method on node ".$this->atkNodeType());
-        
+
         $condition = array_key_exists(0, $params) ? $params[0] : '';
         $excludes = array_key_exists(1, $params) ? $params[1] : '';
         $includes = array_key_exists(2, $params) ? $params[2] : '';
-        $mode = array_key_exists(3, $params) ? $params[3] : '';        
+        $mode = array_key_exists(3, $params) ? $params[3] : '';
         $distinct = array_key_exists(4, $params) ? $params[4] : false;
         $ignoreDefaultFilters = array_key_exists(5, $params) ? $params[5] : false;
-        
+
         $selector = atknew('atk.utils.atk'.($this->hasFlag(NF_ML) ? 'ml' : '').'selector', $this);
         $this->_initSelector($selector);
         $selector->where($condition);

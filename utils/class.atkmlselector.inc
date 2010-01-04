@@ -19,11 +19,11 @@
  * Special selector for multi-language nodes. Due to the way multi-language
  * nodes work we need to fetch all rows at once, might need to set some
  * extra conditions etc.
- * 
+ *
  * @todo I don't understand the multi-language code for one bit and I don't have
- *       a setup where I can test this. So can anyone try this code and probably 
+ *       a setup where I can test this. So can anyone try this code and probably
  *       fix it?
- * 
+ *
  * @author Peter C. Verhage <peter@achievo.org>
  * @package atk
  * @subpackage utils
@@ -32,36 +32,36 @@ class atkMLSelector extends atkSelector
 {
   /**
    * Apply multi-language conditions.
-   * 
+   *
    * @param atkQuery $query query object
    */
   protected function _applyMultiLanguageConditionsToQuery(atkQuery $query)
   {
     $mlSplitter = atkinstance("atk.utils.atkmlsplitter");
     $mlSplitter->addMlCondition($query, $this->_getNode(), $this->m_mode, $this->_getNode()->getTable());
-  }  
-  
+  }
+
   /**
    * Override build query so we can add the multi language conditions.
-   * 
+   *
    * @return atkQuery query object
    */
-  protected function _buildQuery()
+  protected function _buildQuery(array $attrsByLoadType)
   {
-    $query = parent::_buildQuery();
+    $query = parent::_buildQuery($attrsByLoadType);
     $this->_applyMultiLanguageConditionsToQuery($query);
     return $query;
   }
 
   /**
    * Transform raw database rows to node compatible rows.
-   * 
+   *
    * @param array    $rows            raw database rows
    * @param atkQuery $query           query object
    * @param array    $attrsByLoadType attributes by load type
-   * 
+   *
    * @return array node compatible rows
-   */  
+   */
   protected function _transformRows($rows, atkQuery $query, array $attrsByLoadType)
   {
     // When copying there could be more than one multi-language record.
@@ -70,11 +70,11 @@ class atkMLSelector extends atkSelector
     if ($this->m_mode == 'copy')
     {
       $mlSplitter = atkinstance("atk.utils.atkmlsplitter");
-      
+
       $result = array();
       $ids = array();
       $indexes =array();
-      
+
       foreach ($rows as $row)
       {
         if (!in_array($row[$this->_getNode()->primaryKeyField()], $ids))
@@ -90,7 +90,7 @@ class atkMLSelector extends atkSelector
           $result[$indexes[$index]][] = $row;
         }
       }
-      
+
       // combine the multi-language records and put them in the rows array.
       $rows = array();
       foreach ($result as $entry)
@@ -98,15 +98,15 @@ class atkMLSelector extends atkSelector
         $mlSplitter->combineMlRecordSet($this->_getNode(), $entry, $query);
         $rows[] = $entry[0];
       }
-    } 
-    
+    }
+
     // Combine multi-language records on edit.
     else if ($this->m_mode == 'edit')
     {
       $mlSplitter = atkinstance("atk.utils.atkmlsplitter");
       $mlSplitter->combineMlRecordSet($this->_getNode(), $rows, $query);
-    }     
-    
+    }
+
     return parent::_transformRows($rows, $query, $attrsByLoadType);
   }
 
