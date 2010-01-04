@@ -4884,7 +4884,7 @@
         $distinct = array_key_exists(5, $params) ? $params[5] : false;
         $ignoreDefaultFilters = array_key_exists(6, $params) ? $params[6] : false;
         
-        $selector = atknew('atk.utils.atkselector', $this);
+        $selector = atknew('atk.utils.atk'.($this->hasFlag(NF_ML) ? 'ml' : '').'selector', $this);
         $this->_initSelector($selector);
         $selector->where($condition);
         if ($order === false || $order != '') 
@@ -4911,7 +4911,7 @@
         $distinct = array_key_exists(4, $params) ? $params[4] : false;
         $ignoreDefaultFilters = array_key_exists(5, $params) ? $params[5] : false;
         
-        $selector = atknew('atk.utils.atkselector', $this);
+        $selector = atknew('atk.utils.atk'.($this->hasFlag(NF_ML) ? 'ml' : '').'selector', $this);
         $this->_initSelector($selector);
         $selector->where($condition);
         $selector->excludes($excludes);
