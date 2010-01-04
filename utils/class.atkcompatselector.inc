@@ -28,6 +28,33 @@
 class atkCompatSelector extends atkSelector
 {
   /**
+   * Build selector based on the set conditions.
+   * 
+   * @return string selector
+   */
+  protected function _buildSelector()
+  {
+    $selector = '';
+    
+    if (count($this->m_conditions) == 1)
+    {
+      $selector = $this->m_conditions[0]['condition']; // can't support binds
+    }
+    else if (count($this->m_conditions) > 1)
+    {
+      $conditions = array(); // can't support binds
+      foreach ($this->m_conditions as $condition)
+      {
+        $conditions[] = $condition['condition'];
+      }
+        
+      $selector = '('.implode(') AND (', $conditions).')';
+    } 
+
+    return $selector;
+  }
+  
+  /**
    * Return all rows.
    *
    * @return array all rows
@@ -37,23 +64,7 @@ class atkCompatSelector extends atkSelector
     if ($this->m_rows === null)
     {
       atkwarning("Using deprecated selectDb override for node ".$this->_getNode()->atkNodeType());
-      
-      $selector = '';
-      if (count($this->m_conditions) == 1)
-      {
-        $selector = $this->m_conditions[0]['condition']; // can't support binds
-      }
-      else if (count($this->m_conditions) > 1)
-      {
-        $conditions = array(); // can't support binds
-        foreach ($this->m_conditions as $condition)
-        {
-          $conditions[] = $condition['condition'];
-        }
-        
-        $selector = '('.implode(') AND (', $conditions).')';
-      }
-                
+      $selector = $this->_buildSelector();
       $this->m_rows = $this->m_node->selectDb($selector, $this->m_order, array('limit' => $this->m_limit, 'offset' => $this->m_offset), $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct, $this->m_ignoreDefaultFilters);
     }
 
@@ -70,18 +81,7 @@ class atkCompatSelector extends atkSelector
     if ($this->m_rowCount === null)
     {
       atkwarning("Using deprecated countDb override for node ".$this->_getNode()->atkNodeType());
-      
-      $selector = '';
-      $conditions = array_keys($this->m_conditions); // we can't support binds
-      if (count($conditions) == 1)
-      {
-        $selector = $conditions[0];
-      }
-      else if (count($conditions) > 1)
-      {
-        $selector = '('.implode(') AND (', $conditions).')';
-      }
-        
+      $selector = $this->_buildSelector();
       $this->m_rowCount = (int)$this->m_node->countDb($selector, $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct, $this->m_ignoreDefaultFilters);
     }
 
