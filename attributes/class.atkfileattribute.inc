@@ -137,6 +137,7 @@
         $this->m_dir = $this->AddSlash($dir);
         $this->m_url = $this->AddSlash($dir);
       }
+      return $this;
     }
 
     /**
@@ -148,9 +149,10 @@
      *
      * @param bool $autonumbering
      */
-    function setAutonumbering($autonumbering=true)
+    public function setAutonumbering($autonumbering=true)
     {
       $this->m_autonumbering = $autonumbering;
+      return $this;
     }
 
 
