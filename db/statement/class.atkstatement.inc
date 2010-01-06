@@ -476,7 +476,7 @@ abstract class atkStatement implements IteratorAggregate
    */
   public function getAllValuesAssoc($keyColumn=0, $valueColumn=1)
   {
-    $rows = $this->getAllRowsAssoc($query, $keyColumn);
+    $rows = $this->getAllRowsAssoc($keyColumn);
     foreach ($rows as $key => &$value)
     {
       if (is_numeric($valueColumn))
