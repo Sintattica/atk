@@ -58,20 +58,20 @@
       $this->m_decimalseparator = atktext(self::SEPARATOR_DECIMAL,'atk');
       $this->m_thousandsseparator = atktext(self::SEPARATOR_THOUSAND,'atk');
     }
-    
+
     /**
      * Returns the number of decimals.
-     * 
+     *
      * @return int decimals
      */
     public function getDecimals()
     {
       return (int)$this->m_decimals;
     }
-    
+
     /**
      * Sets the number of decimals.
-     * 
+     *
      * @param int $decimals number of decimals
      */
     public function setDecimals($decimals)
@@ -81,7 +81,7 @@
 
     /**
      * Set the minimum and maximum value of the number. Violations of this range
-     * 
+     *
      * @param int $minvalue Minimum value of the number.
      * @param int $maxvalue Maximum value of the number.
      */
@@ -90,7 +90,7 @@
       $this->m_minvalue = $minvalue;
       $this->m_maxvalue = $maxvalue;
     }
-    
+
     /**
      * Retrieves the ORDER BY statement for this attribute's node.
      * Derived attributes may override this functionality to implement other
@@ -252,14 +252,14 @@
       $this->m_decimalseparator = $separator;
     }
 
-    
+
     /**
      * Formats the number based on setting in the language file
      *
      * @param float  $number             number
      * @param string $decimalSeparator   override decimal separator
      * @param string $thousandsSeparator override thousands separator
-     * 
+     *
      * @return string nicely formatted number
      */
     protected function formatNumber($number, $decimalSeparator="", $thousandsSeparator="")
@@ -276,11 +276,11 @@
 
       // NOTE: we don't use number_format because this sometimes causes rounding issues
       //       if a float can not be properly represented (see http://nl.php.net/manual/en/function.number-format.php#93893)
-       
+
       $tmp1 = round((float)$number, $this->getDecimals());
       $tmp1 .= $this->getDecimals() > 0 && strpos($tmp1, '.') === false ? '.' : '';
       $tmp1 .= str_repeat('0', max($this->getDecimals() - strlen(substr($tmp1, strpos($tmp1, '.') + 1)), 0));
-      
+
       while (($tmp2 = preg_replace('/(?<!.)(\d+)(\d\d\d)/', '\1 \2', $tmp1)) != $tmp1)
       {
         $tmp1 = $tmp2;
@@ -424,14 +424,14 @@
     function fetchMeta($metadata)
     {
     	parent::fetchMeta($metadata);
-    	
+
     	if (strpos($this->m_size, ',') !== false)
     	{
     		list($this->m_size, $decimals) = explode(',', $this->m_size);
-    		
+
     		if ($this->m_decimals === null)
     		{
-    		  // no decimals explicitly set, so use the one we 
+    		  // no decimals explicitly set, so use the one we
     		  // retrieved from the database
     		  $this->m_decimals = $decimals;
     		}
@@ -442,8 +442,8 @@
     		  $this->m_decimals = min($this->m_decimals, $decimals);
     		}
     	}
-    }    
-    
+    }
+
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
@@ -465,7 +465,7 @@
       {
         $onchange = '';
       }
-      
+
       $this->registerJavaScriptObservers($id);
 
       $size    = $this->m_size;
@@ -562,13 +562,25 @@
         $str = trim($value);
         if ($slash!==false)
         {
-          $processed["from"] = $this->removeSeparators(substr($str, 0, $slash));
-          $processed["to"] = $this->removeSeparators(substr($str,$slash+1));
+          $from = substr($str, 0, $slash);
+          $to = substr($str,$slash+1);
+
+          if (!is_numeric($from) || !is_numeric($to))
+          {
+            return array();
+          }
+
+          $processed["from"] = $this->removeSeparators($from);
+          $processed["to"] = $this->removeSeparators($to);
           $searchmode = 'between';
+        }
+        else if (is_numeric($str))
+        {
+          $processed["from"] = (float)$this->removeSeparators($str); // quicksearch doesn't use an array.
         }
         else
         {
-          $processed["from"] = (float)$this->removeSeparators($str); // quicksearch doesn't use an array.
+          return array();
         }
       }
       else

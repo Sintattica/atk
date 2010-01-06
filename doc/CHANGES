@@ -9,6 +9,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Fixed extended search on one2many relations again. [Peter,Martin]
 + Added atkHiddenAttribute for convenient addition of hidden fields to
   forms. [Ivo]
 + Added support for bind parameters to atkDatagrid::addFilter. [Peter/Tjeerd]
