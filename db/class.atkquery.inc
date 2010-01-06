@@ -285,6 +285,22 @@
 
       return $this;
     }
+    
+    /**
+     * Clear field list.
+     */
+    public function clearFields()
+    {
+      $this->m_fields = array();
+    }
+    
+    /**
+     * Clear expression list.
+     */
+    public function clearExpressions()
+    {
+      $this->m_expressions = array();
+    }
 
     /**
     * Add table to Tables array

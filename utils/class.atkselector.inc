@@ -750,6 +750,10 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
     $query->setDistinct($this->m_distinct);
     $query->addTable($this->_getNode()->getTable());
 
+    $this->_applyAttributesToQuery($query, $attrsByLoadType);
+    $query->clearFields();
+    $query->clearExpressions();
+    
     $this->_applyConditionsToQuery($query);
     $this->_applyFiltersToQuery($query);
 
