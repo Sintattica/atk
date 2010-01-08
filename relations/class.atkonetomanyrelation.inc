@@ -1196,6 +1196,7 @@
          if(!empty($searchcondition))
          {
            $query->addSearchCondition($searchcondition);
+           $query->setDistinct(true);
 
            // @todo: is this still needed?
            if ($this->m_ownerInstance->m_postvars["atkselector"])
@@ -1253,7 +1254,7 @@
        }
 
        if (count($searchconditions)>0)
-        return "(".implode(" OR ",$searchconditions).")";
+         return "(".implode(" OR ",$searchconditions).")";
        else
         return false;
      }
