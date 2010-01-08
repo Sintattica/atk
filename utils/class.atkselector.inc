@@ -745,22 +745,14 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
     }
 
     $attrsByLoadType = $this->_getAttributesByLoadType();
-
-    $query = $this->_getNode()->getDb()->createQuery();
-    $query->setDistinct($this->m_distinct);
-    $query->addTable($this->_getNode()->getTable());
-
-    $this->_applyAttributesToQuery($query, $attrsByLoadType);
-    $query->clearFields();
-    $query->clearExpressions();
     
-    $this->_applyConditionsToQuery($query);
-    $this->_applyFiltersToQuery($query);
-
     $index = $this->_getNode()->m_index;
     $this->_getNode()->m_index = null;
-    $this->_applyPostvarsToQuery($query, $attrsByLoadType);
+    $query = $this->_buildQuery($attrsByLoadType);
     $this->_getNode()->m_index = $index;
+    
+    $query->clearFields();
+    $query->clearExpressions();
 
     $indexColumn = $this->_getDb()->quoteIdentifier($this->_getNode()->getTable()).'.'.$this->_getDb()->quoteIdentifier($index);
     $expression = "UPPER(".$this->_getDb()->func_substring($indexColumn, 1, 1).")";

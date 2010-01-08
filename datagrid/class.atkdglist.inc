@@ -314,6 +314,7 @@ class atkDGList extends atkDGComponent
       $record["rownum"] = $i;
       $record["id"] = $listName.'_'.$i;
       $record["type"] = $list["rows"][$i]["type"];
+      $record['class'] = $grid->getNode()->rowClass($recordset[$i], $i);
 
       /* multi-record-priority-actions -> priority selection */
       if (!$edit && $grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS))

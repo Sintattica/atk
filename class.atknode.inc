@@ -4851,6 +4851,21 @@
     {
       return $this->getDb()->escapeSQL($string);
     }
+    
+    /**
+     * Row CSS class.
+     * 
+     * Used to determine the CSS class(s) for rows in the datagrid list.
+     * 
+     * @param array $record record
+     * @param int   $nr     row number
+     * 
+     * @return string CSS class(es)
+     */
+    public function rowClass($record, $nr)
+    {
+      return $nr % 2 == 0 ? 'row1' : 'row2';
+    }
 
     /**
      * Catch missing methods.
