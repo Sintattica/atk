@@ -368,7 +368,7 @@
     public function display($record, $mode="list")
     {
       // for the view mode we use the datagrid and load the records ourselves
-      if ($mode == 'view')
+      if ($mode == 'view' || ($mode == 'edit' && $this->hasFlag(AF_READONLY_EDIT)))
       {
         $grid = $this->createGrid($record, 'admin', 'view');
         $grid->loadRecords(); // load records early
@@ -884,7 +884,8 @@
       // for edit and view mode we don't load any records unless a display override exists
       // we use the grid to load records because it makes things easier
       if (($mode != 'add' && $mode != 'edit' && $mode != 'view') ||
-          ($mode == 'view' && method_exists($this->getOwnerInstance(), $this->fieldName()."_display")))
+          ($mode == 'view' && method_exists($this->getOwnerInstance(), $this->fieldName()."_display")) ||
+          ($mode == 'edit' && $this->hasFlag(AF_READONLY_EDIT) && method_exists($this->getOwnerInstance(), $this->fieldName()."_display")))
       {
         $grid = $this->createGrid($record, $mode == 'copy' ? 'copy' : 'admin', $mode, false);
         $grid->setPostvar('atklimit', -1); // all records
