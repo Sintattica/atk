@@ -44,7 +44,7 @@ class atkMetaNode extends atkNode
    *
    * - type           node type
    * - table          table name
-   * - sequence       sequence name
+   * - sequence       sequence name to use (if not specified, it'll use autoincrement for mysql)
    * - db/database    database name or instance
    * - policy         meta policy, the meta policy to use ((sub-)class atkMetaPolicy instance)
    * - grammar        meta grammar, the meta grammar to use ((sub-)class atkMetaGrammar instance)
