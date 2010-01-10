@@ -17,10 +17,10 @@
    * @package atk
    * @subpackage skel
    *
-   * @author Ivo Jansch <ivo@achievo.org>
+   * @author Ivo Jansch <ivo@ibuildings.com>
    *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   * @copyright (c)2000-2010 Ibuildings
+   * @license http://www.atkframework.com/licensing ATK Open Source License
    *
    * @version $Revision: 6161 $
    * $Id$
