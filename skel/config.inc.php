@@ -220,7 +220,8 @@
 
   // If you work with groups/levels  you need these parameters
   $config_auth_leveltable  = "users";
-  $config_auth_levelfield  = "entity";
+  $config_auth_levelfield  = "group_id";
+  $config_auth_accesstable = "accessright";
 
   // Setting this to true will make ATK use a loginform instead of a browser
   // popup.
