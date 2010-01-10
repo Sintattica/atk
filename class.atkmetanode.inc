@@ -57,8 +57,9 @@ class atkMetaNode extends atkNode
    * - filter         filter
    * - securityAlias  security alias for this node
    * - securityMap    security map for this node (will be added to the existing security map!)
-   * - cacheable      control whatever this meta node is cacheable (by default if the meta method is
-   *                  defined static or there is no meta method defined the meta node is cacheable)
+   * - cacheable      control whatever this meta node is cacheable (by default a metanode is 
+   *                  cachable if the meta method is defined static or if there is no meta method 
+   *                  defined)
    *
    * All of these variables can also be specified by creating a class variable with
    * the same name. If you do so for flags, and have to use multiple flags, use
