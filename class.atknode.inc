@@ -3573,7 +3573,7 @@
      *
      * @return atkSelector
      */
-    public function select($condition=null, $params=array())
+    public function select($condition=null, array $params=array())
     {
       $class = 'atkselector';
 
