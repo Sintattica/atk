@@ -1675,6 +1675,16 @@ class atkMetaPolicy
       unset($this->m_attrs[$name]);
     }
   }
+  
+  /**
+   * Does the given attribute exist?
+   *
+   * @param string $name attribute name
+   */
+  public function exists($name)
+  {
+    return isset($this->m_attrs[$name]);
+  }
 
   /**
    * Returns a reference to the attributes array.
@@ -1840,6 +1850,15 @@ class atkMetaPolicy
     $this->_setNodeTable($table);
 
     $db = atkGetDb($database);
+    if ($table == null)
+    {
+      throw new Exception("No table found for meta node " . $this->getNode()->atkNodeType() . "! Are you sure you are connecting to the right database?");
+    }
+    else if (!$db->tableExists($table))
+    {
+      throw new Exception("Table {$table}, referenced by meta node " . $this->getNode()->atkNodeType() . ", does not exist! Are you sure you are connecting to the right database?");
+    }
+
     $metaData = $db->tableMeta($table);
     $this->_setMetaData($metaData);
 
