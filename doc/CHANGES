@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
++ Implemented atkRecycleBin, a listener that can be added to a node and that
+  transfers deleted records to a recyclebin table. [Ivo]
 * atkMetaPolicy now throws an exception if it can't detect a table for a node 
   or if an explicitly set table does not exist. [Peter]
 + Added atkMetaPolicy::exists method which can be used to check if a certain
