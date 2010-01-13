@@ -1402,8 +1402,15 @@ class atkMetaPolicy
    *
    * - dest(-ination)  destination attribute name
    * - filter          destination filter
-   * - through         intermediate node name (for many-to-many relations)
-   * - type            type of many-to-many relation (shuttle, bool(ean) or list, defaults to shuttle)
+   * - through         intermediary node name (for many-to-many relations)
+   * - local           if ATK can't determine the key in the intermediary node
+   *                   automatically, use local to tell it which key points to
+   *                   the source node.
+   * - remote          if ATK can't determine the key in the intermediary node
+   *                   use remote to tell it which key points to the 
+   *                   destination node. 
+   * - type            type of many-to-many relation (shuttle, select, 
+   *                   eshuttle, bool(ean) or list, defaults to shuttle)
    * - cols/columns    number of columns (many-to-many bool relations only)
    * - rows            number of rows (many-to-many list relations only)
    * - name            name for this relation (by default getNodeType($accessor))
