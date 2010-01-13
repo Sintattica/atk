@@ -19,9 +19,12 @@
    * The atkTriggerListener base class for handling trigger events on records.
    *
    * The most useful purpose of the atkTriggerListener is to serve as a base
-   * class for custom trigger listeners. Extend this class and override only
-   * the notify($trigger, $record) method. Using atkNode::addListener you can
-   * add listeners that catch evens such as records updates and additions.
+   * class for custom trigger listeners. Extend this class and implement
+   * postUpdate, preDelete etc. functions that will automatically be called
+   * when such a trigger occurs. For more flexibility, override only
+   * the notify($trigger, $record) method which catches every trigger. 
+   * Using atkNode::addListener you can add listeners that catch evens such as 
+   * records updates and additions.
    * This is much like the classic atk postUpdate/postAdd triggers, only much
    * more flexible.
    *
