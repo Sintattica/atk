@@ -440,7 +440,16 @@
    function tableExists($table)
    {
      $this->connect('r');
-     $id = $this->_query("SHOW TABLES LIKE '" .$table ."'", true);
+     if (strpos($table, '.') !== false)
+     {
+       list($dbname, $tablename) = explode(".", $table);
+       $id = $this->_query("SHOW TABLES FROM `". $dbname ."` LIKE '". $tablename ."'", true);
+     }
+     else
+     {
+       $id = $this->_query("SHOW TABLES LIKE '" .$table ."'", true);
+     }
+     
      $result = @mysqli_num_rows($id) > 0;
      atkdebug("Table exists? $table => ".($result ? 'yes' : 'no'));
      return $result;
