@@ -221,8 +221,8 @@
       }
       else // HTTP login
       {
-        $auth_user = $_SERVER["PHP_AUTH_USER"];
-        $auth_pw = $_SERVER["PHP_AUTH_PW"];
+        $auth_user = isset($_SERVER["PHP_AUTH_USER"]) ? $_SERVER["PHP_AUTH_USER"] : null;
+        $auth_pw = isset($_SERVER["PHP_AUTH_PW"]) ? $_SERVER["PHP_AUTH_PW"] : null;
       }
 
       // throw post login event?
