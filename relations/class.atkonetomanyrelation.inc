@@ -1001,6 +1001,10 @@
         $this->updateSessionAddFakeId($row, $this->getSessionAddFakeId(), $record);
         $this->m_destInstance->addDb($row);
       }
+
+      // after saving the rows, we can clear the sessionstore
+      atkSessionStore::getInstance($this->getSessionStoreKey())->setData(null);
+
       return true;
     }
 

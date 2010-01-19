@@ -183,7 +183,7 @@ class atkSessionStore
    * @param array $data Data to set
    * @return mixed Data that was set or false if we don't have a key or session
    */
-  private function setData($data)
+  public function setData($data)
   {
     if (!$this->_key) return false;
 
