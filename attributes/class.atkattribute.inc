@@ -682,14 +682,20 @@
     function addFlag($flag)
     {
       $this->m_flags |= $flag;
-      if (hasFlag($flag, AF_HIDE_LIST)&&!$this->hasFlag(AF_PRIMARY)&&is_object($this->m_ownerInstance)&&!in_array($this->fieldName(),$this->m_ownerInstance->m_listExcludes))
+
+      if (!$this->hasFlag(AF_PRIMARY) && is_object($this->m_ownerInstance))
       {
-        $this->m_ownerInstance->m_listExcludes[]=$this->fieldName();
+        if (hasFlag($flag, AF_HIDE_LIST) && !in_array($this->fieldName(), $this->m_ownerInstance->m_listExcludes))
+        {
+          $this->m_ownerInstance->m_listExcludes[] = $this->fieldName();
+        }
+
+        if (hasFlag($flag, AF_HIDE_VIEW) && !in_array($this->fieldName(), $this->m_ownerInstance->m_viewExcludes))
+        {
+          $this->m_ownerInstance->m_viewExcludes[] = $this->fieldName();
+        }
       }
-      if (hasFlag($flag, AF_HIDE_VIEW)&&!$this->hasFlag(AF_PRIMARY)&&is_object($this->m_ownerInstance)&&!in_array($this->fieldName(),$this->m_ownerInstance->m_viewExcludes))
-      {
-        $this->m_ownerInstance->m_viewExcludes[]=$this->fieldName();
-      }
+
       return $this;
     }
 
@@ -700,11 +706,13 @@
      * from the attribute. You can assign multiple flags by using the pipe
      * symbol. Setting the flags will overwrite all previous flag-settings.
      * @param int $flags The flags to be set to the attribute.
+     * @return atkAttribute The instance of this atkAttribute
      */
     function setFlags($flags = 0)
     {
       $this->m_flags = 0;
       $this->addFlag($flags); // always call addFlag
+      return $this;
     }
 
     /**
@@ -718,25 +726,38 @@
      */
     function removeFlag($flag)
     {
-      if($this->hasFlag($flag)) $this->m_flags ^= $flag;
-      if ((hasFlag($flag, AF_HIDE_LIST)&&!$this->hasFlag(AF_PRIMARY))&&is_object($this->m_ownerInstance)&&in_array($this->fieldName(),$this->m_ownerInstance->m_listExcludes))
+      if($this->hasFlag($flag))
       {
-        unset($this->m_ownerInstance->m_listExcludes[array_search($this->fieldName(), $this->m_ownerInstance->m_listExcludes)]);
-      }
-      if ((hasFlag($flag, AF_HIDE_VIEW)&&!$this->hasFlag(AF_PRIMARY))&&is_object($this->m_ownerInstance)&&in_array($this->fieldName(),$this->m_ownerInstance->m_viewExcludes))
+        $this->m_flags ^= $flag;  
+      } 
+      
+      if (!$this->hasFlag(AF_PRIMARY) && is_object($this->m_ownerInstance))
       {
-        unset($this->m_ownerInstance->m_viewExcludes[array_search($this->fieldName(), $this->m_ownerInstance->m_viewExcludes)]);
+        if (hasFlag($flag, AF_HIDE_LIST) && in_array($this->fieldName(), $this->m_ownerInstance->m_listExcludes))
+        {
+          $key = array_search($this->fieldName(), $this->m_ownerInstance->m_listExcludes);
+          unset($this->m_ownerInstance->m_listExcludes[$key]);
+        }
+
+        if (hasFlag($flag, AF_HIDE_VIEW) && in_array($this->fieldName(), $this->m_ownerInstance->m_viewExcludes))
+        {
+          $key = array_search($this->fieldName(), $this->m_ownerInstance->m_viewExcludes);
+          unset($this->m_ownerInstance->m_viewExcludes[$key]);
+        }          
       }
+
       return $this;
     }
 
     /**
      * Adds a disabled mode flag to the attribute  (use DISABLED_VIEW and DISABLED_EDIT flags).
      * @param int $flag The flag to add to the attribute
+     * @return atkAttribute The instance of this atkAttribute
      */
     function addDisabledMode($flag)
     {
       $this->m_disabledModes |= $flag;
+      return $this;
     }
     /**
      * Check if the attribute is disabled in some mode (use DISABLED_VIEW and DISABLED_EDIT flags).
@@ -754,19 +775,27 @@
      * from the attribute. You can assign multiple flags by using the pipe
      * symbol. Setting the flags will overwrite all previous flag-settings.
      * @param int $flags The flags to be set to the attribute.
+     * @return atkAttribute The instance of this atkAttribute
      */
     function setDisabledModes($flags = 0)
     {
       $this->m_disabledModes = $flags;
+      return $this;
     }
     /**
      * Removes a disabled mode from the attribute.
      *
      * @param int $flag The flag to remove from the attribute
+     * @return atkAttribute The instance of this atkAttribute
      */
     function removeDisabledMode($flag)
     {
-      if($this->hasDisabledMode($flag)) $this->m_disabledModes ^= $flag;
+      if ($this->hasDisabledMode($flag))
+      {
+        $this->m_disabledModes ^= $flag;    
+      }
+      
+      return $this;
     }
     /**
      * Returns the name of the attribute.
@@ -801,7 +830,7 @@
      */
     function isEmpty($record)
     {
-      return (!isset($record[$this->fieldName()])||$record[$this->fieldName()]===""||$record[$this->fieldName()]===NULL);
+      return (!isset($record[$this->fieldName()]) || $record[$this->fieldName()]==="");
     }
 
     /**
@@ -818,7 +847,7 @@
      */
     function value2db($rec)
     {
-      if (is_array($rec)&&isset($rec[$this->fieldName()]))
+      if (is_array($rec) && isset($rec[$this->fieldName()]))
       {
         return $this->escapeSQL($rec[$this->fieldName()]);
       }
@@ -864,10 +893,12 @@
      *       in the node or if the override properly calls parent::initial_values!
      *
      * @param mixed $value initial value
+     * @return atkAttribute The instance of this atkAttribute
      */
     function setInitialValue($value)
     {
       $this->m_initialValue = $value;
+      return $this;
     }
 
     /**
@@ -1126,6 +1157,7 @@
      * Put the attribute on one or more tabs.
      * @param array $tabs An array of tabs on which the attribute should
      *                    be displayed.
+     * @return atkAttribute The instance of this atkAttribute
      */
     function setTabs($tabs)
     {
@@ -1139,6 +1171,7 @@
       }
 
       $this->m_tabs = $tabs;
+      return $this;
     }
 
     /**
@@ -1159,6 +1192,7 @@
      *
      * @param array $sections An array of tabs and/or sections on which the attribute should
      *                    be displayed.
+     * @return atkAttribute The instance of this atkAttribute
      */
     function setSections($sections)
     {
@@ -1170,6 +1204,8 @@
       {
         $this->m_sections = $sections;
       }
+      
+      return $this;
     }
 
     /**
@@ -1189,17 +1225,19 @@
      */
     public function getColumn()
     {
-    	return $this->m_column;
+      return $this->m_column;
     }
 
     /**
      * Set column.
      *
      * @param string $name column name
+     * @return atkAttribute The instance of this atkAttribute
      */
     public function setColumn($name)
     {
-    	$this->m_column = $name;
+      $this->m_column = $name;
+      return $this;
     }
 
 
@@ -1229,6 +1267,7 @@
       {
         $result = $this->display($defaults, $mode);
       }
+
       return $result;
     }
 
@@ -1525,10 +1564,11 @@
       if (count($path) > 0)
       {
         atk_var_dump($path, 'Invalid search path for '.$this->m_ownerInstance->atkNodeType().'#'.$this->fieldName().', ignoring criterium!');
-        return;
       }
-
-      $this->searchCondition($query, $ownerAlias, $value, $mode);
+      else
+      {
+        $this->searchCondition($query, $ownerAlias, $value, $mode);
+      }
     }
 
     /**
@@ -1600,10 +1640,12 @@
      * to use the attributes searchmode for that particulair attribute
      * instead of the general searchmode.
      * @param String $searchmode The searchmode we want to set on the attribute
+     * @return atkAttribute The instance of this atkAttribute
      */
     function setAttributeSearchmode($searchmode)
     {
       $this->m_searchmode = $searchmode;
+      return $this;
     }
 
     /**
@@ -1977,6 +2019,8 @@
      *        specified size and the size of the field in the database.
      *        Usually, these are the same. In the case they differ, the
      *        smallest of the 2 will be used.
+     *
+     * @return atkAttribute The instance of this atkAttribute
      */
     function setAttribSize($size)
     {
@@ -2000,6 +2044,8 @@
           $this->m_maxsize = $this->m_size = $this->m_searchsize = $size;
         }
       }
+      
+      return $this;
     }
 
     /**
@@ -2163,10 +2209,12 @@
      * @param string $mode The storage mode ("add", "update" or null for all)
      *
      * @see storageType
+     * @return atkAttribute The instance of this atkAttribute
      */
     function setStorageType($type, $mode=null)
     {
       $this->m_storageType[$mode] = $type;
+      return $this;
     }
 
     /**
@@ -2219,10 +2267,12 @@
      * @param string $mode The load mode ("view", "admin" etc. or null for all)
      *
      * @see loadType
+     * @return atkAttribute The instance of this atkAttribute
      */
     function setLoadType($type, $mode=null)
     {
       $this->m_loadType[$mode] = $type;
+      return $this;
     }
 
     /**
@@ -2306,6 +2356,7 @@
      *                   navigation is added.
      * @param int $navkeys The mask indicating which keys to support for
      *                     navigation.
+     * @return atkAttribute The instance of this atkAttribute
      */
     function registerKeyListener($id, $navkeys=KB_CTRLCURSOR)
     {
@@ -2314,6 +2365,8 @@
         $kb = &atkKeyboard::getInstance();
         $kb->addFormElementHandler($id, $navkeys);
       }
+      
+      return $this;
     }
 
     /**
@@ -2371,6 +2424,7 @@
     *                                   into the search fields.
     * @param array   $fieldprefix       search / mode field prefix
     * @param array   $currentSearchMode current search mode
+    * @return atkAttribute The instance of this atkAttribute
     */
     function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "", $currentSearchMode=array())
     {
@@ -2400,6 +2454,8 @@
 
       // add $field to fields array
       $fields[] = $field;
+      
+      return $this;
     }
 
     /**
@@ -2775,10 +2831,16 @@
      * Add a CSS class for this attribute on an HTML form.
      *
      * @param String $classname The name of a class.
+     * @return atkAttribute The instance of this atkAttribute
      */
     function addCSSClass($classname)
     {
-      if (!in_array($classname, $this->m_cssclasses)) $this->m_cssclasses[] = $classname;
+      if (!in_array($classname, $this->m_cssclasses))
+      {
+        $this->m_cssclasses[] = $classname;   
+      }
+
+      return $this;
     }
 
     /**
@@ -2797,10 +2859,12 @@
      * Set whether initially hidden or not.  A field is "hidden" by adding the class atkAttrRowHidden.
      *
      * @param boolean $bool Initially hidden?
+     * @return atkAttribute The instance of this atkAttribute
      */
     function setInitialHidden($bool)
     {
       $this->m_initial_hidden = $bool;
+      return $this;
     }
 
     /**
@@ -2821,10 +2885,12 @@
      *
      * @param bool $bool TRUE if it is called manually, FALSE if ATK
      *                   should call it.
+     * @return atkAttribute The instance of this atkAttribute
      */
     function setManualPaint($bool)
     {
       $this->m_manual_paint = $bool;
+      return $this;
     }
 
     /**
@@ -2862,4 +2928,3 @@
       return $this->m_ownerInstance->atkNodeType()."::".$this->fieldName();
     }
   }
-?>
