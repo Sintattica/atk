@@ -71,7 +71,7 @@
   "cannot make file" => "Cannot create file: ", // Missing string!!!
   "cannot_remove_file" => "Die Datei kann nicht gelöscht werden!",
   "captcha_explain" => "Please fill in the displayed code", // Missing string!!!
-  "charset" => "iso-8859-1",
+  "charset" => "UTF-8",
   "check rights to" => "Please check that you have the appropriate rights to ", // Missing string!!!
   "check_all" => "Alles auswählen",
   "check_none" => "Nichts auswählen",

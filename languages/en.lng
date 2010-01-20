@@ -61,7 +61,7 @@
   "cannot make file" => "Cannot create file: ",
   "cannot_remove_file" => "Can't remove file!",
   "captcha_explain" => "Please fill in the displayed code",
-  "charset" => "iso-8859-1",
+  "charset" => "UTF-8",
   "check rights to" => "Please check that you have the appropriate rights to ",
   "check_all" => "Select all",
   "check_none" => "Select none",
