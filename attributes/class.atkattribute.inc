@@ -1466,7 +1466,7 @@
      *
      * @return String A piece of html-code
      */
-    public function search($record=array(), $extended=false, $fieldprefix="")
+    public function search($record=array(), $extended=false, $fieldprefix="", atkDataGrid $grid=null)
     {
       $id = $this->getSearchFieldName($fieldprefix);
 
