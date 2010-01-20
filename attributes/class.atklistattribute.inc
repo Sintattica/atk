@@ -356,7 +356,7 @@
      *
      * @return String A piece of html-code with a checkbox
      */
-    function search($record="", $extended=false, $fieldprefix="")
+    function search($record="", $extended=false, $fieldprefix="", $grid=null)
     {
       $values = $this->getValues($record);
       $result = '<select ';
@@ -366,11 +366,13 @@
       }
 
       // if we use autosearch, register an onchange event that submits the grid
-      if (!$extended && $this->m_autoSearch) {
-          $id = $this->getSearchFieldName($fieldprefix);
-          $result .= '  id="'.$id.'" ';
-          $code = '$(\''.$id.'\').observe(\'change\', function(event) { var fieldId = \''.$id.'\'; ATK.DataGrid.update("admin", {}, {}, ATK.DataGrid.extractSearchOverrides); return false; });';
-          $this->getOwnerInstance()->getPage()->register_loadscript($code);
+      if (!is_null($grid) && !$extended && $this->m_autoSearch) {
+        $id = $this->getSearchFieldName($fieldprefix);
+        $result .= '  id="'.$id.'" ';
+        $code = '$(\''.$id.'\').observe(\'change\', function(event) { ' .
+          $grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractSearchOverrides') .
+          ' return false; });';
+        $this->getOwnerInstance()->getPage()->register_loadscript($code);
       }
 
       $result .= 'name="'.$this->getSearchFieldName($fieldprefix).'[]">';
