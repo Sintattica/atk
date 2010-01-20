@@ -217,6 +217,14 @@ class atkManyToOneRelation extends atkRelation
   var $m_concatDescriptorFunction = '';
 
   /**
+   * When autosearch is set to true, this attribute will automatically submit
+   * the search form onchange. This will only happen in the admin action.
+   *
+   * @var boolean
+   */
+  protected $m_autoSearch = false;
+
+  /**
    * Constructor.
    * @param String $name The name of the attribute. This is the name of the
    *                     field that is the referential key to the
@@ -279,6 +287,17 @@ class atkManyToOneRelation extends atkRelation
     if (atkconfig("manytoone_autocomplete_large", true) && hasFlag($flag, AF_LARGE))
     $this->m_flags |= AF_RELATION_AUTOCOMPLETE;
     return $this;
+  }
+
+  /**
+   * When autosearch is set to true, this attribute will automatically submit
+   * the search form onchange. This will only happen in the admin action.
+   * @param bool $auto
+   * @return void
+   */
+  public function setAutoSearch($auto = false)
+  {
+    $this->m_autoSearch = $auto;
   }
 
   /**
@@ -1099,6 +1118,14 @@ class atkManyToOneRelation extends atkRelation
           if(isset($record[$this->fieldName()][$this->fieldName()]))
           $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
 
+        }
+
+        // if we use autosearch, register an onchange event that submits the grid
+        if (!$extended && $this->m_autoSearch) {
+           $id = $this->getSearchFieldName($fieldprefix);
+           $result .= '  id="'.$id.'" ';
+           $code = '$(\''.$id.'\').observe(\'change\', function(event) { var fieldId = \''.$id.'\'; ATK.DataGrid.update("admin", {}, {}, ATK.DataGrid.extractSearchOverrides); return false; });';
+           $this->getOwnerInstance()->getPage()->register_loadscript($code);
         }
 
         $result.='name="'.$this->getSearchFieldName($fieldprefix).'[]">';

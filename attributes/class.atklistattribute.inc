@@ -88,6 +88,14 @@
 
      var $m_onchangehandler_init = "newvalue = el.options[el.selectedIndex].value;\n";
 
+     /**
+      * When autosearch is set to true, this attribute will automatically submit
+      * the search form onchange. This will only happen in the admin action.
+      *
+      * @var boolean
+      */
+     protected $m_autoSearch = false;
+
     /**
      * Constructor.
      *
@@ -156,36 +164,36 @@
     /**
      * Get function to access the member variable for options.
      * For backwards compatibility we also check the old member variable m_options
-     * 
+     *
      * @param array $rec The record
      */
-    function getOptions($rec=null) 
+    function getOptions($rec=null)
     {
       if(!isset($this->m_types["options"]) || count($this->m_types["options"]) == 0)
         return $this->m_options;
       return $this->_get("options",$rec);
     }
-    
+
     /**
      * Get functions to access the member variable for values
      * For backwards compatibility we also check the old member variable m_values
-     * 
+     *
      * @param array $rec The record
      */
-    function getValues($rec=null) 
+    function getValues($rec=null)
     {
       if(!isset($this->m_types["values"]) || count($this->m_types["values"]) == 0)
         return $this->m_values;
       return $this->_get("values",$rec);
     }
-    
+
     /**
      * Get functions to access the member variable for lookup.
      * For backwards compatibility we also check the old member variable m_lookup
-     * 
+     *
      * @param array $rec The record
      */
-    function getLookup($rec=null) 
+    function getLookup($rec=null)
     {
       if(!isset($this->m_types["lookup"]) || count($this->m_types["lookup"]) == 0)
         return $this->m_lookup;
@@ -334,7 +342,7 @@
      * The framework calls this method to display the searchbox
      * in the search bar of the recordlist, and to display a more extensive
      * search in the 'extended' search screen.
-     * 
+     *
      * @todo Configurable rows
      * @param array $record Array with values
      * @param boolean $extended if set to false, a simple search input is
@@ -355,6 +363,14 @@
       if ($extended)
       {
         $result.='multiple size="'.min(5,count($values)+1).'"';
+      }
+
+      // if we use autosearch, register an onchange event that submits the grid
+      if (!$extended && $this->m_autoSearch) {
+          $id = $this->getSearchFieldName($fieldprefix);
+          $result .= '  id="'.$id.'" ';
+          $code = '$(\''.$id.'\').observe(\'change\', function(event) { var fieldId = \''.$id.'\'; ATK.DataGrid.update("admin", {}, {}, ATK.DataGrid.extractSearchOverrides); return false; });';
+          $this->getOwnerInstance()->getPage()->register_loadscript($code);
       }
 
       $result .= 'name="'.$this->getSearchFieldName($fieldprefix).'[]">';
@@ -468,6 +484,18 @@
     {
       $this->m_selected = $selected;
     }
+
+    /**
+     * When autosearch is set to true, this attribute will automatically submit
+     * the search form onchange. This will only happen in the admin action.
+     * @param bool $auto
+     * @return void
+     */
+    public function setAutoSearch($auto = false)
+    {
+        $this->m_autoSearch = $auto;
+    }
+
 
     /**
      * Gets the selected listattribute
@@ -611,7 +639,7 @@
       $this->createLookupArray($optionArray,$valueArray);
       return $this;
     }
-    
+
     /**
      * Remove value from dropdown
      *
