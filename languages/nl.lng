@@ -211,7 +211,7 @@
   "list_null_value" => "Geen waarde",
   "list_null_value_obligatory" => "(Maak een keuze...)",
   "load_criteria" => "Laden opgeslagen zoekopdracht",
-  "lock_expired" => "De items die u open heeft staan zijn niet meer exclusief voor u toegankelijk. Dit kan verschillende oorzaken hebben, de meest gebruikelijke oorzaak is dat u te lang niet heeft opgeslagen. U kunt proberen uw werk nog op te slaan, maar het is mogelijk dat de items inmiddels door een andere gebruiker is/zijn toege�gend!",
+  "lock_expired" => "De items die u open heeft staan zijn niet meer exclusief voor u toegankelijk. Dit kan verschillende oorzaken hebben, de meest gebruikelijke oorzaak is dat u te lang niet heeft opgeslagen. U kunt proberen uw werk nog op te slaan, maar het is mogelijk dat de items inmiddels door een andere gebruiker is/zijn toegeëigend!",
   "lock_info_line" => "[user_id] (ip: [user_ip]) sinds [lock_date]",
   "lock_locked" => "De door u geselecteerde items zijn momenteel niet toegankelijk omdat een andere gebruiker deze open heeft staan.",
   "logged_in_as" => "Aangemeld als",
