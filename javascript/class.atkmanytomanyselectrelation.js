@@ -14,10 +14,22 @@ ATK.ManyToManySelectRelation = {
   /**
    * Add.
    */
-  add: function(el, url) {
+  add: function(el, url, makeSortable) {
     var params = { selector: $F(el) };
     var li = $(el).up('li');
-    new Ajax.Updater(li, url, { parameters: params, insertion: Insertion.Before, evalScripts: true });
+    
+  new Ajax.Request(
+          url, {
+            parameters: params,
+            onSuccess: function(response) {
+                li.insert({before: response.responseText});
+                response.responseText.evalScripts();
+                if(makeSortable)
+                {
+                    ATK.ManyToManySelectRelation.makeItemsSortable(li.up('ul'));
+                }
+            }
+    });
     
     if (el.type == 'select-one')
     {
@@ -28,5 +40,8 @@ ATK.ManyToManySelectRelation = {
       $(el.name + '_search').value = '';
       el.value = '';      
     }
+  },
+  makeItemsSortable: function(id) {
+    Sortable.create($(id), { constraint: 'vertical', only: 'atkmanytomanyselectrelation-selected'});
   }
 }
