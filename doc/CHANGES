@@ -9,26 +9,27 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Fixed warning when registering a custom actionHandler. [Tjeerd]
 + Added setAutoSearch() to atkManyToOneRelation and atkListAttribute. When set
-  to true and the attribute is rendered onto a datagrid search form, the 
+  to true and the attribute is rendered onto a datagrid search form, the
   attribute will automatically refresh the datagrid it belongs when its onchange
   event occurs. [Matthijs]
 * atkOneToManyRelation::storeAdd() now resets the datagrid session store after a
   successful save of the relation. Otherwise, when adding a new parent record
-  in certain situations, the relation would show previously added records 
-  from the old session in the relation datagrid. [Matthijs] 
+  in certain situations, the relation would show previously added records
+  from the old session in the relation datagrid. [Matthijs]
 * Changed some atkAttribute methods to return their instance for easy chaining
   of methods. [mvdvelden]
 * Fixed tableExists in the mysqli driver to respect the database name when
   explicitly set in the table property of a metaNode. [mvdvelden]
 + Implemented atkRecycleBin, a listener that can be added to a node and that
   transfers deleted records to a recyclebin table. [Ivo]
-* atkMetaPolicy now throws an exception if it can't detect a table for a node 
+* atkMetaPolicy now throws an exception if it can't detect a table for a node
   or if an explicitly set table does not exist. [Peter]
 + Added atkMetaPolicy::exists method which can be used to check if a certain
   attribute/column exists. [Peter]
 + Added atkNode::rowClass method which can be used to return (a) CSS
-  class(es) for a datagrid list row based on record contents. [Peter] 
+  class(es) for a datagrid list row based on record contents. [Peter]
 + Added atkHiddenAttribute for convenient addition of hidden fields to
   forms. [Ivo]
 + Added support for bind parameters to atkDatagrid::addFilter. [Peter/Tjeerd]

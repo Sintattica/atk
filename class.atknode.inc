@@ -4415,7 +4415,7 @@
       }
 
       // handler object
-      elseif ($handler != NULL && is_subclass_of($handler, "atkActionHandler"))
+      elseif ($handler != NULL && $handler instanceof atkActionHandler)
       {
         atkdebug("atkNode::callHandler:Using override/existing atkActionHandler ".get_class($handler). " class for '".$action."'");
         $handler->handle($this, $action, $this->m_postvars);
@@ -4851,15 +4851,15 @@
     {
       return $this->getDb()->escapeSQL($string);
     }
-    
+
     /**
      * Row CSS class.
-     * 
+     *
      * Used to determine the CSS class(s) for rows in the datagrid list.
-     * 
+     *
      * @param array $record record
      * @param int   $nr     row number
-     * 
+     *
      * @return string CSS class(es)
      */
     public function rowClass($record, $nr)
