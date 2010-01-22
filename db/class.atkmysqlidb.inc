@@ -124,6 +124,27 @@
    }
 
    /**
+    * Escaping a MySQL string, in a mysqli safe way
+    * @param string $string
+    * @param bool $wildcard
+    */
+   function escapeSQL($string, $wildcard=false)
+   {
+     $org = $string;
+     if ($this->connect('r') === DB_SUCCESS)
+     {
+       if ($wildcard == true)
+       {
+         $string = str_replace('%', '\%', $string);
+       }
+       $retVal = mysqli_real_escape_string($this->m_link_id, $string);
+       return $retVal;
+     }
+
+     return null;
+   }
+
+   /**
     * Performs a query
     * @param string $query the query
     * @param int $offset offset in record list

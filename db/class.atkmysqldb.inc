@@ -164,7 +164,25 @@
         $this->m_link_id = 0;
       }
     }
-
+  
+   /**
+    * Escaping a MySQL string, in a mysqli safe way
+    * @param string $string
+    * @param bool $wildcard
+    */
+   function escapeSQL($string, $wildcard=false)
+   {
+      if ($this->connect('r') === DB_SUCCESS)
+      {
+        if ($wildcard == true)
+        {
+          $string = str_replace('%', '\%', $string);
+        }
+        return mysql_real_escape_string($this->m_link_id, $string);
+      }
+      return null;
+    }
+    
     /**
      * Performs a query
      * @param string $query the query

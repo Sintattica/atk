@@ -9,6 +9,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
++ Added MySQLi and MySQL specific escaping. [mvdvelden]
 * Fixed warning when registering a custom actionHandler. [Tjeerd]
 + Added setAutoSearch() to atkManyToOneRelation and atkListAttribute. When set
   to true and the attribute is rendered onto a datagrid search form, the
