@@ -192,7 +192,7 @@
      * @param array $record Record to store
      * @return bool Successfull save?
      */
-    private function storeRecord(&$record)
+    public function storeRecord(&$record)
     {
       $atkstoretype = "";
       $sessionmanager = atkGetSessionManager();
