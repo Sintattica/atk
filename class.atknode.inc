@@ -4591,7 +4591,7 @@
      * @param int $levelskip Number of levels to skip
      * @return String The feedback url.
      */
-    function feedbackUrl($action, $status, $record="", $message="", $levelskip=1)
+    function feedbackUrl($action, $status, $record="", $message="", $levelskip=null)
     {
       $controller = &atkcontroller::getInstance();
       $controller->setNode($this);

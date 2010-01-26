@@ -436,7 +436,7 @@
      * @param integer $levelskip The number of levels to skip
      * @return String The feedback url.
      */
-    function feedbackUrl($action, $status, $record="", $message="", $levelskip=1)
+    function feedbackUrl($action, $status, $record="", $message="", $levelskip=null)
     {
       $node = &$this->getNode();
       if((isset($node->m_feedback[$action]) && hasFlag($node->m_feedback[$action], $status)) || $status==ACTION_FAILED)
@@ -444,6 +444,13 @@
         $vars = array("atkaction"=>"feedback", "atkfbaction"=>$action, "atkactionstatus"=>$status,"atkfbmessage"=>$message);
         $atkNodeType = $node->atkNodeType();
         $sessionStatus = SESSION_REPLACE;
+        
+        // The level skip given is based on where we should end up after the
+        // feedback action is shown to the user. This means that the feedback
+        // action should be shown one level higher in the stack, hence the -1.
+        // Default the feedback action is shown on the current level, so in that
+        // case we have a simple SESSION_REPLACE with a level skip of null.
+        $levelskip = $levelskip == null ? null : $levelskip - 1;
       }
       else
       {
