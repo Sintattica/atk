@@ -57,16 +57,16 @@
       $this->atkAttribute($name,$flags); // base class constructor
       $this->m_text = $text;
     }
-    
+
     /**
      * Add flag.
-     * 
+     *
      * @param int $flag flag
      */
     public function addFlag($flag)
     {
       parent::addFlag($flag);
-      
+
       if ($this->hasFlag(AF_DUMMY_SHOW_LABEL))
       {
         $this->removeFlag(AF_BLANK_LABEL);
@@ -121,7 +121,7 @@
     {
       return $this->m_text;
     }
-    
+
     /**
      * Set the text of this attribute
      *
@@ -133,8 +133,18 @@
     }
 
     /**
+     * Get the text of the attribute
+     *
+     * @return string The text of the attribute
+     */
+    public function getText()
+    {
+      return $this->m_text;
+    }
+
+    /**
     * No function, but is neccesary
-    * 
+    *
     * @param atkDb $db Database object
     * @param array $record The record
     * @param string $mode The mode
