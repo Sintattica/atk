@@ -33,6 +33,13 @@
     static $s_classPaths = array();
     
     /**
+     * Is re-indexed during this request?
+     * 
+     * @var boolean
+     */
+    static $s_isReindexed = false;
+    
+    /**
      * Imports a file
      * @param string $fullclassname Name of class in atkformat (map1.map2.classfile)
      * @param bool   $failsafe      If $failsafe is true (default), the class is required.  Otherwise, the
@@ -390,30 +397,34 @@
     /**
      * Finds a class in the current application.
      *
-     * @param string $classname The classname to find.
-     * @return string|bool The classpath (atkimport statement) of the class
-     *                     if found, else false
+     * @param string $class The classname to find.
+     * 
+     * @return string|bool   The classpath (atkimport statement) of the class
+     *                       if found, else false
      */
-    function findClass($classname)
+    function findClass($class)
     {
-      static $s_forced;
-      $classname = strtolower($classname);
+      $class = strtolower($class);
       $classloader = new atkClassLoader();
       $classes = $classloader->getAllClasses();
-      if (!in_array($classname,array_keys($classes)))
+      
+      if (!in_array($class, array_keys($classes)))
       {
-        if (!$s_forced)
+        if (atkconfig('autoload_reindex_on_missing_class', false) && !self::$s_isReindexed)
         {
-          $s_forced=1;
           $classes = $classloader->getAllClasses(true);
-          if (in_array($classname,array_keys($classes)))
+          self::$s_isReindexed = true;
+                    
+          if (in_array($class, array_keys($classes)))
           {
-            return $classes[$classname];
+            return $classes[$class];
           }
         }
+        
         return false;
       }
-      return $classes[$classname];
+      
+      return $classes[$class];
     }
 
     /**

@@ -968,4 +968,23 @@
    */
   $config_zend_framework_path = null;
 
+
+  /**
+   * Use the ATK autoloader for ATK classes.
+   * 
+   * @var bool
+   */
+  $config_autoload_classes = true;
+  
+  /**
+   * Re-index the cached class list when a class is missing?
+   * 
+   * When this option is turned off you should manually delete the
+   * cached classes file (atktmp/classes.inc) when updating ATK to
+   * a newer version. It's recommended to not change the value of this
+   * option unless you are an ATK developer.
+   * 
+   * @var bool
+   */
+  $config_autoload_reindex_on_missing_class = false;
 ?>

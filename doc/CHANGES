@@ -9,6 +9,11 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Added $config_autoload_reindex_on_missing_class configuration option, to
+  disable the auto re-indexing of all ATK class files when PHP detects
+  a missing class. This means you should manually delete the cached 
+  atktmp/classes.inc file on an ATK update or turn this option on, the
+  default is off. [Peter]
 + Added support for setting a position attribute/column for a many-to-many
   select relation. When set, the selected records can be re-arranged using
   simple drag & drop and their positions are saved in the database. 
