@@ -9,6 +9,10 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
++ Added support for setting a position attribute/column for a many-to-many
+  select relation. When set, the selected records can be re-arranged using
+  simple drag & drop and their positions are saved in the database. 
+  [Paul, Peter]
 + Added MySQLi and MySQL specific escaping. [mvdvelden]
 * Fixed warning when registering a custom actionHandler. [Tjeerd]
 + Added setAutoSearch() to atkManyToOneRelation and atkListAttribute. When set

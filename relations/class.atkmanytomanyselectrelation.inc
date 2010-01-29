@@ -26,8 +26,11 @@ define('AF_MANYTOMANYSELECT_NO_AUTOCOMPLETE', AF_SPECIFIC_3);
 /**
  * Many-to-many select relation.
  *
- * The relation shows allows you to add one record at a time to a
- * many-to-many relation using auto-completion or a select page.
+ * The relation shows allows you to add one record at a time to a many-to-many 
+ * relation using auto-completion or a select page. If a position attribute has
+ * been set (setPositionAttribute) the order of the items can be changed using
+ * simple drag & drop.
+ * 
  *
  * @author Peter C. Verhage <peter@achievo.org>
  * @package atk
@@ -45,6 +48,14 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
    * @var atkManyToOneRelation
    */
   private $m_manyToOneRelation = null;
+
+  /**
+   * The name of the attribute/column where the position of the item in 
+   * the set should be stored.
+   * 
+   * @var string
+   */
+  private $m_positionAttribute;
 
   /**
    * Constructs a new many-to-many select relation.
@@ -94,7 +105,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   {
     return $this->m_manyToOneRelation;
   }
-  
+
   /**
    * Create the instance of the destination and copy the destination to
    * the the many to one relation
@@ -108,6 +119,31 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     $result = parent::createDestination();
     $this->getManyToOneRelation()->m_destInstance = $this->m_destInstance;
     return $result;
+  }
+  
+  /**
+   * Order selected records in the same way as the selected keys. We only do
+   * this if the position attribute has been set.
+   * 
+   * @param array $selectedRecords selected records
+   * @param array $selectedKey     selected keys
+   */
+  private function orderSelectedRecords(&$selectedRecords, $selectedKeys)
+  {
+    $orderedRecords = array();
+    
+    foreach($selectedKeys as $key)
+    {
+      foreach($selectedRecords as $record)
+      {
+        if ($key == $this->getDestination()->primaryKey($record))
+        {
+          $orderedRecords[] = $record;
+        }
+      }
+    }
+    
+    $selectedRecords = $orderedRecords;    
   }
 
   /**
@@ -128,13 +164,15 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     }
 
     $this->createDestination();
-    
+
     $this->createLink();
+
 
     $this->getOwnerInstance()->getPage()->register_script(atkconfig('atkroot').'atk/javascript/class.'.strtolower(__CLASS__).'.js');
     $this->getOwnerInstance()->addStyle('atkmanytomanyselectrelation.css');
 
     $id = $this->getHtmlId($fieldprefix);
+    $selectId = "{$id}_selection";
     $selectedKeys = $this->getSelectedRecords($record);
 
     if (isset($record[$this->getManyToOneRelation()->fieldName()]) && is_array($record[$this->getManyToOneRelation()->fieldName()]))
@@ -151,12 +189,13 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     {
       $selector = '('.implode(') OR (', $selectedKeys).')';
       $selectedRecords = $this->getDestination()->select($selector)->includes($this->getDestination()->descriptorFields());
+      $this->orderSelectedRecords($selectedRecords, $selectedKeys);
     }
 
     $result =
       '<input type="hidden" name="'.$this->getHtmlId($fieldprefix).'" value="" />'.       // Post an empty value if none selected (instead of not posting anything)
       '<div class="atkmanytomanyselectrelation">
-         <ul id="'.$id.'_selection" class="atkmanytomanyselectrelation-selection">';
+      <ul id="'.$selectId.'" class="atkmanytomanyselectrelation-selection">';
 
     foreach ($selectedRecords as $selectedRecord)
     {
@@ -166,14 +205,89 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     $result .= $this->renderAdditionField($record, $fieldprefix, $mode);
 
     $result .= '
-        </ul>
+      </ul>
       </div>';
 
     if (($this->hasFlag(AF_MANYTOMANYSELECT_DETAILADD)) && ($this->m_destInstance->allowed("add")))
       $result.= href(dispatch_url($this->m_destination, "add", array('atkfilter' => 'clear', "atkpkret"=>$id."_newsel")), $this->getAddLabel(), SESSION_NESTED) . "\n";
 
+    if($this->hasPositionAttribute())
+    {
+      $this->getOwnerInstance()->getPage()->register_loadscript("ATK.ManyToManySelectRelation.makeItemsSortable('{$selectId}');");
+    }
+
     return $result;
   }
+
+
+  /**
+   * Load function.
+   * 
+   * @param atkDb  $db     database instance.
+   * @param array  $record record
+   * @param string $mode   load mode
+   */
+  public function load(atkDb $db, $record, $mode)
+  {
+    if (!$this->hasPositionAttribute())
+    {
+      return parent::load($db, $record, $mode);
+    }
+
+    $this->createLink();
+    $where = $this->_getLoadWhereClause($record);
+    $link = &$this->getLink();
+    return $link->select()->where($where)->orderBy($link->getTable().'.'.$this->getPositionAttribute())->allRows();
+  }
+
+  /**
+   * Perform the create action on a record that is new
+   * 
+   * @param array $selectedKey the selected keys
+   * @param array $selectedRecord the selected record
+   * @param array $ownerRecord the owner record
+   * @param int $index the index of the item in the set
+   * @access protected
+   * @return array the newly created record
+   */
+  protected function _createRecord($selectedKey, $selectedRecord, $ownerRecord, $index)
+  {
+    $record = parent::_createRecord($selectedKey, $selectedRecord, $ownerRecord, $index);
+
+    if($this->hasPositionAttribute())
+    {
+      $record[$this->getPositionAttribute()] = $index + 1;
+    }
+
+    return $record;
+  }
+
+  /**
+   * Perform the update action on a record that's been changed
+   * 
+   * @param array $record the record that has been changed
+   * @param int $index the index of the item in the set
+   * @access protected
+   * @return boolean true if the update was performed successfuly, false if there were issues
+   */
+  protected function _updateRecord($record, $index)
+  {
+    // If the parent class didn't manage to update the record 
+    // then don't attempt to perform this update
+    if(!parent::_updateRecord($record, $index))
+      return false;
+
+    if($this->hasPositionAttribute())
+    {
+      $record[$this->getPositionAttribute()] = $index + 1;
+      if(!$this->getLink()->updateDb($record, true))
+      {
+        return false;
+      }
+    }
+    return true;
+  }
+
 
   /**
    * Render selected record.
@@ -208,11 +322,11 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     // Build the record
     $result = '
       <li class="atkmanytomanyselectrelation-selected">
-        <input type="hidden" name="'.$name.'" value="'.atk_htmlentities($key).'"/>
-        <span>'.atk_htmlentities($this->getDestination()->descriptor($record)).'</span>
-        ('.implode(' / ', $actionLinks).')
+      <input type="hidden" name="'.$name.'" value="'.atk_htmlentities($key).'"/>
+      <span>'.atk_htmlentities($this->getDestination()->descriptor($record)).'</span>
+      ('.implode(' / ', $actionLinks).')
       </li>
-    ';
+      ';
 
     return $result;
   }
@@ -226,16 +340,16 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
    */
   protected function getActionLink($action, $record)
   {
-      $actionMethod = "get{$action}ActionLink";
+    $actionMethod = "get{$action}ActionLink";
 
-      if (method_exists($this,$actionMethod))
-      {
-        return $this->$actionMethod($record);
-      }
-      else
-      {
-        atkwarning('Missing '.$actionMethod.' method on manytomanyselectrelation. ');
-      }
+    if (method_exists($this,$actionMethod))
+    {
+      return $this->$actionMethod($record);
+    }
+    else
+    {
+      atkwarning('Missing '.$actionMethod.' method on manytomanyselectrelation. ');
+    }
 
   }
 
@@ -285,7 +399,9 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     $url = partial_url($this->getOwnerInstance()->atkNodeType(), $mode, 'attribute.'.$this->fieldName().'.selectedrecord', array('fieldprefix' => $fieldprefix));
 
     $relation = $this->getManyToOneRelation();
-    $relation->addOnChangeHandler("ATK.ManyToManySelectRelation.add(el, '{$url}');");
+
+    $hasPositionAttribute = $this->hasPositionAttribute() ? 'true' : 'false';
+    $relation->addOnChangeHandler("ATK.ManyToManySelectRelation.add(el, '{$url}', {$hasPositionAttribute});");
 
     return '<li class="atkmanytomanyselectrelation-addition">'.$relation->edit($record, $fieldprefix, $mode).'</li>';
   }
@@ -368,5 +484,39 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   public function setDestinationFilter($filter)
   {
     return $this->getManyToOneRelation()->setDestinationFilter($filter);
+  }
+
+  /**
+   * Set the positional attribute/column of the many to many join. It is the column
+   * in the join table that denotes the position of the item in the set.
+   * 
+   * @param string $attr the position attribute/column name of the join
+   * @return void
+   */
+  public function setPositionAttribute($attr)
+  {
+    $this->m_positionAttribute = $attr;
+  }
+
+  /**
+   * Get the positional attribute of the many to many join. It is the column
+   * in the join table that denotes the position of the item in the set.
+   * 
+   * @access public
+   * @return string the position column name of the join
+   */
+  public function getPositionAttribute()
+  {
+    return $this->m_positionAttribute;
+  }
+
+  /**
+   * Check if positon attribute is set
+   *
+   * @return boolean true if the position attribute has been set
+   */
+  public function hasPositionAttribute()
+  {
+    return $this->getPositionAttribute() != null;
   }
 }
