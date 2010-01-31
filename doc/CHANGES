@@ -9,6 +9,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
++ Add setNodeOverloader method to atkmoduletools for node overloading. 
+  This method check, did the node was overload, so it works correctly, 
+  when node overloads several times. [Yury]
 * Added $config_autoload_reindex_on_missing_class configuration option, to
   disable the auto re-indexing of all ATK class files when PHP detects
   a missing class. This means you should manually delete the cached 
@@ -40,6 +43,7 @@ Changes in ATK 6.5
   attribute/column exists. [Peter]
 + Added atkNode::rowClass method which can be used to return (a) CSS
   class(es) for a datagrid list row based on record contents. [Peter]
+>>>>>>> .r6681
 + Added atkHiddenAttribute for convenient addition of hidden fields to
   forms. [Ivo]
 + Added support for bind parameters to atkDatagrid::addFilter. [Peter/Tjeerd]
