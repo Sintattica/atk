@@ -617,25 +617,4 @@
     }
   }
 
-  /**
-   * Set overloader for $node. First check current overloader
-   *
-   * @param string $node - nodename for overloading (modulename.nodename)
-   * @param string $overloader - overload node name (modulename.nodename)
-   */
-  function setNodeOverloader($node, $overloader)
-  {
-    global $g_overloaders;
-    
-    $current = atkArrayNvl($g_overloaders,$node);
-    if($current)
-    {
-      $g_overloaders[$current] = $overloader;
-    }
-    else 
-    {
-      $g_overloaders[$node] = $overloader;
-    }
-  }
-  
 ?>
