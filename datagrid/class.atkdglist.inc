@@ -15,7 +15,7 @@
 
 /**
  * The data grid list component renders the recordlist.
- * 
+ *
  * Options:
  * - alwaysShowGrid: always show datagrid, even if there are no records?
  *                   by default the grid won't display the grid headers
@@ -37,7 +37,7 @@
 class atkDGList extends atkDGComponent
 {
   protected $m_hasActionColumn = null;
-  
+
   /**
    * Render the list.
    *
@@ -46,15 +46,15 @@ class atkDGList extends atkDGComponent
   function render()
   {
   	$alwaysShowGrid = $this->getOption('alwaysShowGrid', false);
-  	
+
   	if (!$alwaysShowGrid &&
   	    $this->getGrid()->isEmbedded() &&
-  	    !$this->getGrid()->isUpdate() && 
+  	    !$this->getGrid()->isUpdate() &&
   	    count($this->getGrid()->getRecords()) == 0)
   	{
   		return '';
   	}
-  	
+
     $grid = $this->getGrid();
     $data = $this->getRecordlistData($grid->getRecords(), $grid->getDefaultActions(), $grid->getExcludes());
     $ui = $grid->getNode()->getUi();
@@ -77,7 +77,7 @@ class atkDGList extends atkDGComponent
     $page = $this->getPage();
 
     $edit = $grid->isEditing();
-    
+
     $page->register_style($theme->stylePath("recordlist.css",$grid->getNode()->m_module));
     $page->register_script(atkconfig("atkroot")."atk/javascript/recordlist.js");
 
@@ -114,7 +114,7 @@ class atkDGList extends atkDGComponent
     }
 
     $hasActionCol = $this->_hasActionColumn($list, $hasSearch);
-    
+
     $orientation  = atkconfig('recordlist_orientation', $theme->getAttribute("recordlist_orientation"));
     $vorientation = trim(atkconfig('recordlist_vorientation', $theme->getAttribute("recordlist_vorientation")));
 
@@ -361,13 +361,13 @@ class atkDGList extends atkDGComponent
         }
         else $record["cols"][] = array("content"=>"");
       }
-      
+
       // editable row, add selector
       else if ($edit && $list["rows"][$i]['edit'])
       {
-        $liststart .= 
+        $liststart .=
           '<input type="hidden" name="atkdatagriddata_AE_'.$i.'_AE_atkprimkey" value="'.htmlentities($list["rows"][$i]["selector"]).'">';
-      }        
+      }
 
       /* locked? */
       if ($grid->hasFlag(atkDataGrid::LOCKING))
@@ -594,14 +594,14 @@ class atkDGList extends atkDGComponent
         }
       }
     }
-    
+
     else if ($edit)
     {
       $embedded = $this->getGrid()->isEmbedded() ? 'true' : 'false';
       $mra =
        '<input type="button" class="btn" value="'.atktext('save').'" onclick="'.atk_htmlentities($this->getGrid()->getSaveCall()).'">';
     }
-    
+
 
     if (atkconfig("use_keyboard_handler"))
     {
@@ -706,7 +706,7 @@ class atkDGList extends atkDGComponent
   private function convertDataGridFlags()
   {
     $grid = $this->getGrid();
-    
+
     atkimport('atk.recordlist.atkrecordlist');
     $result  = !$grid->isEditing() && $grid->hasFlag(atkDataGrid::MULTI_RECORD_ACTIONS) ? RL_MRA : 0;
     $result |= !$grid->isEditing() && $grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS) ? RL_MRPA : 0;
@@ -714,7 +714,7 @@ class atkDGList extends atkDGComponent
     $result |= $grid->isEditing() || !$grid->hasFlag(atkDataGrid::SEARCH) ? RL_NO_SEARCH : 0;
     $result |= $grid->isEditing() || !$grid->hasFlag(atkDataGrid::EXTENDED_SEARCH) ? RL_NO_EXTENDED_SEARCH : 0;
     $result |= !$grid->isEditing() && $grid->hasFlag(atkDataGrid::EXTENDED_SORT) ? RL_EXT_SORT : 0;
-    $result |= $grid->isEditing() ? RL_NO_SORT : 0;    
+    $result |= $grid->isEditing() ? RL_NO_SORT : 0;
     return $result;
   }
 
@@ -751,12 +751,12 @@ class atkDGList extends atkDGComponent
 
     /* get the heading and search columns */
     $atksearchpostvar = $grid->getPostvar("atksearch");
-    
-    if (!hasFlag($flags, RL_NO_SEARCH) || $grid->isEditing()) 
+
+    if (!hasFlag($flags, RL_NO_SEARCH) || $grid->isEditing())
     {
       $grid->getNode()->setAttribSizes();
     }
-    
+
     foreach (array_keys($grid->getNode()->m_attribIndexList) as $r)
     {
       $name = $grid->getNode()->m_attribIndexList[$r]["name"];
@@ -797,8 +797,8 @@ class atkDGList extends atkDGComponent
       }
 
       /* actions / mra */
-      $grid->getNode()->recordActions($row["record"], $row["actions"], $row["mra"]);
-      
+      $grid->getNode()->collectRecordActions($row["record"], $row["actions"], $row["mra"]);
+
       // filter actions we are allowed to execute
       foreach($row["actions"] as $name => $url)
       {
@@ -824,7 +824,7 @@ class atkDGList extends atkDGComponent
           unset($row["actions"][$name]);
         }
       }
-      
+
       // filter multi-record-actions we are allowed to execute
       foreach ($row["mra"] as $j => $name)
       {

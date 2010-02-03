@@ -75,7 +75,7 @@
      * Action "admin" handler method, we override this method because we don't want
      * an add form when the flag NF_TREE_NO_ROOT_ADD. Because the add form is only
      * used to add root elements.
-     * 
+     *
      * @param atkActionHandler $handler
      * @param array $record
      */
@@ -105,7 +105,7 @@
     /**
      * Admin page displays records and the actions that can be performed on
      * them (edit, delete) in a Treeview
-     * 
+     *
      * @param atkActionHandler $handler The action handler object
      */
     function adminPage(&$handler)
@@ -231,7 +231,7 @@
 
     /**
      * Recursive funtion which fills an array with all the items of the tree.
-     * 
+     *
      * @param bool $showactions Show actions?
      * @param bool $expandAll Expand all leafs?
      * @param bool $foldable Is this tree foldable?
@@ -621,7 +621,7 @@
 
             // Look for custom record actions.
             $recordactions = $actions;
-            $this->recordActions($this->m_tree[$cnt]["label"], $recordactions,$dummy);
+            $this->collectRecordActions($this->m_tree[$cnt]["label"], $recordactions,$dummy);
 
             foreach($recordactions as $name => $url)
             {
@@ -714,7 +714,7 @@
     /**
      * delete record from the database also the childrecords.
      * todo: instead of delete, set the deleted flag.
-     * 
+     *
      * @param string $selector Selector
      */
     function deleteDb($selector)

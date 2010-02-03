@@ -57,7 +57,7 @@
     /**
      * Sets the action session status for actions in the recordlist.
      * (Defaults to SESSION_NESTED).
-     * 
+     *
      * @param int $sessionStatus The session status (one of the SESSION_* constants)
      */
     function setActionSessionStatus($sessionStatus)
@@ -67,8 +67,8 @@
 
     /**
      * Make the recordlist use a different masternode than the node than it is rendering.
-     * 
-     * @param atkNode $masternode 
+     *
+     * @param atkNode $masternode
      */
     function setMasterNode(&$masternode)
     {
@@ -760,7 +760,7 @@
         }
 
         /* actions / mra */
-        $this->m_node->recordActions($row["record"], $row["actions"], $row["mra"]);
+        $this->m_node->collectRecordActions($row["record"], $row["actions"], $row["mra"]);
         $result["mra"] = array_merge($result["mra"], $row["mra"]);
         foreach($row["actions"] as $name => $url)
         {

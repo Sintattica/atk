@@ -26,11 +26,11 @@ define('AF_MANYTOMANYSELECT_NO_AUTOCOMPLETE', AF_SPECIFIC_3);
 /**
  * Many-to-many select relation.
  *
- * The relation shows allows you to add one record at a time to a many-to-many 
+ * The relation shows allows you to add one record at a time to a many-to-many
  * relation using auto-completion or a select page. If a position attribute has
  * been set (setPositionAttribute) the order of the items can be changed using
  * simple drag & drop.
- * 
+ *
  *
  * @author Peter C. Verhage <peter@achievo.org>
  * @package atk
@@ -50,9 +50,9 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   private $m_manyToOneRelation = null;
 
   /**
-   * The name of the attribute/column where the position of the item in 
+   * The name of the attribute/column where the position of the item in
    * the set should be stored.
-   * 
+   *
    * @var string
    */
   private $m_positionAttribute;
@@ -120,18 +120,18 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     $this->getManyToOneRelation()->m_destInstance = $this->m_destInstance;
     return $result;
   }
-  
+
   /**
    * Order selected records in the same way as the selected keys. We only do
    * this if the position attribute has been set.
-   * 
+   *
    * @param array $selectedRecords selected records
    * @param array $selectedKey     selected keys
    */
   private function orderSelectedRecords(&$selectedRecords, $selectedKeys)
   {
     $orderedRecords = array();
-    
+
     foreach($selectedKeys as $key)
     {
       foreach($selectedRecords as $record)
@@ -142,8 +142,8 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
         }
       }
     }
-    
-    $selectedRecords = $orderedRecords;    
+
+    $selectedRecords = $orderedRecords;
   }
 
   /**
@@ -222,7 +222,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
 
   /**
    * Load function.
-   * 
+   *
    * @param atkDb  $db     database instance.
    * @param array  $record record
    * @param string $mode   load mode
@@ -242,7 +242,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
 
   /**
    * Perform the create action on a record that is new
-   * 
+   *
    * @param array $selectedKey the selected keys
    * @param array $selectedRecord the selected record
    * @param array $ownerRecord the owner record
@@ -264,7 +264,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
 
   /**
    * Perform the update action on a record that's been changed
-   * 
+   *
    * @param array $record the record that has been changed
    * @param int $index the index of the item in the set
    * @access protected
@@ -272,7 +272,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
    */
   protected function _updateRecord($record, $index)
   {
-    // If the parent class didn't manage to update the record 
+    // If the parent class didn't manage to update the record
     // then don't attempt to perform this update
     if(!parent::_updateRecord($record, $index))
       return false;
@@ -308,7 +308,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     }
 
     $actions[] = 'delete';
-    $this->recordActions($record, $actions);
+    $this->collectRecordActions($record, $actions);
 
     // Call the renderButton action for those actions
     $actionLinks = array();
@@ -392,7 +392,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
    * Render addition field.
    *
    * @param string $fieldprefix field prefix
-   * @param string $mode 
+   * @param string $mode
    */
   protected function renderAdditionField($record, $fieldprefix, $mode)
   {
@@ -489,7 +489,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   /**
    * Set the positional attribute/column of the many to many join. It is the column
    * in the join table that denotes the position of the item in the set.
-   * 
+   *
    * @param string $attr the position attribute/column name of the join
    * @return void
    */
@@ -501,7 +501,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   /**
    * Get the positional attribute of the many to many join. It is the column
    * in the join table that denotes the position of the item in the set.
-   * 
+   *
    * @access public
    * @return string the position column name of the join
    */

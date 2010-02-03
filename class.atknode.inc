@@ -693,6 +693,13 @@
     var $m_triggerListeners = array();
 
     /**
+     * List of callback functions to manipulate the record actions
+     *
+     * @var array
+     */
+    protected $m_recordActionsCallbacks = array();
+
+    /**
      * Tracker variable to see if we are currently in 'modifier mode' (running inside
      * the scope of a modname_nodename_modifier() method). The variable contains the
      * name of the modifying module.
@@ -2158,7 +2165,7 @@
           }
         }
       }
-      
+
       // call preAddToEditArray at the attribute level, allows attribute to do
       // some last minute manipulations on for example the record
       foreach ($this->getAttributes() as $attr)
@@ -2168,12 +2175,12 @@
 
       // call preAddToEditArray for the node itself.
       $this->preAddToEditArray($defaults, $mode);
-      
+
       // initialize dependencies
       foreach ($this->getAttributes() as $attr)
       {
         $attr->initDependencies($defaults, $fieldprefix, $mode);
-      }      
+      }
 
       // extra submission data
       $result["hide"][] = '<input type="hidden" name="atkfieldprefix" value="'.$this->getEditFieldPrefix(false).'">';
@@ -4142,6 +4149,59 @@
     function recordActions($record, &$actions, &$mraactions)
     {
       // Do nothing.
+    }
+
+    /**
+     * Registers a function/method that is called for each record in a recordlist,
+     * to determine what actions may be performed on the record.
+     *
+     * The callback receives the record, a reference to the record actions and
+     * a reference to the MRA actions as arguments.
+     *
+     */
+    public function registerRecordActionsCallback($callback)
+    {
+        if (is_callable($callback, false, $callableName)) {
+            if (is_array($callback)) {
+                if (!method_exists($callback[0], $callback[1])) {
+                    atkerror("The registered record actions callback method '$callableName' doesn't exist");
+                    return;
+                }
+            }
+            $this->m_recordActionsCallbacks[] = $callback;
+        } else {
+            atkerror("The registered record actions callback '$callableName' is not callable");
+            return;
+        }
+    }
+
+    /**
+     * Function that is called for each record in a recordlist, to determine
+     * what actions may be performed on the record.
+     *
+     * This function is a framework method and should not be called directly.
+     * It should not be overridden either.
+     *
+     * To change the record actions, either override atkNode::recordActions() in you node,
+     * or call atkNode::registerRecordActionsCallback to register a callback.
+     *
+     * @param array $record The record for which the actions need to be
+     *                      determined.
+     * @param array &$actions Reference to an array with the already defined
+     *                        actions. This is an associative array with the action
+     *                        identifier as key, and an url as value. Actions can be
+     *                        removed from it, or added to the array.
+     * @param array &$mraactions List of multirecordactions that are supported for
+     *                           the passed record.
+     * @return void;
+     */
+    public function collectRecordActions($record, &$actions, &$mraactions)
+    {
+        $this->recordActions($record, $actions, $mraactions);
+
+        foreach ($this->m_recordActionsCallbacks as $callback) {
+            call_user_func_array($callback, array($record, &$actions, &$mraactions));
+        }
     }
 
     /**
