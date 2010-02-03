@@ -130,15 +130,13 @@
     */
    function escapeSQL($string, $wildcard=false)
    {
-     $org = $string;
      if ($this->connect('r') === DB_SUCCESS)
      {
        if ($wildcard == true)
        {
          $string = str_replace('%', '\%', $string);
        }
-       $retVal = mysqli_real_escape_string($this->m_link_id, $string);
-       return $retVal;
+       return mysqli_real_escape_string($this->m_link_id, $string);
      }
 
      return null;
