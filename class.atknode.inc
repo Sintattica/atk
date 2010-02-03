@@ -2158,11 +2158,24 @@
           }
         }
       }
+      
+      // call preAddToEditArray at the attribute level, allows attribute to do
+      // some last minute manipulations on for example the record
+      foreach ($this->getAttributes() as $attr)
+      {
+        $attr->preAddToEditArray($defaults, $mode);
+      }
 
+      // call preAddToEditArray for the node itself.
       $this->preAddToEditArray($defaults, $mode);
+      
+      // initialize dependencies
+      foreach ($this->getAttributes() as $attr)
+      {
+        $attr->initDependencies($defaults, $fieldprefix, $mode);
+      }      
 
-      /* extra submission data */
-      //$result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkescape">';
+      // extra submission data
       $result["hide"][] = '<input type="hidden" name="atkfieldprefix" value="'.$this->getEditFieldPrefix(false).'">';
       $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atknodetype" value="'.$this->atknodetype().'">';
       $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkprimkey" value="'.atkArrayNvl($record, "atkprimkey", "").'">';

@@ -6,6 +6,49 @@ ATK.Attribute = {
   /**
    * Refresh the attribute input form using Ajax.
    */
+  callDependencies: function(url) {
+    var form = $(ATK.Dialog && ATK.Dialog.getCurrent() != null ? 'dialogform' : 'entryform'); // TODO: find a better way to detect the correct form
+    if (form == null) return;
+      
+    var elements = Form.getElements(form);
+    var queryComponents = new Array();
+
+    for (var i = 0; i < elements.length; i++) {
+      if (elements[i].name && elements[i].name.substring(0, 3) != 'atk') {
+        if (elements[i].className=='shuttle_select') {
+          if (elements[i].name.substring(elements[i].name.length-4) != '_sel') {
+            var queryComponent = this.serializeShuttle(elements[i]);
+          } else {
+            var queryComponent = null;
+          }
+        } else {
+          var queryComponent = Form.Element.serialize(elements[i]);
+        }
+        if (queryComponent)
+          queryComponents.push(queryComponent);
+      }
+    }
+
+    atkErrorFields.each(function(field) {
+      var queryComponent = $H({ 'atkerrorfields[]': field }).toQueryString();
+      queryComponents.push(queryComponent);
+    });
+
+    var params = queryComponents.join('&');
+
+    var func = function(transport) {
+      transport.responseText.evalScripts();
+      if (form == 'dialogform' && ATK.Dialog && ATK.Dialog.getCurrent() != null) {
+        ATK.Dialog.getCurrent().delayedResize();
+      }
+    };
+
+    new Ajax.Request(url, { method: 'post', parameters: params, evalScripts: true, onComplete: func });
+  },    
+    
+  /**
+   * Refresh the attribute input form using Ajax.
+   */
   refresh: function(url, focusFirstFormEl) {
     var form = $(ATK.Dialog && ATK.Dialog.getCurrent() != null ? 'dialogform' : 'entryform'); // TODO: find a better way to detect the correct form
     if (form == null) return;

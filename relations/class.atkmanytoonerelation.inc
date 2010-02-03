@@ -114,13 +114,6 @@ class atkManyToOneRelation extends atkRelation
   var $m_hidewhenempty = false;
 
   /**
-   * Variable for caching records
-   * @access private
-   * @var array
-   */
-  var $m_selectableRecords = array();
-
-  /**
    * List columns.
    * @access private
    * @var Array
@@ -223,6 +216,15 @@ class atkManyToOneRelation extends atkRelation
    * @var boolean
    */
   protected $m_autoSearch = false;
+  
+  /**
+   * Selectable records for edit mode.
+   * 
+   * @see atkManyToOneRelation::preAddToEditArray
+   * 
+   * @var array
+   */
+  protected $m_selectableRecords = null;
 
   /**
    * Constructor.
@@ -691,7 +693,7 @@ class atkManyToOneRelation extends atkRelation
     {
       if ($this->m_destInstance->allowed("add"))
       {
-        $links[] = href(dispatch_url($this->getAutoLinkDestination(),"add",array("atkpkret"=>$id."_newsel","atkfilter"=>($filter!=""?$filter:""))),
+        $links[] = href(dispatch_url($this->getAutoLinkDestination(),"add",array("atkpkret"=>$id,"atkfilter"=>($filter!=""?$filter:""))),
         atktext("new"),SESSION_NESTED,true);
       }
 
@@ -731,7 +733,60 @@ class atkManyToOneRelation extends atkRelation
     }
     return $this->m_destination;
   }
-
+  
+  /**
+   * Prepare for editing, make sure we already have the selectable records
+   * loaded and update the record with the possible selection of the first
+   * record.
+   * 
+   * @param array  $record reference to the record
+   * @param string $mode   edit mode
+   */
+  public function preAddToEditArray(&$record, $mode)
+  {
+    if ((!$this->hasFlag(AF_RELATION_AUTOCOMPLETE) && !$this->hasFlag(AF_LARGE)) || 
+        $this->m_autocomplete_minrecords > -1)
+    {
+      $this->m_selectableRecords = $this->_getSelectableRecords($record, 'select');
+      
+      if (count($this->m_selectableRecords) > 0 &&
+          !atkconfig("list_obligatory_null_item") && 
+          (($this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM)) || 
+           (!$this->hasFlag(AF_OBLIGATORY) && $this->hasFlag(AF_RELATION_NO_NULL_ITEM))))
+      {
+        if (!isset($record[$this->fieldName()]) || !is_array($record[$this->fieldName()]))
+        {
+          $record[$this->fieldName()] = $this->m_selectableRecords[0];
+        }
+        else if (!$this->_isSelectableRecord($record, 'select'))
+        {
+          $record[$this->fieldName()] = $this->m_selectableRecords[0];
+        }
+        else
+        {
+          $current = $this->getDestination()->primaryKey($record[$this->fieldName()]);
+          $record[$this->fieldName()] = null;
+          foreach ($this->m_selectableRecords as $selectable)
+          {
+            if ($this->getDestination()->primaryKey($selectable) == $current)
+            {
+              $record[$this->fieldName()] = $selectable;
+              break;
+            }
+          }
+        }
+      }
+    }
+    else if (is_array($record[$this->fieldName()]) && !$this->_isSelectableRecord($record, 'select'))
+    {
+      $record[$this->fieldName()] = null;
+    }
+    else if (is_array($record[$this->fieldName()]))
+    {
+      $this->populate($record);
+    }    
+  }
+  
   /**
    * Returns a piece of html code that can be used in a form to edit this
    * attribute's value.
@@ -743,14 +798,15 @@ class atkManyToOneRelation extends atkRelation
    */
   function edit($record, $fieldprefix="", $mode="edit")
   {
-    // Two variances.. one with a dropdownbox containing all records,
-    // and one with a dropdownbox that contains the last 10 used records,
-    // with a link to a selector with all records. This second one is for
-    // relations with large tables, so is only used when AF_LARGE is set.
-    $recordset = NULL;
+    if (!$this->createDestination())
+    {
+      return atkerror("Could not create destination for destination: $this->m_destination!");
+    }    
+    
+    $recordset = $this->m_selectableRecords;
 
-    // check if a normal dropdown should be shown or the autocomplete field
-    if ($this->hasFlag(AF_RELATION_AUTOCOMPLETE) && $this->m_autocomplete_minrecords > -1)
+    // load records for bwc
+    if ($recordset === null && $this->hasFlag(AF_RELATION_AUTOCOMPLETE) && $this->m_autocomplete_minrecords > -1)
     {
       $recordset = $this->_getSelectableRecords($record, 'select');
     }
@@ -760,99 +816,91 @@ class atkManyToOneRelation extends atkRelation
       return $this->drawAutoCompleteBox($record, $fieldprefix, $mode);
     }
 
-    if ($this->createDestination())
+    
+    $id = $fieldprefix.$this->fieldName();
+    $filter = $this->parseFilter($this->m_destinationFilter, $record);
+    $autolink = $this->getRelationAutolink($id, $filter);
+    $editflag = true;
+
+    $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
+    $currentPk = $value != null ? $this->getDestination()->primaryKey($value) : null;
+      
+    if (!$this->hasFlag(AF_LARGE)) // normal dropdown..
     {
-      $id = $fieldprefix.$this->fieldName();
-      $filter=$this->parseFilter($this->m_destinationFilter,$record);
-      $autolink = $this->getRelationAutolink($id, $filter);
-      $editflag = true;
-
-      if (!$this->hasFlag(AF_LARGE))
+      // load records for bwc
+      if ($recordset == null)
       {
-        // normal dropdown..
-        $value=NULL;
-        if(isset($record[$this->fieldName()]))
-        $value = $record[$this->fieldName()];
-        $currentPk = $this->m_destInstance->primaryKey($value);
+        $recordset = $this->_getSelectableRecords($record, 'select');
+      }
+      
+      if (count($recordset) == 0)
+      {
+        $editflag = false;
+      }
 
-        if (is_null($recordset)) // already loaded above.
-        {
-          $recordset = $this->_getSelectableRecords($record, 'select');
-        }
-        if(count($recordset)==0) $editflag = false;
+      $onchange='';
+      if (count($this->m_onchangecode))
+      {
+        $onchange = 'onChange="'.$id.'_onChange(this);"';
+        $this->_renderChangeHandler($fieldprefix);
+      }
 
-        $onchange='';
-        if (count($this->m_onchangecode))
-        {
-          $onchange = 'onChange="'.$id.'_onChange(this);"';
-          $this->_renderChangeHandler($fieldprefix);
-        }
-
-        // autoselect if there is only one record (if obligatory is not set,
-        // we don't autoselect, since user may wist to select 'none' instead
-        // of the 1 record.
-        $result = "";
-        if (count($recordset) == 0)
-        {
-          $result .= $this->getNoneLabel();
-        }
-        else
-        {
-          $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);
-          $this->registerJavaScriptObservers($id);
-          $result.= '<select id="'.$id.'" name="'.$id.'" class="atkmanytoonerelation" '.$onchange.'>';
-          if ($this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) || (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) || (atkconfig("list_obligatory_null_item")&&!is_array($value)))
-          {
-            // Relation may be empty, so we must provide an empty selectable..
-            $result.= '<option value="">'.$this->getNoneLabel();
-          }
-          // Newly added check
-          $newlyadded = "";
-          if (is_object($this->m_ownerInstance) && isset($this->m_ownerInstance->m_postvars[$id."_ret"]))
-          {
-            $newlyadded = $this->m_ownerInstance->m_postvars[$id."_ret"];
-          }
-
-          for ($i=0, $_i=count($recordset);$i<$_i;$i++)
-          {
-            $pk = $this->m_destInstance->primaryKey($recordset[$i]);
-            if (($newlyadded!="" && $newlyadded==$pk) || ($newlyadded=="" && $pk==$currentPk)) $sel = "selected"; else $sel = "";
-            $result.= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', atk_htmlentities($this->m_destInstance->descriptor($recordset[$i])));
-          }
-          $result.='</select>';
-        }
+      // autoselect if there is only one record (if obligatory is not set,
+      // we don't autoselect, since user may wist to select 'none' instead
+      // of the 1 record.
+      $result = '';
+      
+      if (count($recordset) == 0)
+      {
+        $result = $this->getNoneLabel();
       }
       else
       {
-        // Large mode
-        // TODO: Fill a dropdown box with recent records..
+        $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);
+        $this->registerJavaScriptObservers($id);
+        
+        $result = '<select id="'.$id.'" name="'.$id.'" class="atkmanytoonerelation" '.$onchange.'>';
 
-        $newlyadded = atkArrayNvl($this->m_ownerInstance->m_postvars,$id."_ret");
-
-        $destrecord = $this->_getDestRecord($id."_newsel", $newlyadded, $record, $editflag);
-
-        if (count($destrecord))
+        // relation may be empty, so we must provide an empty selectable..
+        if ($this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) || 
+            (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) || 
+            (atkconfig("list_obligatory_null_item") && !is_array($value)))
         {
-          $result.= '<span id="'.$id.'_current" >'.$this->m_destInstance->descriptor($destrecord)."&nbsp;&nbsp;";
-          if (!$this->hasFlag(AF_OBLIGATORY))
-          {
-            $result.= '<a href="#" onClick="document.getElementById(\''.
-            $id.'\').value=\'\'; document.getElementById(\''.$id.'_current\').style.display=\'none\'">'.atktext("unselect").'</a>&nbsp;&nbsp;';
-          }
-          $result.= '</span>';
+          $result.= '<option value="">'.$this->getNoneLabel();
         }
 
-        $result.=$this->hide($record, $fieldprefix);
-        $newsel = $id."_newsel";
-        $result.=$this->_getSelectLink($newsel, $filter);
+        foreach ($recordset as $selectable)
+        {
+          $pk = $this->getDestination()->primaryKey($selectable);
+          $sel = $pk == $currentPk ? 'selected="selected"' : '';
+          $result .= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', atk_htmlentities($this->m_destInstance->descriptor($selectable)));
+        }
+        
+        $result .= '</select>';
+      }
+    }
+    else
+    {
+      $destrecord = $record[$this->fieldName()];
+      if (is_array($destrecord))
+      {
+        $result.= '<span id="'.$id.'_current" >'.$this->m_destInstance->descriptor($destrecord)."&nbsp;&nbsp;";
+        if (!$this->hasFlag(AF_OBLIGATORY))
+        {
+          $result.= '<a href="#" onClick="document.getElementById(\''.
+          $id.'\').value=\'\'; document.getElementById(\''.$id.'_current\').style.display=\'none\'">'.atktext("unselect").'</a>&nbsp;&nbsp;';
+        }
+        $result.= '</span>';
       }
 
-      if($editflag) $result.= isset($autolink['edit']) ? $autolink['edit'] : "";
-      $result.= isset($autolink['add']) ? $autolink['add'] : "";
-      return $result;
+      $result .= $this->hide($record, $fieldprefix);
+      $result .= $this->_getSelectLink($id, $filter);
     }
 
-    return atkerror("Could not create destination for destination: $this->m_destination!");
+    $result .= $editflag && isset($autolink['edit']) ? $autolink['edit'] : "";
+    $result .= isset($autolink['add']) ? $autolink['add'] : "";
+    
+    return $result;
   }
 
   /**
@@ -889,48 +937,6 @@ class atkManyToOneRelation extends atkRelation
   }
 
   /**
-   * Get the destination record for the edit action
-   *
-   * @param String $selname    The name that the selected variable uses in the URL
-   * @param String $newlyadded The name that the selected variable uses in the postvars
-   * @param Array $record      The original record
-   * @param bool $editflag     The edit flag (?)
-   * @return Array The destination record
-   */
-  function _getDestRecord($selname, $newlyadded, &$record, &$editflag)
-  {
-    global $ATK_VARS;
-    if (atkArrayNvl($ATK_VARS,$selname) || $newlyadded)
-    // new record selected
-    {
-      // $ATK_VARS[$selname] contains full primary key of selected record.
-      $recset = $this->m_destInstance->selectDb(($ATK_VARS[$selname]?$ATK_VARS[$selname]:$newlyadded),"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
-      $destrecord = $recset[0];
-      $record[$this->fieldName()] = $destrecord; // put destrecord inside original record.
-    }
-    elseif (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()]) == count($this->m_destInstance->m_primaryKey))
-    // old record present, but probably only primary key fields are loaded (this happens after pressing 'save' on a record)
-    {
-      $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
-      $recset = $this->m_destInstance->selectDb($currentPk,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
-      $destrecord = $recset[0];
-      $record[$this->fieldName()] = $destrecord; // put destrecord inside original record.
-    }
-    elseif (is_array($record[$this->fieldName()]) && !$this->isEmpty($record))
-    // complete old record present
-    {
-      $destrecord = $record[$this->fieldName()];
-    }
-    else
-    // no record yet, empty value.
-    {
-      $destrecord = array();
-      $editflag = false;
-    }
-    return $destrecord;
-  }
-
-  /**
    * Creates and returns the auto edit/view links
    * @param String $id          The field id
    * @param String $filter      Filter that we want to apply on the destination node
@@ -951,7 +957,7 @@ class atkManyToOneRelation extends atkRelation
       }
       if ($this->m_destInstance->allowed("add"))
       {
-        $autolink['add'] = "&nbsp;".href(dispatch_url($this->getAutoLinkDestination(),"add",array("atkpkret"=>$id."_ret","atkfilter"=>($this->m_useFilterForAddLink && $filter != "" ? $filter : ""))),
+        $autolink['add'] = "&nbsp;".href(dispatch_url($this->getAutoLinkDestination(),"add",array("atkpkret"=>$id,"atkfilter"=>($this->m_useFilterForAddLink && $filter != "" ? $filter : ""))),
         atktext("new"),SESSION_NESTED,true);
       }
     }
@@ -2083,11 +2089,6 @@ class atkManyToOneRelation extends atkRelation
     $this->m_ownerInstance->addStyle("atkmanytoonerelation.css");
 
     $id = $this->getHtmlId($fieldPrefix);
-    $editflag = true;
-
-    $newlyadded = atkArrayNvl($this->m_ownerInstance->m_postvars,$id."_ret");
-
-    $this->_getDestRecord($id."_newsel", $newlyadded, $record, $editflag);
 
     // validate is this is a selectable record and if so
     // retrieve the display label and hidden value

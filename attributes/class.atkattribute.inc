@@ -532,11 +532,11 @@
     var $m_onchangehandler_init = "";
 
     /**
-     * Variable to store depended attributes.
-     * @access private
-     * @var Array
+     * Variable to store dependency callbacks.
+     * 
+     * @var array
      */
-    var $m_dependees = array();
+    private $m_dependencies = array();
 
     /**
      * Attribute to store disabled modes.
@@ -576,12 +576,6 @@
      * @see setInitialValue
      */
     var $m_initialValue = NULL;
-
-    /**
-     * Manually painted attribute. Will not be rendered. If this is set to true, you are responsible
-     * for calling the attribute's edit() method to paint it on screen.
-     */
-    var $m_manual_paint = false;
 
     /**
      * Column.
@@ -1097,6 +1091,18 @@
         $arr["fields"][] = $entry;
       }
     }
+    
+    /**
+     * Prepare for edit. Is called before all attributes are added to the
+     * edit array and allows for last minute manipulations based on the
+     * record but also manipulations on the record itself.
+     * 
+     * @param array  $record reference to the record
+     * @param string $mode   edit mode
+     */
+    public function preAddToEditArray(&$record, $mode)
+    {
+    }
 
     /**
      * Adds the attribute's edit / hide HTML code to the edit array.
@@ -1114,10 +1120,6 @@
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
-      /* Attribute manually paints itself? */
-      if ($this->m_manual_paint) return;
-
-
       /* hide */
       if (($mode=="edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode=="add" && $this->hasFlag(AF_HIDE_ADD)))
       {
@@ -1131,8 +1133,6 @@
       else
       {
         global $ATK_VARS;
-
-        $this->_registerDependees($mode, $fieldprefix);
 
         $entry = array("name" => $this->m_name, "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
         $entry["id"] = $this->getHtmlId($fieldprefix);
@@ -2693,7 +2693,6 @@
     {
       $record = $this->m_ownerInstance->updateRecord();
       $fieldprefix = $this->m_ownerInstance->m_postvars['atkfp'];
-      $this->_registerDependees($mode, $fieldprefix);
 
       $arr = array('fields' => array());
       $defaults = &$record;
@@ -2710,111 +2709,110 @@
         $script .= "\$('".str_replace('.', '_', $this->m_ownerInstance->atkNodeType().'_'.$field['id'])."').update(".atkJSON::encode($value).");\r\n";
       }
 
-      $this->_registerDependees($mode, $fieldprefix);
-
       return '<script type="text/javascript">'.$script.'</script>';
     }
 
     /**
-     * Indicate that another attribute depends on this attribute, and that if
-     * this attribute is updated, the dependent attribute needs to be updated as well.
-     * (This is mostly relevant to Ajax calls.)
-     *
-     * @see _registerDependees()
-     * @param String $attribName The attribute you wish to update.
-     * @return atkAttribute Returns the current instance of the attribute
+     * Add a depended attribute for this attribute, which means the depended
+     * attribute will be refreshed (using Ajax) if the value for this attribute
+     * changes. 
+     * 
+     * This method is deprecated, use atkAttribute::addDependency instead!
+     * 
+     * @deprecated
+     * @see atkAttribute::addDependency
+     * 
+     * @param string $attribute attribute name
+     * 
+     * @return atkAttribute attribute instance.
      */
-    function addDependee($attribName)
+    public function addDependee($attribute)
     {
-      if(!in_array($attribName, $this->m_dependees)) $this->m_dependees[] = $attribName;
+      $callback = create_function('$modifier', '$modifier->refreshAttribute("'.$attribute.'");');
+      $this->addDependency($callback);
+      return $this;
+    }
+    
+    /**
+     * Special case of an on-change handler which gets executed server-side and
+     * can manipulate the DOM using PHP wrapper methods available in the 
+     * atkFormModifier class or by outputting JavaScript code directly.
+     *
+     * @param mixed callback closure or something else which is_callable
+     * 
+     * @return atkAttribute attribute instance
+     */
+    public function addDependency($callback)
+    {
+      $this->m_dependencies[] = $callback;
       return $this;
     }
 
     /**
      * Retrieve the dependees for this attribute.
-     *
-     * @see _registerDependees()
-     * @return Array $m_dependees Returns the list of dependees.
+     * 
+     * @return array Returns the list of dependees (callbacks) for this attribute.
      */
-    function getDependees()
+    public function getDependencies()
     {
-      return $this->m_dependees;
+      return $this->m_dependencies;
     }
+    
+    /**
+     * Initialize and calls the dependencies.
+     *
+     * @param array  $record      record
+     * @param string $fieldPrefix the prefix for this attribute in an HTML form
+     * @param string $mode        add/edit mode
+     */
+    public function initDependencies($record, $fieldPrefix, $mode)
+    {
+      if (count($this->getDependencies()) == 0)
+      {
+        return;
+      }
+      
+      $this->_callDependencies($record, $fieldPrefix, $mode, true);
+
+      atkimport('atk.utils.atkjson');
+      
+      $action = $mode == "add" ? "add" : "edit";
+      $url = partial_url($this->getOwnerInstance()->atkNodeType(), $action, "attribute.".$this->fieldName().".dependencies", array("atkdata" => array('fieldPrefix' => $fieldPrefix, 'mode' => $mode)));
+      $url = atkJSON::encode($url);
+      
+      $this->getOwnerInstance()->getPage()->register_script(atkconfig('atkroot').'atk/javascript/class.atkattribute.js');      
+      $code = "ATK.Attribute.callDependencies({$url});";
+      $this->addOnChangeHandler($code);
+    }  
 
     /**
-     * Returns a JavaScript call for refreshing this attribute.
-     *
-     * @todo add documentation for $focusFirstFormEl.
-     *
-     * @param String $mode add/edit mode
-     * @param String $fieldprefix The prefix for this attribute in an HTML form
-     * @param bool $focusFirstFormEl ???
-     * @param bool $registerScript Does the javascript for this attribute need to be registered.
-     * @return String javascript Returns the javascript call to refresh this attribute.
+     * Calls the dependency callbacks for this attribute.
+     * 
+     * @param array   $record      record
+     * @param string  $fieldPrefix the prefix for this attribute in an HTML form
+     * @param string  $mode        add/edit mode
+     * @param boolean $initial     initial call (e.g. non-javascript manipulation)
      */
-    protected function getRefreshCall($mode='edit', $fieldprefix='', $focusFirstFormEl=false, $registerScript=true)
+    protected function _callDependencies($record, $fieldPrefix, $mode, $initial)
     {
-      if ($registerScript)
+      atkimport('atk.utils.atkeditformmodifier');
+      $modifier = new atkEditFormModifier($this->getOwnerInstance(), $record, $fieldPrefix, $mode, $initial);
+      
+      foreach ($this->getDependencies() as $callable)
       {
-        $this->getOwnerInstance()->getPage()->register_script(atkconfig('atkroot').'atk/javascript/class.atkattribute.js');
-      }
-
-      $url = addslashes(partial_url($this->getOwnerInstance()->atkNodeType(), $mode == "add" ? "add" : "edit", "attribute.".$this->fieldName().".refresh", array("atkfp" => $fieldprefix)));
-      $code = "ATK.Attribute.refresh('$url', ".($focusFirstFormEl ? 'true' : 'false').");";
-      return $code;
-    }
-
-    /**
-     * Register change handlers for dependees.
-     *
-     * A dependee is a different attribute (mostly part of the same node) that
-     * needs to be refreshed through an AJAX call if the value of this attribute
-     * changes.
-     * @access private
-     * @param String $mode add/edit mode
-     * @param String $fieldprefix The prefix for this attribute in an HTML form
-     */
-    function _registerDependees($mode="", $fieldprefix="")
-    {
-      if(!empty($this->m_dependees))
-      {
-        foreach ($this->m_dependees as $attribName)
-        {
-          $code = $this->getOwnerInstance()->getAttribute($attribName)->getRefreshCall($mode, $fieldprefix);
-          $this->addOnChangeHandler($code);
-
-          $isPartial = $this->m_ownerInstance->m_partial != NULL;
-          if (!$isPartial)
-          {
-            $code = $this->getOwnerInstance()->getAttribute($attribName)->getRefreshCall($mode, $fieldprefix, true);
-          }
-
-          // only register the initial refresh on attribute load if this attribute
-          // itself doesn't depend on any other attribute or this is a partial request
-          if ($isPartial || !$this->isDepending())
-          {
-            $page = &$this->m_ownerInstance->getPage();
-            $page->register_loadscript($code);
-          }
-        }
+        call_user_func($callable, $modifier);
       }
     }
-
+    
     /**
-     * Check whether this attribute depends on other attributes.
-     *
-     * @return boolean whether the attribute depends on other attribute(s)
+     * Call dependencies for this attribute and output JavaScript.
      */
-    function isDepending()
+    public function partial_dependencies()
     {
-      foreach (array_keys($this->m_ownerInstance->m_attribList) as $attrName)
-      {
-        $attr = &$this->m_ownerInstance->getAttribute($attrName);
-        if (in_array($this->fieldName(), $attr->getDependees()))
-          return true;
-      }
-
-      return false;
+      $record = $this->getOwnerInstance()->updateRecord();
+      $fieldPrefix = $this->getOwnerInstance()->m_postvars['atkdata']['fieldPrefix'];
+      $mode = $this->getOwnerInstance()->m_postvars['atkdata']['mode'];
+      $this->_callDependencies($record, $fieldPrefix, $mode, false);
     }
 
     /**
@@ -2878,28 +2876,6 @@
     {
       return $this->m_initial_hidden;
     }
-
-    /**
-     * Set wether the edit() method of this attribute should be called
-     * by the framework, or if the edit method is called manually.
-     *
-     * @param bool $bool TRUE if it is called manually, FALSE if ATK
-     *                   should call it.
-     * @return atkAttribute The instance of this atkAttribute
-     */
-    function setManualPaint($bool)
-    {
-      $this->m_manual_paint = $bool;
-      return $this;
-    }
-
-    /**
-     * Check wether this attribute should be manually painted (call the edit
-     * method) or not.
-     *
-     * @return bool Manually painted?
-     */
-    function isManualPaint() { return $this->m_manual_paint; }
 
     /**
      * Observe the given JavaScript event and execute the given JavaScript

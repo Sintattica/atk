@@ -9,9 +9,23 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
-+ Add setNodeOverloader method to atkmoduletools for node overloading. 
-  This method check, did the node was overload, so it works correctly, 
-  when node overloads several times. [Yury]
++ Added atkAttribute::addDependency which replaces atkAttribute::addDependee
+  and allows you to register a callback which is both called on the initial
+  add/edit form generation and when the attribute changes value. The
+  callback is passed a special helper object which allows you to use PHP
+  calls to hide, show and/or refresh one or more attributes or output
+  JavaScript code which does some more DOM modifications. [Peter]
+* Deprecated atkAttribute::addDependee, for now it will create a dependency
+  with a callback which refreshes the depended attribute. [Peter]
++ Added atkAttribute::preAddToEditArray which can be used to make some 
+  last-minute modifications to the record or attribute. This makes it
+  for example possible for the atkManyToOneRelation to pre-load it's
+  selectable records and update the record to already select the first
+  record (on add, when no default value is set and the relation is
+  obligatory). This can be used by other (depended) attributes to render
+  themselves based on that information. [Peter]
+- Removed atkAttribute::setManualPaint because it was already been replaced
+  for a while now with the attribute disabled mode. [Peter]
 * Added $config_autoload_reindex_on_missing_class configuration option, to
   disable the auto re-indexing of all ATK class files when PHP detects
   a missing class. This means you should manually delete the cached 

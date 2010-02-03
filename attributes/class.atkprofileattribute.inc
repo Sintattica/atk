@@ -475,7 +475,7 @@
         if ($showSection)
         {
           $result .= "</div><br>";
-          $result .= "<span style=\"font-size: 120%; font-weight: bold\"><a href=\"javascript:void(0)\" onclick=\"profile_swapProfileDiv('div_$section','".atkConfig("atkroot")."'); return false;\"><img src='".atkConfig("atkroot")."atk/images/plus.gif' border='0' id='img_div_$section'></a>&nbsp;".atktext(array("title_$section", $section), $section)."</span><br/>";
+          $result .= "<span  onclick=\"profile_swapProfileDiv('div_$section','".atkConfig("atkroot")."');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\"<img src='".atkConfig("atkroot")."atk/images/plus.gif' border='0' id='img_div_$section'>&nbsp;".atktext(array("title_$section", $section), $section)."</span><br/>";
           $result .= "<div id='div_$section' name='div_$section' style='display: none; padding-left: 15px'>";
           $result .= "<input type='hidden' name=\"divstate['div_$section']\" id=\"divstate['div_$section']\" value='closed' />";
           $result.='<div style="font-size: 80%; margin-top: 4px; margin-bottom: 4px" >
