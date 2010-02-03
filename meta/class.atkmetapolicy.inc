@@ -792,9 +792,18 @@ class atkMetaPolicy
    */
   public static function cmpAttributes($a, $b)
   {
-  	if ($a['order'] < $b['order']) return -1;
-  	elseif ($a['order'] == $b['order']) return 0;
-  	else return 1;
+    if (!isset($a['order'], $b['order']) || $a['order'] == $b['order'])
+    {
+      return 0;
+    }
+    else if ($a['order'] < $b['order'])
+  	{
+  	  return -1;   
+  	}
+  	else
+  	{
+  	  return 1;  
+  	} 
   }
   
   /**
