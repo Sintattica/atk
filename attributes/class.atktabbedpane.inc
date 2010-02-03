@@ -181,8 +181,6 @@
           /* edit */
           else
           {
-            $p_attrib->_registerDependees($mode, $fieldprefix);
-
             $entry = array("name" => $p_attrib->m_name, "obligatory" => $p_attrib->hasFlag(AF_OBLIGATORY), "attribute" => &$p_attrib);
             $entry["id"] = $p_attrib->getHtmlId($fieldprefix);
 
