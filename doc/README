@@ -7,7 +7,7 @@ ATK requires PHP 5.1.3 or newer.
 
 Copyright and Licensing
 -----------------------
-ATK and all related material is (c) 2000-2008 Ibuildings.nl and Ivo Jansch.
+ATK and all related material is (c) 2000-2010 Ibuildings and Ivo Jansch.
 ATK is distributed under the LGPL license. A copy of this license can be found
 in the LICENSE file. ATK contains some third party components that have their
 own licensing conditions. More information on this can be found in the 
@@ -15,25 +15,16 @@ COPYRIGHT file.
 
 Contact information
 -------------------
-Technical questions regarding ATK: Ivo Jansch <ivo@achievo.org>
+Support forum: http://forums.ibuildings.com
 
-The project homepage can be found at http://www.achievo.org/atk
+Project maintainer: Peter C. Verhage <peter@ibuildings.com>
 
-If you want to be notified when new versions of ATK are released, you can 
-subscribe to our announcements mailinglist, by sending an empty message to
-atk-announce-subscribe@achievo.org. 
-
-If you want to discuss ATK features with the developers and other users,
-you can visit our forums at http://www.achievo.org/forum.
-
+The project homepage can be found at http://www.atk-framework.com
 
 Commercial Support
 ------------------
 Ibuildings provides extensive support for ATK. Information about the 
-support options can be found at http://www.achievo.org/atk/support
-
-Tailormade support is a possibility. Send a message to info@achievo.org
-for more information.
+support options can be found at http://www.atk-framework.com/support
 
 
 Disclaimer
@@ -47,8 +38,8 @@ disclaimer can be found in the doc/LICENSE file.
 
 Getting the latest release
 --------------------------
-The latest release of Achievo ATK can always be found at 
-http://www.achievo.org/atk/download
+The latest release of ATK can always be found at 
+http://www.atk-framework.com/download
 
 
 Getting involved
@@ -60,5 +51,5 @@ by our own resources alone.
 We can also use some help in doing translations of the software and
 documentation writing. If you're creative, we can also use themes.
 If you want to help development, post a message on our development forums at
-http://www.achievo.org/forum. If you don't want to post in public forums
-you can also send an email to ivo@achievo.org with your suggestions.
+http://forum.ibuildings.com. If you don't want to post in public forums
+you can also send an email to peter@ibuildings.com with your suggestions.

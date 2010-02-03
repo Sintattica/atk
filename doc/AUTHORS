@@ -1,21 +1,17 @@
 Author
 ------
-Ivo Jansch             <ivo at achievo.org>
+Ivo Jansch             <ivo at ibuildings.com>
 
+Maintainer
+----------
+Peter Verhage          <peter at ibuildings.com>
 
 Additional Development
 ----------------------
 Sandy Pleyte           <sandy at achievo.org>
-Peter Verhage          <peter at achievo.org>
 Martin Roest           <martin at ibuildings.nl>
 Boy Baukema            <boy at ibuildings.nl>
 Yury Golovnya          <yury at achievo.org>
-
-Marketing
-----------
-Jeroen Stephan         <jeroen at ibuildings.nl>
-Joni Overbosch         <joni at ibuildings.nl>
-
 
 Sponsors
 --------
@@ -49,7 +45,7 @@ development of new features.
   autonumbering feature to atkFileAttribute. Zicht also sponsored a large part
   of the atkMlWrapper functionality.
 
-To become a sponsor, please read http://www.achievo.org/services/sponsor/.
+To become a sponsor, please contact us at http://www.ibuildings.com/contact/.
 
 
 Translators
@@ -144,7 +140,7 @@ Stefan Niederhauser
 William Rhee 
 
   William, of the University of Michigan, added Oracle 8i Support
-  to Achievo.
+  to ATK.
 
 Ber Dohmen 
 
