@@ -37,7 +37,7 @@
      case 1:
      {
        list($module, $id) = explode(".", $params["id"]);
-       $str = atktext($id, $module, $params["node"]);
+       $str = atktext($id, $module, isset($params["node"]) ? $params["node"] : '' );
        break;
      }
      case 2:
