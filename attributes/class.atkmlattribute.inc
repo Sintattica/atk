@@ -257,15 +257,24 @@
     function db2value($rec)
     {
       $languages = $this->getLanguages();
-      if($this->isMlNode())
+      if ($this->isMlNode())
       {
-        if(is_array($rec[$this->fieldName()]))
+        if (!isset($rec[$this->fieldName()]))
         {
-          foreach($rec[$this->fieldName()] as $lng=>$value)
+          return NULL;
+        }
+
+        if (is_array($rec[$this->fieldName()]))
+        {
+          foreach ($rec[$this->fieldName()] as $lng=>$value)
           {
             $result[$lng]=stripslashes($value);
           }
-        } else $result = stripslashes($rec[$this->fieldName()]);
+        }
+        else
+        {
+          $result = stripslashes($rec[$this->fieldName()]);
+        }
       }
       else
       {
@@ -274,6 +283,7 @@
           $result[$languages[$i]] = stripslashes($rec[$this->fieldName().'_'.$languages[$i]]);
         }
       }
+
       return $result;
     }
 
