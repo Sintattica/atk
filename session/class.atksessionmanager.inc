@@ -780,7 +780,7 @@
       if (!is_array($stack)) $prevlevelfromstack = 0;
       else $prevlevelfromstack = count($stack)-1;
 
-      $oldStackId = atkStackId();
+      $oldStackId = atkStackID();
 
       if ($atkprevlevel!=$prevlevelfromstack)
       {
@@ -806,8 +806,10 @@
         $g_sessionData[$this->m_namespace]["stack"][$newid] = $stack;
 
         // Copy the global stackvars for the stack too.
-        $g_sessionData[$this->m_namespace]['globals']['#STACK#'][$newid] =
-          $g_sessionData[$this->m_namespace]['globals']['#STACK#'][$oldStackId];
+        if (isset($g_sessionData[$this->m_namespace]['globals']['#STACK#'][$oldStackId])) {
+          $g_sessionData[$this->m_namespace]['globals']['#STACK#'][$newid] =
+            $g_sessionData[$this->m_namespace]['globals']['#STACK#'][$oldStackId];
+        }
 
         return false;
       }

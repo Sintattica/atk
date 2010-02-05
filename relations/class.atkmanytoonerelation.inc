@@ -216,12 +216,12 @@ class atkManyToOneRelation extends atkRelation
    * @var boolean
    */
   protected $m_autoSearch = false;
-  
+
   /**
    * Selectable records for edit mode.
-   * 
+   *
    * @see atkManyToOneRelation::preAddToEditArray
-   * 
+   *
    * @var array
    */
   protected $m_selectableRecords = null;
@@ -733,25 +733,25 @@ class atkManyToOneRelation extends atkRelation
     }
     return $this->m_destination;
   }
-  
+
   /**
    * Prepare for editing, make sure we already have the selectable records
    * loaded and update the record with the possible selection of the first
    * record.
-   * 
+   *
    * @param array  $record reference to the record
    * @param string $mode   edit mode
    */
   public function preAddToEditArray(&$record, $mode)
   {
-    if ((!$this->hasFlag(AF_RELATION_AUTOCOMPLETE) && !$this->hasFlag(AF_LARGE)) || 
+    if ((!$this->hasFlag(AF_RELATION_AUTOCOMPLETE) && !$this->hasFlag(AF_LARGE)) ||
         $this->m_autocomplete_minrecords > -1)
     {
       $this->m_selectableRecords = $this->_getSelectableRecords($record, 'select');
-      
+
       if (count($this->m_selectableRecords) > 0 &&
-          !atkconfig("list_obligatory_null_item") && 
-          (($this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM)) || 
+          !atkconfig("list_obligatory_null_item") &&
+          (($this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM)) ||
            (!$this->hasFlag(AF_OBLIGATORY) && $this->hasFlag(AF_RELATION_NO_NULL_ITEM))))
       {
         if (!isset($record[$this->fieldName()]) || !is_array($record[$this->fieldName()]))
@@ -784,9 +784,9 @@ class atkManyToOneRelation extends atkRelation
     else if (is_array($record[$this->fieldName()]))
     {
       $this->populate($record);
-    }    
+    }
   }
-  
+
   /**
    * Returns a piece of html code that can be used in a form to edit this
    * attribute's value.
@@ -801,8 +801,8 @@ class atkManyToOneRelation extends atkRelation
     if (!$this->createDestination())
     {
       return atkerror("Could not create destination for destination: $this->m_destination!");
-    }    
-    
+    }
+
     $recordset = $this->m_selectableRecords;
 
     // load records for bwc
@@ -816,7 +816,7 @@ class atkManyToOneRelation extends atkRelation
       return $this->drawAutoCompleteBox($record, $fieldprefix, $mode);
     }
 
-    
+
     $id = $fieldprefix.$this->fieldName();
     $filter = $this->parseFilter($this->m_destinationFilter, $record);
     $autolink = $this->getRelationAutolink($id, $filter);
@@ -824,7 +824,7 @@ class atkManyToOneRelation extends atkRelation
 
     $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
     $currentPk = $value != null ? $this->getDestination()->primaryKey($value) : null;
-      
+
     if (!$this->hasFlag(AF_LARGE)) // normal dropdown..
     {
       // load records for bwc
@@ -832,7 +832,7 @@ class atkManyToOneRelation extends atkRelation
       {
         $recordset = $this->_getSelectableRecords($record, 'select');
       }
-      
+
       if (count($recordset) == 0)
       {
         $editflag = false;
@@ -849,7 +849,7 @@ class atkManyToOneRelation extends atkRelation
       // we don't autoselect, since user may wist to select 'none' instead
       // of the 1 record.
       $result = '';
-      
+
       if (count($recordset) == 0)
       {
         $result = $this->getNoneLabel();
@@ -858,12 +858,12 @@ class atkManyToOneRelation extends atkRelation
       {
         $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);
         $this->registerJavaScriptObservers($id);
-        
+
         $result = '<select id="'.$id.'" name="'.$id.'" class="atkmanytoonerelation" '.$onchange.'>';
 
         // relation may be empty, so we must provide an empty selectable..
-        if ($this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) || 
-            (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) || 
+        if ($this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
+            (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) ||
             (atkconfig("list_obligatory_null_item") && !is_array($value)))
         {
           $result.= '<option value="">'.$this->getNoneLabel();
@@ -875,7 +875,7 @@ class atkManyToOneRelation extends atkRelation
           $sel = $pk == $currentPk ? 'selected="selected"' : '';
           $result .= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', atk_htmlentities($this->m_destInstance->descriptor($selectable)));
         }
-        
+
         $result .= '</select>';
       }
     }
@@ -899,7 +899,7 @@ class atkManyToOneRelation extends atkRelation
 
     $result .= $editflag && isset($autolink['edit']) ? $autolink['edit'] : "";
     $result .= isset($autolink['add']) ? $autolink['add'] : "";
-    
+
     return $result;
   }
 
@@ -1096,7 +1096,7 @@ class atkManyToOneRelation extends atkRelation
             {
               $filter = $filter['filter'];
               $arr = $this->filterToArray($filter);
-              $arr = is_array($arr[$this->getOwnerInstance()->m_table]) ? $arr[$this->getOwnerInstance()->m_table] : array();
+              $arr = (isset($arr[$this->getOwnerInstance()->m_table]) && is_array($arr[$this->getOwnerInstance()->m_table])) ? $arr[$this->getOwnerInstance()->m_table] : array();
               foreach ($arr as $attrName => $value)
               {
                 $attr = $this->getOwnerInstance()->getAttribute($attrName);
@@ -1927,8 +1927,9 @@ class atkManyToOneRelation extends atkRelation
             $order = $this->fieldName().'.'.$order;
 
             if (is_object($atkorderby) &&
-            isset($atkorderby->m_colcfg[$this->fieldName()]) &&
-            $atkorderby->m_colcfg[$this->fieldName()]['extra'] == $attribname)
+            isset($atkorderby->m_colcfg[$this->fieldName()])
+                && isset($atkorderby->m_colcfg[$this->fieldName()]['extra'])
+                && $atkorderby->m_colcfg[$this->fieldName()]['extra'] == $attribname)
             {
               $direction = $atkorderby->getDirection($this->fieldName());
               if ($direction=="asc") $order.=" desc";

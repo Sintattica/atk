@@ -528,7 +528,16 @@ class atkDGList extends atkDGComponent
     /****************************************/
     elseif (!$edit && $hasMRA)
     {
-      $target = session_url(atkSelf().'?atknodetype='.$grid->getNode()->atkNodeType().'&atktarget='.$grid->getNode()->m_postvars['atktarget'].'&atktargetvar='.$grid->getNode()->m_postvars['atktargetvar'].'&atktargetvartpl='.$grid->getNode()->m_postvars['atktargetvartpl'], SESSION_NESTED);
+      $postvars = $grid->getNode()->m_postvars;
+
+      $target = session_url(
+        atkSelf().'?atknodetype=' . $grid->getNode()->atkNodeType()
+          . '&atktarget=' . (isset($postvars['atktarget']) ? $postvars['atktarget'] : '')
+          . '&atktargetvar=' . (isset($postvars['atktargetvar']) ? $postvars['atktargetvar'] : '')
+          . '&atktargetvartpl=' . (isset($postvars['atktargetvartpl']) ? $postvars['atktargetvartpl'] : '')
+        ,
+        SESSION_NESTED
+      );
 
       $mra = (count($list["rows"]) > 1 && $grid->getMRASelectionMode() == MRA_MULTI_SELECT ?
                   '<a href="javascript:void(0)" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'all\')">'.atktext("select_all").'</a> | '.
