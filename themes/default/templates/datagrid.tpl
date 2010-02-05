@@ -1,52 +1,52 @@
 <table border="0" cellspacing="0" cellpadding="2">
-{if isset($top) && !empty($top)}
+{if !empty($top)}
 <tr>
   <td align="left" valign="top" colspan="2">
     {$top}
   </td>
 </tr>
 {/if}
-{if isset($index) && !empty($index) || isset($editcontrol) && !empty($editcontrol)}
+{if !empty($index) || !empty($editcontrol)}
   <tr>
     <td align="left" valign="top">
-      {if isset($editcontrol) && !empty($editcontrol)}{$editcontrol}{/if} {if isset($index) && !empty($index)}{$index}{/if}
+      {if !empty($editcontrol)}{$editcontrol}{/if} {if !empty($index)}{$index}{/if}
     </td>
   </tr>
-{elseif isset($paginator) && !empty($paginator) || isset($limit) && !empty($limit)}
+{elseif !empty($paginator) || !empty($limit)}
   <tr>
     <td align="left" valign="middle">
-      {if isset($editcontrol) && !empty($editcontrol)}{$editcontrol}{/if} {if isset($paginator) && !empty($paginator)}{$paginator}{/if}
+      {if !empty($editcontrol)}{$editcontrol}{/if} {if !empty($paginator)}{$paginator}{/if}
     </td>
     <td align="right" valign="middle">
-      {if isset($limit) && !empty($limit)}{$limit}{/if}
+      {if !empty($limit)}{$limit}{/if}
     </td>
   </tr>
 {/if}
-{if isset($list) && !empty($list)}
+{if !empty($list)}
 <tr>
   <td align="left" valign="top" colspan="2">
     {$list}
   </td>
 </tr>
 {/if}
-{if isset($norecordsfound) && !empty($norecordsfound)}
+{if !empty($norecordsfound)}
   <tr>
     <td align="left" valign="top">
       <i>{$norecordsfound}</i>
     </td>
   </tr>
 {/if}
-{if isset($paginator) && !empty($paginator) || isset($summary) && !empty($summary)}
+{if !empty($paginator) || !empty($summary)}
   <tr>
     <td align="left" valign="middle">
-      {if isset($paginator) && !empty($paginator)}{$paginator}{/if}
+      {if !empty($paginator)}{$paginator}{/if}
     </td>
     <td align="right" valign="middle">
-      {if isset($summary) && !empty($summary)}{$summary}{/if}
+      {if !empty($summary)}{$summary}{/if}
     </td>
   </tr>
 {/if}
-{if isset($bottom) && !empty($bottom)}
+{if !empty($bottom)}
 <tr>
   <td align="left" valign="top" colspan="2">
     {$bottom}
