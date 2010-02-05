@@ -468,7 +468,7 @@
       $editableActions = $this->getEditableActions($record);
       $selectedActions = $this->getSelectedActions($record);
 
-      $showSection = count($allActions) > 1 && ($isAdmin || count($editableActions) > 1);
+      $showSection = count($allActions) > 1;
 
       foreach ($allActions as $section => $modules)
       {

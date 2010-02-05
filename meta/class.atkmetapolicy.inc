@@ -689,7 +689,8 @@ class atkMetaPolicy
       atkuse("attribute", $type);
     elseif (atkexists("relation", $type))
       atkuse("relation", $type);
-    else atkimport($type);    
+    else if (!atkimport($type)) 
+      throw new Exception("Cannot import attribute of type {$type}");    
   }
   
   /**
@@ -1458,6 +1459,10 @@ class atkMetaPolicy
     }
 
     $destination = $this->_findDestination($accessor, true);
+    if (empty($destination))
+    {
+      throw new Exception("Cannot find destination for ".$this->getNode()->atkNodeType()."::hasMany({$accessor}, ...)");
+    }
 
     if (isset($options['through']))
     {
@@ -1486,6 +1491,10 @@ class atkMetaPolicy
       }
 
       $through = $this->_findDestination($options['through'], true);
+      if (empty($through))
+      {
+        throw new Exception("Cannot find intermediate node for ".$this->getNode()->atkNodeType()."::hasMany({$accessor}, array(through => {$options['through']}, ...))");
+      }      
 
       if (!isset($options['local']))
       {
@@ -1569,6 +1578,10 @@ class atkMetaPolicy
 
     // look-up destination node
     $destination = $this->_findDestination($accessor, false);
+    if (empty($destination))
+    {
+      throw new Exception("Cannot find destination for ".$this->getNode()->atkNodeType()."::hasOne($accessor, ...)");
+    }
 
     // explicit source given
     if (array_key_exists("source", $options))

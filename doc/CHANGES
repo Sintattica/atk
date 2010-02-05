@@ -9,11 +9,12 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
-+ Added atkNode::registerRecordActionsCallback(). This makes it possible to add
-  callbacks to a node that manipulate the record actions for a grid from outside 
-  of a node. The callback function has the same signature as 
-  atkNode::recordActions(). The old way: overriding atkNode::recordActions() is 
-  still possible. [Matthijs]
+* atkMetaPolicy now throws an exception when a destination (or link) node 
+  or a certain attribute class cannot be found. [Peter]
++ Added atkNode::registerRecordActionsCallback(). This makes it possible to 
+  manipulate the record actions for a grid from outside of a node. The 
+  callback function has the same signature as atkNode::recordActions(). 
+  Overriding atkNode::recordActions() is also still possible. [Matthijs]
 + Added atkAttribute::addDependency which replaces atkAttribute::addDependee
   and allows you to register a callback which is both called on the initial
   add/edit form generation and when the attribute changes value. The
