@@ -532,9 +532,9 @@ class atkDGList extends atkDGComponent
 
       $target = session_url(
         atkSelf().'?atknodetype=' . $grid->getNode()->atkNodeType()
-          . '&atktarget=' . (isset($postvars['atktarget']) ? $postvars['atktarget'] : '')
-          . '&atktargetvar=' . (isset($postvars['atktargetvar']) ? $postvars['atktargetvar'] : '')
-          . '&atktargetvartpl=' . (isset($postvars['atktargetvartpl']) ? $postvars['atktargetvartpl'] : '')
+          . '&atktarget=' . (!empty($postvars['atktarget']) ? $postvars['atktarget'] : '')
+          . '&atktargetvar=' . (!empty($postvars['atktargetvar']) ? $postvars['atktargetvar'] : '')
+          . '&atktargetvartpl=' . (!empty($postvars['atktargetvartpl']) ? $postvars['atktargetvartpl'] : '')
         ,
         SESSION_NESTED
       );
