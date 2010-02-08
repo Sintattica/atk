@@ -205,10 +205,22 @@
 
       if ($level === atkLevel() && $value==="" && atkarraynvl($_REQUEST, $var, "")!=="")
       {
-        $value = $_REQUEST[$var];
+        // Only read the value of the stack var from the request if this is the first
+        // call to stackVar for this var in this request without an explicit value. If
+        // we would this for every call without an explicit value we would overwrite values
+        // that are set somewhere between those calls.
+        static $requestStackVars = array();
+        if (!in_array($var, $requestStackVars))
+        {
+          $value = $_REQUEST[$var];
+          $requestStackVars[] = $var;
+        }
       }
 
-      if ($value!=="") $currentitem[$var] = $value;
+      if ($value!=="") 
+      {
+        $currentitem[$var] = $value;
+      }
 
       if (!is_array(atkArrayNvl($currentitem, "defined_stackvars")) || !in_array($var, $currentitem["defined_stackvars"]))
       {

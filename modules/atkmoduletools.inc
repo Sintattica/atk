@@ -109,6 +109,7 @@
   function &atkGetNode($node, $init=TRUE, $cache_id="default", $reset=false)
   {
     global $g_nodeRepository;
+    $node = strtolower($node); // classes / directory names should always be in lower-case
     if (!isset($g_nodeRepository[$cache_id][$node])||!is_object($g_nodeRepository[$cache_id][$node]) || $reset)
     {
       atkdebug("Constructing a new node - $node");
@@ -132,6 +133,7 @@
   function &atkSetNode($nodename, &$node, $cache_id="default")
   {
     global $g_nodeRepository;
+    $nodename = strtolower($nodename); // classes / directory names should always be in lower-case    
     $org = &$g_nodeRepository[$cache_id][$nodename];
     $g_nodeRepository[$cache_id][$nodename] = &$node;
     return $org;
@@ -271,6 +273,7 @@
    */
   function &newNode($node, $init=TRUE)
   {
+    $node = strtolower($node); // classes / directory names should always be in lower-case
     $module = getNodeModule($node);
 
     if ($module=="")
