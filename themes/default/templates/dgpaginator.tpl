@@ -3,7 +3,7 @@
     |
   {/if}
   
-  {if isset($link.current)}
+  {if isset($link.current) && $link.current}
     <b>{$link.title}</b>
   {else}
     <a href="javascript:void(0)" onclick="{$link.call|escape}" title="{$link.title|escape}">{$link.title|escape}</a>
