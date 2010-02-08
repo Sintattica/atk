@@ -308,7 +308,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     }
 
     $actions[] = 'delete';
-    $this->collectRecordActions($record, $actions);
+    $this->recordActions($record, $actions);
 
     // Call the renderButton action for those actions
     $actionLinks = array();
