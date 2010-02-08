@@ -687,7 +687,7 @@
      * @param array $record Array with fields
      * @return string Filename or Nothing
      */
-    function display($record)
+    function display($record, $mode = "")
     {
       // Get random number to use as param when displaying images
       // while updating images was not allways visible due to caching
@@ -884,7 +884,7 @@
      *                            of any html form element for this attribute.
      * @return string Piece of htmlcode
      */
-    function hide($record="", $fieldprefix)
+    function hide($record = "", $fieldprefix = "")
     {
       $field = $record[$this->fieldName()];
 
