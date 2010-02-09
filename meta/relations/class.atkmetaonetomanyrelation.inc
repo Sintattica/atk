@@ -43,16 +43,29 @@ class atkMetaOneToManyRelation extends atkOneToManyRelation
    */
   public function __construct($name, $destination, $template, $options, $flags=0)
   {
-    $refKey = isset($options['dest']) ? $options['dest'] : (isset($options['destination']) ? $options['destination'] : '?');
+    if (isset($options['dest']))
+    {
+      $refKey = $options['dest'];
+    }
+    else if (isset($options['destination']))
+    {
+      $refKey = $options['destination'];
+    }
+    else
+    {
+      $refKey = '?';
+    }
 
     parent::__construct($name, $destination, $refKey, $flags);
     
-    $this->m_variants = (array)@$options['variants'];
+    $this->m_variants = isset($options['variants']) ? (array) $options['variants'] : array();
 
     $this->setDescriptorTemplate($template);
 
-    if (isset($options["filter"])) 
+    if (isset($options["filter"]))
+    {
       $this->setDestinationFilter($options["filter"]);
+    }
   }
 
   /**
