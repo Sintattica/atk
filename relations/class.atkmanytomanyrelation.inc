@@ -47,6 +47,7 @@
     var $m_localFilter = NULL;
   
     protected $m_ownerFields = null;
+    protected $m_limit;
   
     /**
      * Constructor
