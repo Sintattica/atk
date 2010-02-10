@@ -121,7 +121,7 @@
      * @param string $date the date string
      * @return array with 3 fields (day, month, year)
      */
-    function dateArray($date=null)
+    static public function dateArray($date=null)
     {
     	if ($date == null)
     	{
@@ -540,7 +540,7 @@
       }
       else
       {
-        $date = $this->dateArray($field);
+        $date = self::dateArray($field);
         if ($this->checkDateArray($date))
         {
           $current = adodb_mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
@@ -1031,7 +1031,7 @@
 
         $arr = $this->parseDate($value, $formats);
         if ($arr['day'] == 0 || $arr['month'] == 0 || $arr['year'] == 0)
-          return $this->dateArray(adodb_date("Ymd", strtotime($value)));
+          return self::dateArray(adodb_date("Ymd", strtotime($value)));
         else return $arr;
       }
 
@@ -1050,7 +1050,7 @@
       $value = &$record[$this->fieldName()];
 
       /* array or no array */
-      if (!is_array($value)) $value = $this->dateArray(adodb_date("Ymd", strtotime($value)));
+      if (!is_array($value)) $value = self::dateArray(adodb_date("Ymd", strtotime($value)));
 
       /* if not obligatory and one of the fields is null then the date will be saved as null */
       if (!$this->hasFlag(AF_OBLIGATORY) && (empty($value["year"]) || empty($value["month"]) || empty($value["day"]))) return;
@@ -1084,7 +1084,7 @@
       $str_min = $this->m_date_min;
       if (strlen($str_min) == 8)
       {
-        $date = $this->dateArray($str_min);
+        $date = self::dateArray($str_min);
         if ($this->checkDateArray($date))
           $minimum = adodb_mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
         else $str_min = 0;
@@ -1095,7 +1095,7 @@
       $str_max = $this->m_date_max;
       if (strlen($str_max) == 8)
       {
-        $date = $this->dateArray($str_max);
+        $date = self::dateArray($str_max);
         if ($this->checkDateArray($date))
           $maximum = adodb_mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
         else $str_max = 0;
