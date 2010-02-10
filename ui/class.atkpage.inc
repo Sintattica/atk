@@ -114,7 +114,7 @@
      * Retrieve the one-and-only atkPage instance.
      * @return atkPage
      */
-    function &getInstance()
+    static public function &getInstance()
     {
       static $s_page = NULL;
       if ($s_page == NULL)

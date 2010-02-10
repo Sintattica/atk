@@ -52,7 +52,7 @@
      *
      * @return atkUI
      */
-    function &getInstance()
+    static public function &getInstance()
     {
       static $s_instance = NULL;
 

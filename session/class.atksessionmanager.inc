@@ -358,7 +358,7 @@
     protected function _touchCurrentStack()
     {
       global $g_sessionData;
-      $g_sessionData[$this->m_namespace]["stack_stamp"][atkStackId()] = mktime();
+      $g_sessionData[$this->m_namespace]["stack_stamp"][atkStackId()] = time();
     }
 
     /**
@@ -376,7 +376,7 @@
         return;
       }
 
-      $now = mktime();
+      $now = time();
       $stacks = &$g_sessionData[$this->m_namespace]['stack'];
       $stackStamps = $g_sessionData[$this->m_namespace]["stack_stamp"];
       $stackIds = array_keys($stacks);
@@ -841,7 +841,7 @@
      * @static
      * @return array The application aware php session.
      */
-    public function &getSession()
+    static public function &getSession()
     {
       if (!isset($_SESSION[atkconfig("identifier")]) || !is_array($_SESSION[atkconfig("identifier")]))
         $_SESSION[atkconfig("identifier")] = array();
@@ -859,7 +859,7 @@
      * @static
      * @return int the new session level
      */
-    public function newLevel($sessionstatus=SESSION_DEFAULT, $levelskip=null)
+    static public function newLevel($sessionstatus=SESSION_DEFAULT, $levelskip=null)
     {
       $currentlevel = atkLevel();
 
@@ -913,7 +913,7 @@
      * @static
      * @return int the new session level
      */
-    public function oldLevel($sessionstatus = SESSION_DEFAULT, $levelskip = null)
+    static public function oldLevel($sessionstatus = SESSION_DEFAULT, $levelskip = null)
     {
       $level = atkLevel();
       if ($sessionstatus == SESSION_REPLACE && $levelskip !== null)
@@ -983,7 +983,7 @@
      * @param string $url         the URL
      * @return array the vars of the session
      */
-    public function sessionVars($sessionstatus=SESSION_DEFAULT, $levelskip=null, $url="")
+    static public function sessionVars($sessionstatus=SESSION_DEFAULT, $levelskip=null, $url="")
     {
       global $g_stickyurl;
 
@@ -1026,7 +1026,7 @@
      * @static
      * @return string the session aware URL
      */
-    public function sessionUrl($url,$sessionstatus=SESSION_DEFAULT, $levelskip=null)
+    static public function sessionUrl($url,$sessionstatus=SESSION_DEFAULT, $levelskip=null)
     {
       if (strpos($url,"?")!==false)
       {
@@ -1061,7 +1061,7 @@
      * @static
      * @return string the HTML link for the session aware URI
      */
-    public function href($url,$name="",$sessionstatus=SESSION_DEFAULT, $saveform=false, $extraprops="")
+    static public function href($url,$name="",$sessionstatus=SESSION_DEFAULT, $saveform=false, $extraprops="")
     {
       if ($saveform)
       {

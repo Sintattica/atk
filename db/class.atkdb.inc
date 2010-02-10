@@ -280,7 +280,7 @@
      * @return mixed current database mapping (null if inactive)
      * @static
      */
-    function getMapping()
+    static public function getMapping()
     {
       return atkDb::_getOrUseMapping();
     }
@@ -305,7 +305,7 @@
      * @param string $name database name
      * @static
      */
-    function getTranslatedDatabaseName($name)
+    static public function getTranslatedDatabaseName($name)
     {
       $mapping = atkDb::getMapping();
       return $mapping === NULL || !isset($mapping[$name]) ? $name : $mapping[$name];
@@ -318,7 +318,7 @@
      * @return mixed current database mapping (null if inactive)
      * @static
      */
-    function _getOrUseMapping($mapping="get")
+    static protected function _getOrUseMapping($mapping="get")
     {
       static $s_mapping = NULL;
       if ($mapping !== "get")
@@ -1301,7 +1301,7 @@
      * @param String $mode The mode to connect with the database
      * @return atkDb Instance of the database class.
      */
-    public function &getInstance($conn="default", $reset=false, $mode="rw")
+    static public function &getInstance($conn="default", $reset=false, $mode="rw")
     {
       global $g_dbinstances;
 
