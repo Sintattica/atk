@@ -1988,7 +1988,10 @@
       if (getenv("HTTP_CLIENT_IP"))
         $s_ip = getenv("HTTP_CLIENT_IP");
       elseif (getenv("HTTP_X_FORWARDED_FOR"))
-        $s_ip = getenv("HTTP_X_FORWARDED_FOR");
+      {
+        $ipArray = explode(",", getenv("HTTP_X_FORWARDED_FOR"));
+        $s_ip = $ipArray[0];
+      }      
       elseif (getenv("REMOTE_ADDR"))
         $s_ip = getenv("REMOTE_ADDR");
       else $s_ip = 'x.x.x.x';
