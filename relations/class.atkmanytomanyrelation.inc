@@ -628,7 +628,7 @@
   
       $selectedRecordsByKey = $this->_extractSelectedRecordsByKey($record);
       $selectedRecordsKeys = array_keys($selectedRecordsByKey);
-  
+
       // first delete the existing records that aren't selected anymore
       $deleteKeys = array_diff($existingRecordsKeys, $selectedRecordsKeys);
   

@@ -274,17 +274,20 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   {
     // If the parent class didn't manage to update the record
     // then don't attempt to perform this update
-    if(!parent::_updateRecord($record, $index))
+    if (!parent::_updateRecord($record, $index))
+    {
       return false;
+    }
 
-    if($this->hasPositionAttribute())
+    if ($this->hasPositionAttribute())
     {
       $record[$this->getPositionAttribute()] = $index + 1;
-      if(!$this->getLink()->updateDb($record, true))
+      if (!$this->getLink()->updateDb($record, true, '', array($this->getPositionAttribute())))
       {
         return false;
       }
     }
+    
     return true;
   }
 
