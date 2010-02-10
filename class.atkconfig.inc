@@ -295,9 +295,13 @@
    */
   function atkconfig($tag, $default="")
   {
-    $fn = 'config_'.$tag;
-    if (function_exists($fn)) return $fn();
-    return (isset($GLOBALS["config_".$tag])?$GLOBALS["config_".$tag]:$default);
+    $cfgName = 'config_'.$tag;
+    if (function_exists($cfgName)) 
+    {
+      return $cfgName();
+    }
+
+    return isset($GLOBALS[$cfgName]) ? $GLOBALS[$cfgName] : $default;
   }
 
   /**
