@@ -1831,13 +1831,9 @@ class atkManyToOneRelation extends atkRelation
 
       foreach ($parts as $part)
       {
-
-        $part = trim($part);
-
-        list($field, $fieldDirection) = preg_split('/\s+/', $part);
-
-        $fieldDirection = strtoupper($fieldDirection);
-        $fieldDirection = empty($fieldDirection) ? 'ASC' : $fieldDirection;
+        $split = preg_split('/\s+/', trim($part));
+        $field = isset($split[0]) ? $split[0] : null;
+        $fieldDirection = empty($split[1]) ? 'ASC' : strtoupper($split[1]);
 
         // if our default direction is DESC (the opposite of the default ASC)
         // we always have to switch the given direction to be the opposite, e.g.
