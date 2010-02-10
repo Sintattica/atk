@@ -68,7 +68,7 @@ class atkStatementParser
 
   /**
    * Parses the SQL query. Replaced any named bind parameter by anonymous bind
-   * parameters and saved the positions of the bind parameters in an array.
+   * parameters and saves the positions of the bind parameters in an array.
    */
   private function _parse()
   {
@@ -79,7 +79,7 @@ class atkStatementParser
     $quoteChars = array_flip(str_split(self::QUOTE_CHARS));
     $quoteChar = null;
 
-    for ($i = 0, $strlen = strlen($query); $i < $strlen; $i++)
+    for ($i = 0; $i < strlen($query); $i++)
     {
       $char = $query{$i};
 
@@ -100,7 +100,7 @@ class atkStatementParser
       }
       else if ($quoteChar == null && $char == ':')
       {
-        if (preg_match("/^:(\w+)/", substr($query, $i), $matches))
+        if (preg_match('/^:(\w+)/', substr($query, $i), $matches))
         {
           $name = $matches[1];
           $bindPositions[$i] = $name;
