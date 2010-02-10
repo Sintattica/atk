@@ -79,7 +79,7 @@ class atkStatementParser
     $quoteChars = array_flip(str_split(self::QUOTE_CHARS));
     $quoteChar = null;
 
-    for ($i = 0; $i < strlen($query); $i++)
+    for ($i = 0, $length = strlen($query); $i < $length; $i++)
     {
       $char = $query{$i};
 
@@ -105,6 +105,7 @@ class atkStatementParser
           $name = $matches[1];
           $bindPositions[$i] = $name;
           $query = substr($query, 0, $i).'?'.substr($query, $i + strlen($name) + 1);
+          $length = strlen($query);
         }
       }
     }
