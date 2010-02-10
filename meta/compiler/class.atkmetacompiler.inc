@@ -161,7 +161,7 @@ class atkMetaCompiler
   {
     $type = $data['type'];
     $params = $data['params'];
-    $flags = (int)$data['flags'];
+    $flags = isset($data['flags']) ? (int)$data['flags'] : 0;
     $tabs = isset($data['tabs']) ? $data['tabs'] : null;
     $order = $data['order'];
 
