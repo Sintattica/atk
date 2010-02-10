@@ -889,7 +889,7 @@
       {
         $grid = $this->createGrid($record, $mode == 'copy' ? 'copy' : 'admin', $mode, false);
         $grid->setPostvar('atklimit', -1); // all records
-        $grid->setCountHandler(array(get_class(), '___dummyCount')); // don't count
+        $grid->setCountHandler(array($this, '___dummyCount')); // don't count
         $grid->loadRecords();
         $result = $grid->getRecords();
         $grid->destroy(); // clean-up
@@ -1089,7 +1089,7 @@
      *
      * @return String An empty string.
      */
-    function hide()
+    function hide($record = '', $fieldprefix = '')
     {
       //Nothing to hide..
       return "";
