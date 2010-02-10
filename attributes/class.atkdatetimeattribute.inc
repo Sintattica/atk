@@ -177,7 +177,10 @@
         $datetime = date("YmdHis");
       $date = substr($datetime, 0, 8);
       $time = substr($datetime, 8, 6);
-      return array_merge(atkDateAttribute::dateArray($date), atkTimeAttribute::timeArray($time));
+      return array_merge(
+        atkDateAttribute::dateArray($date), 
+        atkTimeAttribute::timeArray($time)
+      );
     }
 
     /**
@@ -316,26 +319,36 @@
          * array of the time attribute).
          */
         if ($rec[$this->fieldName()] == "0000-00-00 00:00:00")
+        {
           return "";
+        }
 
-        $datetime = explode(" ",$rec[$this->fieldname()]);
-
-        $tmp_rec = $rec;
-        $tmp_rec[$this->fieldname()]=$datetime[0];
-        $result_date=$this->m_date->db2value($tmp_rec);
-        if ($result_date == NULL) return NULL;
+        $datetime = explode(" ", $rec[$this->fieldname()]);
 
         $tmp_rec = $rec;
-        $tmp_rec[$this->fieldname()]=$datetime[1];
+        $tmp_rec[$this->fieldname()] = $datetime[0];
+        $result_date = $this->m_date->db2value($tmp_rec);
+        if ($result_date == NULL)
+        {
+          return NULL;
+        }
+
+        $tmp_rec = $rec;
+        $tmp_rec[$this->fieldname()] = isset($datetime[1]) ? $datetime[1] : null;
         $result_time = $this->m_time->db2value($tmp_rec);
         if ($result_time == NULL)
+        {
           $result_time = array('hours' => '00', 'minutes' => '00', 'seconds' => '00');
+        }
 
         $value = array_merge((array)$result_date,(array)$result_time);
         $value = $this->fromUTC($value, $tmp_rec);
         return $value;
       }
-      else return NULL;
+      else
+      {
+        return NULL;
+      }
     }
 
     /**
