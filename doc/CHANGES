@@ -202,6 +202,8 @@ Changes in ATK 6.5
   or use the new $useLimit parameter and set it to true. [Peter, Tjeerd]
 * Fixed parameter order in atkText call inside the sessionmanager::stacktrace
   function. [Guido]
+* Fixed the lack of support for NF_NO_ADD and NF_NO_DELETE 
+  on atkmanytomanyselectrelation. [pmatthews]
 
 Changes in prior versions
 -------------------------

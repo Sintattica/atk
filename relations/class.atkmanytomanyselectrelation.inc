@@ -310,7 +310,11 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
       $actions[] = 'edit';
     }
 
-    $actions[] = 'delete';
+    if (!$this->getLink()->hasFlag(NF_NO_DELETE))
+    {
+      $actions[] = 'delete';
+    }
+
     $this->recordActions($record, $actions);
 
     // Call the renderButton action for those actions
@@ -322,12 +326,17 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
         $actionLinks[] = $actionLink;
     }
 
+    $htmlActionLinks = '';
+    if(count($actionLink))
+    {
+      $htmlActionLinks = '('.implode(' / ', $actionLinks).')';
+    }
     // Build the record
     $result = '
       <li class="atkmanytomanyselectrelation-selected">
       <input type="hidden" name="'.$name.'" value="'.atk_htmlentities($key).'"/>
       <span>'.atk_htmlentities($this->getDestination()->descriptor($record)).'</span>
-      ('.implode(' / ', $actionLinks).')
+      '.$htmlActionLinks.'
       </li>
       ';
 
@@ -399,6 +408,11 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
    */
   protected function renderAdditionField($record, $fieldprefix, $mode)
   {
+    if ($this->getLink()->hasFlag(NF_NO_ADD))
+    {
+      return '';
+    }
+
     $url = partial_url($this->getOwnerInstance()->atkNodeType(), $mode, 'attribute.'.$this->fieldName().'.selectedrecord', array('fieldprefix' => $fieldprefix));
 
     $relation = $this->getManyToOneRelation();
