@@ -62,6 +62,13 @@
     var $m_restrictions;
 
     /**
+     * Salt to use when encoding our password
+     *
+     * @var string
+     */
+    private $m_salt = '';
+
+    /**
      * Constructor
      * @param string $name Name of the attribute
      * @param bool $generate Generate password (boolean)
@@ -101,7 +108,7 @@
      */
     function encode($value)
     {
-      return $this->hasFlag(AF_PASSWORD_NO_ENCODE) ? $value : md5($value);
+      return $this->hasFlag(AF_PASSWORD_NO_ENCODE) ? $value : md5($this->getSalt() . $value);
     }
 
     /**
@@ -563,5 +570,25 @@
       return false;
     }
 
+    /**
+     * Set the salt we're using for encoding passwords. Passwords will be
+     * prefixed with this salt.
+     *
+     * @param string $salt the salt we should use
+     */
+    public function setSalt($salt)
+    {
+        $this->m_salt = (string) $salt;
+    }
+
+    /**
+     * Returns the salt we're currently using for encoding passwords.
+     *
+     * @return string the salt we're using
+     */
+    public function getSalt()
+    {
+        return $this->m_salt;
+    }
   }
 ?>
