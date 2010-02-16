@@ -32,15 +32,31 @@
   class atkViewEditBase extends atkActionHandler
   {
     /**
-     * Get the record to view/edit
+     * Holds the record for the node. It is cached as long as the instance
+     * exists, unless we force a reload.
      *
+     * @var array
+     */
+    private $m_record = null;
+
+    /**
+     * Get the record to view/edit. It is cached as long as the instance
+     * exists, unless we force a reload.
+     *
+     * @param bool $force Whether or not to force the fetching of the record
      * @return Array The record for viewing/editting
      */
-    public function getRecord()
+    public function getRecord($force = false)
     {
+      // if we are not forcing a fetch and we already have a cached record, return it
+      if ($force === false && $this->m_record !== null)
+      {
+          return $this->m_record;
+      }
+
       $record = $this->getRejectInfo(); // Check reject info first
 
-      if ($record == null) //If reject info not set -  do select
+      if ($record == null) // If reject info not set -  do select
       {
         $atkstoretype = "";
         $sessionmanager = atkGetSessionManager();
@@ -51,6 +67,10 @@
           default:        $record = $this->getRecordFromDb(); break;
         }
       }
+
+      // cache the record
+      $this->m_record = $record;
+
       return $record;
     }
 
@@ -62,7 +82,7 @@
     protected function getRecordFromDb()
     {
       $selector = atkArrayNvl($this->m_node->m_postvars, 'atkselector', "");
-      list($record) = $this->m_node->selectDb($selector,"","","","","edit");
+      $record = $this->m_node->select($selector)->mode('edit')->getFirstRow();
       return $record;
     }
 

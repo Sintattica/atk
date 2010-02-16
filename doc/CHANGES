@@ -9,6 +9,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Added record caching to atkViewEditBase::getRecord(). The record is now cached
+  as long as the handler instance exists, unless we call getRecord with a  
+  boolean true argument. This forces the record to be fetched again. [Matthijs]
 + Added setSalt and getSalt methods to the atkPasswordAttribute to allow using
   a salt when encoding the passwords [Harrie]
 * Fixed atkSessionManager::stackVar so that it doesn't keep overwriting the
