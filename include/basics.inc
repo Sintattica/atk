@@ -23,4 +23,10 @@
   require_once($config_atkroot."atk/utils/class.atkstring.inc");
   require_once($config_atkroot."atk/atktools.inc");
   require_once($config_atkroot."atk/utils/class.atkclassloader.inc");
+  
+  $locale = atktext('locale', 'atk');
+  if ($locale != null)
+  {
+    setlocale(LC_TIME, $locale);
+  }
 ?>
