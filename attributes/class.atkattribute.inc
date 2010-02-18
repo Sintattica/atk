@@ -2776,7 +2776,12 @@
 
       atkimport('atk.utils.atkjson');
       
-      $action = $mode == "add" ? "add" : "edit";
+      $action = $this->getOwnerInstance()->m_action;
+      if ($action == null)
+      {
+        $action = $mode == "add" ? "add" : "edit";
+      }
+      
       $url = partial_url($this->getOwnerInstance()->atkNodeType(), $action, "attribute.".$this->fieldName().".dependencies", array("atkdata" => array('fieldPrefix' => $fieldPrefix, 'mode' => $mode)));
       $url = atkJSON::encode($url);
       
