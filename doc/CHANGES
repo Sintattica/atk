@@ -9,6 +9,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Fixed atkDirectoryTraverser warnings on reading unreadable dirs. [Dennis]
 + Set the time locale based on the locale specified in the language file. [Peter]
 * Changed default locale for "nl" to UTF-8. [Peter]
 * Added record caching to atkViewEditBase::getRecord(). The record is now cached

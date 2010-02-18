@@ -90,7 +90,7 @@
       {
         $this->_callback("visitFile", $path);
         return true;
-      }
+      } 
       elseif (@is_dir($path))
       {
         $this->_callback("visitDir", $path);
@@ -117,15 +117,15 @@
     function getDirContents($path)
     {
       $result = array();
-      $dir = opendir($path);
-      while (($file = readdir($dir)) !== false)
+      $dir = @opendir($path);
+      while (($file = @readdir($dir)) !== false)
       {
         if (!$this->isExcluded($file))
         {
           $result[] = $file;
         }
       }
-      closedir($dir);
+      @closedir($dir);
       sort($result);
       return $result;
     }
