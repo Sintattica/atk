@@ -9,6 +9,11 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Filtering the results displayed in the manytomanyselectrelation so you don't
+  get multiple entries for the same relation. This ususally happens when you
+  add more than one result between saving. [pmatthews]
+* Fixed the lack of support for NF_NO_ADD and NF_NO_DELETE 
+  on atkmanytomanyselectrelation. [pmatthews]
 * Fixed atkDirectoryTraverser warnings on reading unreadable dirs. [Dennis]
 + Set the time locale based on the locale specified in the language file. [Peter]
 * Changed default locale for "nl" to UTF-8. [Peter]
@@ -210,8 +215,6 @@ Changes in ATK 6.5
   or use the new $useLimit parameter and set it to true. [Peter, Tjeerd]
 * Fixed parameter order in atkText call inside the sessionmanager::stacktrace
   function. [Guido]
-* Fixed the lack of support for NF_NO_ADD and NF_NO_DELETE 
-  on atkmanytomanyselectrelation. [pmatthews]
 
 Changes in prior versions
 -------------------------

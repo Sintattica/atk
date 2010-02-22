@@ -173,16 +173,8 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
 
     $id = $this->getHtmlId($fieldprefix);
     $selectId = "{$id}_selection";
-    $selectedKeys = $this->getSelectedRecords($record);
 
-    if (isset($record[$this->getManyToOneRelation()->fieldName()]) && is_array($record[$this->getManyToOneRelation()->fieldName()]))
-    {
-      $selectedKeys[] = $this->getDestination()->primaryKey($record[$this->getManyToOneRelation()->fieldName()]);
-    }
-    if (isset($this->getOwnerInstance()->m_postvars[$id.'_newsel']))
-    {
-      $selectedKeys[] = $this->getOwnerInstance()->m_postvars[$id.'_newsel'];
-    }
+    $selectedKeys = $this->getSelectedKeys($record, $id);
 
     $selectedRecords = array();
     if (count($selectedKeys) > 0)
@@ -219,6 +211,39 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     return $result;
   }
 
+  /**
+   * Return the selected keys for a given record
+   *
+   * @param array $record The record that holds the value for this attribute.
+   * @param String $id is the html id of the relation
+   * @param int $uniqueFilter is the type of array_unique filter to use on 
+   *            the results. Use boolean false to dissable
+   *
+   * @return array of selected keys in the order they were submitted
+   */
+  public function getSelectedKeys($record, $id, $uniqueFilter = SORT_STRING)
+  {
+    // Get Existing selected records
+    $selectedKeys = $this->getSelectedRecords($record);
+
+    // Get records added this time
+    if (isset($record[$this->getManyToOneRelation()->fieldName()]) && is_array($record[$this->getManyToOneRelation()->fieldName()]))
+    {
+      $selectedKeys[] = $this->getDestination()->primaryKey($record[$this->getManyToOneRelation()->fieldName()]);
+    }
+
+    // Get New Selection records
+    if (isset($this->getOwnerInstance()->m_postvars[$id.'_newsel']))
+    {
+      $selectedKeys[] = $this->getOwnerInstance()->m_postvars[$id.'_newsel'];
+    }
+    if($enforceUnique !== false)
+    {
+      $selectedKeys = array_unique($selectedKeys, $enforceUnique);
+    }
+
+    return $selectedKeys;
+  }
 
   /**
    * Load function.
