@@ -221,7 +221,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
    *
    * @return array of selected keys in the order they were submitted
    */
-  public function getSelectedKeys($record, $id, $uniqueFilter = SORT_STRING)
+  public function getSelectedKeys($record, $id, $uniqueFilter = true)
   {
     // Get Existing selected records
     $selectedKeys = $this->getSelectedRecords($record);
@@ -237,9 +237,9 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     {
       $selectedKeys[] = $this->getOwnerInstance()->m_postvars[$id.'_newsel'];
     }
-    if($enforceUnique !== false && is_array($selectedKeys) && count($selectedKeys))
+    if($enforceUnique && is_array($selectedKeys) && count($selectedKeys))
     {
-      $selectedKeys = array_unique($selectedKeys, $enforceUnique);
+      $selectedKeys = array_unique($selectedKeys);
     }
 
     return $selectedKeys;
