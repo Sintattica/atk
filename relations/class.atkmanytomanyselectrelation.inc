@@ -237,7 +237,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     {
       $selectedKeys[] = $this->getOwnerInstance()->m_postvars[$id.'_newsel'];
     }
-    if($enforceUnique !== false)
+    if($enforceUnique !== false && is_array($selectedKeys) && count($selectedKeys))
     {
       $selectedKeys = array_unique($selectedKeys, $enforceUnique);
     }
