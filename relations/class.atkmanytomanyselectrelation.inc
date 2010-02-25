@@ -58,6 +58,13 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   private $m_positionAttribute;
 
   /**
+   * The html to be output next to a positional attribute label
+   *
+   * @var string
+   */
+  private $m_positionAttributeHtmlModifier;
+
+  /**
    * Constructs a new many-to-many select relation.
    *
    * @param string $name        The name of the relation
@@ -535,11 +542,14 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
    * in the join table that denotes the position of the item in the set.
    *
    * @param string $attr the position attribute/column name of the join
+   * @param string $htmlIdentifier is the html string to add to the end of the label. 
+   *        Defaults to an up down image.
    * @return void
    */
-  public function setPositionAttribute($attr)
+  public function setPositionAttribute($attr, $htmlIdentifier = null)
   {
     $this->m_positionAttribute = $attr;
+    $this->m_positionAttributeHtmlModifier = $htmlIdentifier;
   }
 
   /**
@@ -562,5 +572,40 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   public function hasPositionAttribute()
   {
     return $this->getPositionAttribute() != null;
+  }
+
+  /**
+   * Get the HTML label of the attribute.
+   *
+   * The difference with the label() method is that the label method always
+   * returns the HTML label, while the getLabel() method is 'smart', by
+   * taking the AF_NOLABEL and AF_BLANKLABEL flags into account.
+   *
+   * @param array $record The record holding the value for this attribute.
+   * @param string $mode The mode ("add", "edit" or "view")
+   * @return String The HTML compatible label for this attribute, or an
+   *                empty string if the label should be blank, or NULL if no
+   *                label at all should be displayed.
+   */
+  function getLabel($record = array(), $mode='')
+  {
+    $additional = '';
+    if($this->hasPositionAttribute())
+    {
+      if(is_null($this->m_positionAttributeHtmlModifier))
+      {
+        $additional = ' <img src="' . $config['atkroot'] . 'atk/images/up-down.gif" 
+          width="10" height="10" 
+          alt="Sortable Ordering" 
+          title="Sortable Ordering" />';
+      }
+      else
+      {
+        $additional = $this->m_positionAttributeHtmlModifier;
+      }
+
+    }
+
+    return parent::getLabel($record, $mode) . $additional;
   }
 }
