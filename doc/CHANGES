@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Exposed getAddURL as protected method on atkOneToManyRelation, allowing
+  you to change the URL that is used as the 'add a new x'. [Boy]
 * Filtering the results displayed in the manytomanyselectrelation so you don't
   get multiple entries for the same relation. This ususally happens when you
   add more than one result between saving. [pmatthews]

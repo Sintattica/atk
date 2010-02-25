@@ -681,17 +681,17 @@
       $filter = $this->getAddFilterString($record);
       if (!empty($filter)) $params['atkfilter'] = $filter;
 
-      $add_url = dispatch_url($this->m_destination, "add", $params);
-      $label = $this->getAddLabel();
-
       $onchange = '';
       if (count($this->m_onchangecode))
       {
         $onchange = 'onChange="'.$this->fieldName().'_onChange(this);"';
         $this->_renderChangeHandler($fieldprefix);
       }
-      $url = href($add_url, $label, SESSION_NESTED, $saveform, $onchange.' class="atkonetomanyrelation"');
-      return $url;
+
+      $add_url = $this->getAddURL($params);
+      $label   = $this->getAddLabel();
+
+      return href($add_url, $label, SESSION_NESTED, $saveform, $onchange.' class="atkonetomanyrelation"');
     }
 
     /**
@@ -751,6 +751,11 @@
       }
 
       return $prefix . $columnName;
+    }
+
+    protected function getAddURL($params=array())
+    {
+      return dispatch_url($this->m_destination, "add", $params);
     }
 
     /**
