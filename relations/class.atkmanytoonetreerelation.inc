@@ -34,8 +34,6 @@
    */
   class atkManyToOneTreeRelation extends atkManyToOneRelation
   {
-
-
     var $m_current = "";
     var $m_level = "";
 
@@ -62,7 +60,6 @@
      */
     function edit($record="", $fieldprefix="", $mode="")
     {
-      global $m_current;
       $this->createDestination();
       $tmp1=atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey);
       $tmp2=atk_array_merge($tmp1,array($this->m_destInstance->m_parent));
@@ -71,7 +68,7 @@
         $this->m_destInstance->addFilter(stringparse($this->m_destinationFilter,$record));
       }
       $recordset = $this->m_destInstance->selectDb("",$this->m_destInstance->m_primaryKey[0],"","",$tmp2);
-      $m_current = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+      $this->m_current = $this->m_ownerInstance->primaryKey($record);
       $result = '<select name="'.$fieldprefix.$this->formName().'">';
 
       if ($this->hasFlag(AF_OBLIGATORY)==false)
@@ -137,19 +134,30 @@
      */
     function render($tree="",$level=0)
     {
-      global $m_current,$m_level;
       $res="";
       while (list($id,$objarr) = each($tree))
       {
-       if($m_current == $this->m_destInstance->m_table.".".$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'") { $sel="SELECTED";$m_level=$level; } else { $sel=""; }
+        $i++;
+        if($this->m_current != $this->m_destInstance->m_table.".".$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'")
+        {
+          $this->m_level=$level;
+          $sel = "";
+        }
+        else
+        {
+          // if equal, select the option it and do not render childs (parent cannot be moved to a childnode of its own)
+          $sel="SELECTED";
+        }
+
         $res.= '<option value="'.$this->m_destInstance->m_table.".".$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'".'" '.$sel.'>'.str_repeat("-",(2*$level))." ".$objarr->m_label;
+
         if (count($objarr->m_sub)>0 && $sel=="")
         {
-          $res.=$this->render($objarr->m_sub, $level+1);
+         $res.=$this->render($objarr->m_sub, $level+1);
         }
-      }
-      $m_level=0;
-      return $res;
+     }
+     $this->m_level=0;
+     return $res;
     }
   }
 ?>
