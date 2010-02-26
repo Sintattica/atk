@@ -264,7 +264,7 @@
 
      if (is_array($matches) && sizeof($matches) == 2)
      {
-       atkdebug("<b>Fallback feature called because error '1100' occured during the last query. Running query again using table lock for table '{$matches[1]}' (".$this->m_link_id.").</b>");
+       atkdebug("<b>Fallback feature called because error '1100' occured during the last query. Running query again using table lock for table '{$matches[1]}'.</b>");
        $table = $matches[1];
 
        if ($this->m_query_id)
