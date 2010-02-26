@@ -1306,6 +1306,16 @@
     }
 
     /**
+     * Returns the current partial name.
+     * 
+     * @return string partial name
+     */
+    public function getPartial()
+    {
+      return $this->m_partial;
+    }
+    
+    /**
      * Is partial request?
      *
      * @return boolean is partial
@@ -4239,6 +4249,16 @@
     public function getModule()
     {
       return $this->m_module;
+    }
+    
+    /**
+     * Returns the current action for this node.
+     * 
+     * @return string action
+     */
+    public function getAction()
+    {
+      return $this->m_action;
     }
 
     /**

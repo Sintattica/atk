@@ -69,11 +69,32 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
   protected $m_indices = null;
 
   /**
-   * Statement.
+   * Current iterator instance (if iterator is used).
+   * 
+   * @var atkSelectorIterator
+   */
+  private $m_iterator = null;
+  
+  /**
+   * Current statement object (if iterator is used).
    *
    * @var atkStatement
    */
-  protected $m_stmt = null;
+  private $m_stmt = null;
+  
+  /**
+   * Current query object (if iterator is used).
+   * 
+   * @var atkQuery 
+   */
+  private $m_query = null;
+  
+  /**
+   * Current attributes by load type (if iterator is used).
+   * 
+   * @var array
+   */
+  private $m_attrsByLoadType = null;
 
   /**
    * Constructor.
@@ -673,6 +694,23 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
 
     return $rows;
   }
+  
+  /**
+   * Transform raw database row to node compatible row for the current iterator.
+   * 
+   * @param array $row raw database row
+   * 
+   * @return array node compatible row
+   */
+  public function transformRow($row)
+  {
+    if ($this->m_iterator == null)
+    {
+      throw new Exception(__METHOD__ . ' should only be called by the current atkSelectorIterator instance!');
+    }
+    
+    return $this->_transformRow($row, $this->m_query, $this->m_attrsByLoadType);
+  }
 
   /**
    * Returns the first found row.
@@ -849,20 +887,29 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
   }
 
   /**
-   * Returns an iterator for this selector.
+   * Returns this selector's iterator.
+   * 
+   * NOTE: if you call this method multiple times, the same iterator will
+   *       be returned, unless you have closed the selector first
    */
   public function getIterator()
   {
-    if ($this->m_stmt == null)
+    if ($this->m_iterator == null)
     {
       $attrsByLoadType = $this->_getAttributesByLoadType();
       $query = $this->_buildSelectQuery($attrsByLoadType);
       $stmt = $this->_getDb()->prepare($query->buildSelect());
       $stmt->execute($this->_getBindParameters());
+      
+      $this->m_attrsByLoadType = $attrsByLoadType;
+      $this->m_query = $query;
       $this->m_stmt = $stmt;
+      
+      atkimport('atk.utils.atkselectoriterator');
+      $this->m_iterator = new atkSelectorIterator($this->m_stmt->getIterator(), $this);
     }
 
-    return $this->m_stmt->getIterator();
+    return $this->m_iterator;
   }
 
   /**
@@ -871,10 +918,13 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
    */
   public function close()
   {
-    if ($this->m_stmt != null)
+    if ($this->m_iterator != null)
     {
+      $this->m_iterator = null;
       $this->m_stmt->close();
       $this->m_stmt = null;
+      $this->m_query = null;
+      $this->m_attrsByLoadType = null;
     }
 
     $this->m_rows = null;
