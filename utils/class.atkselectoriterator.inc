@@ -18,24 +18,24 @@
 /**
  * Selector iterator, makes sure that each each row returned by the internal
  * iterator gets transformed before it is returned to the user.
- * 
+ *
  * @author Peter C. Verhage <peter@achievo.org>
  * @package atk
- * @subpackage utils 
+ * @subpackage utils
  */
 class atkSelectorIterator extends IteratorIterator
 {
   /**
    * Selector.
-   * 
+   *
    * @var atkSelector
    */
   private $m_selector;
-  
+
   /**
    * Constructor.
-   * 
-   * @param Iterator    $iterator iterator 
+   *
+   * @param Iterator    $iterator iterator
    * @param atkSelector $selector selector
    */
   public function __construct(Iterator $iterator, atkSelector $selector)
@@ -43,29 +43,29 @@ class atkSelectorIterator extends IteratorIterator
     parent::__construct($iterator);
     $this->m_selector = $selector;
   }
-  
+
   /**
    * Returns the selector.
-   * 
+   *
    * @return atkSelector selector
    */
   public function getSelector()
   {
     return $this->m_selector;
-  } 
-  
+  }
+
   /**
-   * Returns the current row transformed. 
+   * Returns the current row transformed.
    */
   public function current()
   {
-    $row = parent::__current();
-    
+    $row = parent::current();
+
     if ($row != null)
     {
       $row = $this->getSelector()->transformRow($row);
     }
-    
+
     return $row;
   }
 }
