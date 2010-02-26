@@ -529,6 +529,15 @@ class atkDataGrid
     unset($sessions[$this->getName()]);
     if ($this->m_useSession)
       $this->m_sessionMgr->pageVar('atkdgsession', $sessions);
+
+    foreach ($this->m_componentInstances as $comp)
+    {
+      $comp->destroy();
+    }
+
+    $this->m_componentInstances = array();
+    $this->m_listeners = array();
+    $this->m_records = null;
   }
 
   /**

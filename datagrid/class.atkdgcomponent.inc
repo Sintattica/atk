@@ -9,7 +9,7 @@
  * @subpackage utils
  *
  * @copyright (c) 2000-2007 Ibuildings.nl BV
- * 
+ *
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
 
@@ -29,14 +29,14 @@ abstract class atkDGComponent
    * @var atkDataGrid
    */
   private $m_grid;
-  
+
   /**
    * The component options.
-   * 
+   *
    * @var array
    */
   private $m_options;
-  
+
   /**
    * Constructor.
    *
@@ -48,19 +48,27 @@ abstract class atkDGComponent
     $this->m_grid = $grid;
     $this->m_options = $options;
   }
-  
+
+  /**
+   * Destroy.
+   */
+  public function destroy()
+  {
+    $this->m_grid = null;
+  }
+
   /**
    * Returns the value for the component option with the given name.
-   * 
+   *
    * @param string $name option name
-   * 
+   *
    * @return mixed option value
    */
   protected function getOption($name, $fallback=null)
   {
     return isset($this->m_options[$name]) ? $this->m_options[$name] : $fallback;
   }
-  
+
   /**
    * Returns the data grid.
    *
@@ -70,53 +78,53 @@ abstract class atkDGComponent
   {
     return $this->m_grid;
   }
-  
+
   /**
    * Returns the data grid node.
-   * 
+   *
    * @return atkNode node
    */
   protected function getNode()
   {
     return $this->getGrid()->getNode();
   }
-  
+
   /**
    * Returns the page object.
-   * 
+   *
    * @return atkPage page
    */
   protected function getPage()
   {
     return $this->getNode()->getPage();
   }
-  
+
   /**
    * Returns the UI object.
-   * 
+   *
    * @return atkUi ui
    */
   protected function getUi()
   {
     return $this->getNode()->getUi();
   }
-  
+
   /**
    * Return the theme object.
-   * 
+   *
    * @return atkTheme theme
    */
   protected function getTheme()
   {
     return atkinstance("atk.ui.atktheme");
-  } 
-  
+  }
+
   /**
-   * Translate the given string using the grid node. 
-   * 
+   * Translate the given string using the grid node.
+   *
    * The value of $fallback will be returned if no translation can be found.
    * If you want NULL to be returned when no translation can be found then
-   * leave the fallback empty and set $useDefault to false.  
+   * leave the fallback empty and set $useDefault to false.
    *
    * @param string  $string      string to translate
    * @param string  $fallback    fallback in-case no translation can be found
@@ -126,10 +134,10 @@ abstract class atkDGComponent
   {
     return $this->getGrid()->text($string, $fallback, $useDefault);
   }
-  
+
   /**
    * Renders the component.
-   * 
+   *
    * @return string component HTML
    */
   public abstract function render();
