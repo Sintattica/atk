@@ -210,7 +210,7 @@
      * @param array $record Record to store in the session
      * @return bool Successfull save?
      */
-    private function storeRecordInSession(&$record)
+    protected function storeRecordInSession(&$record)
     {
       atkdebug("STORING RECORD IN SESSION");
       $result = atkinstance('atk.session.atksessionstore')->addDataRow($record, $this->m_node->primaryKeyField());

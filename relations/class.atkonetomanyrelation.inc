@@ -600,7 +600,7 @@
      *
      * @return string
      */
-    private function getSessionAddFakeId()
+    public function getSessionAddFakeId()
     {
       return "-999999";
     }
@@ -611,7 +611,7 @@
      *
      * @return string
      */
-    private function getSessionStoreKey()
+    public function getSessionStoreKey()
     {
       return $this->getOwnerInstance()->atkNodeType().':'.$this->fieldName();
     }
