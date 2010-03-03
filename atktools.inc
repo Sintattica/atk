@@ -1626,7 +1626,7 @@
   {
     if (atkconfig("zend_framework_path") == null)
     {
-      throw new Exception("Zend Framework path not set ($config_zend_framework_path)!");
+      throw new Exception("Zend Framework path not set (".atkconfig('zend_framework_path').")!");
     }
 
     $current_path = getcwd();
@@ -1991,7 +1991,7 @@
       {
         $ipArray = explode(",", getenv("HTTP_X_FORWARDED_FOR"));
         $s_ip = $ipArray[0];
-      }      
+      }
       elseif (getenv("REMOTE_ADDR"))
         $s_ip = getenv("REMOTE_ADDR");
       else $s_ip = 'x.x.x.x';
