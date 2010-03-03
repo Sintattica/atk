@@ -281,6 +281,7 @@
           }
           else
           {
+            global $ATK_VARS;
             atkError("No object '".$ATK_VARS["atknodetype"]."' created!!?!");
           }
         }
@@ -444,7 +445,7 @@
         $vars = array("atkaction"=>"feedback", "atkfbaction"=>$action, "atkactionstatus"=>$status,"atkfbmessage"=>$message);
         $atkNodeType = $node->atkNodeType();
         $sessionStatus = SESSION_REPLACE;
-        
+
         // The level skip given is based on where we should end up after the
         // feedback action is shown to the user. This means that the feedback
         // action should be shown one level higher in the stack, hence the -1.
