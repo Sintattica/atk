@@ -927,6 +927,7 @@
       static $attrib_index = 0;
 
       $tabs = null;
+      $column = null;
 
       $attribute->m_owner = $this->m_type;
 
@@ -1307,14 +1308,14 @@
 
     /**
      * Returns the current partial name.
-     * 
+     *
      * @return string partial name
      */
     public function getPartial()
     {
       return $this->m_partial;
     }
-    
+
     /**
      * Is partial request?
      *
@@ -4250,10 +4251,10 @@
     {
       return $this->m_module;
     }
-    
+
     /**
      * Returns the current action for this node.
-     * 
+     *
      * @return string action
      */
     public function getAction()
