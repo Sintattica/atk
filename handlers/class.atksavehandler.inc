@@ -223,7 +223,7 @@
      * @param array $record Record to store in the database
      * @return bool Successfull save?
      */
-    private function storeRecordInDb(&$record)
+    protected function storeRecordInDb(&$record)
     {
       if (!$this->m_node->addDb($record, true, "add")) return false;
 
