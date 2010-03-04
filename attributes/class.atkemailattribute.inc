@@ -71,7 +71,7 @@
       if ($mode == "csv")
         return parent::display($record, $mode);
 
-      if ($record[$this->fieldName()]!="")
+      if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] != "")
       {
         return '<a href="mailto:'.$record[$this->fieldName()].'">'.$record[$this->fieldName()].'</a>';
       }

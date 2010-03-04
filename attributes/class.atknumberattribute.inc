@@ -359,7 +359,7 @@
       if($this->getDecimals()>0)
         return round((float) $rec[$this->fieldName()], $this->getDecimals());
       else
-        return $rec[$this->fieldName()];
+        return isset($rec[$this->fieldName()]) ? $rec[$this->fieldName()] : null;
     }
 
     /**

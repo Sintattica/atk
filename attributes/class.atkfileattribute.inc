@@ -161,9 +161,12 @@
      * @param string $dir_url String with the url/dir
      * @return string with a / on the end
      */
-    function AddSlash($dir_url)
+    public function AddSlash($dir_url)
     {
-      if(substr($dir_url,strlen($dir_url)-1,strlen($dir_url))!="/") { $dir_url.="/"; }
+      if (substr($dir_url, -1) !== '/') {
+          $dir_url .= '/';
+      }
+
       return $dir_url;
     }
 
@@ -338,7 +341,7 @@
               $dirname = dirname($this->m_dir.$filename);
               if (!$this->mkdir($dirname))
               {
-                atkerror("File could not be saved");
+                atkerror("File could not be saved, unable to make directory '{$dirname}'");
                 return "";
               }
 
@@ -349,7 +352,7 @@
               }
               else
               {
-                atkerror("File could not be saved");
+                atkerror("File could not be saved, unable to copy file '{$rec[$this->fieldName()]["tmpfile"]}' to destination '{$this->m_dir}{$filename}'");
                 return "";
               }
             }
@@ -514,9 +517,23 @@
      */
     function db2value($rec)
     {
-      return Array("tmpfile"=>$this->m_dir.$rec[$this->fieldName()],
-                   "orgfilename"=>$rec[$this->fieldName()],
-                   "filename"=>$rec[$this->fieldName()],"filesize"=>"?");
+        $retData = array(
+            'tmpfile' => null,
+            'orgfilename' => null,
+            'filename' => null,
+            'filesize' => null
+        );
+      
+        if (isset($rec[$this->fieldName()])) {
+            $retData = array(
+                'tmpfile' => $this->m_dir . $rec[$this->fieldName()],
+                'orgfilename' => $rec[$this->fieldName()],
+                'filename' => $rec[$this->fieldName()],
+                'filesize' => '?'
+            );
+        }
+
+        return $retData;
     }
 
     /**
@@ -693,10 +710,10 @@
       // while updating images was not allways visible due to caching
       $randval = mt_rand();
 
-      $filename    = $record[$this->fieldName()]["filename"];
+      $filename    = isset($record[$this->fieldName()]["filename"]) ? $record[$this->fieldName()]["filename"] : null;
       atkdebug($this->fieldname()." - File: $filename");
       $prev_type     = Array("jpg","jpeg","gif","tif","png","bmp","htm","html","txt");  // file types for preview
-      $imgtype_prev = Array("jpg","jpeg","gif","png");  // types whitch are supported by GetImageSize
+      $imgtype_prev = Array("jpg","jpeg","gif","png");  // types which are supported by GetImageSize
       if($filename != "")
       {
         if(is_file($this->m_dir.$filename))
