@@ -575,7 +575,11 @@
               $tabLink = $this->getTabLink($node, $error);
               $error_tab = ' ('.atktext("error_tab").' '.$tabLink.' )';
             }
-            else $error_tab = "";
+            else
+            {
+                $tabLink = null;
+                $error_tab = "";
+            }
 
             if (is_array($error['label']))
             {
