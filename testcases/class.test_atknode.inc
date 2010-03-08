@@ -71,7 +71,8 @@
         'testing' => null,
       );
 
-      $valid_filters = array(
+      $validFilters = array(
+        '',
         array_shift(array_keys($node->m_attribList)) . " = 'barr'",
         "{$node->m_table}." . array_shift(array_keys($node->m_attribList)) . " = 'bar'",
         "`{$node->m_table}`.`" . array_pop(array_keys($node->m_attribList)) . "` = 'bar'",
@@ -82,7 +83,9 @@
           ")",
       );
 
-      $invalid_filters = array(
+      $invalidFilters = array(
+        'some invalid string here',
+        'aaaaa.aaaaa',
         "NOT_IN_LIST = 'anything'",
         "moo.cow = 'bar'",
         "`moo`.`cow` = 'bar'",
@@ -93,14 +96,14 @@
           ")",
       );
 
-      foreach($valid_filters as $filter)
+      foreach($validFilters as $filter)
       {
-        $this->assertEqual($node->validateFilter($filter), $filter, "Filter should be valid %s");
+        $this->assertEqual($node->validateFilter($filter), $filter, "Filter '$filter' should be valid. Result: %s");
       }
 
-      foreach($invalid_filters as $filter)
+      foreach($invalidFilters as $filter)
       {
-        $this->assertNotEqual($node->validateFilter($filter), $filter, "Filter should be invalid %s");
+        $this->assertNotEqual($node->validateFilter($filter), $filter, "Filter '$filter' should be invalid. Result: %s");
       }
     }
    }

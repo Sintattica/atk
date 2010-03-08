@@ -4706,52 +4706,52 @@
      */
     function validateFilter($filter)
     {
-    	if($filter=='') return '';
+      // If the filter is blank
+        // Or we can't find the target field
+      if ($filter=='' || !$targetField = $this->getFirstTargetFieldFromFilterSql($filter))
+        // Don't allow the filter
+        return '';
+
+      // Separate the table name from the column name
+      $targetDetails = explode('.', $targetField);
+
+      $targetTable = $this->m_table;
+      $targetColumn = array_pop($targetDetails);
+
+      // If no table is specified then it is implied that it is the current table
+      if (count($targetDetails) == 1)
+      {
+        $targetTable = array_pop($targetDetails);
+      }
+
+      // If the table isn't $this one
+        // Or the column doesn't belong to $this
+      if (strtolower(trim($targetTable)) !== strtolower($this->m_table)
+        || !in_array($targetColumn, array_keys($this->m_attribList)))
+      {
+        // Don't allow the filter
+        return "";
+      }
+      return $filter;
+    }
+
+    /**
+     * Get the targeted field and table from a snippet of filter string sql
+     *
+     * @param string $sql is the filter string sql
+     * @return string the target table and field or an empty string
+     */
+    function getFirstTargetFieldFromFilterSql($sql)
+    {
       // All standard SQL operators
       $sqloperators = array('=','<>','>','<','>=','<=','BETWEEN','LIKE','IN', 'IS', 'NOT IN','&');
 
-      $targetField = $filter;
-
       $sqlOperatorsString = implode('|', array_map('preg_quote', $sqloperators));
-      preg_match("/^(\w.+?)\s+({$sqlOperatorsString})/", str_replace('`', '', trim($filter)), $matches);
+      preg_match("/^(\w.+?)\s+({$sqlOperatorsString})/", str_replace('`', '', trim($sql)), $matches);
 
-      if(count($matches) > 2)
-      {
-        $targetField = $matches[1];
-      }
+      if (count($matches) != 3) return '';
 
-      // Get the field that it applies to
-      // $relation holds the tablename and $field holds the field
-      $targetDetails = explode('.', $targetField);
-      if(count($targetDetails) < 2)
-      {
-        $relation = $this->m_table;
-        $field = array_pop($targetDetails);
-      }
-      else {
-        list($relation, $field) = $targetDetails;
-      }
-
-      // if the filter includes a tablename
-      if ($field != "")
-      {
-        // check if the filter table is the same as the nodes table
-        if (strtolower(trim($relation)) !== strtolower($this->m_table) && !in_array($relation, array_keys($this->m_attribList))) return "";
-
-        // go on to check the field
-        $relation = $field;
-      }
-
-      // Check the filter for every operator
-      foreach ($sqloperators as $sqloperator)
-      {
-        // split the fieldname from the fieldvalue
-				atkdebug("RELATION: |$relation|");
-        list($relation_new, $dummy) = explode($sqloperator, $relation);
-        // check if the fieldname is in the attriblist
-        if (in_array(trim($relation_new), array_keys($this->m_attribList))) return $filter;
-      }
-      return "";
+      return $matches[1];
     }
 
     /**
