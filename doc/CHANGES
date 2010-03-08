@@ -9,6 +9,10 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Adding basic tests for atknode->validateFilter [pmatthews]
+* Fixing atknode->validateFilter to cope with more complex queries and not 
+  break if a table.column is used in a query but not as the first field 
+  refferenced [pmatthews]
 + Adding visual prompt to orderable class.atkmanytomanyselectrelation.inc
   Defaults to images/up-down.gif, overrideable. [pmatthews]
 * Exposed getAddURL as protected method on atkOneToManyRelation, allowing

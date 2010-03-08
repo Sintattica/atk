@@ -4707,9 +4707,30 @@
     function validateFilter($filter)
     {
     	if($filter=='') return '';
+      // All standard SQL operators
+      $sqloperators = array('=','<>','>','<','>=','<=','BETWEEN','LIKE','IN', 'IS', 'NOT IN','&');
+
+      $targetField = $filter;
+
+      $sqlOperatorsString = implode('|', array_map('preg_quote', $sqloperators));
+      preg_match("/^(\w.+?)\s+({$sqlOperatorsString})/", str_replace('`', '', trim($filter)), $matches);
+
+      if(count($matches) > 2)
+      {
+        $targetField = $matches[1];
+      }
+
       // Get the field that it applies to
       // $relation holds the tablename and $field holds the field
-      list($relation, $field) = explode('.', $filter);
+      $targetDetails = explode('.', $targetField);
+      if(count($targetDetails) < 2)
+      {
+        $relation = $this->m_table;
+        $field = array_pop($targetDetails);
+      }
+      else {
+        list($relation, $field) = $targetDetails;
+      }
 
       // if the filter includes a tablename
       if ($field != "")
@@ -4720,9 +4741,6 @@
         // go on to check the field
         $relation = $field;
       }
-
-      // All standard SQL operators
-      $sqloperators = array('=','<>','>','<','>=','<=','BETWEEN','LIKE','IN', 'IS', 'NOT IN','&');
 
       // Check the filter for every operator
       foreach ($sqloperators as $sqloperator)

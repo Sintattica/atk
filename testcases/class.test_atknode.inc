@@ -53,5 +53,55 @@
 
 
     }
-  }
+
+    function test_validateFilter()
+    {
+      // Load used classes
+      atkimport("atk.atknode");
+      atkimport("atk.attributes.atkattribute");
+
+      // Create a node and initialize
+      $node = new atkNode("testnode");
+      $module = new atkModule("testmodule");
+      $node->m_module = "testmodule";
+      $node->m_table = 'test_table';
+      $node->m_attribList = array(
+        'foo' => null,
+        'bar' => null,
+        'testing' => null,
+      );
+
+      $valid_filters = array(
+        array_shift(array_keys($node->m_attribList)) . " = 'barr'",
+        "{$node->m_table}." . array_shift(array_keys($node->m_attribList)) . " = 'bar'",
+        "`{$node->m_table}`.`" . array_pop(array_keys($node->m_attribList)) . "` = 'bar'",
+        array_shift(array_keys($node->m_attribList)) . " IN (" .
+          "SELECT distinct(`{$node->m_table}`.`" . array_pop(array_keys($node->m_attribList)) . "`) " .
+            "FROM {$node->m_table} " .
+            "WHERE `" . array_pop(array_keys($node->m_attribList)) . "` IN (2, 3, 4)" .
+          ")",
+      );
+
+      $invalid_filters = array(
+        "NOT_IN_LIST = 'anything'",
+        "moo.cow = 'bar'",
+        "`moo`.`cow` = 'bar'",
+        "`NOT_IN_LIST` IN (" .
+          "SELECT distinct(`{$node->m_table}`.`" . array_pop(array_keys($node->m_attribList)) . "`) " .
+            "FROM {$node->m_table} " .
+            "WHERE `" . array_pop(array_keys($node->m_attribList)) . "` IN (2, 3, 4)" .
+          ")",
+      );
+
+      foreach($valid_filters as $filter)
+      {
+        $this->assertEqual($node->validateFilter($filter), $filter, "Filter should be valid %s");
+      }
+
+      foreach($invalid_filters as $filter)
+      {
+        $this->assertNotEqual($node->validateFilter($filter), $filter, "Filter should be invalid %s");
+      }
+    }
+   }
 ?>
