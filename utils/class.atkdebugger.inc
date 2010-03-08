@@ -38,7 +38,7 @@
      *
      * @return atkDebugger Instance of atkDebugger
      */
-    function &getInstance()
+    public static function getInstance()
     {
       static $s_instance = NULL;
       if ($s_instance==NULL)
@@ -72,11 +72,11 @@
      * @param string $txt The debug statement
      * @return bool Indication if statement is added
      */
-    public function addStatement($txt)
+    public static function addStatement($txt)
     {
       if (function_exists('atkGetSessionManager') && atkGetSessionManager())
       {
-        $instance = &atkDebugger::getInstance();
+        $instance = atkDebugger::getInstance();
         if (is_object($instance))
         {
           return $instance->_addStatement($txt);
@@ -93,7 +93,7 @@
      * 
      * @return bool Indication if query is added
      */
-    public function addQuery($query, $isSystemQuery=false)
+    public static function addQuery($query, $isSystemQuery=false)
     {
       self::$s_queryCount += !$isSystemQuery ? 1 : 0;
       self::$s_systemQueryCount += $isSystemQuery ? 1 :0;
@@ -102,7 +102,7 @@
       {
         if (atkGetSessionManager())
         {
-          $instance = &atkDebugger::getInstance();
+          $instance = atkDebugger::getInstance();
           if (is_object($instance))
           {
             return $instance->_addQuery($query);
