@@ -16,8 +16,8 @@
    */
 
   /** @internal includes */
-  require_once($config_atkroot.'atk/include/basics.inc');
   require_once($config_atkroot.'atk/modules/atkmoduletools.inc');
+  require_once($config_atkroot.'atk/include/basics.inc');
   require_once($config_atkroot.'atk/include/compatibility.inc');
   if (atkconfig('autoload_classes',    true)) require_once($config_atkroot.'atk/include/autoload.inc');
   if (atkconfig('use_atkerrorhandler', true)) require_once($config_atkroot.'atk/include/errorhandler.inc');
