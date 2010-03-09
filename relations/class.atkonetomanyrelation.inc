@@ -279,7 +279,7 @@
       $this->createDestination();
 
       atkimport('atk.datagrid.atkdatagrid');
-      $grid = atkDataGrid::create($this->m_destInstance, str_replace('.', '_', $this->getOwnerInstance()->atkNodeType()).'_'.$this->fieldName(), null, true, $useSession);
+      $grid = atkDataGrid::create($this->m_destInstance, str_replace('.', '_', $this->getOwnerInstance()->atkNodeType()).'_'.$this->fieldName().'_grid', null, true, $useSession);
 
       $grid->setMode($mode);
       $grid->setMasterRecord($record);
