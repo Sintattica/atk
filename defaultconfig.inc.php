@@ -626,6 +626,10 @@
   /**
    * Set to true, to output pages gzip compressed to the browser if the
    * browser supports it.
+   *
+   * Note: This should only be used for situations where either the webserver (Apache)
+   * doesn't support it or you can't get to the webserver configuration,
+   * as webservers are generally much better at this than ATK is.
    */
   $config_output_gzip = false;
 
