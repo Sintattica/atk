@@ -178,7 +178,7 @@
         {
           $string = str_replace('%', '\%', $string);
         }
-        return mysql_real_escape_string($this->m_link_id, $string);
+        return mysql_real_escape_string($string, $this->m_link_id);
       }
       return null;
     }
