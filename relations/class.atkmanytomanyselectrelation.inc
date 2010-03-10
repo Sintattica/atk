@@ -65,6 +65,14 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   private $m_positionAttributeHtmlModifier;
 
   /**
+   * Whether to allow line breaks when displaying a destination descriptor
+   * defaults to false therefore new line characters are removed
+   *
+   * @var boolean
+   */
+  private $m_allowLineBreaks = false;
+
+  /**
    * Constructs a new many-to-many select relation.
    *
    * @param string $name        The name of the relation
@@ -365,11 +373,19 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     {
       $htmlActionLinks = '('.implode(' / ', $actionLinks).')';
     }
+
+    // Get the descriptor and ensure it's presentible
+    $descriptor = $this->filterLineBreaks(
+      atk_htmlentities(
+        $this->getdestination()->descriptor($record)
+      )
+    );
+
     // Build the record
     $result = '
       <li class="atkmanytomanyselectrelation-selected">
       <input type="hidden" name="'.$name.'" value="'.atk_htmlentities($key).'"/>
-      <span>'.atk_htmlentities($this->getDestination()->descriptor($record)).'</span>
+      <span>'. $descriptor .'</span>
       '.$htmlActionLinks.'
       </li>
       ';
@@ -572,6 +588,44 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
   public function hasPositionAttribute()
   {
     return $this->getPositionAttribute() != null;
+  }
+
+  /**
+   * Specify whether line breaks are permitted in the
+   * destination descriptor output
+   *
+   * @param boolean $areAllowed true if line breaks are allowed
+   * @return void
+   */
+  public function setAllowLineBreaks($areAllowed = false)
+  {
+    $this->m_allowLineBreaks = $areAllowed;
+  }
+
+  /**
+   * Get whether line breaks are allowed
+   *
+   * @return boolean true if line breaks are allowed
+   */
+  public function getAllowLineBreaks()
+  {
+    return $this->m_allowLineBreaks;
+  }
+
+  /**
+   * Filter line breaks from a given string
+   *
+   * @param string $subject the subject to be filtered
+   * @return string the filtered subject
+   */
+  protected function filterLineBreaks($subject)
+  {
+    $replace = '';
+    if ($this->getAllowLineBreaks())
+    {
+      $replace = '<br />';
+    }
+    return str_replace("\n", $replace, $subject);
   }
 
   /**
