@@ -9,8 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
-* Offering a configuration option on the atkmanytomanyselectrelation to allow 
-  newlines to be displayed [pmatthews]
+* Always displaying newlines for destination descriptors 
+  in atkmanytomanyselectrelation [pmatthews]
 * Don't show relations as link in list mode for atkManyToOneRelations with
   AF_MANYTOONE_AUTOLINK flag (only in view/edit mode). [Peter]
 * Adding basic tests for atknode->validateFilter [pmatthews]
