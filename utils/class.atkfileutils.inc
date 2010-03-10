@@ -382,6 +382,35 @@ class atkFileUtils
   }
 
   /**
+   * Get the Mimetype for a file the proper way.
+   *
+   * @link http://en.wikipedia.org/wiki/MIME_type
+   *
+   * @param string $file_path Path to the file
+   * @return string Mimetype
+   */
+  public static function getFileMimetype($file_path)
+  {
+    // First try with fileinfo functions
+    if (function_exists('finfo_open'))
+    {
+      $finfo = finfo_open(FILEINFO_MIME_TYPE);
+      $type =  finfo_file($finfo, $file_path);
+      finfo_close($finfo);
+    }
+    elseif (function_exists('mime_content_type'))
+    {
+      $type = mime_content_type($file);
+    }
+    else
+    {
+      // Unable to get the file mimetype!
+      $type = '';
+    }
+    return $type;
+  }
+
+  /**
    * Delete complete directory and all of its contents.
    *
    * @todo If one of the subdirs/files cannot be removed, you end up with
