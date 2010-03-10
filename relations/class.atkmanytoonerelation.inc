@@ -628,7 +628,7 @@ class atkManyToOneRelation extends atkRelation
       if(!$this->isEmpty($record))
       {
         $result = $this->m_destInstance->descriptor($record[$this->fieldName()]);
-        if ($this->hasFlag(AF_RELATION_AUTOLINK) && (!in_array($mode, array("csv", "plain")))) // create link to edit/view screen
+        if ($this->hasFlag(AF_RELATION_AUTOLINK) && (!in_array($mode, array("csv", "plain", "list")))) // create link to edit/view screen
         {
           if (($this->m_destInstance->allowed("view"))&&!$this->m_destInstance->hasFlag(NF_NO_VIEW)&&$result!="")
           {
