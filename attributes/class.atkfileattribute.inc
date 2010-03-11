@@ -182,6 +182,11 @@
     {
       $dirHandle = dir($this->m_dir);
       $file_arr  = array();
+      if (!$dirHandle)
+      {
+        atkerror("Unable to open directory {$this->m_dir}");
+        return array();
+      }
 
       while($item = $dirHandle->read())
       {
