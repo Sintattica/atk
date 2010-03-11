@@ -337,9 +337,36 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     $name = $this->getHtmlId($fieldprefix).'[]['.$this->getRemoteKey().']';
     $key = $record[$this->getDestination()->primaryKeyField()];
 
-    // Define what actions need to be shown.
+    // Get the descriptor and ensure it's presentible
+    $descriptor = nl2br(
+      atk_htmlentities(
+        $this->getdestination()->descriptor($record)
+      )
+    );
+
+    // Build the record
+    $result = '
+      <li class="atkmanytomanyselectrelation-selected">
+      <input type="hidden" name="'.$name.'" value="'.atk_htmlentities($key).'"/>
+      <span>'. $descriptor .'</span>
+      ' . $this->renderSelectedRecordActions($record) .'
+      </li>
+      ';
+
+    return $result;
+  }
+
+  /*
+   * Renders the action links for a given record
+   *
+   * @param array $record is the selected record
+   * @return string the actions in their html link form
+   */
+  protected function renderSelectedRecordActions($record)
+  {
     $actions = array();
-    if ($this->hasFlag(AF_MANYTOMANYSELECT_DETAILEDIT) && $this->getDestination()->allowed('edit', $record))
+    if ($this->hasFlag(AF_MANYTOMANYSELECT_DETAILEDIT) 
+        && $this->getDestination()->allowed('edit', $record))
     {
       $actions[] = 'edit';
     }
@@ -365,24 +392,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     {
       $htmlActionLinks = '('.implode(' / ', $actionLinks).')';
     }
-
-    // Get the descriptor and ensure it's presentible
-    $descriptor = nl2br(
-      atk_htmlentities(
-        $this->getdestination()->descriptor($record)
-      )
-    );
-
-    // Build the record
-    $result = '
-      <li class="atkmanytomanyselectrelation-selected">
-      <input type="hidden" name="'.$name.'" value="'.atk_htmlentities($key).'"/>
-      <span>'. $descriptor .'</span>
-      '.$htmlActionLinks.'
-      </li>
-      ';
-
-    return $result;
+    return $htmlActionLinks;
   }
 
   /**
@@ -415,7 +425,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
    */
   protected function getEditActionLink($record)
   {
-    return href(dispatch_url($this->getDestination()->atkNodeType(), 'edit', array('atkselector' => $this->getDestination()->primaryKey($record))), $this->text('edit'), SESSION_NESTED, true);
+    return href(dispatch_url($this->getdestination()->atknodetype(), 'edit', array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SESSION_NESTED, true);
   }
 
   /**

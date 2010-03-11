@@ -9,6 +9,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Separating the generate link logic from the display record logic in the
+  atkmanytomanyselectrelation with the aim of allowing link 
+  customisation [pmatthews]
 * Made atkFileAttribute::getFiles throw an error if the directory 
   is not readable. [Boy]
 + Added atkFileUtils::getFileMimetype, to get the mimetype of a file using
