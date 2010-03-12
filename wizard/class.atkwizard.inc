@@ -99,7 +99,7 @@ class atkWizard extends atkWizardBase
      * @access private
      * @var array
      */
-  var $m_currentPanelIndex;
+  var $m_currentPanelIndex = 0;
 
     /**
      * Value needed by atkPage to render the content of a page. Default
@@ -193,7 +193,7 @@ class atkWizard extends atkWizardBase
   {
     //Get session vars
     global $g_sessionManager;
-
+return;   
     $this->m_wizardAction = AtkWizardActionLoader::getWizardAction($g_sessionManager->stackVar("atkwizardaction"));
 
     $this->m_currentPanelIndex = $g_sessionManager->stackVar("atkwizardpanelindex");

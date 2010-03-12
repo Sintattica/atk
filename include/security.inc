@@ -18,12 +18,12 @@
   /**
    * Filter the atkselector REQUEST variable for blacklisted SQL (like UNIONs)
    */
-  require_once $config_atkroot.'atk/security/db/class.sql_whereclause_blacklist_checker.inc';
+  require_once $GLOBALS['config_atkroot'].'atk/security/db/class.sql_whereclause_blacklist_checker.inc';
   filter_request_where_clause('atkselector');
   filter_request_where_clause('atkfilter');
 
   // initialise g_ array.
-  $g_user = array();
+  $GLOBALS['g_user'] = array();
 
   /**
    * Calling this function will invoke the login process. Call this function in

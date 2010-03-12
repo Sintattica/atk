@@ -26,10 +26,25 @@
    * @subpackage subpackage
    * @access private
    */
-  class atkAttributeTestCase extends UnitTestCase
+  abstract class atkAttributeTestCase extends atkTestCase
   {        
     var $m_attribute = null;
         
+     /**
+       * Setup the testcase.
+       */
+      function setUp()
+      {
+        parent::setUp();
+        $this->setMockDb();
+      }
+      
+      function tearDown()
+      {
+        parent::tearDown();
+        $this->restoreDb();  
+      }    
+    
     /**
      * Perform api test. 
      *
@@ -77,7 +92,7 @@
  
       $internalvalue = $this->m_attribute->db2value(array($this->m_attribute->m_name=>$dbvalue));      
       $roundtrip = $this->m_attribute->value2db(array($this->m_attribute->m_name=>$internalvalue));
-      $this->assertEqual($dbvalue, $roundtrip, $this->_getMsg("db/value roundtrip check"));                        
+      $this->assertEquals($dbvalue, $roundtrip, $this->_getMsg("db/value roundtrip check"));                        
     }
     
     /**
@@ -148,7 +163,7 @@
      */
     function assertDbFieldSize($value, $msg="")
     {
-      $this->assertPattern('/[(\d,\d)|(\d)]/', $value, 'dbFieldSize '. $msg);
+      $this->assertRegExp('/[(\d,\d)|(\d)]/', (string)$value, 'dbFieldSize '. $msg);
     }
     
     /**

@@ -18,7 +18,7 @@
   /**
    * @internal includes
    */
-  require_once(atkconfig("atkroot")."atk/test/simpletest/unit_tester.php");
+  require_once 'PHPUnit/Framework/TestCase.php';
 
   /**
    * atkTestCase is a specialization of SimpleTest's UnitTestCase. It
@@ -31,56 +31,26 @@
    * @subpackage test
    *
    */
-  class atkTestCase extends UnitTestCase
+  abstract class atkTestCase extends PHPUnit_Framework_TestCase
   {
+    public $useTestDatabase = false;
+    
+    private $m_path = null;
+    
     var $m_restoreDb = array();
     var $m_restoreNode = array();
     var $m_restoreSecMgr = NULL;
 
-    var $m_useTestDatabase = NULL;
-    var $m_fixtures = array();
     var $m_fixtureData = array();
-    var $m_usesFixture = NULL;
 
     /**
      * Constructor.
      *
      * @return atkTestCase
      */
-    function atkTestCase($label = false)
+    public function __construct($label = null)
     {
-      $this->UnitTestCase($label);
-    }
-
-    function getLabel()
-    {
-      $label = parent::getLabel();
-      return empty($label) ? get_class($this) : $label;
-    }
-
-    /**
-     * Use test database?
-     *
-     * @return boolean use test database?
-     */
-    function useTestDatabase()
-    {
-      if ($this->m_useTestDatabase === NULL)
-      {
-        $this->setUseTestDatabase(atkTestSuite::useTestDatabase());
-      }
-
-      return $this->m_useTestDatabase;
-    }
-
-    /**
-     * Use test database?
-     *
-     * @param boolean $value use test database?
-     */
-    function setUseTestDatabase($value)
-    {
-      $this->m_useTestDatabase = $value;
+      parent::__construct($label);
     }
 
     /**
@@ -89,8 +59,14 @@
      * will be loaded into the test database. Make sure
      * you call the parent if you override this method!
      */
-    function setUp()
+    public function setUp()
     {
+      if ($this->useTestDatabase && !$this->_validateTestDb())
+      {
+        $this->markTestSkipped('Test database isn\'t configured properly.');
+        return;
+      }
+        
       // don't let test-cases influence each other, so make sure
       // the node repository etc. is empty when we start a new test-case
       global $g_nodeRepository, $g_moduleRepository, $g_nodeHandlers, $g_nodeListeners, $g_nodeControllers;
@@ -100,14 +76,64 @@
       $g_nodeListeners = array();
       $g_nodeControllers = array();
 
-      if ($this->useTestDatabase())
+      if ($this->useTestDatabase)
       {
         // switch to the test databases
         $mapping = atkconfig("test_db_mapping");
+        foreach ($mapping as $test)
+        {
+          $testDb = atkGetDb($test);
+          $testDb->toggleForeignKeys(false);
+          $testDb->deleteAll();
+          $testDb->commit();
+          $testDb->toggleForeignKeys(true);          
+        }
+
         atkDb::useMapping($mapping);
-        $this->_loadData();
+        
+        $this->setUpTestDatabase();
       }
     }
+    
+    /**
+     * Set-up test database data.
+     */
+    public function setUpTestDatabase()
+    {
+      
+    }
+     
+    /**
+     * Check if we have a test database for each database.
+     *
+     * @return boolean
+     */
+    protected function _validateTestDb()
+    {
+      $db = atkconfig('db');
+      $mapping = atkconfig("test_db_mapping");
+      
+      foreach (array_keys($db) as $normal)
+      {
+        if (in_array($normal, $mapping))
+        {
+          continue;
+        }
+        
+        if (!isset($db[$mapping[$normal]]))
+        {
+          return false;
+        }
+        
+        $conn = atkGetDb($mapping[$normal]);
+        if ($conn->getDbStatus() != DB_SUCCESS)
+        {
+          return false;
+        }
+      }
+      
+      return true;
+    }    
 
     /**
      * Called after each test method. By default this
@@ -118,14 +144,61 @@
      */
     function tearDown()
     {
-      if ($this->useTestDatabase())
+      if ($this->useTestDatabase)
       {
-        // stop using the test database(s)
-        $this->_cleanData();
         atkDb::clearMapping();
       }
     }
 
+    /**
+     * Adds the given fixture to the given database.
+     *
+     * @param string $name     fixture name
+     * @param string $database database name
+     */
+    function addFixture($name, $database="default")
+    {
+      $this->addFixtures(array($name), $database);
+    }
+
+    /**
+     * Adds the given fixtures to the given database.
+     *
+     * @param array $names     fixture names
+     * @param string $database database name
+     */
+    function addFixtures($names, $database="default")
+    {
+      atkdebug("Load fixtures into test database...");
+
+      $db = $this->_getTestDb($database);
+      $db->toggleForeignKeys(false);
+
+      atkimport('atk.fixture.atkfixturemanager');
+      $manager = atkFixtureManager::getInstance();
+      
+      foreach ($names as $fullname)
+      {
+        $result = $manager->load($fullname, $db, $this->_getPath());
+        if ($result === false)
+        {
+          throw new Exception("Error loading fixture '$fullname'!");
+        }
+        
+        $table = $result['table'];
+        $data = $result['data'];
+
+        if (!isset($this->m_fixtureData[$database][$table]))
+          $this->m_fixtureData[$database][$table] = array();
+
+        $this->m_fixtureData[$database][$table] =
+          array_merge($this->m_fixtureData[$database][$table], $data);
+      }
+
+      $db->toggleForeignKeys(true);
+      $db->commit();
+    }
+    
     /**
      * Returns the fixture for the given table name with the given name.
      * If the fixture doesn't exist NULL is returned. If no database is specified
@@ -182,134 +255,19 @@
     }
 
     /**
-     * Clean-up data in the test database so we have a nice clean
-     * database for the next test method.
-     */
-    function _cleanData()
-    {
-      atkdebug("Clean test database(s)...");
-
-      $config = atkconfig("db");
-      $mapping = atkconfig("test_db_mapping");
-
-      foreach ($mapping as $normal => $test)
-      {
-      	$db = &$this->_getTestDb($test);
-        
-      	if($db->getDbStatus() <> DB_SUCCESS)
-        {
-          atkerror("test db '$test' is not acceptable");
-          break;
-        }
-
-        if (!isset($config[$test]["transactional_fixtures"]) ||
-            !$config[$test]["transactional_fixtures"])
-        {
-          $db->toggleForeignKeys(false);
-
-          if ($config['default']['db'] == $config[$test]['db']) atkerror("atkTestCase::_cleanData() | testdatabase equals default database: '{$config['default']['db']}'! Database will not be emptied");
-          else $db->deleteAll();
-
-          $db->commit();
-
-          $db->toggleForeignKeys(true);
-        }
-        else
-        {
-          $db->rollback();
-        }
-      }
-    }
-
-    /**
-     * Load fixture data into the test database.
-     */
-    function _loadData()
-    {
-      atkdebug("Load fixtures into test database(s)...");
-
-      if (count($this->m_fixtures) == 0) return;
-
-      $config = atkconfig("db");
-      $mapping = atkconfig("test_db_mapping");
-
-      atkimport('atk.fixture.atkfixturemanager');
-      $manager = &atkFixtureManager::getInstance();
-
-      $this->m_fixtureData = array();
-      foreach($this->m_fixtures as $database => $fixtures)
-      {
-        $db = &$this->_getTestDb($database);
-        
-        if($db->getDbStatus() <> DB_SUCCESS)
-        {
-          atkerror("test db '$database' is not acceptable");
-          break;
-        }
-
-        if (!isset($config[$mapping[$database]]["transactional_fixtures"]) ||
-            !$config[$mapping[$database]]["transactional_fixtures"])
-        {
-          $db->toggleForeignKeys(false);
-        }
-
-        foreach ($fixtures as $fullname)
-        {
-          $result = $manager->load($fullname, $db, $this->_getPath());
-          if ($result === false)
-          {
-            atkerror("Error loading fixture '$fullname'!");
-          }
-          else
-          {
-            $table = $result['table'];
-            $data = $result['data'];
-
-            if (!isset($this->m_fixtureData[$database][$table]))
-              $this->m_fixtureData[$database][$table] = array();
-
-            $this->m_fixtureData[$database][$table] =
-              array_merge($this->m_fixtureData[$database][$table], $data);
-          }
-        }
-
-        if (!isset($config[$mapping[$database]]["transactional_fixtures"]) ||
-            !$config[$mapping[$database]]["transactional_fixtures"])
-        {
-          $db->toggleForeignKeys(true);
-          $db->commit();
-        }
-      }
-    }
-
-    /**
      * Get path for this test-case.
      *
      * @return returns the path for this test-case
      */
     function _getPath()
     {
-      static $s_path = array();
-      $class = strtolower(get_class($this));
-
-      if (!isset($s_path[$class]))
+      if (!isset($this->m_path))
       {
-        $includes = get_included_files();
-        $name = "class.{$class}.inc";
-        $nameLength = strlen("class.{$class}.inc");
-        foreach ($includes as $file)
-        {
-          if (strcasecmp($name, substr($file, -$nameLength)) == 0)
-          {
-            $s_path[$class] = substr($file, 0, -$nameLength);
-            break;
-          }
-        }
+        $ref = new ReflectionClass(get_class($this));
+        $this->m_path = dirname($ref->getFilename()).'/';
       }
-
-      if (!isset($s_path[$class]))
-        atkerror('Could not determine path for test-case: '.$class);
-      else return $s_path[$class];
+      
+      return $this->m_path;
     }
 
     /**
@@ -318,31 +276,7 @@
     function &_getTestDb($database)
     {
       return atkGetDb($database);
-    }
-
-    /**
-     * Adds the given fixture to the given database.
-     *
-     * @param string $name     fixture name
-     * @param string $database database name
-     */
-    function addFixture($name, $database="default")
-    {
-      $this->addFixtures(array($name), $database);
-    }
-
-    /**
-     * Adds the given fixtures to the given database.
-     *
-     * @param array $names     fixture names
-     * @param string $database database name
-     */
-    function addFixtures($names, $database="default")
-    {
-      if (!isset($this->m_fixtures[$database]))
-        $this->m_fixtures[$database] = array();
-      $this->m_fixtures[$database] = array_unique(array_merge($this->m_fixtures[$database], $names));
-    }
+    }    
 
     function setMockDb($conn=NULL)
     {
@@ -351,7 +285,7 @@
       if ($conn === NULL)
         $conn = "default";
 
-      $config_db["mock"]["driver"] = "mock";
+      $config_db["mock"]["driver"] = "atk.test.mocks.atkmockdb";
 
       $mockdb = &atkGetDb("mock");
       $this->m_restoreDb[$conn] = &atkDb::setInstance($conn, $mockdb);
@@ -514,59 +448,6 @@
       $flag = eval("return ".$flagName.";");
       $hasFlag = $node->getAttribute($attribName)->hasFlag($flag);
       $this->assertFalse($hasFlag, "Attribute ".$node->atkNodeType()."::$attribName not has flag $flagName");
-    }
-
-    /**
-     * Check if currect testcase use fixture
-     *
-     * @return boolean
-     */
-    function useFixture()
-    {
-      if($this->m_usesFixture === null) return (count($this->m_fixtures) > 0);
-      else return $this->m_usesFixture;
-    }
-    
-    /**
-     * Set if currect testcase use fixture
-     *
-     */
-    function setUseFixture($value)
-    {
-      $this->m_usesFixture = $value;
-    }
-
-    /**
-     * When the testdatabase isn't configured or acceptable and the
-     * test uses the testdatabase then skip it.
-     *
-     */
-    public function skip()
-    {
-      $this->skipIf(!$this->useTestDatabase() && $this->useFixture(),'Test database isn\'t configured');
-      $this->skipIf($this->useTestDatabase() && $this->useFixture() && !$this->_checkFixtureDb(),'Test database is not acceptable');
-    }
-    
-    /**
-     * Check if database(s), used by fixture, are acceptable
-     *
-     * @return boolean
-     */
-    function _checkFixtureDb()
-    {
-      $mapping = atkconfig("test_db_mapping");
-      atkDb::useMapping($mapping);
-      foreach($this->m_fixtures as $database=>$fixture)
-      {
-        $db = &$this->_getTestDb($database);
-        
-        if($db->getDbStatus() <> DB_SUCCESS)
-        {
-          atkerror("test db '$database' is not acceptable");
-          return false;
-        }
-      }
-      return true;
     }
   }
 ?>

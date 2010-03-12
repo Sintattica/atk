@@ -1,5 +1,4 @@
 <?php
-
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
@@ -15,16 +14,12 @@
    * @version $Revision: $
    * $Id$
    */
-
-  require_once($config_atkroot."atk/class.atkconfig.inc");
-  require_once($config_atkroot."atk/defaultconfig.inc.php");
-
+  require_once($GLOBALS['config_atkroot']."atk/class.atkconfig.inc");
+  atkConfig::loadGlobals();
+   
   // Auto-register modules
-  if (file_exists("$config_module_path/config.modules.inc"))
+  if (file_exists("{$GLOBALS['config_module_path']}/config.modules.inc"))
   {
-    include_once("$config_module_path/config.modules.inc");
-  }
-
-  require_once($config_application_dir."config.inc.php");
-
+    include_once("{$GLOBALS['config_module_path']}/config.modules.inc");        
+  }  
 ?>

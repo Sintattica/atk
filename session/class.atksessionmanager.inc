@@ -1082,6 +1082,11 @@
    */
   function atksession_init()
   {
+    if (php_sapi_name() == 'cli')
+    {
+      return false; // command-line
+    }
+    
     $cookie_params = session_get_cookie_params();
     $cookiepath   = atkconfig("application_root");
     $cookiedomain = (atkconfig("cookiedomain") != "") ? atkconfig("cookiedomain") : NULL;
@@ -1129,7 +1134,7 @@
   {
     global $ATK_VARS, $g_sessionManager, $g_sessionData, $atkprevlevel;
 
-    $g_sessionManager = new atkSessionManager($namespace, $usestack);
+    $g_sessionManager = atknew('atk.session.atksessionmanager', $namespace, $usestack);
 
     atkDataDecode($_REQUEST);
     $ATK_VARS = array_merge($_GET, $_POST);

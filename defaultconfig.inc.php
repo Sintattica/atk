@@ -168,7 +168,7 @@
    *   mssql:   Microsoft SQL Server
    * @var String
    */
-  $config_db["default"]["driver"]="mysql";
+  $config_db["default"]["driver"]="mysqli";
 
   /**
    * Test database mapping. Maps normal databases to their test database.
@@ -991,4 +991,13 @@
    * @var bool
    */
   $config_autoload_reindex_on_missing_class = false;
+  
+  /**
+   * Normally atkerror silently ignores an error and sends an e-mail and/or
+   * adds the error to the debug output. Using this switch ATK will throw
+   * an exception when atkerror is called.
+   * 
+   * @var boolean 
+   */
+  $config_throw_exception_on_error = false;
 ?>

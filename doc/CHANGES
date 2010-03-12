@@ -9,11 +9,20 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
++ Added atkConfig::setGlobal and atkConfig::getGlobal to set and get the
+  value of global configuration parameters. [Peter]
++ Added support for specifying a database driver outside atk/db using a fully 
+  qualified ATK class path. [Peter]
++ Added full support for PHPUnit based tests, for detailed information on
+  setting things up see atk/skel-tests/README. [Peter]
+- Removed SimpleTest, please note that this change is in no way backwards
+  compatible. If you need to run SimpleTest tests you should use an older
+  version of ATK or migrate your tests to PHPUnit. [Peter]
 * Separating the generate link logic from the display record logic in the
-  atkmanytomanyselectrelation with the aim of allowing link 
-  customisation [pmatthews]
-* Made atkFileAttribute::getFiles throw an error if the directory 
-  is not readable. [Boy]
+  atkmanytomanyselectrelation with the aim of allowing link customisation 
+  [pmatthews]
+* Made atkFileAttribute::getFiles throw an error if the directory is not 
+  readable. [Boy]
 + Added atkFileUtils::getFileMimetype, to get the mimetype of a file using
   the fileinfo extension or mime_content_type function. [Boy]
 * Always displaying newlines for destination descriptors 

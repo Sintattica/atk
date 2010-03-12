@@ -1311,19 +1311,28 @@
       if ($reset || !isset($g_dbinstances[$conn]) || !$g_dbinstances[$conn]->hasMode($mode))
       {
         $dbconfig = atkconfig("db");
-        
-        if (isset($dbconfig[$conn]["driver"]))
+
+        if (!empty($dbconfig[$conn]["driver"]) && strpos($dbconfig[$conn]["driver"], '.') !== false)
         {
-          $driver = "atk{$dbconfig[$conn]["driver"]}db";
+          $driver = $dbconfig[$conn]["driver"];
+        }
+        else if (!empty($dbconfig[$conn]["driver"]))
+        {
+          $driver = "atk.db.atk{$dbconfig[$conn]["driver"]}db";
+        }        
+        else if (!empty($dbconfig[$conn]["driver"]))
+        {
+          atkhalt("Driver {$dbconfig[$conn]["driver"]} not found for connection '$conn'!");
+          return null;
         }
         else
         {
-          atkwarning("Driver not found for connection '$conn'! Initialising 'mock' atkDb driver");
-          $driver = "atkdb";
+          atkhalt("Driver not specified for connection '$conn'!");
+          return null;          
         }
 
         atkdebug("Creating new database instance with '{$driver}' driver");
-        $dbinstance = atknew("atk.db.{$driver}")->init($conn, $mode);
+        $dbinstance = atknew($driver)->init($conn, $mode);
 
         $g_dbinstances[$conn] = $dbinstance;
       }

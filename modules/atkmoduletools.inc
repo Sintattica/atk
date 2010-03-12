@@ -27,35 +27,35 @@
    * @access private
    * @var Array
    */
-  $g_nodeRepository = array();
+  $GLOBALS['g_nodeRepository'] = array();
 
   /**
    * A repository of module instances..
    * @access private
    * @var Array
    */
-  $g_moduleRepository = array();
+  $GLOBALS['g_moduleRepository'] = array();
 
   /**
    * registered node action handlers
    * @access private
    * @var Array
    */
-  $g_nodeHandlers = array();
+  $GLOBALS['g_nodeHandlers'] = array();
 
   /**
    * registered node listeners
    * @access private
    * @var Array
    */
-  $g_nodeListeners = array();
+  $GLOBALS['g_nodeListeners'] = array();
 
   /**
    * registered node controllers
    * @access private
    * @var Array
    */
-  $g_nodeControllers = array();
+  $GLOBALS['g_nodeControllers'] = array();
 
   /**
    * Gets the node type of a node string

@@ -24,34 +24,34 @@
    * Current microtime, to see when exactly this request started.
    * @var float
    */
-  $g_startTime = (float)$usec + (float)$sec; // can't use getmicrotime here because it isn't available yet
+  $GLOBALS['g_startTime'] = (float)$usec + (float)$sec; // can't use getmicrotime here because it isn't available yet
 
   /**
    * Global theme variable, containing theme data
    * @deprecated In favor of atkTheme class
    * @var array
    */
-  $g_theme = array();
+  $GLOBALS['g_theme'] = array();
 
   /**
    * Global node list
    */
-  $g_nodes = array();
+  $GLOBALS['g_nodes'] = array();
 
   /**
    * Global module list
    */
-  $g_modules = array();
+  $GLOBALS['g_modules'] = array();
 
   /**
    * Global menu
    */
-  $g_menu = array();
+  $GLOBALS['g_menu'] = array();
 
   /**
    * Global moduleflags per module
    */
-  $g_moduleflags = array();
+  $GLOBALS['g_moduleflags'] = array();
 
   /**
    * Sticky global variables.
@@ -59,16 +59,16 @@
    * in session urls and forms.
    * @var array
    */
-  $g_stickyurl = array();
+  $GLOBALS['g_stickyurl'] = array();
 
   /**
    * Modifiers
    */
-  $g_modifiers = array();
+  $GLOBALS['g_modifiers'] = array();
 
   /**
    * Overloaders
    */
-  $g_overloaders = array();
+  $GLOBALS['g_overloaders'] = array();
 
 ?>

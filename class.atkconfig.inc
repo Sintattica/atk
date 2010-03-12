@@ -25,6 +25,62 @@
   class atkConfig
   {
     /**
+     * Load global configuration variables.
+     */
+    public static function loadGlobals()
+    {
+      foreach (array_keys($GLOBALS) as $key)
+      {
+        if (substr($key, 0, 7) == 'config_')
+        {
+          global $$key;
+        }
+      }
+      
+      require_once($config_atkroot."atk/defaultconfig.inc.php");
+      require_once($config_application_dir."config.inc.php");
+      
+      foreach (get_defined_vars() as $key => $value)
+      {
+        if (substr($key, 0, 7) == 'config_')
+        {
+          global $$key;
+          $$key = $value;
+        }
+      }
+    }
+    
+    /**
+     * Returns the value for a global configuration variable.
+     * 
+     * @param string $name    configuration variable name (without the config_ prefix)
+     * @param mixed  $default default (fallback) value
+     */
+    public static function getGlobal($name, $default=null)
+    {
+      $fullName = 'config_'.$name;
+      if (function_exists($fullName)) 
+      {
+        return $fullName();
+      }
+  
+      return isset($GLOBALS[$fullName]) ? $GLOBALS[$fullName] : $default;
+    }
+
+    /**
+     * Sets the value of a global configuration variable.
+     * 
+     * Only works for configuration variables where no function for exists.
+     * 
+     * @param string $name  configuration variable name (without the config_ prefix)
+     * @param mixed  $value new value
+     */
+    public static function setGlobal($name, $value)
+    {
+      $GLOBALS['config_'.$name] = $value;
+    }
+    
+    /**
      * Get a configuration value for a section (typically a module)
      *
      * Can be overridden with a global function config_$section_$tag.
@@ -295,13 +351,7 @@
    */
   function atkconfig($tag, $default="")
   {
-    $cfgName = 'config_'.$tag;
-    if (function_exists($cfgName)) 
-    {
-      return $cfgName();
-    }
-
-    return isset($GLOBALS[$cfgName]) ? $GLOBALS[$cfgName] : $default;
+    return atkConfig::getGlobal($tag, $default);
   }
 
   /**

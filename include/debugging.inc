@@ -15,13 +15,12 @@
    * @version $Revision: $
    * $Id$
    */
-
-  if (atk_value_in_array($config_smart_debug))
+  if (atk_value_in_array($GLOBALS['config_smart_debug']))
   {
-    $config_debug = atkConfig::smartDebugLevel($config_debug, $config_smart_debug);
+    $GLOBALS['config_debug'] = atkConfig::smartDebugLevel($GLOBALS['config_debug'], $GLOBALS['config_smart_debug']);
   }
 
-  if ($config_debug > 0)
+  if ($GLOBALS['config_debug'] > 0)
   {
     ini_set('display_errors', 1);
   }

@@ -264,7 +264,7 @@
       $metadata = $database->metadata($table);
       foreach($metadata as $field)
       {
-        if (hasFlag($field['flags'], MF_AUTO_INCREMENT))
+        if (hasFlag($field['flags'], MF_AUTO_INCREMENT) && strtolower(@$field['table_type']) != 'innodb')
         {
           $sequence = isset($field['sequence']) ? $field['sequence'] : atkConfig("database_sequenceprefix").$table;
           $query = "SELECT MAX(" .$field['name'] .") AS value FROM $table";

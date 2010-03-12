@@ -21,13 +21,13 @@
    * Re-indroduced to ensure backwards compatibility.
    * @deprecated in favor of the atkSelf() function.
    */
-  $PHP_SELF = atkSelf();
+  $GLOBALS['PHP_SELF'] = atkSelf();
 
   /**
    * WARNING: Do NOT use this global variable, it is deprecated .
    * Set this because all PHP_SELF variables must have the same value.
    * @deprecated in favor of the atkSelf() function.
    */
-  $_SERVER["PHP_SELF"] = $PHP_SELF;
+  $_SERVER["PHP_SELF"] = atkSelf();
 
 ?>

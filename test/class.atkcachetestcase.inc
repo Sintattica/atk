@@ -16,7 +16,7 @@
  * @version $Revision: 5898 $
  * $Id$
  */     
-class atkCacheTestCase extends UnitTestCase
+class atkCacheTestCase extends atkTestCase
 {
   
   protected $m_cache;
@@ -75,16 +75,16 @@ class atkCacheTestCase extends UnitTestCase
     $data = 'Lifetime data';
     
     // configured from setup
-    $this->assertEqual($this->m_cache->getLifetime(), $this->m_lifetime);
+    $this->assertEquals($this->m_cache->getLifetime(), $this->m_lifetime);
     
     // store something
     $this->assertTrue($this->m_cache->set($id, $data),'Save data');
-    $this->assertEqual($this->m_cache->get($id), $data);
+    $this->assertEquals($this->m_cache->get($id), $data);
     
     // wait until just before the lifetime,
     // we should still get data
     sleep($this->m_cache->getLifetime() - 2);
-    $this->assertEqual($this->m_cache->get($id), $data);
+    $this->assertEquals($this->m_cache->get($id), $data);
     
     // wait until just after the lifetime,
     // we should get nothing
@@ -92,14 +92,14 @@ class atkCacheTestCase extends UnitTestCase
     $this->assertFalse($this->m_cache->get($id));
     
     // with custom lifetime on the set function
-    $this->assertTrue($this->m_cache->set($id, $data, 8),'Save data');
-    $this->assertEqual($this->m_cache->get($id), $data);
+    $this->assertTrue($this->m_cache->set($id, $data, 3),'Save data');
+    $this->assertEquals($this->m_cache->get($id), $data);
     
     //make sure that the default time isn't used
-    sleep(5); 
-    $this->assertEqual($this->m_cache->get($id), $data);
+    sleep(2); 
+    $this->assertEquals($this->m_cache->get($id), $data);
     
-    sleep(3);
+    sleep(2);
     $this->assertFalse($this->m_cache->get($id));
  
   }
@@ -117,16 +117,16 @@ class atkCacheTestCase extends UnitTestCase
     // add for the first time
     $this->m_cache[$id2]=$data2;
     //$this->assertTrue($this->m_cache[$id]=$data),"Add data");
-    $this->assertEqual($this->m_cache[$id2], $data2);
+    $this->assertEquals($this->m_cache[$id2], $data2);
 
     $this->assertTrue($this->m_cache->add($id, $data),"Add data");
-    $this->assertEqual($this->m_cache->get($id), $data);
+    $this->assertEquals($this->m_cache->get($id), $data);
     
     // add for the second time with a different value, should fail
     $this->assertFalse($this->m_cache->add($id, 'atk'),"Add data for second time with different value");
     
     // make sure it really didn't overwrite the data
-    $this->assertEqual($this->m_cache->get($id), $data);
+    $this->assertEquals($this->m_cache->get($id), $data);
   }
 
 
@@ -145,17 +145,17 @@ class atkCacheTestCase extends UnitTestCase
     $this->assertTrue($this->m_cache->set($id, $data),"Save data");
     
     // and we should be able to get now
-    $this->assertEqual($this->m_cache->get($id), $data);
+    $this->assertEquals($this->m_cache->get($id), $data);
     
     // deactivate then try to get
     $this->m_cache->setActive(false);
     $this->assertFalse($this->m_cache->isActive());
-    $this->assertNull($this->m_cache->get($id));
+    $this->assertFalse($this->m_cache->get($id));
     
     // re-activate then try to get
     $this->m_cache->setActive(true);
     $this->assertTrue($this->m_cache->isActive(),'Is cache still active ?');
-    $this->assertEqual($this->m_cache->get($id), $data);
+    $this->assertEquals($this->m_cache->get($id), $data);
   }
   
   /**
@@ -170,7 +170,7 @@ class atkCacheTestCase extends UnitTestCase
         'year'   => '2008',
     );
     $this->assertTrue($this->m_cache->set($id, $data),"Save data");
-    $this->assertEqual($this->m_cache->get($id), $data);
+    $this->assertEquals($this->m_cache->get($id), $data);
   }
   
   /**
@@ -181,7 +181,7 @@ class atkCacheTestCase extends UnitTestCase
     $id = 'save_object';
     $data = atknew("atk.atklanguage");
     $this->assertTrue($this->m_cache->set($id, $data),"Save data");
-    $this->assertEqual($this->m_cache->get($id), $data);
+    $this->assertEquals($this->m_cache->get($id), $data);
   }
 
   /**
@@ -192,7 +192,7 @@ class atkCacheTestCase extends UnitTestCase
     $id = 'test_save_string';
     $data = 'Save string data';
     $this->assertTrue($this->m_cache->set($id, $data),'Save data');
-    $this->assertEqual($this->m_cache->get($id), $data);
+    $this->assertEquals($this->m_cache->get($id), $data);
   }
   
   /**
@@ -210,7 +210,7 @@ class atkCacheTestCase extends UnitTestCase
     $this->assertTrue($this->m_cache->set($id, $data),"Save data");
     
     // and we should be able to get now
-    $this->assertEqual($this->m_cache->get($id), $data);
+    $this->assertEquals($this->m_cache->get($id), $data);
     
     // delete it, should not be able to get again
     $this->m_cache->delete($id);
@@ -231,7 +231,7 @@ class atkCacheTestCase extends UnitTestCase
         // so store some data
         $this->assertTrue($this->m_cache->set($id, $data),"Save data");
         // and we should be able to get now
-        $this->assertEqual($this->m_cache->get($id), $data);
+        $this->assertEquals($this->m_cache->get($id), $data);
     }
     
     // delete everything

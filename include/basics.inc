@@ -18,11 +18,11 @@
 
   /** BASIC ATK INCLUDES **/
   /** Gives you configs and the atktools **/
-  require_once($config_atkroot.'atk/include/globals.inc');
-  require_once($config_atkroot.'atk/include/configs.inc');
-  require_once($config_atkroot."atk/utils/class.atkstring.inc");
-  require_once($config_atkroot."atk/atktools.inc");
-  require_once($config_atkroot."atk/utils/class.atkclassloader.inc");
+  require_once($GLOBALS['config_atkroot'].'atk/include/globals.inc');
+  require_once($GLOBALS['config_atkroot'].'atk/include/configs.inc');
+  require_once($GLOBALS['config_atkroot']."atk/utils/class.atkstring.inc");
+  require_once($GLOBALS['config_atkroot']."atk/atktools.inc");
+  require_once($GLOBALS['config_atkroot']."atk/utils/class.atkclassloader.inc");
   
   $locale = atktext('locale', 'atk');
   if ($locale != null)

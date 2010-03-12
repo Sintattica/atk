@@ -384,7 +384,7 @@
         $handler = &atknew($class);
         if (is_object($handler))
         {
-          return $handler->$method($params);
+          return call_user_func_array(array($handler, $method), $params);
         }
         return false;
       }

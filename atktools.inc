@@ -304,6 +304,11 @@
 
     if (function_exists('debug_backtrace'))
       atkdebug("Trace:".atk_get_trace(), DEBUG_ERROR);
+      
+    if (atkconfig('throw_exception_on_error'))
+    {
+      throw new Exception($txt);
+    }
   }
 
   /**
