@@ -458,7 +458,16 @@
     public function renderPlainErrorMessages()
     {
       global $g_error_msg;
-      $output = '<br><div style="font-family: monospace; font-size: 11px; color: #FF0000" align="left">error: '.implode("<br>\nerror: ",$g_error_msg).'</div>';
+            
+      if (php_sapi_name() == 'cli')
+      {
+        $output = "error: ".implode("\nerror: ", $g_error_msg)."\n";
+      }
+      else
+      {
+        $output = '<br><div style="font-family: monospace; font-size: 11px; color: #FF0000" align="left">error: '.implode("<br>\nerror: ",$g_error_msg).'</div>';
+      }
+      
       return $output;
     }
 

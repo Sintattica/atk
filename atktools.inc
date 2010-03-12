@@ -173,14 +173,21 @@
         // critical
         $level_color="#ff0000";
       }
-      $output=atkOutput::getInstance();
-      $res ="<html>";
-      $res.='<body bgcolor="#ffffff" color="#000000">';
-      $res.="<font color=\"$level_color\"><b>".atktext($level,"atk")."</b></font>: $msg.<br />\n";
-      $res.="<b>Halted</b>";
-      $output->output($res);
-      $output->outputFlush();
-      die("Halted...");
+      
+      if (php_sapi_name() == 'cli')
+      {
+        $res = atktext($level,"atk").': '.$msg."\n";
+      }
+      else
+      {
+        $res  ="<html>";
+        $res .='<body bgcolor="#ffffff" color="#000000">';
+        $res .="<font color=\"$level_color\"><b>".atktext($level,"atk")."</b></font>: $msg.<br />\n";
+      }
+      
+      atkOutput::getInstance()->output($res);
+      atkOutput::getInstance()->outputFlush();
+      exit("Halted...\n");
     }
     else
     {

@@ -66,6 +66,21 @@
     }
     
     /**
+     * Output header.
+     * 
+     * @param string $header
+     */
+    public static function header($header)
+    {
+      if (php_sapi_name() == 'cli')
+      {
+        return;
+      }
+      
+      header($header);
+    }
+    
+    /**
      * Send the caching headers
      *
      * @param timestamp $lastmodificationstamp Timestamp of the last modification
@@ -85,12 +100,12 @@
         $_gmt_mtime = gmdate('D, d M Y H:i:s', $lastmodificationstamp).' GMT';
         if($_last_modified_date == $_gmt_mtime)
         {
-          header("HTTP/1.0 304 Not Modified");
+          atkOutput::header("HTTP/1.0 304 Not Modified");
           return;
         }
         else
         {
-          header ("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastmodificationstamp) . " GMT");
+          atkOutput::header("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastmodificationstamp) . " GMT");
         }
       }
     }
@@ -102,11 +117,11 @@
     public static function sendNoCacheHeaders()
     {
       atkdebug("Sending no-cache headers (lmd: ".gmdate("D, d M Y H:i:s")." GMT)");
-      header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
-      header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
-      header("Cache-Control: no-store, no-cache, must-revalidate");
-      header("Cache-Control: post-check=0, pre-check=0", false);
-      header ("Pragma: no-cache");                          // HTTP/1.0
+      atkOutput::header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
+      atkOutput::header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
+      atkOutput::header("Cache-Control: no-store, no-cache, must-revalidate");
+      atkOutput::header("Cache-Control: post-check=0, pre-check=0", false);
+      atkOutput::header("Pragma: no-cache");                          // HTTP/1.0
     }
 
     /**
@@ -135,7 +150,7 @@
         $this->sendCachingHeaders($lastmodificationstamp,$nocache);
         
         // Set the content type and the character set (as defined in the language files)
-        header ("Content-Type: text/html; charset=".($charset==""?atkGetCharset():$charset)); 
+        atkOutput::header("Content-Type: text/html; charset=".($charset==""?atkGetCharset():$charset)); 
 
         $res = $this->m_content;
 
@@ -146,7 +161,7 @@
           mailreport();
         }
         
-        $debugger = &atkinstance('atk.utils.atkdebugger');
+        $debugger = atkinstance('atk.utils.atkdebugger');
         $res .= $debugger->renderDebugAndErrorMessages();
       }
 
@@ -156,7 +171,7 @@
           isset($_SERVER['HTTP_ACCEPT_ENCODING']) && strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')
          )
       {
-        header('Content-Encoding: gzip');
+        atkOutput::header('Content-Encoding: gzip');
         echo $this->gzip($res);
       }
       else
