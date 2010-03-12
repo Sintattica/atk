@@ -3942,7 +3942,11 @@
       $recordset = $this->selectDb($selector,"","","","","delete");
 
       // nothing to delete, throw an error (determined by $failwhenempty)!
-      if (count($recordset) == 0) return !$failwhenempty;
+      if (count($recordset) == 0)
+      {
+        atkwarning($this->atknodetype()."->deleteDb($selector): 0 records found, not deleting anything.");
+        return !$failwhenempty;
+      }
 
       if($exectrigger)
       {

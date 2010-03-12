@@ -9,6 +9,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* atkNode::deleteDb now emits a warning if there is nothing to delete. [Boy]
 + Added atkConfig::setGlobal and atkConfig::getGlobal to set and get the
   value of global configuration parameters. [Peter]
 + Added support for specifying a database driver outside atk/db using a fully 
