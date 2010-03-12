@@ -334,7 +334,7 @@
       $colors = func_get_arg(0);
       $type = ($numargs == 2) ? func_get_arg(1) : 'hex';
 
-      if (!$this->checkTypeAndMode($type))
+      if (!is_string($colors) || !$this->checkTypeAndMode($type))
         return false;
 
       // color types -

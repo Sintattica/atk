@@ -886,7 +886,7 @@
 
       // If no section/tab is specified or tabs are disabled, we use the current default tab
       // (specified with the setDefaultTab method, or "default" otherwise)
-      elseif ($sections === NULL || strlen($sections) == 0 || !atkconfig("tabs"))
+      elseif ($sections === NULL || (is_string($sections) && strlen($sections) == 0) || !atkconfig("tabs"))
       {
         $sections = array($this->m_default_tab);
       }
