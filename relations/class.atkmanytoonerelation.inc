@@ -431,6 +431,19 @@ class atkManyToOneRelation extends atkRelation
     return $this;
   }
 
+  /**
+   * Reset the list columns and add multiple list columns. Attributes of the
+   * destination node that (only) will be displayed in the recordlist.
+   * @return atkManyToOneRelation The instance of this atkManyToOneRelation
+   */
+  public function setListColumns()
+  {
+    $attrs = func_get_args();
+    $this->m_listColumns = array();
+    foreach ($attrs as $attr)
+    $this->m_listColumns[] = $attr;
+    return $this;
+  }
 
   /**
    * Always show list columns in list view,
