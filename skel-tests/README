@@ -2,6 +2,10 @@ To create your own ATK PHPUnit test environment you should copy the contents
 of atk/skel-tests/ to a directory called tests/ (or how you want to name it), 
 preferably outside your application root.
 
+If this is a somewhat older ATK application (one that dates before the PHPUnit
+support in ATK), you might need to grab a fresh copy of atk/skel/atk.inc for
+your project.
+
 After copying the necessary files open bootstrap.php and change the value of
 $config_atkroot to your application's ATK root.
 
