@@ -1384,17 +1384,17 @@
 
         $arr["heading"][$key]["title"] = $this->label();
 
-        if (!hasFlag($flags, RL_NO_SORT) && !$this->hasFlag(AF_NO_SORT))
+        if ($grid->hasFlag(atkDataGrid::SORT) && !$this->hasFlag(AF_NO_SORT))
         {
           $arr["heading"][$key]["order"] = $this->listHeaderSortOrder($columnConfig, $fieldprefix);
         }
 
-        if (hasFlag($flags, RL_EXT_SORT))
+        if ($grid->hasFlag(atkDataGrid::EXTENDED_SORT))
         {
           $arr["sort"][$key] = $this->extendedSort($columnConfig, $fieldprefix, $grid);
         }
 
-        if (!hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(AF_SEARCHABLE))
+        if ($grid->hasFlag(atkDataGrid::SEARCH) && $this->hasFlag(AF_SEARCHABLE))
         {
           $fn = $this->fieldName()."_search";
           if (method_exists($this->m_ownerInstance, $fn))
