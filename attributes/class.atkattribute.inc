@@ -1362,17 +1362,22 @@
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param String $action the action that is being performed on the node
-     * @param array  $arr reference to the the recordlist array
-     * @param String $fieldprefix the fieldprefix
-     * @param int    $flags the recordlist flags
-     * @param array  $atksearch the current ATK search list (if not empty)
+     * @param String          $action       the action that is being performed on the node
+     * @param array           $arr          reference to the the recordlist array
+     * @param String          $fieldprefix  the fieldprefix
+     * @param int             $flags        the recordlist flags
+     * @param array           $atksearch    the current ATK search list (if not empty)
      * @param atkColumnConfig $columnConfig Column configuration object
-     * @param atkDataGrid $grid The atkDataGrid this attribute lives on.
-     * @see atkNode::listArray
-     */
-    function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, &$columnConfig, $grid=null)
+     * @param atkDataGrid     $grid         The atkDataGrid this attribute lives on.
+     * @param string          $column       child column (null for this attribute, * for this attribute and all childs)     
+    */
+    public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, &$columnConfig, atkDataGrid $grid=null, $column='*')
     {
+      if ($column != null && $column != '*')
+      {
+        throw new Exception("Invalid list column {$column} for ".get_class($this)." ".$this->getOwnerInstance()->atkNodeType().'::'.$this->fieldName());
+      }
+      
       if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select"))
       {
         $key = $fieldprefix.$this->fieldName();
@@ -1410,15 +1415,22 @@
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param String $action the action that is being performed on the node
-     * @param array  $arr reference to the the recordlist array
-     * @param int    $nr the current row number
-     * @param String $fieldprefix the fieldprefix
-     * @param int    $flags the recordlist flags
-     * @see atkNode::listArray
+     * @param String      $action      the action that is being performed on the node
+     * @param array       $arr         reference to the the recordlist array
+     * @param int         $nr          the current row number
+     * @param String      $fieldprefix the fieldprefix
+     * @param int         $flags       the recordlist flags
+     * @param boolean     $edit        editing?
+     * @param atkDataGrid $grid        data grid
+     * @param string      $column      child column (null for this attribute, * for this attribute and all childs)
      */
-    function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags, $edit=false)
+    public function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags, $edit=false, atkDataGrid $grid=null, $column='*')
     {
+      if ($column != null && $column != '*')
+      {
+        throw new Exception("Invalid list column {$column} for ".get_class($this)." ".$this->getOwnerInstance()->atkNodeType().'::'.$this->fieldName());
+      }
+      
       if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select"))
       {
         if ($edit)

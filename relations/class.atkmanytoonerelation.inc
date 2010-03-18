@@ -1914,77 +1914,89 @@ class atkManyToOneRelation extends atkRelation
    *
    * Framework method. It should not be necessary to call this method directly.
    *
-   * @param String $action the action that is being performed on the node
-   * @param array  $arr reference to the the recordlist array
-   * @param String $fieldprefix the fieldprefix
-   * @param int    $flags the recordlist flags
-   * @param array  $atksearch the current ATK search list (if not empty)
-   * @param String $atkorderby the current ATK orderby string (if not empty)
-   * @param atkDataGrid $grid The datagrid
-   * @see atkNode::listArray
-   */
-  public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby, $grid=null, $listcolumn='*')
+   * @param String          $action       the action that is being performed on the node
+   * @param array           $arr          reference to the the recordlist array
+   * @param String          $fieldprefix  the fieldprefix
+   * @param int             $flags        the recordlist flags
+   * @param array           $atksearch    the current ATK search list (if not empty)
+   * @param atkColumnConfig $columnConfig Column configuration object
+   * @param atkDataGrid     $grid         The atkDataGrid this attribute lives on.
+   * @param string          $column       child column (null for this attribute, * for this attribute and all childs)     
+  */
+  public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby, atkDataGrid $grid=null, $column='*')
   {
-    if ($listcolumn==='*')
+    if ($column == null || $column == '*')
     {
-      $this->addColumnToListArrayHeader($this->fieldName(), $action, $arr, $fieldprefix, $flags, $atksearch, $atkorderby, $grid);
-
+      $prefix = $fieldprefix.$this->fieldName()."_AE_";
+      parent::addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby, $grid, null);
+    }
+    
+    if ($column == '*')
+    {
       // only add extra columns when needed
       if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) return;
       if (!$this->createDestination() || count($this->m_listColumns) == 0) return;
 
-      foreach ($this->m_listColumns as $attribname)
+      foreach ($this->m_listColumns as $column)
       {
-        $this->addColumnToListArrayHeader($attribname, $action, $arr, $fieldprefix, $flags, $atksearch, $atkorderby, $grid);
+        $this->_addColumnToListArrayHeader($column, $action, $arr, $fieldprefix, $flags, $atksearch, $atkorderby, $grid);
       }
     }
-    else
+    else if ($column != null)
     {
-      $this->addColumnToListArrayHeader($listcolumn, $action, $arr, $fieldprefix, $flags, $atksearch, $atkorderby, $grid);
+      $this->_addColumnToListArrayHeader($column, $action, $arr, $fieldprefix, $flags, $atksearch, $atkorderby, $grid);
     }
   }
-
-  public function addColumnToListArrayHeader($column, $action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby, $grid=null)
+  
+  /**
+   * Adds the child attribute / field to the list row.
+   *
+   * Framework method. It should not be necessary to call this method directly.
+   *
+   * @param string      $column      child column (null for this attribute, * for this attribute and all childs)     
+   * @param String      $action      the action that is being performed on the node
+   * @param array       $arr         reference to the the recordlist array
+   * @param String      $fieldprefix the fieldprefix
+   * @param int         $flags       the recordlist flags
+   * @param array       $atksearch   the current ATK search list (if not empty)
+   * @param string      $atkorderby  order by
+   * @param atkDataGrid $grid        The atkDataGrid this attribute lives on.
+   */
+  protected function _addColumnToListArrayHeader($column, $action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby, atkDataGrid $grid=null)
   {
     $prefix = $fieldprefix.$this->fieldName()."_AE_";
 
-    if (in_array($column, array('', $this->fieldName())))
+    $p_attrib = $this->m_destInstance->getAttribute($column);
+    if ($p_attrib == null)
     {
-      // regular behaviour.
-      parent::addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby, $grid);
+      throw new Exception("Invalid list column {$column} for atkManyToOneRelation ".$this->getOwnerInstance()->atkNodeType().'::'.$this->fieldName());
     }
-    else
+    
+    $p_attrib->m_flags |= AF_HIDE_LIST;
+    $p_attrib->m_flags ^= AF_HIDE_LIST;
+    $p_attrib->addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby, $grid, null);
+
+    // fix order by clause
+    $needle = $prefix.$column;
+    foreach (array_keys($arr['heading']) as $key)
     {
-      $attribname = $column;
-      $p_attrib = &$this->m_destInstance->getAttribute($attribname);
-      $p_attrib->m_flags |= AF_HIDE_LIST;
-      $p_attrib->m_flags ^= AF_HIDE_LIST;
-      $p_attrib->addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby, $grid);
+      if (strpos($key, $needle) !== 0) continue;
+      
+      $order = $arr['heading'][$key]['order'];
+      if (empty($order)) continue;
+      
+      $order = $this->fieldName().'.'.$order;
 
-      $needle = $prefix.$attribname;
-      foreach (array_keys($arr['heading']) as $key)
+      if (is_object($atkorderby) &&
+      isset($atkorderby->m_colcfg[$this->fieldName()])
+          && isset($atkorderby->m_colcfg[$this->fieldName()]['extra'])
+          && $atkorderby->m_colcfg[$this->fieldName()]['extra'] == $column)
       {
-        // fix order by clause
-        if (strpos($key, $needle) === 0)
-        {
-          $order = $arr['heading'][$key]['order'];
-          if (!empty($order))
-          {
-            $order = $this->fieldName().'.'.$order;
-
-            if (is_object($atkorderby) &&
-            isset($atkorderby->m_colcfg[$this->fieldName()])
-                && isset($atkorderby->m_colcfg[$this->fieldName()]['extra'])
-                && $atkorderby->m_colcfg[$this->fieldName()]['extra'] == $attribname)
-            {
-              $direction = $atkorderby->getDirection($this->fieldName());
-              if ($direction=="asc") $order.=" desc";
-            }
-
-            $arr['heading'][$key]['order'] = $order;
-          }
-        }
+        $direction = $atkorderby->getDirection($this->fieldName());
+        if ($direction=="asc") $order.=" desc";
       }
+
+      $arr['heading'][$key]['order'] = $order;
     }
   }
 
@@ -1993,60 +2005,74 @@ class atkManyToOneRelation extends atkRelation
    *
    * Framework method. It should not be necessary to call this method directly.
    *
-   * @param String $action the action that is being performed on the node
-   * @param array  $arr reference to the the recordlist array
-   * @param int    $nr the current row number
-   * @param String $fieldprefix the fieldprefix
-   * @param int    $flags the recordlist flags
-   * @see atkNode::listArray
+   * @param String      $action      the action that is being performed on the node
+   * @param array       $arr         reference to the the recordlist array
+   * @param int         $nr          the current row number
+   * @param String      $fieldprefix the fieldprefix
+   * @param int         $flags       the recordlist flags
+   * @param boolean     $edit        editing?
+   * @param atkDataGrid $grid        data grid
+   * @param string      $column      child column (null for this attribute, * for this attribute and all childs)
    */
-  public function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags, $edit=false, $listcolumn='*')
+  public function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags, $edit=false, atkDataGrid $grid=null, $column='*')
   {
-    if ($listcolumn!=='*')
+    if ($column == null || $column == '*')
     {
-      $this->addColumnToListArrayRow($listcolumn, $action, $arr, $nr, $fieldprefix, $flags, $edit);
+      $prefix = $fieldprefix.$this->fieldName()."_AE_";      
+      parent::addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit, $grid, null);
     }
-    else
+    
+    if ($column == '*')
     {
-      $this->addColumnToListArrayRow($this->fieldName(), $action, $arr, $nr, $fieldprefix, $flags, $edit);
-
       // only add extra columns when needed
       if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) return;
       if (!$this->createDestination() || count($this->m_listColumns) == 0) return;
 
       foreach ($this->m_listColumns as $column)
       {
-        $this->addColumnToListArrayRow($column, $action, $arr, $nr, $fieldprefix, $flags, $edit);
+        $this->_addColumnToListArrayRow($column, $action, $arr, $nr, $fieldprefix, $flags, $edit, $grid);
       }
     }
+    else if ($column != null)
+    {
+      $this->_addColumnToListArrayRow($column, $action, $arr, $nr, $fieldprefix, $flags, $edit, $grid);      
+    }    
   }
 
-  public function addColumnToListArrayRow($column, $action, &$arr, $nr, $fieldprefix, $flags, $edit=false)
+  /**
+   * Adds the child attribute / field to the list row.
+   *
+   * @param string      $column      child attribute name
+   * @param String      $action      the action that is being performed on the node
+   * @param array       $arr         reference to the the recordlist array
+   * @param int         $nr          the current row number
+   * @param String      $fieldprefix the fieldprefix
+   * @param int         $flags       the recordlist flags
+   * @param boolean     $edit        editing?
+   * @param atkDataGrid $grid        data grid
+   */
+  protected function _addColumnToListArrayRow($column, $action, &$arr, $nr, $fieldprefix, $flags, $edit=false, atkDataGrid $grid=null)
   {
     $prefix = $fieldprefix.$this->fieldName()."_AE_";
 
-    if (in_array($column, array('', $this->fieldName())))
+    // small trick, the destination record is in a subarray. The destination
+    // addToListArrayRow will not expect this though, so we have to modify the
+    // record a bit before passing it to the detail columns.
+    $backup = $arr["rows"][$nr]["record"];
+    $arr["rows"][$nr]["record"] = $arr["rows"][$nr]["record"][$this->fieldName()];
+
+    $p_attrib = $this->m_destInstance->getAttribute($column);
+    if ($p_attrib == null)
     {
-      parent::addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit);
+      throw new Exception("Invalid list column {$column} for atkManyToOneRelation ".$this->getOwnerInstance()->atkNodeType().'::'.$this->fieldName());
     }
-    else
-    {
-      // small trick, the destination record is in a subarray. The destination
-      // addToListArrayRow will not expect this though, so we have to modify the
-      // record a bit before passing it to the detail columns.
-      $backup = $arr["rows"][$nr]["record"];
-      $arr["rows"][$nr]["record"] = $arr["rows"][$nr]["record"][$this->fieldName()];
 
-      $p_attrib = &$this->m_destInstance->getAttribute($column);
-      if (!$p_attrib) return atkerror("Column '$column' is not a valid destination column!");
+    $p_attrib->m_flags |= AF_HIDE_LIST;
+    $p_attrib->m_flags ^= AF_HIDE_LIST;
 
-      $p_attrib->m_flags |= AF_HIDE_LIST;
-      $p_attrib->m_flags ^= AF_HIDE_LIST;
+    $p_attrib->addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit, $grid, null);
 
-      $p_attrib->addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit);
-
-      $arr["rows"][$nr]["record"] = $backup;
-    }    
+    $arr["rows"][$nr]["record"] = $backup;
   }
 
   /**
