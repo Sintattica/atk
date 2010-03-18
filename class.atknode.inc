@@ -4708,13 +4708,22 @@
      * @returns String Returns $filter if the filter is valid or a empty
      *                 string if not.
      */
-    function validateFilter($filter)
+    public function validateFilter($filter)
     {
       // If the filter is blank
         // Or we can't find the target field
-      if ($filter=='' || !$targetField = $this->getFirstTargetFieldFromFilterSql($filter))
+      if ($filter==='')
+      {
+        return $filter;
+      }
+
+      $targetField = $this->getFirstTargetFieldFromFilterSql($filter);
+      if (!$targetField)
+      {
+        atkwarning($this->atkNodeType().'->'.__FUNCTION__."($filter): Disallowed because it has no target field");
         // Don't allow the filter
         return '';
+      }
 
       // Separate the table name from the column name
       $targetDetails = explode('.', $targetField);
@@ -4729,11 +4738,16 @@
       }
 
       // If the table isn't $this one
-        // Or the column doesn't belong to $this
-      if (strtolower(trim($targetTable)) !== strtolower($this->m_table)
-        || !in_array($targetColumn, array_keys($this->m_attribList)))
+      if (strtolower(trim($targetTable)) !== strtolower($this->m_table))
       {
-        // Don't allow the filter
+        atkwarning($this->atkNodeType().'->'.__FUNCTION__."($filter): Disallowed because ".strtolower(trim($targetTable))." !== ".strtolower($this->m_table));
+        return '';
+      }
+
+      // Or the column doesn't belong to $this
+      if (!in_array($targetColumn, array_keys($this->m_attribList)))
+      {
+        atkwarning($this->atkNodeType().'->'.__FUNCTION__."($filter): Disallowed because target column $targetColumn isn't in node");
         return "";
       }
       return $filter;
@@ -4751,7 +4765,8 @@
       $sqloperators = array('=','<>','>','<','>=','<=','BETWEEN','LIKE','IN', 'IS', 'NOT IN','&');
 
       $sqlOperatorsString = implode('|', array_map('preg_quote', $sqloperators));
-      preg_match("/^(\w.+?)\s+({$sqlOperatorsString})/", str_replace('`', '', trim($sql)), $matches);
+      $matches = array();
+      preg_match("/^(\w.+?)\s*({$sqlOperatorsString})/", str_replace('`', '', trim($sql)), $matches);
 
       if (count($matches) != 3) return '';
 

@@ -1,6 +1,4 @@
-To create your own ATK PHPUnit test environment you should copy the contents 
-of atk/skel-tests/ to a directory called tests/ (or how you want to name it), 
-preferably outside your application root.
+To create your own ATK PHPUnit test environment you should:
 
 If this is a somewhat older ATK application (one that dates before the PHPUnit
 support in ATK), you might need to grab a fresh copy of atk/skel/atk.inc for
@@ -9,10 +7,15 @@ your project.
 After copying the necessary files open bootstrap.php and change the value of
 $config_atkroot to your application's ATK root.
 
-If you want to run ATK's own tests you can checkout the tests in the tests/
-directory using the following command:
+- Update your atk.inc with the atk.inc from atk/skel/.
 
-  svn co http://svn.ibuildings.nl/atk/tests/trunk atk 
+- Open bootstrap.php and change the value of $config_atkroot
+  to your application's ATK root.
+
+- (optional) if you want to run ATK's own tests you can checkout the tests
+  in the tests/ directory using the following command:
+
+  svn co http://svn.ibuildings.nl/atk/tests/trunk atk
 
 You now have a directory structure like the following:
 
@@ -31,22 +34,23 @@ After you've installed PHPUnit you are ready to run ATK's tests by issuing the
 following command from inside the tests/ directory:
 
   phpunit
-  
-This command uses the phpunit.xml to check what files / directories are 
-available for testing. If you only want to test a certain group of tests you
-can use the --group command-line argument, e.g. to run only the attribute 
+
+This command uses the phpunit.xml to check what files / directories are
+available for testing (note, this works only for PHPUnit 3.4+, otherwise
+use 'phpunit AllTests.php'). If you only want to test a certain group of tests
+you can use the --group command-line argument, e.g. to run only the attribute
 tests, you can use the following command:
 
   phpunit --group ATK-Attributes
-  
+
 You can also exclude a group of tests, using the following command:
 
   phpunit --exclude-group ATK-Cache
- 
+
 To get a list of available groups you can issue the following command:
 
   phpunit --list-groups
-  
+
 You can customize the phpunit.xml file to include your own tests. By default
 an entry is added for a directory called modules/ which can contain the
 tests for your own modules. Your directory structure could for example look
@@ -67,14 +71,18 @@ like the following:
     AllTests.php
     bootstrap.php
     phpunit.xml
-    
-You are however free to modify phpunit.xml to suit your own needs. If the 
-phpunit.xml file is not flexible enough for you could also choose to modify
-the AllTests.php file to suit your needs. To use the AllTests.php file to run
-your tests you can use the following command:
+
+You are however free to modify phpunit.xml to suit your own needs. If the
+phpunit.xml file is not flexible enough for you or you are using
+an older version of PHPUnit you could also choose to modify the
+AllTests.php file to suit your needs.
+To use the AllTests.php file to run your tests you can use
+the following command:
 
   phpunit AllTests.php
-  
-Be aware if you use the AllTests.php approach you will use the ability to 
-include/exclude groups on the command-line like in the examples above. However
-you can still include/exclude groups programatically inside your AllTests.php.
+
+Be aware if you use the AllTests.php approach with newer PHPUnit versions
+you will lose the ability to include/exclude groups on the command-line
+like in the examples above.
+However you can still include/exclude groups programatically
+inside your AllTests.php.

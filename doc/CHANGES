@@ -9,6 +9,11 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Made atkSelectHandler also execute the modifyGrid action. [Boy]
+* Fixed atkNode::validateFilter, was unable to spaces in the filter and made
+  it emit warnings if it fails a filter. [Boy]
++ Added option to atkDgList to set the columns to be displayed, with support
+  for atkManyToOneRelation 'list columns'. [Boy]
 * atkNode::deleteDb now emits a warning if there is nothing to delete. [Boy]
 + Added atkConfig::setGlobal and atkConfig::getGlobal to set and get the
   value of global configuration parameters. [Peter]

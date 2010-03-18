@@ -55,14 +55,17 @@ class atkSelectHandler extends atkActionHandler
    */
   public function selectPage()
   {
-    $this->getNode()->addStyle("style.css");
+    $node = $this->getNode();
+    $node->addStyle("style.css");
 
     atkimport('atk.datagrid.atkdatagrid');
-    $grid = atkDataGrid::create($this->getNode(), 'select');
+    $grid = atkDataGrid::create($node, 'select');
     $actions = array('select' => atkurldecode($grid->getPostvar('atktarget')));
     $grid->removeFlag(atkDataGrid::MULTI_RECORD_ACTIONS);
     $grid->removeFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS);
     $grid->setDefaultActions($actions);
+
+    $this->modifyDataGrid($grid, atkDataGrid::CREATE);
     
     if ($this->autoSelectRecord($grid))
     {
@@ -70,8 +73,8 @@ class atkSelectHandler extends atkActionHandler
     }
 
     $params = array();
-    $params["header"] = $this->getNode()->text("title_select");
-    $params["list"] = $grid->render();
+    $params["header"] = $node->text("title_select");
+    $params["list"]   = $grid->render();
     $params["footer"] = "";
     
     if (atkLevel() > 0)
@@ -98,12 +101,17 @@ class atkSelectHandler extends atkActionHandler
     atkimport('atk.datagrid.atkdatagrid');
     try
     {
-    return atkDataGrid::resume($this->getNode())->render();
-  }      
+      $grid = atkDataGrid::resume($this->getNode());
+
+      $this->modifyDataGrid($grid, atkDataGrid::RESUME);
+    }
     catch (Exception $e)
     {
-      return atkDataGrid::create($this->getNode())->render();
+      $grid = atkDataGrid::create($this->getNode());
+      
+      $this->modifyDataGrid($grid, atkDataGrid::RESUME);
     }
+    return $grid->render();
   }
 
   /**

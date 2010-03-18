@@ -190,21 +190,6 @@
 
       return $grid->render();
     }
-     
-    /**
-     * Modify grid.
-     * 
-     * @param atkDataGrid $grid grid
-     * @param int         $mode CREATE or RESUME
-     */
-    protected function modifyDataGrid(atkDataGrid $grid, $mode)
-    {    
-      $method = 'modifyDataGrid';
-      if (method_exists($this->getNode(), $method))
-      {
-        $this->getNode()->$method($grid, $mode);
-      }
-    }
 
     /**
      * If a search action has been defined and a search only returns one result

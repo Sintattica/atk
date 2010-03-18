@@ -43,7 +43,7 @@ class atkDGList extends atkDGComponent
    *
    * @return string rendered list HTML
    */
-  function render()
+  public function render()
   {
   	$alwaysShowGrid = $this->getOption('alwaysShowGrid', false);
 
@@ -758,23 +758,12 @@ class atkDGList extends atkDGComponent
 
     $columnConfig = &$grid->getNode()->getColumnConfig($grid->getName());
 
-    /* get the heading and search columns */
-    $atksearchpostvar = $grid->getPostvar("atksearch");
-
     if (!hasFlag($flags, RL_NO_SEARCH) || $grid->isEditing())
     {
       $grid->getNode()->setAttribSizes();
     }
 
-    foreach (array_keys($grid->getNode()->m_attribIndexList) as $r)
-    {
-      $name = $grid->getNode()->m_attribIndexList[$r]["name"];
-      if (!in_array($name, $suppress))
-      {
-        $attribute = &$grid->getNode()->m_attribList[$name];
-        $attribute->addToListArrayHeader($grid->getNode()->m_action, $result, $prefix, $flags, $atksearchpostvar, $columnConfig, $this->getGrid());
-      }
-    }
+    $this->_addToListArrayHeader($result, $prefix, $suppress, $flags, $columnConfig);
 
     /* actions array can contain multi-record-actions */
     if (count($actions) == 2 && count(array_diff(array_keys($actions), array("actions", "mra"))) == 0)
@@ -849,16 +838,7 @@ class atkDGList extends atkDGComponent
       /* columns */
       $editAllowed = $grid->getPostvar('atkgridedit', false) && $grid->getNode()->allowed('edit', $result["rows"][$i]["record"]);
       $result["rows"][$i]["edit"] = $editAllowed;
-      foreach (array_keys($grid->getNode()->m_attribIndexList) as $r)
-      {
-        $name = $grid->getNode()->m_attribIndexList[$r]["name"];
-        if (!in_array($name, $suppress))
-        {
-          $attribute = &$grid->getNode()->m_attribList[$name];
-          $edit = $editAllowed && in_array($name, $grid->getNode()->m_editableListAttributes);
-          $attribute->addToListArrayRow($grid->getNode()->m_action, $result, $i, $prefix, $flags, $edit);
-        }
-      }
+      $this->_addToListArrayRow($suppress, $editAllowed, $result, $i, $prefix, $flags);
     }
 
     if (hasFlag($flags, RL_EXT_SORT) && $columnConfig->hasSubTotals())
@@ -872,5 +852,160 @@ class atkDGList extends atkDGComponent
       $result["mra"] = array_values(array_unique($result["mra"]));
 
     return $result;
+  }
+
+  private function _addToListArrayHeader(&$result, $prefix, $suppress, $flags, $columnConfig)
+  {
+    $grid             = $this->getGrid();
+    $node             = $grid->getNode();
+    $atksearchpostvar = $grid->getPostvar("atksearch");
+
+    $columnOrder = $this->getOption('columns');
+    if ($columnOrder)
+    {
+      $this->_addToListArrayHeaderByColumnOrder(
+        $node,
+        $grid,
+        $atksearchpostvar,
+        $result,
+        $prefix,
+        $suppress,
+        $flags,
+        $columnConfig
+      );
+    }
+    else
+    {
+      $this->_addToListArrayHeaderByIndex(
+        $node,
+        $grid,
+        $atksearchpostvar,
+        $result,
+        $prefix,
+        $suppress,
+        $flags,
+        $columnConfig
+      );
+    }
+  }
+
+  private function _addToListArrayHeaderByColumnOrder(atkNode $node, atkDataGrid $grid, $atksearchpostvar, &$result, $prefix, $suppress, $flags, $columnConfig)
+  {
+    $columns = $this->getOption('columns');
+    foreach ($columns as $column)
+    {
+      $attribute = '';
+      $listcolumn = '';
+      $exploded = explode('.', $column);
+      $attribute = $exploded[0];
+      if (isset($exploded[1])) $listcolumn = $exploded[1];
+      if (in_array($attribute, $suppress)) continue;
+
+      $attribute = $node->getAttribute($attribute);
+      if ($attribute)
+      {
+        $attribute->addToListArrayHeader(
+          $grid->getNode()->m_action,
+          $result,
+          $prefix,
+          $flags,
+          $atksearchpostvar,
+          $columnConfig,
+          $grid,
+          $listcolumn
+        );
+      }
+      else
+      {
+        atkerror("Attribute from '$column' not found?!");
+      }
+    }
+  }
+
+  private function _addToListArrayHeaderByIndex($node, $grid, $atksearchpostvar, &$result, $prefix, $suppress, $flags, $columnConfig)
+  {
+    foreach (array_keys($node->m_attribIndexList) as $r)
+    {
+      $name = $node->m_attribIndexList[$r]["name"];
+      if (!in_array($name, $suppress))
+      {
+        $attribute = $node->getAttribute($name);
+        $attribute->addToListArrayHeader(
+          $grid->getNode()->m_action,
+          $result,
+          $prefix,
+          $flags,
+          $atksearchpostvar,
+          $columnConfig,
+          $grid
+        );
+      }
+    }
+  }
+
+  private function _addToListArrayRow($suppress, $editAllowed, &$result, $i, $prefix, $flags)
+  {
+    $grid = $this->getGrid();
+    $columns = $this->getOption('columns');
+    if ($columns)
+    {
+      $this->_addToListArrayRowByColumns($grid, $suppress, $editAllowed, $result, $i, $prefix, $flags);
+    }
+    else
+    {
+      $this->_addToListArrayRowByIndex($grid, $suppress, $editAllowed, $result, $i, $prefix, $flags);
+    }
+  }
+
+  private function _addToListArrayRowByColumns($grid, $suppress, $editAllowed, &$result, $i, $prefix, $flags)
+  {
+    $node = $grid->getNode();
+
+    $columns = $this->getOption('columns');
+    foreach ($columns as $column)
+    {
+      $attribute = '';
+      $listcolumn = '';
+      $exploded = explode('.', $column);
+      $attribute = $exploded[0];
+      if (isset($exploded[1])) $listcolumn = $exploded[1];
+
+      $edit = $editAllowed && in_array($attribute, $node->m_editableListAttributes);
+      if (in_array($attribute, $suppress)) continue;
+
+      $attribute = $node->getAttribute($attribute);
+      if ($attribute)
+      {
+        $attribute->addToListArrayRow(
+          $node->getAction(),
+          $result,
+          $i,
+          $prefix,
+          $flags,
+          $edit,
+          $listcolumn
+        );
+      }
+      else
+      {
+        atkerror("Attribute mentioned in '$column' does not have a valid attribute?!");
+      }
+    }
+  }
+
+  private function _addToListArrayRowByIndex($grid, $suppress, $editAllowed, &$result, $i, $prefix, $flags)
+  {
+    $node = $grid->getNode();
+    $columnOrder = $this->getOption('columnOrder');
+    foreach (array_keys($node->m_attribIndexList) as $r)
+    {
+      $name = $node->m_attribIndexList[$r]["name"];
+      if (!in_array($name, $suppress))
+      {
+        $attribute = $node->getAttribute($name);
+        $edit = $editAllowed && in_array($name, $node->m_editableListAttributes);
+        $attribute->addToListArrayRow($node->getAction(), $result, $i, $prefix, $flags, $edit);
+      }
+    }
   }
 }

@@ -309,6 +309,22 @@
       }
     }
 
+
+    /**
+     * Modify grid.
+     *
+     * @param atkDataGrid $grid grid
+     * @param int         $mode CREATE or RESUME
+     */
+    protected function modifyDataGrid(atkDataGrid $grid, $mode)
+    {
+      $method = 'modifyDataGrid';
+      if (method_exists($this->getNode(), $method))
+      {
+        $this->getNode()->$method($grid, $mode);
+      }
+    }
+
     /**
      * Get the cached recordlist
      *

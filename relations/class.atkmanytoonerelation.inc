@@ -431,6 +431,11 @@ class atkManyToOneRelation extends atkRelation
     return $this;
   }
 
+  public function getListColumns()
+  {
+    return $this->m_listColumns;
+  }
+
   /**
    * Reset the list columns and add multiple list columns. Attributes of the
    * destination node that (only) will be displayed in the recordlist.
@@ -438,10 +443,22 @@ class atkManyToOneRelation extends atkRelation
    */
   public function setListColumns()
   {
-    $attrs = func_get_args();
     $this->m_listColumns = array();
-    foreach ($attrs as $attr)
-    $this->m_listColumns[] = $attr;
+
+    $attrs = func_get_args();
+    if (count($attrs)===1 && is_array($attrs[0]))
+    {
+      $columns = $attrs[0];
+    }
+    else
+    {
+      $columns = $attrs;
+    }
+    
+    foreach ($columns as $column)
+    {
+      $this->m_listColumns[] = $column;
+    }
     return $this;
   }
 
@@ -1092,7 +1109,7 @@ class atkManyToOneRelation extends atkRelation
    *
    * @return String A piece of html-code
    */
-  function search($record=array(), $extended=false, $fieldprefix="", $grid=null)
+  function search($record=array(), $extended=false, $fieldprefix="", atkDataGrid $grid=null)
   {
     $useautocompletion = atkConfig("manytoone_search_autocomplete", true) && $this->hasFlag(AF_RELATION_AUTOCOMPLETE);
     if (!$this->hasFlag(AF_LARGE) && !$useautocompletion)
@@ -1906,19 +1923,39 @@ class atkManyToOneRelation extends atkRelation
    * @param atkDataGrid $grid The datagrid
    * @see atkNode::listArray
    */
-  function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby, $grid=null)
+  public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby, $grid=null, $listcolumn='*')
+  {
+    if ($listcolumn==='*')
+    {
+      $this->addColumnToListArrayHeader($this->fieldName(), $action, $arr, $fieldprefix, $flags, $atksearch, $atkorderby, $grid);
+
+      // only add extra columns when needed
+      if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) return;
+      if (!$this->createDestination() || count($this->m_listColumns) == 0) return;
+
+      foreach ($this->m_listColumns as $attribname)
+      {
+        $this->addColumnToListArrayHeader($attribname, $action, $arr, $fieldprefix, $flags, $atksearch, $atkorderby, $grid);
+      }
+    }
+    else
+    {
+      $this->addColumnToListArrayHeader($listcolumn, $action, $arr, $fieldprefix, $flags, $atksearch, $atkorderby, $grid);
+    }
+  }
+
+  public function addColumnToListArrayHeader($column, $action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby, $grid=null)
   {
     $prefix = $fieldprefix.$this->fieldName()."_AE_";
 
-    // regular behaviour.
-    parent::addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby, $grid);
-
-    // only add extra columns when needed
-    if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) return;
-    if (!$this->createDestination() || count($this->m_listColumns) == 0) return;
-
-    foreach ($this->m_listColumns as $attribname)
+    if (in_array($column, array('', $this->fieldName())))
     {
+      // regular behaviour.
+      parent::addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby, $grid);
+    }
+    else
+    {
+      $attribname = $column;
       $p_attrib = &$this->m_destInstance->getAttribute($attribname);
       $p_attrib->m_flags |= AF_HIDE_LIST;
       $p_attrib->m_flags ^= AF_HIDE_LIST;
@@ -1963,31 +2000,53 @@ class atkManyToOneRelation extends atkRelation
    * @param int    $flags the recordlist flags
    * @see atkNode::listArray
    */
-  function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags, $edit=false)
+  public function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags, $edit=false, $listcolumn='*')
+  {
+    if ($listcolumn!=='*')
+    {
+      $this->addColumnToListArrayRow($listcolumn, $action, $arr, $nr, $fieldprefix, $flags, $edit);
+    }
+    else
+    {
+      $this->addColumnToListArrayRow($this->fieldName(), $action, $arr, $nr, $fieldprefix, $flags, $edit);
+
+      // only add extra columns when needed
+      if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) return;
+      if (!$this->createDestination() || count($this->m_listColumns) == 0) return;
+
+      foreach ($this->m_listColumns as $column)
+      {
+        $this->addColumnToListArrayRow($column, $action, $arr, $nr, $fieldprefix, $flags, $edit);
+      }
+    }
+  }
+
+  public function addColumnToListArrayRow($column, $action, &$arr, $nr, $fieldprefix, $flags, $edit=false)
   {
     $prefix = $fieldprefix.$this->fieldName()."_AE_";
 
-    parent::addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit);
-
-    // only add extra columns when needed
-    if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) return;
-    if (!$this->createDestination() || count($this->m_listColumns) == 0) return;
-
-    // small trick, the destination record is in a subarray. The destination
-    // addToListArrayRow will not expect this though, so we have to modify the
-    // record a bit before passing it to the detail columns.
-    $backup = $arr["rows"][$nr]["record"];
-    $arr["rows"][$nr]["record"] = $arr["rows"][$nr]["record"][$this->fieldName()];
-
-    foreach ($this->m_listColumns as $attribname)
+    if (in_array($column, array('', $this->fieldName())))
     {
-      $p_attrib = &$this->m_destInstance->getAttribute($attribname);
+      parent::addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit);
+    }
+    else
+    {
+      // small trick, the destination record is in a subarray. The destination
+      // addToListArrayRow will not expect this though, so we have to modify the
+      // record a bit before passing it to the detail columns.
+      $backup = $arr["rows"][$nr]["record"];
+      $arr["rows"][$nr]["record"] = $arr["rows"][$nr]["record"][$this->fieldName()];
+
+      $p_attrib = &$this->m_destInstance->getAttribute($column);
+      if (!$p_attrib) return atkerror("Column '$column' is not a valid destination column!");
+
       $p_attrib->m_flags |= AF_HIDE_LIST;
       $p_attrib->m_flags ^= AF_HIDE_LIST;
-      $p_attrib->addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit);
-    }
 
-    $arr["rows"][$nr]["record"] = $backup;
+      $p_attrib->addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit);
+
+      $arr["rows"][$nr]["record"] = $backup;
+    }    
   }
 
   /**
