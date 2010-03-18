@@ -55,12 +55,13 @@ abstract class atkCache implements ArrayAccess
     * Get atkCache instance, default when no type
     * is configured it will use var cache.
     *
-    * @param string $types Cache type
+    * @param string  $types    Cache type
+    * @param boolean $fallback fallback to var cache if all types fail?
+    * 
     * @return object atkCache object of the request type
     */
-   public static function getInstance($types="")
+   public static function getInstance($types="", $fallback=true)
    {
-     
      if($types=='') $types = atkconfig("cache_method",array());
      if(!is_array($types)) $types = array($types);
 
@@ -91,13 +92,15 @@ abstract class atkCache implements ArrayAccess
          atknotice("Can't instantatie atkCache class $classname: ".$e->getMessage());
        }
      }
+     
+     if (!$fallback)
+     {
+       throw new Exception("Cannot instantiate atkCache class of the following type(s): ".implode(', ', $types));
+     }
+     
      // Default return var cache
      atkdebug("atkcache::getInstance() -> Using var cache");
-     self::$m_instances['var'] = atknew("atk.cache.atkcache_var");
-     self::$m_instances['var']->setNamespace(atkconfig('cache_namespace','default'));
-     self::$m_instances['var']->setLifetime(self::$m_instances['var']->getCacheConfig('lifetime',3600));
-     self::$m_instances['var']->setActive(atkconfig('cache_active',true));
-     return self::$m_instances['var']; 
+     return self::getInstance('var', false);
    }
    
    /**

@@ -32,7 +32,15 @@ class atkCacheTestCase extends atkTestCase
     $GLOBALS['config_cache'][$this->m_type]['lifetime'] = $this->m_lifetime;
     
     
-    $this->m_cache = atkCache::getinstance($this->m_type);
+    try
+    {
+      $this->m_cache = atkCache::getInstance($this->m_type, false);
+    }
+    catch (Exception $ex)
+    {
+      $this->markTestSkipped($ex->getMessage());
+      return;
+    }
 
     // We need to make sure that the cache is empty
     // It's not correct, but I don't know an other 
@@ -43,7 +51,7 @@ class atkCacheTestCase extends atkTestCase
   /**
    * Check if we have the correct object
    */
-  public function test__construct()
+  public function test_construct()
   {
      $classname = "atkCache_".$this->m_type;
      $this->assertTrue($this->m_cache instanceof $classname,"Do we have the correct object (".$this->m_type.") ?");
