@@ -4738,14 +4738,16 @@
       }
 
       // If the table isn't $this one
-      if (strtolower(trim($targetTable)) !== strtolower($this->m_table))
+      if (strtolower(trim($targetTable)) !== strtolower($this->m_table) &&
+          !($this->getAttribute($targetTable) instanceof atkManyToOneRelation))
       {
-        atkwarning($this->atkNodeType().'->'.__FUNCTION__."($filter): Disallowed because ".strtolower(trim($targetTable))." !== ".strtolower($this->m_table));
+        atkwarning($this->atkNodeType().'->'.__FUNCTION__."($filter): Disallowed because ".strtolower(trim($targetTable))." !== ".strtolower($this->m_table). ' and not a valid many-to-one relation.');
         return '';
       }
 
       // Or the column doesn't belong to $this
-      if (!in_array($targetColumn, array_keys($this->m_attribList)))
+      if (!($this->getAttribute($targetTable) instanceof atkManyToOneRelation) &&
+          !in_array($targetColumn, array_keys($this->m_attribList)))
       {
         atkwarning($this->atkNodeType().'->'.__FUNCTION__."($filter): Disallowed because target column $targetColumn isn't in node");
         return "";
