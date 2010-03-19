@@ -2256,7 +2256,8 @@ class atkManyToOneRelation extends atkRelation
     foreach ($records as $rec)
     {
       $option = atk_htmlentities($this->m_destInstance->descriptor($rec));
-      $highlightedOption = preg_replace('/('.preg_quote($searchvalue).')/i', '<span class="atkmanytoone_highlite">\\1</span>', $option);
+      $escaped_searchvalue = str_replace('/', '\/', preg_quote($searchvalue));
+      $highlightedOption = preg_replace('/('.$escaped_searchvalue.')/i', '<span class="atkmanytoone_highlite">\\1</span>', $option);
       $value = $this->m_destInstance->primaryKey($rec);
       $result .= '
           <li title="'.$option.'">

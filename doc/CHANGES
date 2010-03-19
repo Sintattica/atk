@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Making the autoloader work with strings with forward slashes (preg_quote 
+  doesn't seem to resolve the problem). [pmatthews]
 * Added $force option to atkCache::getInstance which can be used to force
   creating a new instance. Can be helpful for test-cases and such. [Peter]
 * Added $fallback option to atkCache::getInstance which can be used to
