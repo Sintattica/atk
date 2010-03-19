@@ -57,10 +57,11 @@ abstract class atkCache implements ArrayAccess
     *
     * @param string  $types    Cache type
     * @param boolean $fallback fallback to var cache if all types fail?
+    * @param boolean $force    force new instance
     * 
     * @return object atkCache object of the request type
     */
-   public static function getInstance($types="", $fallback=true)
+   public static function getInstance($types="", $fallback=true, $force=false)
    {
      if($types=='') $types = atkconfig("cache_method",array());
      if(!is_array($types)) $types = array($types);
@@ -71,7 +72,7 @@ abstract class atkCache implements ArrayAccess
        
        try
        {
-         if(array_key_exists($type,self::$m_instances) && is_object(self::$m_instances[$type]))
+         if (!$force && array_key_exists($type,self::$m_instances) && is_object(self::$m_instances[$type]))
          {
            atkdebug("atkcache::getInstance -> Using cached instance of $type cache");
            return self::$m_instances[$type];
@@ -100,7 +101,7 @@ abstract class atkCache implements ArrayAccess
      
      // Default return var cache
      atkdebug("atkcache::getInstance() -> Using var cache");
-     return self::getInstance('var', false);
+     return self::getInstance('var', false, $force);
    }
    
    /**

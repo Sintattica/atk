@@ -34,7 +34,7 @@ class atkCacheTestCase extends atkTestCase
     
     try
     {
-      $this->m_cache = atkCache::getInstance($this->m_type, false);
+      $this->m_cache = atkCache::getInstance($this->m_type, false, true);
     }
     catch (Exception $ex)
     {

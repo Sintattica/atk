@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Added $force option to atkCache::getInstance which can be used to force
+  creating a new instance. Can be helpful for test-cases and such. [Peter]
 * Added $fallback option to atkCache::getInstance which can be used to
   disable the graceful fallback to var cache. [Peter]
 * Made atkSelectHandler also execute the modifyGrid action. [Boy]
