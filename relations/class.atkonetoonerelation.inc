@@ -1027,25 +1027,35 @@
      * @param String $atkorderby the current ATK orderby string (if not empty)
      * @see atkNode::listArray
      */
-    function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
-    {
-      if (!$this->hasFlag(AF_ONETOONE_INTEGRATE))
+    function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $columnConfig, atkDataGrid $grid=null, $column='*')
+    {   
+      if ($this->hasFlag(AF_HIDE_LIST) || !$this->createDestination())
+      {
+        return;
+      }      
+      
+      if ((!$this->hasFlag(AF_ONETOONE_INTEGRATE) && $column == '*') || $column == null)
       {
         // regular behaviour.
-        parent::addToListArrayHeader($action, $arr, $fieldprefix, $flags, $atksearch, $atkorderby);
+        parent::addToListArrayHeader($action, $arr, $fieldprefix, $flags, $atksearch, $columnConfig, $grid, $column);
+        return;
       }
-      else if (!$this->hasFlag(AF_HIDE_LIST))
+      else if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) || ($column != '*' && $this->getDestination()->getAttribute($column) == null))
       {
-        // integrated version, don't add ourselves, but add all columns from the destination.
-        if ($this->createDestination())
+        throw new Exception("Invalid list column {$column} for atkOneToOneRelation ".$this->getOwnerInstance()->atkNodeType().'::'.$this->fieldName());
+      }
+
+      // integrated version, don't add ourselves, but add all columns from the destination.
+      $prefix = $fieldprefix.$this->fieldName()."_AE_";
+      foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
+      {
+        if ($column != '*' && $column != $attribname) 
         {
-          $prefix = $fieldprefix.$this->fieldName()."_AE_";
-          foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
-          {
-            $p_attrib = &$this->m_destInstance->getAttribute($attribname);
-            $p_attrib->addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby);
-          }
+          continue;
         }
+        
+        $p_attrib = &$this->m_destInstance->getAttribute($attribname);
+        $p_attrib->addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $columnConfig, $grid, null);
       }
     }
 
@@ -1061,31 +1071,44 @@
      * @param int    $flags the recordlist flags
      * @see atkNode::listArray
      */
-    function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags)
+    function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags, $edit=false, atkDataGrid $grid=null, $column='*')
     {
-      if (!$this->hasFlag(AF_ONETOONE_INTEGRATE))
+      if ($this->hasFlag(AF_HIDE_LIST) || !$this->createDestination())
       {
-        parent::addToListArrayRow($action, $arr, $nr, $fieldprefix, $flags);
+        return;
+      }      
+      
+      if ((!$this->hasFlag(AF_ONETOONE_INTEGRATE) && $column == '*') || $column == null)
+      {
+        parent::addToListArrayRow($action, $arr, $nr, $fieldprefix, $flags, $edit, $grid, $column);
+        return;
       }
-      else if (!$this->hasFlag(AF_HIDE_LIST))
+      else if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) || ($column != '*' && $this->getDestination()->getAttribute($column) == null))
       {
-        // integrated version, don't add ourselves, but add all columns from the destination.
-        if ($this->createDestination())
+        throw new Exception("Invalid list column {$column} for atkOneToOneRelation ".$this->getOwnerInstance()->atkNodeType().'::'.$this->fieldName());
+      }
+      
+      
+      // integrated version, don't add ourselves, but add all columns from the destination
+      // small trick, the destination record is in a subarray. The destination
+      // addToListArrayRow will not expect this though, so we have to modify the
+      // record a bit before passing it to the detail columns.
+      $oldrecord = $arr["rows"][$nr]["record"];
+      $arr["rows"][$nr]["record"] = $arr["rows"][$nr]["record"][$this->fieldName()];
+      
+      $prefix = $fieldprefix.$this->fieldName()."_AE_";      
+      foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
+      {
+        if ($column != '*' && $column != $attribname) 
         {
-          // small trick, the destination record is in a subarray. The destination
-          // addToListArrayRow will not expect this though, so we have to modify the
-          // record a bit before passing it to the detail columns.
-          $oldrecord = $arr["rows"][$nr]["record"];
-          $arr["rows"][$nr]["record"] = $arr["rows"][$nr]["record"][$this->fieldName()];
-          foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
-          {
-            $pref = $fieldprefix . "_AE_" .$this->fieldName();
-            $p_attrib = &$this->m_destInstance->getAttribute($attribname);
-            $p_attrib->addToListArrayRow($action, $arr, $nr, $pref, $flags);
-          }
-          $arr["rows"][$nr]["record"] = $oldrecord;
+          continue;
         }
+        
+        $p_attrib = &$this->m_destInstance->getAttribute($attribname);
+        $p_attrib->addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit, $grid, null);
       }
+      
+      $arr["rows"][$nr]["record"] = $oldrecord;
     }
 
     /**

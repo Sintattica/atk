@@ -1371,7 +1371,7 @@
      * @param atkDataGrid     $grid         The atkDataGrid this attribute lives on.
      * @param string          $column       child column (null for this attribute, * for this attribute and all childs)     
     */
-    public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, &$columnConfig, atkDataGrid $grid=null, $column='*')
+    public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $columnConfig, atkDataGrid $grid=null, $column='*')
     {
       if ($column != null && $column != '*')
       {
