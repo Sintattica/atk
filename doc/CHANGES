@@ -9,6 +9,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* atkMetaPolicy::add now has a default value for the attribute type. [Peter]
 * Making the autoloader work with strings with forward slashes (preg_quote 
   doesn't seem to resolve the problem). [pmatthews]
 * Added $force option to atkCache::getInstance which can be used to force

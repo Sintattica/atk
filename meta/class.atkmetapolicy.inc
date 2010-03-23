@@ -1633,7 +1633,7 @@ class atkMetaPolicy
    * 
    * @return atkMetaAttributeModifier
    */
-  public function add($name, $type, $params=array(), $flags=0, $sections=NULL, $order=NULL, $default=self::NO_DEFAULT_VALUE)
+  public function add($name, $type='atkattribute', $params=array(), $flags=0, $sections=NULL, $order=NULL, $default=self::NO_DEFAULT_VALUE)
   {
     $this->importAttribute($type);
     

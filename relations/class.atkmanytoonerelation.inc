@@ -685,7 +685,7 @@ class atkManyToOneRelation extends atkRelation
    * @param array $record        record
    * @param mixed $fullOrFields  load all data, only the given fields or only the descriptor fields?
    */
-  function populate(&$record, $fullOrFields=false)
+  public function populate(&$record, $fullOrFields=false)
   {
     if (!is_array($record)||$record[$this->fieldName()] == "") return;
 
@@ -694,14 +694,24 @@ class atkManyToOneRelation extends atkRelation
 
     $includes = "";
     if (is_array($fullOrFields))
-    $includes = array_merge($this->m_destInstance->m_primaryKey, $fullOrFields);
-    else if (!$fullOrFields)
-    $includes = $this->m_destInstance->descriptorFields();
-
-    $result = $this->m_destInstance->selectDb($this->m_destInstance->primaryKey($record[$this->fieldName()]), $this->m_destInstance->getColumnConfig()->getOrderByStatement(), "", "", $includes);
-    if (count($result))
     {
-      list($record[$this->fieldName()]) = $result;
+      $includes = array_merge($this->m_destInstance->m_primaryKey, $fullOrFields);
+    }
+    else if (!$fullOrFields)
+    {
+      $includes = $this->m_destInstance->descriptorFields();
+    }
+
+    $result = 
+      $this->m_destInstance
+        ->select($this->m_destInstance->primaryKey($record[$this->fieldName()]))
+        ->orderBy($this->m_destInstance->getColumnConfig()->getOrderByStatement())
+        ->includes($includes)
+        ->firstRow();
+        
+    if ($result != null)
+    {
+      $record[$this->fieldName()] = $result;
     }
   }
 
@@ -1624,7 +1634,7 @@ class atkManyToOneRelation extends atkRelation
       $condition = $condition.' AND '.$filter;
     }
 
-    list($record) = $this->m_destInstance->selectDb($condition, "", "", "", "", $mode);
+    $record = $this->m_destInstance->select($condition)->mode($mode)->firstRow();
     return $record;
   }
 
@@ -1726,9 +1736,8 @@ class atkManyToOneRelation extends atkRelation
     // No selection override exists, simply add the record key to the selector.
     $filter = $this->createFilter($record);
     $selector = "($selectedKey)".($filter != NULL ? " AND ($filter)" : "");
-    list($result) = $this->m_destInstance->selectDb($selector,false,"","",$this->m_destInstance->m_primaryKey,$mode);
-
-    return $result != NULL;
+ 
+    return $this->m_destInstance->select($selector)->getRowCount() > 0;
   }
 
   /**
@@ -1745,7 +1754,13 @@ class atkManyToOneRelation extends atkRelation
     $this->createDestination();
 
     $selector = $this->createFilter($record);
-    $result = $this->m_destInstance->selectDb($selector,$this->getDestination()->getOrder(),"","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey),$mode);
+    $result = 
+      $this->m_destInstance
+        ->select($selector)
+        ->orderBy($this->getDestination()->getOrder())
+        ->includes(atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey))
+        ->mode($mode)
+        ->allRows();
 
     return $result;
   }

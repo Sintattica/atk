@@ -33,6 +33,7 @@
     var $m_regex_results = array();
     var $m_query_history = array();
     var $m_next_ids = array();
+    var $m_tables = array();
     
     private $m_currentResult = null;
     
@@ -88,6 +89,7 @@
       if (is_array($result))
       {
         $this->m_currentResult = $result;
+        return true;
       }
       else if (isset($result))
       {
@@ -117,6 +119,8 @@
       }
       else
       {
+        $this->m_record = null;
+        $this->m_row = -1;
         return false;
       }
     }
@@ -155,6 +159,23 @@
     function getQueryHistory()
     {
       return $this->m_query_history;
+    }
+    
+    /**
+     * Returns the last executed query.
+     * 
+     * @return string last executed query
+     */
+    function getLastQuery()
+    {
+      if (count($this->m_query_history) == 0)
+      {
+        return null;
+      }
+      else
+      {
+        return $this->m_query_history[count($this->m_query_history) - 1];
+      }
     }
     
     /**
@@ -225,7 +246,28 @@
       $ddl = atkDDL::create($this->m_type);
       $ddl->m_db = $this;
       return $ddl;
-    }    
-  }
+    } 
 
+    /**
+     * Sets the tables in the database.
+     * 
+     * @param array $tables table names
+     */
+    public function setTables($tables)
+    {
+      $this->m_tables = $tables;
+    }
+    
+    /**
+     * Returns whatever the given table exists in the database.
+     * 
+     * @param string $table table name
+     * 
+     * @return boolean table exists?
+     */
+    public function tableExists($table)
+    {
+      return in_array($table, $this->m_tables);
+    }
+  }
 ?>

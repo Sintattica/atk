@@ -567,7 +567,7 @@
         $result.=implode($this->quoteFields($this->m_fields),", ");
         $result.=") as count FROM ";
        }
-       else $result = "SELECT COUNT(*) as count FROM ";
+       else $result = "SELECT COUNT(*) AS count FROM ";
 
        for ($i=0;$i<count($this->m_tables);$i++)
        {
