@@ -73,10 +73,10 @@ class atkEditFormModifier
    * @param string  $mode         add/edit mode
    * @param string  $initial      initial form setup?
    */
-  public function __construct(atkNode $node, $record, $fieldPrefix, $mode, $initial)
+  public function __construct(atkNode $node, &$record, $fieldPrefix, $mode, $initial)
   {
     $this->m_node = $node;
-    $this->m_record = $record;
+    $this->m_record = &$record;
     $this->m_fieldPrefix = $fieldPrefix;
     $this->m_mode = $mode;
     $this->m_initial = $initial;

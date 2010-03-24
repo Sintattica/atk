@@ -2777,7 +2777,7 @@
      * @param string $fieldPrefix the prefix for this attribute in an HTML form
      * @param string $mode        add/edit mode
      */
-    public function initDependencies($record, $fieldPrefix, $mode)
+    public function initDependencies(&$record, $fieldPrefix, $mode)
     {
       if (count($this->getDependencies()) == 0)
       {
@@ -2810,7 +2810,7 @@
      * @param string  $mode        add/edit mode
      * @param boolean $initial     initial call (e.g. non-javascript manipulation)
      */
-    protected function _callDependencies($record, $fieldPrefix, $mode, $initial)
+    protected function _callDependencies(&$record, $fieldPrefix, $mode, $initial)
     {
       atkimport('atk.utils.atkeditformmodifier');
       $modifier = new atkEditFormModifier($this->getOwnerInstance(), $record, $fieldPrefix, $mode, $initial);
