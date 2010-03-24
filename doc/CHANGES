@@ -9,6 +9,10 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
++ Added atkPage::getLoadScripts() which returns the currently loaded load
+  script codes. [Peter]
++ Added $offset option to atkPage::register_load_script to register a
+  script at a certain offset. [Peter]
 * atkMetaPolicy::add now has a default value for the attribute type. [Peter]
 * Making the autoloader work with strings with forward slashes (preg_quote 
   doesn't seem to resolve the problem). [pmatthews]

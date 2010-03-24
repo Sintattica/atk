@@ -228,12 +228,27 @@
     }
 
     /**
+     * Returns a copy of the load scripts.
+     */
+    public function getLoadScripts()
+    {
+      return $this->m_loadscripts;
+    }
+    
+    /**
      * Register a javascript code statement that is executed on pageload.
      * @param String $code The javascript code fragment to execute on load.
      */
-   function register_loadscript($code)
+   function register_loadscript($code, $offset=null)
    {
-     if (!in_array($code, $this->m_loadscripts)) $this->m_loadscripts[] = $code;
+     if (!in_array($code, $this->m_loadscripts) && $offset === null) 
+     {
+       $this->m_loadscripts[] = $code;
+     }
+     else if (!in_array($code, $this->m_loadscripts))
+     {
+       array_splice($this->m_loadscripts, $offset, 0, $code);
+     }
    }
 
    /**

@@ -182,6 +182,8 @@ class atkEditFormModifier
 
     atkimport('atk.utils.atkjson');
     
+    $offset = count($this->getNode()->getPage()->getLoadScripts());
+    
     $error = array();
     $editArray = array('fields' => array());
     $this->m_node->getAttribute($name)->addToEditArray($this->getMode(), $editArray, $this->getRecord(), $error, $this->getFieldPrefix());
@@ -194,7 +196,7 @@ class atkEditFormModifier
       $scriptCode .= "\$('{$element}').update({$value});\n";
     }    
     
-    $this->scriptCode($scriptCode);
+    $this->getNode()->getPage()->register_loadscript($scriptCode, $offset);
   }
   
   /**
