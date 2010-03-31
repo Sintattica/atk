@@ -48,6 +48,9 @@
   
     protected $m_ownerFields = null;
     protected $m_limit;
+    
+    private $m_selectableRecordsCache = array();
+    private $m_selectableRecordCountCache = array();
   
     /**
      * Constructor
@@ -122,52 +125,80 @@
       $method = $this->fieldName()."_selection";
       if (method_exists($this->m_ownerInstance, $method))
         return count($this->_getSelectableRecords($record, $mode));
-  
-      static $resultList = array();
-  
-      if ($this->createDestination())
+      else return $this->getSelectableRecordCount($record, $mode);
+    }
+    
+    /**
+     * Returns the selectable record count. The count is cached unless the 
+     * $force parameter is set to true
+     *
+     * @param array   $record
+     * @param string  $mode
+     * @param boolean $force 
+     * 
+     * @return int
+     */    
+    public function getSelectableRecordCount($record=array(), $mode='', $force=false)
+    {
+      if (!$this->createDestination())
       {
-        $filter = $this->parseDestinationFilter($record);
-  
-        $filterkey = md5($this->m_destInstance->atkNodeType().".".$filter);
-        if (!array_key_exists($filterkey, $resultList))
-        {
-          $resultList[$filterkey] = $this->m_destInstance->countDb($filter,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
-        }
-  
-        return $resultList[$filterkey];
+        return 0;
       }
-  
-      return 0;
+      
+      $filter = $this->parseDestinationFilter($record);
+
+      $cacheKey = md5($filter);
+      if (!array_key_exists($cacheKey, $this->m_selectableRecordCountCache) || $force)
+      {
+        $this->m_selectableRecordCountCache[$cacheKey] = 
+          $this->getDestination()
+               ->select($filter)
+               ->getRowCount();
+      }
+
+      return $this->m_selectableRecordCountCache[$cacheKey];
     }    
   
     /**
-     * Returns the selectable records for this relation.
+     * Returns the selectable records for this relation. The records are cached
+     * unless the $force parameter is set to true.
      *
-     * @param array $record
-     * @param string $mode
+     * @param array   $record
+     * @param string  $mode
      * @param boolean $force
      * 
      * @return array selectable records
      */
-    public function getSelectableRecords($record=array(), $mode="",$force=false)
+    public function getSelectableRecords($record=array(), $mode="", $force=false)
     {
-      static $resultList = array();
-  
-      if ($this->createDestination())
+      if (!$this->createDestination())
       {
-        $filter = $this->parseDestinationFilter($record);
-  
-        $filterkey = md5($this->m_destInstance->atkNodeType().".".$filter);
-        if (!array_key_exists($filterkey, $resultList) || $force)
-        {
-          $resultList[$filterkey] = $this->m_destInstance->selectDb($filter,"",(is_numeric($this->m_limit) ? $this->m_limit : "" ),"",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
-        }
-  
-        return $resultList[$filterkey];
+        return array();
+      }
+
+      $filter = $this->parseDestinationFilter($record);
+
+      $cacheKey = md5($filter);
+      if (!array_key_exists($cacheKey, $this->m_selectableRecordsCache) || $force)
+      {
+        $this->m_selectableRecordsCache[$cacheKey] =
+          $this->getDestination()
+               ->select($filter)
+               ->limit(is_numeric($this->m_limit) ? $this->m_limit : -1)
+               ->includes(atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey))
+               ->getAllRows();
       }
   
-      return array();
+      return $this->m_selectableRecordsCache[$cacheKey];
+    }
+    
+    /**
+     * Clears the selectable record count and records cache.
+     */
+    public function clearSelectableCache()
+    {
+      $this->m_selectableRecordCountCache = array();
+      $this->m_selectableRecordsCache = array();
     }
   
     /**

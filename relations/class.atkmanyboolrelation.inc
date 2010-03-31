@@ -104,13 +104,16 @@
           {
             $sel = "";
           }
-          $result.= '<td class="table"><input type="checkbox" name="'.
+          
+          $inputId = $this->getHtmlId($fieldprefix).'_'.$i;
+          
+          $result.= '<td class="table"><input type="checkbox" id="'.$inputId.'" name="'.
                          $this->getHtmlId($fieldprefix).
                          '[]['.$this->getRemoteKey().
                          ']" value="'.
                          $recordset[$i][$this->m_destInstance->primaryKeyField()].
                          '" '.$this->getCSSClassAttribute("atkcheckbox").' '.$sel.'></td><td class="table">'.
-                         $this->m_destInstance->descriptor($recordset[$i]).
+                         '<label for="'.$inputId.'">'.$this->m_destInstance->descriptor($recordset[$i]).'</label>'.
                          '</td><td class="table">'.$detaillink.'</td>';
           if ($i%$cols == $modcols) $result .="</tr><tr>\n";
         }

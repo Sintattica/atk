@@ -29,6 +29,20 @@
   class atkLanguage
   {
     /**
+     * Instance.
+     * 
+     * @var atkLanguage
+     */
+    private static $s_instance = null;
+    
+    /**
+     * Supported languages.
+     * 
+     * @var array
+     */
+    private static $s_supportedLanguages = null;
+    
+    /**
      * Directory where language files are stored.
      * @access private
      * @var String
@@ -87,14 +101,14 @@
      *
      * @return atkLanguage Instance of the atkLanguage class
      */
-    public static function &getInstance()
+    public static function getInstance()
     {
-      static $s_atklanguage;
-      if (!is_object($s_atklanguage))
+      if (self::$s_instance == null)
       {
-        $s_atklanguage = new atkLanguage();
+        self::$s_instance = new self();
       }
-      return $s_atklanguage;
+      
+      return self::$s_instance;
     }
 
     /**
@@ -275,6 +289,16 @@
       }
       return $autolng;
     }
+    
+    /**
+     * Explicitly sets the supported languages.
+     * 
+     * @param array $languages supported languages
+     */
+    public static function setSupportedLanguages(array $languages)
+    {
+      self::$s_supportedLanguages = $languages;
+    }
 
     /**
      * Get the languages supported by the application
@@ -284,10 +308,8 @@
      */
     public static function getSupportedLanguages()
     {
-      static $s_supported = array();
-
       $supportedlanguagesmodule = atkconfig('supported_languages_module');
-      if (empty($s_supported) && $supportedlanguagesmodule)
+      if (self::$s_supportedLanguages == null && $supportedlanguagesmodule)
       {
         $supportedlanguagesdir = atkLanguage::getLanguageDirForModule($supportedlanguagesmodule);
         atkimport('atk.utils.atkdirectorytraverser');
@@ -295,9 +317,9 @@
         $traverser = new atkDirectoryTraverser();
         $traverser->addCallbackObject($supportedlanguagescollector);
         $traverser->traverse($supportedlanguagesdir);
-        $s_supported = $supportedlanguagescollector->getLanguages();
+        self::$s_supportedLanguages = $supportedlanguagescollector->getLanguages();
       }
-      return $s_supported;
+      return self::$s_supportedLanguages;
     }
 
     /**
