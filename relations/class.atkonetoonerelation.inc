@@ -887,6 +887,15 @@
 
         if (is_array($a["fields"]))
         {
+          if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) || $this->hasFlag(AF_ONETOONE_RESPECT_TABS))
+          {
+            foreach (array_keys($a['fields']) as $key)
+            {
+              
+              $a['fields'][$key]['tabs'] = $this->m_tabs;
+              $a['fields'][$key]['sections'] = $this->getSections();
+            }
+          }
           $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
         }
 

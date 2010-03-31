@@ -9,6 +9,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Making atkonetoonerelation listen to tabs in view mode when the
+  AF_ONETOONE_INTEGRATE is not set or when the AF_ONETOONE_RESPECT_TABS is
+  set. [Melvin]
 + Added atkPage::getLoadScripts() which returns the currently loaded load
   script codes. [Peter]
 + Added $offset option to atkPage::register_load_script to register a
