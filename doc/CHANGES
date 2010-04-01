@@ -12,6 +12,8 @@ Changes in ATK 6.4.3
 * Fixed atkNumberAttribute's extended search. The attribute always called
   getSearchCondition which resulted in including a search for the value 0. 
   [Martin, Peter]
++ Added ability to change the default limits in the dropdown via $grid->setComponentOption
+  [Peter, Jeroenvs]
 
 Changes in prior versions
 -------------------------

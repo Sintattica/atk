@@ -34,7 +34,7 @@ class atkDGLimit extends atkDGComponent
   {
     $defaultLimit = $this->getGrid()->getDefaultLimit();
     $limit = $this->getGrid()->getLimit();    
-    $values = array(5, 10, 15, 20, 25, 30, 40, 50, 100, $defaultLimit, $limit);
+    $values = array_merge($this->getOption('limits', array(5, 10, 15, 20, 25, 30, 40, 50, 100)), array ($defaultLimit, $limit));
     $values = array_diff($values, array(-1));
     $values = array_unique($values);
     sort($values);    

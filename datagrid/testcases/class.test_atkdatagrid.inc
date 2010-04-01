@@ -113,7 +113,11 @@ class test_atkDataGrid extends atkTestCase
     $this->assertEqual(6, count($grid->getComponents()));        
     $grid->addComponent('another_paginator', 'atk.datagrid.atkdgpaginator');
     $this->assertEqual(7, count($grid->getComponents()));
-    $this->assertNotNull($grid->getComponent('another_paginator'));    
+    $this->assertNotNull($grid->getComponent('another_paginator'));
+
+    $grid = atkDataGrid::create($node, 'test');
+    $grid->setComponentOption('limit', 'limits', array(10, 20, 30, 40, 50));
+    $this->assertEqual(array('class' => 'atk.datagrid.atkdglimit', 'options' => array('limits' => array(10, 20, 30, 40, 50))), $grid->getComponent('limit'));
   }
   
   /**
