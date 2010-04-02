@@ -319,7 +319,8 @@
         $traverser->traverse($supportedlanguagesdir);
         self::$s_supportedLanguages = $supportedlanguagescollector->getLanguages();
       }
-      return self::$s_supportedLanguages;
+
+      return (array) self::$s_supportedLanguages;
     }
 
     /**
