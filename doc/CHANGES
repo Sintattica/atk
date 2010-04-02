@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.5
 ------------------
+* Fixing a Javascript bug, causing various IE versions to break when using
+  the calendar popup [mvdvelden]
 + Added more unit tests [jhuiting]
 + Added atkLanguage::setSupportedLanguages which makes it more easy to write
   tests for a certain language, but can also be used to explicitly set the

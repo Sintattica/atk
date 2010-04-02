@@ -40,9 +40,9 @@ function RealAdjustDate(el, arr, format, str_min, str_max, emptyfield, weekday, 
 
   /* current date attribute inputs */
   input = Array();
-  input["d"] = frm.elements[arr + "[day]"];
-  input["m"] = frm.elements[arr + "[month]"];
-  input["y"] = frm.elements[arr + "[year]"];
+  input["d"] = document.getElementById(arr + "[day]");
+  input["m"] = document.getElementById(arr + "[month]");
+  input["y"] = document.getElementById(arr + "[year]");
 
   /* check if valid date attribute inputs */
   if (input["d"] == null || input["m"] == null || input["y"] == null) return;
