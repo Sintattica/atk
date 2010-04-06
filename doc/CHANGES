@@ -11,7 +11,6 @@ Changes in ATK 6.5
 ------------------
 * Fixing a Javascript bug, causing various IE versions to break when using
   the calendar popup [mvdvelden]
-+ Added more unit tests [jhuiting]
 + Added atkLanguage::setSupportedLanguages which makes it more easy to write
   tests for a certain language, but can also be used to explicitly set the
   supported languages instead of relying on auto-detection. [Peter]
@@ -57,7 +56,6 @@ Changes in ATK 6.5
   in atkmanytomanyselectrelation [pmatthews]
 * Don't show relations as link in list mode for atkManyToOneRelations with
   AF_MANYTOONE_AUTOLINK flag (only in view/edit mode). [Peter]
-* Adding basic tests for atknode->validateFilter [pmatthews]
 * Fixing atknode->validateFilter to cope with more complex queries and not 
   break if a table.column is used in a query but not as the first field 
   refferenced [pmatthews]
@@ -72,7 +70,7 @@ Changes in ATK 6.5
   on atkmanytomanyselectrelation. [pmatthews]
 * Fixed atkDirectoryTraverser warnings on reading unreadable dirs. [Dennis]
 + Set the time locale based on the locale specified in the language file. [Peter]
-* Changed default locale for "nl" to UTF-8. [Peter]
+* Changed default charset for "nl" to UTF-8. [Peter]
 * Added record caching to atkViewEditBase::getRecord(). The record is now cached
   as long as the handler instance exists, unless we call getRecord with a  
   boolean true argument. This forces the record to be fetched again. [Matthijs]
@@ -135,7 +133,6 @@ Changes in ATK 6.5
   attribute/column exists. [Peter]
 + Added atkNode::rowClass method which can be used to return (a) CSS
   class(es) for a datagrid list row based on record contents. [Peter]
->>>>>>> .r6681
 + Added atkHiddenAttribute for convenient addition of hidden fields to
   forms. [Ivo]
 + Added support for bind parameters to atkDatagrid::addFilter. [Peter/Tjeerd]
@@ -199,7 +196,7 @@ Changes in ATK 6.5
   backwards incompatible in the highly unlinkely event you escape the URL
   yourself beforehand. [Peter]
 * Generalized atkController::getButton so you can use it for undefined
-  actions (in which case the button name will be the actio name). [Peter]
+  actions (in which case the button name will be the action name). [Peter]
 * Improved atkSelector::where so that multiple calls will be ANDed together
   (something you would expect it to do anyway). [Peter]
 * Log system queries (like locks, metadata retrieval etc.) separately so we
@@ -244,8 +241,8 @@ Changes in ATK 6.5
 * Improved tooltip support (reminder, if you add a <node>_<column>_tooltip
   entry in your text file it will be displayed as a help text when hovering
   a special help icon). [Peter]
-* small optimization to AtkStringParser->getFields(). [Matthijs]
-* removed class AtkOneToManyRelationSessionGridHandler from file
+* Small optimization to AtkStringParser->getFields(). [Matthijs]
+* Removed class AtkOneToManyRelationSessionGridHandler from file
   class.atkonetomanyrelation.inc and put it into its own file.
   Otherwise the classloader couldn't properly cache this class and
   would rebuild the class list every time. [Matthijs]
