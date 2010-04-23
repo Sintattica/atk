@@ -11,6 +11,8 @@ Changes in ATK 6.6
 ------------------
 * Fixed bug in atkDateAttribute that if no date was selected yet the day
   drop-down is empty (instead of containing options 1 to 31). [Peter]
+* Added atkform.js for submitting an ATK form using an Ajax 
+  request. [Peter, Sandy]
 
 Changes in prior versions
 -------------------------
