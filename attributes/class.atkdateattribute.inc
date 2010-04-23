@@ -112,7 +112,7 @@
         $date = adodb_getdate(adodb_mktime (0, 0, 0, $date["mon"]+1, 0, $date["year"]));
         return $date["mday"];
       }
-      return "";
+      return 31;
     }
 
     /**
