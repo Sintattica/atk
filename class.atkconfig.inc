@@ -135,7 +135,7 @@
      * @param string $section Name of the section to get configs for
      * @return array Configuration values
      */
-    protected static function getConfigForSection($section)
+    public static function getConfigForSection($section)
     {
       $config = self::getDirConfigForSection(atkconfig('configdir'), $section);
       if (moduleExists($section))
