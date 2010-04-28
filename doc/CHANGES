@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.6
 ------------------
+* atkController::loadDispatchPage now also supports array selectors for 
+  multi record actions (MRA). [Matthijs] 
 * Close atkDateAttribute's calendar on single date click. [Peter]
 * atkOneToOneRelation now also respects the attribute's tab for errors if the
   AF_ONETOONE_RESPECT_TABS flag is set. [Peter]
