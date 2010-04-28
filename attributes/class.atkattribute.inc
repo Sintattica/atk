@@ -1097,10 +1097,11 @@
      * edit array and allows for last minute manipulations based on the
      * record but also manipulations on the record itself.
      * 
-     * @param array  $record reference to the record
-     * @param string $mode   edit mode
+     * @param array  $record      reference to the record
+     * @param string $fieldPrefix field prefix
+     * @param string $mode        edit mode
      */
-    public function preAddToEditArray(&$record, $mode)
+    public function preAddToEditArray(&$record, $fieldPrefix, $mode)
     {
     }
 

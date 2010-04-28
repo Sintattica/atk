@@ -9,8 +9,15 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.6
 ------------------
+* atkOneToOneRelation now also respects the attribute's tab for errors if the
+  AF_ONETOONE_RESPECT_TABS flag is set. [Peter]
+* atkAttribute::preAddToEditArray now also gets the fieldrefix passed. [Peter]
+* Fixed bug in MySQLi database driver which caused the length of fields to be a 
+  factor 3 of their real size if the characterset was set to UTF-8. [Peter]
+* atkFieldSet now marks itself as errornous if one of it's fields contains
+  errornous data. [Peter]
 * Improved email validation by adding case support in the local part
-  of an emailaddress in the emailattribute::validate(). [Martin]
+  of an emailaddress in the atkEmailAttribute::validate(). [Martin]
 * Fixed bug in atkDateAttribute that if no date was selected yet the day
   drop-down is empty (instead of containing options 1 to 31). [Peter]
 * Added atkform.js for submitting an ATK form using an Ajax 

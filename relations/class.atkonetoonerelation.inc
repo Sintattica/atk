@@ -934,17 +934,22 @@
     function validate(&$record, $mode)
     {
       // zitten AF_ONETOONE_ERROR en AF_OBLIGATORY elkaar soms in de weg
-      if ($this->hasFlag(AF_ONETOONE_ERROR)&&($mode!="add" || !$this->hasFlag(AF_HIDE_ADD)))
+      if ($this->hasFlag(AF_ONETOONE_ERROR) && 
+          ($mode!="add" || !$this->hasFlag(AF_HIDE_ADD)) && 
+          $this->createDestination())
       {
-        if ($this->createDestination())
-        {
-          $this->m_destInstance->validate($record[$this->fieldName()], $mode, array($this->m_refKey));
+        $this->m_destInstance->validate($record[$this->fieldName()], $mode, array($this->m_refKey));
 
-          // only add 'atkerror' record when 1:1 relation contains error
-          if (isset($record[$this->fieldName()]["atkerror"]))
-          {
-            $record["atkerror"] = array_merge((array)$record["atkerror"], (array)$record[$this->fieldName()]["atkerror"]);
-          }
+        // only add 'atkerror' record when 1:1 relation contains error
+        if (!isset($record[$this->fieldName()]["atkerror"]))
+        {
+          return;
+        }
+        
+        foreach ($record[$this->fieldName()]["atkerror"] as $error)
+        {
+          $error['tab'] = $this->hasFlag(AF_ONETOONE_RESPECT_TABS) ? $this->m_tabs[0] : $error['tab']; 
+          $record["atkerror"][] = $error;
         }
       }
     }

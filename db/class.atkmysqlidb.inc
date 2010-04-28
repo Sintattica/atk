@@ -513,12 +513,12 @@
          list($dbname, $tablename) = explode(".", $table);
          
          /* get meta data */
-         $id = @$this->_query("SELECT * FROM `{$dbname}`.`{$tablename}` LIMIT 1", true);
+         $id = @$this->_query("SELECT * FROM `{$dbname}`.`{$tablename}` LIMIT 0", true);
        }
        else
        {
          /* get meta data */
-         $id = $this->_query("SELECT * FROM `{$table}` LIMIT 1", true);
+         $id = $this->_query("SELECT * FROM `{$table}` LIMIT 0", true);
        }
 
        // table type
@@ -526,39 +526,46 @@
        
        if (!$id)
        {
-         	atkdebug("Metadata query failed.");
-         	return array();
+           atkdebug("Metadata query failed.");
+           return array();
        }
        $i  = 0;
        $result = array();
 
        while ($finfo = mysqli_fetch_field($id))
        {
-		      $result[$i]["table"]      = $finfo->table;
-		      $result[$i]["table_type"] = $tableType;
-	        $result[$i]["name"]       = $finfo->name;
-	        $result[$i]["type"]       = $finfo->type;
-	        $result[$i]["gentype"]    = $ddl->getGenericType($finfo->type);
-	        $result[$i]["len"]        = $finfo->length;
-	        $result[$i]["flags"]      = 0;
+          $result[$i]["table"]      = $finfo->table;
+          $result[$i]["table_type"] = $tableType;
+          $result[$i]["name"]       = $finfo->name;
+          $result[$i]["type"]       = $finfo->type;
+          $result[$i]["gentype"]    = $ddl->getGenericType($finfo->type);
+          $result[$i]["len"]        = $finfo->length;
+          $result[$i]["flags"]      = 0;
+          
+          // if the connection character set is UTF8 MySQL returns the length multiplied
+          // by 3, probably because the max length of an UTF8 character is 3 bytes, we need
+          // the real size in characters, so we divide the length by 3
+          if (strtoupper($this->m_charset) == 'UTF8' && ($result[$i]['gentype'] == 'string' || $result[$i]['gentype'] == 'text'))
+          {
+            $result[$i]['len'] /= 3;
+          }
+          else if ($result[$i]["gentype"] == "decimal")
+          {
+            $result[$i]["len"] -= $finfo->decimals + 1;
+            $result[$i]["len"] .= "," . $finfo->decimals;
+          }
 
-	        if ($result[$i]["gentype"] == "decimal")
-	        {
-	          $result[$i]["len"] -= $finfo->decimals + 1;
-	          $result[$i]["len"] .= "," . $finfo->decimals;
-	        }
+          if($finfo->flags & MYSQLI_PRI_KEY_FLAG) $result[$i]["flags"]|= MF_PRIMARY;
+          if($finfo->flags & MYSQLI_UNIQUE_KEY_FLAG) $result[$i]["flags"]|= MF_UNIQUE;
+          if($finfo->flags & MYSQLI_NOT_NULL_FLAG ) $result[$i]["flags"]|= MF_NOT_NULL;
+          if($finfo->flags & MYSQLI_AUTO_INCREMENT_FLAG) $result[$i]["flags"]|= MF_AUTO_INCREMENT;
 
-	        if($finfo->flags & MYSQLI_PRI_KEY_FLAG) $result[$i]["flags"]|= MF_PRIMARY;
-	        if($finfo->flags & MYSQLI_UNIQUE_KEY_FLAG) $result[$i]["flags"]|= MF_UNIQUE;
-	        if($finfo->flags & MYSQLI_NOT_NULL_FLAG ) $result[$i]["flags"]|= MF_NOT_NULL;
-	        if($finfo->flags & MYSQLI_AUTO_INCREMENT_FLAG) $result[$i]["flags"]|= MF_AUTO_INCREMENT;
+           if ($full)
+               $result["meta"][$result[$i]["name"]] = $i;
+          $i++;
+        }
 
-         	if ($full)
-           		$result["meta"][$result[$i]["name"]] = $i;
-	      	$i++;
-      	}
-
-      	if ($full)
+        if ($full)
           $result["num_fields"] = $i;
 
         mysqli_free_result($id);

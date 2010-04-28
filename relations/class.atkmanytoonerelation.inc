@@ -779,10 +779,11 @@ class atkManyToOneRelation extends atkRelation
    * loaded and update the record with the possible selection of the first
    * record.
    *
-   * @param array  $record reference to the record
-   * @param string $mode   edit mode
+   * @param array  $record      reference to the record
+   * @param string $fieldPrefix field prefix
+   * @param string $mode        edit mode
    */
-  public function preAddToEditArray(&$record, $mode)
+  public function preAddToEditArray(&$record, $fieldPrefix, $mode)
   {
     if ((!$this->hasFlag(AF_RELATION_AUTOCOMPLETE) && !$this->hasFlag(AF_LARGE)) ||
         $this->m_autocomplete_minrecords > -1)

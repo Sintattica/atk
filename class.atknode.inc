@@ -2181,7 +2181,7 @@
       // some last minute manipulations on for example the record
       foreach ($this->getAttributes() as $attr)
       {
-        $attr->preAddToEditArray($defaults, $mode);
+        $attr->preAddToEditArray($defaults, $fieldprefix, $mode);
       }
 
       // call preAddToEditArray for the node itself.
