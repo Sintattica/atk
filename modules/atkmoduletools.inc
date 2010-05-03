@@ -381,6 +381,9 @@
    * @param $action the node action
    * @param $handler handler functionname or object (is_subclass_of atkActionHandler)
    * @return true if there is no known handler
+   * 
+   * @deprecated
+   * @see atkRegisterNodeHandler
    */
   function registerNodeHandler($node, $action, &$handler)
   {
@@ -410,11 +413,11 @@
    * @param String/atkActionHandler $handler handler functionname or object (is_subclass_of atkActionHandler)
    * @return bool true if there is no known handler
    */
-  function atkRegisterNodeHandler($node, $action, &$handler)
+  function atkRegisterNodeHandler($node, $action, $handler)
   {
     global $g_nodeHandlers;
     if (isset($g_nodeHandlers[$node][$action])) return FALSE;
-    else $g_nodeHandlers[$node][$action] = &$handler;
+    else $g_nodeHandlers[$node][$action] = $handler;
     return TRUE;
   }
 
@@ -427,6 +430,9 @@
    * @param string $class node handler class ATK path
    *
    * @return bool true if there is no known handler
+   * 
+   * @deprecated
+   * @see atkRegisterNodeHandler
    */
   function atkRegisterNodeHandlerClass($node, $action, $class)
   {
