@@ -217,7 +217,7 @@
         }
       }
 
-      if ($value!=="") 
+      if ($value!=="")
       {
         $currentitem[$var] = $value;
       }
@@ -960,7 +960,7 @@
       }
 
       $res .= '<input type="hidden" name="'.session_name().'" value="'.session_id().'" />';
-      $res .= '<input type="hidden" name="atkescape" value="" />';
+      $res .= '<input type="hidden" name="atkescape" value="" autocomplete="off" />';
 
       for ($i=0;$i<count($g_stickyurl);$i++)
       {
@@ -1086,7 +1086,7 @@
     {
       return false; // command-line
     }
-    
+
     $cookie_params = session_get_cookie_params();
     $cookiepath   = atkconfig("application_root");
     $cookiedomain = (atkconfig("cookiedomain") != "") ? atkconfig("cookiedomain") : NULL;
