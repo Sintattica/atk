@@ -591,6 +591,20 @@
      * @var array
      */
     private $m_jsObservers = array();
+    
+    /**
+     * View callback.
+     * 
+     * @var mixed
+     */
+    private $m_viewCallback = null;
+    
+    /**
+     * Edit callback.
+     * 
+     * @var mixed
+     */
+    private $m_editCallback = null;
 
     /**
      * Constructor
@@ -1240,7 +1254,29 @@
       $this->m_column = $name;
       return $this;
     }
-
+      
+    /**
+     * Returns the view callback (if set).
+     * 
+     * @return mixed callback method
+     */
+    protected function getViewCallback()
+    {
+      return $this->m_viewCallback;
+    }    
+    
+    /**
+     * Sets the view callback. 
+     * 
+     * The callback is called instead of the regular display method of the
+     * attribute.
+     * 
+     * @param mixed $callback callback method
+     */
+    public function setViewCallback($callback)
+    {
+      $this->m_viewCallback = $callback;
+    }
 
     /**
      * Retrieve the html code for placing this attribute in a view page.
@@ -1259,14 +1295,19 @@
      */
     function getView($mode, &$defaults)
     {
-      $funcname = $this->m_name."_display";
-      if (method_exists($this->m_ownerInstance, $funcname))
+      $method = $this->m_name."_display";
+      
+      if ($this->getViewCallback() != null)
       {
-        $result = $this->m_ownerInstance->$funcname($defaults, $mode);
+        return call_user_func($this->getViewCallback(), $defaults, $mode, $this);
+      }
+      else if (method_exists($this->m_ownerInstance, $method))
+      {
+        return $this->m_ownerInstance->$method($defaults, $mode);
       }
       else
       {
-        $result = $this->display($defaults, $mode);
+        return $this->display($defaults, $mode);
       }
 
       return $result;
@@ -1291,6 +1332,29 @@
       $result = $this->getOwnerInstance()->getUi()->render($template, $vars, $this->getModule());
       return $result;
     }
+    
+    /**
+     * Returns the edit callback (if set).
+     * 
+     * @return mixed callback method
+     */
+    protected function getEditCallback()
+    {
+      return $this->m_editCallback;
+    }    
+    
+    /**
+     * Sets the edit callback. 
+     * 
+     * The callback is called instead of the regular display method of the
+     * attribute.
+     * 
+     * @param mixed $callback callback method
+     */
+    public function setEditCallback($callback)
+    {
+      $this->m_editCallback = $callback;
+    }    
 
     /**
      * Retrieve the HTML code for placing this attribute in an edit page.
@@ -1313,28 +1377,30 @@
      */
     function getEdit($mode, &$defaults, $fieldprefix)
     {
-      /* readonly */
-      $result = "";
-      if (($mode=="edit" && $this->hasFlag(AF_READONLY_EDIT)) || ($mode=="add" && $this->hasFlag(AF_READONLY_ADD)))
+      // readonly
+      if (($mode=="edit" && $this->hasFlag(AF_READONLY_EDIT)) || 
+          ($mode=="add" && $this->hasFlag(AF_READONLY_ADD)))
       {
-        $result.= $this->hide($defaults, $fieldprefix);
-        $result.= $this->getView($mode, $defaults);
+        return
+          $this->hide($defaults, $fieldprefix).
+          $this->getView($mode, $defaults);
       }
-      /* normal */
+      
+      $method = $this->m_name."_edit";
+      if ($this->getEditCallback() != null)
+      {
+        return call_user_func($this->getEditCallback(), $defaults, $fieldprefix, $mode, $this);
+      }
+      else if ($this->m_name != "action" && method_exists($this->m_ownerInstance, $method)) 
+      {
+        // we can't support the override for attributes named action, because of a conflict with 
+        // a possible edit action override (in both cases the method is called action_edit)
+        return $this->m_ownerInstance->$method($defaults, $fieldprefix, $mode);
+      }
       else
       {
-        $funcname = $this->m_name."_edit";
-        // The check for 'action' is a workaround for a weird php bug, which chokes on funcnames with 'action' in them.
-        if ($this->m_name != "action" && method_exists($this->m_ownerInstance, $funcname))
-        {
-          $result .= $this->m_ownerInstance->$funcname($defaults, $fieldprefix, $mode);
-        }
-        else
-        {
-          $result .= $this->edit($defaults, $fieldprefix, $mode);
-        }
+        return $this->edit($defaults, $fieldprefix, $mode);
       }
-      return $result;
     }
 
     /**

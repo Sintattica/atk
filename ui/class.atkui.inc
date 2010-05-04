@@ -79,7 +79,7 @@
       $tpl = "action_$action.tpl";
       if ($this->m_theme->tplPath($tpl)=="") // no specific theme for this action
       {
-      	
+        
         $tpl = "action.tpl";
       }
       return $this->render($tpl, $vars, $module);
@@ -175,21 +175,31 @@
      */
     public function render($name, $vars=array(), $module="")
     {
-    	$path = $this->templatePath($name, $module);
-    	
-    	if (substr($path, -4) != '.php' && file_exists($path.'.php'))
-    	{
-    		$path .= '.php';
-    	}
-    	
-    	if (substr($path, -4) == '.php')
-    	{
-    		return $this->renderPhp($path, $vars);
-    	}
-    	else
-    	{
-    		return $this->renderSmarty($path, $vars);
-    	}
+      $path = $this->templatePath($name, $module);
+      
+      if (substr($path, -4) != '.php' && file_exists($path.'.php'))
+      {
+        $path .= '.php';
+      }
+      
+      if (substr($path, -4) == '.php')
+      {
+        $result = $this->renderPhp($path, $vars);
+      }
+      else
+      {
+        $result = $this->renderSmarty($path, $vars);
+      }
+
+      if (atkconfig('debug') >= 3)
+      {
+        $result =
+          "\n<!-- START [{$path}] -->\n".
+          $result.      
+          "\n<!-- END [{$path}] -->\n";
+      }
+      
+      return $result;
     }
     
     /**
@@ -202,12 +212,12 @@
      */
     private function renderPhp($path, $vars)
     {
-    	unset($path);
-    	unset($vars);
-    	extract(func_get_arg(1));
-    	ob_start();
-    	include func_get_arg(0);
-    	return ob_get_clean();
+      unset($path);
+      unset($vars);
+      extract(func_get_arg(1));
+      ob_start();
+      include func_get_arg(0);
+      return ob_get_clean();
     }
     
     /**

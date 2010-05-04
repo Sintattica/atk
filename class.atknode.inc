@@ -923,7 +923,7 @@
      */
     public function add($attribute,$sections=NULL,$order=0)
     {
-      static $attrib_order = 100;
+      static $attrib_order = 0;
       static $attrib_index = 0;
 
       $tabs = null;
@@ -4606,7 +4606,7 @@
     }
 
     /**
-     * This function resorts the attribIndexList.
+     * This function resorts the attribIndexList and attribList.
      *
      * This is necessary if you add attributes *after* init() is already
      * called, and you set an order for those attributes.
@@ -4616,11 +4616,15 @@
       usort($this->m_attribIndexList,array("atknode","attrib_cmp"));
 
       // after sorting we need to update the attribute indices
+      $attrs = array();
       foreach ($this->m_attribIndexList as $index => $info)
       {
-        $attr = &$this->getAttribute($info['name']);
+        $attr = $this->getAttribute($info['name']);
         $attr->m_index = $index;
+        $attrs[$info['name']] = $attr;
       }
+      
+      $this->m_attribList = $attrs;
     }
 
     /**
