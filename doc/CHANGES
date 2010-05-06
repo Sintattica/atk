@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.6
 ------------------
+* Stillblue menu now has a fixed position so that it always shown even if
+  you scroll down the page. [Peter]
 + Added atkAttribute::setEditCallback and atkAttribute::setViewCallback
   which can be used to register a callback for overriding the edit or
   display functionality of an attribute. [Peter]
