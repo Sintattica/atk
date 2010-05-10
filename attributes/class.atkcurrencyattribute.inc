@@ -43,17 +43,17 @@ class atkCurrencyAttribute extends atkNumberAttribute
     $this->atkNumberAttribute($name,$flags,$size,$decimals); // base class constructor
 
     if($currencysymbol=="") $currencysymbol=atktext("currencysymbol","atk","","","",true);
-    
+
     $this->m_currencysymbol = $currencysymbol;
     $this->m_decimalseparator = ($decimalseparator!=""?$decimalseparator:".");
     $this->m_thousandsseparator = ($thousandsseparator!=""?$thousandsseparator:",");
-    
+
     $this->setUseThousandsSeparator(true);
   }
 
   /**
    * overrides the edit function to put the currencysymbol in front of the input field
-   * 
+   *
    * @param array $record The record that holds the value for this attribute.
    * @param String $fieldprefix The fieldprefix to put in front of the name
    *                            of any html form element for this attribute.
@@ -62,7 +62,7 @@ class atkCurrencyAttribute extends atkNumberAttribute
    */
   function edit($record="", $fieldprefix="", $mode='')
   {
-    return $this->m_currencysymbol." ".parent::edit($record,$fieldprefix,$mode);
+    return $this->getCurrencySymbolDisplay().parent::edit($record,$fieldprefix,$mode);
   }
 
   /**
@@ -81,9 +81,18 @@ class atkCurrencyAttribute extends atkNumberAttribute
    */
   function display($record, $mode="")
   {
-    $result = empty($this->m_currencysymbol) ? "" : $this->m_currencysymbol." ";
+    $result = empty($this->m_currencysymbol) ? "" : $this->getCurrencySymbolDisplay();
     $result .= parent::display($record,$mode);
     return $result;
+  }
+
+  /**
+   * Get currency symbol display
+   * @return string
+   */
+  function getCurrencySymbolDisplay()
+  {
+    return '<span class="currencysymbol">'.$this->m_currencysymbol.'</span> ';
   }
 }
 

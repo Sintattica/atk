@@ -9,6 +9,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.6
 ------------------
+* Added a span around the currencysymbol of the currency attribute. [Sandy]
 * Stillblue menu now has a fixed position so that it always shown even if
   you scroll down the page. [Peter]
 + Added atkAttribute::setEditCallback and atkAttribute::setViewCallback
