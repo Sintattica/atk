@@ -752,6 +752,13 @@
      * @var string
      */
     private $m_defaultColumn = null;
+    
+    /**
+     * Current maximum attribute order value.
+     * 
+     * @var int
+     */
+    private $m_attribOrder = 0;
 
     /**
      * Constructor.
@@ -923,9 +930,6 @@
      */
     public function add($attribute,$sections=NULL,$order=0)
     {
-      static $attrib_order = 0;
-      static $attrib_index = 0;
-
       $tabs = null;
       $column = null;
 
@@ -1017,10 +1021,10 @@
 
       if(!$exist)
       {
-        if($order==0)
+        if ($order == 0)
         {
-          $order=$attrib_order;
-          $attrib_order+=100;
+          $this->m_attribOrder += 100;          
+          $order = $this->m_attribOrder;
         }
 
         if (!atkReadOptimizer())
@@ -1042,14 +1046,12 @@
         }
 
         $attribute->m_order = $order;
-        $this->m_attribIndexList[$attrib_index]=array("name"=>$attribute->fieldName(),"tabs"=>$tabs,"sections"=>$sections,"order"=>$attribute->m_order);
-        $attribute->m_index = $attrib_index;
+        $this->m_attribIndexList[] = array("name"=>$attribute->fieldName(),"tabs"=>$tabs,"sections"=>$sections,"order"=>$attribute->m_order);
+        $attribute->m_index = count($this->m_attribIndexList) - 1;
         $attribute->setTabs($tabs);
         $attribute->setSections($sections);
         $this->m_attributeTabs[$attribute->fieldname()] = $tabs;
-        $attrib_index++;
       }
-
 
       // Order the tablist
       $this->m_attribList[$attribute->fieldName()]=&$attribute;
