@@ -978,7 +978,7 @@
      */
     function db2value($rec)
     {
-      if (!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()]) == 0 || (int)substr($rec[$this->fieldName()], 0, 4) == 0) return "";
+      if (!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()]) == 0 || (int)substr($rec[$this->fieldName()], 0, 4) == 0) return null;
       return array("year" =>substr($rec[$this->fieldName()], 0, 4),
                    "month"=>substr($rec[$this->fieldName()], 5, 2),
                    "day"  =>substr($rec[$this->fieldName()], 8, 2));
