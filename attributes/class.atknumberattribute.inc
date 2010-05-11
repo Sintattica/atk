@@ -109,7 +109,7 @@
         $table = $this->m_ownerInstance->m_table;
       }
 
-      return $table.".".$this->fieldName().($direction ? " {$direction}" : "");
+      return $this->getDb()->quoteIdentifier($table).".".$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " {$direction}" : "");
     }
 
     /**

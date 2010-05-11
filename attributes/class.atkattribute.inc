@@ -2686,7 +2686,7 @@
         $table = $this->m_ownerInstance->m_table;
       }
 
-      return "LOWER(".$table.".".$this->fieldName().")".($direction ? " {$direction}" : "");
+      return "LOWER(".$this->getDb()->quoteIdentifier($table).".".$this->getDb()->quoteIdentifier($this->fieldName()).")".($direction ? " {$direction}" : "");
     }
 
     /**
