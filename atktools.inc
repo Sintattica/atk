@@ -173,7 +173,7 @@
         // critical
         $level_color="#ff0000";
       }
-      
+
       if (php_sapi_name() == 'cli')
       {
         $res = atktext($level,"atk").': '.$msg."\n";
@@ -184,7 +184,7 @@
         $res .='<body bgcolor="#ffffff" color="#000000">';
         $res .="<font color=\"$level_color\"><b>".atktext($level,"atk")."</b></font>: $msg.<br />\n";
       }
-      
+
       atkOutput::getInstance()->output($res);
       atkOutput::getInstance()->outputFlush();
       exit("Halted...\n");
@@ -280,8 +280,7 @@
    * However it does not trigger a mailreport
    * or anything else that an atkerror triggers.
    *
-   * @param unknown_type $txt
-   * @return unknown
+   * @param string $txt
    */
   function atkwarning($txt)
   {
@@ -311,7 +310,7 @@
 
     if (function_exists('debug_backtrace'))
       atkdebug("Trace:".atk_get_trace(), DEBUG_ERROR);
-      
+
     if (atkconfig('throw_exception_on_error'))
     {
       throw new Exception($txt);

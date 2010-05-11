@@ -169,7 +169,7 @@
     {
       $languages = $this->getLanguages();
 
-      $id  =  $this->getSearchFieldName($prefix);
+      $id  =  $this->getSearchFieldName($fieldprefix);
       $id .= !$this->isMlNode()?'_'.$languages[0]:'';
 
       $result= '<input type="text" name="'.$id.'"'.
