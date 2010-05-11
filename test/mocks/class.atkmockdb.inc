@@ -37,6 +37,8 @@
     
     private $m_currentResult = null;
     
+    protected $m_identifierQuoting = array('start' => '`', 'end' => '`', 'escape' => '`');
+    
 
     /**
      * Connect to the database.
