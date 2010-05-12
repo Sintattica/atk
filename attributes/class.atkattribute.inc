@@ -2686,7 +2686,21 @@
         $table = $this->m_ownerInstance->m_table;
       }
 
-      return "LOWER(".$this->getDb()->quoteIdentifier($table).".".$this->getDb()->quoteIdentifier($this->fieldName()).")".($direction ? " {$direction}" : "");
+      // check for a schema name in $table
+      if (strpos($table, '.') !== false) {
+        $identifiers = explode('.', $table);
+
+        $tableIdentifier = '';
+        foreach ($identifiers as $identifier) {
+            $tableIdentifier .= $this->getDb()->quoteIdentifier($identifier) . '.';
+        }
+
+        return "LOWER(".$tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).")".($direction ? " {$direction}" : "");
+      } else {
+        return "LOWER(".$this->getDb()->quoteIdentifier($table).".".$this->getDb()->quoteIdentifier($this->fieldName()).")".($direction ? " {$direction}" : "");
+      }
+
+
     }
 
     /**

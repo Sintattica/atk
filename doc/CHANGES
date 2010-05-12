@@ -9,6 +9,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.6
 ------------------
+* Fixed quoting of identifiers in order by clause. It now conforms to the way 
+  atkquery quotes fields with multiple identifiers such as schema name and/or
+  database name [Matthijs]
 * Fixed quoting of identifiers in order by clause. [Peter]
 * Fixed reset of atkSessionStore. [Sandy]
 * Added a span around the currencysymbol of the currency attribute. [Sandy]
