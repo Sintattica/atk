@@ -1051,7 +1051,7 @@
      * form variables in the session and restore them whenever you come back.
      *
      * @param string $url         the url to make session aware
-     * @param string $name        the name to display
+     * @param string $name        the name to display (will not be escaped!)
      * @param var $sessionstatus  the session flags
      *                            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
      *                             SESSION_NESTED|SESSION_BACK)
@@ -1065,14 +1065,14 @@
     {
       if ($saveform)
       {
-        $str = 'javascript:atkSubmit("'.atkurlencode(atkSessionManager::sessionUrl($url,$sessionstatus)).'")';
+        $str = 'atkSubmit("'.atkurlencode(atkSessionManager::sessionUrl($url,$sessionstatus)).'");';
+        return "<a href=\"javascript:void(0)\" onclick=\"".atk_htmlentities($str)."\" ".$extraprops.">".$name."</a>";        
       }
       else
       {
         $str = atkSessionManager::sessionUrl($url,$sessionstatus);
+        return "<a href=\"".atk_htmlentities($str)."\" ".$extraprops.">".$name."</a>";
       }
-
-      return "<a href=\"".atk_htmlentities($str)."\" ".$extraprops.">".$name."</a>";
     }
   }
 
