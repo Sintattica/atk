@@ -219,14 +219,18 @@
      */
     function edit($record="", $fieldprefix="", $mode="")
     {
-      if (method_exists($this->getOwnerInstance(), $this->fieldName().'_display'))
+      // When we have errors, don't show the filename above the input.
+      if ($record[$this->fieldName()]['error'] == 0)
       {
-        $method = $this->fieldName().'_display';
-        $result = $this->m_ownerInstance->$method($record, 'view');
-      }
-      else
-      {
-        $result=$this->display($record, 'view');
+        if (method_exists($this->getOwnerInstance(), $this->fieldName() .'_display'))
+        {
+          $method = $this->fieldName() .'_display';
+          $result = $this->m_ownerInstance->$method($record, 'view');
+        }
+        else
+        {
+          $result = $this->display($record, 'view');
+        }
       }
 
       if(!is_dir($this->m_dir) || !is_writable($this->m_dir))
@@ -607,12 +611,16 @@
 
       if (is_array($_FILES)||($rec[$this->fieldName()]["select"] != "") || ($rec[$this->fieldName()]["filename"]!="")) // php4
       {
+
         // if an error occured during the upload process
         // and the error is not 'no file' while the field isn't obligatory or a file was already selected
         $fileselected = isset($rec[$this->fieldName()]["select"]) && $rec[$this->fieldName()]["select"] != "";
         if ($_FILES[$postfiles_basename]['error'] > 0 && !((!$this->hasFlag(AF_OBLIGATORY) || $fileselected) && $_FILES[$postfiles_basename]['error'] == UPLOAD_ERR_NO_FILE))
         {
-          return array('error' => $_FILES[$postfiles_basename]['error']);
+          return array(
+            'filename' => $_FILES[$this->fieldName()]['name'],
+            'error' => $_FILES[$this->fieldName()]['error']
+          );
         }
 
         // if no new file has been uploaded..
@@ -653,7 +661,7 @@
             // Note: without file_exists() check, calling filesize() generates an error message:
             $result = array("tmpfile"=>$filename == '' ? '' : $this->m_dir.$filename,
                           "filename"=>$filename,
-                          "filesize"=>($filename!='' && file_exists(filesize($this->m_dir.$filename)) ? filesize($this->m_dir.$filename) : 0),
+                          "filesize"=>(is_file($this->m_dir.$filename) ? filesize($this->m_dir.$filename) : 0),
                           "orgfilename"=>$filename);
           }
         }
@@ -671,7 +679,9 @@
                           "filesize"=>$_FILES[$postfiles_basename]["size"],
                           "orgfilename"=>$realname);
         }
+
         return $result;
+
       }
     }
 
