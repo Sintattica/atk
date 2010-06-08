@@ -297,23 +297,38 @@
    * The difference is, that this is also displayed when debugging is turned
    * off.
    *
-   * If errorreporting by email is turned on, the errormessages are also handled (from atkOutput)
+   * If error reporting by email is turned on, the error messages are also 
+   * send by e-mail.
    *
-   * @param string $txt the text to display
+   * @param string|Exception $error the error text or exception to display
    */
-  function atkerror($txt)
+  function atkerror($error)
   {
-    global $g_error_msg;
-    $g_error_msg[]="[".elapsed()."] ".$txt;
-
-    atkdebug($txt, DEBUG_ERROR);
-
-    if (function_exists('debug_backtrace'))
-      atkdebug("Trace:".atk_get_trace(), DEBUG_ERROR);
-
-    if (atkconfig('throw_exception_on_error'))
+    global $g_error_msg;    
+    
+    if ($error instanceof Exception)
     {
-      throw new Exception($txt);
+      $g_error_msg[] = "[".elapsed()."] " . $error->getMessage();
+      atkdebug(nl2br($error->getMessage()."\n".$error->getTraceAsString()), DEBUG_ERROR);
+    }
+    else 
+    {
+      $g_error_msg[] = "[".elapsed()."] " . $error;
+      atkdebug($error, DEBUG_ERROR);
+    }
+    
+    if (function_exists('debug_backtrace'))
+    {
+      atkdebug("Trace:".atk_get_trace(), DEBUG_ERROR);
+    }
+
+    if (atkconfig('throw_exception_on_error') && $error instanceof Exception)
+    {
+      throw $error;
+    }
+    else if (atkconfig('throw_exception_on_error'))
+    {
+      throw new Exception($error);
     }
   }
 
