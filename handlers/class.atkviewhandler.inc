@@ -139,9 +139,10 @@
      *
      * @param Array $record The record
      * @param String $mode The mode we're in (defaults to "view")
+     * @param String $template The template to use for the view form
      * @return String HTML code of the page
      */
-    function viewForm($record, $mode="view")
+    function viewForm($record, $mode="view", $template="")
     {
       $node = &$this->m_node;
 
@@ -277,14 +278,21 @@
 
       $tabTpl = $this->_getTabTpl($node, $tabs,$mode,$record);
 
-      if(count(array_unique($tabTpl))>1)
+      if($template)
       {
-        $tabForm = $this->_renderTabs($fields, $tabTpl);
-        $innerform = implode(null,$tabForm);
+          $innerform = $ui->render($template, array("fields"=>$fields,'attributes'=>$attributes));
       }
       else
       {
-        $innerform = $ui->render($node->getTemplate("view", $record, $tab), array("fields"=>$fields,'attributes'=>$attributes));
+          if(count(array_unique($tabTpl))>1)
+          {
+            $tabForm = $this->_renderTabs($fields, $tabTpl);
+            $innerform = implode(null,$tabForm);
+          }
+          else
+          {
+            $innerform = $ui->render($node->getTemplate("view", $record, $tab), array("fields"=>$fields,'attributes'=>$attributes));
+          }
       }
       return $innerform;
     }
