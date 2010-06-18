@@ -112,6 +112,7 @@ class atkCacheTestCase extends atkTestCase
     sleep(2);
     $this->assertFalse($this->m_cache->get($id));
  
+$this->assertFalse($id);
   }
 
   /**
