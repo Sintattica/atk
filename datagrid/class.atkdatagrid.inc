@@ -915,6 +915,32 @@ class atkDataGrid
   {
     return $this->getPostvar('atkgridedit', false);
   }
+  
+
+  /**
+   * Returns the master node.
+   *
+   * @see atkDataGrid::setMasterNode
+   *
+   * @return atkNode master node
+   */
+  public function getMasterNode()
+  {
+    return $this->m_masterNode;
+  }
+
+  /**
+   * Sets the master node if the grid is used in a 1:n relationship.
+   *
+   * This node is not directly used by the datagrid itself, but
+   * components might.
+   *
+   * @param atkNode $node master node
+   */
+  public function setMasterNode(atkNode $node)
+  {
+    $this->m_masterNode = $node;
+  }  
 
   /**
    * Returns the master record.
@@ -925,7 +951,7 @@ class atkDataGrid
    */
   public function getMasterRecord()
   {
-  	return $this->m_masterRecord;
+    return $this->m_masterRecord;
   }
 
   /**
@@ -936,9 +962,9 @@ class atkDataGrid
    *
    * @param array $record master record
    */
-  public function setMasterRecord($record)
+  public function setMasterRecord(array $record)
   {
-  	$this->m_masterRecord = $record;
+    $this->m_masterRecord = $record;
   }
 
   /**
@@ -997,7 +1023,7 @@ class atkDataGrid
    */
   public function setComponentOption($component, $option, $value)
   {
-  	$this->m_components[$component]['options'][$option] = $value;
+    $this->m_components[$component]['options'][$option] = $value;
   }
 
   /**
@@ -1256,7 +1282,7 @@ class atkDataGrid
    */
   public function removeFilters()
   {
-  	$this->m_filters = array();
+    $this->m_filters = array();
   }
 
   /**

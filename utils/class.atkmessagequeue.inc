@@ -21,7 +21,8 @@
    */
   define('AMQ_GENERAL', 0);
   define('AMQ_SUCCESS', 1);
-  define('AMQ_FAILURE', 2);
+  define('AMQ_WARNING', 2);  
+  define('AMQ_FAILURE', 3);
 
   /**
    * This class implements the ATK message queue for showing messages
@@ -89,6 +90,7 @@
     {
       if ($type == AMQ_SUCCESS) return 'success';
       else if ($type == AMQ_FAILURE) return 'failure';
+      else if ($type == AMQ_WARNING) return 'warning';
       else return 'general';
     }
 

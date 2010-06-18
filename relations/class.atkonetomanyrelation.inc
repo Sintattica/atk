@@ -282,6 +282,7 @@
       $grid = atkDataGrid::create($this->m_destInstance, str_replace('.', '_', $this->getOwnerInstance()->atkNodeType()).'_'.$this->fieldName().'_grid', null, true, $useSession);
 
       $grid->setMode($mode);
+      $grid->setMasterNode($this->getOwnerInstance());      
       $grid->setMasterRecord($record);
 
       $grid->removeFlag(atkDataGrid::EXTENDED_SEARCH);

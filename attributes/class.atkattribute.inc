@@ -1118,6 +1118,18 @@
     public function preAddToEditArray(&$record, $fieldPrefix, $mode)
     {
     }
+    
+    /**
+     * Prepare for view. Is called before all attributes are added to the
+     * view array and allows for last minute manipulations based on the
+     * record but also manipulations on the record itself.
+     *
+     * @param array  $record reference to the record
+     * @param string $mode   view mode
+     */
+    public function preAddToViewArray(&$record, $mode)
+    {
+    }    
 
     /**
      * Adds the attribute's edit / hide HTML code to the edit array.

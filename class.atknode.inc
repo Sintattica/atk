@@ -2056,10 +2056,25 @@
      * @param array $record the edit record
      * @param string $mode edit mode (add or edit)
      */
-    function preAddToEditArray(&$record, $mode="add")
+    function preAddToEditArray(&$record, $mode)
     {
       // do nothing
     }
+    
+    /**
+     * The preAddToViewArray method is called from within the viewArray
+     * method prior to letting the attributes add themselves to the view
+     * array, but after the view record values have been collected This makes
+     * it possible to do some last-minute modifications to the record data 
+     * and possibily add some last-minute attributes etc.
+     *
+     * @param array  $record the edit record
+     * @param string $mode   view mode
+     */
+    function preAddToViewArray(&$record, $mode)
+    {
+      // do nothing
+    }    
 
     /**
      * Function outputs an array with edit fields. For each field the array
@@ -2277,6 +2292,16 @@
     {
       // update visibility of some attributes based on the current record
       $this->checkAttributeSecurity($mode, $record);
+      
+      // call preAddToViewArray at the attribute level, allows attribute to do
+      // some last minute manipulations on for example the record
+      foreach ($this->getAttributes() as $attr)
+      {
+        $attr->preAddToViewArray($record, $mode);
+      }
+
+      // call preAddToViewArray for the node itself.
+      $this->preAddToViewArray($record, $mode);      
 
       $tab = $this->getActiveTab();
 
@@ -2536,7 +2561,7 @@
         $newtab["total"] = count($list);
         foreach ($list as $t)
         {
-          $newtab["title"] = atktext(array("tab_$t", $t),$this->m_module,$this->m_type);
+          $newtab["title"] = $this->text(array("tab_$t", $t));
           $newtab["tab"] = $t;
           $url = atkSelf()."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atktab=".$t;
           if ($this->m_action == "view")

@@ -10,7 +10,6 @@
     <div class="atkmessages_{$message.type}">{$message.message}</div>
   {/foreach}
 </div>
-<br />
 {/if}
 {$header}
 {$formstart}
