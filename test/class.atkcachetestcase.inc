@@ -21,7 +21,7 @@ class atkCacheTestCase extends atkTestCase
   
   protected $m_cache;
   protected $m_lifetime = 5;
-    
+  protected $m_prefix;
   protected $m_type='';
     
   public function setup()
@@ -31,6 +31,8 @@ class atkCacheTestCase extends atkTestCase
     // Set lifetime for testcases
     $GLOBALS['config_cache'][$this->m_type]['lifetime'] = $this->m_lifetime;
     
+    // Generate a unique prefix
+    $this->m_prefix = uniqid('test_' . $this->m_type, true);
     
     try
     {
@@ -79,7 +81,7 @@ class atkCacheTestCase extends atkTestCase
    */
   public function test_getLifetime()
   {
-    $id = 'test_getlifetime';
+    $id = $this->m_prefix . 'getlifetime';
     $data = 'Lifetime data';
     
     // configured from setup
@@ -117,9 +119,9 @@ class atkCacheTestCase extends atkTestCase
    */
   public function test_add()
   {
-    $id = 'test_add';
+    $id = $this->m_prefix . 'add';
     $data = 'Add data';
-    $id2 = 'test_add2';
+    $id2 = $this->m_prefix . 'add2';
     $data2 = 'Add data2';
     
     // add for the first time
@@ -143,7 +145,7 @@ class atkCacheTestCase extends atkTestCase
    */
   public function test_get()
   {
-    $id = 'test_get';
+    $id = $this->m_prefix . 'get';
     $data = 'Get data';
     
     // data has not been stored yet
@@ -171,7 +173,7 @@ class atkCacheTestCase extends atkTestCase
    */
   public function test_set_Array()
   {
-    $id = 'save_Array';
+    $id = $this->m_prefix . 'save_Array';
     $data = array(
         'name'   => 'atkCache',
         'parent' => 'atk',
@@ -186,7 +188,7 @@ class atkCacheTestCase extends atkTestCase
    */
   public function test_set_Object()
   {
-    $id = 'save_object';
+    $id = $this->m_prefix . 'save_object';
     $data = atknew("atk.atklanguage");
     $this->assertTrue($this->m_cache->set($id, $data),"Save data");
     $this->assertEquals($this->m_cache->get($id), $data);
@@ -197,7 +199,7 @@ class atkCacheTestCase extends atkTestCase
    */
   public function test_set_String()
   {
-    $id = 'test_save_string';
+    $id = $this->m_prefix . 'save_string';
     $data = 'Save string data';
     $this->assertTrue($this->m_cache->set($id, $data),'Save data');
     $this->assertEquals($this->m_cache->get($id), $data);
@@ -208,7 +210,7 @@ class atkCacheTestCase extends atkTestCase
    */
   public function test_delete()
   {
-    $id = 'test_delete';
+    $id = $this->m_prefix .'test_delete';
     $data = 'Delete data';
     
     // data has not been stored yet
@@ -230,7 +232,10 @@ class atkCacheTestCase extends atkTestCase
    */
   public function test_deleteAll()
   {
-    $list = array(1, 2, 'three','four');
+    $list = array(
+        $this->m_prefix . 'one',
+        $this->m_prefix . 'two',
+    );
     $data = 'Delete all data';
     
     foreach ($list as $id) {

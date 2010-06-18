@@ -57,6 +57,8 @@ Changes in ATK 6.6
   drop-down is empty (instead of containing options 1 to 31). [Peter]
 * Added atkform.js for submitting an ATK form using an Ajax 
   request. [Peter, Sandy]
+* Added unique cache prefix to atkCacheTestCase in order to prevent collisions
+  between simultanious runs of PHPUnit. [Guido]
 
 Changes in prior versions
 -------------------------
