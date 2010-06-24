@@ -54,6 +54,11 @@
     // error message that caused the fatal error is put in this variable.
     var $m_fatalError = "";
 
+    /**
+     * Can we use password retrieving/recreating in current configuration
+     */
+    protected $m_enablepasswordmailer = false;
+
 
     /**
      * Register a new listener.
@@ -124,7 +129,7 @@
     /**
      * Constructor
      * @access private
-     * 
+     *
      * @param string $authentication_type The type of authentication (user/password verification) to use
      * @param string $authorization_type The type of authorization (mostly the same as the authentication_type)
      * @param string $securityscheme The security scheme that will be used to determine who is allowed to do what
@@ -152,6 +157,23 @@
 
       /* security scheme */
       $this->m_scheme = $securityscheme;
+
+      /**
+       * Check, can we use password retrieving/recreating.
+       * We take into account configuration var auth_enablepasswordmailer
+       * and authentication methid, that we use
+       *
+       */
+      if(atkconfig("auth_enablepasswordmailer",false))
+      {
+        foreach ($this->m_authentication as $auth)
+        {
+          if(in_array($auth->getPasswordPolicy(),array(PASSWORD_RETRIEVABLE,PASSWORD_RECREATE)))
+          {
+            $this->m_enablepasswordmailer = true;
+          }
+        }
+      }
     }
 
     /**
@@ -161,42 +183,15 @@
      */
     function mailPassword($username)
     {
-      // Query the database for user records having the given username and return if not found
-      $usernode = &atkGetNode(atkconfig("auth_usernode"));
-      $selector = sprintf("%s.%s = '%s'", atkconfig("auth_usertable"), atkconfig("auth_userfield"), $username);
-      $userrecords = $usernode->selectDb($selector, "", "", "", array(atkconfig("auth_userpk"), atkconfig("auth_emailfield"), atkconfig("auth_passwordfield")), "edit");
-      if (count($userrecords) != 1)
+      if($this->get_enablepasswordmailer())
       {
-        atkdebug("User '$username' not found.");
-        return false;
+        // Send an email containing the new password to user
+        $subject = atktext("auth_passwordmail_subjectnew_password", "atk");
+        $body = atktext("auth_passwordmail_explanation", "atk") . "\n\n";
+        $body.= atktext(atkconfig("auth_userfield")) . ": " . $username . "\n";
+        $body.= atktext(atkconfig("auth_passwordfield")) . ": " . $newpassword . "\n";
+        mail($email, $subject, $body);
       }
-
-      // Retrieve the email address
-      $email = $userrecords[0][atkconfig("auth_emailfield")];
-      if (empty($email))
-      {
-        atkdebug("Email address for '$username' not available.");
-        return false;
-      }
-
-      // Regenerate the password
-      $passwordattr = &$usernode->getAttribute(atkconfig("auth_passwordfield"));
-      $newpassword = $passwordattr->generatePassword();
-
-      // Update the record in the database
-      $userrecords[0][atkconfig("auth_passwordfield")]["hash"] = md5($newpassword);
-      $usernode->updateDb($userrecords[0], true, "", array(atkconfig("auth_passwordfield")));
-
-      $db = &$usernode->getDB();
-      $db->commit();
-
-      // Send an email containing the new password to user
-      $subject = atktext("auth_passwordmail_subjectnew_password", "atk");
-      $body = atktext("auth_passwordmail_explanation", "atk") . "\n\n";
-      $body.= atktext(atkconfig("auth_userfield")) . ": " . $username . "\n";
-      $body.= atktext(atkconfig("auth_passwordfield")) . ": " . $newpassword . "\n";
-      mail($email, $subject, $body);
-
       // Return true
       return true;
     }
@@ -304,7 +299,7 @@
           $response = AUTH_MISSINGUSERNAME;
         }
         // Email password if password forgotten and passwordmailer enabled
-        else if ((!empty($auth_user)) && (atkconfig("auth_loginform")==true) && (atkconfig("auth_enablepasswordmailer", false)) && (atkArrayNvl($ATK_VARS, "login", "")==atktext('password_forgotten')))
+        else if ((!empty($auth_user)) && (atkconfig("auth_loginform")==true) && $this->get_enablepasswordmailer() && (atkArrayNvl($ATK_VARS, "login", "")==atktext('password_forgotten')))
         {
           $this->mailPassword($auth_user);
           $response = AUTH_PASSWORDSENT;
@@ -530,7 +525,7 @@
      * @access private
      *
      * @param string $defaultname The username that might already be known
-     * @param int    $lastresponse The lastresponse when trying to login 
+     * @param int    $lastresponse The lastresponse when trying to login
      *                              possible values: AUTH_MISMATCH, AUTH_LOCKED, AUTH_MISSINGUSERNAME, AUTH_PASSWORDSENT
      */
     function loginForm($defaultname, $lastresponse)
@@ -618,8 +613,8 @@
         $output.="<tr><td valign=top>".atktext('password')."</td><td>:</td><td><input type=password size=15 name=auth_pw value='' /></td></tr>";
         $output.='<tr><td colspan="3" align="center" height="50" valign="middle">';
         $output.='<input name="login" class="button" type="submit" value="'.atktext('login').'">';
-        $tplvars["auth_enablepasswordmailer"] = atkconfig("auth_enablepasswordmailer", false);
-        if (atkconfig("auth_enablepasswordmailer", false))
+        $tplvars["auth_enablepasswordmailer"] = $this->get_enablepasswordmailer();
+        if ($this->get_enablepasswordmailer())
         {
           $output.='&nbsp;&nbsp;<input name="login" class="button" type="submit" value="'.atktext('password_forgotten').'">';
           $tplvars["forgotpasswordbutton"] = '<input name="login" class="button" type="submit" value="'.atktext('password_forgotten').'">';
@@ -640,7 +635,7 @@
      * Generate field for entering the username (dropdown or input box,
      * depending on settings.
      * @access private
-     * 
+     *
      * @param string $defaultname The username that might already be known
      */
     function auth_userField($defaultname)
@@ -792,14 +787,24 @@
     }
 
     /**
-     * If we are using cookies to store the login information this function will generate 
-     * the cookiename 
+     * If we are using cookies to store the login information this function will generate
+     * the cookiename
      *
      * @return cookiename based on the application title
      */
     function _getAuthCookieName()
     {
       return "atkauth_3".str_replace(" ","_",atktext("app_title"));
+    }
+
+    /**
+     * Getter for m_enablepasswordmailer
+     *
+     * @return bool
+     */
+    public function get_enablepasswordmailer()
+    {
+      return $this->m_enablepasswordmailer;
     }
   }
 
@@ -817,4 +822,5 @@
     if (!is_object($secMgr)) return 1;
     else return $secMgr->allowed($node, $privilege);
   }
+
 ?>

@@ -160,6 +160,29 @@
      {
        return false;
      }
+
+    /**
+     * This function returns "get password" policy for current auth method
+     *
+     * @return const
+     */
+    function getPasswordPolicy()
+    {
+      return PASSWORD_RETRIEVABLE;    
+    }
+    
+    /**
+     * This function returns password or false, if password can't be retrieve/recreate
+     * 
+     * @param string $username User for which the password should be regenerated
+     *
+     * @return mixed string with password or false
+     */
+    function getPassword($username)
+    {
+      if(isset($config_user[$user]["password"])) return $config_user[$user]["password"];
+      return false;    
+    }
    }
 
 ?>
