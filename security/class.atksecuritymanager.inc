@@ -183,15 +183,42 @@
      */
     function mailPassword($username)
     {
-      if($this->get_enablepasswordmailer())
+      // Query the database for user records having the given username and return if not found
+      $usernode = &atkGetNode(atkconfig("auth_usernode"));
+      $selector = sprintf("%s.%s = '%s'", atkconfig("auth_usertable"), atkconfig("auth_userfield"), $username);
+      $userrecords = $usernode->selectDb($selector, "", "", "", array(atkconfig("auth_userpk"), atkconfig("auth_emailfield"), atkconfig("auth_passwordfield")), "edit");
+      if (count($userrecords) != 1)
       {
-        // Send an email containing the new password to user
-        $subject = atktext("auth_passwordmail_subjectnew_password", "atk");
-        $body = atktext("auth_passwordmail_explanation", "atk") . "\n\n";
-        $body.= atktext(atkconfig("auth_userfield")) . ": " . $username . "\n";
-        $body.= atktext(atkconfig("auth_passwordfield")) . ": " . $newpassword . "\n";
-        mail($email, $subject, $body);
+        atkdebug("User '$username' not found.");
+        return false;
       }
+
+      // Retrieve the email address
+      $email = $userrecords[0][atkconfig("auth_emailfield")];
+      if (empty($email))
+      {
+        atkdebug("Email address for '$username' not available.");
+        return false;
+      }
+
+      // Regenerate the password
+      $passwordattr = &$usernode->getAttribute(atkconfig("auth_passwordfield"));
+      $newpassword = $passwordattr->generatePassword();
+
+      // Update the record in the database
+      $userrecords[0][atkconfig("auth_passwordfield")]["hash"] = md5($newpassword);
+      $usernode->updateDb($userrecords[0], true, "", array(atkconfig("auth_passwordfield")));
+
+      $db = &$usernode->getDB();
+      $db->commit();
+
+      // Send an email containing the new password to user
+      $subject = atktext("auth_passwordmail_subjectnew_password", "atk");
+      $body = atktext("auth_passwordmail_explanation", "atk") . "\n\n";
+      $body.= atktext(atkconfig("auth_userfield")) . ": " . $username . "\n";
+      $body.= atktext(atkconfig("auth_passwordfield")) . ": " . $newpassword . "\n";
+      mail($email, $subject, $body);
+
       // Return true
       return true;
     }
@@ -822,5 +849,4 @@
     if (!is_object($secMgr)) return 1;
     else return $secMgr->allowed($node, $privilege);
   }
-
 ?>
