@@ -32,22 +32,22 @@
    class auth_config extends auth_interface
    {
      /**
-     * Authenticate a user. 
+     * Authenticate a user.
      *
      * @param String $user The login of the user to authenticate.
-     * @param String $passwd The password of the user. Note: if the canMd5 
-     *                       function of an implementation returns true,      
+     * @param String $passwd The password of the user. Note: if the canMd5
+     *                       function of an implementation returns true,
      *                       $passwd will be passed as an md5 string.
      *
      * @return int AUTH_SUCCESS - Authentication succesful
-     *             AUTH_MISMATCH - Authentication failed, wrong 
+     *             AUTH_MISMATCH - Authentication failed, wrong
      *                             user/password combination
      *             AUTH_LOCKED - Account is locked, can not login
      *                           with current username.
-     *             AUTH_ERROR - Authentication failed due to some 
-     *                          error which cannot be solved by 
-     *                          just trying again. If you return 
-     *                          this value, you *must* also 
+     *             AUTH_ERROR - Authentication failed due to some
+     *                          error which cannot be solved by
+     *                          just trying again. If you return
+     *                          this value, you *must* also
      *                          fill the m_fatalError variable.
      */
      function validateUser($user, $passwd)
@@ -73,16 +73,16 @@
      *                 Drivers that support both md5 and cleartext passwords
      *                 can return atkconfig("authentication_md5") to let the
      *                 application decide whether to use md5.
-     */ 
+     */
      function canMd5()
      {
        return atkconfig("authentication_md5");
      }
 
-     /** 
+     /**
      * This function returns information about a user in an associative
      * array with the following elements:
-     * "name" -> the userid (should normally be the same as the $user 
+     * "name" -> the userid (should normally be the same as the $user
      *           variable that gets passed to it.
      * "level" -> The level/group(s) to which this user belongs.
      * Specific implementations of the method may add more information if
@@ -129,15 +129,15 @@
        return $result;
      }
 
-     /** 
-     * This function returns the level/group(s) that are allowed to 
+     /**
+     * This function returns the level/group(s) that are allowed to
      * view/edit a certain attribute of a given node.
      * @param String $node The full nodename of the node for which to check
      *                     attribute access.
      * @param String $attrib The name of the attribute to check
      * @param String $mode "view" or "edit"
-     * @param mixed One (int) or more (array) entities that are allowed to 
-     *              view/edit the attribute. 
+     * @param mixed One (int) or more (array) entities that are allowed to
+     *              view/edit the attribute.
      */
      function getAttribEntity($node, $attrib, $mode)
      {
@@ -148,7 +148,7 @@
 
        return $entity;
      }
-     
+
      /**
       * This function returns a boolean that is true when the class allows the
       * resetting of the password of a user.
@@ -168,20 +168,20 @@
      */
     function getPasswordPolicy()
     {
-      return PASSWORD_RETRIEVABLE;    
+      return PASSWORD_RETRIEVABLE;
     }
-    
+
     /**
      * This function returns password or false, if password can't be retrieve/recreate
-     * 
+     *
      * @param string $username User for which the password should be regenerated
      *
      * @return mixed string with password or false
      */
     function getPassword($username)
     {
-      if(isset($config_user[$user]["password"])) return $config_user[$user]["password"];
-      return false;    
+      if(isset($config_user[$username]["password"])) return $config_user[$username]["password"];
+      return false;
     }
    }
 
