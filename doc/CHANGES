@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.6
 ------------------
+* Fixed bug in atkNode which causes attributes to be given the wrong index
+  when an attribute had been removed in between. [Peter]
 + Added atkDataGrid::setMasterNode(...) which is used by the
   atkOneToManyRelation to set it's owner instance. This isn't used directly
   by the atkDataGrid itself, but can be used by modifiers or listeners. [Peter]

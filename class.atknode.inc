@@ -1047,7 +1047,7 @@
 
         $attribute->m_order = $order;
         $this->m_attribIndexList[] = array("name"=>$attribute->fieldName(),"tabs"=>$tabs,"sections"=>$sections,"order"=>$attribute->m_order);
-        $attribute->m_index = count($this->m_attribIndexList) - 1;
+        $attribute->m_index = max(array_keys($this->m_attribIndexList)); // might contain gaps
         $attribute->setTabs($tabs);
         $attribute->setSections($sections);
         $this->m_attributeTabs[$attribute->fieldname()] = $tabs;
