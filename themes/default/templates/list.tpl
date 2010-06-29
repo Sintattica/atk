@@ -15,30 +15,30 @@
   {/if}  
   {if (isset($header) && !empty($header))}
   <tr>
-    <td valign="top" align="left">{$header}<br><br></td>
+    <td valign="top" align="left">{$header}<br/></td>
   </tr>
   {/if}
   {if (isset($index) && !empty($index))}
   <tr>
-    <td valign="top" align="left">{$index}<br><br></td>
+    <td valign="top" align="left">{$index}<br/></td>
   </tr>
   {/if}
   {if (isset($navbar) && !empty($navbar))}
   <tr>
-    <td valign="top" align="left">{$navbar}<br></td>
+    <td valign="top" align="left">{$navbar}<br/></td>
   </tr>
   {/if}
   <tr>
-    <td valign="top" align="left">{$list}<br></td>
+    <td valign="top" align="left">{$list}<br/></td>
   </tr>
   {if (isset($navbar) && !empty($navbar))}
   <tr>
-    <td valign="top" align="left">{$navbar}<br></td>
+    <td valign="top" align="left">{$navbar}<br/></td>
   </tr>
   {/if}
   {if (isset($footer) && !empty($footer))}
   <tr>
-    <td valign="top" align="left">{$footer}<br></td>
+    <td valign="top" align="left">{$footer}<br/></td>
   </tr>
   {/if}
 </table>
