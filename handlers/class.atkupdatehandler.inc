@@ -105,7 +105,7 @@
       }
       else if (isset($this->m_postvars['atkcancel']))
       {
-        $this->handleCancel($record);
+        $this->invoke('handleCancel', $record);
       }
       else
       {

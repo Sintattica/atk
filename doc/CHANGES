@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.6
 ------------------
+* Changed the handleCancel call in atkUpdateHandler, so that it can be 
+  overridden in your node. [mvdvelden]
 * Fixed bug in atkNode which causes attributes to be given the wrong index
   when an attribute had been removed in between. [Peter]
 + Added atkDataGrid::setMasterNode(...) which is used by the
