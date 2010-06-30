@@ -176,6 +176,7 @@
       }
 
       $params               = $node->getDefaultActionParams();
+      $params["title"]      = $node->actionTitle('add');
       $params["header"]     = $this->invoke("addHeader", $record);
       $params["formstart"]  = $this->getFormStart();
       $params["content"]    = $this->getContent($record);

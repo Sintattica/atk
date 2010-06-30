@@ -66,7 +66,7 @@
     var $m_returnbehaviour = ATK_ACTION_STAY;
 
     /** @access protected */
-    protected $m_boxTemplate = "box.tpl";
+    protected $m_boxTemplate = "box";
 
     /**
      * Render mode, defaults to "box" but can be changed to "dialog".

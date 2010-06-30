@@ -198,6 +198,7 @@
       }
 
       $params               = $node->getDefaultActionParams($locked);
+      $params['title']      = $node->actionTitle('edit', $record);
       $params["formstart"]  = $this->getFormStart();
       $params["header"]     = $this->invoke("editHeader", $record);
       $params["content"]    = $this->getContent($record);

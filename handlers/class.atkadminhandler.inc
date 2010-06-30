@@ -372,7 +372,14 @@
       if ($importlink!="") $links[] = $importlink;
       $exportlink = $this->getExportLink();
       if ($exportlink!="") $links[] = $exportlink;
-      return implode(" | ", $links);
+      $result = implode(" | ", $links);
+      
+      if (strlen(trim($result)) > 0)
+      {
+        $result .= '<br/>';
+      }
+      
+      return $result;
     }
 
     /**
