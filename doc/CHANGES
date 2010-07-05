@@ -9,6 +9,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.6
 ------------------
+* Fixed value2db of atkBoolAttribute. [Sandy]
 + Added box template support to atkPageBuilder. [Peter]
 * Fixed column support for meta node. [Peter]
 * Changed the handleCancel call in atkUpdateHandler, so that it can be 

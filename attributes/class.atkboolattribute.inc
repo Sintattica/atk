@@ -135,12 +135,11 @@
     /**
      * Get the value if it exits, otherwise return 0
      * @param array $rec Array with values
-     * @return String with slashes
+     * @return int
      */
     function value2db($rec)
     {
-      (isset($rec[$this->fieldName()]) ? $ret =  $rec[$this->fieldName()]: $ret = 0);
-      return $ret;
+      return (isset($rec[$this->fieldName()]) ? (int)$rec[$this->fieldName()] : 0);
     }
 
     /**
