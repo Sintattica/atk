@@ -90,6 +90,7 @@
 
         $params["activeTab"] = $tab;
         $params["header"] = $this->invoke("viewHeader", $record);
+        $params['title'] = $node->actionTitle($this->m_action, $record);
         $params["content"] = $node->tabulate("view", $innerform);
 
         $params["formstart"] = '<form name="entryform" id="entryform" action="'.getDispatchFile().'" method="get">'.session_form(SESSION_NESTED).
@@ -114,7 +115,7 @@
         }
         else
         {
-          $total = $ui->renderBox($vars);
+          $total = $ui->renderBox($vars, $this->m_boxTemplate);
         }
 
         return $total;
