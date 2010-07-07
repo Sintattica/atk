@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.6
 ------------------
++ Added atkViewHandler::getFormButtons() and made the view handler use it, so 
+  that it conforms to the way other handlers get their formbuttons. [Matthijs]
 * Fixed value2db of atkBoolAttribute. [Sandy]
 + Added box template support to atkPageBuilder. [Peter]
 * Fixed column support for meta node. [Peter]

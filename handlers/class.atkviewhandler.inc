@@ -29,6 +29,9 @@
    */
   class atkViewHandler extends atkViewEditBase
   {
+
+    var $m_buttonsource = null;
+
     /**
      * The action handler method.
      *
@@ -95,7 +98,7 @@
 
         $params["formstart"] = '<form name="entryform" id="entryform" action="'.getDispatchFile().'" method="get">'.session_form(SESSION_NESTED).
                                '<input type="hidden" name="atkselector" value="'.$node->primaryKey($record).'">';
-        $params["buttons"]   = $node->getFormButtons("view", $record);
+        $params["buttons"]   = $this->getFormButtons($record);
         $params["formend"] = '</form>';
 
         $output = $ui->renderAction("view", $params);
@@ -125,6 +128,24 @@
         atkerror("ui object error");
       }
     }
+
+    /**
+     * Get the buttons for the current action form.
+     *
+     * @param array $record
+     * @return array Array with buttons
+     */
+    public function getFormButtons($record=null)
+    {
+      // If no custom button source is given, get the default atkController.
+      if ($this->m_buttonsource===null) {
+        $this->m_buttonsource = &$this->m_node;
+      }
+
+      return $this->m_buttonsource->getFormButtons("view", $record);
+    }
+
+
 
     /**
      * Overrideable function to create a header for view mode.
