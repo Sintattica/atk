@@ -48,6 +48,16 @@ table.recordlist .row2
   background-color: #E0E8EF;
 }
 
+table.recordList .row1
+{
+  background-color: #ffffff;
+}
+
+table.recordList .row2
+{
+  background-color: #E0E8EF;
+}
+
 .recordListSearch
 {
   background: #666 ! important;
@@ -61,7 +71,7 @@ table.recordlist .row2
 .recordList
 {
   border: 0px solid #d7d7d7;
-  border-left: 1px solid #eee;  
+  border-left: 1px solid #eee;
 }
 
 .recordListSearch
