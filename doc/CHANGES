@@ -9,6 +9,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.6
 ------------------
+* Fixed view mode auto-link for read-only fields. [Peter]
 + Added atkViewHandler::getFormButtons() and made the view handler use it, so 
   that it conforms to the way other handlers get their formbuttons. [Matthijs]
 * Fixed value2db of atkBoolAttribute. [Sandy]

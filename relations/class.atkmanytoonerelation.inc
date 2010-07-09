@@ -662,7 +662,8 @@ class atkManyToOneRelation extends atkRelation
         {
           if (($this->m_destInstance->allowed("view"))&&!$this->m_destInstance->hasFlag(NF_NO_VIEW)&&$result!="")
           {
-            $result = href(dispatch_url($this->m_destination,"view",array("atkselector"=>$this->m_destInstance->primaryKey($record[$this->fieldName()]))), $result, SESSION_NESTED);
+            $saveForm = $mode == 'add' || $mode == 'edit';
+            $result = href(dispatch_url($this->m_destination,"view",array("atkselector"=>$this->m_destInstance->primaryKey($record[$this->fieldName()]))), $result, SESSION_NESTED, $saveForm);
           }
         }
       }
