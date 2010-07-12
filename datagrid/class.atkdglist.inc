@@ -434,7 +434,7 @@ class atkDGList extends atkDGComponent
         $confirmtext= "false";
         if (atkconfig("recordlist_javascript_delete") && $name=="delete")
         $confirmtext = "'".$grid->getNode()->confirmActionText($name)."'";
-        $str_actions.=$this->_renderRecordActionLink($url, $link, $listName, $i, $name, $confirmText);
+        $str_actions.=$this->_renderRecordActionLink($url, $link, $listName, $i, $name, $confirmtext);
       }
 
       $str_actions.="</span>";
