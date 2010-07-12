@@ -434,7 +434,7 @@ class atkDGList extends atkDGComponent
         $confirmtext= "false";
         if (atkconfig("recordlist_javascript_delete") && $name=="delete")
         $confirmtext = "'".$grid->getNode()->confirmActionText($name)."'";
-        $str_actions.=$this->_renderRecordActionLink($link, $listName, $i, $name, $confirmText);
+        $str_actions.=$this->_renderRecordActionLink($url, $link, $listName, $i, $name, $confirmText);
       }
 
       $str_actions.="</span>";
@@ -640,13 +640,14 @@ class atkDGList extends atkDGComponent
   /**
    * Renders a link for a row action with the specified parameters
 
+   * @param string $url The URL for the record action
    * @param string $link HTML for displaying the link (between the <a></a>)
    * @param string $listName The name of the recordlist
    * @param string $i The row index to render the action for
    * @param string $name The action name
    * @param bool|string $confirmtext The text for the confirmation if set
    */
-  protected function _renderRecordActionLink($link, $listName, $i, $name, $confirmtext = "false")
+  protected function _renderRecordActionLink($url, $link, $listName, $i, $name, $confirmtext = "false")
   {
      return '<a href="'."javascript:rl_do('$listName',$i,'$name',$confirmtext);".'">'.$link.'</a>&nbsp;';
   }
