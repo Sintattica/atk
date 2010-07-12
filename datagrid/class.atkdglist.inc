@@ -45,15 +45,15 @@ class atkDGList extends atkDGComponent
    */
   public function render()
   {
-  	$alwaysShowGrid = $this->getOption('alwaysShowGrid', false);
+    $alwaysShowGrid = $this->getOption('alwaysShowGrid', false);
 
-  	if (!$alwaysShowGrid &&
-  	    $this->getGrid()->isEmbedded() &&
-  	    !$this->getGrid()->isUpdate() &&
-  	    count($this->getGrid()->getRecords()) == 0)
-  	{
-  		return '';
-  	}
+    if (!$alwaysShowGrid &&
+        $this->getGrid()->isEmbedded() &&
+        !$this->getGrid()->isUpdate() &&
+        count($this->getGrid()->getRecords()) == 0)
+    {
+        return '';
+    }
 
     $grid = $this->getGrid();
     $data = $this->getRecordlistData($grid->getRecords(), $grid->getDefaultActions(), $grid->getExcludes());
@@ -63,7 +63,7 @@ class atkDGList extends atkDGComponent
 
   /**
    * Get records for a recordlist without actually rendering the recordlist.
-   * @param atkNode $node					the atknode of the grid
+   * @param atkNode $node                   the atknode of the grid
    * @param Array   $recordset    the list of records
    * @param Array   $actions      the default actions array
    * @param Integer $flags        recordlist flags (see the top of this file)
@@ -434,7 +434,7 @@ class atkDGList extends atkDGComponent
         $confirmtext= "false";
         if (atkconfig("recordlist_javascript_delete") && $name=="delete")
         $confirmtext = "'".$grid->getNode()->confirmActionText($name)."'";
-        $str_actions.='<a href="'."javascript:rl_do('$listName',$i,'$name',$confirmtext);".'">'.$link.'</a>&nbsp;';
+        $str_actions.=$this->_renderRecordActionLink($link, $listName, $i, $name, $confirmText);
       }
 
       $str_actions.="</span>";
@@ -635,6 +635,20 @@ class atkDGList extends atkDGComponent
                             "editing"=>$this->getGrid()->isEditing());
 
     return $recordListData;
+  }
+
+  /**
+   * Renders a link for a row action with the specified parameters
+
+   * @param string $link HTML for displaying the link (between the <a></a>)
+   * @param string $listName The name of the recordlist
+   * @param string $i The row index to render the action for
+   * @param string $name The action name
+   * @param bool|string $confirmtext The text for the confirmation if set
+   */
+  protected function _renderRecordActionLink($link, $listName, $i, $name, $confirmtext = "false")
+  {
+     return '<a href="'."javascript:rl_do('$listName',$i,'$name',$confirmtext);".'">'.$link.'</a>&nbsp;';
   }
 
   /**
@@ -855,13 +869,13 @@ class atkDGList extends atkDGComponent
   }
 
   /**
-   * Returns the list attributes and their possible child column 
+   * Returns the list attributes and their possible child column
    * names for this list.
    */
   protected function _getColumns()
   {
     $result = array();
-    
+
     $columns = $this->getOption('columns');
     if ($columns == null)
     {
@@ -884,7 +898,7 @@ class atkDGList extends atkDGComponent
         $result[] = $entry;
       }
     }
-    
+
     return $result;
   }
 
@@ -897,7 +911,7 @@ class atkDGList extends atkDGComponent
 
     foreach ($columns as $column)
     {
-      if (in_array($column->attrName, $suppressList)) 
+      if (in_array($column->attrName, $suppressList))
       {
         continue;
       }
@@ -907,7 +921,7 @@ class atkDGList extends atkDGComponent
       {
         throw new Exception("Invalid attribute {$column->attrName} for node ".$this->getNode()->atkNodeType());
       }
-      
+
       $attr->addToListArrayHeader(
         $this->getNode()->getAction(),
         $listArray,
@@ -918,9 +932,9 @@ class atkDGList extends atkDGComponent
         $this->getGrid(),
         $column->columnName
       );
-    }    
+    }
   }
-  
+
   /**
    * Adds the given row the the list array.
    */
@@ -930,7 +944,7 @@ class atkDGList extends atkDGComponent
 
     foreach ($columns as $column)
     {
-      if (in_array($column->attrName, $suppressList)) 
+      if (in_array($column->attrName, $suppressList))
       {
         continue;
       }
@@ -940,9 +954,9 @@ class atkDGList extends atkDGComponent
       {
         throw new Exception("Invalid attribute {$column->attrName} for node ".$this->getNode()->atkNodeType());
       }
-      
-      $edit = $editAllowed && in_array($column->attrName, $this->getNode()->m_editableListAttributes);      
-      
+
+      $edit = $editAllowed && in_array($column->attrName, $this->getNode()->m_editableListAttributes);
+
       $attr->addToListArrayRow(
         $this->getNode()->getAction(),
         $listArray,
@@ -954,5 +968,5 @@ class atkDGList extends atkDGComponent
         $column->columnName
       );
     }
-  }    
+  }
 }

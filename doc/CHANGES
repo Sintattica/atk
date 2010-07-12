@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.6
 ------------------
++ Added atkDGList::_renderRecordActionLink(). This can be overridden to influence the
+  way record actions are rendered in a datagrid. [Matthijs]
 * Fixed view mode auto-link for read-only fields. [Peter]
 + Added atkViewHandler::getFormButtons() and made the view handler use it, so 
   that it conforms to the way other handlers get their formbuttons. [Matthijs]
