@@ -82,10 +82,10 @@ class atkDataGrid
    * @private
    */
   const RESUME = 2;
-  
+
   /**
    * Grid modifiers.
-   * 
+   *
    * @var array
    */
   private static $s_modifiers;
@@ -400,7 +400,7 @@ class atkDataGrid
     $class = substr($class, strrpos($class, '.') + 1);
     $grid = new $class($node, $name, self::RESUME);
     self::callModifiers($grid, self::RESUME);
-    return $grid;    
+    return $grid;
   }
 
   /**
@@ -488,6 +488,7 @@ class atkDataGrid
     $this->addComponent('limit', 'atk.datagrid.atkdglimit');
     $this->addComponent('norecordsfound', 'atk.datagrid.atkdgnorecordsfound');
     $this->addComponent('paginator', 'atk.datagrid.atkdgpaginator');
+    $this->addComponent('addstyle', 'atk.datagrid.atkdgaddstyle');
 
     if (!empty($this->getNode()->m_index))
     {
@@ -915,7 +916,7 @@ class atkDataGrid
   {
     return $this->getPostvar('atkgridedit', false);
   }
-  
+
 
   /**
    * Returns the master node.
@@ -940,7 +941,7 @@ class atkDataGrid
   public function setMasterNode(atkNode $node)
   {
     $this->m_masterNode = $node;
-  }  
+  }
 
   /**
    * Returns the master record.
@@ -1807,48 +1808,48 @@ class atkDataGrid
 
     return $result;
   }
-  
+
   /**
    * Call grid modifiers for the given grid.
-   * 
+   *
    * @param atkDataGrid $grid grid
    * @param int         $mode creation mode
    */
   private static function callModifiers(atkDataGrid $grid, $mode)
   {
     $keys = array('*', $grid->getNode()->atkNodeType());
-    
+
     foreach ($keys as $key)
     {
       if (!isset(self::$s_modifiers[$key]))
       {
         continue;
       }
-      
+
       foreach (self::$s_modifiers[$key] as $callback)
       {
         call_user_func($callback, $grid, $mode);
       }
     }
   }
-  
+
   /**
    * Unregister datagrid modifier.
-   * 
+   *
    * @param string|null $nodeType node type (e.g. module.node), leave null to match all nodes
    * @param mixed       $callback callback method
    */
   public static function unregisterModifier($nodeType, $callback)
   {
-    self::$s_modifiers[$nodeType == null ? '*' : $nodeType] = 
+    self::$s_modifiers[$nodeType == null ? '*' : $nodeType] =
       array_diff(self::$s_modifiers[$nodeType == null ? '*' : $nodeType], array($callback));
   }
-  
+
   /**
-   * Register datagrid modifier. 
-   * 
+   * Register datagrid modifier.
+   *
    * The modifier will be called at the end of construction time if the node
-   * type matches. The first argument for the callback will be the datagrid 
+   * type matches. The first argument for the callback will be the datagrid
    * instance, the second argument the creation mode (e.g. atkDataGrid::CREATE
    * or atkDataGrid::RESUME).
    *

@@ -698,7 +698,8 @@
      * @var array
      */
     protected $m_recordActionsCallbacks = array();
-
+    protected $m_rowClassCallback = array();
+    protected $m_customCss = array();
     /**
      * Tracker variable to see if we are currently in 'modifier mode' (running inside
      * the scope of a modname_nodename_modifier() method). The variable contains the
@@ -752,10 +753,10 @@
      * @var string
      */
     private $m_defaultColumn = null;
-    
+
     /**
      * Current maximum attribute order value.
-     * 
+     *
      * @var int
      */
     private $m_attribOrder = 0;
@@ -1023,7 +1024,7 @@
       {
         if ($order == 0)
         {
-          $this->m_attribOrder += 100;          
+          $this->m_attribOrder += 100;
           $order = $this->m_attribOrder;
         }
 
@@ -2060,12 +2061,12 @@
     {
       // do nothing
     }
-    
+
     /**
      * The preAddToViewArray method is called from within the viewArray
      * method prior to letting the attributes add themselves to the view
      * array, but after the view record values have been collected This makes
-     * it possible to do some last-minute modifications to the record data 
+     * it possible to do some last-minute modifications to the record data
      * and possibily add some last-minute attributes etc.
      *
      * @param array  $record the edit record
@@ -2074,7 +2075,7 @@
     function preAddToViewArray(&$record, $mode)
     {
       // do nothing
-    }    
+    }
 
     /**
      * Function outputs an array with edit fields. For each field the array
@@ -2292,7 +2293,7 @@
     {
       // update visibility of some attributes based on the current record
       $this->checkAttributeSecurity($mode, $record);
-      
+
       // call preAddToViewArray at the attribute level, allows attribute to do
       // some last minute manipulations on for example the record
       foreach ($this->getAttributes() as $attr)
@@ -2301,7 +2302,7 @@
       }
 
       // call preAddToViewArray for the node itself.
-      $this->preAddToViewArray($record, $mode);      
+      $this->preAddToViewArray($record, $mode);
 
       $tab = $this->getActiveTab();
 
@@ -4650,7 +4651,7 @@
         $attr->m_index = $index;
         $attrs[$info['name']] = $attr;
       }
-      
+
       $this->m_attribList = $attrs;
     }
 
@@ -5103,5 +5104,46 @@
         throw new Exception("Call to undefined method ".get_class($this)."::{$method}()", E_USER_ERROR);
       }
     }
+
+    public function setRowClassCallback($callback)
+    {
+      if (is_callable($callback, false, $callableName))
+      {
+        if (is_array($callback))
+        {
+          if (!method_exists($callback[0], $callback[1]))
+          {
+            atkerror("The registered record actions callback method '$callableName' doesn't exist");
+            return;
+          }
+        }
+        $this->m_rowClassCallback[] = $callback;
+      }
+      else
+      {
+        atkerror("The registered record actions callback '$callableName' is not callable");
+        return;
+      }
+
+
+
+      //$this->m_rowClassCallback[] = $callback;
+    }
+
+    public function getRowClassCallback()
+    {
+      return $this->m_rowClassCallback;
+    }
+
+    public function addCustomCss($cssfilename)
+    {
+      $this->m_customCss[] = $cssfilename;
+    }
+
+    public function getCustomScc()
+    {
+      return $this->m_customCss;
+    }
+
   }
 ?>
