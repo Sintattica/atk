@@ -9,6 +9,12 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.6
 ------------------
+* Improved the edit and view handlers so that they explicitly only retrieve
+  a single row even though the selector might return multiple. [Peter]
++ Added atkPHPView for PHP based templates which makes variables inside the
+  template available as $this->varName, which will make the transition to
+  Zend_View easier in the near future. [Peter] 
+* Fixed escaping of stack trace in Steelblue and Stillblue themes. [Peter]
 + Added atkDGList::_renderRecordActionLink(). This can be overridden to influence the
   way record actions are rendered in a datagrid. [Matthijs]
 * Fixed view mode auto-link for read-only fields. [Peter]

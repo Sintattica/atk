@@ -212,12 +212,9 @@
      */
     private function renderPhp($path, $vars)
     {
-      unset($path);
-      unset($vars);
-      extract(func_get_arg(1));
-      ob_start();
-      include func_get_arg(0);
-      return ob_get_clean();
+      atkimport('atk.ui.atkphpview');
+      $view = new atkPHPView($path, $vars);
+      return (string)$view;
     }
     
     /**

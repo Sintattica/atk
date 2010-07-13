@@ -82,7 +82,7 @@
     protected function getRecordFromDb()
     {
       $selector = atkArrayNvl($this->m_node->m_postvars, 'atkselector', "");
-      list($record) = $this->m_node->select($selector)->mode('edit')->getAllRows();
+      $record = $this->m_node->select($selector)->mode('edit')->getFirstRow();
       return $record;
     }
 
