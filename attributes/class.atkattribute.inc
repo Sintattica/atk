@@ -2917,9 +2917,19 @@
      */
     public function partial_dependencies()
     {
+      // set attribute sizes
+      $this->getOwnerInstance()->setAttribSizes();
+        
       $record = $this->getOwnerInstance()->updateRecord();
       $fieldPrefix = $this->getOwnerInstance()->m_postvars['atkdata']['fieldPrefix'];
       $mode = $this->getOwnerInstance()->m_postvars['atkdata']['mode'];
+      
+      // initialize dependencies
+      foreach ($this->getOwnerInstance()->getAttributes() as $attr)
+      {
+        $attr->initDependencies($record, $fieldPrefix, $mode);
+      }
+      
       $this->_callDependencies($record, $fieldPrefix, $mode, false);
     }
 

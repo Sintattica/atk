@@ -9,6 +9,10 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.6
 ------------------
+* Make sure we install other dependencies when handeling one. [Peter]
+* Fixed atkNumberAttribute's search field, size is not limitted anymore to
+  the size of the maximum allowed value which makes it possible again to
+  enter ranges for the search. [Peter]
 * Improved the edit and view handlers so that they explicitly only retrieve
   a single row even though the selector might return multiple. [Peter]
 + Added atkPHPView for PHP based templates which makes variables inside the

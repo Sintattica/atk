@@ -108,22 +108,24 @@
       {
         $table = $this->m_ownerInstance->m_table;
       }
-
+      
       // check for a schema name in $table
-      if (strpos($table, '.') !== false) {
+      if (strpos($table, '.') !== false) 
+      {
         $identifiers = explode('.', $table);
-
+      
         $tableIdentifier = '';
-        foreach ($identifiers as $identifier) {
-            $tableIdentifier .= $this->getDb()->quoteIdentifier($identifier) . '.';
+        foreach ($identifiers as $identifier) 
+        {
+          $tableIdentifier .= $this->getDb()->quoteIdentifier($identifier) . '.';
         }
-
+        
         return $tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " {$direction}" : "");
-      } else {
+      } 
+      else 
+      {
         return $this->getDb()->quoteIdentifier($table).".".$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " {$direction}" : "");
-      }
-
-
+      }      
     }
 
     /**
@@ -437,25 +439,38 @@
      */
     function fetchMeta($metadata)
     {
-    	parent::fetchMeta($metadata);
+      $searchSize = $this->m_searchsize;
+      $maxSize = $this->m_maxsize; 
+      
+      parent::fetchMeta($metadata);
+      
+      if (strpos($this->m_size, ',') !== false)
+      {
+        list($this->m_size, $decimals) = explode(',', $this->m_size);
 
-    	if (strpos($this->m_size, ',') !== false)
-    	{
-    		list($this->m_size, $decimals) = explode(',', $this->m_size);
+        if ($this->m_decimals === null)
+        {
+          // no decimals explicitly set, so use the one we
+          // retrieved from the database
+          $this->m_decimals = $decimals;
+        }
+        else
+        {
+          // if the number of decimals are explicitly set, but the database
+          // simply can't handle it, we use the lowest value
+          $this->m_decimals = min($this->m_decimals, $decimals);
+        }
+      }
+      
+      if ($this->m_searchsize > 0) 
+      {
+        $this->m_searchsize = min($searchSize, $this->m_size + $this->m_decimals + 1, 20);
+      }
 
-    		if ($this->m_decimals === null)
-    		{
-    		  // no decimals explicitly set, so use the one we
-    		  // retrieved from the database
-    		  $this->m_decimals = $decimals;
-    		}
-    		else
-    		{
-    		  // if the number of decimals are explicitly set, but the database
-    		  // simply can't handle it, we use the lowest value
-    		  $this->m_decimals = min($this->m_decimals, $decimals);
-    		}
-    	}
+      if ($this->m_maxsize > 0) 
+      {
+        $this->m_maxsize = min($maxSize, $this->m_size, 20);
+      }
     }
 
     /**
@@ -532,28 +547,32 @@
           if ($value["from"]!=""||$value["to"]!="")
           {
              // Two values were entered in the extended search screen.
-             $record[$this->fieldName()] = $value["from"]."/".$value["to"];
+             $value = $value["from"]."/".$value["to"];
           }
           else
           {
-            $record[$this->fieldName()] = "";
+            $value = "";
           }
         }
-        return parent::search($record, $extended, $fieldprefix);
+        
+        $id = $this->getSearchFieldName($fieldprefix);
+        
+        $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
+        $result = '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.atk_htmlentities($value).'"'.
+                  ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';        
+        return $result;
       }
       else
       {
         $id = $this->getSearchFieldName($fieldprefix).'[from]';
         $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
         $result= '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.atk_htmlentities($value).'"'.
-                  ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
-                  ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
+                  ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';
 
         $id = $this->getSearchFieldName($fieldprefix).'[to]';
         $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
         $result.= " (".atktext("until").' <input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.atk_htmlentities($value).'"'.
-                  ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
-                  ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>)';
+                  ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>)';
         return $result;
       }
     }
