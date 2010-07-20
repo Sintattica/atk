@@ -9,6 +9,10 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.6
 ------------------
+* Gave atkSaveHandler a _handleRedirect() method that does the redirect call,
+  so that it's easier to override and unit-test. 
+* Gave atkNode a _redirect() method that does the actual redirecting, so that 
+  it's easier to unit-test this behaviour 
 * Make sure we install other dependencies when handeling one. [Peter]
 * Fixed atkNumberAttribute's search field, size is not limitted anymore to
   the size of the maximum allowed value which makes it possible again to

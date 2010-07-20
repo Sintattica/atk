@@ -3146,12 +3146,20 @@
           mailreport();
         }
 
-        header('Location: '.$location);
+        $this->_redirect($location);
         if ($exit)
         {
           exit();
         }
       }
+    }
+    
+    /**
+     * Do the actual redirecting.
+     */
+    protected function _redirect($location)
+    {
+        header('Location: '. $location);
     }
 
     /**

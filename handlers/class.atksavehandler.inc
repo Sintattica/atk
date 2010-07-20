@@ -133,7 +133,7 @@
           else
           {
             $location = $this->getSuccessReturnURL($record);
-            $this->m_node->redirect($location, $record);
+            $this->_handleRedirect($location, $record);
           }
         }
       }
@@ -141,8 +141,21 @@
       {
         // Cancel was pressed
         $location = $this->m_node->feedbackUrl("save", ACTION_CANCELLED, $record, "", $this->_getSkip());
-        $this->m_node->redirect($location);
+        $this->_handleRedirect($location);
       }
+    }
+    
+    /**
+     * Redirect after save
+     * 
+     * @param string $location
+     * @param array|bool $recordOrExit
+     * @param bool $exit
+     * @param int $levelskip
+     */
+    protected function _handleRedirect($location = "", $recordOrExit = array(), $exit = false, $levelskip = 1)
+    {
+        $this->m_node->redirect($location, $recordOrExit, $exit, $levelskip);
     }
 
     /**
@@ -255,7 +268,7 @@
       else
       {
         $location = $this->m_node->feedbackUrl("save", ACTION_FAILED, $record, $db->getErrorMsg());
-        $this->m_node->redirect($location);
+        $this->_handleRedirect($location);
       }
     }
 
@@ -282,7 +295,7 @@
     function goBack($record)
     {
       $this->setRejectInfo($record);
-      $this->m_node->redirect();
+      $this->_handleRedirect();
     }
 
     /**
