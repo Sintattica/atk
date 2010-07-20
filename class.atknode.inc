@@ -3074,6 +3074,7 @@
      * the browser, i.e. before any echo or before the call to
      * atkOutput::outputFlush().
      *
+     * @static
      * @param String $location The url to which you want to redirect the user.
      *                         If ommitted, the call automatically redirects
      *                         to the previous screen of the user. (one level
@@ -3146,20 +3147,12 @@
           mailreport();
         }
 
-        $this->_redirect($location);
+        header('Location: '. $location);
         if ($exit)
         {
           exit();
         }
       }
-    }
-    
-    /**
-     * Do the actual redirecting.
-     */
-    protected function _redirect($location)
-    {
-        header('Location: '. $location);
     }
 
     /**
