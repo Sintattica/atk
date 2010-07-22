@@ -282,7 +282,7 @@
       $grid = atkDataGrid::create($this->m_destInstance, str_replace('.', '_', $this->getOwnerInstance()->atkNodeType()).'_'.$this->fieldName().'_grid', null, true, $useSession);
 
       $grid->setMode($mode);
-      $grid->setMasterNode($this->getOwnerInstance());      
+      $grid->setMasterNode($this->getOwnerInstance());
       $grid->setMasterRecord($record);
 
       $grid->removeFlag(atkDataGrid::EXTENDED_SEARCH);
@@ -675,7 +675,7 @@
     function _getNestedAddLink($myrecords, $record, $saveform=true, $fieldprefix='', $params=array())
     {
       $url = "";
-      if ((int)$this->m_maxRecords!==0 && count($myrecords) > $this->m_maxRecords) return $url;
+      if ((int)$this->m_maxRecords !== 0 && $this->m_maxRecords <= count($myrecords)) return $url;
       if (!$this->createDestination()) return $url;
       if ($this->m_destInstance->hasFlag(NF_NO_ADD)) return $url;
 
