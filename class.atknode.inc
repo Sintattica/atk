@@ -698,8 +698,15 @@
      * @var array
      */
     protected $m_recordActionsCallbacks = array();
+
+    /**
+     * List of callback functions to add css class to row.
+     * See details in atkDGList::getRecordlistData() method
+     *
+     * @var array
+     */
     protected $m_rowClassCallback = array();
-    protected $m_customCss = array();
+
     /**
      * Tracker variable to see if we are currently in 'modifier mode' (running inside
      * the scope of a modname_nodename_modifier() method). The variable contains the
@@ -5106,44 +5113,51 @@
       }
     }
 
+    /**
+     * Add callback function for add css class to row.
+     *
+     * @param mixed $callback name of a function or array with an object
+     * and the name of a method or closure
+     *
+     * @return boolean
+     */
     public function setRowClassCallback($callback)
     {
+      $res = false;
       if (is_callable($callback, false, $callableName))
+      {
+        if (is_array($callback) && !method_exists($callback[0], $callback[1]))
+        {
+          atkerror("The registered row class callback method '$callableName' doesn't exist");
+        }
+        else
+        {
+          $this->m_rowClassCallback[] = $callback;
+          $res = true;
+        }
+      }
+      else
       {
         if (is_array($callback))
         {
           if (!method_exists($callback[0], $callback[1]))
           {
-            atkerror("The registered record actions callback method '$callableName' doesn't exist");
-            return;
+            atkerror("The registered row class callback method '$callableName' doesn't exist");
           }
         }
-        $this->m_rowClassCallback[] = $callback;
+        atkerror("The registered row class callback '$callableName' is not callable");
       }
-      else
-      {
-        atkerror("The registered record actions callback '$callableName' is not callable");
-        return;
-      }
-
-
-
-      //$this->m_rowClassCallback[] = $callback;
+      return $res;
     }
 
+    /**
+     * Return array with callback function list, which use for add css class to row
+     *
+     * @return array
+     */
     public function getRowClassCallback()
     {
       return $this->m_rowClassCallback;
-    }
-
-    public function addCustomCss($cssfilename)
-    {
-      $this->m_customCss[] = $cssfilename;
-    }
-
-    public function getCustomScc()
-    {
-      return $this->m_customCss;
     }
 
   }
