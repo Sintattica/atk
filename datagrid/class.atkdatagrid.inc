@@ -488,6 +488,7 @@ class atkDataGrid
     $this->addComponent('limit', 'atk.datagrid.atkdglimit');
     $this->addComponent('norecordsfound', 'atk.datagrid.atkdgnorecordsfound');
     $this->addComponent('paginator', 'atk.datagrid.atkdgpaginator');
+    $this->addComponent('addstyle', 'atk.datagrid.atkdgaddstyle');
 
     if (!empty($this->getNode()->m_index))
     {
