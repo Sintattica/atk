@@ -153,6 +153,16 @@
       $this->m_regex_results[$offset][$limit][$regex] = $result;
     }
     
+    
+    /**
+     * Set the affected row count
+     * @param int $count
+     */
+    public function setAffectedRows($count)
+    {
+        $this->m_affected_rows = $count;
+    }
+    
     /**
      * Retrieve the query history.
      *
