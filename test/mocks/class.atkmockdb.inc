@@ -155,12 +155,20 @@
     
     
     /**
-     * Set the affected row count
-     * @param int $count
+     * Set the affected rows, expecting an array with rows
+     * @param array $result
      */
-    public function setAffectedRows($count)
+    public function setAffectedRows($result)
     {
-        $this->m_affected_rows = $count;
+        $this->m_affected_rows = $result;
+    }
+    
+    /**
+     * Overriding the affected rows count to what was set.
+     */
+    public function affected_rows()
+    {
+        return $this->m_affected_rows;
     }
     
     /**
