@@ -85,6 +85,7 @@ Changes in ATK 6.6
   request. [Peter, Sandy]
 * Added unique cache prefix to atkCacheTestCase in order to prevent collisions
   between simultanious runs of PHPUnit. [Guido]
+* Fixed invocation of missing_module_handler. [Guido]
 
 Changes in prior versions
 -------------------------

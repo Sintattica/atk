@@ -195,7 +195,7 @@
       else
       {
         atkimport("atk.utils.atkclassloader");
-        $mod = atkClassLoader::invokeFromString(atkconfig("missing_module_handler"), array("module"=>$modname));
+        $mod = atkClassLoader::invokeFromString(atkconfig("missing_module_handler"), array(array("module"=>$modname)));
         if ($mod===false)
         {
           // Changed by Ivo: This used to construct a dummy module, so
