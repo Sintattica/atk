@@ -7,87 +7,11 @@ Please do not exceed 80 characters per line.
 Latest changes go on top, different types of changes may be mixed.
 
 
-Changes in ATK 6.6
+Changes in ATK 7.0
 ------------------
-+ Added setAffectedRows() on atkMockDb. [mvdvelden]
-+ Added DB2 and i5 database drivers. [Harrie]
-* Gave atkSaveHandler a _handleRedirect() method that does the redirect call,
-  so that it's easier to override and unit-test. 
-* Make sure we install other dependencies when handeling one. [Peter]
-* Fixed atkNumberAttribute's search field, size is not limitted anymore to
-  the size of the maximum allowed value which makes it possible again to
-  enter ranges for the search. [Peter]
-* Improved the edit and view handlers so that they explicitly only retrieve
-  a single row even though the selector might return multiple. [Peter]
-+ Added atkPHPView for PHP based templates which makes variables inside the
-  template available as $this->varName, which will make the transition to
-  Zend_View easier in the near future. [Peter] 
-* Fixed escaping of stack trace in Steelblue and Stillblue themes. [Peter]
-+ Added atkDGList::_renderRecordActionLink(). This can be overridden to influence the
-  way record actions are rendered in a datagrid. [Matthijs]
-* Fixed view mode auto-link for read-only fields. [Peter]
-+ Added atkViewHandler::getFormButtons() and made the view handler use it, so 
-  that it conforms to the way other handlers get their formbuttons. [Matthijs]
-* Fixed value2db of atkBoolAttribute. [Sandy]
-+ Added box template support to atkPageBuilder. [Peter]
-* Fixed column support for meta node. [Peter]
-* Changed the handleCancel call in atkUpdateHandler, so that it can be 
-  overridden in your node. [mvdvelden]
-* Fixed bug in atkNode which causes attributes to be given the wrong index
-  when an attribute had been removed in between. [Peter]
-+ Added atkDataGrid::setMasterNode(...) which is used by the
-  atkOneToManyRelation to set it's owner instance. This isn't used directly
-  by the atkDataGrid itself, but can be used by modifiers or listeners. [Peter]
-+ Added preAddToViewArray method to atkNode and atkAttribute which works
-  similar to the preAddToEditArray methods but is invoked when creating
-  the view array for the view handler. [Peter]
-+ Added AMQ_WARNING message type to atkMessageQueue. [Peter]
-* Fixed bug in atkMySQLiStatement which caused database errors to be
-  reported as unknown error instead of the much more useful database error
-  message. [Peter]
-* atkError now supports printing errors based on a given exception. [Peter]
-* Fixing file size check and made some validation changes so that the actual
-  error is shown. [mvdvelden]
-* Fixed quoting of identifiers in order by clause. It now conforms to the way 
-  atkquery quotes fields with multiple identifiers such as schema name and/or
-  database name [Matthijs]
-* Fixed quoting of identifiers in order by clause. [Peter]
-* Fixed reset of atkSessionStore. [Sandy]
-* Added a span around the currencysymbol of the currency attribute. [Sandy]
-* Stillblue menu now has a fixed position so that it always shown even if
-  you scroll down the page. [Peter]
-+ Added atkAttribute::setEditCallback and atkAttribute::setViewCallback
-  which can be used to register a callback for overriding the edit or
-  display functionality of an attribute. [Peter]
-* Sort atkNode's attribute list when the order of attributes is changed
-  (and attribSort is called). [Peter]
-* Add template name in HTML/XML comments when rendering templates on debug
-  level 3. Makes it easy to find the origin of template HTML/XML. [Peter]
-* Fixed a bug where the hidden field atkescape would contain a wrong value by
-  setting the autocomplete attribute of the field to off [Matthijs]
-+ Added atkDataGrid::registerModifier to register a grid modifier outside
-  the node or relation that uses it. [Peter]
-* atkController::loadDispatchPage now also supports array selectors for 
-  multi record actions (MRA). [Matthijs] 
-* Close atkDateAttribute's calendar on single date click. [Peter]
-* atkOneToOneRelation now also respects the attribute's tab for errors if the
-  AF_ONETOONE_RESPECT_TABS flag is set. [Peter]
-* atkAttribute::preAddToEditArray now also gets the fieldrefix passed. [Peter]
-* Fixed bug in MySQLi database driver which caused the length of fields to be a 
-  factor 3 of their real size if the characterset was set to UTF-8. [Peter]
-* atkFieldSet now marks itself as errornous if one of it's fields contains
-  errornous data. [Peter]
-* Improved email validation by adding case support in the local part
-  of an emailaddress in the atkEmailAttribute::validate(). [Martin]
-* Fixed bug in atkDateAttribute that if no date was selected yet the day
-  drop-down is empty (instead of containing options 1 to 31). [Peter]
-* Added atkform.js for submitting an ATK form using an Ajax 
-  request. [Peter, Sandy]
-* Added unique cache prefix to atkCacheTestCase in order to prevent collisions
-  between simultanious runs of PHPUnit. [Guido]
-* Fixed invocation of missing_module_handler. [Guido]
+
 
 Changes in prior versions
 -------------------------
 Changes in older ATK versions can be found at:
-http://websvn.ibuildings.nl/wsvn/atk/atk/tags/release_6_5_0/doc/CHANGES
+http://websvn.ibuildings.nl/wsvn/atk/atk/tags/release_6_6_0/doc/CHANGES
