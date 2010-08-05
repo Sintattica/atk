@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.6
 ------------------
+* Fixed bug causing scrollbar to disappear when opening and closing an atkDialog 
+  in IE [Harrie]
 + Added Arabic language file. [Hamdi]
 + Added Turkish language file. [Bilal]
 * Updated Italian language file. [Michele]
