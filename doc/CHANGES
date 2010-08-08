@@ -10,7 +10,7 @@ Latest changes go on top, different types of changes may be mixed.
 Changes in ATK 7.0
 ------------------
 * Fixed invocation of missing_class_handler. [Guido]
-
+* Fixed NULL values for MySQL Strict mode. [Sandy]
 
 Changes in prior versions
 -------------------------
