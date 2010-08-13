@@ -9,6 +9,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.6
 ------------------
+* Fixed details link manybool relation with proper local and remote keys [Dengels]
 * Fixed bug causing scrollbar to disappear when opening and closing an atkDialog 
   in IE [Harrie]
 + Added Arabic language file. [Hamdi]
