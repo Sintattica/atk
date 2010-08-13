@@ -82,7 +82,11 @@
     protected function getRecordFromDb()
     {
       $selector = atkArrayNvl($this->m_node->m_postvars, 'atkselector', "");
-      $record = $this->m_node->select($selector)->mode('edit')->getFirstRow();
+      if ($this->getNode()->hasFlag(NF_ML)) {
+        list($record) = $this->m_node->selectDb($selector,"","","","","edit");
+      } else {
+        $record = $this->m_node->select($selector)->mode('edit')->getFirstRow();
+      }
       return $record;
     }
 

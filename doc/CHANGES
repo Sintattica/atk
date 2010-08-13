@@ -9,6 +9,9 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.6
 ------------------
++ Added atkMlFckAttribute - a multilanguage version of the fckattribute [Harrie]
+* Fixed problem with the various ml-attributes not being able to edit other
+  languages except for the default one. [Harrie]
 * Fixed details link manybool relation with proper local and remote keys [Dengels]
 * Fixed bug causing scrollbar to disappear when opening and closing an atkDialog 
   in IE [Harrie]
