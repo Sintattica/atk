@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 6.6
 ------------------
+* Fixed bug: multilanguage nodes referencing themselves (f.e. using a parent_id)
+  caused an error when updating one of the child records [Harrie]
 + Added atkMlFckAttribute - a multilanguage version of the fckattribute [Harrie]
 * Fixed problem with the various ml-attributes not being able to edit other
   languages except for the default one. [Harrie]

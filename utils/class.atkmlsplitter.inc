@@ -98,6 +98,7 @@
      */
     function updateMlRecords($node, $record, $mode="add", $excludes = '', $includes = '')
     {
+      global $ATK_VARS;
       atkdebug("atkmlsplitter::updateMlRecords() for mode $mode");
       
       $excludelist = array();
@@ -129,7 +130,8 @@
       }
 
       $languages = $this->getLanguages($node);
-      $atklngrecordmodes = sessionLoad("atklng_".$node->m_type);
+      $atkLevel = $ATK_VARS['atklevel'];
+      $atklngrecordmodes = sessionLoad("atklng_".$node->m_type."_".($atkLevel-1));
 
       $autoincrementflags=Array();
       foreach($node->m_primaryKey as $primkey)
@@ -205,8 +207,8 @@
       	// restore the relations
       	$node->m_attribList[$attribname]=$relation;
       }
-
-      sessionStore("atklng_".$node->m_type,NULL); // deleting modes
+      $atkLevel = $ATK_VARS['atklevel'];
+      sessionStore("atklng_".$node->m_type."_".($atkLevel-1),NULL); // deleting modes
     }
 
     /**
@@ -240,6 +242,7 @@
     */
     function combineMlRecordSet(&$node, &$recordset,$query)
     {
+      global $ATK_VARS;
       $hasrelationwithmlnode = $this->getMlNodes($node);
       $languages = $this->getLanguages($node);
       if(count($languages)!=count($recordset))
@@ -247,7 +250,9 @@
         $recordset = $this->addLngRecords($node,$recordset);
       }
       $this->mergeMlRecords($node,$recordset);
-      sessionStore("atklng_".$node->m_type,$recordset[0]["atklngrecordmodes"]);
+
+      $atkLevel = $ATK_VARS['atklevel'];
+      sessionStore("atklng_".$node->m_type."_".($atkLevel-1),$recordset[0]["atklngrecordmodes"]);
     }
 
    /**
