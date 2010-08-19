@@ -166,6 +166,33 @@
     }
 
     /**
+     * Returns a piece of html code for hiding this attribute in an HTML form,
+     * while still posting its value. (<input type="hidden">)
+     *
+     * We have to format the value, so it matches the display value
+     * Otherwise the value will be corrupted by removeSeparators
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @return String A piece of htmlcode with hidden form elements that post
+     *                this attribute's value without showing it.
+     */
+    function hide($record="", $fieldprefix="")
+    {
+      // the next if-statement is a workaround for derived attributes which do
+      // not override the hide() method properly. This will not give them a
+      // working hide() functionality but at least it will not give error messages.
+      if (!is_array($record[$this->fieldName()]))
+      {
+        $id = $id = $this->getHtmlId($fieldprefix);
+        $result = '<input type="hidden" id="'.$id.'" name="'.$fieldprefix.$this->formName().'" value="'.htmlspecialchars($this->formatNumber($record[$this->fieldName()])).'">';
+        return $result;
+      }
+      else atkdebug("Warning attribute ".$this->m_name." has no proper hide method!");
+    }
+
+    /**
      * convert a formatted number to a real number
      * @param String $number The number that needs to be converted
      * @param String $decimal_separator override decimal separator
