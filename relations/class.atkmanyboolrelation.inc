@@ -106,11 +106,11 @@
             $sel = "";
           }
 
-          $inputId = $this->getHtmlId($fieldprefix).$i;
+          $inputId = $this->getHtmlId($fieldprefix).'_'.$i;
 
           if (count($this->m_onchangecode))
           {
-            $onchange = 'onChange="'.$inputId.'_onChange(this);"';
+            $onchange = ' onChange="'.$inputId.'_onChange(this);"';
             $this->_renderChangeHandler($fieldprefix, $i);
           }
           else
@@ -123,7 +123,7 @@
                          '[]['.$this->getRemoteKey().
                          ']" value="'.
                          $recordset[$i][$this->m_destInstance->primaryKeyField()].
-                         '" '.$this->getCSSClassAttribute("atkcheckbox").' '.$sel.'></td><td class="table">'.
+                         '" '.$this->getCSSClassAttribute("atkcheckbox").' '.$sel.$onchange.'></td><td class="table">'.
                          '<label for="'.$inputId.'">'.$this->m_destInstance->descriptor($recordset[$i]).'</label>'.
                          '</td><td class="table">'.$detaillink.'</td>';
           if ($i%$cols == $modcols) $result .="</tr><tr>\n";
