@@ -70,13 +70,13 @@
   
         if (!$this->hasFlag(AF_MANYBOOL_NO_TOOLBAR))
         {
-	        $result .='<div align="left"><font size="-2">
-	                  [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
-	                       atktext("check_all", "atk").
-	                  '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
-	                       atktext("check_none", "atk").
-	                  '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
-	                       atktext("invert_selection", "atk").'</a>]</font></div>';
+            $result .='<div align="left"><font size="-2">
+                      [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
+                           atktext("check_all", "atk").
+                      '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
+                           atktext("check_none", "atk").
+                      '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
+                           atktext("invert_selection", "atk").'</a>]</font></div>';
         }
       
         $result.= '<table border="0"><tr>';
@@ -105,15 +105,25 @@
           {
             $sel = "";
           }
-          
-          $inputId = $this->getHtmlId($fieldprefix).'_'.$i;
-          
+
+          $inputId = $this->getHtmlId($fieldprefix).$i;
+
+          if (count($this->m_onchangecode))
+          {
+            $onchange = 'onChange="'.$inputId.'_onChange(this);"';
+            $this->_renderChangeHandler($fieldprefix, $i);
+          }
+          else
+          {
+            $onchange = '';
+          }
+
           $result.= '<td class="table"><input type="checkbox" id="'.$inputId.'" name="'.
                          $this->getHtmlId($fieldprefix).
                          '[]['.$this->getRemoteKey().
                          ']" value="'.
                          $recordset[$i][$this->m_destInstance->primaryKeyField()].
-                         '" '.$this->getCSSClassAttribute("atkcheckbox").' '.$sel.'></td><td class="table">'.
+                         '" '.$this->getCSSClassAttribute("atkcheckbox").' '.$sel.' '.$onchange.'></td><td class="table">'.
                          '<label for="'.$inputId.'">'.$this->m_destInstance->descriptor($recordset[$i]).'</label>'.
                          '</td><td class="table">'.$detaillink.'</td>';
           if ($i%$cols == $modcols) $result .="</tr><tr>\n";
