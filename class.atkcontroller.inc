@@ -611,6 +611,7 @@
            $value = '<< '.atktext($action, 'atk');
            break;
          case "edit":
+           $name = "atkedit";
            $class = "btn_save";
            break;
          default:
