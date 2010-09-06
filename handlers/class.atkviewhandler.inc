@@ -74,6 +74,17 @@
     }
 
     /**
+     * Get the start of the form.
+     *
+     * @return String HTML The forms' start
+     */
+    public function getFormStart($record = null)
+    {
+        return '<form name="entryform" id="entryform" action="'.getDispatchFile().'" method="get">'.session_form(SESSION_NESTED).
+                               '<input type="hidden" name="atkselector" value="'.$this->getNode()->primaryKey($record).'">';
+    }
+    
+    /**
      * Returns an htmlpage displaying all displayable attributes.
      * @param array $record The record to display.
      * @param atkNode $node The node for which a viewPage is displayed.
@@ -96,8 +107,7 @@
         $params['title'] = $node->actionTitle($this->m_action, $record);
         $params["content"] = $node->tabulate("view", $innerform);
 
-        $params["formstart"] = '<form name="entryform" id="entryform" action="'.getDispatchFile().'" method="get">'.session_form(SESSION_NESTED).
-                               '<input type="hidden" name="atkselector" value="'.$node->primaryKey($record).'">';
+        $params["formstart"] = $this->getFormStart($record);
         $params["buttons"]   = $this->getFormButtons($record);
         $params["formend"] = '</form>';
 
