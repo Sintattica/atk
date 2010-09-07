@@ -111,7 +111,7 @@
           if (count($this->m_onchangecode))
           {
             $onchange = ' onChange="'.$inputId.'_onChange(this);"';
-            $this->_renderChangeHandler($fieldprefix, $i);
+            $this->_renderChangeHandler($fieldprefix, '_'.$i);
           }
           else
           {
