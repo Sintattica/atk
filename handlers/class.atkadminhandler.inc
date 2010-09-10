@@ -52,7 +52,7 @@
     /**
      * Sets the action session status for actions in the recordlist.
      * (Defaults to SESSION_NESTED).
-     * 
+     *
      * @param Integer $sessionStatus The sessionstatus (for example SESSION_REPLACE)
      */
     function setActionSessionStatus($sessionStatus)
@@ -87,14 +87,16 @@
      *
      * The implementation delegates drawing of the form to the atkAddHandler.
      *
-     * @param array $record The record 
+     * @param array $record The record
      * @return String A box containing the add page.
      */
     function addPage($record=NULL)
     {
       // Reuse the atkAddHandler for the addPage.
-      $handler = $this->m_node->getHandler("add");
-      $handler->setNode($this->m_node);
+      $node = atkGetNode($this->invoke('getAddNodeType'));
+
+      $handler = $node->getHandler("add");
+      $handler->setNode($node);
       $handler->setReturnBehaviour(ATK_ACTION_STAY); // have the save action stay on the admin page
       return $handler->invoke("addPage", $record);
     }
@@ -141,12 +143,12 @@
 
       atkimport('atk.datagrid.atkdatagrid');
       $grid = atkDataGrid::create($this->getNode(), 'admin');
-      
+
       if (is_array($actions))
       {
         $grid->setDefaultActions($actions);
       }
-      
+
       $this->modifyDataGrid($grid, atkDataGrid::CREATE);
 
       if ($this->redirectToSearchAction($grid))
@@ -173,8 +175,8 @@
       try
       {
       $grid = atkDataGrid::resume($this->getNode());
-      
-      $this->modifyDataGrid($grid, atkDataGrid::RESUME);      
+
+      $this->modifyDataGrid($grid, atkDataGrid::RESUME);
       }
       catch (Exception $e)
       {
@@ -300,10 +302,10 @@
       $link = "";
       if ($this->m_node->allowed("view") && $this->m_node->allowed("export") && $this->m_node->hasFlag(NF_EXPORT))
       {
-        $filter = '';    
+        $filter = '';
         if(count($this->m_node->m_fuzzyFilters) > 0)
         {
-          $filter = implode(' AND ', $this->m_node->m_fuzzyFilters); 
+          $filter = implode(' AND ', $this->m_node->m_fuzzyFilters);
         }
 
         $link.= href(dispatch_url($this->m_node->atkNodeType(), "export", array('atkfilter'=>$filter)), atktext("export", "atk", $this->m_node->m_type), SESSION_NESTED);
@@ -312,50 +314,65 @@
     }
 
     /**
+     *
+     * This function returns the nodetype that should be used for creating
+     * the add form or add link above the admin grid. This defaults to the
+     * node for this handler. Override this method in your handler or directly
+     * in your node to set a custom nodetype.
+     */
+    public function getAddNodeType()
+    {
+        return $this->m_node->atkNodeType();
+    }
+
+
+    /**
      * Get the add link to add to the admin header
      *
      * @return String HTML code with link to the add action of the node (if allowed)
      */
     function getAddLink()
     {
-			if (!$this->m_node->hasFlag(NF_NO_ADD) && $this->m_node->allowed("add"))
-			{
-				$label = $this->m_node->text("link_".$this->m_node->m_type."_add", null, "", "", true);
-        if (empty($label))
-        {
-          // generic text
-          $label = $this->m_node->text($this->m_node->m_type)." ".atktext("add","atk","");
-        }
+    	$node = atkGetNode($this->invoke('getAddNodeType'));
 
-        atkimport('atk.handlers.atkaddorcopyhandler');
-        $add = $this->m_node->hasFlag(NF_ADD_DIALOG);
-        $addorcopy = $this->m_node->hasFlag(NF_ADDORCOPY_DIALOG) &&
-                     atkAddOrCopyHandler::hasCopyableRecords($this->m_node);
+    	if (!$node->hasFlag(NF_NO_ADD) && $node->allowed("add"))
+    	{
+    		$label = $node->text("link_".$node->m_type."_add", null, "", "", true);
+    		if (empty($label))
+    		{
+    			// generic text
+    			$label = $node->text($node->m_type)." ".atktext("add","atk","");
+    		}
+
+    		atkimport('atk.handlers.atkaddorcopyhandler');
+    		$add = $node->hasFlag(NF_ADD_DIALOG);
+    		$addorcopy = $node->hasFlag(NF_ADDORCOPY_DIALOG) &&
+    		atkAddOrCopyHandler::hasCopyableRecords($node);
 
 
-        if ($add || $addorcopy)
-				{
-				  $action = $this->m_node->hasFlag(NF_ADDORCOPY_DIALOG) ? 'addorcopy' : 'add';
+    		if ($add || $addorcopy)
+    		{
+    			$action = $node->hasFlag(NF_ADDORCOPY_DIALOG) ? 'addorcopy' : 'add';
 
-					atkimport('atk.ui.atkdialog');
-					$dialog = new atkDialog($this->m_node->atkNodeType(), $action, 'dialog');
-					$dialog->setModifierObject($this->m_node);
-					$dialog->setSessionStatus(SESSION_PARTIAL);
-					$onClick = $dialog->getCall();
+    			atkimport('atk.ui.atkdialog');
+    			$dialog = new atkDialog($node->atkNodeType(), $action, 'dialog');
+    			$dialog->setModifierObject($node);
+    			$dialog->setSessionStatus(SESSION_PARTIAL);
+    			$onClick = $dialog->getCall();
 
-					return '
+    			return '
 			      <a href="javascript:void(0)" onclick="'.$onClick.'; return false;" class="valignMiddle">'.$label.'</a>
 			    ';
-				}
-				elseif ($this->m_node->hasFlag(NF_ADD_LINK))
-				{
-					$addurl = atkSelf().'?atknodetype='.$this->m_node->atknodetype().'&atkaction=add';
-	        return atkHref($addurl,$label,SESSION_NESTED);
-				}
+    		}
+    		elseif ($node->hasFlag(NF_ADD_LINK))
+    		{
+    			$addurl = atkSelf().'?atknodetype='.$node->atkNodeType().'&atkaction=add';
+    			return atkHref($addurl,$label,SESSION_NESTED);
+    		}
 
-			}
+    	}
 
-			return "";
+    	return "";
     }
 
     /**
@@ -373,12 +390,12 @@
       $exportlink = $this->getExportLink();
       if ($exportlink!="") $links[] = $exportlink;
       $result = implode(" | ", $links);
-      
+
       if (strlen(trim($result)) > 0)
       {
         $result .= '<br/>';
       }
-      
+
       return $result;
     }
 
