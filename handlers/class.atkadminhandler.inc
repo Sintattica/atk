@@ -379,10 +379,11 @@
      * This function renders the url that is used by
      * atkAdminHandler::getAddLink().
      *
-     * @param $node The node to use for creating the add url
+     * @return string The url for the add link for the admin page
      */
-    public function getAddUrl(atkNode $node)
+    public function getAddUrl()
     {
+        $node = atkGetNode($this->invoke('getAddNodeType'));
     	return atkSelf().'?atknodetype='.$node->atkNodeType().'&atkaction=add';
     }
 
