@@ -366,13 +366,24 @@
     		}
     		elseif ($node->hasFlag(NF_ADD_LINK))
     		{
-    			$addurl = atkSelf().'?atknodetype='.$node->atkNodeType().'&atkaction=add';
+    			$addurl = $this->invoke('getAddUrl', $node);
     			return atkHref($addurl,$label,SESSION_NESTED);
     		}
 
     	}
 
     	return "";
+    }
+
+    /**
+     * This function renders the url that is used by
+     * atkAdminHandler::getAddLink().
+     *
+     * @param $node The node to use for creating the add url
+     */
+    public function getAddUrl(atkNode $node)
+    {
+    	return atkSelf().'?atknodetype='.$node->atkNodeType().'&atkaction=add';
     }
 
     /**
