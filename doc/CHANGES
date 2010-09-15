@@ -9,6 +9,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 7.0
 ------------------
+* atkHiddenAttribute now always renders itself in add mode too [mvdvelden]
 + Added atkAdminHandler::getAddUrl(). This method is used by 
   atkAdminHandler::getAddLink() for determining the node to use for creating 
   the add link. getAddUrl can be

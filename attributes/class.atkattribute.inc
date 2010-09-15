@@ -1151,10 +1151,11 @@
       /* hide */
       if (($mode=="edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode=="add" && $this->hasFlag(AF_HIDE_ADD)))
       {
-        /* when adding, there's nothing to hide... */
-        if ($mode=="edit" || ($mode=="add" && !$this->isEmpty($defaults)))
+        /* when adding, there's nothing to hide, unless we're dealing with atkHiddenAttribute... */
+        if ($mode=="edit" || ($mode=="add" && (!$this->isEmpty($defaults) || $this instanceof atkHiddenAttribute)))
+        {
           $arr["hide"][] = $this->hide($defaults, $fieldprefix, $mode);
-
+        }
       }
 
       /* edit */

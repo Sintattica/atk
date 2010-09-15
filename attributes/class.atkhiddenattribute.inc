@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the Achievo ATK distribution.
  * Detailed copyright and licensing information can be found
@@ -37,7 +36,7 @@ class atkHiddenAttribute extends atkDummyAttribute
      */
     public function __construct($name, $text="", $flags=0) 
     {
-        // A hidden  attrikbute should be... HIDDEN! (srlsy?)
+        // A hidden  attribute should be... HIDDEN! (srlsy?)
         $flags |= AF_HIDE;
 
         parent::__construct($name, $text, $flags);
@@ -50,7 +49,7 @@ class atkHiddenAttribute extends atkDummyAttribute
      */
     public function hide($record="", $fieldprefix="") 
     {
-        $id = $id = $this->getHtmlId($fieldprefix);
+        $id = $this->getHtmlId($fieldprefix);
         $result = '<input type="hidden" id="'.$id.'" name="'.$fieldprefix.$this->formName().'" value="'.
                        htmlspecialchars($this->m_text).'">';
          return $result;
