@@ -515,4 +515,38 @@
       $page = &$this->getPage();
       $page->addContent($content);
     }
+    
+    /**
+     * Get/generate CSRF token for the current session stack.
+     * 
+     * http://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29_Prevention_Cheat_Sheet
+     * 
+     * @return string CSRF token
+     */
+    protected function getCSRFToken()
+    {
+      // retrieve earlier generated token from the session stack
+      $token = atkGetSessionManager()->globalStackVar('ATK_CSRF_TOKEN');
+      if ($token != null)
+      {
+        return $token;
+      }
+
+      // generate and store token in sesion stack
+      $token = md5(uniqid(rand(), true));
+      atkGetSessionManager()->globalStackVar('ATK_CSRF_TOKEN', $token);
+      
+      return $token;
+    }
+    
+    /**
+     * Checks whatever the given CSRF token matches the one stored in the
+     * session stack.
+     * 
+     * @return boolean is valid CSRF token?
+     */
+    protected function isValidCSRFToken($token)
+    {
+      return $this->getCSRFToken() == $token;
+    }
   }

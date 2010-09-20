@@ -37,6 +37,14 @@
       if (!$this->_checkAllowed())
       {
         $this->renderAccessDeniedPage();
+        return;
+      }
+      
+      if ((!empty($this->m_postvars['confirm']) || !empty($this->m_postvars['cancel'])) &&
+          !$this->isValidCSRFToken($this->m_postvars['atkcsrftoken']))
+      {
+        $this->renderAccessDeniedPage();
+        return;
       }
 
       if (!empty($this->m_postvars['confirm'])) $this->_doDelete();
@@ -54,7 +62,7 @@
         // If we got here, then the node is not locked and we haven't displayed the
         // confirmation page yet, so we display it
         $page = &$this->getPage();
-        $page->addContent($this->m_node->renderActionPage("delete", $this->m_node->confirmAction($this->m_postvars['atkselector'], "delete", false, TRUE)) );
+        $page->addContent($this->m_node->renderActionPage("delete", $this->m_node->confirmAction($this->m_postvars['atkselector'], "delete", false, TRUE, true, $this->getCSRFToken())) );
       }
       else
       {
