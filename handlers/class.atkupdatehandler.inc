@@ -65,6 +65,14 @@
         $this->handleAccessDenied();
         return;
       }
+      
+      // check for CSRF token
+      if (!$this->isValidCSRFToken($this->m_postvars['atkcsrftoken']))
+      {
+        $this->renderAccessDeniedPage();
+        return;
+      }
+
 
       if (isset($this->m_postvars['atknoclose'])||
           isset($this->m_postvars['atksaveandclose']) ||

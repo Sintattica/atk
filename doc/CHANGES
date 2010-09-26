@@ -7,13 +7,11 @@ Please do not exceed 80 characters per line.
 Latest changes go on top, different types of changes may be mixed.
 
 
-Changes in ATK 6.4.3
+Changes in ATK 6.4.4
 --------------------
-* Fixed atkNumberAttribute's extended search. The attribute always called
-  getSearchCondition which resulted in including a search for the value 0. 
-  [Martin, Peter]
+* Implemented CSRF protection for save, update and delete handlers. [peter]
 
 Changes in prior versions
 -------------------------
 Changes in older ATK versions can be found at:
-http://websvn.ibuildings.nl/wsvn/atk/atk/tags/release_6_4_2/doc/CHANGES
+http://websvn.ibuildings.nl/wsvn/atk/atk/tags/release_6_4_3/doc/CHANGES
