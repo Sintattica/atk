@@ -139,7 +139,7 @@
           }
           else
           {
-            $location = $this->getSuccessReturnURL($record);
+            $location = $this->invoke(getSuccessReturnURL($record));
             $this->_handleRedirect($location, $record);
           }
         }
