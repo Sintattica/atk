@@ -99,13 +99,13 @@
         $this->renderAccessDeniedPage();
         return;
       }
-      
+
       // check for CSRF token
       if (!$this->isValidCSRFToken($this->m_postvars['atkcsrftoken']))
       {
         $this->renderAccessDeniedPage();
         return;
-      }      
+      }
 
       if (!isset($this->m_postvars['atkcancel']))
       {
@@ -151,10 +151,10 @@
         $this->_handleRedirect($location);
       }
     }
-    
+
     /**
      * Redirect after save
-     * 
+     *
      * @param string $location
      * @param array|bool $recordOrExit
      * @param bool $exit
@@ -171,7 +171,7 @@
      * @param array $record Saved record
      * @return string Location to redirect to
      */
-    private function getSuccessReturnURL($record)
+    protected function getSuccessReturnURL($record)
     {
       $location="";
       if ($this->m_node->hasFlag(NF_EDITAFTERADD) && $this->m_node->allowed('edit'))
