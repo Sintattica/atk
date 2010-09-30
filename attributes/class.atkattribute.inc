@@ -2873,7 +2873,7 @@
     public function initDependencies(&$record, $fieldPrefix, $mode)
     {
         
-        if (count($this->getDependencies()) == 0)
+      if (count($this->getDependencies()) == 0)
       {          
         return;
       }
@@ -2894,7 +2894,7 @@
       
       
       $this->getOwnerInstance()->getPage()->register_script(atkconfig('atkroot').'atk/javascript/class.atkattribute.js');
-      $code = "ATK.Attribute.callDependencies({$url});";
+      $code = "ATK.Attribute.callDependencies({$url}, el);";
       $this->addOnChangeHandler($code);
     }
 

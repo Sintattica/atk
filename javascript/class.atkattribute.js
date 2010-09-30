@@ -6,8 +6,9 @@ ATK.Attribute = {
   /**
    * Refresh the attribute input form using Ajax.
    */
-  callDependencies: function(url) {
-    var form = $(ATK.Dialog && ATK.Dialog.getCurrent() != null ? 'dialogform' : 'entryform'); // TODO: find a better way to detect the correct form
+  callDependencies: function(url, el) {
+    var form = el.up('form');
+
     if (form == null) return;
       
     var elements = Form.getElements(form);
