@@ -66,11 +66,16 @@
       }
       else
       {
+        $this->_handleCancelAction();
+      }
+    }
+
+      protected function _handleCancelAction()
+      {
         // Confirmation page was displayed and 'no' was clicked
         $location = $this->m_node->feedbackUrl("delete", ACTION_CANCELLED);
         $this->m_node->redirect($location);
       }
-    }
 
     /**
      * Check if we are allowed to remove the given records.
