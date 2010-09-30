@@ -39,7 +39,7 @@
         $this->renderAccessDeniedPage();
         return;
       }
-      
+
       if ((!empty($this->m_postvars['confirm']) || !empty($this->m_postvars['cancel'])) &&
           !$this->isValidCSRFToken($this->m_postvars['atkcsrftoken']))
       {
@@ -101,7 +101,7 @@
      * needs to be deleted (session or dabase), delete it
      * and redirect to the feedback url.
      */
-    function _doDelete()
+    protected function _doDelete()
     {
       $atkstoretype = "";
       $sessionmanager = atkGetSessionManager();
@@ -123,7 +123,7 @@
      *
      * @return mixed Results, true or string with errormessage
      */
-    private function _doDeleteDb()
+    protected function _doDeleteDb()
     {
       $db = &$this->m_node->getDb();
       if ($this->m_node->deleteDb($this->m_postvars['atkselector']))
@@ -144,7 +144,7 @@
      *
      * @return bool Results, true or false
      */
-    private function _doDeleteSession()
+    protected function _doDeleteSession()
     {
       $selector = atkArrayNvl($this->m_postvars, 'atkselector','');
       return atkinstance('atk.session.atksessionstore')->deleteDataRowForSelector($selector);
@@ -186,7 +186,7 @@
      * @return bool wether or not the attributes have allowed deletion
      */
     function checkAttributes()
-    {   
+    {
       foreach ($this->m_node->getAttributes() as $attrib)
       {
       	// If allowed !=== true, then it returned an error message
