@@ -174,4 +174,4 @@ ATK.DataGrid = {
 
     new Ajax.Request(url, { parameters: params, onSuccess: success });
   }
-}
+};
