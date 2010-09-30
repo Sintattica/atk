@@ -1879,7 +1879,7 @@
      */
     function getFormButtons($mode, $record)
     {
-      $controller = &atkcontroller::getInstance();
+      $controller = &atkinstance('atk.atkcontroller');
       $controller->setNode($this);
       return $controller->getFormButtons($mode, $record);
     }
@@ -2742,7 +2742,7 @@
       $formstart.=session_form();
       $formstart.='<input type="hidden" name="atkaction" value="'.$action.'">';
       $formstart.='<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">';
-      
+
       if (isset($csrfToken))
       {
         $this->getHandler($action);
