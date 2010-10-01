@@ -10,7 +10,7 @@
           {/foreach}
         </div>
         </div>
-      </td
+      </td>
     </tr>        
   {/if}  
   {if (isset($header) && !empty($header))}
