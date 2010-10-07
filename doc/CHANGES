@@ -9,6 +9,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 7.0
 ------------------
+* atkFileAttribute, don't display current file in add mode. [Peter]
 * Changed the way the form is detected when dealing with attribute dependencies.
   This feature now supports multiple forms on one page. [mvdvelden]
 * Implemented CSRF protection for save, update and delete handlers. [peter]
