@@ -103,6 +103,7 @@ Changes in ATK 6.6
 * Fixed invocation of missing_module_handler. [Guido]
 * Fixed bug in atkNumberAttribute. Value not posted correctly when field has
   AF_READONLY flag [Sandy, Jeroenvs]
+* Fixed escaping in db2value in atkMlFckAttribute [Jeroenvs]
 
 Changes in prior versions
 -------------------------

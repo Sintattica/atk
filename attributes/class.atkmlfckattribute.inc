@@ -175,8 +175,12 @@ class atkMlFckAttribute extends atkMlTextAttribute
      */
     public function value2db($rec)
     {
-        $dbValue = parent::value2db($rec);
-        $dbValue = $this->escapeSQL(preg_replace("/\&quot;/Ui","\"", $dbValue));
-        return $dbValue;
+        if (is_array($rec)&&isset($rec[$this->fieldName()][$this->m_language]))
+        {
+            $dbval = $this->escapeSQL(preg_replace("/\&quot;/Ui","\"",$rec[$this->fieldName()][$this->m_language]));
+            return $dbval;
+        }
+
+        return NULL;
     }
 }
