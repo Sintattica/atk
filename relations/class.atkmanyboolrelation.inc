@@ -44,6 +44,12 @@
     var $m_cols=3;
 
     /**
+     * The flag indicating wether or not we should show the 'details' link
+     * @var boolean
+     */
+    private $m_showDetailsLink = true;
+
+    /**
      * Return a piece of html code to edit the attribute
      * @param array $record Current record
      * @param String $fieldprefix The fieldprefix to put in front of the name
@@ -87,8 +93,10 @@
           if (in_array($this->m_destInstance->primaryKey($recordset[$i]),$selectedPk))
           {
             $sel = "checked";
-            if (!$this->m_linkInstance->hasFlag(NF_NO_EDIT)&&$this->m_linkInstance->allowed("edit"))
-            {
+            if ($this->getShowDetailsLink() 
+                && !$this->m_linkInstance->hasFlag(NF_NO_EDIT)
+                && $this->m_linkInstance->allowed("edit")
+            ) {
 
               $selector = $this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'".
                 ' AND '.$this->m_linkInstance->m_table.'.'.$this->getRemoteKey().
@@ -153,5 +161,24 @@
       $this->m_cols = $cols;
     }
 
+
+    /**
+     * Returns true if the details link should be rendered
+     * @return boolean
+     */
+    public function getShowDetailsLink()
+    {
+      return $this->m_showDetailsLink;
+    }
+    
+    /**
+     * Set wether or not we should show the details link
+     * @param boolean $status
+     * @return atkManyToManyRelation
+     */
+    public function setShowDetailsLink($status)
+    {
+      $this->m_showDetailsLink = ($status == true);
+      return $this;
+    }
   }
-?>
