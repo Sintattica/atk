@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 7.0
 ------------------
++ Added the ability to expose callbacks in PHP views. [Peter]
+* Fixed alignment of recordlist th's (steelblue/stillblue) in Webkit. [Peter]
 * Introduced "setShowDetailsLink" Allowing you to hide the "details" link after
   the items of a atkManyBoolRelation attribute. [mvdvelden]
 * atkFileAttribute, don't display current file in add mode. [Peter]
