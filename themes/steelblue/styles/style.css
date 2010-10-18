@@ -267,6 +267,7 @@ textarea
 	padding: 2px;
 }
 
+button.atkbutton,
 button.btn,
 button.btn_save,
 button.btn_cancel,
@@ -275,7 +276,7 @@ button.btn_saveandcontinue,
 button.btn_saveandnext
 {
   color: #000;
-  margin-right: 5px;
+  margin-right: 2px;
 }
 
 button.atkdefaultbutton
