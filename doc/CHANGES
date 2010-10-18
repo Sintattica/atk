@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 7.0
 ------------------
+* Now returning button instead of input tags in atkController::getButton. 
+  Improves styling compatbility with WebKit. [Peter]
 + Added the ability to expose callbacks in PHP views. [Peter]
 * Fixed alignment of recordlist th's (steelblue/stillblue) in Webkit. [Peter]
 * Introduced "setShowDetailsLink" Allowing you to hide the "details" link after

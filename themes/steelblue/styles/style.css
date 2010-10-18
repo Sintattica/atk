@@ -267,17 +267,18 @@ textarea
 	padding: 2px;
 }
 
-input.btn,
-input.btn_save,
-input.btn_cancel,
-input.btn_saveandclose,
-input.btn_saveandcontinue,
-input.btn_saveandnext
+button.btn,
+button.btn_save,
+button.btn_cancel,
+button.btn_saveandclose,
+button.btn_saveandcontinue,
+button.btn_saveandnext
 {
   color: #000;
+  margin-right: 5px;
 }
 
-input.atkdefaultbutton
+button.atkdefaultbutton
 {
   font-weight: bold;
 }

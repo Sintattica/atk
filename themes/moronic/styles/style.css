@@ -80,16 +80,16 @@ TEXTAREA
   font-size: 11px;  
 }
 
-INPUT.btn,
-INPUT.btn_save,
-INPUT.btn_cancel,
-INPUT.btn_saveandclose
+button.btn,
+button.btn_save,
+button.btn_cancel,
+button.btn_saveandclose
 {
   background-color: #CCCCCC;
   height: 25px;
 }
 
-INPUT.btn_saveandclose
+button.btn_saveandclose
 {
   font-weight: bold;
 }

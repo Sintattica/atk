@@ -634,7 +634,7 @@
       if ($name != "")
         $name = "name=\"".$this->m_node->getEditFieldPrefix()."{$name}\" ";
 
-       return '<input type="submit" '.$class.$name.' value="'.$value.'">';
+       return '<button type="submit" '.$class.$name.'>'.$value.'</button>';
      }
 
      /**
