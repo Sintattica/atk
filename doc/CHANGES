@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 7.0
 ------------------
+* Rewrote a previous fix to native Javascript, rather then using PrototypeJS. 
+  Since this doesn't work in all situations with some IE versions [mvdvelden]
 * Now returning button instead of input tags in atkController::getButton. 
   Improves styling compatbility with WebKit. [Peter]
 + Added the ability to expose callbacks in PHP views. [Peter]
