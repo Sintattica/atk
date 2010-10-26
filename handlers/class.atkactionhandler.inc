@@ -523,7 +523,7 @@
      * 
      * @return string CSRF token
      */
-    protected function getCSRFToken()
+    public function getCSRFToken()
     {
       // retrieve earlier generated token from the session stack
       $token = atkGetSessionManager()->globalStackVar('ATK_CSRF_TOKEN');
