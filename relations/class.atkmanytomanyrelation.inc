@@ -553,14 +553,19 @@
     protected function _extractSelectedRecordsByKey($record)
     {
       $selectedRecordsByKey = array();
-      foreach ($record[$this->fieldName()] as $selectedRecord)
-      {
-        $selectedKey = 
-          is_array($selectedRecord[$this->getRemoteKey()]) ?
-          $selectedRecord[$this->getRemoteKey()][$this->getDestination()->primaryKeyField()] :
-          $selectedRecord[$this->getRemoteKey()];
+      
+      if (isset($record[$this->fieldName()])) {
+      
+        foreach ($record[$this->fieldName()] as $selectedRecord)
+        {
+          $selectedKey = 
+            is_array($selectedRecord[$this->getRemoteKey()]) ?
+            $selectedRecord[$this->getRemoteKey()][$this->getDestination()->primaryKeyField()] :
+            $selectedRecord[$this->getRemoteKey()];
   
-        $selectedRecordsByKey[$selectedKey] = $selectedRecord;
+          $selectedRecordsByKey[$selectedKey] = $selectedRecord;
+        }
+      
       }
   
       return $selectedRecordsByKey;      
