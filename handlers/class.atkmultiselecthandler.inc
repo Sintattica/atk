@@ -127,7 +127,17 @@
 
       atkimport('atk.datagrid.atkdatagrid');
       $grid = atkDataGrid::create($this->getNode(), 'multiselect');
-      $grid->setDefaultActions($actions);
+      /**
+       * At first the changes below looked like the solution for the error
+       * on the contact multiselect page. Except this is not the case, because
+       * the MRA actions will not be shown, which is a must.
+       */
+      if (is_array($actions['actions'])) {
+        $grid->setDefaultActions($actions['actions']);
+      } else {
+        $grid->setDefaultActions($actions);
+      }
+
       $grid->removeFlag(atkDataGrid::EXTENDED_SEARCH);
       $grid->addFlag(atkDataGrid::MULTI_RECORD_ACTIONS);
       $params["list"] = $grid->render();
