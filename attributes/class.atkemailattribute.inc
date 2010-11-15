@@ -156,6 +156,7 @@
         return false;
       }
     }
+
     /**
      * Called by the framework to determine the database field datatype.
      * @return String The databasefield datatype.
