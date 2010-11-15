@@ -110,7 +110,7 @@
     /**
      * Checks e-mail address syntax against a regular expression.
      *
-     * @param string $email e-mail address.
+     * @param  string $email e-mail address.
      * @return boolean e-mailaddress syntactically valid or not.
      * @static
      */
