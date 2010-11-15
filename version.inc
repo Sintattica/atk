@@ -10,7 +10,7 @@
    * This file contains variables about this ATK version and the
    * state of the code such as development or stable.
    *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @copyright (c)2000-2010 Ibuildings.nl BV
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision$
