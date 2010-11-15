@@ -12,7 +12,7 @@
    * @package atk
    * @subpackage attributes
    *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @copyright (c)2000-2010 Ibuildings.nl BV
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision: 6309 $
