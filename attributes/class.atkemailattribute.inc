@@ -23,6 +23,7 @@
    * Attribute for editing email fields.
    *
    * @author Ivo Jansch <ivo@achievo.org>
+   * @author Maurice Maas 
    * @package atk
    * @subpackage attributes
    *
