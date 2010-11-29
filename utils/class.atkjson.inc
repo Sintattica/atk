@@ -44,6 +44,11 @@
   class atkJSON
   {
     /**
+     * Maximum recursion depth for conversion of data for encoding to UTF-8
+     */
+    const UTF8_CONVERSION_RECURSION_LIMIT = 30;
+
+    /**
      * Get JSON service object. This method should never
      * be called directly!
      *
@@ -53,7 +58,7 @@
      * @static
      * @private
      */
-    function &_getJSONService($assoc=false)
+    private static function &_getJSONService($assoc=false)
     {
       static $services = array();
 
@@ -76,13 +81,54 @@
      * @param mixed $var PHP variable
      * @return string JSON string
      */
-    function encode($var)
+    public static function encode($var)
     {
-      if (function_exists('json_encode'))
-        return json_encode($var);
+      if (function_exists('json_encode')) {
+        $encoded = json_encode($var);
+        if ($encoded!=='null' || $var===null) {
+          return $encoded;
+        }
+        else {
+          // Variable may contain non-utf-8 characters (like binary data)
+          // format to UTF-8 and try again.
+          return json_encode(self::_utf8json($var));
+        }
+      }
       $service = atkJSON::_getJSONService();
       return $service->encode($var);
     }
+
+    /**
+     * Convert a mixed type variable to UTF-8
+     * @param mixed $data PHP variable
+     */
+    private function _utf8json($data, $depth = 0) {
+      $depth++;
+      if ($depth >= self::UTF8_CONVERSION_RECURSION_LIMIT) {
+        throw new Exception('atkJSON recustion limit reached on: ' . $value);
+      }
+
+      if (is_string($data)) {
+        return utf8_encode($data);
+      }
+      else if (is_numeric) {
+        return $data;
+      }
+      else if (is_array($data)) {
+        /* our return object */
+        $newArray = array();
+
+        foreach($data as $key => $val) {
+          $newArray[$key] = self::_utf8json($val, $depth);
+        }
+
+        /* return utf8 encoded array */
+        return $newArray;       
+      }
+      else {
+        throw new Exception("Unrecognized datatype for UTF-8 conversion in atkJSON");
+      }
+    } 
 
     /**
      * Decode JSON string.
@@ -91,7 +137,7 @@
      * @param boolean $assoc return as associative array (instead of objects)
      * @return mixed PHP value
      */
-    function decode($string, $assoc=false)
+    public static function decode($string, $assoc=false)
     {
       if (function_exists('json_decode'))
         return json_decode($string, $assoc);
@@ -99,4 +145,3 @@
       return $service->decode($string);
     }
   }
-?>
