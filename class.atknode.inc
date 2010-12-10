@@ -3675,7 +3675,7 @@
      */
     public function fetchByPk($pk)
     {
-      return $this->select($this->getTable().".".$this->primaryKeyField().'='.$pk)->firstRow();
+      return $this->select($this->getTable() . ".".$this->primaryKeyField() . '= ?', array($pk))->firstRow();
     }
 
     /**

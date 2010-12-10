@@ -9,6 +9,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 7.0
 ------------------
+* Fixed SQL injection vulnerability when using atkNode::fetchByPk() [Harrie]
 * When atkJSON::encode fails, try again after UTF-8 encoding of contents. [Boy]
 * Fixed invoking 'delete' on attributes [mvdvelden]
 * Check if the actions are set correctly in atkmultiselecthandle [dengels]
