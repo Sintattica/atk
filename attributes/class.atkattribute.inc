@@ -91,7 +91,7 @@
    *
    * hide flag
    */
-  define("AF_HIDE_VIEW"	 ,                        256);
+  define("AF_HIDE_VIEW"  ,                        256);
 
   /**
    * Not searchable in extended search
@@ -1013,14 +1013,15 @@
      *
      * @access private
      * @param String $fieldprefix The prefix to the field
+     * @param String $elementNr The number of the element when attribute contains multiple options
      */
-    function _renderChangeHandler($fieldprefix)
+    function _renderChangeHandler($fieldprefix, $elementNr="")
     {
       if (count($this->m_onchangecode))
       {
         $page = &$this->m_ownerInstance->getPage();
         $page->register_scriptcode("
-    function ".$this->getHtmlId($fieldprefix)."_onChange(el)
+    function ".$this->getHtmlId($fieldprefix).$elementNr."_onChange(el)
     {
       {$this->m_onchangehandler_init}
       ".implode("\n      ", $this->m_onchangecode)."
@@ -1150,10 +1151,11 @@
       /* hide */
       if (($mode=="edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode=="add" && $this->hasFlag(AF_HIDE_ADD)))
       {
-        /* when adding, there's nothing to hide... */
-        if ($mode=="edit" || ($mode=="add" && !$this->isEmpty($defaults)))
+        /* when adding, there's nothing to hide, unless we're dealing with atkHiddenAttribute... */
+        if ($mode=="edit" || ($mode=="add" && (!$this->isEmpty($defaults) || $this instanceof atkHiddenAttribute)))
+        {
           $arr["hide"][] = $this->hide($defaults, $fieldprefix, $mode);
-
+        }
       }
 
       /* edit */
@@ -2870,8 +2872,9 @@
      */
     public function initDependencies(&$record, $fieldPrefix, $mode)
     {
+        
       if (count($this->getDependencies()) == 0)
-      {
+      {          
         return;
       }
 
@@ -2888,8 +2891,10 @@
       $url = partial_url($this->getOwnerInstance()->atkNodeType(), $action, "attribute.".$this->fieldName().".dependencies", array("atkdata" => array('fieldPrefix' => $fieldPrefix, 'mode' => $mode)));
       $url = atkJSON::encode($url);
 
+      
+      
       $this->getOwnerInstance()->getPage()->register_script(atkconfig('atkroot').'atk/javascript/class.atkattribute.js');
-      $code = "ATK.Attribute.callDependencies({$url});";
+      $code = "ATK.Attribute.callDependencies({$url}, el);";
       $this->addOnChangeHandler($code);
     }
 

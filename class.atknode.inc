@@ -1879,7 +1879,7 @@
      */
     function getFormButtons($mode, $record)
     {
-      $controller = &atkcontroller::getInstance();
+      $controller = &atkinstance('atk.atkcontroller');
       $controller->setNode($this);
       return $controller->getFormButtons($mode, $record);
     }
@@ -2724,7 +2724,7 @@
      *                confirmation page, or the output of the custom
      *                override if $checkoverride was true.
      */
-    function confirmAction($atkselector, $action, $locked=false, $checkoverride=true, $mergeSelectors=true)
+    function confirmAction($atkselector, $action, $locked=false, $checkoverride=true, $mergeSelectors=true, $csrfToken=null)
     {
       $method = 'confirm'.$action;
       if ($checkoverride && method_exists($this, $method))
@@ -2742,6 +2742,12 @@
       $formstart.=session_form();
       $formstart.='<input type="hidden" name="atkaction" value="'.$action.'">';
       $formstart.='<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">';
+
+      if (isset($csrfToken))
+      {
+        $this->getHandler($action);
+        $formstart .= '<input type="hidden" name="atkcsrftoken" value="'.$csrfToken.'">';
+      }
 
       if ($mergeSelectors)
       {
@@ -3999,9 +4005,8 @@
         {
           for ($j = 0, $_j = count($this->m_cascadingAttribs); $j < $_j; $j++)
           {
-            $p_attrib = &$this->m_attribList[$this->m_cascadingAttribs[$j]];
-
-            if (is_array($recordset[$i][$this->m_cascadingAttribs[$j]]) && $recordset[$i][$this->m_cascadingAttribs[$j]] !== NULL && !$p_attrib->isEmpty($recordset[$i]))
+            $p_attrib = $this->m_attribList[$this->m_cascadingAttribs[$j]];
+            if (isset($recordset[$i][$this->m_cascadingAttribs[$j]]) && !$p_attrib->isEmpty($recordset[$i]))
             {
               if (!$p_attrib->delete($recordset[$i]))
               {

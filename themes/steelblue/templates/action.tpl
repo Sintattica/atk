@@ -19,7 +19,7 @@
 <br>
 <div id="action-buttons">
       {foreach from=$buttons item=button}
-        &nbsp;{$button}&nbsp;
+        {$button}
       {/foreach}
 </div>
 {$formend}

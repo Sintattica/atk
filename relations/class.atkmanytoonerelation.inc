@@ -184,6 +184,14 @@ class atkManyToOneRelation extends atkRelation
   var $m_autocomplete_minrecords = -1;
 
   /**
+   * Set the size attribute of the autocompletion input element
+   *
+   * @access protected
+   * @var integer
+   */
+  protected $m_autocomplete_size = 30;
+
+  /**
    * Destination node for auto links (edit, new)
    *
    * @var string
@@ -372,6 +380,16 @@ class atkManyToOneRelation extends atkRelation
   function setAutoCompleteMinRecords($minrecords)
   {
     $this->m_autocomplete_minrecords = $minrecords;
+  }
+
+  /**
+   * Set the size of the rendered autocompletion input element
+   *
+   * @param integer $size
+   */
+  function setAutoCompleteSize($size)
+  {
+    $this->m_autocomplete_size = $size;
   }
 
   /**
@@ -2222,7 +2240,7 @@ class atkManyToOneRelation extends atkRelation
 
     $result =
         '<input type="hidden" id="'.$id.'" name="'.$id.'" value="'.$value.'" />
-         <input type="text" id="'.$id.'_search" value="'.atk_htmlentities($label).'" class="atkmanytoonerelation_search" size="30" onfocus="this.select()" />
+         <input type="text" id="'.$id.'_search" value="'.atk_htmlentities($label).'" class="atkmanytoonerelation_search" size="'.$this->m_autocomplete_size.'" onfocus="this.select()" />
          <img id="'.$id.'_spinner" src="atk/images/spinner.gif" style="vertical-align: middle; display: none"> '.$links.'
          <div id="'.$id.'_result" style="display: none" class="atkmanytoonerelation_result"></div>';
 

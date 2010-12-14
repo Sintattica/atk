@@ -6,10 +6,22 @@ ATK.Attribute = {
   /**
    * Refresh the attribute input form using Ajax.
    */
-  callDependencies: function(url) {
-    var form = $(ATK.Dialog && ATK.Dialog.getCurrent() != null ? 'dialogform' : 'entryform'); // TODO: find a better way to detect the correct form
+  callDependencies: function(url, el) {
+    var form = null, pn = el.parentNode;
+
+    // Loop trough the previous nodes to find the parent form element of our
+    // element. We stop searching when we reached the body element. 
+    while (pn.tagName !== 'body' && pn.tagName !== 'BODY') {
+        if (pn.tagName === 'form' || pn.tagName === 'FORM') {
+            form = pn;
+            break;
+        } else {
+            pn = pn.parentNode;
+        }
+    }
+
     if (form == null) return;
-      
+
     var elements = Form.getElements(form);
     var queryComponents = new Array();
 

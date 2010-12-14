@@ -169,12 +169,12 @@ TEXTAREA
   font-size: 11px;
 }
 
-INPUT.btn,
-INPUT.btn_save,
-INPUT.btn_cancel,
-INPUT.btn_saveandclose,
-INPUT.btn_saveandcontinue,
-INPUT.btn_saveandnext
+button.btn,
+button.btn_save,
+button.btn_cancel,
+button.btn_saveandclose,
+button.btn_saveandcontinue,
+button.btn_saveandnext
 {
   background-color: #CCCCCC;
   height: 25px;
@@ -185,7 +185,7 @@ INPUT.btn_saveandnext
   border:0px ! Important;
 }
 
-INPUT.btn_saveandclose
+button.btn_saveandclose
 {
   font-weight: bold;
 }

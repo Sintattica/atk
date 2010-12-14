@@ -96,9 +96,10 @@ table.recordList .row2
 
 .recordList th
 {
-	background-color: #749abe;
-	font-weight: normal;
-	color: #FFFFFF !important;
+  background-color: #749abe;
+  font-weight: normal;
+  color: #FFFFFF !important;
+  text-align: left;  
 }
 
 .recordList th a

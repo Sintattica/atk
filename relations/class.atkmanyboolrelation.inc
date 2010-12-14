@@ -44,6 +44,12 @@
     var $m_cols=3;
 
     /**
+     * The flag indicating wether or not we should show the 'details' link
+     * @var boolean
+     */
+    private $m_showDetailsLink = true;
+
+    /**
      * Return a piece of html code to edit the attribute
      * @param array $record Current record
      * @param String $fieldprefix The fieldprefix to put in front of the name
@@ -70,13 +76,13 @@
   
         if (!$this->hasFlag(AF_MANYBOOL_NO_TOOLBAR))
         {
-	        $result .='<div align="left"><font size="-2">
-	                  [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
-	                       atktext("check_all", "atk").
-	                  '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
-	                       atktext("check_none", "atk").
-	                  '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
-	                       atktext("invert_selection", "atk").'</a>]</font></div>';
+            $result .='<div align="left"><font size="-2">
+                      [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
+                           atktext("check_all", "atk").
+                      '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
+                           atktext("check_none", "atk").
+                      '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
+                           atktext("invert_selection", "atk").'</a>]</font></div>';
         }
       
         $result.= '<table border="0"><tr>';
@@ -87,8 +93,11 @@
           if (in_array($this->m_destInstance->primaryKey($recordset[$i]),$selectedPk))
           {
             $sel = "checked";
-            if (!$this->m_linkInstance->hasFlag(NF_NO_EDIT)&&$this->m_linkInstance->allowed("edit"))
-            {
+            if ($this->getShowDetailsLink() 
+                && !$this->m_linkInstance->hasFlag(NF_NO_EDIT)
+                && $this->m_linkInstance->allowed("edit")
+            ) {
+
               $localPkAttr = $this->getOwnerInstance()->getAttribute($this->getOwnerInstance()->primaryKeyField());
               $localValue = $localPkAttr->value2db($record);
 
@@ -98,7 +107,6 @@
               $selector = $this->m_linkInstance->m_table.'.'.$this->getLocalKey()."=".$localValue."".
                 ' AND '.$this->m_linkInstance->m_table.'.'.$this->getRemoteKey().
                 "='".$remoteValue."'";
-
               // Create link to details.
               $detaillink = href(dispatch_url($this->m_link, "edit", array("atkselector"=>$selector)),
                 "[".atktext("details", "atk")."]",
@@ -110,15 +118,25 @@
           {
             $sel = "";
           }
-          
+
           $inputId = $this->getHtmlId($fieldprefix).'_'.$i;
-          
+
+          if (count($this->m_onchangecode))
+          {
+            $onchange = ' onChange="'.$inputId.'_onChange(this);"';
+            $this->_renderChangeHandler($fieldprefix, '_'.$i);
+          }
+          else
+          {
+            $onchange = '';
+          }
+
           $result.= '<td class="table"><input type="checkbox" id="'.$inputId.'" name="'.
                          $this->getHtmlId($fieldprefix).
                          '[]['.$this->getRemoteKey().
                          ']" value="'.
                          $recordset[$i][$this->m_destInstance->primaryKeyField()].
-                         '" '.$this->getCSSClassAttribute("atkcheckbox").' '.$sel.'></td><td class="table">'.
+                         '" '.$this->getCSSClassAttribute("atkcheckbox").' '.$sel.$onchange.'></td><td class="table">'.
                          '<label for="'.$inputId.'">'.$this->m_destInstance->descriptor($recordset[$i]).'</label>'.
                          '</td><td class="table">'.$detaillink.'</td>';
           if ($i%$cols == $modcols) $result .="</tr><tr>\n";
@@ -148,5 +166,24 @@
       $this->m_cols = $cols;
     }
 
+
+    /**
+     * Returns true if the details link should be rendered
+     * @return boolean
+     */
+    public function getShowDetailsLink()
+    {
+      return $this->m_showDetailsLink;
+    }
+    
+    /**
+     * Set wether or not we should show the details link
+     * @param boolean $status
+     * @return atkManyToManyRelation
+     */
+    public function setShowDetailsLink($status)
+    {
+      $this->m_showDetailsLink = ($status == true);
+      return $this;
+    }
   }
-?>

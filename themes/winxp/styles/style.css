@@ -81,13 +81,13 @@ TEXTAREA
 }
 
 .button,
-INPUT.btn,
-INPUT.btn_save,
-INPUT.btn_cancel,
-INPUT.btn_saveandclose,
-INPUT.btn_saveandcontinue,
-INPUT.btn_saveandnext,
-INPUT.btn_search
+button.btn,
+button.btn_save,
+button.btn_cancel,
+button.btn_saveandclose,
+button.btn_saveandcontinue,
+button.btn_saveandnext,
+button.btn_search
 {
 	font-size : 8pt;
 	color : #fff;
@@ -100,7 +100,7 @@ INPUT.btn_search
 	cursor : hand;
 }
 
-INPUT.btn_saveandclose  {
+button.btn_saveandclose  {
 	font-weight : bold;
 }
 

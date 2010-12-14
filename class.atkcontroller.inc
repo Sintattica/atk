@@ -611,6 +611,7 @@
            $value = '<< '.atktext($action, 'atk');
            break;
          case "edit":
+           $name = "atkedit";
            $class = "btn_save";
            break;
          default:
@@ -633,7 +634,7 @@
       if ($name != "")
         $name = "name=\"".$this->m_node->getEditFieldPrefix()."{$name}\" ";
 
-       return '<input type="submit" '.$class.$name.' value="'.$value.'">';
+       return '<button type="submit" '.$class.$name.'>'.$value.'</button>';
      }
 
      /**

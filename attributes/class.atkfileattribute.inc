@@ -219,8 +219,8 @@
      */
     function edit($record="", $fieldprefix="", $mode="")
     {
-      // When we have errors, don't show the filename above the input.
-      if ($record[$this->fieldName()]['error'] == 0)
+      // When in add mode or we have errors, don't show the filename above the input.
+      if ($mode != 'add' && $record[$this->fieldName()]['error'] == 0)
       {
         if (method_exists($this->getOwnerInstance(), $this->fieldName() .'_display'))
         {

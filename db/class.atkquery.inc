@@ -205,9 +205,9 @@
       $this->m_fields[] = $fieldname;
       if ($quotefield) $this->m_quotedfields[] = $fieldname;
 
-      if ($quote) $value = "'".$value."'";
+      if ($quote && !is_null($value)) $value = "'".$value."'";
       elseif ($value === NULL || $value === '') $value = 'NULL';
-
+      
       $this->m_values[$fieldname] = $value;
 
       if ($fieldaliasprefix!="")

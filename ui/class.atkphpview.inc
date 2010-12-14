@@ -52,4 +52,24 @@ class atkPHPView
   {
     return $this->m_vars[$name];
   }
+  
+  /**
+   * Allows closures in the template variables to be called.
+   * 
+   * @param string $name function name
+   * @param array  $args function arguments
+   * 
+   * @return mixed function result
+   */
+  public function __call($name, $args)
+  {
+    if (isset($this->m_vars[$name]) && is_callable($this->m_vars[$name]))
+    {
+      return call_user_func_array($this->m_vars[$name], $args);
+    }
+    else
+    {
+      throw new Exception("Unkown method {$name}");
+    }
+  }
 }
