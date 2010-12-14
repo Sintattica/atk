@@ -255,14 +255,12 @@
       if (isset($ATK_VARS["atklogout"]) && (!isset($session["relogin"])||$session["relogin"]!=1))
       {
         $this->notifyListeners("preLogout", $auth_user);
+        $currentUser = &atkGetUser();
 
-        session_destroy();
-
-        $cookie_params = session_get_cookie_params();
-        $cookiepath   = atkconfig("application_root");
-        $cookiedomain = (atkconfig("cookiedomain") != "") ? atkconfig("cookiedomain") : NULL;
-        session_set_cookie_params($cookie_params["lifetime"], $cookiepath, $cookiedomain);
-        @session_start();
+        // Let the authentication plugin know about logout too.
+        foreach ($this->m_authentication as $auth) {
+            $auth->logout($currentUser);
+        }
         $session = array();
         $session["relogin"]=1;
 

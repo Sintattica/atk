@@ -77,7 +77,23 @@
     {      
       return AUTH_ERROR; // dummy implementation. should not be used.
     }
-    
+
+    /** 
+     * Logout handling. The default implementation does simple session destruction
+     * and recreates a new session.
+     * @param array $user The user data (as returned by atkGetUser() 
+     */
+    function logout($user)
+    {
+        session_destroy();
+
+        $cookie_params = session_get_cookie_params();
+        $cookiepath   = atkconfig("application_root");
+        $cookiedomain = (atkconfig("cookiedomain") != "") ? atkconfig("cookiedomain") : NULL;
+        session_set_cookie_params($cookie_params["lifetime"], $cookiepath, $cookiedomain);
+        @session_start(); 
+    }
+ 
     /**
      * Does the authentication method support md5 encoding of passwords?
      *
