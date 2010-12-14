@@ -98,10 +98,15 @@
                 && $this->m_linkInstance->allowed("edit")
             ) {
 
-              $selector = $this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'".
-                ' AND '.$this->m_linkInstance->m_table.'.'.$this->getRemoteKey().
-                "='".$recordset[$i][$this->m_destInstance->primaryKeyField()]."'";
+              $localPkAttr = $this->getOwnerInstance()->getAttribute($this->getOwnerInstance()->primaryKeyField());
+              $localValue = $localPkAttr->value2db($record);
 
+              $remotePkAttr = $this->getDestination()->getAttribute($this->getDestination()->primaryKeyField());
+              $remoteValue = $remotePkAttr->value2db($recordset[$i]);
+
+              $selector = $this->m_linkInstance->m_table.'.'.$this->getLocalKey()."=".$localValue."".
+                ' AND '.$this->m_linkInstance->m_table.'.'.$this->getRemoteKey().
+                "='".$remoteValue."'";
               // Create link to details.
               $detaillink = href(dispatch_url($this->m_link, "edit", array("atkselector"=>$selector)),
                 "[".atktext("details", "atk")."]",

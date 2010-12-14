@@ -121,17 +121,23 @@
      * @param array $record Array with fields
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @return unknown
+     * @param string $fieldname the fieldname for this field. If left empty the
+     *                          default will be used.
+     * @return string the html that displays the edit field
      */
-    function editFck($record="", $fieldprefix="")
+    function editFck($record="", $fieldprefix="", $fieldname="")
     {
-      $id = $fieldprefix.$this->fieldName();
+      if ('' == $fieldname) {
+        $fieldname = $this->fieldName();
+      }
+
+      $id = $fieldprefix.$fieldname;
       $this->registerKeyListener($id, KB_CTRLCURSOR);
 
-      $oFCKeditor = new FCKeditor($fieldprefix.$this->fieldName()) ;
+      $oFCKeditor = new FCKeditor($fieldprefix.$fieldname) ;
       $oFCKeditor->BasePath = atkconfig("atkroot")."atk/attributes/fck/";
 
-      $oFCKeditor->Value = isset($record[$this->fieldName()])?$record[$this->fieldName()]:"";
+      $oFCKeditor->Value = isset($record[$fieldname])?$record[$fieldname]:"";
       $oFCKeditor->ToolbarSet=$this->fck_opt['ToolbarSet'];
       $oFCKeditor->Width=$this->fck_opt['Width'];
       $oFCKeditor->Height=$this->fck_opt['Height'];

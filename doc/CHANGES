@@ -9,44 +9,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 7.0
 ------------------
-* Fixed SQL injection vulnerability when using atkNode::fetchByPk() [Harrie]
-* When atkJSON::encode fails, try again after UTF-8 encoding of contents. [Boy]
-* Fixed invoking 'delete' on attributes [mvdvelden]
-* Check if the actions are set correctly in atkmultiselecthandle [dengels]
-* Changed atkmanytomanyrelation for checking if a fieldname is set before 
-  looping through this [Patrick van der Rijst, mvdvelden]
-* Changed visibility of method getCSRFToken to public [dengels]
-* Rewrote a previous fix to native Javascript, rather then using PrototypeJS. 
-  Since this doesn't work in all situations with some IE versions [mvdvelden]
-* Now returning button instead of input tags in atkController::getButton. 
-  Improves styling compatbility with WebKit. [Peter]
-+ Added the ability to expose callbacks in PHP views. [Peter]
-* Fixed alignment of recordlist th's (steelblue/stillblue) in Webkit. [Peter]
-* Introduced "setShowDetailsLink" Allowing you to hide the "details" link after
-  the items of a atkManyBoolRelation attribute. [mvdvelden]
-* atkFileAttribute, don't display current file in add mode. [Peter]
-* Changed the way the form is detected when dealing with attribute dependencies.
-  This feature now supports multiple forms on one page. [mvdvelden]
-* Implemented CSRF protection for save, update and delete handlers. [peter]
-* atkHiddenAttribute now always renders itself in add mode too [mvdvelden]
-+ Added atkAdminHandler::getAddUrl(). This method is used by 
-  atkAdminHandler::getAddLink() for determining the node to use for creating 
-  the add link. getAddUrl can be
-  overridden in the handler or in the node to provide a custom url for the
-  add link. [Matthijs]
-+ Added atkAdminHandler::getAddNodeType(). This method is used by 
-  atkAdminHandler::getAddLink() and atkAdminHandler::addPage() for determining
-  the node to use for creating the add link or form. getAddNodeType can be
-  overridden in the handler or in the node to provide a custom node for the
-  add link or form. [Matthijs]
-+ Added dependency functionaliteit to manybool attribute [dengels]
-* Fixed invocation of missing_class_handler. [Guido]
-* Fixed NULL values for MySQL Strict mode. [Sandy]
-* Fixed bug in atkNumberAttribute. Value not posted correctly when field has 
-  AF_READONLY flag. [Sandy, Jeroenvs]
-+ In atkManyToOneRelations that use autocompletion, the size of the rendered
-  input element can be set using the function setAutoCompleteSize($size).
-  [Patrick]
+
 
 Changes in prior versions
 -------------------------
