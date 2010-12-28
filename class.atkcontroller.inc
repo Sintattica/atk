@@ -318,7 +318,7 @@
         $secMgr->logAction($node->m_type, $node->m_action);
         $node->callHandler($node->m_action);
 
-        if (is_array($node->m_postvars["atkselector"])) {
+        if (isset($node->m_postvars["atkselector"]) && is_array($node->m_postvars["atkselector"])) {
             $atkSelectorDecoded = array();
 
             foreach ($node->m_postvars["atkselector"] as $rowIndex => $selector) {

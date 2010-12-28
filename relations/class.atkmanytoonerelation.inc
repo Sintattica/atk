@@ -2017,10 +2017,11 @@ class atkManyToOneRelation extends atkRelation
     {
       if (strpos($key, $needle) !== 0) continue;
       
-      $order = $arr['heading'][$key]['order'];
-      if (empty($order)) continue;
-      
-      $order = $this->fieldName().'.'.$order;
+      if (empty($arr['heading'][$key]['order'])) {
+          continue;
+      }
+
+      $order = $this->fieldName() .'.'. $arr['heading'][$key]['order'];
 
       if (is_object($atkorderby) &&
       isset($atkorderby->m_colcfg[$this->fieldName()])

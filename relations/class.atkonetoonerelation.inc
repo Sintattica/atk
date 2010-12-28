@@ -291,7 +291,7 @@
           }
         }
         $recs = $this->m_destInstance->selectDb($condition, "", "", "", "", $mode);
-        return $recs[0];
+        return isset($recs[0]) ? $recs[0] : null;
       }
     }
 
