@@ -97,8 +97,18 @@
         return;
       }
       
+      
+      $prefix = '';
+      if (isset($this->m_postvars['atkfieldprefix'])) {
+        $prefix = $this->m_postvars['atkfieldprefix'];
+      }
+
+      $csrfToken = isset($this->m_postvars[$prefix . 'atkcsrftoken'])
+        ? $this->m_postvars[$prefix . 'atkcsrftoken']
+        : null;
+
       // check for CSRF token
-      if (!$this->isValidCSRFToken($this->m_postvars['atkcsrftoken']))
+      if (!$this->isValidCSRFToken($csrfToken))
       {
         $this->renderAccessDeniedPage();
         return;
