@@ -116,6 +116,10 @@
      */
     function getDirContents($path)
     {
+   	  if(!is_dir($path)) {
+   	  	return array();
+   	  }
+
       $result = array();
       $dir = @opendir($path);
       while (($file = @readdir($dir)) !== false)
