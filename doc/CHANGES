@@ -10,6 +10,7 @@ Latest changes go on top, different types of changes may be mixed.
 Changes in ATK 7.0
 ------------------
 + Added saml authentication (Contributed by Egeniq)
++ Added postfix labeling to atkAttribute [Patrick]
 
 
 Changes in prior versions

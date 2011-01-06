@@ -483,6 +483,13 @@
     var $m_label = "";
 
     /**
+     * The postfix label of the attribute.
+     * @access private
+     * @var String
+     */
+    var $m_postfixlabel = "";
+
+    /**
      * The searchmode for this attribute
      *
      * This var exists so that you can assign searchmodes to specific
@@ -1321,7 +1328,7 @@
       }
       else
       {
-        return $this->display($defaults, $mode);
+        return $this->display($defaults, $mode).(strlen($this->m_postfixlabel) > 0 ? "&nbsp;".$this->m_postfixlabel : "");
       }
     }
 
@@ -1411,7 +1418,7 @@
       }
       else
       {
-        return $this->edit($defaults, $fieldprefix, $mode);
+        return $this->edit($defaults, $fieldprefix, $mode).(strlen($this->m_postfixlabel) > 0 ? "&nbsp;".$this->m_postfixlabel : "");
       }
     }
 
@@ -2225,6 +2232,18 @@
     function setLabel($label)
     {
       $this->m_label = $label;
+      return $this;
+    }
+
+    /**
+     * Set the label of the attribute
+     *
+     * @param string $label
+     * @return atkAttribute The instance of this atkAttribute
+     */
+    function setPostFixLabel($label)
+    {
+      $this->m_postfixlabel = $label;
       return $this;
     }
 
