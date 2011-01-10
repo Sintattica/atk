@@ -155,9 +155,8 @@ class atkDGList extends atkDGComponent
       }
       else
       {
-        $call = atk_htmlentities($grid->getUpdateCall(array('atkorderby' => $head['order'], 'atkstartat' => 0)));
-        $link = '<a href="javascript:void(0)" onclick="'.$call.'">'.$head["title"].'</a>';
-        $headercols[] = array("content" => $link);
+        $call = $grid->getUpdateCall(array('atkorderby' => $head['order'], 'atkstartat' => 0));
+        $headercols[] = array("content" => $this->_getHeadingAnchorHtml($call, $head['title']));
       }
     }
 
@@ -640,6 +639,18 @@ class atkDGList extends atkDGComponent
                             "editing"=>$this->getGrid()->isEditing());
 
     return $recordListData;
+  }
+  
+  /**
+   * Returns the link for heading anchors
+   * 
+   * @param string $onClickCall the value for in the onclick
+   * @param the title of the link $title
+   * @return string
+   */
+  protected function _getHeadingAnchorHtml($onClickCall, $title)
+  {
+    return '<a href="javascript:void(0)" onclick="'. atk_htmlentities($onClickCall) .'">'. atk_htmlentities($title) .'</a>';
   }
 
   /**
