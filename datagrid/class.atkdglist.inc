@@ -650,7 +650,7 @@ class atkDGList extends atkDGComponent
    */
   protected function _getHeadingAnchorHtml($onClickCall, $title)
   {
-    return '<a href="javascript:void(0)" onclick="'. atk_htmlentities($onClickCall) .'">'. atk_htmlentities($title) .'</a>';
+    return '<a href="javascript:void(0)" onclick="'. atk_htmlentities($onClickCall) .'">'. $title .'</a>';
   }
 
   /**
