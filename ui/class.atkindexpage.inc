@@ -196,7 +196,7 @@
      *
      * @param string $extrabodyprops
      */
-    function setExtraheaders($extrabodyprops)
+    function setBodyprops($extrabodyprops)
     {
       $this->m_extrabodyprops = $extrabodyprops;
     }
