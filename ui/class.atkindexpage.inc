@@ -52,6 +52,8 @@
     var $m_topsearchpiece;
     var $m_topcenterpiecelinks;
     var $m_title;
+    var $m_extrabodyprops;
+    var $m_extraheaders;
     var $m_username;
     var $m_defaultDestination;
     var $m_flags;
@@ -105,7 +107,14 @@
 
       $this->atkGenerateDispatcher();
 
-      $this->m_output->output($this->m_page->render($this->m_title != "" ? $this->m_title : null, $this->m_flags));
+      $this->m_output->output(
+          $this->m_page->render(
+              $this->m_title != "" ? $this->m_title : null, 
+              $this->m_flags,
+              $this->m_extrabodyprops != "" ? $this->m_extrabodyprops : null,
+              $this->m_extraheaders != "" ? $this->m_extraheaders : null
+          )
+      );
       $this->m_output->outputFlush();
     }
 
@@ -180,6 +189,26 @@
     function setTitle($title)
     {
       $this->m_title = $title;
+    }
+
+     /**
+     * Set the extra body properties of the page
+     *
+     * @param string $extrabodyprops
+     */
+    function setExtraheaders($extrabodyprops)
+    {
+      $this->m_extrabodyprops = $extrabodyprops;
+    }
+
+     /**
+     * Set the extra headers of the page
+     *
+     * @param string $extraheaders
+     */
+    function setExtraheaders($extraheaders)
+    {
+      $this->m_extraheaders = $extraheaders;
     }
 
     /**
