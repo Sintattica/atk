@@ -260,7 +260,7 @@
   "recordlistsummary" => "Records [start]-[end] van [count]",
   "relogin" => "Opnieuw aanmelden",
   "remove_criterium" => "Verwijderen",
-  "remove_current_file" => "Verwijder huidige bestand",
+  "remove_current_file" => "Verwijder huidig bestand",
   "replace_by" => "Vervangen door",
   "reset_criteria" => "Nieuwe zoekopdracht",
   "restricted_delete_error" => "Er hangt nog detail-informatie onder dit record die eerst verwijderd dient te worden.",
