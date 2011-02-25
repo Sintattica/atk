@@ -1447,7 +1447,7 @@
       foreach ($ATK_VARS as $key => $val)
       {
         if (!in_array($key, $excludes))
-          $str .= "<input type='hidden' name=\"$key\" value=\"".atk_htmlentities(strval($val))."\">\n";
+          $str .= "<input type='hidden' name=\"".atk_htmlentities(strval($key))."\" value=\"".atk_htmlentities(strval($val))."\">\n";
       }
       return $str;
     }
