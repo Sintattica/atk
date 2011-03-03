@@ -50,6 +50,13 @@
      * @access private
      * @var array
      */
+    var $m_metacode = array();
+
+    /**
+     * The list of javascript files to load.
+     * @access private
+     * @var array
+     */
     var $m_scriptfiles = array();
 
     /**
@@ -362,6 +369,7 @@
       $res.= '  <meta http-equiv="Content-Type" content="text/html; charset='.atkGetCharset().'" />'."\n";
       if ($extra_header != "") $res.= $extra_header."\n";
 
+      $this->addMeta($res);
       $this->addScripts($res);
       $this->addStyles($res);
 
@@ -645,6 +653,7 @@
     function renderPartial()
     {
       $result = $this->m_content;     
+      $this->addMeta($result, true);
       $this->addScripts($result, true);
       $this->addStyles($result, true);      
       return $result;
@@ -683,6 +692,28 @@
       return ($this->m_content=="");
     }
 
+    /**
+     * Add a meta tag to the page: <meta ... />
+     * 
+     * @param string $code 
+     */
+    function register_metacode($code) {
+        $this->m_metacode[] = $code;
+    }
+    
+    /**
+     * Adds meta lines from the member variables to HTML output
+     * @param String $res Reference to the HTML output
+     * @param Bool $partial Is this a partial request or a complete request
+     */
+    function addMeta(&$res, $partial=false) {
+        if (!$partial) {
+            foreach ($this->m_metacode as $line) {
+                $res .= "  ".$line."\n";
+            }
+        }
+    }
+    
   }
 
 ?>

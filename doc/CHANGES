@@ -12,6 +12,9 @@ Changes in ATK 7.0
 * Enabled extra headers and body properties for the index page [dengels]
 + Added saml authentication (Contributed by Egeniq)
 + Added postfix labeling to atkAttribute [Patrick]
++ Added possibility in atkPage to add meta information [Patrick]
++ Added template login_meta.tpl to themes to include meta information into the 
+  login page [Patrick] 
 
 
 Changes in prior versions

@@ -653,7 +653,7 @@
       $tplvars["content"]=$output;
       $page->addContent($ui->render("login.tpl", $tplvars));
       $o = &atkOutput::getInstance();
-      $o->output($page->render(atktext("app_title")));
+      $o->output($page->render(atktext("app_title"), HTML_STRICT, "", $ui->render("login_meta.tpl")));
     }
 
     /**
