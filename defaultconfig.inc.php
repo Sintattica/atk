@@ -603,6 +603,12 @@
   $config_recordsperpage=25;
 
   /**
+   * The (max) number of page navigation links to show
+   * @var int
+   */
+  $config_pagelinks=10;
+
+  /**
    * Add a 'show all' option to the records per page selector.
    * @var boolean
    */

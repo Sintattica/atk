@@ -15,6 +15,8 @@ Changes in ATK 7.0
 + Added possibility in atkPage to add meta information [Patrick]
 + Added template login_meta.tpl to themes to include meta information into the 
   login page [Patrick] 
++ Made the number of page navigation links below a record list configurable
+  [Patrick]
 
 
 Changes in prior versions

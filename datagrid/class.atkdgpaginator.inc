@@ -34,6 +34,18 @@ class atkDGPaginator extends atkDGComponent
   protected $m_maxLinks = 10;
   
   /**
+   * Constructor.
+   *
+   * @param atkDataGrid $grid    grid
+   * @param array       $options component options
+   */
+  public function __construct($grid, $options=array())
+  {
+    parent::__construct($grid, $options);
+    $this->m_maxLinks = atkConfig('pagelinks', 10);
+  }  
+  
+  /**
    * Returns an array with pagination links.
    */
   protected function getLinks()
