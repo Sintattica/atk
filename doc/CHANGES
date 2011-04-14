@@ -17,7 +17,7 @@ Changes in ATK 7.0
   login page [Patrick] 
 + Made the number of page navigation links below a record list configurable
   [Patrick]
-
+* Fixed some errors in the french language file [DVR]
 
 Changes in prior versions
 -------------------------
