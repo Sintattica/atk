@@ -926,14 +926,14 @@ class atkManyToOneRelation extends atkRelation
             (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) ||
             (atkconfig("list_obligatory_null_item") && !is_array($value)))
         {
-          $result.= '<option value="">'.$this->getNoneLabel();
+          $result.= '<option value="">'.$this->getNoneLabel().'</option>';
         }
 
         foreach ($recordset as $selectable)
         {
           $pk = $this->getDestination()->primaryKey($selectable);
           $sel = $pk == $currentPk ? 'selected="selected"' : '';
-          $result .= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', atk_htmlentities($this->m_destInstance->descriptor($selectable)));
+          $result .= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', atk_htmlentities($this->m_destInstance->descriptor($selectable))).'</option>';
         }
 
         $result .= '</select>';
