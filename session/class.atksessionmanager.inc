@@ -28,7 +28,7 @@
     // session enabled, multi-app array in which you can store whatever you like.
     // There are old applications however that still use $g_sessionData, so I'll
     // leave it in place for now.
-    $g_sessionData = &$_SESSION[atkconfig('identifier')];
+    $GLOBALS['g_sessionData'] = & $_SESSION[atkconfig('identifier')];
   }
 
   define("SESSION_DEFAULT",0); // stay at current stacklevel

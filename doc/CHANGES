@@ -9,6 +9,7 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 7.0
 ------------------
+* Changed the global definition of $g_sessionData, since that reset referenced assignments. [mvdvelden,epot]
 * Enabled extra headers and body properties for the index page [dengels]
 + Added saml authentication (Contributed by Egeniq)
 + Added postfix labeling to atkAttribute [Patrick]
