@@ -119,6 +119,12 @@
    */
   $config_datagrid_class = "atk.datagrid.atkdatagrid";
 
+
+  /**
+   * The dispatcher, all request (should) lead to this setting.
+   */
+  $config_dispatcher = 'index.php';
+
   /************************** DATABASE SETTINGS ******************************/
 
   /**
