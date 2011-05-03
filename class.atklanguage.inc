@@ -204,6 +204,35 @@
           return $translation;
       }
       return "";
+
+    }
+
+    /**
+     * Returns all strings for the given modulename.
+     *
+     * The returned struct will contain key-value pairs for the translation 
+     * keys, and their respective translation.
+     *  
+     * @param String $module  Module in which the language file should be 
+     * @param String $lng     ISO 639-1 language code, defaults to config 
+     * @return array Translations 
+     */
+    public static function getStringsForModule($module, $lng="") 
+    {
+
+      if ($lng=="") $lng = atkLanguage::getLanguage();
+      $atklanguage = atkLanguage::getInstance();
+
+      $text = $atklanguage->_getStringFromFile($key, $module, $lng);
+      $atklanguage->_includeLanguage($module, $lng);
+
+      if (isset($atklanguage->m_cachedlang[$module])
+          && is_array($atklanguage->m_cachedlang[$module][$lng])) {
+              return $atklanguage->m_cachedlang[$module][$lng];
+      }
+
+      return array();
+
     }
 
     /**
@@ -369,10 +398,10 @@
      */
     protected function _getString($key, $module, $lng, $node="", $nodefaulttext=false, $firstfallback="", $modulefallback=false)
     {
-      // first find node specific string.
+      // First find node specific string.
       $modules = $this->_getModules($module, $firstfallback, $modulefallback);
 
-      // First check custom Strings
+      // Second check custom Strings
       if(isset($this->m_customStrings[$lng]) && isset($this->m_customStrings[$lng][$key]))
         return $this->m_customStrings[$lng][$key];
 
@@ -407,6 +436,7 @@
         return $this->defaultText($key);
       }
       return "";
+
     }
 
     /**
