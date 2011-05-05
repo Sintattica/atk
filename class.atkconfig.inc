@@ -29,25 +29,43 @@
      */
     public static function loadGlobals()
     {
-      foreach (array_keys($GLOBALS) as $key)
-      {
-        if (substr($key, 0, 7) == 'config_')
-        {
-          global $$key;
+      $overrides = array();
+
+      // Put all "config_" globals as variables in the function scope
+      foreach ($GLOBALS as $key => $value) {
+        if (substr($key, 0, 7) === 'config_') {
+
+          $$key = $value;
+
+          // Store the current value, so that we can restore it later. Since our includes below here, depend on
+          // some of these variables, we can't simply change the ordering of this process. Also we can't use
+          // $GLOBALS, due to the use of the global keyword later on.
+          $overrides[$key] = $GLOBALS[$key];
         }
       }
-      
-      require_once($config_atkroot."atk/defaultconfig.inc.php");
-      require_once($config_application_dir."config.inc.php");
-      
+
+      // Include the defaults
+      require_once $config_atkroot ."atk/defaultconfig.inc.php";
+
+      // Get all defined config variables, make then global and update their value
       foreach (get_defined_vars() as $key => $value)
       {
-        if (substr($key, 0, 7) == 'config_')
+        if (substr($key, 0, 7) === 'config_')
         {
+          // Reference the variable to the global scope
           global $$key;
-          $$key = $value;
+
+          // If a key was previously defined in $GLOBALS, make sure it's not overwritten and use that.
+          if (array_key_exists($key, $overrides)) {
+            $$key = $overrides[$key];
+          } else {
+            $$key = $value;
+          }
         }
       }
+
+      // Include the application config, this is leading and will override all previously defined configuration values.
+      require_once $config_application_dir ."config.inc.php";
     }
     
     /**
@@ -59,7 +77,7 @@
     public static function getGlobal($name, $default=null)
     {
       $fullName = 'config_'.$name;
-      if (function_exists($fullName)) 
+      if (function_exists($fullName))
       {
         return $fullName();
       }
