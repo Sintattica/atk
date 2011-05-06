@@ -47,25 +47,47 @@
       // Include the defaults
       require_once $config_atkroot ."atk/defaultconfig.inc.php";
 
+      // Get the application config, this is leading and will override all previously defined configuration values.
+      $applicationConfig = self::getApplicationConfig($config_application_dir);
+
+      // Merge everything we got, including variables defined in our application config and configuration defined
+      // prior to constructing atkConfig
+      $allVars = array_merge(
+        get_defined_vars(),
+        $applicationConfig
+      );
+
       // Get all defined config variables, make then global and update their value
-      foreach (get_defined_vars() as $key => $value)
+      foreach ($allVars as $key => $value)
       {
         if (substr($key, 0, 7) === 'config_')
         {
           // Reference the variable to the global scope
           global $$key;
 
-          // If a key was previously defined in $GLOBALS, make sure it's not overwritten and use that.
-          if (array_key_exists($key, $overrides)) {
+          // If a key was previously defined, use that instead of the default value.
+          if (array_key_exists($key, $applicationConfig)) {
+            $$key = $applicationConfig[$key];
+          } else if (array_key_exists($key, $overrides)) {
             $$key = $overrides[$key];
           } else {
             $$key = $value;
           }
         }
       }
+    }
 
-      // Include the application config, this is leading and will override all previously defined configuration values.
-      require_once $config_application_dir ."config.inc.php";
+    /**
+     * Get the application configuration.
+     *
+     * @static
+     * @param  $path The path to 'config.inc.php in the application directory
+     * @return array
+     */
+    static public function getApplicationConfig($path)
+    {
+      require_once $path .'config.inc.php';
+      return get_defined_vars();
     }
     
     /**
