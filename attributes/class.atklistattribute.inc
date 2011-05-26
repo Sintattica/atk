@@ -274,6 +274,7 @@
       // todo: configurable rows
       $id = $this->getHtmlId($fieldprefix);
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);
+      $this->registerJavaScriptObservers($id);
 
       $onchange='';
       if (count($this->m_onchangecode))
