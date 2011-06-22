@@ -9,6 +9,8 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 7.0
 ------------------
+* Fixed bug that caused the atkManyToManyRelations to truncate the intermediate table when
+  it had no attributes with an AF_PRIMARY flag on it. [harrie]
 * Fixed bug where atkListAttribute didn't honor JSObservers. [ivo]
 * Tooltip template no longer uses short tags. [mvdvelden]
 * Fixed a bug where, configuration that wasn't defined in the default configuration, was never properly

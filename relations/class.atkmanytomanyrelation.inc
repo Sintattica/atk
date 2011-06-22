@@ -579,6 +579,11 @@
     protected function _deleteRecord($record)
     {
       $selector = $this->getLink()->primaryKey($record);
+      
+      if (empty($selector)) {
+          atkerror('primaryKey-selector for link node is empty. Did you add an AF_PRIMARY flag to the primary key field(s) of the intermediate node? Deleting records aborted to prevent dataloss.');
+          return false;
+      }
   
       // append the store deletion filter (if set)
       if (!empty($this->m_store_deletion_filter))
