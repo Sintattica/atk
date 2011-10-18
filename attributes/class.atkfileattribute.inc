@@ -236,7 +236,7 @@
       if(!is_dir($this->m_dir) || !is_writable($this->m_dir))
       {
         atkwarning('atkFileAttribute: ' . $this->m_dir . ' does not exist or is not writeable');
-        return atktext("no_valid_directory", "atk");
+        return atktext("no_valid_directory", "atk") . ': ' .$this->m_dir;
       }
 
       $id = $fieldprefix.$this->fieldName();
