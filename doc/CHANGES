@@ -28,6 +28,7 @@ Changes in ATK 7.0
   [Patrick]
 * Fixed some errors in the french language file [DVR]
 * Generated M:1 select-list options now are properly closed [DVR]
+* In atkManyToOneRelation, removed HTML from destination values in the edit mode dropdown. [Patrick]
 
 Changes in prior versions
 -------------------------

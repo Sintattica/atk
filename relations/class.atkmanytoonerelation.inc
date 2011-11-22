@@ -942,7 +942,7 @@ class atkManyToOneRelation extends atkRelation
         {
           $pk = $this->getDestination()->primaryKey($selectable);
           $sel = $pk == $currentPk ? 'selected="selected"' : '';
-          $result .= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', atk_htmlentities($this->m_destInstance->descriptor($selectable))).'</option>';
+          $result .= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', atk_htmlentities(strip_tags($this->m_destInstance->descriptor($selectable)))).'</option>';
         }
 
         $result .= '</select>';
@@ -1220,7 +1220,7 @@ class atkManyToOneRelation extends atkRelation
 
           if (is_array($record)&&isset($record[$this->fieldName()])&&
           atk_in_array($pk, $record[$this->fieldName()])) $sel = "selected"; else $sel = "";
-          $result.= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', atk_htmlentities($this->m_destInstance->descriptor($recordset[$i]))).'</option>';
+          $result.= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', atk_htmlentities(strip_tags($this->m_destInstance->descriptor($recordset[$i])))).'</option>';
         }
         $result.='</select>';
         return $result;
@@ -2300,7 +2300,7 @@ class atkManyToOneRelation extends atkRelation
     $result = '';
     foreach ($records as $rec)
     {
-      $option = atk_htmlentities($this->m_destInstance->descriptor($rec));
+      $option = atk_htmlentities(strip_tags($this->m_destInstance->descriptor($rec)));
       $value = $this->m_destInstance->primaryKey($rec);
       $highlightedOption = $this->highlight_search_result_match($searchvalue, $option);
       $result .= '
