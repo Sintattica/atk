@@ -157,7 +157,7 @@
   "feedback_update_success" => "De wijzigingen zijn opgeslagen.",
   "field_obligatory" => "Dit veld is verplicht",
   "filecontent" => "Inhoud",
-  "filename" => "Bestandsnaam",
+  "filename" => "Bestand",
   "filename_invalid" => "Deze bestandsnaam is niet geldig",
   "file_exists" => "Er bestaat al een bestand met deze naam",
   "file_not_exist" => "Bestand bestaat niet",
