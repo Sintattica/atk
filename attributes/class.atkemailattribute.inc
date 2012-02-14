@@ -116,7 +116,7 @@
      */
     function validateAddressSyntax($email)
     {
-      if (preg_match("/^[-_a-zA-Z0-9+]+(\.[-_a-zA-Z0-9+]+)*@([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,}$/", $email))
+      if (preg_match("/^[-_a-zA-Z0-9+]+(\.[-_a-zA-Z0-9+]+)*@([0-9a-z-]+\.)*([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,}$/", $email))
       {
         return true;
       }

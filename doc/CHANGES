@@ -9,15 +9,18 @@ Latest changes go on top, different types of changes may be mixed.
 
 Changes in ATK 7.0
 ------------------
-* Fixed bug that caused the atkManyToManyRelations to truncate the intermediate table when
-  it had no attributes with an AF_PRIMARY flag on it. [harrie]
+* Fixed bug that caused the atkManyToManyRelations to truncate the intermediate
+  table when it had no attributes with an AF_PRIMARY flag on it. [harrie]
 * Fixed bug where atkListAttribute didn't honor JSObservers. [ivo]
 * Tooltip template no longer uses short tags. [mvdvelden]
-* Fixed a bug where, configuration that wasn't defined in the default configuration, was never properly
-  imported into the global space and was causing issues. [mvdvelden]
+* Fixed a bug where, configuration that wasn't defined in the default 
+  configuration, was never properly imported into the global space and was 
+  causing issues. [mvdvelden]
 * Changed the way the configuration is populated. [mvdvelden]
-* Added the 'dispatcher' in the default config and changed some references from 'index.php' to this setting. [mvdvelden]
-* Changed the global definition of $g_sessionData, since that reset referenced assignments. [mvdvelden,epot]
+* Added the 'dispatcher' in the default config and changed some references from 
+  'index.php' to this setting. [mvdvelden]
+* Changed the global definition of $g_sessionData, since that reset referenced
+  assignments. [mvdvelden,epot]
 * Enabled extra headers and body properties for the index page [dengels]
 + Added saml authentication (Contributed by Egeniq)
 + Added postfix labeling to atkAttribute [Patrick]
@@ -28,7 +31,10 @@ Changes in ATK 7.0
   [Patrick]
 * Fixed some errors in the french language file [DVR]
 * Generated M:1 select-list options now are properly closed [DVR]
-* In atkManyToOneRelation, removed HTML from destination values in the edit mode dropdown. [Patrick]
+* In atkManyToOneRelation, removed HTML from destination values in the edit mode
+  dropdown. [Patrick]
+* In atkEmailAttribute, modified address validation to allow single character
+  subdomains. [Patrick]
 
 Changes in prior versions
 -------------------------
