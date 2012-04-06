@@ -15,12 +15,10 @@ function filter_request_where_clause($variable)
     foreach ($values as $value)
     {
       $checker = new sql_whereclause_blacklist_checker($value);
-	    if (!$checker->isSafe())
-	    {
-	      atkerror("Unsafe WHERE clause in REQUEST variable: ".$variable);
-	      $_REQUEST[$variable] = $_GET[$variable] = $_POST[$variable] = '';
-	      break;
-	    }
+      if (!$checker->isSafe())
+      {
+        atkhalt("Unsafe WHERE clause in REQUEST variable: ".$variable, 'critical');
+      }
     }
   }
 }
@@ -52,7 +50,9 @@ class sql_whereclause_blacklist_checker
    */
   private $_disallowed=array('/*', ' --', '#', // Comment syntax
                              'ALTER ', 'DELETE FROM', 'SHOW ', 'DROP ', // DDL statements
-                             'UNION ', 'UNION(', ';'); // other
+                             'UNION ', 'UNION(', ';', // other
+                             '0x3a', 'information_schema', 'row(1,1)', 'floor(rand(', // common patterns for Blind SQL injection
+                            );
 
   /**
    * Create a new checker object for a given WHERE clause
@@ -115,6 +115,7 @@ class sql_whereclause_blacklist_checker
         }
       }
     }
+
     return true;
   }
 }
