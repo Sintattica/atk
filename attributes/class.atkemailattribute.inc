@@ -12,7 +12,7 @@
    * @package atk
    * @subpackage attributes
    *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @copyright (c)2000-2010 Ibuildings.nl BV
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision: 6309 $
@@ -22,8 +22,8 @@
   /**
    * Attribute for editing email fields.
    *
-   * @author Maurice Maas <maurice@ibuildings.nl>
    * @author Ivo Jansch <ivo@achievo.org>
+   * @author Maurice Maas 
    * @package atk
    * @subpackage attributes
    *
@@ -110,13 +110,13 @@
     /**
      * Checks e-mail address syntax against a regular expression.
      *
-     * @param string $email e-mail address.
+     * @param  string $email e-mail address.
      * @return boolean e-mailaddress syntactically valid or not.
      * @static
      */
     function validateAddressSyntax($email)
     {
-      if (preg_match("/^[-_a-z0-9+]+(\.[-_a-z0-9+]+)*@([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,4}$/", $email))
+      if (preg_match("/^[-_a-zA-Z0-9+]+(\.[-_a-zA-Z0-9+]+)*@([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,}$/", $email))
       {
         return true;
       }
@@ -156,6 +156,7 @@
         return false;
       }
     }
+
     /**
      * Called by the framework to determine the database field datatype.
      * @return String The databasefield datatype.

@@ -96,6 +96,13 @@
         $this->handleAccessDenied();
         return;
       }
+      
+      // check for CSRF token
+      if (!$this->isValidCSRFToken($this->m_postvars['atkcsrftoken']))
+      {
+        $this->renderAccessDeniedPage();
+        return;
+      }      
 
       if (isset($this->m_postvars['atknoclose'])||
           isset($this->m_postvars['atksaveandclose']) ||
@@ -105,7 +112,7 @@
       }
       else if (isset($this->m_postvars['atkcancel']))
       {
-        $this->handleCancel($record);
+        $this->invoke('handleCancel', $record);
       }
       else
       {

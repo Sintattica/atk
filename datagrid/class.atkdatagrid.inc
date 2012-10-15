@@ -84,6 +84,13 @@ class atkDataGrid
   const RESUME = 2;
 
   /**
+   * Grid modifiers.
+   *
+   * @var array
+   */
+  private static $s_modifiers;
+
+  /**
    * Name.
    *
    * @var string
@@ -355,7 +362,9 @@ class atkDataGrid
     }
     atkimport($class);
     $class = substr($class, strrpos($class, '.') + 1);
-    return new $class($node, $name, self::CREATE, $isEmbedded, $useSession);
+    $grid = new $class($node, $name, self::CREATE, $isEmbedded, $useSession);
+    self::callModifiers($grid, self::CREATE);
+    return $grid;
   }
 
   /**
@@ -389,7 +398,9 @@ class atkDataGrid
 
     atkimport($class);
     $class = substr($class, strrpos($class, '.') + 1);
-    return new $class($node, $name, self::RESUME);
+    $grid = new $class($node, $name, self::RESUME);
+    self::callModifiers($grid, self::RESUME);
+    return $grid;
   }
 
   /**
@@ -905,6 +916,32 @@ class atkDataGrid
     return $this->getPostvar('atkgridedit', false);
   }
 
+
+  /**
+   * Returns the master node.
+   *
+   * @see atkDataGrid::setMasterNode
+   *
+   * @return atkNode master node
+   */
+  public function getMasterNode()
+  {
+    return $this->m_masterNode;
+  }
+
+  /**
+   * Sets the master node if the grid is used in a 1:n relationship.
+   *
+   * This node is not directly used by the datagrid itself, but
+   * components might.
+   *
+   * @param atkNode $node master node
+   */
+  public function setMasterNode(atkNode $node)
+  {
+    $this->m_masterNode = $node;
+  }
+
   /**
    * Returns the master record.
    *
@@ -914,7 +951,7 @@ class atkDataGrid
    */
   public function getMasterRecord()
   {
-  	return $this->m_masterRecord;
+    return $this->m_masterRecord;
   }
 
   /**
@@ -925,9 +962,9 @@ class atkDataGrid
    *
    * @param array $record master record
    */
-  public function setMasterRecord($record)
+  public function setMasterRecord(array $record)
   {
-  	$this->m_masterRecord = $record;
+    $this->m_masterRecord = $record;
   }
 
   /**
@@ -986,7 +1023,7 @@ class atkDataGrid
    */
   public function setComponentOption($component, $option, $value)
   {
-  	$this->m_components[$component]['options'][$option] = $value;
+    $this->m_components[$component]['options'][$option] = $value;
   }
 
   /**
@@ -1245,7 +1282,7 @@ class atkDataGrid
    */
   public function removeFilters()
   {
-  	$this->m_filters = array();
+    $this->m_filters = array();
   }
 
   /**
@@ -1769,5 +1806,57 @@ class atkDataGrid
     $this->notify(atkDGEvent::POST_RENDER);
 
     return $result;
+  }
+
+  /**
+   * Call grid modifiers for the given grid.
+   *
+   * @param atkDataGrid $grid grid
+   * @param int         $mode creation mode
+   */
+  private static function callModifiers(atkDataGrid $grid, $mode)
+  {
+    $keys = array('*', $grid->getNode()->atkNodeType());
+
+    foreach ($keys as $key)
+    {
+      if (!isset(self::$s_modifiers[$key]))
+      {
+        continue;
+      }
+
+      foreach (self::$s_modifiers[$key] as $callback)
+      {
+        call_user_func($callback, $grid, $mode);
+      }
+    }
+  }
+
+  /**
+   * Unregister datagrid modifier.
+   *
+   * @param string|null $nodeType node type (e.g. module.node), leave null to match all nodes
+   * @param mixed       $callback callback method
+   */
+  public static function unregisterModifier($nodeType, $callback)
+  {
+    self::$s_modifiers[$nodeType == null ? '*' : $nodeType] =
+      array_diff(self::$s_modifiers[$nodeType == null ? '*' : $nodeType], array($callback));
+  }
+
+  /**
+   * Register datagrid modifier.
+   *
+   * The modifier will be called at the end of construction time if the node
+   * type matches. The first argument for the callback will be the datagrid
+   * instance, the second argument the creation mode (e.g. atkDataGrid::CREATE
+   * or atkDataGrid::RESUME).
+   *
+   * @param string|null $nodeType node type (e.g. module.node), leave null to match all nodes
+   * @param mixed       $callback callback method
+   */
+  public static function registerModifier($nodeType, $callback)
+  {
+    self::$s_modifiers[$nodeType == null ? '*' : $nodeType][] = $callback;
   }
 }

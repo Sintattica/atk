@@ -29,6 +29,15 @@
     if (!empty($path))
     {
       $tpl_source = file_get_contents($path);
+      
+      if (atkconfig('debug') >= 3)
+      {
+        $tpl_source =
+          "\n<!-- START [{$path}] -->\n".
+          $tpl_source.
+          "\n<!-- END [{$path}] -->\n";
+      }
+        
       return true;
     }
     else

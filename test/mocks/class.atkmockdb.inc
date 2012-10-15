@@ -37,6 +37,8 @@
     
     private $m_currentResult = null;
     
+    protected $m_identifierQuoting = array('start' => '`', 'end' => '`', 'escape' => '`');
+    
 
     /**
      * Connect to the database.
@@ -149,6 +151,24 @@
     function setRegexResult($result, $regex, $offset=-1, $limit=-1)
     {
       $this->m_regex_results[$offset][$limit][$regex] = $result;
+    }
+    
+    
+    /**
+     * Set the affected rows, expecting an array with rows
+     * @param array $result
+     */
+    public function setAffectedRows($result)
+    {
+        $this->m_affected_rows = $result;
+    }
+    
+    /**
+     * Overriding the affected rows count to what was set.
+     */
+    public function affected_rows()
+    {
+        return $this->m_affected_rows;
     }
     
     /**

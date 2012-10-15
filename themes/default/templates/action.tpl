@@ -13,7 +13,7 @@
           {/foreach}
         </div>
         </div>
-      </td
+      </td>
     </tr>        
   {/if}  
   

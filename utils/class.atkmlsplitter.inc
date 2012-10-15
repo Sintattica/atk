@@ -129,7 +129,7 @@
       }
 
       $languages = $this->getLanguages($node);
-      $atklngrecordmodes = sessionLoad("atklng_".$node->m_type);
+      $atklngrecordmodes = sessionLoad("atklng_".$node->m_type."_".atkPrevLevel());
 
       $autoincrementflags=Array();
       foreach($node->m_primaryKey as $primkey)
@@ -205,8 +205,7 @@
       	// restore the relations
       	$node->m_attribList[$attribname]=$relation;
       }
-
-      sessionStore("atklng_".$node->m_type,NULL); // deleting modes
+      sessionStore("atklng_".$node->m_type . "_" . atkPrevLevel(),NULL); // deleting modes
     }
 
     /**
@@ -247,7 +246,8 @@
         $recordset = $this->addLngRecords($node,$recordset);
       }
       $this->mergeMlRecords($node,$recordset);
-      sessionStore("atklng_".$node->m_type,$recordset[0]["atklngrecordmodes"]);
+
+      sessionStore("atklng_".$node->m_type."_".atkLevel(),$recordset[0]["atklngrecordmodes"]);
     }
 
    /**

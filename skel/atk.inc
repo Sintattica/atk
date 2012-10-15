@@ -25,7 +25,7 @@
 
 // This variable indicates where to get all the includes. 
 // Usually, this is the current dir.
-if ($GLOBALS['config_atkroot'] == null)  
+if (empty($GLOBALS['config_atkroot']))  
 {
   $GLOBALS['config_atkroot'] = "./";      
 }

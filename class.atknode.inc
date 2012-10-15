@@ -700,6 +700,14 @@
     protected $m_recordActionsCallbacks = array();
 
     /**
+     * List of callback functions to add css class to row.
+     * See details in atkDGList::getRecordlistData() method
+     *
+     * @var array
+     */
+    protected $m_rowClassCallback = array();
+
+    /**
      * Tracker variable to see if we are currently in 'modifier mode' (running inside
      * the scope of a modname_nodename_modifier() method). The variable contains the
      * name of the modifying module.
@@ -752,6 +760,13 @@
      * @var string
      */
     private $m_defaultColumn = null;
+
+    /**
+     * Current maximum attribute order value.
+     *
+     * @var int
+     */
+    private $m_attribOrder = 0;
 
     /**
      * Constructor.
@@ -923,9 +938,6 @@
      */
     public function add($attribute,$sections=NULL,$order=0)
     {
-      static $attrib_order = 100;
-      static $attrib_index = 0;
-
       $tabs = null;
       $column = null;
 
@@ -1017,10 +1029,10 @@
 
       if(!$exist)
       {
-        if($order==0)
+        if ($order == 0)
         {
-          $order=$attrib_order;
-          $attrib_order+=100;
+          $this->m_attribOrder += 100;
+          $order = $this->m_attribOrder;
         }
 
         if (!atkReadOptimizer())
@@ -1042,14 +1054,12 @@
         }
 
         $attribute->m_order = $order;
-        $this->m_attribIndexList[$attrib_index]=array("name"=>$attribute->fieldName(),"tabs"=>$tabs,"sections"=>$sections,"order"=>$attribute->m_order);
-        $attribute->m_index = $attrib_index;
+        $this->m_attribIndexList[] = array("name"=>$attribute->fieldName(),"tabs"=>$tabs,"sections"=>$sections,"order"=>$attribute->m_order);
+        $attribute->m_index = max(array_keys($this->m_attribIndexList)); // might contain gaps
         $attribute->setTabs($tabs);
         $attribute->setSections($sections);
         $this->m_attributeTabs[$attribute->fieldname()] = $tabs;
-        $attrib_index++;
       }
-
 
       // Order the tablist
       $this->m_attribList[$attribute->fieldName()]=&$attribute;
@@ -1869,7 +1879,7 @@
      */
     function getFormButtons($mode, $record)
     {
-      $controller = &atkcontroller::getInstance();
+      $controller = &atkinstance('atk.atkcontroller');
       $controller->setNode($this);
       return $controller->getFormButtons($mode, $record);
     }
@@ -2054,7 +2064,22 @@
      * @param array $record the edit record
      * @param string $mode edit mode (add or edit)
      */
-    function preAddToEditArray(&$record, $mode="add")
+    function preAddToEditArray(&$record, $mode)
+    {
+      // do nothing
+    }
+
+    /**
+     * The preAddToViewArray method is called from within the viewArray
+     * method prior to letting the attributes add themselves to the view
+     * array, but after the view record values have been collected This makes
+     * it possible to do some last-minute modifications to the record data
+     * and possibily add some last-minute attributes etc.
+     *
+     * @param array  $record the edit record
+     * @param string $mode   view mode
+     */
+    function preAddToViewArray(&$record, $mode)
     {
       // do nothing
     }
@@ -2181,7 +2206,7 @@
       // some last minute manipulations on for example the record
       foreach ($this->getAttributes() as $attr)
       {
-        $attr->preAddToEditArray($defaults, $mode);
+        $attr->preAddToEditArray($defaults, $fieldprefix, $mode);
       }
 
       // call preAddToEditArray for the node itself.
@@ -2275,6 +2300,16 @@
     {
       // update visibility of some attributes based on the current record
       $this->checkAttributeSecurity($mode, $record);
+
+      // call preAddToViewArray at the attribute level, allows attribute to do
+      // some last minute manipulations on for example the record
+      foreach ($this->getAttributes() as $attr)
+      {
+        $attr->preAddToViewArray($record, $mode);
+      }
+
+      // call preAddToViewArray for the node itself.
+      $this->preAddToViewArray($record, $mode);
 
       $tab = $this->getActiveTab();
 
@@ -2534,7 +2569,7 @@
         $newtab["total"] = count($list);
         foreach ($list as $t)
         {
-          $newtab["title"] = atktext(array("tab_$t", $t),$this->m_module,$this->m_type);
+          $newtab["title"] = $this->text(array("tab_$t", $t));
           $newtab["tab"] = $t;
           $url = atkSelf()."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atktab=".$t;
           if ($this->m_action == "view")
@@ -2689,7 +2724,7 @@
      *                confirmation page, or the output of the custom
      *                override if $checkoverride was true.
      */
-    function confirmAction($atkselector, $action, $locked=false, $checkoverride=true, $mergeSelectors=true)
+    function confirmAction($atkselector, $action, $locked=false, $checkoverride=true, $mergeSelectors=true, $csrfToken=null)
     {
       $method = 'confirm'.$action;
       if ($checkoverride && method_exists($this, $method))
@@ -2707,6 +2742,12 @@
       $formstart.=session_form();
       $formstart.='<input type="hidden" name="atkaction" value="'.$action.'">';
       $formstart.='<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">';
+
+      if (isset($csrfToken))
+      {
+        $this->getHandler($action);
+        $formstart .= '<input type="hidden" name="atkcsrftoken" value="'.$csrfToken.'">';
+      }
 
       if ($mergeSelectors)
       {
@@ -3046,6 +3087,7 @@
      * the browser, i.e. before any echo or before the call to
      * atkOutput::outputFlush().
      *
+     * @static
      * @param String $location The url to which you want to redirect the user.
      *                         If ommitted, the call automatically redirects
      *                         to the previous screen of the user. (one level
@@ -3118,7 +3160,7 @@
           mailreport();
         }
 
-        header('Location: '.$location);
+        header('Location: '. $location);
         if ($exit)
         {
           exit();
@@ -3633,7 +3675,7 @@
      */
     public function fetchByPk($pk)
     {
-      return $this->select($this->getTable().".".$this->primaryKeyField().'='.$pk)->firstRow();
+      return $this->select($this->getTable() . ".".$this->primaryKeyField() . '= ?', array($pk))->firstRow();
     }
 
     /**
@@ -3963,9 +4005,8 @@
         {
           for ($j = 0, $_j = count($this->m_cascadingAttribs); $j < $_j; $j++)
           {
-            $p_attrib = &$this->m_attribList[$this->m_cascadingAttribs[$j]];
-
-            if (is_array($recordset[$i][$this->m_cascadingAttribs[$j]]) && $recordset[$i][$this->m_cascadingAttribs[$j]] !== NULL && !$p_attrib->isEmpty($recordset[$i]))
+            $p_attrib = $this->m_attribList[$this->m_cascadingAttribs[$j]];
+            if (isset($recordset[$i][$this->m_cascadingAttribs[$j]]) && !$p_attrib->isEmpty($recordset[$i]))
             {
               if (!$p_attrib->delete($recordset[$i]))
               {
@@ -4606,7 +4647,7 @@
     }
 
     /**
-     * This function resorts the attribIndexList.
+     * This function resorts the attribIndexList and attribList.
      *
      * This is necessary if you add attributes *after* init() is already
      * called, and you set an order for those attributes.
@@ -4616,11 +4657,15 @@
       usort($this->m_attribIndexList,array("atknode","attrib_cmp"));
 
       // after sorting we need to update the attribute indices
+      $attrs = array();
       foreach ($this->m_attribIndexList as $index => $info)
       {
-        $attr = &$this->getAttribute($info['name']);
+        $attr = $this->getAttribute($info['name']);
         $attr->m_index = $index;
+        $attrs[$info['name']] = $attr;
       }
+
+      $this->m_attribList = $attrs;
     }
 
     /**
@@ -5072,5 +5117,53 @@
         throw new Exception("Call to undefined method ".get_class($this)."::{$method}()", E_USER_ERROR);
       }
     }
+
+    /**
+     * Add callback function for add css class to row.
+     *
+     * @param mixed $callback name of a function or array with an object
+     * and the name of a method or closure
+     *
+     * @return boolean
+     */
+    public function setRowClassCallback($callback)
+    {
+      $res = false;
+      if (is_callable($callback, false, $callableName))
+      {
+        if (is_array($callback) && !method_exists($callback[0], $callback[1]))
+        {
+          atkerror("The registered row class callback method '$callableName' doesn't exist");
+        }
+        else
+        {
+          $this->m_rowClassCallback[] = $callback;
+          $res = true;
+        }
+      }
+      else
+      {
+        if (is_array($callback))
+        {
+          if (!method_exists($callback[0], $callback[1]))
+          {
+            atkerror("The registered row class callback method '$callableName' doesn't exist");
+          }
+        }
+        atkerror("The registered row class callback '$callableName' is not callable");
+      }
+      return $res;
+    }
+
+    /**
+     * Return array with callback function list, which use for add css class to row
+     *
+     * @return array
+     */
+    public function getRowClassCallback()
+    {
+      return $this->m_rowClassCallback;
+    }
+
   }
 ?>

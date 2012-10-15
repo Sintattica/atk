@@ -50,6 +50,7 @@
         case MYSQLI_TYPE_LONG:
         case MYSQLI_TYPE_LONGLONG:
         case MYSQLI_TYPE_INT24:
+        case MYSQLI_TYPE_YEAR:
           return "number";
         case MYSQLI_TYPE_DECIMAL:
         case MYSQLI_TYPE_NEWDECIMAL:
@@ -71,7 +72,6 @@
         case MYSQLI_TYPE_TIMESTAMP:
         case MYSQLI_TYPE_DATETIME:
           return "datetime";      
-        case MYSQLI_TYPE_YEAR:
         case MYSQLI_TYPE_NEWDATE:
         case MYSQLI_TYPE_ENUM:
         case MYSQLI_TYPE_SET:         

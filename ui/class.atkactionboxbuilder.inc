@@ -44,6 +44,13 @@ class atkActionBoxBuilder
   protected $m_title = null;
   
   /**
+   * Box template.
+   * 
+   * @var string
+   */
+  protected $m_template = null;
+  
+  /**
    * Action box parameters.
    *
    * @var array
@@ -152,6 +159,19 @@ class atkActionBoxBuilder
   }  
   
   /**
+   * Template.
+   * 
+   * @param string $template template name
+   * 
+   * @return atkActionBoxBuilder
+   */
+  public function template($template)
+  {
+    $this->m_template = $template;
+    return $this;
+  }
+  
+  /**
    * Set content.
    * 
    * @param string $content content
@@ -191,7 +211,7 @@ class atkActionBoxBuilder
         $this->m_params['formend'];
     }
       
-    $this->m_pageBuilder->actionBox($this->m_params, $this->m_title);
+    $this->m_pageBuilder->actionBox($this->m_params, $this->m_title, $this->m_template);
     
     return $this->m_pageBuilder;
   }

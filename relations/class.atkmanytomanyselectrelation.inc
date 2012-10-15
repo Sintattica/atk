@@ -612,7 +612,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     {
       if(is_null($this->m_positionAttributeHtmlModifier))
       {
-        $additional = ' <img src="' . $config['atkroot'] . 'atk/images/up-down.gif" 
+        $additional = ' <img src="' . atkconfig('atkroot') . 'atk/images/up-down.gif" 
           width="10" height="10" 
           alt="Sortable Ordering" 
           title="Sortable Ordering" />';

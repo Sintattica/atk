@@ -296,8 +296,8 @@ class atkMetaAttributeModifier
    */
   public function setColumn($column)
   {
-  	$this->getPolicy()->setColumn($this->getAttributes(), $column);
-  	return $this;
+    $this->getPolicy()->setColumn($this->getAttributes(), $column);
+    return $this;
   }
   
   /**

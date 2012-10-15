@@ -14,7 +14,7 @@ BODY
   margin: 0px;
   z-index: 50;
   width: auto;
-  position: absolute;
+  position: fixed;
   top: 5px;
   left: 120px;
   color: white;

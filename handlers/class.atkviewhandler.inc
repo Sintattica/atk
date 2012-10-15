@@ -29,6 +29,9 @@
    */
   class atkViewHandler extends atkViewEditBase
   {
+
+    var $m_buttonsource = null;
+
     /**
      * The action handler method.
      *
@@ -71,6 +74,17 @@
     }
 
     /**
+     * Get the start of the form.
+     *
+     * @return String HTML The forms' start
+     */
+    public function getFormStart($record = null)
+    {
+        return '<form name="entryform" id="entryform" action="'.getDispatchFile().'" method="get">'.session_form(SESSION_NESTED).
+                               '<input type="hidden" name="atkselector" value="'.$this->getNode()->primaryKey($record).'">';
+    }
+    
+    /**
      * Returns an htmlpage displaying all displayable attributes.
      * @param array $record The record to display.
      * @param atkNode $node The node for which a viewPage is displayed.
@@ -90,11 +104,11 @@
 
         $params["activeTab"] = $tab;
         $params["header"] = $this->invoke("viewHeader", $record);
+        $params['title'] = $node->actionTitle($this->m_action, $record);
         $params["content"] = $node->tabulate("view", $innerform);
 
-        $params["formstart"] = '<form name="entryform" id="entryform" action="'.getDispatchFile().'" method="get">'.session_form(SESSION_NESTED).
-                               '<input type="hidden" name="atkselector" value="'.$node->primaryKey($record).'">';
-        $params["buttons"]   = $node->getFormButtons("view", $record);
+        $params["formstart"] = $this->getFormStart($record);
+        $params["buttons"]   = $this->getFormButtons($record);
         $params["formend"] = '</form>';
 
         $output = $ui->renderAction("view", $params);
@@ -114,7 +128,7 @@
         }
         else
         {
-          $total = $ui->renderBox($vars);
+          $total = $ui->renderBox($vars, $this->m_boxTemplate);
         }
 
         return $total;
@@ -124,6 +138,24 @@
         atkerror("ui object error");
       }
     }
+
+    /**
+     * Get the buttons for the current action form.
+     *
+     * @param array $record
+     * @return array Array with buttons
+     */
+    public function getFormButtons($record=null)
+    {
+      // If no custom button source is given, get the default atkController.
+      if ($this->m_buttonsource===null) {
+        $this->m_buttonsource = &$this->m_node;
+      }
+
+      return $this->m_buttonsource->getFormButtons("view", $record);
+    }
+
+
 
     /**
      * Overrideable function to create a header for view mode.
@@ -139,9 +171,10 @@
      *
      * @param Array $record The record
      * @param String $mode The mode we're in (defaults to "view")
+     * @param String $template The template to use for the view form
      * @return String HTML code of the page
      */
-    function viewForm($record, $mode="view")
+    function viewForm($record, $mode="view", $template="")
     {
       $node = &$this->m_node;
 
@@ -277,14 +310,21 @@
 
       $tabTpl = $this->_getTabTpl($node, $tabs,$mode,$record);
 
-      if(count(array_unique($tabTpl))>1)
+      if($template)
       {
-        $tabForm = $this->_renderTabs($fields, $tabTpl);
-        $innerform = implode(null,$tabForm);
+          $innerform = $ui->render($template, array("fields"=>$fields,'attributes'=>$attributes));
       }
       else
       {
-        $innerform = $ui->render($node->getTemplate("view", $record, $tab), array("fields"=>$fields,'attributes'=>$attributes));
+          if(count(array_unique($tabTpl))>1)
+          {
+            $tabForm = $this->_renderTabs($fields, $tabTpl);
+            $innerform = implode(null,$tabForm);
+          }
+          else
+          {
+            $innerform = $ui->render($node->getTemplate("view", $record, $tab), array("fields"=>$fields,'attributes'=>$attributes));
+          }
       }
       return $innerform;
     }

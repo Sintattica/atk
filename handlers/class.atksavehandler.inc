@@ -100,6 +100,13 @@
         return;
       }
 
+      // check for CSRF token
+      if (!$this->isValidCSRFToken($this->m_postvars['atkcsrftoken']))
+      {
+        $this->renderAccessDeniedPage();
+        return;
+      }
+
       if (!isset($this->m_postvars['atkcancel']))
       {
         // just before we validate the record we call the preAdd() to check if the record needs to be modified
@@ -132,8 +139,8 @@
           }
           else
           {
-            $location = $this->getSuccessReturnURL($record);
-            $this->m_node->redirect($location, $record);
+            $location = $this->invoke('getSuccessReturnURL', $record);
+            $this->_handleRedirect($location, $record);
           }
         }
       }
@@ -141,8 +148,21 @@
       {
         // Cancel was pressed
         $location = $this->m_node->feedbackUrl("save", ACTION_CANCELLED, $record, "", $this->_getSkip());
-        $this->m_node->redirect($location);
+        $this->_handleRedirect($location);
       }
+    }
+
+    /**
+     * Redirect after save
+     *
+     * @param string $location
+     * @param array|bool $recordOrExit
+     * @param bool $exit
+     * @param int $levelskip
+     */
+    protected function _handleRedirect($location = "", $recordOrExit = array(), $exit = false, $levelskip = 1)
+    {
+        $this->m_node->redirect($location, $recordOrExit, $exit, $levelskip);
     }
 
     /**
@@ -151,7 +171,7 @@
      * @param array $record Saved record
      * @return string Location to redirect to
      */
-    private function getSuccessReturnURL($record)
+    protected function getSuccessReturnURL($record)
     {
       $location="";
       if ($this->m_node->hasFlag(NF_EDITAFTERADD) && $this->m_node->allowed('edit'))
@@ -255,7 +275,7 @@
       else
       {
         $location = $this->m_node->feedbackUrl("save", ACTION_FAILED, $record, $db->getErrorMsg());
-        $this->m_node->redirect($location);
+        $this->_handleRedirect($location);
       }
     }
 
@@ -282,7 +302,7 @@
     function goBack($record)
     {
       $this->setRejectInfo($record);
-      $this->m_node->redirect();
+      $this->_handleRedirect();
     }
 
     /**

@@ -30,7 +30,9 @@ class atkSessionStore
   public static function getInstance($key=false, $reset=false)
   {
     if (!$key) $key = self::getKeyFromSession();
-    if (!isset(self::$_instances[$key]) || $reset) self::$_instances[$key] = new self($key);
+    if (!isset(self::$_instances[$key]) || $reset) {
+      self::$_instances[$key] = new self($key, $reset);
+    }
     return self::$_instances[$key];
   }
 
@@ -42,18 +44,23 @@ class atkSessionStore
   private static function getKeyFromSession()
   {
     $sessionmanager = self::getSessionManager();
-    if (!$sessionmanager) return false;
-    else                  return $sessionmanager->globalStackVar("atkstore_key");
+    if (!$sessionmanager) {
+      return false;
+    } else {
+      return $sessionmanager->globalStackVar("atkstore_key");
+    }
   }
 
   /**
    * Create a new sessionstore
    *
    * @param mixed $key Key to use
+   * @param boolean $reset Reset data
    */
-  private function __construct($key)
+  private function __construct($key, $reset = false)
   {
     $this->_key = $key;
+    if($reset) $this->setData(array());
   }
 
   /**
@@ -100,7 +107,10 @@ class atkSessionStore
     if (!$data) return false;
 
     $row_key = self::getRowKeyFromSelector($selector);
-    if ($row_key===false) return false;
+    if (!self::isValidRowKey($row_key, $data))
+    {
+      return false;
+    }
 
     return $data[$row_key];
   }
@@ -119,7 +129,10 @@ class atkSessionStore
     if (!$data) return false;
 
     $row_key = self::getRowKeyFromSelector($selector);
-    if ($row_key===false) return false;
+    if (!self::isValidRowKey($row_key, $data))
+    {
+      return false;
+    }
 
     $data[$row_key] = $row;
 
@@ -140,7 +153,10 @@ class atkSessionStore
     if (!$data) return false;
 
     $row_key = self::getRowKeyFromSelector($selector);
-    if ($row_key===false) return false;
+    if (!self::isValidRowKey($row_key, $data))
+    {
+      return false;
+    }
 
     unset($data[$row_key]);
 
@@ -212,5 +228,24 @@ class atkSessionStore
       return -1*$selector_values[0];
     }
     return false;
+  }
+
+  /**
+   * Check if the given row key is valid
+   * @param int $rowKey Row key
+   * @param array $data Data array
+   * @return boolean
+   */
+  private static function isValidRowKey($rowKey, $data)
+  {
+    if ($rowKey===false)
+    {
+      atkwarning(__CLASS__.'->'.__METHOD__.': No row key selector found');
+      return false;
+    } elseif(!array_key_exists($rowKey, $data)) {
+      atkwarning(__CLASS__.'->'.__METHOD__.': Row key not found in the data');
+      return false;
+    }
+    return true;
   }
 }

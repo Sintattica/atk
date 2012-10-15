@@ -48,6 +48,16 @@ table.recordlist .row2
   background-color: #E0E8EF;
 }
 
+table.recordList .row1
+{
+  background-color: #ffffff;
+}
+
+table.recordList .row2
+{
+  background-color: #E0E8EF;
+}
+
 .recordListSearch
 {
   background: #666 ! important;
@@ -61,7 +71,7 @@ table.recordlist .row2
 .recordList
 {
   border: 0px solid #d7d7d7;
-  border-left: 1px solid #eee;  
+  border-left: 1px solid #eee;
 }
 
 .recordListSearch
@@ -86,9 +96,10 @@ table.recordlist .row2
 
 .recordList th
 {
-	background-color: #749abe;
-	font-weight: normal;
-	color: #FFFFFF !important;
+  background-color: #749abe;
+  font-weight: normal;
+  color: #FFFFFF !important;
+  text-align: left;  
 }
 
 .recordList th a

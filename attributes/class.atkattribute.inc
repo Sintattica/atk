@@ -91,7 +91,7 @@
    *
    * hide flag
    */
-  define("AF_HIDE_VIEW"	 ,                        256);
+  define("AF_HIDE_VIEW"  ,                        256);
 
   /**
    * Not searchable in extended search
@@ -533,7 +533,7 @@
 
     /**
      * Variable to store dependency callbacks.
-     * 
+     *
      * @var array
      */
     private $m_dependencies = array();
@@ -591,6 +591,20 @@
      * @var array
      */
     private $m_jsObservers = array();
+
+    /**
+     * View callback.
+     *
+     * @var mixed
+     */
+    private $m_viewCallback = null;
+
+    /**
+     * Edit callback.
+     *
+     * @var mixed
+     */
+    private $m_editCallback = null;
 
     /**
      * Constructor
@@ -722,9 +736,9 @@
     {
       if($this->hasFlag($flag))
       {
-        $this->m_flags ^= $flag;  
-      } 
-      
+        $this->m_flags ^= $flag;
+      }
+
       if (!$this->hasFlag(AF_PRIMARY) && is_object($this->m_ownerInstance))
       {
         if (hasFlag($flag, AF_HIDE_LIST) && in_array($this->fieldName(), $this->m_ownerInstance->m_listExcludes))
@@ -737,7 +751,7 @@
         {
           $key = array_search($this->fieldName(), $this->m_ownerInstance->m_viewExcludes);
           unset($this->m_ownerInstance->m_viewExcludes[$key]);
-        }          
+        }
       }
 
       return $this;
@@ -786,9 +800,9 @@
     {
       if ($this->hasDisabledMode($flag))
       {
-        $this->m_disabledModes ^= $flag;    
+        $this->m_disabledModes ^= $flag;
       }
-      
+
       return $this;
     }
     /**
@@ -999,14 +1013,15 @@
      *
      * @access private
      * @param String $fieldprefix The prefix to the field
+     * @param String $elementNr The number of the element when attribute contains multiple options
      */
-    function _renderChangeHandler($fieldprefix)
+    function _renderChangeHandler($fieldprefix, $elementNr="")
     {
       if (count($this->m_onchangecode))
       {
         $page = &$this->m_ownerInstance->getPage();
         $page->register_scriptcode("
-    function ".$this->getHtmlId($fieldprefix)."_onChange(el)
+    function ".$this->getHtmlId($fieldprefix).$elementNr."_onChange(el)
     {
       {$this->m_onchangehandler_init}
       ".implode("\n      ", $this->m_onchangecode)."
@@ -1091,18 +1106,31 @@
         $arr["fields"][] = $entry;
       }
     }
-    
+
     /**
      * Prepare for edit. Is called before all attributes are added to the
      * edit array and allows for last minute manipulations based on the
      * record but also manipulations on the record itself.
-     * 
-     * @param array  $record reference to the record
-     * @param string $mode   edit mode
+     *
+     * @param array  $record      reference to the record
+     * @param string $fieldPrefix field prefix
+     * @param string $mode        edit mode
      */
-    public function preAddToEditArray(&$record, $mode)
+    public function preAddToEditArray(&$record, $fieldPrefix, $mode)
     {
     }
+    
+    /**
+     * Prepare for view. Is called before all attributes are added to the
+     * view array and allows for last minute manipulations based on the
+     * record but also manipulations on the record itself.
+     *
+     * @param array  $record reference to the record
+     * @param string $mode   view mode
+     */
+    public function preAddToViewArray(&$record, $mode)
+    {
+    }    
 
     /**
      * Adds the attribute's edit / hide HTML code to the edit array.
@@ -1123,10 +1151,11 @@
       /* hide */
       if (($mode=="edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode=="add" && $this->hasFlag(AF_HIDE_ADD)))
       {
-        /* when adding, there's nothing to hide... */
-        if ($mode=="edit" || ($mode=="add" && !$this->isEmpty($defaults)))
+        /* when adding, there's nothing to hide, unless we're dealing with atkHiddenAttribute... */
+        if ($mode=="edit" || ($mode=="add" && (!$this->isEmpty($defaults) || $this instanceof atkHiddenAttribute)))
+        {
           $arr["hide"][] = $this->hide($defaults, $fieldprefix, $mode);
-
+        }
       }
 
       /* edit */
@@ -1204,7 +1233,7 @@
       {
         $this->m_sections = $sections;
       }
-      
+
       return $this;
     }
 
@@ -1240,6 +1269,28 @@
       return $this;
     }
 
+    /**
+     * Returns the view callback (if set).
+     *
+     * @return mixed callback method
+     */
+    protected function getViewCallback()
+    {
+      return $this->m_viewCallback;
+    }
+
+    /**
+     * Sets the view callback.
+     *
+     * The callback is called instead of the regular display method of the
+     * attribute.
+     *
+     * @param mixed $callback callback method
+     */
+    public function setViewCallback($callback)
+    {
+      $this->m_viewCallback = $callback;
+    }
 
     /**
      * Retrieve the html code for placing this attribute in a view page.
@@ -1258,17 +1309,20 @@
      */
     function getView($mode, &$defaults)
     {
-      $funcname = $this->m_name."_display";
-      if (method_exists($this->m_ownerInstance, $funcname))
+      $method = $this->m_name."_display";
+
+      if ($this->getViewCallback() != null)
       {
-        $result = $this->m_ownerInstance->$funcname($defaults, $mode);
+        return call_user_func($this->getViewCallback(), $defaults, $mode, $this);
+      }
+      else if (method_exists($this->m_ownerInstance, $method))
+      {
+        return $this->m_ownerInstance->$method($defaults, $mode);
       }
       else
       {
-        $result = $this->display($defaults, $mode);
+        return $this->display($defaults, $mode);
       }
-
-      return $result;
     }
 
     /**
@@ -1292,6 +1346,29 @@
     }
 
     /**
+     * Returns the edit callback (if set).
+     *
+     * @return mixed callback method
+     */
+    protected function getEditCallback()
+    {
+      return $this->m_editCallback;
+    }
+
+    /**
+     * Sets the edit callback.
+     *
+     * The callback is called instead of the regular display method of the
+     * attribute.
+     *
+     * @param mixed $callback callback method
+     */
+    public function setEditCallback($callback)
+    {
+      $this->m_editCallback = $callback;
+    }
+
+    /**
      * Retrieve the HTML code for placing this attribute in an edit page.
      *
      * The difference with the edit() method is that the edit() method just
@@ -1312,28 +1389,30 @@
      */
     function getEdit($mode, &$defaults, $fieldprefix)
     {
-      /* readonly */
-      $result = "";
-      if (($mode=="edit" && $this->hasFlag(AF_READONLY_EDIT)) || ($mode=="add" && $this->hasFlag(AF_READONLY_ADD)))
+      // readonly
+      if (($mode=="edit" && $this->hasFlag(AF_READONLY_EDIT)) ||
+          ($mode=="add" && $this->hasFlag(AF_READONLY_ADD)))
       {
-        $result.= $this->hide($defaults, $fieldprefix);
-        $result.= $this->getView($mode, $defaults);
+        return
+          $this->hide($defaults, $fieldprefix).
+          $this->getView($mode, $defaults);
       }
-      /* normal */
+
+      $method = $this->m_name."_edit";
+      if ($this->getEditCallback() != null)
+      {
+        return call_user_func($this->getEditCallback(), $defaults, $fieldprefix, $mode, $this);
+      }
+      else if ($this->m_name != "action" && method_exists($this->m_ownerInstance, $method))
+      {
+        // we can't support the override for attributes named action, because of a conflict with
+        // a possible edit action override (in both cases the method is called action_edit)
+        return $this->m_ownerInstance->$method($defaults, $fieldprefix, $mode);
+      }
       else
       {
-        $funcname = $this->m_name."_edit";
-        // The check for 'action' is a workaround for a weird php bug, which chokes on funcnames with 'action' in them.
-        if ($this->m_name != "action" && method_exists($this->m_ownerInstance, $funcname))
-        {
-          $result .= $this->m_ownerInstance->$funcname($defaults, $fieldprefix, $mode);
-        }
-        else
-        {
-          $result .= $this->edit($defaults, $fieldprefix, $mode);
-        }
+        return $this->edit($defaults, $fieldprefix, $mode);
       }
-      return $result;
     }
 
     /**
@@ -1369,7 +1448,7 @@
      * @param array           $atksearch    the current ATK search list (if not empty)
      * @param atkColumnConfig $columnConfig Column configuration object
      * @param atkDataGrid     $grid         The atkDataGrid this attribute lives on.
-     * @param string          $column       child column (null for this attribute, * for this attribute and all childs)     
+     * @param string          $column       child column (null for this attribute, * for this attribute and all childs)
     */
     public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $columnConfig, atkDataGrid $grid=null, $column='*')
     {
@@ -1377,7 +1456,7 @@
       {
         throw new Exception("Invalid list column {$column} for ".get_class($this)." ".$this->getOwnerInstance()->atkNodeType().'::'.$this->fieldName());
       }
-      
+
       if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select"))
       {
         $key = $fieldprefix.$this->fieldName();
@@ -1430,7 +1509,7 @@
       {
         throw new Exception("Invalid list column {$column} for ".get_class($this)." ".$this->getOwnerInstance()->atkNodeType().'::'.$this->fieldName());
       }
-      
+
       if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select"))
       {
         if ($edit)
@@ -2056,7 +2135,7 @@
           $this->m_maxsize = $this->m_size = $this->m_searchsize = $size;
         }
       }
-      
+
       return $this;
     }
 
@@ -2377,7 +2456,7 @@
         $kb = &atkKeyboard::getInstance();
         $kb->addFormElementHandler($id, $navkeys);
       }
-      
+
       return $this;
     }
 
@@ -2466,7 +2545,7 @@
 
       // add $field to fields array
       $fields[] = $field;
-      
+
       return $this;
     }
 
@@ -2621,7 +2700,21 @@
         $table = $this->m_ownerInstance->m_table;
       }
 
-      return "LOWER(".$table.".".$this->fieldName().")".($direction ? " {$direction}" : "");
+      // check for a schema name in $table
+      if (strpos($table, '.') !== false) {
+        $identifiers = explode('.', $table);
+
+        $tableIdentifier = '';
+        foreach ($identifiers as $identifier) {
+            $tableIdentifier .= $this->getDb()->quoteIdentifier($identifier) . '.';
+        }
+
+        return "LOWER(".$tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).")".($direction ? " {$direction}" : "");
+      } else {
+        return "LOWER(".$this->getDb()->quoteIdentifier($table).".".$this->getDb()->quoteIdentifier($this->fieldName()).")".($direction ? " {$direction}" : "");
+      }
+
+
     }
 
     /**
@@ -2727,15 +2820,15 @@
     /**
      * Add a depended attribute for this attribute, which means the depended
      * attribute will be refreshed (using Ajax) if the value for this attribute
-     * changes. 
-     * 
+     * changes.
+     *
      * This method is deprecated, use atkAttribute::addDependency instead!
-     * 
+     *
      * @deprecated
      * @see atkAttribute::addDependency
-     * 
+     *
      * @param string $attribute attribute name
-     * 
+     *
      * @return atkAttribute attribute instance.
      */
     public function addDependee($attribute)
@@ -2744,14 +2837,14 @@
       $this->addDependency($callback);
       return $this;
     }
-    
+
     /**
      * Special case of an on-change handler which gets executed server-side and
-     * can manipulate the DOM using PHP wrapper methods available in the 
+     * can manipulate the DOM using PHP wrapper methods available in the
      * atkFormModifier class or by outputting JavaScript code directly.
      *
      * @param mixed callback closure or something else which is_callable
-     * 
+     *
      * @return atkAttribute attribute instance
      */
     public function addDependency($callback)
@@ -2762,14 +2855,14 @@
 
     /**
      * Retrieve the dependees for this attribute.
-     * 
+     *
      * @return array Returns the list of dependees (callbacks) for this attribute.
      */
     public function getDependencies()
     {
       return $this->m_dependencies;
     }
-    
+
     /**
      * Initialize and calls the dependencies.
      *
@@ -2779,32 +2872,35 @@
      */
     public function initDependencies(&$record, $fieldPrefix, $mode)
     {
+        
       if (count($this->getDependencies()) == 0)
-      {
+      {          
         return;
       }
-      
+
       $this->_callDependencies($record, $fieldPrefix, $mode, true);
 
       atkimport('atk.utils.atkjson');
-      
+
       $action = $this->getOwnerInstance()->m_action;
       if ($action == null)
       {
         $action = $mode == "add" ? "add" : "edit";
       }
-      
+
       $url = partial_url($this->getOwnerInstance()->atkNodeType(), $action, "attribute.".$this->fieldName().".dependencies", array("atkdata" => array('fieldPrefix' => $fieldPrefix, 'mode' => $mode)));
       $url = atkJSON::encode($url);
+
       
-      $this->getOwnerInstance()->getPage()->register_script(atkconfig('atkroot').'atk/javascript/class.atkattribute.js');      
-      $code = "ATK.Attribute.callDependencies({$url});";
+      
+      $this->getOwnerInstance()->getPage()->register_script(atkconfig('atkroot').'atk/javascript/class.atkattribute.js');
+      $code = "ATK.Attribute.callDependencies({$url}, el);";
       $this->addOnChangeHandler($code);
-    }  
+    }
 
     /**
      * Calls the dependency callbacks for this attribute.
-     * 
+     *
      * @param array   $record      record
      * @param string  $fieldPrefix the prefix for this attribute in an HTML form
      * @param string  $mode        add/edit mode
@@ -2814,21 +2910,31 @@
     {
       atkimport('atk.utils.atkeditformmodifier');
       $modifier = new atkEditFormModifier($this->getOwnerInstance(), $record, $fieldPrefix, $mode, $initial);
-      
+
       foreach ($this->getDependencies() as $callable)
       {
         call_user_func($callable, $modifier);
       }
     }
-    
+
     /**
      * Call dependencies for this attribute and output JavaScript.
      */
     public function partial_dependencies()
     {
+      // set attribute sizes
+      $this->getOwnerInstance()->setAttribSizes();
+        
       $record = $this->getOwnerInstance()->updateRecord();
       $fieldPrefix = $this->getOwnerInstance()->m_postvars['atkdata']['fieldPrefix'];
       $mode = $this->getOwnerInstance()->m_postvars['atkdata']['mode'];
+      
+      // initialize dependencies
+      foreach ($this->getOwnerInstance()->getAttributes() as $attr)
+      {
+        $attr->initDependencies($record, $fieldPrefix, $mode);
+      }
+      
       $this->_callDependencies($record, $fieldPrefix, $mode, false);
     }
 
@@ -2852,7 +2958,7 @@
     {
       if (!in_array($classname, $this->m_cssclasses))
       {
-        $this->m_cssclasses[] = $classname;   
+        $this->m_cssclasses[] = $classname;
       }
 
       return $this;

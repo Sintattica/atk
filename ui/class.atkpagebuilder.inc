@@ -105,12 +105,13 @@ class atkPageBuilder
    *
    * @param string $content
    * @param string $title
+   * @param string $template
    * 
    * @return atkPageBuilder
    */
-  public function box($content, $title=null)
+  public function box($content, $title=null, $template=null)
   {
-    $this->m_boxes[] = array('type' => 'box', 'title' => $title, 'content' => $content);
+    $this->m_boxes[] = array('type' => 'box', 'title' => $title, 'content' => $content, 'template' => $template);
     return $this;
   }
   
@@ -118,13 +119,14 @@ class atkPageBuilder
    * Add action box.
    *
    * @param array  $params
-   * @param string $title 
+   * @param string $title
+   * @param string $template  
    * 
    * @return atkPageBuilder
    */
-  public function actionBox($params, $title=null)
+  public function actionBox($params, $title=null, $template=null)
   {
-    $this->m_boxes[] = array('type' => 'action', 'title' => $title, 'params' => $params);
+    $this->m_boxes[] = array('type' => 'action', 'title' => $title, 'params' => $params, 'template' => $template);
     return $this;
   }  
   
@@ -160,14 +162,15 @@ class atkPageBuilder
       
       if ($box['type'] == 'action')
       {
-        $content = $this->getNode()->getUi()->renderAction($this->m_action, $box['params'], $this->getNode()->getModule());
+        $params = array_merge(array('title' => $title), $box['params']);
+        $content = $this->getNode()->getUi()->renderAction($this->m_action, $params, $this->getNode()->getModule());
       }
       else 
       {
         $content = $box['content'];
       }
       
-      $boxes[] = $this->getNode()->getUi()->renderBox(array('title' => $title, 'content' => $content));
+      $boxes[] = $this->getNode()->getUi()->renderBox(array('title' => $title, 'content' => $content), $box['template']);
     }
 
     $this->getNode()->getPage()->setTitle(atktext('app_shorttitle')." - ".$this->m_title);

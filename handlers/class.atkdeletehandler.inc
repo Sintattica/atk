@@ -37,6 +37,14 @@
       if (!$this->_checkAllowed())
       {
         $this->renderAccessDeniedPage();
+        return;
+      }
+
+      if ((!empty($this->m_postvars['confirm']) || !empty($this->m_postvars['cancel'])) &&
+          !$this->isValidCSRFToken($this->m_postvars['atkcsrftoken']))
+      {
+        $this->renderAccessDeniedPage();
+        return;
       }
 
       if (!empty($this->m_postvars['confirm'])) $this->_doDelete();
@@ -54,15 +62,20 @@
         // If we got here, then the node is not locked and we haven't displayed the
         // confirmation page yet, so we display it
         $page = &$this->getPage();
-        $page->addContent($this->m_node->renderActionPage("delete", $this->m_node->confirmAction($this->m_postvars['atkselector'], "delete", false, TRUE)) );
+        $page->addContent($this->m_node->renderActionPage("delete", $this->m_node->confirmAction($this->m_postvars['atkselector'], "delete", false, TRUE, true, $this->getCSRFToken())) );
       }
       else
+      {
+        $this->_handleCancelAction();
+      }
+    }
+
+      protected function _handleCancelAction()
       {
         // Confirmation page was displayed and 'no' was clicked
         $location = $this->m_node->feedbackUrl("delete", ACTION_CANCELLED);
         $this->m_node->redirect($location);
       }
-    }
 
     /**
      * Check if we are allowed to remove the given records.
@@ -93,7 +106,7 @@
      * needs to be deleted (session or dabase), delete it
      * and redirect to the feedback url.
      */
-    function _doDelete()
+    protected function _doDelete()
     {
       $atkstoretype = "";
       $sessionmanager = atkGetSessionManager();
@@ -115,7 +128,7 @@
      *
      * @return mixed Results, true or string with errormessage
      */
-    private function _doDeleteDb()
+    protected function _doDeleteDb()
     {
       $db = &$this->m_node->getDb();
       if ($this->m_node->deleteDb($this->m_postvars['atkselector']))
@@ -136,7 +149,7 @@
      *
      * @return bool Results, true or false
      */
-    private function _doDeleteSession()
+    protected function _doDeleteSession()
     {
       $selector = atkArrayNvl($this->m_postvars, 'atkselector','');
       return atkinstance('atk.session.atksessionstore')->deleteDataRowForSelector($selector);
@@ -178,7 +191,7 @@
      * @return bool wether or not the attributes have allowed deletion
      */
     function checkAttributes()
-    {   
+    {
       foreach ($this->m_node->getAttributes() as $attrib)
       {
       	// If allowed !=== true, then it returned an error message

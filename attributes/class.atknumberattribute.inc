@@ -108,8 +108,24 @@
       {
         $table = $this->m_ownerInstance->m_table;
       }
-
-      return $table.".".$this->fieldName().($direction ? " {$direction}" : "");
+      
+      // check for a schema name in $table
+      if (strpos($table, '.') !== false) 
+      {
+        $identifiers = explode('.', $table);
+      
+        $tableIdentifier = '';
+        foreach ($identifiers as $identifier) 
+        {
+          $tableIdentifier .= $this->getDb()->quoteIdentifier($identifier) . '.';
+        }
+        
+        return $tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " {$direction}" : "");
+      } 
+      else 
+      {
+        return $this->getDb()->quoteIdentifier($table).".".$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " {$direction}" : "");
+      }      
     }
 
     /**
@@ -147,6 +163,33 @@
     function standardiseSeparator($number)
     {
       return str_replace(atktext("decimal_separator"),".",$number);
+    }
+
+    /**
+     * Returns a piece of html code for hiding this attribute in an HTML form,
+     * while still posting its value. (<input type="hidden">)
+     *
+     * We have to format the value, so it matches the display value
+     * Otherwise the value will be corrupted by removeSeparators
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @return String A piece of htmlcode with hidden form elements that post
+     *                this attribute's value without showing it.
+     */
+    function hide($record="", $fieldprefix="")
+    {
+      // the next if-statement is a workaround for derived attributes which do
+      // not override the hide() method properly. This will not give them a
+      // working hide() functionality but at least it will not give error messages.
+      if (!is_array($record[$this->fieldName()]))
+      {
+        $id = $id = $this->getHtmlId($fieldprefix);
+        $result = '<input type="hidden" id="'.$id.'" name="'.$fieldprefix.$this->formName().'" value="'.htmlspecialchars($this->formatNumber($record[$this->fieldName()])).'">';
+        return $result;
+      }
+      else atkdebug("Warning attribute ".$this->m_name." has no proper hide method!");
     }
 
     /**
@@ -423,25 +466,38 @@
      */
     function fetchMeta($metadata)
     {
-    	parent::fetchMeta($metadata);
+      $searchSize = $this->m_searchsize;
+      $maxSize = $this->m_maxsize; 
+      
+      parent::fetchMeta($metadata);
+      
+      if (strpos($this->m_size, ',') !== false)
+      {
+        list($this->m_size, $decimals) = explode(',', $this->m_size);
 
-    	if (strpos($this->m_size, ',') !== false)
-    	{
-    		list($this->m_size, $decimals) = explode(',', $this->m_size);
+        if ($this->m_decimals === null)
+        {
+          // no decimals explicitly set, so use the one we
+          // retrieved from the database
+          $this->m_decimals = $decimals;
+        }
+        else
+        {
+          // if the number of decimals are explicitly set, but the database
+          // simply can't handle it, we use the lowest value
+          $this->m_decimals = min($this->m_decimals, $decimals);
+        }
+      }
+      
+      if ($this->m_searchsize > 0) 
+      {
+        $this->m_searchsize = min($searchSize, $this->m_size + $this->m_decimals + 1, 20);
+      }
 
-    		if ($this->m_decimals === null)
-    		{
-    		  // no decimals explicitly set, so use the one we
-    		  // retrieved from the database
-    		  $this->m_decimals = $decimals;
-    		}
-    		else
-    		{
-    		  // if the number of decimals are explicitly set, but the database
-    		  // simply can't handle it, we use the lowest value
-    		  $this->m_decimals = min($this->m_decimals, $decimals);
-    		}
-    	}
+      if ($this->m_maxsize > 0) 
+      {
+        $this->m_maxsize = min($maxSize, $this->m_size, 20);
+      }
     }
 
     /**
@@ -518,28 +574,32 @@
           if ($value["from"]!=""||$value["to"]!="")
           {
              // Two values were entered in the extended search screen.
-             $record[$this->fieldName()] = $value["from"]."/".$value["to"];
+             $value = $value["from"]."/".$value["to"];
           }
           else
           {
-            $record[$this->fieldName()] = "";
+            $value = "";
           }
         }
-        return parent::search($record, $extended, $fieldprefix);
+        
+        $id = $this->getSearchFieldName($fieldprefix);
+        
+        $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
+        $result = '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.atk_htmlentities($value).'"'.
+                  ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';        
+        return $result;
       }
       else
       {
         $id = $this->getSearchFieldName($fieldprefix).'[from]';
         $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
         $result= '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.atk_htmlentities($value).'"'.
-                  ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
-                  ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
+                  ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';
 
         $id = $this->getSearchFieldName($fieldprefix).'[to]';
         $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
         $result.= " (".atktext("until").' <input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.atk_htmlentities($value).'"'.
-                  ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
-                  ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>)';
+                  ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>)';
         return $result;
       }
     }

@@ -112,7 +112,7 @@
         $date = adodb_getdate(adodb_mktime (0, 0, 0, $date["mon"]+1, 0, $date["year"]));
         return $date["mday"];
       }
-      return "";
+      return 31;
     }
 
     /**
@@ -978,7 +978,7 @@
      */
     function db2value($rec)
     {
-      if (!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()]) == 0 || (int)substr($rec[$this->fieldName()], 0, 4) == 0) return "";
+      if (!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()]) == 0 || (int)substr($rec[$this->fieldName()], 0, 4) == 0) return null;
       return array("year" =>substr($rec[$this->fieldName()], 0, 4),
                    "month"=>substr($rec[$this->fieldName()], 5, 2),
                    "day"  =>substr($rec[$this->fieldName()], 8, 2));

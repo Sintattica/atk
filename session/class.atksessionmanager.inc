@@ -217,7 +217,7 @@
         }
       }
 
-      if ($value!=="") 
+      if ($value!=="")
       {
         $currentitem[$var] = $value;
       }
@@ -960,7 +960,7 @@
       }
 
       $res .= '<input type="hidden" name="'.session_name().'" value="'.session_id().'" />';
-      $res .= '<input type="hidden" name="atkescape" value="" />';
+      $res .= '<input type="hidden" name="atkescape" value="" autocomplete="off" />';
 
       for ($i=0;$i<count($g_stickyurl);$i++)
       {
@@ -1051,7 +1051,7 @@
      * form variables in the session and restore them whenever you come back.
      *
      * @param string $url         the url to make session aware
-     * @param string $name        the name to display
+     * @param string $name        the name to display (will not be escaped!)
      * @param var $sessionstatus  the session flags
      *                            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
      *                             SESSION_NESTED|SESSION_BACK)
@@ -1065,14 +1065,14 @@
     {
       if ($saveform)
       {
-        $str = 'javascript:atkSubmit("'.atkurlencode(atkSessionManager::sessionUrl($url,$sessionstatus)).'")';
+        $str = 'atkSubmit("'.atkurlencode(atkSessionManager::sessionUrl($url,$sessionstatus)).'");';
+        return "<a href=\"javascript:void(0)\" onclick=\"".atk_htmlentities($str)."\" ".$extraprops.">".$name."</a>";        
       }
       else
       {
         $str = atkSessionManager::sessionUrl($url,$sessionstatus);
+        return "<a href=\"".atk_htmlentities($str)."\" ".$extraprops.">".$name."</a>";
       }
-
-      return "<a href=\"".atk_htmlentities($str)."\" ".$extraprops.">".$name."</a>";
     }
   }
 
@@ -1086,7 +1086,7 @@
     {
       return false; // command-line
     }
-    
+
     $cookie_params = session_get_cookie_params();
     $cookiepath   = atkconfig("application_root");
     $cookiedomain = (atkconfig("cookiedomain") != "") ? atkconfig("cookiedomain") : NULL;

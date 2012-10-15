@@ -184,6 +184,14 @@ class atkManyToOneRelation extends atkRelation
   var $m_autocomplete_minrecords = -1;
 
   /**
+   * Set the size attribute of the autocompletion input element
+   *
+   * @access protected
+   * @var integer
+   */
+  protected $m_autocomplete_size = 30;
+
+  /**
    * Destination node for auto links (edit, new)
    *
    * @var string
@@ -372,6 +380,16 @@ class atkManyToOneRelation extends atkRelation
   function setAutoCompleteMinRecords($minrecords)
   {
     $this->m_autocomplete_minrecords = $minrecords;
+  }
+
+  /**
+   * Set the size of the rendered autocompletion input element
+   *
+   * @param integer $size
+   */
+  function setAutoCompleteSize($size)
+  {
+    $this->m_autocomplete_size = $size;
   }
 
   /**
@@ -662,7 +680,8 @@ class atkManyToOneRelation extends atkRelation
         {
           if (($this->m_destInstance->allowed("view"))&&!$this->m_destInstance->hasFlag(NF_NO_VIEW)&&$result!="")
           {
-            $result = href(dispatch_url($this->m_destination,"view",array("atkselector"=>$this->m_destInstance->primaryKey($record[$this->fieldName()]))), $result, SESSION_NESTED);
+            $saveForm = $mode == 'add' || $mode == 'edit';
+            $result = href(dispatch_url($this->m_destination,"view",array("atkselector"=>$this->m_destInstance->primaryKey($record[$this->fieldName()]))), $result, SESSION_NESTED, $saveForm);
           }
         }
       }
@@ -779,10 +798,11 @@ class atkManyToOneRelation extends atkRelation
    * loaded and update the record with the possible selection of the first
    * record.
    *
-   * @param array  $record reference to the record
-   * @param string $mode   edit mode
+   * @param array  $record      reference to the record
+   * @param string $fieldPrefix field prefix
+   * @param string $mode        edit mode
    */
-  public function preAddToEditArray(&$record, $mode)
+  public function preAddToEditArray(&$record, $fieldPrefix, $mode)
   {
     if ((!$this->hasFlag(AF_RELATION_AUTOCOMPLETE) && !$this->hasFlag(AF_LARGE)) ||
         $this->m_autocomplete_minrecords > -1)
@@ -2220,7 +2240,7 @@ class atkManyToOneRelation extends atkRelation
 
     $result =
         '<input type="hidden" id="'.$id.'" name="'.$id.'" value="'.$value.'" />
-         <input type="text" id="'.$id.'_search" value="'.atk_htmlentities($label).'" class="atkmanytoonerelation_search" size="30" onfocus="this.select()" />
+         <input type="text" id="'.$id.'_search" value="'.atk_htmlentities($label).'" class="atkmanytoonerelation_search" size="'.$this->m_autocomplete_size.'" onfocus="this.select()" />
          <img id="'.$id.'_spinner" src="atk/images/spinner.gif" style="vertical-align: middle; display: none"> '.$links.'
          <div id="'.$id.'_result" style="display: none" class="atkmanytoonerelation_result"></div>';
 
@@ -2457,9 +2477,10 @@ class atkManyToOneRelation extends atkRelation
 
         atkimport("atk.utils.atkstringparser");
         $parser = new atkStringParser($descriptordef);
-        $concatFields = $parser->getAllParsedFieldsAsArray($fields, true);
-        $concatTags       = $concatFields['tags'];
-        $concatSeparators = $concatFields['separators'];
+        $concatFields       = $parser->getAllParsedFieldsAsArray($fields, true);
+        $concatTags         = $concatFields['tags'];
+        $concatSeparators   = $concatFields['separators'];
+        $concatSeparators[] = ' '; //the query removes all spaces, so let's do the same here [Bjorn]
 
         // to search independent of characters between tags, like spaces and comma's,
         // we remove all these separators so we can search for just the concatenated tags in concat_ws [Jeroen]

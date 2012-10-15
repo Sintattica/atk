@@ -301,6 +301,7 @@
       $node = &$this->getNode();
       if(!is_object($node)) return;
 
+
       $node->m_postvars = $postvars;
       $node->m_action = $postvars['atkaction'];
       if (isset($postvars["atkpartial"]))
@@ -317,7 +318,17 @@
         $secMgr->logAction($node->m_type, $node->m_action);
         $node->callHandler($node->m_action);
 
-        list($selector,$id) = explode("=", atkarraynvl($node->m_postvars, "atkselector", "="));
+        if (is_array($node->m_postvars["atkselector"])) {
+            $atkSelectorDecoded = array();
+
+            foreach ($node->m_postvars["atkselector"] as $rowIndex => $selector) {
+                list($selector, $pk) = explode("=", $selector);
+                $atkSelectorDecoded[] = $pk;
+                $id = implode(',', $atkSelectorDecoded);
+            }
+        } else {
+            list($selector,$id) = explode("=", atkarraynvl($node->m_postvars, "atkselector", "="));
+        }
         $page->register_hiddenvars(array("atknodetype"=>$node->m_module.".".$node->m_type, "atkselector"=>str_replace("'", "", $id)));
       }
       else
@@ -600,6 +611,7 @@
            $value = '<< '.atktext($action, 'atk');
            break;
          case "edit":
+           $name = "atkedit";
            $class = "btn_save";
            break;
          default:
@@ -622,7 +634,7 @@
       if ($name != "")
         $name = "name=\"".$this->m_node->getEditFieldPrefix()."{$name}\" ";
 
-       return '<input type="submit" '.$class.$name.' value="'.$value.'">';
+       return '<button type="submit" '.$class.$name.'>'.$value.'</button>';
      }
 
      /**

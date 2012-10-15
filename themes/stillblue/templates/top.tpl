@@ -1,4 +1,6 @@
 {atkconfig var="theme_logo" smartyvar="theme_logo"}
+<div id="topSpacer"></div>
+
 <div id="banner">
   <div id="bannerLogo"><a href="index.php"><img border="0" src="{if empty($theme_logo)}{atkthemeimg logo.jpg}{else}{$theme_logo}{/if}" alt="Logo" /></a></div>
   <div id="bannerCustomImage"></div>

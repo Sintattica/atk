@@ -446,6 +446,58 @@
      {
        return true;
      }
+     
+    /**
+     * This function returns "get password" policy for current auth method
+     *
+     * @return const
+     */
+    function getPasswordPolicy()
+    {
+      return PASSWORD_RETRIEVABLE;    
+    }
+    
+    /**
+     * This function returns password or false, if password can't be retrieve/recreate
+     * 
+     * @param string $username User for which the password should be regenerated
+     *
+     * @return mixed string with password or false
+     */
+    function gettingPassword($username)
+    {
+      // Query the database for user records having the given username and return if not found
+      $usernode = &atkGetNode(atkconfig("auth_usernode"));
+      $selector = sprintf("%s.%s = '%s'", atkconfig("auth_usertable"), atkconfig("auth_userfield"), $username);
+      $userrecords = $usernode->selectDb($selector, "", "", "", array(atkconfig("auth_userpk"), atkconfig("auth_emailfield"), atkconfig("auth_passwordfield")), "edit");
+      if (count($userrecords) != 1)
+      {
+        atkdebug("User '$username' not found.");
+        return false;
+      }
+
+      // Retrieve the email address
+      $email = $userrecords[0][atkconfig("auth_emailfield")];
+      if (empty($email))
+      {
+        atkdebug("Email address for '$username' not available.");
+        return false;
+      }
+
+      // Regenerate the password
+      $passwordattr = &$usernode->getAttribute(atkconfig("auth_passwordfield"));
+      $newpassword = $passwordattr->generatePassword();
+
+      // Update the record in the database
+      $userrecords[0][atkconfig("auth_passwordfield")]["hash"] = md5($newpassword);
+      $usernode->updateDb($userrecords[0], true, "", array(atkconfig("auth_passwordfield")));
+
+      $usernode->getDb()->commit();
+
+      // Return true
+      return $newpassword;
+    }
+    
    }
 
 ?>

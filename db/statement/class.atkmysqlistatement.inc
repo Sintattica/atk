@@ -181,7 +181,7 @@ class atkMySQLiStatement extends atkStatement
     
     if (!$this->m_stmt->execute())
     {
-      throw new atkStatementException("Cannot execute statement.", atkStatementException::STATEMENT_ERROR);
+      throw new atkStatementException("Cannot execute statement: {$this->m_stmt->error}", atkStatementException::STATEMENT_ERROR);
     }
     
     $this->m_insertId = $this->getDb()->link_id()->insert_id;

@@ -193,7 +193,7 @@ class atkEditFormModifier
     {
       $element = str_replace('.', '_', $this->getNode()->atkNodeType().'_'.$field['id']);
       $value = atkJSON::encode(atk_iconv(atkGetCharset(), "UTF-8", $field['html'])); // atkJSON::encode excepts string in UTF-8
-      $scriptCode .= "\$('{$element}').update({$value});\n";
+      $scriptCode .= "\$('{$element}').update({$value});\n\n";
     }    
     
     $this->getNode()->getPage()->register_loadscript($scriptCode, $offset);

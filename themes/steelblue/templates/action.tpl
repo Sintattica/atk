@@ -10,7 +10,6 @@
     <div class="atkmessages_{$message.type}">{$message.message}</div>
   {/foreach}
 </div>
-<br />
 {/if}
 {$header}
 {$formstart}
@@ -20,7 +19,7 @@
 <br>
 <div id="action-buttons">
       {foreach from=$buttons item=button}
-        &nbsp;{$button}&nbsp;
+        {$button}
       {/foreach}
 </div>
 {$formend}

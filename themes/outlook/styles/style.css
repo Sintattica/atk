@@ -71,7 +71,7 @@ TEXTAREA
   font-size: 11px;
 }
 
-INPUT.btn_saveandclose
+button.btn_saveandclose
 {
   font-weight: bold;
 }
