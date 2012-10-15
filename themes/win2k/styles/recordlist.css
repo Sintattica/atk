@@ -1,0 +1,56 @@
+
+TABLE.recordlist TH,
+TABLE.recordlist TD,
+TABLE.recordlist A  {
+	font-family : Verdana,Helvetica,Arial,sans-serif;
+	font-size : 8pt;
+}
+
+TABLE.recordlist TH,
+TABLE.recordlist TH A  {
+	background-color : #d4d0c8;
+}
+
+TABLE.recordlist TD,
+TABLE.recordlist TH  {
+	padding : 0px;
+	border: 0px;
+	margin : 0px;
+}
+
+TABLE.recordlist TH  {
+	border-top : 1px solid rgb(255,255,255);
+	border-left : 1px solid rgb(255,255,255);
+	border-bottom : 1px solid rgb(128,128,128);
+	border-right : 1px solid rgb(128,128,128);
+	cursor : default;
+	height : 14px;
+	font-weight : normal;
+	padding-left : 4px;
+	padding-right : 4px;
+	padding-top : 2px;
+	padding-bottom : 2px;
+	text-align : left;
+	margin : 0px;
+}
+
+TABLE.recordlist .row1  {
+	background-color : #FEFEFE;
+}
+
+TABLE.recordlist .row2  {
+	background-color : #F6F6F6;
+}
+
+TABLE.recordlist {
+	border: 0px;
+	margin: 0px;
+	padding: 0px;
+	border-spacing: 0px;
+}
+
+img.recordlist
+{
+  width: 16px;
+  height: 16px;
+}

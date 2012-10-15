@@ -1,0 +1,2332 @@
+<?php
+
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage relations
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision: 6309 $
+   * $Id$
+   */
+
+  /**
+   * Create edit/view links for the items in a manytoonerelation dropdown.
+   */
+  define("AF_RELATION_AUTOLINK",  AF_SPECIFIC_1);
+
+  /**
+   * Create edit/view links for the items in a manytoonerelation dropdown.
+   */
+  define("AF_MANYTOONE_AUTOLINK", AF_RELATION_AUTOLINK);
+
+  /**
+   * Do not add null option under any circumstance
+   */
+  define("AF_RELATION_NO_NULL_ITEM",  AF_SPECIFIC_2);
+
+  /**
+   * Do not add null option ever
+   */
+  define("AF_MANYTOONE_NO_NULL_ITEM", AF_RELATION_NO_NULL_ITEM);
+
+  /**
+   * Use auto-completition instead of drop-down / selection page
+   */
+  define("AF_RELATION_AUTOCOMPLETE",  AF_SPECIFIC_3);
+
+  /**
+   * Use auto-completition instead of drop-down / selection page
+   */
+  define("AF_MANYTOONE_AUTOCOMPLETE", AF_RELATION_AUTOCOMPLETE);
+
+  /**
+   * Lazy load
+   */
+  define("AF_MANYTOONE_LAZY", AF_SPECIFIC_4);
+
+  /**
+   * Add a default null option to obligatory relations
+   */
+  define("AF_MANYTOONE_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_5);
+
+  /**
+   * @internal include base class
+   */
+  userelation("atkrelation");
+
+  /**
+   * A N:1 relation between two classes.
+   *
+   * For example, projects all have one coordinator, but one
+   * coordinator can have multiple projects. So in the project
+   * class, there's a ManyToOneRelation to a coordinator.
+   *
+   * This relation essentially creates a dropdown box, from which
+   * you can select from a set of records.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage relations
+   *
+   */
+  class atkManyToOneRelation extends atkRelation
+  {
+    const SEARCH_MODE_EXACT       = "exact";
+    const SEARCH_MODE_STARTSWITH  = "startswith";
+    const SEARCH_MODE_CONTAINS    = "contains";
+
+    /**
+     * By default, we do a left join. this means that records that don't have
+     * a record in this relation, will be displayed anyway. NOTE: set  this to
+     * false only if you know what you're doing. When in doubt, 'true' is
+     * usually the best option.
+     * @var boolean
+     */
+    var $m_leftjoin = true;
+
+    /**
+     * The array of referential key fields.
+     * @access private
+     * @var array
+     */
+    var $m_refKey = array();
+
+    /**
+     * SQL statement with extra filter for the join that retrieves the
+     * selected record.
+     * @var String
+     */
+    var $m_joinFilter = "";
+
+    /**
+     * Hide the relation when there are no records to select.
+     * @access private
+     * @var boolean
+     */
+    var $m_hidewhenempty = false;
+
+    /**
+     * Variable for caching records
+     * @access private
+     * @var array
+     */
+    var $m_selectableRecords = array();
+
+    /**
+     * List columns.
+     * @access private
+     * @var Array
+     */
+    var $m_listColumns = array();
+
+    /**
+     * Always show list columns?
+     * @access private
+     * @var boolean
+     */
+    var $m_alwaysShowListColumns = false;
+
+    /**
+     * Label to use for the 'none' option.
+     *
+     * @access private
+     * @var String
+     */
+    var $m_noneLabel = NULL;
+
+    /**
+     * Minimum number of character a user needs to enter before auto-completion kicks in.
+     *
+     * @access private
+     * @var int
+     */
+    var $m_autocomplete_minchars = 2;
+
+    /**
+     * An array with the fieldnames of the destination node in which the autocompletion must search
+     * for results.
+     *
+     * @access private
+     * @var array
+     */
+    var $m_autocomplete_searchfields = "";
+
+    /**
+     * The search mode of the autocomplete fields. Can be 'startswith', 'exact' or 'contains'.
+     *
+     * @access private
+     * @var String
+     */
+    var $m_autocomplete_searchmode = "contains";
+
+    /**
+     * Value determines wether the search of the autocompletion is case-sensitive.
+     *
+     * @var boolean
+     */
+    var $m_autocomplete_search_case_sensitive = false;
+
+    /**
+     * Value determines if select link for autocomplete should use atkSubmit or not (for use in admin screen for example)
+     *
+     * @var boolean
+     */
+    var $m_autocomplete_saveform = true;
+
+    /**
+     * Set the minimal number of records for showing the automcomplete. If there are less records
+     * the normal dropdown is shown
+     *
+     * @access private
+     * @var integer
+     */
+    var $m_autocomplete_minrecords = -1;
+
+    /**
+     * Destination node for auto links (edit, new)
+     *
+     * @var string
+     */
+    protected $m_autolink_destination = "";
+
+    // override onchangehandler init
+    var $m_onchangehandler_init = "newvalue = el.options[el.selectedIndex].value;\n";
+
+    /**
+     * Use destination filter for autolink add link?
+     *
+     * @access private
+     * @var boolean
+     */
+    var $m_useFilterForAddLink = true;
+
+    /**
+     * Set a function to use for determining the descriptor in the getConcatFilter function
+     *
+     * @access private
+     * @var string
+     */
+    var $m_concatDescriptorFunction = '';
+
+    /**
+     * Constructor.
+     * @param String $name The name of the attribute. This is the name of the
+     *                     field that is the referential key to the
+     *                     destination.
+     *                     For relations with more than one field in the
+     *                     foreign key, you should pass an array of
+     *                     referential key fields. The order of the fields
+     *                     must match the order of the primary key attributes
+     *                     in the destination node.
+     * @param String $destination The node we have a relationship with.
+     * @param int $flags Flags for the relation
+     */
+    function atkManyToOneRelation($name, $destination, $flags=0)
+    {
+      if (atkconfig("manytoone_autocomplete_default", false))
+        $flags |= AF_RELATION_AUTOCOMPLETE;
+
+      if (atkconfig("manytoone_autocomplete_large", true) && hasFlag($flags, AF_LARGE))
+        $flags |= AF_RELATION_AUTOCOMPLETE;
+
+      $this->m_autocomplete_minchars = atkconfig("manytoone_autocomplete_minchars", 2);
+      $this->m_autocomplete_searchmode = atkconfig("manytoone_autocomplete_searchmode", "contains");
+      $this->m_autocomplete_search_case_sensitive = atkconfig("manytoone_autocomplete_search_case_sensitive", false);
+
+      if (is_array($name))
+      {
+        $this->m_refKey = $name;
+
+        // ATK can't handle an array as name, so we initialize the
+        // underlying attribute with the first name of the referential
+        // keys.
+        // Languagefiles, overrides, etc should use this first name to
+        // override the relation.
+        $this->atkRelation($name[0], $destination, $flags);
+      }
+      else
+      {
+        $this->m_refKey[] = $name;
+        $this->atkRelation($name, $destination, $flags);
+      }
+
+      if ($this->hasFlag(AF_MANYTOONE_LAZY) && (count($this->m_refKey) > 1 || $this->m_refKey[0] != $this->fieldName()))
+      {
+        atkerror("AF_MANYTOONE_LAZY flag is not supported for multi-column reference key or a reference key that uses another column.");
+      }
+    }
+
+    /**
+     * Adds a flag to the manyToOne relation
+     * Note that adding flags at any time after the constructor might not
+     * always work. There are flags that are processed only at
+     * constructor time.
+     *
+     * @param int $flag The flag to add to the attribute
+     * @return atkManyToOneRelation The instance of this atkManyToOneRelation
+     */
+    function addFlag($flag)
+    {
+      parent::addFlag($flag);
+      if (atkconfig("manytoone_autocomplete_large", true) && hasFlag($flag, AF_LARGE))
+        $this->m_flags |= AF_RELATION_AUTOCOMPLETE;
+      return $this;
+    }
+
+    /**
+     * Set join filter.
+     *
+     * @param string $filter join filter
+     */
+    function setJoinFilter($filter)
+    {
+      $this->m_joinFilter = $filter;
+    }
+
+    /**
+     * Set the searchfields for the autocompletion.
+     *
+     * @param array $searchfields
+     */
+    function setAutoCompleteSearchFields($searchfields)
+    {
+      $this->m_autocomplete_searchfields = $searchfields;
+    }
+
+    /**
+     * Set the searchmode for the autocompletion:
+     * exact, startswith(default) or contains.
+     *
+     * @param array $mode
+     */
+    function setAutoCompleteSearchMode($mode)
+    {
+      $this->m_autocomplete_searchmode = $mode;
+    }
+
+    /**
+     * Set the case-sensitivity for the autocompletion search (true or false).
+     *
+     * @param array $case_sensitive
+     */
+    function setAutoCompleteCaseSensitive($case_sensitive)
+    {
+      $this->m_autocomplete_search_case_sensitive = $case_sensitive;
+    }
+
+    /**
+     * Sets the minimum number of characters before auto-completion kicks in.
+     *
+     * @param int $chars
+     */
+    function setAutoCompleteMinChars($chars)
+    {
+      $this->m_autocomplete_minchars = $chars;
+    }
+
+    /**
+     * Set if the select link should save form (atkSubmit) or not (for use in admin screen for example)
+     *
+     * @param boolean $saveform
+     */
+    function setAutoCompleteSaveForm($saveform=true)
+    {
+      $this->m_autocomplete_saveform = $saveform;
+    }
+
+    /**
+     * Set the minimal number of records for the autocomplete to show
+     * If there are less records the normal dropdown is shown
+     *
+     * @param integer $minrecords
+     */
+    function setAutoCompleteMinRecords($minrecords)
+    {
+      $this->m_autocomplete_minrecords = $minrecords;
+    }
+
+    /**
+     * Use destination filter for auto add link?
+     *
+     * @param boolean $useFilter use destnation filter for add link?
+     */
+    function setUseFilterForAddLink($useFilter)
+    {
+      $this->m_useFilterForAddLink = $useFilter;
+    }
+
+    /**
+     * Set the function for determining the descriptor in the getConcatFilter function
+     * This function should be implemented in the destination node
+     *
+     * @param string $function
+     */
+    function setConcatDescriptorFunction($function)
+    {
+      $this->m_concatDescriptorFunction = $function;
+    }
+
+    /**
+     * Return the function for determining the descriptor in the getConcatFilter function
+     *
+     * @return string
+     */
+    function getConcatDescriptorFunction()
+    {
+      return $this->m_concatDescriptorFunction;
+    }
+
+    /**
+     * Add list column. An attribute of the destination node
+     * that (only) will be displayed in the recordlist.
+     *
+     * @param string $attr The attribute to add to the listcolumn
+     * @return atkManyToOneRelation The instance of this atkManyToOneRelation
+     */
+    function addListColumn($attr)
+    {
+      $this->m_listColumns[] = $attr;
+      return $this;
+    }
+
+    /**
+     * Add multiple list columns. Attributes of the destination node
+     * that (only) will be displayed in the recordlist.
+     * @return atkManyToOneRelation The instance of this atkManyToOneRelation
+     */
+    function addListColumns()
+    {
+      $attrs = func_get_args();
+      foreach ($attrs as $attr)
+        $this->m_listColumns[] = $attr;
+      return $this;
+    }
+
+
+    /**
+     * Always show list columns in list view,
+     * even if the attribute itself is hidden?
+     *
+     * @param bool $value always show list columns?
+     * @return atkManyToOneRelation The instance of this atkManyToOneRelation
+     */
+    function setAlwaysShowListColumns($value)
+    {
+      $this->m_alwaysShowListColumns = $value;
+      if($this->m_alwaysShowListColumns)
+        $this->addFlag(AF_FORCE_LOAD);
+      return $this;
+    }
+
+    /**
+     * Convert value to DataBase value
+     * @param array $rec Record to convert
+     * @return int Database safe value
+     */
+    function value2db($rec)
+    {
+      if ($this->isEmpty($rec))
+      {
+        atkdebug($this->fieldName()." IS EMPTY!");
+        return NULL;
+      }
+      else
+      {
+        if ($this->createDestination())
+        {
+          if (is_array($rec[$this->fieldName()]))
+          {
+            $pkfield = $this->m_destInstance->m_primaryKey[0];
+            $pkattr = &$this->m_destInstance->getAttribute($pkfield);
+            return $pkattr->value2db($rec[$this->fieldName()]);
+          }
+          else
+          {
+            return $rec[$this->fieldName()];
+          }
+        }
+      }
+      // This never happens, does it?
+      return "";
+    }
+
+    /**
+     * Fetch value out of record
+     * @param array $postvars Postvars
+     * @return decoded value
+     */
+    function fetchValue($postvars)
+    {
+      if ($this->isPosted($postvars))
+      {
+        $result = array();
+        
+        // support specifying the value as a single number if the
+        // destination's primary key consists of a single field
+        if (is_numeric($postvars[$this->fieldName()]))
+        {
+          $result[$this->getDestination()->primaryKeyField()] = $postvars[$this->fieldName()];
+        }
+        
+        else
+        {
+          // Split the primary key of the selected record into its
+          // referential key elements.
+          $keyelements = decodeKeyValueSet($postvars[$this->fieldName()]);
+          foreach ($keyelements as $key=>$value)
+          {
+            // Tablename must be stripped out because it is in the way..
+            if (strpos($key,'.')>0)
+            {
+              $field = substr($key,strrpos($key,'.')+1);
+            }
+            else
+            {
+              $field = $key;
+            }
+            $result[$field] = $value;
+          }
+        }
+
+        if (count($result) == 0)
+        {
+          return null;
+        }
+
+        // add descriptor fields, this means they can be shown in the title
+        // bar etc. when updating failed for example
+        $record = array($this->fieldName() => $result);
+        $this->populate($record);
+        $result = $record[$this->fieldName()];
+
+        return $result;
+      }
+      return NULL;
+    }
+
+
+    /**
+     * Converts DataBase value to normal value
+     * @param array $rec Record
+     * @return decoded value
+     */
+    function db2value($rec)
+    {
+      $this->createDestination();
+
+      if (isset($rec[$this->fieldName()]) &&
+          is_array($rec[$this->fieldName()]) &&
+          (!isset($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]) ||
+           empty($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()])))
+      {
+        return NULL;
+      }
+
+      if (isset($rec[$this->fieldName()]))
+      {
+        $myrec = $rec[$this->fieldName()];
+        if (is_array($myrec))
+        {
+          $result = array();
+          if ($this->createDestination())
+          {
+            foreach (array_keys($this->m_destInstance->m_attribList) as $attrName)
+            {
+              $attr = &$this->m_destInstance->m_attribList[$attrName];
+              $result[$attrName] = $attr->db2value($myrec);
+            }
+          }
+
+          return $result;
+        }
+        else
+        {
+          // if the record is not an array, probably only the value of the primary key was loaded.
+          // This workaround only works for single-field primary keys.
+          if ($this->createDestination())
+            return array($this->m_destInstance->primaryKeyField() => $myrec);
+        }
+      }
+    }
+
+    /**
+     * Set none label.
+     *
+     * @param string $label The label to use for the "none" option
+     */
+    function setNoneLabel($label)
+    {
+      $this->m_noneLabel = $label;
+    }
+
+    /**
+     * Get none label.
+     *
+     * @return String The label for the "none" option
+     */
+    function getNoneLabel()
+    {
+      if ($this->m_noneLabel !== NULL)
+        return $this->m_noneLabel;
+      $nodename = $this->m_destInstance->m_type;
+      $modulename = $this->m_destInstance->m_module;
+      $ownermodulename = $this->m_ownerInstance->m_module;
+      $label = atktext($this->fieldName() . '_select_none', $ownermodulename, $this->m_owner, "", "", true);
+      if ($label == "")
+        $label = atktext('select_none', $modulename, $nodename);
+
+      return $label;
+    }
+
+    /**
+     * Returns a displayable string for this value.
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $mode The display mode ("view" for viewpages, or "list"
+     *                     for displaying in recordlists, "edit" for
+     *                     displaying in editscreens, "add" for displaying in
+     *                     add screens. "csv" for csv files. Applications can
+     *                     use additional modes.
+     * @return a displayable string
+     */
+    function display($record, $mode='list')
+    {
+      if ($this->createDestination())
+      {
+        if (count($record[$this->fieldName()])==count($this->m_refKey))
+          $this->populate($record);
+
+        if(!$this->isEmpty($record))
+        {
+          $result = $this->m_destInstance->descriptor($record[$this->fieldName()]);
+          if ($this->hasFlag(AF_RELATION_AUTOLINK) && (!in_array($mode, array("csv", "plain")))) // create link to edit/view screen
+          {
+            if (($this->m_destInstance->allowed("view"))&&!$this->m_destInstance->hasFlag(NF_NO_VIEW)&&$result!="")
+            {
+              $result = href(dispatch_url($this->m_destination,"view",array("atkselector"=>$this->m_destInstance->primaryKey($record[$this->fieldName()]))), $result, SESSION_NESTED);
+            }
+          }
+        }
+        else
+        {
+          $result = (!in_array($mode, array("csv", "plain"))?$this->getNoneLabel():''); // no record
+        }
+        return $result;
+      }
+      else
+      {
+       atkdebug("Can't create destination! ($this->m_destination");
+      }
+      return "";
+    }
+
+    /**
+     * Populate the record with the destination record data.
+     *
+     * @param array $record        record
+     * @param mixed $fullOrFields  load all data, only the given fields or only the descriptor fields?
+     */
+    function populate(&$record, $fullOrFields=false)
+    {
+      if (!is_array($record)||$record[$this->fieldName()] == "") return;
+
+      atkdebug("Delayed loading of ".($fullOrFields || is_array($fullOrFields) ? "" : "descriptor ")."fields for ".$this->m_name);
+      $this->createDestination();
+
+      $includes = "";
+      if (is_array($fullOrFields))
+        $includes = array_merge($this->m_destInstance->m_primaryKey, $fullOrFields);
+      else if (!$fullOrFields)
+        $includes = $this->m_destInstance->descriptorFields();
+
+      $result = $this->m_destInstance->selectDb($this->m_destInstance->primaryKey($record[$this->fieldName()]), $this->m_destInstance->getColumnConfig()->getOrderByStatement(), "", "", $includes);
+      if (count($result))
+      {
+        list($record[$this->fieldName()]) = $result;
+      }
+    }
+
+    /**
+     * Creates HTML for the selection and auto links.
+     *
+     * @param string $id attribute id
+     * @param array $record record
+     * @return string
+     */
+    function createSelectAndAutoLinks($id, $record)
+    {
+      $links = array();
+
+      $newsel = $id;
+      $filter = $this->parseFilter($this->m_destinationFilter, $record);
+      $links[] = $this->_getSelectLink($newsel, $filter);
+      if ($this->hasFlag(AF_RELATION_AUTOLINK)) // auto edit/view link
+      {
+        if ($this->m_destInstance->allowed("add"))
+        {
+          $links[] = href(dispatch_url($this->getAutoLinkDestination(),"add",array("atkpkret"=>$id."_newsel","atkfilter"=>($filter!=""?$filter:""))),
+                          atktext("new"),SESSION_NESTED,true);
+        }
+
+        if ($this->m_destInstance->allowed("edit") && $record[$this->fieldName()] != NULL)
+        {
+          //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
+          //de app crasht als er geen waarde is ingevuld.
+          $editUrl = session_url(dispatch_url($this->getAutoLinkDestination(),"edit",array("atkselector"=>"REPLACEME")),SESSION_NESTED);
+          $links[] = "<span id=\"".$id."_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editUrl)."\", document.entryform.".$id.".value))'>".atktext('edit')."</a></span>";
+        }
+      }
+
+      return implode("&nbsp;", $links);
+    }
+
+
+    /**
+     * Set destination node for the Autolink links (new/edit)
+     *
+     * @param string $node
+     */
+    function setAutoLinkDestination($node)
+    {
+      $this->m_autolink_destination = $node;
+    }
+
+    /**
+     * Get destination node for the Autolink links (new/edit)
+     *
+     * @return string
+     */
+    function getAutoLinkDestination()
+    {
+      if(!empty($this->m_autolink_destination))
+      {
+        return $this->m_autolink_destination;
+      }
+      return $this->m_destination;
+    }
+
+    /**
+     * Returns a piece of html code that can be used in a form to edit this
+     * attribute's value.
+     * @param array $record The record that holds the value for this attribute.
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
+     * @return Piece of html code that can be used in a form to edit this
+     */
+    function edit($record, $fieldprefix="", $mode="edit")
+    {
+      // Two variances.. one with a dropdownbox containing all records,
+      // and one with a dropdownbox that contains the last 10 used records,
+      // with a link to a selector with all records. This second one is for
+      // relations with large tables, so is only used when AF_LARGE is set.
+      $recordset = NULL;
+
+      // check if a normal dropdown should be shown or the autocomplete field
+      if ($this->hasFlag(AF_RELATION_AUTOCOMPLETE) && $this->m_autocomplete_minrecords > -1)
+      {
+        $recordset = $this->_getSelectableRecords($record, 'select');
+      }
+
+      if ($this->hasFlag(AF_RELATION_AUTOCOMPLETE) && (is_object($this->m_ownerInstance)) && ((is_array($recordset) && count($recordset) > $this->m_autocomplete_minrecords) || $this->m_autocomplete_minrecords == -1))
+      {
+        return $this->drawAutoCompleteBox($record, $fieldprefix, $mode);
+      }
+
+      if ($this->createDestination())
+      {
+        $id = $fieldprefix.$this->fieldName();
+        $filter=$this->parseFilter($this->m_destinationFilter,$record);
+        $autolink = $this->getRelationAutolink($id, $filter);
+        $editflag = true;
+
+        if (!$this->hasFlag(AF_LARGE))
+        {
+          // normal dropdown..
+          $value=NULL;
+          if(isset($record[$this->fieldName()]))
+            $value = $record[$this->fieldName()];
+          $currentPk = $this->m_destInstance->primaryKey($value);
+
+          if (is_null($recordset)) // already loaded above.
+          {
+            $recordset = $this->_getSelectableRecords($record, 'select');
+          }
+          if(count($recordset)==0) $editflag = false;
+
+          $onchange='';
+          if (count($this->m_onchangecode))
+          {
+            $onchange = 'onChange="'.$id.'_onChange(this);"';
+            $this->_renderChangeHandler($fieldprefix);
+          }
+
+          // autoselect if there is only one record (if obligatory is not set,
+          // we don't autoselect, since user may wist to select 'none' instead
+          // of the 1 record.
+          $result = "";
+          if (count($recordset) == 0)
+          {
+            $result .= $this->getNoneLabel();
+          }
+          else
+          {
+            $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);
+            $result.= '<select id="'.$id.'" name="'.$id.'" class="atkmanytoonerelation" '.$onchange.'>';
+            if ($this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) || (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) || (atkconfig("list_obligatory_null_item")&&!is_array($value)))
+            {
+              // Relation may be empty, so we must provide an empty selectable..
+              $result.= '<option value="">'.$this->getNoneLabel();
+            }
+            // Newly added check
+            $newlyadded = "";
+            if (is_object($this->m_ownerInstance) && isset($this->m_ownerInstance->m_postvars[$id."_ret"]))
+            {
+              $newlyadded = $this->m_ownerInstance->m_postvars[$id."_ret"];
+            }
+
+            for ($i=0, $_i=count($recordset);$i<$_i;$i++)
+            {
+              $pk = $this->m_destInstance->primaryKey($recordset[$i]);
+              if (($newlyadded!="" && $newlyadded==$pk) || ($newlyadded=="" && $pk==$currentPk)) $sel = "selected"; else $sel = "";
+              $result.= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', atk_htmlentities($this->m_destInstance->descriptor($recordset[$i])));
+            }
+            $result.='</select>';
+          }
+        }
+        else
+        {
+          // Large mode
+          // TODO: Fill a dropdown box with recent records..
+
+          $newlyadded = atkArrayNvl($this->m_ownerInstance->m_postvars,$id."_ret");
+
+          $destrecord = $this->_getDestRecord($id."_newsel", $newlyadded, $record, $editflag);
+
+          if (count($destrecord))
+          {
+            $result.= '<span id="'.$id.'_current" >'.$this->m_destInstance->descriptor($destrecord)."&nbsp;&nbsp;";
+            if (!$this->hasFlag(AF_OBLIGATORY))
+            {
+              $result.= '<a href="#" onClick="document.getElementById(\''.
+                                    $id.'\').value=\'\'; document.getElementById(\''.$id.'_current\').style.display=\'none\'">'.atktext("unselect").'</a>&nbsp;&nbsp;';
+            }
+            $result.= '</span>';
+          }
+
+          $result.=$this->hide($record, $fieldprefix);
+          $newsel = $id."_newsel";
+          $result.=$this->_getSelectLink($newsel, $filter);
+        }
+
+        if($editflag) $result.= isset($autolink['edit']) ? $autolink['edit'] : "";
+        $result.= isset($autolink['add']) ? $autolink['add'] : "";
+        return $result;
+      }
+
+      return atkerror("Could not create destination for destination: $this->m_destination!");
+    }
+
+    /**
+     * Get the select link to select the value using a select action on the destination node
+     *
+     * @param string $selname
+     * @param string $filter
+     * @return String HTML-code with the select link
+     */
+    function _getSelectLink($selname, $filter)
+    {
+      $result = "";
+      // we use the current level to automatically return to this page
+      // when we come from the select..
+      $atktarget = atkurlencode(getDispatchFile()."?atklevel=".atkLevel()."&".$selname."=[atkprimkey]");
+      $linkname = atktext("link_select_".getNodeType($this->m_destination), $this->getOwnerInstance()->getModule(), $this->getOwnerInstance()->getType(),'','',true);
+      if (!$linkname) $linkname = atktext("link_select_".getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination),'','',true);
+      if (!$linkname) $linkname = atktext("select_a").' '.strtolower(atktext(getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination)));
+      if ($this->m_destinationFilter!="")
+      {
+        $result.= href(dispatch_url($this->m_destination,"select",array("atkfilter"=>$filter,"atktarget"=>$atktarget)),
+                       $linkname,
+                       SESSION_NESTED,
+                       $this->m_autocomplete_saveform,'class="atkmanytoonerelation"');
+      }
+      else
+      {
+        $result.= href(dispatch_url($this->m_destination,"select",array("atktarget"=>$atktarget)),
+                       $linkname,
+                       SESSION_NESTED,
+                       $this->m_autocomplete_saveform,'class="atkmanytoonerelation"');
+      }
+      return $result;
+    }
+
+    /**
+     * Get the destination record for the edit action
+     *
+     * @param String $selname    The name that the selected variable uses in the URL
+     * @param String $newlyadded The name that the selected variable uses in the postvars
+     * @param Array $record      The original record
+     * @param bool $editflag     The edit flag (?)
+     * @return Array The destination record
+     */
+    function _getDestRecord($selname, $newlyadded, &$record, &$editflag)
+    {
+      global $ATK_VARS;
+      if (atkArrayNvl($ATK_VARS,$selname) || $newlyadded)
+      // new record selected
+      {
+        // $ATK_VARS[$selname] contains full primary key of selected record.
+        $recset = $this->m_destInstance->selectDb(($ATK_VARS[$selname]?$ATK_VARS[$selname]:$newlyadded),"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+        $destrecord = $recset[0];
+        $record[$this->fieldName()] = $destrecord; // put destrecord inside original record.
+      }
+      elseif (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()]) == count($this->m_destInstance->m_primaryKey))
+      // old record present, but probably only primary key fields are loaded (this happens after pressing 'save' on a record)
+      {
+        $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+        $recset = $this->m_destInstance->selectDb($currentPk,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+        $destrecord = $recset[0];
+        $record[$this->fieldName()] = $destrecord; // put destrecord inside original record.
+      }
+      elseif (is_array($record[$this->fieldName()]) && !$this->isEmpty($record))
+      // complete old record present
+      {
+        $destrecord = $record[$this->fieldName()];
+      }
+      else
+      // no record yet, empty value.
+      {
+        $destrecord = array();
+        $editflag = false;
+      }
+      return $destrecord;
+    }
+
+    /**
+     * Creates and returns the auto edit/view links
+     * @param String $id          The field id
+     * @param String $filter      Filter that we want to apply on the destination node
+     * @return array              The HTML code for the autolink links
+     */
+    function getRelationAutolink($id, $filter)
+    {
+      $autolink = array();
+      if ($this->hasFlag(AF_RELATION_AUTOLINK)) // auto edit/view link
+      {
+        $page = &atkPage::getInstance();
+        $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkmanytoonerelation.js");
+
+        if ($this->m_destInstance->allowed("edit"))
+        {
+          $editlink = session_url(dispatch_url($this->getAutoLinkDestination(),"edit",array("atkselector"=>"REPLACEME")),SESSION_NESTED);
+          $autolink['edit'] = "&nbsp;<a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editlink)."\", document.entryform.".$id.".value))'>".atktext('edit')."</a>";
+        }
+        if ($this->m_destInstance->allowed("add"))
+        {
+          $autolink['add'] = "&nbsp;".href(dispatch_url($this->getAutoLinkDestination(),"add",array("atkpkret"=>$id."_ret","atkfilter"=>($this->m_useFilterForAddLink && $filter != "" ? $filter : ""))),
+                                                        atktext("new"),SESSION_NESTED,true);
+        }
+      }
+      return $autolink;
+    }
+
+    /**
+     * Returns a piece of html code for hiding this attribute in an HTML form,
+     * while still posting its value. (<input type="hidden">)
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @return String A piece of htmlcode with hidden form elements that post
+     *                this attribute's value without showing it.
+     */
+    function hide($record="", $fieldprefix="")
+    {
+      if (!$this->createDestination()) return '';
+
+      $currentPk = "";
+      if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] != null)
+      {
+        $this->fixDestinationRecord($record);
+        $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+      }
+
+      $result =
+        '<input type="hidden" id="'.$fieldprefix.$this->formName().'"
+                name="'.$fieldprefix.$this->formName().'"
+                value="'.$currentPk.'">';
+
+      return $result;
+    }
+
+    /**
+     * Support for destination "records" where only the id is set and the
+     * record itself isn't converted to a real record (array) yet
+     *
+     * @param array $record The record to fix
+     */
+    function fixDestinationRecord(&$record)
+    {
+      if ($this->createDestination() &&
+          isset($record[$this->fieldName()]) &&
+          $record[$this->fieldName()] != null &&
+          !is_array($record[$this->fieldName()]))
+      {
+        $record[$this->fieldName()] = array($this->m_destInstance->primaryKeyField() => $record[$this->fieldName()]);
+      }
+    }
+
+    /**
+     * Retrieve the html code for placing this attribute in an edit page.
+     *
+     * The difference with the edit() method is that the edit() method just
+     * generates the HTML code for editing the attribute, while the getEdit()
+     * method is 'smart', and implements a hide/readonly policy based on
+     * flags and/or custom override methodes in the node.
+     * (<attributename>_edit() and <attributename>_display() methods)
+     *
+     * Framework method, it should not be necessary to call this method
+     * directly.
+     *
+     * @param String $mode The edit mode ("add" or "edit")
+     * @param array $record The record holding the values for this attribute
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @return String the HTML code for this attribute that can be used in an
+     *                editpage.
+     */
+    function getEdit($mode, &$record, $fieldprefix)
+    {
+      $this->fixDestinationRecord($record);
+      return parent::getEdit($mode, $record, $fieldprefix);
+    }
+
+    /**
+     * Converts a record filter to a record array.
+     *
+     * @param string $filter filter string
+     * @return array record
+     */
+    protected function filterToArray($filter)
+    {
+      $result = array();
+
+      $values = decodeKeyValueSet($filter);
+      foreach ($values as $field => $value)
+      {
+        $parts = explode('.', $field);
+        $ref = &$result;
+
+        foreach ($parts as $part)
+        {
+          $ref = &$ref[$part];
+        }
+
+        $ref = $value;
+      }
+
+      return $result;
+    }
+
+    /**
+     * Returns a piece of html code that can be used to get search terms input
+     * from the user.
+     *
+     * @param array $record Array with values
+     * @param boolean $extended if set to false, a simple search input is
+     *                          returned for use in the searchbar of the
+     *                          recordlist. If set to true, a more extended
+     *                          search may be returned for the 'extended'
+     *                          search page. The atkAttribute does not
+     *                          make a difference for $extended is true, but
+     *                          derived attributes may reimplement this.
+     * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param atkDataGrid $grid The datagrid
+     *
+     * @return String A piece of html-code
+     */
+    function search($record=array(), $extended=false, $fieldprefix="", $grid=null)
+    {
+      $useautocompletion = atkConfig("manytoone_search_autocomplete", true) && $this->hasFlag(AF_RELATION_AUTOCOMPLETE);
+      if (!$this->hasFlag(AF_LARGE) && !$useautocompletion)
+      {
+        if ($this->createDestination())
+        {
+          if ($this->m_destinationFilter!="")
+          {
+            $filterRecord = array();
+
+            if ($grid != null)
+            {
+              foreach ($grid->getFilters() as $filter)
+              {
+                $arr = $this->filterToArray($filter);
+                $arr = is_array($arr[$this->getOwnerInstance()->m_table]) ? $arr[$this->getOwnerInstance()->m_table] : array();
+                foreach ($arr as $attrName => $value)
+                {
+                  $attr = $this->getOwnerInstance()->getAttribute($attrName);
+                  if (!is_array($value) && is_a($attr, 'atkManyToOneRelation') && count($attr->m_refKey) == 1)
+                  {
+                    $attr->createDestination();
+                    $arr[$attrName] = array($attr->getDestination()->primaryKeyField() => $value);
+                  }
+                }
+
+                $filterRecord = array_merge($filterRecord, $arr);
+              }
+            }
+
+            $record = array_merge($filterRecord, is_array($record) ? $record : array());
+          }
+
+          $recordset = $this->_getSelectableRecords($record, 'search');
+
+          $result = '<select class="'.get_class($this).'" ';
+          if ($extended)
+          {
+            $result.='multiple size="'.min(5,count($recordset)+1).'"';
+
+            if(isset($record[$this->fieldName()][$this->fieldName()]))
+              $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
+
+          }
+
+          $result.='name="'.$this->getSearchFieldName($fieldprefix).'[]">';
+
+          $pkfield = $this->m_destInstance->primaryKeyField();
+
+          $result.= '<option value="">'.atktext('search_all').'</option>';
+          if (!$this->hasFlag(AF_OBLIGATORY))
+            $result.= '<option value="__NONE__"'.(isset($record[$this->fieldName()]) && atk_in_array('__NONE__', $record[$this->fieldName()]) ? ' selected="selected"' : '').'>'.atktext('search_none').'</option>';
+
+          for ($i=0;$i<count($recordset);$i++)
+          {
+            $pk = $recordset[$i][$pkfield];
+
+            if (is_array($record)&&isset($record[$this->fieldName()])&&
+                       atk_in_array($pk, $record[$this->fieldName()])) $sel = "selected"; else $sel = "";
+            $result.= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;', atk_htmlentities($this->m_destInstance->descriptor($recordset[$i]))).'</option>';
+          }
+          $result.='</select>';
+          return $result;
+        }
+        return "";
+      }
+      else
+      {
+        $id = $this->getSearchFieldName($fieldprefix);
+        if(is_array($record[$this->fieldName()]) && isset($record[$this->fieldName()][$this->fieldName()]))
+           $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
+
+        $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
+        $result = '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
+          ($useautocompletion ? ' onchange=""' : '').
+          ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
+          ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
+
+        if ($useautocompletion)
+        {
+          $page = &$this->m_ownerInstance->getPage();
+          $url = partial_url($this->m_ownerInstance->atkNodeType(), $this->m_ownerInstance->m_action, 'attribute.'.$this->fieldName().'.autocomplete_search');
+          $code = "ATK.ManyToOneRelation.completeSearch('{$id}', '{$id}_result', '{$url}', {$this->m_autocomplete_minchars});";
+          $this->m_ownerInstance->addStyle("atkmanytoonerelation.css");
+          $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkmanytoonerelation.js');
+          $page->register_loadscript($code);
+          $result .= '<div id="'.$id.'_result" style="display: none" class="atkmanytoonerelation_result"></div>';
+        }
+
+        return $result;
+      }
+    }
+
+    /**
+     * Retrieve the list of searchmodes supported by the attribute.
+     *
+     * Note that not all modes may be supported by the database driver.
+     * Compare this list to the one returned by the databasedriver, to
+     * determine which searchmodes may be used.
+     *
+     * @return array List of supported searchmodes
+     */
+    function getSearchModes()
+    {
+      if ($this->hasFlag(AF_LARGE) || $this->hasFlag(AF_MANYTOONE_AUTOCOMPLETE))
+      {
+        return array("substring","exact","wildcard","regex");
+      }
+      return array("exact"); // only support exact search when searching with dropdowns
+    }
+
+    /**
+     * Creates a smart search condition for a given search value, and adds it
+     * to the query that will be used for performing the actual search.
+     *
+     * @param Integer  $id         The unique smart search criterium identifier.
+     * @param Integer  $nr         The element number in the path.
+     * @param Array    $path       The remaining attribute path.
+     * @param atkQuery $query      The query to which the condition will be added.
+     * @param String   $ownerAlias The owner table alias to use.
+     * @param Mixed    $value      The value the user has entered in the searchbox.
+     * @param String   $mode       The searchmode to use.
+     */
+    function smartSearchCondition($id, $nr, $path, &$query, $ownerAlias, $value, $mode)
+    {
+      if (count($path) > 0)
+      {
+        $this->createDestination();
+
+        $destAlias = "ss_{$id}_{$nr}_".$this->fieldName();
+
+        $query->addJoin(
+          $this->m_destInstance->m_table, $destAlias,
+          $this->getJoinCondition($query, $ownerAlias, $destAlias),
+          false
+        );
+
+        $attrName = array_shift($path);
+        $attr = &$this->m_destInstance->getAttribute($attrName);
+
+        if (is_object($attr))
+        {
+          $attr->smartSearchCondition($id, $nr + 1, $path, $query, $destAlias, $value, $mode);
+        }
+      }
+      else
+      {
+        $this->searchCondition($query, $ownerAlias, $value, $mode);
+      }
+    }
+
+    /**
+     * Creates a searchcondition for the field,
+     * was once part of searchCondition, however,
+     * searchcondition() also immediately adds the search condition.
+     *
+     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param String $table       The name of the table in which this attribute
+     *                              is stored
+     * @param mixed $value        The value the user has entered in the searchbox
+     * @param String $searchmode  The searchmode to use. This can be any one
+     *                              of the supported modes, as returned by this
+     *                              attribute's getSearchModes() method.
+     * @param string $fieldaliasprefix The prefix for the field
+     * @return String The searchcondition to use.
+     */
+    function getSearchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix='')
+    {
+      if (!$this->createDestination()) return;
+
+      if (is_array($value))
+      {
+        foreach ($this->m_listColumns as $attr)
+        {
+          $attrValue = $value[$attr];
+          if (!empty($attrValue))
+          {
+            $p_attrib = &$this->m_destInstance->m_attribList[$attr];
+            if (!$p_attrib == NULL)
+            {
+              $p_attrib->searchCondition($query, $this->fieldName(), $attrValue, $this->getChildSearchMode($searchmode, $p_attrib->formName()));
+            }
+          }
+        }
+
+        if (isset($value[$this->fieldName()]))
+        {
+          $value = $value[$this->fieldName()];
+        }
+      }
+
+      if (empty($value))
+      {
+        return '';
+      }
+      else if (!$this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_RELATION_AUTOCOMPLETE))
+      {
+        // We only support 'exact' matches.
+        // But you can select more than one value, which we search using the IN() statement,
+        // which should work in any ansi compatible database.
+        if (!is_array($value)) // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+        {
+          $value = array($value);
+        }
+
+        if (count($value)==1) // exactly one value
+        {
+          if ($value[0] == "__NONE__")
+          {
+            return $query->nullCondition($table.".".$this->fieldName(), true);
+          }
+          elseif ($value[0] != "")
+          {
+            return $query->exactCondition($table.".".$this->fieldName(),$this->escapeSQL($value[0]));
+          }
+        }
+        else // search for more values using IN()
+        {
+          return $table.".".$this->fieldName()." IN ('".implode("','",$value)."')";
+        }
+      }
+      else // AF_LARGE || AF_RELATION_AUTOCOMPLETE
+      {
+        // If we have a descriptor with multiple fields, use CONCAT
+        $attribs = $this->m_destInstance->descriptorFields();
+        $alias = $fieldaliasprefix . $this->fieldName();
+        if(count($attribs)>1)
+        {
+          $searchcondition = $this->getConcatFilter($value,$alias);
+        }
+        else
+        {
+          // ask the destination node for it's search condition
+          $searchcondition = $this->m_destInstance->getSearchCondition($query, $alias, $fieldaliasprefix, $value, $this->getChildSearchMode($searchmode, $this->formName()));
+        }
+        return $searchcondition;
+      }
+    }
+
+    /**
+     * Adds this attribute to database queries.
+     *
+     * Database queries (select, insert and update) are passed to this method
+     * so the attribute can 'hook' itself into the query.
+     *
+     * @param atkQuery $query The SQL query object
+     * @param String $tablename The name of the table of this attribute
+     * @param String $fieldaliasprefix Prefix to use in front of the alias
+     *                                 in the query.
+     * @param Array $rec The record that contains the value of this attribute.
+     * @param int $level Recursion level if relations point to eachother, an
+     *                   endless loop could occur if they keep loading
+     *                   eachothers data. The $level is used to detect this
+     *                   loop. If overriden in a derived class, any subcall to
+     *                   an addToQuery method should pass the $level+1.
+     * @param String $mode Indicates what kind of query is being processing:
+     *                     This can be any action performed on a node (edit,
+     *                     add, etc) Mind you that "add" and "update" are the
+     *                     actions that store something in the database,
+     *                     whereas the rest are probably select queries.
+     */
+    function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level=0, $mode="")
+    {
+      if ($this->hasFlag(AF_MANYTOONE_LAZY))
+      {
+        parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
+        return;
+      }
+
+      if ($this->createDestination())
+      {
+        if ($mode != "update" && $mode != "add")
+        {
+          $alias = $fieldaliasprefix . $this->fieldName();
+          $query->addJoin($this->m_destInstance->m_table,
+                          $alias,
+                          $this->getJoinCondition($query, $tablename, $alias),
+                          $this->m_leftjoin);
+          $this->m_destInstance->addToQuery($query, $alias, $level+1, false, $mode, $this->m_listColumns);
+        }
+        else
+        {
+          for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
+          {
+            if ($rec[$this->fieldName()]===NULL)
+            {
+              $query->addField($this->m_refKey[$i],"NULL","","",false);
+            }
+            else
+            {
+              $value = $rec[$this->fieldName()];
+              if (is_array($value))
+              {
+                $fk = &$this->m_destInstance->getAttribute($this->m_destInstance->m_primaryKey[$i]);
+                $value = $fk->value2db($value);
+              }
+
+              $query->addField($this->m_refKey[$i],$value,"","",!$this->hasFlag(AF_NO_QUOTES));
+            }
+          }
+        }
+      }
+    }
+
+
+    /**
+     * Retrieve detail records from the database.
+     *
+     * Called by the framework to load the detail records.
+     *
+     * @param atkDb $db The database used by the node.
+     * @param array $record The master record
+     * @param String $mode The mode for loading (admin, select, copy, etc)
+     *
+     * @return array Recordset containing detailrecords, or NULL if no detail
+     *               records are present. Note: when $mode is edit, this
+     *               method will always return NULL. This is a framework
+     *               optimization because in edit pages, the records are
+     *               loaded on the fly.
+     */
+    function load(&$db, $record, $mode)
+    {
+      return $this->_getSelectedRecord($record, $mode);
+    }
+
+    /**
+     * Determine the load type of this attribute.
+     *
+     * With this method, the attribute tells the framework whether it wants
+     * to be loaded in the main query (addToQuery) or whether the attribute
+     * has its own load() implementation.
+     * For the atkOneToOneRelation, this depends on the presence of the
+     * AF_ONETOONE_LAZY flag.
+     *
+     * Framework method. It should not be necesary to call this method
+     * directly.
+     *
+     * @param String $mode The type of load (view,admin,edit etc)
+     *
+     * @return int Bitmask containing information about load requirements.
+     *             POSTLOAD|ADDTOQUERY when AF_ONETOONE_LAZY is set.
+     *             ADDTOQUERY when AF_ONETOONE_LAZY is not set.
+     */
+    function loadType($mode)
+    {
+      if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null)
+        return $this->m_loadType[$mode];
+      else if (isset($this->m_loadType[null]) && $this->m_loadType[null] !== null)
+        return $this->m_loadType[null];
+      // Default backwardscompatible behaviour:
+      else if ($this->hasFlag(AF_MANYTOONE_LAZY))
+        return POSTLOAD|ADDTOQUERY;
+      else
+        return ADDTOQUERY;
+    }
+
+    /**
+     * Validate if the record we are referring to really exists.
+     *
+     * @param array $record
+     * @param string $mode
+     */
+    function validate(&$record, $mode)
+    {
+      $sessionmanager = atkGetSessionManager();
+      if ($sessionmanager) $storetype =  $sessionmanager->stackVar('atkstore');
+      if ($storetype!=='session' && !$this->_isSelectableRecord($record))
+      {
+        triggerError($record, $this->fieldName(), 'error_integrity_violation');
+      }
+    }
+
+    /**
+     * Check if two records have the same value for this attribute
+     *
+     * @param array $recA Record A
+     * @param array $recB Record B
+     * @return boolean to indicate if the records are equal
+     */
+    function equal($recA, $recB)
+    {
+      if ($this->createDestination())
+      {
+        return (($recA[$this->fieldName()][$this->m_destInstance->primaryKeyField()]
+                 ==
+                 $recB[$this->fieldName()][$this->m_destInstance->primaryKeyField()])
+               ||
+                ($this->isEmpty($recA)&&$this->isEmpty($recB)));
+             // we must also check empty values, because empty values need not necessarily
+             // be equal (can be "", NULL or 0.
+      }
+      return false;
+    }
+
+    /**
+     * Return the database field type of the attribute.
+     *
+     * Note that the type returned is a 'generic' type. Each database
+     * vendor might have his own types, therefor, the type should be
+     * converted to a database specific type using $db->fieldType().
+     *
+     * If the type was read from the table metadata, that value will
+     * be used. Else, the attribute will analyze its flags to guess
+     * what type it should be. If AF_AUTO_INCREMENT is set, the field
+     * is probaly "number". If not, it's probably "string".
+     *
+     * @return String The 'generic' type of the database field for this
+     *                attribute.
+     */
+    function dbFieldType()
+    {
+      // The type of field that we need to store the foreign key, is equal to
+      // the type of field of the primary key of the node we have a
+      // relationship with.
+      if ($this->createDestination())
+      {
+        if(count($this->m_refKey)>1)
+        {
+          $keys = array();
+          for($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
+          {
+            $keys [] = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]]->dbFieldType();
+          }
+          return $keys;
+        }
+        else
+          return $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()]->dbFieldType();
+      }
+      return "";
+    }
+
+    /**
+     * Return the size of the field in the database.
+     *
+     * If 0 is returned, the size is unknown. In this case, the
+     * return value should not be used to create table columns.
+     *
+     * Ofcourse, the size does not make sense for every field type.
+     * So only interpret the result if a size has meaning for
+     * the field type of this attribute. (For example, if the
+     * database field is of type 'date', the size has no meaning)
+     *
+     * @return int The database field size
+     */
+    function dbFieldSize()
+    {
+      // The size of the field we need to store the foreign key, is equal to
+      // the size of the field of the primary key of the node we have a
+      // relationship with.
+      if ($this->createDestination())
+      {
+        if(count($this->m_refKey)>1)
+        {
+          $keys = array();
+          for($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
+          {
+            $keys [] = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]]->dbFieldSize();
+          }
+          return $keys;
+        }
+        else
+          return $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()]->dbFieldSize();
+      }
+      return 0;
+    }
+
+    /**
+     * Returns the selected record for this many-to-one relation. Uses
+     * the owner instance $this->fieldName()."_selected" method if it exists.
+     *
+     * @param array $record The record
+     * @param string $mode The mode we're in
+     * @return Array with the selected record
+     */
+    function _getSelectedRecord($record=array(), $mode="select")
+    {
+      $method = $this->fieldName()."_selected";
+      if (method_exists($this->m_ownerInstance, $method))
+        return $this->m_ownerInstance->$method($record, $mode);
+      else return $this->getSelectedRecord($record, $mode);
+    }
+
+    /**
+     * Returns the currently selected record.
+     *
+     * @param array $record The record
+     * @param string $mode The mode we're in
+     * @return Array with the selected record
+     */
+    function getSelectedRecord($record=array(), $mode="select")
+    {
+      $this->createDestination();
+
+      $condition = $this->m_destInstance->m_table.'.'.$this->m_destInstance->primaryKeyField().
+                   "='".$record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]."'";
+
+      $filter = $this->createFilter($record);
+      if (!empty($filter))
+      {
+        $condition = $condition.' AND '.$filter;
+      }
+
+      list($record) = $this->m_destInstance->selectDb($condition, "", "", "", "", $mode);
+      return $record;
+    }
+
+    /**
+     * Returns the selectable records for this many-to-one relation. Uses
+     * the owner instance $this->fieldName()."_selection" method if it exists.
+     *
+     * @param array $record The record
+     * @param string $mode The mode we're in
+     * @return Array with the selectable records
+     */
+    function _getSelectableRecords($record=array(), $mode="select")
+    {
+      $method = $this->fieldName()."_selection";
+      if (method_exists($this->m_ownerInstance, $method))
+        return $this->m_ownerInstance->$method($record, $mode);
+      else return $this->getSelectableRecords($record, $mode);
+    }
+
+    /**
+     * Is selectable record? Uses the owner instance $this->fieldName()."_selectable"
+     * method if it exists.
+     *
+     * @param array $record The record
+     * @param string $mode The mode we're in
+     * @return Boolean to indicate if the record is selectable
+     */
+    function _isSelectableRecord($record=array(), $mode="select")
+    {
+      $method = $this->fieldName()."_selectable";
+      if (method_exists($this->m_ownerInstance, $method))
+        return $this->m_ownerInstance->$method($record, $mode);
+      else return $this->isSelectableRecord($record, $mode);
+    }
+
+    /**
+     * Create the destination filter for the given record.
+     *
+     * @param array $record
+     * @return string filter
+     */
+    function createFilter($record)
+    {
+      if ($this->m_destinationFilter != "")
+      {
+        atkimport("atk.utils.atkstringparser");
+        $parser = new atkStringParser($this->m_destinationFilter);
+        return $parser->parse($record);
+      }
+      else
+      {
+        return "";
+      }
+    }
+
+    /**
+     * Is selectable record?
+     *
+     * Use this one from your selectable override when needed.
+     *
+     * @param array $record The record
+     * @param string $mode The mode we're in
+     * @return Boolean to indicate if the record is selectable
+     */
+    function isSelectableRecord($record=array(), $mode="select")
+    {
+      if ($record[$this->fieldName()] == NULL) return false;
+
+      $this->createDestination();
+
+      // if the value is set directly in the record field we first
+      // need to convert the value to an array
+      if (!is_array($record[$this->fieldName()]))
+      {
+        $record[$this->fieldName()] = array(
+          $this->m_destInstance->primaryKeyField() => $record[$this->fieldName()]
+        );
+      }
+
+      $selectedKey = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+      if ($selectedKey == NULL) return false;
+
+      // If custom selection method exists we use this one, although this is
+      // way more inefficient, so if you create a selection override you should
+      // also think about creating a selectable override!
+      $method = $this->fieldName()."_selection";
+      if (method_exists($this->m_ownerInstance, $method))
+      {
+        $rows = $this->m_ownerInstance->$method($record, $mode);
+        foreach ($rows as $row)
+        {
+          $key = $this->m_destInstance->primaryKey($row);
+          if ($key == $selectedKey) return true;
+        }
+
+        return false;
+      }
+
+      // No selection override exists, simply add the record key to the selector.
+      $filter = $this->createFilter($record);
+      $selector = "($selectedKey)".($filter != NULL ? " AND ($filter)" : "");
+      list($result) = $this->m_destInstance->selectDb($selector,false,"","",$this->m_destInstance->m_primaryKey,$mode);
+
+      return $result != NULL;
+    }
+
+    /**
+     * Returns the selectable records.
+     *
+     * Use this one from your selection override when needed.
+     *
+     * @param array $record The record
+     * @param string $mode The mode we're in
+     * @return Array with the selectable records
+     */
+    function getSelectableRecords($record=array(), $mode="select")
+    {
+      $this->createDestination();
+
+      $selector = $this->createFilter($record);
+      $result = $this->m_destInstance->selectDb($selector,$this->getDestination()->getOrder(),"","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey),$mode);
+
+      return $result;
+    }
+
+   /**
+    * Returns the condition (SQL) that should be used when we want to join a relation's
+    * owner node with the parent node.
+    *
+    * @param atkQuery $query The query object
+    * @param String $tablename  The tablename on which to join
+    * @param String $fieldalias The fieldalias
+    * @return String SQL string for joining the owner with the destination.
+    *                Returns false when impossible (f.e. attrib is not a relation).
+    */
+    function getJoinCondition(&$query, $tablename="",$fieldalias="")
+    {
+      if (!$this->createDestination()) return false;
+
+      if ($tablename!="") $realtablename=$tablename;
+      else $realtablename = $this->m_ownerInstance->m_table;
+      $joinconditions = array();
+
+      for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
+      {
+        $joinconditions[] = $realtablename.".".$this->m_refKey[$i].
+        "=".
+        $fieldalias.".".$this->m_destInstance->m_primaryKey[$i];
+      }
+
+      if ($this->m_joinFilter!="")
+      {
+        atkimport('atk.utils.atkstringparser');
+        $parser = new atkStringParser($this->m_joinFilter);
+        $filter = $parser->parse(array('table' => $realtablename, 'owner' => $realtablename, 'destination' => $fieldalias));
+        $joinconditions[] = $filter;
+      }
+      return implode(" AND ",$joinconditions);
+    }
+
+    /**
+     * Make this relation hide itself from the form when there are no items to select
+     *
+     * @param boolean $hidewhenempty true - hide when empty, false - always show
+     */
+    function setHideWhenEmpty($hidewhenempty)
+    {
+      $this->m_hidewhenempty = $hidewhenempty;
+    }
+
+    /**
+     * Adds the attribute's edit / hide HTML code to the edit array.
+     *
+     * This method is called by the node if it wants the data needed to create
+     * an edit form.
+     *
+     * This is a framework method, it should never be called directly.
+     *
+     * @param String $mode     the edit mode ("add" or "edit")
+     * @param array  $arr      pointer to the edit array
+     * @param array  $defaults pointer to the default values array
+     * @param array  $error    pointer to the error array
+     * @param String $fieldprefix   the fieldprefix
+     */
+    function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
+    {
+      if ($this->createDestination())
+      {
+        // check if destination table is empty
+        // only check if hidewhenempty is set to true
+        if ($this->m_hidewhenempty)
+        {
+          $recs = $this->_getSelectableRecords($defaults, 'select');
+          if (count($recs)==0) return $this->hide($defaults, $fieldprefix);
+        }
+      }
+      return parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
+    }
+
+    /**
+     * Retrieves the ORDER BY statement for the relation.
+     *
+     * @param Array $extra A list of attribute names to add to the order by
+     *                     statement
+     * @param String $table The table name (if not given uses the owner node's table name)
+     * @param String $direction Sorting direction (ASC or DESC)
+     * @return String The ORDER BY statement for this attribute
+     */
+    function getOrderByStatement($extra='', $table='', $direction='ASC')
+    {
+      if (!$this->createDestination())
+        return parent::getOrderByStatement();
+
+      if (!empty($table))
+      {
+        $table = $table.'_AE_'.$this->fieldName();
+      }
+      else
+      {
+        $table = $this->fieldName();
+      }
+
+      if (!empty($extra) && in_array($extra, $this->m_listColumns))
+      {
+        return $this->getDestination()->getAttribute($extra)->getOrderByStatement('', $table, $direction);
+      }
+
+      $order = $this->m_destInstance->getOrder();
+
+      if (!empty($order))
+      {
+        $newParts = array();
+        $parts = explode(',', $order);
+
+        foreach ($parts as $part)
+        {
+
+          $part = trim($part);
+
+          list($field, $fieldDirection) = preg_split('/\s+/', $part);
+
+          $fieldDirection = strtoupper($fieldDirection);
+          $fieldDirection = empty($fieldDirection) ? 'ASC' : $fieldDirection;
+
+          // if our default direction is DESC (the opposite of the default ASC)
+          // we always have to switch the given direction to be the opposite, e.g.
+          // DESC => ASC and ASC => DESC, this way we respect the default ordering
+          // in the destination node even if the default is descending
+          if ($fieldDirection == 'DESC')
+          {
+            $fieldDirection = $direction == 'DESC' ? 'ASC' : 'DESC';
+          }
+          else
+          {
+            $fieldDirection = $direction;
+          }
+
+          if (strpos($field, '.') !== false)
+          {
+            list(,$field) = explode('.', $field);
+          }
+
+          $newPart = $this->getDestination()->getAttribute($field)->getOrderByStatement('', $table, $fieldDirection);
+
+          // realias if destination order contains the wrong tablename.
+          if (strpos($newPart, $this->m_destInstance->m_table.'.') !== false)
+          {
+            $newPart= str_replace($this->m_destInstance->m_table.'.', $table.'.', $newPart);
+          }
+          $newParts[] = $newPart;
+        }
+
+        return implode(', ', $newParts);
+      }
+      else
+      {
+        $fields = $this->m_destInstance->descriptorFields();
+        if (count($fields) == 0)
+          $fields = array($this->m_destInstance->primaryKeyField());
+
+        $order = "";
+        foreach ($fields as $field)
+          $order .= (empty($order) ? '' : ', ').$table.".".$field;
+
+        return $order;
+      }
+    }
+
+    /**
+     * Adds the attribute / field to the list header. This includes the column name and search field.
+     *
+     * Framework method. It should not be necessary to call this method directly.
+     *
+     * @param String $action the action that is being performed on the node
+     * @param array  $arr reference to the the recordlist array
+     * @param String $fieldprefix the fieldprefix
+     * @param int    $flags the recordlist flags
+     * @param array  $atksearch the current ATK search list (if not empty)
+     * @param String $atkorderby the current ATK orderby string (if not empty)
+     * @param atkDataGrid $grid The datagrid
+     * @see atkNode::listArray
+     */
+    function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby, $grid=null)
+    {
+      $prefix = $fieldprefix.$this->fieldName()."_AE_";
+
+      // regular behaviour.
+      parent::addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby, $grid);
+
+      // only add extra columns when needed
+      if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) return;
+      if (!$this->createDestination() || count($this->m_listColumns) == 0) return;
+
+      foreach ($this->m_listColumns as $attribname)
+      {
+        $p_attrib = &$this->m_destInstance->getAttribute($attribname);
+        $p_attrib->m_flags |= AF_HIDE_LIST;
+        $p_attrib->m_flags ^= AF_HIDE_LIST;
+        $p_attrib->addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby, $grid);
+
+        $needle = $prefix.$attribname;
+        foreach (array_keys($arr['heading']) as $key)
+        {
+          // fix order by clause
+          if (strpos($key, $needle) === 0)
+          {
+            $order = $arr['heading'][$key]['order'];
+            if (!empty($order))
+            {
+              $order = $this->fieldName().'.'.$order;
+
+              if (is_object($atkorderby) &&
+                  isset($atkorderby->m_colcfg[$this->fieldName()]) &&
+                  $atkorderby->m_colcfg[$this->fieldName()]['extra'] == $attribname)
+              {
+                $direction = $atkorderby->getDirection($this->fieldName());
+                if ($direction=="asc") $order.=" desc";
+              }
+
+              $arr['heading'][$key]['order'] = $order;
+            }
+          }
+        }
+      }
+    }
+
+    /**
+     * Adds the attribute / field to the list row. And if the row is totalisable also to the total.
+     *
+     * Framework method. It should not be necessary to call this method directly.
+     *
+     * @param String $action the action that is being performed on the node
+     * @param array  $arr reference to the the recordlist array
+     * @param int    $nr the current row number
+     * @param String $fieldprefix the fieldprefix
+     * @param int    $flags the recordlist flags
+     * @see atkNode::listArray
+     */
+    function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags, $edit=false)
+    {
+      $prefix = $fieldprefix.$this->fieldName()."_AE_";
+
+      parent::addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit);
+
+      // only add extra columns when needed
+      if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) return;
+      if (!$this->createDestination() || count($this->m_listColumns) == 0) return;
+
+      // small trick, the destination record is in a subarray. The destination
+      // addToListArrayRow will not expect this though, so we have to modify the
+      // record a bit before passing it to the detail columns.
+      $backup = $arr["rows"][$nr]["record"];
+      $arr["rows"][$nr]["record"] = $arr["rows"][$nr]["record"][$this->fieldName()];
+
+      foreach ($this->m_listColumns as $attribname)
+      {
+        $p_attrib = &$this->m_destInstance->getAttribute($attribname);
+        $p_attrib->m_flags |= AF_HIDE_LIST;
+        $p_attrib->m_flags ^= AF_HIDE_LIST;
+        $p_attrib->addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit);
+      }
+
+      $arr["rows"][$nr]["record"] = $backup;
+    }
+
+    /**
+    * Adds the needed searchbox(es) for this attribute to the fields array. This
+    * method should only be called by the atkSearchHandler.
+    * Overridden method; in the integrated version, we should let the destination
+    * attributes hook themselves into the fieldlist instead of hooking the relation
+    * in it.
+    *
+    * @param array   $fields            The array containing fields to use in the
+    *                                   extended search
+    * @param atkNode $node              The node where the field is in
+    * @param array   $record            A record containing default values to put
+    *                                   into the search fields.
+    * @param array   $fieldprefix       search / mode field prefix
+    */
+    function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "")
+    {
+      $prefix = $fieldprefix.$this->fieldName()."_AE_";
+
+      parent::addToSearchformFields($fields, $node, $record, $prefix);
+
+      // only add extra columns when needed
+      if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) return;
+      if (!$this->createDestination() || count($this->m_listColumns) == 0) return;
+
+      foreach ($this->m_listColumns as $attribname)
+      {
+        $p_attrib = &$this->m_destInstance->m_attribList[$attribname];
+        $p_attrib->m_flags |= AF_HIDE_LIST;
+        $p_attrib->m_flags ^= AF_HIDE_LIST;
+
+        if (!$p_attrib->hasFlag(AF_HIDE_SEARCH))
+        {
+          $p_attrib->addToSearchformFields($fields,$node,$record[$this->fieldName()], $prefix);
+        }
+      }
+    }
+
+    /**
+     * Retrieve the sortorder for the listheader based on the
+     * atkColumnConfig
+     *
+     * @param atkColumnConfig $columnConfig The config that contains options for
+     *                                      extended sorting and grouping to a
+     *                                      recordlist.
+     * @return String Returns sort order ASC or DESC
+     */
+    function listHeaderSortOrder(&$columnConfig)
+    {
+      $order = $this->fieldName();
+
+      // only add desc if not one of the listColumns is used for the sorting
+      if (isset($columnConfig->m_colcfg[$order]) && empty($columnConfig->m_colcfg[$order]['extra']))
+      {
+        $direction = $columnConfig->getDirection($order);
+        if ($direction=="asc") $order.=" desc";
+      }
+
+      return $order;
+    }
+
+    /**
+     * Creates and registers the on change handler caller function.
+     * This method will be used to message listeners for a change
+     * event as soon as a new value is selected.
+     *
+     * @param string $fieldId
+     * @param string $fieldPrefix
+     * @param string $none
+     * @return String function name
+     */
+    function createOnChangeCaller($fieldId, $fieldPrefix, $none='null')
+    {
+      $function = $none;
+      if (count($this->m_onchangecode) > 0)
+      {
+        $function = "{$fieldId}_callChangeHandler";
+
+        $js = "
+          function {$function}() {
+            {$fieldId}_onChange(\$('{$fieldId}'));
+          }
+        ";
+
+        $this->m_onchangehandler_init = "newvalue = el.value;\n";
+        $page = &$this->m_ownerInstance->getPage();
+        $page->register_scriptcode($js);
+        $this->_renderChangeHandler($fieldPrefix);
+      }
+
+      return $function;
+    }
+
+    /**
+     * Draw the auto-complete box.
+     *
+     * @param array $record The record
+     * @param string $fieldPrefix The fieldprefix
+     * @param string $mode The mode we're in
+     */
+    function drawAutoCompleteBox($record, $fieldPrefix, $mode)
+    {
+      $this->createDestination();
+
+      // register base JavaScript code and stylesheet
+      $page = &$this->m_ownerInstance->getPage();
+      $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkmanytoonerelation.js');
+      $this->m_ownerInstance->addStyle("atkmanytoonerelation.css");
+
+      $id = $this->getHtmlId($fieldPrefix);
+      $editflag = true;
+
+      $newlyadded = atkArrayNvl($this->m_ownerInstance->m_postvars,$id."_ret");
+
+      $this->_getDestRecord($id."_newsel", $newlyadded, $record, $editflag);
+
+      // validate is this is a selectable record and if so
+      // retrieve the display label and hidden value
+      if ($this->_isSelectableRecord($record, 'select'))
+      {
+        $current = $record[$this->fieldName()];
+        $label = $this->m_destInstance->descriptor($record[$this->fieldName()]);
+        $value = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+      }
+      else
+      {
+        $current = NULL;
+        $label = '';
+        $value = '';
+      }
+
+      // create the widget
+      $links = $this->createSelectAndAutoLinks($id, $record);
+
+      $result =
+        '<input type="hidden" id="'.$id.'" name="'.$id.'" value="'.$value.'" />
+         <input type="text" id="'.$id.'_search" value="'.atk_htmlentities($label).'" class="atkmanytoonerelation_search" size="30" onfocus="this.select()" />
+         <img id="'.$id.'_spinner" src="atk/images/spinner.gif" style="vertical-align: middle; display: none"> '.$links.'
+         <div id="'.$id.'_result" style="display: none" class="atkmanytoonerelation_result"></div>';
+
+      // register JavaScript code that attaches the auto-complete behaviour to the search box
+      $url = partial_url($this->m_ownerInstance->atkNodeType(), $mode, 'attribute.'.$this->fieldName().'.autocomplete');
+      $function = $this->createOnChangeCaller($id, $fieldPrefix);
+      $code = "ATK.ManyToOneRelation.completeEdit('{$id}_search', '{$id}_result', '$id', '{$id}_spinner', '$url', $function, 1);";
+      $page->register_loadscript($code);
+
+      return $result;
+    }
+
+    /**
+     * Auto-complete partial.
+     *
+     * @param string $mode add/edit mode?
+     */
+    function partial_autocomplete($mode)
+    {
+      $searchvalue = $this->m_ownerInstance->m_postvars['value'];
+      if (atk_strlen($searchvalue) < $this->m_autocomplete_minchars)
+      {
+        return '<ul><li class="minimum_chars">'.sprintf($this->text('autocomplete_minimum_chars'), $this->m_autocomplete_minchars).'</li></ul>';
+      }
+
+      $this->createDestination();
+
+      $fieldprefix = (isset($this->m_ownerInstance->m_postvars['atkfieldprefix'])?$this->m_ownerInstance->m_postvars['atkfieldprefix']:"");
+      $searchvalue = $this->escapeSQL($searchvalue);
+      $record = $this->m_ownerInstance->updateRecord();
+
+      $filter = $this->createSearchFilter($searchvalue);
+      $this->addDestinationFilter($filter);
+
+      $records = $this->_getSelectableRecords($record, 'select');
+
+      if (count($records) == 0)
+      {
+        if(in_array($this->m_autocomplete_searchmode,array("exact","startswith","contains")))
+          $str = $this->text('autocomplete_no_results_'.$this->m_autocomplete_searchmode);
+        else
+          $str = $this->text('autocomplete_no_results');
+
+        return '<ul><li class="no_results">'.$str.'</li></ul>';
+      }
+
+      $result = '';
+      foreach ($records as $rec)
+      {
+        $option = atk_htmlentities($this->m_destInstance->descriptor($rec));
+        $highlightedOption = preg_replace('/('.preg_quote($searchvalue).')/i', '<span class="atkmanytoone_highlite">\\1</span>', $option);
+        $value = $this->m_destInstance->primaryKey($rec);
+        $result .= '
+          <li title="'.$option.'">
+            '.$highlightedOption.'
+            <span class="selection" style="display: none">'.$option.'</span>
+            <span class="value" style="display: none">'.$value.'</span>
+          </li>';
+      }
+
+      return "<ul>$result</ul>";
+    }
+
+    /**
+     * Auto-complete search partial.
+     *
+     * @return HTML code with autocomplete result
+     */
+    function partial_autocomplete_search()
+    {
+      $this->createDestination();
+
+      $searchvalue = $this->m_ownerInstance->m_postvars['value'];
+      $searchvalue = $this->escapeSQL($searchvalue);
+      $filter = $this->createSearchFilter($searchvalue);
+      $this->addDestinationFilter($filter);
+
+      $record = array();
+      $records = $this->_getSelectableRecords($record, 'search');
+
+      $result = '';
+      foreach ($records as $rec)
+      {
+        $option = $this->m_destInstance->descriptor($rec);
+        $value = $this->m_destInstance->primaryKey($rec);
+        $result .= '
+          <li title="'.atk_htmlentities($option).'">'.atk_htmlentities($option).'</li>';
+      }
+
+      return "<ul>$result</ul>";
+    }
+
+    /**
+     * Creates a search filter with the given search value on the given
+     * descriptor fields
+     *
+     * @param String $searchvalue A searchstring
+     * @return String a search string (WHERE clause)
+     */
+    function createSearchFilter($searchvalue)
+    {
+      if($this->m_autocomplete_searchfields=="")
+        $searchfields = $this->m_destInstance->descriptorFields();
+      else
+        $searchfields = $this->m_autocomplete_searchfields;
+
+      $parts = preg_split('/\s+/', $searchvalue);
+
+      $mainFilter = array();
+      foreach ($parts as $part)
+      {
+        $filter = array();
+        foreach($searchfields as $attribname)
+        {
+          if (strstr($attribname, '.')) $table = '';
+          else $table = $this->m_destInstance->m_table.".";
+
+          if(!$this->m_autocomplete_search_case_sensitive)
+            $tmp = "LOWER(".$table.$attribname.")";
+          else
+            $tmp = $table.$attribname;
+
+          switch($this->m_autocomplete_searchmode)
+          {
+            case self::SEARCH_MODE_EXACT:
+              if(!$this->m_autocomplete_search_case_sensitive)
+                $tmp.= " = LOWER('{$part}')";
+              else
+                $tmp.= " = '{$part}'";
+              break;
+            case self::SEARCH_MODE_STARTSWITH:
+              if(!$this->m_autocomplete_search_case_sensitive)
+                $tmp.= " LIKE LOWER('{$part}%')";
+              else
+                $tmp.= " LIKE '{$part}%'";
+              break;
+            case self::SEARCH_MODE_CONTAINS:
+              if(!$this->m_autocomplete_search_case_sensitive)
+                $tmp.= " LIKE LOWER('%{$part}%')";
+              else
+                $tmp.= " LIKE '%{$part}%'";
+              break;
+            default:
+              $tmp.= " = LOWER('{$part}')";
+          }
+
+          $filter[] = $tmp;
+        }
+
+        if (count($filter) > 0)
+          $mainFilter[] = "(".implode(") OR (", $filter).")";
+      }
+
+      if (count($mainFilter) > 0)
+        $searchFilter =  "(".implode(") AND (", $mainFilter).")";
+      else $searchFilter = "";
+
+      // When no searchfields are specified and we use the CONTAINS mode
+      // add a concat filter
+      if($this->m_autocomplete_searchmode == self::SEARCH_MODE_CONTAINS && $this->m_autocomplete_searchfields=="")
+      {
+         $filter = $this->getConcatFilter($searchvalue);
+         if($filter)
+         {
+           if($searchFilter!='') $searchFilter.= " OR ";
+           $searchFilter.= $filter;
+         }
+      }
+      return $searchFilter;
+   }
+
+
+   /**
+    * Get Concat filter
+    *
+    * @param string $searchValue Search value
+    * @param string $fieldaliasprefix Field alias prefix
+    * @return string|boolean
+    */
+    function getConcatFilter($searchValue,$fieldaliasprefix="")
+    {
+      // If we have a descriptor with multiple fields, use CONCAT
+      $attribs = $this->m_destInstance->descriptorFields();
+      if(count($attribs)>1)
+      {
+        $fields = array();
+        foreach($attribs as $attribname)
+        {
+          $post = '';
+          if (strstr($attribname, '.'))
+          {
+            if ($fieldaliasprefix != '') $table = $fieldaliasprefix.'_AE_';
+            else $table = '';
+            $post = substr($attribname,strpos($attribname,'.'));
+            $attribname = substr($attribname,0,strpos($attribname,'.'));
+          }
+          elseif($fieldaliasprefix!='') $table = $fieldaliasprefix.".";
+          else $table = $this->m_destInstance->m_table.".";
+
+          $p_attrib = $this->m_destInstance->m_attribList[$attribname];
+          $fields[$p_attrib->fieldName()] = $table.$p_attrib->fieldName().$post;
+        }
+        $value = $this->escapeSQL(trim($searchValue));
+        $value = str_replace("  " , " ", $value);
+        if(!$value)
+        {
+          return false;
+        }
+        else
+        {
+          $function = $this->getConcatDescriptorFunction();
+          if ($function != '' && method_exists($this->m_destInstance, $function))
+          {
+            $descriptordef = $this->m_destInstance->$function();
+          }
+          elseif ($this->m_destInstance->m_descTemplate != NULL)
+          {
+            $descriptordef = $this->m_destInstance->m_descTemplate;
+          }
+          elseif(method_exists($this->m_destInstance,"descriptor_def"))
+          {
+            $descriptordef = $this->m_destInstance->descriptor_def();
+          }
+          else
+          {
+            $descriptordef = $this->m_destInstance->descriptor();
+          }
+
+          atkimport("atk.utils.atkstringparser");
+          $parser = new atkStringParser($descriptordef);
+          $concatFields = $parser->getAllParsedFieldsAsArray($fields, true);
+          $concatTags       = $concatFields['tags'];
+          $concatSeparators = $concatFields['separators'];
+
+          // to search independent of characters between tags, like spaces and comma's,
+          // we remove all these separators so we can search for just the concatenated tags in concat_ws [Jeroen]
+          foreach ($concatSeparators as $separator)
+          {
+            $value = str_replace($separator, "", $value);
+          }
+
+          $db = $this->getDb();
+          $searchcondition = "UPPER(".$db->func_concat_ws($concatTags, "", true).") LIKE UPPER('%".$value."%')";
+
+        }
+        return $searchcondition;
+      }
+      return false;
+    }
+
+  }
+?>

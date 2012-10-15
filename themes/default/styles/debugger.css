@@ -1,0 +1,43 @@
+BODY
+{
+  background-color: #fff;
+  color: #000000;
+  font-size: 11px;
+  font-family: Verdana,Helvetica,Arial;
+  font-weight: normal;
+}
+
+A:link,
+A:visited,
+A:active,
+TD
+{
+  color: #000000;
+  font-size: 10px;
+}
+
+A:hover
+{
+  color: #660000;
+  font-size: 10px;
+}
+
+TH
+{
+  background-color: #666;
+  color: #fff;
+}
+
+#console
+{
+  background-color: #cccccc;
+  margin: 0px;
+  padding: 10px;
+}
+
+.query
+{
+  font-family: courier-new,courier;
+  font-size: 12px;
+}
+

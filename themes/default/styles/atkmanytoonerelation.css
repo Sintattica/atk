@@ -1,0 +1,72 @@
+div.atkmanytoonerelation_selection {
+  position: absolute;
+  width: 250px;
+  background-color: white;
+  border: 1px solid #888;
+  margin: 0px;
+  padding: 0px;
+  visibility: hidden;
+  display: none;
+}
+
+div.atkmanytoonerelation_result {
+  border: 1px solid darkgray;
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  background-color: Menu;
+  z-index: 1000;
+}
+
+div.atkmanytoonerelation_result ul  {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;  
+}
+
+div.atkmanytoonerelation_result li.selected 
+{ 
+  background-color: Highlight;
+  color: HighlightText;  
+}
+
+div.atkmanytoonerelation_result li.no_results,
+div.atkmanytoonerelation_result li.minimum_chars {
+  font-style: italic;
+  font-weight: bold;  
+  white-space: normal;
+}
+
+div.atkmanytoonerelation_result li {
+  list-style-type: none;
+  white-space: nowrap;
+  display: block;
+  margin: 0px;
+  padding: 2px 2px 2px 3px;
+  width: 100%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  cursor: pointer;
+  font-family: verdana,arial,helvetica,sans-serif;
+  font-size: 11px;
+  line-height: 13px;
+  background-color: Menu;
+  color: MenuText;  
+}  
+
+div.atkmanytoonerelation_result {
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 132px;
+}
+* html div.atkmanytoonerelation_result {
+  overflow-y: expression(this.scrollHeight > 132 ? "scroll" : "");
+  height: expression(this.scrollHeight > 132 ? "132px" : "");
+}
+
+
+span.atkmanytoone_highlite {
+  font-weight: bold;
+  text-decoration: underline;
+}

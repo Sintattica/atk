@@ -1,0 +1,66 @@
+
+TABLE.recordlist TH,
+TABLE.recordlist TD,
+TABLE.recordlist A
+{
+  font-family: Verdana,Helvetica,Arial;
+  font-size: 11px;
+  text-align: left;
+  border-width: 1px;
+}
+
+TABLE.recordlist TH,
+TABLE.recordlist TH A
+{
+  background-color: #cccccc;
+  color: #000000;
+  font-weight: bold;
+}
+
+TABLE.recordlist TD,
+TABLE.recordlist TH
+{
+  border-width: 1px;
+  border-color: #000000;
+  border-style: solid;
+  padding: 3px;
+  margin: 0px;
+
+}
+
+TABLE.recordlist .row1
+{
+  background-color: #ffffff;
+}
+
+TABLE.recordlist .row2
+{
+  background-color: #eeeeee;
+}
+
+table.recordlist tbody.groupheader th.firstcol
+{
+  background-image: url(../../../images/plus.gif);;
+}
+
+table.recordlist tbody.groupheader_expanded th.firstcol
+{
+  background-image: url(../../../images/minus.gif);;
+}
+
+table.recordlist tbody.groupheader th,
+table.recordlist tbody.groupheader_expanded th
+{
+  background-color: #888888;
+  color: #ffffff;
+  cursor: pointer;
+  background-position: 5px 50%;
+  background-repeat: no-repeat;
+  padding-left: 22px !important
+}
+
+img.recordlist
+{
+  width: 16px;
+  height: 16px;
+}

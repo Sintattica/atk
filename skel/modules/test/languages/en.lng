@@ -1,0 +1,7 @@
+<?php
+$en=array(
+  "menu_test" => "Test module",
+  "menu_test_admin" => "Test node admin",
+  "test_test" => "Test node",
+);
+?>
