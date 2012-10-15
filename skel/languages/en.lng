@@ -1,0 +1,12 @@
+<?php
+$en=array(
+  "app_description" => "Welcome to this ATK application.",
+  "app_shorttitle" => "ATKApp",
+  "app_title" =>  "Application name",
+
+  // Menu Items
+  "title_test_attributes" =>  "Test attributes",
+  "title_test" =>  "Test",
+
+);
+?>

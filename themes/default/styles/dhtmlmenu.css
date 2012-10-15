@@ -1,0 +1,59 @@
+TD 
+{
+ FONT-SIZE: 10px; FONT-FAMILY: verdana, arial, helvetica, sans-serif
+}
+
+
+.tab-button	 
+{ 
+    background: #198DE9;
+    height: 20; 
+    font-weight: normal; 
+    border-top: 1px solid black; 
+    border-left: 1px solid black; 
+    border-right: 1px solid black; 
+    cursor: hand; 
+    padding-top: 2px; 
+    padding: 2;
+}
+
+.tab-body	
+{ 
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 10px;
+    background: #EEEEE0; 
+    border-top: 1px solid black; 
+    border-left: 1px solid black; 
+    border-bottom: 1px solid black; 
+    border-right: 1px solid black;
+    border-style: ridge;
+    padding: 3;    
+    position:absolute; 
+    left:11px; 
+    top:21px; 
+    width:95%; 
+    z-index:1; 
+    visibility: hidden;
+}
+
+a
+{
+    color: #000000;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 10px;
+}
+
+a.tablink
+{
+    padding:1;
+    color: #000000;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 10px;
+    text-decoration:none;
+}
+
+a.tablink:hover
+{
+    text-decoration:underline;
+}
+

@@ -1,0 +1,80 @@
+To create your own ATK PHPUnit test environment you should copy the contents 
+of atk/skel-tests/ to a directory called tests/ (or how you want to name it), 
+preferably outside your application root.
+
+If this is a somewhat older ATK application (one that dates before the PHPUnit
+support in ATK), you might need to grab a fresh copy of atk/skel/atk.inc for
+your project.
+
+After copying the necessary files open bootstrap.php and change the value of
+$config_atkroot to your application's ATK root.
+
+If you want to run ATK's own tests you can checkout the tests in the tests/
+directory using the following command:
+
+  svn co http://svn.ibuildings.nl/atk/tests/trunk atk 
+
+You now have a directory structure like the following:
+
+  back-end/
+    atk/
+  tests/
+    atk/
+    AllTests.php
+    bootstrap.php
+    phpunit.xml
+
+Before you can run any of the tests you first need to install PHPUnit. For more
+information see http://www.phpunit.de/manual/current/en/installation.html.
+
+After you've installed PHPUnit you are ready to run ATK's tests by issuing the
+following command from inside the tests/ directory:
+
+  phpunit
+  
+This command uses the phpunit.xml to check what files / directories are 
+available for testing. If you only want to test a certain group of tests you
+can use the --group command-line argument, e.g. to run only the attribute 
+tests, you can use the following command:
+
+  phpunit --group ATK-Attributes
+  
+You can also exclude a group of tests, using the following command:
+
+  phpunit --exclude-group ATK-Cache
+ 
+To get a list of available groups you can issue the following command:
+
+  phpunit --list-groups
+  
+You can customize the phpunit.xml file to include your own tests. By default
+an entry is added for a directory called modules/ which can contain the
+tests for your own modules. Your directory structure could for example look
+like the following:
+
+  back-end/
+    atk/
+    modules/
+      employee/
+        nodes/
+          class.employee.inc
+  tests/
+    atk/
+    modules/
+      employee/
+        nodes/
+          EmployeeTest.php
+    AllTests.php
+    bootstrap.php
+    phpunit.xml
+    
+You are however free to modify phpunit.xml to suit your own needs. If the 
+phpunit.xml file is not flexible enough for you could also choose to modify
+the AllTests.php file to suit your needs. To use the AllTests.php file to run
+your tests you can use the following command:
+
+  phpunit AllTests.php
+  
+Be aware if you use the AllTests.php approach you will use the ability to 
+include/exclude groups on the command-line like in the examples above. However
+you can still include/exclude groups programatically inside your AllTests.php.

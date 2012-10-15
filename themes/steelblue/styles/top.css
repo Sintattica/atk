@@ -1,0 +1,89 @@
+
+#banner
+{
+  position: relative;
+  background: #FFFFFF url(../images/bannerBg.jpg) repeat-x left top;
+  height: 149px;
+  z-index: 1;
+}
+
+#bannerLogo
+{
+  position: absolute;
+  z-index:2;
+  top: 29px;
+  left: 0px;
+  height: 106px;
+  width: 500px;
+  overflow: hidden;
+}
+
+#bannerCustomImage
+{
+  position: absolute;
+  z-index:0;
+  top: 29px;
+  right: 0px;
+  background: #FFFFFF url(../images/bannercustomimage.gif) no-repeat right top;
+  height: 106px;
+  width: 500px;
+  overflow: hidden;
+}
+
+#topLinks
+{
+  position: absolute;
+  right: 20px;
+  top: 4px;
+  padding: 0;
+  margin: 0;
+  height: 12px;
+  text-align: right;
+  color: #FFFFFF;
+}
+
+#banner input,
+#banner select,
+#banner textarea
+{
+  background-color: #ffffff;
+  color: #000000;
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  font-size: 11px;
+}
+
+#banner input
+{
+  height: 12px;
+}
+
+INPUT.omsearch
+{
+  color: #414141;
+  height: 17px;
+  padding-bottom: 2px;
+  background: #e0e0e0;
+  border: 1px solid #898989;
+}
+
+#topLinks a,
+#topLinks a:visited
+{
+  color: #FFFFFF;
+}
+
+#topLinks a:hover,
+#topLinks a:active
+{
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+
+#loginBox
+{
+  position: absolute;
+  right: 20px;
+  top: 110px;
+  text-align: right;
+}

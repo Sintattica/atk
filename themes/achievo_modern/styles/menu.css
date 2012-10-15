@@ -1,0 +1,80 @@
+.menu-submenuitem
+{
+  padding: 5px 0px 5px 25px;
+  color: #000000;
+  text-decoration: none;
+}
+
+.menu-menuitem
+{
+  padding-left: 5px;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.menuTitle
+{
+  background: url(../images/menuBg.jpg) repeat-y left top;
+  margin: 0px;
+  padding: 12px 4px 12px 4px;
+}
+
+#mainMenu
+{
+
+}
+
+#mainMenu
+{
+}
+
+.menuItemLevel1
+{
+  background: url(../images/menuLevel1Bg.jpg) no-repeat left top;
+  padding: 6px 4px 6px 16px;
+  display: block;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.menuItemLevel2Head
+{
+  background: url(../images/menuLevel2Bg.jpg) repeat-y left top;
+  padding: 6px 4px 0px 16px;
+  display: block;
+  color: #444 ! important;
+  font-weight: normal;
+  border-top: 2px solid #818181;
+  text-decoration: none;
+}
+
+.menuitem_link
+{
+  background: none;
+  text-decoration: none;
+}
+
+.menuItemLevel2
+{
+  background: url(../images/menuLevel2Bg.jpg) repeat-y left top;
+  padding: 6px 4px 6px 28px;
+  display: block;
+  font-size: 11px;
+  color: #444;
+}
+
+.menuItemLevel2:hover
+{
+  font-size: 11px ! important;
+  padding-left: 28px ! important;
+  font-weight: normal ! important;
+}
+
+.menuItemLevel2Head .menu-menuitem
+{
+  background: none;
+  font-size: 12px !important;
+  padding-left: 0px;
+  color: #fff !important;
+  text-decoration: none;
+}

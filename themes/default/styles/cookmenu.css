@@ -1,0 +1,294 @@
+/* ThemePanelMenu Style Sheet */
+
+
+
+.ThemePanelMenu,.ThemePanelSubMenuTable
+{
+	font-family:	verdana, arial, sans-serif;
+	font-size:	11px;
+	font-weight: bold;
+
+	cursor:		default;
+	white-space:	nowrap;
+}
+
+.ThemePanelSubMenu
+{
+	z-index:	0;
+	position:	absolute;
+	visibility:	hidden;
+	display:	block;
+	overflow:	hidden;
+
+	border:		0;
+	background-color: inherit;
+}
+
+.ThemePanelSubMenuShadow
+{
+	z-index:	-1;
+	position:	absolute;
+	top:		3px;
+	left:		3px;
+	width:		100%;
+	height:		300em;
+	background-color:	black;
+	opacity:	0.5;
+	border:		0;
+	margin:		0;
+}
+
+.ThemePanelSubMenuBorder
+{
+	border:		1px solid #9C9A9C;
+	background-color:	#F7F3F7;
+	padding:	1px;
+	margin:		0px 3px 3px 0px;
+}
+
+.ThemePanelSubMenuTable
+{
+	border-collapse:	separate;
+}
+
+.ThemePanelMenuItem,.ThemePanelMenuItemHover,.ThemePanelMenuItemActive
+{
+	cursor:		default;
+	white-space:	nowrap;
+}
+
+.ThemePanelMainItem,
+.ThemePanelMenuItem
+{
+	background-color:	#878787;
+	white-space:	nowrap;
+	height: 15px; <!-- menu item height -->
+}
+
+.ThemePanelMainItemHover,
+.ThemePanelMainItemActive,
+.ThemePanelMenuItemHover,
+.ThemePanelMenuItemActive
+{
+	background-color:	#C6C6C3;
+	white-space:	nowrap;
+	height: 15px; <!-- menu item height hover -->	
+}
+
+/* horizontal main menu sub components */
+/* panel doesn't really support horizontal menus */
+/* there are simpler approaches, but the setting here allows me to
+   set a background image for the menu without lines all over it */
+
+.ThemePanelMainFolderLeft,
+.ThemePanelMainItemLeft
+{
+	padding:	3px 0px 3px 3px;
+	border:		0;
+	
+	white-space:	nowrap;
+	background-color:	inherit;
+}
+
+.ThemePanelMainFolderText,
+.ThemePanelMainItemText
+{
+	padding:	3px 3px 3px 5px;
+  width: 200px;
+	
+	border:		0;
+	white-space:	nowrap;
+	background-color:	inherit;
+	color: #ffffff;
+  font-size: 11px;
+}
+
+
+.ThemePanelMainItemRight,
+.ThemePanelMainFolderRight
+{
+	padding:	3px 1px 3px 0px;
+  
+	border:		0;
+	white-space:	nowrap;
+	background-color:	inherit;
+}
+
+/* hoover and active border */
+.ThemePanelMainItemHover .ThemePanelMainFolderLeft,
+.ThemePanelMainItemActive .ThemePanelMainFolderLeft,
+.ThemePanelMainItemHover .ThemePanelMainItemLeft,
+.ThemePanelMainItemActive .ThemePanelMainItemLeft,
+.ThemePanelMainItemHover .ThemePanelMainFolderText,
+.ThemePanelMainItemActive .ThemePanelMainFolderText,
+.ThemePanelMainItemHover .ThemePanelMainItemText,
+.ThemePanelMainItemActive .ThemePanelMainItemText,
+.ThemePanelMainItemHover .ThemePanelMainFolderRight,
+.ThemePanelMainItemActive .ThemePanelMainFolderRight,
+.ThemePanelMainItemHover .ThemePanelMainItemRight,
+.ThemePanelMainItemActive .ThemePanelMainItemRight
+{
+	border-color:	#9C9A9C;
+}
+
+.ThemePanelMainItemHover .ThemePanelMainFolderLeft,
+.ThemePanelMainItemActive .ThemePanelMainFolderLeft,
+.ThemePanelMainItemHover .ThemePanelMainItemLeft,
+.ThemePanelMainItemActive .ThemePanelMainItemLeft
+{
+	border-width:	1px 0px 1px 1px;
+	border-style:	solid;
+	padding:	2px 0px 2px 2px;
+}
+
+.ThemePanelMainItemHover .ThemePanelMainFolderText,
+.ThemePanelMainItemActive .ThemePanelMainFolderText,
+.ThemePanelMainItemHover .ThemePanelMainItemText,
+.ThemePanelMainItemActive .ThemePanelMainItemText
+{
+	border-width:	1px 0px 1px 0px;
+	border-style:	solid;
+	padding:	2px 3px 2px 5px;
+}
+
+.ThemePanelMainItemHover .ThemePanelMainFolderRight,
+.ThemePanelMainItemActive .ThemePanelMainFolderRight,
+.ThemePanelMainItemHover .ThemePanelMainItemRight,
+.ThemePanelMainItemActive .ThemePanelMainItemRight
+{
+	border-width:	1px 1px 1px 0px;
+	border-style:	solid;
+	padding:	2px 0px 2px 0px;
+}
+
+/* sub menus sub components */
+
+.ThemePanelMenuFolderLeft,
+.ThemePanelMenuItemLeft
+{
+	padding:	3px 0px 3px 3px;
+	border:		0;
+	white-space:	nowrap;
+	background-color:	inherit;
+}
+
+.ThemePanelMenuFolderText,
+.ThemePanelMenuItemText
+{
+	padding:	3px 3px 3px 5px;
+
+	border:		0;
+	white-space:	nowrap;
+	background-color:	inherit;
+	color: #ffffff;
+  font-size: 11px;
+}
+
+.ThemePanelMenuItemRight,
+.ThemePanelMenuFolderRight
+{
+	padding:	3px 1px 3px 0px;
+
+	border:		0;
+	white-space:	nowrap;
+	background-color:	inherit;
+}
+
+/* hoover and active border */
+.ThemePanelMenuItemHover .ThemePanelMenuFolderLeft,
+.ThemePanelMenuItemActive .ThemePanelMenuFolderLeft,
+.ThemePanelMenuItemHover .ThemePanelMenuItemLeft,
+.ThemePanelMenuItemActive .ThemePanelMenuItemLeft,
+.ThemePanelMenuItemHover .ThemePanelMenuFolderText,
+.ThemePanelMenuItemActive .ThemePanelMenuFolderText,
+.ThemePanelMenuItemHover .ThemePanelMenuItemText,
+.ThemePanelMenuItemActive .ThemePanelMenuItemText,
+.ThemePanelMenuItemHover .ThemePanelMenuFolderRight,
+.ThemePanelMenuItemActive .ThemePanelMenuFolderRight,
+.ThemePanelMenuItemHover .ThemePanelMenuItemRight,
+.ThemePanelMenuItemActive .ThemePanelMenuItemRight
+{
+	border-color:	#9C9A9C;
+}
+
+.ThemePanelMenuItemHover .ThemePanelMenuFolderLeft,
+.ThemePanelMenuItemActive .ThemePanelMenuFolderLeft,
+.ThemePanelMenuItemHover .ThemePanelMenuItemLeft,
+.ThemePanelMenuItemActive .ThemePanelMenuItemLeft
+{
+	border-width:	1px 0px 1px 1px;
+	border-style:	solid;
+	padding:	2px 0px 2px 2px;
+}
+
+.ThemePanelMenuItemHover .ThemePanelMenuFolderText,
+.ThemePanelMenuItemActive .ThemePanelMenuFolderText,
+.ThemePanelMenuItemHover .ThemePanelMenuItemText,
+.ThemePanelMenuItemActive .ThemePanelMenuItemText
+{
+	border-width:	1px 0px 1px 0px;
+	border-style:	solid;
+	padding:	2px 3px 2px 5px;
+}
+
+.ThemePanelMenuItemHover .ThemePanelMenuFolderRight,
+.ThemePanelMenuItemActive .ThemePanelMenuFolderRight,
+.ThemePanelMenuItemHover .ThemePanelMenuItemRight,
+.ThemePanelMenuItemActive .ThemePanelMenuItemRight
+{
+	border-width:	1px 1px 1px 0px;
+	border-style:	solid;
+	padding:	2px 0px 2px 0px;
+}
+
+td.ThemePanelMenuSplit
+{
+	padding:	0px;
+	margin:		0px;
+	height:		7px;
+	border:		0px;
+	background-color:	inherit;
+	overflow:	hidden;
+}
+
+div.ThemePanelMenuSplit
+{
+	display:	block;
+	margin:		0px;
+	height:		1px;
+	width:		100%;
+	overflow:	hidden;
+	background-color:	inherit;
+
+	border-style:	solid;
+	border-width:	1px 0px 0px 0px;
+	border-color:	#9C9A9C;
+}
+
+/* image shadow animation */
+
+/*
+	seq1:	image for normal
+	seq2:	image for hover and active
+
+	To use, in the icon field, input the following:
+	<img class="seq1" src="normal.gif" /><img class="seq2" src="hover.gif" />
+*/
+
+.ThemePanelMenuItem img.seq1
+{
+	display:	inline;
+}
+
+.ThemePanelMenuItemHover seq2,
+.ThemePanelMenuItemActive seq2
+{
+	display:	inline;
+}
+
+.ThemePanelMenuItem .seq2,
+.ThemePanelMenuItemHover .seq1,
+.ThemePanelMenuItemActive .seq1
+{
+	display:	none;
+}

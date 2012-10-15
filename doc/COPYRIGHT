@@ -1,0 +1,101 @@
+ATK Copyright and Licensing
+===========================
+
+ATK is copyright (c) 2000-2009 Ibuildings.nl BV, Vlissingen, Netherlands and
+copyright (c) 2000-2009 Ivo Jansch, Vlissingen, Netherlands.
+
+ATK is distributed with an  open source license, which can be found in the
+doc/LICENSE file. Commercial licenses can be bought through Ibuildings.nl.
+See the LICENSE files for details.
+
+The license covers all source files in the ATK distribution, with the
+exception of the following third party software parts, which remain licensed
+under their respective licenses.
+
+Third party software
+====================
+ATK uses the Smarty template engine by Ispi. The Smarty template engine 
+(http://smarty.php.net) is Copyright (c) 2001-2003 Ispi and made available
+under the Library General Public License (LGPL).
+
+ATK uses the DHTML Calendar Widget by Mihai Bazon. The DHTML Calendar Widget
+(http://dynarch.com/mishoo/calendar.epl) is Copyright (c) 2002-2004 Mihai
+Bazon and made available under the Library General Public License (LGPL). 
+
+ATK uses modified versions of PHPLIB's database abstraction classes for
+database access. PHPLIB (http://phplib.netuse.de) is Copyright (c) 1998,1999 
+SH Online Dienst GmbH and made available under the Library General Public 
+License (LGPL). 
+
+ATK uses functions from the ADOdb Date Library, for date support prior to
+1970. The ADOdb Date Library (http://php.weblogs.com/adodb_date_time_library)
+is Copyright (c) 2003 John Lim and made available under a BSD-style license.
+
+ATK uses SimpleTest (http://www.lastcraft.com/simple_test.php) for unit 
+testing. SimpleTest is Copyright (c)2003-2005 Marcus Baker (lastcraft.com) and
+made available under the Open Group Test Suite License. The full version of 
+SimpleTest including full documentation can be found on its homepage. Included 
+with permission.
+
+ATK uses the FCKEditor (http://www.fckeditor.net) for wysiwyg editing.
+fckEditor is Copyright (c)2003-2005 Frederico Caldeira Knabben and made 
+available under the LGPL license. The full version of fckEditor including full
+documentation can be found on its homepage.
+
+ATK uses TinyButStrong OOo (http://www.tinybutstrong.com/apps/tbsooo/)
+for parsing OpenOffice.org and OpenDocument template files. TinyButStrong
+OOo is Copyright (c) 2005 Olivier LOYNET and released under the GNU Lesser
+General Public License (LGPL). The full version including examples
+and documentation can be downloaded from its homepage.
+
+ATK uses the PHPMailer class (http://phpmailer.sourceforge.net/) for HTML 
+email functionality. PHPMailer is Copyright (c) 2001-2003 Brent R. Matzelle
+and released under the GNU Lesser General Public License (LGPL). The full 
+version including examples and documentation can be downloaded from its 
+homepage.
+
+ATK uses the Prototype Javascript Framework (http://prototype.conio.net/)
+for Ajax support. Prototype is Copyright (c) 2005 Sam Stephenson and made
+available under the terms of an MIT-style license.
+
+ATK uses the script.aculo.us Javascript Library (http://script.aculo.us/)
+for Ajax/Effects support. script.aculo.us is Copyright (c) 2005 Thomas Fuchs  
+and made available under the terms of an MIT-style license.
+
+ATK uses the overLIB Javascript Library (http://www.bosrup.com/web/overlib/)
+for tooltips. overLIB is Copyright (c) 1998-2004 Erik Bosrup and made 
+available under the terms of an Artistic license.
+
+ATK uses the PHP-JSON library (http://mike.teczno.com/json.html) for JSON
+(de-)serialization. PHP-JSON is Copyright (c) 2005 Michal Migurski and
+made available under the terms of the BSD lcense.
+
+ATK uses the Rico Javascript Library (http://openrico.org/) to enrich
+the user experience. Rico is Copyright (c) 2005 Sabre Airline Solutions
+and made available under the terms of the Apache License (version 2.0).
+
+ATK uses the prototype window Javascript Library 
+(http://prototype-window.xilinus.com/) for window support. 
+The prototype window class is Copyright (c) 2006 Sébastien Gruhier  
+and made available under the terms of an MIT-style license.
+
+ATK uses the overlibmws Javascript Library (http://www.macridesweb.com/oltest/)
+for tooltips. overlibmws is Copyright (c) 2002-2006 Foteos Macrides and made
+available under the terms of an Artistic license.
+
+ATK uses parts of the Zend Framework (http://framework.zend.com).
+Zend Framework is Copyright (c) 2006, Zend Technologies USA, Inc. The
+Zend Framework License can be found in the atk/ext/zend subdirectory.
+The full version of Zend Framework, including full documentation can be found 
+on its homepage.
+
+ATK uses the Spyc library for handling YAML (http://spyc.sourceforge.net/)
+Spyc is Copyright 2005-2006 Chris Wanstrath and made available under the
+terms of the MIT license.
+
+ATK uses the PhpCaptcha class by Edward Eliot. The PhpCaptcha class
+(http://www.ejeliot.com/) is copyright (c) 2005 Edward Eliot and
+available as freeware.
+
+ATK uses the json.org JSON library (http://json.org/json.js).
+
