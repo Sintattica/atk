@@ -1,0 +1,85 @@
+
+#editform
+{
+  text-align: left;
+}
+
+.tabsTabs 
+{
+  background: url(../images/tabbottom.gif) repeat-x left bottom;
+}
+
+#tabContainer
+{
+  padding: 0px;
+}
+
+.mainTabs
+{
+  margin: 0 0 15px 0;
+}
+
+.mainTabs a
+{
+  display: block;
+	text-decoration: none;
+}
+
+.activetab
+{
+  display: block;
+  padding: 4px 0px 3px 0px;
+  margin: 0px;
+	color: #414141;
+	background: url(../images/subtabon.gif) no-repeat left top !important;
+	width: 142px;
+	margin: 0px;
+	cursor: default;
+	height: 100%;
+	text-align: center;
+}
+
+.passivetab
+{
+  display: block;
+  padding: 4px 0px 3px 0px;
+  margin: 0px;
+	border: 0px;
+	color: #414141;
+	background: url(../images/subtaboff.gif) no-repeat left top !important;
+	width: 142px;
+	cursor: pointer;
+	height: 100%;
+	text-align: center;
+}
+
+.tabbedPane a
+{
+  
+}
+
+.tabbedPane .tabsTabs .activetab
+{
+  padding: 4px 0px 2px 0px !important;
+}
+
+.tabbedPane .tabsTabs .passivetab
+{
+  padding: 4px 0px 2px 0px !important;
+}
+
+.tabbedPane .tabsTabs .activetab a
+{
+  display: block;
+  color: #414141;
+  text-decoration: none;
+  font-size: 10px;
+  height: 100%;
+}
+
+.tabbedPane .tabsTabs .passivetab a
+{
+  display: block;
+  text-decoration: none;
+  font-size: 10px;
+}

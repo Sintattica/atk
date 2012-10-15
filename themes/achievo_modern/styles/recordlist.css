@@ -1,0 +1,99 @@
+.recordListContainer
+{
+  width: 100%;
+  border: 0px solid #f00;
+}
+
+.recordList
+{
+  width: 100%;
+}
+
+.recordListSearch
+{
+  background: #666 ! important;
+}
+
+.recordListContainer td
+{
+  padding: 8px 0px;
+}
+
+.recordList
+{
+  border-bottom: 3px solid #D7D7D7;
+  width: 100%;
+  border: 0px solid #d7d7d7;
+}
+
+.recordListSearch
+{
+  border-bottom: 3px solid #fff;
+  background-color: #ddd !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+}
+
+.recordList td, .recordList th
+{
+  padding: 4px;
+  border-right: 1px solid #fff;
+}
+
+.recordList td
+{
+  border-right: 1px solid #eee;
+}
+
+.recordList th
+{
+	background-color: #aaa;
+	font-weight: normal;
+}
+
+.recordList th a
+{
+	color: #000;
+}
+
+.recordListTd, .recordListTdFirst
+{
+  border-left: 3px solid #d7d7d7;
+  border-left: 0px solid #fff;
+  border-bottom: 1px dashed #aaa;
+}
+
+.recordListTh, .recordListThFirst
+{
+  border-left: 3px solid #d7d7d7;
+  border-left: 0px solid #fff;
+  border-bottom: 1px dashed #aaa;
+}
+
+.recordListTh a
+{
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.recordListThFirst a
+{
+	font-weight: bold;
+}
+
+input[type="checkbox"]
+{
+  width: auto;
+  border: 0px;
+}
+
+.checkBox
+{
+  width: auto ! important;
+}
+
+img.recordlist
+{
+  width: 16px;
+  height: 16px;
+}

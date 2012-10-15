@@ -1,0 +1,24 @@
+A.atksection {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  height: 14px;
+  font-size: 12px;
+  font-weight: bold;
+  text-decoration: none;
+  background-position: 2px 5px;
+  background-repeat: no-repeat;
+  padding: 2px;
+  padding-left: 16px;    
+  width: 1px;
+  white-space: nowrap;
+  color: #000;
+}
+
+A.openedSection {
+  background-image: url(../../../images/minus.gif);
+}
+
+A.closedSection {
+  background-image: url(../../../images/plus.gif);
+}

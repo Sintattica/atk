@@ -1,0 +1,24 @@
+
+.activetab
+{
+  border: 0px solid black;
+  border-left-width:1px;
+  border-right-width:1px;
+  border-top-width:1px;
+  padding: 6px;
+
+  cursor: pointer;
+  font-weight: bold;
+  margin: 4px;
+}
+
+.passivetab
+{
+  border: 0px solid black;
+  border-left-width:1px;
+  border-right-width:1px;
+  border-top-width:1px;
+  padding: 6px;
+
+  cursor: hand;
+}

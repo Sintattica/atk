@@ -1,0 +1,16 @@
+
+TABLE.recordlist,
+TABLE.recordlist TD,
+TABLE.recordlist TH
+{
+  border-width: 1px;
+  border-color: #000;
+  border-style: solid;
+  border-collapse: collapse;
+}
+
+img.recordlist
+{
+  width: 16px;
+  height: 16px;
+}

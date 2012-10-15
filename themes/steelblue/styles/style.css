@@ -1,0 +1,690 @@
+
+body
+{
+  background: #f3f3f3;
+  color: #414141;
+  font-size: 12px;
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+}
+
+.clickable 
+{
+	cursor: pointer;
+}
+
+a:link, a:visited, a:active
+{
+  color: #414141;
+  font-size: 12px;
+}
+
+a:hover
+{
+  color: #660000;
+  font-size: 12px;
+}
+
+/* STACKTRACE */
+/* ----------------------------------------------------------------------- */
+
+
+.stacktrace, a.stacktrace:link, a.stacktrace:visited
+{
+  font-family: Tahoma, Trebuchet MS, Arial, Verdana;
+  font-size: 12px;
+  font-style: italic;
+  color: #414141;
+}
+
+.stacktrace_end
+{
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  font-size: 12px;
+  font-style: italic;
+  color: #414141;
+}
+
+.fieldlabel
+{
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  font-size: 12px;
+  color: #414141;
+  text-align: left;
+  font-weight: normal !important;
+  padding: 5px 0px 8px 0px !important;
+  width: 200px;
+}
+
+.field
+{
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  font-size: 12px;
+  color: #414141;
+  text-align: left;
+  padding-left: 12px;
+  padding: 3px 0px 3px 0px;
+}
+
+.field a
+{
+  color: #ba0000;
+}
+
+.tab
+{
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.tab_selected
+{
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  font-size: 12px;
+  font-weight: bold;
+  color: #000000;
+}
+
+.topbg
+{
+  background: #52006A;
+}
+
+.menubg
+{
+  background: #F00;
+}
+
+.error, .errorlabel
+{
+  color: #FF0000;
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  font-size: 12px;
+  text-align: left;
+}
+
+.atkmessages
+{
+  background-color: #EEEEEE;
+  color: #000000;
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: left;
+}
+
+.atkmessages_general,
+.atkmessages_success,
+.atkmessages_failure 
+{
+	margin-bottom: 1px;
+	padding: 3px;
+}
+
+.atkmessages_general
+{
+	background-color: yellow;
+	color: #000;
+}
+
+.atkmessages_success
+{
+	background-color: #339900;
+  color: #fff;
+}
+
+.atkmessages_failure
+{
+	background-color: #ff0000;
+	color: #fff;
+}
+
+#action-buttons
+{
+  text-align: right;
+}
+
+ul, ol, li
+{
+  margin: 0px;
+  padding: 0px;
+  list-style-position: inside;
+}
+
+
+
+/* BOX */
+/* ------------------------------------------------------------------ */
+
+.actionpageWrapper
+{
+  width: 93%;
+}
+
+.panel
+{
+  margin: 8px 18px 0px 18px;
+}
+
+.panelTitle
+{
+  height: 26px;
+}
+
+.panelTitleText
+{
+
+  margin: 0;
+  padding: 7px 4px 0px 12px;
+  height: 19px;
+  float: left;
+
+  background: #fff url(../images/tabLeft.gif) no-repeat left top;
+  font-size: 13px;
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  text-transform: capitalize;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+
+.panelTitleRight
+{
+  position: relative;
+  width: 12px;
+  float: left;
+}
+
+.panelHeader
+{
+  background: #fff url(../images/contentheaderleft.jpg) no-repeat left top;
+  height: 12px;
+  font-size: 1px;
+}
+
+.panelContent
+{
+  margin: 0;
+  background: #FFFFFF;
+  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+}
+
+.panelContent2
+{
+  padding: 0 12px 12px 12px;
+}
+
+.panelContent2 form
+{
+  padding: 0;
+  margin: 0;
+}
+
+.panelFooter
+{
+  background: #F3F3F3 url(../images/contentfooterleft.jpg) no-repeat left top;
+  height: 33px;
+}
+
+
+/* EDIT FORM */
+/* ------------------------------------------------------------------ */
+
+input[type="text"],
+input[type="password"],
+select,
+textarea
+{
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  font-size: 12px;
+  padding: 1px;
+}
+
+input {
+	font-size: 12px;
+}
+
+textarea
+{
+	padding: 2px;
+}
+
+input.btn,
+input.btn_save,
+input.btn_cancel,
+input.btn_saveandclose,
+input.btn_saveandcontinue,
+input.btn_saveandnext
+{
+  color: #000;
+}
+
+input.atkdefaultbutton
+{
+  font-weight: bold;
+}
+
+#editform td.field
+{
+  padding-right: 12px;
+  /* white-space: nowrap; */
+}
+
+#changeView
+{
+  position: absolute;
+  right: 12px;
+  top: -38px;
+  text-align: right;
+}
+
+#changeView a
+{
+  color: #9a1010;
+}
+
+.currentDate
+{
+  padding: 4px 0px;
+  color: #333;
+}
+
+.currentDate a
+{
+  text-decoration: none;
+}
+
+
+/* LOGIN FORM */
+/* ------------------------------------------------------------------ */
+
+.LoginHeader
+{
+  position: relative;
+  background: #fff url(../images/loginheaderleft.jpg) no-repeat left;
+  height: 12px;
+  width: 530px;
+  margin: 0px auto;
+}
+
+.LoginFooter
+{
+  position: relative;
+  background: #fff url(../images/contentfooterleft.jpg) no-repeat left;
+  height: 33px;
+  width: 530px;
+  margin: 0px auto;
+}
+
+#logologin
+{
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 249px;
+  height: 102px;
+}
+
+#loginhelp
+{
+  margin: 0px auto;
+  padding: 10px 0px 20px 0px;
+  color: #969696;
+  width: 400px;
+  text-align: center;
+  line-height: 130%;
+  letter-spacing: 0.5px;
+}
+
+#loginform
+{
+  position: relative;
+  width: 530px;
+  padding: 0px;
+  margin: 0px auto;
+}
+
+#loginform form
+{
+	padding: 30px 20px 30px 20px;
+	margin: 0px;
+	border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+	background: #fff;
+}
+
+#loginform-title
+{
+	font-weight: bold;
+	margin-bottom: 8px;
+}
+
+#loginform-content
+{
+  width: 220px;
+}
+
+.loginformField
+{
+	vertical-align: middle;
+	padding: 4px 0px;
+}
+
+.loginformLabel
+{
+	padding-right: 12px;
+	vertical-align: middle;
+}
+
+.atkonetomanyrelation
+{
+	color: #ba0000 ! important;
+	display: block;
+	margin-top: 6px;
+}
+
+
+
+
+/* BUTTONS */
+/* ------------------------------------------------------------------ */
+
+#action-buttons
+{
+  text-align: center;
+}
+
+#editform td.field
+{
+  padding-top: 5px;
+  padding-bottom: 2px;
+  vertical-align: top;
+}
+
+hr
+{
+  border: none;
+  border-top: 1px dashed #666;
+  height: 1px; /* whatever the total width of the border-top and border-bottom equal */
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.atkboolattribute
+{
+  border: 0px ! important;
+  width: auto ! important;
+}
+
+
+/* COMMON STYLES */
+/* ------------------------------------------------------------------ */
+
+.red
+{
+  color: #9a1010;
+}
+
+.bold
+{
+  font-weight: bold;
+}
+
+.capitalize
+{
+  text-transform: capitalize;
+}
+
+.stacktrace
+{
+  margin: -1px 0px 20px 0px;
+}
+
+#action-helplink
+{
+  width: 100%;
+  text-align: right;
+  right: 20px;
+}
+
+h1
+{
+  margin: 0px;
+  padding: 0px 0px 15px 0px;
+}
+
+p
+{
+  position: relative;
+  margin: 0px;
+  padding: 0px 0px 10px 0px;
+}
+
+p img
+{
+  margin: 0px 10px 0px 10px;
+}
+
+.clear
+{
+  clear: both;
+}
+
+form
+{
+	margin: 0;
+	padding: 0;
+}
+
+#atkbusy
+{
+  position: absolute;
+  visibility: hidden;
+  left: 20px;
+  top: 5px;
+  z-index: 20;
+  height: 22px;
+  width: 22px;
+}
+
+#searchbutton
+{
+  margin-top: 5px;
+}
+
+.atkAttrRowHidden
+{
+  display: none !important;
+}
+
+
+/* DIALOG */
+/* ------------------------------------------------------------------ */
+ 
+.atkdialog .nw {
+  background:transparent url(../images/atkdialog_corners_top.gif) no-repeat scroll 0 -25px;
+  height:25px;
+  padding-left:10px;
+}
+
+.atkdialog .ne {
+  background:transparent url(../images/atkdialog_corners_top.gif) no-repeat scroll right 0;
+  height:25px;
+  padding-right:10px;
+}
+
+.atkdialog .n {
+  background:transparent url(../images/atkdialog_corners_top.gif) repeat-x scroll 0 -50px;
+  font-size: 13px;
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  text-transform: capitalize;
+  font-weight: bold;
+  color: #FFFFFF;
+  height:25px;
+  margin:0;
+  padding:0;
+  text-align:center;      
+  padding-right: 60px;
+  padding-top: 3px;   
+  overflow: hidden;
+}
+
+.atkdialog .content {
+  background-color:#FDFDFD;
+  color:#000;
+  font-size: 12px;
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  overflow:auto;
+  padding: 0px;
+  margin: 0px;
+}
+
+.atkdialog .w {
+  border-left:1px solid #B9B9B9;
+  border-right:1px solid #B9B9B9;
+}
+
+.atkdialog .e {
+  border-left:1px solid #FFF;
+  border-right:1px solid #FFF;
+}
+
+.atkdialog .sw {
+  background:transparent url(../images/atkdialog_corners_bottom.gif) no-repeat scroll 0 -12px;
+  font-size:2px;
+  height:12px;
+  padding-left:6px;
+}
+
+.atkdialog .se {
+  background:transparent url(../images/atkdialog_corners_bottom.gif) no-repeat scroll right 0;
+  font-size:2px;
+  height:12px;
+  padding-right:6px;
+}
+
+.atkdialog .s {
+  background:transparent url(../images/atkdialog_corners_bottom.gif) repeat-x scroll 0 -24px;
+  font-size:11px;
+  height:12px;  
+  overflow:hidden;
+} 
+
+.atkdialog .se_resize_handle {
+  background:transparent url(../images/atkdialog_sizer.gif) no-repeat scroll right 0;
+  font-size:2px;
+  height:12px;
+  padding-right:12px;
+}
+
+.atkdialog .se_sizer { 
+  width:12px;
+  height:12px;
+}          
+
+.atkdialog .buttons {
+  position: absolute;
+  top:1px;
+  right:10px;
+  height: 20px;   
+}                
+
+.atkdialog .buttons a.close {
+  background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 0;
+  display:block;
+  height:18px;
+  float:left;
+  width:23px;
+  font-size:1px;
+  padding-top:2px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/       
+}
+
+.atkdialog .buttons a:hover.close {
+  background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -18px;
+}
+
+.atkdialog .buttons a.maximize {
+  background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -36px;
+  display:block;
+  height:18px;
+  float:left;
+  width:23px;
+  font-size:1px;
+  padding-top:1px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/       
+}
+.atkdialog .buttons a:hover.maximize {
+  background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -54px;
+}
+
+.atkdialog .buttons a.minimize {
+  background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -72px;
+  display:block;
+  height:18px;
+  float:left;
+  width:23px;
+  font-size:1px;
+ padding-top:0px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/       
+}                            
+
+.atkdialog .buttons a:hover.minimize {
+  background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -90px;
+}      
+
+.atkdialog .buttons a.minimize.disabled, .atkdialog .buttons.over a.minimize.disabled  {
+  background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -108px !important; 
+}
+
+.atkdialog_overlay {
+  background-color: #ddd;
+  filter:alpha(opacity=60);
+  -moz-opacity: 0.6;
+  opacity: 0.6;
+}
+
+.atkdialog_wired {
+  background:#FFF;
+  border:1px #000 dashed;
+  filter:alpha(opacity=60);
+  opacity:0.6;  
+  position:absolute;
+  -moz-opacity:0.6;
+} 
+
+.load_criteria {
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  font-size: 12px;
+  color: #414141;
+  text-align: left;
+  padding-left: 12px;
+  padding: 3px 0px 15px 0px;
+  vertical-align: middle;
+}
+.load_criteria img {
+  vertical-align: middle;
+}
+
+.save_criteria {
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  font-size: 12px;
+  color: #414141;
+  text-align: left;
+  padding-left: 12px;
+  padding: 15px 0px 3px 0px;
+}
+.save_criteria #save_criteria {
+  margin-left: 21px;
+}
+
+.overlib_txt {
+  font-size: 11px;
+  color: #222;
+}
+
+.overlib_bg {
+  background-color: #ddd;
+}
+
+.overlib_fg {
+  background-color: #ffffcc;	
+}

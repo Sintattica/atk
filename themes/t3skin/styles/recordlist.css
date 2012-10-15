@@ -1,0 +1,57 @@
+TABLE.recordlist
+{
+  margin: 5px;
+  border-collapse: collapse;
+}
+
+TABLE.recordlist TH,
+TABLE.recordlist TD,
+TABLE.recordlist A
+{
+  font-family: Tahoma, Verdana,Helvetica,Arial;
+  font-size: 11px;
+}
+
+TABLE.recordlist TH,
+TABLE.recordlist TH A
+{
+  background-color: #b4bac6;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+TABLE.recordlist TH A:hover
+{
+  background-color: #ccccee;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+TABLE.recordlist TD,
+TABLE.recordlist TH
+{
+  padding: 4px;
+  margin: 0px;
+  border-left-width: 0px;
+  border-right-width: 0px;
+  border-bottom-width: 1px;
+  border-top-width: 1px;
+  border-style: solid;
+  border-color: #ccc;
+}
+
+TABLE.recordlist .row1
+{
+  background-color: #ffffff;
+}
+
+TABLE.recordlist .row2
+{
+  background-color: #f8f9fb;
+}
+
+img.recordlist
+{
+  height: 16px;
+  width: 16px;
+}

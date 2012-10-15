@@ -1,0 +1,17 @@
+<?php
+// Language file for the oracle error's
+
+$txt_db = array();
+$txt_db["1"]    = "Unique constraint geschonden";
+$txt_db["904"]  = "Ongeldige kolom naam";
+$txt_db["932"]  = "Datatypes komen niet overeen";
+$txt_db["918"]  = "Kolom dubbel gedefinieerd";
+$txt_db["1400"] = "Kan geen 'NULL' toevoegen";
+$txt_db["1407"] = "Kan niet een verplicht veld naar 'NULL' updaten";
+$txt_db["1438"] = "Waarde is groter dan toegestaan";
+$txt_db["2290"] = "Check constraint geschonden";
+$txt_db["2291"] = "Integriteitsconstraint geschonden - hoofdsleutel niet gevonden";
+$txt_db["2292"] = "Integriteitsconstraint geschonden - onderliggend record gevonden";
+$txt_db["2293"] = "Valideren mislukt - Check constraint geschonden";
+
+?>
