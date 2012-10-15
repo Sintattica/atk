@@ -1,0 +1,55 @@
+ATK Readme
+==========
+
+Requirements
+------------
+ATK requires PHP 5.1.3 or newer.
+
+Copyright and Licensing
+-----------------------
+ATK and all related material is (c) 2000-2010 Ibuildings and Ivo Jansch.
+ATK is distributed under the LGPL license. A copy of this license can be found
+in the LICENSE file. ATK contains some third party components that have their
+own licensing conditions. More information on this can be found in the 
+COPYRIGHT file.
+
+Contact information
+-------------------
+Support forum: http://forums.ibuildings.com
+
+Project maintainer: Peter C. Verhage <peter@ibuildings.com>
+
+The project homepage can be found at http://www.atk-framework.com
+
+Commercial Support
+------------------
+Ibuildings provides extensive support for ATK. Information about the 
+support options can be found at http://www.atk-framework.com/support
+
+
+Disclaimer
+----------
+This product is provided AS-IS. Ibuildings and any other party involved 
+do not warrant any functionality of the product and deny all responsibility 
+in case of failure of the product or any damage following directly or 
+indirectly from use of this product. The official (and more detailed)
+disclaimer can be found in the doc/LICENSE file. 
+
+
+Getting the latest release
+--------------------------
+The latest release of ATK can always be found at:
+http://www.atk-framework.com/download
+
+
+Getting involved
+----------------
+ATK is developed in an Open Source (http://www.opensource.org) fashion in
+order to facilitate collaboration on the project. One of the reasons for
+choosing the Open Source method is to ensure that development is not limited
+by our own resources alone.
+We can also use some help in doing translations of the software and
+documentation writing. If you're creative, we can also use themes.
+If you want to help development, post a message on our development forums at
+http://forum.ibuildings.com. If you don't want to post in public forums
+you can also send an email to peter@ibuildings.com with your suggestions.

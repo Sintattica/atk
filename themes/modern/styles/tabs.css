@@ -1,0 +1,21 @@
+.activetab
+{
+  cursor: default; 
+  color : #000000; 
+  background: #E0E5F7;
+  border: 0px solid black; 
+  border-left-width:1px;
+  border-right-width:1px;
+  border-top-width:1px;
+}
+
+.passivetab
+{  
+  cursor: pointer; 
+  color : #FFFFFF;
+  background: #2B98F7;
+  border: 0px solid black; 
+  border-left-width:1px;
+  border-right-width:1px;
+  border-top-width:1px;
+}

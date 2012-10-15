@@ -1,0 +1,156 @@
+BODY  {
+	background-color : #E3E0DB;
+	color : #000000;
+	font-size : 8pt;
+	font-family : verdana, helvetica, arial, sans-serif;
+	font-weight : normal;
+}
+
+A:link,
+A:visited,
+A:active  {
+	color : Navy;
+	font-size : 8pt;
+}
+
+TD  {
+	color : Black;
+	font-size : 8pt;
+}
+
+A:hover  {
+	color : Blue;
+	font-size : 8pt;
+}
+
+.stacktrace,
+A.stacktrace:link,
+A.stacktrace:visited  {
+	font-family : verdana, helvetica, arial,serif;
+	font-size : 11px;
+	font-style : italic;
+	color : #555555;
+}
+
+.stacktrace_end  {
+	font-family : verdana, helvetica, arial,serif;
+	font-size : 11px;
+	font-style : italic;
+	color : #000000;
+}
+
+.fieldlabel  {
+	font-family : verdana, helvetica, arial, sans-serif;
+	font-size : 8pt;
+	color : #000000;
+	text-align : left;
+	width: 170px;
+}
+
+.field  {
+	font-family : verdana, helvetica, arial, sans-serif;
+	font-size : 8pt;
+	color : #000000;
+	text-align : left;
+}
+
+INPUT,
+SELECT,
+TEXTAREA
+{
+	color : #000000;
+	font-family : verdana, helvetica, arial, serif;
+	font-size : 8pt;
+	border-bottom: #FFFFFF 1px solid;
+	border-right: #FFFFFF 1px solid;
+	border-top: #666666 1px solid;
+	border-left: #666666 1px solid;
+}
+
+.button,
+button.btn,
+button.btn_save,
+button.btn_cancel,
+button.btn_saveandclose,
+button.btn_saveandnext,
+button.btn_saveandaddnew,
+button.btn_finish,
+button.btn_next,
+button.btn_search,
+INPUT[type=button],
+INPUT[type=submit]
+{
+	font-size : 8pt;
+	color : #303030;
+	background-color : #D6D3CE;
+	border-top : #FFFFFF 1px solid;
+	border-left : #FFFFFF 1px solid;
+	border-bottom : #666666 1px solid;
+	border-right : #666666 1px solid;
+	cursor : pointer;
+	cursor : hand;
+}
+
+button.btn_saveandclose  {
+	font-weight : bold;
+}
+
+.errorlabel  {
+	color : #FF0000;
+	font-family : verdana, helvetica, arial, sans-serif;
+	font-size : 8pt;
+	text-align : left;
+}
+
+.error  {
+	color : #FF0000;
+	font-family : verdana, helvetica, arial, sans-serif;
+	font-size : 8pt;
+	text-align : left;
+}
+
+
+
+
+td.tableRowHeader {
+	font-weight: bold;
+	vertical-align: middle;
+	color: #ffffff;
+	background-color: #629CD3;
+	height: 20px;
+	padding-left: 5px;
+}
+
+
+td.whiteBold {
+	font-family: Arial, Sans-serif, Verdana, Geneva, Helvetica;
+	font-weight: bold;
+	font-size: 11px;
+	padding-top: 1px;
+	font-weight: bold;
+	color: #ffffff;
+}
+
+td.mfPositionerInnerTd {
+	background-color: #D4D0C8;
+	border-top: #FFFFFF 1px solid;
+	border-left: #FFFFFF  1px solid;
+	border-bottom: #848284 1px solid;
+	border-right: #848284 1px solid;
+	padding: 1 1 1 1;
+	height: 100%;
+}
+
+div.mfBoxPositioner2 {
+	background-color: #D4D0C8;
+	border-top: #D4D0C8 1px solid;
+	border-left: #D4D0C8  1px solid;
+	border-bottom: #424142 1px solid;
+	border-right: #424142 1px solid;
+	padding: 0 0 0 0;
+}
+
+.atkAttrRowHidden
+{
+  display: none !important;
+}

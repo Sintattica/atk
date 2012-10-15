@@ -1,0 +1,168 @@
+
+table.recordlist
+{
+  border-collapse: collapse;
+  display: table;
+}
+
+table.recordlist th,
+table.recordlist td,
+table.recordlist a,
+table.recordlist a:hover
+{
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  font-size: 12px;
+  border-width: 1px;
+}
+
+table.recordlist th,
+table.recordlist th a,
+table.recordlist th a:hover
+{
+  color: #414141;
+  font-weight: bold;
+}
+
+table.recordlist td,
+table.recordlist th
+{
+  border-width: 1px;
+  border-color: #BFBFBF;
+  border-style: solid;
+  padding: 3px;
+  margin: 0px;
+}
+
+table.recordlist th
+{
+  padding: 3px 5px 3px 5px !important;
+}
+
+table.recordlist .row1
+{
+  background-color: #ffffff;
+}
+
+table.recordlist .row2
+{
+  background-color: #E0E8EF;
+}
+
+table.recordList .row1
+{
+  background-color: #ffffff;
+}
+
+table.recordList .row2
+{
+  background-color: #E0E8EF;
+}
+
+.recordListSearch
+{
+  background: #666 ! important;
+}
+
+.recordListContainer td
+{
+  padding: 8px 0px;
+}
+
+.recordList
+{
+  border: 0px solid #d7d7d7;
+  border-left: 1px solid #eee;
+}
+
+.recordListSearch
+{
+  border-bottom: 3px solid #fff;
+  background-color: #ddd !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+}
+
+.recordList td, .recordList th
+{
+  padding: 8px 4px 4px 4px !important;
+  border-right: 1px solid #fff;
+}
+
+.recordList td
+{
+  vertical-align: center;
+  border-right: 1px solid #eee;
+}
+
+.recordList th
+{
+  background-color: #749abe;
+  font-weight: normal;
+  color: #FFFFFF !important;
+  text-align: left;  
+}
+
+.recordList th a
+{
+	color: #FFFFFF !important;
+	text-decoration: underline !important;
+}
+
+.recordListTd, .recordListTdFirst
+{
+  border-left: 3px solid #d7d7d7;
+  border-left: 0px solid #fff;
+  border-bottom: 1px dashed #aaa;
+}
+
+.recordListTh, .recordListThFirst
+{
+  border-left: 3px solid #d7d7d7;
+  border-left: 0px solid #fff;
+  border-bottom: 1px dashed #aaa;
+}
+
+.recordListTh a
+{
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.recordListThFirst a
+{
+	font-weight: bold;
+}
+
+.actions
+{
+  display: block;
+  margin-top: -2px;
+  white-space: nowrap;
+}
+
+table.recordlist tbody.groupheader th.firstcol
+{
+  background-image: url(../../../images/plus.gif);;
+}
+
+table.recordlist tbody.groupheader_expanded th.firstcol
+{
+  background-image: url(../../../images/minus.gif);;
+}
+
+table.recordlist tbody.groupheader th,
+table.recordlist tbody.groupheader_expanded th
+{
+  cursor: pointer;
+  background-color: #749ABE;
+  color: #ffffff;
+  background-position: 5px 50%;
+  background-repeat: no-repeat;
+  padding-left: 22px !important
+}
+
+img.recordlist
+{
+  width: 16px;
+  height: 16px;
+}

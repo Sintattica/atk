@@ -1,0 +1,165 @@
+/* ------ HOOFDMENU ------ */
+BODY
+{
+  margin: 0px;
+}
+
+#nav
+{
+  font-family: verdana, Sans-serif;
+  font-size: 11px;
+  font-weight: normal;
+  display: block;
+  height: 24px;
+  margin: 0px;
+  z-index: 50;
+  width: auto;
+  position: fixed;
+  top: 5px;
+  left: 120px;
+  color: white;
+}
+
+#nav a
+{
+  height: 24px;
+  _height: 24px;
+  margin: 0 0 0 0.1em;
+  /*background-color: #2e8dfd;*/
+}
+
+#nav ul
+{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  z-index: 50;
+}
+
+#nav ul li
+{
+  background-color: #87B3DA;
+  
+  display: block;
+  float: left;
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+  margin-right: 2px;
+  position: relative;
+  width: auto;
+  z-index: 50;
+}
+
+#nav ul li a
+{
+  height: 19px;
+  _height: 19px;
+  display: block;
+  font-size: 11px;
+  width: auto;
+  color: white;
+  text-decoration: none;
+  text-align: left;
+  padding: 5px 10px 0px 8px;
+  top: 0px;
+  margin: 0px;
+  float: left;
+}
+
+
+
+
+#nav ul li a:hover,
+#nav ul li a.hover
+{
+  background-color: #96c7f4;
+  color: white;
+}
+
+/* same as the above, but internet explorer < 7 chokes if we add it to the above */
+#nav ul li:hover > a
+{
+  background-color: #96c7f4;
+  color: #fff;
+}
+
+#nav ul ul li a
+{
+  padding: 5px 14px 5px 8px;
+  font-size: 11px;
+  font-weight: normal;
+  background-color: #87B3DA;
+  
+  background-image: none;
+  border-bottom: 1px solid #77b1e4;
+}
+
+#nav ul ul
+{
+  display: none;
+  left: 0px;
+  top: 24px;
+  width: 120px;
+  position: absolute;
+}
+
+#nav ul ul ul,
+#nav ul ul ul ul
+{
+  display: none;
+  left: 142px;
+  top: 0px;
+  width: 120px;
+  position: absolute;
+}
+
+#nav ul li:hover ul
+{
+  display: block;
+  position: absolute;
+  top: 24px;
+  left: 0;
+}
+
+#nav ul li:hover ul ul,
+#nav ul li:hover ul ul ul
+{
+  display: none;
+}
+
+#nav ul ul li:hover ul,
+#nav ul ul ul li:hover ul
+{
+  display: block;
+  left: 142px;
+  top: 0px;
+}
+
+#nav ul ul li
+{
+  display: block;
+  float: left;
+  top: 0;
+  height: auto;
+}
+
+#nav ul ul li a
+{
+  display: block;
+  float: left;
+  width: 120px;
+  height: auto;
+}
+
+li>ul {
+  top: auto;
+  left: auto;
+}
+
+#nav li.separator div
+{
+  height: 0px;
+  width: 142px;
+  border-bottom: 1px dashed #96c7f4;
+}

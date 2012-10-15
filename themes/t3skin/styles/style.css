@@ -1,0 +1,186 @@
+BODY
+{
+  background-color: #efeff4;
+  color: #000000;
+  font-size: 10px;
+  font-family: Verdana,Helvetica,Arial;
+  font-weight: none;
+}
+
+A:link,
+A:visited,
+A:active,
+TD
+{
+  color: #000000;
+  font-size: 10px;
+}
+
+A:hover
+{
+  color: #660000;
+  font-size: 10px;
+}
+
+.stacktrace,
+A.stacktrace:link,
+A.stacktrace:visited
+{
+  font-family: verdana, helvetica, arial;
+  font-size: 11px;
+  font-style: italic;
+  color: #555555;
+}
+
+.stacktrace_end
+{
+  font-family: verdana, helvetica, arial;
+  font-size: 11px;
+  font-style: italic;
+  color: #000000;
+}
+
+.fieldlabel
+{
+  font-family: verdana, helvetica, arial;
+  font-size: 10px;
+  color: #000000;
+  text-align: left;
+}
+
+.field
+{
+  font-family: verdana, helvetica, arial;
+  font-size: 10px;
+  color: #000000;
+  text-align: left;
+}
+
+.tab
+{
+  font-family: verdana, helvetica, arial;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.tab_selected
+{
+  font-family: verdana, helvetica, arial;
+  font-size: 12px;
+  font-weight: bold;
+  color: #000000;
+}
+
+INPUT,
+SELECT,
+TEXTAREA
+{
+  background-color: #fff;
+  color: #000000;
+  font-family: verdana, helvetica, arial;
+  font-size: 11px;
+}
+
+button.btn,
+button.btn_save,
+button.btn_cancel,
+button.btn_saveandclose,
+button.btn_saveandnext
+{
+  background-color: #f8f9fb;
+  border-style: solid;
+  border-color: #b4bac6;
+  border-width: 1px;
+  height: 20px;
+  padding: 2px;
+  font-size: 10px;
+  margin-top: 10px;
+}
+
+button.btn_saveandclose
+{
+  font-weight: bold;
+}
+
+.error,
+.errorlabel
+{
+  color: #FF0000;
+  font-family: verdana, helvetica, arial;
+  font-size: 10px;
+  text-align: left;
+}
+
+.atkmessages
+{
+  color: #000000;
+  font-family: verdana, helvetica, arial;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: left;
+}
+
+.t3menu
+{
+  background-color: #f8f9fb;
+  margin: 0px;
+  padding: 5px 0px;
+  width: 100%;
+  text-align: right;
+  border-color: #b4bac6;
+  border-style: solid;
+  border-width: 0px;
+  border-bottom-width: 1px;
+}
+
+.t3menu .title
+{
+  font-weight: bold;
+}
+
+.t3menu DIV
+{
+  display: inline;
+  padding-right: 15px;
+}
+
+.t3menu DIV A
+{
+  text-decoration: none;
+  padding: 4px;
+}
+
+.t3menu DIV A:hover
+{
+  background-color: #dfdfe4;
+  color: #000;
+}
+
+.t3 menu DIV BR
+{
+  visibility: none;
+}
+
+.box
+{
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.box H1
+{
+  text-align: right;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+FORM TABLE TD
+{
+  text-align: left;
+}
+
+.atkAttrRowHidden
+{
+  display: none !important;
+}

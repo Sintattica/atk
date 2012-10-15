@@ -1,0 +1,252 @@
+Author
+------
+Ivo Jansch             <ivo at ibuildings.com>
+
+Maintainer
+----------
+Peter Verhage          <peter at ibuildings.com>
+
+Additional Development
+----------------------
+Sandy Pleyte           <sandy at achievo.org>
+Martin Roest           <martin at ibuildings.nl>
+Boy Baukema            <boy at ibuildings.nl>
+Yury Golovnya          <yury at achievo.org>
+
+Sponsors
+--------
+ATK grows not only through contributions from the Open Source community,
+but also through financial donations from sponsors, who finance the
+development of new features.
+
+* Ibuildings.nl BV, Netherlands (http://www.ibuildings.nl) sponsors the
+  development of ATK and sponsors ATK's hosting and development
+  facilities (site, mailinglists, cvs etc).
+
+* Cendris BV, Netherlands (http://www.cendris.com) sponsored the development
+  of keyboard navigation, some parts of the oracle driver and field range
+  search support.
+
+* Prosa.dk, Denmark (http://www.prosa.dk) sponsored the development of the
+  multi-sort and subtotals/aggregation features.
+
+* Petrosys Pty, Australia (http://www.petrosys.com.au) sponsored the
+  fix for bug #269.
+
+* For Funding BV, The Netherlands (http://www.funding.nl), we developed
+  the Privacy Enhancing Technologies extensions, the atkCurrencyAttribute,
+  the atkFormatAttribute and improvements to the CSV import feature.
+
+* For Dataroomservices, The Netherlands (http://www.dataroomservices.nl), we
+  added PDA detection support.
+
+* For Zicht Nieuwe Media Ontwerpers, The Netherlands (http://www.zicht.nl), we
+  added the atkShuttleRelation, enhanced the atkFckAttribute and added the
+  autonumbering feature to atkFileAttribute. Zicht also sponsored a large part
+  of the atkMlWrapper functionality.
+
+To become a sponsor, please contact us at http://www.ibuildings.com/contact/.
+
+
+Translators
+-----------
+The following people contributed a translation or updated an existing one:
+
+Arabic          : Hamdi Sahloul
+Braz. Portuguese: Armando M. Baratti   
+                  Kevin Golding        
+                  Geraldo L M Fonseca  
+                  Marcus TB de Aquino  
+                  Wanderlei Antonio Cavassin 
+                  Roberto Berto        
+                  Elton Lu�s Minetto   
+                  Carlisson Galdino    
+                  Daniel Bernardino De Almeida [DanielB] 
+Canadian French : Martin Raymond [MartinR] 
+Catalan         : Llu?s Torrent        
+Chinese         : Chin-Tang Chang      
+Czech           : Jakub Kahovec        
+Dutch           : Ivo Jansch           
+Danish          : Morten Oersted       
+                  Junaid Mukhtar       
+Finnish         : Skytt? Kari          
+                  Arto Saraniva        
+French          : Benoit des Ligneris  
+                  Olivier Fourdan      
+                  Kevin Golding        
+                  Timduru              
+                  Hicham Abassi        
+                  Camille El Khoury    
+                  Benjamin Thouret     
+                  Antoine Allavardin   
+                  Joseph Diniz   
+                  Fanuel Zemolin      
+German          : Bastian Kleineidam   
+                  Lars Martin          
+                  Michael Gaehwiler    
+                  Lucas Smith          
+                  Dirk Weigenand       
+                  Rainer Wedrich       
+                  Nele Vogel           
+                  Stephan Reichhelm    
+                  Christian Veron      
+                  Udo Werner           
+Greek           : Velissariou Costas   
+Hungarian       : Miklos Bagi Jr.      
+Indonesian      : Deus Shiva           
+Italian         : Marco De Toni        
+                  Luca Pescatore       
+                  Christophe Vallet    
+                  Nicola Busetto       
+                  Andrea Trasatti      
+                  Fabrizio Vanzani     
+                  Fabio Saitta         
+                  Michele Rota
+Japanese        : James Gallardo       
+Norwegian       : Stein Bjorndal       
+                  Tommy Stiansen       
+                  Stian Hartviksen     
+                  Kjetil Byklum        
+                  Bj?rn Langfors       
+                  Olav B. Lygre        
+Polish          : Lech Nowak           
+                  Przemek Piotrowski   
+Portuguese      : Pedro Vieira         
+Russian         : Vitaliy Perekupka    
+                  Maryia I. Davidouskaia 
+                  Konstantin Starodubtsev 
+Slovak          : Daniel Kulifaj [DanielK] 
+                  Marian Sura
+Spanish         : Jorge Ibsen          
+                  Armando Montiel Caba 
+                  Oswaldo G?mez        
+                  Antonio              
+                  Kevin Golding        
+                  Daniel Adad          
+                  Pavel F.             
+                  Jos? E. R. Valenciano 
+                  Gabriel Achtig       
+                  Pedro Pitillas       
+                  Raul Sancha          
+                  Victoria Gracia
+Swedish         : Thomas Karlsson      
+Turkish         : Bilal Akcay
+
+
+
+Major Contributors
+------------------
+We like to thank the following people especially, since they made
+significant contributions to the ATK project.
+
+Stefan Niederhauser 
+
+  Stefan came up with the idea of the 'node' concept, which later
+  became the basis of the ATK backend.
+
+William Rhee 
+
+  William, of the University of Michigan, added Oracle 8i Support
+  to ATK.
+
+Ber Dohmen 
+
+  Ber developed the DHTML menu, and created a menu abstraction layer,
+  during an internship at ibuildings.nl.
+
+Mark Baaijens 
+
+  Mark added the atkSecureRelation (Privacy Enhancing Technology)
+  and the atk/security/encryption tools.
+
+Guido van Biemen 
+
+  Guido, among other things, integrated the TinyButStrong Open Office
+  template engine in ATK, made ATK largely notice free and fixed a significant
+  amount of bugs.
+
+
+Theme Designers
+---------------
+'outlook'   Paul Verhoeff   
+'win2k'     Markus Schubert 
+'moronic'   Sandy Pleyte    
+'macoslike' Marcel Visscher 
+'steelblue' Almer Kaasschieter
+'stillblue' Peter Verhage & Eric Snoeijs
+
+Other Contributors
+------------------
+We received bugfixes and other contributions from the following people:
+
+Rene Bakx                            
+Joachim N?bold                      
+Kevin Golding                      
+Pieter Heijmans                   
+Soh Kok Hong                     
+Kees van Dieren                 
+Nicola                        
+J.Enrique Ruiz [Ruiz]                 
+C?sar Ordi?ana [Cesar]                
+Harrie Verveer                        
+Thom Dyson                            
+Andres Attemann                       
+Brian Gillis                          
+Martin Looise [MartinL]               
+Gabriele Gallacci                     
+Fabrizio Vanzani                      
+Dennis-Jan Broerse                    
+Gustavo Espinosa Tavitas              
+Eldad Ran                             
+Arnold Cano                           
+Danny Peeters                         
+Alberto Galanti                       
+Bas de Nooijer                        
+Tjeerd Bijlsma                        
+Przemek Piotrowski                    
+Olav B. Lygre                         
+Renato Furter                         
+Stefano Salvador                      
+Roberto Berto                         
+Nico de Boer                          
+Klaus ?                               
+Gabriel Achtig                        
+Christian Hudson [ChristianH]         
+Ludo Beumer                           
+Patrick van der Velden                
+Kevin L. Winmoe [KevinLW]             
+Jorge Garifuna [JorgeG]               
+Fabio Saitta                          
+Jeroen van Sluijs                     
+Bart Helms                            
+Rainer Glaschick [RainerG]            
+Rich Kucera                           
+Marlon Bilog                          
+Michael Zaugg [MichaelZ]              
+Michael Anello [MichaelA]             
+Almer Kaasschieter                    
+Rene van den Ouden [RenevO]           
+Ruud Alberts                          
+Rik Tonnard [RikT]
+Dennis Luitwieler                     
+Edgar van Ispelen                     
+Peter Bottenberg [PeterB]             
+Mark van der Velden [mvdvelden]       
+Rik Willems            
+Arjen Tebbenhof                       
+Vito Chin                             
+Bjorn de Haan                         
+Erik Snoeijs                          
+Michael Stillwell                     
+Wim Kosten                            
+Michele Rota                         
+Max Westen                           
+Lineke Kerckhoffs Willems            
+Maurice Maas                         
+Alfred Armstrong
+Matthieu Giroux
+Matthijs van den Bos [Matthijs]
+Jos Huiting [jhuiting]
+
+Names between [] are the names they are refered by in the CHANGES file. (If
+different from their first name).

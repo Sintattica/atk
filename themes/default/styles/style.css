@@ -1,0 +1,171 @@
+BODY
+{
+  background-color: #eeeeee;
+  color: #000000;
+  font-size: 10px;
+  font-family: Verdana,Helvetica,Arial;
+  font-weight: none;
+}
+
+A:link,
+A:visited,
+A:active,
+TD
+{
+  color: #000000;
+  font-size: 10px;
+}
+
+A:hover
+{
+  color: #660000;
+  font-size: 10px;
+}
+
+.stacktrace,
+A.stacktrace:link,
+A.stacktrace:visited
+{
+  font-family: verdana, helvetica, arial;
+  font-size: 11px;
+  font-style: italic;
+  color: #555555;
+}
+
+.stacktrace_end
+{
+  font-family: verdana, helvetica, arial;
+  font-size: 11px;
+  font-style: italic;
+  color: #000000;
+}
+
+.fieldlabel
+{
+  font-family: verdana, helvetica, arial;
+  font-size: 12px;
+  color: #000000;
+  text-align: left;
+}
+
+.field
+{
+  font-family: verdana, helvetica, arial;
+  font-size: 12px;
+  color: #000000;
+  text-align: left;
+}
+
+.tab
+{
+  font-family: verdana, helvetica, arial;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.tab_selected
+{
+  font-family: verdana, helvetica, arial;
+  font-size: 12px;
+  font-weight: bold;
+  color: #000000;
+}
+
+INPUT,
+SELECT,
+TEXTAREA
+{
+  background-color: #eeeeee;
+  color: #000000;
+  font-family: verdana, helvetica, arial;
+  font-size: 11px;
+}
+
+button.btn,
+button.btn_save,
+button.btn_cancel,
+button.btn_saveandclose,
+button.btn_saveandnext,
+button.btn_saveandaddnew,
+button.btn_finish,
+button.btn_next
+{
+  background-color: #CCCCCC;
+  height: 25px;
+}
+
+button.btn_saveandclose
+{
+  font-weight: bold;
+}
+
+.topbg
+{
+  background: #52006A;
+
+}
+
+.menubg
+{
+  background: #F00;
+}
+
+.error,
+.errorlabel
+{
+  color: #FF0000;
+  font-family: verdana, helvetica, arial;
+  font-size: 12px;
+  text-align: left;
+}
+
+.atkmessages
+{
+  background-color: #EEEEEE;
+  color: #000000;
+  font-family: verdana, helvetica, arial;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: left;
+  line-height: 200%;
+}
+
+.atkAttrRowHidden
+{
+  display: none !important;
+}
+.load_criteria {
+  font-family: verdana, helvetica, arial;
+  font-size: 12px;
+  color: #000000;
+  text-align: left;
+  vertical-align: middle;
+  padding: 3px 0px 10px 3px;
+}
+.load_criteria img {
+  vertical-align: middle;
+}
+
+.save_criteria {
+  font-family: verdana, helvetica, arial;
+  font-size: 12px;
+  color: #000000;
+  text-align: left;
+  padding: 10px 0px 0px 3px;
+}
+.save_criteria #save_criteria {
+  margin-left: 21px;
+}
+
+.overlib_txt {
+	font-size: 10px;
+}
+
+.overlib_bg {
+	background-color: #ffffcc;
+}
+
+.overlib_fg {
+	
+}

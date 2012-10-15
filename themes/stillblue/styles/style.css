@@ -1,0 +1,33 @@
+@import '../../steelblue/styles/style.css';
+
+.panel, #mainMenu
+{
+  float: left;
+}
+
+.panelTitleRight 
+{
+  Height: 26px;
+}
+
+
+.clearfloat
+{
+  clear: both;
+}
+
+div.stacktrace
+{
+	margin-left: 18px;
+	margin-bottom: 8px;
+}
+
+.actionpageWrapper 
+{
+  width:100%;
+}
+
+#topSpacer 
+{
+  height: 40px;	
+}
