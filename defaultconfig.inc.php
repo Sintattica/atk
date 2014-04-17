@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file is part of the Achievo ATK distribution.
+ * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
  * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
@@ -314,13 +314,17 @@ $config_logfile = "/tmp/atk-security.log";
 
 /**
  * Password Restrictions if required
+ *
+ * 0 => ignore restriction
+ * >0 => implement restriction
+ * Special characters are    !@#$%^&*()-+_=[]{}\|;:'\",.<>/?
  */
-//$config_password_minsize = 0;
-//$config_password_minupperchars = 0;
-//$config_password_minlowerchars = 0;
-//$config_password_minalphabeticchars = 0;
-//$config_password_minnumbers = 0;
-//$config_password_minspecialchars = 0;
+$config_password_minsize            = 0;
+$config_password_minupperchars      = 0;
+$config_password_minlowerchars      = 0;
+$config_password_minalphabeticchars = 0;
+$config_password_minnumbers         = 0;
+$config_password_minspecialchars    = 0;
 
 /* * ************************ AUTHENTICATION ******************************** */
 
@@ -613,22 +617,28 @@ $config_tabs = true;
 $config_dhtml_tabs_stateful = true;
 
 /**
- * The number of records to display on a single page
+ * The default number of records to display on a single page
  * @var int
  */
 $config_recordsperpage = 25;
 
 /**
- * The (max) number of page navigation links to show
- * @var int
+ * The number of records per page options to display on drop down list
+ * @var array
  */
-$config_pagelinks = 10;
+$config_recordsperpage_options = array(15, 25, 50, 100, 500);
 
 /**
  * Add a 'show all' option to the records per page selector.
  * @var boolean
  */
 $config_enable_showall = true;
+
+/**
+ * The (max) number of page navigation links to show
+ * @var int
+ */
+$config_pagelinks = 10;
 
 /**
  * Display a 'stack' of the user activities in the top right corner.
@@ -976,6 +986,15 @@ $config_manytoone_autocomplete_search_case_sensitive = false;
  * @var bool
  */
 $config_lose_changes_warning = false;
+
+/**
+ * Optionally set the export file parameters
+ *
+ * @var string
+ */
+//$config_export_delimiter = ",";
+//$config_export_enclosure = "&quot;";
+//$config_export_export_title_row_ticked = "checked";
 
 /**
  * Directories that contains modules (needed for testcases)
