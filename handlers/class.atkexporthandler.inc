@@ -241,10 +241,10 @@ class atkExportHandler extends atkActionHandler
         }
 
         // Save selection
-        if (array_key_exists('export_selection_options', $this -> m_postvars)
-          && array_key_exists('export_selection_name', $this -> m_postvars)
-          && 'none' == $this -> m_postvars['export_selection_options'] && ''
-          != $this -> m_postvars['export_selection_name'])
+        if (array_key_exists('export_selection_options',
+            $this -> m_postvars) && array_key_exists('export_selection_name',
+            $this -> m_postvars) && 'none' == $this -> m_postvars['export_selection_options']
+          && '' != $this -> m_postvars['export_selection_name'])
         {
             $this -> saveSelection();
         }
@@ -277,7 +277,7 @@ class atkExportHandler extends atkActionHandler
         /*
          * $config_export_delimiter = ",";
          * $config_export_enclosure = "&quot;";
-         * $config_export_export_title_row_ticked = "checked";
+         * $config_export_title_row_checked = "checked";
          */
         $content.= '<tr><td>' . atktext("delimiter", "atk") . ': </td><td><input type="text" size="2" name="delimiter" value=' . atkconfig(export_delimiter,
             ";") . '></td></tr>';
@@ -286,8 +286,7 @@ class atkExportHandler extends atkActionHandler
         $content.= '<tr><td valign="top">' . atktext("export_selectcolumns",
             "atk") . ': </td><td><div id="export_attributes">' . $this -> getAttributeSelect() . '</div></td></tr>';
         $content.= '<tr><td>';
-        $content.= atktext("export_generatetitlerow") . ': </td><td><input type="checkbox" name="generatetitlerow" class="atkcheckbox" value=' . atkconfig(export_export_title_row_ticked,
-            "1") . '>';
+        $content.= atktext("export_generatetitlerow") . ': </td><td><input type="checkbox" name="generatetitlerow" class="atkcheckbox" value=1 ' . atkconfig(export_title_row_checked,"") . '>';
         $content.= '</td></tr>';
         $content.= '</table><br /><br />';
         return $content;
@@ -589,9 +588,10 @@ class atkExportHandler extends atkActionHandler
         {
             $actions = $node -> defaultActions("export");
         }
-        $rl                  = &atknew("atk.recordlist.atkcustomrecordlist");
-        $flags               = ($node_bk -> hasFlag(NF_MRA) ? RL_MRA : 0) | ($node_bk -> hasFlag(NF_MRPA)
-                ? RL_MRPA : 0) | ($node_bk -> hasFlag(NF_LOCK) ? RL_LOCK : 0);
+        $rl                    = &atknew("atk.recordlist.atkcustomrecordlist");
+        $flags                 = ($node_bk -> hasFlag(NF_MRA) ? RL_MRA : 0)
+          | ($node_bk -> hasFlag(NF_MRPA) ? RL_MRPA : 0) | ($node_bk -> hasFlag(NF_LOCK)
+                ? RL_LOCK : 0);
         $node_bk -> m_postvars = $session_back;
 
         if (isset($session_back['atkdg']['admin']['atksearch']))
