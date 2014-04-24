@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
@@ -42,14 +41,10 @@ define("AF_DISPLAY_VERT", AF_SPECIFIC_2);
  */
 class atkRadioAttribute extends atkListAttribute
 {
-
     // Default number of cols / rows
-    var $m_amount         = 1;
-
-    var $m_cols           = false;
-
-    var $m_rows           = false;
-
+    var $m_amount = 1;
+    var $m_cols = false;
+    var $m_rows = false;
     var $m_clickableLabel = true;
 
     /**
@@ -58,7 +53,6 @@ class atkRadioAttribute extends atkListAttribute
      * @var array
      */
     var $m_comments = array();
-
     var $m_onchangehandler_init = "var newvalue = el.value;\n";
 
     /**
@@ -72,38 +66,27 @@ class atkRadioAttribute extends atkListAttribute
      * @param int $size database field size ($size[1] can be used for the amount of cols / rows to display, for example: 3c or 5r or just 4)
      *
      */
-    function atkRadioAttribute($name, $optionArray, $valueArray = "",
-      $flags = 0, $size = 0)
+    function atkRadioAttribute($name, $optionArray, $valueArray = "", $flags = 0, $size = 0)
     {
-        if (is_array($size) and count($size) > 1)
-        {
+        if (is_array($size) and count($size) > 1) {
             $lastchar = strtolower(substr($size[1], -1, 1));
-            if ($lastchar == "c")
-            {
-                $this -> m_cols   = true;
-                $this -> m_amount = substr($size[1], 0, -1);
-            }
-            elseif ($lastchar == "r")
-            {
-                $this -> m_rows   = true;
-                $this -> m_amount = substr($size[1], 0, -1);
-            }
-            else
-            {
+            if ($lastchar == "c") {
+                $this->m_cols = true;
+                $this->m_amount = substr($size[1], 0, -1);
+            } elseif ($lastchar == "r") {
+                $this->m_rows = true;
+                $this->m_amount = substr($size[1], 0, -1);
+            } else {
                 // Default options
-                if ($this -> hasFlag(AF_DISPLAY_VERT))
-                {
-                    $this -> m_rows = true;
+                if ($this->hasFlag(AF_DISPLAY_VERT)) {
+                    $this->m_rows = true;
+                } else {
+                    $this->m_cols = true;
                 }
-                else
-                {
-                    $this -> m_cols = true;
-                }
-                $this -> m_amount = $size[1];
+                $this->m_amount = $size[1];
             }
         }
-        $this -> atkListAttribute($name, $optionArray, $valueArray, $flags,
-          $size); // base class constructor
+        $this->atkListAttribute($name, $optionArray, $valueArray, $flags, $size); // base class constructor
     }
 
     /**
@@ -114,8 +97,8 @@ class atkRadioAttribute extends atkListAttribute
      */
     function setComment($option, $comment)
     {
-        $key                    = array_search($option, $this -> m_options);
-        $this -> m_comments[$key] = $comment;
+        $key = array_search($option, $this->m_options);
+        $this->m_comments[$key] = $comment;
     }
 
     /**
@@ -125,7 +108,7 @@ class atkRadioAttribute extends atkListAttribute
      */
     function setClickableLabel($label = true)
     {
-        $this -> m_clickableLabel = $label;
+        $this->m_clickableLabel = $label;
     }
 
     /**
@@ -139,95 +122,70 @@ class atkRadioAttribute extends atkListAttribute
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
-        $values = $this -> getValues($record);
+        $values = $this->getValues($record);
 
         $total_items = count($values);
-        if ($this -> m_cols && ! $this -> hasFlag(AF_DISPLAY_VERT))
-        {
-            $items = $this -> m_amount;
-        }
-        elseif ($this -> m_rows && ! $this -> hasFlag(AF_DISPLAY_VERT))
-        {
-            $items = ceil($total_items / $this -> m_amount);
-        }
-        elseif ($this -> m_cols && $this -> hasFlag(AF_DISPLAY_VERT))
-        {
-            $items       = ceil($total_items / $this -> m_amount);
+        if ($this->m_cols && !$this->hasFlag(AF_DISPLAY_VERT)) {
+            $items = $this->m_amount;
+        } elseif ($this->m_rows && !$this->hasFlag(AF_DISPLAY_VERT)) {
+            $items = ceil($total_items / $this->m_amount);
+        } elseif ($this->m_cols && $this->hasFlag(AF_DISPLAY_VERT)) {
+            $items = ceil($total_items / $this->m_amount);
             $total_items = $items;
-        }
-        elseif ($this -> m_rows && $this -> hasFlag(AF_DISPLAY_VERT))
-        {
-            $items       = $this -> m_amount;
-            $total_items = $this -> m_amount;
+        } elseif ($this->m_rows && $this->hasFlag(AF_DISPLAY_VERT)) {
+            $items = $this->m_amount;
+            $total_items = $this->m_amount;
         }
 
-        $result     = '<table class="table">';
-        if ( ! $this -> hasFlag(AF_DISPLAY_VERT)) $result.='<tr>';
+        $result = '<table class="table">';
+        if (!$this->hasFlag(AF_DISPLAY_VERT))
+            $result.='<tr>';
         $item_count = 0;
 
-        for ($i = 0; $i < $total_items; $i ++ )
-        {
-            if ($values[$i] == $record[$this -> fieldName()] && $record[$this -> fieldName()]
-              !== "")
-            {
+        for ($i = 0; $i < $total_items; $i ++) {
+            if ($values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()] !== "") {
                 $sel = "checked";
-            }
-            else
-            {
+            } else {
                 $sel = "";
             }
 
-            $labelID = $fieldprefix . $this -> formName() . "_" . $values[$i];
-            if ($this -> hasFlag(AF_DISPLAY_VERT)) $result.='<tr>';
-            $this -> registerKeyListener($labelID, KB_CTRLCURSOR | KB_CURSOR);
-            $id      = $this -> getHtmlId($fieldprefix);
+            $labelID = $fieldprefix . $this->formName() . "_" . $values[$i];
+            if ($this->hasFlag(AF_DISPLAY_VERT))
+                $result.='<tr>';
+            $this->registerKeyListener($labelID, KB_CTRLCURSOR | KB_CURSOR);
+            $id = $this->getHtmlId($fieldprefix);
 
             $onchange = '';
-            if (count($this -> m_onchangecode) || count($this -> getDependencies()))
-            {
+            if (count($this->m_onchangecode) || count($this->getDependencies())) {
                 $onchange = 'onClick="' . $id . '_onChange(this);" ';
-                $this -> _renderChangeHandler($fieldprefix);
+                $this->_renderChangeHandler($fieldprefix);
             }
 
-            $commenthtml = '<br/><div class="atkradio_comment">' . $this -> m_comments[$i] . '</div>';
+            $commenthtml = '<br/><div class="atkradio_comment">' . $this->m_comments[$i] . '</div>';
 
-            $result .= '<td><input id="' . $labelID . '" type="radio" name="' . $fieldprefix . $this -> formName() . '" ' . $this -> getCSSClassAttribute("atkradio") . ' value="' . $values[$i] . '" ' . $onchange . $sel . '>
-        ' . $this -> renderValue($labelID,
-                $this -> _translateValue($values[$i], $record)) . ($this -> hasFlag(AF_DISPLAY_VERT)
-              && $this -> m_comments[$i] != '' ? $commenthtml : '') . '</td>';
+            $result .= '<td><input id="' . $labelID . '" type="radio" name="' . $fieldprefix . $this->formName() . '" ' . $this->getCSSClassAttribute("atkradio") . ' value="' . $values[$i] . '" ' . $onchange . $sel . '>
+        ' . $this->renderValue($labelID, $this->_translateValue($values[$i], $record)) . ($this->hasFlag(AF_DISPLAY_VERT) && $this->m_comments[$i] != ''
+                        ? $commenthtml : '') . '</td>';
 
-            if ($this -> hasflag(AF_DISPLAY_VERT))
-            {
+            if ($this->hasflag(AF_DISPLAY_VERT)) {
                 $tmp_items = $items;
-                if ($this -> hasFlag(AF_DISPLAY_VERT) && $this -> m_rows)
-                {
+                if ($this->hasFlag(AF_DISPLAY_VERT) && $this->m_rows) {
                     $tmp_items = count($values);
-                }
-                else
-                {
-                    $tmp_items = $items * $this -> m_amount;
+                } else {
+                    $tmp_items = $items * $this->m_amount;
                 }
 
-                for ($j = ($items + $i); $j < $tmp_items; $j = $j + $items)
-                {
-                    if ($this -> m_values[$j] == $record[$this -> fieldName()]
-                      && $record[$this -> fieldName()] != "")
-                    {
+                for ($j = ($items + $i); $j < $tmp_items; $j = $j + $items) {
+                    if ($this->m_values[$j] == $record[$this->fieldName()] && $record[$this->fieldName()] != "") {
                         $sel = "checked";
-                    }
-                    else
-                    {
+                    } else {
                         $sel = "";
                     }
-                    if ($values[$j] != "")
-                    {
-                        $result .= '<td><input id="' . $labelID . '" type="radio" name="' . $fieldprefix . $this -> formName() . '" ' . $this -> getCSSClassAttribute("atkradio") . ' value="' . $values[$j] . '" ' . $onchange . $sel . '>
-              ' . $this -> renderValue($labelID,
-                            $this -> _translateValue($values[$j], $record)) . ($this -> m_comments[$i]
-                          != '' ? $commenthtml : '') . '</td>';
-                    }
-                    else
-                    {
+                    if ($values[$j] != "") {
+                        $result .= '<td><input id="' . $labelID . '" type="radio" name="' . $fieldprefix . $this->formName() . '" ' . $this->getCSSClassAttribute("atkradio") . ' value="' . $values[$j] . '" ' . $onchange . $sel . '>
+              ' . $this->renderValue($labelID, $this->_translateValue($values[$j], $record)) . ($this->m_comments[$i] != ''
+                                    ? $commenthtml : '') . '</td>';
+                    } else {
                         $result .='<td>&nbsp;</td>';
                     }
                 }
@@ -235,17 +193,15 @@ class atkRadioAttribute extends atkListAttribute
             }
 
             $item_count ++;
-            if ($item_count == $items && ! $this -> hasFlag(AF_DISPLAY_VERT))
-            {
+            if ($item_count == $items && !$this->hasFlag(AF_DISPLAY_VERT)) {
                 $result.='</tr><tr>';
                 $item_count = 0;
             }
         }
         // Fill with empty boxes when we have a horizontal display
-        if ( ! $this -> hasFlag(AF_DISPLAY_VERT))
-        {
-            for ($i = 0; $i < ($items - $item_count); $i ++ )
-                    $result.='<td>&nbsp;</td>';
+        if (!$this->hasFlag(AF_DISPLAY_VERT)) {
+            for ($i = 0; $i < ($items - $item_count); $i ++)
+                $result.='<td>&nbsp;</td>';
             $result.='</tr>';
         }
         $result.='</table>';
@@ -261,8 +217,7 @@ class atkRadioAttribute extends atkListAttribute
      */
     function renderValue($labelID, $value)
     {
-        if ($this -> m_clickableLabel)
-        {
+        if ($this->m_clickableLabel) {
             return '<label for="' . $labelID . '">' . $value . '</label>';
         }
         return $value;

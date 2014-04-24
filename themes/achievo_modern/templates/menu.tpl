@@ -1,4 +1,4 @@
 <div id="leftnav">
-{$menu_javascript}
-{$menu}
+    {$menu_javascript}
+    {$menu}
 </div>

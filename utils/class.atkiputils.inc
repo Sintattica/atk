@@ -1,29 +1,29 @@
 <?php
-  /**
-   * atkIpUtils class file
-   *
-   * @package atk
-   * @subpackage utils
-   *
-   * @author guido <guido@ibuildings.nl>
-   *
-   * @copyright (c) 2006 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing/ ATK open source license
-   *
-   * @version $Revision: 4767 $
-   * $Id$
-   */
+/**
+ * atkIpUtils class file
+ *
+ * @package atk
+ * @subpackage utils
+ *
+ * @author guido <guido@ibuildings.nl>
+ *
+ * @copyright (c) 2006 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing/ ATK open source license
+ *
+ * @version $Revision: 4767 $
+ * $Id$
+ */
 
-  /**
-   * atkIpUtils class. Contains static methods to allow numeric and string ip validation
-   * and conversion.
-   *
-   * @author guido <guido@ibuildings.nl>
-   * @package atk
-   * @subpackage utils
-   */
-  class atkIpUtils
-  {
+/**
+ * atkIpUtils class. Contains static methods to allow numeric and string ip validation
+ * and conversion.
+ *
+ * @author guido <guido@ibuildings.nl>
+ * @package atk
+ * @subpackage utils
+ */
+class atkIpUtils
+{
 
     /**
      * Checks if the given ip (string or long numeric) is a valid ip
@@ -37,16 +37,13 @@
      */
     function ipValidate($ip)
     {
-      if (is_numeric($ip))
-      {
-        return ($ip >= 0 && $ip <= 4294967295 && !is_null($ip));
-      }
-      elseif (is_string($ip))
-      {
-        $num='(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])';
-        return (preg_match("/^$num\\.$num\\.$num\\.$num$/", $ip, $matches) > 0);
-      }
-      return false;
+        if (is_numeric($ip)) {
+            return ($ip >= 0 && $ip <= 4294967295 && !is_null($ip));
+        } elseif (is_string($ip)) {
+            $num = '(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])';
+            return (preg_match("/^$num\\.$num\\.$num\\.$num$/", $ip, $matches) > 0);
+        }
+        return false;
     }
 
     /**
@@ -61,21 +58,19 @@
      */
     function ipStringFormat($ip)
     {
-      if (!atkIpUtils::ipValidate($ip))
-      {
-        atkDebug("atkIpUtils::ipStringFormat() Invalid ip given");
-        return null;
-      }
-      $long = is_numeric($ip) ? $ip : atkIpUtils::ipLongFormat($ip);
-      $string = "";
-      for ($i=3;$i>=0;$i--)
-      {
-        $string .= (int)($long / pow(256, $i));
-        $long -= (int)($long / pow(256, $i)) * pow(256, $i);
-        if ($i > 0)
-          $string .= ".";
-      }
-      return $string;
+        if (!atkIpUtils::ipValidate($ip)) {
+            atkDebug("atkIpUtils::ipStringFormat() Invalid ip given");
+            return null;
+        }
+        $long = is_numeric($ip) ? $ip : atkIpUtils::ipLongFormat($ip);
+        $string = "";
+        for ($i = 3; $i >= 0; $i--) {
+            $string .= (int) ($long / pow(256, $i));
+            $long -= (int) ($long / pow(256, $i)) * pow(256, $i);
+            if ($i > 0)
+                $string .= ".";
+        }
+        return $string;
     }
 
     /**
@@ -90,15 +85,16 @@
      */
     function ipLongFormat($ip)
     {
-      if (!atkIpUtils::ipValidate($ip))
-      {
-        atkDebug("atkIpUtils::ipLongFormat() Invalid ip given");
-        return null;
-      }
-      if (is_numeric($ip)) return $ip;
-      $array = explode(".",$ip);
-      return $array[3]+256*$array[2]+256*256*$array[1]+256*256*256*$array[0];
+        if (!atkIpUtils::ipValidate($ip)) {
+            atkDebug("atkIpUtils::ipLongFormat() Invalid ip given");
+            return null;
+        }
+        if (is_numeric($ip))
+            return $ip;
+        $array = explode(".", $ip);
+        return $array[3] + 256 * $array[2] + 256 * 256 * $array[1] + 256 * 256 * 256 * $array[0];
     }
 
-  }
+}
+
 ?>

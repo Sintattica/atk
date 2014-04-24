@@ -14,7 +14,7 @@
  * @version $Revision: 4212 $
  * $Id$
  */
- 
+
 /**
  * Implements the {atkscript} plugin for use in templates.
  *
@@ -35,8 +35,9 @@
  */
 function smarty_function_atkscript($params, &$smarty)
 {
-  $page = &atkinstance('atk.ui.atkpage');
-  $page->register_script($params["prefix"].$params["file"]);        
-  return "";
+    $page = &atkinstance('atk.ui.atkpage');
+    $page->register_script($params["prefix"] . $params["file"]);
+    return "";
 }
+
 ?>

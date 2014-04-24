@@ -1,80 +1,77 @@
 <?php
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ *
+ * @copyright (c)2000-2004 Ivo Jansch
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision$
+ * $Id$
+ */
 
-  /**
-   * This file is part of the ATK distribution on GitHub.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   *
-   * @copyright (c)2000-2004 Ivo Jansch
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision$
-   * $Id$
-   */
+/**
+ * Config class for loading config files and retrieving config options.
+ * Also contains misc. methods for use in config files.
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @package atk
+ */
+class atkConfig
+{
 
-  /**
-   * Config class for loading config files and retrieving config options.
-   * Also contains misc. methods for use in config files.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   */
-  class atkConfig
-  {
     /**
      * Load global configuration variables.
      */
     public static function loadGlobals()
     {
-      $overrides = array();
+        $overrides = array();
 
-      // Put all "config_" globals as variables in the function scope
-      foreach ($GLOBALS as $key => $value) {
-        if (substr($key, 0, 7) === 'config_') {
+        // Put all "config_" globals as variables in the function scope
+        foreach ($GLOBALS as $key => $value) {
+            if (substr($key, 0, 7) === 'config_') {
 
-          $$key = $value;
+                $$key = $value;
 
-          // Store the current value, so that we can restore it later. Since our includes below here, depend on
-          // some of these variables, we can't simply change the ordering of this process. Also we can't use
-          // $GLOBALS, due to the use of the global keyword later on.
-          $overrides[$key] = $GLOBALS[$key];
+                // Store the current value, so that we can restore it later. Since our includes below here, depend on
+                // some of these variables, we can't simply change the ordering of this process. Also we can't use
+                // $GLOBALS, due to the use of the global keyword later on.
+                $overrides[$key] = $GLOBALS[$key];
+            }
         }
-      }
 
-      // Include the defaults
-      require_once $config_atkroot ."atk/defaultconfig.inc.php";
+        // Include the defaults
+        require_once $config_atkroot . "atk/defaultconfig.inc.php";
 
-      // Get the application config, this is leading and will override all previously defined configuration values.
-      $applicationConfig = self::getApplicationConfig($config_application_dir);
+        // Get the application config, this is leading and will override all previously defined configuration values.
+        $applicationConfig = self::getApplicationConfig($config_application_dir);
 
-      // Merge everything we got, including variables defined in our application config and configuration defined
-      // prior to constructing atkConfig
-      $allVars = array_merge(
-        get_defined_vars(),
-        $applicationConfig
-      );
+        // Merge everything we got, including variables defined in our application config and configuration defined
+        // prior to constructing atkConfig
+        $allVars = array_merge(
+            get_defined_vars(), $applicationConfig
+        );
 
-      // Get all defined config variables, make then global and update their value
-      foreach ($allVars as $key => $value)
-      {
-        if (substr($key, 0, 7) === 'config_')
-        {
-          // Reference the variable to the global scope
-          global $$key;
+        // Get all defined config variables, make then global and update their value
+        foreach ($allVars as $key => $value) {
+            if (substr($key, 0, 7) === 'config_') {
+                // Reference the variable to the global scope
+                global $$key;
 
-          // If a key was previously defined, use that instead of the default value.
-          if (array_key_exists($key, $applicationConfig)) {
-            $$key = $applicationConfig[$key];
-          } else if (array_key_exists($key, $overrides)) {
-            $$key = $overrides[$key];
-          } else {
-            $$key = $value;
-          }
+                // If a key was previously defined, use that instead of the default value.
+                if (array_key_exists($key, $applicationConfig)) {
+                    $$key = $applicationConfig[$key];
+                } else if (array_key_exists($key, $overrides)) {
+                    $$key = $overrides[$key];
+                } else {
+                    $$key = $value;
+                }
+            }
         }
-      }
     }
 
     /**
@@ -86,25 +83,24 @@
      */
     static public function getApplicationConfig($path)
     {
-      require_once $path .'config.inc.php';
-      return get_defined_vars();
+        require_once $path . 'config.inc.php';
+        return get_defined_vars();
     }
-    
+
     /**
      * Returns the value for a global configuration variable.
      * 
      * @param string $name    configuration variable name (without the config_ prefix)
      * @param mixed  $default default (fallback) value
      */
-    public static function getGlobal($name, $default=null)
+    public static function getGlobal($name, $default = null)
     {
-      $fullName = 'config_'.$name;
-      if (function_exists($fullName))
-      {
-        return $fullName();
-      }
-  
-      return isset($GLOBALS[$fullName]) ? $GLOBALS[$fullName] : $default;
+        $fullName = 'config_' . $name;
+        if (function_exists($fullName)) {
+            return $fullName();
+        }
+
+        return isset($GLOBALS[$fullName]) ? $GLOBALS[$fullName] : $default;
     }
 
     /**
@@ -117,9 +113,9 @@
      */
     public static function setGlobal($name, $value)
     {
-      $GLOBALS['config_'.$name] = $value;
+        $GLOBALS['config_' . $name] = $value;
     }
-    
+
     /**
      * Get a configuration value for a section (typically a module)
      *
@@ -137,34 +133,28 @@
      * @param mixed  $default Default to use if configuration value does not exist
      * @return mixed Configuration value
      */
-    public static function get($section, $tag, $default="")
+    public static function get($section, $tag, $default = "")
     {
-      static $s_configs = array();
+        static $s_configs = array();
 
-      $fn = 'config_'.$section.'_'.$tag;
-      if (function_exists($fn))
-      {
-        return $fn();
-      }
-
-      if (!isset($s_configs[$section]))
-      {
-        $config = self::getConfigForSection($section);
-        if (!is_array($config))
-        {
-          $config = array();
+        $fn = 'config_' . $section . '_' . $tag;
+        if (function_exists($fn)) {
+            return $fn();
         }
-        $s_configs[$section] = $config;
-      }
 
-      if (isset($s_configs[$section][$tag]) && $s_configs[$section][$tag]!=="")
-      {
-        return $s_configs[$section][$tag];
-      }
-      else
-      {
-        return $default;
-      }
+        if (!isset($s_configs[$section])) {
+            $config = self::getConfigForSection($section);
+            if (!is_array($config)) {
+                $config = array();
+            }
+            $s_configs[$section] = $config;
+        }
+
+        if (isset($s_configs[$section][$tag]) && $s_configs[$section][$tag] !== "") {
+            return $s_configs[$section][$tag];
+        } else {
+            return $default;
+        }
     }
 
     /**
@@ -177,17 +167,15 @@
      */
     public static function getConfigForSection($section)
     {
-      $config = self::getDirConfigForSection(atkconfig('configdir'), $section);
-      if (moduleExists($section))
-      {
-        $dir = moduleDir($section).'skel/configs/';
-        if (file_exists($dir))
-        {
-          $module_configs = self::getDirConfigForSection($dir, $section);
-          $config = array_merge($module_configs, $config);
+        $config = self::getDirConfigForSection(atkconfig('configdir'), $section);
+        if (moduleExists($section)) {
+            $dir = moduleDir($section) . 'skel/configs/';
+            if (file_exists($dir)) {
+                $module_configs = self::getDirConfigForSection($dir, $section);
+                $config = array_merge($module_configs, $config);
+            }
         }
-      }
-      return $config;
+        return $config;
     }
 
     /**
@@ -200,19 +188,17 @@
      */
     protected static function getDirConfigForSection($dir, $section)
     {
-      atkdebug("Loading config file for section $section");
-      $config=array();
-      @include($dir.$section.".inc.php");
+        atkdebug("Loading config file for section $section");
+        $config = array();
+        @include($dir . $section . ".inc.php");
 
-      $other = glob(atkconfig("configdir")."{$section}.*.inc.php");
-      if (is_array($other))
-      {
-        foreach ($other as $file)
-        {
-          include($file);
+        $other = glob(atkconfig("configdir") . "{$section}.*.inc.php");
+        if (is_array($other)) {
+            foreach ($other as $file) {
+                include($file);
+            }
         }
-      }
-      return $config;
+        return $config;
     }
 
     /**
@@ -223,8 +209,8 @@
      */
     function ipDebugEnabled($params)
     {
-      $ip = atkGetClientIp();
-      return in_array($ip, $params["list"]);
+        $ip = atkGetClientIp();
+        return in_array($ip, $params["list"]);
     }
 
     /**
@@ -235,18 +221,15 @@
      */
     function requestDebugEnabled($params)
     {
-      $session = &atkSessionManager::getSession();
+        $session = &atkSessionManager::getSession();
 
-      if (isset($_REQUEST["atkdebug"]["key"]))
-      {
-        $session["debug"]["key"] = $_REQUEST["atkdebug"]["key"];
-      }
-      else if (isset($_COOKIE['ATKDEBUG_KEY']) && !empty($_COOKIE['ATKDEBUG_KEY']))
-      {
-        $session["debug"]["key"] = $_COOKIE['ATKDEBUG_KEY'];
-      }
-      
-      return (isset($session["debug"]["key"]) && $session["debug"]["key"] == $params["key"]);
+        if (isset($_REQUEST["atkdebug"]["key"])) {
+            $session["debug"]["key"] = $_REQUEST["atkdebug"]["key"];
+        } else if (isset($_COOKIE['ATKDEBUG_KEY']) && !empty($_COOKIE['ATKDEBUG_KEY'])) {
+            $session["debug"]["key"] = $_COOKIE['ATKDEBUG_KEY'];
+        }
+
+        return (isset($session["debug"]["key"]) && $session["debug"]["key"] == $params["key"]);
     }
 
     /**
@@ -258,39 +241,35 @@
      * @param array $options  
      * @static
      */
-    function smartDebugLevel($default, $options=array())
+    function smartDebugLevel($default, $options = array())
     {
-      $session = &atkSessionManager::getSession();
+        $session = &atkSessionManager::getSession();
 
-      $enabled = $default > 0;
+        $enabled = $default > 0;
 
-      foreach ($options as $option)
-      {
-        $method = $option["type"]."DebugEnabled";
-        if (is_callable(array("atkconfig", $method)))
-          $enabled = $enabled || atkconfig::$method($option);
-      }
-      
-      global $config_debug_enabled;
-      $config_debug_enabled = $enabled;
-
-      if ($enabled)
-      {
-        if (isset($_REQUEST["atkdebug"]["level"]))
-        {
-          $session["debug"]["level"] = $_REQUEST["atkdebug"]["level"];
+        foreach ($options as $option) {
+            $method = $option["type"] . "DebugEnabled";
+            if (is_callable(array("atkconfig", $method)))
+                $enabled = $enabled || atkconfig::$method($option);
         }
-        else if (isset($_COOKIE['ATKDEBUG_LEVEL']))
-        {
-          $session["debug"]["level"] = $_COOKIE['ATKDEBUG_LEVEL'];
-        }
-        
-        if (isset($session["debug"]["level"]))
-          return $session["debug"]["level"];
-        else return max($default, 0);
-      }
 
-      return $default;
+        global $config_debug_enabled;
+        $config_debug_enabled = $enabled;
+
+        if ($enabled) {
+            if (isset($_REQUEST["atkdebug"]["level"])) {
+                $session["debug"]["level"] = $_REQUEST["atkdebug"]["level"];
+            } else if (isset($_COOKIE['ATKDEBUG_LEVEL'])) {
+                $session["debug"]["level"] = $_COOKIE['ATKDEBUG_LEVEL'];
+            }
+
+            if (isset($session["debug"]["level"]))
+                return $session["debug"]["level"];
+            else
+                return max($default, 0);
+        }
+
+        return $default;
     }
 
     /**
@@ -311,9 +290,9 @@
      * @param String $mode The action to restrict ("edit" or "view")
      * @param mixed $entity The level/group that has access to the attribute.
      */
-    function attribRestrict($node,$attrib,$mode,$entity)
+    function attribRestrict($node, $attrib, $mode, $entity)
     {
-      $GLOBALS["config_attribrestrict"][$node][$attrib][$mode] = $entity;
+        $GLOBALS["config_attribrestrict"][$node][$attrib][$mode] = $entity;
     }
 
     /**
@@ -327,9 +306,9 @@
      * @param mixed $entity The entity (securitylevel or group) to which the
      *                      privilege is granted.
      */
-    function grant($node,$action,$entity)
+    function grant($node, $action, $entity)
     {
-      $GLOBALS["config_access"][$node][] = Array($action=>$entity);
+        $GLOBALS["config_access"][$node][] = Array($action => $entity);
     }
 
     /**
@@ -348,8 +327,8 @@
      */
     function addPop3Response($substring, $message)
     {
-      global $g_pop3_responses;
-      $g_pop3_responses[$substring] = $message;
+        global $g_pop3_responses;
+        $g_pop3_responses[$substring] = $message;
     }
 
     /**
@@ -367,86 +346,87 @@
      *                             depending on the setting of
      *                             $config_security_scheme
      */
-    function addUser($name, $password, $securitylevel=0)
+    function addUser($name, $password, $securitylevel = 0)
     {
-      $GLOBALS["config_user"][$name] = Array("password"=>$password,"level"=>$securitylevel);
+        $GLOBALS["config_user"][$name] = Array("password" => $password, "level" => $securitylevel);
     }
-  }
 
-  /**
-   * Retrieve a configuration value.
-   *
-   * In all of your code, you can use this method to retrieve a certain
-   * configuration setting. Any setting defined as $config_something can be
-   * retrieved as atkconfig("something").
-   *
-   * @param String $tag The name of the configuration variable (without the
-   *                    '$config_' prefix!
-   * @param mixed $default The default variable you want to use when the
-   *                       configuration variable is missing from the
-   *                       config file.
-   *
-   * @deprecated Use atkConfig::get() instead.
-   * @return mixed The value of the configuration variable.
-   */
-  function atkconfig($tag, $default="")
-  {
+}
+
+/**
+ * Retrieve a configuration value.
+ *
+ * In all of your code, you can use this method to retrieve a certain
+ * configuration setting. Any setting defined as $config_something can be
+ * retrieved as atkconfig("something").
+ *
+ * @param String $tag The name of the configuration variable (without the
+ *                    '$config_' prefix!
+ * @param mixed $default The default variable you want to use when the
+ *                       configuration variable is missing from the
+ *                       config file.
+ *
+ * @deprecated Use atkConfig::get() instead.
+ * @return mixed The value of the configuration variable.
+ */
+function atkconfig($tag, $default = "")
+{
     return atkConfig::getGlobal($tag, $default);
-  }
+}
 
-  /**
-   * @todo module() and the MF_ flags should be moved to moduletools, but these are
-   * not present yet at configfile load time.
-   */
+/**
+ * @todo module() and the MF_ flags should be moved to moduletools, but these are
+ * not present yet at configfile load time.
+ */
+/**
+ * Module flags
+ */
+/**
+ * Don't use the menuitems from this module
+ */
+define("MF_NOMENU", 1);
 
-  /**
-   * Module flags
-   */
+/**
+ * Don't use the rights of this module
+ */
+define("MF_NORIGHTS", 2);
 
-  /**
-   * Don't use the menuitems from this module
-   */
-  define("MF_NOMENU",                          1);
+/**
+ * Use this module only as a reference
+ */
+define("MF_REFERENCE", MF_NOMENU | MF_NORIGHTS);
 
-  /**
-   * Don't use the rights of this module
-   */
-  define("MF_NORIGHTS",                        2);
+define("MF_SPECIFIC_1", 4);
+define("MF_SPECIFIC_2", 8);
+define("MF_SPECIFIC_3", 16);
 
-  /**
-   * Use this module only as a reference
-   */
-  define("MF_REFERENCE",   MF_NOMENU|MF_NORIGHTS);
+/**
+ * Don't preload this module (module_preload.inc)
+ */
+define("MF_NO_PRELOAD", 32);
 
-  define("MF_SPECIFIC_1",                      4);
-  define("MF_SPECIFIC_2",                      8);
-  define("MF_SPECIFIC_3",                     16);
-
-  /**
-   * Don't preload this module (module_preload.inc)
-   */
-  define("MF_NO_PRELOAD",                     32);
-
-  /**
-   * Load a module.
-   *
-   * This method is used in the config.inc.php or config.modules.inc file to
-   * load the modules.
-   *
-   * @param String $name The name of the module to load.
-   * @param String path The path where the module is located (relative or
-   *                    absolute). If omitted, ATK assumes that the module is
-   *                    installed in the default module dir (identified by
-   *                    $config_module_path).
-   * @param int flags The module (MF_*) flags that influence how the module is
-   *                  loaded.
-   */
-  function module($name, $path="", $flags=0)
-  {
+/**
+ * Load a module.
+ *
+ * This method is used in the config.inc.php or config.modules.inc file to
+ * load the modules.
+ *
+ * @param String $name The name of the module to load.
+ * @param String path The path where the module is located (relative or
+ *                    absolute). If omitted, ATK assumes that the module is
+ *                    installed in the default module dir (identified by
+ *                    $config_module_path).
+ * @param int flags The module (MF_*) flags that influence how the module is
+ *                  loaded.
+ */
+function module($name, $path = "", $flags = 0)
+{
     global $g_modules, $config_module_path, $g_moduleflags;
-    if ($path=="") $path = $config_module_path."/".$name."/";
+    if ($path == "")
+        $path = $config_module_path . "/" . $name . "/";
     $g_modules[$name] = $path;
-    if ($flags>0) $g_moduleflags[$name] = $flags;
-  }
+    if ($flags > 0)
+        $g_moduleflags[$name] = $flags;
+}
 
 ?>

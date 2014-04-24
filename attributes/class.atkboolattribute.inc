@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
@@ -53,10 +52,9 @@ class atkBoolAttribute extends atkAttribute
     function atkBoolAttribute($name, $flags = 0)
     {
         // Call base class constructor. Size of boolean value is always 1.
-        $this -> atkAttribute($name, $flags, 1);
-        if ($this -> hasFlag(AF_BOOL_OBLIGATORY))
-        {
-            $this -> addFlag(AF_OBLIGATORY);
+        $this->atkAttribute($name, $flags, 1);
+        if ($this->hasFlag(AF_BOOL_OBLIGATORY)) {
+            $this->addFlag(AF_OBLIGATORY);
         }
     }
 
@@ -69,14 +67,12 @@ class atkBoolAttribute extends atkAttribute
     function addFlag($flags)
     {
         // setting AF_OBLIGATORY has no use, so prevent setting it.
-        if (hasFlag($flags, AF_OBLIGATORY))
-        {
+        if (hasFlag($flags, AF_OBLIGATORY)) {
             $flags &= (~AF_OBLIGATORY);
         }
 
         // except if someone really really really wants to show this attribute is obligatory
-        if (hasFlag($flags, AF_BOOL_OBLIGATORY))
-        {
+        if (hasFlag($flags, AF_BOOL_OBLIGATORY)) {
             $flags |= AF_OBLIGATORY;
         }
 
@@ -94,8 +90,8 @@ class atkBoolAttribute extends atkAttribute
         $empty = parent::isEmpty($record);
 
         // if bool_obligatory flag is set the value must be true else we treat this record as empty
-        if ($this -> hasFlag(AF_BOOL_OBLIGATORY) && ! $record[$this -> fieldName()])
-                $empty = true;
+        if ($this->hasFlag(AF_BOOL_OBLIGATORY) && !$record[$this->fieldName()])
+            $empty = true;
 
         return $empty;
     }
@@ -112,24 +108,22 @@ class atkBoolAttribute extends atkAttribute
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
-        $id       = $this -> getHtmlId($fieldprefix);
+        $id = $this->getHtmlId($fieldprefix);
         $onchange = '';
-        if (count($this -> m_onchangecode) || count($this -> getDependencies()))
-        {
+        if (count($this->m_onchangecode) || count($this->getDependencies())) {
             $onchange = 'onClick="' . $id . '_onChange(this);" ';
-            $this -> _renderChangeHandler($fieldprefix);
+            $this->_renderChangeHandler($fieldprefix);
         }
         $checked = "";
-        if (isset($record[$this -> fieldName()]) && $record[$this -> fieldName()]
-          > 0) $checked = "checked";
-        $this -> registerKeyListener($id, KB_CTRLCURSOR | KB_CURSOR);
+        if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] > 0)
+            $checked = "checked";
+        $this->registerKeyListener($id, KB_CTRLCURSOR | KB_CURSOR);
 
-        $result = '<input type="checkbox" id="' . $id . '" name="' . $id . '" value="1" ' . $onchange . $checked . ' ' . $this -> getCSSClassAttribute("atkcheckbox") . ' />';
+        $result = '<input type="checkbox" id="' . $id . '" name="' . $id . '" value="1" ' . $onchange . $checked . ' ' . $this->getCSSClassAttribute("atkcheckbox") . ' />';
 
-        if ($this -> hasFlag(AF_BOOL_INLINE_LABEL))
-        {
-            $result .= '&nbsp;<label for="' . $id . '">' . $this -> text(array(
-                $this -> fieldName() . '_label', parent::label($record))) . '</label>';
+        if ($this->hasFlag(AF_BOOL_INLINE_LABEL)) {
+            $result .= '&nbsp;<label for="' . $id . '">' . $this->text(array(
+                    $this->fieldName() . '_label', parent::label($record))) . '</label>';
         }
 
         return $result;
@@ -142,8 +136,8 @@ class atkBoolAttribute extends atkAttribute
      */
     function value2db($rec)
     {
-        return (isset($rec[$this -> fieldName()]) ? (int) $rec[$this -> fieldName()]
-                : 0);
+        return (isset($rec[$this->fieldName()]) ? (int) $rec[$this->fieldName()]
+                    : 0);
     }
 
     /**
@@ -162,14 +156,15 @@ class atkBoolAttribute extends atkAttribute
      */
     function search($record = "", $extended = false, $fieldprefix = "")
     {
-        $result = '<select name="' . $this -> getSearchFieldName($fieldprefix) . '">';
+        $result = '<select name="' . $this->getSearchFieldName($fieldprefix) . '">';
         $result.= '<option value="">' . atktext("search_all", "atk") . '</option>';
         $result.= '<option value="0" ';
-        if ($record[$this -> fieldName()] === '0' && ! empty($record))
-                $result.="selected";
+        if ($record[$this->fieldName()] === '0' && !empty($record))
+            $result.="selected";
         $result.= '>' . atktext("no", "atk") . '</option>';
         $result.= '<option value="1" ';
-        if ($record[$this -> fieldName()] === '1') $result.="selected";
+        if ($record[$this->fieldName()] === '1')
+            $result.="selected";
         $result.= '>' . atktext("yes", "atk") . '</option>';
         $result.='</select>';
         return $result;
@@ -189,10 +184,10 @@ class atkBoolAttribute extends atkAttribute
      */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
-        if (is_array($value)) $value = $value[$this -> fieldName()];
+        if (is_array($value))
+            $value = $value[$this->fieldName()];
         if (isset($value))
-                return $query -> exactCondition($table . "." . $this -> fieldName(),
-                $this -> escapeSQL($value));
+            return $query->exactCondition($table . "." . $this->fieldName(), $this->escapeSQL($value));
     }
 
     /**
@@ -202,18 +197,15 @@ class atkBoolAttribute extends atkAttribute
      */
     function display($record)
     {
-        if ($this -> hasFlag(AF_BOOL_DISPLAY_CHECKBOX))
-        {
+        if ($this->hasFlag(AF_BOOL_DISPLAY_CHECKBOX)) {
             return '
     		  <div align="center">
-    		    <input type="checkbox" disabled="disabled" ' . ($record[$this -> fieldName()]
-                    ? 'checked="checked"' : '') . ' />
+    		    <input type="checkbox" disabled="disabled" ' . ($record[$this->fieldName()]
+                        ? 'checked="checked"' : '') . ' />
     		  </div>
     		';
-        }
-        else
-        {
-            return $this -> text($record[$this -> fieldName()] ? "yes" : "no");
+        } else {
+            return $this->text($record[$this->fieldName()] ? "yes" : "no");
         }
     }
 
@@ -232,12 +224,9 @@ class atkBoolAttribute extends atkAttribute
      */
     function getLabel($record = array(), $mode = '')
     {
-        if ($mode == 'view' && $this -> hasFlag(AF_BLANK_LABEL | AF_BOOL_INLINE_LABEL))
-        {
-            return $this -> label($record);
-        }
-        else
-        {
+        if ($mode == 'view' && $this->hasFlag(AF_BLANK_LABEL | AF_BOOL_INLINE_LABEL)) {
+            return $this->label($record);
+        } else {
             return parent::getLabel($record);
         }
     }
@@ -252,12 +241,9 @@ class atkBoolAttribute extends atkAttribute
      */
     function fetchValue($postvars)
     {
-        if (is_array($postvars) && isset($postvars[$this -> fieldName()]))
-        {
-            return $postvars[$this -> fieldName()];
-        }
-        else
-        {
+        if (is_array($postvars) && isset($postvars[$this->fieldName()])) {
+            return $postvars[$this->fieldName()];
+        } else {
             return 0;
         }
     }
@@ -297,7 +283,7 @@ class atkBoolAttribute extends atkAttribute
     function label($record = array())
     {
         $label_txt = parent::label($record);
-        return '<label for="' . $this -> m_name . '">' . $label_txt . '</label>';
+        return '<label for="' . $this->m_name . '">' . $label_txt . '</label>';
     }
 
     /**
@@ -311,8 +297,8 @@ class atkBoolAttribute extends atkAttribute
      */
     function parseStringValue($stringvalue)
     {
-        if (in_array(strtolower($stringvalue),
-            array("y", "j", "yes", "on", "true", "1", "*"))) return 1;
+        if (in_array(strtolower($stringvalue), array("y", "j", "yes", "on", "true", "1", "*")))
+            return 1;
         return 0;
     }
 
@@ -331,16 +317,14 @@ class atkBoolAttribute extends atkAttribute
         // the next if-statement is a workaround for derived attributes which do
         // not override the hide() method properly. This will not give them a
         // working hide() functionality but at least it will not give error messages.
-        if ($record[$this -> fieldName()] == "")
-                $record[$this -> fieldName()] = "0";
-        if ( ! is_array($record[$this -> fieldName()]))
-        {
-            $result = '<input type="hidden" name="' . $fieldprefix . $this -> formName() .
-              '" value="' . htmlspecialchars($record[$this -> fieldName()]) . '">';
+        if ($record[$this->fieldName()] == "")
+            $record[$this->fieldName()] = "0";
+        if (!is_array($record[$this->fieldName()])) {
+            $result = '<input type="hidden" name="' . $fieldprefix . $this->formName() .
+                '" value="' . htmlspecialchars($record[$this->fieldName()]) . '">';
             return $result;
-        }
-        else
-                atkdebug("Warning attribute " . $this -> m_name . " has no proper hide method!");
+        } else
+            atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
     }
 
 }

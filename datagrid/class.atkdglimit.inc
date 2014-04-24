@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
@@ -33,13 +32,12 @@ class atkDGLimit extends atkDGComponent
      */
     protected function getValues()
     {
-        $defaultLimit = $this -> getGrid() -> getDefaultLimit();
-        $limit        = $this -> getGrid() -> getLimit();
+        $defaultLimit = $this->getGrid()->getDefaultLimit();
+        $limit = $this->getGrid()->getLimit();
         //$values = array(5, 10, 15, 20, 25, 30, 40, 50, 100, $defaultLimit, $limit);
-        $values       = atkconfig("recordsperpage_options",
-          array(5, 10, 15, 20, 25, 30, 40, 50, 100, $defaultLimit, $limit));
-        $values       = array_diff($values, array(-1));
-        $values       = array_unique($values);
+        $values = atkconfig("recordsperpage_options", array(5, 10, 15, 20, 25, 30, 40, 50, 100, $defaultLimit, $limit));
+        $values = array_diff($values, array(-1));
+        $values = array_unique($values);
         sort($values);
         return $values;
     }
@@ -55,20 +53,18 @@ class atkDGLimit extends atkDGComponent
     {
         $options = array();
 
-        $limit = $this -> getGrid() -> getLimit();
+        $limit = $this->getGrid()->getLimit();
 
-        foreach ($values as $value)
-        {
-            $current   = $value == $limit;
+        foreach ($values as $value) {
+            $current = $value == $limit;
             $options[] = array('title' => $value, 'value' => $value, 'current' => $current);
         }
 
         //Add 'show all' option.
         //if ($this -> getOption('showAll', false))
-        if (atkconfig("enable_showall", false))
-        {
-            $options[] = array('title'   => $this -> text('all'), 'value'   => -1,
-              'current' => $limit == -1);
+        if (atkconfig("enable_showall", false)) {
+            $options[] = array('title' => $this->text('all'), 'value' => -1,
+                'current' => $limit == -1);
         }
 
         return $options;
@@ -81,18 +77,15 @@ class atkDGLimit extends atkDGComponent
      */
     public function render()
     {
-        $values = $this -> getValues();
+        $values = $this->getValues();
 
-        if ($this -> getGrid() -> getCount() <= $values[0] || $this -> getGrid() -> isEditing())
-        {
+        if ($this->getGrid()->getCount() <= $values[0] || $this->getGrid()->isEditing()) {
             return '';
         }
 
-        $options = $this -> getOptions($values);
-        $call    = $this -> getGrid() -> getUpdateCall(array('atkstartat' => 0),
-          array('atklimit' => '$F(this)'));
-        $result  = $this -> getUi() -> render('dglimit.tpl',
-          array('options' => $options, 'call' => $call));
+        $options = $this->getOptions($values);
+        $call = $this->getGrid()->getUpdateCall(array('atkstartat' => 0), array('atklimit' => '$F(this)'));
+        $result = $this->getUi()->render('dglimit.tpl', array('options' => $options, 'call' => $call));
         return $result;
     }
 

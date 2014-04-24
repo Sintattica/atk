@@ -12,7 +12,6 @@
  *
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
-
 atkimport('atk.datagrid.atkdgevent');
 
 /**
@@ -26,10 +25,10 @@ atkimport('atk.datagrid.atkdgevent');
 interface atkDGListener
 {
 
-  /**
-   * Will be called for each data grid event.
-   *
-   * @param atkDGEvent $event event
-   */
-  public function notify(atkDGEvent $event);
+    /**
+     * Will be called for each data grid event.
+     *
+     * @param atkDGEvent $event event
+     */
+    public function notify(atkDGEvent $event);
 }

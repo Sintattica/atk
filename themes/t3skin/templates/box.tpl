@@ -1,4 +1,4 @@
 <div class="box">
-  <H1>{$title}</H1>
-  {$content}
+    <H1>{$title}</H1>
+        {$content}
 </div>

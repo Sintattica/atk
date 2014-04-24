@@ -1,43 +1,42 @@
 <?php
+/**
+ * This file is part of the ATK Framework distribution.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage security
+ *
+ * @copyright (c)2010 Ivo Jansch / Egeniq
+ */
 
-  /**
-   * This file is part of the ATK Framework distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage security
-   *
-   * @copyright (c)2010 Ivo Jansch / Egeniq
-   */
-
-  /**
-   * Driver for SAML authentication, for SAML based Single Sign On systems.
-   *
-   * It uses the SimpleSAMLphp library for the actual SAML handling
-   * To use this driver you need to specify a number of config options:
-   *
-   * Required:
-   *
-   * $config_auth_saml_simplesaml_path = path to your simplesamlphp
-   * installation, relative to your application, with trailing slash.
-   * Example:
-   * $config_auth_saml_simplesaml_path = "../simplesamlphp/";
-   *
-   * Optional:
-   *
-   * $config_auth_userid_field = "uid"; The name of the field in the SSO system that 
-   * contains the id of the logged in user. Defaults to 'uid'.
-   *
-   * $config_auth_saml_authsource = "default-sp"; The name of the authsource in 
-   * simplesamlphp. Defaults to 'default-sp'.
-   * 
-   * @author Ivo Jansch        <ivo@egeniq.com>
-   * @package atk
-   * @subpackage security
-   *
-   */   
+/**
+ * Driver for SAML authentication, for SAML based Single Sign On systems.
+ *
+ * It uses the SimpleSAMLphp library for the actual SAML handling
+ * To use this driver you need to specify a number of config options:
+ *
+ * Required:
+ *
+ * $config_auth_saml_simplesaml_path = path to your simplesamlphp
+ * installation, relative to your application, with trailing slash.
+ * Example:
+ * $config_auth_saml_simplesaml_path = "../simplesamlphp/";
+ *
+ * Optional:
+ *
+ * $config_auth_userid_field = "uid"; The name of the field in the SSO system that 
+ * contains the id of the logged in user. Defaults to 'uid'.
+ *
+ * $config_auth_saml_authsource = "default-sp"; The name of the authsource in 
+ * simplesamlphp. Defaults to 'default-sp'.
+ * 
+ * @author Ivo Jansch        <ivo@egeniq.com>
+ * @package atk
+ * @subpackage security
+ *
+ */
 class auth_saml extends auth_interface
 {
     /**
@@ -56,9 +55,9 @@ class auth_saml extends auth_interface
      * @return int AUTH_SUCCESS - Authentication succesful
      */
     public function validateUser($user, $passwd)
-    {       
+    {
         $simplesamlPath = atkconfig("auth_saml_simplesaml_path");
-        require_once(atkconfig('atkroot').$simplesamlPath.'lib/_autoload.php');
+        require_once(atkconfig('atkroot') . $simplesamlPath . 'lib/_autoload.php');
         $as = new SimpleSAML_Auth_Simple(atkconfig('auth_saml_authsource', 'default-sp'));
 
         $as->requireAuth();
@@ -70,11 +69,11 @@ class auth_saml extends auth_interface
         // We transport the logoutUrl as part of the user session data so we can logout at any
         // time later when the user clicks the logout button.
         self::$_samlUser = array("name" => $attributes[atkconfig("auth_userid_field", "uid")][0],
-                                 "attributes" => $attributes,
-                                 "_logoutUrl" => $logoutUrl);
+            "attributes" => $attributes,
+            "_logoutUrl" => $logoutUrl);
 
         return AUTH_SUCCESS;
-    }          
+    }
 
     /**
      * Logout through the SSO system. The default logout handler destroys the session, but
@@ -83,9 +82,9 @@ class auth_saml extends auth_interface
      */
     public function logout($user)
     {
-        header("Location: ".$user["_logoutUrl"]);
+        header("Location: " . $user["_logoutUrl"]);
     }
-     
+
     /**
      * Does this authentication method support md5 encoding of passwords?
      *
@@ -93,10 +92,10 @@ class auth_saml extends auth_interface
      */
     public function canMd5()
     {
-       return false;
+        return false;
     }
 
-    /** 
+    /**
      * Retrieve the user. We ignore $user since a saml user is managed in a 
      * separate system. We return the user as we retrieved it from the SSO 
      * system during login in validateUser.
@@ -107,5 +106,5 @@ class auth_saml extends auth_interface
     {
         return self::$_samlUser;
     }
-}
 
+}

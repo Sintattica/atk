@@ -1,31 +1,31 @@
 <?php
-  /**
-   * This file is part of the ATK distribution on GitHub.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage relations
-   *
-   * @copyright (c)2000-2004 Ivo Jansch
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6320 $
-   * $Id$
-   */
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage relations
+ *
+ * @copyright (c)2000-2004 Ivo Jansch
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6320 $
+ * $Id$
+ */
 
-  /**
-   * The atkRelation class defines a relation to another node.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage relations
-   * @abstract
-   *
-   */
-  class atkRelation extends atkAttribute
-  {
+/**
+ * The atkRelation class defines a relation to another node.
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @package atk
+ * @subpackage relations
+ * @abstract
+ *
+ */
+class atkRelation extends atkAttribute
+{
     /**
      * @var String Destination node.
      */
@@ -34,12 +34,12 @@
     /**
      * @var atkNode Destination instance.
      */
-    var $m_destInstance="";
+    var $m_destInstance = "";
 
     /**
      * @var String Filter for destination records.
      */
-    var $m_destinationFilter="";
+    var $m_destinationFilter = "";
 
     /**
      * Descriptor template for destination node.
@@ -59,11 +59,10 @@
      * @param String $destination The destination node (in module.name notation)
      * @param int $flags Flags for the relation
      */
-    function atkRelation($name, $destination, $flags=0)
+    function atkRelation($name, $destination, $flags = 0)
     {
-      $this->atkAttribute($name, $flags);
-      $this->m_destination = $destination;
-
+        $this->atkAttribute($name, $flags);
+        $this->m_destination = $destination;
     }
 
     /**
@@ -72,7 +71,7 @@
      */
     function getDestinationFilter()
     {
-      return $this->m_destinationFilter;
+        return $this->m_destinationFilter;
     }
 
     /**
@@ -81,7 +80,7 @@
      */
     function setDestinationFilter($filter)
     {
-      $this->m_destinationFilter = $this->_cleanupDestinationFilter($filter);
+        $this->m_destinationFilter = $this->_cleanupDestinationFilter($filter);
     }
 
     /**
@@ -95,49 +94,45 @@
      */
     function _cleanupDestinationFilter($filter)
     {
-      $result = '';
-      $filter_length = strlen($filter);
-      $quotes = array("'",'"','`');
-      $quoteStack = array();
-      $lastChar = '';
+        $result = '';
+        $filter_length = strlen($filter);
+        $quotes = array("'", '"', '`');
+        $quoteStack = array();
+        $lastChar = '';
 
-      for ($i = 0; $i < $filter_length; $i++)
-      {
-        $currentChar = $filter[$i];
+        for ($i = 0; $i < $filter_length; $i++) {
+            $currentChar = $filter[$i];
 
-        if(in_array($currentChar,$quotes))
-        {
-          if(sizeof($quoteStack) > 0 && $currentChar == $quoteStack[sizeof($quoteStack) - 1])
-          {
-            array_pop($quoteStack);
-          }
-          else
-          {
-            array_push($quoteStack,$currentChar);
-          }
+            if (in_array($currentChar, $quotes)) {
+                if (sizeof($quoteStack) > 0 && $currentChar == $quoteStack[sizeof($quoteStack) - 1]) {
+                    array_pop($quoteStack);
+                } else {
+                    array_push($quoteStack, $currentChar);
+                }
+            }
+
+            // not between quotes
+            if (!($currentChar === ' ' && $lastChar === ' ' && sizeof($quoteStack) == 0)) {
+                if ($currentChar != "\n")
+                    $result .= $currentChar;
+            }
+            $lastChar = $currentChar;
         }
-
-        // not between quotes
-        if(!($currentChar === ' ' && $lastChar === ' ' && sizeof($quoteStack) == 0))
-        {
-          if($currentChar != "\n") $result .= $currentChar;
-        }
-        $lastChar = $currentChar;
-      }
-      return $result;
+        return $result;
     }
+
     /**
      * Adds a filter value to the destination filter.
      * @param String $filter Filter to be added to the destination filter.
      */
     function addDestinationFilter($filter)
     {
-      $filter = $this->_cleanupDestinationFilter($filter);
-      if($this->m_destinationFilter != "")
-        $this->m_destinationFilter = "({$this->m_destinationFilter}) AND ({$filter})";
-      else
-        $this->m_destinationFilter = $filter;
-      return $this;
+        $filter = $this->_cleanupDestinationFilter($filter);
+        if ($this->m_destinationFilter != "")
+            $this->m_destinationFilter = "({$this->m_destinationFilter}) AND ({$filter})";
+        else
+            $this->m_destinationFilter = $filter;
+        return $this;
     }
 
     /**
@@ -146,7 +141,7 @@
      */
     function &getDescriptorHandler()
     {
-      return $this->m_descHandler;
+        return $this->m_descHandler;
     }
 
     /**
@@ -155,7 +150,7 @@
      */
     function setDescriptorHandler(&$handler)
     {
-      $this->m_descHandler = &$handler;
+        $this->m_descHandler = &$handler;
     }
 
     /**
@@ -164,7 +159,7 @@
      */
     function getDescriptorTemplate()
     {
-      return $this->m_descTemplate;
+        return $this->m_descTemplate;
     }
 
     /**
@@ -173,7 +168,7 @@
      */
     function setDescriptorTemplate($template)
     {
-      $this->m_descTemplate = $template;
+        $this->m_descTemplate = $template;
     }
 
     /**
@@ -186,10 +181,11 @@
      */
     function descriptor($record, &$node)
     {
-      $method = $this->m_name."_descriptor";
-      if (method_exists($this->m_descHandler, $method))
-        return $this->m_descHandler->$method($record, $node);
-      else return $this->m_descHandler->descriptor($record, $node);
+        $method = $this->m_name . "_descriptor";
+        if (method_exists($this->m_descHandler, $method))
+            return $this->m_descHandler->$method($record, $node);
+        else
+            return $this->m_descHandler->descriptor($record, $node);
     }
 
     /**
@@ -201,44 +197,39 @@
      */
     function createDestination()
     {
-      if (!is_object($this->m_destInstance))
-      {
-        $cache_id = $this->m_owner.".".$this->m_name;
-        $this->m_destInstance = &getNode($this->m_destination, true, $cache_id);
+        if (!is_object($this->m_destInstance)) {
+            $cache_id = $this->m_owner . "." . $this->m_name;
+            $this->m_destInstance = &getNode($this->m_destination, true, $cache_id);
 
-        // Validate if destination was created succesfully
-        if (!is_object($this->m_destInstance))
-        {
-          atkerror("Relation with unknown nodetype '".$this->m_destination."' (in node '".$this->m_owner."')");
-          $this->m_destInstance = NULL;
-          return false;
-        }
-
-        if ($this->hasFlag(AF_NO_FILTER))
-          $this->m_destInstance->m_flags |= NF_NO_FILTER;
-
-        foreach (array_keys($this->m_destInstance->m_attribList) as $key)
-        {
-          $attribute = &$this->m_destInstance->m_attribList[$key];
-
-          if (is_subclass_of($attribute, "atkrelation") && is_object($this->m_ownerInstance) && $attribute->m_destination == $this->m_ownerInstance->atkNodeType())
-          {
-            $attribute->m_destInstance = &$this->m_ownerInstance;
-
-            if (count($attribute->m_tabs) == 1 && $attribute->m_tabs[0] == "default")
-            {
-              $attribute->setTabs($this->m_tabs);
+            // Validate if destination was created succesfully
+            if (!is_object($this->m_destInstance)) {
+                atkerror("Relation with unknown nodetype '" . $this->m_destination . "' (in node '" . $this->m_owner . "')");
+                $this->m_destInstance = NULL;
+                return false;
             }
-          }
+
+            if ($this->hasFlag(AF_NO_FILTER))
+                $this->m_destInstance->m_flags |= NF_NO_FILTER;
+
+            foreach (array_keys($this->m_destInstance->m_attribList) as $key) {
+                $attribute = &$this->m_destInstance->m_attribList[$key];
+
+                if (is_subclass_of($attribute, "atkrelation") && is_object($this->m_ownerInstance) && $attribute->m_destination == $this->m_ownerInstance->atkNodeType()) {
+                    $attribute->m_destInstance = &$this->m_ownerInstance;
+
+                    if (count($attribute->m_tabs) == 1 && $attribute->m_tabs[0] == "default") {
+                        $attribute->setTabs($this->m_tabs);
+                    }
+                }
+            }
+
+            if (!empty($this->m_descHandler))
+                $this->m_destInstance->setDescriptorHandler($this);
+
+            if (!empty($this->m_descTemplate))
+                $this->m_destInstance->setDescriptorTemplate($this->m_descTemplate);
         }
-
-        if (!empty($this->m_descHandler))
-          $this->m_destInstance->setDescriptorHandler($this);
-
-        if (!empty($this->m_descTemplate))
-          $this->m_destInstance->setDescriptorTemplate($this->m_descTemplate);
-      }
-      return true;
+        return true;
     }
 
     /**
@@ -248,7 +239,7 @@
      */
     function display($record)
     {
-      return $record[$this->fieldName()];
+        return $record[$this->fieldName()];
     }
 
     /**
@@ -264,6 +255,7 @@
      */
     function validate(&$record, $mode)
     {
+        
     }
 
     /**
@@ -273,15 +265,12 @@
      */
     function isEmpty($record)
     {
-      if ($this->createDestination() && isset($record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]))
-      {
-        return empty($record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]);
-      }
-      else if ($this->createDestination() && isset($record[$this->fieldName()]))
-      {
-        return empty($record[$this->fieldName()]);
-      }
-      return true; // always empty if error.
+        if ($this->createDestination() && isset($record[$this->fieldName()][$this->m_destInstance->primaryKeyField()])) {
+            return empty($record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]);
+        } else if ($this->createDestination() && isset($record[$this->fieldName()])) {
+            return empty($record[$this->fieldName()]);
+        }
+        return true; // always empty if error.
     }
 
     /**
@@ -290,12 +279,12 @@
      */
     function getSearchModes()
     {
-      // exact match and substring search should be supported by any database.
-      // (the LIKE function is ANSI standard SQL, and both substring and wildcard
-      // searches can be implemented using LIKE)
-      // Possible values
-      //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-      return array("exact");
+        // exact match and substring search should be supported by any database.
+        // (the LIKE function is ANSI standard SQL, and both substring and wildcard
+        // searches can be implemented using LIKE)
+        // Possible values
+        //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
+        return array("exact");
     }
 
     /**
@@ -307,9 +296,9 @@
      */
     protected function getChildSearchMode($searchmode, $childname)
     {
-      if (is_array($searchmode) && isset($searchmode[$childname]))
-        return $searchmode[$childname];
-      return $searchmode;
+        if (is_array($searchmode) && isset($searchmode[$childname]))
+            return $searchmode[$childname];
+        return $searchmode;
     }
 
     /**
@@ -321,7 +310,7 @@
      */
     function dbFieldType()
     {
-      return "";
+        return "";
     }
 
     /**
@@ -334,9 +323,9 @@
      * @return String SQL string for joining the owner with the destination.
      *                Defaults to false.
      */
-    function getJoinCondition(&$query, $tablename="",$fieldalias="")
+    function getJoinCondition(&$query, $tablename = "", $fieldalias = "")
     {
-      return false;
+        return false;
     }
 
     /**
@@ -346,11 +335,10 @@
      */
     function &getDestination()
     {
-      if ($this->createDestination())
-      {
-        return $this->m_destInstance;
-      }
-      return NULL;
+        if ($this->createDestination()) {
+            return $this->m_destInstance;
+        }
+        return NULL;
     }
 
     /**
@@ -360,16 +348,16 @@
      */
     function getAddLabel()
     {
-      // Try to get a translation for link_fieldname_add (or if not found, a translation for link_destination_add)
-      $keys = array("link_" . $this->fieldName() . "_add", "link_" . getNodeType($this->m_destination) . "_add");
-      $label = atktext($keys, getNodeModule($this->m_destination), "", "", "", true);
+        // Try to get a translation for link_fieldname_add (or if not found, a translation for link_destination_add)
+        $keys = array("link_" . $this->fieldName() . "_add", "link_" . getNodeType($this->m_destination) . "_add");
+        $label = atktext($keys, getNodeModule($this->m_destination), "", "", "", true);
 
-      // If translation not found, then use a concatenation of translations of the destination and the word "add" as default
-      if ($label=="")
-        $label = atktext(getNodeType($this->m_destination), getNodeModule($this->m_destination)) . " " . strtolower(atktext("add", "atk"));
+        // If translation not found, then use a concatenation of translations of the destination and the word "add" as default
+        if ($label == "")
+            $label = atktext(getNodeType($this->m_destination), getNodeModule($this->m_destination)) . " " . strtolower(atktext("add", "atk"));
 
-      // Return the translation
-      return $label;
+        // Return the translation
+        return $label;
     }
 
     /**
@@ -379,15 +367,16 @@
      * @param array $record the current record
      * @return $filter string filter.
      */
-    function parseFilter($destFilter,$record)
+    function parseFilter($destFilter, $record)
     {
-      if($destFilter!="")
-      {
-        atkimport("atk.utils.atkstringparser");
-        $parser = new atkStringParser($destFilter);
-        return $parser->parse($record);
-      }
-      return "";
+        if ($destFilter != "") {
+            atkimport("atk.utils.atkstringparser");
+            $parser = new atkStringParser($destFilter);
+            return $parser->parse($record);
+        }
+        return "";
     }
-  }
+
+}
+
 ?>

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
@@ -23,7 +22,7 @@
  */
 function smarty_function_atkconfig($params, &$smarty)
 {
-  $smarty->assign($params["smartyvar"], atkconfig($params["var"]));
+    $smarty->assign($params["smartyvar"], atkconfig($params["var"]));
 }
 
 ?>
