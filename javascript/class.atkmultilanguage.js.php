@@ -1,6 +1,6 @@
 <?php
-/**
- * This file is part of the ATK distribution on GitHub.
+ /**
+ * This file is part of the Achievo ATK distribution.
  * Detailed copyright and licensing information can be found
  * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
@@ -14,6 +14,7 @@
  * @version $Revision: 4173 $
  * $Id$
  */
+
 /**
  * Multilanguage Form Script
  * -------------------------
@@ -60,110 +61,110 @@
 ?>
 
 /**
-* Makes sure all the data gets saved before
-* the form gets submitted.
-* @param frm the form object
-*/
+ * Makes sure all the data gets saved before
+ * the form gets submitted.
+ * @param frm the form object
+ */
 function mlPreSubmit(prefix, frm)
 {
-var curhid = document.getElementById(prefix+'_current');
-var oldlang = curhid.value;
+    var curhid = document.getElementById(prefix + '_current');
+    var oldlang = curhid.value;
 
-// Search for all non-hidden formelements that end with 'multilanguage'.
-// The value from these must be transfered to their corresponding hidden element
-// before submit.
-for (var i=0; i<frm.elements.length; i++)
+    // Search for all non-hidden formelements that end with 'multilanguage'.
+    // The value from these must be transfered to their corresponding hidden element
+    // before submit.
+    for (var i = 0; i < frm.elements.length; i++)
     {
-    var element = frm.elements[i];
+        var element = frm.elements[i];
 
-    if (element.name.substr(0,prefix.length)==prefix)
-    {
-    // This element belongs to us..
-    var endpos = element.name.lastIndexOf("[multilanguage]");
+        if (element.name.substr(0, prefix.length) == prefix)
+        {
+            // This element belongs to us..
+            var endpos = element.name.lastIndexOf("[multilanguage]");
 
-    if (element.name.substr(endpos)=="[multilanguage]")
-    {
-    // And this element is a multilanguage hidden dingske.
-    var basename = element.name.substr(0, endpos);
-    var hiddenCurrentEl = frm.elements[basename+'['+oldlang+']'];
-    hiddenCurrentEl.value = element.value;
-    }
-    }
+            if (element.name.substr(endpos) == "[multilanguage]")
+            {
+                // And this element is a multilanguage hidden dingske.
+                var basename = element.name.substr(0, endpos);
+                var hiddenCurrentEl = frm.elements[basename + '[' + oldlang + ']'];
+                hiddenCurrentEl.value = element.value;
+            }
+        }
     }
 
     return true;
-    }
+}
 
-    /**
-    * Saves the current data if another language is chosen,
-    * and loads the data of the new language into the form fields.
-    * @param switchfield the change language select box object
-    * @param prefix
-    */
-    function changeLanguage(switchfield, prefix, all)
-    {
+/**
+ * Saves the current data if another language is chosen,
+ * and loads the data of the new language into the form fields.
+ * @param switchfield the change language select box object
+ * @param prefix
+ */
+function changeLanguage(switchfield, prefix, all)
+{
     var frm = switchfield.form;
 
-    var curhid = document.getElementById(prefix+'_current');
+    var curhid = document.getElementById(prefix + '_current');
     var oldlang = curhid.value;
     var newlang = switchfield.options[switchfield.selectedIndex].value;
 
-    if (oldlang!=newlang)
+    if (oldlang != newlang)
     {
 
-    // old style notification
+        // old style notification
 
-    for (var i = 0; i < frm.elements.length; i++)
-    {
-    var element = frm.elements[i];
+        for (var i = 0; i < frm.elements.length; i++)
+        {
+            var element = frm.elements[i];
 
-    if (element.name.substr(0,prefix.length)==prefix||all)
-    {
-    // This element belongs to us..
-    var endpos = element.name.lastIndexOf("[multilanguage]");
-    if (element.name.substr(endpos)=="[multilanguage]")
-    {
-    //alert(element.name);
-    // And this element is a multilanguage hidden dingske.
-    // So we must put it's current value in the hidden field that belongs to it
-    // And set it's value to the hidden field of the new language.
-    var basename = element.name.substr(0, endpos);
-    var hiddenCurrentEl = frm.elements[basename+'['+oldlang+']'];
-    var hiddenNewEl = frm.elements[basename+'['+newlang+']'];
-    hiddenCurrentEl.value = element.value;
-    element.value = hiddenNewEl.value;
-    //alert('taal: '+element.value);
+            if (element.name.substr(0, prefix.length) == prefix || all)
+            {
+                // This element belongs to us..
+                var endpos = element.name.lastIndexOf("[multilanguage]");
+                if (element.name.substr(endpos) == "[multilanguage]")
+                {
+                    //alert(element.name);
+                    // And this element is a multilanguage hidden dingske.
+                    // So we must put it's current value in the hidden field that belongs to it
+                    // And set it's value to the hidden field of the new language.
+                    var basename = element.name.substr(0, endpos);
+                    var hiddenCurrentEl = frm.elements[basename + '[' + oldlang + ']'];
+                    var hiddenNewEl = frm.elements[basename + '[' + newlang + ']'];
+                    hiddenCurrentEl.value = element.value;
+                    element.value = hiddenNewEl.value;
+                    //alert('taal: '+element.value);
 
-    var label = document.getElementById(basename+'_label');
-    label.innerHTML=str_languages[newlang];
-    }
-    else
-    {
-    // This might be a switchfield.
-    // We need to switch all switchfields if prefix=="*".
-    if (all)
-    {
-    var endpos = element.name.lastIndexOf("_lgswitch");
-    //        alert(element.name);
-    if (element.name.substr(endpos)=="_lgswitch" && element.name!=switchfield.name) // not the current one
-    {
-    element.selectedIndex = switchfield.selectedIndex;
+                    var label = document.getElementById(basename + '_label');
+                    label.innerHTML = str_languages[newlang];
+                }
+                else
+                {
+                    // This might be a switchfield.
+                    // We need to switch all switchfields if prefix=="*".
+                    if (all)
+                    {
+                        var endpos = element.name.lastIndexOf("_lgswitch");
+                        //        alert(element.name);
+                        if (element.name.substr(endpos) == "_lgswitch" && element.name != switchfield.name) // not the current one
+                        {
+                            element.selectedIndex = switchfield.selectedIndex;
 
-    // We also need to set the hidden _current element of all switches that we change, to the new language.
-    var elcurhid = document.getElementById(element.name.substr(0,endpos)+'_current');
-    elcurhid.value = newlang;
-    }
-    }
-    }
-    }
+                            // We also need to set the hidden _current element of all switches that we change, to the new language.
+                            var elcurhid = document.getElementById(element.name.substr(0, endpos) + '_current');
+                            elcurhid.value = newlang;
+                        }
+                    }
+                }
+            }
 
-    }
+        }
 
-    curhid.value = newlang; // remember which language is currently active
+        curhid.value = newlang; // remember which language is currently active
 
-    // new style notification
-    atkMlSwitch(oldlang, newlang);
+        // new style notification
+        atkMlSwitch(oldlang, newlang);
     }
 
     return true;
-    }
+}
