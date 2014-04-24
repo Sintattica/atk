@@ -39,6 +39,42 @@ Changes in ATK 7.0 (WIP)
   dropdown. [Patrick]
 * In atkEmailAttribute, modified address validation to allow single character
   subdomains. [Patrick]
+  + Added optional password restriction settings to defaultconfig.inc.php [wayneh]
+* Applied dependencies fix (See https://github.com/atkphpframework/atk/issues/3
+  and http://forum.achievo.org/viewtopic.php?f=2&t=20722&hilit=adddependency+removes)
+  to atkattribute, atkboolattribute, atkdateattribute, atkfileattribute,
+  atklistattribute, atknumberattribute, atkradioattribute, atktimeattribute,
+  atkmanybooleanrelation, atkmanytoonerelation, atkonetomanyrelation,
+  atkshuttlerelation [wayneh]
+* Applied Datagrid subtotal/unsubtotal link fix to atkattribute
+  (https://github.com/atkphpframework/atk/issues/8) [wayneh]
+* Applied atkcontroller explode() expects parameter 2 to be string bug fix
+  (http://forum.achievo.org/viewtopic.php?f=2&t=21352&hilit=solved
+   https://github.com/atkphpframework/atk/issues/2) [wayneh]
+* Applied atkTimeAttribute bug fix
+   (http://forum.achievo.org/viewtopic.php?f=2&t=21351&p=88064#p88064
+    https://github.com/atkphpframework/atk/issues/1) [wayneh]
+* Fixed Bug 1611 - $config_enable_showall does not work (edit)
+   (http://bugzilla.achievo.org/show_bug.cgi?id=1611) [wayneh]
+* Replaced "This file is part of the Achievo ATK distribution.
+   with "This file is part of the ATK distribution on GitHub."
+   in all files (iBuilding licence info remains) [wayneh]
++ Added options to set export parameters to atkexporthandler and
+   documented in defaultconfig.inc.php - egs
+     $config_export_delimiter = ",";
+     $config_export_enclosure = "&quot;";
+     $config_export_title_row_checked = "checked"; [wayneh]
++ Added option to configure records per page dropdown options and
+    documented in defaultconfig.inc.php - eg
+      $config_recordsperpage_options = array(15,25,50,100,500); [wayneh]
++ Added flag AF_CLEAR_TOUCH_BUTTONS to atktimeattribute,
+    atkdateattribute,atkdatetimeattribute. Causes 2 buttons to be
+    display to the right of the date and/or time. 1st button (clear)
+    clears the field and 2nd button (touch) sets date and/or time to
+    current date/time. If minutes or seconds range other than 0-59
+    minute or second is rounded to the nearest value in the sequence
+    (see http://forum.achievo.org/viewtopic.php?f=2&t=22404 from
+    agx / bad penguin / baiadomizia) [wayneh]
 
 Changes in ATK 6.6.0
 --------------------
