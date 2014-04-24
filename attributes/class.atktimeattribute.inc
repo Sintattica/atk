@@ -18,7 +18,8 @@
 /**
  * Flags for atkTimeAttribute
  */
-define("AF_TIME_SECONDS", AF_SPECIFIC_1);
+define("AF_TIME_SECONDS", AF_SPECIFIC_1); // Display seconds after hours & minutes
+define("AF_CLEAR_TOUCH_BUTTONS", AF_SPECIFIC_6); // Display butons to clear and 'touch' date
 
 /**
  * The atkTimeAttribute class represents an attribute of a node
@@ -226,6 +227,7 @@ class atkTimeAttribute extends atkAttribute
             $m_hourBox .= sprintf("<option value='%02d'%s>%02d</option>\n",
               $i, $sel, $i);
         }
+        $size_hourbox = $this -> m_endTime - $this -> m_beginTime + 1;
 
         // generate minute dropdown
         if ( ! $this -> hasflag(AF_OBLIGATORY))
@@ -258,6 +260,7 @@ class atkTimeAttribute extends atkAttribute
             $m_minBox .= sprintf("<option value='%02d'%s>%02d</option>\n",
               $minute_steps[$i], $sel, $minute_steps[$i]);
         }
+        $size_minbox = count($minute_steps);
 
         // generate second dropdown
         if ( ! $this -> hasFlag(AF_OBLIGATORY))
@@ -280,8 +283,7 @@ class atkTimeAttribute extends atkAttribute
             $m_secBox .= sprintf("<option value='%02d' %s>%02d</option>\n",
               $this -> m_steps[$i], $sel, $this -> m_steps[$i]);
         }
-
-
+        $size_secbox = count($this -> m_steps);
 
         // close dropdown structures
         $m_hourBox .= "</select>";
@@ -298,7 +300,36 @@ class atkTimeAttribute extends atkAttribute
         }
 
         // assemble display version
-        return $m_hourBox . ":" . $m_minBox . $m_secBox;
+        //return $m_hourBox . ":" . $m_minBox . $m_secBox;
+        $timeedit = $m_hourBox . ":" . $m_minBox . $m_secBox;
+        if ($this -> hasFlag(AF_CLEAR_TOUCH_BUTTONS))
+        {
+            $tmp = $timeedit . "&nbsp;&nbsp;" .
+              ' <input type="button" onclick="
+         $(\'' . $this -> getAttributeHtmlId() . '[hours]\').selectedIndex=0;
+         $(\'' . $this -> getAttributeHtmlId() . '[minutes]\').selectedIndex=0;';
+            if ($this -> hasFlag(AF_TIME_SECONDS))
+            {
+                $tmp .= '$(\'' . $this -> getAttributeHtmlId() . '[seconds]\').selectedIndex=0;';
+            }
+            $tmp .= '" value="&empty;" class="atkDateAttribute button atkbutton">
+      <input type="button" onclick="
+         var d = new Date();
+         var mi = Math.round(d.getMinutes()/Math.round(60 / ' . $size_minbox . '));
+         $(\'' . $this -> getAttributeHtmlId() . '[hours]\').selectedIndex=d.getHours()+1;
+         $(\'' . $this -> getAttributeHtmlId() . '[minutes]\').selectedIndex=mi+1;';
+            if ($this -> hasFlag(AF_TIME_SECONDS))
+            {
+                $tmp .= 'var mi = Math.round(d.getSeconds()/Math.round(60 / ' . $size_secbox . '));
+            $(\'' . $this -> getAttributeHtmlId() . '[seconds]\').selectedIndex=mi+1;';
+            }
+            $tmp .= '" value="&lAarr;" class="atkDateAttribute button atkbutton">';
+            return $tmp;
+        }
+        else
+        {
+            return $timeedit;
+        }
     }
 
     /**

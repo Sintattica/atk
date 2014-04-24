@@ -294,6 +294,11 @@ define("AF_SPECIFIC_4", 268435456); // specific attribute flag 4
 define("AF_SPECIFIC_5", 536870912); // specific attribute flag 5
 
 /**
+ * Specific attribute flag 2
+ */
+define("AF_SPECIFIC_6", 1073741824); // specific attribute flag 6
+
+/**
  * Do not store this attribute
  *
  * Storage type flag, used by the storageType() and related methods
@@ -1462,7 +1467,7 @@ class atkAttribute
      */
     function getError($errors)
     {
-        for ($i = 0; $i < count($errors); $i ++)
+        for ($i = 0; $i < count($errors); $i ++ )
         {
             if ($errors[$i]['attrib_name'] == $this -> fieldName() ||
               atk_in_array($this -> fieldName(), $errors[$i]['attrib_name']))
@@ -2750,7 +2755,7 @@ class atkAttribute
 
         $res.= '<select name="atkcolcmd[][setorder][' . $fieldprefix . $fieldname . ']">';
         $res.= '<option value="">';
-        for ($i = 1; $i < 6; $i ++)
+        for ($i = 1; $i < 6; $i ++ )
         {
             $selected = ($currentOrder == $i ? "selected" : "");
             $res.='<option value="' . $i . '" ' . $selected . '>' . $i;

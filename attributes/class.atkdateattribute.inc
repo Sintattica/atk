@@ -26,6 +26,7 @@ define("AF_DATE_EMPTYFIELD", AF_SPECIFIC_2); // Fields have one empty option
 define("AF_DATE_NO_CALENDAR", AF_SPECIFIC_3); // Do not append the popup calendar.
 define("AF_DATE_DISPLAY_DAY", AF_SPECIFIC_4); // Show the day of the week in the display
 define("AF_DATE_EDIT_NO_DAY", AF_SPECIFIC_5); // Don't display the day of the week in edit mode
+define("AF_CLEAR_TOUCH_BUTTONS", AF_SPECIFIC_6); // Display butons to clear and 'touch' date
 // Include adodb workarounds for <1970 dates on windows.
 $config_atkroot = atkconfig("atkroot");
 require_once($config_atkroot . "atk/utils/adodb-time.inc.php");
@@ -46,7 +47,7 @@ class atkDateAttribute extends atkAttribute
     /**
      * Possible values for sorting the year dropdown
      */
-    const SORT_YEAR_ASC  = 1;
+    const SORT_YEAR_ASC = 1;
 
     const SORT_YEAR_DESC = 2;
 
@@ -89,7 +90,7 @@ class atkDateAttribute extends atkAttribute
 
     var $m_onchangecode = array();
 
-    var $m_maxyears     = 25;
+    var $m_maxyears = 25;
 
     /**
      * Format date according to a format string
@@ -166,8 +167,8 @@ class atkDateAttribute extends atkAttribute
      */
     function checkDateArray($datearray)
     {
-        return checkdate((int) $datearray["month"], (int) $datearray["day"],
-          (int) $datearray["year"]);
+        return checkdate((int) $datearray["month"],
+          (int) $datearray["day"], (int) $datearray["year"]);
     }
 
     /**
@@ -340,8 +341,29 @@ class atkDateAttribute extends atkAttribute
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
-        return $this -> draw($record, $fieldprefix, "", $mode,
-            $this -> hasFlag(AF_OBLIGATORY));
+        //return $this -> draw($record, $fieldprefix, "", $mode,
+        //    $this -> hasFlag(AF_OBLIGATORY));
+        $dateEdit = $this -> draw($record, $fieldprefix, "", $mode,
+          $this -> hasFlag(AF_OBLIGATORY));
+        if ($this -> hasFlag(AF_CLEAR_TOUCH_BUTTONS))
+        {
+            return $dateEdit . "&nbsp;&nbsp;-&nbsp;&nbsp;" .
+              ' <input type="button" onclick="
+         $(\'' . $this -> getAttributeHtmlId() . '[day]\').selectedIndex=0;
+         $(\'' . $this -> getAttributeHtmlId() . '[month]\').selectedIndex=0;
+         $(\'' . $this -> getAttributeHtmlId() . '[year]\').value=\'\';
+      " value="&empty;" class="atkDateAttribute button atkbutton">
+      <input type="button" onclick="
+         var d = new Date();
+         $(\'' . $this -> getAttributeHtmlId() . '[day]\').selectedIndex=d.getDate();
+         $(\'' . $this -> getAttributeHtmlId() . '[month]\').selectedIndex=d.getMonth()+1;
+         $(\'' . $this -> getAttributeHtmlId() . '[year]\').value=d.getFullYear();
+      " value="&lAarr;" class="atkDateAttribute button atkbutton">';
+        }
+        else
+        {
+            return $dateEdit;
+        }
     }
 
     /**
@@ -525,8 +547,8 @@ class atkDateAttribute extends atkAttribute
      * @param bool $obligatory Is this field obligatory or not
      * @return Piece a of HTML Code
      */
-    function draw($record = "", $fieldprefix = "", $postfix = "", $mode = "",
-      $obligatory = false)
+    function draw($record = "", $fieldprefix = "", $postfix = "",
+      $mode = "", $obligatory = false)
     {
         $result = "";
 
@@ -864,9 +886,9 @@ class atkDateAttribute extends atkAttribute
             if (isset($record[$this -> fieldName()]) && is_array($record[$this -> fieldName()]))
                     $record[$this -> fieldName()] = NULL;
 
-            $maxSize         = $this -> m_maxsize;
+            $maxSize           = $this -> m_maxsize;
             $this -> m_maxsize = 25; // temporary increase max size to allow from/to dates
-            $result          = parent::search($record, $extended,
+            $result            = parent::search($record, $extended,
                 $fieldprefix);
             $this -> m_maxsize = $maxSize;
             return $result;
@@ -919,7 +941,7 @@ class atkDateAttribute extends atkAttribute
             {
                 $parts = explode('/', $value);
                 $value = array('from' => trim($parts[0] . '/' . $parts[1] . '/' . $parts[2]),
-                  'to' => trim($parts[3] . '/' . $parts[4] . '/' . $parts[5]));
+                  'to'   => trim($parts[3] . '/' . $parts[4] . '/' . $parts[5]));
             }
             else
             {
