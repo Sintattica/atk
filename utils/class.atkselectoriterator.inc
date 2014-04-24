@@ -25,47 +25,47 @@
  */
 class atkSelectorIterator extends IteratorIterator
 {
-  /**
-   * Selector.
-   *
-   * @var atkSelector
-   */
-  private $m_selector;
+    /**
+     * Selector.
+     *
+     * @var atkSelector
+     */
+    private $m_selector;
 
-  /**
-   * Constructor.
-   *
-   * @param Iterator    $iterator iterator
-   * @param atkSelector $selector selector
-   */
-  public function __construct(Iterator $iterator, atkSelector $selector)
-  {
-    parent::__construct($iterator);
-    $this->m_selector = $selector;
-  }
-
-  /**
-   * Returns the selector.
-   *
-   * @return atkSelector selector
-   */
-  public function getSelector()
-  {
-    return $this->m_selector;
-  }
-
-  /**
-   * Returns the current row transformed.
-   */
-  public function current()
-  {
-    $row = parent::current();
-
-    if ($row != null)
+    /**
+     * Constructor.
+     *
+     * @param Iterator    $iterator iterator
+     * @param atkSelector $selector selector
+     */
+    public function __construct(Iterator $iterator, atkSelector $selector)
     {
-      $row = $this->getSelector()->transformRow($row);
+        parent::__construct($iterator);
+        $this->m_selector = $selector;
     }
 
-    return $row;
-  }
+    /**
+     * Returns the selector.
+     *
+     * @return atkSelector selector
+     */
+    public function getSelector()
+    {
+        return $this->m_selector;
+    }
+
+    /**
+     * Returns the current row transformed.
+     */
+    public function current()
+    {
+        $row = parent::current();
+
+        if ($row != null) {
+            $row = $this->getSelector()->transformRow($row);
+        }
+
+        return $row;
+    }
+
 }

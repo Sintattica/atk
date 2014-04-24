@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
@@ -43,8 +42,7 @@ class atkDocumentAttribute extends atkDummyAttribute
         // Call parent constructor with addition of the af_hide_add flag
         // because this attribute should not be used in add operations where
         // the recorddata is not yet present in the database.
-        $this -> atkDummyAttribute($name, "",
-          $flags | AF_HIDE_ADD | AF_DUMMY_SHOW_LABEL);
+        $this->atkDummyAttribute($name, "", $flags | AF_HIDE_ADD | AF_DUMMY_SHOW_LABEL);
     }
 
     /**
@@ -58,7 +56,7 @@ class atkDocumentAttribute extends atkDummyAttribute
      */
     function edit($record = '', $fieldprefix = '', $mode = '')
     {
-        return $this -> documentSelector($record, $mode, false);
+        return $this->documentSelector($record, $mode, false);
     }
 
     /**
@@ -71,8 +69,9 @@ class atkDocumentAttribute extends atkDummyAttribute
     function display($record, $mode)
     {
         if (($mode != "csv") && ($mode != "plain"))
-                return $this -> documentSelector($record, $mode);
-        else return "";
+            return $this->documentSelector($record, $mode);
+        else
+            return "";
     }
 
     /**
@@ -86,7 +85,7 @@ class atkDocumentAttribute extends atkDummyAttribute
     {
         // Read the directory contents using the directorytraverser
         $dirtrav = &atknew("atk.utils.atkdirectorytraverser");
-        return $dirtrav -> getDirContents($path);
+        return $dirtrav->getDirContents($path);
     }
 
     /**
@@ -102,48 +101,41 @@ class atkDocumentAttribute extends atkDummyAttribute
     {
         // Compose the path to use when searching for docuemnt templates
         $basepath = atkconfig("doctemplatedir", "doctemplates/");
-        $module   = $this -> m_ownerInstance -> m_module;
-        $node     = $this -> m_owner;
-        $path     = $basepath . $module . "/" . $node;
+        $module = $this->m_ownerInstance->m_module;
+        $node = $this->m_owner;
+        $path = $basepath . $module . "/" . $node;
 
         // Only continue if the path is valid and exists
-        if ( ! is_dir($path))
-        {
-            return $this -> text("invalid_path");
+        if (!is_dir($path)) {
+            return $this->text("invalid_path");
         }
 
         // Get the list of document files
-        $contents = $this -> getDocumentFiles($path, $record);
+        $contents = $this->getDocumentFiles($path, $record);
 
-        if (empty($contents))
-        {
-            return $this -> text("no_document_templates_found");
+        if (empty($contents)) {
+            return $this->text("no_document_templates_found");
         }
 
         // Add the select box to the html
         $html = '<select name="atkdoctpl">';
-        foreach ($contents as $entry)
-        {
-            if (is_file($path . "/" . $entry)) // todo: && check of tie een open office extensie heeft
-            {
+        foreach ($contents as $entry) {
+            if (is_file($path . "/" . $entry)) { // todo: && check of tie een open office extensie heeft
                 $html .= '<option value="' . urlencode($entry) . '">' . $entry;
             }
         }
         $html .= '</select> ';
 
         // Add the button to the html
-        $selector      = $this -> m_ownerInstance -> primaryKey($record);
-        $onclickscript = 'window.location="' . session_url(dispatch_url($module . "." . $node,
-              "document", array("atkselector" => $selector)),
-            SESSION_DEFAULT) . '&atkdoctpl="+this.form.atkdoctpl.value;';
+        $selector = $this->m_ownerInstance->primaryKey($record);
+        $onclickscript = 'window.location="' . session_url(dispatch_url($module . "." . $node, "document", array("atkselector" => $selector)), SESSION_DEFAULT) . '&atkdoctpl="+this.form.atkdoctpl.value;';
 
         $html .= '<input type="button" class="btn_doc_open" name="atkdocument" value="' . atktext("open") . '" onclick=\'' . $onclickscript . '\'>';
 
         // Wrap the input elements in a unique session form when no form is present yet (in list and view mode)
-        if ((($mode == "list") || ($mode == "view")) && $addForm)
-        {
+        if ((($mode == "list") || ($mode == "view")) && $addForm) {
             static $documentSelectorFormCounter = 0;
-            $html                               = '<form name="documentSelectorForm' . ++ $documentSelectorFormCounter . '">' . session_form() . $html . '</form>';
+            $html = '<form name="documentSelectorForm' . ++$documentSelectorFormCounter . '">' . session_form() . $html . '</form>';
         }
 
         // Return the generated html

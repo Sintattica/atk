@@ -1,57 +1,53 @@
 <?php
-  /**
-   * This file is part of the ATK distribution on GitHub.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage relations
-   *
-   * @copyright (c)2000-2005 Ibuildings.nl BV
-   * @copyright (c)2000-2005 Ivo Jansch
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6323 $
-   * $Id$
-   */
-  
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage relations
+ *
+ * @copyright (c)2000-2005 Ibuildings.nl BV
+ * @copyright (c)2000-2005 Ivo Jansch
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6323 $
+ * $Id$
+ */
+atkimport("atk.relations.atkrelation");
 
-  atkimport("atk.relations.atkrelation");
-  
-  /**
-   * Many to many relation. Should not be used directly.
-   *
-   * This class is used as base class for special kinds of manytomany
-   * relations, like the manyboolrelation. Note that most many-to-many
-   * relationships can be normalized to a combination of one-to-many and
-   * many-to-one relations.
-   * 
-   * @todo Improve multi-field support. For example setOwnerFields with multiple fields
-   *       doesn't work properly at the moment. But it seems more code does not take
-   *       multi-field support into account.
-   *
-   * @abstract
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage relations
-   *
-   */
-  class atkManyToManyRelation extends atkRelation
-  {
+/**
+ * Many to many relation. Should not be used directly.
+ *
+ * This class is used as base class for special kinds of manytomany
+ * relations, like the manyboolrelation. Note that most many-to-many
+ * relationships can be normalized to a combination of one-to-many and
+ * many-to-one relations.
+ * 
+ * @todo Improve multi-field support. For example setOwnerFields with multiple fields
+ *       doesn't work properly at the moment. But it seems more code does not take
+ *       multi-field support into account.
+ *
+ * @abstract
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @package atk
+ * @subpackage relations
+ *
+ */
+class atkManyToManyRelation extends atkRelation
+{
     var $m_localKey = "";
     var $m_remoteKey = "";
     var $m_link = "";
     var $m_linkInstance = NULL;
     var $m_store_deletion_filter = "";
     var $m_localFilter = NULL;
-  
     protected $m_ownerFields = null;
     protected $m_limit;
-    
     private $m_selectableRecordsCache = array();
     private $m_selectableRecordCountCache = array();
-  
+
     /**
      * Constructor
      * @param String $name The name of the relation
@@ -69,12 +65,12 @@
      *                            end of the relation.
      * @param int $flags Flags for the relation.
      */
-    function atkManyToManyRelation($name, $link, $destination, $flags=0)
+    function atkManyToManyRelation($name, $link, $destination, $flags = 0)
     {
-      $this->m_link = $link;
-      $this->atkRelation($name, $destination, $flags|AF_CASCADE_DELETE|AF_NO_SORT);
+        $this->m_link = $link;
+        $this->atkRelation($name, $destination, $flags | AF_CASCADE_DELETE | AF_NO_SORT);
     }
-  
+
     /**
      * Returns the selectable records. Checks for an override in the owner instance
      * with name <attribname>_selection.
@@ -85,14 +81,15 @@
      * 
      * @return array
      */
-    function _getSelectableRecords($record=array(), $mode="", $force=false)
+    function _getSelectableRecords($record = array(), $mode = "", $force = false)
     {
-      $method = $this->fieldName()."_selection";
-      if (method_exists($this->m_ownerInstance, $method))
-        return $this->m_ownerInstance->$method($record, $mode);
-      else return $this->getSelectableRecords($record, $mode, $force);
+        $method = $this->fieldName() . "_selection";
+        if (method_exists($this->m_ownerInstance, $method))
+            return $this->m_ownerInstance->$method($record, $mode);
+        else
+            return $this->getSelectableRecords($record, $mode, $force);
     }
-  
+
     /**
      * Parse destination filter and return the result.
      *
@@ -102,16 +99,15 @@
      */
     private function parseDestinationFilter($record)
     {
-      $filter = "";
-  
-      if ($this->m_destinationFilter!="")
-      {
-        $filter = $this->parseFilter($this->m_destinationFilter, $record);      
-      }
-  
-      return $filter; 
+        $filter = "";
+
+        if ($this->m_destinationFilter != "") {
+            $filter = $this->parseFilter($this->m_destinationFilter, $record);
+        }
+
+        return $filter;
     }
-  
+
     /**
      * Returns the selectable record count.
      *
@@ -120,14 +116,15 @@
      * 
      * @return int
      */
-    protected function _getSelectableRecordCount($record=array(), $mode="")
+    protected function _getSelectableRecordCount($record = array(), $mode = "")
     {
-      $method = $this->fieldName()."_selection";
-      if (method_exists($this->m_ownerInstance, $method))
-        return count($this->_getSelectableRecords($record, $mode));
-      else return $this->getSelectableRecordCount($record, $mode);
+        $method = $this->fieldName() . "_selection";
+        if (method_exists($this->m_ownerInstance, $method))
+            return count($this->_getSelectableRecords($record, $mode));
+        else
+            return $this->getSelectableRecordCount($record, $mode);
     }
-    
+
     /**
      * Returns the selectable record count. The count is cached unless the 
      * $force parameter is set to true
@@ -137,28 +134,25 @@
      * @param boolean $force 
      * 
      * @return int
-     */    
-    public function getSelectableRecordCount($record=array(), $mode='', $force=false)
+     */
+    public function getSelectableRecordCount($record = array(), $mode = '', $force = false)
     {
-      if (!$this->createDestination())
-      {
-        return 0;
-      }
-      
-      $filter = $this->parseDestinationFilter($record);
+        if (!$this->createDestination()) {
+            return 0;
+        }
 
-      $cacheKey = md5($filter);
-      if (!array_key_exists($cacheKey, $this->m_selectableRecordCountCache) || $force)
-      {
-        $this->m_selectableRecordCountCache[$cacheKey] = 
-          $this->getDestination()
-               ->select($filter)
-               ->getRowCount();
-      }
+        $filter = $this->parseDestinationFilter($record);
 
-      return $this->m_selectableRecordCountCache[$cacheKey];
-    }    
-  
+        $cacheKey = md5($filter);
+        if (!array_key_exists($cacheKey, $this->m_selectableRecordCountCache) || $force) {
+            $this->m_selectableRecordCountCache[$cacheKey] = $this->getDestination()
+                ->select($filter)
+                ->getRowCount();
+        }
+
+        return $this->m_selectableRecordCountCache[$cacheKey];
+    }
+
     /**
      * Returns the selectable records for this relation. The records are cached
      * unless the $force parameter is set to true.
@@ -169,38 +163,35 @@
      * 
      * @return array selectable records
      */
-    public function getSelectableRecords($record=array(), $mode="", $force=false)
+    public function getSelectableRecords($record = array(), $mode = "", $force = false)
     {
-      if (!$this->createDestination())
-      {
-        return array();
-      }
+        if (!$this->createDestination()) {
+            return array();
+        }
 
-      $filter = $this->parseDestinationFilter($record);
+        $filter = $this->parseDestinationFilter($record);
 
-      $cacheKey = md5($filter);
-      if (!array_key_exists($cacheKey, $this->m_selectableRecordsCache) || $force)
-      {
-        $this->m_selectableRecordsCache[$cacheKey] =
-          $this->getDestination()
-               ->select($filter)
-               ->limit(is_numeric($this->m_limit) ? $this->m_limit : -1)
-               ->includes(atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey))
-               ->getAllRows();
-      }
-  
-      return $this->m_selectableRecordsCache[$cacheKey];
+        $cacheKey = md5($filter);
+        if (!array_key_exists($cacheKey, $this->m_selectableRecordsCache) || $force) {
+            $this->m_selectableRecordsCache[$cacheKey] = $this->getDestination()
+                ->select($filter)
+                ->limit(is_numeric($this->m_limit) ? $this->m_limit : -1)
+                ->includes(atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey))
+                ->getAllRows();
+        }
+
+        return $this->m_selectableRecordsCache[$cacheKey];
     }
-    
+
     /**
      * Clears the selectable record count and records cache.
      */
     public function clearSelectableCache()
     {
-      $this->m_selectableRecordCountCache = array();
-      $this->m_selectableRecordsCache = array();
+        $this->m_selectableRecordCountCache = array();
+        $this->m_selectableRecordsCache = array();
     }
-  
+
     /**
      * Returns the primary keys of the currently selected records retrieved
      * from the given record.
@@ -211,28 +202,23 @@
      */
     function getSelectedRecords($record)
     {
-      $keys = array();
-  
-      if (isset($record[$this->fieldName()]))
-      {
-        for ($i = 0; $i < count($record[$this->fieldName()]); $i++)
-        {
-          if (is_array($record[$this->fieldName()][$i][$this->getRemoteKey()]))
-          {
-            $key = $this->m_destInstance->primaryKey($record[$this->fieldName()][$i][$this->getRemoteKey()]);
-          }
-          else
-          {
-            $key = $this->m_destInstance->primaryKey(array($this->m_destInstance->primaryKeyField()=>$record[$this->fieldName()][$i][$this->getRemoteKey()]));
-          }
-  
-          $keys[] = $key;
+        $keys = array();
+
+        if (isset($record[$this->fieldName()])) {
+            for ($i = 0; $i < count($record[$this->fieldName()]); $i++) {
+                if (is_array($record[$this->fieldName()][$i][$this->getRemoteKey()])) {
+                    $key = $this->m_destInstance->primaryKey($record[$this->fieldName()][$i][$this->getRemoteKey()]);
+                } else {
+                    $key = $this->m_destInstance->primaryKey(array($this->m_destInstance->primaryKeyField() => $record[$this->fieldName()][$i][$this->getRemoteKey()]));
+                }
+
+                $keys[] = $key;
+            }
         }
-      }
-  
-      return $keys;
+
+        return $keys;
     }
-  
+
     /**
      * Create instance of the intermediairy link node.
      *
@@ -242,22 +228,20 @@
      */
     function createLink()
     {
-      if ($this->m_linkInstance == NULL)
-      {
-        $this->m_linkInstance = &newNode($this->m_link);
-  
-        // Validate if destination was created succesfully
-        if (!is_object($this->m_linkInstance))
-        {
-          atkerror("Relation with unknown nodetype '".$this->m_link."' (in node '".$this->m_owner."')");
-          $this->m_linkInstance = NULL;
-          return false;
+        if ($this->m_linkInstance == NULL) {
+            $this->m_linkInstance = &newNode($this->m_link);
+
+            // Validate if destination was created succesfully
+            if (!is_object($this->m_linkInstance)) {
+                atkerror("Relation with unknown nodetype '" . $this->m_link . "' (in node '" . $this->m_owner . "')");
+                $this->m_linkInstance = NULL;
+                return false;
+            }
         }
-      }
-  
-      return true;
+
+        return true;
     }
-    
+
     /**
      * Returns the link instance. 
      * 
@@ -267,10 +251,9 @@
      */
     public function getLink()
     {
-      return $this->m_linkInstance;
+        return $this->m_linkInstance;
     }
-    
-  
+
     /**
      * Get the name of the attribute of the intermediairy node that points
      * to the master node.
@@ -278,13 +261,12 @@
      */
     function getLocalKey()
     {
-      if ($this->m_localKey=="")
-      {
-        $this->m_localKey = $this->determineKeyName($this->m_owner);
-      }
-      return $this->m_localKey;
+        if ($this->m_localKey == "") {
+            $this->m_localKey = $this->determineKeyName($this->m_owner);
+        }
+        return $this->m_localKey;
     }
-  
+
     /**
      * Change the name of the attribute of the intermediairy node that points
      * to the master node.
@@ -292,9 +274,9 @@
      */
     function setLocalKey($attributename)
     {
-      $this->m_localKey = $attributename;
+        $this->m_localKey = $attributename;
     }
-  
+
     /**
      * Get the name of the attribute of the intermediairy node that points
      * to the node on the other side of the relation.
@@ -302,16 +284,15 @@
      */
     function getRemoteKey()
     {
-      $this->createDestination();
-  
-      if ($this->m_remoteKey=="")
-      {
-        list($module, $nodename) = explode(".", $this->m_destination);
-        $this->m_remoteKey = $this->determineKeyName($nodename);
-      }
-      return $this->m_remoteKey;
+        $this->createDestination();
+
+        if ($this->m_remoteKey == "") {
+            list($module, $nodename) = explode(".", $this->m_destination);
+            $this->m_remoteKey = $this->determineKeyName($nodename);
+        }
+        return $this->m_remoteKey;
     }
-  
+
     /**
      * Sets the owner fields in the owner instance. The owner fields are
      * the attribute(s) of the owner instance which map to the local key
@@ -321,9 +302,9 @@
      */
     public function setOwnerFields($ownerfields)
     {
-      $this->m_ownerFields = $ownerfields;
+        $this->m_ownerFields = $ownerfields;
     }
-  
+
     /**
      * Returns the owner fields. The owners fields are the attribute(s)
      * of the owner instance which map to the local key of the link node.
@@ -332,13 +313,12 @@
      */
     public function getOwnerFields()
     {
-      if (is_array($this->m_ownerFields) && count($this->m_ownerFields)>0)
-      {
-        return $this->m_ownerFields;
-      }
-      return $this->m_ownerInstance->m_primaryKey;
+        if (is_array($this->m_ownerFields) && count($this->m_ownerFields) > 0) {
+            return $this->m_ownerFields;
+        }
+        return $this->m_ownerInstance->m_primaryKey;
     }
-  
+
     /**
      * Determine the name of the foreign key based on the name of the
      *  relation.
@@ -348,25 +328,20 @@
      */
     function determineKeyName($name)
     {
-      if ($this->createLink())
-      {
-        if (isset($this->m_linkInstance->m_attribList[$name]))
-        {
-          // there's an attribute with the same name as the role.
-          return $name;
+        if ($this->createLink()) {
+            if (isset($this->m_linkInstance->m_attribList[$name])) {
+                // there's an attribute with the same name as the role.
+                return $name;
+            } else {
+                // find out if there's a field with the same name with _id appended to it
+                if (isset($this->m_linkInstance->m_attribList[$name . "_id"])) {
+                    return $name . "_id";
+                }
+            }
         }
-        else
-        {
-          // find out if there's a field with the same name with _id appended to it
-          if (isset($this->m_linkInstance->m_attribList[$name."_id"]))
-          {
-            return $name."_id";
-          }
-        }
-      }
-      return $name;
+        return $name;
     }
-  
+
     /**
      * Change the name of the attribute of the intermediairy node that points
      * to the node on the other side of the relation.
@@ -374,9 +349,9 @@
      */
     function setRemoteKey($attributename)
     {
-      $this->m_remoteKey = $attributename;
+        $this->m_remoteKey = $attributename;
     }
-  
+
     /**
      * Returns a displayable string for this value.
      * 
@@ -388,38 +363,34 @@
      *                     use additional modes.
      * @return a displayable string for this value
      */
-    function display($record, $mode="")
+    function display($record, $mode = "")
     {
-      if (!in_array($mode, array("csv", "plain"))) { $result = "&nbsp;"; } else { $result=''; }
-        if ($this->createDestination() && atk_value_in_array($record[$this->fieldName()]))
-        {
-          $recordset = array();
-          $remotekey = $this->getRemoteKey();
-          for ($i=0;$i<count($record[$this->fieldName()]);$i++)
-          {
-            if(!is_array($record[$this->fieldName()][$i][$remotekey]))
-            {
-              $selector = $this->m_destInstance->m_table.".".$this->m_destInstance->primaryKeyField()."='".$record[$this->fieldName()][$i][$remotekey]."'";
-              list($rec) = $this->m_destInstance->selectDb($selector,"","","",$this->m_destInstance->descriptorFields());
-              $recordset[] = $this->m_destInstance->descriptor($rec);
+        if (!in_array($mode, array("csv", "plain"))) {
+            $result = "&nbsp;";
+        } else {
+            $result = '';
+        }
+        if ($this->createDestination() && atk_value_in_array($record[$this->fieldName()])) {
+            $recordset = array();
+            $remotekey = $this->getRemoteKey();
+            for ($i = 0; $i < count($record[$this->fieldName()]); $i++) {
+                if (!is_array($record[$this->fieldName()][$i][$remotekey])) {
+                    $selector = $this->m_destInstance->m_table . "." . $this->m_destInstance->primaryKeyField() . "='" . $record[$this->fieldName()][$i][$remotekey] . "'";
+                    list($rec) = $this->m_destInstance->selectDb($selector, "", "", "", $this->m_destInstance->descriptorFields());
+                    $recordset[] = $this->m_destInstance->descriptor($rec);
+                } else {
+                    $recordset[] = $this->m_destInstance->descriptor($record[$this->fieldName()][$i][$remotekey]);
+                }
             }
-            else
-            {
-              $recordset[] = $this->m_destInstance->descriptor($record[$this->fieldName()][$i][$remotekey]);
+            if (!in_array($mode, array("csv", "plain"))) {
+                $result = "<ul><li>" . implode("<li>", $recordset) . "</ul>";
+            } else {
+                $result = implode(", ", $recordset);
             }
-          }
-          if (!in_array($mode, array("csv", "plain")))
-          {
-            $result = "<ul><li>".implode("<li>",$recordset)."</ul>";
-          }
-          else
-          {
-            $result = implode(", ",$recordset);
-          }
         }
         return $result;
     }
-  
+
     /**
      * Dummy function
      * 
@@ -429,10 +400,11 @@
      * @param String $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record="", $fieldprefix="", $mode="")
+    function edit($record = "", $fieldprefix = "", $mode = "")
     {
+        
     }
-  
+
     /**
      * Dummy function (we don't add ourselves to the query)
      * @param atkQuery $query The SQL query object
@@ -451,11 +423,11 @@
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec, $level, $mode)
+    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec, $level, $mode)
     {
-      // we don't add ourselves to the query;
+        // we don't add ourselves to the query;
     }
-  
+
     /**
      * load function
      * @param atkDb $notused
@@ -463,15 +435,14 @@
      */
     function load($notused, $record)
     {
-      if ($this->createLink())
-      {
-        $where = $this->_getLoadWhereClause($record);
-        $rel = &$this->m_linkInstance;
-        return $rel->selectDb($where);
-      }
-      return array();
+        if ($this->createLink()) {
+            $where = $this->_getLoadWhereClause($record);
+            $rel = &$this->m_linkInstance;
+            return $rel->selectDb($where);
+        }
+        return array();
     }
-  
+
     /**
      * Get where clause for loading the record
      *
@@ -480,28 +451,27 @@
      */
     function _getLoadWhereClause($record)
     {
-      $whereelems = array();
-      $localkey = $this->getLocalKey();
-      if(!is_array($localkey)) $localkey = array($localkey);
-  
-      $ownerfields = $this->getOwnerFields();
-  
-      for ($i=0, $_i = count($localkey); $i<$_i; $i++)
-      {
-        $primkeyattr = &$this->m_ownerInstance->m_attribList[$ownerfields[$i]];
-  
-        if (!$primkeyattr->isEmpty($record))
-        {
-          $whereelems[] = $this->m_linkInstance->m_table.".".$localkey[$i]."='".$primkeyattr->value2db($record)."'";
+        $whereelems = array();
+        $localkey = $this->getLocalKey();
+        if (!is_array($localkey))
+            $localkey = array($localkey);
+
+        $ownerfields = $this->getOwnerFields();
+
+        for ($i = 0, $_i = count($localkey); $i < $_i; $i++) {
+            $primkeyattr = &$this->m_ownerInstance->m_attribList[$ownerfields[$i]];
+
+            if (!$primkeyattr->isEmpty($record)) {
+                $whereelems[] = $this->m_linkInstance->m_table . "." . $localkey[$i] . "='" . $primkeyattr->value2db($record) . "'";
+            }
         }
-      }
-  
-      if ($this->m_localFilter != NULL)
-        $whereelems[] = $this->m_localFilter;
-  
-      return "(".implode(") AND (", $whereelems).")";
+
+        if ($this->m_localFilter != NULL)
+            $whereelems[] = $this->m_localFilter;
+
+        return "(" . implode(") AND (", $whereelems) . ")";
     }
-  
+
     /**
      * delete relational records..
      * 
@@ -509,16 +479,15 @@
      */
     function delete($record)
     {
-      if ($this->createLink())
-      {
-        $rel = &$this->m_linkInstance;
-        $where = $this->_getLoadWhereClause($record);
-        if($where!='')
-          return $rel->deleteDb($where);
-      }
-      return false;
+        if ($this->createLink()) {
+            $rel = &$this->m_linkInstance;
+            $where = $this->_getLoadWhereClause($record);
+            if ($where != '')
+                return $rel->deleteDb($where);
+        }
+        return false;
     }
-  
+
     /**
      * Returns an array with the existing records indexed by their 
      * primary key selector string.
@@ -529,21 +498,21 @@
      */
     protected function _getExistingRecordsByKey(atkDb $db, $record, $mode)
     {
-      $existingRecords = $this->load($db, $record, $mode);
-      $existingRecordsByKey = array();
-      foreach ($existingRecords as $existingRecord)
-      {
-        $existingRecordKey = 
-          is_array($existingRecord[$this->getRemoteKey()]) ? 
-          $existingRecord[$this->getRemoteKey()][$this->getDestination()->primaryKeyField()] :
-          $existingRecord[$this->getRemoteKey()];
-  
-        $existingRecordsByKey[$existingRecordKey] = $existingRecord;
-      }
-  
-      return $existingRecordsByKey;      
+        $existingRecords = $this->load($db, $record, $mode);
+        $existingRecordsByKey = array();
+        foreach ($existingRecords as $existingRecord) {
+            $existingRecordKey = is_array($existingRecord[$this->getRemoteKey()])
+                    ?
+                $existingRecord[$this->getRemoteKey()][$this->getDestination()->primaryKeyField()]
+                    :
+                $existingRecord[$this->getRemoteKey()];
+
+            $existingRecordsByKey[$existingRecordKey] = $existingRecord;
+        }
+
+        return $existingRecordsByKey;
     }
-  
+
     /**
      * Extracts the selected records from the owner instance record for
      * this relation and index them by their primary key selector string.
@@ -552,25 +521,23 @@
      */
     protected function _extractSelectedRecordsByKey($record)
     {
-      $selectedRecordsByKey = array();
-      
-      if (isset($record[$this->fieldName()])) {
-      
-        foreach ($record[$this->fieldName()] as $selectedRecord)
-        {
-          $selectedKey = 
-            is_array($selectedRecord[$this->getRemoteKey()]) ?
-            $selectedRecord[$this->getRemoteKey()][$this->getDestination()->primaryKeyField()] :
-            $selectedRecord[$this->getRemoteKey()];
-  
-          $selectedRecordsByKey[$selectedKey] = $selectedRecord;
+        $selectedRecordsByKey = array();
+
+        if (isset($record[$this->fieldName()])) {
+
+            foreach ($record[$this->fieldName()] as $selectedRecord) {
+                $selectedKey = is_array($selectedRecord[$this->getRemoteKey()]) ?
+                    $selectedRecord[$this->getRemoteKey()][$this->getDestination()->primaryKeyField()]
+                        :
+                    $selectedRecord[$this->getRemoteKey()];
+
+                $selectedRecordsByKey[$selectedKey] = $selectedRecord;
+            }
         }
-      
-      }
-  
-      return $selectedRecordsByKey;      
+
+        return $selectedRecordsByKey;
     }
-  
+
     /**
      * Delete existing link record.
      * 
@@ -578,22 +545,21 @@
      */
     protected function _deleteRecord($record)
     {
-      $selector = $this->getLink()->primaryKey($record);
-      
-      if (empty($selector)) {
-          atkerror('primaryKey-selector for link node is empty. Did you add an AF_PRIMARY flag to the primary key field(s) of the intermediate node? Deleting records aborted to prevent dataloss.');
-          return false;
-      }
-  
-      // append the store deletion filter (if set)
-      if (!empty($this->m_store_deletion_filter))
-      {
-        $selector = "({$selector}) AND ({$this->m_store_deletion_filter})";
-      }
-  
-      return $this->getLink()->deleteDb($selector);
+        $selector = $this->getLink()->primaryKey($record);
+
+        if (empty($selector)) {
+            atkerror('primaryKey-selector for link node is empty. Did you add an AF_PRIMARY flag to the primary key field(s) of the intermediate node? Deleting records aborted to prevent dataloss.');
+            return false;
+        }
+
+        // append the store deletion filter (if set)
+        if (!empty($this->m_store_deletion_filter)) {
+            $selector = "({$selector}) AND ({$this->m_store_deletion_filter})";
+        }
+
+        return $this->getLink()->deleteDb($selector);
     }
-  
+
     /**
      * Update existing link record.
      * 
@@ -602,10 +568,10 @@
      */
     protected function _updateRecord($record, $index)
     {
-      // don't do anything by default
-      return true;
+        // don't do anything by default
+        return true;
     }
-  
+
     /**
      * Create new link record.
      * 
@@ -618,29 +584,25 @@
      */
     protected function _createRecord($selectedKey, $selectedRecord, $ownerRecord, $index)
     {
-      $record = array_merge($this->getLink()->initial_values(), $selectedRecord);
-      $record[$this->getRemoteKey()] = $selectedKey;
-  
-      $ownerFields = $this->getOwnerFields();
-      $localKey = $this->getLocalKey();
-  
-      if (is_array($localKey))
-      {
-        for ($j = 0; $j < count($localKey); $j++)
-        {
-          $locKey = $this->checkKeyDimension($ownerRecord[$ownerFields[$j]]);
-          $record[$localKey[0]][$ownerFields[$j]] = $locKey;
+        $record = array_merge($this->getLink()->initial_values(), $selectedRecord);
+        $record[$this->getRemoteKey()] = $selectedKey;
+
+        $ownerFields = $this->getOwnerFields();
+        $localKey = $this->getLocalKey();
+
+        if (is_array($localKey)) {
+            for ($j = 0; $j < count($localKey); $j++) {
+                $locKey = $this->checkKeyDimension($ownerRecord[$ownerFields[$j]]);
+                $record[$localKey[0]][$ownerFields[$j]] = $locKey;
+            }
+        } else {
+            $locKey = $this->checkKeyDimension($ownerRecord[$ownerFields[0]]);
+            $record[$localKey] = $locKey;
         }
-      }
-      else
-      {
-        $locKey = $this->checkKeyDimension($ownerRecord[$ownerFields[0]]);
-        $record[$localKey] = $locKey;
-      }  
-  
-      return $record;    
+
+        return $record;
     }
-  
+
     /**
      * Add new link record to the database.
      * 
@@ -650,9 +612,9 @@
      */
     protected function _addRecord($record, $index, $mode)
     {
-      return $this->getLink()->addDb($record, true, $mode);
+        return $this->getLink()->addDb($record, true, $mode);
     }
-  
+
     /**
      * Stores the values in the database
      * 
@@ -662,53 +624,45 @@
      */
     function store($db, $record, $mode)
     {
-      $this->createLink();
-      $this->createDestination();
-  
-      $existingRecordsByKey = $this->_getExistingRecordsByKey($db, $record, $mode);
-      $existingRecordsKeys = array_keys($existingRecordsByKey);
-  
-      $selectedRecordsByKey = $this->_extractSelectedRecordsByKey($record);
-      $selectedRecordsKeys = array_keys($selectedRecordsByKey);
+        $this->createLink();
+        $this->createDestination();
 
-      // first delete the existing records that aren't selected anymore
-      $deleteKeys = array_diff($existingRecordsKeys, $selectedRecordsKeys);
-  
-      foreach ($deleteKeys as $deleteKey)
-      {
-        if (!$this->_deleteRecord($existingRecordsByKey[$deleteKey]))
-        {
-          return false;
+        $existingRecordsByKey = $this->_getExistingRecordsByKey($db, $record, $mode);
+        $existingRecordsKeys = array_keys($existingRecordsByKey);
+
+        $selectedRecordsByKey = $this->_extractSelectedRecordsByKey($record);
+        $selectedRecordsKeys = array_keys($selectedRecordsByKey);
+
+        // first delete the existing records that aren't selected anymore
+        $deleteKeys = array_diff($existingRecordsKeys, $selectedRecordsKeys);
+
+        foreach ($deleteKeys as $deleteKey) {
+            if (!$this->_deleteRecord($existingRecordsByKey[$deleteKey])) {
+                return false;
+            }
         }
-      }
-  
-      // then add new or update existing records
-      $index = 0;
-      foreach ($selectedRecordsByKey as $selectedKey => $selectedRecord)
-      {
-        if (isset($existingRecordsByKey[$selectedKey]))
-        {
-          if (!$this->_updateRecord($existingRecordsByKey[$selectedKey], $index))
-          {
-            return false;
-          }
+
+        // then add new or update existing records
+        $index = 0;
+        foreach ($selectedRecordsByKey as $selectedKey => $selectedRecord) {
+            if (isset($existingRecordsByKey[$selectedKey])) {
+                if (!$this->_updateRecord($existingRecordsByKey[$selectedKey], $index)) {
+                    return false;
+                }
+            } else {
+                $newRecord = $this->_createRecord($selectedKey, $selectedRecord, $record, $index);
+
+                if (!$this->_addRecord($newRecord, $index, $mode)) {
+                    return false;
+                }
+            }
+
+            $index++;
         }
-        else
-        {
-          $newRecord = $this->_createRecord($selectedKey, $selectedRecord, $record, $index);
-  
-          if (!$this->_addRecord($newRecord, $index, $mode))
-          {
-            return false;
-          }
-        }
-  
-        $index++;
-      }   
-  
-      return true;    
-    } 
-  
+
+        return true;
+    }
+
     /**
      * Check if the attribute is empty
      * 
@@ -717,9 +671,9 @@
      */
     function isEmpty($postvars)
     {
-      return (!is_array($postvars[$this->fieldName()]) || count($postvars[$this->fieldName()])==0);
+        return (!is_array($postvars[$this->fieldName()]) || count($postvars[$this->fieldName()]) == 0);
     }
-  
+
     /**
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">)
@@ -730,30 +684,26 @@
      * @return String A piece of htmlcode with hidden form elements that post
      *                This attribute's value without showing it.
      */
-    function hide($record="", $fieldprefix="")
+    function hide($record = "", $fieldprefix = "")
     {
-      $result = "";
-      if(is_array(atkArrayNvl($record,$this->fieldName())) && $this->createDestination())
-      {
-        $ownerFields = $this->getOwnerFields();
-        for($i=0,$_i=count($record[$this->fieldName()]);$i<$_i;$i++)
-        {
-          if(atkArrayNvl($record[$this->fieldName()][$i],$this->getLocalKey()))
-            $result .= '<input type="hidden" name="'.$fieldprefix.$this->formName().
-            '['.$i.']['.$this->getLocalKey().']" value="'.
-            $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getLocalKey()],
-              $ownerFields[0]).'">';
-  
-          if(atkArrayNvl($record[$this->fieldName()][$i],$this->getRemoteKey()))
-            $result .= '<input type="hidden" name="'.$fieldprefix.$this->formName().
-            '['.$i.']['.$this->getRemoteKey().']" value="'.
-            $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getRemoteKey()],
-              $this->m_destInstance->primaryKeyField()).'">';
+        $result = "";
+        if (is_array(atkArrayNvl($record, $this->fieldName())) && $this->createDestination()) {
+            $ownerFields = $this->getOwnerFields();
+            for ($i = 0, $_i = count($record[$this->fieldName()]); $i < $_i; $i++) {
+                if (atkArrayNvl($record[$this->fieldName()][$i], $this->getLocalKey()))
+                    $result .= '<input type="hidden" name="' . $fieldprefix . $this->formName() .
+                        '[' . $i . '][' . $this->getLocalKey() . ']" value="' .
+                        $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getLocalKey()], $ownerFields[0]) . '">';
+
+                if (atkArrayNvl($record[$this->fieldName()][$i], $this->getRemoteKey()))
+                    $result .= '<input type="hidden" name="' . $fieldprefix . $this->formName() .
+                        '[' . $i . '][' . $this->getRemoteKey() . ']" value="' .
+                        $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getRemoteKey()], $this->m_destInstance->primaryKeyField()) . '">';
+            }
         }
-      }
-      return $result;
+        return $result;
     }
-  
+
     /**
      * Returns a piece of html code that can be used in a form to search
      * 
@@ -769,34 +719,35 @@
      *
      * @return string Piece of html code
      */
-    function search($record="", $extended=false, $fieldprefix="")
+    function search($record = "", $extended = false, $fieldprefix = "")
     {
-      $this->createDestination();
-  
-      // now select all records
-      $recordset = $this->m_destInstance->selectDb("","","","*",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
-      $result = '<select ';
-      if ($extended)
-      {
-        $result.='multiple="multiple" size="'.min(5,count($recordset)+1).'"';
-      }
-  
-      $result.='name="'.$this->getSearchFieldName($fieldprefix).'[]">';
-  
-      $pkfield = $this->m_destInstance->primaryKeyField();
-  
-      $result.= '<option value="">'.atktext("search_all", "atk").'</option>';
-  
-      for ($i=0;$i<count($recordset);$i++)
-      {
-        $pk = $recordset[$i][$pkfield];
-        if (atk_in_array($pk, $record[$this->fieldName()])) $sel = ' selected="selected"'; else $sel = "";
-        $result.= '<option value="'.$pk.'"'.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]).'</option>';
-      }
-      $result.='</select>';
-      return $result;
+        $this->createDestination();
+
+        // now select all records
+        $recordset = $this->m_destInstance->selectDb("", "", "", "*", atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+        $result = '<select ';
+        if ($extended) {
+            $result.='multiple="multiple" size="' . min(5, count($recordset) + 1) . '"';
+        }
+
+        $result.='name="' . $this->getSearchFieldName($fieldprefix) . '[]">';
+
+        $pkfield = $this->m_destInstance->primaryKeyField();
+
+        $result.= '<option value="">' . atktext("search_all", "atk") . '</option>';
+
+        for ($i = 0; $i < count($recordset); $i++) {
+            $pk = $recordset[$i][$pkfield];
+            if (atk_in_array($pk, $record[$this->fieldName()]))
+                $sel = ' selected="selected"';
+            else
+                $sel = "";
+            $result.= '<option value="' . $pk . '"' . $sel . '>' . $this->m_destInstance->descriptor($recordset[$i]) . '</option>';
+        }
+        $result.='</select>';
+        return $result;
     }
-  
+
     /**
      * Creates an search condition for a given search value
      * 
@@ -809,45 +760,40 @@
      *                           attribute's getSearchModes() method.
      * @param string $fieldaliasprefix optional prefix for the fieldalias in the table
      */
-    function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix='')
+    function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix = '')
     {
-      $ownerFields = $this->getOwnerFields();
-  
-      // We only support 'exact' matches.
-      // But you can select more than one value, which we search using the IN() statement,
-      // which should work in any ansi compatible database.
-      if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
-      {
-        $this->createLink();
-        $query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), $table.".".$ownerFields[0]."=".$this->fieldName().".".$this->getLocalKey(),FALSE );
-        $query->setDistinct(TRUE);
-  
-        if (count($value)==1) // exactly one value
-        {
-          $query->addSearchCondition($query->exactCondition($this->fieldName().".".$this->getRemoteKey(),$this->escapeSQL($value[0])));
+        $ownerFields = $this->getOwnerFields();
+
+        // We only support 'exact' matches.
+        // But you can select more than one value, which we search using the IN() statement,
+        // which should work in any ansi compatible database.
+        if (is_array($value) && count($value) > 0 && $value[0] != "") { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+            $this->createLink();
+            $query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), $table . "." . $ownerFields[0] . "=" . $this->fieldName() . "." . $this->getLocalKey(), FALSE);
+            $query->setDistinct(TRUE);
+
+            if (count($value) == 1) { // exactly one value
+                $query->addSearchCondition($query->exactCondition($this->fieldName() . "." . $this->getRemoteKey(), $this->escapeSQL($value[0])));
+            } else { // search for more values using IN()
+                $query->addSearchCondition($this->fieldName() . "." . $this->getRemoteKey() . " IN ('" . implode("','", $value) . "')");
+            }
         }
-        else // search for more values using IN()
-        {
-          $query->addSearchCondition($this->fieldName().".".$this->getRemoteKey()." IN ('".implode("','",$value)."')");
-        }
-      }
     }
-  
+
     /**
      * Checks if a key is not an array
      * @param string $key   field containing the key values
      * @param string $field field to return if an array
      * @return value of $field
      */
-    function checkKeyDimension($key, $field="id")
+    function checkKeyDimension($key, $field = "id")
     {
-      if (is_array($key))
-      {
-        return $key[$field];
-      }
-      return $key;
+        if (is_array($key)) {
+            return $key[$field];
+        }
+        return $key;
     }
-  
+
     /**
      * Fetch value. If nothing selected, return empty array instead
      * of nothing.
@@ -856,10 +802,10 @@
      */
     function fetchValue($postvars)
     {
-      $value = parent::fetchValue($postvars);
-      return $value == NULL ? array() : $value;
+        $value = parent::fetchValue($postvars);
+        return $value == NULL ? array() : $value;
     }
-  
+
     /**
      * Function adds a custom filter that is used when deleting items during the store() function.
      *
@@ -876,9 +822,9 @@
      */
     function setStoreDeletionFilter($filter)
     {
-      $this->m_store_deletion_filter = $filter;
+        $this->m_store_deletion_filter = $filter;
     }
-  
+
     /**
      * Local filter is used to only show values that are once selected
      * that comply with the local filter. A local filter is also automatically
@@ -888,8 +834,10 @@
      */
     function setLocalFilter($filter)
     {
-      $this->setStoreDeletionFilter($filter);
-      $this->m_localFilter = $filter;
+        $this->setStoreDeletionFilter($filter);
+        $this->m_localFilter = $filter;
     }
-  }
+
+}
+
 ?>

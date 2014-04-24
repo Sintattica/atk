@@ -1,43 +1,41 @@
 <?php
-  /**
-   * This file is part of the ATK distribution on GitHub.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage attributes
-   *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6305 $
-   * $Id$
-   */
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage attributes
+ *
+ * @copyright (c)2000-2004 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6305 $
+ * $Id$
+ */
+/**
+ * include
+ */
+include_once(atkconfig("atkroot") . "atk/atkbrowsertools.inc");
+atkimport("atk.attributes.atkattribute");
 
-  /**
-   * include
-   */
-  include_once(atkconfig("atkroot")."atk/atkbrowsertools.inc");
-  atkimport("atk.attributes.atkattribute");
-
-  /**
-   * The atkTextAttribute class represents an attribute of a node
-   * that is a big text field.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage attributes
-   * @todo autadjust needs to be modified as not every character == 1 column,
-   *       perhaps forcing every textattribute to use a non-proportional font?
-   */
-  class atkTextAttribute extends atkAttribute
-  {
+/**
+ * The atkTextAttribute class represents an attribute of a node
+ * that is a big text field.
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @package atk
+ * @subpackage attributes
+ * @todo autadjust needs to be modified as not every character == 1 column,
+ *       perhaps forcing every textattribute to use a non-proportional font?
+ */
+class atkTextAttribute extends atkAttribute
+{
     // number of rows of the edit box
     var $m_rows = 10;
     var $m_cols;
     var $m_autoadjust;
-    
     private $m_wrapMode = 'soft';
 
     /**
@@ -52,27 +50,27 @@
      *               $flags is mandatory).
      * @param int $flags Flags for this attribute
      */
-    function atkTextAttribute($name,$size=0,$flags=0)
+    function atkTextAttribute($name, $size = 0, $flags = 0)
     {
-      // compatiblity with old versions (old apps expect a 2 param call to be $name, $flags)
-      if (func_num_args()==3 || is_array($size))
-      {
-         if(is_array($size))
-         {
-           if(isset($size['rows'])!='') $this->m_rows = $size['rows'];
-           if(isset($size['cols'])!='') $this->m_cols = $size['cols'];
-           if(isset($size['autoadjust'])) $this->m_autoadjust = $size['autoadjust'];
-         }
-         else $this->m_rows=$size;
-      }
-      else
-      {
-        $flags = $size;
-      }
+        // compatiblity with old versions (old apps expect a 2 param call to be $name, $flags)
+        if (func_num_args() == 3 || is_array($size)) {
+            if (is_array($size)) {
+                if (isset($size['rows']) != '')
+                    $this->m_rows = $size['rows'];
+                if (isset($size['cols']) != '')
+                    $this->m_cols = $size['cols'];
+                if (isset($size['autoadjust']))
+                    $this->m_autoadjust = $size['autoadjust'];
+            } else
+                $this->m_rows = $size;
+        }
+        else {
+            $flags = $size;
+        }
 
-      $this->atkAttribute($name,$flags); // base class constructor
+        $this->atkAttribute($name, $flags); // base class constructor
     }
-    
+
     /**
      * Returns the current wrap mode.
      * 
@@ -80,9 +78,9 @@
      */
     public function getWrapMode()
     {
-      return $this->m_wrapMode;
+        return $this->m_wrapMode;
     }
-    
+
     /**
      * Sets the wrap mode for the text area.
      *
@@ -90,7 +88,7 @@
      */
     public function setWrapMode($mode)
     {
-      $this->m_wrapMode = $mode;
+        $this->m_wrapMode = $mode;
     }
 
     /**
@@ -102,21 +100,20 @@
      * @param String $mode The mode we're in ('add' or 'edit')
      * @return piece of html code with a textarea
      */
-    function edit($record="", $fieldprefix="", $mode='add')
+    function edit($record = "", $fieldprefix = "", $mode = 'add')
     {
-      // list mode, show a small textarea, until it get's focus
-      // and is inflated to a big textarea
-      if ($mode == 'list')
-      {
-        $id = $fieldprefix.$this->fieldName();
+        // list mode, show a small textarea, until it get's focus
+        // and is inflated to a big textarea
+        if ($mode == 'list') {
+            $id = $fieldprefix . $this->fieldName();
 
-        $page = &$this->m_ownerInstance->getPage();
+            $page = &$this->m_ownerInstance->getPage();
 
-        // NOTE:
-        // The onblur function uses a small timeout to make sure a click on a
-        // new element is performed earlier then the swap of fields.
-        // If we don't do this the click might end up wrong.
-        $page->register_loadscript("
+            // NOTE:
+            // The onblur function uses a small timeout to make sure a click on a
+            // new element is performed earlier then the swap of fields.
+            // If we don't do this the click might end up wrong.
+            $page->register_loadscript("
           \$('{$id}').onfocus = function() {
             \$('{$id}_textarea').value = this.value;
             Element.hide(this);
@@ -133,43 +130,42 @@
           };
         ");
 
-        $html =
-          '<textarea id="'.$id.'" name="'.$id.'" wrap="soft" rows="1" cols="20" style="overflow: hidden">'."\n".htmlspecialchars($record[$this->fieldName()]).'</textarea>'.
-          '<textarea id="'.$id.'_textarea" wrap="'.$this->getWrapMode().'" rows="5" cols="40" style="display: none"></textarea>';
+            $html = '<textarea id="' . $id . '" name="' . $id . '" wrap="soft" rows="1" cols="20" style="overflow: hidden">' . "\n" . htmlspecialchars($record[$this->fieldName()]) . '</textarea>' .
+                '<textarea id="' . $id . '_textarea" wrap="' . $this->getWrapMode() . '" rows="5" cols="40" style="display: none"></textarea>';
 
-        return $html;
-      }
+            return $html;
+        }
 
 
-      (isset($record[$this->fieldName()]))?$text=$record[$this->fieldName()]:$text="";
+        (isset($record[$this->fieldName()])) ? $text = $record[$this->fieldName()]
+                    : $text = "";
 
-      if ($this->m_cols != 0)
-      {
-        $cols = $this->m_cols;
-      }
-      else
-      {
-        $cols = $this->maxInputSize();
-      }
-      $rows = $this->m_rows;
-      $id = $fieldprefix.$this->fieldName();
-      $this->registerKeyListener($id, KB_CTRLCURSOR);
-      if ($rows =="" || $rows == 0) $rows = 10;
-      // watch out, $maxsize isn't supported for a textarea.
+        if ($this->m_cols != 0) {
+            $cols = $this->m_cols;
+        } else {
+            $cols = $this->maxInputSize();
+        }
+        $rows = $this->m_rows;
+        $id = $fieldprefix . $this->fieldName();
+        $this->registerKeyListener($id, KB_CTRLCURSOR);
+        if ($rows == "" || $rows == 0)
+            $rows = 10;
+        // watch out, $maxsize isn't supported for a textarea.
 
-      if ($this->m_autoadjust)
-      {
-        $this->doAutoAdjust(htmlspecialchars($text), $rows, $cols);
-      }
-      
-      $this->registerJavaScriptObservers($id);      
+        if ($this->m_autoadjust) {
+            $this->doAutoAdjust(htmlspecialchars($text), $rows, $cols);
+        }
 
-      $result= "<textarea id='$id' name='$id' wrap='".$this->getWrapMode()."' ";
-      if ($rows) $result.= "rows='$rows' ";
-      if ($cols) $result.= "cols='$cols' ";
-      $result.=$this->getCSSClassAttribute();
-      $result.=">\n".htmlspecialchars($text)."</textarea>";
-      return $result;
+        $this->registerJavaScriptObservers($id);
+
+        $result = "<textarea id='$id' name='$id' wrap='" . $this->getWrapMode() . "' ";
+        if ($rows)
+            $result.= "rows='$rows' ";
+        if ($cols)
+            $result.= "cols='$cols' ";
+        $result.=$this->getCSSClassAttribute();
+        $result.=">\n" . htmlspecialchars($text) . "</textarea>";
+        return $result;
     }
 
     /**
@@ -194,16 +190,13 @@
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
+    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
     {
-      if ($mode == "add" || $mode == "update")
-      {
-        $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES), $mode, $this->dbFieldType());
-      }
-      else
-      {
-        $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES), $mode, $this->dbFieldType());
-      }
+        if ($mode == "add" || $mode == "update") {
+            $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(AF_NO_QUOTES), $mode, $this->dbFieldType());
+        } else {
+            $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES), $mode, $this->dbFieldType());
+        }
     }
 
     /**
@@ -213,11 +206,11 @@
      */
     function value2db($rec)
     {
-      $db = &$this->getDb();
-      if ($db->getType() != "oci9" || $this->dbFieldType() != 'text')
-        return $db->escapeSQL($rec[$this->fieldName()]);
-      else
-        return $rec[$this->fieldName()]; //CLOB in oci9 don't need quotes to be escaped EVIL HACK! THIS IS NOT ATKTEXTATTRIBUTE's PROBLEM!
+        $db = &$this->getDb();
+        if ($db->getType() != "oci9" || $this->dbFieldType() != 'text')
+            return $db->escapeSQL($rec[$this->fieldName()]);
+        else
+            return $rec[$this->fieldName()]; //CLOB in oci9 don't need quotes to be escaped EVIL HACK! THIS IS NOT ATKTEXTATTRIBUTE's PROBLEM!
     }
 
     /**
@@ -227,11 +220,10 @@
      */
     function db2value($rec)
     {
-      if (isset($rec[$this->fieldName()]))
-      {
-        return $rec[$this->fieldName()];
-      }
-      return NULL;
+        if (isset($rec[$this->fieldName()])) {
+            return $rec[$this->fieldName()];
+        }
+        return NULL;
     }
 
     /**
@@ -242,14 +234,14 @@
      */
     function dbFieldType()
     {
-      // make sure our metadata is set
-      if (is_object($this->m_ownerInstance)) $this->m_ownerInstance->setAttribSizes();
+        // make sure our metadata is set
+        if (is_object($this->m_ownerInstance))
+            $this->m_ownerInstance->setAttribSizes();
 
-      if ($this->m_dbfieldtype=="")
-      {
-        return "text";
-      }
-      return $this->m_dbfieldtype;
+        if ($this->m_dbfieldtype == "") {
+            return "text";
+        }
+        return $this->m_dbfieldtype;
     }
 
     /**
@@ -261,7 +253,7 @@
      */
     function fetchMeta($metadata)
     {
-      $this->m_dbfieldtype = $metadata[$this->fieldName()]["gentype"];
+        $this->m_dbfieldtype = $metadata[$this->fieldName()]["gentype"];
     }
 
     /**
@@ -273,31 +265,32 @@
      */
     function doAutoAdjust($data, &$rows, &$cols)
     {
-    	$browser = new browserInfo;
-    	$maxlinechars = 0;
-    	for ($counter = 0, $linecharacters=0, $rowsrequired=1;
-    	     $counter<atk_strlen($data);
-    	     $counter++, $linecharacters++)
-    	{
-    		// Current character we are parsing
-    		$character = substr($data, $counter, 1);
+        $browser = new browserInfo;
+        $maxlinechars = 0;
+        for ($counter = 0, $linecharacters = 0, $rowsrequired = 1; $counter < atk_strlen($data); $counter++, $linecharacters++) {
+            // Current character we are parsing
+            $character = substr($data, $counter, 1);
 
-    		// If we encounter a newline character or the number of characters
-    		// equals the number of columns we have (with IE)...
-    		if ($character == chr(13) || ($linecharacters==$cols && $browser->browser == "MSIE"))
-    		{
-    			if ($linecharacters>$maxlinechars) $maxlinechars = $linecharacters;
-    			// We start another line
-    			$linecharacters = 0;
-    			// But need another row
-    			$rowsrequired++;
-    		}
-    	}
-    	// If we need more rows, we set them
-  	  if ($rowsrequired>$rows) $rows= $rowsrequired;
-  	  // IE wraps characters, other don't, so if we're not dealing with IE
-  	  // we need more columns
-  	  if ($maxlinechars>$cols && $browser->browser!=="MSIE") $cols = $maxlinechars;
+            // If we encounter a newline character or the number of characters
+            // equals the number of columns we have (with IE)...
+            if ($character == chr(13) || ($linecharacters == $cols && $browser->browser == "MSIE")) {
+                if ($linecharacters > $maxlinechars)
+                    $maxlinechars = $linecharacters;
+                // We start another line
+                $linecharacters = 0;
+                // But need another row
+                $rowsrequired++;
+            }
+        }
+        // If we need more rows, we set them
+        if ($rowsrequired > $rows)
+            $rows = $rowsrequired;
+        // IE wraps characters, other don't, so if we're not dealing with IE
+        // we need more columns
+        if ($maxlinechars > $cols && $browser->browser !== "MSIE")
+            $cols = $maxlinechars;
     }
-  }
+
+}
+
 ?>

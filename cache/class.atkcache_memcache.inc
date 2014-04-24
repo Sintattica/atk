@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
@@ -22,7 +21,6 @@ atkimport("atk.cache.atkcache");
 
 class atkCache_memcache extends atkCache
 {
-
     public $m_memcache;
 
     /**
@@ -32,18 +30,14 @@ class atkCache_memcache extends atkCache
      */
     public function __construct()
     {
-        if ( ! extension_loaded('memcache'))
-        {
+        if (!extension_loaded('memcache')) {
             throw new Exception('The memcache extension is not loaded');
         }
-        $this -> m_memcache = new Memcache;
-        $result           = @$this -> m_memcache -> connect(
-            $this -> getCacheCOnfig('host', 'localhost'),
-            $this -> getCacheConfig('port', 11211),
-            $this -> getCacheConfig('timeout', 1)
+        $this->m_memcache = new Memcache;
+        $result = @$this->m_memcache->connect(
+                $this->getCacheCOnfig('host', 'localhost'), $this->getCacheConfig('port', 11211), $this->getCacheConfig('timeout', 1)
         );
-        if ( ! $result)
-        {
+        if (!$result) {
             throw new Exception('Can\'t connect to the memcache server');
         }
     }
@@ -58,13 +52,13 @@ class atkCache_memcache extends atkCache
      */
     public function add($key, $data, $lifetime = false)
     {
-        if ( ! $this -> m_active)
-        {
+        if (!$this->m_active) {
             return false;
         }
 
-        if ($lifetime === false) $lifetime = $this -> m_lifetime;
-        return $this -> m_memcache -> add($key, $data, null, $lifetime);
+        if ($lifetime === false)
+            $lifetime = $this->m_lifetime;
+        return $this->m_memcache->add($key, $data, null, $lifetime);
     }
 
     /**
@@ -77,13 +71,13 @@ class atkCache_memcache extends atkCache
      */
     public function set($key, $data, $lifetime = false)
     {
-        if ( ! $this -> m_active)
-        {
+        if (!$this->m_active) {
             return false;
         }
 
-        if ($lifetime === false) $lifetime = $this -> m_lifetime;
-        return $this -> m_memcache -> set($key, $data, null, $lifetime);
+        if ($lifetime === false)
+            $lifetime = $this->m_lifetime;
+        return $this->m_memcache->set($key, $data, null, $lifetime);
     }
 
     /**
@@ -94,11 +88,10 @@ class atkCache_memcache extends atkCache
      */
     public function get($key)
     {
-        if ( ! $this -> m_active)
-        {
+        if (!$this->m_active) {
             return false;
         }
-        return $this -> m_memcache -> get($key);
+        return $this->m_memcache->get($key);
     }
 
     /**
@@ -109,11 +102,10 @@ class atkCache_memcache extends atkCache
      */
     public function delete($key)
     {
-        if ( ! $this -> m_active)
-        {
+        if (!$this->m_active) {
             return false;
         }
-        $this -> m_memcache -> delete($key);
+        $this->m_memcache->delete($key);
         return true;
     }
 
@@ -124,11 +116,10 @@ class atkCache_memcache extends atkCache
      */
     public function deleteAll()
     {
-        if ( ! $this -> m_active)
-        {
+        if (!$this->m_active) {
             return false;
         }
-        $this -> m_memcache -> flush();
+        $this->m_memcache->flush();
         return true;
     }
 

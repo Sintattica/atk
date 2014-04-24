@@ -1,8 +1,9 @@
 <?php
+
 /**
  * Mock session manager.
  */
-class atkMockSessionManager extends atkSessionManager 
+class atkMockSessionManager extends atkSessionManager
 {
-  // currently does nothing
+    // currently does nothing
 }

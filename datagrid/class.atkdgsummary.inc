@@ -12,7 +12,6 @@
  * 
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
-
 atkimport('atk.datagrid.atkdgcomponent');
 
 /**
@@ -25,49 +24,50 @@ atkimport('atk.datagrid.atkdgcomponent');
  */
 class atkDGSummary extends atkDGComponent
 {
-  /**
-   * Renders the summary for the given data grid.
-   *
-   * @return string rendered HTML
-   */
-  public function render()
-  {
-    $grid = $this->getGrid();
-    
-    $limit = $grid->getLimit();
-    $count = $grid->getCount();
-    
-    if ($count == 0)
+
+    /**
+     * Renders the summary for the given data grid.
+     *
+     * @return string rendered HTML
+     */
+    public function render()
     {
-      return null;
+        $grid = $this->getGrid();
+
+        $limit = $grid->getLimit();
+        $count = $grid->getCount();
+
+        if ($count == 0) {
+            return null;
+        }
+
+        if ($limit == -1) {
+            $limit = $count;
+        }
+
+        $start = $grid->getOffset();
+        $end = min($start + $limit, $count);
+        $page = floor(($start / $limit) + 1);
+        $pages = ceil($count / $limit);
+
+        $string = $grid->text('datagrid_summary');
+
+        $params = array(
+            'start' => $start + 1,
+            'end' => $end,
+            'count' => $count,
+            'limit' => $limit,
+            'page' => $page,
+            'pages' => $pages
+        );
+
+        atkimport("atk.utils.atkstringparser");
+        $parser = new atkStringParser($string);
+        $result = $parser->parse($params);
+
+        return $result;
     }
-    
-    if ($limit == -1)
-    {
-      $limit = $count;
-    }
-    
-	  $start = $grid->getOffset();
-	  $end = min($start + $limit, $count);
-	  $page = floor(($start / $limit) + 1);
-	  $pages = ceil($count / $limit);
 
-	  $string = $grid->text('datagrid_summary');
-
-	  $params = array(
-	    'start' => $start + 1, 
-	    'end' => $end, 
-	    'count' => $count, 
-	    'limit' => $limit, 
-	    'page' => $page, 
-	    'pages' => $pages
-	  );
-
-	  atkimport("atk.utils.atkstringparser");	  
-	  $parser = new atkStringParser($string);
-	  $result = $parser->parse($params);
-	  
-	  return $result;
-  }
 }
+
 ?>

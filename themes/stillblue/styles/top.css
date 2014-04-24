@@ -2,24 +2,24 @@
 
 #banner
 {
-  position: fixed;
-  left: 0px;
-  top: 0px;
-  height: 29px;
-  width: 100%;
-  margin-bottom: 20px;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    height: 29px;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 
 #bannerLogo
 {
-  top: 0px;
-  height: auto;
-  width: auto;
+    top: 0px;
+    height: auto;
+    width: auto;
 }
 
 
 #bannerCustomImage
 {
-  display: none;
+    display: none;
 }

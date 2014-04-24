@@ -25,18 +25,19 @@
  */
 class atkStatementException extends Exception
 {
-  const MISSING_BIND_PARAMETER  = 1;
-  const NO_DATABASE_CONNECTION  = 2;
-  const PREPARE_STATEMENT_ERROR = 3;
-  const STATEMENT_NOT_EXECUTED  = 4;
-  const STATEMENT_ERROR         = 5;  
-  const OTHER_ERROR             = 6;
-  
-  /**
-   * Constructor.
-   */
-  public function __construct($message, $code)
-  {
-    parent::__construct($message, $code);
-  }
+    const MISSING_BIND_PARAMETER = 1;
+    const NO_DATABASE_CONNECTION = 2;
+    const PREPARE_STATEMENT_ERROR = 3;
+    const STATEMENT_NOT_EXECUTED = 4;
+    const STATEMENT_ERROR = 5;
+    const OTHER_ERROR = 6;
+
+    /**
+     * Constructor.
+     */
+    public function __construct($message, $code)
+    {
+        parent::__construct($message, $code);
+    }
+
 }

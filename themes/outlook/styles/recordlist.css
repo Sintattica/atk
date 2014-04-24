@@ -1,6 +1,6 @@
 TABLE.recordlist
 {
-  border-collapse: collapse;
+    border-collapse: collapse;
 }
 
 
@@ -9,43 +9,43 @@ TABLE.recordlist TD,
 TABLE.recordlist A,
 TABLE.recordlist A:hover
 {
-  font-family: Verdana,Helvetica,Arial;
-  font-size: 11px;
-  border-width: 1px;
+    font-family: Verdana,Helvetica,Arial;
+    font-size: 11px;
+    border-width: 1px;
 }
 
 TABLE.recordlist TH,
 TABLE.recordlist TH A,
 TABLE.recordlist TH A:hover
 {
-  background-color: #269BF7;
-  color: #ffffff;
-  font-weight: bold;
+    background-color: #269BF7;
+    color: #ffffff;
+    font-weight: bold;
 }
 
 TABLE.recordlist TD,
 TABLE.recordlist TH
 {
-  border-width: 1px;
-  border-color: #000000;
-  border-style: solid;
-  padding: 3px;
-  margin: 0px;
+    border-width: 1px;
+    border-color: #000000;
+    border-style: solid;
+    padding: 3px;
+    margin: 0px;
 
 }
 
 TABLE.recordlist .row1
 {
-  background-color: #ffffff;
+    background-color: #ffffff;
 }
 
 TABLE.recordlist .row2
 {
-  background-color: #D5E7F4;
+    background-color: #D5E7F4;
 }
 
 img.recordlist
 {
-  width: 16px;
-  height: 16px;
+    width: 16px;
+    height: 16px;
 }
