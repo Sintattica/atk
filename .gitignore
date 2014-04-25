@@ -49,3 +49,7 @@ nbactions.xml
 
 # Textmate
 *.tmproj
+
+# ATK
+# skel temp files
+skel/atktmp/
