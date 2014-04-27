@@ -71,7 +71,7 @@ if (atkconfig("top_frame")) {
 $orientation = ($position == MENU_TOP || $position == MENU_BOTTOM ? FRAMESET_VERTICAL
             : FRAMESET_HORIZONTAL);
 
-$wrapper = &new atkFrameSet("*", $orientation);
+$wrapper = new atkFrameSet("*", $orientation);
 
 if ($position == MENU_TOP || $position == MENU_LEFT) {
     $wrapper->addChild($menuframe);
