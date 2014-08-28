@@ -1,12 +1,10 @@
-body
-{
+body {
     background: #FFFFFF;
     color: #cacaca;
     padding: 0px 0px 0px 9px;
 }
 
-#mainMenu
-{
+#mainMenu {
     position: relative;
     margin: 8px 0px 0px 0px;
     padding: 0px;
@@ -24,22 +22,19 @@ body
 }
 */
 
-.menuitem_link
-{
+.menuitem_link {
     background: none;
     text-decoration: none;
     width: 192px;
 }
 
-.menu-menuitem
-{
+.menu-menuitem {
     padding-left: 0px;
     color: #414141;
     font-weight: bold;
 }
 
-.menuItemLevel1
-{
+.menuItemLevel1 {
     display: block;
     background: url(../images/menubg.gif) no-repeat -192px top;
     width: 175px;
@@ -50,8 +45,7 @@ body
     text-decoration: none;
 }
 
-.menuItemLevel2Head
-{
+.menuItemLevel2Head {
     display: block;
     background: url(../images/menubg.gif) no-repeat left top;
     width: 175px;
@@ -63,8 +57,7 @@ body
     text-decoration: none;
 }
 
-.menuItemLevel2
-{
+.menuItemLevel2 {
     padding: 3px 0px 4px 25px;
     display: block;
     font-size: 11px;
@@ -72,15 +65,13 @@ body
     width: 175px;
 }
 
-.menuItemLevel2:hover
-{
+.menuItemLevel2:hover {
     font-size: 11px !important;
     padding-left: 25px !important;
     font-weight: normal !important;
 }
 
-.menuItemLevel2Head .menu-menuitem
-{
+.menuItemLevel2Head .menu-menuitem {
     background: none;
     font-size: 12px !important;
     padding-left: 0px;
@@ -88,18 +79,15 @@ body
     text-decoration: none;
 }
 
-.submenuHover
-{
+.submenuHover {
     color: #9a1010;
 }
 
-.submenuHover form
-{
+.submenuHover form {
     display: block;
     padding: 0 0 0 15px;
 }
 
-.submenuHover .achievoprojectselector
-{
+.submenuHover .achievoprojectselector {
     padding: 0 0 0 15px;
 }

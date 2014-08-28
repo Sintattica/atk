@@ -4,7 +4,8 @@
             <td colspan="2" class="error">
                 {$errortitle}
                 {foreach from=$errors item=error}
-                    <br>{$error.label}: {$error.message} {if isset($error.tablink)} ({atktext "error_tab"} {$error.tablink}){/if}
+                    <br>
+                    {$error.label}: {$error.message} {if isset($error.tablink)} ({atktext "error_tab"} {$error.tablink}){/if}
                 {/foreach}
             </td>
         </tr>
@@ -14,7 +15,8 @@
             {if isset($field.line)}
                 <td colspan="2" valign="top">{$field.line}</td>
             {else}
-                {if $field.label!=="AF_NO_LABEL"}<td>{if $field.label!=""}{$field.label} {if isset($field.obligatory)}{$field.obligatory}{/if}:{/if}</td>
+                {if $field.label!=="AF_NO_LABEL"}
+                    <td>{if $field.label!=""}{$field.label} {if isset($field.obligatory)}{$field.obligatory}{/if}:{/if}</td>
                 {/if}
                 <td>{$field.full}</td>
             {/if}

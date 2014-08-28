@@ -1,53 +1,29 @@
 @import '../../../javascript/bootstrap/css/bootstrap.css';
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /********  LEGACY CSS ********/
 
-
-
-
-.clickable
-{
+.clickable {
     cursor: pointer;
 }
-
 
 /* STACKTRACE */
 /* ----------------------------------------------------------------------- */
 
-
-.stacktrace, a.stacktrace:link, a.stacktrace:visited
-{
+.stacktrace, a.stacktrace:link, a.stacktrace:visited {
     font-family: Tahoma, Trebuchet MS, Arial, Verdana;
     font-size: 12px;
     font-style: italic;
     color: #414141;
 }
 
-.stacktrace_end
-{
+.stacktrace_end {
     font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
     font-size: 12px;
     font-style: italic;
     color: #414141;
 }
 
-.fieldlabel
-{
+.fieldlabel {
     font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
     font-size: 12px;
     color: #414141;
@@ -57,8 +33,7 @@
     width: 200px;
 }
 
-.field
-{
+.field {
     font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
     font-size: 12px;
     color: #414141;
@@ -67,47 +42,40 @@
     padding: 3px 0px 3px 0px;
 }
 
-.field a
-{
+.field a {
     color: #ba0000;
 }
 
-.tab
-{
+.tab {
     font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
     font-size: 12px;
     font-weight: bold;
     color: #ffffff;
 }
 
-.tab_selected
-{
+.tab_selected {
     font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
     font-size: 12px;
     font-weight: bold;
     color: #000000;
 }
 
-.topbg
-{
+.topbg {
     background: #52006A;
 }
 
-.menubg
-{
+.menubg {
     background: #F00;
 }
 
-.error, .errorlabel
-{
+.error, .errorlabel {
     color: #FF0000;
     font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
     font-size: 12px;
     text-align: left;
 }
 
-.atkmessages
-{
+.atkmessages {
     background-color: #EEEEEE;
     color: #000000;
     font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
@@ -119,39 +87,33 @@
 .atkmessages_general,
 .atkmessages_success,
 .atkmessages_failure,
-.atkmessages_warning
-{
+.atkmessages_warning {
     margin-bottom: 1px;
     padding: 3px;
     padding-left: 6px;
     padding-right: 6px;
 }
 
-.atkmessages_general
-{
+.atkmessages_general {
     background-color: yellow;
     color: #000;
 }
 
-.atkmessages_success
-{
+.atkmessages_success {
     background-color: #339900;
     color: #fff;
 }
 
-.atkmessages_warning
-{
+.atkmessages_warning {
     background-color: orange;
     color: #000;
 }
 
-.atkmessages_warning a
-{
+.atkmessages_warning a {
     color: #000;
 }
 
-.atkmessages_failure
-{
+.atkmessages_failure {
     background-color: #ff0000;
     color: #fff;
     padding: 3px;
@@ -159,22 +121,20 @@
     padding-right: 6px;
 }
 
-#action-buttons
-{
+#action-buttons {
     text-align: right;
 }
 
-ul, ol, li
-{
+ul, ol, li {
     margin: 0px;
     padding: 0px;
     list-style-position: inside;
 }
 
-
-
 /* BOX */
 /* ------------------------------------------------------------------ */
+
+/*
 
 .actionpageWrapper
 {
@@ -246,11 +206,12 @@ ul, ol, li
     height: 33px;
 }
 
+*/
 
 /* EDIT FORM */
 /* ------------------------------------------------------------------ */
 
-
+/*
 button.atkdefaultbutton
 {
     font-weight: bold;
@@ -259,7 +220,6 @@ button.atkdefaultbutton
 #editform td.field
 {
     padding-right: 12px;
-    /* white-space: nowrap; */
 }
 
 #changeView
@@ -285,10 +245,12 @@ button.atkdefaultbutton
 {
     text-decoration: none;
 }
-
+*/
 
 /* LOGIN FORM */
 /* ------------------------------------------------------------------ */
+
+/*
 
 .LoginHeader
 {
@@ -375,11 +337,12 @@ button.atkdefaultbutton
     margin-top: 6px;
 }
 
-
-
+*/
 
 /* BUTTONS */
 /* ------------------------------------------------------------------ */
+
+/*
 
 #action-buttons
 {
@@ -397,7 +360,7 @@ hr
 {
     border: none;
     border-top: 1px dashed #666;
-    height: 1px; /* whatever the total width of the border-top and border-bottom equal */
+    height: 1px;
     margin-top: 4px;
     margin-bottom: 4px;
 }
@@ -408,46 +371,38 @@ hr
     width: auto ! important;
 }
 
+*/
 
 /* COMMON STYLES */
 /* ------------------------------------------------------------------ */
 
-.red
-{
+.red {
     color: #9a1010;
 }
 
-.bold
-{
+.bold {
     font-weight: bold;
 }
 
-.capitalize
-{
+.capitalize {
     text-transform: capitalize;
 }
 
-.stacktrace
-{
+.stacktrace {
     margin: -1px 0px 20px 0px;
 }
 
-#action-helplink
-{
+#action-helplink {
     width: 100%;
     text-align: right;
     right: 20px;
 }
 
-
-.clear
-{
+.clear {
     clear: both;
 }
 
-
-#atkbusy
-{
+#atkbusy {
     position: absolute;
     visibility: hidden;
     left: 20px;
@@ -457,167 +412,165 @@ hr
     width: 22px;
 }
 
-#searchbutton
-{
+#searchbutton {
     margin-top: 5px;
 }
 
-.atkAttrRowHidden
-{
+.atkAttrRowHidden {
     display: none !important;
 }
-
 
 /* DIALOG */
 /* ------------------------------------------------------------------ */
 
 .atkdialog .nw {
-    background:transparent url(../images/atkdialog_corners_top.gif) no-repeat scroll 0 -25px;
-    height:25px;
-    padding-left:10px;
+    background: transparent url(../images/atkdialog_corners_top.gif) no-repeat scroll 0 -25px;
+    height: 25px;
+    padding-left: 10px;
 }
 
 .atkdialog .ne {
-    background:transparent url(../images/atkdialog_corners_top.gif) no-repeat scroll right 0;
-    height:25px;
-    padding-right:10px;
+    background: transparent url(../images/atkdialog_corners_top.gif) no-repeat scroll right 0;
+    height: 25px;
+    padding-right: 10px;
 }
 
 .atkdialog .n {
-    background:transparent url(../images/atkdialog_corners_top.gif) repeat-x scroll 0 -50px;
+    background: transparent url(../images/atkdialog_corners_top.gif) repeat-x scroll 0 -50px;
     font-size: 13px;
     font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
     text-transform: capitalize;
     font-weight: bold;
     color: #FFFFFF;
-    height:25px;
-    margin:0;
-    padding:0;
-    text-align:center;
+    height: 25px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
     padding-right: 60px;
     padding-top: 3px;
     overflow: hidden;
 }
 
 .atkdialog .content {
-    background-color:#FDFDFD;
-    color:#000;
+    background-color: #FDFDFD;
+    color: #000;
     font-size: 12px;
     font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
-    overflow:auto;
+    overflow: auto;
     padding: 0px;
     margin: 0px;
 }
 
 .atkdialog .w {
-    border-left:1px solid #B9B9B9;
-    border-right:1px solid #B9B9B9;
+    border-left: 1px solid #B9B9B9;
+    border-right: 1px solid #B9B9B9;
 }
 
 .atkdialog .e {
-    border-left:1px solid #FFF;
-    border-right:1px solid #FFF;
+    border-left: 1px solid #FFF;
+    border-right: 1px solid #FFF;
 }
 
 .atkdialog .sw {
-    background:transparent url(../images/atkdialog_corners_bottom.gif) no-repeat scroll 0 -12px;
-    font-size:2px;
-    height:12px;
-    padding-left:6px;
+    background: transparent url(../images/atkdialog_corners_bottom.gif) no-repeat scroll 0 -12px;
+    font-size: 2px;
+    height: 12px;
+    padding-left: 6px;
 }
 
 .atkdialog .se {
-    background:transparent url(../images/atkdialog_corners_bottom.gif) no-repeat scroll right 0;
-    font-size:2px;
-    height:12px;
-    padding-right:6px;
+    background: transparent url(../images/atkdialog_corners_bottom.gif) no-repeat scroll right 0;
+    font-size: 2px;
+    height: 12px;
+    padding-right: 6px;
 }
 
 .atkdialog .s {
-    background:transparent url(../images/atkdialog_corners_bottom.gif) repeat-x scroll 0 -24px;
-    font-size:11px;
-    height:12px;
-    overflow:hidden;
+    background: transparent url(../images/atkdialog_corners_bottom.gif) repeat-x scroll 0 -24px;
+    font-size: 11px;
+    height: 12px;
+    overflow: hidden;
 }
 
 .atkdialog .se_resize_handle {
-    background:transparent url(../images/atkdialog_sizer.gif) no-repeat scroll right 0;
-    font-size:2px;
-    height:12px;
-    padding-right:12px;
+    background: transparent url(../images/atkdialog_sizer.gif) no-repeat scroll right 0;
+    font-size: 2px;
+    height: 12px;
+    padding-right: 12px;
 }
 
 .atkdialog .se_sizer {
-    width:12px;
-    height:12px;
+    width: 12px;
+    height: 12px;
 }
 
 .atkdialog .buttons {
     position: absolute;
-    top:1px;
-    right:10px;
+    top: 1px;
+    right: 10px;
     height: 20px;
 }
 
 .atkdialog .buttons a.close {
-    background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 0;
-    display:block;
-    height:18px;
-    float:left;
-    width:23px;
-    font-size:1px;
-    padding-top:2px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/
+    background: transparent url(../images/atkdialog_buttons.gif) no-repeat 0 0;
+    display: block;
+    height: 18px;
+    float: left;
+    width: 23px;
+    font-size: 1px;
+    padding-top: 2px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/
 }
 
 .atkdialog .buttons a:hover.close {
-    background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -18px;
+    background: transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -18px;
 }
 
 .atkdialog .buttons a.maximize {
-    background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -36px;
-    display:block;
-    height:18px;
-    float:left;
-    width:23px;
-    font-size:1px;
-    padding-top:1px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/
+    background: transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -36px;
+    display: block;
+    height: 18px;
+    float: left;
+    width: 23px;
+    font-size: 1px;
+    padding-top: 1px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/
 }
+
 .atkdialog .buttons a:hover.maximize {
-    background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -54px;
+    background: transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -54px;
 }
 
 .atkdialog .buttons a.minimize {
-    background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -72px;
-    display:block;
-    height:18px;
-    float:left;
-    width:23px;
-    font-size:1px;
-    padding-top:0px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/
+    background: transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -72px;
+    display: block;
+    height: 18px;
+    float: left;
+    width: 23px;
+    font-size: 1px;
+    padding-top: 0px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/
 }
 
 .atkdialog .buttons a:hover.minimize {
-    background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -90px;
+    background: transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -90px;
 }
 
-.atkdialog .buttons a.minimize.disabled, .atkdialog .buttons.over a.minimize.disabled  {
-    background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -108px !important;
+.atkdialog .buttons a.minimize.disabled, .atkdialog .buttons.over a.minimize.disabled {
+    background: transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -108px !important;
 }
 
 .atkdialog_overlay {
     background-color: #ddd;
-    filter:alpha(opacity=60);
+    filter: alpha(opacity=60);
     -moz-opacity: 0.6;
     opacity: 0.6;
 }
 
 .atkdialog_wired {
-    background:#FFF;
-    border:1px #000 dashed;
-    filter:alpha(opacity=60);
-    opacity:0.6;
-    position:absolute;
-    -moz-opacity:0.6;
+    background: #FFF;
+    border: 1px #000 dashed;
+    filter: alpha(opacity=60);
+    opacity: 0.6;
+    position: absolute;
+    -moz-opacity: 0.6;
 }
 
 .load_criteria {
@@ -629,6 +582,7 @@ hr
     padding: 3px 0px 15px 0px;
     vertical-align: middle;
 }
+
 .load_criteria img {
     vertical-align: middle;
 }
@@ -641,6 +595,7 @@ hr
     padding-left: 12px;
     padding: 15px 0px 3px 0px;
 }
+
 .save_criteria #save_criteria {
     margin-left: 21px;
 }
@@ -658,6 +613,7 @@ hr
     background-color: #ffffcc;
 }
 
+/*
 .panel, #mainMenu
 {
     float: left;
@@ -668,18 +624,18 @@ hr
     Height: 26px;
 }
 
+*/
 
-.clearfloat
-{
+.clearfloat {
     clear: both;
 }
 
-div.stacktrace
-{
+div.stacktrace {
     margin-left: 18px;
     margin-bottom: 8px;
 }
 
+/*
 .actionpageWrapper 
 {
     width:100%;
@@ -689,4 +645,4 @@ div.stacktrace
 {
     height: 40px;	
 }
-
+*/

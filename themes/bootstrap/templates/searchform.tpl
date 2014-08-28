@@ -1,10 +1,12 @@
 {if $saved_criteria.load_criteria}
     <div class="load_criteria">
-        {$saved_criteria.label_load_criteria}: 
+        {$saved_criteria.label_load_criteria}:
         {$saved_criteria.load_criteria}
         {if $saved_criteria.forget_criteria}
-            <a href="{$saved_criteria.forget_criteria}" title="{$saved_criteria.label_forget_criteria}"><img class="recordlist" border="0" title="Verwijder" alt="Verwijder" src="{atkthemeicon name='delete' type='recordlist'}" /></a>
-            {/if}
+            <a href="{$saved_criteria.forget_criteria}" title="{$saved_criteria.label_forget_criteria}"><img
+                        class="recordlist" border="0" title="Verwijder" alt="Verwijder"
+                        src="{atkthemeicon name='delete' type='recordlist'}"/></a>
+        {/if}
     </div>
 {/if}
 
@@ -18,12 +20,14 @@
         </td>
     </tr>
     <tr>
-        <td colspan="3"><hr></td>
+        <td colspan="3">
+            <hr>
+        </td>
     </tr>
-    {foreach from=$fields item=field}        
+    {foreach from=$fields item=field}
         <tr>
             {if $field.line!=""}
-                <td colspan="2" valign="top" class="field">{$field.line}</td>      
+                <td colspan="2" valign="top" class="field">{$field.line}</td>
             {else}
                 <td valign="top" class="fieldlabel">{if $field.label!=""}{$field.label}: {/if}</td>
                 <td valign="top" class="field">{$field.full}</td>
@@ -35,7 +39,9 @@
     {/foreach}
     {if $saved_criteria.toggle_save_criteria }
         <tr>
-            <td colspan="3"><hr></td>
+            <td colspan="3">
+                <hr>
+            </td>
         </tr>
     {/if}
 </table>

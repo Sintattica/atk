@@ -1,5 +1,4 @@
-#atk_debugging_div
-{
+#atk_debugging_div {
     font-family: monospace;
     font-size: 11px;
     white-space: nowrap;
@@ -9,8 +8,7 @@
     padding-left: 10px;
 }
 
-.atkDebugBlock .atkDebugToggle
-{
+.atkDebugBlock .atkDebugToggle {
     display: block;
     margin-top: 0px;
     text-decoration: none;
@@ -21,42 +19,35 @@
     cursor: pointer;
 }
 
-.atkDebugBlock .atkDebugData
-{
+.atkDebugBlock .atkDebugData {
     margin-top: 2px;
     margin-left: 20px;
     margin-bottom: 10px;
     padding-left: 10px;
 }
 
-.atkDebugExpanded .atkDebugToggle
-{
+.atkDebugExpanded .atkDebugToggle {
     background-image: url(../../../images/minus.gif);
 }
 
-.atkDebugExpanded .atkDebugData
-{
+.atkDebugExpanded .atkDebugData {
     display: block;
 }
 
-.atkDebugCollapsed .atkDebugToggle
-{
+.atkDebugCollapsed .atkDebugToggle {
     background-image: url(../../../images/plus.gif);
 }
 
-.atkDebugCollapsed .atkDebugData
-{
+.atkDebugCollapsed .atkDebugData {
     display: none;
 }
 
 .atkDebugBlockContainsErrors .atkDebugToggle,
 .atkDebugBlock .atkDebugError,
-.atkDebugBlock .atkDebugError A
-{
+.atkDebugBlock .atkDebugError A {
     color: red;
 }
 
-.atkDebugRedirect
-{
+.atkDebugRedirect {
     margin-bottom: 10px;
 }

@@ -8,23 +8,24 @@
 {/if}
 <div class="actionpageWrapper">
     {stacktrace}
-    {if count($stacktrace) > 1}  
+    {if count($stacktrace) > 1}
         <div class="stacktrace">
             {section name=i loop=$stacktrace}
                 {if %i.index%>=%i.loop%-4}
                     {if %i.last%}
                         <span class="stacktrace_end">{$stacktrace[i].title}</span>
-                    {else}           
-                        <a href="{$stacktrace[i].url|atk_htmlentities}" class="stacktrace">{$stacktrace[i].title}</a> &raquo;
+                    {else}
+                        <a href="{$stacktrace[i].url|atk_htmlentities}" class="stacktrace">{$stacktrace[i].title}</a>
+                        &raquo;
                     {/if}
                 {else}
                     {if %i.index% == 0}... &raquo;{/if}
                 {/if}
             {/section}
             &nbsp;&nbsp;
-        </div>    
+        </div>
     {/if}
     {foreach from=$blocks item=block}
         {$block}
-            {/foreach}
-            </div>
+    {/foreach}
+</div>

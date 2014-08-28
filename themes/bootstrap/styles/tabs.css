@@ -1,32 +1,26 @@
 
-#editform
-{
+#editform {
     text-align: left;
 }
 
-.tabsTabs 
-{
+.tabsTabs {
     background: url(../images/tabbottom.gif) repeat-x left bottom;
 }
 
-#tabContainer
-{
+#tabContainer {
     padding: 0px;
 }
 
-.mainTabs
-{
+.mainTabs {
     margin: 0 0 15px 0;
 }
 
-.mainTabs a
-{
+.mainTabs a {
     display: block;
     text-decoration: none;
 }
 
-.activetab
-{
+.activetab {
     display: block;
     padding: 4px 0px 3px 0px;
     margin: 0px;
@@ -39,8 +33,7 @@
     text-align: center;
 }
 
-.passivetab
-{
+.passivetab {
     display: block;
     padding: 4px 0px 3px 0px;
     margin: 0px;
@@ -53,23 +46,19 @@
     text-align: center;
 }
 
-.tabbedPane a
-{
+.tabbedPane a {
 
 }
 
-.tabbedPane .tabsTabs .activetab
-{
+.tabbedPane .tabsTabs .activetab {
     padding: 4px 0px 2px 0px !important;
 }
 
-.tabbedPane .tabsTabs .passivetab
-{
+.tabbedPane .tabsTabs .passivetab {
     padding: 4px 0px 2px 0px !important;
 }
 
-.tabbedPane .tabsTabs .activetab a
-{
+.tabbedPane .tabsTabs .activetab a {
     display: block;
     color: #414141;
     text-decoration: none;
@@ -77,8 +66,7 @@
     height: 100%;
 }
 
-.tabbedPane .tabsTabs .passivetab a
-{
+.tabbedPane .tabsTabs .passivetab a {
     display: block;
     text-decoration: none;
     font-size: 10px;

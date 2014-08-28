@@ -11,8 +11,8 @@
                 </div>
                 </div>
             </td>
-        </tr>        
-    {/if}  
+        </tr>
+    {/if}
     {if (isset($header) && !empty($header))}
         <tr>
             <td valign="top" align="left">{$header}<br/></td>

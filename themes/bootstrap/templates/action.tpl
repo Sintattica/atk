@@ -1,7 +1,7 @@
 {atkmessages}
 {if isset($helplink)}
     <div id="action-helplink" style="border: 0px solid red">
-        {$helplink}<br />
+        {$helplink}<br/>
     </div>
 {/if}
 {if count($atkmessages)}

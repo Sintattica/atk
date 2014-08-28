@@ -8,13 +8,14 @@
 <table border="0" cellpadding="0" cellspacing="0" valign="top">
     <tr>
         <td width="100%" align="left">
-            <br />
+            <br/>
             <table border="0" cellpadding="0" cellspacing="0" class="tabsTabs mainTabs">
-                <tr>                              
+                <tr>
                     {section name=i loop=$tabs}
-                        <td id="tab_{$tabs[i].tab}" valign="middle" align="left" nowrap="nowrap" class="{if $tabs[i].selected}activetab{else}passivetab{/if}">	
+                        <td id="tab_{$tabs[i].tab}" valign="middle" align="left" nowrap="nowrap"
+                            class="{if $tabs[i].selected}activetab{else}passivetab{/if}">
                             <a href="javascript:void(0)" onclick="showTab('{$tabs[i].tab}')">{$tabs[i].title}</a>
-                        </td>          
+                        </td>
                         <td>&nbsp;</td>
                     {/section}
                 </tr>
