@@ -279,7 +279,7 @@ class atkBootstrapIndexPage
                     $box = $this->m_ui->renderBox(array("title" => atkText("app_shorttitle"),
                         "content" => atkText("app_description")));
 
-                    $box = '<div class="container">' . $box . '</div>';
+                    $box = '<div class="container-fluid">' . $box . '</div>';
 
                     $this->m_page->addContent($box);
                 }
