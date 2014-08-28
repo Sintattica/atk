@@ -277,7 +277,7 @@ class atkBootstrapIndexPage
                 } else {
                     $this->m_page->register_style($this->m_theme->stylePath("style.css"));
                     $box = $this->m_ui->renderBox(array("title" => atkText("app_shorttitle"),
-                        "content" => "<br /><br />" . atkText("app_description") . "<br /><br />"));
+                        "content" => atkText("app_description")));
 
                     $box = '<div class="container">' . $box . '</div>';
 
