@@ -77,7 +77,6 @@ class atkSessionManager
      */
     private $m_usestack = true; // should we use a session stack
 
-    ?
 
     /**
      * Default constructor.
