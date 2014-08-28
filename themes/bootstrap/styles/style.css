@@ -1,5 +1,12 @@
 @import '../../../javascript/bootstrap/css/bootstrap.css';
 
+
+body {
+    min-height: 2000px;
+    padding-top: 70px;
+}
+
+
 /********  LEGACY CSS ********/
 
 .clickable {
@@ -619,7 +626,7 @@ hr
     float: left;
 }
 
-.panelTitleRight 
+.panelTitleRight
 {
     Height: 26px;
 }
@@ -636,13 +643,13 @@ div.stacktrace {
 }
 
 /*
-.actionpageWrapper 
+.actionpageWrapper
 {
     width:100%;
 }
 
-#topSpacer 
+#topSpacer
 {
-    height: 40px;	
+    height: 40px;
 }
 */
