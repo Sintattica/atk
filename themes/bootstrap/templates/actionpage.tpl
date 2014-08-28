@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container-fluid">
     {atkmessages}
     {if count($atkmessages)}
         <div class="atkmessages">
