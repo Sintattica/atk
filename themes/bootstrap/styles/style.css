@@ -9,6 +9,9 @@ body {
     text-align: center;
 }
 
+.pagination {
+    margin: 0;
+}
 
 /********  LEGACY CSS ********/
 

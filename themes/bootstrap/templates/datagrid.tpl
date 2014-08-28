@@ -1,56 +1,54 @@
-<table border="0" cellspacing="0" cellpadding="2">
-    {if !empty($top)}
-        <tr>
-            <td align="left" valign="top" colspan="2">
-                {$top}
-            </td>
-        </tr>
-    {/if}
-    {if !empty($index) || !empty($editcontrol)}
-        <tr>
-            <td align="left" valign="top">
-                {if !empty($editcontrol)}{$editcontrol}{/if} {if !empty($index)}{$index}{/if}
-            </td>
-        </tr>
-    {elseif !empty($paginator) || !empty($limit)}
-        <tr>
-            <td align="left" valign="middle">
-                {if !empty($editcontrol)}{$editcontrol}{/if} {if !empty($paginator)}{$paginator}{/if}
-            </td>
-            <td align="right" valign="middle">
-                {if !empty($limit)}{$limit}{/if}
-            </td>
-        </tr>
-    {/if}
-    {if !empty($list)}
-        <tr>
-            <td align="left" valign="top" colspan="2">
-                {$list}
-            </td>
-        </tr>
-    {/if}
-    {if !empty($norecordsfound)}
-        <tr>
-            <td align="left" valign="top">
-                <i>{$norecordsfound}</i>
-            </td>
-        </tr>
-    {/if}
-    {if !empty($paginator) || !empty($summary)}
-        <tr>
-            <td align="left" valign="middle">
-                {if !empty($paginator)}{$paginator}{/if}
-            </td>
-            <td align="right" valign="middle">
-                {if !empty($summary)}{$summary}{/if}
-            </td>
-        </tr>
-    {/if}
-    {if !empty($bottom)}
-        <tr>
-            <td align="left" valign="top" colspan="2">
-                {$bottom}
-            </td>
-        </tr>
-    {/if}
-</table>
+{if !empty($top)}
+    <div class="row">
+        <div class="col-md-12">
+            {$top}
+        </div>
+    </div>
+{/if}
+{if !empty($index) || !empty($editcontrol)}
+    <div class="row">
+        <div class="col-md-12">
+            {if !empty($editcontrol)}{$editcontrol}{/if} {if !empty($index)}{$index}{/if}
+        </div>
+    </div>
+{elseif !empty($paginator) || !empty($limit)}
+    <div class="row">
+        <div class="col-md-6">
+            {if !empty($editcontrol)}{$editcontrol}{/if} {if !empty($paginator)}{$paginator}{/if}
+        </div>
+        <div class="col-md-6 text-right">
+            {if !empty($limit)}{$limit}{/if}
+        </div>
+    </div>
+{/if}
+{if !empty($list)}
+    <div class="row">
+        <div class="col-md-12">
+            {$list}
+        </div>
+    </div>
+{/if}
+{if !empty($norecordsfound)}
+    <div class="row">
+        <div class="col-md-12">
+            <i>{$norecordsfound}</i>
+        </div>
+    </div>
+{/if}
+{if !empty($paginator) || !empty($summary)}
+    <div class="row">
+        <div class="col-md-6">
+            {if !empty($paginator)}{$paginator}{/if}
+        </div>
+        <div class="col-md-6 text-right">
+            {if !empty($summary)}{$summary}{/if}
+        </div>
+    </div>
+{/if}
+{if !empty($bottom)}
+    <div class="row">
+        <div class="col-md-12">
+            {$bottom}
+        </div>
+    </div>
+{/if}
