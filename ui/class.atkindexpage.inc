@@ -275,6 +275,8 @@ class atkIndexPage
                     $box = $this->m_ui->renderBox(array("title" => atkText("app_shorttitle"),
                         "content" => "<br /><br />" . atkText("app_description") . "<br /><br />"));
 
+                    $box = '<div class="container">'.$box.'</div>';
+
                     $this->m_page->addContent($box);
                 }
             }
