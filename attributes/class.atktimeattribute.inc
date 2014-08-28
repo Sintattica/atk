@@ -38,15 +38,15 @@ class atkTimeAttribute extends atkAttribute
 
     /**
      * Constructor
-     * @param string $name      Name of the attribute
-     * @param int $beginTime    Time to start with (eg 8)
-     * @param int $endTime      Time to end with (eg 24)
-     * @param int|array $steps  containing possible minute or seconds values (eg array("00","15","30","45"))
+     * @param string $name Name of the attribute
+     * @param int $beginTime Time to start with (eg 8)
+     * @param int $endTime Time to end with (eg 24)
+     * @param int|array $steps containing possible minute or seconds values (eg array("00","15","30","45"))
      *                          or the interval (eg 5 for 00,05,10,15, etc.)
      *                          if the flag AF_TIME_SECONDS is set, this is for seconds, the minutes will be range(0, 59)
      *                          else this is for the minutes and the seconds will not be displayed
-     * @param string $default   Start Time (exp: 20:30)
-     * @param int $flags        Flags for this attribute
+     * @param string $default Start Time (exp: 20:30)
+     * @param int $flags Flags for this attribute
      */
     function atkTimeAttribute($name, $beginTime = 0, $endTime = 23, $steps = array("00", "15", "30", "45"), $default = "", $flags = 0)
     {
@@ -69,7 +69,7 @@ class atkTimeAttribute extends atkAttribute
     function intervalToSteps($interval)
     {
         $steps = array();
-        for ($i = 0; $i <= 59; $i ++) {
+        for ($i = 0; $i <= 59; $i++) {
             if ($i % $interval === 0) {
                 $steps[] = $i;
             }
@@ -102,7 +102,7 @@ class atkTimeAttribute extends atkAttribute
             return "";
         $tmp_time = sprintf("%02d:%02d", $value["hours"], $value["minutes"]);
         if ($value["seconds"] && $this->hasFlag(AF_TIME_SECONDS))
-            $tmp_time.=sprintf(":%02d", $value["seconds"]);
+            $tmp_time .= sprintf(":%02d", $value["seconds"]);
         return $tmp_time;
     }
 
@@ -130,8 +130,7 @@ class atkTimeAttribute extends atkAttribute
             $result["minutes"] = $exploded[1];
             if ($exploded[2])
                 $result["seconds"] = $exploded[2];
-        }
-        else if (strlen($result['hours']) == 0 || strlen($result['minutes']) == 0) {
+        } else if (strlen($result['hours']) == 0 || strlen($result['minutes']) == 0) {
             return NULL;
         } else {
             $result = array(
@@ -157,7 +156,8 @@ class atkTimeAttribute extends atkAttribute
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         if (($this->m_default == "NOW" && $this->m_ownerInstance->m_action == "add") ||
-            ($this->m_default == "" && $this->hasFlag(AF_OBLIGATORY))) {
+            ($this->m_default == "" && $this->hasFlag(AF_OBLIGATORY))
+        ) {
             $this->m_default = date("H:i:s");
         }
         $default = explode(":", $this->m_default);
@@ -175,9 +175,9 @@ class atkTimeAttribute extends atkAttribute
         $this->registerKeyListener($id . '[hours]', KB_CTRLCURSOR | KB_LEFTRIGHT);
         $this->registerKeyListener($id . '[minutes]', KB_CTRLCURSOR | KB_LEFTRIGHT);
         $this->registerKeyListener($id . '[seconds]', KB_CTRLCURSOR | KB_LEFTRIGHT);
-        $m_hourBox = '<select id="' . $id . '[hours]" name="' . $id . "[hours]\" class=\"atktimeattribute\"{$onChangeCode}>\n";
-        $m_minBox = '<select id="' . $id . '[minutes]" name="' . $id . "[minutes]\" class=\"atktimeattribute\"{$onChangeCode}>\n";
-        $m_secBox = '<select id="' . $id . '[seconds]" name="' . $id . "[seconds]\" class=\"atktimeattribute\"{$onChangeCode}>\n";
+        $m_hourBox = '<select id="' . $id . '[hours]" name="' . $id . "[hours]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
+        $m_minBox = '<select id="' . $id . '[minutes]" name="' . $id . "[minutes]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
+        $m_secBox = '<select id="' . $id . '[seconds]" name="' . $id . "[seconds]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
         // set default values for both boxes
         // depends upon atkaction
         // if add/admin, use $default param, else use time in $record
@@ -195,7 +195,7 @@ class atkTimeAttribute extends atkAttribute
         // generate hour dropdown
         if (!$this->hasflag(AF_OBLIGATORY))
             $m_hourBox .= '<option value=""' . ($m_defHour === "" ? ' selected' : '') . '></option>';
-        for ($i = $this->m_beginTime; $i <= $this->m_endTime; $i ++) {
+        for ($i = $this->m_beginTime; $i <= $this->m_endTime; $i++) {
             if ($m_defHour !== "" && ($i == $m_defHour)) {
                 $sel = " selected";
             } else {
@@ -215,7 +215,7 @@ class atkTimeAttribute extends atkAttribute
             $minute_steps = $this->m_steps;
         }
 
-        for ($i = 0; $i <= count($minute_steps) - 1; $i ++) {
+        for ($i = 0; $i <= count($minute_steps) - 1; $i++) {
             if ($i != 0)
                 $prev = $minute_steps[$i - 1];
             else
@@ -233,7 +233,7 @@ class atkTimeAttribute extends atkAttribute
         // generate second dropdown
         if (!$this->hasFlag(AF_OBLIGATORY))
             $m_secBox .= '<option value""' . ($m_defSec === "" ? ' selected' : '') . '></option>';
-        for ($i = 0; $i <= count($this->m_steps) - 1; $i ++) {
+        for ($i = 0; $i <= count($this->m_steps) - 1; $i++) {
             if ($i != 0)
                 $prev = $this->m_steps[$i - 1];
             else
@@ -262,6 +262,7 @@ class atkTimeAttribute extends atkAttribute
         // assemble display version
         //return $m_hourBox . ":" . $m_minBox . $m_secBox;
         $timeedit = $m_hourBox . ":" . $m_minBox . $m_secBox;
+
         if ($this->hasFlag(AF_CLEAR_TOUCH_BUTTONS)) {
             $tmp = $timeedit . "&nbsp;&nbsp;" .
                 ' <input type="button" onclick="
@@ -281,10 +282,11 @@ class atkTimeAttribute extends atkAttribute
             $(\'' . $this->getAttributeHtmlId() . '[seconds]\').selectedIndex=mi+1;';
             }
             $tmp .= '" value="&lAarr;" class="atkDateAttribute button atkbutton">';
-            return $tmp;
-        } else {
-            return $timeedit;
+            return '<div class="form-inline">' . $tmp . '</div>';
         }
+
+        return '<div class="form-inline">' . $timeedit . '</div>';
+
     }
 
     /**
@@ -361,7 +363,7 @@ class atkTimeAttribute extends atkAttribute
     /**
      * Checks if a value is valid.
      *
-     * @param array $rec    The record that holds the value for this
+     * @param array $rec The record that holds the value for this
      *                      attribute. If an error occurs, the error will
      *                      be stored in the 'atkerror' field of the record.
      * @param String $mode The mode for which should be validated ("add" or
@@ -446,11 +448,11 @@ class atkTimeAttribute extends atkAttribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param atkQuery $query     The query object where the search condition should be placed on
-     * @param String $table       The name of the table in which this attribute
+     * @param atkQuery $query The query object where the search condition should be placed on
+     * @param String $table The name of the table in which this attribute
      *                              is stored
-     * @param mixed $value        The value the user has entered in the searchbox
-     * @param String $searchmode  The searchmode to use. This can be any one
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param String $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.

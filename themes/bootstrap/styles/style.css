@@ -6,6 +6,10 @@ body {
     padding-top: 70px;
 }
 
+#action-buttons {
+    text-align: center;
+}
+
 
 /********  LEGACY CSS ********/
 
@@ -30,28 +34,6 @@ body {
     color: #414141;
 }
 
-.fieldlabel {
-    font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
-    font-size: 12px;
-    color: #414141;
-    text-align: left;
-    font-weight: normal !important;
-    padding: 5px 0px 8px 0px !important;
-    width: 200px;
-}
-
-.field {
-    font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
-    font-size: 12px;
-    color: #414141;
-    text-align: left;
-    padding-left: 12px;
-    padding: 3px 0px 3px 0px;
-}
-
-.field a {
-    color: #ba0000;
-}
 
 .tab {
     font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
@@ -67,28 +49,15 @@ body {
     color: #000000;
 }
 
-.topbg {
-    background: #52006A;
-}
-
-.menubg {
-    background: #F00;
-}
-
 .error, .errorlabel {
     color: #FF0000;
-    font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
-    font-size: 12px;
-    text-align: left;
 }
 
 .atkmessages {
     background-color: #EEEEEE;
     color: #000000;
-    font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
     font-size: 12px;
     font-weight: bold;
-    text-align: left;
 }
 
 .atkmessages_general,
@@ -128,131 +97,8 @@ body {
     padding-right: 6px;
 }
 
-#action-buttons {
-    text-align: right;
-}
 
-ul, ol, li {
-    margin: 0px;
-    padding: 0px;
-    list-style-position: inside;
-}
 
-/* BOX */
-/* ------------------------------------------------------------------ */
-
-/*
-
-.actionpageWrapper
-{
-    width: 93%;
-}
-
-.panel
-{
-    margin: 8px 18px 0px 18px;
-}
-
-.panelTitle
-{
-    height: 26px;
-}
-
-.panelTitleText
-{
-
-    margin: 0;
-    padding: 7px 4px 0px 12px;
-    height: 19px;
-    float: left;
-
-    background: #fff url(../images/tabLeft.gif) no-repeat left top;
-    font-size: 13px;
-    font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
-    text-transform: capitalize;
-    font-weight: bold;
-    color: #FFFFFF;
-}
-
-.panelTitleRight
-{
-    position: relative;
-    width: 12px;
-    float: left;
-}
-
-.panelHeader
-{
-    background: #fff url(../images/contentheaderleft.jpg) no-repeat left top;
-    height: 12px;
-    font-size: 1px;
-}
-
-.panelContent
-{
-    margin: 0;
-    background: #FFFFFF;
-    border-left: 1px solid #e0e0e0;
-    border-right: 1px solid #e0e0e0;
-}
-
-.panelContent2
-{
-    padding: 0 12px 12px 12px;
-}
-
-.panelContent2 form
-{
-    padding: 0;
-    margin: 0;
-}
-
-.panelFooter
-{
-    background: #F3F3F3 url(../images/contentfooterleft.jpg) no-repeat left top;
-    height: 33px;
-}
-
-*/
-
-/* EDIT FORM */
-/* ------------------------------------------------------------------ */
-
-/*
-button.atkdefaultbutton
-{
-    font-weight: bold;
-}
-
-#editform td.field
-{
-    padding-right: 12px;
-}
-
-#changeView
-{
-    position: absolute;
-    right: 12px;
-    top: -38px;
-    text-align: right;
-}
-
-#changeView a
-{
-    color: #9a1010;
-}
-
-.currentDate
-{
-    padding: 4px 0px;
-    color: #333;
-}
-
-.currentDate a
-{
-    text-decoration: none;
-}
-*/
 
 /* LOGIN FORM */
 /* ------------------------------------------------------------------ */
@@ -344,41 +190,6 @@ button.atkdefaultbutton
     margin-top: 6px;
 }
 
-*/
-
-/* BUTTONS */
-/* ------------------------------------------------------------------ */
-
-/*
-
-#action-buttons
-{
-    text-align: center;
-}
-
-#editform td.field
-{
-    padding-top: 5px;
-    padding-bottom: 2px;
-    vertical-align: top;
-}
-
-hr
-{
-    border: none;
-    border-top: 1px dashed #666;
-    height: 1px;
-    margin-top: 4px;
-    margin-bottom: 4px;
-}
-
-.atkboolattribute
-{
-    border: 0px ! important;
-    width: auto ! important;
-}
-
-*/
 
 /* COMMON STYLES */
 /* ------------------------------------------------------------------ */
@@ -620,18 +431,6 @@ hr
     background-color: #ffffcc;
 }
 
-/*
-.panel, #mainMenu
-{
-    float: left;
-}
-
-.panelTitleRight
-{
-    Height: 26px;
-}
-
-*/
 
 .clearfloat {
     clear: both;
@@ -641,15 +440,3 @@ div.stacktrace {
     margin-left: 18px;
     margin-bottom: 8px;
 }
-
-/*
-.actionpageWrapper
-{
-    width:100%;
-}
-
-#topSpacer
-{
-    height: 40px;
-}
-*/

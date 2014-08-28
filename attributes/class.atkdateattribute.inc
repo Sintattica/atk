@@ -372,11 +372,10 @@ class atkDateAttribute extends atkAttribute
     protected function renderYear($fieldname, $str_script, $current, $format, $obligatory)
     {
         $result = "";
-
         /* date must be within specified (default: 25) years */
         if (!empty($current["y_max"]) && !empty($current["y_min"]) && $current["y_max"] - $current["y_min"] <= $this->m_maxyears) {
             $this->registerKeyListener($fieldname . '[year]', KB_CTRLCURSOR | KB_LEFTRIGHT);
-            $result .= '<select id="' . $fieldname . '[year]" name="' . $fieldname . '[year]" class="atkdateattribute" onChange="' . $str_script . '">';
+            $result .= '<select id="' . $fieldname . '[year]" name="' . $fieldname . '[year]" class="atkdateattribute form-control" onChange="' . $str_script . '">';
             if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
                 $result .= '<option value="0"' . ($current === NULL ? ' selected'
                             : '') . '></option>';
@@ -409,7 +408,7 @@ class atkDateAttribute extends atkAttribute
 
         /* normal input box */ else {
             $this->registerKeyListener($fieldname . '[year]', KB_CTRLCURSOR | KB_UPDOWN);
-            $result .= '<input type="text" id="' . $fieldname . '[year]" name="' . $fieldname . '[year]" class="atkdateattribute" size="4" maxlength="4" onChange="' . $str_script . '" value="' . (isset($current["year"])
+            $result .= '<input type="text" id="' . $fieldname . '[year]" name="' . $fieldname . '[year]" class="atkdateattribute form-control" size="4" maxlength="4" onChange="' . $str_script . '" value="' . (isset($current["year"])
                         ? $current["year"] : "") . '">';
         }
 
@@ -429,7 +428,7 @@ class atkDateAttribute extends atkAttribute
     protected function renderMonth($fieldname, $str_script, $current, $format, $obligatory)
     {
         $this->registerKeyListener($fieldname . '[month]', KB_CTRLCURSOR | KB_LEFTRIGHT);
-        $result = '<select id="' . $fieldname . '[month]" name="' . $fieldname . '[month]" class="atkdateattribute" onChange="' . $str_script . '">';
+        $result = '<select id="' . $fieldname . '[month]" name="' . $fieldname . '[month]" class="atkdateattribute form-control" onChange="' . $str_script . '">';
         if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
             $result .= '<option value=""' . ($current === NULL ? ' selected' : '') . '></option>';
         if (!$this->m_simplemode) {
@@ -463,7 +462,7 @@ class atkDateAttribute extends atkAttribute
     protected function renderDay($fieldname, $str_script, $current, $format, $obligatory, $weekdayFormat)
     {
         $this->registerKeyListener($fieldname . '[day]', KB_CTRLCURSOR | KB_LEFTRIGHT);
-        $result = '<select id="' . $fieldname . '[day]" name="' . $fieldname . '[day]" class="atkdateattribute" onChange="' . $str_script . '">';
+        $result = '<select id="' . $fieldname . '[day]" name="' . $fieldname . '[day]" class="atkdateattribute form-control" onChange="' . $str_script . '">';
         if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
             $result .= '<option value=""' . ($current === NULL ? ' selected' : '') . '></option>';
         if (!$this->m_simplemode) {
@@ -531,7 +530,7 @@ class atkDateAttribute extends atkAttribute
 
             $fieldname = $fieldname . '[date]';
             $this->registerKeyListener($fieldname, KB_CTRLCURSOR | KB_UPDOWN);
-            $result = '<input type="text" id="' . $fieldname . '" class="atkdateattribute" name="' . $fieldname . '" value="' . $value . '" size="10">';
+            $result = '<input type="text" id="' . $fieldname . '" class="atkdateattribute form-control" name="' . $fieldname . '" value="' . $value . '" size="10">';
 
             if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && $mode != 'list') {
                 $format = str_replace(array("y", "Y", "m", "n", "j", "d"), array("yy", "y", "mm", "m", "d", "dd"), $this->m_date_format_edit);
@@ -631,9 +630,9 @@ class atkDateAttribute extends atkAttribute
         );
 
         atkimport('atk.utils.atkjson');
-        if (!$this->m_simplemode)
-            $result .= '<script language="javascript">var atkdateattribute_' . $fieldname . ' = ' . atkJSON::encode($info) . ';</script>';
-
+        if (!$this->m_simplemode) {
+            $result .= '<div class="form-inline"><script language="javascript">var atkdateattribute_' . $fieldname . ' = ' . atkJSON::encode($info) . ';</script>';
+        }
 
         /* other date selections */
         $weekdayFormat = NULL;
@@ -671,7 +670,11 @@ class atkDateAttribute extends atkAttribute
 
         if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && !$this->m_yeardropdown && !$this->m_simplemode && $mode != 'list') {
             $result.=' <input ' . $this->getCSSClassAttribute(array("button",
-                    "atkbutton")) . ' type="reset" value="..." onclick="return showCalendar(\'' . $fieldname . '\', \'' . $fieldname . '[year]\', \'y-mm-dd\', true);">';
+                    "atkbutton", 'btn', 'btn-default')) . ' type="reset" value="..." onclick="return showCalendar(\'' . $fieldname . '\', \'' . $fieldname . '[year]\', \'y-mm-dd\', true);">';
+        }
+
+        if (!$this->m_simplemode) {
+            $result.= '</div>'; // form-inline
         }
 
         /* return result */

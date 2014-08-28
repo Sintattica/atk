@@ -11,7 +11,7 @@
         {/foreach}
     </div>
 {/if}
-{$header}
+<div style="border:0px solid red;">{$header}</div>
 {$formstart}
 <div id="action-content" style="border: 0px solid green;">
     {$content}

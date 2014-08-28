@@ -594,8 +594,13 @@ class atkController
             $value = $label;
         $value = atk_htmlentities($value);
 
-        if ($default)
-            $class .= (!empty($class) ? ' ' : '') . 'atkdefaultbutton';
+        $class = trim('btn '.$class);
+
+        if ($default) {
+            $class .= (!empty($class) ? ' ' : '') . 'atkdefaultbutton btn-primary';
+        } else {
+            $class .= (!empty($class) ? ' ' : '') . 'btn-default';
+        }
 
         if ($class != "")
             $class = "class=\"$class\" ";

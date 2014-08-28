@@ -1,12 +1,14 @@
-<tr{if $field.rowid != ""} id="{$field.rowid}"{/if}{if $field.initial_on_tab!='yes'} style="display: none"{/if}
-        class="{$field.tab}">
+<div{if $field.rowid != ""} id="{$field.rowid}"{/if}{if $field.initial_on_tab!='yes'} style="display: none"{/if} class="form-group {$field.tab}">
     {if isset($field.line) && $field.line!=""}
-        <td colspan="2" valign="top" nowrap="nowrap" class="field">{$field.line}</td>
+        {$field.line}
     {else}
         {if $field.label!=="AF_NO_LABEL"}
-            <td valign="top" class="{if isset($field.error)}errorlabel{else}fieldlabel{/if}">{if $field.label!=""}
-            <b>{$field.label}</b>:  {if isset($field.obligatory)}{$field.obligatory}{/if}{/if}</td>{/if}
-        <td valign="top" id="{$field.id}" {if $field.label==="AF_NO_LABEL"}colspan="2"{/if}
-            class="field">{$field.full}</td>
+        <label for="{$field.attribute}" class="{if isset($field.error)}errorlabel{else}fieldlabel{/if}">
+            {if $field.label!=""}{$field.label}{/if}
+            {if isset($field.obligatory)}{$field.obligatory}{/if}
+        </label>
+        {/if}
+
+        {$field.full}
     {/if}
-</tr>
+</div>

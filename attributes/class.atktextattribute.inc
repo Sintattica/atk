@@ -163,7 +163,7 @@ class atkTextAttribute extends atkAttribute
             $result.= "rows='$rows' ";
         if ($cols)
             $result.= "cols='$cols' ";
-        $result.=$this->getCSSClassAttribute();
+        $result.=$this->getCSSClassAttribute(array('form-control'));
         $result.=">\n" . htmlspecialchars($text) . "</textarea>";
         return $result;
     }

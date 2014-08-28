@@ -87,13 +87,13 @@ class atkBootstrapMenu extends atkPlainMenu
         return $ret;
     }
 
-    function processMenu($menu)
+    private function processMenu($menu)
     {
         $ret = '';
         foreach ($menu as $item) {
             if (isset($item['submenu']) && count($item['submenu'])) {
                 $ret .= '<li class="dropdown">';
-                $ret .= '<a href="#" class="dropdown-toggle" data-toggle="dropdown">'.$item['name'].'<span class="caret"></span></a>';
+                $ret .= '<a href="#" class="dropdown-toggle" data-toggle="dropdown">' . $item['name'] . '<span class="caret"></span></a>';
                 $ret .= '<ul class="dropdown-menu" role="menu">' . $this->processMenu($item['submenu']) . '</ul>';
                 $ret .= '</li>';
             } else {
@@ -104,7 +104,7 @@ class atkBootstrapMenu extends atkPlainMenu
     }
 
 
-    function parseItems(&$items)
+    private function parseItems(&$items)
     {
         foreach ($items as &$item) {
             $this->parseItem($item);
@@ -112,7 +112,7 @@ class atkBootstrapMenu extends atkPlainMenu
         return $items;
     }
 
-    function parseItem(&$item)
+    private function parseItem(&$item)
     {
         global $g_menu;
         if ($item['enable'] && array_key_exists($item['name'], $g_menu)) {

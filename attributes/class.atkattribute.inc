@@ -645,6 +645,7 @@ class atkAttribute
 
         // default class
         $this->addCSSClass(get_class($this));
+
         atkimport("atk.keyboard.atkkeyboard");
     }
 
@@ -986,7 +987,7 @@ class atkAttribute
         $value = (isset($record[$this->fieldName()]) && !is_array($record[$this->fieldName()])
                     ? htmlspecialchars($record[$this->fieldName()]) : "");
 
-        $result = '<input type="text" id="' . $id . '" name="' . $id . '" ' . $this->getCSSClassAttribute() .
+        $result = '<input type="text" id="' . $id . '" name="' . $id . '" ' . $this->getCSSClassAttribute(array('form-control')) .
             ' value="' . $value . '"' .
             ($size > 0 ? ' size="' . $size . '"' : '') .
             ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . ' ' . $onchange . ' />';
