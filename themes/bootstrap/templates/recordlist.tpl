@@ -1,8 +1,8 @@
 {if isset($formstart)}{$formstart}{/if}
-<table cellspacing="0" cellpadding="0" class="recordListContainer">
-    <tr>
-        <td>
-            <table id="{$listid}" class="recordList" cellpadding="0" cellspacing="0">
+<div class="recordListContainer">
+    <div class="row">
+        <div class="col-md-12">
+            <table id="{$listid}" class="table recordList">
                 <!-- header -->
                 <tr>
                     {section name=headerloop loop=$header}
@@ -53,7 +53,7 @@
                                     class="{if $smarty.section.colloop.index===0}recordListTdFirst{else}recordListTd{/if}{if $row.cols[colloop].type == "data"} clickable{/if}"
                                     valign="{$vorientation}"  {if isset($row.cols[colloop].htmlattributes)}{$row.cols[colloop].htmlattributes}{/if}
                                     {if $row.cols[colloop].type == "data"} onclick="rl_try('{$listid}', event, {$row.rownum}, ['select', 'edit', 'view'
-                            ], false);"{/if}>
+                    ], false);"{/if}>
                                 {if $row.cols[colloop].content != ""}{$row.cols[colloop].content}{else}&nbsp;{/if}
                             </{if $row.type == "subtotal"}th{else}td{/if}>
                         {/section}
@@ -72,12 +72,12 @@
                     </tr>
                 {/if}
             </table>
-        </td>
-    </tr>
+        </div>
+    </div>
     {if $mra!=""}
         <!-- multirecord actions -->
-        <tr>
-            <td valign="top" style="padding-top: 0px">
+        <div class="row">
+            <div class="col-md-12">
                 {if $editing}
                     {$mra}
                 {else}
@@ -91,8 +91,8 @@
                         </tr>
                     </table>
                 {/if}
-            </td>
-        </tr>
+            </div>
+        </div>
     {/if}
-</table>
+</div>
 {if isset($formend)}{$formend}{/if}

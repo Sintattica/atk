@@ -1,45 +1,44 @@
 {if isset($formstart)}{$formstart}{/if}
-<table border="0" cellspacing="0" cellpadding="2" width="100%">
+<div>
     {atkmessages}
     {if count($atkmessages)}
-        <tr>
-            <td align="center" valign="top">
+        <div class="row">
+            <div class="col-md-12">
                 <div class="atkmessages">
                     {foreach from=$atkmessages item=message}
                         <div class="atkmessages_{$message.type}">{$message.message}</div>
                     {/foreach}
                 </div>
-                </div>
-            </td>
-        </tr>
+            </div>
+        </div>
     {/if}
     {if (isset($header) && !empty($header))}
-        <tr>
-            <td valign="top" align="left">{$header}<br/></td>
-        </tr>
+        <div class="row">
+            <div class="col-md-12">{$header}</div>
+        </div>
     {/if}
     {if (isset($index) && !empty($index))}
-        <tr>
-            <td valign="top" align="left">{$index}<br/></td>
-        </tr>
+        <div class="row">
+            <div class="col-md-12">{$index}</div>
+        </div>
     {/if}
     {if (isset($navbar) && !empty($navbar))}
-        <tr>
-            <td valign="top" align="left">{$navbar}<br/></td>
-        </tr>
+        <div class="row">
+            <div class="col-md-12">{$navbar}</div>
+        </div>
     {/if}
-    <tr>
-        <td valign="top" align="left">{$list}<br/></td>
-    </tr>
+    <div class="row">
+        <div class="col-md-12">{$list}</div>
+    </div>
     {if (isset($navbar) && !empty($navbar))}
-        <tr>
-            <td valign="top" align="left">{$navbar}<br/></td>
-        </tr>
+        <div class="row">
+            <div class="col-md-12">{$navbar}</div>
+        </div>
     {/if}
     {if (isset($footer) && !empty($footer))}
-        <tr>
-            <td valign="top" align="left">{$footer}<br/></td>
-        </tr>
+        <div class="row">
+            <div class="col-md-12">{$footer}</div>
+        </div>
     {/if}
-</table>
+</div>
 {if isset($formstart)}{$formend}{/if}
