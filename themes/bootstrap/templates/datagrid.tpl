@@ -13,10 +13,10 @@
     </div>
 {elseif !empty($paginator) || !empty($limit)}
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-8">
             {if !empty($editcontrol)}{$editcontrol}{/if} {if !empty($paginator)}{$paginator}{/if}
         </div>
-        <div class="col-md-3 text-right">
+        <div class="col-md-4 text-right">
             {if !empty($limit)}{$limit}{/if}
         </div>
     </div>
@@ -37,10 +37,10 @@
 {/if}
 {if !empty($paginator) || !empty($summary)}
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-8">
             {if !empty($paginator)}{$paginator}{/if}
         </div>
-        <div class="col-md-6 text-right">
+        <div class="col-md-4 text-right">
             {if !empty($summary)}{$summary}{/if}
         </div>
     </div>
