@@ -156,7 +156,7 @@ class atkBoolAttribute extends atkAttribute
      */
     function search($record = "", $extended = false, $fieldprefix = "")
     {
-        $result = '<select name="' . $this->getSearchFieldName($fieldprefix) . '">';
+        $result = '<select name="' . $this->getSearchFieldName($fieldprefix) . '" class="form-control">';
         $result.= '<option value="">' . atktext("search_all", "atk") . '</option>';
         $result.= '<option value="0" ';
         if ($record[$this->fieldName()] === '0' && !empty($record))
@@ -280,11 +280,13 @@ class atkBoolAttribute extends atkAttribute
      * @param array $record The record that holds the value of this attribute
      * @return The label for this attribute
      */
+    /*
     function label($record = array())
     {
         $label_txt = parent::label($record);
         return '<label for="' . $this->m_name . '">' . $label_txt . '</label>';
     }
+    */
 
     /**
      * Convert a String representation into an internal value.
