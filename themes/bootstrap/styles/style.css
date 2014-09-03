@@ -1,6 +1,5 @@
 @import '../../../javascript/bootstrap/css/bootstrap.css';
 
-
 body {
     padding-top: 70px;
 }
@@ -11,6 +10,10 @@ body {
 
 .pagination {
     margin: 0;
+}
+
+.fieldlabel {
+    font-weight: bold;
 }
 
 /********  LEGACY CSS ********/
@@ -80,9 +83,6 @@ body {
     padding-left: 6px;
     padding-right: 6px;
 }
-
-
-
 
 /* LOGIN FORM */
 /* ------------------------------------------------------------------ */
@@ -410,7 +410,6 @@ body {
 .overlib_fg {
     background-color: #ffffcc;
 }
-
 
 .clearfloat {
     clear: both;
