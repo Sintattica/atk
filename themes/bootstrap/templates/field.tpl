@@ -1,4 +1,4 @@
-<div{if $field.rowid != ""} id="{$field.rowid}"{/if}{if $field.initial_on_tab!='yes'} style="display: none"{/if} class="form-group {$field.tab}">
+<div{if $field.rowid != ""} id="{$field.rowid}"{/if}{if $field.initial_on_tab!='yes'} style="display: none"{/if} class="section-item form-group {$field.tab}">
     {if isset($field.line) && $field.line!=""}
         {$field.line}
     {else}

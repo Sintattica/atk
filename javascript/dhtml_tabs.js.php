@@ -40,7 +40,7 @@ function handleSectionToggle(element, expand, url)
         expand = closedSections.indexOf(element.id) >= 0;
     }
 
-    $$('tr', 'div.atkSection').select(function(tr) {
+    $$('tr', 'div.atkSection', 'div.section-item').select(function(tr) {
         return $(tr).hasClassName(element.id);
     }).each(function(tr) {
         if (expand) {
@@ -96,7 +96,7 @@ function showTab(tab)
 
     var tabSectionName = 'section_' + tab;
 
-    $$('tr', 'div.atkSection').select(isAttributeTr).each(function(tr) {
+    $$('tr', 'div.atkSection', 'div.section-item').select(isAttributeTr).each(function(tr) {
         var visible =
             $(tr).classNames().find(function(sectionName) {
             return sectionName.substring(0, tabSectionName.length) == tabSectionName &&
