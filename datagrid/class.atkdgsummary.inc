@@ -65,7 +65,7 @@ class atkDGSummary extends atkDGComponent
         $parser = new atkStringParser($string);
         $result = $parser->parse($params);
 
-        return $result;
+        return '<span class="dgridsummary">'.$result.'</span>';
     }
 
 }

@@ -366,7 +366,7 @@ class atkDGList extends atkDGComponent
 
                 if (is_array($recordlist_css_icons) && count($recordlist_css_icons)) {
                     if ($class = $recordlist_css_icons[strtolower($name)]) {
-                       $link = '<span class="'.$class.'"></span> '.$link;
+                       $link = '<span class="'.$class.'" title="'.$link.'"></span>';
                     } else if ($icons == true) {
                         $icon = $theme->iconPath($module . '_' . $nodetype . '_' . strtolower($name), "recordlist", $module, '', false);
                         if (!$icon) {

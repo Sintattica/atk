@@ -1,4 +1,4 @@
-<div class="controls form-inline">
+<div class="controls form-inline dglimit">
     <label>{atktext 'show'}:</label>
     <select onchange="{$call|escape}" class="form-control">
     {foreach from=$options item='option}

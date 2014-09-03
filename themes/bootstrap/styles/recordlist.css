@@ -1,17 +1,5 @@
 
-table.recordlist {
-    border-collapse: collapse;
-    display: table;
-}
 
-table.recordlist th,
-table.recordlist td,
-table.recordlist a,
-table.recordlist a:hover {
-    font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
-    font-size: 12px;
-    border-width: 1px;
-}
 
 table.recordlist th,
 table.recordlist th a,
@@ -43,10 +31,6 @@ table.recordList .row2 {
 
 .recordListSearch {
     background: #666 ! important;
-}
-
-.recordListContainer td {
-    padding: 8px 0px;
 }
 
 .recordList {
@@ -141,4 +125,9 @@ img.recordlist {
 
 .row-type-actions {
     width: 1%;
+}
+
+.recordListContainer {
+    width: 100%;
+    overflow: scroll;
 }
