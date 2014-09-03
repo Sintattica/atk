@@ -1,4 +1,5 @@
 {if isset($formstart)}{$formstart}{/if}
+
 <div class="recordListContainer">
     <table id="{$listid}" class="table table-hover table-condensed recordList">
         <!-- header -->
@@ -74,7 +75,6 @@
 
     {if $mra!=""}
         <!-- multirecord actions -->
-
         {if $editing}
             {$mra}
         {else}
@@ -88,7 +88,7 @@
                 </tr>
             </table>
         {/if}
-
     {/if}
 </div>
+
 {if isset($formend)}{$formend}{/if}

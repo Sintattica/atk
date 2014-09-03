@@ -129,5 +129,9 @@ img.recordlist {
 
 .recordListContainer {
     width: 100%;
-    overflow: scroll;
+    overflow: auto;
+}
+
+.recordList {
+
 }

@@ -1,10 +1,10 @@
+.tabContainer {
+    width: 100%;
+    overflow: auto;
+}
 
 .tabsTabs {
     background: url(../images/tabbottom.gif) repeat-x left bottom;
-}
-
-#tabContainer {
-    padding: 0px;
 }
 
 .mainTabs {
