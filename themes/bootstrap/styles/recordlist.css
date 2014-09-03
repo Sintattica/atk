@@ -33,20 +33,12 @@ table.recordlist th {
     padding: 3px 5px 3px 5px !important;
 }
 
-table.recordlist .row1 {
-    background-color: #ffffff;
-}
-
-table.recordlist .row2 {
-    background-color: #E0E8EF;
-}
-
 table.recordList .row1 {
     background-color: #ffffff;
 }
 
 table.recordList .row2 {
-    background-color: #E0E8EF;
+    background-color: #F9F9F9;
 }
 
 .recordListSearch {
@@ -62,12 +54,7 @@ table.recordList .row2 {
     border-left: 1px solid #eee;
 }
 
-.recordListSearch {
-    border-bottom: 3px solid #fff;
-    background-color: #ddd !important;
-    padding-top: 12px !important;
-    padding-bottom: 12px !important;
-}
+
 
 .recordList td, .recordList th {
     padding: 8px 4px 4px 4px !important;
@@ -75,7 +62,6 @@ table.recordList .row2 {
 }
 
 .recordList td {
-    vertical-align: center;
     border-right: 1px solid #eee;
 }
 
@@ -87,8 +73,8 @@ table.recordList .row2 {
 }
 
 .recordList th a {
-    color: #FFFFFF !important;
-    text-decoration: underline !important;
+    color: #FFFFFF;
+    text-decoration: underline;
 }
 
 .recordListTd, .recordListTdFirst {
@@ -110,6 +96,17 @@ table.recordList .row2 {
 
 .recordListThFirst a {
     font-weight: bold;
+}
+
+.recordListSearch {
+    border-bottom: 3px solid #fff;
+    background-color: #ddd !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+}
+
+th.recordListSearch a {
+    color: #428BCA;
 }
 
 .actions {
