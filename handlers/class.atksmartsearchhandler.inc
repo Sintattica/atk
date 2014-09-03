@@ -613,14 +613,14 @@ class atkSmartSearchHandler extends atkAbstractSearchHandler
 
         $params = array();
 
-        $params["formstart"] = '<form name="entryform" action="' . atkSelf() . '?' . SID . '" method="post">'
+        $params["formstart"] = '<form name="entryform" action="' . atkSelf() . '?' . SID . '" method="post" class="form">'
             . session_form(SESSION_REPLACE)
             . '<input type="hidden" name="atkaction" value="smartsearch">'
             . '<input type="hidden" name="atknodetype" value="' . $node->atkNodeType() . '">';
 
         $params["content"] = $this->invoke("smartSearchForm", $name, $criteria);
 
-        $params["buttons"][] = '<input type="submit" class="btn_search" name="atkdosearch" value="' . atktext("search", "atk") . '">';
+        $params["buttons"][] = '<input type="submit" class="btn btn-default btn_search" name="atkdosearch" value="' . atktext("search", "atk") . '">';
 
         $params["formend"] = '</form>';
 

@@ -50,7 +50,8 @@
                         onclick="selectrow(this, '{$listid}', {$row.rownum})">
                         {section name=colloop loop=$row.cols}
                             <{if $row.type == "subtotal"}th{else}td{/if}
-                                    class="{if $smarty.section.colloop.index===0}recordListTdFirst{else}recordListTd{/if}{if $row.cols[colloop].type == "data"} clickable{/if}"
+                                    class="{if $smarty.section.colloop.index===0}recordListTdFirst{else}recordListTd{/if}{if $row.cols[colloop].type == "data"} clickable{/if}
+                                    row-type-{$row.cols[colloop].type}"
                                     valign="{$vorientation}"  {if isset($row.cols[colloop].htmlattributes)}{$row.cols[colloop].htmlattributes}{/if}
                                     {if $row.cols[colloop].type == "data"} onclick="rl_try('{$listid}', event, {$row.rownum}, ['select', 'edit', 'view'
                     ], false);"{/if}>

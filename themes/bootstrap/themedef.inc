@@ -35,4 +35,12 @@ $theme['menufile'] = 'index.php';
 $theme['menu_params'] = "class='menulink'";
 $theme["tabtype"] = "dhtml";
 
+
+$theme['recordlist_css_icons'] = array();
+$theme['recordlist_css_icons']['view'] = 'glyphicon glyphicon-zoom-in';
+$theme['recordlist_css_icons']['edit'] = 'glyphicon glyphicon-pencil';
+$theme['recordlist_css_icons']['delete'] = 'glyphicon glyphicon-trash';
+
+//$theme['recordlist_icons'] = false;
+
 $atkPage = atkPage::getInstance();

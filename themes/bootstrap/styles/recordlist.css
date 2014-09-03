@@ -116,6 +116,7 @@ table.recordList .row2 {
     display: block;
     margin-top: -2px;
     white-space: nowrap;
+    float: right;
 }
 
 table.recordlist tbody.groupheader th.firstcol {
@@ -139,4 +140,8 @@ table.recordlist tbody.groupheader_expanded th {
 img.recordlist {
     width: 16px;
     height: 16px;
+}
+
+.row-type-actions {
+    width: 1%;
 }
