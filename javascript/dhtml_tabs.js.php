@@ -138,7 +138,7 @@ function showTab(tab)
 
 function getCurrentTab()
 {
-    return < ?php echo $_REQUEST['stateful'] ? 'getTab(getCurrentNodetype(), getCurrentSelector())' : ''; ? > ;
+    return <?php echo $_REQUEST['stateful'] ? 'getTab(getCurrentNodetype(), getCurrentSelector())' : ''; ?> ;
 }
 
 function getTab(nodetype, selector)
