@@ -520,7 +520,7 @@ class atkNumberAttribute extends atkAttribute
 
         $id = $fieldprefix . $this->fieldName();
         $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
-        $result = '<input type="text" id="' . $id . '" class="' . get_class($this) . '" name="' . $id .
+        $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id .
             '" value="' . $value . '"' .
             ($size > 0 ? ' size="' . $size . '"' : '') .
             ($maxsize > 0 ? ' maxlength="' . $maxsize . '"' : '') . ' ' . $onchange . ' />';

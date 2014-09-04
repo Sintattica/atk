@@ -230,7 +230,7 @@ class atkAttributeEditHandler extends atkActionHandler
         $params = array();
         $params["content"] = "<b>" . $errortext . "</b><br />";
         $params["content"].= $errormsg;
-        $params["buttons"][] = '<input type="button" class="btn_cancel" value="' . $this->m_node->text('close') . '" onClick="' . atkDialog::getCloseCall() . '" />';
+        $params["buttons"][] = '<input type="button" class="btn btn-default btn_cancel" value="' . $this->m_node->text('close') . '" onClick="' . atkDialog::getCloseCall() . '" />';
         $content = $ui->renderAction("attributeedit", $params);
 
         $params = array();

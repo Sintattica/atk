@@ -1138,7 +1138,7 @@ class atkManyToOneRelation extends atkRelation
                 $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
 
             $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
-            $result = '<input type="text" id="' . $id . '" class="' . get_class($this) . '" name="' . $id . '" value="' . $record[$this->fieldName()] . '"' .
+            $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . $record[$this->fieldName()] . '"' .
                 ($useautocompletion ? ' onchange=""' : '') .
                 ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"'
                         : '') .
@@ -2074,7 +2074,7 @@ class atkManyToOneRelation extends atkRelation
         $links = $this->createSelectAndAutoLinks($id, $record);
 
         $result = '<input type="hidden" id="' . $id . '" name="' . $id . '" value="' . $value . '" />
-         <input type="text" id="' . $id . '_search" value="' . atk_htmlentities($label) . '" class="atkmanytoonerelation_search" size="' . $this->m_autocomplete_size . '" onfocus="this.select()" />
+         <input type="text" id="' . $id . '_search" value="' . atk_htmlentities($label) . '" class="form-control atkmanytoonerelation_search" size="' . $this->m_autocomplete_size . '" onfocus="this.select()" />
          <img id="' . $id . '_spinner" src="atk/images/spinner.gif" style="vertical-align: middle; display: none"> ' . $links . '
          <div id="' . $id . '_result" style="display: none" class="atkmanytoonerelation_result"></div>';
 

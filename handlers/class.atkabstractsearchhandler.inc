@@ -275,7 +275,7 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
      */
     function getSaveCriteria($current)
     {
-        return '<input id="save_criteria" type="text" size="30" name="save_criteria" value="' . atk_htmlentities($current) . '" disabled="disabled">';
+        return '<input id="save_criteria" class="form-control" type="text" size="30" name="save_criteria" value="' . atk_htmlentities($current) . '" disabled="disabled">';
     }
 
 }

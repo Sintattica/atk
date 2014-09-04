@@ -499,10 +499,10 @@ class atkOneToManyRelation extends atkRelation
     function _getEmbeddedButtons()
     {
         $fname = $this->fieldName();
-        $output.='<input type="submit" class="otm_add" name="' . $fname . '_save" value="' . atktext("add") . '">';
+        $output.='<input type="submit" class="btn btn-default otm_add" name="' . $fname . '_save" value="' . atktext("add") . '">';
         return $output . '<input type="button" onClick="toggleAddForm(\'' . $fname . "_integrated',
                                                                '" . $fname . "_integrated_link');\"
-                                       class=\"otm_add\" name=\"" . $fname . "_cancel\" value=\"" . atktext("cancel") . '">';
+                                       class=\"btn btn-default otm_add\" name=\"" . $fname . "_cancel\" value=\"" . atktext("cancel") . '">';
     }
 
     /**

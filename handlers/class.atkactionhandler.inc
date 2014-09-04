@@ -445,7 +445,7 @@ class atkActionHandler
 
         $params = array();
         $params["content"] = "<br />" . $message . "<br />";
-        $params["buttons"][] = '<input type="button" class="btn_cancel" value="' . $this->m_node->text('close') . '" onClick="' . atkDialog::getCloseCall() . '" />';
+        $params["buttons"][] = '<input type="button" class="btn btn-default btn_cancel" value="' . $this->m_node->text('close') . '" onClick="' . atkDialog::getCloseCall() . '" />';
         $content = $ui->renderAction($this->m_action, $params);
 
         $params = array();

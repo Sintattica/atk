@@ -142,7 +142,7 @@ class atkAddOrCopyHandler extends atkActionHandler
 
             $params = array();
             $params["content"] = "<br />" . $this->m_node->text('error_copy_record') . "<br />";
-            $params["buttons"][] = '<input type="button" class="btn_cancel" value="' . $this->m_node->text('close') . '" onClick="' . atkDialog::getCloseCall() . '" />';
+            $params["buttons"][] = '<input type="button" class="btn btn-default btn_cancel" value="' . $this->m_node->text('close') . '" onClick="' . atkDialog::getCloseCall() . '" />';
             $content = $ui->renderAction("addorcopy", $params);
 
             $params = array();
