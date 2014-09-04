@@ -271,7 +271,7 @@ class atkRecordList
             $searchstart = "";
             $searchend = "";
             if (!hasFlag($flags, RL_NO_SEARCH)) {
-                $button = '<input type="submit" class="btn_search" value="' . atktext("search") . '">';
+                $button = '<input type="submit" class="btn btn-default btn_search" value="' . atktext("search") . '">';
                 if (!hasFlag($flags, RL_NO_EXTENDED_SEARCH) && !$this->m_node->hasFlag(NF_NO_EXTENDED_SEARCH)) {
                     $button .= '<br>' . href(atkSelf() . "?atknodetype=" . $this->getMasterNodeType() . "&atkaction=" . $node->getExtendedSearchAction(), "(" . atktext("search_extended") . ")", SESSION_NESTED);
                 }
