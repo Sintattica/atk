@@ -139,10 +139,10 @@ class atkShuttleRelation extends atkManyToManyRelation
 
         $result.= '</td><td valign="center" align="center">';
 
-        $result.= '<input type="button" value="&gt;" onClick="shuttle_move(\'' . $leftname . '\', \'' . $rightname . '\', \'' . $fieldname . '\');"><br/>';
-        $result.= '<input type="button" value="&lt;" onClick="shuttle_move(\'' . $rightname . '\', \'' . $leftname . '\', \'' . $fieldname . '\');"><br/><br/>';
-        $result.= '<input type="button" value="&gt;&gt;" onClick="shuttle_moveall(\'' . $leftname . '\', \'' . $rightname . '\', \'' . $fieldname . '\');"><br/>';
-        $result.= '<input type="button" value="&lt;&lt;" onClick="shuttle_moveall(\'' . $rightname . '\', \'' . $leftname . '\', \'' . $fieldname . '\');">';
+        $result.= '<input class="btn btn-default" type="button" value="&gt;" onClick="shuttle_move(\'' . $leftname . '\', \'' . $rightname . '\', \'' . $fieldname . '\');"><br/>';
+        $result.= '<input class="btn btn-default" type="button" value="&lt;" onClick="shuttle_move(\'' . $rightname . '\', \'' . $leftname . '\', \'' . $fieldname . '\');"><br/><br/>';
+        $result.= '<input class="btn btn-default" type="button" value="&gt;&gt;" onClick="shuttle_moveall(\'' . $leftname . '\', \'' . $rightname . '\', \'' . $fieldname . '\');"><br/>';
+        $result.= '<input class="btn btn-default" type="button" value="&lt;&lt;" onClick="shuttle_moveall(\'' . $rightname . '\', \'' . $leftname . '\', \'' . $fieldname . '\');">';
 
         $result.= '</td><td>' . atktext('selected', 'atk') . ':<br/>';
 
