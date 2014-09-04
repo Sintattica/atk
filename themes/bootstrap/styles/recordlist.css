@@ -50,7 +50,7 @@ table.recordList .row2 {
 }
 
 .recordList th {
-    background-color: #749abe;
+    background-color: #428BCA;
     font-weight: normal;
     color: #FFFFFF !important;
     text-align: left;
@@ -111,7 +111,7 @@ table.recordlist tbody.groupheader_expanded th.firstcol {
 table.recordlist tbody.groupheader th,
 table.recordlist tbody.groupheader_expanded th {
     cursor: pointer;
-    background-color: #749ABE;
+    background-color: #428BCA;
     color: #ffffff;
     background-position: 5px 50%;
     background-repeat: no-repeat;
