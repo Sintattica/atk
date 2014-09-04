@@ -171,7 +171,7 @@ class atkShuttleRelation extends atkManyToManyRelation
      */
     function _renderSelect($name, $recordset, $width, $opposite, $fieldname)
     {
-        $result = '<select class="shuttle_select" id="' . $name . '" name="' . $name . '" multiple size="10" style="width: ' . $width . 'px;" onDblClick="shuttle_move(\'' . $name . '\', \'' . $opposite . '\', \'' . $fieldname . '\')">';
+        $result = '<select class="form-control shuttle_select" id="' . $name . '" name="' . $name . '" multiple size="10" style="width: ' . $width . 'px;" onDblClick="shuttle_move(\'' . $name . '\', \'' . $opposite . '\', \'' . $fieldname . '\')">';
         for ($i = 0, $_i = count($recordset); $i < $_i; $i ++) {
             $result.= '<option value="' . $recordset[$i][$this->m_destInstance->primaryKeyField()] . '">' . $this->m_destInstance->descriptor($recordset[$i]);
         }

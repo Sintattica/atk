@@ -250,7 +250,7 @@ class atkFileAttribute extends atkAttribute
                 natcasesort($file_arr);
 
                 $this->registerKeyListener($id . '_select', KB_CTRLCURSOR | KB_LEFTRIGHT);
-                $result .= '<select id="' . $id . '_select" name="' . $id . '[select]" ' . $onchange . '>';
+                $result .= '<select id="' . $id . '_select" name="' . $id . '[select]" ' . $onchange . ' class="form-control">';
                 // Add default option with value NULL
                 $result .= "<option value=\"\" selected>" . atktext('selection', 'atk');
                 while (list ($key, $val) = each($file_arr)) {

@@ -118,7 +118,7 @@ class atkDocumentAttribute extends atkDummyAttribute
         }
 
         // Add the select box to the html
-        $html = '<select name="atkdoctpl">';
+        $html = '<select class="form-control" name="atkdoctpl">';
         foreach ($contents as $entry) {
             if (is_file($path . "/" . $entry)) { // todo: && check of tie een open office extensie heeft
                 $html .= '<option value="' . urlencode($entry) . '">' . $entry;

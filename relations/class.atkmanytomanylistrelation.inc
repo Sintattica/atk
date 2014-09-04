@@ -120,7 +120,7 @@ class atkManyToManyListRelation extends atkManyToManyRelation
 
         $size = $this->autoCalculateRows() ? min(count($selectable), $this->getRows())
                 : $this->getRows();
-        $result = '<select id="' . $id . '" name="' . $name . '[][' . $this->getRemoteKey() . ']" multiple="multiple" size="' . $size . '" style="width: ' . $this->getWidth() . 'px">';
+        $result = '<select class="form-control" id="' . $id . '" name="' . $name . '[][' . $this->getRemoteKey() . ']" multiple="multiple" size="' . $size . '" style="width: ' . $this->getWidth() . 'px">';
 
         foreach ($selectable as $row) {
             $key = $this->m_destInstance->primaryKey($row);

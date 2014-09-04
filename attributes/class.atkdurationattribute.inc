@@ -100,7 +100,7 @@ class atkDurationAttribute extends atkAttribute
             if ($this->m_maxtime_min >= 60) {
                 $curhours = $this->_getHourPart($fieldvalue);
                 $curminutes = $this->_getMinutePart($fieldvalue);
-                $result .= '<select id="' . $id . '_hours" name="' . $fieldprefix . $this->formName() . '[hours]">';
+                $result .= '<select id="' . $id . '_hours" name="' . $fieldprefix . $this->formName() . '[hours]" class="form-control">';
                 $this->registerKeyListener($id . '_hours', KB_CTRLCURSOR | KB_LEFTRIGHT);
                 for ($h = 0; $h <= $this->m_maxtime_min / 60;) {
                     $result .= '<option value="' . $h . '" ';
@@ -118,7 +118,7 @@ class atkDurationAttribute extends atkAttribute
 
             if ($this->m_maxtime_min >= 1 && $this->m_resolution_min < 60) {
                 $this->registerKeyListener($id . '_minutes', KB_CTRLCURSOR | KB_LEFTRIGHT);
-                $result .= '&nbsp;<select id="' . $id . '_minutes" name="' . $fieldprefix . $this->formName() . '[minutes]">';
+                $result .= '&nbsp;<select id="' . $id . '_minutes" name="' . $fieldprefix . $this->formName() . '[minutes]" class="form-control">';
                 for ($m = 0; $m < 60 || ($this->m_maxtime_min < 60 && $m < $this->m_maxtime_min);) {
                     $result .= '<option value="' . $m . '" ';
                     if ($curminutes == $m)

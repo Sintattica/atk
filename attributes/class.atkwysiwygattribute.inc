@@ -116,7 +116,7 @@ class atkWysiwygAttribute extends atkTextAttribute
                 $wwview = atkconfig("ww_defaultview");
             }
 
-            $viewselectbox = '<select name="atkwwview[' . $fieldprefix . $this->fieldName() . ']">
+            $viewselectbox = '<select name="atkwwview[' . $fieldprefix . $this->fieldName() . ']" class="form-control">
                             <option value="visual">' . atktext("ww_visualmode") .
                 '<option value="plain" ' . ($wwview == "plain" ? "selected" : "") . '>' . atktext("ww_sourcemode") .
                 '</select>';

@@ -67,7 +67,7 @@ class atkManyToOneTreeRelation extends atkManyToOneRelation
         }
         $recordset = $this->m_destInstance->selectDb("", $this->m_destInstance->m_primaryKey[0], "", "", $tmp2);
         $this->m_current = $this->m_ownerInstance->primaryKey($record);
-        $result = '<select name="' . $fieldprefix . $this->formName() . '">';
+        $result = '<select class="form-control" name="' . $fieldprefix . $this->formName() . '">';
 
         if ($this->hasFlag(AF_OBLIGATORY) == false) {
             // Relation may be empty, so we must provide an empty selectable..
@@ -91,7 +91,7 @@ class atkManyToOneTreeRelation extends atkManyToOneRelation
         }
         $recordset = $this->m_destInstance->selectDb("", "", "", "", atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
 
-        $result = '<select name="atksearch[' . $this->fieldName() . ']">';
+        $result = '<select class="form-control" name="atksearch[' . $this->fieldName() . ']">';
 
         $pkfield = $this->m_destInstance->primaryKeyField();
 

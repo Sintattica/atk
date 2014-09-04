@@ -857,7 +857,7 @@ class atkManyToOneRelation extends atkRelation
                 $this->registerKeyListener($id, KB_CTRLCURSOR | KB_LEFTRIGHT);
                 $this->registerJavaScriptObservers($id);
 
-                $result = '<select id="' . $id . '" name="' . $id . '" class="atkmanytoonerelation" ' . $onchange . '>';
+                $result = '<select id="' . $id . '" name="' . $id . '" class="form-control atkmanytoonerelation" ' . $onchange . '>';
 
                 // relation may be empty, so we must provide an empty selectable..
                 if ($this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
@@ -1089,7 +1089,7 @@ class atkManyToOneRelation extends atkRelation
 
                 $recordset = $this->_getSelectableRecords($record, 'search');
 
-                $result = '<select class="' . get_class($this) . '" ';
+                $result = '<select class="form-control ' . get_class($this) . '" ';
                 if ($extended) {
                     $result.='multiple size="' . min(5, count($recordset) + 1) . '"';
 

@@ -53,7 +53,7 @@ class atkMlSelectorAttribute extends atkMlAttribute
 
         /* build selection list */
         $result .= '<select id="' . $prefix . '_lgswitch" name="' . $prefix . '_lgswitch" onchange="changeLanguage(this, \'' . $prefix . '\', ' . (atkconfig("multilanguage_linked")
-                    ? 'true' : 'false') . ')">';
+                    ? 'true' : 'false') . ')" class="form-control">';
 
         /* options */
         for ($i = 1; $i < sizeof($languages); $i++)

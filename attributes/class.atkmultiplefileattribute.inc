@@ -85,7 +85,7 @@ class atkMultipleFileAttribute extends atkFileAttribute
         }
 
         if (count($file_arr) > 0) {
-            $result .= "<select multiple size=\"3\" name=\"select_" . $this->fieldName() . "[]\">";
+            $result .= "<select multiple size=\"3\" name=\"select_" . $this->fieldName() . "[]\" class=\"form-control\">";
             for ($i = 0; $i < count($file_arr); $i++) {
                 $sel = "";
                 if (in_array($file_arr[$i], $this->getFiles($record[$this->fieldName()][orgfilename])))

@@ -275,7 +275,7 @@ class atkListAttribute extends atkAttribute
             $this->_renderChangeHandler($fieldprefix);
         }
 
-        $result = '<select id="' . $id . '" name="' . $id . '"  class="atklistattribute" ' . $onchange . ($this->m_width
+        $result = '<select id="' . $id . '" name="' . $id . '"  class="form-control atklistattribute" ' . $onchange . ($this->m_width
                     ? " style='width: {$this->m_width}px'" : "") . '>';
 
         $result.=$this->_addEmptyListOption();
@@ -350,7 +350,7 @@ class atkListAttribute extends atkAttribute
     function search($record = "", $extended = false, $fieldprefix = "", $grid = null)
     {
         $values = $this->getValues($record);
-        $result = '<select ';
+        $result = '<select class="form-control" ';
         if ($extended) {
             $result.='multiple size="' . min(5, count($values) + 1) . '"';
         }
