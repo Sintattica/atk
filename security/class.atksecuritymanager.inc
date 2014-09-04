@@ -614,7 +614,7 @@ class atkSecurityManager
                 $userlist = array_merge($userlist, $obj->getUserList());
             }
 
-            $userField = '<select name="auth_user">' . "\n";
+            $userField = '<select id="auth_user" name="auth_user" class="form-control">' . "\n";
 
             for ($i = 0, $_i = count($userlist); $i < $_i; $i++) {
                 $selected = "";
@@ -623,11 +623,11 @@ class atkSecurityManager
                 }
                 $userField .= "<option value='" . $userlist[$i]["userid"] . "'" . $selected . ">" . $userlist[$i]["username"] . "</option>\n";
             }
-            $userField .= "</SELECT>\n";
+            $userField .= "</select>\n";
 
             return $userField;
         } else {
-            return '<input class="loginform" type="text" size="15" name="auth_user" value="' . atk_htmlentities($defaultname) . '" />';
+            return '<input class="form-control loginform" type="text" size="15" id="auth_user" name="auth_user" value="' . atk_htmlentities($defaultname) . '" />';
         }
     }
 

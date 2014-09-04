@@ -1,6 +1,7 @@
 @import '../../../javascript/bootstrap/css/bootstrap.css';
 body {
   padding-top: 70px;
+  background-color: #ededed;
 }
 #action-buttons {
   text-align: center;

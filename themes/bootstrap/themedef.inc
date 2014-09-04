@@ -42,5 +42,3 @@ $theme['recordlist_css_icons']['edit'] = 'glyphicon glyphicon-pencil';
 $theme['recordlist_css_icons']['delete'] = 'glyphicon glyphicon-trash';
 
 //$theme['recordlist_icons'] = false;
-
-$atkPage = atkPage::getInstance();
