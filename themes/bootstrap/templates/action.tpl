@@ -16,8 +16,7 @@
 <div id="action-content" style="border: 0px solid green;">
     {$content}
 </div>
-<br>
-<div id="action-buttons">
+<div id="action-buttons" style="border: 0px solid blue;">
     {foreach from=$buttons item=button}
         {$button}
     {/foreach}

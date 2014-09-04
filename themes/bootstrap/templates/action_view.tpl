@@ -16,7 +16,6 @@
 <div id="action-content" style="border: 0px solid green;">
     {$content}
 </div>
-<br>
 {$formstart}
 <div id="action-buttons">
     {foreach from=$buttons item=button}
