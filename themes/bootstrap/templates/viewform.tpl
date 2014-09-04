@@ -1,7 +1,7 @@
 <div class="viewform">
     {foreach from=$fields item=field}
         <div{if $field.rowid != ""} id="{$field.rowid}"{/if}{if !$field.initial_on_tab} style="display: none"{/if}
-                class="row {$field.class}">
+                class="row section-item {$field.class}">
 
             {if isset($field.line)}
                 <div class="col-md-12 field">{$field.line}</div>
