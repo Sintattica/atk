@@ -79,6 +79,7 @@ class atkBootstrapIndexPage
         $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL
             : HTML_STRICT;
         $this->m_noNav = isset($ATK_VARS['atknonav']);
+        $this->m_extraheaders = $this->m_ui->render('index_meta.tpl');
     }
 
     /**
@@ -151,7 +152,7 @@ class atkBootstrapIndexPage
             $menu = $menuObj->getMenu();
         }
 
-        $top = $this->m_ui->renderBox(array("content" => $content,
+        $top = $this->m_ui->renderBox(array(
             "logintext" => atktext("logged_in_as"),
             "logouttext" => ucfirst(atkText("logout", "atk")),
             "logoutlink" => $logoutLink,
@@ -235,6 +236,10 @@ class atkBootstrapIndexPage
     {
         global $ATK_VARS;
         $session = & atkSessionManager::getSession();
+
+       // $this->m_page->register_metacode('<meta name="viewport" content="width=device-width, initial-scale=1">');
+       // $this->m_page->register_metacode('<meta http-equiv="X-UA-Compatible" content="IE=edge">');
+
 
         if ($session["login"] != 1) {
             // no nodetype passed, or session expired

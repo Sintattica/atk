@@ -1,1 +1,2 @@
+<!--body content -->
 {$content}
