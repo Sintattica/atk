@@ -4274,10 +4274,9 @@ class atkNode
     {
         if ($lockstatus) {
             atkimport('atk.ui.atktheme');
-            $icon = atkTheme::getInstance()->iconPath('lock_' . $this->getLockMode(), 'lock', $this->m_module);
-            return '<img src="' . $icon . '" border="0" name="_lock_">';
+            return atkTheme::getInstance()->icon('lock_' . $this->getLockMode(), 'lock', $this->m_module, '', null, array('name'=>'_lock_'));
         }
-        return "";
+        return '';
     }
 
     /**

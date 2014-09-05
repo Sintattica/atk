@@ -370,7 +370,7 @@ class atkDGList extends atkDGComponent
                         $icon = $theme->getIcon($module . '_' . strtolower($name), "recordlist", $module, '', false, $link);
                     }
                     if (!$icon) {
-                        $icon = $theme->getIcon(strtolower($name), "recordlist", $grid->getNode()->m_module, '', true, $link);
+                        $icon = $theme->getIcon(strtolower($name), "recordlist", $grid->getNode()->m_module, '', null, $link, array('test'=>'ciao'));
                     }
                     if ($icon) {
                         $link = $icon;

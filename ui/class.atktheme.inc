@@ -195,8 +195,12 @@ class atkTheme
      * @param boolean $useDefault use default icon fallback if not found?
      * @return string the full path of the icon file
      */
-    function iconPath($icon, $type, $module = "", $ext = '', $useDefault = true)
+    function iconPath($icon, $type, $module = "", $ext = '', $useDefault = null)
     {
+        if($useDefault === null) {
+            $useDefault = true;
+        }
+
         // Check module themes for icon
         $iconfile = $this->getIconFileFromModuleTheme($icon, $type, $ext);
         if ($module != "" && $iconfile) {
@@ -313,24 +317,37 @@ class atkTheme
         return false;
     }
 
-    function getIcon($icon, $type, $module = "", $ext = '', $useDefault = true, $title = '')
+    function getIcon($icon, $type, $module = '', $ext = '', $useDefault = null, $label = '', $attrs = array())
     {
+        if($useDefault === null) {
+            $useDefault = true;
+        }
+
+        //CSS Icons
         if ($this->getAttribute('usecssicons')) {
+            if ($label) {
+                if (!$attrs['title']) $attrs['title'] = $label;
+            }
             $icon = $this->cssIcon($icon, $type, $module, $useDefault);
             if (!$icon) return false;
             $ret = '<span class="' . $icon . '"';
-            if ($title) {
-                $ret .= ' title="' . $title . '"';
+            foreach($attrs as $k=>$v) {
+                $ret.= ' '.$k.'="'.$v.'"';
             }
             $ret .= ' ></span>';
             return $ret;
         }
 
+        //File Icons
+        if ($label) {
+            if (!$attrs['title']) $attrs['title'] = $label;
+            if (!$attrs['alt']) $attrs['alt'] = $label;
+        }
         $icon = $this->iconPath($icon, $type, $module, $ext, $useDefault);
         if (!$icon) return false;
         $ret = '<img src="' . $icon . '"';
-        if ($title) {
-            $ret .= ' title="' . $title . '" alt="' . $title . '"';
+        foreach($attrs as $k=>$v) {
+            $ret.= ' '.$k.'="'.$v.'"';
         }
         $ret .= ' />';
         return $ret;
