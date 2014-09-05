@@ -1850,7 +1850,7 @@ class atkNode
         $output = $this->statusbar();
         $output.= '<img src="' . atkconfig("atkroot") . 'atk/images/lock.gif"><br><br>' . atktext("lock_locked") . '<br>';
         $output.= '<br><form method="get">' . session_form(SESSION_BACK) .
-            '<input type="submit" class="btn_cancel" value="&lt;&lt; ' . atktext('back') . '"></form>';
+            '<input type="submit" class="btn btn-default btn_cancel" value="&lt;&lt; ' . atktext('back') . '"></form>';
 
         $ui = &$this->getUi();
         if (is_object($ui)) {
@@ -2645,8 +2645,8 @@ class atkNode
 
         $buttons = $this->getFormButtons($action, array());
         if (count($buttons) == 0) {
-            $buttons[] = '<input name="confirm" type="submit" class="btn_ok atkdefaultbutton" value="' . $this->text('yes') . '">';
-            $buttons[] = '<input name="cancel" type="submit" class="btn_cancel" value="' . $this->text('no') . '">';
+            $buttons[] = '<input name="confirm" type="submit" class="btn btn-default btn_ok atkdefaultbutton" value="' . $this->text('yes') . '">';
+            $buttons[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel" value="' . $this->text('no') . '">';
         }
 
         $content = "";

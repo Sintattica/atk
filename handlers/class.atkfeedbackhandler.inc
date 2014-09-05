@@ -60,7 +60,7 @@ class atkFeedbackHandler extends atkActionHandler
 
         if (atkLevel() > 0) {
             $params["formstart"] = '<form method="get">' . session_form(SESSION_BACK);
-            $params["buttons"][] = '<input type="submit" class="btn_cancel" value="&lt;&lt; ' . atktext('back') . '">';
+            $params["buttons"][] = '<input type="submit" class="btn btn-default btn_cancel" value="&lt;&lt; ' . atktext('back') . '">';
             $params["formend"] = '</form>';
         }
 
