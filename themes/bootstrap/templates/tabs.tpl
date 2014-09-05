@@ -7,17 +7,14 @@
 
 
 <div class="tabContainer">
-    <table class="tabsTabs mainTabs">
-        <tr>
-            {section name=i loop=$tabs}
-                <td id="tab_{$tabs[i].tab}" valign="middle" align="left" nowrap="nowrap"
-                    class="{if $tabs[i].selected}activetab{else}passivetab{/if}">
-                    <a href="javascript:void(0)" onclick="showTab('{$tabs[i].tab}')">{$tabs[i].title}</a>
-                </td>
-                <td>&nbsp;</td>
-            {/section}
-        </tr>
-    </table>
+    <ul class="nav nav-tabs">
+        {section name=i loop=$tabs}
+            <li id="tab_{$tabs[i].tab}"
+                class="{if $tabs[i].selected}active activetab{/if}">
+                <a href="javascript:void(0)" onclick="showTab('{$tabs[i].tab}')">{$tabs[i].title}</a>
+            </li>
+        {/section}
+    </ul>
 </div>
 
 <table border="0" cellspacing="0" cellpadding="5" width="100%" class="tabsContent">

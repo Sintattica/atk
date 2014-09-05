@@ -27,10 +27,12 @@ ATK.TabbedPane = {
         tabs.each(function(tab) {
             if (tab.hasClassName(tabName)) {
                 tab.addClassName('activetab');
+                tab.addClassName('active');
                 tab.removeClassName('passivetab');
             } else {
                 tab.addClassName('passivetab');
                 tab.removeClassName('activetab');
+                tab.removeClassName('active');
             }
         });
     }

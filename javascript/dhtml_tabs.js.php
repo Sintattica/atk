@@ -119,6 +119,7 @@ function showTab(tab)
             if (tabs[j] == tab)
             {
                 document.getElementById('tab_' + tabs[j]).className = 'activetab';
+                document.getElementById('tab_' + tabs[j]).className = 'active';
             }
             else
             {
