@@ -303,7 +303,7 @@ class atkEditHandler extends atkViewEditBase
         $formIdentifier = ((isset($this->m_partial) && $this->m_partial != "")) ? "dialogform"
                 : "entryform";
         $formstart = '<form id="' . $formIdentifier . '" name="' . $formIdentifier . '" enctype="multipart/form-data" action="' . $controller->getPhpFile() . '?' . SID . '"' .
-            ' method="post" onsubmit="return globalSubmit(this)">' .
+            ' method="post" onsubmit="return globalSubmit(this)" class="form-horizontal" role="form">' .
             session_form($this->getUpdateSessionStatus());
 
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkaction" value="' . $this->getUpdateAction() . '" />';
