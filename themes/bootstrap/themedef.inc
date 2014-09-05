@@ -36,9 +36,8 @@ $theme['menu_params'] = "class='menulink'";
 $theme["tabtype"] = "dhtml";
 
 
-$theme['recordlist_css_icons'] = array();
-$theme['recordlist_css_icons']['view'] = 'glyphicon glyphicon-zoom-in';
-$theme['recordlist_css_icons']['edit'] = 'glyphicon glyphicon-pencil';
-$theme['recordlist_css_icons']['delete'] = 'glyphicon glyphicon-trash';
-
-//$theme['recordlist_icons'] = false;
+$theme['usecssicons'] = true;
+$theme['cssicons']['recordlist']['view'] = 'glyphicon glyphicon-zoom-in';
+$theme['cssicons']['recordlist']['edit'] = 'glyphicon glyphicon-pencil';
+$theme['cssicons']['recordlist']['delete'] = 'glyphicon glyphicon-trash';
+$theme['cssicons']['lock']['lock_exclusive_head'] = 'glyphicon glyphicon-lock';

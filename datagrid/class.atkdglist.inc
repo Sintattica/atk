@@ -130,8 +130,8 @@ class atkDGList extends atkDGComponent
             $headercols[] = array("content" => ""); // Empty leader on top of mra action list.
         }
         if ($grid->hasFlag(atkDataGrid::LOCKING)) {
-            $lockHeadIcon = atkTheme::getInstance()->iconPath('lock_' . $grid->getNode()->getLockMode() . '_head', 'lock', $grid->getNode()->m_module);
-            $headercols[] = array("content" => '<img src="' . $lockHeadIcon . '">');
+            $lockHeadIcon = atkTheme::getInstance()->icon('lock_' . $grid->getNode()->getLockMode() . '_head', 'lock', $grid->getNode()->m_module);
+            $headercols[] = array("content" => $lockHeadIcon);
         }
         if (($orientation == "left" || $orientation == "both") && ($hasActionCol && count($list["rows"]) > 0)) {
             $headercols[] = array("content" => "");
@@ -343,7 +343,7 @@ class atkDGList extends atkDGComponent
             $icons = (atkconfig('recordlist_icons', $theme->getAttribute("recordlist_icons")) === false ||
             atkconfig('recordlist_icons', $theme->getAttribute("recordlist_icons")) === 'false'
                 ? false : true);
-            $recordlist_css_icons = atkconfig('recordlist_css_icons', $theme->getAttribute("recordlist_css_icons"));
+
 
             foreach ($list["rows"][$i]["actions"] as $name => $url) {
                 if (substr($url, 0, 11) == 'javascript:') {
@@ -364,22 +364,18 @@ class atkDGList extends atkDGComponent
 
                 $link = atk_htmlentities($this->text($actionKeys));
 
-                if (is_array($recordlist_css_icons) && count($recordlist_css_icons)) {
-                    if ($class = $recordlist_css_icons[strtolower($name)]) {
-                       $link = '<span class="'.$class.'" title="'.$link.'"></span>';
-                    } else if ($icons == true) {
-                        $icon = $theme->iconPath($module . '_' . $nodetype . '_' . strtolower($name), "recordlist", $module, '', false);
-                        if (!$icon) {
-                            $icon = $theme->iconPath($module . '_' . strtolower($name), "recordlist", $module, '', false);
-                        }
-                        if (!$icon) {
-                            $icon = $theme->iconPath(strtolower($name), "recordlist", $grid->getNode()->m_module);
-                        }
-                        if (is_file($icon)) {
-                            $link = sprintf('<img class="recordlist" border="0" src="%1$s" alt="%2$s" title="%2$s">', $icon, $link);
-                        } else {
-                            atkwarning("Icon for action '$name' not found!");
-                        }
+                if ($icons == true) {
+                    $icon = $theme->icon($module . '_' . $nodetype . '_' . strtolower($name), "recordlist", $module, '', false, $link);
+                    if (!$icon) {
+                        $icon = $theme->icon($module . '_' . strtolower($name), "recordlist", $module, '', false, $link);
+                    }
+                    if (!$icon) {
+                        $icon = $theme->icon(strtolower($name), "recordlist", $grid->getNode()->m_module, '', true, $link);
+                    }
+                    if ($icon) {
+                        $link = $icon;
+                    } else {
+                        atkwarning("Icon for action '$name' not found!");
                     }
                 }
 

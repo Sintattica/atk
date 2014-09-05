@@ -33,7 +33,7 @@ class atkTheme
     /**
      * Function to get an Instance of the atkTheme class,
      * ensures that there is never more than one instance (Singleton pattern)
-     * 
+     *
      * @param bool $reset Always reset and return a new instance
      * @return atkTheme theme instance
      */
@@ -71,7 +71,7 @@ class atkTheme
      *
      * @static
      * @param String $relpath The relative path to convert
-     * @param String $location 
+     * @param String $location
      * @return String The absolute path
      */
     function absPath($relpath, $location = '')
@@ -102,7 +102,7 @@ class atkTheme
         if (!count($this->m_theme)) {
             $filename = atkconfig("atktempdir") . "themes/" . $this->m_name . ".inc";
             if (!file_exists($filename) || atkconfig("force_theme_recompile")) {
-                $compiler = &atknew("atk.ui.atkthemecompiler");
+                $compiler = & atknew("atk.ui.atkthemecompiler");
                 $compiler->compile($this->m_name);
             }
             include($filename);
@@ -121,13 +121,13 @@ class atkTheme
     function getAttribute($attribname, $default = "")
     {
         return (isset($this->m_theme["attributes"][$attribname]) ? $this->m_theme["attributes"][$attribname]
-                    : $default);
+            : $default);
     }
 
     /**
      * Retrieve the location of a file
      * @access private
-     * 
+     *
      * @param string $type the type of the file
      * @param string $name the name of the themefile
      * @param string $module the name of the module requesting the file
@@ -186,10 +186,10 @@ class atkTheme
 
     /**
      * Returns full path for themed icon file
-     * @param string $icon   the icon name (no extension)
-     * @param string $type   the icon type (example: "recordlist")
+     * @param string $icon the icon name (no extension)
+     * @param string $type the icon type (example: "recordlist")
      * @param string $module the name of the module requesting the file
-     * @param string $ext    the extension of the file,
+     * @param string $ext the extension of the file,
      *                       if this is empty, atkTheme will check several
      *                       extensions.
      * @param boolean $useDefault use default icon fallback if not found?
@@ -199,19 +199,22 @@ class atkTheme
     {
         // Check module themes for icon
         $iconfile = $this->getIconFileFromModuleTheme($icon, $type, $ext);
-        if ($module != "" && $iconfile)
+        if ($module != "" && $iconfile) {
             return moduleDir($module) . "themes/" . $iconfile;
+        }
 
         // Check the default theme for icon
         $iconfile = $this->getIconFileFromTheme($icon, $type, $this->m_theme['files'], $ext);
-        if ($iconfile)
+        if ($iconfile) {
             return atkTheme::absPath($iconfile);
+        }
 
         if ($useDefault) {
             // Check the default theme for default icon
             $iconfile = $this->getIconFileFromTheme('default', $type, $this->m_theme['files'], $ext);
-            if ($iconfile)
+            if ($iconfile) {
                 return atkTheme::absPath($iconfile);
+            }
         }
 
         return false;
@@ -292,6 +295,45 @@ class atkTheme
         return atkTheme::absPath($this->getAttribute("basepath"));
     }
 
-}
 
-?>
+    function cssIcon($icon, $type, $module, $useDefault)
+    {
+        // Check the default theme for css icon
+        $iconcss = $this->getIconCssFromTheme($icon, $type, $this->getAttribute('cssicons'));
+        if ($iconcss) {
+            return $iconcss;
+        }
+    }
+
+    function getIconCssFromTheme($icon, $type, $cssicons)
+    {
+        if (isset($cssicons[$type]) && $cssicons[$type][$icon]) {
+            return $cssicons[$type][$icon];
+        }
+        return false;
+    }
+
+    function icon($icon, $type, $module = "", $ext = '', $useDefault = true, $title = '')
+    {
+        if ($this->getAttribute('usecssicons')) {
+            $icon = $this->cssIcon($icon, $type, $module, $useDefault);
+            if (!$icon) return false;
+            $ret = '<span class="' . $icon . '"';
+            if ($title) {
+                $ret .= ' title="' . $title . '"';
+            }
+            $ret .= ' ></span>';
+            return $ret;
+        }
+
+        $icon = $this->iconPath($icon, $type, $module, $ext, $useDefault);
+        if (!$icon) return false;
+        $ret = '<img src="' . $icon . '"';
+        if ($title) {
+            $ret .= ' title="' . $title . '" alt="' . $title . '"';
+        }
+        $ret .= ' />';
+        return $ret;
+    }
+
+}
