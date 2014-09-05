@@ -5,12 +5,12 @@
     {else}
         {if $field.label!=="AF_NO_LABEL"}
             <label for="{$field.attribute}"
-                   class="col-md-2 control-label {if isset($field.error)}errorlabel{else}fieldlabel{/if}">
+                   class="col-sm-2 control-label {if isset($field.error)}errorlabel{else}fieldlabel{/if}">
                 {if $field.label!=""}{$field.label}{/if}
                 {if isset($field.obligatory)}{$field.obligatory}{/if}
             </label>
         {/if}
-        <div class="{if $field.label!=="AF_NO_LABEL"}col-md-10{else}col-md-12{/if}">
+        <div class="{if $field.label!=="AF_NO_LABEL"}col-sm-10{else}col-sm-12{/if}">
             {if $field.readonly}<span class="form-control-static">{$field.full}</span>{else}{$field.full}{/if}
            </div>
     {/if}

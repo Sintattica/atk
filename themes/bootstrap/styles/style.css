@@ -13,6 +13,9 @@ body {
 .dglimit {
   margin: 10px 0;
 }
+span.form-control-static {
+  display: block;
+}
 @media (min-width: 768px) {
   .pagination,
   .dglimit {
@@ -24,8 +27,13 @@ body {
     text-align: right;
   }
 }
-span.form-control-static {
-  display: block;
+@media (max-width: 767px) {
+  span.form-control-static {
+    padding-top: 0px;
+  }
+  label.control-label {
+    margin-bottom: 0px;
+  }
 }
 /********  LEGACY CSS ********/
 .clickable {

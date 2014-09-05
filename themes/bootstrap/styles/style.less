@@ -17,11 +17,11 @@ body {
   margin: 10px 0;
 }
 
-
-@media(max-width:767px){
-
+span.form-control-static {
+  display: block;
 }
 
+// xs
 @media(min-width:768px){
   .pagination, .dglimit {
     text-align: right;
@@ -34,9 +34,20 @@ body {
   }
 }
 
-span.form-control-static {
-  display: block;
+// sm
+@media(max-width:767px){
+  span.form-control-static {
+    padding-top: 0px;
+  }
+
+  label.control-label {
+    margin-bottom: 0px;
+  }
 }
+
+
+
+
 
 /********  LEGACY CSS ********/
 
