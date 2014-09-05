@@ -24,6 +24,9 @@ body {
     text-align: right;
   }
 }
+span.form-control-static {
+  display: block;
+}
 /********  LEGACY CSS ********/
 .clickable {
   cursor: pointer;

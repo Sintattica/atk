@@ -1303,13 +1303,15 @@ class atkAttribute
         $method = $this->m_name . "_display";
 
         if ($this->getViewCallback() != null) {
-            return call_user_func($this->getViewCallback(), $defaults, $mode, $this);
+            $ret = call_user_func($this->getViewCallback(), $defaults, $mode, $this);
         } else if (method_exists($this->m_ownerInstance, $method)) {
-            return $this->m_ownerInstance->$method($defaults, $mode);
+            $ret = $this->m_ownerInstance->$method($defaults, $mode);
         } else {
-            return $this->display($defaults, $mode) . (strlen($this->m_postfixlabel) > 0
+            $ret = $this->display($defaults, $mode) . (strlen($this->m_postfixlabel) > 0
                         ? "&nbsp;" . $this->m_postfixlabel : "");
         }
+
+        return '<span class="form-control-static">'.$ret.'</span>';
     }
 
     /**

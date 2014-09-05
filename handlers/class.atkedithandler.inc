@@ -569,8 +569,10 @@ class atkEditHandler extends atkViewEditBase
         $fields = array();
         $errorFields = array();
         $attributes = array();
+
         for ($i = 0, $_i = count($data["fields"]); $i < $_i; $i++) {
             $field = &$data["fields"][$i];
+
             $tplfield = $this->createTplField($data["fields"], $i, $mode, $tab);
             $fields[] = $tplfield; // make field available in numeric array
             $params[$field["name"]] = $tplfield; // make field available in associative array
