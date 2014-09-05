@@ -17,7 +17,6 @@
 
 /**
  * Class that generates a bootstrap index page.
- * @author Michele Rota
  * @package atk
  * @subpackage ui
  */
@@ -80,6 +79,11 @@ class atkBootstrapIndexPage
             : HTML_STRICT;
         $this->m_noNav = isset($ATK_VARS['atknonav']);
         $this->m_extraheaders = $this->m_ui->render('index_meta.tpl');
+
+        // Bootstrap & jQuery
+        $this->m_page->register_script(atkconfig("atkroot") . "atk/themes/bootstrap/src/jquery/jquery-2.1.1.min.js");
+        $this->m_page->register_scriptcode('jQuery.noConflict();');
+        $this->m_page->register_script(atkconfig("atkroot") . "atk/themes/bootstrap/src/bootstrap/js/bootstrap.js");
     }
 
     /**
@@ -236,9 +240,6 @@ class atkBootstrapIndexPage
     {
         global $ATK_VARS;
         $session = & atkSessionManager::getSession();
-
-       // $this->m_page->register_metacode('<meta name="viewport" content="width=device-width, initial-scale=1">');
-       // $this->m_page->register_metacode('<meta http-equiv="X-UA-Compatible" content="IE=edge">');
 
 
         if ($session["login"] != 1) {
