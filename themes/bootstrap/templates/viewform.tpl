@@ -8,9 +8,9 @@
             {else}
                 {if $field.label!=="AF_NO_LABEL"}
                     <div class="col-md-2 fieldlabel control-label">{if $field.label!=""}{$field.label}{/if}</div>
-                    <div class="col-md-10 field">{$field.full}</div>
+                    <div class="col-md-10 field"><span class="form-control-static">{$field.full}</span></div>
                 {else}
-                    <div class="col-md-12 field">{$field.full}</div>
+                    <div class="col-md-12 field"><span class="form-control-static">{$field.full}</span></div>
                 {/if}
             {/if}
         </div>

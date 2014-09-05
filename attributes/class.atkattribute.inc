@@ -1311,7 +1311,7 @@ class atkAttribute
                         ? "&nbsp;" . $this->m_postfixlabel : "");
         }
 
-        return '<span class="form-control-static">'.$ret.'</span>';
+        return $ret;
     }
 
     /**
@@ -1378,8 +1378,7 @@ class atkAttribute
     function getEdit($mode, &$defaults, $fieldprefix)
     {
         // readonly
-        if (($mode == "edit" && $this->hasFlag(AF_READONLY_EDIT)) ||
-            ($mode == "add" && $this->hasFlag(AF_READONLY_ADD))) {
+        if ($this->isReadonlyEdit($mode)) {
             return
                 $this->hide($defaults, $fieldprefix) .
                 $this->getView($mode, $defaults);
@@ -1396,6 +1395,10 @@ class atkAttribute
             return $this->edit($defaults, $fieldprefix, $mode) . (strlen($this->m_postfixlabel) > 0
                         ? "&nbsp;" . $this->m_postfixlabel : "");
         }
+    }
+
+    function isReadonlyEdit($mode) {
+        return ($mode == "edit" && $this->hasFlag(AF_READONLY_EDIT)) || ($mode == "add" && $this->hasFlag(AF_READONLY_ADD));
     }
 
     /**

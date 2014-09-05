@@ -468,6 +468,9 @@ class atkEditHandler extends atkViewEditBase
 
             $column = $field['attribute']->getColumn();
             $tplfield["column"] = $column;
+
+            $tplfield['readonly'] = $field['attribute']->isReadonlyEdit($mode);
+
         }
 
         // allow passing of extra arbitrary data, for example if a user overloads the editArray method
