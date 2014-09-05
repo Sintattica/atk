@@ -313,7 +313,7 @@ class atkTheme
         return false;
     }
 
-    function icon($icon, $type, $module = "", $ext = '', $useDefault = true, $title = '')
+    function getIcon($icon, $type, $module = "", $ext = '', $useDefault = true, $title = '')
     {
         if ($this->getAttribute('usecssicons')) {
             $icon = $this->cssIcon($icon, $type, $module, $useDefault);

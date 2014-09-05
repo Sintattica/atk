@@ -130,7 +130,7 @@ class atkDGList extends atkDGComponent
             $headercols[] = array("content" => ""); // Empty leader on top of mra action list.
         }
         if ($grid->hasFlag(atkDataGrid::LOCKING)) {
-            $lockHeadIcon = atkTheme::getInstance()->icon('lock_' . $grid->getNode()->getLockMode() . '_head', 'lock', $grid->getNode()->m_module);
+            $lockHeadIcon = atkTheme::getInstance()->getIcon('lock_' . $grid->getNode()->getLockMode() . '_head', 'lock', $grid->getNode()->m_module);
             $headercols[] = array("content" => $lockHeadIcon);
         }
         if (($orientation == "left" || $orientation == "both") && ($hasActionCol && count($list["rows"]) > 0)) {
@@ -331,9 +331,9 @@ class atkDGList extends atkDGComponent
             if ($grid->hasFlag(atkDataGrid::LOCKING)) {
                 if (is_array($list["rows"][$i]["lock"])) {
                     $this->getPage()->register_script(atkconfig('atkroot') . 'atk/javascript/overlibmws/overlibmws.js');
-                    $lockIcon = atkTheme::getInstance()->iconPath('lock_' . $grid->getNode()->getLockMode(), 'lock', $grid->getNode()->m_module);
+                    $lockIcon = atkTheme::getInstance()->getIcon('lock_' . $grid->getNode()->getLockMode(), 'lock', $grid->getNode()->m_module);
                     $lockInfo = addslashes(str_replace(array("\r\n", "\r", "\n"), " ", atk_htmlentities($this->getLockInfo($list["rows"][$i]["lock"]))));
-                    $record["cols"][] = array("content" => '<img src="' . $lockIcon . '" onmouseover="return overlib(\'' . $lockInfo . '\', NOFOLLOW, FULLHTML);" onmouseout="nd();" border="0">', "type" => "lock");
+                    $record["cols"][] = array("content" => '<span onmouseover="return overlib(\'' . $lockInfo . '\', NOFOLLOW, FULLHTML);" onmouseout="nd();">'.$lockIcon.'</span>', "type" => "lock");
                 } else
                     $record["cols"][] = array("content" => "");
             }
@@ -365,12 +365,12 @@ class atkDGList extends atkDGComponent
                 $link = atk_htmlentities($this->text($actionKeys));
 
                 if ($icons == true) {
-                    $icon = $theme->icon($module . '_' . $nodetype . '_' . strtolower($name), "recordlist", $module, '', false, $link);
+                    $icon = $theme->getIcon($module . '_' . $nodetype . '_' . strtolower($name), "recordlist", $module, '', false, $link);
                     if (!$icon) {
-                        $icon = $theme->icon($module . '_' . strtolower($name), "recordlist", $module, '', false, $link);
+                        $icon = $theme->getIcon($module . '_' . strtolower($name), "recordlist", $module, '', false, $link);
                     }
                     if (!$icon) {
-                        $icon = $theme->icon(strtolower($name), "recordlist", $grid->getNode()->m_module, '', true, $link);
+                        $icon = $theme->getIcon(strtolower($name), "recordlist", $grid->getNode()->m_module, '', true, $link);
                     }
                     if ($icon) {
                         $link = $icon;
