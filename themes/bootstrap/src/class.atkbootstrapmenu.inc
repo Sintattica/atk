@@ -83,7 +83,6 @@ class atkBootstrapMenu extends atkPlainMenu
         $ret = '<ul class="nav navbar-nav">';
         $ret .= $this->processMenu($menu);
         $ret .= '</ul>';
-
         return $ret;
     }
 

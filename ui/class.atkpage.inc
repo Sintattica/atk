@@ -142,9 +142,9 @@ class atkPage
         $this->register_script(atkconfig("atkroot") . "atk/javascript/atkbusy.js");
 
         // Bootstrap & jQuery
-        $this->register_script(atkconfig("atkroot") . "atk/javascript/jquery-2.1.1.min.js");
+        $this->register_script(atkconfig("atkroot") . "atk/ext/jquery-2.1.1.min.js");
         $this->register_scriptcode('jQuery.noConflict();');
-        $this->register_script(atkconfig("atkroot") . "atk/javascript/bootstrap/js/bootstrap.js");
+        $this->register_script(atkconfig("atkroot") . "atk/ext/bootstrap/js/bootstrap.js");
     }
 
     /**

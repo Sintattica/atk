@@ -26,7 +26,7 @@ $theme['dialog_theme_name'] = 'atkdialog';
 $theme['dialog_theme_load'] = false;
 
 $theme["doctype"] = '<!DOCTYPE html>';
-$theme['compatible_menus'] = array('atk.menu.atkBootstrapMenu');
+$theme['compatible_menus'] = array('atk.themes.bootstrap.src.atkBootstrapMenu');
 $theme["highlight"] = "";
 $theme["select"] = "";
 $theme['useframes'] = false;
