@@ -70,10 +70,10 @@ class atkBootstrapIndexPage
     function atkBootstrapIndexPage()
     {
         global $ATK_VARS;
-        $this->m_page = & atkinstance("atk.ui.atkpage");
-        $this->m_ui = & atkinstance("atk.ui.atkui");
-        $this->m_theme = & atkinstance('atk.ui.atktheme');
-        $this->m_output = & atkinstance('atk.ui.atkoutput');
+        $this->m_page = atkinstance("atk.ui.atkpage");
+        $this->m_ui = atkinstance("atk.ui.atkui");
+        $this->m_theme = atkinstance('atk.ui.atktheme');
+        $this->m_output = atkinstance('atk.ui.atkoutput');
         $this->m_user = getUser();
         $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL
             : HTML_STRICT;
@@ -86,11 +86,8 @@ class atkBootstrapIndexPage
         $this->m_page->register_script(atkconfig("atkroot") . "atk/themes/bootstrap/src/bootstrap/js/bootstrap.js");
 
         //Moment JS & Moment php
-        $this->m_page->register_script(atkconfig("atkroot") . "atk/themes/bootstrap/src/moment/moment.min.js");
-        $base = atkConfig::getGlobal('atkroot') . 'atk/ext/momentphp/src/Moment/';
-        include_once($base . 'Moment.php');
-        include_once($base . 'FormatsInterface.php');
-        include_once($base . 'CustomFormats/MomentJs.php');
+        atkimport('atk.utils.atkmomentphpprovider');
+        atkMomentphpProvider::register($this->m_page);
     }
 
     /**
