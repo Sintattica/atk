@@ -7,7 +7,6 @@ class bootstrapDateAttribute extends atkAttribute
 {
     function bootstrapDateAttribute($name, $flags = 0)
     {
-
         $this->atkAttribute($name, $flags);
     }
 
@@ -22,16 +21,14 @@ class bootstrapDateAttribute extends atkAttribute
         $dbFormat = 'YYYY-MM-DD';
 
         $params = array(
-            'language' => atkConfig::getGlobal('language', 'en'),
+            'language' => atkConfig::getGlobal('language'),
             'pickTime' => false
         );
-
-        $m = new \Moment\Moment($value);
-        $pickerValue = $m->format(atktext('btkdate_format_edit'), new \Moment\CustomFormats\MomentJs());
 
         $js = "";
         $js .= "jQuery(function ($) {";
         $js .= "  $('#" . $pickerId . "').datetimepicker(" . json_encode($params) . ");";
+        $js .= "  $('#" . $pickerId . "').data('DateTimePicker').setDate(new moment('" . $value . "'));";
         $js .= "  $('#" . $pickerId . "').on('dp.change', function(e){";
         $js .= "     $('#" . $id . "').val($('#" . $pickerId . "').data('DateTimePicker').getDate().format('" . $dbFormat . "'));";
         $js .= "  });";
@@ -45,7 +42,7 @@ class bootstrapDateAttribute extends atkAttribute
 
         $result = '<div class="row"><div class="col-md-3">';
         $result .= '  <div class="input-group date" id="' . $pickerId . '">';
-        $result .= '    <input type="text" class="form-control" data-date-format="' . $format . '" value="' . $pickerValue . '" />';
+        $result .= '    <input type="text" class="form-control" data-date-format="' . $format . '" />';
         $result .= '    <input type="hidden" id="' . $id . '" name="' . $fieldName . '" value="' . $value . '" />';
         $result .= '    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>';
         $result .= '  </div>';
