@@ -1,11 +1,11 @@
 <div{if $field.rowid != ""} id="{$field.rowid}"{/if}{if $field.initial_on_tab!='yes'} style="display: none"{/if}
-        class="section-item form-group {$field.tab} {if isset($field.obligatory)}required{/if}">
+        class="section-item form-group {$field.tab} {if isset($field.obligatory)}required{/if} {if isset($field.error)}has-error{/if}">
     {if isset($field.line) && $field.line!=""}
         {$field.line}
     {else}
         {if $field.label!=="AF_NO_LABEL"}
             <label for="{$field.attribute}"
-                   class="col-sm-2 control-label {if isset($field.error)}errorlabel{else}fieldlabel{/if}">
+                   class="col-sm-2 control-label">
                 {if $field.label!=""}{$field.label}{/if}
             </label>
         {/if}

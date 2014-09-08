@@ -84,6 +84,13 @@ class atkBootstrapIndexPage
         $this->m_page->register_script(atkconfig("atkroot") . "atk/themes/bootstrap/src/jquery/jquery-2.1.1.min.js");
         $this->m_page->register_scriptcode('jQuery.noConflict();');
         $this->m_page->register_script(atkconfig("atkroot") . "atk/themes/bootstrap/src/bootstrap/js/bootstrap.js");
+
+        //Moment JS & Moment php
+        $this->m_page->register_script(atkconfig("atkroot") . "atk/themes/bootstrap/src/moment/moment.min.js");
+        $base = atkConfig::getGlobal('atkroot') . 'atk/ext/momentphp/src/Moment/';
+        include_once($base . 'Moment.php');
+        include_once($base . 'FormatsInterface.php');
+        include_once($base . 'CustomFormats/MomentJs.php');
     }
 
     /**

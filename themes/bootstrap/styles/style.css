@@ -48,6 +48,9 @@ span.form-control-static {
   color: #c70000;
   font-weight: bold;
 }
+.error {
+  color: #A94442;
+}
 /********  LEGACY CSS ********/
 .clickable {
   cursor: pointer;
@@ -63,10 +66,6 @@ span.form-control-static {
   font-size: 12px;
   font-weight: bold;
   color: #000000;
-}
-.error,
-.errorlabel {
-  color: #FF0000;
 }
 .atkmessages {
   background-color: #EEEEEE;

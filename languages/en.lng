@@ -375,6 +375,7 @@ $en = array(
     "wysiwyg_insert_table" => "Insert table",
     "wysiwyg_merge_cell" => "Merge cells",
     "wysiwyg_split_cell" => "Split cells",
-    "yes" => "Yes"
+    "yes" => "Yes",
+    "btkdate_format_edit" => "MM/DD/YYYY", // momentJS format style
+    "btkdate_format_view" => "MM/DD/YYYY" // momentJS format style
 );
-?>
