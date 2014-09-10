@@ -333,7 +333,7 @@ class atkLanguage
     {
         $supportedlanguagesmodule = atkconfig('supported_languages_module');
         if (self::$s_supportedLanguages == null && $supportedlanguagesmodule) {
-            $supportedlanguagesdir = atkLanguage::getLanguageDirForModule($supportedlanguagesmodule);
+            $supportedlanguagesdir = atkLanguage::getInstance()->getLanguageDirForModule($supportedlanguagesmodule);
             atkimport('atk.utils.atkdirectorytraverser');
             $supportedlanguagescollector = new getSupportedLanguagesCollector();
             $traverser = new atkDirectoryTraverser();

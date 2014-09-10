@@ -4730,7 +4730,7 @@ class atkNode
      */
     function text($string, $module = NULL, $lng = "", $firstfallback = "", $nodefaulttext = false)
     {
-        if ($module == NULL)
+        if ($module === NULL)
             $module = $this->m_module;
         return atktext($string, $module, $this->m_type, $lng, $firstfallback, $nodefaulttext);
     }

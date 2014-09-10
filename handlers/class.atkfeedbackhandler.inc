@@ -55,7 +55,7 @@ class atkFeedbackHandler extends atkActionHandler
 
         $node->addStyle("style.css");
 
-        $params["content"] = atktext('feedback_' . $action . '_' . atkActionStatus($actionstatus), $node->m_module, $node->m_type) .
+        $params["content"] = '<br>'.atktext('feedback_' . $action . '_' . atkActionStatus($actionstatus), $node->m_module, $node->m_type) .
             ' <br>' . $message;
 
         if (atkLevel() > 0) {

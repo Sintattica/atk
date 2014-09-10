@@ -481,8 +481,9 @@ class atkDGList extends atkDGComponent
                 ?
                 '<a href="javascript:void(0)" onclick="updateSelection(\'' . $listName . '\', $(this).up(\'form\'), \'all\')">' . atktext("select_all") . '</a> | ' .
                 '<a href="javascript:void(0)" onclick="updateSelection(\'' . $listName . '\', $(this).up(\'form\'), \'none\')">' . atktext("deselect_all") . '</a> | ' .
-                '<a href="javascript:void(0)" onclick="updateSelection(\'' . $listName . '\', $(this).up(\'form\'), \'invert\')">' . atktext("select_invert") . '</a> ' .
-                '<div style="height: 8px"></div>' :
+                '<a href="javascript:void(0)" onclick="updateSelection(\'' . $listName . '\', $(this).up(\'form\'), \'invert\')">' . atktext("select_invert") . '</a> '
+                //'<div style="height: 8px"></div>'
+                :
                 '');
 
             $module = $grid->getNode()->m_module;
@@ -492,7 +493,7 @@ class atkDGList extends atkDGComponent
             if (count($list["mra"]) > 1) {
                 $default = $this->getGrid()->getMRADefaultAction();
                 $mra .= '<select name="' . $listName . '_atkaction" onchange="javascript:updateSelectable(\'' . $listName . '\', this.form)">' .
-                    '<option value="">' . atktext("with_selected") . ':</option>';
+                    '<option value="">' . atktext("with_selected") . '</option>';
 
                 foreach ($list["mra"] as $name) {
                     if ($grid->getNode()->allowed($name)) {
@@ -801,7 +802,9 @@ class atkDGList extends atkDGComponent
 
         $columns = $this->getOption('columns');
         if ($columns == null) {
-            foreach ($this->getNode()->getAttributeNames() as $attrName) {
+            foreach ($this->getNode()->m_attribIndexList as $attribIndex) { // $this->getNode()->getAttributeNames() as $attrName
+                $attrName = $attribIndex['name'];
+
                 $entry = new stdClass();
                 $entry->attrName = $attrName;
                 $entry->columnName = '*';
