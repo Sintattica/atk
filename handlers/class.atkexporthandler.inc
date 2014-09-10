@@ -124,7 +124,13 @@ class atkExportHandler extends atkActionHandler
          }
         }");
 
-        $page->addContent($this->m_node->genericPage("export", $content));
+        $params = array();
+        $params['title'] = $this->m_node->actionTitle('export');
+        $params['content'] = $content;
+        $content = $this->getUi()->renderBox($params);
+        $output = $this->m_node->renderActionPage('export', $content);
+        $page->addContent($output);
+
         return true;
     }
 
@@ -195,9 +201,9 @@ class atkExportHandler extends atkActionHandler
         $params["formstart"] = '<form name="entryform" enctype="multipart/form-data" action="' . $action . '" method="post">';
         $params["formstart"] .= session_form();
         $params["formstart"] .= '<input type="hidden" name="phase" value="process"/>';
+        $params["buttons"][] = atkButton(atktext("cancel", "atk"), "", SESSION_BACK, true);
         $params["buttons"][] = '<input class="btn" type="submit" value="' . atkText("export", "atk") . '"/>';
         $params["buttons"][] = '<input id="export_save_button" style="display:none;" value="' . atktext("save_export_selection", "atk") . '" name="save_export" class="btn" type="submit" /> ';
-        $params["buttons"][] = atkButton(atktext("back", "atk"), "", SESSION_BACK, true);
         $params["content"] = atkText("export_config_explanation", "atk", $this->m_node->m_type) . '<br/><br/>';
         $params["content"] .= $this->_getOptions();
         $params["formend"] = '</form>';
@@ -252,7 +258,7 @@ class atkExportHandler extends atkActionHandler
         $content.= '<tr><td>' . atktext("enclosure", "atk") . ': </td><td><input type="text" size="2" name="enclosure" value=' . atkconfig(export_enclosure, "&quot;") . '></td></tr>';
         $content.= '<tr><td valign="top">' . atktext("export_selectcolumns", "atk") . ': </td><td><div id="export_attributes">' . $this->getAttributeSelect() . '</div></td></tr>';
         $content.= '<tr><td>';
-        $content.= atktext("export_generatetitlerow") . ': </td><td><input type="checkbox" name="generatetitlerow" class="atkcheckbox" value=1 ' . atkconfig(export_title_row_checked, "") . '>';
+        $content.= atktext("export_generatetitlerow") . ': </td><td><input type="checkbox" name="generatetitlerow" class="atkcheckbox" value=1 ' . atkconfig(export_title_row_checked, "") . ' checked>';
         $content.= '</td></tr>';
         $content.= '</table><br /><br />';
         return $content;
@@ -556,7 +562,7 @@ class atkExportHandler extends atkActionHandler
             $recordset_new[] = $row;
         }
 
-        $rl->render($node_bk, $recordset_new, "", $enclosure, $enclosure . $delimiter, "\r\n", 1, "", "", array('filename' => 'export_' . $node->m_type), "csv", $source['generatetitlerow'], true);
+        $rl->render($node_bk, $recordset_new, "", $enclosure, $enclosure . $delimiter, "\r\n", 1, "", "", array('filename' => 'export_' . $node->m_type), "csv", $source['generatetitlerow'], true, $delimiter);
 
         return true;
     }

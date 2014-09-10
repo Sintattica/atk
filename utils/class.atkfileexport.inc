@@ -91,7 +91,7 @@ class atkFileExport
         }
         // 3. on screen
         else {
-            echo $data;
+            echo utf8_decode($data);
         }
 
         flush();

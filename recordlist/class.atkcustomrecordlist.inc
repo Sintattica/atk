@@ -91,6 +91,11 @@ class atkCustomRecordList extends atkRecordList
                 }
             }
 
+            if ($fsep) {
+                // remove separator at the end of line
+                $output = substr($output, 0, -strlen($fsep));
+            }
+
             $output.=$eol;
         }
 
@@ -124,6 +129,11 @@ class atkCustomRecordList extends atkRecordList
                 }
             }
 
+            if ($fsep) {
+                // remove separator at the end of line
+                $output = substr($output, 0, -strlen($fsep));
+            }
+
             $output.=$eol;
         }
 
@@ -143,6 +153,11 @@ class atkCustomRecordList extends atkRecordList
                         $totalRow.= $sof . $empty . $eof . $fsep;
                     }
                 }
+            }
+
+            if ($fsep) {
+                // remove separator at the end of line
+                $totalRow = substr($totalRow, 0, -strlen($fsep));
             }
 
             $totalRow .= $eol;
