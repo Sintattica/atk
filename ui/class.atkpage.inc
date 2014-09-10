@@ -189,6 +189,28 @@ class atkPage
     }
 
     /**
+     * Unregister a javascript file
+     *
+     * @param String $name The (partial) name of the script to remove
+     */
+    function unregister_script($name)
+    {
+        $removed = false;
+        for ($i=0, $_i=count($this->m_scriptfiles); $i<$_i; $i++)
+        {
+            if (stristr($this->m_scriptfiles[$i], $name)!==false)
+            {
+                unset($this->m_scriptfiles[$i]);
+                $removed = true;
+            }
+        }
+        if ($removed)
+        {
+            $this->m_scriptfiles = array_values($this->m_scriptfiles);
+        }
+    }
+
+    /**
      * Return all javascript files
      *
      * @return array contain file paths
