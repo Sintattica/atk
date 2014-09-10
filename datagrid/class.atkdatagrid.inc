@@ -573,6 +573,10 @@ class atkDataGrid
             if (isset($request[$var])) {
                 $sessions[$this->getName()][$var] = $request[$var];
             }
+            // fix grid searching problem after extended search
+            else if (isset($request['atkdg'][$this->getName()][$var])) {
+                $sessions[$this->getName()][$var] = $request['atkdg'][$this->getName()][$var];
+            }
         }
 
         $this->getNode()->m_postvars['atkdg'] = $sessions;
