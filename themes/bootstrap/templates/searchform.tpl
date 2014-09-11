@@ -1,7 +1,7 @@
 <div class="form-horizontal">
     {if $saved_criteria.load_criteria}
         <div class="row form-group load_criteria">
-            <div class="col-sm-2 control-label">{$saved_criteria.label_load_criteria}</div>
+            <div class="col-sm-2 control-label fieldlabel">{$saved_criteria.label_load_criteria}:</div>
             <div class="col-sm-10 form-inline">
                 {$saved_criteria.load_criteria}
                 {if $saved_criteria.forget_criteria}
@@ -15,8 +15,8 @@
     {/if}
 
     <div class="row form-group">
-        <div class="col-sm-2 control-label">
-            {$searchmode_title}
+        <div class="col-sm-2 control-label fieldlabel">
+            {$searchmode_title}:
         </div>
         <div class="col-sm-10">
             <div class="radio">
@@ -50,7 +50,7 @@
         <div class="row form-group save_criteria">
             <div class="col-sm-2">
                 <div class="checkbox control-label">
-                    <label>{$saved_criteria.toggle_save_criteria} {$saved_criteria.text_save_criteria}</label>
+                    <label>{$saved_criteria.toggle_save_criteria} <span class="fieldlabel">{$saved_criteria.text_save_criteria}:</span></label>
                 </div>
             </div>
             <div class="col-sm-10 field">{$saved_criteria.save_criteria}</div>
