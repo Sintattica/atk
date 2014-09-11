@@ -183,7 +183,7 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
             return NULL;
 
         $result = '
-      <select name="load_criteria" onchange="this.form.submit();">
+      <select name="load_criteria" onchange="this.form.submit();" class="form-control">
         <option value=""></option>';
 
         foreach ($criteria as $name)
@@ -238,7 +238,8 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
             'save_criteria' => $this->getSaveCriteria($current),
             'label_load_criteria' => atk_htmlentities(atktext('load_criteria', 'atk')),
             'label_forget_criteria' => atk_htmlentities(atktext('forget_criteria', 'atk')),
-            'label_save_criteria' => '<label for="toggle_save_criteria">' . atk_htmlentities(atktext('save_criteria', 'atk')) . '</label>'
+            'label_save_criteria' => '<label for="toggle_save_criteria">' . atk_htmlentities(atktext('save_criteria', 'atk')) . '</label>',
+            'text_save_criteria' => atk_htmlentities(atktext('save_criteria', 'atk'))
         );
     }
 
