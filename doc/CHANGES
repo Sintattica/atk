@@ -9,64 +9,20 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 [names] are references to contributors listed in the AUTHORS file.
 
 * Please do not exceed 80 characters per line.
-* Latest changes go on top, different types of changes may be mixed.
 
-Changes in ATK 7.0 (WIP)
+* LATEST CHANGES GO ON TOP, different types of changes may be mixed.
+
+
+Changes in ATK 7.1.0 (WIP)
 ------------------------
-* Fixed bug that caused the atkManyToManyRelations to truncate the intermediate
-  table when it had no attributes with an AF_PRIMARY flag on it. [harrie]
-* Fixed bug where atkListAttribute didn't honor JSObservers. [ivo]
-* Tooltip template no longer uses short tags. [mvdvelden]
-* Fixed a bug where, configuration that wasn't defined in the default 
-  configuration, was never properly imported into the global space and was 
-  causing issues. [mvdvelden]
-* Changed the way the configuration is populated. [mvdvelden]
-* Added the 'dispatcher' in the default config and changed some references from 
-  'index.php' to this setting. [mvdvelden]
-* Changed the global definition of $g_sessionData, since that reset referenced
-  assignments. [mvdvelden,epot]
-* Enabled extra headers and body properties for the index page [dengels]
-+ Added saml authentication (Contributed by Egeniq)
-+ Added postfix labeling to atkAttribute [Patrick]
-+ Added possibility in atkPage to add meta information [Patrick]
-+ Added template login_meta.tpl to themes to include meta information into the 
-  login page [Patrick] 
-+ Made the number of page navigation links below a record list configurable
-  [Patrick]
-* Fixed some errors in the french language file [DVR]
-* Generated M:1 select-list options now are properly closed [DVR]
-* In atkManyToOneRelation, removed HTML from destination values in the edit mode
-  dropdown. [Patrick]
-* In atkEmailAttribute, modified address validation to allow single character
-  subdomains. [Patrick]
-  + Added optional password restriction settings to defaultconfig.inc.php [wayneh]
-* Applied dependencies fix (See https://github.com/atkphpframework/atk/issues/3
-  and http://forum.achievo.org/viewtopic.php?f=2&t=20722&hilit=adddependency+removes)
-  to atkattribute, atkboolattribute, atkdateattribute, atkfileattribute,
-  atklistattribute, atknumberattribute, atkradioattribute, atktimeattribute,
-  atkmanybooleanrelation, atkmanytoonerelation, atkonetomanyrelation,
-  atkshuttlerelation [wayneh]
-* Applied Datagrid subtotal/unsubtotal link fix to atkattribute
-  (https://github.com/atkphpframework/atk/issues/8) [wayneh]
-* Applied atkcontroller explode() expects parameter 2 to be string bug fix
-  (http://forum.achievo.org/viewtopic.php?f=2&t=21352&hilit=solved
-   https://github.com/atkphpframework/atk/issues/2) [wayneh]
-* Applied atkTimeAttribute bug fix
-   (http://forum.achievo.org/viewtopic.php?f=2&t=21351&p=88064#p88064
-    https://github.com/atkphpframework/atk/issues/1) [wayneh]
-* Fixed Bug 1611 - $config_enable_showall does not work (edit)
-   (http://bugzilla.achievo.org/show_bug.cgi?id=1611) [wayneh]
-* Replaced "This file is part of the Achievo ATK distribution.
-   with "This file is part of the ATK distribution on GitHub."
-   in all files (iBuilding licence info remains) [wayneh]
-+ Added options to set export parameters to atkexporthandler and
-   documented in defaultconfig.inc.php - egs
-     $config_export_delimiter = ",";
-     $config_export_enclosure = "&quot;";
-     $config_export_title_row_checked = "checked"; [wayneh]
-+ Added option to configure records per page dropdown options and
-    documented in defaultconfig.inc.php - eg
-      $config_recordsperpage_options = array(15,25,50,100,500); [wayneh]
+* Fix grid searching problem after extended search
+* Export csv improvement
++ Add unregister_script function in atkpage
+
+
+Changes in ATK 7.0.0
+------------------------
+
 + Added flag AF_CLEAR_TOUCH_BUTTONS to atktimeattribute,
     atkdateattribute,atkdatetimeattribute. Causes 2 buttons to be
     display to the right of the date and/or time. 1st button (clear)
@@ -75,13 +31,68 @@ Changes in ATK 7.0 (WIP)
     minute or second is rounded to the nearest value in the sequence
     (see http://forum.achievo.org/viewtopic.php?f=2&t=22404 from
     agx / bad penguin / baiadomizia) [wayneh]
++ Added option to configure records per page dropdown options and
+    documented in defaultconfig.inc.php - eg
+      $config_recordsperpage_options = array(15,25,50,100,500); [wayneh]
++ Added options to set export parameters to atkexporthandler and
+   documented in defaultconfig.inc.php - egs
+     $config_export_delimiter = ",";
+     $config_export_enclosure = "&quot;";
+     $config_export_title_row_checked = "checked"; [wayneh]
+* Replaced "This file is part of the Achievo ATK distribution.
+   with "This file is part of the ATK distribution on GitHub."
+   in all files (iBuilding licence info remains) [wayneh]
+* Fixed Bug 1611 - $config_enable_showall does not work (edit)
+   (http://bugzilla.achievo.org/show_bug.cgi?id=1611) [wayneh]
+* Applied atkTimeAttribute bug fix
+   (http://forum.achievo.org/viewtopic.php?f=2&t=21351&p=88064#p88064
+    https://github.com/atkphpframework/atk/issues/1) [wayneh]
+* Applied atkcontroller explode() expects parameter 2 to be string bug fix
+  (http://forum.achievo.org/viewtopic.php?f=2&t=21352&hilit=solved
+   https://github.com/atkphpframework/atk/issues/2) [wayneh]
+* Applied Datagrid subtotal/unsubtotal link fix to atkattribute
+  (https://github.com/atkphpframework/atk/issues/8) [wayneh]
+* Applied dependencies fix (See https://github.com/atkphpframework/atk/issues/3
+  and http://forum.achievo.org/viewtopic.php?f=2&t=20722&hilit=adddependency+removes)
+  to atkattribute, atkboolattribute, atkdateattribute, atkfileattribute,
+  atklistattribute, atknumberattribute, atkradioattribute, atktimeattribute,
+  atkmanybooleanrelation, atkmanytoonerelation, atkonetomanyrelation,
+  atkshuttlerelation [wayneh]
++ Added optional password restriction settings to defaultconfig.inc.php [wayneh]
 
-Changes in ATK 6.6.0
---------------------
+* In atkEmailAttribute, modified address validation to allow single character
+  subdomains. [Patrick]
+* In atkManyToOneRelation, removed HTML from destination values in the edit mode
+  dropdown. [Patrick]
 * Fixed bug that caused the atkManyToManyRelations to truncate the intermediate table when
   it had no attributes with an AF_PRIMARY flag on it. [harrie]
 * When trying to remove a non-existing value from the values of a list
   attribute, the first value was deleted. This has been fixed. [Tjeerd]
+* Fixed bug where atkListAttribute didn't honor JSObservers. [ivo]
+* Tooltip template no longer uses short tags. [mvdvelden]
+* Fixed a bug where, configuration that wasn't defined in the default
+  configuration, was never properly imported into the global space and was
+  causing issues. [mvdvelden]
+* Changed the way the configuration is populated. [mvdvelden]
+* Added the 'dispatcher' in the default config and changed some references from
+* Added the 'dispatcher' in the default config and changed some references from
+  'index.php' to this setting. [mvdvelden]
+* Changed the global definition of $g_sessionData, since that reset referenced
+  assignments. [mvdvelden,epot]
+* Generated M:1 select-list options now are properly closed [DVR]
+* Fixed some errors in the french language file [DVR]
++ Made the number of page navigation links below a record list configurable
+  [Patrick]
++ Added template login_meta.tpl to themes to include meta information into the
+  login page [Patrick]
++ Added possibility in atkPage to add meta information [Patrick]
+* Enabled extra headers and body properties for the index page [dengels]
++ Added postfix labeling to atkAttribute [Patrick]
++ Added saml authentication (Contributed by Egeniq)
+
+Changes in ATK 6.6.0
+--------------------
+
 * Fixed SQL injection vulnerability when using atkNode::fetchByPk() [Harrie]
 * Fixed bug: multilanguage nodes referencing themselves (f.e. using a parent_id)
   caused an error when updating one of the child records [Harrie]
