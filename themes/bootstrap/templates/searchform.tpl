@@ -44,9 +44,6 @@
 
     {if $saved_criteria.toggle_save_criteria }
         <hr/>
-    {/if}
-
-    {if $saved_criteria.toggle_save_criteria }
         <div class="row form-group save_criteria">
             <div class="col-sm-2">
                 <div class="checkbox control-label">
