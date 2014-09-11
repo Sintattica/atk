@@ -1,22 +1,27 @@
-{if $saved_criteria.load_criteria}
-    <div class="load_criteria">
-        {$saved_criteria.label_load_criteria}:
-        {$saved_criteria.load_criteria}
-        {if $saved_criteria.forget_criteria}
-            <a href="{$saved_criteria.forget_criteria}" title="{$saved_criteria.label_forget_criteria}"><img
-                        class="recordlist" border="0"
-                        src="{atkthemeicon name='delete' type='recordlist'}"/></a>
-        {/if}
-    </div>
-{/if}
-
 <div class="form-horizontal">
+    {if $saved_criteria.load_criteria}
+        <div class="row form-group load_criteria">
+            <div class="col-sm-2 control-label">{$saved_criteria.label_load_criteria}</div>
+            <div class="col-sm-10 form-inline">
+                {$saved_criteria.load_criteria}
+                {if $saved_criteria.forget_criteria}
+                    <a href="{$saved_criteria.forget_criteria}" title="{$saved_criteria.label_forget_criteria}" class="btn btn-default"><span class="glyphicon glyphicon-trash"></span></a>
+                {/if}
+            </div>
+        </div>
+    {/if}
+
     <div class="row form-group">
-        <div class="col-sm-2 control-label fieldlabel">
+        <div class="col-sm-2 control-label">
             {$searchmode_title}
         </div>
-        <div class="col-sm-10 field">
-            {$searchmode_and} &nbsp;&nbsp; {$searchmode_or}
+        <div class="col-sm-10">
+            <div class="radio">
+                <label>{$searchmode_and}</label>
+            </div>
+            <div class="radio">
+                <label>{$searchmode_or}</label>
+            </div>
         </div>
     </div>
 
@@ -37,10 +42,16 @@
     {if $saved_criteria.toggle_save_criteria }
         <hr/>
     {/if}
+
+    {if $saved_criteria.toggle_save_criteria }
+        <div class="row form-group save_criteria">
+            <div class="col-sm-2">
+                <div class="checkbox control-label">
+                    <label>{$saved_criteria.toggle_save_criteria} {$saved_criteria.text_save_criteria}</label>
+                </div>
+            </div>
+            <div class="col-sm-10 field">{$saved_criteria.save_criteria}</div>
+        </div>
+    {/if}
 </div>
 
-{if $saved_criteria.toggle_save_criteria }
-    <div class="save_criteria">
-        {$saved_criteria.toggle_save_criteria} {$saved_criteria.label_save_criteria} {$saved_criteria.save_criteria}
-    </div>
-{/if}
