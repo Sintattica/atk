@@ -985,17 +985,16 @@ $config_lose_changes_warning = false;
 
 /**
  * Optionally set the export file parameters
- *
- * @var string
  */
-//$config_export_delimiter = ",";
-//$config_export_enclosure = "&quot;";
-//$config_export_export_title_row_ticked = "checked";
+$config_export_delimiter = ";";
+$config_export_enclosure = "&quot;";
+$config_export_titlerow_checked = true;
 
 /**
  * Directories that contains modules (needed for testcases)
  */
 //  $config_module_dirs = array("/modules");
+
 // --------- FCK Image Upload Option ---------
 
 $config_fck_filemanager_enabled = false;

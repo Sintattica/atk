@@ -91,7 +91,12 @@ class atkFileExport
         }
         // 3. on screen
         else {
-            echo utf8_decode($data);
+            if ($type == "csv" || $type == "excel") {
+                // in order to output UTF-8 content that Excel both on Windows and OS X will be able to successfully read
+                echo mb_convert_encoding($data, 'Windows-1252', 'UTF-8');
+            } else {
+                echo $data;
+            }
         }
 
         flush();

@@ -249,16 +249,12 @@ class atkExportHandler extends atkActionHandler
             $content .= '<tr><td>&nbsp;</td><td align="left"><div id="selection_interact"></div></td></tr>';
             $content .= '<tr id="export_name" style="display:none;"><td>' . atktext("export_selections_name", "atk") . ': </td><td align="left"><input type="text" size="40" id="export_selection_name" name="export_selection_name" value=""></td></tr>';
         }
-        /*
-         * $config_export_delimiter = ",";
-         * $config_export_enclosure = "&quot;";
-         * $config_export_title_row_checked = "checked";
-         */
-        $content.= '<tr><td>' . atktext("delimiter", "atk") . ': </td><td><input type="text" size="2" name="delimiter" value=' . atkconfig(export_delimiter, ";") . '></td></tr>';
-        $content.= '<tr><td>' . atktext("enclosure", "atk") . ': </td><td><input type="text" size="2" name="enclosure" value=' . atkconfig(export_enclosure, "&quot;") . '></td></tr>';
+
+        $content.= '<tr><td>' . atktext("delimiter", "atk") . ': </td><td><input type="text" size="2" name="delimiter" value=' . atkConfig::getGlobal('export_delimiter', ';') . '></td></tr>';
+        $content.= '<tr><td>' . atktext("enclosure", "atk") . ': </td><td><input type="text" size="2" name="enclosure" value=' . atkConfig::getGlobal('export_enclosure', '&quot;') . '></td></tr>';
         $content.= '<tr><td valign="top">' . atktext("export_selectcolumns", "atk") . ': </td><td><div id="export_attributes">' . $this->getAttributeSelect() . '</div></td></tr>';
         $content.= '<tr><td>';
-        $content.= atktext("export_generatetitlerow") . ': </td><td><input type="checkbox" name="generatetitlerow" class="atkcheckbox" value=1 ' . atkconfig(export_title_row_checked, "") . ' checked>';
+        $content.= atktext("export_generatetitlerow") . ': </td><td><input type="checkbox" name="generatetitlerow" class="atkcheckbox" value=1 ' . (atkConfig::getGlobal('export_titlerow_checked', true) ? 'checked' : '') . '>';
         $content.= '</td></tr>';
         $content.= '</table><br /><br />';
         return $content;
@@ -562,7 +558,7 @@ class atkExportHandler extends atkActionHandler
             $recordset_new[] = $row;
         }
 
-        $rl->render($node_bk, $recordset_new, "", $enclosure, $enclosure . $delimiter, "\r\n", 1, "", "", array('filename' => 'export_' . $node->m_type), "csv", $source['generatetitlerow'], true, $delimiter);
+        $rl->render($node_bk, $recordset_new, "", $enclosure, $enclosure, "\r\n", 1, "", "", array('filename' => 'export_' . $node->m_type), "csv", $source['generatetitlerow'], true, $delimiter);
 
         return true;
     }
