@@ -5,7 +5,10 @@
             <div class="col-sm-10 form-inline">
                 {$saved_criteria.load_criteria}
                 {if $saved_criteria.forget_criteria}
-                    <a href="{$saved_criteria.forget_criteria}" title="{$saved_criteria.label_forget_criteria}" class="btn btn-default"><span class="glyphicon glyphicon-trash"></span></a>
+                    <a href="{$saved_criteria.forget_criteria}" title="{$saved_criteria.label_forget_criteria}"
+                       class="btn btn-default">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </a>
                 {/if}
             </div>
         </div>
