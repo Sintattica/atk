@@ -11,6 +11,7 @@ class bootstrapDateTimeAttribute extends atkAttribute
     var $m_db_format; //MomentJS Format
     var $m_type = 'datetime';
     var $m_pickerparams = array();
+    var $m_disabledDates = array();
 
     function bootstrapDateTimeAttribute($name, $flags = 0)
     {
@@ -83,6 +84,9 @@ class bootstrapDateTimeAttribute extends atkAttribute
         return $this;
     }
 
+
+
+
     function draw($record = "", $fieldprefix = "", $postfix = "", $mode = "")
     {
         $fieldName = $id = $fieldprefix . $this->fieldName() . $postfix;
@@ -103,11 +107,21 @@ class bootstrapDateTimeAttribute extends atkAttribute
             'sideBySide' => true
         );
 
+        if (count($this->m_disabledDates)) {
+            $dates = array();
+            foreach ($this->m_disabledDates as $d) {
+                $dates[] = 'function:moment("' . $d . '")';
+            }
+
+            $params['disabledDates'] = $dates;
+        }
+
         $params = array_merge($params, $this->m_pickerparams);
+        $params = $this->json_stringify($params);
 
         $js = "";
         $js .= "jQuery(function ($) {";
-        $js .= "  $('#" . $pickerId . "').datetimepicker(" . json_encode($params) . ");";
+        $js .= "  $('#" . $pickerId . "').datetimepicker(" . $params . ");";
         $js .= "  $('#" . $pickerId . "').on('dp.change', function(e){";
         $js .= "     $('#" . $id . "').val($('#" . $pickerId . "').data('DateTimePicker').getDate().format('" . $this->m_db_format . "'));";
         $js .= "  });";
@@ -371,6 +385,54 @@ class bootstrapDateTimeAttribute extends atkAttribute
 
 
         return $result;
+    }
+
+    function addDisabledDates($dates)
+    {
+        if (!is_array($dates)) {
+            $dates = array($dates);
+        }
+
+        $this->m_disabledDates = array_merge($this->m_disabledDates, $dates);
+        return $this;
+    }
+
+
+    function json_stringify($input)
+    {
+        $outtext = '';
+        $opening = '{';
+        $closing = '}';
+        $inner = array();
+        $numericarray = array_keys($input) === range(0, count($input) - 1);
+        if ($numericarray) {
+            // This is a numerically sequential array
+            $opening = '[';
+            $closing = ']';
+        }
+        foreach ($input as $key => $val) {
+            if (is_string($val) && preg_match("/^function\:/", $val)) {
+                // The value is a string and begins with 'function:'. Do not encase it in quotes
+                $val = substr($val, 9);
+            } else if (is_int($val)) {
+                // The value is an integer
+                $val = (int)$val;
+            } else if (is_float($val)) {
+                // The value is a float
+                $val = (float)$val;
+            } else if (is_bool($val)) {
+                if ($val) {
+                    $val = 'true';
+                } else {
+                    $val = 'false';
+                }
+            } else {
+                $val = is_array($val) ? self::json_stringify($val) : "\"$val\"";
+            }
+            $inner[] = ($numericarray ? '' : "\"$key\":") . $val;
+        }
+        $outtext .= implode(',', $inner);
+        return $opening.$outtext.$closing;
     }
 
 }

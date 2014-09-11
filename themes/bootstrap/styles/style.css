@@ -120,9 +120,6 @@ span.form-control-static {
   text-align: right;
   right: 20px;
 }
-.clear {
-  clear: both;
-}
 #atkbusy {
   position: absolute;
   visibility: hidden;
@@ -132,12 +129,6 @@ span.form-control-static {
   height: 22px;
   width: 22px;
 }
-#searchbutton {
-  margin-top: 5px;
-}
 .atkAttrRowHidden {
   display: none !important;
-}
-.clearfloat {
-  clear: both;
 }

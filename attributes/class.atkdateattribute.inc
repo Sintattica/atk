@@ -534,7 +534,8 @@ class atkDateAttribute extends atkAttribute
 
             if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && $mode != 'list') {
                 $format = str_replace(array("y", "Y", "m", "n", "j", "d"), array("yy", "y", "mm", "m", "d", "dd"), $this->m_date_format_edit);
-                $result.=' <input ' . $this->getCSSClassAttribute(array("button",
+
+                $result.=' <input ' . $this->getCSSClassAttribute(array("btn", "btn-default", "button",
                         "atkbutton")) . ' type="button" value="..." onclick="return showCalendar(\'' . $fieldname . '\', \'' . $fieldname . '\', \'' . $format . '\', false);">';
             }
             return $result;
