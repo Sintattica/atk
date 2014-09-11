@@ -377,5 +377,9 @@ $it = array(
     "wysiwyg_split_cell" => "Unisci tabelle",
     "yes" => "Si",
     "btkdate_format_edit" => "DD MMMM YYYY", // momentJS format style
-    "btkdate_format_view" => "DD/MM/YYYY" // momentJS format style
+    "btkdate_format_view" => "DD/MM/YYYY", // momentJS format style
+    "btktime_format_edit" => "HH:mm", // momentJS format style
+    "btktime_format_view" => "HH:mm", // momentJS format style
+    "btkdatetime_format_edit" => "DD MMMM YYYY HH:mm", // momentJS format style
+    "btkdatetime_format_view" => "DD/MM/YYYY HH:mm" // momentJS format style
 );
