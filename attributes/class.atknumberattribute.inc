@@ -295,14 +295,12 @@ class atkNumberAttribute extends atkAttribute
      *
      * @return string nicely formatted number
      */
-    protected function formatNumber($number, $decimalSeparator = "", $thousandsSeparator = "")
+    protected function formatNumber($number, $decimalSeparator = "", $thousandsSeparator = "", $mode = "")
     {
-        $decimalSeparator = $decimalSeparator == null ? $this->m_decimalseparator
-                : $decimalSeparator;
-        $thousandsSeparator = $thousandsSeparator == null ? $this->m_thousandsseparator
-                : $thousandsSeparator;
-        $thousandsSeparator = $this->m_use_thousands_separator ? $thousandsSeparator
-                : '';
+        $decimalSeparator = $decimalSeparator == null ? $this->m_decimalseparator : $decimalSeparator;
+        $thousandsSeparator = $thousandsSeparator == null ? $this->m_thousandsseparator : $thousandsSeparator;
+        // (never shows the thousands separator in add/edit mode)
+        $thousandsSeparator = ($this->m_use_thousands_separator && !in_array($mode, array('add', 'edit'))) ? $thousandsSeparator : '';
 
         if ($decimalSeparator == $thousandsSeparator) {
             atkwarning('invalid thousandsseparator. identical to the decimal_separator');
@@ -516,11 +514,11 @@ class atkNumberAttribute extends atkAttribute
 
         $value = "";
         if (isset($record[$this->fieldName()]) && strlen($record[$this->fieldName()]) > 0)
-            $value = $this->formatNumber($record[$this->fieldName()]);
+            $value = $this->formatNumber($record[$this->fieldName()], '', '', $mode);
 
         $id = $fieldprefix . $this->fieldName();
         $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
-        $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id .
+        $result = '<input type="text" id="' . $id . '" ' . $this->getCSSClassAttribute(array('form-control')) . ' name="' . $id .
             '" value="' . $value . '"' .
             ($size > 0 ? ' size="' . $size . '"' : '') .
             ($maxsize > 0 ? ' maxlength="' . $maxsize . '"' : '') . ' ' . $onchange . ' />';
@@ -554,7 +552,7 @@ class atkNumberAttribute extends atkAttribute
             if (is_array($value)) {
                 if ($value["from"] != "" || $value["to"] != "") {
                     // Two values were entered in the extended search screen.
-                    $value = $value["from"] . "/" . $value["to"];
+                    $value = $value["from"] . "-" . $value["to"];
                 } else {
                     $value = "";
                 }
@@ -596,7 +594,7 @@ class atkNumberAttribute extends atkAttribute
     {
         $processed = array();
         if (!is_array($value)) {
-            $slash = strpos($value, '/'); // Support for 'from/to' searches.
+            $slash = strpos($value, '-'); // Support for 'from-to' searches.
             $str = trim($value);
             if ($slash !== false) {
                 $from = substr($str, 0, $slash);
@@ -606,18 +604,18 @@ class atkNumberAttribute extends atkAttribute
                     return array();
                 }
 
-                $processed["from"] = $this->removeSeparators($from);
-                $processed["to"] = $this->removeSeparators($to);
+                $processed["from"] = self::removeSeparators($from);
+                $processed["to"] = self::removeSeparators($to);
                 $searchmode = 'between';
             } else if (is_numeric($str)) {
-                $processed["from"] = (float) $this->removeSeparators($str); // quicksearch doesn't use an array.
+                $processed["from"] = (float) self::removeSeparators($str); // quicksearch doesn't use an array.
             } else {
                 return array();
             }
         } else {
             // assumes array('from'=><intval>, 'to'=><intval>)
             foreach ($value as $key => $search) {
-                $processed[$key] = $this->removeSeparators($search);
+                $processed[$key] = self::removeSeparators($search);
             }
         }
 

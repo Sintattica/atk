@@ -205,7 +205,7 @@ class atkExpressionAttribute extends atkAttribute
         $searchcondition = "";
 
         if ($this->getSearchType() == "number")
-            $value = atkNumberAttribute::processSearchValue($value);
+            $value = atkNumberAttribute::processSearchValue($value, $searchmode);
 
         if ($searchmode != "between") {
             // Use default handler, and use only the first field.
