@@ -603,8 +603,14 @@ class atkDateAttribute extends atkAttribute
 
         /* small date selections, never possible is field isn't obligatory (no min/max date) */
         if (!empty($maximum) && !empty($minimum) && $str_max - $str_min < 25) {
+
+            if (count($this->m_onchangecode))
+            {
+                $this->renderChangeHandler($fieldprefix);
+                $str_script = $this->getHtmlId($fieldprefix).'_onChange(this);"';
+            }
             $this->registerKeyListener($fieldname, KB_CTRLCURSOR | KB_LEFTRIGHT);
-            $result = '<select id="' . $fieldname . '" name="' . $fieldname . '">';
+            $result = '<select id="' . $fieldname . '" name="' . $fieldname . '" onChange="' . $str_script . '">';
             for ($i = $str_min; $i <= $str_max; $i ++) {
                 $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, substr($i, 4, 2), substr($i, 6, 2), substr($i, 0, 4)));
                 $result .= '<option value="' . $i . '"' . ($current !== NULL && $tmp_date[0] == $current[0]
