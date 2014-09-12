@@ -411,6 +411,10 @@ ATK.DateAttribute = {
         date.setHours(0);
         date.setMinutes(0);
         date.setSeconds(0);
+        if (min) {
+            // FIX date min disabled on calendar
+            min.setMilliseconds(0);
+        }
 
         if ((min && date < min) || (max && date > max))
             return true;
