@@ -15,6 +15,10 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in ATK 7.1.0 (WIP)
 ------------------------
+* atkDateAttribute:
+    searching improvement
+    fix dependency handling in "small date selection" mode
+    fix date min disabled on calendar
 * Fix grid searching problem after extended search
 * Export csv improvement
 + Add unregister_script function in atkpage
