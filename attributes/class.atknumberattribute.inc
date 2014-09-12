@@ -310,7 +310,7 @@ class atkNumberAttribute extends atkAttribute
         // NOTE: we don't use number_format because this sometimes causes rounding issues
         //       if a float can not be properly represented (see http://nl.php.net/manual/en/function.number-format.php#93893)
 
-        $tmp1 = round((float) $number, $this->getDecimals());
+        $tmp1 = abs(round((float) $number, $this->getDecimals()));
         $tmp1 .= $this->getDecimals() > 0 && strpos($tmp1, '.') === false ? '.' : '';
         $tmp1 .= str_repeat('0', max($this->getDecimals() - strlen(substr($tmp1, strpos($tmp1, '.') + 1)), 0));
 
@@ -318,7 +318,11 @@ class atkNumberAttribute extends atkAttribute
             $tmp1 = $tmp2;
         }
 
-        return strtr($tmp1, array(' ' => $thousandsSeparator, '.' => $decimalSeparator));
+        $r = strtr($tmp1, array(' ' => $thousandsSeparator, '.' => $decimalSeparator));
+        if ($number < 0) {
+            $r = '-' . $r;
+        }
+        return $r;
     }
 
     /**
