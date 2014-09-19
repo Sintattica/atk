@@ -558,7 +558,8 @@ class atkExportHandler extends atkActionHandler
             $recordset_new[] = $row;
         }
 
-        $rl->render($node_bk, $recordset_new, "", $enclosure, $enclosure, "\r\n", 1, "", "", array('filename' => 'export_' . $node->m_type), "csv", $source['generatetitlerow'], true, $delimiter);
+        $filename = 'export_' . strtolower(str_replace(' ', '_' , $this->getUi()->nodeTitle($node)));
+        $rl->render($node_bk, $recordset_new, "", $enclosure, $enclosure, "\r\n", 1, "", "", array('filename' => $filename), "csv", $source['generatetitlerow'], true, $delimiter);
 
         return true;
     }

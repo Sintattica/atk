@@ -40,11 +40,11 @@ class atkFileExport
      * @todo Currently supports only csv/excel mimetypes.
      * @param String $data  The content
      * @param String $fileName Filename for the download
-     * @param String $ext Extension of the file
      * @param String $type The type (csv / excel / xml)
+     * @param String $ext Extension of the file
      * @param String $compression Compression method (bzip / gzip)
      */
-    function export($data, $fileName, $type, $ext, $compression = "")
+    function export($data, $fileName, $type, $ext = "", $compression = "")
     {
         ob_end_clean();
         if ($compression == "bzip") {
@@ -53,14 +53,17 @@ class atkFileExport
         } elseif ($compression == "gzip") {
             $mime_type = 'application/x-gzip';
             $ext = "gz";
-        } elseif ($type == "csv" || $type == "excel") {
+        } elseif ($type == "csv") {
             $mime_type = 'text/x-csv';
             $ext = "csv";
+        } elseif ($type == "excel") {
+            $mime_type = 'application/octet-stream';
+            $ext = "xls";
         } elseif ($type == "xml") {
             $mime_type = 'text/xml';
             $ext = "xml";
         } else {
-            $mime_type = 'application/octetstream';
+            $mime_type = 'application/octet-stream';
         }
 
         header('Content-Type: ' . $mime_type);
