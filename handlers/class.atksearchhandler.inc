@@ -203,9 +203,7 @@ class atkSearchHandler extends atkAbstractSearchHandler
 
             $params["fields"] = array();
 
-            foreach ($node->m_attribIndexList as $attribIndex) { // array_keys($node->m_attribList) as $attribname
-                $attribname = $attribIndex['name'];
-
+            foreach ($node->getAttributeNames() as $attribname) {
                 $p_attrib = &$node->m_attribList[$attribname];
 
                 if (!$p_attrib->hasFlag(AF_HIDE_SEARCH))
