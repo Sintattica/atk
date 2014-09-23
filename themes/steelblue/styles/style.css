@@ -707,3 +707,7 @@ form
 .overlib_fg {
     background-color: #ffffcc;	
 }
+
+.atkfieldset div {
+    display: inline-block;
+}

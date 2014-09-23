@@ -37,7 +37,7 @@ class atkFieldSet extends atkAttribute
      */
     public function __construct($name, $template, $flags = 0)
     {
-        parent::__construct($name, $flags | AF_NO_SORT);
+        parent::__construct($name, $flags | AF_NO_SORT | AF_HIDE_SEARCH);
         $this->setTemplate($template);
         $this->setLoadType(NOLOAD);
         $this->setStorageType(NOSTORE);
@@ -45,7 +45,7 @@ class atkFieldSet extends atkAttribute
 
     /**
      * Is empty?
-     * 
+     *
      * @return boolean
      */
     public function isEmpty()
@@ -89,9 +89,7 @@ class atkFieldSet extends atkAttribute
     }
 
     /**
-     * Sets the fieldset template. To include an attribute label use 
-     * [attribute.label] to include an attribute edit/display field
-     * use [attribute.field].
+     * Sets the fieldset template. To include an attribute use [attribute name].
      *
      * @param string $template template string
      */
@@ -139,7 +137,7 @@ class atkFieldSet extends atkAttribute
      * @param array $record       record
      * @param string $mode        mode
      * @param string $fieldprefix fieldprefix
-     * 
+     *
      * @return string rendered HTML
      */
     protected function renderFieldSet($type, $record, $mode, $fieldprefix = '')
@@ -147,25 +145,46 @@ class atkFieldSet extends atkAttribute
         $replacements = array();
 
         $fields = array_unique($this->getParser()->getFields());
-        foreach ($fields as $field) {
-            @list($attrName, $part) = explode('.', $field);
+
+        foreach ($fields as $attrName) {
             $attr = $this->getOwnerInstance()->getAttribute($attrName);
 
-            switch ($part) {
-                case 'label':
-                    $replacements[$attrName][$part] = $attr->getLabel($record, $mode);
-                    break;
+            // render the field
+            if ($type == 'edit') {
+                if (($mode == 'edit' && $attr->hasFlag(AF_HIDE_EDIT)) || ($mode == 'add' && $attr->hasFlag(AF_HIDE_ADD))) {
+                    $field = '';
+                } else {
+                    $field = $attr->getEdit($mode, $record, $fieldprefix);
+                }
+            } else if ($type == 'display') {
+                if (($mode == 'view' && $attr->hasFlag(AF_HIDE_VIEW)) || ($mode == 'list' && $attr->hasFlag(AF_HIDE_LIST))) {
+                    $field = '';
+                } else {
+                    $field = $attr->getView($mode, $record);
+                }
+            }
 
-                case 'field':
-                    if ($type == 'edit')
-                        $replacements[$attrName][$part] = $attr->getEdit($mode, $record, $fieldprefix);
-                    else if ($type == 'display')
-                        $replacements[$attrName][$part] = $attr->display($record, $mode);
-                    break;
+            if ($field) {
+                // render the label
+                if (!$attr->hasFlag(AF_NO_LABEL)) {
+                    $label = $attr->getLabel($record, $mode) . ': ';
+                } else {
+                    $label = '';
+                }
+
+                // wrap in a div with appropriate id in order to properly handle a refreshAttribute (v. atkEditFormModifier)
+                $html = sprintf('%s<div id="%s_%s_%s">%s</div>',
+                    $label, $this->getOwnerInstance()->getModule(), $this->getOwnerInstance()->getType(), $attrName, $field
+                );
+
+                $replacements[$attrName] = $html;
+
+            } else {
+                $replacements[$attrName] = '';
             }
         }
 
-        return $this->getParser()->parse($replacements);
+        return '<div class="atkfieldset form-inline">' . $this->getParser()->parse($replacements) . '</div>';
     }
 
     /**
@@ -174,7 +193,7 @@ class atkFieldSet extends atkAttribute
      * @param array  $record
      * @param string $fieldprefix
      * @param string $mode
-     * 
+     *
      * @return string
      */
     public function edit($record, $fieldprefix = '', $mode = '')
@@ -187,12 +206,11 @@ class atkFieldSet extends atkAttribute
      *
      * @param string $record
      * @param string $mode
-     * 
+     *
      * @return string
      */
     public function display($record, $mode = '')
     {
         return $this->renderFieldSet('display', $record, $mode);
     }
-
 }
