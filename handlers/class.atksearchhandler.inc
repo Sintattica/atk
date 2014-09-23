@@ -160,9 +160,8 @@ class atkSearchHandler extends atkAbstractSearchHandler
 
             $params["content"] = $this->invoke("searchForm", $record);
 
-            $params["buttons"][] = '<input type="submit" class="btn btn-primary btn_search atkdefaultbutton" value="' . atktext("search", "atk") . '" name="atkdosearch" >';
-            $params["buttons"][] = '<input class="btn btn-default btn_cancel" type="submit" value="' . atktext("cancel", "atk") . '" name="atkcancel"/>';
-
+            $params["buttons"][] = $controller->getButton('cancel');
+            $params["buttons"][] = $controller->getButton('search', true);
 
             $params["formend"] = '</form>';
 
