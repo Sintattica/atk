@@ -605,16 +605,25 @@ class atkManyToOneRelation extends atkRelation
      *
      * @return String The label for the "none" option
      */
-    function getNoneLabel()
+    function getNoneLabel($mode = '')
     {
+        $text_key = "select_none";
+        if (in_array($mode, array('add', 'edit')) && $this->hasFlag(AF_OBLIGATORY)) {
+            if ((($mode == 'add' && !$this->hasFlag(AF_READONLY_ADD)) || ($mode == 'edit' && !$this->hasFlag(AF_READONLY_EDIT)))) {
+                $text_key = 'select_none_obligatory';
+            }
+        } else if ($mode == 'search') {
+            $text_key = 'search_none';
+        }
+
         if ($this->m_noneLabel !== NULL)
             return $this->m_noneLabel;
         $nodename = $this->m_destInstance->m_type;
         $modulename = $this->m_destInstance->m_module;
         $ownermodulename = $this->m_ownerInstance->m_module;
-        $label = atktext($this->fieldName() . '_select_none', $ownermodulename, $this->m_owner, "", "", true);
+        $label = atktext($this->fieldName() . '_' . $text_key, $ownermodulename, $this->m_owner, "", "", true);
         if ($label == "")
-            $label = atktext('select_none', $modulename, $nodename);
+            $label = atktext($text_key, $modulename, $nodename);
 
         return $label;
     }
@@ -638,14 +647,14 @@ class atkManyToOneRelation extends atkRelation
 
             if (!$this->isEmpty($record)) {
                 $result = $this->m_destInstance->descriptor($record[$this->fieldName()]);
-                if ($this->hasFlag(AF_RELATION_AUTOLINK) && (!in_array($mode, array("csv", "plain", "list")))) { // create link to edit/view screen
+                if ($this->hasFlag(AF_RELATION_AUTOLINK) && (!in_array($mode, array("csv", "plain")))) { // create link to edit/view screen
                     if (($this->m_destInstance->allowed("view")) && !$this->m_destInstance->hasFlag(NF_NO_VIEW) && $result != "") {
                         $saveForm = $mode == 'add' || $mode == 'edit';
                         $result = href(dispatch_url($this->m_destination, "view", array("atkselector" => $this->m_destInstance->primaryKey($record[$this->fieldName()]))), $result, SESSION_NESTED, $saveForm);
                     }
                 }
             } else {
-                $result = (!in_array($mode, array("csv", "plain")) ? $this->getNoneLabel()
+                $result = (!in_array($mode, array("csv", "plain")) ? $this->getNoneLabel($mode)
                             : ''); // no record
             }
             return $result;
@@ -755,7 +764,7 @@ class atkManyToOneRelation extends atkRelation
     {
         if ((!$this->hasFlag(AF_RELATION_AUTOCOMPLETE) && !$this->hasFlag(AF_LARGE)) ||
             $this->m_autocomplete_minrecords > -1) {
-            $this->m_selectableRecords = $this->_getSelectableRecords($record, 'select');
+            $this->m_selectableRecords = $this->_getSelectableRecords($record, $mode);
 
             if (count($this->m_selectableRecords) > 0 &&
                 !$this->getConfigOptionObligatoryNullOption() &&
@@ -763,7 +772,7 @@ class atkManyToOneRelation extends atkRelation
                 (!$this->hasFlag(AF_OBLIGATORY) && $this->hasFlag(AF_RELATION_NO_NULL_ITEM)))) {
                 if (!isset($record[$this->fieldName()]) || !is_array($record[$this->fieldName()])) {
                     $record[$this->fieldName()] = $this->m_selectableRecords[0];
-                } else if (!$this->_isSelectableRecord($record, 'select')) {
+                } else if (!$this->_isSelectableRecord($record, $mode)) {
                     $record[$this->fieldName()] = $this->m_selectableRecords[0];
                 } else {
                     $current = $this->getDestination()->primaryKey($record[$this->fieldName()]);
@@ -776,7 +785,7 @@ class atkManyToOneRelation extends atkRelation
                     }
                 }
             }
-        } else if (is_array($record[$this->fieldName()]) && !$this->_isSelectableRecord($record, 'select')) {
+        } else if (is_array($record[$this->fieldName()]) && !$this->_isSelectableRecord($record, $mode)) {
             $record[$this->fieldName()] = null;
         } else if (is_array($record[$this->fieldName()])) {
             $this->populate($record);
@@ -808,11 +817,13 @@ class atkManyToOneRelation extends atkRelation
             return atkerror("Could not create destination for destination: $this -> m_destination!");
         }
 
+        $this->m_ownerInstance->addStyle("atkmanytoonerelation.css");
+
         $recordset = $this->m_selectableRecords;
 
         // load records for bwc
         if ($recordset === null && $this->hasFlag(AF_RELATION_AUTOCOMPLETE) && $this->m_autocomplete_minrecords > -1) {
-            $recordset = $this->_getSelectableRecords($record, 'select');
+            $recordset = $this->_getSelectableRecords($record, $mode);
         }
 
         if ($this->hasFlag(AF_RELATION_AUTOCOMPLETE) && (is_object($this->m_ownerInstance)) && ((is_array($recordset) && count($recordset) > $this->m_autocomplete_minrecords) || $this->m_autocomplete_minrecords == -1)) {
@@ -833,7 +844,7 @@ class atkManyToOneRelation extends atkRelation
         if (!$this->hasFlag(AF_LARGE)) { // normal dropdown..
             // load records for bwc
             if ($recordset == null) {
-                $recordset = $this->_getSelectableRecords($record, 'select');
+                $recordset = $this->_getSelectableRecords($record, $mode);
             }
 
             if (count($recordset) == 0) {
@@ -863,7 +874,7 @@ class atkManyToOneRelation extends atkRelation
                 if ($this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
                     (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) ||
                     ($this->getConfigOptionObligatoryNullOption() && !is_array($value))) {
-                    $result.= '<option value="">' . $this->getNoneLabel() . '</option>';
+                    $result.= '<option value="">' . $this->getNoneLabel($mode) . '</option>';
                 }
 
                 foreach ($recordset as $selectable) {
@@ -875,14 +886,26 @@ class atkManyToOneRelation extends atkRelation
                 $result .= '</select>';
             }
         } else {
+            $editflag = false;
+
             $destrecord = $record[$this->fieldName()];
             if (is_array($destrecord)) {
-                $result.= '<span id="' . $id . '_current" >' . $this->m_destInstance->descriptor($destrecord) . "&nbsp;&nbsp;";
-                if (!$this->hasFlag(AF_OBLIGATORY)) {
-                    $result.= '<a href="#" onClick="document.getElementById(\'' .
-                        $id . '\').value=\'\'; document.getElementById(\'' . $id . '_current\').style.display=\'none\'">' . atktext("unselect") . '</a>&nbsp;&nbsp;';
+                $result = '<span id="'.$id.'_current" >';
+
+                if ($this->hasFlag(AF_RELATION_AUTOLINK) && $this->m_destInstance->allowed("view") && !$this->m_destInstance->hasFlag(NF_NO_VIEW)) {
+                    $result .= href(dispatch_url($this->m_destination, "view", array("atkselector"=>$this->m_destInstance->primaryKey($record[$this->fieldName()]))), $this->m_destInstance->descriptor($destrecord), SESSION_NESTED);
+                } else {
+                    $result = $this->m_destInstance->descriptor($destrecord);
                 }
-                $result.= '</span>';
+
+                $result .= "&nbsp;";
+
+                if (!$this->hasFlag(AF_OBLIGATORY))
+                {
+                    $result.= '<a href="#" onClick="document.getElementById(\''.
+                        $id.'\').value=\'\'; document.getElementById(\''.$id.'_current\').style.display=\'none\'" class="atkmanytoonerelation">'.atktext("unselect").'</a>&nbsp;';
+                }
+                $result.= '&nbsp;</span>';
             }
 
             $result .= $this->hide($record, $fieldprefix);
@@ -936,11 +959,11 @@ class atkManyToOneRelation extends atkRelation
 
             if ($this->m_destInstance->allowed("edit")) {
                 $editlink = session_url(dispatch_url($this->getAutoLinkDestination(), "edit", array("atkselector" => "REPLACEME")), SESSION_NESTED);
-                $autolink['edit'] = "&nbsp;<a href='javascript:atkSubmit(mto_parse(\"" . atkurlencode($editlink) . "\", document.entryform." . $id . ".value))'>" . atktext('edit') . "</a>";
+                $autolink['edit'] = "&nbsp;<a href='javascript:atkSubmit(mto_parse(\"" . atkurlencode($editlink) . "\", document.entryform." . $id . ".value))' class='atkmanytoonerelation'>" . atktext('edit') . "</a>";
             }
             if ($this->m_destInstance->allowed("add")) {
                 $autolink['add'] = "&nbsp;" . href(dispatch_url($this->getAutoLinkDestination(), "add", array("atkpkret" => $id, "atkfilter" => ($this->m_useFilterForAddLink && $filter != ""
-                                ? $filter : ""))), atktext("new"), SESSION_NESTED, true);
+                                ? $filter : ""))), atktext("new"), SESSION_NESTED, true, 'class="atkmanytoonerelation"');
             }
         }
         return $autolink;
@@ -1113,9 +1136,11 @@ class atkManyToOneRelation extends atkRelation
                 $pkfield = $this->m_destInstance->primaryKeyField();
 
                 $result.= '<option value="">' . atktext('search_all') . '</option>';
-                if (!$this->hasFlag(AF_OBLIGATORY))
-                    $result.= '<option value="__NONE__"' . (isset($record[$this->fieldName()]) && atk_in_array('__NONE__', $record[$this->fieldName()])
-                                ? ' selected="selected"' : '') . '>' . atktext('search_none') . '</option>';
+                if ($this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
+                    (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) ||
+                    (atkconfig("list_obligatory_null_item"))) {
+                    $result.= '<option value="__NONE__"'.(isset($record[$this->fieldName()]) && atk_in_array('__NONE__', $record[$this->fieldName()]) ? ' selected="selected"' : '').'>'.$this->getNoneLabel('search').'</option>';
+                }
 
                 for ($i = 0; $i < count($recordset); $i ++) {
                     $pk = $recordset[$i][$pkfield];
@@ -1392,7 +1417,7 @@ class atkManyToOneRelation extends atkRelation
         $sessionmanager = atkGetSessionManager();
         if ($sessionmanager)
             $storetype = $sessionmanager->stackVar('atkstore');
-        if ($storetype !== 'session' && !$this->_isSelectableRecord($record)) {
+        if ($storetype !== 'session' && !$this->_isSelectableRecord($record, $mode)) {
             triggerError($record, $this->fieldName(), 'error_integrity_violation');
         }
     }
@@ -1488,7 +1513,7 @@ class atkManyToOneRelation extends atkRelation
      * @param string $mode The mode we're in
      * @return Array with the selected record
      */
-    function _getSelectedRecord($record = array(), $mode = "select")
+    function _getSelectedRecord($record = array(), $mode = "")
     {
         $method = $this->fieldName() . "_selected";
         if (method_exists($this->m_ownerInstance, $method))
@@ -1504,7 +1529,7 @@ class atkManyToOneRelation extends atkRelation
      * @param string $mode The mode we're in
      * @return Array with the selected record
      */
-    function getSelectedRecord($record = array(), $mode = "select")
+    function getSelectedRecord($record = array(), $mode = "")
     {
         $this->createDestination();
 
@@ -1516,7 +1541,7 @@ class atkManyToOneRelation extends atkRelation
             $condition = $condition . ' AND ' . $filter;
         }
 
-        $record = $this->m_destInstance->select($condition)->mode($mode)->firstRow();
+        $record = $this->m_destInstance->select($condition)->firstRow();
         return $record;
     }
 
@@ -1528,7 +1553,7 @@ class atkManyToOneRelation extends atkRelation
      * @param string $mode The mode we're in
      * @return Array with the selectable records
      */
-    function _getSelectableRecords($record = array(), $mode = "select")
+    function _getSelectableRecords($record = array(), $mode = "")
     {
         $method = $this->fieldName() . "_selection";
         if (method_exists($this->m_ownerInstance, $method))
@@ -1545,7 +1570,7 @@ class atkManyToOneRelation extends atkRelation
      * @param string $mode The mode we're in
      * @return Boolean to indicate if the record is selectable
      */
-    function _isSelectableRecord($record = array(), $mode = "select")
+    function _isSelectableRecord($record = array(), $mode = "")
     {
         $method = $this->fieldName() . "_selectable";
         if (method_exists($this->m_ownerInstance, $method))
@@ -1580,7 +1605,7 @@ class atkManyToOneRelation extends atkRelation
      * @param string $mode The mode we're in
      * @return Boolean to indicate if the record is selectable
      */
-    function isSelectableRecord($record = array(), $mode = "select")
+    function isSelectableRecord($record = array(), $mode = "")
     {
         if ($record[$this->fieldName()] == NULL)
             return false;
@@ -1630,7 +1655,7 @@ class atkManyToOneRelation extends atkRelation
      * @param string $mode The mode we're in
      * @return Array with the selectable records
      */
-    function getSelectableRecords($record = array(), $mode = "select")
+    function getSelectableRecords($record = array(), $mode = "")
     {
         $this->createDestination();
 
@@ -1639,7 +1664,6 @@ class atkManyToOneRelation extends atkRelation
             ->select($selector)
             ->orderBy($this->getDestination()->getOrder())
             ->includes(atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey))
-            ->mode($mode)
             ->allRows();
 
         return $result;
@@ -1712,7 +1736,7 @@ class atkManyToOneRelation extends atkRelation
             // check if destination table is empty
             // only check if hidewhenempty is set to true
             if ($this->m_hidewhenempty) {
-                $recs = $this->_getSelectableRecords($defaults, 'select');
+                $recs = $this->_getSelectableRecords($defaults, $mode);
                 if (count($recs) == 0)
                     return $this->hide($defaults, $fieldprefix);
             }
@@ -2051,16 +2075,15 @@ class atkManyToOneRelation extends atkRelation
     {
         $this->createDestination();
 
-        // register base JavaScript code and stylesheet
+        // register base JavaScript code
         $page = &$this->m_ownerInstance->getPage();
         $page->register_script(atkconfig('atkroot') . 'atk/javascript/class.atkmanytoonerelation.js');
-        $this->m_ownerInstance->addStyle("atkmanytoonerelation.css");
 
         $id = $this->getHtmlId($fieldPrefix);
 
         // validate is this is a selectable record and if so
         // retrieve the display label and hidden value
-        if ($this->_isSelectableRecord($record, 'select')) {
+        if ($this->_isSelectableRecord($record, $mode)) {
             $current = $record[$this->fieldName()];
             $label = $this->m_destInstance->descriptor($record[$this->fieldName()]);
             $value = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
@@ -2109,7 +2132,7 @@ class atkManyToOneRelation extends atkRelation
         $filter = $this->createSearchFilter($searchvalue);
         $this->addDestinationFilter($filter);
 
-        $records = $this->_getSelectableRecords($record, 'select');
+        $records = $this->_getSelectableRecords($record, $mode);
 
         if (count($records) == 0) {
             if (in_array($this->m_autocomplete_searchmode, array("exact", "startswith", "contains")))
@@ -2279,6 +2302,12 @@ class atkManyToOneRelation extends atkRelation
                 $p_attrib = $this->m_destInstance->m_attribList[$attribname];
                 $fields[$p_attrib->fieldName()] = $table . $p_attrib->fieldName() . $post;
             }
+
+            if (is_array($searchValue)) {
+                // (fix warning trim function)
+                $searchValue = $searchValue[0];
+            }
+
             $value = $this->escapeSQL(trim($searchValue));
             $value = str_replace("  ", " ", $value);
             if (!$value) {

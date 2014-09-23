@@ -15,6 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in ATK 7.1.0 (WIP)
 ------------------------
+* atkManyToOneRelation improvements
 * Form buttons rendering improvement
 + Rendering improvement in atkFieldSet
 * Fixing in atkNumberAttribute, atkExpressionAttribute, atkDurationAttribute, atkUpdateStampAttribute
