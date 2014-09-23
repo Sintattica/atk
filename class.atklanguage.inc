@@ -347,9 +347,7 @@ class atkLanguage
 
     /**
      * Determine the list of modules we need to go through to check
-     * language strings. Overrides have precedence, then the
-     * passed module is considered, finally if no string is found
-     * the fallbacks are checked.
+     * language strings.
      *
      * @access protected
      * @param String $module manually passed module
@@ -366,7 +364,13 @@ class atkLanguage
             $arr[] = $module;
         if ($firstfallback != "")
             $arr[] = $firstfallback;
-        $modules = array_merge($this->m_overridemodules, $arr, $this->_getFallbackModules($modulefallback));
+        if ($module == 'atk') {
+            // overrides have precedence, then the passed module (finally the fallbacks)
+            $modules = array_merge($this->m_overridemodules, $arr, $this->_getFallbackModules($modulefallback));
+        } else {
+            // the passed module has precedence, then the overrides (finally the fallbacks)
+            $modules = array_merge($arr, $this->m_overridemodules, $this->_getFallbackModules($modulefallback));
+        }
         return $modules;
     }
 
