@@ -184,7 +184,7 @@ class atkFieldSet extends atkAttribute
             }
         }
 
-        return '<div class="atkfieldset form-inline">' . $this->getParser()->parse($replacements) . '</div>';
+        return '<div class="atkfieldset">' . $this->getParser()->parse($replacements) . '</div>';
     }
 
     /**

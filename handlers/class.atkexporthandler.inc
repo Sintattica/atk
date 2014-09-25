@@ -204,7 +204,7 @@ class atkExportHandler extends atkActionHandler
         $params["buttons"][] = atkButton(atktext("cancel", "atk"), "", SESSION_BACK, true);
         $params["buttons"][] = '<input class="btn" type="submit" value="' . atkText("export", "atk") . '"/>';
         $params["buttons"][] = '<input id="export_save_button" style="display:none;" value="' . atktext("save_export_selection", "atk") . '" name="save_export" class="btn" type="submit" /> ';
-        $params["content"] = atkText("export_config_explanation", "atk", $this->m_node->m_type) . '<br/><br/>';
+        $params["content"] = '<b>' . atkText("export_config_explanation", "atk", $this->m_node->m_type) . '</b><br/><br/>';
         $params["content"] .= $this->_getOptions();
         $params["formend"] = '</form>';
 
