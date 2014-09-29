@@ -150,15 +150,14 @@ class atkImportHandler extends atkActionHandler
     {
         $result = array();
 
+        if (atkLevel() > 0) {
+            $result[] = atkButton($this->m_node->text("cancel", "atk"), "", SESSION_BACK, true);
+        }
         if ($phase == 'init') {
             $result[] = '<input class="btn" type="submit" value="' . $this->m_node->text("import_upload") . '">';
         } else if ($phase == 'analyze') {
             $result[] = '<input type="submit" class="btn" name="analyse" value="' . $this->m_node->text("import_analyse") . '">';
             $result[] = '<input type="submit" class="btn" name="import" value="' . $this->m_node->text("import_import") . '"> ';
-        }
-
-        if (atkLevel() > 0) {
-            $result[] = atkButton($this->m_node->text("cancel", "atk"), "", SESSION_BACK, true);
         }
 
         return $result;
@@ -499,7 +498,7 @@ class atkImportHandler extends atkActionHandler
         $content.= atktext("import_onfalseidentifier") . ': </td><td> <input type="checkbox" name="onfalseid" class="atkcheckbox" value="1" ' . ($onfalseidentifier
                     ? "CHECKED" : "") . '/>';
         $content.= '</td></tr><tr><td>';
-        $content.= atktext("import_novalidatefirst") . ': </td><td> <input type="checkbox" name="novalidatefirst" class="atkcheckbox" value="1" ' . ($novalidatefirst
+        $content.= atktext("import_validatefirst") . ': </td><td> <input type="checkbox" name="novalidatefirst" class="atkcheckbox" value="1" ' . ($novalidatefirst
                     ? "CHECKED" : "") . '/>';
 
         $content.= '    </td>';
