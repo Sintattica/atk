@@ -15,7 +15,7 @@
     {/if}  
     {if (isset($header) && !empty($header))}
         <tr>
-            <td valign="top" align="left">{$header}<br/></td>
+            <td valign="top" align="left" class="adminHeader">{$header}<br/></td>
         </tr>
     {/if}
     {if (isset($index) && !empty($index))}

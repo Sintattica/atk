@@ -166,3 +166,52 @@ img.recordlist
     width: 16px;
     height: 16px;
 }
+
+table td.adminHeader a {
+    color: #ba0000;
+}
+
+td.mra a {
+    color: #ba0000;
+}
+
+/* OVERRIDES */
+
+.recordList th {
+    text-align: center;
+    padding: 6px 4px !important;
+}
+
+.recordList {
+    border-bottom: 1px solid #eee;
+    border-collapse: collapse;
+}
+
+.recordListTh, .recordListThFirst {
+    border-bottom: 0;
+}
+
+.recordListThFirst, .recordListTh:first-child {
+    border-left: 1px solid #749abe;
+}
+
+.recordListTh:last-child {
+    border-right: 1px solid #749abe;
+}
+
+.recordListTd, .recordListTdFirst {
+    border-bottom: 1px dashed #ccc;
+}
+
+.recordListSearch {
+    background-color: #E9E9E9 !important;
+    border-bottom-width: 1px;
+}
+
+.recordListSearch:last-child {
+    border-right-color: #E9E9E9;
+}
+
+.recordList th.recordListSearch a {
+    color: #777777 !important;
+}

@@ -195,7 +195,7 @@ ul, ol, li
     background: #fff url(../images/tabLeft.gif) no-repeat left top;
     font-size: 13px;
     font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
-    text-transform: capitalize;
+    /*text-transform: capitalize;*/
     font-weight: bold;
     color: #FFFFFF;
 }
@@ -376,7 +376,7 @@ button.atkdefaultbutton
 
 #loginform-content
 {
-    width: 220px;
+    /*width: 220px;*/
 }
 
 .loginformField
@@ -407,6 +407,10 @@ button.atkdefaultbutton
 #action-buttons
 {
     text-align: center;
+}
+
+td.field {
+    vertical-align: middle;
 }
 
 #editform td.field
@@ -704,5 +708,9 @@ form
 }
 
 .atkfieldset div {
+    display: inline-block;
+}
+
+div.form-inline {
     display: inline-block;
 }

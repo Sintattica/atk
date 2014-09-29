@@ -25,8 +25,6 @@
                 {$auth_max_loginattempts_exceeded}
             {else}
                 {$atksessionformvars}
-                {if isset($auth_mismatch)}<span class="error">{$auth_mismatch}</span><br>{/if}
-                {if isset($auth_account_locked)}<span class="error">{$auth_account_locked}</span><br>{/if}
                 <table cellpadding="0" cellspacing="0" border="0"><tr>
                         <td class="loginformLabel">{atktext username}:</td><td class="loginformField">{$userfield}</td>
                     </tr><tr>
@@ -36,8 +34,11 @@
                             <input name="login" class="button atkdefaultbutton" type="submit" value="{atktext login}">
                             {if $auth_enablepasswordmailer}<input name="login" class="button" type="submit" value="{atktext password_forgotten}">{/if}
                         </td>
-                    </tr></table>
-                {/if}
+                    </tr>
+                </table>
+                {if isset($auth_mismatch)}<br><span class="error">{$auth_mismatch}</span><br>{/if}
+                {if isset($auth_account_locked)}<b/><span class="error">{$auth_account_locked}</span><br>{/if}
+            {/if}
         </div>
     </form>
 </div>
