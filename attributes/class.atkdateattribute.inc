@@ -606,7 +606,7 @@ class atkDateAttribute extends atkAttribute
 
             if (count($this->m_onchangecode))
             {
-                $this->renderChangeHandler($fieldprefix);
+                $this->_renderChangeHandler($fieldprefix);
                 $str_script = $this->getHtmlId($fieldprefix).'_onChange(this);"';
             }
             $this->registerKeyListener($fieldname, KB_CTRLCURSOR | KB_LEFTRIGHT);
@@ -648,7 +648,7 @@ class atkDateAttribute extends atkAttribute
                 $str_script = "AdjustDate(this, '" . $fieldname . "');";
 
             if (count($this->m_onchangecode) || count($this->getDependencies())) {
-                $this->renderChangeHandler($fieldprefix);
+                $this->_renderChangeHandler($fieldprefix);
                 $str_script .= $this->getHtmlId($fieldprefix) . '_onChange(this);"';
             }
 
@@ -1240,22 +1240,6 @@ class atkDateAttribute extends atkAttribute
     function addOnChangeHandler($jscode)
     {
         $this->m_onchangecode[] = $jscode;
-    }
-
-    /**
-     * Render the onchange handler code
-     *
-     * @param string $fieldprefix
-     */
-    function renderChangeHandler($fieldprefix)
-    {
-        if (count($this->m_onchangecode) || count($this->getDependencies())) {
-            $page = &$this->m_ownerInstance->getPage();
-            $page->register_scriptcode("function " . $this->getHtmlId($fieldprefix) . "_onChange(el)
-                                    {
-                                      " . implode("\n", $this->m_onchangecode) . "
-                                    }\n");
-        }
     }
 
     /**
