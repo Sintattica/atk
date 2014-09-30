@@ -31,3 +31,10 @@ div.stacktrace
 {
     height: 45px;
 }
+
+/* attributes spinners */
+.atkbusy {
+    margin-left: 5px;
+    display: none;
+    vertical-align: middle;
+}

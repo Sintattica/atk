@@ -830,7 +830,6 @@ class atkManyToOneRelation extends atkRelation
             return $this->drawAutoCompleteBox($record, $fieldprefix, $mode);
         }
 
-
         $id = $fieldprefix . $this->fieldName();
         $filter = $this->parseFilter($this->m_destinationFilter, $record);
         $autolink = $this->getRelationAutolink($id, $filter);
@@ -884,6 +883,7 @@ class atkManyToOneRelation extends atkRelation
                 }
 
                 $result .= '</select>';
+                $result .= $this->getSpinner();
             }
         } else {
             $editflag = false;
@@ -1138,7 +1138,7 @@ class atkManyToOneRelation extends atkRelation
                 $result.= '<option value="">' . atktext('search_all') . '</option>';
                 if ($this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
                     (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) ||
-                    (atkconfig("list_obligatory_null_item"))) {
+                    $this->getConfigOptionObligatoryNullOption()) {
                     $result.= '<option value="__NONE__"'.(isset($record[$this->fieldName()]) && atk_in_array('__NONE__', $record[$this->fieldName()]) ? ' selected="selected"' : '').'>'.$this->getNoneLabel('search').'</option>';
                 }
 

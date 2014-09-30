@@ -537,6 +537,7 @@ class atkDateAttribute extends atkAttribute
                 $result.=' <input ' . $this->getCSSClassAttribute(array("button",
                         "atkbutton")) . ' type="button" value="..." onclick="return showCalendar(\'' . $fieldname . '\', \'' . $fieldname . '\', \'' . $format . '\', false);">';
             }
+            $result .= $this->getSpinner();
             return $result;
         }
 
@@ -617,6 +618,7 @@ class atkDateAttribute extends atkAttribute
                             ? ' selected' : '') . '>' . $this->formatDate($tmp_date, $str_format, !$this->hasFlag(AF_DATE_EDIT_NO_DAY)) . '</option>';
             }
             $result .= '</select>';
+            $result .= $this->getSpinner();
             return $result;
         }
 
@@ -682,6 +684,7 @@ class atkDateAttribute extends atkAttribute
         if (!$this->m_simplemode) {
             $result.= '</div>'; // form-inline
         }
+        $result .= $this->getSpinner();
 
         /* return result */
         return $result;

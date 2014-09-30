@@ -707,7 +707,7 @@ form
     background-color: #ffffcc;	
 }
 
-.atkfieldset div {
+.atkfieldset > div {
     display: inline-block;
 }
 

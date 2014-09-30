@@ -296,6 +296,8 @@ class atkListAttribute extends atkAttribute
         }
 
         $result.='</select>';
+        $result .= $this->getSpinner();
+
         return $result;
     }
 
