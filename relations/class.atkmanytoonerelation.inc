@@ -1135,7 +1135,10 @@ class atkManyToOneRelation extends atkRelation
 
                 $pkfield = $this->m_destInstance->primaryKeyField();
 
-                $result.= '<option value="">' . atktext('search_all') . '</option>';
+                if (!$extended) {
+                    $result .= '<option value="">' . atktext('search_all') . '</option>';
+                }
+
                 if ($this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
                     (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) ||
                     $this->getConfigOptionObligatoryNullOption()) {
