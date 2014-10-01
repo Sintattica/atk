@@ -15,6 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in ATK 7.1.0 (WIP)
 ------------------------
++ Added property in atkListAttribute to render a multiple select also in simple search
 + Added spinner showing next to attributes during dependencies execution
 * Steelblue/Stillblue themes improvements
 * Languages translations refining (en/it)
