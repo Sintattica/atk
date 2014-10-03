@@ -5,7 +5,7 @@
     float: left;
 }
 
-.panelTitleRight 
+.panelTitleRight
 {
     Height: 26px;
 }
@@ -22,27 +22,12 @@ div.stacktrace
     margin-bottom: 8px;
 }
 
-.actionpageWrapper 
+.actionpageWrapper
 {
     width:100%;
 }
 
-#topSpacer 
+#topSpacer
 {
     height: 45px;
-}
-
-/* attributes spinner */
-.atkbusy {
-    display: none;
-    margin-left: 5px;
-    vertical-align: middle;
-}
-
-/* action buttons spinner */
-#action-buttons .spinner {
-    visibility: hidden;
-    display: inline-block;
-    margin-left: 5px;
-    vertical-align: middle;
 }

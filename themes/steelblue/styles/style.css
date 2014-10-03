@@ -7,7 +7,7 @@ body
     font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
 }
 
-.clickable 
+.clickable
 {
     cursor: pointer;
 }
@@ -65,6 +65,11 @@ a:hover
     padding: 3px 0px 3px 0px;
 }
 
+.field a
+{
+    /*color: #ba0000;*/
+}
+
 .tab
 {
     font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
@@ -112,12 +117,12 @@ a:hover
 .atkmessages_general,
 .atkmessages_success,
 .atkmessages_failure,
-.atkmessages_warning  
+.atkmessages_warning
 {
     margin-bottom: 1px;
     padding: 3px;
     padding-left: 6px;
-    padding-right: 6px;	
+    padding-right: 6px;
 }
 
 .atkmessages_general
@@ -138,7 +143,7 @@ a:hover
     color: #000;
 }
 
-.atkmessages_warning a 
+.atkmessages_warning a
 {
     color: #000;
 }
@@ -542,9 +547,9 @@ form
     height:25px;
     margin:0;
     padding:0;
-    text-align:center;      
+    text-align:center;
     padding-right: 60px;
-    padding-top: 3px;   
+    padding-top: 3px;
     overflow: hidden;
 }
 
@@ -585,9 +590,9 @@ form
 .atkdialog .s {
     background:transparent url(../images/atkdialog_corners_bottom.gif) repeat-x scroll 0 -24px;
     font-size:11px;
-    height:12px;  
+    height:12px;
     overflow:hidden;
-} 
+}
 
 .atkdialog .se_resize_handle {
     background:transparent url(../images/atkdialog_sizer.gif) no-repeat scroll right 0;
@@ -596,17 +601,17 @@ form
     padding-right:12px;
 }
 
-.atkdialog .se_sizer { 
+.atkdialog .se_sizer {
     width:12px;
     height:12px;
-}          
+}
 
 .atkdialog .buttons {
     position: absolute;
     top:1px;
     right:10px;
-    height: 20px;   
-}                
+    height: 20px;
+}
 
 .atkdialog .buttons a.close {
     background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 0;
@@ -615,7 +620,7 @@ form
     float:left;
     width:23px;
     font-size:1px;
-    padding-top:2px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/       
+    padding-top:2px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/
 }
 
 .atkdialog .buttons a:hover.close {
@@ -629,7 +634,7 @@ form
     float:left;
     width:23px;
     font-size:1px;
-    padding-top:1px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/       
+    padding-top:1px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/
 }
 .atkdialog .buttons a:hover.maximize {
     background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -54px;
@@ -642,15 +647,15 @@ form
     float:left;
     width:23px;
     font-size:1px;
-    padding-top:0px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/       
-}                            
+    padding-top:0px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/
+}
 
 .atkdialog .buttons a:hover.minimize {
     background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -90px;
-}      
+}
 
 .atkdialog .buttons a.minimize.disabled, .atkdialog .buttons.over a.minimize.disabled  {
-    background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -108px !important; 
+    background:transparent url(../images/atkdialog_buttons.gif) no-repeat 0 -108px !important;
 }
 
 .atkdialog_overlay {
@@ -664,10 +669,10 @@ form
     background:#FFF;
     border:1px #000 dashed;
     filter:alpha(opacity=60);
-    opacity:0.6;  
+    opacity:0.6;
     position:absolute;
     -moz-opacity:0.6;
-} 
+}
 
 .load_criteria {
     font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
@@ -704,7 +709,7 @@ form
 }
 
 .overlib_fg {
-    background-color: #ffffcc;	
+    background-color: #ffffcc;
 }
 
 .atkfieldset > div {
@@ -713,4 +718,19 @@ form
 
 div.form-inline {
     display: inline-block;
+}
+
+/* attributes spinner */
+.atkbusy {
+    display: none;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+/* action buttons spinner */
+#action-buttons .spinner {
+    visibility: hidden;
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: middle;
 }
