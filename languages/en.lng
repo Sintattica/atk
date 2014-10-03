@@ -155,6 +155,7 @@ $en = array(
     "feedback_update_cancelled" => "Changes have not been saved.",
     "feedback_update_failed" => "The changes could not be saved.",
     "feedback_update_success" => "The changes have been saved.",
+    "feedback_view_failed" => "The item could not be viewed.",
     "field_obligatory" => "This field is a required field",
     "filecontent" => "Content",
     "filename" => "Filename",

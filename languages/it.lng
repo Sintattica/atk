@@ -155,6 +155,7 @@ $it = array(
     "feedback_update_cancelled" => "Le modifiche non sono state salvate.",
     "feedback_update_failed" => "Non è possibile salvare le modifiche.",
     "feedback_update_success" => "Le modifiche sono state salvate.",
+    "feedback_view_failed" => "Non è possibile vedere questo record.",
     "field_obligatory" => "Questo campo è obbligatorio",
     "filecontent" => "Contenuto",
     "filename" => "Nome File",
