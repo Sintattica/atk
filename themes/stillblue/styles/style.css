@@ -32,9 +32,17 @@ div.stacktrace
     height: 45px;
 }
 
-/* attributes spinners */
+/* attributes spinner */
 .atkbusy {
-    margin-left: 5px;
     display: none;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+/* action buttons spinner */
+#action-buttons .spinner {
+    visibility: hidden;
+    display: inline-block;
+    margin-left: 5px;
     vertical-align: middle;
 }

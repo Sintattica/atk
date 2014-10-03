@@ -617,6 +617,28 @@ class atkController
         if ($name != "")
             $name = "name=\"" . $this->m_node->getEditFieldPrefix() . "{$name}\" ";
 
+        /* TODO
+        $this->getPage()->register_scriptcode("
+          function disableAndSubmit(button)
+          {
+            //button.disabled = true;
+
+            if (button.style.color == 'gray') {
+              return false;
+            }
+
+            button.style.color = 'gray';
+            var spinner = $$('#action-buttons .spinner')[0];
+            if (spinner) {
+              spinner.style.visibility = 'visible';
+            }
+
+            return true;
+          }
+        ");
+        $onclick = 'onclick="return disableAndSubmit(this);"';
+        */
+
         return '<button type="submit" ' . $class . $name . $valueAttribute . '>' . $value . '</button>';
     }
 
