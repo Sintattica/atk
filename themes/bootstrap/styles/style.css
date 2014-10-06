@@ -1816,3 +1816,6 @@ span.form-control-static {
   font-size: 26px;
   text-align: center;
 }
+.atkfieldset > div {
+  display: inline-block;
+}
