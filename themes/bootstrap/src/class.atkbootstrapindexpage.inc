@@ -80,9 +80,7 @@ class atkBootstrapIndexPage
         $this->m_noNav = isset($ATK_VARS['atknonav']);
         $this->m_extraheaders = $this->m_ui->render('index_meta.tpl');
 
-        // Bootstrap & jQuery
-        $this->m_page->register_script(atkconfig("atkroot") . "atk/themes/bootstrap/src/jquery/jquery-2.1.1.min.js");
-        $this->m_page->register_scriptcode('jQuery.noConflict();');
+        // Bootstrap
         $this->m_page->register_script(atkconfig("atkroot") . "atk/themes/bootstrap/src/bootstrap/js/bootstrap.js");
 
         //Moment JS & Moment php

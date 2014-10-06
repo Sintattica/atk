@@ -134,6 +134,8 @@ class atkPage
     public function __construct()
     {
         // register default scripts
+        $this->register_script(atkconfig("atkroot") . "atk/javascript/jquery-2.1.1.min.js");
+        $this->register_scriptcode('jQuery.noConflict();');
         $this->register_script(atkconfig("atkroot") . "atk/javascript/prototype/prototype.js");
         $this->register_script(atkconfig("atkroot") . "atk/javascript/prototype-ext.js");
         $this->register_script(atkconfig("atkroot") . "atk/javascript/scriptaculous/scriptaculous.js");
@@ -473,6 +475,8 @@ class atkPage
             $res .= "      retval = " . $this->m_submitscripts[$i] . "\n";
             $res .= "      if (retval!=true) return false;\n";
         }
+
+        $res .= "console.log(form);";
 
         $res .= "      return retval;\n";
         $res .= "    }\n";
