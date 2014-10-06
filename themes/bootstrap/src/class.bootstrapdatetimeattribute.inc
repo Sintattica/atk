@@ -5,13 +5,15 @@ useattrib("atkattribute");
 
 class bootstrapDateTimeAttribute extends atkAttribute
 {
-
     var $m_bootstrapdatetime_format_edit;
     var $m_bootstrapdatetime_format_view;
     var $m_db_format; //MomentJS Format
     var $m_type = 'datetime';
     var $m_pickerparams = array();
     var $m_disabledDates = array();
+    var $m_minDate;
+    var $m_maxDate;
+    var $m_sideBySide = true;
 
     function bootstrapDateTimeAttribute($name, $flags = 0)
     {
@@ -85,8 +87,6 @@ class bootstrapDateTimeAttribute extends atkAttribute
     }
 
 
-
-
     function draw($record = "", $fieldprefix = "", $postfix = "", $mode = "")
     {
         $fieldName = $id = $fieldprefix . $this->fieldName() . $postfix;
@@ -104,7 +104,7 @@ class bootstrapDateTimeAttribute extends atkAttribute
             'language' => atkConfig::getGlobal('language'),
             'pickTime' => ($this->m_type == 'datetime' || $this->m_type == 'time'),
             'pickDate' => ($this->m_type == 'datetime' || $this->m_type == 'date'),
-            'sideBySide' => true
+            'sideBySide' => $this->m_sideBySide
         );
 
         if (count($this->m_disabledDates)) {
@@ -116,6 +116,15 @@ class bootstrapDateTimeAttribute extends atkAttribute
             $params['disabledDates'] = $dates;
         }
 
+        if ($this->m_minDate) {
+            $params['minDate'] = "function:moment('" . $this->m_minDate . "')";
+        }
+
+        if ($this->m_maxDate) {
+            $params['maxDate'] = "function:moment('" . $this->m_maxDate . "')";
+        }
+
+
         $params = array_merge($params, $this->m_pickerparams);
         $params = $this->json_stringify($params);
 
@@ -125,11 +134,9 @@ class bootstrapDateTimeAttribute extends atkAttribute
         $js .= "  $('#" . $pickerId . "').on('dp.change', function(e){";
         $js .= "     $('#" . $id . "').val($('#" . $pickerId . "').data('DateTimePicker').getDate().format('" . $this->m_db_format . "'));";
         $js .= "  });";
-
         if ($value) {
-            $js .= "  $('#" . $pickerId . "').data('DateTimePicker').setDate(new moment('" . $value . "'));";
+            $js .= "  $('#" . $pickerId . "').data('DateTimePicker').setDate(moment('" . $value . "'));";
         }
-
         $js .= "});";
 
         $page = atkinstance('atk.ui.atkpage');
@@ -145,7 +152,6 @@ class bootstrapDateTimeAttribute extends atkAttribute
         $result .= '      <span class="input-group-addon"><span class="glyphicon ' . $icon . '"></span>';
         $result .= '    </div>';
 
-
         return $result;
     }
 
@@ -157,13 +163,10 @@ class bootstrapDateTimeAttribute extends atkAttribute
 
     function display($record, $mode)
     {
-
         $value = $this->arrayToValue($record[$this->fieldName()]);
         if (!$value) return null;
 
         $m = new \Moment\Moment($value);
-
-
         $result = $m->format($this->m_bootstrapdatetime_format_view, atkMomentphpProvider::getFormatInstance());
         return $result;
     }
@@ -207,7 +210,6 @@ class bootstrapDateTimeAttribute extends atkAttribute
      */
     function search($record = "", $extended = false, $fieldprefix = "")
     {
-
         if (!$extended) {
             $res = $this->draw($record, "atksearch_AE_" . $fieldprefix, '', 'search');
 
@@ -432,7 +434,21 @@ class bootstrapDateTimeAttribute extends atkAttribute
             $inner[] = ($numericarray ? '' : "\"$key\":") . $val;
         }
         $outtext .= implode(',', $inner);
-        return $opening.$outtext.$closing;
+        return $opening . $outtext . $closing;
     }
 
+    function setMinDate($date)
+    {
+        $this->m_minDate = $date;
+    }
+
+    function setMaxDate($date)
+    {
+        $this->m_maxDate = $date;
+    }
+
+    function setSideBySide($side)
+    {
+        $this->m_sideBySide = $side;
+    }
 }
