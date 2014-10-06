@@ -734,7 +734,9 @@ class atkManyToManyRelation extends atkRelation
 
         $pkfield = $this->m_destInstance->primaryKeyField();
 
-        $result.= '<option value="">' . atktext("search_all", "atk") . '</option>';
+        if (!$extended) {
+            $result .= '<option value="">' . atktext("search_all", "atk") . '</option>';
+        }
 
         for ($i = 0; $i < count($recordset); $i++) {
             $pk = $recordset[$i][$pkfield];

@@ -19,7 +19,8 @@
 <br>
 <div id="action-buttons">
     {foreach from=$buttons item=button}
-        {$button}
+        &nbsp;{$button}&nbsp;
     {/foreach}
+    <div class="spinner"><img src="{atkthemeimg spinner.gif}" alt="Busy"/></div>
 </div>
 {$formend}

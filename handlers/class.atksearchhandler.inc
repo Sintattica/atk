@@ -160,9 +160,8 @@ class atkSearchHandler extends atkAbstractSearchHandler
 
             $params["content"] = $this->invoke("searchForm", $record);
 
-            $params["buttons"][] = '<input type="submit" class="btn btn-primary btn_search atkdefaultbutton" value="' . atktext("search", "atk") . '" name="atkdosearch" >';
-            $params["buttons"][] = '<input class="btn btn-default btn_cancel" type="submit" value="' . atktext("cancel", "atk") . '" name="atkcancel"/>';
-
+            $params["buttons"][] = $controller->getButton('cancel');
+            $params["buttons"][] = $controller->getButton('search', true);
 
             $params["formend"] = '</form>';
 
@@ -203,9 +202,7 @@ class atkSearchHandler extends atkAbstractSearchHandler
 
             $params["fields"] = array();
 
-            foreach ($node->m_attribIndexList as $attribIndex) { // array_keys($node->m_attribList) as $attribname
-                $attribname = $attribIndex['name'];
-
+            foreach ($node->getAttributeNames() as $attribname) {
                 $p_attrib = &$node->m_attribList[$attribname];
 
                 if (!$p_attrib->hasFlag(AF_HIDE_SEARCH))

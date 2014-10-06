@@ -282,11 +282,10 @@ class atkTimeAttribute extends atkAttribute
             $(\'' . $this->getAttributeHtmlId() . '[seconds]\').selectedIndex=mi+1;';
             }
             $tmp .= '" value="&lAarr;" class="atkDateAttribute button atkbutton">';
-            return '<div class="form-inline">' . $tmp . '</div>';
+            return '<div class="form-inline">' . $tmp . '</div>' . $this->getSpinner();
         }
 
-        return '<div class="form-inline">' . $timeedit . '</div>';
-
+        return '<div class="form-inline">' . $timeedit . '</div>' . $this->getSpinner();
     }
 
     /**

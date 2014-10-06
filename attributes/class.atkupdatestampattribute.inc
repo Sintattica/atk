@@ -102,22 +102,6 @@ class atkUpdateStampAttribute extends atkDateTimeAttribute
     }
 
     /**
-     * Retrieve the list of searchmodes supported by the attribute. 
-     *
-     * @return array Array containing "exact" as the only supported 
-     *               searchmode.
-     */
-    function getSearchModes()
-    {
-        // exact match and substring search should be supported by any database.
-        // (the LIKE function is ANSI standard SQL, and both substring and wildcard
-        // searches can be implemented using LIKE)
-        // Possible values
-        //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-        return array("exact");
-    }
-
-    /**
      * We always have a value, even if we're not even in the record
      * @return boolean false
      * */

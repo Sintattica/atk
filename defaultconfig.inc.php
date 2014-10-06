@@ -622,7 +622,7 @@ $config_recordsperpage = 25;
  * The number of records per page options to display on drop down list
  * @var array
  */
-$config_recordsperpage_options = array(15, 25, 50, 100, 500);
+$config_recordsperpage_options = array(10, 25, 50, 100);
 
 /**
  * Add a 'show all' option to the records per page selector.

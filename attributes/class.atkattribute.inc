@@ -616,6 +616,12 @@ class atkAttribute
     private $m_editCallback = null;
 
     /**
+     * Whether to show a spinner (next to the attribute) during dependencies execution
+     * @var bool
+     */
+    private $m_showSpinner = true;
+
+    /**
      * Constructor
      *
      * <b>Example:</b>
@@ -992,6 +998,8 @@ class atkAttribute
             ($size > 0 ? ' size="' . $size . '"' : '') .
             ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . ' ' . $onchange . ' />';
 
+        $result .= $this->getSpinner();
+
         return $result;
     }
 
@@ -1017,14 +1025,57 @@ class atkAttribute
     function _renderChangeHandler($fieldprefix, $elementNr = "")
     {
         if (count($this->m_onchangecode) || count($this->getDependencies())) {
-            $page = &$this->m_ownerInstance->getPage();
+
+            // js code to show the spinner during dependencies execution
+            if (count($this->getDependencies()) && $this->m_showSpinner) {
+                $id = $this->getHtmlId($fieldprefix);
+                if ($this->m_ownerInstance) {
+                    $id = str_replace('.', '_', $this->m_ownerInstance->atknodetype() . '_' . $id);
+                }
+                $spinnerCode = "
+      var spinner = $$('#$id .atkbusy');
+      if (spinner.length) {
+        spinner[0].style.display = 'inline-block';
+      }
+      ";
+            } else {
+                $spinnerCode = '';
+            }
+
+            $page = &atkinstance("atk.ui.atkpage");
             $page->register_scriptcode("
     function " . $this->getHtmlId($fieldprefix) . $elementNr . "_onChange(el)
     {
       {$this->m_onchangehandler_init}
       " . implode("\n      ", $this->m_onchangecode) . "
+      $spinnerCode
     }\n");
         }
+    }
+
+    /**
+     * Returns the html of the spinner to show during dependencies execution (next to the attribute)
+     *
+     * @return string
+     */
+    function getSpinner()
+    {
+        if (count($this->getDependencies()) && $this->m_showSpinner) {
+            $theme = & atkinstance("atk.ui.atktheme");
+            $ret = sprintf('<div class="atkbusy"><img src="%s" alt="Busy"></div>', $theme->imgPath('spinner.gif'));
+            return $ret;
+        }
+        return '';
+    }
+
+    /**
+     * Sets whether to show a spinner (next to the attribute) during dependencies execution
+     *
+     * @param boolean $value
+     */
+    function showSpinner($value)
+    {
+        $this->m_showSpinner = $value;
     }
 
     /**

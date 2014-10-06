@@ -126,6 +126,8 @@ class atkBoolAttribute extends atkAttribute
                     $this->fieldName() . '_label', parent::label($record))) . '</label>';
         }
 
+        $result .= $this->getSpinner();
+
         return $result;
     }
 

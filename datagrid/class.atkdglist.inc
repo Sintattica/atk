@@ -802,9 +802,7 @@ class atkDGList extends atkDGComponent
 
         $columns = $this->getOption('columns');
         if ($columns == null) {
-            foreach ($this->getNode()->m_attribIndexList as $attribIndex) { // $this->getNode()->getAttributeNames() as $attrName
-                $attrName = $attribIndex['name'];
-
+            foreach ($this->getNode()->getAttributeNames() as $attrName) {
                 $entry = new stdClass();
                 $entry->attrName = $attrName;
                 $entry->columnName = '*';

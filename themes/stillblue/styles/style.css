@@ -5,7 +5,7 @@
     float: left;
 }
 
-.panelTitleRight 
+.panelTitleRight
 {
     Height: 26px;
 }
@@ -22,12 +22,12 @@ div.stacktrace
     margin-bottom: 8px;
 }
 
-.actionpageWrapper 
+.actionpageWrapper
 {
     width:100%;
 }
 
-#topSpacer 
+#topSpacer
 {
-    height: 40px;	
+    height: 45px;
 }

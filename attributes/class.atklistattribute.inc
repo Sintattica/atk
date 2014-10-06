@@ -93,6 +93,13 @@ class atkListAttribute extends atkAttribute
     protected $m_autoSearch = false;
 
     /**
+     * Render a multiple select also in simple search (grid)
+     *
+     * @var bool
+     */
+    private $m_multipleInSimpleSearch = false;
+
+    /**
      * Constructor.
      *
      * Warning: very old versions of this attribute supported passing the
@@ -296,6 +303,8 @@ class atkListAttribute extends atkAttribute
         }
 
         $result.='</select>';
+        $result .= $this->getSpinner();
+
         return $result;
     }
 
@@ -326,6 +335,16 @@ class atkListAttribute extends atkAttribute
         return $ret;
     }
 
+    function getMultipleInSimpleSearch()
+    {
+        return $this->m_multipleInSimpleSearch;
+    }
+
+    function setMultipleInSimpleSearch($value)
+    {
+        $this->m_multipleInSimpleSearch = $value;
+    }
+
     /**
      * Returns a piece of html code that can be used to get search terms input
      * from the user.
@@ -351,7 +370,7 @@ class atkListAttribute extends atkAttribute
     {
         $values = $this->getValues($record);
         $result = '<select class="form-control" ';
-        if ($extended) {
+        if ($extended || $this->getMultipleInSimpleSearch()) {
             $result.='multiple size="' . min(5, count($values) + 1) . '"';
         }
 
@@ -367,10 +386,24 @@ class atkListAttribute extends atkAttribute
 
         $result .= 'name="' . $this->getSearchFieldName($fieldprefix) . '[]">';
 
-        $result .= '<option value="">' . atktext('search_all');
+        $selValues = $record[$this->fieldName()];
+        if ($this->getMultipleInSimpleSearch() && is_array($selValues) && count($selValues)) {
+            // in case of multiple select in simple search, we have the selected values into a single string (csv)
+            $selValues = explode(',', $selValues[0]);
+        }
+
+        if (!$extended) {
+            if (!$selValues || (is_array($selValues) && count($selValues) == 1 && $selValues[0] == '')) {
+                $sel = "selected";
+            } else {
+                $sel = "";
+            }
+            $result .= '<option value="" ' . $sel . '>' . atktext('search_all');
+        }
 
         foreach ($values AS $value) {
-            if (atk_in_array(((string) $value), $record[$this->fieldName()], true) && $record[$this->fieldName()] !== "") {
+
+            if (atk_in_array(((string) $value), $selValues, true) && $selValues !== "") {
                 $sel = "selected";
             } else {
                 $sel = "";
@@ -404,6 +437,12 @@ class atkListAttribute extends atkAttribute
         // which should work in any ansi compatible database.
         $searchcondition = "";
         if (is_array($value) && count($value) > 0 && $value[0] != "") { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+
+            if ($this->getMultipleInSimpleSearch()) {
+                // in case of multiple select in simple search, we have the selected values into a single string (csv)
+                $value = explode(',', $value[0]);
+            }
+
             if (count($value) == 1) { // exactly one value
                 $searchcondition = $query->exactCondition($table . "." . $this->fieldName(), $this->escapeSQL($value[0]));
             } else { // search for more values using IN()

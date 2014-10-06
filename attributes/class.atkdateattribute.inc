@@ -538,6 +538,7 @@ class atkDateAttribute extends atkAttribute
                 $result.=' <input ' . $this->getCSSClassAttribute(array("btn", "btn-default", "button",
                         "atkbutton")) . ' type="button" value="..." onclick="return showCalendar(\'' . $fieldname . '\', \'' . $fieldname . '\', \'' . $format . '\', false);">';
             }
+            $result .= $this->getSpinner();
             return $result;
         }
 
@@ -604,14 +605,21 @@ class atkDateAttribute extends atkAttribute
 
         /* small date selections, never possible is field isn't obligatory (no min/max date) */
         if (!empty($maximum) && !empty($minimum) && $str_max - $str_min < 25) {
+
+            if (count($this->m_onchangecode))
+            {
+                $this->_renderChangeHandler($fieldprefix);
+                $str_script = $this->getHtmlId($fieldprefix).'_onChange(this);"';
+            }
             $this->registerKeyListener($fieldname, KB_CTRLCURSOR | KB_LEFTRIGHT);
-            $result = '<select id="' . $fieldname . '" name="' . $fieldname . '">';
+            $result = '<select id="' . $fieldname . '" name="' . $fieldname . '" onChange="' . $str_script . '">';
             for ($i = $str_min; $i <= $str_max; $i ++) {
                 $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, substr($i, 4, 2), substr($i, 6, 2), substr($i, 0, 4)));
                 $result .= '<option value="' . $i . '"' . ($current !== NULL && $tmp_date[0] == $current[0]
                             ? ' selected' : '') . '>' . $this->formatDate($tmp_date, $str_format, !$this->hasFlag(AF_DATE_EDIT_NO_DAY)) . '</option>';
             }
             $result .= '</select>';
+            $result .= $this->getSpinner();
             return $result;
         }
 
@@ -643,7 +651,7 @@ class atkDateAttribute extends atkAttribute
                 $str_script = "AdjustDate(this, '" . $fieldname . "');";
 
             if (count($this->m_onchangecode) || count($this->getDependencies())) {
-                $this->renderChangeHandler($fieldprefix);
+                $this->_renderChangeHandler($fieldprefix);
                 $str_script .= $this->getHtmlId($fieldprefix) . '_onChange(this);"';
             }
 
@@ -677,6 +685,7 @@ class atkDateAttribute extends atkAttribute
         if (!$this->m_simplemode) {
             $result.= '</div>'; // form-inline
         }
+        $result .= $this->getSpinner();
 
         /* return result */
         return $result;
@@ -692,7 +701,7 @@ class atkDateAttribute extends atkAttribute
      */
     function getValidCurrentDate($current, $minimum, $maximum, $mode)
     {
-        if ($current === NULL && (!$this->hasFlag(AF_OBLIGATORY) || $mode == 'add'))
+        if ($current === NULL && (!$this->hasFlag(AF_OBLIGATORY) || in_array($mode, array('add', 'search'))))
             ;
         elseif (!empty($current) && !empty($minimum) && $current < $minimum)
             $current = $minimum;
@@ -804,8 +813,10 @@ class atkDateAttribute extends atkAttribute
     {
         if (!$extended) {
             // plain text search, check if we didn't come from extended search (then current value is an array)
-            if (isset($record[$this->fieldName()]) && is_array($record[$this->fieldName()]))
+            if (isset($record[$this->fieldName()]) && is_array($record[$this->fieldName()])) {
+                // TODO try to set the value
                 $record[$this->fieldName()] = NULL;
+            }
 
             $maxSize = $this->m_maxsize;
             $this->m_maxsize = 25; // temporary increase max size to allow from/to dates
@@ -820,10 +831,10 @@ class atkDateAttribute extends atkAttribute
 
         $rec = isset($record[$this->fieldName()]['from']) ? array($this->fieldName() => $record[$this->fieldName()]['from'])
                 : $record;
-        $res = $this->draw($rec, "atksearch_AE_" . $fieldprefix, "_AE_from");
+        $res = $this->draw($rec, "atksearch_AE_" . $fieldprefix, "_AE_from", 'search');
         $rec = isset($record[$this->fieldName()]['to']) ? array($this->fieldName() => $record[$this->fieldName()]['to'])
                 : $record;
-        $res.= "&nbsp;" . atktext("until") . ": " . $this->draw($rec, "atksearch_AE_" . $fieldprefix, "_AE_to");
+        $res.= "&nbsp;" . atktext("until") . ": " . $this->draw($rec, "atksearch_AE_" . $fieldprefix, "_AE_to", 'search');
 
         return $res;
     }
@@ -849,15 +860,21 @@ class atkDateAttribute extends atkAttribute
         // If we search through datagrid we got no from/to values
         // Therefore we will simulate them
         if (!is_array($value)) {
-            if (substr_count($value, '/') == 1) {
-                list($from, $to) = explode('/', $value);
+            // exact: ex. "d/m/yyyy", "d/m/yy", "d/m" (use current year)
+            // between: two values divided by "-"
+            // >=: one value followed by "-" // TODO using ">" and ">="
+            // <=: one value preceded by "-" // TODO using "<" and "<="
+            if (strpos($value, '-') !== false) {
+                list($from, $to) = explode('-', $value);
                 $value = array('from' => trim($from), 'to' => trim($to));
-            } else if (substr_count($value, '/') == 5) {
-                $parts = explode('/', $value);
-                $value = array('from' => trim($parts[0] . '/' . $parts[1] . '/' . $parts[2]),
-                    'to' => trim($parts[3] . '/' . $parts[4] . '/' . $parts[5]));
             } else {
-                $value = array('from' => $value, 'to' => $value);
+                $value = array('from'=>$value, 'to'=>$value);
+            }
+            if (substr_count($value['from'], '/') == 1) {
+                $value['from'] .= '/' . date('Y');
+            }
+            if (substr_count($value['to'], '/') == 1) {
+                $value['to'] .= '/' . date('Y');
             }
         }
 
@@ -1045,15 +1062,14 @@ class atkDateAttribute extends atkAttribute
         else if (!empty($value)) {
             // maybe we should use strptime in PHP >= 5.1
             $formats = array();
-            $formats[] = str_replace(array("y", "Y", "m", "n", "j", "d"), array("yyyy", "yyyy", "mm", "mm", "dd", "dd"), $this->m_date_format_edit);
-            $formats[] = str_replace(array("y", "Y", "m", "n", "j", "d"), array("yyyy", "yyyy", "m", "m", "dd", "dd"), $this->m_date_format_edit);
-            $formats[] = str_replace(array("y", "Y", "m", "n", "j", "d"), array("yyyy", "yyyy", "mm", "mm", "d", "d"), $this->m_date_format_edit);
-            $formats[] = str_replace(array("y", "Y", "m", "n", "j", "d"), array("yyyy", "yyyy", "m", "m", "d", "d"), $this->m_date_format_edit);
-            $formats[] = str_replace(array("y", "Y", "m", "n", "j", "d"), array("yy", "yy", "mm", "mm", "dd", "dd"), $this->m_date_format_edit);
-            $formats[] = str_replace(array("y", "Y", "m", "n", "j", "d"), array("yy", "yy", "m", "m", "dd", "dd"), $this->m_date_format_edit);
-            $formats[] = str_replace(array("y", "Y", "m", "n", "j", "d"), array("yy", "yy", "mm", "mm", "d", "d"), $this->m_date_format_edit);
-            $formats[] = str_replace(array("y", "Y", "m", "n", "j", "d"), array("yy", "yy", "m", "m", "d", "d"), $this->m_date_format_edit);
-
+            $formats[] = str_replace(array("y", "Y", "m", "n", "F", "d", "j"), array("yyyy", "yyyy", "mm", "mm", "mm", "dd", "dd"), $this->m_date_format_edit);
+            $formats[] = str_replace(array("y", "Y", "m", "n", "F", "d", "j"), array("yyyy", "yyyy", "m",  "m",  "m",  "dd", "dd"), $this->m_date_format_edit);
+            $formats[] = str_replace(array("y", "Y", "m", "n", "F", "d", "j"), array("yyyy", "yyyy", "mm", "mm", "mm", "d",  "d"),  $this->m_date_format_edit);
+            $formats[] = str_replace(array("y", "Y", "m", "n", "F", "d", "j"), array("yyyy", "yyyy", "m",  "m",  "m",  "d",  "d"),  $this->m_date_format_edit);
+            $formats[] = str_replace(array("y", "Y", "m", "n", "F", "d", "j"), array("yy",   "yy",   "mm", "mm", "mm", "dd", "dd"), $this->m_date_format_edit);
+            $formats[] = str_replace(array("y", "Y", "m", "n", "F", "d", "j"), array("yy",   "yy",   "m",  "m",  "m",  "dd", "dd"), $this->m_date_format_edit);
+            $formats[] = str_replace(array("y", "Y", "m", "n", "F", "d", "j"), array("yy",   "yy",   "mm", "mm", "mm", "d",  "d"),  $this->m_date_format_edit);
+            $formats[] = str_replace(array("y", "Y", "m", "n", "F", "d", "j"), array("yy",   "yy",   "m",  "m",  "m",  "d",  "d"),  $this->m_date_format_edit);
             $arr = $this->parseDate($value, $formats);
             if ($arr['day'] == 0 || $arr['month'] == 0 || $arr['year'] == 0)
                 return self::dateArray(adodb_date("Ymd", strtotime($value)));
@@ -1231,22 +1247,6 @@ class atkDateAttribute extends atkAttribute
     }
 
     /**
-     * Render the onchange handler code
-     *
-     * @param string $fieldprefix
-     */
-    function renderChangeHandler($fieldprefix)
-    {
-        if (count($this->m_onchangecode) || count($this->getDependencies())) {
-            $page = &$this->m_ownerInstance->getPage();
-            $page->register_scriptcode("function " . $this->getHtmlId($fieldprefix) . "_onChange(el)
-                                    {
-                                      " . implode("\n", $this->m_onchangecode) . "
-                                    }\n");
-        }
-    }
-
-    /**
      * Convert a String representation into an internal value.
      *
      * This implementation converts datestring to a array with day, month and
@@ -1328,6 +1328,10 @@ class atkDateAttribute extends atkAttribute
                         $day = $month - $day;
                         $month -= $day;
                     }
+                    if (strlen($year) == 2) {
+                        $year = '20' . $year;
+                    }
+
                     return array('day' => $day, 'month' => $month, 'year' => $year);
                 }
             }

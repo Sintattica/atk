@@ -42,16 +42,11 @@
     <!-- records -->
     {$liststart}
     {foreach from=$rows item=row}
-        <tr id="{$row.id}" class="{$row.class}" {if $row.background!=""}style="background-color:{$row.background}" {/if}
-            onmouseover="highlightrow(this, '{$row.highlight}')"
-            onmouseout="resetrow(this)"
-            onclick="selectrow(this, '{$listid}', {$row.rownum})">
+        <tr id="{$row.id}" class="{$row.class}" {if $row.background!=""}style="background-color:{$row.background}" {/if}>
             {section name=colloop loop=$row.cols}
                 <{if $row.type == "subtotal"}th{else}td{/if}
-                    class="{if $smarty.section.colloop.index===0}recordListTdFirst{else}recordListTd{/if}{if $row.cols[colloop].type == "data"} clickable{/if}"
-                    valign="{$vorientation}"  {if isset($row.cols[colloop].htmlattributes)}{$row.cols[colloop].htmlattributes}{/if}
-                    {if $row.cols[colloop].type == "data"} onclick="rl_try('{$listid}', event, {$row.rownum}, ['select', 'edit', 'view'
-                            ], false);"{/if}>
+                    class="{if $smarty.section.colloop.index===0}recordListTdFirst{else}recordListTd{/if}"
+                    valign="{$vorientation}" {if isset($row.cols[colloop].htmlattributes)}{$row.cols[colloop].htmlattributes}{/if}>
                     {if $row.cols[colloop].content != ""}{$row.cols[colloop].content}{else}&nbsp;{/if}
                     </{if $row.type == "subtotal"}th{else}td{/if}>
                     {/section}
@@ -75,7 +70,7 @@
     {if $mra!=""}
         <!-- multirecord actions -->
         <tr>
-            <td valign="top" style="padding-top: 0px">
+            <td valign="top" style="padding-top: 0px" class="mra">
                 {if $editing}
                     {$mra}
                 {else}

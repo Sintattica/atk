@@ -15,9 +15,20 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in ATK 7.1.0 (WIP)
 ------------------------
-* Fix grid searching problem after extended search
++ Added property in atkListAttribute to render a multiple select also in simple search
++ Added spinner showing next to attributes during dependencies execution
+* Steelblue/Stillblue themes improvements
+* Languages translations refining (en/it)
+* Fix precedence in _getModules (atkLanguage)
+* atkManyToOneRelation improvements
+* Form buttons rendering improvement
++ Rendering improvement in atkFieldSet
+* Fixing in atkNumberAttribute, atkExpressionAttribute, atkDurationAttribute, atkUpdateStampAttribute
++ Searching improvement in atkDateAttribute
+* Fixed dependency handling in "small date selection" mode and date min disabled on calendar (atkDateAttribute)
+* Fixed grid searching problem after extended search
 * Export csv improvement
-+ Add unregister_script function in atkpage
++ Added unregister_script function in atkpage
 
 
 Changes in ATK 7.0.0

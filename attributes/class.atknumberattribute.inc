@@ -41,11 +41,11 @@ class atkNumberAttribute extends atkAttribute
 
     /**
      * Constructor
-     * @param string $name Name of the attribute
-     * @param int $flags Flags for this attribute
-     * @param mixed $size The size(s) of integral part (before seperator) for this attribute (default 10)
+     * @param string $name      Name of the attribute
+     * @param int    $flags     Flags for this attribute
+     * @param mixed  $size      The size(s) of integral part (before seperator) for this attribute (default 10)
      *                          also accepts an array. See setAttribSize for format.
-     * @param int $decimals The number of decimals to use.
+     * @param int     $decimals The number of decimals to use.
      *
      */
     function atkNumberAttribute($name, $flags = 0, $size = 10, $decimals = null)
@@ -64,7 +64,7 @@ class atkNumberAttribute extends atkAttribute
      */
     public function getDecimals()
     {
-        return (int)$this->m_decimals;
+        return (int) $this->m_decimals;
     }
 
     /**
@@ -232,7 +232,7 @@ class atkNumberAttribute extends atkAttribute
      */
     public function setUseThousandsSeparator($use_separator)
     {
-        $this->m_use_thousands_separator = (bool)$use_separator;
+        $this->m_use_thousands_separator = (bool) $use_separator;
     }
 
     /**
@@ -289,20 +289,18 @@ class atkNumberAttribute extends atkAttribute
     /**
      * Formats the number based on setting in the language file
      *
-     * @param float $number number
-     * @param string $decimalSeparator override decimal separator
+     * @param float  $number             number
+     * @param string $decimalSeparator   override decimal separator
      * @param string $thousandsSeparator override thousands separator
      *
      * @return string nicely formatted number
      */
-    protected function formatNumber($number, $decimalSeparator = "", $thousandsSeparator = "")
+    protected function formatNumber($number, $decimalSeparator = "", $thousandsSeparator = "", $mode = "")
     {
-        $decimalSeparator = $decimalSeparator == null ? $this->m_decimalseparator
-            : $decimalSeparator;
-        $thousandsSeparator = $thousandsSeparator == null ? $this->m_thousandsseparator
-            : $thousandsSeparator;
-        $thousandsSeparator = $this->m_use_thousands_separator ? $thousandsSeparator
-            : '';
+        $decimalSeparator = $decimalSeparator == null ? $this->m_decimalseparator : $decimalSeparator;
+        $thousandsSeparator = $thousandsSeparator == null ? $this->m_thousandsseparator : $thousandsSeparator;
+        // (never shows the thousands separator in add/edit mode)
+        $thousandsSeparator = ($this->m_use_thousands_separator && !in_array($mode, array('add', 'edit'))) ? $thousandsSeparator : '';
 
         if ($decimalSeparator == $thousandsSeparator) {
             atkwarning('invalid thousandsseparator. identical to the decimal_separator');
@@ -312,7 +310,7 @@ class atkNumberAttribute extends atkAttribute
         // NOTE: we don't use number_format because this sometimes causes rounding issues
         //       if a float can not be properly represented (see http://nl.php.net/manual/en/function.number-format.php#93893)
 
-        $tmp1 = round((float)$number, $this->getDecimals());
+        $tmp1 = abs(round((float) $number, $this->getDecimals()));
         $tmp1 .= $this->getDecimals() > 0 && strpos($tmp1, '.') === false ? '.' : '';
         $tmp1 .= str_repeat('0', max($this->getDecimals() - strlen(substr($tmp1, strpos($tmp1, '.') + 1)), 0));
 
@@ -320,7 +318,11 @@ class atkNumberAttribute extends atkAttribute
             $tmp1 = $tmp2;
         }
 
-        return strtr($tmp1, array(' ' => $thousandsSeparator, '.' => $decimalSeparator));
+        $r = strtr($tmp1, array(' ' => $thousandsSeparator, '.' => $decimalSeparator));
+        if ($number < 0) {
+            $r = '-' . $r;
+        }
+        return $r;
     }
 
     /**
@@ -390,7 +392,7 @@ class atkNumberAttribute extends atkAttribute
         if ((!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()]) == 0) && !$this->hasFlag(AF_OBLIGATORY))
             return NULL;
         if ($this->getDecimals() > 0)
-            return round((float)$rec[$this->fieldName()], $this->getDecimals());
+            return round((float) $rec[$this->fieldName()], $this->getDecimals());
         else
             return isset($rec[$this->fieldName()]) ? $rec[$this->fieldName()] : null;
     }
@@ -516,11 +518,11 @@ class atkNumberAttribute extends atkAttribute
 
         $value = "";
         if (isset($record[$this->fieldName()]) && strlen($record[$this->fieldName()]) > 0)
-            $value = $this->formatNumber($record[$this->fieldName()]);
+            $value = $this->formatNumber($record[$this->fieldName()], '', '', $mode);
 
         $id = $fieldprefix . $this->fieldName();
         $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
-        $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id .
+        $result = '<input type="text" id="' . $id . '" ' . $this->getCSSClassAttribute(array('form-control')) . ' name="' . $id .
             '" value="' . $value . '"' .
             ($size > 0 ? ' size="' . $size . '"' : '') .
             ($maxsize > 0 ? ' maxlength="' . $maxsize . '"' : '') . ' ' . $onchange . ' />';
@@ -554,7 +556,7 @@ class atkNumberAttribute extends atkAttribute
             if (is_array($value)) {
                 if ($value["from"] != "" || $value["to"] != "") {
                     // Two values were entered in the extended search screen.
-                    $value = $value["from"] . "/" . $value["to"];
+                    $value = $value["from"] . "-" . $value["to"];
                 } else {
                     $value = "";
                 }
@@ -563,27 +565,22 @@ class atkNumberAttribute extends atkAttribute
             $id = $this->getSearchFieldName($fieldprefix);
 
             $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
-            $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . atk_htmlentities($value) . '"' .
+            $result = '<input type="text" id="' . $id . '" class="' . get_class($this) . '" name="' . $id . '" value="' . atk_htmlentities($value) . '"' .
                 ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"'
                     : '') . '>';
             return $result;
         } else {
             $id = $this->getSearchFieldName($fieldprefix) . '[from]';
             $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
-
-            $result = '';
-            $result .= '<div class="form-inline">';
-
-            $result .= '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . atk_htmlentities($value) . '"' .
+            $result = '<input type="text" id="' . $id . '" class="' . get_class($this) . '" name="' . $id . '" value="' . atk_htmlentities($value) . '"' .
                 ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"'
-                    : '') . '> ';
+                    : '') . '>';
 
             $id = $this->getSearchFieldName($fieldprefix) . '[to]';
             $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
-            $result .= atktext("until") . ':  <input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . atk_htmlentities($value) . '"' .
+            $result.= " (" . atktext("until") . ' <input type="text" id="' . $id . '" class="' . get_class($this) . '" name="' . $id . '" value="' . atk_htmlentities($value) . '"' .
                 ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"'
-                    : '') . '>';
-            $result .= '</div>';
+                    : '') . '>)';
             return $result;
         }
     }
@@ -601,7 +598,7 @@ class atkNumberAttribute extends atkAttribute
     {
         $processed = array();
         if (!is_array($value)) {
-            $slash = strpos($value, '/'); // Support for 'from/to' searches.
+            $slash = strpos($value, '-'); // Support for 'from-to' searches.
             $str = trim($value);
             if ($slash !== false) {
                 $from = substr($str, 0, $slash);
@@ -611,18 +608,18 @@ class atkNumberAttribute extends atkAttribute
                     return array();
                 }
 
-                $processed["from"] = $this->removeSeparators($from);
-                $processed["to"] = $this->removeSeparators($to);
+                $processed["from"] = self::removeSeparators($from);
+                $processed["to"] = self::removeSeparators($to);
                 $searchmode = 'between';
             } else if (is_numeric($str)) {
-                $processed["from"] = (float)$this->removeSeparators($str); // quicksearch doesn't use an array.
+                $processed["from"] = (float) self::removeSeparators($str); // quicksearch doesn't use an array.
             } else {
                 return array();
             }
         } else {
             // assumes array('from'=><intval>, 'to'=><intval>)
             foreach ($value as $key => $search) {
-                $processed[$key] = $this->removeSeparators($search);
+                $processed[$key] = self::removeSeparators($search);
             }
         }
 
@@ -663,11 +660,11 @@ class atkNumberAttribute extends atkAttribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param atkQuery $query The query object where the search condition should be placed on
-     * @param String $table The name of the table in which this attribute
+     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param String $table       The name of the table in which this attribute
      *                              is stored
-     * @param mixed $value The value the user has entered in the searchbox
-     * @param String $searchmode The searchmode to use. This can be any one
+     * @param mixed $value        The value the user has entered in the searchbox
+     * @param String $searchmode  The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
@@ -683,7 +680,8 @@ class atkNumberAttribute extends atkAttribute
             if (!array_key_exists('from', $value) || strlen(trim($value['from'])) == 0)
                 return false;
             return parent::getSearchCondition($query, $table, $value["from"], $searchmode);
-        } else {
+        }
+        else {
             $fieldname = $table . "." . $this->fieldName();
             return $this->getBetweenCondition($query, $fieldname, $value);
         }
