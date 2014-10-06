@@ -729,6 +729,6 @@ div.form-inline {
 
 /* action buttons spinner */
 #action-spinner {
-  /*  display: none;*/
+   display: none;
     text-align: center;
 }
