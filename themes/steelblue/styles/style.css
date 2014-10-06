@@ -728,9 +728,7 @@ div.form-inline {
 }
 
 /* action buttons spinner */
-#action-buttons .spinner {
-    visibility: hidden;
-    display: inline-block;
-    margin-left: 5px;
-    vertical-align: middle;
+#action-spinner {
+  /*  display: none;*/
+    text-align: center;
 }

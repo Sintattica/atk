@@ -21,4 +21,5 @@
         {$button}
     {/foreach}
 </div>
+<div id="action-spinner"><i class="spinner fa fa-spinner fa-spin"></i></div>
 {$formend}

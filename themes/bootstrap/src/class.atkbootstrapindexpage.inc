@@ -81,11 +81,8 @@ class atkBootstrapIndexPage
         $this->m_extraheaders = $this->m_ui->render('index_meta.tpl');
 
         // Bootstrap
-        $this->m_page->register_script(atkconfig("atkroot") . "atk/themes/bootstrap/src/bootstrap/js/bootstrap.js");
+        $this->m_page->register_script(atkconfig("atkroot") . "atk/themes/bootstrap/lib/bootstrap/js/bootstrap.js");
 
-        //Moment JS & Moment php
-        atkimport('atk.utils.atkmomentphpprovider');
-        atkMomentphpProvider::register($this->m_page);
     }
 
     /**

@@ -32,3 +32,13 @@ function atkSubmit(target)
     globalSubmit(document.entryform);
     document.entryform.submit();
 }
+
+
+function postGlobalSubmit(form) {
+    var f = jQuery(form);
+
+    f.find('#action-buttons').hide();
+    f.find('#action-spinner').show();
+
+    return form;
+}

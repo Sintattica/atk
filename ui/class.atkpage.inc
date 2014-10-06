@@ -142,6 +142,7 @@ class atkPage
         $this->register_script(atkconfig("atkroot") . "atk/javascript/scriptaculous-ext.js");
         $this->register_script(atkconfig("atkroot") . "atk/javascript/class.atktools.js");
         $this->register_script(atkconfig("atkroot") . "atk/javascript/atkbusy.js");
+        $this->register_script(atkconfig("atkroot") . "atk/javascript/moment.min.js");
     }
 
     /**
@@ -476,7 +477,7 @@ class atkPage
             $res .= "      if (retval!=true) return false;\n";
         }
 
-        $res .= "console.log(form);";
+        $res .= "postGlobalSubmit(form);\n";
 
         $res .= "      return retval;\n";
         $res .= "    }\n";

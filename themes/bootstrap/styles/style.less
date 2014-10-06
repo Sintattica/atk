@@ -1,4 +1,7 @@
-@import '../src/bootstrap/css/bootstrap.css';
+@import '../lib/bootstrap/css/bootstrap.css';
+@import '../lib/font-awesome-4.2.0/less/font-awesome.less';
+
+@fa-font-path:        "../lib/font-awesome-4.2.0/fonts";
 
 body {
   padding-top: 70px;
@@ -167,4 +170,18 @@ span.form-control-static {
 
 .atkAttrRowHidden {
   display: none !important;
+}
+
+/* attributes spinner */
+.atkbusy {
+  display: none;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+/* action buttons spinner */
+#action-spinner {
+  display: none;
+  font-size: 26px;
+  text-align: center;
 }

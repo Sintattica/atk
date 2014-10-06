@@ -9,9 +9,6 @@ include_once($base . 'CustomFormats/MomentJs.php');
 
 class atkMomentphpProvider {
 
-    public function register($page){
-        $page->register_script(atkConfig::getGlobal('atkroot') . "atk/themes/bootstrap/src/moment/moment.min.js");
-    }
 
     public static function getFormatInstance()
     {

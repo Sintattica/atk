@@ -3,6 +3,8 @@
 // https://github.com/Eonasdan/bootstrap-datetimepicker
 useattrib("atkattribute");
 
+atkimport('atk.utils.atkmomentphpprovider');
+
 class bootstrapDateTimeAttribute extends atkAttribute
 {
     var $m_bootstrapdatetime_format_edit;
@@ -140,7 +142,7 @@ class bootstrapDateTimeAttribute extends atkAttribute
         $js .= "});";
 
         $page = atkinstance('atk.ui.atkpage');
-        $srcPath = atkConfig::getGlobal('atkroot') . 'atk/themes/bootstrap/src/bootstrap-datetimepicker/build/';
+        $srcPath = atkConfig::getGlobal('atkroot') . 'atk/themes/bootstrap/lib/bootstrap-datetimepicker/build/';
         $page->register_script($srcPath . 'js/bootstrap-datetimepicker.min.js');
         $page->register_style($srcPath . 'css/bootstrap-datetimepicker.min.css');
         $page->register_scriptcode($js);
