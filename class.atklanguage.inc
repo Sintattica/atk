@@ -1,47 +1,47 @@
 <?php
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision$
-   * $Id$
-   */
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ *
+ * @copyright (c)2000-2004 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision$
+ * $Id$
+ */
 
- /**
-   * Class that handles userinterface internationalization.
-   *
-   * This class is used to retrieve the proper translations for any string
-   * displayed in the userinterface. It includes only those language files
-   * that are actually used, and has several fallback systems to find
-   * translations if they can be find in the correct module.
-   *
-   * @author Boy Baukema <boy@ibuildings.nl>
-   * @package atk
-   *
-   */
-  class atkLanguage
-  {
+/**
+ * Class that handles userinterface internationalization.
+ *
+ * This class is used to retrieve the proper translations for any string
+ * displayed in the userinterface. It includes only those language files
+ * that are actually used, and has several fallback systems to find
+ * translations if they can be find in the correct module.
+ *
+ * @author Boy Baukema <boy@ibuildings.nl>
+ * @package atk
+ *
+ */
+class atkLanguage
+{
     /**
      * Instance.
      * 
      * @var atkLanguage
      */
     private static $s_instance = null;
-    
+
     /**
      * Supported languages.
      * 
      * @var array
      */
     private static $s_supportedLanguages = null;
-    
+
     /**
      * Directory where language files are stored.
      * @access private
@@ -90,7 +90,7 @@
      */
     public function __construct()
     {
-      atkdebug("New instance made of atkLanguage");
+        atkdebug("New instance made of atkLanguage");
     }
 
     /**
@@ -103,12 +103,11 @@
      */
     public static function getInstance()
     {
-      if (self::$s_instance == null)
-      {
-        self::$s_instance = new self();
-      }
-      
-      return self::$s_instance;
+        if (self::$s_instance == null) {
+            self::$s_instance = new self();
+        }
+
+        return self::$s_instance;
     }
 
     /**
@@ -118,7 +117,7 @@
      */
     public function addOverrideModule($module)
     {
-      array_unshift($this->m_overridemodules,$module);
+        array_unshift($this->m_overridemodules, $module);
     }
 
     /**
@@ -128,7 +127,7 @@
      */
     public function addFallbackModule($module)
     {
-      $this->m_fallbackmodules[] = $module;
+        $this->m_fallbackmodules[] = $module;
     }
 
     /**
@@ -141,27 +140,24 @@
      */
     protected function _getFallbackModules($modulefallback)
     {
-      static $s_fallbackmodules = array();
-      $key = $modulefallback ? 1 : 0; // we can be called with true or false, cache both results
+        static $s_fallbackmodules = array();
+        $key = $modulefallback ? 1 : 0; // we can be called with true or false, cache both results
 
-      if (!array_key_exists($key, $s_fallbackmodules))
-      {
-        global $g_modules;
+        if (!array_key_exists($key, $s_fallbackmodules)) {
+            global $g_modules;
 
-        $modules = array();
-        if (is_array($g_modules) && ($modulefallback|| atkconfig("language_modulefallback",false)))
-        {
-          foreach ($g_modules as $modname => $modpath)
-          {
-            $modules[] = $modname;
-          }
+            $modules = array();
+            if (is_array($g_modules) && ($modulefallback || atkconfig("language_modulefallback", false))) {
+                foreach ($g_modules as $modname => $modpath) {
+                    $modules[] = $modname;
+                }
+            }
+            $modules[] = "atk";
+
+            $s_fallbackmodules[$key] = array_merge($this->m_fallbackmodules, $modules);
         }
-        $modules[] = "atk";
 
-        $s_fallbackmodules[$key] = array_merge($this->m_fallbackmodules, $modules);
-      }
-
-      return $s_fallbackmodules[$key];
+        return $s_fallbackmodules[$key];
     }
 
     /**
@@ -181,29 +177,57 @@
      *                                when looking for strings
      * @return String the string from the languagefile
      */
-    public static function text($string, $module, $node="", $lng="", $firstfallback="", $nodefaulttext=false,$modulefallback=false)
+    public static function text($string, $module, $node = "", $lng = "", $firstfallback = "", $nodefaulttext = false, $modulefallback = false)
     {
-      // We don't translate nothing
-      if ($string=='') return '';
-      if ($lng=="") $lng = atkLanguage::getLanguage();
-      $lng = strtolower($lng);
-      $atklanguage = atkLanguage::getInstance();
+        // We don't translate nothing
+        if ($string == '')
+            return '';
+        if ($lng == "")
+            $lng = atkLanguage::getLanguage();
+        $lng = strtolower($lng);
+        $atklanguage = atkLanguage::getInstance();
 
-      // If only one string given, process it immediatly
-      if (!is_array($string))
-        return $atklanguage->_getString($string, $module, $lng, $node, $nodefaulttext, $firstfallback, $modulefallback);
+        // If only one string given, process it immediatly
+        if (!is_array($string))
+            return $atklanguage->_getString($string, $module, $lng, $node, $nodefaulttext, $firstfallback, $modulefallback);
 
-      // If multiple strings given, iterate through all strings and return the translation if found
-      for ($i = 0, $_i = count($string); $i < $_i; $i++)
-      {
-        // Try to get the translation
-        $translation = $atklanguage->_getString($string[$i], $module, $lng, $node, $nodefaulttext || ($i < ($_i-1)), $firstfallback, $modulefallback);
+        // If multiple strings given, iterate through all strings and return the translation if found
+        for ($i = 0, $_i = count($string); $i < $_i; $i++) {
+            // Try to get the translation
+            $translation = $atklanguage->_getString($string[$i], $module, $lng, $node, $nodefaulttext || ($i < ($_i - 1)), $firstfallback, $modulefallback);
 
-        // Return the translation if found
-        if ($translation != "")
-          return $translation;
-      }
-      return "";
+            // Return the translation if found
+            if ($translation != "")
+                return $translation;
+        }
+        return "";
+    }
+
+    /**
+     * Returns all strings for the given modulename.
+     *
+     * The returned struct will contain key-value pairs for the translation 
+     * keys, and their respective translation.
+     *  
+     * @param String $module  Module in which the language file should be 
+     * @param String $lng     ISO 639-1 language code, defaults to config 
+     * @return array Translations 
+     */
+    public static function getStringsForModule($module, $lng = "")
+    {
+
+        if ($lng == "")
+            $lng = atkLanguage::getLanguage();
+        $atklanguage = atkLanguage::getInstance();
+
+        $text = $atklanguage->_getStringFromFile($key, $module, $lng);
+        $atklanguage->_includeLanguage($module, $lng);
+
+        if (isset($atklanguage->m_cachedlang[$module]) && is_array($atklanguage->m_cachedlang[$module][$lng])) {
+            return $atklanguage->m_cachedlang[$module][$lng];
+        }
+
+        return array();
     }
 
     /**
@@ -213,14 +237,15 @@
      */
     public static function getLanguage()
     {
-      global $ATK_VARS;
+        global $ATK_VARS;
 
-      if (isset($ATK_VARS["atklng"]) && (in_array($ATK_VARS["atklng"], atkLanguage::getSupportedLanguages()) || in_array($ATK_VARS["atklng"], atkconfig('supported_languages'))))
-      {
-        $lng = $ATK_VARS["atklng"];
-      } // we first check for an atklng variable
-      else { $lng = atkLanguage::getUserLanguage(); }
-      return strtolower($lng);
+        if (isset($ATK_VARS["atklng"]) && (in_array($ATK_VARS["atklng"], atkLanguage::getSupportedLanguages()) || in_array($ATK_VARS["atklng"], atkconfig('supported_languages')))) {
+            $lng = $ATK_VARS["atklng"];
+        } // we first check for an atklng variable
+        else {
+            $lng = atkLanguage::getUserLanguage();
+        }
+        return strtolower($lng);
     }
 
     /**
@@ -232,8 +257,8 @@
      */
     public static function setLanguage($lng)
     {
-      global $ATK_VARS;
-      $ATK_VARS["atklng"] = $lng;
+        global $ATK_VARS;
+        $ATK_VARS["atklng"] = $lng;
     }
 
     /**
@@ -246,28 +271,28 @@
      */
     public static function getUserLanguage()
     {
-      $supported = atkLanguage::getSupportedLanguages();
-      $sessionmanager=null;
-      if(function_exists('atkGetSessionManager')) $sessionmanager = &atkGetSessionManager();
-      if (!empty($sessionmanager))
-      {
-        if (function_exists("getUser"))
-        {
-          $userinfo = getUser();
-          $fieldname = atkconfig('auth_languagefield');
-          if (isset($userinfo[$fieldname]) && in_array($userinfo[$fieldname],$supported)) return $userinfo[$fieldname];
+        $supported = atkLanguage::getSupportedLanguages();
+        $sessionmanager = null;
+        if (function_exists('atkGetSessionManager'))
+            $sessionmanager = &atkGetSessionManager();
+        if (!empty($sessionmanager)) {
+            if (function_exists("getUser")) {
+                $userinfo = getUser();
+                $fieldname = atkconfig('auth_languagefield');
+                if (isset($userinfo[$fieldname]) && in_array($userinfo[$fieldname], $supported))
+                    return $userinfo[$fieldname];
+            }
         }
-      }
 
-      // Otherwise we check the headers
-      if (atkconfig('use_browser_language', false))
-      {
-        $headerlng = atkLanguage::getLanguageFromHeaders();
-        if ($headerlng && in_array($headerlng,$supported)) return $headerlng;
-      }
+        // Otherwise we check the headers
+        if (atkconfig('use_browser_language', false)) {
+            $headerlng = atkLanguage::getLanguageFromHeaders();
+            if ($headerlng && in_array($headerlng, $supported))
+                return $headerlng;
+        }
 
-      // We give up and just return the default language
-      return atkconfig('language');
+        // We give up and just return the default language
+        return atkconfig('language');
     }
 
     /**
@@ -278,18 +303,16 @@
      */
     public static function getLanguageFromHeaders()
     {
-      if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
-      {
-        $langs = split ('[,;]',$_SERVER['HTTP_ACCEPT_LANGUAGE']);
-        if ($langs[0]!="")
-        {
-          $elems=explode("-", $langs[0]); // lng might contain a subset after the dash.
-          $autolng=$elems[0];
+        if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            $langs = split('[,;]', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+            if ($langs[0] != "") {
+                $elems = explode("-", $langs[0]); // lng might contain a subset after the dash.
+                $autolng = $elems[0];
+            }
         }
-      }
-      return $autolng;
+        return $autolng;
     }
-    
+
     /**
      * Explicitly sets the supported languages.
      * 
@@ -297,7 +320,7 @@
      */
     public static function setSupportedLanguages(array $languages)
     {
-      self::$s_supportedLanguages = $languages;
+        self::$s_supportedLanguages = $languages;
     }
 
     /**
@@ -308,26 +331,23 @@
      */
     public static function getSupportedLanguages()
     {
-      $supportedlanguagesmodule = atkconfig('supported_languages_module');
-      if (self::$s_supportedLanguages == null && $supportedlanguagesmodule)
-      {
-        $supportedlanguagesdir = atkLanguage::getLanguageDirForModule($supportedlanguagesmodule);
-        atkimport('atk.utils.atkdirectorytraverser');
-        $supportedlanguagescollector = new getSupportedLanguagesCollector();
-        $traverser = new atkDirectoryTraverser();
-        $traverser->addCallbackObject($supportedlanguagescollector);
-        $traverser->traverse($supportedlanguagesdir);
-        self::$s_supportedLanguages = $supportedlanguagescollector->getLanguages();
-      }
+        $supportedlanguagesmodule = atkconfig('supported_languages_module');
+        if (self::$s_supportedLanguages == null && $supportedlanguagesmodule) {
+            $supportedlanguagesdir = atkLanguage::getInstance()->getLanguageDirForModule($supportedlanguagesmodule);
+            atkimport('atk.utils.atkdirectorytraverser');
+            $supportedlanguagescollector = new getSupportedLanguagesCollector();
+            $traverser = new atkDirectoryTraverser();
+            $traverser->addCallbackObject($supportedlanguagescollector);
+            $traverser->traverse($supportedlanguagesdir);
+            self::$s_supportedLanguages = $supportedlanguagescollector->getLanguages();
+        }
 
-      return (array) self::$s_supportedLanguages;
+        return (array) self::$s_supportedLanguages;
     }
 
     /**
      * Determine the list of modules we need to go through to check
-     * language strings. Overrides have precedence, then the
-     * passed module is considered, finally if no string is found
-     * the fallbacks are checked.
+     * language strings.
      *
      * @access protected
      * @param String $module manually passed module
@@ -337,13 +357,21 @@
      * @param Boolean $modulefallback If true, *all* modules are checked.
      * @return array List of modules to use to find the translations
      */
-    protected function _getModules($module, $firstfallback="", $modulefallback=false)
+    protected function _getModules($module, $firstfallback = "", $modulefallback = false)
     {
-      $arr = array();
-      if ($module) $arr[] = $module;
-      if ($firstfallback!="") $arr[] = $firstfallback;
-      $modules = array_merge($this->m_overridemodules, $arr, $this->_getFallbackModules($modulefallback));
-      return $modules;
+        $arr = array();
+        if ($module)
+            $arr[] = $module;
+        if ($firstfallback != "")
+            $arr[] = $firstfallback;
+        if ($module == 'atk') {
+            // overrides have precedence, then the passed module (finally the fallbacks)
+            $modules = array_merge($this->m_overridemodules, $arr, $this->_getFallbackModules($modulefallback));
+        } else {
+            // the passed module has precedence, then the overrides (finally the fallbacks)
+            $modules = array_merge($arr, $this->m_overridemodules, $this->_getFallbackModules($modulefallback));
+        }
+        return $modules;
     }
 
     /**
@@ -367,46 +395,44 @@
      *                                when looking for strings
      * @return string the name with which to call the string we want from the languagefile
      */
-    protected function _getString($key, $module, $lng, $node="", $nodefaulttext=false, $firstfallback="", $modulefallback=false)
+    protected function _getString($key, $module, $lng, $node = "", $nodefaulttext = false, $firstfallback = "", $modulefallback = false)
     {
-      // first find node specific string.
-      $modules = $this->_getModules($module, $firstfallback, $modulefallback);
+        // First find node specific string.
+        $modules = $this->_getModules($module, $firstfallback, $modulefallback);
 
-      // First check custom Strings
-      if(isset($this->m_customStrings[$lng]) && isset($this->m_customStrings[$lng][$key]))
-        return $this->m_customStrings[$lng][$key];
+        // Second check custom Strings
+        if (isset($this->m_customStrings[$lng]) && isset($this->m_customStrings[$lng][$key]))
+            return $this->m_customStrings[$lng][$key];
 
-      if ($node!="")
-      {
-        foreach ($modules as $modname)
-        {
-          $text = $this->_getStringFromFile($module."_".$node."_".$key, $modname, $lng);
-          if ($text!="") return $text;
+        if ($node != "") {
+            foreach ($modules as $modname) {
+                $text = $this->_getStringFromFile($module . "_" . $node . "_" . $key, $modname, $lng);
+                if ($text != "")
+                    return $text;
+            }
+
+            foreach ($modules as $modname) {
+                $text = $this->_getStringFromFile($node . "_" . $key, $modname, $lng);
+                if ($text != "")
+                    return $text;
+            }
         }
 
-        foreach ($modules as $modname)
-        {
-          $text = $this->_getStringFromFile($node."_".$key, $modname, $lng);
-          if ($text!="") return $text;
+        // find generic module string
+        foreach ($modules as $modname) {
+            $text = $this->_getStringFromFile($key, $modname, $lng);
+            if ($text != "")
+                return $text;
         }
-      }
 
-      // find generic module string
-      foreach ($modules as $modname)
-      {
-        $text = $this->_getStringFromFile($key, $modname, $lng);
-        if ($text!="") return $text;
-      }
+        if (!$nodefaulttext) {
+            if (atkconfig("debug_translations", false))
+                atkdebug("atkLanguage: translation for '$key' with module: '$module' and node: '$node' and language: '$lng' not found, returning default text");
 
-      if (!$nodefaulttext)
-      {
-        if (atkconfig("debug_translations", false))
-          atkdebug("atkLanguage: translation for '$key' with module: '$module' and node: '$node' and language: '$lng' not found, returning default text");
-
-        // Still nothing found. return default string
-        return $this->defaultText($key);
-      }
-      return "";
+            // Still nothing found. return default string
+            return $this->defaultText($key);
+        }
+        return "";
     }
 
     /**
@@ -422,22 +448,20 @@
      */
     protected function _includeLanguage($module, $lng)
     {
-      if (!isset($this->m_cachedlangfiles[$module][$lng])||$this->m_cachedlangfiles[$module][$lng] != 1)
-      {
-        $this->m_cachedlangfiles[$module][$lng] = 1;
-        $path = $this->getLanguageDirForModule($module);
+        if (!isset($this->m_cachedlangfiles[$module][$lng]) || $this->m_cachedlangfiles[$module][$lng] != 1) {
+            $this->m_cachedlangfiles[$module][$lng] = 1;
+            $path = $this->getLanguageDirForModule($module);
 
-        $file = $path.$lng.".lng";
+            $file = $path . $lng . ".lng";
 
-        if (file_exists($file))
-        {
-          include($file);
-          $this->m_cachedlang[$module][$lng] = $$lng;
-          return true;
+            if (file_exists($file)) {
+                include($file);
+                $this->m_cachedlang[$module][$lng] = $$lng;
+                return true;
+            }
+            return false;
         }
-        return false;
-      }
-      return true;
+        return true;
     }
 
     /**
@@ -455,19 +479,16 @@
      */
     public function getLanguageDirForModule($module)
     {
-      if ($module=="atk")
-      {
-        $path = atkconfig("atkroot")."atk/".(isset($this)?$this->LANGDIR:'languages/');
-      }
-      else if ($module=="langoverrides")
-      {
-        $path = atkconfig("language_basedir",(isset($this)?$this->LANGDIR:'languages/'));
-      }
-      else
-      {
-        $path = moduleDir($module).(isset($this)?$this->LANGDIR:'languages/');
-      }
-      return $path;
+        if ($module == "atk") {
+            $path = atkconfig("atkroot") . "atk/" . (isset($this) ? $this->LANGDIR
+                        : 'languages/');
+        } else if ($module == "langoverrides") {
+            $path = atkconfig("language_basedir", (isset($this) ? $this->LANGDIR
+                        : 'languages/'));
+        } else {
+            $path = moduleDir($module) . (isset($this) ? $this->LANGDIR : 'languages/');
+        }
+        return $path;
     }
 
     /**
@@ -479,7 +500,7 @@
      */
     public function defaultText($string)
     {
-      return ucfirst(str_replace("_"," ",str_replace('title_','',$string)));
+        return ucfirst(str_replace("_", " ", str_replace('title_', '', $string)));
     }
 
     /**
@@ -493,15 +514,12 @@
      */
     protected function _getStringFromFile($key, $module, $lng)
     {
-      $this->_includeLanguage($module, $lng);
+        $this->_includeLanguage($module, $lng);
 
-      if (isset($this->m_cachedlang[$module])
-          && is_array($this->m_cachedlang[$module][$lng])
-          && isset($this->m_cachedlang[$module][$lng][$key]))
-      {
-        return $this->m_cachedlang[$module][$lng][$key];
-      }
-      return "";
+        if (isset($this->m_cachedlang[$module]) && is_array($this->m_cachedlang[$module][$lng]) && isset($this->m_cachedlang[$module][$lng][$key])) {
+            return $this->m_cachedlang[$module][$lng][$key];
+        }
+        return "";
     }
 
     /**
@@ -511,36 +529,38 @@
      * @param string $text Text
      * @param string $lng Language
      */
-    public function setText($code,$text,$lng)
+    public function setText($code, $text, $lng)
     {
-      if(!isset($this->m_customStrings[$lng])) $this->m_customStrings[$lng]=array();
-      $this->m_customStrings[$lng][$code]=$text;
+        if (!isset($this->m_customStrings[$lng]))
+            $this->m_customStrings[$lng] = array();
+        $this->m_customStrings[$lng][$code] = $text;
     }
-  }
 
+}
 
-  /**
-   * A collector for supported languages
-   * @author Boy Baukema <boy@ibuildings.nl>
-   * @package atk
-   */
-  class getSupportedLanguagesCollector
-  {
-    var $m_languages=array();
+/**
+ * A collector for supported languages
+ * @author Boy Baukema <boy@ibuildings.nl>
+ * @package atk
+ */
+class getSupportedLanguagesCollector
+{
+    var $m_languages = array();
 
     function visitFile($fullpath)
     {
-      if (substr($fullpath,strlen($fullpath)-4)==='.lng')
-      {
-        $exploded = explode('/',$fullpath);
-        $lng = array_pop($exploded);
-        $this->m_languages[] = substr($lng,0,2);
-      }
+        if (substr($fullpath, strlen($fullpath) - 4) === '.lng') {
+            $exploded = explode('/', $fullpath);
+            $lng = array_pop($exploded);
+            $this->m_languages[] = substr($lng, 0, 2);
+        }
     }
 
     public function getLanguages()
     {
-      return $this->m_languages;
+        return $this->m_languages;
     }
-  }
+
+}
+
 ?>

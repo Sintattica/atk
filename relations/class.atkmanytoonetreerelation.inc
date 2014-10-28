@@ -1,39 +1,38 @@
 <?php
- /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage relations
-   *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6320 $
-   * $Id$
-   */
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage relations
+ *
+ * @copyright (c)2000-2004 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6320 $
+ * $Id$
+ */
+/**
+ * @internal includes..
+ */
+userelation("atkManyToOneRelation");
+include_once(atkconfig("atkroot") . "atk/atktreetools.inc");
 
-  /**
-   * @internal includes..
-   */
-  userelation("atkManyToOneRelation");
-  include_once(atkconfig("atkroot")."atk/atktreetools.inc");
-
-  /**
-   * Extension of the atkManyToOneRelation, that is aware of the treestructure
-   * (parent/child relation) in the destination node, and renders items in the
-   * dropdown accordingly. You need to set the AF_PARENT flag to the parent 
-   * column in the destination node in order to make the tree rendering work.
-   *
-   * @author Sandy Pleyte <sandy@ibuildings.nl>
-   * @package atk
-   * @subpackage relations
-   *
-   */
-  class atkManyToOneTreeRelation extends atkManyToOneRelation
-  {
+/**
+ * Extension of the atkManyToOneRelation, that is aware of the treestructure
+ * (parent/child relation) in the destination node, and renders items in the
+ * dropdown accordingly. You need to set the AF_PARENT flag to the parent 
+ * column in the destination node in order to make the tree rendering work.
+ *
+ * @author Sandy Pleyte <sandy@ibuildings.nl>
+ * @package atk
+ * @subpackage relations
+ *
+ */
+class atkManyToOneTreeRelation extends atkManyToOneRelation
+{
     var $m_current = "";
     var $m_level = "";
 
@@ -43,9 +42,9 @@
      * @param string $destination Destination node for this relation
      * @param int $flags Flags for the relation
      */
-    function atkManyToOneTreeRelation($name, $destination, $flags=0)
+    function atkManyToOneTreeRelation($name, $destination, $flags = 0)
     {
-      $this->atkManyToOneRelation($name, $destination, $flags);
+        $this->atkManyToOneRelation($name, $destination, $flags);
     }
 
     /**
@@ -58,27 +57,25 @@
      * @param String $mode The mode we're in ('add' or 'edit')
      * @return Piece of html code that can  be used in a form to edit this
      */
-    function edit($record="", $fieldprefix="", $mode="")
+    function edit($record = "", $fieldprefix = "", $mode = "")
     {
-      $this->createDestination();
-      $tmp1=atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey);
-      $tmp2=atk_array_merge($tmp1,array($this->m_destInstance->m_parent));
-      if ($this->m_destinationFilter!="")
-      {
-        $this->m_destInstance->addFilter(stringparse($this->m_destinationFilter,$record));
-      }
-      $recordset = $this->m_destInstance->selectDb("",$this->m_destInstance->m_primaryKey[0],"","",$tmp2);
-      $this->m_current = $this->m_ownerInstance->primaryKey($record);
-      $result = '<select name="'.$fieldprefix.$this->formName().'">';
+        $this->createDestination();
+        $tmp1 = atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey);
+        $tmp2 = atk_array_merge($tmp1, array($this->m_destInstance->m_parent));
+        if ($this->m_destinationFilter != "") {
+            $this->m_destInstance->addFilter(stringparse($this->m_destinationFilter, $record));
+        }
+        $recordset = $this->m_destInstance->selectDb("", $this->m_destInstance->m_primaryKey[0], "", "", $tmp2);
+        $this->m_current = $this->m_ownerInstance->primaryKey($record);
+        $result = '<select class="form-control" name="' . $fieldprefix . $this->formName() . '">';
 
-      if ($this->hasFlag(AF_OBLIGATORY)==false)
-      {
-        // Relation may be empty, so we must provide an empty selectable..
-        $result.= '<option value="0">'.atktext('select_none');
-      }
-      $result.=$this->createdd($recordset);
-      $result.='</select>';
-      return $result;
+        if ($this->hasFlag(AF_OBLIGATORY) == false) {
+            // Relation may be empty, so we must provide an empty selectable..
+            $result.= '<option value="0">' . atktext('select_none');
+        }
+        $result.=$this->createdd($recordset);
+        $result.='</select>';
+        return $result;
     }
 
     /**
@@ -86,23 +83,22 @@
      * @param array $record Record
      * @return Piece of html code that can  be used in a form to edit this
      */
-    function search($record="")
+    function search($record = "")
     {
-      $this->createDestination();
-      if ($this->m_destinationFilter!="")
-      {
-        $this->m_destInstance->addFilter(stringparse($this->m_destinationFilter,$record));
-      }
-      $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+        $this->createDestination();
+        if ($this->m_destinationFilter != "") {
+            $this->m_destInstance->addFilter(stringparse($this->m_destinationFilter, $record));
+        }
+        $recordset = $this->m_destInstance->selectDb("", "", "", "", atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
 
-      $result = '<select name="atksearch['.$this->fieldName().']">';
+        $result = '<select class="form-control" name="atksearch[' . $this->fieldName() . ']">';
 
-      $pkfield = $this->m_destInstance->primaryKeyField();
+        $pkfield = $this->m_destInstance->primaryKeyField();
 
-      $result.= '<option value="">'.atktext("search_all", "atk");
-      $result.=$this->createdd($recordset);
-      $result.='</select>';
-      return $result;
+        $result.= '<option value="">' . atktext("search_all", "atk");
+        $result.=$this->createdd($recordset);
+        $result.='</select>';
+        return $result;
     }
 
     /**
@@ -113,16 +109,13 @@
      */
     function createdd($recordset)
     {
-      $t = new tree;
-      for($i=0;$i<count($recordset);$i++)
-      {
-        $group=$recordset[$i];
-        $t->addNode($recordset[$i][$this->m_destInstance->m_primaryKey[0]],
-                    $this->m_destInstance->descriptor($group),
-                    $recordset[$i][$this->m_destInstance->m_parent][$this->m_destInstance->m_primaryKey[0]]);
-      }
-      $tmp = $this->render($t->m_tree);
-      return $tmp;
+        $t = new tree;
+        for ($i = 0; $i < count($recordset); $i++) {
+            $group = $recordset[$i];
+            $t->addNode($recordset[$i][$this->m_destInstance->m_primaryKey[0]], $this->m_destInstance->descriptor($group), $recordset[$i][$this->m_destInstance->m_parent][$this->m_destInstance->m_primaryKey[0]]);
+        }
+        $tmp = $this->render($t->m_tree);
+        return $tmp;
     }
 
     /**
@@ -132,32 +125,29 @@
      * @param int $level
      * @return string The rendered tree
      */
-    function render($tree="",$level=0)
+    function render($tree = "", $level = 0)
     {
-      $res="";
-      while (list($id,$objarr) = each($tree))
-      {
-        $i++;
-        if($this->m_current != $this->m_destInstance->m_table.".".$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'")
-        {
-          $this->m_level=$level;
-          $sel = "";
-        }
-        else
-        {
-          // if equal, select the option it and do not render childs (parent cannot be moved to a childnode of its own)
-          $sel="SELECTED";
-        }
+        $res = "";
+        while (list($id, $objarr) = each($tree)) {
+            $i++;
+            if ($this->m_current != $this->m_destInstance->m_table . "." . $this->m_destInstance->m_primaryKey[0] . "='" . $objarr->m_id . "'") {
+                $this->m_level = $level;
+                $sel = "";
+            } else {
+                // if equal, select the option it and do not render childs (parent cannot be moved to a childnode of its own)
+                $sel = "SELECTED";
+            }
 
-        $res.= '<option value="'.$this->m_destInstance->m_table.".".$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'".'" '.$sel.'>'.str_repeat("-",(2*$level))." ".$objarr->m_label;
+            $res.= '<option value="' . $this->m_destInstance->m_table . "." . $this->m_destInstance->m_primaryKey[0] . "='" . $objarr->m_id . "'" . '" ' . $sel . '>' . str_repeat("-", (2 * $level)) . " " . $objarr->m_label;
 
-        if (count($objarr->m_sub)>0 && $sel=="")
-        {
-         $res.=$this->render($objarr->m_sub, $level+1);
+            if (count($objarr->m_sub) > 0 && $sel == "") {
+                $res.=$this->render($objarr->m_sub, $level + 1);
+            }
         }
-     }
-     $this->m_level=0;
-     return $res;
+        $this->m_level = 0;
+        return $res;
     }
-  }
+
+}
+
 ?>

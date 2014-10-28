@@ -1,38 +1,38 @@
 <?php
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage attributes
-   *
-   * @copyright (c)2006-2007 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6309 $
-   * $Id$
-   */
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage attributes
+ *
+ * @copyright (c)2006-2007 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6309 $
+ * $Id$
+ */
+/**
+ * Flags for the atkIpAttribute
+ */
+define("AF_IP_ALLOW_WILDCARDS", AF_SPECIFIC_1);
+define("AF_IP_STORENUMERIC", AF_SPECIFIC_2);
+define("AF_IP_SINGLEFIELD", AF_SPECIFIC_3);
 
-  /**
-   * Flags for the atkIpAttribute
-   */
-  define("AF_IP_ALLOW_WILDCARDS", AF_SPECIFIC_1);
-  define("AF_IP_STORENUMERIC", AF_SPECIFIC_2);
-  define("AF_IP_SINGLEFIELD", AF_SPECIFIC_3);
+/**
+ * The atkIpAttribute can be used to let the user enter IP(v4) addresses.
+ * It's (optionally) possible to let the user enter wildcards.
+ *
+ * @author Peter C. Verhage <peter@ibuildings.nl>
+ * @author Guido van Biemen <guido@ibuildings.nl>
+ * @package atk
+ * @subpackage attributes
+ */
+class atkIpAttribute extends atkAttribute
+{
 
-  /**
-   * The atkIpAttribute can be used to let the user enter IP(v4) addresses.
-   * It's (optionally) possible to let the user enter wildcards.
-   *
-   * @author Peter C. Verhage <peter@ibuildings.nl>
-   * @author Guido van Biemen <guido@ibuildings.nl>
-   * @package atk
-   * @subpackage attributes
-   */
-  class atkIpAttribute extends atkAttribute
-  {
     /**
      * Constructor.
      *
@@ -41,7 +41,7 @@
      */
     function atkIpAttribute($name, $flags)
     {
-      $this->atkAttribute($name, $flags, 15);
+        $this->atkAttribute($name, $flags, 15);
     }
 
     /**
@@ -53,16 +53,16 @@
      */
     function fetchValue($postvars)
     {
-      if ($this->hasFlag(AF_IP_SINGLEFIELD))
-        return parent::fetchValue($postvars[$this->fieldName()]);
-      if (!$this->isPosted($postvars))
-        return NULL;
+        if ($this->hasFlag(AF_IP_SINGLEFIELD))
+            return parent::fetchValue($postvars[$this->fieldName()]);
+        if (!$this->isPosted($postvars))
+            return NULL;
 
-      $parts = array();
-      for ($i = 0; $i < 4; $i++)
-        $parts[$i] = $postvars[$this->fieldName()][$i];
+        $parts = array();
+        for ($i = 0; $i < 4; $i++)
+            $parts[$i] = $postvars[$this->fieldName()][$i];
 
-      return implode('.', $parts);
+        return implode('.', $parts);
     }
 
     /**
@@ -73,22 +73,21 @@
      *
      * @return string html string
      */
-    function edit($record, $fieldprefix="")
+    function edit($record, $fieldprefix = "")
     {
-      if ($this->hasFlag(AF_IP_SINGLEFIELD))
-        return parent::edit($record, $fieldprefix);
+        if ($this->hasFlag(AF_IP_SINGLEFIELD))
+            return parent::edit($record, $fieldprefix);
 
-      $inputs = array();
-      $values = empty($record[$this->fieldName()]) ? NULL : explode('.', $record[$this->fieldName()]);
+        $inputs = array();
+        $values = empty($record[$this->fieldName()]) ? NULL : explode('.', $record[$this->fieldName()]);
 
-      for ($i = 0; $i < 4; $i++)
-      {
-        $name = $fieldprefix.$this->fieldName().'['.$i.']';
-        $value = isset($values[$i]) ? $values[$i] : '';
-        $inputs[] = '<input type="text" name="'.$name.'" value="'.$value.'" maxlength="3" size="3" />';
-      }
+        for ($i = 0; $i < 4; $i++) {
+            $name = $fieldprefix . $this->fieldName() . '[' . $i . ']';
+            $value = isset($values[$i]) ? $values[$i] : '';
+            $inputs[] = '<input type="text" name="' . $name . '" value="' . $value . '" maxlength="3" size="3" />';
+        }
 
-      return implode('.', $inputs);
+        return implode('.', $inputs);
     }
 
     /**
@@ -102,17 +101,16 @@
      */
     function validate(&$record, $mode)
     {
-      // Check for valid ip string
-      $strvalue = atkArrayNvl($record, $this->fieldName(), "");
-      if (!empty($strvalue))
-      {
-        if ($this->hasFlag(AF_IP_ALLOW_WILDCARDS) && !$this->hasFlag(AF_IP_STORENUMERIC))
-          $strvalue = str_replace("*", "0", $strvalue);
-        $num='(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])';
-        if (preg_match("/^$num\\.$num\\.$num\\.$num$/", $strvalue, $matches) <= 0)
-          triggerError($record, $this->fieldName(), 'error_not_a_valid_ip');
-      }
-      parent::validate($record, $mode);
+        // Check for valid ip string
+        $strvalue = atkArrayNvl($record, $this->fieldName(), "");
+        if (!empty($strvalue)) {
+            if ($this->hasFlag(AF_IP_ALLOW_WILDCARDS) && !$this->hasFlag(AF_IP_STORENUMERIC))
+                $strvalue = str_replace("*", "0", $strvalue);
+            $num = '(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])';
+            if (preg_match("/^$num\\.$num\\.$num\\.$num$/", $strvalue, $matches) <= 0)
+                triggerError($record, $this->fieldName(), 'error_not_a_valid_ip');
+        }
+        parent::validate($record, $mode);
     }
 
     /**
@@ -124,13 +122,13 @@
      */
     function value2db($rec)
     {
-      // By default, return the plain ip number
-      if (!$this->hasFlag(AF_IP_STORENUMERIC))
-        return atkArrayNvl($rec, $this->fieldName());
+        // By default, return the plain ip number
+        if (!$this->hasFlag(AF_IP_STORENUMERIC))
+            return atkArrayNvl($rec, $this->fieldName());
 
-      // But if the AF_IP_STORENUMERIC flag is set, we store it as long integer
-      atkimport("atk.utils.atkiputils");
-      return atkIpUtils::ipLongFormat(atkArrayNvl($rec, $this->fieldName()));
+        // But if the AF_IP_STORENUMERIC flag is set, we store it as long integer
+        atkimport("atk.utils.atkiputils");
+        return atkIpUtils::ipLongFormat(atkArrayNvl($rec, $this->fieldName()));
     }
 
     /**
@@ -141,13 +139,13 @@
      */
     function db2value($rec)
     {
-      // By default, return the plain ip number
-      if (!$this->hasFlag(AF_IP_STORENUMERIC))
-        return atkArrayNvl($rec, $this->fieldName());
+        // By default, return the plain ip number
+        if (!$this->hasFlag(AF_IP_STORENUMERIC))
+            return atkArrayNvl($rec, $this->fieldName());
 
-      // But if the AF_IP_STORENUMERIC flag is set, we load it as long integer
-      atkimport("atk.utils.atkiputils");
-      return atkIpUtils::ipStringFormat(atkArrayNvl($rec, $this->fieldName()));
+        // But if the AF_IP_STORENUMERIC flag is set, we load it as long integer
+        atkimport("atk.utils.atkiputils");
+        return atkIpUtils::ipStringFormat(atkArrayNvl($rec, $this->fieldName()));
     }
 
     /**
@@ -157,7 +155,7 @@
      */
     function dbFieldType()
     {
-      return $this->hasFlag(AF_IP_STORENUMERIC) ? "int" : "string";
+        return $this->hasFlag(AF_IP_STORENUMERIC) ? "int" : "string";
     }
 
     /**
@@ -167,7 +165,9 @@
      */
     function dbFieldSize()
     {
-      return $this->hasFlag(AF_IP_STORENUMERIC) ? 32 : 15;
+        return $this->hasFlag(AF_IP_STORENUMERIC) ? 32 : 15;
     }
-  }
+
+}
+
 ?>

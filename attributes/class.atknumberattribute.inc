@@ -1,43 +1,41 @@
 <?php
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage attributes
+ *
+ * @copyright (c)2000-2004 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6353 $
+ * $Id: class.atknumberattribute.inc 7011 2010-08-19 15:15:30Z jvansluijs $
+ */
 
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage attributes
-   *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6353 $
-   * $Id$
-   */
-
-  /**
-   * The atkNumberAttribute can be used for numeric values.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage attributes
-   *
-   */
-  class atkNumberAttribute extends atkAttribute
-  {
+/**
+ * The atkNumberAttribute can be used for numeric values.
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @package atk
+ * @subpackage attributes
+ *
+ */
+class atkNumberAttribute extends atkAttribute
+{
     var $m_size; // Integral part of number (before decimal separator)
-    var $m_decimals=null; // The number of decimals of the number.
-    var $m_minvalue=false; // The minimum value of the number.
-    var $m_maxvalue=false; // The maximum value of the number.
-    var $m_use_thousands_separator=false; // use the thousands separator when formatting a number
+    var $m_decimals = null; // The number of decimals of the number.
+    var $m_minvalue = false; // The minimum value of the number.
+    var $m_maxvalue = false; // The maximum value of the number.
+    var $m_use_thousands_separator = false; // use the thousands separator when formatting a number
     var $m_decimalseparator;
     var $m_thousandsseparator;
 
     // ids of separators in atk language file
-    const SEPARATOR_DECIMAL  = 'decimal_separator';
+    const SEPARATOR_DECIMAL = 'decimal_separator';
     const SEPARATOR_THOUSAND = 'thousands_separator';
-
     // default separator
     const DEFAULT_SEPARATOR = '.';
 
@@ -50,13 +48,13 @@
      * @param int     $decimals The number of decimals to use.
      *
      */
-    function atkNumberAttribute($name, $flags=0, $size=10, $decimals=null)
+    function atkNumberAttribute($name, $flags = 0, $size = 10, $decimals = null)
     {
-      $this->atkAttribute($name,$flags|AF_NO_QUOTES, $size); // base class constructor
-      $this->m_decimals = $decimals;
+        $this->atkAttribute($name, $flags | AF_NO_QUOTES, $size); // base class constructor
+        $this->m_decimals = $decimals;
 
-      $this->m_decimalseparator = atktext(self::SEPARATOR_DECIMAL,'atk');
-      $this->m_thousandsseparator = atktext(self::SEPARATOR_THOUSAND,'atk');
+        $this->m_decimalseparator = atktext(self::SEPARATOR_DECIMAL, 'atk');
+        $this->m_thousandsseparator = atktext(self::SEPARATOR_THOUSAND, 'atk');
     }
 
     /**
@@ -66,7 +64,7 @@
      */
     public function getDecimals()
     {
-      return (int)$this->m_decimals;
+        return (int) $this->m_decimals;
     }
 
     /**
@@ -76,7 +74,7 @@
      */
     public function setDecimals($decimals)
     {
-      $this->m_decimals = $decimals;
+        $this->m_decimals = $decimals;
     }
 
     /**
@@ -87,8 +85,8 @@
      */
     public function setRange($minvalue, $maxvalue)
     {
-      $this->m_minvalue = $minvalue;
-      $this->m_maxvalue = $maxvalue;
+        $this->m_minvalue = $minvalue;
+        $this->m_maxvalue = $maxvalue;
     }
 
     /**
@@ -102,30 +100,27 @@
      * @param String $direction Sorting direction (ASC or DESC)
      * @return String The ORDER BY statement for this attribute
      */
-    function getOrderByStatement($extra='', $table='', $direction='ASC')
+    function getOrderByStatement($extra = '', $table = '', $direction = 'ASC')
     {
-      if (empty($table))
-      {
-        $table = $this->m_ownerInstance->m_table;
-      }
-      
-      // check for a schema name in $table
-      if (strpos($table, '.') !== false) 
-      {
-        $identifiers = explode('.', $table);
-      
-        $tableIdentifier = '';
-        foreach ($identifiers as $identifier) 
-        {
-          $tableIdentifier .= $this->getDb()->quoteIdentifier($identifier) . '.';
+        if (empty($table)) {
+            $table = $this->m_ownerInstance->m_table;
         }
-        
-        return $tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " {$direction}" : "");
-      } 
-      else 
-      {
-        return $this->getDb()->quoteIdentifier($table).".".$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " {$direction}" : "");
-      }      
+
+        // check for a schema name in $table
+        if (strpos($table, '.') !== false) {
+            $identifiers = explode('.', $table);
+
+            $tableIdentifier = '';
+            foreach ($identifiers as $identifier) {
+                $tableIdentifier .= $this->getDb()->quoteIdentifier($identifier) . '.';
+            }
+
+            return $tableIdentifier . $this->getDb()->quoteIdentifier($this->fieldName()) . ($direction
+                ? " {$direction}" : "");
+        } else {
+            return $this->getDb()->quoteIdentifier($table) . "." . $this->getDb()->quoteIdentifier($this->fieldName()) . ($direction
+                ? " {$direction}" : "");
+        }
     }
 
     /**
@@ -142,13 +137,12 @@
      *                     use additional modes.
      * @return String HTML String
      */
-    function display($record, $mode="")
+    function display($record, $mode = "")
     {
-      if (isset($record[$this->fieldName()]) && $record[$this->fieldName()]!=="")
-      {
-        return $this->formatNumber($record[$this->fieldName()]);
-      }
-      return "";
+        if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] !== "") {
+            return $this->formatNumber($record[$this->fieldName()]);
+        }
+        return "";
     }
 
     /**
@@ -162,7 +156,7 @@
      */
     function standardiseSeparator($number)
     {
-      return str_replace(atktext("decimal_separator"),".",$number);
+        return str_replace(atktext("decimal_separator"), ".", $number);
     }
 
     /**
@@ -178,18 +172,17 @@
      * @return String A piece of htmlcode with hidden form elements that post
      *                this attribute's value without showing it.
      */
-    function hide($record="", $fieldprefix="")
+    function hide($record = "", $fieldprefix = "")
     {
-      // the next if-statement is a workaround for derived attributes which do
-      // not override the hide() method properly. This will not give them a
-      // working hide() functionality but at least it will not give error messages.
-      if (!is_array($record[$this->fieldName()]))
-      {
-        $id = $id = $this->getHtmlId($fieldprefix);
-        $result = '<input type="hidden" id="'.$id.'" name="'.$fieldprefix.$this->formName().'" value="'.htmlspecialchars($this->formatNumber($record[$this->fieldName()])).'">';
-        return $result;
-      }
-      else atkdebug("Warning attribute ".$this->m_name." has no proper hide method!");
+        // the next if-statement is a workaround for derived attributes which do
+        // not override the hide() method properly. This will not give them a
+        // working hide() functionality but at least it will not give error messages.
+        if (!is_array($record[$this->fieldName()])) {
+            $id = $id = $this->getHtmlId($fieldprefix);
+            $result = '<input type="hidden" id="' . $id . '" name="' . $fieldprefix . $this->formName() . '" value="' . htmlspecialchars($this->formatNumber($record[$this->fieldName()])) . '">';
+            return $result;
+        } else
+            atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
     }
 
     /**
@@ -199,38 +192,36 @@
      * @param String $thousands_separator override thousands separator
      * @return String The converted number
      */
-    function removeSeparators($number, $decimal_separator="", $thousands_separator="")
+    function removeSeparators($number, $decimal_separator = "", $thousands_separator = "")
     {
-      if (empty($decimal_separator))   $decimal_separator = $this->m_decimalseparator;
-      if (empty($thousands_separator)) $thousands_separator = $this->m_thousandsseparator;
+        if (empty($decimal_separator))
+            $decimal_separator = $this->m_decimalseparator;
+        if (empty($thousands_separator))
+            $thousands_separator = $this->m_thousandsseparator;
 
-      if ($decimal_separator == $thousands_separator)
-      {
-        atkwarning('invalid thousandsseparator. identical to the decimal_separator');
-        $thousands_separator = '';
-      }
-
-      if (strstr($number,$decimal_separator) !== false)
-      {
-        // check invalid input
-        if(substr_count($number,$decimal_separator) > 2) return $number;
-
-        $number = str_replace($thousands_separator,'',$number);
-        $number = str_replace($decimal_separator,self::DEFAULT_SEPARATOR,$number);
-
-        if(substr_count($number,self::DEFAULT_SEPARATOR) > 1)
-        {
-          $parts = explode(self::DEFAULT_SEPARATOR,$number);
-          $decimals = array_pop($parts);
-          $number = implode('',$parts).self::DEFAULT_SEPARATOR.$decimals;
+        if ($decimal_separator == $thousands_separator) {
+            atkwarning('invalid thousandsseparator. identical to the decimal_separator');
+            $thousands_separator = '';
         }
-      }
-      else
-      {
-        $number = str_replace($thousands_separator,'',$number);
-      }
 
-      return $number;
+        if (strstr($number, $decimal_separator) !== false) {
+            // check invalid input
+            if (substr_count($number, $decimal_separator) > 2)
+                return $number;
+
+            $number = str_replace($thousands_separator, '', $number);
+            $number = str_replace($decimal_separator, self::DEFAULT_SEPARATOR, $number);
+
+            if (substr_count($number, self::DEFAULT_SEPARATOR) > 1) {
+                $parts = explode(self::DEFAULT_SEPARATOR, $number);
+                $decimals = array_pop($parts);
+                $number = implode('', $parts) . self::DEFAULT_SEPARATOR . $decimals;
+            }
+        } else {
+            $number = str_replace($thousands_separator, '', $number);
+        }
+
+        return $number;
     }
 
     /**
@@ -241,7 +232,7 @@
      */
     public function setUseThousandsSeparator($use_separator)
     {
-      $this->m_use_thousands_separator = (bool) $use_separator;
+        $this->m_use_thousands_separator = (bool) $use_separator;
     }
 
     /**
@@ -252,7 +243,7 @@
      */
     public function getUseThousandsSeparator()
     {
-      return $this->m_use_thousands_separator;
+        return $this->m_use_thousands_separator;
     }
 
     /**
@@ -262,7 +253,7 @@
      */
     public function getThousandsSeparator()
     {
-      return $this->m_thousandsseparator;
+        return $this->m_thousandsseparator;
     }
 
     /**
@@ -272,7 +263,7 @@
      */
     public function setThousandsSeparator($separator)
     {
-      $this->m_thousandsseparator = $separator;
+        $this->m_thousandsseparator = $separator;
     }
 
     /**
@@ -282,7 +273,7 @@
      */
     public function getDecimalSeparator()
     {
-      return $this->m_decimalseparator;
+        return $this->m_decimalseparator;
     }
 
     /**
@@ -292,9 +283,8 @@
      */
     public function setDecimalSeparator($separator)
     {
-      $this->m_decimalseparator = $separator;
+        $this->m_decimalseparator = $separator;
     }
-
 
     /**
      * Formats the number based on setting in the language file
@@ -305,31 +295,34 @@
      *
      * @return string nicely formatted number
      */
-    protected function formatNumber($number, $decimalSeparator="", $thousandsSeparator="")
+    protected function formatNumber($number, $decimalSeparator = "", $thousandsSeparator = "", $mode = "")
     {
-      $decimalSeparator = $decimalSeparator == null ? $this->m_decimalseparator : $decimalSeparator;
-      $thousandsSeparator = $thousandsSeparator == null ? $this->m_thousandsseparator : $thousandsSeparator;
-      $thousandsSeparator = $this->m_use_thousands_separator ? $thousandsSeparator : '';
+        $decimalSeparator = $decimalSeparator == null ? $this->m_decimalseparator : $decimalSeparator;
+        $thousandsSeparator = $thousandsSeparator == null ? $this->m_thousandsseparator : $thousandsSeparator;
+        // (never shows the thousands separator in add/edit mode)
+        $thousandsSeparator = ($this->m_use_thousands_separator && !in_array($mode, array('add', 'edit'))) ? $thousandsSeparator : '';
 
-      if ($decimalSeparator == $thousandsSeparator)
-      {
-        atkwarning('invalid thousandsseparator. identical to the decimal_separator');
-        $thousandsSeparator = '';
-      }
+        if ($decimalSeparator == $thousandsSeparator) {
+            atkwarning('invalid thousandsseparator. identical to the decimal_separator');
+            $thousandsSeparator = '';
+        }
 
-      // NOTE: we don't use number_format because this sometimes causes rounding issues
-      //       if a float can not be properly represented (see http://nl.php.net/manual/en/function.number-format.php#93893)
+        // NOTE: we don't use number_format because this sometimes causes rounding issues
+        //       if a float can not be properly represented (see http://nl.php.net/manual/en/function.number-format.php#93893)
 
-      $tmp1 = round((float)$number, $this->getDecimals());
-      $tmp1 .= $this->getDecimals() > 0 && strpos($tmp1, '.') === false ? '.' : '';
-      $tmp1 .= str_repeat('0', max($this->getDecimals() - strlen(substr($tmp1, strpos($tmp1, '.') + 1)), 0));
+        $tmp1 = abs(round((float) $number, $this->getDecimals()));
+        $tmp1 .= $this->getDecimals() > 0 && strpos($tmp1, '.') === false ? '.' : '';
+        $tmp1 .= str_repeat('0', max($this->getDecimals() - strlen(substr($tmp1, strpos($tmp1, '.') + 1)), 0));
 
-      while (($tmp2 = preg_replace('/(?<!.)(\d+)(\d\d\d)/', '\1 \2', $tmp1)) != $tmp1)
-      {
-        $tmp1 = $tmp2;
-      }
+        while (($tmp2 = preg_replace('/(?<!.)(\d+)(\d\d\d)/', '\1 \2', $tmp1)) != $tmp1) {
+            $tmp1 = $tmp2;
+        }
 
-      return strtr($tmp1, array(' ' => $thousandsSeparator, '.' => $decimalSeparator));
+        $r = strtr($tmp1, array(' ' => $thousandsSeparator, '.' => $decimalSeparator));
+        if ($number < 0) {
+            $r = '-' . $r;
+        }
+        return $r;
     }
 
     /**
@@ -343,7 +336,7 @@
      */
     function translateSeparator($number)
     {
-      return str_replace(".", atktext("decimal_separator"), $number);
+        return str_replace(".", atktext("decimal_separator"), $number);
     }
 
     /**
@@ -355,12 +348,12 @@
      */
     function validate(&$record, $mode)
     {
-      if (!is_numeric($record[$this->fieldName()])&&$record[$this->fieldName()]!="")
-        triggerError($record, $this->fieldName(), 'error_notnumeric');
-      if (($this->m_maxvalue !== false) && ($record[$this->fieldName()] > $this->m_maxvalue))
-        triggerError($record, $this->fieldName(), 'above_maximum_value');
-      if (($this->m_minvalue !== false) && ($record[$this->fieldName()] < $this->m_minvalue))
-        triggerError($record, $this->fieldName(), 'below_minimum_value');
+        if (!is_numeric($record[$this->fieldName()]) && $record[$this->fieldName()] != "")
+            triggerError($record, $this->fieldName(), 'error_notnumeric');
+        if (($this->m_maxvalue !== false) && ($record[$this->fieldName()] > $this->m_maxvalue))
+            triggerError($record, $this->fieldName(), 'above_maximum_value');
+        if (($this->m_minvalue !== false) && ($record[$this->fieldName()] < $this->m_minvalue))
+            triggerError($record, $this->fieldName(), 'below_minimum_value');
     }
 
     /**
@@ -377,10 +370,9 @@
      */
     function fetchValue($postvars)
     {
-      if ($this->isPosted($postvars))
-      {
-        return $this->removeSeparators(atkArrayNvl($postvars, $this->fieldName(), ""));
-      }
+        if ($this->isPosted($postvars)) {
+            return $this->removeSeparators(atkArrayNvl($postvars, $this->fieldName(), ""));
+        }
     }
 
     /**
@@ -397,12 +389,12 @@
      */
     function value2db($rec)
     {
-      if((!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()])==0) && !$this->hasFlag(AF_OBLIGATORY))
-        return NULL;
-      if($this->getDecimals()>0)
-        return round((float) $rec[$this->fieldName()], $this->getDecimals());
-      else
-        return isset($rec[$this->fieldName()]) ? $rec[$this->fieldName()] : null;
+        if ((!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()]) == 0) && !$this->hasFlag(AF_OBLIGATORY))
+            return NULL;
+        if ($this->getDecimals() > 0)
+            return round((float) $rec[$this->fieldName()], $this->getDecimals());
+        else
+            return isset($rec[$this->fieldName()]) ? $rec[$this->fieldName()] : null;
     }
 
     /**
@@ -416,12 +408,13 @@
      */
     function getSearchModes()
     {
-      // exact match and substring search should be supported by any database.
-      // (the LIKE function is ANSI standard SQL, and both substring and wildcard
-      // searches can be implemented using LIKE)
-      // Possible values
-      //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-      return array("exact","between", "greaterthan","greaterthanequal","lessthan","lessthanequal");
+        // exact match and substring search should be supported by any database.
+        // (the LIKE function is ANSI standard SQL, and both substring and wildcard
+        // searches can be implemented using LIKE)
+        // Possible values
+        //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
+        return array("exact", "between", "greaterthan", "greaterthanequal",
+            "lessthan", "lessthanequal");
     }
 
     /**
@@ -436,7 +429,7 @@
      */
     function dbFieldType()
     {
-      return ($this->getDecimals()>0?"decimal":"number");
+        return ($this->getDecimals() > 0 ? "decimal" : "number");
     }
 
     /**
@@ -458,7 +451,8 @@
      */
     function dbFieldSize()
     {
-      return $this->m_maxsize.($this->getDecimals()>0?",".$this->getDecimals():"");
+        return $this->m_maxsize . ($this->getDecimals() > 0 ? "," . $this->getDecimals()
+            : "");
     }
 
     /**
@@ -466,38 +460,32 @@
      */
     function fetchMeta($metadata)
     {
-      $searchSize = $this->m_searchsize;
-      $maxSize = $this->m_maxsize; 
-      
-      parent::fetchMeta($metadata);
-      
-      if (strpos($this->m_size, ',') !== false)
-      {
-        list($this->m_size, $decimals) = explode(',', $this->m_size);
+        $searchSize = $this->m_searchsize;
+        $maxSize = $this->m_maxsize;
 
-        if ($this->m_decimals === null)
-        {
-          // no decimals explicitly set, so use the one we
-          // retrieved from the database
-          $this->m_decimals = $decimals;
-        }
-        else
-        {
-          // if the number of decimals are explicitly set, but the database
-          // simply can't handle it, we use the lowest value
-          $this->m_decimals = min($this->m_decimals, $decimals);
-        }
-      }
-      
-      if ($this->m_searchsize > 0) 
-      {
-        $this->m_searchsize = min($searchSize, $this->m_size + $this->m_decimals + 1, 20);
-      }
+        parent::fetchMeta($metadata);
 
-      if ($this->m_maxsize > 0) 
-      {
-        $this->m_maxsize = min($maxSize, $this->m_size, 20);
-      }
+        if (strpos($this->m_size, ',') !== false) {
+            list($this->m_size, $decimals) = explode(',', $this->m_size);
+
+            if ($this->m_decimals === null) {
+                // no decimals explicitly set, so use the one we
+                // retrieved from the database
+                $this->m_decimals = $decimals;
+            } else {
+                // if the number of decimals are explicitly set, but the database
+                // simply can't handle it, we use the lowest value
+                $this->m_decimals = min($this->m_decimals, $decimals);
+            }
+        }
+
+        if ($this->m_searchsize > 0) {
+            $this->m_searchsize = min($searchSize, $this->m_size + $this->m_decimals + 1, 20);
+        }
+
+        if ($this->m_maxsize > 0) {
+            $this->m_maxsize = min($maxSize, $this->m_size, 20);
+        }
     }
 
     /**
@@ -509,41 +497,37 @@
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return Piece of htmlcode
      */
-    function edit($record="", $fieldprefix="", $mode="")
+    function edit($record = "", $fieldprefix = "", $mode = "")
     {
-      $id = $this->getHtmlId($fieldprefix);
-      if (count($this->m_onchangecode))
-      {
-        $onchange = 'onChange="'.$id.'_onChange(this);"';
-        $this->_renderChangeHandler($fieldprefix);
-      }
-      else
-      {
-        $onchange = '';
-      }
+        $id = $this->getHtmlId($fieldprefix);
+        if (count($this->m_onchangecode) || count($this->getDependencies())) {
+            $onchange = 'onChange="' . $id . '_onChange(this);"';
+            $this->_renderChangeHandler($fieldprefix);
+        } else {
+            $onchange = '';
+        }
 
-      $this->registerJavaScriptObservers($id);
+        $this->registerJavaScriptObservers($id);
 
-      $size    = $this->m_size;
-      $maxsize = $this->m_maxsize;
-      if ($this->getDecimals()>0)
-      {
-        $size    += ($this->getDecimals()+1);
-        $maxsize += ($this->getDecimals()+1); // make room for the number of decimals
-      }
+        $size = $this->m_size;
+        $maxsize = $this->m_maxsize;
+        if ($this->getDecimals() > 0) {
+            $size += ($this->getDecimals() + 1);
+            $maxsize += ($this->getDecimals() + 1); // make room for the number of decimals
+        }
 
-      $value = "";
-      if (isset($record[$this->fieldName()]) && strlen($record[$this->fieldName()]) > 0)
-        $value = $this->formatNumber($record[$this->fieldName()]);
+        $value = "";
+        if (isset($record[$this->fieldName()]) && strlen($record[$this->fieldName()]) > 0)
+            $value = $this->formatNumber($record[$this->fieldName()], '', '', $mode);
 
-      $id = $fieldprefix.$this->fieldName();
-      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
-      $result = '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.
-                '" value="'.$value.'"'.
-                ($size    > 0 ? ' size="'.$size.'"' : '').
-                ($maxsize > 0 ? ' maxlength="'.$maxsize.'"' : '').' '.$onchange.' />';
+        $id = $fieldprefix . $this->fieldName();
+        $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
+        $result = '<input type="text" id="' . $id . '" ' . $this->getCSSClassAttribute(array('form-control')) . ' name="' . $id .
+            '" value="' . $value . '"' .
+            ($size > 0 ? ' size="' . $size . '"' : '') .
+            ($maxsize > 0 ? ' maxlength="' . $maxsize . '"' : '') . ' ' . $onchange . ' />';
 
-      return $result;
+        return $result;
     }
 
     /**
@@ -562,46 +546,43 @@
      *
      * @return String A piece of html-code
      */
-    function search($record="", $extended=false, $fieldprefix="")
+    function search($record = "", $extended = false, $fieldprefix = "")
     {
-      $value = "";
-      if (isset($record[$this->fieldName()])) $value = $record[$this->fieldName()];
+        $value = "";
+        if (isset($record[$this->fieldName()]))
+            $value = $record[$this->fieldName()];
 
-      if (!$extended)
-      {
-        if (is_array($value))
-        {
-          if ($value["from"]!=""||$value["to"]!="")
-          {
-             // Two values were entered in the extended search screen.
-             $value = $value["from"]."/".$value["to"];
-          }
-          else
-          {
-            $value = "";
-          }
+        if (!$extended) {
+            if (is_array($value)) {
+                if ($value["from"] != "" || $value["to"] != "") {
+                    // Two values were entered in the extended search screen.
+                    $value = $value["from"] . "-" . $value["to"];
+                } else {
+                    $value = "";
+                }
+            }
+
+            $id = $this->getSearchFieldName($fieldprefix);
+
+            $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
+            $result = '<input type="text" id="' . $id . '" class="' . get_class($this) . '" name="' . $id . '" value="' . atk_htmlentities($value) . '"' .
+                ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"'
+                    : '') . '>';
+            return $result;
+        } else {
+            $id = $this->getSearchFieldName($fieldprefix) . '[from]';
+            $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
+            $result = '<input type="text" id="' . $id . '" class="' . get_class($this) . '" name="' . $id . '" value="' . atk_htmlentities($value) . '"' .
+                ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"'
+                    : '') . '>';
+
+            $id = $this->getSearchFieldName($fieldprefix) . '[to]';
+            $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
+            $result.= " (" . atktext("until") . ' <input type="text" id="' . $id . '" class="' . get_class($this) . '" name="' . $id . '" value="' . atk_htmlentities($value) . '"' .
+                ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"'
+                    : '') . '>)';
+            return $result;
         }
-        
-        $id = $this->getSearchFieldName($fieldprefix);
-        
-        $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
-        $result = '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.atk_htmlentities($value).'"'.
-                  ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';        
-        return $result;
-      }
-      else
-      {
-        $id = $this->getSearchFieldName($fieldprefix).'[from]';
-        $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
-        $result= '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.atk_htmlentities($value).'"'.
-                  ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';
-
-        $id = $this->getSearchFieldName($fieldprefix).'[to]';
-        $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
-        $result.= " (".atktext("until").' <input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.atk_htmlentities($value).'"'.
-                  ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>)';
-        return $result;
-      }
     }
 
     /**
@@ -613,46 +594,36 @@
      *                              attribute's getSearchModes() method.
      * @return string with the processed search value
      */
-    function processSearchValue($value,&$searchmode)
+    function processSearchValue($value, &$searchmode)
     {
-      $processed = array();
-      if (!is_array($value))
-      {
-        $slash = strpos($value, '/'); // Support for 'from/to' searches.
-        $str = trim($value);
-        if ($slash!==false)
-        {
-          $from = substr($str, 0, $slash);
-          $to = substr($str,$slash+1);
+        $processed = array();
+        if (!is_array($value)) {
+            $slash = strpos($value, '-'); // Support for 'from-to' searches.
+            $str = trim($value);
+            if ($slash !== false) {
+                $from = substr($str, 0, $slash);
+                $to = substr($str, $slash + 1);
 
-          if (!is_numeric($from) || !is_numeric($to))
-          {
-            return array();
-          }
+                if (!is_numeric($from) || !is_numeric($to)) {
+                    return array();
+                }
 
-          $processed["from"] = $this->removeSeparators($from);
-          $processed["to"] = $this->removeSeparators($to);
-          $searchmode = 'between';
+                $processed["from"] = self::removeSeparators($from);
+                $processed["to"] = self::removeSeparators($to);
+                $searchmode = 'between';
+            } else if (is_numeric($str)) {
+                $processed["from"] = (float) self::removeSeparators($str); // quicksearch doesn't use an array.
+            } else {
+                return array();
+            }
+        } else {
+            // assumes array('from'=><intval>, 'to'=><intval>)
+            foreach ($value as $key => $search) {
+                $processed[$key] = self::removeSeparators($search);
+            }
         }
-        else if (is_numeric($str))
-        {
-          $processed["from"] = (float)$this->removeSeparators($str); // quicksearch doesn't use an array.
-        }
-        else
-        {
-          return array();
-        }
-      }
-      else
-      {
-        // assumes array('from'=><intval>, 'to'=><intval>)
-        foreach($value as $key => $search)
-        {
-          $processed[$key] = $this->removeSeparators($search);
-        }
-      }
 
-      return $processed;
+        return $processed;
     }
 
     /**
@@ -665,27 +636,23 @@
      */
     function getBetweenCondition(&$query, $fieldname, $value)
     {
-      $searchcondition = "";
+        $searchcondition = "";
 
-      if ($value["from"]!="" && $value["to"]!="")
-      {
-        if ($value["from"]>$value["to"])
-        {
-          // User entered fields in wrong order. Let's fix that.
-          $tmp = $value["from"]; $value["from"] = $value["to"]; $value["to"] = $tmp;
+        if ($value["from"] != "" && $value["to"] != "") {
+            if ($value["from"] > $value["to"]) {
+                // User entered fields in wrong order. Let's fix that.
+                $tmp = $value["from"];
+                $value["from"] = $value["to"];
+                $value["to"] = $tmp;
+            }
+            return $query->betweenCondition($fieldname, $this->escapeSQL($value["from"]), $this->escapeSQL($value["to"]));
+        } else if ($value["from"] != "" && $value["to"] == "") {
+            return $query->greaterthanequalCondition($fieldname, $value["from"]);
+        } else if ($value["from"] == "" && $value["to"] != "") {
+            return $query->lessthanequalCondition($fieldname, $value["to"]);
         }
-        return $query->betweenCondition($fieldname,$this->escapeSQL($value["from"]), $this->escapeSQL($value["to"]));
-      }
-      else if ($value["from"]!="" && $value["to"]=="")
-      {
-        return $query->greaterthanequalCondition($fieldname, $value["from"]);
-      }
-      else if ($value["from"]=="" && $value["to"]!="")
-      {
-        return $query->lessthanequalCondition($fieldname, $value["to"]);
-      }
 
-      return false;
+        return false;
     }
 
     /**
@@ -704,21 +671,22 @@
      */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
-      $searchcondition = "";
+        $searchcondition = "";
 
-      $value = $this->processSearchValue($value,$searchmode);
+        $value = $this->processSearchValue($value, $searchmode);
 
-      if ($searchmode!="between")
-      {
-        // Use default handler, and use only the first field.
-        if (!array_key_exists('from', $value) || strlen(trim($value['from'])) == 0) return false;
-        return parent::getSearchCondition($query, $table, $value["from"], $searchmode);
-      }
-      else
-      {
-        $fieldname = $table.".".$this->fieldName();
-        return $this->getBetweenCondition($query, $fieldname, $value);
-      }
+        if ($searchmode != "between") {
+            // Use default handler, and use only the first field.
+            if (!array_key_exists('from', $value) || strlen(trim($value['from'])) == 0)
+                return false;
+            return parent::getSearchCondition($query, $table, $value["from"], $searchmode);
+        }
+        else {
+            $fieldname = $table . "." . $this->fieldName();
+            return $this->getBetweenCondition($query, $fieldname, $value);
+        }
     }
-  }
+
+}
+
 ?>

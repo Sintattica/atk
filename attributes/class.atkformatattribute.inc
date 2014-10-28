@@ -1,30 +1,29 @@
 <?php
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage attributes
+ *
+ * @copyright (c)2004 Ivo Jansch
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 5798 $
+ * $Id$
+ */
 
- /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage attributes
-   *
-   * @copyright (c)2004 Ivo Jansch
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 5798 $
-   * $Id$
-   */
-
-  /**
-   * The atkFormatAttribute can be used to edit a formatted string.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage attributes
-   */
-  class atkFormatAttribute extends atkAttribute
-  {
+/**
+ * The atkFormatAttribute can be used to edit a formatted string.
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @package atk
+ * @subpackage attributes
+ */
+class atkFormatAttribute extends atkAttribute
+{
     var $m_format = "";
     var $m_breakdownCached = array();
 
@@ -55,10 +54,10 @@
      * @param int $flags Flags for the attribute.
      *
      */
-    function atkFormatAttribute($name, $format, $flags=0)
+    function atkFormatAttribute($name, $format, $flags = 0)
     {
-      $this->m_format = $format;
-      $this->atkAttribute($name, $flags, strlen($format));
+        $this->m_format = $format;
+        $this->atkAttribute($name, $flags, strlen($format));
     }
 
     /**
@@ -72,20 +71,17 @@
      */
     function validate(&$record, $mode)
     {
-      $elems = $this->_breakDown();
-      $values = $this->_valueBreakDown($record[$this->fieldName()]);
+        $elems = $this->_breakDown();
+        $values = $this->_valueBreakDown($record[$this->fieldName()]);
 
-      for($i=0, $j=0, $_i=count($elems); $i<$_i; $i++)
-      {
-        if ($elems[$i]['type']!='/')
-        {
-          if (!$this->_checkString($elems[$i]['type'], $values[$j]))
-          {
-            triggerError($record, $this->fieldName(), 'err', $this->_formatErrorString(($j+1), str_repeat($elems[$i]['type'], $elems[$i]['size'])));
-          }
-          $j++;
+        for ($i = 0, $j = 0, $_i = count($elems); $i < $_i; $i++) {
+            if ($elems[$i]['type'] != '/') {
+                if (!$this->_checkString($elems[$i]['type'], $values[$j])) {
+                    triggerError($record, $this->fieldName(), 'err', $this->_formatErrorString(($j + 1), str_repeat($elems[$i]['type'], $elems[$i]['size'])));
+                }
+                $j++;
+            }
         }
-      }
     }
 
     /**
@@ -97,26 +93,23 @@
      *                            of any html form element for this attribute.
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record = "", $fieldprefix = "")
     {
-      $elems = $this->_breakDown();
-      $values = $this->_valueBreakdown($record[$this->fieldName()]);
+        $elems = $this->_breakDown();
+        $values = $this->_valueBreakdown($record[$this->fieldName()]);
 
-      $inputs=array(); $hints=array();
-      for ($i=0, $j=0, $_i=count($elems); $i<$_i; $i++)
-      {
-        if ($elems[$i]['type']=='/') // literal
-        {
-          $inputs[]=$elems[$i]['mask'];
+        $inputs = array();
+        $hints = array();
+        for ($i = 0, $j = 0, $_i = count($elems); $i < $_i; $i++) {
+            if ($elems[$i]['type'] == '/') { // literal
+                $inputs[] = $elems[$i]['mask'];
+            } else { // format
+                $inputs[] = $this->_inputField($elems[$i]['size'], $i, $fieldprefix, $values[$j]);
+                $j++;
+            }
+            $hints[] = $elems[$i]['mask'];
         }
-        else // format
-        {
-          $inputs[]=$this->_inputField($elems[$i]['size'], $i, $fieldprefix, $values[$j]);
-          $j++;
-        }
-        $hints[]=$elems[$i]['mask'];
-      }
-      return implode(' ', $inputs).'  ('.implode(' ',$hints).')';
+        return implode(' ', $inputs) . '  (' . implode(' ', $hints) . ')';
     }
 
     /**
@@ -129,7 +122,7 @@
      */
     function _formatErrorString($pos, $specifier)
     {
-      return sprintf(atktext('error_format_mismatch', 'atk', $this->m_owner), $pos, $specifier);
+        return sprintf(atktext('error_format_mismatch', 'atk', $this->m_owner), $pos, $specifier);
     }
 
     /**
@@ -144,9 +137,9 @@
      */
     function _inputField($size, $elemnr, $fieldprefix, $value)
     {
-      $id = $this->getHtmlId($fieldprefix).'['.$elemnr.']';
-      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN|KB_LEFTRIGHT);
-      return '<input type="text" name="'.$id.'" id="'.$id.'" size="'.$size.'" maxlength="'.$size.'" value="'.$value.'">';
+        $id = $this->getHtmlId($fieldprefix) . '[' . $elemnr . ']';
+        $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN | KB_LEFTRIGHT);
+        return '<input type="text" name="' . $id . '" id="' . $id . '" size="' . $size . '" maxlength="' . $size . '" value="' . $value . '">';
     }
 
     /**
@@ -159,11 +152,11 @@
      */
     function _checkString($specifier, $string)
     {
-      for ($i=0, $_i=strlen($string); $i<$_i; $i++)
-      {
-        if (!$this->_checkChar($specifier, $string[$i])) return false;
-      }
-      return true;
+        for ($i = 0, $_i = strlen($string); $i < $_i; $i++) {
+            if (!$this->_checkChar($specifier, $string[$i]))
+                return false;
+        }
+        return true;
     }
 
     /**
@@ -176,13 +169,12 @@
      */
     function _checkChar($specifier, $char)
     {
-      switch ($specifier)
-      {
-        case "#": return (is_numeric($char)||(strtoupper($char)>='A'&&strtoupper($char)<='Z'));
-        case "A": return (strtoupper($char)>='A'&&strtoupper($char)<='Z');
-        case "9": return (is_numeric($char));
-      }
-      return true;
+        switch ($specifier) {
+            case "#": return (is_numeric($char) || (strtoupper($char) >= 'A' && strtoupper($char) <= 'Z'));
+            case "A": return (strtoupper($char) >= 'A' && strtoupper($char) <= 'Z');
+            case "9": return (is_numeric($char));
+        }
+        return true;
     }
 
     /**
@@ -200,38 +192,39 @@
      */
     function _breakDown()
     {
-      if (count($this->m_breakdownCached)==0)
-      {
-        $elems = array(); $elem = array(); $last = "";
+        if (count($this->m_breakdownCached) == 0) {
+            $elems = array();
+            $elem = array();
+            $last = "";
 
-        for ($i=0, $_i=strlen($this->m_format); $i<$_i; $i++)
-        {
-          $char = $this->m_format[$i];
-          if ($i==0||!$this->_equalSpecifiers($char, $last))
-          {
-            // add elem
-            if ($i>0) $elems[] = $elem;
+            for ($i = 0, $_i = strlen($this->m_format); $i < $_i; $i++) {
+                $char = $this->m_format[$i];
+                if ($i == 0 || !$this->_equalSpecifiers($char, $last)) {
+                    // add elem
+                    if ($i > 0)
+                        $elems[] = $elem;
 
-            // create new
-            $elem = array('size'=>1, 'type'=>($this->_isSpecifier($char)?$char:'/'), 'mask'=>$char);
-          }
-          else
-          {
-            // increase elem
-            $elem['size']++;
-            $elem['mask'].=$char;
-          }
-          $last=$char;
+                    // create new
+                    $elem = array('size' => 1, 'type' => ($this->_isSpecifier($char)
+                                ? $char : '/'), 'mask' => $char);
+                }
+                else {
+                    // increase elem
+                    $elem['size'] ++;
+                    $elem['mask'].=$char;
+                }
+                $last = $char;
+            }
+
+            // leftover
+            if ($elem['size'] > 0)
+                $elems[] = $elem;
+
+            $this->m_breakdownCached = $elems;
         }
 
-        // leftover
-        if ($elem['size']>0) $elems[] = $elem;
 
-        $this->m_breakdownCached = $elems;
-      }
-
-
-      return $this->m_breakdownCached;
+        return $this->m_breakdownCached;
     }
 
     /**
@@ -243,19 +236,18 @@
      */
     function _valueBreakDown($valuestr)
     {
-      $elems = $this->_breakDown();
-      $values = array(); $pos=0;
+        $elems = $this->_breakDown();
+        $values = array();
+        $pos = 0;
 
-      foreach ($elems as $elem)
-      {
-        if ($elem['type']!='/')
-        {
-          $values[] = trim(substr($valuestr, $pos, $elem['size']));
+        foreach ($elems as $elem) {
+            if ($elem['type'] != '/') {
+                $values[] = trim(substr($valuestr, $pos, $elem['size']));
+            }
+            $pos+=$elem['size'];
         }
-        $pos+=$elem['size'];
-      }
 
-      return $values;
+        return $values;
     }
 
     /**
@@ -269,7 +261,7 @@
      */
     function _equalSpecifiers($charA, $charB)
     {
-      return ((!$this->_isSpecifier($charA)&&!$this->_isSpecifier($charB)) || $charA==$charB);
+        return ((!$this->_isSpecifier($charA) && !$this->_isSpecifier($charB)) || $charA == $charB);
     }
 
     /**
@@ -281,7 +273,7 @@
      */
     function _isSpecifier($char)
     {
-      return ($char!=''&&(strpos("#9A*", $char)!==false));
+        return ($char != '' && (strpos("#9A*", $char) !== false));
     }
 
     /**
@@ -294,21 +286,17 @@
      */
     function fetchValue($postvars)
     {
-      $masks = $this->_breakDown();
-      $elems = $postvars[$this->fieldName()];
+        $masks = $this->_breakDown();
+        $elems = $postvars[$this->fieldName()];
 
-      for ($i=0, $_i=count($masks); $i<$_i; $i++)
-      {
-        if ($masks[$i]['type']=='/') // literal
-        {
-          $result.=$masks[$i]['mask'];
+        for ($i = 0, $_i = count($masks); $i < $_i; $i++) {
+            if ($masks[$i]['type'] == '/') { // literal
+                $result.=$masks[$i]['mask'];
+            } else { // mask
+                $result.=$this->_pad($masks[$i]['type'], $masks[$i]['size'], $elems[$i]);
+            }
         }
-        else // mask
-        {
-          $result.=$this->_pad($masks[$i]['type'], $masks[$i]['size'], $elems[$i]);
-        }
-      }
-      return $result;
+        return $result;
     }
 
     /**
@@ -322,7 +310,7 @@
      */
     function _pad($type, $size, $value)
     {
-      return str_pad($value, $size);
+        return str_pad($value, $size);
     }
 
     /**
@@ -335,18 +323,18 @@
      */
     function isEmpty($record)
     {
-      // value is empty if all non-literals have not been filled in.
-      $values = $this->_valueBreakDown($record[$this->fieldName()]);
-      $elems = $this->_breakDown();
-      for($i=0, $_i=count($elems); $i<$_i; $i++)
-      {
-        if ($elems[$i]['type']!='/') // not a literal
-        {
-          if ($values[$i]!='') return false;
+        // value is empty if all non-literals have not been filled in.
+        $values = $this->_valueBreakDown($record[$this->fieldName()]);
+        $elems = $this->_breakDown();
+        for ($i = 0, $_i = count($elems); $i < $_i; $i++) {
+            if ($elems[$i]['type'] != '/') { // not a literal
+                if ($values[$i] != '')
+                    return false;
+            }
         }
-      }
-      return true;
+        return true;
     }
-  }
+
+}
 
 ?>

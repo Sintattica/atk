@@ -1,37 +1,37 @@
 <?php
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage utils
-   *
-   * @copyright (c)2005 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6065 $
-   * $Id$
-   */
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage utils
+ *
+ * @copyright (c)2005 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6065 $
+ * $Id$
+ */
 
-  /**
-   * Temporary file handler.
-   *
-   * This class can be used to create, read and remove temporary files.
-   * The files are stored in ATK's temporary directory.
-   * An ideal application of this class is writing small php include files
-   * with cached data.
-   *
-   * Note: superseded for caching by atkCache.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage utils
-   *
-   */
-  class atkTmpFile
-  {
+/**
+ * Temporary file handler.
+ *
+ * This class can be used to create, read and remove temporary files.
+ * The files are stored in ATK's temporary directory.
+ * An ideal application of this class is writing small php include files
+ * with cached data.
+ *
+ * Note: superseded for caching by atkCache.
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @package atk
+ * @subpackage utils
+ *
+ */
+class atkTmpFile
+{
     /**
      * Filename as given to constructor.
      * Don't use this! Public because of bwc.
@@ -74,7 +74,7 @@
      */
     public function atkTmpFile($filename)
     {
-      $this->m_filename = $filename;
+        $this->m_filename = $filename;
     }
 
     /**
@@ -88,14 +88,13 @@
      */
     public function create($filename, $baseDirectory = null)
     {
-    	$obj = new atkTmpFile($filename);
+        $obj = new atkTmpFile($filename);
 
-      if(null !== $baseDirectory)
-      {
-        $obj->setBasedir($baseDirectory);
-      }
+        if (null !== $baseDirectory) {
+            $obj->setBasedir($baseDirectory);
+        }
 
-      return $obj;
+        return $obj;
     }
 
     ////////////////// COMPLETE FILE ACTIONS (READ/WRITE/REMOVE) ///////////////////////
@@ -108,11 +107,10 @@
      */
     public function read()
     {
-      if ($this->exists())
-      {
-        return file($this->getPath());
-      }
-      return false;
+        if ($this->exists()) {
+            return file($this->getPath());
+        }
+        return false;
     }
 
     /**
@@ -123,15 +121,13 @@
      */
     public function readFile()
     {
-      if ($this->exists())
-      {
-        if (function_exists("file_get_contents"))
-        {
-          return file_get_contents($this->getPath());
+        if ($this->exists()) {
+            if (function_exists("file_get_contents")) {
+                return file_get_contents($this->getPath());
+            } else
+                return implode(null, $this->read());
         }
-        else return implode(null, $this->read());
-      }
-      return false;
+        return false;
     }
 
     /**
@@ -141,13 +137,12 @@
      */
     public function fpassthru()
     {
-      if ($this->open("r"))
-      {
-        fpassthru($this->m_fp);
-        $this->close();
-        return true;
-      }
-      return false;
+        if ($this->open("r")) {
+            fpassthru($this->m_fp);
+            $this->close();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -158,13 +153,12 @@
      */
     public function writeFile($data)
     {
-      if ($this->open("w"))
-      {
-        $this->write($data);
-        $this->close();
-        return true;
-      }
-      return false;
+        if ($this->open("w")) {
+            $this->write($data);
+            $this->close();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -176,11 +170,11 @@
      */
     public function writeAsPhp($varname, $data)
     {
-      $res = "<?php\n";
-      $res.= "\$".$varname." = ".var_export($data, true);
-      $res.= "\n?>";
+        $res = "<?php\n";
+        $res.= "\$" . $varname . " = " . var_export($data, true);
+        $res.= "\n?>";
 
-      return $this->writeFile($res);
+        return $this->writeFile($res);
     }
 
     /**
@@ -191,13 +185,12 @@
      */
     public function appendToFile($data)
     {
-      if ($this->open('a'))
-      {
-        $this->write($data);
-        $this->close();
-        return true;
-      }
-      return false;
+        if ($this->open('a')) {
+            $this->write($data);
+            $this->close();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -207,8 +200,8 @@
      */
     public function remove()
     {
-      $this->close();
-      return unlink($this->getPath());
+        $this->close();
+        return unlink($this->getPath());
     }
 
     ////////////////// GETTING FILE INFO ///////////////////////
@@ -220,7 +213,7 @@
      */
     public function exists()
     {
-      return file_exists($this->getPath());
+        return file_exists($this->getPath());
     }
 
     /**
@@ -231,8 +224,9 @@
      */
     public function filecTime()
     {
-      if($this->exists()) return filectime($this->getPath());
-      return false;
+        if ($this->exists())
+            return filectime($this->getPath());
+        return false;
     }
 
     /**
@@ -242,9 +236,10 @@
      */
     public function fileAge()
     {
-      $filectime = $this->filectime();
-      if($filectime!=false) return (time()-$filectime);
-      return false;
+        $filectime = $this->filectime();
+        if ($filectime != false)
+            return (time() - $filectime);
+        return false;
     }
 
     /**
@@ -257,7 +252,7 @@
      */
     public function getPath()
     {
-      return $this->getBasedir().$this->m_filename;
+        return $this->getBasedir() . $this->m_filename;
     }
 
     /**
@@ -269,16 +264,15 @@
      */
     public function setBasedir($dir)
     {
-      if(!is_dir($dir) || !is_writable($dir))
-      {
-        $err = 'atkTmpFile:: Unable to set ' . $dir .
-          'as basedir. Directory does not exists or isnot writable';
+        if (!is_dir($dir) || !is_writable($dir)) {
+            $err = 'atkTmpFile:: Unable to set ' . $dir .
+                'as basedir. Directory does not exists or isnot writable';
 
-        atkwarning($err);
-        return false;
-      }
-      $this->m_basedir = $dir;
-      return true;
+            atkwarning($err);
+            return false;
+        }
+        $this->m_basedir = $dir;
+        return true;
     }
 
     /**
@@ -288,11 +282,10 @@
      */
     public function getBasedir()
     {
-      if(!$this->m_basedir)
-      {
-        $this->m_basedir = atkconfig('atktempdir');
-      }
-      return $this->m_basedir;
+        if (!$this->m_basedir) {
+            $this->m_basedir = atkconfig('atktempdir');
+        }
+        return $this->m_basedir;
     }
 
     ////////////////// SIMPLE FILE OPERATIONS ///////////////////////
@@ -307,22 +300,19 @@
      */
     public function open($mode)
     {
-      if ($this->m_mode!="" && $this->m_mode!=$mode)
-      {
-        // file is already open in different mode, close first
-        $this->close();
-      }
-      if (is_null($this->m_fp))
-      {
-        if ($mode != 'r' && $mode != 'r+')
-        {
-          $this->createDirectoryStructure();
+        if ($this->m_mode != "" && $this->m_mode != $mode) {
+            // file is already open in different mode, close first
+            $this->close();
         }
+        if (is_null($this->m_fp)) {
+            if ($mode != 'r' && $mode != 'r+') {
+                $this->createDirectoryStructure();
+            }
 
-        $this->m_fp = fopen($this->getPath(), $mode);
-        $this->m_mode = $mode;
-      }
-      return !is_null($this->m_fp);
+            $this->m_fp = fopen($this->getPath(), $mode);
+            $this->m_mode = $mode;
+        }
+        return !is_null($this->m_fp);
     }
 
     /**
@@ -333,7 +323,7 @@
      */
     public function write($data)
     {
-      return fwrite($this->m_fp, $data);
+        return fwrite($this->m_fp, $data);
     }
 
     /**
@@ -343,14 +333,13 @@
      */
     public function close()
     {
-      if (!is_null($this->m_fp))
-      {
-        fclose($this->m_fp);
-        $this->m_mode="";
-        $this->m_fp = null;
-        return true;
-      }
-      return false;
+        if (!is_null($this->m_fp)) {
+            fclose($this->m_fp);
+            $this->m_mode = "";
+            $this->m_fp = null;
+            return true;
+        }
+        return false;
     }
 
     ////////////////// MISC ///////////////////////
@@ -362,8 +351,10 @@
      */
     public function createDirectoryStructure()
     {
-      useattrib('atkfileattribute');
-      return atkFileAttribute::mkdir(dirname($this->getPath()));
+        useattrib('atkfileattribute');
+        return atkFileAttribute::mkdir(dirname($this->getPath()));
     }
-  }
+
+}
+
 ?>

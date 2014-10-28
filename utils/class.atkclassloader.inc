@@ -1,44 +1,44 @@
 <?php
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage utils
-   *
-   * @copyright (c)2000-2004 Ivo Jansch
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6320 $
-   * $Id$
-   */
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage utils
+ *
+ * @copyright (c)2000-2004 Ivo Jansch
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6320 $
+ * $Id$
+ */
 
-  /**
-   * Utility for importing and loading classes.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   *
-   * @package atk
-   * @subpackage utils
-   */
-  class atkClassLoader
-  {
+/**
+ * Utility for importing and loading classes.
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ *
+ * @package atk
+ * @subpackage utils
+ */
+class atkClassLoader
+{
     /**
      * Class path mounts.
      *
      * @var array
      */
     static $s_classPaths = array();
-    
+
     /**
      * Is re-indexed during this request?
      * 
      * @var boolean
      */
     static $s_isReindexed = false;
-    
+
     /**
      * Imports a file
      * @param string $fullclassname Name of class in atkformat (map1.map2.classfile)
@@ -49,41 +49,32 @@
      *                                 as: "map/class.classname.inc", default false.
      * @return bool whether the file we want to import was actually imported or not
      */
-    static function import($fullclassname, $failsafe=true, $path = false)
+    static function import($fullclassname, $failsafe = true, $path = false)
     {
-      $filename = ($path === false) ? self::getClassPath($fullclassname) : $fullclassname;
-  
-      static $alreadyHad = array();
-  
-      if (array_key_exists($filename, $alreadyHad) === true)
-      {
-        return $alreadyHad[$filename];
-      }
-      else 
-      {
-        if (is_readable($filename) === true)
-        {
-          $alreadyHad[$filename] = true;
-          
-          if ($failsafe === true)
-          {
-            require_once($filename);
-          }
-          else
-          {
-            include_once($filename);
-          }
-          return true;
+        $filename = ($path === false) ? self::getClassPath($fullclassname) : $fullclassname;
+
+        static $alreadyHad = array();
+
+        if (array_key_exists($filename, $alreadyHad) === true) {
+            return $alreadyHad[$filename];
+        } else {
+            if (is_readable($filename) === true) {
+                $alreadyHad[$filename] = true;
+
+                if ($failsafe === true) {
+                    require_once($filename);
+                } else {
+                    include_once($filename);
+                }
+                return true;
+            } else {
+                $alreadyHad[$filename] = false;
+            }
         }
-        else 
-        {
-          $alreadyHad[$filename] = false;
-        }
-      }
-  
-      return false;
-    }    
-    
+
+        return false;
+    }
+
     /**
      * Clean-up the given path.
      *
@@ -94,33 +85,28 @@
      */
     static function cleanPath($path)
     {
-      $result = array();
-  
-      $pathArray = explode('/', $path);
-      if (empty($pathArray[0]))
-        $result[] = '';
-  
-      foreach ($pathArray AS $key => $dir)
-      {
-        if ($dir == '..')
-        {
-          if (end($result) == '..' || !array_pop($result))
-          {
-            $result[] = '..';
-          }
+        $result = array();
+
+        $pathArray = explode('/', $path);
+        if (empty($pathArray[0]))
+            $result[] = '';
+
+        foreach ($pathArray AS $key => $dir) {
+            if ($dir == '..') {
+                if (end($result) == '..' || !array_pop($result)) {
+                    $result[] = '..';
+                }
+            } elseif ($dir && $dir != '.') {
+                $result[] = $dir;
+            }
         }
-        elseif ($dir && $dir != '.')
-        {
-          $result[] = $dir;
-        }
-      }
-  
-      if (!end($pathArray))
-        $result[] = '';
-  
-      return implode('/', $result);
+
+        if (!end($pathArray))
+            $result[] = '';
+
+        return implode('/', $result);
     }
-    
+
     /**
      * Mount a certain (class) path on a certain prefix. After this you can
      * simply load the classes on the given path using the prefix. This makes
@@ -137,9 +123,9 @@
      */
     static function mountClassPath($prefix, $path)
     {
-      self::$s_classPaths[$prefix] = $path;
+        self::$s_classPaths[$prefix] = $path;
     }
-  
+
     /**
      * Converts an ATK classname ("map1.map2.classname")
      * to a pathname ("/map1/map2/class.classname.inc")
@@ -149,30 +135,27 @@
      */
     static function getClassPath($fullclassname, $class = true)
     {
-      $elems = explode(".", strtolower($fullclassname));
-      if($elems[0] == "module")
-      {
-        array_shift($elems);
-        $prefix = moduleDir(array_shift($elems));
-      }
-      else if (isset(self::$s_classPaths[$elems[0]]))
-      {
-        $prefix = self::$s_classPaths[$elems[0]];
-        array_shift($elems);                
-      }
-      else
-      {
-       $prefix = atkconfig("atkroot");
-      }
-  
-      $last = &$elems[count($elems)-1];
-      if ($class) {$last = "class.".$last.".inc";}
-  
-      $filename = $prefix.implode("/", $elems);
-  
-      return $filename;
+        $elems = explode(".", strtolower($fullclassname));
+        if ($elems[0] == "module") {
+            array_shift($elems);
+            $prefix = moduleDir(array_shift($elems));
+        } else if (isset(self::$s_classPaths[$elems[0]])) {
+            $prefix = self::$s_classPaths[$elems[0]];
+            array_shift($elems);
+        } else {
+            $prefix = atkconfig("atkroot");
+        }
+
+        $last = &$elems[count($elems) - 1];
+        if ($class) {
+            $last = "class." . $last . ".inc";
+        }
+
+        $filename = $prefix . implode("/", $elems);
+
+        return $filename;
     }
-  
+
     /**
      * Converts a pathname ("/map1/map2/class.classname.inc")
      * to an ATK classname ("map1.map2.classname")
@@ -180,33 +163,28 @@
      * @param bool $class       is the file a class? defaults to true
      * @return string converted filename
      */
-    static function getClassName($classpath, $class=true)
+    static function getClassName($classpath, $class = true)
     {
-      $classpath = self::cleanPath($classpath);
-      $elems = explode("/", strtolower($classpath));
-      for($counter=0; $counter<=count($elems);$counter++)
-      {
-        if(isset($elems[$counter]) && $elems[$counter] === "../")
-        {
-          array_shift($elems);
+        $classpath = self::cleanPath($classpath);
+        $elems = explode("/", strtolower($classpath));
+        for ($counter = 0; $counter <= count($elems); $counter++) {
+            if (isset($elems[$counter]) && $elems[$counter] === "../") {
+                array_shift($elems);
+            }
         }
-      }
-  
-      if($class)
-      {
-        $last = &$elems[count($elems)-1];
-        $last = substr($last, 6, -4);
-      }
-      else
-      {
-        $last = &$elems[count($elems)-2].$elems[count($elems)-1];
-      }
-  
-      $classname = implode(".", $elems);
-  
-      return $classname;
+
+        if ($class) {
+            $last = &$elems[count($elems) - 1];
+            $last = substr($last, 6, -4);
+        } else {
+            $last = &$elems[count($elems) - 2] . $elems[count($elems) - 1];
+        }
+
+        $classname = implode(".", $elems);
+
+        return $classname;
     }
-  
+
     /**
      * Returns a new instance of a class
      * 
@@ -218,12 +196,12 @@
      */
     static function newInstance($fullclassname)
     {
-      $args = func_get_args();
-      array_shift($args);
-      $args = array_values($args);
-      return self::newInstanceArgs($fullclassname, $args);
+        $args = func_get_args();
+        array_shift($args);
+        $args = array_values($args);
+        return self::newInstanceArgs($fullclassname, $args);
     }
-    
+
     /**
      * Returns a new instance of a class
      * 
@@ -232,33 +210,27 @@
      * 
      * @return object instance of the class
      */
-    static function newInstanceArgs($fullclassname, $args=array())
+    static function newInstanceArgs($fullclassname, $args = array())
     {
-      $fullclassname = self::resolveClass($fullclassname);
-      self::import($fullclassname, true);
-  
-      $elems = explode(".", strtolower($fullclassname));
-      $classname = $elems[count($elems)-1];
-  
-      if (class_exists($classname))
-      {
-        if (count($args) === 0)
-        {
-          return new $classname();
+        $fullclassname = self::resolveClass($fullclassname);
+        self::import($fullclassname, true);
+
+        $elems = explode(".", strtolower($fullclassname));
+        $classname = $elems[count($elems) - 1];
+
+        if (class_exists($classname)) {
+            if (count($args) === 0) {
+                return new $classname();
+            } else {
+                $class = new ReflectionClass($classname);
+                return $class->newInstanceArgs($args);
+            }
+        } else {
+            atkerror("Class $fullclassname not found.");
+            return null;
         }
-        else 
-        {
-          $class = new ReflectionClass($classname);      
-          return $class->newInstanceArgs($args);
-        }
-      }
-      else
-      {
-        atkerror("Class $fullclassname not found.");
-        return null;
-      }
-    }    
-  
+    }
+
     /**
      * Return a singleton instance of the specified class.
      *
@@ -268,21 +240,20 @@
      * @param bool $reset Force resetting of the instance
      * @return obj instance of the class
      * */
-    static function getSingletonInstance($fullclassname, $reset=false)
+    static function getSingletonInstance($fullclassname, $reset = false)
     {
-      static $s_instances = array();
-      $fullclassname = self::resolveClass($fullclassname);
-      if (!isset($s_instances[$fullclassname]) || $reset)
-      {
-        self::import($fullclassname);
-        $classname = substr(strrchr('.'. $fullclassname, '.'), 1);
-        atkdebug("Getting singleton instance $fullclassname");
-        $s_instances[ $fullclassname ] = call_user_func(array($classname, 'getInstance'), $reset);
-      }
+        static $s_instances = array();
+        $fullclassname = self::resolveClass($fullclassname);
+        if (!isset($s_instances[$fullclassname]) || $reset) {
+            self::import($fullclassname);
+            $classname = substr(strrchr('.' . $fullclassname, '.'), 1);
+            atkdebug("Getting singleton instance $fullclassname");
+            $s_instances[$fullclassname] = call_user_func(array($classname, 'getInstance'), $reset);
+        }
 
-      return $s_instances[$fullclassname];
-    }    
-    
+        return $s_instances[$fullclassname];
+    }
+
     /**
      * Resolve a classname to its final classname.
      *
@@ -296,13 +267,12 @@
      */
     static function resolveClass($class)
     {
-      global $g_overloaders;
-      if (isset($g_overloaders[$class]))
-      {
-        return $g_overloaders[$class];
-      }
+        global $g_overloaders;
+        if (isset($g_overloaders[$class])) {
+            return $g_overloaders[$class];
+        }
 
-      return $class;
+        return $class;
     }
 
     /**
@@ -314,15 +284,14 @@
      * @param bool $overwrite
      * @return bool Wether or not we added the overloader
      */
-    function addOverloader($original, $overload, $overwrite=true)
+    function addOverloader($original, $overload, $overwrite = true)
     {
-      global $g_overloaders;
-      if (!array_key_exists($original, $g_overloaders) || $overwrite)
-      {
-        $g_overloaders[$original] = $overload;
-        return true;
-      }
-      return false;
+        global $g_overloaders;
+        if (!array_key_exists($original, $g_overloaders) || $overwrite) {
+            $g_overloaders[$original] = $overload;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -334,13 +303,12 @@
      */
     function removeOverloader($original)
     {
-      global $g_overloaders;
-      if (array_key_exists($original, $g_overloaders))
-      {
-        unset($g_overloaders[$original]);
-        return true;
-      }
-      return false;
+        global $g_overloaders;
+        if (array_key_exists($original, $g_overloaders)) {
+            unset($g_overloaders[$original]);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -352,12 +320,11 @@
      */
     function hasOverloader($original)
     {
-      global $g_overloaders;
-      if (array_key_exists($original, $g_overloaders))
-      {
-        return true;
-      }
-      return false;
+        global $g_overloaders;
+        if (array_key_exists($original, $g_overloaders)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -374,24 +341,21 @@
      *                 returns the output of the invoked method. (be
      *                 careful with methods that return false).
      */
-    function invokeFromString($str, $params=array())
+    function invokeFromString($str, $params = array())
     {
-      if (strpos($str, "#")===false) return false;
+        if (strpos($str, "#") === false)
+            return false;
 
-      list($class, $method) = explode("#", $str);
-      if ($class!="" && $method!="")
-      {
-        $handler = &atknew($class);
-        if (is_object($handler))
-        {
-          return call_user_func_array(array($handler, $method), $params);
+        list($class, $method) = explode("#", $str);
+        if ($class != "" && $method != "") {
+            $handler = &atknew($class);
+            if (is_object($handler)) {
+                return call_user_func_array(array($handler, $method), $params);
+            }
+            return false;
+        } else {
+            return false;
         }
-        return false;
-      }
-      else
-      {
-        return false;
-      }
     }
 
     /**
@@ -404,27 +368,24 @@
      */
     function findClass($class)
     {
-      $class = strtolower($class);
-      $classloader = new atkClassLoader();
-      $classes = $classloader->getAllClasses();
-      
-      if (!in_array($class, array_keys($classes)))
-      {
-        if (atkconfig('autoload_reindex_on_missing_class', false) && !self::$s_isReindexed)
-        {
-          $classes = $classloader->getAllClasses(true);
-          self::$s_isReindexed = true;
-                    
-          if (in_array($class, array_keys($classes)))
-          {
-            return $classes[$class];
-          }
+        $class = strtolower($class);
+        $classloader = new atkClassLoader();
+        $classes = $classloader->getAllClasses();
+
+        if (!in_array($class, array_keys($classes))) {
+            if (atkconfig('autoload_reindex_on_missing_class', false) && !self::$s_isReindexed) {
+                $classes = $classloader->getAllClasses(true);
+                self::$s_isReindexed = true;
+
+                if (in_array($class, array_keys($classes))) {
+                    return $classes[$class];
+                }
+            }
+
+            return false;
         }
-        
-        return false;
-      }
-      
-      return $classes[$class];
+
+        return $classes[$class];
     }
 
     /**
@@ -433,29 +394,26 @@
      * @param bool $force Force reloading of classes, instead of using cache.
      * @return Array An array with the classes as keys and the path as value.
      */
-    function getAllClasses($force=false)
+    function getAllClasses($force = false)
     {
-      static $s_classes=array();
+        static $s_classes = array();
 
-      if (empty($s_classes) || $force)
-      {
-        atkimport('atk.utils.atktmpfile');
-        $cache = new atkTmpFile('classes.inc.php');
-        $classes = array();
+        if (empty($s_classes) || $force) {
+            atkimport('atk.utils.atktmpfile');
+            $cache = new atkTmpFile('classes.inc.php');
+            $classes = array();
 
-        if (is_readable($cache->getPath())) 
-        {
-          include($cache->getPath());
+            if (is_readable($cache->getPath())) {
+                include($cache->getPath());
+            }
+
+            if (empty($classes) || $force) {
+                $classes = $this->findAllClasses();
+                $cache->writeAsPhp('classes', $classes);
+            }
+            $s_classes = $classes;
         }
-
-        if (empty($classes) || $force)
-        {
-          $classes = $this->findAllClasses();
-          $cache->writeAsPhp('classes',$classes);
-        }
-        $s_classes = $classes;
-      }
-      return $s_classes;
+        return $s_classes;
     }
 
     /**
@@ -467,40 +425,40 @@
      */
     function findAllClasses()
     {
-      $traverser = atknew('atk.utils.atkdirectorytraverser');
-      $classfinder = new atkClassFinder();
-      $traverser->addCallbackObject($classfinder);
-      $cwd = getcwd();
-      chdir(atkconfig('atkroot'));
-      $traverser->traverse('atk');
-      chdir($cwd);
-      $classes = $classfinder->getClasses();
-      atkdebug("atkClassLoader::findAllClasses(): Found ".count($classes).' classes');
-      return $classes;
+        $traverser = atknew('atk.utils.atkdirectorytraverser');
+        $classfinder = new atkClassFinder();
+        $traverser->addCallbackObject($classfinder);
+        $cwd = getcwd();
+        chdir(atkconfig('atkroot'));
+        $traverser->traverse('atk');
+        chdir($cwd);
+        $classes = $classfinder->getClasses();
+        atkdebug("atkClassLoader::findAllClasses(): Found " . count($classes) . ' classes');
+        return $classes;
     }
-  }
 
-  /**
-   * Find all files that might be classes.
-   *
-   * Made for use with the directory traverser.
-   *
-   * @author Boy Baukema <boy@achievo.org>
-   *
-   * @package atk
-   * @subpackage utils
-   */
-  class atkClassFinder
-  {
-    var $m_classes=array();
+}
+
+/**
+ * Find all files that might be classes.
+ *
+ * Made for use with the directory traverser.
+ *
+ * @author Boy Baukema <boy@achievo.org>
+ *
+ * @package atk
+ * @subpackage utils
+ */
+class atkClassFinder
+{
+    var $m_classes = array();
 
     function visitFile($file)
     {
-      $filename = basename($file);
-      if (substr($filename,0,6)==='class.' && substr($filename, -4)==='.inc')
-      {
-        $this->m_classes[substr($filename, 6,-4)] = getClassName($file);
-      }
+        $filename = basename($file);
+        if (substr($filename, 0, 6) === 'class.' && substr($filename, -4) === '.inc') {
+            $this->m_classes[substr($filename, 6, -4)] = getClassName($file);
+        }
     }
 
     /**
@@ -511,6 +469,7 @@
      */
     function getClasses()
     {
-      return $this->m_classes;
+        return $this->m_classes;
     }
-  }
+
+}

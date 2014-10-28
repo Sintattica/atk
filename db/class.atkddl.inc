@@ -1,65 +1,62 @@
 <?php
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage db
+ *
+ * @copyright (c)2000-2004 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6344 $
+ * $Id$
+ */
+/**
+ * Some flags that can be used to configure database fields.
+ */
+define("DDL_PRIMARY", 1);
+define("DDL_UNIQUE", 2);
+define("DDL_NOTNULL", 4);
+//define("DDL_AUTO_INCREMENT", 8); //not yet implemented..
+//define("DDL_AUTOINCREMENT" , 8);
 
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage db
-   *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6344 $
-   * $Id$
-   */
-
-  /**
-   * Some flags that can be used to configure database fields.
-   */
-  define("DDL_PRIMARY"       , 1);
-  define("DDL_UNIQUE"        , 2);
-  define("DDL_NOTNULL"       , 4);
-  //define("DDL_AUTO_INCREMENT", 8); //not yet implemented..
-  //define("DDL_AUTOINCREMENT" , 8);
-
-  /**
-   * The Data Definition Language abstract base class.
-   *
-   * Database drivers should derive a class from this base class to implement
-   * vendor specific ddl commands.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage db
-   * @abstract
-   */
-  class atkDDL
-  {
+/**
+ * The Data Definition Language abstract base class.
+ *
+ * Database drivers should derive a class from this base class to implement
+ * vendor specific ddl commands.
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @package atk
+ * @subpackage db
+ * @abstract
+ */
+class atkDDL
+{
     var $m_table = array();
     var $m_fields = array();
     var $m_remove_field;
     var $m_indexes = array(); // not yet implemented
     var $m_primarykey = array();
     var $m_db;
-    
+
     /**
      * Postfix for index names                                                      
      *                                                                              
      * @access private                                                              
      * @var string                                                                  
-     */                                                                             
-    protected $m_idxnameFormat = "%s_idx";     
-    
-     
+     */
+    protected $m_idxnameFormat = "%s_idx";
 
     /**
      * Default constructor
      */
     function atkDDL()
     {
+        
     }
 
     /**
@@ -70,24 +67,21 @@
      * @param String $database The database driver to use
      * @return atkDDL instance of db specific DDL driver
      */
-    function &create($database=NULL)
+    function &create($database = NULL)
     {
-      $db = atkconfig("db");
-      $database = $database === NULL ? $db["default"]["driver"] : $database;
+        $db = atkconfig("db");
+        $database = $database === NULL ? $db["default"]["driver"] : $database;
 
-      $filename = atkconfig("atkroot")."atk/db/class.atk".$database."ddl.inc";
-      if (file_exists($filename))
-      {
-        include_once($filename);
-        $classname = "atk".$database."DDL";
-        $ddlobject = new $classname;
-        return $ddlobject;
-      }
-      else
-      {
-        atkerror("atkddl::create: No support for $database!");
-      }
-      return NULL;
+        $filename = atkconfig("atkroot") . "atk/db/class.atk" . $database . "ddl.inc";
+        if (file_exists($filename)) {
+            include_once($filename);
+            $classname = "atk" . $database . "DDL";
+            $ddlobject = new $classname;
+            return $ddlobject;
+        } else {
+            atkerror("atkddl::create: No support for $database!");
+        }
+        return NULL;
     }
 
     /**
@@ -98,8 +92,8 @@
      */
     function loadMetaData($tablemeta)
     {
-      $this->setTable($tablemeta[0]["table"]);
-      $this->addFields($tablemeta);
+        $this->setTable($tablemeta[0]["table"]);
+        $this->addFields($tablemeta);
     }
 
     /**
@@ -113,24 +107,22 @@
      * @param mixed $default   The default value to be used when inserting new
      *                         rows.
      */
-    function addField($name, $generictype, $size=0, $flags=0, $default=NULL)
+    function addField($name, $generictype, $size = 0, $flags = 0, $default = NULL)
     {
-      if (hasFlag($flags, DDL_PRIMARY))
-      {
-        $this->m_primarykey[] = $name;
-        $flags|=DDL_NOTNULL; // primary keys may never be null.
-      }
+        if (hasFlag($flags, DDL_PRIMARY)) {
+            $this->m_primarykey[] = $name;
+            $flags|=DDL_NOTNULL; // primary keys may never be null.
+        }
 
-      // Fix the size if the type is decimal
-      if($generictype=="decimal")
-      {
-        $size = $this->calculateDecimalFieldSize($size);
-      }
+        // Fix the size if the type is decimal
+        if ($generictype == "decimal") {
+            $size = $this->calculateDecimalFieldSize($size);
+        }
 
-      $this->m_fields[$name] = array("type"=>$generictype,
-                                     "size"=>$size,
-                                     "flags"=>$flags,
-                                     "default"=>$default);
+        $this->m_fields[$name] = array("type" => $generictype,
+            "size" => $size,
+            "flags" => $flags,
+            "default" => $default);
     }
 
     /**
@@ -143,10 +135,10 @@
      */
     function calculateDecimalFieldSize($size)
     {
-      list($tmp_size, $decimals) = explode(",", $size);
-      $tmp_size+=intval($decimals); // we should add the decimals to the size, since
-                            // size is specified including the decimals.
-      return sprintf('%d,%d', $tmp_size, $decimals);
+        list($tmp_size, $decimals) = explode(",", $size);
+        $tmp_size+=intval($decimals); // we should add the decimals to the size, since
+        // size is specified including the decimals.
+        return sprintf('%d,%d', $tmp_size, $decimals);
     }
 
     /**
@@ -156,7 +148,7 @@
      */
     function dropField($name)
     {
-      $this->m_remove_field=$name;
+        $this->m_remove_field = $name;
     }
 
     /**
@@ -168,15 +160,14 @@
      */
     function addFields($meta)
     {
-      foreach ($meta as $field)
-      {
-        $flags  = hasFlag($field["flags"], MF_PRIMARY)  ? DDL_PRIMARY : 0;
-        $flags |= hasFlag($field["flags"], MF_UNIQUE)   ? DDL_UNIQUE  : 0;
-        $flags |= hasFlag($field["flags"], MF_NOT_NULL) ? DDL_NOTNULL : 0;
-        // $flags |= hasFlag($field["flags"], MF_AUTO_INCREMENT) ? DDL_AUTO_INCREMENT : 0;
+        foreach ($meta as $field) {
+            $flags = hasFlag($field["flags"], MF_PRIMARY) ? DDL_PRIMARY : 0;
+            $flags |= hasFlag($field["flags"], MF_UNIQUE) ? DDL_UNIQUE : 0;
+            $flags |= hasFlag($field["flags"], MF_NOT_NULL) ? DDL_NOTNULL : 0;
+            // $flags |= hasFlag($field["flags"], MF_AUTO_INCREMENT) ? DDL_AUTO_INCREMENT : 0;
 
-        $this->addField($field["name"], $field["gentype"], $field["len"], $flags);
-      }
+            $this->addField($field["name"], $field["gentype"], $field["len"], $flags);
+        }
     }
 
     /**
@@ -195,7 +186,7 @@
      */
     function getType($generictype)
     {
-      return ""; // in case we have an unsupported type.
+        return ""; // in case we have an unsupported type.
     }
 
     /**
@@ -209,7 +200,7 @@
      */
     function getGenericType($type)
     {
-      return ""; // in case we have an unsupported type.
+        return ""; // in case we have an unsupported type.
     }
 
     /**
@@ -219,7 +210,7 @@
      */
     function setTable($tablename)
     {
-      $this->m_table = $tablename;
+        $this->m_table = $tablename;
     }
 
     /**
@@ -229,27 +220,24 @@
      */
     function buildCreate()
     {
-      if ($this->m_table!="")
-      {
-        $fields = $this->buildFields();
-        if ($fields!="")
-        {
-          $q = "CREATE TABLE ".$this->m_table."\n(";
+        if ($this->m_table != "") {
+            $fields = $this->buildFields();
+            if ($fields != "") {
+                $q = "CREATE TABLE " . $this->m_table . "\n(";
 
-          $q.= $fields;
+                $q.= $fields;
 
-          $constraints = $this->buildConstraints();
+                $constraints = $this->buildConstraints();
 
-          if ($constraints!="")
-          {
-            $q.= ",\n".$constraints;
-          }
+                if ($constraints != "") {
+                    $q.= ",\n" . $constraints;
+                }
 
-          $q.= ")";
+                $q.= ")";
+            }
+            return $q;
         }
-        return $q;
-      }
-      return "";
+        return "";
     }
 
     /**
@@ -266,38 +254,32 @@
      */
     function buildAlter()
     {
-      if ($this->m_table!="")
-      {
-        $fields = $this->buildFields();
+        if ($this->m_table != "") {
+            $fields = $this->buildFields();
 
-        if ($fields!="" || $this->m_remove_field)
-        {
-          $q = "ALTER TABLE ".$this->m_db->quoteIdentifier($this->m_table);
+            if ($fields != "" || $this->m_remove_field) {
+                $q = "ALTER TABLE " . $this->m_db->quoteIdentifier($this->m_table);
 
-          if ($this->m_remove_field)
-          {
-            $q.=" DROP\n ".$this->m_db->quoteIdentifier($this->m_remove_field);
-          }
-          else
-          {
-            $q.=" ADD\n (";
+                if ($this->m_remove_field) {
+                    $q.=" DROP\n " . $this->m_db->quoteIdentifier($this->m_remove_field);
+                } else {
+                    $q.=" ADD\n (";
 
 
-            $q.= $fields;
+                    $q.= $fields;
 
-            $constraints = $this->buildConstraints();
+                    $constraints = $this->buildConstraints();
 
-            if ($constraints!="")
-            {
-              $q.= ",\n".$constraints;
+                    if ($constraints != "") {
+                        $q.= ",\n" . $constraints;
+                    }
+
+                    $q.= ")";
+                }
+                return array($q);
             }
-
-            $q.= ")";
-          }
-          return array($q);
         }
-      }
-      return "";
+        return "";
     }
 
     /**
@@ -307,13 +289,12 @@
      */
     function buildDrop()
     {
-      if ($this->m_table!="")
-      {
-      	
-        $q = "DROP TABLE ".$this->m_db->quoteIdentifier($this->m_table)."";
-        return $q;
-      }
-      return "";
+        if ($this->m_table != "") {
+
+            $q = "DROP TABLE " . $this->m_db->quoteIdentifier($this->m_table) . "";
+            return $q;
+        }
+        return "";
     }
 
     /**
@@ -331,27 +312,23 @@
      * @param mixed $default   The default value to be used when inserting new
      *                         rows.
      */
-    function buildField($name, $generictype, $size=0, $flags=0, $default=NULL)
+    function buildField($name, $generictype, $size = 0, $flags = 0, $default = NULL)
     {
-      $res = $this->m_db->quoteIdentifier($name)." ".$this->getType($generictype);
-      if ($size>0 && $this->needsSize($generictype))
-      {
-        $res.="(".$size.")";
-      }
-      if ($default!==NULL)
-      {
-        if ($this->needsQuotes($generictype))
-        {
-          $default = "'".$default."'";
+        $res = $this->m_db->quoteIdentifier($name) . " " . $this->getType($generictype);
+        if ($size > 0 && $this->needsSize($generictype)) {
+            $res.="(" . $size . ")";
         }
-        $res.= " DEFAULT ".$default;
-      }
-      if (hasFlag($flags, DDL_NOTNULL))
-      {
-        $res.= " NOT NULL";
-      }
+        if ($default !== NULL) {
+            if ($this->needsQuotes($generictype)) {
+                $default = "'" . $default . "'";
+            }
+            $res.= " DEFAULT " . $default;
+        }
+        if (hasFlag($flags, DDL_NOTNULL)) {
+            $res.= " NOT NULL";
+        }
 
-      return $res;
+        return $res;
     }
 
     /**
@@ -363,13 +340,12 @@
      *
      * @param array $fieldlist  An array of fields that define the primary key.
      */
-    function buildPrimaryKey($fieldlist=array())
+    function buildPrimaryKey($fieldlist = array())
     {
-      if (count($fieldlist)>0)
-      {
-        return "PRIMARY KEY (".implode(", ",$fieldlist).")";
-      }
-      return "";
+        if (count($fieldlist) > 0) {
+            return "PRIMARY KEY (" . implode(", ", $fieldlist) . ")";
+        }
+        return "";
     }
 
     /**
@@ -383,7 +359,7 @@
      */
     function needsQuotes($generictype)
     {
-      return !($generictype=="number"||$generictype=="decimal");
+        return !($generictype == "number" || $generictype == "decimal");
     }
 
     /**
@@ -396,22 +372,21 @@
      */
     function needsSize($generictype)
     {
-      switch($generictype)
-      {
-        case "number":
-        case "decimal":
-        case "string":
-          return true;
-          break;
-        case "date":
-        case "text":
-        case "datetime":
-        case "time":
-        case "boolean":
-          return false;
-          break;
-      }
-      return false; // in case we have an unsupported type.
+        switch ($generictype) {
+            case "number":
+            case "decimal":
+            case "string":
+                return true;
+                break;
+            case "date":
+            case "text":
+            case "datetime":
+            case "time":
+            case "boolean":
+                return false;
+                break;
+        }
+        return false; // in case we have an unsupported type.
     }
 
     /**
@@ -422,17 +397,15 @@
      */
     function _buildFieldsArray()
     {
-      $fields = array();
+        $fields = array();
 
-      foreach ($this->m_fields as $fieldname => $fieldconfig)
-      {
-        if ($fieldname!="" && $fieldconfig["type"]!="" && $this->getType($fieldconfig["type"])!="")
-        {
-          $fields[] = $this->buildField($fieldname, $fieldconfig["type"], $fieldconfig["size"], $fieldconfig["flags"], $fieldconfig["default"]);
+        foreach ($this->m_fields as $fieldname => $fieldconfig) {
+            if ($fieldname != "" && $fieldconfig["type"] != "" && $this->getType($fieldconfig["type"]) != "") {
+                $fields[] = $this->buildField($fieldname, $fieldconfig["type"], $fieldconfig["size"], $fieldconfig["flags"], $fieldconfig["default"]);
+            }
         }
-      }
 
-      return $fields;
+        return $fields;
     }
 
     /**
@@ -443,10 +416,11 @@
      */
     function buildFields()
     {
-      $fields = $this->_buildFieldsArray();
-      if (count($fields) > 0)
-        return implode(",\n", $fields);
-      else return "";
+        $fields = $this->_buildFieldsArray();
+        if (count($fields) > 0)
+            return implode(",\n", $fields);
+        else
+            return "";
     }
 
     /**
@@ -458,10 +432,11 @@
      */
     function _buildConstraintsArray()
     {
-      $constraints = array();
-      $pk = $this->buildPrimaryKey($this->m_primarykey);
-      if (!empty($pk)) $constraints[] = $pk;
-      return $constraints;
+        $constraints = array();
+        $pk = $this->buildPrimaryKey($this->m_primarykey);
+        if (!empty($pk))
+            $constraints[] = $pk;
+        return $constraints;
     }
 
     /**
@@ -472,10 +447,11 @@
      */
     function buildConstraints()
     {
-      $constraints = $this->_buildConstraintsArray();
-      if (count($constraints) > 0)
-        return implode(",\n", $constraints);
-      else return "";
+        $constraints = $this->_buildConstraintsArray();
+        if (count($constraints) > 0)
+            return implode(",\n", $constraints);
+        else
+            return "";
     }
 
     /**
@@ -486,18 +462,16 @@
      */
     function executeCreate()
     {
-      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
+        if (!isset($this->m_db))
+            $this->m_db = &atkGetDb();
 
-      $query = $this->buildCreate();
-      if ($query!="")
-      {
-        return $this->m_db->query($query);
-      }
-      else
-      {
-        atkdebug("atkddl::executeCreate: nothing to do!");
-      }
-      return false;
+        $query = $this->buildCreate();
+        if ($query != "") {
+            return $this->m_db->query($query);
+        } else {
+            atkdebug("atkddl::executeCreate: nothing to do!");
+        }
+        return false;
     }
 
     /**
@@ -513,26 +487,23 @@
      */
     function executeAlter()
     {
-      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
+        if (!isset($this->m_db))
+            $this->m_db = &atkGetDb();
 
-      $queries = $this->buildAlter();
-      if (count($queries)>0)
-      {
-        for ($i=0, $_i=count($queries); $i<$_i; $i++)
-        {
-          if ($queries[$i]!="")
-          {
-            if (!$this->m_db->query($queries[$i]))
-              return false;
-          }
+        $queries = $this->buildAlter();
+        if (count($queries) > 0) {
+            for ($i = 0, $_i = count($queries); $i < $_i; $i++) {
+                if ($queries[$i] != "") {
+                    if (!$this->m_db->query($queries[$i]))
+                        return false;
+                }
+            }
+            return true;
         }
-        return true;
-      }
-      else
-      {
-        atkdebug("atkddl::executeCreate: nothing to do!");
-      }
-      return false;
+        else {
+            atkdebug("atkddl::executeCreate: nothing to do!");
+        }
+        return false;
     }
 
     /**
@@ -543,18 +514,16 @@
      */
     function executeDrop()
     {
-      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
+        if (!isset($this->m_db))
+            $this->m_db = &atkGetDb();
 
-      $query = $this->buildDrop();
-      if ($query!="")
-      {
-        return $this->m_db->query($query);
-      }
-      else
-      {
-        atkdebug("atkddl::executeDrop: nothing to do!");
-      }
-      return false;
+        $query = $this->buildDrop();
+        if ($query != "") {
+            return $this->m_db->query($query);
+        } else {
+            atkdebug("atkddl::executeDrop: nothing to do!");
+        }
+        return false;
     }
 
     /**
@@ -568,18 +537,16 @@
      */
     function executeCreateView($name, $select, $with_check_option)
     {
-      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
+        if (!isset($this->m_db))
+            $this->m_db = &atkGetDb();
 
-      $query = $this->buildView($name, $select, $with_check_option);
-      if ($query!="")
-      {
-        return $this->m_db->query($query);
-      }
-      else
-      {
-        atkdebug("atkddl::executeCreateView: nothing to do!");
-      }
-      return false;
+        $query = $this->buildView($name, $select, $with_check_option);
+        if ($query != "") {
+            return $this->m_db->query($query);
+        } else {
+            atkdebug("atkddl::executeCreateView: nothing to do!");
+        }
+        return false;
     }
 
     /**
@@ -592,8 +559,8 @@
      */
     function buildView($name, $select, $with_check_option)
     {
-      atkerror("buildView don't support by this db or by this db driver");
-      return "";
+        atkerror("buildView don't support by this db or by this db driver");
+        return "";
     }
 
     /**
@@ -605,18 +572,16 @@
      */
     function executeDropView($name)
     {
-      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
+        if (!isset($this->m_db))
+            $this->m_db = &atkGetDb();
 
-      $query = $this->dropView($name);
-      if ($query!="")
-      {
-        return $this->m_db->query($query);
-      }
-      else
-      {
-        atkdebug("atkddl::executeDropView: nothing to do!");
-      }
-      return false;
+        $query = $this->dropView($name);
+        if ($query != "") {
+            return $this->m_db->query($query);
+        } else {
+            atkdebug("atkddl::executeDropView: nothing to do!");
+        }
+        return false;
     }
 
     /**
@@ -627,11 +592,11 @@
      */
     function dropView($name)
     {
-      atkerror("dropView don't support by this db or by this db driver");
-      return "";
+        atkerror("dropView don't support by this db or by this db driver");
+        return "";
     }
-    
-   /**                                                                                                                                       
+
+    /**
      * Create an index                                                                                                                        
      *                                                                                                                                        
      * @param string $name Index name                                                                                                         
@@ -645,55 +610,49 @@
      *                                                  )                                                                                     
      *                               )                                                                                                        
      * @return boolean                                                                                                                        
-     */                                                                                                                                       
-    function createIndex($name,$definition)                                                                                                   
-    {                                                                                                                                         
-      $table = $this->m_db->quoteIdentifier($this->m_table);                                                                            
-      $name = $this->m_db->quoteIdentifier($this->getIndexName($name));                                                           
-                                                                                                                                              
-      $query = "CREATE INDEX $name ON $table";                                                                                                
-      $fields = array();                                                                                                                      
-      foreach ($definition['fields'] as $field => $fieldinfo)                                                                                 
-      {                                                                                                                                       
-        if (!empty($fieldinfo['length']))                                                                                                     
-        {                                                                                                                                     
-          $fields[] = $this->m_db->quoteIdentifier($field)."(".$fieldinfo['length'].")";                                                 
-        }                                                                                                                                     
-        else                                                                                                                                  
-        {                                                                                                                                     
-          $fields[] = $this->m_db->quoteIdentifier($field);                                                                              
-        }                                                                                                                                     
-      }                                                                                                                                       
-      $query .= ' ('. implode(', ', $fields) . ')';                                                                                           
-      return $this->m_db->query($query);                                                                                                      
-    }                                                                                                                                         
-        
+     */
+    function createIndex($name, $definition)
+    {
+        $table = $this->m_db->quoteIdentifier($this->m_table);
+        $name = $this->m_db->quoteIdentifier($this->getIndexName($name));
 
-   /**                                                                                                                                       
-    * Drop an existing index                                                                                                                 
-    *                                                                                                                                        
-    * @param string $name Index name                                                                                                         
-    * @return boolean                                                                                                                        
-    */                                                                                                                                       
-    function dropIndex($name)                                                                                                                 
-    {                                                                                                                                         
-      $table = $this->m_db->quoteIdentifier($this->m_table);                                                                            
-      $name = $this->m_db->quoteIdentifier($this->getIndexName($name));                                                           
-      return $this->m_db->query("DROP INDEX $name ON $table");                                                                                
-    }     
-    
-    
+        $query = "CREATE INDEX $name ON $table";
+        $fields = array();
+        foreach ($definition['fields'] as $field => $fieldinfo) {
+            if (!empty($fieldinfo['length'])) {
+                $fields[] = $this->m_db->quoteIdentifier($field) . "(" . $fieldinfo['length'] . ")";
+            } else {
+                $fields[] = $this->m_db->quoteIdentifier($field);
+            }
+        }
+        $query .= ' (' . implode(', ', $fields) . ')';
+        return $this->m_db->query($query);
+    }
+
+    /**
+     * Drop an existing index                                                                                                                 
+     *                                                                                                                                        
+     * @param string $name Index name                                                                                                         
+     * @return boolean                                                                                                                        
+     */
+    function dropIndex($name)
+    {
+        $table = $this->m_db->quoteIdentifier($this->m_table);
+        $name = $this->m_db->quoteIdentifier($this->getIndexName($name));
+        return $this->m_db->query("DROP INDEX $name ON $table");
+    }
+
     /**
      * Get Indexname
      *
      * @param string $name Indexname
      * @return string
      */
-    function getIndexName($name)                                                                                                              
-    {                                                                                                                                         
-      return sprintf($this->m_idxnameFormat, preg_replace('/[^a-z0-9_\$]/i', '_', $name));                                                                                     
-    }  
-    
+    function getIndexName($name)
+    {
+        return sprintf($this->m_idxnameFormat, preg_replace('/[^a-z0-9_\$]/i', '_', $name));
+    }
+
     /**
      * Rename sequence
      *
@@ -701,10 +660,10 @@
      * @param string $new_name The new sequence name
      * @return bool
      */
-    function renameSequence($name,$new_name)                                                                                                  
-    {                                                                                                                                         
-      return true;                                                                                                                            
-    }                                                                                                                                         
+    function renameSequence($name, $new_name)
+    {
+        return true;
+    }
 
     /**
      * Drop sequence
@@ -712,10 +671,10 @@
      * @param string $name Sequence name
      * @return bool
      */
-    function dropSequence($name)                                                                                                              
-    {                                                                                                                                         
-      return true;                                                                                                                            
-    }                                                                                                                                         
+    function dropSequence($name)
+    {
+        return true;
+    }
 
     /**
      * Rename table name
@@ -724,10 +683,11 @@
      * @param string $new_name New table name
      * @return bool
      */
-    function renameTable($name,$new_name)                                                                                                     
-    {                                                                                                                                         
-      return true;                                                                                                                            
-    }          
-  }
+    function renameTable($name, $new_name)
+    {
+        return true;
+    }
+
+}
 
 ?>

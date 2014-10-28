@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Achievo ATK distribution.
+ * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
  * in the doc/COPYRIGHT and doc/LICENSE files which should be 
  * included in the distribution.
@@ -21,13 +21,10 @@
  * @version $Revision: 4609 $
  * $Id$
  */
- 
-
 // This variable indicates where to get all the includes. 
 // Usually, this is the current dir.
-if (empty($GLOBALS['config_atkroot']))  
-{
-  $GLOBALS['config_atkroot'] = "./";      
+if (empty($GLOBALS['config_atkroot'])) {
+    $GLOBALS['config_atkroot'] = "./";
 }
 
-include_once($GLOBALS['config_atkroot']."atk/include/initial.inc");
+include_once($GLOBALS['config_atkroot'] . "atk/include/initial.inc");

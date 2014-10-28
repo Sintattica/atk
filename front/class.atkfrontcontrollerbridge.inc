@@ -1,37 +1,37 @@
 <?php
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage front
-   *
-   * @copyright (c)2007 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6323 $
-   * $Id$
-   */
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage front
+ *
+ * @copyright (c)2007 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6323 $
+ * $Id$
+ */
+/**
+ * Imports
+ * @access private
+ */
+atkimport('atk.utils.atkdataholder');
 
-  /**
-   * Imports
-   * @access private
-   */
-  atkimport('atk.utils.atkdataholder');
+/**
+ * Front-end controller bridge. This bridge can be (re-)implemented to
+ * support different front-ends then a stand-alone ATK application.
+ *
+ * @author Tjeerd Bijlsma <tjeerd@ibuildings.nl>
+ * @author Peter C. Verhage <peter@ibuildings.nl>
+ * @package atk
+ * @subpackage front
+ */
+class atkFrontControllerBridge
+{
 
-  /**
-   * Front-end controller bridge. This bridge can be (re-)implemented to
-   * support different front-ends then a stand-alone ATK application.
-   *
-   * @author Tjeerd Bijlsma <tjeerd@ibuildings.nl>
-   * @author Peter C. Verhage <peter@ibuildings.nl>
-   * @package atk
-   * @subpackage front
-   */
-  class atkFrontControllerBridge
-  {
     /**
      * Build url using the given URI and variables.
      *
@@ -40,8 +40,8 @@
      */
     public function buildUrl($vars)
     {
-      $url = atkSelf().'?'.http_build_query($vars);
-      return $url;
+        $url = atkSelf() . '?' . http_build_query($vars);
+        return $url;
     }
 
     /**
@@ -51,7 +51,7 @@
      */
     public function doRedirect($url)
     {
-      header('Location: '.$url);
+        header('Location: ' . $url);
     }
 
     /**
@@ -60,9 +60,9 @@
      * @param string $file stylesheet filename
      * @param string $media media type (defaults to 'all')
      */
-    public function registerStyleSheet($file,$media='all')
+    public function registerStyleSheet($file, $media = 'all')
     {
-      atkinstance('atk.ui.atkpage')->register_style($file,$media);
+        atkinstance('atk.ui.atkpage')->register_style($file, $media);
     }
 
     /**
@@ -72,7 +72,7 @@
      */
     public function registerStyleCode($code)
     {
-      atkinstance('atk.ui.atkpage')->register_stylecode($code);
+        atkinstance('atk.ui.atkpage')->register_stylecode($code);
     }
 
     /**
@@ -82,7 +82,7 @@
      */
     public function registerScriptFile($file)
     {
-      atkinstance('atk.ui.atkpage')->register_script($file);
+        atkinstance('atk.ui.atkpage')->register_script($file);
     }
 
     /**
@@ -92,7 +92,7 @@
      */
     public function registerScriptCode($code)
     {
-      atkinstance('atk.ui.atkpage')->register_scriptcode($code);
+        atkinstance('atk.ui.atkpage')->register_scriptcode($code);
     }
 
     /**
@@ -102,6 +102,7 @@
      */
     public function getApplicationRoot()
     {
-      return atkconfig('application_dir');
+        return atkconfig('application_dir');
     }
-  }
+
+}

@@ -1,32 +1,32 @@
 <?php
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage filters
+ *
+ * @copyright (c)2000-2004 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6320 $
+ * $Id$
+ */
 
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage filters
-   *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6320 $
-   * $Id$
-   */     
+/**
+ * Abstract base class for atkFilters.
+ * 
+ * @author Ivo Jansch <ivo@ibuildings.nl>
+ * @author Kees van Dieren <kees@ibuildings.nl>
+ * @package atk
+ * @subpackage filters
+ * @abstract
+ */
+class atkFilter extends atkAttribute
+{
 
-  /**
-   * Abstract base class for atkFilters.
-   * 
-   * @author Ivo Jansch <ivo@ibuildings.nl>
-   * @author Kees van Dieren <kees@ibuildings.nl>
-   * @package atk
-   * @subpackage filters
-   * @abstract
-   */
-  class atkFilter extends atkAttribute
-  {	
     /**
      * Constructor
      *
@@ -34,9 +34,9 @@
      * @param int $flags The flags of the filter
      * @return atkFilter
      */
-    function atkFilter($name, $flags=0)
-    {	
-      $this->atkAttribute($name, $flags|AF_HIDE|AF_FORCE_LOAD);
+    function atkFilter($name, $flags = 0)
+    {
+        $this->atkAttribute($name, $flags | AF_HIDE | AF_FORCE_LOAD);
     }
 
     /**
@@ -58,8 +58,11 @@
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
+    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
     {
+        
     }
-  }
+
+}
+
 ?>

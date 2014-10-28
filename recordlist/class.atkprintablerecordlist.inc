@@ -1,44 +1,42 @@
 <?php
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage recordlist
+ *
+ * @copyright (c)2000-2004 Ivo Jansch
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6320 $
+ * $Id$
+ */
+/** @internal include base class */
+atkimport("atk.recordlist.atkrecordlist");
 
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage recordlist
-   *
-   * @copyright (c)2000-2004 Ivo Jansch
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6320 $
-   * $Id$
-   */
-
-  /** @internal include base class */
-  atkimport("atk.recordlist.atkrecordlist");
-  
-  /**
-   * Recordlist implementation that renders a recordlist that is 
-   * 'printer-friendly'.
-   *
-   * It doesn't render any actions or links, and can only be used as a
-   * readonly list of records.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage recordlist
-   *
-   */
-  class atkPrintableRecordList extends atkRecordList 
-  {
-    
+/**
+ * Recordlist implementation that renders a recordlist that is 
+ * 'printer-friendly'.
+ *
+ * It doesn't render any actions or links, and can only be used as a
+ * readonly list of records.
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @package atk
+ * @subpackage recordlist
+ *
+ */
+class atkPrintableRecordList extends atkRecordList
+{
     /**
      * Creates printableRecordlist
      * @param $suppresslist
      * obsolete by specialRecordList
      */
+
     /**
      * Creates printableRecordlist
      * obsolete by specialRecordList
@@ -49,134 +47,108 @@
      * @param int  		$flags  			The prefix for embeded fields
      * @return String The rendered recordlist
      */
-    function render(&$node, $recordset, $suppressList="", $flags=0)
+    function render(&$node, $recordset, $suppressList = "", $flags = 0)
     {
-      $this->setNode($node);
-      $this->m_flags = $flags;
-      
-      $output='<table border="0" cellspacing="0" cellpadding="4">';
+        $this->setNode($node);
+        $this->m_flags = $flags;
 
-      $output.="<tr>";
+        $output = '<table border="0" cellspacing="0" cellpadding="4">';
 
-      // stuff for the totals row..
-      $totalisable = false;
-      $totals = array();
+        $output.="<tr>";
 
-      // display a headerrow with titles.
-      // Since we are looping the attriblist anyway, we also check if there
-      // are totalisable collumns.
-      foreach (array_keys($this->m_node->m_attribList) as $attribname)
-      {
-        $p_attrib = &$this->m_node->m_attribList[$attribname];
-        $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
-        if (
-            ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
-            &&
-            (
-              ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
-              ||($this->m_node->m_action!="select")
-            )
-            &&$musthide==false
-           )
-        {
-          $output.='<td><b>'.atktext($p_attrib->fieldName(),$this->m_node->m_module, $this->m_node->m_type).'</b></td>';
+        // stuff for the totals row..
+        $totalisable = false;
+        $totals = array();
 
-          // the totalisable check..
-          if ($p_attrib->hasFlag(AF_TOTAL))
-          {
-            $totalisable = true;
-          }
+        // display a headerrow with titles.
+        // Since we are looping the attriblist anyway, we also check if there
+        // are totalisable collumns.
+        foreach (array_keys($this->m_node->m_attribList) as $attribname) {
+            $p_attrib = &$this->m_node->m_attribList[$attribname];
+            $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname, $suppressList));
+            if (
+                ($p_attrib->hasFlag(AF_HIDE_LIST) == false) &&
+                (
+                ($p_attrib->hasFlag(AF_HIDE_SELECT) == false) || ($this->m_node->m_action != "select")
+                ) && $musthide == false
+            ) {
+                $output.='<td><b>' . atktext($p_attrib->fieldName(), $this->m_node->m_module, $this->m_node->m_type) . '</b></td>';
 
-        }
-      }
-
-      $output.="</tr>";
-
-      for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
-      {
-        $output.='<tr>';
-        foreach (array_keys($this->m_node->m_attribList) as $attribname)
-        {
-          $p_attrib = &$this->m_node->m_attribList[$attribname];
-          $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
-          if (
-              ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
-              &&
-              (
-                ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
-                ||($this->m_node->m_action!="select")
-              )
-              &&$musthide==false
-             )
-          {
-            // An <attributename>_display function may be provided in a derived
-            // class to display an attribute.
-            $funcname = $p_attrib->m_name."_display";
-
-            if (method_exists($this->m_node,$funcname))
-            {
-              $value=$this->m_node->$funcname($recordset[$i], "list");
+                // the totalisable check..
+                if ($p_attrib->hasFlag(AF_TOTAL)) {
+                    $totalisable = true;
+                }
             }
-            else
-            {
-              // otherwise, the display function of the particular attribute
-              // is called.
-              $value=$p_attrib->display($recordset[$i], "list");
-            }
-            $output.='<td>'.($value==""?"&nbsp;":$value).'</td>';
-
-            // Calculate totals..
-            if ($p_attrib->hasFlag(AF_TOTAL))
-            {
-              $totals[$attribname] = $p_attrib->sum($totals[$attribname], $recordset[$i]);
-            }
-          }
         }
 
-        $output.='</tr>';
-      }
+        $output.="</tr>";
 
-      // totalrow..
-      if ($totalisable)
-      {
-        $totalRow = '<tr>';
+        for ($i = 0, $_i = count($recordset); $i < $_i; $i++) {
+            $output.='<tr>';
+            foreach (array_keys($this->m_node->m_attribList) as $attribname) {
+                $p_attrib = &$this->m_node->m_attribList[$attribname];
+                $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname, $suppressList));
+                if (
+                    ($p_attrib->hasFlag(AF_HIDE_LIST) == false) &&
+                    (
+                    ($p_attrib->hasFlag(AF_HIDE_SELECT) == false) || ($this->m_node->m_action != "select")
+                    ) && $musthide == false
+                ) {
+                    // An <attributename>_display function may be provided in a derived
+                    // class to display an attribute.
+                    $funcname = $p_attrib->m_name . "_display";
 
-        // Third loop.. this time for the totals row.
-        foreach (array_keys($this->m_node->m_attribList) as $attribname)
-        {
-          $p_attrib = &$this->m_node->m_attribList[$attribname];
-         $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
-          if (
-              ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
-              &&
-              (
-                ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
-                ||($this->m_node->m_action!="select")
-              )
-              &&$musthide==false
-             )
-          {
-            if ($p_attrib->hasFlag(AF_TOTAL))
-            {
-              $totalRow.='<td><b>'.$p_attrib->display($totals[$attribname], "list").'</b></td>';
+                    if (method_exists($this->m_node, $funcname)) {
+                        $value = $this->m_node->$funcname($recordset[$i], "list");
+                    } else {
+                        // otherwise, the display function of the particular attribute
+                        // is called.
+                        $value = $p_attrib->display($recordset[$i], "list");
+                    }
+                    $output.='<td>' . ($value == "" ? "&nbsp;" : $value) . '</td>';
+
+                    // Calculate totals..
+                    if ($p_attrib->hasFlag(AF_TOTAL)) {
+                        $totals[$attribname] = $p_attrib->sum($totals[$attribname], $recordset[$i]);
+                    }
+                }
             }
-            else
-            {
-              $totalRow.='<td>&nbsp;</td>';
-            }
-          }
+
+            $output.='</tr>';
         }
 
-        $totalRow.="</tr>";
+        // totalrow..
+        if ($totalisable) {
+            $totalRow = '<tr>';
 
-        $output.=$totalRow;
-      }
+            // Third loop.. this time for the totals row.
+            foreach (array_keys($this->m_node->m_attribList) as $attribname) {
+                $p_attrib = &$this->m_node->m_attribList[$attribname];
+                $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname, $suppressList));
+                if (
+                    ($p_attrib->hasFlag(AF_HIDE_LIST) == false) &&
+                    (
+                    ($p_attrib->hasFlag(AF_HIDE_SELECT) == false) || ($this->m_node->m_action != "select")
+                    ) && $musthide == false
+                ) {
+                    if ($p_attrib->hasFlag(AF_TOTAL)) {
+                        $totalRow.='<td><b>' . $p_attrib->display($totals[$attribname], "list") . '</b></td>';
+                    } else {
+                        $totalRow.='<td>&nbsp;</td>';
+                    }
+                }
+            }
 
-      $output.='</table>';
+            $totalRow.="</tr>";
 
-      return $output;
+            $output.=$totalRow;
+        }
 
+        $output.='</table>';
+
+        return $output;
     }
-  }
+
+}
 
 ?>

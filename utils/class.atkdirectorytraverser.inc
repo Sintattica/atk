@@ -1,47 +1,45 @@
 <?php
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage utils
+ *
+ * @copyright (c)2005 Ivo Jansch
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6320 $
+ * $Id$
+ */
 
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage utils
-   *
-   * @copyright (c)2005 Ivo Jansch
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6320 $
-   * $Id$
-   */
-
-  /**
-   * This class can be used to recursively traverse a directory structure.
-   * For each dir or file encountered, it calls callback methods on
-   * callbackobjects.
-   * This is similar to the unix 'find' command with an execute option.
-   * You pass a callbackobject that performs the actual action. The
-   * full pathname of the file is passed as a parameter to the callback
-   * method.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage utils
-   *
-   */
-  class atkDirectoryTraverser
-  {
+/**
+ * This class can be used to recursively traverse a directory structure.
+ * For each dir or file encountered, it calls callback methods on
+ * callbackobjects.
+ * This is similar to the unix 'find' command with an execute option.
+ * You pass a callbackobject that performs the actual action. The
+ * full pathname of the file is passed as a parameter to the callback
+ * method.
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @package atk
+ * @subpackage utils
+ *
+ */
+class atkDirectoryTraverser
+{
     public $m_callbackObjects = array();
     public $m_excludes = array();
-
-
 
     /**
      * Constructor
      */
     function atkDirectoryTraverser()
     {
+        
     }
 
     /**
@@ -62,7 +60,7 @@
      */
     function addCallbackObject(&$callbackObject)
     {
-      $this->m_callbackObjects[] = &$callbackObject;
+        $this->m_callbackObjects[] = &$callbackObject;
     }
 
     /**
@@ -71,7 +69,7 @@
      */
     function clearCallbackObjects()
     {
-      $this->m_callbackObjects = array();
+        $this->m_callbackObjects = array();
     }
 
     /**
@@ -86,27 +84,24 @@
      */
     function traverse($path)
     {
-      if (@is_file($path))
-      {
-        $this->_callback("visitFile", $path);
-        return true;
-      } 
-      elseif (@is_dir($path))
-      {
-        $this->_callback("visitDir", $path);
-        $filenames = $this->getDirContents($path);
-        foreach ($filenames as $file)
-        {
-          if ($file!=".."&&$file!=".")
-          {
-            if (!$this->traverse($path."/".$file)) return false;
-          }
+        if (@is_file($path)) {
+            $this->_callback("visitFile", $path);
+            return true;
+        } elseif (@is_dir($path)) {
+            $this->_callback("visitDir", $path);
+            $filenames = $this->getDirContents($path);
+            foreach ($filenames as $file) {
+                if ($file != ".." && $file != ".") {
+                    if (!$this->traverse($path . "/" . $file))
+                        return false;
+                }
+            }
+            return true;
         }
-        return true;
-      }
-      elseif (@is_link($path)) return true;
+        elseif (@is_link($path))
+            return true;
 
-      return false;
+        return false;
     }
 
     /**
@@ -116,18 +111,20 @@
      */
     function getDirContents($path)
     {
-      $result = array();
-      $dir = @opendir($path);
-      while (($file = @readdir($dir)) !== false)
-      {
-        if (!$this->isExcluded($file))
-        {
-          $result[] = $file;
+        if (!is_dir($path)) {
+            return array();
         }
-      }
-      @closedir($dir);
-      sort($result);
-      return $result;
+
+        $result = array();
+        $dir = @opendir($path);
+        while (($file = @readdir($dir)) !== false) {
+            if (!$this->isExcluded($file)) {
+                $result[] = $file;
+            }
+        }
+        @closedir($dir);
+        sort($result);
+        return $result;
     }
 
     /**
@@ -139,13 +136,11 @@
      */
     function _callback($method, $filename)
     {
-      for($i=0, $_i=count($this->m_callbackObjects); $i<$_i; $i++)
-      {
-        if (method_exists($this->m_callbackObjects[$i], $method))
-        {
-          $this->m_callbackObjects[$i]->$method($filename);
+        for ($i = 0, $_i = count($this->m_callbackObjects); $i < $_i; $i++) {
+            if (method_exists($this->m_callbackObjects[$i], $method)) {
+                $this->m_callbackObjects[$i]->$method($filename);
+            }
         }
-      }
     }
 
     /**
@@ -155,7 +150,7 @@
      */
     function addExclude($regex)
     {
-      $this->m_excludes[] = $regex;
+        $this->m_excludes[] = $regex;
     }
 
     /**
@@ -164,7 +159,7 @@
      */
     function clearExcludes()
     {
-      $this->m_excludes = array();
+        $this->m_excludes = array();
     }
 
     /**
@@ -174,14 +169,14 @@
      */
     function isExcluded($file)
     {
-      $excluded = false;
-      $i = 0;
-      $count = count($this->m_excludes);
-      while (!$excluded && $i < $count)
-      {
-        $excluded = (preg_match($this->m_excludes[$i], $file) > 0);
-        $i++;
-      }
-      return $excluded;
+        $excluded = false;
+        $i = 0;
+        $count = count($this->m_excludes);
+        while (!$excluded && $i < $count) {
+            $excluded = (preg_match($this->m_excludes[$i], $file) > 0);
+            $i++;
+        }
+        return $excluded;
     }
-  }
+
+}

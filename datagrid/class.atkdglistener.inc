@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Achievo ATK distribution.
+ * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
  * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
@@ -12,7 +12,6 @@
  *
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
-
 atkimport('atk.datagrid.atkdgevent');
 
 /**
@@ -26,10 +25,10 @@ atkimport('atk.datagrid.atkdgevent');
 interface atkDGListener
 {
 
-  /**
-   * Will be called for each data grid event.
-   *
-   * @param atkDGEvent $event event
-   */
-  public function notify(atkDGEvent $event);
+    /**
+     * Will be called for each data grid event.
+     *
+     * @param atkDGEvent $event event
+     */
+    public function notify(atkDGEvent $event);
 }

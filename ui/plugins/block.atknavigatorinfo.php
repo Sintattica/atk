@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Achievo ATK distribution.
+ * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
  * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
@@ -45,29 +45,26 @@
  */
 function smarty_block_atknavigatorinfo($params, $content, &$smarty, &$repeat)
 {
-  $name = isset($params['name']) ? $params['name'] : 'navigatorinfo';
-  $offset = $params['offset'];
-  $limit = $params['limit'];
-  $count = $params['count'];
-  
-  $pageCount = ceil($count / $limit);
-  $currentPage = ($offset / $limit) + 1;
-  
-  if ($repeat)
-  {
-    $data = array(
-      'page_count' => $pageCount, 
-      'page' => $currentPage, 
-      'start' => $offset + 1, 
-      'end' => min($offset + $limit, $count),
-      'count' => $count
-    );
-    
-    $smarty->assign($name, $data);
-  }
-  else 
-  {
-    $smarty->clear_assign($name);
-    return $content;
-  }
+    $name = isset($params['name']) ? $params['name'] : 'navigatorinfo';
+    $offset = $params['offset'];
+    $limit = $params['limit'];
+    $count = $params['count'];
+
+    $pageCount = ceil($count / $limit);
+    $currentPage = ($offset / $limit) + 1;
+
+    if ($repeat) {
+        $data = array(
+            'page_count' => $pageCount,
+            'page' => $currentPage,
+            'start' => $offset + 1,
+            'end' => min($offset + $limit, $count),
+            'count' => $count
+        );
+
+        $smarty->assign($name, $data);
+    } else {
+        $smarty->clear_assign($name);
+        return $content;
+    }
 }

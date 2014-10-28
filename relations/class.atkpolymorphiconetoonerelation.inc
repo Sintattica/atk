@@ -1,27 +1,28 @@
 <?php
-  userelation("atkonetoonerelation");
-  class atkPolymorphicOneToOneRelation extends atkOneToOneRelation
-  {
+userelation("atkonetoonerelation");
+
+class atkPolymorphicOneToOneRelation extends atkOneToOneRelation
+{
     /**
      * The name of the foreign key field in the master node to the type table.
      * @access private
      * @var String
      */
-    var $m_typefk="";
+    var $m_typefk = "";
 
     /**
      * The name of the foreign key field in the master node to the type table.
      * @access private
      * @var String
      */
-    var $m_discriminatorfield="";
+    var $m_discriminatorfield = "";
 
     /**
      * $modulename The module name
      * @access private
      * @var String
      */
-    var $m_modulename="";
+    var $m_modulename = "";
 
     /**
      * Default Constructor
@@ -46,20 +47,18 @@
      * @param int $flags Attribute flags that influence this attributes'
      *                   behavior.
      */
-
-    function atkPolymorphicOneToOneRelation($name,$typefk,$discriminatorfield,
-                                            $defaultdest,$modulename,$refKey, $flags=0)
+    function atkPolymorphicOneToOneRelation($name, $typefk, $discriminatorfield, $defaultdest, $modulename, $refKey, $flags = 0)
     {
-      $this->atkOneToOneRelation($name,"",$refKey, $flags|AF_HIDE_LIST);
-      $this->m_typefk=$typefk;
-      $this->m_discriminatorfield=$discriminatorfield;
-      $this->m_destination =$defaultdest;
-      $this->m_modulename =$modulename;
+        $this->atkOneToOneRelation($name, "", $refKey, $flags | AF_HIDE_LIST);
+        $this->m_typefk = $typefk;
+        $this->m_discriminatorfield = $discriminatorfield;
+        $this->m_destination = $defaultdest;
+        $this->m_modulename = $modulename;
     }
 
     function loadType()
     {
-      return POSTLOAD;
+        return POSTLOAD;
     }
 
     /**
@@ -76,9 +75,11 @@
      */
     function load(&$db, $record, $mode)
     {
-      $this->m_destination = $this->m_modulename.".".$record[$this->m_typefk][$this->m_discriminatorfield];
-      $this->m_destInstance = $this->m_modulename.".".$record[$this->m_typefk][$this->m_discriminatorfield];
-      return parent::load($db, $record, $mode);
+        $this->m_destination = $this->m_modulename . "." . $record[$this->m_typefk][$this->m_discriminatorfield];
+        $this->m_destInstance = $this->m_modulename . "." . $record[$this->m_typefk][$this->m_discriminatorfield];
+        return parent::load($db, $record, $mode);
     }
-  }
+
+}
+
 ?>

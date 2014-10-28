@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Achievo ATK distribution.
+ * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
  * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
@@ -21,126 +21,117 @@ atkimport("atk.cache.atkcache");
 
 class atkCache_memcache extends atkCache
 {
-  public $m_memcache;
+    public $m_memcache;
 
-
-
-  /**
-   * Constructor
-   *
-   * @todo Add support for Memcache pools
-   */
-  public function __construct()
-  {
-    if(!extension_loaded('memcache'))
+    /**
+     * Constructor
+     *
+     * @todo Add support for Memcache pools
+     */
+    public function __construct()
     {
-      throw new Exception('The memcache extension is not loaded');
-    }
-    $this->m_memcache = new Memcache;
-    $result = @$this->m_memcache->connect(
-                $this->getCacheCOnfig('host','localhost'),
-                $this->getCacheConfig('port',11211),
-                $this->getCacheConfig('timeout',1)
-            );
-    if (!$result)
-    {
-      throw new Exception('Can\'t connect to the memcache server');
-    }
-  }
-
-  /**
-   * Inserts cache entry data, but only if the entry does not already exist.
-   *
-   * @param string $key The entry ID.
-   * @param mixed $data The data to write into the entry.
-   * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
-   * @return bool True on success, false on failure.
-   */
-  public function add($key,$data,$lifetime=false)
-  {
-    if (! $this->m_active)
-    {
-      return false;
+        if (!extension_loaded('memcache')) {
+            throw new Exception('The memcache extension is not loaded');
+        }
+        $this->m_memcache = new Memcache;
+        $result = @$this->m_memcache->connect(
+                $this->getCacheCOnfig('host', 'localhost'), $this->getCacheConfig('port', 11211), $this->getCacheConfig('timeout', 1)
+        );
+        if (!$result) {
+            throw new Exception('Can\'t connect to the memcache server');
+        }
     }
 
-    if($lifetime === false) $lifetime = $this->m_lifetime;
-    return $this->m_memcache->add($key, $data, null, $lifetime);
-  }
-
-  /**
-   * Sets cache entry data.
-   *
-   * @param string $key The entry ID.
-   * @param mixed $data The data to write into the entry.
-   * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
-   * @return bool True on success, false on failure.
-   */
-  public function set($key,$data,$lifetime=false)
-  {
-    if (! $this->m_active)
+    /**
+     * Inserts cache entry data, but only if the entry does not already exist.
+     *
+     * @param string $key The entry ID.
+     * @param mixed $data The data to write into the entry.
+     * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
+     * @return bool True on success, false on failure.
+     */
+    public function add($key, $data, $lifetime = false)
     {
-      return false;
+        if (!$this->m_active) {
+            return false;
+        }
+
+        if ($lifetime === false)
+            $lifetime = $this->m_lifetime;
+        return $this->m_memcache->add($key, $data, null, $lifetime);
     }
 
-    if($lifetime === false) $lifetime = $this->m_lifetime;
-    return $this->m_memcache->set($key, $data, null, $lifetime);
-  }
-
-  /**
-   * Gets cache entry data.
-   *
-   * @param string $key The entry ID.
-   * @return mixed Boolean false on failure, cache data on success.
-   */
-  public function get($key)
-  {
-    if (! $this->m_active)
+    /**
+     * Sets cache entry data.
+     *
+     * @param string $key The entry ID.
+     * @param mixed $data The data to write into the entry.
+     * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
+     * @return bool True on success, false on failure.
+     */
+    public function set($key, $data, $lifetime = false)
     {
-      return false;
-    }
-    return $this->m_memcache->get($key);
-  }
+        if (!$this->m_active) {
+            return false;
+        }
 
-  /**
-   * Deletes a cache entry.
-   *
-   * @param string $key The entry ID.
-   * @return boolean Succes
-   */
-  public function delete($key)
-  {
-    if (! $this->m_active)
+        if ($lifetime === false)
+            $lifetime = $this->m_lifetime;
+        return $this->m_memcache->set($key, $data, null, $lifetime);
+    }
+
+    /**
+     * Gets cache entry data.
+     *
+     * @param string $key The entry ID.
+     * @return mixed Boolean false on failure, cache data on success.
+     */
+    public function get($key)
     {
-      return false;
+        if (!$this->m_active) {
+            return false;
+        }
+        return $this->m_memcache->get($key);
     }
-    $this->m_memcache->delete($key);
-    return true;
-  }
 
-  /**
-   * Removes all cache entries.
-   *
-   * @return boolean Succes
-   */
-  public function deleteAll()
-  {
-    if (!$this->m_active)
+    /**
+     * Deletes a cache entry.
+     *
+     * @param string $key The entry ID.
+     * @return boolean Succes
+     */
+    public function delete($key)
     {
-      return false;
+        if (!$this->m_active) {
+            return false;
+        }
+        $this->m_memcache->delete($key);
+        return true;
     }
-    $this->m_memcache->flush();
-    return true;
-  }
 
-  /**
-   * Get the current cache type
-   *
-   * @return string atkConfig type
-   */
-  public function getType()
-  {
-    return 'memcache';
-  }
+    /**
+     * Removes all cache entries.
+     *
+     * @return boolean Succes
+     */
+    public function deleteAll()
+    {
+        if (!$this->m_active) {
+            return false;
+        }
+        $this->m_memcache->flush();
+        return true;
+    }
+
+    /**
+     * Get the current cache type
+     *
+     * @return string atkConfig type
+     */
+    public function getType()
+    {
+        return 'memcache';
+    }
 
 }
 

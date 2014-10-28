@@ -1,36 +1,34 @@
 <?php
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage handlers
+ *
+ * @copyright (c)2000-2004 Ibuildings.nl BV
+ * @copyright (c)2000-2004 Ivo Jansch
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6310 $
+ * $Id$
+ */
+atkimport("atk.handlers.atkactionhandler");
 
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage handlers
-   *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
-   * @copyright (c)2000-2004 Ivo Jansch
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6310 $
-   * $Id$
-   */
-
-  atkimport("atk.handlers.atkactionhandler");
-
-  /**
-   * Handler class for the edit action of a node. The handler draws a
-   * generic edit form for the given node.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @author Peter C. Verhage <peter@ibuildings.nl>
-   * @package atk
-   * @subpackage handlers
-   *
-   */
-  class atkViewEditBase extends atkActionHandler
-  {
+/**
+ * Handler class for the edit action of a node. The handler draws a
+ * generic edit form for the given node.
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @author Peter C. Verhage <peter@ibuildings.nl>
+ * @package atk
+ * @subpackage handlers
+ *
+ */
+class atkViewEditBase extends atkActionHandler
+{
     /**
      * Holds the record for the node. It is cached as long as the instance
      * exists, unless we force a reload.
@@ -48,30 +46,30 @@
      */
     public function getRecord($force = false)
     {
-      // if we are not forcing a fetch and we already have a cached record, return it
-      if ($force === false && $this->m_record !== null)
-      {
-          return $this->m_record;
-      }
-
-      $record = $this->getRejectInfo(); // Check reject info first
-
-      if ($record == null) // If reject info not set -  do select
-      {
-        $atkstoretype = "";
-        $sessionmanager = atkGetSessionManager();
-        if ($sessionmanager) $atkstoretype = $sessionmanager->stackVar('atkstore');
-        switch ($atkstoretype)
-        {
-          case 'session': $record = $this->getRecordFromSession(); break;
-          default:        $record = $this->getRecordFromDb(); break;
+        // if we are not forcing a fetch and we already have a cached record, return it
+        if ($force === false && $this->m_record !== null) {
+            return $this->m_record;
         }
-      }
 
-      // cache the record
-      $this->m_record = $record;
+        $record = $this->getRejectInfo(); // Check reject info first
 
-      return $record;
+        if ($record == null) { // If reject info not set -  do select
+            $atkstoretype = "";
+            $sessionmanager = atkGetSessionManager();
+            if ($sessionmanager)
+                $atkstoretype = $sessionmanager->stackVar('atkstore');
+            switch ($atkstoretype) {
+                case 'session': $record = $this->getRecordFromSession();
+                    break;
+                default: $record = $this->getRecordFromDb();
+                    break;
+            }
+        }
+
+        // cache the record
+        $this->m_record = $record;
+
+        return $record;
     }
 
     /**
@@ -81,13 +79,13 @@
      */
     protected function getRecordFromDb()
     {
-      $selector = atkArrayNvl($this->m_node->m_postvars, 'atkselector', "");
-      if ($this->getNode()->hasFlag(NF_ML)) {
-        list($record) = $this->m_node->selectDb($selector,"","","","","edit");
-      } else {
-        $record = $this->m_node->select($selector)->mode('edit')->getFirstRow();
-      }
-      return $record;
+        $selector = atkArrayNvl($this->m_node->m_postvars, 'atkselector', "");
+        if ($this->getNode()->hasFlag(NF_ML)) {
+            list($record) = $this->m_node->selectDb($selector, "", "", "", "", "edit");
+        } else {
+            $record = $this->m_node->select($selector)->mode('edit')->getFirstRow();
+        }
+        return $record;
     }
 
     /**
@@ -97,8 +95,8 @@
      */
     protected function getRecordFromSession()
     {
-      $selector = atkArrayNvl($this->m_node->m_postvars, 'atkselector','');
-      return atkinstance('atk.session.atksessionstore')->getDataRowForSelector($selector);
+        $selector = atkArrayNvl($this->m_node->m_postvars, 'atkselector', '');
+        return atkinstance('atk.session.atksessionstore')->getDataRowForSelector($selector);
     }
 
     /**
@@ -113,9 +111,9 @@
      */
     function getSectionLabel($node, $rawName)
     {
-      list($tab, $section) = explode('.', $rawName);
-      $strings = array("section_{$tab}_{$section}", "{$tab}_{$section}", "section_{$section}", $section);
-      return $node->text($strings);
+        list($tab, $section) = explode('.', $rawName);
+        $strings = array("section_{$tab}_{$section}", "{$tab}_{$section}", "section_{$section}", $section);
+        return $node->text($strings);
     }
 
     /**
@@ -130,8 +128,8 @@
      */
     function getTabLabel($node, $tab)
     {
-      $strings = array("tab_{$tab}", $tab);
-      return $node->text($strings);
+        $strings = array("tab_{$tab}", $tab);
+        return $node->text($strings);
     }
 
     /**
@@ -143,33 +141,33 @@
      */
     function getSectionControl($field, $mode)
     {
-      // label
-      $label = atkViewEditBase::getSectionLabel($this->m_node, $field['name']);
+        // label
+        $label = atkViewEditBase::getSectionLabel($this->m_node, $field['name']);
 
-      // our name
-      list($tab, $section) = explode('.', $field["name"]);
-      $name = "section_{$tab}_{$section}";
+        // our name
+        list($tab, $section) = explode('.', $field["name"]);
+        $name = "section_{$tab}_{$section}";
 
-      $url = partial_url($this->m_node->atknodetype(), $mode, "sectionstate",array("atksectionname"=>$name));
+        $url = partial_url($this->m_node->atknodetype(), $mode, "sectionstate", array("atksectionname" => $name));
 
-      // create onclick statement.
-      $onClick = " onClick=\"javascript:handleSectionToggle(this,null,'{$url}'); return false;\"";
-      $initClass = "openedSection";
+        // create onclick statement.
+        $onClick = " onClick=\"javascript:handleSectionToggle(this,null,'{$url}'); return false;\"";
+        $initClass = "openedSection";
 
-      //if the section is not active, we close it on load.
-      atkimport("atk.session.atkstate");
-      $default = in_array($field["name"], $this->m_node->getActiveSections($tab, $mode)) ? 'opened' : 'closed';
-      $sectionstate = atkState::get(array("nodetype"=>$this->m_node->atknodetype(),"section"=>$name), $default);
+        //if the section is not active, we close it on load.
+        atkimport("atk.session.atkstate");
+        $default = in_array($field["name"], $this->m_node->getActiveSections($tab, $mode))
+                ? 'opened' : 'closed';
+        $sectionstate = atkState::get(array("nodetype" => $this->m_node->atknodetype(), "section" => $name), $default);
 
-      if ($sectionstate == 'closed')
-      {
-        $initClass =  "closedSection";
-        $page = &$this->getPage();
-        $page->register_scriptcode("addClosedSection('$name');");
-      }
+        if ($sectionstate == 'closed') {
+            $initClass = "closedSection";
+            $page = &$this->getPage();
+            $page->register_scriptcode("addClosedSection('$name');");
+        }
 
-      // create the clickable link
-      return '<span class="atksectionwr"><a href="javascript:void(0)" id="'.$name.'" class="atksection '.$initClass.'"'.$onClick.'>'.$label.'</a></span>';
+        // create the clickable link
+        return '<span class="atksectionwr"><a href="javascript:void(0)" id="' . $name . '" class="atksection ' . $initClass . '"' . $onClick . '>' . $label . '</a></span>';
     }
 
     /**
@@ -182,15 +180,13 @@
      */
     function isSectionInitialHidden($section, $fields)
     {
-      foreach ($fields as $field)
-      {
-        if (is_array($field["sections"]) && in_array($section, $field['sections']) && (!isset($field['initial_hidden']) || !$field['initial_hidden']))
-        {
-          return false;
+        foreach ($fields as $field) {
+            if (is_array($field["sections"]) && in_array($section, $field['sections']) && (!isset($field['initial_hidden']) || !$field['initial_hidden'])) {
+                return false;
+            }
         }
-      }
 
-      return true;
+        return true;
     }
 
     /**
@@ -202,29 +198,27 @@
      */
     function _addNumbering(&$field, &$tplfield, &$i)
     {
-      static $number, $subnumber;
+        static $number, $subnumber;
 
-      if (!$number && !$subnumber) $number = $field["attribute"]->m_ownerInstance->getNumbering();
-      if (!$subnumber)
-      {
-        if (strlen($number) == 1 || (floor($number) <= 9 && floor($number) >= -9 && floor($number) == $number))
-        {
-          $subnumber = $number;
-          $number = null;
+        if (!$number && !$subnumber)
+            $number = $field["attribute"]->m_ownerInstance->getNumbering();
+        if (!$subnumber) {
+            if (strlen($number) == 1 || (floor($number) <= 9 && floor($number) >= -9 && floor($number) == $number)) {
+                $subnumber = $number;
+                $number = null;
+            } else {
+                $subnumber = substr($number, strrpos($number, ".") + 1);
+                $number = substr($number, 0, strrpos($number, "."));
+            }
         }
-        else
-        {
-          $subnumber = substr($number, strrpos($number, ".")+1);
-          $number = substr($number, 0, strrpos($number, "."));
-        }
-      }
 
-      if ($field["label"])
-      {
-        if ($number) $tplfield["label"]="$number.$subnumber. ";
-        else $tplfield["label"]="$subnumber. ";
-        $subnumber++;
-      }
+        if ($field["label"]) {
+            if ($number)
+                $tplfield["label"] = "$number.$subnumber. ";
+            else
+                $tplfield["label"] = "$subnumber. ";
+            $subnumber++;
+        }
     }
 
     /**
@@ -232,9 +226,9 @@
      */
     function partial_sectionstate()
     {
-      atkimport("atk.session.atkstate");
-    	atkState::set(array("nodetype"=>$this->m_node->atknodetype(),"section"=>$this->m_postvars['atksectionname']),$this->m_postvars['atksectionstate']);
-    	die;
+        atkimport("atk.session.atkstate");
+        atkState::set(array("nodetype" => $this->m_node->atknodetype(), "section" => $this->m_postvars['atksectionname']), $this->m_postvars['atksectionstate']);
+        die;
     }
 
     /**
@@ -248,12 +242,11 @@
      */
     function _getTabTpl($node, $tabs, $mode, $record)
     {
-      $tabTpl = array();
-      foreach ($tabs as $t)
-      {
-        $tabTpl['section_'.$t] = $node->getTemplate($mode, $record, $t);
-      }
-      return $tabTpl;
+        $tabTpl = array();
+        foreach ($tabs as $t) {
+            $tabTpl['section_' . $t] = $node->getTemplate($mode, $record, $t);
+        }
+        return $tabTpl;
     }
 
     /**
@@ -267,45 +260,40 @@
      */
     function _renderTabs($fields, $tabTpl)
     {
-      $ui = &$this->getUi();
-      $tabs = array();
-      $perTpl = array();//per template array
+        $ui = &$this->getUi();
+        $tabs = array();
+        $perTpl = array(); //per template array
 
-      for($i=0,$_i=count($fields);$i<$_i;$i++)
-      {
-        $allTabs = explode(' ', $fields[$i]["tab"]); // should not use "tab" here, because it actually contains the CSS class names and not only the tab names
-        $allMatchingTabs = array_values(array_intersect($allTabs, array_keys($tabTpl))); // because of the CSS thingee above we search for the first matching tab
-        if (count($allMatchingTabs) == 0) $allMatchingTabs = array_keys($tabTpl); // again a workaround for this horribly broken method
-        $tab = $allMatchingTabs[0]; // attributes can be part of one, more than one or all tabs, at the moment it seems only one or all are supported
-        $perTpl[$tabTpl[$tab]]['fields'][] = $fields[$i];//make field available in numeric array
-        $perTpl[$tabTpl[$tab]][$fields[$i]["attribute"]] = $fields[$i];//make field available in associative array
-        $perTpl[$tabTpl[$tab]]['attributes'][$fields[$i]["attribute"]] = $fields[$i];//make field available in associative array
-      }
-
-      // Add 'alltab' fields to all templates
-      foreach ($fields as $field)
-      {
-        if (in_array('alltabs', explode(' ', $field["tab"])))
-        {
-          $templates = array_keys($perTpl);
-          foreach ($templates as $tpl)
-          {
-            if (!$perTpl[$tpl][$field['attribute']])
-            {
-              $perTpl[$tpl]['fields'][] = $field;
-              $perTpl[$tpl][$field['attribute']] = $field;
-            }
-          }
+        for ($i = 0, $_i = count($fields); $i < $_i; $i++) {
+            $allTabs = explode(' ', $fields[$i]["tab"]); // should not use "tab" here, because it actually contains the CSS class names and not only the tab names
+            $allMatchingTabs = array_values(array_intersect($allTabs, array_keys($tabTpl))); // because of the CSS thingee above we search for the first matching tab
+            if (count($allMatchingTabs) == 0)
+                $allMatchingTabs = array_keys($tabTpl); // again a workaround for this horribly broken method
+            $tab = $allMatchingTabs[0]; // attributes can be part of one, more than one or all tabs, at the moment it seems only one or all are supported
+            $perTpl[$tabTpl[$tab]]['fields'][] = $fields[$i]; //make field available in numeric array
+            $perTpl[$tabTpl[$tab]][$fields[$i]["attribute"]] = $fields[$i]; //make field available in associative array
+            $perTpl[$tabTpl[$tab]]['attributes'][$fields[$i]["attribute"]] = $fields[$i]; //make field available in associative array
         }
-      }
 
-      $tpls = array_unique(array_values($tabTpl));
-      foreach ($tpls as $tpl)
-      {
-        $tabs[] = $ui->render($tpl,$perTpl[$tpl]);
-      }
+        // Add 'alltab' fields to all templates
+        foreach ($fields as $field) {
+            if (in_array('alltabs', explode(' ', $field["tab"]))) {
+                $templates = array_keys($perTpl);
+                foreach ($templates as $tpl) {
+                    if (!$perTpl[$tpl][$field['attribute']]) {
+                        $perTpl[$tpl]['fields'][] = $field;
+                        $perTpl[$tpl][$field['attribute']] = $field;
+                    }
+                }
+            }
+        }
 
-      return $tabs;
+        $tpls = array_unique(array_values($tabTpl));
+        foreach ($tpls as $tpl) {
+            $tabs[] = $ui->render($tpl, $perTpl[$tpl]);
+        }
+
+        return $tabs;
     }
 
     /**
@@ -315,16 +303,17 @@
      */
     public function partial_attribute($partial)
     {
-      list(, $attribute, $partial) = explode('.', $partial);
+        list(, $attribute, $partial) = explode('.', $partial);
 
-      $attr = $this->m_node->getAttribute($attribute);
-      if ($attr == NULL)
-      {
-        atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeType()."'");
-        return '';
-      }
+        $attr = $this->m_node->getAttribute($attribute);
+        if ($attr == NULL) {
+            atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
+            return '';
+        }
 
-      return $attr->partial($partial, $this->m_action);
+        return $attr->partial($partial, $this->m_action);
     }
-  }
+
+}
+
 ?>

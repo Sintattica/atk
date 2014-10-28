@@ -1,34 +1,33 @@
 <?php
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage attributes
-   *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6309 $
-   * $Id$
-   */
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage attributes
+ *
+ * @copyright (c)2000-2004 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6309 $
+ * $Id$
+ */
+atkimport("atk.attributes.atkattribute");
 
-   atkimport("atk.attributes.atkattribute");
-
-  /**
-   * With the atkExpressionAttribute class you can select arbitrary SQL expressions
-   * like subqueries etc. It's not possible to save values using this attribute.
-   *
-   * @author Peter C. Verhage <peter@ibuildings.nl>
-   * @package atk
-   * @subpackage attributes
-   */
-  class atkExpressionAttribute extends atkAttribute
-  {
-    var $m_searchType = "string";    
-    var $m_expression;    
+/**
+ * With the atkExpressionAttribute class you can select arbitrary SQL expressions
+ * like subqueries etc. It's not possible to save values using this attribute.
+ *
+ * @author Peter C. Verhage <peter@ibuildings.nl>
+ * @package atk
+ * @subpackage attributes
+ */
+class atkExpressionAttribute extends atkAttribute
+{
+    var $m_searchType = "string";
+    var $m_expression;
 
     /**
      * Constructor.
@@ -39,29 +38,29 @@
      *                                   only search types "string" and "number" are supported.
      * @param int    $flags              The flags for this attribute.
      */
-    function atkExpressionAttribute($name, $expression, $searchTypeOrFlags=0, $flags=0)
+    function atkExpressionAttribute($name, $expression, $searchTypeOrFlags = 0, $flags = 0)
     {
-      if (is_numeric($searchTypeOrFlags))
-        $flags = $searchTypeOrFlags;
+        if (is_numeric($searchTypeOrFlags))
+            $flags = $searchTypeOrFlags;
 
-      $this->atkAttribute($name, $flags|AF_HIDE_ADD|AF_READONLY_EDIT);
-      
-      $this->m_expression = $expression;
-      
-      if (!is_numeric($searchTypeOrFlags))
-        $this->setSearchType($searchTypeOrFlags);
+        $this->atkAttribute($name, $flags | AF_HIDE_ADD | AF_READONLY_EDIT);
+
+        $this->m_expression = $expression;
+
+        if (!is_numeric($searchTypeOrFlags))
+            $this->setSearchType($searchTypeOrFlags);
     }
-    
+
     /**
      * No storage.
      * 
      * @param string $mode The type of storage ("add" or "update")
      */
-    function storageType($mode='')
+    function storageType($mode = '')
     {
-      return NOSTORE;
+        return NOSTORE;
     }
-    
+
     /**
      * Adds this attribute to database queries.
      *
@@ -81,12 +80,12 @@
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
+    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
     {
-      $expression = str_replace("[table]", $tablename, $this->m_expression);
-      $query->addExpression($this->fieldName(), $expression, $fieldaliasprefix);
+        $expression = str_replace("[table]", $tablename, $this->m_expression);
+        $query->addExpression($this->fieldName(), $expression, $fieldaliasprefix);
     }
-    
+
     /**
      * Returns the order by statement for this attribute.
      *
@@ -96,25 +95,23 @@
      * @param String $direction Sorting direction (ASC or DESC)
      * @return order by statement
      */
-    function getOrderByStatement($extra='', $table='', $direction='ASC')
+    function getOrderByStatement($extra = '', $table = '', $direction = 'ASC')
     {
-      if (empty($table))
-       {
-         $table = $this->m_ownerInstance->m_table;
-       }
-      
-      $expression = str_replace("[table]", $table, $this->m_expression);
-      
-      $result = "($expression)";
-      
-      if ($this->getSearchType() == 'string')
-      {
-      	$result = "LOWER({$result})";
-      }
-      
-      $result .= ($direction ? " {$direction}" : "");
-      
-      return $result;
+        if (empty($table)) {
+            $table = $this->m_ownerInstance->m_table;
+        }
+
+        $expression = str_replace("[table]", $table, $this->m_expression);
+
+        $result = "($expression)";
+
+        if ($this->getSearchType() == 'string') {
+            $result = "LOWER({$result})";
+        }
+
+        $result .= ($direction ? " {$direction}" : "");
+
+        return $result;
     }
 
     /**
@@ -124,9 +121,9 @@
      */
     function setSearchType($type)
     {
-      $this->m_searchType = $type;
+        $this->m_searchType = $type;
     }
-    
+
     /**
      * Returns the search type.
      *
@@ -134,8 +131,8 @@
      */
     function getSearchType()
     {
-      return $this->m_searchType;
-    }    
+        return $this->m_searchType;
+    }
 
     /**
      * We don't know our field type plus we can't be stored anyways.
@@ -145,9 +142,9 @@
      */
     function dbFieldType()
     {
-      return "";
+        return "";
     }
-    
+
     /**
      * Returns the search modes.
      *
@@ -155,12 +152,13 @@
      */
     function getSearchModes()
     {
-      if ($this->getSearchType() == "number")
-        return atkNumberAttribute::getSearchModes();
-      else return parent::getSearchModes();
-    }    
-    
-   /**
+        if ($this->getSearchType() == "number")
+            return atkNumberAttribute::getSearchModes();
+        else
+            return parent::getSearchModes();
+    }
+
+    /**
      * Returns a piece of html code that can be used to search for an attribute's value.
      * 
      * @param array $record Array with values
@@ -175,13 +173,14 @@
      *
      * @return String A piece of html-code
      */
-    function search($record="", $extended=false, $fieldprefix="")
+    function search($record = "", $extended = false, $fieldprefix = "")
     {
-      if ($this->getSearchType() == "number")
-        return atkNumberAttribute::search($record, $extended, $fieldprefix);
-      else return parent::search($record, $extended, $fieldprefix);
+        if ($this->getSearchType() == "number")
+            return atkNumberAttribute::search($record, $extended, $fieldprefix);
+        else
+            return parent::search($record, $extended, $fieldprefix);
     }
-    
+
     /**
      * Creates a search condition for this attribute.
      * 
@@ -196,37 +195,34 @@
      */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
-      // If we are accidentally mistaken for a relation and passed an array
-      // we only take our own attribute value from the array
-      if ($this->m_searchmode) $searchmode = $this->m_searchmode;
-      
-      $expression = "(".str_replace("[table]", $table, $this->m_expression).")";
-      
-      $searchcondition = "";
-      
-      if ($this->getSearchType() == "number")
-        $value = atkNumberAttribute::processSearchValue($value);
+        // If we are accidentally mistaken for a relation and passed an array
+        // we only take our own attribute value from the array
+        if ($this->m_searchmode)
+            $searchmode = $this->m_searchmode;
 
-      if ($searchmode != "between")
-      {
-        // Use default handler, and use only the first field.
+        $expression = "(" . str_replace("[table]", $table, $this->m_expression) . ")";
+
+        $searchcondition = "";
+
         if ($this->getSearchType() == "number")
-          $value = $value["from"];
-          
-        $func = $searchmode."Condition";
-        if (method_exists($query,$func) && $value !== "" && $value !== NULL)
-        {
-          return $query->$func($expression, $this->escapeSQL($value));
+            $value = atkNumberAttribute::processSearchValue($value, $searchmode);
+
+        if ($searchmode != "between") {
+            // Use default handler, and use only the first field.
+            if ($this->getSearchType() == "number")
+                $value = $value["from"];
+
+            $func = $searchmode . "Condition";
+            if (method_exists($query, $func) && $value !== "" && $value !== NULL) {
+                return $query->$func($expression, $this->escapeSQL($value));
+            } else {
+                return false;
+            }
+        } else {
+            return atkNumberAttribute::getBetweenCondition($query, $expression, $value);
         }
-        else
-        {
-          return false;
-        }        
-      }
-      else
-      {
-        return atkNumberAttribute::getBetweenCondition($query, $expression, $value);
-      }
-    }    
-  }
+    }
+
+}
+
 ?>

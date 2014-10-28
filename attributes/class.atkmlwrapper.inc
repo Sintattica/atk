@@ -1,42 +1,42 @@
 <?php
- /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage attributes
-   *
-   * @copyright (c)2006 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6309 $
-   * $Id$
-   */
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage attributes
+ *
+ * @copyright (c)2006 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6309 $
+ * $Id$
+ */
 
-  /**
-   * Wrapper for turning any attribute into a multilanguage enabled 
-   * attribute.
-   *
-   * This attribute implements the 'decorator' pattern. It takes an 
-   * attribute as constructor parameter, and turns that attribute into
-   * an internationalised attribute, compatible with the existing 
-   * atkMl*Attributes.
-   *
-   * <i>Example usages</i>
-   *
-   * $this->add(new atkMlWrapper(new atkAttribute("name")));
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage attributes
-   *
-   */
-  class atkMlWrapper extends atkAttribute
-  {
+/**
+ * Wrapper for turning any attribute into a multilanguage enabled 
+ * attribute.
+ *
+ * This attribute implements the 'decorator' pattern. It takes an 
+ * attribute as constructor parameter, and turns that attribute into
+ * an internationalised attribute, compatible with the existing 
+ * atkMl*Attributes.
+ *
+ * <i>Example usages</i>
+ *
+ * $this->add(new atkMlWrapper(new atkAttribute("name")));
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @package atk
+ * @subpackage attributes
+ *
+ */
+class atkMlWrapper extends atkAttribute
+{
     var $m_childList = array();
-    
+
     /**
      * Constructor
      *
@@ -46,17 +46,16 @@
      */
     function atkMlWrapper(&$attribute, $flags = 0)
     {
-      // first highjack the containing attribute
-      $this->atkAttribute($attribute->m_name, $flags|$attribute->m_flags);
-      
-      foreach($this->getLanguages() as $lng)
-      {
-        // Clone attrs with new name
-        $attr = atkClone($attribute);
-        
-        $attr->m_name = $this->m_name."_".$lng;
-        $this->m_childList[$lng] = $attr;
-      }
+        // first highjack the containing attribute
+        $this->atkAttribute($attribute->m_name, $flags | $attribute->m_flags);
+
+        foreach ($this->getLanguages() as $lng) {
+            // Clone attrs with new name
+            $attr = atkClone($attribute);
+
+            $attr->m_name = $this->m_name . "_" . $lng;
+            $this->m_childList[$lng] = $attr;
+        }
     }
 
     /**
@@ -66,7 +65,7 @@
      */
     function getLanguages()
     {
-      return atkconfig("supported_languages");
+        return atkconfig("supported_languages");
     }
 
     /**
@@ -76,9 +75,9 @@
      */
     function isEmpty($record)
     {
-      // @todo
-      atkdebug("mlwrap isempty");
-      return false;
+        // @todo
+        atkdebug("mlwrap isempty");
+        return false;
     }
 
     /**
@@ -87,12 +86,11 @@
      */
     function init()
     {
-      // propagate ownerInstance to childs
-      foreach (array_keys($this->m_childList) as $lng)
-      {
-        $attr = &$this->m_childList[$lng];
-        $attr->m_ownerInstance = &$this->m_ownerInstance;
-      }
+        // propagate ownerInstance to childs
+        foreach (array_keys($this->m_childList) as $lng) {
+            $attr = &$this->m_childList[$lng];
+            $attr->m_ownerInstance = &$this->m_ownerInstance;
+        }
     }
 
     /**
@@ -109,14 +107,13 @@
      */
     function db2value($rec)
     {
-      $value = array();
-      foreach (array_keys($this->m_childList) as $lng)
-      {
-        $attr = &$this->m_childList[$lng];
-        $value[$lng] = $attr->db2value($rec);
-      }
+        $value = array();
+        foreach (array_keys($this->m_childList) as $lng) {
+            $attr = &$this->m_childList[$lng];
+            $value[$lng] = $attr->db2value($rec);
+        }
 
-      return $value;
+        return $value;
     }
 
     /**
@@ -132,27 +129,24 @@
      */
     function fetchValue($postvars)
     {
-      $value = array();
-      foreach (array_keys($this->m_childList) as $lng)
-      {
-        $attr = &$this->m_childList[$lng];
-        $value[$lng] = $attr->fetchValue($postvars);
-      }
+        $value = array();
+        foreach (array_keys($this->m_childList) as $lng) {
+            $attr = &$this->m_childList[$lng];
+            $value[$lng] = $attr->fetchValue($postvars);
+        }
 
-      return $value;
+        return $value;
     }
-
 
     /**
      * Register a piece of script to execute upon language change
      * 
      * @return string with script code
-     */ 
+     */
     function getMlSwitchCode()
     {
-       return "hideAttrib('".$this->fieldName()."_'+oldlng); showAttrib('".$this->fieldName()."_'+newlng);";
+        return "hideAttrib('" . $this->fieldName() . "_'+oldlng); showAttrib('" . $this->fieldName() . "_'+newlng);";
     }
-
 
     /**
      * Returns a piece of html code for hiding this attribute in an HTML form,
@@ -164,16 +158,15 @@
      * @return String A piece of htmlcode with hidden form elements that post
      *                this attribute's value without showing it.
      */
-    function hide($record="", $fieldprefix="")
+    function hide($record = "", $fieldprefix = "")
     {
-      $output = "";
-      foreach (array_keys($this->m_childList) as $lng)
-      {
-        $attr = &$this->m_childList[$lng];
-        $output.= $attr->hide($this->getRecordForLng($lng), $fieldprefix);
-      }
+        $output = "";
+        foreach (array_keys($this->m_childList) as $lng) {
+            $attr = &$this->m_childList[$lng];
+            $output.= $attr->hide($this->getRecordForLng($lng), $fieldprefix);
+        }
 
-      return $output;
+        return $output;
     }
 
     /**
@@ -190,13 +183,13 @@
      *                     use additional modes.
      * @return String HTML String
      */
-    function display($record, $mode="")
+    function display($record, $mode = "")
     {
-      // the next if-statement is a workaround for derived attributes which do
-      $lng = $this->getDefaultLng();
+        // the next if-statement is a workaround for derived attributes which do
+        $lng = $this->getDefaultLng();
 
-      $rec = $this->getRecordForLng($record, $lng);
-      return $this->m_childList[$lng]->display($rec);
+        $rec = $this->getRecordForLng($record, $lng);
+        return $this->m_childList[$lng]->display($rec);
     }
 
     /**
@@ -213,36 +206,31 @@
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
-      $defaultlng = $this->getDefaultLng();
-      $page = &atkPage::getInstance();
-      $page->register_script(atkconfig("atkroot")."atk/javascript/dhtml_formtools.js");
-      $cnt = 0;
-      foreach (array_keys($this->m_childList) as $lng)
-      {
-        $attr = &$this->m_childList[$lng];
+        $defaultlng = $this->getDefaultLng();
+        $page = &atkPage::getInstance();
+        $page->register_script(atkconfig("atkroot") . "atk/javascript/dhtml_formtools.js");
+        $cnt = 0;
+        foreach (array_keys($this->m_childList) as $lng) {
+            $attr = &$this->m_childList[$lng];
 
-        if ($lng==$defaultlng)
-        {
-          // default language
-          $attr->setLabel($this->label());
+            if ($lng == $defaultlng) {
+                // default language
+                $attr->setLabel($this->label());
+            } else {
+                // other languages
+                $attr->setLabel($this->label() . " (" . atktext('language_' . strtolower($lng)) . ")");
+
+                // All but the first other attrib need to be initially hidden.
+                if ($cnt > 1) {
+                    $page->register_loadscript("hideAttrib('" . $attr->fieldName() . "')");
+                }
+            }
+
+            $rec = $this->getRecordForLng($defaults, $lng);
+            $attr->addToEditArray($mode, $arr, $rec, $error, $fieldprefix);
+
+            $cnt++;
         }
-        else
-        {
-          // other languages
-          $attr->setLabel($this->label()." (".atktext('language_'.strtolower($lng)).")");
-
-          // All but the first other attrib need to be initially hidden.
-          if ($cnt>1)
-          {
-            $page->register_loadscript("hideAttrib('".$attr->fieldName()."')");
-          }
-        }
-
-        $rec = $this->getRecordForLng($defaults, $lng);
-        $attr->addToEditArray($mode, $arr, $rec, $error, $fieldprefix);
-
-        $cnt++;
-      }
     }
 
     /**
@@ -254,8 +242,9 @@
      */
     function getRecordForLng($masterrecord, $lng)
     {
-      if (empty($masterrecord)) return array();
-      return array($this->m_childList[$lng]->m_name=>$masterrecord[$this->fieldName()][$lng]);
+        if (empty($masterrecord))
+            return array();
+        return array($this->m_childList[$lng]->m_name => $masterrecord[$this->fieldName()][$lng]);
     }
 
     /**
@@ -265,8 +254,8 @@
      */
     function getDefaultLng()
     {
-      $lngs = array_keys($this->m_childList);
-      return $lngs[0]; // assume first is default
+        $lngs = array_keys($this->m_childList);
+        return $lngs[0]; // assume first is default
     }
 
     /**
@@ -285,7 +274,7 @@
      */
     function validate(&$record, $mode)
     {
-      atkdebug("mlwrap validate");
+        atkdebug("mlwrap validate");
     }
 
     /**
@@ -315,16 +304,14 @@
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
+    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
     {
-      foreach (array_keys($this->m_childList) as $lng)
-      {
-        $attr = &$this->m_childList[$lng];
-        $newrec = $this->getRecordForLng($rec, $lng);
-        $attr->addToQuery($query, $tablename, $fieldaliasprefix, $newrec, $level, $mode);
-      }
+        foreach (array_keys($this->m_childList) as $lng) {
+            $attr = &$this->m_childList[$lng];
+            $newrec = $this->getRecordForLng($rec, $lng);
+            $attr->addToQuery($query, $tablename, $fieldaliasprefix, $newrec, $level, $mode);
+        }
     }
-
 
     /**
      * Fetch the metadata about this attrib from the table metadata, and
@@ -338,13 +325,11 @@
      */
     function fetchMeta($metadata)
     {
-      foreach (array_keys($this->m_childList) as $lng)
-      {
-        $attr = &$this->m_childList[$lng];
-        $attr->fetchMeta($metadata);
-      }
+        foreach (array_keys($this->m_childList) as $lng) {
+            $attr = &$this->m_childList[$lng];
+            $attr->fetchMeta($metadata);
+        }
     }
-
 
     /**
      * Return the database field type of the attribute.
@@ -368,7 +353,7 @@
      */
     function dbFieldType()
     {
-      atkdebug("mlwrap dbfieldtype");
+        atkdebug("mlwrap dbfieldtype");
     }
 
     /**
@@ -390,7 +375,7 @@
      */
     function dbFieldSize()
     {
-      atkdebug("mlwrap dbfieldsize");
+        atkdebug("mlwrap dbfieldsize");
     }
 
     /**
@@ -422,7 +407,7 @@
      */
     function storageType($mode)
     {
-      return $this->m_childList[$this->getDefaultLng()]->storageType($mode);
+        return $this->m_childList[$this->getDefaultLng()]->storageType($mode);
     }
 
     /**
@@ -453,9 +438,9 @@
      *                          called (attribute can not be loaded from the
      *                          database)
      */
-    function loadType($mode, $searching=false)
+    function loadType($mode, $searching = false)
     {
-      return $this->m_childList[$this->getDefaultLng()]->loadType($mode, $searching);
+        return $this->m_childList[$this->getDefaultLng()]->loadType($mode, $searching);
     }
 
     /**
@@ -465,7 +450,7 @@
      */
     function getOrderByStatement()
     {
-      return $this->m_childList[$this->getDefaultLng()]->getOrderByStatement();
+        return $this->m_childList[$this->getDefaultLng()]->getOrderByStatement();
     }
 
     /**
@@ -484,8 +469,9 @@
      */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
-      return $this->m_childList[$this->getDefaultLng()]->getSearchCondition($query, $table, $value, $searchmode);
+        return $this->m_childList[$this->getDefaultLng()]->getSearchCondition($query, $table, $value, $searchmode);
     }
-  }
+
+}
 
 ?>

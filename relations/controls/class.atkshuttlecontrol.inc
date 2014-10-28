@@ -1,29 +1,28 @@
 <?php
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage relations
+ *
+ * @copyright (c)2007 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6320 $
+ * $Id$
+ */
 
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage relations
-   *
-   * @copyright (c)2007 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6320 $
-   * $Id$
-   */
-
-  /**
-   * Abstract baseclass for controls for the shuttle
-   * @author Tjeerd Bijlsma <tjeerd@ibuildings.nl>
-   * @package atk
-   * @subpackage relations
-   */
-  abstract class atkShuttleControl
-  {
+/**
+ * Abstract baseclass for controls for the shuttle
+ * @author Tjeerd Bijlsma <tjeerd@ibuildings.nl>
+ * @package atk
+ * @subpackage relations
+ */
+abstract class atkShuttleControl
+{
     const AVAILABLE = 'available';
     const SELECTED = 'selected';
 
@@ -38,9 +37,9 @@
      */
     public function __construct($name)
     {
-      $this->m_name = $name;
+        $this->m_name = $name;
     }
-    
+
     /**
      * Get the shuttle
      *
@@ -48,7 +47,7 @@
      */
     public function getShuttle()
     {
-      return $this->m_shuttle;
+        return $this->m_shuttle;
     }
 
     /**
@@ -58,7 +57,7 @@
      */
     public function setShuttle($shuttle)
     {
-      $this->m_shuttle = $shuttle;
+        $this->m_shuttle = $shuttle;
     }
 
     /**
@@ -68,7 +67,7 @@
      */
     public function setSection($section)
     {
-      $this->m_section = $section;
+        $this->m_section = $section;
     }
 
     /**
@@ -77,6 +76,7 @@
      */
     public function init()
     {
+        
     }
 
     /**
@@ -86,7 +86,7 @@
      */
     public function getName()
     {
-      return $this->m_name;
+        return $this->m_name;
     }
 
     /**
@@ -97,14 +97,11 @@
      */
     protected function getValue($record)
     {
-      if (isset($record[$this->m_shuttle->fieldName()]['controls'][$this->getName()]))
-      {
-        return $record[$this->m_shuttle->fieldName()]['controls'][$this->getName()];
-      }
-      else
-      {
-        return null;
-      }
+        if (isset($record[$this->m_shuttle->fieldName()]['controls'][$this->getName()])) {
+            return $record[$this->m_shuttle->fieldName()]['controls'][$this->getName()];
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -115,7 +112,7 @@
      */
     public function getFormName($prefix)
     {
-      return $prefix.$this->m_shuttle->fieldName().'[controls]['.$this->getName().']';
+        return $prefix . $this->m_shuttle->fieldName() . '[controls][' . $this->getName() . ']';
     }
 
     /**
@@ -129,7 +126,7 @@
      */
     public function needsRefresh($type, $record)
     {
-      return false;
+        return false;
     }
 
     /**
@@ -146,7 +143,7 @@
      * @return string HTML string
      */
     public abstract function render($record, $mode, $prefix);
-    
+
     /**
      * Text proxy. Forwards translations to the shuttle attribute.
      *
@@ -155,6 +152,7 @@
      */
     public function text($string)
     {
-      return $this->m_shuttle->text($string);
+        return $this->m_shuttle->text($string);
     }
-  }
+
+}

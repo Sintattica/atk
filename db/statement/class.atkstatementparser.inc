@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Achievo ATK distribution.
+ * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
  * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
@@ -26,125 +26,115 @@
  */
 class atkStatementParser
 {
-  /**
-   * Characters we consider as quotes.
-   *
-   * @var string
-   */
-  const QUOTE_CHARS = '"\'`';
+    /**
+     * Characters we consider as quotes.
+     *
+     * @var string
+     */
+    const QUOTE_CHARS = '"\'`';
 
-  /**
-   * (Original) SQL query.
-   *
-   * @var string
-   */
-  private $m_query;
+    /**
+     * (Original) SQL query.
+     *
+     * @var string
+     */
+    private $m_query;
 
-  /**
-   * Parsed SQL query.
-   *
-   * @var string
-   */
-  private $m_parsedQuery;
+    /**
+     * Parsed SQL query.
+     *
+     * @var string
+     */
+    private $m_parsedQuery;
 
-  /**
-   * Bind parameter positions.
-   *
-   * @var array
-   */
-  private $m_bindPositions;
+    /**
+     * Bind parameter positions.
+     *
+     * @var array
+     */
+    private $m_bindPositions;
 
-
-  /**
-   * Constructor.
-   *
-   * @param string $query SQL query
-   */
-  public function __construct($query)
-  {
-    $this->m_query = $query;
-    $this->_parse();
-  }
-
-  /**
-   * Parses the SQL query. Replaced any named bind parameter by anonymous bind
-   * parameters and saves the positions of the bind parameters in an array.
-   */
-  private function _parse()
-  {
-    $query = $this->m_query;
-    $bindPositions = array();
-    $anonBindParams = 0;
-
-    $quoteChars = array_flip(str_split(self::QUOTE_CHARS));
-    $quoteChar = null;
-
-    for ($i = 0, $length = strlen($query); $i < $length; $i++)
+    /**
+     * Constructor.
+     *
+     * @param string $query SQL query
+     */
+    public function __construct($query)
     {
-      $char = $query{$i};
-
-      if (isset($quoteChars[$char]))
-      {
-        if ($quoteChar == null)
-        {
-          $quoteChar = $char;
-        }
-        else if ($quoteChar == $char)
-        {
-          $quoteChar = null;
-        }
-      }
-      else if ($quoteChar == null && $char == '?')
-      {
-        $bindPositions[$i] = $anonBindParams++;
-      }
-      else if ($quoteChar == null && $char == ':')
-      {
-        if (preg_match('/^:(\w+)/', substr($query, $i), $matches))
-        {
-          $name = $matches[1];
-          $bindPositions[$i] = $name;
-          $query = substr($query, 0, $i).'?'.substr($query, $i + strlen($name) + 1);
-          $length = strlen($query);
-        }
-      }
+        $this->m_query = $query;
+        $this->_parse();
     }
 
-    $this->m_parsedQuery = $query;
-    $this->m_bindPositions = $bindPositions;
-  }
+    /**
+     * Parses the SQL query. Replaced any named bind parameter by anonymous bind
+     * parameters and saves the positions of the bind parameters in an array.
+     */
+    private function _parse()
+    {
+        $query = $this->m_query;
+        $bindPositions = array();
+        $anonBindParams = 0;
 
-  /**
-   * Returns the original SQL query.
-   *
-   * @return string query
-   */
-  public function getQuery()
-  {
-    return $this->m_query;
-  }
+        $quoteChars = array_flip(str_split(self::QUOTE_CHARS));
+        $quoteChar = null;
 
-  /**
-   * Returns the parsed SQL query, e.g. named bind parameters are replaced
-   * by anonymous bind parameters.
-   *
-   * @return string parsed query
-   */
-  public function getParsedQuery()
-  {
-    return $this->m_parsedQuery;
-  }
+        for ($i = 0, $length = strlen($query); $i < $length; $i++) {
+            $char = $query{$i};
 
-  /**
-   * Returns the positions for the bind parameters in the query.
-   *
-   * The key of the array contains the character position, the value
-   * contains the bind parameter name or offset.
-   *
-   * @return array
-   */
-  public function getBindPositions()
-  {
-    return $this->m_bindPositions;
-  }
+            if (isset($quoteChars[$char])) {
+                if ($quoteChar == null) {
+                    $quoteChar = $char;
+                } else if ($quoteChar == $char) {
+                    $quoteChar = null;
+                }
+            } else if ($quoteChar == null && $char == '?') {
+                $bindPositions[$i] = $anonBindParams++;
+            } else if ($quoteChar == null && $char == ':') {
+                if (preg_match('/^:(\w+)/', substr($query, $i), $matches)) {
+                    $name = $matches[1];
+                    $bindPositions[$i] = $name;
+                    $query = substr($query, 0, $i) . '?' . substr($query, $i + strlen($name) + 1);
+                    $length = strlen($query);
+                }
+            }
+        }
+
+        $this->m_parsedQuery = $query;
+        $this->m_bindPositions = $bindPositions;
+    }
+
+    /**
+     * Returns the original SQL query.
+     *
+     * @return string query
+     */
+    public function getQuery()
+    {
+        return $this->m_query;
+    }
+
+    /**
+     * Returns the parsed SQL query, e.g. named bind parameters are replaced
+     * by anonymous bind parameters.
+     *
+     * @return string parsed query
+     */
+    public function getParsedQuery()
+    {
+        return $this->m_parsedQuery;
+    }
+
+    /**
+     * Returns the positions for the bind parameters in the query.
+     *
+     * The key of the array contains the character position, the value
+     * contains the bind parameter name or offset.
+     *
+     * @return array
+     */
+    public function getBindPositions()
+    {
+        return $this->m_bindPositions;
+    }
+
 }

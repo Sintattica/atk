@@ -1,32 +1,31 @@
 <?php
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage utils
+ *
+ * @copyright (c)2007 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6320 $
+ * $Id$
+ */
 
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage utils
-   *
-   * @copyright (c)2007 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6320 $
-   * $Id$
-   */
-
-  /**
-   * The atkDataHolder class represents a class
-   * that contains a key-value array .
-   *
-   * @author Peter Verhage <peter@ibuildings.nl>
-   * @package atk
-   * @subpackage utils
-   *
-   */
-  class atkDataHolder
-  {
+/**
+ * The atkDataHolder class represents a class
+ * that contains a key-value array .
+ *
+ * @author Peter Verhage <peter@ibuildings.nl>
+ * @package atk
+ * @subpackage utils
+ *
+ */
+class atkDataHolder
+{
     protected $m_vars;
 
     /**
@@ -36,7 +35,7 @@
      */
     function __construct(&$vars)
     {
-      $this->m_vars = &$vars;
+        $this->m_vars = &$vars;
     }
 
     /**
@@ -47,7 +46,7 @@
      */
     function __isset($name)
     {
-      return isset($this->m_vars[$name]);
+        return isset($this->m_vars[$name]);
     }
 
     /**
@@ -58,7 +57,7 @@
      */
     function &__get($name)
     {
-      return $this->m_vars[$name];
+        return $this->m_vars[$name];
     }
 
     /**
@@ -69,7 +68,7 @@
      */
     function __set($name, $value)
     {
-      $this->m_vars[$name] = $value;
+        $this->m_vars[$name] = $value;
     }
 
     /**
@@ -81,9 +80,9 @@
      * @param array $args arguments
      * @return mixed variabel value (copy!)
      */
-    function __call($method,$args)
+    function __call($method, $args)
     {
-      return $this->m_vars[$name];
+        return $this->m_vars[$name];
     }
 
     /**
@@ -95,17 +94,16 @@
      *
      * @return array array
      */
-    public function &toArray($copy=true)
+    public function &toArray($copy = true)
     {
-      if ($copy)
-      {
-        $copy = $this->m_vars;
-        return $copy;
-      }
-      else
-      {
-        return $this->m_vars;
-      }
+        if ($copy) {
+            $copy = $this->m_vars;
+            return $copy;
+        } else {
+            return $this->m_vars;
+        }
     }
-  }
+
+}
+
 ?>

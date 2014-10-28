@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Achievo ATK distribution.
+ * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
  * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
@@ -12,8 +12,7 @@
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
  */
-
-/** 
+/**
  * @internal base class include
  */
 useattrib("atkdummyattribute");
@@ -29,29 +28,30 @@ useattrib("atkdummyattribute");
  */
 class atkHiddenAttribute extends atkDummyAttribute
 {
-    /** 
+
+    /**
      * The atkHiddenAttribute has a custom constructor. It's purpose is to force the AF_HIDE
      * flag, regardless of flags passed. Its behaviour is identical to atkDummyAttribute's 
      * constructor in every other way.
      */
-    public function __construct($name, $text="", $flags=0) 
+    public function __construct($name, $text = "", $flags = 0)
     {
         // A hidden  attribute should be... HIDDEN! (srlsy?)
         $flags |= AF_HIDE;
 
         parent::__construct($name, $text, $flags);
     }
- 
 
     /**
      * This method is called by the framework whenever an attribute needs to be rendered within a hidden form. 
      * In this case, the attribute renders a hidden input field using its text as its hidden value.
      */
-    public function hide($record="", $fieldprefix="") 
+    public function hide($record = "", $fieldprefix = "")
     {
         $id = $this->getHtmlId($fieldprefix);
-        $result = '<input type="hidden" id="'.$id.'" name="'.$fieldprefix.$this->formName().'" value="'.
-                       htmlspecialchars($this->m_text).'">';
-         return $result;
+        $result = '<input type="hidden" id="' . $id . '" name="' . $fieldprefix . $this->formName() . '" value="' .
+            htmlspecialchars($this->m_text) . '">';
+        return $result;
     }
+
 }

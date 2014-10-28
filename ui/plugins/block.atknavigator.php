@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Achievo ATK distribution.
+ * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
  * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
@@ -55,106 +55,91 @@
  */
 function smarty_block_atknavigator($params, $content, &$smarty, &$repeat)
 {
-  static $loopPages = array();
-  static $loopToggles = array();
-  
-  $name = isset($params['name']) ? $params['name'] : 'navigator';
-  
-  if (!isset($loopPages[$name]))
-  {
-    $offset = $params['offset'];
-    $limit = $params['limit'];
-    $count = $params['count'];
-    $maxPages = isset($params['max_pages']) ? $params['max_pages'] : 10;
-    if (empty($maxP))
-  
-    if (!($limit > 0 && $count > $limit && ceil($count / $limit) > 1))
-    {
-      $repeat = false;
-      return;  
-    }
-  
-    // calculate number of pages, first, current and last page
-    $pageCount = ceil($count / $limit);
-    $currentPage = ($offset / $limit) + 1;
-    $firstPage = $currentPage - floor(($maxPages - 1) / 2);
-    $lastPage = $currentPage + ceil(($maxPages - 1) / 2);
+    static $loopPages = array();
+    static $loopToggles = array();
 
-    if ($firstPage < 1)
-    {
-      $firstPage = 1;
-      $lastPage = min($pageCount, $maxPages);
+    $name = isset($params['name']) ? $params['name'] : 'navigator';
+
+    if (!isset($loopPages[$name])) {
+        $offset = $params['offset'];
+        $limit = $params['limit'];
+        $count = $params['count'];
+        $maxPages = isset($params['max_pages']) ? $params['max_pages'] : 10;
+        if (empty($maxP))
+            if (!($limit > 0 && $count > $limit && ceil($count / $limit) > 1)) {
+                $repeat = false;
+                return;
+            }
+
+        // calculate number of pages, first, current and last page
+        $pageCount = ceil($count / $limit);
+        $currentPage = ($offset / $limit) + 1;
+        $firstPage = $currentPage - floor(($maxPages - 1) / 2);
+        $lastPage = $currentPage + ceil(($maxPages - 1) / 2);
+
+        if ($firstPage < 1) {
+            $firstPage = 1;
+            $lastPage = min($pageCount, $maxPages);
+        }
+
+        if ($lastPage > $pageCount) {
+            $lastPage = $pageCount;
+            $firstPage = max(1, $pageCount - $maxPages + 1);
+        }
+
+        $pages = array();
+
+        if ($currentPage > $firstPage) {
+            $pages[] = array(
+                'type' => 'previous',
+                'page' => $currentPage - 1,
+                'offset' => max(0, ($currentPage - 2) * $limit),
+                'isFirst' => true,
+                'isLast' => false,
+                'isCurrent' => false
+            );
+        }
+
+        for ($i = $firstPage; $i <= $lastPage; $i++) {
+            $pages[] = array(
+                'type' => 'page',
+                'page' => $i,
+                'offset' => max(0, ($i - 1) * $limit),
+                'isFirst' => count($pages) == 0,
+                'isLast' => $currentPage == $lastPage,
+                'isCurrent' => $i == $currentPage
+            );
+        }
+
+        if ($currentPage < $lastPage) {
+            $pages[] = array(
+                'type' => 'next',
+                'page' => $currentPage + 1,
+                'offset' => max(0, $currentPage * $limit),
+                'isFirst' => false,
+                'isLast' => true,
+                'isCurrent' => false
+            );
+        }
+
+        $loopPages[$name] = $pages;
+        $loopToggles[$name] = true;
+        $repeat = true;
+        return;
+    } else if ($loopToggles[$name]) {
+        $page = array_shift($loopPages[$name]);
+        $smarty->assign($name, $page);
+        $loopToggles[$name] = false;
+        $repeat = true;
+    } else {
+        $loopToggles[$name] = true;
+
+        $repeat = count($loopPages[$name]) > 0;
+        if (!$repeat) {
+            unset($loopPages[$name]);
+            unset($loopToggles[$name]);
+        }
+
+        return $content;
     }
-  
-    if ($lastPage > $pageCount)
-    {
-      $lastPage = $pageCount;
-      $firstPage = max(1, $pageCount - $maxPages + 1);
-    }  
-    
-    $pages = array();
-    
-    if ($currentPage > $firstPage)
-    {
-      $pages[] = array(
-        'type' => 'previous',
-        'page' => $currentPage - 1, 
-        'offset' => max(0, ($currentPage - 2) * $limit),    
-        'isFirst' => true,             
-        'isLast' => false,
-        'isCurrent' => false
-      );
-    }
-    
-    for ($i = $firstPage; $i <= $lastPage; $i++)
-    {
-      $pages[] = array(
-        'type' => 'page',
-        'page' => $i, 
-        'offset' => max(0, ($i - 1) * $limit),    
-        'isFirst' => count($pages) == 0,     
-        'isLast' => $currentPage == $lastPage,
-        'isCurrent' => $i == $currentPage
-      );
-    }
-    
-    if ($currentPage < $lastPage)
-    {
-      $pages[] = array(
-        'type' => 'next',
-        'page' => $currentPage + 1,         
-        'offset' => max(0, $currentPage * $limit),    
-        'isFirst' => false,             
-        'isLast' => true,
-        'isCurrent' => false
-      );
-    }
-    
-    $loopPages[$name] = $pages;
-    $loopToggles[$name] = true;
-    $repeat = true;
-    return;
-  }
-  
-  else if ($loopToggles[$name])
-  {
-    $page = array_shift($loopPages[$name]);
-    $smarty->assign($name, $page);
-    $loopToggles[$name] = false;    
-    $repeat = true;
-  }
-  
-  else 
-  {
-    $loopToggles[$name] = true;    
-    
-    $repeat = count($loopPages[$name]) > 0;
-    if (!$repeat)
-    {
-      unset($loopPages[$name]);
-      unset($loopToggles[$name]);  
-    }
-    
-    return $content;
-  }
 }

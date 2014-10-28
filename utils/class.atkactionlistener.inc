@@ -1,37 +1,36 @@
 <?php
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage utils
+ *
+ * @copyright (c)2005 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 4122 $
+ * $Id$
+ */
 
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage utils
-   *
-   * @copyright (c)2005 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 4122 $
-   * $Id$
-   */
-
-  /**
-   * The atkActionListener baseclass for handling ATK events.
-   *
-   * The most useful purpose of the atkActionListener is to serve as a base
-   * class for custom action listeners. Extend this class and override only
-   * the notify($action, $record) method. Using atkNode::addListener you can
-   * add listeners that catch evens such as records updates and additions.
-   * This is much like the classic atk postUpdate/postAdd triggers, only much
-   * more flexible.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage utils
-   */
-  class atkActionListener
-  {
+/**
+ * The atkActionListener baseclass for handling ATK events.
+ *
+ * The most useful purpose of the atkActionListener is to serve as a base
+ * class for custom action listeners. Extend this class and override only
+ * the notify($action, $record) method. Using atkNode::addListener you can
+ * add listeners that catch evens such as records updates and additions.
+ * This is much like the classic atk postUpdate/postAdd triggers, only much
+ * more flexible.
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @package atk
+ * @subpackage utils
+ */
+class atkActionListener
+{
     /**
      * The list of actions the action listener should listen to.
      * @access private
@@ -52,9 +51,9 @@
      * @param array $actionfilter The list of actions to listen to
      * @return atkActionListener
      */
-    function atkActionListener($actionfilter=array())
+    function atkActionListener($actionfilter = array())
     {
-      $this->m_actionfilter = $actionfilter;
+        $this->m_actionfilter = $actionfilter;
     }
 
     /**
@@ -67,7 +66,7 @@
      */
     function setNode(&$node)
     {
-      $this->m_node = &$node;
+        $this->m_node = &$node;
     }
 
     /**
@@ -82,11 +81,10 @@
      */
     function notify($action, $record)
     {
-      if (count($this->m_actionfilter)==0 || atk_in_array($action, $this->m_actionfilter))
-      {
-        atkdebug("Action $action performed on ".$this->m_node->atkNodeType()." (".$this->m_node->primaryKey($record).")");
-        $this->actionPerformed($action, $record);
-      }
+        if (count($this->m_actionfilter) == 0 || atk_in_array($action, $this->m_actionfilter)) {
+            atkdebug("Action $action performed on " . $this->m_node->atkNodeType() . " (" . $this->m_node->primaryKey($record) . ")");
+            $this->actionPerformed($action, $record);
+        }
     }
 
     /**
@@ -100,6 +98,7 @@
      */
     function actionPerformed($action, $record)
     {
+        
     }
 
     /**
@@ -114,11 +113,10 @@
      */
     function preNotify($action, &$record)
     {
-      if (count($this->m_actionfilter)==0 || atk_in_array($action, $this->m_actionfilter))
-      {
-        atkdebug("Action $action to be performed on ".$this->m_node->atkNodeType()." (".$this->m_node->primaryKey($record).")");
-        $this->preActionPerformed($action, $record);
-      }
+        if (count($this->m_actionfilter) == 0 || atk_in_array($action, $this->m_actionfilter)) {
+            atkdebug("Action $action to be performed on " . $this->m_node->atkNodeType() . " (" . $this->m_node->primaryKey($record) . ")");
+            $this->preActionPerformed($action, $record);
+        }
     }
 
     /**
@@ -132,8 +130,9 @@
      */
     function preActionPerformed($action, &$record)
     {
+        
     }
 
-  }
+}
 
 ?>

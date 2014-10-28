@@ -1,34 +1,33 @@
 <?php
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage modules
+ *
+ * @copyright (c)2000-2004 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6323 $
+ * $Id$
+ */
 
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage modules
-   *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6323 $
-   * $Id$
-   */
-
-  /**
-   * The atkModule abstract base class.
-   *
-   * All modules in an ATK application should derive from this class, and
-   * override the methods of this abstract class as they see fit.
-   *
-   * @author Peter C. Verhage <peter@ibuildings.nl>
-   * @package atk
-   * @subpackage modules
-   * @abstract
-   */
-  class atkModule
-  {
+/**
+ * The atkModule abstract base class.
+ *
+ * All modules in an ATK application should derive from this class, and
+ * override the methods of this abstract class as they see fit.
+ *
+ * @author Peter C. Verhage <peter@ibuildings.nl>
+ * @package atk
+ * @subpackage modules
+ * @abstract
+ */
+class atkModule
+{
     /**
      * We keep track if the node currently being instantiated is an
      * overloader or not.
@@ -36,7 +35,6 @@
      * @var boolean
      */
     static $s_isOverloader = false;
-    
     var $m_name;
 
     /**
@@ -44,9 +42,9 @@
      * overhere, create its menuitems etc.
      * @param String $name The name of the module.
      */
-    function atkModule($name="")
+    function atkModule($name = "")
     {
-      $this->m_name = $name;
+        $this->m_name = $name;
     }
 
     /**
@@ -55,6 +53,7 @@
      */
     function getNodes()
     {
+        
     }
 
     /**
@@ -64,6 +63,7 @@
      */
     function getAttributes()
     {
+        
     }
 
     /**
@@ -74,6 +74,7 @@
      */
     function getMenuItems()
     {
+        
     }
 
     /**
@@ -114,11 +115,12 @@
      *                   with default ordering and you want to place a new
      *                   menuitem at the third position, pass 250 for $order.
      */
-    function menuitem($name="", $url="", $parent="main", $enable=1, $order=0)
+    function menuitem($name = "", $url = "", $parent = "main", $enable = 1, $order = 0)
     {
-      /* call basic menuitem */
-    	if (empty($parent)) $parent = 'main';
-      menuitem($name, $url, $parent, $enable, $order, $this->m_name);
+        /* call basic menuitem */
+        if (empty($parent))
+            $parent = 'main';
+        menuitem($name, $url, $parent, $enable, $order, $this->m_name);
     }
 
     /**
@@ -129,6 +131,7 @@
      */
     function getPreferenceLinks()
     {
+        
     }
 
     /**
@@ -139,6 +142,7 @@
      */
     function getAdminLinks()
     {
+        
     }
 
     /**
@@ -149,23 +153,20 @@
      */
     function nodeOverloader($node)
     {
-      global $g_overloaders;
+        global $g_overloaders;
 
-      /* overloader check */
-      if (!empty($g_overloaders[$node]))
-      {
-        atkdebug("Using overloader '".$g_overloaders[$node]."' for class '".$node."'");
-        self::$s_isOverloader = true;
-        $node = newNode($g_overloaders[$node], FALSE);
-        self::$s_isOverloader = false;        
-        return $node;
-      }
+        /* overloader check */
+        if (!empty($g_overloaders[$node])) {
+            atkdebug("Using overloader '" . $g_overloaders[$node] . "' for class '" . $node . "'");
+            self::$s_isOverloader = true;
+            $node = newNode($g_overloaders[$node], FALSE);
+            self::$s_isOverloader = false;
+            return $node;
+        }
 
-      /* no overloader */
-      else
-      {
-        return null;
-      }
+        /* no overloader */ else {
+            return null;
+        }
     }
 
     /**
@@ -177,7 +178,7 @@
      */
     function getNodeFile($node)
     {
-      return nodeFile($node);
+        return nodeFile($node);
     }
 
     /**
@@ -188,10 +189,10 @@
      */
     function getFixturePath($fixture)
     {
-      $module = getNodeModule($fixture);
-      $fixture = getNodeType($fixture);
-      $path = moduleDir($module).'testcases/fixtures/'.$fixture;
-      return $path;
+        $module = getNodeModule($fixture);
+        $fixture = getNodeType($fixture);
+        $path = moduleDir($module) . 'testcases/fixtures/' . $fixture;
+        return $path;
     }
 
     /**
@@ -201,74 +202,65 @@
      */
     function &newNode($node)
     {
-      global $config_atkroot;
+        global $config_atkroot;
 
-      /* include the base file */
-      atkimport("atk.atknode");
+        /* include the base file */
+        atkimport("atk.atknode");
 
-      $corporate_base = atkconfig("corporate_node_base");
-      if ($corporate_base!="")
-      {
-        atkimport($corporate_base);
-      }
-
-      /* check for file */
-      $file = $this->getNodeFile($node);
-      if (!file_exists($file))
-      {
-        atkimport("atk.utils.atkclassloader");
-        $res = atkClassLoader::invokeFromString(atkconfig("missing_class_handler"), array(array("node"=>$node,"module"=>$this->m_name)));
-        if ($res!==false)
-        {
-          return $res;
+        $corporate_base = atkconfig("corporate_node_base");
+        if ($corporate_base != "") {
+            atkimport($corporate_base);
         }
-        else
-        {
-          atkerror("Cannot create node, because a required file ($file) does not exist!", "critical");
-          return NULL;
+
+        /* check for file */
+        $file = $this->getNodeFile($node);
+        if (!file_exists($file)) {
+            atkimport("atk.utils.atkclassloader");
+            $res = atkClassLoader::invokeFromString(atkconfig("missing_class_handler"), array(array("node" => $node, "module" => $this->m_name)));
+            if ($res !== false) {
+                return $res;
+            } else {
+                atkerror("Cannot create node, because a required file ($file) does not exist!", "critical");
+                return NULL;
+            }
         }
-      }
 
-      /* include file */
-      include_once($file);
+        /* include file */
+        include_once($file);
 
-      /* module */
-      $module = getNodeModule($node);
+        /* module */
+        $module = getNodeModule($node);
 
-      // set the current module scope, this will be retrieved in atkNode
-      // to set it's $this->m_module instance variable in an early stage
-      if (!self::$s_isOverloader)
-      {
-        atkModule::setModuleScope($module);
-      }
-
-      /* now that we have included the node source file, we check
-       * for overloaders (because overloaders might need the included file!)
-       */
-      $overloader = &$this->nodeOverloader($node);
-      if ($overloader != NULL)
-      {
-        $overloader->m_module = $module;
-        
-        if (!self::$s_isOverloader)
-        {
-          atkModule::resetModuleScope();
+        // set the current module scope, this will be retrieved in atkNode
+        // to set it's $this->m_module instance variable in an early stage
+        if (!self::$s_isOverloader) {
+            atkModule::setModuleScope($module);
         }
-        
-        return $overloader;
-      }
 
-      /* initialize node and return */
-      $type = getNodeType($node);
-      $node = new $type();
-      $node->m_module = $module;
-      
-      if (!self::$s_isOverloader)
-      {
-        atkModule::resetModuleScope();
-      }
-      
-      return $node;
+        /* now that we have included the node source file, we check
+         * for overloaders (because overloaders might need the included file!)
+         */
+        $overloader = &$this->nodeOverloader($node);
+        if ($overloader != NULL) {
+            $overloader->m_module = $module;
+
+            if (!self::$s_isOverloader) {
+                atkModule::resetModuleScope();
+            }
+
+            return $overloader;
+        }
+
+        /* initialize node and return */
+        $type = getNodeType($node);
+        $node = new $type();
+        $node->m_module = $module;
+
+        if (!self::$s_isOverloader) {
+            atkModule::resetModuleScope();
+        }
+
+        return $node;
     }
 
     /**
@@ -279,8 +271,8 @@
      */
     function setModuleScope($module)
     {
-      global $g_atkModuleScope;
-      $g_atkModuleScope = $module;
+        global $g_atkModuleScope;
+        $g_atkModuleScope = $module;
     }
 
     /**
@@ -291,8 +283,8 @@
      */
     function getModuleScope()
     {
-      global $g_atkModuleScope;
-      return $g_atkModuleScope;
+        global $g_atkModuleScope;
+        return $g_atkModuleScope;
     }
 
     /**
@@ -302,7 +294,7 @@
      */
     function resetModuleScope()
     {
-      atkModule::setModuleScope(null);
+        atkModule::setModuleScope(null);
     }
 
     /**
@@ -312,9 +304,9 @@
      */
     function nodeExists($node)
     {
-      // check for file
-      $file = $this->getNodeFile($node);
-      return file_exists($file);
+        // check for file
+        $file = $this->getNodeFile($node);
+        return file_exists($file);
     }
 
     /**
@@ -325,7 +317,7 @@
      */
     function getModifierFunctions(&$node)
     {
-      return array($node->m_type . "_modifier", str_replace(".", "_", $node->atknodetype()) . "_modifier");
+        return array($node->m_type . "_modifier", str_replace(".", "_", $node->atknodetype()) . "_modifier");
     }
 
     /**
@@ -335,34 +327,34 @@
      */
     function modifier(&$node)
     {
-      // Determine the modifier name and existance for modifiers that modify any node having the this node's type in any module
-      $specificmodifiers = $this->getModifierFunctions($node);
+        // Determine the modifier name and existance for modifiers that modify any node having the this node's type in any module
+        $specificmodifiers = $this->getModifierFunctions($node);
 
-      // Set the number of applied modifiers to zero
-      $appliedmodifiers = 0;
+        // Set the number of applied modifiers to zero
+        $appliedmodifiers = 0;
 
-      // Loop through the possible modifiers and apply them if found
-      foreach ($specificmodifiers as $modifiername)
-      {
-        // If the modifiers is found
-        if (method_exists($this, $modifiername))
-        {
-          // Add a debug line so we know, the modifier is applied
-          atkdebug(sprintf("Applying modifier %s from module %s to node %s", $modifiername, $this->m_name, $node->m_type));
+        // Loop through the possible modifiers and apply them if found
+        foreach ($specificmodifiers as $modifiername) {
+            // If the modifiers is found
+            if (method_exists($this, $modifiername)) {
+                // Add a debug line so we know, the modifier is applied
+                atkdebug(sprintf("Applying modifier %s from module %s to node %s", $modifiername, $this->m_name, $node->m_type));
 
-          // Apply the modifier
-          $node->m_modifier = $this->m_name;
-          $this->$modifiername($node);
-          $node->m_modifier = "";
+                // Apply the modifier
+                $node->m_modifier = $this->m_name;
+                $this->$modifiername($node);
+                $node->m_modifier = "";
 
-          // Increase the number of applied modifiers
-          $appliedmodifiers++;
+                // Increase the number of applied modifiers
+                $appliedmodifiers++;
+            }
         }
-      }
 
-      // If none of the modifiers was found, add a warning to the debug log
-      if ($appliedmodifiers == 0)
-        atkdebug(sprintf("Failed to apply modifier function %s from module %s to node %s; modifier function not found", implode(" or ", $specificmodifiers), $this->m_name, $node->m_type), DEBUG_WARNING);
+        // If none of the modifiers was found, add a warning to the debug log
+        if ($appliedmodifiers == 0)
+            atkdebug(sprintf("Failed to apply modifier function %s from module %s to node %s; modifier function not found", implode(" or ", $specificmodifiers), $this->m_name, $node->m_type), DEBUG_WARNING);
     }
-  }
+
+}
+
 ?>

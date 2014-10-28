@@ -1,34 +1,33 @@
 <?php
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage attributes
-   *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 4845 $
-   * $Id$
-   */
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage attributes
+ *
+ * @copyright (c)2000-2004 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 4845 $
+ * $Id$
+ */
+/** @internal include base class */
+useattrib("atkmlattribute");
 
-  /** @internal include base class */
-  useattrib("atkmlattribute");
-
-  /**
-   * The atkMlSelectorAttribute class represents more the less a dummy
-   * attribute, which makes it possible to select languages in a multilanguage form.
-   *
-   * @author Peter Verhage <peter@ibuildings.nl>
-   * @package atk
-   * @subpackage attributes
-   *
-   */
-  class atkMlSelectorAttribute extends atkMlAttribute
-  {
+/**
+ * The atkMlSelectorAttribute class represents more the less a dummy
+ * attribute, which makes it possible to select languages in a multilanguage form.
+ *
+ * @author Peter Verhage <peter@ibuildings.nl>
+ * @package atk
+ * @subpackage attributes
+ *
+ */
+class atkMlSelectorAttribute extends atkMlAttribute
+{
     var $m_mlselectorattribute = true;
 
     /**
@@ -37,42 +36,43 @@
      * @param string $prefix
      * @return html select box ready for displaying
      */
-    function getSelector($prefix="")
+    function getSelector($prefix = "")
     {
-      static $s_wroteStrings=false;
+        static $s_wroteStrings = false;
 
-      $languages = $this->getLanguages();
+        $languages = $this->getLanguages();
 
-      /* check config */
-      if (!is_array($languages) || sizeof($languages) == 0)
-        return atktext("multilanguage_error_config",$this->m_ownerInstance->m_module,$this->m_ownerInstance->atknodetype());
-  
-      /* first selected other language */
-      //$formname = $prefix.'[multilanguage_current]';
-      $result = '<input id="'.$prefix.'_current" type="hidden" name="'.$formname.'" value="'.($this->m_ownerInstance->m_postvars['atkeditlng']?$this->m_ownerInstance->m_postvars['atkeditlng']:$languages[1]).'">';
+        /* check config */
+        if (!is_array($languages) || sizeof($languages) == 0)
+            return atktext("multilanguage_error_config", $this->m_ownerInstance->m_module, $this->m_ownerInstance->atknodetype());
 
-      /* build selection list */
-      $result .= '<select id="'.$prefix.'_lgswitch" name="'.$prefix.'_lgswitch" onchange="changeLanguage(this, \''.$prefix.'\', '.(atkconfig("multilanguage_linked")?'true':'false').')">';
+        /* first selected other language */
+        //$formname = $prefix.'[multilanguage_current]';
+        $result = '<input id="' . $prefix . '_current" type="hidden" name="' . $formname . '" value="' . ($this->m_ownerInstance->m_postvars['atkeditlng']
+                    ? $this->m_ownerInstance->m_postvars['atkeditlng'] : $languages[1]) . '">';
 
-      /* options */
-      for ($i = 1; $i < sizeof($languages); $i++)
-        $result .= '<option value="'.$languages[$i].'" '.(strtolower($languages[$i])==strtolower($this->m_ownerInstance->m_postvars['atkeditlng'])?'selected':'').'>'.atktext('language_'.strtolower($languages[$i])).'</option>';
+        /* build selection list */
+        $result .= '<select id="' . $prefix . '_lgswitch" name="' . $prefix . '_lgswitch" onchange="changeLanguage(this, \'' . $prefix . '\', ' . (atkconfig("multilanguage_linked")
+                    ? 'true' : 'false') . ')" class="form-control">';
 
-      /* close */
-      $result .= '</select>';
+        /* options */
+        for ($i = 1; $i < sizeof($languages); $i++)
+            $result .= '<option value="' . $languages[$i] . '" ' . (strtolower($languages[$i]) == strtolower($this->m_ownerInstance->m_postvars['atkeditlng'])
+                        ? 'selected' : '') . '>' . atktext('language_' . strtolower($languages[$i])) . '</option>';
 
-      if (!$s_wroteStrings)
-      {
-        $script = "str_languages = new Array();\n";
-        for ($i=0, $_i=count($languages); $i<$_i; $i++)
-        {
-           $script.= "str_languages['".$languages[$i]."'] = '".atktext('language_'.strtolower($languages[$i]))."';\n";
+        /* close */
+        $result .= '</select>';
+
+        if (!$s_wroteStrings) {
+            $script = "str_languages = new Array();\n";
+            for ($i = 0, $_i = count($languages); $i < $_i; $i++) {
+                $script.= "str_languages['" . $languages[$i] . "'] = '" . atktext('language_' . strtolower($languages[$i])) . "';\n";
+            }
+            $page = &atkPage::getInstance();
+            $page->register_scriptcode($script);
+            $s_wroteStrings = true;
         }
-        $page = &atkPage::getInstance();
-        $page->register_scriptcode($script);
-        $s_wroteStrings=true;
-      }
-      return $result;
+        return $result;
     }
 
     /**
@@ -80,12 +80,12 @@
      * @param string $name Name of the attribute
      * @param int $flags Flags for this attribute
      */
-    function atkMlSelectorAttribute($name="", $flags=0)
+    function atkMlSelectorAttribute($name = "", $flags = 0)
     {
-      global $config_atkroot;
-      /* base class constructor */
-      $this->atkMlAttribute("multilanguage_select", $flags|AF_HIDE_LIST);
-      $this->m_mlattribute=FALSE; // just a selector and not a real mlattribute
+        global $config_atkroot;
+        /* base class constructor */
+        $this->atkMlAttribute("multilanguage_select", $flags | AF_HIDE_LIST);
+        $this->m_mlattribute = FALSE; // just a selector and not a real mlattribute
     }
 
     /**
@@ -98,31 +98,29 @@
      * @param String $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record="", $prefix="", $mode="")
+    function edit($record = "", $prefix = "", $mode = "")
     {
-      /* register javascript */
-      $page = &atkPage::getInstance();
-      $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkmultilanguage.js.php");
-      $page->register_submitscript('mlPreSubmit(\''.$prefix.'\', form);');
+        /* register javascript */
+        $page = &atkPage::getInstance();
+        $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atkmultilanguage.js.php");
+        $page->register_submitscript('mlPreSubmit(\'' . $prefix . '\', form);');
 
-      // new style notification script thingee
-      $code = "function atkMlSwitch(oldlng, newlng)
+        // new style notification script thingee
+        $code = "function atkMlSwitch(oldlng, newlng)
                {";
 
-      foreach(array_keys($this->m_ownerInstance->m_attribList) as $attrname)
-      {
-        $p_attrib = &$this->m_ownerInstance->getAttribute($attrname);
-        if (method_exists($p_attrib, "getMlSwitchCode"))
-        {
-          $code.= $p_attrib->getMlSwitchCode()."\n";
+        foreach (array_keys($this->m_ownerInstance->m_attribList) as $attrname) {
+            $p_attrib = &$this->m_ownerInstance->getAttribute($attrname);
+            if (method_exists($p_attrib, "getMlSwitchCode")) {
+                $code.= $p_attrib->getMlSwitchCode() . "\n";
+            }
         }
-      }
 
-      $code.= "}";
+        $code.= "}";
 
-      $page->register_scriptcode($code);
+        $page->register_scriptcode($code);
 
-      return $this->getSelector($prefix);
+        return $this->getSelector($prefix);
     }
 
     /**
@@ -130,9 +128,9 @@
      * @param array $record array with fields
      * @return search field
      */
-    function search($record="")
+    function search($record = "")
     {
-      return $this->getSelector();
+        return $this->getSelector();
     }
 
     /**
@@ -141,9 +139,9 @@
      * @param array $record Array with values
      * @return Piece of htmlcode
      */
-    function hide($record="")
+    function hide($record = "")
     {
-      return "";
+        return "";
     }
 
     /**
@@ -151,21 +149,23 @@
      */
     function store()
     {
-      return true;
+        return true;
     }
 
     /**
      * No function, but is necessary
      */
     function addToQuery()
-    {}
+    {
+        
+    }
 
     /**
      * Dummy imp
      */
     function dbFieldType()
     {
-      return "";
+        return "";
     }
 
     /**
@@ -184,9 +184,12 @@
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
-      $lngs = $this->getLanguages();
-      if (count($lngs)<=2) $this->addFlag(AF_HIDE);
-      return parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
+        $lngs = $this->getLanguages();
+        if (count($lngs) <= 2)
+            $this->addFlag(AF_HIDE);
+        return parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
     }
-  }
+
+}
+
 ?>

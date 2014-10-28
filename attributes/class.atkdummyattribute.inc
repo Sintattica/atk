@@ -1,42 +1,40 @@
 <?php
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage attributes
+ *
+ * @copyright (c)2000-2004 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6309 $
+ * $Id$
+ */
+atkimport("atk.attributes.atkattribute");
 
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage attributes
-   *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6309 $
-   * $Id$
-   */
+/**
+ * Custom flags
+ */
+define("AF_DUMMY_SHOW_LABEL", AF_SPECIFIC_1); // make the dummy label its fields
 
-   atkimport("atk.attributes.atkattribute");
-
-   /**
-    * Custom flags
-    */
-   define("AF_DUMMY_SHOW_LABEL", AF_SPECIFIC_1); // make the dummy label its fields
-
-  /**
-   * With the atkDummyAttribute class you can place comments between other
-   * attributes.
-   *
-   * Use the flag AF_NOLABEL if you want to start at the beginning of the
-   * line.
-   *
-   * @author Sandy Pleyte <sandy@ibuildings.nl>
-   * @package atk
-   * @subpackage attributes
-   *
-   */
-  class atkDummyAttribute extends atkAttribute
-  {
+/**
+ * With the atkDummyAttribute class you can place comments between other
+ * attributes.
+ *
+ * Use the flag AF_NOLABEL if you want to start at the beginning of the
+ * line.
+ *
+ * @author Sandy Pleyte <sandy@ibuildings.nl>
+ * @package atk
+ * @subpackage attributes
+ *
+ */
+class atkDummyAttribute extends atkAttribute
+{
     var $m_text;
 
     /**
@@ -45,17 +43,17 @@
      * @param String $text The text to display
      * @param int $flags The flags for this attribute
      */
-    function atkDummyAttribute($name, $text="", $flags=0)
+    function atkDummyAttribute($name, $text = "", $flags = 0)
     {
-    	// A Dummy attrikbute should not be searchable and sortable
-      $flags |= AF_HIDE_SEARCH | AF_NO_SORT;
+        // A Dummy attrikbute should not be searchable and sortable
+        $flags |= AF_HIDE_SEARCH | AF_NO_SORT;
 
-      // Add the AF_BLANKLABEL flag unless the AF_DUMMY_SHOW_LABEL flag wasn't present
-      if (!hasFlag($flags, AF_DUMMY_SHOW_LABEL))
-    	  $flags |= AF_BLANKLABEL;
+        // Add the AF_BLANKLABEL flag unless the AF_DUMMY_SHOW_LABEL flag wasn't present
+        if (!hasFlag($flags, AF_DUMMY_SHOW_LABEL))
+            $flags |= AF_BLANKLABEL;
 
-      $this->atkAttribute($name,$flags); // base class constructor
-      $this->m_text = $text;
+        $this->atkAttribute($name, $flags); // base class constructor
+        $this->m_text = $text;
     }
 
     /**
@@ -65,12 +63,11 @@
      */
     public function addFlag($flag)
     {
-      parent::addFlag($flag);
+        parent::addFlag($flag);
 
-      if ($this->hasFlag(AF_DUMMY_SHOW_LABEL))
-      {
-        $this->removeFlag(AF_BLANK_LABEL);
-      }
+        if ($this->hasFlag(AF_DUMMY_SHOW_LABEL)) {
+            $this->removeFlag(AF_BLANK_LABEL);
+        }
     }
 
     /**
@@ -84,9 +81,9 @@
      * @param String $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record="", $fieldprefix="", $mode="")
+    function edit($record = "", $fieldprefix = "", $mode = "")
     {
-      return "<div ID=\"$this->m_name\">".$this->m_text."</div>";
+        return "<div ID=\"$this->m_name\">" . $this->m_text . "</div>";
     }
 
     /**
@@ -106,9 +103,9 @@
      *
      * @return String A piece of html-code
      */
-    public function search($record=array(), $extended=false, $fieldprefix="")
+    public function search($record = array(), $extended = false, $fieldprefix = "")
     {
-      return "&nbsp;";
+        return "&nbsp;";
     }
 
     /**
@@ -119,7 +116,7 @@
      */
     function display($record)
     {
-      return $this->m_text;
+        return $this->m_text;
     }
 
     /**
@@ -129,7 +126,7 @@
      */
     function setText($text)
     {
-      $this->m_text = $text;
+        $this->m_text = $text;
     }
 
     /**
@@ -139,20 +136,20 @@
      */
     public function getText()
     {
-      return $this->m_text;
+        return $this->m_text;
     }
 
     /**
-    * No function, but is neccesary
-    *
-    * @param atkDb $db Database object
-    * @param array $record The record
-    * @param string $mode The mode
-    * @return boolean to indicate if store went succesfully
-    */
+     * No function, but is neccesary
+     *
+     * @param atkDb $db Database object
+     * @param array $record The record
+     * @param string $mode The mode
+     * @return boolean to indicate if store went succesfully
+     */
     function store($db, $record, $mode)
     {
-      return true;
+        return true;
     }
 
     /**
@@ -164,7 +161,7 @@
      */
     function db2value($record)
     {
-      return NULL;
+        return NULL;
     }
 
     /**
@@ -187,8 +184,9 @@
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
+    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
     {
+        
     }
 
     /**
@@ -199,12 +197,12 @@
      */
     function getSearchModes()
     {
-      // exact match and substring search should be supported by any database.
-      // (the LIKE function is ANSI standard SQL, and both substring and wildcard
-      // searches can be implemented using LIKE)
-      // Possible values
-      //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-      return array();
+        // exact match and substring search should be supported by any database.
+        // (the LIKE function is ANSI standard SQL, and both substring and wildcard
+        // searches can be implemented using LIKE)
+        // Possible values
+        //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
+        return array();
     }
 
     /**
@@ -215,7 +213,9 @@
      */
     function dbFieldType()
     {
-      return "";
+        return "";
     }
-  }
+
+}
+
 ?>

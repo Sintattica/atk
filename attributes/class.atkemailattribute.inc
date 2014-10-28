@@ -1,36 +1,34 @@
 <?php
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * The file contains the default values for most configuration
+ * settings.
+ *
+ * @package atk
+ * @subpackage attributes
+ *
+ * @copyright (c)2000-2010 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6309 $
+ * $Id$
+ */
 
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * The file contains the default values for most configuration
-   * settings.
-   *
-   * @package atk
-   * @subpackage attributes
-   *
-   * @copyright (c)2000-2010 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6309 $
-   * $Id$
-   */
-
-  /**
-   * Attribute for editing email fields.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @author Maurice Maas 
-   * @package atk
-   * @subpackage attributes
-   *
-   */
-  class atkEmailAttribute extends atkAttribute
-  {
-
+/**
+ * Attribute for editing email fields.
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @author Maurice Maas 
+ * @package atk
+ * @subpackage attributes
+ *
+ */
+class atkEmailAttribute extends atkAttribute
+{
     /**
      * @var boolean Bool to set DNS search in validate function
      * @access private
@@ -50,10 +48,10 @@
      * @param int $flags Flags for the attribute
      * @param int $size The size of the field in characters
      */
-    function atkEmailAttribute($name, $search = false, $flags = 0, $size=0)
+    function atkEmailAttribute($name, $search = false, $flags = 0, $size = 0)
     {
-      $this->m_dnsSearch = $search;
-      $this->atkAttribute($name, $flags, $size);
+        $this->m_dnsSearch = $search;
+        $this->atkAttribute($name, $flags, $size);
     }
 
     /**
@@ -66,16 +64,15 @@
      *                     use additional modes.
      * @return String
      */
-    function display($record, $mode="")
+    function display($record, $mode = "")
     {
-      if ($mode == "csv")
-        return parent::display($record, $mode);
+        if ($mode == "csv")
+            return parent::display($record, $mode);
 
-      if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] != "")
-      {
-        return '<a href="mailto:'.$record[$this->fieldName()].'">'.$record[$this->fieldName()].'</a>';
-      }
-      return '';
+        if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] != "") {
+            return '<a href="mailto:' . $record[$this->fieldName()] . '">' . $record[$this->fieldName()] . '</a>';
+        }
+        return '';
     }
 
     /**
@@ -87,24 +84,19 @@
      */
     function validate(&$record, $mode)
     {
-      $email = $record[$this->fieldName()];
-      //first check complete string
-      if (!atkEmailAttribute::validateAddressSyntax($email))
-      {
-        atkTriggerError($record, $this, 'error_invalid_email');
-      }
-      else
-      {
-        if ($this->m_dnsSearch)
-        {
-          //now check if domain exists, searches DNS for MX records
-          list($username, $domain) = explode('@',$email,2);
-          if ( !(atkEmailAttribute::validateAddressDomain( $domain, false)) )
-          {
-            triggerError($record, $this->fieldName(), 'error_unkown_domain', text('error_unkown_domain')." ".$domain);
-          }
+        $email = $record[$this->fieldName()];
+        //first check complete string
+        if (!atkEmailAttribute::validateAddressSyntax($email)) {
+            atkTriggerError($record, $this, 'error_invalid_email');
+        } else {
+            if ($this->m_dnsSearch) {
+                //now check if domain exists, searches DNS for MX records
+                list($username, $domain) = explode('@', $email, 2);
+                if (!(atkEmailAttribute::validateAddressDomain($domain, false))) {
+                    triggerError($record, $this->fieldName(), 'error_unkown_domain', text('error_unkown_domain') . " " . $domain);
+                }
+            }
         }
-      }
     }
 
     /**
@@ -116,14 +108,11 @@
      */
     function validateAddressSyntax($email)
     {
-      if (preg_match("/^[-_a-zA-Z0-9+]+(\.[-_a-zA-Z0-9+]+)*@([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,}$/", $email))
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+        if (preg_match("/^[-_a-zA-Z0-9+]+(\.[-_a-zA-Z0-9+]+)*@([0-9a-z-]+\.)*([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,}$/", $email)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -136,25 +125,19 @@
      * @return boolean $result
      * @static
      */
-    function validateAddressDomain($domain, $strict=false)
+    function validateAddressDomain($domain, $strict = false)
     {
-      if ($strict)
-      {
-        $rr = 'MX';
-      }
-      else
-      {
-        $rr = 'ANY';
-      }
-      //Check if this domain has an MX host.
-      if(checkdnsrr($domain, $rr))
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+        if ($strict) {
+            $rr = 'MX';
+        } else {
+            $rr = 'ANY';
+        }
+        //Check if this domain has an MX host.
+        if (checkdnsrr($domain, $rr)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -163,13 +146,13 @@
      */
     function dbFieldType()
     {
-      return "string";
+        return "string";
     }
 
-  }
+}
 
-  if (!function_exists("checkdnsrr"))
-  {
+if (!function_exists("checkdnsrr")) {
+
     /**
      * Check an e-mail do main in DNS using nslookup.
      *
@@ -179,25 +162,22 @@
      */
     function checkdnsrr($hostName, $recType = 'MX')
     {
-      if(!empty($hostName))
-      {
-        $recType = escapeshellarg($recType);
-        $hostNameArg = escapeshellarg($hostName);
-        exec("nslookup -type=$recType $hostNameArg", $result);
-        // check each line to find the one that starts with the host
-        // name. If it exists then the function succeeded.
-        foreach ($result as $line)
-        {
-          if(eregi("^$hostName",$line))
-          {
-            return true;
-          }
+        if (!empty($hostName)) {
+            $recType = escapeshellarg($recType);
+            $hostNameArg = escapeshellarg($hostName);
+            exec("nslookup -type=$recType $hostNameArg", $result);
+            // check each line to find the one that starts with the host
+            // name. If it exists then the function succeeded.
+            foreach ($result as $line) {
+                if (eregi("^$hostName", $line)) {
+                    return true;
+                }
+            }
+            // otherwise there was no mail handler for the domain
+            return false;
         }
-        // otherwise there was no mail handler for the domain
         return false;
-      }
-      return false;
     }
-  }
 
+}
 ?>

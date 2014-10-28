@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Achievo ATK distribution.
+ * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
  * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
@@ -22,18 +22,15 @@
  */
 function smarty_resource_ui_source($tpl_name, &$tpl_source, &$smarty)
 {
-  $ui = atkUI::getInstance();
-  $path = $ui->templatePath($tpl_name);
+    $ui = atkUI::getInstance();
+    $path = $ui->templatePath($tpl_name);
 
-  if (!empty($path))
-  {
-    $tpl_source = file_get_contents($path);
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+    if (!empty($path)) {
+        $tpl_source = file_get_contents($path);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -41,18 +38,15 @@ function smarty_resource_ui_source($tpl_name, &$tpl_source, &$smarty)
  */
 function smarty_resource_ui_timestamp($tpl_name, &$tpl_timestamp, &$smarty)
 {
-  $ui = atkUI::getInstance();
-  $path = $ui->templatePath($tpl_name);
+    $ui = atkUI::getInstance();
+    $path = $ui->templatePath($tpl_name);
 
-  if (!empty($path))
-  {
-    $tpl_timestamp = filemtime($path);
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+    if (!empty($path)) {
+        $tpl_timestamp = filemtime($path);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -60,8 +54,8 @@ function smarty_resource_ui_timestamp($tpl_name, &$tpl_timestamp, &$smarty)
  */
 function smarty_resource_ui_secure($tpl_name, &$smarty)
 {
-  // assume all templates are secure
-  return true;
+    // assume all templates are secure
+    return true;
 }
 
 /**
@@ -69,5 +63,5 @@ function smarty_resource_ui_secure($tpl_name, &$smarty)
  */
 function smarty_resource_ui_trusted($tpl_name, &$smarty)
 {
-  // not used for templates
+    // not used for templates
 }

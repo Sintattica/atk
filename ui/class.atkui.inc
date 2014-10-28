@@ -1,29 +1,29 @@
 <?php
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage ui
-   *
-   * @copyright (c)2000-2004 Ivo Jansch
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6309 $
-   * $Id$
-   */
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage ui
+ *
+ * @copyright (c)2000-2004 Ivo Jansch
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6309 $
+ * $Id$
+ */
 
-  /**
-   * Utility class for rendering boxes, lists, tabs or other templates.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage ui
-   */
-  class atkUI
-  {
+/**
+ * Utility class for rendering boxes, lists, tabs or other templates.
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @package atk
+ * @subpackage ui
+ */
+class atkUI
+{
     /**
      * Smarty instance, initialised by constructor
      * @access private
@@ -43,8 +43,8 @@
      */
     function atkUI()
     {
-      $this->m_theme = &atkinstance("atk.ui.atktheme");
-      $this->m_smarty = &atkinstance("atk.ui.atksmarty");
+        $this->m_theme = &atkinstance("atk.ui.atktheme");
+        $this->m_smarty = &atkinstance("atk.ui.atksmarty");
     }
 
     /**
@@ -54,15 +54,14 @@
      */
     static public function &getInstance()
     {
-      static $s_instance = NULL;
+        static $s_instance = NULL;
 
-      if ($s_instance==NULL)
-      {
-        atkdebug("Creating a new atkUI instance");
-        $s_instance = new atkUi();
-      }
+        if ($s_instance == NULL) {
+            atkdebug("Creating a new atkUI instance");
+            $s_instance = new atkUi();
+        }
 
-      return $s_instance;
+        return $s_instance;
     }
 
     /**
@@ -73,16 +72,14 @@
      * @param string $module the name of the module requesting to render a template
      * @return String the rendered template
      */
-    function renderAction($action, $vars, $module="")
+    function renderAction($action, $vars, $module = "")
     {
-      // todo.. action specific templates
-      $tpl = "action_$action.tpl";
-      if ($this->m_theme->tplPath($tpl)=="") // no specific theme for this action
-      {
-        
-        $tpl = "action.tpl";
-      }
-      return $this->render($tpl, $vars, $module);
+        // todo.. action specific templates
+        $tpl = "action_$action.tpl";
+        if ($this->m_theme->tplPath($tpl) == "") { // no specific theme for this action
+            $tpl = "action.tpl";
+        }
+        return $this->render($tpl, $vars, $module);
     }
 
     /**
@@ -91,9 +88,9 @@
      * @param array  $vars   the variables with which to parse the list template
      * @param string $module the name of the module requesting to render a template 
      */
-    function renderList($action, $vars, $module="")
+    function renderList($action, $vars, $module = "")
     {
-      return $this->render("list.tpl", $vars, $module);
+        return $this->render("list.tpl", $vars, $module);
     }
 
     /**
@@ -103,10 +100,10 @@
      * @param string $module the name of the module requesting to render a template
      * @return String with the rendered box
      */
-    function renderTop($vars, $module="")
+    function renderTop($vars, $module = "")
     {
-      atkdebug("Using deprecated renderTop function, please install newer top.php from the atk/skel");
-      return $this->renderBox($vars, "top", $module);
+        atkdebug("Using deprecated renderTop function, please install newer top.php from the atk/skel");
+        return $this->renderBox($vars, "top", $module);
     }
 
     /**
@@ -122,15 +119,14 @@
      * @param string $name The name of the template
      * @param string $module the name of the module requesting to render a template
      */
-    function renderBox($vars, $name="", $module="")
+    function renderBox($vars, $name = "", $module = "")
     {
-      if ($name && file_exists($this->m_theme->tplPath($name.".tpl")))
-      {
-        return $this->render($name.".tpl", $vars);
-      }      
-      return $this->render("box.tpl", $vars, $module);
+        if ($name && file_exists($this->m_theme->tplPath($name . ".tpl"))) {
+            return $this->render($name . ".tpl", $vars);
+        }
+        return $this->render("box.tpl", $vars, $module);
     }
-    
+
     /**
      * Renders the insides of a dialog.
      * 
@@ -138,9 +134,9 @@
      * @param string $module the name of the module requesting to render a template
      * @return string rendered dialog
      */
-    function renderDialog($vars, $module="")
+    function renderDialog($vars, $module = "")
     {
-      return $this->render("dialog.tpl", $vars, $module);
+        return $this->render("dialog.tpl", $vars, $module);
     }
 
     /**
@@ -150,14 +146,13 @@
      * @param string $module the name of the module requesting to render a template
      * @return String the rendered template
      */
-    function renderTabs($vars, $module="")
+    function renderTabs($vars, $module = "")
     {
-      if ($this->m_theme->getAttribute("tabtype")=="dhtml")
-      {
-        $page = &atkPage::getInstance();
-        $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");        
-      }
-      return $this->render("tabs.tpl", $vars, $module);
+        if ($this->m_theme->getAttribute("tabtype") == "dhtml") {
+            $page = &atkPage::getInstance();
+            $page->register_script(atkconfig("atkroot") . "atk/javascript/tools.js");
+        }
+        return $this->render("tabs.tpl", $vars, $module);
     }
 
     /**
@@ -173,35 +168,29 @@
      * 
      * @return String rendered template
      */
-    public function render($name, $vars=array(), $module="")
+    public function render($name, $vars = array(), $module = "")
     {
-      $path = $this->templatePath($name, $module);
-      
-      if (substr($path, -4) != '.php' && file_exists($path.'.php'))
-      {
-        $path .= '.php';
-      }
-      
-      if (substr($path, -4) == '.php')
-      {
-        $result = $this->renderPhp($path, $vars);
-      }
-      else
-      {
-        $result = $this->renderSmarty($path, $vars);
-      }
+        $path = $this->templatePath($name, $module);
 
-      if (atkconfig('debug') >= 3)
-      {
-        $result =
-          "\n<!-- START [{$path}] -->\n".
-          $result.      
-          "\n<!-- END [{$path}] -->\n";
-      }
-      
-      return $result;
+        if (substr($path, -4) != '.php' && file_exists($path . '.php')) {
+            $path .= '.php';
+        }
+
+        if (substr($path, -4) == '.php') {
+            $result = $this->renderPhp($path, $vars);
+        } else {
+            $result = $this->renderSmarty($path, $vars);
+        }
+
+        if (atkconfig('debug') >= 3) {
+            $result = "\n<!-- START [{$path}] -->\n" .
+                $result .
+                "\n<!-- END [{$path}] -->\n";
+        }
+
+        return $result;
     }
-    
+
     /**
      * Render PHP-based template.
      * 
@@ -212,11 +201,11 @@
      */
     private function renderPhp($path, $vars)
     {
-      atkimport('atk.ui.atkphpview');
-      $view = new atkPHPView($path, $vars);
-      return (string)$view;
+        atkimport('atk.ui.atkphpview');
+        $view = new atkPHPView($path, $vars);
+        return (string) $view;
     }
-    
+
     /**
      * Render Smarty-based template.
      * 
@@ -227,32 +216,32 @@
      */
     private function renderSmarty($path, $vars)
     {
-      // First clear any existing smarty var.
-      $this->m_smarty->clear_all_assign();
+        // First clear any existing smarty var.
+        $this->m_smarty->clear_all_assign();
 
-      // Then set some defaults that we need in all templates.
-      $this->m_smarty->assign("themedir", $this->m_theme->themeDir());
+        // Then set some defaults that we need in all templates.
+        $this->m_smarty->assign("themedir", $this->m_theme->themeDir());
 
-      $this->m_smarty->assign("atkroot", atkconfig("atkroot"));
-      $this->m_smarty->assign("application_dir", atkconfig("application_dir"));
+        $this->m_smarty->assign("atkroot", atkconfig("atkroot"));
+        $this->m_smarty->assign("application_dir", atkconfig("application_dir"));
 
-      $this->m_smarty->assign($vars);
+        $this->m_smarty->assign($vars);
 
-      // Smarty fetches templates relative from the template_dir setting.
-      // Since that is an application directory, and themes reside in
-      // a different directory, we have to hack the template_dir
-      // setting.
-      $old = $this->m_smarty->template_dir;
+        // Smarty fetches templates relative from the template_dir setting.
+        // Since that is an application directory, and themes reside in
+        // a different directory, we have to hack the template_dir
+        // setting.
+        $old = $this->m_smarty->template_dir;
 
-      // disable smarty caching for ui purposes.
-      $old_caching = $this->m_smarty->caching;
-      $this->m_smarty->caching = false;
-      $this->m_smarty->template_dir = "./"; // current dir, because tplname already contains full relative path.
-      $res = &$this->m_smarty->fetch($path);
-      $this->m_smarty->template_dir = $old;
-      $this->m_smarty->caching = $old_caching;
+        // disable smarty caching for ui purposes.
+        $old_caching = $this->m_smarty->caching;
+        $this->m_smarty->caching = false;
+        $this->m_smarty->template_dir = "./"; // current dir, because tplname already contains full relative path.
+        $res = &$this->m_smarty->fetch($path);
+        $this->m_smarty->template_dir = $old;
+        $this->m_smarty->caching = $old_caching;
 
-      return $res;
+        return $res;
     }
 
     /**
@@ -267,15 +256,14 @@
      * @param String $module    The name of the module requesting to render a template
      * @return String the template path
      */
-    function templatePath($template, $module="")
+    function templatePath($template, $module = "")
     {
-      if (strpos($template, "/")===false)
-      {
-        // lookup template in theme.
-        $template = $this->m_theme->tplPath($template, $module);
-      }
+        if (strpos($template, "/") === false) {
+            // lookup template in theme.
+            $template = $this->m_theme->tplPath($template, $module);
+        }
 
-      return $template;
+        return $template;
     }
 
     /**
@@ -288,11 +276,11 @@
      * @param String $module  the name of the module requesting the style path
      * @return String the path of the style
      */
-    function stylePath($style, $module="")
+    function stylePath($style, $module = "")
     {
-      return $this->m_theme->stylePath($style, $module);
+        return $this->m_theme->stylePath($style, $module);
     }
-    
+
     /**
      * Return the title to render
      *
@@ -303,10 +291,11 @@
      *                          if we couldn't find a specific title
      * @return String the title for the action
      */
-    function title($module, $nodetype, $action=null, $actiononly=false)
+    function title($module, $nodetype, $action = null, $actiononly = false)
     {
-      if ($module == NULL || $nodetype == NULL) return "";
-      return $this->nodeTitle(atkGetNode($module.'.'.$nodetype), $action, $actiononly);
+        if ($module == NULL || $nodetype == NULL)
+            return "";
+        return $this->nodeTitle(atkGetNode($module . '.' . $nodetype), $action, $actiononly);
     }
 
     /**
@@ -319,51 +308,44 @@
      *                          if we couldn't find a specific title
      * @return String the title for the action
      */
-    function nodeTitle($node, $action=NULL, $actiononly=false)
+    function nodeTitle($node, $action = NULL, $actiononly = false)
     {
-      if ($node == NULL) return "";
+        if ($node == NULL)
+            return "";
 
-      $nodetype = $node->m_type;
-      $module = $node->m_module;
-      
-      if ($action != NULL)
-      {
-        $keys = array('title_'.$module.'_'.$nodetype.'_'.$action,
-                      'title_'.$nodetype.'_'.$action,
-                      'title_'.$action);
+        $nodetype = $node->m_type;
+        $module = $node->m_module;
 
-        $label = $node->text($keys, NULL, "", "", true);
-      }
-      else
-      {
-        $label = "";
-      }
+        if ($action != NULL) {
+            $keys = array('title_' . $module . '_' . $nodetype . '_' . $action,
+                'title_' . $nodetype . '_' . $action,
+                'title_' . $action);
 
-      if ($label=="")
-      {
-        $actionKeys = array(
-          'action_'.$module.'_'.$nodetype.'_'.$action,
-          'action_'.$nodetype.'_'.$action,
-          'action_'.$action,
-          $action
-        );
-        
-        if ($actiononly)
-        {
-          return $node->text($actionKeys);
+            $label = $node->text($keys, NULL, "", "", true);
+        } else {
+            $label = "";
         }
-        else
-        {
-          $keys = array('title_'.$module.'_'.$nodetype, 'title_'.$nodetype, $nodetype);
-          $label = $node->text($keys);
-          if ($action != NULL)
-            $label .= " - ".$node->text($actionKeys);
+
+        if ($label == "") {
+            $actionKeys = array(
+                'action_' . $module . '_' . $nodetype . '_' . $action,
+                'action_' . $nodetype . '_' . $action,
+                'action_' . $action,
+                $action
+            );
+
+            if ($actiononly) {
+                return $node->text($actionKeys);
+            } else {
+                $keys = array('title_' . $module . '_' . $nodetype, 'title_' . $nodetype, $nodetype);
+                $label = $node->text($keys);
+                if ($action != NULL)
+                    $label .= " - " . $node->text($actionKeys);
+            }
         }
-      }
-      return $label;
+        return $label;
     }
-    
-    
+
     /**
      * This function returns a suitable title text for an Wizardpanel.
      * Example: echo $ui->title("departmentwizard", "employee", "add"); might return:
@@ -373,30 +355,33 @@
      * @param String $action the atk action that we are trying execute in the panel
      * @return String the title for this wizardpanel
      */
-    function getWizardTitle($wizard, $panel, $action=NULL)
+    function getWizardTitle($wizard, $panel, $action = NULL)
     {
-      if ($wizard == NULL) return "";
-                            
-      $module = $wizard->getModuleName();
-      $wizardName = $wizard->getName();
-      $panelName = $panel->getPanelName();
-      
-      $keys = array('title_'.$module.'_'.$wizardName,
-                      'title_'.$wizardName);
-      $wizardTitle = atktext($keys, NULL, "", "", true);
-      
-      $keys = array('title_'.$module.'_'.$panelName.'_'.$action,
-                      'title_'.$panelName.'_'.$action);
+        if ($wizard == NULL)
+            return "";
 
-      $panelTitle = atktext($keys, NULL, "", "", true);
+        $module = $wizard->getModuleName();
+        $wizardName = $wizard->getName();
+        $panelName = $panel->getPanelName();
 
-      if($wizard->getWizardAction() !== 'finish')
-        $status = atktext("Step"). " " .($wizard->m_currentPanelIndex + 1) . " " . atktext("of"). " " . count($wizard->m_panelList);
-      else
-        $status = atktext("finished");
-      $label .= $wizardTitle . " - " . $panelTitle . " - " . $status;
-                                  
-      return $label;
+        $keys = array('title_' . $module . '_' . $wizardName,
+            'title_' . $wizardName);
+        $wizardTitle = atktext($keys, NULL, "", "", true);
+
+        $keys = array('title_' . $module . '_' . $panelName . '_' . $action,
+            'title_' . $panelName . '_' . $action);
+
+        $panelTitle = atktext($keys, NULL, "", "", true);
+
+        if ($wizard->getWizardAction() !== 'finish')
+            $status = atktext("Step") . " " . ($wizard->m_currentPanelIndex + 1) . " " . atktext("of") . " " . count($wizard->m_panelList);
+        else
+            $status = atktext("finished");
+        $label .= $wizardTitle . " - " . $panelTitle . " - " . $status;
+
+        return $label;
     }
-  }
+
+}
+
 ?>

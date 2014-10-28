@@ -1,32 +1,33 @@
 <?php
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage security
-   *
-   * @copyright (c)2000-2004 Ivo Jansch
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6280 $
-   * $Id$
-   */
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage security
+ *
+ * @copyright (c)2000-2004 Ivo Jansch
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6280 $
+ * $Id$
+ */
 
-  /**
-   * Dummy driver for non-authentication. When using 'none' as authentication
-   * method, any loginname and any password will be accepted.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage security
-   *
-   */
-   class auth_none extends auth_interface
-   {
-     /**
+/**
+ * Dummy driver for non-authentication. When using 'none' as authentication
+ * method, any loginname and any password will be accepted.
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @package atk
+ * @subpackage security
+ *
+ */
+class auth_none extends auth_interface
+{
+
+    /**
      * Authenticate a user. 
      *
      * @param String $user The login of the user to authenticate.
@@ -45,24 +46,25 @@
      *                          this value, you *must* also 
      *                          fill the m_fatalError variable.
      */
-     function validateUser($user, $passwd)
-     {
-       if ($user == "")
-        return AUTH_SUCCESS;
-       else
-        return AUTH_MISMATCH;
-     }
+    function validateUser($user, $passwd)
+    {
+        if ($user == "")
+            return AUTH_SUCCESS;
+        else
+            return AUTH_MISMATCH;
+    }
 
-     /**
+    /**
      * This authentication method does not support md5 storage of passwords
      * since this method is not using passwords
      *
      * @return boolean false
-     */ 
-     function canMd5()
-     {
-       return false;
-     }
-   }
+     */
+    function canMd5()
+    {
+        return false;
+    }
+
+}
 
 ?>

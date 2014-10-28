@@ -1,36 +1,35 @@
 <?php
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage front
-   *
-   * @copyright (c)2007 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6323 $
-   * $Id$
-   */
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage front
+ *
+ * @copyright (c)2007 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6323 $
+ * $Id$
+ */
+/**
+ * Imports
+ * @access private
+ */
+atkimport('atk.utils.atkdataholder');
 
-  /**
-   * Imports
-   * @access private
-   */
-  atkimport('atk.utils.atkdataholder');
-
-  /**
-   * FrontEnd Controller base class.
-   *
-   * @author Martin Roest <martin@ibuildings.nl>
-   * @author Peter C. Verhage <peter@ibuildings.nl>
-   * @package atk
-   * @subpackage front
-   */
-  class atkFrontController implements ArrayAccess
-  {
+/**
+ * FrontEnd Controller base class.
+ *
+ * @author Martin Roest <martin@ibuildings.nl>
+ * @author Peter C. Verhage <peter@ibuildings.nl>
+ * @package atk
+ * @subpackage front
+ */
+class atkFrontController implements ArrayAccess
+{
     private static $s_current = null;
     private static $s_bridges = array();
 
@@ -38,32 +37,23 @@
      * @var atkFrontControllerBridge
      */
     protected $m_bridge;
-
     protected $m_module;
     protected $m_name;
     protected $m_action;
     protected $m_parent;
-
     protected $m_request;
     protected $m_session;
-
     protected $m_vars = array();
     protected $m_template = "";
-
     protected $m_plugins = NULL;
-
     protected $m_partial = false;
     protected $m_result = "";
     protected $m_rendered = false;
-
     protected $m_headers = array();
     protected $m_contentType;
-
     protected $m_cacheableActions = array();
-
     protected $m_styleSheets = array();
     protected $m_styleCodes = array();
-
     protected $m_scriptFiles = array();
     protected $m_scriptCodes = array();
 
@@ -78,43 +68,40 @@
      *
      * @return string controller result
      */
-    public static function dispatchRequest($vars=array(), $merge=true)
+    public static function dispatchRequest($vars = array(), $merge = true)
     {
-      $parent = self::getCurrent();
+        $parent = self::getCurrent();
 
-      // UriParam can be used to change the default key value of the uri in url's and forms.
-      // This is useful to have multiple controllers on one page.
-      $uriParam = (isset($vars['uri_param'])) ? $vars['uri_param'] : "uri";
+        // UriParam can be used to change the default key value of the uri in url's and forms.
+        // This is useful to have multiple controllers on one page.
+        $uriParam = (isset($vars['uri_param'])) ? $vars['uri_param'] : "uri";
 
-      // If this is the root controller we first look if a request variable named URI
-      // is set, if so we use this URI, else we fallback to the custom (default) URI. If
-      // this is a nested controller, we should always respect the custom given URI.
-      $uri = $parent == null && isset($_REQUEST[$uriParam]) ? $_REQUEST[$uriParam] : $vars[$uriParam];
+        // If this is the root controller we first look if a request variable named URI
+        // is set, if so we use this URI, else we fallback to the custom (default) URI. If
+        // this is a nested controller, we should always respect the custom given URI.
+        $uri = $parent == null && isset($_REQUEST[$uriParam]) ? $_REQUEST[$uriParam]
+                : $vars[$uriParam];
 
-      if ($merge)
-      {
-        if (is_object($parent))
-        {
-          $request = $parent->getRequest()->toArray();
+        if ($merge) {
+            if (is_object($parent)) {
+                $request = $parent->getRequest()->toArray();
+            } else {
+                $request = $_REQUEST;
+                unset($request['uri_param']);
+            }
+
+            $vars = array_merge($request, $vars);
         }
-        else
-        {
-          $request = $_REQUEST;
-          unset($request['uri_param']);
-        }
 
-        $vars = array_merge($request, $vars);
-      }
+        // Always set the URI to the real URI.
+        $vars['uri'] = $uri;
 
-      // Always set the URI to the real URI.
-      $vars['uri'] = $uri;
+        $controller = self::create($uri, $parent);
+        self::setCurrent($controller);
+        $result = $controller->handleRequest($vars);
+        self::setCurrent($parent);
 
-      $controller = self::create($uri, $parent);
-      self::setCurrent($controller);
-      $result = $controller->handleRequest($vars);
-      self::setCurrent($parent);
-
-      return $result;
+        return $result;
     }
 
     /**
@@ -126,10 +113,10 @@
      */
     protected static function uriParts($uri)
     {
-      if ($uri{0} == '/')
-        $uri = substr($uri, 1);
+        if ($uri{0} == '/')
+            $uri = substr($uri, 1);
 
-      return explode('/', $uri);
+        return explode('/', $uri);
     }
 
     /**
@@ -139,24 +126,21 @@
      * @param atkFrontController $parent parent controller
      * @return atkFrontController the controller
      */
-    protected static function create($uri, $parent=NULL)
+    protected static function create($uri, $parent = NULL)
     {
-      list($module, $name, $action) = self::uriParts($uri);
+        list($module, $name, $action) = self::uriParts($uri);
 
-      if ($action == NULL)
-        $action = 'index';
+        if ($action == NULL)
+            $action = 'index';
 
-      $importPath = "module.{$module}.controllers.{$name}controller";
-      if (atkimport($importPath))
-      {
-        atkdebug('Create '.$importPath.' controller instance');
-        $class = "{$name}controller";
-        return new $class($module, $name, $action, $parent);
-      }
-      else
-      {
-        throw new Exception("Can't find controller for: '$uri' expecting '$importPath'");
-      }
+        $importPath = "module.{$module}.controllers.{$name}controller";
+        if (atkimport($importPath)) {
+            atkdebug('Create ' . $importPath . ' controller instance');
+            $class = "{$name}controller";
+            return new $class($module, $name, $action, $parent);
+        } else {
+            throw new Exception("Can't find controller for: '$uri' expecting '$importPath'");
+        }
     }
 
     /**
@@ -167,7 +151,7 @@
      */
     protected static function getCurrent()
     {
-      return self::$s_current;
+        return self::$s_current;
     }
 
     /**
@@ -177,7 +161,7 @@
      */
     protected static function setCurrent($controller)
     {
-      self::$s_current = $controller;
+        self::$s_current = $controller;
     }
 
     /**
@@ -188,15 +172,14 @@
      */
     protected static function createBridge()
     {
-      $class = atkconfig("frontcontroller_bridge", "atk.front.atkfrontcontrollerbridge");
+        $class = atkconfig("frontcontroller_bridge", "atk.front.atkfrontcontrollerbridge");
 
-      if (!isset(self::$s_bridges[$class]))
-      {
-        atkdebug('Create '.$class.' bridge instance');
-        self::$s_bridges[$class] = atknew($class);
-      }
+        if (!isset(self::$s_bridges[$class])) {
+            atkdebug('Create ' . $class . ' bridge instance');
+            self::$s_bridges[$class] = atknew($class);
+        }
 
-      return self::$s_bridges[$class];
+        return self::$s_bridges[$class];
     }
 
     /**
@@ -209,24 +192,20 @@
      */
     protected function __construct($module, $name, $action, $parent = NULL)
     {
-      $this->m_module = $module;
-      $this->m_name = $name;
-      $this->m_action = $action;
-      $this->m_parent = $parent;
+        $this->m_module = $module;
+        $this->m_name = $name;
+        $this->m_action = $action;
+        $this->m_parent = $parent;
 
-      if (isset($this->cacheableActions))
-      {
-        $this->m_cacheableActions = $this->cacheableActions;
-      }
+        if (isset($this->cacheableActions)) {
+            $this->m_cacheableActions = $this->cacheableActions;
+        }
 
-      if ($parent !== null)
-      {
-        $this->m_bridge = $parent->m_bridge;
-      }
-      else
-      {
-        $this->m_bridge = self::createBridge();
-      }
+        if ($parent !== null) {
+            $this->m_bridge = $parent->m_bridge;
+        } else {
+            $this->m_bridge = self::createBridge();
+        }
     }
 
     /**
@@ -236,7 +215,7 @@
      */
     protected function getParent()
     {
-      return $this->m_parent;
+        return $this->m_parent;
     }
 
     /**
@@ -246,7 +225,7 @@
      */
     protected function isRoot()
     {
-      return $this->getParent() == NULL;
+        return $this->getParent() == NULL;
     }
 
     /**
@@ -256,8 +235,10 @@
      */
     protected function getRoot()
     {
-      if ($this->isRoot()) return $this;
-      else return $this->getParent()->getRoot();
+        if ($this->isRoot())
+            return $this;
+        else
+            return $this->getParent()->getRoot();
     }
 
     /**
@@ -267,7 +248,7 @@
      */
     protected function getRequest()
     {
-      return $this->m_request;
+        return $this->m_request;
     }
 
     /**
@@ -277,7 +258,7 @@
      */
     protected function getSession()
     {
-      return $this->m_session;
+        return $this->m_session;
     }
 
     /**
@@ -287,7 +268,7 @@
      */
     protected function getname()
     {
-      return $this->m_name;
+        return $this->m_name;
     }
 
     /**
@@ -297,7 +278,7 @@
      */
     protected function getModule()
     {
-      return $this->m_module;
+        return $this->m_module;
     }
 
     /**
@@ -307,7 +288,7 @@
      */
     protected function getAction()
     {
-      return $this->m_action;
+        return $this->m_action;
     }
 
     /**
@@ -319,7 +300,7 @@
      */
     protected function addHeader($header)
     {
-      $this->m_headers[] = $header;
+        $this->m_headers[] = $header;
     }
 
     /**
@@ -331,7 +312,7 @@
      */
     protected function setContentType($contentType)
     {
-      $this->m_contentType = $contentType;
+        $this->m_contentType = $contentType;
     }
 
     /**
@@ -342,9 +323,9 @@
      */
     protected function setCacheableActions($actions)
     {
-      if (!is_array($actions))
-        $actions = func_get_args();
-      $this->m_cacheableActions = $actions;
+        if (!is_array($actions))
+            $actions = func_get_args();
+        $this->m_cacheableActions = $actions;
     }
 
     /**
@@ -352,7 +333,7 @@
      */
     protected function getActionCacheKey()
     {
-      return '';
+        return '';
     }
 
     /**
@@ -362,11 +343,11 @@
      */
     protected function getActionCacheFile()
     {
-      atkimport('atk.utils.atktmpfile');
-      $path = 'frontcontrollers/'.$this->m_module.'/'.$this->m_name.'/'.$this->m_action;
-      $filename = md5($this->getActionCacheKey()).'.cache';
-      $file = new atkTmpFile($path.'/'.$filename);
-      return $file;
+        atkimport('atk.utils.atktmpfile');
+        $path = 'frontcontrollers/' . $this->m_module . '/' . $this->m_name . '/' . $this->m_action;
+        $filename = md5($this->getActionCacheKey()) . '.cache';
+        $file = new atkTmpFile($path . '/' . $filename);
+        return $file;
     }
 
     /**
@@ -374,11 +355,12 @@
      */
     protected function isActionCached()
     {
-      // action is never cached
-      if (!in_array($this->m_action, $this->m_cacheableActions)) return false;
+        // action is never cached
+        if (!in_array($this->m_action, $this->m_cacheableActions))
+            return false;
 
-      $file = $this->getActionCacheFile();
-      return $file->exists();
+        $file = $this->getActionCacheFile();
+        return $file->exists();
     }
 
     /**
@@ -386,16 +368,16 @@
      */
     protected function loadFromActionCache()
     {
-      $file = $this->getActionCacheFile();
+        $file = $this->getActionCacheFile();
 
-      include($file->getPath());
+        include($file->getPath());
 
-      $this->m_result      = $data['result'];
-      $this->m_headers     = $data['headers'];
-      $this->m_styleSheets = $data['styleSheets'];
-      $this->m_styleCodes  = $data['styleCodes'];
-      $this->m_scriptFiles = $data['scriptFiles'];
-      $this->m_scriptCodes = $data['scriptCodes'];
+        $this->m_result = $data['result'];
+        $this->m_headers = $data['headers'];
+        $this->m_styleSheets = $data['styleSheets'];
+        $this->m_styleCodes = $data['styleCodes'];
+        $this->m_scriptFiles = $data['scriptFiles'];
+        $this->m_scriptCodes = $data['scriptCodes'];
     }
 
     /**
@@ -403,21 +385,22 @@
      */
     protected function storeInActionCache()
     {
-      // action is never cached
-      if (!in_array($this->m_action, $this->m_cacheableActions)) return;
+        // action is never cached
+        if (!in_array($this->m_action, $this->m_cacheableActions))
+            return;
 
-      $data = array(
-        'result'      => $this->m_result,
-        'headers'     => $this->m_headers,
-        'styleSheets' => $this->m_styleSheets,
-        'styleCodes'  => $this->m_styleCodes,
-        'scriptFiles' => $this->m_scriptFiles,
-        'scriptCodes' => $this->m_scriptCodes
-      );
+        $data = array(
+            'result' => $this->m_result,
+            'headers' => $this->m_headers,
+            'styleSheets' => $this->m_styleSheets,
+            'styleCodes' => $this->m_styleCodes,
+            'scriptFiles' => $this->m_scriptFiles,
+            'scriptCodes' => $this->m_scriptCodes
+        );
 
-      $file = $this->getActionCacheFile();
-      $file->writeAsPhp('data', $data);
-      $file->close();
+        $file = $this->getActionCacheFile();
+        $file->writeAsPhp('data', $data);
+        $file->close();
     }
 
     /**
@@ -425,100 +408,89 @@
      */
     protected function registerStylesAndScripts()
     {
-      foreach ($this->m_styleSheets as $entry)
-        $this->m_bridge->registerStyleSheet($entry['file'], $entry['media']);
-      foreach ($this->m_styleCodes as $entry)
-        $this->m_bridge->registerStyleCode($entry['code']);
-      foreach ($this->m_scriptFiles as $entry)
-        $this->m_bridge->registerScriptFile($entry['file']);
-      foreach ($this->m_scriptCodes as $entry)
-        $this->m_bridge->registerScriptCode($entry['code']);
+        foreach ($this->m_styleSheets as $entry)
+            $this->m_bridge->registerStyleSheet($entry['file'], $entry['media']);
+        foreach ($this->m_styleCodes as $entry)
+            $this->m_bridge->registerStyleCode($entry['code']);
+        foreach ($this->m_scriptFiles as $entry)
+            $this->m_bridge->registerScriptFile($entry['file']);
+        foreach ($this->m_scriptCodes as $entry)
+            $this->m_bridge->registerScriptCode($entry['code']);
     }
 
     /**
-    * Handle action.
-    *
-    * @param array $request request variables
-    *
-    * @return result of action
-    */
+     * Handle action.
+     *
+     * @param array $request request variables
+     *
+     * @return result of action
+     */
     protected function handleRequest($request)
     {
-      try
-      {
-        $this->setTemplate($this->m_action);
+        try {
+            $this->setTemplate($this->m_action);
 
-        $this->m_request = new atkDataHolder($request);
-        $this->m_session = $this->loadSession();
+            $this->m_request = new atkDataHolder($request);
+            $this->m_session = $this->loadSession();
 
-        $this->module =   $this->m_module;
-        $this->name =     $this->m_name;
-        $this->action =   $this->m_action;
-        $this->request =  $this->m_request;
-        $this->session =  $this->m_session;
+            $this->module = $this->m_module;
+            $this->name = $this->m_name;
+            $this->action = $this->m_action;
+            $this->request = $this->m_request;
+            $this->session = $this->m_session;
 
-        $this->init();
+            $this->init();
 
-        $this->preFilter();
+            $this->preFilter();
 
-        if ($this->isActionCached())
-        {
-          $this->loadFromActionCache();
+            if ($this->isActionCached()) {
+                $this->loadFromActionCache();
+            } else {
+                $this->installPlugins();
+
+                try {
+                    $method = $this->getActionMethod();
+                } catch (Exception $ex) {
+                    throw new Exception("Invalid action {$this->m_action} for controller {$this->m_module}/{$this->m_name}! (" . $ex->getMessage() . ")");
+                }
+
+                $method->invoke($this);
+
+                $this->render();
+
+                $this->storeInActionCache();
+
+                $this->uninstallPlugins();
+            }
+
+            // register styles and scripts in bridge
+            $this->registerStylesAndScripts();
+
+            $this->postFilter();
+
+            if ($this->m_partial && $this->isRoot()) {
+                while (@ob_end_clean());
+
+                foreach ($this->m_headers as $header)
+                    header($header);
+
+                if (isset($this->m_contentType))
+                    header('Content-Type: ' . $this->m_contentType);
+
+                echo $this->m_result;
+
+                if (!isset($this->m_contentType) || $this->m_contentType == 'text/html') {
+                    atkimport("atk.utils.atkdebugger");
+                    echo atkDebugger::getInstance()->renderDebugAndErrorMessages();
+                }
+                die;
+            }
+        } catch (Exception $ex) {
+            $this->uninstallPlugins();
+            $this->handleException($ex);
         }
-        else
-        {
-          $this->installPlugins();
 
-          try
-          {
-            $method = $this->getActionMethod();
-          }
-          catch (Exception $ex)
-          {
-            throw new Exception("Invalid action {$this->m_action} for controller {$this->m_module}/{$this->m_name}! (".$ex->getMessage().")");
-          }
-
-          $method->invoke($this);
-
-          $this->render();
-
-          $this->storeInActionCache();
-
-          $this->uninstallPlugins();
-        }
-
-        // register styles and scripts in bridge
-        $this->registerStylesAndScripts();
-
-        $this->postFilter();
-
-        if ($this->m_partial && $this->isRoot())
-        {
-          while (@ob_end_clean());
-
-          foreach ($this->m_headers as $header)
-            header($header);
-
-          if (isset($this->m_contentType))
-            header('Content-Type: '.$this->m_contentType);
-
-          echo $this->m_result;
-
-          if (!isset($this->m_contentType) || $this->m_contentType == 'text/html')
-          {
-             atkimport("atk.utils.atkdebugger");
-            echo atkDebugger::getInstance()->renderDebugAndErrorMessages();
-          }
-          die;
-        }
-      }
-      catch (Exception $ex)
-      {
-        $this->uninstallPlugins();
-        $this->handleException($ex);
-      }
-
-      return $this->m_result;
+        return $this->m_result;
     }
 
     /**
@@ -528,15 +500,15 @@
      */
     protected function getActionMethod()
     {
-      $methodname = str_replace('_', '', $this->m_action).'Action';
-      if (!method_exists($this, $methodname))
-        throw new Exception("Action method not found!");
+        $methodname = str_replace('_', '', $this->m_action) . 'Action';
+        if (!method_exists($this, $methodname))
+            throw new Exception("Action method not found!");
 
-      $method = new ReflectionMethod(get_class($this), $methodname);
-      if (!$method->isPublic())
-        throw new Exception("Action method is not public!");
+        $method = new ReflectionMethod(get_class($this), $methodname);
+        if (!$method->isPublic())
+            throw new Exception("Action method is not public!");
 
-      return $method;
+        return $method;
     }
 
     /**
@@ -544,14 +516,18 @@
      * to the right method.
      */
     protected function preFilter()
-    {}
+    {
+        
+    }
 
     /**
      * Init will be called just after preFilter and just before
      * the request is dispatched to the right method.
      */
     protected function init()
-    {}
+    {
+        
+    }
 
     /**
      * Will be called just after the request has been dispatched
@@ -559,7 +535,9 @@
      * the result is returned or outputted.
      */
     protected function postFilter()
-    {}
+    {
+        
+    }
 
     /**
      * Handle exception.
@@ -568,15 +546,12 @@
      */
     protected function handleException($exception)
     {
-      if ($this->isRoot())
-      {
-        atkerror($exception->__toString());
-        $this->renderContent('An unknown error occured.');
-      }
-      else
-      {
-        throw $exception;
-      }
+        if ($this->isRoot()) {
+            atkerror($exception->__toString());
+            $this->renderContent('An unknown error occured.');
+        } else {
+            throw $exception;
+        }
     }
 
     /**
@@ -584,7 +559,7 @@
      */
     protected function loadSession()
     {
-      return new atkDataHolder($_SESSION);
+        return new atkDataHolder($_SESSION);
     }
 
     /**
@@ -592,13 +567,13 @@
      */
     protected function installPlugins()
     {
-      /* @var $smarty Smarty */
-      $smarty = atkinstance("atk.ui.atksmarty");
-      $this->m_plugins = $smarty->_plugins;
-      $smarty->register_function('_partial', array($this, 'partialFunctionTag'), false);
-      $smarty->register_function('_url', array($this, 'urlFunctionTag'), false);
-      $smarty->register_function('_form_vars', array($this, 'formVarsFunctionTag'), false);
-      $smarty->register_block('_link', array($this, 'linkBlockTag'), false);
+        /* @var $smarty Smarty */
+        $smarty = atkinstance("atk.ui.atksmarty");
+        $this->m_plugins = $smarty->_plugins;
+        $smarty->register_function('_partial', array($this, 'partialFunctionTag'), false);
+        $smarty->register_function('_url', array($this, 'urlFunctionTag'), false);
+        $smarty->register_function('_form_vars', array($this, 'formVarsFunctionTag'), false);
+        $smarty->register_block('_link', array($this, 'linkBlockTag'), false);
     }
 
     /**
@@ -606,10 +581,11 @@
      */
     protected function uninstallPlugins()
     {
-      if ($this->m_plugins == NULL) return;
-      $smarty = atkinstance("atk.ui.atksmarty");
-      $smarty->_plugins = $this->m_plugins;
-      $this->m_plugins = NULL;
+        if ($this->m_plugins == NULL)
+            return;
+        $smarty = atkinstance("atk.ui.atksmarty");
+        $smarty->_plugins = $this->m_plugins;
+        $this->m_plugins = NULL;
     }
 
     /**
@@ -619,7 +595,7 @@
      */
     protected function getTemplate()
     {
-      return $this->m_template;
+        return $this->m_template;
     }
 
     /**
@@ -629,7 +605,7 @@
      */
     protected function setTemplate($template)
     {
-      $this->m_template = $template;
+        $this->m_template = $template;
     }
 
     /**
@@ -639,7 +615,7 @@
      */
     protected function getVars()
     {
-      return $this->m_vars;
+        return $this->m_vars;
     }
 
     /**
@@ -649,7 +625,7 @@
      */
     public function __isset($name)
     {
-      return isset($this->m_vars[$name]);
+        return isset($this->m_vars[$name]);
     }
 
     /**
@@ -660,7 +636,7 @@
      */
     public function __set($name, $value)
     {
-      $this->m_vars[$name] = $value;
+        $this->m_vars[$name] = $value;
     }
 
     /**
@@ -671,7 +647,7 @@
      */
     public function &__get($name)
     {
-      return $this->m_vars[$name];
+        return $this->m_vars[$name];
     }
 
     /**
@@ -682,7 +658,7 @@
      */
     public function offsetExists($offset)
     {
-      return isset($this->m_vars[$offset]);
+        return isset($this->m_vars[$offset]);
     }
 
     /**
@@ -693,7 +669,7 @@
      */
     public function offsetGet($offset)
     {
-      return $this->m_vars[$offset];
+        return $this->m_vars[$offset];
     }
 
     /**
@@ -704,7 +680,7 @@
      */
     public function offsetSet($offset, $value)
     {
-      $this->m_vars[$offset] = $value;
+        $this->m_vars[$offset] = $value;
     }
 
     /**
@@ -714,7 +690,7 @@
      */
     public function offsetUnset($offset)
     {
-      unset($this->m_vars[$offset]);
+        unset($this->m_vars[$offset]);
     }
 
     /**
@@ -726,33 +702,27 @@
      */
     protected function uri($controller, $action)
     {
-      if ($this->isRoot())
-      {
-        $controller = str_replace('.', '/', $controller);
+        if ($this->isRoot()) {
+            $controller = str_replace('.', '/', $controller);
 
-        if ($controller != NULL && strpos($controller, '/') === FALSE)
-        {
-          $controller = "{$this->m_module}/{$controller}";
+            if ($controller != NULL && strpos($controller, '/') === FALSE) {
+                $controller = "{$this->m_module}/{$controller}";
+            }
+
+            if ($controller == NULL || $controller == "{$this->m_module}/{$this->m_name}") {
+                $controller = "{$this->m_module}/{$this->m_name}";
+
+                if ($action == NULL)
+                    $action = $this->m_action;
+            }
+            else if ($action == NULL) {
+                $action = 'index';
+            }
+
+            return '/' . $controller . '/' . $action;
+        } else {
+            return $this->getParent()->uri($controller, $action);
         }
-
-        if ($controller == NULL || $controller == "{$this->m_module}/{$this->m_name}")
-        {
-          $controller = "{$this->m_module}/{$this->m_name}";
-
-          if ($action == NULL)
-            $action = $this->m_action;
-        }
-        else if ($action == NULL)
-        {
-          $action = 'index';
-        }
-
-        return '/'.$controller.'/'.$action;
-      }
-      else
-      {
-        return $this->getParent()->uri($controller, $action);
-      }
     }
 
     /**
@@ -764,8 +734,8 @@
      */
     protected function buildUrl($uri, $vars)
     {
-      $vars[$this->getUriParam()] = $uri;
-      return $this->m_bridge->buildUrl($vars);
+        $vars[$this->getUriParam()] = $uri;
+        return $this->m_bridge->buildUrl($vars);
     }
 
     /**
@@ -776,7 +746,7 @@
      */
     protected function getUriParam()
     {
-      return isset($this->request->uri_param) ? $this->request->uri_param : 'uri';
+        return isset($this->request->uri_param) ? $this->request->uri_param : 'uri';
     }
 
     /**
@@ -787,10 +757,10 @@
      * @param array $vars request vars
      * @return string url
      */
-    protected function url($controller=NULL, $action=NULL, $vars=array())
+    protected function url($controller = NULL, $action = NULL, $vars = array())
     {
-      $uri = $this->uri($controller, $action);
-      return $this->buildUrl($uri, $vars);
+        $uri = $this->uri($controller, $action);
+        return $this->buildUrl($uri, $vars);
     }
 
     /**
@@ -802,17 +772,17 @@
      */
     public function urlFunctionTag($params, $smarty)
     {
-      $controller = isset($params['controller']) ? $params['controller'] : NULL;
-      $action = isset($params['action']) ? $params['action'] : NULL;
-      $vars = isset($params['vars']) ? $params['vars'] : array();
+        $controller = isset($params['controller']) ? $params['controller'] : NULL;
+        $action = isset($params['action']) ? $params['action'] : NULL;
+        $vars = isset($params['vars']) ? $params['vars'] : array();
 
-      unset($params['controller']);
-      unset($params['action']);
-      unset($params['vars']);
+        unset($params['controller']);
+        unset($params['action']);
+        unset($params['vars']);
 
-      $vars = array_merge($vars, $params);
+        $vars = array_merge($vars, $params);
 
-      return $this->url($controller, $action, $vars);
+        return $this->url($controller, $action, $vars);
     }
 
     /**
@@ -825,26 +795,25 @@
      */
     public function formVarsFunctionTag($params, $smarty)
     {
-      $controller = isset($params['controller']) ? $params['controller'] : NULL;
-      $action = isset($params['action']) ? $params['action'] : NULL;
-      $vars = isset($params['vars']) ? $params['vars'] : array();
+        $controller = isset($params['controller']) ? $params['controller'] : NULL;
+        $action = isset($params['action']) ? $params['action'] : NULL;
+        $vars = isset($params['vars']) ? $params['vars'] : array();
 
 
-      unset($params['controller']);
-      unset($params['action']);
-      unset($params['vars']);
+        unset($params['controller']);
+        unset($params['action']);
+        unset($params['vars']);
 
-      $uri = $this->uri($controller, $action);
-      $vars = array_merge($vars, $params, array($this->getUriParam() => $uri));
+        $uri = $this->uri($controller, $action);
+        $vars = array_merge($vars, $params, array($this->getUriParam() => $uri));
 
-      $result = '';
-      foreach ($vars as $name => $value)
-      {
-        $value = atk_htmlentities($value);
-        $result .= "<input type=\"hidden\" name=\"{$name}\" value=\"{$value}\">\n";
-      }
+        $result = '';
+        foreach ($vars as $name => $value) {
+            $value = atk_htmlentities($value);
+            $result .= "<input type=\"hidden\" name=\"{$name}\" value=\"{$value}\">\n";
+        }
 
-      return $result;
+        return $result;
     }
 
     /**
@@ -857,12 +826,11 @@
      */
     public function linkBlockTag($params, $content, $smarty, &$repeat)
     {
-       if (!$repeat)
-      {
-        return '<a href="'.$this->urlFunctionTag($params, $smarty).'">'.$content.'</a>';
-      }
+        if (!$repeat) {
+            return '<a href="' . $this->urlFunctionTag($params, $smarty) . '">' . $content . '</a>';
+        }
 
-      return NULL;
+        return NULL;
     }
 
     /**
@@ -874,9 +842,9 @@
      */
     public function partialFunctionTag($params, $smarty)
     {
-      $template = $params[0];
-      unset($params[0]);
-      return $this->_render($template, $params, true);
+        $template = $params[0];
+        unset($params[0]);
+        return $this->_render($template, $params, true);
     }
 
     /**
@@ -886,7 +854,7 @@
      */
     protected function doRedirect($url)
     {
-      $this->m_bridge->doRedirect($url);
+        $this->m_bridge->doRedirect($url);
     }
 
     /**
@@ -898,41 +866,37 @@
      * @param bool $force Force redirect?
      * @return string url
      */
-    protected function redirect($controller=NULL, $action=NULL, $vars=array(), $force=FALSE)
+    protected function redirect($controller = NULL, $action = NULL, $vars = array(), $force = FALSE)
     {
-      if ($this->isRoot() || $force)
-      {
-        $this->doRedirect($this->url($controller, $action, $vars));
-      }
-      else
-      {
-        $vars['uri'] = $this->uri($controller, $action);
-        $content = self::dispatchRequest($vars, false);
-        $this->renderContent($content);
-      }
+        if ($this->isRoot() || $force) {
+            $this->doRedirect($this->url($controller, $action, $vars));
+        } else {
+            $vars['uri'] = $this->uri($controller, $action);
+            $content = self::dispatchRequest($vars, false);
+            $this->renderContent($content);
+        }
     }
 
     /**
-    * Set locale based on the given language.
-    *
-    * @param string $lng language (ISO code)
-    */
+     * Set locale based on the given language.
+     *
+     * @param string $lng language (ISO code)
+     */
     protected function setLocale($lng)
     {
-      switch (strtoupper($lng))
-      {
-        case "EN":
-          setlocale(LC_ALL, "en_EN");
-          break;
-        case "DE":
-          setlocale(LC_ALL, "de_DE");
-          break;
-        case "FR":
-          setlocale(LC_ALL, "fr_FR");
-          break;
-        default:
-          setlocale(LC_ALL, "nl_NL");
-      }
+        switch (strtoupper($lng)) {
+            case "EN":
+                setlocale(LC_ALL, "en_EN");
+                break;
+            case "DE":
+                setlocale(LC_ALL, "de_DE");
+                break;
+            case "FR":
+                setlocale(LC_ALL, "fr_FR");
+                break;
+            default:
+                setlocale(LC_ALL, "nl_NL");
+        }
     }
 
     /**
@@ -941,12 +905,12 @@
      * @param string $file stylesheet filename
      * @param string $media media type (defaults to 'all')
      */
-    protected function registerStyleSheet($file, $media='all')
+    protected function registerStyleSheet($file, $media = 'all')
     {
-      if (is_object($this->m_parent))
-        $this->m_parent->registerStyleSheet($file,$media);
-      else
-        $this->m_styleSheets[] = array('file' => $file, 'media' => $media);
+        if (is_object($this->m_parent))
+            $this->m_parent->registerStyleSheet($file, $media);
+        else
+            $this->m_styleSheets[] = array('file' => $file, 'media' => $media);
     }
 
     /**
@@ -956,10 +920,10 @@
      */
     protected function registerStyleCode($code)
     {
-      if (is_object($this->m_parent))
-        $this->m_parent->registerStyleCode($code);
-      else
-        $this->m_styleCodes[] = array('code' => $code);
+        if (is_object($this->m_parent))
+            $this->m_parent->registerStyleCode($code);
+        else
+            $this->m_styleCodes[] = array('code' => $code);
     }
 
     /**
@@ -969,10 +933,10 @@
      */
     protected function registerScriptFile($file)
     {
-      if (is_object($this->m_parent))
-        $this->m_parent->registerScriptFile($file);
-      else
-        $this->m_scriptFiles[] = array('file' => $file);
+        if (is_object($this->m_parent))
+            $this->m_parent->registerScriptFile($file);
+        else
+            $this->m_scriptFiles[] = array('file' => $file);
     }
 
     /**
@@ -982,10 +946,10 @@
      */
     protected function registerScriptCode($code)
     {
-      if (is_object($this->m_parent))
-        $this->m_parent->registerScriptCode($code);
-      else
-        $this->m_scriptCodes[] = array('code' => $code);
+        if (is_object($this->m_parent))
+            $this->m_parent->registerScriptCode($code);
+        else
+            $this->m_scriptCodes[] = array('code' => $code);
     }
 
     /**
@@ -997,9 +961,9 @@
      * @param string $template template name
      * @param array $vars template variables
      */
-    protected function renderPartial($template=NULL, $vars=NULL)
+    protected function renderPartial($template = NULL, $vars = NULL)
     {
-      $this->render($template, $vars, true);
+        $this->render($template, $vars, true);
     }
 
     /**
@@ -1012,9 +976,9 @@
      */
     protected function renderContent($content)
     {
-      $this->m_partial = true;
-      $this->m_result = $content;
-      $this->m_rendered = true;
+        $this->m_partial = true;
+        $this->m_result = $content;
+        $this->m_rendered = true;
     }
 
     /**
@@ -1027,30 +991,29 @@
      * @param array $vars template variables
      * @param boolean $partial render partial?
      */
-    protected function render($template=NULL, $vars=NULL, $partial=false)
+    protected function render($template = NULL, $vars = NULL, $partial = false)
     {
-      if ($this->m_rendered) return;
+        if ($this->m_rendered)
+            return;
 
-      if ($template == NULL)
-        $template = $this->getTemplate();
+        if ($template == NULL)
+            $template = $this->getTemplate();
 
-      if ($vars == NULL)
-        $vars = $this->getVars();
+        if ($vars == NULL)
+            $vars = $this->getVars();
 
-      if (!$partial && file_exists(moduleDir($this->m_module)."scripts/{$this->m_name}.js"))
-      {
-        $this->registerScriptFile(moduleDir($this->m_module)."scripts/{$this->m_name}.js");
-      }
+        if (!$partial && file_exists(moduleDir($this->m_module) . "scripts/{$this->m_name}.js")) {
+            $this->registerScriptFile(moduleDir($this->m_module) . "scripts/{$this->m_name}.js");
+        }
 
-      if (!$partial && file_exists(moduleDir($this->m_module)."styles/{$this->m_name}.js"))
-      {
-        $this->registerStyleSheet(moduleDir($this->m_module)."styles/{$this->m_name}.js");
-      }
+        if (!$partial && file_exists(moduleDir($this->m_module) . "styles/{$this->m_name}.js")) {
+            $this->registerStyleSheet(moduleDir($this->m_module) . "styles/{$this->m_name}.js");
+        }
 
 
-      $this->m_partial = $partial;
-      $this->m_result = $this->_render($template, $vars, $partial);
-      $this->m_rendered = true;
+        $this->m_partial = $partial;
+        $this->m_result = $this->_render($template, $vars, $partial);
+        $this->m_rendered = true;
     }
 
     /**
@@ -1061,25 +1024,18 @@
      *
      * @return string template path
      */
-    protected function getTemplatePath($template, $directory='templates')
+    protected function getTemplatePath($template, $directory = 'templates')
     {
-      $root = $this->m_bridge->getApplicationRoot();
-      if (file_exists($root."$directory/$template"))
-      {
-        return $root."$directory/$template";
-      }
-      else if (file_exists(moduleDir($this->m_module)."$directory/$template"))
-      {
-        return moduleDir($this->m_module)."$directory/$template";
-      }
-      else if (file_exists(moduleDir($this->m_module)."skel/$directory/$template"))
-      {
-        return moduleDir($this->m_module)."skel/$directory/$template";
-      }
-      else
-      {
-        return null;
-      }
+        $root = $this->m_bridge->getApplicationRoot();
+        if (file_exists($root . "$directory/$template")) {
+            return $root . "$directory/$template";
+        } else if (file_exists(moduleDir($this->m_module) . "$directory/$template")) {
+            return moduleDir($this->m_module) . "$directory/$template";
+        } else if (file_exists(moduleDir($this->m_module) . "skel/$directory/$template")) {
+            return moduleDir($this->m_module) . "skel/$directory/$template";
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -1087,16 +1043,19 @@
      */
     protected function getLayoutTemplatePath()
     {
-      $path = $this->getTemplatePath($this->m_module.'/'.$this->m_name.'.tpl', 'layouts');
-      if ($path != null) return $path;
+        $path = $this->getTemplatePath($this->m_module . '/' . $this->m_name . '.tpl', 'layouts');
+        if ($path != null)
+            return $path;
 
-      $path = $this->getTemplatePath($this->m_module.'/root.tpl', 'layouts');
-      if ($path != null) return $path;
+        $path = $this->getTemplatePath($this->m_module . '/root.tpl', 'layouts');
+        if ($path != null)
+            return $path;
 
-      $path = $this->getTemplatePath('root.tpl', 'layouts');
-      if ($path != null) return $path;
+        $path = $this->getTemplatePath('root.tpl', 'layouts');
+        if ($path != null)
+            return $path;
 
-      return $null;
+        return $null;
     }
 
     /**
@@ -1109,19 +1068,18 @@
      * @param bool   $partial
      * @return string Filename for the template
      */
-    protected function getFileForTemplate($template, $vars, $partial=false)
+    protected function getFileForTemplate($template, $vars, $partial = false)
     {
-      if ($template{0} != '/')
-      {
-        $template = $this->m_module.'/'.$this->m_name.'/'.($partial ? '_' : '').$template;
-      }
-      else
-      {
-        $parts = explode('/', $template);
-        $template = implode('/', array_slice($parts, 0, count($parts) - 1)).'/'.($partial ? '_' : '').$parts[count($parts) - 1];
-      }
+        if ($template{0} != '/') {
+            $template = $this->m_module . '/' . $this->m_name . '/' . ($partial ? '_'
+                        : '') . $template;
+        } else {
+            $parts = explode('/', $template);
+            $template = implode('/', array_slice($parts, 0, count($parts) - 1)) . '/' . ($partial
+                        ? '_' : '') . $parts[count($parts) - 1];
+        }
 
-      return "{$template}.tpl";
+        return "{$template}.tpl";
     }
 
     /**
@@ -1135,33 +1093,32 @@
      */
     protected function _render($template, $vars, $partial)
     {
-      $template = $this->getFileForTemplate($template, $vars, $partial);
+        $template = $this->getFileForTemplate($template, $vars, $partial);
 
-      /* @var $smarty Smarty */
-      $smarty = atkinstance('atk.ui.atksmarty');
+        /* @var $smarty Smarty */
+        $smarty = atkinstance('atk.ui.atksmarty');
 
-      $oldVars = $smarty->get_template_vars();
-      $oldSerials = $smarty->_cache_serials;
-      $oldCaching = $smarty->caching;
+        $oldVars = $smarty->get_template_vars();
+        $oldSerials = $smarty->_cache_serials;
+        $oldCaching = $smarty->caching;
 
-      $smarty->assign($vars);
-      $smarty->caching = false;
-
-      $result = $smarty->fetch($this->getTemplatePath($template));
-
-      $layoutTemplatePath = $this->getLayoutTemplatePath();
-      if ($this->isRoot() && !$partial && $layoutTemplatePath != null)
-      {
-        $vars['content_for_layout'] = $result;
         $smarty->assign($vars);
-        $result = $smarty->fetch($layoutTemplatePath);
-      }
+        $smarty->caching = false;
 
-      $smarty->caching = $oldCaching;
-      $smarty->_cache_serials = $oldSerials;
-      $smarty->assign($oldVars);
+        $result = $smarty->fetch($this->getTemplatePath($template));
 
-      return $result;
+        $layoutTemplatePath = $this->getLayoutTemplatePath();
+        if ($this->isRoot() && !$partial && $layoutTemplatePath != null) {
+            $vars['content_for_layout'] = $result;
+            $smarty->assign($vars);
+            $result = $smarty->fetch($layoutTemplatePath);
+        }
+
+        $smarty->caching = $oldCaching;
+        $smarty->_cache_serials = $oldSerials;
+        $smarty->assign($oldVars);
+
+        return $result;
     }
 
     /**
@@ -1169,6 +1126,7 @@
      */
     public function __toString()
     {
-      return (!$this->isRoot() ? $this->getParent()->__toString().'/' : '').$this->getname();
+        return (!$this->isRoot() ? $this->getParent()->__toString() . '/' : '') . $this->getname();
     }
-  }
+
+}

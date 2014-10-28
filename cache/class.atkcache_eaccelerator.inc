@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Achievo ATK distribution.
+ * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
  * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
@@ -21,117 +21,114 @@ atkimport("atk.cache.atkcache");
 
 class atkCache_eaccelerator extends atkCache
 {
-  /**
-   * constructor
-   */
-  public function __construct()
-  {
-    if(!(extension_loaded('eaccelerator') && ini_get('eaccelerator.enable')))
+
+    /**
+     * constructor
+     */
+    public function __construct()
     {
-      throw new Exception('The eAccelerator extension is not loaded or disabled');
+        if (!(extension_loaded('eaccelerator') && ini_get('eaccelerator.enable'))) {
+            throw new Exception('The eAccelerator extension is not loaded or disabled');
+        }
     }
-  }
 
-  /**
-   * Inserts cache entry data, but only if the entry does not already exist.
-   *
-   * @param string $key The entry ID.
-   * @param mixed $data The data to write into the entry.
-   * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
-   * @return bool True on success, false on failure.
-   */
-  public function add($key,$data,$lifetime=false)
-  {
-    if (!$this->m_active)
+    /**
+     * Inserts cache entry data, but only if the entry does not already exist.
+     *
+     * @param string $key The entry ID.
+     * @param mixed $data The data to write into the entry.
+     * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
+     * @return bool True on success, false on failure.
+     */
+    public function add($key, $data, $lifetime = false)
     {
-      return false;
+        if (!$this->m_active) {
+            return false;
+        }
+
+        if (eaccelerator_get($this->getRealKey($key)) !== null) {
+            return false;
+        }
+
+        if ($lifetime === false)
+            $lifetime = $this->m_lifetime;
+        return eaccelerator_put($this->getRealKey($key), serialize($data), $lifetime);
     }
 
-    if (eaccelerator_get($this->getRealKey($key)) !== null)
+    /**
+     * Sets cache entry data.
+     *
+     * @param string $key The entry ID.
+     * @param mixed $data The data to write into the entry.
+     * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
+     * @return bool True on success, false on failure.
+     */
+    public function set($key, $data, $lifetime = false)
     {
-      return false;
+        if (!$this->m_active) {
+            return false;
+        }
+
+        if ($lifetime === false)
+            $lifetime = $this->m_lifetime;
+        return eaccelerator_put($this->getRealKey($key), serialize($data), $lifetime);
     }
 
-    if($lifetime === false) $lifetime = $this->m_lifetime;
-    return eaccelerator_put($this->getRealKey($key), serialize($data), $lifetime);
-  }
-
-  /**
-   * Sets cache entry data.
-   *
-   * @param string $key The entry ID.
-   * @param mixed $data The data to write into the entry.
-   * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
-   * @return bool True on success, false on failure.
-   */
-  public function set($key,$data,$lifetime=false)
-  {
-    if (!$this->m_active)
+    /**
+     * Gets cache entry data.
+     *
+     * @param string $key The entry ID.
+     * @return mixed Boolean false on failure, cache data on success.
+     */
+    public function get($key)
     {
-      return false;
+        if (!$this->m_active) {
+            return false;
+        }
+
+        $rawCacheValue = eaccelerator_get($this->getRealKey($key));
+        $cacheValue = is_string($rawCacheValue) ? unserialize($rawCacheValue) : $rawCacheValue;
+        return $cacheValue;
     }
 
-    if($lifetime === false) $lifetime = $this->m_lifetime;
-    return eaccelerator_put($this->getRealKey($key), serialize($data), $lifetime);
-  }
-
-  /**
-   * Gets cache entry data.
-   *
-   * @param string $key The entry ID.
-   * @return mixed Boolean false on failure, cache data on success.
-   */
-  public function get($key)
-  {
-    if (!$this->m_active) {
-      return false;
-    }
-
-    $rawCacheValue = eaccelerator_get($this->getRealKey($key));
-    $cacheValue = is_string($rawCacheValue) ? unserialize($rawCacheValue) : $rawCacheValue;
-    return $cacheValue;
-  }
-
-  /**
-   * Deletes a cache entry.
-   *
-   * @param string $key The entry ID.
-   * @return boolean Succes
-   */
-  public function delete($key)
-  {
-    if (!$this->m_active)
+    /**
+     * Deletes a cache entry.
+     *
+     * @param string $key The entry ID.
+     * @return boolean Succes
+     */
+    public function delete($key)
     {
-      return false;
+        if (!$this->m_active) {
+            return false;
+        }
+
+        return eaccelerator_rm($this->getRealKey($key));
     }
 
-    return eaccelerator_rm($this->getRealKey($key));
-  }
+    /**
+     * Removes all cache entries.
+     *
+     * @return boolean Succes
+     */
+    public function deleteAll()
+    {
+        if (!$this->m_active) {
+            return false;
+        }
 
-
-  /**
-   * Removes all cache entries.
-   *
-   * @return boolean Succes
-   */
-  public function deleteAll()
-  {
-    if (! $this->m_active) {
-      return false;
+        return eaccelerator_clean();
     }
 
-    return eaccelerator_clean();
-  }
-
-  /**
-   * Get Current cache type
-   *
-   * @return string Current cache
-   */
-  public function getType()
-  {
-    return 'eaccelerator';
-  }
+    /**
+     * Get Current cache type
+     *
+     * @return string Current cache
+     */
+    public function getType()
+    {
+        return 'eaccelerator';
+    }
 
 }
 

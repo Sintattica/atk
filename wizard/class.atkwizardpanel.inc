@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Achievo ATK distribution.
+ * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
  * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
@@ -16,34 +16,33 @@
  * @version $Revision: 6309 $
  * $Id$
  */
+/**
+ * Imports
+ * @access private
+ */
+atkimport("atk.handlers.atkactionhandler");
+atkimport("atk.handlers.atkaddhandler");
+atkimport("atk.handlers.atksavehandler");
+atkimport("atk.wizard.atkwizardcontroller");
 
-  /**
-   * Imports
-   * @access private
-   */
-  atkimport("atk.handlers.atkactionhandler");
-  atkimport("atk.handlers.atkaddhandler");
-  atkimport("atk.handlers.atksavehandler");
-  atkimport("atk.wizard.atkwizardcontroller");
+/**
+ * atkWizardPanel button definitions.
+ */
+define("FINISH_BUTTON_DEFAULT", 1);
+define("FINISH_BUTTON_SHOW", 2);
+define("FINISH_BUTTON_DONT_SHOW", 3);
 
-  /**
-   * atkWizardPanel button definitions.
-   */
-  define("FINISH_BUTTON_DEFAULT", 1);
-  define("FINISH_BUTTON_SHOW", 2);
-  define("FINISH_BUTTON_DONT_SHOW", 3);
-
-  /**
-   * Wizardpanel which binds to a atknode. This class makes
-   * it possible to add atkNodeListeners and override actionhandlers.
-   *
-   * @author maurice <maurice@ibuildings.nl>
-   * @package atk
-   * @subpackage wizard
-   *
-   */
-  class atkWizardPanel
-  {
+/**
+ * Wizardpanel which binds to a atknode. This class makes
+ * it possible to add atkNodeListeners and override actionhandlers.
+ *
+ * @author maurice <maurice@ibuildings.nl>
+ * @package atk
+ * @subpackage wizard
+ *
+ */
+class atkWizardPanel
+{
     /**
      * Reference to the parent wizard
      *
@@ -116,13 +115,13 @@
      * @param integer $finishButton The finish button to use
      * @return atkWizardPanel
      */
-    function atkWizardPanel(&$wizard, $panelName, $nodeName, $defaultAction="", $finishButton=FINISH_BUTTON_DEFAULT)
+    function atkWizardPanel(&$wizard, $panelName, $nodeName, $defaultAction = "", $finishButton = FINISH_BUTTON_DEFAULT)
     {
-      $this->m_wizard = &$wizard;
-      $this->m_panelName = $panelName;
-      $this->m_nodeName = $nodeName;
-      $this->m_defaultAction = $defaultAction;
-      $this->m_showFinishButton = $finishButton;
+        $this->m_wizard = &$wizard;
+        $this->m_panelName = $panelName;
+        $this->m_nodeName = $nodeName;
+        $this->m_defaultAction = $defaultAction;
+        $this->m_showFinishButton = $finishButton;
     }
 
     /**
@@ -134,48 +133,44 @@
      */
     public function getPanelNode()
     {
-      if (!is_object($this->m_node))
-      {
-        atkdebug("atkWizardPanel::getPanelNode() create node. Node name: " . $this->m_nodeName);
+        if (!is_object($this->m_node)) {
+            atkdebug("atkWizardPanel::getPanelNode() create node. Node name: " . $this->m_nodeName);
 
-        $this->m_node = &getNode($this->m_nodeName);
-        if(!is_object($this->m_node))
-        {
-          atkerror("atkWizardPanel::getPanelNode() Node could not be created. Node name: " . $this->m_nodeName);
-          return NULL;
+            $this->m_node = &getNode($this->m_nodeName);
+            if (!is_object($this->m_node)) {
+                atkerror("atkWizardPanel::getPanelNode() Node could not be created. Node name: " . $this->m_nodeName);
+                return NULL;
+            }
+
+            //Add listeners to node
+            for ($i = 0, $_i = count($this->m_listeners); $i < $_i; $i++) {
+                $this->m_node->addListener($this->m_listeners[$i]);
+            }
+
+            //Add actionhandlers to node
+            for ($i = 0, $_i = count($this->m_actionHandlers); $i < $_i; $i++) {
+                $handlerName = $this->m_actionHandlers[$i]['name'];
+                $handlerAction = $this->m_actionHandlers[$i]['action'];
+
+                $handler = &new $handlerName();
+                atkRegisterNodeHandler($this->m_node->m_type, $handlerAction, $handler);
+            }
+
+            //All nodes should return the output and not try to fill the screen themselves
+            $controller = &atkController::getInstance();
+            $controller->setNode($this->m_node);
+
+            //Make session aware of the fact that we are rendering a node which has been
+            //created by a wizard panel and is not posted as a variable
+            global $g_sessionManager;
+            /* @var $g_sessionManager atkSessionManager  */
+            $g_sessionManager->stackVar("atknodetype", $this->m_nodeName);
+            $g_sessionManager->stackVar("atkaction", $this->m_defaultAction);
+
+            //We set how we want the atk page to be returned
+            $this->m_wizard->setPageFlags(HTML_ALL);
         }
-
-        //Add listeners to node
-        for($i=0, $_i=count($this->m_listeners); $i<$_i; $i++)
-        {
-          $this->m_node->addListener($this->m_listeners[$i]);
-        }
-
-        //Add actionhandlers to node
-        for($i=0, $_i=count($this->m_actionHandlers); $i<$_i; $i++)
-        {
-          $handlerName = $this->m_actionHandlers[$i]['name'];
-          $handlerAction = $this->m_actionHandlers[$i]['action'];
-
-          $handler = &new $handlerName();
-          atkRegisterNodeHandler($this->m_node->m_type, $handlerAction, $handler);
-        }
-
-        //All nodes should return the output and not try to fill the screen themselves
-        $controller = &atkController::getInstance();
-        $controller->setNode($this->m_node);
-             
-        //Make session aware of the fact that we are rendering a node which has been
-        //created by a wizard panel and is not posted as a variable
-        global $g_sessionManager;
-        /* @var $g_sessionManager atkSessionManager  */
-        $g_sessionManager->stackVar("atknodetype", $this->m_nodeName);
-        $g_sessionManager->stackVar("atkaction", $this->m_defaultAction);
-                   
-        //We set how we want the atk page to be returned
-        $this->m_wizard->setPageFlags(HTML_ALL);                        
-      }
-      return $this->m_node;
+        return $this->m_node;
     }
 
     /**
@@ -185,7 +180,7 @@
      */
     public function getPanelName()
     {
-      return $this->m_panelName;
+        return $this->m_panelName;
     }
 
     /**
@@ -198,9 +193,8 @@
      */
     function addListener(&$listener)
     {
-      $this->m_listeners[] = &$listener;
+        $this->m_listeners[] = &$listener;
     }
-
 
     /**
      * Add an atkActionHandler to the atkWizardPanel.
@@ -213,7 +207,7 @@
      */
     public function addActionHandler($handlerName, $handlerAction)
     {
-      $this->m_actionHandlers[] = array("name" => $handlerName, "action" => $handlerAction);
+        $this->m_actionHandlers[] = array("name" => $handlerName, "action" => $handlerAction);
     }
 
     /**
@@ -223,32 +217,29 @@
      */
     function dispatchForm()
     {
-      $node = &$this->getPanelNode();
-      if(!is_object($node)) return "";
+        $node = &$this->getPanelNode();
+        if (!is_object($node))
+            return "";
 
-      /* @var $g_sessionManager atkSessionManager  */
-      global $ATK_VARS, $g_sessionManager;      
-	    
-	    if(!isset($ATK_VARS['atkaction']) || $ATK_VARS['atkaction'] == "")
-	    {
-	      if(!isset($this->m_defaultAction) || $this->m_defaultAction == "")
-	      {
-	        $ATK_VARS['atkaction'] = "add";
-	        $g_sessionManager->stackVar("atkaction", "add");
-	      }
-	      else
-	      {
-	        $ATK_VARS['atkaction'] = $this->m_defaultAction;
-	        $g_sessionManager->stackVar("atkaction", $this->m_defaultAction);
-	      }
-	    }
+        /* @var $g_sessionManager atkSessionManager  */
+        global $ATK_VARS, $g_sessionManager;
 
-	    //Load some smarty vars
-	    if($ATK_VARS['atkaction'] == 'add' || $ATK_VARS['atkaction'] == 'edit' || $ATK_VARS['atkaction'] == 'admin')
-	    {
-	      $this->loadRenderBoxVars($ATK_VARS['atkaction'] );
-	      if($ATK_VARS['atkaction'] == 'admin') $this->loadRenderBoxVars("add");
-	    }
+        if (!isset($ATK_VARS['atkaction']) || $ATK_VARS['atkaction'] == "") {
+            if (!isset($this->m_defaultAction) || $this->m_defaultAction == "") {
+                $ATK_VARS['atkaction'] = "add";
+                $g_sessionManager->stackVar("atkaction", "add");
+            } else {
+                $ATK_VARS['atkaction'] = $this->m_defaultAction;
+                $g_sessionManager->stackVar("atkaction", $this->m_defaultAction);
+            }
+        }
+
+        //Load some smarty vars
+        if ($ATK_VARS['atkaction'] == 'add' || $ATK_VARS['atkaction'] == 'edit' || $ATK_VARS['atkaction'] == 'admin') {
+            $this->loadRenderBoxVars($ATK_VARS['atkaction']);
+            if ($ATK_VARS['atkaction'] == 'admin')
+                $this->loadRenderBoxVars("add");
+        }
     }
 
     /**
@@ -258,19 +249,20 @@
      * some redirect vars to make sure we go to the next wizardpanel.     
      *
      * @return bool on successfully executing this function
-     */    
+     */
     function save()
     {
-      $node = &$this->getPanelNode();
-      if(!is_object($node)) return;
+        $node = &$this->getPanelNode();
+        if (!is_object($node))
+            return;
 
-      //Little dirty, we have to do this to make sure that in case
-      //of an error the paneltitle and intro text are known
-      //in the template
-      //$this->loadRenderBoxVars("add");
-      //if($node->m_action == 'admin') $this->loadRenderBoxVars("admin");
-      
-      return true;
+        //Little dirty, we have to do this to make sure that in case
+        //of an error the paneltitle and intro text are known
+        //in the template
+        //$this->loadRenderBoxVars("add");
+        //if($node->m_action == 'admin') $this->loadRenderBoxVars("admin");
+
+        return true;
     }
 
     /**
@@ -285,7 +277,7 @@
      */
     function showFinishButton()
     {
-      return $this->m_showFinishButton;
+        return $this->m_showFinishButton;
     }
 
     /**
@@ -295,7 +287,7 @@
      */
     function isFinishPanel()
     {
-      return $this->m_wizard->isFinishPanel($this->getPanelName());
+        return $this->m_wizard->isFinishPanel($this->getPanelName());
     }
 
     /**
@@ -308,22 +300,13 @@
     function _getText($key, $fallbackKey)
     {
 
-      $panelNode = $this->getPanelNode();
-      $text = atktext($key,
-                     $panelNode->m_module,
-                     "",
-                     "",
-                     "",
-                     true);
-      
-      if($text != "") return $text;
-      
-      return  atktext($fallbackKey,
-                     $panelNode->m_module,
-                     "",
-                     "",
-                     "",
-                     true);
+        $panelNode = $this->getPanelNode();
+        $text = atktext($key, $panelNode->m_module, "", "", "", true);
+
+        if ($text != "")
+            return $text;
+
+        return atktext($fallbackKey, $panelNode->m_module, "", "", "", true);
     }
 
     /**
@@ -333,11 +316,12 @@
      */
     function loadRenderBoxVars($action)
     {
-      $handler = &$this->m_node->getHandler($action);
-      $handler->addRenderBoxVar("paneltitle", $this->_getText($this->getPanelName()."_".$action, $this->getPanelName()));
-      $handler->addRenderBoxVar("intro", $this->_getText($this->getPanelName()."_".$action."_intro", $this->getPanelName()."_intro"));
-      atkdebug("loadRenderBoxVars actionhandler: ". get_class($handler)." action: ".$action);
+        $handler = &$this->m_node->getHandler($action);
+        $handler->addRenderBoxVar("paneltitle", $this->_getText($this->getPanelName() . "_" . $action, $this->getPanelName()));
+        $handler->addRenderBoxVar("intro", $this->_getText($this->getPanelName() . "_" . $action . "_intro", $this->getPanelName() . "_intro"));
+        atkdebug("loadRenderBoxVars actionhandler: " . get_class($handler) . " action: " . $action);
     }
 
-  }
+}
+
 ?>

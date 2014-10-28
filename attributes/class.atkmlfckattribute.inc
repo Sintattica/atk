@@ -1,5 +1,13 @@
 <?php
+
 /**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ * @copyright (c)2000-2004 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ * *
  * The atkMlFckAttribute class represents an multilanguage FCK-attribute of an
  * atkNode, and will show different FCK editors for the various languages
  * configured.
@@ -13,9 +21,9 @@ class atkMlFckAttribute extends atkMlTextAttribute
 {
     var $m_editorname = "";
     var $m_urlpath = "";
-    var $fck_opt=array( 'ToolbarSet'    => 'Default',
-                        'Width'         => '100%',
-                        'Height'        => '300px');
+    var $fck_opt = array('ToolbarSet' => 'Default',
+        'Width' => '100%',
+        'Height' => '300px');
 
     /**
      * Create a new instance of the atkMlFckAttribute
@@ -25,18 +33,16 @@ class atkMlFckAttribute extends atkMlTextAttribute
      * @param int    $flags the flags for this attribute
      * @param array  $opt   the options to pass to the FCK editor
      */
-    public function __construct($name, $flags=0, $size=0, Array $opt=array())
+    public function __construct($name, $flags = 0, $size = 0, Array $opt = array())
     {
         $config_fck = atkconfig('fck');
 
-        if(is_array($config_fck))
-        {
-            $this->fck_opt = array_merge($this->fck_opt,$config_fck);
+        if (is_array($config_fck)) {
+            $this->fck_opt = array_merge($this->fck_opt, $config_fck);
         }
 
-        if(is_array($opt))
-        {
-            $this->fck_opt = array_merge($this->fck_opt,$opt);
+        if (is_array($opt)) {
+            $this->fck_opt = array_merge($this->fck_opt, $opt);
         }
 
         $this->fck_opt["Language"] = atkconfig("language");
@@ -54,14 +60,14 @@ class atkMlFckAttribute extends atkMlTextAttribute
      * @param string    $mode       The mode we're in ('add' or 'edit')
      * @return string piece of html code with a textarea
      */
-    public function edit($record="", $prefix="", $mode="")
+    public function edit($record = "", $prefix = "", $mode = "")
     {
         include_once(atkconfig('atkroot') . "atk/attributes/fck/fckeditor.php");
 
         $languages = $this->getLanguages();
         $resultHtml = '';
         $fieldName = $this->formName();
-        
+
         $fieldNameLng = $fieldName . '[' . $languages[0] . ']';
         $resultHtml .= $this->editFck($record, $fieldprefix, $fieldNameLng);
 
@@ -89,17 +95,16 @@ class atkMlFckAttribute extends atkMlTextAttribute
         $languages = $this->getLanguages();
         $langCount = count($languages);
 
-        for($i = 1; $i < $langCount; $i++)
-        {
+        for ($i = 1; $i < $langCount; $i ++) {
             $curlng = $languages[$i];
-            $entry = array( "name" => $this->m_name . "_ml",
-                            "obligatory" => $this->hasFlag(AF_OBLIGATORY),
-                            "attribute" => $this);
+            $entry = array("name" => $this->m_name . "_ml",
+                "obligatory" => $this->hasFlag(AF_OBLIGATORY),
+                "attribute" => $this);
 
             $entry["label"] = $this->label($defaults) .
-                ' (<label id="' . $fieldprefix . $this->formName().'_label_ ' .
+                ' (<label id="' . $fieldprefix . $this->formName() . '_label_ ' .
                 strtolower($curlng) . '">' .
-                atktext("language_".strtolower($curlng)) .
+                atktext("language_" . strtolower($curlng)) .
                 '</label>)';
 
             $entry["id"] = $this->getHtmlId($fieldprefix);
@@ -124,22 +129,17 @@ class atkMlFckAttribute extends atkMlTextAttribute
      *                          default will be used.
      * @return string the html that displays the edit field
      */
-    public function editFck($record="", $fieldprefix="", $fieldname="")
+    public function editFck($record = "", $fieldprefix = "", $fieldname = "")
     {
-        if ('' == $fieldname)
-        {
+        if ('' == $fieldname) {
             $fieldname = $this->fieldName();
         }
 
-        if (strstr($fieldname, '['))
-        {
+        if (strstr($fieldname, '[')) {
             preg_match('/^(.+)\[(.+?)\]$/', $fieldname, $matches);
-            if (count($matches) == 3)
-            {
+            if (count($matches) == 3) {
                 $value = $record[$matches[1]][$matches[2]];
-            } 
-            else
-            {
+            } else {
                 $value = isset($record[$fieldname]) ? $record[$fieldname] : "";
             }
         }
@@ -157,10 +157,9 @@ class atkMlFckAttribute extends atkMlTextAttribute
         $oFCKeditor->Config["AutoDetectLanguage"] = false;
         $oFCKeditor->Config["DefaultLanguage"] = $this->fck_opt["Language"];
 
-        if (!empty($this->fck_opt['CustomConfigurationsPath']))
-        {
+        if (!empty($this->fck_opt['CustomConfigurationsPath'])) {
             $oFCKeditor->Config["CustomConfigurationsPath"] = "../../../../" .
-                    $this->fck_opt["CustomConfigurationsPath"];
+                $this->fck_opt["CustomConfigurationsPath"];
         }
 
         return $oFCKeditor->CreateHtml();
@@ -175,12 +174,12 @@ class atkMlFckAttribute extends atkMlTextAttribute
      */
     public function value2db($rec)
     {
-        if (is_array($rec)&&isset($rec[$this->fieldName()][$this->m_language]))
-        {
-            $dbval = $this->escapeSQL(preg_replace("/\&quot;/Ui","\"",$rec[$this->fieldName()][$this->m_language]));
+        if (is_array($rec) && isset($rec[$this->fieldName()][$this->m_language])) {
+            $dbval = $this->escapeSQL(preg_replace("/\&quot;/Ui", "\"", $rec[$this->fieldName()][$this->m_language]));
             return $dbval;
         }
 
         return NULL;
     }
+
 }

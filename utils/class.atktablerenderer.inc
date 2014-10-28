@@ -1,52 +1,49 @@
 <?php
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage utils
+ *
+ * @copyright (c)2000-2004 Ivo Jansch
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 5798 $
+ * $Id$
+ */
+/**
+ * Some defines
+ */
+define("TBL_HEADER", 1);    // Should the first row of the table be rendered as a header?
+define("TBL_FOOTER", 2);    // Should the last row of the table be rendered as a footer?
+define("TBL_ALTERNATE", 4); // Should each row alternate in color? If you want to use this
+// flag, you should provide a style.
+define("TBL_DATA", TBL_HEADER | TBL_ALTERNATE); // Alias for easy rendering of data tables.
 
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage utils
-   *
-   * @copyright (c)2000-2004 Ivo Jansch
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 5798 $
-   * $Id$
-   */
+define("TBL_LEFT", 1);
+define("TBL_RIGHT", 2);
+define("TBL_CENTER", 4);
+define("TBL_TOP", 8);
+define("TBL_BOTTOM", 16);
+define("TBL_MIDDLE", 32);
 
-  /**
-   * Some defines
-   */
-  define("TBL_HEADER", 1);    // Should the first row of the table be rendered as a header?
-  define("TBL_FOOTER", 2);    // Should the last row of the table be rendered as a footer?
-  define("TBL_ALTERNATE", 4); // Should each row alternate in color? If you want to use this
-                              // flag, you should provide a style.
-  define("TBL_DATA", TBL_HEADER|TBL_ALTERNATE); // Alias for easy rendering of data tables.
-
-  define("TBL_LEFT", 1);
-  define("TBL_RIGHT", 2);
-  define("TBL_CENTER", 4);
-  define("TBL_TOP",8);
-  define("TBL_BOTTOM",16);
-  define("TBL_MIDDLE",32);
-
-
-  /**
-   * Table renderer class. Makes rendering of html tables easier.
-   *
-   * The current implementation cannot handle merged cells (rowspan/colspan).
-   * If you need this, you should render the table manually.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @author Edgar van Ispelen <edgar@ibuildings.nl>
-   * @package atk
-   * @subpackage utils
-   *
-   */
-  class atkTableRenderer
-  {
+/**
+ * Table renderer class. Makes rendering of html tables easier.
+ *
+ * The current implementation cannot handle merged cells (rowspan/colspan).
+ * If you need this, you should render the table manually.
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @author Edgar van Ispelen <edgar@ibuildings.nl>
+ * @package atk
+ * @subpackage utils
+ *
+ */
+class atkTableRenderer
+{
     var $m_cellalignment = array();
     var $m_rowalignment = array();
     var $m_colalignment = array();
@@ -59,7 +56,7 @@
     var $m_maxWidth = 0;
     var $m_flags = 0;
     var $m_style = '';
-		var $m_tableMatrix = null;
+    var $m_tableMatrix = null;
 
     /**
      * Constructs a new table renderer
@@ -69,14 +66,13 @@
      * @param string $style style class to set for the table
      * @param string $module module to register style with
      */
-    function atkTableRenderer($flags = 0, $style='', $module='')
+    function atkTableRenderer($flags = 0, $style = '', $module = '')
     {
-      $this->m_flags = $flags;
+        $this->m_flags = $flags;
 
-      if ($style !== '')
-      {
-        $this->setTableStyle($style, $module);
-      }
+        if ($style !== '') {
+            $this->setTableStyle($style, $module);
+        }
     }
 
     /**
@@ -87,7 +83,7 @@
      */
     function setFlag($flag)
     {
-      $this->m_flags |= $flag;
+        $this->m_flags |= $flag;
     }
 
     /**
@@ -98,7 +94,7 @@
      */
     function setDefaultAlignment($alignment)
     {
-      $this->m_defaultalignment = $alignment;
+        $this->m_defaultalignment = $alignment;
     }
 
     /**
@@ -111,7 +107,7 @@
      */
     function setAlignment($row, $col, $alignment)
     {
-      $this->m_cellalignment[$row][$col] = $alignment;
+        $this->m_cellalignment[$row][$col] = $alignment;
     }
 
     /**
@@ -123,7 +119,7 @@
      */
     function setRowAlignment($row, $alignment)
     {
-      $this->m_rowalignment[$row] = $alignment;
+        $this->m_rowalignment[$row] = $alignment;
     }
 
     /**
@@ -135,7 +131,7 @@
      */
     function setColAlignment($col, $alignment)
     {
-      $this->m_colalignment[$col] = $alignment;
+        $this->m_colalignment[$col] = $alignment;
     }
 
     /**
@@ -145,7 +141,7 @@
      */
     function setDefaultClass($class)
     {
-      $this->m_defaultclass = $class;
+        $this->m_defaultclass = $class;
     }
 
     /**
@@ -157,7 +153,7 @@
      */
     function setClass($row, $col, $class)
     {
-      $this->m_cellclass[$row][$col] = $class;
+        $this->m_cellclass[$row][$col] = $class;
     }
 
     /**
@@ -168,7 +164,7 @@
      */
     function setRowClass($row, $class)
     {
-      $this->m_rowclass[$row] = $class;
+        $this->m_rowclass[$row] = $class;
     }
 
     /**
@@ -179,7 +175,7 @@
      */
     function setColClass($col, $class)
     {
-      $this->m_colclass[$col] = $class;
+        $this->m_colclass[$col] = $class;
     }
 
     /**
@@ -190,16 +186,13 @@
      * @param int $span width
      * @param string $type
      */
-    function _setSpan($row,$col,$span,$type="col")
+    function _setSpan($row, $col, $span, $type = "col")
     {
-      if(array_key_exists($row, $this->m_span) && is_array($this->m_span[$row][$col]))
-      {
-        $this->m_span[$row][$col] = array_merge(array($type."span"=>$span),$this->m_span[$row][$col]);
-      }
-      else
-      {
-        $this->m_span[$row][$col] = array($type."span"=>$span);
-      }
+        if (array_key_exists($row, $this->m_span) && is_array($this->m_span[$row][$col])) {
+            $this->m_span[$row][$col] = array_merge(array($type . "span" => $span), $this->m_span[$row][$col]);
+        } else {
+            $this->m_span[$row][$col] = array($type . "span" => $span);
+        }
     }
 
     /**
@@ -209,9 +202,9 @@
      * @param int $col The col to set
      * @param int $span The span width
      */
-    function setColSpan($row,$col,$span)
+    function setColSpan($row, $col, $span)
     {
-      $this->_setSpan($row,$col,$span,"col");
+        $this->_setSpan($row, $col, $span, "col");
     }
 
     /**
@@ -221,9 +214,9 @@
      * @param int $col The col to set
      * @param int $span The span width
      */
-    function setRowSpan($row,$col,$span)
+    function setRowSpan($row, $col, $span)
     {
-      $this->_setSpan($row,$col,$span,"row");
+        $this->_setSpan($row, $col, $span, "row");
     }
 
     /**
@@ -232,11 +225,11 @@
      * @param string $style styleclass name
      * @param string $module module to look for stylesheets
      */
-    function registerStyle($style,$module="")
+    function registerStyle($style, $module = "")
     {
-      $theme = &atkinstance("atk.ui.atktheme");
-      $page = &atkPage::getInstance();
-      $page->register_style($theme->stylePath($style.".css",$module));
+        $theme = &atkinstance("atk.ui.atktheme");
+        $page = &atkPage::getInstance();
+        $page->register_style($theme->stylePath($style . ".css", $module));
     }
 
     /**
@@ -245,48 +238,42 @@
      * @param aray $data table data
      * @return int max number of rows
      */
-    function _getMaxCols($data,$rownr='')
+    function _getMaxCols($data, $rownr = '')
     {
-    	if(is_null($this->m_tableMatrix))
-			{
-	    	$this->m_tableMatrix = array();
-				
-				foreach ($data as $row => $entry)
-				{
-				  foreach ($entry as $cell => $text)
-					{
-						$colspan = isset($this->m_span[$row][$cell]['colspan']) ? $this->m_span[$row][$cell]['colspan'] : 1;
-						$rowspan = isset($this->m_span[$row][$cell]['rowspan']) ? $this->m_span[$row][$cell]['rowspan'] : 1;;
-						
-						$x = $cell;
-						$y = $row;
-						
-						for ($i = $x; $i < $x + $colspan; $i++)
-						{
-							for ($j = $y; $j < $y + $rowspan; $j++)
-							{
-								$this->m_tableMatrix[$j][] = true;
-							}
-						}
-					}
-				}
-			}
-				
-			
-			$max = 0;
-			if($rownr!='')
-			{
-        $max = max(array_keys($this->m_tableMatrix[$rownr]));				
-			}
-			else
-			{
-				foreach ($this->m_tableMatrix as $row)
-				{
-					$max = max($max, max(array_keys($row)));
-				}
-			}
-			
-			return $max;
+        if (is_null($this->m_tableMatrix)) {
+            $this->m_tableMatrix = array();
+
+            foreach ($data as $row => $entry) {
+                foreach ($entry as $cell => $text) {
+                    $colspan = isset($this->m_span[$row][$cell]['colspan']) ? $this->m_span[$row][$cell]['colspan']
+                            : 1;
+                    $rowspan = isset($this->m_span[$row][$cell]['rowspan']) ? $this->m_span[$row][$cell]['rowspan']
+                            : 1;
+                    ;
+
+                    $x = $cell;
+                    $y = $row;
+
+                    for ($i = $x; $i < $x + $colspan; $i++) {
+                        for ($j = $y; $j < $y + $rowspan; $j++) {
+                            $this->m_tableMatrix[$j][] = true;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        $max = 0;
+        if ($rownr != '') {
+            $max = max(array_keys($this->m_tableMatrix[$rownr]));
+        } else {
+            foreach ($this->m_tableMatrix as $row) {
+                $max = max($max, max(array_keys($row)));
+            }
+        }
+
+        return $max;
     }
 
     /**
@@ -325,16 +312,15 @@
      *
      * @return String The rendered table.
      */
-    function render($data, $flags=0, $style="",$module="")
+    function render($data, $flags = 0, $style = "", $module = "")
     {
-      $this->setFlag($flags);
-      if ($style !== "")
-      {
-        $this->setTableStyle($style, $module);
-      }
-      $output = $this->_renderTable($data);
+        $this->setFlag($flags);
+        if ($style !== "") {
+            $this->setTableStyle($style, $module);
+        }
+        $output = $this->_renderTable($data);
 
-      return $output;
+        return $output;
     }
 
     /**
@@ -343,10 +329,10 @@
      * @param string $class styleclass name
      * @param string $module module to look for stylesheets
      */
-    function setTableStyle($class, $module="")
+    function setTableStyle($class, $module = "")
     {
-      $this->m_style = $class;
-      $this->registerStyle($class, $module);
+        $this->m_style = $class;
+        $this->registerStyle($class, $module);
     }
 
     /**
@@ -356,13 +342,12 @@
      */
     function _getTableStyleStr()
     {
-      $class = '';
-      if (!empty($this->m_style))
-      {
-        $class = "class=\"{$this->m_style}\"";
-      }
+        $class = '';
+        if (!empty($this->m_style)) {
+            $class = "class=\"{$this->m_style}\"";
+        }
 
-      return $class;
+        return $class;
     }
 
     /**
@@ -373,41 +358,37 @@
      */
     function _renderTable($data)
     {
-      $rowOffset=0;
-      
-      $this->m_maxWidth = $this->_getMaxCols($data);
-			
-      $class = $this->_getTableStyleStr();
+        $rowOffset = 0;
 
-      $output = "\n<table {$class}>";
+        $this->m_maxWidth = $this->_getMaxCols($data);
 
-      // should render a header?
-      if (hasFlag($this->m_flags, TBL_HEADER))
-      {
-        $header = $data[0];
-        $rowOffset = 1;
-        $output .= $this->_renderHeader($header, 0);
-      }
+        $class = $this->_getTableStyleStr();
 
-      // should render a footer
-      if (hasFlag($this->m_flags, TBL_FOOTER))
-      {
-        $footer_row = count($data) - 1;
-        $footer = array_pop($data);
+        $output = "\n<table {$class}>";
 
-        $output .= $this->_renderBody($data, $rowOffset);
-        $output .= $this->_renderFooter($footer, $footer_row);
-      }
-      else
-      {
-        $output .= $this->_renderBody($data,$rowOffset);
-      }
+        // should render a header?
+        if (hasFlag($this->m_flags, TBL_HEADER)) {
+            $header = $data[0];
+            $rowOffset = 1;
+            $output .= $this->_renderHeader($header, 0);
+        }
 
-      $output .= "</table>\n";
+        // should render a footer
+        if (hasFlag($this->m_flags, TBL_FOOTER)) {
+            $footer_row = count($data) - 1;
+            $footer = array_pop($data);
 
-      $this->m_maxWidth = 0; // reset
+            $output .= $this->_renderBody($data, $rowOffset);
+            $output .= $this->_renderFooter($footer, $footer_row);
+        } else {
+            $output .= $this->_renderBody($data, $rowOffset);
+        }
 
-      return $output;
+        $output .= "</table>\n";
+
+        $this->m_maxWidth = 0; // reset
+
+        return $output;
     }
 
     /**
@@ -420,23 +401,20 @@
      */
     function _renderValue($cell)
     {
-      $value = "";
-      if(is_array($cell))
-      {
-        // Use the value field, if available
-        if(isset($cell['value']))
-          $value = $cell['value'];
-      }
-      else
-      {
-        $value = (string)$cell;
-        if($value == '')
-        {
-          $value = '&nbsp;';
+        $value = "";
+        if (is_array($cell)) {
+            // Use the value field, if available
+            if (isset($cell['value']))
+                $value = $cell['value'];
         }
-      }
+        else {
+            $value = (string) $cell;
+            if ($value == '') {
+                $value = '&nbsp;';
+            }
+        }
 
-      return $value;
+        return $value;
     }
 
     /**
@@ -450,16 +428,16 @@
      */
     function _renderCell($data, $row, $col, $type)
     {
-      $span     = $this->getSpan($row, $col);
-      $spanstr  = $this->_spanStr($span);
-      $alignstr = $this->_alignmentStr($this->getAlignment($row, $col));
-      $idstr    = $this->_getIdStr($data);
-      $class    = $this->_classStr($this->getClass($row, $col));
+        $span = $this->getSpan($row, $col);
+        $spanstr = $this->_spanStr($span);
+        $alignstr = $this->_alignmentStr($this->getAlignment($row, $col));
+        $idstr = $this->_getIdStr($data);
+        $class = $this->_classStr($this->getClass($row, $col));
 
-      $output  = "\n<{$type} {$idstr} {$class} {$spanstr} {$alignstr}>";
-      $output .= $this->_renderValue($data);
-      $output .= "</{$type}>";
-      return $output;
+        $output = "\n<{$type} {$idstr} {$class} {$spanstr} {$alignstr}>";
+        $output .= $this->_renderValue($data);
+        $output .= "</{$type}>";
+        return $output;
     }
 
     /**
@@ -471,11 +449,12 @@
      */
     function _renderHeader($data, $row)
     {
-      $output = '<thead>';
-      $output .= $this->_renderRow($data, $row, 'th');
-      $output .= '</thead>';
-      return $output;
+        $output = '<thead>';
+        $output .= $this->_renderRow($data, $row, 'th');
+        $output .= '</thead>';
+        return $output;
     }
+
     /**
      * Renders one footer row.
      *
@@ -485,10 +464,10 @@
      */
     function _renderFooter($data, $row)
     {
-      $output = '<tfoot>';
-      $output .= $this->_renderRow($data, $row, 'th');
-      $output .= '</tfoot>';
-      return $output;
+        $output = '<tfoot>';
+        $output .= $this->_renderRow($data, $row, 'th');
+        $output .= '</tfoot>';
+        return $output;
     }
 
     /**
@@ -500,18 +479,13 @@
      */
     function _getRowClassStr($row)
     {
-      if (is_string($row))
-      {
-        return 'class="'.$row.'"';
-      }
-      else if (hasFlag($this->m_flags, TBL_ALTERNATE) && ($row % 2) !== 0)
-      {
-        return 'class="row2"';
-      }
-      else
-      {
-       return 'class="row1"';
-      }
+        if (is_string($row)) {
+            return 'class="' . $row . '"';
+        } else if (hasFlag($this->m_flags, TBL_ALTERNATE) && ($row % 2) !== 0) {
+            return 'class="row2"';
+        } else {
+            return 'class="row1"';
+        }
     }
 
     /**
@@ -522,30 +496,28 @@
      * @param string $columntype tagname to use to render columns inside this row
      * @return string html of the row
      */
-    function _renderRow($data, $row, $columntype='td')
+    function _renderRow($data, $row, $columntype = 'td')
     {
-      $class = $this->_getRowClassStr($row);
+        $class = $this->_getRowClassStr($row);
 
-      $output = "\n<tr {$class}>";
+        $output = "\n<tr {$class}>";
 
-      // render all cells inside
-      $colCount = count($data);
-			
-      for ($col=0; $col<$colCount; $col++)
-      {
-        $output .= $this->_renderCell($data[$col], $row, $col, $columntype);
-      }
+        // render all cells inside
+        $colCount = count($data);
 
-      // fill up remaining space
-      $filling = $this->m_maxWidth - ($this->_getMaxCols(array(),$row));
-      if ($filling > 0)
-      {
-        $output .= $this->_renderFillingCell($filling, $columntype);
-      }
+        for ($col = 0; $col < $colCount; $col++) {
+            $output .= $this->_renderCell($data[$col], $row, $col, $columntype);
+        }
 
-      $output .= "\n</tr>";
+        // fill up remaining space
+        $filling = $this->m_maxWidth - ($this->_getMaxCols(array(), $row));
+        if ($filling > 0) {
+            $output .= $this->_renderFillingCell($filling, $columntype);
+        }
 
-      return $output;
+        $output .= "\n</tr>";
+
+        return $output;
     }
 
     /**
@@ -557,7 +529,7 @@
      */
     function _renderFillingCell($colspan, $type)
     {
-      return "<{$type} colspan=\"{$colspan}\">&nbsp;</{$type}>";
+        return "<{$type} colspan=\"{$colspan}\">&nbsp;</{$type}>";
     }
 
     /**
@@ -570,21 +542,20 @@
      */
     function _renderBody($data, $rowOffset = 0)
     {
-      $rowCount = count($data);
-      if ($rowOffset >= $rowCount) return "";
+        $rowCount = count($data);
+        if ($rowOffset >= $rowCount)
+            return "";
 
-      $output = '<tbody>';
+        $output = '<tbody>';
 
-      for ($row=$rowOffset; $row<$rowCount; $row++)
-      {
-        $rowData = $data[$row];
-        $output .= $this->_renderRow($rowData, $row);
-      }
+        for ($row = $rowOffset; $row < $rowCount; $row++) {
+            $rowData = $data[$row];
+            $output .= $this->_renderRow($rowData, $row);
+        }
 
-      $output .= '</tbody>';
-      return $output;
+        $output .= '</tbody>';
+        return $output;
     }
-
 
     /**
      * Gets the cell id string if available.
@@ -594,13 +565,12 @@
      */
     function _getIdStr($data)
     {
-      $id = '';
-      if(is_array($data) && isset($data['id']))
-      {
-        $id = "id=\"{$data['id']}\"";
-      }
+        $id = '';
+        if (is_array($data) && isset($data['id'])) {
+            $id = "id=\"{$data['id']}\"";
+        }
 
-      return $id;
+        return $id;
     }
 
     /**
@@ -611,16 +581,22 @@
      */
     function _alignmentStr($alignment)
     {
-      $ret='';
-      if(hasFlag($alignment,TBL_LEFT)) $ret.='align="left" ';
-      elseif(hasFLag($alignment,TBL_RIGHT)) $ret.='align="right" ';
-      elseif(hasFlag($alignment,TBL_CENTER)) $ret.='align="center" ';
+        $ret = '';
+        if (hasFlag($alignment, TBL_LEFT))
+            $ret.='align="left" ';
+        elseif (hasFLag($alignment, TBL_RIGHT))
+            $ret.='align="right" ';
+        elseif (hasFlag($alignment, TBL_CENTER))
+            $ret.='align="center" ';
 
-      if(hasFlag($alignment,TBL_TOP)) $ret.='valign="top" ';
-      elseif(hasFLag($alignment,TBL_BOTTOM)) $ret.='valign="bottom" ';
-      elseif(hasFlag($alignment,TBL_MIDDLE)) $ret.='valign="middle" ';
+        if (hasFlag($alignment, TBL_TOP))
+            $ret.='valign="top" ';
+        elseif (hasFLag($alignment, TBL_BOTTOM))
+            $ret.='valign="bottom" ';
+        elseif (hasFlag($alignment, TBL_MIDDLE))
+            $ret.='valign="middle" ';
 
-      return $ret;
+        return $ret;
     }
 
     /**
@@ -631,20 +607,16 @@
      */
     function _spanStr($span)
     {
-      if ($span["rowspan"]=="" && $span["colspan"]=="")  return '';
+        if ($span["rowspan"] == "" && $span["colspan"] == "")
+            return '';
 
-      if($span["rowspan"]!="" && $span["colspan"]!="")
-      {
-        return 'rowspan="'.$span["rowspan"].'" colspan="'.$span["colspan"].'"';
-      }
-      elseif($span["rowspan"]!="")
-      {
-        return 'rowspan="'.$span["rowspan"].'"';
-      }
-      elseif($span["colspan"]!="")
-      {
-        return 'colspan="'.$span["colspan"].'"';
-      }
+        if ($span["rowspan"] != "" && $span["colspan"] != "") {
+            return 'rowspan="' . $span["rowspan"] . '" colspan="' . $span["colspan"] . '"';
+        } elseif ($span["rowspan"] != "") {
+            return 'rowspan="' . $span["rowspan"] . '"';
+        } elseif ($span["colspan"] != "") {
+            return 'colspan="' . $span["colspan"] . '"';
+        }
     }
 
     /**
@@ -656,10 +628,10 @@
      */
     function _classStr($class)
     {
-      if (empty($class))
-        return "";
-      else
-        return 'class="'.$class.'"';
+        if (empty($class))
+            return "";
+        else
+            return 'class="' . $class . '"';
     }
 
     /**
@@ -671,10 +643,13 @@
      */
     function getAlignment($row, $col)
     {
-      if (array_key_exists($row, $this->m_cellalignment) && array_key_exists($col, $this->m_cellalignment[$row]) && $this->m_cellalignment[$row][$col]!="") return $this->m_cellalignment[$row][$col];
-      if (array_key_exists($col, $this->m_colalignment) && $this->m_colalignment[$col]!="") return $this->m_colalignment[$col];
-      if (array_key_exists($row, $this->m_rowalignment) && $this->m_rowalignment[$row]!="") return $this->m_rowalignment[$row];
-      return $this->m_defaultalignment;
+        if (array_key_exists($row, $this->m_cellalignment) && array_key_exists($col, $this->m_cellalignment[$row]) && $this->m_cellalignment[$row][$col] != "")
+            return $this->m_cellalignment[$row][$col];
+        if (array_key_exists($col, $this->m_colalignment) && $this->m_colalignment[$col] != "")
+            return $this->m_colalignment[$col];
+        if (array_key_exists($row, $this->m_rowalignment) && $this->m_rowalignment[$row] != "")
+            return $this->m_rowalignment[$row];
+        return $this->m_defaultalignment;
     }
 
     /**
@@ -686,10 +661,13 @@
      */
     function getClass($row, $col)
     {
-      if (array_key_exists($row, $this->m_cellclass) && array_key_exists($col, $this->m_cellclass[$row]) && $this->m_cellclass[$row][$col]!="") return $this->m_cellclass[$row][$col];
-      if (array_key_exists($col, $this->m_colclass) && $this->m_colclass[$col]!="") return $this->m_colclass[$col];
-      if (array_key_exists($row, $this->m_rowclass) && $this->m_rowclass[$row]!="") return $this->m_rowclass[$row];
-      return $this->m_defaultclass;
+        if (array_key_exists($row, $this->m_cellclass) && array_key_exists($col, $this->m_cellclass[$row]) && $this->m_cellclass[$row][$col] != "")
+            return $this->m_cellclass[$row][$col];
+        if (array_key_exists($col, $this->m_colclass) && $this->m_colclass[$col] != "")
+            return $this->m_colclass[$col];
+        if (array_key_exists($row, $this->m_rowclass) && $this->m_rowclass[$row] != "")
+            return $this->m_rowclass[$row];
+        return $this->m_defaultclass;
     }
 
     /**
@@ -699,13 +677,15 @@
      * @param int $col column number of the cell
      * @return bool|string spanning or false if nothing found for the cell
      */
-    function getSpan($row,$col)
+    function getSpan($row, $col)
     {
-      if(array_key_exists($row,$this->m_span) &&
-         array_key_exists($col,$this->m_span[$row]) &&
-         is_array($this->m_span[$row][$col])) return $this->m_span[$row][$col];
-      return false;
+        if (array_key_exists($row, $this->m_span) &&
+            array_key_exists($col, $this->m_span[$row]) &&
+            is_array($this->m_span[$row][$col]))
+            return $this->m_span[$row][$col];
+        return false;
     }
-  }
+
+}
 
 ?>

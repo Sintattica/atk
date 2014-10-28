@@ -1,40 +1,39 @@
 <?php
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage db
+ *
+ * @copyright (c)2000-2006 Ibuildings.nl BV
+ * @copyright (c)2000-2006 Ivo Jansch
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6323 $
+ * $Id$
+ */
 
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage db
-   *
-   * @copyright (c)2000-2006 Ibuildings.nl BV
-   * @copyright (c)2000-2006 Ivo Jansch
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6323 $
-   * $Id$
-   */
-
-  /**
-   * Abstract baseclass for SQL query builder drivers.
-   *
-   * All db drivers should derive a class from this baseclass and implement
-   * the necessary methods.
-   * 
-   * @todo add bind parameter support
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage db
-   * @abstract
-   */
-  class atkQuery
-  {
+/**
+ * Abstract baseclass for SQL query builder drivers.
+ *
+ * All db drivers should derive a class from this baseclass and implement
+ * the necessary methods.
+ * 
+ * @todo add bind parameter support
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @package atk
+ * @subpackage db
+ * @abstract
+ */
+class atkQuery
+{
     /**
-    * Array with Fieldnames
-    */
+     * Array with Fieldnames
+     */
     var $m_fields;
 
     /**
@@ -43,40 +42,39 @@
     var $m_expressions;
 
     /**
-    * Array with tables
-    */
+     * Array with tables
+     */
     var $m_tables;
 
     /**
-    * Array with conditions
-    */
+     * Array with conditions
+     */
     var $m_conditions;
     var $m_searchconditions;
 
     /**
-    * Var with AND or OR method
-    */
+     * Var with AND or OR method
+     */
     var $m_searchmethod;
 
     /**
-    * Array with aliases
-    */
+     * Array with aliases
+     */
     var $m_aliases;
 
     /**
-    * Array with field aliases
-    */
+     * Array with field aliases
+     */
     var $m_fieldaliases;
 
     /**
-    * Array with aliases from joins
-    */
+     * Array with aliases from joins
+     */
     var $m_joinaliases;
 
-
     /**
-    * Array with Joins
-    */
+     * Array with Joins
+     */
     var $m_joins;
 
     /**
@@ -92,18 +90,18 @@
     /**
      * Do we need to perform a DISTINCT query?
      */
-    var $m_distinct=false;
+    var $m_distinct = false;
 
     /**
-      * Do we need to fetch only a specific set of records?
-      */
-    var $m_offset=0;
-    var $m_limit=0;
+     * Do we need to fetch only a specific set of records?
+     */
+    var $m_offset = 0;
+    var $m_limit = 0;
 
     /**
-    * Array with generated aliasses
-    * Oracle has a problem when aliases are too long
-    */
+     * Array with generated aliasses
+     * Oracle has a problem when aliases are too long
+     */
     var $m_generatedAlias;
 
     /**
@@ -124,7 +122,7 @@
      * @var Array
      * @access private
      */
-    var $m_quotedfields=array();
+    var $m_quotedfields = array();
 
     /**
      * Names reserved by the database,
@@ -134,33 +132,33 @@
      * @var Array
      * @access private
      */
-    var $m_reservedNames=array('from','select','order','group','release', 'index', 'table');
+    var $m_reservedNames = array('from', 'select', 'order', 'group', 'release', 'index', 'table');
 
     /**
-    * Initialize all variables
-    */
+     * Initialize all variables
+     */
     function atkquery()
     {
-      $this->m_fields = array();
-      $this->m_expressions = array();
-      $this->m_tables = array();
-      $this->m_conditions = array();
-      $this->m_searchconditions = array();
-      $this->m_aliases = array();
-      $this->m_values = array();
-      $this->m_fieldaliases = array();
-      $this->m_joinaliases = array();
-      $this->m_joins = array();
-      $this->m_orderbys = array();
-      $this->m_groupbys = array();
-      $this->m_searchmethod = "";
+        $this->m_fields = array();
+        $this->m_expressions = array();
+        $this->m_tables = array();
+        $this->m_conditions = array();
+        $this->m_searchconditions = array();
+        $this->m_aliases = array();
+        $this->m_values = array();
+        $this->m_fieldaliases = array();
+        $this->m_joinaliases = array();
+        $this->m_joins = array();
+        $this->m_orderbys = array();
+        $this->m_groupbys = array();
+        $this->m_searchmethod = "";
 
-      // start at 'a'.
-      $this->m_generatedAlias = "a";
+        // start at 'a'.
+        $this->m_generatedAlias = "a";
 
-      $this->m_aliasLookup = array();
+        $this->m_aliasLookup = array();
     }
-    
+
     /**
      * Sets the database instance.
      * 
@@ -168,9 +166,9 @@
      */
     public function setDb($db)
     {
-      $this->m_db = $db;
+        $this->m_db = $db;
     }
-    
+
     /**
      * Returns the database instance.
 
@@ -178,12 +176,11 @@
      */
     public function getDb()
     {
-      if (!isset($this->m_db)) 
-      {
-        $this->m_db = atkGetDb();
-      }
-      
-      return $this->m_db;
+        if (!isset($this->m_db)) {
+            $this->m_db = atkGetDb();
+        }
+
+        return $this->m_db;
     }
 
     /**
@@ -198,29 +195,33 @@
      * @param bool $quotefield Wether or not to quote the fieldname
      * @return atkQuery The query object itself (for fluent usage)
      */
-    function &addField($name, $value="", $table="", $fieldaliasprefix="", $quote=true, $quotefield=false)
+    function &addField($name, $value = "", $table = "", $fieldaliasprefix = "", $quote = true, $quotefield = false)
     {
-      if ($table!="") $fieldname = $table.".".$name;
-      else $fieldname = $name;
-      $this->m_fields[] = $fieldname;
-      if ($quotefield) $this->m_quotedfields[] = $fieldname;
+        if ($table != "")
+            $fieldname = $table . "." . $name;
+        else
+            $fieldname = $name;
+        $this->m_fields[] = $fieldname;
+        if ($quotefield)
+            $this->m_quotedfields[] = $fieldname;
 
-      if ($quote && !is_null($value)) $value = "'".$value."'";
-      elseif ($value === NULL || $value === '') $value = 'NULL';
-      
-      $this->m_values[$fieldname] = $value;
+        if ($quote && !is_null($value))
+            $value = "'" . $value . "'";
+        elseif ($value === NULL || $value === '')
+            $value = 'NULL';
 
-      if ($fieldaliasprefix!="")
-      {
-        $this->m_aliasLookup["al_".$this->m_generatedAlias] = $fieldaliasprefix.$name;
-        $this->m_fieldaliases[$fieldname] = "al_".$this->m_generatedAlias;
+        $this->m_values[$fieldname] = $value;
 
-        $this->m_generatedAlias++;
-      }
+        if ($fieldaliasprefix != "") {
+            $this->m_aliasLookup["al_" . $this->m_generatedAlias] = $fieldaliasprefix . $name;
+            $this->m_fieldaliases[$fieldname] = "al_" . $this->m_generatedAlias;
 
-      return $this;
+            $this->m_generatedAlias++;
+        }
+
+        return $this;
     }
-    
+
     /**
      * Add's a sequence field to the query.
      * 
@@ -231,13 +232,13 @@
      * @param string $seqName   sequence name (optional for certain drivers)
      * 
      * @return atkQuery
-     */  
-    public function addSequenceField($fieldName, &$value, $seqName=null)
+     */
+    public function addSequenceField($fieldName, &$value, $seqName = null)
     {
-      $value = $this->getDb()->nextid($seqName);
-      $this->addField($fieldName, $value, null, null, false, true);
-      return $this;
-    }    
+        $value = $this->getDb()->nextid($seqName);
+        $this->addField($fieldName, $value, null, null, false, true);
+        return $this;
+    }
 
     /**
      * Add multiple fields at once
@@ -251,13 +252,12 @@
      * @param bool $quotefield Wether or not to quote the fieldname
      * @return atkQuery The query object itself (for fluent usage)
      */
-    function addFields(array $fields, $table="", $fieldaliasprefix="", $quote=true, $quotefield=false)
+    function addFields(array $fields, $table = "", $fieldaliasprefix = "", $quote = true, $quotefield = false)
     {
-      foreach ($fields as $name => $value)
-      {
-        $this->addField($name,$value,$table,$fieldaliasprefix,$quote,$quotefield);
-      }
-      return $this;
+        foreach ($fields as $name => $value) {
+            $this->addField($name, $value, $table, $fieldaliasprefix, $quote, $quotefield);
+        }
+        return $this;
     }
 
     /**
@@ -269,65 +269,65 @@
      * @param bool $quoteFieldName      wether or not to quote the expression field name
      * @return atkQuery The query object itself (for fluent usage)
      */
-    function &addExpression($fieldName, $expression, $fieldAliasPrefix="", $quoteFieldName=false)
+    function &addExpression($fieldName, $expression, $fieldAliasPrefix = "", $quoteFieldName = false)
     {
-      if ($quoteFieldName)
-        $this->m_quotedfields[] = $fieldName;
+        if ($quoteFieldName)
+            $this->m_quotedfields[] = $fieldName;
 
-      $this->m_expressions[] = array('name' => $fieldAliasPrefix.$fieldName, 'expression' => $expression);
+        $this->m_expressions[] = array('name' => $fieldAliasPrefix . $fieldName, 'expression' => $expression);
 
-      if (!empty($fieldAliasPrefix))
-      {
-        $this->m_aliasLookup["al_".$this->m_generatedAlias] = $fieldAliasPrefix.$fieldName;
-        $this->m_fieldaliases[$fieldAliasPrefix.$fieldName] = "al_".$this->m_generatedAlias;
-        $this->m_generatedAlias++;
-      }
+        if (!empty($fieldAliasPrefix)) {
+            $this->m_aliasLookup["al_" . $this->m_generatedAlias] = $fieldAliasPrefix . $fieldName;
+            $this->m_fieldaliases[$fieldAliasPrefix . $fieldName] = "al_" . $this->m_generatedAlias;
+            $this->m_generatedAlias++;
+        }
 
-      return $this;
+        return $this;
     }
-    
+
     /**
      * Clear field list.
      */
     public function clearFields()
     {
-      $this->m_fields = array();
+        $this->m_fields = array();
     }
-    
+
     /**
      * Clear expression list.
      */
     public function clearExpressions()
     {
-      $this->m_expressions = array();
+        $this->m_expressions = array();
     }
 
     /**
-    * Add table to Tables array
-    * @param string $name Table name
-    * @param string $alias Alias of table
-    * @return atkQuery The query object itself (for fluent usage)
-    */
+     * Add table to Tables array
+     * @param string $name Table name
+     * @param string $alias Alias of table
+     * @return atkQuery The query object itself (for fluent usage)
+     */
     function &addTable($name, $alias = "")
     {
-      $this->m_tables[] = $name;
-      $this->m_aliases[count($this->m_tables)-1] = $alias;
-      return $this;
+        $this->m_tables[] = $name;
+        $this->m_aliases[count($this->m_tables) - 1] = $alias;
+        return $this;
     }
 
     /**
-    * Add join to Join Array
-    * @param string $table Table name
-    * @param string $alias Alias of table
-    * @param string $condition Condition for the Join
-    * @param bool $outer Wether to use an outer (left) join or an inner join
-    * @return atkQuery The query object itself (for fluent usage)
-    */
-    function &addJoin($table, $alias, $condition, $outer=false)
+     * Add join to Join Array
+     * @param string $table Table name
+     * @param string $alias Alias of table
+     * @param string $condition Condition for the Join
+     * @param bool $outer Wether to use an outer (left) join or an inner join
+     * @return atkQuery The query object itself (for fluent usage)
+     */
+    function &addJoin($table, $alias, $condition, $outer = false)
     {
-      $join = " ".($outer ? "LEFT JOIN " : "JOIN ").$this->quoteField($table)." ".$this->quoteField($alias)." ON (".$condition.") ";
-      if (!in_array($join, $this->m_joins)) $this->m_joins[] = $join;
-      return $this;
+        $join = " " . ($outer ? "LEFT JOIN " : "JOIN ") . $this->quoteField($table) . " " . $this->quoteField($alias) . " ON (" . $condition . ") ";
+        if (!in_array($join, $this->m_joins))
+            $this->m_joins[] = $join;
+        return $this;
     }
 
     /**
@@ -338,8 +338,8 @@
      */
     function &addGroupBy($element)
     {
-      $this->m_groupbys[] = $element;
-      return $this;
+        $this->m_groupbys[] = $element;
+        return $this;
     }
 
     /**
@@ -350,8 +350,8 @@
      */
     function &addOrderBy($element)
     {
-      $this->m_orderbys[] = $element;
-      return $this;
+        $this->m_orderbys[] = $element;
+        return $this;
     }
 
     /**
@@ -362,14 +362,13 @@
      */
     public function addCondition($condition)
     {
-      if ($condition != '') 
-      {
-        // NOTE: previous code tried to make sure a condition wasn't added
-        // twice, however when supporting bind params you can't do this anymore
-        $this->m_conditions[] = $condition;
-      }
-      
-      return $this;
+        if ($condition != '') {
+            // NOTE: previous code tried to make sure a condition wasn't added
+            // twice, however when supporting bind params you can't do this anymore
+            $this->m_conditions[] = $condition;
+        }
+
+        return $this;
     }
 
     /**
@@ -379,10 +378,10 @@
      */
     public function setSearchMethod($searchMethod)
     {
-      $this->m_searchmethod = $searchMethod;
-      return $this;
+        $this->m_searchmethod = $searchMethod;
+        return $this;
     }
-    
+
     /**
      * Add search condition to the query. Basically similar to addCondition, but
      * searchconditions make use of the searchmode setting to determine whether the
@@ -393,8 +392,9 @@
      */
     function &addSearchCondition($condition)
     {
-      if ($condition!="") $this->m_searchconditions[] = $condition;
-      return $this;
+        if ($condition != "")
+            $this->m_searchconditions[] = $condition;
+        return $this;
     }
 
     /**
@@ -408,8 +408,8 @@
      */
     function &setDistinct($distinct)
     {
-      $this->m_distinct = $distinct;
-      return $this;
+        $this->m_distinct = $distinct;
+        return $this;
     }
 
     /**
@@ -421,9 +421,9 @@
      */
     function &setLimit($offset, $limit)
     {
-      $this->m_offset = $offset;
-      $this->m_limit = $limit;
-      return $this;
+        $this->m_offset = $offset;
+        $this->m_limit = $limit;
+        return $this;
     }
 
     /**
@@ -433,68 +433,67 @@
      */
     function buildSelect($distinct = FALSE)
     {
-      if (count($this->m_fields)<1 && count($this->m_expressions)<1) return false;
-      $result = "SELECT ".($distinct||$this->m_distinct ? "DISTINCT ": "");
-      for ($i=0;$i<count($this->m_fields);$i++)
-      {
-        $result.= $this->quoteField($this->m_fields[$i]);
-        $fieldalias = (isset($this->m_fieldaliases[$this->m_fields[$i]])?$this->m_fieldaliases[$this->m_fields[$i]]:"");
-        if ($fieldalias!="") $result.=" AS ".$fieldalias;
-        if ($i < count($this->m_fields)-1) $result.=", ";
-      }
-
-      foreach ($this->m_expressions as $i => $entry)
-      {
-        if (count($this->m_fields) > 0 || $i > 0) $result .= ", ";
-        $fieldName = $entry['name'];
-        $expression = $entry['expression'];
-        $fieldAlias = isset($this->m_fieldaliases[$fieldName]) ? $this->m_fieldaliases[$fieldName] : $this->quoteField($fieldName);
-        $result .= "($expression) AS $fieldAlias";
-        $first = false;
-      }
-
-      $this->_addFrom($result);
-
-      for ($i=0;$i<count($this->m_joins);$i++)
-      {
-        $result.=$this->m_joins[$i];
-      }
-
-      if (count($this->m_conditions)>0)
-      {
-          $result.= " WHERE (".implode(") AND (",$this->m_conditions).")";
-      }
-
-      if (count($this->m_searchconditions)>0)
-      {
-        $prefix=" ";
-        if(count($this->m_conditions)==0) { $prefix=" WHERE "; } else { $prefix=" AND "; }
-        if($this->m_searchmethod==""||$this->m_searchmethod=="AND")
-        {
-          $result.= $prefix."(".implode(" AND ",$this->m_searchconditions).")";
+        if (count($this->m_fields) < 1 && count($this->m_expressions) < 1)
+            return false;
+        $result = "SELECT " . ($distinct || $this->m_distinct ? "DISTINCT " : "");
+        for ($i = 0; $i < count($this->m_fields); $i++) {
+            $result.= $this->quoteField($this->m_fields[$i]);
+            $fieldalias = (isset($this->m_fieldaliases[$this->m_fields[$i]]) ? $this->m_fieldaliases[$this->m_fields[$i]]
+                        : "");
+            if ($fieldalias != "")
+                $result.=" AS " . $fieldalias;
+            if ($i < count($this->m_fields) - 1)
+                $result.=", ";
         }
-        else
-        {
-          $result.= $prefix."(".implode(" OR ",$this->m_searchconditions).")";
+
+        foreach ($this->m_expressions as $i => $entry) {
+            if (count($this->m_fields) > 0 || $i > 0)
+                $result .= ", ";
+            $fieldName = $entry['name'];
+            $expression = $entry['expression'];
+            $fieldAlias = isset($this->m_fieldaliases[$fieldName]) ? $this->m_fieldaliases[$fieldName]
+                    : $this->quoteField($fieldName);
+            $result .= "($expression) AS $fieldAlias";
+            $first = false;
         }
-      }
 
-      if (count($this->m_groupbys)>0)
-      {
-        $result.= " GROUP BY ".implode(", ",$this->m_groupbys);
-      }
+        $this->_addFrom($result);
 
-      if (count($this->m_orderbys)>0)
-      {
-        $this->_addOrderBy($result);
-      }
+        for ($i = 0; $i < count($this->m_joins); $i++) {
+            $result.=$this->m_joins[$i];
+        }
 
-      if ($this->m_limit>0)
-      {
-        $this->_addLimiter($result);
-      }
+        if (count($this->m_conditions) > 0) {
+            $result.= " WHERE (" . implode(") AND (", $this->m_conditions) . ")";
+        }
 
-      return $result;
+        if (count($this->m_searchconditions) > 0) {
+            $prefix = " ";
+            if (count($this->m_conditions) == 0) {
+                $prefix = " WHERE ";
+            } else {
+                $prefix = " AND ";
+            }
+            if ($this->m_searchmethod == "" || $this->m_searchmethod == "AND") {
+                $result.= $prefix . "(" . implode(" AND ", $this->m_searchconditions) . ")";
+            } else {
+                $result.= $prefix . "(" . implode(" OR ", $this->m_searchconditions) . ")";
+            }
+        }
+
+        if (count($this->m_groupbys) > 0) {
+            $result.= " GROUP BY " . implode(", ", $this->m_groupbys);
+        }
+
+        if (count($this->m_orderbys) > 0) {
+            $this->_addOrderBy($result);
+        }
+
+        if ($this->m_limit > 0) {
+            $this->_addLimiter($result);
+        }
+
+        return $result;
     }
 
     /**
@@ -504,14 +503,15 @@
      */
     function _addFrom(&$query)
     {
-      $query.= " FROM ";
-      for ($i=0;$i<count($this->m_tables);$i++)
-      {
-        $query.= $this->quoteField($this->m_tables[$i]);
-        if ($this->m_aliases[$i]!="") $query.=" ".$this->m_aliases[$i];
-        if ($i < count($this->m_tables)-1) $query.=", ";
-      }
-      $query.= " ";
+        $query.= " FROM ";
+        for ($i = 0; $i < count($this->m_tables); $i++) {
+            $query.= $this->quoteField($this->m_tables[$i]);
+            if ($this->m_aliases[$i] != "")
+                $query.=" " . $this->m_aliases[$i];
+            if ($i < count($this->m_tables) - 1)
+                $query.=", ";
+        }
+        $query.= " ";
     }
 
     /**
@@ -522,8 +522,8 @@
      */
     public function executeSelect($distinct = FALSE)
     {
-      $query = $this->buildSelect($distinct);
-      return $this->getDb()->getrows($query); 
+        $query = $this->buildSelect($distinct);
+        return $this->getDb()->getrows($query);
     }
 
     /**
@@ -534,7 +534,7 @@
      */
     function _addLimiter(&$query)
     {
-      // not supported..
+        // not supported..
     }
 
     /**
@@ -544,10 +544,9 @@
      */
     function _addOrderBy(&$query)
     {
-      if (count($this->m_orderbys)>0)
-      {
-        $query.= " ORDER BY ".implode(", ",$this->m_orderbys);
-      }
+        if (count($this->m_orderbys) > 0) {
+            $query.= " ORDER BY " . implode(", ", $this->m_orderbys);
+        }
     }
 
     /**
@@ -559,53 +558,50 @@
      *
      * @return String a SQL Select COUNT(*) Query
      */
-     function buildCount($distinct = FALSE)
-     {
-       if (($distinct||$this->m_distinct) && count($this->m_fields) > 0)
-       {
-        $result = "SELECT COUNT(DISTINCT ";
-        $result.=implode($this->quoteFields($this->m_fields),", ");
-        $result.=") as count FROM ";
-       }
-       else $result = "SELECT COUNT(*) AS count FROM ";
+    function buildCount($distinct = FALSE)
+    {
+        if (($distinct || $this->m_distinct) && count($this->m_fields) > 0) {
+            $result = "SELECT COUNT(DISTINCT ";
+            $result.=implode($this->quoteFields($this->m_fields), ", ");
+            $result.=") as count FROM ";
+        } else
+            $result = "SELECT COUNT(*) AS count FROM ";
 
-       for ($i=0;$i<count($this->m_tables);$i++)
-       {
-         $result.= $this->quoteField($this->m_tables[$i]);
-         if ($this->m_aliases[$i]!="") $result.=" ".$this->m_aliases[$i];
-         if ($i < count($this->m_tables)-1) $result.=", ";
-       }
-
-       for ($i=0;$i<count($this->m_joins);$i++)
-       {
-         $result.=$this->m_joins[$i];
-       }
-
-      if (count($this->m_conditions)>0)
-      {
-        $result.= " WHERE (".implode(") AND (",$this->m_conditions).")";
-      }
-
-      if (count($this->m_searchconditions)>0)
-      {
-        $prefix=" ";
-        if(count($this->m_conditions)==0) { $prefix=" WHERE "; } else { $prefix=" AND "; };
-        if($this->m_searchmethod==""||$this->m_searchmethod=="AND")
-        {
-          $result.= $prefix."(".implode(" AND ",$this->m_searchconditions).")";
+        for ($i = 0; $i < count($this->m_tables); $i++) {
+            $result.= $this->quoteField($this->m_tables[$i]);
+            if ($this->m_aliases[$i] != "")
+                $result.=" " . $this->m_aliases[$i];
+            if ($i < count($this->m_tables) - 1)
+                $result.=", ";
         }
-        else
-        {
-          $result.= $prefix."(".implode(" OR ",$this->m_searchconditions).")";
-        }
-      }
 
-       if (count($this->m_groupbys)>0)
-       {
-         $result.= " GROUP BY ".implode(", ",$this->m_groupbys);
-       }
-       return $result;
-     }
+        for ($i = 0; $i < count($this->m_joins); $i++) {
+            $result.=$this->m_joins[$i];
+        }
+
+        if (count($this->m_conditions) > 0) {
+            $result.= " WHERE (" . implode(") AND (", $this->m_conditions) . ")";
+        }
+
+        if (count($this->m_searchconditions) > 0) {
+            $prefix = " ";
+            if (count($this->m_conditions) == 0) {
+                $prefix = " WHERE ";
+            } else {
+                $prefix = " AND ";
+            };
+            if ($this->m_searchmethod == "" || $this->m_searchmethod == "AND") {
+                $result.= $prefix . "(" . implode(" AND ", $this->m_searchconditions) . ")";
+            } else {
+                $result.= $prefix . "(" . implode(" OR ", $this->m_searchconditions) . ")";
+            }
+        }
+
+        if (count($this->m_groupbys) > 0) {
+            $result.= " GROUP BY " . implode(", ", $this->m_groupbys);
+        }
+        return $result;
+    }
 
     /**
      * Builds the SQL Update query
@@ -613,18 +609,17 @@
      */
     function buildUpdate()
     {
-      $result = "UPDATE ".$this->quoteField($this->m_tables[0])." SET ";
+        $result = "UPDATE " . $this->quoteField($this->m_tables[0]) . " SET ";
 
-      for ($i=0;$i<count($this->m_fields);$i++)
-      {
-        $result.= $this->quoteField($this->m_fields[$i])."=".$this->m_values[$this->m_fields[$i]];
-        if ($i < count($this->m_fields)-1) $result.=",";
-      }
-      if (count($this->m_conditions)>0)
-      {
-        $result.= " WHERE ".implode(" AND ",$this->m_conditions);
-      }
-      return $result;
+        for ($i = 0; $i < count($this->m_fields); $i++) {
+            $result.= $this->quoteField($this->m_fields[$i]) . "=" . $this->m_values[$this->m_fields[$i]];
+            if ($i < count($this->m_fields) - 1)
+                $result.=",";
+        }
+        if (count($this->m_conditions) > 0) {
+            $result.= " WHERE " . implode(" AND ", $this->m_conditions);
+        }
+        return $result;
     }
 
     /**
@@ -632,8 +627,8 @@
      */
     function executeUpdate()
     {
-      $query = $this->buildUpdate();
-      return $this->getDb()->query($query);
+        $query = $this->buildUpdate();
+        return $this->getDb()->query($query);
     }
 
     /**
@@ -641,8 +636,8 @@
      */
     function executeInsert()
     {
-      $query = $this->buildInsert(true);
-      return $this->getDb()->query($query);
+        $query = $this->buildInsert(true);
+        return $this->getDb()->query($query);
     }
 
     /**
@@ -652,25 +647,25 @@
     function buildInsert()
     {
 
-      $result = "INSERT INTO ".$this->quoteField($this->m_tables[0])." (";
+        $result = "INSERT INTO " . $this->quoteField($this->m_tables[0]) . " (";
 
-      for ($i=0;$i<count($this->m_fields);$i++)
-      {
-        $result.= $this->quoteField($this->m_fields[$i]);
-        if ($i < count($this->m_fields)-1) $result.=",";
-      }
+        for ($i = 0; $i < count($this->m_fields); $i++) {
+            $result.= $this->quoteField($this->m_fields[$i]);
+            if ($i < count($this->m_fields) - 1)
+                $result.=",";
+        }
 
-      $result.=") VALUES (";
+        $result.=") VALUES (";
 
-      for ($i=0;$i<count($this->m_fields);$i++)
-      {
-        $result.= $this->m_values[$this->m_fields[$i]];
-        if ($i < count($this->m_fields)-1) $result.=",";
-      }
+        for ($i = 0; $i < count($this->m_fields); $i++) {
+            $result.= $this->m_values[$this->m_fields[$i]];
+            if ($i < count($this->m_fields) - 1)
+                $result.=",";
+        }
 
-      $result.=")";
+        $result.=")";
 
-      return $result;
+        return $result;
     }
 
     /**
@@ -679,14 +674,13 @@
      */
     function buildDelete()
     {
-      $result = "DELETE FROM ".$this->quoteField($this->m_tables[0]);
+        $result = "DELETE FROM " . $this->quoteField($this->m_tables[0]);
 
-      if (count($this->m_conditions)>0)
-      {
-        $result.= " WHERE ".implode(" AND ",$this->m_conditions);
-      }
+        if (count($this->m_conditions) > 0) {
+            $result.= " WHERE " . implode(" AND ", $this->m_conditions);
+        }
 
-      return $result;
+        return $result;
     }
 
     /**
@@ -694,8 +688,8 @@
      */
     function executeDelete()
     {
-      $query = $this->buildDelete();
-      return $this->getDb()->query($query);
+        $query = $this->buildDelete();
+        return $this->getDb()->query($query);
     }
 
     /**
@@ -704,14 +698,12 @@
      */
     function deAlias(&$record)
     {
-      foreach ($record as $name => $value)
-      {
-        if (isset($this->m_aliasLookup[$name]))
-        {
-          $record[$this->m_aliasLookup[strtolower($name)]]=$value;
-          unset($record[strtolower($name)]);
+        foreach ($record as $name => $value) {
+            if (isset($this->m_aliasLookup[$name])) {
+                $record[$this->m_aliasLookup[strtolower($name)]] = $value;
+                unset($record[strtolower($name)]);
+            }
         }
-      }
     }
 
     /**
@@ -720,12 +712,12 @@
      * @param String $field
      * @param Bool $emptyStringIsNull
      */
-    function nullCondition($field, $emptyStringIsNull=false)
+    function nullCondition($field, $emptyStringIsNull = false)
     {
-      $result = "$field IS NULL";
-      if ($emptyStringIsNull)
-        $result = "($result OR $field = '')";
-      return $result;
+        $result = "$field IS NULL";
+        if ($emptyStringIsNull)
+            $result = "($result OR $field = '')";
+        return $result;
     }
 
     /**
@@ -734,12 +726,12 @@
      * @param String $field
      * @param Bool $emptyStringIsNull
      */
-    function notNullCondition($field, $emptyStringIsNull=false)
+    function notNullCondition($field, $emptyStringIsNull = false)
     {
-      $result = "$field IS NOT NULL";
-      if ($emptyStringIsNull)
-        $result = "($result AND $field <> '')";
-      return $result;
+        $result = "$field IS NOT NULL";
+        if ($emptyStringIsNull)
+            $result = "($result AND $field <> '')";
+        return $result;
     }
 
     /**
@@ -749,19 +741,16 @@
      * @param string $dbFieldType help determine exact search method
      * @return string piece of where clause to use in your SQL statement
      */
-    function exactCondition($field, $value, $dbFieldType=null)
+    function exactCondition($field, $value, $dbFieldType = null)
     {
-      if(in_array($dbFieldType,array("decimal","number")))
-        return self::exactNumberCondition($field,$value);
+        if (in_array($dbFieldType, array("decimal", "number")))
+            return self::exactNumberCondition($field, $value);
 
-      if($value[0]=='!')
-      {
-        return "UPPER(".$field.")!=UPPER('".substr($value,1,atk_strlen($value))."')";
-      }
-      else
-      {
-        return "UPPER(".$field.")=UPPER('".$value."')";
-      }
+        if ($value[0] == '!') {
+            return "UPPER(" . $field . ")!=UPPER('" . substr($value, 1, atk_strlen($value)) . "')";
+        } else {
+            return "UPPER(" . $field . ")=UPPER('" . $value . "')";
+        }
     }
 
     /**
@@ -772,7 +761,7 @@
      */
     public static function exactNumberCondition($field, $value)
     {
-      return "$field = $value";
+        return "$field = $value";
     }
 
     /**
@@ -784,14 +773,11 @@
      */
     function substringCondition($field, $value)
     {
-      if($value[0]=='!')
-      {
-        return "UPPER(".$field.") NOT LIKE UPPER('%".substr($value,1,atk_strlen($value))."%')";
-      }
-      else
-      {
-        return "UPPER(".$field.") LIKE UPPER('%".$value."%')";
-      }
+        if ($value[0] == '!') {
+            return "UPPER(" . $field . ") NOT LIKE UPPER('%" . substr($value, 1, atk_strlen($value)) . "%')";
+        } else {
+            return "UPPER(" . $field . ") LIKE UPPER('%" . $value . "%')";
+        }
     }
 
     /**
@@ -802,14 +788,11 @@
      */
     function wildcardCondition($field, $value)
     {
-      if($value[0]=='!')
-      {
-        return "UPPER(".$field.") NOT LIKE UPPER('".str_replace("*","%",substr($value,1,atk_strlen($value)))."')";
-      }
-      else
-      {
-        return "UPPER(".$field.") LIKE UPPER('".str_replace("*","%",$value)."')";
-      }
+        if ($value[0] == '!') {
+            return "UPPER(" . $field . ") NOT LIKE UPPER('" . str_replace("*", "%", substr($value, 1, atk_strlen($value))) . "')";
+        } else {
+            return "UPPER(" . $field . ") LIKE UPPER('" . str_replace("*", "%", $value) . "')";
+        }
     }
 
     /**
@@ -820,14 +803,11 @@
      */
     function greaterthanCondition($field, $value)
     {
-      if($value[0]=='!')
-      {
-        return $field." < '".substr($value,1,atk_strlen($value))."'";
-      }
-      else
-      {
-        return $field." > '".$value."'";
-      }
+        if ($value[0] == '!') {
+            return $field . " < '" . substr($value, 1, atk_strlen($value)) . "'";
+        } else {
+            return $field . " > '" . $value . "'";
+        }
     }
 
     /**
@@ -838,14 +818,11 @@
      */
     function greaterthanequalCondition($field, $value)
     {
-      if($value[0]=='!')
-      {
-        return $field." < '".substr($value,1,atk_strlen($value))."'";
-      }
-      else
-      {
-        return $field." >= '".$value."'";
-      }
+        if ($value[0] == '!') {
+            return $field . " < '" . substr($value, 1, atk_strlen($value)) . "'";
+        } else {
+            return $field . " >= '" . $value . "'";
+        }
     }
 
     /**
@@ -856,14 +833,11 @@
      */
     function lessthanCondition($field, $value)
     {
-      if($value[0]=='!')
-      {
-        return $field." > '".substr($value,1,atk_strlen($value))."'";
-      }
-      else
-      {
-        return $field." < '".$value."'";
-      }
+        if ($value[0] == '!') {
+            return $field . " > '" . substr($value, 1, atk_strlen($value)) . "'";
+        } else {
+            return $field . " < '" . $value . "'";
+        }
     }
 
     /**
@@ -874,14 +848,11 @@
      */
     function lessthanequalCondition($field, $value)
     {
-      if($value[0]=='!')
-      {
-        return $field." > '".substr($value,1,atk_strlen($value))."'";
-      }
-      else
-      {
-        return $field." <= '".$value."'";
-      }
+        if ($value[0] == '!') {
+            return $field . " > '" . substr($value, 1, atk_strlen($value)) . "'";
+        } else {
+            return $field . " <= '" . $value . "'";
+        }
     }
 
     /**
@@ -893,12 +864,12 @@
      * @param Bool $quote Add quotes?
      * @return unknown
      */
-    function betweenCondition($field, $value1, $value2, $quote=true)
+    function betweenCondition($field, $value1, $value2, $quote = true)
     {
-      if($quote)
-        return $field." BETWEEN '".$value1."' AND '".$value2."'";
-      else
-        return $field." BETWEEN ".$value1." AND ".$value2;
+        if ($quote)
+            return $field . " BETWEEN '" . $value1 . "' AND '" . $value2 . "'";
+        else
+            return $field . " BETWEEN " . $value1 . " AND " . $value2;
     }
 
     /**
@@ -907,11 +878,11 @@
      * @param string $basepath The basepath for the database object (defaults to 'atk.db')
      * @return atkQuery A Query object for the appropriate database
      */
-    function &create($basepath="atk.db.")
+    function &create($basepath = "atk.db.")
     {
-      $dbconfig = atkconfig("db");
-      $name = "atk" . $dbconfig["default"]["driver"] . "query";
-      return atknew(($basepath?$basepath.'.':'').$name);
+        $dbconfig = atkconfig("db");
+        $name = "atk" . $dbconfig["default"]["driver"] . "query";
+        return atknew(($basepath ? $basepath . '.' : '') . $name);
     }
 
     /**
@@ -923,24 +894,22 @@
      */
     function quoteField($field)
     {
-      $quotefield=false;
-      if ((in_array($field,$this->m_quotedfields) ||
-           in_array($field, $this->m_tables)) &&
-           preg_match('/(^[\w\.]+)/',$field)."'")
-      {
-        $quotefield=true;
-      }
+        $quotefield = false;
+        if ((in_array($field, $this->m_quotedfields) ||
+            in_array($field, $this->m_tables)) &&
+            preg_match('/(^[\w\.]+)/', $field) . "'") {
+            $quotefield = true;
+        }
 
-      $exploded = explode('.',$field);
-      foreach ($exploded as $identifier)
-      {
-        if ($quotefield || in_array($identifier,$this->m_reservedNames))
-          $identifiers[] = $this->m_fieldquote.$identifier.$this->m_fieldquote;
-        else
-          $identifiers[] = $identifier;
-      }
-      $field = implode('.',$identifiers);
-      return $field;
+        $exploded = explode('.', $field);
+        foreach ($exploded as $identifier) {
+            if ($quotefield || in_array($identifier, $this->m_reservedNames))
+                $identifiers[] = $this->m_fieldquote . $identifier . $this->m_fieldquote;
+            else
+                $identifiers[] = $identifier;
+        }
+        $field = implode('.', $identifiers);
+        return $field;
     }
 
     /**
@@ -952,16 +921,15 @@
      */
     function quoteFields($fields)
     {
-      if ($this->m_fieldquote)
-      {
-        foreach ($fields as $key => $field)
-        {
-          $quoted[$key] = $this->quoteField($field);
+        if ($this->m_fieldquote) {
+            foreach ($fields as $key => $field) {
+                $quoted[$key] = $this->quoteField($field);
+            }
+            $fields = $quoted;
         }
-        $fields = $quoted;
-      }
-      return $fields;
+        return $fields;
     }
-  }
+
+}
 
 ?>

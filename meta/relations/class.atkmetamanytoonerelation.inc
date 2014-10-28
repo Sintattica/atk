@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Achievo ATK distribution.
+ * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
  * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
@@ -14,7 +14,6 @@
  * @version $Revision: 6320 $
  * $Id$
  */
-
 /**
  * @internal Include the base class.
  */
@@ -29,45 +28,47 @@ userelation("atkmanytoonerelation");
  */
 class atkMetaManyToOneRelation extends atkManyToOneRelation
 {
-  /**
-   * Default constructor.
-   * 
-   * @param String $name The unique name of the attribute. In slave mode,
-   *                     this corresponds to the foreign key field in the
-   *                     database table.  (The name is also used as the section 
-   *                     heading.)
-   * @param String $destination the destination node (in module.nodename
-   *                            notation)
-   * @param string $template The descriptor template
-   * @param array $options Array with options 
-   * @param int $flags Attribute flags that influence this attributes'
-   *                   behavior.   
-   */
-  public function __construct($name, $destination, $template, $options, $flags=0)
-  {
-    // we must use $options["source"] (if it is present) as name for the
-    // atkManyToOneRelation, because for multi referential keys $name
-    // must be array with referential key columns
-    if (array_key_exists("source", $options) && is_array($options["source"]))
-      $name = $options["source"];
 
-    parent::__construct($name, $destination, $flags);
+    /**
+     * Default constructor.
+     * 
+     * @param String $name The unique name of the attribute. In slave mode,
+     *                     this corresponds to the foreign key field in the
+     *                     database table.  (The name is also used as the section 
+     *                     heading.)
+     * @param String $destination the destination node (in module.nodename
+     *                            notation)
+     * @param string $template The descriptor template
+     * @param array $options Array with options 
+     * @param int $flags Attribute flags that influence this attributes'
+     *                   behavior.   
+     */
+    public function __construct($name, $destination, $template, $options, $flags = 0)
+    {
+        // we must use $options["source"] (if it is present) as name for the
+        // atkManyToOneRelation, because for multi referential keys $name
+        // must be array with referential key columns
+        if (array_key_exists("source", $options) && is_array($options["source"]))
+            $name = $options["source"];
 
-    $this->setDescriptorTemplate($template);
+        parent::__construct($name, $destination, $flags);
 
-    if (isset($options["filter"]))
-      $this->setDestinationFilter($options["filter"]);
+        $this->setDescriptorTemplate($template);
 
-    if (isset($options['join_filter']))
-      $this->setJoinFilter($options['join_filter']);
+        if (isset($options["filter"]))
+            $this->setDestinationFilter($options["filter"]);
 
-    $cols = array();
-    if (array_key_exists('listcols', $options))
-      $cols = $options['listcols'];
-    else if (array_key_exists('listcolumns', $options))
-      $cols = $options['listcolumns'];
+        if (isset($options['join_filter']))
+            $this->setJoinFilter($options['join_filter']);
 
-    foreach ($cols as $col)
-      $this->addListColumn($col);
-  }
+        $cols = array();
+        if (array_key_exists('listcols', $options))
+            $cols = $options['listcols'];
+        else if (array_key_exists('listcolumns', $options))
+            $cols = $options['listcolumns'];
+
+        foreach ($cols as $col)
+            $this->addListColumn($col);
+    }
+
 }

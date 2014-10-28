@@ -1,6 +1,6 @@
 <?php
 
-  class atki5DDL extends atkDb2DDL 
-  {
+class atki5DDL extends atkDb2DDL
+{
     
-  }
+}

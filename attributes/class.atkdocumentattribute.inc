@@ -1,32 +1,35 @@
 <?php
-  /**
-   * atkDocumentAttribute class file
-   *
-   * @package atk
-   * @subpackage attributes
-   *
-   * @author ivo <ivo@ibuildings.nl>
-   * @author guido <guido@ibuildings.nl>
-   *
-   * @copyright (c) 2005 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing/ ATK open source license
-   *
-   * @version $Revision: 6309 $
-   * $Id$
-   */
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ * atkDocumentAttribute class file
+ *
+ * @package atk
+ * @subpackage attributes
+ *
+ * @author ivo <ivo@ibuildings.nl>
+ * @author guido <guido@ibuildings.nl>
+ *
+ * @copyright (c) 2005 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing/ ATK open source license
+ *
+ * @version $Revision: 6309 $
+ * $Id: class.atkdocumentattribute.inc 6354 2009-04-15 02:41:21Z mvdam $
+ */
+// Use the atkdummyattribute to extend from
+useattrib("atkdummyattribute");
 
-  // Use the atkdummyattribute to extend from
-  useattrib("atkdummyattribute");
-
-  /**
-   * DocumentAttribute class for adding document generation functionality to a node
-   *
-   * @author guido <guido@ibuildings.nl>
-   * @package atk
-   * @subpackage attributes
-   */
-  class atkDocumentAttribute extends atkDummyAttribute
-  {
+/**
+ * DocumentAttribute class for adding document generation functionality to a node
+ *
+ * @author guido <guido@ibuildings.nl>
+ * @package atk
+ * @subpackage attributes
+ */
+class atkDocumentAttribute extends atkDummyAttribute
+{
 
     /**
      * atkDocumentAttribute constructor
@@ -34,12 +37,12 @@
      * @param string $name description
      * @param integer $flags description
      */
-    function atkDocumentAttribute($name, $flags=0)
+    function atkDocumentAttribute($name, $flags = 0)
     {
-      // Call parent constructor with addition of the af_hide_add flag
-      // because this attribute should not be used in add operations where
-      // the recorddata is not yet present in the database.
-      $this->atkDummyAttribute($name, "", $flags|AF_HIDE_ADD|AF_DUMMY_SHOW_LABEL);
+        // Call parent constructor with addition of the af_hide_add flag
+        // because this attribute should not be used in add operations where
+        // the recorddata is not yet present in the database.
+        $this->atkDummyAttribute($name, "", $flags | AF_HIDE_ADD | AF_DUMMY_SHOW_LABEL);
     }
 
     /**
@@ -51,9 +54,9 @@
      * @param String $mode The mode we're in ('add' or 'edit')
      * @return string HTML code for selection control
      */
-    function edit($record='', $fieldprefix='', $mode='')
+    function edit($record = '', $fieldprefix = '', $mode = '')
     {
-      return $this->documentSelector($record, $mode, false);
+        return $this->documentSelector($record, $mode, false);
     }
 
     /**
@@ -65,10 +68,10 @@
      */
     function display($record, $mode)
     {
-      if (($mode!="csv") && ($mode!="plain"))
-        return $this->documentSelector($record, $mode);
-      else
-        return "";
+        if (($mode != "csv") && ($mode != "plain"))
+            return $this->documentSelector($record, $mode);
+        else
+            return "";
     }
 
     /**
@@ -80,9 +83,9 @@
      */
     function getDocumentFiles($path, $record)
     {
-      // Read the directory contents using the directorytraverser
-      $dirtrav = &atknew("atk.utils.atkdirectorytraverser");
-      return $dirtrav->getDirContents($path);
+        // Read the directory contents using the directorytraverser
+        $dirtrav = &atknew("atk.utils.atkdirectorytraverser");
+        return $dirtrav->getDirContents($path);
     }
 
     /**
@@ -91,57 +94,54 @@
      * @param array $record The record that contains this attribute's value
      * @param string $mode Name of the mode in which the document selector will be displayed
      * @param boolean $addForm Do we need to add the form html code?
-     * 
+     *
      * @return string Display code for this attribute in the specified mode
      */
-    function documentSelector($record, $mode = "", $addForm=true)
+    function documentSelector($record, $mode = "", $addForm = true)
     {
-      // Compose the path to use when searching for docuemnt templates
-      $basepath = atkconfig("doctemplatedir", "doctemplates/");
-      $module = $this->m_ownerInstance->m_module;
-      $node = $this->m_owner;
-      $path = $basepath . $module . "/" . $node;
+        // Compose the path to use when searching for docuemnt templates
+        $basepath = atkconfig("doctemplatedir", "doctemplates/");
+        $module = $this->m_ownerInstance->m_module;
+        $node = $this->m_owner;
+        $path = $basepath . $module . "/" . $node;
 
-      // Only continue if the path is valid and exists
-      if (!is_dir($path))
-      {
-      	return $this->text("invalid_path");
-      }
-      
-      // Get the list of document files
-      $contents = $this->getDocumentFiles($path, $record);
-
-      if (empty($contents))
-      {
-      	return $this->text("no_document_templates_found");
-      }
-
-      // Add the select box to the html
-      $html = '<select name="atkdoctpl">';
-      foreach ($contents as $entry)
-      {
-        if (is_file($path . "/" . $entry)) // todo: && check of tie een open office extensie heeft
-        {
-          $html .= '<option value="' . urlencode($entry) . '">' . $entry;
+        // Only continue if the path is valid and exists
+        if (!is_dir($path)) {
+            return $this->text("invalid_path");
         }
-      }
-      $html .= '</select> ';
 
-      // Add the button to the html
-      $selector = $this->m_ownerInstance->primaryKey($record);
-      $onclickscript = 'window.location="'.session_url(dispatch_url($module . "." . $node, "document", array("atkselector"=>$selector)), SESSION_DEFAULT).'&atkdoctpl="+this.form.atkdoctpl.value;';
+        // Get the list of document files
+        $contents = $this->getDocumentFiles($path, $record);
 
-      $html .= '<input type="button" class="btn_doc_open" name="atkdocument" value="' . atktext("open") . '" onclick=\''.$onclickscript.'\'>';
+        if (empty($contents)) {
+            return $this->text("no_document_templates_found");
+        }
 
-      // Wrap the input elements in a unique session form when no form is present yet (in list and view mode)
-      if ((($mode=="list")||($mode=="view")) && $addForm) {
-        static $documentSelectorFormCounter = 0;
-        $html = '<form name="documentSelectorForm' . ++$documentSelectorFormCounter . '">' . session_form(). $html . '</form>';
-      }
+        // Add the select box to the html
+        $html = '<select class="form-control" name="atkdoctpl">';
+        foreach ($contents as $entry) {
+            if (is_file($path . "/" . $entry)) { // todo: && check of tie een open office extensie heeft
+                $html .= '<option value="' . urlencode($entry) . '">' . $entry;
+            }
+        }
+        $html .= '</select> ';
 
-      // Return the generated html
-      return $html;
+        // Add the button to the html
+        $selector = $this->m_ownerInstance->primaryKey($record);
+        $onclickscript = 'window.location="' . session_url(dispatch_url($module . "." . $node, "document", array("atkselector" => $selector)), SESSION_DEFAULT) . '&atkdoctpl="+this.form.atkdoctpl.value;';
+
+        $html .= '<input type="button" class="btn_doc_open" name="atkdocument" value="' . atktext("open") . '" onclick=\'' . $onclickscript . '\'>';
+
+        // Wrap the input elements in a unique session form when no form is present yet (in list and view mode)
+        if ((($mode == "list") || ($mode == "view")) && $addForm) {
+            static $documentSelectorFormCounter = 0;
+            $html = '<form name="documentSelectorForm' . ++$documentSelectorFormCounter . '">' . session_form() . $html . '</form>';
+        }
+
+        // Return the generated html
+        return $html;
     }
-  }
+
+}
 
 ?>

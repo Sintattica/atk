@@ -1,54 +1,53 @@
 <?php
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage datatypes
+ *
+ * @copyright (c)2000-2004 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6318 $
+ * $Id$
+ */
+atkimport('atk.datatypes.atkdatatype');
 
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage datatypes
-   *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6318 $
-   * $Id$
-   */
-  atkimport('atk.datatypes.atkdatatype');
-
-  /**
-   * The 'time' datatype.
-   * Useful for calculating with time in different formats.
-   *
-   * Accepts ATK time format (an array) and timestamps.
-   * Created for easily and fluently calculating durations.
-   *
-   * @deprecated Scheduled for removal.
-   * @author Boy Baukema <boy@achievo.org>
-   * @package atk
-   * @subpackage datatypes
-   */
-  class atkTime extends atkDataType
-  {
+/**
+ * The 'time' datatype.
+ * Useful for calculating with time in different formats.
+ *
+ * Accepts ATK time format (an array) and timestamps.
+ * Created for easily and fluently calculating durations.
+ *
+ * @deprecated Scheduled for removal.
+ * @author Boy Baukema <boy@achievo.org>
+ * @package atk
+ * @subpackage datatypes
+ */
+class atkTime extends atkDataType
+{
     /**
      * @var atkString The template to display the time with
      *                defaults to [hours]:[minutes]:[seconds]
      */
-    private $m_template="";
+    private $m_template = "";
 
     /**
      * @var int The time in UNIX timestamp format
      */
-    private $m_time=0;
+    private $m_time = 0;
 
     /**
      * @var string The date format in PHP format
      *             defaults to H:i:s
      */
-    private $m_format='H:i:s';
+    private $m_format = 'H:i:s';
 
-    /***************** BASICS *****************/
+    /*     * *************** BASICS **************** */
 
     /**
      * Create an atkTime datatype, accepts ATK internal format
@@ -58,18 +57,17 @@
      *                        new atkTime(3600) (one hour) or:
      *                        new atkTime($record['begintime'])
      */
-    public function __construct($time=0)
+    public function __construct($time = 0)
     {
-      $this->setFormat('H:i:s');
-      $this->setTemplate('[hours]:[minutes]:[seconds]');
-      if (is_array($time))
-      {
-        $this->m_time = gmmktime($time['hours'],$time['minutes'],
-                                 $time['seconds'],1,1,1970);
-      }
-      else if (is_numeric($time)) $this->m_time = $time;
-      else atkerror("Unknown time format! Called with: ".
-                    "new atkTime($time)");
+        $this->setFormat('H:i:s');
+        $this->setTemplate('[hours]:[minutes]:[seconds]');
+        if (is_array($time)) {
+            $this->m_time = gmmktime($time['hours'], $time['minutes'], $time['seconds'], 1, 1, 1970);
+        } else if (is_numeric($time))
+            $this->m_time = $time;
+        else
+            atkerror("Unknown time format! Called with: " .
+                "new atkTime($time)");
     }
 
     /**
@@ -80,7 +78,7 @@
      */
     public function create($time)
     {
-      return new atkTime($time);
+        return new atkTime($time);
     }
 
     /**
@@ -90,10 +88,10 @@
      */
     protected function getData()
     {
-      return $this->m_time;
+        return $this->m_time;
     }
 
-    /***************** OPERATIONS *****************/
+    /*     * *************** OPERATIONS **************** */
 
     /**
      * Add time to the current time object.
@@ -103,8 +101,8 @@
      */
     public function add(atkTime $add)
     {
-      $this->m_time+=$add->getTotalSeconds();
-      return $this;
+        $this->m_time+=$add->getTotalSeconds();
+        return $this;
     }
 
     /**
@@ -115,11 +113,11 @@
      */
     public function subtract(atkTime $subtract)
     {
-      $this->m_time-=$subtract->getTotalSeconds();
-      return $this;
+        $this->m_time-=$subtract->getTotalSeconds();
+        return $this;
     }
 
-    /***************** SETTERS *****************/
+    /*     * *************** SETTERS **************** */
 
     /**
      * Set a description template.
@@ -132,8 +130,8 @@
      */
     public function setTemplate($template)
     {
-      $this->m_template= atknew('atk.datatypes.atkstringdt',$template);
-      return $this;
+        $this->m_template = atknew('atk.datatypes.atkstringdt', $template);
+        return $this;
     }
 
     /**
@@ -144,11 +142,11 @@
      */
     public function setFormat($format)
     {
-      $this->m_format = $format;
-      return $this;
+        $this->m_format = $format;
+        return $this;
     }
 
-    /***************** GETTERS *****************/
+    /*     * *************** GETTERS **************** */
 
     /**
      * Gets the time for the current time object in array (ATK) format.
@@ -158,11 +156,11 @@
      *                          when applicable.
      * @return array The array with the time in array format
      */
-    public function getTimeArray($leadingzero=true)
+    public function getTimeArray($leadingzero = true)
     {
-      return array('hours'=>  $this->getHours($leadingzero),
-                   'minutes'=>$this->getMinutes($leadingzero),
-                   'seconds'=>$this->getSeconds($leadingzero));
+        return array('hours' => $this->getHours($leadingzero),
+            'minutes' => $this->getMinutes($leadingzero),
+            'seconds' => $this->getSeconds($leadingzero));
     }
 
     /**
@@ -175,11 +173,12 @@
      *                          when applicable.
      * @return string|int The hours for the current time object
      */
-    public function getHours($leadingzero=false)
+    public function getHours($leadingzero = false)
     {
-      $hours = (int)($this->m_time/3600);
-      if ($leadingzero && $hours<10) $hours="0$hours";
-      return $hours;
+        $hours = (int) ($this->m_time / 3600);
+        if ($leadingzero && $hours < 10)
+            $hours = "0$hours";
+        return $hours;
     }
 
     /**
@@ -192,11 +191,12 @@
      *                          when applicable.
      * @return string|int The
      */
-    public function getMinutes($leadingzero=false)
+    public function getMinutes($leadingzero = false)
     {
-      $minutes = (int)(($this->m_time-($this->getHours()*3600))/60);
-      if ($leadingzero && $minutes<10) $minutes="0$minutes";
-      return $minutes;
+        $minutes = (int) (($this->m_time - ($this->getHours() * 3600)) / 60);
+        if ($leadingzero && $minutes < 10)
+            $minutes = "0$minutes";
+        return $minutes;
     }
 
     /**
@@ -209,12 +209,13 @@
      *                          when applicable.
      * @return string|int The seconds of the time.
      */
-    public function getSeconds($leadingzero=false)
+    public function getSeconds($leadingzero = false)
     {
-      $seconds = (int)($this->m_time-($this->getHours()*3600) -
-                                ($this->getMinutes()*60));
-      if ($leadingzero && $seconds<10) $seconds="0$seconds";
-      return $seconds;
+        $seconds = (int) ($this->m_time - ($this->getHours() * 3600) -
+            ($this->getMinutes() * 60));
+        if ($leadingzero && $seconds < 10)
+            $seconds = "0$seconds";
+        return $seconds;
     }
 
     /**
@@ -226,7 +227,7 @@
      */
     public function getTotalMinutes()
     {
-      return (int)($this->m_time/60);
+        return (int) ($this->m_time / 60);
     }
 
     /**
@@ -238,7 +239,7 @@
      */
     public function getTotalSeconds()
     {
-      return (int)$this->m_time;
+        return (int) $this->m_time;
     }
 
     /**
@@ -252,10 +253,10 @@
      *                         object by setTemplate.
      * @return string The description for the current time object.
      */
-    public function getDescription($template='')
+    public function getDescription($template = '')
     {
-      return $this->m_template->parse($this->getTimeArray())
-                              ->getString();
+        return $this->m_template->parse($this->getTimeArray())
+                ->getString();
     }
 
     /**
@@ -267,11 +268,11 @@
      *                       object by setFormat.
      * @return string The formatted time
      */
-    public function getFormatted($format='')
+    public function getFormatted($format = '')
     {
-      $format = ($format?$format:$this->m_format);
-      atkdebug("formatting time: {$this->m_time} with format $format");
-      return date($format,$this->m_time);
+        $format = ($format ? $format : $this->m_format);
+        atkdebug("formatting time: {$this->m_time} with format $format");
+        return date($format, $this->m_time);
     }
 
     /**
@@ -287,11 +288,11 @@
      */
     public function getDiff(atkTime $compare)
     {
-      return new atkTime((int)($this->m_time -
-                               $compare->getTotalSeconds()));
+        return new atkTime((int) ($this->m_time -
+            $compare->getTotalSeconds()));
     }
 
-    /***************** QUERIES *****************/
+    /*     * *************** QUERIES **************** */
 
     /**
      * Wether or not the time object passed is less than the current
@@ -302,7 +303,7 @@
      */
     public function isLesserThan(atkTime $compare)
     {
-      return ($this->m_time<$compare->getTotalSeconds());
+        return ($this->m_time < $compare->getTotalSeconds());
     }
 
     /**
@@ -314,7 +315,7 @@
      */
     public function isGreaterThan(atkTime $compare)
     {
-      return ($this->m_time>$compare->getTotalSeconds());
+        return ($this->m_time > $compare->getTotalSeconds());
     }
 
     /**
@@ -326,7 +327,7 @@
      */
     public function isEqualTo(atkTime $compare)
     {
-      return ($this->m_time===$compare->getTotalSeconds());
+        return ($this->m_time === $compare->getTotalSeconds());
     }
 
     /**
@@ -336,7 +337,7 @@
      */
     public function isNegative()
     {
-      return ($this->m_time>0);
+        return ($this->m_time > 0);
     }
 
     /**
@@ -346,8 +347,9 @@
      */
     public function isZero()
     {
-      return ($this->m_time===0);
+        return ($this->m_time === 0);
     }
-  }
+
+}
 
 ?>

@@ -1,0 +1,192 @@
+@import '../lib/bootstrap/css/bootstrap.css';
+@import '../lib/font-awesome-4.2.0/less/font-awesome.less';
+
+@fa-font-path:        "../lib/font-awesome-4.2.0/fonts";
+
+body {
+  padding-top: 70px;
+  background-color: #ededed;
+}
+
+#action-buttons {
+  text-align: center;
+}
+
+.fieldlabel {
+  font-weight: bold;
+}
+
+.pagination, .dglimit {
+  margin: 10px 0;
+}
+
+span.form-control-static {
+  display: block;
+}
+
+// xs
+@media(min-width:768px){
+  .pagination, .dglimit {
+    text-align: right;
+  }
+
+  .dgridsummary {
+    margin-top: 10px;
+    display: block;
+    text-align: right;
+  }
+}
+
+// sm
+@media(max-width:767px){
+  span.form-control-static {
+    padding-top: 0px;
+  }
+
+  label.control-label {
+    margin-bottom: 0px;
+  }
+}
+
+.section-item  input[type="checkbox"] {
+  height: 34px;
+  display: block;
+  width: 100%;
+  margin: 0;
+  position: relative;
+  left: -2px;
+}
+
+
+.form-group.required .control-label:before {
+  content: "✲";
+  color: #c70000;
+  font-weight: bold;
+}
+
+.error {
+  color: #A94442;
+}
+
+
+.clickable {
+  cursor: pointer;
+}
+
+.tab {
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.tab_selected {
+  font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
+  font-size: 12px;
+  font-weight: bold;
+  color: #000000;
+}
+
+
+
+.atkmessages {
+  background-color: #EEEEEE;
+  color: #000000;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.atkmessages_general,
+.atkmessages_success,
+.atkmessages_failure,
+.atkmessages_warning {
+  margin-bottom: 1px;
+  padding: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.atkmessages_general {
+  background-color: yellow;
+  color: #000;
+}
+
+.atkmessages_success {
+  background-color: #339900;
+  color: #fff;
+}
+
+.atkmessages_warning {
+  background-color: orange;
+  color: #000;
+}
+
+.atkmessages_warning a {
+  color: #000;
+}
+
+.atkmessages_failure {
+  background-color: #ff0000;
+  color: #fff;
+  padding: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.red {
+  color: #9a1010;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+#action-helplink {
+  width: 100%;
+  text-align: right;
+  right: 20px;
+}
+
+.atkAttrRowHidden {
+  display: none !important;
+}
+
+.atkfieldset > div {
+  display: inline-block;
+}
+
+div.panel-heading {
+  position: relative;
+}
+
+
+/* box spinner */
+#atkbusy {
+  visibility: hidden;
+  position: absolute;
+  right: 6px;
+  top: 5px;
+  color: #808080;
+}
+
+/* attributes spinner */
+.atkbusy {
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+/* action buttons spinner */
+#action-buttons .spinner {
+  visibility: hidden;
+  display: inline-block;
+  margin-left: 5px;
+  vertical-align: middle;
+  color: #808080;
+}
+
+
+

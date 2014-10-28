@@ -1,55 +1,53 @@
 <?php
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage attributes
-   *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6309 $
-   * $Id$
-   */
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage attributes
+ *
+ * @copyright (c)2000-2004 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6309 $
+ * $Id$
+ */
+/**
+ * Imports
+ * @access private
+ */
+atkimport("atk.attributes.atknumberattribute");
 
-  /**
-   * Imports
-   * @access private
-   */
-  atkimport("atk.attributes.atknumberattribute");
+/**
+ * Flags for atkWeekdayAttribute
+ */
+define('AF_WEEKDAY_SMALL_EDIT', AF_SPECIFIC_1);
 
-  /**
-   * Flags for atkWeekdayAttribute
-   */
-  define('AF_WEEKDAY_SMALL_EDIT', AF_SPECIFIC_1);
+/**
+ * Bitwise flags for weekdays.
+ * @access private
+ */
+define('WD_MONDAY', 1);
+define('WD_TUESDAY', 2);
+define('WD_WEDNESDAY', 4);
+define('WD_THURSDAY', 8);
+define('WD_FRIDAY', 16);
+define('WD_SATURDAY', 32);
+define('WD_SUNDAY', 64);
 
-  /**
-   * Bitwise flags for weekdays.
-   * @access private
-   */
-  define('WD_MONDAY',     1);
-  define('WD_TUESDAY',    2);
-  define('WD_WEDNESDAY',  4);
-  define('WD_THURSDAY',   8);
-  define('WD_FRIDAY',    16);
-  define('WD_SATURDAY',  32);
-  define('WD_SUNDAY',    64);
-
-  /**
-   * Attribute for selection the days of the week.
-   *
-   * @author Peter C. Verhage <peter@ibuildings.nl>
-   * @package atk
-   * @subpackage attributes
-   *
-   */
-  class atkWeekdayAttribute extends atkNumberAttribute
-  {
+/**
+ * Attribute for selection the days of the week.
+ *
+ * @author Peter C. Verhage <peter@ibuildings.nl>
+ * @package atk
+ * @subpackage attributes
+ *
+ */
+class atkWeekdayAttribute extends atkNumberAttribute
+{
     var $m_mapping = array(1 => 'monday', 2 => 'tuesday', 4 => 'wednesday', 8 => 'thursday', 16 => 'friday', 32 => 'saturday', 64 => 'sunday');
-
     var $m_extra = array();
 
     /**
@@ -62,15 +60,15 @@
      *                           these options will be numbered from 2^7 (128) to 2^x.
      * @param int $flags        Flags for the attribute. Only used if no set in previous param.
      */
-    function atkWeekdayAttribute($name, $extraOrFlags=0, $flags=0)
+    function atkWeekdayAttribute($name, $extraOrFlags = 0, $flags = 0)
     {
 
-      if (is_numeric($extraOrFlags))
-        $flags = $extraOrFlags;
-      elseif (is_array($extraOrFlags))
-        $this->m_extra = $extraOrFlags;
+        if (is_numeric($extraOrFlags))
+            $flags = $extraOrFlags;
+        elseif (is_array($extraOrFlags))
+            $this->m_extra = $extraOrFlags;
 
-      $this->atkNumberAttribute($name, ($flags|AF_HIDE_SEARCH)^AF_SEARCHABLE);
+        $this->atkNumberAttribute($name, ($flags | AF_HIDE_SEARCH) ^ AF_SEARCHABLE);
     }
 
     /**
@@ -86,8 +84,10 @@
      */
     function fetchValue($postvars)
     {
-      if (!is_array($postvars) || !is_array($postvars[$this->fieldName()])) return 0;
-      else return array_sum($postvars[$this->fieldName()]);
+        if (!is_array($postvars) || !is_array($postvars[$this->fieldName()]))
+            return 0;
+        else
+            return array_sum($postvars[$this->fieldName()]);
     }
 
     /**
@@ -100,38 +100,39 @@
      * @param String $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record="", $fieldprefix="", $mode='add')
+    function edit($record = "", $fieldprefix = "", $mode = 'add')
     {
-      $result = '';
+        $result = '';
 
-      $name = $fieldprefix.$this->fieldName();
-      $value = (int)$record[$this->fieldName()];
+        $name = $fieldprefix . $this->fieldName();
+        $value = (int) $record[$this->fieldName()];
 
-      $separator = $this->hasFlag(AF_WEEKDAY_SMALL_EDIT) || $mode == 'list' ? '&nbsp;' : '<br>';
+        $separator = $this->hasFlag(AF_WEEKDAY_SMALL_EDIT) || $mode == 'list' ? '&nbsp;'
+                : '<br>';
 
-      $max = 7 + count($this->m_extra);
-      for ($i = 1; $i <= $max; $i++)
-      {
-        $day = pow(2, $i-1);
+        $max = 7 + count($this->m_extra);
+        for ($i = 1; $i <= $max; $i++) {
+            $day = pow(2, $i - 1);
 
-        if ($i <= 7)
-          $weekday = atktext($this->m_mapping[$day]);
-        else $weekday = $this->m_extra[$i - 8];
+            if ($i <= 7)
+                $weekday = atktext($this->m_mapping[$day]);
+            else
+                $weekday = $this->m_extra[$i - 8];
 
-        $weekday = ucfirst($weekday);
-        $fullWeekday = $weekday;
-        if ($this->hasFlag(AF_WEEKDAY_SMALL_EDIT) || $mode == 'list')
-          $weekday = substr($weekday, 0, 2);
+            $weekday = ucfirst($weekday);
+            $fullWeekday = $weekday;
+            if ($this->hasFlag(AF_WEEKDAY_SMALL_EDIT) || $mode == 'list')
+                $weekday = substr($weekday, 0, 2);
 
-        $checked = hasFlag($value, $day) ? ' checked' : '';
+            $checked = hasFlag($value, $day) ? ' checked' : '';
 
-        $result .= '<span title="'.$fullWeekday.'"><input type="checkbox" id="'.$name.'" name="'.$name.'['.$i.']" '.$this->getCSSClassAttribute("atkcheckbox").' value="'.$day.'" '.$checked.'> '.$weekday.'</span>'.($i < $max ? $separator : '');
-        $this->registerKeyListener($name.'['.$i.']', KB_CTRLCURSOR|KB_CURSOR);
-      }
+            $result .= '<span title="' . $fullWeekday . '"><input type="checkbox" id="' . $name . '" name="' . $name . '[' . $i . ']" ' . $this->getCSSClassAttribute("atkcheckbox") . ' value="' . $day . '" ' . $checked . '> ' . $weekday . '</span>' . ($i < $max
+                        ? $separator : '');
+            $this->registerKeyListener($name . '[' . $i . ']', KB_CTRLCURSOR | KB_CURSOR);
+        }
 
-      return $result;
+        return $result;
     }
-
 
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
@@ -146,37 +147,36 @@
      *                     between the two display modes.
      * @return String HTML String
      */
-    function display($record, $mode="list")
+    function display($record, $mode = "list")
     {
-      $result = '';
-      $value = (int)$record[$this->fieldName()];
+        $result = '';
+        $value = (int) $record[$this->fieldName()];
 
-      $max = 7 + count($this->m_extra);
-      for ($i = 1; $i <= $max; $i++)
-      {
-        $day = pow(2, $i-1);
+        $max = 7 + count($this->m_extra);
+        for ($i = 1; $i <= $max; $i++) {
+            $day = pow(2, $i - 1);
 
-        if (hasFlag($value, $day))
-        {
-          if ($i <= 7)
-          {
-            $weekday = $this->m_mapping[$day];
-            if ($mode == 'list')
-              $weekday = substr($weekday, 0, 3);
-            $weekday = atktext($weekday);
-          }
-          else
-          {
-            $weekday = $this->m_extra[$i - 8];
-          }
+            if (hasFlag($value, $day)) {
+                if ($i <= 7) {
+                    $weekday = $this->m_mapping[$day];
+                    if ($mode == 'list')
+                        $weekday = substr($weekday, 0, 3);
+                    $weekday = atktext($weekday);
+                }
+                else {
+                    $weekday = $this->m_extra[$i - 8];
+                }
 
-          $result .= (empty($result) ? '' : ($mode == 'list' ? ', ' : '<br>')).$weekday;
+                $result .= (empty($result) ? '' : ($mode == 'list' ? ', ' : '<br>')) . $weekday;
+            }
         }
-      }
 
-      if (empty($result))
-        return atktext('none');
-      else return $result;
+        if (empty($result))
+            return atktext('none');
+        else
+            return $result;
     }
-  }
+
+}
+
 ?>

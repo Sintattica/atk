@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Achievo ATK distribution.
+ * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
  * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
@@ -12,7 +12,6 @@
  * 
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
-
 atkimport('atk.datagrid.atkdgcomponent');
 
 /**
@@ -26,30 +25,28 @@ atkimport('atk.datagrid.atkdgcomponent');
  */
 class atkDGNoRecordsFound extends atkDGComponent
 {
-  /**
-   * Renders the no records found message for the given data grid.
-   *
-   * @return string rendered HTML
-   */
-  public function render()
-  {
-    $grid = $this->getGrid();
-    
-    $usesIndex = $grid->getIndex() != null;
-    $isSearching = is_array($grid->getPostvar('atksearch')) && count($grid->getPostvar('atksearch')) > 0;
-    
-    if ($grid->getCount() == 0 && ($usesIndex || $isSearching))
+
+    /**
+     * Renders the no records found message for the given data grid.
+     *
+     * @return string rendered HTML
+     */
+    public function render()
     {
-      return $grid->text('datagrid_norecordsfound_search');
+        $grid = $this->getGrid();
+
+        $usesIndex = $grid->getIndex() != null;
+        $isSearching = is_array($grid->getPostvar('atksearch')) && count($grid->getPostvar('atksearch')) > 0;
+
+        if ($grid->getCount() == 0 && ($usesIndex || $isSearching)) {
+            return $grid->text('datagrid_norecordsfound_search');
+        } else if ($grid->getCount() == 0) {
+            return $grid->text('datagrid_norecordsfound_general');
+        } else {
+            return null;
+        }
     }
-    else if ($grid->getCount() == 0)
-    {
-      return $grid->text('datagrid_norecordsfound_general');
-    }
-    else 
-    {
-      return null;
-    }
-  }
+
 }
+
 ?>

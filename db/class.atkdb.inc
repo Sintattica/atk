@@ -1,72 +1,69 @@
 <?php
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage db
-   *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6345 $
-   * $Id$
-   */
-
-  if (!atkconfig('meta_caching'))
-  {
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage db
+ *
+ * @copyright (c)2000-2004 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6345 $
+ * $Id$
+ */
+if (!atkconfig('meta_caching')) {
     atkwarning("Table metadata caching is disabled. Turn on \$config_meta_caching to improve your application's performance!");
-  }
+}
 
-  /**
-   * Some defines used for connection statusses, generic error messages, etc.
-   */
-  define("DB_SUCCESS"           , 0);
-  define("DB_UNKNOWNERROR"      , 1);
-  define("DB_UNKNOWNHOST"       , 2);
-  define("DB_UNKNOWNDATABASE"   , 3);
-  define("DB_ACCESSDENIED_USER" , 4);
-  define("DB_ACCESSDENIED_DB"   , 5);
+/**
+ * Some defines used for connection statusses, generic error messages, etc.
+ */
+define("DB_SUCCESS", 0);
+define("DB_UNKNOWNERROR", 1);
+define("DB_UNKNOWNHOST", 2);
+define("DB_UNKNOWNDATABASE", 3);
+define("DB_ACCESSDENIED_USER", 4);
+define("DB_ACCESSDENIED_DB", 5);
 
-  /**
-   * Meta flags.
-   */
-  define('MF_PRIMARY',        1);
-  define('MF_UNIQUE',         2);
-  define('MF_NOT_NULL',       4);
-  define('MF_AUTO_INCREMENT', 8);
-
-
-  /**
-   * Global array containing database instances. Global is necessary because
-   * PHP4 doesn't support static class members.
-   */
-  global $g_dbinstances;
-  $g_dbinstances = array();
+/**
+ * Meta flags.
+ */
+define('MF_PRIMARY', 1);
+define('MF_UNIQUE', 2);
+define('MF_NOT_NULL', 4);
+define('MF_AUTO_INCREMENT', 8);
 
 
-  /**
-   * Abstract baseclass for ATK database drivers.
-   *
-   * Implements some custom functionality and defines some methods that
-   * derived classes should override.
-   *
-   * @author Peter Verhage <peter@achievo.org>
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage db
-   *
-   */
-  class atkDb
-  {
+/**
+ * Global array containing database instances. Global is necessary because
+ * PHP4 doesn't support static class members.
+ */
+global $g_dbinstances;
+$g_dbinstances = array();
+
+/**
+ * Abstract baseclass for ATK database drivers.
+ *
+ * Implements some custom functionality and defines some methods that
+ * derived classes should override.
+ *
+ * @author Peter Verhage <peter@achievo.org>
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @package atk
+ * @subpackage db
+ *
+ */
+class atkDb
+{
     /**
      * The hostname/ip to connect to.
      * @access private
      * @var String
      */
-    var $m_host     = "";
+    var $m_host = "";
 
     /**
      * The name of the database/schema to use.
@@ -80,7 +77,7 @@
      * @access private
      * @var String
      */
-    var $m_user     = "";
+    var $m_user = "";
 
     /**
      * The password for the connection.
@@ -109,7 +106,7 @@
      * @var String
      */
     var $m_collate = "";
-    
+
     /**
      * The mode for the connection.
      * @access private
@@ -205,7 +202,7 @@
      * @access private
      * @var Resource
      */
-    var $m_link_id  = 0;
+    var $m_link_id = 0;
 
     /**
      * The query statement is stored in this variable.
@@ -239,14 +236,14 @@
      * @access private
      */
     var $m_errorLookup = array();
-   
+
     /**
      * Indentifier Quoting
      *
      * @var unknown_type
      */
     protected $m_identifierQuoting = array('start' => '"', 'end' => '"', 'escape' => '"');
-    
+
     /**
      * Set database sequence value.
      *
@@ -257,7 +254,7 @@
      */
     function setSequenceValue($seqname, $value)
     {
-    	atkerror('WARNING: '.get_class($this).'.setSequenceValue NOT IMPLEMENTED!');
+        atkerror('WARNING: ' . get_class($this) . '.setSequenceValue NOT IMPLEMENTED!');
     }
 
     /**
@@ -270,7 +267,7 @@
      */
     function useMapping($mapping)
     {
-      atkDb::_getOrUseMapping($mapping);
+        atkDb::_getOrUseMapping($mapping);
     }
 
     /**
@@ -282,7 +279,7 @@
      */
     static public function getMapping()
     {
-      return atkDb::_getOrUseMapping();
+        return atkDb::_getOrUseMapping();
     }
 
     /**
@@ -292,7 +289,7 @@
      */
     function clearMapping()
     {
-      atkDb::_getOrUseMapping(NULL);
+        atkDb::_getOrUseMapping(NULL);
     }
 
     /**
@@ -307,8 +304,8 @@
      */
     static public function getTranslatedDatabaseName($name)
     {
-      $mapping = atkDb::getMapping();
-      return $mapping === NULL || !isset($mapping[$name]) ? $name : $mapping[$name];
+        $mapping = atkDb::getMapping();
+        return $mapping === NULL || !isset($mapping[$name]) ? $name : $mapping[$name];
     }
 
     /**
@@ -318,12 +315,13 @@
      * @return mixed current database mapping (null if inactive)
      * @static
      */
-    static protected function _getOrUseMapping($mapping="get")
+    static protected function _getOrUseMapping($mapping = "get")
     {
-      static $s_mapping = NULL;
-      if ($mapping !== "get")
-        $s_mapping = $mapping;
-      else return $s_mapping;
+        static $s_mapping = NULL;
+        if ($mapping !== "get")
+            $s_mapping = $mapping;
+        else
+            return $s_mapping;
     }
 
     /**
@@ -332,7 +330,7 @@
      */
     function getType()
     {
-      return $this->m_type;
+        return $this->m_type;
     }
 
     /**
@@ -341,7 +339,7 @@
      */
     function link_id()
     {
-      return $this->m_link_id;
+        return $this->m_link_id;
     }
 
     /**
@@ -349,7 +347,7 @@
      */
     function hasError()
     {
-      return $this->m_errno != 0;
+        return $this->m_errno != 0;
     }
 
     /**
@@ -359,11 +357,10 @@
      */
     function getErrorType()
     {
-      if(in_array($this->m_errno,$this->m_user_error))
-      {
-        return "user";
-      }
-      return "system";
+        if (in_array($this->m_errno, $this->m_user_error)) {
+            return "user";
+        }
+        return "system";
     }
 
     /**
@@ -372,7 +369,7 @@
      */
     function getAtkDbErrno()
     {
-      return $this->_translateError();
+        return $this->_translateError();
     }
 
     /**
@@ -384,7 +381,7 @@
      */
     function getDbErrno()
     {
-      return $this->m_errno;
+        return $this->m_errno;
     }
 
     /**
@@ -396,7 +393,7 @@
      */
     function getDbError()
     {
-      return $this->m_error;
+        return $this->m_error;
     }
 
     /**
@@ -408,8 +405,8 @@
      */
     function setUserError($errno)
     {
-      atkdebug(__CLASS__."::setUserError() -> ".$errno);
-      $this->m_user_error[]=$errno;
+        atkdebug(__CLASS__ . "::setUserError() -> " . $errno);
+        $this->m_user_error[] = $errno;
     }
 
     /**
@@ -420,18 +417,17 @@
      */
     function getQueryMode($query)
     {
-      $query = strtolower($query);
+        $query = strtolower($query);
 
-      $regexes = array('^\\s*select(?!\\s+into)','^\\s*show');
-      foreach ($regexes as $regex)
-      if (preg_match("/$regex/",$query))
-      {
-        return 'r';
-      }
+        $regexes = array('^\\s*select(?!\\s+into)', '^\\s*show');
+        foreach ($regexes as $regex)
+            if (preg_match("/$regex/", $query)) {
+                return 'r';
+            }
 
-      atknotice('Query mode not detected! Using write mode.');
+        atknotice('Query mode not detected! Using write mode.');
 
-      return 'w';
+        return 'w';
     }
 
     /**
@@ -442,17 +438,15 @@
      */
     function errorLookup($errno)
     {
-      if (count($this->m_errorLookup)==0)
-      {
-        $filename = atkconfig("atkroot")."atk/db/languages/".$this->m_vendor."_".atkconfig('language').'.lng';
-        @include_once($filename);
-        $this->m_errorLookup = $txt_db;
-      }
-      if (isset($this->m_errorLookup[$errno]))
-      {
-        return $this->m_errorLookup[$errno];
-      }
-      return "";
+        if (count($this->m_errorLookup) == 0) {
+            $filename = atkconfig("atkroot") . "atk/db/languages/" . $this->m_vendor . "_" . atkconfig('language') . '.lng';
+            @include_once($filename);
+            $this->m_errorLookup = $txt_db;
+        }
+        if (isset($this->m_errorLookup[$errno])) {
+            return $this->m_errorLookup[$errno];
+        }
+        return "";
     }
 
     /**
@@ -461,37 +455,31 @@
      */
     function getErrorMsg()
     {
-      $errno = $this->getAtkDbErrno();
-      if($errno==DB_UNKNOWNERROR)
-      {
-        $errstr = $this->errorLookup($this->getDbErrno());
-        if($errstr=="")
-        {
-          $this->m_error = atktext("unknown_error").": ".$this->getDbErrno()." (".$this->getDbError().")";
+        $errno = $this->getAtkDbErrno();
+        if ($errno == DB_UNKNOWNERROR) {
+            $errstr = $this->errorLookup($this->getDbErrno());
+            if ($errstr == "") {
+                $this->m_error = atktext("unknown_error") . ": " . $this->getDbErrno() . " (" . $this->getDbError() . ")";
+            } else {
+                $this->m_error = $errstr . ($this->getErrorType() == "system" ? " (" . $this->getDbError() . ")"
+                            : "");
+            }
+            return $this->m_error;
+        } else {
+            $tmp_error = '';
+            switch ($errno) {
+                case DB_ACCESSDENIED_DB: $tmp_error = sprintf(atktext("db_access_denied_database", "atk"), $this->m_user, $this->m_database);
+                    break;
+                case DB_ACCESSDENIED_USER: $tmp_error = sprintf(atktext("db_access_denied_user", "atk"), $this->m_user, $this->m_database);
+                    break;
+                case DB_UNKNOWNDATABASE: $tmp_error = sprintf(atktext("db_unknown_database", "atk"), $this->m_database);
+                    break;
+                case DB_UNKNOWNHOST: $tmp_error = sprintf(atktext("db_unknown_host", "atk"), $this->m_host);
+                    break;
+            }
+            $this->m_error = $tmp_error;
+            return $this->m_error;
         }
-        else
-        {
-          $this->m_error=$errstr.($this->getErrorType()=="system"?" (".$this->getDbError().")":"");
-        }
-        return $this->m_error;
-      }
-      else
-      {
-        $tmp_error='';
-        switch ($errno)
-        {
-          case DB_ACCESSDENIED_DB: $tmp_error = sprintf(atktext("db_access_denied_database", "atk"),$this->m_user,$this->m_database);
-                                break;
-          case DB_ACCESSDENIED_USER: $tmp_error = sprintf(atktext("db_access_denied_user", "atk"),$this->m_user,$this->m_database);
-                                     break;
-          case DB_UNKNOWNDATABASE: $tmp_error = sprintf(atktext("db_unknown_database", "atk"),$this->m_database);
-                                   break;
-          case DB_UNKNOWNHOST: $tmp_error = sprintf(atktext("db_unknown_host", "atk"),$this->m_host);
-                               break;
-        }
-        $this->m_error = $tmp_error;
-        return $this->m_error;
-      }
     }
 
     /**
@@ -501,22 +489,20 @@
      * 
      * @param String $message
      */
-    function halt($message="")
+    function halt($message = "")
     {
-      if ($this->m_haltonerror)
-      {
-        if($this->getErrorType()==="system")
-        {
-          atkdebug(__CLASS__."::halt() on system error");
-          if(!in_array($this->m_errno,$this->m_user_error)) $level='critical';
-          atkerror($this->getErrorMsg());
-          halt($this->getErrorMsg(),$level);
+        if ($this->m_haltonerror) {
+            if ($this->getErrorType() === "system") {
+                atkdebug(__CLASS__ . "::halt() on system error");
+                if (!in_array($this->m_errno, $this->m_user_error))
+                    $level = 'critical';
+                atkerror($this->getErrorMsg());
+                halt($this->getErrorMsg(), $level);
+            }
+            else {
+                atkdebug(__CLASS__ . "::halt() on user error (not halting)");
+            }
         }
-        else
-        {
-          atkdebug(__CLASS__."::halt() on user error (not halting)");
-        }
-      }
     }
 
     /**
@@ -526,9 +512,9 @@
      */
     public function getQueryId()
     {
-      return $this->m_query_id;
+        return $this->m_query_id;
     }
-    
+
     /**
      * Sets the current query identifier used for next_record() etc.
      * 
@@ -536,9 +522,9 @@
      */
     public function setQueryId($queryId)
     {
-      $this->m_query_id = $queryId;
+        $this->m_query_id = $queryId;
     }
-    
+
     /**
      * Rests the query resource. 
      * 
@@ -546,7 +532,7 @@
      */
     public function resetQueryId()
     {
-      $this->m_query_id = null;
+        $this->m_query_id = null;
     }
 
     /**
@@ -555,7 +541,7 @@
      */
     function query_id()
     {
-      return $this->m_query_id;
+        return $this->m_query_id;
     }
 
     /**
@@ -565,14 +551,13 @@
      * @return int Connection status
      * @abstract
      */
-    function connect($mode="rw")
+    function connect($mode = "rw")
     {
-      if($this->m_link_id==NULL)
-      {
-        atkdebug("atkdb::connect -> Don't switch use current db");
-        return $this->doConnect($this->m_host,$this->m_user,$this->m_password,$this->m_database,$this->m_port,$this->m_charset);
-      }
-      return DB_SUCCESS;
+        if ($this->m_link_id == NULL) {
+            atkdebug("atkdb::connect -> Don't switch use current db");
+            return $this->doConnect($this->m_host, $this->m_user, $this->m_password, $this->m_database, $this->m_port, $this->m_charset);
+        }
+        return DB_SUCCESS;
     }
 
     /**
@@ -587,7 +572,7 @@
      */
     function doConnect($host, $user, $password, $database, $port, $charset)
     {
-
+        
     }
 
     /**
@@ -602,7 +587,7 @@
      */
     function _translateError($errno)
     {
-      return DB_UNKNOWNERROR;
+        return DB_UNKNOWNERROR;
     }
 
     /**
@@ -611,6 +596,7 @@
      */
     function disconnect()
     {
+        
     }
 
     /**
@@ -619,6 +605,7 @@
      */
     function commit()
     {
+        
     }
 
     /**
@@ -629,6 +616,7 @@
      */
     function savepoint($name)
     {
+        
     }
 
     /**
@@ -639,8 +627,9 @@
      *
      * @abstract
      */
-    function rollback($savepoint="")
+    function rollback($savepoint = "")
     {
+        
     }
 
     /**
@@ -654,22 +643,19 @@
      */
     public function prepare($query)
     {
-      atkimport('atk.db.statement.atkstatement');
-      
-      if (atkimport("atk.db.statement.atk".$this->m_type."statement"))
-      {
-        $class = "atk".$this->m_type."statement";
-      }
-      else
-      {
-        atkimport("atk.db.statement.atkcompatstatement");
-        $class = "atkCompatStatement";
-      }
-      
-      $stmt = new $class($this, $query);
-      return $stmt;
-    }    
-    
+        atkimport('atk.db.statement.atkstatement');
+
+        if (atkimport("atk.db.statement.atk" . $this->m_type . "statement")) {
+            $class = "atk" . $this->m_type . "statement";
+        } else {
+            atkimport("atk.db.statement.atkcompatstatement");
+            $class = "atkCompatStatement";
+        }
+
+        $stmt = new $class($this, $query);
+        return $stmt;
+    }
+
     /**
      * Parse and execute a query.
      *
@@ -684,9 +670,9 @@
      *                   retrieve all rows.
      * @abstract
      */
-    function query($query, $offset=-1, $limit=-1)
+    function query($query, $offset = -1, $limit = -1)
     {
-      return true;
+        return true;
     }
 
     /**
@@ -697,7 +683,7 @@
      */
     function next_record()
     {
-      return 0;
+        return 0;
     }
 
     /**
@@ -708,9 +694,9 @@
      * @return boolean True if succesful, false if not.
      * @abstract
      */
-    function lock($table, $mode="write")
+    function lock($table, $mode = "write")
     {
-      return 0;
+        return 0;
     }
 
     /**
@@ -721,7 +707,7 @@
      */
     function unlock()
     {
-      return 0;
+        return 0;
     }
 
     /**
@@ -735,7 +721,7 @@
      */
     function affected_rows()
     {
-      return array();
+        return array();
     }
 
     /**
@@ -749,6 +735,7 @@
      */
     function nextid($sequence)
     {
+        
     }
 
     /**
@@ -778,9 +765,9 @@
      * @param bool $full all meta data or not
      * @return array with meta data
      */
-    function metadata($table, $full=false)
+    function metadata($table, $full = false)
     {
-      return array();
+        return array();
     }
 
     /**
@@ -789,12 +776,12 @@
      *
      * @param boolean $includeViews include views?
      */
-    function table_names($includeViews=true)
+    function table_names($includeViews = true)
     {
-      return array();
+        return array();
     }
 
-   /**
+    /**
      * This function checks the database for a table with
      * the provide name
      *
@@ -803,7 +790,7 @@
      */
     function tableExists($tableName)
     {
-      return false;
+        return false;
     }
 
     /**
@@ -816,12 +803,12 @@
      * 
      * @return array row
      */
-    public function getRow($query, $useLimit=false)
+    public function getRow($query, $useLimit = false)
     {
-      $rows = $this->getRows($query, $useLimit ? 0 : -1, $useLimit ? 1 : -1);
-      return count($rows) > 0 ? $rows[0] : null;
+        $rows = $this->getRows($query, $useLimit ? 0 : -1, $useLimit ? 1 : -1);
+        return count($rows) > 0 ? $rows[0] : null;
     }
-    
+
     /**
      * Get all rows for the given query.
      *
@@ -837,11 +824,11 @@
      * 
      * @return array rows
      */
-    public function getRows($query, $offset=-1, $limit=-1)
+    public function getRows($query, $offset = -1, $limit = -1)
     {
-      return $this->getRowsAssoc($query, null, $offset, $limit);
+        return $this->getRowsAssoc($query, null, $offset, $limit);
     }
-    
+
     /**
      * Get rows in an associative array with the given column used as key for the rows.
      * 
@@ -858,30 +845,24 @@
      * 
      * @return array rows
      */
-    public function getRowsAssoc($query, $keyColumn=0, $offset=-1, $limit=-1)
+    public function getRowsAssoc($query, $keyColumn = 0, $offset = -1, $limit = -1)
     {
-      $result = array();
+        $result = array();
 
-      $this->query($query, $offset, $limit);
-      for ($i = 0; $this->next_record(); $i++)
-      {
-        if ($keyColumn === null)
-        {
-          $key = $i;
-        }
-        else if (is_numeric($keyColumn))
-        {
-          $key = atkArrayNvl(array_values($this->m_record), $keyColumn);
-        }
-        else
-        {
-          $key = $this->m_record[$keyColumn];
-        }        
-        
-        $result[$key] = $this->m_record;
-      }
+        $this->query($query, $offset, $limit);
+        for ($i = 0; $this->next_record(); $i++) {
+            if ($keyColumn === null) {
+                $key = $i;
+            } else if (is_numeric($keyColumn)) {
+                $key = atkArrayNvl(array_values($this->m_record), $keyColumn);
+            } else {
+                $key = $this->m_record[$keyColumn];
+            }
 
-      return $result;
+            $result[$key] = $this->m_record;
+        }
+
+        return $result;
     }
 
     /**
@@ -894,24 +875,19 @@
      * 
      * @return mixed first value or default fallback value
      */
-    public function getValue($query, $default=null, $valueColumn=0, $useLimit=false)
+    public function getValue($query, $default = null, $valueColumn = 0, $useLimit = false)
     {
-      $row = $this->getRow($query, $useLimit);
-      
-      if ($row == null)
-      {
-        return $default;
-      }
-      else if (is_numeric($valueColumn))
-      {
-        return atkArrayNvl(array_values($row), $valueColumn);
-      }
-      else
-      {
-        return $row[$valueColumn];
-      }
+        $row = $this->getRow($query, $useLimit);
+
+        if ($row == null) {
+            return $default;
+        } else if (is_numeric($valueColumn)) {
+            return atkArrayNvl(array_values($row), $valueColumn);
+        } else {
+            return $row[$valueColumn];
+        }
     }
-    
+
     /**
      * Get an array with all the values in the specified column.
      *
@@ -928,11 +904,11 @@
      * 
      * @return array with values
      */
-    function getValues($query, $valueColumn=0, $offset=-1, $limit=-1)
+    function getValues($query, $valueColumn = 0, $offset = -1, $limit = -1)
     {
-      return $this->getValuesAssoc($query, null, $valueColumn, $offset, $limit);
-    }    
-    
+        return $this->getValuesAssoc($query, null, $valueColumn, $offset, $limit);
+    }
+
     /**
      * Get rows in an associative array with the given key column used as
      * key and the given value column used as value.
@@ -951,22 +927,18 @@
      * 
      * @return array rows
      */
-    public function getValuesAssoc($query, $keyColumn=0, $valueColumn=1, $offset=-1, $limit=-1)
+    public function getValuesAssoc($query, $keyColumn = 0, $valueColumn = 1, $offset = -1, $limit = -1)
     {
-      $rows = $this->getRowsAssoc($query, $keyColumn, $offset, $limit);
-      foreach ($rows as $key => &$value)
-      {
-        if (is_numeric($valueColumn))
-        {
-          $value = atkArrayNvl(array_values($value), $valueColumn);
+        $rows = $this->getRowsAssoc($query, $keyColumn, $offset, $limit);
+        foreach ($rows as $key => &$value) {
+            if (is_numeric($valueColumn)) {
+                $value = atkArrayNvl(array_values($value), $valueColumn);
+            } else {
+                $value = $value[$valueColumn];
+            }
         }
-        else
-        {
-          $value = $value[$valueColumn];
-        }
-      }
-      
-      return $rows;
+
+        return $rows;
     }
 
     /**
@@ -975,10 +947,10 @@
      */
     function getSearchModes()
     {
-      // exact match and substring search should be supported by any database.
-      // (the LIKE function is ANSI standard SQL, and both substring and wildcard
-      // searches can be implemented using LIKE)
-      return array("exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal","between");
+        // exact match and substring search should be supported by any database.
+        // (the LIKE function is ANSI standard SQL, and both substring and wildcard
+        // searches can be implemented using LIKE)
+        return array("exact", "substring", "wildcard", "greaterthan", "greaterthanequal", "lessthan", "lessthanequal", "between");
     }
 
     /**
@@ -989,21 +961,17 @@
      */
     public function tableMeta($table)
     {
-      if (isset($this->m_tableMeta[$table]))
-      {
+        if (isset($this->m_tableMeta[$table])) {
+            return $this->m_tableMeta[$table];
+        }
+
+        if (atkconfig('meta_caching')) {
+            $this->m_tableMeta[$table] = $this->_getTableMetaFromCache($table);
+        } else {
+            $this->m_tableMeta[$table] = $this->_getTableMetaFromDb($table);
+        }
+
         return $this->m_tableMeta[$table];
-      }
-
-      if (atkconfig('meta_caching'))
-      {
-        $this->m_tableMeta[$table] = $this->_getTableMetaFromCache($table);
-      }
-      else
-      {
-        $this->m_tableMeta[$table] = $this->_getTableMetaFromDb($table);
-      }
-
-      return $this->m_tableMeta[$table];
     }
 
     /**
@@ -1015,20 +983,17 @@
      */
     private function _getTableMetaFromCache($table)
     {
-      atkimport('atk.utils.atktmpfile');
-      $tmpfile = new atkTmpFile('tablemeta/' . $this->m_connection . "/" . $table . ".php");
+        atkimport('atk.utils.atktmpfile');
+        $tmpfile = new atkTmpFile('tablemeta/' . $this->m_connection . "/" . $table . ".php");
 
-      if ($tmpfile->exists())
-      {
-        include($tmpfile->getPath());
-      }
-      else
-      {
-        $tablemeta = $this->_getTableMetaFromDb($table);
-        $tmpfile->writeAsPhp("tablemeta", $tablemeta);
-      }
+        if ($tmpfile->exists()) {
+            include($tmpfile->getPath());
+        } else {
+            $tablemeta = $this->_getTableMetaFromDb($table);
+            $tmpfile->writeAsPhp("tablemeta", $tablemeta);
+        }
 
-      return $tablemeta;
+        return $tablemeta;
     }
 
     /**
@@ -1039,39 +1004,38 @@
      */
     protected function _getTableMetaFromDb($table)
     {
-      $meta = $this->metadata($table, false);
+        $meta = $this->metadata($table, false);
 
-      $result = array();
-      for ($i = 0, $_i = count($meta); $i < $_i; $i++)
-      {
-        $meta[$i]['num'] = $i;
-        $result[$meta[$i]['name']] = $meta[$i];
-      }
+        $result = array();
+        for ($i = 0, $_i = count($meta); $i < $_i; $i++) {
+            $meta[$i]['num'] = $i;
+            $result[$meta[$i]['name']] = $meta[$i];
+        }
 
-      return $result;
+        return $result;
     }
 
     /**
-      * get NOW() or SYSDATE() equivalent for the current database
-      *
-      * Every database has it's own implementation to get the current date
-      *
-      */
+     * get NOW() or SYSDATE() equivalent for the current database
+     *
+     * Every database has it's own implementation to get the current date
+     *
+     */
     function func_now()
     {
-      return "NOW()";
+        return "NOW()";
     }
 
     /**
-      * get SUBSTRING() equivalent for the current database.
-      * 
-      * @param String $fieldname The database fieldname
-      * @param Integer $startat The position to start from
-      * @param Integer $length The number of characters 
-      */
-    function func_substring($fieldname, $startat=0, $length=0)
+     * get SUBSTRING() equivalent for the current database.
+     * 
+     * @param String $fieldname The database fieldname
+     * @param Integer $startat The position to start from
+     * @param Integer $length The number of characters 
+     */
+    function func_substring($fieldname, $startat = 0, $length = 0)
     {
-      return "SUBSTRING($fieldname, $startat".($length!=0?", $length":"").")";
+        return "SUBSTRING($fieldname, $startat" . ($length != 0 ? ", $length" : "") . ")";
     }
 
     /**
@@ -1088,10 +1052,11 @@
      * @return String Piece of sql query that converts a date field to char
      *                for the current database
      */
-    function func_datetochar($fieldname, $format="")
+    function func_datetochar($fieldname, $format = "")
     {
-      if ($format=="") $format = atkconfig("date_to_char", "Y-m-d");
-      return "TO_CHAR($fieldname, '".$this->vendorDateFormat($format)."')";
+        if ($format == "")
+            $format = atkconfig("date_to_char", "Y-m-d");
+        return "TO_CHAR($fieldname, '" . $this->vendorDateFormat($format) . "')";
     }
 
     /**
@@ -1102,9 +1067,11 @@
      */
     function func_concat($fields)
     {
-      if(count($fields)==0 or !is_array($fields)) return '';
-      elseif(count($fields)==1) return $fields[0];
-      return "CONCAT(".implode(',',$fields).")";
+        if (count($fields) == 0 or !is_array($fields))
+            return '';
+        elseif (count($fields) == 1)
+            return $fields[0];
+        return "CONCAT(" . implode(',', $fields) . ")";
     }
 
     /**
@@ -1118,17 +1085,16 @@
      */
     function func_concat_ws($fields, $separator, $remove_all_spaces = false)
     {
-      if(count($fields)==0 or !is_array($fields)) return '';
-      elseif(count($fields)==1)                   return $fields[0];
-      
-      if ($remove_all_spaces)
-      {
-        return "REPLACE ( CONCAT_WS('$separator', ".implode(',',$fields)."), ' ', '') ";
-      }
-      else
-      {
-        return "CONCAT_WS('$separator', ".implode(',',$fields).")";        
-      }
+        if (count($fields) == 0 or !is_array($fields))
+            return '';
+        elseif (count($fields) == 1)
+            return $fields[0];
+
+        if ($remove_all_spaces) {
+            return "REPLACE ( CONCAT_WS('$separator', " . implode(',', $fields) . "), ' ', '') ";
+        } else {
+            return "CONCAT_WS('$separator', " . implode(',', $fields) . ")";
+        }
     }
 
     /**
@@ -1146,11 +1112,10 @@
      */
     function vendorDateFormat($format)
     {
-      $php_fmt = array("Y", "m", "d", "H", "h", "i", "s");
-      $db_fmt  = array("YYYY", "MM", "DD", "HH24", "HH12", "MI", "SS");
-      return str_replace($php_fmt, $db_fmt, $format);
+        $php_fmt = array("Y", "m", "d", "H", "h", "i", "s");
+        $db_fmt = array("YYYY", "MM", "DD", "HH24", "HH12", "MI", "SS");
+        return str_replace($php_fmt, $db_fmt, $format);
     }
-
 
     /**
      * Get TO_CHAR() equivalent for the current database.
@@ -1163,17 +1128,17 @@
      */
     function func_datetimetochar($fieldname)
     {
-      return "TO_CHAR($fieldname, 'YYYY-MM-DD hh:mi')";
+        return "TO_CHAR($fieldname, 'YYYY-MM-DD hh:mi')";
     }
 
     /**
-      * Returns the maximum length an identifier (tablename, columnname, etc) may have
-      *
-      * @return Integer The maximum identifier length 
-      */
+     * Returns the maximum length an identifier (tablename, columnname, etc) may have
+     *
+     * @return Integer The maximum identifier length 
+     */
     function maxIdentifierLength()
     {
-      return 64;
+        return 64;
     }
 
     /**
@@ -1183,12 +1148,13 @@
      * @param Bool $wildcard Use wildcards?
      * @return String The escaped SQL string
      */
-    function escapeSQL($string, $wildcard=false)
+    function escapeSQL($string, $wildcard = false)
     {
-      $result = str_replace("'","''",$string);
-      $result = str_replace("\\","\\\\",$result);
-      if ($wildcard == true) $result = str_replace("%","%%",$result);
-      return $result;
+        $result = str_replace("'", "''", $string);
+        $result = str_replace("\\", "\\\\", $result);
+        if ($wildcard == true)
+            $result = str_replace("%", "%%", $result);
+        return $result;
     }
 
     /**
@@ -1197,9 +1163,9 @@
      */
     function &createQuery()
     {
-      $query = &atknew("atk.db.atk".$this->m_type."query");
-      $query->m_db = &$this;
-      return $query;
+        $query = &atknew("atk.db.atk" . $this->m_type . "query");
+        $query->m_db = &$this;
+        return $query;
     }
 
     /**
@@ -1209,7 +1175,7 @@
      */
     function toggleForeignKeys($enable)
     {
-      atkdebug('WARNING: '.get_class($this).'::toggleForeignKeys not implemented!');
+        atkdebug('WARNING: ' . get_class($this) . '::toggleForeignKeys not implemented!');
     }
 
     /**
@@ -1217,30 +1183,25 @@
      */
     function deleteAll()
     {
-      $tables = $this->table_names(false);
-      $count = count($tables);
+        $tables = $this->table_names(false);
+        $count = count($tables);
 
-      do
-      {
-        $prevCount = $count;
-        $count = 0;
+        do {
+            $prevCount = $count;
+            $count = 0;
 
-        foreach($tables as $table)
-        {
-          $query = $this->createQuery();
-          $query->addTable($table['table_name']);
-          if (!$query->executeDelete())
-          {
-            $count++;
-          }
+            foreach ($tables as $table) {
+                $query = $this->createQuery();
+                $query->addTable($table['table_name']);
+                if (!$query->executeDelete()) {
+                    $count++;
+                }
+            }
+        } while ($count < $prevCount && $count > 0);
+
+        if ($count > 0) {
+            atkerror(__CLASS__ . '::deleteAll failed, probably because of circular dependencies');
         }
-      }
-      while ($count < $prevCount && $count > 0);
-
-      if ($count > 0)
-      {
-        atkerror(__CLASS__.'::deleteAll failed, probably because of circular dependencies');
-      }
     }
 
     /**
@@ -1248,11 +1209,10 @@
      */
     function dropAll()
     {
-      $tables = $this->table_names();
-      foreach($tables as $table)
-      {
-        $this->query("DROP TABLE ".$table['table_name']);
-      }
+        $tables = $this->table_names();
+        foreach ($tables as $table) {
+            $this->query("DROP TABLE " . $table['table_name']);
+        }
     }
 
     /**
@@ -1264,16 +1224,15 @@
      */
     function cloneAll(&$otherDb)
     {
-      $this->dropAll();
-      $tables = $otherDb->table_names();
-      foreach($tables as $table)
-      {
-        $ddl = $this->createDDL();
-        $metadata = $otherDb->metadata($table["table_name"]);
-        $ddl->loadMetaData($metadata);
-        $query = $ddl->buildCreate();
-        $this->query($query);
-      }
+        $this->dropAll();
+        $tables = $otherDb->table_names();
+        foreach ($tables as $table) {
+            $ddl = $this->createDDL();
+            $metadata = $otherDb->metadata($table["table_name"]);
+            $ddl->loadMetaData($metadata);
+            $query = $ddl->buildCreate();
+            $this->query($query);
+        }
     }
 
     /**
@@ -1282,10 +1241,10 @@
      */
     function &createDDL()
     {
-      atkimport("atk.db.atkddl");
-      $ddl = &atkDDL::create($this->m_type);
-      $ddl->m_db = &$this;
-      return $ddl;
+        atkimport("atk.db.atkddl");
+        $ddl = &atkDDL::create($this->m_type);
+        $ddl->m_db = &$this;
+        return $ddl;
     }
 
     /**
@@ -1301,42 +1260,34 @@
      * @param String $mode The mode to connect with the database
      * @return atkDb Instance of the database class.
      */
-    static public function &getInstance($conn="default", $reset=false, $mode="rw")
+    static public function &getInstance($conn = "default", $reset = false, $mode = "rw")
     {
-      global $g_dbinstances;
+        global $g_dbinstances;
 
-      // Resolve any potential aliases
-      $conn = self::getTranslatedDatabaseName($conn);
+        // Resolve any potential aliases
+        $conn = self::getTranslatedDatabaseName($conn);
 
-      if ($reset || !isset($g_dbinstances[$conn]) || !$g_dbinstances[$conn]->hasMode($mode))
-      {
-        $dbconfig = atkconfig("db");
+        if ($reset || !isset($g_dbinstances[$conn]) || !$g_dbinstances[$conn]->hasMode($mode)) {
+            $dbconfig = atkconfig("db");
 
-        if (!empty($dbconfig[$conn]["driver"]) && strpos($dbconfig[$conn]["driver"], '.') !== false)
-        {
-          $driver = $dbconfig[$conn]["driver"];
+            if (!empty($dbconfig[$conn]["driver"]) && strpos($dbconfig[$conn]["driver"], '.') !== false) {
+                $driver = $dbconfig[$conn]["driver"];
+            } else if (!empty($dbconfig[$conn]["driver"])) {
+                $driver = "atk.db.atk{$dbconfig[$conn]["driver"]}db";
+            } else if (!empty($dbconfig[$conn]["driver"])) {
+                atkhalt("Driver {$dbconfig[$conn]["driver"]} not found for connection '$conn'!");
+                return null;
+            } else {
+                atkhalt("Driver not specified for connection '$conn'!");
+                return null;
+            }
+
+            atkdebug("Creating new database instance with '{$driver}' driver");
+            $dbinstance = atknew($driver)->init($conn, $mode);
+
+            $g_dbinstances[$conn] = $dbinstance;
         }
-        else if (!empty($dbconfig[$conn]["driver"]))
-        {
-          $driver = "atk.db.atk{$dbconfig[$conn]["driver"]}db";
-        }        
-        else if (!empty($dbconfig[$conn]["driver"]))
-        {
-          atkhalt("Driver {$dbconfig[$conn]["driver"]} not found for connection '$conn'!");
-          return null;
-        }
-        else
-        {
-          atkhalt("Driver not specified for connection '$conn'!");
-          return null;          
-        }
-
-        atkdebug("Creating new database instance with '{$driver}' driver");
-        $dbinstance = atknew($driver)->init($conn, $mode);
-
-        $g_dbinstances[$conn] = $dbinstance;
-      }
-      return $g_dbinstances[$conn];
+        return $g_dbinstances[$conn];
     }
 
     /**
@@ -1346,24 +1297,27 @@
      * @param String $mode The mode to connect with
      * @return atkDb
      */
-    public function init($connectionname='default', $mode='r')
+    public function init($connectionname = 'default', $mode = 'r')
     {
-      atkdebug("(Re)Initialising database instance with connection name '$connectionname' and mode '$mode'");
+        atkdebug("(Re)Initialising database instance with connection name '$connectionname' and mode '$mode'");
 
-      $config = atkconfig("db");
-      $this->m_connection = $connectionname;
-      $this->m_mode = (isset($config[$connectionname]["mode"])?$config[$connectionname]["mode"]:"rw");
-      if (isset($config[$connectionname]["db"]))
-      {
-        $this->m_database = $config[$connectionname]["db"];
-        $this->m_user     = $config[$connectionname]["user"];
-        $this->m_password = $config[$connectionname]["password"];
-        $this->m_host     = $config[$connectionname]["host"];
-        if (isset($config[$connectionname]["port"]))      $this->m_port =    $config[$connectionname]["port"];
-        if (isset($config[$connectionname]["charset"]))   $this->m_charset = $config[$connectionname]["charset"];
-        if (isset($config[$connectionname]["collate"]))   $this->m_collate = $config[$connectionname]["collate"];
-      }
-      return $this;
+        $config = atkconfig("db");
+        $this->m_connection = $connectionname;
+        $this->m_mode = (isset($config[$connectionname]["mode"]) ? $config[$connectionname]["mode"]
+                    : "rw");
+        if (isset($config[$connectionname]["db"])) {
+            $this->m_database = $config[$connectionname]["db"];
+            $this->m_user = $config[$connectionname]["user"];
+            $this->m_password = $config[$connectionname]["password"];
+            $this->m_host = $config[$connectionname]["host"];
+            if (isset($config[$connectionname]["port"]))
+                $this->m_port = $config[$connectionname]["port"];
+            if (isset($config[$connectionname]["charset"]))
+                $this->m_charset = $config[$connectionname]["charset"];
+            if (isset($config[$connectionname]["collate"]))
+                $this->m_collate = $config[$connectionname]["collate"];
+        }
+        return $this;
     }
 
     /**
@@ -1374,11 +1328,10 @@
      */
     public function hasMode($mode)
     {
-      if(strpos($this->m_mode,$mode)!==false)
-      {
-        return true;
-      }
-      return false;
+        if (strpos($this->m_mode, $mode) !== false) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -1391,14 +1344,14 @@
      */
     function &setInstance($name, &$db)
     {
-      global $g_dbinstances;
+        global $g_dbinstances;
 
-      // translate connection name
-      $name = atkDb::getTranslatedDatabaseName($name);
+        // translate connection name
+        $name = atkDb::getTranslatedDatabaseName($name);
 
-      $olddb = &$g_dbinstances[$name];
-      $g_dbinstances[$name] = &$db;
-      return $olddb;
+        $olddb = &$g_dbinstances[$name];
+        $g_dbinstances[$name] = &$db;
+        return $olddb;
     }
 
     /**
@@ -1408,19 +1361,19 @@
      */
     public function getHaltOnError()
     {
-      return $this->m_haltonerror;
+        return $this->m_haltonerror;
     }
-    
+
     /**
      * Halt on error or not?
      *
      * @param Bool $state
      */
-    function setHaltOnError($state=true)
+    function setHaltOnError($state = true)
     {
-      $this->m_haltonerror = $state;
+        $this->m_haltonerror = $state;
     }
-    
+
     /**
      * Check if current db is present and acceptable for current user
      *
@@ -1428,39 +1381,38 @@
      */
     function getDbStatus()
     {
-      // We don't want the db class to display error messages, because
-      // we handle the error ourselves.
-      $curhaltval = $this->m_haltonerror;
-      $this->m_haltonerror = false;
-    
-      $res = $this->connect();
-    
-      if ($res === DB_SUCCESS && (strpos($this->m_type, "mysql") === 0))
-      {
-        // This can't be trusted. Mysql returns DB_SUCCESS even
-        // if the user doesn't have access to the database. We only get an
-        // error for this after we performed the first query.
-        $this->table_names();  // this triggers a query
-        $res = $this->_translateError( $this->getDbErrno() );
-      }
-    
-      $this->m_haltonerror = $curhaltval;
-    
-      return $res;
+        // We don't want the db class to display error messages, because
+        // we handle the error ourselves.
+        $curhaltval = $this->m_haltonerror;
+        $this->m_haltonerror = false;
+
+        $res = $this->connect();
+
+        if ($res === DB_SUCCESS && (strpos($this->m_type, "mysql") === 0)) {
+            // This can't be trusted. Mysql returns DB_SUCCESS even
+            // if the user doesn't have access to the database. We only get an
+            // error for this after we performed the first query.
+            $this->table_names();  // this triggers a query
+            $res = $this->_translateError($this->getDbErrno());
+        }
+
+        $this->m_haltonerror = $curhaltval;
+
+        return $res;
     }
-    
-   /**
-    * Quote Indentifier
-    *
-    * @param string $str
-    * @return string
-    */
-   function quoteIdentifier($str)                           
-   {                                                                               
-     $str = str_replace($this->m_identifierQuoting['end'], $this->m_identifierQuoting['escape'] . $this->m_identifierQuoting['end'], $str);
-     return $this->m_identifierQuoting['start'] . $str . $this->m_identifierQuoting['end'];                                                
-   } 
-    
-  }
+
+    /**
+     * Quote Indentifier
+     *
+     * @param string $str
+     * @return string
+     */
+    function quoteIdentifier($str)
+    {
+        $str = str_replace($this->m_identifierQuoting['end'], $this->m_identifierQuoting['escape'] . $this->m_identifierQuoting['end'], $str);
+        return $this->m_identifierQuoting['start'] . $str . $this->m_identifierQuoting['end'];
+    }
+
+}
 
 ?>
