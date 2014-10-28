@@ -21,5 +21,6 @@
     {foreach from=$buttons item=button}
         &nbsp;{$button}&nbsp;
     {/foreach}
+    <div class="spinner"><i class="fa fa-cog fa-spin fa-2x"></i></div>
 </div>
 {$formend}

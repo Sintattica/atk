@@ -20,6 +20,6 @@
     {foreach from=$buttons item=button}
         {$button}
     {/foreach}
+    <div class="spinner"><i class="fa fa-cog fa-spin fa-2x"></i></div>
 </div>
-<div id="action-spinner"><i class="spinner fa fa-spinner fa-spin"></i></div>
 {$formend}

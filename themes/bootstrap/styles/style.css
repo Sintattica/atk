@@ -1723,7 +1723,6 @@ span.form-control-static {
 .error {
   color: #A94442;
 }
-/********  LEGACY CSS ********/
 .clickable {
   cursor: pointer;
 }
@@ -1776,8 +1775,6 @@ span.form-control-static {
   padding-left: 6px;
   padding-right: 6px;
 }
-/* COMMON STYLES */
-/* ------------------------------------------------------------------ */
 .red {
   color: #9a1010;
 }
@@ -1792,30 +1789,33 @@ span.form-control-static {
   text-align: right;
   right: 20px;
 }
-#atkbusy {
-  position: absolute;
-  visibility: hidden;
-  left: 20px;
-  top: 5px;
-  z-index: 20;
-  height: 22px;
-  width: 22px;
-}
 .atkAttrRowHidden {
   display: none !important;
 }
+.atkfieldset > div {
+  display: inline-block;
+}
+div.panel-heading {
+  position: relative;
+}
+/* box spinner */
+#atkbusy {
+  visibility: hidden;
+  position: absolute;
+  right: 6px;
+  top: 5px;
+  color: #808080;
+}
 /* attributes spinner */
 .atkbusy {
-  display: none;
   margin-left: 5px;
   vertical-align: middle;
 }
 /* action buttons spinner */
-#action-spinner {
-  display: none;
-  font-size: 26px;
-  text-align: center;
-}
-.atkfieldset > div {
+#action-buttons .spinner {
+  visibility: hidden;
   display: inline-block;
+  margin-left: 5px;
+  vertical-align: middle;
+  color: #808080;
 }
