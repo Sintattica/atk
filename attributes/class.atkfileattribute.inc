@@ -215,7 +215,7 @@ class atkFileAttribute extends atkAttribute
                 $method = $this->fieldName() . '_display';
                 $result = $this->m_ownerInstance->$method($record, 'view');
             } else {
-                $result = $this->display($record, 'view');
+                $result = $this->display($record, $mode);
             }
         }
 

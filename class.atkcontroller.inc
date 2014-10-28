@@ -284,7 +284,6 @@ class atkController
         if (!is_object($node))
             return;
 
-
         $node->m_postvars = $postvars;
         $node->m_action = $postvars['atkaction'];
         if (isset($postvars["atkpartial"])) {
@@ -308,7 +307,6 @@ class atkController
                     $id = implode(',', $atkSelectorDecoded);
                 }
             } else {
-                //list($selector,$id) = explode("=", atkarraynvl($node->m_postvars, "atkselector", "="));
                 list($selector, $id) = explode("=", 'atkarraynvl($node->m_postvars, "atkselector", "=")');
             }
             $page->register_hiddenvars(array("atknodetype" => $node->m_module . "." . $node->m_type,
@@ -499,7 +497,7 @@ class atkController
             // if atklevel is 0 or less, we are at the bottom of the session stack,
             // which means that 'saveandclose' doesn't close anyway, so we leave out
             // the 'saveandclose' and 'cancel' button. Unless, a feedback screen is configured.
-            if (atkLevel() > 0 || hasFlag(atkArrayNvl($node->m_feedback, "update", 0), ACTION_SUCCESS)) {
+            if (atkLevel() > 0 || hasFlag(atkArrayNvl($node->m_feedback, "update", 0), ACTION_CANCELLED)) {
                 $result[] = $this->getButton('cancel');
             }
 
@@ -510,7 +508,9 @@ class atkController
             }
 
         } elseif ($mode == "add") {
-            $result[] = $this->getButton('cancel');
+            if (atkLevel() >0 || hasFlag(atkArrayNvl($node->m_feedback, "save", 0), ACTION_CANCELLED)) {
+                $result[] = $this->getButton('cancel');
+            }
 
             // if action is admin, we don't show the cancelbutton or the add next button
             if ($node->hasFlag(NF_ADDAFTERADD) && !$node->hasFlag(NF_EDITAFTERADD))

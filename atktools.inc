@@ -1021,12 +1021,16 @@ function atkTriggerError(&$record, &$attrib, $error, $message = '')
         }
 
         $tab = $attrib[0]->m_tabs[0];
-        $message = $attrib[0]->text($error);
+        if (!$message) {
+            $message = $attrib[0]->text($error);
+        }
     } else {
         $attribName = $attrib->fieldName();
         $label = $attrib->label($record);
         $tab = $attrib->m_tabs[0];
-        $message = $attrib->text($error);
+        if (!$message) {
+            $message = $attrib->text($error);
+        }
     }
 
     triggerError($record, $attribName, $error, $message, $tab, $label);
