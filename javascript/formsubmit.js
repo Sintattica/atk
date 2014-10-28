@@ -34,11 +34,38 @@ function atkSubmit(target)
 }
 
 
-function postGlobalSubmit(form) {
-    var f = jQuery(form);
+function preGlobalSubmit(formEl, bag) {
+    var $ = jQuery;
+    var form = $(formEl);
+    var bt = form.find("button[type='submit']:focus");
+    var spinner = form.find('#action-buttons .spinner');
 
-    f.find('#action-buttons').hide();
-    f.find('#action-spinner').show();
+    bag.spinnerVisibility = spinner.css('visibility');
+    spinner.css('visibility', 'visible');
 
-    return form;
+    if(bt) {
+        var atksubmitaction = form.find('input[type="hidden"].atksubmitaction');
+        bag.buttonDisabled = bt.prop('disabled');
+        bt.prop('disabled', true);
+        atksubmitaction.attr('name', bt.attr('name')).val(bt.val());
+    }
+}
+
+function postGlobalSubmit(formEl, bag, retval) {
+    if(!retval) {
+        var $ = jQuery;
+        var form = $(formEl);
+        var bt = form.find("button[type='submit']:focus");
+        var spinner = form.find('#action-buttons .spinner');
+
+        spinner.css('visibility', bag.spinnerVisibility);
+
+        if(bt) {
+            var atksubmitaction = form.find('input[type="hidden"].atksubmitaction');
+            bt.prop('disabled', bag.buttonDisabled);
+            atksubmitaction.attr('name', '').val('');
+        }
+    }
+
+    return retval;
 }

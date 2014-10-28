@@ -275,7 +275,6 @@ button.btn_saveandclose,
 button.btn_saveandcontinue,
 button.btn_saveandnext
 {
-    color: #000;
     margin-right: 2px;
 }
 
@@ -728,7 +727,9 @@ div.form-inline {
 }
 
 /* action buttons spinner */
-#action-spinner {
-   display: none;
-    text-align: center;
+#action-buttons .spinner {
+    visibility: hidden;
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: middle;
 }

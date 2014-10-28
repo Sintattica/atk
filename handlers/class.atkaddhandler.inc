@@ -216,6 +216,7 @@ class atkAddHandler extends atkActionHandler
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkaction" value="' . $this->getSaveAction() . '" />';
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkprevaction" value="' . $this->getNode()->m_action . '" />';
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkcsrftoken" value="' . $this->getCSRFToken() . '" />';
+        $formstart .= '<input type="hidden" class="atksubmitaction" />';
 
         $formstart .= $controller->getHiddenVarsString();
 

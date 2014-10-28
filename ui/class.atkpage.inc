@@ -470,16 +470,15 @@ class atkPage
 
         $res = "\n    function globalSubmit(form)\n";
         $res .= "    {\n";
-        $res .= "      var retval = true;\n";
+        $res .= "      var retval = true; var bag = {};\n";
+        $res .= "      preGlobalSubmit(form, bag);\n";
 
         for ($i = 0, $_i = count($this->m_submitscripts); $i < $_i; $i++) {
             $res .= "      retval = " . $this->m_submitscripts[$i] . "\n";
-            $res .= "      if (retval!=true) return false;\n";
+            $res .= "      if (retval!=true) { return postGlobalSubmit(form, bag, retval); };\n";
         }
 
-        $res .= "postGlobalSubmit(form);\n";
-
-        $res .= "      return retval;\n";
+        $res .= "      return postGlobalSubmit(form, bag, retval);\n";
         $res .= "    }\n";
         return $res;
     }

@@ -50,6 +50,7 @@ class atkViewHandler extends atkViewEditBase
         }
 
         $page = &$this->getPage();
+        $page->register_script(atkconfig("atkroot") . "atk/javascript/formsubmit.js");
         $this->notify("view", $record);
         $page->addContent($this->m_node->renderActionPage("admin", $this->invoke("viewPage", $record, $this->m_node, $renderbox)));
     }
@@ -70,8 +71,12 @@ class atkViewHandler extends atkViewEditBase
      */
     public function getFormStart($record = null)
     {
-        return '<form name="entryform" id="entryform" action="' . getDispatchFile() . '" method="get">' . session_form(SESSION_NESTED) .
-            '<input type="hidden" name="atkselector" value="' . $this->getNode()->primaryKey($record) . '">';
+        $formstart = '<form name="entryform" id="entryform" action="' . getDispatchFile() . '" method="get" onsubmit="return globalSubmit(this)">';
+        $formstart .= session_form(SESSION_NESTED);
+        $formstart .= '<input type="hidden" name="atkselector" value="' . $this->getNode()->primaryKey($record) . '">';
+        $formstart .= '<input type="hidden" class="atksubmitaction" />';
+        return $formstart;
+
     }
 
     /**

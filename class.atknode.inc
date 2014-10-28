@@ -2629,6 +2629,7 @@ class atkNode
         $formstart.='<input type="hidden" name="atkaction" value="' . $action . '">';
         $formstart.='<input type="hidden" name="atknodetype" value="' . $this->atknodetype() . '">';
 
+
         if (isset($csrfToken)) {
             $this->getHandler($action);
             $formstart .= '<input type="hidden" name="atkcsrftoken" value="' . $csrfToken . '">';

@@ -21,6 +21,6 @@
     {foreach from=$buttons item=button}
         &nbsp;{$button}&nbsp;
     {/foreach}
+    <div class="spinner"><img src="{atkthemeimg spinner.gif}" alt="Busy"/></div>
 </div>
-<div id="action-spinner"><img src="{atkthemeimg spinner.gif}" alt="Busy"/></div>
 {$formend}
