@@ -12,14 +12,14 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 * LATEST CHANGES GO ON TOP, different types of changes may be mixed.
 
-Changes in ATK 7.1.2 (WIP)
+Changes in ATK master (WIP)
 ------------------------
-* Initial implementation of Bootstrap theme
-* composer.json
 
 
-Changes in ATK 7.1.1
+
+Changes in ATK 8.0.0
 ------------------------
++ Added composer.json
 + Added spinner on action buttons
 + Added property in atkListAttribute to render a multiple select also in simple search
 + Added spinner showing next to attributes during dependencies execution
@@ -35,6 +35,7 @@ Changes in ATK 7.1.1
 * Fixed grid searching problem after extended search
 * Export csv improvement
 + Added unregister_script function in atkpage
++ Initial implementation of Bootstrap theme
 
 
 Changes in ATK 7.0.0
