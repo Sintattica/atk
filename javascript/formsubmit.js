@@ -38,12 +38,19 @@ function preGlobalSubmit(formEl, bag) {
     var $ = jQuery;
     var form = $(formEl);
     var bt = form.find("button[type='submit']:focus");
+
+
     var spinner = form.find('#action-buttons .spinner');
 
     bag.spinnerVisibility = spinner.css('visibility');
     spinner.css('visibility', 'visible');
 
-    if(bt) {
+    if(!bt.get(0)) {
+        //recupera il default...
+        bt = form.find("button[type='submit'].atkdefaultbutton");
+    }
+
+    if(bt.get(0)) {
         var atksubmitaction = form.find('input[type="hidden"].atksubmitaction');
         bag.buttonDisabled = bt.prop('disabled');
         bt.prop('disabled', true);
