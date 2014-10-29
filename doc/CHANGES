@@ -14,6 +14,8 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in ATK 7.1.2 (WIP)
 ------------------------
+* Initial implementation of Bootstrap theme
+* composer.json
 
 
 Changes in ATK 7.1.1
