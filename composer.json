@@ -1,0 +1,8 @@
+{
+    "name": "atkphpframework/atk",
+    "description": "ATK business framework",
+    "homepage": "https://github.com/Sintattica/atk",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["framework"]
+}
