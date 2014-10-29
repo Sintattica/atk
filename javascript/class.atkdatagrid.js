@@ -171,3 +171,15 @@ ATK.DataGrid = {
         new Ajax.Request(url, {parameters: params, onSuccess: success});
     }
 };
+
+
+jQuery(function($) {
+    $('.atkdatagrid-container').on('keypress', '.recordListSearch input[type="text"]', function(e) {
+        var bt;
+        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+            bt = $(e.currentTarget).parent('.recordListSearch').parent('tr').find('.btn_search');
+            bt.click();
+            return false;
+        }
+    });
+});
