@@ -654,8 +654,7 @@ class atkManyToOneRelation extends atkRelation
                     }
                 }
             } else {
-                $result = (!in_array($mode, array("csv", "plain")) ? $this->getNoneLabel($mode)
-                            : ''); // no record
+                $result = !in_array($mode, array("csv", "plain", "list")) ? $this->getNoneLabel($mode) : ''; // no record
             }
             return $result;
         } else {
@@ -895,7 +894,7 @@ class atkManyToOneRelation extends atkRelation
                 if ($this->hasFlag(AF_RELATION_AUTOLINK) && $this->m_destInstance->allowed("view") && !$this->m_destInstance->hasFlag(NF_NO_VIEW)) {
                     $result .= href(dispatch_url($this->m_destination, "view", array("atkselector"=>$this->m_destInstance->primaryKey($record[$this->fieldName()]))), $this->m_destInstance->descriptor($destrecord), SESSION_NESTED);
                 } else {
-                    $result = $this->m_destInstance->descriptor($destrecord);
+                    $result .= $this->m_destInstance->descriptor($destrecord);
                 }
 
                 $result .= "&nbsp;";

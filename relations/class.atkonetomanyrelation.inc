@@ -381,7 +381,7 @@ class atkOneToManyRelation extends atkRelation
 
         // no records
         if (count($records) == 0) {
-            return $this->text('none');
+            return !in_array($mode, array("csv", "plain", "list")) ? $this->text('none') : '';
         }
 
         if ($mode == "list") { // list mode
