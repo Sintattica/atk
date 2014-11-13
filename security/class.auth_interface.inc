@@ -2,7 +2,7 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * @package atk
@@ -35,9 +35,9 @@ define("PASSWORD_RECREATE", 1);
 define("PASSWORD_STATIC", 0);
 
 /**
- * This class is the abstract baseclass (interface) for all auth_ classes. 
- * All new authentication/authorization methods need to derive from this 
- * class.   
+ * This class is the abstract baseclass (interface) for all auth_ classes.
+ * All new authentication/authorization methods need to derive from this
+ * class.
  *
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk
@@ -47,29 +47,29 @@ define("PASSWORD_STATIC", 0);
 class auth_interface
 {
     /**
-     * If authentication fails due to an error, instead of a wrong 
+     * If authentication fails due to an error, instead of a wrong
      * username/password combination, this variable must be filled
      * with an explanation of the reason for the error.
      */
     var $m_fatalError;
 
     /**
-     * Authenticate a user. 
+     * Authenticate a user.
      *
      * @param String $user The login of the user to authenticate.
-     * @param String $passwd The password of the user. Note: if the canMd5 
-     *                       function of an implementation returns true,      
+     * @param String $passwd The password of the user. Note: if the canMd5
+     *                       function of an implementation returns true,
      *                       $passwd will be passed as an md5 string.
      *
      * @return int AUTH_SUCCESS - Authentication succesful
-     *             AUTH_MISMATCH - Authentication failed, wrong 
+     *             AUTH_MISMATCH - Authentication failed, wrong
      *                             user/password combination
      *             AUTH_LOCKED - Account is locked, can not login
      *                           with current username.
-     *             AUTH_ERROR - Authentication failed due to some 
-     *                          error which cannot be solved by 
-     *                          just trying again. If you return 
-     *                          this value, you *must* also 
+     *             AUTH_ERROR - Authentication failed due to some
+     *                          error which cannot be solved by
+     *                          just trying again. If you return
+     *                          this value, you *must* also
      *                          fill the m_fatalError variable.
      */
     function validateUser($user, $passwd)
@@ -80,7 +80,7 @@ class auth_interface
     /**
      * Logout handling. The default implementation does simple session destruction
      * and recreates a new session.
-     * @param array $user The user data (as returned by atkGetUser() 
+     * @param array $user The user data (as returned by atkGetUser()
      */
     function logout($user)
     {
@@ -89,7 +89,7 @@ class auth_interface
         $cookie_params = session_get_cookie_params();
         $cookiepath = atkconfig("application_root");
         $cookiedomain = (atkconfig("cookiedomain") != "") ? atkconfig("cookiedomain")
-                : NULL;
+            : NULL;
         session_set_cookie_params($cookie_params["lifetime"], $cookiepath, $cookiedomain);
         @session_start();
     }
@@ -118,7 +118,7 @@ class auth_interface
     /**
      * This function returns information about a user in an associative
      * array with the following elements:
-     * "name" -> the userid (should normally be the same as the $user 
+     * "name" -> the userid (should normally be the same as the $user
      *           variable that gets passed to it.
      * "level" -> The level/group(s) to which this user belongs.
      * Specific implementations of the method may add more information if
@@ -135,7 +135,7 @@ class auth_interface
     /**
      * Check if the currently logged-in user has a certain privilege on a
      * node.
-     * 
+     *
      * @param atkSecurityManager $securityMgr The security manager instance.
      * @param String $node The full nodename of the node for which to check
      *                     access privileges. (modulename.nodename notation).
@@ -147,12 +147,10 @@ class auth_interface
         // security disabled or user is superuser? (may do anything)
         if (($securityMgr->m_scheme == "none") || ($securityMgr->hasLevel(-1)) || (strtolower($securityMgr->m_user["name"]) == "administrator")) {
             $allowed = true;
-        }
-        // user is guest? (guests may do nothing)
+        } // user is guest? (guests may do nothing)
         else if (($securityMgr->hasLevel(-2)) || (strtolower($securityMgr->m_user["name"]) == "guest")) {
             $allowed = false;
-        }
-        // other
+        } // other
         else {
             $required = $this->getEntity($node, $privilege);
 
@@ -185,12 +183,12 @@ class auth_interface
     /**
      * Check if the currently logged-in user has the right to view, edit etc.
      * an attribute of a node.
-     * 
-     * @param atkSecurityManager $securityMgr  the security manager
-     * @param atkAttribute       $attr         attribute reference
-     * @param string             $mode         mode (add, edit, view etc.)
-     * @param array              $record       record data
-     * 
+     *
+     * @param atkSecurityManager $securityMgr the security manager
+     * @param atkAttribute $attr attribute reference
+     * @param string $mode mode (add, edit, view etc.)
+     * @param array $record record data
+     *
      * @return boolean true if access is granted, false if not.
      */
     function attribAllowed(&$securityMgr, &$attr, $mode, $record = NULL)
@@ -201,12 +199,10 @@ class auth_interface
         // security disabled or user is superuser? (may do anything)
         if (($securityMgr->m_scheme == "none") || (!atkconfig("security_attributes")) || ($securityMgr->hasLevel(-1)) || (strtolower($securityMgr->m_user["name"]) == "administrator")) {
             $allowed = true;
-        }
-        // user is guest? (guests may do nothing)
+        } // user is guest? (guests may do nothing)
         else if (($securityMgr->hasLevel(-2)) || (strtolower($securityMgr->m_user["name"]) == "guest")) {
             $allowed = false;
-        }
-        // other
+        } // other
         else {
             // all other situations
             $required = $this->getAttribEntity($node, $attribute, $mode);
@@ -220,13 +216,9 @@ class auth_interface
                 } else if ($securityMgr->m_scheme == "group") {
                     $level = is_array($securityMgr->m_user["level"]) ? $securityMgr->m_user["level"] : [$securityMgr->m_user["level"]];
                     $required = is_array($required) ? $required : [$required];
-                    if ( array_intersect($level, $required) ){
-                        $allowed = true;
-                    }else{
-                        $allowed = false;
-                    }
-                    if(atkconfig("reverse_attributeaccess_logic")){
-                        $allowed = ! $allowed;
+                    $allowed = array_intersect($level, $required) ? true : false;
+                    if (atkConfig::getGlobal("reverse_attributeaccess_logic", false)) {
+                        $allowed = !$allowed;
                     }
                 } else { // unknown scheme??
                     $allowed = false;
@@ -252,14 +244,14 @@ class auth_interface
     }
 
     /**
-     * This function returns the level/group(s) that are allowed to 
+     * This function returns the level/group(s) that are allowed to
      * view/edit a certain attribute of a given node.
      * @param String $node The full nodename of the node for which to check
      *                     attribute access.
      * @param String $attrib The name of the attribute to check
      * @param String $mode "view" or "edit"
-     * @param mixed One (int) or more (array) entities that are allowed to 
-     *              view/edit the attribute. 
+     * @param mixed One (int) or more (array) entities that are allowed to
+     *              view/edit the attribute.
      */
     function getAttribEntity($node, $attrib, $mode)
     {
@@ -270,10 +262,10 @@ class auth_interface
      * This function returns the list of users that may login. This can be
      * used to display a dropdown of users from which to choose.
      *
-     * Implementations that do not support retrieval of a list of users, 
+     * Implementations that do not support retrieval of a list of users,
      * should either not implement this method, or return an empty array.
      *
-     * @return array List of users as an associative array with the following 
+     * @return array List of users as an associative array with the following
      *               format: array of records, each record is an associative
      *               array with a userid and a username field.
      */
@@ -294,7 +286,7 @@ class auth_interface
 
     /**
      * This function returns password or false, if password can't be retrieve/recreate
-     * 
+     *
      * @param string $username User for which the password should be regenerated
      *
      * @return mixed string with password or false
