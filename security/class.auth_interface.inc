@@ -218,7 +218,16 @@ class auth_interface
                 if ($securityMgr->m_scheme == "level") {
                     $allowed = ($securityMgr->m_user["level"] >= $required);
                 } else if ($securityMgr->m_scheme == "group") {
-                    $allowed = in_array($securityMgr->m_user["level"], $required);
+                    $level = is_array($securityMgr->m_user["level"]) ? $securityMgr->m_user["level"] : [$securityMgr->m_user["level"]];
+                    $required = is_array($required) ? $required : [$required];
+                    if ( array_intersect($level, $required) ){
+                        $allowed = true;
+                    }else{
+                        $allowed = false;
+                    }
+                    if(atkconfig("reverse_attributeaccess_logic")){
+                        $allowed = ! $allowed;
+                    }
                 } else { // unknown scheme??
                     $allowed = false;
                 }
