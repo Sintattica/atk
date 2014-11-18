@@ -22,7 +22,7 @@
                         {if %i.index% == 0}...{/if}
                     {/if}
                 {/section}
-            </div>
+            </ol>
         {/if}
         {foreach from=$blocks item=block}
             {$block}
