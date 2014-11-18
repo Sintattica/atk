@@ -362,7 +362,7 @@ function atkGetTrace($format = "html")
                             if (is_object($value))
                                 $valArr[] = sprintf("%s=Object(%s)", $name, get_class($value));
                             else
-                                $valArr[] = $name . "=" . $value;
+                                $valArr[] = $name . "=" . @json_encode($value);
                         }
                     }
                     $stringval = "array(" . implode(", ", $valArr) . ")";
