@@ -12,15 +12,14 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 * LATEST CHANGES GO ON TOP, different types of changes may be mixed.
 
-Changes in ATK master (WIP)
+
+
+
+Changes in ATK 8.0.0 (WIP)
 ------------------------
++ Added "reverse_attributeaccess_logic" global configuration variable
 * charset utf8 in default mysql config
 * oneToMany search grid triggers search on keyboard enter
-
-
-
-Changes in ATK 8.0.0
-------------------------
 + Added composer.json
 + Added spinner on action buttons
 + Added property in atkListAttribute to render a multiple select also in simple search
