@@ -13,13 +13,15 @@
 {/if}
 <div style="border:0px solid red;">{$header}</div>
 {$formstart}
-<div id="action-content" style="border: 0px solid green;">
-    {$content}
-</div>
-<div id="action-buttons" style="border: 0px solid blue;">
-    {foreach from=$buttons item=button}
-        {$button}
-    {/foreach}
-    <div class="spinner"><i class="fa fa-cog fa-spin fa-2x"></i></div>
+<div> <!-- div added to enable nested forms -->
+    <div id="action-content" style="border: 0px solid green;">
+        {$content}
+    </div>
+    <div id="action-buttons" style="border: 0px solid blue;">
+        {foreach from=$buttons item=button}
+            {$button}
+        {/foreach}
+        <div class="spinner"><i class="fa fa-cog fa-spin fa-2x"></i></div>
+    </div>
 </div>
 {$formend}
