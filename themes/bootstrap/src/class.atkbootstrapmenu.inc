@@ -35,7 +35,6 @@ class atkBootstrapMenu extends atkPlainMenu
         $page = & atkinstance("atk.ui.atkpage");
         $menu = $this->load();
         $page->addContent($menu);
-
         return $page->render("Menu", true);
     }
 
@@ -71,7 +70,7 @@ class atkBootstrapMenu extends atkPlainMenu
         foreach ($menu as $item) {
             if (isset($item['submenu']) && count($item['submenu'])) {
                 $ret .= '<li class="dropdown">';
-                $ret .= '<a href="#" class="dropdown-toggle" data-toggle="dropdown">' . $item['name'] . '<span class="caret"></span></a>';
+                $ret .= '<a href="#" class="dropdown-toggle" data-toggle="dropdown">' .  atk_htmlentities($this->getMenuTranslation($item['name'], $item['module'])) . '<span class="caret"></span></a>';
                 $ret .= '<ul class="dropdown-menu" role="menu">' . $this->processMenu($item['submenu']) . '</ul>';
                 $ret .= '</li>';
             } else {
