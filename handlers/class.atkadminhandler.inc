@@ -43,6 +43,7 @@ class atkAdminHandler extends atkActionHandler
         }
 
         $page = &$this->getPage();
+        $page->register_script(atkconfig("atkroot") . "atk/javascript/formsubmit.js");
         $res = $this->renderAdminPage();
         $page->addContent($this->m_node->renderActionPage("admin", $res));
     }

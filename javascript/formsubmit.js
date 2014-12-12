@@ -35,26 +35,29 @@ function atkSubmit(target)
 
 
 function preGlobalSubmit(formEl, bag) {
+
     var $ = jQuery;
     var form = $(formEl);
-    var bt = form.find("button[type='submit']:focus");
+    var actionButton = form.find("#action-buttons button:focus");
+    var enter = form.find('input[type="text"]:focus');
 
+    if (enter.get(0) || actionButton.get(0)) {
 
-    var spinner = form.find('#action-buttons .spinner');
+        var spinner = form.find('#action-buttons .spinner');
+        bag.spinnerVisibility = spinner.css('visibility');
+        spinner.css('visibility', 'visible');
 
-    bag.spinnerVisibility = spinner.css('visibility');
-    spinner.css('visibility', 'visible');
+        if(!actionButton.get(0)) {
+            // get default action button
+            actionButton = form.find("#action-buttons button.atkdefaultbutton");
+        }
 
-    if(!bt.get(0)) {
-        //recupera il default...
-        bt = form.find("button[type='submit'].atkdefaultbutton");
-    }
-
-    if(bt.get(0)) {
-        var atksubmitaction = form.find('input[type="hidden"].atksubmitaction');
-        bag.buttonDisabled = bt.prop('disabled');
-        bt.prop('disabled', true);
-        atksubmitaction.attr('name', bt.attr('name')).val(bt.val());
+        if(actionButton.get(0)) {
+            var atksubmitaction = form.find('input[type="hidden"].atksubmitaction');
+            bag.buttonDisabled = actionButton.prop('disabled');
+            actionButton.prop('disabled', true);
+            atksubmitaction.attr('name', actionButton.attr('name')).val(actionButton.val());
+        }
     }
 }
 
@@ -62,15 +65,24 @@ function postGlobalSubmit(formEl, bag, retval) {
     if(!retval) {
         var $ = jQuery;
         var form = $(formEl);
-        var bt = form.find("button[type='submit']:focus");
-        var spinner = form.find('#action-buttons .spinner');
+        var actionButton = form.find("#action-buttons button:focus");
+        var enter = form.find('input[type="text"]:focus');
 
-        spinner.css('visibility', bag.spinnerVisibility);
+        if (enter.get(0) || actionButton.get(0)) {
 
-        if(bt) {
-            var atksubmitaction = form.find('input[type="hidden"].atksubmitaction');
-            bt.prop('disabled', bag.buttonDisabled);
-            atksubmitaction.attr('name', '').val('');
+            var spinner = form.find('#action-buttons .spinner');
+            spinner.css('visibility', bag.spinnerVisibility);
+
+            if(!actionButton.get(0)) {
+                // get default action button
+                actionButton = form.find("#action-buttons button.atkdefaultbutton");
+            }
+
+            if (actionButton.get(0)) {
+                var atksubmitaction = form.find('input[type="hidden"].atksubmitaction');
+                actionButton.prop('disabled', bag.buttonDisabled);
+                atksubmitaction.attr('name', '').val('');
+            }
         }
     }
 

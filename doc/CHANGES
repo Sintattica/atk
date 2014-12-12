@@ -15,7 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 
 
-Changes in ATK 8.0.0 (WIP)
+Changes in ATK 8.0.0
 ------------------------
 + Added "reverse_attributeaccess_logic" global configuration variable
 * charset utf8 in default mysql config
