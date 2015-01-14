@@ -13,10 +13,14 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 * LATEST CHANGES GO ON TOP, different types of changes may be mixed.
 
 
-Changes in MASTER (WIP)
+Changes in ATK 8.0.1
 ------------------------
-
-
+* Better handling of readonly/hidden atkManyToOneRelation in edit mode
+* Refactored the fetchMeta function in atkAttribute and atkNumberAttribute
++ Added max_searchinput_size config variable
+* Fixed display in atkProfileAttribute and atkDateAttribute
+* Fixed search in atkListAttribute
+* Steelblue theme style improvement
 
 Changes in ATK 8.0.0
 ------------------------
