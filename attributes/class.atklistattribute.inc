@@ -387,7 +387,7 @@ class atkListAttribute extends atkAttribute
         $result .= 'name="' . $this->getSearchFieldName($fieldprefix) . '[]">';
 
         $selValues = $record[$this->fieldName()];
-        if ($this->getMultipleInSimpleSearch() && is_array($selValues) && count($selValues)) {
+        if ($this->getMultipleInSimpleSearch() && is_array($selValues) && count($selValues) == 1 && strpos($selValues[0], ',')) {
             // in case of multiple select in simple search, we have the selected values into a single string (csv)
             $selValues = explode(',', $selValues[0]);
         }
@@ -438,7 +438,7 @@ class atkListAttribute extends atkAttribute
         $searchcondition = "";
         if (is_array($value) && count($value) > 0 && $value[0] != "") { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
 
-            if ($this->getMultipleInSimpleSearch()) {
+            if ($this->getMultipleInSimpleSearch() && count($value) == 1 && strpos($value[0], ',')) {
                 // in case of multiple select in simple search, we have the selected values into a single string (csv)
                 $value = explode(',', $value[0]);
             }

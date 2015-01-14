@@ -104,6 +104,12 @@ a:hover
     text-align: left;
 }
 
+.errorlabel
+{
+    padding: 5px 0px 8px 0px !important;
+    width: 200px;
+}
+
 .atkmessages
 {
     background-color: #EEEEEE;
@@ -419,9 +425,9 @@ td.field {
 
 #editform td.field
 {
-    padding-top: 5px;
+    /*padding-top: 5px;
     padding-bottom: 2px;
-    vertical-align: top;
+    vertical-align: top;*/
 }
 
 hr
