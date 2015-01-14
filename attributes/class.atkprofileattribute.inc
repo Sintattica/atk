@@ -359,9 +359,13 @@ class atkProfileAttribute extends atkAttribute
                     $firstModule = false;
                 else
                     $result .= '</div><br>';
-                $result .= '<b><a href="javascript:void(0)" onclick="profile_swapProfileDiv(\'div_' . $module . "', '" . atkConfig('atkroot') . '\'); return false;"><img src="' . atkConfig('atkroot') . 'atk/images/plus.gif" border="0" id="img_div_' . $module . '></a>&nbsp;</b>' . atktext(array('title_' . $module, $module), $module) . '<br>';
-                $result .= "<div id='div_$module' name='div_$module' style='display: none;'>";
-                $result .= "<input type='hidden' name=\"divstate['div_$module']\" id=\"divstate['div_$module']\" value='closed' />";
+                $result .= sprintf("<b><a href=\"javascript:void(0)\" onclick=\"%s\"><img src=\"%s\" border=\"0\" id=\"img_div_$module\"></a>&nbsp;</b>%s<br>",
+                    "profile_swapProfileDiv('div_$module', '" . atkConfig('atkroot') . "'); return false;",
+                    atkConfig('atkroot') . 'atk/images/plus.gif',
+                    atktext(array("title_$module", $module), $module)
+                );
+                $result .= "<div id=\"div_$module\" name=\"div_$module\" style=\"display: none;\">";
+                $result .= "<input type=\"hidden\" name=\"divstate['div_$module']\" id=\"divstate['div_$module']\" value=\"closed\" />";
                 $result .= "<br>";
             }
 

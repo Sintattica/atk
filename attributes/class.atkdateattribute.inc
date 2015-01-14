@@ -1158,19 +1158,21 @@ class atkDateAttribute extends atkAttribute
      * @param array $record array with date
      * @return formatted date string
      */
-    function display($record)
+    function display($record, $mode = '')
     {
         $value = $record[$this->fieldName()];
         if (!is_array($value) || empty($value["month"]) || empty($value["day"]) || empty($value["year"]))
             return "";
         $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));
         if (!empty($tmp_date)) {
-            if ($this->hasFlag(AF_DATE_DISPLAY_DAY))
-                return $this->formatDate($tmp_date, $this->m_date_format_view, 1);
-            else
-                return $this->formatDate($tmp_date, $this->m_date_format_view, 0);
-        } else
+            $d = $this->formatDate($tmp_date, $this->m_date_format_view, $this->hasFlag(AF_DATE_DISPLAY_DAY));
+            if ($mode == 'list') {
+                $d = str_replace(' ', '&nbsp;', $d);
+            }
+            return $d;
+        } else {
             return "&nbsp;";
+        }
     }
 
     /**
