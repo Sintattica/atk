@@ -485,7 +485,7 @@ class atkController
      *                      This param can be used to define record specific
      *                      buttons.
      */
-    function getFormButtons($mode, $record)
+    function getFormButtons($mode, $record = '')
     {
         $result = array();
         $node = &$this->getNode();
@@ -538,6 +538,10 @@ class atkController
         } elseif ($mode == "delete") {
             $result[] = '<input name="confirm" type="submit" class="btn btn-default btn_ok" value="' . $node->text('yes') . '">';
             $result[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel" value="' . $node->text('no') . '">';
+        } elseif ($mode == "search") {
+            // (don't change the order of button)
+            $result[] = $this->getButton('search', true);
+            $result[] = $this->getButton('cancel');
         }
 
         return $result;
