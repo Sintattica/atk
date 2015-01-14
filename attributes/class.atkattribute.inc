@@ -1902,23 +1902,26 @@ class atkAttribute
     function fetchMeta($metadata)
     {
         $attribname = strtolower($this->fieldName());
-        // Only use meta info if size is not already set manual. (constructor or setAttribSize)
-        // If both are set, use the smallest value.
+
+        // maxsize (the maximum size that can be entered)
         if (isset($metadata[$attribname])) {
-            if ($this->m_size > 0)
-                $this->m_size = min($this->m_size, $metadata[$attribname]['len'], $this->maxInputSize());
-            else
-                $this->m_size = min($metadata[$attribname]['len'], $this->maxInputSize());
-
-            if ($this->m_searchsize > 0)
-                $this->m_searchsize = min($this->m_searchsize, $metadata[$attribname]['len'], 20);
-            else
-                $this->m_searchsize = min($metadata[$attribname]['len'], 20);
-
-            if ($this->m_maxsize > 0)
+            if ($this->m_maxsize > 0) {
+                // if the size is explicitly set, but the database simply can't handle it, we use the smallest value
                 $this->m_maxsize = min($this->m_maxsize, $metadata[$attribname]['len']);
-            else
+            } else {
+                // no size explicitly set, so use the one we retrieved from the database
                 $this->m_maxsize = $metadata[$attribname]['len'];
+            }
+        }
+
+        // size (the size of the input box in add/edit forms)
+        if (!$this->m_size) {
+            $this->m_size = min($this->m_maxsize, $this->maxInputSize());
+        }
+
+        // searchsize (the size of the search box)
+        if (!$this->m_searchsize) {
+            $this->m_searchsize = min($this->m_maxsize, $this->maxSearchInputSize());
         }
 
         // TODO FIXME: The metadata contains the real field type. $this->m_dbfieldtype should be
@@ -2419,8 +2422,16 @@ class atkAttribute
      */
     function maxInputSize()
     {
-        $configsize = atkconfig("max_input_size");
-        return ($configsize == "" ? 70 : $configsize);
+        return atkconfig("max_input_size");
+    }
+
+    /**
+     * Determine the maximum length an input search field may be.
+     * @return int
+     */
+    function maxSearchInputSize()
+    {
+        return atkconfig("max_searchinput_size");
     }
 
     /**
