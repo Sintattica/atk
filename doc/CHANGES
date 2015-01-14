@@ -13,6 +13,14 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 * LATEST CHANGES GO ON TOP, different types of changes may be mixed.
 
 
+Changes in DEVELOP (WIP)
+------------------------
+
+
+Changes in MASTER (WIP)
+------------------------
+
+
 Changes in ATK 8.0.1
 ------------------------
 * Better handling of readonly/hidden atkManyToOneRelation in edit mode
