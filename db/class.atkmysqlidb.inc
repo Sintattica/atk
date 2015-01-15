@@ -509,10 +509,12 @@ class atkMysqliDb extends atkMysqlDb
                 if (strtoupper($this->m_charset) == 'UTF8' && ($result[$i]['gentype'] == 'string' || $result[$i]['gentype'] == 'text')) {
                     $result[$i]['len'] /= 3;
                 } else if ($result[$i]["gentype"] == "decimal") {
-                    $result[$i]["len"] -= $finfo->decimals + 1;
+                    // for a mysql type DECIMAL, the length is returned as M+2 (signed) or M+1 (unsigned)
+                    $offset = ($finfo->flags & MYSQLI_UNSIGNED_FLAG) ? 1 : 2;
+                    $result[$i]["len"] -= ($offset + $finfo->decimals);
                     $result[$i]["len"] .= "," . $finfo->decimals;
+                    // TODO we should also save the "unsigned" flag in $result[$i]["flags"]
                 }
-
                 if ($finfo->flags & MYSQLI_PRI_KEY_FLAG)
                     $result[$i]["flags"]|= MF_PRIMARY;
                 if ($finfo->flags & MYSQLI_UNIQUE_KEY_FLAG)

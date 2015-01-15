@@ -12,7 +12,7 @@
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
  * @version $Revision: 6353 $
- * $Id: class.atknumberattribute.inc 7011 2010-08-19 15:15:30Z jvansluijs $
+ * $Id$
  */
 
 /**
@@ -44,12 +44,11 @@ class atkNumberAttribute extends atkAttribute
      * Constructor
      * @param string $name Name of the attribute
      * @param int $flags Flags for this attribute
-     * @param mixed $size The size(s) of integral part (before seperator) for this attribute (default 10)
-     *                          also accepts an array. See setAttribSize for format.
+     * @param mixed $size The size(s) of integral part (before seperator) for this attribute, also accepts an array (see setAttribSize for format)
      * @param int $decimals The number of decimals to use.
      *
      */
-    function atkNumberAttribute($name, $flags = 0, $size = 10, $decimals = null)
+    function atkNumberAttribute($name, $flags = 0, $size = 0, $decimals = null)
     {
         $this->atkAttribute($name, $flags | AF_NO_QUOTES, $size); // base class constructor
         $this->m_decimals = $decimals;
@@ -469,6 +468,9 @@ class atkNumberAttribute extends atkAttribute
 
             if (strpos($metadata[$attribname]['len'], ',') !== false) {
                 list($metaSize, $metaDecimals) = explode(',', $metadata[$attribname]['len']);
+                $metaSize = (int)$metaSize;
+                $metaDecimals = (int)$metaDecimals;
+
                 // decimals
                 if ($this->m_decimals === null) {
                     $this->m_decimals = $metaDecimals;
@@ -524,6 +526,7 @@ class atkNumberAttribute extends atkAttribute
         if ($this->getDecimals() > 0) {
             $size += ($this->getDecimals() + 1);
             $maxsize += ($this->getDecimals() + 1); // make room for the number of decimals
+            // TODO we should also consider the sign symbol (for signed type)
         }
 
         $value = "";
@@ -566,6 +569,7 @@ class atkNumberAttribute extends atkAttribute
         $searchsize = $this->m_searchsize;
         if ($this->getDecimals() > 0) {
             $searchsize += ($this->getDecimals() + 1); // make room for the number of decimals
+            // TODO we should also consider the sign symbol (for signed type)
         }
 
         if (!$extended) {
