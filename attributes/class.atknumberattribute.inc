@@ -573,10 +573,14 @@ class atkNumberAttribute extends atkAttribute
         }
 
         if (!$extended) {
-            if (is_array($value)) {
-                if ($value["from"] != "" || $value["to"] != "") {
-                    // Two values were entered in the extended search screen.
-                    $value = $value["from"] . "-" . $value["to"];
+            if (is_array($value)) { // values entered in the extended search
+                // TODO we would need to know the searchmode for better handling...
+                if ($value["from"] != "" && $value["to"] != "") {
+                    $value = $value["from"] . "/" . $value["to"];
+                } else if ($value["from"] != "") {
+                    $value = $value["from"];
+                } else if ($value["to"] != "") {
+                    $value = $value["to"];
                 } else {
                     $value = "";
                 }
@@ -623,25 +627,24 @@ class atkNumberAttribute extends atkAttribute
      */
     function processSearchValue($value, &$searchmode)
     {
-        $processed = array();
         if (!is_array($value)) {
-            $slash = strpos($value, '-'); // Support for 'from-to' searches.
-            $str = trim($value);
-            if ($slash !== false) {
-                $from = substr($str, 0, $slash);
-                $to = substr($str, $slash + 1);
-
-                if (!is_numeric($from) || !is_numeric($to)) {
-                    return array();
-                }
-
-                $processed["from"] = self::removeSeparators($from);
-                $processed["to"] = self::removeSeparators($to);
+            // quicksearch
+            $value = trim($value);
+            if (strpos($value, '/') !== false) { // from/to searches
+                list($from, $to) = explode('/', $value);
+                $from = self::removeSeparators(trim($from));
+                $to = self::removeSeparators(trim($to));
+                $from = is_numeric($from) ? (float)$from : '';
+                $to = is_numeric($to) ? (float)$to : '';
+                $processed = array('from' => $from, 'to' => $to);
                 $searchmode = 'between';
-            } else if (is_numeric($str)) {
-                $processed["from"] = (float)self::removeSeparators($str); // quicksearch doesn't use an array.
-            } else {
-                return array();
+            } else { // single value
+                $value = self::removeSeparators($value);
+                if (is_numeric($value)) {
+                    $processed['from'] = (float)$value;
+                } else {
+                    $processed = array();
+                }
             }
         } else {
             // assumes array('from'=><intval>, 'to'=><intval>)
@@ -663,8 +666,6 @@ class atkNumberAttribute extends atkAttribute
      */
     function getBetweenCondition(&$query, $fieldname, $value)
     {
-        $searchcondition = "";
-
         if ($value["from"] != "" && $value["to"] != "") {
             if ($value["from"] > $value["to"]) {
                 // User entered fields in wrong order. Let's fix that.
@@ -698,15 +699,17 @@ class atkNumberAttribute extends atkAttribute
      */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
-        $searchcondition = "";
-
         $value = $this->processSearchValue($value, $searchmode);
 
-        if ($searchmode != "between") {
-            // Use default handler, and use only the first field.
-            if (!array_key_exists('from', $value) || strlen(trim($value['from'])) == 0)
+        if ($searchmode != 'between') {
+            if ($value['from'] != '') {
+                $value = $value['from'];
+            } else if ($value['to'] != '') {
+                $value = $value['to'];
+            } else {
                 return false;
-            return parent::getSearchCondition($query, $table, $value["from"], $searchmode);
+            }
+            return parent::getSearchCondition($query, $table, $value, $searchmode);
         } else {
             $fieldname = $table . "." . $this->fieldName();
             return $this->getBetweenCondition($query, $fieldname, $value);

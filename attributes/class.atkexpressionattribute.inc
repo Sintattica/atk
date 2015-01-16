@@ -202,16 +202,20 @@ class atkExpressionAttribute extends atkAttribute
 
         $expression = "(" . str_replace("[table]", $table, $this->m_expression) . ")";
 
-        $searchcondition = "";
-
-        if ($this->getSearchType() == "number")
+        if ($this->getSearchType() == "number") {
             $value = atkNumberAttribute::processSearchValue($value, $searchmode);
+        }
 
         if ($searchmode != "between") {
-            // Use default handler, and use only the first field.
-            if ($this->getSearchType() == "number")
-                $value = $value["from"];
-
+            if ($this->getSearchType() == "number") {
+                if ($value['from'] != '') {
+                    $value = $value['from'];
+                } else if ($value['to'] != '') {
+                    $value = $value['to'];
+                } else {
+                    return false;
+                }
+            }
             $func = $searchmode . "Condition";
             if (method_exists($query, $func) && $value !== "" && $value !== NULL) {
                 return $query->$func($expression, $this->escapeSQL($value));
@@ -222,7 +226,4 @@ class atkExpressionAttribute extends atkAttribute
             return atkNumberAttribute::getBetweenCondition($query, $expression, $value);
         }
     }
-
 }
-
-?>
