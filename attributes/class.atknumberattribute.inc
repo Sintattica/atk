@@ -567,8 +567,8 @@ class atkNumberAttribute extends atkAttribute
         }
 
         $searchsize = $this->m_searchsize;
-        if ($this->getDecimals() > 0) {
-            $searchsize += ($this->getDecimals() + 1); // make room for the number of decimals
+        if ($this->m_decimals > 0) { // (don't use getDecimals to avoid fatal error when called from atkExpressionAttribute)
+            $searchsize += ($this->m_decimals + 1); // make room for the number of decimals
             // TODO we should also consider the sign symbol (for signed type)
         }
 
