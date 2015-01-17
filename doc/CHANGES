@@ -23,6 +23,7 @@ Changes in MASTER (WIP)
 
 Changes in ATK 8.0.1
 ------------------------
+* Fixed dependencies handling
 * atkNumberAttribute search improvement
 * Better handling of readonly/hidden atkManyToOneRelation in edit mode
 * Refactored the fetchMeta function in atkAttribute and atkNumberAttribute
