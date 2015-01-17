@@ -40,7 +40,7 @@ class atkShuttleRelation extends atkManyToManyRelation
      */
     function _renderChangeHandler($fieldprefix)
     {
-        if (count($this->m_onchangecode) || count($this->getDependencies())) {
+        if (count($this->m_onchangecode)) {
             $page = &$this->m_ownerInstance->getPage();
             $page->register_scriptcode("
     function " . $this->getHtmlId($fieldprefix) . "_onChange()

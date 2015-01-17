@@ -977,7 +977,7 @@ class atkAttribute
         $id = $this->getHtmlId($fieldprefix);
         $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
 
-        if (count($this->m_onchangecode) || count($this->getDependencies())) {
+        if (count($this->m_onchangecode)) {
             $onchange = 'onChange="' . $id . '_onChange(this);"';
             $this->_renderChangeHandler($fieldprefix);
         } else {
@@ -1024,7 +1024,7 @@ class atkAttribute
      */
     function _renderChangeHandler($fieldprefix, $elementNr = "")
     {
-        if (count($this->m_onchangecode) || count($this->getDependencies())) {
+        if (count($this->m_onchangecode)) {
 
             // js code to show the spinner during dependencies execution
             if (count($this->getDependencies()) && $this->m_showSpinner) {
@@ -2862,15 +2862,17 @@ class atkAttribute
      * @param array  $record      record
      * @param string $fieldPrefix the prefix for this attribute in an HTML form
      * @param string $mode        add/edit mode
+     * @param bool   $noCall only initialize dependencies, without calling them
      */
-    public function initDependencies(&$record, $fieldPrefix, $mode)
+    public function initDependencies(&$record, $fieldPrefix, $mode, $noCall = false)
     {
-
         if (count($this->getDependencies()) == 0) {
             return;
         }
 
-        $this->_callDependencies($record, $fieldPrefix, $mode, true);
+        if (!$noCall) {
+            $this->_callDependencies($record, $fieldPrefix, $mode, true);
+        }
 
         atkimport('atk.utils.atkjson');
 
@@ -2921,7 +2923,7 @@ class atkAttribute
 
         // initialize dependencies
         foreach ($this->getOwnerInstance()->getAttributes() as $attr) {
-            $attr->initDependencies($record, $fieldPrefix, $mode);
+            $attr->initDependencies($record, $fieldPrefix, $mode, true); // without calling
         }
 
         $this->_callDependencies($record, $fieldPrefix, $mode, false);

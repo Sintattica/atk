@@ -855,7 +855,7 @@ class atkManyToOneRelation extends atkRelation
             }
 
             $onchange = '';
-            if (count($this->m_onchangecode) || count($this->getDependencies())) {
+            if (count($this->m_onchangecode)) {
                 $onchange = 'onChange="' . $id . '_onChange(this);"';
                 $this->_renderChangeHandler($fieldprefix);
             }
@@ -2059,7 +2059,7 @@ class atkManyToOneRelation extends atkRelation
     function createOnChangeCaller($fieldId, $fieldPrefix, $none = 'null')
     {
         $function = $none;
-        if ((count($this->m_onchangecode) > 0) || count($this->getDependencies())) {
+        if (count($this->m_onchangecode)) {
             $function = "{$fieldId}_callChangeHandler";
 
             $js = "

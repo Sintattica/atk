@@ -166,7 +166,7 @@ class atkTimeAttribute extends atkAttribute
         $field = $record[$this->fieldName()];
 
         $onChangeCode = '';
-        if (count($this->m_onchangecode) || count($this->getDependencies())) {
+        if (count($this->m_onchangecode)) {
             $this->_renderChangeHandler($fieldprefix);
             $onChangeCode = ' onChange="' . $this->getHtmlId($fieldprefix) . '_onChange(this);"';
         }

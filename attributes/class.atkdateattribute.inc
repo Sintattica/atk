@@ -650,7 +650,7 @@ class atkDateAttribute extends atkAttribute
             if (!$this->m_simplemode)
                 $str_script = "AdjustDate(this, '" . $fieldname . "');";
 
-            if (count($this->m_onchangecode) || count($this->getDependencies())) {
+            if (count($this->m_onchangecode)) {
                 $this->_renderChangeHandler($fieldprefix);
                 $str_script .= $this->getHtmlId($fieldprefix) . '_onChange(this);"';
             }

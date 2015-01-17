@@ -277,7 +277,7 @@ class atkListAttribute extends atkAttribute
         $this->registerJavaScriptObservers($id);
 
         $onchange = '';
-        if (count($this->m_onchangecode) || count($this->getDependencies())) {
+        if (count($this->m_onchangecode)) {
             $onchange = 'onChange="' . $id . '_onChange(this);"';
             $this->_renderChangeHandler($fieldprefix);
         }

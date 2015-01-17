@@ -234,7 +234,7 @@ class atkFileAttribute extends atkAttribute
         $result.='<input type="hidden" name="' . $id . '_postfileskey" value="' . $id . '">';
 
         $onchange = '';
-        if (count($this->m_onchangecode) || count($this->getDependencies())) {
+        if (count($this->m_onchangecode)) {
             $onchange = ' onchange="' . $id . '_onChange(this);"';
             $this->_renderChangeHandler($fieldprefix);
         }

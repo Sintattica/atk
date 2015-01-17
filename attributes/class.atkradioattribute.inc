@@ -156,7 +156,7 @@ class atkRadioAttribute extends atkListAttribute
             $id = $this->getHtmlId($fieldprefix);
 
             $onchange = '';
-            if (count($this->m_onchangecode) || count($this->getDependencies())) {
+            if (count($this->m_onchangecode)) {
                 $onchange = 'onClick="' . $id . '_onChange(this);" ';
                 $this->_renderChangeHandler($fieldprefix);
             }

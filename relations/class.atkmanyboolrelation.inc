@@ -109,7 +109,7 @@ class atkManyBoolRelation extends atkManyToManyRelation
 
                 $inputId = $this->getHtmlId($fieldprefix) . '_' . $i;
 
-                if (count($this->m_onchangecode) || count($this->getDependencies())) {
+                if (count($this->m_onchangecode)) {
                     $onchange = ' onChange="' . $inputId . '_onChange(this);"';
                     $this->_renderChangeHandler($fieldprefix, '_' . $i);
                 } else {
