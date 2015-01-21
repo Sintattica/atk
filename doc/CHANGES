@@ -16,13 +16,18 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 Changes in DEVELOP (WIP)
 ------------------------
 
-
 Changes in MASTER (WIP)
 ------------------------
 
 
-Changes in ATK 8.0.1
-------------------------
+Changes in ATK 8.0.2 (21/01/2015)
+---------------------------------
+* Other minor fixing
+* Updated Moment.js to version 2.9.0
+* Fixing search in atkDateAttribute e atkManyToOneRelation
+
+Changes in ATK 8.0.1 (17/01/2015)
+---------------------------------
 * Fixed dependencies handling
 * atkNumberAttribute search improvement
 * Better handling of readonly/hidden atkManyToOneRelation in edit mode
@@ -32,8 +37,8 @@ Changes in ATK 8.0.1
 * Fixed search in atkListAttribute
 * Steelblue theme style improvement
 
-Changes in ATK 8.0.0
-------------------------
+Changes in ATK 8.0.0 (12/12/2014)
+---------------------------------
 + Added "reverse_attributeaccess_logic" global configuration variable
 * charset utf8 in default mysql config
 * oneToMany search grid triggers search on keyboard enter
