@@ -1009,7 +1009,7 @@ function triggerError(&$rec, $attrib, $err, $msg = "", $tab = "", $label = '', $
  * @param string             $error multi-language error string
  * @param string             $message error message (optional)
  */
-function atkTriggerError(&$record, &$attrib, $error, $message = '')
+function atkTriggerError(&$record, $attrib, $error, $message = '')
 {
     if (is_array($attrib)) {
         $attribName = array();
