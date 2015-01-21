@@ -1143,9 +1143,7 @@ class atkManyToOneRelation extends atkRelation
                     $result .= '<option value="">' . atktext('search_all') . '</option>';
                 }
 
-                if ($this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
-                    (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) ||
-                    $this->getConfigOptionObligatoryNullOption()) {
+                if ((!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM))) {
                     $result.= '<option value="__NONE__"'.(isset($record[$this->fieldName()]) && atk_in_array('__NONE__', $record[$this->fieldName()]) ? ' selected="selected"' : '').'>'.$this->getNoneLabel('search').'</option>';
                 }
 
