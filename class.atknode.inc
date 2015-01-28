@@ -2757,6 +2757,8 @@ class atkNode
 
         $this->attribSort();
 
+        $this->setAttribSizes();
+
         $lockType = atkconfig("lock_type");
         if (!empty($lockType) && $this->hasFlag(NF_LOCK)) {
             $this->m_lock = &atkinstance("atk.lock.atklock");
@@ -2767,7 +2769,7 @@ class atkNode
 
         $this->m_initialised = true;
 
-        // Call the attributes postInit method to doe some last time
+        // Call the attributes postInit method to do some last time
         // initialization if necessary.
         foreach (array_keys($this->m_attribList) as $attribname) {
             $p_attrib = &$this->m_attribList[$attribname];

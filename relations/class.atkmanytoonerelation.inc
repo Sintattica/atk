@@ -939,7 +939,7 @@ class atkManyToOneRelation extends atkRelation
         if (!$linkname)
             $linkname = atktext("link_select_" . getNodeType($this->m_destination), getNodeModule($this->m_destination), getNodeType($this->m_destination), '', '', true);
         if (!$linkname)
-            $linkname = atktext("select_a") . ' ' . strtolower(atktext(getNodeType($this->m_destination), getNodeModule($this->m_destination), getNodeType($this->m_destination)));
+            $linkname = atktext("select_a"); // . ' ' . strtolower(atktext(getNodeType($this->m_destination), getNodeModule($this->m_destination), getNodeType($this->m_destination)));
         if ($this->m_destinationFilter != "") {
             $result.= href(dispatch_url($this->m_destination, "select", array("atkfilter" => $filter, "atktarget" => $atktarget)), $linkname, SESSION_NESTED, $this->m_autocomplete_saveform, 'class="atkmanytoonerelation"');
         } else {
