@@ -18,9 +18,11 @@ Changes in DEVELOP (WIP)
 * setAttribSizes calling also in init function of atkNode
 * Languages translations refining
 
-
 Changes in MASTER (WIP)
 ------------------------
+* setAttribSizes calling also in init function of atkNode
+* Languages translations refining
+
 
 
 Changes in ATK 8.0.2 (21/01/2015)
