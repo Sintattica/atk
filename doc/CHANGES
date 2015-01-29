@@ -15,6 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
+* fixed handling of AF_LARGE atkManyToOneRelation in edit mode
 + added showAttributes, hideAttributes and refreshAttributes in atkEditFormModifier
 + added addAttributesFlag and removeAttributesFlag functions in atkNode
 * setAttribSizes calling also in init function of atkNode

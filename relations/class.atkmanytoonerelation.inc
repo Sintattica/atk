@@ -761,13 +761,12 @@ class atkManyToOneRelation extends atkRelation
      */
     public function preAddToEditArray(&$record, $fieldPrefix, $mode)
     {
-        if ($mode == 'edit' && ($this->hasFlag(AF_READONLY_EDIT) || $this->hasFlag(AF_HIDE_EDIT))) {
+        if ($mode == 'edit' && ($this->hasFlag(AF_READONLY_EDIT) || $this->hasFlag(AF_HIDE_EDIT) || $this->hasFlag(AF_LARGE))) {
             // in this case we don't want that the destination filters are activated
             return;
         }
 
-        if ((!$this->hasFlag(AF_RELATION_AUTOCOMPLETE) && !$this->hasFlag(AF_LARGE)) ||
-            $this->m_autocomplete_minrecords > -1) {
+        if ((!$this->hasFlag(AF_RELATION_AUTOCOMPLETE) && !$this->hasFlag(AF_LARGE)) || $this->m_autocomplete_minrecords > -1) {
             $this->m_selectableRecords = $this->_getSelectableRecords($record, $mode);
 
             if (count($this->m_selectableRecords) > 0 &&
@@ -1612,7 +1611,7 @@ class atkManyToOneRelation extends atkRelation
      */
     function isSelectableRecord($record = array(), $mode = "")
     {
-        if ($mode == 'update' && ($this->hasFlag(AF_READONLY_EDIT) || $this->hasFlag(AF_HIDE_EDIT))) {
+        if ($mode == 'update' && ($this->hasFlag(AF_READONLY_EDIT) || $this->hasFlag(AF_HIDE_EDIT) || $this->hasFlag(AF_LARGE))) {
             // in this case we don't want that the destination filters are activated
             return true;
         }
