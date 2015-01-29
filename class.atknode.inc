@@ -4907,6 +4907,27 @@ class atkNode
         return $this->m_rowClassCallback;
     }
 
-}
+    /**
+     * Adds a flag to a list of attributes.
+     * @param array $attrsNames The names of attributes
+     * @param int $flag The flag to add to the attributes
+     */
+    public function addAttributesFlag($attrsNames, $flag)
+    {
+        foreach ($attrsNames as $name) {
+            $this->getAttribute($name)->addFlag($flag);
+        }
+    }
 
-?>
+    /**
+     * Removes a flag from a list of attributes.
+     * @param array $attrsNames The names of attributes
+     * @param int $flag The flag to remove from the attributes
+     */
+    public function removeAttributesFlag($attrsNames, $flag)
+    {
+        foreach ($attrsNames as $name) {
+            $this->getAttribute($name)->removeFlag($flag);
+        }
+    }
+}

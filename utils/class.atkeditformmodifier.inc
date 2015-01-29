@@ -149,6 +149,18 @@ class atkEditFormModifier
     }
 
     /**
+     * Show the attributes rows for the attributes with the given names.
+     *
+     * @param array $names attributes names
+     */
+    public function showAttributes($names)
+    {
+        foreach ($names as $name) {
+            $this->showAttribute($name);
+        }
+    }
+
+    /**
      * Hide the attribute row for the attribute with the given name.
      * 
      * @param string $name attribute name
@@ -159,6 +171,18 @@ class atkEditFormModifier
             $this->getNode()->getAttribute($name)->setInitialHidden(true);
         } else {
             $this->scriptCode("$('ar_" . $this->getFieldPrefix() . $name . "').addClassName('atkAttrRowHidden');");
+        }
+    }
+
+    /**
+     * Hide the attributes rows for the attributes with the given names.
+     *
+     * @param array $names attributes names
+     */
+    public function hideAttributes($names)
+    {
+        foreach ($names as $name) {
+            $this->hideAttribute($name);
         }
     }
 
@@ -189,6 +213,18 @@ class atkEditFormModifier
         }
 
         $this->getNode()->getPage()->register_loadscript($scriptCode, $offset);
+    }
+
+    /**
+     * Re-render / refresh the attributes with the given names.
+     *
+     * @param array $names attributes names
+     */
+    public function refreshAttributes($names)
+    {
+        foreach ($names as $name) {
+            $this->refreshAttribute($name);
+        }
     }
 
     /**
