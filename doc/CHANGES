@@ -23,6 +23,7 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
+* fixed handling of AF_LARGE atkManyToOneRelation in edit mode
 + added showAttributes, hideAttributes and refreshAttributes in atkEditFormModifier
 + added addAttributesFlag and removeAttributesFlag functions in atkNode
 * setAttribSizes calling also in init function of atkNode
