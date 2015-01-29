@@ -22,6 +22,8 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
++ added showAttributes, hideAttributes and refreshAttributes in atkEditFormModifier
++ added addAttributesFlag and removeAttributesFlag functions in atkNode
 * setAttribSizes calling also in init function of atkNode
 * Languages translations refining
 
