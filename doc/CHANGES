@@ -25,6 +25,8 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
++ Added dependencies handling in atkDateTimeAttribute
+* Fixed onChange handling in atkDateAttribute when the user changes date on calendar
 * Fixed handling of AF_LARGE atkManyToOneRelation in edit mode
 + Added showAttributes, hideAttributes and refreshAttributes in atkEditFormModifier
 + Added addAttributesFlag and removeAttributesFlag functions in atkNode
