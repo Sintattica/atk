@@ -263,6 +263,27 @@ class atkDateTimeAttribute extends atkAttribute
         return array_merge($date, $time);
     }
 
+    public function addDependency($callback)
+    {
+        parent::addDependency($callback);
+        $this->m_date->addDependency($callback);
+        $this->m_time->addDependency($callback);
+        return $this;
+    }
+
+    function addOnChangeHandler($jscode)
+    {
+        $this->m_date->addOnChangeHandler($jscode);
+        $this->m_time->addOnChangeHandler($jscode);
+        return $this;
+    }
+
+    function showSpinner($value)
+    {
+        $this->m_date->showSpinner($value);
+        $this->m_time->showSpinner($value);
+    }
+
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
@@ -277,7 +298,7 @@ class atkDateTimeAttribute extends atkAttribute
     {
         $dateEdit = $this->m_date->edit($record, $fieldprefix);
         $timeEdit = $this->m_time->edit($record, $fieldprefix);
-        return $dateEdit . "&nbsp;&nbsp;-&nbsp;&nbsp;" . $timeEdit;
+        return $dateEdit . "&nbsp-&nbsp;" . $timeEdit;
     }
 
     /**
@@ -636,7 +657,4 @@ class atkDateTimeAttribute extends atkAttribute
             $attr->addFlag(AF_FORCE_LOAD);
         }
     }
-
 }
-
-?>

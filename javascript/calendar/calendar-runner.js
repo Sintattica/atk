@@ -55,7 +55,7 @@ function showCalendar(id, bindname, format, dateattr)
 // This function gets called when the end-user clicks on some date.
 function changeWidget(cal, date)
 {
-  ATK.DateAttribute.setValue(cal.dateattrId, { year: date.substr(0,4), month: parseInt(date.substr(5,2), 10), day: parseInt(date.substr(8,2), 10) });
+  ATK.DateAttribute.setValue(cal.dateattrId, { year: date.substr(0,4), month: parseInt(date.substr(5,2), 10), day: parseInt(date.substr(8,2), 10) }, true);
   cal.hide();
 }
 

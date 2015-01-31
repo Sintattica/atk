@@ -80,7 +80,6 @@ class atkDateAttribute extends atkAttribute
     var $m_date_max;
     var $m_date_format_edit;
     var $m_date_format_view;
-    var $m_onchangecode = array();
     var $m_maxyears = 25;
 
     /**
@@ -1237,15 +1236,6 @@ class atkDateAttribute extends atkAttribute
     function dbFieldType()
     {
         return "date";
-    }
-
-    /**
-     * Add a javascript onchange event handler.
-     * @param string $jscode A block of valid javascript code.
-     */
-    function addOnChangeHandler($jscode)
-    {
-        $this->m_onchangecode[] = $jscode;
     }
 
     /**
