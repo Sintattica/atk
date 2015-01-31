@@ -14,7 +14,10 @@ function getDays(date)
 }
 
 /**
- * Wrapper function for ReadAdjustDate, since it's crashing in some IE 6.0 browsers
+ * Checks/changes the date input boxes for a certain date field on the form.
+ * @param el pointer to the form element which initiated the call to this method
+ * @param arr name of the input boxes (without [day] etc.)
+ * @param newDate optional new date
  */
 function AdjustDate(el, arr, newDate)
 {
@@ -23,24 +26,13 @@ function AdjustDate(el, arr, newDate)
     }
 
     var info = eval('atkdateattribute_' + arr);
-    setTimeout(function() {
-        RealAdjustDate(el, arr, info.format, info.min, info.max, info.emptyfield, info.weekday, newDate)
-    }, 1);
-}
+    var format = info.format; // a valid date format string (like in PHP)
+    var str_min = info.min; // the minimum valid date
+    var str_max = info.max; // the maximum valid date
+    var emptyfield = info.emptyfield;
+    var weekday = info.weekday;
 
-/**
- * Checks/changes the date input boxes for a certain date field on the form.
- * @param el pointer to the form element which initiated the call to this method
- * @param arr name of the input boxes (without [day] etc.)
- * @param format a valid date format string (like in PHP)
- * @param str_min the minimum valid date
- * @param str_max the maximum valid date
- * @param obligatory is the date field obligatory
- */
-function RealAdjustDate(el, arr, format, str_min, str_max, emptyfield, weekday, newDate)
-{
     var format_month, format_day, array_months, format_weekday;
-    var frm = el.form;
 
     /* current date attribute inputs */
     input = Array();
@@ -337,7 +329,7 @@ ATK.DateAttribute = {
     /**
      * Set value of attribute with the given name.
      */
-    setValue: function(name, value) {
+    setValue: function(name, value, fromCalendar) {
         var dayEl = document.getElementById(name + "[day]");
         var monthEl = document.getElementById(name + "[month]");
         var yearEl = document.getElementById(name + "[year]");
@@ -345,6 +337,14 @@ ATK.DateAttribute = {
         AdjustDate(yearEl, name, value);
         AdjustDate(monthEl, name, value);
         AdjustDate(dayEl, name, value);
+
+        if (fromCalendar) {
+            // manually calls onChange (for dependencies handling) when the end-user changes date on calendar
+            var fn = window[name + '_onChange'];
+            if (typeof fn === "function") {
+                fn.apply(null, dayEl);
+            }
+        }
     },
     /**
      * Refresh.
