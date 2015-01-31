@@ -15,16 +15,13 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
-+ Added dependencies handling in atkDateTimeAttribute
-* Fixed onChange handling in atkDateAttribute when the user changes date on calendar
-* Fixed handling of AF_LARGE atkManyToOneRelation in edit mode
-+ Added showAttributes, hideAttributes and refreshAttributes in atkEditFormModifier
-+ Added addAttributesFlag and removeAttributesFlag functions in atkNode
-* setAttribSizes calling also in init function of atkNode
-* Languages translations refining
 
 Changes in MASTER (WIP)
 ------------------------
+
+
+Changes in ATK 8.0.3 (31/01/2015)
+---------------------------------
 + Added dependencies handling in atkDateTimeAttribute
 * Fixed onChange handling in atkDateAttribute when the user changes date on calendar
 * Fixed handling of AF_LARGE atkManyToOneRelation in edit mode
@@ -32,8 +29,6 @@ Changes in MASTER (WIP)
 + Added addAttributesFlag and removeAttributesFlag functions in atkNode
 * setAttribSizes calling also in init function of atkNode
 * Languages translations refining
-
-
 
 Changes in ATK 8.0.2 (21/01/2015)
 ---------------------------------
