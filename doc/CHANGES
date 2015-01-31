@@ -15,6 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
++ Added dependencies handling in atkDateTimeAttribute
 * Fixed onChange handling in atkDateAttribute when the user changes date on calendar
 * Fixed handling of AF_LARGE atkManyToOneRelation in edit mode
 + Added showAttributes, hideAttributes and refreshAttributes in atkEditFormModifier

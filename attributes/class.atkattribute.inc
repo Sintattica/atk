@@ -1035,7 +1035,7 @@ class atkAttribute
                 $spinnerCode = "
       var spinner = $$('#$id .atkbusy');
       if (spinner.length) {
-        spinner[0].style.display = 'inline-block';
+        spinner[spinner.length-1].style.display = 'inline-block';
       }
       ";
             } else {
