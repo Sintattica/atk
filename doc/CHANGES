@@ -15,6 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
++ Added "recordlist_onclick" global configuration variable
 
 Changes in MASTER (WIP)
 ------------------------
