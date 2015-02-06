@@ -19,6 +19,7 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
++ Added "recordlist_onclick" global configuration variable
 
 
 Changes in ATK 8.0.3 (31/01/2015)
