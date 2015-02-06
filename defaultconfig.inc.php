@@ -654,6 +654,12 @@ $config_max_input_size = 70;
  */
 $config_max_searchinput_size = 20;
 
+/**
+ * Set to true, clicking on a record redirects to its view or edit page
+ * @var boolean
+ */
+$config_recordlist_onclick = false;
+
 /* * ********************************* OUTPUT ******************************* */
 
 /**
