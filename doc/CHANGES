@@ -20,12 +20,12 @@ Changes in MASTER (WIP)
 ------------------------
 
 
-Changes in ATK 8.0.3 (09/02/2015)
+Changes in ATK 8.0.4 (09/02/2015)
+---------------------------------
 * Fixed Bootstrap navbar issues
 + Added "mra_position" global configuration variable
 * Refined attributes utility functions in atkNode and atkEditFormModifier
 + Added "recordlist_onclick" global configuration variable
-
 
 Changes in ATK 8.0.3 (31/01/2015)
 ---------------------------------
