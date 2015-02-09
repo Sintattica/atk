@@ -18,10 +18,10 @@
  * Allows to make some modifications to the add/edit. Depending on which
  * time these methods are called the modifications are made in PHP or outputted
  * as JavaScript.
- * 
- * This class is used by the attribute dependency mechanism and should *not* be 
+ *
+ * This class is used by the attribute dependency mechanism and should *not* be
  * used stand-alone.
- * 
+ *
  * @author Peter C. Verhage <peter@achievo.org>
  *
  * @package atk.utils
@@ -30,28 +30,28 @@ class atkEditFormModifier
 {
     /**
      * Node.
-     * 
+     *
      * @var atkNode
      */
     private $m_node;
 
     /**
      * Record.
-     * 
+     *
      * @var array
      */
     private $m_record;
 
     /**
      * Add/edit mode.
-     * 
+     *
      * @var string
      */
     private $mode;
 
     /**
      * Field prefix.
-     * 
+     *
      * @var string
      */
     private $fieldPrefix;
@@ -59,14 +59,14 @@ class atkEditFormModifier
     /**
      * Initial setup/modification of the edit form, e.g. when the form is
      * rendered for the first time.
-     * 
+     *
      * @var boolean
      */
     private $m_initial;
 
     /**
      * Constructor.
-     * 
+     *
      * @param atkNode $node         node instance
      * @param array   $record       record
      * @param string  $fieldPrefix  field prefix
@@ -84,7 +84,7 @@ class atkEditFormModifier
 
     /**
      * Returns the node instance.
-     * 
+     *
      * @return atkNode node instance
      */
     public function getNode()
@@ -95,7 +95,7 @@ class atkEditFormModifier
     /**
      * Returns a reference to the record. This means the record can be modified
      * which can be used to modify the record before refreshAttribute calls.
-     * 
+     *
      * @return array record reference
      */
     public function &getRecord()
@@ -105,7 +105,7 @@ class atkEditFormModifier
 
     /**
      * Returns the form's field prefix.
-     * 
+     *
      * @return string field prefix
      */
     public function getFieldPrefix()
@@ -115,7 +115,7 @@ class atkEditFormModifier
 
     /**
      * Returns the mode (add or edit).
-     * 
+     *
      * @return string mode (add or edit)
      */
     public function getMode()
@@ -126,7 +126,7 @@ class atkEditFormModifier
     /**
      * Is this the initial setup of the form (or are we updating the form from
      * an Ajax request)?
-     * 
+     *
      * @return boolean initial form setup?
      */
     public function isInitial()
@@ -136,7 +136,7 @@ class atkEditFormModifier
 
     /**
      * Show the attribute row for the attribute with the given name.
-     * 
+     *
      * @param string $name attribute name
      */
     public function showAttribute($name)
@@ -152,17 +152,20 @@ class atkEditFormModifier
      * Show the attributes rows for the attributes with the given names.
      *
      * @param array $names attributes names
+     * @param bool $check Check the presence of the attributes
      */
-    public function showAttributes($names)
+    public function showAttributes($names, $check = false)
     {
         foreach ($names as $name) {
-            $this->showAttribute($name);
+            if (!$check || $this->getNode()->getAttribute($name)) {
+                $this->showAttribute($name);
+            }
         }
     }
 
     /**
      * Hide the attribute row for the attribute with the given name.
-     * 
+     *
      * @param string $name attribute name
      */
     public function hideAttribute($name)
@@ -178,17 +181,20 @@ class atkEditFormModifier
      * Hide the attributes rows for the attributes with the given names.
      *
      * @param array $names attributes names
+     * @param bool $check Check the presence of the attributes
      */
-    public function hideAttributes($names)
+    public function hideAttributes($names, $check = false)
     {
         foreach ($names as $name) {
-            $this->hideAttribute($name);
+            if (!$check || $this->getNode()->getAttribute($name)) {
+                $this->hideAttribute($name);
+            }
         }
     }
 
     /**
      * Re-render / refresh the attribute with the given name.
-     * 
+     *
      * @param string $name attribute name
      */
     public function refreshAttribute($name)
@@ -219,19 +225,22 @@ class atkEditFormModifier
      * Re-render / refresh the attributes with the given names.
      *
      * @param array $names attributes names
+     * @param bool $check Check the presence of the attributes
      */
-    public function refreshAttributes($names)
+    public function refreshAttributes($names, $check = false)
     {
         foreach ($names as $name) {
-            $this->refreshAttribute($name);
+            if (!$check || $this->getNode()->getAttribute($name)) {
+                $this->refreshAttribute($name);
+            }
         }
     }
 
     /**
      * Output JavaScript code.
-     * 
+     *
      * Script is executed in the on-load.
-     * 
+     *
      * @param string $code JavaScript code
      */
     public function scriptCode($code)
@@ -241,12 +250,11 @@ class atkEditFormModifier
 
     /**
      * Register JavaScript file.
-     * 
+     *
      * @param string $file JavaScript file
      */
     public function scriptFile($file)
     {
         $this->getNode()->getPage()->register_script($file);
     }
-
 }

@@ -4911,11 +4911,15 @@ class atkNode
      * Adds a flag to a list of attributes.
      * @param array $attrsNames The names of attributes
      * @param int $flag The flag to add to the attributes
+     * @param bool $check Check the presence of the attributes
      */
-    public function addAttributesFlag($attrsNames, $flag)
+    public function addAttributesFlag($attrsNames, $flag, $check = false)
     {
         foreach ($attrsNames as $name) {
-            $this->getAttribute($name)->addFlag($flag);
+            $attr = $this->getAttribute($name);
+            if (!$check || $attr) {
+                $attr->addFlag($flag);
+            }
         }
     }
 
@@ -4923,11 +4927,15 @@ class atkNode
      * Removes a flag from a list of attributes.
      * @param array $attrsNames The names of attributes
      * @param int $flag The flag to remove from the attributes
+     * @param bool $check Check the presence of the attributes
      */
-    public function removeAttributesFlag($attrsNames, $flag)
+    public function removeAttributesFlag($attrsNames, $flag, $check = false)
     {
         foreach ($attrsNames as $name) {
-            $this->getAttribute($name)->removeFlag($flag);
+            $attr = $this->getAttribute($name);
+            if (!$check || $attr) {
+                $attr->removeFlag($flag);
+            }
         }
     }
 }
