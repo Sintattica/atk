@@ -1,7 +1,27 @@
 {atkconfig var="recordlist_onclick" smartyvar="recordlist_onclick"}
+{atkconfig var="mra_position" smartyvar="mra_position"}
+
 {if isset($formstart)}{$formstart}{/if}
 
 <div class="recordListContainer">
+
+    {if $mra != '' && $mra_position == 'top'}
+        <!-- multirecord actions -->
+        {if $editing}
+            {$mra}
+        {else}
+            <table border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td valign="bottom"><img src="{$atkroot}atk/images/arrowdown.gif" border="0"></td>
+                    <td style="padding-bottom: 10px; padding-left: 5px">
+                        {$mra}
+                    </td>
+                </tr>
+            </table>
+        {/if}
+
+    {/if}
+
     <table id="{$listid}" class="table table-condensed recordList">
         <!-- header -->
         <tr>
@@ -49,8 +69,7 @@
                         onmouseover="highlightrow(this, '{$row.highlight}')"
                         onmouseout="resetrow(this)"
                         onclick="selectrow(this, '{$listid}', {$row.rownum})"
-                    {/if}
-                    >
+                    {/if}>
                 {section name=colloop loop=$row.cols}
                     <{if $row.type == "subtotal"}th{else}td{/if}
                             class="{if $smarty.section.colloop.index===0}recordListTdFirst{else}recordListTd{/if}{if $row.cols[colloop].type == "data" && $recordlist_onclick} clickable{/if}
@@ -69,7 +88,7 @@
             <!-- totals row -->
             <tr>
                 {foreach from=$total item=col}
-                    <th valign="{$vorientation}" {if isset($col.htmlattributes)}{$col.htmlattributes}{/if}>
+                    <th class="recordListTotal" valign="{$vorientation}" {if isset($col.htmlattributes)}{$col.htmlattributes}{/if}>
                         {if $col.content != ""}{$col.content}{else}&nbsp;{/if}
                     </th>
                 {/foreach}
@@ -77,15 +96,14 @@
         {/if}
     </table>
 
-    {if $mra!=""}
+    {if $mra != '' && $mra_position == 'bottom'}
         <!-- multirecord actions -->
         {if $editing}
             {$mra}
         {else}
             <table border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                    <td valign="top" style="padding-top: 0px; padding-left: 2px"><img
-                                src="{$atkroot}atk/images/arrow.gif" border="0"></td>
+                    <td valign="top" style="padding: 4px 0px"><img src="{$atkroot}atk/images/arrow.gif" border="0"></td>
                     <td style="padding-top: 6px; padding-left: 5px">
                         {$mra}
                     </td>

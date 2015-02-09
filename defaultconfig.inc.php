@@ -660,6 +660,13 @@ $config_max_searchinput_size = 20;
  */
 $config_recordlist_onclick = false;
 
+/**
+ * The position of MRA (multi record actions): "top" or "bottom"
+ * @var string
+ */
+$config_mra_position = 'bottom';
+
+
 /* * ********************************* OUTPUT ******************************* */
 
 /**

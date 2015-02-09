@@ -63,7 +63,7 @@ table.recordList .row2
     background: #666 ! important;
 }
 
-.recordListContainer td
+.recordListContainer
 {
     padding: 8px 0px;
 }
