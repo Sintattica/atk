@@ -15,6 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
+* Fixed Bootstrap navbar issues
 + Added "mra_position" global configuration variable
 * Refined attributes utility functions in atkNode and atkEditFormModifier
 + Added "recordlist_onclick" global configuration variable

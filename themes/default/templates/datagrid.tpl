@@ -18,8 +18,8 @@
         {if !empty($editcontrol)}{$editcontrol}{/if} {if !empty($paginator)}{$paginator}{/if}
     </td>
     <td align="right" valign="middle">
-    {if !empty($limit)}{$limit}{/if}
-</td>
+        {if !empty($limit)}{$limit}{/if} {if !empty($summary)}{$summary}{/if}
+    </td>
 </tr>
 {/if}
 {if !empty($list)}

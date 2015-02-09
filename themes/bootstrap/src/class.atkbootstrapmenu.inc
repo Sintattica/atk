@@ -68,13 +68,19 @@ class atkBootstrapMenu extends atkPlainMenu
     {
         $ret = '';
         foreach ($menu as $item) {
-            if (isset($item['submenu']) && count($item['submenu'])) {
-                $ret .= '<li class="dropdown">';
-                $ret .= '<a href="#" class="dropdown-toggle" data-toggle="dropdown">' .  atk_htmlentities($this->getMenuTranslation($item['name'], $item['module'])) . '<span class="caret"></span></a>';
-                $ret .= '<ul class="dropdown-menu" role="menu">' . $this->processMenu($item['submenu']) . '</ul>';
+            if ($this->isEnabled($item)) {
+                $hasSubmenu = isset($item['submenu']) && count($item['submenu']);
+                $ret .= '<li' . ($hasSubmenu ? ' class="dropdown"' : '') . '>';
+                $url = $item['url'] ? $item['url'] : '#';
+                $attrs = $hasSubmenu ? 'class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"' : '';
+                $ret .= '<a href="' . $url . '" ' . $attrs . '>' . atk_htmlentities($this->getMenuTranslation($item['name'], $item['module']));
+                if ($hasSubmenu) {
+                    $ret .= '<span class="caret"></span></a>';
+                    $ret .= '<ul class="dropdown-menu" role="menu">' . $this->processMenu($item['submenu']) . '</ul>';
+                } else {
+                    $ret .= '</a>';
+                }
                 $ret .= '</li>';
-            } else {
-                $ret .= '<li><a href="' . $item['url'] . '">' . $item['name'] . '</a></li>';
             }
         }
         return $ret;
