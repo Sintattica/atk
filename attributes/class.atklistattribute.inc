@@ -371,7 +371,7 @@ class atkListAttribute extends atkAttribute
         $values = $this->getValues($record);
         $result = '<select class="form-control" ';
         if ($extended || $this->getMultipleInSimpleSearch()) {
-            $result.='multiple size="' . min(5, count($values) + 1) . '"';
+            $result.='multiple size="' . min(5, count($values) + (!$extended ? 1 : 0)) . '"';
         }
 
         // if we use autosearch, register an onchange event that submits the grid
