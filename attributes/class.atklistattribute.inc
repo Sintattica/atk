@@ -366,7 +366,7 @@ class atkListAttribute extends atkAttribute
      *
      * @return String A piece of html-code with a checkbox
      */
-    function search($record = "", $extended = false, $fieldprefix = "", $grid = null)
+    function search($record = "", $extended = false, $fieldprefix = "", $grid = null, $notSelectFirst = false)
     {
         $values = $this->getValues($record);
         $result = '<select class="form-control" ';
@@ -387,19 +387,24 @@ class atkListAttribute extends atkAttribute
         $result .= 'name="' . $this->getSearchFieldName($fieldprefix) . '[]">';
 
         $selValues = $record[$this->fieldName()];
-        if ($this->getMultipleInSimpleSearch() && is_array($selValues) && count($selValues) == 1 && strpos($selValues[0], ',')) {
+        if ($this->getMultipleInSimpleSearch() && is_array($selValues) && count($selValues) == 1 && strpos($selValues[0], ',') !== false) {
             // in case of multiple select in simple search, we have the selected values into a single string (csv)
             $selValues = explode(',', $selValues[0]);
         }
 
-        if (!$extended) {
+        // "search all" option has precedence (when another options are selected together)
+        if ($selValues[0] == '') {
+            $selValues = array('');
+        }
+
+        if (!$notSelectFirst) {
             if (!$selValues || (is_array($selValues) && count($selValues) == 1 && $selValues[0] == '')) {
                 $sel = "selected";
             } else {
                 $sel = "";
             }
-            $result .= '<option value="" ' . $sel . '>' . atktext('search_all');
         }
+        $result .= '<option value="" ' . $sel . '>' . atktext('search_all');
 
         foreach ($values AS $value) {
 
@@ -438,9 +443,13 @@ class atkListAttribute extends atkAttribute
         $searchcondition = "";
         if (is_array($value) && count($value) > 0 && $value[0] != "") { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
 
-            if ($this->getMultipleInSimpleSearch() && count($value) == 1 && strpos($value[0], ',')) {
+            if ($this->getMultipleInSimpleSearch() && count($value) == 1 && strpos($value[0], ',') !== false) {
                 // in case of multiple select in simple search, we have the selected values into a single string (csv)
                 $value = explode(',', $value[0]);
+                // "search all" option has precedence (when another options are selected together)
+                if ($value[0] == "") {
+                    return;
+                }
             }
 
             if (count($value) == 1) { // exactly one value
