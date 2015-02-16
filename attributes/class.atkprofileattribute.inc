@@ -352,22 +352,8 @@ class atkProfileAttribute extends atkAttribute
         $firstModule = true;
 
         foreach ($allActions as $module => $nodes) {
-            // If we have more then one module, split up the module results by collapsable div's
-            if ($showModule) {
-                $result .= "<br><hr>";
-                if ($firstModule)
-                    $firstModule = false;
-                else
-                    $result .= '</div><br>';
-                $result .= sprintf("<b><a href=\"javascript:void(0)\" onclick=\"%s\"><img src=\"%s\" border=\"0\" id=\"img_div_$module\"></a>&nbsp;</b>%s<br>",
-                    "profile_swapProfileDiv('div_$module', '" . atkConfig('atkroot') . "'); return false;",
-                    atkConfig('atkroot') . 'atk/images/plus.gif',
-                    atktext(array("title_$module", $module), $module)
-                );
-                $result .= "<div id=\"div_$module\" name=\"div_$module\" style=\"display: none;\">";
-                $result .= "<input type=\"hidden\" name=\"divstate['div_$module']\" id=\"divstate['div_$module']\" value=\"closed\" />";
-                $result .= "<br>";
-            }
+
+            $module_result = '';
 
             foreach ($nodes as $node => $actions) {
                 $showBox = $isAdmin || count(array_intersect($actions, (is_array($editableActions[$module][$node])
@@ -397,17 +383,40 @@ class atkProfileAttribute extends atkAttribute
                 if ($showBox) {
                     $node_result .= "<b>" . atktext($node, $module) . "</b><br>";
                     $node_result .= $permissions_string;
-                    if ($display_tabs_str)
+                    if ($display_tabs_str) {
                         $node_result .= "<br>Tabs:&nbsp;" . $tab_permissions_string;
+                    }
                     $node_result .= "<br /><br />\n";
                 }else {
                     $node_result .= $permissions_string;
-                    if ($display_tabs_str)
+                    if ($display_tabs_str) {
                         $node_result .= "<br>Tabs:&nbsp;" . $tab_permissions_string;
+                    }
                 }
 
-                if ($display_node_str)
-                    $result .= $node_result;
+                if ($display_node_str) {
+                    $module_result .= $node_result;
+                }
+            }
+
+            // If we have more then one module, split up the module results by collapsable div's
+            if ($showModule) {
+                if ($module_result) {
+                    if ($firstModule) {
+                        $firstModule = false;
+                    } else {
+                        $result .= '</div><br>';
+                    }
+                    $result .= sprintf("<b><a href=\"javascript:void(0)\" onclick=\"%s\"><img src=\"%s\" border=\"0\" id=\"img_div_$module\"></a>&nbsp;</b>%s<br>",
+                        "profile_swapProfileDiv('div_$module', '" . atkConfig('atkroot') . "'); return false;",
+                        atkConfig('atkroot') . 'atk/images/plus.gif',
+                        atktext(array("title_$module", $module), $module)
+                    );
+                    $result .= "<div id=\"div_$module\" name=\"div_$module\" style=\"display: none;\">";
+                    $result .= "<input type=\"hidden\" name=\"divstate['div_$module']\" id=\"divstate['div_$module']\" value=\"closed\" />";
+                    $result .= "<br>";
+                    $result .= $module_result;
+                }
             }
         }
 
