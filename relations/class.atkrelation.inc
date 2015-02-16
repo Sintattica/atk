@@ -80,6 +80,8 @@ class atkRelation extends atkAttribute
      */
     function setDestinationFilter($filter)
     {
+        $filter = str_replace('[table]', $this->getDestination()->getTable(), $filter);
+
         $this->m_destinationFilter = $this->_cleanupDestinationFilter($filter);
     }
 
@@ -127,6 +129,8 @@ class atkRelation extends atkAttribute
      */
     function addDestinationFilter($filter)
     {
+        $filter = str_replace('[table]', $this->getDestination()->getTable(), $filter);
+
         $filter = $this->_cleanupDestinationFilter($filter);
         if ($this->m_destinationFilter != "")
             $this->m_destinationFilter = "({$this->m_destinationFilter}) AND ({$filter})";
