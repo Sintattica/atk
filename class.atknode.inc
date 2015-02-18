@@ -1423,6 +1423,8 @@ class atkNode
      */
     function setOrder($orderby)
     {
+        $orderby = str_replace('[table]', $this->getTable(), $orderby);
+
         $this->m_default_order = $orderby;
     }
 
