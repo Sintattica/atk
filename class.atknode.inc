@@ -1423,6 +1423,8 @@ class atkNode
      */
     function setOrder($orderby)
     {
+        $orderby = str_replace('[table]', $this->getTable(), $orderby);
+
         $this->m_default_order = $orderby;
     }
 
@@ -1785,6 +1787,8 @@ class atkNode
      */
     function addFilter($filter, $value = "")
     {
+        $value = str_replace('[table]', $this->getTable(), $value);
+
         if ($value == "") {
             // $key is a where clause kind of thing
             $this->m_fuzzyFilters[] = $filter;
@@ -1802,6 +1806,8 @@ class atkNode
      */
     function removeFilter($filter, $value = "")
     {
+        $value = str_replace('[table]', $this->getTable(), $value);
+
         if ($value == "") {
             // fuzzy
             $key = array_search($filter, $this->m_fuzzyFilters);
