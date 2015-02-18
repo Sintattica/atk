@@ -608,7 +608,7 @@ class atkDateAttribute extends atkAttribute
             if (count($this->m_onchangecode))
             {
                 $this->_renderChangeHandler($fieldprefix);
-                $str_script = $this->getHtmlId($fieldprefix).'_onChange(this);"';
+                $str_script = $this->getHtmlId($fieldprefix).'_onChange(this);';
             }
             $this->registerKeyListener($fieldname, KB_CTRLCURSOR | KB_LEFTRIGHT);
             $result = '<select id="' . $fieldname . '" name="' . $fieldname . '" onChange="' . $str_script . '">';
@@ -651,7 +651,7 @@ class atkDateAttribute extends atkAttribute
 
             if (count($this->m_onchangecode)) {
                 $this->_renderChangeHandler($fieldprefix);
-                $str_script .= $this->getHtmlId($fieldprefix) . '_onChange(this);"';
+                $str_script .= $this->getHtmlId($fieldprefix) . '_onChange(this);';
             }
 
             /* year input box */
