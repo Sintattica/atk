@@ -22,6 +22,9 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
+* Improved setOrder function in atkNode
+* Better rendering of atkProfileAttribute (display)
+* Improved filter functions in atkNode and atkRelation
 * Fixed search in atkListAttribute
 
 
