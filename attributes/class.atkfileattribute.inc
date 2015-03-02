@@ -109,9 +109,9 @@ class atkFileAttribute extends atkAttribute
      */
     function atkFileAttribute($name, $dir, $flags = 0, $size = 0)
     {
-        // We use 255 as default filename size if no size specified.
-        if ($size == 0)
+        /*if ($size == 0)
             $size = 255;
+        */
 
         // Call base class constructor.
         $this->atkAttribute($name, $flags | AF_CASCADE_DELETE, $size);
