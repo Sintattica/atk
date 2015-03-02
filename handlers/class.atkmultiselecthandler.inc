@@ -137,7 +137,7 @@ class atkMultiSelectHandler extends atkAdminHandler
 
         if (atkLevel() > 0) {
             $backlinkurl = atkSessionManager::sessionUrl(atkSelf() . '?atklevel=' . session_level(SESSION_BACK));
-            $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backlinkurl . '\';" value="&lt;&lt; ' . atktext('back') . '"></div>';
+            $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backlinkurl . '\';" value="' . atktext('cancel') . '"></div>';
         }
 
         $output = $this->getUi()->renderList("multiselect", $params);

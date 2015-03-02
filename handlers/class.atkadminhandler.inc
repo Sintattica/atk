@@ -316,7 +316,7 @@ class atkAdminHandler extends atkActionHandler
             $label = $node->text("link_" . $node->m_type . "_add", null, "", "", true);
             if (empty($label)) {
                 // generic text
-                $label = $node->text($node->m_type) . " " . atktext("add", "atk", "");
+                $label = atktext("add", "atk");
             }
 
             atkimport('atk.handlers.atkaddorcopyhandler');

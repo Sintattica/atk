@@ -1,7 +1,7 @@
 {atkmessages}
 {if isset($helplink)}
     <div id="action-helplink" style="border: 0px solid red">
-        {$helplink}<br />
+        {$helplink}<br/>
     </div>
 {/if}
 {if count($atkmessages)}
@@ -16,11 +16,13 @@
 <div id="action-content" style="border: 0px solid green;">
     {$content}
 </div>
-<br>
+<br/>
 <div id="action-buttons">
     {foreach from=$buttons item=button}
         &nbsp;{$button}&nbsp;
     {/foreach}
-    <div class="spinner"><img src="{atkthemeimg spinner.gif}" alt="Busy"/></div>
+    {if $buttons}
+        <div class="spinner"><img src="{atkthemeimg spinner.gif}" alt="Busy"/></div>
+    {/if}
 </div>
 {$formend}

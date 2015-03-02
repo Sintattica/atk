@@ -526,8 +526,9 @@ class atkController
             }
         }
         elseif ($mode == "view") {
-            if (atkLevel() > 0)
-                $result[] = $this->getButton('back');
+            if (atkLevel() > 0) {
+                $result[] = $this->getButton('back', false, atktext('cancel'));
+            }
 
             // if appropriate, display an edit button.
             if (!$node->hasFlag(NF_NO_EDIT) && $node->allowed("edit", $record)) {

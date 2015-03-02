@@ -77,7 +77,7 @@ class atkSelectHandler extends atkActionHandler
 
         if (atkLevel() > 0) {
             $backUrl = session_url(atkSelf() . '?atklevel=' . session_level(SESSION_BACK));
-            $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backUrl . '\';" value="&lt;&lt; ' . $this->getNode()->text('back') . '"></div>';
+            $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backUrl . '\';" value="' . $this->getNode()->text('cancel') . '"></div>';
         }
 
         $output = $this->getUi()->renderList("select", $params);
