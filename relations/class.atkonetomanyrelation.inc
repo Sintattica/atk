@@ -725,13 +725,12 @@ class atkOneToManyRelation extends atkRelation
         $key = "link_" . $this->fieldName() . "_add";
         $label = atktext($key, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type, "", "", true);
         if ($label == "") {
-            $key = "link_" . $this->fieldName() . "_add";
             $label = atktext($key, $this->m_destInstance->m_module, "", "", "", true);
             if ($label == "") {
                 $key = "link_" . getNodeType($this->m_destination) . "_add";
                 $label = atktext($key, $this->m_destInstance->m_module, "", "", "", true);
                 if ($label == "") {
-                    $label = atktext(getNodeType($this->m_destination), $this->m_destInstance->m_module) . " " . strtolower(atktext("add", "atk"));
+                    $label = atktext("link_add", "atk");
                 }
             }
         }

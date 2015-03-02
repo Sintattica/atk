@@ -61,9 +61,9 @@ class atkTagAttribute extends atkFuzzySearchAttribute
      */
     function atkTagAttribute($name, $destination, $destinationfield, $link, $mode = TA_ADD, $flags = 0, $size = 0)
     {
-        if ($size == 0) {
+        /*if ($size == 0) {
             $size = $this->maxInputSize();
-        }
+        }*/
 
         $this->atkAttribute($name, $flags | AF_NO_SORT, $size);
         $this->m_destination = $destination;
@@ -558,15 +558,6 @@ class atkTagAttribute extends atkFuzzySearchAttribute
     function dbFieldType()
     {
         
-    }
-
-    /**
-     * Determine the maximum length an input field may be.
-     * @return int
-     */
-    function maxInputSize()
-    {
-        return 70;
     }
 
     /**

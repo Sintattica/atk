@@ -86,9 +86,10 @@ class atkFuzzySearchAttribute extends atkAttribute
      */
     function atkFuzzySearchAttribute($name, $searchnode, $callback, $mode = "all", $flags = 0, $size = 0)
     {
-        if ($size == 0) {
+        /*if ($size == 0) {
             $size = $this->maxInputSize();
-        }
+        }*/
+
         $this->atkAttribute($name, $flags | AF_HIDE_VIEW | AF_HIDE_LIST, $size);
         $this->m_searchnode = $searchnode;
         $this->m_callback = $callback;
