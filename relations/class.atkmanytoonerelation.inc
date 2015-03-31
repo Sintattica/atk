@@ -187,7 +187,7 @@ class atkManyToOneRelation extends atkRelation
      * @access protected
      * @var integer
      */
-    protected $m_autocomplete_size = 30;
+    protected $m_autocomplete_size = 50;
 
     /**
      * Destination node for auto links (edit, new)
