@@ -536,27 +536,19 @@ function atkHref($url, $name = "", $sessionstatus = SESSION_DEFAULT, $saveform =
 }
 
 /**
- * Same as array_merge from php, but without duplicates..
+ * array_merge without duplicates
  * Supports unlimited number of arrays as arguments.
  *
- * @param Array $array1 the first array
- * @param Array $array2 the second array
+ * @param array $array1 <p>
+ * Initial array to merge.
+ * </p>
+ * @param array $array2 [optional]
+ * @param array $_ [optional]
  * @return Array The result of the merge between $array1 and $array2
  */
-function atk_array_merge($array1, $array2)
+function atk_array_merge(array $array1, array $array2 = null, array $_ = null)
 {
-    $res = Array();
-
-    $arrays = func_get_args();
-    for ($i = 0, $_i = count($arrays); $i < $_i; $i++) {
-        for ($j = 0, $_j = count($arrays[$i]); $j < $_j; $j++) {
-            if (!in_array($arrays[$i][$j], $res)) {
-                $res[] = $arrays[$i][$j];
-            }
-        }
-    }
-
-    return $res;
+    return array_unique(call_user_func_array("array_merge",func_get_args()), SORT_REGULAR);
 }
 
 /**
