@@ -255,6 +255,7 @@ class atkManyToOneRelation extends atkRelation
         $this->m_autocomplete_minchars = atkconfig("manytoone_autocomplete_minchars", 2);
         $this->m_autocomplete_searchmode = atkconfig("manytoone_autocomplete_searchmode", "contains");
         $this->m_autocomplete_search_case_sensitive = atkconfig("manytoone_autocomplete_search_case_sensitive", false);
+        $this->m_autocomplete_size = atkconfig("manytoone_autocomplete_size", 50);
 
         if (is_array($name)) {
             $this->m_refKey = $name;
@@ -720,7 +721,7 @@ class atkManyToOneRelation extends atkRelation
                 //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
                 //de app crasht als er geen waarde is ingevuld.
                 $editUrl = session_url(dispatch_url($this->getAutoLinkDestination(), "edit", array("atkselector" => "REPLACEME")), SESSION_NESTED);
-                $links[] = "<span id=\"" . $id . "_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"" . atkurlencode($editUrl) . "\", document.entryform." . $id . ".value))'>" . atktext('edit') . "</a></span>";
+                $links[] = "<span id=\"" . $id . "_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"" . atkurlencode($editUrl) . "\", document.entryform." . $id . ".value))' class=\"atkmanytoonerelation\">" . atktext('edit') . "</a></span>";
             }
         }
 

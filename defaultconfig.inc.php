@@ -979,6 +979,13 @@ $config_manytoone_search_autocomplete = true;
 $config_manytoone_autocomplete_minchars = 2;
 
 /**
+ * The length of the HTML input field generated in auto-completion mode.
+ *
+ * @var int
+ */
+$config_manytoone_autocomplete_size = 50;
+
+/**
  * The search mode of the autocomplete fields. Can be 'startswith', 'exact' or 'contains'.
  *
  * @access private
