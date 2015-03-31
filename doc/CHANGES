@@ -20,6 +20,8 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
++ Added "manytoone_autocomplete_size" global configuration variable
+* Minor fixing
 
 
 Changes in ATK 8.0.5 (02/03/2015)
