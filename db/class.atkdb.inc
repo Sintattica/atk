@@ -462,19 +462,23 @@ class atkDb
                 $this->m_error = atktext("unknown_error") . ": " . $this->getDbErrno() . " (" . $this->getDbError() . ")";
             } else {
                 $this->m_error = $errstr . ($this->getErrorType() == "system" ? " (" . $this->getDbError() . ")"
-                            : "");
+                        : "");
             }
             return $this->m_error;
         } else {
             $tmp_error = '';
             switch ($errno) {
-                case DB_ACCESSDENIED_DB: $tmp_error = sprintf(atktext("db_access_denied_database", "atk"), $this->m_user, $this->m_database);
+                case DB_ACCESSDENIED_DB:
+                    $tmp_error = sprintf(atktext("db_access_denied_database", "atk"), $this->m_user, $this->m_database);
                     break;
-                case DB_ACCESSDENIED_USER: $tmp_error = sprintf(atktext("db_access_denied_user", "atk"), $this->m_user, $this->m_database);
+                case DB_ACCESSDENIED_USER:
+                    $tmp_error = sprintf(atktext("db_access_denied_user", "atk"), $this->m_user, $this->m_database);
                     break;
-                case DB_UNKNOWNDATABASE: $tmp_error = sprintf(atktext("db_unknown_database", "atk"), $this->m_database);
+                case DB_UNKNOWNDATABASE:
+                    $tmp_error = sprintf(atktext("db_unknown_database", "atk"), $this->m_database);
                     break;
-                case DB_UNKNOWNHOST: $tmp_error = sprintf(atktext("db_unknown_host", "atk"), $this->m_host);
+                case DB_UNKNOWNHOST:
+                    $tmp_error = sprintf(atktext("db_unknown_host", "atk"), $this->m_host);
                     break;
             }
             $this->m_error = $tmp_error;
@@ -486,7 +490,7 @@ class atkDb
      * If haltonerror is set, this will raise an atkerror. If not, it will
      * place the error in atkdebug and continue.
      * @access protected
-     * 
+     *
      * @param String $message
      */
     function halt($message = "")
@@ -498,8 +502,7 @@ class atkDb
                     $level = 'critical';
                 atkerror($this->getErrorMsg());
                 halt($this->getErrorMsg(), $level);
-            }
-            else {
+            } else {
                 atkdebug(__CLASS__ . "::halt() on user error (not halting)");
             }
         }
@@ -507,7 +510,7 @@ class atkDb
 
     /**
      * Returns the current query resource.
-     * 
+     *
      * @return mixed query resource
      */
     public function getQueryId()
@@ -517,7 +520,7 @@ class atkDb
 
     /**
      * Sets the current query identifier used for next_record() etc.
-     * 
+     *
      * @param mixed $queryId query resource
      */
     public function setQueryId($queryId)
@@ -526,8 +529,8 @@ class atkDb
     }
 
     /**
-     * Rests the query resource. 
-     * 
+     * Rests the query resource.
+     *
      * NOTE: this doesn't close the query/statement!
      */
     public function resetQueryId()
@@ -546,7 +549,7 @@ class atkDb
 
     /**
      * Connect to the database.
-     * 
+     *
      * @param String $mode The mode to connect
      * @return int Connection status
      * @abstract
@@ -572,7 +575,7 @@ class atkDb
      */
     function doConnect($host, $user, $password, $database, $port, $charset)
     {
-        
+
     }
 
     /**
@@ -596,7 +599,7 @@ class atkDb
      */
     function disconnect()
     {
-        
+
     }
 
     /**
@@ -605,7 +608,7 @@ class atkDb
      */
     function commit()
     {
-        
+
     }
 
     /**
@@ -616,7 +619,7 @@ class atkDb
      */
     function savepoint($name)
     {
-        
+
     }
 
     /**
@@ -629,16 +632,16 @@ class atkDb
      */
     function rollback($savepoint = "")
     {
-        
+
     }
 
     /**
      * Creates a new statement for the given query.
-     * 
+     *
      * @see atkStatement
-     * 
+     *
      * @param string $query SQL query
-     * 
+     *
      * @return atkStatement statement
      */
     public function prepare($query)
@@ -735,7 +738,7 @@ class atkDb
      */
     function nextid($sequence)
     {
-        
+
     }
 
     /**
@@ -795,12 +798,12 @@ class atkDb
 
     /**
      * Returns the first row for the given query.
-     * 
+     *
      * Please note: this method does *not* add a limit to the query
-     * 
-     * @param string  $query    query
+     *
+     * @param string $query query
      * @param boolean $useLimit add limit to the query (if you have your own limit specify false!)
-     * 
+     *
      * @return array row
      */
     public function getRow($query, $useLimit = false)
@@ -812,16 +815,16 @@ class atkDb
     /**
      * Get all rows for the given query.
      *
-     * NOTE: 
-     * This is not an efficient way to retrieve records, as this 
-     * will load all records into one array into memory. If you 
-     * retrieve a lot of records, you might hit the memory_limit 
+     * NOTE:
+     * This is not an efficient way to retrieve records, as this
+     * will load all records into one array into memory. If you
+     * retrieve a lot of records, you might hit the memory_limit
      * and your script will die.
      *
-     * @param string $query  query
-     * @param int    $offset offset
-     * @param int    $limit  limit
-     * 
+     * @param string $query query
+     * @param int $offset offset
+     * @param int $limit limit
+     *
      * @return array rows
      */
     public function getRows($query, $offset = -1, $limit = -1)
@@ -831,18 +834,18 @@ class atkDb
 
     /**
      * Get rows in an associative array with the given column used as key for the rows.
-     * 
-     * NOTE: 
-     * This is not an efficient way to retrieve records, as this 
-     * will load all records into one array into memory. If you 
-     * retrieve a lot of records, you might hit the memory_limit 
+     *
+     * NOTE:
+     * This is not an efficient way to retrieve records, as this
+     * will load all records into one array into memory. If you
+     * retrieve a lot of records, you might hit the memory_limit
      * and your script will die.
      *
-     * @param string     $query     query
+     * @param string $query query
      * @param int|string $keyColumn column index / name (default first column) to be used as key
-     * @param int        $offset    offset
-     * @param int        $limit     limit
-     * 
+     * @param int $offset offset
+     * @param int $limit limit
+     *
      * @return array rows
      */
     public function getRowsAssoc($query, $keyColumn = 0, $offset = -1, $limit = -1)
@@ -868,11 +871,11 @@ class atkDb
     /**
      * Get a single value from a certain specified query
      *
-     * @param string     $query       query
-     * @param mixed      $default     fallback value if the query doesn't return a result
+     * @param string $query query
+     * @param mixed $default fallback value if the query doesn't return a result
      * @param int|string $valueColumn column index / name (default first column) to be used as value
-     * @param boolean    $useLimit    add limit to the query (if you have your own limit specify false!)
-     * 
+     * @param boolean $useLimit add limit to the query (if you have your own limit specify false!)
+     *
      * @return mixed first value or default fallback value
      */
     public function getValue($query, $default = null, $valueColumn = 0, $useLimit = false)
@@ -891,17 +894,17 @@ class atkDb
     /**
      * Get an array with all the values in the specified column.
      *
-     * NOTE: 
-     * This is not an efficient way to retrieve records, as this 
-     * will load all records into one array into memory. If you 
-     * retrieve a lot of records, you might hit the memory_limit 
+     * NOTE:
+     * This is not an efficient way to retrieve records, as this
+     * will load all records into one array into memory. If you
+     * retrieve a lot of records, you might hit the memory_limit
      * and your script will die.
      *
-     * @param string     $query       query
+     * @param string $query query
      * @param int|string $valueColumn column index / name (default first column) to be used as value
-     * @param int        $offset      offset
-     * @param int        $limit       limit
-     * 
+     * @param int $offset offset
+     * @param int $limit limit
+     *
      * @return array with values
      */
     function getValues($query, $valueColumn = 0, $offset = -1, $limit = -1)
@@ -912,19 +915,19 @@ class atkDb
     /**
      * Get rows in an associative array with the given key column used as
      * key and the given value column used as value.
-     * 
-     * NOTE: 
-     * This is not an efficient way to retrieve records, as this 
-     * will load all records into one array into memory. If you 
-     * retrieve a lot of records, you might hit the memory_limit 
+     *
+     * NOTE:
+     * This is not an efficient way to retrieve records, as this
+     * will load all records into one array into memory. If you
+     * retrieve a lot of records, you might hit the memory_limit
      * and your script will die.
      *
-     * @param string     $query       query
-     * @param int|string $keyColumn   column index / name (default first column) to be used as key
+     * @param string $query query
+     * @param int|string $keyColumn column index / name (default first column) to be used as key
      * @param int|string $valueColumn column index / name (default first column) to be used as value
-     * @param int        $offset      offset
-     * @param int        $limit       limit
-     * 
+     * @param int $offset offset
+     * @param int $limit limit
+     *
      * @return array rows
      */
     public function getValuesAssoc($query, $keyColumn = 0, $valueColumn = 1, $offset = -1, $limit = -1)
@@ -983,16 +986,13 @@ class atkDb
      */
     private function _getTableMetaFromCache($table)
     {
-        atkimport('atk.utils.atktmpfile');
-        $tmpfile = new atkTmpFile('tablemeta/' . $this->m_connection . "/" . $table . ".php");
-
-        if ($tmpfile->exists()) {
-            include($tmpfile->getPath());
-        } else {
+        $cache = atkCache::getInstance();
+        $key = $this->m_connection . "/" . $table;
+        if (!$tablemeta = $cache->get($key)) {
             $tablemeta = $this->_getTableMetaFromDb($table);
-            $tmpfile->writeAsPhp("tablemeta", $tablemeta);
+            $cache->delete($key);
+            $cache->set($key, $tablemeta);
         }
-
         return $tablemeta;
     }
 
@@ -1028,10 +1028,10 @@ class atkDb
 
     /**
      * get SUBSTRING() equivalent for the current database.
-     * 
+     *
      * @param String $fieldname The database fieldname
      * @param Integer $startat The position to start from
-     * @param Integer $length The number of characters 
+     * @param Integer $length The number of characters
      */
     function func_substring($fieldname, $startat = 0, $length = 0)
     {
@@ -1080,7 +1080,7 @@ class atkDb
      * @param array $fields
      * @param string $separator
      * @param boolean $remove_all_spaces remove all spaces in result (atkAggrecatedColumns searches for string without spaces)
-     * 
+     *
      * @return string $query_part
      */
     function func_concat_ws($fields, $separator, $remove_all_spaces = false)
@@ -1121,7 +1121,7 @@ class atkDb
      * Get TO_CHAR() equivalent for the current database.
      *
      * TODO/FIXME: add format parameter. Current format is always yyyy-mm-dd hh:mi.
-     * 
+     *
      * @param String $fieldname The field to generate the to_char for.
      * @return String Piece of sql query that converts a datetime field to char
      *                for the current database
@@ -1134,7 +1134,7 @@ class atkDb
     /**
      * Returns the maximum length an identifier (tablename, columnname, etc) may have
      *
-     * @return Integer The maximum identifier length 
+     * @return Integer The maximum identifier length
      */
     function maxIdentifierLength()
     {
@@ -1143,7 +1143,7 @@ class atkDb
 
     /**
      * escapes quotes for use in SQL: ' -> '' (and sometimes % -> %%)
-     * 
+     *
      * @param String $string The string to escape
      * @param Bool $wildcard Use wildcards?
      * @return String The escaped SQL string
@@ -1163,8 +1163,8 @@ class atkDb
      */
     function &createQuery()
     {
-        $query = &atknew("atk.db.atk" . $this->m_type . "query");
-        $query->m_db = &$this;
+        $query = & atknew("atk.db.atk" . $this->m_type . "query");
+        $query->m_db = & $this;
         return $query;
     }
 
@@ -1242,8 +1242,8 @@ class atkDb
     function &createDDL()
     {
         atkimport("atk.db.atkddl");
-        $ddl = &atkDDL::create($this->m_type);
-        $ddl->m_db = &$this;
+        $ddl = & atkDDL::create($this->m_type);
+        $ddl->m_db = & $this;
         return $ddl;
     }
 
@@ -1304,7 +1304,7 @@ class atkDb
         $config = atkconfig("db");
         $this->m_connection = $connectionname;
         $this->m_mode = (isset($config[$connectionname]["mode"]) ? $config[$connectionname]["mode"]
-                    : "rw");
+            : "rw");
         if (isset($config[$connectionname]["db"])) {
             $this->m_database = $config[$connectionname]["db"];
             $this->m_user = $config[$connectionname]["user"];
@@ -1349,14 +1349,14 @@ class atkDb
         // translate connection name
         $name = atkDb::getTranslatedDatabaseName($name);
 
-        $olddb = &$g_dbinstances[$name];
-        $g_dbinstances[$name] = &$db;
+        $olddb = & $g_dbinstances[$name];
+        $g_dbinstances[$name] = & $db;
         return $olddb;
     }
 
     /**
      * Halt on error?
-     * 
+     *
      * @return boolean halt on error?
      */
     public function getHaltOnError()
@@ -1392,7 +1392,7 @@ class atkDb
             // This can't be trusted. Mysql returns DB_SUCCESS even
             // if the user doesn't have access to the database. We only get an
             // error for this after we performed the first query.
-            $this->table_names();  // this triggers a query
+            $this->table_names(); // this triggers a query
             $res = $this->_translateError($this->getDbErrno());
         }
 
@@ -1414,5 +1414,3 @@ class atkDb
     }
 
 }
-
-?>
