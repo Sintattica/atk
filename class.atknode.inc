@@ -1574,7 +1574,7 @@ class atkNode
 
 
 
-                
+
 // Only display the attribute if the attribute
             // resides on at least on visible tab
             for ($i = 0, $_i = sizeof($p_attrib->m_tabs); $i < $_i; $i ++) {
@@ -3982,7 +3982,7 @@ class atkNode
      */
     function preCopy(&$record)
     {
-        
+
     }
 
     /**
@@ -4283,7 +4283,7 @@ class atkNode
     {
         if ($lockstatus) {
             atkimport('atk.ui.atktheme');
-            return atkTheme::getInstance()->icon('lock_' . $this->getLockMode(), 'lock', $this->m_module, '', null, array('name'=>'_lock_'));
+            return atkTheme::getInstance()->getIcon('lock_' . $this->getLockMode(), 'lock', 'gif', '', null, '', array('name' => '_lock_'));
         }
         return '';
     }
