@@ -115,10 +115,6 @@ class atkDateTimeAttribute extends atkAttribute
         $this->m_date = new atkDateattribute($name, '', '', 0, 0, $flags);
 
         $this->atkAttribute($name, $flags); // base class constructor
-
-        if ($this->hasFlag(AF_OBLIGATORY)) {
-            $this->setInitialValue(atkDateTimeAttribute::datetimeArray());
-        }
     }
 
     /**
@@ -650,11 +646,15 @@ class atkDateTimeAttribute extends atkAttribute
      */
     function postInit()
     {
+        parent::postInit();
         if ($this->m_timezoneAttribute !== null) {
             $node = &$this->getOwnerInstance();
             $parts = explode('.', $this->m_timezoneAttribute);
             $attr = &$node->getAttribute($parts[0]);
             $attr->addFlag(AF_FORCE_LOAD);
         }
+
+        $this->m_date->postInit();
+        $this->m_time->postInit();
     }
 }

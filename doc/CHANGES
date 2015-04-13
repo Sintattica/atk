@@ -15,9 +15,11 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
++ New flags AF_DATE_DEFAULT_EMPTY and AF_TIME_DEFAULT_EMPTY for date and time attributes
+* Login page now handles hidden array parameters
 + Added "manytoone_autocomplete_size" global configuration variable
 * Minor fixing
-* Login page now handles hidden array parameters
+
 
 Changes in MASTER (WIP)
 ------------------------
