@@ -17,6 +17,7 @@ Changes in DEVELOP (WIP)
 ------------------------
 + Added "manytoone_autocomplete_size" global configuration variable
 * Minor fixing
+* Login page now handles hidden array parameters
 
 Changes in MASTER (WIP)
 ------------------------
