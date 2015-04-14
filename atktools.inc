@@ -1325,18 +1325,31 @@ function makeHiddenPostvars($excludes = array())
     if (count($ATK_VARS)) {
         foreach ($ATK_VARS as $key => $val) {
             if (!in_array($key, $excludes)) {
-                if(is_array($val)){
-                    foreach($val as $arrKey => $arrVal){
-                        $str .= "<input type='hidden' name=\"" . atk_htmlentities($key).'['.atk_htmlentities(strval($arrKey)).']' . "\" value=\"" . atk_htmlentities(strval($arrVal)) . "\">\n";
-                    }
-                }else {
-                    $str .= "<input type='hidden' name=\"" . atk_htmlentities(strval($key)) . "\" value=\"" . atk_htmlentities(strval($val)) . "\">\n";
-                }
+                $inputs = array();
+                atkMakeHiddenPostVarsRecursion($key, $val, $inputs);
+                $str .= implode('', $inputs);
             }
         }
         return $str;
     }
     return "";
+}
+
+function atkMakeHiddenPostVarsRecursion($key, $val, &$inputs, $name = null)
+{
+    if ($name == null) {
+        $name = atk_htmlentities($key);
+    } else {
+        $name .= '[' . atk_htmlentities($key) . ']';
+    }
+
+    if (is_array($val)) {
+        foreach ($val as $rKey => $rVal) {
+            atkMakeHiddenPostVarsRecursion($rKey, $rVal, $inputs, $name);
+        }
+    } else {
+        $inputs[] = "<input type='hidden' name=\"" . $name . "\" value=\"" . atk_htmlentities(strval($val)) . "\">\n";
+    }
 }
 
 /**
