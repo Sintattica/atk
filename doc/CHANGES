@@ -15,8 +15,8 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
-+ New flags AF_DATE_DEFAULT_EMPTY and AF_TIME_DEFAULT_EMPTY for date and time attributes
-* Login page now handles hidden array parameters
++ New flags AF_DATE_DEFAULT_EMPTY and AF_TIME_DEFAULT_EMPTY for date and time attributes [michele]
+* Login page now handles hidden array parameters [michele]
 + Added "manytoone_autocomplete_size" global configuration variable
 * Minor fixing
 
@@ -88,7 +88,7 @@ Changes in ATK 8.0.0 (12/12/2014)
 * Fixed grid searching problem after extended search
 * Export csv improvement
 + Added unregister_script function in atkpage
-+ Initial implementation of Bootstrap theme
++ Initial implementation of Bootstrap theme [michele]
 
 
 Changes in ATK 7.0.0
