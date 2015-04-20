@@ -15,7 +15,8 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
-* fix atkdatagrid javascript code
+* show table headers on empty onetomany relation [michele]
+* fix atkdatagrid javascript code [michele]
 + New flags AF_DATE_DEFAULT_EMPTY and AF_TIME_DEFAULT_EMPTY for date and time attributes [michele]
 * Login page now handles hidden array parameters [michele]
 + Added "manytoone_autocomplete_size" global configuration variable

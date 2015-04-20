@@ -454,6 +454,14 @@ class atkOneToManyRelation extends atkRelation
 
         $grid->loadRecords(); // force early load of records
 
+        if($mode === 'edit') {
+            $usesIndex = $grid->getIndex() != null;
+            $isSearching = is_array($grid->getPostvar('atksearch')) && count($grid->getPostvar('atksearch')) > 0;
+            if ($grid->getCount() == 0 && ($usesIndex || $isSearching)) {
+                $grid->setComponentOption('list', 'alwaysShowGrid', true);
+            }
+        }
+
         $output = $this->editHeader($record, $grid->getRecords()) .
             $grid->render() .
             $this->editFooter($record, $grid->getRecords());
