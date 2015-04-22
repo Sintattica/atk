@@ -15,86 +15,93 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
-* Fixed atkdatagrid javascript code
-* Show table headers on empty onetomany relation
-* atkManyToManySelectRelation improvements
-+ Added AF_MANYTOMANY_DETAILVIEW flag in atkManyToManyRelation
-* Fixed decodeKeyValueSet
+* Fixed atkdatagrid javascript code [michele]
+* Show table headers on empty onetomany relation [michele]
+* atkManyToManySelectRelation improvements [luca]
++ Added AF_MANYTOMANY_DETAILVIEW flag in atkManyToManyRelation [luca]
+* Fixed decodeKeyValueSet [luca]
 + New flags AF_DATE_DEFAULT_EMPTY and AF_TIME_DEFAULT_EMPTY for date and time attributes [michele]
 * Login page now handles hidden array parameters [michele]
-+ Added "manytoone_autocomplete_size" global configuration variable
-* Minor fixing
++ Added "manytoone_autocomplete_size" global configuration variable [luca]
+* Minor fixing [luca]Doc. changes
 
 
 Changes in MASTER (WIP)
 ------------------------
-+ Added "manytoone_autocomplete_size" global configuration variable
-* Minor fixing
+* Fixed atkdatagrid javascript code [michele]
+* Show table headers on empty onetomany relation [michele]
+* atkManyToManySelectRelation improvements [luca]
++ Added AF_MANYTOMANY_DETAILVIEW flag in atkManyToManyRelation [luca]
+* Fixed decodeKeyValueSet [luca]
++ New flags AF_DATE_DEFAULT_EMPTY and AF_TIME_DEFAULT_EMPTY for date and time attributes [michele]
+* Login page now handles hidden array parameters [michele]
++ Added "manytoone_autocomplete_size" global configuration variable [luca]
+* Minor fixing [luca]
 
 
 Changes in ATK 8.0.5 (02/03/2015)
 ---------------------------------
-+ Added "link_add" generic label in atkOneToManyRelation
-* Improved setOrder function in atkNode
-* Better rendering of atkProfileAttribute (display)
-* Improved filter functions in atkNode and atkRelation
-* Fixed search in atkListAttribute
++ Added "link_add" generic label in atkOneToManyRelation [luca]
+* Improved setOrder function in atkNode [luca]
+* Better rendering of atkProfileAttribute (display) [luca]
+* Improved filter functions in atkNode and atkRelation [luca]
+* Fixed search in atkListAttribute [luca]
 
 Changes in ATK 8.0.4 (09/02/2015)
 ---------------------------------
-* Fixed Bootstrap navbar issues
-+ Added "mra_position" global configuration variable
-* Refined attributes utility functions in atkNode and atkEditFormModifier
-+ Added "recordlist_onclick" global configuration variable
+* Fixed Bootstrap navbar issues [luca/giorgio]
++ Added "mra_position" global configuration variable [luca]
+* Refined attributes utility functions in atkNode and atkEditFormModifier [luca]
++ Added "recordlist_onclick" global configuration variable [giorgio]
 
 Changes in ATK 8.0.3 (31/01/2015)
 ---------------------------------
-+ Added dependencies handling in atkDateTimeAttribute
-* Fixed onChange handling in atkDateAttribute when the user changes date on calendar
-* Fixed handling of AF_LARGE atkManyToOneRelation in edit mode
-+ Added showAttributes, hideAttributes and refreshAttributes in atkEditFormModifier
-+ Added addAttributesFlag and removeAttributesFlag functions in atkNode
-* setAttribSizes calling also in init function of atkNode
-* Languages translations refining
++ Added dependencies handling in atkDateTimeAttribute [luca]
+* Fixed onChange handling in atkDateAttribute when the user changes date on calendar [luca]
+* Fixed handling of AF_LARGE atkManyToOneRelation in edit mode [luca]
++ Added showAttributes, hideAttributes and refreshAttributes in atkEditFormModifier [luca]
++ Added addAttributesFlag and removeAttributesFlag functions in atkNode [luca]
+* setAttribSizes calling also in init function of atkNode [luca]
+* Languages translations refining [luca]
 
 Changes in ATK 8.0.2 (21/01/2015)
 ---------------------------------
-* Other minor fixing
-* Updated Moment.js to version 2.9.0
-* Fixing search in atkDateAttribute e atkManyToOneRelation
+* Other minor fixing [luca]
+* Updated Moment.js to version 2.9.0 [luca]
+* Fixing search in atkDateAttribute e atkManyToOneRelation [luca]
 
 Changes in ATK 8.0.1 (17/01/2015)
 ---------------------------------
-* Fixed dependencies handling
-* atkNumberAttribute search improvement
-* Better handling of readonly/hidden atkManyToOneRelation in edit mode
-* Refactored the fetchMeta function in atkAttribute and atkNumberAttribute
-+ Added max_searchinput_size config variable
-* Fixed display in atkProfileAttribute and atkDateAttribute
-* Fixed search in atkListAttribute
-* Steelblue theme style improvement
+* Fixed dependencies handling [luca]
+* atkNumberAttribute search improvement [luca]
+* Better handling of readonly/hidden atkManyToOneRelation in edit mode [luca/michele]
+* Refactored the fetchMeta function in atkAttribute and atkNumberAttribute [luca]
++ Added max_searchinput_size config variable [luca]
+* Fixed display in atkProfileAttribute and atkDateAttribute [luca]
+* Fixed search in atkListAttribute [luca]
+* Steelblue theme style improvement [luca]
 
 Changes in ATK 8.0.0 (12/12/2014)
 ---------------------------------
-+ Added "reverse_attributeaccess_logic" global configuration variable
-* charset utf8 in default mysql config
-* oneToMany search grid triggers search on keyboard enter
-+ Added composer.json
-+ Added spinner on action buttons
-+ Added property in atkListAttribute to render a multiple select also in simple search
-+ Added spinner showing next to attributes during dependencies execution
-* Steelblue/Stillblue themes improvements
-* Languages translations refining (en/it)
-* Fix precedence in _getModules (atkLanguage)
-* atkManyToOneRelation improvements
-* Form buttons rendering improvement
-+ Rendering improvement in atkFieldSet
-* Fixing in atkNumberAttribute, atkExpressionAttribute, atkDurationAttribute, atkUpdateStampAttribute
-+ Searching improvement in atkDateAttribute
-* Fixed dependency handling in "small date selection" mode and date min disabled on calendar (atkDateAttribute)
-* Fixed grid searching problem after extended search
-* Export csv improvement
-+ Added unregister_script function in atkpage
++ Added "reverse_attributeaccess_logic" global configuration variable [andrea]
+* charset utf8 in default mysql config [michele]
+* oneToMany search grid triggers search on keyboard enter [michele]
++ Added composer.json [luca]
++ Added spinner on action buttons [luca]
++ Added property in atkListAttribute to render a multiple select also in simple search [luca]
++ Added spinner showing next to attributes during dependencies execution [luca]
+* Steelblue/Stillblue themes improvements [luca]
+* Languages translations refining (en/it) [luca]
+* Fix precedence in _getModules (atkLanguage) [luca]
+* atkManyToOneRelation improvements [luca]
+* Form buttons rendering improvement [luca]
++ Rendering improvement in atkFieldSet [luca]
+* Fixing in atkNumberAttribute, atkExpressionAttribute, atkDurationAttribute, atkUpdateStampAttribute [luca]
++ Searching improvement in atkDateAttribute [luca]
+* Fixed dependency handling in "small date selection" mode and date min disabled on calendar (atkDateAttribute) [luca]
+* Fixed grid searching problem after extended search [luca]
+* Export csv improvement [luca]
++ Added unregister_script function in atkpage [luca]
 + Initial implementation of Bootstrap theme [michele]
 
 
