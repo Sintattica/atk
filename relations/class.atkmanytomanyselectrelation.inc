@@ -21,6 +21,7 @@ userelation('atkmanytoonerelation');
 define('AF_MANYTOMANYSELECT_DETAILEDIT', AF_SPECIFIC_1);
 define('AF_MANYTOMANYSELECT_DETAILADD', AF_SPECIFIC_2);
 define('AF_MANYTOMANYSELECT_NO_AUTOCOMPLETE', AF_SPECIFIC_3);
+// (AF_MANYTOMANY_DETAILVIEW inherited from atkManyToManyRelation)
 
 /**
  * Many-to-many select relation.
@@ -89,7 +90,6 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
         $relation->setDisabledModes(DISABLED_VIEW | DISABLED_EDIT);
         $relation->setLoadType(NOLOAD);
         $relation->setStorageType(NOSTORE);
-        $relation->setNoneLabel($this->text('list_null_value_obligatory'));
         $this->m_manyToOneRelation = $relation;
     }
 
@@ -186,21 +186,34 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
         }
 
         $result = '<input type="hidden" name="' . $this->getHtmlId($fieldprefix) . '" value="" />' . // Post an empty value if none selected (instead of not posting anything)
-            '<div class="atkmanytomanyselectrelation">
-      <ul id="' . $selectId . '" class="atkmanytomanyselectrelation-selection">';
+            '<div class="atkmanytomanyselectrelation">';
 
-        foreach ($selectedRecords as $selectedRecord) {
-            $result .= $this->renderSelectedRecord($selectedRecord, $fieldprefix);
+        if (($this->hasFlag(AF_MANYTOMANYSELECT_DETAILADD)) && ($this->m_destInstance->allowed("add"))) {
+            $addLink = ' ' . $this->getAddActionLink($record, $fieldprefix);
         }
 
-        $result .= $this->renderAdditionField($record, $fieldprefix, $mode);
+        $selField = '';
+        foreach ($selectedRecords as $selectedRecord) {
+            $selField .= $this->renderSelectedRecord($selectedRecord, $fieldprefix);
+        }
+        $addField = $this->renderAdditionField($record, $fieldprefix, $mode);
 
-        $result .= '
-      </ul>
-      </div>';
+        if ($selField || $addField) {
+            $result .= '<ul id="' . $selectId . '" class="atkmanytomanyselectrelation-selection" style="width:100% !important">';
+            $result .= $selField;
+            if ($addField) {
+                $result .= '<li class="atkmanytomanyselectrelation-addition">' . $addField . '</li>';
+            }
+            $result .= '</ul>';
+        } else if (!$addLink) {
+            $result .= '<i>' . $this->text('none') .'</i>';
+        }
 
-        if (($this->hasFlag(AF_MANYTOMANYSELECT_DETAILADD)) && ($this->m_destInstance->allowed("add")))
-            $result.= href(dispatch_url($this->m_destination, "add", array('atkfilter' => 'clear', "atkpkret" => $id . "_newsel")), $this->getAddLabel(), SESSION_NESTED) . "\n";
+        if ($addLink) {
+            $result .= $addLink;
+        }
+
+        $result .= '</div>';
 
         if ($this->hasPositionAttribute()) {
             $this->getOwnerInstance()->getPage()->register_loadscript("ATK.ManyToManySelectRelation.makeItemsSortable('{$selectId}');");
@@ -348,6 +361,11 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     protected function renderSelectedRecordActions($record)
     {
         $actions = array();
+
+        if ($this->hasFlag(AF_MANYTOMANY_DETAILVIEW) && !$this->hasFlag(AF_MANYTOMANYSELECT_DETAILEDIT) && $this->getDestination()->allowed("view")) {
+            $actions[] = 'view';
+        }
+
         if ($this->hasFlag(AF_MANYTOMANYSELECT_DETAILEDIT) && $this->getDestination()->allowed('edit', $record)) {
             $actions[] = 'edit';
         }
@@ -368,7 +386,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
 
         $htmlActionLinks = '';
         if (count($actionLink)) {
-            $htmlActionLinks = '(' . implode(' / ', $actionLinks) . ')';
+            $htmlActionLinks = '&nbsp;' . implode(' ', $actionLinks);
         }
         return $htmlActionLinks;
     }
@@ -391,6 +409,14 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
         }
     }
 
+    protected function getAddActionLink($record, $fieldprefix, $params = array())
+    {
+        $filter = $this->parseFilter($this->getManyToOneRelation()->m_destinationFilter, $record);
+        $params = array_merge($params, array('atkfilter' => $filter, "atkpkret" => $this->getHtmlId($fieldprefix) . "_newsel"));
+        $link = href(dispatch_url($this->m_destination, "add", $params), $this->getAddLabel(), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
+        return $link;
+    }
+
     /**
      * The default edit link
      *
@@ -399,7 +425,18 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
      */
     protected function getEditActionLink($record)
     {
-        return href(dispatch_url($this->getdestination()->atknodetype(), 'edit', array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SESSION_NESTED, true);
+        return href(dispatch_url($this->getdestination()->atknodetype(), 'edit', array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
+    }
+
+    /**
+     * The default view link
+     *
+     * @param array $record
+     * @return string
+     */
+    protected function getViewActionLink($record)
+    {
+        return href(dispatch_url($this->getdestination()->atknodetype(), 'view', array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('view'), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
     }
 
     /**
@@ -410,7 +447,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
      */
     protected function getDeleteActionLink($record)
     {
-        return '<a href="javascript:void(0)" onclick="ATK.ManyToManySelectRelation.deleteItem(this); return false;">' . $this->text('delete') . '</a>';
+        return '<a href="javascript:void(0)" class="atkmanytomanyselectrelation-link" onclick="ATK.ManyToManySelectRelation.deleteItem(this); return false;">' . $this->text('remove') . '</a>';
     }
 
     /**
@@ -446,7 +483,13 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
         $hasPositionAttribute = $this->hasPositionAttribute() ? 'true' : 'false';
         $relation->addOnChangeHandler("ATK.ManyToManySelectRelation.add(el, '{$url}', {$hasPositionAttribute});");
 
-        return '<li class="atkmanytomanyselectrelation-addition">' . $relation->edit($record, $fieldprefix, $mode) . '</li>';
+        $relation->setNoneLabel($this->text('select_none_obligatory'));
+        $result = $relation->edit($record, $fieldprefix, $mode);
+        if ($result == $this->text('select_none_obligatory')) {
+            $result = '';
+        }
+
+        return $result;
     }
 
     /**
