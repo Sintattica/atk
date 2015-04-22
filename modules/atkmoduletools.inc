@@ -113,7 +113,7 @@ function &atkGetNode($node, $init = TRUE, $cache_id = "default", $reset = false)
     global $g_nodeRepository;
     $node = strtolower($node); // classes / directory names should always be in lower-case
     if (!isset($g_nodeRepository[$cache_id][$node]) || !is_object($g_nodeRepository[$cache_id][$node]) || $reset) {
-        atkdebug("Constructing a new node - $node");
+        atkdebug("Constructing a new node $node ($cache_id)");
         $g_nodeRepository[$cache_id][$node] = &newNode($node, $init);
     }
     return $g_nodeRepository[$cache_id][$node];

@@ -776,10 +776,10 @@ class atkNode
     {
         if ($type == "")
             $type = strtolower(get_class($this));
-        atkdebug("Creating a new atkNode for $type");
         $this->m_type = $type;
         $this->m_flags = $flags;
         $this->m_module = atkModule::getModuleScope();
+        atkdebug("Creating a new node " . $this->m_module . ".$type");
 
         $this->setEditFieldPrefix(atkconfig('edit_fieldprefix', ''));
     }
