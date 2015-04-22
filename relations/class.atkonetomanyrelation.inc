@@ -716,28 +716,6 @@ class atkOneToManyRelation extends atkRelation
     }
 
     /**
-     * Attempts to get a translated label which can be used when composing an "add" link
-     *
-     * @return String Localised "add" label
-     */
-    function getAddLabel()
-    {
-        $key = "link_" . $this->fieldName() . "_add";
-        $label = atktext($key, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type, "", "", true);
-        if ($label == "") {
-            $label = atktext($key, $this->m_destInstance->m_module, "", "", "", true);
-            if ($label == "") {
-                $key = "link_" . getNodeType($this->m_destination) . "_add";
-                $label = atktext($key, $this->m_destInstance->m_module, "", "", "", true);
-                if ($label == "") {
-                    $label = atktext("link_add", "atk");
-                }
-            }
-        }
-        return $label;
-    }
-
-    /**
      * Retrieve header for the recordlist.
      *
      * The regular atkOneToManyRelation has no implementation for this method,
