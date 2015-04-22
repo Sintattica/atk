@@ -667,7 +667,7 @@ function decodeKeyValuePair($pair)
 }
 
 /**
- * Translates a string like id='3 AND name='joe'' into Array("id"=>3,"name"=>"joe")
+ * Translates a string like id=3 AND name='joe' into Array("id"=>3,"name"=>"joe")
  * @todo we should also support <=>, >=, >, <=, <, <>
  * @param string $set the string to decode
  * @return array the decoded array
@@ -677,6 +677,7 @@ function decodeKeyValueSet($set)
     $result = array();
     $items = explode(" AND ", $set);
     for ($i = 0; $i < count($items); $i++) {
+        $items[$i] = trim($items[$i], '()'); // trim parenthesis if present, e.g. (id=3) AND (name='joe')
         if (strstr($items[$i], '!=') !== false) {
             list($key, $value) = explode("!=", $items[$i]);
             $result[trim($key)] = stripQuotes($value);
