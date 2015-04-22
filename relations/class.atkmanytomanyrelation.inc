@@ -17,6 +17,8 @@
  */
 atkimport("atk.relations.atkrelation");
 
+define('AF_MANYTOMANY_DETAILVIEW', AF_SPECIFIC_5);
+
 /**
  * Many to many relation. Should not be used directly.
  *
@@ -365,27 +367,32 @@ class atkManyToManyRelation extends atkRelation
      */
     function display($record, $mode = "")
     {
-        if (!in_array($mode, array("csv", "plain"))) {
-            $result = "&nbsp;";
-        } else {
-            $result = '';
-        }
+        $result = '';
         if ($this->createDestination() && atk_value_in_array($record[$this->fieldName()])) {
             $recordset = array();
             $remotekey = $this->getRemoteKey();
             for ($i = 0; $i < count($record[$this->fieldName()]); $i++) {
-                if (!is_array($record[$this->fieldName()][$i][$remotekey])) {
-                    $selector = $this->m_destInstance->m_table . "." . $this->m_destInstance->primaryKeyField() . "='" . $record[$this->fieldName()][$i][$remotekey] . "'";
+                $rec = $record[$this->fieldName()][$i][$remotekey];
+                if (!is_array($rec)) {
+                    $selector = $this->m_destInstance->m_table . "." . $this->m_destInstance->primaryKeyField() . "= '$rec'";
                     list($rec) = $this->m_destInstance->selectDb($selector, "", "", "", $this->m_destInstance->descriptorFields());
-                    $recordset[] = $this->m_destInstance->descriptor($rec);
+                    $descr = $this->m_destInstance->descriptor($rec);
                 } else {
-                    $recordset[] = $this->m_destInstance->descriptor($record[$this->fieldName()][$i][$remotekey]);
+                    $descr = $this->m_destInstance->descriptor($rec);
                 }
+                if ($this->hasFlag(AF_MANYTOMANY_DETAILVIEW) && $this->m_destInstance->allowed("view")) {
+                    $descr = href(dispatch_url($this->m_destination, 'view', array('atkselector' => $this->getdestination()->primarykey($rec))), $descr, SESSION_NESTED);
+                }
+                $recordset[] = $descr;
             }
             if (!in_array($mode, array("csv", "plain"))) {
                 $result = "<ul><li>" . implode("<li>", $recordset) . "</ul>";
             } else {
                 $result = implode(", ", $recordset);
+            }
+        } else {
+            if (!in_array($mode, array("csv", "plain"))) {
+                $result = $this->text('none');
             }
         }
         return $result;
