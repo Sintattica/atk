@@ -26,6 +26,8 @@ define("AF_DATE_NO_CALENDAR", AF_SPECIFIC_3); // Do not append the popup calenda
 define("AF_DATE_DISPLAY_DAY", AF_SPECIFIC_4); // Show the day of the week in the display
 define("AF_DATE_EDIT_NO_DAY", AF_SPECIFIC_5); // Don't display the day of the week in edit mode
 define("AF_CLEAR_TOUCH_BUTTONS", AF_SPECIFIC_6); // Display butons to clear and 'touch' date
+define("AF_DATE_DEFAULT_EMPTY", AF_SPECIFIC_7|AF_DATE_EMPTYFIELD); // Always use the empty value on new record
+
 // Include adodb workarounds for <1970 dates on windows.
 $config_atkroot = atkconfig("atkroot");
 require_once($config_atkroot . "atk/utils/adodb-time.inc.php");
@@ -233,19 +235,6 @@ class atkDateAttribute extends atkAttribute
         $this->atkAttribute($name, $flags);
     }
 
-    /**
-     * Override add flag so that we can set the initial value.
-     *
-     * @param int $flags
-     */
-    public function addFlag($flags)
-    {
-        parent::addFlag($flags);
-
-        if ($this->hasFlag(AF_OBLIGATORY)) {
-            $this->setInitialValue(atkDateAttribute::dateArray(date('Ymd')));
-        }
-    }
 
     /**
      * Set the format for the boxes in edit mode.
@@ -323,6 +312,13 @@ class atkDateAttribute extends atkAttribute
             $this->m_date_min = $min;
         else
             $this->m_date_min = strtotime($min);
+    }
+
+    function postInit(){
+        parent::postInit();
+        if ($this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_DATE_DEFAULT_EMPTY)) {
+            $this->setInitialValue(atkDateAttribute::dateArray(date('Ymd')));
+        }
     }
 
     /**
@@ -700,18 +696,19 @@ class atkDateAttribute extends atkAttribute
      */
     function getValidCurrentDate($current, $minimum, $maximum, $mode)
     {
-        if ($current === NULL && (!$this->hasFlag(AF_OBLIGATORY) || in_array($mode, array('add', 'search'))))
-            ;
-        elseif (!empty($current) && !empty($minimum) && $current < $minimum)
+        if ($current === NULL && (!$this->hasFlag(AF_OBLIGATORY) || in_array($mode, array('add', 'search')) || $this->hasFlag(AF_DATE_DEFAULT_EMPTY))) {
+
+        } elseif (!empty($current) && !empty($minimum) && $current < $minimum) {
             $current = $minimum;
-        elseif (!empty($current) && !empty($maximum) && $current > $maximum)
+        } elseif (!empty($current) && !empty($maximum) && $current > $maximum) {
             $current = $maximum;
-        elseif (empty($current) && !empty($minimum) && time() < $minimum)
+        } elseif (empty($current) && !empty($minimum) && time() < $minimum) {
             $current = $minimum;
-        elseif (empty($current) && !empty($maximum) && time() > $maximum)
+        } elseif (empty($current) && !empty($maximum) && time() > $maximum) {
             $current = $maximum;
-        elseif (empty($current))
+        } elseif (empty($current)) {
             $current = time();
+        }
         return $current;
     }
 

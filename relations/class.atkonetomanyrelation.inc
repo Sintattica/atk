@@ -454,6 +454,14 @@ class atkOneToManyRelation extends atkRelation
 
         $grid->loadRecords(); // force early load of records
 
+        if($mode === 'edit') {
+            $usesIndex = $grid->getIndex() != null;
+            $isSearching = is_array($grid->getPostvar('atksearch')) && count($grid->getPostvar('atksearch')) > 0;
+            if ($grid->getCount() == 0 && ($usesIndex || $isSearching)) {
+                $grid->setComponentOption('list', 'alwaysShowGrid', true);
+            }
+        }
+
         $output = $this->editHeader($record, $grid->getRecords()) .
             $grid->render() .
             $this->editFooter($record, $grid->getRecords());
@@ -713,28 +721,6 @@ class atkOneToManyRelation extends atkRelation
     protected function getAddURL($params = array())
     {
         return dispatch_url($this->m_destination, "add", $params);
-    }
-
-    /**
-     * Attempts to get a translated label which can be used when composing an "add" link
-     *
-     * @return String Localised "add" label
-     */
-    function getAddLabel()
-    {
-        $key = "link_" . $this->fieldName() . "_add";
-        $label = atktext($key, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type, "", "", true);
-        if ($label == "") {
-            $label = atktext($key, $this->m_destInstance->m_module, "", "", "", true);
-            if ($label == "") {
-                $key = "link_" . getNodeType($this->m_destination) . "_add";
-                $label = atktext($key, $this->m_destInstance->m_module, "", "", "", true);
-                if ($label == "") {
-                    $label = atktext("link_add", "atk");
-                }
-            }
-        }
-        return $label;
     }
 
     /**

@@ -291,9 +291,14 @@ define("AF_SPECIFIC_4", 268435456); // specific attribute flag 4
 define("AF_SPECIFIC_5", 536870912); // specific attribute flag 5
 
 /**
- * Specific attribute flag 2
+ * Specific attribute flag 6
  */
 define("AF_SPECIFIC_6", 1073741824); // specific attribute flag 6
+
+/**
+ * Specific attribute flag 7
+ */
+define("AF_SPECIFIC_7", 2147483648); // specific attribute flag 7
 
 /**
  * Do not store this attribute

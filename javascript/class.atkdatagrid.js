@@ -174,9 +174,10 @@ ATK.DataGrid = {
 
 
 jQuery(function($) {
-    $('.atkdatagrid-container').on('keypress', '.recordListSearch input[type="text"]', function(e) {
+    $(document).on('keypress', '.atkdatagrid-container .recordListSearch input[type="text"]', function(e) {
         var bt;
         if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+            e.preventDefault();
             bt = $(e.currentTarget).parent('.recordListSearch').parent('tr').find('.btn_search');
             bt.click();
             return false;

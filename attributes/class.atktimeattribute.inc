@@ -19,6 +19,7 @@
  */
 define("AF_TIME_SECONDS", AF_SPECIFIC_1); // Display seconds after hours & minutes
 define("AF_CLEAR_TOUCH_BUTTONS", AF_SPECIFIC_6); // Display butons to clear and 'touch' date
+define("AF_TIME_DEFAULT_EMPTY", AF_SPECIFIC_7); // Always use the empty value on new record
 
 /**
  * The atkTimeAttribute class represents an attribute of a node
@@ -155,8 +156,8 @@ class atkTimeAttribute extends atkAttribute
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
-        if (($this->m_default == "NOW" && $this->m_ownerInstance->m_action == "add") ||
-            ($this->m_default == "" && $this->hasFlag(AF_OBLIGATORY))
+        if ((($this->m_default == "NOW" && $this->m_ownerInstance->m_action == "add") ||
+            ($this->m_default == "" && $this->hasFlag(AF_OBLIGATORY)) && !$this->hasFlag(AF_TIME_DEFAULT_EMPTY))
         ) {
             $this->m_default = date("H:i:s");
         }
@@ -193,7 +194,7 @@ class atkTimeAttribute extends atkAttribute
 
         atkdebug("defhour=$m_defHour   defmin=$m_defMin");
         // generate hour dropdown
-        if (!$this->hasflag(AF_OBLIGATORY))
+        if (!$this->hasflag(AF_OBLIGATORY) || $this->hasFlag(AF_TIME_DEFAULT_EMPTY))
             $m_hourBox .= '<option value=""' . ($m_defHour === "" ? ' selected' : '') . '></option>';
         for ($i = $this->m_beginTime; $i <= $this->m_endTime; $i++) {
             if ($m_defHour !== "" && ($i == $m_defHour)) {
@@ -206,7 +207,7 @@ class atkTimeAttribute extends atkAttribute
         $size_hourbox = $this->m_endTime - $this->m_beginTime + 1;
 
         // generate minute dropdown
-        if (!$this->hasflag(AF_OBLIGATORY))
+        if (!$this->hasflag(AF_OBLIGATORY) || $this->hasFlag(AF_TIME_DEFAULT_EMPTY))
             $m_minBox .= '<option value=""' . ($m_defMin === "" ? ' selected' : '') . '></option>';
 
         if ($this->hasFlag(AF_TIME_SECONDS)) {
@@ -231,7 +232,7 @@ class atkTimeAttribute extends atkAttribute
         $size_minbox = count($minute_steps);
 
         // generate second dropdown
-        if (!$this->hasFlag(AF_OBLIGATORY))
+        if (!$this->hasFlag(AF_OBLIGATORY) || $this->hasFlag(AF_TIME_DEFAULT_EMPTY))
             $m_secBox .= '<option value""' . ($m_defSec === "" ? ' selected' : '') . '></option>';
         for ($i = 0; $i <= count($this->m_steps) - 1; $i++) {
             if ($i != 0)

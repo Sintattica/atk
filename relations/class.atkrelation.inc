@@ -80,6 +80,7 @@ class atkRelation extends atkAttribute
      */
     function setDestinationFilter($filter)
     {
+        // TODO is secure?
         $filter = str_replace('[table]', $this->getDestination()->getTable(), $filter);
 
         $this->m_destinationFilter = $this->_cleanupDestinationFilter($filter);
@@ -129,6 +130,7 @@ class atkRelation extends atkAttribute
      */
     function addDestinationFilter($filter)
     {
+        // TODO is secure?
         $filter = str_replace('[table]', $this->getDestination()->getTable(), $filter);
 
         $filter = $this->_cleanupDestinationFilter($filter);
@@ -352,15 +354,18 @@ class atkRelation extends atkAttribute
      */
     function getAddLabel()
     {
-        // Try to get a translation for link_fieldname_add (or if not found, a translation for link_destination_add)
-        $keys = array("link_" . $this->fieldName() . "_add", "link_" . getNodeType($this->m_destination) . "_add");
-        $label = atktext($keys, getNodeModule($this->m_destination), "", "", "", true);
-
-        // If translation not found, then use a concatenation of translations of the destination and the word "add" as default
-        if ($label == "")
-            $label = atktext(getNodeType($this->m_destination), getNodeModule($this->m_destination)) . " " . strtolower(atktext("add", "atk"));
-
-        // Return the translation
+        $key = "link_" . $this->fieldName() . "_add";
+        $label = atktext($key, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type, "", "", true);
+        if ($label == "") {
+            $label = atktext($key, $this->m_destInstance->m_module, "", "", "", true);
+            if ($label == "") {
+                $key = "link_" . getNodeType($this->m_destination) . "_add";
+                $label = atktext($key, $this->m_destInstance->m_module, "", "", "", true);
+                if ($label == "") {
+                    $label = atktext("link_add", "atk");
+                }
+            }
+        }
         return $label;
     }
 

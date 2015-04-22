@@ -608,6 +608,10 @@ class atkManyToOneRelation extends atkRelation
      */
     function getNoneLabel($mode = '')
     {
+        if ($this->m_noneLabel !== NULL) {
+            return $this->m_noneLabel;
+        }
+
         $text_key = "select_none";
         if (in_array($mode, array('add', 'edit')) && $this->hasFlag(AF_OBLIGATORY)) {
             if ((($mode == 'add' && !$this->hasFlag(AF_READONLY_ADD)) || ($mode == 'edit' && !$this->hasFlag(AF_READONLY_EDIT)))) {
@@ -617,8 +621,6 @@ class atkManyToOneRelation extends atkRelation
             $text_key = 'search_none';
         }
 
-        if ($this->m_noneLabel !== NULL)
-            return $this->m_noneLabel;
         $nodename = $this->m_destInstance->m_type;
         $modulename = $this->m_destInstance->m_module;
         $ownermodulename = $this->m_ownerInstance->m_module;
@@ -897,7 +899,7 @@ class atkManyToOneRelation extends atkRelation
                 $result = '<span id="'.$id.'_current" >';
 
                 if ($this->hasFlag(AF_RELATION_AUTOLINK) && $this->m_destInstance->allowed("view") && !$this->m_destInstance->hasFlag(NF_NO_VIEW)) {
-                    $result .= href(dispatch_url($this->m_destination, "view", array("atkselector"=>$this->m_destInstance->primaryKey($record[$this->fieldName()]))), $this->m_destInstance->descriptor($destrecord), SESSION_NESTED);
+                    $result .= href(dispatch_url($this->m_destination, "view", array("atkselector"=>$this->m_destInstance->primaryKey($record[$this->fieldName()]))), $this->m_destInstance->descriptor($destrecord), SESSION_NESTED, true);
                 } else {
                     $result .= $this->m_destInstance->descriptor($destrecord);
                 }

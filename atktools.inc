@@ -49,11 +49,11 @@ define("DEBUG_ERROR", 8);
  * can be regulated.
  * This funtion must be registered with set_error_handler("atkErrorHandler");
  *
- * @param $errtype: One of the PHP errortypes (E_PARSE, E_USER_ERROR, etc)
-  (See http://www.php.net/manual/en/function.error-reporting.php)
- * @param $errstr: Error text
- * @param $errfile: The php file in which the error occured.
- * @param $errline: The line in the file on which the error occured.
+ * @param $errtype : One of the PHP errortypes (E_PARSE, E_USER_ERROR, etc)
+ * (See http://www.php.net/manual/en/function.error-reporting.php)
+ * @param $errstr : Error text
+ * @param $errfile : The php file in which the error occured.
+ * @param $errline : The line in the file on which the error occured.
  */
 function atkErrorHandler($errtype, $errstr, $errfile, $errline)
 {
@@ -140,7 +140,7 @@ function halt($msg, $level = "warning")
 /**
  * Function atkhalt
  * Halts on critical errors and also on warnings if specified in the config file.
- * @param string $msg   The message to be displayed
+ * @param string $msg The message to be displayed
  * @param string $level The level of the error,
  *                      ("critical"|"warning" (default))
  * @return bool false if something goes horribly wrong
@@ -159,8 +159,8 @@ function atkhalt($msg, $level = "warning")
             $res = atktext($level, "atk") . ': ' . $msg . "\n";
         } else {
             $res = "<html>";
-            $res .='<body bgcolor="#ffffff" color="#000000">';
-            $res .="<font color=\"$level_color\"><b>" . atktext($level, "atk") . "</b></font>: $msg.<br />\n";
+            $res .= '<body bgcolor="#ffffff" color="#000000">';
+            $res .= "<font color=\"$level_color\"><b>" . atktext($level, "atk") . "</b></font>: $msg.<br />\n";
         }
 
         atkOutput::getInstance()->output($res);
@@ -258,8 +258,8 @@ function atkwarning($txt)
 function atkGetTimingInfo()
 {
     return "[" . elapsed() . (atkconfig('debug') > 0 && function_exists("memory_get_usage")
-                ? " / " . sprintf("%02.02f", (memory_get_usage() / 1024 / 1024)) . "MB"
-                : "") . "] ";
+        ? " / " . sprintf("%02.02f", (memory_get_usage() / 1024 / 1024)) . "MB"
+        : "") . "] ";
 }
 
 /**
@@ -267,7 +267,7 @@ function atkGetTimingInfo()
  * The difference is, that this is also displayed when debugging is turned
  * off.
  *
- * If error reporting by email is turned on, the error messages are also 
+ * If error reporting by email is turned on, the error messages are also
  * send by e-mail.
  *
  * @param string|Exception $error the error text or exception to display
@@ -332,7 +332,7 @@ function atkGetTrace($format = "html")
         // Read the source location
         if (isset($traceArr[$i]["file"]))
             $location = $traceArr[$i]["file"] . (isset($traceArr[$i]["line"]) ? sprintf(", line %d", $traceArr[$i]["line"])
-                        : "[Unknown line]");
+                    : "[Unknown line]");
         else
             $location = "[PHP KERNEL]";
 
@@ -341,8 +341,7 @@ function atkGetTrace($format = "html")
             $statement = $traceArr[$i]["class"];
             if (isset($traceArr[$i]["type"]))
                 $statement .= $traceArr[$i]["type"];
-        }
-        else {
+        } else {
             $statement = "";
         }
         $statement .= $traceArr[$i]["function"];
@@ -366,8 +365,7 @@ function atkGetTrace($format = "html")
                         }
                     }
                     $stringval = "array(" . implode(", ", $valArr) . ")";
-                }
-                else if (is_null($val))
+                } else if (is_null($val))
                     $stringval = 'null';
                 else if (is_object($val))
                     $stringval = sprintf("Object(%s)", get_class($val));
@@ -387,7 +385,7 @@ function atkGetTrace($format = "html")
         $ret .= $theSpacer . "@" . $location . "\n";
         $ret .= $theSpacer . $statement;
         $ret .= (strlen($functionParams) ? "\n" . $theSpacer . "(\n" . $functionParams . "\n" . $theSpacer . ")"
-                    : "()") . "\n";
+                : "()") . "\n";
 
         // Add indentation
         $theSpacer .= "  ";
@@ -442,15 +440,15 @@ function atkWriteLog($text)
  * Replaces the [vars] with the values from the language files
  * Please note that it is important, for performance reasons,
  * that you pass along the module where the language files can be found
- * @param mixed $string           string or array of strings containing the name(s) of the string to return
+ * @param mixed $string string or array of strings containing the name(s) of the string to return
  *                                when an array of strings is passed, the second will be the fallback if
  *                                the first one isn't found, and so forth
- * @param String $module          module in which the language file should be looked for,
+ * @param String $module module in which the language file should be looked for,
  *                                defaults to core module with fallback to ATK
- * @param String $node            the node to which the string belongs
- * @param String $lng             ISO 639-1 language code, defaults to config variable
- * @param String $firstfallback   the first module to check as part of the fallback
- * @param boolean $nodefaulttext  if true, then it doesn't return a default text
+ * @param String $node the node to which the string belongs
+ * @param String $lng ISO 639-1 language code, defaults to config variable
+ * @param String $firstfallback the first module to check as part of the fallback
+ * @param boolean $nodefaulttext if true, then it doesn't return a default text
  *                                when it can't find a translation
  * @return String the string from the languagefile
  * @deprecated Use atktext instead
@@ -466,15 +464,15 @@ function text($string, $node = "", $module = "", $lng = "", $firstfallback = "",
  * Replaces the [vars] with the values from the language files
  * Please note that it is important, for performance reasons,
  * that you pass along the module where the language files can be found
- * @param mixed $string           string or array of strings containing the name(s) of the string to return
+ * @param mixed $string string or array of strings containing the name(s) of the string to return
  *                                when an array of strings is passed, the second will be the fallback if
  *                                the first one isn't found, and so forth
- * @param String $module          module in which the language file should be looked for,
+ * @param String $module module in which the language file should be looked for,
  *                                defaults to core module with fallback to ATK
- * @param String $node            the node to which the string belongs
- * @param String $lng             ISO 639-1 language code, defaults to config variable
- * @param String $firstfallback   the first module to check as part of the fallback
- * @param boolean $nodefaulttext  if true, then it doesn't return a default text
+ * @param String $node the node to which the string belongs
+ * @param String $lng ISO 639-1 language code, defaults to config variable
+ * @param String $firstfallback the first module to check as part of the fallback
+ * @param boolean $nodefaulttext if true, then it doesn't return a default text
  *                                when it can't find a translation
  * @param boolean $modulefallback Wether or not to use all the modules of the application in the fallback,
  *                                when looking for strings
@@ -548,7 +546,7 @@ function atkHref($url, $name = "", $sessionstatus = SESSION_DEFAULT, $saveform =
  */
 function atk_array_merge(array $array1, array $array2 = null, array $_ = null)
 {
-    return array_unique(call_user_func_array("array_merge",func_get_args()), SORT_REGULAR);
+    return array_unique(call_user_func_array("array_merge", func_get_args()), SORT_REGULAR);
 }
 
 /**
@@ -605,9 +603,9 @@ function atk_array_merge_keys()
  * an is_array on the haystack first, just to make sure the user
  * doesn't get an error message.
  *
- * @param mixed   $needle   The value to search for.
- * @param Array   $haystack The array to search.
- * @param boolean $strict   If true, type must match.
+ * @param mixed $needle The value to search for.
+ * @param Array $haystack The array to search.
+ * @param boolean $strict If true, type must match.
  * @return bool wether or not the value is in the array
  */
 function atk_in_array($needle, $haystack, $strict = false)
@@ -619,9 +617,9 @@ function atk_in_array($needle, $haystack, $strict = false)
  * Function dataSetContains
  *
  * Checks if a value is in a Array
- * @param array $set  the array
- * @param var $key    the key in the array as in $array[$key]
- * @param var $value  the value we are looking for
+ * @param array $set the array
+ * @param var $key the key in the array as in $array[$key]
+ * @param var $value the value we are looking for
  * @return bool wether or not the value is in the array
  */
 function dataSetContains($set, $key, $value)
@@ -669,7 +667,7 @@ function decodeKeyValuePair($pair)
 }
 
 /**
- * Translates a string like id='3 AND name='joe'' into Array("id"=>3,"name"=>"joe")
+ * Translates a string like id=3 AND name='joe' into Array("id"=>3,"name"=>"joe")
  * @todo we should also support <=>, >=, >, <=, <, <>
  * @param string $set the string to decode
  * @return array the decoded array
@@ -679,6 +677,7 @@ function decodeKeyValueSet($set)
     $result = array();
     $items = explode(" AND ", $set);
     for ($i = 0; $i < count($items); $i++) {
+        $items[$i] = trim($items[$i], '()'); // trim parenthesis if present, e.g. (id=3) AND (name='joe')
         if (strstr($items[$i], '!=') !== false) {
             list($key, $value) = explode("!=", $items[$i]);
             $result[trim($key)] = stripQuotes($value);
@@ -768,8 +767,8 @@ function atkDataDecode(&$vars)
  *  AE_decode($dest, "a_AE_c_AE_b");
  * then $dest will contain a decoded array:
  *  echo $dest["a"]["b"]["c"]; <- this will display 3
- * @param array &$dest  the array to put the decoded var in
- * @param string $var   the var to decode
+ * @param array &$dest the array to put the decoded var in
+ * @param string $var the var to decode
  */
 function AE_decode(&$dest, $var)
 {
@@ -783,7 +782,7 @@ function AE_decode(&$dest, $var)
     }
 
     if (is_array($dest[$var])) {
-        $current = atk_array_merge_recursive((array) $current, $dest[$var]);
+        $current = atk_array_merge_recursive((array)$current, $dest[$var]);
     } else {
         $current = $dest[$var];
     }
@@ -810,7 +809,7 @@ function stringfields($string)
             $adding = true;
         } else {
             if ($adding)
-                $tmp.=$string[$i];
+                $tmp .= $string[$i];
         }
     }
 
@@ -858,8 +857,8 @@ function stringparse($string, $data, $encode = false)
  *
  * @todo Fix a problem where a string containing "_9" will be altered after encoding + decoding it.
  *
- * @param string $string  the url to encode
- * @param bool $pref      wether or not to use a prefix, default true
+ * @param string $string the url to encode
+ * @param bool $pref wether or not to use a prefix, default true
  * @return string the encoded url
  */
 function atkurlencode($string, $pref = true)
@@ -961,13 +960,13 @@ function &atkGetDb($conn = 'default', $reset = false, $mode = "r")
 
 /**
  * Returns a url to open a popup window
- * @param string $target  the target of the popup
- * @param string $params  extra params to pass along
+ * @param string $target the target of the popup
+ * @param string $params extra params to pass along
  * @param string $winName the name of the window
- * @param int $width      the width of the popup
- * @param int $height     the height of the popup
- * @param string $scroll  allow scrolling? (no (default)|yes)
- * @param string $resize  allow resizing? (no (default)|yes)
+ * @param int $width the width of the popup
+ * @param int $height the height of the popup
+ * @param string $scroll allow scrolling? (no (default)|yes)
+ * @param string $resize allow resizing? (no (default)|yes)
  * return string the url for the popup window
  */
 function atkPopup($target, $params, $winName, $width, $height, $scroll = 'no', $resize = 'no')
@@ -981,7 +980,7 @@ function atkPopup($target, $params, $winName, $width, $height, $scroll = 'no', $
  * Adds new element to error array en $record. When
  * $msg is empty the multilange error string is used.
  * @param array &$rec var in which to add element to error array
- * @param var$attrib attributename or an array with attribute names
+ * @param var $attrib attributename or an array with attribute names
  * @param string $err multilanguage error string
  * @param string $msg optinal error string
  */
@@ -996,10 +995,10 @@ function triggerError(&$rec, $attrib, $err, $msg = "", $tab = "", $label = '', $
  * Adds new element to the record error array. When no message
  * is given the multi-language error string is used.
  *
- * @param array              $record  record
+ * @param array $record record
  * @param atkAttribute|array $attrib attribute or array of attributes
- * @param string             $error multi-language error string
- * @param string             $message error message (optional)
+ * @param string $error multi-language error string
+ * @param string $message error message (optional)
  */
 function atkTriggerError(&$record, $attrib, $error, $message = '')
 {
@@ -1100,13 +1099,13 @@ function exportData($data, $filename, $compression = "")
 
     if ($compression == "bzip") {
         $mime = 'application/x-bzip';
-        $filename.= ".bz2";
+        $filename .= ".bz2";
     } else if ($compression == "gzip") {
         $mime = 'application/x-gzip';
-        $filename.= ".gz";
+        $filename .= ".gz";
     } else if ($compression == "zip") {
         $mime = 'application/x-zip';
-        $filename.= ".zip";
+        $filename .= ".zip";
     }
 
     header('Content-Type: ' . $mime);
@@ -1121,8 +1120,7 @@ function exportData($data, $filename, $compression = "")
         if (@function_exists('bzcompress')) {
             echo bzcompress($data);
         }
-    }
-    // 2. as a gzipped file
+    } // 2. as a gzipped file
     else if ($compression == 'gzip') {
         if (@function_exists('gzencode')) {
             echo gzencode($data);
@@ -1131,8 +1129,7 @@ function exportData($data, $filename, $compression = "")
         if (@function_exists('gzcompress')) {
             echo gzcompress($data);
         }
-    }
-    // 3. on screen
+    } // 3. on screen
     else {
         echo $data;
     }
@@ -1141,7 +1138,7 @@ function exportData($data, $filename, $compression = "")
 
 /**
  * This function writes a binary file to the browser for download.
- * @param string $file     the local filename (the file you want to open
+ * @param string $file the local filename (the file you want to open
  *                         on the serverside)
  * @param string $filename the name the file will get when the user downloads it.
  * @param string $mimetype the mimetype of the file
@@ -1205,7 +1202,7 @@ function useattrib($attribute)
 /**
  * Includes the file containing the specified relation
  *
- * @param string $relation  The relation to include in the format "module.relation". ATK will
+ * @param string $relation The relation to include in the format "module.relation". ATK will
  *                          search in [moduledir]/relations/ for the relation file.
  *                          When no modulename is specified ATK will search for the relation
  *                          in [atkdir]/relations/
@@ -1328,12 +1325,32 @@ function makeHiddenPostvars($excludes = array())
 
     if (count($ATK_VARS)) {
         foreach ($ATK_VARS as $key => $val) {
-            if (!in_array($key, $excludes))
-                $str .= "<input type='hidden' name=\"" . atk_htmlentities(strval($key)) . "\" value=\"" . atk_htmlentities(strval($val)) . "\">\n";
+            if (!in_array($key, $excludes)) {
+                $inputs = array();
+                atkMakeHiddenPostVarsRecursion($key, $val, $inputs);
+                $str .= implode('', $inputs);
+            }
         }
         return $str;
     }
     return "";
+}
+
+function atkMakeHiddenPostVarsRecursion($key, $val, &$inputs, $name = null)
+{
+    if ($name == null) {
+        $name = atk_htmlentities($key);
+    } else {
+        $name .= '[' . atk_htmlentities($key) . ']';
+    }
+
+    if (is_array($val)) {
+        foreach ($val as $rKey => $rVal) {
+            atkMakeHiddenPostVarsRecursion($rKey, $rVal, $inputs, $name);
+        }
+    } else {
+        $inputs[] = "<input type='hidden' name=\"" . $name . "\" value=\"" . atk_htmlentities(strval($val)) . "\">\n";
+    }
 }
 
 /**
@@ -1344,9 +1361,12 @@ function makeHiddenPostvars($excludes = array())
 function atkActionStatus($status)
 {
     switch ($status) {
-        case ACTION_CANCELLED: return "cancelled";
-        case ACTION_FAILED: return "failed";
-        case ACTION_SUCCESS: return "success";
+        case ACTION_CANCELLED:
+            return "cancelled";
+        case ACTION_FAILED:
+            return "failed";
+        case ACTION_SUCCESS:
+            return "success";
     }
 }
 
@@ -1385,7 +1405,7 @@ function buildQueryString($params, $parent = "")
  *
  * @param string $node the (module.)node name
  * @param string $action the atk action the link will perform
- * @param string $params: A key/value array with extra options for the url
+ * @param string $params : A key/value array with extra options for the url
  * @param string $phpfile The php file to use for dispatching, if not set we look at the theme for the dispatchfile
  * @return string url for the node with the action
  */
@@ -1445,24 +1465,24 @@ function atkTrace($msg = "")
     global $HTTP_SERVER_VARS, $HTTP_SESSION_VARS, $HTTP_GET_VARS, $HTTP_COOKIE_VARS, $HTTP_POST_VARS;
 
     $log = "\n" . str_repeat("=", 5) . "\n";
-    $log.= "Trace triggered: " . $msg . "\n";
-    $log.= date("r") . "\n";
-    $log.= $HTTP_SERVER_VARS["REMOTE_ADDR"] . "\n";
-    $log.= $HTTP_SERVER_VARS["SCRIPT_URL"] . "\n";
-    $log.= "\nSessioninfo: " . "session_name(): " . session_name() . " session_id(): " . session_id() . " SID: " . SID . " REQUEST: " . $_REQUEST[session_name()] . " COOKIE: " . $_COOKIE[session_name()] . "\n";
-    $log.= "\n\nHTTP_SERVER_VARS:\n";
-    $log.= var_export($HTTP_SERVER_VARS, true);
-    $log.= "\n\nHTTP_SESSION_VARS:\n";
-    $log.= var_export($HTTP_SESSION_VARS, true);
-    $log.= "\n\nHTTP_COOKIE_VARS:\n";
-    $log.= var_export($HTTP_COOKIE_VARS, true);
-    $log.= "\n\nHTTP_POST_VARS:\n";
-    $log.= var_export($HTTP_POST_VARS, true);
-    $log.= "\n\nHTTP_GET_VARS:\n";
-    $log.= var_export($HTTP_GET_VARS, true);
+    $log .= "Trace triggered: " . $msg . "\n";
+    $log .= date("r") . "\n";
+    $log .= $HTTP_SERVER_VARS["REMOTE_ADDR"] . "\n";
+    $log .= $HTTP_SERVER_VARS["SCRIPT_URL"] . "\n";
+    $log .= "\nSessioninfo: " . "session_name(): " . session_name() . " session_id(): " . session_id() . " SID: " . SID . " REQUEST: " . $_REQUEST[session_name()] . " COOKIE: " . $_COOKIE[session_name()] . "\n";
+    $log .= "\n\nHTTP_SERVER_VARS:\n";
+    $log .= var_export($HTTP_SERVER_VARS, true);
+    $log .= "\n\nHTTP_SESSION_VARS:\n";
+    $log .= var_export($HTTP_SESSION_VARS, true);
+    $log .= "\n\nHTTP_COOKIE_VARS:\n";
+    $log .= var_export($HTTP_COOKIE_VARS, true);
+    $log .= "\n\nHTTP_POST_VARS:\n";
+    $log .= var_export($HTTP_POST_VARS, true);
+    $log .= "\n\nHTTP_GET_VARS:\n";
+    $log .= var_export($HTTP_GET_VARS, true);
 
-    $log.= "\n\nSession file info:\n";
-    $log.= var_export(stat(session_save_path() . "/sess_" . session_id()), true);
+    $log .= "\n\nSession file info:\n";
+    $log .= var_export(stat(session_save_path() . "/sess_" . session_id()), true);
 
     $tmpfile = tempnam("/tmp", atkconfig("identifier") . "_trace_");
     $fp = fopen($tmpfile, "a");
@@ -1472,13 +1492,13 @@ function atkTrace($msg = "")
 
 /**
  * Creates a session aware button
- * @param string $text       the text to display on the button
- * @param string $url        the url to use for the button
+ * @param string $text the text to display on the button
+ * @param string $url the url to use for the button
  * @param var $sessionstatus the session flags
  *              (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
  *               SESSION_NESTED|SESSION_BACK)
- * @param string $cssclass   the css class the button should get
- * @param bool $embeded      wether or not it's an embedded button
+ * @param string $cssclass the css class the button should get
+ * @param bool $embeded wether or not it's an embedded button
  */
 function atkButton($text, $url = "", $sessionstatus = SESSION_DEFAULT, $embedded = true, $cssclass = "")
 {
@@ -1491,12 +1511,12 @@ function atkButton($text, $url = "", $sessionstatus = SESSION_DEFAULT, $embedded
 
     $cssclass = ' class="' . $cssclass . '"';
     $script = 'atkSubmit("' . atkurlencode(session_url($url, $sessionstatus)) . '")';
-    $button = '<input type="button" name="atkbtn' . ( ++$cnt) . '" value="' . $text . '" onClick=\'' . $script . '\'' . $cssclass . '>';
+    $button = '<input type="button" name="atkbtn' . (++$cnt) . '" value="' . $text . '" onClick=\'' . $script . '\'' . $cssclass . '>';
 
     if (!$embedded) {
         $res = '<form name="entryform">';
-        $res.= session_form();
-        $res.= $button . '</form>';
+        $res .= session_form();
+        $res .= $button . '</form>';
         return $res;
     } else {
         return $button;
@@ -1506,9 +1526,9 @@ function atkButton($text, $url = "", $sessionstatus = SESSION_DEFAULT, $embedded
 /**
  * Imports a file
  * @param string $fullclassname Name of class in atkformat (map1.map2.classfile)
- * @param bool   $failsafe      If $failsafe is true (default), the class is required.  Otherwise, the
+ * @param bool $failsafe If $failsafe is true (default), the class is required.  Otherwise, the
  *                                class is included.
- * @param bool   $path          Whether or not it is NOT an ATK classname
+ * @param bool $path Whether or not it is NOT an ATK classname
  *                                 ("map.class"), if true it will interpret classname
  *                                 as: "map/class.classname.inc", default false.
  * @return bool whether the file we want to import was actually imported or not
@@ -1520,7 +1540,6 @@ function atkimport($fullclassname, $failsafe = true, $path = false)
 
 /**
  * Imports a Zend Framework class.
-
  * @param string $classname name of class in zend-format (starting with a Capital)
  */
 function zendimport($classname)
@@ -1557,8 +1576,8 @@ function atkCleanPath($path)
 /**
  * Converts an ATK classname ("map1.map2.classname")
  * to a pathname ("/map1/map2/class.classname.inc")
- * @param string $fullclassname  ATK classname to be converted
- * @param bool $class            is the file a class? defaults to true
+ * @param string $fullclassname ATK classname to be converted
+ * @param bool $class is the file a class? defaults to true
  * @return string converted filename
  */
 function getClassPath($fullclassname, $class = true)
@@ -1570,7 +1589,7 @@ function getClassPath($fullclassname, $class = true)
  * Converts a pathname ("/map1/map2/class.classname.inc")
  * to an ATK classname ("map1.map2.classname")
  * @param string $classpath pathname to be converted
- * @param bool $class       is the file a class? defaults to true
+ * @param bool $class is the file a class? defaults to true
  * @return string converted filename
  */
 function getClassName($classpath, $class = true)
@@ -1664,8 +1683,7 @@ function atk_value_in_array($array)
             if (is_array($value)) {
                 if (atk_value_in_array($value))
                     return true;
-            }
-            else if ($value)
+            } else if ($value)
                 return true;
         }
     }
@@ -1713,7 +1731,7 @@ function escapeForRegex($pattern)
         $curchar = substr($pattern, $counter, 1);
         if (in_array($curchar, $escapechars))
             $escaped .= "\\";
-        $escaped.=$curchar;
+        $escaped .= $curchar;
     }
     return $escaped;
 }
@@ -1739,9 +1757,9 @@ function atkGetPostVar($key = "")
  * htmlentities function, but falls back to atkGetCharset() instead of
  * PHP's default charset, if no charset is given.
  *
- * @param String $string    string to convert
- * @param int $quote_style  quote style (defaults to ENT_COMPAT)
- * @param String $charset   character set to use (default to atkGetCharset())
+ * @param String $string string to convert
+ * @param int $quote_style quote style (defaults to ENT_COMPAT)
+ * @param String $charset character set to use (default to atkGetCharset())
  *
  * @return String encoded string
  */
@@ -1755,9 +1773,9 @@ function atk_htmlentities($string, $quote_style = ENT_COMPAT, $charset = null)
  * html_entity_decode function, but falls back to atkGetCharset() instead of
  * PHP's default charset, if no charset is given.
  *
- * @param String $string    string to convert
- * @param int $quote_style  quote style (defaults to ENT_COMPAT)
- * @param String $charset   character set to use (default to atkGetCharset())
+ * @param String $string string to convert
+ * @param int $quote_style quote style (defaults to ENT_COMPAT)
+ * @param String $charset character set to use (default to atkGetCharset())
  *
  * @return String encoded string
  */
@@ -1780,7 +1798,7 @@ function atk_strlen($str)
  * Get part of string
  * @param string $str The string being checked.
  * @param int $start The first position used in $str
- * @param int $length[optional] The maximum length of the returned string
+ * @param int $length [optional] The maximum length of the returned string
  * @return string
  */
 function atk_substr($str, $start, $length = '')
@@ -1792,7 +1810,7 @@ function atk_substr($str, $start, $length = '')
  *  Find position of first occurrence of string in a string
  * @param object $haystack The string being checked.
  * @param object $needle The position counted from the beginning of haystack .
- * @param object $offset[optional] The search offset. If it is not specified, 0 is used.
+ * @param object $offset [optional] The search offset. If it is not specified, 0 is used.
  * @return int|boolean
  */
 function atk_strpos($haystack, $needle, $offset = 0)
@@ -1922,7 +1940,7 @@ function atkSelf()
  * the system. If yes - use it for converting string, if no - save string untouch
  * and make warning about it.
  *
- * @param string $in_charset  from charset
+ * @param string $in_charset from charset
  * @param string $out_charset to charset
  * @param string $str string to convert
  *
