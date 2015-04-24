@@ -529,9 +529,12 @@ class atkDateAttribute extends atkAttribute
 
             if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && $mode != 'list') {
                 $format = str_replace(array("y", "Y", "m", "n", "j", "d"), array("yy", "y", "mm", "m", "d", "dd"), $this->m_date_format_edit);
-
+                $mondayFirst = 'false';
+                if(is_bool(atktext("date_monday_first"))){
+                    $mondayFirst = atktext("date_monday_first") === true ? 'true': $mondayFirst;
+                }
                 $result.=' <input ' . $this->getCSSClassAttribute(array("btn", "btn-default", "button",
-                        "atkbutton")) . ' type="button" value="..." onclick="return showCalendar(\'' . $fieldname . '\', \'' . $fieldname . '\', \'' . $format . '\', false);">';
+                        "atkbutton")) . ' type="button" value="..." onclick="return showCalendar('.$mondayFirst.',\'' . $fieldname . '\', \'' . $fieldname . '\', \'' . $format . '\', false);">';
             }
             $result .= $this->getSpinner();
             return $result;
@@ -673,8 +676,12 @@ class atkDateAttribute extends atkAttribute
         }
 
         if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && !$this->m_yeardropdown && !$this->m_simplemode && $mode != 'list') {
+            $mondayFirst = 'false';
+            if(is_bool(atktext("date_monday_first"))){
+                $mondayFirst = atktext("date_monday_first") === true ? 'true': $mondayFirst;
+            }
             $result.=' <input ' . $this->getCSSClassAttribute(array("button",
-                    "atkbutton", 'btn', 'btn-default')) . ' type="reset" value="..." onclick="return showCalendar(\'' . $fieldname . '\', \'' . $fieldname . '[year]\', \'y-mm-dd\', true);">';
+                    "atkbutton", 'btn', 'btn-default')) . ' type="reset" value="..." onclick="return showCalendar('.$mondayFirst.',\'' . $fieldname . '\', \'' . $fieldname . '[year]\', \'y-mm-dd\', true);">';
         }
 
         if (!$this->m_simplemode) {

@@ -88,6 +88,7 @@ $en = array(
     "datagrid_norecordsfound_general" => "No records found.",
     "datagrid_norecordsfound_search" => "No results found.",
     "datagrid_summary" => "([start]-[end] of [count])",
+    "date_monday_first" => false,
     "date_format_edit" => "j F Y",
     "date_format_view" => "d/m/Y",
     "db_access_denied_database" => "User '%s' has no rights for database '%s'",
