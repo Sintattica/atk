@@ -314,7 +314,7 @@ class atkUpdatehandler extends atkActionHandler
             $location = $this->m_node->feedbackUrl("update", ACTION_SUCCESS, $record, "", 2);
         }
 
-        $this->m_node->redirect($location);
+        $this->m_node->redirect($location, $record);
     }
 
     //=================== PARTIAL / DIALOG METHODS ===================\\
