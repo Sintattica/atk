@@ -1,7 +1,7 @@
 // This function shows the calendar under the element having the given id.
 // It takes care of catching "mousedown" signals on document and hiding the
 // calendar if the click was outside.
-function showCalendar(id, bindname, format, dateattr)
+function showCalendar(id, bindname, format, dateattr, mondayFirst)
 {
   var el = document.getElementById(bindname);
   if (calendar != null)
@@ -16,12 +16,12 @@ function showCalendar(id, bindname, format, dateattr)
   if (dateattr)
   {
     // Bind calendar to dateattribute widgets
-    cal = new Calendar(false, null, changeWidget, closeHandler);
+    cal = new Calendar(mondayFirst, null, changeWidget, closeHandler);
   }
   else
   {
     // Bind calendar to textfield.
-    cal = new Calendar(false, null, changeTextField, closeHandler);
+    cal = new Calendar(mondayFirst, null, changeTextField, closeHandler);
   }
   // uncomment the following line to hide the week numbers
   // cal.weekNumbers = false;

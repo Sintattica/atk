@@ -534,7 +534,7 @@ class atkDateAttribute extends atkAttribute
                     $mondayFirst = atktext("date_monday_first") === true ? 'true': $mondayFirst;
                 }
                 $result.=' <input ' . $this->getCSSClassAttribute(array("btn", "btn-default", "button",
-                        "atkbutton")) . ' type="button" value="..." onclick="return showCalendar('.$mondayFirst.',\'' . $fieldname . '\', \'' . $fieldname . '\', \'' . $format . '\', false);">';
+                        "atkbutton")) . ' type="button" value="..." onclick="return showCalendar(\'' . $fieldname . '\', \'' . $fieldname . '\', \'' . $format . '\', false, '.$mondayFirst.');">';
             }
             $result .= $this->getSpinner();
             return $result;
@@ -681,7 +681,7 @@ class atkDateAttribute extends atkAttribute
                 $mondayFirst = atktext("date_monday_first") === true ? 'true': $mondayFirst;
             }
             $result.=' <input ' . $this->getCSSClassAttribute(array("button",
-                    "atkbutton", 'btn', 'btn-default')) . ' type="reset" value="..." onclick="return showCalendar('.$mondayFirst.',\'' . $fieldname . '\', \'' . $fieldname . '[year]\', \'y-mm-dd\', true);">';
+                    "atkbutton", 'btn', 'btn-default')) . ' type="reset" value="..." onclick="return showCalendar(\'' . $fieldname . '\', \'' . $fieldname . '[year]\', \'y-mm-dd\', true, '.$mondayFirst.');">';
         }
 
         if (!$this->m_simplemode) {
