@@ -84,7 +84,7 @@ class atkTimeAttribute extends atkAttribute
      * @param string $time the time string
      * @return array with 3 fields (hours, minutes, seconds)
      */
-    function timeArray($time)
+    static function timeArray($time)
     {
         return array("hours" => substr($time, 0, 2),
             "minutes" => substr($time, 2, 2),
