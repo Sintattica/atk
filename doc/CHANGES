@@ -29,6 +29,7 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
++ Added "date_monday_first" in languages for atkdateattribute calendar [michele]
 * Fixed atkdatagrid javascript code [michele]
 * Show table headers on empty onetomany relation [michele]
 * atkManyToManySelectRelation improvements [luca]
