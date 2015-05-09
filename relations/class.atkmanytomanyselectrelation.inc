@@ -413,7 +413,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     {
         $filter = $this->parseFilter($this->getManyToOneRelation()->m_destinationFilter, $record);
         $params = array_merge($params, array('atkfilter' => $filter, "atkpkret" => $this->getHtmlId($fieldprefix) . "_newsel"));
-        $link = href(dispatch_url($this->m_destination, "add", $params), $this->getAddLabel(), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
+        $link = atkHref(dispatch_url($this->m_destination, "add", $params), $this->getAddLabel(), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
         return $link;
     }
 
@@ -425,7 +425,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
      */
     protected function getEditActionLink($record)
     {
-        return href(dispatch_url($this->getdestination()->atknodetype(), 'edit', array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
+        return atkHref(dispatch_url($this->getdestination()->atknodetype(), 'edit', array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
     }
 
     /**
@@ -436,7 +436,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
      */
     protected function getViewActionLink($record)
     {
-        return href(dispatch_url($this->getdestination()->atknodetype(), 'view', array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('view'), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
+        return atkHref(dispatch_url($this->getdestination()->atknodetype(), 'view', array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('view'), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
     }
 
     /**
