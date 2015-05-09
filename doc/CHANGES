@@ -31,6 +31,7 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
+* Fixed handleUpdateSuccess on atkupdatehandler, fix NF_EDITAFTERADD nodes on atkmanytomanyselectrelations [michele]
 * Changed menu translation [luca]
 + Added "date_monday_first" in languages for atkdateattribute calendar [michele]
 * Fixed atkdatagrid javascript code [michele]
