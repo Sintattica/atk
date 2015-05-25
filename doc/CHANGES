@@ -15,19 +15,6 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
-* Undo previous filter functions modifications in atkNode and atkRelation [luca]
-* Fixed handleUpdateSuccess on atkupdatehandler, fix NF_EDITAFTERADD nodes on atkmanytomanyselectrelations [michele]
-* Changed menu translation [luca]
-+ Added "date_monday_first" in languages for atkdateattribute calendar [michele]
-* Fixed atkdatagrid javascript code [michele]
-* Show table headers on empty onetomany relation [michele]
-* atkManyToManySelectRelation improvements [luca]
-+ Added AF_MANYTOMANY_DETAILVIEW flag in atkManyToManyRelation [luca]
-* Fixed decodeKeyValueSet [luca]
-+ New flags AF_DATE_DEFAULT_EMPTY and AF_TIME_DEFAULT_EMPTY for date and time attributes [michele]
-* Login page now handles hidden array parameters [michele]
-+ Added "manytoone_autocomplete_size" global configuration variable [luca]
-* Minor fixing [luca]
 
 Changes in MASTER (WIP)
 ------------------------
