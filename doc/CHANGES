@@ -15,6 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
+* Undo previous filter functions modifications in atkNode and atkRelation [luca]
 * Fixed handleUpdateSuccess on atkupdatehandler, fix NF_EDITAFTERADD nodes on atkmanytomanyselectrelations [michele]
 * Changed menu translation [luca]
 + Added "date_monday_first" in languages for atkdateattribute calendar [michele]
