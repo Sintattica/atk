@@ -29,9 +29,13 @@ Changes in DEVELOP (WIP)
 + Added "manytoone_autocomplete_size" global configuration variable [luca]
 * Minor fixing [luca]
 
-
 Changes in MASTER (WIP)
 ------------------------
+
+
+
+Changes in ATK 8.0.6 (25/05/2015)
+---------------------------------
 * Undo previous filter functions modifications in atkNode and atkRelation [luca]
 * Fixed handleUpdateSuccess on atkupdatehandler, fix NF_EDITAFTERADD nodes on atkmanytomanyselectrelations [michele]
 * Changed menu translation [luca]
@@ -45,7 +49,6 @@ Changes in MASTER (WIP)
 * Login page now handles hidden array parameters [michele]
 + Added "manytoone_autocomplete_size" global configuration variable [luca]
 * Minor fixing [luca]
-
 
 Changes in ATK 8.0.5 (02/03/2015)
 ---------------------------------
