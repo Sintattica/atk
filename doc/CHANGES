@@ -21,6 +21,7 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
+* handle atkFileAttribute delete file checkbox [luca,michele]
 * Changed "[table]" placeholder handling in setOrder function of atkNode [luca]
 
 
