@@ -15,6 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
++ new bootstrapColorPickerAttribute [michele]
 * handle atkFileAttribute delete file checkbox [luca,michele]
 * Changed "[table]" placeholder handling in setOrder function of atkNode [luca]
 
