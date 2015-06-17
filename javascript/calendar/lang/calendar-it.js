@@ -1,11 +1,11 @@
 // ** I18N
 Calendar._DN = new Array
 ("Domenica",
- "Lunedì",
- "Martedì",
- "Mercoledì",
- "Giovedì",
- "Venerdì",
+ "LunedÃ¬",
+ "MartedÃ¬",
+ "MercoledÃ¬",
+ "GiovedÃ¬",
+ "VenerdÃ¬",
  "Sabato",
  "Domenica");
 Calendar._MN = new Array
@@ -33,13 +33,13 @@ Calendar._TT["NEXT_YEAR"] = "Anno succ. (tieni premuto per menu)";
 Calendar._TT["SEL_DATE"] = "Seleziona data";
 Calendar._TT["DRAG_TO_MOVE"] = "Trascina per spostare";
 Calendar._TT["PART_TODAY"] = " (oggi)";
-Calendar._TT["MON_FIRST"] = "Parti da lunedì";
+Calendar._TT["MON_FIRST"] = "Parti da lunedÃ¬";
 Calendar._TT["SUN_FIRST"] = "Parti da domenica";
 Calendar._TT["CLOSE"] = "Chiudi";
 Calendar._TT["TODAY"] = "Oggi";
 
 // date formats
 Calendar._TT["DEF_DATE_FORMAT"] = "y-mm-dd";
-Calendar._TT["TT_DATE_FORMAT"] = "D, M d";
+Calendar._TT["TT_DATE_FORMAT"] = "DD d MM";
 
 Calendar._TT["WK"] = "wk";
