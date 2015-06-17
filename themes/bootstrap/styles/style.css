@@ -1819,3 +1819,9 @@ div.panel-heading {
   vertical-align: middle;
   color: #808080;
 }
+.navbar-brand img {
+  max-height: 50px;
+}
+.navbar-brand.has-logo {
+  padding: 0;
+}
