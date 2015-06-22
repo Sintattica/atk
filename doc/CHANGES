@@ -25,6 +25,10 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
++ Added logo in bootstrap theme [andrea]
+* Changed calendar i18n files [luca]
++ new bootstrapColorPickerAttribute [michele]
+* handle atkFileAttribute delete file checkbox [luca,michele]
 * Changed "[table]" placeholder handling in setOrder function of atkNode [luca]
 
 
