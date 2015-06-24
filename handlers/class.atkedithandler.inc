@@ -564,8 +564,7 @@ class atkEditHandler extends atkViewEditBase
                     if (($i + 1) < count($pk_err_attrib))
                         $pk_err_msg .= ", ";
                 }
-                $errors[] = array("label" => atktext("error_primarykey_exists"),
-                    "msg" => $pk_err_msg);
+                $errors[] = array("label" => atktext("error_primarykey_exists"), "message" => $pk_err_msg);
             }
         }
 

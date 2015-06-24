@@ -44,7 +44,7 @@ class atkViewHandler extends atkViewEditBase
         $record = $this->getRecord();
 
         // allowed to view record?
-        if (!$this->allowed($record)) {
+        if (!$record || !$this->allowed($record)) {
             $this->renderAccessDeniedPage();
             return;
         }
