@@ -692,6 +692,7 @@ class atkManyToOneRelation extends atkRelation
             ->select($this->m_destInstance->primaryKey($record[$this->fieldName()]))
             ->orderBy($this->m_destInstance->getColumnConfig()->getOrderByStatement())
             ->includes($includes)
+            ->ignoreDefaultFilters(true)
             ->firstRow();
 
         if ($result != null) {
@@ -764,10 +765,11 @@ class atkManyToOneRelation extends atkRelation
      */
     public function preAddToEditArray(&$record, $fieldPrefix, $mode)
     {
+        /* (replaced by ignoreDefaultFilters)
         if ($mode == 'edit' && ($this->hasFlag(AF_READONLY_EDIT) || $this->hasFlag(AF_HIDE_EDIT) || $this->hasFlag(AF_LARGE))) {
             // in this case we don't want that the destination filters are activated
             return;
-        }
+        }*/
 
         if ((!$this->hasFlag(AF_RELATION_AUTOCOMPLETE) && !$this->hasFlag(AF_LARGE)) || $this->m_autocomplete_minrecords > -1) {
             $this->m_selectableRecords = $this->_getSelectableRecords($record, $mode);
@@ -1549,7 +1551,7 @@ class atkManyToOneRelation extends atkRelation
             $condition = $condition . ' AND ' . $filter;
         }
 
-        $record = $this->m_destInstance->select($condition)->firstRow();
+        $record = $this->m_destInstance->select($condition)->ignoreDefaultFilters(true)->getFirstRow();
         return $record;
     }
 
@@ -1615,10 +1617,11 @@ class atkManyToOneRelation extends atkRelation
      */
     function isSelectableRecord($record = array(), $mode = "")
     {
+        /* (replaced by ignoreDefaultFilters)
         if ($mode == 'update' && ($this->hasFlag(AF_READONLY_EDIT) || $this->hasFlag(AF_HIDE_EDIT) || $this->hasFlag(AF_LARGE))) {
             // in this case we don't want that the destination filters are activated
             return true;
-        }
+        }*/
 
         if ($record[$this->fieldName()] == NULL) {
             return false;
@@ -1657,7 +1660,11 @@ class atkManyToOneRelation extends atkRelation
         $filter = $this->createFilter($record);
         $selector = "($selectedKey)" . ($filter != NULL ? " AND ($filter)" : "");
 
-        return $this->m_destInstance->select($selector)->getRowCount() > 0;
+        if ($this->hasFlag(AF_READONLY_EDIT) || $this->hasFlag(AF_HIDE_EDIT)) {
+            return $this->m_destInstance->select($selector)->ignoreDefaultFilters(true)->getRowCount() > 0;
+        } else {
+            return $this->m_destInstance->select($selector)->getRowCount() > 0;
+        }
     }
 
     /**
