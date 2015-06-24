@@ -26,7 +26,8 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
-* Minor fixing in manyToOne relation [luca]
+* Minor fixing in view/edit handlers [luca]
+* Fixing loading of selected record in atkManyToOneRelation [luca]
 + Added logo in bootstrap theme [andrea]
 * Changed calendar i18n files [luca]
 + new bootstrapColorPickerAttribute [michele]
