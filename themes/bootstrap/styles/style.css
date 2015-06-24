@@ -1825,7 +1825,7 @@ div.panel-heading {
 .navbar-brand.has-logo {
   padding: 0;
 }
-.atkFileAttribute.atkcheckbox {
+.section-item input[type="checkbox"].atkFileAttribute.atkcheckbox {
   width: 20px;
   height: 19px;
   float: left;
