@@ -176,7 +176,7 @@ class atkDateTimeAttribute extends atkAttribute
      * @param string $datetime the time string
      * @return array with 6 fields (day, month, year, hours, minutes, seconds)
      */
-    function datetimeArray($datetime = NULL)
+    static function datetimeArray($datetime = NULL)
     {
         if ($datetime == NULL)
             $datetime = date("YmdHis");

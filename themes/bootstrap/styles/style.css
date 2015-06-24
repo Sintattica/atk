@@ -1819,12 +1819,9 @@ div.panel-heading {
   vertical-align: middle;
   color: #808080;
 }
-.atkFileAttribute.atkcheckbox {
-  width: 20px;
-  height: 19px;
-  float: left;
-  margin-top: 2px;
+.navbar-brand img {
+  max-height: 50px;
 }
-br.atkFileAttributeCheckboxSeparator {
-  display: none;
+.navbar-brand.has-logo {
+  padding: 0;
 }

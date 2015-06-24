@@ -47,7 +47,11 @@ class atkmenuinterface
      */
     function getMenuTranslation($menuitem, $modname = 'atk')
     {
-        return atktext(array("menu_$menuitem", $menuitem), $modname);
+        $s = atktext("menu_$menuitem", $modname, '', '', '', true);
+        if (!$s) {
+            $s = ucwords(atktext($menuitem, $modname));
+        }
+        return $s;
     }
 
     /**

@@ -858,6 +858,17 @@ class atkFileAttribute extends atkAttribute
         return "string";
     }
 
-}
 
-?>
+    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", &$rec = "", $level, $mode)
+    {
+        if ($mode == "add" || $mode == "update") {
+            if (@empty($rec[$this->fieldName()]['postdel']) && $this->isEmpty($rec) && !$this->hasFlag(AF_OBLIGATORY) && !$this->isNotNullInDb()) {
+                $query->addField($this->fieldName(), 'NULL', "", "", false, true);
+            } else {
+                $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(AF_NO_QUOTES), true);
+            }
+        } else {
+            $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES), true);
+        }
+    }
+}

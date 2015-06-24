@@ -165,8 +165,9 @@ Object.extend(Object.extend(ATK.ManyToOneRelation.AdvancedAutocompleter.prototyp
             // needed to clear the value if the user has entered a search
             // query but doesn't select anything from the list
             if (this.clearValue) {
-                this.valueElement.value = '';
-                this.element.value = ''; // clear value
+                this.clear();
+                //this.valueElement.value = '';
+                //this.element.value = ''; // clear value
             }
         }
         if (this.iefix)

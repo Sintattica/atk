@@ -692,6 +692,7 @@ class atkManyToOneRelation extends atkRelation
             ->select($this->m_destInstance->primaryKey($record[$this->fieldName()]))
             ->orderBy($this->m_destInstance->getColumnConfig()->getOrderByStatement())
             ->includes($includes)
+            ->ignoreDefaultFilters(true)
             ->firstRow();
 
         if ($result != null) {
@@ -714,12 +715,12 @@ class atkManyToOneRelation extends atkRelation
         $filter = $this->parseFilter($this->m_destinationFilter, $record);
         $links[] = $this->_getSelectLink($newsel, $filter);
         if ($this->hasFlag(AF_RELATION_AUTOLINK)) { // auto edit/view link
-            if ($this->m_destInstance->allowed("add")) {
+            if ($this->m_destInstance->allowed("add") && !$this->m_destInstance->hasFlag(NF_NO_ADD)) {
                 $links[] = href(dispatch_url($this->getAutoLinkDestination(), "add", array("atkpkret" => $id, "atkfilter" => ($filter != ""
                             ? $filter : ""))), atktext("new"), SESSION_NESTED, true);
             }
 
-            if ($this->m_destInstance->allowed("edit") && $record[$this->fieldName()] != NULL) {
+            if ($this->m_destInstance->allowed("edit") && !$this->m_destInstance->hasFlag(NF_NO_EDIT) && $record[$this->fieldName()] != NULL) {
                 //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
                 //de app crasht als er geen waarde is ingevuld.
                 $editUrl = session_url(dispatch_url($this->getAutoLinkDestination(), "edit", array("atkselector" => "REPLACEME")), SESSION_NESTED);
@@ -764,10 +765,11 @@ class atkManyToOneRelation extends atkRelation
      */
     public function preAddToEditArray(&$record, $fieldPrefix, $mode)
     {
+        /* (replaced by ignoreDefaultFilters)
         if ($mode == 'edit' && ($this->hasFlag(AF_READONLY_EDIT) || $this->hasFlag(AF_HIDE_EDIT) || $this->hasFlag(AF_LARGE))) {
             // in this case we don't want that the destination filters are activated
             return;
-        }
+        }*/
 
         if ((!$this->hasFlag(AF_RELATION_AUTOCOMPLETE) && !$this->hasFlag(AF_LARGE)) || $this->m_autocomplete_minrecords > -1) {
             $this->m_selectableRecords = $this->_getSelectableRecords($record, $mode);
@@ -892,6 +894,7 @@ class atkManyToOneRelation extends atkRelation
                 $result .= $this->getSpinner();
             }
         } else {
+            // TODO configurable?
             $editflag = false;
 
             $destrecord = $record[$this->fieldName()];
@@ -1548,7 +1551,7 @@ class atkManyToOneRelation extends atkRelation
             $condition = $condition . ' AND ' . $filter;
         }
 
-        $record = $this->m_destInstance->select($condition)->firstRow();
+        $record = $this->m_destInstance->select($condition)->ignoreDefaultFilters(true)->getFirstRow();
         return $record;
     }
 
@@ -1614,10 +1617,11 @@ class atkManyToOneRelation extends atkRelation
      */
     function isSelectableRecord($record = array(), $mode = "")
     {
+        /* (replaced by ignoreDefaultFilters)
         if ($mode == 'update' && ($this->hasFlag(AF_READONLY_EDIT) || $this->hasFlag(AF_HIDE_EDIT) || $this->hasFlag(AF_LARGE))) {
             // in this case we don't want that the destination filters are activated
             return true;
-        }
+        }*/
 
         if ($record[$this->fieldName()] == NULL) {
             return false;
@@ -1656,7 +1660,11 @@ class atkManyToOneRelation extends atkRelation
         $filter = $this->createFilter($record);
         $selector = "($selectedKey)" . ($filter != NULL ? " AND ($filter)" : "");
 
-        return $this->m_destInstance->select($selector)->getRowCount() > 0;
+        if ($this->hasFlag(AF_READONLY_EDIT) || $this->hasFlag(AF_HIDE_EDIT)) {
+            return $this->m_destInstance->select($selector)->ignoreDefaultFilters(true)->getRowCount() > 0;
+        } else {
+            return $this->m_destInstance->select($selector)->getRowCount() > 0;
+        }
     }
 
     /**
@@ -2113,6 +2121,8 @@ class atkManyToOneRelation extends atkRelation
          <input type="text" id="' . $id . '_search" value="' . atk_htmlentities($label) . '" class="form-control atkmanytoonerelation_search" size="' . $this->m_autocomplete_size . '" onfocus="this.select()" />
          <img id="' . $id . '_spinner" src="atk/images/spinner.gif" style="vertical-align: middle; display: none"> ' . $links . '
          <div id="' . $id . '_result" style="display: none" class="atkmanytoonerelation_result"></div>';
+
+        $result .= $this->getSpinner(); // spinner for dependency execution
 
         // register JavaScript code that attaches the auto-complete behaviour to the search box
         $url = partial_url($this->m_ownerInstance->atkNodeType(), $mode, 'attribute.' . $this->fieldName() . '.autocomplete');
