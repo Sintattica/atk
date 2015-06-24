@@ -268,7 +268,7 @@ class atkFileAttribute extends atkAttribute
 
         if (!$this->hasFlag(AF_FILE_NO_DELETE) && isset($record[$this->fieldname()]['orgfilename']) && $record[$this->fieldname()]['orgfilename'] != '') {
             $this->registerKeyListener($id . '_del', KB_CTRLCURSOR | KB_CURSOR);
-            $result .= '<br><input id="' . $id . '_del" type="checkbox" name="' . $id . '[del]" ' . $this->getCSSClassAttribute("atkcheckbox") . '>&nbsp;' . atktext("remove_current_file", "atk");
+            $result .= '<br class="atkFileAttributeCheckboxSeparator"><input id="' . $id . '_del" type="checkbox" name="' . $id . '[del]" ' . $this->getCSSClassAttribute("atkcheckbox") . '>&nbsp;' . atktext("remove_current_file", "atk");
         }
         return $result;
     }

@@ -15,6 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
+* Fix checkbox in atkFileAttribute bootstrap theme [michele]
 + Added "date_monday_first" in languages for atkdateattribute calendar [michele]
 * Fixed atkdatagrid javascript code [michele]
 * Show table headers on empty onetomany relation [michele]

@@ -1819,3 +1819,12 @@ div.panel-heading {
   vertical-align: middle;
   color: #808080;
 }
+.atkFileAttribute.atkcheckbox {
+  width: 20px;
+  height: 19px;
+  float: left;
+  margin-top: 2px;
+}
+br.atkFileAttributeCheckboxSeparator {
+  display: none;
+}
