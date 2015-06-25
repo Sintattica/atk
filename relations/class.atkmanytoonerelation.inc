@@ -839,8 +839,6 @@ class atkManyToOneRelation extends atkRelation
         }
 
         $id = $fieldprefix . $this->fieldName();
-        $filter = $this->parseFilter($this->m_destinationFilter, $record);
-        $autolink = $this->getRelationAutolink($id, $filter);
         $editflag = true;
 
         $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()]
@@ -918,9 +916,10 @@ class atkManyToOneRelation extends atkRelation
             }
 
             $result .= $this->hide($record, $fieldprefix);
-            $result .= $this->_getSelectLink($id, $filter);
+            $result .= $this->_getSelectLink($id, $this->parseFilter($this->m_destinationFilter, $record));
         }
 
+        $autolink = $this->getRelationAutolink($id, $this->parseFilter($this->m_destinationFilter, $record));
         $result .= $editflag && isset($autolink['edit']) ? $autolink['edit'] : "";
         $result .= isset($autolink['add']) ? $autolink['add'] : "";
 
