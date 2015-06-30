@@ -1611,13 +1611,13 @@ class atkManyToOneRelation extends atkRelation
      */
     function isSelectableRecord($record = array(), $mode = "")
     {
-        if (($this->hasFlag(AF_READONLY_EDIT) || $this->hasFlag(AF_HIDE_EDIT))) { // || ($this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_MANYTOONE_AUTOCOMPLETE))
-            // in this case we don't want that the destination filters are activated
-            return true;
-        }
-
         if ($record[$this->fieldName()] == NULL) {
             return false;
+        }
+
+        if (in_array($mode, array('edit', 'update')) && ($this->hasFlag(AF_READONLY_EDIT) || $this->hasFlag(AF_HIDE_EDIT))) { // || ($this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_MANYTOONE_AUTOCOMPLETE))
+            // in this case we want the current value is selectable, regardless the destination filters
+            return true;
         }
 
         $this->createDestination();
