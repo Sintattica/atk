@@ -101,7 +101,7 @@ class atkBootstrapMenu extends atkPlainMenu
         return sprintf($this->format_menu, $html_menu);
     }
 
-    private function processMenu($menu, $submenu = false)
+    private function processMenu($menu, $child = false)
     {
         $html = '';
 
@@ -110,11 +110,11 @@ class atkBootstrapMenu extends atkPlainMenu
                 $url = $item['url'] ? $item['url'] : '#';
                 if ($this->_hasSubmenu($item)) {
                     $a_content = $this->_getMenuTitle($item);
-                    $child = $this->processMenu($item['submenu'], true);
-                    if($submenu)
-                        $html .= sprintf($this->format_submenuchild, $a_content, $child );
+                    $childHtml = $this->processMenu($item['submenu'], true);
+                    if($child)
+                        $html .= sprintf($this->format_submenuchild, $a_content, $childHtml );
                     else
-                        $html .= sprintf($this->format_submenuparent, $a_content, $child );
+                        $html .= sprintf($this->format_submenuparent, $a_content, $childHtml );
                 } else {
                     $a_content = $this->_getMenuTitle($item);
                     $html .= sprintf($this->format_single, $url, $a_content);

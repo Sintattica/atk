@@ -15,6 +15,10 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
+* Various fixing in atkManyToOneRelation [luca]
+* Fix checkbox in atkFileAttribute bootstrap theme [michele]
+* Minor fixing in view/edit handlers [luca]
+* Fixed loading of selected record in atkManyToOneRelation [luca]
 + Added logo in bootstrap theme [andrea]
 * Changed calendar i18n files [luca]
 + new bootstrapColorPickerAttribute [michele]

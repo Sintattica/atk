@@ -4,12 +4,12 @@
         var $all              = jQuery('*'), /* TODO: select only menu items ? */
             $submenuLinks     = jQuery('.dropdown-submenu > a'),
             isBootstrapEvent  = false,
-            allBootsrapEvents = 'hide.bs.dropdown' +
-                                ' hide.bs.collapse' +
-                                ' hide.bs.modal' +
-                                ' hide.bs.tooltip' +
-                                ' hide.bs.popover' +
-                                'hide.bs.submenu'
+            allBootsrapEvents = 'hide.bs.dropdown ' +
+                                'hide.bs.collapse ' +
+                                'hide.bs.modal ' +
+                                'hide.bs.tooltip ' +
+                                'hide.bs.popover ' +
+                                'hide.bs.submenu' // needed for bootstrap-submenu
             ;
 
         /* init bootstrap-submenu */
