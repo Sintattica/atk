@@ -1,4 +1,4 @@
-<?PHP
+<?php
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
@@ -25,6 +25,34 @@ atkimport('atk.menu.atkplainmenu');
  */
 class atkBootstrapMenu extends atkPlainMenu
 {
+    private $format_submenuparent = '
+            <li class="dropdown">
+                <a tabindex="0" data-toggle="dropdown">
+                    %s <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+                    %s
+                </ul>
+            <li>
+        ';
+
+
+    private $format_submenuchild = '
+            <li class="dropdown-submenu">
+                <a tabindex="0" data-toggle="dropdown">
+                    %s
+                </a>
+                <ul class="dropdown-menu" role="menu">
+                    %s
+                </ul>
+            <li>
+        ';
+    private $format_menu = '<ul class="nav navbar-nav"> %s </ul>';
+
+
+    private $format_single = '
+        <li> <a href="%s">%s</a> </li>
+    ';
 
     /**
      * Render the menu
@@ -32,7 +60,11 @@ class atkBootstrapMenu extends atkPlainMenu
      */
     function render()
     {
+        /** @var atkPage $page */
         $page = & atkinstance("atk.ui.atkpage");
+        /** @var atkTheme $theme */
+        $theme = atkinstance('atk.ui.atktheme');
+        $page->register_style($theme->absPath("atk/themes/bootstrap/lib/bootstrap-submenu/css/bootstrap-submenu.min.css"));
         $menu = $this->load();
         $page->addContent($menu);
         return $page->render("Menu", true);
@@ -56,34 +88,40 @@ class atkBootstrapMenu extends atkPlainMenu
     function load()
     {
         global $g_menu;
+        /** @var atkPage $page */
+        $page = & atkinstance("atk.ui.atkpage");
+        /** @var atkTheme $theme */
+        $theme = &atkinstance('atk.ui.atktheme');
+        $page->register_style($theme->absPath("atk/themes/bootstrap/lib/bootstrap-submenu/css/bootstrap-submenu.min.css"));
+        $page->register_script($theme->absPath("atk/themes/bootstrap/lib/bootstrap-submenu/js/bootstrap-submenu.min.js"));
+        $page->register_script($theme->absPath("atk/themes/bootstrap/js/menu.js"));
 
-        $menu = $this->parseItems($g_menu['main']);
-        $ret = '<ul class="nav navbar-nav">';
-        $ret .= $this->processMenu($menu);
-        $ret .= '</ul>';
-        return $ret;
+        $html_items = $this->parseItems($g_menu['main']);
+        $html_menu = $this->processMenu($html_items);
+        return sprintf($this->format_menu, $html_menu);
     }
 
-    private function processMenu($menu)
+    private function processMenu($menu, $submenu = false)
     {
-        $ret = '';
+        $html = '';
+
         foreach ($menu as $item) {
             if ($this->isEnabled($item)) {
-                $hasSubmenu = isset($item['submenu']) && count($item['submenu']);
-                $ret .= '<li' . ($hasSubmenu ? ' class="dropdown"' : '') . '>';
                 $url = $item['url'] ? $item['url'] : '#';
-                $attrs = $hasSubmenu ? 'class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"' : '';
-                $ret .= '<a href="' . $url . '" ' . $attrs . '>' . atk_htmlentities($this->getMenuTranslation($item['name'], $item['module']));
-                if ($hasSubmenu) {
-                    $ret .= '<span class="caret"></span></a>';
-                    $ret .= '<ul class="dropdown-menu" role="menu">' . $this->processMenu($item['submenu']) . '</ul>';
+                if ($this->_hasSubmenu($item)) {
+                    $a_content = $this->_getMenuTitle($item);
+                    $child = $this->processMenu($item['submenu'], true);
+                    if($submenu)
+                        $html .= sprintf($this->format_submenuchild, $a_content, $child );
+                    else
+                        $html .= sprintf($this->format_submenuparent, $a_content, $child );
                 } else {
-                    $ret .= '</a>';
+                    $a_content = $this->_getMenuTitle($item);
+                    $html .= sprintf($this->format_single, $url, $a_content);
                 }
-                $ret .= '</li>';
             }
         }
-        return $ret;
+        return $html;
     }
 
 
@@ -102,6 +140,16 @@ class atkBootstrapMenu extends atkPlainMenu
             $item['submenu'] = $this->parseItems($g_menu[$item['name']]);
             return $item;
         }
+    }
+
+    function _hasSubmenu($item)
+    {
+        return isset($item['submenu']) && count($item['submenu']);
+    }
+
+    function _getMenuTitle($item, $append = "")
+    {
+        return atk_htmlentities($this->getMenuTranslation($item['name'], $item['module'])) . $append;
     }
 
 }
