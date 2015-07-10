@@ -29,6 +29,7 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
+* Fix save handler in add mode [luca,michele]
 * Various fixing in atkManyToOneRelation [luca]
 * Fix checkbox in atkFileAttribute bootstrap theme [michele]
 * Minor fixing in view/edit handlers [luca]
