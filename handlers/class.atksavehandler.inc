@@ -101,7 +101,7 @@ class atkSaveHandler extends atkActionHandler
         }
 
         $csrfToken = isset($this->m_postvars[$prefix . 'atkcsrftoken']) ? $this->m_postvars[$prefix . 'atkcsrftoken']
-                : null;
+            : null;
 
         // check for CSRF token
         if (!$this->isValidCSRFToken($csrfToken)) {
@@ -109,38 +109,51 @@ class atkSaveHandler extends atkActionHandler
             return;
         }
 
-        if (!isset($this->m_postvars['atkcancel'])) {
-            // just before we validate the record we call the preAdd() to check if the record needs to be modified
-            if (!$this->m_node->executeTrigger("preAdd", $record, "add")) {
-                $this->handleAddError($record);
-                return;
-            }
-
-            $this->validate($record);
-
-            if (!isset($record['atkerror']))
-                $record['atkerror'] = array();
-
-            $error = count($record['atkerror']) > 0;
-
-            $db = $this->m_node->getDb();
-            if ($error) {
-                // something went wrong, back to where we came from
-                $db->rollback();
-                return $this->goBack($record);
-            } else {
-                if (!$this->storeRecord($record)) {
-                    $this->handleAddError($record);
-                    return;
-                } else {
-                    $location = $this->invoke('getSuccessReturnURL', $record);
-                    $this->_handleRedirect($location, $record);
-                }
-            }
-        } else {
+        if (isset($this->m_postvars['atksaveandclose']) ||
+            isset($this->m_postvars['atkwizardaction']) ||
+            isset($this->m_postvars['atksaveandnext']) ||
+            isset($this->m_postvars['atksaveandcontinue'])
+        ) {
+            $this->handleProcess($record);
+        } else if (isset($this->m_postvars['atkcancel'])) {
             // Cancel was pressed
             $location = $this->m_node->feedbackUrl("save", ACTION_CANCELLED, $record, "", $this->_getSkip());
             $this->_handleRedirect($location);
+        }
+    }
+
+
+    /**
+     * @param array $record Record to store
+     */
+    public function handleProcess($record)
+    {
+        // just before we validate the record we call the preAdd() to check if the record needs to be modified
+        if (!$this->m_node->executeTrigger("preAdd", $record, "add")) {
+            $this->handleAddError($record);
+            return;
+        }
+
+        $this->validate($record);
+
+        if (!isset($record['atkerror']))
+            $record['atkerror'] = array();
+
+        $error = count($record['atkerror']) > 0;
+
+        $db = $this->m_node->getDb();
+        if ($error) {
+            // something went wrong, back to where we came from
+            $db->rollback();
+            return $this->goBack($record);
+        } else {
+            if (!$this->storeRecord($record)) {
+                $this->handleAddError($record);
+                return;
+            } else {
+                $location = $this->invoke('getSuccessReturnURL', $record);
+                $this->_handleRedirect($location, $record);
+            }
         }
     }
 
@@ -174,8 +187,8 @@ class atkSaveHandler extends atkActionHandler
             }
 
             $url = atkSelf() . '?atknodetype=' . $this->m_node->atknodetype();
-            $url.= '&atkaction=edit';
-            $url.= '&atkselector=' . rawurlencode($this->m_node->primaryKey($record));
+            $url .= '&atkaction=edit';
+            $url .= '&atkselector=' . rawurlencode($this->m_node->primaryKey($record));
             $location = session_url($url . $extra, SESSION_REPLACE, $this->_getSkip() - 1);
         } else if ($this->m_node->hasFlag(NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext'])) {
             $filter = "";
@@ -204,8 +217,10 @@ class atkSaveHandler extends atkActionHandler
         if ($sessionmanager)
             $atkstoretype = $sessionmanager->stackVar('atkstore');
         switch ($atkstoretype) {
-            case 'session': return $this->storeRecordInSession($record);
-            default: return $this->storeRecordInDb($record);
+            case 'session':
+                return $this->storeRecordInSession($record);
+            default:
+                return $this->storeRecordInDb($record);
         }
     }
 
@@ -270,7 +285,8 @@ class atkSaveHandler extends atkActionHandler
     function _getSkip()
     {
         if (isset($this->m_postvars["atkreturnbehaviour"]) &&
-            $this->m_postvars["atkreturnbehaviour"] == ATK_ACTION_BACK) {
+            $this->m_postvars["atkreturnbehaviour"] == ATK_ACTION_BACK
+        ) {
             return 2;
         }
         return 1;
@@ -311,7 +327,7 @@ class atkSaveHandler extends atkActionHandler
     /**
      * Handle save of dialog.
      *
-     * @param string $attrRefreshUrl  the attribute refresh url if not specified
+     * @param string $attrRefreshUrl the attribute refresh url if not specified
      *                                the entire page is refreshed
      */
     function handleSave($attrRefreshUrl = '')
@@ -330,7 +346,8 @@ class atkSaveHandler extends atkActionHandler
         // if an error occurs in the preAdd or the validate we have to handle it properly
         if (!$this->m_node->executeTrigger("preAdd", $record, "add") ||
             !$this->validate($record) ||
-            !$this->m_node->addDb($record, true, "add")) {
+            !$this->m_node->addDb($record, true, "add")
+        ) {
             // an error occured, rollback database
             $db->rollback();
 
@@ -390,5 +407,3 @@ class atkSaveHandler extends atkActionHandler
     }
 
 }
-
-?>
