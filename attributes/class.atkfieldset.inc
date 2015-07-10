@@ -157,7 +157,7 @@ class atkFieldSet extends atkAttribute
                     $field = $attr->getEdit($mode, $record, $fieldprefix);
                 }
             } else if ($type == 'display') {
-                if (($mode == 'view' && $attr->hasFlag(AF_HIDE_VIEW)) || ($mode == 'list' && $attr->hasFlag(AF_HIDE_LIST))) {
+                if (($mode == 'view' && $attr->hasFlag(AF_HIDE_VIEW))) {
                     $field = '';
                 } else {
                     $field = $attr->getView($mode, $record);
