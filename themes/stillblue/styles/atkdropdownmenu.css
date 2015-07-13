@@ -10,20 +10,20 @@ BODY
     font-size: 11px;
     font-weight: normal;
     display: block;
-    height: 24px;
+    height: 26px;
     margin: 0px;
     z-index: 50;
     width: auto;
     position: fixed;
-    top: 5px;
+    top: 3px;
     left: 130px;
     color: white;
 }
 
 #nav a
 {
-    height: 24px;
-    _height: 24px;
+    height: 26px;
+    _height: 26px;
     margin: 0 0 0 0.1em;
     /*background-color: #2e8dfd;*/
 }
@@ -38,7 +38,7 @@ BODY
 
 #nav ul li
 {
-    background-color: #87B3DA;
+    background-color: transparent;
 
     display: block;
     float: left;
@@ -53,8 +53,8 @@ BODY
 
 #nav ul li a
 {
-    height: 19px;
-    _height: 19px;
+    height: 21px;
+    _height: 21px;
     display: block;
     font-size: 11px;
     width: auto;
@@ -86,22 +86,23 @@ BODY
 
 #nav ul ul li a
 {
-    padding: 5px 14px 5px 8px;
+    padding: 6px 14px 6px 8px;
     font-size: 11px;
     font-weight: normal;
-    background-color: #87B3DA;
-
+    background-color: #749abe;
     background-image: none;
-    border-bottom: 1px solid #77b1e4;
+    border-top: 1px solid #96c7f4;
+    border-bottom-width: 0px;
 }
 
 #nav ul ul
 {
     display: none;
     left: 0px;
-    top: 24px;
-    width: 120px;
+    top: 26px;
+    width: 142px;
     position: absolute;
+    border-top: 1px solid #f3f3f3;
 }
 
 #nav ul ul ul,
@@ -118,7 +119,7 @@ BODY
 {
     display: block;
     position: absolute;
-    top: 24px;
+    top: 26px;
     left: 0;
 }
 
@@ -162,4 +163,13 @@ li>ul {
     height: 0px;
     width: 142px;
     border-bottom: 1px dashed #96c7f4;
+}
+
+#nav a[href="#"] {
+    cursor: default;
+}
+
+#nav ul ul ul, #nav ul ul ul ul {
+    border-left: 1px solid #f3f3f3;
+    border-top: 0;
 }

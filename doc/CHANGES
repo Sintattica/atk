@@ -15,6 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
+* Removed some images from stillblue theme [giorgio,luca]
 * Fix save handler in add mode [luca,michele]
 * Various fixing in atkManyToOneRelation [luca]
 * Fix checkbox in atkFileAttribute bootstrap theme [michele]

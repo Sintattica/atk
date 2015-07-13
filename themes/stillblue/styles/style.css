@@ -5,11 +5,18 @@
     float: left;
 }
 
-.panelTitleRight
+.panelTitleText
 {
-    Height: 26px;
+    background: #749abe;
+    border-top-left-radius: 10px;
 }
 
+.panelTitleRight
+{
+    height: 26px;
+    background: #749abe;
+    border-top-right-radius: 10px;
+}
 
 .clearfloat
 {
