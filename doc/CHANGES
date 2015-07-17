@@ -16,6 +16,13 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 Changes in DEVELOP (WIP)
 ------------------------
 * Removed some images from stillblue theme [giorgio,luca]
+
+Changes in MASTER (WIP)
+------------------------
+
+
+Changes in ATK 8.0.7 (17/07/2015)
+---------------------------------
 * Fix save handler in add mode [luca,michele]
 * Various fixing in atkManyToOneRelation [luca]
 * Fix checkbox in atkFileAttribute bootstrap theme [michele]
@@ -26,12 +33,6 @@ Changes in DEVELOP (WIP)
 + new bootstrapColorPickerAttribute [michele]
 * handle atkFileAttribute delete file checkbox [luca,michele]
 * Changed "[table]" placeholder handling in setOrder function of atkNode [luca]
-
-
-Changes in MASTER (WIP)
-------------------------
-
-
 
 Changes in ATK 8.0.6 (25/05/2015)
 ---------------------------------
