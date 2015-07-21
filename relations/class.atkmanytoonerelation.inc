@@ -576,11 +576,12 @@ class atkManyToOneRelation extends atkRelation
                 $result = array();
                 if ($this->createDestination()) {
                     foreach (array_keys($this->m_destInstance->m_attribList) as $attrName) {
-                        $attr = &$this->m_destInstance->m_attribList[$attrName];
-                        if ($attr)
+                        if ( isset($this->m_destInstance->m_attribList[$attrName]) ) {
+                            $attr = &$this->m_destInstance->m_attribList[$attrName];
                             $result[$attrName] = $attr->db2value($myrec);
-                        else
+                        } else {
                             atkerror("m_attribList['{$attrName}'] not defined");
+                        }
                     }
                 }
 
