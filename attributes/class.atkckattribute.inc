@@ -56,7 +56,7 @@ class atkCKAttribute extends atkTextAttribute
     {
         /** update CKEditor configuration options */
         $this->ckOptions['language'] = atkLanguage::getLanguage();
-        // $this->ckOptions['scayt_sLang'] = $this->getSpellCheckerLang(atkLanguage::getLanguage()); TODO doesn't work
+        $this->ckOptions['wsc_lang'] = $this->ckOptions['scayt_sLang'] = $this->getSpellCheckerLang(atkLanguage::getLanguage());
         // global config override
         if (is_array(atkconfig::getGlobal('ck_options'))) {
             $this->ckOptions = array_merge($this->ckOptions, atkconfig::getGlobal('ck_options'));
