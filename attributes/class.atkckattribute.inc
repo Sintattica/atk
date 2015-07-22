@@ -38,6 +38,8 @@ class atkCKAttribute extends atkTextAttribute
         ],
         // remove some buttons
         'removeButtons' => 'Save,NewPage,Preview,Anchor,Flash,Smiley,PageBreak,Iframe,Subscript,Superscript,Font,Styles',
+        // remove display of html tags on bottom bar
+        'removePlugins' => 'elementspath',
         // simplify the dialog windows
 	    'removeDialogTabs' => 'image:advanced;link:advanced',
         // set the size
@@ -52,9 +54,14 @@ class atkCKAttribute extends atkTextAttribute
      */
     function __construct($name, $flags = 0, $options = null)
     {
-        // update CKEditor configuration options
+        /** update CKEditor configuration options */
         $this->ckOptions['language'] = atkLanguage::getLanguage();
-        $this->ckOptions['scayt_sLang'] = $this->getSpellCheckerLang(atkLanguage::getLanguage());
+        // $this->ckOptions['scayt_sLang'] = $this->getSpellCheckerLang(atkLanguage::getLanguage()); TODO doesn't work
+        // global config override
+        if (is_array(atkconfig::getGlobal('ck_options'))) {
+            $this->ckOptions = array_merge($this->ckOptions, atkconfig::getGlobal('ck_options'));
+        }
+        // instance override
         if (is_array($options)) {
             $this->ckOptions = array_merge($this->ckOptions, $options);
         }

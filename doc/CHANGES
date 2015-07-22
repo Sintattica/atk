@@ -20,6 +20,8 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
++ Added atkCKAttribute [luca]
+* Removed some images from stillblue theme [giorgio,luca]
 
 
 Changes in ATK 8.0.7 (17/07/2015)

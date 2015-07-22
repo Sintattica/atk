@@ -1061,8 +1061,12 @@ $config_autoload_reindex_on_missing_class = false;
  */
 $config_throw_exception_on_error = false;
 
-
 /**
  * Inverts check logic of attributes rights: default all allowed, the "attribaccess" table will store attributes modes not allowed
  */
 $config_reverse_attributeaccess_logic = false;
+
+/**
+ * atkCKAttribute configuration options override
+ */
+$config_ck_options = array();
