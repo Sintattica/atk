@@ -82,7 +82,7 @@ class atkCustomRecordList extends atkRecordList
                 $p_attrib = &$this->m_node->m_attribList[$attribname];
                 $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname, $suppressList));
                 if (!$this->isHidden($p_attrib) && !$musthide) {
-                    $output.=$sof . $this->eolreplace(atktext($p_attrib->fieldName(), $this->m_node->m_module, $this->m_node->m_type), $rfeplace) . $eof . $fsep;
+                    $output.=$sof . $this->eolreplace($p_attrib->label(), $rfeplace) . $eof . $fsep;
 
                     // the totalisable check..
                     if ($p_attrib->hasFlag(AF_TOTAL)) {
