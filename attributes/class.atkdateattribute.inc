@@ -848,15 +848,14 @@ class atkDateAttribute extends atkAttribute
      * searchcondition() also immediately adds the search condition.
      *
      * @param atkQuery $query     The query object where the search condition should be placed on
-     * @param String $table       The name of the table in which this attribute
-     *                              is stored
+     * @param String $table       The name of the table in which this attribute is stored
      * @param mixed $value        The value the user has entered in the searchbox
-     * @param String $searchmode  The searchmode to use. This can be any one
-     *                              of the supported modes, as returned by this
-     *                              attribute's getSearchModes() method.
+     * @param String $searchmode  The searchmode to use. This can be any one of the supported modes,
+     *                            as returned by this attribute's getSearchModes() method.
+     * @param string $fieldname   The name of the field in the database (used by atkExpressionAttribute)
      * @return String The searchcondition to use.
      */
-    function getSearchCondition(&$query, $table, $value, $searchmode)
+    function getSearchCondition(&$query, $table, $value, $searchmode, $fieldname = '')
     {
         $db = &$this->getDb();
 
@@ -887,7 +886,7 @@ class atkDateAttribute extends atkAttribute
         $fromval = $this->value2db(array($this->fieldName() => $valueFrom));
         $toval = $this->value2db(array($this->fieldName() => $valueTo));
 
-        $field = $db->func_datetochar($table . "." . $this->fieldName());
+        $fieldname = $db->func_datetochar($fieldname ? $fieldname : ($table . "." . $this->fieldName()));
 
         if ($fromval == NULL && $toval == NULL)
             ; // do nothing
@@ -898,20 +897,17 @@ class atkDateAttribute extends atkAttribute
                 $fromval = $toval;
                 $toval = $tmp;
             }
-            $searchcondition = $query->betweenCondition(
-                $field, $fromval, $toval);
+            $searchcondition = $query->betweenCondition($fieldname, $fromval, $toval);
         } else if ($fromval != NULL && $toval == NULL) {
-            $searchcondition = $query->greaterthanequalCondition(
-                $field, $fromval);
+            $searchcondition = $query->greaterthanequalCondition($fieldname, $fromval);
         } else if ($fromval == NULL && $toval != NULL) {
-            $searchcondition = $query->lessthanequalCondition(
-                $field, $toval);
-        } else if ((is_array($value["from"])) or ( is_array($value["to"]))) {
+            $searchcondition = $query->lessthanequalCondition($fieldname, $toval);
+        } else if ((is_array($value["from"])) or (is_array($value["to"]))) {
             $searchcondition = $this->_getDateArraySearchCondition($query, $table, $value);
         } else {
             // plain text search condition
             $value = $this->_autoCompleteDateString($value);
-            $searchcondition = $query->exactCondition($field, $value);
+            $searchcondition = $query->exactCondition($fieldname, $value);
         }
 
         return $searchcondition;
@@ -1046,7 +1042,6 @@ class atkDateAttribute extends atkAttribute
 
         $value = $postvars[$this->fieldName()];
 
-
         // edit in text mode
         if (is_array($value) && array_key_exists('date', $value)) {
             $value = $postvars[$this->fieldName()]['date'];
@@ -1073,7 +1068,7 @@ class atkDateAttribute extends atkAttribute
             $formats[] = str_replace(array("y", "Y", "m", "n", "F", "d", "j"), array("yy",   "yy",   "m",  "m",  "m",  "dd", "dd"), $this->m_date_format_edit);
             $formats[] = str_replace(array("y", "Y", "m", "n", "F", "d", "j"), array("yy",   "yy",   "mm", "mm", "mm", "d",  "d"),  $this->m_date_format_edit);
             $formats[] = str_replace(array("y", "Y", "m", "n", "F", "d", "j"), array("yy",   "yy",   "m",  "m",  "m",  "d",  "d"),  $this->m_date_format_edit);
-            $arr = $this->parseDate($value, $formats);
+            $arr = self::parseDate($value, $formats);
             if ($arr['day'] == 0 || $arr['month'] == 0 || $arr['year'] == 0)
                 return self::dateArray(adodb_date("Ymd", strtotime($value)));
             else
@@ -1256,7 +1251,7 @@ class atkDateAttribute extends atkAttribute
         $formats = array("dd-mm-yyyy", "dd-mm-yy", "d-mm-yyyy", "dd-m-yyyy",
             "d-m-yyyy", "yyyy-mm-dd", "yyyy-mm-d", "yyyy-m-dd", "yyyy-m-d");
 
-        return $this->parseDate($stringvalue, $formats);
+        return self::parseDate($stringvalue, $formats);
     }
 
     /**
@@ -1266,7 +1261,7 @@ class atkDateAttribute extends atkAttribute
      * @param array $formats The formats
      * @return array with day, month and year of the parsed datestring
      */
-    function parseDate($stringvalue, $formats)
+    static function parseDate($stringvalue, $formats)
     {
         //looking in which format the stringvalue match and then get the data
         foreach ($formats as $format) {

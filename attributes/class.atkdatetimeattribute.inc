@@ -429,6 +429,7 @@ class atkDateTimeAttribute extends atkAttribute
      */
     function search($record = "", $extended = false, $fieldprefix = "")
     {
+        $this->m_date->m_searchsize = 10;
         return $this->m_date->search($record, $extended, $fieldprefix);
     }
 
