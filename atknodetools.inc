@@ -22,7 +22,7 @@
  * deciding which users can do what, only in establishing the full set 
  * of actions that can potentially be performed on the node.
  * 
- * @param $node name of the node
+ * @param string $node name of the node
  * @param $action array with actions that can be performed on the node
  * @param $tabs array of tabnames for which security should be handled.
  *              Note that tabs that every user may see need not be
@@ -49,5 +49,3 @@ function registerNode($node, $action, $tabs = array(), $section = null)
         $section = $module;
     $g_nodes[$section][$module][$type] = array_merge($action, $tabs);
 }
-
-?>
