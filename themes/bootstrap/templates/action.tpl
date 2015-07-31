@@ -18,9 +18,11 @@
         {$content}
     </div>
     <div id="action-buttons" style="border: 0px solid blue;">
-        {foreach from=$buttons item=button}
-            {$button}
-        {/foreach}
+        <div class="action-buttons-buttons">
+            {foreach from=$buttons item=button}
+                {$button}
+            {/foreach}
+        </div>
         <div class="spinner"><i class="fa fa-cog fa-spin fa-2x"></i></div>
     </div>
 </div>

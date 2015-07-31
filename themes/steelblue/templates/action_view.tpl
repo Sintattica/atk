@@ -19,9 +19,11 @@
 <br/>
 {$formstart}
 <div id="action-buttons">
-    {foreach from=$buttons item=button}
-        &nbsp;{$button}&nbsp;
-    {/foreach}
+    <div class="action-buttons-buttons">
+        {foreach from=$buttons item=button}
+            {$button}
+        {/foreach}
+    </div>
     {if $buttons}
         <div class="spinner"><img src="{atkthemeimg spinner.gif}" alt="Busy"/></div>
     {/if}

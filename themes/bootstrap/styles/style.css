@@ -1678,6 +1678,17 @@ body {
 #action-buttons {
   text-align: center;
 }
+.action-buttons-buttons {
+  display: inline-block;
+  margin: 0 auto;
+}
+.action-buttons-buttons button {
+  float: right;
+  margin: 0 10px;
+}
+td.field {
+  vertical-align: middle;
+}
 .fieldlabel {
   font-weight: bold;
 }

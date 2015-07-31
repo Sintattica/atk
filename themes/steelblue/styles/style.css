@@ -163,10 +163,6 @@ a:hover
     padding-right: 6px;
 }
 
-#action-buttons
-{
-    text-align: right;
-}
 
 ul, ol, li
 {
@@ -409,25 +405,25 @@ button.atkdefaultbutton
 }
 
 
-
-
 /* BUTTONS */
 /* ------------------------------------------------------------------ */
 
-#action-buttons
-{
+#action-buttons {
     text-align: center;
+}
+
+.action-buttons-buttons {
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.action-buttons-buttons button {
+    float: right;
+    margin: 0 10px;
 }
 
 td.field {
     vertical-align: middle;
-}
-
-#editform td.field
-{
-    /*padding-top: 5px;
-    padding-bottom: 2px;
-    vertical-align: top;*/
 }
 
 hr
