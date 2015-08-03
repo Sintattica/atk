@@ -23,6 +23,9 @@ Changes in MASTER (WIP)
 Changes in ATK 8.1.0 (03/08/2015)
 ---------------------------------
 * Fix action buttons compatibility with IE [michele]
+
+Changes in ATK 8.0.8 (03/08/2015)
+---------------------------------
 + Added "date" search type in atkExpressionAttribute [luca]
 * Fix names in header row (export) [luca]
 + Added atkCKAttribute [luca]
