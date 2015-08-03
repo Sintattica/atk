@@ -18,7 +18,7 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
-
+* Fix panelTitleRight css position (fix for IE) [michele]
 
 Changes in ATK 8.1.0 (03/08/2015)
 ---------------------------------
