@@ -978,7 +978,7 @@ class atkSessionManager
     static public function href($url, $name = "", $sessionstatus = SESSION_DEFAULT, $saveform = false, $extraprops = "")
     {
         if ($saveform) {
-            $str = 'atkSubmit("' . atkurlencode(atkSessionManager::sessionUrl($url, $sessionstatus)) . '");';
+            $str = 'atkSubmit("' . atkurlencode(atkSessionManager::sessionUrl($url, $sessionstatus)) . '", true);';
             return "<a href=\"javascript:void(0)\" onclick=\"" . atk_htmlentities($str) . "\" " . $extraprops . ">" . $name . "</a>";
         } else {
             $str = atkSessionManager::sessionUrl($url, $sessionstatus);

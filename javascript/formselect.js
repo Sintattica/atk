@@ -237,7 +237,7 @@ function atkSubmitMRA(name, form, target, embedded, ignoreHandler)
             form.atkescape.value = target;
         }
 
-        globalSubmit(form);
+        globalSubmit(form, false);
         form.submit();
 
         // In some rare occasions we have to remove the hidden elements from the 
@@ -291,7 +291,7 @@ function atkSubmitMRPA(name, form, target)
     if (selectorLength > 0)
     {
         form.atkescape.value = target;
-        globalSubmit(form);
+        globalSubmit(form, true);
         form.submit();
     }
 }

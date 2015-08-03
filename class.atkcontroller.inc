@@ -494,6 +494,12 @@ class atkController
 
         // edit mode
         if ($mode == "edit") {
+            if (atkLevel() > 0 || hasFlag(atkArrayNvl($node->m_feedback, "update", 0), ACTION_SUCCESS)) {
+                $result[] = $this->getButton('saveandclose', true);
+            }
+
+            $result[] = $this->getButton('save');
+
             // if atklevel is 0 or less, we are at the bottom of the session stack,
             // which means that 'saveandclose' doesn't close anyway, so we leave out
             // the 'saveandclose' and 'cancel' button. Unless, a feedback screen is configured.
@@ -501,41 +507,41 @@ class atkController
                 $result[] = $this->getButton('cancel');
             }
 
-            $result[] = $this->getButton('save');
-
-            if (atkLevel() > 0 || hasFlag(atkArrayNvl($node->m_feedback, "update", 0), ACTION_SUCCESS)) {
-                $result[] = $this->getButton('saveandclose', true);
-            }
 
         } elseif ($mode == "add") {
+
+            if ($node->hasFlag(NF_EDITAFTERADD) === true){
+                if($node->allowed('edit')){
+                    $result[] = $this->getButton('saveandedit', true);
+                } else {
+                    atkwarning("NF_EDITAFTERADD found but no 'edit' privilege.");
+                }
+            } else {
+                $result[] = $this->getButton('saveandclose', true);
+
+                if ($node->hasFlag(NF_ADDAFTERADD)) {
+                    $result[] = $this->getButton('saveandnext', false);
+                }
+            }
+
+
             if (atkLevel() >0 || hasFlag(atkArrayNvl($node->m_feedback, "save", 0), ACTION_CANCELLED)) {
                 $result[] = $this->getButton('cancel');
             }
 
-            // if action is admin, we don't show the cancelbutton or the add next button
-            if ($node->hasFlag(NF_ADDAFTERADD) && !$node->hasFlag(NF_EDITAFTERADD))
-                $result[] = $this->getButton('saveandnext', false);
-
-            if ($node->hasFlag(NF_EDITAFTERADD) === true && $node->allowed('edit')) {
-                $result[] = $this->getButton('saveandedit', true);
-            } else {
-                if ($node->hasFlag(NF_EDITAFTERADD) === true) {
-                    atkwarning("NF_EDITAFTERADD found but no 'edit' privilege.");
-                }
-                $result[] = $this->getButton('saveandclose', true);
-            }
         }
         elseif ($mode == "view") {
-            if (atkLevel() > 0) {
-                $result[] = $this->getButton('back', false, atktext('cancel'));
-            }
-
             // if appropriate, display an edit button.
             if (!$node->hasFlag(NF_NO_EDIT) && $node->allowed("edit", $record)) {
                 $result[] = '<input type="hidden" name="atkaction" value="edit">' .
                     '<input type="hidden" name="atknodetype" value="' . $node->atkNodeType() . '">' .
                     $this->getButton('edit');
             }
+
+            if (atkLevel() > 0) {
+                $result[] = $this->getButton('back', false, atktext('cancel'));
+            }
+
         } elseif ($mode == "delete") {
             $result[] = '<input name="confirm" type="submit" class="btn btn-default btn_ok" value="' . $node->text('yes') . '">';
             $result[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel" value="' . $node->text('no') . '">';

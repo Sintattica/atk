@@ -71,7 +71,7 @@ class atkViewHandler extends atkViewEditBase
      */
     public function getFormStart($record = null)
     {
-        $formstart = '<form name="entryform" id="entryform" action="' . getDispatchFile() . '" method="get" onsubmit="return globalSubmit(this)">';
+        $formstart = '<form name="entryform" id="entryform" action="' . getDispatchFile() . '" method="get" onsubmit="return globalSubmit(this,false)">';
         $formstart .= session_form(SESSION_NESTED);
         $formstart .= '<input type="hidden" name="atkselector" value="' . $this->getNode()->primaryKey($record) . '">';
         $formstart .= '<input type="hidden" class="atksubmitaction" />';
