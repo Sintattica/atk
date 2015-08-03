@@ -212,6 +212,7 @@ ul, ol, li
     position: relative;
     width: 12px;
     float: left;
+    left: -1px;
 }
 
 .panelHeader
