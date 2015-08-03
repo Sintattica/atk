@@ -410,6 +410,7 @@ button.atkdefaultbutton
 
 #action-buttons {
     text-align: center;
+    position: relative;
 }
 
 .action-buttons-buttons {
@@ -417,9 +418,9 @@ button.atkdefaultbutton
     margin: 0 auto;
 }
 
-.action-buttons-buttons button {
+.action-buttons-buttons button, .action-buttons-buttons input[type="submit"] {
     float: right;
-    margin: 0 10px;
+    margin: 0 5px;
 }
 
 td.field {
@@ -732,6 +733,6 @@ div.form-inline {
 #action-buttons .spinner {
     visibility: hidden;
     display: inline-block;
-    margin-left: 5px;
-    vertical-align: middle;
+    margin: 2px 0 0 5px;
+    position: absolute;
 }

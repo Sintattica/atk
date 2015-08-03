@@ -1390,7 +1390,7 @@ class atkOneToManyRelation extends atkRelation
                 $script .= $dialog->getCall(true, false);
             } else {
                 $url = dispatch_url($this->m_destInstance->atkNodeType(), 'add');
-                $script .= "atkSubmit('" . atkurlencode(session_url($url, SESSION_NESTED)) . "');";
+                $script .= "atkSubmit('" . atkurlencode(session_url($url, SESSION_NESTED)) . "', true);";
             }
 
             $page = &$this->m_ownerInstance->getPage();

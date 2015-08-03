@@ -468,17 +468,17 @@ class atkPage
             return "";
         }
 
-        $res = "\n    function globalSubmit(form)\n";
+        $res = "\n    function globalSubmit(form, standardSubmit)\n";
         $res .= "    {\n";
         $res .= "      var retval = true; var bag = {};\n";
-        $res .= "      if (typeof(preGlobalSubmit) == 'function') { preGlobalSubmit(form, bag); }\n";
+        $res .= "      if (typeof(preGlobalSubmit) == 'function') { preGlobalSubmit(form, bag, standardSubmit); }\n";
 
         for ($i = 0, $_i = count($this->m_submitscripts); $i < $_i; $i++) {
             $res .= "      retval = " . $this->m_submitscripts[$i] . "\n";
-            $res .= "      if (retval!=true && typeof(postGlobalSubmit) == 'function') { return postGlobalSubmit(form, bag, retval); } else { return retval; }\n";
+            $res .= "      if (retval!=true && typeof(postGlobalSubmit) == 'function') { return postGlobalSubmit(form, bag, retval, standardSubmit); } else { return retval; }\n";
         }
 
-        $res .= "      if (typeof(postGlobalSubmit) == 'function') { return postGlobalSubmit(form, bag, retval); }\n";
+        $res .= "      if (typeof(postGlobalSubmit) == 'function') { return postGlobalSubmit(form, bag, retval, standardSubmit); }\n";
         $res .= "      return retval;\n";
         $res .= "    }\n";
         return $res;

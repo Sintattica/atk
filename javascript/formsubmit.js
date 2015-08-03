@@ -14,8 +14,10 @@
  * $Id$
  */
 
-function atkSubmit(target)
+function atkSubmit(target, standardSubmit)
 {
+    //if standardSubmit == true, the submit action doesn't come from the main form action buttons
+
     if (target == '-1')
         return;
 
@@ -29,22 +31,27 @@ function atkSubmit(target)
 
     // call global submit function, which doesn't get called automatically
     // when we call entryform.submit manually.
-    globalSubmit(document.entryform);
+    globalSubmit(document.entryform, standardSubmit);
     document.entryform.submit();
 }
 
 
-function preGlobalSubmit(formEl, bag) {
+function preGlobalSubmit(formEl, bag, standardSubmit) {
+
+    //if standardSubmit == true, ignore
+    if(standardSubmit){
+        return true;
+    }
+
     var form = jQuery(formEl);
     var spinner = form.find('#action-buttons .spinner');
     var atksubmitaction;
     bag.spinnerVisibility = spinner.css('visibility');
     spinner.css('visibility', 'visible');
 
-    //ho premuto un bottone?
     var actionButton = form.find("#action-buttons button:focus").get(0);
 
-    //nessun bottone premuto, considero il primo a sinistra *nel DOM*
+    //no action button pressed, consider first *in DOM*
     if(actionButton === undefined) {
         actionButton = form.find("#action-buttons button").get(0);
     }
@@ -61,7 +68,11 @@ function preGlobalSubmit(formEl, bag) {
     return true;
 }
 
-function postGlobalSubmit(formEl, bag, retval) {
+function postGlobalSubmit(formEl, bag, retval, standardSubmit) {
+    if(standardSubmit) {
+        return retval;
+    }
+
     if(!retval) {
         var spinner = jQuery(formEl).find('#action-buttons .spinner');
         spinner.css('visibility', bag.spinnerVisibility);

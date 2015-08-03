@@ -10,6 +10,7 @@ body {
 
 #action-buttons {
   text-align: center;
+  position: relative;
 }
 
 .action-buttons-buttons {
@@ -17,10 +18,19 @@ body {
   margin: 0 auto;
 }
 
-.action-buttons-buttons button {
+.action-buttons-buttons button, .action-buttons-buttons input[type="submit"] {
   float: right;
-  margin: 0 10px;
+  margin: 0 5px;
 }
+
+/* action buttons spinner */
+#action-buttons .spinner {
+  visibility: hidden;
+  display: inline-block;
+  margin: 2px 0 0 5px;
+  position: absolute;
+}
+
 
 td.field {
   vertical-align: middle;

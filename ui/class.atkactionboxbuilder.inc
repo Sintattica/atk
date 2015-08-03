@@ -84,7 +84,7 @@ class atkActionBoxBuilder
         enctype="multipart/form-data" 
         action="' . $controller->getPhpFile() . '?' . SID . '" 
         method="post" 
-        onsubmit="return globalSubmit(this)">' .
+        onsubmit="return globalSubmit(this,true)">' .
             $controller->getHiddenVarsString()
         );
     }

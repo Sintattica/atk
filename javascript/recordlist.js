@@ -81,7 +81,7 @@ function rl_doAndReturn(rlId, rownum, action, confirmtext)
         }
         else
         {
-            atkSubmit(rl_a[rlId][rownum][action] + '&' + rl_a[rlId]['base'] + extra);
+            atkSubmit(rl_a[rlId][rownum][action] + '&' + rl_a[rlId]['base'] + extra, true);
         }
 
         return true;
