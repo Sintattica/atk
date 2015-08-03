@@ -19,5 +19,5 @@
 /**
  * The current atk version
  */
-$atk_version = "8.1.0";
-$atk_state = "stable";
+$atk_version = "8.1.1";
+$atk_state = "development";
