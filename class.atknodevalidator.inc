@@ -123,11 +123,14 @@ class atkNodeValidator
 
                 if ($p_attrib->hasFlag(AF_PRIMARY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT)) {
                     $atkorgkey = $record["atkprimkey"];
-                    if (($atkorgkey == '' // no orgkey, so adding this record
-                        || $atkorgkey != $this->m_nodeObj->primaryKey($record)) // key has changed, so check is necessary
-                        && $this->m_nodeObj->countDb($this->m_nodeObj->primaryKey($record)) > 0
-                    ) {
-                        atkTriggerError($record, $p_attrib, 'error_primarykey_exists');
+                    if ($atkorgkey == '' || $atkorgkey != $this->m_nodeObj->primaryKey($record)) {
+                        $cnt = $this->m_nodeObj->select($this->m_nodeObj->primaryKey($record))
+                            ->ignoreDefaultFilters(true)
+                            ->ignorePostvars(true)
+                            ->getRowCount();
+                        if ($cnt > 0) {
+                            atkTriggerError($record, $p_attrib, 'error_primarykey_exists');
+                        }
                     }
                 }
 

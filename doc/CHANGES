@@ -18,6 +18,7 @@ Changes in DEVELOP (WIP)
 * Fix atkNumberAttribute search for number zero [giorgio]
 * Fix filter in export link [luca]
 * Fix panelTitleRight css position (fix for IE) [michele]
+* Fix atkNodeValidator count on AF_PRIMARY fields [luca,michele]
 
 
 Changes in MASTER (WIP)
