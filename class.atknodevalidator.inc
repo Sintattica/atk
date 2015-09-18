@@ -135,19 +135,27 @@ class atkNodeValidator
                 }
 
                 // if no root elements may be added to the tree, then every record needs to have a parent!
-                if ($p_attrib->hasFlag(AF_PARENT) && $this->m_nodeObj->hasFlag(NF_TREE_NO_ROOT_ADD) && $this->m_nodeObj->m_action == "save")
+                if ($p_attrib->hasFlag(AF_PARENT) && $this->m_nodeObj->hasFlag(NF_TREE_NO_ROOT_ADD) && $this->m_nodeObj->m_action == "save") {
                     $p_attrib->m_flags |= AF_OBLIGATORY;
+                }
 
                 // validate obligatory fields (but not the auto_increment ones, because they don't have a value yet)
                 if ($p_attrib->hasFlag(AF_OBLIGATORY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT) && $p_attrib->isEmpty($record)) {
                     atkTriggerError($record, $p_attrib, 'error_obligatoryfield');
                 }
                 // if flag is primary
-                else if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) && !$p_attrib->isEmpty($record) && $this->m_nodeObj->countDb($this->m_nodeObj->getTable() . ".{$attribname}='" . $db->escapeSQL($p_attrib->value2db($record)) . "'" . ($this->m_mode != 'add'
-                                ? " AND NOT (" . $this->m_nodeObj->primaryKey($record) . ")"
-                                : "")) > 0
-                ) {
-                    atkTriggerError($record, $p_attrib, 'error_uniquefield');
+                else if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) && !$p_attrib->isEmpty($record)) {
+                    $condition = $this->m_nodeObj->getTable() . ".$attribname='" . $db->escapeSQL($p_attrib->value2db($record)) . "'";
+                    if ($this->m_mode != 'add') {
+                        $condition .= " AND NOT (" . $this->m_nodeObj->primaryKey($record) . ")";
+                    }
+                    $cnt = $this->m_nodeObj->select($condition)
+                        ->ignoreDefaultFilters(true)
+                        ->ignorePostvars(true)
+                        ->getRowCount();
+                    if ($cnt > 0) {
+                        atkTriggerError($record, $p_attrib, 'error_uniquefield');
+                    }
                 }
             }
         }
