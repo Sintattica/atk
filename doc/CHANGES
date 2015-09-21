@@ -16,11 +16,12 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 Changes in DEVELOP (WIP)
 ------------------------
 * Fix form submit with enter key on input field [michele]
-* Fix node validation on AF_PRIMARY/AF_UNIQUE fields [michele,luca]
+* Fix node validation on AF_PRIMARY/AF_UNIQUE fields [luca,michele]
+* Fix atkNodeValidator count on AF_PRIMARY fields [luca,michele]
 * Fix atkNumberAttribute search for number zero [giorgio]
 * Fix filter in export link [luca]
 * Fix panelTitleRight css position (fix for IE) [michele]
-* Fix atkNodeValidator count on AF_PRIMARY fields [luca,michele]
+
 
 
 Changes in MASTER (WIP)
