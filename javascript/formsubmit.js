@@ -49,9 +49,10 @@ function preGlobalSubmit(formEl, bag, standardSubmit) {
     bag.spinnerVisibility = spinner.css('visibility');
     spinner.css('visibility', 'visible');
 
-    var actionButton = form.find("#action-buttons button:focus").get(0);
+    var actionButton =  form.find("#action-buttons button[clicked=true]").get(0);
 
-    //no action button pressed, consider first *in DOM*
+    // No action button pressed, probably triggered by enter key on text input.
+    // Consider first *in DOM*
     if(actionButton === undefined) {
         actionButton = form.find("#action-buttons button").get(0);
     }
@@ -61,6 +62,7 @@ function preGlobalSubmit(formEl, bag, standardSubmit) {
         atksubmitaction = form.find('input[type="hidden"].atksubmitaction');
         bag.actionButtonEl = actionButton;
         bag.actionButtonDisabled = actionButton.prop('disabled');
+        bag.atksubmitaction = atksubmitaction;
         actionButton.prop('disabled', true);
         atksubmitaction.attr('name', actionButton.attr('name')).val(actionButton.val());
     }
@@ -80,6 +82,18 @@ function postGlobalSubmit(formEl, bag, retval, standardSubmit) {
         if(bag.actionButton) {
             bag.actionButton.prop('disabled', bag.actionButtonDisabled);
         }
+        if(bag.atksubmitaction) {
+            bag.atksubmitaction.removeAttr('name').removeAttr('value');
+        }
     }
     return retval;
 }
+
+
+jQuery(function($){
+    $("form #action-buttons button").on("click", function() {
+        $("form #action-buttons button").removeAttr("clicked");
+        $(this).attr("clicked", "true");
+    });
+});
+
