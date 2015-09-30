@@ -41,3 +41,4 @@ $theme['cssicons']['recordlist']['view'] = 'glyphicon glyphicon-eye-open';
 $theme['cssicons']['recordlist']['edit'] = 'glyphicon glyphicon-pencil';
 $theme['cssicons']['recordlist']['delete'] = 'glyphicon glyphicon-trash';
 $theme['cssicons']['lock']['lock_exclusive_head'] = 'glyphicon glyphicon-lock';
+$theme['cssicons']['lock']['lock_exclusive'] = 'glyphicon glyphicon-lock';
