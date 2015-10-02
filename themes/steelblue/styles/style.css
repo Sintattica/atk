@@ -715,7 +715,7 @@ form
     background-color: #ffffcc;
 }
 
-.atkfieldset > div {
+.atkfieldset div {
     display: inline-block;
 }
 
@@ -724,7 +724,7 @@ div.form-inline {
 }
 
 /* attributes spinner */
-.atkbusy {
+div.atkbusy {
     display: none;
     margin-left: 5px;
     vertical-align: middle;
