@@ -15,6 +15,13 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
+
+Changes in MASTER (WIP)
+------------------------
+
+
+Changes in ATK 8.2.0 (2015-09-02)
+---------------------------------
 * Changed package name [luca,michele]
 * Fix icon lock [michele]
 * Fix form submit with enter key on input field [michele]
@@ -24,24 +31,18 @@ Changes in DEVELOP (WIP)
 * Fix filter in export link [luca]
 * Fix panelTitleRight css position (fix for IE) [michele]
 
-
-
-Changes in MASTER (WIP)
-------------------------
-
-
-Changes in ATK 8.1.0 (03/08/2015)
+Changes in ATK 8.1.0 (2015-08-03)
 ---------------------------------
 * Fix action buttons compatibility with IE [michele]
 
-Changes in ATK 8.0.8 (03/08/2015)
+Changes in ATK 8.0.8 (2015-08-03)
 ---------------------------------
 + Added "date" search type in atkExpressionAttribute [luca]
 * Fix names in header row (export) [luca]
 + Added atkCKAttribute [luca]
 * Removed some images from stillblue theme [giorgio,luca]
 
-Changes in ATK 8.0.7 (17/07/2015)
+Changes in ATK 8.0.7 (2015-07-17)
 ---------------------------------
 * Fix save handler in add mode [luca,michele]
 * Various fixing in atkManyToOneRelation [luca]
@@ -54,7 +55,7 @@ Changes in ATK 8.0.7 (17/07/2015)
 * handle atkFileAttribute delete file checkbox [luca,michele]
 * Changed "[table]" placeholder handling in setOrder function of atkNode [luca]
 
-Changes in ATK 8.0.6 (25/05/2015)
+Changes in ATK 8.0.6 (2015-05-25)
 ---------------------------------
 * Undo previous filter functions modifications in atkNode and atkRelation [luca]
 * Fixed handleUpdateSuccess on atkupdatehandler, fix NF_EDITAFTERADD nodes on atkmanytomanyselectrelations [michele]
@@ -70,7 +71,7 @@ Changes in ATK 8.0.6 (25/05/2015)
 + Added "manytoone_autocomplete_size" global configuration variable [luca]
 * Minor fixing [luca]
 
-Changes in ATK 8.0.5 (02/03/2015)
+Changes in ATK 8.0.5 (2015-03-02)
 ---------------------------------
 + Added "link_add" generic label in atkOneToManyRelation [luca]
 * Improved setOrder function in atkNode [luca]
@@ -78,14 +79,14 @@ Changes in ATK 8.0.5 (02/03/2015)
 * Improved filter functions in atkNode and atkRelation [luca]
 * Fixed search in atkListAttribute [luca]
 
-Changes in ATK 8.0.4 (09/02/2015)
+Changes in ATK 8.0.4 (2015-02-09)
 ---------------------------------
 * Fixed Bootstrap navbar issues [luca/giorgio]
 + Added "mra_position" global configuration variable [luca]
 * Refined attributes utility functions in atkNode and atkEditFormModifier [luca]
 + Added "recordlist_onclick" global configuration variable [giorgio]
 
-Changes in ATK 8.0.3 (31/01/2015)
+Changes in ATK 8.0.3 (2015-01-31)
 ---------------------------------
 + Added dependencies handling in atkDateTimeAttribute [luca]
 * Fixed onChange handling in atkDateAttribute when the user changes date on calendar [luca]
@@ -95,13 +96,13 @@ Changes in ATK 8.0.3 (31/01/2015)
 * setAttribSizes calling also in init function of atkNode [luca]
 * Languages translations refining [luca]
 
-Changes in ATK 8.0.2 (21/01/2015)
+Changes in ATK 8.0.2 (2015-01-21)
 ---------------------------------
 * Other minor fixing [luca]
 * Updated Moment.js to version 2.9.0 [luca]
 * Fixing search in atkDateAttribute e atkManyToOneRelation [luca]
 
-Changes in ATK 8.0.1 (17/01/2015)
+Changes in ATK 8.0.1 (2015-01-17)
 ---------------------------------
 * Fixed dependencies handling [luca]
 * atkNumberAttribute search improvement [luca]
@@ -112,7 +113,7 @@ Changes in ATK 8.0.1 (17/01/2015)
 * Fixed search in atkListAttribute [luca]
 * Steelblue theme style improvement [luca]
 
-Changes in ATK 8.0.0 (12/12/2014)
+Changes in ATK 8.0.0 (2014-12-12)
 ---------------------------------
 + Added "reverse_attributeaccess_logic" global configuration variable [andrea]
 * charset utf8 in default mysql config [michele]
