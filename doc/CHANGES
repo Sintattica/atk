@@ -15,10 +15,15 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
-* Fix multiple Shuttle relations on node save action [michele]
+
 
 Changes in MASTER (WIP)
 ------------------------
+
+
+Changes in ATK 8.2.1 (2015-10-08)
+------------------------
+* Fix multiple Shuttle relations on node save action [michele]
 
 
 Changes in ATK 8.2.0 (2015-09-02)
