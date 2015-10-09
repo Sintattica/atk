@@ -96,4 +96,4 @@ class atkBajusEncryption extends atkEncryption
 
 }
 
-?>
+

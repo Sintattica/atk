@@ -423,4 +423,3 @@ abstract class atkTestCase extends PHPUnit_Framework_TestCase
 
 }
 
-?>

@@ -170,7 +170,7 @@ class atkAddOrCopyHandler extends atkActionHandler
             $dialog->setSessionStatus(SESSION_PARTIAL);
             $script .= $dialog->getCall(true, false);
         } else {
-            $script .= sprintf("document.location.href = %s;", atkJSON::encode(atkTools::session_url(dispatch_url($this->m_node->atkNodeType(), 'add'), SESSION_NESTED)));
+            $script .= sprintf("document.location.href = %s;", atkJSON::encode(atkTools::session_url(atkTools::dispatch_url($this->m_node->atkNodeType(), 'add'), SESSION_NESTED)));
         }
 
         $page = &$this->getPage();
@@ -424,4 +424,4 @@ class atkAddOrCopyHandler extends atkActionHandler
 
 }
 
-?>
+

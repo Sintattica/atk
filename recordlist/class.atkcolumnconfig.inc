@@ -630,4 +630,4 @@ class atkColumnConfig
 
 }
 
-?>
+

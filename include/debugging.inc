@@ -24,4 +24,3 @@ if ($GLOBALS['config_debug'] > 0) {
 
 // show server info in debug (useful in clustered environments)
 atkTools::atkdebug('Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')');
-?>

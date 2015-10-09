@@ -344,4 +344,3 @@ class atkDbLock extends atkLock
 
 }
 
-?>

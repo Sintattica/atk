@@ -101,7 +101,7 @@ class atkManyBoolRelation extends atkManyToManyRelation
                             ' AND ' . $this->m_linkInstance->m_table . '.' . $this->getRemoteKey() .
                             "='" . $remoteValue . "'";
                         // Create link to details.
-                        $detaillink = atkTools::href(dispatch_url($this->m_link, "edit", array("atkselector" => $selector)), "[" . atkTools::atktext("details", "atk") . "]", SESSION_NESTED, true);
+                        $detaillink = atkTools::href(atkTools::dispatch_url($this->m_link, "edit", array("atkselector" => $selector)), "[" . atkTools::atktext("details", "atk") . "]", SESSION_NESTED, true);
                     }
                 } else {
                     $sel = "";
@@ -137,7 +137,7 @@ class atkManyBoolRelation extends atkManyToManyRelation
         }
         // Add the add link if AF_MANYBOOL_AUTOLINK used
         if (($this->hasFlag(AF_MANYBOOL_AUTOLINK)) && ($this->m_destInstance->allowed("add")))
-            $result.= atkTools::href(dispatch_url($this->m_destination, "add"), $this->getAddLabel(), SESSION_NESTED) . "\n";
+            $result.= atkTools::href(atkTools::dispatch_url($this->m_destination, "add"), $this->getAddLabel(), SESSION_NESTED) . "\n";
 
         return $result;
     }

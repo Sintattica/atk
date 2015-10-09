@@ -1405,4 +1405,3 @@ class atkDateAttribute extends atkAttribute
 
 }
 
-?>

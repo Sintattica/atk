@@ -136,4 +136,3 @@ function atklock()
     return atkLock::getInstance();
 }
 
-?>

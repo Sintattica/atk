@@ -26,4 +26,3 @@ $locale = atkTools::atktext('locale', 'atk');
 if ($locale != null) {
     setlocale(LC_TIME, $locale);
 }
-?>

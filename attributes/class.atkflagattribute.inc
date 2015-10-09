@@ -187,4 +187,3 @@ class atkFlagAttribute extends atkMultiSelectAttribute
 
 }
 
-?>

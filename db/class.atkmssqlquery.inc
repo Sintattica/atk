@@ -120,4 +120,4 @@ class atkMssqlQuery extends atkMysqlQuery
 
 }
 
-?>
+

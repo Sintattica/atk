@@ -225,4 +225,3 @@ class atkRadioAttribute extends atkListAttribute
 
 }
 
-?>

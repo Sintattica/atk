@@ -727,4 +727,3 @@ class atkEditHandler extends atkViewEditBase
 
 }
 
-?>

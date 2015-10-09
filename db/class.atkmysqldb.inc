@@ -687,4 +687,4 @@ class atkMysqlDb extends atkDb
 
 }
 
-?>
+

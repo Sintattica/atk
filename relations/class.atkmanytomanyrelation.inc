@@ -381,7 +381,7 @@ class atkManyToManyRelation extends atkRelation
                     $descr = $this->m_destInstance->descriptor($rec);
                 }
                 if ($this->hasFlag(AF_MANYTOMANY_DETAILVIEW) && $this->m_destInstance->allowed("view")) {
-                    $descr = atkTools::href(dispatch_url($this->m_destination, 'view', array('atkselector' => $this->getdestination()->primarykey($rec))), $descr, SESSION_NESTED);
+                    $descr = atkTools::href(atkTools::dispatch_url($this->m_destination, 'view', array('atkselector' => $this->getdestination()->primarykey($rec))), $descr, SESSION_NESTED);
                 }
                 $recordset[] = $descr;
             }
@@ -849,4 +849,3 @@ class atkManyToManyRelation extends atkRelation
 
 }
 
-?>

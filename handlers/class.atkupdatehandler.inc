@@ -116,7 +116,7 @@ class atkUpdatehandler extends atkActionHandler
             $this->invoke('handleCancel', $record);
         } else {
             // something other than one of the three buttons was pressed. Let's just refresh.
-            $location = atkTools::session_url(dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record), "atktab" => $this->m_node->getActiveTab())), SESSION_REPLACE);
+            $location = atkTools::session_url(atkTools::dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record), "atktab" => $this->m_node->getActiveTab())), SESSION_REPLACE);
             $this->m_node->redirect($location);
         }
     }
@@ -286,7 +286,7 @@ class atkUpdatehandler extends atkActionHandler
     {
         if ($this->hasError($record)) {
             $this->setRejectInfo($record);
-            $location = atkTools::session_url(dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record))), SESSION_BACK);
+            $location = atkTools::session_url(atkTools::dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record))), SESSION_BACK);
             $this->m_node->redirect($location);
         } else {
             $location = $this->m_node->feedbackUrl("update", ACTION_FAILED, $record, $error);
@@ -308,7 +308,7 @@ class atkUpdatehandler extends atkActionHandler
         if (isset($this->m_postvars['atknoclose'])) {
             // 'save' was clicked
             $params = array("atkselector" => $this->m_node->primaryKey($record), "atktab" => $this->m_node->getActiveTab());
-            $location = atkTools::session_url(dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), $params), SESSION_REPLACE, 1);
+            $location = atkTools::session_url(atkTools::dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), $params), SESSION_REPLACE, 1);
         } else {
             // 'save and close' was clicked
             $location = $this->m_node->feedbackUrl("update", ACTION_SUCCESS, $record, "", 2);

@@ -678,4 +678,3 @@ class atkOci8Db extends atkDb
 
 }
 
-?>

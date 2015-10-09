@@ -132,4 +132,3 @@ class atkCache_eaccelerator extends atkCache
 
 }
 
-?>

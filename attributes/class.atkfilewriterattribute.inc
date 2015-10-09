@@ -142,4 +142,4 @@ class atkFileWriterAttribute extends atkTextAttribute
 
 }
 
-?>
+

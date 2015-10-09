@@ -663,4 +663,3 @@ if (!function_exists("ebcdic2ascii")) {
     }
 
 }
-?>

@@ -15,4 +15,4 @@
  * $Id$
  */
 $theme["tabtype"] = "dhtml";
-?>
+

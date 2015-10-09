@@ -21,4 +21,3 @@ atkConfig::loadGlobals();
 if (file_exists("{$GLOBALS['config_module_path']}/config.modules.inc")) {
     include_once("{$GLOBALS['config_module_path']}/config.modules.inc");
 }
-?>

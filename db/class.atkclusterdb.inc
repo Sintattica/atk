@@ -660,4 +660,3 @@ class atkClusterDb extends atkDb
 
 }
 
-?>

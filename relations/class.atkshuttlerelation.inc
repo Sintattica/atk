@@ -191,4 +191,3 @@ class atkShuttleRelation extends atkManyToManyRelation
 
 }
 
-?>

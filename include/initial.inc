@@ -30,4 +30,4 @@ require_once($GLOBALS['config_atkroot'] . 'atk/include/debugging.inc');
 if (atkconfig('lock_type') !== "")
     require_once($GLOBALS['config_atkroot'] . 'atk/lock/class.atklock.inc');
 atkPreloadModules();
-?>
+

@@ -333,4 +333,4 @@ class atkBoolAttribute extends atkAttribute
 
 }
 
-?>
+

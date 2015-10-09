@@ -476,4 +476,3 @@ class atkFuzzySearchAttribute extends atkAttribute
 
 }
 
-?>

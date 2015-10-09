@@ -179,4 +179,3 @@ class atkWeekdayAttribute extends atkNumberAttribute
 
 }
 
-?>

@@ -188,4 +188,3 @@ abstract class atkAttributeTestCase extends atkTestCase
 
 }
 
-?>

@@ -634,4 +634,4 @@ class atkMysqliDb extends atkMysqlDb
 
 }
 
-?>
+

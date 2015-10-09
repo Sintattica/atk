@@ -291,4 +291,4 @@ class atkDurationAttribute extends atkAttribute
 
 }
 
-?>
+

@@ -337,4 +337,3 @@ class atkFormatAttribute extends atkAttribute
 
 }
 
-?>

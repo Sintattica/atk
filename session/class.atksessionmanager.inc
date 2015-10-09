@@ -1198,4 +1198,4 @@ function &atkGetSessionManager()
     return $g_sessionManager;
 }
 
-?>
+

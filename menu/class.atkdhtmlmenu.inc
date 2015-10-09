@@ -189,4 +189,3 @@ class atkDhtmlMenu extends atkmenuinterface
 
 }
 
-?>

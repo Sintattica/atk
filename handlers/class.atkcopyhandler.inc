@@ -69,4 +69,3 @@ class atkCopyHandler extends atkActionHandler
 
 }
 
-?>

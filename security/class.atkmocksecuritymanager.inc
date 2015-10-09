@@ -70,4 +70,3 @@ class atkMockSecurityManager extends atkSecurityManager
 
 }
 
-?>

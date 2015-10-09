@@ -72,4 +72,3 @@ class atkEventLog extends atkActionListener
 
 }
 
-?>

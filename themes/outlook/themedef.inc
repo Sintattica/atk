@@ -19,4 +19,4 @@ $theme["highlight"] = "#c5d7ff";
 $theme["select"] = "#96a7ff";
 
 $theme["tabtype"] = "dhtml";
-?>
+

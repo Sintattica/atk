@@ -73,4 +73,3 @@ class auth_server extends auth_interface
 
 }
 
-?>

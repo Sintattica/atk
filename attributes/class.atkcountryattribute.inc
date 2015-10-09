@@ -1310,4 +1310,3 @@ class atkCountryAttribute extends atkListAttribute
 
 }
 
-?>

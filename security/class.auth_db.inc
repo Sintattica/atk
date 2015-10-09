@@ -480,4 +480,4 @@ class auth_db extends auth_interface
 
 }
 
-?>
+

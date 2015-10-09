@@ -65,4 +65,3 @@ class atkGroupByFilter extends atkFilter
 
 }
 
-?>

@@ -400,9 +400,9 @@ class atkSmartSearchHandler extends atkAbstractSearchHandler
                 $valueName = "criterium_{$id}_value";
                 $modeName = "criterium_{$id}_mode";
 
-                $fieldUrl = atkTools::session_url(dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriumfield'), atkTools::atkSelf()), SESSION_NEW);
-                $valueUrl = atkTools::session_url(dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriumvalue'), atkTools::atkSelf()), SESSION_NEW);
-                $modeUrl = atkTools::session_url(dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriummode'), atkTools::atkSelf()), SESSION_NEW);
+                $fieldUrl = atkTools::session_url(atkTools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriumfield'), atkTools::atkSelf()), SESSION_NEW);
+                $valueUrl = atkTools::session_url(atkTools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriumvalue'), atkTools::atkSelf()), SESSION_NEW);
+                $modeUrl = atkTools::session_url(atkTools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriummode'), atkTools::atkSelf()), SESSION_NEW);
 
                 $scriptCode[] = "ATK.SmartSearchHandler.registerCriteriumFieldListener('{$entry[name]}', '{$prefix}', '{$fieldName}', '{$fieldUrl}', '{$valueName}', '{$valueUrl}', '{$modeName}', '{$modeUrl}')";
             }
@@ -549,7 +549,7 @@ class atkSmartSearchHandler extends atkAbstractSearchHandler
      */
     function getResetCriteria()
     {
-        return atkTools::session_url(dispatch_url($this->m_node->atkNodeType(), $this->m_action), SESSION_REPLACE);
+        return atkTools::session_url(atkTools::dispatch_url($this->m_node->atkNodeType(), $this->m_action), SESSION_REPLACE);
     }
 
     /**
@@ -579,7 +579,7 @@ class atkSmartSearchHandler extends atkAbstractSearchHandler
             $params["criteria"][] = $this->getCriterium($i, $criterium);
         }
 
-        $url = atkTools::session_url(dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('atkpartial' => 'criterium'), atkTools::atkSelf()), SESSION_NEW);
+        $url = atkTools::session_url(atkTools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('atkpartial' => 'criterium'), atkTools::atkSelf()), SESSION_NEW);
         $params["action_add"] = "ATK.SmartSearchHandler.addCriterium('" . addslashes($url) . "')";
 
         return $ui->render($this->getTemplate("form"), $params);
@@ -632,4 +632,4 @@ class atkSmartSearchHandler extends atkAbstractSearchHandler
 
 }
 
-?>
+

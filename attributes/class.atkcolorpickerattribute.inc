@@ -458,4 +458,4 @@ class atkColorPickerAttribute extends atkAttribute
 
 }
 
-?>
+

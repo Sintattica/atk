@@ -474,4 +474,3 @@ class atkMlWrapper extends atkAttribute
 
 }
 
-?>

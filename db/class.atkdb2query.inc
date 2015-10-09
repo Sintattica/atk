@@ -191,4 +191,3 @@ class atkDb2Query extends atkQuery
 
 }
 
-?>

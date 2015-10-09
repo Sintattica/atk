@@ -222,4 +222,4 @@ class atkMysqlDDL extends atkDDL
 
 }
 
-?>
+

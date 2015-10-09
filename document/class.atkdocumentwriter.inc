@@ -280,4 +280,3 @@ class atkDocumentWriter
 
 }
 
-?>

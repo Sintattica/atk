@@ -101,4 +101,3 @@ class atkOci8DDL extends atkDDL
 
 }
 
-?>

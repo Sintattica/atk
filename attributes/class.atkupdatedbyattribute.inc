@@ -88,4 +88,3 @@ class atkUpdatedByAttribute extends atkManyToOneRelation
 
 }
 
-?>

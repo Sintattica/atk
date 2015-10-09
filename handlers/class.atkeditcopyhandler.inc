@@ -49,7 +49,7 @@ class atkEditCopyHandler extends atkActionHandler
         } else {
             $db->commit();
             $this->clearCache();
-            $location = atkTools::session_url(dispatch_url($this->m_node->atknodetype(), "edit", array("atkselector" => $this->m_node->primaryKey($record))), SESSION_REPLACE);
+            $location = atkTools::session_url(atkTools::dispatch_url($this->m_node->atknodetype(), "edit", array("atkselector" => $this->m_node->primaryKey($record))), SESSION_REPLACE);
             $this->m_node->redirect($location);
         }
     }
@@ -73,4 +73,3 @@ class atkEditCopyHandler extends atkActionHandler
 
 }
 
-?>

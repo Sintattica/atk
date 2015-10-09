@@ -79,4 +79,3 @@ class atkToolbar extends atkDummyAttribute
 
 }
 
-?>

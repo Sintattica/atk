@@ -59,4 +59,3 @@ $page->addContent($res);
 $output->output($page->render(atkTools::atktext('app_title') . ' - ' . atkTools::atktext('help'), true));
 
 $output->outputFlush();
-?>

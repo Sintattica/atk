@@ -255,7 +255,7 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
         if (empty($current) || $this->loadCriteria($current) == NULL)
             return NULL;
         else
-            return atkTools::session_url(dispatch_url($this->m_node->atkNodeType(), $this->m_action, array('forget_criteria' => $current)), SESSION_REPLACE);
+            return atkTools::session_url(atkTools::dispatch_url($this->m_node->atkNodeType(), $this->m_action, array('forget_criteria' => $current)), SESSION_REPLACE);
     }
 
     /**

@@ -220,7 +220,7 @@ class atkExportHandler extends atkActionHandler
         // Update selection
         if (array_key_exists('exportvalue', $this->m_postvars) && array_key_exists('save_export', $this->m_postvars) && '' != $this->m_postvars['export_selection_name']) {
             $this->updateSelection();
-            $this->getNode()->redirect(dispatch_url($this->getNode(), 'export'));
+            $this->getNode()->redirect(atkTools::dispatch_url($this->getNode(), 'export'));
         }
 
         // Save selection
@@ -566,4 +566,4 @@ class atkExportHandler extends atkActionHandler
 
 }
 
-?>
+

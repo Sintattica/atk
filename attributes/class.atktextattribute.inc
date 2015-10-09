@@ -293,4 +293,4 @@ class atkTextAttribute extends atkAttribute
 
 }
 
-?>
+

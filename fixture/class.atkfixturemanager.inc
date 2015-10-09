@@ -261,4 +261,3 @@ class atkFixtureManager
 $manager = &atkFixtureManager::getInstance();
 $manager->registerLoader('atk.fixture.atkyamlfixtureloader', array('yml', 'yaml'));
 $manager->registerLoader('atk.fixture.atkphpfixtureloader', array('php'));
-?>

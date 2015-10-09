@@ -133,4 +133,3 @@ function &atkSetSecurityManager(&$mgr)
     return $obj;
 }
 
-?>

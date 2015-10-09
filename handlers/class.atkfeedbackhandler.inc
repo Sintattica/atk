@@ -74,4 +74,3 @@ class atkFeedbackHandler extends atkActionHandler
 
 }
 
-?>

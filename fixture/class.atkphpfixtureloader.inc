@@ -42,4 +42,3 @@ class atkPHPFixtureLoader extends atkAbstractFixtureLoader
 
 }
 
-?>

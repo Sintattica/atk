@@ -24,4 +24,4 @@ $theme["select"] = "#96a7ff";
 $theme["tabtype"] = "dhtml";
 
 $theme['frame_top_height'] = 95;
-?>
+

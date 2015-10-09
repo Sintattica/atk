@@ -206,4 +206,3 @@ class auth_sspi extends auth_db
 
 }
 
-?>

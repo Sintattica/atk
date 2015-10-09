@@ -18,4 +18,3 @@ set_error_handler('atkTools::atkErrorHandler');
 error_reporting(E_ALL);
 
 set_exception_handler('atkTools::atkExceptionHandler');
-?>

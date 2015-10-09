@@ -92,4 +92,3 @@ class atkOci8Query extends atkQuery
 
 }
 
-?>

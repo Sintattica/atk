@@ -117,4 +117,3 @@ class auth_ldap extends auth_interface
 
 }
 
-?>

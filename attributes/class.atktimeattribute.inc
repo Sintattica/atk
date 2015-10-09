@@ -512,4 +512,3 @@ class atkTimeAttribute extends atkAttribute
 
 }
 
-?>

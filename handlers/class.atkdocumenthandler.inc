@@ -112,4 +112,3 @@ class atkDocumentHandler extends atkActionHandler
 
 }
 
-?>

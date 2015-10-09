@@ -40,4 +40,4 @@ class atkDocxWriter extends atkOpenDocumentWriter
 
 }
 
-?>
+

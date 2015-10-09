@@ -130,4 +130,3 @@ class auth_pop3 extends auth_interface
 
 }
 
-?>

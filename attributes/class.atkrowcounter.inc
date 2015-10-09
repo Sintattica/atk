@@ -56,4 +56,3 @@ class atkRowCounter extends atkDummyAttribute
 
 }
 
-?>

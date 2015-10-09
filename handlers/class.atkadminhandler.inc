@@ -214,7 +214,7 @@ class atkAdminHandler extends atkActionHandler
             // reset search so we can back to the normal admin screen if we want
             $grid->setPostvar('atksearch', array());
 
-            $url = atkTools::session_url(dispatch_url($node->atkNodeType(), $action, array('atkselector' => $node->primaryKey($records[0]))), SESSION_NESTED);
+            $url = atkTools::session_url(atkTools::dispatch_url($node->atkNodeType(), $action, array('atkselector' => $node->primaryKey($records[0]))), SESSION_NESTED);
 
             if ($grid->isUpdate()) {
                 atkTools::atkimport('atk.utils.atkjson');
@@ -267,7 +267,7 @@ class atkAdminHandler extends atkActionHandler
     {
         $link = "";
         if ($this->m_node->allowed("add") && !$this->m_node->hasFlag(NF_READONLY) && $this->m_node->hasFlag(NF_IMPORT)) {
-            $link.= atkTools::href(dispatch_url($this->m_node->atkNodeType(), "import"), atkTools::atktext("import", "atk", $this->m_node->m_type), SESSION_NESTED);
+            $link.= atkTools::href(atkTools::dispatch_url($this->m_node->atkNodeType(), "import"), atkTools::atktext("import", "atk", $this->m_node->m_type), SESSION_NESTED);
         }
         return $link;
     }
@@ -286,7 +286,7 @@ class atkAdminHandler extends atkActionHandler
                 $filter = implode(' AND ', str_replace('[table]', $this->m_node->getTable(), $this->m_node->m_fuzzyFilters));
             }
 
-            $link.= atkTools::href(dispatch_url($this->m_node->atkNodeType(), "export", array('atkfilter' => $filter)), atkTools::atktext("export", "atk", $this->m_node->m_type), SESSION_NESTED);
+            $link.= atkTools::href(atkTools::dispatch_url($this->m_node->atkNodeType(), "export", array('atkfilter' => $filter)), atkTools::atktext("export", "atk", $this->m_node->m_type), SESSION_NESTED);
         }
         return $link;
     }
@@ -414,4 +414,4 @@ class atkAdminHandler extends atkActionHandler
 
 }
 
-?>
+

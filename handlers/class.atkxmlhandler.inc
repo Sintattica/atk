@@ -78,4 +78,3 @@ class atkXmlHandler extends atkActionHandler
 
 }
 
-?>

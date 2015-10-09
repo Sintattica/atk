@@ -504,4 +504,4 @@ class atkSecureRelation extends atkOneToOneRelation
 
 }
 
-?>
+

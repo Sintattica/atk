@@ -42,4 +42,3 @@ class atkOci9DDL extends atkOci8DDL
 
 }
 
-?>

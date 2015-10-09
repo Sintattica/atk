@@ -17,4 +17,4 @@
 /** Theme definition */
 $theme["highlight"] = "#b5c7f4";
 $theme["tabtype"] = "dhtml";
-?>
+

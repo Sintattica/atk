@@ -28,4 +28,4 @@ $theme["recordlist_vorientation"] = 'top';
 $theme['recordlist_icons'] = true;
 $theme['dialog_theme_name'] = 'alphacube';
 $theme['dialog_theme_load'] = true;
-?>
+

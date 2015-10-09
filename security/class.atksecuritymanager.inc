@@ -762,4 +762,4 @@ function is_allowed($node, $privilege)
         return $secMgr->allowed($node, $privilege);
 }
 
-?>
+

@@ -54,4 +54,3 @@ class atkCreatedByAttribute extends atkUpdatedByAttribute
 
 }
 
-?>

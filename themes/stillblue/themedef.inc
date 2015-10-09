@@ -27,4 +27,4 @@ $theme['dispatcher'] = 'index.php';
 $theme['menufile'] = 'index.php';
 $theme['menu_params'] = "class='menulink'";
 $theme["tabtype"] = "dhtml";
-?>
+

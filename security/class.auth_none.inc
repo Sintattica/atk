@@ -67,4 +67,3 @@ class auth_none extends auth_interface
 
 }
 
-?>

@@ -108,4 +108,3 @@ class mod_meta extends atkModule
 
 }
 
-?>

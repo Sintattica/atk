@@ -16,4 +16,4 @@
  */
 /** Theme definition */
 $theme["highlight"] = "#ccffcc";
-?>
+

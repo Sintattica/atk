@@ -1636,7 +1636,7 @@ class atkDataGrid
      */
     public function getSaveCall()
     {
-        $url = atkTools::session_url(dispatch_url($this->getNode()->atkNodeType(), 'multiupdate', array('output' => 'json')), SESSION_PARTIAL);
+        $url = atkTools::session_url(atkTools::dispatch_url($this->getNode()->atkNodeType(), 'multiupdate', array('output' => 'json')), SESSION_PARTIAL);
         atkTools::atkimport('atk.utils.atkjson');
         return 'ATK.DataGrid.save(' . atkJSON::encode($this->getName()) . ', ' . atkJSON::encode($url) . ');';
     }

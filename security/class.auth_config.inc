@@ -183,4 +183,4 @@ class auth_config extends auth_interface
 
 }
 
-?>
+

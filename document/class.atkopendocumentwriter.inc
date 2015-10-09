@@ -334,4 +334,3 @@ class atkOpenDocumentWriter extends atkDocumentWriter
 
 }
 
-?>

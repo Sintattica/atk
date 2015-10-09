@@ -27,4 +27,3 @@ $GLOBALS['PHP_SELF'] = atkTools::atkSelf();
  * @deprecated in favor of the atkTools::atkSelf() function.
  */
 $_SERVER["PHP_SELF"] = atkTools::atkSelf();
-?>

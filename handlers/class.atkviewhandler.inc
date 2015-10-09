@@ -313,4 +313,3 @@ class atkViewHandler extends atkViewEditBase
 
 }
 
-?>

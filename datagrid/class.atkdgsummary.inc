@@ -70,4 +70,3 @@ class atkDGSummary extends atkDGComponent
 
 }
 
-?>

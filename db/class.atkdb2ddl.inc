@@ -180,4 +180,3 @@ class atkDb2DDL extends atkDDL
 
 }
 
-?>

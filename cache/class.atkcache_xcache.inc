@@ -178,4 +178,3 @@ class atkCache_xcache extends atkCache
 
 }
 
-?>

@@ -68,4 +68,3 @@ $GLOBALS['g_modifiers'] = array();
  * Overloaders
  */
 $GLOBALS['g_overloaders'] = array();
-?>

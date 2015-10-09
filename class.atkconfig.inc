@@ -429,4 +429,4 @@ function module($name, $path = "", $flags = 0)
         $g_moduleflags[$name] = $flags;
 }
 
-?>
+

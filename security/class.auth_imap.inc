@@ -88,4 +88,3 @@ class auth_imap extends auth_interface
 
 }
 
-?>

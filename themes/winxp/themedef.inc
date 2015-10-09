@@ -22,4 +22,4 @@ $theme["select"] = "#D6DFF7";
 $theme["tabtype"] = "dhtml";
 $theme["modern_menu_compat"] = true;
 $theme['compatible_menus'] = array("modern");
-?>
+

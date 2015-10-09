@@ -49,4 +49,3 @@ class atkDGNoRecordsFound extends atkDGComponent
 
 }
 
-?>

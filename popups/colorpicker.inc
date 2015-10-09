@@ -69,4 +69,3 @@ $page->addContent($layout);
 $output->output($page->render(atkTools::atktext("colorpicker_selectcolor", "atk"), true));
 
 $output->outputFlush();
-?>

@@ -583,4 +583,4 @@ class atkTabbedPane extends atkAttribute
 
 }
 
-?>
+

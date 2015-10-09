@@ -148,4 +148,3 @@ class atkMultiSelectHandler extends atkAdminHandler
 
 }
 
-?>

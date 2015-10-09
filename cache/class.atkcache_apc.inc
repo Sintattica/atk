@@ -133,4 +133,3 @@ class atkCache_apc extends atkCache
 
 }
 
-?>

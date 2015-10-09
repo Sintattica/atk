@@ -135,4 +135,3 @@ class atkCache_memcache extends atkCache
 
 }
 
-?>

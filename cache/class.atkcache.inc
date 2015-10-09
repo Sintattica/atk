@@ -311,4 +311,3 @@ abstract class atkCache implements ArrayAccess
 
 }
 
-?>

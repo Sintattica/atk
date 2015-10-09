@@ -128,7 +128,7 @@ class atkDocumentAttribute extends atkDummyAttribute
 
         // Add the button to the html
         $selector = $this->m_ownerInstance->primaryKey($record);
-        $onclickscript = 'window.location="' . atkTools::session_url(dispatch_url($module . "." . $node, "document", array("atkselector" => $selector)), SESSION_DEFAULT) . '&atkdoctpl="+this.form.atkdoctpl.value;';
+        $onclickscript = 'window.location="' . atkTools::session_url(atkTools::dispatch_url($module . "." . $node, "document", array("atkselector" => $selector)), SESSION_DEFAULT) . '&atkdoctpl="+this.form.atkdoctpl.value;';
 
         $html .= '<input type="button" class="btn_doc_open" name="atkdocument" value="' . atkTools::atktext("open") . '" onclick=\'' . $onclickscript . '\'>';
 
@@ -144,4 +144,4 @@ class atkDocumentAttribute extends atkDummyAttribute
 
 }
 
-?>
+

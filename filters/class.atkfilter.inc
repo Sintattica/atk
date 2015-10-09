@@ -65,4 +65,3 @@ class atkFilter extends atkAttribute
 
 }
 
-?>

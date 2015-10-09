@@ -74,4 +74,3 @@ class atkOci805Query extends atkOci8Query
 
 }
 
-?>
