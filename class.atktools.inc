@@ -1043,7 +1043,7 @@ class atkTools
      */
     public static function exportData($data, $filename, $compression = "")
     {
-        $browser = getBrowserInfo();
+        $browser = self::getBrowserInfo();
         if (preg_match("/ie/i", $browser["browser"])) {
             $mime = "application/octetstream";
             $disp = 'inline';
@@ -1104,8 +1104,8 @@ class atkTools
      */
     public static function exportFile($file, $filename, $mimetype = "", $detectmime = true)
     {
-        include_once(atkConfig::getGlobal("atkroot") . "atk/atkbrowsertools.inc");
-        $browser = getBrowserInfo();
+        include_once(atkConfig::getGlobal("atkroot") . "atk/utils/class.atkbrowsertools.inc");
+        $browser = self::getBrowserInfo();
         if (preg_match("/ie/i", $browser["browser"])) {
             $mime = "application/octetstream";
             $disp = 'attachment';
@@ -2004,7 +2004,7 @@ class atkTools
      *              Note that tabs that every user may see need not be
      *              registered.
      */
-    function registerNode($node, $action, $tabs = array(), $section = null)
+    public static function registerNode($node, $action, $tabs = array(), $section = null)
     {
         if (!is_array($tabs)) {
             $section = $tabs;
@@ -2024,5 +2024,28 @@ class atkTools
         if ($section == null)
             $section = $module;
         $g_nodes[$section][$module][$type] = array_merge($action, $tabs);
+    }
+
+
+    public static function getBrowserInfo($useragent = "")
+    {
+        $tmp = new atkBrowserInfo($useragent);
+        return array
+        (
+            "ua" => $tmp->ua,
+            "version" => $tmp->full_version,
+            "browser" => $tmp->browser,
+            "major" => $tmp->major,
+            "minor" => $tmp->minor,
+            "os" => $tmp->os,
+            "platform" => $tmp->platform,
+            "short" => $tmp->short,
+            "brName" => $tmp->brName,
+            "osName" => $tmp->osName,
+            "hasGui" => $tmp->hasGui,
+            "spider" => $tmp->spider,
+            "family" => $tmp->family,
+            "gecko" => $tmp->gecko
+        );
     }
 }

@@ -17,7 +17,7 @@
 /**
  * include
  */
-include_once(atkconfig("atkroot") . "atk/atkbrowsertools.inc");
+include_once(atkconfig("atkroot") . "atk/utils/class.atkbrowsertools.inc");
 atkTools::atkimport("atk.attributes.atkattribute");
 
 /**
@@ -265,7 +265,7 @@ class atkTextAttribute extends atkAttribute
      */
     function doAutoAdjust($data, &$rows, &$cols)
     {
-        $browser = new browserInfo;
+        $browser = new atkBrowserInfo();
         $maxlinechars = 0;
         for ($counter = 0, $linecharacters = 0, $rowsrequired = 1; $counter < atkTools::atk_strlen($data); $counter++, $linecharacters++) {
             // Current character we are parsing

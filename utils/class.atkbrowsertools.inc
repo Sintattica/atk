@@ -22,9 +22,8 @@
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk
  * @subpackage utils
- * @todo Move this class to the utils subpackage dir.
  */
-class browserInfo
+class atkBrowserInfo
 {
     var $ua = "";
     var $full_version = "";
@@ -41,8 +40,7 @@ class browserInfo
     var $family = "";
     var $gecko = 0;
 
-    // constructor function
-    function browserInfo($ua = "")
+    function __construct($ua = "")
     {
 
         // set ua
@@ -140,85 +138,65 @@ class browserInfo
             $this->browser = 'Opera';
             $this->brName = "Opera";
             $this->hasGui = 1;
-        }
-
-        // iCab
+        } // iCab
         elseif (eregi('iCab ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('iCab/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'iCab';
             $this->brName = "iCAB";
             $this->hasGui = 1;
-        }
-
-        // Lynx
+        } // Lynx
         elseif (eregi('Lynx ([0-9].[0-9a-zA-Z.]{1,9})', $this->ua, $info) || eregi('Lynx/([0-9].[0-9a-zA-Z.]{1,9})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'Lynx';
             $this->platform = 'Unix';
             $this->brName = "Lynx (textbrowser)";
             $this->hasGui = 0;
-        }
-
-        // Wget
+        } // Wget
         elseif (eregi('Wget/([0-9].[0-9a-zA-Z.]{1,9})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'Wget';
             $this->platform = 'Unix';
             $this->brName = "Wget";
             $this->hasGui = 0;
-        }
-
-        // Snoopy (PHP HTTP stuff)
+        } // Snoopy (PHP HTTP stuff)
         elseif (eregi('Snoopy v([0-9].[0-9a-zA-Z.]{1,9})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'Snoopy';
             $this->brName = "Snoopy";
             $this->hasGui = 0;
-        }
-
-        // GetRight
+        } // GetRight
         elseif (eregi('GetRight/([0-9].[0-9a-zA-Z.]{1,9})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'GetRight';
             $this->platform = 'Win9xNT';
             $this->brName = "GetRight";
             $this->hasGui = 0;
-        }
-
-        // KDE Konqueror
+        } // KDE Konqueror
         elseif (eregi('Konqueror ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Konqueror/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'Konqueror';
             $this->platform = 'Unix';
             $this->brName = "KDE Konqueror";
             $this->hasGui = 1;
-        }
-
-        // Netscape 6
+        } // Netscape 6
         elseif (eregi('Netscape6/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'Netscape';
             $this->brName = "Netscape";
             $this->hasGui = 1;
-        }
-
-        // NCSA Mosaic
+        } // NCSA Mosaic
         elseif (eregi('nsca mosaic ([0-9].[0-9a-zA-Z]{1,4})', strtolower($this->ua), $info)) {
             $this->full_version = $info[1];
             $this->browser = 'NSCA Mosaic';
             $this->brName = "NSCA Mosaic";
             $this->hasGui = 1;
-        }
-
-        // Prodigy Classic
+        } // Prodigy Classic
         elseif (eregi('prodigy-wb/([0-9].[0-9a-zA-Z]{1,4})', strtolower($this->ua), $info)) {
             $this->full_version = $info[1];
             $this->browser = 'Prodigy Classic';
             $this->brName = $this->browser;
             $this->hasGui = 1;
-        }
-
-        // Nokia Communicator
+        } // Nokia Communicator
         elseif (eregi('Nokia-Communicator-WWW-Browser ([0-9].[0-9a-zA-Z]{1,4})', strtolower($this->ua), $info)) {
             $this->full_version = $info[1];
             $this->browser = 'Nokia Communicator';
@@ -230,106 +208,84 @@ class browserInfo
         // CRAWLERS, SPIDERS ETC.
         //
 
-     // Inktomi
+        // Inktomi
         elseif (eregi('Slurp/', $this->ua, $info)) {
             $this->full_version = 0;
             $this->browser = 'Inktomi Web Robot';
             $this->brName = "Inktomi Web Robot";
             $this->hasGui = 0;
             $this->spider = 1;
-        }
-
-        // Google
+        } // Google
         elseif (eregi('Googlebot/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'Google WebCrawler';
             $this->brName = "Google WebCrawler";
             $this->hasGui = 0;
             $this->spider = 1;
-        }
-
-        // ASPSeek
+        } // ASPSeek
         elseif (eregi('ASPSeek/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'ASPSeek';
             $this->brName = "ASPSeek";
             $this->hasGui = 0;
             $this->spider = 1;
-        }
-
-        // ArchitextSpider
+        } // ArchitextSpider
         elseif (eregi('ArchitextSpider', $this->ua, $info)) {
             $this->full_version = 0;
             $this->browser = 'ArchitextSpider';
             $this->brName = "ArchitextSpider";
             $this->hasGui = 0;
             $this->spider = 1;
-        }
-
-        // Lycos spider
+        } // Lycos spider
         elseif (eregi('Lycos_Spider', $this->ua, $info)) {
             $this->full_version = 0;
             $this->browser = 'Lycos Spider';
             $this->brName = "Lycos Spider";
             $this->hasGui = 0;
             $this->spider = 1;
-        }
-
-        // Offline Explorer
+        } // Offline Explorer
         elseif (eregi('Offline Explorer/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'Offline Explorer';
             $this->brName = "Offline Explorer";
             $this->hasGui = 0;
             $this->spider = 1;
-        }
-
-        // Openbot/3.0
+        } // Openbot/3.0
         elseif (eregi('Openbot/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'Openfind Data Gatherer';
             $this->brName = "Openfind Data Gatherer";
             $this->hasGui = 0;
             $this->spider = 1;
-        }
-
-        // Scooter
+        } // Scooter
         elseif (eregi('Scooter-([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Scooter-', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'Scooter';
             $this->brName = "Scooter";
             $this->hasGui = 0;
             $this->spider = 1;
-        }
-
-        // Sqworm/2.9.70-BETA
+        } // Sqworm/2.9.70-BETA
         elseif (eregi('Sqworm/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'Sqworm';
             $this->brName = "Sqworm";
             $this->hasGui = 0;
             $this->spider = 1;
-        }
-
-        // True_Robot/1.0
+        } // True_Robot/1.0
         elseif (eregi('True_Robot/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'True_Robot';
             $this->brName = "True Robot";
             $this->hasGui = 0;
             $this->spider = 1;
-        }
-
-        // libwww-perl/5.52
+        } // libwww-perl/5.52
         elseif (eregi('libwww-perl/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'libwww-perl';
             $this->brName = "libwww-perl";
             $this->hasGui = 0;
             $this->spider = 1;
-        }
-
-        // psbot/0.1
+        } // psbot/0.1
         elseif (eregi('psbot/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'picsearch crawler';
@@ -401,7 +357,8 @@ class browserInfo
             $browser == "WAPJ" || // Virtual WAPJAG www.wapjag.de
             $browser == "fetc" || // fetchpage.cgi Perl script from www.wapcab.de
             $browser == "ALAV" || // yet another unknown UP based browser ?
-            $browser == "Wapa") // another unknown browser ("Wapalyzer"?)
+            $browser == "Wapa"
+        ) // another unknown browser ("Wapalyzer"?)
             return true;
         else if (strstr($_SERVER["HTTP_USER_AGENT"], "Blazer")) { // Palm's browser
             return true;
@@ -440,16 +397,12 @@ class browserInfo
             $this->platform = "Win32";
             $this->os = "Win95";
             $this->osname = "Windows 95";
-        }
-
-        // Windows 98
+        } // Windows 98
         elseif (eregi('Win98', $this->ua) || eregi('windows 98', $this->ua)) {
             $this->platform = "Win32";
             $this->os = "Win98";
             $this->osname = "Windows 98";
-        }
-
-        // Windows NT
+        } // Windows NT
         elseif (eregi('WinNT', $this->ua) || eregi('windows NT', $this->ua)) {
             $this->platform = "Win32";
             $this->os = "WinNT";
@@ -466,16 +419,12 @@ class browserInfo
                 $this->os = "WinXP";
                 $this->osname = "Windows XP";
             }
-        }
-
-        // Windows ME
+        } // Windows ME
         elseif (eregi('win 9x 4.90', $this->ua)) {
             $this->platform = "Win32";
             $this->os = "Win ME";
             $this->osname = "Windows Millenium";
-        }
-
-        // Other Win 32
+        } // Other Win 32
         elseif (eregi('Win', $this->ua)) {
             $this->platform = "Win32";
             $this->os = "Win9xNT";
@@ -626,40 +575,4 @@ class browserInfo
             $this->os = "SCO";
         }
     }
-
 }
-
-function getBrowserInfo($useragent = "")
-{
-    $tmp = new browserInfo($useragent);
-    return array
-        (
-        "ua" => $tmp->ua,
-        "version" => $tmp->full_version,
-        "browser" => $tmp->browser,
-        "major" => $tmp->major,
-        "minor" => $tmp->minor,
-        "os" => $tmp->os,
-        "platform" => $tmp->platform,
-        "short" => $tmp->short,
-        "brName" => $tmp->brName,
-        "osName" => $tmp->osName,
-        "hasGui" => $tmp->hasGui,
-        "spider" => $tmp->spider,
-        "family" => $tmp->family,
-        "gecko" => $tmp->gecko
-    );
-}
-
-/**
- * This function can be used to determine if we are using ie specific extensions.
- * The function checks the value of the $config_enable_ie_extensions variable
- * and also the browser that the user is using.
- */
-function ieExtensions()
-{
-    $browser = getBrowserInfo();
-    return (atkconfig("enable_ie_extensions") && $browser["family"] == "ie5up");
-}
-
-?>

@@ -32,7 +32,7 @@ define("AF_DATE_DEFAULT_EMPTY", AF_SPECIFIC_7|AF_DATE_EMPTYFIELD); // Always use
 $config_atkroot = atkconfig("atkroot");
 require_once($config_atkroot . "atk/utils/adodb-time.inc.php");
 // Include browsertools for PDA detection
-include_once($config_atkroot . "atk/atkbrowsertools.inc");
+include_once($config_atkroot . "atk/utils/class.atkbrowsertools.inc");
 
 /**
  * The atkDateAttribute class offers a date widget for date fields.
@@ -501,7 +501,7 @@ class atkDateAttribute extends atkAttribute
         $result = "";
 
         // go in simplemode when a pda is detected
-        if (browserInfo::detectPDA())
+        if (atkBrowserInfo::detectPDA())
             $this->setSimpleMode(true);
 
         $this->m_yeardropdown = false;
