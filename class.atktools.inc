@@ -977,9 +977,10 @@ class atkTools
      */
     public static function triggerError(&$rec, $attrib, $err, $msg = "", $tab = "", $label = '', $module = 'atk')
     {
-        if ($msg == "")
+        if ($msg == "") {
             $msg = self::atktext($err, $module);
-        $rec['self::atkerror'][] = array("attrib_name" => $attrib, "err" => $err, "msg" => $msg, "tab" => $tab, "label" => $label);
+        }
+        $rec['atkerror'][] = array("attrib_name" => $attrib, "err" => $err, "msg" => $msg, "tab" => $tab, "label" => $label);
     }
 
     /**
@@ -1015,7 +1016,7 @@ class atkTools
             }
         }
 
-        triggerError($record, $attribName, $error, $message, $tab, $label);
+        self::triggerError($record, $attribName, $error, $message, $tab, $label);
     }
 
 

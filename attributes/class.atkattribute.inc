@@ -3020,6 +3020,7 @@ class atkAttribute
      */
     function __toString()
     {
+        return $this->fieldName();
         return $this->m_ownerInstance->atkNodeType() . "::" . $this->fieldName();
     }
 

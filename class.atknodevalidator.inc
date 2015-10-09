@@ -141,7 +141,7 @@ class atkNodeValidator
 
                 // validate obligatory fields (but not the auto_increment ones, because they don't have a value yet)
                 if ($p_attrib->hasFlag(AF_OBLIGATORY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT) && $p_attrib->isEmpty($record)) {
-                    atkTools::triggerError($record, $p_attrib, 'error_obligatoryfield');
+                    atkTools::atkTriggerError($record, $p_attrib, 'error_obligatoryfield');
                 }
                 // if flag is primary
                 else if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) && !$p_attrib->isEmpty($record)) {
@@ -154,7 +154,7 @@ class atkNodeValidator
                         ->ignorePostvars(true)
                         ->getRowCount();
                     if ($cnt > 0) {
-                        atkTools::triggerError($record, $p_attrib, 'error_uniquefield');
+                        atkTools::atkTriggerError($record, $p_attrib, 'error_uniquefield');
                     }
                 }
             }
@@ -251,7 +251,7 @@ class atkNodeValidator
             }
 
             if (count($db->getRows($query->buildSelect())) > 0) {
-                atkTools::triggerError($record, $attribs, 'error_uniquefieldset');
+                atkTools::atkTriggerError($record, $attribs, 'error_uniquefieldset');
             }
         }
     }

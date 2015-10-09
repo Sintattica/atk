@@ -2428,6 +2428,7 @@ class atkNode
 
         /* get data, transform into "form", return */
         $data = $this->editArray($mode, $record, $forceList, $suppressList, $fieldprefix);
+        $form = '';
         foreach ($data["hide"] as $hide)
             $form .= $hide;
         return $form;
