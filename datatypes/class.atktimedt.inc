@@ -14,7 +14,7 @@
  * @version $Revision: 6318 $
  * $Id$
  */
-atkimport('atk.datatypes.atkdatatype');
+atkTools::atkimport('atk.datatypes.atkdatatype');
 
 /**
  * The 'time' datatype.
@@ -66,7 +66,7 @@ class atkTime extends atkDataType
         } else if (is_numeric($time))
             $this->m_time = $time;
         else
-            atkerror("Unknown time format! Called with: " .
+            atkTools::atkerror("Unknown time format! Called with: " .
                 "new atkTime($time)");
     }
 
@@ -130,7 +130,7 @@ class atkTime extends atkDataType
      */
     public function setTemplate($template)
     {
-        $this->m_template = atknew('atk.datatypes.atkstringdt', $template);
+        $this->m_template = atkTools::atknew('atk.datatypes.atkstringdt', $template);
         return $this;
     }
 
@@ -271,7 +271,7 @@ class atkTime extends atkDataType
     public function getFormatted($format = '')
     {
         $format = ($format ? $format : $this->m_format);
-        atkdebug("formatting time: {$this->m_time} with format $format");
+        atkTools::atkdebug("formatting time: {$this->m_time} with format $format");
         return date($format, $this->m_time);
     }
 

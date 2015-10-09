@@ -51,11 +51,11 @@ class atkOci8Db extends atkDb
         /* establish connection to database */
         if (empty($this->m_link_id)) {
             $connectfunc = (atkconfig("databasepersistent") ? "OCIPlogon" : "OCILogon");
-            atkdebug("Connectiontype: " . $connectfunc);
+            atkTools::atkdebug("Connectiontype: " . $connectfunc);
             $this->m_link_id = $connectfunc($this->m_user, $this->m_password, $this->m_database);
             if (!$this->m_link_id) {
                 $error = OCIError(); // can't pass link_id because it is null if connect failed.
-                atkdebug("CONNECT ERROR");
+                atkTools::atkdebug("CONNECT ERROR");
                 $this->halt($this->_translateError($error));
             }
 
@@ -89,7 +89,7 @@ class atkOci8Db extends atkDb
      */
     function getAtkDbErrno()
     {
-        atkdebug("atkoci8db::getAtkDbErrno() -> " . $this->getDbErrno());
+        atkTools::atkdebug("atkoci8db::getAtkDbErrno() -> " . $this->getDbErrno());
         return $this->_translateError(array('code' => $this->getDbErrno(), 'error' => $this->getDbError()));
     }
 
@@ -104,7 +104,7 @@ class atkOci8Db extends atkDb
     {
         $this->m_errno = $err['code'];
         $this->m_error = ($err['message'] ? $err['message'] : $err['error']);
-        atkdebug(get_class($this) . '::_translateError() -> DB Error code: ' . $err['code']);
+        atkTools::atkdebug(get_class($this) . '::_translateError() -> DB Error code: ' . $err['code']);
         switch ($this->m_errno) {
             case 0: return DB_SUCCESS;
             case 1017: return DB_ACCESSDENIED_USER;
@@ -120,7 +120,7 @@ class atkOci8Db extends atkDb
     function disconnect()
     {
         if ($this->m_link_id) {
-            atkdebug("Disconnecting from database...");
+            atkTools::atkdebug("Disconnecting from database...");
             OCILogoff($this->m_link_id);
         }
     }
@@ -147,7 +147,7 @@ class atkOci8Db extends atkDb
      */
     function commit()
     {
-        atkdebug(get_class($this) . "::commit");
+        atkTools::atkdebug(get_class($this) . "::commit");
         if ($this->m_link_id) {
             return OCICommit($this->m_link_id);
         }
@@ -162,7 +162,7 @@ class atkOci8Db extends atkDb
      */
     function savepoint($name)
     {
-        atkdebug(get_class($this) . "::savepoint $name");
+        atkTools::atkdebug(get_class($this) . "::savepoint $name");
         $this->query('SAVEPOINT ' . $name);
     }
 
@@ -175,10 +175,10 @@ class atkOci8Db extends atkDb
     function rollback($savepoint = "")
     {
         if (!empty($savepoint)) {
-            atkdebug(get_class($this) . "::rollback (rollback to savepoint $savepoint)");
+            atkTools::atkdebug(get_class($this) . "::rollback (rollback to savepoint $savepoint)");
             $this->query('ROLLBACK TO SAVEPOINT ' . $savepoint);
         } else if ($this->m_link_id) {
-            atkdebug(get_class($this) . "::rollback (global rollback)");
+            atkTools::atkdebug(get_class($this) . "::rollback (global rollback)");
             OCIRollback($this->m_link_id);
         }
         return true;
@@ -207,7 +207,7 @@ class atkOci8Db extends atkDb
         }
 
         /* query */
-        atkdebug("atkoci8db.query(): " . $query);
+        atkTools::atkdebug("atkoci8db.query(): " . $query);
 
         /* connect to database */
         if ($this->connect() == DB_SUCCESS) {
@@ -224,14 +224,14 @@ class atkOci8Db extends atkDb
             if ($this->m_query_id) {
                 if (!@OCIExecute($this->m_query_id, OCI_DEFAULT)) {
                     $error = OCIError($this->m_query_id);
-                    atkerror("Invalid SQL: $query");
+                    atkTools::atkerror("Invalid SQL: $query");
                     $this->halt($this->_translateError($error));
                     return false;
                 }
             } else {
                 /* error in query */
                 $error = OCIError($this->m_link_id);
-                atkerror("Invalid SQL: $query");
+                atkTools::atkerror("Invalid SQL: $query");
                 $this->halt($this->_translateError($error));
                 return false;
             }
@@ -448,20 +448,20 @@ class atkOci8Db extends atkDb
         if ($this->connect() == DB_SUCCESS) {
             $sequence = atkconfig("database_sequenceprefix") . $sequence;
             $query = "SELECT {$sequence}.NEXTVAL AS value FROM DUAL";
-            atkdebug($query);
+            atkTools::atkdebug($query);
             list($row) = $this->getRows($query);
             $diff = $value - $row['value'];
             if ($diff > 0) {
                 $query = "ALTER SEQUENCE {$sequence} INCREMENT BY {$diff}";
-                atkdebug($query);
+                atkTools::atkdebug($query);
                 $queryId = OCIParse($this->m_link_id, $query);
                 @OCIExecute($queryId, OCI_DEFAULT) or $this->halt("Cannot set sequence value for sequence '$sequence'");
                 $query = "SELECT {$sequence}.NEXTVAL AS value FROM DUAL";
-                atkdebug($query);
+                atkTools::atkdebug($query);
                 $queryId = OCIParse($this->m_link_id, $query);
                 @OCIExecute($queryId, OCI_DEFAULT) or $this->halt("Cannot set sequence value for sequence '$sequence'");
                 $query = "ALTER SEQUENCE {$sequence} INCREMENT BY 1";
-                atkdebug($query);
+                atkTools::atkdebug($query);
                 $queryId = OCIParse($this->m_link_id, $query);
                 @OCIExecute($queryId, OCI_DEFAULT) or $this->halt("Cannot set sequence value for sequence '$sequence'");
             }
@@ -480,7 +480,7 @@ class atkOci8Db extends atkDb
      */
     function metadata($table, $full = false)
     {
-        atkimport("atk.db.atkddl");
+        atkTools::atkimport("atk.db.atkddl");
 
         $ddl = &$this->createDDL();
 

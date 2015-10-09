@@ -174,7 +174,7 @@ class atkDb2DDL extends atkDDL
 
     function needsQuotes($generictype)
     {
-        atkdebug("Needquotes for $generictype?");
+        atkTools::atkdebug("Needquotes for $generictype?");
         return !($generictype == "number" || $generictype == "decimal");
     }
 

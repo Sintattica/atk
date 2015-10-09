@@ -107,7 +107,7 @@ class atkNodeValidator
         if ($mode != "")
             $this->setMode($mode);
 
-        atkdebug("validate() with mode " . $this->m_mode . " for node " . $this->m_nodeObj->atkNodeType());
+        atkTools::atkdebug("validate() with mode " . $this->m_mode . " for node " . $this->m_nodeObj->atkNodeType());
 
         // set the record
         $record = &$this->m_record;
@@ -116,7 +116,7 @@ class atkNodeValidator
         $db = &$this->m_nodeObj->getDb();
         foreach ($this->m_nodeObj->m_attribIndexList as $attribdata) {
             $attribname = $attribdata['name'];
-            if (!atk_in_array($attribname, $this->m_ignoreList)) {
+            if (!atkTools::atk_in_array($attribname, $this->m_ignoreList)) {
                 $p_attrib = &$this->m_nodeObj->m_attribList[$attribname];
 
                 $this->validateAttributeValue($p_attrib, $record);
@@ -129,7 +129,7 @@ class atkNodeValidator
                             ->ignorePostvars(true)
                             ->getRowCount();
                         if ($cnt > 0) {
-                            atkTriggerError($record, $p_attrib, 'error_primarykey_exists');
+                            atkTools::triggerError($record, $p_attrib, 'error_primarykey_exists');
                         }
                     }
                 }
@@ -141,7 +141,7 @@ class atkNodeValidator
 
                 // validate obligatory fields (but not the auto_increment ones, because they don't have a value yet)
                 if ($p_attrib->hasFlag(AF_OBLIGATORY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT) && $p_attrib->isEmpty($record)) {
-                    atkTriggerError($record, $p_attrib, 'error_obligatoryfield');
+                    atkTools::triggerError($record, $p_attrib, 'error_obligatoryfield');
                 }
                 // if flag is primary
                 else if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) && !$p_attrib->isEmpty($record)) {
@@ -154,7 +154,7 @@ class atkNodeValidator
                         ->ignorePostvars(true)
                         ->getRowCount();
                     if ($cnt > 0) {
-                        atkTriggerError($record, $p_attrib, 'error_uniquefield');
+                        atkTools::triggerError($record, $p_attrib, 'error_uniquefield');
                     }
                 }
             }
@@ -202,7 +202,7 @@ class atkNodeValidator
     function validateAttributes(&$record)
     {
         foreach (array_keys($this->m_nodeObj->m_attribList) as $attribname) {
-            if (!atk_in_array($attribname, $this->m_ignoreList)) {
+            if (!atkTools::atk_in_array($attribname, $this->m_ignoreList)) {
                 $p_attrib = &$this->m_nodeObj->m_attribList[$attribname];
                 $this->validateAttributeValue($p_attrib, $record);
             }
@@ -220,7 +220,7 @@ class atkNodeValidator
     function validateUniqueFieldSets(&$record)
     {
         $db = &$this->m_nodeObj->getDb();
-        atkimport('atk.db.atkquery');
+        atkTools::atkimport('atk.db.atkquery');
         foreach ($this->m_nodeObj->m_uniqueFieldSets as $uniqueFieldSet) {
             $query = &$db->createQuery();
             $query->addField('*');
@@ -243,7 +243,7 @@ class atkNodeValidator
                         $query->addCondition($query->quoteField($field) . " = '" . $attrib->value2db($record) . "'");
                     }
                 } else
-                    atkerror("Field $field is mentioned in uniquefieldset but does not exist in " . $this->m_nodeObj->atknodetype());
+                    atkTools::atkerror("Field $field is mentioned in uniquefieldset but does not exist in " . $this->m_nodeObj->atknodetype());
             }
 
             if ($this->m_mode != 'add') {
@@ -251,7 +251,7 @@ class atkNodeValidator
             }
 
             if (count($db->getRows($query->buildSelect())) > 0) {
-                atkTriggerError($record, $attribs, 'error_uniquefieldset');
+                atkTools::triggerError($record, $attribs, 'error_uniquefieldset');
             }
         }
     }

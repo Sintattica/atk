@@ -14,7 +14,7 @@
  * @version $Revision$
  * $Id$
  */
-atkimport('atk.db.statement.atkstatement');
+atkTools::atkimport('atk.db.statement.atkstatement');
 
 /**
  * Base statement class used for database drivers which don't have their own
@@ -47,7 +47,7 @@ class atkCompatStatement extends atkStatement
             throw new atkStatementException("Cannot connect to database.", atkStatementException::NO_DATABASE_CONNECTION);
         }
 
-        atkdebug("Prepare query: " . $this->_getParsedQuery());
+        atkTools::atkdebug("Prepare query: " . $this->_getParsedQuery());
     }
 
     /**
@@ -60,10 +60,10 @@ class atkCompatStatement extends atkStatement
     protected function _bindParams($params)
     {
         $query = $this->_getParsedQuery();
-        atkdebug("Binding parameters for query: " . $this->_getParsedQuery());
+        atkTools::atkdebug("Binding parameters for query: " . $this->_getParsedQuery());
 
         foreach (array_values($this->_getBindPositions()) as $i => $param) {
-            atkdebug("Bind param {$i}: " . ($params[$param] === null ? 'NULL' : $params[$param]));
+            atkTools::atkdebug("Bind param {$i}: " . ($params[$param] === null ? 'NULL' : $params[$param]));
         }
 
         foreach (array_reverse($this->_getBindPositions(), true) as $position => $param) {

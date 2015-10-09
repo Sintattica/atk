@@ -91,8 +91,8 @@ class atkTreeNode extends atkNode
      */
     function buildTree()
     {
-        atkdebug("atktreenode::buildtree() " . $this->m_parent);
-        $recordset = $this->selectDb(atkArrayNvl($this->m_postvars, "atkfilter", ""), "", "", $this->m_listExcludes, "", "admin");
+        atkTools::atkdebug("atktreenode::buildtree() " . $this->m_parent);
+        $recordset = $this->selectDb(atkTools::atkArrayNvl($this->m_postvars, "atkfilter", ""), "", "", $this->m_listExcludes, "", "admin");
 
         $treeobject = new tree;
         for ($i = 0; $i < count($recordset); $i++)
@@ -122,7 +122,7 @@ class atkTreeNode extends atkNode
             $content.= $adminHeader . "<br><br>";
         }
 
-        atkdebug("Entering treeview page.");
+        atkTools::atkdebug("Entering treeview page.");
 
         $t = $this->buildTree();
 
@@ -141,15 +141,15 @@ class atkTreeNode extends atkNode
         $content.="<table border=\"0\" cellspacing=0 cellpadding=0 cols=" . ($g_maxlevel + 2) . " width=" . $width . ">\n";
 
         if (!$this->hasFlag(NF_NO_ADD) && $this->hasFlag(NF_ADD_LINK) && $this->allowed("add")) {
-            $addurl = atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=add&atkfilter=" . rawurlencode($this->m_parent . "." . $this->m_primaryKey[0] . "='0'");
-            if (atktext("txt_link_" . getNodeType($this->m_type) . "_add", $this->m_module, "", "", "", true) != "") {
+            $addurl = atkTools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=add&atkfilter=" . rawurlencode($this->m_parent . "." . $this->m_primaryKey[0] . "='0'");
+            if (atkTools::atktext("txt_link_" . getNodeType($this->m_type) . "_add", $this->m_module, "", "", "", true) != "") {
                 // specific text
-                $label = atktext("link_" . getNodeType($this->m_type) . "_add", $this->m_module);
+                $label = atkTools::atktext("link_" . getNodeType($this->m_type) . "_add", $this->m_module);
             } else {
                 // generic text
-                $label = atktext(getNodeType($this->m_type), $this->m_module) . " " . atktext("add", "atk");
+                $label = atkTools::atktext(getNodeType($this->m_type), $this->m_module) . " " . atkTools::atktext("add", "atk");
             }
-            $content.=href($addurl, $label, SESSION_NESTED) . '<br><br>';
+            $content.=atkTools::href($addurl, $label, SESSION_NESTED) . '<br><br>';
         }
 
         $content.= $this->GraphTreeRender();
@@ -160,9 +160,9 @@ class atkTreeNode extends atkNode
             $content.= "<br>" . $adminFooter;
         }
 
-        atkdebug("Generated treeview");
+        atkTools::atkdebug("Generated treeview");
 
-        return $ui->renderBox(array("title" => atktext('title_' . $this->m_type . '_tree', $this->m_module),
+        return $ui->renderBox(array("title" => atkTools::atktext('title_' . $this->m_type . '_tree', $this->m_module),
                 "content" => $content));
     }
 
@@ -174,7 +174,7 @@ class atkTreeNode extends atkNode
      */
     function Fill_tree($tree = "", $level = 0)
     {
-        atkdebug("WARNING: use of deprecated function Fill_tree, use treeToArray instead");
+        atkTools::atkdebug("WARNING: use of deprecated function Fill_tree, use treeToArray instead");
         return $this->treeToArray($tree, $level);
     }
 
@@ -232,7 +232,7 @@ class atkTreeNode extends atkNode
     {
         // Load used classes (and globals? :( )
         global $g_maxlevel, $g_theme, $exp_index;
-        atkimport("atk.utils.atkstringparser");
+        atkTools::atkimport("atk.utils.atkstringparser");
 
         // Return
         if (count($this->m_tree) == 1)
@@ -413,11 +413,11 @@ class atkTreeNode extends atkNode
 
                             if ($this->m_tree[$cnt]["isleaf"] == 1) {
                                 if ($cnt != 0)
-                                    $res.= "<td>" . href(atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params, "<img src=\"" . $img_end_plus . "\" border=0>") . "</td>\n";
+                                    $res.= "<td>" . atkTools::href(atkTools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params, "<img src=\"" . $img_end_plus . "\" border=0>") . "</td>\n";
                             }
                             else {
                                 if ($cnt != 0)
-                                    $res.= "<td>" . href(atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params, "<img src=\"" . $img_plus . "\" border=0>") . "</td>\n";
+                                    $res.= "<td>" . atkTools::href(atkTools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params, "<img src=\"" . $img_plus . "\" border=0>") . "</td>\n";
                             }
                         }
                         else {
@@ -442,7 +442,7 @@ class atkTreeNode extends atkNode
                             if ($this->m_tree[$cnt]["isleaf"] == 1) {
                                 if ($cnt != 0) {
                                     if ($foldable) {
-                                        $res.="<td>" . atkHref(atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params, "<img src=\"" . $img_end_minus . "\" border=0>") . "</td>\n";
+                                        $res.="<td>" . atkTools::atkHref(atkTools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params, "<img src=\"" . $img_end_minus . "\" border=0>") . "</td>\n";
                                     } else {
                                         $res.="<td><img src=\"" . $img_end . "\" border=0></td>\n";
                                     }
@@ -450,7 +450,7 @@ class atkTreeNode extends atkNode
                             } else {
                                 if ($cnt != 0) {
                                     if ($foldable) {
-                                        $res.="<td>" . atkHref(atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params, "<img src=\"" . $img_minus . "\" border=0>") . "</td>\n";
+                                        $res.="<td>" . atkTools::atkHref(atkTools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params, "<img src=\"" . $img_minus . "\" border=0>") . "</td>\n";
                                     } else {
                                         $res.="<td><img src=\"" . $img_split . "\" border=0></td>\n";
                                     }
@@ -487,9 +487,9 @@ class atkTreeNode extends atkNode
                         if (isset($this->extraparams))
                             $params = $params . $this->extraparams;
                         if ($expand[$cnt] == 0)
-                            $res.= "<td>" . atkHref(atkSelf() . "?" . $params, "<img src=\"" . $img_expand . "\" border=0>") . "</td>\n";
+                            $res.= "<td>" . atkTools::atkHref(atkTools::atkSelf() . "?" . $params, "<img src=\"" . $img_expand . "\" border=0>") . "</td>\n";
                         else
-                            $res.= "<td>" . atkHref(atkSelf() . "?" . $params, "<img src=\"" . $img_collapse . "\" border=0>") . "</td>\n";
+                            $res.= "<td>" . atkTools::atkHref(atkTools::atkSelf() . "?" . $params, "<img src=\"" . $img_collapse . "\" border=0>") . "</td>\n";
                     }
                     else {
                         $res.= "<td><img src=\"" . $img_collapse . "\" border=0></td>\n";
@@ -527,19 +527,19 @@ class atkTreeNode extends atkNode
                     $actions = array();
 
                     if (!$this->hasFlag(NF_NO_ADD) && !($this->hasFlag(NF_TREE_NO_ROOT_ADD) && $this->m_tree[$cnt]["level"] == 0)) {
-                        $actions["add"] = atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=add&atkfilter=" . $this->m_parent . "." . $this->m_primaryKey[0] . rawurlencode("='" . $this->m_tree[$cnt]["id"] . "'");
+                        $actions["add"] = atkTools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=add&atkfilter=" . $this->m_parent . "." . $this->m_primaryKey[0] . rawurlencode("='" . $this->m_tree[$cnt]["id"] . "'");
                     }
                     if ($cnt > 0) {
                         if (!$this->hasFlag(NF_NO_EDIT)) {
-                            $actions["edit"] = atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=edit&atkselector=" . $this->m_table . '.' . $this->m_primaryKey[0] . '=' . $this->m_tree[$cnt]["id"];
+                            $actions["edit"] = atkTools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=edit&atkselector=" . $this->m_table . '.' . $this->m_primaryKey[0] . '=' . $this->m_tree[$cnt]["id"];
                         }
                         if (($this->hasFlag(NF_COPY) && $this->allowed("add") && !$this->hasflag(NF_TREE_NO_ROOT_COPY)) || ($this->m_tree[$cnt]["level"] != 1 && $this->hasFlag(NF_COPY) && $this->allowed("add"))) {
-                            $actions["copy"] = atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=copy&atkselector=" . $this->m_table . '.' . $this->m_primaryKey[0] . '=' . $this->m_tree[$cnt]["id"];
+                            $actions["copy"] = atkTools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=copy&atkselector=" . $this->m_table . '.' . $this->m_primaryKey[0] . '=' . $this->m_tree[$cnt]["id"];
                         }
                         if ($this->hasFlag(NF_NO_DELETE) || ($this->hasFlag(NF_TREE_NO_ROOT_DELETE) && $this->m_tree[$cnt]["level"] == 1)) {
                             // Do nothing
                         } else {
-                            $actions["delete"] = atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=delete&atkselector=" . $this->m_table . '.' . $this->m_primaryKey[0] . '=' . $this->m_tree[$cnt]["id"];
+                            $actions["delete"] = atkTools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=delete&atkselector=" . $this->m_table . '.' . $this->m_primaryKey[0] . '=' . $this->m_tree[$cnt]["id"];
                         }
                     }
 
@@ -558,14 +558,14 @@ class atkTreeNode extends atkNode
                             $url = str_replace("_1" . "5D", "]", $url);
 
                             if ($atkencoded)
-                                $url = str_replace('[pk]', atkurlencode(rawurlencode($this->primaryKey($this->m_tree[$cnt]["label"])), false), $url);
+                                $url = str_replace('[pk]', atkTools::atkurlencode(rawurlencode($this->primaryKey($this->m_tree[$cnt]["label"])), false), $url);
                             else
                                 $url = str_replace('[pk]', rawurlencode($this->primaryKey($this->m_tree[$cnt]["label"])), $url);
 
                             $stringparser = new atkStringParser($url);
                             $url = $stringparser->parse($this->m_tree[$cnt]["label"], true);
 
-                            $res.=href($url, atktext($name), SESSION_NESTED) . "&nbsp;";
+                            $res.=atkTools::href($url, atkTools::atktext($name), SESSION_NESTED) . "&nbsp;";
                         }
                     }
 
@@ -592,9 +592,9 @@ class atkTreeNode extends atkNode
         parent::copyDb($record, $mode);
 
         if (!empty($this->m_parent)) {
-            atkdebug("copyDb - Main Record added");
+            atkTools::atkdebug("copyDb - Main Record added");
             $newparent = $record[$this->m_primaryKey[0]];
-            atkdebug('CopyDbCopychildren(' . $this->m_parent . '=' . $oldparent . ',' . $newparent . ')');
+            atkTools::atkdebug('CopyDbCopychildren(' . $this->m_parent . '=' . $oldparent . ',' . $newparent . ')');
             $this->copyChildren($this->m_table . '.' . $this->m_parent . '=' . $oldparent, $newparent, $mode);
         }
         return true;
@@ -619,13 +619,13 @@ class atkTreeNode extends atkNode
                 $oldrec = $recordset[$i];
                 parent::copyDb($recordset[$i], $mode);
 
-                atkdebug("Child Record added");
+                atkTools::atkdebug("Child Record added");
                 $newparent = $recordset[$i][$this->m_primaryKey[0]];
-                atkdebug('CopyChildren(' . $this->m_parent . '=' . $oldrec[$this->m_primaryKey[0]] . ',' . $newparent . ')');
+                atkTools::atkdebug('CopyChildren(' . $this->m_parent . '=' . $oldrec[$this->m_primaryKey[0]] . ',' . $newparent . ')');
                 $this->copyChildren($this->m_table . '.' . $this->m_parent . '=' . $oldrec[$this->m_primaryKey[0]], $newparent);
             }
         } else {
-            atkdebug("No records found with Selector: $selector - $parent");
+            atkTools::atkdebug("No records found with Selector: $selector - $parent");
         }
         return "";
     }
@@ -638,7 +638,7 @@ class atkTreeNode extends atkNode
      */
     function deleteDb($selector)
     {
-        atkdebug("Retrieve record");
+        atkTools::atkdebug("Retrieve record");
         $recordset = $this->selectDb($selector, "", "", "", "", "delete");
         for ($i = 0; $i < count($recordset); $i++) {
             foreach (array_keys($this->m_attribList) as $attribname) {
@@ -650,11 +650,11 @@ class atkTreeNode extends atkNode
         }
         $parent = $recordset[0][$this->m_primaryKey[0]];
         if ($this->m_parent != "") {
-            atkdebug("Check for child records");
+            atkTools::atkdebug("Check for child records");
             $children = $this->selectDb($this->m_table . '.' . $this->m_parent . '=' . $parent, "", "", "", "", "delete");
 
             if (count($children) > 0) {
-                atkdebug('DeleteChildren(' . $this->m_table . '.' . $this->m_parent . '=' . $parent . ',' . $parent . ')');
+                atkTools::atkdebug('DeleteChildren(' . $this->m_table . '.' . $this->m_parent . '=' . $parent . ',' . $parent . ')');
                 $this->deleteChildren($this->m_table . '.' . $this->m_parent . '=' . $parent, $parent);
             }
         }
@@ -680,7 +680,7 @@ class atkTreeNode extends atkNode
      */
     function deleteChildren($selector, $parent)
     {
-        atkdebug("Check for child records of the Child");
+        atkTools::atkdebug("Check for child records of the Child");
         $recordset = $this->selectDb($this->m_table . '.' . $this->m_parent . '=' . $parent, "", "", "", "", "delete");
         for ($i = 0; $i < count($recordset); $i++) {
             foreach (array_keys($this->m_attribList) as $attribname) {
@@ -694,7 +694,7 @@ class atkTreeNode extends atkNode
         if (count($recordset) > 0) {
             for ($i = 0; $i < count($recordset); $i++) {
                 $parent = $recordset[$i][$this->m_primaryKey[0]];
-                atkdebug('DeleteChildren(' . $this->m_table . '.' . $this->m_parent . '=' . $recordset[$i][$this->m_primaryKey[0]] . ',' . $parent . ')');
+                atkTools::atkdebug('DeleteChildren(' . $this->m_table . '.' . $this->m_parent . '=' . $recordset[$i][$this->m_primaryKey[0]] . ',' . $parent . ')');
                 $this->deleteChildren($this->m_table . '.' . $this->m_parent . '=' . $recordset[$i][$this->m_primaryKey[0]], $parent);
             }
         }

@@ -35,7 +35,7 @@ function atksecure()
     $securityMgr = &atkGetSecurityManager();
 
     if (!$securityMgr->authenticate()) {
-        echo '<b>' . atktext("login_failed", "atk") . '</b>';
+        echo '<b>' . atkTools::atktext("login_failed", "atk") . '</b>';
         echo '<br><br>' . $securityMgr->m_fatalError;
         exit;
     }
@@ -64,7 +64,7 @@ function atkGetUser($key = '')
     $session_auth = is_object($sessionmanager) ? $sessionmanager->getValue("authentication", "globals")
             : array();
     if (atkconfig("authentication_session") &&
-        atkArrayNvl($session, "login", 0) == 1 &&
+        atkTools::atkArrayNvl($session, "login", 0) == 1 &&
         $session_auth["authenticated"] == 1 &&
         !empty($session_auth["user"])) {
         $user = $session_auth["user"];
@@ -107,7 +107,7 @@ function &atkGetSecurityManager()
     // In ATK5 we must create a clean singleton with
     // a static instance.
     if (!is_object($g_securityManager)) {
-        atkimport("atk.security.atksecuritymanager");
+        atkTools::atkimport("atk.security.atksecuritymanager");
         // The one and only security manager.
         $authentication = atkconfig("authentication", "none");
         $authorization = atkconfig("authorization", $authentication);

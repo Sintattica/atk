@@ -188,7 +188,7 @@ class atkConfig
      */
     protected static function getDirConfigForSection($dir, $section)
     {
-        atkdebug("Loading config file for section $section");
+        atkTools::atkdebug("Loading config file for section $section");
         $config = array();
         @include($dir . $section . ".inc.php");
 
@@ -209,7 +209,7 @@ class atkConfig
      */
     function ipDebugEnabled($params)
     {
-        $ip = atkGetClientIp();
+        $ip = atkTools::atkGetClientIp();
         return in_array($ip, $params["list"]);
     }
 

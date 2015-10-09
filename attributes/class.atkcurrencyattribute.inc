@@ -1,5 +1,5 @@
 <?php
-useattrib("atknumberattribute");
+atkTools::useattrib("atknumberattribute");
 
 /**
  * This file is part of the ATK distribution on GitHub.
@@ -43,7 +43,7 @@ class atkCurrencyAttribute extends atkNumberAttribute
         $this->atkNumberAttribute($name, $flags, $size, $decimals); // base class constructor
 
         if ($currencysymbol == "")
-            $currencysymbol = atktext("currencysymbol", "atk", "", "", "", true);
+            $currencysymbol = atkTools::atktext("currencysymbol", "atk", "", "", "", true);
 
         $this->m_currencysymbol = $currencysymbol;
         $this->m_decimalseparator = ($decimalseparator != "" ? $decimalseparator

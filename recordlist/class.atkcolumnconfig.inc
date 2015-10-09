@@ -95,11 +95,11 @@ class atkColumnConfig
 
             if (!is_array($colcfg) || $forceNew) {
                 // create new
-                atkdebug("New colconfig initialising");
+                atkTools::atkdebug("New colconfig initialising");
                 $s_instances[$id]->init();
             } else {
                 // inherit old config from session.
-                atkdebug("Resuming colconfig from session");
+                atkTools::atkdebug("Resuming colconfig from session");
                 $s_instances[$id]->m_colcfg = &$colcfg;
             }
 
@@ -229,7 +229,7 @@ class atkColumnConfig
     {
         if (is_null($sortorder) && $this->getMinSort() <= 1) {
             foreach ($this->m_colcfg as $fld => $config) {
-                if (atkArrayNvl($config, "sortorder") > 0) {
+                if (atkTools::atkArrayNvl($config, "sortorder") > 0) {
                     $this->m_colcfg[$fld]["sortorder"] = (int) ($this->m_colcfg[$fld]["sortorder"]) + 1;
                 }
             }
@@ -266,7 +266,7 @@ class atkColumnConfig
     {
         $min = 999;
         foreach ($this->m_colcfg as $field => $config) {
-            if (atkArrayNvl($config, "sortorder") > 0) {
+            if (atkTools::atkArrayNvl($config, "sortorder") > 0) {
                 $min = min($min, $config["sortorder"]);
             }
         }
@@ -283,7 +283,7 @@ class atkColumnConfig
         $result = array();
 
         foreach ($this->m_colcfg as $field => $config) {
-            if (atkArrayNvl($config, "sortorder", 0) > 0 && is_object($this->m_node->m_attribList[$field])) {
+            if (atkTools::atkArrayNvl($config, "sortorder", 0) > 0 && is_object($this->m_node->m_attribList[$field])) {
                 $direction = $config["direction"] == "desc" ? "DESC" : "ASC";
                 $res = $this->m_node->m_attribList[$field]->getOrderByStatement($config['extra'], '', $direction);
                 if ($res)
@@ -427,7 +427,7 @@ class atkColumnConfig
     function getAttributeByOrder($order)
     {
         foreach ($this->m_colcfg as $attrib => $info) {
-            if (atkArrayNvl($info, "sortorder", 0) == $order) {
+            if (atkTools::atkArrayNvl($info, "sortorder", 0) == $order) {
                 return $attrib;
             }
         }
@@ -443,7 +443,7 @@ class atkColumnConfig
     {
         $total = 0;
         foreach ($this->m_colcfg as $attrib => $info) {
-            if (atkArrayNvl($info, "sortorder", 0) > 0)
+            if (atkTools::atkArrayNvl($info, "sortorder", 0) > 0)
                 $total++;
         }
         return $total;
@@ -458,7 +458,7 @@ class atkColumnConfig
     function getDirectionByOrder($order)
     {
         foreach ($this->m_colcfg as $attrib => $info) {
-            if (atkArrayNvl($info, "sortorder", 0) == $order)
+            if (atkTools::atkArrayNvl($info, "sortorder", 0) == $order)
                 return $this->getDirection($attrib);
         }
         return "asc";
@@ -508,7 +508,7 @@ class atkColumnConfig
     function hasSubTotalByOrder($order)
     {
         foreach ($this->m_colcfg as $attrib => $info) {
-            if (atkArrayNvl($info, "sortorder", 0) == $order)
+            if (atkTools::atkArrayNvl($info, "sortorder", 0) == $order)
                 return $this->hasSubTotal($attrib);
         }
         return false;
@@ -534,7 +534,7 @@ class atkColumnConfig
      */
     function _compareSortAttrs($a, $b)
     {
-        return (atkArrayNvl($a, "sortorder", 0) <= atkArrayNvl($b, "sortorder", 0)
+        return (atkTools::atkArrayNvl($a, "sortorder", 0) <= atkTools::atkArrayNvl($b, "sortorder", 0)
                     ? -1 : 1);
     }
 

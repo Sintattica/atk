@@ -34,13 +34,13 @@ $output = &atkOutput::getInstance();
 
 /* general menu stuff */
 /* load menu layout */
-atkimport("atk.menu.atkmenu");
+atkTools::atkimport("atk.menu.atkmenu");
 $menu = &atkMenu::getMenu();
 
 if (is_object($menu))
     $output->output($menu->render());
 else
-    atkerror("no menu object created!");;
+    atkTools::atkerror("no menu object created!");;
 
 $output->outputFlush();
 ?>

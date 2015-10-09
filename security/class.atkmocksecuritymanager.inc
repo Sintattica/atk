@@ -15,7 +15,7 @@
  * $Id$
  */
 /** @internal include */
-atkimport("atk.security.atksecuritymanager");
+atkTools::atkimport("atk.security.atksecuritymanager");
 
 /**
  * The atkMockSecurityManager class is an atkSecurityManager mock 

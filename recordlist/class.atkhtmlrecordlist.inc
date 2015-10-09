@@ -15,7 +15,7 @@
  * $Id$
  */
 /** @internal include base class */
-atkimport("atk.recordlist.atkcustomrecordlist");
+atkTools::atkimport("atk.recordlist.atkcustomrecordlist");
 
 /**
  * HTML recordlist renderer.

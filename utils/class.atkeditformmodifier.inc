@@ -205,7 +205,7 @@ class atkEditFormModifier
             return;
         }
 
-        atkimport('atk.utils.atkjson');
+        atkTools::atkimport('atk.utils.atkjson');
 
         $offset = count($this->getNode()->getPage()->getLoadScripts());
 
@@ -216,7 +216,7 @@ class atkEditFormModifier
         $scriptCode = '';
         foreach ($editArray['fields'] as $field) {
             $element = str_replace('.', '_', $this->getNode()->atkNodeType() . '_' . $field['id']);
-            $value = atkJSON::encode(atk_iconv(atkGetCharset(), "UTF-8", $field['html'])); // atkJSON::encode excepts string in UTF-8
+            $value = atkJSON::encode(atkTools::atk_iconv(atkTools::atkGetCharset(), "UTF-8", $field['html'])); // atkJSON::encode excepts string in UTF-8
             $scriptCode .= "if (\$('$element')) { \$('$element').update($value); } ";
         }
 

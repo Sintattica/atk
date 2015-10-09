@@ -2,7 +2,7 @@
 $config_atkroot = "../../";
 include_once $config_atkroot . './atk.inc';
 
-atkimport('atk.utils.atkyaml');
+atkTools::atkimport('atk.utils.atkyaml');
 
 $table = @$_SERVER['argv'][1];
 if ($table == null)
@@ -10,7 +10,7 @@ if ($table == null)
 
 $table = strtolower($table);
 
-$db = atkGetDb();
+$db = atkTools::atkGetDb();
 $db->query("SELECT * FROM $table");
 
 ob_end_clean();

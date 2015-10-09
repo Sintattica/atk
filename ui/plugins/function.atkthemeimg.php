@@ -34,7 +34,7 @@
  */
 function smarty_function_atkthemeimg($params, &$smarty)
 {
-    $theme = &atkinstance("atk.ui.atktheme");
+    $theme = &atkTools::atkinstance("atk.ui.atktheme");
     return $theme->imgPath($params[0]);
 }
 

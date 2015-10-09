@@ -18,7 +18,7 @@
  * Imports
  * @access private
  */
-atkimport("atk.menu.atkplainmenu");
+atkTools::atkimport("atk.menu.atkplainmenu");
 
 /**
  * Modern menu implementation
@@ -45,13 +45,13 @@ class atkModernMenu extends atkPlainMenu
      */
     function render()
     {
-        $page = &atkinstance('atk.ui.atkpage');
-        $theme = &atkinstance("atk.ui.atktheme");
+        $page = &atkTools::atkinstance('atk.ui.atkpage');
+        $theme = &atkTools::atkinstance("atk.ui.atktheme");
         if ($theme->getAttribute('modern_menu_compat')) {
             $page->addContent($this->getMenu());
             return $page->render("Menu", true);
         } else {
-            $oldmenu = &atknew('atk.menu.atkplainmenu');
+            $oldmenu = &atkTools::atknew('atk.menu.atkplainmenu');
             return $oldmenu->render();
         }
     }
@@ -63,7 +63,7 @@ class atkModernMenu extends atkPlainMenu
      */
     function getMenu()
     {
-        $theme = &atkinstance("atk.ui.atktheme");
+        $theme = &atkTools::atkinstance("atk.ui.atktheme");
         if ($theme->getAttribute('modern_menu_compat')) {
             global $g_menu;
             $atkmenutop = (isset($_REQUEST['atkmenutop']) ? $_REQUEST['atkmenutop']
@@ -77,7 +77,7 @@ class atkModernMenu extends atkPlainMenu
             $page->register_style($theme->stylePath("menu.css"));
             $page->register_script(atkconfig("atkroot") . "atk/javascript/menuload.js");
 
-            $ui = &atkinstance("atk.ui.atkui");
+            $ui = &atkTools::atkinstance("atk.ui.atkui");
             $atkmenutop = (isset($_REQUEST['atkmenutop']) ? $_REQUEST['atkmenutop']
                         : $atkmenutop);
 
@@ -91,7 +91,7 @@ class atkModernMenu extends atkPlainMenu
 
             return $box;
         } else {
-            $oldmenu = &atknew('atk.menu.atkplainmenu');
+            $oldmenu = &atkTools::atknew('atk.menu.atkplainmenu');
             return $oldmenu->getMenu();
         }
     }
@@ -134,14 +134,14 @@ class atkModernMenu extends atkPlainMenu
                     $menuitem['name'] = $this->getMenuTranslation($menuitem['name'], $menuitem['module']);
                 }
 
-                $theme = &atkinstance("atk.ui.atktheme");
+                $theme = &atkTools::atkinstance("atk.ui.atktheme");
                 $menu_icon = $theme->iconPath($menutop . '_' . $menuitem['id'], "menu", $menuitem['module']);
                 if ($menu_icon) {
                     $menuitem['image'] = $menu_icon;
                 }
 
                 if (!empty($menuitem['url'])) {
-                    $menuitem['url'] = session_url($menuitem['url'] . "&amp;atkmenutop={$menuitem['id']}", SESSION_NEW);
+                    $menuitem['url'] = atkTools::session_url($menuitem['url'] . "&amp;atkmenutop={$menuitem['id']}", SESSION_NEW);
                 }
                 $menuitem['header'] = $this->getHeader($menuitem['id']);
                 $menuitems[] = $menuitem;
@@ -178,9 +178,9 @@ class atkModernMenu extends atkPlainMenu
 
                 $menuitem['submenu'][$submenukey]['enable'] = $menuitem['submenu'][$submenukey]['name'] != '-' &&
                     $this->isEnabled($menuitem['submenu'][$submenukey]);
-                $menuitem['submenu'][$submenukey]['url'] = session_url($url, SESSION_NEW);
+                $menuitem['submenu'][$submenukey]['url'] = atkTools::session_url($url, SESSION_NEW);
             }
-            $theme = &atkinstance("atk.ui.atktheme");
+            $theme = &atkTools::atkinstance("atk.ui.atktheme");
             $menu_icon = $theme->iconPath($menuitem['id'] . '_' . $submenuitem['name'], "menu", $submenuitem['module']);
             if ($menu_icon) {
                 $menuitem['submenu'][$submenukey]['image'] = $menu_icon;

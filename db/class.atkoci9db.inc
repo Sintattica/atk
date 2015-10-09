@@ -52,7 +52,7 @@ class atkOci9Db extends atkOci8Db
         /* establish connection to database */
         if (empty($this->m_link_id)) {
             $connectfunc = (atkconfig("databasepersistent") ? "OCIPlogon" : "OCILogon");
-            atkdebug("Connectiontype: " . $connectfunc);
+            atkTools::atkdebug("Connectiontype: " . $connectfunc);
 
             if ($this->m_host != "") { // host based connect
                 $db = "(DESCRIPTION=(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = " . $this->m_host . ")(PORT = " . $this->m_port . ")))(CONNECT_DATA=(SID=" . $this->m_database . ")))";
@@ -119,7 +119,7 @@ class atkOci9Db extends atkOci8Db
         }
 
         /* query */
-        atkdebug("atkoci9db:query(): " . $query);
+        atkTools::atkdebug("atkoci9db:query(): " . $query);
 
         /* connect to database */
         if ($this->connect() == DB_SUCCESS) {
@@ -135,16 +135,16 @@ class atkOci9Db extends atkOci8Db
             //$bindLobs = array();
             if (count($bindLobs) > 0) {
                 $query .= " RETURNING " . implode(", ", array_keys($bindLobs)) . " INTO :" . implode(", :", array_keys($bindLobs));
-                atkdebug("atkoci9db.query(), modified query to: $query");
+                atkTools::atkdebug("atkoci9db.query(), modified query to: $query");
             }
 
             $this->m_query_id = OCIParse($this->m_link_id, $query);
             if ($this->m_query_id) {
                 if (count($bindLobs) > 0) {
                     foreach ($bindLobs as $bind => $value) {
-                        atkdebug("atkoci9db.query(): new descriptor for :$bind");
+                        atkTools::atkdebug("atkoci9db.query(): new descriptor for :$bind");
                         $clobVars[$bind] = &OCINewDescriptor($this->m_link_id, OCI_D_LOB);
-                        atkdebug("atkoci9db.query(): binding (clob) :" . $bind);
+                        atkTools::atkdebug("atkoci9db.query(): binding (clob) :" . $bind);
                         OCIBindByName($this->m_query_id, ":$bind", $clobVars[$bind], -1, OCI_B_CLOB);
                     }
                 }
@@ -158,7 +158,7 @@ class atkOci9Db extends atkOci8Db
                 $OCIexecute = @OCIExecute($this->m_query_id, OCI_DEFAULT);
                 $end = gettimeofday();
                 $secs = (($end['sec'] + $end['usec']) - ($start['sec'] + $start['usec'])) / 1000000;
-                atkdebug("atkoci9db.query(): Query execution took " . $secs . " sec.");
+                atkTools::atkdebug("atkoci9db.query(): Query execution took " . $secs . " sec.");
 
                 if (!$OCIexecute) {
                     /* error in query */
@@ -169,7 +169,7 @@ class atkOci9Db extends atkOci8Db
                     if (count($bindLobs) > 0) {
                         foreach ($bindLobs as $bind => $value) {
                             if (!@$clobVars[$bind]->save($value))
-                                atkerror("Error bind save: empty value");
+                                atkTools::atkerror("Error bind save: empty value");
                         }
                     }
                 }

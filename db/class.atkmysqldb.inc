@@ -39,7 +39,7 @@ class atkMysqlDb extends atkDb
     function atkmysqldb()
     {
         if (!function_exists('mysql_connect')) {
-            atkerror('MySQL not supported by your PHP version');
+            atkTools::atkerror('MySQL not supported by your PHP version');
             die('MySQL not supported by your PHP version');
         }
 
@@ -75,7 +75,7 @@ class atkMysqlDb extends atkDb
 
             /* set character set */
             if (!empty($charset)) {
-                atkdebug("Set database character set to: {$charset}");
+                atkTools::atkdebug("Set database character set to: {$charset}");
                 @mysql_query("SET NAMES '{$charset}'", $this->m_link_id);
             }
         }
@@ -117,7 +117,7 @@ class atkMysqlDb extends atkDb
             case 2004:
             case 2005: return DB_UNKNOWNHOST;
             default:
-                atkdebug("mysqldb::translateError -> MySQL Error: " .
+                atkTools::atkdebug("mysqldb::translateError -> MySQL Error: " .
                     $this->m_errno . " -> " . $this->m_error);
                 return DB_UNKNOWNERROR;
         }
@@ -144,7 +144,7 @@ class atkMysqlDb extends atkDb
     function disconnect()
     {
         if ($this->m_link_id) {
-            atkdebug("Disconnecting from database...");
+            atkTools::atkdebug("Disconnecting from database...");
             @mysql_close($this->m_link_id);
             $this->m_link_id = 0;
         }
@@ -179,7 +179,7 @@ class atkMysqlDb extends atkDb
             $query .= " LIMIT $offset, $limit";
 
         if (atkconfig("debug") >= 0) {
-            atkimport("atk.utils.atkdebugger");
+            atkTools::atkimport("atk.utils.atkdebugger");
             atkDebugger::addQuery($query);
         }
 
@@ -240,7 +240,7 @@ class atkMysqlDb extends atkDb
         preg_match("/\'(.*)\'/U", $error, $matches);
 
         if (is_array($matches) && sizeof($matches) == 2) {
-            atkdebug("<b>Fallback feature called because error '1100' occured during the last query. Running query again using table lock for table '{$matches[1]}' (" . $this->m_link_id . ").</b>");
+            atkTools::atkdebug("<b>Fallback feature called because error '1100' occured during the last query. Running query again using table lock for table '{$matches[1]}' (" . $this->m_link_id . ").</b>");
             $table = $matches[1];
 
             if ($this->m_query_id) {
@@ -308,7 +308,7 @@ class atkMysqlDb extends atkDb
             $query = "lock tables $table $mode";
 
             if (atkconfig("debug") >= 0) {
-                atkimport("atk.utils.atkdebugger");
+                atkTools::atkimport("atk.utils.atkdebugger");
                 atkDebugger::addQuery($query);
             }
 
@@ -449,11 +449,11 @@ class atkMysqlDb extends atkDb
     {
         /* first connect */
         if ($this->connect("r") == DB_SUCCESS) {
-            atkimport("atk.db.atkddl");
+            atkTools::atkimport("atk.db.atkddl");
             $ddl = &atkDDL::create("mysql");
 
             /* list fields */
-            atkdebug("Retrieving metadata for $table");
+            atkTools::atkdebug("Retrieving metadata for $table");
 
             // table type
             $tableType = $this->_getTableType($table);
@@ -467,7 +467,7 @@ class atkMysqlDb extends atkDb
             }
 
             if (!$id) {
-                atkdebug("Metadata query failed.");
+                atkTools::atkdebug("Metadata query failed.");
                 return array();
             }
 
@@ -510,7 +510,7 @@ class atkMysqlDb extends atkDb
 
             /* free result */
             @mysql_free_result($id);
-            atkdebug("Metadata for $table complete");
+            atkTools::atkdebug("Metadata for $table complete");
             return $result;
         }
         return array();
@@ -553,7 +553,7 @@ class atkMysqlDb extends atkDb
                     $close = strpos($type, ')', $open) - 1;
                     return substr($type, $open + 1, $close - $open);
                 } else {
-                    atkwarning('Unexpected column type format, falling back on mysql_field_len()');
+                    atkTools::atkwarning('Unexpected column type format, falling back on mysql_field_len()');
                 }
             }
         }

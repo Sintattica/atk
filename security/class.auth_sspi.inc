@@ -15,7 +15,7 @@
 /**
  * @internal include
  */
-atkimport("atk.security.auth_db");
+atkTools::atkimport("atk.security.auth_db");
 
 /**
  * Driver for authentication and authorization using Microsoft's Security 
@@ -91,7 +91,7 @@ class auth_sspi extends auth_db
         $firstload = !isset($_SERVER["PHP_AUTH_USER"]);
         $_SERVER["PHP_AUTH_USER"] = "";
         $ATK_VARS["auth_user"] = "";
-        $db = &atkGetDb(atkconfig("auth_database"));
+        $db = &atkTools::atkGetDb(atkconfig("auth_database"));
         $query = $this->buildSelectUserQuery($user, atkconfig("auth_usertable"), atkconfig("auth_userfield"), atkconfig("auth_sspi_accountfield"), atkconfig("auth_accountdisablefield"), atkconfig("auth_accountenableexpression"));
 
         $recs = $db->getrows($query);
@@ -130,7 +130,7 @@ class auth_sspi extends auth_db
         $groupfield = atkconfig("auth_groupfield");
         $groupparentfield = atkconfig("auth_groupparentfield");
 
-        $db = &atkGetDb(atkconfig("auth_database"));
+        $db = &atkTools::atkGetDb(atkconfig("auth_database"));
         if ($usertable == $leveltable || $leveltable == "") {
             // Level and userid are stored in the same table.
             // This means one user can only have one level.

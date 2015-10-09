@@ -17,7 +17,7 @@
 /**
  * Base include
  */
-atkimport("atk.db.atkquery");
+atkTools::atkimport("atk.db.atkquery");
 
 /**
  * SQL Builder for IBM db2 databases. 

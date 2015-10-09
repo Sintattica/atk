@@ -63,7 +63,7 @@ class atkStringParser
                     if (isset($value[$el])) {
                         $value = $value[$el];
                     } else if ($replaceUnknownFields) {
-                        atknotice("atkStringparser({$this->m_string})->parse(): Attempting to get element '{$el}', but {$elements[$i - 1]} is not an array!");
+                        atkTools::atknotice("atkStringparser({$this->m_string})->parse(): Attempting to get element '{$el}', but {$elements[$i - 1]} is not an array!");
                         $value = '';
                         break;
                     } else {
@@ -163,7 +163,7 @@ class atkStringParser
     function getAllParsedFieldsAsArray($data, $split_tags_and_fields = false)
     {
         $matches = $this->getAllFieldsAsArray();
-        atk_var_dump($matches, "MATCHES" . ($split_tags_and_fields ? " (split tags and separators)"
+        atkTools::atk_var_dump($matches, "MATCHES" . ($split_tags_and_fields ? " (split tags and separators)"
                     : ""));
 
         $fields = array();

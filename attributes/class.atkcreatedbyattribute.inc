@@ -17,7 +17,7 @@
 /**
  * @internal baseclass include
  */
-useattrib("atkupdatedbyattribute");
+atkTools::useattrib("atkupdatedbyattribute");
 
 /**
  * This attribute can be used to automatically store the user that inserted

@@ -107,7 +107,7 @@ class atkActionHandler
 
         // when we're finished, cleanup any atkrejects (that we haven't set ourselves).
         if (!$this->m_rejecting) {
-            atkdebug("clearing the stuff");
+            atkTools::atkdebug("clearing the stuff");
             $this->getRejectInfo(); // this will clear it.
         }
     }
@@ -261,16 +261,16 @@ class atkActionHandler
         array_shift($arguments);
 
         if ($this->m_node !== NULL && method_exists($this->m_node, $methodname)) {
-            atkdebug("Invoking '$methodname' override on node");
+            atkTools::atkdebug("Invoking '$methodname' override on node");
             // We pass the original object as first parameter to the override.
             array_unshift($arguments, $this);
             $arguments[0] = &$this; // reference copy workaround;
             return call_user_func_array(array(&$this->m_node, $methodname), $arguments);
         } else if (method_exists($this, $methodname)) {
-            atkdebug("Invoking '$methodname' on actionhandler for action " . $this->m_action);
+            atkTools::atkdebug("Invoking '$methodname' on actionhandler for action " . $this->m_action);
             return call_user_func_array(array(&$this, $methodname), $arguments);
         }
-        atkerror("Undefined method '$methodname' in atkActionHandler");
+        atkTools::atkerror("Undefined method '$methodname' in atkActionHandler");
     }
 
     /**
@@ -292,7 +292,7 @@ class atkActionHandler
         // are handled the backwardscompatible default way (invoking action_$action on the node)
         $filename = atkconfig("atkroot") . "atk/handlers/class.atk" . $action . "handler.inc";
         if (file_exists($filename)) {
-            return atknew("atk.handlers.atk" . $action . "handler");
+            return atkTools::atknew("atk.handlers.atk" . $action . "handler");
         } else {
             // We don't have handlers yet for other actions.
             $actionhandler = new atkActionHandler(); // The default handler will automatically
@@ -324,7 +324,7 @@ class atkActionHandler
     {
         static $recordlistcache;
         if (!$recordlistcache) {
-            $recordlistcache = &atknew("atk.recordlist.atkrecordlistcache");
+            $recordlistcache = &atkTools::atknew("atk.recordlist.atkrecordlistcache");
             $recordlistcache->setNode($this->m_node);
             $recordlistcache->setPostvars($this->m_postvars);
         }
@@ -440,7 +440,7 @@ class atkActionHandler
      */
     function renderMessageDialog($message)
     {
-        atkimport('atk.ui.atkdialog');
+        atkTools::atkimport('atk.ui.atkdialog');
         $ui = &$this->m_node->getUi();
 
         $params = array();
@@ -463,7 +463,7 @@ class atkActionHandler
      */
     function updateDialog($content)
     {
-        atkimport('atk.ui.atkdialog');
+        atkTools::atkimport('atk.ui.atkdialog');
         $script = atkDialog::getUpdateCall($content, false);
         $page = &$this->getPage();
         $page->register_loadscript($script);
@@ -474,7 +474,7 @@ class atkActionHandler
      */
     function closeDialog()
     {
-        atkimport('atk.ui.atkdialog');
+        atkTools::atkimport('atk.ui.atkdialog');
         $script = atkDialog::getCloseCall();
         $page = &$this->getPage();
         $page->register_loadscript($script);

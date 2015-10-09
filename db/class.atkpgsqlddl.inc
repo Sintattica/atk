@@ -144,7 +144,7 @@ class atkPgsqlDDL extends atkDDL
             foreach ($this->m_fields as $fieldname => $fieldconfig) {
                 if ($fieldname != "" && $fieldconfig["type"] != "" && $this->getType($fieldconfig["type"]) != "") {
                     $fields[] = $this->buildField($fieldname, $fieldconfig["type"], $fieldconfig["size"], $fieldconfig["flags"] & ~DDL_NOTNULL, $fieldconfig["default"]);
-                    if (hasFlag($fieldconfig["flags"], DDL_NOTNULL))
+                    if (atkTools::hasFlag($fieldconfig["flags"], DDL_NOTNULL))
                         $notNullFields[] = $fieldname;
                 }
             }

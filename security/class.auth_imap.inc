@@ -60,7 +60,7 @@ class auth_imap extends auth_interface
         }
 
         if (atkconfig("auth_mail_server") == "") {
-            $this->m_fatalError = atktext("auth_no_server");
+            $this->m_fatalError = atkTools::atktext("auth_no_server");
             return AUTH_ERROR;
         }
 

@@ -12,7 +12,7 @@
  * 
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
-atkimport('atk.datagrid.atkdgcomponent');
+atkTools::atkimport('atk.datagrid.atkdgcomponent');
 
 /**
  * The data grid paginator. Can be used to render pagination 

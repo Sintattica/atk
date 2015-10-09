@@ -116,7 +116,7 @@ class atkUpdatehandler extends atkActionHandler
             $this->invoke('handleCancel', $record);
         } else {
             // something other than one of the three buttons was pressed. Let's just refresh.
-            $location = session_url(dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record), "atktab" => $this->m_node->getActiveTab())), SESSION_REPLACE);
+            $location = atkTools::session_url(dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record), "atktab" => $this->m_node->getActiveTab())), SESSION_REPLACE);
             $this->m_node->redirect($location);
         }
     }
@@ -251,7 +251,7 @@ class atkUpdatehandler extends atkActionHandler
         } else {
             $db->rollback();
             if ($db->getErrorType() == "user") {
-                triggerError($record, 'Error', $db->getErrorMsg(), '', '');
+                atkTools::triggerError($record, 'Error', $db->getErrorMsg(), '', '');
                 return false;
             }
             return $db->getErrorMsg();
@@ -266,8 +266,8 @@ class atkUpdatehandler extends atkActionHandler
      */
     private function updateRecordInSession($record)
     {
-        $selector = atkArrayNvl($this->m_postvars, 'atkselector', '');
-        return (atkinstance('atk.session.atksessionstore')->updateDataRowForSelector($selector, $record) !== false);
+        $selector = atkTools::atkArrayNvl($this->m_postvars, 'atkselector', '');
+        return (atkTools::atkinstance('atk.session.atksessionstore')->updateDataRowForSelector($selector, $record) !== false);
     }
 
     /**
@@ -286,7 +286,7 @@ class atkUpdatehandler extends atkActionHandler
     {
         if ($this->hasError($record)) {
             $this->setRejectInfo($record);
-            $location = session_url(dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record))), SESSION_BACK);
+            $location = atkTools::session_url(dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record))), SESSION_BACK);
             $this->m_node->redirect($location);
         } else {
             $location = $this->m_node->feedbackUrl("update", ACTION_FAILED, $record, $error);
@@ -308,7 +308,7 @@ class atkUpdatehandler extends atkActionHandler
         if (isset($this->m_postvars['atknoclose'])) {
             // 'save' was clicked
             $params = array("atkselector" => $this->m_node->primaryKey($record), "atktab" => $this->m_node->getActiveTab());
-            $location = session_url(dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), $params), SESSION_REPLACE, 1);
+            $location = atkTools::session_url(dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), $params), SESSION_REPLACE, 1);
         } else {
             // 'save and close' was clicked
             $location = $this->m_node->feedbackUrl("update", ACTION_SUCCESS, $record, "", 2);
@@ -367,7 +367,7 @@ class atkUpdatehandler extends atkActionHandler
      */
     private function loadSuccessDialog($record, $extraParams)
     {
-        atkimport("atk.ui.atkdialog");
+        atkTools::atkimport("atk.ui.atkdialog");
         $script = atkDialog::getCloseCall();
 
         $page = $this->getPage();
@@ -415,7 +415,7 @@ class atkUpdatehandler extends atkActionHandler
      */
     function renderEditPage(&$record)
     {
-        atkwarning("Use of deprecated method: " . __CLASS__ . '->' . __METHOD__);
+        atkTools::atkwarning("Use of deprecated method: " . __CLASS__ . '->' . __METHOD__);
 
         $editpage = $this->getEditPage($record);
         $content = $this->m_node->renderActionPage("edit", $editpage);
@@ -434,7 +434,7 @@ class atkUpdatehandler extends atkActionHandler
      */
     public function getEditPage(&$record)
     {
-        atkwarning("Use of deprecated method: " . __CLASS__ . '->' . __METHOD__);
+        atkTools::atkwarning("Use of deprecated method: " . __CLASS__ . '->' . __METHOD__);
         //  $this->m_action="edit";
         //update succesful, pk value might be changed so update m_orgkey
         $record["atkprimkey"] = $this->m_node->primaryKey($record);

@@ -2264,7 +2264,7 @@ class Smarty_Compiler extends Smarty {
     {
         //$this->_trigger_fatal_error("syntax error: $error_msg", $this->_current_file, $this->_current_line_no, $file, $line, $error_type);
         //SANDY HACK: We don't want Smarty errors but ATK Errors
-        atkerror("Template compile error: [in ".$this->_current_file." line ".$this->_current_line_no."]: syntax error: $error_msg");
+        atkTools::atkerror("Template compile error: [in ".$this->_current_file." line ".$this->_current_line_no."]: syntax error: $error_msg");
     }
 
 

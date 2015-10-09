@@ -103,7 +103,7 @@ class atkImportHandler extends atkActionHandler
         $action = $controller->getPhpFile() . '?' . SID;
 
         $formStart = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="' . $action . '" method="post">' .
-            session_form(atkLevel() == 0 ? SESSION_NESTED : SESSION_REPLACE) .
+            atkTools::session_form(atkLevel() == 0 ? SESSION_NESTED : SESSION_REPLACE) .
             '<input type="hidden" name="atknodetype" value="' . $this->m_node->atkNodeType() . '" />' .
             '<input type="hidden" name="atkaction" value="' . $this->m_node->m_action . '" />' .
             $controller->getHiddenVarsString();
@@ -151,7 +151,7 @@ class atkImportHandler extends atkActionHandler
         $result = array();
 
         if (atkLevel() > 0) {
-            $result[] = atkButton($this->m_node->text("cancel", "atk"), "", SESSION_BACK, true);
+            $result[] = atkTools::atkButton($this->m_node->text("cancel", "atk"), "", SESSION_BACK, true);
         }
         if ($phase == 'init') {
             $result[] = '<input class="btn" type="submit" value="' . $this->m_node->text("import_upload") . '">';
@@ -266,7 +266,7 @@ class atkImportHandler extends atkActionHandler
         $rowCount = $this->getRowCount($filename, $skipfirstrow);
 
         // Display sample
-        $sample = atktext("import_sample") . ':<br><br><table class="recordlist">' .
+        $sample = atkTools::atktext("import_sample") . ':<br><br><table class="recordlist">' .
             $this->_getAnalyseSample($columncount, $col_map, $csv_data, $skipfirstrow);
 
         $content = '
@@ -281,7 +281,7 @@ class atkImportHandler extends atkActionHandler
         </div>';
 
         $page = &$this->m_node->getPage();
-        $theme = &atkinstance("atk.ui.atktheme");
+        $theme = &atkTools::atkinstance("atk.ui.atktheme");
         $page->register_style($theme->stylePath("recordlist.css"));
         $this->invoke('importPage', 'analyze', $content);
     }
@@ -299,7 +299,7 @@ class atkImportHandler extends atkActionHandler
     function _getErrors($importerrors)
     {
         if (is_array($importerrors)) {
-            $content.="\n<table>";
+            $content ="\n<table>";
 
             $errorCount = 0;
             foreach ($importerrors as $record => $errors) {
@@ -308,7 +308,7 @@ class atkImportHandler extends atkActionHandler
                 if ($errorCount > atkconfig("showmaximporterrors", 50))
                     break;
 
-                if ($record == 0 && atk_value_in_array($errors)) {
+                if ($record == 0 && atkTools::atk_value_in_array($errors)) {
                     $content.="<tr><td colSpan=2>";
                     foreach ($errors as $error) {
                         if (!empty($error))
@@ -316,7 +316,7 @@ class atkImportHandler extends atkActionHandler
                     }
                     $content.="</td></tr>";
                 }
-                else if (atk_value_in_array($errors)) {
+                else if (atkTools::atk_value_in_array($errors)) {
                     $content.="<tr><td valign=\"top\" class=\"error\">";
                     $content.="<b>Record $record:</b>&nbsp;";
                     $content.="</td><td valign=\"top\" class=\"error\">";
@@ -348,10 +348,10 @@ class atkImportHandler extends atkActionHandler
         $content.= '<input type="hidden" name="fileid" value="' . $fileid . '">';
         $content.= '<input type="hidden" name="columncount" value="' . $columncount . '">';
         $content.= '<table border="0">';
-        $content.= '<tr><td>' . text("delimiter") . ': </td><td><input type="text" size="2" name="delimiter" value="' . atk_htmlentities($delimiter) . '"></td></tr>';
-        $content.= '<tr><td>' . text("enclosure") . ': </td><td><input type="text" size="2" name="enclosure" value="' . atk_htmlentities($enclosure) . '"></td></tr>';
-        $content.= '<tr><td>' . atktext("import_detectedcolumns") . ': </td><td>' . $columncount . '</td></tr>';
-        $content.= '<tr><td>' . atktext("import_detectedrows") . ': </td><td>' . $rowcount . '</td></tr>';
+        $content.= '<tr><td>' . text("delimiter") . ': </td><td><input type="text" size="2" name="delimiter" value="' . atkTools::atk_htmlentities($delimiter) . '"></td></tr>';
+        $content.= '<tr><td>' . text("enclosure") . ': </td><td><input type="text" size="2" name="enclosure" value="' . atkTools::atk_htmlentities($enclosure) . '"></td></tr>';
+        $content.= '<tr><td>' . atkTools::atktext("import_detectedcolumns") . ': </td><td>' . $columncount . '</td></tr>';
+        $content.= '<tr><td>' . atkTools::atktext("import_detectedrows") . ': </td><td>' . $rowcount . '</td></tr>';
         $content.= '</table>';
         return $content;
     }
@@ -366,10 +366,10 @@ class atkImportHandler extends atkActionHandler
     function _getAnalyseSample($columncount, $col_map, $csv_data, $skipfirstrow)
     {
         // header
-        $sample.= '<tr>';
+        $sample = '<tr>';
         for ($j = 1; $j <= $columncount; $j++) {
             $sample.='<th>';
-            $sample.= ucfirst(atktext("column")) . ' ' . $j;
+            $sample.= ucfirst(atkTools::atktext("column")) . ' ' . $j;
             $sample.='</th>';
         }
         $sample.= '</tr>';
@@ -391,7 +391,7 @@ class atkImportHandler extends atkActionHandler
             for ($j = 0; $j < $columncount; $j++) {
                 if ($i == 0 && $skipfirstrow) {
                     $sample.='<th>';
-                    $sample.=atktext(trim($line[$j]));
+                    $sample.=atkTools::atktext(trim($line[$j]));
                 } else {
                     $sample.='<td>';
                     if ($col_map[$j] != "" && $col_map[$j] != "-") {
@@ -399,7 +399,7 @@ class atkImportHandler extends atkActionHandler
                         if ($display)
                             $sample.= $display;
                         else
-                            $sample.= atktext($col_map[$j]);
+                            $sample.= atkTools::atktext($col_map[$j]);
 
                         if ((string) $display !== (string) $line[$j]) {
                             // Also display raw value so we can verify
@@ -462,7 +462,7 @@ class atkImportHandler extends atkActionHandler
      */
     function _getAnalyseExtraOptions($skipfirstrow, $doupdate, $updatekey1, $onfalseidentifier, $allFields, $novalidatefirst)
     {
-        $content.= '<br /><table id="importoptions">';
+        $content = '<br /><table id="importoptions">';
         $content.= '  <tr>';
         $content.= '    <td>';
 
@@ -474,31 +474,31 @@ class atkImportHandler extends atkActionHandler
         if (empty($allFields) || !$noallfieldvalue)
             $allFields[] = '';
         foreach ($allFields as $allField) {
-            $content.= atktext("import_allfield") . ': </td><td>' . $this->getAttributeSelector(0, $allField, "allFields[]");
+            $content.= atkTools::atktext("import_allfield") . ': </td><td>' . $this->getAttributeSelector(0, $allField, "allFields[]");
 
             if ($allField != "") {
                 $attr = $this->getUsableAttribute($allField);
 
                 if (is_object($attr)) {
                     $fakeeditarray = array($allField => $this->m_postvars[$allField]);
-                    $content.= ' ' . atktext("value") . ': ' . $attr->edit($fakeeditarray, "", "edit") . '<br/>';
+                    $content.= ' ' . atkTools::atktext("value") . ': ' . $attr->edit($fakeeditarray, "", "edit") . '<br/>';
                 }
             }
             $content.= '</td></tr><tr><td>';
         }
 
-        $content.= atktext("import_skipfirstrow") . ': </td><td><input type="checkbox" name="skipfirstrow" class="atkcheckbox" value="1" ' . ($skipfirstrow
+        $content.= atkTools::atktext("import_skipfirstrow") . ': </td><td><input type="checkbox" name="skipfirstrow" class="atkcheckbox" value="1" ' . ($skipfirstrow
                     ? "CHECKED" : "") . '/>';
         $content.= '</td></tr><tr><td>';
-        $content.= atktext("import_doupdate") . ': </td><td> <input type="checkbox" name="doupdate" class="atkcheckbox" value="1" ' . ($doupdate
+        $content.= atkTools::atktext("import_doupdate") . ': </td><td> <input type="checkbox" name="doupdate" class="atkcheckbox" value="1" ' . ($doupdate
                     ? "CHECKED" : "") . '/>';
         $content.= '</td></tr><tr><td>';
-        $content.= atktext("import_update_key") . ': </td><td>' . $this->getAttributeSelector(0, $updatekey1, "updatekey1", 2) . '</td>';
+        $content.= atkTools::atktext("import_update_key") . ': </td><td>' . $this->getAttributeSelector(0, $updatekey1, "updatekey1", 2) . '</td>';
         $content.= '</td></tr><tr><td>';
-        $content.= atktext("import_onfalseidentifier") . ': </td><td> <input type="checkbox" name="onfalseid" class="atkcheckbox" value="1" ' . ($onfalseidentifier
+        $content.= atkTools::atktext("import_onfalseidentifier") . ': </td><td> <input type="checkbox" name="onfalseid" class="atkcheckbox" value="1" ' . ($onfalseidentifier
                     ? "CHECKED" : "") . '/>';
         $content.= '</td></tr><tr><td>';
-        $content.= atktext("import_validatefirst") . ': </td><td> <input type="checkbox" name="novalidatefirst" class="atkcheckbox" value="1" ' . ($novalidatefirst
+        $content.= atkTools::atktext("import_validatefirst") . ': </td><td> <input type="checkbox" name="novalidatefirst" class="atkcheckbox" value="1" ' . ($novalidatefirst
                     ? "CHECKED" : "") . '/>';
 
         $content.= '    </td>';
@@ -871,7 +871,7 @@ class atkImportHandler extends atkActionHandler
 
         if ($emptycol == 2)
             $res.= '<option value="-" ' . (($value == "-" || !$hasoneselected) ? "selected"
-                        : "") . ' style="font-style: italic">' . atktext("import_ignorecolumn");
+                        : "") . ' style="font-style: italic">' . atkTools::atktext("import_ignorecolumn");
         elseif ($emptycol == 1)
             $res.= '<option value="" ' . ((!$value || !$hasoneselected) ? "selected"
                         : "") . '>';
@@ -893,7 +893,7 @@ class atkImportHandler extends atkActionHandler
             if (strtolower($item) == strtolower($value))
                 return $key;
 
-            if (strtolower($item) == strtolower(atktext($value, $this->m_node->m_module, $this->m_node->m_type)))
+            if (strtolower($item) == strtolower(atkTools::atktext($value, $this->m_node->m_module, $this->m_node->m_type)))
                 return $key;
         }
         return false;
@@ -974,7 +974,7 @@ class atkImportHandler extends atkActionHandler
                 $allFieldValue = $this->m_postvars[$allField];
                 if (strstr($allFieldValue, "=")) {
                     $allFieldValue = substr(strstr($allFieldValue, "="), 2);
-                    $allFieldValue = substr($allFieldValue, 0, atk_strlen($allFieldValue) - 1);
+                    $allFieldValue = substr($allFieldValue, 0, atkTools::atk_strlen($allFieldValue) - 1);
                 }
                 $allFieldsValues[$allField] = $allFieldValue;
             }
@@ -1017,7 +1017,7 @@ class atkImportHandler extends atkActionHandler
         $this->clearCache();
 
         // register message
-        atkimport('atk.utils.atkmessagequeue');
+        atkTools::atkimport('atk.utils.atkmessagequeue');
         $messageQueue = &atkMessageQueue::getInstance();
 
         $count = count((array) $validated['validatedrecs']['add']) + count((array) $validated['validatedrecs']['update']);
@@ -1070,23 +1070,23 @@ class atkImportHandler extends atkActionHandler
         static $mb_converting_exists = null;
         if (!isset($mb_converting_exists)) {
             $mb_converting_exists = function_exists("mb_convert_encoding");
-            atkdebug('Checking function_exists("mb_convert_encoding")');
+            atkTools::atkdebug('Checking function_exists("mb_convert_encoding")');
         }
 
         static $atkCharset = null;
         if (!isset($atkCharset)) {
-            $atkCharset = atkGetCharset();
-            atkdebug('setting atkcharset static!');
+            $atkCharset = atkTools::atkGetCharset();
+            atkTools::atkdebug('setting atkcharset static!');
         }
 
-        atkimport("atk.utils.atkstringparser");
+        atkTools::atkimport("atk.utils.atkstringparser");
 
         //copy the csv in a record and add it to the db
         $fp = fopen($file, "r");
         if ($skipfirstrow == "1")
             $line = fgets($fp);
         for ($line = fgets($fp), $counter = 1; $line !== false; $line = fgets($fp), $counter++) {
-            atkdebug("Validating record nr. $counter");
+            atkTools::atkdebug("Validating record nr. $counter");
             //if we have an empty line, pass it
             if (trim($line) == "")
                 continue;
@@ -1094,7 +1094,7 @@ class atkImportHandler extends atkActionHandler
             //large import are a problem for the maximum execution time, so we want to set for each
             //loop of the for-loop an maximum execution time
             set_time_limit(60);
-            atkdebug('set_time_limit(60)');
+            atkTools::atkdebug('set_time_limit(60)');
 
             if ($atkCharset != '' && $mb_converting_exists)
                 $line = mb_convert_encoding($line, $atkCharset);
@@ -1153,7 +1153,7 @@ class atkImportHandler extends atkActionHandler
             if (count($relationselect) == 0 || count($relationselect) > 1) {
                 static $searchresults = array();
                 if (!array_key_exists($attributename, $searchresults) || (array_key_exists($attributename, $searchresults) && !array_key_exists($value, $searchresults[$attributename]))) {
-                    atkdebug("Caching attributeValue result for $attributename ($value)");
+                    atkTools::atkdebug("Caching attributeValue result for $attributename ($value)");
                     $searchresults[$attributename][$value] = $attr->m_destInstance->searchDb($value);
                 }
 
@@ -1167,8 +1167,8 @@ class atkImportHandler extends atkActionHandler
                     else
                         $rec[$attributename] = $value;
 
-                    $importerrors[$counter][] = array("msg" => atktext("error_formdataerror"),
-                        "spec" => sprintf(atktext("import_nonunique_identifier"), $this->getValueFromRecord($rec, $attributename)));
+                    $importerrors[$counter][] = array("msg" => atkTools::atktext("error_formdataerror"),
+                        "spec" => sprintf(atkTools::atktext("import_nonunique_identifier"), $this->getValueFromRecord($rec, $attributename)));
                 }
             }
         }
@@ -1213,7 +1213,7 @@ class atkImportHandler extends atkActionHandler
         foreach ($validatedrecs as $action => $validrecs) {
             foreach ($validrecs as $validrec) {
                 $counter++;
-                atkdebug("Doing $action for record nr $counter");
+                atkTools::atkdebug("Doing $action for record nr $counter");
 
                 $this->$action($validrec);
                 if (!empty($validrec['atkerror'])) {
@@ -1329,7 +1329,7 @@ class atkImportHandler extends atkActionHandler
     function _returnErrors($errors, $singleerror, $doubleerror, &$collection)
     {
         if (count($errors) > 0) {
-            $msg = atktext((count($errors) == 1) ? $singleerror : $doubleerror) . ": ";
+            $msg = atkTools::atktext((count($errors) == 1) ? $singleerror : $doubleerror) . ": ";
             foreach ($errors as $key => $field) {
                 $attr = &$this->getUsableAttribute($field);
                 $errors[$key] = $attr->label();
@@ -1374,7 +1374,7 @@ class atkImportHandler extends atkActionHandler
 
             if (!$result)
                 if (in_array($field, $this->getObligatoryAttributes())) {
-                    return array('msg' => sprintf(atktext("import_error_allfieldnocorrectdata"), atktext($field, $this->m_node->m_module, $this->m_node->m_type), var_export($values[$field], 1)));
+                    return array('msg' => sprintf(atkTools::atktext("import_error_allfieldnocorrectdata"), atkTools::atktext($field, $this->m_node->m_module, $this->m_node->m_type), var_export($values[$field], 1)));
                 } else {
                     $value = "";
                 }
@@ -1429,8 +1429,8 @@ class atkImportHandler extends atkActionHandler
             } else if (!$prepareres || $onfalseidentifier) {
                 $validatedrecs["add"][] = $rec;
             } else {
-                $importerrors[] = array("msg" => atktext("error_formdataerror"),
-                    "spec" => sprintf(atktext("import_nonunique_identifier"), $this->getValueFromRecord($rec, $updatekey1)));
+                $importerrors[] = array("msg" => atkTools::atktext("error_formdataerror"),
+                    "spec" => sprintf(atkTools::atktext("import_nonunique_identifier"), $this->getValueFromRecord($rec, $updatekey1)));
             }
         }
     }

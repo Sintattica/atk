@@ -1,5 +1,5 @@
 <?php
-useattrib("atktextattribute");
+atkTools::useattrib("atktextattribute");
 
 class test extends atkNode
 {

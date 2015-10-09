@@ -15,7 +15,7 @@
  * $Id$
  */
 /** @internal include base class */
-atkimport("atk.recordlist.atkrecordlist");
+atkTools::atkimport("atk.recordlist.atkrecordlist");
 
 /**
  * Custom recordlist renderer.
@@ -118,8 +118,8 @@ class atkCustomRecordList extends atkRecordList
                         // is called.
                         $value = $this->eolreplace($p_attrib->display($recordset[$i], $this->m_mode), $rfeplace);
                     }
-                    if (atkGetCharset() != "" && $decode)
-                        $value = atk_html_entity_decode(atk_htmlentities($value, ENT_NOQUOTES), ENT_NOQUOTES);
+                    if (atkTools::atkGetCharset() != "" && $decode)
+                        $value = atkTools::atk_html_entity_decode(atkTools::atk_htmlentities($value, ENT_NOQUOTES), ENT_NOQUOTES);
                     $output.=$sof . ($value == "" ? $empty : $value) . $eof . $fsep;
 
                     // Calculate totals..
@@ -170,7 +170,7 @@ class atkCustomRecordList extends atkRecordList
             $output = '<table border="1" cellspacing="0" cellpadding="2">' . $output . "</table>";
         }
 
-        atkdebug(atk_html_entity_decode($output));
+        atkTools::atkdebug(atkTools::atk_html_entity_decode($output));
 
         // To a File
         if (!array_key_exists("filename", $outputparams))
@@ -178,7 +178,7 @@ class atkCustomRecordList extends atkRecordList
 
         if ($this->m_exportcsv) {
             $ext = ($type == "0" ? "html" : "csv");
-            $exporter = &atknew("atk.utils.atkfileexport");
+            $exporter = &atkTools::atknew("atk.utils.atkfileexport");
             $exporter->export($output, $outputparams["filename"], $ext, $ext, $compression);
         } else {
             return $output;

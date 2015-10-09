@@ -17,7 +17,7 @@
 /**
  * Base include
  */
-atkimport("atk.db.atkmysqlquery");
+atkTools::atkimport("atk.db.atkmysqlquery");
 
 /**
  * SQL Builder for MSSQL databases.

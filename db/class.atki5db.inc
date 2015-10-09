@@ -59,17 +59,17 @@ class atki5db extends atkdb2db
 
         // get current librarylist
         if (!i5_command("rtvjoba", array(), array("usrlibl" => "curlibl"), $this->m_link_id))
-            return atkdebug("Could not retrieve current librarylist:" . i5_errormsg($this->m_link_id));
+            return atkTools::atkdebug("Could not retrieve current librarylist:" . i5_errormsg($this->m_link_id));
 
-        atkdebug("Current librarylist is $curlibl");
+        atkTools::atkdebug("Current librarylist is $curlibl");
 
         // add our libraries to the librarylist
         $curlibl .= " " . implode(" ", $libraries);
 
         if (!i5_command("chglibl", array("libl" => $curlibl), array(), $this->m_link_id))
-            return atkdebug("Could not change current librarylist:" . i5_errormsg($this->m_link_id));
+            return atkTools::atkdebug("Could not change current librarylist:" . i5_errormsg($this->m_link_id));
 
-        atkdebug("Changed librarylist to: $curlibl");
+        atkTools::atkdebug("Changed librarylist to: $curlibl");
     }
 
     /**
@@ -97,7 +97,7 @@ class atki5db extends atkdb2db
     function disconnect()
     {
         if ($this->m_link_id) {
-            atkdebug("Disconnecting from database...");
+            atkTools::atkdebug("Disconnecting from database...");
             @i5_close($this->m_link_id);
             $this->m_link_id = 0;
         }
@@ -112,8 +112,8 @@ class atki5db extends atkdb2db
      */
     function query($query, $offset = -1, $limit = -1)
     {
-        atkimport("atk.utils.atkdebugger");
-        atkdebug("Query:" . $query);
+        atkTools::atkimport("atk.utils.atkdebugger");
+        atkTools::atkdebug("Query:" . $query);
 
         /* connect to database */
         if ($this->connect($mode) == DB_SUCCESS) {
@@ -139,7 +139,7 @@ class atki5db extends atkdb2db
             $this->m_row = 0;
 
             /* return query id */
-            atkdebug("atki5db::return true<br>");
+            atkTools::atkdebug("atki5db::return true<br>");
             return true;
         }
         return false;
@@ -276,13 +276,13 @@ class atki5db extends atkdb2db
                 $query = "SELECT " . $this->m_seq_field . " FROM " . $this->m_seq_table . " WHERE " . $this->m_seq_namefield . " = '$sequence'";
                 $id = @i5_query($query, $this->m_link_id);
                 $result = @i5_fetch_array($id);
-                atk_var_dump($result, "<h2>RESULT FROM DB_SEQUENCE TABLE:</h2>");
+                atkTools::atk_var_dump($result, "<h2>RESULT FROM DB_SEQUENCE TABLE:</h2>");
 
                 /* no current value, make one */
                 if (!is_array($result)) {
                     $query = "INSERT INTO " . $this->m_seq_table . " VALUES('$sequence', 1)";
                     $id = @i5_query($query, $this->m_link_id);
-                    atkdebug("<b>Ran query $query, result is : $id</b>");
+                    atkTools::atkdebug("<b>Ran query $query, result is : $id</b>");
                     $this->unlock();
                     return 1;
                 }
@@ -317,9 +317,9 @@ class atki5db extends atkdb2db
         if ($this->connect("w") == DB_SUCCESS) {
             // In i5, the table will remain locked until the next commit or rollback. As
             // we never use rollback in ATK, lets just commit() to release all locks
-            atkdebug("Query: commit");
+            atkTools::atkdebug("Query: commit");
             $result = i5_query("COMMIT", $this->m_link_id);
-            atk_var_dump($result, "<h2>RESULT:</h2>");
+            atkTools::atk_var_dump($result, "<h2>RESULT:</h2>");
             if (!$result)
                 $this->halt("commit failed:" . print_r(i5_error($this->m_link_id), true));
 

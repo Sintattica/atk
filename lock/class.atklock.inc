@@ -51,7 +51,7 @@ class atkLock
             if (file_exists($file)) {
                 include_once($file);
                 if (class_exists($class)) {
-                    atkdebug('Constructing a new lock - ' . strtolower($class));
+                    atkTools::atkdebug('Constructing a new lock - ' . strtolower($class));
                     $_instance = new $class();
                 }
             }

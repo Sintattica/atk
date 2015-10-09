@@ -52,7 +52,7 @@ class atkUrlVault
      */
     function atkUrlVault()
     {
-        atkdebug("Creating url vault");
+        atkTools::atkdebug("Creating url vault");
         $sm = &atkGetSessionManager();
         $session = &$sm->getSession();
         if (!isset($session["atkurlvault"]) || !is_array($session["atkurlvault"]))

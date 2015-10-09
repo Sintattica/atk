@@ -73,7 +73,7 @@ class auth_db extends auth_interface
         if ($user == "")
             return AUTH_UNVERIFIED; // can't verify if we have no userid
 
-        $db = &atkGetDb(atkconfig("auth_database"));
+        $db = &atkTools::atkGetDb(atkconfig("auth_database"));
         $query = $this->buildSelectUserQuery($db->escapeSql($user), atkconfig("auth_usertable"), atkconfig("auth_userfield"), atkconfig("auth_passwordfield"), atkconfig("auth_accountdisablefield"), atkconfig("auth_accountenableexpression"));
         $recs = $db->getrows($query);
         if (count($recs) > 0 && $this->isLocked($recs[0])) {
@@ -164,7 +164,7 @@ class auth_db extends auth_interface
         $groupparentfield = atkconfig("auth_groupparentfield");
         $accountenableexpression = atkconfig("auth_accountenableexpression");
 
-        $db = &atkGetDb(atkconfig("auth_database"));
+        $db = &atkTools::atkGetDb(atkconfig("auth_database"));
         if ($usertable == $leveltable || $leveltable == "") {
             // Level and userid are stored in the same table.
             // This means one user can only have one level.
@@ -201,7 +201,7 @@ class auth_db extends auth_interface
      */
     function getParentGroups($parents)
     {
-        $db = &atkGetDb(atkconfig("auth_database"));
+        $db = &atkTools::atkGetDb(atkconfig("auth_database"));
 
         $grouptable = atkconfig("auth_grouptable");
         $groupfield = atkconfig("auth_groupfield");
@@ -314,7 +314,7 @@ class auth_db extends auth_interface
      */
     function getEntity($node, $action)
     {
-        $db = &atkGetDb(atkconfig("auth_database"));
+        $db = &atkTools::atkGetDb(atkconfig("auth_database"));
 
         if (!isset($this->m_rightscache[$node]) || count($this->m_rightscache[$node]) == 0) {
             $query = "SELECT * FROM " . atkconfig("auth_accesstable") . " WHERE node='$node'";
@@ -351,7 +351,7 @@ class auth_db extends auth_interface
      */
     function getAttribEntity($node, $attrib, $mode)
     {
-        $db = &atkGetDb(atkconfig("auth_database"));
+        $db = &atkTools::atkGetDb(atkconfig("auth_database"));
 
         $query = "SELECT * FROM attribaccess WHERE node='$node' AND attribute='$attrib' AND mode='$mode'";
 
@@ -390,7 +390,7 @@ class auth_db extends auth_interface
      */
     function getUserList()
     {
-        $db = &atkGetDb(atkconfig("auth_database"));
+        $db = &atkTools::atkGetDb(atkconfig("auth_database"));
         $query = "SELECT * FROM " . atkconfig("auth_usertable");
 
         $accountdisablefield = atkconfig("auth_accountdisablefield");
@@ -408,7 +408,7 @@ class auth_db extends auth_interface
         $recs = $db->getrows($query);
 
         $userlist = array();
-        atkimport("atk.utils.atkstringparser");
+        atkTools::atkimport("atk.utils.atkstringparser");
         $stringparser = new atkStringParser(atkconfig("auth_userdescriptor"));
         for ($i = 0, $_i = count($recs); $i < $_i; $i++) {
             $userlist[] = array("userid" => $recs[$i][atkconfig("auth_userfield")], "username" => $stringparser->parse($recs[$i]));
@@ -453,14 +453,14 @@ class auth_db extends auth_interface
         $selector = sprintf("%s.%s = '%s'", atkconfig("auth_usertable"), atkconfig("auth_userfield"), $username);
         $userrecords = $usernode->selectDb($selector, "", "", "", array(atkconfig("auth_userpk"), atkconfig("auth_emailfield"), atkconfig("auth_passwordfield")), "edit");
         if (count($userrecords) != 1) {
-            atkdebug("User '$username' not found.");
+            atkTools::atkdebug("User '$username' not found.");
             return false;
         }
 
         // Retrieve the email address
         $email = $userrecords[0][atkconfig("auth_emailfield")];
         if (empty($email)) {
-            atkdebug("Email address for '$username' not available.");
+            atkTools::atkdebug("Email address for '$username' not available.");
             return false;
         }
 

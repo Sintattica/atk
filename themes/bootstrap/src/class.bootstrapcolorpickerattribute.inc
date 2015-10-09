@@ -1,7 +1,7 @@
 <?php
 
 
-useattrib("atkattribute");
+atkTools::useattrib("atkattribute");
 
 
 class bootstrapColorPickerAttribute extends atkAttribute
@@ -11,7 +11,7 @@ class bootstrapColorPickerAttribute extends atkAttribute
     /*
      * remember to import in your node:
      *
-     * atkimport("atk.themes.bootstrap.src.bootstrapcolorpickerattribute");
+     * atkTools::atkimport("atk.themes.bootstrap.src.bootstrapcolorpickerattribute");
      *
      *
      * $colorPickerOptions: see http://mjolnic.com/bootstrap-colorpicker/
@@ -31,8 +31,8 @@ class bootstrapColorPickerAttribute extends atkAttribute
     {
         $htmlId = $this->getHtmlId($fieldprefix) . '_group';
 
-        $page = atkinstance('atk.ui.atkpage');
-        $theme = atkinstance("atk.ui.atktheme");
+        $page = atkTools::atkinstance('atk.ui.atkpage');
+        $theme = atkTools::atkinstance("atk.ui.atktheme");
         $base = atkconfig('atkroot') . 'atk/themes/bootstrap/lib/bootstrap-colorpicker/dist/';
 
         $page->register_script($base . 'js/bootstrap-colorpicker.min.js');

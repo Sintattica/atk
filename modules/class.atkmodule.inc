@@ -157,7 +157,7 @@ class atkModule
 
         /* overloader check */
         if (!empty($g_overloaders[$node])) {
-            atkdebug("Using overloader '" . $g_overloaders[$node] . "' for class '" . $node . "'");
+            atkTools::atkdebug("Using overloader '" . $g_overloaders[$node] . "' for class '" . $node . "'");
             self::$s_isOverloader = true;
             $node = newNode($g_overloaders[$node], FALSE);
             self::$s_isOverloader = false;
@@ -205,22 +205,22 @@ class atkModule
         global $config_atkroot;
 
         /* include the base file */
-        atkimport("atk.atknode");
+        atkTools::atkimport("atk.atknode");
 
         $corporate_base = atkconfig("corporate_node_base");
         if ($corporate_base != "") {
-            atkimport($corporate_base);
+            atkTools::atkimport($corporate_base);
         }
 
         /* check for file */
         $file = $this->getNodeFile($node);
         if (!file_exists($file)) {
-            atkimport("atk.utils.atkclassloader");
+            atkTools::atkimport("atk.utils.atkclassloader");
             $res = atkClassLoader::invokeFromString(atkconfig("missing_class_handler"), array(array("node" => $node, "module" => $this->m_name)));
             if ($res !== false) {
                 return $res;
             } else {
-                atkerror("Cannot create node, because a required file ($file) does not exist!", "critical");
+                atkTools::atkerror("Cannot create node, because a required file ($file) does not exist!", "critical");
                 return NULL;
             }
         }
@@ -338,7 +338,7 @@ class atkModule
             // If the modifiers is found
             if (method_exists($this, $modifiername)) {
                 // Add a debug line so we know, the modifier is applied
-                atkdebug(sprintf("Applying modifier %s from module %s to node %s", $modifiername, $this->m_name, $node->m_type));
+                atkTools::atkdebug(sprintf("Applying modifier %s from module %s to node %s", $modifiername, $this->m_name, $node->m_type));
 
                 // Apply the modifier
                 $node->m_modifier = $this->m_name;
@@ -352,7 +352,7 @@ class atkModule
 
         // If none of the modifiers was found, add a warning to the debug log
         if ($appliedmodifiers == 0)
-            atkdebug(sprintf("Failed to apply modifier function %s from module %s to node %s; modifier function not found", implode(" or ", $specificmodifiers), $this->m_name, $node->m_type), DEBUG_WARNING);
+            atkTools::atkdebug(sprintf("Failed to apply modifier function %s from module %s to node %s; modifier function not found", implode(" or ", $specificmodifiers), $this->m_name, $node->m_type), DEBUG_WARNING);
     }
 
 }

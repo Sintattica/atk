@@ -18,9 +18,9 @@
  * Imports
  * @access private
  */
-atkimport('atk.utils.atkjson');
-atkimport('atk.relations.controls.atkshuttlecontrol');
-atkimport('atk.relations.controls.atkshuttlefilter');
+atkTools::atkimport('atk.utils.atkjson');
+atkTools::atkimport('atk.relations.controls.atkshuttlecontrol');
+atkTools::atkimport('atk.relations.controls.atkshuttlefilter');
 
 
 /**
@@ -232,7 +232,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     {
         // Add onchange handler
         $mode == "add" ? "add" : "edit";
-        $url = addslashes(partial_url($this->m_ownerInstance->atkNodeType(), $mode, "attribute." . $this->getHtmlId($fieldprefix) . ".selection", array("atkfieldprefix" => $fieldprefix)));
+        $url = addslashes(atkTools::partial_url($this->m_ownerInstance->atkNodeType(), $mode, "attribute." . $this->getHtmlId($fieldprefix) . ".selection", array("atkfieldprefix" => $fieldprefix)));
         $this->addOnChangeHandler("shuttle_refresh('$url', '" . $this->getHtmlId($fieldprefix) . '[cselected][][' . $this->getRemoteKey() . ']' . "', '" . $prefix . $this->fieldName() . "[section]', el);");
         $this->_renderChangeHandler($fieldprefix);
 
@@ -406,7 +406,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
         $parser = null;
         // Only import the stringparser once.
         if (isset($this->m_descriptor_tooltip_template)) {
-            atkimport("atk.utils.atkstringparser");
+            atkTools::atkimport("atk.utils.atkstringparser");
             $parser = new atkStringParser($this->m_descriptor_tooltip_template);
         }
 
@@ -417,7 +417,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
 
             $ttip = str_replace('\r\n', ' ', strip_tags($ttip));
 
-            $result.= '<option value="' . $recordset[$i][$this->m_destInstance->primaryKeyField()] . '" title="' . $ttip . '">' . atk_htmlentities($title) . '</option>';
+            $result.= '<option value="' . $recordset[$i][$this->m_destInstance->primaryKeyField()] . '" title="' . $ttip . '">' . atkTools::atk_htmlentities($title) . '</option>';
         }
         $result.= '</select>';
         return $result;

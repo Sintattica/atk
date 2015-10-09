@@ -136,7 +136,7 @@ class atkPageBuilder
      */
     public function beginActionBox()
     {
-        atkimport('atk.ui.atkactionboxbuilder');
+        atkTools::atkimport('atk.ui.atkactionboxbuilder');
         return new atkActionBoxBuilder($this);
     }
 
@@ -166,7 +166,7 @@ class atkPageBuilder
             $boxes[] = $this->getNode()->getUi()->renderBox(array('title' => $title, 'content' => $content), $box['template']);
         }
 
-        $this->getNode()->getPage()->setTitle(atktext('app_shorttitle') . " - " . $this->m_title);
+        $this->getNode()->getPage()->setTitle(atkTools::atktext('app_shorttitle') . " - " . $this->m_title);
 
         $content = $this->getNode()->renderActionPage($this->m_title, $boxes);
 

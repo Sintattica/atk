@@ -53,7 +53,7 @@ class atkMetaGrammar
         }
 
         if (!isset(self::$instances[$class])) {
-            self::$instances[$class] = atknew($class);
+            self::$instances[$class] = atkTools::atknew($class);
         }
 
         return self::$instances[$class];

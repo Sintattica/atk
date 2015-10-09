@@ -55,14 +55,14 @@ class atkFeedbackHandler extends atkActionHandler
 
         $node->addStyle("style.css");
 
-        $params["content"] = '<br>'.atktext('feedback_' . $action . '_' . atkActionStatus($actionstatus), $node->m_module, $node->m_type);
+        $params["content"] = '<br>'.atkTools::atktext('feedback_' . $action . '_' . atkTools::atkActionStatus($actionstatus), $node->m_module, $node->m_type);
         if ($message) {
             $params["content"] .= ' <br>' . $message;
         }
 
         if (atkLevel() > 0) {
-            $params["formstart"] = '<form method="get">' . session_form(SESSION_BACK);
-            $params["buttons"][] = '<input type="submit" class="btn btn-default btn_cancel" value="&lt;&lt; ' . atktext('back') . '">';
+            $params["formstart"] = '<form method="get">' . atkTools::session_form(SESSION_BACK);
+            $params["buttons"][] = '<input type="submit" class="btn btn-default btn_cancel" value="&lt;&lt; ' . atkTools::atktext('back') . '">';
             $params["formend"] = '</form>';
         }
 

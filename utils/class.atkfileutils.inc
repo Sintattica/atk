@@ -47,14 +47,14 @@ class atkFileUtils
         if (is_null($orgdest))
             $orgdest = $dest;
 
-        atkdebug("Checking write permission for " . $orgdest);
+        atkTools::atkdebug("Checking write permission for " . $orgdest);
 
         if (!atkFileUtils::is_writable($orgdest)) {
-            atkdebug("Error no write permission!");
+            atkTools::atkdebug("Error no write permission!");
             return false;
         }
 
-        atkdebug("Permission granted to write.");
+        atkTools::atkdebug("Permission granted to write.");
 
         if ($dest == $orgdest && $dirname != '') {
             mkdir($orgdest . "/" . $dirname, $privileges);
@@ -131,7 +131,7 @@ class atkFileUtils
             }
         }
 
-        atkdebug("Checking with: " . $testdest);
+        atkTools::atkdebug("Checking with: " . $testdest);
 
         return is_writable($testdest);
     }
@@ -152,11 +152,11 @@ class atkFileUtils
         $dir = preg_replace('/(\/){2,}|(\\\){1,}/', '/', $dir); //only forward-slash
 
         if (!atkFileUtils::is_writable($dir)) {
-            atkdebug("Error no write permission!");
+            atkTools::atkdebug("Error no write permission!");
             return false;
         }
 
-        atkdebug("Permission granted to write.");
+        atkTools::atkdebug("Permission granted to write.");
 
         if (is_null($dir) || $dir === "") {
             return FALSE;
@@ -181,7 +181,7 @@ class atkFileUtils
      */
     function parseDirectoryName($template, $data)
     {
-        atkimport("atk.utils.atkstringparser");
+        atkTools::atkimport("atk.utils.atkstringparser");
         $stringparser = new atkStringParser($template);
         return $stringparser->parse($data);
     }
@@ -359,10 +359,10 @@ class atkFileUtils
 
         $ext = trim(strtolower($ext));
         if (array_key_exists($ext, $mimetypes)) {
-            atkdebug("Filetype for $filename is {$mimetypes[$ext]}");
+            atkTools::atkdebug("Filetype for $filename is {$mimetypes[$ext]}");
             return $mimetypes[$ext];
         } else {
-            atkdebug("Filetype for $filename could not be found. Returning application/octet-stream.");
+            atkTools::atkdebug("Filetype for $filename could not be found. Returning application/octet-stream.");
             return "application/octet-stream";
         }
     }

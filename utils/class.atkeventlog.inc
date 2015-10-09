@@ -17,7 +17,7 @@
 /**
  * Base class import.
  */
-atkimport("atk.utils.atkactionlistener");
+atkTools::atkimport("atk.utils.atkactionlistener");
 
 /**
  * The atkEventLog is a ready to use atkActionListener for logging events

@@ -17,14 +17,14 @@
 /**
  * WARNING: Do NOT use this global variable, it is deprecated .
  * Re-indroduced to ensure backwards compatibility.
- * @deprecated in favor of the atkSelf() function.
+ * @deprecated in favor of the atkTools::atkSelf() function.
  */
-$GLOBALS['PHP_SELF'] = atkSelf();
+$GLOBALS['PHP_SELF'] = atkTools::atkSelf();
 
 /**
  * WARNING: Do NOT use this global variable, it is deprecated .
  * Set this because all PHP_SELF variables must have the same value.
- * @deprecated in favor of the atkSelf() function.
+ * @deprecated in favor of the atkTools::atkSelf() function.
  */
-$_SERVER["PHP_SELF"] = atkSelf();
+$_SERVER["PHP_SELF"] = atkTools::atkSelf();
 ?>

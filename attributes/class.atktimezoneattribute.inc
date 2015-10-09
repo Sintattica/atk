@@ -13,8 +13,8 @@
  *
  */
 /** @internal includes * */
-atkimport("atk.atklanguage");
-useattrib("atklistattribute");
+atkTools::atkimport("atk.atklanguage");
+atkTools::useattrib("atklistattribute");
 
 /**
  * The atkTimeZone class represents an attribute to handle timezones in a listbox.

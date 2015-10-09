@@ -60,7 +60,7 @@ class auth_pop3 extends auth_interface
         if ($server == "[db]") {
             // if server is set to [db], that means we have a different server per
             // user. We lookup in the database what server we need to call.
-            $db = &atkGetDb();
+            $db = &atkTools::atkGetDb();
             $res = $db->getrows("SELECT auth_server
                                FROM " . atkconfig("auth_usertable") . "
                               WHERE " . atkconfig("auth_userfield") . "='" . $user . "'");
@@ -75,8 +75,8 @@ class auth_pop3 extends auth_interface
 
         if ($server == "") {
             $secMgr->log(1, "pop3auth error: No server specified");
-            atkdebug("pop3auth error: No server specified");
-            $this->m_fatalError = atktext("auth_no_server");
+            atkTools::atkdebug("pop3auth error: No server specified");
+            $this->m_fatalError = atkTools::atktext("auth_no_server");
             return AUTH_ERROR;
         }
 
@@ -85,8 +85,8 @@ class auth_pop3 extends auth_interface
         $link_id = fsockopen($server, $port, $errno, $errstr, 30);
         if (!$link_id) {
             $secMgr->log(1, "pop3auth serverconnect error $server: $errstr");
-            atkdebug("Error connecting to server $server: $errstr");
-            $this->m_fatalError = atktext("auth_unable_to_connect");
+            atkTools::atkdebug("Error connecting to server $server: $errstr");
+            $this->m_fatalError = atkTools::atktext("auth_unable_to_connect");
             return AUTH_ERROR;
         }
 

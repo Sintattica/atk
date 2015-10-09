@@ -16,7 +16,7 @@
  * @version $Revision: 6310 $
  * $Id$
  */
-atkimport("atk.handlers.atkactionhandler");
+atkTools::atkimport("atk.handlers.atkactionhandler");
 
 /**
  * Some defines
@@ -148,7 +148,7 @@ class atkAttributeEditHandler extends atkActionHandler
             // If the validation succeeded, we will get here and try to perform the update.
             if (!$node->updateDb($rec, false, "", array($attributename))) {
                 $success = false;
-                triggerError($rec, $attributename, $node->getDb()->getErrorType(), $node->getDb()->getErrorMsg());
+                atkTools::triggerError($rec, $attributename, $node->getDb()->getErrorType(), $node->getDb()->getErrorMsg());
                 break;
             }
         }
@@ -181,7 +181,7 @@ class atkAttributeEditHandler extends atkActionHandler
      */
     function handleError($error, $record = null, $reload = false)
     {
-        atkimport('atk.ui.atkdialog');
+        atkTools::atkimport('atk.ui.atkdialog');
 
         $this->registerExternalFiles();
 
@@ -226,7 +226,7 @@ class atkAttributeEditHandler extends atkActionHandler
         }
 
         $ui = &$this->m_node->getUi();
-        atkimport('atk.ui.atkdialog');
+        atkTools::atkimport('atk.ui.atkdialog');
         $params = array();
         $params["content"] = "<b>" . $errortext . "</b><br />";
         $params["content"].= $errormsg;
@@ -368,7 +368,7 @@ class atkAttributeEditHandler extends atkActionHandler
      */
     function onChange()
     {
-        $url = partial_url($this->m_masterNode->atkNodeType(), 'attributeedit', 'refreshvaluefield');
+        $url = atkTools::partial_url($this->m_masterNode->atkNodeType(), 'attributeedit', 'refreshvaluefield');
         $script = "
         ATK.AttributeEditHandler.refreshvalues('$url');
       ";
@@ -512,7 +512,7 @@ class atkAttributeEditHandler extends atkActionHandler
     {
         $page = &$this->getPage();
 
-        atkimport('atk.utils.atkjson');
+        atkTools::atkimport('atk.utils.atkjson');
         // get selected attribute
         $selectedattribute = $this->m_node->m_postvars["attributename"];
 
@@ -534,7 +534,7 @@ class atkAttributeEditHandler extends atkActionHandler
         if ($this->m_processUrl != null) {
             return $this->m_processUrl;
         } else {
-            return partial_url($this->m_masterNode->atkNodeType(), 'attributeedit', 'process');
+            return atkTools::partial_url($this->m_masterNode->atkNodeType(), 'attributeedit', 'process');
         }
     }
 

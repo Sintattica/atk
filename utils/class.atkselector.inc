@@ -287,9 +287,9 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
             return false;
         }
 
-        $searchCriteria = atkArrayNvl($this->_getNode()->m_postvars, 'atksearch');
-        $smartSearchCriteria = atkArrayNvl($this->_getNode()->m_postvars, 'atksmartsearch');
-        $indexValue = $this->_getNode()->m_index != '' ? atkArrayNvl($this->_getNode()->m_postvars, 'atkindex', '')
+        $searchCriteria = atkTools::atkArrayNvl($this->_getNode()->m_postvars, 'atksearch');
+        $smartSearchCriteria = atkTools::atkArrayNvl($this->_getNode()->m_postvars, 'atksmartsearch');
+        $indexValue = $this->_getNode()->m_index != '' ? atkTools::atkArrayNvl($this->_getNode()->m_postvars, 'atkindex', '')
                 : '';
 
         return (is_array($searchCriteria) && count($searchCriteria) > 0) ||
@@ -316,7 +316,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
      */
     protected function _applyPostedFilterToQuery($query)
     {
-        $filter = atkArrayNvl($this->_getNode()->m_postvars, 'atkfilter', '');
+        $filter = atkTools::atkArrayNvl($this->_getNode()->m_postvars, 'atkfilter', '');
         if (empty($filter)) {
             return;
         }
@@ -333,7 +333,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
     protected function _applyPostedIndexValueToQuery(atkQuery $query)
     {
         $indexAttrName = $this->_getNode()->m_index;
-        $indexValue = atkArrayNvl($this->_getNode()->m_postvars, 'atkindex', '');
+        $indexValue = atkTools::atkArrayNvl($this->_getNode()->m_postvars, 'atkindex', '');
         if (empty($indexAttrName) || empty($indexValue) || !is_object($this->_getNode()->getAttribute($indexAttrName))) {
             return;
         }
@@ -362,7 +362,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
      */
     protected function _applyPostedSearchCriteriaToQuery(atkQuery $query, array $attrsByLoadType)
     {
-        $searchCriteria = atkArrayNvl($this->_getNode()->m_postvars, 'atksearch');
+        $searchCriteria = atkTools::atkArrayNvl($this->_getNode()->m_postvars, 'atksearch');
         if (!is_array($searchCriteria) || count($searchCriteria) == 0) {
             return;
         }
@@ -390,7 +390,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
 
                 $attr->searchCondition($query, $this->_getNode()->getTable(), $value, $searchMode, '');
             } else {
-                atkdebug("Using default search method for $key");
+                atkTools::atkdebug("Using default search method for $key");
                 $condition = "LOWER(" . $this->_getNode()->getTable() . "." . $key . ") LIKE LOWER('%" . $this->_getDb()->escapeSQL($value, true) . "%')";
                 $query->addSearchCondition($condition);
             }
@@ -404,7 +404,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
      */
     protected function _applyPostedSmartSearchCriteriaToQuery(atkQuery $query)
     {
-        $searchCriteria = atkArrayNvl($this->_getNode()->m_postvars, 'atksmartsearch');
+        $searchCriteria = atkTools::atkArrayNvl($this->_getNode()->m_postvars, 'atksmartsearch');
         if (!is_array($searchCriteria) || count($searchCriteria) == 0) {
             return;
         }
@@ -457,7 +457,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
         }
 
         // fuzzy filters
-        atkimport("atk.utils.atkstringparser");
+        atkTools::atkimport("atk.utils.atkstringparser");
         foreach ($this->_getNode()->m_fuzzyFilters as $filter) {
             $parser = new atkStringParser($filter);
             $filter = $parser->parse(array('table' => $this->_getNode()->getTable()));
@@ -500,15 +500,15 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
 
             $loadType = $attr->loadType($this->m_mode, $isSearching);
 
-            if (hasFlag($loadType, PRELOAD)) {
+            if (atkTools::hasFlag($loadType, PRELOAD)) {
                 $result[PRELOAD][$attr->fieldName()] = $attr;
             }
 
-            if (hasFlag($loadType, ADDTOQUERY)) {
+            if (atkTools::hasFlag($loadType, ADDTOQUERY)) {
                 $result[ADDTOQUERY][$attr->fieldName()] = $attr;
             }
 
-            if (hasFlag($loadType, POSTLOAD)) {
+            if (atkTools::hasFlag($loadType, POSTLOAD)) {
                 $result[POSTLOAD][$attr->fieldName()] = $attr;
             }
         }
@@ -617,7 +617,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
     protected function _transformRow($row, atkQuery $query, array $attrsByLoadType)
     {
         $query->deAlias($row);
-        atkDataDecode($row);
+        atkTools::atkDataDecode($row);
 
         $result = array();
         foreach ($attrsByLoadType[ADDTOQUERY] as $attr) {
@@ -856,7 +856,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
             $this->m_query = $query;
             $this->m_stmt = $stmt;
 
-            atkimport('atk.utils.atkselectoriterator');
+            atkTools::atkimport('atk.utils.atkselectoriterator');
             $this->m_iterator = new atkSelectorIterator($this->m_stmt->getIterator(), $this);
         }
 

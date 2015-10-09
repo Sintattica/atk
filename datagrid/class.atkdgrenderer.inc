@@ -53,8 +53,8 @@ class atkDGRenderer extends atkDGComponent
     protected function renderForm($result)
     {
         if (!$this->getGrid()->isUpdate() && !$this->getGrid()->isEmbedded()) {
-            $result = '<form id="' . $this->getGrid()->getFormName() . '" name="' . $this->getGrid()->getFormName() . '" method="post" action="' . atkSelf() . '">' .
-                session_form() .
+            $result = '<form id="' . $this->getGrid()->getFormName() . '" name="' . $this->getGrid()->getFormName() . '" method="post" action="' . atkTools::atkSelf() . '">' .
+                atkTools::session_form() .
                 $result .
                 '</form>';
         }
@@ -87,7 +87,7 @@ class atkDGRenderer extends atkDGComponent
         if ($this->getGrid()->isUpdate())
             return;
 
-        atkimport('atk.utils.atkjson');
+        atkTools::atkimport('atk.utils.atkjson');
 
         $name = atkJSON::encode($this->getGrid()->getName());
         $baseUrl = atkJSON::encode($this->getGrid()->getBaseUrl());

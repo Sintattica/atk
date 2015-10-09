@@ -17,7 +17,7 @@
 /**
  * @internal include baseclass.
  */
-useattrib('atkUpdateStampAttribute');
+atkTools::useattrib('atkUpdateStampAttribute');
 
 /**
  * Attribute for keeping track of record creation times.

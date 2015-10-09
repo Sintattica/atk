@@ -104,7 +104,7 @@ class atkMlFckAttribute extends atkMlTextAttribute
             $entry["label"] = $this->label($defaults) .
                 ' (<label id="' . $fieldprefix . $this->formName() . '_label_ ' .
                 strtolower($curlng) . '">' .
-                atktext("language_" . strtolower($curlng)) .
+                atkTools::atktext("language_" . strtolower($curlng)) .
                 '</label>)';
 
             $entry["id"] = $this->getHtmlId($fieldprefix);

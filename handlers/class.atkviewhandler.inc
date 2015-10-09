@@ -14,7 +14,7 @@
  * @version $Revision: 6310 $
  * $Id$
  */
-atkimport("atk.handlers.atkvieweditbase");
+atkTools::atkimport("atk.handlers.atkvieweditbase");
 
 /**
  * Handler class for a readonly view action. Similar to the edit handler,
@@ -71,8 +71,8 @@ class atkViewHandler extends atkViewEditBase
      */
     public function getFormStart($record = null)
     {
-        $formstart = '<form name="entryform" id="entryform" action="' . getDispatchFile() . '" method="get" onsubmit="return globalSubmit(this,false)">';
-        $formstart .= session_form(SESSION_NESTED);
+        $formstart = '<form name="entryform" id="entryform" action="' .  atkTools::getDispatchFile() . '" method="get" onsubmit="return globalSubmit(this,false)">';
+        $formstart .= atkTools::session_form(SESSION_NESTED);
         $formstart .= '<input type="hidden" name="atkselector" value="' . $this->getNode()->primaryKey($record) . '">';
         $formstart .= '<input type="hidden" class="atksubmitaction" />';
         return $formstart;
@@ -111,7 +111,7 @@ class atkViewHandler extends atkViewEditBase
                 return $output;
             }
 
-            $this->getPage()->setTitle(atktext('app_shorttitle') . " - " . $node->actionTitle($this->m_action, $record));
+            $this->getPage()->setTitle(atkTools::atktext('app_shorttitle') . " - " . $node->actionTitle($this->m_action, $record));
 
             $vars = array("title" => $node->actionTitle($this->m_action, $record), "content" => $output);
 
@@ -123,7 +123,7 @@ class atkViewHandler extends atkViewEditBase
 
             return $total;
         } else {
-            atkerror("ui object error");
+            atkTools::atkerror("ui object error");
         }
     }
 
@@ -207,7 +207,7 @@ class atkViewHandler extends atkViewEditBase
 
             // Give the row an id if it doesn't have one yet
             if (!isset($field["id"]) || empty($field["id"]))
-                $field['id'] = getUniqueID("anonymousattribrows");
+                $field['id'] = atkTools::getUniqueID("anonymousattribrows");
 
             // ar_ stands voor 'attribrow'.
             $tplfield["rowid"] = "ar_" . $field['id']; // The id of the containing row

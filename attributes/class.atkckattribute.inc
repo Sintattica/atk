@@ -11,7 +11,7 @@
  *
  */
 
-useattrib("atktextattribute");
+atkTools::useattrib("atktextattribute");
 
 /**
  * Attribute wrapper for CKEditor (the successor of FCK Editor)
@@ -88,7 +88,7 @@ class atkCKAttribute extends atkTextAttribute
 
     function display($record, $mode = "")
     {
-        return atkArrayNvl($record, $this->fieldName(), "");
+        return atkTools::atkArrayNvl($record, $this->fieldName(), "");
     }
 
     function value2db($rec)

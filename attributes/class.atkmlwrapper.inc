@@ -51,7 +51,7 @@ class atkMlWrapper extends atkAttribute
 
         foreach ($this->getLanguages() as $lng) {
             // Clone attrs with new name
-            $attr = atkClone($attribute);
+            $attr = atkTools::atkClone($attribute);
 
             $attr->m_name = $this->m_name . "_" . $lng;
             $this->m_childList[$lng] = $attr;
@@ -76,7 +76,7 @@ class atkMlWrapper extends atkAttribute
     function isEmpty($record)
     {
         // @todo
-        atkdebug("mlwrap isempty");
+        atkTools::atkdebug("mlwrap isempty");
         return false;
     }
 
@@ -218,7 +218,7 @@ class atkMlWrapper extends atkAttribute
                 $attr->setLabel($this->label());
             } else {
                 // other languages
-                $attr->setLabel($this->label() . " (" . atktext('language_' . strtolower($lng)) . ")");
+                $attr->setLabel($this->label() . " (" . atkTools::atktext('language_' . strtolower($lng)) . ")");
 
                 // All but the first other attrib need to be initially hidden.
                 if ($cnt > 1) {
@@ -274,7 +274,7 @@ class atkMlWrapper extends atkAttribute
      */
     function validate(&$record, $mode)
     {
-        atkdebug("mlwrap validate");
+        atkTools::atkdebug("mlwrap validate");
     }
 
     /**
@@ -353,7 +353,7 @@ class atkMlWrapper extends atkAttribute
      */
     function dbFieldType()
     {
-        atkdebug("mlwrap dbfieldtype");
+        atkTools::atkdebug("mlwrap dbfieldtype");
     }
 
     /**
@@ -375,7 +375,7 @@ class atkMlWrapper extends atkAttribute
      */
     function dbFieldSize()
     {
-        atkdebug("mlwrap dbfieldsize");
+        atkTools::atkdebug("mlwrap dbfieldsize");
     }
 
     /**

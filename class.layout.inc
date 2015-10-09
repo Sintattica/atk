@@ -59,7 +59,7 @@ class layout
 
     function &getInstance()
     {
-        atkdebug("obsolete use of layout class!");
+        atkTools::atkdebug("obsolete use of layout class!");
         static $s_instance = NULL;
         if ($s_instance == NULL) {
             $s_instance = new layout();
@@ -70,7 +70,7 @@ class layout
     function constructUI()
     {
         if ($this->m_atkui == NULL) {
-            $this->m_atkui = &atkinstance("atk.ui.atkui");
+            $this->m_atkui = &atkTools::atkinstance("atk.ui.atkui");
         }
     }
 
@@ -88,7 +88,7 @@ class layout
      */
     function initGui()
     {
-        atkdebug("Obsolete use of layout::initGui()!");
+        atkTools::atkdebug("Obsolete use of layout::initGui()!");
         static $initialized = false;
         global $g_theme;
 
@@ -107,7 +107,7 @@ class layout
             $this->constructUI();
             $page->register_style($this->m_atkui->stylePath("style.css"));
 
-            atkdebug("Initialized GUI");
+            atkTools::atkdebug("Initialized GUI");
             $initialized = true;
         }
     }
@@ -119,7 +119,7 @@ class layout
 
     function import_layout()
     {
-        atkdebug("Obsolete use of layout::import_layout()!");
+        atkTools::atkdebug("Obsolete use of layout::import_layout()!");
 
         global $g_theme;
 
@@ -141,7 +141,7 @@ class layout
      */
     function output($txt)
     {
-        atkdebug("Obsolete use of layout::output()!");
+        atkTools::atkdebug("Obsolete use of layout::output()!");
         $this->m_atkoutput->output($txt);
     }
 
@@ -151,7 +151,7 @@ class layout
      */
     function rawoutput($txt)
     {
-        atkdebug("Obsolete use of layout::rawoutput()!");
+        atkTools::atkdebug("Obsolete use of layout::rawoutput()!");
         $this->m_atkoutput->rawoutput($txt);
     }
 
@@ -165,7 +165,7 @@ class layout
      */
     function outputFlush($nocache = true, $lastmodificationstamp = "", $gzip = false)
     {
-        atkdebug("Obsolete use of layout::outputFlush()!");
+        atkTools::atkdebug("Obsolete use of layout::outputFlush()!");
         $this->m_atkoutput->outputFlush($nocache, $lastmodificationstamp);
     }
 
@@ -174,7 +174,7 @@ class layout
      */
     function page($title = "")
     {
-        atkdebug("Obsolete use of layout::page()!");
+        atkTools::atkdebug("Obsolete use of layout::page()!");
         $page = &$this->getPage();
         $this->output($page->render($title, $this->m_atkoutput->m_content));
     }
@@ -186,7 +186,7 @@ class layout
      */
     function error($title, $txt)
     {
-        atkdebug("Obsolete use of layout::error()!");
+        atkTools::atkdebug("Obsolete use of layout::error()!");
         $this->ui_top($title);
         $this->output("<br><br><br>");
         $this->output($txt);
@@ -200,7 +200,7 @@ class layout
      */
     function maxInputSize()
     {
-        atkdebug("Obsolete use of layout::maxInputSize()!");
+        atkTools::atkdebug("Obsolete use of layout::maxInputSize()!");
         $size = atkconfig("max_input_size");
         if ($size != "")
             return $size;
@@ -213,7 +213,7 @@ class layout
      */
     function searchSize()
     {
-        atkdebug("Obsolete use of layout::searchSize()!");
+        atkTools::atkdebug("Obsolete use of layout::searchSize()!");
         return 20;
     }
 
@@ -223,14 +223,14 @@ class layout
      */
     function register_script($file)
     {
-        atkdebug("Obsolete use of layout::register_script()!");
+        atkTools::atkdebug("Obsolete use of layout::register_script()!");
         $page = &$this->getPage();
         $page->register_script($file);
     }
 
     function register_submitscript($code)
     {
-        atkdebug("Obsolete use of layout::register_submitscript()!");
+        atkTools::atkdebug("Obsolete use of layout::register_submitscript()!");
         if (!in_array($code, $this->m_submitscripts))
             $this->m_submitscripts[] = $code;
     }
@@ -241,7 +241,7 @@ class layout
      */
     function register_style($file)
     {
-        atkdebug("Obsolete use of layout::register_style()!");
+        atkTools::atkdebug("Obsolete use of layout::register_style()!");
         $page = &$this->getPage();
         $page->register_style($file);
     }
@@ -253,7 +253,7 @@ class layout
      */
     function title($module, $nodetype, $action)
     {
-        atkdebug("Obsolete use of layout::title()!");
+        atkTools::atkdebug("Obsolete use of layout::title()!");
         $this->constructUI();
         return $this->m_atkui->title($module, $nodetype, $action);
     }
@@ -264,7 +264,7 @@ class layout
      */
     function head($title)
     {
-        atkdebug("Obsolete use of layout::head()!");
+        atkTools::atkdebug("Obsolete use of layout::head()!");
         if (!$this->m_wrotehead) {
             $page = &$this->getPage();
             $this->output($page->head($title));
@@ -275,7 +275,7 @@ class layout
     // Dummy, creates an atkPage if one does not exist (for backward compatibility).
     function &getPage()
     {
-        $page = &atkinstance("atk.ui.atkpage");
+        $page = &atkTools::atkinstance("atk.ui.atkpage");
         return $page;
     }
 
@@ -285,7 +285,7 @@ class layout
      */
     function ret_head($title)
     {
-        atkdebug("Obsolete use of layout::ret_head()!");
+        atkTools::atkdebug("Obsolete use of layout::ret_head()!");
         $page = &$this->getPage();
         return $page->head($title);
     }
@@ -296,7 +296,7 @@ class layout
      */
     function body($extraprops = "")
     {
-        atkdebug("Obsolete use of layout::body()!");
+        atkTools::atkdebug("Obsolete use of layout::body()!");
         if (!$this->m_wrotebody) {
             $page = &$this->getPage();
             $this->output($page->body($extraprops));
@@ -310,7 +310,7 @@ class layout
      */
     function ret_body($extraprops = "")
     {
-        atkdebug("Obsolete use of layout::ret_body()!");
+        atkTools::atkdebug("Obsolete use of layout::ret_body()!");
         $page = &$this->getPage();
         return $page->body($extraprops);
     }
@@ -321,7 +321,7 @@ class layout
      */
     function ui_top($title)
     {
-        atkdebug("Obsolete use of layout::ui_top()!");
+        atkTools::atkdebug("Obsolete use of layout::ui_top()!");
         $this->m_saved = $this->m_atkoutput->m_content;
         $this->m_atkoutput->m_content = "";
         $this->m_lasttitle = $title;
@@ -329,7 +329,7 @@ class layout
 
     function ret_tpl($tplname, $vars = "", $fallbacktpl = "")
     {
-        atkdebug("Obsolete use of layout::ret_tpl()!");
+        atkTools::atkdebug("Obsolete use of layout::ret_tpl()!");
         $template = $this->getTemplate($tplname, $fallbacktpl);
         $template = str_replace('[IMAGEDIR]', $this->m_tpldir . "images", $template);
 
@@ -343,7 +343,7 @@ class layout
 
     function tpl($tplname, $vars = "", $fallbacktpl = "")
     {
-        atkdebug("Obsolete use of layout::tpl()!");
+        atkTools::atkdebug("Obsolete use of layout::tpl()!");
         $this->output($this->ret_tpl($tplname, $vars, $fallbacktpl));
     }
 
@@ -352,7 +352,7 @@ class layout
      */
     function ui_bottom()
     {
-        atkdebug("Obsolete use of layout::ui_bottom()!");
+        atkTools::atkdebug("Obsolete use of layout::ui_bottom()!");
         $this->constructUI();
         $rendered = $this->m_atkui->render("box.tpl", array("content" => $this->m_atkoutput->m_content,
             "title" => $this->m_lasttitle));
@@ -367,7 +367,7 @@ class layout
      */
     function tabs_top($tabs)
     {
-        atkdebug("Obsolete use of layout::tabs_top()!");
+        atkTools::atkdebug("Obsolete use of layout::tabs_top()!");
         if (file_exists($this->m_tpldir . "tabs_top.tmpl")) {
             $this->tpl("tabs_top", array("tabs" => $tabs));
         } else {
@@ -386,7 +386,7 @@ class layout
      */
     function tabs_bottom()
     {
-        atkdebug("Obsolete use of layout::tabs_bottom()!");
+        atkTools::atkdebug("Obsolete use of layout::tabs_bottom()!");
         if (file_exists($this->m_tpldir . "tabs_bottom.tmpl")) {
             $this->tpl("tabs_bottom");
         } else {
@@ -402,7 +402,7 @@ class layout
      */
     function ret_tab($title, $link, $selected = false)
     {
-        atkdebug("Obsolete use of layout::ret_tab()!");
+        atkTools::atkdebug("Obsolete use of layout::ret_tab()!");
         if (file_exists($this->m_tpldir . "tab_" . ($selected ? "selected" : "normal") . ".tmpl")) {
             return $this->ret_tpl("tab_" . ($selected ? "selected" : "normal"), array("title" => $title,
                     "link" => $link));
@@ -417,7 +417,7 @@ class layout
 
     function data_top()
     {
-        atkdebug("Obsolete use of layout::data_top()!");
+        atkTools::atkdebug("Obsolete use of layout::data_top()!");
         global $g_theme;
         $template = $this->ret_tpl("data_top");
 
@@ -433,7 +433,7 @@ class layout
 
     function data_bottom()
     {
-        atkdebug("Obsolete use of layout::data_bottom()!");
+        atkTools::atkdebug("Obsolete use of layout::data_bottom()!");
         global $g_theme;
         $template = $this->ret_tpl("data_bottom");
 
@@ -455,7 +455,7 @@ class layout
      */
     function table_simple($border = 0, $fillout = false)
     {
-        atkdebug("Obsolete use of layout::tableSimple()!");
+        atkTools::atkdebug("Obsolete use of layout::tableSimple()!");
         $this->output('<table border="' . $border . '" cellspacing="0" cellpadding="2"');
         if ($fillout)
             $this->output(' width="100%"');
@@ -470,7 +470,7 @@ class layout
      */
     function ret_table_simple($border = 0, $fillout = false)
     {
-        atkdebug("Obsolete use of layout::ret_table_simple()!");
+        atkTools::atkdebug("Obsolete use of layout::ret_table_simple()!");
         $output = '<table border="' . $border . '" cellspacing="0" cellpadding="2"';
         if ($fillout)
             $output.=' width="100%"';
@@ -485,7 +485,7 @@ class layout
      */
     function td($contents = "", $extraprops = "")
     {
-        atkdebug("Obsolete use of layout::td()!");
+        atkTools::atkdebug("Obsolete use of layout::td()!");
         $this->output($this->ret_td($contents, $extraprops));
     }
 
@@ -497,7 +497,7 @@ class layout
      */
     function ret_td($contents = "", $extraprops = "")
     {
-        atkdebug("Obsolete use of layout::ret_td()!");
+        atkTools::atkdebug("Obsolete use of layout::ret_td()!");
         $output = '<td class="table" ' . $extraprops . '>';
         if (strlen($contents) == 0) {
             $output.="&nbsp;";
@@ -516,13 +516,13 @@ class layout
      */
     function tr_top($alt = false, $extraprops = "")
     {
-        atkdebug("Obsolete use of layout::tr_top()!");
+        atkTools::atkdebug("Obsolete use of layout::tr_top()!");
         return '<tr class="row' . ($alt ? "2" : "1") . '" ' . $extraprops . '>';
     }
 
     function tr_bottom()
     {
-        atkdebug("Obsolete use of layout::tr_bottom()!");
+        atkTools::atkdebug("Obsolete use of layout::tr_bottom()!");
         return '</tr>';
     }
 
@@ -533,7 +533,7 @@ class layout
      */
     function td_datatitle($contents = "", $extraprops = "")
     {
-        atkdebug("Obsolete use of layout::td_datatitle()!");
+        atkTools::atkdebug("Obsolete use of layout::td_datatitle()!");
         $this->output('<td class="tableheader" ' . $extraprops . '>');
         if ($contents == "") {
             $this->output("&nbsp;");
@@ -551,7 +551,7 @@ class layout
      */
     function ret_td_datatitle($contents = "", $extraprops = "")
     {
-        atkdebug("Obsolete use of layout::ret_td_datatitle()!");
+        atkTools::atkdebug("Obsolete use of layout::ret_td_datatitle()!");
         global $g_colorset;
         $output = '<td class="tableheader" ' . $extraprops . '>';
         if ($contents == "") {
@@ -571,7 +571,7 @@ class layout
      */
     function ret_editForm(&$data, &$node)
     {
-        atkdebug("Obsolete use of layout::ret_editForm()!");
+        atkTools::atkdebug("Obsolete use of layout::ret_editForm()!");
         global $config_atkroot;
 
         /* javascript */
@@ -586,7 +586,7 @@ class layout
         /* check for errors and display them */
         if (count($data['error']) > 0) {
             $form .= '<tr>';
-            $error_title = '<b>' . atktext('error_formdataerror') . '</b>';
+            $error_title = '<b>' . atkTools::atktext('error_formdataerror') . '</b>';
             $errormsg = "";
 
             $pk_err = array();
@@ -598,18 +598,18 @@ class layout
                     $index = $node->m_attribList[$error['attrib_name']]->m_index;
                     $tabs = $node->m_attribIndexList[$index]["tabs"];
                     if (count($node->m_tabList[$node->m_action]) > 1 &&
-                        $tabs != "*" && !atk_in_array($tab, $tabs)) {
-                        $error_tab = ' (' . atktext("error_tab") . ' ' . atkHref(atkSelf() . "?atktab=" . $tabs[0], atktext("tab_" . $tabs[0], "", $node->m_type), SESSION_DEFAULT, true) . ')';
+                        $tabs != "*" && !atkTools::atk_in_array($tab, $tabs)) {
+                        $error_tab = ' (' . atkTools::atktext("error_tab") . ' ' . atkTools::atkHref(atkTools::atkSelf() . "?atktab=" . $tabs[0], atkTools::atktext("tab_" . $tabs[0], "", $node->m_type), SESSION_DEFAULT, true) . ')';
                     } else {
                         $error_tab = "";
                     }
-                    $errormsg.="<br>" . atktext($error['attrib_name'], "", $type) . ': ' . $error['msg'] . $error_tab;
+                    $errormsg.="<br>" . atkTools::atktext($error['attrib_name'], "", $type) . ': ' . $error['msg'] . $error_tab;
                 }
             }
             if (count($pk_err_attrib) > 0) { // Make primary key error message
-                $pk_err_msg = "<br>" . atktext(error_primarykey_exists) . ": ";
+                $pk_err_msg = "<br>" . atkTools::atktext(error_primarykey_exists) . ": ";
                 for ($i = 0; $i < count($pk_err_attrib); $i++) {
-                    $pk_err_msg .= atktext($pk_err_attrib[$i]);
+                    $pk_err_msg .= atkTools::atktext($pk_err_attrib[$i]);
                     if (($i + 1) < count($pk_err_attrib))
                         $pk_err_msg .= ", ";
                 }
@@ -623,7 +623,7 @@ class layout
         }
 
         // load images
-        $reqimg = '<img align="top" onMouseOver="javascript:window.status=\'' . addslashes(atktext("field_obligatory")) . '\';" src="' . $this->getImgSrc("required_field.gif") . '" border="0" alt="' . atktext("field_obligatory") . '">&nbsp;';
+        $reqimg = '<img align="top" onMouseOver="javascript:window.status=\'' . addslashes(atkTools::atktext("field_obligatory")) . '\';" src="' . $this->getImgSrc("required_field.gif") . '" border="0" alt="' . atkTools::atktext("field_obligatory") . '">&nbsp;';
         $tipimg = $this->getImgSrc("help.gif");
 
         /* display the edit fields */
@@ -677,7 +677,7 @@ class layout
                     $module = $node->m_attribList[$field['name']]->m_ownerInstance->m_module;
                 else
                     $module = "atk";
-                $ttip = atktext("txt_" . $node->m_type . "_" . $field["name"] . "_tooltip", $module, "", "", "", true);
+                $ttip = atkTools::atktext("txt_" . $node->m_type . "_" . $field["name"] . "_tooltip", $module, "", "", "", true);
 
                 if ($ttip != "") {
                     $editsrc.= '<img align="top" src="' . $tipimg . '" border="0" alt="' . $ttip . '" onClick="javascript:alert(\'' . preg_replace('/([\r\n])/e', "", addslashes($ttip)) . '\')" onMouseOver="javascript:window.status=\'' . preg_replace('/([\r\n])/e', "", addslashes($ttip)) . '\';">&nbsp;';
@@ -694,7 +694,7 @@ class layout
 
     function getTemplate($templatefile, $fallback = "")
     {
-        atkdebug("Obsolete use of layout::getTemplate()!");
+        atkTools::atkdebug("Obsolete use of layout::getTemplate()!");
         if (file_exists($this->m_tpldir . $templatefile . ".tmpl")) {
             return implode(file($this->m_tpldir . $templatefile . ".tmpl"), "");
         } else {
@@ -707,7 +707,7 @@ class layout
 
     function theme_style($stylesheetname)
     {
-        atkdebug("Obsolete use of layout::theme_style()!");
+        atkTools::atkdebug("Obsolete use of layout::theme_style()!");
         if (file_exists($this->m_tpldir . "styles/$stylesheetname")) {
             $this->register_style($this->m_tpldir . "styles/$stylesheetname");
         } else {
@@ -718,14 +718,14 @@ class layout
 
     function initTheme()
     {
-        atkdebug("Obsolete use of layout::initTheme()!");
-        $theme = &atkinstance("atk.ui.atktheme");
+        atkTools::atkdebug("Obsolete use of layout::initTheme()!");
+        $theme = &atkTools::atkinstance("atk.ui.atktheme");
         $this->m_tpldir = $theme->themeDir();
     }
 
     function getImgSrc($img)
     {
-        atkdebug("Obsolete use of layout::getImgSrc()!");
+        atkTools::atkdebug("Obsolete use of layout::getImgSrc()!");
         global $config_atkroot, $g_theme;
         $themeDir = $config_atkroot . "atk/themes/" . $g_theme["Name"] . "/images/";
         $defaultDir = $config_atkroot . "atk/themes/default/images/";

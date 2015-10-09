@@ -24,8 +24,8 @@ define("TA_IGNORE", 3); //When a none-existing tag is found, the tag is ignored.
 /**
  * @internal base include
  */
-atkimport("atk.attributes.atkfuzzysearchattribute");
-atkimport("atk.attributes.atktextattribute");
+atkTools::atkimport("atk.attributes.atkfuzzysearchattribute");
+atkTools::atkimport("atk.attributes.atktextattribute");
 
 /**
  * This attribute is used for adding tags to a node
@@ -140,10 +140,10 @@ class atkTagAttribute extends atkFuzzySearchAttribute
 
         foreach ($this->m_nonematching as $keyword) {
             if ($this->m_mode == TA_ERROR) {
-                atkTriggerError($rec, $this, "notallowed_new_defaulttag", sprintf($this->text("notallowed_new_defaulttag"), $keyword));
+                atkTools::triggerError($rec, $this, "notallowed_new_defaulttag", sprintf($this->text("notallowed_new_defaulttag"), $keyword));
                 $valid = false;
             } elseif ($this->m_mode == TA_ADD && !$this->isValidKeyWord($keyword)) {
-                atkTriggerError($rec, $this, 'error_tag_illegalvalue', sprintf($this->text('error_tag_illegalvalue'), $keyword));
+                atkTools::triggerError($rec, $this, 'error_tag_illegalvalue', sprintf($this->text('error_tag_illegalvalue'), $keyword));
                 $valid = false;
             }
         }
@@ -159,7 +159,7 @@ class atkTagAttribute extends atkFuzzySearchAttribute
     function isValidKeyWord($keyword)
     {
         $replaced = strip_tags(str_replace("\n", '', str_replace("\r\n", '', $keyword)));
-        return (atk_strlen($keyword) == atk_strlen($replaced));
+        return (atkTools::atk_strlen($keyword) == atkTools::atk_strlen($replaced));
     }
 
     /**
@@ -174,9 +174,9 @@ class atkTagAttribute extends atkFuzzySearchAttribute
      */
     function edit($rec = "", $prefix = "", $mode = "")
     {
-        atkdebug("edit of attribute '$this->fieldName()'");
+        atkTools::atkdebug("edit of attribute '$this->fieldName()'");
 
-        $page = &atkinstance('atk.ui.atkpage');
+        $page = &atkTools::atkinstance('atk.ui.atkpage');
         $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atktagattribute.js");
 
         if ($this->createDestinationInstance()) {
@@ -190,7 +190,7 @@ class atkTagAttribute extends atkFuzzySearchAttribute
             return $html;
         }
         else {
-            atkdebug("could not create destination instance");
+            atkTools::atkdebug("could not create destination instance");
             return false;
         }
     }
@@ -302,7 +302,7 @@ class atkTagAttribute extends atkFuzzySearchAttribute
      */
     function getMatches($searchstring)
     {
-        atkdebug("Performing search");
+        atkTools::atkdebug("Performing search");
         $result = array();
 
         if ($this->createDestinationInstance() && $searchstring != "") {
@@ -325,7 +325,7 @@ class atkTagAttribute extends atkFuzzySearchAttribute
      */
     function getDestinationRecords($token)
     {
-        $selector = $this->m_destInstance->m_table . "." . $this->m_destinationfield . "='" . escapeSQL($token) . "'";
+        $selector = $this->m_destInstance->m_table . "." . $this->m_destinationfield . "='" . atkTools::escapeSQL($token) . "'";
         return $this->m_destInstance->selectDb($selector);
     }
 
@@ -374,12 +374,12 @@ class atkTagAttribute extends atkFuzzySearchAttribute
         $resultset = array();
 
         if (!$this->createLink()) {
-            atkdebug("could not create an instance for the link '$this->m_link'");
+            atkTools::atkdebug("could not create an instance for the link '$this->m_link'");
             return false;
         }
 
         if (!$this->createDestinationInstance()) {
-            atkdebug("could not create an instance for the destination '$this->m_destination'");
+            atkTools::atkdebug("could not create an instance for the destination '$this->m_destination'");
             return false;
         }
 
@@ -388,7 +388,7 @@ class atkTagAttribute extends atkFuzzySearchAttribute
         $selector = $this->m_linkInstance->m_table . "." . $this->getLocalKey() . "='" . $objectid . "'";
 
         if (!$this->m_linkInstance->deleteDb($selector)) {
-            atkdebug("could not delete the linked default tags");
+            atkTools::atkdebug("could not delete the linked default tags");
             return false;
         }
 
@@ -419,10 +419,10 @@ class atkTagAttribute extends atkFuzzySearchAttribute
 
                 //if one keyword could not be added, stop adding them.
                 if (!$this->m_destInstance->validate($defaultsRec, 'add') || !$this->m_destInstance->addDb($defaultsRec)) {
-                    atkdebug("could not add default keyword");
+                    atkTools::atkdebug("could not add default keyword");
                     return false;
                 } else {
-                    $newrecord = decodeKeyValueSet($defaultsRec["atkprimkey"]);
+                    $newrecord = atkTools::decodeKeyValueSet($defaultsRec["atkprimkey"]);
                     $newrecord[$this->m_destinationfield] = $keyword;
                     $newrecord["atkprimkey"] = $defaultsRec["atkprimkey"];
 
@@ -438,7 +438,7 @@ class atkTagAttribute extends atkFuzzySearchAttribute
             $locKey = $rec[$this->m_ownerInstance->primaryKeyField()];
             $remKey = $res[$this->m_destInstance->primaryKeyField()];
 
-            atkdebug("<h2>LOCKEY:$locKey REMKEY:$remKey</h2>");
+            atkTools::atkdebug("<h2>LOCKEY:$locKey REMKEY:$remKey</h2>");
 
             $newrecord = $this->m_linkInstance->initial_values();
             $newrecord[$this->getLocalKey()][$this->m_ownerInstance->primaryKeyField()] = $locKey;
@@ -453,10 +453,10 @@ class atkTagAttribute extends atkFuzzySearchAttribute
             $existing = $this->m_linkInstance->selectDb($where, "", "", "", $this->m_linkInstance->m_primaryKey);
 
             if (!count($existing)) {
-                atkdebug("does not exist, adding new record.");
+                atkTools::atkdebug("does not exist, adding new record.");
 
                 if (!$this->m_linkInstance->addDb($newrecord, true, $mode)) {
-                    atkdebug("could not add keyword");
+                    atkTools::atkdebug("could not add keyword");
                     return false;
                 }
             }
@@ -472,7 +472,7 @@ class atkTagAttribute extends atkFuzzySearchAttribute
      */
     function load($notused, $record)
     {
-        atkdebug("calling load");
+        atkTools::atkdebug("calling load");
         if ($this->createLink()) {
             return $this->m_linkInstance->selectDb($this->m_linkInstance->m_table . "." . $this->getLocalKey() . "='" . $record[$this->m_ownerInstance->primaryKeyField()] . "'");
         }

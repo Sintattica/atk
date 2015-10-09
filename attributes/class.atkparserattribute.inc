@@ -70,7 +70,7 @@ class atkParserAttribute extends atkAttribute
      */
     function display($record)
     {
-        atkimport("atk.utils.atkstringparser");
+        atkTools::atkimport("atk.utils.atkstringparser");
         $stringparser = new atkStringParser($this->m_text);
         return $stringparser->parse($record);
     }

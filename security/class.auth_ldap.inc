@@ -53,12 +53,12 @@ class auth_ldap extends auth_interface
             return AUTH_UNVERIFIED; // can't verify if we have no userid
 
         if ($ldap = ldap_connect(atkconfig("auth_ldap_host"))) {
-            atkdebug("successful connection to " . atkconfig("auth_ldap_host"));
+            atkTools::atkdebug("successful connection to " . atkconfig("auth_ldap_host"));
             if (atkconfig("auth_ldap_bind_tree")) {
                 if ($bindID = @ldap_bind($ldap, atkconfig("auth_ldap_bind_dn"), atkconfig("auth_ldap_bind_pw"))) {
-                    atkdebug("Succesfully bound to " . atkconfig("auth_ldap_bind_dn") . " with id: " . $bindID . " conn_id " . $ldap);
+                    atkTools::atkdebug("Succesfully bound to " . atkconfig("auth_ldap_bind_dn") . " with id: " . $bindID . " conn_id " . $ldap);
                 } else {
-                    atkdebug("<b>Error binding to</b> " . atkconfig("auth_ldap_bind_dn") . " " . atkconfig("auth_ldap_bind_pw"));
+                    atkTools::atkdebug("<b>Error binding to</b> " . atkconfig("auth_ldap_bind_dn") . " " . atkconfig("auth_ldap_bind_pw"));
                     return AUTH_ERROR;
                 }
             }
@@ -78,7 +78,7 @@ class auth_ldap extends auth_interface
                 $sri = @ldap_search($ldap, $searchPattern, $filterCmd);
 
                 if ($sri === false) {
-                    atkdebug("Invalid searchpattern: " . $searchPattern);
+                    atkTools::atkdebug("Invalid searchpattern: " . $searchPattern);
                 } else {
                     $allValues = ldap_get_entries($ldap, $sri);
 
@@ -97,7 +97,7 @@ class auth_ldap extends auth_interface
                     }
                 }
             }
-            atkdebug("LDAP did not successfully authenticate $user");
+            atkTools::atkdebug("LDAP did not successfully authenticate $user");
 
             // dn not found or password wrong TODO/FIXME: return -1 if dn not found
             return AUTH_MISMATCH;

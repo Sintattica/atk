@@ -58,7 +58,7 @@ class atkSoapServer implements atkServerInterface
      */
     public function __call($method, $args)
     {
-        atkdebug("Function $method called with args: " . var_export($args, true));
+        atkTools::atkdebug("Function $method called with args: " . var_export($args, true));
     }
 
 }

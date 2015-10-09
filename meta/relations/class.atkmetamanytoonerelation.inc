@@ -17,7 +17,7 @@
 /**
  * @internal Include the base class.
  */
-userelation("atkmanytoonerelation");
+atkTools::userelation("atkmanytoonerelation");
 
 /**
  * Implementation of many-to-one relationships for meta nodes.

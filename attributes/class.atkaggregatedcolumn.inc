@@ -66,7 +66,7 @@ class atkAggregatedColumn extends atkAttribute
         $this->atkAttribute($name, $flags | AF_HIDE_EDIT | AF_HIDE_ADD | AF_HIDE_VIEW); // base class constructor
         $this->m_template = $template;
 
-        atkimport("atk.utils.atkstringparser");
+        atkTools::atkimport("atk.utils.atkstringparser");
         $parser = new atkStringParser($template);
         $this->m_displayfields = $parser->getFields();
 
@@ -96,7 +96,7 @@ class atkAggregatedColumn extends atkAttribute
 
             $rec[$field] = $p_attrib->display($record[$this->fieldName()], $mode);
         }
-        atkimport("atk.utils.atkstringparser");
+        atkTools::atkimport("atk.utils.atkstringparser");
         $parser = new atkStringParser($this->m_template);
         return $parser->parse($rec);
     }
@@ -117,7 +117,7 @@ class atkAggregatedColumn extends atkAttribute
         if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select")) {
             $arr["heading"][$fieldprefix . $this->fieldName()]["title"] = $this->label();
 
-            if (!hasFlag($flags, RL_NO_SORT) && !$this->hasFlag(AF_NO_SORT)) {
+            if (!atkTools::hasFlag($flags, RL_NO_SORT) && !$this->hasFlag(AF_NO_SORT)) {
                 $rec = array();
                 foreach ($this->m_displayfields as $field) {
                     $rec[] = $this->m_ownerInstance->m_table . "." . $field;
@@ -127,10 +127,10 @@ class atkAggregatedColumn extends atkAttribute
                     $order = implode(" DESC,", $rec);
                     $order .= " DESC";
                 }
-                $arr["heading"][$fieldprefix . $this->fieldName()]["url"] = session_url(atkSelf() . '?atknodetype=' . $this->m_ownerInstance->atkNodeType() . '&atkaction=' . $action . '&atkorderby=' . rawurlencode($order));
+                $arr["heading"][$fieldprefix . $this->fieldName()]["url"] = atkTools::session_url(atkTools::atkSelf() . '?atknodetype=' . $this->m_ownerInstance->atkNodeType() . '&atkaction=' . $action . '&atkorderby=' . rawurlencode($order));
             }
 
-            if (!hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(AF_SEARCHABLE)) {
+            if (!atkTools::hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(AF_SEARCHABLE)) {
                 $arr["search"][$fieldprefix . $this->fieldName()] = $this->search($atksearch, false, $fieldprefix);
                 $arr["search"][$fieldprefix . $this->fieldName()].='<input type="hidden" name="atksearchmode[' . $this->formName() . ']" value="' . $this->getSearchMode(false) . '">';
             }
@@ -172,7 +172,7 @@ class atkAggregatedColumn extends atkAttribute
     function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
     {
         if ($mode !== 'add' && $mode != 'edit') {
-            $allfields = atk_array_merge($this->m_displayfields, $this->m_searchfields);
+            $allfields = atkTools::atk_array_merge($this->m_displayfields, $this->m_searchfields);
             $alias = $fieldaliasprefix . $this->fieldName() . "_AE_";
             foreach ($allfields as $field) {
                 $p_attrib = $this->m_ownerInstance->m_attribList[$field];
@@ -240,7 +240,7 @@ class atkAggregatedColumn extends atkAttribute
                     $data[$field] = $field;
             }
 
-            atkimport("atk.utils.atkstringparser");
+            atkTools::atkimport("atk.utils.atkstringparser");
             $parser = new atkStringParser($this->m_template);
             $concatFields = $parser->getAllParsedFieldsAsArray($data, true);
             $concatTags = $concatFields['tags'];

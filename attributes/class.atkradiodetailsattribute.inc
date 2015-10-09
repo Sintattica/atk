@@ -112,7 +112,7 @@ class atkRadioDetailsAttribute extends atkAttribute
             $attrNames = @$this->m_details[$value];
 
             if ($attrNames != null) {
-                $url = partial_url($this->getOwnerInstance()->atkNodeType(), $mode, 'attribute.' . $this->fieldName() . '.details', array('value' => $value, 'fieldprefix' => $fieldprefix));
+                $url = atkTools::partial_url($this->getOwnerInstance()->atkNodeType(), $mode, 'attribute.' . $this->fieldName() . '.details', array('value' => $value, 'fieldprefix' => $fieldprefix));
                 $onChange = "ATK.RadioDetailsAttribute.select(this, '{$url}');";
             } else {
                 $onChange = "ATK.RadioDetailsAttribute.select(this);";
@@ -132,7 +132,7 @@ class atkRadioDetailsAttribute extends atkAttribute
                         if (is_null($attr))
                             continue;
 
-                        $result .= '<blockquote>' . $attr->edit($record, $fieldprefix, $mode) . '&nbsp;' . atk_htmlentities($attr->getLabel($record, $mode)) . '</blockquote>';
+                        $result .= '<blockquote>' . $attr->edit($record, $fieldprefix, $mode) . '&nbsp;' . atkTools::atk_htmlentities($attr->getLabel($record, $mode)) . '</blockquote>';
                     }
                 }
                 $result .= '</div>';
@@ -159,7 +159,7 @@ class atkRadioDetailsAttribute extends atkAttribute
     {
         $value = $record[$this->fieldName()];
         $options = array_flip($this->m_options);
-        $result = atk_htmlentities($this->text($options[$value]));
+        $result = atkTools::atk_htmlentities($this->text($options[$value]));
 
         if ($mode == 'view') {
             $attrNames = @$this->m_details[$value];
@@ -172,7 +172,7 @@ class atkRadioDetailsAttribute extends atkAttribute
                     $label = $attr->getLabel($record, $mode);
                     $result .= '
             <blockquote>
-              ' . (!empty($label) ? atk_htmlentities($label) . ':' : '') . '
+              ' . (!empty($label) ? atkTools::atk_htmlentities($label) . ':' : '') . '
               ' . $attr->display($record, $mode) . '
             </blockquote>';
                 }

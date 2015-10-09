@@ -70,10 +70,10 @@ class atkBootstrapIndexPage
     function atkBootstrapIndexPage()
     {
         global $ATK_VARS;
-        $this->m_page = atkinstance("atk.ui.atkpage");
-        $this->m_ui = atkinstance("atk.ui.atkui");
-        $this->m_theme = atkinstance('atk.ui.atktheme');
-        $this->m_output = atkinstance('atk.ui.atkoutput');
+        $this->m_page = atkTools::atkinstance("atk.ui.atkpage");
+        $this->m_ui = atkTools::atkinstance("atk.ui.atkui");
+        $this->m_theme = atkTools::atkinstance('atk.ui.atktheme');
+        $this->m_output = atkTools::atkinstance('atk.ui.atkoutput');
         $this->m_user = getUser();
         $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL
             : HTML_STRICT;
@@ -94,7 +94,7 @@ class atkBootstrapIndexPage
      */
     function hasFlag($flag)
     {
-        return hasFlag($this->m_flags, $flag);
+        return atkTools::hasFlag($this->m_flags, $flag);
     }
 
     /**
@@ -127,13 +127,13 @@ class atkBootstrapIndexPage
     {
         /* general menu stuff */
         /* load menu layout */
-        atkimport("atk.menu.atkmenu");
+        atkTools::atkimport("atk.menu.atkmenu");
         $menu = & atkMenu::getMenu();
 
         if (is_object($menu))
             $this->m_page->addContent($menu->getMenu());
         else
-            atkerror("no menu object created!");
+            atkTools::atkerror("no menu object created!");
     }
 
     /**
@@ -148,7 +148,7 @@ class atkBootstrapIndexPage
         $this->m_page->register_style($this->m_theme->stylePath("top.css"));
 
         /* load menu layout */
-        atkimport("atk.menu.atkmenu");
+        atkTools::atkimport("atk.menu.atkmenu");
         $menuObj = & atkMenu::getMenu();
         $menu = null;
 
@@ -157,14 +157,14 @@ class atkBootstrapIndexPage
         }
 
         $top = $this->m_ui->renderBox(array(
-            "logintext" => atktext("logged_in_as"),
-            "logouttext" => ucfirst(atkText("logout", "atk")),
+            "logintext" => atkTools::atktext("logged_in_as"),
+            "logouttext" => ucfirst(atkTools::atktext("logout", "atk")),
             "logoutlink" => $logoutLink,
             "logouttarget" => "_top",
             "centerpiece_links" => $this->m_topcenterpiecelinks,
             "searchpiece" => $this->m_topsearchpiece,
-            "title" => ($this->m_title != "" ? $this->m_title : atkText("app_title")),
-            "app_title" => atkText("app_title"),
+            "title" => ($this->m_title != "" ? $this->m_title : atkTools::atktext("app_title")),
+            "app_title" => atkTools::atktext("app_title"),
             "user" => ($this->m_username ? $this->m_username : $this->m_user["name"]),
             "fulluser" => $this->m_user,
             "menu" => $menu
@@ -253,13 +253,13 @@ class atkBootstrapIndexPage
                     $destination .= "&atkselector=" . $ATK_VARS["atkselector"];
             }
 
-            $box = $this->m_ui->renderBox(array("title" => atkText("title_session_expired"),
-                "content" => '<br><br>' . atkText("explain_session_expired") . '<br><br><br><br>
-                                           <a href="index.php?atklogout=true' . $destination . '" target="_top">' . atkText("relogin") . '</a><br><br>'));
+            $box = $this->m_ui->renderBox(array("title" => atkTools::atktext("title_session_expired"),
+                "content" => '<br><br>' . atkTools::atktext("explain_session_expired") . '<br><br><br><br>
+                                           <a href="index.php?atklogout=true' . $destination . '" target="_top">' . atkTools::atktext("relogin") . '</a><br><br>'));
 
             $this->m_page->addContent($box);
 
-            $this->m_output->output($this->m_page->render(atkText("title_session_expired"), true));
+            $this->m_output->output($this->m_page->render(atkTools::atktext("title_session_expired"), true));
         } else {
             $lockType = atkconfig("lock_type");
             if (!empty($lockType))
@@ -270,20 +270,20 @@ class atkBootstrapIndexPage
                 $obj = & getNode($ATK_VARS['atknodetype']);
 
                 if (is_object($obj)) {
-                    $controller = & atkinstance("atk.atkcontroller");
+                    $controller = & atkTools::atkinstance("atk.atkcontroller");
                     $controller->invoke("loadDispatchPage", $ATK_VARS);
                 } else {
-                    atkdebug("No object created!!?!");
+                    atkTools::atkdebug("No object created!!?!");
                 }
             } else {
 
                 if (is_array($this->m_defaultDestination)) {
-                    $controller = & atkinstance("atk.atkcontroller");
+                    $controller = & atkTools::atkinstance("atk.atkcontroller");
                     $controller->invoke("loadDispatchPage", $this->m_defaultDestination);
                 } else {
                     $this->m_page->register_style($this->m_theme->stylePath("style.css"));
-                    $box = $this->m_ui->renderBox(array("title" => atkText("app_shorttitle"),
-                        "content" => atkText("app_description")));
+                    $box = $this->m_ui->renderBox(array("title" => atkTools::atktext("app_shorttitle"),
+                        "content" => atkTools::atktext("app_description")));
 
                     $box = '<div class="container-fluid">' . $box . '</div>';
 

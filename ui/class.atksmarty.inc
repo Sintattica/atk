@@ -39,7 +39,7 @@ class atkSmarty
     {
         static $s_smarty = NULL;
         if ($s_smarty == NULL) {
-            atkdebug("Creating Smarty instance");
+            atkTools::atkdebug("Creating Smarty instance");
             if (!class_exists("Smarty")) {
                 include_once(atkconfig("atkroot") . "atk/ui/smarty/Smarty.class.php");
             }
@@ -57,7 +57,7 @@ class atkSmarty
             //Try to create the template compile directory if it not already exists.
             if (!file_exists(atkconfig("tplcompiledir"))) {
                 if (!mkdir(atkconfig("tplcompiledir"), 0755, true)) {
-                    atkerror("Unable to create template compile directory: " . atkconfig("tplcompiledir"));
+                    atkTools::atkerror("Unable to create template compile directory: " . atkconfig("tplcompiledir"));
                 }
             }
             $s_smarty->compile_dir = atkconfig("tplcompiledir"); // name of directory for compiled templates
@@ -101,7 +101,7 @@ class atkSmarty
                 $s_smarty->plugins_dir[] = $customplugindir;
 
             //$s_smarty->register_compiler_function("tpl","tpl_include");
-            atkdebug("Instantiated new Smarty");
+            atkTools::atkdebug("Instantiated new Smarty");
         }
         return $s_smarty;
     }
@@ -139,7 +139,7 @@ class atkSmarty
             $path = $moduleOrPath;
         }
 
-        $fullPath = getClassPath($path, false) . '/' . $type . '.' . $name . '.php';
+        $fullPath = atkTools::getClassPath($path, false) . '/' . $type . '.' . $name . '.php';
         return $fullPath;
     }
 

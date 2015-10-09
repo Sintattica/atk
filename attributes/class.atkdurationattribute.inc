@@ -94,7 +94,7 @@ class atkDurationAttribute extends atkAttribute
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $id = $fieldprefix . $this->formName();
-        $fieldvalue = atkArrayNvl($record, $this->fieldName(), "");
+        $fieldvalue = atkTools::atkArrayNvl($record, $this->fieldName(), "");
         if (!$this->hasFlag(AF_DURATION_STRING)) {
             $result = '';
             if ($this->m_maxtime_min >= 60) {
@@ -106,7 +106,7 @@ class atkDurationAttribute extends atkAttribute
                     $result .= '<option value="' . $h . '" ';
                     if ($curhours == $h)
                         $result.= "selected";
-                    $result .='>' . $h . ' ' . atktext('hours', 'atk');
+                    $result .='>' . $h . ' ' . atkTools::atktext('hours', 'atk');
                     if ($this->m_resolution_min <= 60) {
                         $h++;
                     } else {
@@ -123,7 +123,7 @@ class atkDurationAttribute extends atkAttribute
                     $result .= '<option value="' . $m . '" ';
                     if ($curminutes == $m)
                         $result.= "selected";
-                    $result .='>' . $m . ' ' . atktext('minutes', 'atk');
+                    $result .='>' . $m . ' ' . atkTools::atktext('minutes', 'atk');
                     if ($this->m_resolution_min <= 1) {
                         $m++;
                     } else {

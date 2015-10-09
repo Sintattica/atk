@@ -14,7 +14,7 @@
  * @version $Revision: 6347 $
  * $Id$
  */
-atkimport('atk.menu.atkplainmenu');
+atkTools::atkimport('atk.menu.atkplainmenu');
 
 /**
  * Implementation of the Bootstrap menu.
@@ -61,9 +61,9 @@ class atkBootstrapMenu extends atkPlainMenu
     function render()
     {
         /** @var atkPage $page */
-        $page = & atkinstance("atk.ui.atkpage");
+        $page = & atkTools::atkinstance("atk.ui.atkpage");
         /** @var atkTheme $theme */
-        $theme = atkinstance('atk.ui.atktheme');
+        $theme = atkTools::atkinstance('atk.ui.atktheme');
         $page->register_style($theme->absPath("atk/themes/bootstrap/lib/bootstrap-submenu/css/bootstrap-submenu.min.css"));
         $menu = $this->load();
         $page->addContent($menu);
@@ -89,9 +89,9 @@ class atkBootstrapMenu extends atkPlainMenu
     {
         global $g_menu;
         /** @var atkPage $page */
-        $page = & atkinstance("atk.ui.atkpage");
+        $page = & atkTools::atkinstance("atk.ui.atkpage");
         /** @var atkTheme $theme */
-        $theme = &atkinstance('atk.ui.atktheme');
+        $theme = &atkTools::atkinstance('atk.ui.atktheme');
         $page->register_style($theme->absPath("atk/themes/bootstrap/lib/bootstrap-submenu/css/bootstrap-submenu.min.css"));
         $page->register_script($theme->absPath("atk/themes/bootstrap/lib/bootstrap-submenu/js/bootstrap-submenu.min.js"));
         $page->register_script($theme->absPath("atk/themes/bootstrap/js/menu.js"));
@@ -149,7 +149,7 @@ class atkBootstrapMenu extends atkPlainMenu
 
     function _getMenuTitle($item, $append = "")
     {
-        return atk_htmlentities($this->getMenuTranslation($item['name'], $item['module'])) . $append;
+        return atkTools::atk_htmlentities($this->getMenuTranslation($item['name'], $item['module'])) . $append;
     }
 
 }

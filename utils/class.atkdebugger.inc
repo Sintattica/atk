@@ -41,7 +41,7 @@ class atkDebugger
         static $s_instance = NULL;
         if ($s_instance == NULL) {
             if (!atkGetSessionManager())
-                atkwarning("Instantiating debugger without sessionmanager, debugger will not do anything until session is started. Also, the debugging info already in the session will not be cleaned, this could lead to monster sessions over time!");
+                atkTools::atkwarning("Instantiating debugger without sessionmanager, debugger will not do anything until session is started. Also, the debugging info already in the session will not be cleaned, this could lead to monster sessions over time!");
             $s_instance = new atkDebugger();
         }
         return $s_instance;
@@ -59,7 +59,7 @@ class atkDebugger
             $data = &$this->getDebuggerData(true);
             $data = array(); // start clean
             global $g_debug_msg;
-            $g_debug_msg[] = atkGetTimingInfo() . "Debugger initialized. [" . $link . "]";
+            $g_debug_msg[] = atkTools::atkGetTimingInfo() . "Debugger initialized. [" . $link . "]";
         }
     }
 
@@ -101,7 +101,7 @@ class atkDebugger
                 }
             }
         } else {
-            atkdebug(atk_htmlentities($query));
+            atkTools::atkdebug(atkTools::atk_htmlentities($query));
             return true;
         }
         return false;
@@ -118,7 +118,7 @@ class atkDebugger
         if (!$this->m_isconsole) {
             $data = &$this->getDebuggerData();
             global $g_debug_msg;
-            $data["statements"][] = array("statement" => $txt, "trace" => atk_get_trace());
+            $data["statements"][] = array("statement" => $txt, "trace" => atkTools::atkGetTrace());
             $link = $this->consoleLink("trace", "statement", array("stmt_id" => count($data["statements"]) - 1), true);
             $txt = preg_replace("|MB\]|", "MB] [$link]", $txt, 1);
             $g_debug_msg[] = $txt;
@@ -138,9 +138,9 @@ class atkDebugger
         if (!$this->m_isconsole) { // don't add queries executed by the console itself
             $data = &$this->getDebuggerData();
 
-            $data["queries"][] = array("query" => $query, "trace" => atk_get_trace());
+            $data["queries"][] = array("query" => $query, "trace" => atkTools::atkGetTrace());
 
-            atkdebug("[" . $this->consoleLink("query&nbsp;details", "query", array("query_id" => count($data["queries"]) - 1), true) . "] " . atk_htmlentities($query));
+            atkTools::atkdebug("[" . $this->consoleLink("query&nbsp;details", "query", array("query_id" => count($data["queries"]) - 1), true) . "] " . atkTools::atk_htmlentities($query));
 
             return true;
         }
@@ -204,8 +204,8 @@ class atkDebugger
      */
     public function renderConsole()
     {
-        $page = &atkinstance("atk.ui.atkpage");
-        $theme = &atkinstance("atk.ui.atktheme");
+        $page = &atkTools::atkinstance("atk.ui.atkpage");
+        $theme = &atkTools::atkinstance("atk.ui.atktheme");
         $page->register_style($theme->stylePath("debugger.css"));
         $data = &$this->getDebuggerData(false, $_REQUEST['atkstackid']);
         $res = $this->consoleControls() . '<br/><br/>';
@@ -245,7 +245,7 @@ class atkDebugger
         $output = "<h1>Query</h1>";
         $query = $queries[$id]["query"];
         $output.= $this->highlightQuery($query);
-        $db = &atkGetDb();
+        $db = &atkTools::atkGetDb();
         if (strtolower(substr(trim($query), 0, 6)) == "select") {
             $output.= '<h1>Resultset</h1>';
             $result = $db->getrows($query);
@@ -443,7 +443,7 @@ class atkDebugger
         global $g_debug_msg, $g_error_msg, $g_startTime;
 
         $time = strftime("%H:%M:%S", $g_startTime);
-        $duration = sprintf("%02.05f", getmicrotime() - $g_startTime);
+        $duration = sprintf("%02.05f", atkDebugger::getMicroTime() - $g_startTime);
         $usage = function_exists("memory_get_usage") ? sprintf("%02.02f", (memory_get_usage() / 1024 / 1024))
                 : "? ";
         $method = $_SERVER['REQUEST_METHOD'];
@@ -531,13 +531,13 @@ class atkDebugger
         $block = $this->renderDebugBlock($expanded);
 
         if ($isPartial) {
-            atkimport('atk.utils.atkjson');
+            atkTools::atkimport('atk.utils.atkjson');
 
             $output = '<script type="text/javascript">
             ATK.Debug.addContent(' . atkJSON::encode($block) . ');
            </script>';
         } else {
-            $ui = &atkinstance('atk.ui.atkui');
+            $ui = &atkTools::atkinstance('atk.ui.atkui');
             $stylesheet = $ui->stylePath('atkdebug.css');
             $script = atkconfig('atkroot') . 'atk/javascript/class.atkdebug.js';
 

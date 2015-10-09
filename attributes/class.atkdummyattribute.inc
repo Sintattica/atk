@@ -14,7 +14,7 @@
  * @version $Revision: 6309 $
  * $Id$
  */
-atkimport("atk.attributes.atkattribute");
+atkTools::atkimport("atk.attributes.atkattribute");
 
 /**
  * Custom flags
@@ -49,7 +49,7 @@ class atkDummyAttribute extends atkAttribute
         $flags |= AF_HIDE_SEARCH | AF_NO_SORT;
 
         // Add the AF_BLANKLABEL flag unless the AF_DUMMY_SHOW_LABEL flag wasn't present
-        if (!hasFlag($flags, AF_DUMMY_SHOW_LABEL))
+        if (!atkTools::hasFlag($flags, AF_DUMMY_SHOW_LABEL))
             $flags |= AF_BLANKLABEL;
 
         $this->atkAttribute($name, $flags); // base class constructor

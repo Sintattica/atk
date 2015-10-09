@@ -17,7 +17,7 @@
 /**
  * Base include
  */
-atkimport("atk.db.atkquery");
+atkTools::atkimport("atk.db.atkquery");
 
 /**
  * SQL Builder for MySQL databases. 
@@ -45,7 +45,7 @@ class atkMysqlQuery extends atkQuery
     function regexpCondition($field, $value, $inverse = false)
     {
         if ($value[0] == '!') {
-            return $field . " NOT REGEXP '" . substr($value, 1, atk_strlen($value)) . "'";
+            return $field . " NOT REGEXP '" . substr($value, 1, atkTools::atk_strlen($value)) . "'";
         } else {
             return $field . " REGEXP '$value'";
         }
@@ -65,7 +65,7 @@ class atkMysqlQuery extends atkQuery
     function soundexCondition($field, $value, $inverse = false)
     {
         if ($value[0] == '!') {
-            return "soundex($field) NOT like concat('%',substring(soundex('" . substr($value, 1, atk_strlen($value)) . "') from 2),'%')";
+            return "soundex($field) NOT like concat('%',substring(soundex('" . substr($value, 1, atkTools::atk_strlen($value)) . "') from 2),'%')";
         } else {
             return "soundex($field) like concat('%',substring(soundex('$value') from 2),'%')";
         }

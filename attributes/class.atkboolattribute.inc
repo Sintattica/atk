@@ -67,12 +67,12 @@ class atkBoolAttribute extends atkAttribute
     function addFlag($flags)
     {
         // setting AF_OBLIGATORY has no use, so prevent setting it.
-        if (hasFlag($flags, AF_OBLIGATORY)) {
+        if (atkTools::hasFlag($flags, AF_OBLIGATORY)) {
             $flags &= (~AF_OBLIGATORY);
         }
 
         // except if someone really really really wants to show this attribute is obligatory
-        if (hasFlag($flags, AF_BOOL_OBLIGATORY)) {
+        if (atkTools::hasFlag($flags, AF_BOOL_OBLIGATORY)) {
             $flags |= AF_OBLIGATORY;
         }
 
@@ -159,15 +159,15 @@ class atkBoolAttribute extends atkAttribute
     function search($record = "", $extended = false, $fieldprefix = "")
     {
         $result = '<select name="' . $this->getSearchFieldName($fieldprefix) . '" class="form-control">';
-        $result.= '<option value="">' . atktext("search_all", "atk") . '</option>';
+        $result.= '<option value="">' . atkTools::atktext("search_all", "atk") . '</option>';
         $result.= '<option value="0" ';
         if ($record[$this->fieldName()] === '0' && !empty($record))
             $result.="selected";
-        $result.= '>' . atktext("no", "atk") . '</option>';
+        $result.= '>' . atkTools::atktext("no", "atk") . '</option>';
         $result.= '<option value="1" ';
         if ($record[$this->fieldName()] === '1')
             $result.="selected";
-        $result.= '>' . atktext("yes", "atk") . '</option>';
+        $result.= '>' . atkTools::atktext("yes", "atk") . '</option>';
         $result.='</select>';
         return $result;
     }
@@ -328,7 +328,7 @@ class atkBoolAttribute extends atkAttribute
                 '" value="' . htmlspecialchars($record[$this->fieldName()]) . '">';
             return $result;
         } else
-            atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
+            atkTools::atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
     }
 
 }

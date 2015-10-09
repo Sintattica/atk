@@ -17,7 +17,7 @@
  * @version $Revision: 5898 $
  * $Id$
  */
-atkimport("atk.cache.atkcache");
+atkTools::atkimport("atk.cache.atkcache");
 
 class atkCache_zp_output extends atkCache
 {
@@ -64,7 +64,7 @@ class atkCache_zp_output extends atkCache
         }
 
         if ($lifetime !== false)
-            atkwarning("Lifetime setting is not supported in this type of cache :" . $this->getType() . ". Instead default lifetime is used");
+            atkTools::atkwarning("Lifetime setting is not supported in this type of cache :" . $this->getType() . ". Instead default lifetime is used");
 
         if (output_cache_get($key, $this->m_lifetime) !== false) {
             return false;
@@ -89,7 +89,7 @@ class atkCache_zp_output extends atkCache
         }
 
         if ($lifetime !== false)
-            atkwarning("Lifetime setting is not supported in this type of cache :" . $this->getType() . ". Instead default lifetime is used");
+            atkTools::atkwarning("Lifetime setting is not supported in this type of cache :" . $this->getType() . ". Instead default lifetime is used");
 
         output_cache_put($key, serialize($data));
         return true;

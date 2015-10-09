@@ -37,7 +37,7 @@ abstract class atkErrorHandlerBase
             $handlerClassName = 'atk' . ucfirst($handlerName) . 'ErrorHandler';
             return new $handlerClassName($params);
         } else {
-            atkwarning("Could not find script file for error handler '$handlerName': $handlerFileName");
+            atkTools::atkwarning("Could not find script file for error handler '$handlerName': $handlerFileName");
         }
     }
 

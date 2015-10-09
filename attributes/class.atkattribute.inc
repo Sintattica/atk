@@ -657,7 +657,7 @@ class atkAttribute
         // default class
         $this->addCSSClass(get_class($this));
 
-        atkimport("atk.keyboard.atkkeyboard");
+        atkTools::atkimport("atk.keyboard.atkkeyboard");
     }
 
     /**
@@ -712,11 +712,11 @@ class atkAttribute
         $this->m_flags |= $flag;
 
         if (!$this->hasFlag(AF_PRIMARY) && is_object($this->m_ownerInstance)) {
-            if (hasFlag($flag, AF_HIDE_LIST) && !in_array($this->fieldName(), $this->m_ownerInstance->m_listExcludes)) {
+            if (atkTools::hasFlag($flag, AF_HIDE_LIST) && !in_array($this->fieldName(), $this->m_ownerInstance->m_listExcludes)) {
                 $this->m_ownerInstance->m_listExcludes[] = $this->fieldName();
             }
 
-            if (hasFlag($flag, AF_HIDE_VIEW) && !in_array($this->fieldName(), $this->m_ownerInstance->m_viewExcludes)) {
+            if (atkTools::hasFlag($flag, AF_HIDE_VIEW) && !in_array($this->fieldName(), $this->m_ownerInstance->m_viewExcludes)) {
                 $this->m_ownerInstance->m_viewExcludes[] = $this->fieldName();
             }
         }
@@ -756,12 +756,12 @@ class atkAttribute
         }
 
         if (!$this->hasFlag(AF_PRIMARY) && is_object($this->m_ownerInstance)) {
-            if (hasFlag($flag, AF_HIDE_LIST) && in_array($this->fieldName(), $this->m_ownerInstance->m_listExcludes)) {
+            if (atkTools::hasFlag($flag, AF_HIDE_LIST) && in_array($this->fieldName(), $this->m_ownerInstance->m_listExcludes)) {
                 $key = array_search($this->fieldName(), $this->m_ownerInstance->m_listExcludes);
                 unset($this->m_ownerInstance->m_listExcludes[$key]);
             }
 
-            if (hasFlag($flag, AF_HIDE_VIEW) && in_array($this->fieldName(), $this->m_ownerInstance->m_viewExcludes)) {
+            if (atkTools::hasFlag($flag, AF_HIDE_VIEW) && in_array($this->fieldName(), $this->m_ownerInstance->m_viewExcludes)) {
                 $key = array_search($this->fieldName(), $this->m_ownerInstance->m_viewExcludes);
                 unset($this->m_ownerInstance->m_viewExcludes[$key]);
             }
@@ -1047,7 +1047,7 @@ class atkAttribute
                 $spinnerCode = '';
             }
 
-            $page = &atkinstance("atk.ui.atkpage");
+            $page = &atkTools::atkinstance("atk.ui.atkpage");
             $page->register_scriptcode("
     function " . $this->getHtmlId($fieldprefix) . $elementNr . "_onChange(el)
     {
@@ -1066,7 +1066,7 @@ class atkAttribute
     function getSpinner()
     {
         if (count($this->getDependencies()) && $this->m_showSpinner) {
-            $theme = & atkinstance("atk.ui.atktheme");
+            $theme = & atkTools::atkinstance("atk.ui.atktheme");
             $ret = sprintf('<div class="atkbusy"><img src="%s" alt="Busy"></div>', $theme->imgPath('spinner.gif'));
             return $ret;
         }
@@ -1103,7 +1103,7 @@ class atkAttribute
             $result = '<input type="hidden" id="' . $id . '" name="' . $fieldprefix . $this->formName() . '" value="' . htmlspecialchars($record[$this->fieldName()]) . '">';
             return $result;
         } else
-            atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
+            atkTools::atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
     }
 
     /**
@@ -1222,7 +1222,7 @@ class atkAttribute
             /* label? */
             $entry["label"] = $this->getLabel($defaults, $mode);
             /* error? */
-            $entry["error"] = $this->getError($error) || (isset($ATK_VARS["atkerrorfields"]) && atk_in_array($entry['id'], $ATK_VARS['atkerrorfields']));
+            $entry["error"] = $this->getError($error) || (isset($ATK_VARS["atkerrorfields"]) && atkTools::atk_in_array($entry['id'], $ATK_VARS['atkerrorfields']));
             // on which tab?
             $entry["tabs"] = $this->getTabs($mode);
             //on which sections?
@@ -1469,7 +1469,7 @@ class atkAttribute
     {
         for ($i = 0; $i < count($errors); $i ++) {
             if ($errors[$i]['attrib_name'] == $this->fieldName() ||
-                atk_in_array($this->fieldName(), $errors[$i]['attrib_name'])) {
+                atkTools::atk_in_array($this->fieldName(), $errors[$i]['attrib_name'])) {
                 return true;
             }
         }
@@ -1590,7 +1590,7 @@ class atkAttribute
         }
 
         $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
-        $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . atk_htmlentities($value) . '"' .
+        $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . atkTools::atk_htmlentities($value) . '"' .
             ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"' : '') . '>';
 
         return $result;
@@ -1623,13 +1623,13 @@ class atkAttribute
 
             foreach ($searchModes as $value) {
                 $selected = $searchMode == $value ? ' selected="selected"' : '';
-                $field .= '<option value="' . $value . '"' . $selected . '>' . atk_htmlentities($this->text("search_" . $value)) . '</option>';
+                $field .= '<option value="' . $value . '"' . $selected . '>' . atkTools::atk_htmlentities($this->text("search_" . $value)) . '</option>';
             }
 
             $field .= '</select>';
         } else {
             $field = '<input type="hidden" name="' . $this->getSearchModeFieldname($fieldprefix) . '" value="' . $searchMode . '">' .
-                ($extended ? atktext("search_" . $searchMode) : '');
+                ($extended ? atkTools::atktext("search_" . $searchMode) : '');
         }
 
         return $field;
@@ -1668,7 +1668,7 @@ class atkAttribute
         // default implementation doesn't supported nested paths, this method
         // should be overriden by relations etc. if they want to support this
         if (count($path) > 0) {
-            atk_var_dump($path, 'Invalid search path for ' . $this->m_ownerInstance->atkNodeType() . '#' . $this->fieldName() . ', ignoring criterium!');
+            atkTools::atk_var_dump($path, 'Invalid search path for ' . $this->m_ownerInstance->atkNodeType() . '#' . $this->fieldName() . ', ignoring criterium!');
         } else {
             $this->searchCondition($query, $ownerAlias, $value, $mode);
         }
@@ -1720,7 +1720,7 @@ class atkAttribute
             $searchmode = $this->m_searchmode;
 
         // @todo Is this really needed?
-        if (strpos($value, "*") !== false && atk_strlen($value) > 1) {
+        if (strpos($value, "*") !== false && atkTools::atk_strlen($value) > 1) {
             // auto wildcard detection
             $searchmode = "wildcard";
         }
@@ -1729,7 +1729,7 @@ class atkAttribute
         if (method_exists($query, $func) && ($value || ($value == 0))) {
             return $query->$func($table . "." . $this->fieldName(), $this->escapeSQL($value), $this->dbFieldType());
         } elseif (!method_exists($query, $func)) {
-            atkdebug("Database doesn't support searchmode '$searchmode' for " . $this->fieldName() . ", ignoring condition.");
+            atkTools::atkdebug("Database doesn't support searchmode '$searchmode' for " . $this->fieldName() . ", ignoring condition.");
         }
         return false;
     }
@@ -1805,7 +1805,7 @@ class atkAttribute
     {
         $db = &$this->getDb();
         $meta = $db->tableMeta($this->m_ownerInstance->m_table);
-        return hasFlag($meta[$this->fieldName()]['flags'], MF_NOT_NULL);
+        return atkTools::hasFlag($meta[$this->fieldName()]['flags'], MF_NOT_NULL);
     }
 
     /**
@@ -2299,9 +2299,9 @@ class atkAttribute
      */
     function hasStore($mode)
     {
-        atkdebug("Deprecated use of hasStore");
+        atkTools::atkdebug("Deprecated use of hasStore");
         $storagetype = $this->storageType($mode);
-        return (hasFlag($storagetype, POSTSTORE) || hasFlag($storagetype, PRESTORE)
+        return (atkTools::hasFlag($storagetype, POSTSTORE) || atkTools::hasFlag($storagetype, PRESTORE)
             );
     }
 
@@ -2486,7 +2486,7 @@ class atkAttribute
      */
     function showOnTab($tab)
     {
-        return ($this->getTabs() == "*" || atk_in_array($tab, $this->getTabs()));
+        return ($this->getTabs() == "*" || atkTools::atk_in_array($tab, $this->getTabs()));
     }
 
     /**
@@ -2619,10 +2619,10 @@ class atkAttribute
             $cmd = ($columnConfig->hasSubTotal($this->fieldName()) ? "unsubtotal"
                         : "subtotal");
             if ($grid == null) {
-                return href(getDispatchFile() . '?' . $columnConfig->getUrlCommand($this->fieldName(), $cmd), atktext("column_" . $cmd)) . ' ';
+                return atkTools::href( atkTools::getDispatchFile() . '?' . $columnConfig->getUrlCommand($this->fieldName(), $cmd), atkTools::atktext("column_" . $cmd)) . ' ';
             } else {
                 $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($this->fieldName(), $cmd));
-                $return = '<a href="javascript:void(0)" onclick="' . atk_htmlentities($call) . '">' . $this->text("column_" . $cmd) . '</a>';
+                $return = '<a href="javascript:void(0)" onclick="' . atkTools::atk_htmlentities($call) . '">' . $this->text("column_" . $cmd) . '</a>';
             }
         }
         return "";
@@ -2649,10 +2649,10 @@ class atkAttribute
             $direction = ($columnConfig->getSortDirection($this->fieldName()) == "desc"
                         ? "asc" : "desc");
             if ($grid == null) {
-                $res = href(getDispatchFile() . '?' . $columnConfig->getUrlCommand($fieldname, $direction), atktext("column_" . $direction)) . ' ';
+                $res = atkTools::href( atkTools::getDispatchFile() . '?' . $columnConfig->getUrlCommand($fieldname, $direction), atkTools::atktext("column_" . $direction)) . ' ';
             } else {
                 $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($fieldname, $direction));
-                $res = '<a href="javascript:void(0)" onclick="' . atk_htmlentities($call) . '">' . $this->text("column_" . $direction) . '</a>';
+                $res = '<a href="javascript:void(0)" onclick="' . atkTools::atk_htmlentities($call) . '">' . $this->text("column_" . $direction) . '</a>';
             }
         }
 
@@ -2734,7 +2734,7 @@ class atkAttribute
         if (is_object($this->getOwnerInstance())) {
             return $this->getOwnerInstance()->text($string, null, '', '', !$fallback);
         } else {
-            return atktext($string, $this->getModule(), '', '', '', !$fallback);
+            return atkTools::atktext($string, $this->getModule(), '', '', '', !$fallback);
         }
     }
 
@@ -2750,7 +2750,7 @@ class atkAttribute
         if (is_object($this->getOwnerInstance())) {
             return $this->getOwnerInstance()->getDb();
         } else {
-            return atkGetDb();
+            return atkTools::atkGetDb();
         }
     }
 
@@ -2805,10 +2805,10 @@ class atkAttribute
         $this->addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
 
         $script = '';
-        atkimport('atk.utils.atkjson');
+        atkTools::atkimport('atk.utils.atkjson');
         foreach ($arr['fields'] as $field) {
             //atkJSON::encode expect string in in ASCII or UTF-8 format, so convert data to UTF-8
-            $value = atk_iconv(atkGetCharset(), "UTF-8", $field['html']);
+            $value = atkTools::atk_iconv(atkTools::atkGetCharset(), "UTF-8", $field['html']);
             $script .= "\$('" . str_replace('.', '_', $this->m_ownerInstance->atkNodeType() . '_' . $field['id']) . "').update(" . atkJSON::encode($value) . ");\r\n";
         }
 
@@ -2879,14 +2879,14 @@ class atkAttribute
             $this->_callDependencies($record, $fieldPrefix, $mode, true);
         }
 
-        atkimport('atk.utils.atkjson');
+        atkTools::atkimport('atk.utils.atkjson');
 
         $action = $this->getOwnerInstance()->m_action;
         if ($action == null) {
             $action = $mode == "add" ? "add" : "edit";
         }
 
-        $url = partial_url($this->getOwnerInstance()->atkNodeType(), $action, "attribute." . $this->fieldName() . ".dependencies", array("atkdata" => array('fieldPrefix' => $fieldPrefix, 'mode' => $mode)));
+        $url = atkTools::partial_url($this->getOwnerInstance()->atkNodeType(), $action, "attribute." . $this->fieldName() . ".dependencies", array("atkdata" => array('fieldPrefix' => $fieldPrefix, 'mode' => $mode)));
         $url = atkJSON::encode($url);
 
 
@@ -2906,7 +2906,7 @@ class atkAttribute
      */
     protected function _callDependencies(&$record, $fieldPrefix, $mode, $initial)
     {
-        atkimport('atk.utils.atkeditformmodifier');
+        atkTools::atkimport('atk.utils.atkeditformmodifier');
         $modifier = new atkEditFormModifier($this->getOwnerInstance(), $record, $fieldPrefix, $mode, $initial);
 
         foreach ($this->getDependencies() as $callable) {

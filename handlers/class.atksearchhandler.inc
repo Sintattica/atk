@@ -32,7 +32,7 @@
  *       should be customizable in the future.
  *
  */
-atkimport("atk.handlers.atkabstractsearchhandler");
+atkTools::atkimport("atk.handlers.atkabstractsearchhandler");
 
 class atkSearchHandler extends atkAbstractSearchHandler
 {
@@ -57,8 +57,8 @@ class atkSearchHandler extends atkAbstractSearchHandler
             $this->redirectToResults();
             return;
         } elseif (!empty($this->m_postvars['atkcancel'])) {
-            $url = dispatch_url($this->getPreviousNode(), $this->getPreviousAction());
-            $url = session_url($url, atkLevel() > 0 ? SESSION_BACK : SESSION_REPLACE);
+            $url = atkTools::dispatch_url($this->getPreviousNode(), $this->getPreviousAction());
+            $url = atkTools::session_url($url, atkLevel() > 0 ? SESSION_BACK : SESSION_REPLACE);
 
             $this->m_node->redirect($url);
         }
@@ -83,8 +83,8 @@ class atkSearchHandler extends atkAbstractSearchHandler
      */
     function redirectToResults()
     {
-        $url = dispatch_url($this->getPreviousNode(), $this->getPreviousAction(), $this->fetchCriteria(), atkSelf());
-        $url = session_url($url, atkLevel() > 0 ? SESSION_BACK : SESSION_REPLACE);
+        $url = atkTools::dispatch_url($this->getPreviousNode(), $this->getPreviousAction(), $this->fetchCriteria(), atkTools::atkSelf());
+        $url = atkTools::session_url($url, atkLevel() > 0 ? SESSION_BACK : SESSION_REPLACE);
 
         $this->m_node->redirect($url);
     }
@@ -122,7 +122,7 @@ class atkSearchHandler extends atkAbstractSearchHandler
 
         $attr = &$this->m_node->getAttribute($attribute);
         if ($attr == NULL) {
-            atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
+            atkTools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
             return '';
         }
 
@@ -152,7 +152,7 @@ class atkSearchHandler extends atkAbstractSearchHandler
             $params = array();
             $params["formstart"] = '<form name="entryform" action="' . $controller->getPhpFile() . '?' . SID . '" method="post">';
 
-            $params["formstart"].= session_form(SESSION_REPLACE);
+            $params["formstart"].= atkTools::session_form(SESSION_REPLACE);
             $params["formstart"].='<input type="hidden" name="atkaction" value="search">';
 
             $params["formstart"].='<input type="hidden" name="atknodetype" value="' . $node->atknodetype() . '">';
@@ -171,7 +171,7 @@ class atkSearchHandler extends atkAbstractSearchHandler
 
             return $total;
         } else {
-            atkerror("ui object failure");
+            atkTools::atkerror("ui object failure");
         }
     }
 
@@ -194,9 +194,9 @@ class atkSearchHandler extends atkAbstractSearchHandler
             $name = $this->handleSavedCriteria($criteria);
 
             $params = array();
-            $params['searchmode_title'] = atktext("search_mode", "atk");
-            $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="AND" checked>' . atktext("search_and", "atk");
-            $params['searchmode_or'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="OR">' . atktext("search_or", "atk");
+            $params['searchmode_title'] = atkTools::atktext("search_mode", "atk");
+            $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="AND" checked>' . atkTools::atktext("search_and", "atk");
+            $params['searchmode_or'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="OR">' . atkTools::atktext("search_or", "atk");
             $params['saved_criteria'] = $this->getSavedCriteria($name);
 
             $params["fields"] = array();
@@ -210,7 +210,7 @@ class atkSearchHandler extends atkAbstractSearchHandler
             }
             return $ui->render($node->getTemplate("search", $record), $params);
         } else
-            atkerror("ui object error");
+            atkTools::atkerror("ui object error");
     }
 
     /**

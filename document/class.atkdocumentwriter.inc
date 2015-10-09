@@ -259,22 +259,22 @@ class atkDocumentWriter
 
         if ($format == "opendocument") {
             if ($s_oo_instance == NULL) {
-                atkdebug("Creating a new atkOpenDocumentWriter instance");
-                atkimport("atk.document.atkopendocumentwriter");
+                atkTools::atkdebug("Creating a new atkOpenDocumentWriter instance");
+                atkTools::atkimport("atk.document.atkopendocumentwriter");
                 $s_oo_instance = new atkOpenDocumentWriter();
             }
 
             return $s_oo_instance;
         } else if ($format == "docx") {
             if ($s_docx_instance == NULL) {
-                atkdebug("Creating a new atkDocxWriter instance");
-                atkimport("atk.document.atkdocxwriter");
+                atkTools::atkdebug("Creating a new atkDocxWriter instance");
+                atkTools::atkimport("atk.document.atkdocxwriter");
                 $s_docx_instance = new atkDocxWriter();
             }
 
             return $s_docx_instance;
         } else {
-            atkdebug(sprintf("Failed to create atkDocumentWriter instance (unknown format: %s)", $format));
+            atkTools::atkdebug(sprintf("Failed to create atkDocumentWriter instance (unknown format: %s)", $format));
         }
     }
 

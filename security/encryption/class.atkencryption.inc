@@ -44,7 +44,7 @@ class atkEncryption
             $type = atkconfig("encryption_defaultmethod");
         $encryptionclass = "atk" . strtolower($type) . "encryption";
 
-        if (atkimport("atk.security.encryption." . $encryptionclass)) {
+        if (atkTools::atkimport("atk.security.encryption." . $encryptionclass)) {
             return new $encryptionclass();
         } else
             return $this;

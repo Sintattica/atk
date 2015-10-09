@@ -17,7 +17,7 @@
 /**
  * Base include
  */
-atkimport("atk.db.atkquery");
+atkTools::atkimport("atk.db.atkquery");
 
 /**
  * SQL query builder for PostgreSQL.

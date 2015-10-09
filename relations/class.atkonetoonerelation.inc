@@ -49,7 +49,7 @@ define("AF_ONETOONE_RESPECT_TABS", AF_SPECIFIC_5);
 /**
  * @internal Include the base class.
  */
-userelation("atkrelation");
+atkTools::userelation("atkrelation");
 
 /**
  * Implementation of one-to-one relationships.
@@ -314,7 +314,7 @@ class atkOneToOneRelation extends atkRelation
         $classname = $this->m_destination;
         $cache_id = $this->m_owner . "." . $this->m_name;
         $rel = &atkGetNode($classname, true, $cache_id);
-        atkdebug("O2O DELETE for $classname: " . $this->m_refKey . "=" . $record[$this->m_ownerInstance->primaryKeyField()]);
+        atkTools::atkdebug("O2O DELETE for $classname: " . $this->m_refKey . "=" . $record[$this->m_ownerInstance->primaryKeyField()]);
 
         if ($this->m_refKey != "") {
             // Foreign key is in the destination node
@@ -489,7 +489,7 @@ class atkOneToOneRelation extends atkRelation
         if ($this->createDestination()) {
             $vars = &$this->_getStoreValue($record);
             if ($vars["mode"] == "edit") {
-                atkdebug("Updating existing one2one record");
+                atkTools::atkdebug("Updating existing one2one record");
                 // we put the vars in the postvars, because there is information
                 // like atkorgkey in it that is vital.
                 // but we restore the postvars after we're done updating
@@ -503,7 +503,7 @@ class atkOneToOneRelation extends atkRelation
                     // destination record already exists, and we are not copying.
                     $result = true;
                 } else {
-                    atkdebug("atkonetoonerelation->store(): Adding new one2one record for mode $mode");
+                    atkTools::atkdebug("atkonetoonerelation->store(): Adding new one2one record for mode $mode");
                     $this->m_destInstance->preAdd($vars);
                     $result = $this->m_destInstance->addDb($vars, true, $mode);
                 }
@@ -513,7 +513,7 @@ class atkOneToOneRelation extends atkRelation
                 }
                 return $result;
             } else {
-                atkdebug("atkonetoonerelation->store(): Nothing to store in one2one record");
+                atkTools::atkdebug("atkonetoonerelation->store(): Nothing to store in one2one record");
                 return true;
             }
         }
@@ -609,7 +609,7 @@ class atkOneToOneRelation extends atkRelation
      */
     function hide($record = "", $fieldprefix = "")
     {
-        atkdebug("hide called for " . $this->fieldName());
+        atkTools::atkdebug("hide called for " . $this->fieldName());
         if ($this->createDestination()) {
             if ($record[$this->fieldName()] != NULL) {
                 $myrecord = $record[$this->fieldName()];
@@ -626,7 +626,7 @@ class atkOneToOneRelation extends atkRelation
             }
 
             $output.='<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '[mode]" value="' . $mode . '">';
-            $forceList = decodeKeyValueSet($this->getFilter());
+            $forceList = atkTools::decodeKeyValueSet($this->getFilter());
             $output.= $this->m_destInstance->hideform($mode, $myrecord, $forceList, $fieldprefix . $this->fieldName() . "_AE_");
             return $output;
         }
@@ -705,7 +705,7 @@ class atkOneToOneRelation extends atkRelation
 
                 /* add fields */
 
-                $forceList = decodeKeyValueSet($this->m_destinationFilter);
+                $forceList = atkTools::decodeKeyValueSet($this->m_destinationFilter);
                 if ($this->m_refKey != "") {
                     if ($this->destinationHasRelation()) {
                         $forceList[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $defaults[$this->m_ownerInstance->primaryKeyField()];
@@ -730,7 +730,7 @@ class atkOneToOneRelation extends atkRelation
                     /* separator and name */
                     if ($arr['fields'][count($arr['fields']) - 1]['html'] !== '-')
                         $arr["fields"][] = array("html" => "-", "tabs" => $this->m_tabs, 'sections' => $this->getSections());
-                    $arr["fields"][] = array("line" => "<b>" . atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type) . "</b>", "tabs" => $this->m_tabs, 'sections' => $this->getSections());
+                    $arr["fields"][] = array("line" => "<b>" . atkTools::atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type) . "</b>", "tabs" => $this->m_tabs, 'sections' => $this->getSections());
                 }
 
                 if (is_array($a["fields"])) {
@@ -800,7 +800,7 @@ class atkOneToOneRelation extends atkRelation
                 /* separator and name */
                 if ($arr['fields'][count($arr['fields']) - 1]['html'] !== '-')
                     $arr["fields"][] = array("html" => "-", "tabs" => $this->m_tabs, 'sections' => $this->getSections());
-                $arr["fields"][] = array("line" => "<b>" . atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type) . "</b>", "tabs" => $this->m_tabs, 'sections' => $this->getSections());
+                $arr["fields"][] = array("line" => "<b>" . atkTools::atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type) . "</b>", "tabs" => $this->m_tabs, 'sections' => $this->getSections());
             }
 
             if (is_array($a["fields"])) {
@@ -1068,7 +1068,7 @@ class atkOneToOneRelation extends atkRelation
                     if (is_object($p_attrib)) {
                         $p_attrib->searchCondition($query, $p_attrib->getTable($key), $val, $this->getChildSearchMode($searchmode, $p_attrib->formName()));
                     } else
-                        atkdebug("Field $key was not found in this relation (this is very weird)");
+                        atkTools::atkdebug("Field $key was not found in this relation (this is very weird)");
                 }
             }
         }

@@ -30,21 +30,21 @@ class atkDocumentHandler extends atkActionHandler
     function action_document()
     {
         // Add "Action document" to debug log to indicate this function is entered
-        atkdebug("Action document");
+        atkTools::atkdebug("Action document");
 
         // Load and instantiate the documentwriter
-        atkimport("atk.document.atkdocumentwriter");
+        atkTools::atkimport("atk.document.atkdocumentwriter");
         $openDocumentWriter = &atkDocumentWriter::getInstance("opendocument");
 
         // ATKSelector must be available to perform this action
         if ($this->m_postvars["atkselector"] == "") {
-            atkerror("Selector parameter not available.");
+            atkTools::atkerror("Selector parameter not available.");
             return false;
         }
 
         // ATKDocTpl must be available to perform this action
         if (!isset($this->m_postvars["atkdoctpl"])) {
-            atkerror("atkdoctpl parameter not available.");
+            atkTools::atkerror("atkdoctpl parameter not available.");
             return false;
         }
 
@@ -52,13 +52,13 @@ class atkDocumentHandler extends atkActionHandler
 
         // Check for invalid characters in filename, modulename and nodename in order to prevent hacking
         if (ereg("[<>\\/|;]", $module . $node . $this->m_postvars["atkdoctpl"]) !== false) {
-            atkerror("Invalid filename given.");
+            atkTools::atkerror("Invalid filename given.");
             return false;
         }
 
         // Check if the file exists
         if (!is_file($tpl_file)) {
-            atkerror("Given file does not exist.");
+            atkTools::atkerror("Given file does not exist.");
             return false;
         }
 

@@ -24,7 +24,7 @@
  * @subpackage handlers
  *
  */
-atkimport("atk.handlers.atkadminhandler");
+atkTools::atkimport("atk.handlers.atkadminhandler");
 
 class atkMultiSelectHandler extends atkAdminHandler
 {
@@ -61,7 +61,7 @@ class atkMultiSelectHandler extends atkAdminHandler
         $recordset = $node->selectDb(implode(' OR ', $this->m_postvars['atkselector']), $columnConfig->getOrderByStatement(), "", $node->m_listExcludes, "", "multiselect");
 
         // loop recordset to parse atktargetvar
-        $atktarget = atkurldecode($node->m_postvars['atktarget']);
+        $atktarget = atkTools::atkurldecode($node->m_postvars['atktarget']);
         $atktargetvar = $node->m_postvars['atktargetvar'];
         $atktargettpl = $node->m_postvars['atktargetvartpl'];
 
@@ -84,7 +84,7 @@ class atkMultiSelectHandler extends atkAdminHandler
      */
     function parseString($string, $recordset)
     {
-        atkimport("atk.utils.atkstringparser");
+        atkTools::atkimport("atk.utils.atkstringparser");
         $parser = new atkStringParser($string);
 
         // for backwardscompatibility reasons, we also support the '[pk]' var.
@@ -113,12 +113,12 @@ class atkMultiSelectHandler extends atkAdminHandler
 
         $this->getNode()->addStyle("style.css");
 
-        $params["header"] = atktext("title_multiselect", $this->getNode()->m_module, $this->getNode()->m_type);
+        $params["header"] = atkTools::atktext("title_multiselect", $this->getNode()->m_module, $this->getNode()->m_type);
 
         $actions['actions'] = array();
         $actions['mra'][] = 'multiselect';
 
-        atkimport('atk.datagrid.atkdatagrid');
+        atkTools::atkimport('atk.datagrid.atkdatagrid');
         $grid = atkDataGrid::create($this->getNode(), 'multiselect');
         /**
          * At first the changes below looked like the solution for the error
@@ -136,8 +136,8 @@ class atkMultiSelectHandler extends atkAdminHandler
         $params["list"] = $grid->render();
 
         if (atkLevel() > 0) {
-            $backlinkurl = atkSessionManager::sessionUrl(atkSelf() . '?atklevel=' . session_level(SESSION_BACK));
-            $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backlinkurl . '\';" value="' . atktext('cancel') . '"></div>';
+            $backlinkurl = atkSessionManager::sessionUrl(atkTools::atkSelf() . '?atklevel=' . atkSessionManager::newLevel(SESSION_BACK));
+            $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backlinkurl . '\';" value="' . atkTools::atktext('cancel') . '"></div>';
         }
 
         $output = $this->getUi()->renderList("multiselect", $params);

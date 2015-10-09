@@ -203,7 +203,7 @@ class atkRelation extends atkAttribute
 
             // Validate if destination was created succesfully
             if (!is_object($this->m_destInstance)) {
-                atkerror("Relation with unknown nodetype '" . $this->m_destination . "' (in node '" . $this->m_owner . "')");
+                atkTools::atkerror("Relation with unknown nodetype '" . $this->m_destination . "' (in node '" . $this->m_owner . "')");
                 $this->m_destInstance = NULL;
                 return false;
             }
@@ -349,14 +349,14 @@ class atkRelation extends atkAttribute
     function getAddLabel()
     {
         $key = "link_" . $this->fieldName() . "_add";
-        $label = atktext($key, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type, "", "", true);
+        $label = atkTools::atktext($key, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type, "", "", true);
         if ($label == "") {
-            $label = atktext($key, $this->m_destInstance->m_module, "", "", "", true);
+            $label = atkTools::atktext($key, $this->m_destInstance->m_module, "", "", "", true);
             if ($label == "") {
                 $key = "link_" . getNodeType($this->m_destination) . "_add";
-                $label = atktext($key, $this->m_destInstance->m_module, "", "", "", true);
+                $label = atkTools::atktext($key, $this->m_destInstance->m_module, "", "", "", true);
                 if ($label == "") {
-                    $label = atktext("link_add", "atk");
+                    $label = atkTools::atktext("link_add", "atk");
                 }
             }
         }
@@ -373,7 +373,7 @@ class atkRelation extends atkAttribute
     function parseFilter($destFilter, $record)
     {
         if ($destFilter != "") {
-            atkimport("atk.utils.atkstringparser");
+            atkTools::atkimport("atk.utils.atkstringparser");
             $parser = new atkStringParser($destFilter);
             return $parser->parse($record);
         }

@@ -26,7 +26,7 @@
  * $Id$
  */
 /** @internal includes and defines * */
-useattrib("atkattribute");
+atkTools::useattrib("atkattribute");
 
 define("CP_COLORMODE_DEFAULT", 0);
 define("CP_COLORMODE_HEX6", 1);
@@ -44,7 +44,7 @@ function drawTD($field, $color, $colHeight, $colWidth, $extern = 0)
         $row .='<A href ="javascript:picker';
     }
     $row .="('" . $field . "','" . $color . "')";
-    $row .='" title="' . atktext("color", "atk") . ': ' . $color . '"><IMG SRC="' . atkconfig('atkroot') . 'atk/images/dummy.gif" border=0 width=' . $colWidth . ' height=' . $colHeight . ' alt="-X-"></a></td>';
+    $row .='" title="' . atkTools::atktext("color", "atk") . ': ' . $color . '"><IMG SRC="' . atkconfig('atkroot') . 'atk/images/dummy.gif" border=0 width=' . $colWidth . ' height=' . $colHeight . ' alt="-X-"></a></td>';
     $row .= "\n";
 
     return $row;
@@ -238,7 +238,7 @@ class atkColorPickerAttribute extends atkAttribute
         $formRef = $this->fieldName();
 
         if ($this->m_currentColor == "") {
-            $this->m_currentColor = atkArrayNvl($record, $this->fieldName(), "");
+            $this->m_currentColor = atkTools::atkArrayNvl($record, $this->fieldName(), "");
         }
 
         $colorField = '<input type="hidden" name="' . $fieldprefix . $this->formName() . '" id="' . $fieldprefix . $this->formName() . '" value="' . $this->m_currentColor . '" size="7" maxlength="7">';
@@ -252,7 +252,7 @@ class atkColorPickerAttribute extends atkAttribute
 
         if (trim($this->m_currentColor) == "") {
             $selectImg = atkconfig("atkroot") . "atk/images/select_color_off.gif";
-            $alt = atkText("no_color_selected", "atk");
+            $alt = atkTools::atktext("no_color_selected", "atk");
         } else {
             $selectImg = atkconfig("atkroot") . "atk/images/select_color_on.gif";
             $alt = $this->m_currentColor;
@@ -265,7 +265,7 @@ class atkColorPickerAttribute extends atkAttribute
             $urlColor = $this->m_currentColor;
         }
 
-        $url = atkPopup('atk/popups/colorpicker.inc', 'field=' . $fieldprefix . $this->fieldName() . '&activecolor=' . $urlColor . '&usercol=' . $userCol, 'colorPicker', 315, 1000, 'no', 'no');
+        $url = atkTools::atkPopup('atk/popups/colorpicker.inc', 'field=' . $fieldprefix . $this->fieldName() . '&activecolor=' . $urlColor . '&usercol=' . $userCol, 'colorPicker', 315, 1000, 'no', 'no');
         $text = '<a href="javascript:void(0);" onclick="' . $url . '; return false;"><img name="img_' . $fieldprefix . $this->fieldName() . '" id="img_' . $fieldprefix . $this->fieldName() . '" src="' . $selectImg . '" border="0" alt="' . $alt . '" style="background-color: ' . $alt . ';"></a>' . $colorField;
         $result = '<table cellpadding="0" cellspacing="0" border="0" width="35" height="21" align="left"><tr><td id="example_' . $fieldprefix . $this->fieldName() . '" name="example_' . $fieldprefix . $this->fieldName() . '" style="padding:0px;" valign="top" align="left" bgcolor="' . $this->m_currentColor . '">' . $text . '</td></tr></table>';
 
@@ -285,7 +285,7 @@ class atkColorPickerAttribute extends atkAttribute
     {
         $color = $record[$this->fieldName()];
         if (!$this->check_color($color))
-            atkTriggerError($record, $this, 'error_invalid_color');
+            atkTools::triggerError($record, $this, 'error_invalid_color');
     }
 
     /**
@@ -362,7 +362,7 @@ class atkColorPickerAttribute extends atkAttribute
                 }
             }
         } else {
-            atkerror("Error in function check_color(): Invalid argument for color type.");
+            atkTools::atkerror("Error in function check_color(): Invalid argument for color type.");
             return false;
         }
     }
@@ -376,12 +376,12 @@ class atkColorPickerAttribute extends atkAttribute
     function checkNumArgs($numargs)
     {
         if ($numargs < 1) {
-            atkerror("Error in function check_color(): No arguments passed to function.");
+            atkTools::atkerror("Error in function check_color(): No arguments passed to function.");
             return false;
         }
 
         if ($numargs > 2) {
-            atkerror("Error in function check_color(): Too many arguments passed to function.");
+            atkTools::atkerror("Error in function check_color(): Too many arguments passed to function.");
             return false;
         }
 

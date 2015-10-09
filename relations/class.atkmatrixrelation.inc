@@ -18,7 +18,7 @@
 define("AF_MATRIX_ACYCLIC", AF_SPECIFIC_1); // checks if a matrix is acyclic
 
 /** @internal include base class */
-userelation("atkrelation");
+atkTools::userelation("atkrelation");
 
 /**
  * Many2Many relation that is represented by a clickable matrix.
@@ -119,7 +119,7 @@ class atkMatrixRelation extends atkRelation
         else
             $where = "";
 
-        $recordset = $this->m_destInstance->selectDb($where, "", "", "", atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+        $recordset = $this->m_destInstance->selectDb($where, "", "", "", atkTools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
 
         for ($i = 0; $i < count($recordset); $i++) {
             $matrix_fields_row[$i] = $this->m_destInstance->descriptor($recordset[$i]);
@@ -137,7 +137,7 @@ class atkMatrixRelation extends atkRelation
         else
             $where = "";
 
-        $recordset = $this->m_destInstance->selectDb($where, "", "", "", atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+        $recordset = $this->m_destInstance->selectDb($where, "", "", "", atkTools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
 
         for ($i = 0; $i < count($recordset); $i++) {
             $matrix_fields_col[$i] = $this->m_destInstance->descriptor($recordset[$i]);
@@ -259,7 +259,7 @@ class atkMatrixRelation extends atkRelation
             else
                 $where = "";
 
-            $recordset = $this->m_destInstance->selectDb($where, "", "", "", atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+            $recordset = $this->m_destInstance->selectDb($where, "", "", "", atkTools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
 
             for ($i = 0; $i < count($recordset); $i++) {
                 $primaryKeyValue = explode("'", $this->m_destInstance->primaryKey($recordset[$i]));

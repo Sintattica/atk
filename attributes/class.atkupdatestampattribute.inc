@@ -17,7 +17,7 @@
 /**
  * @internal include baseclass.
  */
-useattrib('atkDateTimeAttribute');
+atkTools::useattrib('atkDateTimeAttribute');
 
 /**
  * Attribute for keeping track of last-modification times.

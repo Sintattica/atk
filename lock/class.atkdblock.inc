@@ -76,9 +76,9 @@ class atkDbLock extends atkLock
         $this->storeLockList($atklockList);
 
         if (!isset($ATK_VARS['atkpartial']) && $this->m_id > 0) {
-            $page = &atkinstance("atk.ui.atkpage");
+            $page = &atkTools::atkinstance("atk.ui.atkpage");
             $page->register_script(atkconfig("atkroot") . "atk/javascript/xml.js");
-            $page->register_script(session_url("include.php?file=atk/lock/lock.js.php&stack=" . atkStackID() . "&id=" . $this->m_id, SESSION_NEW));
+            $page->register_script(atkTools::session_url("include.php?file=atk/lock/lock.js.php&stack=" . atkStackID() . "&id=" . $this->m_id, SESSION_NEW));
         }
     }
 
@@ -128,7 +128,7 @@ class atkDbLock extends atkLock
         }
 
         /* lock the lock table :) */
-        $db = &atkGetDb();
+        $db = &atkTools::atkGetDb();
         $db->lock("db_lock");
 
         /* check if the item can be locked */
@@ -136,10 +136,10 @@ class atkDbLock extends atkLock
             $query = &$db->createQuery();
             $query->addField("*");
             $query->addTable("db_lock");
-            $query->addCondition("lock_table = '" . escapeSQL($table) . "'");
-            $query->addCondition("lock_record = '" . escapeSQL($selector) . "'");
+            $query->addCondition("lock_table = '" . atkTools::escapeSQL($table) . "'");
+            $query->addCondition("lock_record = '" . atkTools::escapeSQL($selector) . "'");
             $query->addCondition("lock_lease >= " . $db->func_now());
-            $query->addCondition("session_id <> '" . escapeSQL(session_id()) . "'");
+            $query->addCondition("session_id <> '" . atkTools::escapeSQL(session_id()) . "'");
             $result = $db->getRows($query->buildCount());
         }
 
@@ -149,7 +149,7 @@ class atkDbLock extends atkLock
                 $this->m_id = $db->nextid("db_lock");
                 $page = &atkPage::getInstance();
                 $page->register_script(atkconfig("atkroot") . "atk/javascript/xml.js");
-                $page->register_script(session_url("include.php?file=atk/lock/lock.js.php&stack=" . atkStackID() . "&id=" . $this->m_id, SESSION_NEW));
+                $page->register_script(atkTools::session_url("include.php?file=atk/lock/lock.js.php&stack=" . atkStackID() . "&id=" . $this->m_id, SESSION_NEW));
             }
 
             $user = getUser();
@@ -158,10 +158,10 @@ class atkDbLock extends atkLock
 
             $query = &$db->createQuery();
             $query->addField("lock_id", $this->m_id);
-            $query->addField("lock_table", escapeSQL($table));
-            $query->addField("lock_record", escapeSQL($selector));
-            $query->addField("user_id", escapeSQL($user));
-            $query->addField("user_ip", escapeSQL(atkGetClientIp()));
+            $query->addField("lock_table", atkTools::escapeSQL($table));
+            $query->addField("lock_record", atkTools::escapeSQL($selector));
+            $query->addField("user_id", atkTools::escapeSQL($user));
+            $query->addField("user_ip", atkTools::escapeSQL(atkTools::atkGetClientIp()));
             $query->addField("lock_stamp", $db->func_now(), "", "", FALSE);
             $dbconfig = atkconfig("db");
             if (substr($dbconfig["default"]["driver"], 0, 3) != 'oci')
@@ -169,7 +169,7 @@ class atkDbLock extends atkLock
             else
                 $query->addField("lock_lease", $db->func_now() . " +  " . (60 / 86400), "", "", FALSE);
             $query->addField("lock_lease_count", "0");
-            $query->addField("session_id", escapeSQL(session_id()));
+            $query->addField("session_id", atkTools::escapeSQL(session_id()));
             $query->addTable("db_lock");
             $query->executeInsert();
 
@@ -203,7 +203,7 @@ class atkDbLock extends atkLock
      */
     function unlock($selector, $table)
     {
-        $db = &atkGetDb();
+        $db = &atkTools::atkGetDb();
 
         $user = getUser();
         if (is_array($user))
@@ -219,11 +219,11 @@ class atkDbLock extends atkLock
             (
             "(" .
             "lock_id = '" . (int) $this->m_id . "' AND " .
-            "lock_table = '" . escapeSQL($table) . "' AND " .
-            "lock_record = '" . escapeSQL($selector) . "' AND " .
-            "user_id = '" . escapeSQL($user) . "' AND " .
-            "user_ip = '" . escapeSQL(atkGetClientIp()) . "' AND " .
-            "session_id = '" . escapeSQL(session_id()) . "'" .
+            "lock_table = '" . atkTools::escapeSQL($table) . "' AND " .
+            "lock_record = '" . atkTools::escapeSQL($selector) . "' AND " .
+            "user_id = '" . atkTools::escapeSQL($user) . "' AND " .
+            "user_ip = '" . atkTools::escapeSQL(atkTools::atkGetClientIp()) . "' AND " .
+            "session_id = '" . atkTools::escapeSQL(session_id()) . "'" .
             ") OR (" .
             "lock_lease <= " . $db->func_now() .
             ")"
@@ -256,7 +256,7 @@ class atkDbLock extends atkLock
             $user = $user['name'];
 
         /* lock the lock table :) */
-        $db = &atkGetDb();
+        $db = &atkTools::atkGetDb();
         $db->lock("db_lock");
 
         /* extend lock lease */
@@ -269,9 +269,9 @@ class atkDbLock extends atkLock
         $query->addField("lock_lease_count", "lock_lease_count + 1", "", "", FALSE);
         $query->addTable("db_lock");
         $query->addCondition("lock_id = " . (int) $identifier);
-        $query->addCondition("user_id = '" . escapeSQL($user) . "'");
-        $query->addCondition("user_ip = '" . escapeSQL(atkGetClientIp()) . "'");
-        $query->addCondition("session_id = '" . escapeSQL(session_id()) . "'");
+        $query->addCondition("user_id = '" . atkTools::escapeSQL($user) . "'");
+        $query->addCondition("user_ip = '" . atkTools::escapeSQL(atkTools::atkGetClientIp()) . "'");
+        $query->addCondition("session_id = '" . atkTools::escapeSQL(session_id()) . "'");
         $query->addCondition("lock_lease >= " . $db->func_now());
         $query->executeUpdate();
         $result = $db->affected_rows();
@@ -316,7 +316,7 @@ class atkDbLock extends atkLock
 
         /* select all locks for the node table -> cache */
         if (!is_array($_cache[$table])) {
-            $db = &atkGetDb();
+            $db = &atkTools::atkGetDb();
             $query = &$db->createQuery();
             $query->addField("lock_id");
             $query->addField("lock_record");
@@ -325,10 +325,10 @@ class atkDbLock extends atkLock
             $query->addField("lock_stamp");
             $query->addField("lock_lease");
             $query->addTable("db_lock");
-            $query->addCondition("lock_table = '" . escapeSQL($table) . "'");
+            $query->addCondition("lock_table = '" . atkTools::escapeSQL($table) . "'");
             $query->addCondition("lock_lease >= " . $db->func_now());
             if ($mode == self::EXCLUSIVE)
-                $query->addCondition("session_id <> '" . escapeSQL(session_id()) . "'");
+                $query->addCondition("session_id <> '" . atkTools::escapeSQL(session_id()) . "'");
             $_cache[$table] = $query->executeSelect();
         }
 

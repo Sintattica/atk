@@ -15,7 +15,7 @@
  * $Id: class.atkmanyboolrelation.inc 7080 2010-12-14 08:52:42Z sandy $
  */
 /** @internal include baseclass. */
-userelation("atkmanytomanyrelation");
+atkTools::userelation("atkmanytomanyrelation");
 
 /**
  * Attribute flag. When used the atkManyBoolRelation shows add links to add records for the related table
@@ -75,11 +75,11 @@ class atkManyBoolRelation extends atkManyToManyRelation
             if (!$this->hasFlag(AF_MANYBOOL_NO_TOOLBAR)) {
                 $result .='<div align="left"><font size="-2">
                       [<a href="javascript:void(0)" onclick="profile_checkAll(\'' . $this->getHtmlId($fieldprefix) . '\'); return false;">' .
-                    atktext("check_all", "atk") .
+                    atkTools::atktext("check_all", "atk") .
                     '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\'' . $this->getHtmlId($fieldprefix) . '\'); return false;">' .
-                    atktext("check_none", "atk") .
+                    atkTools::atktext("check_none", "atk") .
                     '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\'' . $this->getHtmlId($fieldprefix) . '\'); return false;">' .
-                    atktext("invert_selection", "atk") . '</a>]</font></div>';
+                    atkTools::atktext("invert_selection", "atk") . '</a>]</font></div>';
             }
 
             $result.= '<table border="0"><tr>';
@@ -101,7 +101,7 @@ class atkManyBoolRelation extends atkManyToManyRelation
                             ' AND ' . $this->m_linkInstance->m_table . '.' . $this->getRemoteKey() .
                             "='" . $remoteValue . "'";
                         // Create link to details.
-                        $detaillink = href(dispatch_url($this->m_link, "edit", array("atkselector" => $selector)), "[" . atktext("details", "atk") . "]", SESSION_NESTED, true);
+                        $detaillink = atkTools::href(dispatch_url($this->m_link, "edit", array("atkselector" => $selector)), "[" . atkTools::atktext("details", "atk") . "]", SESSION_NESTED, true);
                     }
                 } else {
                     $sel = "";
@@ -133,11 +133,11 @@ class atkManyBoolRelation extends atkManyToManyRelation
             $nodename = $this->m_destInstance->m_type;
             $modulename = $this->m_destInstance->m_module;
             ;
-            $result .= atktext('select_none', $modulename, $nodename) . " ";
+            $result .= atkTools::atktext('select_none', $modulename, $nodename) . " ";
         }
         // Add the add link if AF_MANYBOOL_AUTOLINK used
         if (($this->hasFlag(AF_MANYBOOL_AUTOLINK)) && ($this->m_destInstance->allowed("add")))
-            $result.= href(dispatch_url($this->m_destination, "add"), $this->getAddLabel(), SESSION_NESTED) . "\n";
+            $result.= atkTools::href(dispatch_url($this->m_destination, "add"), $this->getAddLabel(), SESSION_NESTED) . "\n";
 
         return $result;
     }

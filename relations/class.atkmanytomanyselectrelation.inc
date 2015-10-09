@@ -15,8 +15,8 @@
  * $Id$
  */
 /** @internal includes and defines * */
-userelation("atkmanytomanyrelation");
-userelation('atkmanytoonerelation');
+atkTools::userelation("atkmanytomanyrelation");
+atkTools::userelation('atkmanytoonerelation');
 
 define('AF_MANYTOMANYSELECT_DETAILEDIT', AF_SPECIFIC_1);
 define('AF_MANYTOMANYSELECT_DETAILADD', AF_SPECIFIC_2);
@@ -334,7 +334,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
 
         // Get the descriptor and ensure it's presentible
         $descriptor = nl2br(
-            atk_htmlentities(
+            atkTools::atk_htmlentities(
                 $this->getdestination()->descriptor($record)
             )
         );
@@ -342,7 +342,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
         // Build the record
         $result = '
       <li class="atkmanytomanyselectrelation-selected">
-      <input type="hidden" name="' . $name . '" value="' . atk_htmlentities($key) . '"/>
+      <input type="hidden" name="' . $name . '" value="' . atkTools::atk_htmlentities($key) . '"/>
       <span>' . $descriptor . '</span>
       ' . $this->renderSelectedRecordActions($record) . '
       </li>
@@ -405,7 +405,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
         if (method_exists($this, $actionMethod)) {
             return $this->$actionMethod($record);
         } else {
-            atkwarning('Missing ' . $actionMethod . ' method on manytomanyselectrelation. ');
+            atkTools::atkwarning('Missing ' . $actionMethod . ' method on manytomanyselectrelation. ');
         }
     }
 
@@ -413,7 +413,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     {
         $filter = $this->parseFilter($this->getManyToOneRelation()->m_destinationFilter, $record);
         $params = array_merge($params, array('atkfilter' => $filter, "atkpkret" => $this->getHtmlId($fieldprefix) . "_newsel"));
-        $link = atkHref(dispatch_url($this->m_destination, "add", $params), $this->getAddLabel(), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
+        $link = atkTools::atkHref(dispatch_url($this->m_destination, "add", $params), $this->getAddLabel(), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
         return $link;
     }
 
@@ -425,7 +425,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
      */
     protected function getEditActionLink($record)
     {
-        return atkHref(dispatch_url($this->getdestination()->atknodetype(), 'edit', array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
+        return atkTools::atkHref(dispatch_url($this->getdestination()->atknodetype(), 'edit', array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
     }
 
     /**
@@ -436,7 +436,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
      */
     protected function getViewActionLink($record)
     {
-        return atkHref(dispatch_url($this->getdestination()->atknodetype(), 'view', array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('view'), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
+        return atkTools::atkHref(dispatch_url($this->getdestination()->atknodetype(), 'view', array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('view'), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
     }
 
     /**
@@ -476,7 +476,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
             return '';
         }
 
-        $url = partial_url($this->getOwnerInstance()->atkNodeType(), $mode, 'attribute.' . $this->fieldName() . '.selectedrecord', array('fieldprefix' => $fieldprefix));
+        $url = atkTools::partial_url($this->getOwnerInstance()->atkNodeType(), $mode, 'attribute.' . $this->fieldName() . '.selectedrecord', array('fieldprefix' => $fieldprefix));
 
         $relation = $this->getManyToOneRelation();
 

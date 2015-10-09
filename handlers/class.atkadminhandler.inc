@@ -26,7 +26,7 @@
  * @subpackage handlers
  *
  */
-atkimport("atk.handlers.atkactionhandler");
+atkTools::atkimport("atk.handlers.atkactionhandler");
 
 class atkAdminHandler extends atkActionHandler
 {
@@ -135,7 +135,7 @@ class atkAdminHandler extends atkActionHandler
     {
         $this->getNode()->addStyle("style.css");
 
-        atkimport('atk.datagrid.atkdatagrid');
+        atkTools::atkimport('atk.datagrid.atkdatagrid');
         $grid = atkDataGrid::create($this->getNode(), 'admin');
 
         if (is_array($actions)) {
@@ -163,7 +163,7 @@ class atkAdminHandler extends atkActionHandler
      */
     public function partial_datagrid()
     {
-        atkimport('atk.datagrid.atkdatagrid');
+        atkTools::atkimport('atk.datagrid.atkdatagrid');
         try {
             $grid = atkDataGrid::resume($this->getNode());
 
@@ -214,10 +214,10 @@ class atkAdminHandler extends atkActionHandler
             // reset search so we can back to the normal admin screen if we want
             $grid->setPostvar('atksearch', array());
 
-            $url = session_url(dispatch_url($node->atkNodeType(), $action, array('atkselector' => $node->primaryKey($records[0]))), SESSION_NESTED);
+            $url = atkTools::session_url(dispatch_url($node->atkNodeType(), $action, array('atkselector' => $node->primaryKey($records[0]))), SESSION_NESTED);
 
             if ($grid->isUpdate()) {
-                atkimport('atk.utils.atkjson');
+                atkTools::atkimport('atk.utils.atkjson');
                 $script = 'document.location.href = ' . atkJSON::encode($url) . ';';
                 $node->getPage()->register_loadscript($script);
             } else {
@@ -267,7 +267,7 @@ class atkAdminHandler extends atkActionHandler
     {
         $link = "";
         if ($this->m_node->allowed("add") && !$this->m_node->hasFlag(NF_READONLY) && $this->m_node->hasFlag(NF_IMPORT)) {
-            $link.= href(dispatch_url($this->m_node->atkNodeType(), "import"), atktext("import", "atk", $this->m_node->m_type), SESSION_NESTED);
+            $link.= atkTools::href(dispatch_url($this->m_node->atkNodeType(), "import"), atkTools::atktext("import", "atk", $this->m_node->m_type), SESSION_NESTED);
         }
         return $link;
     }
@@ -286,7 +286,7 @@ class atkAdminHandler extends atkActionHandler
                 $filter = implode(' AND ', str_replace('[table]', $this->m_node->getTable(), $this->m_node->m_fuzzyFilters));
             }
 
-            $link.= href(dispatch_url($this->m_node->atkNodeType(), "export", array('atkfilter' => $filter)), atktext("export", "atk", $this->m_node->m_type), SESSION_NESTED);
+            $link.= atkTools::href(dispatch_url($this->m_node->atkNodeType(), "export", array('atkfilter' => $filter)), atkTools::atktext("export", "atk", $this->m_node->m_type), SESSION_NESTED);
         }
         return $link;
     }
@@ -316,10 +316,10 @@ class atkAdminHandler extends atkActionHandler
             $label = $node->text("link_" . $node->m_type . "_add", null, "", "", true);
             if (empty($label)) {
                 // generic text
-                $label = atktext("add", "atk");
+                $label = atkTools::atktext("add", "atk");
             }
 
-            atkimport('atk.handlers.atkaddorcopyhandler');
+            atkTools::atkimport('atk.handlers.atkaddorcopyhandler');
             $add = $node->hasFlag(NF_ADD_DIALOG);
             $addorcopy = $node->hasFlag(NF_ADDORCOPY_DIALOG) &&
                 atkAddOrCopyHandler::hasCopyableRecords($node);
@@ -328,7 +328,7 @@ class atkAdminHandler extends atkActionHandler
             if ($add || $addorcopy) {
                 $action = $node->hasFlag(NF_ADDORCOPY_DIALOG) ? 'addorcopy' : 'add';
 
-                atkimport('atk.ui.atkdialog');
+                atkTools::atkimport('atk.ui.atkdialog');
                 $dialog = new atkDialog($node->atkNodeType(), $action, 'dialog');
                 $dialog->setModifierObject($node);
                 $dialog->setSessionStatus(SESSION_PARTIAL);
@@ -339,7 +339,7 @@ class atkAdminHandler extends atkActionHandler
 			    ';
             } elseif ($node->hasFlag(NF_ADD_LINK)) {
                 $addurl = $this->invoke('getAddUrl', $node);
-                return atkHref($addurl, $label, SESSION_NESTED);
+                return atkTools::atkHref($addurl, $label, SESSION_NESTED);
             }
         }
 
@@ -355,7 +355,7 @@ class atkAdminHandler extends atkActionHandler
     public function getAddUrl()
     {
         $node = atkGetNode($this->invoke('getAddNodeType'));
-        return atkSelf() . '?atknodetype=' . $node->atkNodeType() . '&atkaction=add';
+        return atkTools::atkSelf() . '?atknodetype=' . $node->atkNodeType() . '&atkaction=add';
     }
 
     /**
@@ -405,7 +405,7 @@ class atkAdminHandler extends atkActionHandler
 
         $attr = &$this->m_node->getAttribute($attribute);
         if ($attr == NULL) {
-            atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
+            atkTools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
             return '';
         }
 

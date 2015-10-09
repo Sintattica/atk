@@ -14,7 +14,7 @@
  * @version $Revision: 6309 $
  * $Id: class.atkfileattribute.inc 7137 2011-10-18 06:41:06Z sandy $
  */
-useattrib("atkattribute");
+atkTools::useattrib("atkattribute");
 
 /** flag(s) specific for the atkFileAttribute */
 /**
@@ -177,7 +177,7 @@ class atkFileAttribute extends atkAttribute
         $dirHandle = dir($this->m_dir);
         $file_arr = array();
         if (!$dirHandle) {
-            atkerror("Unable to open directory {$this->m_dir}");
+            atkTools::atkerror("Unable to open directory {$this->m_dir}");
             return array();
         }
 
@@ -220,8 +220,8 @@ class atkFileAttribute extends atkAttribute
         }
 
         if (!is_dir($this->m_dir) || !is_writable($this->m_dir)) {
-            atkwarning('atkFileAttribute: ' . $this->m_dir . ' does not exist or is not writeable');
-            return atktext("no_valid_directory", "atk") . ': ' . $this->m_dir;
+            atkTools::atkwarning('atkFileAttribute: ' . $this->m_dir . ' does not exist or is not writeable');
+            return atkTools::atktext("no_valid_directory", "atk") . ': ' . $this->m_dir;
         }
 
         $id = $fieldprefix . $this->fieldName();
@@ -252,7 +252,7 @@ class atkFileAttribute extends atkAttribute
                 $this->registerKeyListener($id . '_select', KB_CTRLCURSOR | KB_LEFTRIGHT);
                 $result .= '<select id="' . $id . '_select" name="' . $id . '[select]" ' . $onchange . ' class="form-control">';
                 // Add default option with value NULL
-                $result .= "<option value=\"\" selected>" . atktext('selection', 'atk');
+                $result .= "<option value=\"\" selected>" . atkTools::atktext('selection', 'atk');
                 while (list ($key, $val) = each($file_arr)) {
                     (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename'] == $val)
                                 ? $selected = "selected" : $selected = '';
@@ -268,7 +268,7 @@ class atkFileAttribute extends atkAttribute
 
         if (!$this->hasFlag(AF_FILE_NO_DELETE) && isset($record[$this->fieldname()]['orgfilename']) && $record[$this->fieldname()]['orgfilename'] != '') {
             $this->registerKeyListener($id . '_del', KB_CTRLCURSOR | KB_CURSOR);
-            $result .= '<br class="atkFileAttributeCheckboxSeparator"><input id="' . $id . '_del" type="checkbox" name="' . $id . '[del]" ' . $this->getCSSClassAttribute("atkcheckbox") . '>&nbsp;' . atktext("remove_current_file", "atk");
+            $result .= '<br class="atkFileAttributeCheckboxSeparator"><input id="' . $id . '_del" type="checkbox" name="' . $id . '[del]" ' . $this->getCSSClassAttribute("atkcheckbox") . '>&nbsp;' . atkTools::atktext("remove_current_file", "atk");
         }
         return $result;
     }
@@ -293,17 +293,17 @@ class atkFileAttribute extends atkAttribute
             if ($this->hasFlag(AF_FILE_PHYSICAL_DELETE)) {
                 $file = "";
                 if (isset($rec[$this->fieldName()]["postdel"]) && $rec[$this->fieldName()]["postdel"] != "") {
-                    atkdebug("postdel set");
+                    atkTools::atkdebug("postdel set");
                     $file = $rec[$this->fieldName()]["postdel"];
                 } else if (isset($rec[$this->fieldName()]["orgfilename"])) {
-                    atkdebug("postdel not set");
+                    atkTools::atkdebug("postdel not set");
                     $file = $rec[$this->fieldName()]["orgfilename"];
                 }
-                atkdebug("file is now " . $file);
+                atkTools::atkdebug("file is now " . $file);
                 if ($file != "" && file_exists($this->m_dir . $file)) {
                     unlink($this->m_dir . $file);
                 } else
-                    atkdebug("File doesn't exist anymore.");
+                    atkTools::atkdebug("File doesn't exist anymore.");
             }
 //        echo ':::::return leeg::::';
             return '';
@@ -316,7 +316,7 @@ class atkFileAttribute extends atkAttribute
                 if ($filename != "") {
                     $dirname = dirname($this->m_dir . $filename);
                     if (!$this->mkdir($dirname)) {
-                        atkerror("File could not be saved, unable to make directory '{$dirname}'");
+                        atkTools::atkerror("File could not be saved, unable to make directory '{$dirname}'");
                         return "";
                     }
 
@@ -324,7 +324,7 @@ class atkFileAttribute extends atkAttribute
                         $this->processFile($this->m_dir, $filename);
                         return $this->escapeSQL($filename);
                     } else {
-                        atkerror("File could not be saved, unable to copy file '{$rec[$this->fieldName()]["tmpfile"]}' to destination '{$this->m_dir}{$filename}'");
+                        atkTools::atkerror("File could not be saved, unable to copy file '{$rec[$this->fieldName()]["tmpfile"]}' to destination '{$this->m_dir}{$filename}'");
                         return "";
                     }
                 }
@@ -415,7 +415,7 @@ class atkFileAttribute extends atkAttribute
     function setAllowedFileTypes($types)
     {
         if (!is_array($types)) {
-            atkerror('atkFileAttribute::setAllowedFileTypes() Invalid types (types is not an array!');
+            atkTools::atkerror('atkFileAttribute::setAllowedFileTypes() Invalid types (types is not an array!');
             return false;
         }
         $this->m_allowedFileTypes = $types;
@@ -519,7 +519,7 @@ class atkFileAttribute extends atkAttribute
         $error = $record[$this->fieldName()]['error'];
         if ($error > 0) {
             $error_text = $this->fetchFileErrorType($error);
-            atkTriggerError($record, $this, $error_text, atktext($error_text, "atk"));
+            atkTools::triggerError($record, $this, $error_text, atkTools::atktext($error_text, "atk"));
         }
     }
 
@@ -577,7 +577,7 @@ class atkFileAttribute extends atkAttribute
             elseif (count($_FILES) == 0 || $_FILES[$postfiles_basename]["tmp_name"] == "none" || $_FILES[$postfiles_basename]["tmp_name"] == "") {
                 // No file to upload, then check if the select box is filled
                 if ($fileselected) {
-                    atkdebug("file selected!");
+                    atkTools::atkdebug("file selected!");
                     $filename = $rec[$this->fieldName()]["select"];
                     $orgfilename = $filename;
                     $postdel = '';
@@ -666,7 +666,7 @@ class atkFileAttribute extends atkAttribute
 
         $filename = isset($record[$this->fieldName()]["filename"]) ? $record[$this->fieldName()]["filename"]
                 : null;
-        atkdebug($this->fieldname() . " - File: $filename");
+        atkTools::atkdebug($this->fieldname() . " - File: $filename");
         $prev_type = Array("jpg", "jpeg", "gif", "tif", "png", "bmp", "htm",
             "html", "txt");  // file types for preview
         $imgtype_prev = Array("jpg", "jpeg", "gif", "png");  // types which are supported by GetImageSize
@@ -687,7 +687,7 @@ class atkFileAttribute extends atkAttribute
                 }
                 return '<img src="' . $this->m_url . $filename . '?b=' . $randval . '" alt="' . $filename . '">';
             } else {
-                return $filename . "(<font color=\"#ff0000\">" . atktext("file_not_exist", "atk") . "</font>)";
+                return $filename . "(<font color=\"#ff0000\">" . atkTools::atktext("file_not_exist", "atk") . "</font>)";
             }
         }
     }
@@ -765,7 +765,7 @@ class atkFileAttribute extends atkAttribute
         if ($this->m_filenameTpl == "") {
             $filename = $default;
         } else {
-            atkimport("atk.utils.atkstringparser");
+            atkTools::atkimport("atk.utils.atkstringparser");
             $parser = new atkStringParser($this->m_filenameTpl);
             $includes = $parser->getAttributes();
             $record = $this->m_ownerInstance->updateRecord($rec, $includes, array($this->fieldname()));
@@ -787,7 +787,7 @@ class atkFileAttribute extends atkAttribute
     function _filenameUnique($rec, $filename)
     {
         // check if there's another record using this same name. If so, (re)number the filename.
-        atkdebug("atkFileAttribute::_filenameUnique() -> unique check");
+        atkTools::atkdebug("atkFileAttribute::_filenameUnique() -> unique check");
 
         if ($dotPos = strrpos($filename, '.')) {
             $name = substr($filename, 0, strrpos($filename, '.'));
@@ -823,7 +823,7 @@ class atkFileAttribute extends atkAttribute
             // file name exists, so mangle it with a number.
             $filename = $name . "-" . ($max_count + 1) . $ext;
         }
-        atkdebug("atkFileAttribute::_filenameUnique() -> New filename = " . $filename);
+        atkTools::atkdebug("atkFileAttribute::_filenameUnique() -> New filename = " . $filename);
         return $filename;
     }
 

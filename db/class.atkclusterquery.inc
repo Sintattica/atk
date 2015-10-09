@@ -36,7 +36,7 @@ class atkClusterQuery
      */
     public function __construct()
     {
-        $this->m_query = atkGetDb()->createQuery();
+        $this->m_query = atkTools::atkGetDb()->createQuery();
     }
 
     ////////////////////////////// OVERLOADING METHODS //////////////////////////////

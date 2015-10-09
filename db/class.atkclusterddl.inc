@@ -36,7 +36,7 @@ class atkClusterDDL
      */
     public function __construct()
     {
-        $this->m_ddl = atkGetDb()->createDDL();
+        $this->m_ddl = atkTools::atkGetDb()->createDDL();
     }
 
     ////////////////////////////// OVERLOADING METHODS //////////////////////////////

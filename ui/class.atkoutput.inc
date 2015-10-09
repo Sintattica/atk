@@ -57,7 +57,7 @@ class atkOutput
     {
         static $s_instance = NULL;
         if ($s_instance == NULL) {
-            atkdebug("Created a new atkOutput instance");
+            atkTools::atkdebug("Created a new atkOutput instance");
             $s_instance = new atkOutput();
         }
         return $s_instance;
@@ -107,7 +107,7 @@ class atkOutput
      */
     public static function sendNoCacheHeaders()
     {
-        atkdebug("Sending no-cache headers (lmd: " . gmdate("D, d M Y H:i:s") . " GMT)");
+        atkTools::atkdebug("Sending no-cache headers (lmd: " . gmdate("D, d M Y H:i:s") . " GMT)");
         atkOutput::header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
         atkOutput::header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
         atkOutput::header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -139,17 +139,17 @@ class atkOutput
 
             // Set the content type and the character set (as defined in the language files)
             atkOutput::header("Content-Type: text/html; charset=" . ($charset == ""
-                        ? atkGetCharset() : $charset));
+                        ? atkTools::atkGetCharset() : $charset));
 
             $res = $this->m_content;
 
             if (count($g_error_msg) > 0) {
                 // send an mail report with errormessages..
                 // (even when display of errors is turned off)
-                mailreport();
+                atkTools::mailreport();
             }
 
-            $debugger = atkinstance('atk.utils.atkdebugger');
+            $debugger = atkTools::atkinstance('atk.utils.atkdebugger');
             $res .= $debugger->renderDebugAndErrorMessages();
         }
 

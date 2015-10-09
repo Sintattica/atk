@@ -43,8 +43,8 @@ class atkUI
      */
     function atkUI()
     {
-        $this->m_theme = &atkinstance("atk.ui.atktheme");
-        $this->m_smarty = &atkinstance("atk.ui.atksmarty");
+        $this->m_theme = &atkTools::atkinstance("atk.ui.atktheme");
+        $this->m_smarty = &atkTools::atkinstance("atk.ui.atksmarty");
     }
 
     /**
@@ -57,7 +57,7 @@ class atkUI
         static $s_instance = NULL;
 
         if ($s_instance == NULL) {
-            atkdebug("Creating a new atkUI instance");
+            atkTools::atkdebug("Creating a new atkUI instance");
             $s_instance = new atkUi();
         }
 
@@ -102,7 +102,7 @@ class atkUI
      */
     function renderTop($vars, $module = "")
     {
-        atkdebug("Using deprecated renderTop function, please install newer top.php from the atk/skel");
+        atkTools::atkdebug("Using deprecated renderTop function, please install newer top.php from the atk/skel");
         return $this->renderBox($vars, "top", $module);
     }
 
@@ -201,7 +201,7 @@ class atkUI
      */
     private function renderPhp($path, $vars)
     {
-        atkimport('atk.ui.atkphpview');
+        atkTools::atkimport('atk.ui.atkphpview');
         $view = new atkPHPView($path, $vars);
         return (string) $view;
     }
@@ -366,17 +366,17 @@ class atkUI
 
         $keys = array('title_' . $module . '_' . $wizardName,
             'title_' . $wizardName);
-        $wizardTitle = atktext($keys, NULL, "", "", true);
+        $wizardTitle = atkTools::atktext($keys, NULL, "", "", true);
 
         $keys = array('title_' . $module . '_' . $panelName . '_' . $action,
             'title_' . $panelName . '_' . $action);
 
-        $panelTitle = atktext($keys, NULL, "", "", true);
+        $panelTitle = atkTools::atktext($keys, NULL, "", "", true);
 
         if ($wizard->getWizardAction() !== 'finish')
-            $status = atktext("Step") . " " . ($wizard->m_currentPanelIndex + 1) . " " . atktext("of") . " " . count($wizard->m_panelList);
+            $status = atkTools::atktext("Step") . " " . ($wizard->m_currentPanelIndex + 1) . " " . atkTools::atktext("of") . " " . count($wizard->m_panelList);
         else
-            $status = atktext("finished");
+            $status = atkTools::atktext("finished");
         $label .= $wizardTitle . " - " . $panelTitle . " - " . $status;
 
         return $label;

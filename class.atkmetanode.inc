@@ -13,7 +13,7 @@
  * @version $Revision$
  * $Id$
  */
-atkimport("atk.atknode");
+atkTools::atkimport("atk.atknode");
 
 /**
  * The ATK Meta Node class.
@@ -143,7 +143,7 @@ class atkMetaNode extends atkNode
         if (!$this->isCacheable())
             return false;
 
-        atkimport('atk.utils.atktmpfile');
+        atkTools::atkimport('atk.utils.atktmpfile');
         $file = new atkTmpFile("meta/" . $this->getModule() . "/" . $this->getType() . ".php");
         $module = getModule($this->getModule());
         if ($file->exists() && ($module == null || !file_exists($module->getNodeFile($this->atkNodeType())) || filemtime($file->getPath()) > filemtime($module->getNodeFile($this->atkNodeType())))) {
@@ -162,7 +162,7 @@ class atkMetaNode extends atkNode
      */
     protected function _createPolicy()
     {
-        atkimport('atk.meta.atkmetapolicy');
+        atkTools::atkimport('atk.meta.atkmetapolicy');
         $policy = $this->getMetaOption('policy');
         return atkMetaPolicy::create($this, $policy);
     }

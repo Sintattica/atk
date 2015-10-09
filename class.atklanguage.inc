@@ -90,7 +90,7 @@ class atkLanguage
      */
     public function __construct()
     {
-        atkdebug("New instance made of atkLanguage");
+        atkTools::atkdebug("New instance made of atkLanguage");
     }
 
     /**
@@ -334,7 +334,7 @@ class atkLanguage
         $supportedlanguagesmodule = atkconfig('supported_languages_module');
         if (self::$s_supportedLanguages == null && $supportedlanguagesmodule) {
             $supportedlanguagesdir = atkLanguage::getInstance()->getLanguageDirForModule($supportedlanguagesmodule);
-            atkimport('atk.utils.atkdirectorytraverser');
+            atkTools::atkimport('atk.utils.atkdirectorytraverser');
             $supportedlanguagescollector = new getSupportedLanguagesCollector();
             $traverser = new atkDirectoryTraverser();
             $traverser->addCallbackObject($supportedlanguagescollector);
@@ -427,7 +427,7 @@ class atkLanguage
 
         if (!$nodefaulttext) {
             if (atkconfig("debug_translations", false))
-                atkdebug("atkLanguage: translation for '$key' with module: '$module' and node: '$node' and language: '$lng' not found, returning default text");
+                atkTools::atkdebug("atkLanguage: translation for '$key' with module: '$module' and node: '$node' and language: '$lng' not found, returning default text");
 
             // Still nothing found. return default string
             return $this->defaultText($key);

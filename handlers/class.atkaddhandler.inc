@@ -167,7 +167,7 @@ class atkAddHandler extends atkActionHandler
         $ui = &$node->getUi();
 
         if (!is_object($ui)) {
-            atkerror("ui object failure");
+            atkTools::atkerror("ui object failure");
             return false;
         }
 
@@ -212,7 +212,7 @@ class atkAddHandler extends atkActionHandler
             ' method="post" onsubmit="return globalSubmit(this,false)">';
 
 
-        $formstart .= session_form(SESSION_NESTED, $this->getReturnBehaviour(), $node->getEditFieldPrefix());
+        $formstart .= atkTools::session_form(SESSION_NESTED, $this->getReturnBehaviour(), $node->getEditFieldPrefix());
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkaction" value="' . $this->getSaveAction() . '" />';
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkprevaction" value="' . $this->getNode()->m_action . '" />';
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkcsrftoken" value="' . $this->getCSRFToken() . '" />';
@@ -257,7 +257,7 @@ class atkAddHandler extends atkActionHandler
     {
         $node = &$this->m_node;
         $forceList = array();
-        $filterList = (isset($node->m_postvars['atkfilter'])) ? decodeKeyValueSet($node->m_postvars['atkfilter'])
+        $filterList = (isset($node->m_postvars['atkfilter'])) ? atkTools::decodeKeyValueSet($node->m_postvars['atkfilter'])
                 : array();
         foreach ($filterList as $field => $value) {
             list($table, $column) = explode('.', $field);
@@ -344,7 +344,7 @@ class atkAddHandler extends atkActionHandler
 
         $attr = &$this->m_node->getAttribute($attribute);
         if ($attr == NULL) {
-            atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
+            atkTools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
             return '';
         }
 
@@ -356,7 +356,7 @@ class atkAddHandler extends atkActionHandler
      */
     function partial_sectionstate()
     {
-        atkimport("atk.session.atkstate");
+        atkTools::atkimport("atk.session.atkstate");
         atkState::set(array("nodetype" => $this->m_node->atknodetype(), "section" => $this->m_postvars['atksectionname']), $this->m_postvars['atksectionstate']);
     }
 
@@ -394,7 +394,7 @@ class atkAddHandler extends atkActionHandler
         if ($this->m_dialogSaveUrl != null) {
             return $this->m_dialogSaveUrl;
         } else {
-            return partial_url($this->m_node->atkNodeType(), 'save', 'dialog');
+            return atkTools::partial_url($this->m_node->atkNodeType(), 'save', 'dialog');
         }
     }
 

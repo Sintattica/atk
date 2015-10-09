@@ -95,7 +95,7 @@ class atkdb2db extends atkDb
             case 2004:
             case 2005: return DB_UNKNOWNHOST;
             default:
-                atkdebug("mysqldb::translateError -> MySQL Error: " .
+                atkTools::atkdebug("mysqldb::translateError -> MySQL Error: " .
                     $this->m_errno . " -> " . $this->m_error);
                 return DB_UNKNOWNERROR;
         }
@@ -123,7 +123,7 @@ class atkdb2db extends atkDb
     function disconnect()
     {
         if ($this->m_link_id) {
-            atkdebug("Disconnecting from database...");
+            atkTools::atkdebug("Disconnecting from database...");
             @db2_close($this->m_link_id);
             $this->m_link_id = 0;
         }
@@ -139,12 +139,12 @@ class atkdb2db extends atkDb
      */
     function query($query, $offset = -1, $limit = -1)
     {
-        atkimport("atk.utils.atkdebugger");
-        atkdebug("In query dinges");
-        atkdebug("Query:" . $query);
-        atkdebug("Query added to debugger...");
+        atkTools::atkimport("atk.utils.atkdebugger");
+        atkTools::atkdebug("In query dinges");
+        atkTools::atkdebug("Query:" . $query);
+        atkTools::atkdebug("Query added to debugger...");
 
-        atkdebug("atkdb2db::query -> connect with mode = $mode");
+        atkTools::atkdebug("atkdb2db::query -> connect with mode = $mode");
 
         /* connect to database */
         if ($this->connect($mode) == DB_SUCCESS) {
@@ -215,7 +215,7 @@ class atkdb2db extends atkDb
      */
     function seek($position = 0)
     {
-        atkerror("Seek not (yet) implemented for db2 driver");
+        atkTools::atkerror("Seek not (yet) implemented for db2 driver");
     }
 
     /**
@@ -234,7 +234,7 @@ class atkdb2db extends atkDb
         if ($this->connect("w") == DB_SUCCESS) {
             $query = "LOCK TABLE $table IN " . ($mode == "write" ? "EXCLUSIVE" : "SHARE") . " MODE";
 
-            atkimport("atk.utils.atkdebugger");
+            atkTools::atkimport("atk.utils.atkdebugger");
             atkDebugger::addQuery($query);
 
             /* lock */
@@ -352,7 +352,7 @@ class atkdb2db extends atkDb
      */
     function _getTableType($table)
     {
-        atkerror("_getTableType not implemented yet for db2 database");
+        atkTools::atkerror("_getTableType not implemented yet for db2 database");
     }
 
     /**
@@ -424,7 +424,7 @@ class atkdb2db extends atkDb
      */
     function table_names()
     {
-        atkerror("table_names for atkdb2db not implemented yet!");
+        atkTools::atkerror("table_names for atkdb2db not implemented yet!");
         /* query */
         $this->query("SHOW TABLES"); // not sure if this is the right syntax for db2?
 

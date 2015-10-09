@@ -14,7 +14,7 @@
  * @version $Revision: 6305 $
  * $Id: class.atklistattribute.inc 7126 2011-05-26 22:33:22Z ijansch $
  */
-atkimport("atk.attributes.atkattribute");
+atkTools::atkimport("atk.attributes.atkattribute");
 
 /**
  * Do not translate the options
@@ -136,7 +136,7 @@ class atkListAttribute extends atkAttribute
         // If no size is specified, the max size we have is equal to the biggest value.
         if ($size == 0) {
             for ($i = 0, $_i = count($valueArray); $i < $_i; $i ++) {
-                $size = max($size, atk_strlen($valueArray[$i]));
+                $size = max($size, atkTools::atk_strlen($valueArray[$i]));
             }
         }
 
@@ -288,7 +288,7 @@ class atkListAttribute extends atkAttribute
         $result.=$this->_addEmptyListOption();
 
         $values = $this->getValues($record);
-        $recvalue = atkArrayNvl($record, $this->fieldName());
+        $recvalue = atkTools::atkArrayNvl($record, $this->fieldName());
 
         for ($i = 0; $i < count($values); $i ++) {
             // If the current value is selected or occurs in the record
@@ -329,7 +329,7 @@ class atkListAttribute extends atkAttribute
             // CONFIG IS DEPRECATED
             ((atkconfig("list_obligatory_null_item") && !$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM)) ||
             ($this->hasFlag(AF_LIST_OBLIGATORY_NULL_ITEM))))) {
-            $ret = '<option value="' . $this->m_emptyvalue . '">' . atk_htmlentities($this->text(array(
+            $ret = '<option value="' . $this->m_emptyvalue . '">' . atkTools::atk_htmlentities($this->text(array(
                         $this->fieldName() . '_' . $text_key, $text_key))) . '</option>';
         }
         return $ret;
@@ -404,11 +404,11 @@ class atkListAttribute extends atkAttribute
                 $sel = "";
             }
         }
-        $result .= '<option value="" ' . $sel . '>' . atktext('search_all');
+        $result .= '<option value="" ' . $sel . '>' . atkTools::atktext('search_all');
 
         foreach ($values AS $value) {
 
-            if (atk_in_array(((string) $value), $selValues, true) && $selValues !== "") {
+            if (atkTools::atk_in_array(((string) $value), $selValues, true) && $selValues !== "") {
                 $sel = "selected";
             } else {
                 $sel = "";
@@ -582,7 +582,7 @@ class atkListAttribute extends atkAttribute
             if (strtolower($stringvalue) == strtolower($option))
                 return $values[$i];
 
-            if (strtolower(atktext($stringvalue)) == strtolower($option))
+            if (strtolower(atkTools::atktext($stringvalue)) == strtolower($option))
                 return $values[$i];
             $i ++;
         }

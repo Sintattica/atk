@@ -31,7 +31,7 @@ include_once($config_atkroot . "atk/include/initial.inc");
 atksession();
 atksecure();
 
-$debugger = &atkinstance("atk.utils.atkdebugger");
+$debugger = &atkTools::atkinstance("atk.utils.atkdebugger");
 
 $output = &atkOutput::getInstance();
 

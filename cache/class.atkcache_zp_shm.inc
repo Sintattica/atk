@@ -17,7 +17,7 @@
  * @version $Revision: 5898 $
  * $Id$
  */
-atkimport("atk.cache.atkcache");
+atkTools::atkimport("atk.cache.atkcache");
 
 class atkCache_zp_shm extends atkCache
 {

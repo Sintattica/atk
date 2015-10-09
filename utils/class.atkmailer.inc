@@ -48,7 +48,7 @@ class atkMailer extends PHPMailer
      */
     public function __construct()
     {
-        $charset = strtoupper(atkGetCharset());
+        $charset = strtoupper(atkTools::atkGetCharset());
         $this->CharSet = ($charset ? $charset : $this->CharSet);
     }
 
@@ -59,7 +59,7 @@ class atkMailer extends PHPMailer
      */
     function error_handler($msg)
     {
-        atkerror($msg);
+        atkTools::atkerror($msg);
     }
 
     /**
@@ -105,8 +105,8 @@ class atkMailer extends PHPMailer
             if ($i > 0)
                 $str .= ', ';
             $str .= ($ishtml ? htmlentities($recipient[0]) : $recipient[0]);
-            if (atk_strlen($recipient['1']) > 0)
-                $str .= ' (' . ($ishtml ? atk_htmlentities($recipient[1]) : $recipient[1]) . ')';
+            if (atkTools::atk_strlen($recipient['1']) > 0)
+                $str .= ' (' . ($ishtml ? atkTools::atk_htmlentities($recipient[1]) : $recipient[1]) . ')';
         }
         return $str;
     }

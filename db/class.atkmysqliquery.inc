@@ -92,7 +92,7 @@ class atkMysqliQuery extends atkMysqlQuery
 
         for ($i = 0; $i < count($this->m_fields); $i++) {
             if (($this->m_values[$this->m_fields[$i]] === "''") and ($this->m_db->m_tableMeta[$this->m_tables[0]][$this->m_fields[$i]]["type"] == "int")) {
-                atkdebug("atkMysqliQuery::buildInsert() : '' transformed in '0' for MySQL5 compatibility in field '" . $this->m_fields[$i] . "'");
+                atkTools::atkdebug("atkMysqliQuery::buildInsert() : '' transformed in '0' for MySQL5 compatibility in field '" . $this->m_fields[$i] . "'");
                 $result.= "'0'";
             } else {
                 $result.= $this->m_values[$this->m_fields[$i]];
@@ -120,7 +120,7 @@ class atkMysqliQuery extends atkMysqlQuery
     public function addSequenceField($fieldName, &$value, $seqName = null)
     {
         $meta = $this->getDb()->tableMeta($this->m_tables[0]);
-        if (!hasFlag($meta[$fieldName]['flags'], MF_AUTO_INCREMENT)) {
+        if (!atkTools::hasFlag($meta[$fieldName]['flags'], MF_AUTO_INCREMENT)) {
             return parent::addSequenceField($fieldName, $value, $seqName);
         }
 
@@ -141,7 +141,7 @@ class atkMysqliQuery extends atkMysqlQuery
 
         if ($result && $this->m_returnSeqValue) {
             $this->m_seqValue = $this->getDb()->getInsertId();
-            atkdebug("Value for sequence column {$this->m_tables[0]}.{$this->m_seqField}: {$this->m_seqValue}");
+            atkTools::atkdebug("Value for sequence column {$this->m_tables[0]}.{$this->m_seqField}: {$this->m_seqValue}");
         }
 
         return $result;

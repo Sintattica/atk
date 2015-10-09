@@ -17,7 +17,7 @@
 /**
  * Base include
  */
-atkimport("atk.db.atkquery");
+atkTools::atkimport("atk.db.atkquery");
 
 /**
  * Query build for Oracle 8i databases.
@@ -84,7 +84,7 @@ class atkOci8Query extends atkQuery
         }
 
         if ($value[0] == '!') {
-            return "(SELECT UPPER((" . $field . ")) FROM dual) NOT LIKE '%" . strtoupper(substr($value, 1, atk_strlen($value))) . "%'";
+            return "(SELECT UPPER((" . $field . ")) FROM dual) NOT LIKE '%" . strtoupper(substr($value, 1, atkTools::atk_strlen($value))) . "%'";
         } else {
             return "(SELECT UPPER((" . $field . ")) FROM dual) LIKE '%" . strtoupper($value) . "%'";
         }

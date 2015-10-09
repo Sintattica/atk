@@ -77,7 +77,7 @@ class atkFormatAttribute extends atkAttribute
         for ($i = 0, $j = 0, $_i = count($elems); $i < $_i; $i++) {
             if ($elems[$i]['type'] != '/') {
                 if (!$this->_checkString($elems[$i]['type'], $values[$j])) {
-                    triggerError($record, $this->fieldName(), 'err', $this->_formatErrorString(($j + 1), str_repeat($elems[$i]['type'], $elems[$i]['size'])));
+                    atkTools::triggerError($record, $this->fieldName(), 'err', $this->_formatErrorString(($j + 1), str_repeat($elems[$i]['type'], $elems[$i]['size'])));
                 }
                 $j++;
             }
@@ -122,7 +122,7 @@ class atkFormatAttribute extends atkAttribute
      */
     function _formatErrorString($pos, $specifier)
     {
-        return sprintf(atktext('error_format_mismatch', 'atk', $this->m_owner), $pos, $specifier);
+        return sprintf(atkTools::atktext('error_format_mismatch', 'atk', $this->m_owner), $pos, $specifier);
     }
 
     /**

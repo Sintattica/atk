@@ -17,7 +17,7 @@
 /**
  * Base include
  */
-atkimport("atk.db.atkquery");
+atkTools::atkimport("atk.db.atkquery");
 
 /**
  * A mock query abstraction.

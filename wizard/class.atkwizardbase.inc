@@ -15,7 +15,7 @@
  * @version $Revision: 6309 $
  * $Id$
  */
-atkimport("atk.atkcontroller");
+atkTools::atkimport("atk.atkcontroller");
 
 /**
  * atkWizard class which is capable of using atknodes
@@ -70,9 +70,9 @@ class atkWizardBase extends atkController
                     $atkwizardaction = "next";
 
                 if ($this->showFinishButton())
-                    $result[] = '<input type="submit" class="btn_next" name="atkwizardaction[finish]" value="' . atktext("finish", "atk") . '">';
+                    $result[] = '<input type="submit" class="btn_next" name="atkwizardaction[finish]" value="' . atkTools::atktext("finish", "atk") . '">';
                 else
-                    $result[] = '<input type="submit" class="btn_next" name="atkwizardaction[' . $atkwizardaction . ']" value="' . atktext("next", "atk") . '">';
+                    $result[] = '<input type="submit" class="btn_next" name="atkwizardaction[' . $atkwizardaction . ']" value="' . atkTools::atktext("next", "atk") . '">';
             }
             else {
                 //if we explicitly don't want the finish button we set a hidden var to post the atkwizardaction
@@ -81,21 +81,21 @@ class atkWizardBase extends atkController
                 else
                     $atkwizardaction = "saveandnext";
 
-                $result[] = '<input type="submit" class="btn_next" name="atkwizardaction[saveandaddnew]" value="' . atktext("saveandaddnew", "atk") . '">';
+                $result[] = '<input type="submit" class="btn_next" name="atkwizardaction[saveandaddnew]" value="' . atkTools::atktext("saveandaddnew", "atk") . '">';
                 if ($this->showFinishButton())
-                    $result[] = '<input type="submit" class="btn_next" name="atkwizardaction[finish]" value="' . atktext("finish", "atk") . '">';
+                    $result[] = '<input type="submit" class="btn_next" name="atkwizardaction[finish]" value="' . atkTools::atktext("finish", "atk") . '">';
                 else
-                    $result[] = '<input type="submit" class="btn_next" name="atkwizardaction[' . $atkwizardaction . ']" value="' . atktext("saveandnext", "atk") . '">';
+                    $result[] = '<input type="submit" class="btn_next" name="atkwizardaction[' . $atkwizardaction . ']" value="' . atkTools::atktext("saveandnext", "atk") . '">';
             }
 
-            $result[] = '<input type="submit" class="btn_cancel" name="atkwizardcancel" value="' . atktext("cancel", "atk") . '">';
+            $result[] = '<input type="submit" class="btn_cancel" name="atkwizardcancel" value="' . atkTools::atktext("cancel", "atk") . '">';
         }
         elseif ($this->m_mode == WIZARD_MODE_EDIT) {
             // We post the action as key value in de atkwizardaction var. Therefor
             // we have to convert the atkwizardaction value in atkWizard::start().        
-            $result[] = '<input type="submit" class="btn_save" name="atknoclose" value="' . atktext("save", "atk") . '">';
-            $result[] = '<input type="submit" class="btn_next" name="atkwizardaction[finish]" value="' . atktext("finish", "atk") . '">';
-            $result[] = '<input type="submit" class="btn_cancel" name="atkcancel" value="' . atktext("cancel", "atk") . '">';
+            $result[] = '<input type="submit" class="btn_save" name="atknoclose" value="' . atkTools::atktext("save", "atk") . '">';
+            $result[] = '<input type="submit" class="btn_next" name="atkwizardaction[finish]" value="' . atkTools::atktext("finish", "atk") . '">';
+            $result[] = '<input type="submit" class="btn_cancel" name="atkcancel" value="' . atkTools::atktext("cancel", "atk") . '">';
         } else {
             $result = parent::getFormButtons($action, $record);
         }

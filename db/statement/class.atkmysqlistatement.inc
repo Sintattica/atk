@@ -14,7 +14,7 @@
  * @version $Revision$
  * $Id$
  */
-atkimport('atk.db.statement.atkstatement');
+atkTools::atkimport('atk.db.statement.atkstatement');
 
 /**
  * MySQLi statement implementation.
@@ -57,7 +57,7 @@ class atkMySQLiStatement extends atkStatement
         }
 
         $conn = $this->getDb()->link_id();
-        atkdebug("Prepare query: " . $this->_getParsedQuery());
+        atkTools::atkdebug("Prepare query: " . $this->_getParsedQuery());
         $this->m_stmt = $conn->prepare($this->_getParsedQuery());
         if (!$this->m_stmt || $conn->errno) {
             throw new atkStatementException("Cannot prepare statement (ERROR: {$conn->errno} - {$conn->error}).", atkStatementException::PREPARE_STATEMENT_ERROR);
@@ -95,7 +95,7 @@ class atkMySQLiStatement extends atkStatement
         $args = array();
         $args[] = str_repeat('s', count($this->_getBindPositions()));
         foreach ($this->_getBindPositions() as $param) {
-            atkdebug("Bind param {$i}: " . ($params[$param] === null ? 'NULL' : $params[$param]));
+            atkTools::atkdebug("Bind param {$i}: " . ($params[$param] === null ? 'NULL' : $params[$param]));
             $args[] = &$params[$param];
             $i++;
         }
@@ -161,7 +161,7 @@ class atkMySQLiStatement extends atkStatement
     protected function _execute($params)
     {
         if (atkconfig("debug") >= 0) {
-            atkimport("atk.utils.atkdebugger");
+            atkTools::atkimport("atk.utils.atkdebugger");
             atkDebugger::addQuery($this->_getParsedQuery(), false);
         }
 

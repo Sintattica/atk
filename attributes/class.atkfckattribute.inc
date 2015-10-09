@@ -18,7 +18,7 @@
 /**
  * @internal include baseclass.
  */
-useattrib("atktextattribute");
+atkTools::useattrib("atktextattribute");
 
 /**
  * The atkFckAttribute is a 'wysiwyg' text editor.
@@ -91,7 +91,7 @@ class atkFckAttribute extends atkTextAttribute
      */
     function display($record = "", $mode = "")
     {
-        return atkArrayNvl($record, $this->fieldName(), "");
+        return atkTools::atkArrayNvl($record, $this->fieldName(), "");
     }
 
     /**

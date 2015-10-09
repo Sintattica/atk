@@ -22,7 +22,7 @@
 /** @internal some defines */
 global $ATK_VARS;
 $id = (int) $ATK_VARS["id"];
-$message = atktext("lock_expired");
+$message = atkTools::atktext("lock_expired");
 $stack = $ATK_VARS["stack"];
 ?>
 var atkLock = new Object();
@@ -101,7 +101,7 @@ atkLockUnlock();
 */
 function atkLockCheck()
 {
-var sURI = '<?php echo session_url('include.php?file=atk/lock/lock.php&type=xml&stack=' . $stack); ?>&id=' + atkLock.theIdentifier + '&sequence=' + atkLock.theSequence;
+var sURI = '<?php echo atkTools::session_url('include.php?file=atk/lock/lock.php&type=xml&stack=' . $stack); ?>&id=' + atkLock.theIdentifier + '&sequence=' + atkLock.theSequence;
 
 if (atkLock.type == 'xml')
 {
@@ -122,7 +122,7 @@ else
 {
 var image = new Image();
 image.onerror = atkLockUnlock;
-image.src = '<?php echo session_url('include.php?file=atk/lock/lock.php&type=image&stack=' . $stack); ?>&id=' + atkLock.theIdentifier + '&sequence=' + atkLock.theSequence;
+image.src = '<?php echo atkTools::session_url('include.php?file=atk/lock/lock.php&type=image&stack=' . $stack); ?>&id=' + atkLock.theIdentifier + '&sequence=' + atkLock.theSequence;
 }
 }
 

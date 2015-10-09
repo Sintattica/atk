@@ -116,7 +116,7 @@ abstract class atkDGComponent
      */
     protected function getTheme()
     {
-        return atkinstance("atk.ui.atktheme");
+        return atkTools::atkinstance("atk.ui.atktheme");
     }
 
     /**

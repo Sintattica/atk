@@ -18,7 +18,7 @@
  * include
  */
 include_once(atkconfig("atkroot") . "atk/atkbrowsertools.inc");
-atkimport("atk.attributes.atkattribute");
+atkTools::atkimport("atk.attributes.atkattribute");
 
 /**
  * The atkTextAttribute class represents an attribute of a node
@@ -267,7 +267,7 @@ class atkTextAttribute extends atkAttribute
     {
         $browser = new browserInfo;
         $maxlinechars = 0;
-        for ($counter = 0, $linecharacters = 0, $rowsrequired = 1; $counter < atk_strlen($data); $counter++, $linecharacters++) {
+        for ($counter = 0, $linecharacters = 0, $rowsrequired = 1; $counter < atkTools::atk_strlen($data); $counter++, $linecharacters++) {
             // Current character we are parsing
             $character = substr($data, $counter, 1);
 

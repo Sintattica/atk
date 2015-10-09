@@ -177,7 +177,7 @@ class atkQuery
     public function getDb()
     {
         if (!isset($this->m_db)) {
-            $this->m_db = atkGetDb();
+            $this->m_db = atkTools::atkGetDb();
         }
 
         return $this->m_db;
@@ -747,7 +747,7 @@ class atkQuery
             return self::exactNumberCondition($field, $value);
 
         if ($value[0] == '!') {
-            return "UPPER(" . $field . ")!=UPPER('" . substr($value, 1, atk_strlen($value)) . "')";
+            return "UPPER(" . $field . ")!=UPPER('" . substr($value, 1, atkTools::atk_strlen($value)) . "')";
         } else {
             return "UPPER(" . $field . ")=UPPER('" . $value . "')";
         }
@@ -774,7 +774,7 @@ class atkQuery
     function substringCondition($field, $value)
     {
         if ($value[0] == '!') {
-            return "UPPER(" . $field . ") NOT LIKE UPPER('%" . substr($value, 1, atk_strlen($value)) . "%')";
+            return "UPPER(" . $field . ") NOT LIKE UPPER('%" . substr($value, 1, atkTools::atk_strlen($value)) . "%')";
         } else {
             return "UPPER(" . $field . ") LIKE UPPER('%" . $value . "%')";
         }
@@ -789,7 +789,7 @@ class atkQuery
     function wildcardCondition($field, $value)
     {
         if ($value[0] == '!') {
-            return "UPPER(" . $field . ") NOT LIKE UPPER('" . str_replace("*", "%", substr($value, 1, atk_strlen($value))) . "')";
+            return "UPPER(" . $field . ") NOT LIKE UPPER('" . str_replace("*", "%", substr($value, 1, atkTools::atk_strlen($value))) . "')";
         } else {
             return "UPPER(" . $field . ") LIKE UPPER('" . str_replace("*", "%", $value) . "')";
         }
@@ -804,7 +804,7 @@ class atkQuery
     function greaterthanCondition($field, $value)
     {
         if ($value[0] == '!') {
-            return $field . " < '" . substr($value, 1, atk_strlen($value)) . "'";
+            return $field . " < '" . substr($value, 1, atkTools::atk_strlen($value)) . "'";
         } else {
             return $field . " > '" . $value . "'";
         }
@@ -819,7 +819,7 @@ class atkQuery
     function greaterthanequalCondition($field, $value)
     {
         if ($value[0] == '!') {
-            return $field . " < '" . substr($value, 1, atk_strlen($value)) . "'";
+            return $field . " < '" . substr($value, 1, atkTools::atk_strlen($value)) . "'";
         } else {
             return $field . " >= '" . $value . "'";
         }
@@ -834,7 +834,7 @@ class atkQuery
     function lessthanCondition($field, $value)
     {
         if ($value[0] == '!') {
-            return $field . " > '" . substr($value, 1, atk_strlen($value)) . "'";
+            return $field . " > '" . substr($value, 1, atkTools::atk_strlen($value)) . "'";
         } else {
             return $field . " < '" . $value . "'";
         }
@@ -849,7 +849,7 @@ class atkQuery
     function lessthanequalCondition($field, $value)
     {
         if ($value[0] == '!') {
-            return $field . " > '" . substr($value, 1, atk_strlen($value)) . "'";
+            return $field . " > '" . substr($value, 1, atkTools::atk_strlen($value)) . "'";
         } else {
             return $field . " <= '" . $value . "'";
         }
@@ -882,7 +882,7 @@ class atkQuery
     {
         $dbconfig = atkconfig("db");
         $name = "atk" . $dbconfig["default"]["driver"] . "query";
-        return atknew(($basepath ? $basepath . '.' : '') . $name);
+        return atkTools::atknew(($basepath ? $basepath . '.' : '') . $name);
     }
 
     /**

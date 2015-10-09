@@ -53,7 +53,7 @@ class atkTheme
     function atkTheme()
     {
         global $g_theme;
-        atkdebug("Created a new atkTheme instance");
+        atkTools::atkdebug("Created a new atkTheme instance");
         if (isset($g_theme["Name"]) && $g_theme["Name"] != "") {
             $this->m_name = $g_theme["Name"];
         } else {
@@ -102,7 +102,7 @@ class atkTheme
         if (!count($this->m_theme)) {
             $filename = atkconfig("atktempdir") . "themes/" . $this->m_name . ".inc";
             if (!file_exists($filename) || atkconfig("force_theme_recompile")) {
-                $compiler = & atknew("atk.ui.atkthemecompiler");
+                $compiler = & atkTools::atknew("atk.ui.atkthemecompiler");
                 $compiler->compile($this->m_name);
             }
             include($filename);

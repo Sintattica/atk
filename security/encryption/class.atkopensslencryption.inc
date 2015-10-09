@@ -54,7 +54,7 @@ class atkOpenSSLEncryption extends atkEncryption
         if ($key)
             openssl_public_encrypt($input, $encrypted, $key);
         else
-            atkerror("atkOpenSSLEncryption::encrypt << not a valid key passed");
+            atkTools::atkerror("atkOpenSSLEncryption::encrypt << not a valid key passed");
 
         return $this->stripbackslashes($encrypted);
     }
@@ -72,7 +72,7 @@ class atkOpenSSLEncryption extends atkEncryption
         $key = openssl_get_privatekey($keys['private']);
 
         if ($key)
-            atkerror("atkOpenSSLEncryption::decrypt << not a valid key passed");
+            atkTools::atkerror("atkOpenSSLEncryption::decrypt << not a valid key passed");
         else {
             echo "decrypt for: input:$input, decrypted: $decrypted, key: $key";
             openssl_private_decrypt($input, $decrypted, $key);

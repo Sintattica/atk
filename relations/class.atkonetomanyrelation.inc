@@ -17,7 +17,7 @@
 /**
  * @internal Include base class.
  */
-userelation("atkrelation");
+atkTools::userelation("atkrelation");
 
 /**
  * Only allow deletion of master item when there are no child records
@@ -191,7 +191,7 @@ class atkOneToManyRelation extends atkRelation
     public function addFlag($flag)
     {
         $ret = parent::addFlag($flag);
-        if (hasFlag($this->m_flags, AF_ONETOMANY_SHOW_ADD)) {
+        if (atkTools::hasFlag($this->m_flags, AF_ONETOMANY_SHOW_ADD)) {
             $this->removeFlag(AF_HIDE_ADD);
         }
         return $ret;
@@ -269,7 +269,7 @@ class atkOneToManyRelation extends atkRelation
     {
         $this->createDestination();
 
-        atkimport('atk.datagrid.atkdatagrid');
+        atkTools::atkimport('atk.datagrid.atkdatagrid');
         $grid = atkDataGrid::create($this->m_destInstance, str_replace('.', '_', $this->getOwnerInstance()->atkNodeType()) . '_' . $this->fieldName() . '_grid', null, true, $useSession);
 
         $grid->setMode($mode);
@@ -283,7 +283,7 @@ class atkOneToManyRelation extends atkRelation
             $grid->removeFlag(atkDataGrid::LOCKING);
         }
 
-        $grid->setBaseUrl(partial_url($this->getOwnerInstance()->atkNodeType(), $action, 'attribute.' . $this->fieldName() . '.grid'));
+        $grid->setBaseUrl(atkTools::partial_url($this->getOwnerInstance()->atkNodeType(), $action, 'attribute.' . $this->fieldName() . '.grid'));
 
         $grid->setExcludes($this->getGridExcludes());
 
@@ -307,7 +307,7 @@ class atkOneToManyRelation extends atkRelation
         $this->createDestination();
         $node = $this->getDestination();
 
-        atkimport('atk.datagrid.atkdatagrid');
+        atkTools::atkimport('atk.datagrid.atkdatagrid');
         try {
             $grid = atkDataGrid::resume($node);
             $this->modifyDataGrid($grid, atkDataGrid::RESUME);
@@ -369,7 +369,7 @@ class atkOneToManyRelation extends atkRelation
 
             $actions = array();
             if (!$this->m_destInstance->hasFlag(NF_NO_VIEW)) {
-                $actions['view'] = dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $this->m_destinationFilter));
+                $actions['view'] = atkTools::dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $this->m_destinationFilter));
             }
 
             $grid->setDefaultActions($actions);
@@ -421,7 +421,7 @@ class atkOneToManyRelation extends atkRelation
      */
     public function edit($record = "", $fieldprefix = "", $mode = '')
     {
-        $page = &atkinstance('atk.ui.atkpage');
+        $page = &atkTools::atkinstance('atk.ui.atkpage');
         $page->register_script(atkconfig("atkroot") . "atk/javascript/tools.js");
         $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atkonetomanyrelation.js");
 
@@ -507,10 +507,10 @@ class atkOneToManyRelation extends atkRelation
     function _getEmbeddedButtons()
     {
         $fname = $this->fieldName();
-        $output.='<input type="submit" class="btn btn-default otm_add" name="' . $fname . '_save" value="' . atktext("add") . '">';
+        $output.='<input type="submit" class="btn btn-default otm_add" name="' . $fname . '_save" value="' . atkTools::atktext("add") . '">';
         return $output . '<input type="button" onClick="toggleAddForm(\'' . $fname . "_integrated',
                                                                '" . $fname . "_integrated_link');\"
-                                       class=\"btn btn-default otm_add\" name=\"" . $fname . "_cancel\" value=\"" . atktext("cancel") . '">';
+                                       class=\"btn btn-default otm_add\" name=\"" . $fname . "_cancel\" value=\"" . atkTools::atktext("cancel") . '">';
     }
 
     /**
@@ -538,7 +538,7 @@ class atkOneToManyRelation extends atkRelation
         if ($is_addorcopy_mode) {
             $filter = $this->getAddFilterString($record);
 
-            atkimport('atk.handlers.atkaddorcopyhandler');
+            atkTools::atkimport('atk.handlers.atkaddorcopyhandler');
             $showDialog = atkAddOrCopyHandler::hasCopyableRecords($this->m_destInstance, $filter);
 
             if ($showDialog) {
@@ -609,7 +609,7 @@ class atkOneToManyRelation extends atkRelation
      */
     function _getDialogAddLink($record, $action, $params = array())
     {
-        atkimport("atk.ui.atkdialog");
+        atkTools::atkimport("atk.ui.atkdialog");
 
         $ui = &$this->m_ownerInstance->getUi();
 
@@ -659,7 +659,7 @@ class atkOneToManyRelation extends atkRelation
         $add_url = $this->getAddURL($params);
         $label = $this->getAddLabel();
 
-        return href($add_url, $label, SESSION_NESTED, $saveform, $onchange . ' class="atkonetomanyrelation"');
+        return atkTools::href($add_url, $label, SESSION_NESTED, $saveform, $onchange . ' class="atkonetomanyrelation"');
     }
 
     /**
@@ -720,7 +720,7 @@ class atkOneToManyRelation extends atkRelation
 
     protected function getAddURL($params = array())
     {
-        return dispatch_url($this->m_destination, "add", $params);
+        return atkTools::dispatch_url($this->m_destination, "add", $params);
     }
 
     /**
@@ -933,7 +933,7 @@ class atkOneToManyRelation extends atkRelation
         if (!$this->createDestination())
             return false;
 
-        atkimport('atk.session.atksessionstore');
+        atkTools::atkimport('atk.session.atksessionstore');
         $rows = atkSessionStore::getInstance($this->getSessionStoreKey())->getData();
 
         foreach ($rows as $row) {
@@ -1240,7 +1240,7 @@ class atkOneToManyRelation extends atkRelation
             if ($where) {
                 $childrecords = $rel->selectDb($where);
                 if (!empty($childrecords))
-                    return atktext("restricted_delete_error");
+                    return atkTools::atktext("restricted_delete_error");
             } else
                 return;
         }
@@ -1303,7 +1303,7 @@ class atkOneToManyRelation extends atkRelation
         // which point back to this ownerinstance and it doesn't need them anymore anyway.
         $this->m_ownerInstance->m_postvars = array();
 
-        $handler->setDialogSaveUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.add_process'));
+        $handler->setDialogSaveUrl(atkTools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.add_process'));
         $result = $handler->renderAddDialog();
         $page = &$this->m_ownerInstance->getPage();
         $page->addContent($result);
@@ -1322,7 +1322,7 @@ class atkOneToManyRelation extends atkRelation
         // which point back to this ownerinstance and it doesn't need them anymore anyway.
         $this->m_ownerInstance->m_postvars = array();
 
-        $handler->setDialogSaveUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.add_process'));
+        $handler->setDialogSaveUrl(atkTools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.add_process'));
         $handler->handleSave($this->getPartialSaveUrl());
     }
 
@@ -1332,7 +1332,7 @@ class atkOneToManyRelation extends atkRelation
      */
     public function getPartialSaveUrl()
     {
-        return partial_url(
+        return atkTools::partial_url(
             $this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' .
             $this->fieldName() .
             '.refresh'
@@ -1347,7 +1347,7 @@ class atkOneToManyRelation extends atkRelation
         $this->createDestination();
         $this->m_destInstance->addFilter($this->m_ownerInstance->m_postvars['atkfilter']);
         $handler = &$this->m_destInstance->getHandler('addorcopy');
-        $handler->setProcessUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.addorcopy_process', array('atkfilter' => $this->m_ownerInstance->m_postvars['atkfilter'])));
+        $handler->setProcessUrl(atkTools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.addorcopy_process', array('atkfilter' => $this->m_ownerInstance->m_postvars['atkfilter'])));
         $handler->handleDialog();
     }
 
@@ -1369,14 +1369,14 @@ class atkOneToManyRelation extends atkRelation
             // which point back to this ownerinstance and it doesn't need them anymore anyway.
             $this->m_ownerInstance->m_postvars = array();
 
-            $handler->handleCopy(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.refresh'));
+            $handler->handleCopy(atkTools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.refresh'));
         }
 
         // user has choosen to add a new record, depending on whatever the AF_ONETOMANY_ADD_DIALOG
         // or the destination instance NF_ADD_DIALOG flags has been set we either show the user an
         // add dialog or redirect him/her to the add page (using an atkSubmit)
         else {
-            atkimport("atk.ui.atkdialog");
+            atkTools::atkimport("atk.ui.atkdialog");
 
             $script = atkDialog::getCloseCall();
 
@@ -1389,8 +1389,8 @@ class atkOneToManyRelation extends atkRelation
                 $dialog->setSessionStatus(SESSION_PARTIAL);
                 $script .= $dialog->getCall(true, false);
             } else {
-                $url = dispatch_url($this->m_destInstance->atkNodeType(), 'add');
-                $script .= "atkSubmit('" . atkurlencode(session_url($url, SESSION_NESTED)) . "', true);";
+                $url = atkTools::dispatch_url($this->m_destInstance->atkNodeType(), 'add');
+                $script .= "atkSubmit('" . atkTools::atkurlencode(atkTools::session_url($url, SESSION_NESTED)) . "', true);";
             }
 
             $page = &$this->m_ownerInstance->getPage();
@@ -1412,7 +1412,7 @@ class atkOneToManyRelation extends atkRelation
         // which point back to this ownerinstance and it doesn't need them anymore anyway.
         $this->m_ownerInstance->m_postvars = array();
 
-        $handler->setDialogSaveUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.edit_process'));
+        $handler->setDialogSaveUrl(atkTools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.edit_process'));
         $result = $handler->renderEditDialog();
         $page = &$this->m_ownerInstance->getPage();
         $page->addContent($result);
@@ -1431,8 +1431,8 @@ class atkOneToManyRelation extends atkRelation
         // which point back to this ownerinstance and it doesn't need them anymore anyway.
         $this->m_ownerInstance->m_postvars = array();
 
-        $handler->setDialogSaveUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.edit_process'));
-        $handler->handleUpdate(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.refresh'));
+        $handler->setDialogSaveUrl(atkTools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.edit_process'));
+        $handler->handleUpdate(atkTools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.refresh'));
     }
 
     /**

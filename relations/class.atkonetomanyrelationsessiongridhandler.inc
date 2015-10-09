@@ -68,7 +68,7 @@ class atkOneToManyRelationSessionGridHandler
      */
     private function getRecordsFromSession()
     {
-        atkimport('atk.session.atksessionstore');
+        atkTools::atkimport('atk.session.atksessionstore');
         return atkSessionStore::getInstance($this->_key)->getData();
     }
 

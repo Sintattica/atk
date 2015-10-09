@@ -48,7 +48,7 @@ class atkmlsplitter
         static $s_mlsplitter = NULL;
         if (!is_object($s_mlsplitter)) {
             $s_mlsplitter = new atkmlsplitter();
-            atkdebug("Created a new atkmlsplitter instance");
+            atkTools::atkdebug("Created a new atkmlsplitter instance");
         }
         return $s_mlsplitter;
     }
@@ -80,7 +80,7 @@ class atkmlsplitter
     function updateLngField(&$node, &$record)
     {
         // blegh
-        $db = &atkGetDb();
+        $db = &atkTools::atkGetDb();
         $sql = "UPDATE " . $node->m_table . " SET " . $node->m_lngfield . "='" . $node->m_defaultlanguage . "'
                WHERE " . $node->m_lngfield . "='' AND " . $record["atkprimkey"];
         return $db->query($sql);
@@ -97,7 +97,7 @@ class atkmlsplitter
      */
     function updateMlRecords($node, $record, $mode = "add", $excludes = '', $includes = '')
     {
-        atkdebug("atkmlsplitter::updateMlRecords() for mode $mode");
+        atkTools::atkdebug("atkmlsplitter::updateMlRecords() for mode $mode");
 
         $excludelist = array();
         $relations = array();
@@ -108,7 +108,7 @@ class atkmlsplitter
                 // assume all onetomanyrelations are stored in the PRESTORE so we MUST NOT use addDb()
                 // on this node if its contains relations to others
                 // but for 1:n and n:1 we need to save the refkey
-                if ((is_a($node->m_attribList[$attribname], "atkManyToOneRelation") || is_a($node->m_attribList[$attribname], "atkOneToOneRelation")) && hasFlag($node->m_attribList[$attribname]->storageType(), ADDTOQUERY)) {
+                if ((is_a($node->m_attribList[$attribname], "atkManyToOneRelation") || is_a($node->m_attribList[$attribname], "atkOneToOneRelation")) && atkTools::hasFlag($node->m_attribList[$attribname]->storageType(), ADDTOQUERY)) {
                     $relations[$attribname] = $node->m_attribList[$attribname];
 
                     $p_attrib = &$node->m_attribList[$attribname];
@@ -289,7 +289,7 @@ class atkmlsplitter
     {
         $newrecordset = Array();
         $languages = $this->getLanguages($node);
-        atkdebug("atkmlsplitter adding missings lngrecord for " . $node->m_type . "!");
+        atkTools::atkdebug("atkmlsplitter adding missings lngrecord for " . $node->m_type . "!");
         for ($i = 0, $max = count($languages); $i < $max; $i++) {
             $index = NULL;
             if (!$this->hasLngRecord($node, $recordset, $languages[$i], $index)) {

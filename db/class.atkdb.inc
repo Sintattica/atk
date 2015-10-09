@@ -15,7 +15,7 @@
  * $Id$
  */
 if (!atkconfig('meta_caching')) {
-    atkwarning("Table metadata caching is disabled. Turn on \$config_meta_caching to improve your application's performance!");
+    atkTools::atkwarning("Table metadata caching is disabled. Turn on \$config_meta_caching to improve your application's performance!");
 }
 
 /**
@@ -254,7 +254,7 @@ class atkDb
      */
     function setSequenceValue($seqname, $value)
     {
-        atkerror('WARNING: ' . get_class($this) . '.setSequenceValue NOT IMPLEMENTED!');
+        atkTools::atkerror('WARNING: ' . get_class($this) . '.setSequenceValue NOT IMPLEMENTED!');
     }
 
     /**
@@ -405,7 +405,7 @@ class atkDb
      */
     function setUserError($errno)
     {
-        atkdebug(__CLASS__ . "::setUserError() -> " . $errno);
+        atkTools::atkdebug(__CLASS__ . "::setUserError() -> " . $errno);
         $this->m_user_error[] = $errno;
     }
 
@@ -425,7 +425,7 @@ class atkDb
                 return 'r';
             }
 
-        atknotice('Query mode not detected! Using write mode.');
+        atkTools::atknotice('Query mode not detected! Using write mode.');
 
         return 'w';
     }
@@ -459,7 +459,7 @@ class atkDb
         if ($errno == DB_UNKNOWNERROR) {
             $errstr = $this->errorLookup($this->getDbErrno());
             if ($errstr == "") {
-                $this->m_error = atktext("unknown_error") . ": " . $this->getDbErrno() . " (" . $this->getDbError() . ")";
+                $this->m_error = atkTools::atktext("unknown_error") . ": " . $this->getDbErrno() . " (" . $this->getDbError() . ")";
             } else {
                 $this->m_error = $errstr . ($this->getErrorType() == "system" ? " (" . $this->getDbError() . ")"
                             : "");
@@ -468,13 +468,13 @@ class atkDb
         } else {
             $tmp_error = '';
             switch ($errno) {
-                case DB_ACCESSDENIED_DB: $tmp_error = sprintf(atktext("db_access_denied_database", "atk"), $this->m_user, $this->m_database);
+                case DB_ACCESSDENIED_DB: $tmp_error = sprintf(atkTools::atktext("db_access_denied_database", "atk"), $this->m_user, $this->m_database);
                     break;
-                case DB_ACCESSDENIED_USER: $tmp_error = sprintf(atktext("db_access_denied_user", "atk"), $this->m_user, $this->m_database);
+                case DB_ACCESSDENIED_USER: $tmp_error = sprintf(atkTools::atktext("db_access_denied_user", "atk"), $this->m_user, $this->m_database);
                     break;
-                case DB_UNKNOWNDATABASE: $tmp_error = sprintf(atktext("db_unknown_database", "atk"), $this->m_database);
+                case DB_UNKNOWNDATABASE: $tmp_error = sprintf(atkTools::atktext("db_unknown_database", "atk"), $this->m_database);
                     break;
-                case DB_UNKNOWNHOST: $tmp_error = sprintf(atktext("db_unknown_host", "atk"), $this->m_host);
+                case DB_UNKNOWNHOST: $tmp_error = sprintf(atkTools::atktext("db_unknown_host", "atk"), $this->m_host);
                     break;
             }
             $this->m_error = $tmp_error;
@@ -493,14 +493,14 @@ class atkDb
     {
         if ($this->m_haltonerror) {
             if ($this->getErrorType() === "system") {
-                atkdebug(__CLASS__ . "::halt() on system error");
+                atkTools::atkdebug(__CLASS__ . "::halt() on system error");
                 if (!in_array($this->m_errno, $this->m_user_error))
                     $level = 'critical';
-                atkerror($this->getErrorMsg());
+                atkTools::atkerror($this->getErrorMsg());
                 halt($this->getErrorMsg(), $level);
             }
             else {
-                atkdebug(__CLASS__ . "::halt() on user error (not halting)");
+                atkTools::atkdebug(__CLASS__ . "::halt() on user error (not halting)");
             }
         }
     }
@@ -554,7 +554,7 @@ class atkDb
     function connect($mode = "rw")
     {
         if ($this->m_link_id == NULL) {
-            atkdebug("atkdb::connect -> Don't switch use current db");
+            atkTools::atkdebug("atkdb::connect -> Don't switch use current db");
             return $this->doConnect($this->m_host, $this->m_user, $this->m_password, $this->m_database, $this->m_port, $this->m_charset);
         }
         return DB_SUCCESS;
@@ -643,12 +643,12 @@ class atkDb
      */
     public function prepare($query)
     {
-        atkimport('atk.db.statement.atkstatement');
+        atkTools::atkimport('atk.db.statement.atkstatement');
 
-        if (atkimport("atk.db.statement.atk" . $this->m_type . "statement")) {
+        if (atkTools::atkimport("atk.db.statement.atk" . $this->m_type . "statement")) {
             $class = "atk" . $this->m_type . "statement";
         } else {
-            atkimport("atk.db.statement.atkcompatstatement");
+            atkTools::atkimport("atk.db.statement.atkcompatstatement");
             $class = "atkCompatStatement";
         }
 
@@ -854,7 +854,7 @@ class atkDb
             if ($keyColumn === null) {
                 $key = $i;
             } else if (is_numeric($keyColumn)) {
-                $key = atkArrayNvl(array_values($this->m_record), $keyColumn);
+                $key = atkTools::atkArrayNvl(array_values($this->m_record), $keyColumn);
             } else {
                 $key = $this->m_record[$keyColumn];
             }
@@ -882,7 +882,7 @@ class atkDb
         if ($row == null) {
             return $default;
         } else if (is_numeric($valueColumn)) {
-            return atkArrayNvl(array_values($row), $valueColumn);
+            return atkTools::atkArrayNvl(array_values($row), $valueColumn);
         } else {
             return $row[$valueColumn];
         }
@@ -932,7 +932,7 @@ class atkDb
         $rows = $this->getRowsAssoc($query, $keyColumn, $offset, $limit);
         foreach ($rows as $key => &$value) {
             if (is_numeric($valueColumn)) {
-                $value = atkArrayNvl(array_values($value), $valueColumn);
+                $value = atkTools::atkArrayNvl(array_values($value), $valueColumn);
             } else {
                 $value = $value[$valueColumn];
             }
@@ -983,7 +983,7 @@ class atkDb
      */
     private function _getTableMetaFromCache($table)
     {
-        atkimport('atk.utils.atktmpfile');
+        atkTools::atkimport('atk.utils.atktmpfile');
         $tmpfile = new atkTmpFile('tablemeta/' . $this->m_connection . "/" . $table . ".php");
 
         if ($tmpfile->exists()) {
@@ -1163,7 +1163,7 @@ class atkDb
      */
     function &createQuery()
     {
-        $query = &atknew("atk.db.atk" . $this->m_type . "query");
+        $query = &atkTools::atknew("atk.db.atk" . $this->m_type . "query");
         $query->m_db = &$this;
         return $query;
     }
@@ -1175,7 +1175,7 @@ class atkDb
      */
     function toggleForeignKeys($enable)
     {
-        atkdebug('WARNING: ' . get_class($this) . '::toggleForeignKeys not implemented!');
+        atkTools::atkdebug('WARNING: ' . get_class($this) . '::toggleForeignKeys not implemented!');
     }
 
     /**
@@ -1200,7 +1200,7 @@ class atkDb
         } while ($count < $prevCount && $count > 0);
 
         if ($count > 0) {
-            atkerror(__CLASS__ . '::deleteAll failed, probably because of circular dependencies');
+            atkTools::atkerror(__CLASS__ . '::deleteAll failed, probably because of circular dependencies');
         }
     }
 
@@ -1241,7 +1241,7 @@ class atkDb
      */
     function &createDDL()
     {
-        atkimport("atk.db.atkddl");
+        atkTools::atkimport("atk.db.atkddl");
         $ddl = &atkDDL::create($this->m_type);
         $ddl->m_db = &$this;
         return $ddl;
@@ -1275,15 +1275,15 @@ class atkDb
             } else if (!empty($dbconfig[$conn]["driver"])) {
                 $driver = "atk.db.atk{$dbconfig[$conn]["driver"]}db";
             } else if (!empty($dbconfig[$conn]["driver"])) {
-                atkhalt("Driver {$dbconfig[$conn]["driver"]} not found for connection '$conn'!");
+                atkTools::atkhalt("Driver {$dbconfig[$conn]["driver"]} not found for connection '$conn'!");
                 return null;
             } else {
-                atkhalt("Driver not specified for connection '$conn'!");
+                atkTools::atkhalt("Driver not specified for connection '$conn'!");
                 return null;
             }
 
-            atkdebug("Creating new database instance with '{$driver}' driver");
-            $dbinstance = atknew($driver)->init($conn, $mode);
+            atkTools::atkdebug("Creating new database instance with '{$driver}' driver");
+            $dbinstance = atkTools::atknew($driver)->init($conn, $mode);
 
             $g_dbinstances[$conn] = $dbinstance;
         }
@@ -1299,7 +1299,7 @@ class atkDb
      */
     public function init($connectionname = 'default', $mode = 'r')
     {
-        atkdebug("(Re)Initialising database instance with connection name '$connectionname' and mode '$mode'");
+        atkTools::atkdebug("(Re)Initialising database instance with connection name '$connectionname' and mode '$mode'");
 
         $config = atkconfig("db");
         $this->m_connection = $connectionname;

@@ -53,8 +53,8 @@ class atkNumberAttribute extends atkAttribute
         $this->atkAttribute($name, $flags | AF_NO_QUOTES, $size); // base class constructor
         $this->m_decimals = $decimals;
 
-        $this->m_decimalseparator = atktext(self::SEPARATOR_DECIMAL, 'atk');
-        $this->m_thousandsseparator = atktext(self::SEPARATOR_THOUSAND, 'atk');
+        $this->m_decimalseparator = atkTools::atktext(self::SEPARATOR_DECIMAL, 'atk');
+        $this->m_thousandsseparator = atkTools::atktext(self::SEPARATOR_THOUSAND, 'atk');
     }
 
     /**
@@ -154,7 +154,7 @@ class atkNumberAttribute extends atkAttribute
      */
     function standardiseSeparator($number)
     {
-        return str_replace(atktext("decimal_separator"), ".", $number);
+        return str_replace(atkTools::atktext("decimal_separator"), ".", $number);
     }
 
     /**
@@ -180,7 +180,7 @@ class atkNumberAttribute extends atkAttribute
             $result = '<input type="hidden" id="' . $id . '" name="' . $fieldprefix . $this->formName() . '" value="' . htmlspecialchars($this->formatNumber($record[$this->fieldName()])) . '">';
             return $result;
         } else
-            atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
+            atkTools::atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
     }
 
     /**
@@ -198,7 +198,7 @@ class atkNumberAttribute extends atkAttribute
             $thousands_separator = $this->m_thousandsseparator;
 
         if ($decimal_separator == $thousands_separator) {
-            atkwarning('invalid thousandsseparator. identical to the decimal_separator');
+            atkTools::atkwarning('invalid thousandsseparator. identical to the decimal_separator');
             $thousands_separator = '';
         }
 
@@ -301,7 +301,7 @@ class atkNumberAttribute extends atkAttribute
         $thousandsSeparator = ($this->m_use_thousands_separator && !in_array($mode, array('add', 'edit'))) ? $thousandsSeparator : '';
 
         if ($decimalSeparator == $thousandsSeparator) {
-            atkwarning('invalid thousandsseparator. identical to the decimal_separator');
+            atkTools::atkwarning('invalid thousandsseparator. identical to the decimal_separator');
             $thousandsSeparator = '';
         }
 
@@ -334,7 +334,7 @@ class atkNumberAttribute extends atkAttribute
      */
     function translateSeparator($number)
     {
-        return str_replace(".", atktext("decimal_separator"), $number);
+        return str_replace(".", atkTools::atktext("decimal_separator"), $number);
     }
 
     /**
@@ -347,11 +347,11 @@ class atkNumberAttribute extends atkAttribute
     function validate(&$record, $mode)
     {
         if (!is_numeric($record[$this->fieldName()]) && $record[$this->fieldName()] != "")
-            triggerError($record, $this->fieldName(), 'error_notnumeric');
+            atkTools::triggerError($record, $this->fieldName(), 'error_notnumeric');
         if (($this->m_maxvalue !== false) && ($record[$this->fieldName()] > $this->m_maxvalue))
-            triggerError($record, $this->fieldName(), 'above_maximum_value');
+            atkTools::triggerError($record, $this->fieldName(), 'above_maximum_value');
         if (($this->m_minvalue !== false) && ($record[$this->fieldName()] < $this->m_minvalue))
-            triggerError($record, $this->fieldName(), 'below_minimum_value');
+            atkTools::triggerError($record, $this->fieldName(), 'below_minimum_value');
     }
 
     /**
@@ -369,7 +369,7 @@ class atkNumberAttribute extends atkAttribute
     function fetchValue($postvars)
     {
         if ($this->isPosted($postvars)) {
-            return $this->removeSeparators(atkArrayNvl($postvars, $this->fieldName(), ""));
+            return $this->removeSeparators(atkTools::atkArrayNvl($postvars, $this->fieldName(), ""));
         }
     }
 
@@ -589,7 +589,7 @@ class atkNumberAttribute extends atkAttribute
             $id = $this->getSearchFieldName($fieldprefix);
 
             $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
-            $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . atk_htmlentities($value) . '"' .
+            $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . atkTools::atk_htmlentities($value) . '"' .
                 ($searchsize > 0 ? ' size="' . $searchsize . '"' : '') . '>';
 
         } else {
@@ -604,11 +604,11 @@ class atkNumberAttribute extends atkAttribute
             }
 
             $result = '<div class="form-inline">';
-            $result .= '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . atk_htmlentities($valueFrom) . '"' .
+            $result .= '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . atkTools::atk_htmlentities($valueFrom) . '"' .
                 ($searchsize > 0 ? ' size="' . $searchsize . '"' : '') . '>';
             $id = $this->getSearchFieldName($fieldprefix) . '[to]';
             $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
-            $result .= " (" . atktext("until") . ' <input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . atk_htmlentities($valueTo) . '"' .
+            $result .= " (" . atkTools::atktext("until") . ' <input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . atkTools::atk_htmlentities($valueTo) . '"' .
                 ($searchsize > 0 ? ' size="' . $searchsize . '"' : '') . '>)';
             $result .= '</div>';
         }

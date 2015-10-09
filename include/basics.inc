@@ -19,10 +19,10 @@
 require_once($GLOBALS['config_atkroot'] . 'atk/include/globals.inc');
 require_once($GLOBALS['config_atkroot'] . 'atk/include/configs.inc');
 require_once($GLOBALS['config_atkroot'] . "atk/utils/class.atkstring.inc");
-require_once($GLOBALS['config_atkroot'] . "atk/atktools.inc");
+require_once($GLOBALS['config_atkroot'] . "atk/class.atktools.inc");
 require_once($GLOBALS['config_atkroot'] . "atk/utils/class.atkclassloader.inc");
 
-$locale = atktext('locale', 'atk');
+$locale = atkTools::atktext('locale', 'atk');
 if ($locale != null) {
     setlocale(LC_TIME, $locale);
 }

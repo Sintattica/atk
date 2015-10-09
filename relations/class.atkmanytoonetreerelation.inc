@@ -17,7 +17,7 @@
 /**
  * @internal includes..
  */
-userelation("atkManyToOneRelation");
+atkTools::userelation("atkManyToOneRelation");
 include_once(atkconfig("atkroot") . "atk/atktreetools.inc");
 
 /**
@@ -60,10 +60,10 @@ class atkManyToOneTreeRelation extends atkManyToOneRelation
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $this->createDestination();
-        $tmp1 = atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey);
-        $tmp2 = atk_array_merge($tmp1, array($this->m_destInstance->m_parent));
+        $tmp1 = atkTools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey);
+        $tmp2 = atkTools::atk_array_merge($tmp1, array($this->m_destInstance->m_parent));
         if ($this->m_destinationFilter != "") {
-            $this->m_destInstance->addFilter(stringparse($this->m_destinationFilter, $record));
+            $this->m_destInstance->addFilter(atkTools::stringparse($this->m_destinationFilter, $record));
         }
         $recordset = $this->m_destInstance->selectDb("", $this->m_destInstance->m_primaryKey[0], "", "", $tmp2);
         $this->m_current = $this->m_ownerInstance->primaryKey($record);
@@ -71,7 +71,7 @@ class atkManyToOneTreeRelation extends atkManyToOneRelation
 
         if ($this->hasFlag(AF_OBLIGATORY) == false) {
             // Relation may be empty, so we must provide an empty selectable..
-            $result.= '<option value="0">' . atktext('select_none');
+            $result.= '<option value="0">' . atkTools::atktext('select_none');
         }
         $result.=$this->createdd($recordset);
         $result.='</select>';
@@ -87,15 +87,15 @@ class atkManyToOneTreeRelation extends atkManyToOneRelation
     {
         $this->createDestination();
         if ($this->m_destinationFilter != "") {
-            $this->m_destInstance->addFilter(stringparse($this->m_destinationFilter, $record));
+            $this->m_destInstance->addFilter(atkTools::stringparse($this->m_destinationFilter, $record));
         }
-        $recordset = $this->m_destInstance->selectDb("", "", "", "", atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+        $recordset = $this->m_destInstance->selectDb("", "", "", "", atkTools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
 
         $result = '<select class="form-control" name="atksearch[' . $this->fieldName() . ']">';
 
         $pkfield = $this->m_destInstance->primaryKeyField();
 
-        $result.= '<option value="">' . atktext("search_all", "atk");
+        $result.= '<option value="">' . atkTools::atktext("search_all", "atk");
         $result.=$this->createdd($recordset);
         $result.='</select>';
         return $result;

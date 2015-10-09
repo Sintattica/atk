@@ -227,7 +227,7 @@ class atkMockDb extends atkDb
      */
     function createQuery()
     {
-        $query = atknew("atk.test.mocks.atkmockquery");
+        $query = atkTools::atknew("atk.test.mocks.atkmockquery");
         $query->m_db = $this;
         return $query;
     }
@@ -238,7 +238,7 @@ class atkMockDb extends atkDb
      */
     function createDDL()
     {
-        atkimport("atk.test.mocks.atkmockddl");
+        atkTools::atkimport("atk.test.mocks.atkmockddl");
         $ddl = atkDDL::create($this->m_type);
         $ddl->m_db = $this;
         return $ddl;

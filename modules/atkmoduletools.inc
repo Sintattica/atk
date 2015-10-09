@@ -113,7 +113,7 @@ function &atkGetNode($node, $init = TRUE, $cache_id = "default", $reset = false)
     global $g_nodeRepository;
     $node = strtolower($node); // classes / directory names should always be in lower-case
     if (!isset($g_nodeRepository[$cache_id][$node]) || !is_object($g_nodeRepository[$cache_id][$node]) || $reset) {
-        atkdebug("Constructing a new node $node ($cache_id)");
+        atkTools::atkdebug("Constructing a new node $node ($cache_id)");
         $g_nodeRepository[$cache_id][$node] = &newNode($node, $init);
     }
     return $g_nodeRepository[$cache_id][$node];
@@ -161,38 +161,38 @@ function &atkGetModule($modname)
 {
     global $g_moduleRepository;
 
-    atkimport("atk.atknode");
+    atkTools::atkimport("atk.atknode");
 
     if (!isset($g_moduleRepository[$modname]) || !is_object($g_moduleRepository[$modname])) {
-        atkimport("atk.modules.atkmodule");
+        atkTools::atkimport("atk.modules.atkmodule");
         $corporate_base = atkconfig("corporate_module_base");
         if ($corporate_base != "") {
-            atkimport($corporate_base);
+            atkTools::atkimport($corporate_base);
         }
 
         $filename = moduleDir($modname) . "module.inc";
         if (file_exists($filename)) {
             include_once($filename);
         } else {
-            atkdebug("Couldn't find module.inc for module '$modname' in '" . moduleDir($modname) . "'");
+            atkTools::atkdebug("Couldn't find module.inc for module '$modname' in '" . moduleDir($modname) . "'");
         }
 
-        atkdebug("Constructing a new module - $modname");
+        atkTools::atkdebug("Constructing a new module - $modname");
         if (class_exists("mod_" . $modname)) {
             $realmodname = "mod_" . $modname;
             $mod = new $realmodname($modname);
         } else if (class_exists($modname)) {
-            atkdebug("Warning: Deprecated use of short modulename '$modname'. Class in module.inc should be renamed to 'mod_$modname'.");
+            atkTools::atkdebug("Warning: Deprecated use of short modulename '$modname'. Class in module.inc should be renamed to 'mod_$modname'.");
             $mod = new $modname();
         } else {
-            atkimport("atk.utils.atkclassloader");
+            atkTools::atkimport("atk.utils.atkclassloader");
             $mod = atkClassLoader::invokeFromString(atkconfig("missing_module_handler"), array(array("module" => $modname)));
             if ($mod === false) {
                 // Changed by Ivo: This used to construct a dummy module, so
                 // modules could exist that didn't have a module.inc file.
                 // We no longer support this (2003-01-11)
                 $mod = NULL;
-                atkdebug("Warning: module $modname does not exist");
+                atkTools::atkdebug("Warning: module $modname does not exist");
             }
         }
         $g_moduleRepository[$modname] = $mod;
@@ -239,7 +239,7 @@ function nodeFile($node)
                 $file = "{$modules[$module]}/class.{$type}.inc";
             }
         } else {
-            atkdebug("Couldn't find node '$node' in module '$module'. Trying default module path.");
+            atkTools::atkdebug("Couldn't find node '$node' in module '$module'. Trying default module path.");
             $file = $config_module_path . "/" . $module . "/class.$type.inc";
         }
     }
@@ -270,9 +270,9 @@ function &newNode($node, $init = TRUE)
                 $node->init();
             return $node;
         } else
-            atkerror("Module $module does not have newNode function (does it extend from atkModule?)");
+            atkTools::atkerror("Module $module does not have newNode function (does it extend from atkModule?)");
     } else
-        atkerror("Module $module could not be instantiated.");
+        atkTools::atkerror("Module $module could not be instantiated.");
     return NULL;
 }
 
@@ -295,7 +295,7 @@ function nodeExists($node)
 
     $exists = is_object($module) && $module->nodeExists($node);
     $existence[$node] = $exists;
-    atkdebug("Node $node exists? " . ($exists ? 'yes' : 'no'));
+    atkTools::atkdebug("Node $node exists? " . ($exists ? 'yes' : 'no'));
 
     return $exists;
 }
@@ -550,16 +550,16 @@ function atkPreloadModule($modname, $modpath)
 
     // no module file exists
     if (!file_exists($filename)) {
-        atkdebug("Couldn't find module_preload.inc or module.inc for module '$modname' in '$modpath'");
+        atkTools::atkdebug("Couldn't find module_preload.inc or module.inc for module '$modname' in '$modpath'");
         return;
     }
 
     if ($filename != $preload) {
-        atkdebug("Loading module - $modname");
-        atkimport("atk.modules.atkmodule");
+        atkTools::atkdebug("Loading module - $modname");
+        atkTools::atkimport("atk.modules.atkmodule");
         $corporate_base = atkconfig("corporate_module_base");
         if ($corporate_base != "") {
-            atkimport($corporate_base);
+            atkTools::atkimport($corporate_base);
         }
     }
 
@@ -591,7 +591,7 @@ function atkPreloadModules()
     $modules = atkGetModules();
 
     foreach ($modules as $modname => $modpath) {
-        if ((!isset($g_moduleflags[$modname])) || (!hasFlag($g_moduleflags[$modname], MF_NO_PRELOAD))) {
+        if ((!isset($g_moduleflags[$modname])) || (!atkTools::hasFlag($g_moduleflags[$modname], MF_NO_PRELOAD))) {
             atkPreloadModule($modname, $modpath);
         }
     }

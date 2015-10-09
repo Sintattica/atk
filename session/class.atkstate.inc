@@ -118,7 +118,7 @@ class atkState
                 self::_set_using_session($key, $value);
                 break;
             default:
-                atkerror("set method don't exists");
+                atkTools::atkerror("set method don't exists");
         }
     }
 

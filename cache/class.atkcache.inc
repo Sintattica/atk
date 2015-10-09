@@ -75,19 +75,19 @@ abstract class atkCache implements ArrayAccess
 
             try {
                 if (!$force && array_key_exists($type, self::$m_instances) && is_object(self::$m_instances[$type])) {
-                    atkdebug("atkcache::getInstance -> Using cached instance of $type cache");
+                    atkTools::atkdebug("atkcache::getInstance -> Using cached instance of $type cache");
                     return self::$m_instances[$type];
                 } else {
-                    self::$m_instances[$type] = atknew($classname);
+                    self::$m_instances[$type] = atkTools::atknew($classname);
                     self::$m_instances[$type]->setNamespace(atkconfig('cache_namespace', 'default'));
                     self::$m_instances[$type]->setLifetime(self::$m_instances[$type]->getCacheConfig('lifetime', 3600));
                     self::$m_instances[$type]->setActive(atkconfig('cache_active', true));
-                    atkdebug("atkcache::getInstance() -> Using $type cache");
+                    atkTools::atkdebug("atkcache::getInstance() -> Using $type cache");
 
                     return self::$m_instances[$type];
                 }
             } catch (Exception $e) {
-                atknotice("Can't instantatie atkCache class $classname: " . $e->getMessage());
+                atkTools::atknotice("Can't instantatie atkCache class $classname: " . $e->getMessage());
             }
         }
 
@@ -96,7 +96,7 @@ abstract class atkCache implements ArrayAccess
         }
 
         // Default return var cache
-        atkdebug("atkcache::getInstance() -> Using var cache");
+        atkTools::atkdebug("atkcache::getInstance() -> Using var cache");
         return self::getInstance('var', false, $force);
     }
 

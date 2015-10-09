@@ -20,10 +20,9 @@
  * Imports
  * @access private
  */
-atkimport("atk.wizard.atkwizardbase");
-atkimport("atk.wizard.atkwizardactionloader");
-atkimport("atk.wizard.atkwizardpanel");
-atkimport("atk.atknodetools");
+atkTools::atkimport("atk.wizard.atkwizardbase");
+atkTools::atkimport("atk.wizard.atkwizardactionloader");
+atkTools::atkimport("atk.wizard.atkwizardpanel");
 
 /**
  * atkWizard modees
@@ -141,7 +140,7 @@ class atkWizard extends atkWizardBase
      */
     function atkWizard()
     {
-        atkdebug("atkWizard::constructor" . atkGetPostVar("atkcontroller"));
+        atkTools::atkdebug("atkWizard::constructor" . atkTools::atkGetPostVar("atkcontroller"));
 
         $this->atkWizardBase();
 
@@ -196,7 +195,7 @@ class atkWizard extends atkWizardBase
             $this->m_currentPanelIndex = 0;
 
         global $g_sessionData;
-        atk_var_dump($g_sessionData["default"]["stack"][atkStackID()], "SESSION DATA");
+        atkTools::atk_var_dump($g_sessionData["default"]["stack"][atkStackID()], "SESSION DATA");
     }
 
     /**
@@ -242,11 +241,11 @@ class atkWizard extends atkWizardBase
      */
     public function handleRequest()
     {
-        atkdebug("atkwizard::handleRequest()");
+        atkTools::atkdebug("atkwizard::handleRequest()");
 
         global $g_sessionManager, $ATK_VARS;
 
-        if (!$this->m_isWizardInitiated && atkGetPostVar("atkaction") !== "" && atkGetPostVar("atkwizardaction") === "") {
+        if (!$this->m_isWizardInitiated && atkTools::atkGetPostVar("atkaction") !== "" && atkTools::atkGetPostVar("atkwizardaction") === "") {
             //A not wizard related action as initiated, like an edit action
             //on an admin screen. Set the wizard mode to NULL to prevent showing a wizard
             //specific form. We do not use the wizard dispatcher but call the standard
@@ -259,7 +258,7 @@ class atkWizard extends atkWizardBase
             $node = $currentWizardPanel->getPanelNode();
 
             // check if user has filled in something
-            if ((atkGetPostVar("atkaction") == 'save' || atkGetPostVar("atkaction") == "update" || atkGetPostVar("atkaction") == "delete") && $node->filledInForm()) {
+            if ((atkTools::atkGetPostVar("atkaction") == 'save' || atkTools::atkGetPostVar("atkaction") == "update" || atkTools::atkGetPostVar("atkaction") == "delete") && $node->filledInForm()) {
                 //save form
                 $this->save($this->m_wizardAction);
             } elseif ($this->m_wizardAction == 'finish') {
@@ -273,7 +272,7 @@ class atkWizard extends atkWizardBase
                     return "";
                 }
             } else {
-                if (!((atkGetPostVar("atkaction") == 'save' || atkGetPostVar("atkaction") == "update" || atkGetPostVar("atkaction") == "delete") && $node->filledInForm())) {
+                if (!((atkTools::atkGetPostVar("atkaction") == 'save' || atkTools::atkGetPostVar("atkaction") == "update" || atkTools::atkGetPostVar("atkaction") == "delete") && $node->filledInForm())) {
                     $ATK_VARS['atkaction'] = "";
                 }
                 $this->wizardDispatch($this->m_wizardAction);
@@ -358,10 +357,10 @@ class atkWizard extends atkWizardBase
     {
         $node = &$this->getNode();
 
-        $content = "<br><br>" . atktext("content_wizard_finished") . "<br><br><br>";
+        $content = "<br><br>" . atkTools::atktext("content_wizard_finished") . "<br><br><br>";
 
         $page = &$node->getPage();
-        $page->addContent($this->genericPage(atktext("title_wizard_finished"), $content));
+        $page->addContent($this->genericPage(atkTools::atktext("title_wizard_finished"), $content));
         return $page->render($this->getHtmlTitle(), $this->m_page_flags);
     }
 
@@ -407,7 +406,7 @@ class atkWizard extends atkWizardBase
     public function &getCurrentPanel()
     {
         if (!is_object($this->m_panelList[$this->m_currentPanelIndex])) {
-            atkerror("Panel could not be crated. Non existing panel index: " . $this->m_currentPanelIndex);
+            atkTools::atkerror("Panel could not be crated. Non existing panel index: " . $this->m_currentPanelIndex);
             return NULL;
         }
         return $this->m_panelList[$this->m_currentPanelIndex];
@@ -449,7 +448,7 @@ class atkWizard extends atkWizardBase
     {
         $node = &$this->getNode();
         $ui = &$node->getUi();
-        return atktext('app_shorttitle') . " - " . $ui->getWizardTitle($this, $this->getCurrentPanel());
+        return atkTools::atktext('app_shorttitle') . " - " . $ui->getWizardTitle($this, $this->getCurrentPanel());
     }
 
     /**

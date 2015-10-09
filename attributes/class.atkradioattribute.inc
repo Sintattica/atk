@@ -17,7 +17,7 @@
 /**
  * @internal Include base class
  */
-atkimport("atk.attributes.atklistattribute");
+atkTools::atkimport("atk.attributes.atklistattribute");
 
 /**
  * Flag(s) specific for atkRadioAttribute

@@ -87,13 +87,13 @@ class atkEmailAttribute extends atkAttribute
         $email = $record[$this->fieldName()];
         //first check complete string
         if (!atkEmailAttribute::validateAddressSyntax($email)) {
-            atkTriggerError($record, $this, 'error_invalid_email');
+            atkTools::triggerError($record, $this, 'error_invalid_email');
         } else {
             if ($this->m_dnsSearch) {
                 //now check if domain exists, searches DNS for MX records
                 list($username, $domain) = explode('@', $email, 2);
                 if (!(atkEmailAttribute::validateAddressDomain($domain, false))) {
-                    triggerError($record, $this->fieldName(), 'error_unkown_domain', text('error_unkown_domain') . " " . $domain);
+                    atkTools::triggerError($record, $this->fieldName(), 'error_unkown_domain', text('error_unkown_domain') . " " . $domain);
                 }
             }
         }

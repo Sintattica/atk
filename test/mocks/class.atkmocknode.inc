@@ -14,7 +14,7 @@
  * $Id: class.atkmocknode.inc 6355 2009-04-21 15:20:09Z lineke $
  */
 /** @internal include */
-atkimport("atk.atknode");
+atkTools::atkimport("atk.atknode");
 
 /**
  * The atkMockNode class is an atkNode mock object for testing purposes

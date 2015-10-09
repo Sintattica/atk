@@ -205,7 +205,7 @@ class atkActionBoxBuilder
     public function endActionBox()
     {
         if ($this->m_sessionStatus !== null) {
-            $this->m_params['formend'] = session_form($this->m_sessionStatus) .
+            $this->m_params['formend'] = atkTools::session_form($this->m_sessionStatus) .
                 $this->m_params['formend'];
         }
 

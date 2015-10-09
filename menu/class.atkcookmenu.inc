@@ -18,7 +18,7 @@
  * Imports
  * @access private
  */
-atkimport("atk.menu.atkmodernmenu");
+atkTools::atkimport("atk.menu.atkmodernmenu");
 
 /**
  * The atkBoolAttribute class represents an attribute of a node
@@ -53,15 +53,15 @@ class atkcookmenu extends atkModernMenu
         $atkmenutop = "main";
 
         $menuitems = $this->getMenuItems($g_menu, $atkmenutop);
-        $theme = &atkinstance("atk.ui.atktheme");
-        $page = &atkinstance("atk.ui.atkpage");
+        $theme = &atkTools::atkinstance("atk.ui.atktheme");
+        $page = &atkTools::atkinstance("atk.ui.atkpage");
         $page->register_style($theme->stylePath("style.css"));
         $page->register_style($theme->stylePath("cookmenu.css"));
         $page->register_scriptcode("var myThemePanelBase='" . str_replace('arrow.gif', '', $theme->imgPath("arrow.gif")) . "';", true);
         $page->register_script(atkconfig("atkroot") . "atk/javascript/jscookmenu/JSCookMenu.js");
         $page->register_script(atkconfig("atkroot") . "atk/javascript/jscookmenu/effect.js");
         $page->register_script(atkconfig("atkroot") . "atk/javascript/jscookmenu/theme.js");
-        $ui = &atkinstance("atk.ui.atkui");
+        $ui = &atkTools::atkinstance("atk.ui.atkui");
 
         $menu_javascript = '<script language="JavaScript" type="text/javascript">
                           var atkCookMenu =

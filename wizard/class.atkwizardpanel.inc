@@ -20,10 +20,10 @@
  * Imports
  * @access private
  */
-atkimport("atk.handlers.atkactionhandler");
-atkimport("atk.handlers.atkaddhandler");
-atkimport("atk.handlers.atksavehandler");
-atkimport("atk.wizard.atkwizardcontroller");
+atkTools::atkimport("atk.handlers.atkactionhandler");
+atkTools::atkimport("atk.handlers.atkaddhandler");
+atkTools::atkimport("atk.handlers.atksavehandler");
+atkTools::atkimport("atk.wizard.atkwizardcontroller");
 
 /**
  * atkWizardPanel button definitions.
@@ -134,11 +134,11 @@ class atkWizardPanel
     public function getPanelNode()
     {
         if (!is_object($this->m_node)) {
-            atkdebug("atkWizardPanel::getPanelNode() create node. Node name: " . $this->m_nodeName);
+            atkTools::atkdebug("atkWizardPanel::getPanelNode() create node. Node name: " . $this->m_nodeName);
 
             $this->m_node = &getNode($this->m_nodeName);
             if (!is_object($this->m_node)) {
-                atkerror("atkWizardPanel::getPanelNode() Node could not be created. Node name: " . $this->m_nodeName);
+                atkTools::atkerror("atkWizardPanel::getPanelNode() Node could not be created. Node name: " . $this->m_nodeName);
                 return NULL;
             }
 
@@ -301,12 +301,12 @@ class atkWizardPanel
     {
 
         $panelNode = $this->getPanelNode();
-        $text = atktext($key, $panelNode->m_module, "", "", "", true);
+        $text = atkTools::atktext($key, $panelNode->m_module, "", "", "", true);
 
         if ($text != "")
             return $text;
 
-        return atktext($fallbackKey, $panelNode->m_module, "", "", "", true);
+        return atkTools::atktext($fallbackKey, $panelNode->m_module, "", "", "", true);
     }
 
     /**
@@ -319,7 +319,7 @@ class atkWizardPanel
         $handler = &$this->m_node->getHandler($action);
         $handler->addRenderBoxVar("paneltitle", $this->_getText($this->getPanelName() . "_" . $action, $this->getPanelName()));
         $handler->addRenderBoxVar("intro", $this->_getText($this->getPanelName() . "_" . $action . "_intro", $this->getPanelName() . "_intro"));
-        atkdebug("loadRenderBoxVars actionhandler: " . get_class($handler) . " action: " . $action);
+        atkTools::atkdebug("loadRenderBoxVars actionhandler: " . get_class($handler) . " action: " . $action);
     }
 
 }

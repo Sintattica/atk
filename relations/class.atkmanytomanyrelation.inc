@@ -15,7 +15,7 @@
  * @version $Revision: 6323 $
  * $Id$
  */
-atkimport("atk.relations.atkrelation");
+atkTools::atkimport("atk.relations.atkrelation");
 
 define('AF_MANYTOMANY_DETAILVIEW', AF_SPECIFIC_5);
 
@@ -178,7 +178,7 @@ class atkManyToManyRelation extends atkRelation
             $this->m_selectableRecordsCache[$cacheKey] = $this->getDestination()
                 ->select($filter)
                 ->limit(is_numeric($this->m_limit) ? $this->m_limit : -1)
-                ->includes(atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey))
+                ->includes(atkTools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey))
                 ->getAllRows();
         }
 
@@ -235,7 +235,7 @@ class atkManyToManyRelation extends atkRelation
 
             // Validate if destination was created succesfully
             if (!is_object($this->m_linkInstance)) {
-                atkerror("Relation with unknown nodetype '" . $this->m_link . "' (in node '" . $this->m_owner . "')");
+                atkTools::atkerror("Relation with unknown nodetype '" . $this->m_link . "' (in node '" . $this->m_owner . "')");
                 $this->m_linkInstance = NULL;
                 return false;
             }
@@ -368,7 +368,7 @@ class atkManyToManyRelation extends atkRelation
     function display($record, $mode = "")
     {
         $result = '';
-        if ($this->createDestination() && atk_value_in_array($record[$this->fieldName()])) {
+        if ($this->createDestination() && atkTools::atk_value_in_array($record[$this->fieldName()])) {
             $recordset = array();
             $remotekey = $this->getRemoteKey();
             for ($i = 0; $i < count($record[$this->fieldName()]); $i++) {
@@ -381,7 +381,7 @@ class atkManyToManyRelation extends atkRelation
                     $descr = $this->m_destInstance->descriptor($rec);
                 }
                 if ($this->hasFlag(AF_MANYTOMANY_DETAILVIEW) && $this->m_destInstance->allowed("view")) {
-                    $descr = href(dispatch_url($this->m_destination, 'view', array('atkselector' => $this->getdestination()->primarykey($rec))), $descr, SESSION_NESTED);
+                    $descr = atkTools::href(dispatch_url($this->m_destination, 'view', array('atkselector' => $this->getdestination()->primarykey($rec))), $descr, SESSION_NESTED);
                 }
                 $recordset[] = $descr;
             }
@@ -555,7 +555,7 @@ class atkManyToManyRelation extends atkRelation
         $selector = $this->getLink()->primaryKey($record);
 
         if (empty($selector)) {
-            atkerror('primaryKey-selector for link node is empty. Did you add an AF_PRIMARY flag to the primary key field(s) of the intermediate node? Deleting records aborted to prevent dataloss.');
+            atkTools::atkerror('primaryKey-selector for link node is empty. Did you add an AF_PRIMARY flag to the primary key field(s) of the intermediate node? Deleting records aborted to prevent dataloss.');
             return false;
         }
 
@@ -694,15 +694,15 @@ class atkManyToManyRelation extends atkRelation
     function hide($record = "", $fieldprefix = "")
     {
         $result = "";
-        if (is_array(atkArrayNvl($record, $this->fieldName())) && $this->createDestination()) {
+        if (is_array(atkTools::atkArrayNvl($record, $this->fieldName())) && $this->createDestination()) {
             $ownerFields = $this->getOwnerFields();
             for ($i = 0, $_i = count($record[$this->fieldName()]); $i < $_i; $i++) {
-                if (atkArrayNvl($record[$this->fieldName()][$i], $this->getLocalKey()))
+                if (atkTools::atkArrayNvl($record[$this->fieldName()][$i], $this->getLocalKey()))
                     $result .= '<input type="hidden" name="' . $fieldprefix . $this->formName() .
                         '[' . $i . '][' . $this->getLocalKey() . ']" value="' .
                         $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getLocalKey()], $ownerFields[0]) . '">';
 
-                if (atkArrayNvl($record[$this->fieldName()][$i], $this->getRemoteKey()))
+                if (atkTools::atkArrayNvl($record[$this->fieldName()][$i], $this->getRemoteKey()))
                     $result .= '<input type="hidden" name="' . $fieldprefix . $this->formName() .
                         '[' . $i . '][' . $this->getRemoteKey() . ']" value="' .
                         $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getRemoteKey()], $this->m_destInstance->primaryKeyField()) . '">';
@@ -731,7 +731,7 @@ class atkManyToManyRelation extends atkRelation
         $this->createDestination();
 
         // now select all records
-        $recordset = $this->m_destInstance->selectDb("", "", "", "*", atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+        $recordset = $this->m_destInstance->selectDb("", "", "", "*", atkTools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
         $result = '<select class="form-control"';
         if ($extended) {
             $result.='multiple="multiple" size="' . min(5, count($recordset) + 1) . '"';
@@ -742,12 +742,12 @@ class atkManyToManyRelation extends atkRelation
         $pkfield = $this->m_destInstance->primaryKeyField();
 
         if (!$extended) {
-            $result .= '<option value="">' . atktext("search_all", "atk") . '</option>';
+            $result .= '<option value="">' . atkTools::atktext("search_all", "atk") . '</option>';
         }
 
         for ($i = 0; $i < count($recordset); $i++) {
             $pk = $recordset[$i][$pkfield];
-            if (atk_in_array($pk, $record[$this->fieldName()]))
+            if (atkTools::atk_in_array($pk, $record[$this->fieldName()]))
                 $sel = ' selected="selected"';
             else
                 $sel = "";

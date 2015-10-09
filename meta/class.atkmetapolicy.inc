@@ -14,8 +14,8 @@
  * @version $Revision: 6320 $
  * $Id$
  */
-atkimport("atk.meta.grammar.atkmetagrammar");
-atkimport("atk.meta.compiler.atkmetacompiler");
+atkTools::atkimport("atk.meta.grammar.atkmetagrammar");
+atkTools::atkimport("atk.meta.compiler.atkmetacompiler");
 
 /**
  * The default meta policy.
@@ -176,7 +176,7 @@ class atkMetaPolicy
             $class = atkconfig("meta_policy", "atk.meta.atkmetapolicy");
         }
 
-        return atknew($class, $node);
+        return atkTools::atknew($class, $node);
     }
 
     /**
@@ -578,14 +578,14 @@ class atkMetaPolicy
      */
     protected function _getFlags($name, $meta)
     {
-        $flags = (hasFlag($meta['flags'], MF_PRIMARY) ? AF_PRIMARY : 0) |
-            (hasFlag($meta['flags'], MF_UNIQUE) ? AF_UNIQUE : 0) |
-            (hasFlag($meta['flags'], MF_NOT_NULL) ? AF_OBLIGATORY : 0) |
-            (hasFlag($meta['flags'], MF_AUTO_INCREMENT | MF_PRIMARY) ? AF_AUTOKEY
+        $flags = (atkTools::hasFlag($meta['flags'], MF_PRIMARY) ? AF_PRIMARY : 0) |
+            (atkTools::hasFlag($meta['flags'], MF_UNIQUE) ? AF_UNIQUE : 0) |
+            (atkTools::hasFlag($meta['flags'], MF_NOT_NULL) ? AF_OBLIGATORY : 0) |
+            (atkTools::hasFlag($meta['flags'], MF_AUTO_INCREMENT | MF_PRIMARY) ? AF_AUTOKEY
                     : 0) |
             ($meta['gentype'] == "text" ? AF_HIDE_LIST : 0);
 
-        if (hasFlag($flags, AF_PRIMARY) && $meta['num'] == 0 &&
+        if (atkTools::hasFlag($flags, AF_PRIMARY) && $meta['num'] == 0 &&
             in_array($name, array("id", $meta['table'] . "id", $meta['table'] . "_id")))
             $flags |= AF_AUTOKEY;
 
@@ -654,15 +654,15 @@ class atkMetaPolicy
      */
     public function importAttribute($type)
     {
-        if (strpos($type, '.') === false && atkexists("attribute", $this->getNode()->getModule() . '.' . $type))
-            atkuse("attribute", $this->getNode()->getModule() . '.' . $type);
-        elseif (strpos($type, '.') === false && atkexists("relation", $this->getNode()->getModule() . '.' . $type))
-            atkuse("relation", $this->getNode()->getModule() . '.' . $type);
-        elseif (atkexists("attribute", $type))
-            atkuse("attribute", $type);
-        elseif (atkexists("relation", $type))
-            atkuse("relation", $type);
-        else if (!atkimport($type))
+        if (strpos($type, '.') === false && atkTools::atkexists("attribute", $this->getNode()->getModule() . '.' . $type))
+            atkTools::atkuse("attribute", $this->getNode()->getModule() . '.' . $type);
+        elseif (strpos($type, '.') === false && atkTools::atkexists("relation", $this->getNode()->getModule() . '.' . $type))
+            atkTools::atkuse("relation", $this->getNode()->getModule() . '.' . $type);
+        elseif (atkTools::atkexists("attribute", $type))
+            atkTools::atkuse("attribute", $type);
+        elseif (atkTools::atkexists("relation", $type))
+            atkTools::atkuse("relation", $type);
+        else if (!atkTools::atkimport($type))
             throw new Exception("Cannot import attribute of type {$type}");
     }
 
@@ -680,7 +680,7 @@ class atkMetaPolicy
     {
         if (!is_array($attrs))
             $attrs = func_get_args();
-        return atknew('atk.meta.atkmetaattributemodifier', $this, $attrs);
+        return atkTools::atknew('atk.meta.atkmetaattributemodifier', $this, $attrs);
     }
 
     /**
@@ -1573,7 +1573,7 @@ class atkMetaPolicy
 
         $this->sortAttributes();
 
-        return atknew('atk.meta.atkmetaattributemodifier', $this, $names);
+        return atkTools::atknew('atk.meta.atkmetaattributemodifier', $this, $names);
     }
 
     /**
@@ -1692,7 +1692,7 @@ class atkMetaPolicy
             $base[] = $module . "_" . strtolower($class);
         }
 
-        $db = atkGetDb($this->getNodeDatabase());
+        $db = atkTools::atkGetDb($this->getNodeDatabase());
         foreach ($base as $entry) {
             if ($db->tableExists($entry)) {
                 return $entry;
@@ -1774,7 +1774,7 @@ class atkMetaPolicy
             $table = $this->_detectNodeTable();
         $this->_setNodeTable($table);
 
-        $db = atkGetDb($database);
+        $db = atkTools::atkGetDb($database);
         if ($table == null) {
             throw new Exception("No table found for meta node " . $this->getNode()->atkNodeType() . "! Are you sure you are connecting to the right database?");
         } else if (!$db->tableExists($table)) {
@@ -1859,7 +1859,7 @@ class atkMetaPolicy
      */
     protected function _cache($code)
     {
-        atkimport('atk.utils.atktmpfile');
+        atkTools::atkimport('atk.utils.atktmpfile');
         $file = new atkTmpFile("meta/" . $this->getNode()->getModule() . "/" . $this->getNode()->getType() . ".php");
         $file->writeFile("<?php\n$code");
         return $file->getPath();
@@ -1875,7 +1875,7 @@ class atkMetaPolicy
         $code = $this->_compile();
 
         if (atkconfig('debug') > 2) {
-            atk_var_dump("\n\n$code", "atkMetaPolicy::apply - " . $this->getNode()->atkNodeType());
+            atkTools::atk_var_dump("\n\n$code", "atkMetaPolicy::apply - " . $this->getNode()->atkNodeType());
         }
 
         // needed for included and eval'ed code!

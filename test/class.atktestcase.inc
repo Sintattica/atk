@@ -75,7 +75,7 @@ abstract class atkTestCase extends PHPUnit_Framework_TestCase
             // switch to the test databases
             $mapping = atkconfig("test_db_mapping");
             foreach ($mapping as $test) {
-                $testDb = atkGetDb($test);
+                $testDb = atkTools::atkGetDb($test);
                 $testDb->toggleForeignKeys(false);
                 $testDb->deleteAll();
                 $testDb->commit();
@@ -115,7 +115,7 @@ abstract class atkTestCase extends PHPUnit_Framework_TestCase
                 return false;
             }
 
-            $conn = atkGetDb($mapping[$normal]);
+            $conn = atkTools::atkGetDb($mapping[$normal]);
             if ($conn->getDbStatus() != DB_SUCCESS) {
                 return false;
             }
@@ -157,12 +157,12 @@ abstract class atkTestCase extends PHPUnit_Framework_TestCase
      */
     function addFixtures($names, $database = "default")
     {
-        atkdebug("Load fixtures into test database...");
+        atkTools::atkdebug("Load fixtures into test database...");
 
         $db = $this->_getTestDb($database);
         $db->toggleForeignKeys(false);
 
-        atkimport('atk.fixture.atkfixturemanager');
+        atkTools::atkimport('atk.fixture.atkfixturemanager');
         $manager = atkFixtureManager::getInstance();
 
         foreach ($names as $fullname) {
@@ -254,7 +254,7 @@ abstract class atkTestCase extends PHPUnit_Framework_TestCase
      */
     function &_getTestDb($database)
     {
-        return atkGetDb($database);
+        return atkTools::atkGetDb($database);
     }
 
     function setMockDb($conn = NULL)
@@ -266,7 +266,7 @@ abstract class atkTestCase extends PHPUnit_Framework_TestCase
 
         $config_db["mock"]["driver"] = "atk.test.mocks.atkmockdb";
 
-        $mockdb = &atkGetDb("mock");
+        $mockdb = &atkTools::atkGetDb("mock");
         $this->m_restoreDb[$conn] = &atkDb::setInstance($conn, $mockdb);
     }
 

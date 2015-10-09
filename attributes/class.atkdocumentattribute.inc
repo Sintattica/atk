@@ -19,7 +19,7 @@
  * $Id: class.atkdocumentattribute.inc 6354 2009-04-15 02:41:21Z mvdam $
  */
 // Use the atkdummyattribute to extend from
-useattrib("atkdummyattribute");
+atkTools::useattrib("atkdummyattribute");
 
 /**
  * DocumentAttribute class for adding document generation functionality to a node
@@ -84,7 +84,7 @@ class atkDocumentAttribute extends atkDummyAttribute
     function getDocumentFiles($path, $record)
     {
         // Read the directory contents using the directorytraverser
-        $dirtrav = &atknew("atk.utils.atkdirectorytraverser");
+        $dirtrav = &atkTools::atknew("atk.utils.atkdirectorytraverser");
         return $dirtrav->getDirContents($path);
     }
 
@@ -128,14 +128,14 @@ class atkDocumentAttribute extends atkDummyAttribute
 
         // Add the button to the html
         $selector = $this->m_ownerInstance->primaryKey($record);
-        $onclickscript = 'window.location="' . session_url(dispatch_url($module . "." . $node, "document", array("atkselector" => $selector)), SESSION_DEFAULT) . '&atkdoctpl="+this.form.atkdoctpl.value;';
+        $onclickscript = 'window.location="' . atkTools::session_url(dispatch_url($module . "." . $node, "document", array("atkselector" => $selector)), SESSION_DEFAULT) . '&atkdoctpl="+this.form.atkdoctpl.value;';
 
-        $html .= '<input type="button" class="btn_doc_open" name="atkdocument" value="' . atktext("open") . '" onclick=\'' . $onclickscript . '\'>';
+        $html .= '<input type="button" class="btn_doc_open" name="atkdocument" value="' . atkTools::atktext("open") . '" onclick=\'' . $onclickscript . '\'>';
 
         // Wrap the input elements in a unique session form when no form is present yet (in list and view mode)
         if ((($mode == "list") || ($mode == "view")) && $addForm) {
             static $documentSelectorFormCounter = 0;
-            $html = '<form name="documentSelectorForm' . ++$documentSelectorFormCounter . '">' . session_form() . $html . '</form>';
+            $html = '<form name="documentSelectorForm' . ++$documentSelectorFormCounter . '">' . atkTools::session_form() . $html . '</form>';
         }
 
         // Return the generated html

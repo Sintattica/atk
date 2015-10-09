@@ -102,13 +102,13 @@ class atkIpAttribute extends atkAttribute
     function validate(&$record, $mode)
     {
         // Check for valid ip string
-        $strvalue = atkArrayNvl($record, $this->fieldName(), "");
+        $strvalue = atkTools::atkArrayNvl($record, $this->fieldName(), "");
         if (!empty($strvalue)) {
             if ($this->hasFlag(AF_IP_ALLOW_WILDCARDS) && !$this->hasFlag(AF_IP_STORENUMERIC))
                 $strvalue = str_replace("*", "0", $strvalue);
             $num = '(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])';
             if (preg_match("/^$num\\.$num\\.$num\\.$num$/", $strvalue, $matches) <= 0)
-                triggerError($record, $this->fieldName(), 'error_not_a_valid_ip');
+                atkTools::triggerError($record, $this->fieldName(), 'error_not_a_valid_ip');
         }
         parent::validate($record, $mode);
     }
@@ -124,11 +124,11 @@ class atkIpAttribute extends atkAttribute
     {
         // By default, return the plain ip number
         if (!$this->hasFlag(AF_IP_STORENUMERIC))
-            return atkArrayNvl($rec, $this->fieldName());
+            return atkTools::atkArrayNvl($rec, $this->fieldName());
 
         // But if the AF_IP_STORENUMERIC flag is set, we store it as long integer
-        atkimport("atk.utils.atkiputils");
-        return atkIpUtils::ipLongFormat(atkArrayNvl($rec, $this->fieldName()));
+        atkTools::atkimport("atk.utils.atkiputils");
+        return atkIpUtils::ipLongFormat(atkTools::atkArrayNvl($rec, $this->fieldName()));
     }
 
     /**
@@ -141,11 +141,11 @@ class atkIpAttribute extends atkAttribute
     {
         // By default, return the plain ip number
         if (!$this->hasFlag(AF_IP_STORENUMERIC))
-            return atkArrayNvl($rec, $this->fieldName());
+            return atkTools::atkArrayNvl($rec, $this->fieldName());
 
         // But if the AF_IP_STORENUMERIC flag is set, we load it as long integer
-        atkimport("atk.utils.atkiputils");
-        return atkIpUtils::ipStringFormat(atkArrayNvl($rec, $this->fieldName()));
+        atkTools::atkimport("atk.utils.atkiputils");
+        return atkIpUtils::ipStringFormat(atkTools::atkArrayNvl($rec, $this->fieldName()));
     }
 
     /**

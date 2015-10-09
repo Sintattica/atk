@@ -12,8 +12,8 @@
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
  */
-atkimport("atk.security.encryption.atkencryption");
-userelation("atkonetoonerelation");
+atkTools::atkimport("atk.security.encryption.atkencryption");
+atkTools::userelation("atkonetoonerelation");
 
 /**
  * Relationship that can link 2 tables based on a secure link
@@ -151,7 +151,7 @@ class atkSecureRelation extends atkOneToOneRelation
         else {
             $query = "SELECT " . $linkfield . " as pass FROM " . $linktable . " WHERE " . atkconfig("auth_userfield") . " = '" . $username . "'";
 
-            $db = &atkGetDb();
+            $db = &atkTools::atkGetDb();
             $rec = $db->getrows($query);
             if (count($rec) < 1)
                 return $linkpass;
@@ -255,7 +255,7 @@ class atkSecureRelation extends atkOneToOneRelation
                         $decryptedlink = $this->decrypt($records[$i], $this->m_linkbackfield);
 
                         if (!$decryptedlink && $errorconfig) {
-                            atkdebug("Unable to decrypt link: " . $link . "for record: " . var_export($records[$i], true) . " with linkbackfield: " . $this->m_linkbackfield);
+                            atkTools::atkdebug("Unable to decrypt link: " . $link . "for record: " . var_export($records[$i], true) . " with linkbackfield: " . $this->m_linkbackfield);
                             $decrypterror = true;
                         } else {
                             $this->m_keylookup[$decryptedlink] = $i;
@@ -264,9 +264,9 @@ class atkSecureRelation extends atkOneToOneRelation
                     }
                     if ($decrypterror) {
                         if ($errorconfig == 2)
-                            atkerror("There were errors decrypting the secured links, see debuginfo");
+                            atkTools::atkerror("There were errors decrypting the secured links, see debuginfo");
                         else if ($errorconfig == 1)
-                            mailreport();
+                            atkTools::mailreport();
                     }
                     return $this->m_records;
                 }
@@ -301,7 +301,7 @@ class atkSecureRelation extends atkOneToOneRelation
                 $this->m_refKey = $backup_refkey;
                 return $load;
             } else {
-                atkdebug("Could not decrypt the link: $link for " . $this->m_ownerInstance->primaryKeyField() . "='" . $record[$this->m_ownerInstance->primaryKeyField()]);
+                atkTools::atkdebug("Could not decrypt the link: $link for " . $this->m_ownerInstance->primaryKeyField() . "='" . $record[$this->m_ownerInstance->primaryKeyField()]);
             }
         }
     }
@@ -329,14 +329,14 @@ class atkSecureRelation extends atkOneToOneRelation
                     else if ($this->m_destInstance->m_attribList[$field])
                         $cachetable = $this->m_destInstance->m_table;
 
-                    $db = &atkGetDb();
+                    $db = &atkTools::atkGetDb();
                     $db->query("UPDATE $cachetable
                               SET {$this->m_cachefield}='$cryptedlink'
                               WHERE " . $this->m_ownerInstance->primaryKeyField() . " = '" .
                         $record[$this->m_ownerInstance->primaryKeyField()] . "'");
                 }
                 else if (!$cryptedlink || !is_numeric($cryptedlink)) {
-                    atkdebug("decrypt($record, $field) failed! and yielded: $cryptedlink");
+                    atkTools::atkdebug("decrypt($record, $field) failed! and yielded: $cryptedlink");
                     return NULL;
                 }
             } else {
@@ -355,7 +355,7 @@ class atkSecureRelation extends atkOneToOneRelation
      */
     function newUser($id, $pass)
     {
-        $db = &atkGetDb();
+        $db = &atkTools::atkGetDb();
         $linkpass = $this->m_crypt->encryptKey($this->getLinkPassword($this->m_linktable, $this->m_linkfield), $pass);
         $query = "UPDATE $this->m_linktable SET $this->m_linkfield = '" . $linkpass . "' WHERE id = '$id'";
         $db->query($query);
@@ -367,7 +367,7 @@ class atkSecureRelation extends atkOneToOneRelation
      */
     function _getJoinCondition()
     {
-        $db = &atkGetDb();
+        $db = &atkTools::atkGetDb();
 
         // decrypt the encrypted keys to get the tables joined
         $temp_query = "SELECT " . $this->fieldName() . " FROM " . $this->m_ownerInstance->m_table;

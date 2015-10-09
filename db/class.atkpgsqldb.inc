@@ -104,7 +104,7 @@ class atkPgsqlDb extends atkDb
         /* limit? */
         if ($offset >= 0 && $limit >= 0)
             $query .= " LIMIT $limit OFFSET $offset";
-        atkdebug("atkpgsqldb.query(): " . $query);
+        atkTools::atkdebug("atkpgsqldb.query(): " . $query);
 
         /* connect to database */
         if ($this->connect() == DB_SUCCESS) {
@@ -294,7 +294,7 @@ class atkPgsqlDb extends atkDb
      */
     function metadata($table, $full = false)
     {
-        atkimport("atk.db.atkddl");
+        atkTools::atkimport("atk.db.atkddl");
         $ddl = &atkDDL::create("pgsql");
 
         if (strpos($table, ".") <> false) {
@@ -368,7 +368,7 @@ class atkPgsqlDb extends atkDb
             if ($row['is_auto_inc'] == 1)
                 $meta[$i]['sequence'] = $row['sequence'];
 
-            else if (atk_strlen($row['default']) > 0) {
+            else if (atkTools::atk_strlen($row['default']) > 0) {
                 // date/time/datetime
                 if (strtolower($row['default']) == "now" && in_array($meta[$i]['gentype'], array("date", "time", "datetime")))
                     $meta[$i]['default'] = "NOW";

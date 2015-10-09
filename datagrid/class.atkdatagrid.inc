@@ -12,8 +12,8 @@
  *
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
-atkimport('atk.datagrid.atkdglistener');
-atkimport('atk.datagrid.atkdgcomponent');
+atkTools::atkimport('atk.datagrid.atkdglistener');
+atkTools::atkimport('atk.datagrid.atkdgcomponent');
 
 /**
  * The data grid is a component based record list container.
@@ -358,7 +358,7 @@ class atkDataGrid
         if ($useSession) {
             atkGetSessionManager()->pageVar('atkdgsession', $sessions);
         }
-        atkimport($class);
+        atkTools::atkimport($class);
         $class = substr($class, strrpos($class, '.') + 1);
         $grid = new $class($node, $name, self::CREATE, $isEmbedded, $useSession);
         self::callModifiers($grid, self::CREATE);
@@ -392,7 +392,7 @@ class atkDataGrid
 
         $class = $session['class'];
 
-        atkimport($class);
+        atkTools::atkimport($class);
         $class = substr($class, strrpos($class, '.') + 1);
         $grid = new $class($node, $name, self::RESUME);
         self::callModifiers($grid, self::RESUME);
@@ -448,7 +448,7 @@ class atkDataGrid
     protected function initOnCreate()
     {
         $this->setFlags($this->convertNodeFlags($this->getNode()->getFlags()));
-        $this->setBaseUrl(partial_url($this->getNode()->atkNodeType(), $this->getNode()->m_action, 'datagrid'));
+        $this->setBaseUrl(atkTools::partial_url($this->getNode()->atkNodeType(), $this->getNode()->m_action, 'datagrid'));
 
         $this->setDefaultLimit(atkconfig('recordsperpage'));
         $this->setDefaultActions($this->getNode()->defaultActions("admin"));
@@ -463,7 +463,7 @@ class atkDataGrid
                 $this->addFilter($key . "='" . $value . "'");
             }
 
-            atkimport('atk.utils.atkstringparser');
+            atkTools::atkimport('atk.utils.atkstringparser');
             foreach ($this->getNode()->m_fuzzyFilters as $filter) {
                 $parser = new atkStringParser($filter);
                 $filter = $parser->parse(array('table' => $this->getNode()->getTable()));
@@ -559,7 +559,7 @@ class atkDataGrid
             return;
 
         $request = array_merge($_GET, $_POST);
-        atkDataDecode($request);
+        atkTools::atkDataDecode($request);
 
         $vars = array('atkstartat', 'atklimit', 'atksearch', 'atksmartsearch',
             'atksearchmode', 'atkorderby', 'atkindex', 'atkcolcmd');
@@ -697,15 +697,15 @@ class atkDataGrid
      */
     protected function convertNodeFlags($nodeFlags)
     {
-        $flags = !hasFlag($nodeFlags, NF_NO_SORT) ? self::SORT : 0;
-        $flags |= hasFlag($nodeFlags, NF_EXT_SORT) ? self::EXTENDED_SORT : 0;
-        $flags |=!hasFlag($nodeFlags, NF_NO_SEARCH) ? self::SEARCH : 0;
-        $flags |=!hasFlag($nodeFlags, NF_NO_EXTENDED_SEARCH) ? self::EXTENDED_SEARCH
+        $flags = !atkTools::hasFlag($nodeFlags, NF_NO_SORT) ? self::SORT : 0;
+        $flags |= atkTools::hasFlag($nodeFlags, NF_EXT_SORT) ? self::EXTENDED_SORT : 0;
+        $flags |=!atkTools::hasFlag($nodeFlags, NF_NO_SEARCH) ? self::SEARCH : 0;
+        $flags |=!atkTools::hasFlag($nodeFlags, NF_NO_EXTENDED_SEARCH) ? self::EXTENDED_SEARCH
                 : 0;
-        $flags |= hasFlag($nodeFlags, NF_MRA) ? self::MULTI_RECORD_ACTIONS : 0;
-        $flags |= hasFlag($nodeFlags, NF_MRPA) ? self::MULTI_RECORD_PRIORITY_ACTIONS
+        $flags |= atkTools::hasFlag($nodeFlags, NF_MRA) ? self::MULTI_RECORD_ACTIONS : 0;
+        $flags |= atkTools::hasFlag($nodeFlags, NF_MRPA) ? self::MULTI_RECORD_PRIORITY_ACTIONS
                 : 0;
-        $flags |= hasFlag($nodeFlags, NF_LOCK) ? self::LOCKING : 0;
+        $flags |= atkTools::hasFlag($nodeFlags, NF_LOCK) ? self::LOCKING : 0;
 
         return $flags;
     }
@@ -759,7 +759,7 @@ class atkDataGrid
      */
     public function hasFlag($flag)
     {
-        return hasFlag($this->m_flags, $flag);
+        return atkTools::hasFlag($this->m_flags, $flag);
     }
 
     /**
@@ -1031,7 +1031,7 @@ class atkDataGrid
         $this->m_componentInstances = array();
 
         foreach ($this->getComponents() as $name => $info) {
-            $comp = atknew($info['class'], $this, $info['options']);
+            $comp = atkTools::atknew($info['class'], $this, $info['options']);
             $this->m_componentInstances[$name] = $comp;
             if ($comp instanceof atkDGListener)
                 $this->addListener($comp);
@@ -1625,7 +1625,7 @@ class atkDataGrid
             $overridesJsStr .= (!empty($overridesJsStr) ? ', ' : '') . "'$key': $js";
         }
 
-        atkimport('atk.utils.atkjson');
+        atkTools::atkimport('atk.utils.atkjson');
         return 'ATK.DataGrid.update(' . atkJSON::encode($this->getName()) . ', ' . atkJSON::encode($overrides) . ', {' . $overridesJsStr . '}, ' . $overridesJsCallback . ');';
     }
 
@@ -1636,8 +1636,8 @@ class atkDataGrid
      */
     public function getSaveCall()
     {
-        $url = session_url(dispatch_url($this->getNode()->atkNodeType(), 'multiupdate', array('output' => 'json')), SESSION_PARTIAL);
-        atkimport('atk.utils.atkjson');
+        $url = atkTools::session_url(dispatch_url($this->getNode()->atkNodeType(), 'multiupdate', array('output' => 'json')), SESSION_PARTIAL);
+        atkTools::atkimport('atk.utils.atkjson');
         return 'ATK.DataGrid.save(' . atkJSON::encode($this->getName()) . ', ' . atkJSON::encode($url) . ');';
     }
 
@@ -1764,7 +1764,7 @@ class atkDataGrid
         $this->loadRecords();
 
         // render the grid
-        atkimport('atk.datagrid.atkdgrenderer');
+        atkTools::atkimport('atk.datagrid.atkdgrenderer');
         $renderer = new atkDGRenderer($this);
         $result = $renderer->render();
 

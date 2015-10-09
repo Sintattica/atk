@@ -15,7 +15,7 @@
  * @version $Revision: 6351 $
  * $Id$
  */
-atkimport("atk.handlers.atkvieweditbase");
+atkTools::atkimport("atk.handlers.atkvieweditbase");
 
 /**
  * Handler class for the edit action of a node. The handler draws a
@@ -179,7 +179,7 @@ class atkEditHandler extends atkViewEditBase
         $ui = &$node->getUi();
 
         if (!is_object($ui)) {
-            atkerror("ui object failure");
+            atkTools::atkerror("ui object failure");
             return false;
         }
 
@@ -225,7 +225,7 @@ class atkEditHandler extends atkViewEditBase
 
         $forceList = array();
         if (isset($node->m_postvars['atkfilter'])) {
-            $forceList = decodeKeyValueSet($node->m_postvars['atkfilter']);
+            $forceList = atkTools::decodeKeyValueSet($node->m_postvars['atkfilter']);
         }
 
         $suppressList = array();
@@ -251,7 +251,7 @@ class atkEditHandler extends atkViewEditBase
         $ui = &$node->getUi();
 
         if (is_object($ui)) {
-            $this->getPage()->setTitle(atktext('app_shorttitle') . " - " . $node->actionTitle('edit', $record));
+            $this->getPage()->setTitle(atkTools::atktext('app_shorttitle') . " - " . $node->actionTitle('edit', $record));
 
             $output = $ui->renderAction("edit", $params, $node->m_module);
             $this->addRenderBoxVar("title", $node->actionTitle('edit', $record));
@@ -304,7 +304,7 @@ class atkEditHandler extends atkViewEditBase
                 : "entryform";
         $formstart = '<form id="' . $formIdentifier . '" name="' . $formIdentifier . '" enctype="multipart/form-data" action="' . $controller->getPhpFile() . '?' . SID . '"' .
             ' method="post" onsubmit="return globalSubmit(this,false)" class="form-horizontal" role="form">' .
-            session_form($this->getUpdateSessionStatus());
+            atkTools::session_form($this->getUpdateSessionStatus());
 
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkaction" value="' . $this->getUpdateAction() . '" />';
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkprevaction" value="' . $this->getNode()->m_action . '" />';
@@ -397,7 +397,7 @@ class atkEditHandler extends atkViewEditBase
             (!is_array($field["sections"]) || count(array_intersect($field['sections'], $visibleSections)) > 0);
 
         // ar_ stands voor 'attribrow'.
-        $tplfield["rowid"] = "ar_" . ($field['id'] != '' ? $field['id'] : getUniqueID("anonymousattribrows")); // The id of the containing row
+        $tplfield["rowid"] = "ar_" . ($field['id'] != '' ? $field['id'] : atkTools::getUniqueID("anonymousattribrows")); // The id of the containing row
         // check for separator
         if ($field["html"] == "-" && $index > 0 && $fields[$index - 1]["html"] != "-") {
             $tplfield["type"] = "line";
@@ -440,9 +440,9 @@ class atkEditHandler extends atkViewEditBase
             /* obligatory indicator */
             if ($field["obligatory"]) {
                 // load images
-                $theme = &atkinstance("atk.ui.atktheme");
+                $theme = &atkTools::atkinstance("atk.ui.atktheme");
                 $reqimg = '<img align="top" src="' . $theme->imgPath("required_field.gif") . '" border="0"
-                     alt="' . atktext("field_obligatory") . '" title="' . atktext("field_obligatory") . '">';
+                     alt="' . atkTools::atktext("field_obligatory") . '" title="' . atkTools::atktext("field_obligatory") . '">';
 
                 $tplfield["label"];
                 $tplfield["obligatory"] = $reqimg;
@@ -515,7 +515,7 @@ class atkEditHandler extends atkViewEditBase
         // Handle errors
         $errors = array();
         if (count($data['error']) > 0) {
-            $error_title = '<b>' . atktext('error_formdataerror') . '</b>';
+            $error_title = '<b>' . atkTools::atktext('error_formdataerror') . '</b>';
 
             foreach ($data["error"] as $error) {
                 if ($error['err'] == "error_primarykey_exists") {
@@ -525,7 +525,7 @@ class atkEditHandler extends atkViewEditBase
 
                     if (count($tabs) > 1 && $error["tab"]) {
                         $tabLink = $this->getTabLink($node, $error);
-                        $error_tab = ' (' . atktext("error_tab") . ' ' . $tabLink . ' )';
+                        $error_tab = ' (' . atkTools::atktext("error_tab") . ' ' . $tabLink . ' )';
                     } else {
                         $tabLink = null;
                         $error_tab = "";
@@ -560,11 +560,11 @@ class atkEditHandler extends atkViewEditBase
             }
             if (count($pk_err_attrib) > 0) { // Make primary key error message
                 for ($i = 0; $i < count($pk_err_attrib); $i++) {
-                    $pk_err_msg .= atktext($pk_err_attrib[$i], $node->m_module);
+                    $pk_err_msg .= atkTools::atktext($pk_err_attrib[$i], $node->m_module);
                     if (($i + 1) < count($pk_err_attrib))
                         $pk_err_msg .= ", ";
                 }
-                $errors[] = array("label" => atktext("error_primarykey_exists"), "message" => $pk_err_msg);
+                $errors[] = array("label" => atkTools::atktext("error_primarykey_exists"), "message" => $pk_err_msg);
             }
         }
 
@@ -590,7 +590,7 @@ class atkEditHandler extends atkViewEditBase
         $page->register_script(atkconfig("atkroot") . "atk/javascript/formsubmit.js");
 
         // register fields that contain errornous values
-        atkimport('atk.utils.atkjson');
+        atkTools::atkimport('atk.utils.atkjson');
         $page->register_scriptcode("var atkErrorFields = " . atkJSON::encode($errorFields) . ";");
 
         if (atkconfig('lose_changes_warning', true)) {
@@ -620,7 +620,7 @@ class atkEditHandler extends atkViewEditBase
 
         $params["errortitle"] = $error_title;
         $params["errors"] = $errors; // Add the list of errors.
-        atkdebug("Render editform - $template");
+        atkTools::atkdebug("Render editform - $template");
         if ($template) {
             $result .= $ui->render($template, $params);
         } else {
@@ -707,7 +707,7 @@ class atkEditHandler extends atkViewEditBase
         if ($this->m_dialogSaveUrl != null) {
             return $this->m_dialogSaveUrl;
         } else {
-            return partial_url($this->m_node->atkNodeType(), 'update', 'dialog');
+            return atkTools::partial_url($this->m_node->atkNodeType(), 'update', 'dialog');
         }
     }
 

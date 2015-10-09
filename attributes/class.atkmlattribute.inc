@@ -133,7 +133,7 @@ class atkMlAttribute extends atkAttribute
             $entry = array("name" => $this->m_name . "_ml", "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
 
             /* label? */
-            $entry["label"] = $this->label($defaults) . ' (<label id="' . $fieldprefix . $this->formName() . '_label">' . atktext("language_" . strtolower($curlng)) . '</label>)';
+            $entry["label"] = $this->label($defaults) . ' (<label id="' . $fieldprefix . $this->formName() . '_label">' . atkTools::atktext("language_" . strtolower($curlng)) . '</label>)';
             $entry["id"] = $this->getHtmlId($fieldprefix);
             $entry["tabs"] = $this->m_tabs;
             $entry["sections"] = $this->m_sections;
@@ -172,7 +172,7 @@ class atkMlAttribute extends atkAttribute
         $id .=!$this->isMlNode() ? '_' . $languages[0] : '';
 
         $result = '<input type="text" name="' . $id . '"' .
-            ' value="' . atk_htmlentities($record[$this->fieldName() . (!$this->isMlNode()
+            ' value="' . atkTools::atk_htmlentities($record[$this->fieldName() . (!$this->isMlNode()
                         ? '_' . $languages[0] : '')]) . '"' .
             ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"' : '') .
             ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . '>';
@@ -372,7 +372,7 @@ class atkMlAttribute extends atkAttribute
             $searchcondition = $query->$func($table . "." . $this->fieldName() . (!$this->isMlNode()
                         ? '_' . $languages[0] : ''), $this->escapeSQL($value));
         } else {
-            atkdebug("Database doesn't support searchmode '$searchmode' for " . $this->fieldName() . ", ignoring condition.");
+            atkTools::atkdebug("Database doesn't support searchmode '$searchmode' for " . $this->fieldName() . ", ignoring condition.");
         }
         return $searchcondition;
     }

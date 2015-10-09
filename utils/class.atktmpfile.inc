@@ -268,7 +268,7 @@ class atkTmpFile
             $err = 'atkTmpFile:: Unable to set ' . $dir .
                 'as basedir. Directory does not exists or isnot writable';
 
-            atkwarning($err);
+            atkTools::atkwarning($err);
             return false;
         }
         $this->m_basedir = $dir;
@@ -351,7 +351,7 @@ class atkTmpFile
      */
     public function createDirectoryStructure()
     {
-        useattrib('atkfileattribute');
+        atkTools::useattrib('atkfileattribute');
         return atkFileAttribute::mkdir(dirname($this->getPath()));
     }
 

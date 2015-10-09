@@ -192,7 +192,7 @@ class atkTimeAttribute extends atkAttribute
             $m_defSec = $default[2];
         }
 
-        atkdebug("defhour=$m_defHour   defmin=$m_defMin");
+        atkTools::atkdebug("defhour=$m_defHour   defmin=$m_defMin");
         // generate hour dropdown
         if (!$this->hasflag(AF_OBLIGATORY) || $this->hasFlag(AF_TIME_DEFAULT_EMPTY))
             $m_hourBox .= '<option value=""' . ($m_defHour === "" ? ' selected' : '') . '></option>';
@@ -373,7 +373,7 @@ class atkTimeAttribute extends atkAttribute
     {
         $value = $rec[$this->fieldName()];
         if ($this->hasFlag(AF_OBLIGATORY) && ($value["hours"] == -1 || $value['minutes'] == -1)) {
-            triggerError($rec, $this->fieldName(), 'error_obligatoryfield');
+            atkTools::triggerError($rec, $this->fieldName(), 'error_obligatoryfield');
         }
     }
 

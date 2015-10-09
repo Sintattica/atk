@@ -16,7 +16,7 @@
 /**
  * @internal used attribute
  */
-useattrib("atktextattribute");
+atkTools::useattrib("atktextattribute");
 
 /**
  * File editing node.
@@ -166,7 +166,7 @@ class atkFileEditor extends atkNode
     {
         $this->m_dir = $this->stripDir($this->m_dir);
         if (is_dir($this->m_dir . "/" . $record["filename"])) {
-            $actions['view'] = dispatch_url($this->atkNodeType(), "dirchange", array('atkselector' => $this->m_dir . $record["filename"]));
+            $actions['view'] = atkTools::dispatch_url($this->atkNodeType(), "dirchange", array('atkselector' => $this->m_dir . $record["filename"]));
             unset($actions["edit"]);
             unset($actions["delete"]);
             return;
@@ -229,13 +229,13 @@ class atkFileEditor extends atkNode
                     }
                 }
             } else {
-                atkdebug("Dir " . $this->m_dir . " could not be read");
+                atkTools::atkdebug("Dir " . $this->m_dir . " could not be read");
             }
         } else {
             // file selected, read file.
             // in the fileeditor, the selector is always dummy.filename=name
             // so we use the value of the decoded pair as a filename.
-            $decodedselector = decodeKeyValuePair($selector);
+            $decodedselector = atkTools::decodeKeyValuePair($selector);
             $filename = $decodedselector["dummy.filename"];
             $record['filename'] = $filename;
 
@@ -245,7 +245,7 @@ class atkFileEditor extends atkNode
             if (is_file($this->m_dir . $filename)) {
                 $record['filecontent'] = implode("", file($this->m_dir . $filename));
             } else {
-                atkdebug("File $filename not found");
+                atkTools::atkdebug("File $filename not found");
             }
             $res[] = $record;
         }
@@ -261,9 +261,9 @@ class atkFileEditor extends atkNode
     function validate(&$rec, $mode)
     {
         if (!ereg($this->m_filefilter, $rec['filename'])) {
-            triggerError($rec, "filename", "filename_invalid");
+            atkTools::triggerError($rec, "filename", "filename_invalid");
         } else if ($mode == "add" && file_exists($this->m_dir . $rec['filename'])) {
-            triggerError($rec, "filename", "file_exists");
+            atkTools::triggerError($rec, "filename", "file_exists");
         }
     }
 
@@ -290,12 +290,12 @@ class atkFileEditor extends atkNode
         $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
         $fp = @fopen($this->m_dir . $record['filename'], "wb");
         if ($fp == NULL) {
-            atkerror("Unable to open file " . $record['filename'] . " for writing. (Is directory '" . $this->m_dir . "' readable by webserver?");
+            atkTools::atkerror("Unable to open file " . $record['filename'] . " for writing. (Is directory '" . $this->m_dir . "' readable by webserver?");
             return false;
         } else {
             fwrite($fp, $record['filecontent']);
             fclose($fp);
-            atkdebug("Wrote " . $record['filename']);
+            atkTools::atkdebug("Wrote " . $record['filename']);
         }
         return true;
     }
@@ -319,24 +319,24 @@ class atkFileEditor extends atkNode
 
         if ($record['atkprimkey'] != "") {
             if ($record['atkprimkey'] != $this->primaryKey($record)) {
-                $decodedprimkey = decodeKeyValuePair($record['atkprimkey']);
+                $decodedprimkey = atkTools::decodeKeyValuePair($record['atkprimkey']);
                 $filename = $this->m_dir . $decodedprimkey["dummy.filename"];
 
                 unlink($filename);
-                atkdebug("Filename changed. Deleted original '$filename'.");
+                atkTools::atkdebug("Filename changed. Deleted original '$filename'.");
             }
             $fp = @fopen($this->m_dir . $record['filename'], "wb");
             if ($fp == NULL) {
-                atkerror("Unable to open file " . $record['filename'] . " for writing. (Is directory '" . $this->m_dir . "' readable by webserver?");
+                atkTools::atkerror("Unable to open file " . $record['filename'] . " for writing. (Is directory '" . $this->m_dir . "' readable by webserver?");
             } else {
                 fwrite($fp, $record['filecontent']);
                 fclose($fp);
-                atkdebug("Wrote " . $record['filename']);
+                atkTools::atkdebug("Wrote " . $record['filename']);
                 $record['atkprimkey'] = $record['filename'];
             }
             return true;
         } else {
-            atkdebug("NOT UPDATING! NO SELECTOR SET!");
+            atkTools::atkdebug("NOT UPDATING! NO SELECTOR SET!");
             return false;
         }
     }
@@ -352,17 +352,17 @@ class atkFileEditor extends atkNode
     {
         $sessmngr = atkGetSessionManager();
         $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
-        $decodedselector = decodeKeyValuePair($selector);
+        $decodedselector = atkTools::decodeKeyValuePair($selector);
         $filename = $decodedselector["dummy.filename"];
 
-        atk_var_dump($this->m_dir, 'm_dir');
-        atk_var_dump($filename, 'filename');
+        atkTools::atk_var_dump($this->m_dir, 'm_dir');
+        atkTools::atk_var_dump($filename, 'filename');
 
         if (strpos($filename, "..") === false) {
             unlink($this->m_dir . $filename);
-            atkdebug("Deleted " . $this->m_dir . $filename);
+            atkTools::atkdebug("Deleted " . $this->m_dir . $filename);
         } else {
-            atkerror("Cannot unlink relative files. Possible hack attempt detected!");
+            atkTools::atkerror("Cannot unlink relative files. Possible hack attempt detected!");
         }
         return true;
     }

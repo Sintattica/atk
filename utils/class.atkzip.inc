@@ -81,11 +81,11 @@ class atkZip
     {
         $command = $this->getInfozipCommand($type, $params);
         $output = array();
-        atkdebug("atkZip->runInfozipCommand: Executing command: $command");
+        atkTools::atkdebug("atkZip->runInfozipCommand: Executing command: $command");
         $returncode = NULL; //var for catching returncode fro exec.
         exec($command, $output, $returncode);
-        atkdebug("atkZip->runInfozipCommand: Return code was: " . $returncode);
-        atk_var_dump($output, "atkZip->runInfozipCommand: Console output");
+        atkTools::atkdebug("atkZip->runInfozipCommand: Return code was: " . $returncode);
+        atkTools::atk_var_dump($output, "atkZip->runInfozipCommand: Console output");
         return $returncode;
     }
 
@@ -138,7 +138,7 @@ class atkZip
                 18 => "Zip could not open a specified file for reading; either it doesn't exist or the user running Zip doesn't have permission to read it.",
             );
         }
-        return atkArrayNvl($codes, $errorcode, "Unknown error code returned by Infozip");
+        return atkTools::atkArrayNvl($codes, $errorcode, "Unknown error code returned by Infozip");
     }
 
     /**
@@ -151,20 +151,20 @@ class atkZip
         if ($this->m_testok)
             return true;
 
-        atkdebug("atkZip->test: Testing systems zip abilities");
-        atkdebug("atkZip->test: Zipmode = " . $this->m_zipmode);
+        atkTools::atkdebug("atkZip->test: Testing systems zip abilities");
+        atkTools::atkdebug("atkZip->test: Zipmode = " . $this->m_zipmode);
 
         // If the php version is 5.2 or newer and the zip extension is loaded, we can use the
         // ziparchive class
         if (in_array($this->m_zipmode, array("auto", "internal"))) {
-            atkdebug("atkZip->test: Testing for php 5.2 and zip extension");
+            atkTools::atkdebug("atkZip->test: Testing for php 5.2 and zip extension");
             $phpversion = phpversion();
             $zipextensionloaded = @extension_loaded("zip");
-            atkdebug("atkZip->test: PHP Version = " . $phpversion);
-            atkdebug("atkZip->test: extension_loaded('zip') = " . ($zipextensionloaded
+            atkTools::atkdebug("atkZip->test: PHP Version = " . $phpversion);
+            atkTools::atkdebug("atkZip->test: extension_loaded('zip') = " . ($zipextensionloaded
                         ? "true" : "false"));
             if (version_compare($phpversion, '5.2') > 0 && $zipextensionloaded) {
-                atkdebug("atkZip->test: PHP 5.2 or newer and the ZIP extension are present, TEST SUCCESFULL!");
+                atkTools::atkdebug("atkZip->test: PHP 5.2 or newer and the ZIP extension are present, TEST SUCCESFULL!");
                 if ($this->m_zipmode == "auto")
                     $this->m_zipmode = "internal";
                 $this->m_testok = true;
@@ -177,9 +177,9 @@ class atkZip
         if (in_array($this->m_zipmode, array("auto", "infozip"))) {
             $zipoutput = shell_exec($this->getInfozipCommand(ATKZIP_ZIP, "-h"));
             $unzipoutput = shell_exec($this->getInfozipCommand(ATKZIP_UNZIP, "-h"));
-            atkdebug("atkZip->test: php 5.2 or zip extension not found, now testing for infozip binaries");
+            atkTools::atkdebug("atkZip->test: php 5.2 or zip extension not found, now testing for infozip binaries");
             if ((strlen($zipoutput) > 0) && (strlen($unzipoutput) > 0)) {
-                atkdebug("atkZip->test: zip and unzip command responded, TEST SUCCESFULL!");
+                atkTools::atkdebug("atkZip->test: zip and unzip command responded, TEST SUCCESFULL!");
                 if ($this->m_zipmode == "auto")
                     $this->m_zipmode = "infozip";
                 $this->m_testok = true;
@@ -187,8 +187,8 @@ class atkZip
             }
         }
 
-        atkdebug("atkZip->test: This system has no zip abilities, TEST FAILED!");
-        atkdebug("atkZip->test: Try upgrading to PHP 5.2 and installing the php zip extension");
+        atkTools::atkdebug("atkZip->test: This system has no zip abilities, TEST FAILED!");
+        atkTools::atkdebug("atkZip->test: Try upgrading to PHP 5.2 and installing the php zip extension");
         return false;
     }
 
@@ -252,7 +252,7 @@ class atkZip
         if ($this->m_zipmode == "internal") {
             $zip = new ZipArchive;
             if ($zip->open($archive) === TRUE) {
-                atkdebug("AtkZip::add|adding " . $filepath . basename($filename) . " to $archive");
+                atkTools::atkdebug("AtkZip::add|adding " . $filepath . basename($filename) . " to $archive");
                 $zip->addFile($filename, $filepath . basename($filename));
                 $zip->close();
                 return true;

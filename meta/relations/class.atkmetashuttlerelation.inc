@@ -17,7 +17,7 @@
 /**
  * @internal Include the base class.
  */
-userelation("atkshuttlerelation");
+atkTools::userelation("atkshuttlerelation");
 
 /**
  * Implementation of many-to-many relationships using a shuttle for meta nodes.

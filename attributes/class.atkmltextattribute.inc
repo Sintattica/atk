@@ -15,7 +15,7 @@
  * $Id$
  */
 /** @internal Include base class */
-useattrib("atkmlattribute");
+atkTools::useattrib("atkmlattribute");
 
 /**
  * The atkMlTextAttribute class represents an multilanguage attribute
@@ -102,7 +102,7 @@ class atkMlTextAttribute extends atkMlAttribute
             $entry = array("name" => $this->m_name . "_ml", "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
 
             /* label? */
-            $entry["label"] = $this->label($defaults) . ' (<label id="' . $fieldprefix . $this->formName() . '_label">' . atktext("language_" . strtolower($curlng)) . '</label>)';
+            $entry["label"] = $this->label($defaults) . ' (<label id="' . $fieldprefix . $this->formName() . '_label">' . atkTools::atktext("language_" . strtolower($curlng)) . '</label>)';
             $entry["id"] = $this->getHtmlId($fieldprefix);
             $entry["tabs"] = $this->m_tabs;
             $entry["sections"] = $this->m_sections;

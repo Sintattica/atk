@@ -45,7 +45,7 @@ class atkOutlookMenu extends atkmenuinterface
     {
         global $g_menu, $ATK_VARS, $g_modules;
         $page = &atkPage::getInstance();
-        $theme = &atkinstance("atk.ui.atktheme");
+        $theme = &atkTools::atkinstance("atk.ui.atktheme");
         $atkmenutop = $ATK_VARS["atkmenutop"];
         if ($atkmenutop == "")
             $atkmenutop = "main";
@@ -86,7 +86,7 @@ class atkOutlookMenu extends atkmenuinterface
                 for ($i = 0; $i < count($g_menu[$atkmenutop]); $i++) {
                     $menu = "";
                     $name = $g_menu[$atkmenutop][$i]["name"];
-                    $url = session_url($g_menu[$atkmenutop][$i]["url"], SESSION_NEW);
+                    $url = atkTools::session_url($g_menu[$atkmenutop][$i]["url"], SESSION_NEW);
                     $enable = $g_menu[$atkmenutop][$i]["enable"];
                     $modname = $g_menu[$atkmenutop][$i]["module"];
 
@@ -104,7 +104,7 @@ class atkOutlookMenu extends atkmenuinterface
 
                     /* submenu ? */
                     else if (empty($url) && $enable) {
-                        $menu .= href('menu.php?atkmenutop=' . $name, $this->getMenuTranslation($name, $modname), SESSION_DEFAULT) . atkconfig("menu_delimiter");
+                        $menu .= atkTools::href('menu.php?atkmenutop=' . $name, $this->getMenuTranslation($name, $modname), SESSION_DEFAULT) . atkconfig("menu_delimiter");
                     } else if (empty($url) && !$enable) {
                         //$menu .=text("menu_$name").$config_menu_delimiter;
                     }
@@ -113,9 +113,9 @@ class atkOutlookMenu extends atkmenuinterface
                         if ($g_menu[$atkmenutop][$i]["url"] != "") {
                             if ($g_menu[$atkmenutop][$i]["module"] != "") {
                                 $menu_icon = $g_modules[$g_menu[$atkmenutop][$i]["module"]] . 'icons/' . $atkmenutop . '_' . $name . '.gif';
-                                atkdebug("Search for menu icon: $menu_icon");
+                                atkTools::atkdebug("Search for menu icon: $menu_icon");
                             } else {
-                                atkdebug("Search for menu icon by iconpath: $menu_icon | $atkmenutop -> $name");
+                                atkTools::atkdebug("Search for menu icon by iconpath: $menu_icon | $atkmenutop -> $name");
                                 $menu_icon = $theme->iconPath($atkmenutop . '_' . $name, "outlook");
                             }
 

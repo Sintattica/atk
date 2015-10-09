@@ -118,7 +118,7 @@ class atkAddOrCopyHandler extends atkActionHandler
             $this->preCopy($record, $this->m_node, $includes);
         }
 
-        atkimport("atk.ui.atkdialog");
+        atkTools::atkimport("atk.ui.atkdialog");
         $db = &$this->m_node->getDb();
         $page = &$this->getPage();
 
@@ -161,7 +161,7 @@ class atkAddOrCopyHandler extends atkActionHandler
      */
     function handleAdd()
     {
-        atkimport("atk.ui.atkdialog");
+        atkTools::atkimport("atk.ui.atkdialog");
 
         $script = atkDialog::getCloseCall();
 
@@ -170,7 +170,7 @@ class atkAddOrCopyHandler extends atkActionHandler
             $dialog->setSessionStatus(SESSION_PARTIAL);
             $script .= $dialog->getCall(true, false);
         } else {
-            $script .= sprintf("document.location.href = %s;", atkJSON::encode(session_url(dispatch_url($this->m_node->atkNodeType(), 'add'), SESSION_NESTED)));
+            $script .= sprintf("document.location.href = %s;", atkJSON::encode(atkTools::session_url(dispatch_url($this->m_node->atkNodeType(), 'add'), SESSION_NESTED)));
         }
 
         $page = &$this->getPage();
@@ -233,7 +233,7 @@ class atkAddOrCopyHandler extends atkActionHandler
      */
     function getContent()
     {
-        $content = atktext("intro_addorcopy") . '
+        $content = atkTools::atktext("intro_addorcopy") . '
         <br />
         <br />
         <table border="0" style="text-align: left">
@@ -408,7 +408,7 @@ class atkAddOrCopyHandler extends atkActionHandler
         if ($this->m_processUrl != null) {
             return $this->m_processUrl;
         } else {
-            return partial_url($this->m_node->atkNodeType(), 'addorcopy', 'process');
+            return atkTools::partial_url($this->m_node->atkNodeType(), 'addorcopy', 'process');
         }
     }
 

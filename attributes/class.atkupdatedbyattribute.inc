@@ -17,7 +17,7 @@
 /**
  * @internal baseclass include
  */
-userelation("atkmanytoonerelation");
+atkTools::userelation("atkmanytoonerelation");
 
 /**
  * This attribute can be used to automatically store the user that inserted

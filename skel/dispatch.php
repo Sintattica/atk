@@ -35,8 +35,8 @@ $output = &atkOutput::getInstance();
 if ($ATK_VARS["atknodetype"] == "" || $session["login"] != 1) {
     // no nodetype passed, or session expired
 
-    $page = &atknew("atk.ui.atkpage");
-    $ui = &atkinstance("atk.ui.atkui");
+    $page = &atkTools::atknew("atk.ui.atkpage");
+    $ui = &atkTools::atkinstance("atk.ui.atkui");
     $theme = &atkTheme::getInstance();
 
 
@@ -49,17 +49,17 @@ if ($ATK_VARS["atknodetype"] == "" || $session["login"] != 1) {
             $destination.="&atkselector=" . $ATK_VARS["atkselector"];
     }
 
-    $title = atktext("title_session_expired");
+    $title = atkTools::atktext("title_session_expired");
     $contenttpl = '<br>%s<br><br><input type="button" onclick="top.location=\'%s\';" value="%s"><br><br>';
-    $content = sprintf($contenttpl, atktext("explain_session_expired"), str_replace("'", "\\'", $destination), atktext("relogin"));
+    $content = sprintf($contenttpl, atkTools::atktext("explain_session_expired"), str_replace("'", "\\'", $destination), atkTools::atktext("relogin"));
     $box = $ui->renderBox(array("title" => $title, "content" => $content));
 
     $page->addContent($box);
-    $output->output($page->render(atktext("title_session_expired"), true));
+    $output->output($page->render(atkTools::atktext("title_session_expired"), true));
 }
 else {
     atksecure();
-    atkimport("atk.ui.atkpage");
+    atkTools::atkimport("atk.ui.atkpage");
 
     $lockType = atkconfig("lock_type");
     if (!empty($lockType))
@@ -69,9 +69,9 @@ else {
 
     //Load controller   
     if ($ATK_VARS["atkcontroller"] == "")
-        $controller = &atkinstance("atk.atkcontroller");
+        $controller = &atkTools::atkinstance("atk.atkcontroller");
     else
-        $controller = &atkinstance($ATK_VARS["atkcontroller"]);
+        $controller = &atkTools::atkinstance($ATK_VARS["atkcontroller"]);
 
     //Handle http request  
     $controller->dispatch($ATK_VARS, $flags);

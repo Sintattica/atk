@@ -39,7 +39,7 @@ class mod_meta extends atkModule
      */
     function getNodes()
     {
-        registerNode("meta.meta", array("admin", "add", "edit", "delete"));
+        atkTools::registerNode("meta.meta", array("admin", "add", "edit", "delete"));
     }
 
     /**
@@ -48,12 +48,12 @@ class mod_meta extends atkModule
     function getMenuItems()
     {
         if (atkConfig::get("meta", "automenu", true)) {
-            $db = &atkGetDb();
+            $db = &atkTools::atkGetDb();
             $tables = $db->table_names();
 
             menuitem("meta", "", "main", array("meta.meta", "admin"));
             foreach ($tables as $table)
-                menuitem($table["table_name"], dispatch_url("meta." . $table["table_name"], "admin"), "meta", array("meta.meta", "admin"));
+                menuitem($table["table_name"], atkTools::dispatch_url("meta." . $table["table_name"], "admin"), "meta", array("meta.meta", "admin"));
         }
     }
 
@@ -68,7 +68,7 @@ class mod_meta extends atkModule
             return NULL;
         $table = getNodeType($node);
 
-        atkimport('atk.atkmetanode');
+        atkTools::atkimport('atk.atkmetanode');
         atkModule::setModuleScope('meta');
         $node = new atkMetaNode(array("type" => $table, "table" => $table, "handler" => array($this, 'initMetaPolicy')));
         atkModule::resetModuleScope();
@@ -83,7 +83,7 @@ class mod_meta extends atkModule
      */
     function nodeExists($node)
     {
-        $db = &atkGetDb();
+        $db = &atkTools::atkGetDb();
         $table = getNodeType($node);
         if (!preg_match('/[a-z0-9_]/i', $table))
             return FALSE;
@@ -99,7 +99,7 @@ class mod_meta extends atkModule
         $attrs = &$policy->getAttributes();
 
         foreach (array_keys($attrs) as $name) {
-            if (hasFlag($attrs[$name]["flags"], AF_AUTOKEY)) {
+            if (atkTools::hasFlag($attrs[$name]["flags"], AF_AUTOKEY)) {
                 $attrs[$name]["flags"] ^= AF_HIDE;
                 $attrs[$name]["flags"] |= AF_READONLY | AF_HIDE_ADD;
             }

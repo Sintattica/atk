@@ -215,7 +215,7 @@ class atkProfileAttribute extends atkAttribute
         // hierarchic groups, only return actions of parent (if this record has a parent)
         $parentAttr = $this->m_parentAttrName;
         if (!empty($parentAttr) && is_numeric($record[$parentAttr])) {
-            $db = &atkGetDb();
+            $db = &atkTools::atkGetDb();
             $query = "SELECT DISTINCT node, action FROM " . atkconfig("auth_accesstable") . " " .
                 "WHERE " . $this->m_accessField . " = " . $record[$parentAttr];
             $rows = $db->getRows($query);
@@ -230,13 +230,12 @@ class atkProfileAttribute extends atkAttribute
         // non-hierarchic groups, or root
         else {
             // include node information
-            require_once(atkconfig("atkroot") . "atk/atknodetools.inc");
             if (file_exists("config.nodes.inc"))
                 include_once("config.nodes.inc");
 
             // get nodes for each module
             foreach (array_keys($g_modules) as $module) {
-                if (!isset($g_moduleflags[$module]) || !hasFlag($g_moduleflags[$module], MF_NORIGHTS)) {
+                if (!isset($g_moduleflags[$module]) || !atkTools::hasFlag($g_moduleflags[$module], MF_NORIGHTS)) {
                     $instance = &getModule($module);
                     if (method_exists($instance, "getNodes"))
                         $instance->getNodes();
@@ -281,7 +280,7 @@ class atkProfileAttribute extends atkAttribute
             $levels = "'" . implode("','", $user['level']) . "'";
 
         // retrieve editable actions by user's levels
-        $db = &atkGetDb();
+        $db = &atkTools::atkGetDb();
         $query = "SELECT DISTINCT node, action FROM " . atkconfig("auth_accesstable") . " WHERE " . $this->m_accessField . " IN (" . $levels . ")";
         $rows = $db->getRows($query);
 
@@ -381,7 +380,7 @@ class atkProfileAttribute extends atkAttribute
                 }
 
                 if ($showBox) {
-                    $node_result .= "<b>" . atktext($node, $module) . "</b><br>";
+                    $node_result .= "<b>" . atkTools::atktext($node, $module) . "</b><br>";
                     $node_result .= $permissions_string;
                     if ($display_tabs_str) {
                         $node_result .= "<br>Tabs:&nbsp;" . $tab_permissions_string;
@@ -410,7 +409,7 @@ class atkProfileAttribute extends atkAttribute
                     $result .= sprintf("<b><a href=\"javascript:void(0)\" onclick=\"%s\"><img src=\"%s\" border=\"0\" id=\"img_div_$module\"></a>&nbsp;</b>%s<br>",
                         "profile_swapProfileDiv('div_$module', '" . atkConfig('atkroot') . "'); return false;",
                         atkConfig('atkroot') . 'atk/images/plus.gif',
-                        atktext(array("title_$module", $module), $module)
+                        atkTools::atktext(array("title_$module", $module), $module)
                     );
                     $result .= "<div id=\"div_$module\" name=\"div_$module\" style=\"display: none;\">";
                     $result .= "<input type=\"hidden\" name=\"divstate['div_$module']\" id=\"divstate['div_$module']\" value=\"closed\" />";
@@ -443,11 +442,11 @@ class atkProfileAttribute extends atkAttribute
 
         $result = '<div align="right">
                   [<a href="javascript:void(0)" onclick="profile_checkAll(\'' . $this->fieldName() . '\'); return false;">' .
-            atktext("check_all") .
+            atkTools::atktext("check_all") .
             '</a> | <a href="javascript:void(0)" onclick="profile_checkNone(\'' . $this->fieldName() . '\'); return false;">' .
-            atktext("check_none") .
+            atkTools::atktext("check_none") .
             '</a> | <a href="javascript:void(0)" onclick="profile_checkInvert(\'' . $this->fieldName() . '\'); return false;">' .
-            atktext("invert_selection") . '</a>]</div>';
+            atkTools::atktext("invert_selection") . '</a>]</div>';
 
         $isAdmin = ($user['name'] == 'administrator' || $this->canGrantAll());
         $allActions = $this->getAllActions($record, true);
@@ -459,16 +458,16 @@ class atkProfileAttribute extends atkAttribute
         foreach ($allActions as $section => $modules) {
             if ($showSection) {
                 $result .= "</div><br>";
-                $result .= "<span  onclick=\"profile_swapProfileDiv('div_$section','" . atkConfig("atkroot") . "');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\"><img src=\"" . atkConfig("atkroot") . "atk/images/plus.gif\" border=\"0\" id=\"img_div_$section\">&nbsp;" . atktext(array("title_$section", $section), $section) . "</span><br/>";
+                $result .= "<span  onclick=\"profile_swapProfileDiv('div_$section','" . atkConfig("atkroot") . "');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\"><img src=\"" . atkConfig("atkroot") . "atk/images/plus.gif\" border=\"0\" id=\"img_div_$section\">&nbsp;" . atkTools::atktext(array("title_$section", $section), $section) . "</span><br/>";
                 $result .= "<div id='div_$section' name='div_$section' style='display: none; padding-left: 15px'>";
                 $result .= "<input type='hidden' name=\"divstate['div_$section']\" id=\"divstate['div_$section']\" value='closed' />";
                 $result.='<div style="font-size: 80%; margin-top: 4px; margin-bottom: 4px" >
                   [<a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkAllByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' .
-                    atktext("check_all", "atk") .
+                    atkTools::atktext("check_all", "atk") .
                     '</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkNoneByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' .
-                    atktext("check_none", "atk") .
+                    atkTools::atktext("check_none", "atk") .
                     '</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkInvertByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' .
-                    atktext("invert_selection", "atk") . '</a>]</div>';
+                    atkTools::atktext("invert_selection", "atk") . '</a>]</div>';
                 $result .= "<br>";
             }
 
@@ -478,7 +477,7 @@ class atkProfileAttribute extends atkAttribute
                                         ? $editableActions[$module][$node] : array()))) > 0;
 
                     if ($showBox)
-                        $result .= "<b>" . atktext($node, $module) . "</b><br>";
+                        $result .= "<b>" . atkTools::atktext($node, $module) . "</b><br>";
 
                     $tabs_str = "";
                     $display_tabs_str = false;
@@ -487,7 +486,7 @@ class atkProfileAttribute extends atkAttribute
                     foreach ($actions as $action) {
                         $temp_str = "";
 
-                        $isEditable = $isAdmin || atk_in_array($action, $editableActions[$module][$node]);
+                        $isEditable = $isAdmin || atkTools::atk_in_array($action, $editableActions[$module][$node]);
                         $isSelected = isset($selectedActions[$module][$node]) && in_array($action, $selectedActions[$module][$node]);
 
                         if ($isEditable) {
@@ -542,7 +541,7 @@ class atkProfileAttribute extends atkAttribute
         );
 
         // don't use text() function of attribute, because of auto module detection
-        $label = atktext($keys, $modulename, $nodename);
+        $label = atkTools::atktext($keys, $modulename, $nodename);
 
         return $label;
     }
@@ -576,7 +575,7 @@ class atkProfileAttribute extends atkAttribute
                 $action = $elems[2];
             } else {
                 // never happens..
-                atkdebug("profileattribute encountered incomplete combination");
+                atkTools::atkdebug("profileattribute encountered incomplete combination");
             }
             $actions[$node][] = $action;
         }

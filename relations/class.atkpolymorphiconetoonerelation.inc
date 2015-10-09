@@ -1,5 +1,5 @@
 <?php
-userelation("atkonetoonerelation");
+atkTools::userelation("atkonetoonerelation");
 
 class atkPolymorphicOneToOneRelation extends atkOneToOneRelation
 {

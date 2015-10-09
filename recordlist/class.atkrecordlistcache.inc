@@ -109,7 +109,7 @@ class atkRecordlistCache
         $this->_setCacheId();
 
         if (file_exists($this->m_cacheid) && filesize($this->m_cacheid) && !$this->noCaching()) {
-            $theme = &atkinstance("atk.ui.atktheme");
+            $theme = &atkTools::atkinstance("atk.ui.atktheme");
             $page = &atkPage::getInstance();
 
             $page->register_style($theme->stylePath("recordlist.css"));
@@ -161,7 +161,7 @@ class atkRecordlistCache
                 fwrite($fp, $output);
                 fclose($fp);
             } else {
-                return atkerror("Couldn't open {$this->m_cacheid} for writing!");
+                return atkTools::atkerror("Couldn't open {$this->m_cacheid} for writing!");
             }
 
             $fp = &fopen($this->m_cacheid . "_actionloader", "a+");
@@ -169,9 +169,9 @@ class atkRecordlistCache
                 fwrite($fp, $actionloader);
                 fclose($fp);
             } else {
-                return atkerror("Couldn't open {$this->m_cacheid}_actionloader for writing!");
+                return atkTools::atkerror("Couldn't open {$this->m_cacheid}_actionloader for writing!");
             }
-            atkdebug("New cache created for {$this->m_node->m_module}.{$this->m_node->m_type} and written to: $this->m_cacheid");
+            atkTools::atkdebug("New cache created for {$this->m_node->m_module}.{$this->m_node->m_type} and written to: $this->m_cacheid");
         }
         return;
     }
@@ -185,8 +185,8 @@ class atkRecordlistCache
     {
         return
             $this->m_postvars['atkorderby'] ||
-            ($this->m_postvars['atksearch'] && atk_value_in_array($this->m_postvars['atksearch'])) ||
-            ($this->m_postvars['atksmartsearch'] && atk_value_in_array($this->m_postvars['atksmartsearch']));
+            ($this->m_postvars['atksearch'] && atkTools::atk_value_in_array($this->m_postvars['atksearch'])) ||
+            ($this->m_postvars['atksmartsearch'] && atkTools::atk_value_in_array($this->m_postvars['atksmartsearch']));
     }
 
     /**
@@ -194,7 +194,7 @@ class atkRecordlistCache
      */
     function clearCache()
     {
-        atkimport("atk.utils.atkdirectorytraverser");
+        atkTools::atkimport("atk.utils.atkdirectorytraverser");
         $cachedir = atkconfig("atktempdir") . "rlcache/";
         $atkdirtrav = new atkDirectoryTraverser();
 
@@ -213,7 +213,7 @@ class atkRecordlistCache
                 unlink($cachedir . $cachefile);
             }
         }
-        atkdebug("Cache for {$this->m_node->m_module}.{$this->m_node->m_type} cleared");
+        atkTools::atkdebug("Cache for {$this->m_node->m_module}.{$this->m_node->m_type} cleared");
     }
 
     /**

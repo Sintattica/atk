@@ -97,7 +97,7 @@ class atkSessionManager
         $this->m_usestack = $usestack;
         // added in 5.3 but not working
         // session_regenerate_id();
-        atkdebug("creating sessionManager (namespace: $namespace)");
+        atkTools::atkdebug("creating sessionManager (namespace: $namespace)");
     }
 
     /**
@@ -213,7 +213,7 @@ class atkSessionManager
         if (!is_array($currentitem))
             return null;
 
-        if ($level === atkLevel() && $value === "" && atkarraynvl($_REQUEST, $var, "") !== "") {
+        if ($level === atkLevel() && $value === "" && atkTools::atkArrayNvl($_REQUEST, $var, "") !== "") {
             // Only read the value of the stack var from the request if this is the first
             // call to stackVar for this var in this request without an explicit value. If
             // we would this for every call without an explicit value we would overwrite values
@@ -229,11 +229,11 @@ class atkSessionManager
             $currentitem[$var] = $value;
         }
 
-        if (!is_array(atkArrayNvl($currentitem, "defined_stackvars")) || !in_array($var, $currentitem["defined_stackvars"])) {
+        if (!is_array(atkTools::atkArrayNvl($currentitem, "defined_stackvars")) || !in_array($var, $currentitem["defined_stackvars"])) {
             $currentitem["defined_stackvars"][] = $var;
         }
         // We always return the current value..
-        return atkarraynvl($currentitem, $var);
+        return atkTools::atkArrayNvl($currentitem, $var);
     }
 
     /**
@@ -259,7 +259,7 @@ class atkSessionManager
             $top_stack_level = array();
 
         if ($value === "") {
-            if (atkarraynvl($_REQUEST, $var, "") !== "") {
+            if (atkTools::atkArrayNvl($_REQUEST, $var, "") !== "") {
                 $value = $_REQUEST[$var];
             } else if ($this->stackVar($var)) {
                 $value = $this->stackVar($var);
@@ -269,7 +269,7 @@ class atkSessionManager
         if ($value !== "") {
             $top_stack_level[$var] = $value;
         }
-        return atkarraynvl($top_stack_level, $var);
+        return atkTools::atkArrayNvl($top_stack_level, $var);
     }
 
     /**
@@ -300,7 +300,7 @@ class atkSessionManager
 
             if ($value == "") {
                 if (isset($_REQUEST[$var])) {
-                    atkdebug("Setting current item");
+                    atkTools::atkdebug("Setting current item");
                     $currentitem[$var] = $_REQUEST[$var];
                 }
             } else {
@@ -362,7 +362,7 @@ class atkSessionManager
 
         $maxAge = atkconfig('session_max_stack_inactivity_period', 0);
         if ($maxAge <= 0) {
-            atkwarning(__METHOD__ . ': removing expired stacks disabled, enable by setting $config_session_max_stack_inactivity_period to a value > 0');
+            atkTools::atkwarning(__METHOD__ . ': removing expired stacks disabled, enable by setting $config_session_max_stack_inactivity_period to a value > 0');
             return;
         }
 
@@ -382,7 +382,7 @@ class atkSessionManager
             $age = $now - $stamp;
 
             if ($age > $maxAge) {
-                atkdebug(__METHOD__ . ': removing expired stack "' . $stackId . '" (age ' . $age . 's)');
+                atkTools::atkdebug(__METHOD__ . ': removing expired stack "' . $stackId . '" (age ' . $age . 's)');
                 unset($stacks[$stackId]);
                 unset($stackStamps[$stackId]);
                 $removed = true;
@@ -390,7 +390,7 @@ class atkSessionManager
         }
 
         if (!$removed) {
-            atkdebug(__METHOD__ . ': no expired stacks, nothing removed');
+            atkTools::atkdebug(__METHOD__ . ': no expired stacks, nothing removed');
         }
     }
 
@@ -428,7 +428,7 @@ class atkSessionManager
         if (!isset($atklevel) || $atklevel == "")
             $atklevel = 0;
 
-        atkdebug("ATKLevel: " . $atklevel);
+        atkTools::atkdebug("ATKLevel: " . $atklevel);
 
         if ($this->_verifyStackIntegrity() && $atklevel == -1) {
             // New stack, new stackid, if level = -1.
@@ -447,17 +447,17 @@ class atkSessionManager
         // causes a new stackitem to be pushed onto the stack at the wrong
         // location.
         if ($atklevel > count($stack)) {
-            atkdebug("Requested ATKLevel (" . $atklevel . ") too high for stack, lowering to " . count($stack));
+            atkTools::atkdebug("Requested ATKLevel (" . $atklevel . ") too high for stack, lowering to " . count($stack));
             $atklevel = count($stack);
         }
 
         if (isset($postvars["atkescape"]) && $postvars["atkescape"] != "") {
             $this->m_escapemode = true;
-            atkdebug("ATK session escapemode");
+            atkTools::atkdebug("ATK session escapemode");
 
             $currentitem = &$stack[count($stack) - 1];
 
-            atkdebug("Saving formdata in session");
+            atkTools::atkdebug("Saving formdata in session");
 
             unset($currentitem['atkreject']); // clear old reject info
 
@@ -491,7 +491,7 @@ class atkSessionManager
             $partial = false;
 
             if ($atklevel == -1 || !is_array($stack)) { // SESSION_NEW
-                atkdebug("Cleaning stack");
+                atkTools::atkdebug("Cleaning stack");
                 $stack = array();
                 $atklevel = 0;
             } else if ($atklevel == -2) { // SESSION_REPLACE
@@ -515,7 +515,7 @@ class atkSessionManager
                 $currentitem = $stack[$atklevel];
 
             if (!isset($currentitem) || $currentitem == "") {
-                atkdebug("New level on session stack");
+                atkTools::atkdebug("New level on session stack");
                 // Initialise
                 $currentitem = array();
                 // new level.. always based on the previous level
@@ -560,7 +560,7 @@ class atkSessionManager
                 // If we are getting back from a higher level, we may now delete everything above
                 $deletecount = (count($stack) - 1) - $atklevel;
                 for ($i = 0; $i < $deletecount; $i++) {
-                    atkdebug("popped an item out of the stack");
+                    atkTools::atkdebug("popped an item out of the stack");
                     array_pop($stack);
                 }
 
@@ -570,7 +570,7 @@ class atkSessionManager
 
                     if (isset($postvars[$var]) && count($postvars[$var]) > 0 && (!$partial || !in_array($var, $lockedVars))) {
                         if ($recursive && is_array($currentitem[$var]) && is_array($postvars[$var])) {
-                            $currentitem[$var] = atk_array_merge_recursive($currentitem[$var], $postvars[$var]);
+                            $currentitem[$var] = atkTools::atk_array_merge_recursive($currentitem[$var], $postvars[$var]);
                         } else {
                             $currentitem[$var] = $postvars[$var];
                         }
@@ -589,7 +589,7 @@ class atkSessionManager
             }
 
             if (isset($currentitem["atkformdata"]) && is_array($currentitem["atkformdata"])) {
-                atkdebug("Session formdata present");
+                atkTools::atkdebug("Session formdata present");
                 foreach ($currentitem['atkformdata'] as $var => $value) {
 
                     // don't override what was passed in the url.
@@ -598,7 +598,7 @@ class atkSessionManager
                     } else if (is_array($postvars[$var]) && is_array($value)) {
                         // Formdata that was posted earlier needs to be merged with the current
                         // formdata. We use a custom array_merge here to preserve key=>value pairs.
-                        $postvars[$var] = atk_array_merge_keys($value, $postvars[$var]);
+                        $postvars[$var] = atkTools::atk_array_merge_keys($value, $postvars[$var]);
                     }
                 }
 
@@ -631,7 +631,7 @@ class atkSessionManager
     {
         global $g_sessionData;
 
-        $ui = &atkinstance("atk.ui.atkui");
+        $ui = &atkTools::atkinstance("atk.ui.atkui");
 
         $res = array();
         $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];
@@ -645,20 +645,20 @@ class atkSessionManager
             $type = getNodeType($node);
             $action = $stack[$i]["atkaction"];
             $title = $ui->title($module, $type, $action);
-            $descriptor = atkArrayNvl($stack[$i], "descriptor", "");
+            $descriptor = atkTools::atkArrayNvl($stack[$i], "descriptor", "");
 
             $entry = array(
                 'url' => '',
                 'title' => $title,
                 'descriptor' => $descriptor,
                 'node' => $node,
-                'nodetitle' => atktext($type, $module, $type),
+                'nodetitle' => atkTools::atktext($type, $module, $type),
                 'action' => $action,
-                'actiontitle' => atktext($action, $module, $type)
+                'actiontitle' => atkTools::atktext($action, $module, $type)
             );
 
             if ($i < count($stack) - 1) {
-                $entry['url'] = session_url(getDispatchFile() . '?atklevel=' . $i);
+                $entry['url'] = atkTools::session_url( atkTools::getDispatchFile() . '?atklevel=' . $i);
             }
 
             $res[] = $entry;
@@ -693,10 +693,10 @@ class atkSessionManager
                 }
 
                 if (is_object($node)) {
-                    $ui = &atkinstance("atk.ui.atkui");
+                    $ui = &atkTools::atkinstance("atk.ui.atkui");
                     $txt = $ui->title($module, $nodename);
                 } else {
-                    $txt = atktext($nodename, $module);
+                    $txt = atkTools::atktext($nodename, $module);
                 }
 
                 $res[] = $txt . (isset($stack[$i]["descriptor"]) ? " [ {$stack[$i]['descriptor']} ] "
@@ -738,7 +738,7 @@ class atkSessionManager
             // is different. Let's fork the stack.
             // @TODO: If an error occurs and forking is required, the rejection info is not forked right, since it is currently stored
             //        in session['atkreject'] and not directly in the stack. See also atk/handlers/class.atkactionhandler.inc.
-            atkdebug("Multiple windows detected: levelstack forked (atkprevlevel=$atkprevlevel, real: $prevlevelfromstack)");
+            atkTools::atkdebug("Multiple windows detected: levelstack forked (atkprevlevel=$atkprevlevel, real: $prevlevelfromstack)");
             $newid = atkStackID(true);
 
             // We must also make this stack 'ok' with the atkprevlevel.
@@ -747,7 +747,7 @@ class atkSessionManager
             // stack level).
             $deletecount = (count($stack) - 1) - $atkprevlevel;
             for ($i = 0; $i < $deletecount; $i++) {
-                atkdebug("popped an item out of the forked stack");
+                atkTools::atkdebug("popped an item out of the forked stack");
                 array_pop($stack);
             }
 
@@ -978,11 +978,11 @@ class atkSessionManager
     static public function href($url, $name = "", $sessionstatus = SESSION_DEFAULT, $saveform = false, $extraprops = "")
     {
         if ($saveform) {
-            $str = 'atkSubmit("' . atkurlencode(atkSessionManager::sessionUrl($url, $sessionstatus)) . '", true);';
-            return "<a href=\"javascript:void(0)\" onclick=\"" . atk_htmlentities($str) . "\" " . $extraprops . ">" . $name . "</a>";
+            $str = 'atkSubmit("' . atkTools::atkurlencode(atkSessionManager::sessionUrl($url, $sessionstatus)) . '", true);';
+            return "<a href=\"javascript:void(0)\" onclick=\"" . atkTools::atk_htmlentities($str) . "\" " . $extraprops . ">" . $name . "</a>";
         } else {
             $str = atkSessionManager::sessionUrl($url, $sessionstatus);
-            return "<a href=\"" . atk_htmlentities($str) . "\" " . $extraprops . ">" . $name . "</a>";
+            return "<a href=\"" . atkTools::atk_htmlentities($str) . "\" " . $extraprops . ">" . $name . "</a>";
         }
     }
 
@@ -1008,7 +1008,7 @@ function atksession_init()
     if (function_exists("session_cache_expire"))
         session_cache_expire(atkconfig("session_cache_expire"));
     else
-        atkdebug("session_cache_expire function does not exist, please upgrade to the latest stable php version (at least 4.2.x)", DEBUG_WARNING);
+        atkTools::atkdebug("session_cache_expire function does not exist, please upgrade to the latest stable php version (at least 4.2.x)", DEBUG_WARNING);
 
     // set the cache limiter (used for caching)
     session_cache_limiter(atkconfig("session_cache_limiter"));
@@ -1023,7 +1023,7 @@ function atksession_init()
         session_start();
         return true;
     } else
-        atkwarning("Not a valid session!");
+        atkTools::atkwarning("Not a valid session!");
     return false;
 }
 
@@ -1049,11 +1049,11 @@ function atksession($namespace = "default", $usestack = true)
 {
     global $ATK_VARS, $g_sessionManager, $g_sessionData, $atkprevlevel;
 
-    $g_sessionManager = atknew('atk.session.atksessionmanager', $namespace, $usestack);
+    $g_sessionManager = atkTools::atknew('atk.session.atksessionmanager', $namespace, $usestack);
 
-    atkDataDecode($_REQUEST);
+    atkTools::atkDataDecode($_REQUEST);
     $ATK_VARS = array_merge($_GET, $_POST);
-    atkDataDecode($ATK_VARS);
+    atkTools::atkDataDecode($ATK_VARS);
     if (array_key_exists('atkfieldprefix', $ATK_VARS) && $ATK_VARS['atkfieldprefix'] != '')
         $ATK_VARS = $ATK_VARS[$ATK_VARS['atkfieldprefix']];
 
@@ -1061,23 +1061,23 @@ function atksession($namespace = "default", $usestack = true)
 
     // Escape check
     if (isset($_REQUEST["atkescape"]) && $_REQUEST["atkescape"] != "") {
-        atkimport("atk.atknode");
-        atkNode::redirect(atkurldecode($_REQUEST["atkescape"]));
+        atkTools::atkimport("atk.atknode");
+        atkNode::redirect(atkTools::atkurldecode($_REQUEST["atkescape"]));
         atkOutput::getInstance()->outputFlush();
         exit;
     }
     // Nested URL check
     else if (isset($_REQUEST["atknested"]) && $_REQUEST["atknested"] != "") {
-        atkimport("atk.atknode");
-        atkNode::redirect(session_url($_REQUEST["atknested"], SESSION_NESTED));
+        atkTools::atkimport("atk.atknode");
+        atkNode::redirect(atkTools::session_url($_REQUEST["atknested"], SESSION_NESTED));
         atkOutput::getInstance()->outputFlush();
         exit;
     }
     // Back check
     else if (isset($ATK_VARS["atkback"]) && $ATK_VARS["atkback"] != "") {
         // When we go back, we go one level deeper than the level we came from.
-        atkimport("atk.atknode");
-        atkNode::redirect(session_url(atkSelf() . "?atklevel=" . ($atkprevlevel - 1)));
+        atkTools::atkimport("atk.atknode");
+        atkNode::redirect(atkTools::session_url(atkTools::atkSelf() . "?atklevel=" . ($atkprevlevel - 1)));
         atkOutput::getInstance()->outputFlush();
         exit;
     }

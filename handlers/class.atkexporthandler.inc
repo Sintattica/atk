@@ -54,7 +54,7 @@ class atkExportHandler extends atkActionHandler
                 $this->m_postvars[$key] = $value;
 
         //need to keep the selected item after an exporterror
-        $phase = atkArrayNvl($this->m_postvars, "phase", "init");
+        $phase = atkTools::atkArrayNvl($this->m_postvars, "phase", "init");
         if (!in_array($phase, array("init", "process")))
             $phase = "init";
 
@@ -82,14 +82,14 @@ class atkExportHandler extends atkActionHandler
           {
             fieldval = $( 'export_selection_options' ).value;
           }
-          new Ajax.Updater('export_attributes', '" . partial_url($this->m_postvars['atknodetype'], 'export', 'export') . "exportvalue='+fieldval+'&' );
+          new Ajax.Updater('export_attributes', '" . atkTools::partial_url($this->m_postvars['atknodetype'], 'export', 'export') . "exportvalue='+fieldval+'&' );
 
           if( fieldval != 'none' )
           {
             if( fieldval != 'new' )
             {
-              new Ajax.Updater('selection_interact', '" . partial_url($this->m_postvars['atknodetype'], 'export', 'selection_interact') . "exportvalue='+fieldval+'&' );
-              new Ajax.Updater('export_name', '" . partial_url($this->m_postvars['atknodetype'], 'export', 'selection_name') . "exportvalue='+fieldval+'&' );
+              new Ajax.Updater('selection_interact', '" . atkTools::partial_url($this->m_postvars['atknodetype'], 'export', 'selection_interact') . "exportvalue='+fieldval+'&' );
+              new Ajax.Updater('export_name', '" . atkTools::partial_url($this->m_postvars['atknodetype'], 'export', 'selection_name') . "exportvalue='+fieldval+'&' );
               $( 'selection_interact' ).style.display='';
               $( 'export_name' ).style.display='';
               $( 'export_save_button' ).style.display='';
@@ -115,12 +115,12 @@ class atkExportHandler extends atkActionHandler
         $page->register_scriptcode("
         function confirm_delete()
         {
-         var where_to = confirm('" . atktext('confirm_delete') . "');
+         var where_to = confirm('" . atkTools::atktext('confirm_delete') . "');
          var dodelete = $( 'export_selection_options' ).value;
 
          if (where_to == true)
          {
-           window.location= \"" . dispatch_url($this->m_postvars['atknodetype'], 'export', array('confirmed' => 'true')) . "&dodelete=\"+dodelete;
+           window.location= \"" . atkTools::dispatch_url($this->m_postvars['atknodetype'], 'export', array('confirmed' => 'true')) . "&dodelete=\"+dodelete;
          }
         }");
 
@@ -158,13 +158,13 @@ class atkExportHandler extends atkActionHandler
         $value = '';
 
         if ($selected) {
-            $db = atkGetDb();
+            $db = atkTools::atkGetDb();
             $rows = $db->getRows('SELECT name FROM atk_exportcriteria WHERE id = ' . (int) $selected);
             if (count($rows) == 1) {
                 $value = htmlentities($rows[0]['name']);
             }
         }
-        return '<td>' . atktext("export_selections_name", "atk") . ': </td><td align="left"><input type="text" size="40" name="export_selection_name" id="export_selection_name" value="' . $value . '"></td>
+        return '<td>' . atkTools::atktext("export_selections_name", "atk") . ': </td><td align="left"><input type="text" size="40" name="export_selection_name" id="export_selection_name" value="' . $value . '"></td>
               <input type="hidden" name="exportvalue" value="' . $this->m_postvars['exportvalue'] . '" />';
     }
 
@@ -178,13 +178,13 @@ class atkExportHandler extends atkActionHandler
         $selected = array_key_exists('exportvalue', $this->m_postvars) ? $this->m_postvars['exportvalue']
                 : null;
 
-        $theme = atkinstance('atk.ui.atktheme');
+        $theme = atkTools::atkinstance('atk.ui.atktheme');
 
         $img_delete = $theme->iconPath('delete', 'recordlist');
-        $url_delete = dispatch_url($this->m_node->m_module . '.' . $this->m_node->m_type, 'export', array('dodelete' => $selected));
+        $url_delete = atkTools::dispatch_url($this->m_node->m_module . '.' . $this->m_node->m_type, 'export', array('dodelete' => $selected));
 
         if ($selected) {
-            $result = '<a href="' . $url_delete . '" title="' . atktext('delete_selection') . '" onclick="confirm_delete();"><img src="' . $img_delete . '" alt="' . atktext('delete_selection') . '" border="0" /></a>';
+            $result = '<a href="' . $url_delete . '" title="' . atkTools::atktext('delete_selection') . '" onclick="confirm_delete();"><img src="' . $img_delete . '" alt="' . atkTools::atktext('delete_selection') . '" border="0" /></a>';
             return $result;
         }
     }
@@ -195,16 +195,16 @@ class atkExportHandler extends atkActionHandler
      */
     function _getInitHtml()
     {
-        $action = dispatch_url($this->m_node->m_module . '.' . $this->m_node->m_type, "export");
+        $action = atkTools::dispatch_url($this->m_node->m_module . '.' . $this->m_node->m_type, "export");
 
         $params = array();
         $params["formstart"] = '<form name="entryform" enctype="multipart/form-data" action="' . $action . '" method="post">';
-        $params["formstart"] .= session_form();
+        $params["formstart"] .= atkTools::session_form();
         $params["formstart"] .= '<input type="hidden" name="phase" value="process"/>';
-        $params["buttons"][] = atkButton(atktext("cancel", "atk"), "", SESSION_BACK, true);
-        $params["buttons"][] = '<input class="btn" type="submit" value="' . atkText("export", "atk") . '"/>';
-        $params["buttons"][] = '<input id="export_save_button" style="display:none;" value="' . atktext("save_export_selection", "atk") . '" name="save_export" class="btn" type="submit" /> ';
-        $params["content"] = '<b>' . atkText("export_config_explanation", "atk", $this->m_node->m_type) . '</b><br/><br/>';
+        $params["buttons"][] = atkTools::atkButton(atkTools::atktext("cancel", "atk"), "", SESSION_BACK, true);
+        $params["buttons"][] = '<input class="btn" type="submit" value="' . atkTools::atktext("export", "atk") . '"/>';
+        $params["buttons"][] = '<input id="export_save_button" style="display:none;" value="' . atkTools::atktext("save_export_selection", "atk") . '" name="save_export" class="btn" type="submit" /> ';
+        $params["content"] = '<b>' . atkTools::atktext("export_config_explanation", "atk", $this->m_node->m_type) . '</b><br/><br/>';
         $params["content"] .= $this->_getOptions();
         $params["formend"] = '</form>';
 
@@ -245,16 +245,16 @@ class atkExportHandler extends atkActionHandler
 
         // enable extended export options
         if (true === atkconfig('enable_export_save_selection')) {
-            $content .= '<tr><td>' . atktext("export_selections", "atk") . ': </td><td align="left">' . $this->getExportSelectionDropdown() . '&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="toggleSelectionName(\'new\');return false;">' . atktext('new', 'atk') . '</a></td></tr>';
+            $content .= '<tr><td>' . atkTools::atktext("export_selections", "atk") . ': </td><td align="left">' . $this->getExportSelectionDropdown() . '&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="toggleSelectionName(\'new\');return false;">' . atkTools::atktext('new', 'atk') . '</a></td></tr>';
             $content .= '<tr><td>&nbsp;</td><td align="left"><div id="selection_interact"></div></td></tr>';
-            $content .= '<tr id="export_name" style="display:none;"><td>' . atktext("export_selections_name", "atk") . ': </td><td align="left"><input type="text" size="40" id="export_selection_name" name="export_selection_name" value=""></td></tr>';
+            $content .= '<tr id="export_name" style="display:none;"><td>' . atkTools::atktext("export_selections_name", "atk") . ': </td><td align="left"><input type="text" size="40" id="export_selection_name" name="export_selection_name" value=""></td></tr>';
         }
 
-        $content.= '<tr><td>' . atktext("delimiter", "atk") . ': </td><td><input type="text" size="2" name="delimiter" value=' . atkConfig::getGlobal('export_delimiter', ';') . '></td></tr>';
-        $content.= '<tr><td>' . atktext("enclosure", "atk") . ': </td><td><input type="text" size="2" name="enclosure" value=' . atkConfig::getGlobal('export_enclosure', '&quot;') . '></td></tr>';
-        $content.= '<tr><td valign="top">' . atktext("export_selectcolumns", "atk") . ': </td><td><div id="export_attributes">' . $this->getAttributeSelect() . '</div></td></tr>';
+        $content.= '<tr><td>' . atkTools::atktext("delimiter", "atk") . ': </td><td><input type="text" size="2" name="delimiter" value=' . atkConfig::getGlobal('export_delimiter', ';') . '></td></tr>';
+        $content.= '<tr><td>' . atkTools::atktext("enclosure", "atk") . ': </td><td><input type="text" size="2" name="enclosure" value=' . atkConfig::getGlobal('export_enclosure', '&quot;') . '></td></tr>';
+        $content.= '<tr><td valign="top">' . atkTools::atktext("export_selectcolumns", "atk") . ': </td><td><div id="export_attributes">' . $this->getAttributeSelect() . '</div></td></tr>';
         $content.= '<tr><td>';
-        $content.= atktext("export_generatetitlerow") . ': </td><td><input type="checkbox" name="generatetitlerow" class="atkcheckbox" value=1 ' . (atkConfig::getGlobal('export_titlerow_checked', true) ? 'checked' : '') . '>';
+        $content.= atkTools::atktext("export_generatetitlerow") . ': </td><td><input type="checkbox" name="generatetitlerow" class="atkcheckbox" value=1 ' . (atkConfig::getGlobal('export_titlerow_checked', true) ? 'checked' : '') . '>';
         $content.= '</td></tr>';
         $content.= '</table><br /><br />';
         return $content;
@@ -269,7 +269,7 @@ class atkExportHandler extends atkActionHandler
     {
         $html = '
         <select name="export_selection_options" id="export_selection_options" onchange="javascript:toggleSelectionName( );return false;" >
-          <option value="none">' . atktext('none', 'atk');
+          <option value="none">' . atkTools::atktext('none', 'atk');
 
         $options = $this->getExportSelections();
         if (count($options)) {
@@ -291,7 +291,7 @@ class atkExportHandler extends atkActionHandler
      */
     private function saveSelection()
     {
-        $db = atkGetDb();
+        $db = atkTools::atkGetDb();
         $id = $db->nextid('exportcriteria');
 
         $user_id = 0;
@@ -324,7 +324,7 @@ class atkExportHandler extends atkActionHandler
      */
     private function updateSelection()
     {
-        $db = atkGetDb();
+        $db = atkTools::atkGetDb();
 
         $user_id = 0;
         if ('none' !== strtolower(atkConfig('authentication'))) {
@@ -361,7 +361,7 @@ class atkExportHandler extends atkActionHandler
      */
     private function deleteSelection($id)
     {
-        $db = atkGetDb();
+        $db = atkTools::atkGetDb();
         $db->query('DELETE FROM atk_exportcriteria WHERE id = ' . (int) $id);
     }
 
@@ -380,7 +380,7 @@ class atkExportHandler extends atkActionHandler
             }
         }
 
-        $db = atkGetDb();
+        $db = atkTools::atkGetDb();
         return $db->getRows($query = 'SELECT id, name FROM atk_exportcriteria WHERE ' . $where . ' ORDER BY name');
     }
 
@@ -399,7 +399,7 @@ class atkExportHandler extends atkActionHandler
         foreach ($atts as $tab => $group) {
             $content .= '<TABLE style="border: 1px solid #d8d8d8; width: 90%">';
             if ($tab != 'default') {
-                $content .= '<TR><TD colspan="' . $cols . '"><div style="background-color: #ccc; color: #00366E; font-weight: bold">' . atktext(array(
+                $content .= '<TR><TD colspan="' . $cols . '"><div style="background-color: #ccc; color: #00366E; font-weight: bold">' . atkTools::atktext(array(
                         "tab_$tab", $tab), $this->m_node->m_module, $this->m_node->m_type) . '</div></TD></TR><TR>';
             }
             $idx = 0;
@@ -435,7 +435,7 @@ class atkExportHandler extends atkActionHandler
 
         $criteria = array();
         if (!in_array($value, array('new', 'none', ''))) {
-            $db = atkGetDb();
+            $db = atkTools::atkGetDb();
             $rows = $db->getRows('SELECT * FROM atk_exportcriteria WHERE id = ' . (int) $value);
             $criteria = unserialize($rows[0]['criteria']);
         }
@@ -529,7 +529,7 @@ class atkExportHandler extends atkActionHandler
         if (!is_array($actions)) {
             $actions = $node->defaultActions("export");
         }
-        $rl = &atknew("atk.recordlist.atkcustomrecordlist");
+        $rl = &atkTools::atknew("atk.recordlist.atkcustomrecordlist");
         $flags = ($node_bk->hasFlag(NF_MRA) ? RL_MRA : 0) | ($node_bk->hasFlag(NF_MRPA)
                     ? RL_MRPA : 0) | ($node_bk->hasFlag(NF_LOCK) ? RL_LOCK : 0);
         $node_bk->m_postvars = $session_back;
@@ -539,7 +539,7 @@ class atkExportHandler extends atkActionHandler
         if (isset($session_back['atkdg']['admin']['atksearchmode']))
             $node_bk->m_postvars['atksearchmode'] = $session_back['atkdg']['admin']['atksearchmode'];
 
-        $atkfilter = atkArrayNvl($source, 'atkfilter', "");
+        $atkfilter = atkTools::atkArrayNvl($source, 'atkfilter', "");
         $recordset = $node_bk->selectDb($session_back['atkselector'] . ($session_back['atkselector'] != '' && $atkfilter != ''
                     ? ' AND ' : '') . $atkfilter, $atkorderby, "", "", $list_includes, "export");
         if (method_exists($this->m_node, "assignExportData"))

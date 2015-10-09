@@ -15,7 +15,7 @@
  * $Id$
  */
 /** @internal include base class. */
-useattrib("atkmultiselectattribute");
+atkTools::useattrib("atkmultiselectattribute");
 
 /**
  * The atkFlagAttribute class offers an way to edit bitmask flags.
@@ -73,7 +73,7 @@ class atkFlagAttribute extends atkMultiSelectAttribute
         if ($rec[$this->fieldName()] > 0) {
             $newrec = array();
             foreach ($this->m_values as $value) {
-                if (hasFlag($rec[$this->fieldName()], $value)) {
+                if (atkTools::hasFlag($rec[$this->fieldName()], $value)) {
                     $newrec[] = $value;
                 }
             }
@@ -134,11 +134,11 @@ class atkFlagAttribute extends atkMultiSelectAttribute
      */
     function fetchValue($postvars)
     {
-        $vars = atkArrayNvl($postvars, $this->fieldName());
+        $vars = atkTools::atkArrayNvl($postvars, $this->fieldName());
         if (!is_array($vars)) {
             $result = array();
             foreach ($this->m_values as $value) {
-                if (hasFlag($vars, $value)) {
+                if (atkTools::hasFlag($vars, $value)) {
                     $result[] = $value;
                 }
             }

@@ -132,7 +132,7 @@ class atkClusterDb extends atkDb
      */
     public function createQuery()
     {
-        $query = &atknew("atk.db.atk{$this->m_current_clusternode->m_type}query");
+        $query = &atkTools::atknew("atk.db.atk{$this->m_current_clusternode->m_type}query");
         $query->m_db = $this;
         return $query;
     }
@@ -145,7 +145,7 @@ class atkClusterDb extends atkDb
      */
     public function createDDL()
     {
-        atkimport("atk.db.atkddl");
+        atkTools::atkimport("atk.db.atkddl");
         $ddl = &atkDDL::create($this->m_current_clusternode->m_type);
         $ddl->m_db = $this;
         return $ddl;
@@ -243,7 +243,7 @@ class atkClusterDb extends atkDb
         $number = mt_rand(0, count($nodeconfigs) - 1);
         $nodename = $nodenames[$number];
 
-        $this->m_current_clusternode = atkGetDb($nodename, false, $mode);
+        $this->m_current_clusternode = atkTools::atkGetDb($nodename, false, $mode);
     }
 
     ////////////////////////////// OVERLOADING METHODS //////////////////////////////

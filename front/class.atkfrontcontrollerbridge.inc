@@ -18,7 +18,7 @@
  * Imports
  * @access private
  */
-atkimport('atk.utils.atkdataholder');
+atkTools::atkimport('atk.utils.atkdataholder');
 
 /**
  * Front-end controller bridge. This bridge can be (re-)implemented to
@@ -40,7 +40,7 @@ class atkFrontControllerBridge
      */
     public function buildUrl($vars)
     {
-        $url = atkSelf() . '?' . http_build_query($vars);
+        $url = atkTools::atkSelf() . '?' . http_build_query($vars);
         return $url;
     }
 
@@ -62,7 +62,7 @@ class atkFrontControllerBridge
      */
     public function registerStyleSheet($file, $media = 'all')
     {
-        atkinstance('atk.ui.atkpage')->register_style($file, $media);
+        atkTools::atkinstance('atk.ui.atkpage')->register_style($file, $media);
     }
 
     /**
@@ -72,7 +72,7 @@ class atkFrontControllerBridge
      */
     public function registerStyleCode($code)
     {
-        atkinstance('atk.ui.atkpage')->register_stylecode($code);
+        atkTools::atkinstance('atk.ui.atkpage')->register_stylecode($code);
     }
 
     /**
@@ -82,7 +82,7 @@ class atkFrontControllerBridge
      */
     public function registerScriptFile($file)
     {
-        atkinstance('atk.ui.atkpage')->register_script($file);
+        atkTools::atkinstance('atk.ui.atkpage')->register_script($file);
     }
 
     /**
@@ -92,7 +92,7 @@ class atkFrontControllerBridge
      */
     public function registerScriptCode($code)
     {
-        atkinstance('atk.ui.atkpage')->register_scriptcode($code);
+        atkTools::atkinstance('atk.ui.atkpage')->register_scriptcode($code);
     }
 
     /**

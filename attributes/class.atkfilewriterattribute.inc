@@ -17,7 +17,7 @@
 /**
  * @internal include base class.
  */
-useattrib("atkTextAttribute");
+atkTools::useattrib("atkTextAttribute");
 include_once(atkconfig("atkroot") . "atk/utils/class.atkstringparser.inc");
 
 /**
@@ -76,7 +76,7 @@ class atkFileWriterAttribute extends atkTextAttribute
 
         if (!$parser->isComplete($record)) {
             // record does not contain all data. Let's lazy load.
-            atkdebug("[atkfilewriter] Lazy loading rest of record to complete filename.");
+            atkTools::atkdebug("[atkfilewriter] Lazy loading rest of record to complete filename.");
             $recs = $this->m_ownerInstance->selectDb($record["atkprimkey"]);
             $record = $recs[0];
         }
@@ -86,11 +86,11 @@ class atkFileWriterAttribute extends atkTextAttribute
         $fp = @fopen($filename, "w");
 
         if ($fp == false) {
-            atkerror("[" . $this->fieldName() . "] couldn't open $filename for writing!");
+            atkTools::atkerror("[" . $this->fieldName() . "] couldn't open $filename for writing!");
         } else {
             fwrite($fp, $contents);
             fclose($fp);
-            atkdebug("[" . $this->fieldName() . "] succesfully wrote $filename..");
+            atkTools::atkdebug("[" . $this->fieldName() . "] succesfully wrote $filename..");
         }
 
         return $this->escapeSQL($contents);
@@ -111,13 +111,13 @@ class atkFileWriterAttribute extends atkTextAttribute
         $filename = $parser->parse($record);
 
         if (!file_exists($filename)) {
-            atkdebug("[" . $this->fieldName() . "] warning: $filename doesn't exist");
+            atkTools::atkdebug("[" . $this->fieldName() . "] warning: $filename doesn't exist");
             return $record[$this->fieldName()];
         } else {
             if ($record[$this->fieldName()] == "") {
                 // db is empty. if file contains stuff, use that.          
                 $contents = implode("", file($filename));
-                atkdebug("[" . $this->fieldName() . "] succesfully read $filename");
+                atkTools::atkdebug("[" . $this->fieldName() . "] succesfully read $filename");
                 return $contents;
             } else {
                 return $record[$this->fieldName()];

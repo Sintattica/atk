@@ -15,7 +15,7 @@
  * $Id: class.atkmocksecuritymanager.inc 6354 2009-04-15 02:41:21Z mvdam $
  */
 /** @internal include */
-atkimport("atk.security.atksecuritymanager");
+atkTools::atkimport("atk.security.atksecuritymanager");
 
 /**
  * The atkMockSecurityManager class is an atkSecurityManager mock 

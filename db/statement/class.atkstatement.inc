@@ -14,8 +14,8 @@
  * @version $Revision$
  * $Id$
  */
-atkimport('atk.db.statement.atkstatementexception');
-atkimport('atk.db.statement.atkstatementparser');
+atkTools::atkimport('atk.db.statement.atkstatementexception');
+atkTools::atkimport('atk.db.statement.atkstatementparser');
 
 /**
  * A statement can be used to execute a query.
@@ -32,7 +32,7 @@ atkimport('atk.db.statement.atkstatementparser');
  * To create an instance please use the atkDb::prepare($query) method.
  * 
  * Example:
- * $stmt = atkGetDb()->prepare("SELECT COUNT(*) FROM people WHERE birthday > :birthday");
+ * $stmt = atkTools::atkGetDb()->prepare("SELECT COUNT(*) FROM people WHERE birthday > :birthday");
  * $stmt->execute(array('birthday' => '1985-09-20'));
  * foreach ($stmt as $person)
  * {
@@ -312,7 +312,7 @@ abstract class atkStatement implements IteratorAggregate
     {
         $this->rewind();
 
-        atkimport('atk.db.statement.atkstatementiterator');
+        atkTools::atkimport('atk.db.statement.atkstatementiterator');
         return new atkStatementIterator($this);
     }
 
@@ -381,7 +381,7 @@ abstract class atkStatement implements IteratorAggregate
             if ($keyColumn === null) {
                 $key = $i;
             } else if (is_numeric($keyColumn)) {
-                $key = atkArrayNvl(array_values($row), $keyColumn);
+                $key = atkTools::atkArrayNvl(array_values($row), $keyColumn);
             } else {
                 $key = $row[$keyColumn];
             }
@@ -411,7 +411,7 @@ abstract class atkStatement implements IteratorAggregate
         if ($row == null) {
             return $fallback;
         } else if (is_numeric($valueColumn)) {
-            return atkArrayNvl(array_values($row), $valueColumn);
+            return atkTools::atkArrayNvl(array_values($row), $valueColumn);
         } else {
             return $row[$valueColumn];
         }
@@ -461,7 +461,7 @@ abstract class atkStatement implements IteratorAggregate
         $rows = $this->getAllRowsAssoc($keyColumn);
         foreach ($rows as $key => &$value) {
             if (is_numeric($valueColumn)) {
-                $value = atkArrayNvl(array_values($value), $valueColumn);
+                $value = atkTools::atkArrayNvl(array_values($value), $valueColumn);
             } else {
                 $value = $value[$valueColumn];
             }

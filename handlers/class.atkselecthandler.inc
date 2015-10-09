@@ -57,9 +57,9 @@ class atkSelectHandler extends atkActionHandler
         $node = $this->getNode();
         $node->addStyle("style.css");
 
-        atkimport('atk.datagrid.atkdatagrid');
+        atkTools::atkimport('atk.datagrid.atkdatagrid');
         $grid = atkDataGrid::create($node, 'select');
-        $actions = array('select' => atkurldecode($grid->getPostvar('atktarget')));
+        $actions = array('select' => atkTools::atkurldecode($grid->getPostvar('atktarget')));
         $grid->removeFlag(atkDataGrid::MULTI_RECORD_ACTIONS);
         $grid->removeFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS);
         $grid->setDefaultActions($actions);
@@ -76,7 +76,7 @@ class atkSelectHandler extends atkActionHandler
         $params["footer"] = "";
 
         if (atkLevel() > 0) {
-            $backUrl = session_url(atkSelf() . '?atklevel=' . session_level(SESSION_BACK));
+            $backUrl = atkTools::session_url(atkTools::atkSelf() . '?atklevel=' . atkSessionManager::newLevel(SESSION_BACK));
             $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backUrl . '\';" value="' . $this->getNode()->text('cancel') . '"></div>';
         }
 
@@ -95,7 +95,7 @@ class atkSelectHandler extends atkActionHandler
      */
     public function partial_datagrid()
     {
-        atkimport('atk.datagrid.atkdatagrid');
+        atkTools::atkimport('atk.datagrid.atkdatagrid');
         try {
             $grid = atkDataGrid::resume($this->getNode());
 
@@ -129,21 +129,21 @@ class atkSelectHandler extends atkActionHandler
         }
 
         if (atkLevel() > 0 && $grid->getPostvar('atkprevlevel', 0) > atkLevel()) {
-            $backUrl = session_url(atkSelf() . '?atklevel=' . session_level(SESSION_BACK));
+            $backUrl = atkTools::session_url(atkTools::atkSelf() . '?atklevel=' . atkSessionManager::newLevel(SESSION_BACK));
             $node->redirect($backUrl);
         } else {
             $records = $grid->getRecords();
 
             // There's only one record and the autoselect flag is set, so we
             // automatically go to the target.
-            atkimport("atk.utils.atkstringparser");
-            $parser = new atkStringParser(rawurldecode(atkurldecode($grid->getPostvar('atktarget'))));
+            atkTools::atkimport("atk.utils.atkstringparser");
+            $parser = new atkStringParser(rawurldecode(atkTools::atkurldecode($grid->getPostvar('atktarget'))));
 
             // For backwardscompatibility reasons, we also support the '[pk]' var.
             $records[0]['pk'] = $node->primaryKey($records[0]);
             $target = $parser->parse($records[0], true);
 
-            $node->redirect(session_url($target, SESSION_NESTED));
+            $node->redirect(atkTools::session_url($target, SESSION_NESTED));
         }
 
         return true;

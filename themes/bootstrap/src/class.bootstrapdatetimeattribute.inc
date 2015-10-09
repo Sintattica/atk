@@ -1,9 +1,9 @@
 <?php
 
 // https://github.com/Eonasdan/bootstrap-datetimepicker
-useattrib("atkattribute");
+atkTools::useattrib("atkattribute");
 
-atkimport('atk.utils.atkmomentphpprovider');
+atkTools::atkimport('atk.utils.atkmomentphpprovider');
 
 class bootstrapDateTimeAttribute extends atkAttribute
 {
@@ -25,21 +25,21 @@ class bootstrapDateTimeAttribute extends atkAttribute
     function postInit()
     {
         if ($this->m_type == 'datetime') {
-            if (!$this->m_bootstrapdatetime_format_edit) $this->m_bootstrapdatetime_format_edit = atktext('btkdatetime_format_edit');
-            if (!$this->m_bootstrapdatetime_format_view) $this->m_bootstrapdatetime_format_view = atktext('btkdatetime_format_view');
+            if (!$this->m_bootstrapdatetime_format_edit) $this->m_bootstrapdatetime_format_edit = atkTools::atktext('btkdatetime_format_edit');
+            if (!$this->m_bootstrapdatetime_format_view) $this->m_bootstrapdatetime_format_view = atkTools::atktext('btkdatetime_format_view');
             $this->m_db_format = 'YYYY-MM-DD HH:mm:ss';
         } else if ($this->m_type == 'date') {
-            if (!$this->m_bootstrapdatetime_format_edit) $this->m_bootstrapdatetime_format_edit = atktext('btkdate_format_edit');
-            if (!$this->m_bootstrapdatetime_format_view) $this->m_bootstrapdatetime_format_view = atktext('btkdate_format_view');
+            if (!$this->m_bootstrapdatetime_format_edit) $this->m_bootstrapdatetime_format_edit = atkTools::atktext('btkdate_format_edit');
+            if (!$this->m_bootstrapdatetime_format_view) $this->m_bootstrapdatetime_format_view = atkTools::atktext('btkdate_format_view');
             $this->m_db_format = 'YYYY-MM-DD';
         } else if ($this->m_type == 'time') {
-            if (!$this->m_bootstrapdatetime_format_edit) $this->m_bootstrapdatetime_format_edit = atktext('btktime_format_edit');
-            if (!$this->m_bootstrapdatetime_format_view) $this->m_bootstrapdatetime_format_view = atktext('btktime_format_view');
+            if (!$this->m_bootstrapdatetime_format_edit) $this->m_bootstrapdatetime_format_edit = atkTools::atktext('btktime_format_edit');
+            if (!$this->m_bootstrapdatetime_format_view) $this->m_bootstrapdatetime_format_view = atkTools::atktext('btktime_format_view');
             $this->m_db_format = 'HH:mm:ss';
         }
 
         if (!$this->m_db_format) {
-            atkerror('bootstrapDateAttribute must have Date or Time');
+            atkTools::atkerror('bootstrapDateAttribute must have Date or Time');
         }
     }
 
@@ -141,7 +141,7 @@ class bootstrapDateTimeAttribute extends atkAttribute
         }
         $js .= "});";
 
-        $page = atkinstance('atk.ui.atkpage');
+        $page = atkTools::atkinstance('atk.ui.atkpage');
         $srcPath = atkConfig::getGlobal('atkroot') . 'atk/themes/bootstrap/lib/bootstrap-datetimepicker/build/';
         $page->register_script($srcPath . 'js/bootstrap-datetimepicker.min.js');
         $page->register_style($srcPath . 'css/bootstrap-datetimepicker.min.css');
@@ -227,7 +227,7 @@ class bootstrapDateTimeAttribute extends atkAttribute
         $res = $this->draw($rec, 'atksearch_AE_' . $fieldprefix, '_AE_from', 'search');
         $rec = isset($record[$this->fieldName()]['to']) ? array($this->fieldName() => $record[$this->fieldName()]['to'])
             : $record;
-        $res .= atktext("until") . $this->draw($rec, 'atksearch_AE_' . $fieldprefix, "_AE_to", 'search');
+        $res .= atkTools::atktext("until") . $this->draw($rec, 'atksearch_AE_' . $fieldprefix, "_AE_to", 'search');
 
         return $res;
     }

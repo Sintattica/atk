@@ -17,8 +17,8 @@
 /**
  * @internal Includes
  */
-atkimport("atk.attributes.atkdateattribute");
-atkimport("atk.attributes.atktimeattribute");
+atkTools::atkimport("atk.attributes.atkdateattribute");
+atkTools::atkimport("atk.attributes.atktimeattribute");
 
 /**
  * The atkDateTimeAttribute class can be used for date and time entry.
@@ -600,7 +600,7 @@ class atkDateTimeAttribute extends atkAttribute
                 }
             }
 
-            atkdebug('WARNING: could not determine UTC offset for atkDateTimeAttribute "' . $this->fieldName() . '"!');
+            atkTools::atkdebug('WARNING: could not determine UTC offset for atkDateTimeAttribute "' . $this->fieldName() . '"!');
             return 0;
         } else {
             return 0;

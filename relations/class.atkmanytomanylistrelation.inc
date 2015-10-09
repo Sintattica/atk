@@ -14,7 +14,7 @@
  * @version $Revision: 6320 $
  * $Id$
  */
-userelation("atkmanytomanyrelation");
+atkTools::userelation("atkmanytomanyrelation");
 
 /**
  * Many-to-many list relation.
@@ -128,7 +128,7 @@ class atkManyToManyListRelation extends atkManyToManyRelation
             $selectedStr = in_array($key, $selected) ? ' selected="selected"' : '';
             $value = $row[$this->m_destInstance->primaryKeyField()];
 
-            $result.= '<option value="' . atk_htmlentities($value) . '"' . $selectedStr . '>' . $label . '</option>';
+            $result.= '<option value="' . atkTools::atk_htmlentities($value) . '"' . $selectedStr . '>' . $label . '</option>';
         }
 
         $result .= '</select>';

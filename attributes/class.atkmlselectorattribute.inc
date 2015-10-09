@@ -15,7 +15,7 @@
  * $Id$
  */
 /** @internal include base class */
-useattrib("atkmlattribute");
+atkTools::useattrib("atkmlattribute");
 
 /**
  * The atkMlSelectorAttribute class represents more the less a dummy
@@ -44,7 +44,7 @@ class atkMlSelectorAttribute extends atkMlAttribute
 
         /* check config */
         if (!is_array($languages) || sizeof($languages) == 0)
-            return atktext("multilanguage_error_config", $this->m_ownerInstance->m_module, $this->m_ownerInstance->atknodetype());
+            return atkTools::atktext("multilanguage_error_config", $this->m_ownerInstance->m_module, $this->m_ownerInstance->atknodetype());
 
         /* first selected other language */
         //$formname = $prefix.'[multilanguage_current]';
@@ -58,7 +58,7 @@ class atkMlSelectorAttribute extends atkMlAttribute
         /* options */
         for ($i = 1; $i < sizeof($languages); $i++)
             $result .= '<option value="' . $languages[$i] . '" ' . (strtolower($languages[$i]) == strtolower($this->m_ownerInstance->m_postvars['atkeditlng'])
-                        ? 'selected' : '') . '>' . atktext('language_' . strtolower($languages[$i])) . '</option>';
+                        ? 'selected' : '') . '>' . atkTools::atktext('language_' . strtolower($languages[$i])) . '</option>';
 
         /* close */
         $result .= '</select>';
@@ -66,7 +66,7 @@ class atkMlSelectorAttribute extends atkMlAttribute
         if (!$s_wroteStrings) {
             $script = "str_languages = new Array();\n";
             for ($i = 0, $_i = count($languages); $i < $_i; $i++) {
-                $script.= "str_languages['" . $languages[$i] . "'] = '" . atktext('language_' . strtolower($languages[$i])) . "';\n";
+                $script.= "str_languages['" . $languages[$i] . "'] = '" . atkTools::atktext('language_' . strtolower($languages[$i])) . "';\n";
             }
             $page = &atkPage::getInstance();
             $page->register_scriptcode($script);

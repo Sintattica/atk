@@ -43,8 +43,8 @@ class atkPlainMenu extends atkmenuinterface
      */
     function render()
     {
-        $page = &atkinstance("atk.ui.atkpage");
-        $theme = &atkinstance("atk.ui.atktheme");
+        $page = &atkTools::atkinstance("atk.ui.atkpage");
+        $theme = &atkTools::atkinstance("atk.ui.atktheme");
         $page->addContent($this->getMenu());
 
         return $page->render("Menu", true);
@@ -58,9 +58,9 @@ class atkPlainMenu extends atkmenuinterface
     function getMenu()
     {
         global $ATK_VARS, $g_menu, $g_menu_parent;
-        $atkmenutop = atkArrayNvl($ATK_VARS, "atkmenutop", "main");
-        $theme = &atkinstance('atk.ui.atktheme');
-        $page = &atkinstance('atk.atkpage');
+        $atkmenutop = atkTools::atkArrayNvl($ATK_VARS, "atkmenutop", "main");
+        $theme = &atkTools::atkinstance('atk.ui.atktheme');
+        $page = &atkTools::atkinstance('atk.atkpage');
 
         $menu = $this->getHeader($atkmenutop);
         if (is_array($g_menu[$atkmenutop])) {
@@ -87,28 +87,28 @@ class atkPlainMenu extends atkmenuinterface
                 /* submenu ? */
                 else if (empty($url) && $enable) {
                     $url = $theme->getAttribute('menufile', atkconfig("menufile", 'menu.php')) . '?atkmenutop=' . $name;
-                    $menu .= href($url, $this->getMenuTranslation($name, $modname), SESSION_DEFAULT) . $delimiter;
+                    $menu .= atkTools::href($url, $this->getMenuTranslation($name, $modname), SESSION_DEFAULT) . $delimiter;
                 } else if (empty($url) && !$enable) {
                     //$menu .=text("menu_$name").$config_menu_delimiter;
                 }
                 /* normal menu item */ else if ($enable)
-                    $menu .= href($url, $this->getMenuTranslation($name, $modname), SESSION_NEW, false, $theme->getAttribute('menu_params', atkconfig('menu_params', 'target="main"'))) . $delimiter;
+                    $menu .= atkTools::href($url, $this->getMenuTranslation($name, $modname), SESSION_NEW, false, $theme->getAttribute('menu_params', atkconfig('menu_params', 'target="main"'))) . $delimiter;
                 else {
                     //$menu .= text("menu_$name").$config_menu_delimiter;
                 }
-                $menuitems[$i]["url"] = session_url($url);
+                $menuitems[$i]["url"] = atkTools::session_url($url);
             }
         }
         /* previous */
         if ($atkmenutop != "main") {
             $parent = $g_menu_parent[$atkmenutop];
             $menu .= atkconfig("menu_delimiter");
-            $menu .= href($theme->getAttribute('menufile', atkconfig("menufile", 'menu.php')) . '?atkmenutop=' . $parent, atktext("back_to", "atk") . ' ' . $this->getMenuTranslation($parent, $modname), SESSION_DEFAULT) . $delimiter;
+            $menu .= atkTools::href($theme->getAttribute('menufile', atkconfig("menufile", 'menu.php')) . '?atkmenutop=' . $parent, atkTools::atktext("back_to", "atk") . ' ' . $this->getMenuTranslation($parent, $modname), SESSION_DEFAULT) . $delimiter;
         }
         $menu.=$this->getFooter($atkmenutop);
         $page->register_style($theme->stylePath("style.css"));
         $page->register_script(atkconfig("atkroot") . "atk/javascript/menuload.js");
-        $ui = &atkinstance("atk.ui.atkui");
+        $ui = &atkTools::atkinstance("atk.ui.atkui");
 
         return $ui->renderBox(array("title" => $this->getMenuTranslation($atkmenutop, $modname),
                 "content" => $menu,

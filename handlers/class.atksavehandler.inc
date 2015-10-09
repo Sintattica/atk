@@ -186,17 +186,17 @@ class atkSaveHandler extends atkActionHandler
                 $extra = "&atkpkret=" . rawurlencode($this->m_postvars["atkpkret"]);
             }
 
-            $url = atkSelf() . '?atknodetype=' . $this->m_node->atknodetype();
+            $url = atkTools::atkSelf() . '?atknodetype=' . $this->m_node->atknodetype();
             $url .= '&atkaction=edit';
             $url .= '&atkselector=' . rawurlencode($this->m_node->primaryKey($record));
-            $location = session_url($url . $extra, SESSION_REPLACE, $this->_getSkip() - 1);
+            $location = atkTools::session_url($url . $extra, SESSION_REPLACE, $this->_getSkip() - 1);
         } else if ($this->m_node->hasFlag(NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext'])) {
             $filter = "";
             if (isset($this->m_node->m_postvars['atkfilter'])) {
                 $filter = "&atkfilter=" . rawurlencode($this->m_node->m_postvars['atkfilter']);
             }
-            $url = atkSelf() . '?atknodetype=' . $this->m_node->atknodetype() . '&atkaction=' . $this->getAddAction();
-            $location = session_url($url . $filter, SESSION_REPLACE, $this->_getSkip() - 1);
+            $url = atkTools::atkSelf() . '?atknodetype=' . $this->m_node->atknodetype() . '&atkaction=' . $this->getAddAction();
+            $location = atkTools::session_url($url . $filter, SESSION_REPLACE, $this->_getSkip() - 1);
         } else {
             // normal succesful save
             $location = $this->m_node->feedbackUrl("save", ACTION_SUCCESS, $record, "", $this->_getSkip());
@@ -232,8 +232,8 @@ class atkSaveHandler extends atkActionHandler
      */
     protected function storeRecordInSession(&$record)
     {
-        atkdebug("STORING RECORD IN SESSION");
-        $result = atkinstance('atk.session.atksessionstore')->addDataRow($record, $this->m_node->primaryKeyField());
+        atkTools::atkdebug("STORING RECORD IN SESSION");
+        $result = atkTools::atkinstance('atk.session.atksessionstore')->addDataRow($record, $this->m_node->primaryKeyField());
         return ($result !== false);
     }
 
@@ -267,7 +267,7 @@ class atkSaveHandler extends atkActionHandler
         $db->rollback();
 
         if ($db->getErrorType() == "user") {
-            triggerError($record, 'Error', $db->getErrorMsg(), '', '');
+            atkTools::triggerError($record, 'Error', $db->getErrorMsg(), '', '');
 
             // still an error, back to where we came from
             $this->goBack($record);
@@ -352,7 +352,7 @@ class atkSaveHandler extends atkActionHandler
             $db->rollback();
 
             if ($db->hasError() && $db->getErrorType() != "user") {
-                triggerError($record, null, '', $db->getErrorMsg());
+                atkTools::triggerError($record, null, '', $db->getErrorMsg());
             }
 
             // re-render add dialog
@@ -373,7 +373,7 @@ class atkSaveHandler extends atkActionHandler
 
         $page = &$this->getPage();
 
-        atkimport("atk.ui.atkdialog");
+        atkTools::atkimport("atk.ui.atkdialog");
         $script = atkDialog::getCloseCall();
 
         if ($attrRefreshUrl == null) {

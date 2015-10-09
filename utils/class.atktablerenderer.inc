@@ -227,7 +227,7 @@ class atkTableRenderer
      */
     function registerStyle($style, $module = "")
     {
-        $theme = &atkinstance("atk.ui.atktheme");
+        $theme = &atkTools::atkinstance("atk.ui.atktheme");
         $page = &atkPage::getInstance();
         $page->register_style($theme->stylePath($style . ".css", $module));
     }
@@ -281,7 +281,7 @@ class atkTableRenderer
      *
      * <b>Example:</b>
      * <code>
-     *  $tbl = &atknew("atk.utils.atktablerenderer");
+     *  $tbl = &atkTools::atknew("atk.utils.atktablerenderer");
      *  $tbl->render($data, TBL_HEADER|TBL_ALTERNATE, "recordlist");
      * </code>
      *
@@ -367,14 +367,14 @@ class atkTableRenderer
         $output = "\n<table {$class}>";
 
         // should render a header?
-        if (hasFlag($this->m_flags, TBL_HEADER)) {
+        if (atkTools::hasFlag($this->m_flags, TBL_HEADER)) {
             $header = $data[0];
             $rowOffset = 1;
             $output .= $this->_renderHeader($header, 0);
         }
 
         // should render a footer
-        if (hasFlag($this->m_flags, TBL_FOOTER)) {
+        if (atkTools::hasFlag($this->m_flags, TBL_FOOTER)) {
             $footer_row = count($data) - 1;
             $footer = array_pop($data);
 
@@ -481,7 +481,7 @@ class atkTableRenderer
     {
         if (is_string($row)) {
             return 'class="' . $row . '"';
-        } else if (hasFlag($this->m_flags, TBL_ALTERNATE) && ($row % 2) !== 0) {
+        } else if (atkTools::hasFlag($this->m_flags, TBL_ALTERNATE) && ($row % 2) !== 0) {
             return 'class="row2"';
         } else {
             return 'class="row1"';
@@ -582,18 +582,18 @@ class atkTableRenderer
     function _alignmentStr($alignment)
     {
         $ret = '';
-        if (hasFlag($alignment, TBL_LEFT))
+        if (atkTools::hasFlag($alignment, TBL_LEFT))
             $ret.='align="left" ';
         elseif (hasFLag($alignment, TBL_RIGHT))
             $ret.='align="right" ';
-        elseif (hasFlag($alignment, TBL_CENTER))
+        elseif (atkTools::hasFlag($alignment, TBL_CENTER))
             $ret.='align="center" ';
 
-        if (hasFlag($alignment, TBL_TOP))
+        if (atkTools::hasFlag($alignment, TBL_TOP))
             $ret.='valign="top" ';
         elseif (hasFLag($alignment, TBL_BOTTOM))
             $ret.='valign="bottom" ';
-        elseif (hasFlag($alignment, TBL_MIDDLE))
+        elseif (atkTools::hasFlag($alignment, TBL_MIDDLE))
             $ret.='valign="middle" ';
 
         return $ret;

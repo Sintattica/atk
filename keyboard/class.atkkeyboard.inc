@@ -17,7 +17,7 @@
 /**
  * Imports used by the class..
  */
-atkimport("atk.ui.atkpage");
+atkTools::atkimport("atk.ui.atkpage");
 
 /**
  * Define some key shortcut constants. (mind you, these are not actual ascii key values)
@@ -57,7 +57,7 @@ class atkKeyboard
     {
         static $s_kb;
         if ($s_kb == NULL) {
-            atkdebug("Creating atkKeyboard instance");
+            atkTools::atkdebug("Creating atkKeyboard instance");
             $s_kb = new atkKeyboard();
         }
 
@@ -79,11 +79,11 @@ class atkKeyboard
     function addFormElementHandler($id, $navkeys)
     {
         $params = array("'" . $id . "'",
-            hasFlag($navkeys, KB_UP) ? "1" : "0",
-            hasFlag($navkeys, KB_DOWN) ? "1" : "0",
-            hasFlag($navkeys, KB_LEFT) ? "1" : "0",
-            hasFlag($navkeys, KB_RIGHT) ? "1" : "0",
-            hasFlag($navkeys, KB_CTRLCURSOR) ? "1" : "0");
+            atkTools::hasFlag($navkeys, KB_UP) ? "1" : "0",
+            atkTools::hasFlag($navkeys, KB_DOWN) ? "1" : "0",
+            atkTools::hasFlag($navkeys, KB_LEFT) ? "1" : "0",
+            atkTools::hasFlag($navkeys, KB_RIGHT) ? "1" : "0",
+            atkTools::hasFlag($navkeys, KB_CTRLCURSOR) ? "1" : "0");
 
         $this->addHandler("atkFEKeyListener", $params);
     }

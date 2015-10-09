@@ -129,7 +129,7 @@ class atkTotalizer
         // replace columns
         foreach ($row["data"] as $col => $value) {
             if ($col == $fieldname) {
-                $row["data"][$col] = atktext("subtotal");
+                $row["data"][$col] = atkTools::atktext("subtotal");
             } else if (isset($subtotalcolumns[$col])) {
                 $row["data"][$col] = $subtotalcolumns[$col];
             } else {

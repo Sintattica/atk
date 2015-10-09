@@ -14,7 +14,7 @@ function filter_request_where_clause($variable)
         foreach ($values as $value) {
             $checker = new sql_whereclause_blacklist_checker($value);
             if (!$checker->isSafe()) {
-                atkhalt("Unsafe WHERE clause in REQUEST variable: " . $variable, 'critical');
+                atkTools::atkhalt("Unsafe WHERE clause in REQUEST variable: " . $variable, 'critical');
             }
         }
     }

@@ -16,9 +16,9 @@
 /**
  * some includes
  */
-atkimport("atk.attributes.atkattribute");
-atkimport("atk.atkcontroller");
-atkimport("atk.modules.atkmodule");
+atkTools::atkimport("atk.attributes.atkattribute");
+atkTools::atkimport("atk.atkcontroller");
+atkTools::atkimport("atk.modules.atkmodule");
 
 /**
  * Define some flags for nodes. Use the constructor of the atkNode
@@ -779,7 +779,7 @@ class atkNode
         $this->m_type = $type;
         $this->m_flags = $flags;
         $this->m_module = atkModule::getModuleScope();
-        atkdebug("Creating a new node " . $this->m_module . ".$type");
+        atkTools::atkdebug("Creating a new node " . $this->m_module . ".$type");
 
         $this->setEditFieldPrefix(atkconfig('edit_fieldprefix', ''));
     }
@@ -1011,30 +1011,30 @@ class atkNode
                 if ($tabs != "*") {
                     if (!$attribute->hasFlag(AF_HIDE_ADD))
                         $this->m_tabList["add"] = isset($this->m_tabList["add"])
-                                ? atk_array_merge($this->m_tabList["add"], $tabs)
+                                ? atkTools::atk_array_merge($this->m_tabList["add"], $tabs)
                                 : $tabs;
                     if (!$attribute->hasFlag(AF_HIDE_EDIT))
                         $this->m_tabList["edit"] = isset($this->m_tabList["edit"])
-                                ? atk_array_merge($this->m_tabList["edit"], $tabs)
+                                ? atkTools::atk_array_merge($this->m_tabList["edit"], $tabs)
                                 : $tabs;
                     if (!$attribute->hasFlag(AF_HIDE_VIEW))
                         $this->m_tabList["view"] = isset($this->m_tabList["view"])
-                                ? atk_array_merge($this->m_tabList["view"], $tabs)
+                                ? atkTools::atk_array_merge($this->m_tabList["view"], $tabs)
                                 : $tabs;
                 }
 
                 if ($sections != "*") {
                     if (!$attribute->hasFlag(AF_HIDE_ADD))
                         $this->m_sectionList["add"] = isset($this->m_sectionList["add"])
-                                ? atk_array_merge($this->m_sectionList["add"], $sections)
+                                ? atkTools::atk_array_merge($this->m_sectionList["add"], $sections)
                                 : $sections;
                     if (!$attribute->hasFlag(AF_HIDE_EDIT))
                         $this->m_sectionList["edit"] = isset($this->m_sectionList['edit'])
-                                ? atk_array_merge($this->m_sectionList["edit"], $sections)
+                                ? atkTools::atk_array_merge($this->m_sectionList["edit"], $sections)
                                 : $sections;
                     if (!$attribute->hasFlag(AF_HIDE_VIEW))
                         $this->m_sectionList["view"] = isset($this->m_sectionList['view'])
-                                ? atk_array_merge($this->m_sectionList["view"], $sections)
+                                ? atkTools::atk_array_merge($this->m_sectionList["view"], $sections)
                                 : $sections;
                 }
             }
@@ -1082,7 +1082,7 @@ class atkNode
      */
     public function addFieldSet($name, $template, $flags = 0, $sections = NULL, $order = 0)
     {
-        useattrib('atkfieldset');
+        atkTools::useattrib('atkfieldset');
         $this->add(new atkFieldSet($name, $template, $flags), $sections, $order);
     }
 
@@ -1141,7 +1141,7 @@ class atkNode
     function remove($attribname)
     {
         if (is_object($this->m_attribList[$attribname])) {
-            atkdebug("removing attribute $attribname");
+            atkTools::atkdebug("removing attribute $attribname");
 
             $listindex = $this->m_attribList[$attribname]->m_index;
 
@@ -1200,7 +1200,7 @@ class atkNode
         if (is_null($this->getAttributes()))
             return false;
 
-        $postvars = atkGetPostVar();
+        $postvars = atkTools::atkGetPostVar();
         foreach ($this->m_attribList AS $name => $value)
             if (!$value->hasFlag(AF_HIDE_LIST))
                 if (!is_array($value->fetchValue($postvars)) && $value->fetchValue($postvars) !== "")
@@ -1387,7 +1387,7 @@ class atkNode
     function primaryKeyField()
     {
         if (count($this->m_primaryKey) === 0) {
-            atkwarning($this->atkNodeType() . "::primaryKeyField() called, but there are no primary key fields defined!");
+            atkTools::atkwarning($this->atkNodeType() . "::primaryKeyField() called, but there are no primary key fields defined!");
             return null;
         }
 
@@ -1477,12 +1477,12 @@ class atkNode
     function getDb()
     {
         if ($this->m_db == NULL) {
-            return atkGetDb();
+            return atkTools::atkGetDb();
         } else if (is_object($this->m_db)) {
             return $this->m_db;
         } else {
             // must be a named connection
-            return atkGetDb($this->m_db);
+            return atkTools::atkGetDb($this->m_db);
         }
     }
 
@@ -1508,7 +1508,7 @@ class atkNode
      */
     function setTabIndex($tabname, $index, $action = "")
     {
-        atkdebug("atkNode::setTabIndex($tabname,$index,$action)");
+        atkTools::atkdebug("atkNode::setTabIndex($tabname,$index,$action)");
         $actionList = array("add", "edit", "view");
         if ($action != "")
             $actionList = array($action);
@@ -1584,8 +1584,8 @@ class atkNode
             if (is_object($p_attrib)) {
                 $additional = $p_attrib->getAdditionalTabs($action);
                 if (is_array($additional) && count($additional) > 0) {
-                    $list = atk_array_merge($list, $additional);
-                    $this->m_filledTabs = atk_array_merge($this->m_filledTabs, $additional);
+                    $list = atkTools::atk_array_merge($list, $additional);
+                    $this->m_filledTabs = atkTools::atk_array_merge($this->m_filledTabs, $additional);
                 }
 
                 // Keep track of the tabs that containg attribs
@@ -1595,7 +1595,7 @@ class atkNode
                     $this->m_filledTabs[] = $tabCode;
                 }
             } else {
-                atkdebug("atknode::getTabs() Warning: $attribname is not an object!?");
+                atkTools::atkdebug("atknode::getTabs() Warning: $attribname is not an object!?");
             }
         }
 
@@ -1673,16 +1673,15 @@ class atkNode
 
             // load the $g_nodes array to find out what tabs are required
             if (!isset($g_nodes[$this->m_module][$this->m_module][$this->m_type])) {
-                include_once(atkconfig("atkroot") . "atk/atknodetools.inc");
                 $module = &getModule($this->m_module);
                 $module->getNodes();
             }
 
             $priv = "tab_" . $tablist[$i];
-            if (isset($g_nodes[$this->m_module][$this->m_module][$this->m_type]) && atk_in_array($priv, $g_nodes[$this->m_module][$this->m_module][$this->m_type])) {
+            if (isset($g_nodes[$this->m_module][$this->m_module][$this->m_type]) && atkTools::atk_in_array($priv, $g_nodes[$this->m_module][$this->m_module][$this->m_type])) {
                 // authorisation is required
                 if (!$secMgr->allowed($this->m_module . "." . $this->m_type, "tab_" . $tablist[$i])) {
-                    atkdebug("Removing TAB " . $tablist[$i] . " because access to this tab was denied");
+                    atkTools::atkdebug("Removing TAB " . $tablist[$i] . " because access to this tab was denied");
                     $disable[] = $tablist[$i];
                     unset($tablist[$i]);
                 }
@@ -1718,7 +1717,7 @@ class atkNode
                 if (in_array($tabEntry, $this->m_filledTabs)) {
                     $tabList[] = $tabEntry;
                 } else {
-                    atkdebug("Removing TAB " . $tabEntry . " because it had no attributes assigned");
+                    atkTools::atkdebug("Removing TAB " . $tabEntry . " because it had no attributes assigned");
                 }
             }
         }
@@ -1761,7 +1760,7 @@ class atkNode
         if (is_array($this->m_sectionList[$mode])) {
             foreach ($this->m_sectionList[$mode] as $section) {
                 if (substr($section, 0, strlen($tab)) == $tab) {
-                    atkimport("atk.session.atkstate");
+                    atkTools::atkimport("atk.session.atkstate");
                     $sectionName = 'section_' . str_replace('.', '_', $section);
                     $key = array("nodetype" => $this->atknodetype(),
                         "section" => $sectionName);
@@ -1835,7 +1834,7 @@ class atkNode
      */
     function getFormButtons($mode, $record)
     {
-        $controller = &atkinstance('atk.atkcontroller');
+        $controller = &atkTools::atkinstance('atk.atkcontroller');
         $controller->setNode($this);
         return $controller->getFormButtons($mode, $record);
     }
@@ -1848,9 +1847,9 @@ class atkNode
     function lockPage()
     {
         $output = $this->statusbar();
-        $output.= '<img src="' . atkconfig("atkroot") . 'atk/images/lock.gif"><br><br>' . atktext("lock_locked") . '<br>';
-        $output.= '<br><form method="get">' . session_form(SESSION_BACK) .
-            '<input type="submit" class="btn btn-default btn_cancel" value="&lt;&lt; ' . atktext('back') . '"></form>';
+        $output.= '<img src="' . atkconfig("atkroot") . 'atk/images/lock.gif"><br><br>' . atkTools::atktext("lock_locked") . '<br>';
+        $output.= '<br><form method="get">' . atkTools::session_form(SESSION_BACK) .
+            '<input type="submit" class="btn btn-default btn_cancel" value="&lt;&lt; ' . atkTools::atktext('back') . '"></form>';
 
         $ui = &$this->getUi();
         if (is_object($ui)) {
@@ -1867,7 +1866,7 @@ class atkNode
      */
     function &getUi()
     {
-        $ui = &atkinstance("atk.ui.atkui");
+        $ui = &atkTools::atkinstance("atk.ui.atkui");
         return $ui;
     }
 
@@ -1903,7 +1902,7 @@ class atkNode
                 $descrtrace = "... - ";
             for ($i = max(0, $cnt - 3), $_i = $cnt; $i < $_i; $i ++) {
                 $desc = $descriptortrace[$i];
-                $descrtrace.= atk_htmlentities($desc, ENT_COMPAT) . " - ";
+                $descrtrace.= atkTools::atk_htmlentities($desc, ENT_COMPAT) . " - ";
             }
             $res = $descrtrace . $res;
         }
@@ -2121,7 +2120,7 @@ class atkNode
                                 $p_attrib->m_flags |= AF_READONLY | AF_HIDE_ADD;
                         }
                         else {
-                            atkerror("Attribute '$attribname' doesn't exist in the attributelist");
+                            atkTools::atkerror("Attribute '$attribname' doesn't exist in the attributelist");
                         }
                     }
                 }
@@ -2145,7 +2144,7 @@ class atkNode
         // extra submission data
         $result["hide"][] = '<input type="hidden" name="atkfieldprefix" value="' . $this->getEditFieldPrefix(false) . '">';
         $result["hide"][] = '<input type="hidden" name="' . $fieldprefix . 'atknodetype" value="' . $this->atknodetype() . '">';
-        $result["hide"][] = '<input type="hidden" name="' . $fieldprefix . 'atkprimkey" value="' . atkArrayNvl($record, "atkprimkey", "") . '">';
+        $result["hide"][] = '<input type="hidden" name="' . $fieldprefix . 'atkprimkey" value="' . atkTools::atkArrayNvl($record, "atkprimkey", "") . '">';
 
         /* For all attributes we use the edit() method to get HTML code for editting the
          * attribute's data. If the attribute is hidden we use the hide() method method
@@ -2170,7 +2169,7 @@ class atkNode
                 }
 
                 /* sometimes a field is hidden although not specified by the field itself */
-                $theme = &atkinstance("atk.ui.atktheme");
+                $theme = &atkTools::atkinstance("atk.ui.atktheme");
                 if ($theme->getAttribute("tabtype") == "dhtml" || $ignoreTab) {
                     $notOnTab = FALSE;
                 } else {
@@ -2184,7 +2183,7 @@ class atkNode
                 /* we let the attribute add itself to the edit array */
                 $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
             } else {
-                atkerror("Attribute $attribname not found!");
+                atkTools::atkerror("Attribute $attribname not found!");
             }
         }
 
@@ -2241,7 +2240,7 @@ class atkNode
                 $p_attrib->addToViewArray($mode, $result, $record);
             }
             else {
-                atkerror("Attribute $attribname not found!");
+                atkTools::atkerror("Attribute $attribname not found!");
             }
         }
 
@@ -2465,11 +2464,11 @@ class atkNode
             foreach ($list as $t) {
                 $newtab["title"] = $this->text(array("tab_$t", $t));
                 $newtab["tab"] = $t;
-                $url = atkSelf() . "?atknodetype=" . $this->atkNodeType() . "&atkaction=" . $this->m_action . "&atktab=" . $t;
+                $url = atkTools::atkSelf() . "?atknodetype=" . $this->atkNodeType() . "&atkaction=" . $this->m_action . "&atktab=" . $t;
                 if ($this->m_action == "view") {
                     $newtab["link"] = atkSessionManager::sessionUrl($url, SESSION_DEFAULT);
                 } else {
-                    $newtab["link"] = "javascript:atkSubmit('" . atkurlencode(atkSessionManager::sessionUrl($url, SESSION_DEFAULT)) . "')";
+                    $newtab["link"] = "javascript:atkSubmit('" . atkTools::atkurlencode(atkSessionManager::sessionUrl($url, SESSION_DEFAULT)) . "')";
                 }
                 $newtab["selected"] = ($t == $tab);
                 $result[] = $newtab;
@@ -2514,7 +2513,7 @@ class atkNode
             }
         }
 
-        $actionbase = atkSelf() . '?atknodetype=' . $this->atknodetype() . '&atkselector=[pk]' . $postfix;
+        $actionbase = atkTools::atkSelf() . '?atknodetype=' . $this->atknodetype() . '&atkselector=[pk]' . $postfix;
         if (!$this->hasFlag(NF_NO_VIEW) && $this->allowed("view")) {
             $actions["view"] = $actionbase . '&atkaction=view';
         }
@@ -2624,8 +2623,8 @@ class atkNode
         else
             $atkselector_str = $atkselector;
 
-        $formstart = '<form action="' . atkSelf() . '?"' . SID . ' method="post">';
-        $formstart.=session_form();
+        $formstart = '<form action="' . atkTools::atkSelf() . '?"' . SID . ' method="post">';
+        $formstart.=atkTools::session_form();
         $formstart.='<input type="hidden" name="atkaction" value="' . $action . '">';
         $formstart.='<input type="hidden" name="atknodetype" value="' . $this->atknodetype() . '">';
 
@@ -2655,7 +2654,7 @@ class atkNode
         if (count($recs) == 1) {
             // 1 record, put it in the page title (with the actionTitle call, a few lines below)
             $record = $recs[0];
-            $this->getPage()->setTitle(atktext('app_shorttitle') . " - " . $this->actionTitle($action, $record));
+            $this->getPage()->setTitle(atkTools::atktext('app_shorttitle') . " - " . $this->actionTitle($action, $record));
         } else {
             // we are gonna perform an action on more than one record
             // show a list of affected records, at least if we can find a
@@ -2664,7 +2663,7 @@ class atkNode
                 $record = "";
                 $content.= "<ul>";
                 for ($i = 0, $_i = count($recs); $i < $_i; $i ++) {
-                    $content.="<li>" . str_replace(' ', '&nbsp;', atk_htmlentities($this->descriptor($recs[$i])));
+                    $content.="<li>" . str_replace(' ', '&nbsp;', atkTools::atk_htmlentities($this->descriptor($recs[$i])));
                 }
                 $content.= "</ul>";
             }
@@ -2723,7 +2722,7 @@ class atkNode
      */
     function init()
     {
-        atkdebug("init for " . $this->m_type);
+        atkTools::atkdebug("init for " . $this->m_type);
         global $g_modifiers;
 
         // Check if initialisation is not already done.
@@ -2761,7 +2760,7 @@ class atkNode
 
         $lockType = atkconfig("lock_type");
         if (!empty($lockType) && $this->hasFlag(NF_LOCK)) {
-            $this->m_lock = &atkinstance("atk.lock.atklock");
+            $this->m_lock = &atkTools::atkinstance("atk.lock.atklock");
         } else
             $this->removeFlag(NF_LOCK);
 
@@ -2780,7 +2779,7 @@ class atkNode
     /**
      * Add the listeners for the current node
      * A listener can be defined either by placing an instantiated object
-     * or the full location in atkimport style notation, in a global array
+     * or the full location in atkTools::atkimport( style notation, in a global array
      * called $g_nodeListeners (useful for example for adding listeners
      * to nodes from another module's module.inc file. in module.inc files,
      * $listeners can be used to add listeners to a node.
@@ -2795,14 +2794,14 @@ class atkNode
                     $this->addListener($listener);
                 } else {
                     if (is_string($listener)) {
-                        $listenerobj = &atknew($listener);
+                        $listenerobj = &atkTools::atknew($listener);
                         if (is_object($listenerobj)) {
                             $this->addListener($listenerobj);
                         } else
-                            atkdebug("We couldn't find a classname for listener with supposed nodetype: '$listener'");
+                            atkTools::atkdebug("We couldn't find a classname for listener with supposed nodetype: '$listener'");
                     }
                     else {
-                        atkdebug("Failed to add listener with supposed nodetype: '$listener'");
+                        atkTools::atkdebug("Failed to add listener with supposed nodetype: '$listener'");
                     }
                 }
             }
@@ -2845,7 +2844,7 @@ class atkNode
      */
     function dispatch($postvars, $flags = NULL)
     {
-        atkdebug("atkNode::dispatch()");
+        atkTools::atkdebug("atkNode::dispatch()");
         $controller = &atkcontroller::getInstance();
         $controller->setNode($this);
         return $controller->handleRequest($postvars, $flags);
@@ -2920,7 +2919,7 @@ class atkNode
      */
     function &getPage()
     {
-        $page = &atkinstance("atk.ui.atkpage");
+        $page = &atkTools::atkinstance("atk.ui.atkpage");
         return $page;
     }
 
@@ -2931,7 +2930,7 @@ class atkNode
      */
     public function createPageBuilder()
     {
-        atkimport('atk.ui.atkpagebuilder');
+        atkTools::atkimport('atk.ui.atkpagebuilder');
         return new atkPageBuilder($this);
     }
 
@@ -2966,7 +2965,7 @@ class atkNode
     {
         global $g_returnurl;
 
-        atkdebug("atknode::redirect()");
+        atkTools::atkdebug("atknode::redirect()");
 
         $record = $recordOrExit;
         if (is_bool($recordOrExit)) {
@@ -2978,7 +2977,7 @@ class atkNode
             $location = $g_returnurl;
 
         if ($location == "") {
-            $location = atkSessionManager::sessionUrl(atkSelf(), SESSION_BACK, $levelskip);
+            $location = atkSessionManager::sessionUrl(atkTools::atkSelf(), SESSION_BACK, $levelskip);
         }
 
         if (count($record)) {
@@ -2989,16 +2988,16 @@ class atkNode
 
         // The actual redirect.
         if (atkconfig("debug") >= 2) {
-            $debugger = &atkinstance('atk.utils.atkdebugger');
+            $debugger = &atkTools::atkinstance('atk.utils.atkdebugger');
             $debugger->setRedirectUrl($location);
-            atkdebug('Non-debug version would have redirected to <a href="' . $location . '">' . $location . '</a>');
+            atkTools::atkdebug('Non-debug version would have redirected to <a href="' . $location . '">' . $location . '</a>');
             if ($exit) {
                 $output = &atkOutput::getInstance();
                 $output->outputFlush();
                 exit();
             }
         } else {
-            atkdebug('redirecting to: ' . $location);
+            atkTools::atkdebug('redirecting to: ' . $location);
 
             if (substr($location, -1) == "&") {
                 $location = substr($location, 0, -1);
@@ -3009,7 +3008,7 @@ class atkNode
 
             global $g_error_msg;
             if (count($g_error_msg) > 0) {
-                mailreport();
+                atkTools::mailreport();
             }
 
             header('Location: ' . $location);
@@ -3126,7 +3125,7 @@ class atkNode
                 $descriptordef = $this->descriptor_def();
 
             // parse fields from descriptordef
-            atkimport("atk.utils.atkstringparser");
+            atkTools::atkimport("atk.utils.atkstringparser");
             $parser = new atkStringParser($descriptordef);
             $fields = $parser->getFields();
 
@@ -3179,13 +3178,13 @@ class atkNode
 
         // Descriptor template is set?
         if ($this->m_descTemplate != NULL) {
-            atkimport("atk.utils.atkstringparser");
+            atkTools::atkimport("atk.utils.atkstringparser");
             $parser = new atkStringParser($this->m_descTemplate);
             return $parser->parse($rec);
         }
         // See if node has a custom descriptor definition.
         else if (method_exists($this, "descriptor_def")) {
-            atkimport("atk.utils.atkstringparser");
+            atkTools::atkimport("atk.utils.atkstringparser");
             $parser = new atkStringParser($this->descriptor_def());
             return $parser->parse($rec);
         } else {
@@ -3230,7 +3229,7 @@ class atkNode
      */
     function validate(&$record, $mode, $ignoreList = array())
     {
-        $validateObj = &atknew($this->m_validate_class);
+        $validateObj = &atkTools::atknew($this->m_validate_class);
 
         $validateObj->setNode($this);
         $validateObj->setRecord($record);
@@ -3296,7 +3295,7 @@ class atkNode
      * fail.
      *
      * NOTE: Does not commit your transaction! If you are using a database that uses
-     * transactions you will need to call 'atkGetDb()->commit()' manually.
+     * transactions you will need to call 'atkTools::atkGetDb()->commit()' manually.
      *
      * @param array $record The record to update in the database.
      * @param bool $exectrigger wether to execute the pre/post update triggers
@@ -3330,13 +3329,13 @@ class atkNode
                 if ((!is_array($excludes) || !in_array($attribname, $excludes)) &&
                     (!is_array($includes) || in_array($attribname, $includes))) {
                     $p_attrib = &$this->m_attribList[$attribname];
-                    if ($p_attrib->needsUpdate($record) || atk_in_array($attribname, $includes)) {
+                    if ($p_attrib->needsUpdate($record) || atkTools::atk_in_array($attribname, $includes)) {
                         $storemode = $p_attrib->storageType("update");
-                        if (hasFlag($storemode, PRESTORE))
+                        if (atkTools::hasFlag($storemode, PRESTORE))
                             $storelist["pre"][] = $attribname;
-                        if (hasFlag($storemode, POSTSTORE))
+                        if (atkTools::hasFlag($storemode, POSTSTORE))
                             $storelist["post"][] = $attribname;
-                        if (hasFlag($storemode, ADDTOQUERY))
+                        if (atkTools::hasFlag($storemode, ADDTOQUERY))
                             $storelist["query"][] = $attribname;
                     }
                 }
@@ -3356,7 +3355,7 @@ class atkNode
             if ($this->hasFlag(NF_ML) && $record["atkmlsplit"] == "") {
                 $record["atkmlsplit"] = 1;
 
-                $mltool = &atkinstance("atk.utils.atkmlsplitter");
+                $mltool = &atkTools::atkinstance("atk.utils.atkmlsplitter");
                 $mltool->updateMlRecords($this, $record, "update", $excludes, $includes);
             }
 
@@ -3371,7 +3370,7 @@ class atkNode
                 return true;
         }
         else {
-            atkdebug("NOT UPDATING! NO SELECTOR SET!");
+            atkTools::atkdebug("NOT UPDATING! NO SELECTOR SET!");
             return false;
         }
         return true;
@@ -3393,7 +3392,7 @@ class atkNode
             $p_attrib = &$this->m_attribList[$storelist[$i]];
             if (!$p_attrib->store($this->getDb(), $record, $mode)) {
                 // something went wrong.
-                atkdebug("Store aborted. Attribute '" . $storelist[$i] . "' reported an error.");
+                atkTools::atkdebug("Store aborted. Attribute '" . $storelist[$i] . "' reported an error.");
                 return false;
             }
         }
@@ -3489,7 +3488,7 @@ class atkNode
         }
 
 
-        $selector = atknew('atk.utils.' . $class, $this);
+        $selector = atkTools::atknew('atk.utils.' . $class, $this);
         $this->_initSelector($selector, $condition, $params);
 
         return $selector;
@@ -3544,7 +3543,7 @@ class atkNode
         if ($allfields) {
             $usedFields = array_keys($this->m_attribList);
         } else {
-            $usedFields = atk_array_merge($this->descriptorFields(), $this->m_primaryKey, $includes);
+            $usedFields = atkTools::atk_array_merge($this->descriptorFields(), $this->m_primaryKey, $includes);
             foreach (array_keys($this->m_attribList) as $name)
                 if (is_object($this->m_attribList[$name]) && $this->m_attribList[$name]->hasFlag(AF_FORCE_LOAD))
                     $usedFields[] = $name;
@@ -3557,7 +3556,7 @@ class atkNode
             if (is_object($p_attrib)) {
                 $loadmode = $p_attrib->loadType("");
 
-                if ($loadmode && hasFlag($loadmode, ADDTOQUERY)) {
+                if ($loadmode && atkTools::hasFlag($loadmode, ADDTOQUERY)) {
                     if ($usefieldalias)
                         $fieldaliasprefix = $alias . "_AE_";
 
@@ -3565,11 +3564,11 @@ class atkNode
                     $p_attrib->addToQuery($query, $alias, $fieldaliasprefix, $dummy, $level, $mode);
                 }
             } else
-                atkdebug("$attribname is not an object?! Check your descriptor_def for non-existant fields");
+                atkTools::atkdebug("$attribname is not an object?! Check your descriptor_def for non-existant fields");
         }
 
         if ($this->hasFlag(NF_ML)) {
-            $mltool = &atkinstance("atk.utils.atkmlsplitter");
+            $mltool = &atkTools::atkinstance("atk.utils.atkmlsplitter");
             $mltool->addMlCondition($query, $this, $mode, $alias);
         }
     }
@@ -3621,7 +3620,7 @@ class atkNode
                     if (is_array($searchmode)) {
                         $attribsearchmode = $attribsearchmode[$p_attrib->m_name];
                     }
-                    atkdebug("getSearchCondition: $table - $fieldaliasprefix");
+                    atkTools::atkdebug("getSearchCondition: $table - $fieldaliasprefix");
                     $searchCondition = $p_attrib->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
                     if ($searchCondition != "")
                         $searchConditions[] = $searchCondition;
@@ -3649,7 +3648,7 @@ class atkNode
      * the call to addDb you can use access the primary key fields.
      *
      * NOTE: Does not commit your transaction! If you are using a database that uses
-     * transactions you will need to call 'atkGetDb()->commit()' manually.
+     * transactions you will need to call 'atkTools::atkGetDb()->commit()' manually.
      *
      * @param array $record The record to save.
      * @param boolean $exectrigger Indicates whether the postAdd trigger
@@ -3663,7 +3662,7 @@ class atkNode
     {
         if ($exectrigger)
             if (!$this->executeTrigger("preAdd", $record, $mode))
-                return atkerror("preAdd() failed!");
+                return atkTools::atkerror("preAdd() failed!");
 
         $db = &$this->getDb();
         $query = &$db->createQuery();
@@ -3674,13 +3673,13 @@ class atkNode
 
         foreach (array_keys($this->m_attribList) as $attribname) {
             $p_attrib = &$this->m_attribList[$attribname];
-            if (!atk_in_array($attribname, $excludelist) && ($mode != "add" || $p_attrib->needsInsert($record))) {
+            if (!atkTools::atk_in_array($attribname, $excludelist) && ($mode != "add" || $p_attrib->needsInsert($record))) {
                 $storemode = $p_attrib->storageType($mode);
-                if (hasFlag($storemode, PRESTORE))
+                if (atkTools::hasFlag($storemode, PRESTORE))
                     $storelist["pre"][] = $attribname;
-                if (hasFlag($storemode, POSTSTORE))
+                if (atkTools::hasFlag($storemode, POSTSTORE))
                     $storelist["post"][] = $attribname;
-                if (hasFlag($storemode, ADDTOQUERY))
+                if (atkTools::hasFlag($storemode, ADDTOQUERY))
                     $storelist["query"][] = $attribname;
             }
         }
@@ -3694,7 +3693,7 @@ class atkNode
         }
 
         if (!$query->executeInsert()) {
-            atkdebug("executeInsert failed..");
+            atkTools::atkdebug("executeInsert failed..");
             return false;
         }
 
@@ -3703,12 +3702,12 @@ class atkNode
 
         if ($this->hasFlag(NF_ML) && $record["atkmlsplit"] == "") {
             $record["atkmlsplit"] = 1;
-            $mltool = &atkinstance("atk.utils.atkmlsplitter");
+            $mltool = &atkTools::atkinstance("atk.utils.atkmlsplitter");
             $mltool->updateMlRecords($this, $record, $mode);
         }
 
         if (!$this->_storeAttributes($storelist["post"], $record, $mode)) {
-            atkdebug("_storeAttributes failed..");
+            atkTools::atkdebug("_storeAttributes failed..");
             return false;
         }
 
@@ -3740,12 +3739,12 @@ class atkNode
             $return = $this->$trigger($record, $mode);
 
             if ($return === NULL) {
-                atkdebug("Undefined return: " . $this->atkNodeType() . ".$trigger doesn't return anything, it should return a boolean!", DEBUG_WARNING);
+                atkTools::atkdebug("Undefined return: " . $this->atkNodeType() . ".$trigger doesn't return anything, it should return a boolean!", DEBUG_WARNING);
                 $return = true;
             }
 
             if (!$return) {
-                atkdebug($this->atkNodeType() . ".$trigger failed!");
+                atkTools::atkdebug($this->atkNodeType() . ".$trigger failed!");
                 return false;
             }
 
@@ -3754,12 +3753,12 @@ class atkNode
                 $return = $listener->notify($trigger, $record, $mode);
 
                 if ($return === NULL) {
-                    atkdebug("Undefined return: " . $this->atkNodeType() . ", " . get_class($listener) . ".notify('$trigger', ...) doesn't return anything, it should return a boolean!", DEBUG_WARNING);
+                    atkTools::atkdebug("Undefined return: " . $this->atkNodeType() . ", " . get_class($listener) . ".notify('$trigger', ...) doesn't return anything, it should return a boolean!", DEBUG_WARNING);
                     $return = true;
                 }
 
                 if (!$return) {
-                    atkdebug($this->atkNodeType() . ", " . get_class($listener) . ".notify('$trigger', ...) failed!");
+                    atkTools::atkdebug($this->atkNodeType() . ", " . get_class($listener) . ".notify('$trigger', ...) failed!");
                     return false;
                 }
             }
@@ -3776,7 +3775,7 @@ class atkNode
      * method is invoked.
      *
      * NOTE: Does not commit your transaction! If you are using a database that uses
-     * transactions you will need to call 'atkGetDb()->commit()' manually.
+     * transactions you will need to call 'atkTools::atkGetDb()->commit()' manually.
      *
      * @todo There's a discrepancy between updateDb, addDb and deleteDb:
      *       There should be a deleteDb which accepts a record, instead
@@ -3793,7 +3792,7 @@ class atkNode
 
         // nothing to delete, throw an error (determined by $failwhenempty)!
         if (count($recordset) == 0) {
-            atkwarning($this->atknodetype() . "->deleteDb($selector): 0 records found, not deleting anything.");
+            atkTools::atkwarning($this->atknodetype() . "->deleteDb($selector): 0 records found, not deleting anything.");
             return !$failwhenempty;
         }
 
@@ -4019,13 +4018,13 @@ class atkNode
         if (is_callable($callback, false, $callableName)) {
             if (is_array($callback)) {
                 if (!method_exists($callback[0], $callback[1])) {
-                    atkerror("The registered record actions callback method '$callableName' doesn't exist");
+                    atkTools::atkerror("The registered record actions callback method '$callableName' doesn't exist");
                     return;
                 }
             }
             $this->m_recordActionsCallbacks[] = $callback;
         } else {
-            atkerror("The registered record actions callback '$callableName' is not callable");
+            atkTools::atkerror("The registered record actions callback '$callableName' is not callable");
             return;
         }
     }
@@ -4216,7 +4215,7 @@ class atkNode
     function addAllowedAction($action)
     {
         if (is_array($action)) {
-            $this->m_unsecuredActions = atk_array_merge($this->m_unsecuredActions, $action);
+            $this->m_unsecuredActions = atkTools::atk_array_merge($this->m_unsecuredActions, $action);
         } else {
             $this->m_unsecuredActions[] = $action;
         }
@@ -4229,7 +4228,7 @@ class atkNode
      */
     function statusbar($locked = FALSE)
     {
-        atkdebug("Obsolete use of statusbar()");
+        atkTools::atkdebug("Obsolete use of statusbar()");
         if (!$this->m_statusbarDone) {
             global $g_sessionManager;
             $ui = &$this->getUi();
@@ -4262,7 +4261,7 @@ class atkNode
         if ($res["helpurl"] != "") {
             $page = &$this->getPage();
             $page->register_script(atkconfig("atkroot") . "atk/javascript/newwindow.js");
-            $res["helplabel"] = atktext("help");
+            $res["helplabel"] = atkTools::atktext("help");
             $res["helplink"] = '<a href="' . $res["helpurl"] . '">' . $res["helplabel"] . '</a>';
         }
         return $res;
@@ -4276,7 +4275,7 @@ class atkNode
     function getLockStatusIcon($lockstatus)
     {
         if ($lockstatus) {
-            atkimport('atk.ui.atktheme');
+            atkTools::atkimport('atk.ui.atktheme');
             return atkTheme::getInstance()->getIcon('lock_' . $this->getLockMode(), 'lock', $this->m_module, '', null, array('name'=>'_lock_'));
         }
         return '';
@@ -4308,8 +4307,8 @@ class atkNode
             }
         }
 
-        $name = atktext("help");
-        return atkPopup('atk/popups/help.inc', 'node=' . $node . ($helpmodule != ""
+        $name = atkTools::atktext("help");
+        return atkTools::atkPopup('atk/popups/help.inc', 'node=' . $node . ($helpmodule != ""
                     ? "&module=" . $helpmodule : ""), $name, 650, 650, 'yes', 'no');
     }
 
@@ -4324,24 +4323,24 @@ class atkNode
      */
     function callHandler($action)
     {
-        atkdebug("atkNode::callHandler(); action: " . $action);
+        atkTools::atkdebug("atkNode::callHandler(); action: " . $action);
         $handler = &atkGetNodeHandler($this->m_type, $action);
 
         // handler function
         if ($handler != NULL && is_string($handler) && function_exists($handler)) {
-            atkdebug("atkNode::callHandler: Calling external handler function for '" . $action . "'");
+            atkTools::atkdebug("atkNode::callHandler: Calling external handler function for '" . $action . "'");
             $handler($this, $action);
         }
 
         // handler object
         elseif ($handler != NULL && $handler instanceof atkActionHandler) {
-            atkdebug("atkNode::callHandler:Using override/existing atkActionHandler " . get_class($handler) . " class for '" . $action . "'");
+            atkTools::atkdebug("atkNode::callHandler:Using override/existing atkActionHandler " . get_class($handler) . " class for '" . $action . "'");
             $handler->handle($this, $action, $this->m_postvars);
         }
 
         // no (valid) handler
         else {
-            atkdebug("Calling default handler function for '" . $action . "'");
+            atkTools::atkdebug("Calling default handler function for '" . $action . "'");
             $this->m_handler = &$this->getHandler($action);
             $this->m_handler->handle($this, $action, $this->m_postvars);
         }
@@ -4357,8 +4356,8 @@ class atkNode
      */
     function &getHandler($action)
     {
-        atkdebug("atkNode::getHandler(); action: " . $action);
-        atkimport("atk.handlers.atkactionhandler");
+        atkTools::atkdebug("atkNode::getHandler(); action: " . $action);
+        atkTools::atkimport("atk.handlers.atkactionhandler");
 
         // for backwards compatibility we first check if a handler exists without using the module name
         $handler = &atkGetNodeHandler($this->m_type, $action);
@@ -4369,8 +4368,8 @@ class atkNode
         }
 
         // The node handler might return a class, then we need to instantiate the handler
-        if (is_string($handler) && !function_exists($handler) && atkimport($handler)) {
-            $handler = &atknew($handler);
+        if (is_string($handler) && !function_exists($handler) && atkTools::atkimport($handler)) {
+            $handler = &atkTools::atknew($handler);
         }
 
         // The node handler might return a function as nodehandler. We cannot
@@ -4380,7 +4379,7 @@ class atkNode
         //       or why support functions at all?!
         // handler object
         if ($handler != NULL && is_subclass_of($handler, "atkActionHandler")) {
-            atkdebug("atkNode::getHandler: Using existing atkActionHandler " . get_class($handler) . " class for '" . $action . "'");
+            atkTools::atkdebug("atkNode::getHandler: Using existing atkActionHandler " . get_class($handler) . " class for '" . $action . "'");
             $handler->setNode($this);
             $handler->setAction($action);
         } else {
@@ -4391,7 +4390,7 @@ class atkNode
 
             //If we use a default handler we need to register it to this node
             //because we might call it a second time.
-            atkdebug("atkNode::getHandler: Register default atkActionHandler for " . $this->m_type . " action: '" . $action . "'");
+            atkTools::atkdebug("atkNode::getHandler: Register default atkActionHandler for " . $this->m_type . " action: '" . $action . "'");
             atkRegisterNodeHandler($this->m_type, $action, $handler);
         }
 
@@ -4462,7 +4461,7 @@ class atkNode
         // To perform the search, we fill atksearch, so selectDb automatically
         // searches. Because an atksearch variable may have already been set,
         // we save it to restore it after the query.
-        $orgsearch = atkArrayNvl($this->m_postvars, "atksearch");
+        $orgsearch = atkTools::atkArrayNvl($this->m_postvars, "atksearch");
 
         // Built whereclause.
         foreach (array_keys($this->m_attribList) as $attribname) {
@@ -4531,7 +4530,7 @@ class atkNode
 
         $targetField = $this->getFirstTargetFieldFromFilterSql($filter);
         if (!$targetField) {
-            atkwarning($this->atkNodeType() . '->' . __FUNCTION__ . "($filter): Disallowed because it has no target field");
+            atkTools::atkwarning($this->atkNodeType() . '->' . __FUNCTION__ . "($filter): Disallowed because it has no target field");
             // Don't allow the filter
             return '';
         }
@@ -4550,14 +4549,14 @@ class atkNode
         // If the table isn't $this one
         if (strtolower(trim($targetTable)) !== strtolower($this->m_table) &&
             !($this->getAttribute($targetTable) instanceof atkManyToOneRelation)) {
-            atkwarning($this->atkNodeType() . '->' . __FUNCTION__ . "($filter): Disallowed because " . strtolower(trim($targetTable)) . " !== " . strtolower($this->m_table) . ' and not a valid many-to-one relation.');
+            atkTools::atkwarning($this->atkNodeType() . '->' . __FUNCTION__ . "($filter): Disallowed because " . strtolower(trim($targetTable)) . " !== " . strtolower($this->m_table) . ' and not a valid many-to-one relation.');
             return '';
         }
 
         // Or the column doesn't belong to $this
         if (!($this->getAttribute($targetTable) instanceof atkManyToOneRelation) &&
             !in_array($targetColumn, array_keys($this->m_attribList))) {
-            atkwarning($this->atkNodeType() . '->' . __FUNCTION__ . "($filter): Disallowed because target column $targetColumn isn't in node");
+            atkTools::atkwarning($this->atkNodeType() . '->' . __FUNCTION__ . "($filter): Disallowed because target column $targetColumn isn't in node");
             return "";
         }
         return $filter;
@@ -4594,7 +4593,7 @@ class atkNode
      */
     function addStyle($style)
     {
-        $theme = &atkinstance("atk.ui.atktheme");
+        $theme = &atkTools::atkinstance("atk.ui.atktheme");
         $page = &$this->getPage();
         $page->register_style($theme->stylePath($style));
     }
@@ -4672,7 +4671,7 @@ class atkNode
         } else if (is_a($listener, 'atkTriggerListener')) {
             $this->m_triggerListeners[] = &$listener;
         } else {
-            atkdebug('atkNode::addListener: Unknown listener base class ' . get_class($listener));
+            atkTools::atkdebug('atkNode::addListener: Unknown listener base class ' . get_class($listener));
         }
     }
 
@@ -4712,7 +4711,7 @@ class atkNode
      */
     function &getColumnConfig($id = NULL, $forceNew = false)
     {
-        atkimport("atk.recordlist.atkcolumnconfig");
+        atkTools::atkimport("atk.recordlist.atkcolumnconfig");
         $columnConfig = &atkColumnConfig::getConfig($this, $id, $forceNew);
         return $columnConfig;
     }
@@ -4735,7 +4734,7 @@ class atkNode
     {
         if ($module === NULL)
             $module = $this->m_module;
-        return atktext($string, $module, $this->m_type, $lng, $firstfallback, $nodefaulttext);
+        return atkTools::atktext($string, $module, $this->m_type, $lng, $firstfallback, $nodefaulttext);
     }
 
     /**
@@ -4817,7 +4816,7 @@ class atkNode
         // only instantiated on the first call after which we use a normal
         // selector if a call to parent::selectDb(...) is made.
         if (strtolower($method) == 'selectdb') {
-            atkwarning("Use of deprecated selectDb method on node " . $this->atkNodeType());
+            atkTools::atkwarning("Use of deprecated selectDb method on node " . $this->atkNodeType());
 
             $condition = array_key_exists(0, $params) ? $params[0] : '';
             $order = array_key_exists(1, $params) ? $params[1] : '';
@@ -4828,7 +4827,7 @@ class atkNode
             $distinct = array_key_exists(5, $params) ? $params[5] : false;
             $ignoreDefaultFilters = array_key_exists(6, $params) ? $params[6] : false;
 
-            $selector = atknew('atk.utils.atk' . ($this->hasFlag(NF_ML) ? 'ml' : '') . 'selector', $this);
+            $selector = atkTools::atknew('atk.utils.atk' . ($this->hasFlag(NF_ML) ? 'ml' : '') . 'selector', $this);
             $this->_initSelector($selector);
             $selector->where($condition);
             if ($order === false || $order != '')
@@ -4845,7 +4844,7 @@ class atkNode
             return $selector->getAllRows();
         }
         else if (strtolower($method) == 'countdb') {
-            atkwarning("Use of deprecated countDb method on node " . $this->atkNodeType());
+            atkTools::atkwarning("Use of deprecated countDb method on node " . $this->atkNodeType());
 
             $condition = array_key_exists(0, $params) ? $params[0] : '';
             $excludes = array_key_exists(1, $params) ? $params[1] : '';
@@ -4854,7 +4853,7 @@ class atkNode
             $distinct = array_key_exists(4, $params) ? $params[4] : false;
             $ignoreDefaultFilters = array_key_exists(5, $params) ? $params[5] : false;
 
-            $selector = atknew('atk.utils.atk' . ($this->hasFlag(NF_ML) ? 'ml' : '') . 'selector', $this);
+            $selector = atkTools::atknew('atk.utils.atk' . ($this->hasFlag(NF_ML) ? 'ml' : '') . 'selector', $this);
             $this->_initSelector($selector);
             $selector->where($condition);
             $selector->excludes($excludes);
@@ -4881,7 +4880,7 @@ class atkNode
         $res = false;
         if (is_callable($callback, false, $callableName)) {
             if (is_array($callback) && !method_exists($callback[0], $callback[1])) {
-                atkerror("The registered row class callback method '$callableName' doesn't exist");
+                atkTools::atkerror("The registered row class callback method '$callableName' doesn't exist");
             } else {
                 $this->m_rowClassCallback[] = $callback;
                 $res = true;
@@ -4889,10 +4888,10 @@ class atkNode
         } else {
             if (is_array($callback)) {
                 if (!method_exists($callback[0], $callback[1])) {
-                    atkerror("The registered row class callback method '$callableName' doesn't exist");
+                    atkTools::atkerror("The registered row class callback method '$callableName' doesn't exist");
                 }
             }
-            atkerror("The registered row class callback '$callableName' is not callable");
+            atkTools::atkerror("The registered row class callback '$callableName' is not callable");
         }
         return $res;
     }

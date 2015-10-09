@@ -43,7 +43,7 @@ class atkString
     {
         if (self::$s_hasMultiByteSupport === null) {
             if (function_exists('mb_strlen') && atkconfig('use_mbstring', true)) {
-                mb_internal_encoding(atkGetCharset());
+                mb_internal_encoding(atkTools::atkGetCharset());
                 self::$s_hasMultiByteSupport = true;
             } else {
                 self::$s_hasMultiByteSupport = false;
@@ -61,7 +61,7 @@ class atkString
     {
         if (self::hasMultiByteSupport()) {
             return mb_strlen($str);
-        } elseif (strtolower(atkGetCharset()) == 'utf-8') {
+        } elseif (strtolower(atkTools::atkGetCharset()) == 'utf-8') {
             preg_match_all("/./su", $str, $matches);
             $chars = $matches[0];
             return count($chars);
@@ -149,14 +149,14 @@ class atkString
      *
      * @param String $str    string to convert
      * @param int $quote_style  quote style (defaults to ENT_COMPAT)
-     * @param String $charset   character set to use (default to atktext('charset', 'atk'))
+     * @param String $charset   character set to use (default to atkTools::atktext('charset', 'atk'))
      *
      * @return String encoded string
      */
     public static function html_entity_decode($str, $quote_style = ENT_COMPAT, $charset = null)
     {
         if ($charset === null)
-            $charset = atkGetCharset();
+            $charset = atkTools::atkGetCharset();
 
         // check if charset is allowed, else use default charset for this function
         if (!in_array(strtolower($charset), self::$s_acceptedCharsets))
@@ -167,19 +167,19 @@ class atkString
 
     /**
      * ATK version of the PHP htmlentities function. Works just like PHP's
-     * htmlentities function, but falls back to atkGetCharset() instead of
+     * htmlentities function, but falls back to atkTools::atkGetCharset() instead of
      * PHP's default charset, if no charset is given.
      *
      * @param String $str       string to convert
      * @param int $quote_style  quote style (defaults to ENT_COMPAT)
-     * @param String $charset   character set to use (default to atkGetCharset())
+     * @param String $charset   character set to use (default to atkTools::atkGetCharset())
      *
      * @return String encoded string
      */
     public static function htmlentities($str, $quote_style = ENT_COMPAT, $charset = null)
     {
         if ($charset === null)
-            $charset = atkGetCharset();
+            $charset = atkTools::atkGetCharset();
 
         // check if charset is allowed, else use default charset for this function
         if (!in_array(strtolower($charset), self::$s_acceptedCharsets))
@@ -190,7 +190,7 @@ class atkString
 
     /**
      * ATK version of the PHP html_entity_decode function. Works just like PHP's
-     * html_entity_decode function, but falls back to atkGetCharset() instead of 
+     * html_entity_decode function, but falls back to atkTools::atkGetCharset() instead of
      * PHP's default charset, if no charset is given.
      *
      * @param string $in_charset The input charset
@@ -203,7 +203,7 @@ class atkString
         if (function_exists("iconv")) {
             $str = iconv($in_charset, $out_charset, $str);
         } else {
-            atkwarning(atktext("error_iconv_not_install"));
+            atkTools::atkwarning(atkTools::atktext("error_iconv_not_install"));
         }
         return $str;
     }

@@ -17,7 +17,7 @@
 /**
  * Base class include 
  */
-useattrib("atkdummyattribute");
+atkTools::useattrib("atkdummyattribute");
 
 /**
  * Custom flags

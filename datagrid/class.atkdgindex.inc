@@ -12,7 +12,7 @@
  * 
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
-atkimport('atk.datagrid.atkdgcomponent');
+atkTools::atkimport('atk.datagrid.atkdgcomponent');
 
 /**
  * The data grid index. Can be used to render an alphanumeric index

@@ -17,7 +17,7 @@
 /**
  * @internal Include the base class.
  */
-userelation("atkmanytomanyselectrelation");
+atkTools::userelation("atkmanytomanyselectrelation");
 
 /**
  * Implementation of many-to-many relationships using checkboxes for meta nodes.

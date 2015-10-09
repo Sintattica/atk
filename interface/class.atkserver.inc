@@ -52,7 +52,7 @@ class atkServer
      */
     private function __construct()
     {
-        atkdebug("Created a new atkServer instance.");
+        atkTools::atkdebug("Created a new atkServer instance.");
     }
 
     /**
@@ -61,12 +61,12 @@ class atkServer
      */
     public function run()
     {
-        $output = atkinstance("atk.ui.atkoutput");
+        $output = atkTools::atkinstance("atk.ui.atkoutput");
         $protocol = $this->getProtocol();
         if (!$this->isValidProtocol($protocol)) {
             $output->output("Server not active or invalid protocol");
         } else {
-            $server = atknew("atk.interface.${protocol}.atk${protocol}server");
+            $server = atkTools::atknew("atk.interface.${protocol}.atk${protocol}server");
             $output->output($server->handleRequest($_REQUEST));
         }
         $output->outputFlush();

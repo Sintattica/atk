@@ -48,7 +48,7 @@ class atkMetaCompiler
         }
 
         if (!isset(self::$instances[$class])) {
-            self::$instances[$class] = atknew($class);
+            self::$instances[$class] = atkTools::atknew($class);
         }
 
         return self::$instances[$class];
@@ -85,7 +85,7 @@ class atkMetaCompiler
 
         $found = array();
         foreach ($constants[$prefix] as $value => $const) {
-            if (hasFlag($flags, $value)) {
+            if (atkTools::hasFlag($flags, $value)) {
                 $found[] = $const;
                 $flags ^= $value;
             }
@@ -163,16 +163,16 @@ class atkMetaCompiler
 
         $code = "// attribute: {$name}\n";
 
-        if (strpos($type, '.') === false && atkexists("attribute", $policy->getNode()->getModule() . '.' . $type))
-            $code .= 'atkuse("attribute", ' . var_export($policy->getNode()->getModule() . '.' . $type, true) . ");\n";
-        elseif (strpos($type, '.') === false && atkexists("relation", $policy->getNode()->getModule() . '.' . $type))
-            $code .= 'atkuse("relation", ' . var_export($policy->getNode()->getModule() . '.' . $type, true) . ");\n";
-        elseif (atkexists("attribute", $type))
-            $code .= 'atkuse("attribute", ' . var_export($type, true) . ");\n";
-        elseif (atkexists("relation", $type))
-            $code .= 'atkuse("relation", ' . var_export($type, true) . ");\n";
+        if (strpos($type, '.') === false && atkTools::atkexists("attribute", $policy->getNode()->getModule() . '.' . $type))
+            $code .= 'atkTools::atkuse("attribute", ' . var_export($policy->getNode()->getModule() . '.' . $type, true) . ");\n";
+        elseif (strpos($type, '.') === false && atkTools::atkexists("relation", $policy->getNode()->getModule() . '.' . $type))
+            $code .= 'atkTools::atkuse("relation", ' . var_export($policy->getNode()->getModule() . '.' . $type, true) . ");\n";
+        elseif (atkTools::atkexists("attribute", $type))
+            $code .= 'atkTools::atkuse("attribute", ' . var_export($type, true) . ");\n";
+        elseif (atkTools::atkexists("relation", $type))
+            $code .= 'atkTools::atkuse("relation", ' . var_export($type, true) . ");\n";
         else
-            $code .= 'atkimport(' . var_export($type, true) . ");\n";
+            $code .= 'atkTools::atkimport(' . var_export($type, true) . ");\n";
 
         if (strrpos($type, ".") !== FALSE)
             $type = substr($type, strrpos($type, ".") + 1);
@@ -244,9 +244,9 @@ class atkMetaCompiler
 
         $code = '';
 
-        if (hasFlag($policy->getNodeFlags(), NF_ML)) {
+        if (atkTools::hasFlag($policy->getNodeFlags(), NF_ML)) {
             $code .=
-                "useattrib('atkmlselectorattribute');\n" .
+                "atkTools::useattrib('atkmlselectorattribute');\n" .
                 "\$node->add(new atkMlSelectorAttribute());\n\n";
         }
 

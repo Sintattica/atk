@@ -14,7 +14,7 @@
  * @version $Revision: 6289 $
  * $Id$
  */
-useattrib("atkFileAttribute");
+atkTools::useattrib("atkFileAttribute");
 
 /**
  * This is an extend of the famous atkfileattribute :). Now its possible 
@@ -81,7 +81,7 @@ class atkMultipleFileAttribute extends atkFileAttribute
             $d->close();
         }
         else {
-            return atktext("no_valid_directory");
+            return atkTools::atktext("no_valid_directory");
         }
 
         if (count($file_arr) > 0) {
@@ -165,7 +165,7 @@ class atkMultipleFileAttribute extends atkFileAttribute
                 }
             } else {
                 if (strlen($files[$i]) > 0)
-                    $r .= $files[$i] . "(<font color=\"#ff0000\">" . atktext("file_not_exist") . "</font><br>)";
+                    $r .= $files[$i] . "(<font color=\"#ff0000\">" . atkTools::atktext("file_not_exist") . "</font><br>)";
             }
         }
         return $r;

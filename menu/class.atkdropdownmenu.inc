@@ -14,7 +14,7 @@
  * @version $Revision: 6347 $
  * $Id$
  */
-atkimport('atk.menu.atkplainmenu');
+atkTools::atkimport('atk.menu.atkplainmenu');
 
 /**
  * Implementation of the Dropdowntext menu.
@@ -33,7 +33,7 @@ class atkDropdownMenu extends atkPlainMenu
      */
     function render()
     {
-        $page = &atkinstance("atk.ui.atkpage");
+        $page = &atkTools::atkinstance("atk.ui.atkpage");
         $menu = $this->load();
         $page->addContent($menu);
 
@@ -59,8 +59,8 @@ class atkDropdownMenu extends atkPlainMenu
     {
         global $ATK_VARS, $g_menu;
 
-        $page = &atkinstance('atk.ui.atkpage');
-        $theme = &atkinstance("atk.ui.atktheme");
+        $page = &atkTools::atkinstance('atk.ui.atkpage');
+        $theme = &atkTools::atkinstance("atk.ui.atktheme");
         $page->register_script(atkconfig('atkroot') . 'atk/javascript/dropdown_menu.js');
         $page->register_style($theme->stylePath("atkdropdownmenu.css"));
         $page->m_loadscripts[] = "new DHTMLListMenu('nav');";
@@ -80,7 +80,7 @@ class atkDropdownMenu extends atkPlainMenu
         }
 
         if (atkconfig("menu_logout_link")) {
-            $menu.="    <li><a href=\"app.php?atklogout=1\">" . atktext('logout') . "</a></li>\n";
+            $menu.="    <li><a href=\"app.php?atklogout=1\">" . atkTools::atktext('logout') . "</a></li>\n";
         }
 
         $menu.="  </ul>\n";
@@ -133,9 +133,9 @@ class atkDropdownMenu extends atkPlainMenu
         if ($menuitem['name'] == '-')
             return "<li class=\"separator\"><div></div></li>\n";
         if ($menuitem['url'] && substr($menuitem['url'], 0, 11) == 'javascript:') {
-            $href = '<a href="javascript:void(0)" onclick="' . atk_htmlentities($menuitem['url']) . '; return false;">' . atk_htmlentities($this->getMenuTranslation($menuitem['name'], $menuitem['module'])) . '</a>';
+            $href = '<a href="javascript:void(0)" onclick="' . atkTools::atk_htmlentities($menuitem['url']) . '; return false;">' . atkTools::atk_htmlentities($this->getMenuTranslation($menuitem['name'], $menuitem['module'])) . '</a>';
         } else if ($menuitem['url']) {
-            $href = href($menuitem['url'], $this->getMenuTranslation($menuitem['name'], $menuitem['module']), SESSION_NEW);
+            $href = atkTools::href($menuitem['url'], $this->getMenuTranslation($menuitem['name'], $menuitem['module']), SESSION_NEW);
         } else
             $href = '<a href="#">' . $name . '</a>';
 

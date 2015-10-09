@@ -14,7 +14,7 @@ class atkMomentphpProvider {
     {
         static $s_instance = NULL;
         if ($s_instance == NULL) {
-            atkdebug("Created a new \Moment\CustomFormats\MomentJs instance");
+            atkTools::atkdebug("Created a new \Moment\CustomFormats\MomentJs instance");
             $s_instance = new \Moment\CustomFormats\MomentJs();
         }
         return $s_instance;

@@ -15,7 +15,7 @@
  * $Id$
  * 
  */
-atkimport("atk.attributes.atkattribute");
+atkTools::atkimport("atk.attributes.atkattribute");
 
 /**
  * With the atkCaptchaAttribute class you can easily add a captcha to a forum 
@@ -58,11 +58,11 @@ class atkCaptchaAttribute extends atkAttribute
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $target = "atk/ext/captcha/img/captcha.jpg.php";
-        $img = session_url("include.php?file=" . $target);
+        $img = atkTools::session_url("include.php?file=" . $target);
 
         $html = '<img src="' . $img . '"><br>';
         $html .= '<br>';
-        $html .= '<small>' . atktext("captcha_explain", "atk") . '</small><br>';
+        $html .= '<small>' . atkTools::atktext("captcha_explain", "atk") . '</small><br>';
         $html .= '<input type="text" name="' . $fieldprefix . $this->fieldName() . '">';
         return $html;
     }
@@ -98,7 +98,7 @@ class atkCaptchaAttribute extends atkAttribute
     {
         $sCaptchaCode = $record[$this->fieldName()];
         if (md5(strtoupper($sCaptchaCode)) != $_SESSION['php_captcha']) {
-            triggerError($record, $this->fieldName(), 'error_captchafield');
+            atkTools::triggerError($record, $this->fieldName(), 'error_captchafield');
         }
 
         // clear to prevent re-use

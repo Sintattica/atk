@@ -34,7 +34,7 @@ atksecure();
 
 //  Renders the help screen
 $node = $_GET["node"];
-$title = atktext("title_$node", isset($_GET["module"]) ? $_GET["module"] : "");
+$title = atkTools::atktext("title_$node", isset($_GET["module"]) ? $_GET["module"] : "");
 $helpbase = $config_atkroot;
 if (isset($_GET["module"]))
     $helpbase = moduleDir($_GET["module"]);
@@ -43,8 +43,8 @@ $data = '<div align="left">';
 $data .= implode("<br>", file($file));
 $data .='</div>';
 
-$page = &atknew("atk.ui.atkpage");
-$ui = &atkinstance("atk.ui.atkui");
+$page = &atkTools::atknew("atk.ui.atkpage");
+$ui = &atkTools::atkinstance("atk.ui.atkui");
 
 $output = &atkOutput::getInstance();
 
@@ -52,11 +52,11 @@ $page->register_style($ui->stylePath("style.css"));
 
 $res = $ui->renderBox(array("title" => $title,
     "content" => $data));
-$res.='<br><div align="right"><a href="javascript:window.close();">' . atktext("close") . '</a></div>';
+$res.='<br><div align="right"><a href="javascript:window.close();">' . atkTools::atktext("close") . '</a></div>';
 
 $page->addContent($res);
 
-$output->output($page->render(atktext('app_title') . ' - ' . atktext('help'), true));
+$output->output($page->render(atkTools::atktext('app_title') . ' - ' . atkTools::atktext('help'), true));
 
 $output->outputFlush();
 ?>

@@ -15,7 +15,7 @@
  * $Id$
  */
 /** @internal Include base class */
-atkimport("atk.db.atkoci8ddl");
+atkTools::atkimport("atk.db.atkoci8ddl");
 
 /**
  * Oracle 9i ddl driver. 

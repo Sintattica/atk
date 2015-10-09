@@ -123,7 +123,7 @@ class atkPage
         static $s_page = NULL;
         if ($s_page == NULL) {
             $s_page = new atkPage();
-            atkdebug("Created a new atkPage instance");
+            atkTools::atkdebug("Created a new atkPage instance");
         }
         return $s_page;
     }
@@ -376,10 +376,10 @@ class atkPage
     {
         $res = "<head>\n  <title>$title</title>\n";
 
-        $version = atkversion();
+        $version = atkTools::atkversion();
         $res.= '  <meta name="atkversion" content="' . $version . '" />' . "\n";
 
-        $res.= '  <meta http-equiv="Content-Type" content="text/html; charset=' . atkGetCharset() . '" />' . "\n";
+        $res.= '  <meta http-equiv="Content-Type" content="text/html; charset=' . atkTools::atkGetCharset() . '" />' . "\n";
         if ($extra_header != "")
             $res.= $extra_header . "\n";
 
@@ -612,14 +612,14 @@ class atkPage
             $title = $this->m_title;
         }
 
-        $ui = &atkinstance('atk.ui.atkui');
-        $theme = &atkinstance('atk.ui.atktheme');
+        $ui = &atkTools::atkinstance('atk.ui.atkui');
+        $theme = &atkTools::atkinstance('atk.ui.atktheme');
 
         if (is_bool($flags) && $flags == true) {
             $flags = HTML_STRICT;
         } elseif (is_bool($flags) && $flags == false) {
             $flags = HTML_HEADER | HTML_DOCTYPE;
-        } elseif (hasFlag($flags, HTML_PARTIAL)) {
+        } elseif (atkTools::hasFlag($flags, HTML_PARTIAL)) {
             return $this->renderPartial();
         }
 
@@ -627,18 +627,18 @@ class atkPage
             $this->m_content = $ui->render('page.tpl', array('content' => $this->m_content));
 
         $page = '';
-        if (hasFlag($flags, HTML_DOCTYPE))
+        if (atkTools::hasFlag($flags, HTML_DOCTYPE))
             $page.=$theme->getAttribute('doctype', atkconfig("doctype"));
         $page.= "\n<html>\n";
 
-        if (hasFlag($flags, HTML_HEADER))
+        if (atkTools::hasFlag($flags, HTML_HEADER))
             $page.= $this->head($title, $extra_header);
-        if (hasFlag($flags, HTML_BODY))
+        if (atkTools::hasFlag($flags, HTML_BODY))
             $page.= $this->body($extrabodyprops);
 
         $page.=$this->m_content . "\n";
         $page.= $this->renderHiddenVars();
-        if (hasFlag($flags, HTML_BODY))
+        if (atkTools::hasFlag($flags, HTML_BODY))
             $page.= "</body>\n";
         $page.= "</html>\n";
 

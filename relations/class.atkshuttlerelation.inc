@@ -15,7 +15,7 @@
  * $Id: class.atkshuttlerelation.inc 6354 2009-04-15 02:41:21Z mvdam $
  */
 /** @internal base include */
-userelation("atkmanytomanyrelation");
+atkTools::userelation("atkmanytomanyrelation");
 
 /**
  * Many-to-many relation.
@@ -123,14 +123,14 @@ class atkShuttleRelation extends atkManyToManyRelation
             }
 
             // fancy autowidth detection
-            $width = max(atk_strlen($this->m_destInstance->descriptor($recordset[$i])) * 10, $width);
+            $width = max(atkTools::atk_strlen($this->m_destInstance->descriptor($recordset[$i])) * 10, $width);
         }
 
         if ($this->m_maxlistwidth) {
             $width = min($this->m_maxlistwidth, $width);
         }
 
-        $result = '<table border="0"><tr><td>' . atktext('available', 'atk') . ':<br/>';
+        $result = '<table border="0"><tr><td>' . atkTools::atktext('available', 'atk') . ':<br/>';
 
         $fieldname = $fieldprefix . $this->fieldName();
         $leftname = $fieldname . "_sel";
@@ -144,7 +144,7 @@ class atkShuttleRelation extends atkManyToManyRelation
         $result.= '<input class="btn btn-default" type="button" value="&gt;&gt;" onClick="shuttle_moveall(\'' . $leftname . '\', \'' . $rightname . '\', \'' . $fieldname . '\');"><br/>';
         $result.= '<input class="btn btn-default" type="button" value="&lt;&lt;" onClick="shuttle_moveall(\'' . $rightname . '\', \'' . $leftname . '\', \'' . $fieldname . '\');">';
 
-        $result.= '</td><td>' . atktext('selected', 'atk') . ':<br/>';
+        $result.= '</td><td>' . atkTools::atktext('selected', 'atk') . ':<br/>';
 
         $result.= $this->_renderSelect($rightname, $right, $width, $leftname, $fieldname);
 

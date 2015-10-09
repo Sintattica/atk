@@ -16,8 +16,8 @@
  * $Id$
  */
 /** @internal includes * */
-atkimport("atk.atklanguage");
-useattrib("atklistattribute");
+atkTools::atkimport("atk.atklanguage");
+atkTools::useattrib("atklistattribute");
 
 /**
  * The atkStateAttribute class represents an attribute to handle United States in a listbox.
@@ -62,7 +62,7 @@ class atkStateAttribute extends atkListAttribute
         }
 
         // When switch is not user get country options
-        atkdebug("StateAttribute - $name - $switch");
+        atkTools::atkdebug("StateAttribute - $name - $switch");
 
         $this->fillStateArray();
         $valueArray = $this->getStateValueArray($switch);

@@ -26,7 +26,7 @@ class atkCacheTestCase extends atkTestCase
 
     public function setup()
     {
-        atkimport("atk.cache.atkcache");
+        atkTools::atkimport("atk.cache.atkcache");
 
         // Set lifetime for testcases
         $GLOBALS['config_cache'][$this->m_type]['lifetime'] = $this->m_lifetime;
@@ -184,7 +184,7 @@ class atkCacheTestCase extends atkTestCase
     public function test_set_Object()
     {
         $id = $this->m_prefix . 'save_object';
-        $data = atknew("atk.atklanguage");
+        $data = atkTools::atknew("atk.atklanguage");
         $this->assertTrue($this->m_cache->set($id, $data), "Save data");
         $this->assertEquals($this->m_cache->get($id), $data);
     }

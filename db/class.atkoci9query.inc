@@ -210,7 +210,7 @@ class atkOci9Query extends atkOci8Query
     function executeUpdate()
     {
         if (!isset($this->m_db))
-            $this->m_db = &atkGetDb();
+            $this->m_db = &atkTools::atkGetDb();
         $query = $this->buildUpdate();
         return $this->m_db->query($query, 0, 0, $this->m_bind_vars);
     }
@@ -221,7 +221,7 @@ class atkOci9Query extends atkOci8Query
     function executeInsert()
     {
         if (!isset($this->m_db))
-            $this->m_db = &atkGetDb();
+            $this->m_db = &atkTools::atkGetDb();
         $query = $this->buildInsert();
         return $this->m_db->query($query, 0, 0, $this->m_bind_vars);
     }

@@ -18,7 +18,7 @@
  * Imports
  * @access private
  */
-atkimport('atk.utils.atkdataholder');
+atkTools::atkimport('atk.utils.atkdataholder');
 
 /**
  * FrontEnd Controller base class.
@@ -134,8 +134,8 @@ class atkFrontController implements ArrayAccess
             $action = 'index';
 
         $importPath = "module.{$module}.controllers.{$name}controller";
-        if (atkimport($importPath)) {
-            atkdebug('Create ' . $importPath . ' controller instance');
+        if (atkTools::atkimport($importPath)) {
+            atkTools::atkdebug('Create ' . $importPath . ' controller instance');
             $class = "{$name}controller";
             return new $class($module, $name, $action, $parent);
         } else {
@@ -175,8 +175,8 @@ class atkFrontController implements ArrayAccess
         $class = atkconfig("frontcontroller_bridge", "atk.front.atkfrontcontrollerbridge");
 
         if (!isset(self::$s_bridges[$class])) {
-            atkdebug('Create ' . $class . ' bridge instance');
-            self::$s_bridges[$class] = atknew($class);
+            atkTools::atkdebug('Create ' . $class . ' bridge instance');
+            self::$s_bridges[$class] = atkTools::atknew($class);
         }
 
         return self::$s_bridges[$class];
@@ -343,7 +343,7 @@ class atkFrontController implements ArrayAccess
      */
     protected function getActionCacheFile()
     {
-        atkimport('atk.utils.atktmpfile');
+        atkTools::atkimport('atk.utils.atktmpfile');
         $path = 'frontcontrollers/' . $this->m_module . '/' . $this->m_name . '/' . $this->m_action;
         $filename = md5($this->getActionCacheKey()) . '.cache';
         $file = new atkTmpFile($path . '/' . $filename);
@@ -480,7 +480,7 @@ class atkFrontController implements ArrayAccess
                 echo $this->m_result;
 
                 if (!isset($this->m_contentType) || $this->m_contentType == 'text/html') {
-                    atkimport("atk.utils.atkdebugger");
+                    atkTools::atkimport("atk.utils.atkdebugger");
                     echo atkDebugger::getInstance()->renderDebugAndErrorMessages();
                 }
                 die;
@@ -547,7 +547,7 @@ class atkFrontController implements ArrayAccess
     protected function handleException($exception)
     {
         if ($this->isRoot()) {
-            atkerror($exception->__toString());
+            atkTools::atkerror($exception->__toString());
             $this->renderContent('An unknown error occured.');
         } else {
             throw $exception;
@@ -568,7 +568,7 @@ class atkFrontController implements ArrayAccess
     protected function installPlugins()
     {
         /* @var $smarty Smarty */
-        $smarty = atkinstance("atk.ui.atksmarty");
+        $smarty = atkTools::atkinstance("atk.ui.atksmarty");
         $this->m_plugins = $smarty->_plugins;
         $smarty->register_function('_partial', array($this, 'partialFunctionTag'), false);
         $smarty->register_function('_url', array($this, 'urlFunctionTag'), false);
@@ -583,7 +583,7 @@ class atkFrontController implements ArrayAccess
     {
         if ($this->m_plugins == NULL)
             return;
-        $smarty = atkinstance("atk.ui.atksmarty");
+        $smarty = atkTools::atkinstance("atk.ui.atksmarty");
         $smarty->_plugins = $this->m_plugins;
         $this->m_plugins = NULL;
     }
@@ -809,7 +809,7 @@ class atkFrontController implements ArrayAccess
 
         $result = '';
         foreach ($vars as $name => $value) {
-            $value = atk_htmlentities($value);
+            $value = atkTools::atk_htmlentities($value);
             $result .= "<input type=\"hidden\" name=\"{$name}\" value=\"{$value}\">\n";
         }
 
@@ -1096,7 +1096,7 @@ class atkFrontController implements ArrayAccess
         $template = $this->getFileForTemplate($template, $vars, $partial);
 
         /* @var $smarty Smarty */
-        $smarty = atkinstance('atk.ui.atksmarty');
+        $smarty = atkTools::atkinstance('atk.ui.atksmarty');
 
         $oldVars = $smarty->get_template_vars();
         $oldSerials = $smarty->_cache_serials;
