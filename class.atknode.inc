@@ -1673,7 +1673,7 @@ class atkNode
 
             // load the $g_nodes array to find out what tabs are required
             if (!isset($g_nodes[$this->m_module][$this->m_module][$this->m_type])) {
-                $module = &getModule($this->m_module);
+                $module = atkGetModule($this->m_module);
                 $module->getNodes();
             }
 
@@ -2742,7 +2742,7 @@ class atkNode
         // modifiers if found.
         if (isset($g_modifiers[$this->atknodetype()])) {
             foreach ($g_modifiers[$this->atknodetype()] as $modulename) {
-                $module = &getModule($modulename);
+                $module = atkGetModule($modulename);
                 $module->modifier($this);
             }
         }

@@ -236,7 +236,7 @@ class atkProfileAttribute extends atkAttribute
             // get nodes for each module
             foreach (array_keys($g_modules) as $module) {
                 if (!isset($g_moduleflags[$module]) || !atkTools::hasFlag($g_moduleflags[$module], MF_NORIGHTS)) {
-                    $instance = &getModule($module);
+                    $instance = atkGetModule($module);
                     if (method_exists($instance, "getNodes"))
                         $instance->getNodes();
                 }

@@ -187,17 +187,6 @@ function &atkGetModule($modname)
     return $g_moduleRepository[$modname];
 }
 
-/**
- * Retrieve the atkModule with the given name.
- *
- * @deprecated Use atkGetModule instead.
- * @param String $modname The name of the module
- * @return atkModule an instance of the atkModule
- */
-function getModule($modname)
-{
-    return atkGetModule($modname);
-}
 
 /**
  * Retrieve the full filename containing the given node.
@@ -248,7 +237,7 @@ function &newNode($node, $init = TRUE)
         // No module, use the default instance.
         $module_inst = new atkModule();
     } else {
-        $module_inst = getModule($module);
+        $module_inst = atkGetModule($module);
     }
     if (is_object($module_inst)) {
         if (method_exists($module_inst, 'newNode')) {
@@ -278,7 +267,7 @@ function nodeExists($node)
     if ($module == "")
         $module = new atkModule();
     else
-        $module = getModule(getNodeModule($node));
+        $module = atkGetModule(getNodeModule($node));
 
     $exists = is_object($module) && $module->nodeExists($node);
     $existence[$node] = $exists;
@@ -471,7 +460,7 @@ function atkHarvestModules($function, $param = "", $associative = false)
     $total = array();
 
     foreach ($modulekeys as $modname) {
-        $module = &getModule($modname);
+        $module = atkGetModule($modname);
         if (is_object($module) && method_exists($module, $function)) {
             $res = $module->$function($param);
             if (!empty($res)) {
