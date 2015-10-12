@@ -316,34 +316,6 @@ function moduleExists($module)
     return (is_array($modules) && in_array($module, array_keys($modules)));
 }
 
-/**
- * Returns a registered node action handler.
- * @deprecated Use atkGetNodeHandler instead
- * @param $node the name of the node
- * @param $action the node action
- * @return handler functionname or object (is_subclass_of atkActionHandler) or
- *         NULL if no handler exists for the specified action
- */
-function &getNodeHandler($node, $action)
-{
-    return atkGetNodeHandler($node, $action);
-}
-
-/**
- * Registers a new node action handler.
- * @deprecated Use atkRegisterNodeHandler instead
- * @param $node the name of the node (* matches all)
- * @param $action the node action
- * @param $handler handler functionname or object (is_subclass_of atkActionHandler)
- * @return true if there is no known handler
- * 
- * @deprecated
- * @see atkRegisterNodeHandler
- */
-function registerNodeHandler($node, $action, &$handler)
-{
-    return atkRegisterNodeHandler($node, $action, $handler);
-}
 
 /**
  * Returns a registered node action handler.
@@ -381,22 +353,6 @@ function atkRegisterNodeHandler($node, $action, $handler)
     return TRUE;
 }
 
-/**
- * Registers a new node action handler.
- *
- * @param string $node the name of the node (* matches all)
- * @param string $action the node action
- * @param string $class node handler class ATK path
- *
- * @return bool true if there is no known handler
- * 
- * @deprecated
- * @see atkRegisterNodeHandler
- */
-function atkRegisterNodeHandlerClass($node, $action, $class)
-{
-    atkRegisterNodeHandler($node, $action, $class);
-}
 
 /**
  * Returns a registered node controller.

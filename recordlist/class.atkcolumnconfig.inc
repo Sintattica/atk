@@ -64,7 +64,7 @@ class atkColumnConfig
      *
      * @return atkNode The node
      */
-    function atkGetNode()
+    function &getNode()
     {
         return $this->m_node;
     }
