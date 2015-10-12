@@ -152,7 +152,7 @@ class atkDbLock extends atkLock
                 $page->register_script(atkTools::session_url("include.php?file=atk/lock/lock.js.php&stack=" . atkSessionManager::atkStackID() . "&id=" . $this->m_id, SESSION_NEW));
             }
 
-            $user = getUser();
+            $user = atkSecurityManager::atkGetUser();
             if (is_array($user))
                 $user = $user['name'];
 
@@ -205,7 +205,7 @@ class atkDbLock extends atkLock
     {
         $db = &atkTools::atkGetDb();
 
-        $user = getUser();
+        $user = atkSecurityManager::atkGetUser();
         if (is_array($user))
             $user = $user['name'];
 
@@ -251,7 +251,7 @@ class atkDbLock extends atkLock
         else
             $atkstackid = atkSessionManager::atkStackID();
 
-        $user = getUser();
+        $user = atkSecurityManager::atkGetUser();
         if (is_array($user))
             $user = $user['name'];
 

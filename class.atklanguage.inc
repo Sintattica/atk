@@ -277,7 +277,7 @@ class atkLanguage
             $sessionmanager = &atkSessionManager::atkGetSessionManager();
         if (!empty($sessionmanager)) {
             if (function_exists("getUser")) {
-                $userinfo = getUser();
+                $userinfo = atkSecurityManager::atkGetUser();
                 $fieldname = atkconfig('auth_languagefield');
                 if (isset($userinfo[$fieldname]) && in_array($userinfo[$fieldname], $supported))
                     return $userinfo[$fieldname];

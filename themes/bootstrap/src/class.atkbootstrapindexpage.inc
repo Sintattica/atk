@@ -74,7 +74,7 @@ class atkBootstrapIndexPage
         $this->m_ui = atkTools::atkinstance("atk.ui.atkui");
         $this->m_theme = atkTools::atkinstance('atk.ui.atktheme');
         $this->m_output = atkTools::atkinstance('atk.ui.atkoutput');
-        $this->m_user = getUser();
+        $this->m_user = atkSecurityManager::atkGetUser();
         $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL
             : HTML_STRICT;
         $this->m_noNav = isset($ATK_VARS['atknonav']);

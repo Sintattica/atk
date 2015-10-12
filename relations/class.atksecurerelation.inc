@@ -132,7 +132,7 @@ class atkSecureRelation extends atkOneToOneRelation
         if (!$linkfield)
             $linkfield = $this->m_linkfield;
 
-        $user = getUser();
+        $user = atkSecurityManager::atkGetUser();
         $username = $user['name'];
         $password = $user['PASS'];
 

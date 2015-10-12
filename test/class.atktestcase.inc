@@ -289,12 +289,16 @@ abstract class atkTestCase extends PHPUnit_Framework_TestCase
 
     function &setMockSecurityManager(&$mockmanager)
     {
-        $this->m_restoreSecMgr = &atkSetSecurityManager($mockmanager);
+        global $g_securityManager;
+        $obj = $g_securityManager;
+        $g_securityManager = $mockmanager;
+        $this->m_restoreSecMgr = $obj;
     }
 
     function restoreSecurityManager()
     {
-        atkSetSecurityManager($this->m_restoreSecMgr);
+        global $g_securityManager;
+        $g_securityManager = $this->m_restoreSecMgr;
     }
 
     /**

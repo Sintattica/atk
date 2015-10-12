@@ -137,7 +137,7 @@ class atkmenuinterface
         } else if (is_array($enable)) {
             $enabled = false;
             for ($j = 0; $j < (count($enable) / 2); $j++) {
-                $enabled = $enabled || is_allowed($enable[(2 * $j)], $enable[(2 * $j) + 1]);
+                $enabled = $enabled || atkSecurityManager::is_allowed($enable[(2 * $j)], $enable[(2 * $j) + 1]);
             }
             $enable = $enabled;
         } else if (array_key_exists($menuitem['name'], $g_menu) && is_array($g_menu[$menuitem['name']])) {

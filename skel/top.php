@@ -44,7 +44,7 @@ $vars = array("logintext" => atkTools::atktext("logged_in_as", "atk"),
     "centerpiece" => "",
     "searchpiece" => "",
     "title" => atkTools::atktext("app_title"),
-    "user" => atkTools::atkArrayNvl(atkGetUser(), "name"));
+    "user" => atkTools::atkArrayNvl(atkSecurityManager::atkGetUser(), "name"));
 
 // Backwards compatible $vars[content], that is what will render when the
 // box.tpl is used instead of a top.tpl. This happens in old themes.

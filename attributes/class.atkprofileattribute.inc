@@ -272,7 +272,7 @@ class atkProfileAttribute extends atkAttribute
      */
     function getEditableActions($record)
     {
-        $user = getUser();
+        $user = atkSecurityManager::atkGetUser();
         $levels = "";
         if (!is_array($user['level']))
             $levels = "'" . $user['level'] . "'";
@@ -334,7 +334,7 @@ class atkProfileAttribute extends atkAttribute
      */
     public function display($record)
     {
-        $user = getUser();
+        $user = atkSecurityManager::atkGetUser();
         $page = &atkPage::getInstance();
         $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atkprofileattribute.js.php");
         $this->_restoreDivStates($page);
@@ -434,7 +434,7 @@ class atkProfileAttribute extends atkAttribute
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
-        $user = getUser();
+        $user = atkSecurityManager::atkGetUser();
         $page = &atkPage::getInstance();
         $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atkprofileattribute.js.php");
 

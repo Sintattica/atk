@@ -68,7 +68,7 @@ class atkUpdatedByAttribute extends atkManyToOneRelation
      */
     function initialValue()
     {
-        $fakeRecord = array($this->fieldName() => getUser());
+        $fakeRecord = array($this->fieldName() => atkSecurityManager::atkGetUser());
         $this->populate($fakeRecord);
         return $fakeRecord[$this->fieldName()];
     }

@@ -296,7 +296,7 @@ class atkExportHandler extends atkActionHandler
 
         $user_id = 0;
         if ('none' !== strtolower(atkConfig('authentication'))) {
-            $user = atkGetUser();
+            $user = atkSecurityManager::atkGetUser();
             $user_id = array_key_exists(atkConfig('auth_userpk'), $user) ? $user[atkConfig('auth_userpk')]
                     : 0;
         }
@@ -328,7 +328,7 @@ class atkExportHandler extends atkActionHandler
 
         $user_id = 0;
         if ('none' !== strtolower(atkConfig('authentication'))) {
-            $user = atkGetUser();
+            $user = atkSecurityManager::atkGetUser();
             $user_id = array_key_exists(atkConfig('auth_userpk'), $user) ? $user[atkConfig('auth_userpk')]
                     : 0;
         }
@@ -374,7 +374,7 @@ class atkExportHandler extends atkActionHandler
     {
         $where = ' nodetype = "' . $this->m_postvars['atknodetype'] . '"';
         if ('none' !== strtolower(atkConfig('authentication'))) {
-            $user = atkGetUser();
+            $user = atkSecurityManager::atkGetUser();
             if ('administrator' !== strtolower($user['name'])) {
                 $where .= ' AND user_id IN( 0, ' . (int) $user[atkConfig('auth_userpk')] . ' )';
             }
