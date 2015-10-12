@@ -93,7 +93,7 @@ class atkDGRenderer extends atkDGComponent
         $baseUrl = atkJSON::encode($this->getGrid()->getBaseUrl());
         $embedded = $this->getGrid()->isEmbedded() ? 'true' : 'false';
 
-        $this->getPage()->register_script(atkconfig('atkroot') . 'atk/javascript/class.atkdatagrid.js');
+        $this->getPage()->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/class.atkdatagrid.js');
         $this->getPage()->register_loadscript("
       ATK.DataGrid.register($name, $baseUrl, $embedded);
     ");

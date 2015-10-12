@@ -35,7 +35,7 @@ class atkDb2DDL extends atkDDL
     function getType($generictype)
     {
         $config_db_mysql_default_text_columntype = "longtext";
-        $config = atkconfig('db_mysql_default_' . $generictype . '_columntype');
+        $config = atkConfig::getGlobal('db_mysql_default_' . $generictype . '_columntype');
         if ($config)
             return $config;
 

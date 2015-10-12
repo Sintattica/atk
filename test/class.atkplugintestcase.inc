@@ -40,7 +40,7 @@ class atkPluginTestCase extends atkTestCase
     function runPlugin($type, $plugin, $params = array())
     {
         $smarty = &atkSmarty::getInstance();
-        include_once(atkconfig("atkroot") . "atk/ui/smarty/internals/core.load_plugins.php");
+        include_once(atkConfig::getGlobal("atkroot") . "atk/ui/smarty/internals/core.load_plugins.php");
         include_once($smarty->_get_plugin_filepath($type, $plugin));
         $funcname = "smarty_function_" . $plugin;
         return $funcname($params, $smarty);

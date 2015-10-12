@@ -116,9 +116,9 @@ class atkDhtmlMenu extends atkmenuinterface
         $theme = &atkTools::atkinstance("atk.ui.atktheme");
         $page->register_style($theme->stylePath("style.css"));
         $page->register_style($theme->stylePath("dhtmlmenu.css"));
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/atk_tabs.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/atk_tabs.js");
 
-        $code = 'var tabSelectMode = "' . atkconfig("tabselectMode") . '";' . "\n";
+        $code = 'var tabSelectMode = "' . atkConfig::getGlobal("tabselectMode") . '";' . "\n";
 
         $code.= 'var rows     = new Array();
                var num_rows = 1;

@@ -50,7 +50,7 @@ class atkOci8Db extends atkDb
     {
         /* establish connection to database */
         if (empty($this->m_link_id)) {
-            $connectfunc = (atkconfig("databasepersistent") ? "OCIPlogon" : "OCILogon");
+            $connectfunc = (atkConfig::getGlobal("databasepersistent") ? "OCIPlogon" : "OCILogon");
             atkTools::atkdebug("Connectiontype: " . $connectfunc);
             $this->m_link_id = $connectfunc($this->m_user, $this->m_password, $this->m_database);
             if (!$this->m_link_id) {
@@ -401,7 +401,7 @@ class atkOci8Db extends atkDb
     {
         /* connect first */
         if ($this->connect() == DB_SUCCESS) {
-            $sequencename = atkconfig("database_sequenceprefix") . $sequence;
+            $sequencename = atkConfig::getGlobal("database_sequenceprefix") . $sequence;
 
             /* get sequence number and increment */
             $query = "SELECT " . $sequencename . ".nextval AS nextid FROM dual";
@@ -446,7 +446,7 @@ class atkOci8Db extends atkDb
     {
         /* connect first */
         if ($this->connect() == DB_SUCCESS) {
-            $sequence = atkconfig("database_sequenceprefix") . $sequence;
+            $sequence = atkConfig::getGlobal("database_sequenceprefix") . $sequence;
             $query = "SELECT {$sequence}.NEXTVAL AS value FROM DUAL";
             atkTools::atkdebug($query);
             list($row) = $this->getRows($query);

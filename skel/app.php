@@ -59,7 +59,7 @@ $menuframe = new atkFrame(($position == MENU_LEFT || $position == MENU_RIGHT ? (
 $noframes = '<p>Your browser doesnt support frames, but this is required to run ' . atkTools::atktext('app_title') . "</p>\n";
 
 $root = new atkRootFrameset();
-if (atkconfig("top_frame")) {
+if (atkConfig::getGlobal("top_frame")) {
     $outer = new atkFrameSet("*", FRAMESET_VERTICAL, 0, $noframes);
     $outer->addChild($topframe);
     $root->addChild($outer);

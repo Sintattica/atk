@@ -22,7 +22,7 @@
  */
 function smarty_function_atkconfig($params, &$smarty)
 {
-    $smarty->assign($params["smartyvar"], atkconfig($params["var"]));
+    $smarty->assign($params["smartyvar"], atkConfig::getGlobal($params["var"]));
 }
 
 ?>

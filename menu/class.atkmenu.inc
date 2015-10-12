@@ -75,7 +75,7 @@ class atkMenu
     function getMenuClass()
     {
         // Get the configured layout class
-        $classname = atkMenu::layoutToClass(atkconfig("menu_layout"));
+        $classname = atkMenu::layoutToClass(atkConfig::getGlobal("menu_layout"));
         atkTools::atkdebug("Configured menu layout class: $classname");
 
         // Check if the class is compatible with the current theme, if not use a compatible menu.
@@ -122,7 +122,7 @@ class atkMenu
             // This makes sure that all calls to dispatch_url will generate a url for the main frame and not
             // within the menu itself.
             $theme = &atkTools::atkinstance("atk.ui.atktheme");
-            $dispatcher = $theme->getAttribute('dispatcher', atkconfig("dispatcher", "dispatch.php")); // do not use atkSelf here!
+            $dispatcher = $theme->getAttribute('dispatcher', atkConfig::getGlobal("dispatcher", "dispatch.php")); // do not use atkSelf here!
             $c = &atkTools::atkinstance("atk.atkcontroller");
             $c->setPhpFile($dispatcher);
 

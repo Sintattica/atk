@@ -65,7 +65,7 @@ class atkMlWrapper extends atkAttribute
      */
     function getLanguages()
     {
-        return atkconfig("supported_languages");
+        return atkConfig::getGlobal("supported_languages");
     }
 
     /**
@@ -208,7 +208,7 @@ class atkMlWrapper extends atkAttribute
     {
         $defaultlng = $this->getDefaultLng();
         $page = &atkPage::getInstance();
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/dhtml_formtools.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/dhtml_formtools.js");
         $cnt = 0;
         foreach (array_keys($this->m_childList) as $lng) {
             $attr = &$this->m_childList[$lng];

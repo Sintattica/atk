@@ -115,7 +115,7 @@ class atkClassLoader
      * Note: at the moment only single element prefixes are allowed!
      * 
      * Example:
-     * atkClassLoader::mountClassPath('frontend', atkconfig('atkroot').'../frontend/');
+     * atkClassLoader::mountClassPath('frontend', atkConfig::getGlobal('atkroot').'../frontend/');
      * atkClassLoader::newInstance('frontend.helloworld');
      *
      * @param string $prefix prefix
@@ -143,7 +143,7 @@ class atkClassLoader
             $prefix = self::$s_classPaths[$elems[0]];
             array_shift($elems);
         } else {
-            $prefix = atkconfig("atkroot");
+            $prefix = atkConfig::getGlobal("atkroot");
         }
 
         $last = &$elems[count($elems) - 1];
@@ -373,7 +373,7 @@ class atkClassLoader
         $classes = $classloader->getAllClasses();
 
         if (!in_array($class, array_keys($classes))) {
-            if (atkconfig('autoload_reindex_on_missing_class', false) && !self::$s_isReindexed) {
+            if (atkConfig::getGlobal('autoload_reindex_on_missing_class', false) && !self::$s_isReindexed) {
                 $classes = $classloader->getAllClasses(true);
                 self::$s_isReindexed = true;
 
@@ -429,7 +429,7 @@ class atkClassLoader
         $classfinder = new atkClassFinder();
         $traverser->addCallbackObject($classfinder);
         $cwd = getcwd();
-        chdir(atkconfig('atkroot'));
+        chdir(atkConfig::getGlobal('atkroot'));
         $traverser->traverse('atk');
         chdir($cwd);
         $classes = $classfinder->getClasses();

@@ -29,7 +29,7 @@ define("AF_CLEAR_TOUCH_BUTTONS", AF_SPECIFIC_6); // Display butons to clear and 
 define("AF_DATE_DEFAULT_EMPTY", AF_SPECIFIC_7|AF_DATE_EMPTYFIELD); // Always use the empty value on new record
 
 // Include adodb workarounds for <1970 dates on windows.
-$config_atkroot = atkconfig("atkroot");
+$config_atkroot = atkConfig::getGlobal("atkroot");
 require_once($config_atkroot . "atk/utils/adodb-time.inc.php");
 // Include browsertools for PDA detection
 include_once($config_atkroot . "atk/utils/class.atkbrowsertools.inc");
@@ -763,13 +763,13 @@ class atkDateAttribute extends atkAttribute
           var m_weekdays_short = Array("' . implode('","', $m_weekdays_short) . '");
         ', true);
 
-            $page->register_script(atkconfig('atkroot') . 'atk/javascript/class.atkdateattribute.js');
+            $page->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/class.atkdateattribute.js');
         }
 
         if ($useCalendar) {
-            $page->register_script(atkconfig("atkroot") . "atk/javascript/calendar/calendar.js");
-            $page->register_script(atkconfig("atkroot") . "atk/javascript/calendar/calendar-runner.js");
-            $page->register_script(atkconfig("atkroot") . "atk/javascript/calendar/lang/calendar-" . atkconfig("language") . ".js");
+            $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/calendar/calendar.js");
+            $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/calendar/calendar-runner.js");
+            $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/calendar/lang/calendar-" . atkConfig::getGlobal("language") . ".js");
 
             $theme = atkTools::atkinstance("atk.ui.atktheme");
             $page->register_style($theme->stylePath("atkdateattribute.css"));

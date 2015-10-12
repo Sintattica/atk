@@ -59,7 +59,7 @@ class atkMlTextAttribute extends atkMlAttribute
         $this->m_languages = $languages;
         /* register javascript */
         $page = &atkPage::getInstance();
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atkmultilanguage.js.php");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atkmultilanguage.js.php");
         //$page->register_submitscript('submitSave(form);');
 
         $this->m_size = $this->maxInputSize();

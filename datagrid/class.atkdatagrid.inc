@@ -352,7 +352,7 @@ class atkDataGrid
     {
         $useSession = $useSession && atkSessionManager::atkGetSessionManager() != null;
         $name = $name == null ? uniqid('atkdatagrid') : $name;
-        $class = $class == null ? atkconfig('datagrid_class') : $class;
+        $class = $class == null ? atkConfig::getGlobal('datagrid_class') : $class;
         $sessions = &$GLOBALS['ATK_VARS']['atkdgsession'];
         $sessions[$name] = array('class' => $class, 'custom' => array(), 'system' => array());
         if ($useSession) {
@@ -450,7 +450,7 @@ class atkDataGrid
         $this->setFlags($this->convertNodeFlags($this->getNode()->getFlags()));
         $this->setBaseUrl(atkTools::partial_url($this->getNode()->atkNodeType(), $this->getNode()->m_action, 'datagrid'));
 
-        $this->setDefaultLimit(atkconfig('recordsperpage'));
+        $this->setDefaultLimit(atkConfig::getGlobal('recordsperpage'));
         $this->setDefaultActions($this->getNode()->defaultActions("admin"));
         $this->setDefaultOrderBy($this->getNode()->getOrder());
         $this->setTemplate('datagrid.tpl');
@@ -474,7 +474,7 @@ class atkDataGrid
         $this->addComponent('list', 'atk.datagrid.atkdglist');
         $this->addComponent('summary', 'atk.datagrid.atkdgsummary');
         //$this->addComponent('limit', 'atk.datagrid.atkdglimit');
-        $this->addComponent('limit', 'atk.datagrid.atkdglimit', array('showAll' => atkconfig('enable_showall')));
+        $this->addComponent('limit', 'atk.datagrid.atkdglimit', array('showAll' => atkConfig::getGlobal('enable_showall')));
         $this->addComponent('norecordsfound', 'atk.datagrid.atkdgnorecordsfound');
         $this->addComponent('paginator', 'atk.datagrid.atkdgpaginator');
 

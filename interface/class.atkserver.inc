@@ -17,7 +17,7 @@
 /**
  * @todo Replace this with Marks's interface importer.
  */
-include_once(atkconfig("atkroot") . "atk/interface/interface.atkserverinterface.inc");
+include_once(atkConfig::getGlobal("atkroot") . "atk/interface/interface.atkserverinterface.inc");
 
 /**
  * The atkServer class is the base implementation of the ATK webservices
@@ -100,7 +100,7 @@ class atkServer
      */
     public function getDefaultProtocol()
     {
-        return (isset($_REQUEST["protocol"]) ? $_REQUEST["protocol"] : atkconfig("server_default_protocol"));
+        return (isset($_REQUEST["protocol"]) ? $_REQUEST["protocol"] : atkConfig::getGlobal("server_default_protocol"));
     }
 
     /**

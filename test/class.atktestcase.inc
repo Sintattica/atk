@@ -73,7 +73,7 @@ abstract class atkTestCase extends PHPUnit_Framework_TestCase
 
         if ($this->useTestDatabase) {
             // switch to the test databases
-            $mapping = atkconfig("test_db_mapping");
+            $mapping = atkConfig::getGlobal("test_db_mapping");
             foreach ($mapping as $test) {
                 $testDb = atkTools::atkGetDb($test);
                 $testDb->toggleForeignKeys(false);
@@ -103,8 +103,8 @@ abstract class atkTestCase extends PHPUnit_Framework_TestCase
      */
     protected function _validateTestDb()
     {
-        $db = atkconfig('db');
-        $mapping = atkconfig("test_db_mapping");
+        $db = atkConfig::getGlobal('db');
+        $mapping = atkConfig::getGlobal("test_db_mapping");
 
         foreach (array_keys($db) as $normal) {
             if (in_array($normal, $mapping)) {

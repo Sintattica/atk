@@ -64,7 +64,7 @@ class atkJSON
 
         if (!isset($services[$assoc])) {
             if (!class_exists("Services_JSON")) {
-                include_once atkconfig('atkroot') . 'atk/ext/json/json.php';
+                include_once atkConfig::getGlobal('atkroot') . 'atk/ext/json/json.php';
             }
 
             $services[$assoc] = new Services_JSON($assoc ? SERVICES_JSON_LOOSE_TYPE

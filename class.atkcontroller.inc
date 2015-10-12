@@ -490,7 +490,7 @@ class atkController
         $result = array();
         $node = &$this->getNode();
         $page = &$node->getPage();
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/tools.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/tools.js");
 
         // edit mode
         if ($mode == "edit") {
@@ -707,7 +707,7 @@ class atkController
 
         if ($this->m_php_file != "")
             return $this->m_php_file;
-        return $theme->getAttribute('dispatcher', atkconfig("dispatcher", atkTools::atkSelf()));
+        return $theme->getAttribute('dispatcher', atkConfig::getGlobal("dispatcher", atkTools::atkSelf()));
     }
 
     /**

@@ -147,7 +147,7 @@ class atkRecordList
         $page->register_style($theme->stylePath("recordlist.css", $this->m_node->m_module));
 
         $listName = "rl_" . getUniqueId("normalRecordList");
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/recordlist.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/recordlist.js");
 
         $defaulthighlight = $theme->getAttribute("highlight");
         $selectcolor = $theme->getAttribute("select");
@@ -168,8 +168,8 @@ class atkRecordList
                 $this->m_node->m_priority_max = $this->m_node->m_priority_min + count($list["rows"]) - 1;
         }
 
-        $orientation = atkconfig('recordlist_orientation', $theme->getAttribute("recordlist_orientation"));
-        $vorientation = trim(atkconfig('recordlist_vorientation', $theme->getAttribute("recordlist_vorientation")));
+        $orientation = atkConfig::getGlobal('recordlist_orientation', $theme->getAttribute("recordlist_orientation"));
+        $vorientation = trim(atkConfig::getGlobal('recordlist_vorientation', $theme->getAttribute("recordlist_vorientation")));
 
         $ui = &$this->m_node->getUi();
 
@@ -191,7 +191,7 @@ class atkRecordList
                 $headercols[] = array("content" => ""); // Empty leader on top of mra action list.
             }
             if (atkTools::hasFlag($flags, RL_LOCK)) {
-                $headercols[] = array("content" => '<img src="' . atkconfig("atkroot") . 'atk/images/lock_head.gif">');
+                $headercols[] = array("content" => '<img src="' . atkConfig::getGlobal("atkroot") . 'atk/images/lock_head.gif">');
             }
             if (($orientation == "left" || $orientation == "both") && ($this->_hasActionColumn($list) && count($list["rows"]) > 0)) {
                 $headercols[] = array("content" => "");
@@ -316,7 +316,7 @@ class atkRecordList
             $liststart = "";
             $listend = "";
             if (atkTools::hasFlag($flags, RL_MRA) || atkTools::hasFlag($flags, RL_MRPA)) {
-                $page->register_script(atkconfig("atkroot") . "atk/javascript/formselect.js");
+                $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/formselect.js");
 
                 if (!atkTools::hasFlag($flags, RL_EMBED)) {
                     if (empty($formName))
@@ -401,15 +401,15 @@ class atkRecordList
                 if (atkTools::hasFlag($flags, RL_LOCK)) {
                     if (is_array($list["rows"][$i]["lock"])) {
                         $alt = $list["rows"][$i]["lock"]["user_id"] . " / " . $list["rows"][$i]["lock"]["user_ip"];
-                        $record["cols"][] = array("content" => '<img src="' . atkconfig("atkroot") . 'atk/images/lock.gif" alt="' . $alt . '" title="' . $alt . '" border="0">', "type" => "lock");
+                        $record["cols"][] = array("content" => '<img src="' . atkConfig::getGlobal("atkroot") . 'atk/images/lock.gif" alt="' . $alt . '" title="' . $alt . '" border="0">', "type" => "lock");
                     } else
                         $record["cols"][] = array("content" => "");
                 }
 
                 $str_actions = "<span class=\"actions\">";
                 $actionloader.="\nrl_a['" . $listName . "'][" . $i . "] = {};";
-                $icons = (atkconfig('recordlist_icons', $theme->getAttribute("recordlist_icons")) === false ||
-                    atkconfig('recordlist_icons', $theme->getAttribute("recordlist_icons")) === 'false'
+                $icons = (atkConfig::getGlobal('recordlist_icons', $theme->getAttribute("recordlist_icons")) === false ||
+                    atkConfig::getGlobal('recordlist_icons', $theme->getAttribute("recordlist_icons")) === 'false'
                             ? false : true);
 
                 foreach ($list["rows"][$i]["actions"] as $name => $url) {
@@ -430,7 +430,7 @@ class atkRecordList
                     }
 
                     $confirmtext = "false";
-                    if (atkconfig("recordlist_javascript_delete") && $name == "delete")
+                    if (atkConfig::getGlobal("recordlist_javascript_delete") && $name == "delete")
                         $confirmtext = "'" . $this->m_node->confirmActionText($name) . "'";
                     $str_actions.='<a href="' . "javascript:rl_do('$listName',$i,'$name',$confirmtext);" . '">' . $link . '</a>&nbsp;';
                 }
@@ -548,7 +548,7 @@ class atkRecordList
                 }
             }
 
-            if (atkconfig("use_keyboard_handler")) {
+            if (atkConfig::getGlobal("use_keyboard_handler")) {
                 $kb = &atkKeyboard::getInstance();
                 $kb->addRecordListHandler($listName, $selectcolor, count($records));
             }

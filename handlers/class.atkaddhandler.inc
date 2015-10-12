@@ -146,8 +146,8 @@ class atkAddHandler extends atkActionHandler
     {
         $page = &$this->getPage();
         $ui = &$this->getUi();
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/tools.js");
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/formfocus.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/tools.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/formfocus.js");
         $page->register_loadscript("placeFocus();");
         $page->register_style($ui->stylePath("style.css"));
     }

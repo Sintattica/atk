@@ -283,7 +283,7 @@ class atkTmpFile
     public function getBasedir()
     {
         if (!$this->m_basedir) {
-            $this->m_basedir = atkconfig('atktempdir');
+            $this->m_basedir = atkConfig::getGlobal('atktempdir');
         }
         return $this->m_basedir;
     }

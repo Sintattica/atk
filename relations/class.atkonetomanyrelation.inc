@@ -422,8 +422,8 @@ class atkOneToManyRelation extends atkRelation
     public function edit($record = "", $fieldprefix = "", $mode = '')
     {
         $page = &atkTools::atkinstance('atk.ui.atkpage');
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/tools.js");
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atkonetomanyrelation.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/tools.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atkonetomanyrelation.js");
 
         $grid = $this->createGrid($record, 'admin', $mode);
 
@@ -492,9 +492,9 @@ class atkOneToManyRelation extends atkRelation
 
         $add_link .= '<br />';
 
-        if (atkconfig("onetomany_addlink_position", "bottom") == "top") {
+        if (atkConfig::getGlobal("onetomany_addlink_position", "bottom") == "top") {
             $output = $add_link . $output;
-        } else if (atkconfig("onetomany_addlink_position", "bottom") == "bottom") {
+        } else if (atkConfig::getGlobal("onetomany_addlink_position", "bottom") == "bottom") {
             $output .= $add_link;
         }
     }

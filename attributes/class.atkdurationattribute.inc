@@ -227,10 +227,10 @@ class atkDurationAttribute extends atkAttribute
             $minutes = abs($minutes);
         }
 
-        if (atkconfig("durationformat", 0) == DURATIONFORMAT_DECIMAL) {
+        if (atkConfig::getGlobal("durationformat", 0) == DURATIONFORMAT_DECIMAL) {
             $decimalvalue = $this->_getHourPart($minutes) + (self::_getMinutePart($minutes) / 60);
             return $prefix . sprintf("%02.02f", $decimalvalue);
-        } elseif (atkconfig("durationformat", 0) == DURATIONFORMAT_TIME) {
+        } elseif (atkConfig::getGlobal("durationformat", 0) == DURATIONFORMAT_TIME) {
             return $prefix . sprintf("%d:%02d", self::_getHourPart($minutes), self::_getMinutePart($minutes));
         }
     }

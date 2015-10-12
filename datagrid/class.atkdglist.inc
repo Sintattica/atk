@@ -79,7 +79,7 @@ class atkDGList extends atkDGComponent
         $edit = $grid->isEditing();
 
         $page->register_style($theme->stylePath("recordlist.css", $grid->getNode()->m_module));
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/recordlist.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/recordlist.js");
 
         $listName = $grid->getName();
 
@@ -110,8 +110,8 @@ class atkDGList extends atkDGComponent
 
         $hasActionCol = $this->_hasActionColumn($list, $hasSearch);
 
-        $orientation = atkconfig('recordlist_orientation', $theme->getAttribute("recordlist_orientation"));
-        $vorientation = trim(atkconfig('recordlist_vorientation', $theme->getAttribute("recordlist_vorientation")));
+        $orientation = atkConfig::getGlobal('recordlist_orientation', $theme->getAttribute("recordlist_orientation"));
+        $vorientation = trim(atkConfig::getGlobal('recordlist_vorientation', $theme->getAttribute("recordlist_vorientation")));
 
         /*         * *********** */
         /* HEADER ROW */
@@ -236,7 +236,7 @@ class atkDGList extends atkDGComponent
         $listend = "";
 
         if (!$edit && ($hasMRA || $grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS))) {
-            $page->register_script(atkconfig("atkroot") . "atk/javascript/formselect.js");
+            $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/formselect.js");
 
             if ($hasMRA) {
                 $liststart .= '<script language="javascript" type="text/javascript">var ' . $listName . ' = new Object();</script>';
@@ -330,7 +330,7 @@ class atkDGList extends atkDGComponent
             /* locked? */
             if ($grid->hasFlag(atkDataGrid::LOCKING)) {
                 if (is_array($list["rows"][$i]["lock"])) {
-                    $this->getPage()->register_script(atkconfig('atkroot') . 'atk/javascript/overlibmws/overlibmws.js');
+                    $this->getPage()->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/overlibmws/overlibmws.js');
                     $lockIcon = atkTheme::getInstance()->getIcon('lock_' . $grid->getNode()->getLockMode(), 'lock', $grid->getNode()->m_module);
                     $lockInfo = addslashes(str_replace(array("\r\n", "\r", "\n"), " ", htmlentities($this->getLockInfo($list["rows"][$i]["lock"]))));
                     $record["cols"][] = array("content" => '<span onmouseover="return overlib(\'' . $lockInfo . '\', NOFOLLOW, FULLHTML);" onmouseout="nd();">'.$lockIcon.'</span>', "type" => "lock");
@@ -340,8 +340,8 @@ class atkDGList extends atkDGComponent
 
             $str_actions = "<span class=\"actions\">";
             $actionloader .= "\nrl_a['" . $listName . "'][" . $i . "] = {};";
-            $icons = (atkconfig('recordlist_icons', $theme->getAttribute("recordlist_icons")) === false ||
-            atkconfig('recordlist_icons', $theme->getAttribute("recordlist_icons")) === 'false'
+            $icons = (atkConfig::getGlobal('recordlist_icons', $theme->getAttribute("recordlist_icons")) === false ||
+            atkConfig::getGlobal('recordlist_icons', $theme->getAttribute("recordlist_icons")) === 'false'
                 ? false : true);
 
 
@@ -381,7 +381,7 @@ class atkDGList extends atkDGComponent
 
 
                 $confirmtext = "false";
-                if (atkconfig("recordlist_javascript_delete") && $name == "delete")
+                if (atkConfig::getGlobal("recordlist_javascript_delete") && $name == "delete")
                     $confirmtext = "'" . $grid->getNode()->confirmActionText($name) . "'";
                 $str_actions .= $this->_renderRecordActionLink($url, $link, $listName, $i, $name, $confirmtext);
             }
@@ -538,7 +538,7 @@ class atkDGList extends atkDGComponent
         }
 
 
-        if (atkconfig("use_keyboard_handler")) {
+        if (atkConfig::getGlobal("use_keyboard_handler")) {
             $kb = & atkKeyboard::getInstance();
             $kb->addRecordListHandler($listName, $selectcolor, count($records));
         }

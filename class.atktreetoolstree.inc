@@ -15,7 +15,7 @@
  * $Id$
  */
 
-include_once(atkconfig("atkroot") . "atk/class.atktreetoolsnode.inc");
+include_once(atkConfig::getGlobal("atkroot") . "atk/class.atktreetoolsnode.inc");
 
 /**
  * Tree class, used to build trees of nodes.

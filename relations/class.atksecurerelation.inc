@@ -149,7 +149,7 @@ class atkSecureRelation extends atkOneToOneRelation
                 $linkpass = $crypt->getRandomKey($password);
         }
         else {
-            $query = "SELECT " . $linkfield . " as pass FROM " . $linktable . " WHERE " . atkconfig("auth_userfield") . " = '" . $username . "'";
+            $query = "SELECT " . $linkfield . " as pass FROM " . $linktable . " WHERE " . atkConfig::getGlobal("auth_userfield") . " = '" . $username . "'";
 
             $db = &atkTools::atkGetDb();
             $rec = $db->getrows($query);
@@ -248,7 +248,7 @@ class atkSecureRelation extends atkOneToOneRelation
 
                     $records = $this->m_destInstance->selectDb();
                     $this->m_searcharray = $oldsearcharray;
-                    $errorconfig = atkconfig("securerelation_decrypterror", null);
+                    $errorconfig = atkConfig::getGlobal("securerelation_decrypterror", null);
 
                     // create lookup table for easy reference.            
                     for ($i = 0, $_i = count($records); $i < $_i; $i++) {
@@ -465,7 +465,7 @@ class atkSecureRelation extends atkOneToOneRelation
                     if (is_array($searchmode))
                         $searchmode = $searchmode[$this->fieldName()];
                     if (!$searchmode)
-                        $searchmode = atkconfig("search_defaultmode");
+                        $searchmode = atkConfig::getGlobal("search_defaultmode");
                     // checking for the getSearchCondition
                     // for backwards compatibility
                     if (method_exists($p_attrib, "getSearchCondition")) {

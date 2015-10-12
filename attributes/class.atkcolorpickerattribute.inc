@@ -44,7 +44,7 @@ function drawTD($field, $color, $colHeight, $colWidth, $extern = 0)
         $row .='<A href ="javascript:picker';
     }
     $row .="('" . $field . "','" . $color . "')";
-    $row .='" title="' . atkTools::atktext("color", "atk") . ': ' . $color . '"><IMG SRC="' . atkconfig('atkroot') . 'atk/images/dummy.gif" border=0 width=' . $colWidth . ' height=' . $colHeight . ' alt="-X-"></a></td>';
+    $row .='" title="' . atkTools::atktext("color", "atk") . ': ' . $color . '"><IMG SRC="' . atkConfig::getGlobal('atkroot') . 'atk/images/dummy.gif" border=0 width=' . $colWidth . ' height=' . $colHeight . ' alt="-X-"></a></td>';
     $row .= "\n";
 
     return $row;
@@ -230,8 +230,8 @@ class atkColorPickerAttribute extends atkAttribute
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $page = &atkPage::getInstance();
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/newwindow.js");
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/colorpicker.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/newwindow.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/colorpicker.js");
 
         $colHeight = "11";
         $colWidth = "11";
@@ -251,10 +251,10 @@ class atkColorPickerAttribute extends atkAttribute
         }
 
         if (trim($this->m_currentColor) == "") {
-            $selectImg = atkconfig("atkroot") . "atk/images/select_color_off.gif";
+            $selectImg = atkConfig::getGlobal("atkroot") . "atk/images/select_color_off.gif";
             $alt = atkTools::atktext("no_color_selected", "atk");
         } else {
-            $selectImg = atkconfig("atkroot") . "atk/images/select_color_on.gif";
+            $selectImg = atkConfig::getGlobal("atkroot") . "atk/images/select_color_on.gif";
             $alt = $this->m_currentColor;
         }
 

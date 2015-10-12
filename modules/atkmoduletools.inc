@@ -165,7 +165,7 @@ function &atkGetModule($modname)
 
     if (!isset($g_moduleRepository[$modname]) || !is_object($g_moduleRepository[$modname])) {
         atkTools::atkimport("atk.modules.atkmodule");
-        $corporate_base = atkconfig("corporate_module_base");
+        $corporate_base = atkConfig::getGlobal("corporate_module_base");
         if ($corporate_base != "") {
             atkTools::atkimport($corporate_base);
         }
@@ -186,7 +186,7 @@ function &atkGetModule($modname)
             $mod = new $modname();
         } else {
             atkTools::atkimport("atk.utils.atkclassloader");
-            $mod = atkClassLoader::invokeFromString(atkconfig("missing_module_handler"), array(array("module" => $modname)));
+            $mod = atkClassLoader::invokeFromString(atkConfig::getGlobal("missing_module_handler"), array(array("module" => $modname)));
             if ($mod === false) {
                 // Changed by Ivo: This used to construct a dummy module, so
                 // modules could exist that didn't have a module.inc file.
@@ -557,7 +557,7 @@ function atkPreloadModule($modname, $modpath)
     if ($filename != $preload) {
         atkTools::atkdebug("Loading module - $modname");
         atkTools::atkimport("atk.modules.atkmodule");
-        $corporate_base = atkconfig("corporate_module_base");
+        $corporate_base = atkConfig::getGlobal("corporate_module_base");
         if ($corporate_base != "") {
             atkTools::atkimport($corporate_base);
         }

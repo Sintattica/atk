@@ -1508,7 +1508,7 @@ class atkTools
         }
 
         $current_path = getcwd();
-        chdir(atkConfig('atkroot') . atkConfig::getGlobal("zend_framework_path") . "/");
+        chdir(atkConfig::getGlobal('atkroot') . atkConfig::getGlobal("zend_framework_path") . "/");
 
         $filename = $classname . '.php';
 

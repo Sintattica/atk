@@ -30,7 +30,7 @@ atkSessionManager::atksession();
 atksecure();
 
 $theme = &atkTools::atkinstance('atk.ui.atktheme');
-if (atkconfig("fullscreen")) {
+if (atkConfig::getGlobal("fullscreen")) {
     // Fullscreen mode. Use index.php as launcher, and launch app.php fullscreen.
 
     atkSessionManager::atksession();
@@ -42,7 +42,7 @@ if (atkconfig("fullscreen")) {
     $output = &atkOutput::getInstance();
 
     $page->register_style($theme->stylePath("style.css"));
-    $page->register_script(atkconfig("atkroot") . "atk/javascript/launcher.js");
+    $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/launcher.js");
 
     $content = '<script language="javascript">atkLaunchApp(); </script>';
     $content.= '<br><br><a href="#" onClick="atkLaunchApp()">' . atkTools::atktext('app_reopen') . '</a> &nbsp; ' .

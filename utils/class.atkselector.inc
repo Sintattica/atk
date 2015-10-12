@@ -385,7 +385,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
                 }
 
                 if ($searchMode == null) {
-                    $searchMode = atkconfig('search_defaultmode');
+                    $searchMode = atkConfig::getGlobal('search_defaultmode');
                 }
 
                 $attr->searchCondition($query, $this->_getNode()->getTable(), $value, $searchMode, '');

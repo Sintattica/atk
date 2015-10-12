@@ -174,7 +174,7 @@ class atkClusterDb extends atkDb
      */
     protected function setConfig()
     {
-        $dbconfig = atkconfig('db');
+        $dbconfig = atkConfig::getGlobal('db');
         $config = $dbconfig[$this->m_name];
         foreach ($config['nodes'] as $mode => $nodes) {
             if (is_array($nodes)) {

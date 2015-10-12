@@ -133,7 +133,7 @@ function atkLockUnlock()
 {
 atkLock.isLocked = false;
 if (typeof(document.images['_lock_']) != 'undefined')
-document.images['_lock_'].src='<?php echo atkconfig("atkroot"); ?>atk/images/lock_expired.gif';
+document.images['_lock_'].src='<?php echo atkConfig::getGlobal("atkroot"); ?>atk/images/lock_expired.gif';
 alert('<?php echo addslashes($message); ?>');
 }
 

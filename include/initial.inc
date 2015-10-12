@@ -18,16 +18,16 @@
 require_once($GLOBALS['config_atkroot'] . 'atk/modules/atkmoduletools.inc');
 require_once($GLOBALS['config_atkroot'] . 'atk/include/basics.inc');
 require_once($GLOBALS['config_atkroot'] . 'atk/include/compatibility.inc');
-if (atkconfig('autoload_classes', true))
+if (atkConfig::getGlobal('autoload_classes', true))
     require_once($GLOBALS['config_atkroot'] . 'atk/include/autoload.inc');
-if (atkconfig('use_atkerrorhandler', true))
+if (atkConfig::getGlobal('use_atkerrorhandler', true))
     require_once($GLOBALS['config_atkroot'] . 'atk/include/errorhandler.inc');
 require_once($GLOBALS['config_atkroot'] . 'atk/ui/class.atkoutput.inc');
 require_once($GLOBALS['config_atkroot'] . 'atk/session/class.atksessionmanager.inc');
 require_once($GLOBALS['config_atkroot'] . "atk/utils/class.atkstring.inc");
 require_once($GLOBALS['config_atkroot'] . 'atk/include/security.inc');
 require_once($GLOBALS['config_atkroot'] . 'atk/include/debugging.inc');
-if (atkconfig('lock_type') !== "")
+if (atkConfig::getGlobal('lock_type') !== "")
     require_once($GLOBALS['config_atkroot'] . 'atk/lock/class.atklock.inc');
 atkPreloadModules();
 

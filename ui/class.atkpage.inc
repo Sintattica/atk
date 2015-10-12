@@ -134,15 +134,15 @@ class atkPage
     public function __construct()
     {
         // register default scripts
-        $this->register_script(atkconfig("atkroot") . "atk/javascript/jquery-2.1.1.min.js");
+        $this->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/jquery-2.1.1.min.js");
         $this->register_scriptcode('jQuery.noConflict();');
-        $this->register_script(atkconfig("atkroot") . "atk/javascript/prototype/prototype.js");
-        $this->register_script(atkconfig("atkroot") . "atk/javascript/prototype-ext.js");
-        $this->register_script(atkconfig("atkroot") . "atk/javascript/scriptaculous/scriptaculous.js");
-        $this->register_script(atkconfig("atkroot") . "atk/javascript/scriptaculous-ext.js");
-        $this->register_script(atkconfig("atkroot") . "atk/javascript/class.atktools.js");
-        $this->register_script(atkconfig("atkroot") . "atk/javascript/atkbusy.js");
-        $this->register_script(atkconfig("atkroot") . "atk/javascript/moment.min.js");
+        $this->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/prototype/prototype.js");
+        $this->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/prototype-ext.js");
+        $this->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/scriptaculous/scriptaculous.js");
+        $this->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/scriptaculous-ext.js");
+        $this->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atktools.js");
+        $this->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/atkbusy.js");
+        $this->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/moment.min.js");
     }
 
     /**
@@ -387,7 +387,7 @@ class atkPage
         $this->addScripts($res);
         $this->addStyles($res);
 
-        $favico = atkconfig("defaultfavico");
+        $favico = atkConfig::getGlobal("defaultfavico");
         if ($favico != "") {
             $res.= '  <link rel="icon" href="' . $favico . '" type="image/x-icon" />' . "\n";
             $res.= '  <link rel="shortcut icon" href="' . $favico . '" type="image/x-icon" />' . "\n";
@@ -633,7 +633,7 @@ class atkPage
 
         $page = '';
         if (atkTools::hasFlag($flags, HTML_DOCTYPE))
-            $page.=$theme->getAttribute('doctype', atkconfig("doctype"));
+            $page.=$theme->getAttribute('doctype', atkConfig::getGlobal("doctype"));
         $page.= "\n<html>\n";
 
         if (atkTools::hasFlag($flags, HTML_HEADER))

@@ -17,7 +17,7 @@
  * @internal includes..
  */
 
-include_once(atkconfig("atkroot") . "atk/class.atktreetoolstree.inc");
+include_once(atkConfig::getGlobal("atkroot") . "atk/class.atktreetoolstree.inc");
 
 define("NF_TREE_NO_ROOT_DELETE", NF_SPECIFIC_1); // No root elements can be deleted
 define("NF_TREE_NO_ROOT_COPY", NF_SPECIFIC_2); // No root elements can be copied

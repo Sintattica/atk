@@ -15,7 +15,7 @@
  * $Id$
  */
 /** @internal include base class */
-require_once(atkconfig("atkroot") . "atk/db/class.atkoci8query.inc");
+require_once(atkConfig::getGlobal("atkroot") . "atk/db/class.atkoci8query.inc");
 
 /**
  * Query builder for Oracle 9i and later databases.

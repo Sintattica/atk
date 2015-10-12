@@ -18,7 +18,7 @@
  * @internal includes..
  */
 atkTools::userelation("atkManyToOneRelation");
-include_once(atkconfig("atkroot") . "atk/class.atktreetoolstree.inc");
+include_once(atkConfig::getGlobal("atkroot") . "atk/class.atktreetoolstree.inc");
 
 /**
  * Extension of the atkManyToOneRelation, that is aware of the treestructure

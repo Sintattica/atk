@@ -132,7 +132,7 @@ class atkAddOrCopyHandler extends atkActionHandler
             if ($attrRefreshUrl == null) {
                 $script .= "document.location.href = document.location.href;";
             } else {
-                $page->register_script(atkconfig('atkroot') . 'atk/javascript/class.atkattribute.js');
+                $page->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/class.atkattribute.js');
                 $script .= "ATK.Attribute.refresh('" . $attrRefreshUrl . "');";
             }
         } else {

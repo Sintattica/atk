@@ -31,7 +31,7 @@ class atkCache_apc extends atkCache
         if (!( extension_loaded('apc') && ini_get('apc.enabled') )) {
             throw new Exception('The APC extension is not loaded or disabled');
         }
-        $this->m_namespace = atkconfig('cache_namespace', "default");
+        $this->m_namespace = atkConfig::getGlobal('cache_namespace', "default");
     }
 
     /**

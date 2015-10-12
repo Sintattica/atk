@@ -403,7 +403,7 @@ class atkDateTimeAttribute extends atkAttribute
                 }
             }
         } else {
-            if (atkconfig('database') != 'oci9')
+            if (atkConfig::getGlobal('database') != 'oci9')
                 $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES));
             else {
                 $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES), $mode, "DATETIME");

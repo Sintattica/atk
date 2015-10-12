@@ -160,7 +160,7 @@ class atkMySQLiStatement extends atkStatement
      */
     protected function _execute($params)
     {
-        if (atkconfig("debug") >= 0) {
+        if (atkConfig::getGlobal("debug") >= 0) {
             atkTools::atkimport("atk.utils.atkdebugger");
             atkDebugger::addQuery($this->_getParsedQuery(), false);
         }

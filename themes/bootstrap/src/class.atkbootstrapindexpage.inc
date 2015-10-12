@@ -81,7 +81,7 @@ class atkBootstrapIndexPage
         $this->m_extraheaders = $this->m_ui->render('index_meta.tpl');
 
         // Bootstrap
-        $this->m_page->register_script(atkconfig("atkroot") . "atk/themes/bootstrap/lib/bootstrap/js/bootstrap.js");
+        $this->m_page->register_script(atkConfig::getGlobal("atkroot") . "atk/themes/bootstrap/lib/bootstrap/js/bootstrap.js");
 
 
     }
@@ -142,7 +142,7 @@ class atkBootstrapIndexPage
      */
     function atkGenerateTop()
     {
-        $logoutLink = atkconfig('dispatcher') . '?atklogout=1';
+        $logoutLink = atkConfig::getGlobal('dispatcher') . '?atklogout=1';
 
         $this->m_page->register_style($this->m_theme->stylePath("style.css"));
         $this->m_page->register_style($this->m_theme->stylePath("top.css"));
@@ -261,7 +261,7 @@ class atkBootstrapIndexPage
 
             $this->m_output->output($this->m_page->render(atkTools::atktext("title_session_expired"), true));
         } else {
-            $lockType = atkconfig("lock_type");
+            $lockType = atkConfig::getGlobal("lock_type");
             if (!empty($lockType))
                 atklock();
 

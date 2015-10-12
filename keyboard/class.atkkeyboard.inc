@@ -110,7 +110,7 @@ class atkKeyboard
 
         // atkrlkeylistener must be loaded after the main addHandler, which loads keyboardhandler.
         $page = &atkPage::getInstance();
-        $page->register_script(atkconfig("atkroot") . "atk/keyboard/javascript/class.atkrlkeylistener.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/keyboard/javascript/class.atkrlkeylistener.js");
     }
 
     /**
@@ -128,7 +128,7 @@ class atkKeyboard
     function addHandler($handlertype, $params)
     {
         $page = &atkPage::getInstance();
-        $page->register_script(atkconfig("atkroot") . "atk/keyboard/javascript/keyboardhandler.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/keyboard/javascript/keyboardhandler.js");
         $page->register_loadscript("kb_init();\n");
         $page->register_loadscript("kb_addListener(new $handlertype(" . implode(",", $params) . "));");
     }

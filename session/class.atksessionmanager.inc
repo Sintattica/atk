@@ -17,17 +17,17 @@
 /**
  * @internal initialization
  */
-$config_identifier = atkconfig("identifier");
+$config_identifier = atkConfig::getGlobal("identifier");
 if (empty($config_identifier))
     $config_identifier = "default";
 
-if (atkconfig('session_init', true) && atkSessionManager::atksession_init()) {
+if (atkConfig::getGlobal('session_init', true) && atkSessionManager::atksession_init()) {
     // backwardscompatibility hacks. g_sessionData and g_sessionData are obsolete actually.
     // You can use $session = &atkSessionManager::getSession() now, and you'll have a
     // session enabled, multi-app array in which you can store whatever you like.
     // There are old applications however that still use $g_sessionData, so I'll
     // leave it in place for now.
-    $GLOBALS['g_sessionData'] = & $_SESSION[atkconfig('identifier')];
+    $GLOBALS['g_sessionData'] = & $_SESSION[atkConfig::getGlobal('identifier')];
 }
 
 define("SESSION_DEFAULT", 0); // stay at current stacklevel
@@ -354,13 +354,13 @@ class atkSessionManager
 
     /**
      * Removes any stacks which have been inactive for a period >
-     * atkconfig('session_max_stack_inactivity_period').
+     * atkConfig::getGlobal('session_max_stack_inactivity_period').
      */
     protected function _removeExpiredStacks()
     {
         global $g_sessionData;
 
-        $maxAge = atkconfig('session_max_stack_inactivity_period', 0);
+        $maxAge = atkConfig::getGlobal('session_max_stack_inactivity_period', 0);
         if ($maxAge <= 0) {
             atkTools::atkwarning(__METHOD__ . ': removing expired stacks disabled, enable by setting $config_session_max_stack_inactivity_period to a value > 0');
             return;
@@ -778,9 +778,9 @@ class atkSessionManager
      */
     static public function &getSession()
     {
-        if (!isset($_SESSION[atkconfig("identifier")]) || !is_array($_SESSION[atkconfig("identifier")]))
-            $_SESSION[atkconfig("identifier")] = array();
-        return $_SESSION[atkconfig("identifier")];
+        if (!isset($_SESSION[atkConfig::getGlobal("identifier")]) || !is_array($_SESSION[atkConfig::getGlobal("identifier")]))
+            $_SESSION[atkConfig::getGlobal("identifier")] = array();
+        return $_SESSION[atkConfig::getGlobal("identifier")];
     }
 
     /**
@@ -999,26 +999,26 @@ class atkSessionManager
         }
 
         $cookie_params = session_get_cookie_params();
-        $cookiepath = atkconfig("application_root");
-        $cookiedomain = (atkconfig("cookiedomain") != "") ? atkconfig("cookiedomain")
+        $cookiepath = atkConfig::getGlobal("application_root");
+        $cookiedomain = (atkConfig::getGlobal("cookiedomain") != "") ? atkConfig::getGlobal("cookiedomain")
             : NULL;
         session_set_cookie_params($cookie_params["lifetime"], $cookiepath, $cookiedomain);
 
         // set cache expire (if function exists, or show upgrade hint if not)
         if (function_exists("session_cache_expire"))
-            session_cache_expire(atkconfig("session_cache_expire"));
+            session_cache_expire(atkConfig::getGlobal("session_cache_expire"));
         else
             atkTools::atkdebug("session_cache_expire function does not exist, please upgrade to the latest stable php version (at least 4.2.x)", DEBUG_WARNING);
 
         // set the cache limiter (used for caching)
-        session_cache_limiter(atkconfig("session_cache_limiter"));
+        session_cache_limiter(atkConfig::getGlobal("session_cache_limiter"));
 
         // If somehow the sessionid is unclean (searchengine bots have been known to mangle sessionids)
         // we don't have a session...
         if (self::isValidSessionId()) {
-            $sessionname = atkconfig("session_name");
+            $sessionname = atkConfig::getGlobal("session_name");
             if (!$sessionname)
-                $sessionname = atkconfig('identifier');
+                $sessionname = atkConfig::getGlobal('identifier');
             session_name($sessionname);
             session_start();
             return true;
@@ -1166,9 +1166,9 @@ class atkSessionManager
      */
     static public function isValidSessionId()
     {
-        $name = atkconfig("session_name");
+        $name = atkConfig::getGlobal("session_name");
         if (empty($name))
-            $name = atkconfig("identifier");
+            $name = atkConfig::getGlobal("identifier");
 
         $sessionid = "";
         global ${$name};

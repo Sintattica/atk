@@ -51,10 +51,10 @@ class auth_pop3 extends auth_interface
         global $g_pop3_responses;
 
         /* if it's a virtual mail server add @<domain> to the username */
-        if (atkconfig("auth_mail_virtual") == true)
-            $user = $user . "@" . atkconfig("auth_mail_suffix");
+        if (atkConfig::getGlobal("auth_mail_virtual") == true)
+            $user = $user . "@" . atkConfig::getGlobal("auth_mail_suffix");
 
-        $server = atkconfig("auth_mail_server");
+        $server = atkConfig::getGlobal("auth_mail_server");
 
         // Special feature
         if ($server == "[db]") {
@@ -62,8 +62,8 @@ class auth_pop3 extends auth_interface
             // user. We lookup in the database what server we need to call.
             $db = &atkTools::atkGetDb();
             $res = $db->getrows("SELECT auth_server
-                               FROM " . atkconfig("auth_usertable") . "
-                              WHERE " . atkconfig("auth_userfield") . "='" . $user . "'");
+                               FROM " . atkConfig::getGlobal("auth_usertable") . "
+                              WHERE " . atkConfig::getGlobal("auth_userfield") . "='" . $user . "'");
             if (count($res) == 0) {
                 // User not found.
                 return AUTH_MISMATCH;
@@ -81,7 +81,7 @@ class auth_pop3 extends auth_interface
         }
 
         /* connect */
-        $port = atkconfig("auth_mail_port");
+        $port = atkConfig::getGlobal("auth_mail_port");
         $link_id = fsockopen($server, $port, $errno, $errstr, 30);
         if (!$link_id) {
             $secMgr->log(1, "pop3auth serverconnect error $server: $errstr");

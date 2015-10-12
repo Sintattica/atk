@@ -153,7 +153,7 @@ class atkOutput
             $res .= $debugger->renderDebugAndErrorMessages();
         }
 
-        if (atkconfig("output_gzip") &&
+        if (atkConfig::getGlobal("output_gzip") &&
             phpversion() >= '4.0.4pl1' &&
             (strstr($_SERVER["HTTP_USER_AGENT"], 'compatible') || strstr($_SERVER["HTTP_USER_AGENT"], 'Gecko')) &&
             isset($_SERVER['HTTP_ACCEPT_ENCODING']) && strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')
@@ -173,7 +173,7 @@ class atkOutput
     public function getDebugging()
     {
         global $g_debug_msg;
-        if (atkconfig("debug") > 0) {
+        if (atkConfig::getGlobal("debug") > 0) {
             $output = '<br><div style="font-family: monospace; font-size: 11px;" align="left" id="atk_debugging_div">' . implode("<br>\n ", $g_debug_msg) . '</div>';
             return $output;
         }

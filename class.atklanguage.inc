@@ -147,7 +147,7 @@ class atkLanguage
             global $g_modules;
 
             $modules = array();
-            if (is_array($g_modules) && ($modulefallback || atkconfig("language_modulefallback", false))) {
+            if (is_array($g_modules) && ($modulefallback || atkConfig::getGlobal("language_modulefallback", false))) {
                 foreach ($g_modules as $modname => $modpath) {
                     $modules[] = $modname;
                 }
@@ -239,7 +239,7 @@ class atkLanguage
     {
         global $ATK_VARS;
 
-        if (isset($ATK_VARS["atklng"]) && (in_array($ATK_VARS["atklng"], atkLanguage::getSupportedLanguages()) || in_array($ATK_VARS["atklng"], atkconfig('supported_languages')))) {
+        if (isset($ATK_VARS["atklng"]) && (in_array($ATK_VARS["atklng"], atkLanguage::getSupportedLanguages()) || in_array($ATK_VARS["atklng"], atkConfig::getGlobal('supported_languages')))) {
             $lng = $ATK_VARS["atklng"];
         } // we first check for an atklng variable
         else {
@@ -278,21 +278,21 @@ class atkLanguage
         if (!empty($sessionmanager)) {
             if (function_exists("getUser")) {
                 $userinfo = atkSecurityManager::atkGetUser();
-                $fieldname = atkconfig('auth_languagefield');
+                $fieldname = atkConfig::getGlobal('auth_languagefield');
                 if (isset($userinfo[$fieldname]) && in_array($userinfo[$fieldname], $supported))
                     return $userinfo[$fieldname];
             }
         }
 
         // Otherwise we check the headers
-        if (atkconfig('use_browser_language', false)) {
+        if (atkConfig::getGlobal('use_browser_language', false)) {
             $headerlng = atkLanguage::getLanguageFromHeaders();
             if ($headerlng && in_array($headerlng, $supported))
                 return $headerlng;
         }
 
         // We give up and just return the default language
-        return atkconfig('language');
+        return atkConfig::getGlobal('language');
     }
 
     /**
@@ -331,7 +331,7 @@ class atkLanguage
      */
     public static function getSupportedLanguages()
     {
-        $supportedlanguagesmodule = atkconfig('supported_languages_module');
+        $supportedlanguagesmodule = atkConfig::getGlobal('supported_languages_module');
         if (self::$s_supportedLanguages == null && $supportedlanguagesmodule) {
             $supportedlanguagesdir = atkLanguage::getInstance()->getLanguageDirForModule($supportedlanguagesmodule);
             atkTools::atkimport('atk.utils.atkdirectorytraverser');
@@ -426,7 +426,7 @@ class atkLanguage
         }
 
         if (!$nodefaulttext) {
-            if (atkconfig("debug_translations", false))
+            if (atkConfig::getGlobal("debug_translations", false))
                 atkTools::atkdebug("atkLanguage: translation for '$key' with module: '$module' and node: '$node' and language: '$lng' not found, returning default text");
 
             // Still nothing found. return default string
@@ -480,10 +480,10 @@ class atkLanguage
     public function getLanguageDirForModule($module)
     {
         if ($module == "atk") {
-            $path = atkconfig("atkroot") . "atk/" . (isset($this) ? $this->LANGDIR
+            $path = atkConfig::getGlobal("atkroot") . "atk/" . (isset($this) ? $this->LANGDIR
                         : 'languages/');
         } else if ($module == "langoverrides") {
-            $path = atkconfig("language_basedir", (isset($this) ? $this->LANGDIR
+            $path = atkConfig::getGlobal("language_basedir", (isset($this) ? $this->LANGDIR
                         : 'languages/'));
         } else {
             $path = moduleDir($module) . (isset($this) ? $this->LANGDIR : 'languages/');

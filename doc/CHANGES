@@ -1364,7 +1364,7 @@ Changes in ATK 6.2.0
   [Yury]
 * Fixed support for searching number 0 in atkNumberAttribute (bug #726) [Yury]
 * Fixed display of obligatory fields in integrated form. (bug #845) [Yury]
-* Change hard coded "seq_" to atkConfig("database_sequenceprefix"). (bug #859)
+* Change hard coded "seq_" to atkConfig::getGlobal("database_sequenceprefix"). (bug #859)
   [Michele, Yury]
 * Fixed Ajax calls handling of special characters. (bug #880) [Yury]
 * Fixed SQL query error when going back from viewing role of team member.
@@ -2328,7 +2328,7 @@ Changed in ATK 6.0.0
   atkOpenDocumentWriter. [Guido]
 * the atkPopup target should be passed through session_url in case the
   sessionid is passed through urls. [Guido]
-* If $_SESSION[atkconfig("identifier")] is not an array, we assign an empty
+* If $_SESSION[atkConfig::getGlobal("identifier")] is not an array, we assign an empty
   array to it to prevent session initialisation errors. [Peter, Guido]
 * Fixed obligatory field checking for attributes of the atkOneToOnerelation's
   destination node by merging the validation errors from the destination

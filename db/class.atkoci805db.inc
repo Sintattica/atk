@@ -17,7 +17,7 @@
 /**
  * @internal Include baseclass
  */
-require_once(atkconfig("atkroot") . "atk/db/class.atkoci8db.inc");
+require_once(atkConfig::getGlobal("atkroot") . "atk/db/class.atkoci8db.inc");
 
 /**
  * Oracle 8.0.5 database driver.

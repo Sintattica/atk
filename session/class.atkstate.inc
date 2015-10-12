@@ -130,7 +130,7 @@ class atkState
      */
     protected static function _set_using_cookie($key, $value)
     {
-        setcookie($key, $value, time() + 60 * (atkconfig("state_cookie_expire")));
+        setcookie($key, $value, time() + 60 * (atkConfig::getGlobal("state_cookie_expire")));
     }
 
     /**

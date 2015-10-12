@@ -46,7 +46,7 @@ class atkMysqlDDL extends atkDDL
      */
     function getType($generictype)
     {
-        $config = atkconfig('db_mysql_default_' . $generictype . '_columntype');
+        $config = atkConfig::getGlobal('db_mysql_default_' . $generictype . '_columntype');
         if ($config)
             return $config;
 

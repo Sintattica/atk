@@ -77,13 +77,13 @@ class auth_sspi extends auth_db
         $position = strpos($sspipath, "\\");
         $domain = substr($sspipath, 0, $position);
         $user = substr($sspipath, $position + 1, strlen($sspipath) - $position);
-        if (!isset($sspipath) || ($sspipath == "") || !in_array($domain, atkconfig("auth_sspi_trusted_domains")))
+        if (!isset($sspipath) || ($sspipath == "") || !in_array($domain, atkConfig::getGlobal("auth_sspi_trusted_domains")))
             return AUTH_UNVERIFIED;
 
         // Si on ne recharge pas chaque fois l'utilisateur et si l'utilisateur n'a pas change
         // @todo, what is auth_reloadusers? does not seem relevant to this piece of code, doesn't exist 
         // elsewhere in atk.
-        if (!atkconfig("auth_reloadusers") && ( $user == $_SERVER["PHP_AUTH_USER"] )) {
+        if (!atkConfig::getGlobal("auth_reloadusers") && ( $user == $_SERVER["PHP_AUTH_USER"] )) {
             // On autorise
             return AUTH_SUCCESS;
         }
@@ -91,8 +91,8 @@ class auth_sspi extends auth_db
         $firstload = !isset($_SERVER["PHP_AUTH_USER"]);
         $_SERVER["PHP_AUTH_USER"] = "";
         $ATK_VARS["auth_user"] = "";
-        $db = &atkTools::atkGetDb(atkconfig("auth_database"));
-        $query = $this->buildSelectUserQuery($user, atkconfig("auth_usertable"), atkconfig("auth_userfield"), atkconfig("auth_sspi_accountfield"), atkconfig("auth_accountdisablefield"), atkconfig("auth_accountenableexpression"));
+        $db = &atkTools::atkGetDb(atkConfig::getGlobal("auth_database"));
+        $query = $this->buildSelectUserQuery($user, atkConfig::getGlobal("auth_usertable"), atkConfig::getGlobal("auth_userfield"), atkConfig::getGlobal("auth_sspi_accountfield"), atkConfig::getGlobal("auth_accountdisablefield"), atkConfig::getGlobal("auth_accountenableexpression"));
 
         $recs = $db->getrows($query);
         if (count($recs) > 0 && $this->isLocked($recs[0])) {
@@ -120,17 +120,17 @@ class auth_sspi extends auth_db
 
     function selectUser($user)
     {
-        $usertable = atkconfig("auth_usertable");
-        $sspifield = atkconfig("auth_sspi_accountfield");
-        $leveltable = atkconfig("auth_leveltable");
-        $levelfield = atkconfig("auth_levelfield");
-        $userpk = atkconfig("auth_userpk");
-        $userfk = atkconfig("auth_userfk", $userpk);
-        $grouptable = atkconfig("auth_grouptable");
-        $groupfield = atkconfig("auth_groupfield");
-        $groupparentfield = atkconfig("auth_groupparentfield");
+        $usertable = atkConfig::getGlobal("auth_usertable");
+        $sspifield = atkConfig::getGlobal("auth_sspi_accountfield");
+        $leveltable = atkConfig::getGlobal("auth_leveltable");
+        $levelfield = atkConfig::getGlobal("auth_levelfield");
+        $userpk = atkConfig::getGlobal("auth_userpk");
+        $userfk = atkConfig::getGlobal("auth_userfk", $userpk);
+        $grouptable = atkConfig::getGlobal("auth_grouptable");
+        $groupfield = atkConfig::getGlobal("auth_groupfield");
+        $groupparentfield = atkConfig::getGlobal("auth_groupparentfield");
 
-        $db = &atkTools::atkGetDb(atkconfig("auth_database"));
+        $db = &atkTools::atkGetDb(atkConfig::getGlobal("auth_database"));
         if ($usertable == $leveltable || $leveltable == "") {
             // Level and userid are stored in the same table.
             // This means one user can only have one level.
@@ -158,9 +158,9 @@ class auth_sspi extends auth_db
 
     function getUser(&$user)
     {
-        $grouptable = atkconfig("auth_grouptable");
-        $groupfield = atkconfig("auth_groupfield");
-        $groupparentfield = atkconfig("auth_groupparentfield");
+        $grouptable = atkConfig::getGlobal("auth_grouptable");
+        $groupfield = atkConfig::getGlobal("auth_groupfield");
+        $groupparentfield = atkConfig::getGlobal("auth_groupparentfield");
         $user = $_SERVER["PHP_AUTH_USER"];
 
         $recs = $this->selectUser($user);
@@ -172,7 +172,7 @@ class auth_sspi extends auth_db
             $parents = array();
 
             for ($i = 0; $i < count($recs); $i++) {
-                $level[] = $recs[$i][atkconfig("auth_levelfield")];
+                $level[] = $recs[$i][atkConfig::getGlobal("auth_levelfield")];
                 $groups[] = $recs[$i][$groupfield];
 
                 if (!empty($groupparentfield) && $recs[$i][$groupparentfield] != "")

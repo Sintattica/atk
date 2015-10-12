@@ -66,7 +66,7 @@ abstract class atkCache implements ArrayAccess
     public static function getInstance($types = "", $fallback = true, $force = false)
     {
         if ($types == '')
-            $types = atkconfig("cache_method", array());
+            $types = atkConfig::getGlobal("cache_method", array());
         if (!is_array($types))
             $types = array($types);
 
@@ -79,9 +79,9 @@ abstract class atkCache implements ArrayAccess
                     return self::$m_instances[$type];
                 } else {
                     self::$m_instances[$type] = atkTools::atknew($classname);
-                    self::$m_instances[$type]->setNamespace(atkconfig('cache_namespace', 'default'));
+                    self::$m_instances[$type]->setNamespace(atkConfig::getGlobal('cache_namespace', 'default'));
                     self::$m_instances[$type]->setLifetime(self::$m_instances[$type]->getCacheConfig('lifetime', 3600));
-                    self::$m_instances[$type]->setActive(atkconfig('cache_active', true));
+                    self::$m_instances[$type]->setActive(atkConfig::getGlobal('cache_active', true));
                     atkTools::atkdebug("atkcache::getInstance() -> Using $type cache");
 
                     return self::$m_instances[$type];
@@ -109,7 +109,7 @@ abstract class atkCache implements ArrayAccess
      */
     public function getCacheConfig($key, $default = "")
     {
-        $cacheConfig = atkConfig('cache', array());
+        $cacheConfig = atkConfig::getGlobal('cache', array());
         $type = $this->getType();
 
         if (array_key_exists($type, $cacheConfig) &&

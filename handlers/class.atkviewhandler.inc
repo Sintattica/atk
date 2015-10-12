@@ -50,7 +50,7 @@ class atkViewHandler extends atkViewEditBase
         }
 
         $page = &$this->getPage();
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/formsubmit.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/formsubmit.js");
         $this->notify("view", $record);
         $page->addContent($this->m_node->renderActionPage("admin", $this->invoke("viewPage", $record, $this->m_node, $renderbox)));
     }

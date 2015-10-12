@@ -144,8 +144,8 @@ class atkSearchHandler extends atkAbstractSearchHandler
         $controller->setNode($this->m_node);
 
         $page = &$this->getPage();
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/tools.js");
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/formfocus.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/tools.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/formfocus.js");
         $page->register_loadscript("placeFocus();");
         $ui = &$this->getUi();
         if (is_object($ui)) {

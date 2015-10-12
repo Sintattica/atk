@@ -158,7 +158,7 @@ class atkMultipleFileAttribute extends atkFileAttribute
                     }
 
                     $page = &atkPage::getInstance();
-                    $page->register_script(atkconfig("atkroot") . "atk/javascript/newwindow.js");
+                    $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/newwindow.js");
                     $r .= '<a href="' . $this->m_url . $files[$i] . '" alt="' . $files[$i] . '" onclick="NewWindow(this.href,\'name\',\'' . ($imagehw[0] + 50) . '\',\'' . ($imagehw[1] + 50) . '\',\'yes\');return false;">' . $files[$i] . '</a><br>';
                 } else {
                     $r .= "<a href=\"" . $this->m_url . "$files[$i]\" target=\"_new\">$files[$i]</a><br>";

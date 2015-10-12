@@ -77,7 +77,7 @@ class atkDbLock extends atkLock
 
         if (!isset($ATK_VARS['atkpartial']) && $this->m_id > 0) {
             $page = &atkTools::atkinstance("atk.ui.atkpage");
-            $page->register_script(atkconfig("atkroot") . "atk/javascript/xml.js");
+            $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/xml.js");
             $page->register_script(atkTools::session_url("include.php?file=atk/lock/lock.js.php&stack=" . atkSessionManager::atkStackID() . "&id=" . $this->m_id, SESSION_NEW));
         }
     }
@@ -148,7 +148,7 @@ class atkDbLock extends atkLock
             if ($this->m_id <= 0) {
                 $this->m_id = $db->nextid("db_lock");
                 $page = &atkPage::getInstance();
-                $page->register_script(atkconfig("atkroot") . "atk/javascript/xml.js");
+                $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/xml.js");
                 $page->register_script(atkTools::session_url("include.php?file=atk/lock/lock.js.php&stack=" . atkSessionManager::atkStackID() . "&id=" . $this->m_id, SESSION_NEW));
             }
 
@@ -163,7 +163,7 @@ class atkDbLock extends atkLock
             $query->addField("user_id", atkTools::escapeSQL($user));
             $query->addField("user_ip", atkTools::escapeSQL(atkTools::atkGetClientIp()));
             $query->addField("lock_stamp", $db->func_now(), "", "", FALSE);
-            $dbconfig = atkconfig("db");
+            $dbconfig = atkConfig::getGlobal("db");
             if (substr($dbconfig["default"]["driver"], 0, 3) != 'oci')
                 $query->addField("lock_lease", $db->func_now() . " + INTERVAL 60 SECOND", "", "", FALSE);
             else
@@ -261,7 +261,7 @@ class atkDbLock extends atkLock
 
         /* extend lock lease */
         $query = &$db->createQuery();
-        $dbconfig = atkconfig("db");
+        $dbconfig = atkConfig::getGlobal("db");
         if (substr($dbconfig["default"]["driver"], 0, 3) != 'oci')
             $query->addField("lock_lease", $db->func_now() . " + INTERVAL 60 SECOND", "", "", FALSE);
         else

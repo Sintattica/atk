@@ -41,7 +41,7 @@ class atkSmarty
         if ($s_smarty == NULL) {
             atkTools::atkdebug("Creating Smarty instance");
             if (!class_exists("Smarty")) {
-                include_once(atkconfig("atkroot") . "atk/ui/smarty/Smarty.class.php");
+                include_once(atkConfig::getGlobal("atkroot") . "atk/ui/smarty/Smarty.class.php");
             }
 
             // Warning: you'd think that the next line should read
@@ -53,28 +53,28 @@ class atkSmarty
 
             // Initialize..
 
-            $s_smarty->template_dir = atkconfig("tplroot"); // name of directory for templates
+            $s_smarty->template_dir = atkConfig::getGlobal("tplroot"); // name of directory for templates
             //Try to create the template compile directory if it not already exists.
-            if (!file_exists(atkconfig("tplcompiledir"))) {
-                if (!mkdir(atkconfig("tplcompiledir"), 0755, true)) {
-                    atkTools::atkerror("Unable to create template compile directory: " . atkconfig("tplcompiledir"));
+            if (!file_exists(atkConfig::getGlobal("tplcompiledir"))) {
+                if (!mkdir(atkConfig::getGlobal("tplcompiledir"), 0755, true)) {
+                    atkTools::atkerror("Unable to create template compile directory: " . atkConfig::getGlobal("tplcompiledir"));
                 }
             }
-            $s_smarty->compile_dir = atkconfig("tplcompiledir"); // name of directory for compiled templates
+            $s_smarty->compile_dir = atkConfig::getGlobal("tplcompiledir"); // name of directory for compiled templates
 
             $s_smarty->autoload_filters = array();    // indicates which filters will be auto-loaded
 
-            $s_smarty->force_compile = atkconfig("smarty_forcecompile");   // force templates to compile every time,
+            $s_smarty->force_compile = atkConfig::getGlobal("smarty_forcecompile");   // force templates to compile every time,
             // overrides cache settings. default false.
 
-            $s_smarty->caching = atkconfig("tplcaching");     // enable caching. can be one of 0/1/2.
+            $s_smarty->caching = atkConfig::getGlobal("tplcaching");     // enable caching. can be one of 0/1/2.
             // 0 = no caching
             // 1 = use class cache_lifetime value
             // 2 = use cache_lifetime in cache file
             // default = 0.
-            $s_smarty->cache_dir = atkconfig("tplcachedir");    // name of directory for template cache files
-            $s_smarty->use_sub_dirs = atkconfig("tplusesubdirs"); // use subdirs for compiled and cached templates
-            $s_smarty->cache_lifetime = atkconfig("tplcachelifetime"); // number of seconds cached content will persist.
+            $s_smarty->cache_dir = atkConfig::getGlobal("tplcachedir");    // name of directory for template cache files
+            $s_smarty->use_sub_dirs = atkConfig::getGlobal("tplusesubdirs"); // use subdirs for compiled and cached templates
+            $s_smarty->cache_lifetime = atkConfig::getGlobal("tplcachelifetime"); // number of seconds cached content will persist.
             // 0 = always regenerate cache,
             // -1 = never expires. default is one hour (3600)
             $s_smarty->cache_modified_check = true;                         // respect If-Modified-Since headers on cached content
@@ -90,13 +90,13 @@ class atkSmarty
             // SMARTY_PHP_ALLOW    -> execute php tags
             // default: SMARTY_PHP_PASSTHRU
 
-            $s_smarty->default_handler = atkconfig("defaulthandler");
-            $s_smarty->default_modifier = atkconfig("defaultmodifier");
+            $s_smarty->default_handler = atkConfig::getGlobal("defaulthandler");
+            $s_smarty->default_modifier = atkConfig::getGlobal("defaultmodifier");
 
             // plugin dirs
-            $s_smarty->plugins_dir = array(atkconfig("atkroot") . "atk/ui/smarty/plugins",
-                atkconfig("atkroot") . "atk/ui/plugins");
-            $customplugindir = atkconfig("tplplugindir");
+            $s_smarty->plugins_dir = array(atkConfig::getGlobal("atkroot") . "atk/ui/smarty/plugins",
+                atkConfig::getGlobal("atkroot") . "atk/ui/plugins");
+            $customplugindir = atkConfig::getGlobal("tplplugindir");
             if ($customplugindir != "")
                 $s_smarty->plugins_dir[] = $customplugindir;
 

@@ -177,7 +177,7 @@ class atkTagAttribute extends atkFuzzySearchAttribute
         atkTools::atkdebug("edit of attribute '$this->fieldName()'");
 
         $page = &atkTools::atkinstance('atk.ui.atkpage');
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atktagattribute.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atktagattribute.js");
 
         if ($this->createDestinationInstance()) {
             $html = $this->displayDefaultTags($prefix);

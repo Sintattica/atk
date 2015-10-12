@@ -17,7 +17,7 @@
 /**
  * @internal includes
  */
-include_once(atkconfig("atkroot") . 'atk/ext/phpmailer/class.phpmailer.php');
+include_once(atkConfig::getGlobal("atkroot") . 'atk/ext/phpmailer/class.phpmailer.php');
 
 /**
  * ATK mailer class
@@ -67,12 +67,12 @@ class atkMailer extends PHPMailer
      */
     function Send()
     {
-        if (atkconfig("mail_enabled", true)) {
+        if (atkConfig::getGlobal("mail_enabled", true)) {
             // make sure Sender is set so the Return-Path header will have a decent value
             if ($this->Sender == "")
                 $this->Sender = $this->From;
 
-            $mail_redirect = atkconfig("mail_redirect");
+            $mail_redirect = atkConfig::getGlobal("mail_redirect");
             if (!empty($mail_redirect)) {
                 $n = (strpos(strtolower($this->ContentType), 'html') !== false ? "<br/>"
                             : "\n");

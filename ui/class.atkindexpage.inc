@@ -138,7 +138,7 @@ class atkIndexPage
      */
     function atkGenerateTop()
     {
-        $logoutLink = atkconfig('dispatcher') . '?atklogout=1';
+        $logoutLink = atkConfig::getGlobal('dispatcher') . '?atklogout=1';
 
         $this->m_page->register_style($this->m_theme->stylePath("style.css"));
         $this->m_page->register_style($this->m_theme->stylePath("top.css"));
@@ -251,7 +251,7 @@ class atkIndexPage
             $this->m_output->output($this->m_page->render(atkTools::atktext("title_session_expired"), true));
         }
         else {
-            $lockType = atkconfig("lock_type");
+            $lockType = atkConfig::getGlobal("lock_type");
             if (!empty($lockType))
                 atklock();
 

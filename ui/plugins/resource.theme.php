@@ -28,7 +28,7 @@ function smarty_resource_theme_source($tpl_name, &$tpl_source, &$smarty)
     if (!empty($path)) {
         $tpl_source = file_get_contents($path);
 
-        if (atkconfig('debug') >= 3) {
+        if (atkConfig::getGlobal('debug') >= 3) {
             $tpl_source = "\n<!-- START [{$path}] -->\n" .
                 $tpl_source .
                 "\n<!-- END [{$path}] -->\n";

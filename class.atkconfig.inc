@@ -167,7 +167,7 @@ class atkConfig
      */
     public static function getConfigForSection($section)
     {
-        $config = self::getDirConfigForSection(atkconfig('configdir'), $section);
+        $config = self::getDirConfigForSection(atkConfig::getGlobal('configdir'), $section);
         if (moduleExists($section)) {
             $dir = moduleDir($section) . 'skel/configs/';
             if (file_exists($dir)) {
@@ -192,7 +192,7 @@ class atkConfig
         $config = array();
         @include($dir . $section . ".inc.php");
 
-        $other = glob(atkconfig("configdir") . "{$section}.*.inc.php");
+        $other = glob(atkConfig::getGlobal("configdir") . "{$section}.*.inc.php");
         if (is_array($other)) {
             foreach ($other as $file) {
                 include($file);
@@ -351,27 +351,6 @@ class atkConfig
         $GLOBALS["config_user"][$name] = Array("password" => $password, "level" => $securitylevel);
     }
 
-}
-
-/**
- * Retrieve a configuration value.
- *
- * In all of your code, you can use this method to retrieve a certain
- * configuration setting. Any setting defined as $config_something can be
- * retrieved as atkconfig("something").
- *
- * @param String $tag The name of the configuration variable (without the
- *                    '$config_' prefix!
- * @param mixed $default The default variable you want to use when the
- *                       configuration variable is missing from the
- *                       config file.
- *
- * @deprecated Use atkConfig::get() instead.
- * @return mixed The value of the configuration variable.
- */
-function atkconfig($tag, $default = "")
-{
-    return atkConfig::getGlobal($tag, $default);
 }
 
 /**

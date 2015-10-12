@@ -35,7 +35,7 @@ class atkMlFckAttribute extends atkMlTextAttribute
      */
     public function __construct($name, $flags = 0, $size = 0, Array $opt = array())
     {
-        $config_fck = atkconfig('fck');
+        $config_fck = atkConfig::getGlobal('fck');
 
         if (is_array($config_fck)) {
             $this->fck_opt = array_merge($this->fck_opt, $config_fck);
@@ -45,7 +45,7 @@ class atkMlFckAttribute extends atkMlTextAttribute
             $this->fck_opt = array_merge($this->fck_opt, $opt);
         }
 
-        $this->fck_opt["Language"] = atkconfig("language");
+        $this->fck_opt["Language"] = atkConfig::getGlobal("language");
         $this->atkMlTextAttribute($name, $flags, $size);
     }
 
@@ -62,7 +62,7 @@ class atkMlFckAttribute extends atkMlTextAttribute
      */
     public function edit($record = "", $prefix = "", $mode = "")
     {
-        include_once(atkconfig('atkroot') . "atk/attributes/fck/fckeditor.php");
+        include_once(atkConfig::getGlobal('atkroot') . "atk/attributes/fck/fckeditor.php");
 
         $languages = $this->getLanguages();
         $resultHtml = '';
@@ -148,7 +148,7 @@ class atkMlFckAttribute extends atkMlTextAttribute
         $this->registerKeyListener($id, KB_CTRLCURSOR);
 
         $oFCKeditor = new FCKeditor($fieldprefix . $fieldname);
-        $oFCKeditor->BasePath = atkconfig("atkroot") . "atk/attributes/fck/";
+        $oFCKeditor->BasePath = atkConfig::getGlobal("atkroot") . "atk/attributes/fck/";
 
         $oFCKeditor->Value = $value;
         $oFCKeditor->ToolbarSet = $this->fck_opt['ToolbarSet'];

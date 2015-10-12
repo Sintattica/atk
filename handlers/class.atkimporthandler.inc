@@ -305,7 +305,7 @@ class atkImportHandler extends atkActionHandler
             foreach ($importerrors as $record => $errors) {
                 $errorCount++;
 
-                if ($errorCount > atkconfig("showmaximporterrors", 50))
+                if ($errorCount > atkConfig::getGlobal("showmaximporterrors", 50))
                     break;
 
                 if ($record == 0 && atkTools::atk_value_in_array($errors)) {
@@ -321,7 +321,7 @@ class atkImportHandler extends atkActionHandler
                     $content.="<b>Record $record:</b>&nbsp;";
                     $content.="</td><td valign=\"top\" class=\"error\">";
                     $counter = 0;
-                    for ($counter = 0; $counter < count($errors) && $counter < atkconfig("showmaximporterrors", 50); $counter++) {
+                    for ($counter = 0; $counter < count($errors) && $counter < atkConfig::getGlobal("showmaximporterrors", 50); $counter++) {
                         $content.= $this->m_node->text($errors[$counter]['msg']) . $errors[$counter]['spec'] . "<br />";
                     }
                     $content.="</td></tr>";
@@ -514,7 +514,7 @@ class atkImportHandler extends atkActionHandler
      */
     function getTmpFileDestination($fileid)
     {
-        return atkconfig("atktempdir") . "csv_import_$fileid.csv";
+        return atkConfig::getGlobal("atktempdir") . "csv_import_$fileid.csv";
     }
 
     /**

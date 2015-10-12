@@ -102,7 +102,7 @@ class atkFrontControllerBridge
      */
     public function getApplicationRoot()
     {
-        return atkconfig('application_dir');
+        return atkConfig::getGlobal('application_dir');
     }
 
 }

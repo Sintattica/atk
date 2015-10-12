@@ -18,7 +18,7 @@
 /**
  * @internal Include baseclass
  */
-require_once(atkconfig("atkroot") . "atk/db/class.atkmysqlddl.inc");
+require_once(atkConfig::getGlobal("atkroot") . "atk/db/class.atkmysqlddl.inc");
 
 /**
  * MySQL 4.1+ ddl driver.

@@ -42,9 +42,9 @@ class atkdb2db extends atkDb
         $this->m_vendor = "db2";
         $this->m_user_error = array();
 
-        $this->m_seq_table = atkconfig("db_sequence_table");
-        $this->m_seq_field = atkconfig("db_sequence_field");
-        $this->m_seq_namefield = atkconfig("db_sequence_namefield");
+        $this->m_seq_table = atkConfig::getGlobal("db_sequence_table");
+        $this->m_seq_field = atkConfig::getGlobal("db_sequence_field");
+        $this->m_seq_namefield = atkConfig::getGlobal("db_sequence_namefield");
     }
 
     /**
@@ -63,7 +63,7 @@ class atkdb2db extends atkDb
                 $port = 50000;
 
             $options = array("DB2_ATTR_CASE" => DB2_CASE_LOWER);
-            $dbconfig = atkconfig("db");
+            $dbconfig = atkConfig::getGlobal("db");
             $dbconfig = $dbconfig[$this->m_connection];
             if (array_key_exists('i5_lib', $dbconfig) && $dbconfig['i5_lib'] != "")
                 $options['i5_lib'] = $dbconfig['i5_lib'];
@@ -369,7 +369,7 @@ class atkdb2db extends atkDb
         if ($this->connect() == DB_SUCCESS) {
             $ddl = &atkDDL::create("db2");
             $query = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '$tbl'";
-            $dbconfig = atkconfig("db");
+            $dbconfig = atkConfig::getGlobal("db");
             $dbconfig = $dbconfig[$this->m_connection];
             if (array_key_exists('i5_lib', $dbconfig) && $dbconfig['i5_lib'] != "")
                 $query .= " AND TABLE_SCHEMA = '{$dbconfig['i5_lib']}'";
@@ -450,7 +450,7 @@ class atkdb2db extends atkDb
     function tableExists($tablename)
     {
         $query = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '$tablename'";
-        $dbconfig = atkconfig("db");
+        $dbconfig = atkConfig::getGlobal("db");
         $dbconfig = $dbconfig[$this->m_connection];
         if (array_key_exists('i5_lib', $dbconfig) && $dbconfig['i5_lib'] != "")
             $query .= " AND TABLE_SCHEMA = '{$dbconfig['i5_lib']}'";

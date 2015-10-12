@@ -100,7 +100,7 @@ class atkRadioDetailsAttribute extends atkAttribute
      */
     public function edit($record, $fieldprefix, $mode = 'add')
     {
-        $this->getOwnerInstance()->getPage()->register_script(atkconfig('atkroot') . 'atk/javascript/class.' . strtolower(__CLASS__) . '.js');
+        $this->getOwnerInstance()->getPage()->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/class.' . strtolower(__CLASS__) . '.js');
 
         $name = $fieldprefix . $this->fieldName();
 

@@ -39,7 +39,7 @@ class atki5db extends atkdb2db
                 $port = 50000;
 
             $options = array(I5_OPTIONS_SQLNAMING => "SQL", I5_OPTIONS_INITLIBL => "ALGDEVDTA SYSIBM");
-            $dbconfig = atkconfig("db");
+            $dbconfig = atkConfig::getGlobal("db");
             $dbconfig = $dbconfig[$this->m_connection];
 
             $this->m_link_id = i5_connect($host, $user, $password);
@@ -236,7 +236,7 @@ class atki5db extends atkdb2db
             $ddl = &atkDDL::create("i5");
             $query = "SELECT * FROM \"COLUMNS\" WHERE \"TABLE_NAME\" = '$tbl'";
 
-            $dbconfig = atkconfig("db");
+            $dbconfig = atkConfig::getGlobal("db");
             $dbconfig = $dbconfig[$this->m_connection];
             if (array_key_exists('i5_lib', $dbconfig) && $dbconfig['i5_lib'] != "")
                 $query .= " AND TABLE_SCHEMA = '{$dbconfig['i5_lib']}'";

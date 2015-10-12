@@ -64,7 +64,7 @@ class atkmlsplitter
         if (method_exists($node, "getLanguages")) {
             return $node->getLanguages();
         }
-        $lngs = atkconfig("supported_languages");
+        $lngs = atkConfig::getGlobal("supported_languages");
         for ($i = 0, $_i = count($lngs); $i < $_i; $i++)
             $lngs[$i] = strtoupper($lngs[$i]);
         return $lngs;

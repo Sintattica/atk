@@ -93,7 +93,7 @@ class atkDebugger
         self::$s_queryCount +=!$isSystemQuery ? 1 : 0;
         self::$s_systemQueryCount += $isSystemQuery ? 1 : 0;
 
-        if (atkconfig('debug') > 2) {
+        if (atkConfig::getGlobal('debug') > 2) {
             if (atkSessionManager::atkGetSessionManager()) {
                 $instance = atkDebugger::getInstance();
                 if (is_object($instance)) {
@@ -165,11 +165,11 @@ class atkDebugger
 
         static $s_first = true;
         $res = "";
-        $url = atkconfig("application_dir") . 'debugger.php?atkstackid=' . $stackId . '&action=' . $action . '&atkprevlevel=' . atkSessionManager::atkLevel() . $this->urlParams($params);
+        $url = atkConfig::getGlobal("application_dir") . 'debugger.php?atkstackid=' . $stackId . '&action=' . $action . '&atkprevlevel=' . atkSessionManager::atkLevel() . $this->urlParams($params);
 
         if ($popup) {
             if ($s_first) {
-                $res.= '<script type="text/javascript" language="JavaScript" src="' . atkconfig("atkroot") . 'atk/javascript/newwindow.js"></script>';
+                $res.= '<script type="text/javascript" language="JavaScript" src="' . atkConfig::getGlobal("atkroot") . 'atk/javascript/newwindow.js"></script>';
                 $s_first = false;
             }
             $res.= '<a href="javascript:NewWindow(\'' . $url . '\', \'atkconsole\', 800, 600, \'yes\', \'yes\')">' . $text . '</a>';
@@ -513,12 +513,12 @@ class atkDebugger
         $isPartial = isset($ATK_VARS['atkpartial']);
 
         // only display error messages
-        if (count($g_error_msg) > 0 && atkconfig('display_errors') && atkconfig('debug') <= 0 && !$isPartial) {
+        if (count($g_error_msg) > 0 && atkConfig::getGlobal('display_errors') && atkConfig::getGlobal('debug') <= 0 && !$isPartial) {
             return $this->renderPlainErrorMessages();
         }
 
         // no debug messages or error messages to output
-        else if (atkconfig('debug') <= 0 || (count($g_debug_msg) == 0 && count($g_error_msg) == 0)) {
+        else if (atkConfig::getGlobal('debug') <= 0 || (count($g_debug_msg) == 0 && count($g_error_msg) == 0)) {
             return '';
         }
 
@@ -539,7 +539,7 @@ class atkDebugger
         } else {
             $ui = &atkTools::atkinstance('atk.ui.atkui');
             $stylesheet = $ui->stylePath('atkdebug.css');
-            $script = atkconfig('atkroot') . 'atk/javascript/class.atkdebug.js';
+            $script = atkConfig::getGlobal('atkroot') . 'atk/javascript/class.atkdebug.js';
 
             $redirect = $this->renderRedirectLink();
 

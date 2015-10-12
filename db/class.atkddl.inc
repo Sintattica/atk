@@ -69,10 +69,10 @@ class atkDDL
      */
     function &create($database = NULL)
     {
-        $db = atkconfig("db");
+        $db = atkConfig::getGlobal("db");
         $database = $database === NULL ? $db["default"]["driver"] : $database;
 
-        $filename = atkconfig("atkroot") . "atk/db/class.atk" . $database . "ddl.inc";
+        $filename = atkConfig::getGlobal("atkroot") . "atk/db/class.atk" . $database . "ddl.inc";
         if (file_exists($filename)) {
             include_once($filename);
             $classname = "atk" . $database . "DDL";

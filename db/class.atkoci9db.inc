@@ -15,7 +15,7 @@
  * $Id$
  */
 /** @internal Include base class */
-require_once(atkconfig("atkroot") . "atk/db/class.atkoci8db.inc");
+require_once(atkConfig::getGlobal("atkroot") . "atk/db/class.atkoci8db.inc");
 
 /**
  * Oracle 9i database driver.
@@ -51,7 +51,7 @@ class atkOci9Db extends atkOci8Db
     {
         /* establish connection to database */
         if (empty($this->m_link_id)) {
-            $connectfunc = (atkconfig("databasepersistent") ? "OCIPlogon" : "OCILogon");
+            $connectfunc = (atkConfig::getGlobal("databasepersistent") ? "OCIPlogon" : "OCILogon");
             atkTools::atkdebug("Connectiontype: " . $connectfunc);
 
             if ($this->m_host != "") { // host based connect

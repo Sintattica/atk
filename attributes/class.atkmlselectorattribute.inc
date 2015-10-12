@@ -52,7 +52,7 @@ class atkMlSelectorAttribute extends atkMlAttribute
                     ? $this->m_ownerInstance->m_postvars['atkeditlng'] : $languages[1]) . '">';
 
         /* build selection list */
-        $result .= '<select id="' . $prefix . '_lgswitch" name="' . $prefix . '_lgswitch" onchange="changeLanguage(this, \'' . $prefix . '\', ' . (atkconfig("multilanguage_linked")
+        $result .= '<select id="' . $prefix . '_lgswitch" name="' . $prefix . '_lgswitch" onchange="changeLanguage(this, \'' . $prefix . '\', ' . (atkConfig::getGlobal("multilanguage_linked")
                     ? 'true' : 'false') . ')" class="form-control">';
 
         /* options */
@@ -102,7 +102,7 @@ class atkMlSelectorAttribute extends atkMlAttribute
     {
         /* register javascript */
         $page = &atkPage::getInstance();
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atkmultilanguage.js.php");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atkmultilanguage.js.php");
         $page->register_submitscript('mlPreSubmit(\'' . $prefix . '\', form);');
 
         // new style notification script thingee

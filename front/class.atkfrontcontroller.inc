@@ -172,7 +172,7 @@ class atkFrontController implements ArrayAccess
      */
     protected static function createBridge()
     {
-        $class = atkconfig("frontcontroller_bridge", "atk.front.atkfrontcontrollerbridge");
+        $class = atkConfig::getGlobal("frontcontroller_bridge", "atk.front.atkfrontcontrollerbridge");
 
         if (!isset(self::$s_bridges[$class])) {
             atkTools::atkdebug('Create ' . $class . ' bridge instance');

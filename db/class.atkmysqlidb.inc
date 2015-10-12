@@ -16,7 +16,7 @@
 /**
  * @internal Include baseclass
  */
-require_once(atkconfig("atkroot") . "atk/db/class.atkmysqldb.inc");
+require_once(atkConfig::getGlobal("atkroot") . "atk/db/class.atkmysqldb.inc");
 
 /**
  * Driver for MySQL databases > 4.1.3
@@ -183,7 +183,7 @@ class atkMysqliDb extends atkMysqlDb
             if ($unlock_table)
                 $this->unlock();
 
-            if (atkconfig('debug') >= 1) {
+            if (atkConfig::getGlobal('debug') >= 1) {
                 $this->debugWarnings();
             }
 
@@ -200,7 +200,7 @@ class atkMysqliDb extends atkMysqlDb
      */
     protected function _query($query, $isSystemQuery)
     {
-        if (atkconfig("debug") >= 0) {
+        if (atkConfig::getGlobal("debug") >= 0) {
             atkTools::atkimport("atk.utils.atkdebugger");
             atkDebugger::addQuery($query, $isSystemQuery);
         }
@@ -266,7 +266,7 @@ class atkMysqliDb extends atkMysqlDb
     function next_record()
     {
         /* goto next record */
-        $this->m_record = @mysqli_fetch_array($this->m_query_id, MYSQLI_ASSOC | atkconfig("mysqlfetchmode"));
+        $this->m_record = @mysqli_fetch_array($this->m_query_id, MYSQLI_ASSOC | atkConfig::getGlobal("mysqlfetchmode"));
         $this->m_row++;
         $this->m_errno = mysqli_errno($this->m_link_id);
         $this->m_error = mysqli_error($this->m_link_id);
@@ -310,7 +310,7 @@ class atkMysqliDb extends atkMysqlDb
             /* lock */
             $query = "LOCK TABLES $table $mode";
 
-            if (atkconfig("debug") >= 0) {
+            if (atkConfig::getGlobal("debug") >= 0) {
                 atkTools::atkimport("atk.utils.atkdebugger");
                 atkDebugger::addQuery($query);
             }
@@ -450,7 +450,7 @@ class atkMysqliDb extends atkMysqlDb
     {
         $this->connect('r');
         $id = $this->_query("SHOW TABLE STATUS LIKE '" . $table . "'", true);
-        $status = @mysqli_fetch_array($id, MYSQLI_ASSOC | atkconfig("mysqlfetchmode"));
+        $status = @mysqli_fetch_array($id, MYSQLI_ASSOC | atkConfig::getGlobal("mysqlfetchmode"));
         $result = $status != NULL && isset($status['Engine']) ? $status['Engine']
                 : NULL;
         atkTools::atkdebug("Table type? $table => $result");

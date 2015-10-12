@@ -61,7 +61,7 @@ else {
     atksecure();
     atkTools::atkimport("atk.ui.atkpage");
 
-    $lockType = atkconfig("lock_type");
+    $lockType = atkConfig::getGlobal("lock_type");
     if (!empty($lockType))
         atklock();
 

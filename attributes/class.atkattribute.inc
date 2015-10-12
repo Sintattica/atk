@@ -2426,7 +2426,7 @@ class atkAttribute
      */
     function maxInputSize()
     {
-        return atkconfig("max_input_size");
+        return atkConfig::getGlobal("max_input_size");
     }
 
     /**
@@ -2435,7 +2435,7 @@ class atkAttribute
      */
     function maxSearchInputSize()
     {
-        return atkconfig("max_searchinput_size");
+        return atkConfig::getGlobal("max_searchinput_size");
     }
 
     /**
@@ -2470,7 +2470,7 @@ class atkAttribute
      */
     function registerKeyListener($id, $navkeys = KB_CTRLCURSOR)
     {
-        if (atkconfig("use_keyboard_handler")) {
+        if (atkConfig::getGlobal("use_keyboard_handler")) {
             $kb = &atkKeyboard::getInstance();
             $kb->addFormElementHandler($id, $navkeys);
         }
@@ -2891,7 +2891,7 @@ class atkAttribute
 
 
 
-        $this->getOwnerInstance()->getPage()->register_script(atkconfig('atkroot') . 'atk/javascript/class.atkattribute.js');
+        $this->getOwnerInstance()->getPage()->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/class.atkattribute.js');
         $code = "ATK.Attribute.callDependencies({$url}, el);";
         $this->addOnChangeHandler($code);
     }

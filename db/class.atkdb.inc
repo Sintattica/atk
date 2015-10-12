@@ -14,7 +14,7 @@
  * @version $Revision: 6345 $
  * $Id$
  */
-if (!atkconfig('meta_caching')) {
+if (!atkConfig::getGlobal('meta_caching')) {
     atkTools::atkwarning("Table metadata caching is disabled. Turn on \$config_meta_caching to improve your application's performance!");
 }
 
@@ -439,7 +439,7 @@ class atkDb
     function errorLookup($errno)
     {
         if (count($this->m_errorLookup) == 0) {
-            $filename = atkconfig("atkroot") . "atk/db/languages/" . $this->m_vendor . "_" . atkconfig('language') . '.lng';
+            $filename = atkConfig::getGlobal("atkroot") . "atk/db/languages/" . $this->m_vendor . "_" . atkConfig::getGlobal('language') . '.lng';
             @include_once($filename);
             $this->m_errorLookup = $txt_db;
         }
@@ -965,7 +965,7 @@ class atkDb
             return $this->m_tableMeta[$table];
         }
 
-        if (atkconfig('meta_caching')) {
+        if (atkConfig::getGlobal('meta_caching')) {
             $this->m_tableMeta[$table] = $this->_getTableMetaFromCache($table);
         } else {
             $this->m_tableMeta[$table] = $this->_getTableMetaFromDb($table);
@@ -1055,7 +1055,7 @@ class atkDb
     function func_datetochar($fieldname, $format = "")
     {
         if ($format == "")
-            $format = atkconfig("date_to_char", "Y-m-d");
+            $format = atkConfig::getGlobal("date_to_char", "Y-m-d");
         return "TO_CHAR($fieldname, '" . $this->vendorDateFormat($format) . "')";
     }
 
@@ -1268,7 +1268,7 @@ class atkDb
         $conn = self::getTranslatedDatabaseName($conn);
 
         if ($reset || !isset($g_dbinstances[$conn]) || !$g_dbinstances[$conn]->hasMode($mode)) {
-            $dbconfig = atkconfig("db");
+            $dbconfig = atkConfig::getGlobal("db");
 
             if (!empty($dbconfig[$conn]["driver"]) && strpos($dbconfig[$conn]["driver"], '.') !== false) {
                 $driver = $dbconfig[$conn]["driver"];
@@ -1301,7 +1301,7 @@ class atkDb
     {
         atkTools::atkdebug("(Re)Initialising database instance with connection name '$connectionname' and mode '$mode'");
 
-        $config = atkconfig("db");
+        $config = atkConfig::getGlobal("db");
         $this->m_connection = $connectionname;
         $this->m_mode = (isset($config[$connectionname]["mode"]) ? $config[$connectionname]["mode"]
                     : "rw");

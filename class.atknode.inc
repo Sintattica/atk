@@ -781,7 +781,7 @@ class atkNode
         $this->m_module = atkModule::getModuleScope();
         atkTools::atkdebug("Creating a new node " . $this->m_module . ".$type");
 
-        $this->setEditFieldPrefix(atkconfig('edit_fieldprefix', ''));
+        $this->setEditFieldPrefix(atkConfig::getGlobal('edit_fieldprefix', ''));
     }
 
     /**
@@ -891,7 +891,7 @@ class atkNode
 
         // If no section/tab is specified or tabs are disabled, we use the current default tab
         // (specified with the setDefaultTab method, or "default" otherwise)
-        elseif ($sections === NULL || (is_string($sections) && strlen($sections) == 0) || !atkconfig("tabs")) {
+        elseif ($sections === NULL || (is_string($sections) && strlen($sections) == 0) || !atkConfig::getGlobal("tabs")) {
             $sections = array($this->m_default_tab);
         }
 
@@ -1847,7 +1847,7 @@ class atkNode
     function lockPage()
     {
         $output = $this->statusbar();
-        $output.= '<img src="' . atkconfig("atkroot") . 'atk/images/lock.gif"><br><br>' . atkTools::atktext("lock_locked") . '<br>';
+        $output.= '<img src="' . atkConfig::getGlobal("atkroot") . 'atk/images/lock.gif"><br><br>' . atkTools::atktext("lock_locked") . '<br>';
         $output.= '<br><form method="get">' . atkTools::session_form(SESSION_BACK) .
             '<input type="submit" class="btn btn-default btn_cancel" value="&lt;&lt; ' . atkTools::atktext('back') . '"></form>';
 
@@ -1930,7 +1930,7 @@ class atkNode
 
         if (count($sections) > 0 || $tabs > 1) {
             $page = &$this->getPage();
-            $page->register_script(atkconfig("atkroot") . "atk/javascript/dhtml_tabs.js.php?stateful=" . (atkconfig('dhtml_tabs_stateful')
+            $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/dhtml_tabs.js.php?stateful=" . (atkConfig::getGlobal('dhtml_tabs_stateful')
                         ? 1 : 0));
 
             // Load default tab show script.
@@ -2572,7 +2572,7 @@ class atkNode
     function getExtendedSearchAction()
     {
         if (empty($this->m_extended_search_action))
-            return atkconfig('extended_search_action');
+            return atkConfig::getGlobal('extended_search_action');
         else
             return $this->m_extended_search_action;
     }
@@ -2759,13 +2759,13 @@ class atkNode
 
         $this->setAttribSizes();
 
-        $lockType = atkconfig("lock_type");
+        $lockType = atkConfig::getGlobal("lock_type");
         if (!empty($lockType) && $this->hasFlag(NF_LOCK)) {
             $this->m_lock = &atkTools::atkinstance("atk.lock.atklock");
         } else
             $this->removeFlag(NF_LOCK);
 
-        $this->m_defaultlanguage = strtoupper(atkconfig("defaultlanguage"));
+        $this->m_defaultlanguage = strtoupper(atkConfig::getGlobal("defaultlanguage"));
 
         $this->m_initialised = true;
 
@@ -2988,7 +2988,7 @@ class atkNode
         }
 
         // The actual redirect.
-        if (atkconfig("debug") >= 2) {
+        if (atkConfig::getGlobal("debug") >= 2) {
             $debugger = &atkTools::atkinstance('atk.utils.atkdebugger');
             $debugger->setRedirectUrl($location);
             atkTools::atkdebug('Non-debug version would have redirected to <a href="' . $location . '">' . $location . '</a>');
@@ -3449,7 +3449,7 @@ class atkNode
         } else if (isset($this->m_postvars["atksearchmode"])) {
             return $this->m_postvars["atksearchmode"];
         }
-        return atkconfig("search_defaultmode");
+        return atkConfig::getGlobal("search_defaultmode");
     }
 
     /**
@@ -4237,7 +4237,7 @@ class atkNode
             $params = array();
 
             $this->m_statusbarDone = true;
-            if (atkconfig("stacktrace")) {
+            if (atkConfig::getGlobal("stacktrace")) {
                 $params["stacktrace"] = $g_sessionManager->stackTrace();
             }
 
@@ -4261,7 +4261,7 @@ class atkNode
         $res["helpurl"] = $this->helpUrl();
         if ($res["helpurl"] != "") {
             $page = &$this->getPage();
-            $page->register_script(atkconfig("atkroot") . "atk/javascript/newwindow.js");
+            $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/newwindow.js");
             $res["helplabel"] = atkTools::atktext("help");
             $res["helplink"] = '<a href="' . $res["helpurl"] . '">' . $res["helplabel"] . '</a>';
         }
@@ -4292,7 +4292,7 @@ class atkNode
      */
     function helpUrl()
     {
-        $language = atkconfig("language");
+        $language = atkConfig::getGlobal("language");
         $node = $this->m_type;
 
         $file = moduleDir($this->m_module) . "help/" . $language . "/help." . $node . ".inc";

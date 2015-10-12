@@ -48,7 +48,7 @@ class atkMlNumberAttribute extends atkMlAttribute
      */
     function validate(&$record, $mode)
     {
-        $languages = atkconfig("supported_languages");
+        $languages = atkConfig::getGlobal("supported_languages");
         $value = $record[$this->fieldName()];
 
         foreach ($languages as $language) {

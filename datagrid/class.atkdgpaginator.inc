@@ -41,7 +41,7 @@ class atkDGPaginator extends atkDGComponent
     public function __construct($grid, $options = array())
     {
         parent::__construct($grid, $options);
-        $this->m_maxLinks = atkConfig('pagelinks', 10);
+        $this->m_maxLinks = atkConfig::getGlobal('pagelinks', 10);
     }
 
     /**

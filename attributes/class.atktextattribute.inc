@@ -17,7 +17,7 @@
 /**
  * include
  */
-include_once(atkconfig("atkroot") . "atk/utils/class.atkbrowsertools.inc");
+include_once(atkConfig::getGlobal("atkroot") . "atk/utils/class.atkbrowsertools.inc");
 atkTools::atkimport("atk.attributes.atkattribute");
 
 /**

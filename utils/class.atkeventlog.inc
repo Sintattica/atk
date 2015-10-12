@@ -58,7 +58,7 @@ class atkEventLog extends atkActionListener
     function actionPerformed($action, $record)
     {
         $user = &atkSecurityManager::atkGetUser();
-        $userid = $user[atkconfig("auth_userpk")];
+        $userid = $user[atkConfig::getGlobal("auth_userpk")];
         if ($userid == "")
             $userid = 0; // probably administrator
         $node = $this->m_node->atkNodeType();

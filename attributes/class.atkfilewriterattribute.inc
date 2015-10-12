@@ -18,7 +18,7 @@
  * @internal include base class.
  */
 atkTools::useattrib("atkTextAttribute");
-include_once(atkconfig("atkroot") . "atk/utils/class.atkstringparser.inc");
+include_once(atkConfig::getGlobal("atkroot") . "atk/utils/class.atkstringparser.inc");
 
 /**
  * The atkFileWriterAttribute is an attribute that reads data from / saves 

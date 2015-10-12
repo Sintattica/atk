@@ -15,7 +15,7 @@
 /**
  * @internal Include parent class
  */
-require_once(atkconfig("atkroot") . "atk/db/class.atkmysqldb.inc");
+require_once(atkConfig::getGlobal("atkroot") . "atk/db/class.atkmysqldb.inc");
 
 /**
  * Driver for MsSQL databases

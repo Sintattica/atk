@@ -244,7 +244,7 @@ class atkExportHandler extends atkActionHandler
         $content = '<table border="0" width="100%">';
 
         // enable extended export options
-        if (true === atkconfig('enable_export_save_selection')) {
+        if (true === atkConfig::getGlobal('enable_export_save_selection')) {
             $content .= '<tr><td>' . atkTools::atktext("export_selections", "atk") . ': </td><td align="left">' . $this->getExportSelectionDropdown() . '&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="toggleSelectionName(\'new\');return false;">' . atkTools::atktext('new', 'atk') . '</a></td></tr>';
             $content .= '<tr><td>&nbsp;</td><td align="left"><div id="selection_interact"></div></td></tr>';
             $content .= '<tr id="export_name" style="display:none;"><td>' . atkTools::atktext("export_selections_name", "atk") . ': </td><td align="left"><input type="text" size="40" id="export_selection_name" name="export_selection_name" value=""></td></tr>';
@@ -295,9 +295,9 @@ class atkExportHandler extends atkActionHandler
         $id = $db->nextid('exportcriteria');
 
         $user_id = 0;
-        if ('none' !== strtolower(atkConfig('authentication'))) {
+        if ('none' !== strtolower(atkConfig::getGlobal('authentication'))) {
             $user = atkSecurityManager::atkGetUser();
-            $user_id = array_key_exists(atkConfig('auth_userpk'), $user) ? $user[atkConfig('auth_userpk')]
+            $user_id = array_key_exists(atkConfig::getGlobal('auth_userpk'), $user) ? $user[atkConfig::getGlobal('auth_userpk')]
                     : 0;
         }
 
@@ -327,9 +327,9 @@ class atkExportHandler extends atkActionHandler
         $db = atkTools::atkGetDb();
 
         $user_id = 0;
-        if ('none' !== strtolower(atkConfig('authentication'))) {
+        if ('none' !== strtolower(atkConfig::getGlobal('authentication'))) {
             $user = atkSecurityManager::atkGetUser();
-            $user_id = array_key_exists(atkConfig('auth_userpk'), $user) ? $user[atkConfig('auth_userpk')]
+            $user_id = array_key_exists(atkConfig::getGlobal('auth_userpk'), $user) ? $user[atkConfig::getGlobal('auth_userpk')]
                     : 0;
         }
 
@@ -373,10 +373,10 @@ class atkExportHandler extends atkActionHandler
     protected function getExportSelections()
     {
         $where = ' nodetype = "' . $this->m_postvars['atknodetype'] . '"';
-        if ('none' !== strtolower(atkConfig('authentication'))) {
+        if ('none' !== strtolower(atkConfig::getGlobal('authentication'))) {
             $user = atkSecurityManager::atkGetUser();
             if ('administrator' !== strtolower($user['name'])) {
-                $where .= ' AND user_id IN( 0, ' . (int) $user[atkConfig('auth_userpk')] . ' )';
+                $where .= ' AND user_id IN( 0, ' . (int) $user[atkConfig::getGlobal('auth_userpk')] . ' )';
             }
         }
 

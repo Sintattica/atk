@@ -139,7 +139,7 @@ class atkPgsqlDb extends atkDb
     function next_record()
     {
         /* goto next record */
-        $this->m_record = @pg_fetch_array($this->m_query_id, $this->m_row, PGSQL_ASSOC | atkconfig("pgsqlfetchmode"));
+        $this->m_record = @pg_fetch_array($this->m_query_id, $this->m_row, PGSQL_ASSOC | atkConfig::getGlobal("pgsqlfetchmode"));
         $this->m_row++;
 
         /* are we there? */
@@ -243,7 +243,7 @@ class atkPgsqlDb extends atkDb
     {
         /* connect first */
         if ($this->connect() == DB_SUCCESS) {
-            $sequencename = atkconfig("database_sequenceprefix") . $sequence;
+            $sequencename = atkConfig::getGlobal("database_sequenceprefix") . $sequence;
             /* get sequence number and increment */
             $query = "SELECT nextval('$sequencename') AS nextid";
 

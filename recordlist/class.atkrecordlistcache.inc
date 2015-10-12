@@ -113,8 +113,8 @@ class atkRecordlistCache
             $page = &atkPage::getInstance();
 
             $page->register_style($theme->stylePath("recordlist.css"));
-            $page->register_script(atkconfig("atkroot") . "atk/javascript/formselect.js");
-            $page->register_script(atkconfig("atkroot") . "atk/javascript/recordlist.js");
+            $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/formselect.js");
+            $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/recordlist.js");
 
             /**
              * RecordlistCache must call getUniqueId() too, or the counter will be off.
@@ -123,7 +123,7 @@ class atkRecordlistCache
 
             $stackID = atkSessionManager::atkStackID();
             $page->register_loadscript(str_replace("*|REPLACESTACKID|*", $stackID, file_get_contents($this->m_cacheid . "_actionloader")));
-            $output = str_replace("*|REPLACESTACKID|*", $stackID, file_get_contents(atkconfig("atkroot") . $this->m_cacheid));
+            $output = str_replace("*|REPLACESTACKID|*", $stackID, file_get_contents(atkConfig::getGlobal("atkroot") . $this->m_cacheid));
         }
         return $output;
     }
@@ -133,7 +133,7 @@ class atkRecordlistCache
      */
     function _setCacheId()
     {
-        $this->m_cachedir = atkconfig("atktempdir") . "rlcache/";
+        $this->m_cachedir = atkConfig::getGlobal("atktempdir") . "rlcache/";
         $identifiers = $this->getIdentifiers();
         $this->m_cacheid = $this->m_cachedir . implode("_", $identifiers) . "_" . $this->m_postvars['atkstartat'];
 
@@ -195,7 +195,7 @@ class atkRecordlistCache
     function clearCache()
     {
         atkTools::atkimport("atk.utils.atkdirectorytraverser");
-        $cachedir = atkconfig("atktempdir") . "rlcache/";
+        $cachedir = atkConfig::getGlobal("atktempdir") . "rlcache/";
         $atkdirtrav = new atkDirectoryTraverser();
 
         $identifiers = $this->getIdentifiers();

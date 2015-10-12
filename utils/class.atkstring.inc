@@ -42,7 +42,7 @@ class atkString
     protected static function hasMultiByteSupport()
     {
         if (self::$s_hasMultiByteSupport === null) {
-            if (function_exists('mb_strlen') && atkconfig('use_mbstring', true)) {
+            if (function_exists('mb_strlen') && atkConfig::getGlobal('use_mbstring', true)) {
                 mb_internal_encoding(atkTools::atkGetCharset());
                 self::$s_hasMultiByteSupport = true;
             } else {

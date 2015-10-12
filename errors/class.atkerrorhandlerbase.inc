@@ -31,7 +31,7 @@ abstract class atkErrorHandlerBase
      */
     static public function get($handlerName, $params)
     {
-        $handlerFileName = atkconfig('atkroot') . 'atk/errors/class.atk' . strtolower($handlerName) . 'errorhandler.inc';
+        $handlerFileName = atkConfig::getGlobal('atkroot') . 'atk/errors/class.atk' . strtolower($handlerName) . 'errorhandler.inc';
         if (file_exists($handlerFileName)) {
             require_once($handlerFileName);
             $handlerClassName = 'atk' . ucfirst($handlerName) . 'ErrorHandler';

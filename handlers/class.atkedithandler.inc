@@ -142,10 +142,10 @@ class atkEditHandler extends atkViewEditBase
     {
         $page = &$this->getPage();
         $ui = &$this->getUi();
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/tools.js");
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/formfocus.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/tools.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/formfocus.js");
         $page->register_loadscript("placeFocus();");
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/dhtml_formtools.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/dhtml_formtools.js");
         $page->register_style($ui->stylePath("style.css"));
     }
 
@@ -587,13 +587,13 @@ class atkEditHandler extends atkViewEditBase
 
         $ui = &$this->getUi();
         $page = &$this->getPage();
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/formsubmit.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/formsubmit.js");
 
         // register fields that contain errornous values
         atkTools::atkimport('atk.utils.atkjson');
         $page->register_scriptcode("var atkErrorFields = " . atkJSON::encode($errorFields) . ";");
 
-        if (atkconfig('lose_changes_warning', true)) {
+        if (atkConfig::getGlobal('lose_changes_warning', true)) {
             // If we are in the save or update action the user has added a nested record, has done
             // a selection using the select handler or generated an error, in either way we assume
             // the form has been changed, so we always warn the user when leaving the page.
@@ -604,7 +604,7 @@ class atkEditHandler extends atkViewEditBase
             }
 
             $unloadText = addslashes($this->m_node->text('lose_changes_warning'));
-            $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atkunloadhelper.js");
+            $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atkunloadhelper.js");
             $page->register_loadscript("new ATK.UnloadHelper('entryform', '{$unloadText}', {$isChanged});");
         }
 

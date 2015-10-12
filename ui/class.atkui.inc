@@ -150,7 +150,7 @@ class atkUI
     {
         if ($this->m_theme->getAttribute("tabtype") == "dhtml") {
             $page = &atkPage::getInstance();
-            $page->register_script(atkconfig("atkroot") . "atk/javascript/tools.js");
+            $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/tools.js");
         }
         return $this->render("tabs.tpl", $vars, $module);
     }
@@ -182,7 +182,7 @@ class atkUI
             $result = $this->renderSmarty($path, $vars);
         }
 
-        if (atkconfig('debug') >= 3) {
+        if (atkConfig::getGlobal('debug') >= 3) {
             $result = "\n<!-- START [{$path}] -->\n" .
                 $result .
                 "\n<!-- END [{$path}] -->\n";
@@ -222,8 +222,8 @@ class atkUI
         // Then set some defaults that we need in all templates.
         $this->m_smarty->assign("themedir", $this->m_theme->themeDir());
 
-        $this->m_smarty->assign("atkroot", atkconfig("atkroot"));
-        $this->m_smarty->assign("application_dir", atkconfig("application_dir"));
+        $this->m_smarty->assign("atkroot", atkConfig::getGlobal("atkroot"));
+        $this->m_smarty->assign("application_dir", atkConfig::getGlobal("application_dir"));
 
         $this->m_smarty->assign($vars);
 

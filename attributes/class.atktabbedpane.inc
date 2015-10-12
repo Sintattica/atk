@@ -475,7 +475,7 @@ class atkTabbedPane extends atkAttribute
             $node->addStyle("tabs.css");
 
             $page = &$node->getPage();
-            $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atktabbedpane.js");
+            $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atktabbedpane.js");
             $page->register_loadscript("ATK.TabbedPane.showTab('tabbedPane{$fieldprefix}{$this->m_name}', '$activeTabName');");
 
             $ui = &$node->getUi();

@@ -38,7 +38,7 @@ $title = atkTools::atktext("title_$node", isset($_GET["module"]) ? $_GET["module
 $helpbase = $config_atkroot;
 if (isset($_GET["module"]))
     $helpbase = moduleDir($_GET["module"]);
-$file = $helpbase . "help/" . atkconfig('language') . "/help." . $node . ".inc";
+$file = $helpbase . "help/" . atkConfig::getGlobal('language') . "/help." . $node . ".inc";
 $data = '<div align="left">';
 $data .= implode("<br>", file($file));
 $data .='</div>';

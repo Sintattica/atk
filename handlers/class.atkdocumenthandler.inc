@@ -103,7 +103,7 @@ class atkDocumentHandler extends atkActionHandler
      */
     function getFilenameForTemplate($template)
     {
-        $basepath = atkconfig("doctemplatedir", "doctemplates/");
+        $basepath = atkConfig::getGlobal("doctemplatedir", "doctemplates/");
         $module = $this->m_node->m_module;
         $node = $this->m_node->m_type;
 

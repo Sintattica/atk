@@ -170,7 +170,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
         $this->createLink();
 
 
-        $this->getOwnerInstance()->getPage()->register_script(atkconfig('atkroot') . 'atk/javascript/class.' . strtolower(__CLASS__) . '.js');
+        $this->getOwnerInstance()->getPage()->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/class.' . strtolower(__CLASS__) . '.js');
         $this->getOwnerInstance()->addStyle('atkmanytomanyselectrelation.css');
 
         $id = $this->getHtmlId($fieldprefix);
@@ -628,7 +628,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
         $additional = '';
         if ($this->hasPositionAttribute()) {
             if (is_null($this->m_positionAttributeHtmlModifier)) {
-                $additional = ' <img src="' . atkconfig('atkroot') . 'atk/images/up-down.gif" 
+                $additional = ' <img src="' . atkConfig::getGlobal('atkroot') . 'atk/images/up-down.gif"
           width="10" height="10" 
           alt="Sortable Ordering" 
           title="Sortable Ordering" />';

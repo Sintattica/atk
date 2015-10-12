@@ -178,7 +178,7 @@ class atkMysqlDb extends atkDb
         if ($offset >= 0 && $limit > 0)
             $query .= " LIMIT $offset, $limit";
 
-        if (atkconfig("debug") >= 0) {
+        if (atkConfig::getGlobal("debug") >= 0) {
             atkTools::atkimport("atk.utils.atkdebugger");
             atkDebugger::addQuery($query);
         }
@@ -264,7 +264,7 @@ class atkMysqlDb extends atkDb
     function next_record()
     {
         /* goto next record */
-        $this->m_record = @mysql_fetch_array($this->m_query_id, MYSQL_ASSOC | atkconfig("mysqlfetchmode"));
+        $this->m_record = @mysql_fetch_array($this->m_query_id, MYSQL_ASSOC | atkConfig::getGlobal("mysqlfetchmode"));
         $this->m_row++;
         $this->m_errno = mysql_errno();
         $this->m_error = mysql_error();
@@ -307,7 +307,7 @@ class atkMysqlDb extends atkDb
         if ($this->connect("w") == DB_SUCCESS) {
             $query = "lock tables $table $mode";
 
-            if (atkconfig("debug") >= 0) {
+            if (atkConfig::getGlobal("debug") >= 0) {
                 atkTools::atkimport("atk.utils.atkdebugger");
                 atkDebugger::addQuery($query);
             }
@@ -622,7 +622,7 @@ class atkMysqlDb extends atkDb
     function func_datetochar($fieldname, $format = "")
     {
         if ($format == "")
-            $format = atkconfig("date_to_char", "Y-m-d");
+            $format = atkConfig::getGlobal("date_to_char", "Y-m-d");
         return "DATE_FORMAT($fieldname, '" . $this->vendorDateFormat($format) . "')";
     }
 

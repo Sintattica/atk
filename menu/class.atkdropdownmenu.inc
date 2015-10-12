@@ -61,7 +61,7 @@ class atkDropdownMenu extends atkPlainMenu
 
         $page = &atkTools::atkinstance('atk.ui.atkpage');
         $theme = &atkTools::atkinstance("atk.ui.atktheme");
-        $page->register_script(atkconfig('atkroot') . 'atk/javascript/dropdown_menu.js');
+        $page->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/dropdown_menu.js');
         $page->register_style($theme->stylePath("atkdropdownmenu.css"));
         $page->m_loadscripts[] = "new DHTMLListMenu('nav');";
 
@@ -79,7 +79,7 @@ class atkDropdownMenu extends atkPlainMenu
             $menu .= $this->getMenuItem($menuitem, "    ");
         }
 
-        if (atkconfig("menu_logout_link")) {
+        if (atkConfig::getGlobal("menu_logout_link")) {
             $menu.="    <li><a href=\"app.php?atklogout=1\">" . atkTools::atktext('logout') . "</a></li>\n";
         }
 
@@ -127,7 +127,7 @@ class atkDropdownMenu extends atkPlainMenu
      */
     function getItemHtml($menuitem, $submenu = "", $submenuname = '')
     {
-        $delimiter = atkconfig("menu_delimiter");
+        $delimiter = atkConfig::getGlobal("menu_delimiter");
 
         $name = $this->getMenuTranslation($menuitem['name'], $menuitem['module']);
         if ($menuitem['name'] == '-')

@@ -52,21 +52,21 @@ class auth_ldap extends auth_interface
         if ($user == "")
             return AUTH_UNVERIFIED; // can't verify if we have no userid
 
-        if ($ldap = ldap_connect(atkconfig("auth_ldap_host"))) {
-            atkTools::atkdebug("successful connection to " . atkconfig("auth_ldap_host"));
-            if (atkconfig("auth_ldap_bind_tree")) {
-                if ($bindID = @ldap_bind($ldap, atkconfig("auth_ldap_bind_dn"), atkconfig("auth_ldap_bind_pw"))) {
-                    atkTools::atkdebug("Succesfully bound to " . atkconfig("auth_ldap_bind_dn") . " with id: " . $bindID . " conn_id " . $ldap);
+        if ($ldap = ldap_connect(atkConfig::getGlobal("auth_ldap_host"))) {
+            atkTools::atkdebug("successful connection to " . atkConfig::getGlobal("auth_ldap_host"));
+            if (atkConfig::getGlobal("auth_ldap_bind_tree")) {
+                if ($bindID = @ldap_bind($ldap, atkConfig::getGlobal("auth_ldap_bind_dn"), atkConfig::getGlobal("auth_ldap_bind_pw"))) {
+                    atkTools::atkdebug("Succesfully bound to " . atkConfig::getGlobal("auth_ldap_bind_dn") . " with id: " . $bindID . " conn_id " . $ldap);
                 } else {
-                    atkTools::atkdebug("<b>Error binding to</b> " . atkconfig("auth_ldap_bind_dn") . " " . atkconfig("auth_ldap_bind_pw"));
+                    atkTools::atkdebug("<b>Error binding to</b> " . atkConfig::getGlobal("auth_ldap_bind_dn") . " " . atkConfig::getGlobal("auth_ldap_bind_pw"));
                     return AUTH_ERROR;
                 }
             }
 
             // find the dn for this uid, the uid is not always in the dn
-            $filter = (atkconfig("auth_ldap_search_filter") != "" ? atkconfig("auth_ldap_search_filter")
+            $filter = (atkConfig::getGlobal("auth_ldap_search_filter") != "" ? atkConfig::getGlobal("auth_ldap_search_filter")
                         : "uid");
-            $pattern = atkconfig("auth_ldap_context");
+            $pattern = atkConfig::getGlobal("auth_ldap_context");
 
             // Add support for searching in multiple DN's
             if (!is_array($pattern)) {

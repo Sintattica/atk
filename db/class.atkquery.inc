@@ -880,7 +880,7 @@ class atkQuery
      */
     function &create($basepath = "atk.db.")
     {
-        $dbconfig = atkconfig("db");
+        $dbconfig = atkConfig::getGlobal("db");
         $name = "atk" . $dbconfig["default"]["driver"] . "query";
         return atkTools::atknew(($basepath ? $basepath . '.' : '') . $name);
     }

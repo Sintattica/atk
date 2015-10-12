@@ -45,8 +45,8 @@ class atkLock
         static $_instance = NULL;
 
         if ($_instance == NULL) {
-            $class = "atk" . atkconfig("lock_type") . "Lock";
-            $file = atkconfig("atkroot") . "atk/lock/class." . strtolower($class) . ".inc";
+            $class = "atk" . atkConfig::getGlobal("lock_type") . "Lock";
+            $file = atkConfig::getGlobal("atkroot") . "atk/lock/class." . strtolower($class) . ".inc";
 
             if (file_exists($file)) {
                 include_once($file);

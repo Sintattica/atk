@@ -290,7 +290,7 @@ class atkActionHandler
     {
         // The next if statement checks for 'known' actions. All unknown actions
         // are handled the backwardscompatible default way (invoking action_$action on the node)
-        $filename = atkconfig("atkroot") . "atk/handlers/class.atk" . $action . "handler.inc";
+        $filename = atkConfig::getGlobal("atkroot") . "atk/handlers/class.atk" . $action . "handler.inc";
         if (file_exists($filename)) {
             return atkTools::atknew("atk.handlers.atk" . $action . "handler");
         } else {

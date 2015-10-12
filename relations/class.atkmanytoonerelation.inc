@@ -246,16 +246,16 @@ class atkManyToOneRelation extends atkRelation
      */
     function atkManyToOneRelation($name, $destination, $flags = 0)
     {
-        if (atkconfig("manytoone_autocomplete_default", false))
+        if (atkConfig::getGlobal("manytoone_autocomplete_default", false))
             $flags |= AF_RELATION_AUTOCOMPLETE;
 
-        if (atkconfig("manytoone_autocomplete_large", true) && atkTools::hasFlag($flags, AF_LARGE))
+        if (atkConfig::getGlobal("manytoone_autocomplete_large", true) && atkTools::hasFlag($flags, AF_LARGE))
             $flags |= AF_RELATION_AUTOCOMPLETE;
 
-        $this->m_autocomplete_minchars = atkconfig("manytoone_autocomplete_minchars", 2);
-        $this->m_autocomplete_searchmode = atkconfig("manytoone_autocomplete_searchmode", "contains");
-        $this->m_autocomplete_search_case_sensitive = atkconfig("manytoone_autocomplete_search_case_sensitive", false);
-        $this->m_autocomplete_size = atkconfig("manytoone_autocomplete_size", 50);
+        $this->m_autocomplete_minchars = atkConfig::getGlobal("manytoone_autocomplete_minchars", 2);
+        $this->m_autocomplete_searchmode = atkConfig::getGlobal("manytoone_autocomplete_searchmode", "contains");
+        $this->m_autocomplete_search_case_sensitive = atkConfig::getGlobal("manytoone_autocomplete_search_case_sensitive", false);
+        $this->m_autocomplete_size = atkConfig::getGlobal("manytoone_autocomplete_size", 50);
 
         if (is_array($name)) {
             $this->m_refKey = $name;
@@ -288,7 +288,7 @@ class atkManyToOneRelation extends atkRelation
     function addFlag($flag)
     {
         parent::addFlag($flag);
-        if (atkconfig("manytoone_autocomplete_large", true) && atkTools::hasFlag($flag, AF_LARGE))
+        if (atkConfig::getGlobal("manytoone_autocomplete_large", true) && atkTools::hasFlag($flag, AF_LARGE))
             $this->m_flags |= AF_RELATION_AUTOCOMPLETE;
         return $this;
     }
@@ -804,7 +804,7 @@ class atkManyToOneRelation extends atkRelation
      */
     public function getConfigOptionObligatoryNullOption()
     {
-        return atkconfig("list_obligatory_null_item");
+        return atkConfig::getGlobal("list_obligatory_null_item");
     }
 
     /**
@@ -962,7 +962,7 @@ class atkManyToOneRelation extends atkRelation
         $autolink = array();
         if ($this->hasFlag(AF_RELATION_AUTOLINK)) { // auto edit/view link
             $page = &atkPage::getInstance();
-            $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atkmanytoonerelation.js");
+            $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atkmanytoonerelation.js");
 
             if ($this->m_destInstance->allowed("edit")) {
                 $editlink = atkTools::session_url(atkTools::dispatch_url($this->getAutoLinkDestination(), "edit", array("atkselector" => "REPLACEME")), SESSION_NESTED);
@@ -1089,7 +1089,7 @@ class atkManyToOneRelation extends atkRelation
      */
     function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
-        $useautocompletion = atkConfig("manytoone_search_autocomplete", true) && $this->hasFlag(AF_RELATION_AUTOCOMPLETE);
+        $useautocompletion = atkConfig::getGlobal("manytoone_search_autocomplete", true) && $this->hasFlag(AF_RELATION_AUTOCOMPLETE);
         if (!$this->hasFlag(AF_LARGE) && !$useautocompletion) {
             if ($this->createDestination()) {
                 if ($this->m_destinationFilter != "") {
@@ -1182,7 +1182,7 @@ class atkManyToOneRelation extends atkRelation
                 $url = atkTools::partial_url($this->m_ownerInstance->atkNodeType(), $this->m_ownerInstance->m_action, 'attribute.' . $this->fieldName() . '.autocomplete_search');
                 $code = "ATK.ManyToOneRelation.completeSearch('{$id}', '{$id}_result', '{$url}', {$this->m_autocomplete_minchars});";
                 $this->m_ownerInstance->addStyle("atkmanytoonerelation.css");
-                $page->register_script(atkconfig('atkroot') . 'atk/javascript/class.atkmanytoonerelation.js');
+                $page->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/class.atkmanytoonerelation.js');
                 $page->register_loadscript($code);
                 $result .= '<div id="' . $id . '_result" style="display: none" class="atkmanytoonerelation_result"></div>';
             }
@@ -2091,7 +2091,7 @@ class atkManyToOneRelation extends atkRelation
 
         // register base JavaScript code
         $page = &$this->m_ownerInstance->getPage();
-        $page->register_script(atkconfig('atkroot') . 'atk/javascript/class.atkmanytoonerelation.js');
+        $page->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/class.atkmanytoonerelation.js');
 
         $id = $this->getHtmlId($fieldPrefix);
 

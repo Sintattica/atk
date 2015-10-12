@@ -49,8 +49,8 @@ class atkThemeCompiler
 
         // Write it to the compiled theme file
         if (count($data)) {
-            if (!file_exists(atkconfig("atktempdir") . "themes/")) {
-                mkdir(atkconfig("atktempdir") . "themes/");
+            if (!file_exists(atkConfig::getGlobal("atktempdir") . "themes/")) {
+                mkdir(atkConfig::getGlobal("atktempdir") . "themes/");
             }
 
             atkTools::atkimport("atk.utils.atktmpfile");
@@ -86,7 +86,7 @@ class atkThemeCompiler
         $path = $this->findTheme($name, $location);
         if ($path == "") {
             // theme not found.
-            $defaulttheme = atkconfig("defaulttheme");
+            $defaulttheme = atkConfig::getGlobal("defaulttheme");
             if ($name != $defaulttheme) {
                 // this is not the default theme, let's load that instead.
                 return $this->readStructure($defaulttheme, "auto");
@@ -146,10 +146,10 @@ class atkThemeCompiler
                 $location = "module";
                 return "module/$module/themes/$name/";
             }
-        } else if ($location != "atk" && file_exists(atkconfig("application_dir") . "themes/$name/themedef.inc")) {
+        } else if ($location != "atk" && file_exists(atkConfig::getGlobal("application_dir") . "themes/$name/themedef.inc")) {
             $location = "app";
             return "themes/$name/";
-        } else if ($location != "app" && file_exists(atkconfig("atkroot") . "atk/themes/$name/themedef.inc")) {
+        } else if ($location != "app" && file_exists(atkConfig::getGlobal("atkroot") . "atk/themes/$name/themedef.inc")) {
             $location = "atk";
             return "atk/themes/$name/";
         }

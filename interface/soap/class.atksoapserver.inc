@@ -17,7 +17,7 @@
 /**
  * @todo Replace this with Marks's interface importer.
  */
-include_once(atkconfig("atkroot") . "atk/interface/interface.atkserverinterface.inc");
+include_once(atkConfig::getGlobal("atkroot") . "atk/interface/interface.atkserverinterface.inc");
 
 /**
  * The SOAP implementation for the ATK webservices layer.

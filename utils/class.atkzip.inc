@@ -45,9 +45,9 @@ class atkZip
      */
     function atkZip()
     {
-        $this->m_zipmode = atkconfig("zipmode", "auto");
-        $this->m_zip_bin = atkconfig("ziplocation", "zip");
-        $this->m_unzip_bin = atkconfig("unziplocation", "unzip");
+        $this->m_zipmode = atkConfig::getGlobal("zipmode", "auto");
+        $this->m_zip_bin = atkConfig::getGlobal("ziplocation", "zip");
+        $this->m_unzip_bin = atkConfig::getGlobal("unziplocation", "unzip");
         if (!$this->test())
             atkError("atkZip: Error while testing");
     }

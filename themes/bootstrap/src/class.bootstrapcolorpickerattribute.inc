@@ -33,7 +33,7 @@ class bootstrapColorPickerAttribute extends atkAttribute
 
         $page = atkTools::atkinstance('atk.ui.atkpage');
         $theme = atkTools::atkinstance("atk.ui.atktheme");
-        $base = atkconfig('atkroot') . 'atk/themes/bootstrap/lib/bootstrap-colorpicker/dist/';
+        $base = atkConfig::getGlobal('atkroot') . 'atk/themes/bootstrap/lib/bootstrap-colorpicker/dist/';
 
         $page->register_script($base . 'js/bootstrap-colorpicker.min.js');
         $page->register_style($base . 'css/bootstrap-colorpicker.min.css');

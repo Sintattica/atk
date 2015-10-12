@@ -59,7 +59,7 @@ class atkCache_file extends atkCache
      */
     protected function setCachePath()
     {
-        $this->m_path = $this->getCacheConfig('path', atkconfig('atktempdir') . "cache/") . $this->getFileSafeNamespace() . '/';
+        $this->m_path = $this->getCacheConfig('path', atkConfig::getGlobal('atktempdir') . "cache/") . $this->getFileSafeNamespace() . '/';
         atkFileAttribute::mkdir($this->m_path);
     }
 

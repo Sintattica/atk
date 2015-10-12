@@ -43,7 +43,7 @@ class atkOpenDocumentWriter extends atkDocumentWriter
     {
         $this->m_tbsooo = new clsTinyButStrongOOo;
         $this->m_tbsooo->VarPrefix = "documentvar_";
-        $processdir = atkconfig("atktempdir") . "documents";
+        $processdir = atkConfig::getGlobal("atktempdir") . "documents";
         if (!is_dir($processdir))
             mkdir($processdir);
         $this->m_tbsooo->SetProcessDir($processdir);

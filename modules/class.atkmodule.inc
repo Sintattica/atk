@@ -207,7 +207,7 @@ class atkModule
         /* include the base file */
         atkTools::atkimport("atk.atknode");
 
-        $corporate_base = atkconfig("corporate_node_base");
+        $corporate_base = atkConfig::getGlobal("corporate_node_base");
         if ($corporate_base != "") {
             atkTools::atkimport($corporate_base);
         }
@@ -216,7 +216,7 @@ class atkModule
         $file = $this->getNodeFile($node);
         if (!file_exists($file)) {
             atkTools::atkimport("atk.utils.atkclassloader");
-            $res = atkClassLoader::invokeFromString(atkconfig("missing_class_handler"), array(array("node" => $node, "module" => $this->m_name)));
+            $res = atkClassLoader::invokeFromString(atkConfig::getGlobal("missing_class_handler"), array(array("node" => $node, "module" => $this->m_name)));
             if ($res !== false) {
                 return $res;
             } else {

@@ -57,7 +57,7 @@ class atkTheme
         if (isset($g_theme["Name"]) && $g_theme["Name"] != "") {
             $this->m_name = $g_theme["Name"];
         } else {
-            $this->m_name = atkconfig("defaulttheme");
+            $this->m_name = atkConfig::getGlobal("defaulttheme");
         }
         $this->_loadTheme();
     }
@@ -88,7 +88,7 @@ class atkTheme
         else if (substr($relpath, 0, 7) === 'themes/')
             $location = 'app';
 
-        return ($location === 'app' ? atkconfig('application_dir') : atkconfig("atkroot")) . $relpath;
+        return ($location === 'app' ? atkConfig::getGlobal('application_dir') : atkConfig::getGlobal("atkroot")) . $relpath;
     }
 
     /**
@@ -100,8 +100,8 @@ class atkTheme
     function _loadTheme()
     {
         if (!count($this->m_theme)) {
-            $filename = atkconfig("atktempdir") . "themes/" . $this->m_name . ".inc";
-            if (!file_exists($filename) || atkconfig("force_theme_recompile")) {
+            $filename = atkConfig::getGlobal("atktempdir") . "themes/" . $this->m_name . ".inc";
+            if (!file_exists($filename) || atkConfig::getGlobal("force_theme_recompile")) {
                 $compiler = & atkTools::atknew("atk.ui.atkthemecompiler");
                 $compiler->compile($this->m_name);
             }

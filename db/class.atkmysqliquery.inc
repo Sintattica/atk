@@ -17,7 +17,7 @@
 /**
  * @internal Include baseclass
  */
-require_once(atkconfig("atkroot") . "atk/db/class.atkmysqlquery.inc");
+require_once(atkConfig::getGlobal("atkroot") . "atk/db/class.atkmysqlquery.inc");
 
 /**
  * SQL Builder for MySQL 4.1+ databases.

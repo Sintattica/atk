@@ -41,7 +41,7 @@ class atkEncryption
     function &getEncryption($type = "")
     {
         if ($type == "")
-            $type = atkconfig("encryption_defaultmethod");
+            $type = atkConfig::getGlobal("encryption_defaultmethod");
         $encryptionclass = "atk" . strtolower($type) . "encryption";
 
         if (atkTools::atkimport("atk.security.encryption." . $encryptionclass)) {

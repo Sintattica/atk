@@ -111,7 +111,7 @@ class atkFixtureManager
         // beneath module directory
         else if (
             count($parts) == 2 &&
-            !is_dir(atkconfig("atkroot") . $parts[0] . '/' . $parts[1]) &&
+            !is_dir(atkConfig::getGlobal("atkroot") . $parts[0] . '/' . $parts[1]) &&
             moduleExists($parts[0])) {
             $module = &getModule($parts[0]);
             $path = $module->getFixturePath($fullname);
@@ -245,7 +245,7 @@ class atkFixtureManager
         $metadata = $database->metadata($table);
         foreach ($metadata as $field) {
             if (atkTools::hasFlag($field['flags'], MF_AUTO_INCREMENT) && strtolower(@$field['table_type']) != 'innodb') {
-                $sequence = isset($field['sequence']) ? $field['sequence'] : atkConfig("database_sequenceprefix") . $table;
+                $sequence = isset($field['sequence']) ? $field['sequence'] : atkConfig::getGlobal("database_sequenceprefix") . $table;
                 $query = "SELECT MAX(" . $field['name'] . ") AS value FROM $table";
                 list($result) = $database->getRows($query);
                 $database->setSequenceValue($sequence, $result['value']);

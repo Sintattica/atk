@@ -43,7 +43,7 @@ class atkUpdatedByAttribute extends atkManyToOneRelation
      */
     function atkUpdatedByAttribute($name, $flags = 0)
     {
-        $this->atkManyToOneRelation($name, atkconfig("auth_usernode"), $flags | AF_READONLY | AF_HIDE_ADD);
+        $this->atkManyToOneRelation($name, atkConfig::getGlobal("auth_usernode"), $flags | AF_READONLY | AF_HIDE_ADD);
         $this->setForceInsert(true);
         $this->setForceUpdate(true);
     }

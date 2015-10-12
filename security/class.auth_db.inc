@@ -73,8 +73,8 @@ class auth_db extends auth_interface
         if ($user == "")
             return AUTH_UNVERIFIED; // can't verify if we have no userid
 
-        $db = &atkTools::atkGetDb(atkconfig("auth_database"));
-        $query = $this->buildSelectUserQuery($db->escapeSql($user), atkconfig("auth_usertable"), atkconfig("auth_userfield"), atkconfig("auth_passwordfield"), atkconfig("auth_accountdisablefield"), atkconfig("auth_accountenableexpression"));
+        $db = &atkTools::atkGetDb(atkConfig::getGlobal("auth_database"));
+        $query = $this->buildSelectUserQuery($db->escapeSql($user), atkConfig::getGlobal("auth_usertable"), atkConfig::getGlobal("auth_userfield"), atkConfig::getGlobal("auth_passwordfield"), atkConfig::getGlobal("auth_accountdisablefield"), atkConfig::getGlobal("auth_accountenableexpression"));
         $recs = $db->getrows($query);
         if (count($recs) > 0 && $this->isLocked($recs[0])) {
             return AUTH_LOCKED;
@@ -92,7 +92,7 @@ class auth_db extends auth_interface
      */
     function getPassword($rec)
     {
-        return (isset($rec[atkconfig("auth_passwordfield")])) ? $rec[atkconfig("auth_passwordfield")]
+        return (isset($rec[atkConfig::getGlobal("auth_passwordfield")])) ? $rec[atkConfig::getGlobal("auth_passwordfield")]
                 : false;
     }
 
@@ -104,7 +104,7 @@ class auth_db extends auth_interface
      */
     function isLocked($rec)
     {
-        return (isset($rec[atkconfig("auth_accountdisablefield")]) && $rec[atkconfig("auth_accountdisablefield")] == 1);
+        return (isset($rec[atkConfig::getGlobal("auth_accountdisablefield")]) && $rec[atkConfig::getGlobal("auth_accountdisablefield")] == 1);
     }
 
     /**
@@ -122,7 +122,7 @@ class auth_db extends auth_interface
     function matchPasswords($dbpasswd, $userpasswd)
     {
         // crypt password method, like in bugzilla
-        if (atkconfig("auth_usecryptedpassword", false)) {
+        if (atkConfig::getGlobal("auth_usecryptedpassword", false)) {
             // password is stored using the crypt method, using the cryptedpassword itself as the salt.
             return (crypt($userpasswd, $dbpasswd) == $dbpasswd);
         } else {
@@ -137,12 +137,12 @@ class auth_db extends auth_interface
      * @return boolean True if md5 is always used. false if md5 is not
      *                 supported.
      *                 Drivers that support both md5 and cleartext passwords
-     *                 can return atkconfig("authentication_md5") to let the
+     *                 can return atkConfig::getGlobal("authentication_md5") to let the
      *                 application decide whether to use md5.
      */
     function canMd5()
     {
-        return atkconfig("authentication_md5");
+        return atkConfig::getGlobal("authentication_md5");
     }
 
     /**
@@ -153,18 +153,18 @@ class auth_db extends auth_interface
      */
     function selectUser($user)
     {
-        $usertable = atkconfig("auth_usertable");
-        $userfield = atkconfig("auth_userfield");
-        $leveltable = atkconfig("auth_leveltable");
-        $levelfield = atkconfig("auth_levelfield");
-        $userpk = atkconfig("auth_userpk");
-        $userfk = atkconfig("auth_userfk", $userpk);
-        $grouptable = atkconfig("auth_grouptable");
-        $groupfield = atkconfig("auth_groupfield");
-        $groupparentfield = atkconfig("auth_groupparentfield");
-        $accountenableexpression = atkconfig("auth_accountenableexpression");
+        $usertable = atkConfig::getGlobal("auth_usertable");
+        $userfield = atkConfig::getGlobal("auth_userfield");
+        $leveltable = atkConfig::getGlobal("auth_leveltable");
+        $levelfield = atkConfig::getGlobal("auth_levelfield");
+        $userpk = atkConfig::getGlobal("auth_userpk");
+        $userfk = atkConfig::getGlobal("auth_userfk", $userpk);
+        $grouptable = atkConfig::getGlobal("auth_grouptable");
+        $groupfield = atkConfig::getGlobal("auth_groupfield");
+        $groupparentfield = atkConfig::getGlobal("auth_groupparentfield");
+        $accountenableexpression = atkConfig::getGlobal("auth_accountenableexpression");
 
-        $db = &atkTools::atkGetDb(atkconfig("auth_database"));
+        $db = &atkTools::atkGetDb(atkConfig::getGlobal("auth_database"));
         if ($usertable == $leveltable || $leveltable == "") {
             // Level and userid are stored in the same table.
             // This means one user can only have one level.
@@ -201,11 +201,11 @@ class auth_db extends auth_interface
      */
     function getParentGroups($parents)
     {
-        $db = &atkTools::atkGetDb(atkconfig("auth_database"));
+        $db = &atkTools::atkGetDb(atkConfig::getGlobal("auth_database"));
 
-        $grouptable = atkconfig("auth_grouptable");
-        $groupfield = atkconfig("auth_groupfield");
-        $groupparentfield = atkconfig("auth_groupparentfield");
+        $grouptable = atkConfig::getGlobal("auth_grouptable");
+        $groupfield = atkConfig::getGlobal("auth_groupfield");
+        $groupparentfield = atkConfig::getGlobal("auth_groupparentfield");
 
         $query = &$db->createQuery();
         $query->addField($groupparentfield);
@@ -231,9 +231,9 @@ class auth_db extends auth_interface
      */
     function getUser($user)
     {
-        $grouptable = atkconfig("auth_grouptable");
-        $groupfield = atkconfig("auth_groupfield");
-        $groupparentfield = atkconfig("auth_groupparentfield");
+        $grouptable = atkConfig::getGlobal("auth_grouptable");
+        $groupfield = atkConfig::getGlobal("auth_groupfield");
+        $groupparentfield = atkConfig::getGlobal("auth_groupparentfield");
 
         $recs = $this->selectUser($user);
         $groups = array();
@@ -244,8 +244,8 @@ class auth_db extends auth_interface
             $parents = array();
 
             for ($i = 0; $i < count($recs); $i++) {
-                $level[] = $recs[$i][atkconfig("auth_levelfield")];
-                $groups[] = $recs[$i][atkconfig("auth_levelfield")];
+                $level[] = $recs[$i][atkConfig::getGlobal("auth_levelfield")];
+                $groups[] = $recs[$i][atkConfig::getGlobal("auth_levelfield")];
 
                 if (!empty($groupparentfield) && $recs[$i][$groupparentfield] != "")
                     $parents[] = $recs[$i][$groupparentfield];
@@ -289,15 +289,15 @@ class auth_db extends auth_interface
             $access = array();
             for ($i = 0; $i < count($recs); $i++) {
                 if ($i == 0)
-                    $access = $recs[$i][atkconfig("auth_accesslevelfield")];
-                if ($recs[$i][atkconfig("auth_accesslevelfield")] > $access)
-                    $access = $recs[$i][atkconfig("auth_accesslevelfield")];
+                    $access = $recs[$i][atkConfig::getGlobal("auth_accesslevelfield")];
+                if ($recs[$i][atkConfig::getGlobal("auth_accesslevelfield")] > $access)
+                    $access = $recs[$i][atkConfig::getGlobal("auth_accesslevelfield")];
             }
         }
         else {
             $access = "";
-            if (isset($recs[0][atkconfig("auth_accesslevelfield")])) {
-                $access = $recs[0][atkconfig("auth_accesslevelfield")];
+            if (isset($recs[0][atkConfig::getGlobal("auth_accesslevelfield")])) {
+                $access = $recs[0][atkConfig::getGlobal("auth_accesslevelfield")];
             }
         }
         return $access;
@@ -314,10 +314,10 @@ class auth_db extends auth_interface
      */
     function getEntity($node, $action)
     {
-        $db = &atkTools::atkGetDb(atkconfig("auth_database"));
+        $db = &atkTools::atkGetDb(atkConfig::getGlobal("auth_database"));
 
         if (!isset($this->m_rightscache[$node]) || count($this->m_rightscache[$node]) == 0) {
-            $query = "SELECT * FROM " . atkconfig("auth_accesstable") . " WHERE node='$node'";
+            $query = "SELECT * FROM " . atkConfig::getGlobal("auth_accesstable") . " WHERE node='$node'";
 
             $this->m_rightscache[$node] = $db->getrows($query);
         }
@@ -326,9 +326,9 @@ class auth_db extends auth_interface
 
         $rights = $this->m_rightscache[$node];
 
-        $field = atkconfig("auth_accessfield");
+        $field = atkConfig::getGlobal("auth_accessfield");
         if (empty($field))
-            $field = atkconfig("auth_levelfield");
+            $field = atkConfig::getGlobal("auth_levelfield");
 
         for ($i = 0, $_i = count($rights); $i < $_i; $i++) {
             if ($rights[$i]['action'] == $action) {
@@ -351,7 +351,7 @@ class auth_db extends auth_interface
      */
     function getAttribEntity($node, $attrib, $mode)
     {
-        $db = &atkTools::atkGetDb(atkconfig("auth_database"));
+        $db = &atkTools::atkGetDb(atkConfig::getGlobal("auth_database"));
 
         $query = "SELECT * FROM attribaccess WHERE node='$node' AND attribute='$attrib' AND mode='$mode'";
 
@@ -360,8 +360,8 @@ class auth_db extends auth_interface
         $result = Array();
 
         for ($i = 0; $i < count($rights); $i++) {
-            if ($rights[$i][atkconfig("auth_levelfield")] != "") {
-                $result[] = $rights[$i][atkconfig("auth_levelfield")];
+            if ($rights[$i][atkConfig::getGlobal("auth_levelfield")] != "") {
+                $result[] = $rights[$i][atkConfig::getGlobal("auth_levelfield")];
             }
         }
 
@@ -390,11 +390,11 @@ class auth_db extends auth_interface
      */
     function getUserList()
     {
-        $db = &atkTools::atkGetDb(atkconfig("auth_database"));
-        $query = "SELECT * FROM " . atkconfig("auth_usertable");
+        $db = &atkTools::atkGetDb(atkConfig::getGlobal("auth_database"));
+        $query = "SELECT * FROM " . atkConfig::getGlobal("auth_usertable");
 
-        $accountdisablefield = atkconfig("auth_accountdisablefield");
-        $accountenableexpression = atkconfig("auth_accountenableexpression");
+        $accountdisablefield = atkConfig::getGlobal("auth_accountdisablefield");
+        $accountenableexpression = atkConfig::getGlobal("auth_accountenableexpression");
         if ($accountenableexpression != "") {
             $query.= " WHERE $accountenableexpression";
             if ($accountdisablefield != "")
@@ -409,9 +409,9 @@ class auth_db extends auth_interface
 
         $userlist = array();
         atkTools::atkimport("atk.utils.atkstringparser");
-        $stringparser = new atkStringParser(atkconfig("auth_userdescriptor"));
+        $stringparser = new atkStringParser(atkConfig::getGlobal("auth_userdescriptor"));
         for ($i = 0, $_i = count($recs); $i < $_i; $i++) {
-            $userlist[] = array("userid" => $recs[$i][atkconfig("auth_userfield")], "username" => $stringparser->parse($recs[$i]));
+            $userlist[] = array("userid" => $recs[$i][atkConfig::getGlobal("auth_userfield")], "username" => $stringparser->parse($recs[$i]));
         }
         usort($userlist, array("auth_db", "userListCompare"));
         return $userlist;
@@ -449,28 +449,28 @@ class auth_db extends auth_interface
     function gettingPassword($username)
     {
         // Query the database for user records having the given username and return if not found
-        $usernode = &atkGetNode(atkconfig("auth_usernode"));
-        $selector = sprintf("%s.%s = '%s'", atkconfig("auth_usertable"), atkconfig("auth_userfield"), $username);
-        $userrecords = $usernode->selectDb($selector, "", "", "", array(atkconfig("auth_userpk"), atkconfig("auth_emailfield"), atkconfig("auth_passwordfield")), "edit");
+        $usernode = &atkGetNode(atkConfig::getGlobal("auth_usernode"));
+        $selector = sprintf("%s.%s = '%s'", atkConfig::getGlobal("auth_usertable"), atkConfig::getGlobal("auth_userfield"), $username);
+        $userrecords = $usernode->selectDb($selector, "", "", "", array(atkConfig::getGlobal("auth_userpk"), atkConfig::getGlobal("auth_emailfield"), atkConfig::getGlobal("auth_passwordfield")), "edit");
         if (count($userrecords) != 1) {
             atkTools::atkdebug("User '$username' not found.");
             return false;
         }
 
         // Retrieve the email address
-        $email = $userrecords[0][atkconfig("auth_emailfield")];
+        $email = $userrecords[0][atkConfig::getGlobal("auth_emailfield")];
         if (empty($email)) {
             atkTools::atkdebug("Email address for '$username' not available.");
             return false;
         }
 
         // Regenerate the password
-        $passwordattr = &$usernode->getAttribute(atkconfig("auth_passwordfield"));
+        $passwordattr = &$usernode->getAttribute(atkConfig::getGlobal("auth_passwordfield"));
         $newpassword = $passwordattr->generatePassword();
 
         // Update the record in the database
-        $userrecords[0][atkconfig("auth_passwordfield")]["hash"] = md5($newpassword);
-        $usernode->updateDb($userrecords[0], true, "", array(atkconfig("auth_passwordfield")));
+        $userrecords[0][atkConfig::getGlobal("auth_passwordfield")]["hash"] = md5($newpassword);
+        $usernode->updateDb($userrecords[0], true, "", array(atkConfig::getGlobal("auth_passwordfield")));
 
         $usernode->getDb()->commit();
 

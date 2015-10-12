@@ -87,8 +87,8 @@ class auth_interface
         session_destroy();
 
         $cookie_params = session_get_cookie_params();
-        $cookiepath = atkconfig("application_root");
-        $cookiedomain = (atkconfig("cookiedomain") != "") ? atkconfig("cookiedomain")
+        $cookiepath = atkConfig::getGlobal("application_root");
+        $cookiedomain = (atkConfig::getGlobal("cookiedomain") != "") ? atkConfig::getGlobal("cookiedomain")
             : NULL;
         session_set_cookie_params($cookie_params["lifetime"], $cookiepath, $cookiedomain);
         @session_start();
@@ -100,12 +100,12 @@ class auth_interface
      * @return boolean True if md5 is always used. false if md5 is not
      *                 supported.
      *                 Drivers that support both md5 and cleartext passwords
-     *                 can return atkconfig("authentication_md5") to let the
+     *                 can return atkConfig::getGlobal("authentication_md5") to let the
      *                 application decide whether to use md5.
      */
     function canMd5()
     {
-        return atkconfig("authentication_md5");
+        return atkConfig::getGlobal("authentication_md5");
     }
 
     /**
@@ -158,7 +158,7 @@ class auth_interface
                 // No access restrictions found..
                 // so either nobody or anybody can perform this
                 // operation, depending on the configuration.
-                $allowed = !atkconfig("restrictive");
+                $allowed = !atkConfig::getGlobal("restrictive");
             } else {
                 if ($securityMgr->m_scheme == "level") {
                     // in level based security, only one level is specified for each node/action combination.
@@ -197,7 +197,7 @@ class auth_interface
         $attribute = $attr->fieldName();
 
         // security disabled or user is superuser? (may do anything)
-        if (($securityMgr->m_scheme == "none") || (!atkconfig("security_attributes")) || ($securityMgr->hasLevel(-1)) || (strtolower($securityMgr->m_user["name"]) == "administrator")) {
+        if (($securityMgr->m_scheme == "none") || (!atkConfig::getGlobal("security_attributes")) || ($securityMgr->hasLevel(-1)) || (strtolower($securityMgr->m_user["name"]) == "administrator")) {
             $allowed = true;
         } // user is guest? (guests may do nothing)
         else if (($securityMgr->hasLevel(-2)) || (strtolower($securityMgr->m_user["name"]) == "guest")) {

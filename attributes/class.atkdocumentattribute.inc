@@ -100,7 +100,7 @@ class atkDocumentAttribute extends atkDummyAttribute
     function documentSelector($record, $mode = "", $addForm = true)
     {
         // Compose the path to use when searching for docuemnt templates
-        $basepath = atkconfig("doctemplatedir", "doctemplates/");
+        $basepath = atkConfig::getGlobal("doctemplatedir", "doctemplates/");
         $module = $this->m_ownerInstance->m_module;
         $node = $this->m_owner;
         $path = $basepath . $module . "/" . $node;

@@ -95,7 +95,7 @@ class layout
         if (!$initialized) {
             global $g_theme;
             if (!isset($g_theme["Name"]) || $g_theme["Name"] == "")
-                $g_theme["Name"] = atkconfig("defaulttheme");
+                $g_theme["Name"] = atkConfig::getGlobal("defaulttheme");
             if ($g_theme["Name"] == "")
                 $g_theme["Name"] = "default";
             $this->initTheme();
@@ -129,8 +129,8 @@ class layout
             if (isset($g_theme["css_default"]) && $g_theme["css_default"] != "") {
                 $page->register_style($this->m_tpldir . $g_theme["css_default"]);
             } else {
-                $page->register_style((file_exists(atkconfig("application_dir") . "./style.css")
-                            ? "." : atkconfig("atkroot") . "atk") . '/style.css');
+                $page->register_style((file_exists(atkConfig::getGlobal("application_dir") . "./style.css")
+                            ? "." : atkConfig::getGlobal("atkroot") . "atk") . '/style.css');
             }
         }
     }
@@ -201,7 +201,7 @@ class layout
     function maxInputSize()
     {
         atkTools::atkdebug("Obsolete use of layout::maxInputSize()!");
-        $size = atkconfig("max_input_size");
+        $size = atkConfig::getGlobal("max_input_size");
         if ($size != "")
             return $size;
         return 70;

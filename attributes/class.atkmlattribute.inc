@@ -41,7 +41,7 @@ class atkMlAttribute extends atkAttribute
         global $config_atkroot;
         /* base class constructor */
         $this->atkAttribute($name, $flags, $size);
-        $this->m_language = strtoupper(atkconfig("defaultlanguage"));
+        $this->m_language = strtoupper(atkConfig::getGlobal("defaultlanguage"));
     }
 
     /**
@@ -74,7 +74,7 @@ class atkMlAttribute extends atkAttribute
      */
     function getLanguages()
     {
-        return atkconfig("supported_languages");
+        return atkConfig::getGlobal("supported_languages");
     }
 
     /**
@@ -91,7 +91,7 @@ class atkMlAttribute extends atkAttribute
         $this->m_edited = true;
         /* register javascript */
         $page = &atkPage::getInstance();
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atkmultilanguage.js.php");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atkmultilanguage.js.php");
 
         $languages = $this->getLanguages();
         $this->m_languages = $languages; // cache.

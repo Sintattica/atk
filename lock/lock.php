@@ -37,7 +37,7 @@ if ($lock->extend($id)) {
     // image
     else {
         header("Content-type: image/gif");
-        readfile(atkconfig("atkroot") . 'atk/images/dummy.gif');
+        readfile(atkConfig::getGlobal("atkroot") . 'atk/images/dummy.gif');
     }
 }
 

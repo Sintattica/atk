@@ -601,9 +601,9 @@ class atkSmartSearchHandler extends atkAbstractSearchHandler
 
         $node->addStyle("style.css");
 
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/tools.js");
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/formfocus.js");
-        $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atksmartsearchhandler.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/tools.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/formfocus.js");
+        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atksmartsearchhandler.js");
 
         atkTools::useattrib('atkdateattribute');
         atkDateAttribute::registerScriptsAndStyles();
