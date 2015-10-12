@@ -757,6 +757,23 @@ class atkSecurityManager
         return $this->m_enablepasswordmailer;
     }
 
+    /**
+     * Calling this function will invoke the login process. Call this function in
+     * every file that you want to have secured.
+     * (This is actually a small wrapper for $securityManager->authenticate(),
+     * so you can quickly secure an application.
+     */
+    function atksecure()
+    {
+        $securityMgr = self::getInstance();
+
+        if (!$securityMgr->authenticate()) {
+            echo '<b>' . atkTools::atktext("login_failed", "atk") . '</b>';
+            echo '<br><br>' . $securityMgr->m_fatalError;
+            exit;
+        }
+    }
+
 }
 
 /**

@@ -24,22 +24,7 @@ filter_request_where_clause('atkfilter');
 // initialise g_ array.
 $GLOBALS['g_user'] = array();
 
-/**
- * Calling this function will invoke the login process. Call this function in
- * every file that you want to have secured.
- * (This is actually a small wrapper for $securityManager->authenticate(),
- * so you can quickly secure an application.
- */
-function atksecure()
-{
-    $securityMgr = &atkSecurityManager::getInstance();
 
-    if (!$securityMgr->authenticate()) {
-        echo '<b>' . atkTools::atktext("login_failed", "atk") . '</b>';
-        echo '<br><br>' . $securityMgr->m_fatalError;
-        exit;
-    }
-}
 
 /**
  * Retrieve all known information about the currently logged-in user.
