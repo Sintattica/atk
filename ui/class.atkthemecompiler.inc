@@ -141,7 +141,7 @@ class atkThemeCompiler
     {
         if (strpos($name, ".") !== false) {
             list ($module, $name) = explode(".", $name);
-            $path = moduleDir($module) . "themes/" . $name . "/";
+            $path = atkModule::moduleDir($module) . "themes/" . $name . "/";
             if (file_exists($path . "themedef.inc")) {
                 $location = "module";
                 return "module/$module/themes/$name/";

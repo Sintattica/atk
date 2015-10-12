@@ -80,7 +80,7 @@ class atkTheme
             return "";
 
         if (preg_match("!module/(.*?)/(.*)!", $relpath, $matches)) {
-            return moduleDir($matches[1]) . $matches[2];
+            return atkModule::moduleDir($matches[1]) . $matches[2];
         }
 
         if (substr($relpath, 0, 4) === 'atk/')
@@ -135,7 +135,7 @@ class atkTheme
     function getFileLocation($type, $name, $module = "")
     {
         if ($module != "" && isset($this->m_theme["modulefiles"][$module][$type][$name])) {
-            return moduleDir($module) . "themes/" . $this->m_theme["modulefiles"][$module][$type][$name];
+            return atkModule::moduleDir($module) . "themes/" . $this->m_theme["modulefiles"][$module][$type][$name];
         } else if (isset($this->m_theme["files"][$type][$name])) {
             return atkTheme::absPath($this->m_theme["files"][$type][$name]);
         }
@@ -204,7 +204,7 @@ class atkTheme
         // Check module themes for icon
         $iconfile = $this->getIconFileFromModuleTheme($icon, $type, $ext);
         if ($module != "" && $iconfile) {
-            return moduleDir($module) . "themes/" . $iconfile;
+            return atkModule::moduleDir($module) . "themes/" . $iconfile;
         }
 
         // Check the default theme for icon
@@ -236,7 +236,7 @@ class atkTheme
     {
         if (!isset($this->m_theme['modulefiles']))
             return false;
-        $modules = atkGetModules();
+        $modules = atkModule::atkGetModules();
         $modulenames = array_keys($modules);
         foreach ($modulenames as $modulename) {
             if (isset($this->m_theme['modulefiles'][$modulename])) {

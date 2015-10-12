@@ -30,6 +30,7 @@ class atkConfig
     public static function loadGlobals()
     {
         $overrides = array();
+        global $config_atkroot, $config_application_dir;
 
         // Put all "config_" globals as variables in the function scope
         foreach ($GLOBALS as $key => $value) {
@@ -168,8 +169,8 @@ class atkConfig
     public static function getConfigForSection($section)
     {
         $config = self::getDirConfigForSection(atkConfig::getGlobal('configdir'), $section);
-        if (moduleExists($section)) {
-            $dir = moduleDir($section) . 'skel/configs/';
+        if (atkModule::moduleExists($section)) {
+            $dir = atkModule::moduleDir($section) . 'skel/configs/';
             if (file_exists($dir)) {
                 $module_configs = self::getDirConfigForSection($dir, $section);
                 $config = array_merge($module_configs, $config);

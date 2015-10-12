@@ -143,12 +143,12 @@ class atkTreeNode extends atkNode
 
         if (!$this->hasFlag(NF_NO_ADD) && $this->hasFlag(NF_ADD_LINK) && $this->allowed("add")) {
             $addurl = atkTools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=add&atkfilter=" . rawurlencode($this->m_parent . "." . $this->m_primaryKey[0] . "='0'");
-            if (atkTools::atktext("txt_link_" . getNodeType($this->m_type) . "_add", $this->m_module, "", "", "", true) != "") {
+            if (atkTools::atktext("txt_link_" . atkModule::getNodeType($this->m_type) . "_add", $this->m_module, "", "", "", true) != "") {
                 // specific text
-                $label = atkTools::atktext("link_" . getNodeType($this->m_type) . "_add", $this->m_module);
+                $label = atkTools::atktext("link_" . atkModule::getNodeType($this->m_type) . "_add", $this->m_module);
             } else {
                 // generic text
-                $label = atkTools::atktext(getNodeType($this->m_type), $this->m_module) . " " . atkTools::atktext("add", "atk");
+                $label = atkTools::atktext(atkModule::getNodeType($this->m_type), $this->m_module) . " " . atkTools::atktext("add", "atk");
             }
             $content.=atkTools::href($addurl, $label, SESSION_NESTED) . '<br><br>';
         }

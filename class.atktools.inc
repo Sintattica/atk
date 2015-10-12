@@ -1186,7 +1186,7 @@ class atkTools
         global $config_atkroot;
         $a = explode(".", $name);
         if (count($a) == 2)
-            $include = moduleDir(strtolower($a[0])) . $type . "s/class." . strtolower($a[1]) . ".inc";
+            $include = atkModule::moduleDir(strtolower($a[0])) . $type . "s/class." . strtolower($a[1]) . ".inc";
         else
             $include = $config_atkroot . "atk/" . $type . "s/class." . strtolower($name) . ".inc";
         return $include;
@@ -2013,8 +2013,8 @@ class atkTools
         }
 
         global $g_nodes;
-        $module = getNodeModule($node);
-        $type = getNodeType($node);
+        $module = atkModule::getNodeModule($node);
+        $type = atkModule::getNodeType($node);
 
         // prefix tabs with tab_
         for ($i = 0, $_i = count($tabs); $i < $_i; $i++)

@@ -87,8 +87,8 @@ class atkController
             //Its not so nice to use the getNodeModule and getNodeType functions,
             //because the name suggests they work with atkNodes. But they also do
             //the job when using other class names.
-            $this->m_name = getNodeType($atkControllerClass);
-            $this->m_module_name = getNodeModule($atkControllerClass);
+            $this->m_name = atkModule::getNodeType($atkControllerClass);
+            $this->m_module_name = atkModule::getNodeModule($atkControllerClass);
         }
     }
 
@@ -259,7 +259,7 @@ class atkController
             //if the object not yet exists, try to create it
             $fullclassname = $this->m_postvars["atknodetype"];
             if (isset($fullclassname) && $fullclassname != null) {
-                $this->m_node = atkGetNode($fullclassname);
+                $this->m_node = atkModule::atkGetNode($fullclassname);
                 if (is_object($this->m_node)) {
                     return $this->m_node;
                 } else {

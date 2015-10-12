@@ -641,8 +641,8 @@ class atkSessionManager
                 continue;
 
             $node = $stack[$i]["atknodetype"];
-            $module = getNodeModule($node);
-            $type = getNodeType($node);
+            $module = atkModule::getNodeModule($node);
+            $type = atkModule::getNodeType($node);
             $action = $stack[$i]["atkaction"];
             $title = $ui->title($module, $type, $action);
             $descriptor = atkTools::atkArrayNvl($stack[$i], "descriptor", "");
@@ -687,9 +687,9 @@ class atkSessionManager
         for ($i = 0; $i < $stackcount; $i++) {
             if (isset($stack[$i]["descriptor"]) || $i == ($stackcount - 1)) {
                 if ($stack[$i]["atknodetype"] != "") {
-                    $node = atkGetNode($stack[$i]["atknodetype"]);
-                    $module = getNodeModule($stack[$i]["atknodetype"]);
-                    $nodename = getNodeType($stack[$i]["atknodetype"]);
+                    $node = atkModule::atkGetNode($stack[$i]["atknodetype"]);
+                    $module = atkModule::getNodeModule($stack[$i]["atknodetype"]);
+                    $nodename = atkModule::getNodeType($stack[$i]["atknodetype"]);
                 }
 
                 if (is_object($node)) {

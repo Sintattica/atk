@@ -133,7 +133,7 @@ class atkSmarty
      */
     function getPathForPlugin($moduleOrPath, $name, $type)
     {
-        if (moduleExists($moduleOrPath)) {
+        if (atkModule::moduleExists($moduleOrPath)) {
             $path = 'module.' . $moduleOrPath . '.plugins';
         } else {
             $path = $moduleOrPath;

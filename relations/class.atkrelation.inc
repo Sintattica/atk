@@ -199,7 +199,7 @@ class atkRelation extends atkAttribute
     {
         if (!is_object($this->m_destInstance)) {
             $cache_id = $this->m_owner . "." . $this->m_name;
-            $this->m_destInstance = atkGetNode($this->m_destination, true, $cache_id);
+            $this->m_destInstance = atkModule::atkGetNode($this->m_destination, true, $cache_id);
 
             // Validate if destination was created succesfully
             if (!is_object($this->m_destInstance)) {
@@ -353,7 +353,7 @@ class atkRelation extends atkAttribute
         if ($label == "") {
             $label = atkTools::atktext($key, $this->m_destInstance->m_module, "", "", "", true);
             if ($label == "") {
-                $key = "link_" . getNodeType($this->m_destination) . "_add";
+                $key = "link_" . atkModule::getNodeType($this->m_destination) . "_add";
                 $label = atkTools::atktext($key, $this->m_destInstance->m_module, "", "", "", true);
                 if ($label == "") {
                     $label = atkTools::atktext("link_add", "atk");

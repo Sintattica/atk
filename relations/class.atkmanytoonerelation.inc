@@ -938,11 +938,11 @@ class atkManyToOneRelation extends atkRelation
         // we use the current level to automatically return to this page
         // when we come from the select..
         $atktarget = atkTools::atkurlencode( atkTools::getDispatchFile() . "?atklevel=" . atkSessionManager::atkLevel() . "&" . $selname . "=[atkprimkey]");
-        $linkname = atkTools::atktext("link_select_" . getNodeType($this->m_destination), $this->getOwnerInstance()->getModule(), $this->getOwnerInstance()->getType(), '', '', true);
+        $linkname = atkTools::atktext("link_select_" . atkModule::getNodeType($this->m_destination), $this->getOwnerInstance()->getModule(), $this->getOwnerInstance()->getType(), '', '', true);
         if (!$linkname)
-            $linkname = atkTools::atktext("link_select_" . getNodeType($this->m_destination), getNodeModule($this->m_destination), getNodeType($this->m_destination), '', '', true);
+            $linkname = atkTools::atktext("link_select_" . atkModule::getNodeType($this->m_destination), atkModule::getNodeModule($this->m_destination), atkModule::getNodeType($this->m_destination), '', '', true);
         if (!$linkname)
-            $linkname = atkTools::atktext("select_a"); // . ' ' . strtolower(atkTools::atktext(getNodeType($this->m_destination), getNodeModule($this->m_destination), getNodeType($this->m_destination)));
+            $linkname = atkTools::atktext("select_a"); // . ' ' . strtolower(atkTools::atktext(atkModule::getNodeType($this->m_destination), atkModule::getNodeModule($this->m_destination), atkModule::getNodeType($this->m_destination)));
         if ($this->m_destinationFilter != "") {
             $result.= atkTools::href(atkTools::dispatch_url($this->m_destination, "select", array("atkfilter" => $filter, "atktarget" => $atktarget)), $linkname, SESSION_NESTED, $this->m_autocomplete_saveform, 'class="atkmanytoonerelation"');
         } else {

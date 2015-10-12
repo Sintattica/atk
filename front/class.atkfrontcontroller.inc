@@ -1002,12 +1002,12 @@ class atkFrontController implements ArrayAccess
         if ($vars == NULL)
             $vars = $this->getVars();
 
-        if (!$partial && file_exists(moduleDir($this->m_module) . "scripts/{$this->m_name}.js")) {
-            $this->registerScriptFile(moduleDir($this->m_module) . "scripts/{$this->m_name}.js");
+        if (!$partial && file_exists(atkModule::moduleDir($this->m_module) . "scripts/{$this->m_name}.js")) {
+            $this->registerScriptFile(atkModule::moduleDir($this->m_module) . "scripts/{$this->m_name}.js");
         }
 
-        if (!$partial && file_exists(moduleDir($this->m_module) . "styles/{$this->m_name}.js")) {
-            $this->registerStyleSheet(moduleDir($this->m_module) . "styles/{$this->m_name}.js");
+        if (!$partial && file_exists(atkModule::moduleDir($this->m_module) . "styles/{$this->m_name}.js")) {
+            $this->registerStyleSheet(atkModule::moduleDir($this->m_module) . "styles/{$this->m_name}.js");
         }
 
 
@@ -1029,10 +1029,10 @@ class atkFrontController implements ArrayAccess
         $root = $this->m_bridge->getApplicationRoot();
         if (file_exists($root . "$directory/$template")) {
             return $root . "$directory/$template";
-        } else if (file_exists(moduleDir($this->m_module) . "$directory/$template")) {
-            return moduleDir($this->m_module) . "$directory/$template";
-        } else if (file_exists(moduleDir($this->m_module) . "skel/$directory/$template")) {
-            return moduleDir($this->m_module) . "skel/$directory/$template";
+        } else if (file_exists(atkModule::moduleDir($this->m_module) . "$directory/$template")) {
+            return atkModule::moduleDir($this->m_module) . "$directory/$template";
+        } else if (file_exists(atkModule::moduleDir($this->m_module) . "skel/$directory/$template")) {
+            return atkModule::moduleDir($this->m_module) . "skel/$directory/$template";
         } else {
             return null;
         }

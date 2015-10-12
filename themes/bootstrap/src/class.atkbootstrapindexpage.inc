@@ -267,7 +267,7 @@ class atkBootstrapIndexPage
 
             // Create node
             if (isset($ATK_VARS['atknodetype'])) {
-                $obj = atkGetNode($ATK_VARS['atknodetype']);
+                $obj = atkModule::atkGetNode($ATK_VARS['atknodetype']);
 
                 if (is_object($obj)) {
                     $controller = & atkTools::atkinstance("atk.atkcontroller");

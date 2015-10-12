@@ -56,8 +56,8 @@ class atkDialog
 
         atkTools::atkimport('atk.ui.atkui');
         $ui = atkUI::getInstance();
-        $module = getNodeModule($nodeType);
-        $type = getNodeType($nodeType);
+        $module = atkModule::getNodeModule($nodeType);
+        $type = atkModule::getNodeType($nodeType);
         $this->m_title = $ui->title($module, $type, $action);
 
         $theme = atkTheme::getInstance();
@@ -70,7 +70,7 @@ class atkDialog
      *
      * @return string node type
      */
-    public function getNodeType()
+    public function atkModule::getNodeType()
     {
         return $this->m_nodeType;
     }
@@ -255,7 +255,7 @@ class atkDialog
      */
     function getUrl()
     {
-        return atkTools::partial_url($this->getNodeType(), $this->m_action, $this->m_partial, $this->m_params, $this->m_sessionStatus);
+        return atkTools::partial_url($this->atkModule::getNodeType(), $this->m_action, $this->m_partial, $this->m_params, $this->m_sessionStatus);
     }
 
     /**

@@ -126,7 +126,7 @@ class atkMenu
             $c = &atkTools::atkinstance("atk.atkcontroller");
             $c->setPhpFile($dispatcher);
 
-            atkHarvestModules("getMenuItems");
+            atkModule::atkHarvestModules("getMenuItems");
         }
 
         return $s_instance;

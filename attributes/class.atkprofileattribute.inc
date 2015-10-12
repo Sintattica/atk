@@ -132,8 +132,8 @@ class atkProfileAttribute extends atkAttribute
             foreach ($checked as $node => $actions) {
                 $actions = array_unique($actions);
 
-                $nodeModule = getNodeModule($node);
-                $nodeType = getNodeType($node);
+                $nodeModule = atkModule::getNodeModule($node);
+                $nodeType = atkModule::getNodeType($node);
 
                 $validActions = array();
 
@@ -221,8 +221,8 @@ class atkProfileAttribute extends atkAttribute
             $rows = $db->getRows($query);
 
             foreach ($rows as $row) {
-                $module = getNodeModule($row['node']);
-                $node = getNodeType($row['node']);
+                $module = atkModule::getNodeModule($row['node']);
+                $node = atkModule::getNodeType($row['node']);
                 $result[$module][$module][$node][] = $row['action'];
             }
         }
@@ -236,7 +236,7 @@ class atkProfileAttribute extends atkAttribute
             // get nodes for each module
             foreach (array_keys($g_modules) as $module) {
                 if (!isset($g_moduleflags[$module]) || !atkTools::hasFlag($g_moduleflags[$module], MF_NORIGHTS)) {
-                    $instance = atkGetModule($module);
+                    $instance = atkModule::atkGetModule($module);
                     if (method_exists($instance, "getNodes"))
                         $instance->getNodes();
                 }
@@ -286,8 +286,8 @@ class atkProfileAttribute extends atkAttribute
 
         $result = array();
         foreach ($rows as $row) {
-            $module = getNodeModule($row['node']);
-            $node = getNodeType($row['node']);
+            $module = atkModule::getNodeModule($row['node']);
+            $node = atkModule::getNodeType($row['node']);
             $result[$module][$node][] = $row['action'];
         }
 
@@ -316,8 +316,8 @@ class atkProfileAttribute extends atkAttribute
 
         $result = array();
         foreach ($selected as $node => $actions) {
-            $module = getNodeModule($node);
-            $node = getNodeType($node);
+            $module = atkModule::getNodeModule($node);
+            $node = atkModule::getNodeType($node);
             $result[$module][$node] = $actions;
         }
 

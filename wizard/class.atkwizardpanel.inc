@@ -136,7 +136,7 @@ class atkWizardPanel
         if (!is_object($this->m_node)) {
             atkTools::atkdebug("atkWizardPanel::getPanelNode() create node. Node name: " . $this->m_nodeName);
 
-            $this->m_node = atkGetNode($this->m_nodeName);
+            $this->m_node = atkModule::atkGetNode($this->m_nodeName);
             if (!is_object($this->m_node)) {
                 atkTools::atkerror("atkWizardPanel::getPanelNode() Node could not be created. Node name: " . $this->m_nodeName);
                 return NULL;
@@ -153,7 +153,7 @@ class atkWizardPanel
                 $handlerAction = $this->m_actionHandlers[$i]['action'];
 
                 $handler = &new $handlerName();
-                atkRegisterNodeHandler($this->m_node->m_type, $handlerAction, $handler);
+                atkModule::atkRegisterNodeHandler($this->m_node->m_type, $handlerAction, $handler);
             }
 
             //All nodes should return the output and not try to fill the screen themselves

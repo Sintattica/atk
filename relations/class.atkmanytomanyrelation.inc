@@ -231,7 +231,7 @@ class atkManyToManyRelation extends atkRelation
     function createLink()
     {
         if ($this->m_linkInstance == NULL) {
-            $this->m_linkInstance = &newNode($this->m_link);
+            $this->m_linkInstance = atkModule::newAtkNode($this->m_link);
 
             // Validate if destination was created succesfully
             if (!is_object($this->m_linkInstance)) {

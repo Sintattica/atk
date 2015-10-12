@@ -449,7 +449,7 @@ class auth_db extends auth_interface
     function gettingPassword($username)
     {
         // Query the database for user records having the given username and return if not found
-        $usernode = &atkGetNode(atkConfig::getGlobal("auth_usernode"));
+        $usernode = &atkModule::atkGetNode(atkConfig::getGlobal("auth_usernode"));
         $selector = sprintf("%s.%s = '%s'", atkConfig::getGlobal("auth_usertable"), atkConfig::getGlobal("auth_userfield"), $username);
         $userrecords = $usernode->selectDb($selector, "", "", "", array(atkConfig::getGlobal("auth_userpk"), atkConfig::getGlobal("auth_emailfield"), atkConfig::getGlobal("auth_passwordfield")), "edit");
         if (count($userrecords) != 1) {

@@ -77,7 +77,7 @@ class atkDhtmlMenu extends atkmenuinterface
                     for ($j = 0; $j < (count($enable) / 2); $j++) {
                         $action = $enable[(2 * $j) + 1];
 
-                        $instance = atkGetNode($enable[(2 * $j)]);
+                        $instance = atkModule::atkGetNode($enable[(2 * $j)]);
                         $enabled |= $instance->allowed($action);
                     }
                     $enable = $enabled;

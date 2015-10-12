@@ -486,7 +486,7 @@ class atkLanguage
             $path = atkConfig::getGlobal("language_basedir", (isset($this) ? $this->LANGDIR
                         : 'languages/'));
         } else {
-            $path = moduleDir($module) . (isset($this) ? $this->LANGDIR : 'languages/');
+            $path = atkModule::moduleDir($module) . (isset($this) ? $this->LANGDIR : 'languages/');
         }
         return $path;
     }

@@ -279,12 +279,12 @@ abstract class atkTestCase extends PHPUnit_Framework_TestCase
 
     function &setMockNode($nodename, &$mocknode)
     {
-        $this->m_restoreNode[$nodename] = &atkSetNode($nodename, $mocknode);
+        $this->m_restoreNode[$nodename] = &atkModule::atkSetNode($nodename, $mocknode);
     }
 
     function restoreNode($nodename)
     {
-        atkSetNode($nodename, $this->m_restoreNode[$nodename]);
+        atkModule::atkSetNode($nodename, $this->m_restoreNode[$nodename]);
     }
 
     function &setMockSecurityManager(&$mockmanager)

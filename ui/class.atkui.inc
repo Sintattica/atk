@@ -295,7 +295,7 @@ class atkUI
     {
         if ($module == NULL || $nodetype == NULL)
             return "";
-        return $this->nodeTitle(atkGetNode($module . '.' . $nodetype), $action, $actiononly);
+        return $this->nodeTitle(atkModule::atkGetNode($module . '.' . $nodetype), $action, $actiononly);
     }
 
     /**

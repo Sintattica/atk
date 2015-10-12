@@ -138,7 +138,7 @@ class atkClassLoader
         $elems = explode(".", strtolower($fullclassname));
         if ($elems[0] == "module") {
             array_shift($elems);
-            $prefix = moduleDir(array_shift($elems));
+            $prefix = atkModule::moduleDir(array_shift($elems));
         } else if (isset(self::$s_classPaths[$elems[0]])) {
             $prefix = self::$s_classPaths[$elems[0]];
             array_shift($elems);
@@ -341,7 +341,7 @@ class atkClassLoader
      *                 returns the output of the invoked method. (be
      *                 careful with methods that return false).
      */
-    function invokeFromString($str, $params = array())
+    public static function invokeFromString($str, $params = array())
     {
         if (strpos($str, "#") === false)
             return false;

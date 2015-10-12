@@ -211,7 +211,7 @@ class atkDocumentWriter
             return false;
 
         // Assign the quotation owner to the document
-        $node = &atkGetNode($nodename);
+        $node = &atkModule::atkGetNode($nodename);
 
         // Get the record from the database
         $records = $node->selectDb($selector, "", "", "", "", "view");

@@ -3163,7 +3163,7 @@ Changes in ATK 5.5.0
   [Harrie]
 + Added tab security. It is now possible to grant/prevent access to a single
   tab of a node. [Harrie]
-+ Added atkSetNode() counterpart for atkGetNode(), to set nodes to a different
++ Added atkSetNode() counterpart for atkModule::atkGetNode(), to set nodes to a different
   instance at runtime. [Ivo]
 + Added atkSetSecurityManager() counterpart for atkSecurityManager::getInstance(), to set
   the securitymanager to a different instance at runtime. [Ivo]

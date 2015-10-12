@@ -876,7 +876,7 @@ class atkOneToManyRelation extends atkRelation
     {
         $classname = $this->m_destination;
         $cache_id = $this->m_owner . "." . $this->m_name;
-        $rel = atkGetNode($classname, $cache_id);
+        $rel = atkModule::atkGetNode($classname, $cache_id);
         $ownerfields = $this->getOwnerFields();
 
         for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i ++) {
@@ -1234,7 +1234,7 @@ class atkOneToManyRelation extends atkRelation
             // Get the destination node
             $classname = $this->m_destination;
             $cache_id = $this->m_owner . "." . $this->m_name;
-            $rel = atkGetNode($classname, $cache_id);
+            $rel = atkModule::atkGetNode($classname, $cache_id);
             // Get the current atkselector
             $where = $this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']);
             if ($where) {

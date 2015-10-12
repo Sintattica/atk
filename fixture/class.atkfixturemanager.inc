@@ -112,8 +112,8 @@ class atkFixtureManager
         else if (
             count($parts) == 2 &&
             !is_dir(atkConfig::getGlobal("atkroot") . $parts[0] . '/' . $parts[1]) &&
-            moduleExists($parts[0])) {
-            $module = atkGetModule($parts[0]);
+            atkModule::moduleExists($parts[0])) {
+            $module = atkModule::atkGetModule($parts[0]);
             $path = $module->getFixturePath($fullname);
         }
 

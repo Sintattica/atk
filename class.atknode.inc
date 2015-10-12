@@ -18,7 +18,7 @@
  */
 atkTools::atkimport("atk.attributes.atkattribute");
 atkTools::atkimport("atk.atkcontroller");
-atkTools::atkimport("atk.modules.atkmodule");
+atkTools::atkimport("atk.atkmodule");
 
 /**
  * Define some flags for nodes. Use the constructor of the atkNode
@@ -935,7 +935,7 @@ class atkNode
         if ($this->m_modifier != "")
             $attribute->m_module = $this->m_modifier;
 
-        if (!atkReadOptimizer()) {
+        if (!atkModule::atkReadOptimizer()) {
             $this->resolveSectionsTabsOrder($sections, $tabs, $column, $order);
 
             // check for parent fieldname (treeview)
@@ -1006,7 +1006,7 @@ class atkNode
                 $order = $this->m_attribOrder;
             }
 
-            if (!atkReadOptimizer()) {
+            if (!atkModule::atkReadOptimizer()) {
                 // add new tab(s) to the tab list ("*" isn't a tab!)
                 if ($tabs != "*") {
                     if (!$attribute->hasFlag(AF_HIDE_ADD))
@@ -1673,7 +1673,7 @@ class atkNode
 
             // load the $g_nodes array to find out what tabs are required
             if (!isset($g_nodes[$this->m_module][$this->m_module][$this->m_type])) {
-                $module = atkGetModule($this->m_module);
+                $module = atkModule::atkGetModule($this->m_module);
                 $module->getNodes();
             }
 
@@ -2742,7 +2742,7 @@ class atkNode
         // modifiers if found.
         if (isset($g_modifiers[$this->atknodetype()])) {
             foreach ($g_modifiers[$this->atknodetype()] as $modulename) {
-                $module = atkGetModule($modulename);
+                $module = atkModule::atkGetModule($modulename);
                 $module->modifier($this);
             }
         }
@@ -3463,7 +3463,7 @@ class atkNode
     {
         $selector->orderBy($this->getOrder());
         $selector->ignoreDefaultFilters($this->hasFlag(NF_NO_FILTER));
-        $selector->ignorePostvars(atkReadOptimizer());
+        $selector->ignorePostvars(atkModule::atkReadOptimizer());
 
         if ($condition != null) {
             $selector->where($condition, $params);
@@ -4295,7 +4295,7 @@ class atkNode
         $language = atkConfig::getGlobal("language");
         $node = $this->m_type;
 
-        $file = moduleDir($this->m_module) . "help/" . $language . "/help." . $node . ".inc";
+        $file = atkModule::moduleDir($this->m_module) . "help/" . $language . "/help." . $node . ".inc";
         $helpmodule = "";
         if (file_exists($file)) {
             $helpmodule = $this->m_module;
@@ -4325,7 +4325,7 @@ class atkNode
     function callHandler($action)
     {
         atkTools::atkdebug("atkNode::callHandler(); action: " . $action);
-        $handler = &atkGetNodeHandler($this->m_type, $action);
+        $handler = atkModule::atkGetNodeHandler($this->m_type, $action);
 
         // handler function
         if ($handler != NULL && is_string($handler) && function_exists($handler)) {
@@ -4361,11 +4361,11 @@ class atkNode
         atkTools::atkimport("atk.handlers.atkactionhandler");
 
         // for backwards compatibility we first check if a handler exists without using the module name
-        $handler = &atkGetNodeHandler($this->m_type, $action);
+        $handler = atkModule::atkGetNodeHandler($this->m_type, $action);
 
         // then check if a handler exists registered including the module name
         if ($handler == NULL) {
-            $handler = &atkGetNodeHandler($this->atkNodeType(), $action);
+            $handler = atkModule::atkGetNodeHandler($this->atkNodeType(), $action);
         }
 
         // The node handler might return a class, then we need to instantiate the handler
@@ -4392,7 +4392,7 @@ class atkNode
             //If we use a default handler we need to register it to this node
             //because we might call it a second time.
             atkTools::atkdebug("atkNode::getHandler: Register default atkActionHandler for " . $this->m_type . " action: '" . $action . "'");
-            atkRegisterNodeHandler($this->m_type, $action, $handler);
+            atkModule::atkRegisterNodeHandler($this->m_type, $action, $handler);
         }
 
         return $handler;
