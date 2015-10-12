@@ -663,7 +663,7 @@ class atkTools
 
         list($key, $value) = preg_split($s_regex, $pair);
 
-        return array($key => stripQuotes($value));
+        return array($key => self::stripQuotes($value));
     }
 
     /**
@@ -680,10 +680,10 @@ class atkTools
             $items[$i] = trim($items[$i], '()'); // trim parenthesis if present, e.g. (id=3) AND (name='joe')
             if (strstr($items[$i], '!=') !== false) {
                 list($key, $value) = explode("!=", $items[$i]);
-                $result[trim($key)] = stripQuotes($value);
+                $result[trim($key)] = self::stripQuotes($value);
             } elseif (strstr($items[$i], '=') !== false) {
                 list($key, $value) = explode("=", $items[$i]);
-                $result[trim($key)] = stripQuotes($value);
+                $result[trim($key)] = self::stripQuotes($value);
             } elseif (stristr($items[$i], 'IS NULL') !== false) {
                 list($key) = preg_split('/IS NULL/i', $items[$i]);
                 $result[trim($key)] = NULL;

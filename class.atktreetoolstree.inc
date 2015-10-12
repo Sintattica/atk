@@ -15,29 +15,7 @@
  * $Id$
  */
 
-/**
- * Node class, represents a node in a tree.
- *
- * @author Ivo Jansch <ivo@achievo.org>
- * @package atk   
- */
-class node
-{
-    var $m_id;
-    var $m_label; // DEPRECATED, use $m_object instead.
-    var $m_object;
-    var $m_img;
-    var $m_sub = array();
-
-    function node($id, $object, $img = "")
-    {
-        $this->m_id = $id;
-        $this->m_object = $object;
-        $this->m_label = &$this->m_object; // DEPRECATED, but available for backwardcompatibility.
-        $this->m_img = $img;
-    }
-
-}
+include_once(atkconfig("atkroot") . "atk/class.atktreetoolsnode.inc");
 
 /**
  * Tree class, used to build trees of nodes.
@@ -45,7 +23,7 @@ class node
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk   
  */
-class tree
+class atkTreeToolsTree
 {
     var $m_tree = array();
     var $m_allnodes = array();
@@ -53,7 +31,7 @@ class tree
 
     function addNode($id, $naam, $parent = 0, $img = "")
     {
-        $n = new node($id, $naam, $img);
+        $n = new atkTreeToolsNode($id, $naam, $img);
         $this->m_allnodes[$id] = &$n;
 
         if (array_key_exists($id, $this->m_parentless) && is_array($this->m_parentless[$id])) {

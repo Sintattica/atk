@@ -16,7 +16,8 @@
 /**
  * @internal includes..
  */
-include_once(atkconfig("atkroot") . "atk/atktreetools.inc");
+
+include_once(atkconfig("atkroot") . "atk/class.atktreetoolstree.inc");
 
 define("NF_TREE_NO_ROOT_DELETE", NF_SPECIFIC_1); // No root elements can be deleted
 define("NF_TREE_NO_ROOT_COPY", NF_SPECIFIC_2); // No root elements can be copied
@@ -94,7 +95,7 @@ class atkTreeNode extends atkNode
         atkTools::atkdebug("atktreenode::buildtree() " . $this->m_parent);
         $recordset = $this->selectDb(atkTools::atkArrayNvl($this->m_postvars, "atkfilter", ""), "", "", $this->m_listExcludes, "", "admin");
 
-        $treeobject = new tree;
+        $treeobject = new atkTreeToolsTree();
         for ($i = 0; $i < count($recordset); $i++)
             $treeobject->addNode($recordset[$i][$this->m_primaryKey[0]], $recordset[$i], $recordset[$i][$this->m_parent][$this->m_primaryKey[0]]);
 

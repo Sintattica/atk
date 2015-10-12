@@ -18,7 +18,7 @@
  * @internal includes..
  */
 atkTools::userelation("atkManyToOneRelation");
-include_once(atkconfig("atkroot") . "atk/atktreetools.inc");
+include_once(atkconfig("atkroot") . "atk/class.atktreetoolstree.inc");
 
 /**
  * Extension of the atkManyToOneRelation, that is aware of the treestructure
@@ -109,7 +109,7 @@ class atkManyToOneTreeRelation extends atkManyToOneRelation
      */
     function createdd($recordset)
     {
-        $t = new tree;
+        $t = new atkTreeToolsTree();
         for ($i = 0; $i < count($recordset); $i++) {
             $group = $recordset[$i];
             $t->addNode($recordset[$i][$this->m_destInstance->m_primaryKey[0]], $this->m_destInstance->descriptor($group), $recordset[$i][$this->m_destInstance->m_parent][$this->m_destInstance->m_primaryKey[0]]);
@@ -128,6 +128,7 @@ class atkManyToOneTreeRelation extends atkManyToOneRelation
     function render($tree = "", $level = 0)
     {
         $res = "";
+        $i = 0;
         while (list($id, $objarr) = each($tree)) {
             $i++;
             if ($this->m_current != $this->m_destInstance->m_table . "." . $this->m_destInstance->m_primaryKey[0] . "='" . $objarr->m_id . "'") {
