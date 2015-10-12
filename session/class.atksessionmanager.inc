@@ -687,7 +687,7 @@ class atkSessionManager
         for ($i = 0; $i < $stackcount; $i++) {
             if (isset($stack[$i]["descriptor"]) || $i == ($stackcount - 1)) {
                 if ($stack[$i]["atknodetype"] != "") {
-                    $node = &getNode($stack[$i]["atknodetype"]);
+                    $node = atkGetNode($stack[$i]["atknodetype"]);
                     $module = getNodeModule($stack[$i]["atknodetype"]);
                     $nodename = getNodeType($stack[$i]["atknodetype"]);
                 }

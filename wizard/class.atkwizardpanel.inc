@@ -136,7 +136,7 @@ class atkWizardPanel
         if (!is_object($this->m_node)) {
             atkTools::atkdebug("atkWizardPanel::getPanelNode() create node. Node name: " . $this->m_nodeName);
 
-            $this->m_node = &getNode($this->m_nodeName);
+            $this->m_node = atkGetNode($this->m_nodeName);
             if (!is_object($this->m_node)) {
                 atkTools::atkerror("atkWizardPanel::getPanelNode() Node could not be created. Node name: " . $this->m_nodeName);
                 return NULL;

@@ -105,7 +105,7 @@ class atkFuzzySearchAttribute extends atkAttribute
     function createSearchNodeInstance()
     {
         if (!is_object($this->m_searchnodeInstance)) {
-            $this->m_searchnodeInstance = &getNode($this->m_searchnode);
+            $this->m_searchnodeInstance = atkGetNode($this->m_searchnode);
             return is_object($this->m_searchnodeInstance);
         }
         return true;

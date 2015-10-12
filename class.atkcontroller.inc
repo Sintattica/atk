@@ -259,12 +259,12 @@ class atkController
             //if the object not yet exists, try to create it
             $fullclassname = $this->m_postvars["atknodetype"];
             if (isset($fullclassname) && $fullclassname != null) {
-                $this->m_node = &getNode($fullclassname);
+                $this->m_node = atkGetNode($fullclassname);
                 if (is_object($this->m_node)) {
                     return $this->m_node;
                 } else {
                     global $ATK_VARS;
-                    atkError("No object '" . $ATK_VARS["atknodetype"] . "' created!!?!");
+                    atkTools::atkerror("No object '" . $ATK_VARS["atknodetype"] . "' created!!?!");
                 }
             }
         }
