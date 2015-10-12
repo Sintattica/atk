@@ -346,7 +346,7 @@ class atkConfig
      *                             depending on the setting of
      *                             $config_security_scheme
      */
-    function addUser($name, $password, $securitylevel = 0)
+    public static function addUser($name, $password, $securitylevel = 0)
     {
         $GLOBALS["config_user"][$name] = Array("password" => $password, "level" => $securitylevel);
     }

@@ -294,7 +294,7 @@ class atkController
         $page->setTitle(atkTools::atktext('app_shorttitle') . " - " . $this->getUi()->title($node->m_module, $node->m_type, $node->m_action));
 
         if ($node->allowed($node->m_action)) {
-            $secMgr = &atkGetSecurityManager();
+            $secMgr = &atkSecurityManager::getInstance();
             $secMgr->logAction($node->m_type, $node->m_action);
             $node->callHandler($node->m_action);
 

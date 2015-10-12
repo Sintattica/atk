@@ -1669,7 +1669,7 @@ class atkNode
         for ($i = 0, $_i = count($tablist); $i < $_i; $i ++) {
             if ($tablist[$i] == "" || $tablist[$i] == "default")
                 continue;
-            $secMgr = &atkGetSecurityManager();
+            $secMgr = &atkSecurityManager::getInstance();
 
             // load the $g_nodes array to find out what tabs are required
             if (!isset($g_nodes[$this->m_module][$this->m_module][$this->m_type])) {
@@ -1982,7 +1982,7 @@ class atkNode
     {
         // check if an attribute needs to be read-only or
         // even hidden based on the current record
-        $secMgr = &atkGetSecurityManager();
+        $secMgr = &atkSecurityManager::getInstance();
         foreach (array_keys($this->m_attribList) as $attrName) {
             $attr = &$this->getAttribute($attrName);
 
@@ -4137,7 +4137,7 @@ class atkNode
      */
     function allowed($action, $record = "")
     {
-        $secMgr = &atkGetSecurityManager();
+        $secMgr = &atkSecurityManager::getInstance();
 
         $alias = $this->atkNodeType();
         $this->resolveNodeTypeAndAction($alias, $action);

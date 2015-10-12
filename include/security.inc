@@ -32,7 +32,7 @@ $GLOBALS['g_user'] = array();
  */
 function atksecure()
 {
-    $securityMgr = &atkGetSecurityManager();
+    $securityMgr = &atkSecurityManager::getInstance();
 
     if (!$securityMgr->authenticate()) {
         echo '<b>' . atkTools::atktext("login_failed", "atk") . '</b>';
@@ -95,27 +95,6 @@ function atkGetUserId()
     return $user[$userpk];
 }
 
-/**
- * Wrapper method to access the security manager.
- * @todo Rewrite to a getInstance method in atkSecurityManager.
- * @return atkSecurityManager
- */
-function &atkGetSecurityManager()
-{
-    global $g_securityManager; // WORKAROUND: we use a global var since many
-    // atk apps rely on a global variable being present.
-    // In ATK5 we must create a clean singleton with
-    // a static instance.
-    if (!is_object($g_securityManager)) {
-        atkTools::atkimport("atk.security.atksecuritymanager");
-        // The one and only security manager.
-        $authentication = atkconfig("authentication", "none");
-        $authorization = atkconfig("authorization", $authentication);
-        $scheme = atkconfig("securityscheme", "none");
-        $g_securityManager = new atkSecurityManager($authentication, $authorization, $scheme);
-    }
-    return $g_securityManager;
-}
 
 /**
  * Replaced the securitymanager at runtime with a different instance.

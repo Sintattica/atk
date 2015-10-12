@@ -31,7 +31,7 @@ define("AUTH_ERROR", -1);
  * The security manager for ATK applications.
  *
  * Don't instantiate this class yourself, use the global instance
- * that is returned by atkGetSecurityManager() instead.
+ * that is returned by atkSecurityManager::getInstance() instead.
  *
  * @todo Make a real singleton with a getInstance class.
  *
@@ -54,6 +54,20 @@ class atkSecurityManager
      * Can we use password retrieving/recreating in current configuration
      */
     protected $m_enablepasswordmailer = false;
+
+
+    static public function &getInstance()
+    {
+        global $g_securityManager;
+        if (!is_object($g_securityManager)) {
+            // The one and only security manager.
+            $authentication = atkconfig("authentication", "none");
+            $authorization = atkconfig("authorization", $authentication);
+            $scheme = atkconfig("securityscheme", "none");
+            $g_securityManager = new atkSecurityManager($authentication, $authorization, $scheme);
+        }
+        return $g_securityManager;
+    }
 
     /**
      * Register a new listener.
@@ -526,10 +540,10 @@ class atkSecurityManager
 
         $tplvars = Array();
         $output = '<form action="' . atkTools::atkSelf() . '" method="post">';
-        $output.=makeHiddenPostVars(array("atklogout", "loginattempts"));
+        $output.=atkTools::makeHiddenPostVars(array("atklogout", "loginattempts"));
         $output.='<br><br><table border="0" cellspacing="2" cellpadding="0" align="center">';
 
-        $tplvars["atksessionformvars"] = makeHiddenPostVars(array("atklogout", "loginattempts"));
+        $tplvars["atksessionformvars"] = atkTools::makeHiddenPostVars(array("atklogout", "loginattempts"));
         $tplvars["formurl"] = atkTools::atkSelf();
 
         // max_loginattempts of 0 means no maximum.
@@ -755,7 +769,7 @@ class atkSecurityManager
  */
 function is_allowed($node, $privilege)
 {
-    $secMgr = &atkGetSecurityManager();
+    $secMgr = &atkSecurityManager::getInstance();
     if (!is_object($secMgr))
         return 1;
     else

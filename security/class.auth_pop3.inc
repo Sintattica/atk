@@ -71,7 +71,7 @@ class auth_pop3 extends auth_interface
             $server = $res[0]["auth_server"];
         }
 
-        $secMgr = &atkGetSecurityManager();
+        $secMgr = &atkSecurityManager::getInstance();
 
         if ($server == "") {
             $secMgr->log(1, "pop3auth error: No server specified");

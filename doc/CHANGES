@@ -3165,7 +3165,7 @@ Changes in ATK 5.5.0
   tab of a node. [Harrie]
 + Added atkSetNode() counterpart for atkGetNode(), to set nodes to a different
   instance at runtime. [Ivo]
-+ Added atkSetSecurityManager() counterpart for atkGetSecurityManager(), to set
++ Added atkSetSecurityManager() counterpart for atkSecurityManager::getInstance(), to set
   the securitymanager to a different instance at runtime. [Ivo]
 + Added flag AF_RELATION_NO_NULL_ITEM for atkManyToOneRelation to hide the
   select_none option. [Dennis]
