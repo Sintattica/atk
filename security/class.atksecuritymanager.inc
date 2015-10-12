@@ -757,7 +757,7 @@ class atkSecurityManager
      * (This is actually a small wrapper for $securityManager->authenticate(),
      * so you can quickly secure an application.
      */
-    function atksecure()
+    public static function atksecure()
     {
         $securityMgr = self::getInstance();
 
