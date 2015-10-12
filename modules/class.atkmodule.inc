@@ -120,7 +120,7 @@ class atkModule
         /* call basic menuitem */
         if (empty($parent))
             $parent = 'main';
-        menuitem($name, $url, $parent, $enable, $order, $this->m_name);
+        atkTools::menuitem($name, $url, $parent, $enable, $order, $this->m_name);
     }
 
     /**

@@ -28,8 +28,6 @@ define("MENU_NOMULTILEVEL", 2);
 
 atkTools::atkimport("atk.menu.atkmenuinterface");
 
-include_once(atkconfig("atkroot") . "atk/atkmenutools.inc");
-
 /**
  * Menu utility class.
  *
