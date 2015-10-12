@@ -119,7 +119,7 @@ class atkCustomRecordList extends atkRecordList
                         $value = $this->eolreplace($p_attrib->display($recordset[$i], $this->m_mode), $rfeplace);
                     }
                     if (atkTools::atkGetCharset() != "" && $decode)
-                        $value = atkTools::atk_html_entity_decode(atkTools::atk_htmlentities($value, ENT_NOQUOTES), ENT_NOQUOTES);
+                        $value = atkTools::atk_html_entity_decode(htmlentities($value, ENT_NOQUOTES), ENT_NOQUOTES);
                     $output.=$sof . ($value == "" ? $empty : $value) . $eof . $fsep;
 
                     // Calculate totals..

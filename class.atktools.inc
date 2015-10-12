@@ -211,7 +211,7 @@ class atkTools
         $level = atkConfig::getGlobal("debug");
         if ($level >= 0) {
             if (self::hasFlag($flags, DEBUG_HTML))
-                $txt = self::atk_htmlentities($txt);
+                $txt = htmlentities($txt);
             if (self::hasFlag($flags, DEBUG_WARNING))
                 $txt = "<b>" . $txt . "</b>";
 
@@ -1298,9 +1298,9 @@ class atkTools
     public static function atkMakeHiddenPostVarsRecursion($key, $val, &$inputs, $name = null)
     {
         if ($name == null) {
-            $name = self::atk_htmlentities($key);
+            $name = htmlentities($key);
         } else {
-            $name .= '[' . self::atk_htmlentities($key) . ']';
+            $name .= '[' . htmlentities($key) . ']';
         }
 
         if (is_array($val)) {
@@ -1308,7 +1308,7 @@ class atkTools
                 self::atkMakeHiddenPostVarsRecursion($rKey, $rVal, $inputs, $name);
             }
         } else {
-            $inputs[] = "<input type='hidden' name=\"" . $name . "\" value=\"" . self::atk_htmlentities(strval($val)) . "\">\n";
+            $inputs[] = "<input type='hidden' name=\"" . $name . "\" value=\"" . htmlentities(strval($val)) . "\">\n";
         }
     }
 
@@ -1891,7 +1891,7 @@ class atkTools
         $self = $_SERVER['PHP_SELF'];
         if (strpos($self, '"') !== false)
             $self = substr($self, 0, strpos($self, '"')); //XSS attempt
-        return self::atk_htmlentities(strip_tags($self)); // just in case..
+        return htmlentities(strip_tags($self)); // just in case..
     }
 
     /**

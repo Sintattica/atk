@@ -208,7 +208,7 @@ class atkSmartSearchHandler extends atkAbstractSearchHandler
         $labels = array('criterium_field', 'criterium_value', 'criterium_mode', 'add_criterium', 'remove_criterium', 'load_criteria', 'save_criteria', 'forget_criteria', 'reset_criteria');
         $result = array();
         foreach ($labels as $label)
-            $result[$label] = atkTools::atk_htmlentities(atkTools::atktext($label, 'atk'));
+            $result[$label] = htmlentities(atkTools::atktext($label, 'atk'));
         return $result;
     }
 
@@ -262,7 +262,7 @@ class atkSmartSearchHandler extends atkAbstractSearchHandler
     {
         if (count($entry['attrs']) == 1 && !$entry['includeSelf']) {
             $attr = &$entry['attrs'][0];
-            $label = is_a($attr, 'atkmanytoonerelation') ? '' : atkTools::atk_htmlentities(strip_tags($attr->label()));
+            $label = is_a($attr, 'atkmanytoonerelation') ? '' : htmlentities(strip_tags($attr->label()));
             return $label . '<input type="hidden" name="' . $entry['name'] . '" value="' . $attr->fieldName() . '">';
         }
 
@@ -281,7 +281,7 @@ class atkSmartSearchHandler extends atkAbstractSearchHandler
             $attr = &$entry['attrs'][$i];
             $selected = $current != NULL && $attr->fieldName() == $current->fieldName()
                     ? ' selected="selected"' : '';
-            $label = atkTools::atk_htmlentities(strip_tags($attr->label()));
+            $label = htmlentities(strip_tags($attr->label()));
             $result .= '<option value="' . $attr->fieldName() . '"' . $selected . '>' . $label . '</option>';
         }
 

@@ -348,8 +348,8 @@ class atkImportHandler extends atkActionHandler
         $content.= '<input type="hidden" name="fileid" value="' . $fileid . '">';
         $content.= '<input type="hidden" name="columncount" value="' . $columncount . '">';
         $content.= '<table border="0">';
-        $content.= '<tr><td>' . text("delimiter") . ': </td><td><input type="text" size="2" name="delimiter" value="' . atkTools::atk_htmlentities($delimiter) . '"></td></tr>';
-        $content.= '<tr><td>' . text("enclosure") . ': </td><td><input type="text" size="2" name="enclosure" value="' . atkTools::atk_htmlentities($enclosure) . '"></td></tr>';
+        $content.= '<tr><td>' . text("delimiter") . ': </td><td><input type="text" size="2" name="delimiter" value="' . htmlentities($delimiter) . '"></td></tr>';
+        $content.= '<tr><td>' . text("enclosure") . ': </td><td><input type="text" size="2" name="enclosure" value="' . htmlentities($enclosure) . '"></td></tr>';
         $content.= '<tr><td>' . atkTools::atktext("import_detectedcolumns") . ': </td><td>' . $columncount . '</td></tr>';
         $content.= '<tr><td>' . atkTools::atktext("import_detectedrows") . ': </td><td>' . $rowcount . '</td></tr>';
         $content.= '</table>';

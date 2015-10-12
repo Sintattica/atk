@@ -589,7 +589,7 @@ class atkNumberAttribute extends atkAttribute
             $id = $this->getSearchFieldName($fieldprefix);
 
             $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
-            $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . atkTools::atk_htmlentities($value) . '"' .
+            $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . htmlentities($value) . '"' .
                 ($searchsize > 0 ? ' size="' . $searchsize . '"' : '') . '>';
 
         } else {
@@ -604,11 +604,11 @@ class atkNumberAttribute extends atkAttribute
             }
 
             $result = '<div class="form-inline">';
-            $result .= '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . atkTools::atk_htmlentities($valueFrom) . '"' .
+            $result .= '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . htmlentities($valueFrom) . '"' .
                 ($searchsize > 0 ? ' size="' . $searchsize . '"' : '') . '>';
             $id = $this->getSearchFieldName($fieldprefix) . '[to]';
             $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
-            $result .= " (" . atkTools::atktext("until") . ' <input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . atkTools::atk_htmlentities($valueTo) . '"' .
+            $result .= " (" . atkTools::atktext("until") . ' <input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . htmlentities($valueTo) . '"' .
                 ($searchsize > 0 ? ' size="' . $searchsize . '"' : '') . '>)';
             $result .= '</div>';
         }

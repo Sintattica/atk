@@ -390,8 +390,8 @@ class atkRecordList
                 /* multi-record-actions -> checkbox */ elseif (atkTools::hasFlag($flags, RL_MRA)) {
                     if (count($list["rows"][$i]["mra"]) > 0)
                         $record["cols"][] = array(
-                            "content" => '<input type="checkbox" name="' . $listName . '_atkselector[]" value="' . atkTools::atk_htmlentities($list["rows"][$i]["selector"]) . '" class="atkcheckbox" onclick="if (this.disabled) this.checked = false">' .
-                            '<script language="javascript"  type="text/javascript">' . $listName . '["' . atkTools::atk_htmlentities($list["rows"][$i]["selector"]) . '"] = new Array("' . implode($list["rows"][$i]["mra"], '","') . '");</script>',
+                            "content" => '<input type="checkbox" name="' . $listName . '_atkselector[]" value="' . htmlentities($list["rows"][$i]["selector"]) . '" class="atkcheckbox" onclick="if (this.disabled) this.checked = false">' .
+                            '<script language="javascript"  type="text/javascript">' . $listName . '["' . htmlentities($list["rows"][$i]["selector"]) . '"] = new Array("' . implode($list["rows"][$i]["mra"], '","') . '");</script>',
                             "type" => "mra");
                     else
                         $record["cols"][] = array("content" => "");

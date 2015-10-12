@@ -149,7 +149,7 @@ class atkBootstrapMenu extends atkPlainMenu
 
     function _getMenuTitle($item, $append = "")
     {
-        return atkTools::atk_htmlentities($this->getMenuTranslation($item['name'], $item['module'])) . $append;
+        return htmlentities($this->getMenuTranslation($item['name'], $item['module'])) . $append;
     }
 
 }

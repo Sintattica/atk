@@ -101,7 +101,7 @@ class atkDebugger
                 }
             }
         } else {
-            atkTools::atkdebug(atkTools::atk_htmlentities($query));
+            atkTools::atkdebug(htmlentities($query));
             return true;
         }
         return false;
@@ -140,7 +140,7 @@ class atkDebugger
 
             $data["queries"][] = array("query" => $query, "trace" => atkTools::atkGetTrace());
 
-            atkTools::atkdebug("[" . $this->consoleLink("query&nbsp;details", "query", array("query_id" => count($data["queries"]) - 1), true) . "] " . atkTools::atk_htmlentities($query));
+            atkTools::atkdebug("[" . $this->consoleLink("query&nbsp;details", "query", array("query_id" => count($data["queries"]) - 1), true) . "] " . htmlentities($query));
 
             return true;
         }

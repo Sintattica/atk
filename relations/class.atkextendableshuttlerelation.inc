@@ -417,7 +417,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
 
             $ttip = str_replace('\r\n', ' ', strip_tags($ttip));
 
-            $result.= '<option value="' . $recordset[$i][$this->m_destInstance->primaryKeyField()] . '" title="' . $ttip . '">' . atkTools::atk_htmlentities($title) . '</option>';
+            $result.= '<option value="' . $recordset[$i][$this->m_destInstance->primaryKeyField()] . '" title="' . $ttip . '">' . htmlentities($title) . '</option>';
         }
         $result.= '</select>';
         return $result;

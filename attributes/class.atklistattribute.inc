@@ -329,7 +329,7 @@ class atkListAttribute extends atkAttribute
             // CONFIG IS DEPRECATED
             ((atkconfig("list_obligatory_null_item") && !$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM)) ||
             ($this->hasFlag(AF_LIST_OBLIGATORY_NULL_ITEM))))) {
-            $ret = '<option value="' . $this->m_emptyvalue . '">' . atkTools::atk_htmlentities($this->text(array(
+            $ret = '<option value="' . $this->m_emptyvalue . '">' . htmlentities($this->text(array(
                         $this->fieldName() . '_' . $text_key, $text_key))) . '</option>';
         }
         return $ret;

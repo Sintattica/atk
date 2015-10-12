@@ -979,10 +979,10 @@ class atkSessionManager
     {
         if ($saveform) {
             $str = 'atkSubmit("' . atkTools::atkurlencode(atkSessionManager::sessionUrl($url, $sessionstatus)) . '", true);';
-            return "<a href=\"javascript:void(0)\" onclick=\"" . atkTools::atk_htmlentities($str) . "\" " . $extraprops . ">" . $name . "</a>";
+            return "<a href=\"javascript:void(0)\" onclick=\"" . htmlentities($str) . "\" " . $extraprops . ">" . $name . "</a>";
         } else {
             $str = atkSessionManager::sessionUrl($url, $sessionstatus);
-            return "<a href=\"" . atkTools::atk_htmlentities($str) . "\" " . $extraprops . ">" . $name . "</a>";
+            return "<a href=\"" . htmlentities($str) . "\" " . $extraprops . ">" . $name . "</a>";
         }
     }
 

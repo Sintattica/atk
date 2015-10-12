@@ -884,7 +884,7 @@ class atkManyToOneRelation extends atkRelation
                 foreach ($recordset as $selectable) {
                     $pk = $this->getDestination()->primaryKey($selectable);
                     $sel = $pk == $currentPk ? 'selected="selected"' : '';
-                    $result .= '<option value="' . $pk . '" ' . $sel . '>' . str_replace(' ', '&nbsp;', atkTools::atk_htmlentities(strip_tags($this->m_destInstance->descriptor($selectable)))) . '</option>';
+                    $result .= '<option value="' . $pk . '" ' . $sel . '>' . str_replace(' ', '&nbsp;', htmlentities(strip_tags($this->m_destInstance->descriptor($selectable)))) . '</option>';
                 }
 
                 $result .= '</select>';
@@ -1158,7 +1158,7 @@ class atkManyToOneRelation extends atkRelation
                         $sel = "selected";
                     else
                         $sel = "";
-                    $result.= '<option value="' . $pk . '" ' . $sel . '>' . str_replace(' ', '&nbsp;', atkTools::atk_htmlentities(strip_tags($this->m_destInstance->descriptor($recordset[$i])))) . '</option>';
+                    $result.= '<option value="' . $pk . '" ' . $sel . '>' . str_replace(' ', '&nbsp;', htmlentities(strip_tags($this->m_destInstance->descriptor($recordset[$i])))) . '</option>';
                 }
                 $result.='</select>';
                 return $result;
@@ -2111,7 +2111,7 @@ class atkManyToOneRelation extends atkRelation
         $links = $this->createSelectAndAutoLinks($id, $record);
 
         $result = '<input type="hidden" id="' . $id . '" name="' . $id . '" value="' . $value . '" />
-         <input type="text" id="' . $id . '_search" value="' . atkTools::atk_htmlentities($label) . '" class="form-control atkmanytoonerelation_search" size="' . $this->m_autocomplete_size . '" onfocus="this.select()" />
+         <input type="text" id="' . $id . '_search" value="' . htmlentities($label) . '" class="form-control atkmanytoonerelation_search" size="' . $this->m_autocomplete_size . '" onfocus="this.select()" />
          <img id="' . $id . '_spinner" src="atk/images/spinner.gif" style="vertical-align: middle; display: none"> ' . $links . '
          <div id="' . $id . '_result" style="display: none" class="atkmanytoonerelation_result"></div>';
 
@@ -2161,7 +2161,7 @@ class atkManyToOneRelation extends atkRelation
 
         $result = '';
         foreach ($records as $rec) {
-            $option = atkTools::atk_htmlentities(strip_tags($this->m_destInstance->descriptor($rec)));
+            $option = htmlentities(strip_tags($this->m_destInstance->descriptor($rec)));
             $value = $this->m_destInstance->primaryKey($rec);
             $highlightedOption = $this->highlight_search_result_match($searchvalue, $option);
             $result .= '
@@ -2203,7 +2203,7 @@ class atkManyToOneRelation extends atkRelation
             $option = $this->m_destInstance->descriptor($rec);
             $value = $this->m_destInstance->primaryKey($rec);
             $result .= '
-          <li title="' . atkTools::atk_htmlentities($option) . '">' . atkTools::atk_htmlentities($option) . '</li>';
+          <li title="' . htmlentities($option) . '">' . htmlentities($option) . '</li>';
         }
 
         return "<ul>$result</ul>";

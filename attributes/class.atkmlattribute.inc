@@ -172,7 +172,7 @@ class atkMlAttribute extends atkAttribute
         $id .=!$this->isMlNode() ? '_' . $languages[0] : '';
 
         $result = '<input type="text" name="' . $id . '"' .
-            ' value="' . atkTools::atk_htmlentities($record[$this->fieldName() . (!$this->isMlNode()
+            ' value="' . htmlentities($record[$this->fieldName() . (!$this->isMlNode()
                         ? '_' . $languages[0] : '')]) . '"' .
             ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"' : '') .
             ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . '>';

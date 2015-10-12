@@ -106,7 +106,7 @@ class atkMailer extends PHPMailer
                 $str .= ', ';
             $str .= ($ishtml ? htmlentities($recipient[0]) : $recipient[0]);
             if (atkTools::atk_strlen($recipient['1']) > 0)
-                $str .= ' (' . ($ishtml ? atkTools::atk_htmlentities($recipient[1]) : $recipient[1]) . ')';
+                $str .= ' (' . ($ishtml ? htmlentities($recipient[1]) : $recipient[1]) . ')';
         }
         return $str;
     }

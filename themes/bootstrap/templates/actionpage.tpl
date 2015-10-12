@@ -16,7 +16,7 @@
                         {if %i.last%}
                             <li class="active">{$stacktrace[i].title}</li>
                         {else}
-                            <li><a href="{$stacktrace[i].url|atk_htmlentities}">{$stacktrace[i].title}</a></li>
+                            <li><a href="{$stacktrace[i].url|htmlentities}">{$stacktrace[i].title}</a></li>
                         {/if}
                     {else}
                         {if %i.index% == 0}...{/if}

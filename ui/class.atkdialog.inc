@@ -329,7 +329,7 @@ class atkDialog
         );
 
         $result = vsprintf($call, $params);
-        $result = $encode ? atkTools::atk_htmlentities($result) : $result;
+        $result = $encode ? htmlentities($result) : $result;
         $result = $lateParamBinding ? "function(params) { $result }" : $result;
 
         return $result;
@@ -359,7 +359,7 @@ class atkDialog
         );
 
         $result = vsprintf($call, $params);
-        return $encode ? atkTools::atk_htmlentities($result) : $result;
+        return $encode ? htmlentities($result) : $result;
     }
 
     /**
@@ -396,7 +396,7 @@ class atkDialog
         );
 
         $result = vsprintf($call, $params);
-        return $encode ? atkTools::atk_htmlentities($result) : $result;
+        return $encode ? htmlentities($result) : $result;
     }
 
     /**
@@ -415,7 +415,7 @@ class atkDialog
         $params = array(atkJSON::encode($content));
 
         $result = vsprintf($call, $params);
-        return $encode ? atkTools::atk_htmlentities($result) : $result;
+        return $encode ? htmlentities($result) : $result;
     }
 
     /**

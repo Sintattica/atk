@@ -627,7 +627,7 @@ class atkSecurityManager
 
             return $userField;
         } else {
-            return '<input class="form-control loginform" type="text" size="15" id="auth_user" name="auth_user" value="' . atkTools::atk_htmlentities($defaultname) . '" />';
+            return '<input class="form-control loginform" type="text" size="15" id="auth_user" name="auth_user" value="' . htmlentities($defaultname) . '" />';
         }
     }
 

@@ -2175,7 +2175,7 @@ function meth_Conv_Html(&$Txt) {
 
 // Standard alert message provided by TinyButStrong, return False is the message is cancelled.
 function meth_Misc_Alert($Source,$Message,$NoErrMsg=false) {
-  $x = '<br /><b>TinyButStrong Error</b> ('.$Source.'): '.atkTools::atk_htmlentities($Message);
+  $x = '<br /><b>TinyButStrong Error</b> ('.$Source.'): '.htmlentities($Message);
   if ($NoErrMsg) $x = $x.' <em>This message can be cancelled using parameter \'noerr\'.</em>';
   $x = $x."<br />\n";
   $x = str_replace($this->ChrOpen,$this->ChrProtect,$x);

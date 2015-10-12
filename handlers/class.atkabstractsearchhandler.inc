@@ -187,8 +187,8 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
         <option value=""></option>';
 
         foreach ($criteria as $name)
-            $result .= '<option value="' . atkTools::atk_htmlentities($name) . '"' . ($name == $current
-                        ? ' selected' : '') . '>' . atkTools::atk_htmlentities($name) . '</option>';
+            $result .= '<option value="' . htmlentities($name) . '"' . ($name == $current
+                        ? ' selected' : '') . '>' . htmlentities($name) . '</option>';
 
         $result .= '</select>';
         return $result;
@@ -236,10 +236,10 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
             'forget_criteria' => $this->getForgetCriteria($current),
             'toggle_save_criteria' => $this->getToggleSaveCriteria(),
             'save_criteria' => $this->getSaveCriteria($current),
-            'label_load_criteria' => atkTools::atk_htmlentities(atkTools::atktext('load_criteria', 'atk')),
-            'label_forget_criteria' => atkTools::atk_htmlentities(atkTools::atktext('forget_criteria', 'atk')),
-            'label_save_criteria' => '<label for="toggle_save_criteria">' . atkTools::atk_htmlentities(atkTools::atktext('save_criteria', 'atk')) . '</label>',
-            'text_save_criteria' => atkTools::atk_htmlentities(atkTools::atktext('save_criteria', 'atk'))
+            'label_load_criteria' => htmlentities(atkTools::atktext('load_criteria', 'atk')),
+            'label_forget_criteria' => htmlentities(atkTools::atktext('forget_criteria', 'atk')),
+            'label_save_criteria' => '<label for="toggle_save_criteria">' . htmlentities(atkTools::atktext('save_criteria', 'atk')) . '</label>',
+            'text_save_criteria' => htmlentities(atkTools::atktext('save_criteria', 'atk'))
         );
     }
 
@@ -276,7 +276,7 @@ abstract class atkAbstractSearchHandler extends atkActionHandler
      */
     function getSaveCriteria($current)
     {
-        return '<input id="save_criteria" class="form-control" type="text" size="30" name="save_criteria" value="' . atkTools::atk_htmlentities($current) . '" disabled="disabled">';
+        return '<input id="save_criteria" class="form-control" type="text" size="30" name="save_criteria" value="' . htmlentities($current) . '" disabled="disabled">';
     }
 
 }

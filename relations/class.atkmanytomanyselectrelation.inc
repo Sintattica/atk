@@ -334,7 +334,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
 
         // Get the descriptor and ensure it's presentible
         $descriptor = nl2br(
-            atkTools::atk_htmlentities(
+            htmlentities(
                 $this->getdestination()->descriptor($record)
             )
         );
@@ -342,7 +342,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
         // Build the record
         $result = '
       <li class="atkmanytomanyselectrelation-selected">
-      <input type="hidden" name="' . $name . '" value="' . atkTools::atk_htmlentities($key) . '"/>
+      <input type="hidden" name="' . $name . '" value="' . htmlentities($key) . '"/>
       <span>' . $descriptor . '</span>
       ' . $this->renderSelectedRecordActions($record) . '
       </li>

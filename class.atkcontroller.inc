@@ -609,7 +609,7 @@ class atkController
             $value = $this->m_node->text($action);
         if (isset($label))
             $value = $label;
-        $value = atkTools::atk_htmlentities($value);
+        $value = htmlentities($value);
 
         $class = trim('btn '.$class);
 

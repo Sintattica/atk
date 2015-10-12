@@ -1902,7 +1902,7 @@ class atkNode
                 $descrtrace = "... - ";
             for ($i = max(0, $cnt - 3), $_i = $cnt; $i < $_i; $i ++) {
                 $desc = $descriptortrace[$i];
-                $descrtrace.= atkTools::atk_htmlentities($desc, ENT_COMPAT) . " - ";
+                $descrtrace.= htmlentities($desc, ENT_COMPAT) . " - ";
             }
             $res = $descrtrace . $res;
         }
@@ -2664,7 +2664,7 @@ class atkNode
                 $record = "";
                 $content.= "<ul>";
                 for ($i = 0, $_i = count($recs); $i < $_i; $i ++) {
-                    $content.="<li>" . str_replace(' ', '&nbsp;', atkTools::atk_htmlentities($this->descriptor($recs[$i])));
+                    $content.="<li>" . str_replace(' ', '&nbsp;', htmlentities($this->descriptor($recs[$i])));
                 }
                 $content.= "</ul>";
             }

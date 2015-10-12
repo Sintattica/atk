@@ -1590,7 +1590,7 @@ class atkAttribute
         }
 
         $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
-        $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . atkTools::atk_htmlentities($value) . '"' .
+        $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . htmlentities($value) . '"' .
             ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"' : '') . '>';
 
         return $result;
@@ -1623,7 +1623,7 @@ class atkAttribute
 
             foreach ($searchModes as $value) {
                 $selected = $searchMode == $value ? ' selected="selected"' : '';
-                $field .= '<option value="' . $value . '"' . $selected . '>' . atkTools::atk_htmlentities($this->text("search_" . $value)) . '</option>';
+                $field .= '<option value="' . $value . '"' . $selected . '>' . htmlentities($this->text("search_" . $value)) . '</option>';
             }
 
             $field .= '</select>';
@@ -2622,7 +2622,7 @@ class atkAttribute
                 return atkTools::href( atkTools::getDispatchFile() . '?' . $columnConfig->getUrlCommand($this->fieldName(), $cmd), atkTools::atktext("column_" . $cmd)) . ' ';
             } else {
                 $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($this->fieldName(), $cmd));
-                $return = '<a href="javascript:void(0)" onclick="' . atkTools::atk_htmlentities($call) . '">' . $this->text("column_" . $cmd) . '</a>';
+                $return = '<a href="javascript:void(0)" onclick="' . htmlentities($call) . '">' . $this->text("column_" . $cmd) . '</a>';
             }
         }
         return "";
@@ -2652,7 +2652,7 @@ class atkAttribute
                 $res = atkTools::href( atkTools::getDispatchFile() . '?' . $columnConfig->getUrlCommand($fieldname, $direction), atkTools::atktext("column_" . $direction)) . ' ';
             } else {
                 $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($fieldname, $direction));
-                $res = '<a href="javascript:void(0)" onclick="' . atkTools::atk_htmlentities($call) . '">' . $this->text("column_" . $direction) . '</a>';
+                $res = '<a href="javascript:void(0)" onclick="' . htmlentities($call) . '">' . $this->text("column_" . $direction) . '</a>';
             }
         }
 

@@ -166,7 +166,7 @@ class atkDGList extends atkDGComponent
         $sortstart = "";
         $sortend = "";
         if ($grid->hasFlag(atkDataGrid::EXTENDED_SORT)) {
-            $call = atkTools::atk_htmlentities($grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractExtendedSortOverrides'));
+            $call = htmlentities($grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractExtendedSortOverrides'));
             $button = '<input type="button" value="' . atkTools::atktext("sort") . '" onclick="' . $call . '">';
 
             if (!$edit && ($hasMRA || $grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS))) {
@@ -197,7 +197,7 @@ class atkDGList extends atkDGComponent
         $searchstart = "";
         $searchend = "";
         if ($hasSearch) {
-            $call = atkTools::atk_htmlentities($grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractSearchOverrides'));
+            $call = htmlentities($grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractSearchOverrides'));
             $buttonType = $grid->isEmbedded() ? "button" : "submit";
             $button = '<input type="' . $buttonType . '" class="btn btn-default btn_search" value="' . atkTools::atktext("search") . '" onclick="' . $call . ' return false;">';
             if ($grid->hasFlag(atkDataGrid::EXTENDED_SEARCH)) {
@@ -288,7 +288,7 @@ class atkDGList extends atkDGComponent
             /* multi-record-priority-actions -> priority selection */
             if (!$edit && $grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS)) {
                 $select = '<select name="' . $listName . '_atkselector[]">' .
-                    '<option value="' . atkTools::atk_htmlentities($list["rows"][$i]["selector"]) . '"></option>';
+                    '<option value="' . htmlentities($list["rows"][$i]["selector"]) . '"></option>';
                 for ($j = $grid->getNode()->m_priority_min; $j <= $grid->getNode()->m_priority_max; $j++)
                     $select .= '<option value="' . $j . '">' . $j . '</option>';
                 $select .= '</select>';
@@ -314,7 +314,7 @@ class atkDGList extends atkDGComponent
                         "content" =>
                             $inputHTML . '
               <script language="javascript"  type="text/javascript">' .
-                            $listName . '["' . atkTools::atk_htmlentities($list["rows"][$i]["selector"]) . '"] =
+                            $listName . '["' . htmlentities($list["rows"][$i]["selector"]) . '"] =
                   new Array("' . implode($list["rows"][$i]["mra"], '","') . '");
               </script>',
                         "type" => "mra"
@@ -332,7 +332,7 @@ class atkDGList extends atkDGComponent
                 if (is_array($list["rows"][$i]["lock"])) {
                     $this->getPage()->register_script(atkconfig('atkroot') . 'atk/javascript/overlibmws/overlibmws.js');
                     $lockIcon = atkTheme::getInstance()->getIcon('lock_' . $grid->getNode()->getLockMode(), 'lock', $grid->getNode()->m_module);
-                    $lockInfo = addslashes(str_replace(array("\r\n", "\r", "\n"), " ", atkTools::atk_htmlentities($this->getLockInfo($list["rows"][$i]["lock"]))));
+                    $lockInfo = addslashes(str_replace(array("\r\n", "\r", "\n"), " ", htmlentities($this->getLockInfo($list["rows"][$i]["lock"]))));
                     $record["cols"][] = array("content" => '<span onmouseover="return overlib(\'' . $lockInfo . '\', NOFOLLOW, FULLHTML);" onmouseout="nd();">'.$lockIcon.'</span>', "type" => "lock");
                 } else
                     $record["cols"][] = array("content" => "");
@@ -362,7 +362,7 @@ class atkDGList extends atkDGComponent
                     $name
                 );
 
-                $link = atkTools::atk_htmlentities($this->text($actionKeys));
+                $link = htmlentities($this->text($actionKeys));
 
                 if ($icons == true) {
                     $icon = $theme->getIcon($module . '_' . $nodetype . '_' . strtolower($name), "recordlist", $module, '', false, $link);
@@ -534,7 +534,7 @@ class atkDGList extends atkDGComponent
             }
         } else if ($edit) {
             $embedded = $this->getGrid()->isEmbedded() ? 'true' : 'false';
-            $mra = '<input type="button" class="btn" value="' . atkTools::atktext('save') . '" onclick="' . atkTools::atk_htmlentities($this->getGrid()->getSaveCall()) . '">';
+            $mra = '<input type="button" class="btn" value="' . atkTools::atktext('save') . '" onclick="' . htmlentities($this->getGrid()->getSaveCall()) . '">';
         }
 
 
@@ -571,7 +571,7 @@ class atkDGList extends atkDGComponent
      */
     protected function _getHeadingAnchorHtml($onClickCall, $title)
     {
-        return '<a href="javascript:void(0)" onclick="' . atkTools::atk_htmlentities($onClickCall) . '">' . $title . '</a>';
+        return '<a href="javascript:void(0)" onclick="' . htmlentities($onClickCall) . '">' . $title . '</a>';
     }
 
     /**

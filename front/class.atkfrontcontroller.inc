@@ -809,7 +809,7 @@ class atkFrontController implements ArrayAccess
 
         $result = '';
         foreach ($vars as $name => $value) {
-            $value = atkTools::atk_htmlentities($value);
+            $value = htmlentities($value);
             $result .= "<input type=\"hidden\" name=\"{$name}\" value=\"{$value}\">\n";
         }
 

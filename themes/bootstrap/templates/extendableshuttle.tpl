@@ -20,7 +20,7 @@
                 <select class="shuttle_select" id="{$leftname}" name="{$leftname}" multiple size="10"
                         onDblClick="shuttle_move('{$leftname}', '{$rightname}', 'add', '{$htmlid}[selected][][{$remotekey}]');{$htmlid}_onChange('selected');">
                     {foreach from=$available_options key=key item=option}
-                        <option value="{$key}" title="{$option|atk_htmlentities}">{$option|atk_htmlentities}</option>
+                        <option value="{$key}" title="{$option|htmlentities}">{$option|htmlentities}</option>
                     {/foreach}
                 </select>
             </div>
@@ -44,7 +44,7 @@
                 <select class="shuttle_select" id="{$rightname}" name="{$rightname}" multiple size="10"
                         onDblClick="shuttle_move('{$rightname}', '{$leftname}', 'del', '{$htmlid}[selected][][{$remotekey}]');{$htmlid}_onChange('available');">
                     {foreach from=$selected_options key=key item=option}
-                        <option value="{$key}" title="{$option|atk_htmlentities}">{$option|atk_htmlentities}</option>
+                        <option value="{$key}" title="{$option|htmlentities}">{$option|htmlentities}</option>
                     {/foreach}
                 </select>
             </div>

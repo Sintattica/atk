@@ -133,7 +133,7 @@ class atkDropdownMenu extends atkPlainMenu
         if ($menuitem['name'] == '-')
             return "<li class=\"separator\"><div></div></li>\n";
         if ($menuitem['url'] && substr($menuitem['url'], 0, 11) == 'javascript:') {
-            $href = '<a href="javascript:void(0)" onclick="' . atkTools::atk_htmlentities($menuitem['url']) . '; return false;">' . atkTools::atk_htmlentities($this->getMenuTranslation($menuitem['name'], $menuitem['module'])) . '</a>';
+            $href = '<a href="javascript:void(0)" onclick="' . htmlentities($menuitem['url']) . '; return false;">' . htmlentities($this->getMenuTranslation($menuitem['name'], $menuitem['module'])) . '</a>';
         } else if ($menuitem['url']) {
             $href = atkTools::href($menuitem['url'], $this->getMenuTranslation($menuitem['name'], $menuitem['module']), SESSION_NEW);
         } else
