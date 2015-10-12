@@ -350,13 +350,13 @@ class atkDataGrid
      */
     public static function create(atkNode $node, $name = null, $class = null, $isEmbedded = false, $useSession = true)
     {
-        $useSession = $useSession && atkGetSessionManager() != null;
+        $useSession = $useSession && atkSessionManager::atkGetSessionManager() != null;
         $name = $name == null ? uniqid('atkdatagrid') : $name;
         $class = $class == null ? atkconfig('datagrid_class') : $class;
         $sessions = &$GLOBALS['ATK_VARS']['atkdgsession'];
         $sessions[$name] = array('class' => $class, 'custom' => array(), 'system' => array());
         if ($useSession) {
-            atkGetSessionManager()->pageVar('atkdgsession', $sessions);
+            atkSessionManager::atkGetSessionManager()->pageVar('atkdgsession', $sessions);
         }
         atkTools::atkimport($class);
         $class = substr($class, strrpos($class, '.') + 1);
@@ -416,7 +416,7 @@ class atkDataGrid
         $this->setEmbedded($isEmbedded);
 
         $this->m_useSession = $useSession;
-        $this->m_sessionMgr = $useSession ? atkGetSessionManager() : null;
+        $this->m_sessionMgr = $useSession ? atkSessionManager::atkGetSessionManager() : null;
 
         $this->registerGlobalOverrides();
         $this->setUpdate($mode == self::RESUME);

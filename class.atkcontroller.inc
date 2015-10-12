@@ -494,7 +494,7 @@ class atkController
 
         // edit mode
         if ($mode == "edit") {
-            if (atkLevel() > 0 || atkTools::hasFlag(atkTools::atkArrayNvl($node->m_feedback, "update", 0), ACTION_SUCCESS)) {
+            if (atkSessionManager::atkLevel() > 0 || atkTools::hasFlag(atkTools::atkArrayNvl($node->m_feedback, "update", 0), ACTION_SUCCESS)) {
                 $result[] = $this->getButton('saveandclose', true);
             }
 
@@ -503,7 +503,7 @@ class atkController
             // if atklevel is 0 or less, we are at the bottom of the session stack,
             // which means that 'saveandclose' doesn't close anyway, so we leave out
             // the 'saveandclose' and 'cancel' button. Unless, a feedback screen is configured.
-            if (atkLevel() > 0 || atkTools::hasFlag(atkTools::atkArrayNvl($node->m_feedback, "update", 0), ACTION_CANCELLED)) {
+            if (atkSessionManager::atkLevel() > 0 || atkTools::hasFlag(atkTools::atkArrayNvl($node->m_feedback, "update", 0), ACTION_CANCELLED)) {
                 $result[] = $this->getButton('cancel');
             }
 
@@ -525,7 +525,7 @@ class atkController
             }
 
 
-            if (atkLevel() >0 || atkTools::hasFlag(atkTools::atkArrayNvl($node->m_feedback, "save", 0), ACTION_CANCELLED)) {
+            if (atkSessionManager::atkLevel() >0 || atkTools::hasFlag(atkTools::atkArrayNvl($node->m_feedback, "save", 0), ACTION_CANCELLED)) {
                 $result[] = $this->getButton('cancel');
             }
 
@@ -538,7 +538,7 @@ class atkController
                     $this->getButton('edit');
             }
 
-            if (atkLevel() > 0) {
+            if (atkSessionManager::atkLevel() > 0) {
                 $result[] = $this->getButton('back', false, atkTools::atktext('cancel'));
             }
 

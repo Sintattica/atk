@@ -40,7 +40,7 @@ class atkDebugger
     {
         static $s_instance = NULL;
         if ($s_instance == NULL) {
-            if (!atkGetSessionManager())
+            if (!atkSessionManager::atkGetSessionManager())
                 atkTools::atkwarning("Instantiating debugger without sessionmanager, debugger will not do anything until session is started. Also, the debugging info already in the session will not be cleaned, this could lead to monster sessions over time!");
             $s_instance = new atkDebugger();
         }
@@ -71,7 +71,7 @@ class atkDebugger
      */
     public static function addStatement($txt)
     {
-        if (function_exists('atkGetSessionManager') && atkGetSessionManager()) {
+        if (function_exists('atkGetSessionManager') && atkSessionManager::atkGetSessionManager()) {
             $instance = atkDebugger::getInstance();
             if (is_object($instance)) {
                 return $instance->_addStatement($txt);
@@ -94,7 +94,7 @@ class atkDebugger
         self::$s_systemQueryCount += $isSystemQuery ? 1 : 0;
 
         if (atkconfig('debug') > 2) {
-            if (atkGetSessionManager()) {
+            if (atkSessionManager::atkGetSessionManager()) {
                 $instance = atkDebugger::getInstance();
                 if (is_object($instance)) {
                     return $instance->_addQuery($query);
@@ -160,12 +160,12 @@ class atkDebugger
     public function consoleLink($text, $action = "", $params = array(), $popup = false, $stackId = NULL)
     {
         if ($stackId == NULL) {
-            $stackId = atkStackId();
+            $stackId = atkSessionManager::atkStackID();
         }
 
         static $s_first = true;
         $res = "";
-        $url = atkconfig("application_dir") . 'debugger.php?atkstackid=' . $stackId . '&action=' . $action . '&atkprevlevel=' . atkLevel() . $this->urlParams($params);
+        $url = atkconfig("application_dir") . 'debugger.php?atkstackid=' . $stackId . '&action=' . $action . '&atkprevlevel=' . atkSessionManager::atkLevel() . $this->urlParams($params);
 
         if ($popup) {
             if ($s_first) {
@@ -347,10 +347,10 @@ class atkDebugger
     public function &getDebuggerData($clean = false, $stackId = NULL)
     {
         if ($stackId == NULL) {
-            $stackId = atkStackId();
+            $stackId = atkSessionManager::atkStackID();
         }
 
-        $sessionmanager = atkGetSessionManager();
+        $sessionmanager = atkSessionManager::atkGetSessionManager();
         if (is_object($sessionmanager)) {
             $session = &$sessionmanager->getSession();
             if ($clean)

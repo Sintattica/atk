@@ -135,7 +135,7 @@ class atkMultiSelectHandler extends atkAdminHandler
         $grid->addFlag(atkDataGrid::MULTI_RECORD_ACTIONS);
         $params["list"] = $grid->render();
 
-        if (atkLevel() > 0) {
+        if (atkSessionManager::atkLevel() > 0) {
             $backlinkurl = atkSessionManager::sessionUrl(atkTools::atkSelf() . '?atklevel=' . atkSessionManager::newLevel(SESSION_BACK));
             $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backlinkurl . '\';" value="' . atkTools::atktext('cancel') . '"></div>';
         }

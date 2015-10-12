@@ -213,7 +213,7 @@ class atkSaveHandler extends atkActionHandler
     public function storeRecord(&$record)
     {
         $atkstoretype = "";
-        $sessionmanager = atkGetSessionManager();
+        $sessionmanager = atkSessionManager::atkGetSessionManager();
         if ($sessionmanager)
             $atkstoretype = $sessionmanager->stackVar('atkstore');
         switch ($atkstoretype) {

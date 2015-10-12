@@ -29,7 +29,7 @@
 $config_atkroot = "./";
 include_once("atk.inc");
 
-atksession();
+atkSessionManager::atksession();
 atksecure();
 
 $file = $ATK_VARS["file"];

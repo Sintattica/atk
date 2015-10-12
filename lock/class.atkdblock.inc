@@ -39,16 +39,16 @@ class atkDbLock extends atkLock
             $atklockList = array();
 
         /* first time (session or stack)! */
-        if (!is_array($atklockList[atkStackID()]) || count($atklockList[atkStackID()]["stack"]) == 0) {
-            $atklockList[atkStackID()] = array("id" => 0, "stack" => array());
-            $atklock = &$atklockList[atkStackID()];
+        if (!is_array($atklockList[atkSessionManager::atkStackID()]) || count($atklockList[atkSessionManager::atkStackID()]["stack"]) == 0) {
+            $atklockList[atkSessionManager::atkStackID()] = array("id" => 0, "stack" => array());
+            $atklock = &$atklockList[atkSessionManager::atkStackID()];
         }
 
         /* check if some locks need to be removed */ else {
-            $atklock = &$atklockList[atkStackID()];
+            $atklock = &$atklockList[atkSessionManager::atkStackID()];
             $this->m_id = (int) $atklock["id"];
 
-            for ($i = 0, $_i = count($atklock["stack"]) - atkLevel(); $i < $_i; $i++) {
+            for ($i = 0, $_i = count($atklock["stack"]) - atkSessionManager::atkLevel(); $i < $_i; $i++) {
                 $selectorList = array_pop($atklock["stack"]);
                 if (is_array($selectorList))
                     foreach ($selectorList as $selector => $table)
@@ -70,7 +70,7 @@ class atkDbLock extends atkLock
                 $atklock["id"] = 0;
         }
 
-        for ($i = count($atklock["stack"]); $i < atkLevel(); $i++)
+        for ($i = count($atklock["stack"]); $i < atkSessionManager::atkLevel(); $i++)
             $atklock["stack"][] = array();
         $this->m_id = (int) $atklock["id"];
         $this->storeLockList($atklockList);
@@ -78,7 +78,7 @@ class atkDbLock extends atkLock
         if (!isset($ATK_VARS['atkpartial']) && $this->m_id > 0) {
             $page = &atkTools::atkinstance("atk.ui.atkpage");
             $page->register_script(atkconfig("atkroot") . "atk/javascript/xml.js");
-            $page->register_script(atkTools::session_url("include.php?file=atk/lock/lock.js.php&stack=" . atkStackID() . "&id=" . $this->m_id, SESSION_NEW));
+            $page->register_script(atkTools::session_url("include.php?file=atk/lock/lock.js.php&stack=" . atkSessionManager::atkStackID() . "&id=" . $this->m_id, SESSION_NEW));
         }
     }
 
@@ -121,8 +121,8 @@ class atkDbLock extends atkLock
         /* first check if we haven't locked the item already */
         $atklockList = $this->loadLockList();
         if (is_array($atklockList)) {
-            $atklock = $atklockList[atkStackID()];
-            for ($i = atkLevel() - 1, $_i = count($atklock["stack"]); $i < $_i; $i++)
+            $atklock = $atklockList[atkSessionManager::atkStackID()];
+            for ($i = atkSessionManager::atkLevel() - 1, $_i = count($atklock["stack"]); $i < $_i; $i++)
                 if (is_array($atklock["stack"][$i]) && in_array($selector, array_keys($atklock["stack"][$i])))
                     return TRUE;
         }
@@ -149,7 +149,7 @@ class atkDbLock extends atkLock
                 $this->m_id = $db->nextid("db_lock");
                 $page = &atkPage::getInstance();
                 $page->register_script(atkconfig("atkroot") . "atk/javascript/xml.js");
-                $page->register_script(atkTools::session_url("include.php?file=atk/lock/lock.js.php&stack=" . atkStackID() . "&id=" . $this->m_id, SESSION_NEW));
+                $page->register_script(atkTools::session_url("include.php?file=atk/lock/lock.js.php&stack=" . atkSessionManager::atkStackID() . "&id=" . $this->m_id, SESSION_NEW));
             }
 
             $user = getUser();
@@ -174,7 +174,7 @@ class atkDbLock extends atkLock
             $query->executeInsert();
 
             $atklockList = $this->loadLockList();
-            $atklock = &$atklockList[atkStackID()];
+            $atklock = &$atklockList[atkSessionManager::atkStackID()];
             $atklock["id"] = (int) $this->m_id;
             $selectorList = array_pop($atklock["stack"]);
             $selectorList[$selector] = $table;
@@ -249,7 +249,7 @@ class atkDbLock extends atkLock
         if (!empty($ATK_VARS["stack"]))
             $atkstackid = $ATK_VARS["stack"];
         else
-            $atkstackid = atkStackID();
+            $atkstackid = atkSessionManager::atkStackID();
 
         $user = getUser();
         if (is_array($user))
@@ -308,8 +308,8 @@ class atkDbLock extends atkLock
         /* first check if we haven't locked the item ourselves already */
         $atklockList = $this->loadLockList();
         if (is_array($atklockList)) {
-            $atklock = $atklockList[atkStackID()];
-            for ($i = atkLevel() - 1, $_i = count($atklock["stack"]); $i < $_i; $i++)
+            $atklock = $atklockList[atkSessionManager::atkStackID()];
+            for ($i = atkSessionManager::atkLevel() - 1, $_i = count($atklock["stack"]); $i < $_i; $i++)
                 if (is_array($atklock["stack"][$i]) && in_array($selector, array_keys($atklock["stack"][$i])))
                     return NULL;
         }

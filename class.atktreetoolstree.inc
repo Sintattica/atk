@@ -78,9 +78,9 @@ class atkTreeToolsTree
     {
         global $ATK_VARS;
         $postTree = $ATK_VARS["atktree"];
-        $sessionTree = sessionLoad("atktree");
+        $sessionTree = atkSessionManager::sessionLoad("atktree");
         if ($postTree != "" && $sessionTree != $postTree) {
-            sessionStore("atktree", $postTree); // new in the session
+            atkSessionManager::sessionStore("atktree", $postTree); // new in the session
             $realTree = $postTree;
         } else {
             $realTree = $sessionTree; // use the last known tree

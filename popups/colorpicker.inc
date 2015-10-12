@@ -22,7 +22,7 @@
  */
 include_once($config_atkroot . "atk.inc");
 
-atksession("admin");
+atkSessionManager::atksession("admin");
 
 atkTools::useattrib("atkcolorpickerattribute");
 

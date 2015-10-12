@@ -169,10 +169,10 @@ class atkWizard extends atkWizardBase
         /* @var $g_sessionManager atkSessionManager */
         $level = $g_sessionManager->getValue("wizard_initiation_level");
         if ($level === null) {
-            $g_sessionManager->globalVar("wizard_initiation_level", atkLevel());
+            $g_sessionManager->globalVar("wizard_initiation_level", atkSessionManager::atkLevel());
             $this->m_isWizardInitiated = true;
         } else {
-            $this->m_isWizardInitiated = ($level === atkLevel());
+            $this->m_isWizardInitiated = ($level === atkSessionManager::atkLevel());
         }
     }
 
@@ -195,7 +195,7 @@ class atkWizard extends atkWizardBase
             $this->m_currentPanelIndex = 0;
 
         global $g_sessionData;
-        atkTools::atk_var_dump($g_sessionData["default"]["stack"][atkStackID()], "SESSION DATA");
+        atkTools::atk_var_dump($g_sessionData["default"]["stack"][atkSessionManager::atkStackID()], "SESSION DATA");
     }
 
     /**

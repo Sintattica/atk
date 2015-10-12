@@ -1,7 +1,7 @@
 <?php
 $config_atkroot = ("./");
 include_once("atk.inc");
-atksession();
+atkSessionManager::atksession();
 
 if ($_SERVER['HTTP_USER_AGENT'] == "") {
     atkConsoleController::run();

@@ -121,7 +121,7 @@ class atkRecordlistCache
              */
             getUniqueId("normalRecordList");
 
-            $stackID = atkStackID();
+            $stackID = atkSessionManager::atkStackID();
             $page->register_loadscript(str_replace("*|REPLACESTACKID|*", $stackID, file_get_contents($this->m_cacheid . "_actionloader")));
             $output = str_replace("*|REPLACESTACKID|*", $stackID, file_get_contents(atkconfig("atkroot") . $this->m_cacheid));
         }
@@ -149,7 +149,7 @@ class atkRecordlistCache
     function writeCache($output, $actionloader)
     {
         if (!$this->noCaching()) {
-            $stackID = atkStackID();
+            $stackID = atkSessionManager::atkStackID();
             $output = str_replace($stackID, "*|REPLACESTACKID|*", $output);
             $actionloader = str_replace($stackID, "*|REPLACESTACKID|*", $actionloader);
 

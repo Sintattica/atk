@@ -55,7 +55,7 @@ class atkViewEditBase extends atkActionHandler
 
         if ($record == null) { // If reject info not set -  do select
             $atkstoretype = "";
-            $sessionmanager = atkGetSessionManager();
+            $sessionmanager = atkSessionManager::atkGetSessionManager();
             if ($sessionmanager)
                 $atkstoretype = $sessionmanager->stackVar('atkstore');
             switch ($atkstoretype) {

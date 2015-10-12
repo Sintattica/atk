@@ -60,7 +60,7 @@ class atkFeedbackHandler extends atkActionHandler
             $params["content"] .= ' <br>' . $message;
         }
 
-        if (atkLevel() > 0) {
+        if (atkSessionManager::atkLevel() > 0) {
             $params["formstart"] = '<form method="get">' . atkTools::session_form(SESSION_BACK);
             $params["buttons"][] = '<input type="submit" class="btn btn-default btn_cancel" value="&lt;&lt; ' . atkTools::atktext('back') . '">';
             $params["formend"] = '</form>';

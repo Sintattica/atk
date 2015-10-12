@@ -75,7 +75,7 @@ class atkSelectHandler extends atkActionHandler
         $params["list"] = $grid->render();
         $params["footer"] = "";
 
-        if (atkLevel() > 0) {
+        if (atkSessionManager::atkLevel() > 0) {
             $backUrl = atkTools::session_url(atkTools::atkSelf() . '?atklevel=' . atkSessionManager::newLevel(SESSION_BACK));
             $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backUrl . '\';" value="' . $this->getNode()->text('cancel') . '"></div>';
         }
@@ -128,7 +128,7 @@ class atkSelectHandler extends atkActionHandler
             return false;
         }
 
-        if (atkLevel() > 0 && $grid->getPostvar('atkprevlevel', 0) > atkLevel()) {
+        if (atkSessionManager::atkLevel() > 0 && $grid->getPostvar('atkprevlevel', 0) > atkSessionManager::atkLevel()) {
             $backUrl = atkTools::session_url(atkTools::atkSelf() . '?atklevel=' . atkSessionManager::newLevel(SESSION_BACK));
             $node->redirect($backUrl);
         } else {

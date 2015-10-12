@@ -26,14 +26,14 @@
  */
 $config_atkroot = "./";
 include_once("atk.inc");
-atksession();
+atkSessionManager::atksession();
 atksecure();
 
 $theme = &atkTools::atkinstance('atk.ui.atktheme');
 if (atkconfig("fullscreen")) {
     // Fullscreen mode. Use index.php as launcher, and launch app.php fullscreen.
 
-    atksession();
+    atkSessionManager::atksession();
     atksecure();
 
     $page = &atkTools::atknew("atk.ui.atkpage");

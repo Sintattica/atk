@@ -191,7 +191,7 @@ class atkFileEditor extends atkNode
      */
     function selectDb($selector = "", $orderby = "", $limit = "")
     {
-        atkGetSessionManager()->stackVar('dirname', $this->m_dir);
+        atkSessionManager::atkGetSessionManager()->stackVar('dirname', $this->m_dir);
         if ($selector == "") {
             // no file selected, generate list..
             $start = 0;
@@ -286,7 +286,7 @@ class atkFileEditor extends atkNode
      */
     function addDb($record)
     {
-        $sessmngr = atkGetSessionManager();
+        $sessmngr = atkSessionManager::atkGetSessionManager();
         $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
         $fp = @fopen($this->m_dir . $record['filename'], "wb");
         if ($fp == NULL) {
@@ -314,7 +314,7 @@ class atkFileEditor extends atkNode
         // (not by atkselector, since the primary key might have
         // changed, so we use the atkorgkey, which is the value before
         // any update happened.)
-        $sessmngr = atkGetSessionManager();
+        $sessmngr = atkSessionManager::atkGetSessionManager();
         $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
 
         if ($record['atkprimkey'] != "") {
@@ -350,7 +350,7 @@ class atkFileEditor extends atkNode
      */
     function deleteDb($selector)
     {
-        $sessmngr = atkGetSessionManager();
+        $sessmngr = atkSessionManager::atkGetSessionManager();
         $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
         $decodedselector = atkTools::decodeKeyValuePair($selector);
         $filename = $decodedselector["dummy.filename"];
@@ -375,7 +375,7 @@ class atkFileEditor extends atkNode
      */
     function action_edit(atkEditHandler $handler)
     {
-        $this->m_dir = atkGetSessionManager()->stackVar('dirname');
+        $this->m_dir = atkSessionManager::atkGetSessionManager()->stackVar('dirname');
         $handler->action_edit();
     }
 
@@ -387,7 +387,7 @@ class atkFileEditor extends atkNode
      */
     function action_delete(atkDeleteHandler $handler)
     {
-        $this->m_dir = atkGetSessionManager()->stackVar('dirname');
+        $this->m_dir = atkSessionManager::atkGetSessionManager()->stackVar('dirname');
         $handler->action_delete();
     }
 
@@ -399,7 +399,7 @@ class atkFileEditor extends atkNode
     function action_dirchange()
     {
         $selectedDir = $this->stripDir($this->m_postvars['atkselector']);
-        atkGetSessionManager()->stackVar('dirname', $selectedDir);
+        atkSessionManager::atkGetSessionManager()->stackVar('dirname', $selectedDir);
 
         $this->m_dir = $selectedDir;
         $this->callHandler('admin');

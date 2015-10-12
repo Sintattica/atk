@@ -221,7 +221,7 @@ class atkUpdatehandler extends atkActionHandler
     private function updateRecord(&$record)
     {
         $atkstoretype = "";
-        $sessionmanager = atkGetSessionManager();
+        $sessionmanager = atkSessionManager::atkGetSessionManager();
         if ($sessionmanager)
             $atkstoretype = $sessionmanager->stackVar('atkstore');
         switch ($atkstoretype) {

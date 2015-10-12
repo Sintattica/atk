@@ -177,7 +177,7 @@ class atkSessionStore
      */
     protected static function getSessionManager()
     {
-        $sessionmanager = atkGetSessionManager();
+        $sessionmanager = atkSessionManager::atkGetSessionManager();
         if (!$sessionmanager)
             return false;
         else

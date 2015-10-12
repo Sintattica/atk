@@ -274,7 +274,7 @@ class atkLanguage
         $supported = atkLanguage::getSupportedLanguages();
         $sessionmanager = null;
         if (function_exists('atkGetSessionManager'))
-            $sessionmanager = &atkGetSessionManager();
+            $sessionmanager = &atkSessionManager::atkGetSessionManager();
         if (!empty($sessionmanager)) {
             if (function_exists("getUser")) {
                 $userinfo = getUser();

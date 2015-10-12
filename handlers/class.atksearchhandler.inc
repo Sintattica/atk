@@ -58,7 +58,7 @@ class atkSearchHandler extends atkAbstractSearchHandler
             return;
         } elseif (!empty($this->m_postvars['atkcancel'])) {
             $url = atkTools::dispatch_url($this->getPreviousNode(), $this->getPreviousAction());
-            $url = atkTools::session_url($url, atkLevel() > 0 ? SESSION_BACK : SESSION_REPLACE);
+            $url = atkTools::session_url($url, atkSessionManager::atkLevel() > 0 ? SESSION_BACK : SESSION_REPLACE);
 
             $this->m_node->redirect($url);
         }
@@ -84,7 +84,7 @@ class atkSearchHandler extends atkAbstractSearchHandler
     function redirectToResults()
     {
         $url = atkTools::dispatch_url($this->getPreviousNode(), $this->getPreviousAction(), $this->fetchCriteria(), atkTools::atkSelf());
-        $url = atkTools::session_url($url, atkLevel() > 0 ? SESSION_BACK : SESSION_REPLACE);
+        $url = atkTools::session_url($url, atkSessionManager::atkLevel() > 0 ? SESSION_BACK : SESSION_REPLACE);
 
         $this->m_node->redirect($url);
     }
@@ -96,7 +96,7 @@ class atkSearchHandler extends atkAbstractSearchHandler
      */
     function getPreviousNode()
     {
-        return atkLevel() > 0 ? atkGetSessionManager()->stackVar('atknodetype', '', atkLevel() - 1)
+        return atkSessionManager::atkLevel() > 0 ? atkSessionManager::atkGetSessionManager()->stackVar('atknodetype', '', atkSessionManager::atkLevel() - 1)
                 : $this->m_node->atkNodeType();
     }
 
@@ -107,7 +107,7 @@ class atkSearchHandler extends atkAbstractSearchHandler
      */
     function getPreviousAction()
     {
-        return atkLevel() > 0 ? atkGetSessionManager()->stackVar('atkaction', '', atkLevel() - 1)
+        return atkSessionManager::atkLevel() > 0 ? atkSessionManager::atkGetSessionManager()->stackVar('atkaction', '', atkSessionManager::atkLevel() - 1)
                 : 'admin';
     }
 

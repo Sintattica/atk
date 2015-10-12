@@ -23,7 +23,7 @@ function atkSubmit(target, standardSubmit)
 
     // Set ALL <input name="atkescape"> to target--for some reason
     // there are multiple atkescape inputs on some pages, as it's
-    // possible to set the wrong one, which means atksession() in
+    // possible to set the wrong one, which means atkSessionManager::atksession() in
     // class.atksessionmanager.inc gets a blank atkescape.
     $$('input[name="atkescape"]').each(function(n) {
         n.value = target;

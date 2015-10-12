@@ -108,7 +108,7 @@ class atkDeleteHandler extends atkActionHandler
     protected function _doDelete()
     {
         $atkstoretype = "";
-        $sessionmanager = atkGetSessionManager();
+        $sessionmanager = atkSessionManager::atkGetSessionManager();
         if ($sessionmanager)
             $atkstoretype = $sessionmanager->stackVar('atkstore');
         switch ($atkstoretype) {

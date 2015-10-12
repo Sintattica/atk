@@ -28,7 +28,7 @@ $config_atkroot = "./";
 
 include_once($config_atkroot . "atk/include/initial.inc");
 
-atksession();
+atkSessionManager::atksession();
 atksecure();
 
 $debugger = &atkTools::atkinstance("atk.utils.atkdebugger");

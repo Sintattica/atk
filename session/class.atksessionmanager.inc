@@ -21,7 +21,7 @@ $config_identifier = atkconfig("identifier");
 if (empty($config_identifier))
     $config_identifier = "default";
 
-if (atkconfig('session_init', true) && atksession_init()) {
+if (atkconfig('session_init', true) && atkSessionManager::atksession_init()) {
     // backwardscompatibility hacks. g_sessionData and g_sessionData are obsolete actually.
     // You can use $session = &atkSessionManager::getSession() now, and you'll have a
     // session enabled, multi-app array in which you can store whatever you like.
@@ -163,13 +163,13 @@ class atkSessionManager
         global $g_sessionData;
         if ($namespace == "globals")
             return isset($g_sessionData["globals"][$var]) ? $g_sessionData["globals"][$var]
-                    : null;
+                : null;
         else if ($namespace != "")
             return isset($g_sessionData[$namespace]["globals"][$var]) ? $g_sessionData[$namespace]["globals"][$var]
-                    : null;
+                : null;
         else
             return isset($g_sessionData[$this->m_namespace]["globals"][$var]) ? $g_sessionData[$this->m_namespace]["globals"][$var]
-                    : null;
+                : null;
     }
 
     /**
@@ -206,14 +206,14 @@ class atkSessionManager
 
         // If no level is supplied we use the var from the current level
         if ($level === null)
-            $level = atkLevel();
+            $level = self::atkLevel();
 
         $sessionData = &$this->getSession();
-        $currentitem = &$sessionData[$this->m_namespace]["stack"][atkStackID()][$level];
+        $currentitem = &$sessionData[$this->m_namespace]["stack"][self::atkStackID()][$level];
         if (!is_array($currentitem))
             return null;
 
-        if ($level === atkLevel() && $value === "" && atkTools::atkArrayNvl($_REQUEST, $var, "") !== "") {
+        if ($level === self::atkLevel() && $value === "" && atkTools::atkArrayNvl($_REQUEST, $var, "") !== "") {
             // Only read the value of the stack var from the request if this is the first
             // call to stackVar for this var in this request without an explicit value. If
             // we would this for every call without an explicit value we would overwrite values
@@ -254,7 +254,7 @@ class atkSessionManager
             return null;
 
         $sessionData = &$this->getSession();
-        $top_stack_level = &$sessionData[$this->m_namespace]['globals']['#STACK#'][atkStackID()];
+        $top_stack_level = &$sessionData[$this->m_namespace]['globals']['#STACK#'][self::atkStackID()];
         if (!is_array($top_stack_level))
             $top_stack_level = array();
 
@@ -296,7 +296,7 @@ class atkSessionManager
         if (!$this->m_escapemode) {
             global $g_sessionData;
 
-            $currentitem = &$g_sessionData[$this->m_namespace]["stack"][atkStackID()][atkLevel()];
+            $currentitem = &$g_sessionData[$this->m_namespace]["stack"][self::atkStackID()][self::atkLevel()];
 
             if ($value == "") {
                 if (isset($_REQUEST[$var])) {
@@ -349,7 +349,7 @@ class atkSessionManager
     protected function _touchCurrentStack()
     {
         global $g_sessionData;
-        $g_sessionData[$this->m_namespace]["stack_stamp"][atkStackId()] = time();
+        $g_sessionData[$this->m_namespace]["stack_stamp"][self::atkStackID()] = time();
     }
 
     /**
@@ -374,7 +374,7 @@ class atkSessionManager
 
         foreach ($stackIds as $stackId) {
             // don't remove the current stack or stacks that are, for some reason, not stamped
-            if ($stackId == atkStackId() || !isset($stackStamps[$stackId])) {
+            if ($stackId == self::atkStackID() || !isset($stackStamps[$stackId])) {
                 continue;
             }
 
@@ -432,9 +432,9 @@ class atkSessionManager
 
         if ($this->_verifyStackIntegrity() && $atklevel == -1) {
             // New stack, new stackid, if level = -1.
-            $stackid = atkStackID($atklevel == -1);
+            $stackid = self::atkStackID($atklevel == -1);
         } else {
-            $stackid = atkStackID();
+            $stackid = self::atkStackID();
         }
 
         $stack = &$g_sessionData[$this->m_namespace]["stack"][$stackid];
@@ -526,8 +526,8 @@ class atkSessionManager
                     foreach ($copieditem as $key => $value) {
                         if (in_array($key, $sessionVars) ||
                             (isset($copieditem["defined_stackvars"]) &&
-                            is_array($copieditem["defined_stackvars"]) &&
-                            in_array($key, $copieditem["defined_stackvars"]))) {
+                                is_array($copieditem["defined_stackvars"]) &&
+                                in_array($key, $copieditem["defined_stackvars"]))) {
                             $currentitem[$key] = $value;
                         }
                     }
@@ -634,7 +634,7 @@ class atkSessionManager
         $ui = &atkTools::atkinstance("atk.ui.atkui");
 
         $res = array();
-        $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];
+        $stack = $g_sessionData[$this->m_namespace]["stack"][self::atkStackID()];
 
         for ($i = 0; $i < count($stack); $i++) {
             if (!isset($stack[$i]["atknodetype"]))
@@ -680,7 +680,7 @@ class atkSessionManager
     {
         global $g_sessionData;
 
-        $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];
+        $stack = $g_sessionData[$this->m_namespace]["stack"][self::atkStackID()];
         $res = array();
 
         $stackcount = count($stack);
@@ -700,7 +700,7 @@ class atkSessionManager
                 }
 
                 $res[] = $txt . (isset($stack[$i]["descriptor"]) ? " [ {$stack[$i]['descriptor']} ] "
-                            : "");
+                        : "");
             }
         }
         return $res;
@@ -723,14 +723,14 @@ class atkSessionManager
         global $g_sessionData, $atklevel, $atkprevlevel;
         $stack = "";
 
-        if (isset($g_sessionData[$this->m_namespace]["stack"][atkStackID()]))
-            $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];
+        if (isset($g_sessionData[$this->m_namespace]["stack"][self::atkStackID()]))
+            $stack = $g_sessionData[$this->m_namespace]["stack"][self::atkStackID()];
         if (!is_array($stack))
             $prevlevelfromstack = 0;
         else
             $prevlevelfromstack = count($stack) - 1;
 
-        $oldStackId = atkStackID();
+        $oldStackId = self::atkStackID();
 
         if ($atkprevlevel != $prevlevelfromstack) {
             // What we think we came from (as indicated in the url by atkprevlevel)
@@ -739,7 +739,7 @@ class atkSessionManager
             // @TODO: If an error occurs and forking is required, the rejection info is not forked right, since it is currently stored
             //        in session['atkreject'] and not directly in the stack. See also atk/handlers/class.atkactionhandler.inc.
             atkTools::atkdebug("Multiple windows detected: levelstack forked (atkprevlevel=$atkprevlevel, real: $prevlevelfromstack)");
-            $newid = atkStackID(true);
+            $newid = self::atkStackID(true);
 
             // We must also make this stack 'ok' with the atkprevlevel.
             // (there may be more levels on the stack than we should have, because
@@ -796,37 +796,37 @@ class atkSessionManager
      */
     static public function newLevel($sessionstatus = SESSION_DEFAULT, $levelskip = null)
     {
-        $currentlevel = atkLevel();
+        $currentlevel = self::atkLevel();
 
         $newlevel = -1;
 
         switch ($sessionstatus) {
             case SESSION_NEW: {
-                    $newlevel = -1;
-                    break;
-                }
+                $newlevel = -1;
+                break;
+            }
             case SESSION_REPLACE: {
-                    $newlevel = -2;
-                    break;
-                }
+                $newlevel = -2;
+                break;
+            }
             case SESSION_PARTIAL: {
-                    $newlevel = -3;
-                    break;
-                }
+                $newlevel = -3;
+                break;
+            }
             case SESSION_NESTED: {
-                    $newlevel = $currentlevel + 1;
-                    break;
-                }
+                $newlevel = $currentlevel + 1;
+                break;
+            }
             case SESSION_BACK: {
-                    if ($levelskip === null)
-                        $levelskip = 1;
+                if ($levelskip === null)
+                    $levelskip = 1;
 
-                    $newlevel = max(0, $currentlevel - $levelskip);
-                    break;
-                }
+                $newlevel = max(0, $currentlevel - $levelskip);
+                break;
+            }
             default: {
-                    $newlevel = $currentlevel;
-                }
+                $newlevel = $currentlevel;
+            }
         }
         return $newlevel;
     }
@@ -843,7 +843,7 @@ class atkSessionManager
      */
     static public function oldLevel($sessionstatus = SESSION_DEFAULT, $levelskip = null)
     {
-        $level = atkLevel();
+        $level = self::atkLevel();
         if ($sessionstatus == SESSION_REPLACE && $levelskip !== null) {
             $level = $level - $levelskip;
         }
@@ -873,10 +873,10 @@ class atkSessionManager
         if ($newlevel != 0) {
             $res = '<input type="hidden" name="atklevel" value="' . $newlevel . '" />';
         }
-        $res.='<input type="hidden" name="atkprevlevel" value="' . atkLevel() . '" />';
+        $res.='<input type="hidden" name="atkprevlevel" value="' . self::atkLevel() . '" />';
 
         if ($sessionstatus != SESSION_NEW) {
-            $res.='<input type="hidden" name="atkstackid" value="' . atkStackID() . '" />';
+            $res.='<input type="hidden" name="atkstackid" value="' . self::atkStackID() . '" />';
         }
 
         if (!is_null($returnbehaviour)) {
@@ -918,7 +918,7 @@ class atkSessionManager
         }
         $vars.= "atkprevlevel=" . $oldlevel;
         if ($sessionstatus != SESSION_NEW) {
-            $vars.="&atkstackid=" . atkStackID();
+            $vars.="&atkstackid=" . self::atkStackID();
         }
         $vars.= "&" . SID;
 
@@ -986,216 +986,217 @@ class atkSessionManager
         }
     }
 
-}
 
-/**
- * Initialize and start a PHP session.
- * Without this smart debugging and the securitymanager will not function correctly.
- */
-function atksession_init()
-{
-    if (php_sapi_name() == 'cli') {
-        return false; // command-line
-    }
 
-    $cookie_params = session_get_cookie_params();
-    $cookiepath = atkconfig("application_root");
-    $cookiedomain = (atkconfig("cookiedomain") != "") ? atkconfig("cookiedomain")
+    /**
+     * Initialize and start a PHP session.
+     * Without this smart debugging and the securitymanager will not function correctly.
+     */
+    static public function atksession_init()
+    {
+        if (php_sapi_name() == 'cli') {
+            return false; // command-line
+        }
+
+        $cookie_params = session_get_cookie_params();
+        $cookiepath = atkconfig("application_root");
+        $cookiedomain = (atkconfig("cookiedomain") != "") ? atkconfig("cookiedomain")
             : NULL;
-    session_set_cookie_params($cookie_params["lifetime"], $cookiepath, $cookiedomain);
+        session_set_cookie_params($cookie_params["lifetime"], $cookiepath, $cookiedomain);
 
-    // set cache expire (if function exists, or show upgrade hint if not)
-    if (function_exists("session_cache_expire"))
-        session_cache_expire(atkconfig("session_cache_expire"));
-    else
-        atkTools::atkdebug("session_cache_expire function does not exist, please upgrade to the latest stable php version (at least 4.2.x)", DEBUG_WARNING);
+        // set cache expire (if function exists, or show upgrade hint if not)
+        if (function_exists("session_cache_expire"))
+            session_cache_expire(atkconfig("session_cache_expire"));
+        else
+            atkTools::atkdebug("session_cache_expire function does not exist, please upgrade to the latest stable php version (at least 4.2.x)", DEBUG_WARNING);
 
-    // set the cache limiter (used for caching)
-    session_cache_limiter(atkconfig("session_cache_limiter"));
+        // set the cache limiter (used for caching)
+        session_cache_limiter(atkconfig("session_cache_limiter"));
 
-    // If somehow the sessionid is unclean (searchengine bots have been known to mangle sessionids)
-    // we don't have a session...
-    if (isValidSessionId()) {
-        $sessionname = atkconfig("session_name");
-        if (!$sessionname)
-            $sessionname = atkconfig('identifier');
-        session_name($sessionname);
-        session_start();
-        return true;
-    } else
-        atkTools::atkwarning("Not a valid session!");
-    return false;
-}
-
-/**
- * Initializes the sessionmanager.
- *
- * After the session has been initialised with atksession(), the session
- * manager can be used using the global variable $g_sessionManager.
- * Call this function in every file that you want to use atk sessions.
- *
- * @param String $namespace If multiple scripts/applications are
- *                          installed on thesame url, they can each use
- *                          a different namespace to make sure they
- *                          don't share session data.
- * @param boolean $usestack Tell the sessionmanager to use the session
- *                          stack manager (back/forth navigation in
- *                          screens, remembering vars over multiple
- *                          pages etc). This comes with a slight
- *                          performance impact, so scripts not using
- *                          the stack should pass false here.
- */
-function atksession($namespace = "default", $usestack = true)
-{
-    global $ATK_VARS, $g_sessionManager, $g_sessionData, $atkprevlevel;
-
-    $g_sessionManager = atkTools::atknew('atk.session.atksessionmanager', $namespace, $usestack);
-
-    atkTools::atkDataDecode($_REQUEST);
-    $ATK_VARS = array_merge($_GET, $_POST);
-    atkTools::atkDataDecode($ATK_VARS);
-    if (array_key_exists('atkfieldprefix', $ATK_VARS) && $ATK_VARS['atkfieldprefix'] != '')
-        $ATK_VARS = $ATK_VARS[$ATK_VARS['atkfieldprefix']];
-
-    $g_sessionManager->session_read($ATK_VARS);
-
-    // Escape check
-    if (isset($_REQUEST["atkescape"]) && $_REQUEST["atkescape"] != "") {
-        atkTools::atkimport("atk.atknode");
-        atkNode::redirect(atkTools::atkurldecode($_REQUEST["atkescape"]));
-        atkOutput::getInstance()->outputFlush();
-        exit;
-    }
-    // Nested URL check
-    else if (isset($_REQUEST["atknested"]) && $_REQUEST["atknested"] != "") {
-        atkTools::atkimport("atk.atknode");
-        atkNode::redirect(atkTools::session_url($_REQUEST["atknested"], SESSION_NESTED));
-        atkOutput::getInstance()->outputFlush();
-        exit;
-    }
-    // Back check
-    else if (isset($ATK_VARS["atkback"]) && $ATK_VARS["atkback"] != "") {
-        // When we go back, we go one level deeper than the level we came from.
-        atkTools::atkimport("atk.atknode");
-        atkNode::redirect(atkTools::session_url(atkTools::atkSelf() . "?atklevel=" . ($atkprevlevel - 1)));
-        atkOutput::getInstance()->outputFlush();
-        exit;
-    }
-}
-
-/**
- * Store a variable in the current namespace.
- * @deprecated Use atkSessionManager::getSession() instead, and store
- *             the variable directly in the application session, or
- *             use globalVar() to store a variable in the current
- *             namespace.
- */
-function sessionStore($var, $value)
-{
-    global $g_sessionManager;
-    if (!isset($g_sessionManager))
-        throw new Exception("Trying to store '$var' in session, but no sessionmanager present! Did you start a session (atksession())?");
-    $g_sessionManager->globalVar($var, $value);
-}
-
-/**
- * Load a variable from a namespace.
- * @deprecated Use atkSessionManager::getSession() instead, and load
- *             the variable directly from the application session, or
- *             use getValue() to retrieve a variable from a given namespace.
- */
-function sessionLoad($var, $namespace = "")
-{
-    global $g_sessionManager;
-    if (!isset($g_sessionManager))
-        throw new Exception("Trying to load '$var' (namespace: '$namespace') from session, but no sessionmanager present! Did you start a session (atksession())?");
-    return $g_sessionManager->getValue($var, $namespace);
-}
-
-/**
- * @internal Used by the session manager to retrieve a unique id for the
- *           current atk stack.
- */
-function atkStackID($new = false)
-{
-    global $atkstackid;
-    if (!isset($atkstackid) || $atkstackid == "" || $new) {
-        // No stack id yet, or forced creation of a new one.
-        $atkstackid = uniqid("");
-    }
-    return $atkstackid;
-}
-
-/**
- * Retrieve the current atkLevel of the session stack.
- *
- * Level 0 is the 'entry screen' of a stack. Any screen deeper from the
- * entry screen (following an edit link for example) has its atklevel
- * increased by 1. This method is useful for checking if a 'back' button
- * should be displayed. A backbutton will work for any screen whose
- * atklevel is bigger than 0.
- *
- * @return int The current atk level.
- */
-function atkLevel()
-{
-    global $atklevel;
-    if (!isset($atklevel) || $atklevel == "") {
-        $atklevel = 0; // assume bottom level.
-    }
-    return $atklevel;
-}
-
-function atkPrevLevel()
-{
-    global $atkprevlevel;
-    if (!isset($atkprevlevel) || $atkprevlevel == "") {
-        $atkprevlevel = 0; // assume bottom level.
-    }
-    return $atkprevlevel;
-}
-
-/**
- * Checks wether or not the sessionid that was passed along is valid
- * A session id can become invalid because of tampering and would otherwise
- * cause a php error.
- * A valid session id consists only of alphanumeric characters.
- * Mind you, an empty sessionid is also valid,
- * simply because there is no session yet
- * @return bool Wether or not the sessionid is valid
- */
-function isValidSessionId()
-{
-    $name = atkconfig("session_name");
-    if (empty($name))
-        $name = atkconfig("identifier");
-
-    $sessionid = "";
-    global ${$name};
-
-    if (isset($_COOKIE[$name]) && $_COOKIE[$name]) {
-        $sessionid = $_COOKIE[$name];
-    } else {
-        $sessionid = ${$name};
-    }
-
-    if ($sessionid == "")
-        return true;
-
-    if (!preg_match('/^[a-z0-9:-]+$/i', $sessionid))
+        // If somehow the sessionid is unclean (searchengine bots have been known to mangle sessionids)
+        // we don't have a session...
+        if (self::isValidSessionId()) {
+            $sessionname = atkconfig("session_name");
+            if (!$sessionname)
+                $sessionname = atkconfig('identifier');
+            session_name($sessionname);
+            session_start();
+            return true;
+        } else
+            atkTools::atkwarning("Not a valid session!");
         return false;
+    }
 
-    return true;
+    /**
+     * Initializes the sessionmanager.
+     *
+     * After the session has been initialised with atksession(), the session
+     * manager can be used using the global variable $g_sessionManager.
+     * Call this function in every file that you want to use atk sessions.
+     *
+     * @param String $namespace If multiple scripts/applications are
+     *                          installed on thesame url, they can each use
+     *                          a different namespace to make sure they
+     *                          don't share session data.
+     * @param boolean $usestack Tell the sessionmanager to use the session
+     *                          stack manager (back/forth navigation in
+     *                          screens, remembering vars over multiple
+     *                          pages etc). This comes with a slight
+     *                          performance impact, so scripts not using
+     *                          the stack should pass false here.
+     */
+    static public function atksession($namespace = "default", $usestack = true)
+    {
+        global $ATK_VARS, $g_sessionManager, $g_sessionData, $atkprevlevel;
+
+        $g_sessionManager = atkTools::atknew('atk.session.atksessionmanager', $namespace, $usestack);
+
+        atkTools::atkDataDecode($_REQUEST);
+        $ATK_VARS = array_merge($_GET, $_POST);
+        atkTools::atkDataDecode($ATK_VARS);
+        if (array_key_exists('atkfieldprefix', $ATK_VARS) && $ATK_VARS['atkfieldprefix'] != '')
+            $ATK_VARS = $ATK_VARS[$ATK_VARS['atkfieldprefix']];
+
+        $g_sessionManager->session_read($ATK_VARS);
+
+        // Escape check
+        if (isset($_REQUEST["atkescape"]) && $_REQUEST["atkescape"] != "") {
+            atkTools::atkimport("atk.atknode");
+            atkNode::redirect(atkTools::atkurldecode($_REQUEST["atkescape"]));
+            atkOutput::getInstance()->outputFlush();
+            exit;
+        }
+        // Nested URL check
+        else if (isset($_REQUEST["atknested"]) && $_REQUEST["atknested"] != "") {
+            atkTools::atkimport("atk.atknode");
+            atkNode::redirect(atkTools::session_url($_REQUEST["atknested"], SESSION_NESTED));
+            atkOutput::getInstance()->outputFlush();
+            exit;
+        }
+        // Back check
+        else if (isset($ATK_VARS["atkback"]) && $ATK_VARS["atkback"] != "") {
+            // When we go back, we go one level deeper than the level we came from.
+            atkTools::atkimport("atk.atknode");
+            atkNode::redirect(atkTools::session_url(atkTools::atkSelf() . "?atklevel=" . ($atkprevlevel - 1)));
+            atkOutput::getInstance()->outputFlush();
+            exit;
+        }
+    }
+
+    /**
+     * Store a variable in the current namespace.
+     * @deprecated Use atkSessionManager::getSession() instead, and store
+     *             the variable directly in the application session, or
+     *             use globalVar() to store a variable in the current
+     *             namespace.
+     */
+    static public function sessionStore($var, $value)
+    {
+        global $g_sessionManager;
+        if (!isset($g_sessionManager))
+            throw new Exception("Trying to store '$var' in session, but no sessionmanager present! Did you start a session (atksession())?");
+        $g_sessionManager->globalVar($var, $value);
+    }
+
+    /**
+     * Load a variable from a namespace.
+     * @deprecated Use atkSessionManager::getSession() instead, and load
+     *             the variable directly from the application session, or
+     *             use getValue() to retrieve a variable from a given namespace.
+     */
+    static public function sessionLoad($var, $namespace = "")
+    {
+        global $g_sessionManager;
+        if (!isset($g_sessionManager))
+            throw new Exception("Trying to load '$var' (namespace: '$namespace') from session, but no sessionmanager present! Did you start a session (atksession())?");
+        return $g_sessionManager->getValue($var, $namespace);
+    }
+
+    /**
+     * @internal Used by the session manager to retrieve a unique id for the
+     *           current atk stack.
+     */
+    static public function atkStackID($new = false)
+    {
+        global $atkstackid;
+        if (!isset($atkstackid) || $atkstackid == "" || $new) {
+            // No stack id yet, or forced creation of a new one.
+            $atkstackid = uniqid("");
+        }
+        return $atkstackid;
+    }
+
+    /**
+     * Retrieve the current atkLevel of the session stack.
+     *
+     * Level 0 is the 'entry screen' of a stack. Any screen deeper from the
+     * entry screen (following an edit link for example) has its atklevel
+     * increased by 1. This method is useful for checking if a 'back' button
+     * should be displayed. A backbutton will work for any screen whose
+     * atklevel is bigger than 0.
+     *
+     * @return int The current atk level.
+     */
+    static public function atkLevel()
+    {
+        global $atklevel;
+        if (!isset($atklevel) || $atklevel == "") {
+            $atklevel = 0; // assume bottom level.
+        }
+        return $atklevel;
+    }
+
+    static public function atkPrevLevel()
+    {
+        global $atkprevlevel;
+        if (!isset($atkprevlevel) || $atkprevlevel == "") {
+            $atkprevlevel = 0; // assume bottom level.
+        }
+        return $atkprevlevel;
+    }
+
+    /**
+     * Checks wether or not the sessionid that was passed along is valid
+     * A session id can become invalid because of tampering and would otherwise
+     * cause a php error.
+     * A valid session id consists only of alphanumeric characters.
+     * Mind you, an empty sessionid is also valid,
+     * simply because there is no session yet
+     * @return bool Wether or not the sessionid is valid
+     */
+    static public function isValidSessionId()
+    {
+        $name = atkconfig("session_name");
+        if (empty($name))
+            $name = atkconfig("identifier");
+
+        $sessionid = "";
+        global ${$name};
+
+        if (isset($_COOKIE[$name]) && $_COOKIE[$name]) {
+            $sessionid = $_COOKIE[$name];
+        } else {
+            $sessionid = ${$name};
+        }
+
+        if ($sessionid == "")
+            return true;
+
+        if (!preg_match('/^[a-z0-9:-]+$/i', $sessionid))
+            return false;
+
+        return true;
+    }
+
+    /**
+     * Returns the sessionmanager.
+     * @return atkSessionManager Session manager
+     */
+    static public function &atkGetSessionManager()
+    {
+        global $g_sessionManager;
+        return $g_sessionManager;
+    }
+
 }
-
-/**
- * Returns the sessionmanager.
- * @return atkSessionManager Session manager
- */
-function &atkGetSessionManager()
-{
-    global $g_sessionManager;
-    return $g_sessionManager;
-}
-
 

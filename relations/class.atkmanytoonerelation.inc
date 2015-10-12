@@ -937,7 +937,7 @@ class atkManyToOneRelation extends atkRelation
         $result = "";
         // we use the current level to automatically return to this page
         // when we come from the select..
-        $atktarget = atkTools::atkurlencode( atkTools::getDispatchFile() . "?atklevel=" . atkLevel() . "&" . $selname . "=[atkprimkey]");
+        $atktarget = atkTools::atkurlencode( atkTools::getDispatchFile() . "?atklevel=" . atkSessionManager::atkLevel() . "&" . $selname . "=[atkprimkey]");
         $linkname = atkTools::atktext("link_select_" . getNodeType($this->m_destination), $this->getOwnerInstance()->getModule(), $this->getOwnerInstance()->getType(), '', '', true);
         if (!$linkname)
             $linkname = atkTools::atktext("link_select_" . getNodeType($this->m_destination), getNodeModule($this->m_destination), getNodeType($this->m_destination), '', '', true);
@@ -1422,7 +1422,7 @@ class atkManyToOneRelation extends atkRelation
      */
     function validate(&$record, $mode)
     {
-        $sessionmanager = atkGetSessionManager();
+        $sessionmanager = atkSessionManager::atkGetSessionManager();
         if ($sessionmanager)
             $storetype = $sessionmanager->stackVar('atkstore');
         if ($storetype !== 'session' && !$this->_isSelectableRecord($record, $mode)) {

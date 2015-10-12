@@ -58,7 +58,7 @@ function getUser()
  */
 function atkGetUser($key = '')
 {
-    $sessionmanager = &atkGetSessionManager();
+    $sessionmanager = &atkSessionManager::atkGetSessionManager();
     $session = &atkSessionManager::getSession();
     $user = "";
     $session_auth = is_object($sessionmanager) ? $sessionmanager->getValue("authentication", "globals")

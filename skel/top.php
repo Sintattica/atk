@@ -26,7 +26,7 @@
 $config_atkroot = "./";
 include_once("atk.inc");
 
-atksession();
+atkSessionManager::atksession();
 atksecure();
 
 $page = &atkNew("atk.ui.atkpage");

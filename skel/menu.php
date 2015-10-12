@@ -27,7 +27,7 @@
 $config_atkroot = "./";
 include_once("atk.inc");
 
-atksession();
+atkSessionManager::atksession();
 atksecure();
 
 $output = &atkOutput::getInstance();

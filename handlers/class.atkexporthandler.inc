@@ -510,7 +510,7 @@ class atkExportHandler extends atkActionHandler
                 $list_includes[] = substr($name, strlen('export_'));
         }
         global $g_sessionData;
-        $session_back = $g_sessionData["default"]["stack"][atkStackID()][atkLevel() - 1];
+        $session_back = $g_sessionData["default"]["stack"][atkSessionManager::atkStackID()][atkSessionManager::atkLevel() - 1];
         $atkorderby = $session_back['atkorderby'];
 
         $node = &$this->m_node;

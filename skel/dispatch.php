@@ -27,7 +27,7 @@
 $config_atkroot = "./";
 include_once("atk.inc");
 
-atksession();
+atkSessionManager::atksession();
 
 $session = &atkSessionManager::getSession();
 $output = &atkOutput::getInstance();

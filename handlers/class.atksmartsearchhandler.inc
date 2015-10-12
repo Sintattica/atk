@@ -192,7 +192,7 @@ class atkSmartSearchHandler extends atkAbstractSearchHandler
 
         $params = array('atksmartsearch' => $criteria);
         $url = atkTools::dispatch_url($this->m_node->atkNodeType(), 'admin', $params, atkTools::atkSelf());
-        $this->m_node->redirect(atkTools::session_url($url, atkLevel() == 0 ? SESSION_REPLACE
+        $this->m_node->redirect(atkTools::session_url($url, atkSessionManager::atkLevel() == 0 ? SESSION_REPLACE
                         : SESSION_BACK));
     }
 

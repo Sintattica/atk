@@ -29,7 +29,7 @@
  */
 include_once($config_atkroot . "atk.inc");
 
-atksession();
+atkSessionManager::atksession();
 atksecure();
 
 //  Renders the help screen

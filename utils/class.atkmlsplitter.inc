@@ -124,7 +124,7 @@ class atkmlsplitter
         }
 
         $languages = $this->getLanguages($node);
-        $atklngrecordmodes = sessionLoad("atklng_" . $node->m_type . "_" . atkPrevLevel());
+        $atklngrecordmodes = atkSessionManager::sessionLoad("atklng_" . $node->m_type . "_" . atkSessionManager::atkPrevLevel());
 
         $autoincrementflags = Array();
         foreach ($node->m_primaryKey as $primkey) {
@@ -191,7 +191,7 @@ class atkmlsplitter
             // restore the relations
             $node->m_attribList[$attribname] = $relation;
         }
-        sessionStore("atklng_" . $node->m_type . "_" . atkPrevLevel(), NULL); // deleting modes
+        atkSessionManager::sessionStore("atklng_" . $node->m_type . "_" . atkSessionManager::atkPrevLevel(), NULL); // deleting modes
     }
 
     /**
@@ -232,7 +232,7 @@ class atkmlsplitter
         }
         $this->mergeMlRecords($node, $recordset);
 
-        sessionStore("atklng_" . $node->m_type . "_" . atkLevel(), $recordset[0]["atklngrecordmodes"]);
+        atkSessionManager::sessionStore("atklng_" . $node->m_type . "_" . atkSessionManager::atkLevel(), $recordset[0]["atklngrecordmodes"]);
     }
 
     /**

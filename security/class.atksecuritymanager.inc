@@ -465,7 +465,7 @@ class atkSecurityManager
         header('user: ' . $this->m_user["name"]);
         $GLOBALS["g_user"] = $this->m_user;
         $g_sessionManager->globalVar("authentication", array("authenticated" => 1, "user" => $this->m_user), true);
-        sessionStore('loginattempts', ''); //reset maxloginattempts
+        atkSessionManager::sessionStore('loginattempts', ''); //reset maxloginattempts
 
         if ($throwPostLoginEvent)
             $this->notifyListeners("postLogin", $auth_user);
@@ -502,7 +502,7 @@ class atkSecurityManager
      */
     function loginForm($defaultname, $lastresponse)
     {
-        $loginattempts = sessionLoad('loginattempts'); // Note: not actually how many authentication attempts, but how many times the login form has been displayed.
+        $loginattempts = atkSessionManager::sessionLoad('loginattempts'); // Note: not actually how many authentication attempts, but how many times the login form has been displayed.
         if ($loginattempts == "")
             $loginattempts = 0;
 
@@ -512,7 +512,7 @@ class atkSecurityManager
             $loginattempts++;
         }
 
-        sessionStore('loginattempts', $loginattempts);
+        atkSessionManager::sessionStore('loginattempts', $loginattempts);
 
         atkTools::atkdebug('LoginAttempts: ' . $loginattempts);
 

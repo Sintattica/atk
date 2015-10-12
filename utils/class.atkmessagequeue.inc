@@ -168,7 +168,7 @@ class atkMessageQueue
      */
     function &getQueue()
     {
-        $sessionmgr = &atkGetSessionManager();
+        $sessionmgr = &atkSessionManager::atkGetSessionManager();
         $session = &$sessionmgr->getSession();
         if (!isset($session['atkmessagequeue'])) {
             $session['atkmessagequeue'] = array();
