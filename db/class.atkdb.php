@@ -439,7 +439,7 @@ class atkDb
     function errorLookup($errno)
     {
         if (count($this->m_errorLookup) == 0) {
-            $filename = atkConfig::getGlobal("atkroot") . "atk/db/languages/" . $this->m_vendor . "_" . atkConfig::getGlobal('language') . '.lng';
+            $filename = atkConfig::getGlobal("atkroot") . "atk/db/languages/" . $this->m_vendor . "_" . atkConfig::getGlobal('language') . '.lng.php';
             @include_once($filename);
             $this->m_errorLookup = $txt_db;
         }

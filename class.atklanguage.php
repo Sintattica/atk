@@ -452,7 +452,7 @@ class atkLanguage
             $this->m_cachedlangfiles[$module][$lng] = 1;
             $path = $this->getLanguageDirForModule($module);
 
-            $file = $path . $lng . ".lng";
+            $file = $path . $lng . ".lng.php";
 
             if (file_exists($file)) {
                 include($file);
@@ -549,7 +549,7 @@ class getSupportedLanguagesCollector
 
     function visitFile($fullpath)
     {
-        if (substr($fullpath, strlen($fullpath) - 4) === '.lng') {
+        if (substr($fullpath, strlen($fullpath) - 8) === '.lng.php') {
             $exploded = explode('/', $fullpath);
             $lng = array_pop($exploded);
             $this->m_languages[] = substr($lng, 0, 2);
