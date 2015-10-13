@@ -1,4 +1,15 @@
-@import '../../default/styles/atkmanytomanyselectrelation.css';
+.atkmanytomanyselectrelation-selection
+{
+    padding-left: 15px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.atkmanytomanyselectrelation-selected
+{
+    margin-bottom: 3px;
+}
+
 
 .atkmanytomanyselectrelation {
     white-space: nowrap;

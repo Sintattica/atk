@@ -29,7 +29,8 @@ $theme["tabtype"] = "dhtml";
 
 
 $theme["recordlist_orientation"] = 'right';
-//$theme['compatible_menus'] = array('modern');
 $theme['modern_menu_compat'] = true;
 $theme['dialog_theme_name'] = 'atkdialog';
 $theme['dialog_theme_load'] = false;
+$theme["recordlist_vorientation"] = 'top';
+$theme['recordlist_icons'] = true;

@@ -74,7 +74,7 @@ class atkTheme
      * @param String $location
      * @return String The absolute path
      */
-    function absPath($relpath, $location = '')
+    public static function absPath($relpath, $location = '')
     {
         if ($relpath == "")
             return "";

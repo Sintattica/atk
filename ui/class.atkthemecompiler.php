@@ -68,13 +68,6 @@ class atkThemeCompiler
      * converts it to a dataset containing all theme attributes and the
      * exact location of all themable files.
      *
-     * This method also takes inheritance into account. If the theme derives
-     * from another theme, the info for said theme is included too. This is
-     * done recursively so themes can derive from any number of base themes.
-     *
-     * All themes are implicitly derived from the 'default' theme unless they
-     * specify otherwise in their themedef.inc file.
-     *
      * @param String $name The name of the theme
      * @param String $location The location of the theme ("atk", "app" or "auto")
      * @return array Theme dData structure
@@ -84,35 +77,12 @@ class atkThemeCompiler
         $data = array();
 
         $path = $this->findTheme($name, $location);
-        if ($path == "") {
-            // theme not found.
-            $defaulttheme = atkConfig::getGlobal("defaulttheme");
-            if ($name != $defaulttheme) {
-                // this is not the default theme, let's load that instead.
-                return $this->readStructure($defaulttheme, "auto");
-            } else {
-                // this is the default theme, set in the config. If this doesn't exist, fallback to default.
-                return $this->readStructure("default", "atk");
-            }
-        }
 
         $abspath = atkTheme::absPath($path, $location);
 
         // First parse the themedef file for attributes
         if ($path != "" && file_exists($abspath . "themedef.php")) {
             include($abspath . "themedef.php");
-
-            if (isset($theme["basetheme"])) { // If theme is derived from another theme, use that other theme as basis
-                $basethemelocation = isset($theme["basethemelocation"]) ? $theme["basethemelocation"]
-                        : "auto";
-                $data = $this->readStructure($theme["basetheme"], $basethemelocation);
-            } else if ($name != "default") { // If basetheme is not explicitly defined, use default as base theme
-                $data = $this->readStructure("default", "auto");
-            } else if ($name == "default" && $location == "app") { // if this theme is the app's default theme, use atk default as base
-                $data = $this->readStructure("default", "atk");
-            } else {
-                // end of the pipeline
-            }
 
             if (isset($theme)) {
                 foreach ($theme as $key => $value)
