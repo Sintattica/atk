@@ -21,10 +21,15 @@ $theme["doctype"] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"' . "\n" .
 $theme['compatible_menus'] = array('atk.menu.atkDropdownMenu');
 $theme["highlight"] = "";
 $theme["select"] = "";
-$theme["basetheme"] = "steelblue";
 $theme['useframes'] = false;
 $theme['dispatcher'] = 'index.php';
 $theme['menufile'] = 'index.php';
 $theme['menu_params'] = "class='menulink'";
 $theme["tabtype"] = "dhtml";
 
+
+$theme["recordlist_orientation"] = 'right';
+//$theme['compatible_menus'] = array('modern');
+$theme['modern_menu_compat'] = true;
+$theme['dialog_theme_name'] = 'atkdialog';
+$theme['dialog_theme_load'] = false;
