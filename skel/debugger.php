@@ -39,4 +39,3 @@ $output->output($debugger->renderConsole());
 
 $config_debug = 0; // force debugging off in console
 $output->outputFlush();
-?>

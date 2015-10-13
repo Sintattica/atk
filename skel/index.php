@@ -64,4 +64,3 @@ if (atkConfig::getGlobal("fullscreen")) {
         $indexpage->generate();
     }
 }
-?>

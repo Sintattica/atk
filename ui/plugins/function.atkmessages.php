@@ -48,5 +48,3 @@ function smarty_function_atkmessages($params, &$smarty)
     }
     return "";
 }
-
-?>

@@ -72,5 +72,3 @@ function smarty_resource_theme_trusted($tpl_name, &$smarty)
 {
     // not used for templates
 }
-
-?>

@@ -379,4 +379,3 @@ $fr = array(
     "wysiwyg_split_cell" => "Diviser cellulle",
     "yes" => "Oui",
 );
-?>

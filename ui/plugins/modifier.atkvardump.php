@@ -30,5 +30,3 @@ function smarty_modifier_atkvardump($data, $name = '')
     atkTools::atk_var_dump($data, $name);
     return $data;
 }
-
-?>

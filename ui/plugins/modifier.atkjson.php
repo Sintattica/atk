@@ -28,5 +28,3 @@ function smarty_modifier_atkjson($data)
     atkTools::atkimport('atk.utils.atkjson');
     return atkJSON::encode($data);
 }
-
-?>

@@ -4,4 +4,3 @@ include_once("atk.php");
 
 $atkserver = atkTools::atkinstance("atk.interface.atkserver");
 $atkserver->run();
-?>

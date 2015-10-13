@@ -86,4 +86,3 @@ $outer->addChild($wrapper);
 $output.= $root->render();
 $output.= "</html>";
 echo $output;
-?>

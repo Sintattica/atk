@@ -377,4 +377,3 @@ $cs = array(
     "wysiwyg_split_cell" => "Split cells", // Missing string!!!
     "yes" => "Yes", // Missing string!!!
 );
-?>

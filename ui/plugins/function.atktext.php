@@ -57,5 +57,3 @@ function smarty_function_atktext($params, &$smarty)
     $parser = new atkStringParser($str);
     return $parser->parse($params);
 }
-
-?>

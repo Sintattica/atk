@@ -34,5 +34,3 @@ function smarty_function_atkmoduledir($params, &$smarty)
 {
     return $smarty->assign("atkmoduledir", atkModule::moduleDir($params['modulename']));
 }
-
-?>

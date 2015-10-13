@@ -39,4 +39,3 @@ $page->addContent($box);
 $output->output($page->render(atkTools::atktext('app_shorttitle'), true));
 
 $output->outputFlush();
-?>

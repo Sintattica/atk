@@ -77,4 +77,3 @@ else {
     $controller->dispatch($ATK_VARS, $flags);
 }
 $output->outputFlush();
-?>

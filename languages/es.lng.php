@@ -379,4 +379,3 @@ $es = array(
     "wysiwyg_split_cell" => "Dividir celdas",
     "yes" => "Si",
 );
-?>

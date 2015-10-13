@@ -38,7 +38,7 @@ $de = array(
     "attrib_delete_not_allowed" => "Field '%s' does not allow the record to be deleted. (%s)'", // Missing string!!!
     "aug" => "Aug", // Missing string!!!
     "august" => "August",
-    "auth_account_locked" => "Diese Anmeldekennung wurde gesperrt. Benutzen Sie nach Möglichkeit eine andere oder wenden Sie sich an Ihren Administrator.",
+    "auth_account_locked" => "Diese Anmeldekennung wurde gesperrt. Benutzen Sie nach Mï¿½glichkeit eine andere oder wenden Sie sich an Ihren Administrator.",
     "auth_max_loginattempts_exceeded" => "Zu viele Versuche. Die Anmeldung wurde deaktiviert. Wenden Sie sich bitte an Ihren Administrator.",
     "auth_mismatch" => "Benutzername oder Passwort falsch. Bitte veruchen Sie es erneut.",
     "auth_missingusername" => "Please enter a username first.", // Missing string!!!
@@ -165,7 +165,7 @@ $de = array(
     "forget_criteria" => "Remove selected search", // Missing string!!!
     "fri" => "Fre",
     "friday" => "Freitag",
-    "fsa_pleasemakeselection" => "Es wurden mehrere Treffer gefunden. Bitte wählen Sie einen aus.",
+    "fsa_pleasemakeselection" => "Es wurden mehrere Treffer gefunden. Bitte wï¿½hlen Sie einen aus.",
     "help" => "Hilfe",
     "import" => "Import data", // Missing string!!!
     "import_allfield" => "Use default value for one of the attributes (e.g. if the column is absent in the CSV file)", // Missing string!!!
@@ -377,4 +377,3 @@ $de = array(
     "wysiwyg_split_cell" => "Zellen trennen",
     "yes" => "Ja",
 );
-?>

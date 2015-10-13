@@ -59,4 +59,3 @@ $page->addContent($top);
 $output->output($page->render($vars["title"], true));
 
 $output->outputFlush();
-?>

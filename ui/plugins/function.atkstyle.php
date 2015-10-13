@@ -39,5 +39,3 @@ function smarty_function_atkstyle($params, &$smarty)
     $page->register_style($params["file"], $params["media"]);
     return "";
 }
-
-?>

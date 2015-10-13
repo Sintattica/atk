@@ -165,7 +165,7 @@ $pt = array(
     "forget_criteria" => "Remove selected search", // Missing string!!!
     "fri" => "Fri", // Missing string!!!
     "friday" => "Friday", // Missing string!!!
-    "fsa_pleasemakeselection" => "Mais de uma ocorrência foi encontrada. Por favor faça sua seleção.",
+    "fsa_pleasemakeselection" => "Mais de uma ocorrï¿½ncia foi encontrada. Por favor faï¿½a sua seleï¿½ï¿½o.",
     "help" => "Help", // Missing string!!!
     "import" => "Import data", // Missing string!!!
     "import_allfield" => "Use default value for one of the attributes (e.g. if the column is absent in the CSV file)", // Missing string!!!
@@ -377,4 +377,3 @@ $pt = array(
     "wysiwyg_split_cell" => "Split cells", // Missing string!!!
     "yes" => "Yes", // Missing string!!!
 );
-?>

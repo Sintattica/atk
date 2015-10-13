@@ -377,4 +377,3 @@ $nl = array(
     "wysiwyg_split_cell" => "Cellen splitsen",
     "yes" => "Ja",
 );
-?>

@@ -377,4 +377,3 @@ $id = array(
     "wysiwyg_split_cell" => "Split sel-sel",
     "yes" => "Ya",
 );
-?>

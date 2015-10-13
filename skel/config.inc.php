@@ -300,4 +300,3 @@ $config_cache_method = 'var';
 // Cache namespace, change this when you are hosting your application on a 
 // shared hosting.
 $config_cache_namespace = 'default';
-?>

@@ -36,4 +36,3 @@ $file = $ATK_VARS["file"];
 $allowed = atkConfig::getGlobal("allowed_includes");
 if (atkTools::atk_in_array($file, $allowed))
     include_once(atkConfig::getGlobal("atkroot") . $file);
-?>

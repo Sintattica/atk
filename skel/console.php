@@ -8,4 +8,3 @@ if ($_SERVER['HTTP_USER_AGENT'] == "") {
 } else {
     echo "This script can only be executed from a console, and not via browser";
 }
-?>

@@ -24,5 +24,3 @@ function smarty_function_atkconfig($params, &$smarty)
 {
     $smarty->assign($params["smartyvar"], atkConfig::getGlobal($params["var"]));
 }
-
-?>

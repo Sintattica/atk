@@ -172,7 +172,7 @@ class atkTmpFile
     {
         $res = "<?php\n";
         $res.= "\$" . $varname . " = " . var_export($data, true);
-        $res.= "\n?>";
+        $res.= ";";
 
         return $this->writeFile($res);
     }

@@ -39,5 +39,3 @@ function smarty_function_atkscript($params, &$smarty)
     $page->register_script($params["prefix"] . $params["file"]);
     return "";
 }
-
-?>

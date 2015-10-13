@@ -51,5 +51,3 @@ function smarty_function_atkdatefield($params, &$smarty)
     $html = $attr->edit(array($name => $date));
     return $html;
 }
-
-?>

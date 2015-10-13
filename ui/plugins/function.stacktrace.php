@@ -43,5 +43,3 @@ function smarty_function_stacktrace($params, &$smarty)
     }
     return "";
 }
-
-?>
