@@ -340,7 +340,7 @@ class atkSecureRelation extends atkOneToOneRelation
                     return NULL;
                 }
             } else {
-                halt("no ownerinstance found for the secure relation");
+                atkTools::atkhalt("no ownerinstance found for the secure relation");
             }
         } else {
             $cryptedlink = $record[$this->m_cachefield];

@@ -134,14 +134,6 @@ class atkTools
     }
 
     /**
-     * @deprecated Use self::atkhalt instead.
-     */
-    public static function halt($msg, $level = "warning")
-    {
-        return self::atkhalt($msg, $level);
-    }
-
-    /**
      * Function self::atkhalt
      * Halts on critical errors and also on warnings if specified in the config file.
      * @param string $msg The message to be displayed

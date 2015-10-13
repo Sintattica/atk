@@ -497,7 +497,7 @@ class atkDb
                 if (!in_array($this->m_errno, $this->m_user_error))
                     $level = 'critical';
                 atkTools::atkerror($this->getErrorMsg());
-                halt($this->getErrorMsg(), $level);
+                atkTools::atkhalt($this->getErrorMsg(), $level);
             }
             else {
                 atkTools::atkdebug(__CLASS__ . "::halt() on user error (not halting)");
