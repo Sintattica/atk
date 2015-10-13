@@ -25,7 +25,7 @@
  * @internal Setup the system
  */
 $config_atkroot = "./";
-include_once("atk.inc");
+include_once("atk.php");
 
 atkSessionManager::atksession();
 

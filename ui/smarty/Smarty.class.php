@@ -1419,7 +1419,7 @@ class Smarty
         }
 
         $_source_content = $_params['source_content'];
-        $_cache_include    = substr($compile_path, 0, -4).'.inc';
+        $_cache_include    = substr($compile_path, 0, -4).'.php';
 
         if ($this->_compile_source($resource_name, $_source_content, $_compiled_content, $_cache_include)) {
             // if a _cache_serial was set, we also have to write an include-file:

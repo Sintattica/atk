@@ -848,7 +848,7 @@ $config_enable_ie_extensions = false;
  * @var Array
  */
 $config_allowed_includes = array("atk/lock/lock.php", "atk/lock/lock.js.php",
-    "atk/popups/help.inc", "atk/popups/colorpicker.inc",
+    "atk/popups/help.php", "atk/popups/colorpicker.php",
     "atk/ext/captcha/img/captcha.jpg.php");
 
 /**

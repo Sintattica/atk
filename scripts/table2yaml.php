@@ -1,6 +1,6 @@
 <?php
 $config_atkroot = "../../";
-include_once $config_atkroot . './atk.inc';
+include_once $config_atkroot . './atk.php';
 
 atkTools::atkimport('atk.utils.atkyaml');
 

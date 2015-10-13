@@ -1,6 +1,6 @@
 <?php
 $config_atkroot = ("./");
-include_once("atk.inc");
+include_once("atk.php");
 atkSessionManager::atksession();
 
 if ($_SERVER['HTTP_USER_AGENT'] == "") {

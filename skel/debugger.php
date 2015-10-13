@@ -26,7 +26,7 @@
  */
 $config_atkroot = "./";
 
-include_once($config_atkroot . "atk/include/initial.inc");
+include_once($config_atkroot . "atk/include/initial.php");
 
 atkSessionManager::atksession();
 atksecure();

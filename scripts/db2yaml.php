@@ -1,6 +1,6 @@
 <?php
 $config_atkroot = "../../";
-include_once $config_atkroot . './atk.inc';
+include_once $config_atkroot . './atk.php';
 
 $dir = @$_SERVER['argv'][1];
 if ($dir == null)

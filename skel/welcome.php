@@ -24,7 +24,7 @@
  * @internal includes..
  */
 $config_atkroot = "./";
-include_once("atk.inc");
+include_once("atk.php");
 
 $page = &atkTools::atknew("atk.ui.atkpage");
 $ui = &atkTools::atkinstance("atk.ui.atkui");
