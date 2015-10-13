@@ -17,10 +17,11 @@
 /** BASIC ATK INCLUDES * */
 /** Gives you configs and the atktools * */
 require_once($GLOBALS['config_atkroot'] . 'atk/include/globals.php');
+require_once($GLOBALS['config_atkroot'] . 'atk/utils/class.atkclassloader.php');
+require_once($GLOBALS['config_atkroot'] . 'atk/class.atktools.php');
 require_once($GLOBALS['config_atkroot'] . 'atk/include/configs.php');
 require_once($GLOBALS['config_atkroot'] . 'atk/utils/class.atkstring.php');
-require_once($GLOBALS['config_atkroot'] . 'atk/class.atktools.php');
-require_once($GLOBALS['config_atkroot'] . 'atk/utils/class.atkclassloader.php');
+
 
 $locale = atkTools::atktext('locale', 'atk');
 if ($locale != null) {

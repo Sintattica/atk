@@ -55,6 +55,28 @@ $GLOBALS['g_nodeListeners'] = array();
 $GLOBALS['g_nodeControllers'] = array();
 
 
+define("MF_NOMENU", 1);
+
+/**
+ * Don't use the rights of this module
+ */
+define("MF_NORIGHTS", 2);
+
+/**
+ * Use this module only as a reference
+ */
+define("MF_REFERENCE", MF_NOMENU | MF_NORIGHTS);
+
+define("MF_SPECIFIC_1", 4);
+define("MF_SPECIFIC_2", 8);
+define("MF_SPECIFIC_3", 16);
+
+/**
+ * Don't preload this module (module_preload.inc)
+ */
+define("MF_NO_PRELOAD", 32);
+
+
 /**
  * The atkModule abstract base class.
  *
@@ -808,6 +830,32 @@ class atkModule
                 self::atkPreloadModule($modname, $modpath);
             }
         }
+    }
+
+
+
+    /**
+     * Load a module.
+     *
+     * This method is used in the config.inc.php or config.modules.php file to
+     * load the modules.
+     *
+     * @param String $name The name of the module to load.
+     * @param String path The path where the module is located (relative or
+     *                    absolute). If omitted, ATK assumes that the module is
+     *                    installed in the default module dir (identified by
+     *                    $config_module_path).
+     * @param int flags The module (MF_*) flags that influence how the module is
+     *                  loaded.
+     */
+    public static function module($name, $path = "", $flags = 0)
+    {
+        global $g_modules, $config_module_path, $g_moduleflags;
+        if ($path == "")
+            $path = $config_module_path . "/" . $name . "/";
+        $g_modules[$name] = $path;
+        if ($flags > 0)
+            $g_moduleflags[$name] = $flags;
     }
 }
 
