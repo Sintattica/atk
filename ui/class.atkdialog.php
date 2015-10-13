@@ -70,7 +70,7 @@ class atkDialog
      *
      * @return string node type
      */
-    public function atkModule::getNodeType()
+    public function getNodeType()
     {
         return $this->m_nodeType;
     }
@@ -255,7 +255,7 @@ class atkDialog
      */
     function getUrl()
     {
-        return atkTools::partial_url($this->atkModule::getNodeType(), $this->m_action, $this->m_partial, $this->m_params, $this->m_sessionStatus);
+        return atkTools::partial_url($this->getNodeType(), $this->m_action, $this->m_partial, $this->m_params, $this->m_sessionStatus);
     }
 
     /**

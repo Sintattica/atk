@@ -4,7 +4,7 @@
             {if count($stacktrace)}
                 <td align="left" class="stacktrace">
                     {section name=i loop=$stacktrace}
-                        {if %i.last%}
+                        {if %i.last %}
                             <span class="stacktrace_end">{$stacktrace[i].title}</span>
                         {else}           
                             <a href="{$stacktrace[i].url}" class="stacktrace">{$stacktrace[i].title}</a> &raquo;

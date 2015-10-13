@@ -18,7 +18,7 @@
 /**
  * ATK driver for clustered databases. This class proxies queries
  * to correct read/write slaves.
- * 
+ *
  * @author Boy Baukema <boy@ibuildings.nl>
  * @package atk
  * @subpackage db
@@ -29,14 +29,14 @@ class atkClusterDb extends atkDb
 
     /**
      * Array of read-only slaves
-     * 
+     *
      * @var array
      */
     protected $m_readonly_nodes_config = array();
 
     /**
      * Array of write-only slaves
-     * 
+     *
      * @var array
      */
     protected $m_writeonly_nodes_config = array();
@@ -53,11 +53,11 @@ class atkClusterDb extends atkDb
 
     /**
      * Initialize the atkClusterDb
-     * 
+     *
      * @param string $connectionname The name of the database connection
-     * @param string $mode			Mode can be r, w or rw
-     * 
-     * @access public 
+     * @param string $mode Mode can be r, w or rw
+     *
+     * @access public
      * @return void
      */
     public function init($connectionname, $mode = 'rw')
@@ -69,10 +69,10 @@ class atkClusterDb extends atkDb
     }
 
     /**
-     * Connects to a cluster node and sets the node as "current node" 
-     * 
+     * Connects to a cluster node and sets the node as "current node"
+     *
      * @param string $mode Mode can be r, w or rw
-     * 
+     *
      * @access public
      * @return bool Whether the connect succeded or not
      */
@@ -84,9 +84,9 @@ class atkClusterDb extends atkDb
 
     /**
      * Returns nodes that have a specific mode set
-     * 
+     *
      * @param string $mode Mode can be r, w or rw
-     * 
+     *
      * @access public
      * @return array
      */
@@ -126,7 +126,7 @@ class atkClusterDb extends atkDb
 
     /**
      * Creates a new a new query object based on the current nodes type
-     * 
+     *
      * @access public
      * @return object
      */
@@ -139,8 +139,8 @@ class atkClusterDb extends atkDb
 
     /**
      * Creates a new new atkDDL based on current cluster nodes type
-     * 
-     * @access public 
+     *
+     * @access public
      * @return atkDDL
      */
     public function createDDL()
@@ -152,7 +152,7 @@ class atkClusterDb extends atkDb
     }
 
     /**
-     * Gets the next available id 
+     * Gets the next available id
      *
      * @access public
      * @return int
@@ -169,7 +169,7 @@ class atkClusterDb extends atkDb
     /**
      * Sets config and mode for all configured nodes
      *
-     * @access protected 
+     * @access protected
      * @return void
      */
     protected function setConfig()
@@ -189,9 +189,9 @@ class atkClusterDb extends atkDb
      * Sets the config and mode for a named node
      *
      * @param string $nodename
-     * @param array  $nodeconfig
+     * @param array $nodeconfig
      * @param string $mode
-     * 
+     *
      * @access protected
      * @return void
      */
@@ -210,7 +210,7 @@ class atkClusterDb extends atkDb
      * Sets a random cluster node as the current node based on the mode provided
      *
      * @param string $mode
-     * 
+     *
      * @access protected
      * @return void
      */
@@ -231,9 +231,9 @@ class atkClusterDb extends atkDb
      * Selects a random node from the node configuration based
      * on the mode.
      *
-     * @param array  $nodeconfigs
+     * @param array $nodeconfigs
      * @param string $mode
-     * 
+     *
      * @access protected
      * @return void
      */
@@ -252,8 +252,8 @@ class atkClusterDb extends atkDb
      * Allows setting key/value pairs for the current node
      *
      * @param string $name
-     * @param mixed  $value
-     * 
+     * @param mixed $value
+     *
      * @access public
      * @return void
      */
@@ -324,8 +324,8 @@ class atkClusterDb extends atkDb
      * (people are using atkDb as typehints everywhere). The most decent way to fix this issue
      * would be to make atkDb into an interface and then have atkClusterDb and atkDb implement it
      * (and use 'atkDbInterface' for typehinting instead of atkDb), but this would break backward
-     * compatibility (maybe other people use atkDb in their code as well for typehinting) and since 
-     * atkClusterDb doesn't seem to be used very often anyway for now we just solved this issue 
+     * compatibility (maybe other people use atkDb in their code as well for typehinting) and since
+     * atkClusterDb doesn't seem to be used very often anyway for now we just solved this issue
      * using some vogon poetry. Continue reading at your own risk.
      */
     public function setSequenceValue()
@@ -358,7 +358,7 @@ class atkClusterDb extends atkDb
         return $this->__call(__FUNCTION__, $args);
     }
 
-    public function _getOrUseMapping()
+    static public function _getOrUseMapping()
     {
         $args = func_get_args();
         return $this->__call(__FUNCTION__, $args);

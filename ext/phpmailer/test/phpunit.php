@@ -112,7 +112,7 @@ class TestCase extends Assert /* implements Test */ {
     if (! $testResult)
       $testResult = $this->_createResult();
     $this->fResult = $testResult;
-    $testResult->run(&$this);
+    $testResult->run($this);
     $this->fResult = 0;
     return $testResult;
   }
@@ -147,7 +147,7 @@ class TestCase extends Assert /* implements Test */ {
     //printf("TestCase::fail(%s)<br>\n", ($message) ? $message : '');
     /* JUnit throws AssertionFailedError here.  We just record the
        failure and carry on */
-    $this->fExceptions[] = new Exception(&$message);
+    $this->fExceptions[] = new Exception($message);
   }
 
   function error($message) {
@@ -228,7 +228,7 @@ class TestSuite /* implements Test */ {
     while (list($na, $test) = each($this->fTests)) {
       if ($testResult->shouldStop())
 	break;
-      $test->run(&$testResult);
+      $test->run($testResult);
     }
   }
 
@@ -292,7 +292,7 @@ class TestResult {
     /* this is where JUnit would catch AssertionFailedError */
     $exceptions = $test->getExceptions();
     if ($exceptions)
-      $this->fFailures[] = new TestFailure(&$test, &$exceptions);
+      $this->fFailures[] = new TestFailure($test, $exceptions);
     $this->_endTest($test);
   }
 
