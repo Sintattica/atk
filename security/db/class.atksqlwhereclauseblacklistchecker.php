@@ -1,24 +1,6 @@
 <?php
 
-/**
- * Filter a request variable, containing a WHERE clause, from the globals
- * if it is blacklisted.
- *
- * @param string $variable
- * @example filter_request_where_clause('atkselector')
- */
-function filter_request_where_clause($variable)
-{
-    if (isset($_REQUEST[$variable])) {
-        $values = (array) $_REQUEST[$variable];
-        foreach ($values as $value) {
-            $checker = new sql_whereclause_blacklist_checker($value);
-            if (!$checker->isSafe()) {
-                atkTools::atkhalt("Unsafe WHERE clause in REQUEST variable: " . $variable, 'critical');
-            }
-        }
-    }
-}
+
 
 /**
  * A blacklist checker that blacklists certain SQL parts,
@@ -31,7 +13,7 @@ function filter_request_where_clause($variable)
  * However, as we improve ATK, for backwardscompatibility,
  * we blacklist what SQL we know to be evil in where clauses.
  */
-class sql_whereclause_blacklist_checker
+class atkSqlWhereclauseBlacklistChecker
 {
     /**
      * The WHERE clause to filter.
@@ -113,6 +95,27 @@ class sql_whereclause_blacklist_checker
         }
 
         return true;
+    }
+
+
+    /**
+     * Filter a request variable, containing a WHERE clause, from the globals
+     * if it is blacklisted.
+     *
+     * @param string $variable
+     * @example filter_request_where_clause('atkselector')
+     */
+    static public function filter_request_where_clause($variable)
+    {
+        if (isset($_REQUEST[$variable])) {
+            $values = (array) $_REQUEST[$variable];
+            foreach ($values as $value) {
+                $checker = new self($value);
+                if (!$checker->isSafe()) {
+                    atkTools::atkhalt("Unsafe WHERE clause in REQUEST variable: " . $variable, 'critical');
+                }
+            }
+        }
     }
 
 }
