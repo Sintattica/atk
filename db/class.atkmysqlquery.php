@@ -27,7 +27,7 @@ atkTools::atkimport("atk.db.atkquery");
  * @subpackage db
  *
  */
-class atkMysqlQuery extends atkQuery
+class Atk_MysqlQuery extends Atk_Query
 {
     var $m_fieldquote = '`';
 

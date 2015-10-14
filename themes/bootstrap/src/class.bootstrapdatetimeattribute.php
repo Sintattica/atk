@@ -5,7 +5,7 @@ atkTools::useattrib("atkattribute");
 
 atkTools::atkimport('atk.utils.atkmomentphpprovider');
 
-class bootstrapDateTimeAttribute extends atkAttribute
+class bootstrapDateTimeAttribute extends Atk_Attribute
 {
     var $m_bootstrapdatetime_format_edit;
     var $m_bootstrapdatetime_format_view;

@@ -31,7 +31,7 @@ define("ATKZIP_UNZIP", 1);
  * @subpackage utils
  *
  */
-class atkZip
+class Atk_Zip
 {
     var $m_zip_bin = "";
     var $m_unzip_bin = "";

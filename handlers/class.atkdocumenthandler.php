@@ -21,7 +21,7 @@
  * @package atk
  * @subpackage handlers
  */
-class atkDocumentHandler extends atkActionHandler
+class Atk_DocumentHandler extends Atk_ActionHandler
 {
 
     /**

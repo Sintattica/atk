@@ -24,7 +24,7 @@
  * @package atk
  * @subpackage utils
  */
-class atkCompatSelector extends atkSelector
+class Atk_CompatSelector extends Atk_Selector
 {
 
     /**

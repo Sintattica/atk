@@ -39,7 +39,7 @@ define("AUTH_ERROR", -1);
  * @package atk
  * @subpackage security
  */
-class atkSecurityManager
+class Atk_SecurityManager
 {
     var $m_authentication = "";
     var $m_authorization = 0;
@@ -64,7 +64,7 @@ class atkSecurityManager
             $authentication = atkConfig::getGlobal("authentication", "none");
             $authorization = atkConfig::getGlobal("authorization", $authentication);
             $scheme = atkConfig::getGlobal("securityscheme", "none");
-            $g_securityManager = new atkSecurityManager($authentication, $authorization, $scheme);
+            $g_securityManager = new Atk_SecurityManager($authentication, $authorization, $scheme);
         }
         return $g_securityManager;
     }

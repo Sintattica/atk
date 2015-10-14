@@ -35,7 +35,7 @@ atkTools::useattrib('atkDateTimeAttribute');
  * @subpackage attributes
  *
  */
-class atkUpdateStampAttribute extends atkDateTimeAttribute
+class Atk_UpdateStampAttribute extends Atk_DateTimeAttribute
 {
 
     /**

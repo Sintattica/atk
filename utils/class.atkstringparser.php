@@ -23,7 +23,7 @@
  * @subpackage utils
  *
  */
-class atkStringParser
+class Atk_StringParser
 {
     var $m_fields = array();
     var $m_string = "";
@@ -171,7 +171,7 @@ class atkStringParser
             foreach ($matches[0] as $match) {
                 // Check if need to parse the match
                 if (strpos($match, '[') !== false && strpos($match, ']') !== false) {
-                    $parser = new atkStringParser($match);
+                    $parser = new Atk_StringParser($match);
 
                     if ($split_tags_and_fields) {
                         $fields['tags'][] = $parser->parse($data);

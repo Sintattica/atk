@@ -25,7 +25,7 @@ atkTools::atkimport("atk.recordlist.atkrecordlist");
  * @subpackage recordlist
  *
  */
-class atkCustomRecordList extends atkRecordList
+class Atk_CustomRecordList extends Atk_RecordList
 {
     var $m_exportcsv = true;
     protected $m_mode;

@@ -23,7 +23,7 @@
  * @package atk
  * @subpackage utils
  */
-class atkBrowserInfo
+class Atk_BrowserInfo
 {
     var $ua = "";
     var $full_version = "";

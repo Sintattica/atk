@@ -6,7 +6,7 @@
  *
  * @author Mark Wittens
  */
-abstract class atkErrorHandlerBase
+abstract class Atk_ErrorHandlerBase
 {
     protected $params = array();
 

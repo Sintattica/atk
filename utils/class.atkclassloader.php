@@ -23,7 +23,7 @@
  * @package atk
  * @subpackage utils
  */
-class atkClassLoader
+class Atk_ClassLoader
 {
     /**
      * Class path mounts.
@@ -369,7 +369,7 @@ class atkClassLoader
     function findClass($class)
     {
         $class = strtolower($class);
-        $classloader = new atkClassLoader();
+        $classloader = new Atk_ClassLoader();
         $classes = $classloader->getAllClasses();
 
         if (!in_array($class, array_keys($classes))) {
@@ -400,7 +400,7 @@ class atkClassLoader
 
         if (empty($s_classes) || $force) {
             atkTools::atkimport('atk.utils.atktmpfile');
-            $cache = new atkTmpFile('classes.inc.php');
+            $cache = new Atk_TmpFile('classes.inc.php');
             $classes = array();
 
             if (is_readable($cache->getPath())) {
@@ -426,7 +426,7 @@ class atkClassLoader
     function findAllClasses()
     {
         $traverser = atkTools::atknew('atk.utils.atkdirectorytraverser');
-        $classfinder = new atkClassFinder();
+        $classfinder = new Atk_ClassFinder();
         $traverser->addCallbackObject($classfinder);
         $cwd = getcwd();
         chdir(atkConfig::getGlobal('atkroot'));
@@ -449,7 +449,7 @@ class atkClassLoader
  * @package atk
  * @subpackage utils
  */
-class atkClassFinder
+class Atk_ClassFinder
 {
     var $m_classes = array();
 

@@ -23,7 +23,7 @@
  * @package atk
  * @subpackage datagrid
  */
-class atkDGEvent
+class Atk_DGEvent
 {
     /**
      * Event will be triggered at the start of the call to atkDataGrid::render,

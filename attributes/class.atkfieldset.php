@@ -23,7 +23,7 @@
  * @package atk
  * @subpackage attributes
  */
-class atkFieldSet extends atkAttribute
+class Atk_FieldSet extends Atk_Attribute
 {
     private $m_template;
     private $m_parser;
@@ -108,7 +108,7 @@ class atkFieldSet extends atkAttribute
     {
         if ($this->m_parser == null) {
             atkTools::atkimport('atk.utils.atkstringparser');
-            $this->m_parser = new atkStringParser($this->getTemplate());
+            $this->m_parser = new Atk_StringParser($this->getTemplate());
         }
 
         return $this->m_parser;

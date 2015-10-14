@@ -31,7 +31,7 @@
  * @package atk
  * @subpackage ui
  */
-class atkPageBuilder
+class Atk_PageBuilder
 {
     protected $m_node = null;
     protected $m_action = null;

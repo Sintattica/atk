@@ -47,7 +47,7 @@ define("EASYCONSONANTS", "aeuy");
  * @subpackage attributes
  *
  */
-class atkPasswordAttribute extends atkAttribute
+class Atk_PasswordAttribute extends Atk_Attribute
 {
     /* generate? */
     var $m_generate;
@@ -496,7 +496,7 @@ class atkPasswordAttribute extends atkAttribute
         atkTools::atkdebug("atkPasswordAttribute::makePassword() is deprecated, use generatePassword() on an atkPasswordAttribute instead.");
 
         // Construct a new passwordattribute, generate the password and return it
-        $passwordattribute = new atkPasswordAttribute("dummy", true);
+        $passwordattribute = new Atk_PasswordAttribute("dummy", true);
         return $passwordattribute->getRandomChars(array(EASYVOWELS, EASYCONSONANTS, EASYVOWELS), $times * 3);
     }
 

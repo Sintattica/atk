@@ -4,7 +4,7 @@
  * Session storage singleton, given a key (or a key in the session)
  * stores records to the current session
  */
-class atkSessionStore
+class Atk_SessionStore
 {
     /**
      * Instances of the session store, indexed by key

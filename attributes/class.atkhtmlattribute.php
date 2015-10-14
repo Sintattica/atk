@@ -32,7 +32,7 @@ atkTools::useattrib("atktextattribute");
  * @subpackage attributes
  *
  */
-class atkHtmlAttribute extends atkTextAttribute
+class Atk_HtmlAttribute extends Atk_TextAttribute
 {
     /**
      * New line to BR boolean

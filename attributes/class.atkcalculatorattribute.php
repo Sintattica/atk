@@ -56,7 +56,7 @@
  * @subpackage attributes
  *
  */
-class atkCalculatorAttribute extends atkAttribute
+class Atk_CalculatorAttribute extends Atk_Attribute
 {
     /**
      * The calculation to perform.

@@ -9,7 +9,7 @@
  * @author Harrie Verveer
  * @author Mark Wittens
  */
-class atkZendPlatformErrorHandler extends atkErrorHandlerBase
+class Atk_ZendPlatformErrorHandler extends Atk_ErrorHandlerBase
 {
 
     /**

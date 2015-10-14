@@ -30,7 +30,7 @@
  * @subpackage utils
  *
  */
-class atkTmpFile
+class Atk_TmpFile
 {
     /**
      * Filename as given to constructor.
@@ -88,7 +88,7 @@ class atkTmpFile
      */
     public function create($filename, $baseDirectory = null)
     {
-        $obj = new atkTmpFile($filename);
+        $obj = new Atk_TmpFile($filename);
 
         if (null !== $baseDirectory) {
             $obj->setBasedir($baseDirectory);

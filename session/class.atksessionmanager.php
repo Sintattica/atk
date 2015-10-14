@@ -57,7 +57,7 @@ if (isset($_REQUEST["atkstackid"]))
  * @package atk
  * @subpackage session
  */
-class atkSessionManager
+class Atk_SessionManager
 {
     /**
      * @access private

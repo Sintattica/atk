@@ -35,7 +35,7 @@ define("AF_LIVETEXT_NL2BR", AF_SPECIFIC_2);
  * @subpackage attributes
  *
  */
-class atkLiveTextPreview extends atkDummyAttribute
+class Atk_LiveTextPreview extends Atk_DummyAttribute
 {
     var $m_masterattribute = "";
 

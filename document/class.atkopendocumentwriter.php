@@ -26,7 +26,7 @@ include_once('tbsooo/tbsooo_class.php');
  * @package atk
  * @subpackage document
  */
-class atkOpenDocumentWriter extends atkDocumentWriter
+class Atk_OpenDocumentWriter extends Atk_DocumentWriter
 {
     /**
      * TinyButStrong OpenOffice.org template parser instance

@@ -38,7 +38,7 @@ define("AF_MANYBOOL_NO_TOOLBAR", AF_SPECIFIC_2);
  * @subpackage relations
  *
  */
-class atkManyBoolRelation extends atkManyToManyRelation
+class Atk_ManyBoolRelation extends Atk_ManyToManyRelation
 {
     var $m_cols = 3;
 

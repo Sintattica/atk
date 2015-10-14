@@ -23,7 +23,7 @@ atkTools::atkimport('atk.datagrid.atkdgcomponent');
  * @package atk
  * @subpackage datagrid
  */
-class atkDGNoRecordsFound extends atkDGComponent
+class Atk_DGNoRecordsFound extends Atk_DGComponent
 {
 
     /**

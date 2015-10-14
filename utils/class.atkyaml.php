@@ -29,7 +29,7 @@ include_once(atkConfig::getGlobal("atkroot") . "atk/ext/spyc/spyc.php");
  * @package atk
  * @subpackage utils
  */
-class atkYAML
+class Atk_YAML
 {
 
     /**

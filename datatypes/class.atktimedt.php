@@ -28,7 +28,7 @@ atkTools::atkimport('atk.datatypes.atkdatatype');
  * @package atk
  * @subpackage datatypes
  */
-class atkTime extends atkDataType
+class Atk_Time extends Atk_DataType
 {
     /**
      * @var atkString The template to display the time with

@@ -24,7 +24,7 @@
  * @subpackage security
  *
  */
-class atkOpenSSLEncryption extends atkEncryption
+class Atk_OpenSSLEncryption extends Atk_Encryption
 {
     var $m_config_default;
     var $m_config_nokey;

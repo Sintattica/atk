@@ -148,7 +148,7 @@ function colorMatrix($colHeight, $colWidth, $field, $extern = 0, $userColors)
  * @subpackage attributes
  *
  */
-class atkColorPickerAttribute extends atkAttribute
+class Atk_ColorPickerAttribute extends Atk_Attribute
 {
     var $m_userColors;
     var $m_currentColor;

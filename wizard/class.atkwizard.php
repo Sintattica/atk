@@ -46,7 +46,7 @@ define("WIZARD_MODE_EDIT", 2);
  * @subpackage wizard
  *
  */
-class atkWizard extends atkWizardBase
+class Atk_Wizard extends Atk_WizardBase
 {
     /**
      * Array of panels

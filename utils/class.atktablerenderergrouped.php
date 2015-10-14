@@ -62,7 +62,7 @@ atkTools::atkimport("atk.utils.atktablerenderer");
  * @package atk
  * @subpackage utils
  */
-class atkTableRendererGrouped extends atkTableRenderer
+class Atk_TableRendererGrouped extends Atk_TableRenderer
 {
     /**
      * Used in counting rows

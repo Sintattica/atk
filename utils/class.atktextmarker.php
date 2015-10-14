@@ -22,7 +22,7 @@
  * @package atk
  * @subpackage utils
  */
-class atkTextMarker
+class Atk_TextMarker
 {
     var $m_text = "";
     var $m_editedtext = "";

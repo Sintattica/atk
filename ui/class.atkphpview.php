@@ -4,7 +4,7 @@
  * Small wrapper for PHP views to make template variables accessible using
  * $this->varname syntax in preparation of using real Zend_View templates.
  */
-class atkPHPView
+class Atk_PHPView
 {
     private $m_path;
     private $m_vars;

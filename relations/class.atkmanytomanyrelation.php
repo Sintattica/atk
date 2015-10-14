@@ -37,7 +37,7 @@ define('AF_MANYTOMANY_DETAILVIEW', AF_SPECIFIC_5);
  * @subpackage relations
  *
  */
-class atkManyToManyRelation extends atkRelation
+class Atk_ManyToManyRelation extends Atk_Relation
 {
     var $m_localKey = "";
     var $m_remoteKey = "";

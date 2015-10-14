@@ -21,7 +21,7 @@
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk
  */
-class atkConfig
+class Atk_Config
 {
 
     /**

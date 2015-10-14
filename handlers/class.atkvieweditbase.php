@@ -27,7 +27,7 @@ atkTools::atkimport("atk.handlers.atkactionhandler");
  * @subpackage handlers
  *
  */
-class atkViewEditBase extends atkActionHandler
+class Atk_ViewEditBase extends Atk_ActionHandler
 {
     /**
      * Holds the record for the node. It is cached as long as the instance

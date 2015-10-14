@@ -75,7 +75,7 @@ atkTools::userelation("atkrelation");
  * @subpackage relations
  *
  */
-class atkManyToOneRelation extends atkRelation
+class Atk_ManyToOneRelation extends Atk_Relation
 {
     const SEARCH_MODE_EXACT = "exact";
     const SEARCH_MODE_STARTSWITH = "startswith";
@@ -1597,7 +1597,7 @@ class atkManyToOneRelation extends atkRelation
     {
         if ($this->m_destinationFilter != "") {
             atkTools::atkimport("atk.utils.atkstringparser");
-            $parser = new atkStringParser($this->m_destinationFilter);
+            $parser = new Atk_StringParser($this->m_destinationFilter);
             return $parser->parse($record);
         } else {
             return "";
@@ -1712,7 +1712,7 @@ class atkManyToOneRelation extends atkRelation
 
         if ($this->m_joinFilter != "") {
             atkTools::atkimport('atk.utils.atkstringparser');
-            $parser = new atkStringParser($this->m_joinFilter);
+            $parser = new Atk_StringParser($this->m_joinFilter);
             $filter = $parser->parse(array('table' => $realtablename,
                 'owner' => $realtablename, 'destination' => $fieldalias));
             $joinconditions[] = $filter;
@@ -2341,7 +2341,7 @@ class atkManyToOneRelation extends atkRelation
                 }
 
                 atkTools::atkimport("atk.utils.atkstringparser");
-                $parser = new atkStringParser($descriptordef);
+                $parser = new Atk_StringParser($descriptordef);
                 $concatFields = $parser->getAllParsedFieldsAsArray($fields, true);
                 $concatTags = $concatFields['tags'];
                 $concatSeparators = $concatFields['separators'];

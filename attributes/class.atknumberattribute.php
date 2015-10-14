@@ -23,7 +23,7 @@
  * @subpackage attributes
  *
  */
-class atkNumberAttribute extends atkAttribute
+class Atk_NumberAttribute extends Atk_Attribute
 {
     // N.B. $m_size, $m_maxsize and $m_searchsize are relative to only the integral part of number (before decimal separator)
 

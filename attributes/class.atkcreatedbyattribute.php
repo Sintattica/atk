@@ -28,7 +28,7 @@ atkTools::useattrib("atkupdatedbyattribute");
  * @subpackage attributes
  *
  */
-class atkCreatedByAttribute extends atkUpdatedByAttribute
+class Atk_CreatedByAttribute extends Atk_UpdatedByAttribute
 {
 
     /**

@@ -19,7 +19,7 @@
  */
 atkTools::atkimport("atk.cache.atkcache");
 
-class atkCache_zp_shm extends atkCache
+class Atk_Cache_zp_shm extends Atk_Cache
 {
     protected $m_namespace;
 

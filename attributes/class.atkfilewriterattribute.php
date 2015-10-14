@@ -29,7 +29,7 @@ include_once(atkConfig::getGlobal("atkroot") . "atk/utils/class.atkstringparser.
  * @subpackage attributes
  *
  */
-class atkFileWriterAttribute extends atkTextAttribute
+class Atk_FileWriterAttribute extends Atk_TextAttribute
 {
     var $m_filename;
 
@@ -72,7 +72,7 @@ class atkFileWriterAttribute extends atkTextAttribute
 
         $contents = $record[$this->fieldName()];
 
-        $parser = new atkStringParser($this->m_filename);
+        $parser = new Atk_StringParser($this->m_filename);
 
         if (!$parser->isComplete($record)) {
             // record does not contain all data. Let's lazy load.
@@ -107,7 +107,7 @@ class atkFileWriterAttribute extends atkTextAttribute
     function db2value($record)
     {
         // determine filename.
-        $parser = new atkStringParser($this->m_filename);
+        $parser = new Atk_StringParser($this->m_filename);
         $filename = $parser->parse($record);
 
         if (!file_exists($filename)) {

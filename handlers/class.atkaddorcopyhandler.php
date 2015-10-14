@@ -24,7 +24,7 @@
  * @subpackage handlers
  *
  */
-class atkAddOrCopyHandler extends atkActionHandler
+class Atk_AddOrCopyHandler extends Atk_ActionHandler
 {
     var $m_processUrl = null;
 
@@ -166,7 +166,7 @@ class atkAddOrCopyHandler extends atkActionHandler
         $script = atkDialog::getCloseCall();
 
         if ($this->m_node->hasFlag(NF_ADD_DIALOG)) {
-            $dialog = new atkDialog($this->m_node->atkNodeType(), 'add', 'dialog');
+            $dialog = new Atk_Dialog($this->m_node->atkNodeType(), 'add', 'dialog');
             $dialog->setSessionStatus(SESSION_PARTIAL);
             $script .= $dialog->getCall(true, false);
         } else {

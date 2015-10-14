@@ -17,7 +17,7 @@
  * @subpackage attributes
  *
  */
-class atkMlFckAttribute extends atkMlTextAttribute
+class Atk_MlFckAttribute extends Atk_MlTextAttribute
 {
     var $m_editorname = "";
     var $m_urlpath = "";

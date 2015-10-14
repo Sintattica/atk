@@ -374,7 +374,7 @@ define("DISABLED_ALL", DISABLED_VIEW | DISABLED_EDIT);
  * @package atk
  * @subpackage attributes
  */
-class atkAttribute
+class Atk_Attribute
 {
     /**
      * The name of the attribute
@@ -2907,7 +2907,7 @@ class atkAttribute
     protected function _callDependencies(&$record, $fieldPrefix, $mode, $initial)
     {
         atkTools::atkimport('atk.utils.atkeditformmodifier');
-        $modifier = new atkEditFormModifier($this->getOwnerInstance(), $record, $fieldPrefix, $mode, $initial);
+        $modifier = new Atk_EditFormModifier($this->getOwnerInstance(), $record, $fieldPrefix, $mode, $initial);
 
         foreach ($this->getDependencies() as $callable) {
             call_user_func($callable, $modifier);
@@ -2973,7 +2973,7 @@ class atkAttribute
     }
 
     /**
-     * Set whether initially hidden or not.  A field is "hidden" by adding the class atkAttrRowHidden.
+     * Set whether initially hidden or not.  A field is "hidden" by adding the class Atk_AttrRowHidden.
      *
      * @param boolean $bool Initially hidden?
      * @return atkAttribute The instance of this atkAttribute

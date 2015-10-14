@@ -5,7 +5,7 @@
  * Provides the OTM grid with data from the session,
  * when the OTM is in add mode.
  */
-class atkOneToManyRelationSessionGridHandler
+class Atk_OneToManyRelationSessionGridHandler
 {
     private $_key;
 

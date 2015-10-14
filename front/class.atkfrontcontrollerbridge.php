@@ -29,7 +29,7 @@ atkTools::atkimport('atk.utils.atkdataholder');
  * @package atk
  * @subpackage front
  */
-class atkFrontControllerBridge
+class Atk_FrontControllerBridge
 {
 
     /**

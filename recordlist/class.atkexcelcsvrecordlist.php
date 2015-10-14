@@ -26,7 +26,7 @@ atkTools::atkimport("atk.recordlist.atkcustomrecordlist");
  * @subpackage recordlist
  *
  */
-class atkExcelCSVRecordList extends atkCustomRecordList
+class Atk_ExcelCSVRecordList extends Atk_CustomRecordList
 {
     var $lfreplace = null;
 

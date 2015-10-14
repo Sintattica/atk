@@ -24,7 +24,7 @@ atkTools::atkimport('atk.menu.atkplainmenu');
  * @package atk
  * @subpackage menu
  */
-class atkDropdownMenu extends atkPlainMenu
+class Atk_DropdownMenu extends Atk_PlainMenu
 {
 
     /**

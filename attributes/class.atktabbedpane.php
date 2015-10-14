@@ -32,7 +32,7 @@ define("AF_TABBEDPANE_NO_AUTO_HIDE_LABEL", AF_SPECIFIC_1);
  * @subpackage attributes
  *
  */
-class atkTabbedPane extends atkAttribute
+class Atk_TabbedPane extends Atk_Attribute
 {
     /**
      * The tabs list

@@ -20,7 +20,7 @@
  * @package atk
  * @subpackage ui
  */
-class atkBootstrapIndexPage
+class Atk_BootstrapIndexPage
 {
     /**
      * @var atkPage

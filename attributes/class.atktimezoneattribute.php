@@ -23,7 +23,7 @@ atkTools::useattrib("atklistattribute");
  * @package atk
  * @subpackage attributes
  */
-class atkTimeZoneAttribute extends atkListAttribute
+class Atk_TimeZoneAttribute extends Atk_ListAttribute
 {
     var $m_defaulttocurrent = true;
 

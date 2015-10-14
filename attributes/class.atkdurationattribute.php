@@ -26,7 +26,7 @@ define("DURATIONFORMAT_DECIMAL", 1);
  * @package atk
  * @subpackage attributes
  */
-class atkDurationAttribute extends atkAttribute
+class Atk_DurationAttribute extends Atk_Attribute
 {
     /** member vars * */
     var $m_resolution_min;

@@ -7,7 +7,7 @@
  * - mailto: The email address the errors will be mailed to
  *
  */
-class atkMailErrorHandler extends atkErrorHandlerBase
+class Atk_MailErrorHandler extends Atk_ErrorHandlerBase
 {
 
     protected function _wordwrap($line)

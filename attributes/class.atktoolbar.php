@@ -33,7 +33,7 @@ include_once($config_atkroot . "atk/attributes/class.atkdummyattribute.php");
  * @subpackage attributes
  *   
  */
-class atkToolbar extends atkDummyAttribute
+class Atk_Toolbar extends Atk_DummyAttribute
 {
 
     /**

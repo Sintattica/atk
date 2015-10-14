@@ -41,7 +41,7 @@ define("FINISH_BUTTON_DONT_SHOW", 3);
  * @subpackage wizard
  *
  */
-class atkWizardPanel
+class Atk_WizardPanel
 {
     /**
      * Reference to the parent wizard

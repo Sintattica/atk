@@ -46,7 +46,7 @@ function smarty_function_atkdatefield($params, &$smarty)
     }
 
     atkTools::useattrib('atkdateattribute');
-    $attr = new atkDateAttribute($name, $format, '', $min, $max, ($noweekday ? AF_DATE_EDIT_NO_DAY
+    $attr = new Atk_DateAttribute($name, $format, '', $min, $max, ($noweekday ? AF_DATE_EDIT_NO_DAY
                 : 0) | ($mandatory ? AF_OBLIGATORY : 0) | ($calendar ? 0 : AF_DATE_NO_CALENDAR));
     $html = $attr->edit(array($name => $date));
     return $html;

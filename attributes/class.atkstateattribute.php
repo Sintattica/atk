@@ -21,13 +21,13 @@ atkTools::useattrib("atklistattribute");
 
 /**
  * The atkStateAttribute class represents an attribute to handle United States in a listbox.
- * It extends atkListAttribute.
+ * It extends Atk_ListAttribute.
  *
  * @author Kevin Lwinmoe <kevin.lwinmoe@gmail.com>
  * @package atk
  * @subpackage attributes
  */
-class atkStateAttribute extends atkListAttribute
+class Atk_StateAttribute extends Atk_ListAttribute
 {
     var $m_states = array();
     var $m_usa_states = array('AL', 'AK', 'AS', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FM', 'FL',

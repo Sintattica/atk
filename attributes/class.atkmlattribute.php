@@ -23,7 +23,7 @@
  * @subpackage attributes
  *
  */
-class atkMlAttribute extends atkAttribute
+class Atk_MlAttribute extends Atk_Attribute
 {
     var $m_language = "";
     var $m_mlattribute = TRUE;

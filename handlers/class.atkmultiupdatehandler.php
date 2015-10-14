@@ -18,7 +18,7 @@
 
 /**
  */
-class atkMultiUpdatehandler extends atkActionHandler
+class Atk_MultiUpdatehandler extends Atk_ActionHandler
 {
 
     /**

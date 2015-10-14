@@ -29,7 +29,7 @@ atkTools::atkimport("atk.attributes.atktimeattribute");
  * @subpackage attributes
  *
  */
-class atkDateTimeAttribute extends atkAttribute
+class Atk_DateTimeAttribute extends Atk_Attribute
 {
     var $m_time = "";
     var $m_date = "";
@@ -111,8 +111,8 @@ class atkDateTimeAttribute extends atkAttribute
         if ($this->hasFlag(AF_CLEAR_TOUCH_BUTTONS)) {
             $flags .= "|AF_CLEAR_TOUCH_BUTTONS";
         }
-        $this->m_time = new atkTimeattribute($name, 0, 23, $default_steps, $default_time, $flags);
-        $this->m_date = new atkDateattribute($name, '', '', 0, 0, $flags);
+        $this->m_time = new Atk_Timeattribute($name, 0, 23, $default_steps, $default_time, $flags);
+        $this->m_date = new Atk_Dateattribute($name, '', '', 0, 0, $flags);
 
         $this->atkAttribute($name, $flags); // base class constructor
     }

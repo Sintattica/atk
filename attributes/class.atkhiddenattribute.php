@@ -26,7 +26,7 @@ atkTools::useattrib("atkdummyattribute");
  * @package atk
  * @subpackage attributes
  */
-class atkHiddenAttribute extends atkDummyAttribute
+class Atk_HiddenAttribute extends Atk_DummyAttribute
 {
 
     /**

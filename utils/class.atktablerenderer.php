@@ -42,7 +42,7 @@ define("TBL_MIDDLE", 32);
  * @subpackage utils
  *
  */
-class atkTableRenderer
+class Atk_TableRenderer
 {
     var $m_cellalignment = array();
     var $m_rowalignment = array();

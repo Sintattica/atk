@@ -24,7 +24,7 @@ atkTools::useattrib("atkmultiselectattribute");
  * @subpackage attributes
  *
  */
-class atkFlagAttribute extends atkMultiSelectAttribute
+class Atk_FlagAttribute extends Atk_MultiSelectAttribute
 {
 
     /**

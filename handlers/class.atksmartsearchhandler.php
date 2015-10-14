@@ -25,7 +25,7 @@
  */
 atkTools::atkimport("atk.handlers.atkabstractsearchhandler");
 
-class atkSmartSearchHandler extends atkAbstractSearchHandler
+class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
 {
 
     /**

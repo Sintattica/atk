@@ -32,7 +32,7 @@ define("RL_SORT_DESC", 2);
  * @package atk
  * @subpackage recordlist
  */
-class atkColumnConfig
+class Atk_ColumnConfig
 {
     var $m_colcfg = array();
     var $m_node = NULL;
@@ -87,7 +87,7 @@ class atkColumnConfig
             $id = $node->atkNodeType();
 
         if (!isset($s_instances[$id]) || $forceNew) {
-            $s_instances[$id] = new atkColumnConfig();
+            $s_instances[$id] = new Atk_ColumnConfig();
             $s_instances[$id]->setNode($node);
 
             $colcfg = $g_sessionManager != null ? $g_sessionManager->pageVar("atkcolcfg_" . $id)

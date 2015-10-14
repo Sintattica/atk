@@ -24,7 +24,7 @@ atkTools::atkimport('atk.db.statement.atkstatement');
  * @package atk
  * @subpackage db.statement
  */
-class atkMySQLiStatement extends atkStatement
+class Atk_MySQLiStatement extends Atk_Statement
 {
     /**
      * MySQLi statement.

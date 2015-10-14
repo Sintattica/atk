@@ -28,7 +28,7 @@
  * @package atk
  * @subpackage utils
  */
-class atkMLSelector extends atkSelector
+class Atk_MLSelector extends Atk_Selector
 {
 
     /**

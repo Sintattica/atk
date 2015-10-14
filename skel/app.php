@@ -52,15 +52,15 @@ else {
 
 $frame_top_height = $theme->getAttribute('frame_top_height');
 $frame_menu_width = $theme->getAttribute('frame_menu_width');
-$topframe = new atkFrame($frame_top_height ? $frame_top_height : "75", "top", "top.php", FRAME_SCROLL_NO, true);
-$mainframe = new atkFrame("*", "main", $destination, FRAME_SCROLL_AUTO, true);
-$menuframe = new atkFrame(($position == MENU_LEFT || $position == MENU_RIGHT ? ($frame_menu_width
+$topframe = new Atk_Frame($frame_top_height ? $frame_top_height : "75", "top", "top.php", FRAME_SCROLL_NO, true);
+$mainframe = new Atk_Frame("*", "main", $destination, FRAME_SCROLL_AUTO, true);
+$menuframe = new Atk_Frame(($position == MENU_LEFT || $position == MENU_RIGHT ? ($frame_menu_width
                 ? $frame_menu_width : 190) : $menu->getHeight()), "menu", "menu.php", $scrolling);
 $noframes = '<p>Your browser doesnt support frames, but this is required to run ' . atkTools::atktext('app_title') . "</p>\n";
 
-$root = new atkRootFrameset();
+$root = new Atk_RootFrameset();
 if (atkConfig::getGlobal("top_frame")) {
-    $outer = new atkFrameSet("*", FRAMESET_VERTICAL, 0, $noframes);
+    $outer = new Atk_FrameSet("*", FRAMESET_VERTICAL, 0, $noframes);
     $outer->addChild($topframe);
     $root->addChild($outer);
 } else {
@@ -71,7 +71,7 @@ if (atkConfig::getGlobal("top_frame")) {
 $orientation = ($position == MENU_TOP || $position == MENU_BOTTOM ? FRAMESET_VERTICAL
             : FRAMESET_HORIZONTAL);
 
-$wrapper = new atkFrameSet("*", $orientation);
+$wrapper = new Atk_FrameSet("*", $orientation);
 
 if ($position == MENU_TOP || $position == MENU_LEFT) {
     $wrapper->addChild($menuframe);

@@ -23,7 +23,7 @@
  * @subpackage db
  *
  */
-class atkPgsqlDb extends atkDb
+class Atk_PgsqlDb extends Atk_Db
 {
     /* identification */
     var $m_type = "pgsql";

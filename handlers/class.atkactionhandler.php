@@ -40,7 +40,7 @@ define("ATK_ACTION_BACK", 1);
  * @subpackage handlers
  * @abstract
  */
-class atkActionHandler
+class Atk_ActionHandler
 {
     /**
      * @var atkNode
@@ -295,7 +295,7 @@ class atkActionHandler
             return atkTools::atknew("atk.handlers.atk" . $action . "handler");
         } else {
             // We don't have handlers yet for other actions.
-            $actionhandler = new atkActionHandler(); // The default handler will automatically
+            $actionhandler = new Atk_ActionHandler(); // The default handler will automatically
             // invoke the node methods.
             return $actionhandler;
         }

@@ -28,7 +28,7 @@ usefilter("atkfilter");
  * @subpackage filters
  *
  */
-class atkDistinctFilter extends atkFilter
+class Atk_DistinctFilter extends Atk_Filter
 {
 
     /**

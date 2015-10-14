@@ -22,7 +22,7 @@
  * @package atk
  * @subpackage db
  */
-class atkMysqlDb extends atkDb
+class Atk_MysqlDb extends Atk_Db
 {
     /* sequence table */
     var $m_seq_table = "db_sequence";

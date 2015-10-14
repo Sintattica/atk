@@ -30,7 +30,7 @@ require_once(atkConfig::getGlobal("atkroot") . "atk/db/class.atkmysqlddl.php");
  * @subpackage db
  *
  */
-class atkMysqliDDL extends atkMysqlDDL
+class Atk_MysqliDDL extends Atk_MysqlDDL
 {
 
     /**

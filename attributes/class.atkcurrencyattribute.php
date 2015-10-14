@@ -23,7 +23,7 @@ atkTools::useattrib("atknumberattribute");
  * @subpackage attributes
  *
  */
-class atkCurrencyAttribute extends atkNumberAttribute
+class Atk_CurrencyAttribute extends Atk_NumberAttribute
 {
     var $m_currencysymbol;
 

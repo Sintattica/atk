@@ -27,7 +27,7 @@
  * @subpackage attributes
  *
  */
-class atkEmailAttribute extends atkAttribute
+class Atk_EmailAttribute extends Atk_Attribute
 {
     /**
      * @var boolean Bool to set DNS search in validate function

@@ -409,7 +409,7 @@ class auth_db extends auth_interface
 
         $userlist = array();
         atkTools::atkimport("atk.utils.atkstringparser");
-        $stringparser = new atkStringParser(atkConfig::getGlobal("auth_userdescriptor"));
+        $stringparser = new Atk_StringParser(atkConfig::getGlobal("auth_userdescriptor"));
         for ($i = 0, $_i = count($recs); $i < $_i; $i++) {
             $userlist[] = array("userid" => $recs[$i][atkConfig::getGlobal("auth_userfield")], "username" => $stringparser->parse($recs[$i]));
         }

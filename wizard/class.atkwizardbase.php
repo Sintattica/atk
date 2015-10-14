@@ -27,7 +27,7 @@ atkTools::atkimport("atk.atkcontroller");
  * @package atk
  *
  */
-class atkWizardBase extends atkController
+class Atk_WizardBase extends Atk_Controller
 {
 
     /**

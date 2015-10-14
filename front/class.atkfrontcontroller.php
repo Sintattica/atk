@@ -28,7 +28,7 @@ atkTools::atkimport('atk.utils.atkdataholder');
  * @package atk
  * @subpackage front
  */
-class atkFrontController implements ArrayAccess
+class Atk_FrontController implements ArrayAccess
 {
     private static $s_current = null;
     private static $s_bridges = array();
@@ -346,7 +346,7 @@ class atkFrontController implements ArrayAccess
         atkTools::atkimport('atk.utils.atktmpfile');
         $path = 'frontcontrollers/' . $this->m_module . '/' . $this->m_name . '/' . $this->m_action;
         $filename = md5($this->getActionCacheKey()) . '.cache';
-        $file = new atkTmpFile($path . '/' . $filename);
+        $file = new Atk_TmpFile($path . '/' . $filename);
         return $file;
     }
 
@@ -430,7 +430,7 @@ class atkFrontController implements ArrayAccess
         try {
             $this->setTemplate($this->m_action);
 
-            $this->m_request = new atkDataHolder($request);
+            $this->m_request = new Atk_DataHolder($request);
             $this->m_session = $this->loadSession();
 
             $this->module = $this->m_module;

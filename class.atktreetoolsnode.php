@@ -21,7 +21,7 @@
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk   
  */
-class atkTreeToolsNode
+class Atk_TreeToolsNode
 {
     var $m_id;
     var $m_label; // DEPRECATED, use $m_object instead.

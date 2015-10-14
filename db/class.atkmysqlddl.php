@@ -25,7 +25,7 @@
  * @subpackage db
  *
  */
-class atkMysqlDDL extends atkDDL
+class Atk_MysqlDDL extends Atk_DDL
 {
     var $m_table_type = NULL;
 

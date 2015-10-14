@@ -29,7 +29,7 @@
  * @subpackage handlers
  * @todo Add locking check for when an application calls an action_update on a locked node
  */
-class atkUpdatehandler extends atkActionHandler
+class Atk_Updatehandler extends Atk_ActionHandler
 {
     public $m_dialogSaveUrl;
 

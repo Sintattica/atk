@@ -28,7 +28,7 @@ atkTools::userelation("atkonetoonerelation");
  * @subpackage relations
  *
  */
-class atkSecureRelation extends atkOneToOneRelation
+class Atk_SecureRelation extends Atk_OneToOneRelation
 {
     var $m_crypt = NULL;
     var $m_linktable;

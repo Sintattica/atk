@@ -29,7 +29,7 @@ atkTools::atkimport("atk.recordlist.atkrecordlist");
  * @subpackage recordlist
  *
  */
-class atkPrintableRecordList extends atkRecordList
+class Atk_PrintableRecordList extends Atk_RecordList
 {
     /**
      * Creates printableRecordlist

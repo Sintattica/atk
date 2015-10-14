@@ -28,7 +28,7 @@ atkTools::userelation("atkmanytomanyrelation");
  * @subpackage relations
  *
  */
-class atkShuttleRelation extends atkManyToManyRelation
+class Atk_ShuttleRelation extends Atk_ManyToManyRelation
 {
     var $m_maxlistwidth = null;
 

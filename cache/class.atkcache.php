@@ -18,7 +18,7 @@
  * @version $Revision: 6309 $
  * $Id$
  */
-abstract class atkCache implements ArrayAccess
+abstract class Atk_Cache implements ArrayAccess
 {
     /**
      * All cache instances

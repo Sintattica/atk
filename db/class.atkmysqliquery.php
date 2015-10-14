@@ -27,7 +27,7 @@ require_once(atkConfig::getGlobal("atkroot") . "atk/db/class.atkmysqlquery.php")
  * @subpackage db
  *
  */
-class atkMysqliQuery extends atkMysqlQuery
+class Atk_MysqliQuery extends Atk_MysqlQuery
 {
     /**
      * Reference to the field where the new sequence

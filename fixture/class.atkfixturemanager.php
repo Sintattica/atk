@@ -25,7 +25,7 @@
  * @package atk
  * @subpackage fixture
  */
-class atkFixtureManager
+class Atk_FixtureManager
 {
     /**
      * Loader class names by extension.
@@ -50,7 +50,7 @@ class atkFixtureManager
     {
         static $instance = NULL;
         if ($instance == NULL)
-            $instance = new atkFixtureManager();
+            $instance = new Atk_FixtureManager();
         return $instance;
     }
 

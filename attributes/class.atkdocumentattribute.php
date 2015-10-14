@@ -28,7 +28,7 @@ atkTools::useattrib("atkdummyattribute");
  * @package atk
  * @subpackage attributes
  */
-class atkDocumentAttribute extends atkDummyAttribute
+class Atk_DocumentAttribute extends Atk_DummyAttribute
 {
 
     /**

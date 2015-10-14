@@ -21,7 +21,7 @@
  * @package atk
  * @subpackage document
  */
-class atkDocumentWriter
+class Atk_DocumentWriter
 {
     /**
      * Template vars array
@@ -236,7 +236,7 @@ class atkDocumentWriter
     {
         // Get the current date and a reference to an atkDateAttribute in order to format the current date
         $date = adodb_getdate();
-        $dateattribute = new atkDateAttribute("dummy");
+        $dateattribute = new Atk_DateAttribute("dummy");
 
         // Assign the date in short and long format as [shortdate] and [longdate]
         $this->Assign($prefix . "shortdate", $dateattribute->formatDate($date, "d-m-Y", 0));
@@ -261,7 +261,7 @@ class atkDocumentWriter
             if ($s_oo_instance == NULL) {
                 atkTools::atkdebug("Creating a new atkOpenDocumentWriter instance");
                 atkTools::atkimport("atk.document.atkopendocumentwriter");
-                $s_oo_instance = new atkOpenDocumentWriter();
+                $s_oo_instance = new Atk_OpenDocumentWriter();
             }
 
             return $s_oo_instance;
@@ -269,7 +269,7 @@ class atkDocumentWriter
             if ($s_docx_instance == NULL) {
                 atkTools::atkdebug("Creating a new atkDocxWriter instance");
                 atkTools::atkimport("atk.document.atkdocxwriter");
-                $s_docx_instance = new atkDocxWriter();
+                $s_docx_instance = new Atk_DocxWriter();
             }
 
             return $s_docx_instance;

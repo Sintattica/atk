@@ -30,7 +30,7 @@
  */
 atkTools::atkimport("atk.attributes.atkdummyattribute");
 
-class atkRowCounter extends atkDummyAttribute
+class Atk_RowCounter extends Atk_DummyAttribute
 {
 
     /**

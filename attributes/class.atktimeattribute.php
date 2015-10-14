@@ -30,7 +30,7 @@ define("AF_TIME_DEFAULT_EMPTY", AF_SPECIFIC_7); // Always use the empty value on
  * @subpackage attributes
  *
  */
-class atkTimeAttribute extends atkAttribute
+class Atk_TimeAttribute extends Atk_Attribute
 {
     var $m_beginTime = 0;
     var $m_endTime = 23;

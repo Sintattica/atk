@@ -25,7 +25,7 @@ atkTools::useattrib("atkFileAttribute");
  * @subpackage attributes
  *
  */
-class atkMultipleFileAttribute extends atkFileAttribute
+class Atk_MultipleFileAttribute extends Atk_FileAttribute
 {
     /**
      * private vars  

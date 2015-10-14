@@ -21,7 +21,7 @@
  * @package atk
  * @subpackage datagrid
  */
-class atkDGRenderer extends atkDGComponent
+class Atk_DGRenderer extends Atk_DGComponent
 {
 
     /**

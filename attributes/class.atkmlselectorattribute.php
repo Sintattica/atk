@@ -26,7 +26,7 @@ atkTools::useattrib("atkmlattribute");
  * @subpackage attributes
  *
  */
-class atkMlSelectorAttribute extends atkMlAttribute
+class Atk_MlSelectorAttribute extends Atk_MlAttribute
 {
     var $m_mlselectorattribute = true;
 

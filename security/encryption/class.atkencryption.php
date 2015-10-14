@@ -26,7 +26,7 @@
  * @subpackage security
  *
  */
-class atkEncryption
+class Atk_Encryption
 {
 
     /**

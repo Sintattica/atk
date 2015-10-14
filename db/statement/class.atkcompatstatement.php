@@ -29,7 +29,7 @@ atkTools::atkimport('atk.db.statement.atkstatement');
  * @package atk
  * @subpackage db.statement
  */
-class atkCompatStatement extends atkStatement
+class Atk_CompatStatement extends Atk_Statement
 {
     /**
      * Query resource.

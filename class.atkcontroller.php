@@ -20,7 +20,7 @@
  * @package atk
  * @todo Make this class a real singleton.
  */
-class atkController
+class Atk_Controller
 {
     /**
      * The name of the wizard.
@@ -162,7 +162,7 @@ class atkController
      * handling the actual action.
      *
      * @param array $postvars The request variables for the node.
-     * @param string $flags Render flags (see class atkPage).
+     * @param string $flags Render flags (see class Atk_Page).
      *
      */
     function handleRequest($postvars, $flags = NULL)

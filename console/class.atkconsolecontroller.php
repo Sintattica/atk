@@ -22,7 +22,7 @@
  * @package atk
  * @subpackage console
  */
-class atkConsoleController
+class Atk_ConsoleController
 {
     /**
      * Controller name.
@@ -218,7 +218,7 @@ class atkConsoleController
         }
 
         atkTools::atkimport('atk.utils.atktmpfile');
-        $file = new atkTmpFile($filename);
+        $file = new Atk_TmpFile($filename);
         $file->appendToFile($lines);
 
         if ($this->isDebugEnabled()) {

@@ -19,7 +19,7 @@
  */
 atkTools::atkimport("atk.cache.atkcache");
 
-class atkCache_var extends atkCache
+class Atk_Cache_var extends Atk_Cache
 {
     /**
      * Expiration timestamps for each cache entry.

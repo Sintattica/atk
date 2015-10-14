@@ -68,7 +68,7 @@ atkTools::userelation("atkrelation");
  * @subpackage relations
  *
  */
-class atkOneToOneRelation extends atkRelation
+class Atk_OneToOneRelation extends Atk_Relation
 {
     /**
      * The name of the referential key attribute in the target node.

@@ -25,7 +25,7 @@ atkTools::atkimport('atk.datatypes.atkdatatype');
  * @package atk
  * @subpackage datatypes
  */
-class atkArrayDt extends atkDataType
+class Atk_ArrayDt extends Atk_DataType
 {
     /**
      * @var array The internal value of the current array object

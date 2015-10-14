@@ -24,7 +24,7 @@ atkTools::atkimport("atk.attributes.atkattribute");
  * @package atk
  * @subpackage attributes
  */
-class atkExpressionAttribute extends atkAttribute
+class Atk_ExpressionAttribute extends Atk_Attribute
 {
     var $m_searchType = "string";
     var $m_expression;
@@ -180,7 +180,7 @@ class atkExpressionAttribute extends atkAttribute
         if ($this->getSearchType() == "number") {
             return atkNumberAttribute::search($record, $extended, $fieldprefix);
         } else if ($this->getSearchType() == "date") {
-            $attr = new atkDateAttribute($this->fieldName());
+            $attr = new Atk_DateAttribute($this->fieldName());
             $attr->m_searchsize = 10;
             return $attr->search($record, $extended, $fieldprefix);
         } else {
@@ -210,7 +210,7 @@ class atkExpressionAttribute extends atkAttribute
         $expression = "(" . str_replace("[table]", $table, $this->m_expression) . ")";
 
         if ($this->getSearchType() == "date") {
-            $attr = new atkDateAttribute($this->fieldName());
+            $attr = new Atk_DateAttribute($this->fieldName());
             return $attr->getSearchCondition($query, $table, $value, $searchmode, $expression);
         }
 

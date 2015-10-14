@@ -22,7 +22,7 @@ atkTools::atkimport('atk.datagrid.atkdgcomponent');
  * @package atk
  * @subpackage datagrid
  */
-class atkDGLimit extends atkDGComponent
+class Atk_DGLimit extends Atk_DGComponent
 {
 
     /**

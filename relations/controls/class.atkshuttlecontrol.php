@@ -21,7 +21,7 @@
  * @package atk
  * @subpackage relations
  */
-abstract class atkShuttleControl
+abstract class Atk_ShuttleControl
 {
     const AVAILABLE = 'available';
     const SELECTED = 'selected';

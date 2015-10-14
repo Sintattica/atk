@@ -33,7 +33,7 @@ $g_maxlevel = 0;
  * instead of atkNode.
  * <b>Example:</b>
  * <code>
- * class classname extends atkTreeNode
+ * class classname extends Atk_TreeNode
  * {
  *      $this->atkTreeNode("nodeclass");
  *
@@ -46,7 +46,7 @@ $g_maxlevel = 0;
  * @author Sandy Pleyte <sandy@achievo.org>
  * @package atk
  */
-class atkTreeNode extends atkNode
+class Atk_TreeNode extends Atk_Node
 {
     var $m_tree = array();
 
@@ -95,7 +95,7 @@ class atkTreeNode extends atkNode
         atkTools::atkdebug("atktreenode::buildtree() " . $this->m_parent);
         $recordset = $this->selectDb(atkTools::atkArrayNvl($this->m_postvars, "atkfilter", ""), "", "", $this->m_listExcludes, "", "admin");
 
-        $treeobject = new atkTreeToolsTree();
+        $treeobject = new Atk_TreeToolsTree();
         for ($i = 0; $i < count($recordset); $i++)
             $treeobject->addNode($recordset[$i][$this->m_primaryKey[0]], $recordset[$i], $recordset[$i][$this->m_parent][$this->m_primaryKey[0]]);
 
@@ -563,7 +563,7 @@ class atkTreeNode extends atkNode
                             else
                                 $url = str_replace('[pk]', rawurlencode($this->primaryKey($this->m_tree[$cnt]["label"])), $url);
 
-                            $stringparser = new atkStringParser($url);
+                            $stringparser = new Atk_StringParser($url);
                             $url = $stringparser->parse($this->m_tree[$cnt]["label"], true);
 
                             $res.=atkTools::href($url, atkTools::atktext($name), SESSION_NESTED) . "&nbsp;";

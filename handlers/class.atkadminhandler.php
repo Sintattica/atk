@@ -28,7 +28,7 @@
  */
 atkTools::atkimport("atk.handlers.atkactionhandler");
 
-class atkAdminHandler extends atkActionHandler
+class Atk_AdminHandler extends Atk_ActionHandler
 {
     var $m_actionSessionStatus = SESSION_NESTED;
 
@@ -329,7 +329,7 @@ class atkAdminHandler extends atkActionHandler
                 $action = $node->hasFlag(NF_ADDORCOPY_DIALOG) ? 'addorcopy' : 'add';
 
                 atkTools::atkimport('atk.ui.atkdialog');
-                $dialog = new atkDialog($node->atkNodeType(), $action, 'dialog');
+                $dialog = new Atk_Dialog($node->atkNodeType(), $action, 'dialog');
                 $dialog->setModifierObject($node);
                 $dialog->setSessionStatus(SESSION_PARTIAL);
                 $onClick = $dialog->getCall();

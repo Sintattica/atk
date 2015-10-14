@@ -25,7 +25,7 @@
  * @subpackage handlers
  *
  */
-class atkFileExport
+class Atk_FileExport
 {
 
     /**

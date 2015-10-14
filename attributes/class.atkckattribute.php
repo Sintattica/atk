@@ -18,7 +18,7 @@ atkTools::useattrib("atktextattribute");
  * See http://ckeditor.com
  *
  */
-class atkCKAttribute extends atkTextAttribute
+class Atk_CKAttribute extends Atk_TextAttribute
 {
     /**
      * @var array CKEditor configuration (default)

@@ -23,7 +23,7 @@
  * @package atk
  * @subpackage recordlist
  */
-class atkTotalizer
+class Atk_Totalizer
 {
     var $m_node = NULL;
     var $m_columnConfig = NULL;

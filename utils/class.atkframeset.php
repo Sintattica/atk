@@ -32,7 +32,7 @@ define("FRAME_SCROLL_AUTO", "auto");
  * @subpackage utils
  *
  */
-class atkFrameSet extends atkAbstractFrame
+class Atk_FrameSet extends Atk_AbstractFrame
 {
     var $m_border;
     var $m_orientation;
@@ -128,7 +128,7 @@ class atkFrameSet extends atkAbstractFrame
  * @package atk
  * @subpackage utils
  */
-class atkFrame extends atkAbstractFrame
+class Atk_Frame extends Atk_AbstractFrame
 {
     var $m_name;
     var $m_src;
@@ -185,7 +185,7 @@ class atkFrame extends atkAbstractFrame
  * @package atk
  * @subpackage utils
  */
-class atkRootFrameset extends atkAbstractFrame
+class Atk_RootFrameset extends Atk_AbstractFrame
 {
 
     /**
@@ -211,7 +211,7 @@ class atkRootFrameset extends atkAbstractFrame
  * @package atk
  * @subpackage utils
  */
-class atkAbstractFrame
+class Atk_AbstractFrame
 {
     var $m_childs = array();
     var $m_dimension;

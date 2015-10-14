@@ -46,7 +46,7 @@ atkTools::atkimport("atk.utils.atkactionlistener");
  * @package atk
  * @subpackage utils
  */
-class atkEventLog extends atkActionListener
+class Atk_EventLog extends Atk_ActionListener
 {
 
     /**

@@ -30,7 +30,7 @@ define("AF_IP_SINGLEFIELD", AF_SPECIFIC_3);
  * @package atk
  * @subpackage attributes
  */
-class atkIpAttribute extends atkAttribute
+class Atk_IpAttribute extends Atk_Attribute
 {
 
     /**

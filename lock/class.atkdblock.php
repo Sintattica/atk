@@ -22,7 +22,7 @@
  * @package atk
  * @subpackage lock
  */
-class atkDbLock extends atkLock
+class Atk_DbLock extends Atk_Lock
 {
 
     /**

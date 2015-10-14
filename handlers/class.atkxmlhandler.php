@@ -23,7 +23,7 @@
  * @subpackage handlers
  *
  */
-class atkXmlHandler extends atkActionHandler
+class Atk_XmlHandler extends Atk_ActionHandler
 {
 
     /**

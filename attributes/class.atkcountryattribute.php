@@ -25,7 +25,7 @@ atkTools::useattrib("atklistattribute");
  * @package atk
  * @subpackage attributes
  */
-class atkCountryAttribute extends atkListAttribute
+class Atk_CountryAttribute extends Atk_ListAttribute
 {
     var $m_countries = array();
     var $m_europe_countries = array('AL', 'AT', 'BE', 'BA', 'BG', 'HR', 'CY', 'CZ', 'DK', 'DE', 'FI', 'FR', 'GB', 'GR', 'HU', 'IE', 'IT', 'LI',

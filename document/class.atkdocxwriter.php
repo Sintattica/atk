@@ -20,7 +20,7 @@
  * @package atk
  * @subpackage document
  */
-class atkDocxWriter extends atkOpenDocumentWriter
+class Atk_DocxWriter extends Atk_OpenDocumentWriter
 {
 
     /**

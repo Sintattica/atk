@@ -31,7 +31,7 @@ atkTools::atkimport('atk.datagrid.atkdgcomponent');
  * @package atk
  * @subpackage datagrid
  */
-class atkDataGrid
+class Atk_DataGrid
 {
     /**
      * Enable sorting for the datagrid.
@@ -465,7 +465,7 @@ class atkDataGrid
 
             atkTools::atkimport('atk.utils.atkstringparser');
             foreach ($this->getNode()->m_fuzzyFilters as $filter) {
-                $parser = new atkStringParser($filter);
+                $parser = new Atk_StringParser($filter);
                 $filter = $parser->parse(array('table' => $this->getNode()->getTable()));
                 $this->addFilter($filter);
             }
@@ -1700,7 +1700,7 @@ class atkDataGrid
      */
     protected function notify($event)
     {
-        $event = new atkDGEvent($this, $event);
+        $event = new Atk_DGEvent($this, $event);
 
         foreach ($this->getListeners() as $listener) {
             $listener->notify($event);
@@ -1765,7 +1765,7 @@ class atkDataGrid
 
         // render the grid
         atkTools::atkimport('atk.datagrid.atkdgrenderer');
-        $renderer = new atkDGRenderer($this);
+        $renderer = new Atk_DGRenderer($this);
         $result = $renderer->render();
 
         // restore previous postvars

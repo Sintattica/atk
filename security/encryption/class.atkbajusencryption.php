@@ -22,7 +22,7 @@
  * @subpackage security
  *
  */
-class atkBajusEncryption extends atkEncryption
+class Atk_BajusEncryption extends Atk_Encryption
 {
 
     /**

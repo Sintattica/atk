@@ -29,7 +29,7 @@
  * @subpackage utils
  *
  */
-class atkDirectoryTraverser
+class Atk_DirectoryTraverser
 {
     public $m_callbackObjects = array();
     public $m_excludes = array();

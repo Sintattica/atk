@@ -28,7 +28,7 @@ include_once(atkConfig::getGlobal("atkroot") . "atk/interface/interface.atkserve
  * @package atk
  * @subpackage interface
  */
-class atkServer
+class Atk_Server
 {
     private $m_protocol = "";
 
@@ -41,7 +41,7 @@ class atkServer
     {
         static $s_instance = NULL;
         if ($s_instance == NULL) {
-            $s_instance = new atkServer();
+            $s_instance = new Atk_Server();
         }
         return $s_instance;
     }

@@ -28,7 +28,7 @@
  * @subpackage attributes
  *
  */
-class atkMlHtmlAttribute extends atkMlTextAttribute
+class Atk_MlHtmlAttribute extends Atk_MlTextAttribute
 {
     /**
      * New line to BR boolean

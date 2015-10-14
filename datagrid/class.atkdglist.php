@@ -34,7 +34,7 @@
  * @todo Keyboard navigation is at the moment broken because we don't supply the navigation array.
  *       However, this should be done in a different way anyhow.
  */
-class atkDGList extends atkDGComponent
+class Atk_DGList extends Atk_DGComponent
 {
     protected $m_hasActionColumn = null;
 
@@ -756,7 +756,7 @@ class atkDGList extends atkDGComponent
                     else
                         $url = str_replace('[pk]', rawurlencode($row["selector"]), $url);
 
-                    $parser = new atkStringParser($url);
+                    $parser = new Atk_StringParser($url);
                     $url = $parser->parse($row["record"], true, false);
                     $row["actions"][$name] = $url;
                 } else {
@@ -782,7 +782,7 @@ class atkDGList extends atkDGComponent
 
         if (atkTools::hasFlag($flags, RL_EXT_SORT) && $columnConfig->hasSubTotals()) {
             atkTools::atkimport("atk.recordlist.atktotalizer");
-            $totalizer = new atkTotalizer($grid->getNode(), $columnConfig);
+            $totalizer = new Atk_Totalizer($grid->getNode(), $columnConfig);
             $result["rows"] = $totalizer->totalize($result["rows"]);
         }
 

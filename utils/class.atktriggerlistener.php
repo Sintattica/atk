@@ -33,7 +33,7 @@
  * @package atk
  * @subpackage utils
  */
-class atkTriggerListener
+class Atk_TriggerListener
 {
     /**
      * The owning node of the listener.

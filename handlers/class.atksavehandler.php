@@ -29,7 +29,7 @@
  * @subpackage handlers
  *
  */
-class atkSaveHandler extends atkActionHandler
+class Atk_SaveHandler extends Atk_ActionHandler
 {
     var $m_dialogSaveUrl;
 

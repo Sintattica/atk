@@ -34,7 +34,7 @@ atkTools::useattrib("atktextattribute");
  * @subpackage attributes
  *
  */
-class atkFckAttribute extends atkTextAttribute
+class Atk_FckAttribute extends Atk_TextAttribute
 {
     var $m_editorname = "";
     var $m_urlpath = "";

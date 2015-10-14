@@ -20,7 +20,7 @@
 atkTools::atkimport("atk.cache.atkcache");
 atkTools::useattrib('atkFileAttribute');
 
-class atkCache_file extends atkCache
+class Atk_Cache_file extends Atk_Cache
 {
     /**
      * Path where the cache files are saved

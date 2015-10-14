@@ -30,7 +30,7 @@
  * @subpackage attributes
  *
  */
-class atkAggregatedColumn extends atkAttribute
+class Atk_AggregatedColumn extends Atk_Attribute
 {
     /**
      * The display/sort template
@@ -67,7 +67,7 @@ class atkAggregatedColumn extends atkAttribute
         $this->m_template = $template;
 
         atkTools::atkimport("atk.utils.atkstringparser");
-        $parser = new atkStringParser($template);
+        $parser = new Atk_StringParser($template);
         $this->m_displayfields = $parser->getFields();
 
         if (!is_array($searchfields))
@@ -97,7 +97,7 @@ class atkAggregatedColumn extends atkAttribute
             $rec[$field] = $p_attrib->display($record[$this->fieldName()], $mode);
         }
         atkTools::atkimport("atk.utils.atkstringparser");
-        $parser = new atkStringParser($this->m_template);
+        $parser = new Atk_StringParser($this->m_template);
         return $parser->parse($rec);
     }
 
@@ -241,7 +241,7 @@ class atkAggregatedColumn extends atkAttribute
             }
 
             atkTools::atkimport("atk.utils.atkstringparser");
-            $parser = new atkStringParser($this->m_template);
+            $parser = new Atk_StringParser($this->m_template);
             $concatFields = $parser->getAllParsedFieldsAsArray($data, true);
             $concatTags = $concatFields['tags'];
             $concatSeparators = $concatFields['separators'];

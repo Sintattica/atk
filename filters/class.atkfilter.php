@@ -24,7 +24,7 @@
  * @subpackage filters
  * @abstract
  */
-class atkFilter extends atkAttribute
+class Atk_Filter extends Atk_Attribute
 {
 
     /**

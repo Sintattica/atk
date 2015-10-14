@@ -24,7 +24,7 @@
  * @subpackage security
  *
  */
-class atkBase64Encryption extends atkEncryption
+class Atk_Base64Encryption extends Atk_Encryption
 {
 
     /**

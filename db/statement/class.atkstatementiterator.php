@@ -3,7 +3,7 @@
 /**
  * External iterator for a statement.
  */
-class atkStatementIterator implements Iterator
+class Atk_StatementIterator implements Iterator
 {
     /**
      * Current row.

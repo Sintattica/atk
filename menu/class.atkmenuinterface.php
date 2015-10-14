@@ -25,7 +25,7 @@
  * @package atk
  * @subpackage menu
  */
-class atkmenuinterface
+class Atk_menuinterface
 {
     var $m_height;
 

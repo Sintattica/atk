@@ -3,7 +3,7 @@
 /**
  * Example module.
  */
-class mod_test extends atkModule
+class mod_test extends Atk_Module
 {
 
     function getNodes()

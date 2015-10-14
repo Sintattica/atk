@@ -4,7 +4,7 @@
 atkTools::useattrib("atkattribute");
 
 
-class bootstrapColorPickerAttribute extends atkAttribute
+class bootstrapColorPickerAttribute extends Atk_Attribute
 {
 
 

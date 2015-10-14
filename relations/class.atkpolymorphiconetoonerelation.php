@@ -1,7 +1,7 @@
 <?php
 atkTools::userelation("atkonetoonerelation");
 
-class atkPolymorphicOneToOneRelation extends atkOneToOneRelation
+class Atk_PolymorphicOneToOneRelation extends Atk_OneToOneRelation
 {
     /**
      * The name of the foreign key field in the master node to the type table.
@@ -27,7 +27,7 @@ class atkPolymorphicOneToOneRelation extends atkOneToOneRelation
     /**
      * Default Constructor
      *
-     * The atkPolymorphicOneToOneRelation extends atkOneToOneRelation:
+     * The atkPolymorphicOneToOneRelation extends Atk_OneToOneRelation:
      * <b>Example:</b>
      * <code>
      *  $this->add(new atkPolymorphicOneToOneRelation("details","fruittype_id","table","poly.orange",

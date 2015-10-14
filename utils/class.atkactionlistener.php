@@ -29,7 +29,7 @@
  * @package atk
  * @subpackage utils
  */
-class atkActionListener
+class Atk_ActionListener
 {
     /**
      * The list of actions the action listener should listen to.

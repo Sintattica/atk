@@ -28,7 +28,7 @@
  * @subpackage session
  *
  */
-class atkState
+class Atk_State
 {
 
     /**

@@ -25,7 +25,7 @@
  * @subpackage utils
  *
  */
-class atkFileUtils
+class Atk_FileUtils
 {
 
     /**
@@ -182,7 +182,7 @@ class atkFileUtils
     function parseDirectoryName($template, $data)
     {
         atkTools::atkimport("atk.utils.atkstringparser");
-        $stringparser = new atkStringParser($template);
+        $stringparser = new Atk_StringParser($template);
         return $stringparser->parse($data);
     }
 

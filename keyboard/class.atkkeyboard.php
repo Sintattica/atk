@@ -41,7 +41,7 @@ define("KB_CTRLCURSOR", 16);
  * @subpackage keyboard
  *
  */
-class atkKeyboard
+class Atk_Keyboard
 {
     /**
      * WORKAROUND: in php (4.3.1 at least) at least one member var must exist, to make it possible to create singletons.
@@ -58,7 +58,7 @@ class atkKeyboard
         static $s_kb;
         if ($s_kb == NULL) {
             atkTools::atkdebug("Creating atkKeyboard instance");
-            $s_kb = new atkKeyboard();
+            $s_kb = new Atk_Keyboard();
         }
 
         return $s_kb;

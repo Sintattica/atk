@@ -24,7 +24,7 @@
  * @package atk
  * @subpackage db.statement
  */
-class atkStatementParser
+class Atk_StatementParser
 {
     /**
      * Characters we consider as quotes.

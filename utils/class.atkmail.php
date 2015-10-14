@@ -25,7 +25,7 @@
  * @deprecated 
  * @see atkMailer
  */
-class atkMail
+class Atk_Mail
 {
 
     /**

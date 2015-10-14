@@ -23,7 +23,7 @@
  * @package atk
  * @subpackage db.statement
  */
-class atkStatementException extends Exception
+class Atk_StatementException extends Exception
 {
     const MISSING_BIND_PARAMETER = 1;
     const NO_DATABASE_CONNECTION = 2;

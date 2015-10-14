@@ -37,7 +37,7 @@ atkTools::useattrib('atkUpdateStampAttribute');
  * @subpackage attributes
  *
  */
-class atkCreateStampAttribute extends atkUpdateStampAttribute
+class Atk_CreateStampAttribute extends Atk_UpdateStampAttribute
 {
 
     /**

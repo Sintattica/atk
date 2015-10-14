@@ -26,7 +26,7 @@
  * @package atk
  *
  */
-class atkLanguage
+class Atk_Language
 {
     /**
      * Instance.
@@ -336,7 +336,7 @@ class atkLanguage
             $supportedlanguagesdir = atkLanguage::getInstance()->getLanguageDirForModule($supportedlanguagesmodule);
             atkTools::atkimport('atk.utils.atkdirectorytraverser');
             $supportedlanguagescollector = new getSupportedLanguagesCollector();
-            $traverser = new atkDirectoryTraverser();
+            $traverser = new Atk_DirectoryTraverser();
             $traverser->addCallbackObject($supportedlanguagescollector);
             $traverser->traverse($supportedlanguagesdir);
             self::$s_supportedLanguages = $supportedlanguagescollector->getLanguages();

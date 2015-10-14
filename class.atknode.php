@@ -276,7 +276,7 @@ define("MRA_NO_SELECT", 3);
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk
  */
-class atkNode
+class Atk_Node
 {
     /**
      * reference to the class which is used to validate atknodes
@@ -2841,7 +2841,7 @@ class atkNode
      * handling the actual action.
      *
      * @param array $postvars The request variables for the node.
-     * @param int $flags Render flags (see class atkPage).
+     * @param int $flags Render flags (see class Atk_Page).
      */
     function dispatch($postvars, $flags = NULL)
     {
@@ -3127,7 +3127,7 @@ class atkNode
 
             // parse fields from descriptordef
             atkTools::atkimport("atk.utils.atkstringparser");
-            $parser = new atkStringParser($descriptordef);
+            $parser = new Atk_StringParser($descriptordef);
             $fields = $parser->getFields();
 
             // There might be fields that have a '.' in them. These fields are
@@ -3180,13 +3180,13 @@ class atkNode
         // Descriptor template is set?
         if ($this->m_descTemplate != NULL) {
             atkTools::atkimport("atk.utils.atkstringparser");
-            $parser = new atkStringParser($this->m_descTemplate);
+            $parser = new Atk_StringParser($this->m_descTemplate);
             return $parser->parse($rec);
         }
         // See if node has a custom descriptor definition.
         else if (method_exists($this, "descriptor_def")) {
             atkTools::atkimport("atk.utils.atkstringparser");
-            $parser = new atkStringParser($this->descriptor_def());
+            $parser = new Atk_StringParser($this->descriptor_def());
             return $parser->parse($rec);
         } else {
             // default descriptor.. (default is first attribute of a node)

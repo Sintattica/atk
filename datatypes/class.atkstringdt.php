@@ -25,7 +25,7 @@ atkTools::atkimport('atk.datatypes.atkdatatype');
  * @package atk
  * @subpackage datatypes
  */
-class atkStringDt extends atkDataType
+class Atk_StringDt extends Atk_DataType
 {
     /**
      * @var string The internal value of the current string object

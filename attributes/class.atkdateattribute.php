@@ -42,7 +42,7 @@ include_once($config_atkroot . "atk/utils/class.atkbrowsertools.php");
  * @subpackage attributes
  *
  */
-class atkDateAttribute extends atkAttribute
+class Atk_DateAttribute extends Atk_Attribute
 {
     /**
      * Possible values for sorting the year dropdown

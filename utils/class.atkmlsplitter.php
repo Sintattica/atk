@@ -27,7 +27,7 @@
  * @subpackage utils
  *
  */
-class atkmlsplitter
+class Atk_mlsplitter
 {
 
     /**
@@ -47,7 +47,7 @@ class atkmlsplitter
     {
         static $s_mlsplitter = NULL;
         if (!is_object($s_mlsplitter)) {
-            $s_mlsplitter = new atkmlsplitter();
+            $s_mlsplitter = new Atk_mlsplitter();
             atkTools::atkdebug("Created a new atkmlsplitter instance");
         }
         return $s_mlsplitter;
@@ -115,7 +115,7 @@ class atkmlsplitter
                     $p_attrib->createDestination();
                     $attribvalue = $p_attrib->m_destInstance->m_attribList[$p_attrib->m_destInstance->primaryKeyField()]->value2db($record[$attribname]);
                     $record[$p_attrib->fieldName()] = $attribvalue;
-                    $p_attrib = new atkAttribute($attribname);
+                    $p_attrib = new Atk_Attribute($attribname);
                     $p_attrib->m_ownerInstance = &$node;
                     $p_attrib->init();
                 } else

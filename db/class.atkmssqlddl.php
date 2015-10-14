@@ -26,7 +26,7 @@
  * @subpackage db
  *
  */
-class atkMsSqlDDL extends atkDDL
+class Atk_MsSqlDDL extends Atk_DDL
 {
 
     /**

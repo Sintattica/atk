@@ -44,7 +44,7 @@ require_once(atkConfig::getGlobal("atkroot") . "atk/db/class.atkmysqldb.php");
  * @package atk
  * @subpackage db
  */
-class atkMsSqlDb extends atkMysqlDb
+class Atk_MsSqlDb extends Atk_MysqlDb
 {
 
     /**

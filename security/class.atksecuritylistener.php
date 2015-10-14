@@ -32,7 +32,7 @@
  * @package atk
  * @subpackage security
  */
-class atkSecurityListener
+class Atk_SecurityListener
 {
 
     /**

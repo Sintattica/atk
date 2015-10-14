@@ -26,7 +26,7 @@
  *
  * @package atk.utils
  */
-class atkEditFormModifier
+class Atk_EditFormModifier
 {
     /**
      * Node.

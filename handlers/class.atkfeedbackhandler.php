@@ -25,7 +25,7 @@
  * @subpackage handlers
  *
  */
-class atkFeedbackHandler extends atkActionHandler
+class Atk_FeedbackHandler extends Atk_ActionHandler
 {
 
     /**

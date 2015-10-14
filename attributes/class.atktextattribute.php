@@ -30,7 +30,7 @@ atkTools::atkimport("atk.attributes.atkattribute");
  * @todo autadjust needs to be modified as not every character == 1 column,
  *       perhaps forcing every textattribute to use a non-proportional font?
  */
-class atkTextAttribute extends atkAttribute
+class Atk_TextAttribute extends Atk_Attribute
 {
     // number of rows of the edit box
     var $m_rows = 10;
@@ -265,7 +265,7 @@ class atkTextAttribute extends atkAttribute
      */
     function doAutoAdjust($data, &$rows, &$cols)
     {
-        $browser = new atkBrowserInfo();
+        $browser = new Atk_BrowserInfo();
         $maxlinechars = 0;
         for ($counter = 0, $linecharacters = 0, $rowsrequired = 1; $counter < atkTools::atk_strlen($data); $counter++, $linecharacters++) {
             // Current character we are parsing

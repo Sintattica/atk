@@ -30,7 +30,7 @@
  * @package atk
  * @subpackage recordlist
  */
-class atkRecordlistCache
+class Atk_RecordlistCache
 {
     /**
      * The directory where we store the cache
@@ -196,7 +196,7 @@ class atkRecordlistCache
     {
         atkTools::atkimport("atk.utils.atkdirectorytraverser");
         $cachedir = atkConfig::getGlobal("atktempdir") . "rlcache/";
-        $atkdirtrav = new atkDirectoryTraverser();
+        $atkdirtrav = new Atk_DirectoryTraverser();
 
         $identifiers = $this->getIdentifiers();
 

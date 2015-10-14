@@ -13,7 +13,7 @@
  * However, as we improve ATK, for backwardscompatibility,
  * we blacklist what SQL we know to be evil in where clauses.
  */
-class atkSqlWhereclauseBlacklistChecker
+class Atk_SqlWhereclauseBlacklistChecker
 {
     /**
      * The WHERE clause to filter.

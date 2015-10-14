@@ -7,7 +7,7 @@ include_once($base . 'MomentException.php');
 include_once($base . 'FormatsInterface.php');
 include_once($base . 'CustomFormats/MomentJs.php');
 
-class atkMomentphpProvider {
+class Atk_MomentphpProvider {
 
 
     public static function getFormatInstance()

@@ -31,7 +31,7 @@ include_once(atkConfig::getGlobal("atkroot") . "atk/class.atktreetoolstree.php")
  * @subpackage relations
  *
  */
-class atkManyToOneTreeRelation extends atkManyToOneRelation
+class Atk_ManyToOneTreeRelation extends Atk_ManyToOneRelation
 {
     var $m_current = "";
     var $m_level = "";
@@ -109,7 +109,7 @@ class atkManyToOneTreeRelation extends atkManyToOneRelation
      */
     function createdd($recordset)
     {
-        $t = new atkTreeToolsTree();
+        $t = new Atk_TreeToolsTree();
         for ($i = 0; $i < count($recordset); $i++) {
             $group = $recordset[$i];
             $t->addNode($recordset[$i][$this->m_destInstance->m_primaryKey[0]], $this->m_destInstance->descriptor($group), $recordset[$i][$this->m_destInstance->m_parent][$this->m_destInstance->m_primaryKey[0]]);

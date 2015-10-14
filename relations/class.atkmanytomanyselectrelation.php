@@ -36,7 +36,7 @@ define('AF_MANYTOMANYSELECT_NO_AUTOCOMPLETE', AF_SPECIFIC_3);
  * @package atk
  * @subpackage relations
  */
-class atkManyToManySelectRelation extends atkManyToManyRelation
+class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
 {
     const SEARCH_MODE_EXACT = atkManyToOneRelation::SEARCH_MODE_EXACT;
     const SEARCH_MODE_STARTSWITH = atkManyToOneRelation::SEARCH_MODE_STARTSWITH;
@@ -86,7 +86,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
     {
         parent::__construct($name, $link, $destination, $flags);
 
-        $relation = new atkManyToOneRelation($this->fieldName() . '_m2msr_add', $this->m_destination, AF_MANYTOONE_AUTOCOMPLETE | AF_HIDE);
+        $relation = new Atk_ManyToOneRelation($this->fieldName() . '_m2msr_add', $this->m_destination, AF_MANYTOONE_AUTOCOMPLETE | AF_HIDE);
         $relation->setDisabledModes(DISABLED_VIEW | DISABLED_EDIT);
         $relation->setLoadType(NOLOAD);
         $relation->setStorageType(NOSTORE);

@@ -39,7 +39,7 @@ define("AF_DISPLAY_VERT", AF_SPECIFIC_2);
  * @subpackage attributes
  *
  */
-class atkRadioAttribute extends atkListAttribute
+class Atk_RadioAttribute extends Atk_ListAttribute
 {
     // Default number of cols / rows
     var $m_amount = 1;

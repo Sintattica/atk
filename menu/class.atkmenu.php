@@ -39,7 +39,7 @@ atkTools::atkimport("atk.menu.atkmenuinterface");
  * @package atk
  * @subpackage menu
  */
-class atkMenu
+class Atk_Menu
 {
 
     /**

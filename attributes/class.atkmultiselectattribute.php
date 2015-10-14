@@ -31,7 +31,7 @@ define("AF_LINKS_BOTTOM", AF_SPECIFIC_4);
  * @subpackage attributes
  *
  */
-class atkMultiSelectAttribute extends atkListAttribute
+class Atk_MultiSelectAttribute extends Atk_ListAttribute
 {
     // number of cols
     public $m_cols;

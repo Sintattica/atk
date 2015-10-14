@@ -22,7 +22,7 @@ atkTools::atkimport('atk.datagrid.atkdgcomponent');
  * @package atk
  * @subpackage datagrid
  */
-class atkDGSummary extends atkDGComponent
+class Atk_DGSummary extends Atk_DGComponent
 {
 
     /**
@@ -62,7 +62,7 @@ class atkDGSummary extends atkDGComponent
         );
 
         atkTools::atkimport("atk.utils.atkstringparser");
-        $parser = new atkStringParser($string);
+        $parser = new Atk_StringParser($string);
         $result = $parser->parse($params);
 
         return '<span class="dgridsummary">'.$result.'</span>';

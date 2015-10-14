@@ -25,7 +25,7 @@ require_once(atkConfig::getGlobal("atkroot") . "atk/db/class.atkmysqldb.php");
  * @package atk
  * @subpackage db
  */
-class atkMysqliDb extends atkMysqlDb
+class Atk_MysqliDb extends Atk_MysqlDb
 {
     /**
      * The last insert id from the last query

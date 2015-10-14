@@ -23,7 +23,7 @@ atkTools::atkimport('atk.datagrid.atkdgcomponent');
  * @package atk
  * @subpackage datagrid
  */
-class atkDGEditControl extends atkDGComponent
+class Atk_DGEditControl extends Atk_DGComponent
 {
 
     /**

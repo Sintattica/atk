@@ -19,7 +19,7 @@
  */
 atkTools::atkimport("atk.cache.atkcache");
 
-class atkCache_xcache extends atkCache
+class Atk_Cache_xcache extends Atk_Cache
 {
 
     /**

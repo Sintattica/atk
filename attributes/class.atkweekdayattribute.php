@@ -45,7 +45,7 @@ define('WD_SUNDAY', 64);
  * @subpackage attributes
  *
  */
-class atkWeekdayAttribute extends atkNumberAttribute
+class Atk_WeekdayAttribute extends Atk_NumberAttribute
 {
     var $m_mapping = array(1 => 'monday', 2 => 'tuesday', 4 => 'wednesday', 8 => 'thursday', 16 => 'friday', 32 => 'saturday', 64 => 'sunday');
     var $m_extra = array();

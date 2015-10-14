@@ -26,7 +26,7 @@
  */
 atkTools::atkimport("atk.handlers.atkadminhandler");
 
-class atkMultiSelectHandler extends atkAdminHandler
+class Atk_MultiSelectHandler extends Atk_AdminHandler
 {
 
     /**
@@ -85,7 +85,7 @@ class atkMultiSelectHandler extends atkAdminHandler
     function parseString($string, $recordset)
     {
         atkTools::atkimport("atk.utils.atkstringparser");
-        $parser = new atkStringParser($string);
+        $parser = new Atk_StringParser($string);
 
         // for backwardscompatibility reasons, we also support the '[pk]' var.
         $recordset['pk'] = $this->getNode()->primaryKey($recordset);

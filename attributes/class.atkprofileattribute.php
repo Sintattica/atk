@@ -25,7 +25,7 @@
  * @subpackage attributes
  *
  */
-class atkProfileAttribute extends atkAttribute
+class Atk_ProfileAttribute extends Atk_Attribute
 {
     var $m_parentAttrName;
     var $m_accessField;

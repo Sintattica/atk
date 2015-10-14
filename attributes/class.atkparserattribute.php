@@ -24,7 +24,7 @@
  * @subpackage attributes
  *
  */
-class atkParserAttribute extends atkAttribute
+class Atk_ParserAttribute extends Atk_Attribute
 {
     var $m_text;
 
@@ -71,7 +71,7 @@ class atkParserAttribute extends atkAttribute
     function display($record)
     {
         atkTools::atkimport("atk.utils.atkstringparser");
-        $stringparser = new atkStringParser($this->m_text);
+        $stringparser = new Atk_StringParser($this->m_text);
         return $stringparser->parse($record);
     }
 

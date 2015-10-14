@@ -31,7 +31,7 @@ define('AMQ_FAILURE', 3);
  * @subpackage utils
  *
  */
-class atkMessageQueue
+class Atk_MessageQueue
 {
 
     /**
@@ -45,7 +45,7 @@ class atkMessageQueue
         if ($s_instance == NULL) {
             global $g_sessionManager;
             if (is_object($g_sessionManager)) { // don't bother to create if session has not yet been initialised
-                $s_instance = new atkMessageQueue();
+                $s_instance = new Atk_MessageQueue();
             }
         }
         return $s_instance;

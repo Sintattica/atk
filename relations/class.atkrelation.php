@@ -24,7 +24,7 @@
  * @abstract
  *
  */
-class atkRelation extends atkAttribute
+class Atk_Relation extends Atk_Attribute
 {
     /**
      * @var String Destination node.
@@ -374,7 +374,7 @@ class atkRelation extends atkAttribute
     {
         if ($destFilter != "") {
             atkTools::atkimport("atk.utils.atkstringparser");
-            $parser = new atkStringParser($destFilter);
+            $parser = new Atk_StringParser($destFilter);
             return $parser->parse($record);
         }
         return "";

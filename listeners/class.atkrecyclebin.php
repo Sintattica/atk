@@ -39,7 +39,7 @@
  * @subpackage listeners
  *
  */
-class atkRecycleBin extends atkTriggerListener
+class Atk_RecycleBin extends Atk_TriggerListener
 {
     /**
      * The options for the recycle bin.

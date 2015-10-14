@@ -25,7 +25,7 @@
  * @subpackage handlers
  *
  */
-class atkImportHandler extends atkActionHandler
+class Atk_ImportHandler extends Atk_ActionHandler
 {
     var $m_importNode;
 

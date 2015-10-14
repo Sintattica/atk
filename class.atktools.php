@@ -43,7 +43,7 @@ define("DEBUG_NOTICE", 4);
 define("DEBUG_ERROR", 8);
 
 
-class atkTools
+class Atk_Tools
 {
 
     /**
@@ -2022,7 +2022,7 @@ class atkTools
 
     public static function getBrowserInfo($useragent = "")
     {
-        $tmp = new atkBrowserInfo($useragent);
+        $tmp = new Atk_BrowserInfo($useragent);
         return array
         (
             "ua" => $tmp->ua,

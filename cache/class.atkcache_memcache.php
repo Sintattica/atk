@@ -19,7 +19,7 @@
  */
 atkTools::atkimport("atk.cache.atkcache");
 
-class atkCache_memcache extends atkCache
+class Atk_Cache_memcache extends Atk_Cache
 {
     public $m_memcache;
 

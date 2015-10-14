@@ -88,7 +88,7 @@ define("MF_NO_PRELOAD", 32);
  * @subpackage modules
  * @abstract
  */
-class atkModule
+class Atk_Module
 {
     /**
      * We keep track if the node currently being instantiated is an
@@ -582,7 +582,7 @@ class atkModule
 
         if ($module == "") {
             // No module, use the default instance.
-            $module_inst = new atkModule();
+            $module_inst = new Atk_Module();
         } else {
             $module_inst = self::atkGetModule($module);
         }
@@ -612,7 +612,7 @@ class atkModule
 
         $module = self::getNodeModule($node);
         if ($module == "")
-            $module = new atkModule();
+            $module = new Atk_Module();
         else
             $module = self::atkGetModule(self::getNodeModule($node));
 

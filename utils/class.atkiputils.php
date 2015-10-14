@@ -22,7 +22,7 @@
  * @package atk
  * @subpackage utils
  */
-class atkIpUtils
+class Atk_IpUtils
 {
 
     /**

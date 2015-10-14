@@ -24,7 +24,7 @@
  * @subpackage utils
  *
  */
-class atkDataHolder
+class Atk_DataHolder
 {
     protected $m_vars;
 

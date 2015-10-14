@@ -37,7 +37,7 @@ define("AF_SHUTTLERELATION_NO_AUTOLOAD", AF_SPECIFIC_1);
  * @package atk
  * @subpackage relations
  */
-class atkExtendableShuttleRelation extends atkManyToManyRelation
+class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
 {
     protected $m_controlsBySection = array();
     protected $m_selectedFields = array();
@@ -407,7 +407,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
         // Only import the stringparser once.
         if (isset($this->m_descriptor_tooltip_template)) {
             atkTools::atkimport("atk.utils.atkstringparser");
-            $parser = new atkStringParser($this->m_descriptor_tooltip_template);
+            $parser = new Atk_StringParser($this->m_descriptor_tooltip_template);
         }
 
         for ($i = 0, $_i = count($recordset); $i < $_i; $i++) {

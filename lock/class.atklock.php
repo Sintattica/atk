@@ -27,7 +27,7 @@
  * @subpackage lock
  * @abstract
  */
-class atkLock
+class Atk_Lock
 {
     const EXCLUSIVE = 'exclusive';
     const SHARED = 'shared';

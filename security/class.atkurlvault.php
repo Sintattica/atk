@@ -29,7 +29,7 @@
  * @package atk
  * @subpackage security
  */
-class atkUrlVault
+class Atk_UrlVault
 {
     /**
      * The array containing all urls in the vault.
@@ -70,7 +70,7 @@ class atkUrlVault
         static $s_instance = NULL;
 
         if ($s_instance == NULL) {
-            $s_instance = new atkUrlVault();
+            $s_instance = new Atk_UrlVault();
         }
 
         return $s_instance;

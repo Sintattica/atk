@@ -45,7 +45,7 @@ atkTools::atkimport('atk.db.statement.atkstatementparser');
  * @package atk
  * @subpackage db.statement
  */
-abstract class atkStatement implements IteratorAggregate
+abstract class Atk_Statement implements IteratorAggregate
 {
     /**
      * (Original) SQL query.
@@ -111,7 +111,7 @@ abstract class atkStatement implements IteratorAggregate
      */
     protected function _parse()
     {
-        $parser = new atkStatementParser($this->getQuery());
+        $parser = new Atk_StatementParser($this->getQuery());
         $this->m_parsedQuery = $parser->getParsedQuery();
         $this->m_bindPositions = $parser->getBindPositions();
     }

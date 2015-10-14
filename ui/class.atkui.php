@@ -22,7 +22,7 @@
  * @package atk
  * @subpackage ui
  */
-class atkUI
+class Atk_UI
 {
     /**
      * Smarty instance, initialised by constructor
@@ -58,7 +58,7 @@ class atkUI
 
         if ($s_instance == NULL) {
             atkTools::atkdebug("Creating a new atkUI instance");
-            $s_instance = new atkUi();
+            $s_instance = new Atk_Ui();
         }
 
         return $s_instance;
@@ -202,7 +202,7 @@ class atkUI
     private function renderPhp($path, $vars)
     {
         atkTools::atkimport('atk.ui.atkphpview');
-        $view = new atkPHPView($path, $vars);
+        $view = new Atk_PHPView($path, $vars);
         return (string) $view;
     }
 

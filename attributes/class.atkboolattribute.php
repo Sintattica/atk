@@ -41,7 +41,7 @@ define("AF_BOOL_DISPLAY_CHECKBOX", AF_SPECIFIC_3);
  * @subpackage attributes
  *
  */
-class atkBoolAttribute extends atkAttribute
+class Atk_BoolAttribute extends Atk_Attribute
 {
 
     /**

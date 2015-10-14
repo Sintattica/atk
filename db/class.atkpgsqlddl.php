@@ -23,7 +23,7 @@
  * @subpackage db
  *
  */
-class atkPgsqlDDL extends atkDDL
+class Atk_PgsqlDDL extends Atk_DDL
 {
 
     /**

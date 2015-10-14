@@ -24,7 +24,7 @@
  * @subpackage ui
  *
  */
-class atkSmarty
+class Atk_Smarty
 {
 
     /**

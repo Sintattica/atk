@@ -29,7 +29,7 @@ usefilter("atkfilter");
  * @subpackage filters
  *
  */
-class atkGroupByFilter extends atkFilter
+class Atk_GroupByFilter extends Atk_Filter
 {
     /**
      * the group by statement

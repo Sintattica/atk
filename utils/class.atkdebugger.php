@@ -24,7 +24,7 @@
  * @subpackage utils
  *
  */
-class atkDebugger
+class Atk_Debugger
 {
     var $m_isconsole = true;
     var $m_redirectUrl = null;
@@ -42,7 +42,7 @@ class atkDebugger
         if ($s_instance == NULL) {
             if (!atkSessionManager::atkGetSessionManager())
                 atkTools::atkwarning("Instantiating debugger without sessionmanager, debugger will not do anything until session is started. Also, the debugging info already in the session will not be cleaned, this could lead to monster sessions over time!");
-            $s_instance = new atkDebugger();
+            $s_instance = new Atk_Debugger();
         }
         return $s_instance;
     }

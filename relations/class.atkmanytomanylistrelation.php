@@ -26,7 +26,7 @@ atkTools::userelation("atkmanytomanyrelation");
  * @package atk
  * @subpackage relations
  */
-class atkManyToManyListRelation extends atkManyToManyRelation
+class Atk_ManyToManyListRelation extends Atk_ManyToManyRelation
 {
     private $m_rows = 6;
     private $m_width = 200;

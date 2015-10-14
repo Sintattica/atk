@@ -27,7 +27,7 @@
  * @subpackage handlers
  *
  */
-class atkDeleteHandler extends atkActionHandler
+class Atk_DeleteHandler extends Atk_ActionHandler
 {
 
     /**

@@ -31,7 +31,7 @@ atkTools::userelation("atkmanytoonerelation");
  * @subpackage attributes
  *
  */
-class atkUpdatedByAttribute extends atkManyToOneRelation
+class Atk_UpdatedByAttribute extends Atk_ManyToOneRelation
 {
 
     /**

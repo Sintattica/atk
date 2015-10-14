@@ -22,7 +22,7 @@
  * @package atk
  * @subpackage attributes
  */
-class atkFormatAttribute extends atkAttribute
+class Atk_FormatAttribute extends Atk_Attribute
 {
     var $m_format = "";
     var $m_breakdownCached = array();

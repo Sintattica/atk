@@ -24,7 +24,7 @@
  * @subpackage handlers
  *
  */
-class atkCopyHandler extends atkActionHandler
+class Atk_CopyHandler extends Atk_ActionHandler
 {
 
     /**

@@ -54,6 +54,6 @@ function smarty_function_atktext($params, &$smarty)
 
     // parse the rest of the params in the string
     atkTools::atkimport("atk.utils.atkstringparser");
-    $parser = new atkStringParser($str);
+    $parser = new Atk_StringParser($str);
     return $parser->parse($params);
 }

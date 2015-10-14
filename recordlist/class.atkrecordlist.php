@@ -34,7 +34,7 @@ atkTools::atkimport("atk.utils.atkstringparser");
  * @subpackage recordlist
  *
  */
-class atkRecordList
+class Atk_RecordList
 {
     var $m_node = NULL;
     var $m_flags = 0;
@@ -705,7 +705,7 @@ class atkRecordList
                     else
                         $url = str_replace('[pk]', rawurlencode($row["selector"]), $url);
 
-                    $parser = new atkStringParser($url);
+                    $parser = new Atk_StringParser($url);
                     $url = $parser->parse($row["record"], true);
                     $row["actions"][$name] = $url;
                 }
@@ -726,7 +726,7 @@ class atkRecordList
 
         if (atkTools::hasFlag($flags, RL_EXT_SORT) && $columnConfig->hasSubTotals()) {
             atkTools::atkimport("atk.recordlist.atktotalizer");
-            $totalizer = new atkTotalizer($this->m_node, $columnConfig);
+            $totalizer = new Atk_Totalizer($this->m_node, $columnConfig);
             $result["rows"] = $totalizer->totalize($result["rows"]);
         }
 

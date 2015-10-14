@@ -40,7 +40,7 @@ define("HTML_PARTIAL", 8);                    // Partial (only content, this fla
  * @subpackage ui
  *
  */
-class atkPage
+class Atk_Page
 {
     /**
      * The list of javascript files to load.
@@ -122,7 +122,7 @@ class atkPage
     {
         static $s_page = NULL;
         if ($s_page == NULL) {
-            $s_page = new atkPage();
+            $s_page = new Atk_Page();
             atkTools::atkdebug("Created a new atkPage instance");
         }
         return $s_page;

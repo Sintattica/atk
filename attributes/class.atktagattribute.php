@@ -36,7 +36,7 @@ atkTools::atkimport("atk.attributes.atktextattribute");
  * @package atk
  * @subpackage attributes
  */
-class atkTagAttribute extends atkFuzzySearchAttribute
+class Atk_TagAttribute extends Atk_FuzzySearchAttribute
 {
     var $m_link = "";
     var $m_linkInstance = NULL;

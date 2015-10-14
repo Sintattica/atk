@@ -34,7 +34,7 @@ atkTools::atkimport('atk.ui.atktheme');
  * @subpackage ui
  *
  */
-class atkThemeCompiler
+class Atk_ThemeCompiler
 {
 
     /**
@@ -54,7 +54,7 @@ class atkThemeCompiler
             }
 
             atkTools::atkimport("atk.utils.atktmpfile");
-            $tmpfile = new atkTmpFile("themes/$name.php");
+            $tmpfile = new Atk_TmpFile("themes/$name.php");
             $tmpfile->writeAsPhp("theme", $data);
             return true;
         }

@@ -25,7 +25,7 @@ include_once(atkConfig::getGlobal("atkroot") . "atk/interface/interface.atkserve
  * @package atk
  * @subpackage interface
  */
-class atkSoapServer implements atkServerInterface
+class Atk_SoapServer implements Atk_ServerInterface
 {
     private $m_server = NULL;
 

@@ -27,7 +27,7 @@ atkTools::atkimport("atk.db.atkmysqlquery");
  * @subpackage db
  *
  */
-class atkMssqlQuery extends atkMysqlQuery
+class Atk_MssqlQuery extends Atk_MysqlQuery
 {
 
     /**

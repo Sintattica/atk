@@ -30,7 +30,7 @@
  * @package atk
  * @subpackage datatypes
  */
-abstract class atkDataType
+abstract class Atk_DataType
 {
 
     /**

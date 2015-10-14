@@ -37,7 +37,7 @@ include_once(atkConfig::getGlobal("atkroot") . 'atk/ext/phpmailer/class.phpmaile
  * @package atk
  * @subpackage utils
  */
-class atkMailer extends PHPMailer
+class Atk_Mailer extends PHPMailer
 {
     var $Mailer = "mail";
     var $WordWrap = 75;

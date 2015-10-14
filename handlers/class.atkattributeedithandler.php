@@ -38,7 +38,7 @@ define("ATTRIBUTEEDIT_ERROR_VALIDATE", 8);
  * @subpackage handlers
  *
  */
-class atkAttributeEditHandler extends atkActionHandler
+class Atk_AttributeEditHandler extends Atk_ActionHandler
 {
     var $m_processUrl = null;
     var $m_masterNode = null;

@@ -22,7 +22,7 @@ atkTools::atkimport('atk.datagrid.atkdgcomponent');
  * @package atk
  * @subpackage datagrid
  */
-class atkDGPaginator extends atkDGComponent
+class Atk_DGPaginator extends Atk_DGComponent
 {
     /**
      * Maximum number of pagination links (excluding

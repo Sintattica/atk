@@ -24,7 +24,7 @@
  * @subpackage fixture
  * @author Peter C. Verhage <peter@ibuildings.nl>
  */
-class atkPHPFixtureLoader extends atkAbstractFixtureLoader
+class Atk_PHPFixtureLoader extends Atk_AbstractFixtureLoader
 {
 
     /**

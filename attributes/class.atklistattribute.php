@@ -45,7 +45,7 @@ define("AF_LIST_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_4);
  * @subpackage attributes
  *
  */
-class atkListAttribute extends atkAttribute
+class Atk_ListAttribute extends Atk_Attribute
 {
     /**
      * Array with options for Listbox

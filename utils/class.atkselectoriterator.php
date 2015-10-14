@@ -23,7 +23,7 @@
  * @package atk
  * @subpackage utils
  */
-class atkSelectorIterator extends IteratorIterator
+class Atk_SelectorIterator extends IteratorIterator
 {
     /**
      * Selector.

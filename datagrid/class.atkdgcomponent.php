@@ -21,7 +21,7 @@
  * @package atk
  * @subpackage datagrid
  */
-abstract class atkDGComponent
+abstract class Atk_DGComponent
 {
     /**
      * The atkDataGrid.

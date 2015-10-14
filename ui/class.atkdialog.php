@@ -22,7 +22,7 @@
  * @package atk
  * @subpackage ui
  */
-class atkDialog
+class Atk_Dialog
 {
     protected $m_nodeType;
     protected $m_action;

@@ -29,7 +29,7 @@
  * @subpackage db
  * @abstract
  */
-class atkQuery
+class Atk_Query
 {
     /**
      * Array with Fieldnames

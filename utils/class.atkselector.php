@@ -22,7 +22,7 @@
  * @package atk
  * @subpackage utils
  */
-class atkSelector implements ArrayAccess, Countable, IteratorAggregate
+class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
 {
     /**
      * This selector's node.
@@ -459,7 +459,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
         // fuzzy filters
         atkTools::atkimport("atk.utils.atkstringparser");
         foreach ($this->_getNode()->m_fuzzyFilters as $filter) {
-            $parser = new atkStringParser($filter);
+            $parser = new Atk_StringParser($filter);
             $filter = $parser->parse(array('table' => $this->_getNode()->getTable()));
             $query->addCondition($filter);
         }
@@ -857,7 +857,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
             $this->m_stmt = $stmt;
 
             atkTools::atkimport('atk.utils.atkselectoriterator');
-            $this->m_iterator = new atkSelectorIterator($this->m_stmt->getIterator(), $this);
+            $this->m_iterator = new Atk_SelectorIterator($this->m_stmt->getIterator(), $this);
         }
 
         return $this->m_iterator;

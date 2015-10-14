@@ -29,7 +29,7 @@ atkTools::atkimport("atk.attributes.atkattribute");
  * @subpackage attributes
  *
  */
-class atkCaptchaAttribute extends atkAttribute
+class Atk_CaptchaAttribute extends Atk_Attribute
 {
 
     /**

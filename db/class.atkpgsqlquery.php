@@ -27,7 +27,7 @@ atkTools::atkimport("atk.db.atkquery");
  * @subpackage db
  *
  */
-class atkPgsqlQuery extends atkQuery
+class Atk_PgsqlQuery extends Atk_Query
 {
 
     /**

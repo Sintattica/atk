@@ -35,7 +35,7 @@
  * @subpackage ui
  *
  */
-class atkOutput
+class Atk_Output
 {
     /**
      * Store raw output data.
@@ -58,7 +58,7 @@ class atkOutput
         static $s_instance = NULL;
         if ($s_instance == NULL) {
             atkTools::atkdebug("Created a new atkOutput instance");
-            $s_instance = new atkOutput();
+            $s_instance = new Atk_Output();
         }
         return $s_instance;
     }

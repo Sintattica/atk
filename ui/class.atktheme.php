@@ -25,7 +25,7 @@
  * @subpackage ui
  *
  */
-class atkTheme
+class Atk_Theme
 {
     var $m_name = "";
     var $m_theme = array();
@@ -41,7 +41,7 @@ class atkTheme
     {
         static $s_instance = NULL;
         if ($s_instance == NULL || $reset) {
-            $s_instance = new atkTheme();
+            $s_instance = new Atk_Theme();
         }
         return $s_instance;
     }

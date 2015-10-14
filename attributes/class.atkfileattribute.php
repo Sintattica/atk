@@ -58,7 +58,7 @@ define("AF_FILE_POPUP", AF_POPUP);
  * @subpackage attributes
  *
  */
-class atkFileAttribute extends atkAttribute
+class Atk_FileAttribute extends Atk_Attribute
 {
     /**
      * Directory with images
@@ -766,7 +766,7 @@ class atkFileAttribute extends atkAttribute
             $filename = $default;
         } else {
             atkTools::atkimport("atk.utils.atkstringparser");
-            $parser = new atkStringParser($this->m_filenameTpl);
+            $parser = new Atk_StringParser($this->m_filenameTpl);
             $includes = $parser->getAttributes();
             $record = $this->m_ownerInstance->updateRecord($rec, $includes, array($this->fieldname()));
             $record[$this->fieldName()] = substr($default, 0, strrpos($default, '.'));

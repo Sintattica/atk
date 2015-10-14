@@ -48,7 +48,7 @@ define('ANCHOR', 4);
  * @package atk
  * @subpackage attributes
  */
-class atkUrlAttribute extends atkAttribute
+class Atk_UrlAttribute extends Atk_Attribute
 {
     var $m_accepts_url_flag = 0;
     var $m_newWindow = false;

@@ -26,7 +26,7 @@
  * @subpackage attributes
  *
  */
-class atkMlNumberAttribute extends atkMlAttribute
+class Atk_MlNumberAttribute extends Atk_MlAttribute
 {
 
     /**

@@ -30,7 +30,7 @@ atkTools::userelation("atkrelation");
  * @subpackage relations
  *
  */
-class atkMatrixRelation extends atkRelation
+class Atk_MatrixRelation extends Atk_Relation
 {
     var $m_name1;
     var $m_destination1;

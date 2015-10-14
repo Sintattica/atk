@@ -34,7 +34,7 @@ define("DDL_NOTNULL", 4);
  * @subpackage db
  * @abstract
  */
-class atkDDL
+class Atk_DDL
 {
     var $m_table = array();
     var $m_fields = array();

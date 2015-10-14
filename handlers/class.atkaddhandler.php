@@ -25,7 +25,7 @@
  * @subpackage handlers
  *
  */
-class atkAddHandler extends atkActionHandler
+class Atk_AddHandler extends Atk_ActionHandler
 {
     var $m_buttonsource = null;
     var $m_dialogSaveUrl = null;

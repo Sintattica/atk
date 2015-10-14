@@ -24,7 +24,7 @@
  * @package atk
  *
  */
-class atkNodeValidator
+class Atk_NodeValidator
 {
     /**
      * @var atkNode The node which needs to get validated

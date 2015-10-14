@@ -24,7 +24,7 @@
  * @package atk
  * @subpackage attributes
  */
-class atkRadioDetailsAttribute extends atkAttribute
+class Atk_RadioDetailsAttribute extends Atk_Attribute
 {
     /**
      * Options

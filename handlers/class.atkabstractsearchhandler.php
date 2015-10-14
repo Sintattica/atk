@@ -21,7 +21,7 @@ atkTools::atkimport('atk.handlers.atkactionhandler');
  * @package atk
  * @subpackage testcases
  */
-abstract class atkAbstractSearchHandler extends atkActionHandler
+abstract class Atk_AbstractSearchHandler extends Atk_ActionHandler
 {
     /**
      * Holds the table name of the searchcriteria

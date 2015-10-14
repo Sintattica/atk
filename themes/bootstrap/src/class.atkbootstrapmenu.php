@@ -23,7 +23,7 @@ atkTools::atkimport('atk.menu.atkplainmenu');
  * @package atk
  * @subpackage menu
  */
-class atkBootstrapMenu extends atkPlainMenu
+class Atk_BootstrapMenu extends Atk_PlainMenu
 {
     private $format_submenuparent = '
             <li class="dropdown">

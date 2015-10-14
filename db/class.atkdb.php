@@ -56,7 +56,7 @@ $g_dbinstances = array();
  * @subpackage db
  *
  */
-class atkDb
+class Atk_Db
 {
     /**
      * The hostname/ip to connect to.
@@ -984,7 +984,7 @@ class atkDb
     private function _getTableMetaFromCache($table)
     {
         atkTools::atkimport('atk.utils.atktmpfile');
-        $tmpfile = new atkTmpFile('tablemeta/' . $this->m_connection . "/" . $table . ".php");
+        $tmpfile = new Atk_TmpFile('tablemeta/' . $this->m_connection . "/" . $table . ".php");
 
         if ($tmpfile->exists()) {
             include($tmpfile->getPath());

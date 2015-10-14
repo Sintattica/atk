@@ -18,7 +18,7 @@
  * @version $Revision$
  * $Id$
  */
-class atkString
+class Atk_String
 {
     /**
      * Do we have multibyte support 

@@ -25,7 +25,7 @@
  * @author Peter C. Verhage <peter@ibuildings.nl>
  * @package atk
  */
-class atkDataNode extends atkNode
+class Atk_DataNode extends Atk_Node
 {
     /**
      * Data.

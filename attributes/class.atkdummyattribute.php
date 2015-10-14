@@ -33,7 +33,7 @@ define("AF_DUMMY_SHOW_LABEL", AF_SPECIFIC_1); // make the dummy label its fields
  * @subpackage attributes
  *
  */
-class atkDummyAttribute extends atkAttribute
+class Atk_DummyAttribute extends Atk_Attribute
 {
     var $m_text;
 

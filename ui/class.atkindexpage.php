@@ -21,7 +21,7 @@
  * @package atk
  * @subpackage ui
  */
-class atkIndexPage
+class Atk_IndexPage
 {
     /**
      * @var atkPage

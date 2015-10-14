@@ -24,7 +24,7 @@
  * @subpackage fixture
  * @abstract
  */
-class atkAbstractFixtureLoader
+class Atk_AbstractFixtureLoader
 {
 
     /**

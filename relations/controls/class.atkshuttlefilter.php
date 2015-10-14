@@ -26,7 +26,7 @@ atkTools::atkimport('atk.relations.controls.atkshuttlecontrol');
  * @package atk
  * @subpackage relations
  */
-abstract class atkShuttleFilter extends atkShuttleControl
+abstract class Atk_ShuttleFilter extends Atk_ShuttleControl
 {
 
     /**

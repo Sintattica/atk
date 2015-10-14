@@ -25,7 +25,7 @@ atkTools::atkimport("atk.handlers.atkvieweditbase");
  * @subpackage handlers
  *
  */
-class atkViewHandler extends atkViewEditBase
+class Atk_ViewHandler extends Atk_ViewEditBase
 {
     var $m_buttonsource = null;
 

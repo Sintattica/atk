@@ -23,7 +23,7 @@ include_once(atkConfig::getGlobal("atkroot") . "atk/class.atktreetoolsnode.php")
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk   
  */
-class atkTreeToolsTree
+class Atk_TreeToolsTree
 {
     var $m_tree = array();
     var $m_allnodes = array();
@@ -31,7 +31,7 @@ class atkTreeToolsTree
 
     function addNode($id, $naam, $parent = 0, $img = "")
     {
-        $n = new atkTreeToolsNode($id, $naam, $img);
+        $n = new Atk_TreeToolsNode($id, $naam, $img);
         $this->m_allnodes[$id] = &$n;
 
         if (array_key_exists($id, $this->m_parentless) && is_array($this->m_parentless[$id])) {

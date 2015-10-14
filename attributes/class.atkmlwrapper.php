@@ -33,7 +33,7 @@
  * @subpackage attributes
  *
  */
-class atkMlWrapper extends atkAttribute
+class Atk_MlWrapper extends Atk_Attribute
 {
     var $m_childList = array();
 

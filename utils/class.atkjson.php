@@ -41,7 +41,7 @@
  * @subpackage utils
  * @author Peter C. Verhage <peter@ibuildings.nl>
  */
-class atkJSON
+class Atk_JSON
 {
     /**
      * Maximum recursion depth for conversion of data for encoding to UTF-8

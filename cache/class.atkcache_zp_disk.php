@@ -19,7 +19,7 @@
  */
 atkTools::atkimport("atk.cache.atkcache");
 
-class atkCache_zp_disk extends atkCache
+class Atk_Cache_zp_disk extends Atk_Cache
 {
 
     /**

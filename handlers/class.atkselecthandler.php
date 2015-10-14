@@ -25,7 +25,7 @@
  * @package atk
  * @subpackage handlers
  */
-class atkSelectHandler extends atkActionHandler
+class Atk_SelectHandler extends Atk_ActionHandler
 {
 
     /**
@@ -137,7 +137,7 @@ class atkSelectHandler extends atkActionHandler
             // There's only one record and the autoselect flag is set, so we
             // automatically go to the target.
             atkTools::atkimport("atk.utils.atkstringparser");
-            $parser = new atkStringParser(rawurldecode(atkTools::atkurldecode($grid->getPostvar('atktarget'))));
+            $parser = new Atk_StringParser(rawurldecode(atkTools::atkurldecode($grid->getPostvar('atktarget'))));
 
             // For backwardscompatibility reasons, we also support the '[pk]' var.
             $records[0]['pk'] = $node->primaryKey($records[0]);

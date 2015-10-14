@@ -22,7 +22,7 @@ atkTools::useattrib("atkMultiSelectAttribute");
  * @package atk
  * @subpackage attributes
  */
-class atkFuzzySearchAttribute extends atkAttribute
+class Atk_FuzzySearchAttribute extends Atk_Attribute
 {
     /**
      * The node we are searching on
@@ -216,7 +216,7 @@ class atkFuzzySearchAttribute extends atkAttribute
                     }
                 }
 
-                $attrib = new atkMultiSelectAttribute($this->m_name, $optionArray, $valueArray, 1, AF_NO_LABEL | AF_CHECK_ALL | AF_LINKS_BOTTOM);
+                $attrib = new Atk_MultiSelectAttribute($this->m_name, $optionArray, $valueArray, 1, AF_NO_LABEL | AF_CHECK_ALL | AF_LINKS_BOTTOM);
                 $res.= $attrib->edit();
             } else if ($this->m_mode == "select" || ($this->m_mode == "multiselect" && count($this->m_matches) == 1)) {
                 // Select one record from all matches.

@@ -25,7 +25,7 @@
  * @package atk
  * @subpackage fixture
  */
-class atkYAMLFixtureLoader extends atkAbstractFixtureLoader
+class Atk_YAMLFixtureLoader extends Atk_AbstractFixtureLoader
 {
 
     /**

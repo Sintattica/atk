@@ -31,7 +31,7 @@ atkTools::atkimport("atk.security.atksecuritymanager");
  * @package atk
  * @subpackage security
  */
-class atkMockSecurityManager extends atkSecurityManager
+class Atk_MockSecurityManager extends Atk_SecurityManager
 {
     /**
      * Set the nodepriviledges 

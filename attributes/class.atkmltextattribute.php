@@ -28,7 +28,7 @@ atkTools::useattrib("atkmlattribute");
  * @subpackage attributes
  *
  */
-class atkMlTextAttribute extends atkMlAttribute
+class Atk_MlTextAttribute extends Atk_MlAttribute
 {
 
     /**

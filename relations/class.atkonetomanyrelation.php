@@ -67,7 +67,7 @@ define("AF_ONETOMANY_SHOW_ADD", AF_SPECIFIC_4);
  * @subpackage relations
  *
  */
-class atkOneToManyRelation extends atkRelation
+class Atk_OneToManyRelation extends Atk_Relation
 {
     var $m_recordlist;
 
@@ -439,7 +439,7 @@ class atkOneToManyRelation extends atkRelation
 
             // Make the grid use the OTM Session Grid Handler
             // which makes the grid get it's records from the session.
-            $handler = new atkOneToManyRelationSessionGridHandler($this->getSessionStoreKey());
+            $handler = new Atk_OneToManyRelationSessionGridHandler($this->getSessionStoreKey());
 
             $grid->setCountHandler(array($handler, 'countHandlerForAdd'));
             $grid->setSelectHandler(array($handler, 'selectHandlerForAdd'));
@@ -618,7 +618,7 @@ class atkOneToManyRelation extends atkRelation
             $params['atkfilter'] = $filter;
         }
 
-        $dialog = new atkDialog($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.' . $action . '_dialog', $params);
+        $dialog = new Atk_Dialog($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.' . $action . '_dialog', $params);
         $title = $ui->title($this->m_destInstance->m_module, $this->m_destInstance->m_type, $action);
         $dialog->setTitle($title);
         $dialog->setModifierObject($this->m_destInstance);
@@ -1383,7 +1383,7 @@ class atkOneToManyRelation extends atkRelation
             if ($this->hasFlag(AF_ONETOMANY_ADD_DIALOG) || $this->m_destInstance->hasFlag(NF_ADD_DIALOG)) {
                 $ui = &$this->m_ownerInstance->getUi();
                 $filter = $this->m_ownerInstance->m_postvars['atkfilter'];
-                $dialog = new atkDialog($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.add_dialog', array('atkfilter' => $filter));
+                $dialog = new Atk_Dialog($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.add_dialog', array('atkfilter' => $filter));
                 $title = $ui->title($this->m_destInstance->m_module, $this->m_destInstance->m_type, 'add');
                 $dialog->setTitle($title);
                 $dialog->setSessionStatus(SESSION_PARTIAL);

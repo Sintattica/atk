@@ -27,7 +27,7 @@
  * 
  * @see atkPageBuilder
  */
-class atkActionBoxBuilder
+class Atk_ActionBoxBuilder
 {
     /**
      * Page builder.

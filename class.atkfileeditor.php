@@ -37,7 +37,7 @@ atkTools::useattrib("atktextattribute");
  * @package atk
  *
  */
-class atkFileEditor extends atkNode
+class Atk_FileEditor extends Atk_Node
 {
     var $m_dir;
     var $m_basedir;
