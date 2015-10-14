@@ -27,9 +27,15 @@
 class Atk_CompatSelector extends Atk_Selector
 {
 
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     /**
      * Build selector based on the set conditions.
-     * 
+     *
      * @return string selector
      */
     protected function _buildSelector()
@@ -58,7 +64,7 @@ class Atk_CompatSelector extends Atk_Selector
     public function getAllRows()
     {
         if ($this->m_rows === null) {
-            atkTools::atkwarning("Using deprecated selectDb override for node " . $this->_getNode()->atkNodeType());
+            Atk_Tools::atkwarning("Using deprecated selectDb override for node " . $this->_getNode()->atkNodeType());
             $selector = $this->_buildSelector();
             $this->m_rows = $this->m_node->selectDb($selector, $this->m_order, array('limit' => $this->m_limit, 'offset' => $this->m_offset), $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct, $this->m_ignoreDefaultFilters);
         }
@@ -74,9 +80,9 @@ class Atk_CompatSelector extends Atk_Selector
     public function getRowCount()
     {
         if ($this->m_rowCount === null) {
-            atkTools::atkwarning("Using deprecated countDb override for node " . $this->_getNode()->atkNodeType());
+            Atk_Tools::atkwarning("Using deprecated countDb override for node " . $this->_getNode()->atkNodeType());
             $selector = $this->_buildSelector();
-            $this->m_rowCount = (int) $this->m_node->countDb($selector, $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct, $this->m_ignoreDefaultFilters);
+            $this->m_rowCount = (int)$this->m_node->countDb($selector, $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct, $this->m_ignoreDefaultFilters);
         }
 
         return $this->m_rowCount;

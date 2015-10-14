@@ -14,7 +14,7 @@
  * @version $Revision: 6309 $
  * $Id$
  */
-atkTools::atkimport("atk.attributes.atkattribute");
+Atk_Tools::atkimport("atk.attributes.atkattribute");
 
 /**
  * Custom flags
@@ -49,7 +49,7 @@ class Atk_DummyAttribute extends Atk_Attribute
         $flags |= AF_HIDE_SEARCH | AF_NO_SORT;
 
         // Add the AF_BLANKLABEL flag unless the AF_DUMMY_SHOW_LABEL flag wasn't present
-        if (!atkTools::hasFlag($flags, AF_DUMMY_SHOW_LABEL))
+        if (!Atk_Tools::hasFlag($flags, AF_DUMMY_SHOW_LABEL))
             $flags |= AF_BLANKLABEL;
 
         $this->atkAttribute($name, $flags); // base class constructor
@@ -142,7 +142,7 @@ class Atk_DummyAttribute extends Atk_Attribute
     /**
      * No function, but is neccesary
      *
-     * @param atkDb $db Database object
+     * @param Atk_Db $db Database object
      * @param array $record The record
      * @param string $mode The mode
      * @return boolean to indicate if store went succesfully
@@ -168,7 +168,7 @@ class Atk_DummyAttribute extends Atk_Attribute
      * Adds this attribute to database queries.
      * VOID implementation because dummy attributes are not stored in the database
      *
-     * @param atkQuery $query The SQL query object
+     * @param Atk_Query $query The SQL query object
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.

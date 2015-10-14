@@ -58,11 +58,11 @@ class Atk_IpUtils
      */
     function ipStringFormat($ip)
     {
-        if (!atkIpUtils::ipValidate($ip)) {
-            atkTools::atkdebug("atkIpUtils::ipStringFormat() Invalid ip given");
+        if (!Atk_IpUtils::ipValidate($ip)) {
+            Atk_Tools::atkdebug("Atk_IpUtils::ipStringFormat() Invalid ip given");
             return null;
         }
-        $long = is_numeric($ip) ? $ip : atkIpUtils::ipLongFormat($ip);
+        $long = is_numeric($ip) ? $ip : Atk_IpUtils::ipLongFormat($ip);
         $string = "";
         for ($i = 3; $i >= 0; $i--) {
             $string .= (int) ($long / pow(256, $i));
@@ -85,8 +85,8 @@ class Atk_IpUtils
      */
     function ipLongFormat($ip)
     {
-        if (!atkIpUtils::ipValidate($ip)) {
-            atkTools::atkdebug("atkIpUtils::ipLongFormat() Invalid ip given");
+        if (!Atk_IpUtils::ipValidate($ip)) {
+            Atk_Tools::atkdebug("Atk_IpUtils::ipLongFormat() Invalid ip given");
             return null;
         }
         if (is_numeric($ip))

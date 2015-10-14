@@ -30,21 +30,21 @@ class Atk_DocumentHandler extends Atk_ActionHandler
     function action_document()
     {
         // Add "Action document" to debug log to indicate this function is entered
-        atkTools::atkdebug("Action document");
+        Atk_Tools::atkdebug("Action document");
 
         // Load and instantiate the documentwriter
-        atkTools::atkimport("atk.document.atkdocumentwriter");
-        $openDocumentWriter = &atkDocumentWriter::getInstance("opendocument");
+        Atk_Tools::atkimport("atk.document.atkdocumentwriter");
+        $openDocumentWriter = &Atk_DocumentWriter::getInstance("opendocument");
 
         // ATKSelector must be available to perform this action
         if ($this->m_postvars["atkselector"] == "") {
-            atkTools::atkerror("Selector parameter not available.");
+            Atk_Tools::atkerror("Selector parameter not available.");
             return false;
         }
 
         // ATKDocTpl must be available to perform this action
         if (!isset($this->m_postvars["atkdoctpl"])) {
-            atkTools::atkerror("atkdoctpl parameter not available.");
+            Atk_Tools::atkerror("atkdoctpl parameter not available.");
             return false;
         }
 
@@ -52,13 +52,13 @@ class Atk_DocumentHandler extends Atk_ActionHandler
 
         // Check for invalid characters in filename, modulename and nodename in order to prevent hacking
         if (ereg("[<>\\/|;]", $module . $node . $this->m_postvars["atkdoctpl"]) !== false) {
-            atkTools::atkerror("Invalid filename given.");
+            Atk_Tools::atkerror("Invalid filename given.");
             return false;
         }
 
         // Check if the file exists
         if (!is_file($tpl_file)) {
-            atkTools::atkerror("Given file does not exist.");
+            Atk_Tools::atkerror("Given file does not exist.");
             return false;
         }
 
@@ -103,7 +103,7 @@ class Atk_DocumentHandler extends Atk_ActionHandler
      */
     function getFilenameForTemplate($template)
     {
-        $basepath = atkConfig::getGlobal("doctemplatedir", "doctemplates/");
+        $basepath = Atk_Config::getGlobal("doctemplatedir", "doctemplates/");
         $module = $this->m_node->m_module;
         $node = $this->m_node->m_type;
 

@@ -17,7 +17,7 @@
 /**
  * @internal Include base class.
  */
-atkTools::userelation("atkrelation");
+Atk_Tools::userelation("atkrelation");
 
 /**
  * Only allow deletion of master item when there are no child records
@@ -174,9 +174,9 @@ class Atk_OneToManyRelation extends Atk_Relation
      * @param int $flags Attribute flags that influence this attributes'
      *                   behavior.
      */
-    function atkOneToManyRelation($name, $destination, $refKey = "", $flags = 0)
+    function __construct($name, $destination, $refKey = "", $flags = 0)
     {
-        $this->atkRelation($name, $destination, $flags | AF_NO_SORT | AF_HIDE_ADD);
+        parent::__construct($name, $destination, $flags | AF_NO_SORT | AF_HIDE_ADD);
 
         if (is_array($refKey)) {
             $this->m_refKey = $refKey;
@@ -191,7 +191,7 @@ class Atk_OneToManyRelation extends Atk_Relation
     public function addFlag($flag)
     {
         $ret = parent::addFlag($flag);
-        if (atkTools::hasFlag($this->m_flags, AF_ONETOMANY_SHOW_ADD)) {
+        if (Atk_Tools::hasFlag($this->m_flags, AF_ONETOMANY_SHOW_ADD)) {
             $this->removeFlag(AF_HIDE_ADD);
         }
         return $ret;
@@ -263,27 +263,27 @@ class Atk_OneToManyRelation extends Atk_Relation
      * @param string  $action     the action
      * @param boolean $useSession use session?
      *
-     * @return atkDataGrid grid
+     * @return Atk_DataGrid grid
      */
     protected function createGrid($record, $mode, $action, $useSession = true)
     {
         $this->createDestination();
 
-        atkTools::atkimport('atk.datagrid.atkdatagrid');
-        $grid = atkDataGrid::create($this->m_destInstance, str_replace('.', '_', $this->getOwnerInstance()->atkNodeType()) . '_' . $this->fieldName() . '_grid', null, true, $useSession);
+        Atk_Tools::atkimport('atk.datagrid.atkdatagrid');
+        $grid = Atk_DataGrid::create($this->m_destInstance, str_replace('.', '_', $this->getOwnerInstance()->atkNodeType()) . '_' . $this->fieldName() . '_grid', null, true, $useSession);
 
         $grid->setMode($mode);
         $grid->setMasterNode($this->getOwnerInstance());
         $grid->setMasterRecord($record);
 
-        $grid->removeFlag(atkDataGrid::EXTENDED_SEARCH);
+        $grid->removeFlag(Atk_DataGrid::EXTENDED_SEARCH);
         if ($action == 'view') {
-            $grid->removeFlag(atkDataGrid::MULTI_RECORD_ACTIONS);
-            $grid->removeFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS);
-            $grid->removeFlag(atkDataGrid::LOCKING);
+            $grid->removeFlag(Atk_DataGrid::MULTI_RECORD_ACTIONS);
+            $grid->removeFlag(Atk_DataGrid::MULTI_RECORD_PRIORITY_ACTIONS);
+            $grid->removeFlag(Atk_DataGrid::LOCKING);
         }
 
-        $grid->setBaseUrl(atkTools::partial_url($this->getOwnerInstance()->atkNodeType(), $action, 'attribute.' . $this->fieldName() . '.grid'));
+        $grid->setBaseUrl(Atk_Tools::partial_url($this->getOwnerInstance()->atkNodeType(), $action, 'attribute.' . $this->fieldName() . '.grid'));
 
         $grid->setExcludes($this->getGridExcludes());
 
@@ -292,7 +292,7 @@ class Atk_OneToManyRelation extends Atk_Relation
             $grid->addFilter($this->parseFilter($this->m_destinationFilter, $record));
         }
 
-        $this->modifyDataGrid($grid, atkDataGrid::CREATE);
+        $this->modifyDataGrid($grid, Atk_DataGrid::CREATE);
 
         return $grid;
     }
@@ -307,13 +307,13 @@ class Atk_OneToManyRelation extends Atk_Relation
         $this->createDestination();
         $node = $this->getDestination();
 
-        atkTools::atkimport('atk.datagrid.atkdatagrid');
+        Atk_Tools::atkimport('atk.datagrid.atkdatagrid');
         try {
-            $grid = atkDataGrid::resume($node);
-            $this->modifyDataGrid($grid, atkDataGrid::RESUME);
+            $grid = Atk_DataGrid::resume($node);
+            $this->modifyDataGrid($grid, Atk_DataGrid::RESUME);
         } catch (Exception $e) {
-            $grid = atkDataGrid::create($node);
-            $this->modifyDataGrid($grid, atkDataGrid::CREATE);
+            $grid = Atk_DataGrid::create($node);
+            $this->modifyDataGrid($grid, Atk_DataGrid::CREATE);
         }
 
         return $grid->render();
@@ -322,10 +322,10 @@ class Atk_OneToManyRelation extends Atk_Relation
     /**
      * Modify grid.
      *
-     * @param atkDataGrid $grid grid
+     * @param Atk_DataGrid $grid grid
      * @param int         $mode CREATE or RESUME
      */
-    protected function modifyDataGrid(atkDataGrid $grid, $mode)
+    protected function modifyDataGrid(Atk_DataGrid $grid, $mode)
     {
         $method = 'modifyDataGrid';
         if (method_exists($this->getDestination(), $method)) {
@@ -369,7 +369,7 @@ class Atk_OneToManyRelation extends Atk_Relation
 
             $actions = array();
             if (!$this->m_destInstance->hasFlag(NF_NO_VIEW)) {
-                $actions['view'] = atkTools::dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $this->m_destinationFilter));
+                $actions['view'] = Atk_Tools::dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $this->m_destinationFilter));
             }
 
             $grid->setDefaultActions($actions);
@@ -421,9 +421,9 @@ class Atk_OneToManyRelation extends Atk_Relation
      */
     public function edit($record = "", $fieldprefix = "", $mode = '')
     {
-        $page = &atkTools::atkinstance('atk.ui.atkpage');
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/tools.js");
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atkonetomanyrelation.js");
+        $page = &Atk_Tools::atkinstance('atk.ui.atkpage');
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/tools.js");
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atkonetomanyrelation.js");
 
         $grid = $this->createGrid($record, 'admin', $mode);
 
@@ -444,9 +444,9 @@ class Atk_OneToManyRelation extends Atk_Relation
             $grid->setCountHandler(array($handler, 'countHandlerForAdd'));
             $grid->setSelectHandler(array($handler, 'selectHandlerForAdd'));
             // No searching and sorting on session data... for now...
-            $grid->removeFlag(atkDataGrid::SEARCH);
-            $grid->removeFlag(atkDataGrid::SORT);
-            $grid->removeFlag(atkDataGrid::EXTENDED_SORT);
+            $grid->removeFlag(Atk_DataGrid::SEARCH);
+            $grid->removeFlag(Atk_DataGrid::SORT);
+            $grid->removeFlag(Atk_DataGrid::EXTENDED_SORT);
         }
 
         $actions = $this->m_destInstance->defaultActions("relation", $params);
@@ -492,9 +492,9 @@ class Atk_OneToManyRelation extends Atk_Relation
 
         $add_link .= '<br />';
 
-        if (atkConfig::getGlobal("onetomany_addlink_position", "bottom") == "top") {
+        if (Atk_Config::getGlobal("onetomany_addlink_position", "bottom") == "top") {
             $output = $add_link . $output;
-        } else if (atkConfig::getGlobal("onetomany_addlink_position", "bottom") == "bottom") {
+        } else if (Atk_Config::getGlobal("onetomany_addlink_position", "bottom") == "bottom") {
             $output .= $add_link;
         }
     }
@@ -507,10 +507,10 @@ class Atk_OneToManyRelation extends Atk_Relation
     function _getEmbeddedButtons()
     {
         $fname = $this->fieldName();
-        $output.='<input type="submit" class="btn btn-default otm_add" name="' . $fname . '_save" value="' . atkTools::atktext("add") . '">';
+        $output.='<input type="submit" class="btn btn-default otm_add" name="' . $fname . '_save" value="' . Atk_Tools::atktext("add") . '">';
         return $output . '<input type="button" onClick="toggleAddForm(\'' . $fname . "_integrated',
                                                                '" . $fname . "_integrated_link');\"
-                                       class=\"btn btn-default otm_add\" name=\"" . $fname . "_cancel\" value=\"" . atkTools::atktext("cancel") . '">';
+                                       class=\"btn btn-default otm_add\" name=\"" . $fname . "_cancel\" value=\"" . Atk_Tools::atktext("cancel") . '">';
     }
 
     /**
@@ -538,8 +538,8 @@ class Atk_OneToManyRelation extends Atk_Relation
         if ($is_addorcopy_mode) {
             $filter = $this->getAddFilterString($record);
 
-            atkTools::atkimport('atk.handlers.atkaddorcopyhandler');
-            $showDialog = atkAddOrCopyHandler::hasCopyableRecords($this->m_destInstance, $filter);
+            Atk_Tools::atkimport('atk.handlers.atkaddorcopyhandler');
+            $showDialog = Atk_AddOrCopyHandler::hasCopyableRecords($this->m_destInstance, $filter);
 
             if ($showDialog) {
                 return $this->_getDialogAddLink($record, 'addorcopy', $params);
@@ -609,7 +609,7 @@ class Atk_OneToManyRelation extends Atk_Relation
      */
     function _getDialogAddLink($record, $action, $params = array())
     {
-        atkTools::atkimport("atk.ui.atkdialog");
+        Atk_Tools::atkimport("atk.ui.atkdialog");
 
         $ui = &$this->m_ownerInstance->getUi();
 
@@ -659,7 +659,7 @@ class Atk_OneToManyRelation extends Atk_Relation
         $add_url = $this->getAddURL($params);
         $label = $this->getAddLabel();
 
-        return atkTools::href($add_url, $label, SESSION_NESTED, $saveform, $onchange . ' class="atkonetomanyrelation"');
+        return Atk_Tools::href($add_url, $label, SESSION_NESTED, $saveform, $onchange . ' class="atkonetomanyrelation"');
     }
 
     /**
@@ -720,7 +720,7 @@ class Atk_OneToManyRelation extends Atk_Relation
 
     protected function getAddURL($params = array())
     {
-        return atkTools::dispatch_url($this->m_destination, "add", $params);
+        return Atk_Tools::dispatch_url($this->m_destination, "add", $params);
     }
 
     /**
@@ -729,7 +729,7 @@ class Atk_OneToManyRelation extends Atk_Relation
      * The regular atkOneToManyRelation has no implementation for this method,
      * but it may be overridden in derived classes to add extra information
      * (text, links, whatever) to the top of the attribute, right before the
-     * recordlist. This is similar to the adminHeader() method in atkNode.
+     * recordlist. This is similar to the adminHeader() method in Atk_Node.
      *
      * @param array $record The master record that is being edited.
      * @param array $childrecords The childrecords in this master/detail
@@ -751,7 +751,7 @@ class Atk_OneToManyRelation extends Atk_Relation
      * The regular atkOneToManyRelation has no implementation for this method,
      * but it may be overridden in derived classes to add extra information
      * (text, links, whatever) to the bottom of the attribute, just after the
-     * recordlist. This is similar to the adminFooter() method in atkNode.
+     * recordlist. This is similar to the adminFooter() method in Atk_Node.
      *
      * @param array $record The master record that is being edited.
      * @param array $childrecords The childrecords in this master/detail
@@ -811,7 +811,7 @@ class Atk_OneToManyRelation extends Atk_Relation
      *
      * Called by the framework to load the detail records.
      *
-     * @param atkDb $db The database used by the node.
+     * @param Atk_Db $db The database used by the node.
      * @param array $record The master record
      * @param String $mode The mode for loading (admin, select, copy, etc)
      * @param bool $paging divide the result records on multiple pages ($config_recordsperpage)
@@ -876,7 +876,7 @@ class Atk_OneToManyRelation extends Atk_Relation
     {
         $classname = $this->m_destination;
         $cache_id = $this->m_owner . "." . $this->m_name;
-        $rel = atkModule::atkGetNode($classname, $cache_id);
+        $rel = Atk_Module::atkGetNode($classname, $cache_id);
         $ownerfields = $this->getOwnerFields();
 
         for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i ++) {
@@ -905,13 +905,13 @@ class Atk_OneToManyRelation extends Atk_Relation
      *
      * other than those this method does not do anything.
      *
-     * @param atkDb $db The database used by the node.
+     * @param Atk_Db $db The database used by the node.
      * @param array $record The master record which has the detail records
      *                      embedded.
      * @param string $mode The mode we're in ("add", "edit", "copy")
      * @return boolean true if store was successful, false otherwise.
      */
-    function store(atkDb $db, $record, $mode)
+    function store(Atk_Db $db, $record, $mode)
     {
         switch ($mode) {
             case 'add' : return $this->storeAdd($db, $record, $mode);
@@ -923,18 +923,18 @@ class Atk_OneToManyRelation extends Atk_Relation
     /**
      * Persist records from the session (in add mode) to the database.
      *
-     * @param atkDb $db
+     * @param Atk_Db $db
      * @param array $record
      * @param string $mode
      * @return bool
      */
-    private function storeAdd(atkDb $db, $record, $mode)
+    private function storeAdd(Atk_Db $db, $record, $mode)
     {
         if (!$this->createDestination())
             return false;
 
-        atkTools::atkimport('atk.session.atksessionstore');
-        $rows = atkSessionStore::getInstance($this->getSessionStoreKey())->getData();
+        Atk_Tools::atkimport('atk.session.atksessionstore');
+        $rows = Atk_SessionStore::getInstance($this->getSessionStoreKey())->getData();
 
         foreach ($rows as $row) {
             $this->updateSessionAddFakeId($row, $this->getSessionAddFakeId(), $record);
@@ -942,7 +942,7 @@ class Atk_OneToManyRelation extends Atk_Relation
         }
 
         // after saving the rows, we can clear the sessionstore
-        atkSessionStore::getInstance($this->getSessionStoreKey())->setData(null);
+        Atk_SessionStore::getInstance($this->getSessionStoreKey())->setData(null);
 
         return true;
     }
@@ -971,12 +971,12 @@ class Atk_OneToManyRelation extends Atk_Relation
     /**
      * Copy detail records.
      *
-     * @param atkDb  $db     Datbase connection to use
+     * @param Atk_Db  $db     Datbase connection to use
      * @param array  $record Owner record
      * @param string $mode   Mode ('copy')
      * @return bool
      */
-    private function storeCopy(atkDb $db, $record, $mode)
+    private function storeCopy(Atk_Db $db, $record, $mode)
     {
         $onetomanyrecs = $record[$this->fieldName()];
         if (!is_array($onetomanyrecs) || count($onetomanyrecs) <= 0)
@@ -1044,7 +1044,7 @@ class Atk_OneToManyRelation extends Atk_Relation
      * Returns the condition (SQL) that should be used when we want to join an owner
      * node with the destination node of the atkOneToManyRelation.
      *
-     * @param atkQuery $query      The query object.
+     * @param Atk_Query $query      The query object.
      * @param String   $ownerAlias The owner table alias.
      * @param String   $destAlias  The destination table alias.
      *
@@ -1075,7 +1075,7 @@ class Atk_OneToManyRelation extends Atk_Relation
      * @param Integer  $id         The unique smart search criterium identifier.
      * @param Integer  $nr         The element number in the path.
      * @param Array    $path       The remaining attribute path.
-     * @param atkQuery $query      The query to which the condition will be added.
+     * @param Atk_Query $query      The query to which the condition will be added.
      * @param String   $ownerAlias The owner table alias to use.
      * @param Mixed    $value      The value the user has entered in the searchbox.
      * @param String   $mode       The searchmode to use.
@@ -1108,7 +1108,7 @@ class Atk_OneToManyRelation extends Atk_Relation
     /**
      * Adds a search condition for a given search value
      *
-     * @param atkQuery $query The query to which the condition will be added.
+     * @param Atk_Query $query The query to which the condition will be added.
      * @param String $table The name of the table in which this attribute
      *                      is stored
      * @param mixed $value The value the user has entered in the searchbox
@@ -1140,7 +1140,7 @@ class Atk_OneToManyRelation extends Atk_Relation
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param Atk_Query $query     The query object where the search condition should be placed on
      * @param String $table       The name of the table in which this attribute
      *                              is stored
      * @param mixed $value        The value the user has entered in the searchbox
@@ -1183,7 +1183,7 @@ class Atk_OneToManyRelation extends Atk_Relation
     /**
      * Calls searchCondition on an attribute in the destination
      * To hook the destination attribute on the query
-     * @param atkQuery &$query     The query object
+     * @param Atk_Query &$query     The query object
      * @param String   $table      The table to search on
      * @param mixed    $value      The value to search
      * @param mixed    $searchmode The mode used when searching
@@ -1234,13 +1234,13 @@ class Atk_OneToManyRelation extends Atk_Relation
             // Get the destination node
             $classname = $this->m_destination;
             $cache_id = $this->m_owner . "." . $this->m_name;
-            $rel = atkModule::atkGetNode($classname, $cache_id);
+            $rel = Atk_Module::atkGetNode($classname, $cache_id);
             // Get the current atkselector
             $where = $this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']);
             if ($where) {
                 $childrecords = $rel->selectDb($where);
                 if (!empty($childrecords))
-                    return atkTools::atktext("restricted_delete_error");
+                    return Atk_Tools::atktext("restricted_delete_error");
             } else
                 return;
         }
@@ -1303,7 +1303,7 @@ class Atk_OneToManyRelation extends Atk_Relation
         // which point back to this ownerinstance and it doesn't need them anymore anyway.
         $this->m_ownerInstance->m_postvars = array();
 
-        $handler->setDialogSaveUrl(atkTools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.add_process'));
+        $handler->setDialogSaveUrl(Atk_Tools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.add_process'));
         $result = $handler->renderAddDialog();
         $page = &$this->m_ownerInstance->getPage();
         $page->addContent($result);
@@ -1322,7 +1322,7 @@ class Atk_OneToManyRelation extends Atk_Relation
         // which point back to this ownerinstance and it doesn't need them anymore anyway.
         $this->m_ownerInstance->m_postvars = array();
 
-        $handler->setDialogSaveUrl(atkTools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.add_process'));
+        $handler->setDialogSaveUrl(Atk_Tools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.add_process'));
         $handler->handleSave($this->getPartialSaveUrl());
     }
 
@@ -1332,7 +1332,7 @@ class Atk_OneToManyRelation extends Atk_Relation
      */
     public function getPartialSaveUrl()
     {
-        return atkTools::partial_url(
+        return Atk_Tools::partial_url(
             $this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' .
             $this->fieldName() .
             '.refresh'
@@ -1347,7 +1347,7 @@ class Atk_OneToManyRelation extends Atk_Relation
         $this->createDestination();
         $this->m_destInstance->addFilter($this->m_ownerInstance->m_postvars['atkfilter']);
         $handler = &$this->m_destInstance->getHandler('addorcopy');
-        $handler->setProcessUrl(atkTools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.addorcopy_process', array('atkfilter' => $this->m_ownerInstance->m_postvars['atkfilter'])));
+        $handler->setProcessUrl(Atk_Tools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.addorcopy_process', array('atkfilter' => $this->m_ownerInstance->m_postvars['atkfilter'])));
         $handler->handleDialog();
     }
 
@@ -1369,16 +1369,16 @@ class Atk_OneToManyRelation extends Atk_Relation
             // which point back to this ownerinstance and it doesn't need them anymore anyway.
             $this->m_ownerInstance->m_postvars = array();
 
-            $handler->handleCopy(atkTools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.refresh'));
+            $handler->handleCopy(Atk_Tools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.refresh'));
         }
 
         // user has choosen to add a new record, depending on whatever the AF_ONETOMANY_ADD_DIALOG
         // or the destination instance NF_ADD_DIALOG flags has been set we either show the user an
         // add dialog or redirect him/her to the add page (using an atkSubmit)
         else {
-            atkTools::atkimport("atk.ui.atkdialog");
+            Atk_Tools::atkimport("atk.ui.atkdialog");
 
-            $script = atkDialog::getCloseCall();
+            $script = Atk_Dialog::getCloseCall();
 
             if ($this->hasFlag(AF_ONETOMANY_ADD_DIALOG) || $this->m_destInstance->hasFlag(NF_ADD_DIALOG)) {
                 $ui = &$this->m_ownerInstance->getUi();
@@ -1389,8 +1389,8 @@ class Atk_OneToManyRelation extends Atk_Relation
                 $dialog->setSessionStatus(SESSION_PARTIAL);
                 $script .= $dialog->getCall(true, false);
             } else {
-                $url = atkTools::dispatch_url($this->m_destInstance->atkNodeType(), 'add');
-                $script .= "atkSubmit('" . atkTools::atkurlencode(atkTools::session_url($url, SESSION_NESTED)) . "', true);";
+                $url = Atk_Tools::dispatch_url($this->m_destInstance->atkNodeType(), 'add');
+                $script .= "atkSubmit('" . Atk_Tools::atkurlencode(Atk_Tools::session_url($url, SESSION_NESTED)) . "', true);";
             }
 
             $page = &$this->m_ownerInstance->getPage();
@@ -1412,7 +1412,7 @@ class Atk_OneToManyRelation extends Atk_Relation
         // which point back to this ownerinstance and it doesn't need them anymore anyway.
         $this->m_ownerInstance->m_postvars = array();
 
-        $handler->setDialogSaveUrl(atkTools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.edit_process'));
+        $handler->setDialogSaveUrl(Atk_Tools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.edit_process'));
         $result = $handler->renderEditDialog();
         $page = &$this->m_ownerInstance->getPage();
         $page->addContent($result);
@@ -1431,8 +1431,8 @@ class Atk_OneToManyRelation extends Atk_Relation
         // which point back to this ownerinstance and it doesn't need them anymore anyway.
         $this->m_ownerInstance->m_postvars = array();
 
-        $handler->setDialogSaveUrl(atkTools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.edit_process'));
-        $handler->handleUpdate(atkTools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.refresh'));
+        $handler->setDialogSaveUrl(Atk_Tools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.edit_process'));
+        $handler->handleUpdate(Atk_Tools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' . $this->fieldName() . '.refresh'));
     }
 
     /**

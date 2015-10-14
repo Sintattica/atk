@@ -127,7 +127,7 @@ class Atk_Config
      * and use them as defaults.
      *
      * <b>Example:</b>
-     *        atkConfig::get('color','mymodule','FF0000');
+     *        Atk_Config::get('color','mymodule','FF0000');
      *
      * @param string $section Section to check (typically a module)
      * @param string $tag     Name of configuration to get
@@ -168,9 +168,9 @@ class Atk_Config
      */
     public static function getConfigForSection($section)
     {
-        $config = self::getDirConfigForSection(atkConfig::getGlobal('configdir'), $section);
-        if (atkModule::moduleExists($section)) {
-            $dir = atkModule::moduleDir($section) . 'skel/configs/';
+        $config = self::getDirConfigForSection(Atk_Config::getGlobal('configdir'), $section);
+        if (Atk_Module::moduleExists($section)) {
+            $dir = Atk_Module::moduleDir($section) . 'skel/configs/';
             if (file_exists($dir)) {
                 $module_configs = self::getDirConfigForSection($dir, $section);
                 $config = array_merge($module_configs, $config);
@@ -189,11 +189,11 @@ class Atk_Config
      */
     protected static function getDirConfigForSection($dir, $section)
     {
-        atkTools::atkdebug("Loading config file for section $section");
+        Atk_Tools::atkdebug("Loading config file for section $section");
         $config = array();
         @include($dir . $section . ".inc.php");
 
-        $other = glob(atkConfig::getGlobal("configdir") . "{$section}.*.inc.php");
+        $other = glob(Atk_Config::getGlobal("configdir") . "{$section}.*.inc.php");
         if (is_array($other)) {
             foreach ($other as $file) {
                 include($file);
@@ -210,7 +210,7 @@ class Atk_Config
      */
     function ipDebugEnabled($params)
     {
-        $ip = atkTools::atkGetClientIp();
+        $ip = Atk_Tools::atkGetClientIp();
         return in_array($ip, $params["list"]);
     }
 
@@ -222,7 +222,7 @@ class Atk_Config
      */
     function requestDebugEnabled($params)
     {
-        $session = &atkSessionManager::getSession();
+        $session = &Atk_SessionManager::getSession();
 
         if (isset($_REQUEST["atkdebug"]["key"])) {
             $session["debug"]["key"] = $_REQUEST["atkdebug"]["key"];
@@ -244,14 +244,14 @@ class Atk_Config
      */
     function smartDebugLevel($default, $options = array())
     {
-        $session = &atkSessionManager::getSession();
+        $session = &Atk_SessionManager::getSession();
 
         $enabled = $default > 0;
 
         foreach ($options as $option) {
             $method = $option["type"] . "DebugEnabled";
             if (is_callable(array("atkconfig", $method)))
-                $enabled = $enabled || atkconfig::$method($option);
+                $enabled = $enabled || Atk_config::$method($option);
         }
 
         global $config_debug_enabled;

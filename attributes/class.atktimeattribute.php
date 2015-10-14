@@ -192,7 +192,7 @@ class Atk_TimeAttribute extends Atk_Attribute
             $m_defSec = $default[2];
         }
 
-        atkTools::atkdebug("defhour=$m_defHour   defmin=$m_defMin");
+        Atk_Tools::atkdebug("defhour=$m_defHour   defmin=$m_defMin");
         // generate hour dropdown
         if (!$this->hasflag(AF_OBLIGATORY) || $this->hasFlag(AF_TIME_DEFAULT_EMPTY))
             $m_hourBox .= '<option value=""' . ($m_defHour === "" ? ' selected' : '') . '></option>';
@@ -373,7 +373,7 @@ class Atk_TimeAttribute extends Atk_Attribute
     {
         $value = $rec[$this->fieldName()];
         if ($this->hasFlag(AF_OBLIGATORY) && ($value["hours"] == -1 || $value['minutes'] == -1)) {
-            atkTools::triggerError($rec, $this->fieldName(), 'error_obligatoryfield');
+            Atk_Tools::triggerError($rec, $this->fieldName(), 'error_obligatoryfield');
         }
     }
 
@@ -383,7 +383,7 @@ class Atk_TimeAttribute extends Atk_Attribute
      * Database queries (select, insert and update) are passed to this method
      * so the attribute can 'hook' itself into the query.
      *
-     * @param atkQuery $query The SQL query object
+     * @param Atk_Query $query The SQL query object
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
@@ -448,7 +448,7 @@ class Atk_TimeAttribute extends Atk_Attribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param atkQuery $query The query object where the search condition should be placed on
+     * @param Atk_Query $query The query object where the search condition should be placed on
      * @param String $table The name of the table in which this attribute
      *                              is stored
      * @param mixed $value The value the user has entered in the searchbox

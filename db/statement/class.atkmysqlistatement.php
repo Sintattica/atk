@@ -14,7 +14,7 @@
  * @version $Revision$
  * $Id$
  */
-atkTools::atkimport('atk.db.statement.atkstatement');
+Atk_Tools::atkimport('atk.db.statement.atkstatement');
 
 /**
  * MySQLi statement implementation.
@@ -53,14 +53,14 @@ class Atk_MySQLiStatement extends Atk_Statement
     protected function _prepare()
     {
         if ($this->getDb()->connect() != DB_SUCCESS) {
-            throw new atkStatementException("Cannot connect to database.", atkStatementException::NO_DATABASE_CONNECTION);
+            throw new Atk_StatementException("Cannot connect to database.", Atk_StatementException::NO_DATABASE_CONNECTION);
         }
 
         $conn = $this->getDb()->link_id();
-        atkTools::atkdebug("Prepare query: " . $this->_getParsedQuery());
+        Atk_Tools::atkdebug("Prepare query: " . $this->_getParsedQuery());
         $this->m_stmt = $conn->prepare($this->_getParsedQuery());
         if (!$this->m_stmt || $conn->errno) {
-            throw new atkStatementException("Cannot prepare statement (ERROR: {$conn->errno} - {$conn->error}).", atkStatementException::PREPARE_STATEMENT_ERROR);
+            throw new Atk_StatementException("Cannot prepare statement (ERROR: {$conn->errno} - {$conn->error}).", Atk_StatementException::PREPARE_STATEMENT_ERROR);
         }
     }
 
@@ -74,7 +74,7 @@ class Atk_MySQLiStatement extends Atk_Statement
     public function rewind()
     {
         if ($this->_getLatestParams() === null) {
-            throw new atkStatementException("Statement has not been executed yet.", atkStatementException::STATEMENT_NOT_EXECUTED);
+            throw new Atk_StatementException("Statement has not been executed yet.", Atk_StatementException::STATEMENT_NOT_EXECUTED);
         }
 
         $this->m_stmt->data_seek(0);
@@ -95,7 +95,7 @@ class Atk_MySQLiStatement extends Atk_Statement
         $args = array();
         $args[] = str_repeat('s', count($this->_getBindPositions()));
         foreach ($this->_getBindPositions() as $param) {
-            atkTools::atkdebug("Bind param {$i}: " . ($params[$param] === null ? 'NULL' : $params[$param]));
+            Atk_Tools::atkdebug("Bind param {$i}: " . ($params[$param] === null ? 'NULL' : $params[$param]));
             $args[] = &$params[$param];
             $i++;
         }
@@ -115,7 +115,7 @@ class Atk_MySQLiStatement extends Atk_Statement
 
         $metadata = $this->m_stmt->result_metadata();
         if ($this->m_stmt->errno) {
-            throw new atkStatementException("Cannot retrieve metadata (ERROR: {$this->m_stmt->errno} - {$this->m_stmt->error}).", atkStatementException::OTHER_ERROR);
+            throw new Atk_StatementException("Cannot retrieve metadata (ERROR: {$this->m_stmt->errno} - {$this->m_stmt->error}).", Atk_StatementException::OTHER_ERROR);
         }
 
         if (!$metadata) {
@@ -160,15 +160,15 @@ class Atk_MySQLiStatement extends Atk_Statement
      */
     protected function _execute($params)
     {
-        if (atkConfig::getGlobal("debug") >= 0) {
-            atkTools::atkimport("atk.utils.atkdebugger");
-            atkDebugger::addQuery($this->_getParsedQuery(), false);
+        if (Atk_Config::getGlobal("debug") >= 0) {
+            Atk_Tools::atkimport("atk.utils.atkdebugger");
+            Atk_Debugger::addQuery($this->_getParsedQuery(), false);
         }
 
         $this->_bindParams($params);
 
         if (!$this->m_stmt->execute()) {
-            throw new atkStatementException("Cannot execute statement: {$this->m_stmt->error}", atkStatementException::STATEMENT_ERROR);
+            throw new Atk_StatementException("Cannot execute statement: {$this->m_stmt->error}", Atk_StatementException::STATEMENT_ERROR);
         }
 
         $this->m_insertId = $this->getDb()->link_id()->insert_id;
@@ -220,7 +220,7 @@ class Atk_MySQLiStatement extends Atk_Statement
 
     /**
      * Returns the number of affected rows in case of an INSERT, UPDATE 
-     * or DELETE query. Called immediatly after atkStatement::_execute().
+     * or DELETE query. Called immediatly after Atk_Statement::_execute().
      */
     protected function _getAffectedRowCount()
     {

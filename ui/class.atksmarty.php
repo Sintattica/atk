@@ -39,9 +39,9 @@ class Atk_Smarty
     {
         static $s_smarty = NULL;
         if ($s_smarty == NULL) {
-            atkTools::atkdebug("Creating Smarty instance");
+            Atk_Tools::atkdebug("Creating Smarty instance");
             if (!class_exists("Smarty")) {
-                include_once(atkConfig::getGlobal("atkroot") . "atk/ui/smarty/Smarty.class.php");
+                include_once(Atk_Config::getGlobal("atkroot") . "atk/ui/smarty/Smarty.class.php");
             }
 
             // Warning: you'd think that the next line should read
@@ -53,28 +53,28 @@ class Atk_Smarty
 
             // Initialize..
 
-            $s_smarty->template_dir = atkConfig::getGlobal("tplroot"); // name of directory for templates
+            $s_smarty->template_dir = Atk_Config::getGlobal("tplroot"); // name of directory for templates
             //Try to create the template compile directory if it not already exists.
-            if (!file_exists(atkConfig::getGlobal("tplcompiledir"))) {
-                if (!mkdir(atkConfig::getGlobal("tplcompiledir"), 0755, true)) {
-                    atkTools::atkerror("Unable to create template compile directory: " . atkConfig::getGlobal("tplcompiledir"));
+            if (!file_exists(Atk_Config::getGlobal("tplcompiledir"))) {
+                if (!mkdir(Atk_Config::getGlobal("tplcompiledir"), 0755, true)) {
+                    Atk_Tools::atkerror("Unable to create template compile directory: " . Atk_Config::getGlobal("tplcompiledir"));
                 }
             }
-            $s_smarty->compile_dir = atkConfig::getGlobal("tplcompiledir"); // name of directory for compiled templates
+            $s_smarty->compile_dir = Atk_Config::getGlobal("tplcompiledir"); // name of directory for compiled templates
 
             $s_smarty->autoload_filters = array();    // indicates which filters will be auto-loaded
 
-            $s_smarty->force_compile = atkConfig::getGlobal("smarty_forcecompile");   // force templates to compile every time,
+            $s_smarty->force_compile = Atk_Config::getGlobal("smarty_forcecompile");   // force templates to compile every time,
             // overrides cache settings. default false.
 
-            $s_smarty->caching = atkConfig::getGlobal("tplcaching");     // enable caching. can be one of 0/1/2.
+            $s_smarty->caching = Atk_Config::getGlobal("tplcaching");     // enable caching. can be one of 0/1/2.
             // 0 = no caching
             // 1 = use class cache_lifetime value
             // 2 = use cache_lifetime in cache file
             // default = 0.
-            $s_smarty->cache_dir = atkConfig::getGlobal("tplcachedir");    // name of directory for template cache files
-            $s_smarty->use_sub_dirs = atkConfig::getGlobal("tplusesubdirs"); // use subdirs for compiled and cached templates
-            $s_smarty->cache_lifetime = atkConfig::getGlobal("tplcachelifetime"); // number of seconds cached content will persist.
+            $s_smarty->cache_dir = Atk_Config::getGlobal("tplcachedir");    // name of directory for template cache files
+            $s_smarty->use_sub_dirs = Atk_Config::getGlobal("tplusesubdirs"); // use subdirs for compiled and cached templates
+            $s_smarty->cache_lifetime = Atk_Config::getGlobal("tplcachelifetime"); // number of seconds cached content will persist.
             // 0 = always regenerate cache,
             // -1 = never expires. default is one hour (3600)
             $s_smarty->cache_modified_check = true;                         // respect If-Modified-Since headers on cached content
@@ -90,18 +90,18 @@ class Atk_Smarty
             // SMARTY_PHP_ALLOW    -> execute php tags
             // default: SMARTY_PHP_PASSTHRU
 
-            $s_smarty->default_handler = atkConfig::getGlobal("defaulthandler");
-            $s_smarty->default_modifier = atkConfig::getGlobal("defaultmodifier");
+            $s_smarty->default_handler = Atk_Config::getGlobal("defaulthandler");
+            $s_smarty->default_modifier = Atk_Config::getGlobal("defaultmodifier");
 
             // plugin dirs
-            $s_smarty->plugins_dir = array(atkConfig::getGlobal("atkroot") . "atk/ui/smarty/plugins",
-                atkConfig::getGlobal("atkroot") . "atk/ui/plugins");
-            $customplugindir = atkConfig::getGlobal("tplplugindir");
+            $s_smarty->plugins_dir = array(Atk_Config::getGlobal("atkroot") . "atk/ui/smarty/plugins",
+                Atk_Config::getGlobal("atkroot") . "atk/ui/plugins");
+            $customplugindir = Atk_Config::getGlobal("tplplugindir");
             if ($customplugindir != "")
                 $s_smarty->plugins_dir[] = $customplugindir;
 
             //$s_smarty->register_compiler_function("tpl","tpl_include");
-            atkTools::atkdebug("Instantiated new Smarty");
+            Atk_Tools::atkdebug("Instantiated new Smarty");
         }
         return $s_smarty;
     }
@@ -113,7 +113,7 @@ class Atk_Smarty
      */
     function addPluginDir($path)
     {
-        $smarty = &atkSmarty::getInstance();
+        $smarty = &Atk_Smarty::getInstance();
         $smarty->plugins_dir[] = $path;
     }
 
@@ -133,13 +133,13 @@ class Atk_Smarty
      */
     function getPathForPlugin($moduleOrPath, $name, $type)
     {
-        if (atkModule::moduleExists($moduleOrPath)) {
+        if (Atk_Module::moduleExists($moduleOrPath)) {
             $path = 'module.' . $moduleOrPath . '.plugins';
         } else {
             $path = $moduleOrPath;
         }
 
-        $fullPath = atkTools::getClassPath($path, false) . '/' . $type . '.' . $name . '.php';
+        $fullPath = Atk_Tools::getClassPath($path, false) . '/' . $type . '.' . $name . '.php';
         return $fullPath;
     }
 
@@ -157,12 +157,12 @@ class Atk_Smarty
      */
     function addFunction($moduleOrPath, $tag, $name = "", $cacheable = true, $cache_attrs = null)
     {
-        $smarty = &atkSmarty::getInstance();
+        $smarty = self::getInstance();
 
         $name = empty($name) ? $tag : $name;
         $function = "__smarty_function_$name";
 
-        $path = atkSmarty::getPathForPlugin($moduleOrPath, $name, 'function');
+        $path = self::getPathForPlugin($moduleOrPath, $name, 'function');
 
         eval('
       function ' . $function . '($params, &$smarty)
@@ -184,7 +184,7 @@ class Atk_Smarty
      */
     function addDynamicFunction($moduleOrPath, $tag, $cache_attrs = null)
     {
-        atkSmarty::addFunction($moduleOrPath, $tag, $tag, false, $cache_attrs);
+        Atk_Smarty::addFunction($moduleOrPath, $tag, $tag, false, $cache_attrs);
     }
 
     /**
@@ -200,12 +200,12 @@ class Atk_Smarty
      */
     function addCompilerFunction($moduleOrPath, $tag, $name = "", $cacheable = true)
     {
-        $smarty = &atkSmarty::getInstance();
+        $smarty = self::getInstance();
 
         $name = empty($name) ? $tag : $name;
         $function = "__smarty_compiler_$name";
 
-        $path = atkSmarty::getPathForPlugin($moduleOrPath, $name, 'compiler');
+        $path = self::getPathForPlugin($moduleOrPath, $name, 'compiler');
 
         eval('
       function ' . $function . '($tag_arg, &$smarty)
@@ -231,12 +231,12 @@ class Atk_Smarty
      */
     function addBlock($moduleOrPath, $tag, $name = "", $cacheable = true)
     {
-        $smarty = &atkSmarty::getInstance();
+        $smarty = self::getInstance();
 
         $name = empty($name) ? $tag : $name;
         $function = "__smarty_block_$name";
 
-        $path = atkSmarty::getPathForPlugin($moduleOrPath, $name, 'block');
+        $path = Atk_Smarty::getPathForPlugin($moduleOrPath, $name, 'block');
 
         eval('
       function ' . $function . '($params, $content, &$smarty, &$repeat)
@@ -257,7 +257,7 @@ class Atk_Smarty
      */
     function addDynamicBlock($moduleOrPath, $tag)
     {
-        atkSmarty::addBlock($moduleOrPath, $tag, $tag, false);
+        self::addBlock($moduleOrPath, $tag, $tag, false);
     }
 
     /**
@@ -269,12 +269,12 @@ class Atk_Smarty
      */
     function addModifier($moduleOrPath, $tag, $name = "")
     {
-        $smarty = &atkSmarty::getInstance();
+        $smarty = self::getInstance();
 
         $name = empty($name) ? $tag : $name;
         $function = "__smarty_modifier_$name";
 
-        $path = atkSmarty::getPathForPlugin($moduleOrPath, $name, 'modifier');
+        $path = self::getPathForPlugin($moduleOrPath, $name, 'modifier');
 
         eval('
       function ' . $function . '($variable)
@@ -294,7 +294,7 @@ class Atk_Smarty
      */
     function addOutputFilter($function)
     {
-        $smarty = &atkSmarty::getInstance();
+        $smarty = self::getInstance();
         $smarty->register_outputfilter($function);
     }
 
@@ -306,4 +306,4 @@ class Atk_Smarty
  * on the plug-in's filename. Non-dynamic plug-ins should be placed in the plugins/ subdir,
  * but shouldn't be registered here (Smarty will detect them automatically).
  */
-atkSmarty::addDynamicFunction('atk.ui.plugins', 'atkfrontcontroller');
+Atk_Smarty::addDynamicFunction('atk.ui.plugins', 'atkfrontcontroller');

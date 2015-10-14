@@ -41,7 +41,7 @@ class Atk_Theme
     {
         static $s_instance = NULL;
         if ($s_instance == NULL || $reset) {
-            $s_instance = new Atk_Theme();
+            $s_instance = new self();
         }
         return $s_instance;
     }
@@ -50,14 +50,14 @@ class Atk_Theme
      * Constructor, initializes class and certain values
      * @access private
      */
-    function atkTheme()
+    function __construct()
     {
         global $g_theme;
-        atkTools::atkdebug("Created a new atkTheme instance");
+        Atk_Tools::atkdebug("Created a new atkTheme instance");
         if (isset($g_theme["Name"]) && $g_theme["Name"] != "") {
             $this->m_name = $g_theme["Name"];
         } else {
-            $this->m_name = atkConfig::getGlobal("defaulttheme");
+            $this->m_name = Atk_Config::getGlobal("defaulttheme");
         }
         $this->_loadTheme();
     }
@@ -76,19 +76,21 @@ class Atk_Theme
      */
     public static function absPath($relpath, $location = '')
     {
-        if ($relpath == "")
+        if ($relpath == "") {
             return "";
-
+        }
         if (preg_match("!module/(.*?)/(.*)!", $relpath, $matches)) {
-            return atkModule::moduleDir($matches[1]) . $matches[2];
+            return Atk_Module::moduleDir($matches[1]) . $matches[2];
         }
 
-        if (substr($relpath, 0, 4) === 'atk/')
+        if (substr($relpath, 0, 4) === 'atk/') {
             $location = 'atk';
-        else if (substr($relpath, 0, 7) === 'themes/')
+        } else if (substr($relpath, 0, 7) === 'themes/') {
             $location = 'app';
+        }
 
-        return ($location === 'app' ? atkConfig::getGlobal('application_dir') : atkConfig::getGlobal("atkroot")) . $relpath;
+        $return = ($location === 'app' ? Atk_Config::getGlobal('application_dir') : Atk_Config::getGlobal("atkroot")) . $relpath;
+        return $return;
     }
 
     /**
@@ -100,9 +102,9 @@ class Atk_Theme
     function _loadTheme()
     {
         if (!count($this->m_theme)) {
-            $filename = atkConfig::getGlobal("atktempdir") . "themes/" . $this->m_name . ".php";
-            if (!file_exists($filename) || atkConfig::getGlobal("force_theme_recompile")) {
-                $compiler = & atkTools::atknew("atk.ui.atkthemecompiler");
+            $filename = Atk_Config::getGlobal("atktempdir") . "themes/" . $this->m_name . ".php";
+            if (!file_exists($filename) || Atk_Config::getGlobal("force_theme_recompile")) {
+                $compiler = &Atk_Tools::atknew("atk.ui.atkthemecompiler");
                 $compiler->compile($this->m_name);
             }
             include($filename);
@@ -135,9 +137,9 @@ class Atk_Theme
     function getFileLocation($type, $name, $module = "")
     {
         if ($module != "" && isset($this->m_theme["modulefiles"][$module][$type][$name])) {
-            return atkModule::moduleDir($module) . "themes/" . $this->m_theme["modulefiles"][$module][$type][$name];
+            return Atk_Module::moduleDir($module) . "themes/" . $this->m_theme["modulefiles"][$module][$type][$name];
         } else if (isset($this->m_theme["files"][$type][$name])) {
-            return atkTheme::absPath($this->m_theme["files"][$type][$name]);
+            return Atk_Theme::absPath($this->m_theme["files"][$type][$name]);
         }
         return "";
     }
@@ -197,27 +199,27 @@ class Atk_Theme
      */
     function iconPath($icon, $type, $module = "", $ext = '', $useDefault = null)
     {
-        if($useDefault === null) {
+        if ($useDefault === null) {
             $useDefault = true;
         }
 
         // Check module themes for icon
         $iconfile = $this->getIconFileFromModuleTheme($icon, $type, $ext);
         if ($module != "" && $iconfile) {
-            return atkModule::moduleDir($module) . "themes/" . $iconfile;
+            return Atk_Module::moduleDir($module) . "themes/" . $iconfile;
         }
 
         // Check the default theme for icon
         $iconfile = $this->getIconFileFromTheme($icon, $type, $this->m_theme['files'], $ext);
         if ($iconfile) {
-            return atkTheme::absPath($iconfile);
+            return Atk_Theme::absPath($iconfile);
         }
 
         if ($useDefault) {
             // Check the default theme for default icon
             $iconfile = $this->getIconFileFromTheme('default', $type, $this->m_theme['files'], $ext);
             if ($iconfile) {
-                return atkTheme::absPath($iconfile);
+                return Atk_Theme::absPath($iconfile);
             }
         }
 
@@ -236,7 +238,7 @@ class Atk_Theme
     {
         if (!isset($this->m_theme['modulefiles']))
             return false;
-        $modules = atkModule::atkGetModules();
+        $modules = Atk_Module::atkGetModules();
         $modulenames = array_keys($modules);
         foreach ($modulenames as $modulename) {
             if (isset($this->m_theme['modulefiles'][$modulename])) {
@@ -296,7 +298,7 @@ class Atk_Theme
      */
     function themeDir()
     {
-        return atkTheme::absPath($this->getAttribute("basepath"));
+        return Atk_Theme::absPath($this->getAttribute("basepath"));
     }
 
 
@@ -319,7 +321,7 @@ class Atk_Theme
 
     function getIcon($icon, $type, $module = '', $ext = '', $useDefault = null, $label = '', $attrs = array())
     {
-        if($useDefault === null) {
+        if ($useDefault === null) {
             $useDefault = true;
         }
 
@@ -331,8 +333,8 @@ class Atk_Theme
             $icon = $this->cssIcon($icon, $type, $module, $useDefault);
             if (!$icon) return false;
             $ret = '<span class="' . $icon . '"';
-            foreach($attrs as $k=>$v) {
-                $ret.= ' '.$k.'="'.$v.'"';
+            foreach ($attrs as $k => $v) {
+                $ret .= ' ' . $k . '="' . $v . '"';
             }
             $ret .= ' ></span>';
             return $ret;
@@ -346,8 +348,8 @@ class Atk_Theme
         $icon = $this->iconPath($icon, $type, $module, $ext, $useDefault);
         if (!$icon) return false;
         $ret = '<img src="' . $icon . '"';
-        foreach($attrs as $k=>$v) {
-            $ret.= ' '.$k.'="'.$v.'"';
+        foreach ($attrs as $k => $v) {
+            $ret .= ' ' . $k . '="' . $v . '"';
         }
         $ret .= ' />';
         return $ret;

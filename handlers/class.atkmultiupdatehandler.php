@@ -35,7 +35,5 @@ class Atk_MultiUpdatehandler extends Atk_ActionHandler
         }
 
         $this->getNode()->getDb()->commit();
-        die('true');
     }
-
 }

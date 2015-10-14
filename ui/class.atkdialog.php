@@ -54,13 +54,13 @@ class Atk_Dialog
         $this->m_partial = $partial;
         $this->m_params = $params;
 
-        atkTools::atkimport('atk.ui.atkui');
-        $ui = atkUI::getInstance();
-        $module = atkModule::getNodeModule($nodeType);
-        $type = atkModule::getNodeType($nodeType);
+        Atk_Tools::atkimport('atk.ui.atkui');
+        $ui = Atk_UI::getInstance();
+        $module = Atk_Module::getNodeModule($nodeType);
+        $type = Atk_Module::getNodeType($nodeType);
         $this->m_title = $ui->title($module, $type, $action);
 
-        $theme = atkTheme::getInstance();
+        $theme = Atk_Theme::getInstance();
         $this->m_themeName = $theme->getAttribute('dialog_theme_name', 'alphacube');
         $this->m_themeLoad = $theme->getAttribute('dialog_theme_load', true);
     }
@@ -203,7 +203,7 @@ class Atk_Dialog
      * Sets an object which modifyObject method will be called (if exists) just
      * before showing the dialog. This method is allowed to alter the dialog.
      * 
-     * @see atkDialog::getCall
+     * @see Atk_Dialog::getCall
      *
      * @param mixed $object modifier object
      */
@@ -229,21 +229,21 @@ class Atk_Dialog
      */
     public static function loadScriptsAndStyles($theme = null)
     {
-        if ($theme === null && atkTheme::getInstance()->getAttribute('dialog_theme_load', true)) {
-            $theme = atkTheme::getInstance()->getAttribute('dialog_theme_name', 'alphacube');
+        if ($theme === null && Atk_Theme::getInstance()->getAttribute('dialog_theme_load', true)) {
+            $theme = Atk_Theme::getInstance()->getAttribute('dialog_theme_name', 'alphacube');
         }
 
-        atkTools::atkimport('atk.ui.atkpage');
+        Atk_Tools::atkimport('atk.ui.atkpage');
 
-        $page = &atkPage::getInstance();
-        $page->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/prototype-ui/window/window.packed.js');
-        $page->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/prototype-ui-ext.js');
-        $page->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/class.atkdialog.js');
-        $page->register_style(atkConfig::getGlobal('atkroot') . 'atk/javascript/prototype-ui/window/themes/window/window.css');
-        $page->register_style(atkConfig::getGlobal('atkroot') . 'atk/javascript/prototype-ui/window/themes/shadow/mac_shadow.css');
+        $page = &Atk_Page::getInstance();
+        $page->register_script(Atk_Config::getGlobal('atkroot') . 'atk/javascript/prototype-ui/window/window.packed.js');
+        $page->register_script(Atk_Config::getGlobal('atkroot') . 'atk/javascript/prototype-ui-ext.js');
+        $page->register_script(Atk_Config::getGlobal('atkroot') . 'atk/javascript/class.atkdialog.js');
+        $page->register_style(Atk_Config::getGlobal('atkroot') . 'atk/javascript/prototype-ui/window/themes/window/window.css');
+        $page->register_style(Atk_Config::getGlobal('atkroot') . 'atk/javascript/prototype-ui/window/themes/shadow/mac_shadow.css');
 
         if ($theme) {
-            $page->register_style(atkConfig::getGlobal('atkroot') . 'atk/javascript/prototype-ui/window/themes/window/' . $theme . '.css');
+            $page->register_style(Atk_Config::getGlobal('atkroot') . 'atk/javascript/prototype-ui/window/themes/window/' . $theme . '.css');
         }
     }
 
@@ -255,7 +255,7 @@ class Atk_Dialog
      */
     function getUrl()
     {
-        return atkTools::partial_url($this->getNodeType(), $this->m_action, $this->m_partial, $this->m_params, $this->m_sessionStatus);
+        return Atk_Tools::partial_url($this->getNodeType(), $this->m_action, $this->m_partial, $this->m_params, $this->m_sessionStatus);
     }
 
     /**
@@ -287,8 +287,8 @@ class Atk_Dialog
      */
     protected function getWindowOptions()
     {
-        if (atkTheme::getInstance()->getAttribute('dialog_window_options', null) != null)
-            return atkTheme::getInstance()->getAttribute('dialog_window_options');
+        if (Atk_Theme::getInstance()->getAttribute('dialog_window_options', null) != null)
+            return Atk_Theme::getInstance()->getAttribute('dialog_window_options');
         else
             return '{}';
     }
@@ -317,14 +317,14 @@ class Atk_Dialog
             }
         }
 
-        atkTools::atkimport('atk.utils.atkjson');
+        Atk_Tools::atkimport('atk.utils.atkjson');
 
         $call = "(new ATK.Dialog(%s, %s, " . ($lateParamBinding ? 'params' : '{}') . ", %s, %s, %s)).show();";
         $params = array(
-            atkJSON::encode($this->m_title),
-            atkJSON::encode($this->getUrl()),
-            atkJSON::encode($this->m_themeName),
-            count($this->getOptions()) == 0 ? '{}' : atkJSON::encode($this->getOptions()),
+            Atk_JSON::encode($this->m_title),
+            Atk_JSON::encode($this->getUrl()),
+            Atk_JSON::encode($this->m_themeName),
+            count($this->getOptions()) == 0 ? '{}' : Atk_JSON::encode($this->getOptions()),
             $this->getWindowOptions()
         );
 
@@ -349,13 +349,13 @@ class Atk_Dialog
      */
     public static function getSaveCall($url, $formName = 'dialogform', $extraParams = array(), $encode = true)
     {
-        atkTools::atkimport('atk.utils.atkjson');
+        Atk_Tools::atkimport('atk.utils.atkjson');
 
         $call = 'ATK.Dialog.getCurrent().save(%s, %s, %s);';
         $params = array(
-            atkJSON::encode($url),
-            atkJSON::encode($formName),
-            count($extraParams) == 0 ? '{}' : atkJSON::encode($extraParams)
+            Atk_JSON::encode($url),
+            Atk_JSON::encode($formName),
+            count($extraParams) == 0 ? '{}' : Atk_JSON::encode($extraParams)
         );
 
         $result = vsprintf($call, $params);
@@ -386,13 +386,13 @@ class Atk_Dialog
      */
     public static function getSaveAndCloseCall($url, $formName = 'dialogform', $extraParams = array(), $encode = true)
     {
-        atkTools::atkimport('atk.utils.atkjson');
+        Atk_Tools::atkimport('atk.utils.atkjson');
 
         $call = 'ATK.Dialog.getCurrent().saveAndClose(%s, %s, %s);';
         $params = array(
-            atkJSON::encode($url),
-            atkJSON::encode($formName),
-            count($extraParams) == 0 ? '{}' : atkJSON::encode($extraParams)
+            Atk_JSON::encode($url),
+            Atk_JSON::encode($formName),
+            count($extraParams) == 0 ? '{}' : Atk_JSON::encode($extraParams)
         );
 
         $result = vsprintf($call, $params);
@@ -409,10 +409,10 @@ class Atk_Dialog
      */
     public static function getUpdateCall($content, $encode = true)
     {
-        atkTools::atkimport('atk.utils.atkjson');
+        Atk_Tools::atkimport('atk.utils.atkjson');
 
         $call = 'ATK.Dialog.getCurrent().update(%s);';
-        $params = array(atkJSON::encode($content));
+        $params = array(Atk_JSON::encode($content));
 
         $result = vsprintf($call, $params);
         return $encode ? htmlentities($result) : $result;

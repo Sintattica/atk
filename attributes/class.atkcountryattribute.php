@@ -15,8 +15,8 @@
  * $Id$
  */
 /** @internal includes * */
-atkTools::atkimport("atk.atklanguage");
-atkTools::useattrib("atklistattribute");
+Atk_Tools::atkimport("atk.atklanguage");
+Atk_Tools::useattrib("atklistattribute");
 
 /**
  * The atkCountry class represents an attribute to handle ISO Countries in a listbox.
@@ -65,7 +65,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
      * @param bool $defaulttocurrent Set the default selected country to the 
      *                               current country based on the atk language
      */
-    function atkCountryAttribute($name, $switch = "world", $optionArray = "", $valueArray = "", $flags = 0, $defaulttocurrent = true)
+    function __construct($name, $switch = "world", $optionArray = "", $valueArray = "", $flags = 0, $defaulttocurrent = true)
     {
         if (is_numeric($switch)) {
             $flags = $switch;
@@ -73,7 +73,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         }
 
         // When switch is not user get country options
-        atkTools::atkdebug("CountryAttribute - $name - $switch");
+        Atk_Tools::atkdebug("CountryAttribute - $name - $switch");
         if ($switch != "user") {
             //we assume that the 3 param is flags
             if (is_numeric($optionArray))
@@ -89,7 +89,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
             $valueArray = $this->getCountryValueArray($switch);
         }
         $this->m_defaulttocurrent = $defaulttocurrent;
-        $this->atkListAttribute($name, $optionsArray, $valueArray, $flags | AF_NO_TRANSLATION, 0);
+        parent::__construct($name, $optionsArray, $valueArray, $flags | AF_NO_TRANSLATION, 0);
     }
 
     /**
@@ -107,12 +107,12 @@ class Atk_CountryAttribute extends Atk_ListAttribute
             if (in_array($countryIso, $this->m_world_countries)) {
                 array_push($custom_list, $countryIso);
             } else {
-                atkTools::atkwarning('atkCountryAttribute: setList: ' . $countryIso . ' is a unknown country and will be ignored');
+                Atk_Tools::atkwarning('atkCountryAttribute: setList: ' . $countryIso . ' is a unknown country and will be ignored');
             }
         }
 
         if (count($custom_list) == 0) {
-            atkTools::atkerror('atkCountryAttribute: setList: empty custom country list');
+            Atk_Tools::atkerror('atkCountryAttribute: setList: empty custom country list');
             return false;
         }
 
@@ -133,7 +133,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
     function edit($record = "", $fieldprefix = "", $mode)
     {
         if ($this->m_defaulttocurrent && !$record[$this->fieldName()])
-            $record[$this->fieldName()] = strtoupper(atkLanguage::getLanguage());
+            $record[$this->fieldName()] = strtoupper(Atk_Language::getLanguage());
         return parent::edit($record, $fieldprefix);
     }
 
@@ -203,9 +203,9 @@ class Atk_CountryAttribute extends Atk_ListAttribute
      */
     function getCountryOption($iso_code)
     {
-        $lng = atkLanguage::getLanguage();
+        $lng = Atk_Language::getLanguage();
         if (!array_key_exists($iso_code, $this->m_country))
-            atkTools::atkdebug('UNKNOWN ISO CODE: ' . $iso_code);
+            Atk_Tools::atkdebug('UNKNOWN ISO CODE: ' . $iso_code);
         if (array_key_exists($lng, $this->m_country[$iso_code])) {
             return $this->m_country[$iso_code][$lng];
         } else {
@@ -219,7 +219,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
      */
     function fillCountriesArray()
     {
-        $this->m_country["AL"]["nl"] = atkTools::atk_html_entity_decode("Albani&euml;");
+        $this->m_country["AL"]["nl"] = Atk_Tools::atk_html_entity_decode("Albani&euml;");
         $this->m_country["AL"]["de"] = "Albania";
         $this->m_country["AL"]["en"] = "Albania";
 
@@ -227,11 +227,11 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["AT"]["de"] = "Austria";
         $this->m_country["AT"]["en"] = "Austria";
 
-        $this->m_country['BE']['nl'] = atkTools::atk_html_entity_decode("Belgi&euml;");
+        $this->m_country['BE']['nl'] = Atk_Tools::atk_html_entity_decode("Belgi&euml;");
         $this->m_country['BE']['de'] = "Belgien";
         $this->m_country['BE']['en'] = "Belgium";
 
-        $this->m_country["BA"]["nl"] = atkTools::atk_html_entity_decode("Bosni&euml;-Herzegovina");
+        $this->m_country["BA"]["nl"] = Atk_Tools::atk_html_entity_decode("Bosni&euml;-Herzegovina");
         $this->m_country["BA"]["de"] = "Bosnia-Herzegovina";
         $this->m_country["BA"]["en"] = "Bosnia-Herzegovina";
 
@@ -247,7 +247,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["CY"]["de"] = "Cyprus";
         $this->m_country["CY"]["en"] = "Cyprus";
 
-        $this->m_country["CZ"]["nl"] = atkTools::atk_html_entity_decode("Tsjechi&euml;");
+        $this->m_country["CZ"]["nl"] = Atk_Tools::atk_html_entity_decode("Tsjechi&euml;");
         $this->m_country["CZ"]["de"] = "Czech Republic";
         $this->m_country["CZ"]["en"] = "Czech Republic";
 
@@ -275,7 +275,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country['FR']['de'] = "Frankreich";
         $this->m_country['FR']['en'] = "France";
 
-        $this->m_country['GB']['nl'] = atkTools::atk_html_entity_decode("Groot-Brittanni&euml;");
+        $this->m_country['GB']['nl'] = Atk_Tools::atk_html_entity_decode("Groot-Brittanni&euml;");
         $this->m_country['GB']['de'] = "England";
         $this->m_country['GB']['en'] = "Great Britain";
 
@@ -283,7 +283,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["GR"]["de"] = "Greece";
         $this->m_country["GR"]["en"] = "Greece";
 
-        $this->m_country["HR"]["nl"] = atkTools::atk_html_entity_decode("Kroati&euml;");
+        $this->m_country["HR"]["nl"] = Atk_Tools::atk_html_entity_decode("Kroati&euml;");
         $this->m_country["HR"]["de"] = "Croatia";
         $this->m_country["HR"]["en"] = "Croatia";
 
@@ -299,7 +299,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country['IE']['de'] = "Irland";
         $this->m_country['IE']['en'] = "Ireland";
 
-        $this->m_country['IT']['nl'] = atkTools::atk_html_entity_decode("Itali&euml;");
+        $this->m_country['IT']['nl'] = Atk_Tools::atk_html_entity_decode("Itali&euml;");
         $this->m_country['IT']['de'] = "Italien";
         $this->m_country['IT']['en'] = "Italy";
 
@@ -331,7 +331,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["PT"]["de"] = "Portugal";
         $this->m_country["PT"]["en"] = "Portugal";
 
-        $this->m_country["RO"]["nl"] = atkTools::atk_html_entity_decode("Roemeni&euml;");
+        $this->m_country["RO"]["nl"] = Atk_Tools::atk_html_entity_decode("Roemeni&euml;");
         $this->m_country["RO"]["de"] = "Romania";
         $this->m_country["RO"]["en"] = "Romania";
 
@@ -339,11 +339,11 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country['SE']['de'] = "Schweden";
         $this->m_country['SE']['en'] = "Sweden";
 
-        $this->m_country["SK"]["nl"] = atkTools::atk_html_entity_decode("Slowakij&euml;");
+        $this->m_country["SK"]["nl"] = Atk_Tools::atk_html_entity_decode("Slowakij&euml;");
         $this->m_country["SK"]["de"] = "Slovak Republic";
         $this->m_country["SK"]["en"] = "Slovak Republic";
 
-        $this->m_country["SI"]["nl"] = atkTools::atk_html_entity_decode("Sloveni&euml;");
+        $this->m_country["SI"]["nl"] = Atk_Tools::atk_html_entity_decode("Sloveni&euml;");
         $this->m_country["SI"]["de"] = "Slovenia";
         $this->m_country["SI"]["en"] = "Slovenia";
 
@@ -351,7 +351,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["TR"]["de"] = "Turkey";
         $this->m_country["TR"]["en"] = "Turkey";
 
-        $this->m_country['YU']['nl'] = atkTools::atk_html_entity_decode("Joegoslavi&euml;");
+        $this->m_country['YU']['nl'] = Atk_Tools::atk_html_entity_decode("Joegoslavi&euml;");
         $this->m_country['YU']['de'] = "Jugoslawien";
         $this->m_country['YU']['en'] = "Yugoslavia";
     }
@@ -367,7 +367,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["AF"]["de"] = "Afghanistan";
         $this->m_country["AF"]["en"] = "Afghanistan";
 
-        $this->m_country["AL"]["nl"] = atkTools::atk_html_entity_decode("Albani&euml;");
+        $this->m_country["AL"]["nl"] = Atk_Tools::atk_html_entity_decode("Albani&euml;");
         $this->m_country["AL"]["de"] = "Albania";
         $this->m_country["AL"]["en"] = "Albania";
 
@@ -399,11 +399,11 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["AG"]["de"] = "Antigua and Barbuda";
         $this->m_country["AG"]["en"] = "Antigua and Barbuda";
 
-        $this->m_country["AR"]["nl"] = atkTools::atk_html_entity_decode("Argentini&euml;");
+        $this->m_country["AR"]["nl"] = Atk_Tools::atk_html_entity_decode("Argentini&euml;");
         $this->m_country["AR"]["de"] = "Argentina";
         $this->m_country["AR"]["en"] = "Argentina";
 
-        $this->m_country["AM"]["nl"] = atkTools::atk_html_entity_decode("Armeni&euml;");
+        $this->m_country["AM"]["nl"] = Atk_Tools::atk_html_entity_decode("Armeni&euml;");
         $this->m_country["AM"]["de"] = "Armenia";
         $this->m_country["AM"]["en"] = "Armenia";
 
@@ -411,7 +411,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["AW"]["de"] = "Aruba";
         $this->m_country["AW"]["en"] = "Aruba";
 
-        $this->m_country["AU"]["nl"] = atkTools::atk_html_entity_decode("Australi&euml;");
+        $this->m_country["AU"]["nl"] = Atk_Tools::atk_html_entity_decode("Australi&euml;");
         $this->m_country["AU"]["de"] = "Australia";
         $this->m_country["AU"]["en"] = "Australia";
 
@@ -443,7 +443,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["BY"]["de"] = "Belarus";
         $this->m_country["BY"]["en"] = "Belarus";
 
-        $this->m_country['BE']['nl'] = atkTools::atk_html_entity_decode("Belgi&euml;");
+        $this->m_country['BE']['nl'] = Atk_Tools::atk_html_entity_decode("Belgi&euml;");
         $this->m_country['BE']['de'] = "Belgien";
         $this->m_country['BE']['en'] = "Belgium";
 
@@ -463,7 +463,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["BO"]["de"] = "Bolivia";
         $this->m_country["BO"]["en"] = "Bolivia";
 
-        $this->m_country["BA"]["nl"] = atkTools::atk_html_entity_decode("Bosni&euml;-Herzegovina");
+        $this->m_country["BA"]["nl"] = Atk_Tools::atk_html_entity_decode("Bosni&euml;-Herzegovina");
         $this->m_country["BA"]["de"] = "Bosnia-Herzegovina";
         $this->m_country["BA"]["en"] = "Bosnia-Herzegovina";
 
@@ -475,7 +475,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["BV"]["de"] = "Bouvet Island";
         $this->m_country["BV"]["en"] = "Bouvet Island";
 
-        $this->m_country["BR"]["nl"] = atkTools::atk_html_entity_decode("Brazili&euml;");
+        $this->m_country["BR"]["nl"] = Atk_Tools::atk_html_entity_decode("Brazili&euml;");
         $this->m_country["BR"]["de"] = "Brazil";
         $this->m_country["BR"]["en"] = "Brazil";
 
@@ -515,7 +515,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["CA"]["de"] = "Canada";
         $this->m_country["CA"]["en"] = "Canada";
 
-        $this->m_country["CV"]["nl"] = atkTools::atk_html_entity_decode("Kaapverdi&euml;");
+        $this->m_country["CV"]["nl"] = Atk_Tools::atk_html_entity_decode("Kaapverdi&euml;");
         $this->m_country["CV"]["de"] = "Cape Verde";
         $this->m_country["CV"]["en"] = "Cape Verde";
 
@@ -567,7 +567,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["CR"]["de"] = "Costa Rica";
         $this->m_country["CR"]["en"] = "Costa Rica";
 
-        $this->m_country["HR"]["nl"] = atkTools::atk_html_entity_decode("Kroati&euml;");
+        $this->m_country["HR"]["nl"] = Atk_Tools::atk_html_entity_decode("Kroati&euml;");
         $this->m_country["HR"]["de"] = "Croatia";
         $this->m_country["HR"]["en"] = "Croatia";
 
@@ -579,7 +579,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["CY"]["de"] = "Cyprus";
         $this->m_country["CY"]["en"] = "Cyprus";
 
-        $this->m_country["CZ"]["nl"] = atkTools::atk_html_entity_decode("Tsjechi&euml;");
+        $this->m_country["CZ"]["nl"] = Atk_Tools::atk_html_entity_decode("Tsjechi&euml;");
         $this->m_country["CZ"]["de"] = "Czech Republic";
         $this->m_country["CZ"]["en"] = "Czech Republic";
 
@@ -631,7 +631,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["EE"]["de"] = "Estonia";
         $this->m_country["EE"]["en"] = "Estonia";
 
-        $this->m_country["ET"]["nl"] = atkTools::atk_html_entity_decode("Ethiopi&euml;");
+        $this->m_country["ET"]["nl"] = Atk_Tools::atk_html_entity_decode("Ethiopi&euml;");
         $this->m_country["ET"]["de"] = "Ethiopia";
         $this->m_country["ET"]["en"] = "Ethiopia";
 
@@ -639,7 +639,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["FK"]["de"] = "Falkland Isl.(Malvinas)";
         $this->m_country["FK"]["en"] = "Falkland Isl.(Malvinas)";
 
-        $this->m_country["FO"]["nl"] = atkTools::atk_html_entity_decode("Faer&ouml;er");
+        $this->m_country["FO"]["nl"] = Atk_Tools::atk_html_entity_decode("Faer&ouml;er");
         $this->m_country["FO"]["de"] = "Faroe Islands";
         $this->m_country["FO"]["en"] = "Faroe Islands";
 
@@ -671,7 +671,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["GM"]["de"] = "Gambia";
         $this->m_country["GM"]["en"] = "Gambia";
 
-        $this->m_country["GE"]["nl"] = atkTools::atk_html_entity_decode("Georgi&euml;");
+        $this->m_country["GE"]["nl"] = Atk_Tools::atk_html_entity_decode("Georgi&euml;");
         $this->m_country["GE"]["de"] = "Georgia";
         $this->m_country["GE"]["en"] = "Georgia";
 
@@ -727,7 +727,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["GF"]["de"] = "Guyana (Fr.)";
         $this->m_country["GF"]["en"] = "Guyana (Fr.)";
 
-        $this->m_country["HT"]["nl"] = atkTools::atk_html_entity_decode("Ha&iuml;ti");
+        $this->m_country["HT"]["nl"] = Atk_Tools::atk_html_entity_decode("Ha&iuml;ti");
         $this->m_country["HT"]["de"] = "Haiti";
         $this->m_country["HT"]["en"] = "Haiti";
 
@@ -755,7 +755,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["IN"]["de"] = "India";
         $this->m_country["IN"]["en"] = "India";
 
-        $this->m_country["ID"]["nl"] = atkTools::atk_html_entity_decode("Indonesi&euml;");
+        $this->m_country["ID"]["nl"] = Atk_Tools::atk_html_entity_decode("Indonesi&euml;");
         $this->m_country["ID"]["de"] = "Indonesia";
         $this->m_country["ID"]["en"] = "Indonesia";
 
@@ -771,11 +771,11 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["IE"]["de"] = "Ireland";
         $this->m_country["IE"]["en"] = "Ireland";
 
-        $this->m_country["IL"]["nl"] = atkTools::atk_html_entity_decode("Isra&euml;l");
+        $this->m_country["IL"]["nl"] = Atk_Tools::atk_html_entity_decode("Isra&euml;l");
         $this->m_country["IL"]["de"] = "Israel";
         $this->m_country["IL"]["en"] = "Israel";
 
-        $this->m_country["IT"]["nl"] = atkTools::atk_html_entity_decode("Itali&euml;");
+        $this->m_country["IT"]["nl"] = Atk_Tools::atk_html_entity_decode("Itali&euml;");
         $this->m_country["IT"]["de"] = "Italy";
         $this->m_country["IT"]["en"] = "Italy";
 
@@ -791,7 +791,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["JP"]["de"] = "Japan";
         $this->m_country["JP"]["en"] = "Japan";
 
-        $this->m_country["JO"]["nl"] = atkTools::atk_html_entity_decode("Jordani&euml;");
+        $this->m_country["JO"]["nl"] = Atk_Tools::atk_html_entity_decode("Jordani&euml;");
         $this->m_country["JO"]["de"] = "Jordan";
         $this->m_country["JO"]["en"] = "Jordan";
 
@@ -803,7 +803,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["KE"]["de"] = "Kenya";
         $this->m_country["KE"]["en"] = "Kenya";
 
-        $this->m_country["KG"]["nl"] = atkTools::atk_html_entity_decode("Kirgizi&euml;");
+        $this->m_country["KG"]["nl"] = Atk_Tools::atk_html_entity_decode("Kirgizi&euml;");
         $this->m_country["KG"]["de"] = "Kirgistan";
         $this->m_country["KG"]["en"] = "Kirgistan";
 
@@ -843,7 +843,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["LR"]["de"] = "Liberia";
         $this->m_country["LR"]["en"] = "Liberia";
 
-        $this->m_country["LY"]["nl"] = atkTools::atk_html_entity_decode("Libi&euml;");
+        $this->m_country["LY"]["nl"] = Atk_Tools::atk_html_entity_decode("Libi&euml;");
         $this->m_country["LY"]["de"] = "Libya";
         $this->m_country["LY"]["en"] = "Libya";
 
@@ -871,7 +871,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["MW"]["de"] = "Malawi";
         $this->m_country["MW"]["en"] = "Malawi";
 
-        $this->m_country["MY"]["nl"] = atkTools::atk_html_entity_decode("Maleisi&euml;");
+        $this->m_country["MY"]["nl"] = Atk_Tools::atk_html_entity_decode("Maleisi&euml;");
         $this->m_country["MY"]["de"] = "Malaysia";
         $this->m_country["MY"]["en"] = "Malaysia";
 
@@ -895,7 +895,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["MQ"]["de"] = "Martinique (Fr.)";
         $this->m_country["MQ"]["en"] = "Martinique (Fr.)";
 
-        $this->m_country["MR"]["nl"] = atkTools::atk_html_entity_decode("Mauritani&euml;");
+        $this->m_country["MR"]["nl"] = Atk_Tools::atk_html_entity_decode("Mauritani&euml;");
         $this->m_country["MR"]["de"] = "Mauritania";
         $this->m_country["MR"]["en"] = "Mauritania";
 
@@ -911,7 +911,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["FM"]["de"] = "Micronesia";
         $this->m_country["FM"]["en"] = "Micronesia";
 
-        $this->m_country["MD"]["nl"] = atkTools::atk_html_entity_decode("Moldavi&euml;");
+        $this->m_country["MD"]["nl"] = Atk_Tools::atk_html_entity_decode("Moldavi&euml;");
         $this->m_country["MD"]["de"] = "Moldavia";
         $this->m_country["MD"]["en"] = "Moldavia";
 
@@ -919,7 +919,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["MC"]["de"] = "Monaco";
         $this->m_country["MC"]["en"] = "Monaco";
 
-        $this->m_country["MN"]["nl"] = atkTools::atk_html_entity_decode("Mongoli&euml;");
+        $this->m_country["MN"]["nl"] = Atk_Tools::atk_html_entity_decode("Mongoli&euml;");
         $this->m_country["MN"]["de"] = "Mongolia";
         $this->m_country["MN"]["en"] = "Mongolia";
 
@@ -939,7 +939,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["MM"]["de"] = "Myanmar";
         $this->m_country["MM"]["en"] = "Myanmar";
 
-        $this->m_country["NA"]["nl"] = atkTools::atk_html_entity_decode("Namibi&euml;");
+        $this->m_country["NA"]["nl"] = Atk_Tools::atk_html_entity_decode("Namibi&euml;");
         $this->m_country["NA"]["de"] = "Namibia";
         $this->m_country["NA"]["en"] = "Namibia";
 
@@ -1035,7 +1035,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["PL"]["de"] = "Poland";
         $this->m_country["PL"]["en"] = "Poland";
 
-        $this->m_country["PF"]["nl"] = atkTools::atk_html_entity_decode("Frans-Polynesi&euml;");
+        $this->m_country["PF"]["nl"] = Atk_Tools::atk_html_entity_decode("Frans-Polynesi&euml;");
         $this->m_country["PF"]["de"] = "Polynesia (Fr.)";
         $this->m_country["PF"]["en"] = "Polynesia (Fr.)";
 
@@ -1055,7 +1055,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["RE"]["de"] = "Reunion (Fr.)";
         $this->m_country["RE"]["en"] = "Reunion (Fr.)";
 
-        $this->m_country["RO"]["nl"] = atkTools::atk_html_entity_decode("Roemeni&euml;");
+        $this->m_country["RO"]["nl"] = Atk_Tools::atk_html_entity_decode("Roemeni&euml;");
         $this->m_country["RO"]["de"] = "Romania";
         $this->m_country["RO"]["en"] = "Romania";
 
@@ -1079,7 +1079,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["SM"]["de"] = "San Marino";
         $this->m_country["SM"]["en"] = "San Marino";
 
-        $this->m_country["SA"]["nl"] = atkTools::atk_html_entity_decode("Saoedi-Arabi&euml;");
+        $this->m_country["SA"]["nl"] = Atk_Tools::atk_html_entity_decode("Saoedi-Arabi&euml;");
         $this->m_country["SA"]["de"] = "Saudi Arabia";
         $this->m_country["SA"]["en"] = "Saudi Arabia";
 
@@ -1099,7 +1099,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["SG"]["de"] = "Singapore";
         $this->m_country["SG"]["en"] = "Singapore";
 
-        $this->m_country["SK"]["nl"] = atkTools::atk_html_entity_decode("Slowakij&euml;");
+        $this->m_country["SK"]["nl"] = Atk_Tools::atk_html_entity_decode("Slowakij&euml;");
         $this->m_country["SK"]["de"] = "Slovak Republic";
         $this->m_country["SK"]["en"] = "Slovak Republic";
 
@@ -1111,7 +1111,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["SB"]["de"] = "Solomon Islands";
         $this->m_country["SB"]["en"] = "Solomon Islands";
 
-        $this->m_country["SO"]["nl"] = atkTools::atk_html_entity_decode("Somali&euml;");
+        $this->m_country["SO"]["nl"] = Atk_Tools::atk_html_entity_decode("Somali&euml;");
         $this->m_country["SO"]["de"] = "Somalia";
         $this->m_country["SO"]["en"] = "Somalia";
 
@@ -1171,7 +1171,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["CH"]["de"] = "Switzerland";
         $this->m_country["CH"]["en"] = "Switzerland";
 
-        $this->m_country["SY"]["nl"] = atkTools::atk_html_entity_decode("Syri&euml;");
+        $this->m_country["SY"]["nl"] = Atk_Tools::atk_html_entity_decode("Syri&euml;");
         $this->m_country["SY"]["de"] = "Syria";
         $this->m_country["SY"]["en"] = "Syria";
 
@@ -1235,7 +1235,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         $this->m_country["UG"]["de"] = "Uganda";
         $this->m_country["UG"]["en"] = "Uganda";
 
-        $this->m_country["UA"]["nl"] = atkTools::atk_html_entity_decode("Oekra&iuml;ne");
+        $this->m_country["UA"]["nl"] = Atk_Tools::atk_html_entity_decode("Oekra&iuml;ne");
         $this->m_country["UA"]["de"] = "Ukraine";
         $this->m_country["UA"]["en"] = "Ukraine";
 

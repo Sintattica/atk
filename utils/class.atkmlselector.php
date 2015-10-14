@@ -34,18 +34,18 @@ class Atk_MLSelector extends Atk_Selector
     /**
      * Apply multi-language conditions.
      *
-     * @param atkQuery $query query object
+     * @param Atk_Query $query query object
      */
-    protected function _applyMultiLanguageConditionsToQuery(atkQuery $query)
+    protected function _applyMultiLanguageConditionsToQuery(Atk_Query $query)
     {
-        $mlSplitter = atkTools::atkinstance("atk.utils.atkmlsplitter");
+        $mlSplitter = Atk_Tools::atkinstance("atk.utils.atkmlsplitter");
         $mlSplitter->addMlCondition($query, $this->_getNode(), $this->m_mode, $this->_getNode()->getTable());
     }
 
     /**
      * Override build query so we can add the multi language conditions.
      *
-     * @return atkQuery query object
+     * @return Atk_Query query object
      */
     protected function _buildQuery(array $attrsByLoadType)
     {
@@ -58,18 +58,18 @@ class Atk_MLSelector extends Atk_Selector
      * Transform raw database rows to node compatible rows.
      *
      * @param array    $rows            raw database rows
-     * @param atkQuery $query           query object
+     * @param Atk_Query $query           query object
      * @param array    $attrsByLoadType attributes by load type
      *
      * @return array node compatible rows
      */
-    protected function _transformRows($rows, atkQuery $query, array $attrsByLoadType)
+    protected function _transformRows($rows, Atk_Query $query, array $attrsByLoadType)
     {
         // When copying there could be more than one multi-language record.
         // So we split this before sending it to the multi-language splitter.
         // This only happens in case of an atkOneToManyRelation.
         if ($this->m_mode == 'copy') {
-            $mlSplitter = atkTools::atkinstance("atk.utils.atkmlsplitter");
+            $mlSplitter = Atk_Tools::atkinstance("atk.utils.atkmlsplitter");
 
             $result = array();
             $ids = array();
@@ -97,7 +97,7 @@ class Atk_MLSelector extends Atk_Selector
 
         // Combine multi-language records on edit.
         else if ($this->m_mode == 'edit') {
-            $mlSplitter = atkTools::atkinstance("atk.utils.atkmlsplitter");
+            $mlSplitter = Atk_Tools::atkinstance("atk.utils.atkmlsplitter");
             $mlSplitter->combineMlRecordSet($this->_getNode(), $rows, $query);
         }
 

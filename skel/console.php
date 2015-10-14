@@ -1,10 +1,10 @@
 <?php
 $config_atkroot = ("./");
 include_once("atk.php");
-atkSessionManager::atksession();
+Atk_SessionManager::atksession();
 
 if ($_SERVER['HTTP_USER_AGENT'] == "") {
-    atkConsoleController::run();
+    Atk_ConsoleController::run();
 } else {
     echo "This script can only be executed from a console, and not via browser";
 }

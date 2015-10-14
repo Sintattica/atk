@@ -68,14 +68,14 @@ class Atk_IndexPage
      *
      * @return atkIndexPage
      */
-    function atkIndexPage()
+    function __construct()
     {
         global $ATK_VARS;
-        $this->m_page = &atkTools::atkinstance("atk.ui.atkpage");
-        $this->m_ui = &atkTools::atkinstance("atk.ui.atkui");
-        $this->m_theme = &atkTools::atkinstance('atk.ui.atktheme');
-        $this->m_output = &atkTools::atkinstance('atk.ui.atkoutput');
-        $this->m_user = atkSecurityManager::atkGetUser();
+        $this->m_page = &Atk_Tools::atkinstance("atk.ui.atkpage");
+        $this->m_ui = &Atk_Tools::atkinstance("atk.ui.atkui");
+        $this->m_theme = &Atk_Tools::atkinstance('atk.ui.atktheme');
+        $this->m_output = &Atk_Tools::atkinstance('atk.ui.atkoutput');
+        $this->m_user = Atk_SecurityManager::atkGetUser();
         $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL
                 : HTML_STRICT;
         $this->m_noNav = isset($ATK_VARS['atknonav']);
@@ -89,7 +89,7 @@ class Atk_IndexPage
      */
     function hasFlag($flag)
     {
-        return atkTools::hasFlag($this->m_flags, $flag);
+        return Atk_Tools::hasFlag($this->m_flags, $flag);
     }
 
     /**
@@ -123,13 +123,13 @@ class Atk_IndexPage
     {
         /* general menu stuff */
         /* load menu layout */
-        atkTools::atkimport("atk.menu.atkmenu");
-        $menu = &atkMenu::getMenu();
+        Atk_Tools::atkimport("atk.menu.atkmenu");
+        $menu = &Atk_Menu::getMenu();
 
         if (is_object($menu))
             $this->m_page->addContent($menu->getMenu());
         else
-            atkTools::atkerror("no menu object created!");
+            Atk_Tools::atkerror("no menu object created!");
     }
 
     /**
@@ -138,24 +138,24 @@ class Atk_IndexPage
      */
     function atkGenerateTop()
     {
-        $logoutLink = atkConfig::getGlobal('dispatcher') . '?atklogout=1';
+        $logoutLink = Atk_Config::getGlobal('dispatcher') . '?atklogout=1';
 
         $this->m_page->register_style($this->m_theme->stylePath("style.css"));
         $this->m_page->register_style($this->m_theme->stylePath("top.css"));
 
         //Backwards compatible $content, that is what will render when the box.tpl is used instead of a top.tpl
-        $loggedin = atkTools::atktext("logged_in_as", "atk") . ": <b>" . ($this->m_user["name"]
+        $loggedin = Atk_Tools::atktext("logged_in_as", "atk") . ": <b>" . ($this->m_user["name"]
                     ? $this->m_user['name'] : 'administrator') . "</b>";
-        $content = '<br />' . $loggedin . ' &nbsp; <a href="' . $logoutLink . '">' . ucfirst(atkTools::atktext("logout")) . ' </a>&nbsp;<br /><br />';
+        $content = '<br />' . $loggedin . ' &nbsp; <a href="' . $logoutLink . '">' . ucfirst(Atk_Tools::atktext("logout")) . ' </a>&nbsp;<br /><br />';
 
         $top = $this->m_ui->renderBox(array("content" => $content,
-            "logintext" => atkTools::atktext("logged_in_as"),
-            "logouttext" => ucfirst(atkTools::atktext("logout", "atk")),
+            "logintext" => Atk_Tools::atktext("logged_in_as"),
+            "logouttext" => ucfirst(Atk_Tools::atktext("logout", "atk")),
             "logoutlink" => $logoutLink,
             "logouttarget" => "_top",
             "centerpiece_links" => $this->m_topcenterpiecelinks,
             "searchpiece" => $this->m_topsearchpiece,
-            "title" => ($this->m_title != "" ? $this->m_title : atkTools::atktext("app_title")),
+            "title" => ($this->m_title != "" ? $this->m_title : Atk_Tools::atktext("app_title")),
             "user" => ($this->m_username ? $this->m_username : $this->m_user["name"]),
             "fulluser" => $this->m_user
             ), "top");
@@ -229,7 +229,7 @@ class Atk_IndexPage
     function atkGenerateDispatcher()
     {
         global $ATK_VARS;
-        $session = &atkSessionManager::getSession();
+        $session = &Atk_SessionManager::getSession();
 
         if ($session["login"] != 1) {
             // no nodetype passed, or session expired
@@ -242,38 +242,38 @@ class Atk_IndexPage
                     $destination.="&atkselector=" . $ATK_VARS["atkselector"];
             }
 
-            $box = $this->m_ui->renderBox(array("title" => atkTools::atktext("title_session_expired"),
-                "content" => '<br><br>' . atkTools::atktext("explain_session_expired") . '<br><br><br><br>
-                                           <a href="index.php?atklogout=true' . $destination . '" target="_top">' . atkTools::atktext("relogin") . '</a><br><br>'));
+            $box = $this->m_ui->renderBox(array("title" => Atk_Tools::atktext("title_session_expired"),
+                "content" => '<br><br>' . Atk_Tools::atktext("explain_session_expired") . '<br><br><br><br>
+                                           <a href="index.php?atklogout=true' . $destination . '" target="_top">' . Atk_Tools::atktext("relogin") . '</a><br><br>'));
 
             $this->m_page->addContent($box);
 
-            $this->m_output->output($this->m_page->render(atkTools::atktext("title_session_expired"), true));
+            $this->m_output->output($this->m_page->render(Atk_Tools::atktext("title_session_expired"), true));
         }
         else {
-            $lockType = atkConfig::getGlobal("lock_type");
+            $lockType = Atk_Config::getGlobal("lock_type");
             if (!empty($lockType))
                 atklock();
 
             // Create node
             if (isset($ATK_VARS['atknodetype'])) {
-                $obj = atkModule::atkGetNode($ATK_VARS['atknodetype']);
+                $obj = Atk_Module::atkGetNode($ATK_VARS['atknodetype']);
 
                 if (is_object($obj)) {
-                    $controller = &atkTools::atkinstance("atk.atkcontroller");
+                    $controller = &Atk_Tools::atkinstance("atk.atkcontroller");
                     $controller->invoke("loadDispatchPage", $ATK_VARS);
                 } else {
-                    atkTools::atkdebug("No object created!!?!");
+                    Atk_Tools::atkdebug("No object created!!?!");
                 }
             } else {
 
                 if (is_array($this->m_defaultDestination)) {
-                    $controller = &atkTools::atkinstance("atk.atkcontroller");
+                    $controller = &Atk_Tools::atkinstance("atk.atkcontroller");
                     $controller->invoke("loadDispatchPage", $this->m_defaultDestination);
                 } else {
                     $this->m_page->register_style($this->m_theme->stylePath("style.css"));
-                    $box = $this->m_ui->renderBox(array("title" => atkTools::atktext("app_shorttitle"),
-                        "content" => "<br /><br />" . atkTools::atktext("app_description") . "<br /><br />"));
+                    $box = $this->m_ui->renderBox(array("title" => Atk_Tools::atktext("app_shorttitle"),
+                        "content" => "<br /><br />" . Atk_Tools::atktext("app_description") . "<br /><br />"));
 
                     $this->m_page->addContent($box);
                 }

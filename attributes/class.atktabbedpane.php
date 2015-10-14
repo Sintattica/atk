@@ -14,8 +14,8 @@
  * @version $Revision: 6309 $
  * $Id$
  */
-atkTools::atkimport("atk.attributes.atkattribute");
-atkTools::atkimport("atk.handlers.atkvieweditbase");
+Atk_Tools::atkimport("atk.attributes.atkattribute");
+Atk_Tools::atkimport("atk.handlers.atkvieweditbase");
 
 /**
  * Custom flags
@@ -183,7 +183,7 @@ class Atk_TabbedPane extends Atk_Attribute
                     $fields["fields"][] = $entry;
                 }
             } else {
-                atkTools::atkerror("Attribute $name not found!");
+                Atk_Tools::atkerror("Attribute $name not found!");
             }
         }
         /* check for errors */
@@ -212,7 +212,7 @@ class Atk_TabbedPane extends Atk_Attribute
         /* $errors = array();
           if (count($data['error']) > 0)
           {
-          $error_title = '<b>'.atkTools::atktext('error_formdataerror').'</b>';
+          $error_title = '<b>'.Atk_Tools::atktext('error_formdataerror').'</b>';
 
           foreach ($data["error"] as $error)
           {
@@ -230,18 +230,18 @@ class Atk_TabbedPane extends Atk_Attribute
           $type = (empty($error["node"]) ? $node->m_type : $error["node"]);
 
           if (count($node->getTabs($node->m_action)) > 1 && $error["tab"])
-          $error_tab = ' ('.atkTools::atktext("error_tab").' '.'<a href="javascript:showTab(\''.$error["tab"].'\');">'.atkTools::atktext(array("tab_".$error["tab"], $error["tab"]),$node->m_module, $node->m_type).'</a> )';
+          $error_tab = ' ('.Atk_Tools::atktext("error_tab").' '.'<a href="javascript:showTab(\''.$error["tab"].'\');">'.Atk_Tools::atktext(array("tab_".$error["tab"], $error["tab"]),$node->m_module, $node->m_type).'</a> )';
           else $error_tab = "";
 
           if(!is_array($error['attrib_name']))
           {
-          $label = atkTools::atktext($error['attrib_name'], $node->m_module, $type);
+          $label = Atk_Tools::atktext($error['attrib_name'], $node->m_module, $type);
           }
           else
           {
           $label = array();
           foreach($error['attrib_name'] as $attrib)
-          $label[] = atkTools::atktext($attrib, $node->m_module, $type);
+          $label[] = Atk_Tools::atktext($attrib, $node->m_module, $type);
 
           $label= implode(", ", $label);
           }
@@ -253,20 +253,20 @@ class Atk_TabbedPane extends Atk_Attribute
           {
           for($i=0;$i<count($pk_err_attrib); $i++)
           {
-          $pk_err_msg .= atkTools::atktext($pk_err_attrib[$i], $node->m_module);
+          $pk_err_msg .= Atk_Tools::atktext($pk_err_attrib[$i], $node->m_module);
           if (($i+1) < count($pk_err_attrib)) $pk_err_msg .= ", ";
           }
-          $errors[] = array("label"=>atkTools::atktext("error_primarykey_exists"),
+          $errors[] = array("label"=>Atk_Tools::atktext("error_primarykey_exists"),
           "msg"=>$pk_err_msg);
           }
           } */
 
         // Handle fields
         // load images
-        $theme = &atkTools::atkinstance("atk.ui.atktheme");
+        $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
         $tipimg = $theme->imgPath("help.gif");
         $reqimg = '<img align="top" src="' . $theme->imgPath("required_field.gif") . '" border="0"
-                  alt="' . atkTools::atktext("field_obligatory") . '" title="' . atkTools::atktext("field_obligatory") . '">';
+                  alt="' . Atk_Tools::atktext("field_obligatory") . '" title="' . Atk_Tools::atktext("field_obligatory") . '">';
 
         /* display the edit fields */
         $fields = array();
@@ -287,7 +287,7 @@ class Atk_TabbedPane extends Atk_Attribute
                 $tplfield["class"].= " atkAttrRowHidden";
 
             $tplfield["rowid"] = "tabbedPaneAttr_" . ($field['id'] != '' ? $field['id']
-                        : atkTools::getUniqueID("anonymousattribrows")); // The id of the containing row
+                        : Atk_Tools::getUniqueID("anonymousattribrows")); // The id of the containing row
 
             /* check for separator */
             if ($field["html"] == "-" && $i > 0 && $data["fields"][$i - 1]["html"] != "-") {
@@ -301,7 +301,7 @@ class Atk_TabbedPane extends Atk_Attribute
             }
             /* edit field */ else {
                 if ($field["attribute"]->m_ownerInstance->getNumbering()) {
-                    atkViewEditBase::_addNumbering($field, $tplfield, $i);
+                    Atk_ViewEditBase::_addNumbering($field, $tplfield, $i);
                 }
 
                 /* does the field have a label? */
@@ -334,7 +334,7 @@ class Atk_TabbedPane extends Atk_Attribute
                 }
                 if (!$module)
                     $module = "atk";
-                $ttip = atkTools::atktext($node->m_type . "_" . $field["name"] . "_tooltip", $module, "", "", "", true);
+                $ttip = Atk_Tools::atktext($node->m_type . "_" . $field["name"] . "_tooltip", $module, "", "", "", true);
 
                 if ($ttip) {
                     $onelinetip = preg_replace('/([\r\n])/e', "", $ttip);
@@ -401,7 +401,7 @@ class Atk_TabbedPane extends Atk_Attribute
                     $fieldtab = $this->m_attribsList[$name];
 
                     $tplfield["class"] = "tabbedPaneAttr tabbedPaneTab{$fieldtab}";
-                    $tplfield["rowid"] = "tabbedPaneAttr_" . atkTools::getUniqueID("anonymousattribrows"); // The id of the containing row
+                    $tplfield["rowid"] = "tabbedPaneAttr_" . Atk_Tools::getUniqueID("anonymousattribrows"); // The id of the containing row
                     $tplfield["tab"] = $tplfield["class"]; // for backwards compatibility
 
                     $tplfield["initial_on_tab"] = ($fieldtab == $active_tab);
@@ -419,10 +419,10 @@ class Atk_TabbedPane extends Atk_Attribute
                     $module = $p_attrib->getModule();
                     if (!$module)
                         $module = "atk";
-                    $ttip = atkTools::atktext($node->m_type . "_" . $name . "_tooltip", $module, "", "", "", true);
+                    $ttip = Atk_Tools::atktext($node->m_type . "_" . $name . "_tooltip", $module, "", "", "", true);
 
                     if ($ttip) {
-                        $theme = &atkTools::atkinstance("atk.ui.atktheme");
+                        $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
                         $tipimg = $theme->imgPath("help.gif");
 
                         $onelinetip = preg_replace('/([\r\n])/e', "", $ttip);
@@ -450,7 +450,7 @@ class Atk_TabbedPane extends Atk_Attribute
                     $fields[] = $tplfield;
                 }
             } else {
-                atkTools::atkerror("Attribute $name not found!");
+                Atk_Tools::atkerror("Attribute $name not found!");
             }
         }
         $innerform = $ui->render($node->getTemplate("view", $record, $tab), array("fields" => $fields));
@@ -475,7 +475,7 @@ class Atk_TabbedPane extends Atk_Attribute
             $node->addStyle("tabs.css");
 
             $page = &$node->getPage();
-            $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atktabbedpane.js");
+            $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atktabbedpane.js");
             $page->register_loadscript("ATK.TabbedPane.showTab('tabbedPane{$fieldprefix}{$this->m_name}', '$activeTabName');");
 
             $ui = &$node->getUi();
@@ -511,7 +511,7 @@ class Atk_TabbedPane extends Atk_Attribute
 
         foreach ($this->m_attribsList as $attrib => $tab) {
             $newtab = array();
-            $newtab["title"] = atkTools::atktext(array("tab_$tab", $tab), $node->m_module, $node->m_type);
+            $newtab["title"] = Atk_Tools::atktext(array("tab_$tab", $tab), $node->m_module, $node->m_type);
             $newtab["attribute"] = $attrib;
             $newtab["selected"] = ($active_tab == $tab);
             $result["tabbedPaneTab{$tab}"] = $newtab;

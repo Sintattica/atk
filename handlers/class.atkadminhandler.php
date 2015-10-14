@@ -26,7 +26,7 @@
  * @subpackage handlers
  *
  */
-atkTools::atkimport("atk.handlers.atkactionhandler");
+Atk_Tools::atkimport("atk.handlers.atkactionhandler");
 
 class Atk_AdminHandler extends Atk_ActionHandler
 {
@@ -43,7 +43,7 @@ class Atk_AdminHandler extends Atk_ActionHandler
         }
 
         $page = &$this->getPage();
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/formsubmit.js");
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/formsubmit.js");
         $res = $this->renderAdminPage();
         $page->addContent($this->m_node->renderActionPage("admin", $res));
     }
@@ -90,7 +90,7 @@ class Atk_AdminHandler extends Atk_ActionHandler
     function addPage($record = NULL)
     {
         // Reuse the atkAddHandler for the addPage.
-        $node = atkModule::atkGetNode($this->invoke('getAddNodeType'));
+        $node = Atk_Module::atkGetNode($this->invoke('getAddNodeType'));
 
         $handler = $node->getHandler("add");
         $handler->setNode($node);
@@ -135,14 +135,14 @@ class Atk_AdminHandler extends Atk_ActionHandler
     {
         $this->getNode()->addStyle("style.css");
 
-        atkTools::atkimport('atk.datagrid.atkdatagrid');
-        $grid = atkDataGrid::create($this->getNode(), 'admin');
+        Atk_Tools::atkimport('atk.datagrid.atkdatagrid');
+        $grid = Atk_DataGrid::create($this->getNode(), 'admin');
 
         if (is_array($actions)) {
             $grid->setDefaultActions($actions);
         }
 
-        $this->modifyDataGrid($grid, atkDataGrid::CREATE);
+        $this->modifyDataGrid($grid, Atk_DataGrid::CREATE);
 
         if ($this->redirectToSearchAction($grid)) {
             return '';
@@ -163,15 +163,15 @@ class Atk_AdminHandler extends Atk_ActionHandler
      */
     public function partial_datagrid()
     {
-        atkTools::atkimport('atk.datagrid.atkdatagrid');
+        Atk_Tools::atkimport('atk.datagrid.atkdatagrid');
         try {
-            $grid = atkDataGrid::resume($this->getNode());
+            $grid = Atk_DataGrid::resume($this->getNode());
 
-            $this->modifyDataGrid($grid, atkDataGrid::RESUME);
+            $this->modifyDataGrid($grid, Atk_DataGrid::RESUME);
         } catch (Exception $e) {
-            $grid = atkDataGrid::create($this->getNode());
+            $grid = Atk_DataGrid::create($this->getNode());
 
-            $this->modifyDataGrid($grid, atkDataGrid::CREATE);
+            $this->modifyDataGrid($grid, Atk_DataGrid::CREATE);
         }
 
         if ($this->redirectToSearchAction($grid)) {
@@ -185,7 +185,7 @@ class Atk_AdminHandler extends Atk_ActionHandler
      * If a search action has been defined and a search only returns one result
      * the user will be automatically redirected to the search action.
      *
-     * @param atkDataGrid $grid data grid
+     * @param Atk_DataGrid $grid data grid
      * @return boolean redirect active?
      */
     protected function redirectToSearchAction($grid)
@@ -214,11 +214,11 @@ class Atk_AdminHandler extends Atk_ActionHandler
             // reset search so we can back to the normal admin screen if we want
             $grid->setPostvar('atksearch', array());
 
-            $url = atkTools::session_url(atkTools::dispatch_url($node->atkNodeType(), $action, array('atkselector' => $node->primaryKey($records[0]))), SESSION_NESTED);
+            $url = Atk_Tools::session_url(Atk_Tools::dispatch_url($node->atkNodeType(), $action, array('atkselector' => $node->primaryKey($records[0]))), SESSION_NESTED);
 
             if ($grid->isUpdate()) {
-                atkTools::atkimport('atk.utils.atkjson');
-                $script = 'document.location.href = ' . atkJSON::encode($url) . ';';
+                Atk_Tools::atkimport('atk.utils.atkjson');
+                $script = 'document.location.href = ' . Atk_JSON::encode($url) . ';';
                 $node->getPage()->register_loadscript($script);
             } else {
                 $node->redirect($url);
@@ -267,7 +267,7 @@ class Atk_AdminHandler extends Atk_ActionHandler
     {
         $link = "";
         if ($this->m_node->allowed("add") && !$this->m_node->hasFlag(NF_READONLY) && $this->m_node->hasFlag(NF_IMPORT)) {
-            $link.= atkTools::href(atkTools::dispatch_url($this->m_node->atkNodeType(), "import"), atkTools::atktext("import", "atk", $this->m_node->m_type), SESSION_NESTED);
+            $link.= Atk_Tools::href(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), "import"), Atk_Tools::atktext("import", "atk", $this->m_node->m_type), SESSION_NESTED);
         }
         return $link;
     }
@@ -286,7 +286,7 @@ class Atk_AdminHandler extends Atk_ActionHandler
                 $filter = implode(' AND ', str_replace('[table]', $this->m_node->getTable(), $this->m_node->m_fuzzyFilters));
             }
 
-            $link.= atkTools::href(atkTools::dispatch_url($this->m_node->atkNodeType(), "export", array('atkfilter' => $filter)), atkTools::atktext("export", "atk", $this->m_node->m_type), SESSION_NESTED);
+            $link.= Atk_Tools::href(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), "export", array('atkfilter' => $filter)), Atk_Tools::atktext("export", "atk", $this->m_node->m_type), SESSION_NESTED);
         }
         return $link;
     }
@@ -310,25 +310,25 @@ class Atk_AdminHandler extends Atk_ActionHandler
      */
     function getAddLink()
     {
-        $node = atkModule::atkGetNode($this->invoke('getAddNodeType'));
+        $node = Atk_Module::atkGetNode($this->invoke('getAddNodeType'));
 
         if (!$node->hasFlag(NF_NO_ADD) && $node->allowed("add")) {
             $label = $node->text("link_" . $node->m_type . "_add", null, "", "", true);
             if (empty($label)) {
                 // generic text
-                $label = atkTools::atktext("add", "atk");
+                $label = Atk_Tools::atktext("add", "atk");
             }
 
-            atkTools::atkimport('atk.handlers.atkaddorcopyhandler');
+            Atk_Tools::atkimport('atk.handlers.atkaddorcopyhandler');
             $add = $node->hasFlag(NF_ADD_DIALOG);
             $addorcopy = $node->hasFlag(NF_ADDORCOPY_DIALOG) &&
-                atkAddOrCopyHandler::hasCopyableRecords($node);
+                Atk_AddOrCopyHandler::hasCopyableRecords($node);
 
 
             if ($add || $addorcopy) {
                 $action = $node->hasFlag(NF_ADDORCOPY_DIALOG) ? 'addorcopy' : 'add';
 
-                atkTools::atkimport('atk.ui.atkdialog');
+                Atk_Tools::atkimport('atk.ui.atkdialog');
                 $dialog = new Atk_Dialog($node->atkNodeType(), $action, 'dialog');
                 $dialog->setModifierObject($node);
                 $dialog->setSessionStatus(SESSION_PARTIAL);
@@ -339,7 +339,7 @@ class Atk_AdminHandler extends Atk_ActionHandler
 			    ';
             } elseif ($node->hasFlag(NF_ADD_LINK)) {
                 $addurl = $this->invoke('getAddUrl', $node);
-                return atkTools::atkHref($addurl, $label, SESSION_NESTED);
+                return Atk_Tools::atkHref($addurl, $label, SESSION_NESTED);
             }
         }
 
@@ -348,14 +348,14 @@ class Atk_AdminHandler extends Atk_ActionHandler
 
     /**
      * This function renders the url that is used by
-     * atkAdminHandler::getAddLink().
+     * Atk_AdminHandler::getAddLink().
      *
      * @return string The url for the add link for the admin page
      */
     public function getAddUrl()
     {
-        $node = atkModule::atkGetNode($this->invoke('getAddNodeType'));
-        return atkTools::atkSelf() . '?atknodetype=' . $node->atkNodeType() . '&atkaction=add';
+        $node = Atk_Module::atkGetNode($this->invoke('getAddNodeType'));
+        return Atk_Tools::atkSelf() . '?atknodetype=' . $node->atkNodeType() . '&atkaction=add';
     }
 
     /**
@@ -405,7 +405,7 @@ class Atk_AdminHandler extends Atk_ActionHandler
 
         $attr = &$this->m_node->getAttribute($attribute);
         if ($attr == NULL) {
-            atkTools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
+            Atk_Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
             return '';
         }
 

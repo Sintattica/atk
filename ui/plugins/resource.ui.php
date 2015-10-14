@@ -22,7 +22,7 @@
  */
 function smarty_resource_ui_source($tpl_name, &$tpl_source, &$smarty)
 {
-    $ui = atkUI::getInstance();
+    $ui = Atk_UI::getInstance();
     $path = $ui->templatePath($tpl_name);
 
     if (!empty($path)) {
@@ -38,7 +38,7 @@ function smarty_resource_ui_source($tpl_name, &$tpl_source, &$smarty)
  */
 function smarty_resource_ui_timestamp($tpl_name, &$tpl_timestamp, &$smarty)
 {
-    $ui = atkUI::getInstance();
+    $ui = Atk_UI::getInstance();
     $path = $ui->templatePath($tpl_name);
 
     if (!empty($path)) {

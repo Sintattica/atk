@@ -11,7 +11,7 @@
  *
  */
 
-atkTools::useattrib("atktextattribute");
+Atk_Tools::useattrib("atktextattribute");
 
 /**
  * Attribute wrapper for CKEditor (the successor of FCK Editor)
@@ -55,18 +55,18 @@ class Atk_CKAttribute extends Atk_TextAttribute
     function __construct($name, $flags = 0, $options = null)
     {
         /** update CKEditor configuration options */
-        $this->ckOptions['language'] = atkLanguage::getLanguage();
-        $this->ckOptions['wsc_lang'] = $this->ckOptions['scayt_sLang'] = $this->getSpellCheckerLang(atkLanguage::getLanguage());
+        $this->ckOptions['language'] = Atk_Language::getLanguage();
+        $this->ckOptions['wsc_lang'] = $this->ckOptions['scayt_sLang'] = $this->getSpellCheckerLang(Atk_Language::getLanguage());
         // global config override
-        if (is_array(atkconfig::getGlobal('ck_options'))) {
-            $this->ckOptions = array_merge($this->ckOptions, atkconfig::getGlobal('ck_options'));
+        if (is_array(Atk_config::getGlobal('ck_options'))) {
+            $this->ckOptions = array_merge($this->ckOptions, Atk_config::getGlobal('ck_options'));
         }
         // instance override
         if (is_array($options)) {
             $this->ckOptions = array_merge($this->ckOptions, $options);
         }
 
-        parent::atkTextAttribute($name, 0, $flags);
+        parent::__construct($name, 0, $flags);
     }
 
     function edit($record = "", $fieldprefix = "", $mode = "")
@@ -77,7 +77,7 @@ class Atk_CKAttribute extends Atk_TextAttribute
         $this->registerKeyListener($id, KB_CTRLCURSOR);
 
         // register CKEditor main script
-        $page->register_script(atkConfig::getGlobal("atkroot") . 'atk/attributes/ckeditor/ckeditor.js');
+        $page->register_script(Atk_Config::getGlobal("atkroot") . 'atk/attributes/ckeditor/ckeditor.js');
 
         // activate CKEditor
         $options = json_encode($this->ckOptions);
@@ -88,7 +88,7 @@ class Atk_CKAttribute extends Atk_TextAttribute
 
     function display($record, $mode = "")
     {
-        return atkTools::atkArrayNvl($record, $this->fieldName(), "");
+        return Atk_Tools::atkArrayNvl($record, $this->fieldName(), "");
     }
 
     function value2db($rec)

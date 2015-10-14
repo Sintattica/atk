@@ -14,7 +14,7 @@
  * @version $Revision: 6318 $
  * $Id$
  */
-atkTools::atkimport('atk.datatypes.atkdatatype');
+Atk_Tools::atkimport('atk.datatypes.atkdatatype');
 
 /**
  * The 'array' datatype.

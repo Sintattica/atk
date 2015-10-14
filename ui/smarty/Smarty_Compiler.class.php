@@ -1,6 +1,6 @@
 <?php
 
-include_once(atkConfig::getGlobal("atkroot")."atk/ui/smarty/Smarty.class.php");
+include_once(Atk_Config::getGlobal("atkroot")."atk/ui/smarty/Smarty.class.php");
 
 /**
  * Project:     Smarty: the PHP compiling template engine

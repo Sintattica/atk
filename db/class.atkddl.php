@@ -54,7 +54,7 @@ class Atk_DDL
     /**
      * Default constructor
      */
-    function atkDDL()
+    function __construct()
     {
         
     }
@@ -69,17 +69,17 @@ class Atk_DDL
      */
     function &create($database = NULL)
     {
-        $db = atkConfig::getGlobal("db");
+        $db = Atk_Config::getGlobal("db");
         $database = $database === NULL ? $db["default"]["driver"] : $database;
 
-        $filename = atkConfig::getGlobal("atkroot") . "atk/db/class.atk" . $database . "ddl.php";
+        $filename = Atk_Config::getGlobal("atkroot") . "atk/db/class.atk" . $database . "ddl.php";
         if (file_exists($filename)) {
             include_once($filename);
-            $classname = "atk" . $database . "DDL";
+            $classname = "Atk_" . $database . "DDL";
             $ddlobject = new $classname;
             return $ddlobject;
         } else {
-            atkTools::atkerror("atkddl::create: No support for $database!");
+            Atk_Tools::atkerror("Atk_ddl::create: No support for $database!");
         }
         return NULL;
     }
@@ -109,7 +109,7 @@ class Atk_DDL
      */
     function addField($name, $generictype, $size = 0, $flags = 0, $default = NULL)
     {
-        if (atkTools::hasFlag($flags, DDL_PRIMARY)) {
+        if (Atk_Tools::hasFlag($flags, DDL_PRIMARY)) {
             $this->m_primarykey[] = $name;
             $flags|=DDL_NOTNULL; // primary keys may never be null.
         }
@@ -161,9 +161,9 @@ class Atk_DDL
     function addFields($meta)
     {
         foreach ($meta as $field) {
-            $flags = atkTools::hasFlag($field["flags"], MF_PRIMARY) ? DDL_PRIMARY : 0;
-            $flags |= atkTools::hasFlag($field["flags"], MF_UNIQUE) ? DDL_UNIQUE : 0;
-            $flags |= atkTools::hasFlag($field["flags"], MF_NOT_NULL) ? DDL_NOTNULL : 0;
+            $flags = Atk_Tools::hasFlag($field["flags"], MF_PRIMARY) ? DDL_PRIMARY : 0;
+            $flags |= Atk_Tools::hasFlag($field["flags"], MF_UNIQUE) ? DDL_UNIQUE : 0;
+            $flags |= Atk_Tools::hasFlag($field["flags"], MF_NOT_NULL) ? DDL_NOTNULL : 0;
             // $flags |= hasFlag($field["flags"], MF_AUTO_INCREMENT) ? DDL_AUTO_INCREMENT : 0;
 
             $this->addField($field["name"], $field["gentype"], $field["len"], $flags);
@@ -174,7 +174,7 @@ class Atk_DDL
      * Convert an ATK generic datatype to a database specific type.
      *
      * This function will be overrided by the database specific subclasses of
-     * atkDb.
+     * Atk_Db.
      * Note: in all derived subclasses, the following types *must* be
      * supported: number, decimal, string, date, text, datetime, time,
      * boolean.
@@ -193,7 +193,7 @@ class Atk_DDL
      * Convert an database specific type to an ATK generic datatype.
      *
      * This function will be overrided by the database specific subclasses of
-     * atkDb.
+     * Atk_Db.
      *
      * @param string $type  The database specific datatype to convert.
      * @abstract
@@ -324,7 +324,7 @@ class Atk_DDL
             }
             $res.= " DEFAULT " . $default;
         }
-        if (atkTools::hasFlag($flags, DDL_NOTNULL)) {
+        if (Atk_Tools::hasFlag($flags, DDL_NOTNULL)) {
             $res.= " NOT NULL";
         }
 
@@ -463,13 +463,13 @@ class Atk_DDL
     function executeCreate()
     {
         if (!isset($this->m_db))
-            $this->m_db = &atkTools::atkGetDb();
+            $this->m_db = &Atk_Tools::atkGetDb();
 
         $query = $this->buildCreate();
         if ($query != "") {
             return $this->m_db->query($query);
         } else {
-            atkTools::atkdebug("atkddl::executeCreate: nothing to do!");
+            Atk_Tools::atkdebug("Atk_ddl::executeCreate: nothing to do!");
         }
         return false;
     }
@@ -488,7 +488,7 @@ class Atk_DDL
     function executeAlter()
     {
         if (!isset($this->m_db))
-            $this->m_db = &atkTools::atkGetDb();
+            $this->m_db = &Atk_Tools::atkGetDb();
 
         $queries = $this->buildAlter();
         if (count($queries) > 0) {
@@ -501,7 +501,7 @@ class Atk_DDL
             return true;
         }
         else {
-            atkTools::atkdebug("atkddl::executeCreate: nothing to do!");
+            Atk_Tools::atkdebug("Atk_ddl::executeCreate: nothing to do!");
         }
         return false;
     }
@@ -515,13 +515,13 @@ class Atk_DDL
     function executeDrop()
     {
         if (!isset($this->m_db))
-            $this->m_db = &atkTools::atkGetDb();
+            $this->m_db = &Atk_Tools::atkGetDb();
 
         $query = $this->buildDrop();
         if ($query != "") {
             return $this->m_db->query($query);
         } else {
-            atkTools::atkdebug("atkddl::executeDrop: nothing to do!");
+            Atk_Tools::atkdebug("Atk_ddl::executeDrop: nothing to do!");
         }
         return false;
     }
@@ -538,13 +538,13 @@ class Atk_DDL
     function executeCreateView($name, $select, $with_check_option)
     {
         if (!isset($this->m_db))
-            $this->m_db = &atkTools::atkGetDb();
+            $this->m_db = &Atk_Tools::atkGetDb();
 
         $query = $this->buildView($name, $select, $with_check_option);
         if ($query != "") {
             return $this->m_db->query($query);
         } else {
-            atkTools::atkdebug("atkddl::executeCreateView: nothing to do!");
+            Atk_Tools::atkdebug("Atk_ddl::executeCreateView: nothing to do!");
         }
         return false;
     }
@@ -559,7 +559,7 @@ class Atk_DDL
      */
     function buildView($name, $select, $with_check_option)
     {
-        atkTools::atkerror("buildView don't support by this db or by this db driver");
+        Atk_Tools::atkerror("buildView don't support by this db or by this db driver");
         return "";
     }
 
@@ -573,13 +573,13 @@ class Atk_DDL
     function executeDropView($name)
     {
         if (!isset($this->m_db))
-            $this->m_db = &atkTools::atkGetDb();
+            $this->m_db = &Atk_Tools::atkGetDb();
 
         $query = $this->dropView($name);
         if ($query != "") {
             return $this->m_db->query($query);
         } else {
-            atkTools::atkdebug("atkddl::executeDropView: nothing to do!");
+            Atk_Tools::atkdebug("Atk_ddl::executeDropView: nothing to do!");
         }
         return false;
     }
@@ -592,7 +592,7 @@ class Atk_DDL
      */
     function dropView($name)
     {
-        atkTools::atkerror("dropView don't support by this db or by this db driver");
+        Atk_Tools::atkerror("dropView don't support by this db or by this db driver");
         return "";
     }
 

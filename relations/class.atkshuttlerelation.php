@@ -15,7 +15,7 @@
  * $Id: class.atkshuttlerelation.inc 6354 2009-04-15 02:41:21Z mvdam $
  */
 /** @internal base include */
-atkTools::userelation("atkmanytomanyrelation");
+Atk_Tools::userelation("atkmanytomanyrelation");
 
 /**
  * Many-to-many relation.
@@ -123,14 +123,14 @@ class Atk_ShuttleRelation extends Atk_ManyToManyRelation
             }
 
             // fancy autowidth detection
-            $width = max(atkTools::atk_strlen($this->m_destInstance->descriptor($recordset[$i])) * 10, $width);
+            $width = max(Atk_Tools::atk_strlen($this->m_destInstance->descriptor($recordset[$i])) * 10, $width);
         }
 
         if ($this->m_maxlistwidth) {
             $width = min($this->m_maxlistwidth, $width);
         }
 
-        $result = '<table border="0"><tr><td>' . atkTools::atktext('available', 'atk') . ':<br/>';
+        $result = '<table border="0"><tr><td>' . Atk_Tools::atktext('available', 'atk') . ':<br/>';
 
         $fieldname = $fieldprefix . $this->fieldName();
         $leftname = $fieldname . "_sel";
@@ -144,14 +144,14 @@ class Atk_ShuttleRelation extends Atk_ManyToManyRelation
         $result.= '<input class="btn btn-default" type="button" value="&gt;&gt;" onClick="shuttle_moveall(\'' . $leftname . '\', \'' . $rightname . '\', \'' . $fieldname . '\');"><br/>';
         $result.= '<input class="btn btn-default" type="button" value="&lt;&lt;" onClick="shuttle_moveall(\'' . $rightname . '\', \'' . $leftname . '\', \'' . $fieldname . '\');">';
 
-        $result.= '</td><td>' . atkTools::atktext('selected', 'atk') . ':<br/>';
+        $result.= '</td><td>' . Atk_Tools::atktext('selected', 'atk') . ':<br/>';
 
         $result.= $this->_renderSelect($rightname, $right, $width, $leftname, $fieldname);
 
         // on submit, we must select all items in the right selector, as unselected items
         // will not be posted.
         $page = &$this->m_ownerInstance->getPage();
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atkshuttlerelation.js");
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atkshuttlerelation.js");
         $page->register_submitscript("shuttle_selectAll('" . $rightname . "');");
 
         $result.= '</table>';

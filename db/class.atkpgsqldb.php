@@ -32,7 +32,7 @@ class Atk_PgsqlDb extends Atk_Db
     /**
      * Base constructor
      */
-    function atkpgsqldb()
+    function __construct()
     {
         /* do nothing */
     }
@@ -104,7 +104,7 @@ class Atk_PgsqlDb extends Atk_Db
         /* limit? */
         if ($offset >= 0 && $limit >= 0)
             $query .= " LIMIT $limit OFFSET $offset";
-        atkTools::atkdebug("atkpgsqldb.query(): " . $query);
+        Atk_Tools::atkdebug("atkpgsqldb.query(): " . $query);
 
         /* connect to database */
         if ($this->connect() == DB_SUCCESS) {
@@ -139,7 +139,7 @@ class Atk_PgsqlDb extends Atk_Db
     function next_record()
     {
         /* goto next record */
-        $this->m_record = @pg_fetch_array($this->m_query_id, $this->m_row, PGSQL_ASSOC | atkConfig::getGlobal("pgsqlfetchmode"));
+        $this->m_record = @pg_fetch_array($this->m_query_id, $this->m_row, PGSQL_ASSOC | Atk_Config::getGlobal("pgsqlfetchmode"));
         $this->m_row++;
 
         /* are we there? */
@@ -243,7 +243,7 @@ class Atk_PgsqlDb extends Atk_Db
     {
         /* connect first */
         if ($this->connect() == DB_SUCCESS) {
-            $sequencename = atkConfig::getGlobal("database_sequenceprefix") . $sequence;
+            $sequencename = Atk_Config::getGlobal("database_sequenceprefix") . $sequence;
             /* get sequence number and increment */
             $query = "SELECT nextval('$sequencename') AS nextid";
 
@@ -294,8 +294,8 @@ class Atk_PgsqlDb extends Atk_Db
      */
     function metadata($table, $full = false)
     {
-        atkTools::atkimport("atk.db.atkddl");
-        $ddl = &atkDDL::create("pgsql");
+        Atk_Tools::atkimport("atk.db.atkddl");
+        $ddl = &Atk_DDL::create("pgsql");
 
         if (strpos($table, ".") <> false) {
             // there is a period in the table, so we split out the schema name.
@@ -368,7 +368,7 @@ class Atk_PgsqlDb extends Atk_Db
             if ($row['is_auto_inc'] == 1)
                 $meta[$i]['sequence'] = $row['sequence'];
 
-            else if (atkTools::atk_strlen($row['default']) > 0) {
+            else if (Atk_Tools::atk_strlen($row['default']) > 0) {
                 // date/time/datetime
                 if (strtolower($row['default']) == "now" && in_array($meta[$i]['gentype'], array("date", "time", "datetime")))
                     $meta[$i]['default'] = "NOW";

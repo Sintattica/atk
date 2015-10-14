@@ -25,13 +25,13 @@ class Atk_MailErrorHandler extends Atk_ErrorHandlerBase
     public function handle($errorMessage, $debugMessage)
     {
         global $g_sessionManager, $g_sessionData, $g_user, $g_modules;
-        $txt_app_title = atkTools::atktext("app_title");
+        $txt_app_title = Atk_Tools::atktext("app_title");
 
         if ($this->params['mailto'] != "") { // only if enabled..
             $subject = "[" . $_SERVER["SERVER_NAME"] . "] $txt_app_title error";
 
-            $defaultfrom = sprintf("%s <%s@%s>", $txt_app_title, atkConfig::getGlobal("identifier", "atk"), $_SERVER["SERVER_NAME"]);
-            $from = atkConfig::getGlobal("mail_sender", $defaultfrom);
+            $defaultfrom = sprintf("%s <%s@%s>", $txt_app_title, Atk_Config::getGlobal("identifier", "atk"), $_SERVER["SERVER_NAME"]);
+            $from = Atk_Config::getGlobal("mail_sender", $defaultfrom);
 
             $body = "Hello,\n\nAn error seems to have occurred in the atk application named '$txt_app_title'.\n";
             $body .= "\nThe errormessage was:\n\n" . implode("\n", is_array($errorMessage)
@@ -43,7 +43,7 @@ class Atk_MailErrorHandler extends Atk_ErrorHandlerBase
 
             $lines = array();
             for ($i = 0, $_ = count($debugMessage); $i < $_; $i++) {
-                $lines[] = $this->_wordwrap(atkTools::atk_html_entity_decode(preg_replace('(\[<a.*</a>\])', '', $debugMessage[$i])));
+                $lines[] = $this->_wordwrap(Atk_Tools::atk_html_entity_decode(preg_replace('(\[<a.*</a>\])', '', $debugMessage[$i])));
             }
             $body .= implode("\n", $lines);
 

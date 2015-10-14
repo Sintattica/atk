@@ -115,8 +115,8 @@ class Atk_ClassLoader
      * Note: at the moment only single element prefixes are allowed!
      * 
      * Example:
-     * atkClassLoader::mountClassPath('frontend', atkConfig::getGlobal('atkroot').'../frontend/');
-     * atkClassLoader::newInstance('frontend.helloworld');
+     * Atk_ClassLoader::mountClassPath('frontend', Atk_Config::getGlobal('atkroot').'../frontend/');
+     * Atk_ClassLoader::newInstance('frontend.helloworld');
      *
      * @param string $prefix prefix
      * @param string $path   class path
@@ -138,12 +138,12 @@ class Atk_ClassLoader
         $elems = explode(".", strtolower($fullclassname));
         if ($elems[0] == "module") {
             array_shift($elems);
-            $prefix = atkModule::moduleDir(array_shift($elems));
+            $prefix = Atk_Module::moduleDir(array_shift($elems));
         } else if (isset(self::$s_classPaths[$elems[0]])) {
             $prefix = self::$s_classPaths[$elems[0]];
             array_shift($elems);
         } else {
-            $prefix = atkConfig::getGlobal("atkroot");
+            $prefix = Atk_Config::getGlobal("atkroot");
         }
 
         $last = &$elems[count($elems) - 1];
@@ -218,6 +218,10 @@ class Atk_ClassLoader
         $elems = explode(".", strtolower($fullclassname));
         $classname = $elems[count($elems) - 1];
 
+        if(strpos($classname, 'atk') === 0){
+            $classname = "Atk_".substr($classname, 3);
+        }
+
         if (class_exists($classname)) {
             if (count($args) === 0) {
                 return new $classname();
@@ -226,7 +230,7 @@ class Atk_ClassLoader
                 return $class->newInstanceArgs($args);
             }
         } else {
-            atkTools::atkerror("Class $fullclassname not found.");
+            Atk_Tools::atkerror("Class $fullclassname not found.");
             return null;
         }
     }
@@ -247,7 +251,10 @@ class Atk_ClassLoader
         if (!isset($s_instances[$fullclassname]) || $reset) {
             self::import($fullclassname);
             $classname = substr(strrchr('.' . $fullclassname, '.'), 1);
-            atkTools::atkdebug("Getting singleton instance $fullclassname");
+            if(strpos($classname, 'atk') === 0){
+                $classname = "Atk_".substr($classname, 3);
+            }
+            Atk_Tools::atkdebug("Getting singleton instance $fullclassname");
             $s_instances[$fullclassname] = call_user_func(array($classname, 'getInstance'), $reset);
         }
 
@@ -348,7 +355,7 @@ class Atk_ClassLoader
 
         list($class, $method) = explode("#", $str);
         if ($class != "" && $method != "") {
-            $handler = &atkTools::atknew($class);
+            $handler = &Atk_Tools::atknew($class);
             if (is_object($handler)) {
                 return call_user_func_array(array($handler, $method), $params);
             }
@@ -363,17 +370,23 @@ class Atk_ClassLoader
      *
      * @param string $class The classname to find.
      * 
-     * @return string|bool   The classpath (atkTools::atkimport( statement) of the class
+     * @return string|bool   The classpath (Atk_Tools::atkimport( statement) of the class
      *                       if found, else false
      */
     function findClass($class)
     {
-        $class = strtolower($class);
+        if(strpos($class, "Atk_") === 0) {
+            $class = "atk".substr($class,4);
+        }
+
         $classloader = new Atk_ClassLoader();
         $classes = $classloader->getAllClasses();
+        $class = strtolower($class);
+
+
 
         if (!in_array($class, array_keys($classes))) {
-            if (atkConfig::getGlobal('autoload_reindex_on_missing_class', false) && !self::$s_isReindexed) {
+            if (Atk_Config::getGlobal('autoload_reindex_on_missing_class', false) && !self::$s_isReindexed) {
                 $classes = $classloader->getAllClasses(true);
                 self::$s_isReindexed = true;
 
@@ -399,7 +412,7 @@ class Atk_ClassLoader
         static $s_classes = array();
 
         if (empty($s_classes) || $force) {
-            atkTools::atkimport('atk.utils.atktmpfile');
+            Atk_Tools::atkimport('atk.utils.atktmpfile');
             $cache = new Atk_TmpFile('classes.inc.php');
             $classes = array();
 
@@ -425,15 +438,15 @@ class Atk_ClassLoader
      */
     function findAllClasses()
     {
-        $traverser = atkTools::atknew('atk.utils.atkdirectorytraverser');
+        $traverser = Atk_Tools::atknew('atk.utils.atkdirectorytraverser');
         $classfinder = new Atk_ClassFinder();
         $traverser->addCallbackObject($classfinder);
         $cwd = getcwd();
-        chdir(atkConfig::getGlobal('atkroot'));
+        chdir(Atk_Config::getGlobal('atkroot'));
         $traverser->traverse('atk');
         chdir($cwd);
         $classes = $classfinder->getClasses();
-        atkTools::atkdebug("atkClassLoader::findAllClasses(): Found " . count($classes) . ' classes');
+        Atk_Tools::atkdebug("Atk_ClassLoader::findAllClasses(): Found " . count($classes) . ' classes');
         return $classes;
     }
 
@@ -457,12 +470,13 @@ class Atk_ClassFinder
     {
         $filename = basename($file);
         if (substr($filename, 0, 6) === 'class.' && substr($filename, -4) === '.php') {
-            $this->m_classes[substr($filename, 6, -4)] = atkTools::getClassName($file);
+            $name = substr($filename, 6, -4);
+            $this->m_classes[$name] = Atk_Tools::getClassName($file);
         }
     }
 
     /**
-     * Returns all the found classes as keys with their classpath (atkTools::atkimport( statement)
+     * Returns all the found classes as keys with their classpath (Atk_Tools::atkimport( statement)
      * as value.
      *
      * @return array The found classes with classpatsh

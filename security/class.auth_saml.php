@@ -56,9 +56,9 @@ class auth_saml extends auth_interface
      */
     public function validateUser($user, $passwd)
     {
-        $simplesamlPath = atkConfig::getGlobal("auth_saml_simplesaml_path");
-        require_once(atkConfig::getGlobal('atkroot') . $simplesamlPath . 'lib/_autoload.php');
-        $as = new SimpleSAML_Auth_Simple(atkConfig::getGlobal('auth_saml_authsource', 'default-sp'));
+        $simplesamlPath = Atk_Config::getGlobal("auth_saml_simplesaml_path");
+        require_once(Atk_Config::getGlobal('atkroot') . $simplesamlPath . 'lib/_autoload.php');
+        $as = new SimpleSAML_Auth_Simple(Atk_Config::getGlobal('auth_saml_authsource', 'default-sp'));
 
         $as->requireAuth();
 
@@ -68,7 +68,7 @@ class auth_saml extends auth_interface
 
         // We transport the logoutUrl as part of the user session data so we can logout at any
         // time later when the user clicks the logout button.
-        self::$_samlUser = array("name" => $attributes[atkConfig::getGlobal("auth_userid_field", "uid")][0],
+        self::$_samlUser = array("name" => $attributes[Atk_Config::getGlobal("auth_userid_field", "uid")][0],
             "attributes" => $attributes,
             "_logoutUrl" => $logoutUrl);
 

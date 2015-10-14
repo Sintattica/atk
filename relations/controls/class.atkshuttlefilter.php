@@ -18,7 +18,7 @@
  * Imports
  * @access private
  */
-atkTools::atkimport('atk.relations.controls.atkshuttlecontrol');
+Atk_Tools::atkimport('atk.relations.controls.atkshuttlecontrol');
 
 /**
  *
@@ -50,7 +50,7 @@ abstract class Atk_ShuttleFilter extends Atk_ShuttleControl
     protected function registerChangeHandler($mode, $prefix)
     {
         $mode == "add" ? "add" : "edit";
-        $url = addslashes(atkTools::partial_url($this->m_shuttle->m_ownerInstance->atkNodeType(), $mode, "attribute." . $this->m_shuttle->getHtmlId($prefix) . ".filter", array("atkfieldprefix" => $prefix)));
+        $url = addslashes(Atk_Tools::partial_url($this->m_shuttle->m_ownerInstance->atkNodeType(), $mode, "attribute." . $this->m_shuttle->getHtmlId($prefix) . ".filter", array("atkfieldprefix" => $prefix)));
 
         $page = $this->m_shuttle->m_ownerInstance->getPage();
         $page->register_scriptcode("function " . $this->getChangeHandlerName($prefix) . "(el)

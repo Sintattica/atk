@@ -20,7 +20,7 @@
  *
  * The most useful purpose of the atkActionListener is to serve as a base
  * class for custom action listeners. Extend this class and override only
- * the notify($action, $record) method. Using atkNode::addListener you can
+ * the notify($action, $record) method. Using Atk_Node::addListener you can
  * add listeners that catch evens such as records updates and additions.
  * This is much like the classic atk postUpdate/postAdd triggers, only much
  * more flexible.
@@ -41,7 +41,7 @@ class Atk_ActionListener
     /**
      * The owning node of the listener.
      * @access private
-     * @var atkNode
+     * @var Atk_Node
      */
     var $m_node = NULL;
 
@@ -49,9 +49,9 @@ class Atk_ActionListener
      * Base constructor
      *
      * @param array $actionfilter The list of actions to listen to
-     * @return atkActionListener
+     * @return Atk_ActionListener
      */
-    function atkActionListener($actionfilter = array())
+    function __construct($actionfilter = array())
     {
         $this->m_actionfilter = $actionfilter;
     }
@@ -59,10 +59,10 @@ class Atk_ActionListener
     /**
      * Set the owning node of the listener.
      *
-     * When using atkNode::addListener to add a listener to a node it is not
+     * When using Atk_Node::addListener to add a listener to a node it is not
      * necessary to call this method as addListener will do that for you.
      *
-     * @param atkNode $node The node to set as owner
+     * @param Atk_Node $node The node to set as owner
      */
     function setNode(&$node)
     {
@@ -81,8 +81,8 @@ class Atk_ActionListener
      */
     function notify($action, $record)
     {
-        if (count($this->m_actionfilter) == 0 || atkTools::atk_in_array($action, $this->m_actionfilter)) {
-            atkTools::atkdebug("Action $action performed on " . $this->m_node->atkNodeType() . " (" . $this->m_node->primaryKey($record) . ")");
+        if (count($this->m_actionfilter) == 0 || Atk_Tools::atk_in_array($action, $this->m_actionfilter)) {
+            Atk_Tools::atkdebug("Action $action performed on " . $this->m_node->atkNodeType() . " (" . $this->m_node->primaryKey($record) . ")");
             $this->actionPerformed($action, $record);
         }
     }
@@ -113,8 +113,8 @@ class Atk_ActionListener
      */
     function preNotify($action, &$record)
     {
-        if (count($this->m_actionfilter) == 0 || atkTools::atk_in_array($action, $this->m_actionfilter)) {
-            atkTools::atkdebug("Action $action to be performed on " . $this->m_node->atkNodeType() . " (" . $this->m_node->primaryKey($record) . ")");
+        if (count($this->m_actionfilter) == 0 || Atk_Tools::atk_in_array($action, $this->m_actionfilter)) {
+            Atk_Tools::atkdebug("Action $action to be performed on " . $this->m_node->atkNodeType() . " (" . $this->m_node->primaryKey($record) . ")");
             $this->preActionPerformed($action, $record);
         }
     }

@@ -40,8 +40,8 @@ class Atk_Debugger
     {
         static $s_instance = NULL;
         if ($s_instance == NULL) {
-            if (!atkSessionManager::atkGetSessionManager())
-                atkTools::atkwarning("Instantiating debugger without sessionmanager, debugger will not do anything until session is started. Also, the debugging info already in the session will not be cleaned, this could lead to monster sessions over time!");
+            if (!Atk_SessionManager::atkGetSessionManager())
+                Atk_Tools::atkwarning("Instantiating debugger without sessionmanager, debugger will not do anything until session is started. Also, the debugging info already in the session will not be cleaned, this could lead to monster sessions over time!");
             $s_instance = new Atk_Debugger();
         }
         return $s_instance;
@@ -59,7 +59,7 @@ class Atk_Debugger
             $data = &$this->getDebuggerData(true);
             $data = array(); // start clean
             global $g_debug_msg;
-            $g_debug_msg[] = atkTools::atkGetTimingInfo() . "Debugger initialized. [" . $link . "]";
+            $g_debug_msg[] = Atk_Tools::atkGetTimingInfo() . "Debugger initialized. [" . $link . "]";
         }
     }
 
@@ -71,8 +71,8 @@ class Atk_Debugger
      */
     public static function addStatement($txt)
     {
-        if (function_exists('atkGetSessionManager') && atkSessionManager::atkGetSessionManager()) {
-            $instance = atkDebugger::getInstance();
+        if (function_exists('atkGetSessionManager') && Atk_SessionManager::atkGetSessionManager()) {
+            $instance = Atk_Debugger::getInstance();
             if (is_object($instance)) {
                 return $instance->_addStatement($txt);
             }
@@ -93,15 +93,15 @@ class Atk_Debugger
         self::$s_queryCount +=!$isSystemQuery ? 1 : 0;
         self::$s_systemQueryCount += $isSystemQuery ? 1 : 0;
 
-        if (atkConfig::getGlobal('debug') > 2) {
-            if (atkSessionManager::atkGetSessionManager()) {
-                $instance = atkDebugger::getInstance();
+        if (Atk_Config::getGlobal('debug') > 2) {
+            if (Atk_SessionManager::atkGetSessionManager()) {
+                $instance = Atk_Debugger::getInstance();
                 if (is_object($instance)) {
                     return $instance->_addQuery($query);
                 }
             }
         } else {
-            atkTools::atkdebug(htmlentities($query));
+            Atk_Tools::atkdebug(htmlentities($query));
             return true;
         }
         return false;
@@ -118,7 +118,7 @@ class Atk_Debugger
         if (!$this->m_isconsole) {
             $data = &$this->getDebuggerData();
             global $g_debug_msg;
-            $data["statements"][] = array("statement" => $txt, "trace" => atkTools::atkGetTrace());
+            $data["statements"][] = array("statement" => $txt, "trace" => Atk_Tools::atkGetTrace());
             $link = $this->consoleLink("trace", "statement", array("stmt_id" => count($data["statements"]) - 1), true);
             $txt = preg_replace("|MB\]|", "MB] [$link]", $txt, 1);
             $g_debug_msg[] = $txt;
@@ -138,9 +138,9 @@ class Atk_Debugger
         if (!$this->m_isconsole) { // don't add queries executed by the console itself
             $data = &$this->getDebuggerData();
 
-            $data["queries"][] = array("query" => $query, "trace" => atkTools::atkGetTrace());
+            $data["queries"][] = array("query" => $query, "trace" => Atk_Tools::atkGetTrace());
 
-            atkTools::atkdebug("[" . $this->consoleLink("query&nbsp;details", "query", array("query_id" => count($data["queries"]) - 1), true) . "] " . htmlentities($query));
+            Atk_Tools::atkdebug("[" . $this->consoleLink("query&nbsp;details", "query", array("query_id" => count($data["queries"]) - 1), true) . "] " . htmlentities($query));
 
             return true;
         }
@@ -160,16 +160,16 @@ class Atk_Debugger
     public function consoleLink($text, $action = "", $params = array(), $popup = false, $stackId = NULL)
     {
         if ($stackId == NULL) {
-            $stackId = atkSessionManager::atkStackID();
+            $stackId = Atk_SessionManager::atkStackID();
         }
 
         static $s_first = true;
         $res = "";
-        $url = atkConfig::getGlobal("application_dir") . 'debugger.php?atkstackid=' . $stackId . '&action=' . $action . '&atkprevlevel=' . atkSessionManager::atkLevel() . $this->urlParams($params);
+        $url = Atk_Config::getGlobal("application_dir") . 'debugger.php?atkstackid=' . $stackId . '&action=' . $action . '&atkprevlevel=' . Atk_SessionManager::atkLevel() . $this->urlParams($params);
 
         if ($popup) {
             if ($s_first) {
-                $res.= '<script type="text/javascript" language="JavaScript" src="' . atkConfig::getGlobal("atkroot") . 'atk/javascript/newwindow.js"></script>';
+                $res.= '<script type="text/javascript" language="JavaScript" src="' . Atk_Config::getGlobal("atkroot") . 'atk/javascript/newwindow.js"></script>';
                 $s_first = false;
             }
             $res.= '<a href="javascript:NewWindow(\'' . $url . '\', \'atkconsole\', 800, 600, \'yes\', \'yes\')">' . $text . '</a>';
@@ -204,8 +204,8 @@ class Atk_Debugger
      */
     public function renderConsole()
     {
-        $page = &atkTools::atkinstance("atk.ui.atkpage");
-        $theme = &atkTools::atkinstance("atk.ui.atktheme");
+        $page = &Atk_Tools::atkinstance("atk.ui.atkpage");
+        $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
         $page->register_style($theme->stylePath("debugger.css"));
         $data = &$this->getDebuggerData(false, $_REQUEST['atkstackid']);
         $res = $this->consoleControls() . '<br/><br/>';
@@ -245,7 +245,7 @@ class Atk_Debugger
         $output = "<h1>Query</h1>";
         $query = $queries[$id]["query"];
         $output.= $this->highlightQuery($query);
-        $db = &atkTools::atkGetDb();
+        $db = &Atk_Tools::atkGetDb();
         if (strtolower(substr(trim($query), 0, 6)) == "select") {
             $output.= '<h1>Resultset</h1>';
             $result = $db->getrows($query);
@@ -347,10 +347,10 @@ class Atk_Debugger
     public function &getDebuggerData($clean = false, $stackId = NULL)
     {
         if ($stackId == NULL) {
-            $stackId = atkSessionManager::atkStackID();
+            $stackId = Atk_SessionManager::atkStackID();
         }
 
-        $sessionmanager = atkSessionManager::atkGetSessionManager();
+        $sessionmanager = Atk_SessionManager::atkGetSessionManager();
         if (is_object($sessionmanager)) {
             $session = &$sessionmanager->getSession();
             if ($clean)
@@ -443,7 +443,7 @@ class Atk_Debugger
         global $g_debug_msg, $g_error_msg, $g_startTime;
 
         $time = strftime("%H:%M:%S", $g_startTime);
-        $duration = sprintf("%02.05f", atkDebugger::getMicroTime() - $g_startTime);
+        $duration = sprintf("%02.05f", Atk_Debugger::getMicroTime() - $g_startTime);
         $usage = function_exists("memory_get_usage") ? sprintf("%02.02f", (memory_get_usage() / 1024 / 1024))
                 : "? ";
         $method = $_SERVER['REQUEST_METHOD'];
@@ -513,12 +513,12 @@ class Atk_Debugger
         $isPartial = isset($ATK_VARS['atkpartial']);
 
         // only display error messages
-        if (count($g_error_msg) > 0 && atkConfig::getGlobal('display_errors') && atkConfig::getGlobal('debug') <= 0 && !$isPartial) {
+        if (count($g_error_msg) > 0 && Atk_Config::getGlobal('display_errors') && Atk_Config::getGlobal('debug') <= 0 && !$isPartial) {
             return $this->renderPlainErrorMessages();
         }
 
         // no debug messages or error messages to output
-        else if (atkConfig::getGlobal('debug') <= 0 || (count($g_debug_msg) == 0 && count($g_error_msg) == 0)) {
+        else if (Atk_Config::getGlobal('debug') <= 0 || (count($g_debug_msg) == 0 && count($g_error_msg) == 0)) {
             return '';
         }
 
@@ -531,15 +531,15 @@ class Atk_Debugger
         $block = $this->renderDebugBlock($expanded);
 
         if ($isPartial) {
-            atkTools::atkimport('atk.utils.atkjson');
+            Atk_Tools::atkimport('atk.utils.atkjson');
 
             $output = '<script type="text/javascript">
-            ATK.Debug.addContent(' . atkJSON::encode($block) . ');
+            ATK.Debug.addContent(' . Atk_JSON::encode($block) . ');
            </script>';
         } else {
-            $ui = &atkTools::atkinstance('atk.ui.atkui');
+            $ui = &Atk_Tools::atkinstance('atk.ui.atkui');
             $stylesheet = $ui->stylePath('atkdebug.css');
-            $script = atkConfig::getGlobal('atkroot') . 'atk/javascript/class.atkdebug.js';
+            $script = Atk_Config::getGlobal('atkroot') . 'atk/javascript/class.atkdebug.js';
 
             $redirect = $this->renderRedirectLink();
 
@@ -584,7 +584,7 @@ class Atk_Debugger
             $previous = $offset;
         }
 
-        $new = atkDebugger::getMicroTime();
+        $new = Atk_Debugger::getMicroTime();
         $res = "+" . sprintf("%02.05f", $new - $offset) . "s / " . sprintf("%02.05f", $new - $previous) . "s";
         $previous = $new;
         return $res;

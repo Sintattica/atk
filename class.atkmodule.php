@@ -104,7 +104,7 @@ class Atk_Module
      * overhere, create its menuitems etc.
      * @param String $name The name of the module.
      */
-    function atkModule($name = "")
+    function __construct($name = "")
     {
         $this->m_name = $name;
     }
@@ -182,7 +182,7 @@ class Atk_Module
         /* call basic menuitem */
         if (empty($parent))
             $parent = 'main';
-        atkTools::menuitem($name, $url, $parent, $enable, $order, $this->m_name);
+        Atk_Tools::menuitem($name, $url, $parent, $enable, $order, $this->m_name);
     }
 
     /**
@@ -219,7 +219,7 @@ class Atk_Module
 
         /* overloader check */
         if (!empty($g_overloaders[$node])) {
-            atkTools::atkdebug("Using overloader '" . $g_overloaders[$node] . "' for class '" . $node . "'");
+            Atk_Tools::atkdebug("Using overloader '" . $g_overloaders[$node] . "' for class '" . $node . "'");
             self::$s_isOverloader = true;
             $node = self::newAtkNode($g_overloaders[$node], FALSE);
             self::$s_isOverloader = false;
@@ -241,8 +241,8 @@ class Atk_Module
         $modules = self::atkGetModules();
 
         /* module and type */
-        $module = atkModule::getNodeModule($node);
-        $type = atkModule::getNodeType($node);
+        $module = Atk_Module::getNodeModule($node);
+        $type = Atk_Module::getNodeType($node);
         $file = "class.$type.php";
 
         /* filename */
@@ -256,7 +256,7 @@ class Atk_Module
                     $file = "{$modules[$module]}/class.{$type}.php";
                 }
             } else {
-                atkTools::atkdebug("Couldn't find node '$node' in module '$module'. Trying default module path.");
+                Atk_Tools::atkdebug("Couldn't find node '$node' in module '$module'. Trying default module path.");
                 $file = $config_module_path . "/" . $module . "/class.$type.php";
             }
         }
@@ -279,7 +279,7 @@ class Atk_Module
 
     /**
      * Construct a new node. A module can override this method for it's own nodes.
-     * @param atkNode $node the node type
+     * @param Atk_Node $node the node type
      * @return new node object
      */
     function &newNode($node)
@@ -287,22 +287,22 @@ class Atk_Module
         global $config_atkroot;
 
         /* include the base file */
-        atkTools::atkimport("atk.atknode");
+        Atk_Tools::atkimport("atk.atknode");
 
-        $corporate_base = atkConfig::getGlobal("corporate_node_base");
+        $corporate_base = Atk_Config::getGlobal("corporate_node_base");
         if ($corporate_base != "") {
-            atkTools::atkimport($corporate_base);
+            Atk_Tools::atkimport($corporate_base);
         }
 
         /* check for file */
         $file = $this->getNodeFile($node);
         if (!file_exists($file)) {
-            atkTools::atkimport("atk.utils.atkclassloader");
-            $res = atkClassLoader::invokeFromString(atkConfig::getGlobal("missing_class_handler"), array(array("node" => $node, "module" => $this->m_name)));
+            Atk_Tools::atkimport("atk.utils.atkclassloader");
+            $res = Atk_ClassLoader::invokeFromString(Atk_Config::getGlobal("missing_class_handler"), array(array("node" => $node, "module" => $this->m_name)));
             if ($res !== false) {
                 return $res;
             } else {
-                atkTools::atkerror("Cannot create node, because a required file ($file) does not exist!");
+                Atk_Tools::atkerror("Cannot create node, because a required file ($file) does not exist!");
                 return NULL;
             }
         }
@@ -313,7 +313,7 @@ class Atk_Module
         /* module */
         $module = self::getNodeModule($node);
 
-        // set the current module scope, this will be retrieved in atkNode
+        // set the current module scope, this will be retrieved in Atk_Node
         // to set it's $this->m_module instance variable in an early stage
         if (!self::$s_isOverloader) {
             self::setModuleScope($module);
@@ -394,7 +394,7 @@ class Atk_Module
     /**
      * Get the modifier functions for this node
      *
-     * @param atkNode $node
+     * @param Atk_Node $node
      * @return array Array with modifier function names
      */
     function getModifierFunctions(&$node)
@@ -405,7 +405,7 @@ class Atk_Module
     /**
      * Modifies the given node
      *
-     * @param atkNode $node Node to be modified
+     * @param Atk_Node $node Node to be modified
      */
     function modifier(&$node)
     {
@@ -420,7 +420,7 @@ class Atk_Module
             // If the modifiers is found
             if (method_exists($this, $modifiername)) {
                 // Add a debug line so we know, the modifier is applied
-                atkTools::atkdebug(sprintf("Applying modifier %s from module %s to node %s", $modifiername, $this->m_name, $node->m_type));
+                Atk_Tools::atkdebug(sprintf("Applying modifier %s from module %s to node %s", $modifiername, $this->m_name, $node->m_type));
 
                 // Apply the modifier
                 $node->m_modifier = $this->m_name;
@@ -434,7 +434,7 @@ class Atk_Module
 
         // If none of the modifiers was found, add a warning to the debug log
         if ($appliedmodifiers == 0)
-            atkTools::atkdebug(sprintf("Failed to apply modifier function %s from module %s to node %s; modifier function not found", implode(" or ", $specificmodifiers), $this->m_name, $node->m_type), DEBUG_WARNING);
+            Atk_Tools::atkdebug(sprintf("Failed to apply modifier function %s from module %s to node %s; modifier function not found", implode(" or ", $specificmodifiers), $this->m_name, $node->m_type), DEBUG_WARNING);
     }
 
 
@@ -476,15 +476,15 @@ class Atk_Module
      * @param bool $init Initialize the node?
      * @param String $cache_id The cache id in the node repository
      * @param bool $reset Whether or not to reset the particular node in the repository
-     * @return atkNode the node
+     * @return Atk_Node the node
      */
     public static function &atkGetNode($node, $init = TRUE, $cache_id = "default", $reset = false)
     {
         global $g_nodeRepository;
         $node = strtolower($node); // classes / directory names should always be in lower-case
         if (!isset($g_nodeRepository[$cache_id][$node]) || !is_object($g_nodeRepository[$cache_id][$node]) || $reset) {
-            atkTools::atkdebug("Constructing a new node $node ($cache_id)");
-            $g_nodeRepository[$cache_id][$node] = &self::newAtkNode($node, $init);
+            Atk_Tools::atkdebug("Constructing a new node $node ($cache_id)");
+            $g_nodeRepository[$cache_id][$node] = self::newAtkNode($node, $init);
         }
         return $g_nodeRepository[$cache_id][$node];
     }
@@ -495,10 +495,10 @@ class Atk_Module
      * This is useful to replace nodes with mocks for testing purposes.
      *
      * @param String $nodename The full name of the node (module.nodename)
-     * @param atkNode $node The node instance to replace the current one
+     * @param Atk_Node $node The node instance to replace the current one
      * @param String $cache_id If set, replaces only the instance with a certain
      *                         cache_id
-     * @return atkNode The current node, useful to restore afterwards. Can be
+     * @return Atk_Node The current node, useful to restore afterwards. Can be
      *                 NULL.
      */
     public static function &atkSetNode($nodename, &$node, $cache_id = "default")
@@ -531,37 +531,37 @@ class Atk_Module
     {
         global $g_moduleRepository;
 
-        atkTools::atkimport("atk.atknode");
+        Atk_Tools::atkimport("atk.atknode");
 
         if (!isset($g_moduleRepository[$modname]) || !is_object($g_moduleRepository[$modname])) {
-            $corporate_base = atkConfig::getGlobal("corporate_module_base");
+            $corporate_base = Atk_Config::getGlobal("corporate_module_base");
             if ($corporate_base != "") {
-                atkTools::atkimport($corporate_base);
+                Atk_Tools::atkimport($corporate_base);
             }
 
             $filename = self::moduleDir($modname) . "module.php";
             if (file_exists($filename)) {
                 include_once($filename);
             } else {
-                atkTools::atkdebug("Couldn't find module.php for module '$modname' in '" . self::moduleDir($modname) . "'");
+                Atk_Tools::atkdebug("Couldn't find module.php for module '$modname' in '" . self::moduleDir($modname) . "'");
             }
 
-            atkTools::atkdebug("Constructing a new module - $modname");
+            Atk_Tools::atkdebug("Constructing a new module - $modname");
             if (class_exists("mod_" . $modname)) {
                 $realmodname = "mod_" . $modname;
                 $mod = new $realmodname($modname);
             } else if (class_exists($modname)) {
-                atkTools::atkdebug("Warning: Deprecated use of short modulename '$modname'. Class in module.inc should be renamed to 'mod_$modname'.");
+                Atk_Tools::atkdebug("Warning: Deprecated use of short modulename '$modname'. Class in module.inc should be renamed to 'mod_$modname'.");
                 $mod = new $modname();
             } else {
-                atkTools::atkimport("atk.utils.atkclassloader");
-                $mod = atkClassLoader::invokeFromString(atkConfig::getGlobal("missing_module_handler"), array(array("module" => $modname)));
+                Atk_Tools::atkimport("atk.utils.atkclassloader");
+                $mod = Atk_ClassLoader::invokeFromString(Atk_Config::getGlobal("missing_module_handler"), array(array("module" => $modname)));
                 if ($mod === false) {
                     // Changed by Ivo: This used to construct a dummy module, so
                     // modules could exist that didn't have a module.inc file.
                     // We no longer support this (2003-01-11)
                     $mod = NULL;
-                    atkTools::atkdebug("Warning: module $modname does not exist");
+                    Atk_Tools::atkdebug("Warning: module $modname does not exist");
                 }
             }
             $g_moduleRepository[$modname] = $mod;
@@ -573,7 +573,7 @@ class Atk_Module
      * Construct a new node
      * @param String $node the node type
      * @param bool $init initialize the node?
-     * @return atkNode new node object
+     * @return Atk_Node new node object
      */
     public static function &newAtkNode($node, $init = TRUE)
     {
@@ -593,9 +593,9 @@ class Atk_Module
                     $node->init();
                 return $node;
             } else
-                atkTools::atkerror("Module $module does not have newNode function (does it extend from atkModule?)");
+                Atk_Tools::atkerror("Module $module does not have newNode function (does it extend from atkModule?)");
         } else
-            atkTools::atkerror("Module $module could not be instantiated.");
+            Atk_Tools::atkerror("Module $module could not be instantiated.");
         return NULL;
     }
 
@@ -618,7 +618,7 @@ class Atk_Module
 
         $exists = is_object($module) && $module->nodeExists($node);
         $existence[$node] = $exists;
-        atkTools::atkdebug("Node $node exists? " . ($exists ? 'yes' : 'no'));
+        Atk_Tools::atkdebug("Node $node exists? " . ($exists ? 'yes' : 'no'));
 
         return $exists;
     }
@@ -741,7 +741,7 @@ class Atk_Module
 
     /**
      * Get/set the status of the readoptimizer.
-     * If you need the dataread-functionality of atkNode but don't need
+     * If you need the dataread-functionality of Atk_Node but don't need
      * the ui stuff, or the data write stuff, you can turn on the read
      * optimizer, so nodes load faster.
      * If you call this function without parameters (or NULL as param)
@@ -786,15 +786,15 @@ class Atk_Module
 
         // no module file exists
         if (!file_exists($filename)) {
-            atkTools::atkdebug("Couldn't find module_preload.php or module.php for module '$modname' in '$modpath'");
+            Atk_Tools::atkdebug("Couldn't find module_preload.php or module.php for module '$modname' in '$modpath'");
             return;
         }
 
         if ($filename != $preload) {
-            atkTools::atkdebug("Loading module - $modname");
-            $corporate_base = atkConfig::getGlobal("corporate_module_base");
+            Atk_Tools::atkdebug("Loading module - $modname");
+            $corporate_base = Atk_Config::getGlobal("corporate_module_base");
             if ($corporate_base != "") {
-                atkTools::atkimport($corporate_base);
+                Atk_Tools::atkimport($corporate_base);
             }
         }
 
@@ -826,7 +826,7 @@ class Atk_Module
         $modules = self::atkGetModules();
 
         foreach ($modules as $modname => $modpath) {
-            if ((!isset($g_moduleflags[$modname])) || (!atkTools::hasFlag($g_moduleflags[$modname], MF_NO_PRELOAD))) {
+            if ((!isset($g_moduleflags[$modname])) || (!Atk_Tools::hasFlag($g_moduleflags[$modname], MF_NO_PRELOAD))) {
                 self::atkPreloadModule($modname, $modpath);
             }
         }

@@ -16,12 +16,12 @@
 /**
  * @internal used attribute
  */
-atkTools::useattrib("atktextattribute");
+Atk_Tools::useattrib("atktextattribute");
 
 /**
  * File editing node.
  *
- * This is a special derivative atkNode that does not have database
+ * This is a special derivative Atk_Node that does not have database
  * interaction, but that can be used to edit files in a directory on the
  * server.
  *
@@ -65,12 +65,12 @@ class Atk_FileEditor extends Atk_Node
      *                       Note 2: Watch out when using $ in your regular
      *                       expression; PHP parses this, so use single quotes
      *                       or escape the dollarsign with \.
-     * @param int $flags The node flags. See atkNode for a list of possible
+     * @param int $flags The node flags. See Atk_Node for a list of possible
      *                   flags.
      */
-    function atkFileEditor($name, $dir = "", $filter = "", $flags = 0)
+    function __construct($name, $dir = "", $filter = "", $flags = 0)
     {
-        $this->atkNode($name, $flags | NF_ADD_LINK);
+        parent::__construct($name, $flags | NF_ADD_LINK);
         $this->m_dir = $dir;
         $this->m_basedir = $dir;
         if ($dir == "")
@@ -166,7 +166,7 @@ class Atk_FileEditor extends Atk_Node
     {
         $this->m_dir = $this->stripDir($this->m_dir);
         if (is_dir($this->m_dir . "/" . $record["filename"])) {
-            $actions['view'] = atkTools::dispatch_url($this->atkNodeType(), "dirchange", array('atkselector' => $this->m_dir . $record["filename"]));
+            $actions['view'] = Atk_Tools::dispatch_url($this->atkNodeType(), "dirchange", array('atkselector' => $this->m_dir . $record["filename"]));
             unset($actions["edit"]);
             unset($actions["delete"]);
             return;
@@ -191,7 +191,7 @@ class Atk_FileEditor extends Atk_Node
      */
     function selectDb($selector = "", $orderby = "", $limit = "")
     {
-        atkSessionManager::atkGetSessionManager()->stackVar('dirname', $this->m_dir);
+        Atk_SessionManager::atkGetSessionManager()->stackVar('dirname', $this->m_dir);
         if ($selector == "") {
             // no file selected, generate list..
             $start = 0;
@@ -229,13 +229,13 @@ class Atk_FileEditor extends Atk_Node
                     }
                 }
             } else {
-                atkTools::atkdebug("Dir " . $this->m_dir . " could not be read");
+                Atk_Tools::atkdebug("Dir " . $this->m_dir . " could not be read");
             }
         } else {
             // file selected, read file.
             // in the fileeditor, the selector is always dummy.filename=name
             // so we use the value of the decoded pair as a filename.
-            $decodedselector = atkTools::decodeKeyValuePair($selector);
+            $decodedselector = Atk_Tools::decodeKeyValuePair($selector);
             $filename = $decodedselector["dummy.filename"];
             $record['filename'] = $filename;
 
@@ -245,7 +245,7 @@ class Atk_FileEditor extends Atk_Node
             if (is_file($this->m_dir . $filename)) {
                 $record['filecontent'] = implode("", file($this->m_dir . $filename));
             } else {
-                atkTools::atkdebug("File $filename not found");
+                Atk_Tools::atkdebug("File $filename not found");
             }
             $res[] = $record;
         }
@@ -261,9 +261,9 @@ class Atk_FileEditor extends Atk_Node
     function validate(&$rec, $mode)
     {
         if (!ereg($this->m_filefilter, $rec['filename'])) {
-            atkTools::triggerError($rec, "filename", "filename_invalid");
+            Atk_Tools::triggerError($rec, "filename", "filename_invalid");
         } else if ($mode == "add" && file_exists($this->m_dir . $rec['filename'])) {
-            atkTools::triggerError($rec, "filename", "file_exists");
+            Atk_Tools::triggerError($rec, "filename", "file_exists");
         }
     }
 
@@ -286,16 +286,16 @@ class Atk_FileEditor extends Atk_Node
      */
     function addDb($record)
     {
-        $sessmngr = atkSessionManager::atkGetSessionManager();
+        $sessmngr = Atk_SessionManager::atkGetSessionManager();
         $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
         $fp = @fopen($this->m_dir . $record['filename'], "wb");
         if ($fp == NULL) {
-            atkTools::atkerror("Unable to open file " . $record['filename'] . " for writing. (Is directory '" . $this->m_dir . "' readable by webserver?");
+            Atk_Tools::atkerror("Unable to open file " . $record['filename'] . " for writing. (Is directory '" . $this->m_dir . "' readable by webserver?");
             return false;
         } else {
             fwrite($fp, $record['filecontent']);
             fclose($fp);
-            atkTools::atkdebug("Wrote " . $record['filename']);
+            Atk_Tools::atkdebug("Wrote " . $record['filename']);
         }
         return true;
     }
@@ -314,29 +314,29 @@ class Atk_FileEditor extends Atk_Node
         // (not by atkselector, since the primary key might have
         // changed, so we use the atkorgkey, which is the value before
         // any update happened.)
-        $sessmngr = atkSessionManager::atkGetSessionManager();
+        $sessmngr = Atk_SessionManager::atkGetSessionManager();
         $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
 
         if ($record['atkprimkey'] != "") {
             if ($record['atkprimkey'] != $this->primaryKey($record)) {
-                $decodedprimkey = atkTools::decodeKeyValuePair($record['atkprimkey']);
+                $decodedprimkey = Atk_Tools::decodeKeyValuePair($record['atkprimkey']);
                 $filename = $this->m_dir . $decodedprimkey["dummy.filename"];
 
                 unlink($filename);
-                atkTools::atkdebug("Filename changed. Deleted original '$filename'.");
+                Atk_Tools::atkdebug("Filename changed. Deleted original '$filename'.");
             }
             $fp = @fopen($this->m_dir . $record['filename'], "wb");
             if ($fp == NULL) {
-                atkTools::atkerror("Unable to open file " . $record['filename'] . " for writing. (Is directory '" . $this->m_dir . "' readable by webserver?");
+                Atk_Tools::atkerror("Unable to open file " . $record['filename'] . " for writing. (Is directory '" . $this->m_dir . "' readable by webserver?");
             } else {
                 fwrite($fp, $record['filecontent']);
                 fclose($fp);
-                atkTools::atkdebug("Wrote " . $record['filename']);
+                Atk_Tools::atkdebug("Wrote " . $record['filename']);
                 $record['atkprimkey'] = $record['filename'];
             }
             return true;
         } else {
-            atkTools::atkdebug("NOT UPDATING! NO SELECTOR SET!");
+            Atk_Tools::atkdebug("NOT UPDATING! NO SELECTOR SET!");
             return false;
         }
     }
@@ -350,19 +350,19 @@ class Atk_FileEditor extends Atk_Node
      */
     function deleteDb($selector)
     {
-        $sessmngr = atkSessionManager::atkGetSessionManager();
+        $sessmngr = Atk_SessionManager::atkGetSessionManager();
         $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
-        $decodedselector = atkTools::decodeKeyValuePair($selector);
+        $decodedselector = Atk_Tools::decodeKeyValuePair($selector);
         $filename = $decodedselector["dummy.filename"];
 
-        atkTools::atk_var_dump($this->m_dir, 'm_dir');
-        atkTools::atk_var_dump($filename, 'filename');
+        Atk_Tools::atk_var_dump($this->m_dir, 'm_dir');
+        Atk_Tools::atk_var_dump($filename, 'filename');
 
         if (strpos($filename, "..") === false) {
             unlink($this->m_dir . $filename);
-            atkTools::atkdebug("Deleted " . $this->m_dir . $filename);
+            Atk_Tools::atkdebug("Deleted " . $this->m_dir . $filename);
         } else {
-            atkTools::atkerror("Cannot unlink relative files. Possible hack attempt detected!");
+            Atk_Tools::atkerror("Cannot unlink relative files. Possible hack attempt detected!");
         }
         return true;
     }
@@ -375,7 +375,7 @@ class Atk_FileEditor extends Atk_Node
      */
     function action_edit(atkEditHandler $handler)
     {
-        $this->m_dir = atkSessionManager::atkGetSessionManager()->stackVar('dirname');
+        $this->m_dir = Atk_SessionManager::atkGetSessionManager()->stackVar('dirname');
         $handler->action_edit();
     }
 
@@ -387,7 +387,7 @@ class Atk_FileEditor extends Atk_Node
      */
     function action_delete(atkDeleteHandler $handler)
     {
-        $this->m_dir = atkSessionManager::atkGetSessionManager()->stackVar('dirname');
+        $this->m_dir = Atk_SessionManager::atkGetSessionManager()->stackVar('dirname');
         $handler->action_delete();
     }
 
@@ -399,7 +399,7 @@ class Atk_FileEditor extends Atk_Node
     function action_dirchange()
     {
         $selectedDir = $this->stripDir($this->m_postvars['atkselector']);
-        atkSessionManager::atkGetSessionManager()->stackVar('dirname', $selectedDir);
+        Atk_SessionManager::atkGetSessionManager()->stackVar('dirname', $selectedDir);
 
         $this->m_dir = $selectedDir;
         $this->callHandler('admin');

@@ -11,7 +11,7 @@
  * @copyright (c)2000-2004 Ivo Jansch
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
-atkTools::useattrib("atkMultiSelectAttribute");
+Atk_Tools::useattrib("atkMultiSelectAttribute");
 
 /**
  * The atkFuzzySearchAttribute class represents an attribute of a node
@@ -105,7 +105,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
     function createSearchNodeInstance()
     {
         if (!is_object($this->m_searchnodeInstance)) {
-            $this->m_searchnodeInstance = atkModule::atkGetNode($this->m_searchnode);
+            $this->m_searchnodeInstance = Atk_Module::atkGetNode($this->m_searchnode);
             return is_object($this->m_searchnodeInstance);
         }
         return true;
@@ -154,7 +154,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
             }
 
             if ($mustselect) {
-                atkTools::triggerError($rec, $this->fieldName(), 'fsa_pleasemakeselection');
+                Atk_Tools::triggerError($rec, $this->fieldName(), 'fsa_pleasemakeselection');
                 return false;
             }
         }
@@ -202,7 +202,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
                     }
                 }
                 if (!$notempty)
-                    return atkTools::atktext("no_results_found");
+                    return Atk_Tools::atktext("no_results_found");
             }
 
             if ($this->m_mode == "multiselect" && count($this->m_matches > 1)) {
@@ -221,7 +221,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
             } else if ($this->m_mode == "select" || ($this->m_mode == "multiselect" && count($this->m_matches) == 1)) {
                 // Select one record from all matches.
                 $res.= '<SELECT NAME="' . $prefix . $this->fieldName() . '[]" class="form-control">';
-                $res.= '<OPTION VALUE="">' . atkTools::atktext('select_none');
+                $res.= '<OPTION VALUE="">' . Atk_Tools::atktext('select_none');
                 $selects = array();
                 foreach ($this->m_matches as $keyword => $matches) {
                     for ($i = 0, $_i = count($matches); $i < $_i; $i++) {
@@ -239,7 +239,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
                 foreach ($this->m_matches as $keyword => $matches) {
                     if (count($matches) > 0) {
                         $res.= '<tr><td>\'' . $keyword . '\': </td><td><SELECT NAME="' . $prefix . $this->fieldName() . '[]" class="form-control">';
-                        $res.= '<OPTION VALUE="">' . atkTools::atktext('select_none');
+                        $res.= '<OPTION VALUE="">' . Atk_Tools::atktext('select_none');
                         for ($i = 0, $_i = count($matches); $i < $_i; $i++) {
                             $res.= '<OPTION VALUE="' . $this->m_searchnodeInstance->primaryKey($matches[$i]) . '">' . $this->m_searchnodeInstance->descriptor($matches[$i]);
                         }
@@ -263,7 +263,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
      */
     function getMatches($searchstring)
     {
-        atkTools::atkdebug("Performing search");
+        Atk_Tools::atkdebug("Performing search");
         $result = array();
 
         if ($this->createSearchNodeInstance() && $searchstring != "") {
@@ -280,7 +280,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
     /**
      * Override the store method of this attribute to search
      *
-     * @param atkDb $db
+     * @param Atk_Db $db
      * @param array $rec The record
      * @param string $mode
      * @return boolean

@@ -14,7 +14,7 @@
  * @version $Revision: 6289 $
  * $Id$
  */
-atkTools::useattrib("atkFileAttribute");
+Atk_Tools::useattrib("atkFileAttribute");
 
 /**
  * This is an extend of the famous atkfileattribute :). Now its possible 
@@ -81,7 +81,7 @@ class Atk_MultipleFileAttribute extends Atk_FileAttribute
             $d->close();
         }
         else {
-            return atkTools::atktext("no_valid_directory");
+            return Atk_Tools::atktext("no_valid_directory");
         }
 
         if (count($file_arr) > 0) {
@@ -157,15 +157,15 @@ class Atk_MultipleFileAttribute extends Atk_FileAttribute
                         $imagehw = Array("0" => "640", "1" => "480");
                     }
 
-                    $page = &atkPage::getInstance();
-                    $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/newwindow.js");
+                    $page = &Atk_Page::getInstance();
+                    $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/newwindow.js");
                     $r .= '<a href="' . $this->m_url . $files[$i] . '" alt="' . $files[$i] . '" onclick="NewWindow(this.href,\'name\',\'' . ($imagehw[0] + 50) . '\',\'' . ($imagehw[1] + 50) . '\',\'yes\');return false;">' . $files[$i] . '</a><br>';
                 } else {
                     $r .= "<a href=\"" . $this->m_url . "$files[$i]\" target=\"_new\">$files[$i]</a><br>";
                 }
             } else {
                 if (strlen($files[$i]) > 0)
-                    $r .= $files[$i] . "(<font color=\"#ff0000\">" . atkTools::atktext("file_not_exist") . "</font><br>)";
+                    $r .= $files[$i] . "(<font color=\"#ff0000\">" . Atk_Tools::atktext("file_not_exist") . "</font><br>)";
             }
         }
         return $r;

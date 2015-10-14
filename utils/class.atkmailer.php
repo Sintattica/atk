@@ -17,7 +17,7 @@
 /**
  * @internal includes
  */
-include_once(atkConfig::getGlobal("atkroot") . 'atk/ext/phpmailer/class.phpmailer.php');
+include_once(Atk_Config::getGlobal("atkroot") . 'atk/ext/phpmailer/class.phpmailer.php');
 
 /**
  * ATK mailer class
@@ -48,7 +48,7 @@ class Atk_Mailer extends PHPMailer
      */
     public function __construct()
     {
-        $charset = strtoupper(atkTools::atkGetCharset());
+        $charset = strtoupper(Atk_Tools::atkGetCharset());
         $this->CharSet = ($charset ? $charset : $this->CharSet);
     }
 
@@ -59,7 +59,7 @@ class Atk_Mailer extends PHPMailer
      */
     function error_handler($msg)
     {
-        atkTools::atkerror($msg);
+        Atk_Tools::atkerror($msg);
     }
 
     /**
@@ -67,12 +67,12 @@ class Atk_Mailer extends PHPMailer
      */
     function Send()
     {
-        if (atkConfig::getGlobal("mail_enabled", true)) {
+        if (Atk_Config::getGlobal("mail_enabled", true)) {
             // make sure Sender is set so the Return-Path header will have a decent value
             if ($this->Sender == "")
                 $this->Sender = $this->From;
 
-            $mail_redirect = atkConfig::getGlobal("mail_redirect");
+            $mail_redirect = Atk_Config::getGlobal("mail_redirect");
             if (!empty($mail_redirect)) {
                 $n = (strpos(strtolower($this->ContentType), 'html') !== false ? "<br/>"
                             : "\n");
@@ -105,7 +105,7 @@ class Atk_Mailer extends PHPMailer
             if ($i > 0)
                 $str .= ', ';
             $str .= ($ishtml ? htmlentities($recipient[0]) : $recipient[0]);
-            if (atkTools::atk_strlen($recipient['1']) > 0)
+            if (Atk_Tools::atk_strlen($recipient['1']) > 0)
                 $str .= ' (' . ($ishtml ? htmlentities($recipient[1]) : $recipient[1]) . ')';
         }
         return $str;

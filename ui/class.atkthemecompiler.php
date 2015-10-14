@@ -15,7 +15,7 @@
  * @version $Revision: 6309 $
  * $Id$
  */
-atkTools::atkimport('atk.ui.atktheme');
+Atk_Tools::atkimport('atk.ui.atktheme');
 
 /**
  * Compiles cache for current theme.
@@ -49,11 +49,11 @@ class Atk_ThemeCompiler
 
         // Write it to the compiled theme file
         if (count($data)) {
-            if (!file_exists(atkConfig::getGlobal("atktempdir") . "themes/")) {
-                mkdir(atkConfig::getGlobal("atktempdir") . "themes/");
+            if (!file_exists(Atk_Config::getGlobal("atktempdir") . "themes/")) {
+                mkdir(Atk_Config::getGlobal("atktempdir") . "themes/");
             }
 
-            atkTools::atkimport("atk.utils.atktmpfile");
+            Atk_Tools::atkimport("atk.utils.atktmpfile");
             $tmpfile = new Atk_TmpFile("themes/$name.php");
             $tmpfile->writeAsPhp("theme", $data);
             return true;
@@ -78,7 +78,7 @@ class Atk_ThemeCompiler
 
         $path = $this->findTheme($name, $location);
 
-        $abspath = atkTheme::absPath($path, $location);
+        $abspath = Atk_Theme::absPath($path, $location);
 
         // First parse the themedef file for attributes
         if ($path != "" && file_exists($abspath . "themedef.php")) {
@@ -111,19 +111,19 @@ class Atk_ThemeCompiler
     {
         if (strpos($name, ".") !== false) {
             list ($module, $name) = explode(".", $name);
-            $path = atkModule::moduleDir($module) . "themes/" . $name . "/";
+            $path = Atk_Module::moduleDir($module) . "themes/" . $name . "/";
             if (file_exists($path . "themedef.php")) {
                 $location = "module";
                 return "module/$module/themes/$name/";
             }
-        } else if ($location != "atk" && file_exists(atkConfig::getGlobal("application_dir") . "themes/$name/themedef.php")) {
+        } else if ($location != "atk" && file_exists(Atk_Config::getGlobal("application_dir") . "themes/$name/themedef.php")) {
             $location = "app";
             return "themes/$name/";
-        } else if ($location != "app" && file_exists(atkConfig::getGlobal("atkroot") . "atk/themes/$name/themedef.php")) {
+        } else if ($location != "app" && file_exists(Atk_Config::getGlobal("atkroot") . "atk/themes/$name/themedef.php")) {
             $location = "atk";
             return "atk/themes/$name/";
         }
-        atkTools::atkerror("Theme $name not found");
+        Atk_Tools::atkerror("Theme $name not found");
         $location = "";
         return "";
     }
@@ -139,7 +139,7 @@ class Atk_ThemeCompiler
      */
     function scanThemePath($path, $abspath, &$data)
     {
-        $traverser = &atkTools::atknew("atk.utils.atkdirectorytraverser");
+        $traverser = &Atk_Tools::atknew("atk.utils.atkdirectorytraverser");
         $subitems = $traverser->getDirContents($abspath);
         foreach ($subitems as $name) {
             if (in_array($name, array("images", "styles", "templates"))) { // images, styles and templates are compiled the same
@@ -182,7 +182,7 @@ class Atk_ThemeCompiler
     {
         global $g_modules;
 
-        $traverser = &atkTools::atknew("atk.utils.atkdirectorytraverser");
+        $traverser = &Atk_Tools::atknew("atk.utils.atkdirectorytraverser");
         foreach ($g_modules as $module => $modpath) {
             $abspath = $modpath . "themes/" . $theme . "/";
 
@@ -217,7 +217,7 @@ class Atk_ThemeCompiler
     function _dirContents($path)
     {
         $files = array();
-        $traverser = &atkTools::atknew("atk.utils.atkdirectorytraverser");
+        $traverser = &Atk_Tools::atknew("atk.utils.atkdirectorytraverser");
         $traverser->addExclude('/^\.(.*)/'); // ignore everything starting with a '.'
         $traverser->addExclude('/^CVS$/');   // ignore CVS directories
         $files = $traverser->getDirContents($path);

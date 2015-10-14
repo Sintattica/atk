@@ -14,8 +14,8 @@
  * @version $Revision$
  * $Id$
  */
-atkTools::atkimport('atk.db.statement.atkstatementexception');
-atkTools::atkimport('atk.db.statement.atkstatementparser');
+Atk_Tools::atkimport('atk.db.statement.atkstatementexception');
+Atk_Tools::atkimport('atk.db.statement.atkstatementparser');
 
 /**
  * A statement can be used to execute a query.
@@ -29,10 +29,10 @@ atkTools::atkimport('atk.db.statement.atkstatementparser');
  * (efficient one-by-one retrieval of rows) or one of the convenience methods
  * (e.g. getFirstRow, getAllRows, ...).
  * 
- * To create an instance please use the atkDb::prepare($query) method.
+ * To create an instance please use the Atk_Db::prepare($query) method.
  * 
  * Example:
- * $stmt = atkTools::atkGetDb()->prepare("SELECT COUNT(*) FROM people WHERE birthday > :birthday");
+ * $stmt = Atk_Tools::atkGetDb()->prepare("SELECT COUNT(*) FROM people WHERE birthday > :birthday");
  * $stmt->execute(array('birthday' => '1985-09-20'));
  * foreach ($stmt as $person)
  * {
@@ -85,10 +85,10 @@ abstract class Atk_Statement implements IteratorAggregate
     /**
      * Constructs a new statement for the given query.
      * 
-     * @param atkDb  $db    database instance
+     * @param Atk_Db  $db    database instance
      * @param string $query SQL query
      */
-    public function __construct(atkDb $db, $query)
+    public function __construct(Atk_Db $db, $query)
     {
         $this->m_db = $db;
         $this->m_query = $query;
@@ -119,7 +119,7 @@ abstract class Atk_Statement implements IteratorAggregate
     /**
      * Returns the database instance.
      * 
-     * @return atkDb database instance
+     * @return Atk_Db database instance
      */
     public function getDb()
     {
@@ -202,7 +202,7 @@ abstract class Atk_Statement implements IteratorAggregate
 
     /**
      * Returns the number of affected rows in case of an INSERT, UPDATE 
-     * or DELETE query. Called immediatly after atkStatement::_execute().
+     * or DELETE query. Called immediatly after Atk_Statement::_execute().
      */
     protected abstract function _getAffectedRowCount();
 
@@ -220,7 +220,7 @@ abstract class Atk_Statement implements IteratorAggregate
      * Close this statement.
      * 
      * Frees all resources after which this statement cannot be used anymore.
-     * If you want to re-use the statement, use the atkStatement::reset() method.
+     * If you want to re-use the statement, use the Atk_Statement::reset() method.
      */
     public function close()
     {
@@ -240,7 +240,7 @@ abstract class Atk_Statement implements IteratorAggregate
     public function rewind()
     {
         if ($this->_getLatestParams() === null) {
-            throw new atkStatementException("Statement has not been executed yet.", atkStatementException::STATEMENT_NOT_EXECUTED);
+            throw new Atk_StatementException("Statement has not been executed yet.", Atk_StatementException::STATEMENT_NOT_EXECUTED);
         }
 
         if ($this->m_position !== false) {
@@ -258,8 +258,8 @@ abstract class Atk_Statement implements IteratorAggregate
     {
         foreach ($this->_getBindPositions() as $position => $param) {
             if (!array_key_exists($param, $params)) {
-                throw new atkStatementException("Missing bind parameter " . (!is_numeric($param)
-                        ? ':' : '') . $param . ".", atkStatementException::MISSING_BIND_PARAMETER);
+                throw new Atk_StatementException("Missing bind parameter " . (!is_numeric($param)
+                        ? ':' : '') . $param . ".", Atk_StatementException::MISSING_BIND_PARAMETER);
             }
         }
     }
@@ -286,7 +286,7 @@ abstract class Atk_Statement implements IteratorAggregate
     public function fetch()
     {
         if ($this->_getLatestParams() === null) {
-            throw new atkStatementException("Statement has not been executed yet.", atkStatementException::STATEMENT_NOT_EXECUTED);
+            throw new Atk_StatementException("Statement has not been executed yet.", Atk_StatementException::STATEMENT_NOT_EXECUTED);
         }
 
         $result = $this->_fetch();
@@ -312,7 +312,7 @@ abstract class Atk_Statement implements IteratorAggregate
     {
         $this->rewind();
 
-        atkTools::atkimport('atk.db.statement.atkstatementiterator');
+        Atk_Tools::atkimport('atk.db.statement.atkstatementiterator');
         return new atkStatementIterator($this);
     }
 
@@ -342,7 +342,7 @@ abstract class Atk_Statement implements IteratorAggregate
      * NOTE: 
      * This is not an efficient way to retrieve records, as this will load all
      * records into an array in memory. If you retrieve a lot of records, you 
-     * are better of using atkStatement::getIterator which only retrieves one
+     * are better of using Atk_Statement::getIterator which only retrieves one
      * row at a time.
      * 
      * Depending on the database driver, using this method multiple times might
@@ -361,7 +361,7 @@ abstract class Atk_Statement implements IteratorAggregate
      * NOTE: 
      * This is not an efficient way to retrieve records, as this will load all
      * records into an array in memory. If you retrieve a lot of records, you 
-     * are better of using atkStatement::getIterator which only retrieves one
+     * are better of using Atk_Statement::getIterator which only retrieves one
      * row at a time.
      * 
      * Depending on the database driver, using this method multiple times might
@@ -381,7 +381,7 @@ abstract class Atk_Statement implements IteratorAggregate
             if ($keyColumn === null) {
                 $key = $i;
             } else if (is_numeric($keyColumn)) {
-                $key = atkTools::atkArrayNvl(array_values($row), $keyColumn);
+                $key = Atk_Tools::atkArrayNvl(array_values($row), $keyColumn);
             } else {
                 $key = $row[$keyColumn];
             }
@@ -411,7 +411,7 @@ abstract class Atk_Statement implements IteratorAggregate
         if ($row == null) {
             return $fallback;
         } else if (is_numeric($valueColumn)) {
-            return atkTools::atkArrayNvl(array_values($row), $valueColumn);
+            return Atk_Tools::atkArrayNvl(array_values($row), $valueColumn);
         } else {
             return $row[$valueColumn];
         }
@@ -423,7 +423,7 @@ abstract class Atk_Statement implements IteratorAggregate
      * NOTE: 
      * This is not an efficient way to retrieve records, as this will load all
      * records into an array in memory. If you retrieve a lot of records, you 
-     * are better of using atkStatement::getIterator which only retrieves one
+     * are better of using Atk_Statement::getIterator which only retrieves one
      * row at a time.
      * 
      * Depending on the database driver, using this method multiple times might
@@ -445,7 +445,7 @@ abstract class Atk_Statement implements IteratorAggregate
      * NOTE: 
      * This is not an efficient way to retrieve records, as this will load all
      * records into an array in memory. If you retrieve a lot of records, you 
-     * are better of using atkStatement::getIterator which only retrieves one
+     * are better of using Atk_Statement::getIterator which only retrieves one
      * row at a time.
      * 
      * Depending on the database driver, using this method multiple times might
@@ -461,7 +461,7 @@ abstract class Atk_Statement implements IteratorAggregate
         $rows = $this->getAllRowsAssoc($keyColumn);
         foreach ($rows as $key => &$value) {
             if (is_numeric($valueColumn)) {
-                $value = atkTools::atkArrayNvl(array_values($value), $valueColumn);
+                $value = Atk_Tools::atkArrayNvl(array_values($value), $valueColumn);
             } else {
                 $value = $value[$valueColumn];
             }
@@ -477,7 +477,7 @@ abstract class Atk_Statement implements IteratorAggregate
     public function getAffectedRowCount()
     {
         if ($this->_getLatestParams() === null) {
-            throw new atkStatementException("Statement has not been executed yet.", atkStatementException::STATEMENT_NOT_EXECUTED);
+            throw new Atk_StatementException("Statement has not been executed yet.", Atk_StatementException::STATEMENT_NOT_EXECUTED);
         }
 
         return $this->m_affectedRowCount;

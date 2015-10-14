@@ -13,7 +13,7 @@
  *
  * @version $Revision$
  */
-atkTools::atkimport('atk.handlers.atkactionhandler');
+Atk_Tools::atkimport('atk.handlers.atkactionhandler');
 
 /**
  * Abstract class for implementing an atkSearchHandler
@@ -72,7 +72,7 @@ abstract class Atk_AbstractSearchHandler extends Atk_ActionHandler
         $db = $this->m_node->getDb();
         $this->m_table_exists = $db->tableExists($this->m_table);
 
-        atkTools::atkdebug('tableExists checking table: ' . $this->m_table . ' exists : ' . print_r($this->m_table_exists, true));
+        Atk_Tools::atkdebug('tableExists checking table: ' . $this->m_table . ' exists : ' . print_r($this->m_table_exists, true));
 
         return $this->m_table_exists;
     }
@@ -111,7 +111,7 @@ abstract class Atk_AbstractSearchHandler extends Atk_ActionHandler
         $db = &$this->m_node->getDb();
         $query = "DELETE FROM {$this->m_table} WHERE nodetype = '%s' AND UPPER(name) = UPPER('%s') AND handlertype = '%s'";
 
-        $db->query(sprintf($query, $this->m_node->atkNodeType(), atkTools::escapeSQL($name), $this->getSearchHandlerType()));
+        $db->query(sprintf($query, $this->m_node->atkNodeType(), Atk_Tools::escapeSQL($name), $this->getSearchHandlerType()));
         $db->commit();
     }
 
@@ -132,7 +132,7 @@ abstract class Atk_AbstractSearchHandler extends Atk_ActionHandler
         $this->forgetCriteria($name);
         $db = &$this->m_node->getDb();
         $query = "INSERT INTO {$this->m_table} (nodetype, name, criteria, handlertype) VALUES('%s', '%s', '%s', '%s')";
-        $db->query(sprintf($query, $this->m_node->atkNodeType(), atkTools::escapeSQL($name), atkTools::escapeSQL(serialize($criteria)), $this->getSearchHandlerType()));
+        $db->query(sprintf($query, $this->m_node->atkNodeType(), Atk_Tools::escapeSQL($name), Atk_Tools::escapeSQL(serialize($criteria)), $this->getSearchHandlerType()));
         $db->commit();
     }
 
@@ -150,12 +150,12 @@ abstract class Atk_AbstractSearchHandler extends Atk_ActionHandler
         $db = &$this->m_node->getDb();
         $query = "SELECT c.criteria FROM {$this->m_table} c WHERE c.nodetype = '%s' AND UPPER(c.name) = UPPER('%s') AND handlertype = '%s'";
 
-        atkTools::atk_var_dump(sprintf($query, $this->m_node->atkNodeType(), atkTools::escapeSQL($name), $this->getSearchHandlerType()), 'loadCriteria query');
+        Atk_Tools::atk_var_dump(sprintf($query, $this->m_node->atkNodeType(), Atk_Tools::escapeSQL($name), $this->getSearchHandlerType()), 'loadCriteria query');
 
-        list($row) = $db->getRows(sprintf($query, $this->m_node->atkNodeType(), atkTools::escapeSQL($name), $this->getSearchHandlerType()));
+        list($row) = $db->getRows(sprintf($query, $this->m_node->atkNodeType(), Atk_Tools::escapeSQL($name), $this->getSearchHandlerType()));
         $criteria = $row == NULL ? NULL : unserialize($row['criteria']);
 
-        atkTools::atk_var_dump($criteria, 'loadCriteria criteria');
+        Atk_Tools::atk_var_dump($criteria, 'loadCriteria criteria');
         return $criteria;
     }
 
@@ -236,10 +236,10 @@ abstract class Atk_AbstractSearchHandler extends Atk_ActionHandler
             'forget_criteria' => $this->getForgetCriteria($current),
             'toggle_save_criteria' => $this->getToggleSaveCriteria(),
             'save_criteria' => $this->getSaveCriteria($current),
-            'label_load_criteria' => htmlentities(atkTools::atktext('load_criteria', 'atk')),
-            'label_forget_criteria' => htmlentities(atkTools::atktext('forget_criteria', 'atk')),
-            'label_save_criteria' => '<label for="toggle_save_criteria">' . htmlentities(atkTools::atktext('save_criteria', 'atk')) . '</label>',
-            'text_save_criteria' => htmlentities(atkTools::atktext('save_criteria', 'atk'))
+            'label_load_criteria' => htmlentities(Atk_Tools::atktext('load_criteria', 'atk')),
+            'label_forget_criteria' => htmlentities(Atk_Tools::atktext('forget_criteria', 'atk')),
+            'label_save_criteria' => '<label for="toggle_save_criteria">' . htmlentities(Atk_Tools::atktext('save_criteria', 'atk')) . '</label>',
+            'text_save_criteria' => htmlentities(Atk_Tools::atktext('save_criteria', 'atk'))
         );
     }
 
@@ -255,7 +255,7 @@ abstract class Atk_AbstractSearchHandler extends Atk_ActionHandler
         if (empty($current) || $this->loadCriteria($current) == NULL)
             return NULL;
         else
-            return atkTools::session_url(atkTools::dispatch_url($this->m_node->atkNodeType(), $this->m_action, array('forget_criteria' => $current)), SESSION_REPLACE);
+            return Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), $this->m_action, array('forget_criteria' => $current)), SESSION_REPLACE);
     }
 
     /**

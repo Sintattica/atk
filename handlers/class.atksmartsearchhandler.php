@@ -23,7 +23,7 @@
  * @package atk
  * @subpackage handlers
  */
-atkTools::atkimport("atk.handlers.atkabstractsearchhandler");
+Atk_Tools::atkimport("atk.handlers.atkabstractsearchhandler");
 
 class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
 {
@@ -191,8 +191,8 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
         }
 
         $params = array('atksmartsearch' => $criteria);
-        $url = atkTools::dispatch_url($this->m_node->atkNodeType(), 'admin', $params, atkTools::atkSelf());
-        $this->m_node->redirect(atkTools::session_url($url, atkSessionManager::atkLevel() == 0 ? SESSION_REPLACE
+        $url = Atk_Tools::dispatch_url($this->m_node->atkNodeType(), 'admin', $params, Atk_Tools::atkSelf());
+        $this->m_node->redirect(Atk_Tools::session_url($url, Atk_SessionManager::atkLevel() == 0 ? SESSION_REPLACE
                         : SESSION_BACK));
     }
 
@@ -208,7 +208,7 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
         $labels = array('criterium_field', 'criterium_value', 'criterium_mode', 'add_criterium', 'remove_criterium', 'load_criteria', 'save_criteria', 'forget_criteria', 'reset_criteria');
         $result = array();
         foreach ($labels as $label)
-            $result[$label] = htmlentities(atkTools::atktext($label, 'atk'));
+            $result[$label] = htmlentities(Atk_Tools::atktext($label, 'atk'));
         return $result;
     }
 
@@ -231,7 +231,7 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
     /**
      * Get searchable attributes for the given node.
      *
-     * @param atkNode $node     reference to the node
+     * @param Atk_Node $node     reference to the node
      * @param Array   $excludes attribute exclude list
      *
      * @return Array list of reference to searchable attributes
@@ -306,12 +306,12 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
      * them for the next call to this method.
      *
      * @param Array   $path        reference to the current path
-     * @param atkNode $node        reference to the current node
+     * @param Atk_Node $node        reference to the current node
      * @param String  $attrName    currently selected attribute
      * @param Boolean $includeSelf should we include ourselves?
      * @param Array   $excludes    attributes to exclude
      *
-     * @return atkNode next node
+     * @return Atk_Node next node
      */
     function &addNodeAndAttrEntry(&$path, &$node, $attrName, &$includeSelf, &$excludes)
     {
@@ -400,9 +400,9 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
                 $valueName = "criterium_{$id}_value";
                 $modeName = "criterium_{$id}_mode";
 
-                $fieldUrl = atkTools::session_url(atkTools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriumfield'), atkTools::atkSelf()), SESSION_NEW);
-                $valueUrl = atkTools::session_url(atkTools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriumvalue'), atkTools::atkSelf()), SESSION_NEW);
-                $modeUrl = atkTools::session_url(atkTools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriummode'), atkTools::atkSelf()), SESSION_NEW);
+                $fieldUrl = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriumfield'), Atk_Tools::atkSelf()), SESSION_NEW);
+                $valueUrl = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriumvalue'), Atk_Tools::atkSelf()), SESSION_NEW);
+                $modeUrl = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriummode'), Atk_Tools::atkSelf()), SESSION_NEW);
 
                 $scriptCode[] = "ATK.SmartSearchHandler.registerCriteriumFieldListener('{$entry[name]}', '{$prefix}', '{$fieldName}', '{$fieldUrl}', '{$valueName}', '{$valueUrl}', '{$modeName}', '{$modeUrl}')";
             }
@@ -549,7 +549,7 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
      */
     function getResetCriteria()
     {
-        return atkTools::session_url(atkTools::dispatch_url($this->m_node->atkNodeType(), $this->m_action), SESSION_REPLACE);
+        return Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), $this->m_action), SESSION_REPLACE);
     }
 
     /**
@@ -574,12 +574,12 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
         $params['saved_criteria'] = $this->getSavedCriteria($name);
 
         $params["criteria"] = array();
-        atkTools::atkdebug('criteria smartSearchForm: ' . print_r($criteria, true));
+        Atk_Tools::atkdebug('criteria smartSearchForm: ' . print_r($criteria, true));
         foreach ($criteria as $i => $criterium) {
             $params["criteria"][] = $this->getCriterium($i, $criterium);
         }
 
-        $url = atkTools::session_url(atkTools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('atkpartial' => 'criterium'), atkTools::atkSelf()), SESSION_NEW);
+        $url = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('atkpartial' => 'criterium'), Atk_Tools::atkSelf()), SESSION_NEW);
         $params["action_add"] = "ATK.SmartSearchHandler.addCriterium('" . addslashes($url) . "')";
 
         return $ui->render($this->getTemplate("form"), $params);
@@ -594,33 +594,33 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
      */
     function smartSearchPage($name = "", $criteria = array())
     {
-        atkTools::atkimport("atk.atklanguage");
+        Atk_Tools::atkimport("atk.atklanguage");
         $node = &$this->m_node;
         $page = &$this->getPage();
         $ui = &$this->getUi();
 
         $node->addStyle("style.css");
 
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/tools.js");
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/formfocus.js");
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atksmartsearchhandler.js");
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/tools.js");
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/formfocus.js");
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atksmartsearchhandler.js");
 
-        atkTools::useattrib('atkdateattribute');
-        atkDateAttribute::registerScriptsAndStyles();
+        Atk_Tools::useattrib('atkdateattribute');
+        Atk_DateAttribute::registerScriptsAndStyles();
 
-        $theme = &atkTools::atkinstance("atk.ui.atktheme");
+        $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
         $page->register_style($theme->stylePath("atkdateattribute.css"));
 
         $params = array();
 
-        $params["formstart"] = '<form name="entryform" action="' . atkTools::atkSelf() . '?' . SID . '" method="post" class="form">'
-            . atkTools::session_form(SESSION_REPLACE)
+        $params["formstart"] = '<form name="entryform" action="' . Atk_Tools::atkSelf() . '?' . SID . '" method="post" class="form">'
+            . Atk_Tools::session_form(SESSION_REPLACE)
             . '<input type="hidden" name="atkaction" value="smartsearch">'
             . '<input type="hidden" name="atknodetype" value="' . $node->atkNodeType() . '">';
 
         $params["content"] = $this->invoke("smartSearchForm", $name, $criteria);
 
-        $params["buttons"][] = '<input type="submit" class="btn btn-default btn_search" name="atkdosearch" value="' . atkTools::atktext("search", "atk") . '">';
+        $params["buttons"][] = '<input type="submit" class="btn btn-default btn_search" name="atkdosearch" value="' . Atk_Tools::atktext("search", "atk") . '">';
 
         $params["formend"] = '</form>';
 

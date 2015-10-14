@@ -108,7 +108,7 @@ class Atk_State
      */
     public static function set($key, $value, $type = 'cookie')
     {
-        $key = atkState::getKey($key);
+        $key = Atk_State::getKey($key);
 
         switch ($type) {
             case 'cookie':
@@ -118,7 +118,7 @@ class Atk_State
                 self::_set_using_session($key, $value);
                 break;
             default:
-                atkTools::atkerror("set method don't exists");
+                Atk_Tools::atkerror("set method don't exists");
         }
     }
 
@@ -130,7 +130,7 @@ class Atk_State
      */
     protected static function _set_using_cookie($key, $value)
     {
-        setcookie($key, $value, time() + 60 * (atkConfig::getGlobal("state_cookie_expire")));
+        setcookie($key, $value, time() + 60 * (Atk_Config::getGlobal("state_cookie_expire")));
     }
 
     /**

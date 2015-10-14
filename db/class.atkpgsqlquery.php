@@ -17,7 +17,7 @@
 /**
  * Base include
  */
-atkTools::atkimport("atk.db.atkquery");
+Atk_Tools::atkimport("atk.db.atkquery");
 
 /**
  * SQL query builder for PostgreSQL.
@@ -36,7 +36,7 @@ class Atk_PgsqlQuery extends Atk_Query
      * @param string $alias alias for the table
      * @param string $condition join condition
      * @param bool $outer Wether to use an outer (left) join or an inner join
-     * @return atkQuery The query object (for fluent usage)
+     * @return Atk_Query The query object (for fluent usage)
      */
     function &addJoin($table, $alias, $condition, $outer)
     {

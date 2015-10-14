@@ -54,7 +54,7 @@ abstract class Atk_DataType
      */
     public function dump($label = "")
     {
-        atkTools::atk_var_dump($this->getData(), $label);
+        Atk_Tools::atk_var_dump($this->getData(), $label);
         return $this;
     }
 

@@ -36,6 +36,6 @@
  */
 function smarty_function_atkthemeicon($params, &$smarty)
 {
-    $theme = &atkTools::atkinstance("atk.ui.atktheme");
+    $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
     return $theme->iconPath($params['name'], $params['type']);
 }

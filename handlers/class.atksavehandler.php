@@ -186,17 +186,17 @@ class Atk_SaveHandler extends Atk_ActionHandler
                 $extra = "&atkpkret=" . rawurlencode($this->m_postvars["atkpkret"]);
             }
 
-            $url = atkTools::atkSelf() . '?atknodetype=' . $this->m_node->atknodetype();
+            $url = Atk_Tools::atkSelf() . '?atknodetype=' . $this->m_node->atknodetype();
             $url .= '&atkaction=edit';
             $url .= '&atkselector=' . rawurlencode($this->m_node->primaryKey($record));
-            $location = atkTools::session_url($url . $extra, SESSION_REPLACE, $this->_getSkip() - 1);
+            $location = Atk_Tools::session_url($url . $extra, SESSION_REPLACE, $this->_getSkip() - 1);
         } else if ($this->m_node->hasFlag(NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext'])) {
             $filter = "";
             if (isset($this->m_node->m_postvars['atkfilter'])) {
                 $filter = "&atkfilter=" . rawurlencode($this->m_node->m_postvars['atkfilter']);
             }
-            $url = atkTools::atkSelf() . '?atknodetype=' . $this->m_node->atknodetype() . '&atkaction=' . $this->getAddAction();
-            $location = atkTools::session_url($url . $filter, SESSION_REPLACE, $this->_getSkip() - 1);
+            $url = Atk_Tools::atkSelf() . '?atknodetype=' . $this->m_node->atknodetype() . '&atkaction=' . $this->getAddAction();
+            $location = Atk_Tools::session_url($url . $filter, SESSION_REPLACE, $this->_getSkip() - 1);
         } else {
             // normal succesful save
             $location = $this->m_node->feedbackUrl("save", ACTION_SUCCESS, $record, "", $this->_getSkip());
@@ -213,7 +213,7 @@ class Atk_SaveHandler extends Atk_ActionHandler
     public function storeRecord(&$record)
     {
         $atkstoretype = "";
-        $sessionmanager = atkSessionManager::atkGetSessionManager();
+        $sessionmanager = Atk_SessionManager::atkGetSessionManager();
         if ($sessionmanager)
             $atkstoretype = $sessionmanager->stackVar('atkstore');
         switch ($atkstoretype) {
@@ -232,8 +232,8 @@ class Atk_SaveHandler extends Atk_ActionHandler
      */
     protected function storeRecordInSession(&$record)
     {
-        atkTools::atkdebug("STORING RECORD IN SESSION");
-        $result = atkTools::atkinstance('atk.session.atksessionstore')->addDataRow($record, $this->m_node->primaryKeyField());
+        Atk_Tools::atkdebug("STORING RECORD IN SESSION");
+        $result = Atk_Tools::atkinstance('atk.session.atksessionstore')->addDataRow($record, $this->m_node->primaryKeyField());
         return ($result !== false);
     }
 
@@ -267,7 +267,7 @@ class Atk_SaveHandler extends Atk_ActionHandler
         $db->rollback();
 
         if ($db->getErrorType() == "user") {
-            atkTools::triggerError($record, 'Error', $db->getErrorMsg(), '', '');
+            Atk_Tools::triggerError($record, 'Error', $db->getErrorMsg(), '', '');
 
             // still an error, back to where we came from
             $this->goBack($record);
@@ -352,7 +352,7 @@ class Atk_SaveHandler extends Atk_ActionHandler
             $db->rollback();
 
             if ($db->hasError() && $db->getErrorType() != "user") {
-                atkTools::triggerError($record, null, '', $db->getErrorMsg());
+                Atk_Tools::triggerError($record, null, '', $db->getErrorMsg());
             }
 
             // re-render add dialog
@@ -373,13 +373,13 @@ class Atk_SaveHandler extends Atk_ActionHandler
 
         $page = &$this->getPage();
 
-        atkTools::atkimport("atk.ui.atkdialog");
-        $script = atkDialog::getCloseCall();
+        Atk_Tools::atkimport("atk.ui.atkdialog");
+        $script = Atk_Dialog::getCloseCall();
 
         if ($attrRefreshUrl == null) {
             $script .= "document.location.href = document.location.href;";
         } else {
-            $page->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/class.atkattribute.js');
+            $page->register_script(Atk_Config::getGlobal('atkroot') . 'atk/javascript/class.atkattribute.js');
             $script .= "ATK.Attribute.refresh('" . $attrRefreshUrl . "');";
         }
 

@@ -12,7 +12,7 @@
  *
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
-atkTools::atkimport('atk.datagrid.atkdgevent');
+Atk_Tools::atkimport('atk.datagrid.atkdgevent');
 
 /**
  * The data grid listener can be implemented and registered for a data grid
@@ -22,7 +22,7 @@ atkTools::atkimport('atk.datagrid.atkdgevent');
  * @package atk
  * @subpackage datagrid
  */
-interface atkDGListener
+interface Atk_DGListener
 {
 
     /**

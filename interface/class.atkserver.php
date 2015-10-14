@@ -17,7 +17,7 @@
 /**
  * @todo Replace this with Marks's interface importer.
  */
-include_once(atkConfig::getGlobal("atkroot") . "atk/interface/interface.atkserverinterface.php");
+include_once(Atk_Config::getGlobal("atkroot") . "atk/interface/interface.atkserverinterface.php");
 
 /**
  * The atkServer class is the base implementation of the ATK webservices
@@ -52,7 +52,7 @@ class Atk_Server
      */
     private function __construct()
     {
-        atkTools::atkdebug("Created a new atkServer instance.");
+        Atk_Tools::atkdebug("Created a new atkServer instance.");
     }
 
     /**
@@ -61,12 +61,12 @@ class Atk_Server
      */
     public function run()
     {
-        $output = atkTools::atkinstance("atk.ui.atkoutput");
+        $output = Atk_Tools::atkinstance("atk.ui.atkoutput");
         $protocol = $this->getProtocol();
         if (!$this->isValidProtocol($protocol)) {
             $output->output("Server not active or invalid protocol");
         } else {
-            $server = atkTools::atknew("atk.interface.${protocol}.atk${protocol}server");
+            $server = Atk_Tools::atknew("atk.interface.${protocol}.atk${protocol}server");
             $output->output($server->handleRequest($_REQUEST));
         }
         $output->outputFlush();
@@ -100,7 +100,7 @@ class Atk_Server
      */
     public function getDefaultProtocol()
     {
-        return (isset($_REQUEST["protocol"]) ? $_REQUEST["protocol"] : atkConfig::getGlobal("server_default_protocol"));
+        return (isset($_REQUEST["protocol"]) ? $_REQUEST["protocol"] : Atk_Config::getGlobal("server_default_protocol"));
     }
 
     /**

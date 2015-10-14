@@ -51,19 +51,19 @@ class auth_pop3 extends auth_interface
         global $g_pop3_responses;
 
         /* if it's a virtual mail server add @<domain> to the username */
-        if (atkConfig::getGlobal("auth_mail_virtual") == true)
-            $user = $user . "@" . atkConfig::getGlobal("auth_mail_suffix");
+        if (Atk_Config::getGlobal("auth_mail_virtual") == true)
+            $user = $user . "@" . Atk_Config::getGlobal("auth_mail_suffix");
 
-        $server = atkConfig::getGlobal("auth_mail_server");
+        $server = Atk_Config::getGlobal("auth_mail_server");
 
         // Special feature
         if ($server == "[db]") {
             // if server is set to [db], that means we have a different server per
             // user. We lookup in the database what server we need to call.
-            $db = &atkTools::atkGetDb();
+            $db = &Atk_Tools::atkGetDb();
             $res = $db->getrows("SELECT auth_server
-                               FROM " . atkConfig::getGlobal("auth_usertable") . "
-                              WHERE " . atkConfig::getGlobal("auth_userfield") . "='" . $user . "'");
+                               FROM " . Atk_Config::getGlobal("auth_usertable") . "
+                              WHERE " . Atk_Config::getGlobal("auth_userfield") . "='" . $user . "'");
             if (count($res) == 0) {
                 // User not found.
                 return AUTH_MISMATCH;
@@ -71,22 +71,22 @@ class auth_pop3 extends auth_interface
             $server = $res[0]["auth_server"];
         }
 
-        $secMgr = &atkSecurityManager::getInstance();
+        $secMgr = &Atk_SecurityManager::getInstance();
 
         if ($server == "") {
             $secMgr->log(1, "pop3auth error: No server specified");
-            atkTools::atkdebug("pop3auth error: No server specified");
-            $this->m_fatalError = atkTools::atktext("auth_no_server");
+            Atk_Tools::atkdebug("pop3auth error: No server specified");
+            $this->m_fatalError = Atk_Tools::atktext("auth_no_server");
             return AUTH_ERROR;
         }
 
         /* connect */
-        $port = atkConfig::getGlobal("auth_mail_port");
+        $port = Atk_Config::getGlobal("auth_mail_port");
         $link_id = fsockopen($server, $port, $errno, $errstr, 30);
         if (!$link_id) {
             $secMgr->log(1, "pop3auth serverconnect error $server: $errstr");
-            atkTools::atkdebug("Error connecting to server $server: $errstr");
-            $this->m_fatalError = atkTools::atktext("auth_unable_to_connect");
+            Atk_Tools::atkdebug("Error connecting to server $server: $errstr");
+            $this->m_fatalError = Atk_Tools::atktext("auth_unable_to_connect");
             return AUTH_ERROR;
         }
 

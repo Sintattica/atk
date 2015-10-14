@@ -82,8 +82,8 @@ class Atk_FixtureManager
         $class = $this->m_loadersByExtension[$extension];
 
         if (!isset($this->m_loaders[$class])) {
-            atkTools::atkimport('atk.fixture.atkabstractfixtureloader');
-            $this->m_loaders[$class] = &atkTools::atknew($class);
+            Atk_Tools::atkimport('atk.fixture.atkabstractfixtureloader');
+            $this->m_loaders[$class] = &Atk_Tools::atknew($class);
         }
 
         return $this->m_loaders[$class];
@@ -111,20 +111,20 @@ class Atk_FixtureManager
         // beneath module directory
         else if (
             count($parts) == 2 &&
-            !is_dir(atkConfig::getGlobal("atkroot") . $parts[0] . '/' . $parts[1]) &&
-            atkModule::moduleExists($parts[0])) {
-            $module = atkModule::atkGetModule($parts[0]);
+            !is_dir(Atk_Config::getGlobal("atkroot") . $parts[0] . '/' . $parts[1]) &&
+            Atk_Module::moduleExists($parts[0])) {
+            $module = Atk_Module::atkGetModule($parts[0]);
             $path = $module->getFixturePath($fullname);
         }
 
         // full path (without testcases/fixtures directory?)
         else {
             $tmpFullname = implode('.', array_slice($parts, 0, count($parts) - 1)) . '.testcases.fixtures.' . $parts[count($parts) - 1];
-            $path = atkTools::getClassPath($tmpFullname, false);
+            $path = Atk_Tools::getClassPath($tmpFullname, false);
 
             // full path
             if (count(glob("{$path}.*")) == 0) {
-                $path = atkTools::getClassPath($fullname, false);
+                $path = Atk_Tools::getClassPath($fullname, false);
             }
         }
 
@@ -159,7 +159,7 @@ class Atk_FixtureManager
      * Load data for the given fixture into the test database.
      *
      * @param string  $fullname    full fixture name
-     * @param atkDb   $database    database instance
+     * @param Atk_Db   $database    database instance
      * @param string  $searchPath  search path (for fixtures without path/module specification)
      *
      * @return mixed if successful an array with fixture table and data else false
@@ -171,7 +171,7 @@ class Atk_FixtureManager
         // get the fixture path
         $path = $this->getPath($fullname, $searchPath);
         if ($path == NULL) {
-            atkTools::atkdebug("No fixture data file found for fixture '{$fullname}'!");
+            Atk_Tools::atkdebug("No fixture data file found for fixture '{$fullname}'!");
             return false;
         }
 
@@ -181,7 +181,7 @@ class Atk_FixtureManager
         // based on the type get the loader instance
         $loader = &$this->getLoader($type);
         if ($loader == NULL) {
-            atkTools::atkdebug("Don't know how to load fixture data of type '{$type}' for fixture '{$fullname}'!");
+            Atk_Tools::atkdebug("Don't know how to load fixture data of type '{$type}' for fixture '{$fullname}'!");
             return false;
         }
 
@@ -191,13 +191,13 @@ class Atk_FixtureManager
         // check if the fixture's table exists
         $table = $this->getTable($fullname);
         if (!$database->tableExists($table)) {
-            atkTools::atkdebug("Table '{$table}' not found in database for fixture '$fullname'!");
+            Atk_Tools::atkdebug("Table '{$table}' not found in database for fixture '$fullname'!");
             return false;
         }
 
         // finally save the fixture data in the database
         if (!$this->save($database, $table, $data)) {
-            atkTools::atkdebug("Could not save (all) fixture data for fixture '$fullname'!");
+            Atk_Tools::atkdebug("Could not save (all) fixture data for fixture '$fullname'!");
             return false;
         }
 
@@ -208,7 +208,7 @@ class Atk_FixtureManager
     /**
      * Save fixture data to the database in the given table.
      *
-     * @param atkDb  $database database instance
+     * @param Atk_Db  $database database instance
      * @param string $table    table name
      * @param array  $data     fixture data
      *
@@ -234,8 +234,8 @@ class Atk_FixtureManager
             }
 
             if (!$query->executeInsert()) {
-                atkTools::atkerror("Could not insert fixture '{$item}' into table {$table}");
-                atkTools::atk_var_dump($record, "Invalid fixture");
+                Atk_Tools::atkerror("Could not insert fixture '{$item}' into table {$table}");
+                Atk_Tools::atk_var_dump($record, "Invalid fixture");
                 $database->rollback($savepoint);
                 return false;
             }
@@ -244,8 +244,8 @@ class Atk_FixtureManager
         // set sequence value(s)
         $metadata = $database->metadata($table);
         foreach ($metadata as $field) {
-            if (atkTools::hasFlag($field['flags'], MF_AUTO_INCREMENT) && strtolower(@$field['table_type']) != 'innodb') {
-                $sequence = isset($field['sequence']) ? $field['sequence'] : atkConfig::getGlobal("database_sequenceprefix") . $table;
+            if (Atk_Tools::hasFlag($field['flags'], MF_AUTO_INCREMENT) && strtolower(@$field['table_type']) != 'innodb') {
+                $sequence = isset($field['sequence']) ? $field['sequence'] : Atk_Config::getGlobal("database_sequenceprefix") . $table;
                 $query = "SELECT MAX(" . $field['name'] . ") AS value FROM $table";
                 list($result) = $database->getRows($query);
                 $database->setSequenceValue($sequence, $result['value']);
@@ -258,6 +258,6 @@ class Atk_FixtureManager
 }
 
 // register ATK default loaders
-$manager = &atkFixtureManager::getInstance();
+$manager = &Atk_FixtureManager::getInstance();
 $manager->registerLoader('atk.fixture.atkyamlfixtureloader', array('yml', 'yaml'));
 $manager->registerLoader('atk.fixture.atkphpfixtureloader', array('php'));

@@ -20,10 +20,10 @@
  * Imports
  * @access private
  */
-atkTools::atkimport("atk.handlers.atkactionhandler");
-atkTools::atkimport("atk.handlers.atkaddhandler");
-atkTools::atkimport("atk.handlers.atksavehandler");
-atkTools::atkimport("atk.wizard.atkwizardcontroller");
+Atk_Tools::atkimport("atk.handlers.atkactionhandler");
+Atk_Tools::atkimport("atk.handlers.atkaddhandler");
+Atk_Tools::atkimport("atk.handlers.atksavehandler");
+Atk_Tools::atkimport("atk.wizard.atkwizardcontroller");
 
 /**
  * atkWizardPanel button definitions.
@@ -58,14 +58,14 @@ class Atk_WizardPanel
     var $m_panelName;
 
     /**
-     * Name representation of the atkNode
+     * Name representation of the Atk_Node
      *
      * @var string
      */
     var $m_nodeName;
 
     /**
-     * Reference to the atkNode
+     * Reference to the Atk_Node
      *
      * @var object reference
      */
@@ -73,7 +73,7 @@ class Atk_WizardPanel
 
     /**
      * Array of Actionlisteners which listen
-     * to the atkNode
+     * to the Atk_Node
      *
      * @var array
      */
@@ -81,14 +81,14 @@ class Atk_WizardPanel
 
     /**
      * Array of ActionHandlers which are binded
-     * to the atkNode
+     * to the Atk_Node
      *
      * @var array
      */
     var $m_actionHandlers = array();
 
     /**
-     * The default atkNode action for this wizardpanel
+     * The default Atk_Node action for this wizardpanel
      *
      * @var string
      */
@@ -125,7 +125,7 @@ class Atk_WizardPanel
     }
 
     /**
-     * Return the atkNode object for this panel. If it didn't exist yet, this method 
+     * Return the Atk_Node object for this panel. If it didn't exist yet, this method
      * will create it and add actionlistener or actionhandlers. The session will also
      * be manipulated so that the controller knows which atknodetype to render.
      *
@@ -134,11 +134,11 @@ class Atk_WizardPanel
     public function getPanelNode()
     {
         if (!is_object($this->m_node)) {
-            atkTools::atkdebug("atkWizardPanel::getPanelNode() create node. Node name: " . $this->m_nodeName);
+            Atk_Tools::atkdebug("Atk_WizardPanel::getPanelNode() create node. Node name: " . $this->m_nodeName);
 
-            $this->m_node = atkModule::atkGetNode($this->m_nodeName);
+            $this->m_node = Atk_Module::atkGetNode($this->m_nodeName);
             if (!is_object($this->m_node)) {
-                atkTools::atkerror("atkWizardPanel::getPanelNode() Node could not be created. Node name: " . $this->m_nodeName);
+                Atk_Tools::atkerror("Atk_WizardPanel::getPanelNode() Node could not be created. Node name: " . $this->m_nodeName);
                 return NULL;
             }
 
@@ -153,11 +153,11 @@ class Atk_WizardPanel
                 $handlerAction = $this->m_actionHandlers[$i]['action'];
 
                 $handler = &new $handlerName();
-                atkModule::atkRegisterNodeHandler($this->m_node->m_type, $handlerAction, $handler);
+                Atk_Module::atkRegisterNodeHandler($this->m_node->m_type, $handlerAction, $handler);
             }
 
             //All nodes should return the output and not try to fill the screen themselves
-            $controller = &atkController::getInstance();
+            $controller = &Atk_Controller::getInstance();
             $controller->setNode($this->m_node);
 
             //Make session aware of the fact that we are rendering a node which has been
@@ -186,7 +186,7 @@ class Atk_WizardPanel
     /**
      * Add an atkActionListener to the atkWizardPanel.
      *
-     * Listeners are added to the atkNode when the
+     * Listeners are added to the Atk_Node when the
      * node is created.
      *
      * @param atkActionListener $listener
@@ -199,7 +199,7 @@ class Atk_WizardPanel
     /**
      * Add an atkActionHandler to the atkWizardPanel.
      *
-     * Handlers are created and added to the atkNode when the
+     * Handlers are created and added to the Atk_Node when the
      * node is created.
      *
      * @param string $handlerName Name of the handler to add
@@ -301,12 +301,12 @@ class Atk_WizardPanel
     {
 
         $panelNode = $this->getPanelNode();
-        $text = atkTools::atktext($key, $panelNode->m_module, "", "", "", true);
+        $text = Atk_Tools::atktext($key, $panelNode->m_module, "", "", "", true);
 
         if ($text != "")
             return $text;
 
-        return atkTools::atktext($fallbackKey, $panelNode->m_module, "", "", "", true);
+        return Atk_Tools::atktext($fallbackKey, $panelNode->m_module, "", "", "", true);
     }
 
     /**
@@ -319,7 +319,7 @@ class Atk_WizardPanel
         $handler = &$this->m_node->getHandler($action);
         $handler->addRenderBoxVar("paneltitle", $this->_getText($this->getPanelName() . "_" . $action, $this->getPanelName()));
         $handler->addRenderBoxVar("intro", $this->_getText($this->getPanelName() . "_" . $action . "_intro", $this->getPanelName() . "_intro"));
-        atkTools::atkdebug("loadRenderBoxVars actionhandler: " . get_class($handler) . " action: " . $action);
+        Atk_Tools::atkdebug("loadRenderBoxVars actionhandler: " . get_class($handler) . " action: " . $action);
     }
 
 }

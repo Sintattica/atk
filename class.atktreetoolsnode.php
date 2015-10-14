@@ -29,7 +29,7 @@ class Atk_TreeToolsNode
     var $m_img;
     var $m_sub = array();
 
-    function atkTreeToolsNode($id, $object, $img = "")
+    function __construct($id, $object, $img = "")
     {
         $this->m_id = $id;
         $this->m_object = $object;

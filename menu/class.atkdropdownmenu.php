@@ -14,7 +14,7 @@
  * @version $Revision: 6347 $
  * $Id$
  */
-atkTools::atkimport('atk.menu.atkplainmenu');
+Atk_Tools::atkimport('atk.menu.atkplainmenu');
 
 /**
  * Implementation of the Dropdowntext menu.
@@ -33,7 +33,7 @@ class Atk_DropdownMenu extends Atk_PlainMenu
      */
     function render()
     {
-        $page = &atkTools::atkinstance("atk.ui.atkpage");
+        $page = &Atk_Tools::atkinstance("atk.ui.atkpage");
         $menu = $this->load();
         $page->addContent($menu);
 
@@ -59,9 +59,9 @@ class Atk_DropdownMenu extends Atk_PlainMenu
     {
         global $ATK_VARS, $g_menu;
 
-        $page = &atkTools::atkinstance('atk.ui.atkpage');
-        $theme = &atkTools::atkinstance("atk.ui.atktheme");
-        $page->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/dropdown_menu.js');
+        $page = Atk_Tools::atkinstance('atk.ui.atkpage');
+        $theme = Atk_Tools::atkinstance("atk.ui.atktheme");
+        $page->register_script(Atk_Config::getGlobal('atkroot') . 'atk/javascript/dropdown_menu.js');
         $page->register_style($theme->stylePath("atkdropdownmenu.css"));
         $page->m_loadscripts[] = "new DHTMLListMenu('nav');";
 
@@ -69,7 +69,7 @@ class Atk_DropdownMenu extends Atk_PlainMenu
                 : 'main';
         if (!is_array($g_menu[$atkmenutop]))
             $g_menu[$atkmenutop] = array();
-        usort($g_menu[$atkmenutop], array("atkplainmenu", "menu_cmp"));
+        usort($g_menu[$atkmenutop], array("Atk_PlainMenu", "menu_cmp"));
 
         $menu = "<div id=\"nav\">\n";
         $menu.=$this->getHeader($atkmenutop);
@@ -79,8 +79,8 @@ class Atk_DropdownMenu extends Atk_PlainMenu
             $menu .= $this->getMenuItem($menuitem, "    ");
         }
 
-        if (atkConfig::getGlobal("menu_logout_link")) {
-            $menu.="    <li><a href=\"app.php?atklogout=1\">" . atkTools::atktext('logout') . "</a></li>\n";
+        if (Atk_Config::getGlobal("menu_logout_link")) {
+            $menu.="    <li><a href=\"app.php?atklogout=1\">" . Atk_Tools::atktext('logout') . "</a></li>\n";
         }
 
         $menu.="  </ul>\n";
@@ -127,7 +127,7 @@ class Atk_DropdownMenu extends Atk_PlainMenu
      */
     function getItemHtml($menuitem, $submenu = "", $submenuname = '')
     {
-        $delimiter = atkConfig::getGlobal("menu_delimiter");
+        $delimiter = Atk_Config::getGlobal("menu_delimiter");
 
         $name = $this->getMenuTranslation($menuitem['name'], $menuitem['module']);
         if ($menuitem['name'] == '-')
@@ -135,7 +135,7 @@ class Atk_DropdownMenu extends Atk_PlainMenu
         if ($menuitem['url'] && substr($menuitem['url'], 0, 11) == 'javascript:') {
             $href = '<a href="javascript:void(0)" onclick="' . htmlentities($menuitem['url']) . '; return false;">' . htmlentities($this->getMenuTranslation($menuitem['name'], $menuitem['module'])) . '</a>';
         } else if ($menuitem['url']) {
-            $href = atkTools::href($menuitem['url'], $this->getMenuTranslation($menuitem['name'], $menuitem['module']), SESSION_NEW);
+            $href = Atk_Tools::href($menuitem['url'], $this->getMenuTranslation($menuitem['name'], $menuitem['module']), SESSION_NEW);
         } else
             $href = '<a href="#">' . $name . '</a>';
 

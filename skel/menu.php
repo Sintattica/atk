@@ -27,19 +27,19 @@
 $config_atkroot = "./";
 include_once("atk.php");
 
-atkSessionManager::atksession();
+Atk_SessionManager::atksession();
 atksecure();
 
-$output = &atkOutput::getInstance();
+$output = &Atk_Output::getInstance();
 
 /* general menu stuff */
 /* load menu layout */
-atkTools::atkimport("atk.menu.atkmenu");
-$menu = &atkMenu::getMenu();
+Atk_Tools::atkimport("atk.menu.atkmenu");
+$menu = &Atk_Menu::getMenu();
 
 if (is_object($menu))
     $output->output($menu->render());
 else
-    atkTools::atkerror("no menu object created!");;
+    Atk_Tools::atkerror("no menu object created!");;
 
 $output->outputFlush();

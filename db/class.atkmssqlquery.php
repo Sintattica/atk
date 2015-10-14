@@ -17,7 +17,7 @@
 /**
  * Base include
  */
-atkTools::atkimport("atk.db.atkmysqlquery");
+Atk_Tools::atkimport("atk.db.atkmysqlquery");
 
 /**
  * SQL Builder for MSSQL databases.
@@ -90,7 +90,7 @@ class Atk_MssqlQuery extends Atk_MysqlQuery
      * @param bool $quote If this parameter is true, stuff is inserted into the db
      *               using quotes, e.g. SET name = 'piet'. If it is false, it's
      *               done without quotes, e.d. SET number = 4.
-     * @return atkQuery The query object itself (for fluent usage)
+     * @return Atk_Query The query object itself (for fluent usage)
      */
     function &addField($name, $value = "", $table = "", $fieldaliasprefix = "", $quote = true)
     {

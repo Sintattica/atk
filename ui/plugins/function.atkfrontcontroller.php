@@ -25,6 +25,6 @@
  */
 function smarty_function_atkfrontcontroller($params, $smarty)
 {
-    atkTools::atkimport('atk.front.atkfrontcontroller');
-    return atkFrontController::dispatchRequest($params);
+    Atk_Tools::atkimport('atk.front.atkfrontcontroller');
+    return Atk_FrontController::dispatchRequest($params);
 }

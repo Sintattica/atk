@@ -66,7 +66,7 @@ abstract class Atk_Cache implements ArrayAccess
     public static function getInstance($types = "", $fallback = true, $force = false)
     {
         if ($types == '')
-            $types = atkConfig::getGlobal("cache_method", array());
+            $types = Atk_Config::getGlobal("cache_method", array());
         if (!is_array($types))
             $types = array($types);
 
@@ -75,19 +75,19 @@ abstract class Atk_Cache implements ArrayAccess
 
             try {
                 if (!$force && array_key_exists($type, self::$m_instances) && is_object(self::$m_instances[$type])) {
-                    atkTools::atkdebug("atkcache::getInstance -> Using cached instance of $type cache");
+                    Atk_Tools::atkdebug("Atk_cache::getInstance -> Using cached instance of $type cache");
                     return self::$m_instances[$type];
                 } else {
-                    self::$m_instances[$type] = atkTools::atknew($classname);
-                    self::$m_instances[$type]->setNamespace(atkConfig::getGlobal('cache_namespace', 'default'));
+                    self::$m_instances[$type] = Atk_Tools::atknew($classname);
+                    self::$m_instances[$type]->setNamespace(Atk_Config::getGlobal('cache_namespace', 'default'));
                     self::$m_instances[$type]->setLifetime(self::$m_instances[$type]->getCacheConfig('lifetime', 3600));
-                    self::$m_instances[$type]->setActive(atkConfig::getGlobal('cache_active', true));
-                    atkTools::atkdebug("atkcache::getInstance() -> Using $type cache");
+                    self::$m_instances[$type]->setActive(Atk_Config::getGlobal('cache_active', true));
+                    Atk_Tools::atkdebug("Atk_cache::getInstance() -> Using $type cache");
 
                     return self::$m_instances[$type];
                 }
             } catch (Exception $e) {
-                atkTools::atknotice("Can't instantatie atkCache class $classname: " . $e->getMessage());
+                Atk_Tools::atknotice("Can't instantatie atkCache class $classname: " . $e->getMessage());
             }
         }
 
@@ -96,7 +96,7 @@ abstract class Atk_Cache implements ArrayAccess
         }
 
         // Default return var cache
-        atkTools::atkdebug("atkcache::getInstance() -> Using var cache");
+        Atk_Tools::atkdebug("Atk_cache::getInstance() -> Using var cache");
         return self::getInstance('var', false, $force);
     }
 
@@ -109,7 +109,7 @@ abstract class Atk_Cache implements ArrayAccess
      */
     public function getCacheConfig($key, $default = "")
     {
-        $cacheConfig = atkConfig::getGlobal('cache', array());
+        $cacheConfig = Atk_Config::getGlobal('cache', array());
         $type = $this->getType();
 
         if (array_key_exists($type, $cacheConfig) &&

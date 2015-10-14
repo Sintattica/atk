@@ -26,33 +26,33 @@
  */
 $config_atkroot = "./";
 include_once("atk.php");
-atkSessionManager::atksession();
+Atk_SessionManager::atksession();
 atksecure();
 
-$theme = &atkTools::atkinstance('atk.ui.atktheme');
-if (atkConfig::getGlobal("fullscreen")) {
+$theme = &Atk_Tools::atkinstance('atk.ui.atktheme');
+if (Atk_Config::getGlobal("fullscreen")) {
     // Fullscreen mode. Use index.php as launcher, and launch app.php fullscreen.
 
-    atkSessionManager::atksession();
+    Atk_SessionManager::atksession();
     atksecure();
 
-    $page = &atkTools::atknew("atk.ui.atkpage");
-    $ui = &atkTools::atkinstance("atk.ui.atkui");
-    $theme = &atkTheme::getInstance();
-    $output = &atkOutput::getInstance();
+    $page = &Atk_Tools::atknew("atk.ui.atkpage");
+    $ui = &Atk_Tools::atkinstance("atk.ui.atkui");
+    $theme = &Atk_Theme::getInstance();
+    $output = &Atk_Output::getInstance();
 
     $page->register_style($theme->stylePath("style.css"));
-    $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/launcher.js");
+    $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/launcher.js");
 
     $content = '<script language="javascript">atkLaunchApp(); </script>';
-    $content.= '<br><br><a href="#" onClick="atkLaunchApp()">' . atkTools::atktext('app_reopen') . '</a> &nbsp; ' .
-        '<a href="#" onClick="window.close()">' . atkTools::atktext('app_close') . '</a><br><br>';
+    $content.= '<br><br><a href="#" onClick="atkLaunchApp()">' . Atk_Tools::atktext('app_reopen') . '</a> &nbsp; ' .
+        '<a href="#" onClick="window.close()">' . Atk_Tools::atktext('app_close') . '</a><br><br>';
 
-    $box = $ui->renderBox(array("title" => atkTools::atktext("app_launcher"),
+    $box = $ui->renderBox(array("title" => Atk_Tools::atktext("app_launcher"),
         "content" => $content));
 
     $page->addContent($box);
-    $output->output($page->render(atkTools::atktext('app_launcher'), true));
+    $output->output($page->render(Atk_Tools::atktext('app_launcher'), true));
 
     $output->outputFlush();
 } else {
@@ -60,7 +60,7 @@ if (atkConfig::getGlobal("fullscreen")) {
         // Regular mode. app.php can be included directly.
         include "app.php";
     } else {
-        $indexpage = &atkTools::atknew('atk.ui.atkindexpage');
+        $indexpage = &Atk_Tools::atknew('atk.ui.atkindexpage');
         $indexpage->generate();
     }
 }

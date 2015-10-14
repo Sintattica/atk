@@ -24,7 +24,7 @@ global $ATK_VARS;
 $id = (int) $ATK_VARS["id"];
 $type = ($ATK_VARS["type"] == "xml") ? "xml" : "image";
 
-$lock = &atkLock::getInstance();
+$lock = &Atk_Lock::getInstance();
 
 /* extend lock lease */
 if ($lock->extend($id)) {
@@ -37,7 +37,7 @@ if ($lock->extend($id)) {
     // image
     else {
         header("Content-type: image/gif");
-        readfile(atkConfig::getGlobal("atkroot") . 'atk/images/dummy.gif');
+        readfile(Atk_Config::getGlobal("atkroot") . 'atk/images/dummy.gif');
     }
 }
 

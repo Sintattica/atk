@@ -15,7 +15,7 @@
  * $Id$
  */
 require_once($GLOBALS['config_atkroot'] . "atk/class.atkconfig.php");
-atkConfig::loadGlobals();
+Atk_Config::loadGlobals();
 
 // Auto-register modules
 if (file_exists("{$GLOBALS['config_module_path']}/config.modules.php")) {

@@ -18,7 +18,7 @@
 define("AF_MATRIX_ACYCLIC", AF_SPECIFIC_1); // checks if a matrix is acyclic
 
 /** @internal include base class */
-atkTools::userelation("atkrelation");
+Atk_Tools::userelation("atkrelation");
 
 /**
  * Many2Many relation that is represented by a clickable matrix.
@@ -50,9 +50,9 @@ class Atk_MatrixRelation extends Atk_Relation
      * @param string $fk2             foreignkey in colum table
      * @param int    $flags           AF_MATRIX_ACYCLIC if input must be acyclic
      */
-    function atkMatrixRelation($name, $name1, $destination1, $fk1, $name2, $destination2, $fk2, $flags = 0)
+    function __construct($name, $name1, $destination1, $fk1, $name2, $destination2, $fk2, $flags = 0)
     {
-        $this->atkRelation($name, $destination1, $flags);
+        parent::__construct($name, $destination1, $flags);
 
         $this->m_name1 = $name1;
         $this->m_destination1 = $destination1;
@@ -75,7 +75,7 @@ class Atk_MatrixRelation extends Atk_Relation
     /**
      * Load the values of this relation
      *
-     * @param atkDb $db The database object
+     * @param Atk_Db $db The database object
      * @param array $record
      * @return array Array with values
      */
@@ -119,7 +119,7 @@ class Atk_MatrixRelation extends Atk_Relation
         else
             $where = "";
 
-        $recordset = $this->m_destInstance->selectDb($where, "", "", "", atkTools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+        $recordset = $this->m_destInstance->selectDb($where, "", "", "", Atk_Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
 
         for ($i = 0; $i < count($recordset); $i++) {
             $matrix_fields_row[$i] = $this->m_destInstance->descriptor($recordset[$i]);
@@ -137,7 +137,7 @@ class Atk_MatrixRelation extends Atk_Relation
         else
             $where = "";
 
-        $recordset = $this->m_destInstance->selectDb($where, "", "", "", atkTools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+        $recordset = $this->m_destInstance->selectDb($where, "", "", "", Atk_Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
 
         for ($i = 0; $i < count($recordset); $i++) {
             $matrix_fields_col[$i] = $this->m_destInstance->descriptor($recordset[$i]);
@@ -236,7 +236,7 @@ class Atk_MatrixRelation extends Atk_Relation
     /**
      * Delete the records before storage
      *
-     * @param atkDb $db The database object
+     * @param Atk_Db $db The database object
      * @param array $record The record
      */
     function delete_before_store($db, $record)
@@ -259,7 +259,7 @@ class Atk_MatrixRelation extends Atk_Relation
             else
                 $where = "";
 
-            $recordset = $this->m_destInstance->selectDb($where, "", "", "", atkTools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+            $recordset = $this->m_destInstance->selectDb($where, "", "", "", Atk_Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
 
             for ($i = 0; $i < count($recordset); $i++) {
                 $primaryKeyValue = explode("'", $this->m_destInstance->primaryKey($recordset[$i]));
@@ -272,7 +272,7 @@ class Atk_MatrixRelation extends Atk_Relation
     /**
      * Store the value(s) of this relation
      *
-     * @param atkDb $db The database object
+     * @param Atk_Db $db The database object
      * @param array $record The record
      * @return bool true
      */

@@ -14,7 +14,7 @@
  * @version $Revision: 6305 $
  * $Id: class.atklistattribute.inc 7126 2011-05-26 22:33:22Z ijansch $
  */
-atkTools::atkimport("atk.attributes.atkattribute");
+Atk_Tools::atkimport("atk.attributes.atkattribute");
 
 /**
  * Do not translate the options
@@ -136,7 +136,7 @@ class Atk_ListAttribute extends Atk_Attribute
         // If no size is specified, the max size we have is equal to the biggest value.
         if ($size == 0) {
             for ($i = 0, $_i = count($valueArray); $i < $_i; $i ++) {
-                $size = max($size, atkTools::atk_strlen($valueArray[$i]));
+                $size = max($size, Atk_Tools::atk_strlen($valueArray[$i]));
             }
         }
 
@@ -288,7 +288,7 @@ class Atk_ListAttribute extends Atk_Attribute
         $result.=$this->_addEmptyListOption();
 
         $values = $this->getValues($record);
-        $recvalue = atkTools::atkArrayNvl($record, $this->fieldName());
+        $recvalue = Atk_Tools::atkArrayNvl($record, $this->fieldName());
 
         for ($i = 0; $i < count($values); $i ++) {
             // If the current value is selected or occurs in the record
@@ -327,7 +327,7 @@ class Atk_ListAttribute extends Atk_Attribute
         if (!$this->hasFlag(AF_LIST_NO_NULL_ITEM) ||
             ($this->hasFlag(AF_OBLIGATORY) &&
             // CONFIG IS DEPRECATED
-            ((atkConfig::getGlobal("list_obligatory_null_item") && !$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM)) ||
+            ((Atk_Config::getGlobal("list_obligatory_null_item") && !$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM)) ||
             ($this->hasFlag(AF_LIST_OBLIGATORY_NULL_ITEM))))) {
             $ret = '<option value="' . $this->m_emptyvalue . '">' . htmlentities($this->text(array(
                         $this->fieldName() . '_' . $text_key, $text_key))) . '</option>';
@@ -404,11 +404,11 @@ class Atk_ListAttribute extends Atk_Attribute
                 $sel = "";
             }
         }
-        $result .= '<option value="" ' . $sel . '>' . atkTools::atktext('search_all');
+        $result .= '<option value="" ' . $sel . '>' . Atk_Tools::atktext('search_all');
 
         foreach ($values AS $value) {
 
-            if (atkTools::atk_in_array(((string) $value), $selValues, true) && $selValues !== "") {
+            if (Atk_Tools::atk_in_array(((string) $value), $selValues, true) && $selValues !== "") {
                 $sel = "selected";
             } else {
                 $sel = "";
@@ -426,7 +426,7 @@ class Atk_ListAttribute extends Atk_Attribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param Atk_Query $query     The query object where the search condition should be placed on
      * @param String $table       The name of the table in which this attribute
      *                              is stored
      * @param mixed $value        The value the user has entered in the searchbox
@@ -509,7 +509,7 @@ class Atk_ListAttribute extends Atk_Attribute
      * @param string $selected the listitem you want to have selected
      *
      * @deprecated
-     * @see atkNode::initial_values
+     * @see Atk_Node::initial_values
      */
     function setSelected($selected)
     {
@@ -533,7 +533,7 @@ class Atk_ListAttribute extends Atk_Attribute
      * @return string the selected listitem
      *
      * @deprecated
-     * @see atkNode::initial_values
+     * @see Atk_Node::initial_values
      */
     function getSelected()
     {
@@ -582,7 +582,7 @@ class Atk_ListAttribute extends Atk_Attribute
             if (strtolower($stringvalue) == strtolower($option))
                 return $values[$i];
 
-            if (strtolower(atkTools::atktext($stringvalue)) == strtolower($option))
+            if (strtolower(Atk_Tools::atktext($stringvalue)) == strtolower($option))
                 return $values[$i];
             $i ++;
         }

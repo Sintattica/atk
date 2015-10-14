@@ -15,7 +15,7 @@
  * $Id$
  */
 /** @internal include base class. */
-atkTools::useattrib("atkmultiselectattribute");
+Atk_Tools::useattrib("atkmultiselectattribute");
 
 /**
  * The atkFlagAttribute class offers an way to edit bitmask flags.
@@ -73,7 +73,7 @@ class Atk_FlagAttribute extends Atk_MultiSelectAttribute
         if ($rec[$this->fieldName()] > 0) {
             $newrec = array();
             foreach ($this->m_values as $value) {
-                if (atkTools::hasFlag($rec[$this->fieldName()], $value)) {
+                if (Atk_Tools::hasFlag($rec[$this->fieldName()], $value)) {
                     $newrec[] = $value;
                 }
             }
@@ -98,7 +98,7 @@ class Atk_FlagAttribute extends Atk_MultiSelectAttribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param Atk_Query $query     The query object where the search condition should be placed on
      * @param String $table       The name of the table in which this attribute
      *                              is stored
      * @param mixed $value        The value the user has entered in the searchbox
@@ -134,11 +134,11 @@ class Atk_FlagAttribute extends Atk_MultiSelectAttribute
      */
     function fetchValue($postvars)
     {
-        $vars = atkTools::atkArrayNvl($postvars, $this->fieldName());
+        $vars = Atk_Tools::atkArrayNvl($postvars, $this->fieldName());
         if (!is_array($vars)) {
             $result = array();
             foreach ($this->m_values as $value) {
-                if (atkTools::hasFlag($vars, $value)) {
+                if (Atk_Tools::hasFlag($vars, $value)) {
                     $result[] = $value;
                 }
             }

@@ -22,10 +22,10 @@ class Atk_OneToManyRelationSessionGridHandler
     /**
      * Select handler, returns the records for the grid
      *
-     * @param atkDataGrid $grid
+     * @param Atk_DataGrid $grid
      * @return array Records for the grid
      */
-    public function selectHandlerForAdd(atkDataGrid $grid)
+    public function selectHandlerForAdd(Atk_DataGrid $grid)
     {
         $records = $this->getRecordsFromSession();
 
@@ -68,8 +68,8 @@ class Atk_OneToManyRelationSessionGridHandler
      */
     private function getRecordsFromSession()
     {
-        atkTools::atkimport('atk.session.atksessionstore');
-        return atkSessionStore::getInstance($this->_key)->getData();
+        Atk_Tools::atkimport('atk.session.atksessionstore');
+        return Atk_SessionStore::getInstance($this->_key)->getData();
     }
 
 }

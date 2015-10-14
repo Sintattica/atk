@@ -74,7 +74,7 @@ class Atk_ActionBoxBuilder
         $this->m_pageBuilder = $pageBuilder;
         $this->m_params = $pageBuilder->getNode()->getDefaultActionParams(false);
 
-        $controller = atkController::getInstance();
+        $controller = Atk_Controller::getInstance();
         $controller->setNode($pageBuilder->getNode());
 
         $this->formStart('
@@ -205,7 +205,7 @@ class Atk_ActionBoxBuilder
     public function endActionBox()
     {
         if ($this->m_sessionStatus !== null) {
-            $this->m_params['formend'] = atkTools::session_form($this->m_sessionStatus) .
+            $this->m_params['formend'] = Atk_Tools::session_form($this->m_sessionStatus) .
                 $this->m_params['formend'];
         }
 

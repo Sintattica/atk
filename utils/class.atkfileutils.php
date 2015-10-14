@@ -47,18 +47,18 @@ class Atk_FileUtils
         if (is_null($orgdest))
             $orgdest = $dest;
 
-        atkTools::atkdebug("Checking write permission for " . $orgdest);
+        Atk_Tools::atkdebug("Checking write permission for " . $orgdest);
 
-        if (!atkFileUtils::is_writable($orgdest)) {
-            atkTools::atkdebug("Error no write permission!");
+        if (!Atk_FileUtils::is_writable($orgdest)) {
+            Atk_Tools::atkdebug("Error no write permission!");
             return false;
         }
 
-        atkTools::atkdebug("Permission granted to write.");
+        Atk_Tools::atkdebug("Permission granted to write.");
 
         if ($dest == $orgdest && $dirname != '') {
             mkdir($orgdest . "/" . $dirname, $privileges);
-            return atkFileUtils::copyDirRecursive($source, $orgdest . "/" . $dirname, '', $privileges);
+            return Atk_FileUtils::copyDirRecursive($source, $orgdest . "/" . $dirname, '', $privileges);
         }
 
         // Simple copy for a file
@@ -92,7 +92,7 @@ class Atk_FileUtils
 
             // Deep copy directories
             if ($dest !== "$source/$entry")
-                atkFileUtils::copyDirRecursive("$source/$entry", "$dest/$entry", $dirname, $privileges);
+                Atk_FileUtils::copyDirRecursive("$source/$entry", "$dest/$entry", $dirname, $privileges);
         }
 
         // Clean up
@@ -131,7 +131,7 @@ class Atk_FileUtils
             }
         }
 
-        atkTools::atkdebug("Checking with: " . $testdest);
+        Atk_Tools::atkdebug("Checking with: " . $testdest);
 
         return is_writable($testdest);
     }
@@ -151,12 +151,12 @@ class Atk_FileUtils
     {
         $dir = preg_replace('/(\/){2,}|(\\\){1,}/', '/', $dir); //only forward-slash
 
-        if (!atkFileUtils::is_writable($dir)) {
-            atkTools::atkdebug("Error no write permission!");
+        if (!Atk_FileUtils::is_writable($dir)) {
+            Atk_Tools::atkdebug("Error no write permission!");
             return false;
         }
 
-        atkTools::atkdebug("Permission granted to write.");
+        Atk_Tools::atkdebug("Permission granted to write.");
 
         if (is_null($dir) || $dir === "") {
             return FALSE;
@@ -164,7 +164,7 @@ class Atk_FileUtils
         if (is_dir($dir) || $dir === "/") {
             return TRUE;
         }
-        if (atkFileUtils::mkdirRecursive(dirname($dir), $privileges, $recursive)) {
+        if (Atk_FileUtils::mkdirRecursive(dirname($dir), $privileges, $recursive)) {
             return mkdir($dir, $privileges);
         }
         return FALSE;
@@ -181,7 +181,7 @@ class Atk_FileUtils
      */
     function parseDirectoryName($template, $data)
     {
-        atkTools::atkimport("atk.utils.atkstringparser");
+        Atk_Tools::atkimport("atk.utils.atkstringparser");
         $stringparser = new Atk_StringParser($template);
         return $stringparser->parse($data);
     }
@@ -359,10 +359,10 @@ class Atk_FileUtils
 
         $ext = trim(strtolower($ext));
         if (array_key_exists($ext, $mimetypes)) {
-            atkTools::atkdebug("Filetype for $filename is {$mimetypes[$ext]}");
+            Atk_Tools::atkdebug("Filetype for $filename is {$mimetypes[$ext]}");
             return $mimetypes[$ext];
         } else {
-            atkTools::atkdebug("Filetype for $filename could not be found. Returning application/octet-stream.");
+            Atk_Tools::atkdebug("Filetype for $filename could not be found. Returning application/octet-stream.");
             return "application/octet-stream";
         }
     }
@@ -414,7 +414,7 @@ class Atk_FileUtils
             }
             $entry = $dir . '/' . $entry;
             if (is_dir($entry)) {
-                if (!atkFileUtils::rmdirRecursive($entry)) {
+                if (!Atk_FileUtils::rmdirRecursive($entry)) {
                     return FALSE;
                 }
                 continue;

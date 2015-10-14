@@ -86,7 +86,7 @@ class Atk_SessionStore
      */
     public function addDataRow($row, $primary_key_field)
     {
-        atkTools::atk_var_dump($row, __CLASS__ . '->' . __METHOD__ . ": Adding a new row to session store with primary key field '$primary_key_field' and key: " . $this->getKey());
+        Atk_Tools::atk_var_dump($row, __CLASS__ . '->' . __METHOD__ . ": Adding a new row to session store with primary key field '$primary_key_field' and key: " . $this->getKey());
         $data = $this->getData();
         if ($data === false)
             return false;
@@ -108,7 +108,7 @@ class Atk_SessionStore
      */
     public function getDataRowForSelector($selector)
     {
-        atkTools::atk_var_dump($selector, __CLASS__ . '->' . __METHOD__ . ": Getting row from session store with key: " . $this->getKey());
+        Atk_Tools::atk_var_dump($selector, __CLASS__ . '->' . __METHOD__ . ": Getting row from session store with key: " . $this->getKey());
         $data = $this->getData();
         if (!$data)
             return false;
@@ -130,7 +130,7 @@ class Atk_SessionStore
      */
     public function updateDataRowForSelector($selector, $row)
     {
-        atkTools::atk_var_dump($row, __CLASS__ . '->' . __METHOD__ . ": Updating row in session store with key: " . $this->getKey() . " and selector: $selector");
+        Atk_Tools::atk_var_dump($row, __CLASS__ . '->' . __METHOD__ . ": Updating row in session store with key: " . $this->getKey() . " and selector: $selector");
         $data = $this->getData();
         if (!$data)
             return false;
@@ -154,7 +154,7 @@ class Atk_SessionStore
      */
     public function deleteDataRowForSelector($selector)
     {
-        atkTools::atk_var_dump($selector, __CLASS__ . '->' . __METHOD__ . ": Deleting row from session store with key: " . $this->getKey());
+        Atk_Tools::atk_var_dump($selector, __CLASS__ . '->' . __METHOD__ . ": Deleting row from session store with key: " . $this->getKey());
         $data = $this->getData();
         if (!$data)
             return false;
@@ -177,7 +177,7 @@ class Atk_SessionStore
      */
     protected static function getSessionManager()
     {
-        $sessionmanager = atkSessionManager::atkGetSessionManager();
+        $sessionmanager = Atk_SessionManager::atkGetSessionManager();
         if (!$sessionmanager)
             return false;
         else
@@ -233,7 +233,7 @@ class Atk_SessionStore
      */
     private static function getRowKeyFromSelector($selector)
     {
-        $selector = atkTools::decodeKeyValuePair($selector);
+        $selector = Atk_Tools::decodeKeyValuePair($selector);
         $selector_values = array_values($selector);
 
         if (count($selector_values) === 1 && is_numeric($selector_values[0]) && $selector_values[0] <= 0) {
@@ -251,10 +251,10 @@ class Atk_SessionStore
     private static function isValidRowKey($rowKey, $data)
     {
         if ($rowKey === false) {
-            atkTools::atkwarning(__CLASS__ . '->' . __METHOD__ . ': No row key selector found');
+            Atk_Tools::atkwarning(__CLASS__ . '->' . __METHOD__ . ': No row key selector found');
             return false;
         } elseif (!array_key_exists($rowKey, $data)) {
-            atkTools::atkwarning(__CLASS__ . '->' . __METHOD__ . ': Row key not found in the data');
+            Atk_Tools::atkwarning(__CLASS__ . '->' . __METHOD__ . ': Row key not found in the data');
             return false;
         }
         return true;

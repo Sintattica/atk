@@ -61,12 +61,12 @@ class Atk_AggregatedColumn extends Atk_Attribute
      * @param Array  $searchfields Array with fields, in which search will be perform
      *                             If ommited, fields from $template will be used
      */
-    function atkAggregatedColumn($name, $template, $flags = 0, $searchfields = "")
+    function __construct($name, $template, $flags = 0, $searchfields = "")
     {
-        $this->atkAttribute($name, $flags | AF_HIDE_EDIT | AF_HIDE_ADD | AF_HIDE_VIEW); // base class constructor
+        parent::__construct($name, $flags | AF_HIDE_EDIT | AF_HIDE_ADD | AF_HIDE_VIEW); // base class constructor
         $this->m_template = $template;
 
-        atkTools::atkimport("atk.utils.atkstringparser");
+        Atk_Tools::atkimport("atk.utils.atkstringparser");
         $parser = new Atk_StringParser($template);
         $this->m_displayfields = $parser->getFields();
 
@@ -96,7 +96,7 @@ class Atk_AggregatedColumn extends Atk_Attribute
 
             $rec[$field] = $p_attrib->display($record[$this->fieldName()], $mode);
         }
-        atkTools::atkimport("atk.utils.atkstringparser");
+        Atk_Tools::atkimport("atk.utils.atkstringparser");
         $parser = new Atk_StringParser($this->m_template);
         return $parser->parse($rec);
     }
@@ -110,14 +110,14 @@ class Atk_AggregatedColumn extends Atk_Attribute
      * @param int    $flags the recordlist flags
      * @param array  $atksearch the current ATK search list (if not empty)
      * @param string $atkorderby Order by string
-     * @see atkNode::listArray
+     * @see Atk_Node::listArray
      */
     function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
     {
         if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select")) {
             $arr["heading"][$fieldprefix . $this->fieldName()]["title"] = $this->label();
 
-            if (!atkTools::hasFlag($flags, RL_NO_SORT) && !$this->hasFlag(AF_NO_SORT)) {
+            if (!Atk_Tools::hasFlag($flags, RL_NO_SORT) && !$this->hasFlag(AF_NO_SORT)) {
                 $rec = array();
                 foreach ($this->m_displayfields as $field) {
                     $rec[] = $this->m_ownerInstance->m_table . "." . $field;
@@ -127,10 +127,10 @@ class Atk_AggregatedColumn extends Atk_Attribute
                     $order = implode(" DESC,", $rec);
                     $order .= " DESC";
                 }
-                $arr["heading"][$fieldprefix . $this->fieldName()]["url"] = atkTools::session_url(atkTools::atkSelf() . '?atknodetype=' . $this->m_ownerInstance->atkNodeType() . '&atkaction=' . $action . '&atkorderby=' . rawurlencode($order));
+                $arr["heading"][$fieldprefix . $this->fieldName()]["url"] = Atk_Tools::session_url(Atk_Tools::atkSelf() . '?atknodetype=' . $this->m_ownerInstance->atkNodeType() . '&atkaction=' . $action . '&atkorderby=' . rawurlencode($order));
             }
 
-            if (!atkTools::hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(AF_SEARCHABLE)) {
+            if (!Atk_Tools::hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(AF_SEARCHABLE)) {
                 $arr["search"][$fieldprefix . $this->fieldName()] = $this->search($atksearch, false, $fieldprefix);
                 $arr["search"][$fieldprefix . $this->fieldName()].='<input type="hidden" name="atksearchmode[' . $this->formName() . ']" value="' . $this->getSearchMode(false) . '">';
             }
@@ -140,7 +140,7 @@ class Atk_AggregatedColumn extends Atk_Attribute
     /**
      * We do not want this attribute to store anything in the database, so we implement an empty store function
      *
-     * @param atkDb $db
+     * @param Atk_Db $db
      * @param array $record 
      * @param string $mode
      * @return boolean to indicate if store went succesfull
@@ -153,7 +153,7 @@ class Atk_AggregatedColumn extends Atk_Attribute
     /**
      * Adds this attribute to database queries.
      *
-     * @param atkQuery $query The SQL query object
+     * @param Atk_Query $query The SQL query object
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
@@ -172,7 +172,7 @@ class Atk_AggregatedColumn extends Atk_Attribute
     function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
     {
         if ($mode !== 'add' && $mode != 'edit') {
-            $allfields = atkTools::atk_array_merge($this->m_displayfields, $this->m_searchfields);
+            $allfields = Atk_Tools::atk_array_merge($this->m_displayfields, $this->m_searchfields);
             $alias = $fieldaliasprefix . $this->fieldName() . "_AE_";
             foreach ($allfields as $field) {
                 $p_attrib = $this->m_ownerInstance->m_attribList[$field];
@@ -185,7 +185,7 @@ class Atk_AggregatedColumn extends Atk_Attribute
      * Creates a search condition for a given search value, and adds it to the
      * query that will be used for performing the actual search.
      *
-     * @param atkQuery $query The query to which the condition will be added.
+     * @param Atk_Query $query The query to which the condition will be added.
      * @param String $table The name of the table in which this attribute
      *                      is stored
      * @param mixed $value The value the user has entered in the searchbox
@@ -206,7 +206,7 @@ class Atk_AggregatedColumn extends Atk_Attribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param Atk_Query $query     The query object where the search condition should be placed on
      * @param String $table       The name of the table in which this attribute
      *                              is stored
      * @param mixed $value        The value the user has entered in the searchbox
@@ -240,7 +240,7 @@ class Atk_AggregatedColumn extends Atk_Attribute
                     $data[$field] = $field;
             }
 
-            atkTools::atkimport("atk.utils.atkstringparser");
+            Atk_Tools::atkimport("atk.utils.atkstringparser");
             $parser = new Atk_StringParser($this->m_template);
             $concatFields = $parser->getAllParsedFieldsAsArray($data, true);
             $concatTags = $concatFields['tags'];

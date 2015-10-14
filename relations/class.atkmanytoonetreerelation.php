@@ -17,8 +17,8 @@
 /**
  * @internal includes..
  */
-atkTools::userelation("atkManyToOneRelation");
-include_once(atkConfig::getGlobal("atkroot") . "atk/class.atktreetoolstree.php");
+Atk_Tools::userelation("atkManyToOneRelation");
+include_once(Atk_Config::getGlobal("atkroot") . "atk/class.atktreetoolstree.php");
 
 /**
  * Extension of the atkManyToOneRelation, that is aware of the treestructure
@@ -42,9 +42,9 @@ class Atk_ManyToOneTreeRelation extends Atk_ManyToOneRelation
      * @param string $destination Destination node for this relation
      * @param int $flags Flags for the relation
      */
-    function atkManyToOneTreeRelation($name, $destination, $flags = 0)
+    function __construct($name, $destination, $flags = 0)
     {
-        $this->atkManyToOneRelation($name, $destination, $flags);
+        parent::__construct($name, $destination, $flags);
     }
 
     /**
@@ -60,10 +60,10 @@ class Atk_ManyToOneTreeRelation extends Atk_ManyToOneRelation
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $this->createDestination();
-        $tmp1 = atkTools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey);
-        $tmp2 = atkTools::atk_array_merge($tmp1, array($this->m_destInstance->m_parent));
+        $tmp1 = Atk_Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey);
+        $tmp2 = Atk_Tools::atk_array_merge($tmp1, array($this->m_destInstance->m_parent));
         if ($this->m_destinationFilter != "") {
-            $this->m_destInstance->addFilter(atkTools::stringparse($this->m_destinationFilter, $record));
+            $this->m_destInstance->addFilter(Atk_Tools::stringparse($this->m_destinationFilter, $record));
         }
         $recordset = $this->m_destInstance->selectDb("", $this->m_destInstance->m_primaryKey[0], "", "", $tmp2);
         $this->m_current = $this->m_ownerInstance->primaryKey($record);
@@ -71,7 +71,7 @@ class Atk_ManyToOneTreeRelation extends Atk_ManyToOneRelation
 
         if ($this->hasFlag(AF_OBLIGATORY) == false) {
             // Relation may be empty, so we must provide an empty selectable..
-            $result.= '<option value="0">' . atkTools::atktext('select_none');
+            $result.= '<option value="0">' . Atk_Tools::atktext('select_none');
         }
         $result.=$this->createdd($recordset);
         $result.='</select>';
@@ -87,15 +87,15 @@ class Atk_ManyToOneTreeRelation extends Atk_ManyToOneRelation
     {
         $this->createDestination();
         if ($this->m_destinationFilter != "") {
-            $this->m_destInstance->addFilter(atkTools::stringparse($this->m_destinationFilter, $record));
+            $this->m_destInstance->addFilter(Atk_Tools::stringparse($this->m_destinationFilter, $record));
         }
-        $recordset = $this->m_destInstance->selectDb("", "", "", "", atkTools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+        $recordset = $this->m_destInstance->selectDb("", "", "", "", Atk_Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
 
         $result = '<select class="form-control" name="atksearch[' . $this->fieldName() . ']">';
 
         $pkfield = $this->m_destInstance->primaryKeyField();
 
-        $result.= '<option value="">' . atkTools::atktext("search_all", "atk");
+        $result.= '<option value="">' . Atk_Tools::atktext("search_all", "atk");
         $result.=$this->createdd($recordset);
         $result.='</select>';
         return $result;

@@ -72,7 +72,7 @@ class Atk_TmpFile
      * @param string $filename
      * @return atkTmpFile
      */
-    public function atkTmpFile($filename)
+    public function __construct($filename)
     {
         $this->m_filename = $filename;
     }
@@ -265,10 +265,10 @@ class Atk_TmpFile
     public function setBasedir($dir)
     {
         if (!is_dir($dir) || !is_writable($dir)) {
-            $err = 'atkTmpFile:: Unable to set ' . $dir .
+            $err = 'Atk_TmpFile:: Unable to set ' . $dir .
                 'as basedir. Directory does not exists or isnot writable';
 
-            atkTools::atkwarning($err);
+            Atk_Tools::atkwarning($err);
             return false;
         }
         $this->m_basedir = $dir;
@@ -283,7 +283,7 @@ class Atk_TmpFile
     public function getBasedir()
     {
         if (!$this->m_basedir) {
-            $this->m_basedir = atkConfig::getGlobal('atktempdir');
+            $this->m_basedir = Atk_Config::getGlobal('atktempdir');
         }
         return $this->m_basedir;
     }
@@ -351,8 +351,8 @@ class Atk_TmpFile
      */
     public function createDirectoryStructure()
     {
-        atkTools::useattrib('atkfileattribute');
-        return atkFileAttribute::mkdir(dirname($this->getPath()));
+        Atk_Tools::useattrib('atkfileattribute');
+        return Atk_FileAttribute::mkdir(dirname($this->getPath()));
     }
 
 }

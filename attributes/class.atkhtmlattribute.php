@@ -15,7 +15,7 @@
  * $Id$
  */
 // Load used attribute class
-atkTools::useattrib("atktextattribute");
+Atk_Tools::useattrib("atktextattribute");
 
 /**
  * The atkHtmlAttribute class is the same as a normal atkAttribute. It only

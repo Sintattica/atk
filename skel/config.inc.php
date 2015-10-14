@@ -150,7 +150,7 @@ $config_output_gzip = false;
 // "pop3"   - users / passwords are stored in the POP3 server
 // "ldap"   - users / passwords are stored in an LDAP server
 // "server" - authentication is done by the webserver (.htaccess)
-// custom type with a fullclassname like 'module.mymodule.myauth' (syntax similar as atknew or atkTools::atkimport()
+// custom type with a fullclassname like 'module.mymodule.myauth' (syntax similar as atknew or Atk_Tools::atkimport()
 // if you need to use multiple authentication types list them delimited by comma
 $config_authentication = "none";
 
@@ -267,11 +267,11 @@ $config_logfile = "/tmp/atk-security.log";
 // If you have config_authentication set to "config", you may now specify
 // a set of usernames and passwords (in plain text).
 // Example:
-// atkConfig::addUser("harry","password");
+// Atk_Config::addUser("harry","password");
 // If securityscheme is "level" or "group", you may also specify the
 // level or group as third parameter:
-// atkConfig::addUser("harry","password",3);
-// atkConfig::addUser("harry","password","admins");
+// Atk_Config::addUser("harry","password",3);
+// Atk_Config::addUser("harry","password","admins");
 // -------------- DOCUMENT WRITER CONFIGURATION ---------------
 // For document attributes, ATK automatically searches for template
 // documents in a specific directory. The base directory to search in

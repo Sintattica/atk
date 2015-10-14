@@ -24,9 +24,9 @@
 abstract class Atk_DGComponent
 {
     /**
-     * The atkDataGrid.
+     * The Atk_DataGrid.
      *
-     * @var atkDataGrid
+     * @var Atk_DataGrid
      */
     private $m_grid;
 
@@ -40,7 +40,7 @@ abstract class Atk_DGComponent
     /**
      * Constructor.
      *
-     * @param atkDataGrid $grid    grid
+     * @param Atk_DataGrid $grid    grid
      * @param array       $options component options
      */
     public function __construct($grid, $options = array())
@@ -72,7 +72,7 @@ abstract class Atk_DGComponent
     /**
      * Returns the data grid.
      *
-     * @return atkDataGrid data grid
+     * @return Atk_DataGrid data grid
      */
     protected function getGrid()
     {
@@ -82,7 +82,7 @@ abstract class Atk_DGComponent
     /**
      * Returns the data grid node.
      *
-     * @return atkNode node
+     * @return Atk_Node node
      */
     protected function getNode()
     {
@@ -116,7 +116,7 @@ abstract class Atk_DGComponent
      */
     protected function getTheme()
     {
-        return atkTools::atkinstance("atk.ui.atktheme");
+        return Atk_Tools::atkinstance("atk.ui.atktheme");
     }
 
     /**

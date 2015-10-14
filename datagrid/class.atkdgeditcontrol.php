@@ -12,7 +12,7 @@
  * 
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
-atkTools::atkimport('atk.datagrid.atkdgcomponent');
+Atk_Tools::atkimport('atk.datagrid.atkdgcomponent');
 
 /**
  * The data grid no records found message. Can be used to render a 
@@ -29,7 +29,7 @@ class Atk_DGEditControl extends Atk_DGComponent
     /**
      * Renders the no records found message for the given data grid.
      *
-     * @param atkDataGrid $grid the data grid
+     * @param Atk_DataGrid $grid the data grid
      * @return string rendered HTML
      */
     public function render()

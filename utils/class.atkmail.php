@@ -41,7 +41,7 @@ class Atk_Mail
      */
     function mail()
     {
-        if (atkConfig::getGlobal("mail_enabled", true)) {
+        if (Atk_Config::getGlobal("mail_enabled", true)) {
             $args = func_get_args();
             return call_user_func_array("mail", $args);
         } else

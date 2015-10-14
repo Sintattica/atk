@@ -22,13 +22,13 @@
  */
 function smarty_resource_theme_source($tpl_name, &$tpl_source, &$smarty)
 {
-    $theme = &atkTheme::getInstance();
+    $theme = &Atk_Theme::getInstance();
     $path = $theme->tplPath($tpl_name);
 
     if (!empty($path)) {
         $tpl_source = file_get_contents($path);
 
-        if (atkConfig::getGlobal('debug') >= 3) {
+        if (Atk_Config::getGlobal('debug') >= 3) {
             $tpl_source = "\n<!-- START [{$path}] -->\n" .
                 $tpl_source .
                 "\n<!-- END [{$path}] -->\n";
@@ -45,7 +45,7 @@ function smarty_resource_theme_source($tpl_name, &$tpl_source, &$smarty)
  */
 function smarty_resource_theme_timestamp($tpl_name, &$tpl_timestamp, &$smarty)
 {
-    $theme = &atkTheme::getInstance();
+    $theme = &Atk_Theme::getInstance();
     $path = $theme->tplPath($tpl_name);
 
     if (!empty($path)) {

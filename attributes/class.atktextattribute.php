@@ -17,8 +17,8 @@
 /**
  * include
  */
-include_once(atkConfig::getGlobal("atkroot") . "atk/utils/class.atkbrowsertools.php");
-atkTools::atkimport("atk.attributes.atkattribute");
+include_once(Atk_Config::getGlobal("atkroot") . "atk/utils/class.atkbrowsertools.php");
+Atk_Tools::atkimport("atk.attributes.atkattribute");
 
 /**
  * The atkTextAttribute class represents an attribute of a node
@@ -174,7 +174,7 @@ class Atk_TextAttribute extends Atk_Attribute
      * Database queries (select, insert and update) are passed to this method
      * so the attribute can 'hook' itself into the query.
      *
-     * @param atkQuery $query The SQL query object
+     * @param Atk_Query $query The SQL query object
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
@@ -267,7 +267,7 @@ class Atk_TextAttribute extends Atk_Attribute
     {
         $browser = new Atk_BrowserInfo();
         $maxlinechars = 0;
-        for ($counter = 0, $linecharacters = 0, $rowsrequired = 1; $counter < atkTools::atk_strlen($data); $counter++, $linecharacters++) {
+        for ($counter = 0, $linecharacters = 0, $rowsrequired = 1; $counter < Atk_Tools::atk_strlen($data); $counter++, $linecharacters++) {
             // Current character we are parsing
             $character = substr($data, $counter, 1);
 

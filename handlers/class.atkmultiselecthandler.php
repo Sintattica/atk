@@ -24,7 +24,7 @@
  * @subpackage handlers
  *
  */
-atkTools::atkimport("atk.handlers.atkadminhandler");
+Atk_Tools::atkimport("atk.handlers.atkadminhandler");
 
 class Atk_MultiSelectHandler extends Atk_AdminHandler
 {
@@ -61,7 +61,7 @@ class Atk_MultiSelectHandler extends Atk_AdminHandler
         $recordset = $node->selectDb(implode(' OR ', $this->m_postvars['atkselector']), $columnConfig->getOrderByStatement(), "", $node->m_listExcludes, "", "multiselect");
 
         // loop recordset to parse atktargetvar
-        $atktarget = atkTools::atkurldecode($node->m_postvars['atktarget']);
+        $atktarget = Atk_Tools::atkurldecode($node->m_postvars['atktarget']);
         $atktargetvar = $node->m_postvars['atktargetvar'];
         $atktargettpl = $node->m_postvars['atktargetvartpl'];
 
@@ -84,7 +84,7 @@ class Atk_MultiSelectHandler extends Atk_AdminHandler
      */
     function parseString($string, $recordset)
     {
-        atkTools::atkimport("atk.utils.atkstringparser");
+        Atk_Tools::atkimport("atk.utils.atkstringparser");
         $parser = new Atk_StringParser($string);
 
         // for backwardscompatibility reasons, we also support the '[pk]' var.
@@ -113,13 +113,13 @@ class Atk_MultiSelectHandler extends Atk_AdminHandler
 
         $this->getNode()->addStyle("style.css");
 
-        $params["header"] = atkTools::atktext("title_multiselect", $this->getNode()->m_module, $this->getNode()->m_type);
+        $params["header"] = Atk_Tools::atktext("title_multiselect", $this->getNode()->m_module, $this->getNode()->m_type);
 
         $actions['actions'] = array();
         $actions['mra'][] = 'multiselect';
 
-        atkTools::atkimport('atk.datagrid.atkdatagrid');
-        $grid = atkDataGrid::create($this->getNode(), 'multiselect');
+        Atk_Tools::atkimport('atk.datagrid.atkdatagrid');
+        $grid = Atk_DataGrid::create($this->getNode(), 'multiselect');
         /**
          * At first the changes below looked like the solution for the error
          * on the contact multiselect page. Except this is not the case, because
@@ -131,13 +131,13 @@ class Atk_MultiSelectHandler extends Atk_AdminHandler
             $grid->setDefaultActions($actions);
         }
 
-        $grid->removeFlag(atkDataGrid::EXTENDED_SEARCH);
-        $grid->addFlag(atkDataGrid::MULTI_RECORD_ACTIONS);
+        $grid->removeFlag(Atk_DataGrid::EXTENDED_SEARCH);
+        $grid->addFlag(Atk_DataGrid::MULTI_RECORD_ACTIONS);
         $params["list"] = $grid->render();
 
-        if (atkSessionManager::atkLevel() > 0) {
-            $backlinkurl = atkSessionManager::sessionUrl(atkTools::atkSelf() . '?atklevel=' . atkSessionManager::newLevel(SESSION_BACK));
-            $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backlinkurl . '\';" value="' . atkTools::atktext('cancel') . '"></div>';
+        if (Atk_SessionManager::atkLevel() > 0) {
+            $backlinkurl = Atk_SessionManager::sessionUrl(Atk_Tools::atkSelf() . '?atklevel=' . Atk_SessionManager::newLevel(SESSION_BACK));
+            $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backlinkurl . '\';" value="' . Atk_Tools::atktext('cancel') . '"></div>';
         }
 
         $output = $this->getUi()->renderList("multiselect", $params);

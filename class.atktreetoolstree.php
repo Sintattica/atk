@@ -15,7 +15,7 @@
  * $Id$
  */
 
-include_once(atkConfig::getGlobal("atkroot") . "atk/class.atktreetoolsnode.php");
+include_once(Atk_Config::getGlobal("atkroot") . "atk/class.atktreetoolsnode.php");
 
 /**
  * Tree class, used to build trees of nodes.
@@ -78,9 +78,9 @@ class Atk_TreeToolsTree
     {
         global $ATK_VARS;
         $postTree = $ATK_VARS["atktree"];
-        $sessionTree = atkSessionManager::sessionLoad("atktree");
+        $sessionTree = Atk_SessionManager::sessionLoad("atktree");
         if ($postTree != "" && $sessionTree != $postTree) {
-            atkSessionManager::sessionStore("atktree", $postTree); // new in the session
+            Atk_SessionManager::sessionStore("atktree", $postTree); // new in the session
             $realTree = $postTree;
         } else {
             $realTree = $sessionTree; // use the last known tree

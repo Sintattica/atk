@@ -15,7 +15,7 @@
  * $Id$
  */
 /** @internal Include base class */
-atkTools::useattrib("atkmlattribute");
+Atk_Tools::useattrib("atkmlattribute");
 
 /**
  * The atkMlTextAttribute class represents an multilanguage attribute
@@ -58,8 +58,8 @@ class Atk_MlTextAttribute extends Atk_MlAttribute
         $id = $this->getHtmlId($prefix);
         $this->m_languages = $languages;
         /* register javascript */
-        $page = &atkPage::getInstance();
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atkmultilanguage.js.php");
+        $page = &Atk_Page::getInstance();
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atkmultilanguage.js.php");
         //$page->register_submitscript('submitSave(form);');
 
         $this->m_size = $this->maxInputSize();
@@ -94,7 +94,7 @@ class Atk_MlTextAttribute extends Atk_MlAttribute
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
-        atkAttribute::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
+        Atk_Attribute::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
 
         if ($this->m_edited) { // if we edited this attrib, we also need to add the
             $key = array_search($this->m_ownerInstance->m_postvars['atkeditlng'], $this->m_languages);
@@ -102,7 +102,7 @@ class Atk_MlTextAttribute extends Atk_MlAttribute
             $entry = array("name" => $this->m_name . "_ml", "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
 
             /* label? */
-            $entry["label"] = $this->label($defaults) . ' (<label id="' . $fieldprefix . $this->formName() . '_label">' . atkTools::atktext("language_" . strtolower($curlng)) . '</label>)';
+            $entry["label"] = $this->label($defaults) . ' (<label id="' . $fieldprefix . $this->formName() . '_label">' . Atk_Tools::atktext("language_" . strtolower($curlng)) . '</label>)';
             $entry["id"] = $this->getHtmlId($fieldprefix);
             $entry["tabs"] = $this->m_tabs;
             $entry["sections"] = $this->m_sections;

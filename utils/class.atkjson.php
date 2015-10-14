@@ -64,7 +64,7 @@ class Atk_JSON
 
         if (!isset($services[$assoc])) {
             if (!class_exists("Services_JSON")) {
-                include_once atkConfig::getGlobal('atkroot') . 'atk/ext/json/json.php';
+                include_once Atk_Config::getGlobal('atkroot') . 'atk/ext/json/json.php';
             }
 
             $services[$assoc] = new Services_JSON($assoc ? SERVICES_JSON_LOOSE_TYPE
@@ -92,7 +92,7 @@ class Atk_JSON
                 return json_encode(self::_utf8json($var));
             }
         }
-        $service = atkJSON::_getJSONService();
+        $service = Atk_JSON::_getJSONService();
         return $service->encode($var);
     }
 
@@ -137,7 +137,7 @@ class Atk_JSON
     {
         if (function_exists('json_decode'))
             return json_decode($string, $assoc);
-        $service = atkJSON::_getJSONService($assoc);
+        $service = Atk_JSON::_getJSONService($assoc);
         return $service->decode($string);
     }
 

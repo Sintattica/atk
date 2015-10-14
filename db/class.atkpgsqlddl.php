@@ -31,9 +31,9 @@ class Atk_PgsqlDDL extends Atk_DDL
      *
      * @return atkPgsqlDDL
      */
-    function atkPgsqlDDL()
+    function __construct()
     {
-        $this->atkDDL();
+        parent::__construct();
     }
 
     /**
@@ -144,7 +144,7 @@ class Atk_PgsqlDDL extends Atk_DDL
             foreach ($this->m_fields as $fieldname => $fieldconfig) {
                 if ($fieldname != "" && $fieldconfig["type"] != "" && $this->getType($fieldconfig["type"]) != "") {
                     $fields[] = $this->buildField($fieldname, $fieldconfig["type"], $fieldconfig["size"], $fieldconfig["flags"] & ~DDL_NOTNULL, $fieldconfig["default"]);
-                    if (atkTools::hasFlag($fieldconfig["flags"], DDL_NOTNULL))
+                    if (Atk_Tools::hasFlag($fieldconfig["flags"], DDL_NOTNULL))
                         $notNullFields[] = $fieldname;
                 }
             }

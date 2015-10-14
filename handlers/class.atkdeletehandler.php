@@ -108,7 +108,7 @@ class Atk_DeleteHandler extends Atk_ActionHandler
     protected function _doDelete()
     {
         $atkstoretype = "";
-        $sessionmanager = atkSessionManager::atkGetSessionManager();
+        $sessionmanager = Atk_SessionManager::atkGetSessionManager();
         if ($sessionmanager)
             $atkstoretype = $sessionmanager->stackVar('atkstore');
         switch ($atkstoretype) {
@@ -151,8 +151,8 @@ class Atk_DeleteHandler extends Atk_ActionHandler
      */
     protected function _doDeleteSession()
     {
-        $selector = atkTools::atkArrayNvl($this->m_postvars, 'atkselector', '');
-        return atkTools::atkinstance('atk.session.atksessionstore')->deleteDataRowForSelector($selector);
+        $selector = Atk_Tools::atkArrayNvl($this->m_postvars, 'atkselector', '');
+        return Atk_Tools::atkinstance('atk.session.atksessionstore')->deleteDataRowForSelector($selector);
     }
 
     /**
@@ -196,7 +196,7 @@ class Atk_DeleteHandler extends Atk_ActionHandler
             if ($attrib->deleteAllowed() !== true) {
                 $db = &$this->m_node->getDb();
                 $db->rollback();
-                $location = $this->m_node->feedbackUrl("delete", ACTION_FAILED, null, sprintf(atkTools::atktext("attrib_delete_not_allowed"), atkTools::atktext($attrib->m_name, $this->m_node->m_module, $this->m_node->m_type), $allowed));
+                $location = $this->m_node->feedbackUrl("delete", ACTION_FAILED, null, sprintf(Atk_Tools::atktext("attrib_delete_not_allowed"), Atk_Tools::atktext($attrib->m_name, $this->m_node->m_module, $this->m_node->m_type), $allowed));
                 $this->m_node->redirect($location);
                 return;
             }

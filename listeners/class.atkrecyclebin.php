@@ -71,11 +71,11 @@ class Atk_RecycleBin extends Atk_TriggerListener
      */
     public function preDelete($record)
     {
-        atkTools::atkdebug("delete performed, storing record in recyclebin");
+        Atk_Tools::atkdebug("delete performed, storing record in recyclebin");
 
         if (isset($this->_options["node"])) {
 
-            $node = atkModule::atkGetNode($this->_options["node"]);
+            $node = Atk_Module::atkGetNode($this->_options["node"]);
             $node->addDb($record);
         } else {
 
@@ -94,7 +94,7 @@ class Atk_RecycleBin extends Atk_TriggerListener
             } else { // default behaviour: assume table with _bin appendix
                 $node->setTable($node->getTable() . "_bin");
             }
-            atkTools::atkdebug("adding record to recyclebin");
+            Atk_Tools::atkdebug("adding record to recyclebin");
             $node->addDb($record);
         }
         return true;

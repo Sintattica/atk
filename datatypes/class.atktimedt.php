@@ -14,7 +14,7 @@
  * @version $Revision: 6318 $
  * $Id$
  */
-atkTools::atkimport('atk.datatypes.atkdatatype');
+Atk_Tools::atkimport('atk.datatypes.atkdatatype');
 
 /**
  * The 'time' datatype.
@@ -66,7 +66,7 @@ class Atk_Time extends Atk_DataType
         } else if (is_numeric($time))
             $this->m_time = $time;
         else
-            atkTools::atkerror("Unknown time format! Called with: " .
+            Atk_Tools::atkerror("Unknown time format! Called with: " .
                 "new atkTime($time)");
     }
 
@@ -130,7 +130,7 @@ class Atk_Time extends Atk_DataType
      */
     public function setTemplate($template)
     {
-        $this->m_template = atkTools::atknew('atk.datatypes.atkstringdt', $template);
+        $this->m_template = Atk_Tools::atknew('atk.datatypes.atkstringdt', $template);
         return $this;
     }
 
@@ -166,8 +166,8 @@ class Atk_Time extends Atk_DataType
     /**
      * Gets the hours of the current time object.
      *
-     * example: atkTime::create(3677)->getHours() returns 1
-     * example: atkTime::create(3680)->getHours(true) returns "01"
+     * example: Atk_Time::create(3677)->getHours() returns 1
+     * example: Atk_Time::create(3680)->getHours(true) returns "01"
      *
      * @param bool $leadingzero Wether or not to use a leading zero
      *                          when applicable.
@@ -184,8 +184,8 @@ class Atk_Time extends Atk_DataType
     /**
      * Gets the minutes of the current time object
      *
-     * example: atkTime::create(126)->getMinutes() returns 2
-     * example: atkTime::create(126)->getMinutes(true) returns "02"
+     * example: Atk_Time::create(126)->getMinutes() returns 2
+     * example: Atk_Time::create(126)->getMinutes(true) returns "02"
      *
      * @param bool $leadingzero Wether or not to use a leading zero
      *                          when applicable.
@@ -202,8 +202,8 @@ class Atk_Time extends Atk_DataType
     /**
      * Gets the seconds for the current time object.
      *
-     * example: atkTime::create(45)->getSeconds() returns 45
-     * example: atkTime::create(5)->getSeconds(true) returns "05"
+     * example: Atk_Time::create(45)->getSeconds() returns 45
+     * example: Atk_Time::create(5)->getSeconds(true) returns "05"
      *
      * @param bool $leadingzero Wether or not to use a leading zero
      *                          when applicable.
@@ -245,7 +245,7 @@ class Atk_Time extends Atk_DataType
     /**
      * Get the description for the current time object.
      *
-     * example: atkTime::create(3666)->getDescription(
+     * example: Atk_Time::create(3666)->getDescription(
      *            '[hours] hours and [minutes] minutes');
      *
      * @param string $template The template to use, if none is passed
@@ -271,7 +271,7 @@ class Atk_Time extends Atk_DataType
     public function getFormatted($format = '')
     {
         $format = ($format ? $format : $this->m_format);
-        atkTools::atkdebug("formatting time: {$this->m_time} with format $format");
+        Atk_Tools::atkdebug("formatting time: {$this->m_time} with format $format");
         return date($format, $this->m_time);
     }
 
@@ -279,7 +279,7 @@ class Atk_Time extends Atk_DataType
      * Get the difference between the current time object and
      * another time object as a time object.
      *
-     * example: atkTime::create(3600)->getDiff(new atkTime(600)) will
+     * example: Atk_Time::create(3600)->getDiff(new atkTime(600)) will
      *          return a time object with 3000 seconds or 50 minutes.
      *
      * @param atkTime $compare The time object to compare against.

@@ -12,7 +12,7 @@
  * 
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
-atkTools::atkimport('atk.datagrid.atkdgcomponent');
+Atk_Tools::atkimport('atk.datagrid.atkdgcomponent');
 
 /**
  * The data grid paginator. Can be used to render pagination 
@@ -35,13 +35,13 @@ class Atk_DGPaginator extends Atk_DGComponent
     /**
      * Constructor.
      *
-     * @param atkDataGrid $grid    grid
+     * @param Atk_DataGrid $grid    grid
      * @param array       $options component options
      */
     public function __construct($grid, $options = array())
     {
         parent::__construct($grid, $options);
-        $this->m_maxLinks = atkConfig::getGlobal('pagelinks', 10);
+        $this->m_maxLinks = Atk_Config::getGlobal('pagelinks', 10);
     }
 
     /**

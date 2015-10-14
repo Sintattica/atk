@@ -53,8 +53,8 @@ class Atk_DGRenderer extends Atk_DGComponent
     protected function renderForm($result)
     {
         if (!$this->getGrid()->isUpdate() && !$this->getGrid()->isEmbedded()) {
-            $result = '<form id="' . $this->getGrid()->getFormName() . '" name="' . $this->getGrid()->getFormName() . '" method="post" action="' . atkTools::atkSelf() . '">' .
-                atkTools::session_form() .
+            $result = '<form id="' . $this->getGrid()->getFormName() . '" name="' . $this->getGrid()->getFormName() . '" method="post" action="' . Atk_Tools::atkSelf() . '">' .
+                Atk_Tools::session_form() .
                 $result .
                 '</form>';
         }
@@ -73,7 +73,7 @@ class Atk_DGRenderer extends Atk_DGComponent
 
         // $this->getGrid() is an atkdatagrid instance
         foreach ($this->getGrid()->getComponentInstances() as $name => $comp) {
-            $vars[$name] = $comp->render(); // when $name == "list", $comp->render() results in a call to atkDGList::render()
+            $vars[$name] = $comp->render(); // when $name == "list", $comp->render() results in a call to Atk_DGList::render()
         }
 
         return $this->getUi()->render($this->getGrid()->getTemplate(), $vars);
@@ -87,13 +87,13 @@ class Atk_DGRenderer extends Atk_DGComponent
         if ($this->getGrid()->isUpdate())
             return;
 
-        atkTools::atkimport('atk.utils.atkjson');
+        Atk_Tools::atkimport('atk.utils.atkjson');
 
-        $name = atkJSON::encode($this->getGrid()->getName());
-        $baseUrl = atkJSON::encode($this->getGrid()->getBaseUrl());
+        $name = Atk_JSON::encode($this->getGrid()->getName());
+        $baseUrl = Atk_JSON::encode($this->getGrid()->getBaseUrl());
         $embedded = $this->getGrid()->isEmbedded() ? 'true' : 'false';
 
-        $this->getPage()->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/class.atkdatagrid.js');
+        $this->getPage()->register_script(Atk_Config::getGlobal('atkroot') . 'atk/javascript/class.atkdatagrid.js');
         $this->getPage()->register_loadscript("
       ATK.DataGrid.register($name, $baseUrl, $embedded);
     ");

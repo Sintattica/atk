@@ -15,7 +15,7 @@
  * $Id$
  */
 /** @internal Include base class */
-atkTools::useattrib("atklistattribute");
+Atk_Tools::useattrib("atklistattribute");
 
 /** Defines */
 define("AF_NO_TOGGLELINKS", AF_SPECIFIC_2);
@@ -62,7 +62,7 @@ class Atk_MultiSelectAttribute extends Atk_ListAttribute
         if ($size == "") {
             $size = 0;
             for ($i = 0, $_i = count($valueArray); $i < $_i; $i++) {
-                $size+=(atkTools::atk_strlen($valueArray[$i]) + 1); // 1 extra for the '|' symbol
+                $size+=(Atk_Tools::atk_strlen($valueArray[$i]) + 1); // 1 extra for the '|' symbol
             }
         }
         $this->atkListAttribute($name, $optionArray, $valueArray, $flags, $size); // base class constructor
@@ -102,7 +102,7 @@ class Atk_MultiSelectAttribute extends Atk_ListAttribute
      */
     function value2db($rec)
     {
-        //atkTools::atkdebug("multiselectattribute::value2db()");
+        //Atk_Tools::atkdebug("multiselectattribute::value2db()");
         if (is_array($rec[$this->fieldName()]) && count($rec[$this->fieldName()] >= 1)) {
             return $this->escapeSQL(implode($this->m_fieldSeparator, $rec[$this->fieldName()]));
         } else
@@ -176,7 +176,7 @@ class Atk_MultiSelectAttribute extends Atk_ListAttribute
 
         $id = $fieldprefix . $this->fieldName();
 
-        $page = &atkPage::getInstance();
+        $page = &Atk_Page::getInstance();
         $page->register_script($config_atkroot . "atk/javascript/class.atkprofileattribute.js.php");
 
         $result = "";
@@ -193,7 +193,7 @@ class Atk_MultiSelectAttribute extends Atk_ListAttribute
 
         for ($i = 0; $i < count($values); $i++) {
             if (!$this->hasFlag(AF_CHECK_ALL)) {
-                (atkTools::atk_in_array($values[$i], $recordvalue)) ? $sel = "checked" : $sel = "";
+                (Atk_Tools::atk_in_array($values[$i], $recordvalue)) ? $sel = "checked" : $sel = "";
             } else {
                 $sel = "checked";
             }
@@ -271,14 +271,14 @@ class Atk_MultiSelectAttribute extends Atk_ListAttribute
      */
     function _addLinks($fieldprefix)
     {
-        if (count($this->m_values) > 4 && !atkTools::hasFlag($this->m_flags, AF_NO_TOGGLELINKS)) {
+        if (count($this->m_values) > 4 && !Atk_Tools::hasFlag($this->m_flags, AF_NO_TOGGLELINKS)) {
             return '<div align="left"><font size="-2">
                   [<a href="javascript:void(0)" onclick="profile_checkAll(\'' . $fieldprefix . $this->fieldName() . '\'); return false;">' .
-                atkTools::atktext("check_all") .
+                Atk_Tools::atktext("check_all") .
                 '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\'' . $fieldprefix . $this->fieldName() . '\'); return false;">' .
-                atkTools::atktext("check_none") .
+                Atk_Tools::atktext("check_none") .
                 '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\'' . $fieldprefix . $this->fieldName() . '\'); return false;">' .
-                atkTools::atktext("invert_selection") . '</a>]</font></div>';
+                Atk_Tools::atktext("invert_selection") . '</a>]</font></div>';
         }
     }
 

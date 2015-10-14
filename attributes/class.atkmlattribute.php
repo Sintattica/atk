@@ -16,7 +16,7 @@
  */
 
 /**
- * The atkMlAttribute class represents an multilanguage attribute of an atkNode.
+ * The atkMlAttribute class represents an multilanguage attribute of an Atk_Node.
  *
  * @author Peter Verhage <peter@ibuildings.nl>
  * @package atk
@@ -41,7 +41,7 @@ class Atk_MlAttribute extends Atk_Attribute
         global $config_atkroot;
         /* base class constructor */
         $this->atkAttribute($name, $flags, $size);
-        $this->m_language = strtoupper(atkConfig::getGlobal("defaultlanguage"));
+        $this->m_language = strtoupper(Atk_Config::getGlobal("defaultlanguage"));
     }
 
     /**
@@ -74,7 +74,7 @@ class Atk_MlAttribute extends Atk_Attribute
      */
     function getLanguages()
     {
-        return atkConfig::getGlobal("supported_languages");
+        return Atk_Config::getGlobal("supported_languages");
     }
 
     /**
@@ -90,8 +90,8 @@ class Atk_MlAttribute extends Atk_Attribute
     {
         $this->m_edited = true;
         /* register javascript */
-        $page = &atkPage::getInstance();
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atkmultilanguage.js.php");
+        $page = &Atk_Page::getInstance();
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atkmultilanguage.js.php");
 
         $languages = $this->getLanguages();
         $this->m_languages = $languages; // cache.
@@ -133,7 +133,7 @@ class Atk_MlAttribute extends Atk_Attribute
             $entry = array("name" => $this->m_name . "_ml", "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
 
             /* label? */
-            $entry["label"] = $this->label($defaults) . ' (<label id="' . $fieldprefix . $this->formName() . '_label">' . atkTools::atktext("language_" . strtolower($curlng)) . '</label>)';
+            $entry["label"] = $this->label($defaults) . ' (<label id="' . $fieldprefix . $this->formName() . '_label">' . Atk_Tools::atktext("language_" . strtolower($curlng)) . '</label>)';
             $entry["id"] = $this->getHtmlId($fieldprefix);
             $entry["tabs"] = $this->m_tabs;
             $entry["sections"] = $this->m_sections;
@@ -298,7 +298,7 @@ class Atk_MlAttribute extends Atk_Attribute
      * Database queries (select, insert and update) are passed to this method
      * so the attribute can 'hook' itself into the query.
      *
-     * @param atkQuery $query The SQL query object
+     * @param Atk_Query $query The SQL query object
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
@@ -355,7 +355,7 @@ class Atk_MlAttribute extends Atk_Attribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param Atk_Query $query     The query object where the search condition should be placed on
      * @param String $table       The name of the table in which this attribute
      *                              is stored
      * @param mixed $value        The value the user has entered in the searchbox
@@ -372,7 +372,7 @@ class Atk_MlAttribute extends Atk_Attribute
             $searchcondition = $query->$func($table . "." . $this->fieldName() . (!$this->isMlNode()
                         ? '_' . $languages[0] : ''), $this->escapeSQL($value));
         } else {
-            atkTools::atkdebug("Database doesn't support searchmode '$searchmode' for " . $this->fieldName() . ", ignoring condition.");
+            Atk_Tools::atkdebug("Database doesn't support searchmode '$searchmode' for " . $this->fieldName() . ", ignoring condition.");
         }
         return $searchcondition;
     }

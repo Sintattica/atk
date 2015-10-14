@@ -28,7 +28,7 @@
  * @subpackage attributes
  *
  */
-atkTools::atkimport("atk.attributes.atkdummyattribute");
+Atk_Tools::atkimport("atk.attributes.atkdummyattribute");
 
 class Atk_RowCounter extends Atk_DummyAttribute
 {

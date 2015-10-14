@@ -94,7 +94,7 @@ class Atk_DurationAttribute extends Atk_Attribute
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $id = $fieldprefix . $this->formName();
-        $fieldvalue = atkTools::atkArrayNvl($record, $this->fieldName(), "");
+        $fieldvalue = Atk_Tools::atkArrayNvl($record, $this->fieldName(), "");
         if (!$this->hasFlag(AF_DURATION_STRING)) {
             $result = '';
             if ($this->m_maxtime_min >= 60) {
@@ -106,7 +106,7 @@ class Atk_DurationAttribute extends Atk_Attribute
                     $result .= '<option value="' . $h . '" ';
                     if ($curhours == $h)
                         $result.= "selected";
-                    $result .='>' . $h . ' ' . atkTools::atktext('hours', 'atk');
+                    $result .='>' . $h . ' ' . Atk_Tools::atktext('hours', 'atk');
                     if ($this->m_resolution_min <= 60) {
                         $h++;
                     } else {
@@ -123,7 +123,7 @@ class Atk_DurationAttribute extends Atk_Attribute
                     $result .= '<option value="' . $m . '" ';
                     if ($curminutes == $m)
                         $result.= "selected";
-                    $result .='>' . $m . ' ' . atkTools::atktext('minutes', 'atk');
+                    $result .='>' . $m . ' ' . Atk_Tools::atktext('minutes', 'atk');
                     if ($this->m_resolution_min <= 1) {
                         $m++;
                     } else {
@@ -227,10 +227,10 @@ class Atk_DurationAttribute extends Atk_Attribute
             $minutes = abs($minutes);
         }
 
-        if (atkConfig::getGlobal("durationformat", 0) == DURATIONFORMAT_DECIMAL) {
+        if (Atk_Config::getGlobal("durationformat", 0) == DURATIONFORMAT_DECIMAL) {
             $decimalvalue = $this->_getHourPart($minutes) + (self::_getMinutePart($minutes) / 60);
             return $prefix . sprintf("%02.02f", $decimalvalue);
-        } elseif (atkConfig::getGlobal("durationformat", 0) == DURATIONFORMAT_TIME) {
+        } elseif (Atk_Config::getGlobal("durationformat", 0) == DURATIONFORMAT_TIME) {
             return $prefix . sprintf("%d:%02d", self::_getHourPart($minutes), self::_getMinutePart($minutes));
         }
     }

@@ -28,12 +28,12 @@ $config_atkroot = "./";
 
 include_once($config_atkroot . "atk/include/initial.php");
 
-atkSessionManager::atksession();
+Atk_SessionManager::atksession();
 atksecure();
 
-$debugger = &atkTools::atkinstance("atk.utils.atkdebugger");
+$debugger = &Atk_Tools::atkinstance("atk.utils.atkdebugger");
 
-$output = &atkOutput::getInstance();
+$output = &Atk_Output::getInstance();
 
 $output->output($debugger->renderConsole());
 

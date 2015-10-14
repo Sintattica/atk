@@ -51,7 +51,7 @@ class Atk_MlWrapper extends Atk_Attribute
 
         foreach ($this->getLanguages() as $lng) {
             // Clone attrs with new name
-            $attr = atkTools::atkClone($attribute);
+            $attr = Atk_Tools::atkClone($attribute);
 
             $attr->m_name = $this->m_name . "_" . $lng;
             $this->m_childList[$lng] = $attr;
@@ -65,7 +65,7 @@ class Atk_MlWrapper extends Atk_Attribute
      */
     function getLanguages()
     {
-        return atkConfig::getGlobal("supported_languages");
+        return Atk_Config::getGlobal("supported_languages");
     }
 
     /**
@@ -76,7 +76,7 @@ class Atk_MlWrapper extends Atk_Attribute
     function isEmpty($record)
     {
         // @todo
-        atkTools::atkdebug("mlwrap isempty");
+        Atk_Tools::atkdebug("mlwrap isempty");
         return false;
     }
 
@@ -207,8 +207,8 @@ class Atk_MlWrapper extends Atk_Attribute
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
         $defaultlng = $this->getDefaultLng();
-        $page = &atkPage::getInstance();
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/dhtml_formtools.js");
+        $page = &Atk_Page::getInstance();
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/dhtml_formtools.js");
         $cnt = 0;
         foreach (array_keys($this->m_childList) as $lng) {
             $attr = &$this->m_childList[$lng];
@@ -218,7 +218,7 @@ class Atk_MlWrapper extends Atk_Attribute
                 $attr->setLabel($this->label());
             } else {
                 // other languages
-                $attr->setLabel($this->label() . " (" . atkTools::atktext('language_' . strtolower($lng)) . ")");
+                $attr->setLabel($this->label() . " (" . Atk_Tools::atktext('language_' . strtolower($lng)) . ")");
 
                 // All but the first other attrib need to be initially hidden.
                 if ($cnt > 1) {
@@ -274,7 +274,7 @@ class Atk_MlWrapper extends Atk_Attribute
      */
     function validate(&$record, $mode)
     {
-        atkTools::atkdebug("mlwrap validate");
+        Atk_Tools::atkdebug("mlwrap validate");
     }
 
     /**
@@ -288,7 +288,7 @@ class Atk_MlWrapper extends Atk_Attribute
      * database field (like relations for example), may have to reimplement
      * this method.
      *
-     * @param atkQuery $query The SQL query object
+     * @param Atk_Query $query The SQL query object
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
@@ -353,7 +353,7 @@ class Atk_MlWrapper extends Atk_Attribute
      */
     function dbFieldType()
     {
-        atkTools::atkdebug("mlwrap dbfieldtype");
+        Atk_Tools::atkdebug("mlwrap dbfieldtype");
     }
 
     /**
@@ -375,7 +375,7 @@ class Atk_MlWrapper extends Atk_Attribute
      */
     function dbFieldSize()
     {
-        atkTools::atkdebug("mlwrap dbfieldsize");
+        Atk_Tools::atkdebug("mlwrap dbfieldsize");
     }
 
     /**
@@ -458,7 +458,7 @@ class Atk_MlWrapper extends Atk_Attribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param Atk_Query $query     The query object where the search condition should be placed on
      * @param String $table       The name of the table in which this attribute
      *                              is stored
      * @param mixed $value        The value the user has entered in the searchbox

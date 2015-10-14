@@ -28,7 +28,7 @@ class Atk_SelectorIterator extends IteratorIterator
     /**
      * Selector.
      *
-     * @var atkSelector
+     * @var Atk_Selector
      */
     private $m_selector;
 
@@ -36,9 +36,9 @@ class Atk_SelectorIterator extends IteratorIterator
      * Constructor.
      *
      * @param Iterator    $iterator iterator
-     * @param atkSelector $selector selector
+     * @param Atk_Selector $selector selector
      */
-    public function __construct(Iterator $iterator, atkSelector $selector)
+    public function __construct(Iterator $iterator, Atk_Selector $selector)
     {
         parent::__construct($iterator);
         $this->m_selector = $selector;
@@ -47,7 +47,7 @@ class Atk_SelectorIterator extends IteratorIterator
     /**
      * Returns the selector.
      *
-     * @return atkSelector selector
+     * @return Atk_Selector selector
      */
     public function getSelector()
     {

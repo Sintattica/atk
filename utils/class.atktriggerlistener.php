@@ -23,7 +23,7 @@
  * postUpdate, preDelete etc. functions that will automatically be called
  * when such a trigger occurs. For more flexibility, override only
  * the notify($trigger, $record) method which catches every trigger. 
- * Using atkNode::addListener you can add listeners that catch evens such as 
+ * Using Atk_Node::addListener you can add listeners that catch evens such as 
  * records updates and additions.
  * This is much like the classic atk postUpdate/postAdd triggers, only much
  * more flexible.
@@ -38,16 +38,16 @@ class Atk_TriggerListener
     /**
      * The owning node of the listener.
      * @access private
-     * @var atkNode
+     * @var Atk_Node
      */
     var $m_node = NULL;
 
     /**
      * Base constructor.
      * 
-     * @return atkTriggerListener
+     * @return Atk_TriggerListener
      */
-    function atkTriggerListener()
+    function __construct()
     {
         
     }
@@ -55,10 +55,10 @@ class Atk_TriggerListener
     /**
      * Set the owning node of the listener.
      *
-     * When using atkNode::addListener to add a listener to a node it is not
+     * When using Atk_Node::addListener to add a listener to a node it is not
      * necessary to call this method as addListener will do that for you.
      *
-     * @param atkNode $node The node to set as owner
+     * @param Atk_Node $node The node to set as owner
      */
     function setNode(&$node)
     {
@@ -80,7 +80,7 @@ class Atk_TriggerListener
     function notify($trigger, &$record, $mode = NULL)
     {
         if (method_exists($this, $trigger)) {
-            atkTools::atkdebug("Call listener " . get_class($this) . " for trigger $trigger on " . $this->m_node->atkNodeType() . " (" . $this->m_node->primaryKey($record) . ")");
+            Atk_Tools::atkdebug("Call listener " . get_class($this) . " for trigger $trigger on " . $this->m_node->atkNodeType() . " (" . $this->m_node->primaryKey($record) . ")");
             return $this->$trigger($record, $mode);
         } else {
             return true;

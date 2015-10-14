@@ -43,7 +43,7 @@ define("ATK_ACTION_BACK", 1);
 class Atk_ActionHandler
 {
     /**
-     * @var atkNode
+     * @var Atk_Node
      * @access private
      */
     var $m_node = NULL;
@@ -82,6 +82,10 @@ class Atk_ActionHandler
         
     }
 
+    function __construct(){
+
+    }
+
     /**
      * The handle() method handles the action.
      *
@@ -91,7 +95,7 @@ class Atk_ActionHandler
      * for the action we don't invoke the action_$action override but
      * instead let the partial method handle the action.
      *
-     * @param atkNode $node The node on which the action should be performed.
+     * @param Atk_Node $node The node on which the action should be performed.
      * @param String $action The action that is being performed.
      * @param array $postvars Any variables from the request
      *
@@ -107,7 +111,7 @@ class Atk_ActionHandler
 
         // when we're finished, cleanup any atkrejects (that we haven't set ourselves).
         if (!$this->m_rejecting) {
-            atkTools::atkdebug("clearing the stuff");
+            Atk_Tools::atkdebug("clearing the stuff");
             $this->getRejectInfo(); // this will clear it.
         }
     }
@@ -115,7 +119,7 @@ class Atk_ActionHandler
     /**
      * Returns the node object.
      *
-     * @return atkNode
+     * @return Atk_Node
      */
     public function getNode()
     {
@@ -131,7 +135,7 @@ class Atk_ActionHandler
      */
     function getRejectInfo()
     {
-        return atkSessionManager::atkGetSessionManager()->stackVar('atkreject');
+        return Atk_SessionManager::atkGetSessionManager()->stackVar('atkreject');
     }
 
     /**
@@ -143,13 +147,13 @@ class Atk_ActionHandler
      */
     function setRejectInfo($data)
     {
-        atkSessionManager::atkGetSessionManager()->stackVar('atkreject', $data, atkSessionManager::atkPrevLevel());
+        Atk_SessionManager::atkGetSessionManager()->stackVar('atkreject', $data, Atk_SessionManager::atkPrevLevel());
         $this->m_rejecting = true;
     }
 
     /**
      * Set the calling node of the current action.
-     * @param atkNode $node The node on which the action should be performed.
+     * @param Atk_Node $node The node on which the action should be performed.
      */
     function setNode(&$node)
     {
@@ -261,16 +265,16 @@ class Atk_ActionHandler
         array_shift($arguments);
 
         if ($this->m_node !== NULL && method_exists($this->m_node, $methodname)) {
-            atkTools::atkdebug("Invoking '$methodname' override on node");
+            Atk_Tools::atkdebug("Invoking '$methodname' override on node");
             // We pass the original object as first parameter to the override.
             array_unshift($arguments, $this);
             $arguments[0] = &$this; // reference copy workaround;
             return call_user_func_array(array(&$this->m_node, $methodname), $arguments);
         } else if (method_exists($this, $methodname)) {
-            atkTools::atkdebug("Invoking '$methodname' on actionhandler for action " . $this->m_action);
+            Atk_Tools::atkdebug("Invoking '$methodname' on actionhandler for action " . $this->m_action);
             return call_user_func_array(array(&$this, $methodname), $arguments);
         }
-        atkTools::atkerror("Undefined method '$methodname' in atkActionHandler");
+        Atk_Tools::atkerror("Undefined method '$methodname' in atkActionHandler");
     }
 
     /**
@@ -290,9 +294,9 @@ class Atk_ActionHandler
     {
         // The next if statement checks for 'known' actions. All unknown actions
         // are handled the backwardscompatible default way (invoking action_$action on the node)
-        $filename = atkConfig::getGlobal("atkroot") . "atk/handlers/class.atk" . $action . "handler.php";
+        $filename = Atk_Config::getGlobal("atkroot") . "atk/handlers/class.atk" . $action . "handler.php";
         if (file_exists($filename)) {
-            return atkTools::atknew("atk.handlers.atk" . $action . "handler");
+            return Atk_Tools::atknew("atk.handlers.atk" . $action . "handler");
         } else {
             // We don't have handlers yet for other actions.
             $actionhandler = new Atk_ActionHandler(); // The default handler will automatically
@@ -304,10 +308,10 @@ class Atk_ActionHandler
     /**
      * Modify grid.
      *
-     * @param atkDataGrid $grid grid
+     * @param Atk_DataGrid $grid grid
      * @param int         $mode CREATE or RESUME
      */
-    protected function modifyDataGrid(atkDataGrid $grid, $mode)
+    protected function modifyDataGrid(Atk_DataGrid $grid, $mode)
     {
         $method = 'modifyDataGrid';
         if (method_exists($this->getNode(), $method)) {
@@ -324,7 +328,7 @@ class Atk_ActionHandler
     {
         static $recordlistcache;
         if (!$recordlistcache) {
-            $recordlistcache = &atkTools::atknew("atk.recordlist.atkrecordlistcache");
+            $recordlistcache = &Atk_Tools::atknew("atk.recordlist.atkrecordlistcache");
             $recordlistcache->setNode($this->m_node);
             $recordlistcache->setPostvars($this->m_postvars);
         }
@@ -413,7 +417,7 @@ class Atk_ActionHandler
      */
     function _getAccessDeniedPage()
     {
-        $controller = &atkController::getInstance();
+        $controller = &Atk_Controller::getInstance();
         $controller->setNode($this->m_node);
         return $controller->accessDeniedPage();
     }
@@ -440,12 +444,12 @@ class Atk_ActionHandler
      */
     function renderMessageDialog($message)
     {
-        atkTools::atkimport('atk.ui.atkdialog');
+        Atk_Tools::atkimport('atk.ui.atkdialog');
         $ui = &$this->m_node->getUi();
 
         $params = array();
         $params["content"] = "<br />" . $message . "<br />";
-        $params["buttons"][] = '<input type="button" class="btn btn-default btn_cancel" value="' . $this->m_node->text('close') . '" onClick="' . atkDialog::getCloseCall() . '" />';
+        $params["buttons"][] = '<input type="button" class="btn btn-default btn_cancel" value="' . $this->m_node->text('close') . '" onClick="' . Atk_Dialog::getCloseCall() . '" />';
         $content = $ui->renderAction($this->m_action, $params);
 
         $params = array();
@@ -463,8 +467,8 @@ class Atk_ActionHandler
      */
     function updateDialog($content)
     {
-        atkTools::atkimport('atk.ui.atkdialog');
-        $script = atkDialog::getUpdateCall($content, false);
+        Atk_Tools::atkimport('atk.ui.atkdialog');
+        $script = Atk_Dialog::getUpdateCall($content, false);
         $page = &$this->getPage();
         $page->register_loadscript($script);
     }
@@ -474,8 +478,8 @@ class Atk_ActionHandler
      */
     function closeDialog()
     {
-        atkTools::atkimport('atk.ui.atkdialog');
-        $script = atkDialog::getCloseCall();
+        Atk_Tools::atkimport('atk.ui.atkdialog');
+        $script = Atk_Dialog::getCloseCall();
         $page = &$this->getPage();
         $page->register_loadscript($script);
     }
@@ -510,14 +514,14 @@ class Atk_ActionHandler
     public function getCSRFToken()
     {
         // retrieve earlier generated token from the session stack
-        $token = atkSessionManager::atkGetSessionManager()->globalStackVar('ATK_CSRF_TOKEN');
+        $token = Atk_SessionManager::atkGetSessionManager()->globalStackVar('ATK_CSRF_TOKEN');
         if ($token != null) {
             return $token;
         }
 
         // generate and store token in sesion stack
         $token = md5(uniqid(rand(), true));
-        atkSessionManager::atkGetSessionManager()->globalStackVar('ATK_CSRF_TOKEN', $token);
+        Atk_SessionManager::atkGetSessionManager()->globalStackVar('ATK_CSRF_TOKEN', $token);
 
         return $token;
     }

@@ -26,16 +26,16 @@
 $config_atkroot = "./";
 include_once("atk.php");
 
-$page = &atkTools::atknew("atk.ui.atkpage");
-$ui = &atkTools::atkinstance("atk.ui.atkui");
-$theme = &atkTheme::getInstance();
-$output = &atkOutput::getInstance();
+$page = &Atk_Tools::atknew("atk.ui.atkpage");
+$ui = &Atk_Tools::atkinstance("atk.ui.atkui");
+$theme = &Atk_Theme::getInstance();
+$output = &Atk_Output::getInstance();
 
 $page->register_style($theme->stylePath("style.css"));
-$box = $ui->renderBox(array("title" => atkTools::atktext("app_shorttitle"),
-    "content" => "<br><br>" . atkTools::atktext("app_description") . "<br><br>"));
+$box = $ui->renderBox(array("title" => Atk_Tools::atktext("app_shorttitle"),
+    "content" => "<br><br>" . Atk_Tools::atktext("app_description") . "<br><br>"));
 
 $page->addContent($box);
-$output->output($page->render(atkTools::atktext('app_shorttitle'), true));
+$output->output($page->render(Atk_Tools::atktext('app_shorttitle'), true));
 
 $output->outputFlush();

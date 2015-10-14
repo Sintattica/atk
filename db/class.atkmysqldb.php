@@ -36,12 +36,14 @@ class Atk_MysqlDb extends Atk_Db
     /**
      * Base constructor
      */
-    function atkmysqldb()
+    function __construct()
     {
         if (!function_exists('mysql_connect')) {
-            atkTools::atkerror('MySQL not supported by your PHP version');
+            Atk_Tools::atkerror('MySQL not supported by your PHP version');
             die('MySQL not supported by your PHP version');
         }
+
+        parent::__construct();
 
         // set the user error's
         $this->m_type = "mysql";
@@ -75,7 +77,7 @@ class Atk_MysqlDb extends Atk_Db
 
             /* set character set */
             if (!empty($charset)) {
-                atkTools::atkdebug("Set database character set to: {$charset}");
+                Atk_Tools::atkdebug("Set database character set to: {$charset}");
                 @mysql_query("SET NAMES '{$charset}'", $this->m_link_id);
             }
         }
@@ -117,7 +119,7 @@ class Atk_MysqlDb extends Atk_Db
             case 2004:
             case 2005: return DB_UNKNOWNHOST;
             default:
-                atkTools::atkdebug("mysqldb::translateError -> MySQL Error: " .
+                Atk_Tools::atkdebug("mysqldb::translateError -> MySQL Error: " .
                     $this->m_errno . " -> " . $this->m_error);
                 return DB_UNKNOWNERROR;
         }
@@ -144,7 +146,7 @@ class Atk_MysqlDb extends Atk_Db
     function disconnect()
     {
         if ($this->m_link_id) {
-            atkTools::atkdebug("Disconnecting from database...");
+            Atk_Tools::atkdebug("Disconnecting from database...");
             @mysql_close($this->m_link_id);
             $this->m_link_id = 0;
         }
@@ -178,9 +180,9 @@ class Atk_MysqlDb extends Atk_Db
         if ($offset >= 0 && $limit > 0)
             $query .= " LIMIT $offset, $limit";
 
-        if (atkConfig::getGlobal("debug") >= 0) {
-            atkTools::atkimport("atk.utils.atkdebugger");
-            atkDebugger::addQuery($query);
+        if (Atk_Config::getGlobal("debug") >= 0) {
+            Atk_Tools::atkimport("atk.utils.atkdebugger");
+            Atk_Debugger::addQuery($query);
         }
 
         $mode = $this->getQueryMode($query);
@@ -240,7 +242,7 @@ class Atk_MysqlDb extends Atk_Db
         preg_match("/\'(.*)\'/U", $error, $matches);
 
         if (is_array($matches) && sizeof($matches) == 2) {
-            atkTools::atkdebug("<b>Fallback feature called because error '1100' occured during the last query. Running query again using table lock for table '{$matches[1]}' (" . $this->m_link_id . ").</b>");
+            Atk_Tools::atkdebug("<b>Fallback feature called because error '1100' occured during the last query. Running query again using table lock for table '{$matches[1]}' (" . $this->m_link_id . ").</b>");
             $table = $matches[1];
 
             if ($this->m_query_id) {
@@ -264,7 +266,7 @@ class Atk_MysqlDb extends Atk_Db
     function next_record()
     {
         /* goto next record */
-        $this->m_record = @mysql_fetch_array($this->m_query_id, MYSQL_ASSOC | atkConfig::getGlobal("mysqlfetchmode"));
+        $this->m_record = @mysql_fetch_array($this->m_query_id, MYSQL_ASSOC | Atk_Config::getGlobal("mysqlfetchmode"));
         $this->m_row++;
         $this->m_errno = mysql_errno();
         $this->m_error = mysql_error();
@@ -307,9 +309,9 @@ class Atk_MysqlDb extends Atk_Db
         if ($this->connect("w") == DB_SUCCESS) {
             $query = "lock tables $table $mode";
 
-            if (atkConfig::getGlobal("debug") >= 0) {
-                atkTools::atkimport("atk.utils.atkdebugger");
-                atkDebugger::addQuery($query);
+            if (Atk_Config::getGlobal("debug") >= 0) {
+                Atk_Tools::atkimport("atk.utils.atkdebugger");
+                Atk_Debugger::addQuery($query);
             }
 
             /* lock */
@@ -449,11 +451,11 @@ class Atk_MysqlDb extends Atk_Db
     {
         /* first connect */
         if ($this->connect("r") == DB_SUCCESS) {
-            atkTools::atkimport("atk.db.atkddl");
-            $ddl = &atkDDL::create("mysql");
+            Atk_Tools::atkimport("atk.db.atkddl");
+            $ddl = &Atk_DDL::create("mysql");
 
             /* list fields */
-            atkTools::atkdebug("Retrieving metadata for $table");
+            Atk_Tools::atkdebug("Retrieving metadata for $table");
 
             // table type
             $tableType = $this->_getTableType($table);
@@ -467,7 +469,7 @@ class Atk_MysqlDb extends Atk_Db
             }
 
             if (!$id) {
-                atkTools::atkdebug("Metadata query failed.");
+                Atk_Tools::atkdebug("Metadata query failed.");
                 return array();
             }
 
@@ -510,7 +512,7 @@ class Atk_MysqlDb extends Atk_Db
 
             /* free result */
             @mysql_free_result($id);
-            atkTools::atkdebug("Metadata for $table complete");
+            Atk_Tools::atkdebug("Metadata for $table complete");
             return $result;
         }
         return array();
@@ -553,7 +555,7 @@ class Atk_MysqlDb extends Atk_Db
                     $close = strpos($type, ')', $open) - 1;
                     return substr($type, $open + 1, $close - $open);
                 } else {
-                    atkTools::atkwarning('Unexpected column type format, falling back on mysql_field_len()');
+                    Atk_Tools::atkwarning('Unexpected column type format, falling back on mysql_field_len()');
                 }
             }
         }
@@ -622,7 +624,7 @@ class Atk_MysqlDb extends Atk_Db
     function func_datetochar($fieldname, $format = "")
     {
         if ($format == "")
-            $format = atkConfig::getGlobal("date_to_char", "Y-m-d");
+            $format = Atk_Config::getGlobal("date_to_char", "Y-m-d");
         return "DATE_FORMAT($fieldname, '" . $this->vendorDateFormat($format) . "')";
     }
 

@@ -19,7 +19,7 @@
  * $Id: class.atkdocumentattribute.inc 6354 2009-04-15 02:41:21Z mvdam $
  */
 // Use the atkdummyattribute to extend from
-atkTools::useattrib("atkdummyattribute");
+Atk_Tools::useattrib("atkdummyattribute");
 
 /**
  * DocumentAttribute class for adding document generation functionality to a node
@@ -84,7 +84,7 @@ class Atk_DocumentAttribute extends Atk_DummyAttribute
     function getDocumentFiles($path, $record)
     {
         // Read the directory contents using the directorytraverser
-        $dirtrav = &atkTools::atknew("atk.utils.atkdirectorytraverser");
+        $dirtrav = &Atk_Tools::atknew("atk.utils.atkdirectorytraverser");
         return $dirtrav->getDirContents($path);
     }
 
@@ -100,7 +100,7 @@ class Atk_DocumentAttribute extends Atk_DummyAttribute
     function documentSelector($record, $mode = "", $addForm = true)
     {
         // Compose the path to use when searching for docuemnt templates
-        $basepath = atkConfig::getGlobal("doctemplatedir", "doctemplates/");
+        $basepath = Atk_Config::getGlobal("doctemplatedir", "doctemplates/");
         $module = $this->m_ownerInstance->m_module;
         $node = $this->m_owner;
         $path = $basepath . $module . "/" . $node;
@@ -128,14 +128,14 @@ class Atk_DocumentAttribute extends Atk_DummyAttribute
 
         // Add the button to the html
         $selector = $this->m_ownerInstance->primaryKey($record);
-        $onclickscript = 'window.location="' . atkTools::session_url(atkTools::dispatch_url($module . "." . $node, "document", array("atkselector" => $selector)), SESSION_DEFAULT) . '&atkdoctpl="+this.form.atkdoctpl.value;';
+        $onclickscript = 'window.location="' . Atk_Tools::session_url(Atk_Tools::dispatch_url($module . "." . $node, "document", array("atkselector" => $selector)), SESSION_DEFAULT) . '&atkdoctpl="+this.form.atkdoctpl.value;';
 
-        $html .= '<input type="button" class="btn_doc_open" name="atkdocument" value="' . atkTools::atktext("open") . '" onclick=\'' . $onclickscript . '\'>';
+        $html .= '<input type="button" class="btn_doc_open" name="atkdocument" value="' . Atk_Tools::atktext("open") . '" onclick=\'' . $onclickscript . '\'>';
 
         // Wrap the input elements in a unique session form when no form is present yet (in list and view mode)
         if ((($mode == "list") || ($mode == "view")) && $addForm) {
             static $documentSelectorFormCounter = 0;
-            $html = '<form name="documentSelectorForm' . ++$documentSelectorFormCounter . '">' . atkTools::session_form() . $html . '</form>';
+            $html = '<form name="documentSelectorForm' . ++$documentSelectorFormCounter . '">' . Atk_Tools::session_form() . $html . '</form>';
         }
 
         // Return the generated html

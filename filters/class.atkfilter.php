@@ -42,7 +42,7 @@ class Atk_Filter extends Atk_Attribute
     /**
      * Adds this attribute to database queries.
      *
-     * @param atkQuery $query The SQL query object
+     * @param Atk_Query $query The SQL query object
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.

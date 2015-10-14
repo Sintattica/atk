@@ -71,7 +71,7 @@ class Atk_FileExport
 
         // Fix for downloading (Office) documents using an SSL connection in
         // combination with MSIE.
-        if (($_SERVER["SERVER_PORT"] == "443" || atkTools::atkArrayNvl($_SERVER, 'HTTP_X_FORWARDED_PROTO') == "https") && eregi("msie", $_SERVER["HTTP_USER_AGENT"])) {
+        if (($_SERVER["SERVER_PORT"] == "443" || Atk_Tools::atkArrayNvl($_SERVER, 'HTTP_X_FORWARDED_PROTO') == "https") && eregi("msie", $_SERVER["HTTP_USER_AGENT"])) {
             header('Pragma: public');
         } else {
             header('Pragma: no-cache');

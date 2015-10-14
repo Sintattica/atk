@@ -50,11 +50,11 @@ class Atk_UrlVault
      * @access private
      * @return atkUrlVault
      */
-    function atkUrlVault()
+    function __construct()
     {
-        atkTools::atkdebug("Creating url vault");
-        $sm = &atkSessionManager::atkGetSessionManager();
-        $session = &$sm->getSession();
+        Atk_Tools::atkdebug("Creating url vault");
+        $sm = Atk_SessionManager::atkGetSessionManager();
+        $session = $sm->getSession();
         if (!isset($session["atkurlvault"]) || !is_array($session["atkurlvault"]))
             $session["atkurlvault"] = array();
         $this->m_vault = &$session["atkurlvault"];

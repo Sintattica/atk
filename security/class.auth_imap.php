@@ -55,17 +55,17 @@ class auth_imap extends auth_interface
 
             
 // if it's a virtual mail server add @<domain> to the username
-        if (atkConfig::getGlobal("auth_mail_login_type") == "vmailmgr") {
-            $user = $user . "@" . atkConfig::getGlobal("auth_mail_suffix");
+        if (Atk_Config::getGlobal("auth_mail_login_type") == "vmailmgr") {
+            $user = $user . "@" . Atk_Config::getGlobal("auth_mail_suffix");
         }
 
-        if (atkConfig::getGlobal("auth_mail_server") == "") {
-            $this->m_fatalError = atkTools::atktext("auth_no_server");
+        if (Atk_Config::getGlobal("auth_mail_server") == "") {
+            $this->m_fatalError = Atk_Tools::atktext("auth_no_server");
             return AUTH_ERROR;
         }
 
-        $mailauth = @imap_open("{" . atkConfig::getGlobal("auth_mail_server")
-                . ":" . atkConfig::getGlobal("auth_mail_port") . "}", $user, $passwd);
+        $mailauth = @imap_open("{" . Atk_Config::getGlobal("auth_mail_server")
+                . ":" . Atk_Config::getGlobal("auth_mail_port") . "}", $user, $passwd);
         // TODO/FIXME: return AUTH_ERROR when connection fails..
         if ($mailauth == 0) {
             return AUTH_MISMATCH;

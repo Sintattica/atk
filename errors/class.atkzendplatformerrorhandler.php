@@ -28,7 +28,7 @@ class Atk_ZendPlatformErrorHandler extends Atk_ErrorHandlerBase
             else
                 $errMsg = preg_replace('/\[\+.*s\]/', '', $errMsg); // get rid of timestamps because they will prevent ZP from finding duplicate errors
 
-            monitor_custom_event(atkTools::atktext("app_title"), $errMsg, true);
+            monitor_custom_event(Atk_Tools::atktext("app_title"), $errMsg, true);
         }
     }
 
@@ -40,18 +40,18 @@ class Atk_ZendPlatformErrorHandler extends Atk_ErrorHandlerBase
     protected function zendPlatformAvailable()
     {
         if (!function_exists('accelerator_license_info')) {
-            atkTools::atkdebug('Zend Platform was not detected');
+            Atk_Tools::atkdebug('Zend Platform was not detected');
             return false;
         }
 
         if (!function_exists('accelerator_get_configuration')) {
             $licenseInfo = accelerator_license_info();
-            atkTools::atkdebug('The Zend Platform extension is not loaded correctly: ' . $licenseInfo['failure_reason']);
+            Atk_Tools::atkdebug('The Zend Platform extension is not loaded correctly: ' . $licenseInfo['failure_reason']);
             return false;
         }
 
         if (!function_exists('monitor_custom_event')) {
-            atkTools::atkdebug('Zend Platform seems to be there, but the function \'monitor_custom_event\' could not be found');
+            Atk_Tools::atkdebug('Zend Platform seems to be there, but the function \'monitor_custom_event\' could not be found');
             return false;
         }
 

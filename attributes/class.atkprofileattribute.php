@@ -48,22 +48,22 @@ class Atk_ProfileAttribute extends Atk_Attribute
         $this->atkAttribute($name, $flags | AF_HIDE_SEARCH | AF_HIDE_LIST);
         $this->m_parentAttrName = $parentAttrName;
 
-        $this->m_accessField = atkConfig::getGlobal('auth_accessfield');
+        $this->m_accessField = Atk_Config::getGlobal('auth_accessfield');
         if (empty($this->m_accessField))
-            $this->m_accessField = atkConfig::getGlobal('auth_levelfield');
+            $this->m_accessField = Atk_Config::getGlobal('auth_levelfield');
     }
 
     /**
      * Load this record
      *
-     * @param atkDb $db The database object
+     * @param Atk_Db $db The database object
      * @param array $record The record
      * @return array Array with loaded values
      */
     function load(&$db, $record)
     {
         $query = "SELECT *
-                FROM " . atkConfig::getGlobal("auth_accesstable") . "
+                FROM " . Atk_Config::getGlobal("auth_accesstable") . "
                 WHERE " . $this->m_accessField . "='" . $record[$this->m_ownerInstance->primaryKeyField()] . "'";
 
         $result = Array();
@@ -77,7 +77,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
     /**
      * Get child groups
      *
-     * @param atkDb $db The database object
+     * @param Atk_Db $db The database object
      * @param int $id The id to search for
      * @return array
      */
@@ -104,7 +104,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
     /**
      * Store the value of this attribute in the database
      *
-     * @param atkDb $db The database object
+     * @param Atk_Db $db The database object
      * @param array $record The record which holds the values to store
      * @param string $mode The mode we're in
      * @return bool True if succesfull, false if not
@@ -118,7 +118,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
         $allActions = $this->getAllActions($record, false);
         $editableActions = $this->getEditableActions($record);
 
-        $delquery = "DELETE FROM " . atkConfig::getGlobal("auth_accesstable") . "
+        $delquery = "DELETE FROM " . Atk_Config::getGlobal("auth_accesstable") . "
                    WHERE " . $this->m_accessField . "='" . $record[$this->m_ownerInstance->primaryKeyField()] . "'";
 
         if ($db->query($delquery)) {
@@ -132,8 +132,8 @@ class Atk_ProfileAttribute extends Atk_Attribute
             foreach ($checked as $node => $actions) {
                 $actions = array_unique($actions);
 
-                $nodeModule = atkModule::getNodeModule($node);
-                $nodeType = atkModule::getNodeType($node);
+                $nodeModule = Atk_Module::getNodeModule($node);
+                $nodeType = Atk_Module::getNodeType($node);
 
                 $validActions = array();
 
@@ -147,7 +147,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
                             : array();
 
                 foreach ($validActions as $action) {
-                    $query = "INSERT INTO " . atkConfig::getGlobal("auth_accesstable") . " (node, action, " . $this->m_accessField . ") ";
+                    $query = "INSERT INTO " . Atk_Config::getGlobal("auth_accesstable") . " (node, action, " . $this->m_accessField . ") ";
                     $query.= "VALUES ('" . $db->escapeSQL($node) . "','" . $db->escapeSQL($action) . "','" . $record[$this->m_ownerInstance->primaryKeyField()] . "')";
 
                     if (!$db->query($query)) {
@@ -157,7 +157,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
                 }
 
                 if (count($children) > 0 && count($validActions) > 0) {
-                    $query = "DELETE FROM " . atkConfig::getGlobal("auth_accesstable") . " " .
+                    $query = "DELETE FROM " . Atk_Config::getGlobal("auth_accesstable") . " " .
                         "WHERE " . $this->m_accessField . " IN (" . implode(",", $children) . ") " .
                         "AND node = '" . $db->escapeSQL($node) . "' " .
                         "AND action NOT IN ('" . implode("','", $validActions) . "')";
@@ -215,14 +215,14 @@ class Atk_ProfileAttribute extends Atk_Attribute
         // hierarchic groups, only return actions of parent (if this record has a parent)
         $parentAttr = $this->m_parentAttrName;
         if (!empty($parentAttr) && is_numeric($record[$parentAttr])) {
-            $db = &atkTools::atkGetDb();
-            $query = "SELECT DISTINCT node, action FROM " . atkConfig::getGlobal("auth_accesstable") . " " .
+            $db = &Atk_Tools::atkGetDb();
+            $query = "SELECT DISTINCT node, action FROM " . Atk_Config::getGlobal("auth_accesstable") . " " .
                 "WHERE " . $this->m_accessField . " = " . $record[$parentAttr];
             $rows = $db->getRows($query);
 
             foreach ($rows as $row) {
-                $module = atkModule::getNodeModule($row['node']);
-                $node = atkModule::getNodeType($row['node']);
+                $module = Atk_Module::getNodeModule($row['node']);
+                $node = Atk_Module::getNodeType($row['node']);
                 $result[$module][$module][$node][] = $row['action'];
             }
         }
@@ -235,8 +235,8 @@ class Atk_ProfileAttribute extends Atk_Attribute
 
             // get nodes for each module
             foreach (array_keys($g_modules) as $module) {
-                if (!isset($g_moduleflags[$module]) || !atkTools::hasFlag($g_moduleflags[$module], MF_NORIGHTS)) {
-                    $instance = atkModule::atkGetModule($module);
+                if (!isset($g_moduleflags[$module]) || !Atk_Tools::hasFlag($g_moduleflags[$module], MF_NORIGHTS)) {
+                    $instance = Atk_Module::atkGetModule($module);
                     if (method_exists($instance, "getNodes"))
                         $instance->getNodes();
                 }
@@ -272,7 +272,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
      */
     function getEditableActions($record)
     {
-        $user = atkSecurityManager::atkGetUser();
+        $user = Atk_SecurityManager::atkGetUser();
         $levels = "";
         if (!is_array($user['level']))
             $levels = "'" . $user['level'] . "'";
@@ -280,14 +280,14 @@ class Atk_ProfileAttribute extends Atk_Attribute
             $levels = "'" . implode("','", $user['level']) . "'";
 
         // retrieve editable actions by user's levels
-        $db = &atkTools::atkGetDb();
-        $query = "SELECT DISTINCT node, action FROM " . atkConfig::getGlobal("auth_accesstable") . " WHERE " . $this->m_accessField . " IN (" . $levels . ")";
+        $db = &Atk_Tools::atkGetDb();
+        $query = "SELECT DISTINCT node, action FROM " . Atk_Config::getGlobal("auth_accesstable") . " WHERE " . $this->m_accessField . " IN (" . $levels . ")";
         $rows = $db->getRows($query);
 
         $result = array();
         foreach ($rows as $row) {
-            $module = atkModule::getNodeModule($row['node']);
-            $node = atkModule::getNodeType($row['node']);
+            $module = Atk_Module::getNodeModule($row['node']);
+            $node = Atk_Module::getNodeType($row['node']);
             $result[$module][$node][] = $row['action'];
         }
 
@@ -316,8 +316,8 @@ class Atk_ProfileAttribute extends Atk_Attribute
 
         $result = array();
         foreach ($selected as $node => $actions) {
-            $module = atkModule::getNodeModule($node);
-            $node = atkModule::getNodeType($node);
+            $module = Atk_Module::getNodeModule($node);
+            $node = Atk_Module::getNodeType($node);
             $result[$module][$node] = $actions;
         }
 
@@ -334,9 +334,9 @@ class Atk_ProfileAttribute extends Atk_Attribute
      */
     public function display($record)
     {
-        $user = atkSecurityManager::atkGetUser();
-        $page = &atkPage::getInstance();
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atkprofileattribute.js.php");
+        $user = Atk_SecurityManager::atkGetUser();
+        $page = &Atk_Page::getInstance();
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atkprofileattribute.js.php");
         $this->_restoreDivStates($page);
 
         $result = '';
@@ -380,7 +380,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
                 }
 
                 if ($showBox) {
-                    $node_result .= "<b>" . atkTools::atktext($node, $module) . "</b><br>";
+                    $node_result .= "<b>" . Atk_Tools::atktext($node, $module) . "</b><br>";
                     $node_result .= $permissions_string;
                     if ($display_tabs_str) {
                         $node_result .= "<br>Tabs:&nbsp;" . $tab_permissions_string;
@@ -407,9 +407,9 @@ class Atk_ProfileAttribute extends Atk_Attribute
                         $result .= '</div><br>';
                     }
                     $result .= sprintf("<b><a href=\"javascript:void(0)\" onclick=\"%s\"><img src=\"%s\" border=\"0\" id=\"img_div_$module\"></a>&nbsp;</b>%s<br>",
-                        "profile_swapProfileDiv('div_$module', '" . atkConfig::getGlobal('atkroot') . "'); return false;",
-                        atkConfig::getGlobal('atkroot') . 'atk/images/plus.gif',
-                        atkTools::atktext(array("title_$module", $module), $module)
+                        "profile_swapProfileDiv('div_$module', '" . Atk_Config::getGlobal('atkroot') . "'); return false;",
+                        Atk_Config::getGlobal('atkroot') . 'atk/images/plus.gif',
+                        Atk_Tools::atktext(array("title_$module", $module), $module)
                     );
                     $result .= "<div id=\"div_$module\" name=\"div_$module\" style=\"display: none;\">";
                     $result .= "<input type=\"hidden\" name=\"divstate['div_$module']\" id=\"divstate['div_$module']\" value=\"closed\" />";
@@ -434,19 +434,19 @@ class Atk_ProfileAttribute extends Atk_Attribute
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
-        $user = atkSecurityManager::atkGetUser();
-        $page = &atkPage::getInstance();
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atkprofileattribute.js.php");
+        $user = Atk_SecurityManager::atkGetUser();
+        $page = &Atk_Page::getInstance();
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atkprofileattribute.js.php");
 
         $this->_restoreDivStates($page);
 
         $result = '<div align="right">
                   [<a href="javascript:void(0)" onclick="profile_checkAll(\'' . $this->fieldName() . '\'); return false;">' .
-            atkTools::atktext("check_all") .
+            Atk_Tools::atktext("check_all") .
             '</a> | <a href="javascript:void(0)" onclick="profile_checkNone(\'' . $this->fieldName() . '\'); return false;">' .
-            atkTools::atktext("check_none") .
+            Atk_Tools::atktext("check_none") .
             '</a> | <a href="javascript:void(0)" onclick="profile_checkInvert(\'' . $this->fieldName() . '\'); return false;">' .
-            atkTools::atktext("invert_selection") . '</a>]</div>';
+            Atk_Tools::atktext("invert_selection") . '</a>]</div>';
 
         $isAdmin = ($user['name'] == 'administrator' || $this->canGrantAll());
         $allActions = $this->getAllActions($record, true);
@@ -458,16 +458,16 @@ class Atk_ProfileAttribute extends Atk_Attribute
         foreach ($allActions as $section => $modules) {
             if ($showSection) {
                 $result .= "</div><br>";
-                $result .= "<span  onclick=\"profile_swapProfileDiv('div_$section','" . atkConfig::getGlobal("atkroot") . "');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\"><img src=\"" . atkConfig::getGlobal("atkroot") . "atk/images/plus.gif\" border=\"0\" id=\"img_div_$section\">&nbsp;" . atkTools::atktext(array("title_$section", $section), $section) . "</span><br/>";
+                $result .= "<span  onclick=\"profile_swapProfileDiv('div_$section','" . Atk_Config::getGlobal("atkroot") . "');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\"><img src=\"" . Atk_Config::getGlobal("atkroot") . "atk/images/plus.gif\" border=\"0\" id=\"img_div_$section\">&nbsp;" . Atk_Tools::atktext(array("title_$section", $section), $section) . "</span><br/>";
                 $result .= "<div id='div_$section' name='div_$section' style='display: none; padding-left: 15px'>";
                 $result .= "<input type='hidden' name=\"divstate['div_$section']\" id=\"divstate['div_$section']\" value='closed' />";
                 $result.='<div style="font-size: 80%; margin-top: 4px; margin-bottom: 4px" >
                   [<a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkAllByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' .
-                    atkTools::atktext("check_all", "atk") .
+                    Atk_Tools::atktext("check_all", "atk") .
                     '</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkNoneByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' .
-                    atkTools::atktext("check_none", "atk") .
+                    Atk_Tools::atktext("check_none", "atk") .
                     '</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkInvertByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' .
-                    atkTools::atktext("invert_selection", "atk") . '</a>]</div>';
+                    Atk_Tools::atktext("invert_selection", "atk") . '</a>]</div>';
                 $result .= "<br>";
             }
 
@@ -477,7 +477,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
                                         ? $editableActions[$module][$node] : array()))) > 0;
 
                     if ($showBox)
-                        $result .= "<b>" . atkTools::atktext($node, $module) . "</b><br>";
+                        $result .= "<b>" . Atk_Tools::atktext($node, $module) . "</b><br>";
 
                     $tabs_str = "";
                     $display_tabs_str = false;
@@ -486,7 +486,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
                     foreach ($actions as $action) {
                         $temp_str = "";
 
-                        $isEditable = $isAdmin || atkTools::atk_in_array($action, $editableActions[$module][$node]);
+                        $isEditable = $isAdmin || Atk_Tools::atk_in_array($action, $editableActions[$module][$node]);
                         $isSelected = isset($selectedActions[$module][$node]) && in_array($action, $selectedActions[$module][$node]);
 
                         if ($isEditable) {
@@ -541,7 +541,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
         );
 
         // don't use text() function of attribute, because of auto module detection
-        $label = atkTools::atktext($keys, $modulename, $nodename);
+        $label = Atk_Tools::atktext($keys, $modulename, $nodename);
 
         return $label;
     }
@@ -575,7 +575,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
                 $action = $elems[2];
             } else {
                 // never happens..
-                atkTools::atkdebug("profileattribute encountered incomplete combination");
+                Atk_Tools::atkdebug("profileattribute encountered incomplete combination");
             }
             $actions[$node][] = $action;
         }
@@ -631,7 +631,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
      */
     function canGrantAll()
     {
-        $privilege_setting = atkConfig::getGlobal("auth_grantall_privilege");
+        $privilege_setting = Atk_Config::getGlobal("auth_grantall_privilege");
 
         if ($privilege_setting != "") {
             global $g_securityManager;
@@ -658,7 +658,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
         foreach ($divstate as $key => $value) {
             $key = substr($key, 2, -2);
             if ($value == "opened")
-                $onLoadScript .= "profile_swapProfileDiv('$key','" . atkConfig::getGlobal("atkroot") . "');";
+                $onLoadScript .= "profile_swapProfileDiv('$key','" . Atk_Config::getGlobal("atkroot") . "');";
         }
         $page->register_loadscript($onLoadScript);
     }

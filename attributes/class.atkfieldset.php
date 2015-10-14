@@ -107,7 +107,7 @@ class Atk_FieldSet extends Atk_Attribute
     protected function getParser()
     {
         if ($this->m_parser == null) {
-            atkTools::atkimport('atk.utils.atkstringparser');
+            Atk_Tools::atkimport('atk.utils.atkstringparser');
             $this->m_parser = new Atk_StringParser($this->getTemplate());
         }
 

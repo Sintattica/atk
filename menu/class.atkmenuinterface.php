@@ -47,9 +47,9 @@ class Atk_menuinterface
      */
     function getMenuTranslation($menuitem, $modname = 'atk')
     {
-        $s = atkTools::atktext("menu_$menuitem", $modname, '', '', '', true);
+        $s = Atk_Tools::atktext("menu_$menuitem", $modname, '', '', '', true);
         if (!$s) {
-            $s = ucwords(atkTools::atktext($menuitem, $modname));
+            $s = ucwords(Atk_Tools::atktext($menuitem, $modname));
         }
         return $s;
     }
@@ -137,7 +137,7 @@ class Atk_menuinterface
         } else if (is_array($enable)) {
             $enabled = false;
             for ($j = 0; $j < (count($enable) / 2); $j++) {
-                $enabled = $enabled || atkSecurityManager::is_allowed($enable[(2 * $j)], $enable[(2 * $j) + 1]);
+                $enabled = $enabled || Atk_SecurityManager::is_allowed($enable[(2 * $j)], $enable[(2 * $j) + 1]);
             }
             $enable = $enabled;
         } else if (array_key_exists($menuitem['name'], $g_menu) && is_array($g_menu[$menuitem['name']])) {

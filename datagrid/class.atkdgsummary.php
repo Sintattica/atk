@@ -12,7 +12,7 @@
  * 
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
-atkTools::atkimport('atk.datagrid.atkdgcomponent');
+Atk_Tools::atkimport('atk.datagrid.atkdgcomponent');
 
 /**
  * The data grid summary. Can be used to render a 
@@ -61,7 +61,7 @@ class Atk_DGSummary extends Atk_DGComponent
             'pages' => $pages
         );
 
-        atkTools::atkimport("atk.utils.atkstringparser");
+        Atk_Tools::atkimport("atk.utils.atkstringparser");
         $parser = new Atk_StringParser($string);
         $result = $parser->parse($params);
 

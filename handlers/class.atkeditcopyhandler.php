@@ -32,7 +32,7 @@ class Atk_EditCopyHandler extends Atk_ActionHandler
      */
     function action_editcopy()
     {
-        atkTools::atkdebug("atknode::action_editcopy()");
+        Atk_Tools::atkdebug("Atk_node::action_editcopy()");
 
         $record = $this->getCopyRecord();
         // allowed to editcopy record?
@@ -49,7 +49,7 @@ class Atk_EditCopyHandler extends Atk_ActionHandler
         } else {
             $db->commit();
             $this->clearCache();
-            $location = atkTools::session_url(atkTools::dispatch_url($this->m_node->atknodetype(), "edit", array("atkselector" => $this->m_node->primaryKey($record))), SESSION_REPLACE);
+            $location = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atknodetype(), "edit", array("atkselector" => $this->m_node->primaryKey($record))), SESSION_REPLACE);
             $this->m_node->redirect($location);
         }
     }
@@ -66,7 +66,7 @@ class Atk_EditCopyHandler extends Atk_ActionHandler
         if (count($recordset) > 0) {
             return $recordset[0];
         } else {
-            atkTools::atkdebug("Geen records gevonden met selector: $selector");
+            Atk_Tools::atkdebug("Geen records gevonden met selector: $selector");
             $this->m_node->redirect();
         }
     }

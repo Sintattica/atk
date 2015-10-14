@@ -31,11 +31,11 @@ class Atk_Totalizer
     /**
      * Constructor
      *
-     * @param atkNode $node
+     * @param Atk_Node $node
      * @param atkColumnConfig $columnConfig
      * @return atkTotalizer
      */
-    function atkTotalizer(&$node, &$columnConfig)
+    function __construct(&$node, &$columnConfig)
     {
         $this->m_node = &$node;
         $this->m_columnConfig = &$columnConfig;
@@ -129,7 +129,7 @@ class Atk_Totalizer
         // replace columns
         foreach ($row["data"] as $col => $value) {
             if ($col == $fieldname) {
-                $row["data"][$col] = atkTools::atktext("subtotal");
+                $row["data"][$col] = Atk_Tools::atktext("subtotal");
             } else if (isset($subtotalcolumns[$col])) {
                 $row["data"][$col] = $subtotalcolumns[$col];
             } else {

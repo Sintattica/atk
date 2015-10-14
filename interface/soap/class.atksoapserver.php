@@ -17,7 +17,7 @@
 /**
  * @todo Replace this with Marks's interface importer.
  */
-include_once(atkConfig::getGlobal("atkroot") . "atk/interface/interface.atkserverinterface.php");
+include_once(Atk_Config::getGlobal("atkroot") . "atk/interface/interface.atkserverinterface.php");
 
 /**
  * The SOAP implementation for the ATK webservices layer.
@@ -58,7 +58,7 @@ class Atk_SoapServer implements Atk_ServerInterface
      */
     public function __call($method, $args)
     {
-        atkTools::atkdebug("Function $method called with args: " . var_export($args, true));
+        Atk_Tools::atkdebug("Function $method called with args: " . var_export($args, true));
     }
 
 }

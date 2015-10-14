@@ -17,14 +17,14 @@
 /**
  * Base class import.
  */
-atkTools::atkimport("atk.utils.atkactionlistener");
+Atk_Tools::atkimport("atk.utils.atkactionlistener");
 
 /**
  * The atkEventLog is a ready to use atkActionListener for logging events
  * in a table.
  *
  * You can use the atkEventLog by adding an instance to a node using
- * atkNode's addListener() method.
+ * Atk_Node's addListener() method.
  *
  * In order to use the atkEventLog, you have to have a table in the database
  * named 'atkeventlog' with the following structure:
@@ -57,8 +57,8 @@ class Atk_EventLog extends Atk_ActionListener
      */
     function actionPerformed($action, $record)
     {
-        $user = &atkSecurityManager::atkGetUser();
-        $userid = $user[atkConfig::getGlobal("auth_userpk")];
+        $user = &Atk_SecurityManager::atkGetUser();
+        $userid = $user[Atk_Config::getGlobal("auth_userpk")];
         if ($userid == "")
             $userid = 0; // probably administrator
         $node = $this->m_node->atkNodeType();

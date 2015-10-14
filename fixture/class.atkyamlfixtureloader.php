@@ -38,8 +38,8 @@ class Atk_YAMLFixtureLoader extends Atk_AbstractFixtureLoader
     {
         $contents = file_get_contents($path);
         $contents = $this->parse($contents);
-        atkTools::atkimport('atk.utils.atkyaml');
-        $data = atkYAML::load($contents);
+        Atk_Tools::atkimport('atk.utils.atkyaml');
+        $data = Atk_YAML::load($contents);
         return $data;
     }
 

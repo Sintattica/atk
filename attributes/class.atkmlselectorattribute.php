@@ -15,7 +15,7 @@
  * $Id$
  */
 /** @internal include base class */
-atkTools::useattrib("atkmlattribute");
+Atk_Tools::useattrib("atkmlattribute");
 
 /**
  * The atkMlSelectorAttribute class represents more the less a dummy
@@ -44,7 +44,7 @@ class Atk_MlSelectorAttribute extends Atk_MlAttribute
 
         /* check config */
         if (!is_array($languages) || sizeof($languages) == 0)
-            return atkTools::atktext("multilanguage_error_config", $this->m_ownerInstance->m_module, $this->m_ownerInstance->atknodetype());
+            return Atk_Tools::atktext("multilanguage_error_config", $this->m_ownerInstance->m_module, $this->m_ownerInstance->atknodetype());
 
         /* first selected other language */
         //$formname = $prefix.'[multilanguage_current]';
@@ -52,13 +52,13 @@ class Atk_MlSelectorAttribute extends Atk_MlAttribute
                     ? $this->m_ownerInstance->m_postvars['atkeditlng'] : $languages[1]) . '">';
 
         /* build selection list */
-        $result .= '<select id="' . $prefix . '_lgswitch" name="' . $prefix . '_lgswitch" onchange="changeLanguage(this, \'' . $prefix . '\', ' . (atkConfig::getGlobal("multilanguage_linked")
+        $result .= '<select id="' . $prefix . '_lgswitch" name="' . $prefix . '_lgswitch" onchange="changeLanguage(this, \'' . $prefix . '\', ' . (Atk_Config::getGlobal("multilanguage_linked")
                     ? 'true' : 'false') . ')" class="form-control">';
 
         /* options */
         for ($i = 1; $i < sizeof($languages); $i++)
             $result .= '<option value="' . $languages[$i] . '" ' . (strtolower($languages[$i]) == strtolower($this->m_ownerInstance->m_postvars['atkeditlng'])
-                        ? 'selected' : '') . '>' . atkTools::atktext('language_' . strtolower($languages[$i])) . '</option>';
+                        ? 'selected' : '') . '>' . Atk_Tools::atktext('language_' . strtolower($languages[$i])) . '</option>';
 
         /* close */
         $result .= '</select>';
@@ -66,9 +66,9 @@ class Atk_MlSelectorAttribute extends Atk_MlAttribute
         if (!$s_wroteStrings) {
             $script = "str_languages = new Array();\n";
             for ($i = 0, $_i = count($languages); $i < $_i; $i++) {
-                $script.= "str_languages['" . $languages[$i] . "'] = '" . atkTools::atktext('language_' . strtolower($languages[$i])) . "';\n";
+                $script.= "str_languages['" . $languages[$i] . "'] = '" . Atk_Tools::atktext('language_' . strtolower($languages[$i])) . "';\n";
             }
-            $page = &atkPage::getInstance();
+            $page = &Atk_Page::getInstance();
             $page->register_scriptcode($script);
             $s_wroteStrings = true;
         }
@@ -101,8 +101,8 @@ class Atk_MlSelectorAttribute extends Atk_MlAttribute
     function edit($record = "", $prefix = "", $mode = "")
     {
         /* register javascript */
-        $page = &atkPage::getInstance();
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atkmultilanguage.js.php");
+        $page = &Atk_Page::getInstance();
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atkmultilanguage.js.php");
         $page->register_submitscript('mlPreSubmit(\'' . $prefix . '\', form);');
 
         // new style notification script thingee

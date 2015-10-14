@@ -42,7 +42,7 @@ class Atk_DistinctFilter extends Atk_Filter
     /**
      * add the distinct statement to the query
      *
-     * @param atkQuery $query The SQL query object
+     * @param Atk_Query $query The SQL query object
      * @return void
      */
     function addToQuery(&$query)

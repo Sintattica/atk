@@ -20,9 +20,9 @@
  * Imports
  * @access private
  */
-atkTools::atkimport("atk.wizard.atkwizardbase");
-atkTools::atkimport("atk.wizard.atkwizardactionloader");
-atkTools::atkimport("atk.wizard.atkwizardpanel");
+Atk_Tools::atkimport("atk.wizard.atkwizardbase");
+Atk_Tools::atkimport("atk.wizard.atkwizardactionloader");
+Atk_Tools::atkimport("atk.wizard.atkwizardpanel");
 
 /**
  * atkWizard modees
@@ -138,11 +138,11 @@ class Atk_Wizard extends Atk_WizardBase
      *
      * @return atkWizard
      */
-    function atkWizard()
+    function __construct()
     {
-        atkTools::atkdebug("atkWizard::constructor" . atkTools::atkGetPostVar("atkcontroller"));
+        Atk_Tools::atkdebug("Atk_Wizard::constructor" . Atk_Tools::atkGetPostVar("atkcontroller"));
 
-        $this->atkWizardBase();
+        parent::__construct();
 
         $this->collectWizardSessionData();
         $this->setHiddenParam("atkcontroller", $this->m_module_name . $this->m_name);
@@ -169,10 +169,10 @@ class Atk_Wizard extends Atk_WizardBase
         /* @var $g_sessionManager atkSessionManager */
         $level = $g_sessionManager->getValue("wizard_initiation_level");
         if ($level === null) {
-            $g_sessionManager->globalVar("wizard_initiation_level", atkSessionManager::atkLevel());
+            $g_sessionManager->globalVar("wizard_initiation_level", Atk_SessionManager::atkLevel());
             $this->m_isWizardInitiated = true;
         } else {
-            $this->m_isWizardInitiated = ($level === atkSessionManager::atkLevel());
+            $this->m_isWizardInitiated = ($level === Atk_SessionManager::atkLevel());
         }
     }
 
@@ -195,7 +195,7 @@ class Atk_Wizard extends Atk_WizardBase
             $this->m_currentPanelIndex = 0;
 
         global $g_sessionData;
-        atkTools::atk_var_dump($g_sessionData["default"]["stack"][atkSessionManager::atkStackID()], "SESSION DATA");
+        Atk_Tools::atk_var_dump($g_sessionData["default"]["stack"][Atk_SessionManager::atkStackID()], "SESSION DATA");
     }
 
     /**
@@ -234,18 +234,18 @@ class Atk_Wizard extends Atk_WizardBase
 
     /**
      * Main execution function (start of the wizard). Every page load will go through
-     * this function. This function overrides atkController::handleRequest but it always 
+     * this function. This function overrides Atk_Controller::handleRequest but it always 
      * calls its parent in the end.
      *
      * @return String The html output
      */
     public function handleRequest()
     {
-        atkTools::atkdebug("atkwizard::handleRequest()");
+        Atk_Tools::atkdebug("Atk_wizard::handleRequest()");
 
         global $g_sessionManager, $ATK_VARS;
 
-        if (!$this->m_isWizardInitiated && atkTools::atkGetPostVar("atkaction") !== "" && atkTools::atkGetPostVar("atkwizardaction") === "") {
+        if (!$this->m_isWizardInitiated && Atk_Tools::atkGetPostVar("atkaction") !== "" && Atk_Tools::atkGetPostVar("atkwizardaction") === "") {
             //A not wizard related action as initiated, like an edit action
             //on an admin screen. Set the wizard mode to NULL to prevent showing a wizard
             //specific form. We do not use the wizard dispatcher but call the standard
@@ -258,7 +258,7 @@ class Atk_Wizard extends Atk_WizardBase
             $node = $currentWizardPanel->getPanelNode();
 
             // check if user has filled in something
-            if ((atkTools::atkGetPostVar("atkaction") == 'save' || atkTools::atkGetPostVar("atkaction") == "update" || atkTools::atkGetPostVar("atkaction") == "delete") && $node->filledInForm()) {
+            if ((Atk_Tools::atkGetPostVar("atkaction") == 'save' || Atk_Tools::atkGetPostVar("atkaction") == "update" || Atk_Tools::atkGetPostVar("atkaction") == "delete") && $node->filledInForm()) {
                 //save form
                 $this->save($this->m_wizardAction);
             } elseif ($this->m_wizardAction == 'finish') {
@@ -267,12 +267,12 @@ class Atk_Wizard extends Atk_WizardBase
                 if ($this->getReturnOutput())
                     return $finishOutput;
                 else {
-                    $output = &atkOutput::getInstance();
+                    $output = &Atk_Output::getInstance();
                     $output->output($finishOutput);
                     return "";
                 }
             } else {
-                if (!((atkTools::atkGetPostVar("atkaction") == 'save' || atkTools::atkGetPostVar("atkaction") == "update" || atkTools::atkGetPostVar("atkaction") == "delete") && $node->filledInForm())) {
+                if (!((Atk_Tools::atkGetPostVar("atkaction") == 'save' || Atk_Tools::atkGetPostVar("atkaction") == "update" || Atk_Tools::atkGetPostVar("atkaction") == "delete") && $node->filledInForm())) {
                     $ATK_VARS['atkaction'] = "";
                 }
                 $this->wizardDispatch($this->m_wizardAction);
@@ -357,10 +357,10 @@ class Atk_Wizard extends Atk_WizardBase
     {
         $node = &$this->getNode();
 
-        $content = "<br><br>" . atkTools::atktext("content_wizard_finished") . "<br><br><br>";
+        $content = "<br><br>" . Atk_Tools::atktext("content_wizard_finished") . "<br><br><br>";
 
         $page = &$node->getPage();
-        $page->addContent($this->genericPage(atkTools::atktext("title_wizard_finished"), $content));
+        $page->addContent($this->genericPage(Atk_Tools::atktext("title_wizard_finished"), $content));
         return $page->render($this->getHtmlTitle(), $this->m_page_flags);
     }
 
@@ -406,7 +406,7 @@ class Atk_Wizard extends Atk_WizardBase
     public function &getCurrentPanel()
     {
         if (!is_object($this->m_panelList[$this->m_currentPanelIndex])) {
-            atkTools::atkerror("Panel could not be crated. Non existing panel index: " . $this->m_currentPanelIndex);
+            Atk_Tools::atkerror("Panel could not be crated. Non existing panel index: " . $this->m_currentPanelIndex);
             return NULL;
         }
         return $this->m_panelList[$this->m_currentPanelIndex];
@@ -440,7 +440,7 @@ class Atk_Wizard extends Atk_WizardBase
     }
 
     /**
-     * Set the value of the html meta tag. This is an override of the atkcontroller::setHtmlTitle.
+     * Set the value of the html meta tag. This is an override of the Atk_controller::setHtmlTitle.
      * We now want to show the wizard name, wizard panel and which step we are at. 
      *
      */
@@ -448,11 +448,11 @@ class Atk_Wizard extends Atk_WizardBase
     {
         $node = &$this->getNode();
         $ui = &$node->getUi();
-        return atkTools::atktext('app_shorttitle') . " - " . $ui->getWizardTitle($this, $this->getCurrentPanel());
+        return Atk_Tools::atktext('app_shorttitle') . " - " . $ui->getWizardTitle($this, $this->getCurrentPanel());
     }
 
     /**
-     * Return the title to be show on top of an Action Page. This is an override of the atkController::actionPageTitle function.
+     * Return the title to be show on top of an Action Page. This is an override of the Atk_Controller::actionPageTitle function.
      * We now want to show the wizard name, wizard panel and which step we are at. 
      *
      * @return string The title

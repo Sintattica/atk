@@ -32,7 +32,7 @@
  *       should be customizable in the future.
  *
  */
-atkTools::atkimport("atk.handlers.atkabstractsearchhandler");
+Atk_Tools::atkimport("atk.handlers.atkabstractsearchhandler");
 
 class Atk_SearchHandler extends Atk_AbstractSearchHandler
 {
@@ -57,8 +57,8 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
             $this->redirectToResults();
             return;
         } elseif (!empty($this->m_postvars['atkcancel'])) {
-            $url = atkTools::dispatch_url($this->getPreviousNode(), $this->getPreviousAction());
-            $url = atkTools::session_url($url, atkSessionManager::atkLevel() > 0 ? SESSION_BACK : SESSION_REPLACE);
+            $url = Atk_Tools::dispatch_url($this->getPreviousNode(), $this->getPreviousAction());
+            $url = Atk_Tools::session_url($url, Atk_SessionManager::atkLevel() > 0 ? SESSION_BACK : SESSION_REPLACE);
 
             $this->m_node->redirect($url);
         }
@@ -83,8 +83,8 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
      */
     function redirectToResults()
     {
-        $url = atkTools::dispatch_url($this->getPreviousNode(), $this->getPreviousAction(), $this->fetchCriteria(), atkTools::atkSelf());
-        $url = atkTools::session_url($url, atkSessionManager::atkLevel() > 0 ? SESSION_BACK : SESSION_REPLACE);
+        $url = Atk_Tools::dispatch_url($this->getPreviousNode(), $this->getPreviousAction(), $this->fetchCriteria(), Atk_Tools::atkSelf());
+        $url = Atk_Tools::session_url($url, Atk_SessionManager::atkLevel() > 0 ? SESSION_BACK : SESSION_REPLACE);
 
         $this->m_node->redirect($url);
     }
@@ -96,7 +96,7 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
      */
     function getPreviousNode()
     {
-        return atkSessionManager::atkLevel() > 0 ? atkSessionManager::atkGetSessionManager()->stackVar('atknodetype', '', atkSessionManager::atkLevel() - 1)
+        return Atk_SessionManager::atkLevel() > 0 ? Atk_SessionManager::atkGetSessionManager()->stackVar('atknodetype', '', Atk_SessionManager::atkLevel() - 1)
                 : $this->m_node->atkNodeType();
     }
 
@@ -107,7 +107,7 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
      */
     function getPreviousAction()
     {
-        return atkSessionManager::atkLevel() > 0 ? atkSessionManager::atkGetSessionManager()->stackVar('atkaction', '', atkSessionManager::atkLevel() - 1)
+        return Atk_SessionManager::atkLevel() > 0 ? Atk_SessionManager::atkGetSessionManager()->stackVar('atkaction', '', Atk_SessionManager::atkLevel() - 1)
                 : 'admin';
     }
 
@@ -122,7 +122,7 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
 
         $attr = &$this->m_node->getAttribute($attribute);
         if ($attr == NULL) {
-            atkTools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
+            Atk_Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
             return '';
         }
 
@@ -140,19 +140,19 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
         $node = &$this->m_node;
 
         $node->addStyle("style.css");
-        $controller = &atkcontroller::getInstance();
+        $controller = &Atk_controller::getInstance();
         $controller->setNode($this->m_node);
 
         $page = &$this->getPage();
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/tools.js");
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/formfocus.js");
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/tools.js");
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/formfocus.js");
         $page->register_loadscript("placeFocus();");
         $ui = &$this->getUi();
         if (is_object($ui)) {
             $params = array();
             $params["formstart"] = '<form name="entryform" action="' . $controller->getPhpFile() . '?' . SID . '" method="post">';
 
-            $params["formstart"].= atkTools::session_form(SESSION_REPLACE);
+            $params["formstart"].= Atk_Tools::session_form(SESSION_REPLACE);
             $params["formstart"].='<input type="hidden" name="atkaction" value="search">';
 
             $params["formstart"].='<input type="hidden" name="atknodetype" value="' . $node->atknodetype() . '">';
@@ -171,7 +171,7 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
 
             return $total;
         } else {
-            atkTools::atkerror("ui object failure");
+            Atk_Tools::atkerror("ui object failure");
         }
     }
 
@@ -194,9 +194,9 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
             $name = $this->handleSavedCriteria($criteria);
 
             $params = array();
-            $params['searchmode_title'] = atkTools::atktext("search_mode", "atk");
-            $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="AND" checked>' . atkTools::atktext("search_and", "atk");
-            $params['searchmode_or'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="OR">' . atkTools::atktext("search_or", "atk");
+            $params['searchmode_title'] = Atk_Tools::atktext("search_mode", "atk");
+            $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="AND" checked>' . Atk_Tools::atktext("search_and", "atk");
+            $params['searchmode_or'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="OR">' . Atk_Tools::atktext("search_or", "atk");
             $params['saved_criteria'] = $this->getSavedCriteria($name);
 
             $params["fields"] = array();
@@ -210,7 +210,7 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
             }
             return $ui->render($node->getTemplate("search", $record), $params);
         } else
-            atkTools::atkerror("ui object error");
+            Atk_Tools::atkerror("ui object error");
     }
 
     /**

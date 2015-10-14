@@ -18,9 +18,9 @@
  * Imports
  * @access private
  */
-atkTools::atkimport('atk.utils.atkjson');
-atkTools::atkimport('atk.relations.controls.atkshuttlecontrol');
-atkTools::atkimport('atk.relations.controls.atkshuttlefilter');
+Atk_Tools::atkimport('atk.utils.atkjson');
+Atk_Tools::atkimport('atk.relations.controls.atkshuttlecontrol');
+Atk_Tools::atkimport('atk.relations.controls.atkshuttlefilter');
 
 
 /**
@@ -66,8 +66,8 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
     public function __construct($name, $link, $destination, $flags = 0)
     {
         parent::__construct($name, $link, $destination, $flags);
-        $this->m_controlsBySection[atkShuttleControl::AVAILABLE] = array();
-        $this->m_controlsBySection[atkShuttleControl::SELECTED] = array();
+        $this->m_controlsBySection[Atk_ShuttleControl::AVAILABLE] = array();
+        $this->m_controlsBySection[Atk_ShuttleControl::SELECTED] = array();
     }
 
     /**
@@ -91,7 +91,7 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
      * be retrieved. $record[$this->fieldName()] contains the following entries:
      *
      * - "section" => section ("available" or "selected")
-     * - "controls" => control values (see atkShuttleControl::getValue)
+     * - "controls" => control values (see Atk_ShuttleControl::getValue)
      * - "selected" => currently selected records (keys)
      * - "available" => currently available records (keys) (should not be used by this method!)
      */
@@ -122,12 +122,12 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
         $res = "<script language=\"text/javascript\">";
         foreach ($this->m_controlsBySection[$record[$this->fieldName()]["section"]] as $control) {
             if ($control->needsRefresh('filter', $record)) {
-                $res .= "$('" . $control->getFormName($prefix) . "').innerHTML = " . atkJSON::encode($control->render($record, $mode, $prefix)) . ";";
+                $res .= "$('" . $control->getFormName($prefix) . "').innerHTML = " . Atk_JSON::encode($control->render($record, $mode, $prefix)) . ";";
             }
         }
 
         if ($redraw) {
-            $res .= "$('" . $this->getHtmlId($prefix) . "_" . $record[$this->fieldName()]["section"] . "').innerHTML = " . atkJSON::encode($this->renderSelectBoxes($record[$this->fieldName()]["section"], $record, $mode, $prefix)) . ";";
+            $res .= "$('" . $this->getHtmlId($prefix) . "_" . $record[$this->fieldName()]["section"] . "').innerHTML = " . Atk_JSON::encode($this->renderSelectBoxes($record[$this->fieldName()]["section"], $record, $mode, $prefix)) . ";";
         }
         $res .= "</script>";
 
@@ -191,7 +191,7 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
      *
      * - "action" => "add" or "delete"
      * - "item" => added or deleted record (key)
-     * - "controls" => control values (see atkShuttleControl::getValue)
+     * - "controls" => control values (see Atk_ShuttleControl::getValue)
      * - "selected" => currently selected records (keys)
      * - "available" => currently available records (keys)
      */
@@ -203,14 +203,14 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
 
 
         $res = "<script language=\"text/javascript\">";
-        foreach ($this->m_controlsBySection[atkShuttleControl::AVAILABLE] as $control) {
+        foreach ($this->m_controlsBySection[Atk_ShuttleControl::AVAILABLE] as $control) {
             if ($control->needsRefresh('selection', $record)) {
-                $res .= "$('" . $control->getFormName($prefix) . "').innerHTML = " . atkJSON::encode($control->render($record, $mode, $prefix)) . ";";
+                $res .= "$('" . $control->getFormName($prefix) . "').innerHTML = " . Atk_JSON::encode($control->render($record, $mode, $prefix)) . ";";
             }
         }
-        foreach ($this->m_controlsBySection[atkShuttleControl::SELECTED] as $control) {
+        foreach ($this->m_controlsBySection[Atk_ShuttleControl::SELECTED] as $control) {
             if ($control->needsRefresh('selection', $record)) {
-                $res .= "$('" . $control->getFormName($prefix) . "').innerHTML = " . atkJSON::encode($control->render($record, $mode, $prefix)) . ";";
+                $res .= "$('" . $control->getFormName($prefix) . "').innerHTML = " . Atk_JSON::encode($control->render($record, $mode, $prefix)) . ";";
             }
         }
         $res .= "</script>";
@@ -232,12 +232,12 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
     {
         // Add onchange handler
         $mode == "add" ? "add" : "edit";
-        $url = addslashes(atkTools::partial_url($this->m_ownerInstance->atkNodeType(), $mode, "attribute." . $this->getHtmlId($fieldprefix) . ".selection", array("atkfieldprefix" => $fieldprefix)));
+        $url = addslashes(Atk_Tools::partial_url($this->m_ownerInstance->atkNodeType(), $mode, "attribute." . $this->getHtmlId($fieldprefix) . ".selection", array("atkfieldprefix" => $fieldprefix)));
         $this->addOnChangeHandler("shuttle_refresh('$url', '" . $this->getHtmlId($fieldprefix) . '[cselected][][' . $this->getRemoteKey() . ']' . "', '" . $prefix . $this->fieldName() . "[section]', el);");
         $this->_renderChangeHandler($fieldprefix);
 
         $filtersBySection = array();
-        foreach (array(atkShuttleControl::AVAILABLE, atkShuttleControl::SELECTED) as $section) {
+        foreach (array(Atk_ShuttleControl::AVAILABLE, Atk_ShuttleControl::SELECTED) as $section) {
             foreach ($this->m_controlsBySection[$section] as $control) {
                 if (is_a($control, 'atkShuttleFilter')) {
                     $filter = $control->getFilter($record);
@@ -253,20 +253,20 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
         }
 
         $availableFilter = '';
-        if (count($filtersBySection[atkShuttleControl::AVAILABLE]) > 0)
-            $availableFilter = '(' . implode(') AND (', $filtersBySection[atkShuttleControl::AVAILABLE]) . ')';
+        if (count($filtersBySection[Atk_ShuttleControl::AVAILABLE]) > 0)
+            $availableFilter = '(' . implode(') AND (', $filtersBySection[Atk_ShuttleControl::AVAILABLE]) . ')';
 
         $selectedFilter = '';
-        if (count($filtersBySection[atkShuttleControl::SELECTED]) > 0)
-            $selectedFilter = '(' . implode(') AND (', $filtersBySection[atkShuttleControl::SELECTED]) . ')';
+        if (count($filtersBySection[Atk_ShuttleControl::SELECTED]) > 0)
+            $selectedFilter = '(' . implode(') AND (', $filtersBySection[Atk_ShuttleControl::SELECTED]) . ')';
 
         // Get controls for 'available' side
-        foreach ($this->m_controlsBySection[atkShuttleControl::AVAILABLE] as $control) {
+        foreach ($this->m_controlsBySection[Atk_ShuttleControl::AVAILABLE] as $control) {
             $ava_controls[] = $control->render($record, $mode, $fieldprefix);
         }
 
         // Get controls for 'selected' side
-        foreach ($this->m_controlsBySection[atkShuttleControl::SELECTED] as $control) {
+        foreach ($this->m_controlsBySection[Atk_ShuttleControl::SELECTED] as $control) {
             $sel_controls[] = $control->render($record, $mode, $fieldprefix);
         }
 
@@ -291,13 +291,13 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
         foreach ($right as $fld) {
             $vals[] = $fld[$this->m_destInstance->primaryKeyField()];
         }
-        $value = atkJSON::encode($vals);
+        $value = Atk_JSON::encode($vals);
         if ($value == "null")
             $value = "[]";
 
         // on submit, we must select all items in the right selector, as unselected items will not be posted.
         $page = &$this->m_ownerInstance->getPage();
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atkextendableshuttlerelation.js");
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atkextendableshuttlerelation.js");
         $page->register_submitscript("shuttle_selectAll('" . $rightname . "');");
 
         $ui = ATKUI::getInstance();
@@ -320,7 +320,7 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
     /**
      * Load the records for this relation
      *
-     * @param atkDb $notused The database object
+     * @param Atk_Db $notused The database object
      * @param array $record The record
      * @return array Array with records
      */
@@ -340,7 +340,7 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
     public function fetchValue($postvars)
     {
         $ret = array();
-        $vals = atkJSON::decode($postvars[$this->fieldName()]['selected'][0][$this->getRemoteKey()], true);
+        $vals = Atk_JSON::decode($postvars[$this->fieldName()]['selected'][0][$this->getRemoteKey()], true);
         if (is_array($vals)) {
             foreach ($vals as $val) {
                 $ret[][$this->getRemoteKey()] = $val;
@@ -406,7 +406,7 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
         $parser = null;
         // Only import the stringparser once.
         if (isset($this->m_descriptor_tooltip_template)) {
-            atkTools::atkimport("atk.utils.atkstringparser");
+            Atk_Tools::atkimport("atk.utils.atkstringparser");
             $parser = new Atk_StringParser($this->m_descriptor_tooltip_template);
         }
 

@@ -17,7 +17,7 @@
 /**
  * @internal baseclass include
  */
-atkTools::useattrib("atkupdatedbyattribute");
+Atk_Tools::useattrib("atkupdatedbyattribute");
 
 /**
  * This attribute can be used to automatically store the user that inserted
@@ -38,9 +38,9 @@ class Atk_CreatedByAttribute extends Atk_UpdatedByAttribute
      * @param int $flags Flags for this attribute.
      * @return atkCreatedByAttribute
      */
-    function atkCreatedByAttribute($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
-        $this->atkUpdatedByAttribute($name, $flags);
+        parent::__construct($name, $flags);
     }
 
     /**

@@ -62,9 +62,9 @@ class Atk_FrameSet extends Atk_AbstractFrame
      *                         framesets.
      *                        
      */
-    function atkFrameSet($dimension = "*", $orientation = FRAMESET_VERTICAL, $border = 0, $noframes = '')
+    function __construct($dimension = "*", $orientation = FRAMESET_VERTICAL, $border = 0, $noframes = '')
     {
-        $this->atkAbstractFrame($dimension);
+        parent::__construct($dimension);
 
         $this->m_orientation = $orientation;
         $this->m_border = $border;
@@ -221,7 +221,7 @@ class Atk_AbstractFrame
      * 
      * @param string $dimension
      */
-    function atkAbstractFrame($dimension = "*")
+    function __construct($dimension = "*")
     {
         $this->m_dimension = $dimension;
     }

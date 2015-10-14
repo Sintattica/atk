@@ -14,7 +14,7 @@
  * @version $Revision$
  * $Id$
  */
-atkTools::atkimport('atk.db.statement.atkstatement');
+Atk_Tools::atkimport('atk.db.statement.atkstatement');
 
 /**
  * Base statement class used for database drivers which don't have their own
@@ -44,10 +44,10 @@ class Atk_CompatStatement extends Atk_Statement
     protected function _prepare()
     {
         if ($this->getDb()->connect() != DB_SUCCESS) {
-            throw new atkStatementException("Cannot connect to database.", atkStatementException::NO_DATABASE_CONNECTION);
+            throw new Atk_StatementException("Cannot connect to database.", Atk_StatementException::NO_DATABASE_CONNECTION);
         }
 
-        atkTools::atkdebug("Prepare query: " . $this->_getParsedQuery());
+        Atk_Tools::atkdebug("Prepare query: " . $this->_getParsedQuery());
     }
 
     /**
@@ -60,10 +60,10 @@ class Atk_CompatStatement extends Atk_Statement
     protected function _bindParams($params)
     {
         $query = $this->_getParsedQuery();
-        atkTools::atkdebug("Binding parameters for query: " . $this->_getParsedQuery());
+        Atk_Tools::atkdebug("Binding parameters for query: " . $this->_getParsedQuery());
 
         foreach (array_values($this->_getBindPositions()) as $i => $param) {
-            atkTools::atkdebug("Bind param {$i}: " . ($params[$param] === null ? 'NULL' : $params[$param]));
+            Atk_Tools::atkdebug("Bind param {$i}: " . ($params[$param] === null ? 'NULL' : $params[$param]));
         }
 
         foreach (array_reverse($this->_getBindPositions(), true) as $position => $param) {
@@ -104,7 +104,7 @@ class Atk_CompatStatement extends Atk_Statement
 
         if (!$result) {
             $this->m_resource = null;
-            throw new atkStatementException("Cannot execute statement: " . $query, atkStatementException::STATEMENT_ERROR);
+            throw new Atk_StatementException("Cannot execute statement: " . $query, Atk_StatementException::STATEMENT_ERROR);
         }
     }
 
@@ -119,7 +119,7 @@ class Atk_CompatStatement extends Atk_Statement
         $oldId = $this->getDb()->getQueryId();
 
         // set our own query resource in the database driver so we can use
-        // the atkDb::next_record() method and retrieve the new record
+        // the Atk_Db::next_record() method and retrieve the new record
         $this->getDb()->setQueryId($this->m_resource);
         $this->getDb()->next_record();
         $row = $this->getDb()->m_record;
@@ -145,7 +145,7 @@ class Atk_CompatStatement extends Atk_Statement
     public function _close()
     {
         // There is no proper way to do this which is compatible with all drivers
-        // because there is no atkDb::free() method. We could retrieve all rows,
+        // because there is no Atk_Db::free() method. We could retrieve all rows,
         // which automatically closes the current resource, but that's not very 
         // efficient. We can also execute a dummy query but the same query should
         // work for all drivers... So instead we simply leak a resource which is
@@ -155,7 +155,7 @@ class Atk_CompatStatement extends Atk_Statement
 
     /**
      * Returns the number of affected rows in case of an INSERT, UPDATE 
-     * or DELETE query. Called immediatly after atkStatement::_execute().
+     * or DELETE query. Called immediatly after Atk_Statement::_execute().
      */
     protected function _getAffectedRowCount()
     {
@@ -163,7 +163,7 @@ class Atk_CompatStatement extends Atk_Statement
         $oldId = $this->getDb()->getQueryId();
 
         // set our own query resource in the database driver so we can use
-        // the atkDb::affected_rows() method and retrieve the affected row count
+        // the Atk_Db::affected_rows() method and retrieve the affected row count
         $this->getDb()->setQueryId($this->m_resource);
         $result = $this->getDb()->affected_rows();
 

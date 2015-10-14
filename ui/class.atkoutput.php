@@ -57,15 +57,15 @@ class Atk_Output
     {
         static $s_instance = NULL;
         if ($s_instance == NULL) {
-            atkTools::atkdebug("Created a new atkOutput instance");
-            $s_instance = new Atk_Output();
+            Atk_Tools::atkdebug("Created a new atkOutput instance");
+            $s_instance = new self();
         }
         return $s_instance;
     }
 
     /**
      * Output header.
-     * 
+     *
      * @param string $header
      */
     public static function header($header)
@@ -88,15 +88,15 @@ class Atk_Output
         // Since atk pages are always dynamic, we have to prevent that some browsers cache
         // the pages, unless $nocache was set to true.
         if ($nocache) {
-            atkOutput::sendNoCacheHeaders();
+            self::sendNoCacheHeaders();
         } else if ($lastmodificationstamp != 0) {
             $_last_modified_date = @substr($_SERVER['HTTP_IF_MODIFIED_SINCE'], 0, strpos($_SERVER['HTTP_IF_MODIFIED_SINCE'], 'GMT') + 3);
             $_gmt_mtime = gmdate('D, d M Y H:i:s', $lastmodificationstamp) . ' GMT';
             if ($_last_modified_date == $_gmt_mtime) {
-                atkOutput::header("HTTP/1.0 304 Not Modified");
+                self::header("HTTP/1.0 304 Not Modified");
                 return;
             } else {
-                atkOutput::header("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastmodificationstamp) . " GMT");
+                self::header("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastmodificationstamp) . " GMT");
             }
         }
     }
@@ -107,12 +107,12 @@ class Atk_Output
      */
     public static function sendNoCacheHeaders()
     {
-        atkTools::atkdebug("Sending no-cache headers (lmd: " . gmdate("D, d M Y H:i:s") . " GMT)");
-        atkOutput::header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
-        atkOutput::header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
-        atkOutput::header("Cache-Control: no-store, no-cache, must-revalidate");
-        atkOutput::header("Cache-Control: post-check=0, pre-check=0", false);
-        atkOutput::header("Pragma: no-cache");                          // HTTP/1.0
+        Atk_Tools::atkdebug("Sending no-cache headers (lmd: " . gmdate("D, d M Y H:i:s") . " GMT)");
+        self::header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
+        self::header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
+        self::header("Cache-Control: no-store, no-cache, must-revalidate");
+        self::header("Cache-Control: post-check=0, pre-check=0", false);
+        self::header("Pragma: no-cache");                          // HTTP/1.0
     }
 
     /**
@@ -138,27 +138,27 @@ class Atk_Output
             $this->sendCachingHeaders($lastmodificationstamp, $nocache);
 
             // Set the content type and the character set (as defined in the language files)
-            atkOutput::header("Content-Type: text/html; charset=" . ($charset == ""
-                        ? atkTools::atkGetCharset() : $charset));
+            self::header("Content-Type: text/html; charset=" . ($charset == ""
+                    ? Atk_Tools::atkGetCharset() : $charset));
 
             $res = $this->m_content;
 
             if (count($g_error_msg) > 0) {
                 // send an mail report with errormessages..
                 // (even when display of errors is turned off)
-                atkTools::mailreport();
+                Atk_Tools::mailreport();
             }
 
-            $debugger = atkTools::atkinstance('atk.utils.atkdebugger');
+            $debugger = Atk_Tools::atkinstance('atk.utils.atkdebugger');
             $res .= $debugger->renderDebugAndErrorMessages();
         }
 
-        if (atkConfig::getGlobal("output_gzip") &&
+        if (Atk_Config::getGlobal("output_gzip") &&
             phpversion() >= '4.0.4pl1' &&
             (strstr($_SERVER["HTTP_USER_AGENT"], 'compatible') || strstr($_SERVER["HTTP_USER_AGENT"], 'Gecko')) &&
             isset($_SERVER['HTTP_ACCEPT_ENCODING']) && strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')
         ) {
-            atkOutput::header('Content-Encoding: gzip');
+            self::header('Content-Encoding: gzip');
             echo $this->gzip($res);
         } else {
             echo $res;
@@ -173,7 +173,7 @@ class Atk_Output
     public function getDebugging()
     {
         global $g_debug_msg;
-        if (atkConfig::getGlobal("debug") > 0) {
+        if (Atk_Config::getGlobal("debug") > 0) {
             $output = '<br><div style="font-family: monospace; font-size: 11px;" align="left" id="atk_debugging_div">' . implode("<br>\n ", $g_debug_msg) . '</div>';
             return $output;
         }
@@ -189,7 +189,7 @@ class Atk_Output
      */
     public function rawoutput($txt)
     {
-        $this->m_raw.= $txt . "\n";
+        $this->m_raw .= $txt . "\n";
     }
 
     /**
@@ -198,7 +198,7 @@ class Atk_Output
      */
     public function output($txt)
     {
-        $this->m_content.= $txt . "\n";
+        $this->m_content .= $txt . "\n";
     }
 
     /**
@@ -218,9 +218,9 @@ class Atk_Output
         $contents = substr($contents, 0, strlen($contents) - 4);
 
         $res = "\x1f\x8b\x08\x00\x00\x00\x00\x00";
-        $res.= $contents;
-        $res.= pack('V', $gzip_crc);
-        $res.= pack('V', $gzip_size);
+        $res .= $contents;
+        $res .= pack('V', $gzip_crc);
+        $res .= pack('V', $gzip_size);
 
         return $res;
     }

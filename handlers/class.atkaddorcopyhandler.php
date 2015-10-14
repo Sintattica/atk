@@ -70,7 +70,7 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
      * Remove one-to-many relations which the user didn't explicitly select.
      *
      * @param array $record   record
-     * @param atkNode $node   node reference
+     * @param Atk_Node $node   node reference
      * @param array $includes include list
      * @param string $prefix  current prefix
      */
@@ -118,7 +118,7 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
             $this->preCopy($record, $this->m_node, $includes);
         }
 
-        atkTools::atkimport("atk.ui.atkdialog");
+        Atk_Tools::atkimport("atk.ui.atkdialog");
         $db = &$this->m_node->getDb();
         $page = &$this->getPage();
 
@@ -127,12 +127,12 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
             $this->notify("copy", $record);
             $this->clearCache();
 
-            $script = atkDialog::getCloseCall();
+            $script = Atk_Dialog::getCloseCall();
 
             if ($attrRefreshUrl == null) {
                 $script .= "document.location.href = document.location.href;";
             } else {
-                $page->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/class.atkattribute.js');
+                $page->register_script(Atk_Config::getGlobal('atkroot') . 'atk/javascript/class.atkattribute.js');
                 $script .= "ATK.Attribute.refresh('" . $attrRefreshUrl . "');";
             }
         } else {
@@ -142,7 +142,7 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
 
             $params = array();
             $params["content"] = "<br />" . $this->m_node->text('error_copy_record') . "<br />";
-            $params["buttons"][] = '<input type="button" class="btn btn-default btn_cancel" value="' . $this->m_node->text('close') . '" onClick="' . atkDialog::getCloseCall() . '" />';
+            $params["buttons"][] = '<input type="button" class="btn btn-default btn_cancel" value="' . $this->m_node->text('close') . '" onClick="' . Atk_Dialog::getCloseCall() . '" />';
             $content = $ui->renderAction("addorcopy", $params);
 
             $params = array();
@@ -150,7 +150,7 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
             $params["content"] = $content;
             $content = $ui->renderDialog($params);
 
-            $script = atkDialog::getUpdateCall($content, false);
+            $script = Atk_Dialog::getUpdateCall($content, false);
         }
 
         $page->register_loadscript($script);
@@ -161,16 +161,16 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
      */
     function handleAdd()
     {
-        atkTools::atkimport("atk.ui.atkdialog");
+        Atk_Tools::atkimport("atk.ui.atkdialog");
 
-        $script = atkDialog::getCloseCall();
+        $script = Atk_Dialog::getCloseCall();
 
         if ($this->m_node->hasFlag(NF_ADD_DIALOG)) {
             $dialog = new Atk_Dialog($this->m_node->atkNodeType(), 'add', 'dialog');
             $dialog->setSessionStatus(SESSION_PARTIAL);
             $script .= $dialog->getCall(true, false);
         } else {
-            $script .= sprintf("document.location.href = %s;", atkJSON::encode(atkTools::session_url(atkTools::dispatch_url($this->m_node->atkNodeType(), 'add'), SESSION_NESTED)));
+            $script .= sprintf("document.location.href = %s;", Atk_JSON::encode(Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), 'add'), SESSION_NESTED)));
         }
 
         $page = &$this->getPage();
@@ -195,7 +195,7 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
     function getAddOrCopyPage()
     {
         $url = $this->getProcessUrl();
-        $controller = &atkController::getInstance();
+        $controller = &Atk_Controller::getInstance();
 
         $params = array();
         $params["formstart"] = $this->getFormStart();
@@ -233,7 +233,7 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
      */
     function getContent()
     {
-        $content = atkTools::atktext("intro_addorcopy") . '
+        $content = Atk_Tools::atktext("intro_addorcopy") . '
         <br />
         <br />
         <table border="0" style="text-align: left">
@@ -259,7 +259,7 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
      */
     function getFormStart()
     {
-        $controller = &atkController::getInstance();
+        $controller = &Atk_Controller::getInstance();
         $formstart = '<form id="dialogform" name="dialogform" action="' . $controller->getPhpFile() . '?' . SID . '" method="post">';
         return $formstart;
     }
@@ -304,7 +304,7 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
      * to determine if we can skip the whole dialog and continue to the add page
      * directly.
      *
-     * @param atkNode $node The node to check
+     * @param Atk_Node $node The node to check
      * @param string $selector an extra selector to add to the count query
      * @return bool true when there are records to copy, false if there are none
      * @static
@@ -363,7 +363,7 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
      * Returns a HTML fragment which allows the user to select nested
      * one-to-many relations he/she wants to include in the copy.
      * 
-     * @param atkNode $node The node to get the onetomany relations from
+     * @param Atk_Node $node The node to get the onetomany relations from
      * @param String $prefix The field prefix
      * @param Integer $level The level of the includes
      */
@@ -408,7 +408,7 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
         if ($this->m_processUrl != null) {
             return $this->m_processUrl;
         } else {
-            return atkTools::partial_url($this->m_node->atkNodeType(), 'addorcopy', 'process');
+            return Atk_Tools::partial_url($this->m_node->atkNodeType(), 'addorcopy', 'process');
         }
     }
 

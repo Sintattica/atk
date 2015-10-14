@@ -100,7 +100,7 @@ class Atk_RadioDetailsAttribute extends Atk_Attribute
      */
     public function edit($record, $fieldprefix, $mode = 'add')
     {
-        $this->getOwnerInstance()->getPage()->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/class.' . strtolower(__CLASS__) . '.js');
+        $this->getOwnerInstance()->getPage()->register_script(Atk_Config::getGlobal('atkroot') . 'atk/javascript/class.' . strtolower(__CLASS__) . '.js');
 
         $name = $fieldprefix . $this->fieldName();
 
@@ -112,7 +112,7 @@ class Atk_RadioDetailsAttribute extends Atk_Attribute
             $attrNames = @$this->m_details[$value];
 
             if ($attrNames != null) {
-                $url = atkTools::partial_url($this->getOwnerInstance()->atkNodeType(), $mode, 'attribute.' . $this->fieldName() . '.details', array('value' => $value, 'fieldprefix' => $fieldprefix));
+                $url = Atk_Tools::partial_url($this->getOwnerInstance()->atkNodeType(), $mode, 'attribute.' . $this->fieldName() . '.details', array('value' => $value, 'fieldprefix' => $fieldprefix));
                 $onChange = "ATK.RadioDetailsAttribute.select(this, '{$url}');";
             } else {
                 $onChange = "ATK.RadioDetailsAttribute.select(this);";

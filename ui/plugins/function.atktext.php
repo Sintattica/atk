@@ -18,7 +18,7 @@
 /**
  * function to get multilanguage strings
  *
- * This is actually a wrapper for ATK's atkTools::atktext() method, for
+ * This is actually a wrapper for ATK's Atk_Tools::atktext() method, for
  * use in templates.
  *
  * @author Ivo Jansch <ivo@achievo.org>
@@ -35,16 +35,16 @@ function smarty_function_atktext($params, &$smarty)
     switch (substr_count($params["id"], ".")) {
         case 1: {
                 list($module, $id) = explode(".", $params["id"]);
-                $str = atkTools::atktext($id, $module, isset($params["node"]) ? $params["node"]
+                $str = Atk_Tools::atktext($id, $module, isset($params["node"]) ? $params["node"]
                             : '' );
                 break;
             }
         case 2: {
                 list($module, $node, $id) = explode(".", $params["id"]);
-                $str = atkTools::atktext($id, $module, $node);
+                $str = Atk_Tools::atktext($id, $module, $node);
                 break;
             }
-        default: $str = atkTools::atktext($params["id"], atkTools::atkArrayNvl($params, "module", ""), atkTools::atkArrayNvl($params, "node", ""), atkTools::atkArrayNvl($params, "lng", ""));
+        default: $str = Atk_Tools::atktext($params["id"], Atk_Tools::atkArrayNvl($params, "module", ""), Atk_Tools::atkArrayNvl($params, "node", ""), Atk_Tools::atkArrayNvl($params, "lng", ""));
     }
 
     if (isset($params["filter"])) {
@@ -53,7 +53,7 @@ function smarty_function_atktext($params, &$smarty)
     }
 
     // parse the rest of the params in the string
-    atkTools::atkimport("atk.utils.atkstringparser");
+    Atk_Tools::atkimport("atk.utils.atkstringparser");
     $parser = new Atk_StringParser($str);
     return $parser->parse($params);
 }

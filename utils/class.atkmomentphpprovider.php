@@ -1,6 +1,6 @@
 <?php
 
-$base = atkConfig::getGlobal('atkroot') . 'atk/ext/momentphp/src/Moment/';
+$base = Atk_Config::getGlobal('atkroot') . 'atk/ext/momentphp/src/Moment/';
 
 include_once($base . 'Moment.php');
 include_once($base . 'MomentException.php');
@@ -14,7 +14,7 @@ class Atk_MomentphpProvider {
     {
         static $s_instance = NULL;
         if ($s_instance == NULL) {
-            atkTools::atkdebug("Created a new \Moment\CustomFormats\MomentJs instance");
+            Atk_Tools::atkdebug("Created a new \Moment\CustomFormats\MomentJs instance");
             $s_instance = new \Moment\CustomFormats\MomentJs();
         }
         return $s_instance;

@@ -34,9 +34,9 @@ class Atk_MsSqlDDL extends Atk_DDL
      *
      * @return atkMsSqlDDL
      */
-    function atkMsSqlDDL()
+    function __construct()
     {
-        
+        parent::__construct();
     }
 
     /**

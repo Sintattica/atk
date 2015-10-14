@@ -15,8 +15,8 @@
  * $Id$
  */
 /** @internal includes and defines * */
-atkTools::userelation("atkmanytomanyrelation");
-atkTools::userelation('atkmanytoonerelation');
+Atk_Tools::userelation("atkmanytomanyrelation");
+Atk_Tools::userelation('atkmanytoonerelation');
 
 define('AF_MANYTOMANYSELECT_DETAILEDIT', AF_SPECIFIC_1);
 define('AF_MANYTOMANYSELECT_DETAILADD', AF_SPECIFIC_2);
@@ -38,9 +38,9 @@ define('AF_MANYTOMANYSELECT_NO_AUTOCOMPLETE', AF_SPECIFIC_3);
  */
 class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
 {
-    const SEARCH_MODE_EXACT = atkManyToOneRelation::SEARCH_MODE_EXACT;
-    const SEARCH_MODE_STARTSWITH = atkManyToOneRelation::SEARCH_MODE_STARTSWITH;
-    const SEARCH_MODE_CONTAINS = atkManyToOneRelation::SEARCH_MODE_CONTAINS;
+    const SEARCH_MODE_EXACT = Atk_ManyToOneRelation::SEARCH_MODE_EXACT;
+    const SEARCH_MODE_STARTSWITH = Atk_ManyToOneRelation::SEARCH_MODE_STARTSWITH;
+    const SEARCH_MODE_CONTAINS = Atk_ManyToOneRelation::SEARCH_MODE_CONTAINS;
 
     /**
      * The many-to-one relation.
@@ -170,7 +170,7 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
         $this->createLink();
 
 
-        $this->getOwnerInstance()->getPage()->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/class.' . strtolower(__CLASS__) . '.js');
+        $this->getOwnerInstance()->getPage()->register_script(Atk_Config::getGlobal('atkroot') . 'atk/javascript/class.' . strtolower(__CLASS__) . '.js');
         $this->getOwnerInstance()->addStyle('atkmanytomanyselectrelation.css');
 
         $id = $this->getHtmlId($fieldprefix);
@@ -258,11 +258,11 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
     /**
      * Load function.
      *
-     * @param atkDb  $db     database instance.
+     * @param Atk_Db  $db     database instance.
      * @param array  $record record
      * @param string $mode   load mode
      */
-    public function load(atkDb $db, $record, $mode)
+    public function load(Atk_Db $db, $record, $mode)
     {
         if (!$this->hasPositionAttribute()) {
             return parent::load($db, $record, $mode);
@@ -405,7 +405,7 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
         if (method_exists($this, $actionMethod)) {
             return $this->$actionMethod($record);
         } else {
-            atkTools::atkwarning('Missing ' . $actionMethod . ' method on manytomanyselectrelation. ');
+            Atk_Tools::atkwarning('Missing ' . $actionMethod . ' method on manytomanyselectrelation. ');
         }
     }
 
@@ -413,7 +413,7 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
     {
         $filter = $this->parseFilter($this->getManyToOneRelation()->m_destinationFilter, $record);
         $params = array_merge($params, array('atkfilter' => $filter, "atkpkret" => $this->getHtmlId($fieldprefix) . "_newsel"));
-        $link = atkTools::atkHref(atkTools::dispatch_url($this->m_destination, "add", $params), $this->getAddLabel(), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
+        $link = Atk_Tools::atkHref(Atk_Tools::dispatch_url($this->m_destination, "add", $params), $this->getAddLabel(), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
         return $link;
     }
 
@@ -425,7 +425,7 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
      */
     protected function getEditActionLink($record)
     {
-        return atkTools::atkHref(atkTools::dispatch_url($this->getdestination()->atknodetype(), 'edit', array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
+        return Atk_Tools::atkHref(Atk_Tools::dispatch_url($this->getdestination()->atknodetype(), 'edit', array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
     }
 
     /**
@@ -436,7 +436,7 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
      */
     protected function getViewActionLink($record)
     {
-        return atkTools::atkHref(atkTools::dispatch_url($this->getdestination()->atknodetype(), 'view', array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('view'), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
+        return Atk_Tools::atkHref(Atk_Tools::dispatch_url($this->getdestination()->atknodetype(), 'view', array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('view'), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
     }
 
     /**
@@ -476,7 +476,7 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
             return '';
         }
 
-        $url = atkTools::partial_url($this->getOwnerInstance()->atkNodeType(), $mode, 'attribute.' . $this->fieldName() . '.selectedrecord', array('fieldprefix' => $fieldprefix));
+        $url = Atk_Tools::partial_url($this->getOwnerInstance()->atkNodeType(), $mode, 'attribute.' . $this->fieldName() . '.selectedrecord', array('fieldprefix' => $fieldprefix));
 
         $relation = $this->getManyToOneRelation();
 
@@ -628,7 +628,7 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
         $additional = '';
         if ($this->hasPositionAttribute()) {
             if (is_null($this->m_positionAttributeHtmlModifier)) {
-                $additional = ' <img src="' . atkConfig::getGlobal('atkroot') . 'atk/images/up-down.gif"
+                $additional = ' <img src="' . Atk_Config::getGlobal('atkroot') . 'atk/images/up-down.gif"
           width="10" height="10" 
           alt="Sortable Ordering" 
           title="Sortable Ordering" />';

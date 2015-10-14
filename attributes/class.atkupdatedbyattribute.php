@@ -17,7 +17,7 @@
 /**
  * @internal baseclass include
  */
-atkTools::userelation("atkmanytoonerelation");
+Atk_Tools::userelation("atkmanytoonerelation");
 
 /**
  * This attribute can be used to automatically store the user that inserted
@@ -43,7 +43,7 @@ class Atk_UpdatedByAttribute extends Atk_ManyToOneRelation
      */
     function atkUpdatedByAttribute($name, $flags = 0)
     {
-        $this->atkManyToOneRelation($name, atkConfig::getGlobal("auth_usernode"), $flags | AF_READONLY | AF_HIDE_ADD);
+        $this->atkManyToOneRelation($name, Atk_Config::getGlobal("auth_usernode"), $flags | AF_READONLY | AF_HIDE_ADD);
         $this->setForceInsert(true);
         $this->setForceUpdate(true);
     }
@@ -54,7 +54,7 @@ class Atk_UpdatedByAttribute extends Atk_ManyToOneRelation
     function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
     {
         if ($mode == 'add' || $mode == 'update') {
-            atkAttribute::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
+            Atk_Attribute::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
         } else {
             parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
         }
@@ -68,7 +68,7 @@ class Atk_UpdatedByAttribute extends Atk_ManyToOneRelation
      */
     function initialValue()
     {
-        $fakeRecord = array($this->fieldName() => atkSecurityManager::atkGetUser());
+        $fakeRecord = array($this->fieldName() => Atk_SecurityManager::atkGetUser());
         $this->populate($fakeRecord);
         return $fakeRecord[$this->fieldName()];
     }

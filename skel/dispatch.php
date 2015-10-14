@@ -27,17 +27,17 @@
 $config_atkroot = "./";
 include_once("atk.php");
 
-atkSessionManager::atksession();
+Atk_SessionManager::atksession();
 
-$session = &atkSessionManager::getSession();
-$output = &atkOutput::getInstance();
+$session = &Atk_SessionManager::getSession();
+$output = &Atk_Output::getInstance();
 
 if ($ATK_VARS["atknodetype"] == "" || $session["login"] != 1) {
     // no nodetype passed, or session expired
 
-    $page = &atkTools::atknew("atk.ui.atkpage");
-    $ui = &atkTools::atkinstance("atk.ui.atkui");
-    $theme = &atkTheme::getInstance();
+    $page = &Atk_Tools::atknew("atk.ui.atkpage");
+    $ui = &Atk_Tools::atkinstance("atk.ui.atkui");
+    $theme = &Atk_Theme::getInstance();
 
 
     $page->register_style($theme->stylePath("style.css"));
@@ -49,19 +49,19 @@ if ($ATK_VARS["atknodetype"] == "" || $session["login"] != 1) {
             $destination.="&atkselector=" . $ATK_VARS["atkselector"];
     }
 
-    $title = atkTools::atktext("title_session_expired");
+    $title = Atk_Tools::atktext("title_session_expired");
     $contenttpl = '<br>%s<br><br><input type="button" onclick="top.location=\'%s\';" value="%s"><br><br>';
-    $content = sprintf($contenttpl, atkTools::atktext("explain_session_expired"), str_replace("'", "\\'", $destination), atkTools::atktext("relogin"));
+    $content = sprintf($contenttpl, Atk_Tools::atktext("explain_session_expired"), str_replace("'", "\\'", $destination), Atk_Tools::atktext("relogin"));
     $box = $ui->renderBox(array("title" => $title, "content" => $content));
 
     $page->addContent($box);
-    $output->output($page->render(atkTools::atktext("title_session_expired"), true));
+    $output->output($page->render(Atk_Tools::atktext("title_session_expired"), true));
 }
 else {
     atksecure();
-    atkTools::atkimport("atk.ui.atkpage");
+    Atk_Tools::atkimport("atk.ui.atkpage");
 
-    $lockType = atkConfig::getGlobal("lock_type");
+    $lockType = Atk_Config::getGlobal("lock_type");
     if (!empty($lockType))
         atklock();
 
@@ -69,9 +69,9 @@ else {
 
     //Load controller   
     if ($ATK_VARS["atkcontroller"] == "")
-        $controller = &atkTools::atkinstance("atk.atkcontroller");
+        $controller = &Atk_Tools::atkinstance("atk.atkcontroller");
     else
-        $controller = &atkTools::atkinstance($ATK_VARS["atkcontroller"]);
+        $controller = &Atk_Tools::atkinstance($ATK_VARS["atkcontroller"]);
 
     //Handle http request  
     $controller->dispatch($ATK_VARS, $flags);

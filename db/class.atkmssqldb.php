@@ -15,7 +15,7 @@
 /**
  * @internal Include parent class
  */
-require_once(atkConfig::getGlobal("atkroot") . "atk/db/class.atkmysqldb.php");
+require_once(Atk_Config::getGlobal("atkroot") . "atk/db/class.atkmysqldb.php");
 
 /**
  * Driver for MsSQL databases
@@ -50,8 +50,10 @@ class Atk_MsSqlDb extends Atk_MysqlDb
     /**
      * Class constructor
      */
-    function atkMsSqlDb()
+    function __construct()
     {
+        parent::__construct();
+
         $this->m_type = "mssql";
         $this->m_vendor = "microsoft";
         $this->m_user_error = array();
@@ -93,7 +95,7 @@ class Atk_MsSqlDb extends Atk_MysqlDb
     {
         // The MSSQL interface can not return detailed error information
         $this->m_errno = 1;
-        $this->m_error = atkTools::atktext('unknown_error');
+        $this->m_error = Atk_Tools::atktext('unknown_error');
 
         return DB_UNKNOWNERROR;
     }
@@ -103,7 +105,7 @@ class Atk_MsSqlDb extends Atk_MysqlDb
      */
     function disconnect()
     {
-        atkTools::atkdebug("Disconnecting from database...");
+        Atk_Tools::atkdebug("Disconnecting from database...");
         mssql_close($this->m_link_id);
     }
 
@@ -118,7 +120,7 @@ class Atk_MsSqlDb extends Atk_MysqlDb
     {
         // <- implement limit support here
 
-        atkTools::atkdebug("atkmssqldb.query(): " . $query);
+        Atk_Tools::atkdebug("atkmssqldb.query(): " . $query);
 
         /* connect to database */
         if ($this->connect() == DB_SUCCESS) {
@@ -310,15 +312,15 @@ class Atk_MsSqlDb extends Atk_MysqlDb
     {
         /* first connect */
         if ($this->connect() == DB_SUCCESS) {
-            atkTools::atkimport("atk.db.atkddl");
-            $ddl = &atkDDL::create("mssql");
+            Atk_Tools::atkimport("atk.db.atkddl");
+            $ddl = &Atk_DDL::create("mssql");
 
             /* list fields */
-            atkTools::atkdebug("Retrieving metadata for $table");
+            Atk_Tools::atkdebug("Retrieving metadata for $table");
             /* get meta data */
             $id = @mssql_query("SELECT TOP 1 * FROM [$table]", $this->m_link_id);
             if (!$id) {
-                atkTools::atkdebug("Metadata query failed.");
+                Atk_Tools::atkdebug("Metadata query failed.");
                 return array();
             }
             $i = 0;
@@ -347,7 +349,7 @@ class Atk_MsSqlDb extends Atk_MysqlDb
             $result["num_fields"] = $i;
             mssql_free_result($id);
 
-            atkTools::atkdebug("Metadata for $table complete");
+            Atk_Tools::atkdebug("Metadata for $table complete");
             return $result;
         }
         return array();
@@ -380,7 +382,7 @@ class Atk_MsSqlDb extends Atk_MysqlDb
     function commit()
     {
         if ($this->m_link_id) {
-            atkTools::atkdebug("Commit");
+            Atk_Tools::atkdebug("Commit");
             mssql_query("COMMIT TRANSACTION;", $this->m_link_id);
         }
         return true;
@@ -394,7 +396,7 @@ class Atk_MsSqlDb extends Atk_MysqlDb
     function rollback()
     {
         if ($this->m_link_id) {
-            atkTools::atkdebug("Rollback");
+            Atk_Tools::atkdebug("Rollback");
             mssql_query("ROLLBACK TRANSACTION;", $this->m_link_id);
         }
         return true;
@@ -406,7 +408,7 @@ class Atk_MsSqlDb extends Atk_MysqlDb
      */
     function getErrorMsg()
     {
-        return atkTools::atktext("db_unknown_mssql_error");
+        return Atk_Tools::atktext("db_unknown_mssql_error");
     }
 
     /**

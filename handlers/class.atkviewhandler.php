@@ -14,7 +14,7 @@
  * @version $Revision: 6310 $
  * $Id$
  */
-atkTools::atkimport("atk.handlers.atkvieweditbase");
+Atk_Tools::atkimport("atk.handlers.atkvieweditbase");
 
 /**
  * Handler class for a readonly view action. Similar to the edit handler,
@@ -50,7 +50,7 @@ class Atk_ViewHandler extends Atk_ViewEditBase
         }
 
         $page = &$this->getPage();
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/formsubmit.js");
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/formsubmit.js");
         $this->notify("view", $record);
         $page->addContent($this->m_node->renderActionPage("admin", $this->invoke("viewPage", $record, $this->m_node, $renderbox)));
     }
@@ -71,8 +71,8 @@ class Atk_ViewHandler extends Atk_ViewEditBase
      */
     public function getFormStart($record = null)
     {
-        $formstart = '<form name="entryform" id="entryform" action="' .  atkTools::getDispatchFile() . '" method="get" onsubmit="return globalSubmit(this,false)">';
-        $formstart .= atkTools::session_form(SESSION_NESTED);
+        $formstart = '<form name="entryform" id="entryform" action="' .  Atk_Tools::getDispatchFile() . '" method="get" onsubmit="return globalSubmit(this,false)">';
+        $formstart .= Atk_Tools::session_form(SESSION_NESTED);
         $formstart .= '<input type="hidden" name="atkselector" value="' . $this->getNode()->primaryKey($record) . '">';
         $formstart .= '<input type="hidden" class="atksubmitaction" />';
         return $formstart;
@@ -82,7 +82,7 @@ class Atk_ViewHandler extends Atk_ViewEditBase
     /**
      * Returns an htmlpage displaying all displayable attributes.
      * @param array $record The record to display.
-     * @param atkNode $node The node for which a viewPage is displayed.
+     * @param Atk_Node $node The node for which a viewPage is displayed.
      * @param Bool $renderbox Render this action in a renderbox or just output the HTML
      * @return String The html page with a reaonly view of relevant fields.
      */
@@ -111,7 +111,7 @@ class Atk_ViewHandler extends Atk_ViewEditBase
                 return $output;
             }
 
-            $this->getPage()->setTitle(atkTools::atktext('app_shorttitle') . " - " . $node->actionTitle($this->m_action, $record));
+            $this->getPage()->setTitle(Atk_Tools::atktext('app_shorttitle') . " - " . $node->actionTitle($this->m_action, $record));
 
             $vars = array("title" => $node->actionTitle($this->m_action, $record), "content" => $output);
 
@@ -123,7 +123,7 @@ class Atk_ViewHandler extends Atk_ViewEditBase
 
             return $total;
         } else {
-            atkTools::atkerror("ui object error");
+            Atk_Tools::atkerror("ui object error");
         }
     }
 
@@ -207,7 +207,7 @@ class Atk_ViewHandler extends Atk_ViewEditBase
 
             // Give the row an id if it doesn't have one yet
             if (!isset($field["id"]) || empty($field["id"]))
-                $field['id'] = atkTools::getUniqueID("anonymousattribrows");
+                $field['id'] = Atk_Tools::getUniqueID("anonymousattribrows");
 
             // ar_ stands voor 'attribrow'.
             $tplfield["rowid"] = "ar_" . $field['id']; // The id of the containing row

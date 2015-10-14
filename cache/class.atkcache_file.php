@@ -17,8 +17,8 @@
  * @version $Revision: 6309 $
  * $Id$
  */
-atkTools::atkimport("atk.cache.atkcache");
-atkTools::useattrib('atkFileAttribute');
+Atk_Tools::atkimport("atk.cache.atkcache");
+Atk_Tools::useattrib('atkFileAttribute');
 
 class Atk_Cache_file extends Atk_Cache
 {
@@ -59,8 +59,8 @@ class Atk_Cache_file extends Atk_Cache
      */
     protected function setCachePath()
     {
-        $this->m_path = $this->getCacheConfig('path', atkConfig::getGlobal('atktempdir') . "cache/") . $this->getFileSafeNamespace() . '/';
-        atkFileAttribute::mkdir($this->m_path);
+        $this->m_path = $this->getCacheConfig('path', Atk_Config::getGlobal('atktempdir') . "cache/") . $this->getFileSafeNamespace() . '/';
+        Atk_FileAttribute::mkdir($this->m_path);
     }
 
     /**

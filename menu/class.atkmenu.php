@@ -26,7 +26,7 @@ define("MENU_UNSCROLLABLE", 2);
 define("MENU_MULTILEVEL", 1); //More then 2 levels supported
 define("MENU_NOMULTILEVEL", 2);
 
-atkTools::atkimport("atk.menu.atkmenuinterface");
+Atk_Tools::atkimport("atk.menu.atkmenuinterface");
 
 /**
  * Menu utility class.
@@ -75,21 +75,21 @@ class Atk_Menu
     function getMenuClass()
     {
         // Get the configured layout class
-        $classname = atkMenu::layoutToClass(atkConfig::getGlobal("menu_layout"));
-        atkTools::atkdebug("Configured menu layout class: $classname");
+        $classname = Atk_Menu::layoutToClass(Atk_Config::getGlobal("menu_layout"));
+        Atk_Tools::atkdebug("Configured menu layout class: $classname");
 
         // Check if the class is compatible with the current theme, if not use a compatible menu.
-        $theme = &atkTools::atkinstance("atk.ui.atktheme");
+        $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
         $compatiblemenus = $theme->getAttribute('compatible_menus');
         // If this attribute exists then retreive them
         if (is_array($compatiblemenus)) {
             for ($i = 0, $_i = count($compatiblemenus); $i < $_i; $i++)
-                $compatiblemenus[$i] = atkMenu::layoutToClass($compatiblemenus[$i]);
+                $compatiblemenus[$i] = Atk_Menu::layoutToClass($compatiblemenus[$i]);
         }
 
         if (!empty($compatiblemenus) && is_array($compatiblemenus) && !in_array($classname, $compatiblemenus)) {
             $classname = $compatiblemenus[0];
-            atkTools::atkdebug("Falling back to menu layout class: $classname");
+            Atk_Tools::atkdebug("Falling back to menu layout class: $classname");
         }
 
         // Return the layout class name
@@ -105,28 +105,28 @@ class Atk_Menu
     {
         static $s_instance = NULL;
         if ($s_instance == NULL) {
-            atkTools::atkdebug("Creating a new menu instance");
-            $classname = atkMenu::getMenuClass();
+            Atk_Tools::atkdebug("Creating a new menu instance");
+            $classname = Atk_Menu::getMenuClass();
 
 
-            $filename = atkTools::getClassPath($classname);
+            $filename = Atk_Tools::getClassPath($classname);
             if (file_exists($filename))
-                $s_instance = atkTools::atknew($classname);
+                $s_instance = Atk_Tools::atknew($classname);
             else {
-                atkTools::atkerror('Failed to get menu object (' . $filename . ' / ' . $classname . ')!');
-                atkTools::atkwarning('Please check your compatible_menus in themedef.inc and config_menu_layout in config.inc.php.');
-                $s_instance = atkTools::atknew('atk.menu.atkplainmenu');
+                Atk_Tools::atkerror('Failed to get menu object (' . $filename . ' / ' . $classname . ')!');
+                Atk_Tools::atkwarning('Please check your compatible_menus in themedef.inc and config_menu_layout in config.inc.php.');
+                $s_instance = Atk_Tools::atknew('atk.menu.atkplainmenu');
             }
 
             // Set the dispatchfile for this menu based on the theme setting, or to the default if not set.
             // This makes sure that all calls to dispatch_url will generate a url for the main frame and not
             // within the menu itself.
-            $theme = &atkTools::atkinstance("atk.ui.atktheme");
-            $dispatcher = $theme->getAttribute('dispatcher', atkConfig::getGlobal("dispatcher", "dispatch.php")); // do not use atkSelf here!
-            $c = &atkTools::atkinstance("atk.atkcontroller");
+            $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
+            $dispatcher = $theme->getAttribute('dispatcher', Atk_Config::getGlobal("dispatcher", "dispatch.php")); // do not use atkSelf here!
+            $c = &Atk_Tools::atkinstance("atk.atkcontroller");
             $c->setPhpFile($dispatcher);
 
-            atkModule::atkHarvestModules("getMenuItems");
+            Atk_Module::atkHarvestModules("getMenuItems");
         }
 
         return $s_instance;

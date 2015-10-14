@@ -29,33 +29,33 @@
  */
 include_once($config_atkroot . "atk.php");
 
-atkSessionManager::atksession();
+Atk_SessionManager::atksession();
 atksecure();
 
 //  Renders the help screen
 $node = $_GET["node"];
-$title = atkTools::atktext("title_$node", isset($_GET["module"]) ? $_GET["module"] : "");
+$title = Atk_Tools::atktext("title_$node", isset($_GET["module"]) ? $_GET["module"] : "");
 $helpbase = $config_atkroot;
 if (isset($_GET["module"]))
-    $helpbase = atkModule::moduleDir($_GET["module"]);
-$file = $helpbase . "help/" . atkConfig::getGlobal('language') . "/help." . $node . ".php";
+    $helpbase = Atk_Module::moduleDir($_GET["module"]);
+$file = $helpbase . "help/" . Atk_Config::getGlobal('language') . "/help." . $node . ".php";
 $data = '<div align="left">';
 $data .= implode("<br>", file($file));
 $data .='</div>';
 
-$page = &atkTools::atknew("atk.ui.atkpage");
-$ui = &atkTools::atkinstance("atk.ui.atkui");
+$page = &Atk_Tools::atknew("atk.ui.atkpage");
+$ui = &Atk_Tools::atkinstance("atk.ui.atkui");
 
-$output = &atkOutput::getInstance();
+$output = &Atk_Output::getInstance();
 
 $page->register_style($ui->stylePath("style.css"));
 
 $res = $ui->renderBox(array("title" => $title,
     "content" => $data));
-$res.='<br><div align="right"><a href="javascript:window.close();">' . atkTools::atktext("close") . '</a></div>';
+$res.='<br><div align="right"><a href="javascript:window.close();">' . Atk_Tools::atktext("close") . '</a></div>';
 
 $page->addContent($res);
 
-$output->output($page->render(atkTools::atktext('app_title') . ' - ' . atkTools::atktext('help'), true));
+$output->output($page->render(Atk_Tools::atktext('app_title') . ' - ' . Atk_Tools::atktext('help'), true));
 
 $output->outputFlush();

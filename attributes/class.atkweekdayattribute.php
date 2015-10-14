@@ -18,7 +18,7 @@
  * Imports
  * @access private
  */
-atkTools::atkimport("atk.attributes.atknumberattribute");
+Atk_Tools::atkimport("atk.attributes.atknumberattribute");
 
 /**
  * Flags for atkWeekdayAttribute
@@ -115,7 +115,7 @@ class Atk_WeekdayAttribute extends Atk_NumberAttribute
             $day = pow(2, $i - 1);
 
             if ($i <= 7)
-                $weekday = atkTools::atktext($this->m_mapping[$day]);
+                $weekday = Atk_Tools::atktext($this->m_mapping[$day]);
             else
                 $weekday = $this->m_extra[$i - 8];
 
@@ -156,12 +156,12 @@ class Atk_WeekdayAttribute extends Atk_NumberAttribute
         for ($i = 1; $i <= $max; $i++) {
             $day = pow(2, $i - 1);
 
-            if (atkTools::hasFlag($value, $day)) {
+            if (Atk_Tools::hasFlag($value, $day)) {
                 if ($i <= 7) {
                     $weekday = $this->m_mapping[$day];
                     if ($mode == 'list')
                         $weekday = substr($weekday, 0, 3);
-                    $weekday = atkTools::atktext($weekday);
+                    $weekday = Atk_Tools::atktext($weekday);
                 }
                 else {
                     $weekday = $this->m_extra[$i - 8];
@@ -172,7 +172,7 @@ class Atk_WeekdayAttribute extends Atk_NumberAttribute
         }
 
         if (empty($result))
-            return atkTools::atktext('none');
+            return Atk_Tools::atktext('none');
         else
             return $result;
     }

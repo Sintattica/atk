@@ -32,7 +32,7 @@ class Atk_Relation extends Atk_Attribute
     var $m_destination;
 
     /**
-     * @var atkNode Destination instance.
+     * @var Atk_Node Destination instance.
      */
     var $m_destInstance = "";
 
@@ -59,9 +59,9 @@ class Atk_Relation extends Atk_Attribute
      * @param String $destination The destination node (in module.name notation)
      * @param int $flags Flags for the relation
      */
-    function atkRelation($name, $destination, $flags = 0)
+    function __construct($name, $destination, $flags = 0)
     {
-        $this->atkAttribute($name, $flags);
+        parent::__construct($name, $flags);
         $this->m_destination = $destination;
     }
 
@@ -176,7 +176,7 @@ class Atk_Relation extends Atk_Attribute
      * to the real description handler.
      *
      * @param array $record The record
-     * @param atkNode $node The atknode object
+     * @param Atk_Node $node The atknode object
      * @return String with the descriptor
      */
     function descriptor($record, &$node)
@@ -199,11 +199,11 @@ class Atk_Relation extends Atk_Attribute
     {
         if (!is_object($this->m_destInstance)) {
             $cache_id = $this->m_owner . "." . $this->m_name;
-            $this->m_destInstance = atkModule::atkGetNode($this->m_destination, true, $cache_id);
+            $this->m_destInstance = Atk_Module::atkGetNode($this->m_destination, true, $cache_id);
 
             // Validate if destination was created succesfully
             if (!is_object($this->m_destInstance)) {
-                atkTools::atkerror("Relation with unknown nodetype '" . $this->m_destination . "' (in node '" . $this->m_owner . "')");
+                Atk_Tools::atkerror("Relation with unknown nodetype '" . $this->m_destination . "' (in node '" . $this->m_owner . "')");
                 $this->m_destInstance = NULL;
                 return false;
             }
@@ -317,7 +317,7 @@ class Atk_Relation extends Atk_Attribute
      * Returns the condition (SQL) that should be used when we want to join a relation's
      * owner node with the parent node.
      *
-     * @param atkQuery $query The query object
+     * @param Atk_Query $query The query object
      * @param string $tablename The tablename
      * @param string $fieldalias
      * @return String SQL string for joining the owner with the destination.
@@ -330,7 +330,7 @@ class Atk_Relation extends Atk_Attribute
 
     /**
      * Returns an instance of the node that the relation points to.
-     * @return atkNode The node that this relation points to, or
+     * @return Atk_Node The node that this relation points to, or
      *                 NULL if the destination is not valid.
      */
     function &getDestination()
@@ -349,14 +349,14 @@ class Atk_Relation extends Atk_Attribute
     function getAddLabel()
     {
         $key = "link_" . $this->fieldName() . "_add";
-        $label = atkTools::atktext($key, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type, "", "", true);
+        $label = Atk_Tools::atktext($key, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type, "", "", true);
         if ($label == "") {
-            $label = atkTools::atktext($key, $this->m_destInstance->m_module, "", "", "", true);
+            $label = Atk_Tools::atktext($key, $this->m_destInstance->m_module, "", "", "", true);
             if ($label == "") {
-                $key = "link_" . atkModule::getNodeType($this->m_destination) . "_add";
-                $label = atkTools::atktext($key, $this->m_destInstance->m_module, "", "", "", true);
+                $key = "link_" . Atk_Module::getNodeType($this->m_destination) . "_add";
+                $label = Atk_Tools::atktext($key, $this->m_destInstance->m_module, "", "", "", true);
                 if ($label == "") {
-                    $label = atkTools::atktext("link_add", "atk");
+                    $label = Atk_Tools::atktext("link_add", "atk");
                 }
             }
         }
@@ -373,7 +373,7 @@ class Atk_Relation extends Atk_Attribute
     function parseFilter($destFilter, $record)
     {
         if ($destFilter != "") {
-            atkTools::atkimport("atk.utils.atkstringparser");
+            Atk_Tools::atkimport("atk.utils.atkstringparser");
             $parser = new Atk_StringParser($destFilter);
             return $parser->parse($record);
         }

@@ -14,7 +14,7 @@
  * @version $Revision: 6309 $
  * $Id$
  */
-atkTools::atkimport("atk.attributes.atkattribute");
+Atk_Tools::atkimport("atk.attributes.atkattribute");
 
 /**
  * Flag(s) specific for atkPasswordAttribute
@@ -118,7 +118,7 @@ class Atk_PasswordAttribute extends Atk_Attribute
                 if (in_array(strtolower($name), array("minsize", "minupperchars", "minlowerchars", "minalphabeticchars", "minnumbers", "minspecialchars"))) {
                     $this->m_restrictions[strtolower($name)] = $value;
                 } else {
-                    atkTools::atkdebug("atkPasswordAttribute->setRestrictions(): Unknown restriction: \"$name\"=\"$value\"", DEBUG_WARNING);
+                    Atk_Tools::atkdebug("atkPasswordAttribute->setRestrictions(): Unknown restriction: \"$name\"=\"$value\"", DEBUG_WARNING);
                 }
             }
         }
@@ -150,12 +150,12 @@ class Atk_PasswordAttribute extends Atk_Attribute
             if (!$this->m_generate) {
                 $this->registerKeyListener($id . '[new]', KB_CTRLCURSOR | KB_UPDOWN);
                 $this->registerKeyListener($id . '[again]', KB_CTRLCURSOR | KB_UPDOWN);
-                $result = atkTools::atktext("password_new", "atk") . ':<br>' .
+                $result = Atk_Tools::atktext("password_new", "atk") . ':<br>' .
                     '<input autocomplete="off" type="password" id="' . $id . '[new]" name="' . $id . '[new]"' .
                     ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"'
                             : '') .
                     ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . "><br><br>" .
-                    atkTools::atktext("password_again", "atk") . ':<br>' .
+                    Atk_Tools::atktext("password_again", "atk") . ':<br>' .
                     '<input autocomplete="off" type="password" id="' . $id . '[again]" name="' . $id . '[again]"' .
                     ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"'
                             : '') .
@@ -180,7 +180,7 @@ class Atk_PasswordAttribute extends Atk_Attribute
 
             if (!$this->hasFlag(AF_PASSWORD_NOVALIDATE)) {
                 $this->registerKeyListener($id . '[current]', KB_CTRLCURSOR | KB_UPDOWN);
-                $result .= atkTools::atktext("password_current", "atk") . ':<br>' .
+                $result .= Atk_Tools::atktext("password_current", "atk") . ':<br>' .
                     '<input autocomplete="off" type="password" id="' . $id . '[current]" name="' . $id . '[current]"' .
                     ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"'
                             : '') .
@@ -188,11 +188,11 @@ class Atk_PasswordAttribute extends Atk_Attribute
             }
             $this->registerKeyListener($id . '[new]', KB_CTRLCURSOR | KB_UPDOWN);
             $this->registerKeyListener($id . '[again]', KB_CTRLCURSOR | KB_UPDOWN);
-            $result .= atkTools::atktext("password_new", "atk") . ':<br>' .
+            $result .= Atk_Tools::atktext("password_new", "atk") . ':<br>' .
                 '<input autocomplete="off" type="password" id="' . $id . '[new]" name="' . $id . '[new]"' .
                 ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') .
                 ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . '><br><br>' .
-                atkTools::atktext("password_again", "atk") . ':<br>' .
+                Atk_Tools::atktext("password_again", "atk") . ':<br>' .
                 '<input autocomplete="off" type="password" id="' . $id . '[again]" name="' . $id . '[again]"' .
                 ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') .
                 ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . '>';
@@ -298,7 +298,7 @@ class Atk_PasswordAttribute extends Atk_Attribute
     {
         // If no restrictions are set, return "No restrictions apply to this password"
         if (count($this->m_restrictions) == 0) {
-            return atkTools::atktext("no_restrictions_apply_to_this_password", "atk");
+            return Atk_Tools::atktext("no_restrictions_apply_to_this_password", "atk");
         }
 
         // Start with an empty string
@@ -309,9 +309,9 @@ class Atk_PasswordAttribute extends Atk_Attribute
             // Add a human readable form of the current restriction to the text string and append a linebreak
             if ($value > 0) {
                 if ($name == "minsize")
-                    $text .= sprintf(atkTools::atktext("the_password_should_be_at_least_%d_characters_long", "atk"), $value);
+                    $text .= sprintf(Atk_Tools::atktext("the_password_should_be_at_least_%d_characters_long", "atk"), $value);
                 else
-                    $text .= sprintf(atkTools::atktext("the_password_should_at_least_contain_%d_%s", "atk"), $value, atkTools::atktext(substr($name, 3), "atk"));
+                    $text .= sprintf(Atk_Tools::atktext("the_password_should_at_least_contain_%d_%s", "atk"), $value, Atk_Tools::atktext(substr($name, 3), "atk"));
                 $text .= "<br />\n";
             }
         }
@@ -331,30 +331,30 @@ class Atk_PasswordAttribute extends Atk_Attribute
         $error = FALSE;
         $value = $record[$this->fieldName()];
 
-        if ($mode == 'update' && (atkTools::atk_strlen($value["new"]) > 0 || atkTools::atk_strlen($value["again"]) > 0) && !$this->hasFlag(AF_PASSWORD_NOVALIDATE) && $value["current"] != $value["hash"]) {
+        if ($mode == 'update' && (Atk_Tools::atk_strlen($value["new"]) > 0 || Atk_Tools::atk_strlen($value["again"]) > 0) && !$this->hasFlag(AF_PASSWORD_NOVALIDATE) && $value["current"] != $value["hash"]) {
             $error = TRUE;
-            atkTools::triggerError($record, $this->fieldName(), 'error_password_incorrect');
+            Atk_Tools::triggerError($record, $this->fieldName(), 'error_password_incorrect');
         }
 
         if ($value["new"] != $value["again"]) {
             $error = TRUE;
-            atkTools::triggerError($record, $this->fieldName(), 'error_password_nomatch');
+            Atk_Tools::triggerError($record, $this->fieldName(), 'error_password_nomatch');
         }
 
-        if ($mode == "add" && $this->hasFlag(AF_OBLIGATORY) && atkTools::atk_strlen($value["new"]) == 0) {
+        if ($mode == "add" && $this->hasFlag(AF_OBLIGATORY) && Atk_Tools::atk_strlen($value["new"]) == 0) {
             $error = TRUE;
-            atkTools::triggerError($record, $this->fieldName(), 'error_obligatoryfield');
+            Atk_Tools::triggerError($record, $this->fieldName(), 'error_obligatoryfield');
         }
 
         // Check if the password meets the restrictions. If not, set error to true and
         // triger an error with the human readable form of the restrictions as message.
-        if ((atkTools::atk_strlen($value["new"]) > 0) && (!$this->validateRestrictions($value["newplain"]))) {
+        if ((Atk_Tools::atk_strlen($value["new"]) > 0) && (!$this->validateRestrictions($value["newplain"]))) {
             $error = TRUE;
-            atkTools::triggerError($record, $this->fieldName(), $this->getRestrictionsText());
+            Atk_Tools::triggerError($record, $this->fieldName(), $this->getRestrictionsText());
         }
 
         // new password?
-        if (!$error && atkTools::atk_strlen($value["new"]) > 0)
+        if (!$error && Atk_Tools::atk_strlen($value["new"]) > 0)
             $record[$this->fieldName()]["hash"] = $record[$this->fieldName()]["new"];
     }
 
@@ -392,7 +392,7 @@ class Atk_PasswordAttribute extends Atk_Attribute
      */
     function display($rec)
     {
-        return atkTools::atktext("password_hidden", "atk");
+        return Atk_Tools::atktext("password_hidden", "atk");
     }
 
     /**
@@ -493,7 +493,7 @@ class Atk_PasswordAttribute extends Atk_Attribute
     function makePassword($times = 2)
     {
         // Show a debugmessage about this function being deprecated
-        atkTools::atkdebug("atkPasswordAttribute::makePassword() is deprecated, use generatePassword() on an atkPasswordAttribute instead.");
+        Atk_Tools::atkdebug("Atk_PasswordAttribute::makePassword() is deprecated, use generatePassword() on an atkPasswordAttribute instead.");
 
         // Construct a new passwordattribute, generate the password and return it
         $passwordattribute = new Atk_PasswordAttribute("dummy", true);
@@ -535,7 +535,7 @@ class Atk_PasswordAttribute extends Atk_Attribute
 
         // new is set from an update using the password attrib edit() function
 
-        if (atkTools::atkArrayNvl($value, "new", "") != "" || atkTools::atkArrayNvl($value, "hash", "") != "") {
+        if (Atk_Tools::atkArrayNvl($value, "new", "") != "" || Atk_Tools::atkArrayNvl($value, "hash", "") != "") {
             return true;
         }
         return false;

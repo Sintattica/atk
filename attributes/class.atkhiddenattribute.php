@@ -15,7 +15,7 @@
 /**
  * @internal base class include
  */
-atkTools::useattrib("atkdummyattribute");
+Atk_Tools::useattrib("atkdummyattribute");
 
 /**
  * The atkHiddenAttribute behaves very similar to an atkDummyAttribute, but with the main difference

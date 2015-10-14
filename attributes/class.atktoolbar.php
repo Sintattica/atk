@@ -60,9 +60,9 @@ class Atk_Toolbar extends Atk_DummyAttribute
     {
         global $config_atkroot;
 
-        $theme = &atkTheme::getInstance();
+        $theme = &Atk_Theme::getInstance();
 
-        $page = &atkPage::getInstance();
+        $page = &Atk_Page::getInstance();
         $page->register_script($config_atkroot . "atk/javascript/newwindow.js");
         $page->register_script($config_atkroot . "atk/javascript/class.atktoolbar.js");
         $res = '<a href="javascript:modifySelection(\'<b>\',\'</b>\');"><img src="' . $theme->iconPath("bold", "toolbar") . '" border="0" alt="Vet"></a> ';

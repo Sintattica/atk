@@ -16,8 +16,8 @@
  * $Id$
  */
 /** @internal includes * */
-atkTools::atkimport("atk.atklanguage");
-atkTools::useattrib("atklistattribute");
+Atk_Tools::atkimport("atk.atklanguage");
+Atk_Tools::useattrib("atklistattribute");
 
 /**
  * The atkStateAttribute class represents an attribute to handle United States in a listbox.
@@ -62,7 +62,7 @@ class Atk_StateAttribute extends Atk_ListAttribute
         }
 
         // When switch is not user get country options
-        atkTools::atkdebug("StateAttribute - $name - $switch");
+        Atk_Tools::atkdebug("StateAttribute - $name - $switch");
 
         $this->fillStateArray();
         $valueArray = $this->getStateValueArray($switch);
@@ -85,7 +85,7 @@ class Atk_StateAttribute extends Atk_ListAttribute
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         if ($this->m_defaulttocurrent && !$record[$this->fieldName()])
-            $record[$this->fieldName()] = strtoupper(atkLanguage::getLanguage());
+            $record[$this->fieldName()] = strtoupper(Atk_Language::getLanguage());
         return parent::edit($record, $fieldprefix);
     }
 
@@ -201,7 +201,7 @@ class Atk_StateAttribute extends Atk_ListAttribute
      */
     function getStateOption($iso_code)
     {
-        return $this->m_state[$iso_code][atkLanguage::getLanguage()];
+        return $this->m_state[$iso_code][Atk_Language::getLanguage()];
     }
 
 }

@@ -14,7 +14,7 @@
  * @version $Revision: 6320 $
  * $Id$
  */
-atkTools::userelation("atkmanytomanyrelation");
+Atk_Tools::userelation("atkmanytomanyrelation");
 
 /**
  * Many-to-many list relation.

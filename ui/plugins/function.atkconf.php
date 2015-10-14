@@ -22,6 +22,6 @@
  */
 function smarty_function_atkconf($params, &$smarty)
 {
-    $val = atkConfig::get($params['module'], $params['key']);
+    $val = Atk_Config::get($params['module'], $params['key']);
     return $val;
 }

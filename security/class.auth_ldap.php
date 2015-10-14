@@ -52,21 +52,21 @@ class auth_ldap extends auth_interface
         if ($user == "")
             return AUTH_UNVERIFIED; // can't verify if we have no userid
 
-        if ($ldap = ldap_connect(atkConfig::getGlobal("auth_ldap_host"))) {
-            atkTools::atkdebug("successful connection to " . atkConfig::getGlobal("auth_ldap_host"));
-            if (atkConfig::getGlobal("auth_ldap_bind_tree")) {
-                if ($bindID = @ldap_bind($ldap, atkConfig::getGlobal("auth_ldap_bind_dn"), atkConfig::getGlobal("auth_ldap_bind_pw"))) {
-                    atkTools::atkdebug("Succesfully bound to " . atkConfig::getGlobal("auth_ldap_bind_dn") . " with id: " . $bindID . " conn_id " . $ldap);
+        if ($ldap = ldap_connect(Atk_Config::getGlobal("auth_ldap_host"))) {
+            Atk_Tools::atkdebug("successful connection to " . Atk_Config::getGlobal("auth_ldap_host"));
+            if (Atk_Config::getGlobal("auth_ldap_bind_tree")) {
+                if ($bindID = @ldap_bind($ldap, Atk_Config::getGlobal("auth_ldap_bind_dn"), Atk_Config::getGlobal("auth_ldap_bind_pw"))) {
+                    Atk_Tools::atkdebug("Succesfully bound to " . Atk_Config::getGlobal("auth_ldap_bind_dn") . " with id: " . $bindID . " conn_id " . $ldap);
                 } else {
-                    atkTools::atkdebug("<b>Error binding to</b> " . atkConfig::getGlobal("auth_ldap_bind_dn") . " " . atkConfig::getGlobal("auth_ldap_bind_pw"));
+                    Atk_Tools::atkdebug("<b>Error binding to</b> " . Atk_Config::getGlobal("auth_ldap_bind_dn") . " " . Atk_Config::getGlobal("auth_ldap_bind_pw"));
                     return AUTH_ERROR;
                 }
             }
 
             // find the dn for this uid, the uid is not always in the dn
-            $filter = (atkConfig::getGlobal("auth_ldap_search_filter") != "" ? atkConfig::getGlobal("auth_ldap_search_filter")
+            $filter = (Atk_Config::getGlobal("auth_ldap_search_filter") != "" ? Atk_Config::getGlobal("auth_ldap_search_filter")
                         : "uid");
-            $pattern = atkConfig::getGlobal("auth_ldap_context");
+            $pattern = Atk_Config::getGlobal("auth_ldap_context");
 
             // Add support for searching in multiple DN's
             if (!is_array($pattern)) {
@@ -78,7 +78,7 @@ class auth_ldap extends auth_interface
                 $sri = @ldap_search($ldap, $searchPattern, $filterCmd);
 
                 if ($sri === false) {
-                    atkTools::atkdebug("Invalid searchpattern: " . $searchPattern);
+                    Atk_Tools::atkdebug("Invalid searchpattern: " . $searchPattern);
                 } else {
                     $allValues = ldap_get_entries($ldap, $sri);
 
@@ -97,7 +97,7 @@ class auth_ldap extends auth_interface
                     }
                 }
             }
-            atkTools::atkdebug("LDAP did not successfully authenticate $user");
+            Atk_Tools::atkdebug("LDAP did not successfully authenticate $user");
 
             // dn not found or password wrong TODO/FIXME: return -1 if dn not found
             return AUTH_MISMATCH;

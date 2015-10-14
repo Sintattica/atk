@@ -17,7 +17,7 @@
 /**
  * @internal Include baseclass
  */
-require_once(atkConfig::getGlobal("atkroot") . "atk/db/class.atkmysqlquery.php");
+require_once(Atk_Config::getGlobal("atkroot") . "atk/db/class.atkmysqlquery.php");
 
 /**
  * SQL Builder for MySQL 4.1+ databases.
@@ -92,7 +92,7 @@ class Atk_MysqliQuery extends Atk_MysqlQuery
 
         for ($i = 0; $i < count($this->m_fields); $i++) {
             if (($this->m_values[$this->m_fields[$i]] === "''") and ($this->m_db->m_tableMeta[$this->m_tables[0]][$this->m_fields[$i]]["type"] == "int")) {
-                atkTools::atkdebug("atkMysqliQuery::buildInsert() : '' transformed in '0' for MySQL5 compatibility in field '" . $this->m_fields[$i] . "'");
+                Atk_Tools::atkdebug("Atk_MysqliQuery::buildInsert() : '' transformed in '0' for MySQL5 compatibility in field '" . $this->m_fields[$i] . "'");
                 $result.= "'0'";
             } else {
                 $result.= $this->m_values[$this->m_fields[$i]];
@@ -115,12 +115,12 @@ class Atk_MysqliQuery extends Atk_MysqlQuery
      *                          executed
      * @param string $seqName   sequence name (optional for certain drivers)
      * 
-     * @return atkQuery
+     * @return Atk_Query
      */
     public function addSequenceField($fieldName, &$value, $seqName = null)
     {
         $meta = $this->getDb()->tableMeta($this->m_tables[0]);
-        if (!atkTools::hasFlag($meta[$fieldName]['flags'], MF_AUTO_INCREMENT)) {
+        if (!Atk_Tools::hasFlag($meta[$fieldName]['flags'], MF_AUTO_INCREMENT)) {
             return parent::addSequenceField($fieldName, $value, $seqName);
         }
 
@@ -141,7 +141,7 @@ class Atk_MysqliQuery extends Atk_MysqlQuery
 
         if ($result && $this->m_returnSeqValue) {
             $this->m_seqValue = $this->getDb()->getInsertId();
-            atkTools::atkdebug("Value for sequence column {$this->m_tables[0]}.{$this->m_seqField}: {$this->m_seqValue}");
+            Atk_Tools::atkdebug("Value for sequence column {$this->m_tables[0]}.{$this->m_seqField}: {$this->m_seqValue}");
         }
 
         return $result;

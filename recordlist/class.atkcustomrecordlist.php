@@ -15,7 +15,7 @@
  * $Id$
  */
 /** @internal include base class */
-atkTools::atkimport("atk.recordlist.atkrecordlist");
+Atk_Tools::atkimport("atk.recordlist.atkrecordlist");
 
 /**
  * Custom recordlist renderer.
@@ -32,7 +32,7 @@ class Atk_CustomRecordList extends Atk_RecordList
 
     /**
      * Creates a special Recordlist that can be used for exporting to files or to make it printable
-     * @param atkNode $node       The node to use as definition for the columns.
+     * @param Atk_Node $node       The node to use as definition for the columns.
      * @param array $recordset    The records to render
      * @param String $sol         String to use at start of each row
      * @param String $sof         String to use at start of each field
@@ -118,8 +118,8 @@ class Atk_CustomRecordList extends Atk_RecordList
                         // is called.
                         $value = $this->eolreplace($p_attrib->display($recordset[$i], $this->m_mode), $rfeplace);
                     }
-                    if (atkTools::atkGetCharset() != "" && $decode)
-                        $value = atkTools::atk_html_entity_decode(htmlentities($value, ENT_NOQUOTES), ENT_NOQUOTES);
+                    if (Atk_Tools::atkGetCharset() != "" && $decode)
+                        $value = Atk_Tools::atk_html_entity_decode(htmlentities($value, ENT_NOQUOTES), ENT_NOQUOTES);
                     $output.=$sof . ($value == "" ? $empty : $value) . $eof . $fsep;
 
                     // Calculate totals..
@@ -170,7 +170,7 @@ class Atk_CustomRecordList extends Atk_RecordList
             $output = '<table border="1" cellspacing="0" cellpadding="2">' . $output . "</table>";
         }
 
-        atkTools::atkdebug(atkTools::atk_html_entity_decode($output));
+        Atk_Tools::atkdebug(Atk_Tools::atk_html_entity_decode($output));
 
         // To a File
         if (!array_key_exists("filename", $outputparams))
@@ -178,7 +178,7 @@ class Atk_CustomRecordList extends Atk_RecordList
 
         if ($this->m_exportcsv) {
             $ext = ($type == "0" ? "html" : "csv");
-            $exporter = &atkTools::atknew("atk.utils.atkfileexport");
+            $exporter = &Atk_Tools::atknew("atk.utils.atkfileexport");
             $exporter->export($output, $outputparams["filename"], $ext, $ext, $compression);
         } else {
             return $output;

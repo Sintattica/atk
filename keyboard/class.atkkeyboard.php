@@ -17,7 +17,7 @@
 /**
  * Imports used by the class..
  */
-atkTools::atkimport("atk.ui.atkpage");
+Atk_Tools::atkimport("atk.ui.atkpage");
 
 /**
  * Define some key shortcut constants. (mind you, these are not actual ascii key values)
@@ -57,7 +57,7 @@ class Atk_Keyboard
     {
         static $s_kb;
         if ($s_kb == NULL) {
-            atkTools::atkdebug("Creating atkKeyboard instance");
+            Atk_Tools::atkdebug("Creating atkKeyboard instance");
             $s_kb = new Atk_Keyboard();
         }
 
@@ -79,11 +79,11 @@ class Atk_Keyboard
     function addFormElementHandler($id, $navkeys)
     {
         $params = array("'" . $id . "'",
-            atkTools::hasFlag($navkeys, KB_UP) ? "1" : "0",
-            atkTools::hasFlag($navkeys, KB_DOWN) ? "1" : "0",
-            atkTools::hasFlag($navkeys, KB_LEFT) ? "1" : "0",
-            atkTools::hasFlag($navkeys, KB_RIGHT) ? "1" : "0",
-            atkTools::hasFlag($navkeys, KB_CTRLCURSOR) ? "1" : "0");
+            Atk_Tools::hasFlag($navkeys, KB_UP) ? "1" : "0",
+            Atk_Tools::hasFlag($navkeys, KB_DOWN) ? "1" : "0",
+            Atk_Tools::hasFlag($navkeys, KB_LEFT) ? "1" : "0",
+            Atk_Tools::hasFlag($navkeys, KB_RIGHT) ? "1" : "0",
+            Atk_Tools::hasFlag($navkeys, KB_CTRLCURSOR) ? "1" : "0");
 
         $this->addHandler("atkFEKeyListener", $params);
     }
@@ -109,8 +109,8 @@ class Atk_Keyboard
         $this->addHandler("atkRLKeyListener", $params);
 
         // atkrlkeylistener must be loaded after the main addHandler, which loads keyboardhandler.
-        $page = &atkPage::getInstance();
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/keyboard/javascript/class.atkrlkeylistener.js");
+        $page = &Atk_Page::getInstance();
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/keyboard/javascript/class.atkrlkeylistener.js");
     }
 
     /**
@@ -127,8 +127,8 @@ class Atk_Keyboard
      */
     function addHandler($handlertype, $params)
     {
-        $page = &atkPage::getInstance();
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/keyboard/javascript/keyboardhandler.js");
+        $page = &Atk_Page::getInstance();
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/keyboard/javascript/keyboardhandler.js");
         $page->register_loadscript("kb_init();\n");
         $page->register_loadscript("kb_addListener(new $handlertype(" . implode(",", $params) . "));");
     }

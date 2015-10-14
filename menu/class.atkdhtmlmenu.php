@@ -32,7 +32,7 @@ class Atk_DhtmlMenu extends Atk_menuinterface
      *
      * @return atkDhtmlMenu
      */
-    function atkDhtmlMenu()
+    function __construct()
     {
         $this->m_height = "50";
     }
@@ -59,13 +59,13 @@ class Atk_DhtmlMenu extends Atk_menuinterface
         while (list ($name) = each($g_menu)) {
             $tabContent = "";
             $atkmenutop = $name;
-            $tabName = addslashes(atkTools::atktext($atkmenutop, "", "menu"));
+            $tabName = addslashes(Atk_Tools::atktext($atkmenutop, "", "menu"));
             $items = 0;
 
             for ($i = 0; $i < count($g_menu[$atkmenutop]); $i++) {
                 $menu = "";
                 $name = $g_menu[$atkmenutop][$i]["name"];
-                $url = atkTools::session_url($g_menu[$atkmenutop][$i]["url"], SESSION_NEW);
+                $url = Atk_Tools::session_url($g_menu[$atkmenutop][$i]["url"], SESSION_NEW);
                 $enable = $g_menu[$atkmenutop][$i]["enable"];
 
                 // Check wether we have the rights and the item is not a root item
@@ -77,7 +77,7 @@ class Atk_DhtmlMenu extends Atk_menuinterface
                     for ($j = 0; $j < (count($enable) / 2); $j++) {
                         $action = $enable[(2 * $j) + 1];
 
-                        $instance = atkModule::atkGetNode($enable[(2 * $j)]);
+                        $instance = Atk_Module::atkGetNode($enable[(2 * $j)]);
                         $enabled |= $instance->allowed($action);
                     }
                     $enable = $enabled;
@@ -90,7 +90,7 @@ class Atk_DhtmlMenu extends Atk_menuinterface
                 /* normal menu item */
                 else if ($enable) {
                     if ($g_menu[$atkmenutop][$i]["url"] != "") {
-                        $tabContent .= "<a target='main' class='tablink' href='$url'>" . atkTools::atktext($name, "", "menu") . "</a>";
+                        $tabContent .= "<a target='main' class='tablink' href='$url'>" . Atk_Tools::atktext($name, "", "menu") . "</a>";
 
                         if ($i < count($g_menu[$atkmenutop]) - 1) {
                             $tabContent .= "&nbsp;|&nbsp;";
@@ -110,15 +110,15 @@ class Atk_DhtmlMenu extends Atk_menuinterface
 
         // add options tab containing logout
         $tabs .= '   rows[1][' . $tab . '] = "Opties"' . "\n";
-        $divs .= '<div id="T1' . $tab . '" class="tab-body"><a class="tablink" href="index.php?atklogout=1" target="_top">' . atkTools::atktext("logout", "atk") . '</a></div>' . "\n";
+        $divs .= '<div id="T1' . $tab . '" class="tab-body"><a class="tablink" href="index.php?atklogout=1" target="_top">' . Atk_Tools::atktext("logout", "atk") . '</a></div>' . "\n";
 
-        $page = &atkTools::atknew("atk.ui.atkpage");
-        $theme = &atkTools::atkinstance("atk.ui.atktheme");
+        $page = &Atk_Tools::atknew("atk.ui.atkpage");
+        $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
         $page->register_style($theme->stylePath("style.css"));
         $page->register_style($theme->stylePath("dhtmlmenu.css"));
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/atk_tabs.js");
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/atk_tabs.js");
 
-        $code = 'var tabSelectMode = "' . atkConfig::getGlobal("tabselectMode") . '";' . "\n";
+        $code = 'var tabSelectMode = "' . Atk_Config::getGlobal("tabselectMode") . '";' . "\n";
 
         $code.= 'var rows     = new Array();
                var num_rows = 1;

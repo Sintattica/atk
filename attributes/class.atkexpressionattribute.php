@@ -14,7 +14,7 @@
  * @version $Revision: 6309 $
  * $Id$
  */
-atkTools::atkimport("atk.attributes.atkattribute");
+Atk_Tools::atkimport("atk.attributes.atkattribute");
 
 /**
  * With the atkExpressionAttribute class you can select arbitrary SQL expressions
@@ -64,7 +64,7 @@ class Atk_ExpressionAttribute extends Atk_Attribute
     /**
      * Adds this attribute to database queries.
      *
-     * @param atkQuery $query The SQL query object
+     * @param Atk_Query $query The SQL query object
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
@@ -153,9 +153,9 @@ class Atk_ExpressionAttribute extends Atk_Attribute
     function getSearchModes()
     {
         if ($this->getSearchType() == "number")
-            return atkNumberAttribute::getSearchModes();
+            return Atk_NumberAttribute::getSearchModes();
         else if ($this->getSearchType() == "date")
-            return atkDateAttribute::getSearchModes();
+            return Atk_DateAttribute::getSearchModes();
         else
             return parent::getSearchModes();
     }
@@ -178,7 +178,7 @@ class Atk_ExpressionAttribute extends Atk_Attribute
     function search($record = "", $extended = false, $fieldprefix = "")
     {
         if ($this->getSearchType() == "number") {
-            return atkNumberAttribute::search($record, $extended, $fieldprefix);
+            return Atk_NumberAttribute::search($record, $extended, $fieldprefix);
         } else if ($this->getSearchType() == "date") {
             $attr = new Atk_DateAttribute($this->fieldName());
             $attr->m_searchsize = 10;
@@ -191,7 +191,7 @@ class Atk_ExpressionAttribute extends Atk_Attribute
     /**
      * Creates a search condition for this attribute.
      * 
-     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param Atk_Query $query     The query object where the search condition should be placed on
      * @param String $table       The name of the table in which this attribute
      *                              is stored
      * @param mixed $value        The value the user has entered in the searchbox
@@ -215,7 +215,7 @@ class Atk_ExpressionAttribute extends Atk_Attribute
         }
 
         if ($this->getSearchType() == "number") {
-            $value = atkNumberAttribute::processSearchValue($value, $searchmode);
+            $value = Atk_NumberAttribute::processSearchValue($value, $searchmode);
         }
 
         if ($searchmode != "between") {
@@ -235,7 +235,7 @@ class Atk_ExpressionAttribute extends Atk_Attribute
                 return false;
             }
         } else {
-            return atkNumberAttribute::getBetweenCondition($query, $expression, $value);
+            return Atk_NumberAttribute::getBetweenCondition($query, $expression, $value);
         }
     }
 }

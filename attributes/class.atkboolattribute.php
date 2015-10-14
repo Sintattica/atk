@@ -49,10 +49,10 @@ class Atk_BoolAttribute extends Atk_Attribute
      * @param string $name Name of the attribute
      * @param int $flags Flags for this attribute
      */
-    function atkBoolAttribute($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
         // Call base class constructor. Size of boolean value is always 1.
-        $this->atkAttribute($name, $flags, 1);
+        parent::__construct($name, $flags, 1);
         if ($this->hasFlag(AF_BOOL_OBLIGATORY)) {
             $this->addFlag(AF_OBLIGATORY);
         }
@@ -67,12 +67,12 @@ class Atk_BoolAttribute extends Atk_Attribute
     function addFlag($flags)
     {
         // setting AF_OBLIGATORY has no use, so prevent setting it.
-        if (atkTools::hasFlag($flags, AF_OBLIGATORY)) {
+        if (Atk_Tools::hasFlag($flags, AF_OBLIGATORY)) {
             $flags &= (~AF_OBLIGATORY);
         }
 
         // except if someone really really really wants to show this attribute is obligatory
-        if (atkTools::hasFlag($flags, AF_BOOL_OBLIGATORY)) {
+        if (Atk_Tools::hasFlag($flags, AF_BOOL_OBLIGATORY)) {
             $flags |= AF_OBLIGATORY;
         }
 
@@ -159,15 +159,15 @@ class Atk_BoolAttribute extends Atk_Attribute
     function search($record = "", $extended = false, $fieldprefix = "")
     {
         $result = '<select name="' . $this->getSearchFieldName($fieldprefix) . '" class="form-control">';
-        $result.= '<option value="">' . atkTools::atktext("search_all", "atk") . '</option>';
+        $result.= '<option value="">' . Atk_Tools::atktext("search_all", "atk") . '</option>';
         $result.= '<option value="0" ';
         if ($record[$this->fieldName()] === '0' && !empty($record))
             $result.="selected";
-        $result.= '>' . atkTools::atktext("no", "atk") . '</option>';
+        $result.= '>' . Atk_Tools::atktext("no", "atk") . '</option>';
         $result.= '<option value="1" ';
         if ($record[$this->fieldName()] === '1')
             $result.="selected";
-        $result.= '>' . atkTools::atktext("yes", "atk") . '</option>';
+        $result.= '>' . Atk_Tools::atktext("yes", "atk") . '</option>';
         $result.='</select>';
         return $result;
     }
@@ -175,7 +175,7 @@ class Atk_BoolAttribute extends Atk_Attribute
     /**
      * Creates a searchcondition for the field
      *
-     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param Atk_Query $query     The query object where the search condition should be placed on
      * @param String $table       The name of the table in which this attribute
      *                              is stored
      * @param mixed $value        The value the user has entered in the searchbox
@@ -328,7 +328,7 @@ class Atk_BoolAttribute extends Atk_Attribute
                 '" value="' . htmlspecialchars($record[$this->fieldName()]) . '">';
             return $result;
         } else
-            atkTools::atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
+            Atk_Tools::atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
     }
 
 }

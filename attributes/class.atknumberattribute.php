@@ -53,8 +53,8 @@ class Atk_NumberAttribute extends Atk_Attribute
         $this->atkAttribute($name, $flags | AF_NO_QUOTES, $size); // base class constructor
         $this->m_decimals = $decimals;
 
-        $this->m_decimalseparator = atkTools::atktext(self::SEPARATOR_DECIMAL, 'atk');
-        $this->m_thousandsseparator = atkTools::atktext(self::SEPARATOR_THOUSAND, 'atk');
+        $this->m_decimalseparator = Atk_Tools::atktext(self::SEPARATOR_DECIMAL, 'atk');
+        $this->m_thousandsseparator = Atk_Tools::atktext(self::SEPARATOR_THOUSAND, 'atk');
     }
 
     /**
@@ -154,7 +154,7 @@ class Atk_NumberAttribute extends Atk_Attribute
      */
     function standardiseSeparator($number)
     {
-        return str_replace(atkTools::atktext("decimal_separator"), ".", $number);
+        return str_replace(Atk_Tools::atktext("decimal_separator"), ".", $number);
     }
 
     /**
@@ -180,7 +180,7 @@ class Atk_NumberAttribute extends Atk_Attribute
             $result = '<input type="hidden" id="' . $id . '" name="' . $fieldprefix . $this->formName() . '" value="' . htmlspecialchars($this->formatNumber($record[$this->fieldName()])) . '">';
             return $result;
         } else
-            atkTools::atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
+            Atk_Tools::atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
     }
 
     /**
@@ -198,7 +198,7 @@ class Atk_NumberAttribute extends Atk_Attribute
             $thousands_separator = $this->m_thousandsseparator;
 
         if ($decimal_separator == $thousands_separator) {
-            atkTools::atkwarning('invalid thousandsseparator. identical to the decimal_separator');
+            Atk_Tools::atkwarning('invalid thousandsseparator. identical to the decimal_separator');
             $thousands_separator = '';
         }
 
@@ -301,7 +301,7 @@ class Atk_NumberAttribute extends Atk_Attribute
         $thousandsSeparator = ($this->m_use_thousands_separator && !in_array($mode, array('add', 'edit'))) ? $thousandsSeparator : '';
 
         if ($decimalSeparator == $thousandsSeparator) {
-            atkTools::atkwarning('invalid thousandsseparator. identical to the decimal_separator');
+            Atk_Tools::atkwarning('invalid thousandsseparator. identical to the decimal_separator');
             $thousandsSeparator = '';
         }
 
@@ -334,7 +334,7 @@ class Atk_NumberAttribute extends Atk_Attribute
      */
     function translateSeparator($number)
     {
-        return str_replace(".", atkTools::atktext("decimal_separator"), $number);
+        return str_replace(".", Atk_Tools::atktext("decimal_separator"), $number);
     }
 
     /**
@@ -347,11 +347,11 @@ class Atk_NumberAttribute extends Atk_Attribute
     function validate(&$record, $mode)
     {
         if (!is_numeric($record[$this->fieldName()]) && $record[$this->fieldName()] != "")
-            atkTools::triggerError($record, $this->fieldName(), 'error_notnumeric');
+            Atk_Tools::triggerError($record, $this->fieldName(), 'error_notnumeric');
         if (($this->m_maxvalue !== false) && ($record[$this->fieldName()] > $this->m_maxvalue))
-            atkTools::triggerError($record, $this->fieldName(), 'above_maximum_value');
+            Atk_Tools::triggerError($record, $this->fieldName(), 'above_maximum_value');
         if (($this->m_minvalue !== false) && ($record[$this->fieldName()] < $this->m_minvalue))
-            atkTools::triggerError($record, $this->fieldName(), 'below_minimum_value');
+            Atk_Tools::triggerError($record, $this->fieldName(), 'below_minimum_value');
     }
 
     /**
@@ -369,7 +369,7 @@ class Atk_NumberAttribute extends Atk_Attribute
     function fetchValue($postvars)
     {
         if ($this->isPosted($postvars)) {
-            return $this->removeSeparators(atkTools::atkArrayNvl($postvars, $this->fieldName(), ""));
+            return $this->removeSeparators(Atk_Tools::atkArrayNvl($postvars, $this->fieldName(), ""));
         }
     }
 
@@ -608,7 +608,7 @@ class Atk_NumberAttribute extends Atk_Attribute
                 ($searchsize > 0 ? ' size="' . $searchsize . '"' : '') . '>';
             $id = $this->getSearchFieldName($fieldprefix) . '[to]';
             $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
-            $result .= " (" . atkTools::atktext("until") . ' <input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . htmlentities($valueTo) . '"' .
+            $result .= " (" . Atk_Tools::atktext("until") . ' <input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . htmlentities($valueTo) . '"' .
                 ($searchsize > 0 ? ' size="' . $searchsize . '"' : '') . '>)';
             $result .= '</div>';
         }
@@ -659,7 +659,7 @@ class Atk_NumberAttribute extends Atk_Attribute
     /**
      * Get the between search condition
      *
-     * @param atkQuery $query The query object where the search condition should be placed on
+     * @param Atk_Query $query The query object where the search condition should be placed on
      * @param string $fieldname The name of the field in the database
      * @param string $value The processed search value
      * @return query where clause for searching
@@ -688,7 +688,7 @@ class Atk_NumberAttribute extends Atk_Attribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param atkQuery $query The query object where the search condition should be placed on
+     * @param Atk_Query $query The query object where the search condition should be placed on
      * @param String $table The name of the table in which this attribute
      *                              is stored
      * @param mixed $value The value the user has entered in the searchbox

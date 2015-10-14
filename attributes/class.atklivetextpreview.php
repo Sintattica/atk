@@ -17,7 +17,7 @@
 /**
  * Base class include 
  */
-atkTools::useattrib("atkdummyattribute");
+Atk_Tools::useattrib("atkdummyattribute");
 
 /**
  * Custom flags
@@ -63,7 +63,7 @@ class Atk_LiveTextPreview extends Atk_DummyAttribute
      */
     function edit($record, $fieldprefix = "")
     {
-        $page = &atkPage::getInstance();
+        $page = &Atk_Page::getInstance();
         $id = $fieldprefix . $this->fieldName();
         $master = $fieldprefix . $this->m_masterattribute;
         $page->register_scriptcode("function {$id}_ReloadTextDiv()

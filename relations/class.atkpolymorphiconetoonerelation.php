@@ -1,5 +1,5 @@
 <?php
-atkTools::userelation("atkonetoonerelation");
+Atk_Tools::userelation("atkonetoonerelation");
 
 class Atk_PolymorphicOneToOneRelation extends Atk_OneToOneRelation
 {
@@ -47,9 +47,9 @@ class Atk_PolymorphicOneToOneRelation extends Atk_OneToOneRelation
      * @param int $flags Attribute flags that influence this attributes'
      *                   behavior.
      */
-    function atkPolymorphicOneToOneRelation($name, $typefk, $discriminatorfield, $defaultdest, $modulename, $refKey, $flags = 0)
+    function __construct($name, $typefk, $discriminatorfield, $defaultdest, $modulename, $refKey, $flags = 0)
     {
-        $this->atkOneToOneRelation($name, "", $refKey, $flags | AF_HIDE_LIST);
+        parent::__construct($name, "", $refKey, $flags | AF_HIDE_LIST);
         $this->m_typefk = $typefk;
         $this->m_discriminatorfield = $discriminatorfield;
         $this->m_destination = $defaultdest;
@@ -66,7 +66,7 @@ class Atk_PolymorphicOneToOneRelation extends Atk_OneToOneRelation
      *
      * Called by the framework to load the detail records.
      *
-     * @param atkDb $db The database used by the node.
+     * @param Atk_Db $db The database used by the node.
      * @param array $record The master record
      * @param String $mode The mode for loading (admin, select, copy, etc)
      *

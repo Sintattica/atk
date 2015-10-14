@@ -123,7 +123,7 @@ class Atk_Page
         static $s_page = NULL;
         if ($s_page == NULL) {
             $s_page = new Atk_Page();
-            atkTools::atkdebug("Created a new atkPage instance");
+            Atk_Tools::atkdebug("Created a new atkPage instance");
         }
         return $s_page;
     }
@@ -134,15 +134,15 @@ class Atk_Page
     public function __construct()
     {
         // register default scripts
-        $this->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/jquery-2.1.1.min.js");
+        $this->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/jquery-2.1.1.min.js");
         $this->register_scriptcode('jQuery.noConflict();');
-        $this->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/prototype/prototype.js");
-        $this->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/prototype-ext.js");
-        $this->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/scriptaculous/scriptaculous.js");
-        $this->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/scriptaculous-ext.js");
-        $this->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/class.atktools.js");
-        $this->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/atkbusy.js");
-        $this->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/moment.min.js");
+        $this->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/prototype/prototype.js");
+        $this->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/prototype-ext.js");
+        $this->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/scriptaculous/scriptaculous.js");
+        $this->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/scriptaculous-ext.js");
+        $this->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atktools.js");
+        $this->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/atkbusy.js");
+        $this->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/moment.min.js");
     }
 
     /**
@@ -376,10 +376,10 @@ class Atk_Page
     {
         $res = "<head>\n  <title>$title</title>\n";
 
-        $version = atkTools::atkversion();
+        $version = Atk_Tools::atkversion();
         $res.= '  <meta name="atkversion" content="' . $version . '" />' . "\n";
 
-        $res.= '  <meta http-equiv="Content-Type" content="text/html; charset=' . atkTools::atkGetCharset() . '" />' . "\n";
+        $res.= '  <meta http-equiv="Content-Type" content="text/html; charset=' . Atk_Tools::atkGetCharset() . '" />' . "\n";
         if ($extra_header != "")
             $res.= $extra_header . "\n";
 
@@ -387,7 +387,7 @@ class Atk_Page
         $this->addScripts($res);
         $this->addStyles($res);
 
-        $favico = atkConfig::getGlobal("defaultfavico");
+        $favico = Atk_Config::getGlobal("defaultfavico");
         if ($favico != "") {
             $res.= '  <link rel="icon" href="' . $favico . '" type="image/x-icon" />' . "\n";
             $res.= '  <link rel="shortcut icon" href="' . $favico . '" type="image/x-icon" />' . "\n";
@@ -617,14 +617,14 @@ class Atk_Page
             $title = $this->m_title;
         }
 
-        $ui = &atkTools::atkinstance('atk.ui.atkui');
-        $theme = &atkTools::atkinstance('atk.ui.atktheme');
+        $ui = Atk_Tools::atkinstance('atk.ui.atkui');
+        $theme = Atk_Tools::atkinstance('atk.ui.atktheme');
 
         if (is_bool($flags) && $flags == true) {
             $flags = HTML_STRICT;
         } elseif (is_bool($flags) && $flags == false) {
             $flags = HTML_HEADER | HTML_DOCTYPE;
-        } elseif (atkTools::hasFlag($flags, HTML_PARTIAL)) {
+        } elseif (Atk_Tools::hasFlag($flags, HTML_PARTIAL)) {
             return $this->renderPartial();
         }
 
@@ -632,18 +632,18 @@ class Atk_Page
             $this->m_content = $ui->render('page.tpl', array('content' => $this->m_content));
 
         $page = '';
-        if (atkTools::hasFlag($flags, HTML_DOCTYPE))
-            $page.=$theme->getAttribute('doctype', atkConfig::getGlobal("doctype"));
+        if (Atk_Tools::hasFlag($flags, HTML_DOCTYPE))
+            $page.=$theme->getAttribute('doctype', Atk_Config::getGlobal("doctype"));
         $page.= "\n<html>\n";
 
-        if (atkTools::hasFlag($flags, HTML_HEADER))
+        if (Atk_Tools::hasFlag($flags, HTML_HEADER))
             $page.= $this->head($title, $extra_header);
-        if (atkTools::hasFlag($flags, HTML_BODY))
+        if (Atk_Tools::hasFlag($flags, HTML_BODY))
             $page.= $this->body($extrabodyprops);
 
         $page.=$this->m_content . "\n";
         $page.= $this->renderHiddenVars();
-        if (atkTools::hasFlag($flags, HTML_BODY))
+        if (Atk_Tools::hasFlag($flags, HTML_BODY))
             $page.= "</body>\n";
         $page.= "</html>\n";
 

@@ -16,7 +16,7 @@
 /**
  * @internal Include baseclass
  */
-require_once(atkConfig::getGlobal("atkroot") . "atk/db/class.atkmysqldb.php");
+require_once(Atk_Config::getGlobal("atkroot") . "atk/db/class.atkmysqldb.php");
 
 /**
  * Driver for MySQL databases > 4.1.3
@@ -37,11 +37,13 @@ class Atk_MysqliDb extends Atk_MysqlDb
     /**
      * Base constructor
      */
-    function atkmysqlidb()
+    function __construct()
     {
         if (!function_exists('mysqli_connect')) {
             trigger_error('MySQLi not supported by your PHP version', E_USER_ERROR);
         }
+
+        parent::__construct();
 
         // set type
         $this->m_type = "mysqli";
@@ -74,7 +76,7 @@ class Atk_MysqliDb extends Atk_MysqlDb
 
             /* set character set */
             if (!empty($charset)) {
-                atkTools::atkdebug("Set database character set to: {$charset}");
+                Atk_Tools::atkdebug("Set database character set to: {$charset}");
                 $this->_query("SET NAMES '{$charset}'", true);
             }
 
@@ -108,7 +110,7 @@ class Atk_MysqliDb extends Atk_MysqlDb
     function disconnect()
     {
         if ($this->m_link_id) {
-            atkTools::atkdebug("Disconnecting from database...");
+            Atk_Tools::atkdebug("Disconnecting from database...");
             @mysqli_close($this->m_link_id);
             $this->m_link_id = 0;
         }
@@ -183,7 +185,7 @@ class Atk_MysqliDb extends Atk_MysqlDb
             if ($unlock_table)
                 $this->unlock();
 
-            if (atkConfig::getGlobal('debug') >= 1) {
+            if (Atk_Config::getGlobal('debug') >= 1) {
                 $this->debugWarnings();
             }
 
@@ -200,9 +202,9 @@ class Atk_MysqliDb extends Atk_MysqlDb
      */
     protected function _query($query, $isSystemQuery)
     {
-        if (atkConfig::getGlobal("debug") >= 0) {
-            atkTools::atkimport("atk.utils.atkdebugger");
-            atkDebugger::addQuery($query, $isSystemQuery);
+        if (Atk_Config::getGlobal("debug") >= 0) {
+            Atk_Tools::atkimport("atk.utils.atkdebugger");
+            Atk_Debugger::addQuery($query, $isSystemQuery);
         }
 
         return @mysqli_query($this->m_link_id, $query);
@@ -222,7 +224,7 @@ class Atk_MysqliDb extends Atk_MysqlDb
         }
 
         foreach ($warnings as $warning) {
-            atkTools::atkwarning("MYSQL warning '{$warning['Level']}' (Code: {$warning['Code']}): {$warning['Message']}");
+            Atk_Tools::atkwarning("MYSQL warning '{$warning['Level']}' (Code: {$warning['Code']}): {$warning['Message']}");
         }
     }
 
@@ -242,7 +244,7 @@ class Atk_MysqliDb extends Atk_MysqlDb
         preg_match("/\'(.*)\'/U", $error, $matches);
 
         if (is_array($matches) && sizeof($matches) == 2) {
-            atkTools::atkdebug("<b>Fallback feature called because error '1100' occured during the last query. Running query again using table lock for table '{$matches[1]}'.</b>");
+            Atk_Tools::atkdebug("<b>Fallback feature called because error '1100' occured during the last query. Running query again using table lock for table '{$matches[1]}'.</b>");
             $table = $matches[1];
 
             if ($this->m_query_id) {
@@ -266,7 +268,7 @@ class Atk_MysqliDb extends Atk_MysqlDb
     function next_record()
     {
         /* goto next record */
-        $this->m_record = @mysqli_fetch_array($this->m_query_id, MYSQLI_ASSOC | atkConfig::getGlobal("mysqlfetchmode"));
+        $this->m_record = @mysqli_fetch_array($this->m_query_id, MYSQLI_ASSOC | Atk_Config::getGlobal("mysqlfetchmode"));
         $this->m_row++;
         $this->m_errno = mysqli_errno($this->m_link_id);
         $this->m_error = mysqli_error($this->m_link_id);
@@ -310,9 +312,9 @@ class Atk_MysqliDb extends Atk_MysqlDb
             /* lock */
             $query = "LOCK TABLES $table $mode";
 
-            if (atkConfig::getGlobal("debug") >= 0) {
-                atkTools::atkimport("atk.utils.atkdebugger");
-                atkDebugger::addQuery($query);
+            if (Atk_Config::getGlobal("debug") >= 0) {
+                Atk_Tools::atkimport("atk.utils.atkdebugger");
+                Atk_Debugger::addQuery($query);
             }
 
             $result = $this->_query($query, true);
@@ -334,7 +336,7 @@ class Atk_MysqliDb extends Atk_MysqlDb
         /* connect first */
         if ($this->connect('w') == DB_SUCCESS) {
             /* unlock */
-            atkTools::atkdebug("unlock tables");
+            Atk_Tools::atkdebug("unlock tables");
             $result = $this->_query("UNLOCK TABLES", true);
             if (!$result)
                 $this->halt("unlock tables failed.");
@@ -436,7 +438,7 @@ class Atk_MysqliDb extends Atk_MysqlDb
         }
 
         $result = @mysqli_num_rows($id) > 0;
-        atkTools::atkdebug("Table exists? $table => " . ($result ? 'yes' : 'no'));
+        Atk_Tools::atkdebug("Table exists? $table => " . ($result ? 'yes' : 'no'));
         return $result;
     }
 
@@ -450,10 +452,10 @@ class Atk_MysqliDb extends Atk_MysqlDb
     {
         $this->connect('r');
         $id = $this->_query("SHOW TABLE STATUS LIKE '" . $table . "'", true);
-        $status = @mysqli_fetch_array($id, MYSQLI_ASSOC | atkConfig::getGlobal("mysqlfetchmode"));
+        $status = @mysqli_fetch_array($id, MYSQLI_ASSOC | Atk_Config::getGlobal("mysqlfetchmode"));
         $result = $status != NULL && isset($status['Engine']) ? $status['Engine']
                 : NULL;
-        atkTools::atkdebug("Table type? $table => $result");
+        Atk_Tools::atkdebug("Table type? $table => $result");
         return $result;
     }
 
@@ -467,11 +469,11 @@ class Atk_MysqliDb extends Atk_MysqlDb
     {
         /* first connect */
         if ($this->connect('r') == DB_SUCCESS) {
-            atkTools::atkimport("atk.db.atkddl");
-            $ddl = &atkDDL::create("mysqli");
+            Atk_Tools::atkimport("atk.db.atkddl");
+            $ddl = &Atk_DDL::create("mysqli");
 
             /* list fields */
-            atkTools::atkdebug("Retrieving metadata for $table");
+            Atk_Tools::atkdebug("Retrieving metadata for $table");
 
             /* The tablename may also contain a schema. If so we check for it. */
             if (strpos($table, ".") !== false) {
@@ -488,7 +490,7 @@ class Atk_MysqliDb extends Atk_MysqlDb
             $tableType = $this->_getTableType(isset($tablename) ? $tablename : $table);
 
             if (!$id) {
-                atkTools::atkdebug("Metadata query failed.");
+                Atk_Tools::atkdebug("Metadata query failed.");
                 return array();
             }
             $i = 0;
@@ -534,7 +536,7 @@ class Atk_MysqliDb extends Atk_MysqlDb
 
             mysqli_free_result($id);
 
-            atkTools::atkdebug("Metadata for $table complete");
+            Atk_Tools::atkdebug("Metadata for $table complete");
             return $result;
         }
         return array();
@@ -575,7 +577,7 @@ class Atk_MysqliDb extends Atk_MysqlDb
     function commit()
     {
         if ($this->m_link_id) {
-            atkTools::atkdebug("Commit");
+            Atk_Tools::atkdebug("Commit");
             mysqli_commit($this->m_link_id);
         }
         return true;
@@ -588,7 +590,7 @@ class Atk_MysqliDb extends Atk_MysqlDb
      */
     function savepoint($name)
     {
-        atkTools::atkdebug(get_class($this) . "::savepoint $name");
+        Atk_Tools::atkdebug(get_class($this) . "::savepoint $name");
         $this->query('SAVEPOINT ' . $name);
     }
 
@@ -601,10 +603,10 @@ class Atk_MysqliDb extends Atk_MysqlDb
     {
         if ($this->m_link_id) {
             if (!empty($savepoint)) {
-                atkTools::atkdebug(get_class($this) . "::rollback (rollback to savepoint $savepoint)");
+                Atk_Tools::atkdebug(get_class($this) . "::rollback (rollback to savepoint $savepoint)");
                 $this->query('ROLLBACK TO SAVEPOINT ' . $savepoint);
             } else {
-                atkTools::atkdebug("Rollback");
+                Atk_Tools::atkdebug("Rollback");
                 mysqli_rollback($this->m_link_id);
             }
         }

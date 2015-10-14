@@ -17,7 +17,7 @@
 /**
  * @internal include baseclass.
  */
-atkTools::useattrib('atkDateTimeAttribute');
+Atk_Tools::useattrib('atkDateTimeAttribute');
 
 /**
  * Attribute for keeping track of last-modification times.
@@ -51,7 +51,7 @@ class Atk_UpdateStampAttribute extends Atk_DateTimeAttribute
         $this->atkDateTimeAttribute($name, date("Y-m-d"), date("H:i:s"), $flags | AF_READONLY | AF_HIDE_ADD);
         $this->setForceInsert(true);
         $this->setForceUpdate(true);
-        $this->setInitialValue(atkDateTimeAttribute::datetimeArray());
+        $this->setInitialValue(Atk_DateTimeAttribute::datetimeArray());
     }
 
     /**
@@ -75,7 +75,7 @@ class Atk_UpdateStampAttribute extends Atk_DateTimeAttribute
      */
     function initialValue()
     {
-        return atkDateTimeAttribute::datetimeArray();
+        return Atk_DateTimeAttribute::datetimeArray();
     }
 
     /**

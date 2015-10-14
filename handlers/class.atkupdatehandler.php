@@ -116,7 +116,7 @@ class Atk_Updatehandler extends Atk_ActionHandler
             $this->invoke('handleCancel', $record);
         } else {
             // something other than one of the three buttons was pressed. Let's just refresh.
-            $location = atkTools::session_url(atkTools::dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record), "atktab" => $this->m_node->getActiveTab())), SESSION_REPLACE);
+            $location = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record), "atktab" => $this->m_node->getActiveTab())), SESSION_REPLACE);
             $this->m_node->redirect($location);
         }
     }
@@ -221,7 +221,7 @@ class Atk_Updatehandler extends Atk_ActionHandler
     private function updateRecord(&$record)
     {
         $atkstoretype = "";
-        $sessionmanager = atkSessionManager::atkGetSessionManager();
+        $sessionmanager = Atk_SessionManager::atkGetSessionManager();
         if ($sessionmanager)
             $atkstoretype = $sessionmanager->stackVar('atkstore');
         switch ($atkstoretype) {
@@ -251,7 +251,7 @@ class Atk_Updatehandler extends Atk_ActionHandler
         } else {
             $db->rollback();
             if ($db->getErrorType() == "user") {
-                atkTools::triggerError($record, 'Error', $db->getErrorMsg(), '', '');
+                Atk_Tools::triggerError($record, 'Error', $db->getErrorMsg(), '', '');
                 return false;
             }
             return $db->getErrorMsg();
@@ -266,8 +266,8 @@ class Atk_Updatehandler extends Atk_ActionHandler
      */
     private function updateRecordInSession($record)
     {
-        $selector = atkTools::atkArrayNvl($this->m_postvars, 'atkselector', '');
-        return (atkTools::atkinstance('atk.session.atksessionstore')->updateDataRowForSelector($selector, $record) !== false);
+        $selector = Atk_Tools::atkArrayNvl($this->m_postvars, 'atkselector', '');
+        return (Atk_Tools::atkinstance('atk.session.atksessionstore')->updateDataRowForSelector($selector, $record) !== false);
     }
 
     /**
@@ -286,7 +286,7 @@ class Atk_Updatehandler extends Atk_ActionHandler
     {
         if ($this->hasError($record)) {
             $this->setRejectInfo($record);
-            $location = atkTools::session_url(atkTools::dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record))), SESSION_BACK);
+            $location = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record))), SESSION_BACK);
             $this->m_node->redirect($location);
         } else {
             $location = $this->m_node->feedbackUrl("update", ACTION_FAILED, $record, $error);
@@ -308,7 +308,7 @@ class Atk_Updatehandler extends Atk_ActionHandler
         if (isset($this->m_postvars['atknoclose'])) {
             // 'save' was clicked
             $params = array("atkselector" => $this->m_node->primaryKey($record), "atktab" => $this->m_node->getActiveTab());
-            $location = atkTools::session_url(atkTools::dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), $params), SESSION_REPLACE, 1);
+            $location = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), $params), SESSION_REPLACE, 1);
         } else {
             // 'save and close' was clicked
             $location = $this->m_node->feedbackUrl("update", ACTION_SUCCESS, $record, "", 2);
@@ -367,14 +367,14 @@ class Atk_Updatehandler extends Atk_ActionHandler
      */
     private function loadSuccessDialog($record, $extraParams)
     {
-        atkTools::atkimport("atk.ui.atkdialog");
-        $script = atkDialog::getCloseCall();
+        Atk_Tools::atkimport("atk.ui.atkdialog");
+        $script = Atk_Dialog::getCloseCall();
 
         $page = $this->getPage();
         if ($extra_params['attribute_refresh_url'] == null) {
             $script .= "document.location.href = document.location.href;";
         } else {
-            $page->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/class.atkattribute.js');
+            $page->register_script(Atk_Config::getGlobal('atkroot') . 'atk/javascript/class.atkattribute.js');
             $script .= "ATK.Attribute.refresh('{$extra_params['attribute_refresh_url']}');";
         }
 
@@ -415,7 +415,7 @@ class Atk_Updatehandler extends Atk_ActionHandler
      */
     function renderEditPage(&$record)
     {
-        atkTools::atkwarning("Use of deprecated method: " . __CLASS__ . '->' . __METHOD__);
+        Atk_Tools::atkwarning("Use of deprecated method: " . __CLASS__ . '->' . __METHOD__);
 
         $editpage = $this->getEditPage($record);
         $content = $this->m_node->renderActionPage("edit", $editpage);
@@ -434,7 +434,7 @@ class Atk_Updatehandler extends Atk_ActionHandler
      */
     public function getEditPage(&$record)
     {
-        atkTools::atkwarning("Use of deprecated method: " . __CLASS__ . '->' . __METHOD__);
+        Atk_Tools::atkwarning("Use of deprecated method: " . __CLASS__ . '->' . __METHOD__);
         //  $this->m_action="edit";
         //update succesful, pk value might be changed so update m_orgkey
         $record["atkprimkey"] = $this->m_node->primaryKey($record);

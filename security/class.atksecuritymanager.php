@@ -31,7 +31,7 @@ define("AUTH_ERROR", -1);
  * The security manager for ATK applications.
  *
  * Don't instantiate this class yourself, use the global instance
- * that is returned by atkSecurityManager::getInstance() instead.
+ * that is returned by Atk_SecurityManager::getInstance() instead.
  *
  * @todo Make a real singleton with a getInstance class.
  *
@@ -61,9 +61,9 @@ class Atk_SecurityManager
         global $g_securityManager;
         if (!is_object($g_securityManager)) {
             // The one and only security manager.
-            $authentication = atkConfig::getGlobal("authentication", "none");
-            $authorization = atkConfig::getGlobal("authorization", $authentication);
-            $scheme = atkConfig::getGlobal("securityscheme", "none");
+            $authentication = Atk_Config::getGlobal("authentication", "none");
+            $authorization = Atk_Config::getGlobal("authorization", $authentication);
+            $scheme = Atk_Config::getGlobal("securityscheme", "none");
             $g_securityManager = new Atk_SecurityManager($authentication, $authorization, $scheme);
         }
         return $g_securityManager;
@@ -92,7 +92,7 @@ class Atk_SecurityManager
     }
 
     /**
-     * returns the full classname for use with atkTools::atkimport(
+     * returns the full classname for use with Atk_Tools::atkimport(
      *
      * @param string $type
      * @return string full classname
@@ -138,24 +138,24 @@ class Atk_SecurityManager
      * @param string $authorization_type The type of authorization (mostly the same as the authentication_type)
      * @param string $securityscheme The security scheme that will be used to determine who is allowed to do what
      */
-    function atkSecurityManager($authentication_type = "none", $authorization_type = "none", $securityscheme = "none")
+    function __construct($authentication_type = "none", $authorization_type = "none", $securityscheme = "none")
     {
-        atkTools::atkdebug("creating securityManager (authenticationtype: $authentication_type, authorizationtype: $authorization_type, scheme: $securityscheme)");
+        Atk_Tools::atkdebug("creating securityManager (authenticationtype: $authentication_type, authorizationtype: $authorization_type, scheme: $securityscheme)");
 
         // required interface;
-        atkTools::atkimport("atk.security.auth_interface");
+        Atk_Tools::atkimport("atk.security.auth_interface");
 
         $authentication = $this->_getAuthTypes($authentication_type);
         foreach ($authentication as $class) {
-            if (!$obj = atkTools::atknew($class)) {
-                atkTools::atkdebug("atkSecurityManager() unsupported authentication type or type no found for $class");
+            if (!$obj = Atk_Tools::atknew($class)) {
+                Atk_Tools::atkdebug("atkSecurityManager() unsupported authentication type or type no found for $class");
             } else
                 $this->m_authentication[$class] = $obj;
         }
 
         /* authorization class */
         $clsname = $this->_getclassname($authorization_type);
-        $this->m_authorization = &atkTools::atknew($clsname);
+        $this->m_authorization = Atk_Tools::atknew($clsname);
 
         /* security scheme */
         $this->m_scheme = $securityscheme;
@@ -166,7 +166,7 @@ class Atk_SecurityManager
          * and authentication methid, that we use
          *
          */
-        if (atkConfig::getGlobal("auth_enablepasswordmailer", false)) {
+        if (Atk_Config::getGlobal("auth_enablepasswordmailer", false)) {
             foreach ($this->m_authentication as $auth) {
                 if (in_array($auth->getPasswordPolicy(), array(PASSWORD_RETRIEVABLE, PASSWORD_RECREATE))) {
                     $this->m_enablepasswordmailer = true;
@@ -183,37 +183,37 @@ class Atk_SecurityManager
     function mailPassword($username)
     {
         // Query the database for user records having the given username and return if not found
-        $usernode = &atkModule::atkGetNode(atkConfig::getGlobal("auth_usernode"));
-        $selector = sprintf("%s.%s = '%s'", atkConfig::getGlobal("auth_usertable"), atkConfig::getGlobal("auth_userfield"), $username);
-        $userrecords = $usernode->selectDb($selector, "", "", "", array(atkConfig::getGlobal("auth_userpk"), atkConfig::getGlobal("auth_emailfield"), atkConfig::getGlobal("auth_passwordfield")), "edit");
+        $usernode = &Atk_Module::atkGetNode(Atk_Config::getGlobal("auth_usernode"));
+        $selector = sprintf("%s.%s = '%s'", Atk_Config::getGlobal("auth_usertable"), Atk_Config::getGlobal("auth_userfield"), $username);
+        $userrecords = $usernode->selectDb($selector, "", "", "", array(Atk_Config::getGlobal("auth_userpk"), Atk_Config::getGlobal("auth_emailfield"), Atk_Config::getGlobal("auth_passwordfield")), "edit");
         if (count($userrecords) != 1) {
-            atkTools::atkdebug("User '$username' not found.");
+            Atk_Tools::atkdebug("User '$username' not found.");
             return false;
         }
 
         // Retrieve the email address
-        $email = $userrecords[0][atkConfig::getGlobal("auth_emailfield")];
+        $email = $userrecords[0][Atk_Config::getGlobal("auth_emailfield")];
         if (empty($email)) {
-            atkTools::atkdebug("Email address for '$username' not available.");
+            Atk_Tools::atkdebug("Email address for '$username' not available.");
             return false;
         }
 
         // Regenerate the password
-        $passwordattr = &$usernode->getAttribute(atkConfig::getGlobal("auth_passwordfield"));
+        $passwordattr = &$usernode->getAttribute(Atk_Config::getGlobal("auth_passwordfield"));
         $newpassword = $passwordattr->generatePassword();
 
         // Update the record in the database
-        $userrecords[0][atkConfig::getGlobal("auth_passwordfield")]["hash"] = md5($newpassword);
-        $usernode->updateDb($userrecords[0], true, "", array(atkConfig::getGlobal("auth_passwordfield")));
+        $userrecords[0][Atk_Config::getGlobal("auth_passwordfield")]["hash"] = md5($newpassword);
+        $usernode->updateDb($userrecords[0], true, "", array(Atk_Config::getGlobal("auth_passwordfield")));
 
         $db = &$usernode->getDB();
         $db->commit();
 
         // Send an email containing the new password to user
-        $subject = atkTools::atktext("auth_passwordmail_subjectnew_password", "atk");
-        $body = atkTools::atktext("auth_passwordmail_explanation", "atk") . "\n\n";
-        $body .= atkTools::atktext(atkConfig::getGlobal("auth_userfield")) . ": " . $username . "\n";
-        $body .= atkTools::atktext(atkConfig::getGlobal("auth_passwordfield")) . ": " . $newpassword . "\n";
+        $subject = Atk_Tools::atktext("auth_passwordmail_subjectnew_password", "atk");
+        $body = Atk_Tools::atktext("auth_passwordmail_explanation", "atk") . "\n\n";
+        $body .= Atk_Tools::atktext(Atk_Config::getGlobal("auth_userfield")) . ": " . $username . "\n";
+        $body .= Atk_Tools::atktext(Atk_Config::getGlobal("auth_passwordfield")) . ": " . $newpassword . "\n";
         mail($email, $subject, $body);
 
         // Return true
@@ -229,11 +229,11 @@ class Atk_SecurityManager
     function authenticate()
     {
         global $g_sessionManager, $ATK_VARS;
-        $session = &atkSessionManager::getSession();
+        $session = &Atk_SessionManager::getSession();
 
         $response = AUTH_UNVERIFIED;
 
-        if (atkConfig::getGlobal("auth_loginform") == true) { // form login
+        if (Atk_Config::getGlobal("auth_loginform") == true) { // form login
             $auth_user = isset($ATK_VARS["auth_user"]) ? $ATK_VARS["auth_user"] : null;
             $auth_pw = isset($ATK_VARS["auth_pw"]) ? $ATK_VARS["auth_pw"] : null;
         } else { // HTTP login
@@ -249,7 +249,7 @@ class Atk_SecurityManager
         // first check if we want to logout
         if (isset($ATK_VARS["atklogout"]) && (!isset($session["relogin"]) || $session["relogin"] != 1)) {
             $this->notifyListeners("preLogout", $auth_user);
-            $currentUser = &atkSecurityManager::atkGetUser();
+            $currentUser = &Atk_SecurityManager::atkGetUser();
 
             // Let the authentication plugin know about logout too.
             foreach ($this->m_authentication as $auth) {
@@ -259,7 +259,7 @@ class Atk_SecurityManager
             $session["relogin"] = 1;
 
             // destroy cookie
-            if (atkConfig::getGlobal("authentication_cookie") && $auth_user != "administrator") {
+            if (Atk_Config::getGlobal("authentication_cookie") && $auth_user != "administrator") {
                 $cookiename = $this->_getAuthCookieName();
                 if (!empty($_COOKIE[$cookiename]))
                     setcookie($cookiename, "", 0);
@@ -287,15 +287,15 @@ class Atk_SecurityManager
             }
 
             // check previous sessions..
-            if (atkConfig::getGlobal("authentication_cookie")) {
+            if (Atk_Config::getGlobal("authentication_cookie")) {
                 // Cookiename is based on the app_title, for there may be more than 1 atk app running,
                 // each with their own cookie..
                 $cookiename = $this->_getAuthCookieName();
-                list($enc, $user, $passwd) = explode(".", base64_decode(atkTools::atkArrayNvl($_COOKIE, $cookiename, "Li4=")));
+                list($enc, $user, $passwd) = explode(".", base64_decode(Atk_Tools::atkArrayNvl($_COOKIE, $cookiename, "Li4=")));
 
                 // for security reasons administrator will never be cookied..
                 if ($auth_user == "" && $user != "" && $user != "administrator") {
-                    atkTools::atkdebug("Using cookie to retrieve previously used userid/password");
+                    Atk_Tools::atkdebug("Using cookie to retrieve previously used userid/password");
                     $auth_user = $user;
                     $auth_pw = $passwd;
                     $md5 = ($enc == "MD5"); // cookie may already be md5;
@@ -305,10 +305,10 @@ class Atk_SecurityManager
             $authenticated = false;
 
             // Check if a username was entered
-            if ((atkTools::atkArrayNvl($ATK_VARS, "login", "") != "") && empty($auth_user) && !strstr(atkConfig::getGlobal("authentication"), "none")) {
+            if ((Atk_Tools::atkArrayNvl($ATK_VARS, "login", "") != "") && empty($auth_user) && !strstr(Atk_Config::getGlobal("authentication"), "none")) {
                 $response = AUTH_MISSINGUSERNAME;
             } // Email password if password forgotten and passwordmailer enabled
-            else if ((!empty($auth_user)) && (atkConfig::getGlobal("auth_loginform") == true) && $this->get_enablepasswordmailer() && (atkTools::atkArrayNvl($ATK_VARS, "login", "") == atkTools::atktext('password_forgotten'))) {
+            else if ((!empty($auth_user)) && (Atk_Config::getGlobal("auth_loginform") == true) && $this->get_enablepasswordmailer() && (Atk_Tools::atkArrayNvl($ATK_VARS, "login", "") == Atk_Tools::atktext('password_forgotten'))) {
                 $this->mailPassword($auth_user);
                 $response = AUTH_PASSWORDSENT;
             } else {
@@ -317,8 +317,8 @@ class Atk_SecurityManager
 
                 // check administrator and guest user
                 if ($auth_user == "administrator" || $auth_user == "guest") {
-                    $config_pw = atkConfig::getGlobal($auth_user . "password");
-                    if (!empty($config_pw) && (($auth_pw == $config_pw) || (atkConfig::getGlobal("authentication_md5") && (md5($auth_pw) == strtolower($config_pw))))) {
+                    $config_pw = Atk_Config::getGlobal($auth_user . "password");
+                    if (!empty($config_pw) && (($auth_pw == $config_pw) || (Atk_Config::getGlobal("authentication_md5") && (md5($auth_pw) == strtolower($config_pw))))) {
                         $authenticated = true;
                         $response = AUTH_SUCCESS;
                         if ($auth_user == "administrator")
@@ -342,7 +342,7 @@ class Atk_SecurityManager
                             $obj->canMd5() && !$md5 ? $tmp_pw = md5($auth_pw) : $tmp_pw = $auth_pw;
                             $response = $obj->validateUser($auth_user, $tmp_pw);
                             if ($response == AUTH_SUCCESS) {
-                                atkTools::atkdebug("atkSecurityManager::authenticate() using $name authentication");
+                                Atk_Tools::atkdebug("Atk_SecurityManager::authenticate() using $name authentication");
                                 $authname = $name;
                                 break;
                             }
@@ -352,20 +352,20 @@ class Atk_SecurityManager
                         // We store the username + securitylevel of the logged in user.
                         $this->m_user = $this->m_authorization->getUser($auth_user);
                         $this->m_user['AUTH'] = $authname; // something to see wich auth scheme is used
-                        if (atkConfig::getGlobal("enable_ssl_encryption"))
+                        if (Atk_Config::getGlobal("enable_ssl_encryption"))
                             $this->m_user['PASS'] = $auth_pw; // used by aktsecurerelation to decrypt an linkpass
 
 
 // for convenience, we also store the user as a global variable.
                         (is_array($this->m_user['level'])) ? $dbg = implode(",", $this->m_user['level'])
                             : $dbg = $this->m_user['level'];
-                        atkTools::atkdebug("Logged in user: " . $this->m_user["name"] . " (level: " . $dbg . ")");
+                        Atk_Tools::atkdebug("Logged in user: " . $this->m_user["name"] . " (level: " . $dbg . ")");
                         $authenticated = true;
 
                         // Remember that we are logged in..
                         //$g_sessionManager->globalVar("authentication",array("authenticated"=>1, "user"=>$this->m_user), true);
                         // write cookie
-                        if (atkConfig::getGlobal("authentication_cookie") && $auth_user != "administrator") {
+                        if (Atk_Config::getGlobal("authentication_cookie") && $auth_user != "administrator") {
                             // if the authentication scheme supports md5 passwords, we can safely store
                             // the password as md5 in the cookie.
                             if ($md5) { // Password is already md5 encoded
@@ -385,7 +385,7 @@ class Atk_SecurityManager
                                     $enc = "PLAIN";
                                 }
                             }
-                            setcookie($cookiename, base64_encode($enc . "." . $auth_user . "." . $tmppw), time() + 60 * (atkConfig::getGlobal("authentication_cookie_expire")));
+                            setcookie($cookiename, base64_encode($enc . "." . $auth_user . "." . $tmppw), time() + 60 * (Atk_Config::getGlobal("authentication_cookie_expire")));
                         }
                     } else {
                         // login was incorrect. Either the supplied username/password combination is
@@ -408,13 +408,13 @@ class Atk_SecurityManager
             // if the login is really valid.
             $session_auth = $g_sessionManager->getValue("authentication", "globals");
 
-            if (atkConfig::getGlobal("authentication_session") &&
+            if (Atk_Config::getGlobal("authentication_session") &&
                 $session["login"] == 1 &&
                 $session_auth["authenticated"] == 1 &&
                 !empty($session_auth["user"])
             ) {
                 $this->m_user = $session_auth["user"];
-                atkTools::atkdebug("Using session for authentication / user = " . $this->m_user["name"]);
+                Atk_Tools::atkdebug("Using session for authentication / user = " . $this->m_user["name"]);
             } else {
                 // Invalid session
                 $authenticated = false;
@@ -427,29 +427,29 @@ class Atk_SecurityManager
         }
         // still not logged in?!
         if (!isset($session["login"]) || $session["login"] != 1) {
-            $location = atkConfig::getGlobal('auth_loginpage', '');
+            $location = Atk_Config::getGlobal('auth_loginpage', '');
             if ($location) {
                 $location .= (strpos($location, '?') === false) ? '?' : '&';
                 $location .= 'login=' . $auth_user . '&error=' . $response;
 
-                if (atkConfig::getGlobal("debug") >= 2) {
-                    $debugger = &atkTools::atkinstance('atk.utils.atkdebugger');
+                if (Atk_Config::getGlobal("debug") >= 2) {
+                    $debugger = &Atk_Tools::atkinstance('atk.utils.atkdebugger');
                     $debugger->setRedirectUrl($location);
-                    atkTools::atkdebug('Non-debug version would have redirected to <a href="' . $location . '">' . $location . '</a>');
-                    $output = &atkOutput::getInstance();
+                    Atk_Tools::atkdebug('Non-debug version would have redirected to <a href="' . $location . '">' . $location . '</a>');
+                    $output = &Atk_Output::getInstance();
                     $output->outputFlush();
                     exit();
                 } else {
                     header('Location: ' . $location);
                     exit();
                 }
-            } elseif (atkConfig::getGlobal("auth_loginform")) {
+            } elseif (Atk_Config::getGlobal("auth_loginform")) {
                 $this->loginForm($auth_user, $response);
-                $output = &atkOutput::getInstance();
+                $output = &Atk_Output::getInstance();
                 $output->outputFlush();
                 exit();
             } else {
-                header('WWW-Authenticate: Basic realm="' . atkTools::atktext("app_title") . (atkConfig::getGlobal("auth_changerealm", true)
+                header('WWW-Authenticate: Basic realm="' . Atk_Tools::atktext("app_title") . (Atk_Config::getGlobal("auth_changerealm", true)
                         ? ' - ' . strftime("%c", time()) : "") . '"');
                 if (ereg("Microsoft", $_SERVER['SERVER_SOFTWARE']))
                     header("Status: 401 Unauthorized");
@@ -459,7 +459,7 @@ class Atk_SecurityManager
             }
         } // we are authenticated, but atklogout is still active, let's get rid of it!
         else if (isset($ATK_VARS["atklogout"]))
-            header("Location: " . atkTools::atkSelf() . "?");
+            header("Location: " . Atk_Tools::atkSelf() . "?");
 
         // we keep the relogin state until the atklogout variable isn't set anymore
         else if (!isset($ATK_VARS["atklogout"]) && isset($session["relogin"]) && $session["relogin"] == 1)
@@ -473,7 +473,7 @@ class Atk_SecurityManager
         header('user: ' . $this->m_user["name"]);
         $GLOBALS["g_user"] = $this->m_user;
         $g_sessionManager->globalVar("authentication", array("authenticated" => 1, "user" => $this->m_user), true);
-        atkSessionManager::sessionStore('loginattempts', ''); //reset maxloginattempts
+        Atk_SessionManager::sessionStore('loginattempts', ''); //reset maxloginattempts
 
         if ($throwPostLoginEvent)
             $this->notifyListeners("postLogin", $auth_user);
@@ -492,8 +492,8 @@ class Atk_SecurityManager
     function reloadUser()
     {
         global $g_user, $g_sessionManager;
-        $user = atkSecurityManager::atkGetUser();
-        $this->m_user = $this->m_authorization->getUser($user[atkConfig::getGlobal('auth_userfield')]);
+        $user = Atk_SecurityManager::atkGetUser();
+        $this->m_user = $this->m_authorization->getUser($user[Atk_Config::getGlobal('auth_userfield')]);
         $g_user = &$this->m_user;
         $old_auth = $g_sessionManager->getValue("authentication", "globals");
         $old_auth["user"] = $g_user;
@@ -510,7 +510,7 @@ class Atk_SecurityManager
      */
     function loginForm($defaultname, $lastresponse)
     {
-        $loginattempts = atkSessionManager::sessionLoad('loginattempts'); // Note: not actually how many authentication attempts, but how many times the login form has been displayed.
+        $loginattempts = Atk_SessionManager::sessionLoad('loginattempts'); // Note: not actually how many authentication attempts, but how many times the login form has been displayed.
         if ($loginattempts == "")
             $loginattempts = 0;
 
@@ -520,71 +520,71 @@ class Atk_SecurityManager
             $loginattempts++;
         }
 
-        atkSessionManager::sessionStore('loginattempts', $loginattempts);
+        Atk_SessionManager::sessionStore('loginattempts', $loginattempts);
 
-        atkTools::atkdebug('LoginAttempts: ' . $loginattempts);
+        Atk_Tools::atkdebug('LoginAttempts: ' . $loginattempts);
 
-        $page = &atkTools::atkinstance("atk.ui.atkpage", true);
-        $ui = &atkTools::atkinstance("atk.ui.atkui");
+        $page = &Atk_Tools::atkinstance("atk.ui.atkpage", true);
+        $ui = &Atk_Tools::atkinstance("atk.ui.atkui");
 
         $page->register_style($ui->stylePath("style.css"));
         $page->register_style($ui->stylePath("login.css"));
 
-        $page->register_script(atkConfig::getGlobal('atkroot') . "atk/javascript/tools.js");
+        $page->register_script(Atk_Config::getGlobal('atkroot') . "atk/javascript/tools.js");
 
         $tplvars = Array();
-        $output = '<form action="' . atkTools::atkSelf() . '" method="post">';
-        $output .= atkTools::makeHiddenPostVars(array("atklogout", "loginattempts"));
+        $output = '<form action="' . Atk_Tools::atkSelf() . '" method="post">';
+        $output .= Atk_Tools::makeHiddenPostVars(array("atklogout", "loginattempts"));
         $output .= '<br><br><table border="0" cellspacing="2" cellpadding="0" align="center">';
 
-        $tplvars["atksessionformvars"] = atkTools::makeHiddenPostVars(array("atklogout", "loginattempts"));
-        $tplvars["formurl"] = atkTools::atkSelf();
+        $tplvars["atksessionformvars"] = Atk_Tools::makeHiddenPostVars(array("atklogout", "loginattempts"));
+        $tplvars["formurl"] = Atk_Tools::atkSelf();
 
         // max_loginattempts of 0 means no maximum.
-        if (atkConfig::getGlobal('max_loginattempts') > 0 && $loginattempts > atkConfig::getGlobal('max_loginattempts')) {
-            $output .= "<tr><td class=table>" . atkTools::atktext('auth_max_loginattempts_exceeded') . "<br><br></td></tr>";
-            $tplvars["auth_max_loginattempts_exceeded"] = atkTools::atktext('auth_max_loginattempts_exceeded');
+        if (Atk_Config::getGlobal('max_loginattempts') > 0 && $loginattempts > Atk_Config::getGlobal('max_loginattempts')) {
+            $output .= "<tr><td class=table>" . Atk_Tools::atktext('auth_max_loginattempts_exceeded') . "<br><br></td></tr>";
+            $tplvars["auth_max_loginattempts_exceeded"] = Atk_Tools::atktext('auth_max_loginattempts_exceeded');
         } else {
-            $page->register_script(atkConfig::getGlobal('atkroot') . "atk/javascript/formfocus.js");
+            $page->register_script(Atk_Config::getGlobal('atkroot') . "atk/javascript/formfocus.js");
             $page->register_loadscript("placeFocus(false);");
 
             // generate the username input field
             // based upon the config_authdropdown and auth. method
             $userField = $this->auth_userField($defaultname);
-            $tplvars["username"] = atkTools::atktext("username");
-            $tplvars["password"] = atkTools::atktext("password");
+            $tplvars["username"] = Atk_Tools::atktext("username");
+            $tplvars["password"] = Atk_Tools::atktext("password");
             $tplvars["userfield"] = $userField;
             $tplvars["passwordfield"] = '<input class="loginform" type="password" size="15" name="auth_pw" value="" />';
-            $tplvars["submitbutton"] = '<input name="login" class="button" type="submit" value="' . atkTools::atktext('login') . '" />';
-            $tplvars["title"] = atkTools::atktext('login_form');
+            $tplvars["submitbutton"] = '<input name="login" class="button" type="submit" value="' . Atk_Tools::atktext('login') . '" />';
+            $tplvars["title"] = Atk_Tools::atktext('login_form');
 
             if ($lastresponse == AUTH_LOCKED) {
-                $output .= "<tr><td colspan=3 class=error>" . atkTools::atktext('auth_account_locked') . "<br><br></td></tr>";
-                $tplvars["auth_account_locked"] = atkTools::atktext('auth_account_locked');
-                $tplvars["error"] = atkTools::atktext('auth_account_locked');
+                $output .= "<tr><td colspan=3 class=error>" . Atk_Tools::atktext('auth_account_locked') . "<br><br></td></tr>";
+                $tplvars["auth_account_locked"] = Atk_Tools::atktext('auth_account_locked');
+                $tplvars["error"] = Atk_Tools::atktext('auth_account_locked');
             } else if ($lastresponse == AUTH_MISMATCH) {
-                $output .= '<tr><td colspan=3 class=error>' . atkTools::atktext('auth_mismatch') . '<br><br></td></tr>';
-                $tplvars["auth_mismatch"] = atkTools::atktext('auth_mismatch');
-                $tplvars["error"] = atkTools::atktext('auth_mismatch');
+                $output .= '<tr><td colspan=3 class=error>' . Atk_Tools::atktext('auth_mismatch') . '<br><br></td></tr>';
+                $tplvars["auth_mismatch"] = Atk_Tools::atktext('auth_mismatch');
+                $tplvars["error"] = Atk_Tools::atktext('auth_mismatch');
             } else if ($lastresponse == AUTH_MISSINGUSERNAME) {
-                $output .= '<tr><td colspan="3" class=error>' . atkTools::atktext('auth_missingusername') . '<br /><br /></td></tr>';
-                $tplvars["auth_mismatch"] = atkTools::atktext('auth_missingusername');
-                $tplvars["error"] = atkTools::atktext('auth_missingusername');
+                $output .= '<tr><td colspan="3" class=error>' . Atk_Tools::atktext('auth_missingusername') . '<br /><br /></td></tr>';
+                $tplvars["auth_mismatch"] = Atk_Tools::atktext('auth_missingusername');
+                $tplvars["error"] = Atk_Tools::atktext('auth_missingusername');
             } else if ($lastresponse == AUTH_PASSWORDSENT) {
-                $output .= '<tr><td colspan="3">' . atkTools::atktext('auth_passwordmail_sent') . '<br /><br /></td></tr>';
-                $tplvars["auth_mismatch"] = atkTools::atktext('auth_passwordmail_sent');
+                $output .= '<tr><td colspan="3">' . Atk_Tools::atktext('auth_passwordmail_sent') . '<br /><br /></td></tr>';
+                $tplvars["auth_mismatch"] = Atk_Tools::atktext('auth_passwordmail_sent');
             }
 
             // generate the form
-            $output .= "<tr><td valign=top>" . atkTools::atktext('username') . "</td><td>:</td><td>" . $userField . "</td></tr>";
+            $output .= "<tr><td valign=top>" . Atk_Tools::atktext('username') . "</td><td>:</td><td>" . $userField . "</td></tr>";
             $output .= "<tr><td colspan=3 height=6></td></tr>";
-            $output .= "<tr><td valign=top>" . atkTools::atktext('password') . "</td><td>:</td><td><input type=password size=15 name=auth_pw value='' /></td></tr>";
+            $output .= "<tr><td valign=top>" . Atk_Tools::atktext('password') . "</td><td>:</td><td><input type=password size=15 name=auth_pw value='' /></td></tr>";
             $output .= '<tr><td colspan="3" align="center" height="50" valign="middle">';
-            $output .= '<input name="login" class="button" type="submit" value="' . atkTools::atktext('login') . '">';
+            $output .= '<input name="login" class="button" type="submit" value="' . Atk_Tools::atktext('login') . '">';
             $tplvars["auth_enablepasswordmailer"] = $this->get_enablepasswordmailer();
             if ($this->get_enablepasswordmailer()) {
-                $output .= '&nbsp;&nbsp;<input name="login" class="button" type="submit" value="' . atkTools::atktext('password_forgotten') . '">';
-                $tplvars["forgotpasswordbutton"] = '<input name="login" class="button" type="submit" value="' . atkTools::atktext('password_forgotten') . '">';
+                $output .= '&nbsp;&nbsp;<input name="login" class="button" type="submit" value="' . Atk_Tools::atktext('password_forgotten') . '">';
+                $tplvars["forgotpasswordbutton"] = '<input name="login" class="button" type="submit" value="' . Atk_Tools::atktext('password_forgotten') . '">';
             }
             $output .= '</td></tr>';
         }
@@ -593,8 +593,8 @@ class Atk_SecurityManager
 
         $tplvars["content"] = $output;
         $page->addContent($ui->render("login.tpl", $tplvars));
-        $o = &atkOutput::getInstance();
-        $o->output($page->render(atkTools::atktext("app_title"), HTML_STRICT, "", $ui->render("login_meta.tpl")));
+        $o = &Atk_Output::getInstance();
+        $o->output($page->render(Atk_Tools::atktext("app_title"), HTML_STRICT, "", $ui->render("login_meta.tpl")));
     }
 
     /**
@@ -606,15 +606,15 @@ class Atk_SecurityManager
      */
     function auth_userField($defaultname)
     {
-        if (atkConfig::getGlobal("auth_dropdown") == true) {
+        if (Atk_Config::getGlobal("auth_dropdown") == true) {
             $auth_types = $this->m_authentication;
             $userlist = array();
 
             // Administrator and guest user may be present.
-            if (atkConfig::getGlobal("administratorpassword") != "") {
+            if (Atk_Config::getGlobal("administratorpassword") != "") {
                 $userlist[] = array("userid" => "administrator", "username" => "Administrator");
             }
-            if (atkConfig::getGlobal("guestpassword") != "") {
+            if (Atk_Config::getGlobal("guestpassword") != "") {
                 $userlist[] = array("userid" => "guest", "username" => "Guest");
             }
 
@@ -718,14 +718,14 @@ class Atk_SecurityManager
     function log($level, $message)
     {
 
-        if (atkConfig::getGlobal("logging") > 0 && atkConfig::getGlobal("logging") >= $level) {
-            $fp = @fopen(atkConfig::getGlobal("logfile"), "a");
+        if (Atk_Config::getGlobal("logging") > 0 && Atk_Config::getGlobal("logging") >= $level) {
+            $fp = @fopen(Atk_Config::getGlobal("logfile"), "a");
             if ($fp) {
                 $logstamp = "[" . date("d-m-Y H:i:s") . "] [" . $_SERVER["REMOTE_ADDR"] . "] " . $this->m_user["name"] . " | ";
                 @fwrite($fp, $logstamp . $message . "\n");
                 @fclose($fp);
             } else {
-                atkTools::atkdebug("error opening logfile");
+                Atk_Tools::atkdebug("error opening logfile");
             }
         }
     }
@@ -738,7 +738,7 @@ class Atk_SecurityManager
      */
     function _getAuthCookieName()
     {
-        return "atkauth_3" . str_replace(" ", "_", atkTools::atktext("app_title"));
+        return "atkauth_3" . str_replace(" ", "_", Atk_Tools::atktext("app_title"));
     }
 
     /**
@@ -762,7 +762,7 @@ class Atk_SecurityManager
         $securityMgr = self::getInstance();
 
         if (!$securityMgr->authenticate()) {
-            echo '<b>' . atkTools::atktext("login_failed", "atk") . '</b>';
+            echo '<b>' . Atk_Tools::atktext("login_failed", "atk") . '</b>';
             echo '<br><br>' . $securityMgr->m_fatalError;
             exit;
         }
@@ -775,13 +775,13 @@ class Atk_SecurityManager
      */
     public static function atkGetUser($key = '')
     {
-        $sessionmanager = atkSessionManager::atkGetSessionManager();
-        $session = atkSessionManager::getSession();
+        $sessionmanager = Atk_SessionManager::atkGetSessionManager();
+        $session = Atk_SessionManager::getSession();
         $user = "";
         $session_auth = is_object($sessionmanager) ? $sessionmanager->getValue("authentication", "globals")
             : array();
-        if (atkConfig::getGlobal("authentication_session") &&
-            atkTools::atkArrayNvl($session, "login", 0) == 1 &&
+        if (Atk_Config::getGlobal("authentication_session") &&
+            Atk_Tools::atkArrayNvl($session, "login", 0) == 1 &&
             $session_auth["authenticated"] == 1 &&
             !empty($session_auth["user"])
         ) {
@@ -802,7 +802,7 @@ class Atk_SecurityManager
     public static function atkGetUserId()
     {
         $user = self::atkGetUser();
-        $userpk = atkConfig::getGlobal('auth_userpk');
+        $userpk = Atk_Config::getGlobal('auth_userpk');
 
         // check if logged in || logged in as administrator
         if ($user == "" || $userpk == "" ||

@@ -14,7 +14,7 @@
  * @version $Revision: 5442 $
  * $Id$
  */
-atkTools::atkimport("atk.utils.atkmessagequeue");
+Atk_Tools::atkimport("atk.utils.atkmessagequeue");
 
 /**
  * Implements the {atkmessages} plugin for use in templates.
@@ -39,10 +39,10 @@ function smarty_function_atkmessages($params, &$smarty)
 {
     global $g_sessionManager;
     if (is_object($g_sessionManager)) {
-        $msgs = atkMessageQueue::getMessages();
+        $msgs = Atk_MessageQueue::getMessages();
         $smarty->assign("atkmessages", $msgs);
         if (empty($msgs)) {
-            atkTools::atkdebug("No messages in atkMessageQueue");
+            Atk_Tools::atkdebug("No messages in atkMessageQueue");
         }
         return "";
     }

@@ -26,18 +26,18 @@
  */
 $config_atkroot = "./";
 include_once("atk.php");
-atkSessionManager::atksession();
+Atk_SessionManager::atksession();
 atksecure();
 $output = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">';
 $output.="\n<html>\n <head>\n";
-$output.='  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=' . atkTools::atkGetCharset() . '">';
-$output.="\n  <title>" . atkTools::atktext('app_title') . "</title>\n </head>\n";
+$output.='  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=' . Atk_Tools::atkGetCharset() . '">';
+$output.="\n  <title>" . Atk_Tools::atktext('app_title') . "</title>\n </head>\n";
 
-atkTools::atkimport("atk.menu.atkmenu");
-atkTools::atkimport("atk.utils.atkframeset");
+Atk_Tools::atkimport("atk.menu.atkmenu");
+Atk_Tools::atkimport("atk.utils.atkframeset");
 
-$menu = &atkMenu::getMenu();
-$theme = &atkTools::atkinstance('atk.ui.atktheme');
+$menu = &Atk_Menu::getMenu();
+$theme = &Atk_Tools::atkinstance('atk.ui.atktheme');
 
 $position = $menu->getPosition();
 $scrolling = ($menu->getScrollable() == MENU_SCROLLABLE ? FRAME_SCROLL_AUTO : FRAME_SCROLL_NO);
@@ -56,10 +56,10 @@ $topframe = new Atk_Frame($frame_top_height ? $frame_top_height : "75", "top", "
 $mainframe = new Atk_Frame("*", "main", $destination, FRAME_SCROLL_AUTO, true);
 $menuframe = new Atk_Frame(($position == MENU_LEFT || $position == MENU_RIGHT ? ($frame_menu_width
                 ? $frame_menu_width : 190) : $menu->getHeight()), "menu", "menu.php", $scrolling);
-$noframes = '<p>Your browser doesnt support frames, but this is required to run ' . atkTools::atktext('app_title') . "</p>\n";
+$noframes = '<p>Your browser doesnt support frames, but this is required to run ' . Atk_Tools::atktext('app_title') . "</p>\n";
 
 $root = new Atk_RootFrameset();
-if (atkConfig::getGlobal("top_frame")) {
+if (Atk_Config::getGlobal("top_frame")) {
     $outer = new Atk_FrameSet("*", FRAMESET_VERTICAL, 0, $noframes);
     $outer->addChild($topframe);
     $root->addChild($outer);

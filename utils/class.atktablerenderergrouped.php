@@ -19,7 +19,7 @@
  * Imports
  * @access private
  */
-atkTools::atkimport("atk.utils.atktablerenderer");
+Atk_Tools::atkimport("atk.utils.atktablerenderer");
 
 /**
  * Renders table with row based groups. A grouped table is a table with some rows
@@ -81,13 +81,13 @@ class Atk_TableRendererGrouped extends Atk_TableRenderer
      * @return atkTableRendererGrouped
      * @access public
      */
-    function atkTableRendererGrouped($flags = 0, $style = '', $module = '')
+    function __construct($flags = 0, $style = '', $module = '')
     {
-        $this->atkTableRenderer($flags, $style, $module);
+        parent::__construct($flags, $style, $module);
         $this->setClass('groupheader', 0, 'firstcol');
         // Include tools.js for the toggleDisplay function
-        $page = &atkPage::getInstance();
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/tools.js");
+        $page = &Atk_Page::getInstance();
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/tools.js");
     }
 
     /**

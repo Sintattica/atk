@@ -15,7 +15,7 @@
  * @version $Revision: 6310 $
  * $Id$
  */
-atkTools::atkimport("atk.handlers.atkactionhandler");
+Atk_Tools::atkimport("atk.handlers.atkactionhandler");
 
 /**
  * Handler class for the edit action of a node. The handler draws a
@@ -55,7 +55,7 @@ class Atk_ViewEditBase extends Atk_ActionHandler
 
         if ($record == null) { // If reject info not set -  do select
             $atkstoretype = "";
-            $sessionmanager = atkSessionManager::atkGetSessionManager();
+            $sessionmanager = Atk_SessionManager::atkGetSessionManager();
             if ($sessionmanager)
                 $atkstoretype = $sessionmanager->stackVar('atkstore');
             switch ($atkstoretype) {
@@ -79,7 +79,7 @@ class Atk_ViewEditBase extends Atk_ActionHandler
      */
     protected function getRecordFromDb()
     {
-        $selector = atkTools::atkArrayNvl($this->m_node->m_postvars, 'atkselector', "");
+        $selector = Atk_Tools::atkArrayNvl($this->m_node->m_postvars, 'atkselector', "");
         if ($this->getNode()->hasFlag(NF_ML)) {
             list($record) = $this->m_node->selectDb($selector, "", "", "", "", "edit");
         } else {
@@ -95,14 +95,14 @@ class Atk_ViewEditBase extends Atk_ActionHandler
      */
     protected function getRecordFromSession()
     {
-        $selector = atkTools::atkArrayNvl($this->m_node->m_postvars, 'atkselector', '');
-        return atkTools::atkinstance('atk.session.atksessionstore')->getDataRowForSelector($selector);
+        $selector = Atk_Tools::atkArrayNvl($this->m_node->m_postvars, 'atkselector', '');
+        return Atk_Tools::atkinstance('atk.session.atksessionstore')->getDataRowForSelector($selector);
     }
 
     /**
      * Get section label.
      *
-     * @param atkNode $node
+     * @param Atk_Node $node
      * @param string $rawName
      *
      * @return string label
@@ -119,7 +119,7 @@ class Atk_ViewEditBase extends Atk_ActionHandler
     /**
      * Get tab label.
      *
-     * @param atkNode $node
+     * @param Atk_Node $node
      * @param string $tab
      *
      * @return string label
@@ -142,23 +142,23 @@ class Atk_ViewEditBase extends Atk_ActionHandler
     function getSectionControl($field, $mode)
     {
         // label
-        $label = atkViewEditBase::getSectionLabel($this->m_node, $field['name']);
+        $label = Atk_ViewEditBase::getSectionLabel($this->m_node, $field['name']);
 
         // our name
         list($tab, $section) = explode('.', $field["name"]);
         $name = "section_{$tab}_{$section}";
 
-        $url = atkTools::partial_url($this->m_node->atknodetype(), $mode, "sectionstate", array("atksectionname" => $name));
+        $url = Atk_Tools::partial_url($this->m_node->atknodetype(), $mode, "sectionstate", array("atksectionname" => $name));
 
         // create onclick statement.
         $onClick = " onClick=\"javascript:handleSectionToggle(this,null,'{$url}'); return false;\"";
         $initClass = "openedSection";
 
         //if the section is not active, we close it on load.
-        atkTools::atkimport("atk.session.atkstate");
+        Atk_Tools::atkimport("atk.session.atkstate");
         $default = in_array($field["name"], $this->m_node->getActiveSections($tab, $mode))
                 ? 'opened' : 'closed';
-        $sectionstate = atkState::get(array("nodetype" => $this->m_node->atknodetype(), "section" => $name), $default);
+        $sectionstate = Atk_State::get(array("nodetype" => $this->m_node->atknodetype(), "section" => $name), $default);
 
         if ($sectionstate == 'closed') {
             $initClass = "closedSection";
@@ -226,8 +226,8 @@ class Atk_ViewEditBase extends Atk_ActionHandler
      */
     function partial_sectionstate()
     {
-        atkTools::atkimport("atk.session.atkstate");
-        atkState::set(array("nodetype" => $this->m_node->atknodetype(), "section" => $this->m_postvars['atksectionname']), $this->m_postvars['atksectionstate']);
+        Atk_Tools::atkimport("atk.session.atkstate");
+        Atk_State::set(array("nodetype" => $this->m_node->atknodetype(), "section" => $this->m_postvars['atksectionname']), $this->m_postvars['atksectionstate']);
         die;
     }
 
@@ -307,7 +307,7 @@ class Atk_ViewEditBase extends Atk_ActionHandler
 
         $attr = $this->m_node->getAttribute($attribute);
         if ($attr == NULL) {
-            atkTools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
+            Atk_Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
             return '';
         }
 

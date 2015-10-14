@@ -112,7 +112,7 @@ class Atk_SqlWhereclauseBlacklistChecker
             foreach ($values as $value) {
                 $checker = new self($value);
                 if (!$checker->isSafe()) {
-                    atkTools::atkhalt("Unsafe WHERE clause in REQUEST variable: " . $variable, 'critical');
+                    Atk_Tools::atkhalt("Unsafe WHERE clause in REQUEST variable: " . $variable, 'critical');
                 }
             }
         }

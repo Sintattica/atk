@@ -17,7 +17,7 @@
 /**
  * @internal baseclass include
  */
-atkTools::useattrib("atkattribute");
+Atk_Tools::useattrib("atkattribute");
 
 /** flag(s) specific for atkDateAttribute */
 define("AF_DATE_STRING", AF_SPECIFIC_1); // date must be entered as an english date string (strtotime), also checks edit format
@@ -29,7 +29,7 @@ define("AF_CLEAR_TOUCH_BUTTONS", AF_SPECIFIC_6); // Display butons to clear and 
 define("AF_DATE_DEFAULT_EMPTY", AF_SPECIFIC_7|AF_DATE_EMPTYFIELD); // Always use the empty value on new record
 
 // Include adodb workarounds for <1970 dates on windows.
-$config_atkroot = atkConfig::getGlobal("atkroot");
+$config_atkroot = Atk_Config::getGlobal("atkroot");
 require_once($config_atkroot . "atk/utils/adodb-time.inc.php");
 // Include browsertools for PDA detection
 include_once($config_atkroot . "atk/utils/class.atkbrowsertools.php");
@@ -60,7 +60,7 @@ class Atk_DateAttribute extends Atk_Attribute
     /**
      * Are we in simple mode?
      *
-     * @see atkDateAttribute::setSimpleMode()
+     * @see Atk_DateAttribute::setSimpleMode()
      * @var bool
      */
     protected $m_simplemode = false;
@@ -93,7 +93,7 @@ class Atk_DateAttribute extends Atk_Attribute
      */
     function formatDate($date, $format, $weekday = true)
     {
-        return atkTools::atkFormatDate($date, $format, $weekday);
+        return Atk_Tools::atkFormatDate($date, $format, $weekday);
     }
 
     /**
@@ -143,7 +143,7 @@ class Atk_DateAttribute extends Atk_Attribute
      */
     function arrayToTime($dateArray)
     {
-        return atkDateAttribute::_arrayToTime($dateArray);
+        return Atk_DateAttribute::_arrayToTime($dateArray);
     }
 
     /**
@@ -243,7 +243,7 @@ class Atk_DateAttribute extends Atk_Attribute
      */
     function setFormatEdit($format_edit)
     {
-        $txt_date_format_edit = atkTools::atktext("date_format_edit", "atk", "", "", "", true);
+        $txt_date_format_edit = Atk_Tools::atktext("date_format_edit", "atk", "", "", "", true);
 
         if ($this->hasFlag(AF_DATE_STRING) && empty($format_edit))
             $this->m_date_format_edit = "Y-m-d";
@@ -262,7 +262,7 @@ class Atk_DateAttribute extends Atk_Attribute
      */
     function setFormatView($format_view)
     {
-        $txt_date_format_view = atkTools::atktext("date_format_view", "atk", "", "", "", true);
+        $txt_date_format_view = Atk_Tools::atktext("date_format_view", "atk", "", "", "", true);
 
         if (!empty($format_view))
             $this->m_date_format_view = $format_view;
@@ -317,7 +317,7 @@ class Atk_DateAttribute extends Atk_Attribute
     function postInit(){
         parent::postInit();
         if ($this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_DATE_DEFAULT_EMPTY)) {
-            $this->setInitialValue(atkDateAttribute::dateArray(date('Ymd')));
+            $this->setInitialValue(Atk_DateAttribute::dateArray(date('Ymd')));
         }
     }
 
@@ -501,7 +501,7 @@ class Atk_DateAttribute extends Atk_Attribute
         $result = "";
 
         // go in simplemode when a pda is detected
-        if (atkBrowserInfo::detectPDA())
+        if (Atk_BrowserInfo::detectPDA())
             $this->setSimpleMode(true);
 
         $this->m_yeardropdown = false;
@@ -530,8 +530,8 @@ class Atk_DateAttribute extends Atk_Attribute
             if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && $mode != 'list') {
                 $format = str_replace(array("y", "Y", "m", "n", "j", "d"), array("yy", "y", "mm", "m", "d", "dd"), $this->m_date_format_edit);
                 $mondayFirst = 'false';
-                if(is_bool(atkTools::atktext("date_monday_first"))){
-                    $mondayFirst = atkTools::atktext("date_monday_first") === true ? 'true': $mondayFirst;
+                if(is_bool(Atk_Tools::atktext("date_monday_first"))){
+                    $mondayFirst = Atk_Tools::atktext("date_monday_first") === true ? 'true': $mondayFirst;
                 }
                 $result.=' <input ' . $this->getCSSClassAttribute(array("btn", "btn-default", "button",
                         "atkbutton")) . ' type="button" value="..." onclick="return showCalendar(\'' . $fieldname . '\', \'' . $fieldname . '\', \'' . $format . '\', false, '.$mondayFirst.');">';
@@ -541,7 +541,7 @@ class Atk_DateAttribute extends Atk_Attribute
         }
 
         /* this field */
-        $field = atkTools::atkArrayNvl($record, $this->fieldName());
+        $field = Atk_Tools::atkArrayNvl($record, $this->fieldName());
         $str_format = $this->m_date_format_edit;
 
         /* currently selected date */
@@ -554,7 +554,7 @@ class Atk_DateAttribute extends Atk_Attribute
                 $current = adodb_mktime(0, 0, 0, $field["month"], $field["day"], $field["year"]);
             } else {
                 $current = NULL;
-                atkTools::triggerError($record, $this->fieldName(), "error_date_invalid");
+                Atk_Tools::triggerError($record, $this->fieldName(), "error_date_invalid");
             }
         } else {
             $date = self::dateArray($field);
@@ -636,9 +636,9 @@ class Atk_DateAttribute extends Atk_Attribute
             'weekday' => !$this->hasFlag(AF_DATE_EDIT_NO_DAY)
         );
 
-        atkTools::atkimport('atk.utils.atkjson');
+        Atk_Tools::atkimport('atk.utils.atkjson');
         if (!$this->m_simplemode) {
-            $result .= '<div class="form-inline"><script language="javascript">var atkdateattribute_' . $fieldname . ' = ' . atkJSON::encode($info) . ';</script>';
+            $result .= '<div class="form-inline"><script language="javascript">var atkdateattribute_' . $fieldname . ' = ' . Atk_JSON::encode($info) . ';</script>';
         }
 
         /* other date selections */
@@ -677,8 +677,8 @@ class Atk_DateAttribute extends Atk_Attribute
 
         if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && !$this->m_yeardropdown && !$this->m_simplemode && $mode != 'list') {
             $mondayFirst = 'false';
-            if(is_bool(atkTools::atktext("date_monday_first"))){
-                $mondayFirst = atkTools::atktext("date_monday_first") === true ? 'true': $mondayFirst;
+            if(is_bool(Atk_Tools::atktext("date_monday_first"))){
+                $mondayFirst = Atk_Tools::atktext("date_monday_first") === true ? 'true': $mondayFirst;
             }
             $result.=' <input ' . $this->getCSSClassAttribute(array("button",
                     "atkbutton", 'btn', 'btn-default')) . ' type="reset" value="..." onclick="return showCalendar(\'' . $fieldname . '\', \'' . $fieldname . '[year]\', \'y-mm-dd\', true, '.$mondayFirst.');">';
@@ -727,7 +727,7 @@ class Atk_DateAttribute extends Atk_Attribute
      */
     public static function registerScriptsAndStyles($useCalendar = true)
     {
-        $page = atkTools::atkinstance('atk.ui.atkpage');
+        $page = Atk_Tools::atkinstance('atk.ui.atkpage');
 
         // make sure we register the script code with translations for the months etc. only once!
         if (!self::$s_baseScriptsRegistered) {
@@ -744,16 +744,16 @@ class Atk_DateAttribute extends Atk_Attribute
                 "sat");
 
             foreach ($m_months_short as &$m) {
-                $m = atkTools::atktext($m, "atk");
+                $m = Atk_Tools::atktext($m, "atk");
             }
             foreach ($m_months_long as &$m) {
-                $m = atkTools::atktext($m, "atk");
+                $m = Atk_Tools::atktext($m, "atk");
             }
             foreach ($m_weekdays_long as &$m) {
-                $m = atkTools::atktext($m, "atk");
+                $m = Atk_Tools::atktext($m, "atk");
             }
             foreach ($m_weekdays_short as &$m) {
-                $m = atkTools::atktext($m, "atk");
+                $m = Atk_Tools::atktext($m, "atk");
             }
 
             $page->register_scriptcode('
@@ -763,15 +763,15 @@ class Atk_DateAttribute extends Atk_Attribute
           var m_weekdays_short = Array("' . implode('","', $m_weekdays_short) . '");
         ', true);
 
-            $page->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/class.atkdateattribute.js');
+            $page->register_script(Atk_Config::getGlobal('atkroot') . 'atk/javascript/class.atkdateattribute.js');
         }
 
         if ($useCalendar) {
-            $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/calendar/calendar.js");
-            $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/calendar/calendar-runner.js");
-            $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/calendar/lang/calendar-" . atkConfig::getGlobal("language") . ".js");
+            $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/calendar/calendar.js");
+            $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/calendar/calendar-runner.js");
+            $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/calendar/lang/calendar-" . Atk_Config::getGlobal("language") . ".js");
 
-            $theme = atkTools::atkinstance("atk.ui.atktheme");
+            $theme = Atk_Tools::atkinstance("atk.ui.atktheme");
             $page->register_style($theme->stylePath("atkdateattribute.css"));
         }
     }
@@ -837,7 +837,7 @@ class Atk_DateAttribute extends Atk_Attribute
         $res = $this->draw($rec, "atksearch_AE_" . $fieldprefix, "_AE_from", 'search');
         $rec = isset($record[$this->fieldName()]['to']) ? array($this->fieldName() => $record[$this->fieldName()]['to'])
                 : $record;
-        $res.= "&nbsp;" . atkTools::atktext("until") . ": " . $this->draw($rec, "atksearch_AE_" . $fieldprefix, "_AE_to", 'search');
+        $res.= "&nbsp;" . Atk_Tools::atktext("until") . ": " . $this->draw($rec, "atksearch_AE_" . $fieldprefix, "_AE_to", 'search');
 
         return $res;
     }
@@ -847,7 +847,7 @@ class Atk_DateAttribute extends Atk_Attribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param Atk_Query $query     The query object where the search condition should be placed on
      * @param String $table       The name of the table in which this attribute is stored
      * @param mixed $value        The value the user has entered in the searchbox
      * @param String $searchmode  The searchmode to use. This can be any one of the supported modes,
@@ -937,14 +937,14 @@ class Atk_DateAttribute extends Atk_Attribute
      * Makes the search conditions if the normal conditions are
      * not met and if given date is an array,
      * for example when only the year or year-month is given
-     * @param atkQuery $query Query which is given in getSearchCondition
+     * @param Atk_Query $query Query which is given in getSearchCondition
      * @param string $table Table on which the condition must be executed
      * @param array $value Array with values given for the search
      * @return String YYYY-MM or YYYY
      */
     function _getDateArraySearchCondition($query, $table, $value)
     {
-        $db = &atkTools::atkGetDb();
+        $db = &Atk_Tools::atkGetDb();
         $fromvalue = $this->_MakeDateForCondition($value["from"]);
         $tovalue = $this->_MakeDateForCondition($value["to"]);
 
@@ -1103,7 +1103,7 @@ class Atk_DateAttribute extends Atk_Attribute
             if ($this->checkDateArray($value))
                 $current = adodb_mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]);
             else {
-                atkTools::triggerError($record, $this->fieldName(), 'error_date_invalid');
+                Atk_Tools::triggerError($record, $this->fieldName(), 'error_date_invalid');
                 return;
             }
         }
@@ -1113,7 +1113,7 @@ class Atk_DateAttribute extends Atk_Attribute
             return;
         else {
             if ($value["year"] == '' || $value['month'] == 0 || $value['day'] == 0) {
-                atkTools::triggerError($record, $this->fieldName(), 'error_obligatoryfield');
+                Atk_Tools::triggerError($record, $this->fieldName(), 'error_obligatoryfield');
                 return;
             }
         }
@@ -1142,13 +1142,13 @@ class Atk_DateAttribute extends Atk_Attribute
 
         /* date < minimum */
         if (!empty($minimum) && $current < $minimum) {
-            atkTools::triggerError($record, $this->fieldName(), 'error_date_minimum', atkTools::atktext("error_date_minimum") . " " . $this->formatDate(adodb_getdate($minimum), $this->m_date_format_view, 0));
+            Atk_Tools::triggerError($record, $this->fieldName(), 'error_date_minimum', Atk_Tools::atktext("error_date_minimum") . " " . $this->formatDate(adodb_getdate($minimum), $this->m_date_format_view, 0));
             return;
         }
 
         /* date > maximum */
         if (!empty($maximum) && $current > $maximum)
-            atkTools::triggerError($record, $this->fieldName(), 'error_date_maximum', atkTools::atktext("error_date_maximum") . " " . $this->formatDate(adodb_getdate($maximum), $this->m_date_format_view, 0));
+            Atk_Tools::triggerError($record, $this->fieldName(), 'error_date_maximum', Atk_Tools::atktext("error_date_maximum") . " " . $this->formatDate(adodb_getdate($maximum), $this->m_date_format_view, 0));
     }
 
     /**
@@ -1193,7 +1193,7 @@ class Atk_DateAttribute extends Atk_Attribute
      * Database queries (select, insert and update) are passed to this method
      * so the attribute can 'hook' itself into the query.
      *
-     * @param atkQuery $query The SQL query object
+     * @param Atk_Query $query The SQL query object
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.

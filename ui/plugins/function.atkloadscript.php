@@ -31,6 +31,6 @@
  */
 function smarty_function_atkloadscript($params)
 {
-    $page = &atkTools::atkinstance('atk.ui.atkpage');
+    $page = &Atk_Tools::atkinstance('atk.ui.atkpage');
     $page->register_loadscript($params[0] ? $params[0] : $params['code']);
 }

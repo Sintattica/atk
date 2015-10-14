@@ -14,7 +14,7 @@
  * @version $Revision: 6318 $
  * $Id$
  */
-atkTools::atkimport('atk.datatypes.atkdatatype');
+Atk_Tools::atkimport('atk.datatypes.atkdatatype');
 
 /**
  * The 'string' datatype.
@@ -67,7 +67,7 @@ class Atk_StringDt extends Atk_DataType
      */
     public function parse($data)
     {
-        $this->m_string = atkTools::atknew('atk.utils.atkstringparser', $this->m_string)->parse($data);
+        $this->m_string = Atk_Tools::atknew('atk.utils.atkstringparser', $this->m_string)->parse($data);
         return $this;
     }
 

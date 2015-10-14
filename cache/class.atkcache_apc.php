@@ -17,7 +17,7 @@
  * @version $Revision: 5898 $
  * $Id$
  */
-atkTools::atkimport("atk.cache.atkcache");
+Atk_Tools::atkimport("atk.cache.atkcache");
 
 class Atk_Cache_apc extends Atk_Cache
 {
@@ -31,7 +31,7 @@ class Atk_Cache_apc extends Atk_Cache
         if (!( extension_loaded('apc') && ini_get('apc.enabled') )) {
             throw new Exception('The APC extension is not loaded or disabled');
         }
-        $this->m_namespace = atkConfig::getGlobal('cache_namespace', "default");
+        $this->m_namespace = Atk_Config::getGlobal('cache_namespace', "default");
     }
 
     /**

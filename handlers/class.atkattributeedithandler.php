@@ -16,7 +16,7 @@
  * @version $Revision: 6310 $
  * $Id$
  */
-atkTools::atkimport("atk.handlers.atkactionhandler");
+Atk_Tools::atkimport("atk.handlers.atkactionhandler");
 
 /**
  * Some defines
@@ -46,7 +46,7 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
     /**
      * Set the maste node
      *
-     * @param atkNode $node The master node
+     * @param Atk_Node $node The master node
      */
     function setMasterNode($node)
     {
@@ -148,7 +148,7 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
             // If the validation succeeded, we will get here and try to perform the update.
             if (!$node->updateDb($rec, false, "", array($attributename))) {
                 $success = false;
-                atkTools::triggerError($rec, $attributename, $node->getDb()->getErrorType(), $node->getDb()->getErrorMsg());
+                Atk_Tools::triggerError($rec, $attributename, $node->getDb()->getErrorType(), $node->getDb()->getErrorMsg());
                 break;
             }
         }
@@ -181,7 +181,7 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
      */
     function handleError($error, $record = null, $reload = false)
     {
-        atkTools::atkimport('atk.ui.atkdialog');
+        Atk_Tools::atkimport('atk.ui.atkdialog');
 
         $this->registerExternalFiles();
 
@@ -192,7 +192,7 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
         if (!$reload) {
             $page->addContent($content);
         } else {
-            $script = atkDialog::getUpdateCall($content, false);
+            $script = Atk_Dialog::getUpdateCall($content, false);
             $page->register_loadscript($script);
         }
     }
@@ -226,11 +226,11 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
         }
 
         $ui = &$this->m_node->getUi();
-        atkTools::atkimport('atk.ui.atkdialog');
+        Atk_Tools::atkimport('atk.ui.atkdialog');
         $params = array();
         $params["content"] = "<b>" . $errortext . "</b><br />";
         $params["content"].= $errormsg;
-        $params["buttons"][] = '<input type="button" class="btn btn-default btn_cancel" value="' . $this->m_node->text('close') . '" onClick="' . atkDialog::getCloseCall() . '" />';
+        $params["buttons"][] = '<input type="button" class="btn btn-default btn_cancel" value="' . $this->m_node->text('close') . '" onClick="' . Atk_Dialog::getCloseCall() . '" />';
         $content = $ui->renderAction("attributeedit", $params);
 
         $params = array();
@@ -258,7 +258,7 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
     function getAttributeEditPage()
     {
         $url = $this->getProcessUrl();
-        $controller = &atkController::getInstance();
+        $controller = &Atk_Controller::getInstance();
 
         $this->registerExternalFiles();
 
@@ -280,8 +280,8 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
     {
         $page = &$this->getPage();
         $ui = &$this->getUi();
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/tools.js");
-        $page->register_script(atkConfig::getGlobal('atkroot') . 'atk/javascript/class.atkattributeedithandler.js');
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/tools.js");
+        $page->register_script(Atk_Config::getGlobal('atkroot') . 'atk/javascript/class.atkattributeedithandler.js');
         $page->register_style($ui->stylePath("style.css"));
     }
 
@@ -368,7 +368,7 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
      */
     function onChange()
     {
-        $url = atkTools::partial_url($this->m_masterNode->atkNodeType(), 'attributeedit', 'refreshvaluefield');
+        $url = Atk_Tools::partial_url($this->m_masterNode->atkNodeType(), 'attributeedit', 'refreshvaluefield');
         $script = "
         ATK.AttributeEditHandler.refreshvalues('$url');
       ";
@@ -489,7 +489,7 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
      */
     function getFormStart()
     {
-        $controller = &atkcontroller::getInstance();
+        $controller = &Atk_controller::getInstance();
         $controller->setNode($this->m_node);
 
         $formstart = '<form id="dialogform" name="dialogform" action="' . $controller->getPhpFile() . '?' . SID . '" method="post">';
@@ -512,14 +512,14 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
     {
         $page = &$this->getPage();
 
-        atkTools::atkimport('atk.utils.atkjson');
+        Atk_Tools::atkimport('atk.utils.atkjson');
         // get selected attribute
         $selectedattribute = $this->m_node->m_postvars["attributename"];
 
         $field = $this->_getDropDownValues($selectedattribute);
 
         $keys = implode(',', array_keys($this->m_node->m_postvars));
-        $content = "<script type=\"text/javascript\">$('selectedvaluediv').innerHTML = " . atkJSON::encode($field) . "</script>";
+        $content = "<script type=\"text/javascript\">$('selectedvaluediv').innerHTML = " . Atk_JSON::encode($field) . "</script>";
 
         $page->addContent($content);
     }
@@ -534,7 +534,7 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
         if ($this->m_processUrl != null) {
             return $this->m_processUrl;
         } else {
-            return atkTools::partial_url($this->m_masterNode->atkNodeType(), 'attributeedit', 'process');
+            return Atk_Tools::partial_url($this->m_masterNode->atkNodeType(), 'attributeedit', 'process');
         }
     }
 

@@ -45,13 +45,13 @@ class Atk_Lock
         static $_instance = NULL;
 
         if ($_instance == NULL) {
-            $class = "atk" . atkConfig::getGlobal("lock_type") . "Lock";
-            $file = atkConfig::getGlobal("atkroot") . "atk/lock/class." . strtolower($class) . ".php";
+            $class = "atk" . Atk_Config::getGlobal("lock_type") . "Lock";
+            $file = Atk_Config::getGlobal("atkroot") . "atk/lock/class." . strtolower($class) . ".php";
 
             if (file_exists($file)) {
                 include_once($file);
                 if (class_exists($class)) {
-                    atkTools::atkdebug('Constructing a new lock - ' . strtolower($class));
+                    Atk_Tools::atkdebug('Constructing a new lock - ' . strtolower($class));
                     $_instance = new $class();
                 }
             }
@@ -133,6 +133,6 @@ class Atk_Lock
  */
 function atklock()
 {
-    return atkLock::getInstance();
+    return Atk_Lock::getInstance();
 }
 

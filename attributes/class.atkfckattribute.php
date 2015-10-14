@@ -18,7 +18,7 @@
 /**
  * @internal include baseclass.
  */
-atkTools::useattrib("atktextattribute");
+Atk_Tools::useattrib("atktextattribute");
 
 /**
  * The atkFckAttribute is a 'wysiwyg' text editor.
@@ -52,7 +52,7 @@ class Atk_FckAttribute extends Atk_TextAttribute
      */
     function atkFckAttribute($name, $size = '', $flags = 0, $opt = array())
     {
-        $config_fck = atkConfig::getGlobal('fck');
+        $config_fck = Atk_Config::getGlobal('fck');
         if (is_array($config_fck)) {
             $this->fck_opt = array_merge($this->fck_opt, $config_fck);
         }
@@ -60,7 +60,7 @@ class Atk_FckAttribute extends Atk_TextAttribute
             $this->fck_opt = array_merge($this->fck_opt, $opt);
         }
 
-        $this->fck_opt["Language"] = atkConfig::getGlobal("language");
+        $this->fck_opt["Language"] = Atk_Config::getGlobal("language");
 
         $this->atkTextAttribute($name, $size, $flags);
     }
@@ -91,7 +91,7 @@ class Atk_FckAttribute extends Atk_TextAttribute
      */
     function display($record = "", $mode = "")
     {
-        return atkTools::atkArrayNvl($record, $this->fieldName(), "");
+        return Atk_Tools::atkArrayNvl($record, $this->fieldName(), "");
     }
 
     /**
@@ -131,7 +131,7 @@ class Atk_FckAttribute extends Atk_TextAttribute
         $this->registerKeyListener($id, KB_CTRLCURSOR);
 
         $oFCKeditor = new FCKeditor($fieldprefix . $fieldname);
-        $oFCKeditor->BasePath = atkConfig::getGlobal("atkroot") . "atk/attributes/fck/";
+        $oFCKeditor->BasePath = Atk_Config::getGlobal("atkroot") . "atk/attributes/fck/";
 
         $oFCKeditor->Value = isset($record[$fieldname]) ? $record[$fieldname] : "";
         $oFCKeditor->ToolbarSet = $this->fck_opt['ToolbarSet'];

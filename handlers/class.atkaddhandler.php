@@ -42,9 +42,9 @@ class Atk_AddHandler extends Atk_ActionHandler
      *
      * @return atkAddHandler
      */
-    function atkAddHandler()
+    function __construct()
     {
-        $this->atkActionHandler();
+        parent::__construct();
         $this->setReturnBehaviour(ATK_ACTION_BACK);
     }
 
@@ -62,7 +62,7 @@ class Atk_AddHandler extends Atk_ActionHandler
         $record = $this->getRejectInfo();
 
         $page = &$this->getPage();
-        $controller = &atkcontroller::getInstance();
+        $controller = &Atk_controller::getInstance();
         $page->addContent($controller->renderActionPage("add", $this->invoke("addPage", $record)));
     }
 
@@ -146,8 +146,8 @@ class Atk_AddHandler extends Atk_ActionHandler
     {
         $page = &$this->getPage();
         $ui = &$this->getUi();
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/tools.js");
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/formfocus.js");
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/tools.js");
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/formfocus.js");
         $page->register_loadscript("placeFocus();");
         $page->register_style($ui->stylePath("style.css"));
     }
@@ -167,7 +167,7 @@ class Atk_AddHandler extends Atk_ActionHandler
         $ui = &$node->getUi();
 
         if (!is_object($ui)) {
-            atkTools::atkerror("ui object failure");
+            Atk_Tools::atkerror("ui object failure");
             return false;
         }
 
@@ -201,7 +201,7 @@ class Atk_AddHandler extends Atk_ActionHandler
      */
     function getFormStart()
     {
-        $controller = &atkcontroller::getInstance();
+        $controller = &Atk_controller::getInstance();
         $controller->setNode($this->m_node);
 
         $node = &$this->m_node;
@@ -212,7 +212,7 @@ class Atk_AddHandler extends Atk_ActionHandler
             ' method="post" onsubmit="return globalSubmit(this,false)">';
 
 
-        $formstart .= atkTools::session_form(SESSION_NESTED, $this->getReturnBehaviour(), $node->getEditFieldPrefix());
+        $formstart .= Atk_Tools::session_form(SESSION_NESTED, $this->getReturnBehaviour(), $node->getEditFieldPrefix());
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkaction" value="' . $this->getSaveAction() . '" />';
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkprevaction" value="' . $this->getNode()->m_action . '" />';
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkcsrftoken" value="' . $this->getCSRFToken() . '" />';
@@ -257,7 +257,7 @@ class Atk_AddHandler extends Atk_ActionHandler
     {
         $node = &$this->m_node;
         $forceList = array();
-        $filterList = (isset($node->m_postvars['atkfilter'])) ? atkTools::decodeKeyValueSet($node->m_postvars['atkfilter'])
+        $filterList = (isset($node->m_postvars['atkfilter'])) ? Atk_Tools::decodeKeyValueSet($node->m_postvars['atkfilter'])
                 : array();
         foreach ($filterList as $field => $value) {
             list($table, $column) = explode('.', $field);
@@ -292,7 +292,7 @@ class Atk_AddHandler extends Atk_ActionHandler
     function getFormButtons($record = null)
     {
         if ($this->m_partial == 'dialog') {
-            $controller = &atkController::getInstance();
+            $controller = &Atk_Controller::getInstance();
             $result = array();
             $result[] = $controller->getDialogButton('save', null, $this->getDialogSaveUrl(), $this->getDialogSaveParams());
             $result[] = $controller->getDialogButton('cancel');
@@ -344,7 +344,7 @@ class Atk_AddHandler extends Atk_ActionHandler
 
         $attr = &$this->m_node->getAttribute($attribute);
         if ($attr == NULL) {
-            atkTools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
+            Atk_Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
             return '';
         }
 
@@ -356,8 +356,8 @@ class Atk_AddHandler extends Atk_ActionHandler
      */
     function partial_sectionstate()
     {
-        atkTools::atkimport("atk.session.atkstate");
-        atkState::set(array("nodetype" => $this->m_node->atknodetype(), "section" => $this->m_postvars['atksectionname']), $this->m_postvars['atksectionstate']);
+        Atk_Tools::atkimport("atk.session.atkstate");
+        Atk_State::set(array("nodetype" => $this->m_node->atknodetype(), "section" => $this->m_postvars['atksectionname']), $this->m_postvars['atksectionstate']);
     }
 
     /**
@@ -394,7 +394,7 @@ class Atk_AddHandler extends Atk_ActionHandler
         if ($this->m_dialogSaveUrl != null) {
             return $this->m_dialogSaveUrl;
         } else {
-            return atkTools::partial_url($this->m_node->atkNodeType(), 'save', 'dialog');
+            return Atk_Tools::partial_url($this->m_node->atkNodeType(), 'save', 'dialog');
         }
     }
 

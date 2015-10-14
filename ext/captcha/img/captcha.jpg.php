@@ -6,7 +6,7 @@
    */
   
   // captcha directory
-  $captchaDir = atkConfig::getGlobal("atkroot")."atk/ext/captcha/";
+  $captchaDir = Atk_Config::getGlobal("atkroot")."atk/ext/captcha/";
 
   // include captcha class 
   require($captchaDir."php-captcha.inc.php");

@@ -137,7 +137,7 @@ class Atk_Query
     /**
      * Initialize all variables
      */
-    function atkquery()
+    function __construct()
     {
         $this->m_fields = array();
         $this->m_expressions = array();
@@ -162,7 +162,7 @@ class Atk_Query
     /**
      * Sets the database instance.
      * 
-     * @var atkDb $db database instance
+     * @var Atk_Db $db database instance
      */
     public function setDb($db)
     {
@@ -172,12 +172,12 @@ class Atk_Query
     /**
      * Returns the database instance.
 
-     * @return atkDb database instance
+     * @return Atk_Db database instance
      */
     public function getDb()
     {
         if (!isset($this->m_db)) {
-            $this->m_db = atkTools::atkGetDb();
+            $this->m_db = Atk_Tools::atkGetDb();
         }
 
         return $this->m_db;
@@ -193,7 +193,7 @@ class Atk_Query
      *               using quotes, e.g. SET name = 'piet'. If it is false, it's
      *               done without quotes, e.d. SET number = 4.
      * @param bool $quotefield Wether or not to quote the fieldname
-     * @return atkQuery The query object itself (for fluent usage)
+     * @return Atk_Query The query object itself (for fluent usage)
      */
     function &addField($name, $value = "", $table = "", $fieldaliasprefix = "", $quote = true, $quotefield = false)
     {
@@ -231,7 +231,7 @@ class Atk_Query
      *                          executed
      * @param string $seqName   sequence name (optional for certain drivers)
      * 
-     * @return atkQuery
+     * @return Atk_Query
      */
     public function addSequenceField($fieldName, &$value, $seqName = null)
     {
@@ -250,7 +250,7 @@ class Atk_Query
      *               using quotes, e.g. SET name = 'piet'. If it is false, it's
      *               done without quotes, e.d. SET number = 4.
      * @param bool $quotefield Wether or not to quote the fieldname
-     * @return atkQuery The query object itself (for fluent usage)
+     * @return Atk_Query The query object itself (for fluent usage)
      */
     function addFields(array $fields, $table = "", $fieldaliasprefix = "", $quote = true, $quotefield = false)
     {
@@ -267,7 +267,7 @@ class Atk_Query
      * @param string $expression        expression value
      * @param string $fieldAliasPrefix  field alias prefix
      * @param bool $quoteFieldName      wether or not to quote the expression field name
-     * @return atkQuery The query object itself (for fluent usage)
+     * @return Atk_Query The query object itself (for fluent usage)
      */
     function &addExpression($fieldName, $expression, $fieldAliasPrefix = "", $quoteFieldName = false)
     {
@@ -305,7 +305,7 @@ class Atk_Query
      * Add table to Tables array
      * @param string $name Table name
      * @param string $alias Alias of table
-     * @return atkQuery The query object itself (for fluent usage)
+     * @return Atk_Query The query object itself (for fluent usage)
      */
     function &addTable($name, $alias = "")
     {
@@ -320,7 +320,7 @@ class Atk_Query
      * @param string $alias Alias of table
      * @param string $condition Condition for the Join
      * @param bool $outer Wether to use an outer (left) join or an inner join
-     * @return atkQuery The query object itself (for fluent usage)
+     * @return Atk_Query The query object itself (for fluent usage)
      */
     function &addJoin($table, $alias, $condition, $outer = false)
     {
@@ -334,7 +334,7 @@ class Atk_Query
      * Add a group-by statement
      *
      * @param String $element Group by expression
-     * @return atkQuery The query object itself (for fluent usage)
+     * @return Atk_Query The query object itself (for fluent usage)
      */
     function &addGroupBy($element)
     {
@@ -346,7 +346,7 @@ class Atk_Query
      * Add order-by statement
      *
      * @param String $element Order by expression
-     * @return atkQuery The query object itself (for fluent usage)
+     * @return Atk_Query The query object itself (for fluent usage)
      */
     function &addOrderBy($element)
     {
@@ -358,7 +358,7 @@ class Atk_Query
      * Add a query condition (conditions are where-expressions that are AND-ed)
      * 
      * @param string $condition Condition
-     * @return atkQuery The query object itself (for fluent usage)
+     * @return Atk_Query The query object itself (for fluent usage)
      */
     public function addCondition($condition)
     {
@@ -388,7 +388,7 @@ class Atk_Query
      * different searchconditions should be and'ed or or'ed.
      * 
      * @param string $condition Condition
-     * @return atkQuery The query object itself (for fluent usage)
+     * @return Atk_Query The query object itself (for fluent usage)
      */
     function &addSearchCondition($condition)
     {
@@ -404,7 +404,7 @@ class Atk_Query
      * 
      * @param Bool $distinct Set to true to perform a distinct select,
      *                          false for a regular select.
-     * @return atkQuery The query object itself (for fluent usage)
+     * @return Atk_Query The query object itself (for fluent usage)
      */
     function &setDistinct($distinct)
     {
@@ -417,7 +417,7 @@ class Atk_Query
      *
      * @param int $offset Retrieve records starting with record ...
      * @param int $limit Retrieve only this many records.
-     * @return atkQuery The query object itself (for fluent usage)
+     * @return Atk_Query The query object itself (for fluent usage)
      */
     function &setLimit($offset, $limit)
     {
@@ -747,7 +747,7 @@ class Atk_Query
             return self::exactNumberCondition($field, $value);
 
         if ($value[0] == '!') {
-            return "UPPER(" . $field . ")!=UPPER('" . substr($value, 1, atkTools::atk_strlen($value)) . "')";
+            return "UPPER(" . $field . ")!=UPPER('" . substr($value, 1, Atk_Tools::atk_strlen($value)) . "')";
         } else {
             return "UPPER(" . $field . ")=UPPER('" . $value . "')";
         }
@@ -774,7 +774,7 @@ class Atk_Query
     function substringCondition($field, $value)
     {
         if ($value[0] == '!') {
-            return "UPPER(" . $field . ") NOT LIKE UPPER('%" . substr($value, 1, atkTools::atk_strlen($value)) . "%')";
+            return "UPPER(" . $field . ") NOT LIKE UPPER('%" . substr($value, 1, Atk_Tools::atk_strlen($value)) . "%')";
         } else {
             return "UPPER(" . $field . ") LIKE UPPER('%" . $value . "%')";
         }
@@ -789,7 +789,7 @@ class Atk_Query
     function wildcardCondition($field, $value)
     {
         if ($value[0] == '!') {
-            return "UPPER(" . $field . ") NOT LIKE UPPER('" . str_replace("*", "%", substr($value, 1, atkTools::atk_strlen($value))) . "')";
+            return "UPPER(" . $field . ") NOT LIKE UPPER('" . str_replace("*", "%", substr($value, 1, Atk_Tools::atk_strlen($value))) . "')";
         } else {
             return "UPPER(" . $field . ") LIKE UPPER('" . str_replace("*", "%", $value) . "')";
         }
@@ -804,7 +804,7 @@ class Atk_Query
     function greaterthanCondition($field, $value)
     {
         if ($value[0] == '!') {
-            return $field . " < '" . substr($value, 1, atkTools::atk_strlen($value)) . "'";
+            return $field . " < '" . substr($value, 1, Atk_Tools::atk_strlen($value)) . "'";
         } else {
             return $field . " > '" . $value . "'";
         }
@@ -819,7 +819,7 @@ class Atk_Query
     function greaterthanequalCondition($field, $value)
     {
         if ($value[0] == '!') {
-            return $field . " < '" . substr($value, 1, atkTools::atk_strlen($value)) . "'";
+            return $field . " < '" . substr($value, 1, Atk_Tools::atk_strlen($value)) . "'";
         } else {
             return $field . " >= '" . $value . "'";
         }
@@ -834,7 +834,7 @@ class Atk_Query
     function lessthanCondition($field, $value)
     {
         if ($value[0] == '!') {
-            return $field . " > '" . substr($value, 1, atkTools::atk_strlen($value)) . "'";
+            return $field . " > '" . substr($value, 1, Atk_Tools::atk_strlen($value)) . "'";
         } else {
             return $field . " < '" . $value . "'";
         }
@@ -849,7 +849,7 @@ class Atk_Query
     function lessthanequalCondition($field, $value)
     {
         if ($value[0] == '!') {
-            return $field . " > '" . substr($value, 1, atkTools::atk_strlen($value)) . "'";
+            return $field . " > '" . substr($value, 1, Atk_Tools::atk_strlen($value)) . "'";
         } else {
             return $field . " <= '" . $value . "'";
         }
@@ -876,13 +876,13 @@ class Atk_Query
      * Static factory method. This method returns a new instance of a query
      * object for the current database.
      * @param string $basepath The basepath for the database object (defaults to 'atk.db')
-     * @return atkQuery A Query object for the appropriate database
+     * @return Atk_Query A Query object for the appropriate database
      */
     function &create($basepath = "atk.db.")
     {
-        $dbconfig = atkConfig::getGlobal("db");
+        $dbconfig = Atk_Config::getGlobal("db");
         $name = "atk" . $dbconfig["default"]["driver"] . "query";
-        return atkTools::atknew(($basepath ? $basepath . '.' : '') . $name);
+        return Atk_Tools::atknew(($basepath ? $basepath . '.' : '') . $name);
     }
 
     /**

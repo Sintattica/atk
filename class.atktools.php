@@ -116,7 +116,7 @@ class Atk_Tools
             // we must die. we can't even output anything anymore..
             // we can do something with the info though.
             self::handleError();
-            atkOutput::getInstance()->outputFlush();
+            Atk_Output::getInstance()->outputFlush();
             die;
         }
     }
@@ -159,8 +159,8 @@ class Atk_Tools
                 $res .= "<font color=\"$level_color\"><b>" . self::atktext($level, "atk") . "</b></font>: $msg.<br />\n";
             }
 
-            atkOutput::getInstance()->output($res);
-            atkOutput::getInstance()->outputFlush();
+            Atk_Output::getInstance()->output($res);
+            Atk_Output::getInstance()->outputFlush();
             exit("Halted...\n");
         } else {
             self::atkerror("$msg");
@@ -169,24 +169,24 @@ class Atk_Tools
     }
 
     /**
-     * @deprecated Use atkDebugger::getMicroTime()
+     * @deprecated Use Atk_Debugger::getMicroTime()
      * @return int the microtime
      */
     public static function getmicrotime()
     {
         self::atkimport("atk.utils.atkdebugger");
-        return atkDebugger::getMicroTime();
+        return Atk_Debugger::getMicroTime();
     }
 
     /**
-     * @deprecated Use atkDebugger::elapsed();
+     * @deprecated Use Atk_Debugger::elapsed();
      *
      * @return string elapsed time in microseconds
      */
     public static function elapsed()
     {
         self::atkimport("atk.utils.atkdebugger");
-        return atkDebugger::elapsed();
+        return Atk_Debugger::elapsed();
     }
 
 
@@ -200,7 +200,7 @@ class Atk_Tools
     public static function atkdebug($txt, $flags = 0)
     {
         global $g_debug_msg;
-        $level = atkConfig::getGlobal("debug");
+        $level = Atk_Config::getGlobal("debug");
         if ($level >= 0) {
             if (self::hasFlag($flags, DEBUG_HTML))
                 $txt = htmlentities($txt);
@@ -216,7 +216,7 @@ class Atk_Tools
 
             if ($level > 2) {
                 self::atkimport("atk.utils.self::atkdebugger");
-                if (!atkDebugger::addStatement($line)) {
+                if (!Atk_Debugger::addStatement($line)) {
                     $g_debug_msg[] = $line;
                 }
             } else if (!self::hasFlag($flags, DEBUG_NOTICE)) {
@@ -254,7 +254,7 @@ class Atk_Tools
 
     public static function atkGetTimingInfo()
     {
-        return "[" . self::elapsed() . (atkConfig::getGlobal('debug') > 0 && function_exists("memory_get_usage")
+        return "[" . self::elapsed() . (Atk_Config::getGlobal('debug') > 0 && function_exists("memory_get_usage")
             ? " / " . sprintf("%02.02f", (memory_get_usage() / 1024 / 1024)) . "MB"
             : "") . "] ";
     }
@@ -285,9 +285,9 @@ class Atk_Tools
             self::atkdebug("Trace:" . self::atk_get_trace(), DEBUG_ERROR);
         }
 
-        if (atkConfig::getGlobal('throw_exception_on_error') && $error instanceof Exception) {
+        if (Atk_Config::getGlobal('throw_exception_on_error') && $error instanceof Exception) {
             throw $error;
-        } else if (atkConfig::getGlobal('throw_exception_on_error')) {
+        } else if (Atk_Config::getGlobal('throw_exception_on_error')) {
             throw new Exception($error);
         }
     }
@@ -428,8 +428,8 @@ class Atk_Tools
      */
     public static function atkWriteLog($text)
     {
-        if (atkConfig::getGlobal("debug") > 0 && atkConfig::getGlobal("debuglog")) {
-            self::atkWriteToFile($text, atkConfig::getGlobal("debuglog"));
+        if (Atk_Config::getGlobal("debug") > 0 && Atk_Config::getGlobal("debuglog")) {
+            self::atkWriteToFile($text, Atk_Config::getGlobal("debuglog"));
         }
     }
 
@@ -455,7 +455,7 @@ class Atk_Tools
     {
         self::atkdebug("Call to deprecated self::text() function", DEBUG_WARNING);
         self::atkimport("atk.atklanguage");
-        return atkLanguage::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext);
+        return Atk_Language::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext);
     }
     */
 
@@ -480,49 +480,49 @@ class Atk_Tools
     public static function atktext($string, $module = "", $node = "", $lng = "", $firstfallback = "", $nodefaulttext = false, $modulefallback = false)
     {
         self::atkimport("atk.atklanguage");
-        return atkLanguage::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext, $modulefallback);
+        return Atk_Language::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext, $modulefallback);
     }
 
 
     /**
-     * @deprecated Use atkSessionManager::formState instead.
+     * @deprecated Use Atk_SessionManager::formState instead.
      */
     public static function session_form($sessionstatus = SESSION_DEFAULT, $returnbehaviour = null, $fieldprefix = '')
     {
-        return atkSessionManager::formState($sessionstatus, $returnbehaviour, $fieldprefix);
+        return Atk_SessionManager::formState($sessionstatus, $returnbehaviour, $fieldprefix);
     }
 
     /**
-     * @deprecated Use atkSessionManager::sessionVars() instead.
+     * @deprecated Use Atk_SessionManager::sessionVars() instead.
      */
     public static function session_vars($sessionstatus = SESSION_DEFAULT, $levelskip = null, $url = "")
     {
-        return atkSessionManager::sessionVars($sessionstatus, $levelskip, $url);
+        return Atk_SessionManager::sessionVars($sessionstatus, $levelskip, $url);
     }
 
     /**
-     * @deprecated use atkSessionManager::sessionUrl() instead.
+     * @deprecated use Atk_SessionManager::sessionUrl() instead.
      */
     public static function session_url($url, $sessionstatus = SESSION_DEFAULT, $levelskip = null)
     {
-        return atkSessionManager::sessionUrl($url, $sessionstatus, $levelskip);
+        return Atk_SessionManager::sessionUrl($url, $sessionstatus, $levelskip);
     }
 
     /**
-     * @deprecated use self::atkHref or atkSessionManager::href instead.
+     * @deprecated use self::atkHref or Atk_SessionManager::href instead.
      */
     public static function  href($url, $name = "", $sessionstatus = SESSION_DEFAULT, $saveform = false, $extraprops = "")
     {
-        return atkSessionManager::href($url, $name, $sessionstatus, $saveform, $extraprops);
+        return Atk_SessionManager::href($url, $name, $sessionstatus, $saveform, $extraprops);
     }
 
     /**
-     * Convenience wrapper for atkSessionManager::href().
-     * @see atkSessionManager::href
+     * Convenience wrapper for Atk_SessionManager::href().
+     * @see Atk_SessionManager::href
      */
     public static function atkHref($url, $name = "", $sessionstatus = SESSION_DEFAULT, $saveform = false, $extraprops = "")
     {
-        return atkSessionManager::href($url, $name, $sessionstatus, $saveform, $extraprops);
+        return Atk_SessionManager::href($url, $name, $sessionstatus, $saveform, $extraprops);
     }
 
     /**
@@ -883,8 +883,8 @@ class Atk_Tools
     public static function mailreport()
     {
         global $g_error_msg, $g_debug_msg;
-        include_once(atkConfig::getGlobal('atkroot') . 'atk/errors/class.atkerrorhandlerbase.php');
-        $errorHandlerObject = atkErrorHandlerBase::get('mail', array('mailto' => atkConfig::getGlobal('mailreport')));
+        include_once(Atk_Config::getGlobal('atkroot') . 'atk/errors/class.atkerrorhandlerbase.php');
+        $errorHandlerObject = Atk_ErrorHandlerBase::get('mail', array('mailto' => Atk_Config::getGlobal('mailreport')));
         $errorHandlerObject->handle($g_error_msg, $g_debug_msg);
     }
 
@@ -896,12 +896,12 @@ class Atk_Tools
     public static function handleError()
     {
         global $g_error_msg, $g_debug_msg;
-        include_once(atkConfig::getGlobal('atkroot') . 'atk/errors/class.atkerrorhandlerbase.php');
-        $errorHandlers = atkConfig::getGlobal('error_handlers', array('mail' => array('mailto' => atkConfig::getGlobal('mailreport'))));
+        include_once(Atk_Config::getGlobal('atkroot') . 'atk/errors/class.atkerrorhandlerbase.php');
+        $errorHandlers = Atk_Config::getGlobal('error_handlers', array('mail' => array('mailto' => Atk_Config::getGlobal('mailreport'))));
         foreach ($errorHandlers as $key => $value) {
             if (is_numeric($key))
                 $key = $value;
-            $errorHandlerObject = atkErrorHandlerBase::get($key, $value);
+            $errorHandlerObject = Atk_ErrorHandlerBase::get($key, $value);
             $errorHandlerObject->handle($g_error_msg, $g_debug_msg);
         }
     }
@@ -930,14 +930,14 @@ class Atk_Tools
     }
 
     /**
-     * Convenience wrapper for atkDb::getInstance()
+     * Convenience wrapper for Atk_Db::getInstance()
      * @param String $conn The name of the connection to retrieve
-     * @return atkDb Database connection instance
+     * @return Atk_Db Database connection instance
      */
     public static function &atkGetDb($conn = 'default', $reset = false, $mode = "r")
     {
         self::atkimport("atk.db.atkdb");
-        $db = &atkDb::getInstance($conn, $reset, $mode);
+        $db = &Atk_Db::getInstance($conn, $reset, $mode);
         return $db;
     }
 
@@ -1097,7 +1097,7 @@ class Atk_Tools
      */
     public static function exportFile($file, $filename, $mimetype = "", $detectmime = true)
     {
-        include_once(atkConfig::getGlobal("atkroot") . "atk/utils/class.atkbrowsertools.php");
+        include_once(Atk_Config::getGlobal("atkroot") . "atk/utils/class.atkbrowsertools.php");
         $browser = self::getBrowserInfo();
         if (preg_match("/ie/i", $browser["browser"])) {
             $mime = "application/octetstream";
@@ -1178,7 +1178,7 @@ class Atk_Tools
         global $config_atkroot;
         $a = explode(".", $name);
         if (count($a) == 2)
-            $include = atkModule::moduleDir(strtolower($a[0])) . $type . "s/class." . strtolower($a[1]) . ".php";
+            $include = Atk_Module::moduleDir(strtolower($a[0])) . $type . "s/class." . strtolower($a[1]) . ".php";
         else
             $include = $config_atkroot . "atk/" . $type . "s/class." . strtolower($name) . ".php";
         return $include;
@@ -1380,7 +1380,7 @@ class Atk_Tools
     }
 
     /**
-     * @deprecated Use atkcontroller::getPhpFile() instead.
+     * @deprecated Use Atk_controller::getPhpFile() instead.
      */
     public static function getDispatchFile()
     {
@@ -1435,7 +1435,7 @@ class Atk_Tools
         $log .= "\n\nSession file info:\n";
         $log .= var_export(stat(session_save_path() . "/sess_" . session_id()), true);
 
-        $tmpfile = tempnam("/tmp", atkConfig::getGlobal("identifier") . "_trace_");
+        $tmpfile = tempnam("/tmp", Atk_Config::getGlobal("identifier") . "_trace_");
         $fp = fopen($tmpfile, "a");
         fwrite($fp, $log);
         fclose($fp);
@@ -1453,8 +1453,8 @@ class Atk_Tools
      */
     public static function atkButton($text, $url = "", $sessionstatus = SESSION_DEFAULT, $embedded = true, $cssclass = "")
     {
-        $page = &atkPage::getInstance();
-        $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/formsubmit.js");
+        $page = &Atk_Page::getInstance();
+        $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/formsubmit.js");
         static $cnt = 0;
 
         if ($cssclass == "")
@@ -1486,7 +1486,7 @@ class Atk_Tools
      */
     public static function atkimport($fullclassname, $failsafe = true, $path = false)
     {
-        return atkClassLoader::import($fullclassname, $failsafe, $path);
+        return Atk_ClassLoader::import($fullclassname, $failsafe, $path);
     }
 
     /**
@@ -1495,12 +1495,12 @@ class Atk_Tools
      */
     public static function zendimport($classname)
     {
-        if (atkConfig::getGlobal("zend_framework_path") == null) {
-            throw new Exception("Zend Framework path not set (" . atkConfig::getGlobal('zend_framework_path') . ")!");
+        if (Atk_Config::getGlobal("zend_framework_path") == null) {
+            throw new Exception("Zend Framework path not set (" . Atk_Config::getGlobal('zend_framework_path') . ")!");
         }
 
         $current_path = getcwd();
-        chdir(atkConfig::getGlobal('atkroot') . atkConfig::getGlobal("zend_framework_path") . "/");
+        chdir(Atk_Config::getGlobal('atkroot') . Atk_Config::getGlobal("zend_framework_path") . "/");
 
         $filename = $classname . '.php';
 
@@ -1521,7 +1521,7 @@ class Atk_Tools
      */
     public static function atkCleanPath($path)
     {
-        return atkClassLoader::cleanPath($path);
+        return Atk_ClassLoader::cleanPath($path);
     }
 
     /**
@@ -1533,7 +1533,7 @@ class Atk_Tools
      */
     public static function getClassPath($fullclassname, $class = true)
     {
-        return atkClassLoader::getClassPath($fullclassname, $class);
+        return Atk_ClassLoader::getClassPath($fullclassname, $class);
     }
 
     /**
@@ -1545,7 +1545,7 @@ class Atk_Tools
      */
     public static function getClassName($classpath, $class = true)
     {
-        return atkClassLoader::getClassName($classpath, $class);
+        return Atk_ClassLoader::getClassName($classpath, $class);
     }
 
     /**
@@ -1558,7 +1558,7 @@ class Atk_Tools
         $args = func_get_args();
         array_shift($args);
         $args = array_values($args);
-        return atkClassLoader::newInstanceArgs($fullclassname, $args);
+        return Atk_ClassLoader::newInstanceArgs($fullclassname, $args);
     }
 
     /**
@@ -1571,7 +1571,7 @@ class Atk_Tools
      * */
     public static function &atkinstance($fullclassname, $reset = false)
     {
-        return atkClassLoader::getSingletonInstance($fullclassname, $reset);
+        return Atk_ClassLoader::getSingletonInstance($fullclassname, $reset);
     }
 
     /**
@@ -1716,7 +1716,7 @@ class Atk_Tools
      */
     public static function atk_htmlentities($string, $quote_style = ENT_COMPAT, $charset = null)
     {
-        return atkString::htmlentities($string, $quote_style, $charset);
+        return Atk_String::htmlentities($string, $quote_style, $charset);
     }
 
     /**
@@ -1732,7 +1732,7 @@ class Atk_Tools
      */
     public static function atk_html_entity_decode($string, $quote_style = ENT_COMPAT, $charset = null)
     {
-        return atkString::html_entity_decode($string, $quote_style, $charset);
+        return Atk_String::html_entity_decode($string, $quote_style, $charset);
     }
 
     /**
@@ -1742,7 +1742,7 @@ class Atk_Tools
      */
     public static function atk_strlen($str)
     {
-        return atkString::strlen($str);
+        return Atk_String::strlen($str);
     }
 
     /**
@@ -1754,7 +1754,7 @@ class Atk_Tools
      */
     public static function atk_substr($str, $start, $length = '')
     {
-        return atkString::substr($str, $start, $length);
+        return Atk_String::substr($str, $start, $length);
     }
 
     /**
@@ -1766,7 +1766,7 @@ class Atk_Tools
      */
     public static function atk_strpos($haystack, $needle, $offset = 0)
     {
-        return atkString::strpos($haystack, $needle, $offset);
+        return Atk_String::strpos($haystack, $needle, $offset);
     }
 
     /**
@@ -1776,7 +1776,7 @@ class Atk_Tools
      */
     public static function atk_strtolower($str)
     {
-        return atkString::strtolower($str);
+        return Atk_String::strtolower($str);
     }
 
     /**
@@ -1787,7 +1787,7 @@ class Atk_Tools
      */
     public static function atk_strtoupper($str)
     {
-        return atkString::strtoupper($str);
+        return Atk_String::strtoupper($str);
     }
 
     /**
@@ -1798,7 +1798,7 @@ class Atk_Tools
      */
     public static function atkGetCharset()
     {
-        return atkConfig::getGlobal('default_charset', self::atktext('charset', 'atk'));
+        return Atk_Config::getGlobal('default_charset', self::atktext('charset', 'atk'));
     }
 
     /**
@@ -1828,7 +1828,7 @@ class Atk_Tools
     public static function atkResolveClass($class)
     {
         self::atkimport("atk.utils.atkclassloader");
-        return atkClassLoader::resolveClass($class);
+        return Atk_ClassLoader::resolveClass($class);
     }
 
     /**
@@ -1899,7 +1899,7 @@ class Atk_Tools
      */
     public static function atk_iconv($in_charset, $out_charset, $str)
     {
-        return atkString::iconv($in_charset, $out_charset, $str);
+        return Atk_String::iconv($in_charset, $out_charset, $str);
     }
 
     /**
@@ -1959,7 +1959,7 @@ class Atk_Tools
         }
 
         /* get date string */
-        require_once(atkConfig::getGlobal('atkroot') . "atk/utils/adodb-time.inc.php");
+        require_once(Atk_Config::getGlobal('atkroot') . "atk/utils/adodb-time.inc.php");
         $str_date = adodb_date($format, $date[0]);
 
         $month = $date['month'];
@@ -2005,8 +2005,8 @@ class Atk_Tools
         }
 
         global $g_nodes;
-        $module = atkModule::getNodeModule($node);
-        $type = atkModule::getNodeType($node);
+        $module = Atk_Module::getNodeModule($node);
+        $type = Atk_Module::getNodeType($node);
 
         // prefix tabs with tab_
         for ($i = 0, $_i = count($tabs); $i < $_i; $i++)

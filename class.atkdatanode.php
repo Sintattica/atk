@@ -81,7 +81,7 @@ class Atk_DataNode extends Atk_Node
      */
     public function selectDb($selector = null, $order = null, $limit = null)
     {
-        atkTools::atkdebug(get_class($this) . '::selectDb(' . $selector . ')');
+        Atk_Tools::atkdebug(get_class($this) . '::selectDb(' . $selector . ')');
 
         if ($order == null) {
             $order = $this->getOrder();
@@ -97,7 +97,7 @@ class Atk_DataNode extends Atk_Node
         );
 
         $result = $this->findData($params);
-        atkTools::atkdebug('Result ' . get_class($this) . '::selectDb(' . $selector . ') => ' . count($result) . ' row(s)');
+        Atk_Tools::atkdebug('Result ' . get_class($this) . '::selectDb(' . $selector . ') => ' . count($result) . ' row(s)');
         return $result;
     }
 
@@ -224,7 +224,7 @@ class Atk_DataNode extends Atk_Node
 
         $selectors = explode(") OR (", $selector);
         foreach ($selectors as $selector) {
-            $keyValueSet = atkTools::decodeKeyValueSet($selector);
+            $keyValueSet = Atk_Tools::decodeKeyValueSet($selector);
             foreach ($keyValueSet as $column => $value) {
                 $column = trim($column, ' ()');
                 $value = trim($value, ' ()');
@@ -235,7 +235,7 @@ class Atk_DataNode extends Atk_Node
                         continue;
                 }
 
-                $value = stripslashes(atkTools::stripQuotes($value));
+                $value = stripslashes(Atk_Tools::stripQuotes($value));
 
                 if (isset($criteria[$column]) && $criteria[$column] != $value) {
                     $criteria[$column] = array_merge((array) $criteria[$column], (array) $value);

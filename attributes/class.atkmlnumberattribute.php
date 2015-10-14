@@ -48,12 +48,12 @@ class Atk_MlNumberAttribute extends Atk_MlAttribute
      */
     function validate(&$record, $mode)
     {
-        $languages = atkConfig::getGlobal("supported_languages");
+        $languages = Atk_Config::getGlobal("supported_languages");
         $value = $record[$this->fieldName()];
 
         foreach ($languages as $language) {
             if (!is_numeric($value[$language]) && $value[$language] != "")
-                atkTools::triggerError($record, $this->fieldName(), 'error_notnumeric');
+                Atk_Tools::triggerError($record, $this->fieldName(), 'error_notnumeric');
         }
     }
 

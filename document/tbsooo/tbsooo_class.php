@@ -31,13 +31,13 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 
   function SetZipBinary($path_binary, $test=false)
   {
-    atkTools::atkdebug('clsTinyButStrongOOo->SetZipBinary: This method is deprecated', DEBUG_WARNING);
+    Atk_Tools::atkdebug('clsTinyButStrongOOo->SetZipBinary: This method is deprecated', DEBUG_WARNING);
     return false;
   }
 
   function SetUnzipBinary($path_binary, $test=false)
   {
-    atkTools::atkdebug('clsTinyButStrongOOo->SetUnzipBinary: This method is deprecated', DEBUG_WARNING);
+    Atk_Tools::atkdebug('clsTinyButStrongOOo->SetUnzipBinary: This method is deprecated', DEBUG_WARNING);
     return false;
   }
 
@@ -47,7 +47,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 
     // set the directory for processing temporary OOo files
     if ($process_path == '') {
-      atkTools::atkerror('clsTinyButStrongOOo->SetProcessDir: Parameter is empty');
+      Atk_Tools::atkerror('clsTinyButStrongOOo->SetProcessDir: Parameter is empty');
       return false;
     }
     // add a trailing / at the path
@@ -55,13 +55,13 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 
     // test if 'dir' exists
     if (!is_dir($this->_process_path)) {
-      atkTools::atkerror('clsTinyButStrongOOo->SetProcessDir: Directory not found : '.$this->_process_path);
+      Atk_Tools::atkerror('clsTinyButStrongOOo->SetProcessDir: Directory not found : '.$this->_process_path);
       return false;
     }
 
     // test if 'dir' is writable
     if (!is_writable($this->_process_path)) {
-      atkTools::atkerror('clsTinyButStrongOOo->SetProcessDir: Directory not writable : '.$this->_process_path);
+      Atk_Tools::atkerror('clsTinyButStrongOOo->SetProcessDir: Directory not writable : '.$this->_process_path);
       return false;
     }
     return true;
@@ -76,7 +76,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
   {
     // test if OOo source file exist
     if (!file_exists($ooo_template_filename)) {
-      atkTools::atkerror('clsTinyButStrongOOo->NewDocFromTpl: File not found : '.$ooo_template_filename);
+      Atk_Tools::atkerror('clsTinyButStrongOOo->NewDocFromTpl: File not found : '.$ooo_template_filename);
       return false;
     }
 
@@ -90,13 +90,13 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 
     // create unique temporary basename dir
     if (!mkdir($this->_ooo_basename, 0700)) {
-      atkTools::atkerror('clsTinyButStrongOOo->NewDocFromTpl: Can\'t create directory : '.$this->_ooo_basename);
+      Atk_Tools::atkerror('clsTinyButStrongOOo->NewDocFromTpl: Can\'t create directory : '.$this->_ooo_basename);
       return false;
     }
 
     // copy the ooo template into the temporary basename dir
     if (!copy($ooo_template_filename, $this->_ooo_basename.'.'.$this->_ooo_file_ext)) {
-      atkTools::atkerror('clsTinyButStrongOOo->NewDocFromTpl: Can\'t copy file to process dir : '.$ooo_template_filename);
+      Atk_Tools::atkerror('clsTinyButStrongOOo->NewDocFromTpl: Can\'t copy file to process dir : '.$ooo_template_filename);
       return false;
     }
     return $this->_ooo_basename.'.'.$this->_ooo_file_ext;
@@ -113,18 +113,18 @@ class clsTinyButStrongOOo extends clsTinyButStrong
     $extracted = $atkzip->extract($ooofilename, $this->_ooo_basename, $xml_file);
 
     if (!$extracted) {
-      atkTools::atkerror("clsTinyButStrongOOo->LoadXmlFromDoc: Error while extracting the template from the document file");
+      Atk_Tools::atkerror("clsTinyButStrongOOo->LoadXmlFromDoc: Error while extracting the template from the document file");
       return false;
     }
 
     // test if XML file exist
     if (!file_exists($xmlfilename)) {
-      atkTools::atkerror('clsTinyButStrongOOo->LoadXmlFromDoc: File not found: '.$xmlfilename);
+      Atk_Tools::atkerror('clsTinyButStrongOOo->LoadXmlFromDoc: File not found: '.$xmlfilename);
       return false;
     }
     else
     {
-      atkTools::atkdebug('clsTinyButStrongOOo->LoadXmlFromDoc: File exists: '.$xmlfilename);
+      Atk_Tools::atkdebug('clsTinyButStrongOOo->LoadXmlFromDoc: File exists: '.$xmlfilename);
     }
 
     // load the template
@@ -153,13 +153,13 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 
     // test if XML file exist
     if (!file_exists($xmlfilename)) {
-      atkTools::atkerror('clsTinyButStrongOOo->SaveXmlToDoc: File not found : '.$xmlfilename);
+      Atk_Tools::atkerror('clsTinyButStrongOOo->SaveXmlToDoc: File not found : '.$xmlfilename);
       return false;
     }
 
     // test if ZIP file exist
     if (!file_exists($ooofilename)) {
-      atkTools::atkerror('clsTinyButStrongOOo->SaveXmlToDoc: File not found : '.$ooofilename);
+      Atk_Tools::atkerror('clsTinyButStrongOOo->SaveXmlToDoc: File not found : '.$ooofilename);
       return false;
     }
 
@@ -180,7 +180,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
     unlink($xmlfilename);
 
     if (!$added) {
-      atkTools::atkerror("clsTinyButStrongOOo->SaveXmlToDoc: Error while integrating data into the document file");
+      Atk_Tools::atkerror("clsTinyButStrongOOo->SaveXmlToDoc: Error while integrating data into the document file");
       return false;
     }
 
@@ -243,16 +243,16 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 
   function ClearProcessDir($hour = '2', $minut = '0')
   {
-    atkTools::atkimport('atk.utils.atkfileutils');
+    Atk_Tools::atkimport('atk.utils.atkfileutils');
     clearstatcache();
     $now = mktime(date("H")-abs((int)$hour), date("i")-abs((int)$minut), date("s"), date("m"), date("d"), date("Y"));
     if ($dir = @opendir($this->_process_path)) {
       while (($file = readdir($dir)) !== false)  {
         if ($file != ".." && $file != ".") {
           if (filemtime($this->_process_path.$file) < $now) {
-            if (!(is_dir($this->_process_path.$file) ? @atkFileUtils::rmdirRecursive($this->_process_path.'/'.$file) : @unlink($this->_process_path.$file))) 
+            if (!(is_dir($this->_process_path.$file) ? @Atk_FileUtils::rmdirRecursive($this->_process_path.'/'.$file) : @unlink($this->_process_path.$file))) 
             {
-              atkTools::atkdebug('clsTinyButStrongOOo->ClearProcessDir: Can\'t remove directory or file : '.$this->_process_path.$file);
+              Atk_Tools::atkdebug('clsTinyButStrongOOo->ClearProcessDir: Can\'t remove directory or file : '.$this->_process_path.$file);
             }
           }
         }
@@ -298,7 +298,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 
     // remove the temporary directory
     if (is_dir($this->_ooo_basename) && !rmdir ($this->_ooo_basename)) {
-      atkTools::atkerror('clsTinyButStrongOOo->_RemoveTmpBasenameDir: Can\'t remove directory : '.$this->_ooo_basename);
+      Atk_Tools::atkerror('clsTinyButStrongOOo->_RemoveTmpBasenameDir: Can\'t remove directory : '.$this->_ooo_basename);
     }
   }
 }

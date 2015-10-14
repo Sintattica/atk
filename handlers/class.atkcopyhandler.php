@@ -42,7 +42,7 @@ class Atk_CopyHandler extends Atk_ActionHandler
      */
     function nodeCopy()
     {
-        atkTools::atkdebug("atkCopyHandler::nodeCopy()");
+        Atk_Tools::atkdebug("Atk_CopyHandler::nodeCopy()");
         $recordset = $this->m_node->selectDb($this->m_postvars['atkselector'], "", "", "", "", "copy");
         $db = &$this->m_node->getDb();
         if (count($recordset) > 0) {
@@ -53,10 +53,10 @@ class Atk_CopyHandler extends Atk_ActionHandler
             }
 
             if (!$this->m_node->copyDb($recordset[0])) {
-                atkTools::atkdebug("atknode::action_copy() -> Error");
+                Atk_Tools::atkdebug("Atk_node::action_copy() -> Error");
                 $db->rollback();
                 $location = $this->m_node->feedbackUrl("save", ACTION_FAILED, $recordset[0], $db->getErrorMsg());
-                atkTools::atkdebug("atknode::action_copy() -> Redirect");
+                Atk_Tools::atkdebug("Atk_node::action_copy() -> Redirect");
                 $this->m_node->redirect($location);
             } else {
                 $db->commit();

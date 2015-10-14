@@ -70,12 +70,12 @@ class auth_config extends auth_interface
      * @return boolean True if md5 is always used. false if md5 is not
      *                 supported.
      *                 Drivers that support both md5 and cleartext passwords
-     *                 can return atkConfig::getGlobal("authentication_md5") to let the
+     *                 can return Atk_Config::getGlobal("authentication_md5") to let the
      *                 application decide whether to use md5.
      */
     function canMd5()
     {
-        return atkConfig::getGlobal("authentication_md5");
+        return Atk_Config::getGlobal("authentication_md5");
     }
 
     /**

@@ -41,10 +41,10 @@ class Atk_UI
     /**
      * atkUi constructor, initialises Smarty and atkTheme instance
      */
-    function atkUI()
+    function __construct()
     {
-        $this->m_theme = &atkTools::atkinstance("atk.ui.atktheme");
-        $this->m_smarty = &atkTools::atkinstance("atk.ui.atksmarty");
+        $this->m_theme = Atk_Tools::atkinstance("atk.ui.atktheme");
+        $this->m_smarty = Atk_Tools::atkinstance("atk.ui.atksmarty");
     }
 
     /**
@@ -57,8 +57,8 @@ class Atk_UI
         static $s_instance = NULL;
 
         if ($s_instance == NULL) {
-            atkTools::atkdebug("Creating a new atkUI instance");
-            $s_instance = new Atk_Ui();
+            Atk_Tools::atkdebug("Creating a new atkUI instance");
+            $s_instance = new self();
         }
 
         return $s_instance;
@@ -68,7 +68,7 @@ class Atk_UI
      * Renders action templates
      * Currently only the view action is implemented
      * @param String $action the action for which to render the template
-     * @param array  $vars   the template variables
+     * @param array $vars the template variables
      * @param string $module the name of the module requesting to render a template
      * @return String the rendered template
      */
@@ -85,8 +85,8 @@ class Atk_UI
     /**
      * Renders a list template
      * @param String $action not used (deprecated?)
-     * @param array  $vars   the variables with which to parse the list template
-     * @param string $module the name of the module requesting to render a template 
+     * @param array $vars the variables with which to parse the list template
+     * @param string $module the name of the module requesting to render a template
      */
     function renderList($action, $vars, $module = "")
     {
@@ -102,7 +102,7 @@ class Atk_UI
      */
     function renderTop($vars, $module = "")
     {
-        atkTools::atkdebug("Using deprecated renderTop function, please install newer top.php from the atk/skel");
+        Atk_Tools::atkdebug("Using deprecated renderTop function, please install newer top.php from the atk/skel");
         return $this->renderBox($vars, "top", $module);
     }
 
@@ -114,7 +114,7 @@ class Atk_UI
      * For instance, calling renderBox($smartyvars, "menu")
      * will make it search for a menu.tpl first and use that
      * if it's available, otherwise it will just use box.tpl
-     * 
+     *
      * @param array $vars the variables for the template
      * @param string $name The name of the template
      * @param string $module the name of the module requesting to render a template
@@ -129,7 +129,7 @@ class Atk_UI
 
     /**
      * Renders the insides of a dialog.
-     * 
+     *
      * @param array $vars template variables
      * @param string $module the name of the module requesting to render a template
      * @return string rendered dialog
@@ -149,23 +149,23 @@ class Atk_UI
     function renderTabs($vars, $module = "")
     {
         if ($this->m_theme->getAttribute("tabtype") == "dhtml") {
-            $page = &atkPage::getInstance();
-            $page->register_script(atkConfig::getGlobal("atkroot") . "atk/javascript/tools.js");
+            $page = &Atk_Page::getInstance();
+            $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/tools.js");
         }
         return $this->render("tabs.tpl", $vars, $module);
     }
 
     /**
-     * Renders the given template. 
-     * 
+     * Renders the given template.
+     *
      * If the name ends with ".php" PHP will be used to render the template. If
      * the name ends with ".tpl" and a file with the extension ".tpl.php" exists
-     * PHP will be used, otherwise Smarty will be used to render the template. 
-     * 
-     * @param String $name   the name of the template to render
-     * @param array  $vars   the variables with which to render the template
+     * PHP will be used, otherwise Smarty will be used to render the template.
+     *
+     * @param String $name the name of the template to render
+     * @param array $vars the variables with which to render the template
      * @param String $module the name of the module requesting to render a template
-     * 
+     *
      * @return String rendered template
      */
     public function render($name, $vars = array(), $module = "")
@@ -182,7 +182,7 @@ class Atk_UI
             $result = $this->renderSmarty($path, $vars);
         }
 
-        if (atkConfig::getGlobal('debug') >= 3) {
+        if (Atk_Config::getGlobal('debug') >= 3) {
             $result = "\n<!-- START [{$path}] -->\n" .
                 $result .
                 "\n<!-- END [{$path}] -->\n";
@@ -193,25 +193,25 @@ class Atk_UI
 
     /**
      * Render PHP-based template.
-     * 
+     *
      * @param string $path template path
-     * @param array  $vars template variables
-     * 
+     * @param array $vars template variables
+     *
      * @return string rendered template
      */
     private function renderPhp($path, $vars)
     {
-        atkTools::atkimport('atk.ui.atkphpview');
+        Atk_Tools::atkimport('atk.ui.atkphpview');
         $view = new Atk_PHPView($path, $vars);
-        return (string) $view;
+        return (string)$view;
     }
 
     /**
      * Render Smarty-based template.
-     * 
+     *
      * @param string $path template path
-     * @param array  $vars template variables
-     * 
+     * @param array $vars template variables
+     *
      * @return string rendered template
      */
     private function renderSmarty($path, $vars)
@@ -222,8 +222,8 @@ class Atk_UI
         // Then set some defaults that we need in all templates.
         $this->m_smarty->assign("themedir", $this->m_theme->themeDir());
 
-        $this->m_smarty->assign("atkroot", atkConfig::getGlobal("atkroot"));
-        $this->m_smarty->assign("application_dir", atkConfig::getGlobal("application_dir"));
+        $this->m_smarty->assign("atkroot", Atk_Config::getGlobal("atkroot"));
+        $this->m_smarty->assign("application_dir", Atk_Config::getGlobal("application_dir"));
 
         $this->m_smarty->assign($vars);
 
@@ -251,9 +251,9 @@ class Atk_UI
      * we assume the full template path is already given and we simply
      * return it.
      *
-     * @param String $template  The filename (without path) of the template
+     * @param String $template The filename (without path) of the template
      *                          for which you want to complete the path.
-     * @param String $module    The name of the module requesting to render a template
+     * @param String $module The name of the module requesting to render a template
      * @return String the template path
      */
     function templatePath($template, $module = "")
@@ -273,7 +273,7 @@ class Atk_UI
      *
      * @param String $style The filename (without path) of the stylesheet for
      *                      which you want to complete the path.
-     * @param String $module  the name of the module requesting the style path
+     * @param String $module the name of the module requesting the style path
      * @return String the path of the style
      */
     function stylePath($style, $module = "")
@@ -284,10 +284,10 @@ class Atk_UI
     /**
      * Return the title to render
      *
-     * @param String $module   the module in which to look
+     * @param String $module the module in which to look
      * @param String $nodetype the nodetype of the action
-     * @param String $action   the action that we are trying to find a title for
-     * @param bool   $actiononly wether or not to return a name of the node
+     * @param String $action the action that we are trying to find a title for
+     * @param bool $actiononly wether or not to return a name of the node
      *                          if we couldn't find a specific title
      * @return String the title for the action
      */
@@ -295,16 +295,16 @@ class Atk_UI
     {
         if ($module == NULL || $nodetype == NULL)
             return "";
-        return $this->nodeTitle(atkModule::atkGetNode($module . '.' . $nodetype), $action, $actiononly);
+        return $this->nodeTitle(Atk_Module::atkGetNode($module . '.' . $nodetype), $action, $actiononly);
     }
 
     /**
      * This function returns a suitable title text for an action.
      * Example: echo $ui->title("users", "employee", "edit"); might return:
      *          'Edit an existing employee'
-     * @param atkNode $node the node to get the title from
-     * @param String $action   the action that we are trying to find a title for
-     * @param bool   $actiononly wether or not to return a name of the node
+     * @param Atk_Node $node the node to get the title from
+     * @param String $action the action that we are trying to find a title for
+     * @param bool $actiononly wether or not to return a name of the node
      *                          if we couldn't find a specific title
      * @return String the title for the action
      */
@@ -366,17 +366,17 @@ class Atk_UI
 
         $keys = array('title_' . $module . '_' . $wizardName,
             'title_' . $wizardName);
-        $wizardTitle = atkTools::atktext($keys, NULL, "", "", true);
+        $wizardTitle = Atk_Tools::atktext($keys, NULL, "", "", true);
 
         $keys = array('title_' . $module . '_' . $panelName . '_' . $action,
             'title_' . $panelName . '_' . $action);
 
-        $panelTitle = atkTools::atktext($keys, NULL, "", "", true);
+        $panelTitle = Atk_Tools::atktext($keys, NULL, "", "", true);
 
         if ($wizard->getWizardAction() !== 'finish')
-            $status = atkTools::atktext("Step") . " " . ($wizard->m_currentPanelIndex + 1) . " " . atkTools::atktext("of") . " " . count($wizard->m_panelList);
+            $status = Atk_Tools::atktext("Step") . " " . ($wizard->m_currentPanelIndex + 1) . " " . Atk_Tools::atktext("of") . " " . count($wizard->m_panelList);
         else
-            $status = atkTools::atktext("finished");
+            $status = Atk_Tools::atktext("finished");
         $label .= $wizardTitle . " - " . $panelTitle . " - " . $status;
 
         return $label;

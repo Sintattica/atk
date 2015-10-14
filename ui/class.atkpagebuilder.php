@@ -42,9 +42,9 @@ class Atk_PageBuilder
     /**
      * Constructor.
      *
-     * @param atkNode $node
+     * @param Atk_Node $node
      */
-    public function __construct(atkNode $node)
+    public function __construct(Atk_Node $node)
     {
         $this->m_node = $node;
         $this->m_action = $node->m_action;
@@ -53,7 +53,7 @@ class Atk_PageBuilder
     /**
      * Returns the node.
      *
-     * @return atkNode
+     * @return Atk_Node
      */
     public function getNode()
     {
@@ -136,7 +136,7 @@ class Atk_PageBuilder
      */
     public function beginActionBox()
     {
-        atkTools::atkimport('atk.ui.atkactionboxbuilder');
+        Atk_Tools::atkimport('atk.ui.atkactionboxbuilder');
         return new atkActionBoxBuilder($this);
     }
 
@@ -166,7 +166,7 @@ class Atk_PageBuilder
             $boxes[] = $this->getNode()->getUi()->renderBox(array('title' => $title, 'content' => $content), $box['template']);
         }
 
-        $this->getNode()->getPage()->setTitle(atkTools::atktext('app_shorttitle') . " - " . $this->m_title);
+        $this->getNode()->getPage()->setTitle(Atk_Tools::atktext('app_shorttitle') . " - " . $this->m_title);
 
         $content = $this->getNode()->renderActionPage($this->m_title, $boxes);
 

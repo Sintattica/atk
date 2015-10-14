@@ -31,13 +31,13 @@ abstract class Atk_ErrorHandlerBase
      */
     static public function get($handlerName, $params)
     {
-        $handlerFileName = atkConfig::getGlobal('atkroot') . 'atk/errors/class.atk' . strtolower($handlerName) . 'errorhandler.php';
+        $handlerFileName = Atk_Config::getGlobal('atkroot') . 'atk/errors/class.atk' . strtolower($handlerName) . 'errorhandler.php';
         if (file_exists($handlerFileName)) {
             require_once($handlerFileName);
-            $handlerClassName = 'atk' . ucfirst($handlerName) . 'ErrorHandler';
+            $handlerClassName = 'Atk_' . ucfirst($handlerName) . 'ErrorHandler';
             return new $handlerClassName($params);
         } else {
-            atkTools::atkwarning("Could not find script file for error handler '$handlerName': $handlerFileName");
+            Atk_Tools::atkwarning("Could not find script file for error handler '$handlerName': $handlerFileName");
         }
     }
 

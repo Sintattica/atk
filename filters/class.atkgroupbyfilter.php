@@ -55,7 +55,7 @@ class Atk_GroupByFilter extends Atk_Filter
     /**
      * add the group by statement to the query
      *
-     * @param atkQuery $query The SQL query object
+     * @param Atk_Query $query The SQL query object
      * @return void
      */
     function addToQuery(&$query)

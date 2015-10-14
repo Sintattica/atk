@@ -31,7 +31,7 @@ class Atk_EditFormModifier
     /**
      * Node.
      *
-     * @var atkNode
+     * @var Atk_Node
      */
     private $m_node;
 
@@ -67,13 +67,13 @@ class Atk_EditFormModifier
     /**
      * Constructor.
      *
-     * @param atkNode $node         node instance
+     * @param Atk_Node $node         node instance
      * @param array   $record       record
      * @param string  $fieldPrefix  field prefix
      * @param string  $mode         add/edit mode
      * @param string  $initial      initial form setup?
      */
-    public function __construct(atkNode $node, &$record, $fieldPrefix, $mode, $initial)
+    public function __construct(Atk_Node $node, &$record, $fieldPrefix, $mode, $initial)
     {
         $this->m_node = $node;
         $this->m_record = &$record;
@@ -85,7 +85,7 @@ class Atk_EditFormModifier
     /**
      * Returns the node instance.
      *
-     * @return atkNode node instance
+     * @return Atk_Node node instance
      */
     public function getNode()
     {
@@ -205,7 +205,7 @@ class Atk_EditFormModifier
             return;
         }
 
-        atkTools::atkimport('atk.utils.atkjson');
+        Atk_Tools::atkimport('atk.utils.atkjson');
 
         $offset = count($this->getNode()->getPage()->getLoadScripts());
 
@@ -216,7 +216,7 @@ class Atk_EditFormModifier
         $scriptCode = '';
         foreach ($editArray['fields'] as $field) {
             $element = str_replace('.', '_', $this->getNode()->atkNodeType() . '_' . $field['id']);
-            $value = atkJSON::encode(atkTools::atk_iconv(atkTools::atkGetCharset(), "UTF-8", $field['html'])); // atkJSON::encode excepts string in UTF-8
+            $value = Atk_JSON::encode(Atk_Tools::atk_iconv(Atk_Tools::atkGetCharset(), "UTF-8", $field['html'])); // Atk_JSON::encode excepts string in UTF-8
             $scriptCode .= "if (\$('$element')) { \$('$element').update($value); } ";
         }
 

@@ -273,13 +273,13 @@ class Atk_UrlAttribute extends Atk_Attribute
         if (!$result && $show_error) {
             // if result of all validations is false, display error-messages
             if ($absolute_result === false)
-                atkTools::triggerError($record, $this->fieldName(), 'invalid_absolute_no_anchor_url', atkTools::atktext('invalid_absolute_no_anchor_url'));
+                Atk_Tools::triggerError($record, $this->fieldName(), 'invalid_absolute_no_anchor_url', Atk_Tools::atktext('invalid_absolute_no_anchor_url'));
             if ($anchor_result === false)
-                atkTools::triggerError($record, $this->fieldName(), 'invalid_url_anchor', atkTools::atktext('invalid_url_anchor'));
+                Atk_Tools::triggerError($record, $this->fieldName(), 'invalid_url_anchor', Atk_Tools::atktext('invalid_url_anchor'));
             if ($absolute_anchor_result === false)
-                atkTools::triggerError($record, $this->fieldName(), 'invalid_absolute_url', atkTools::atktext('invalid_absolute_url'));
+                Atk_Tools::triggerError($record, $this->fieldName(), 'invalid_absolute_url', Atk_Tools::atktext('invalid_absolute_url'));
             if ($relative_result === false)
-                atkTools::triggerError($record, $this->fieldName(), 'invalid_relative_url', atkTools::atktext('invalid_relative_url'));
+                Atk_Tools::triggerError($record, $this->fieldName(), 'invalid_relative_url', Atk_Tools::atktext('invalid_relative_url'));
         }
         return ($result || parent::validate($record, $mode));
     }

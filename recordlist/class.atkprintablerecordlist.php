@@ -15,7 +15,7 @@
  * $Id$
  */
 /** @internal include base class */
-atkTools::atkimport("atk.recordlist.atkrecordlist");
+Atk_Tools::atkimport("atk.recordlist.atkrecordlist");
 
 /**
  * Recordlist implementation that renders a recordlist that is 
@@ -41,7 +41,7 @@ class Atk_PrintableRecordList extends Atk_RecordList
      * Creates printableRecordlist
      * obsolete by specialRecordList
      *
-     * @param atkNode $node         the node
+     * @param Atk_Node $node         the node
      * @param Array   $recordset    the list of records
      * @param Array   $suppressList fields we don't display
      * @param int  		$flags  			The prefix for embeded fields
@@ -72,7 +72,7 @@ class Atk_PrintableRecordList extends Atk_RecordList
                 ($p_attrib->hasFlag(AF_HIDE_SELECT) == false) || ($this->m_node->m_action != "select")
                 ) && $musthide == false
             ) {
-                $output.='<td><b>' . atkTools::atktext($p_attrib->fieldName(), $this->m_node->m_module, $this->m_node->m_type) . '</b></td>';
+                $output.='<td><b>' . Atk_Tools::atktext($p_attrib->fieldName(), $this->m_node->m_module, $this->m_node->m_type) . '</b></td>';
 
                 // the totalisable check..
                 if ($p_attrib->hasFlag(AF_TOTAL)) {

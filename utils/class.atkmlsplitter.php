@@ -34,7 +34,7 @@ class Atk_mlsplitter
      * Constructor
      *
      */
-    function atkMlSplitter()
+    function __construct()
     {
         // constructor
     }
@@ -48,7 +48,7 @@ class Atk_mlsplitter
         static $s_mlsplitter = NULL;
         if (!is_object($s_mlsplitter)) {
             $s_mlsplitter = new Atk_mlsplitter();
-            atkTools::atkdebug("Created a new atkmlsplitter instance");
+            Atk_Tools::atkdebug("Created a new atkmlsplitter instance");
         }
         return $s_mlsplitter;
     }
@@ -56,7 +56,7 @@ class Atk_mlsplitter
     /**
      * Get supported languages
      *
-     * @param atkNode $node
+     * @param Atk_Node $node
      * @return array Array with supported languages
      */
     function getLanguages(&$node)
@@ -64,7 +64,7 @@ class Atk_mlsplitter
         if (method_exists($node, "getLanguages")) {
             return $node->getLanguages();
         }
-        $lngs = atkConfig::getGlobal("supported_languages");
+        $lngs = Atk_Config::getGlobal("supported_languages");
         for ($i = 0, $_i = count($lngs); $i < $_i; $i++)
             $lngs[$i] = strtoupper($lngs[$i]);
         return $lngs;
@@ -73,14 +73,14 @@ class Atk_mlsplitter
     /**
      * Update the language field
      *
-     * @param atkNode $node
+     * @param Atk_Node $node
      * @param array $record
      * @return bool
      */
     function updateLngField(&$node, &$record)
     {
         // blegh
-        $db = &atkTools::atkGetDb();
+        $db = &Atk_Tools::atkGetDb();
         $sql = "UPDATE " . $node->m_table . " SET " . $node->m_lngfield . "='" . $node->m_defaultlanguage . "'
                WHERE " . $node->m_lngfield . "='' AND " . $record["atkprimkey"];
         return $db->query($sql);
@@ -91,13 +91,13 @@ class Atk_mlsplitter
      * because nodes are cached and we have to make some attribute modifications you
      * can't pass the node as a reference!!
      *
-     * @param atkNode $node
+     * @param Atk_Node $node
      * @param array $record
      * @param string $mode
      */
     function updateMlRecords($node, $record, $mode = "add", $excludes = '', $includes = '')
     {
-        atkTools::atkdebug("atkmlsplitter::updateMlRecords() for mode $mode");
+        Atk_Tools::atkdebug("Atk_mlsplitter::updateMlRecords() for mode $mode");
 
         $excludelist = array();
         $relations = array();
@@ -108,7 +108,7 @@ class Atk_mlsplitter
                 // assume all onetomanyrelations are stored in the PRESTORE so we MUST NOT use addDb()
                 // on this node if its contains relations to others
                 // but for 1:n and n:1 we need to save the refkey
-                if ((is_a($node->m_attribList[$attribname], "atkManyToOneRelation") || is_a($node->m_attribList[$attribname], "atkOneToOneRelation")) && atkTools::hasFlag($node->m_attribList[$attribname]->storageType(), ADDTOQUERY)) {
+                if ((is_a($node->m_attribList[$attribname], "atkManyToOneRelation") || is_a($node->m_attribList[$attribname], "atkOneToOneRelation")) && Atk_Tools::hasFlag($node->m_attribList[$attribname]->storageType(), ADDTOQUERY)) {
                     $relations[$attribname] = $node->m_attribList[$attribname];
 
                     $p_attrib = &$node->m_attribList[$attribname];
@@ -124,7 +124,7 @@ class Atk_mlsplitter
         }
 
         $languages = $this->getLanguages($node);
-        $atklngrecordmodes = atkSessionManager::sessionLoad("atklng_" . $node->m_type . "_" . atkSessionManager::atkPrevLevel());
+        $atklngrecordmodes = Atk_SessionManager::sessionLoad("atklng_" . $node->m_type . "_" . Atk_SessionManager::atkPrevLevel());
 
         $autoincrementflags = Array();
         foreach ($node->m_primaryKey as $primkey) {
@@ -191,14 +191,14 @@ class Atk_mlsplitter
             // restore the relations
             $node->m_attribList[$attribname] = $relation;
         }
-        atkSessionManager::sessionStore("atklng_" . $node->m_type . "_" . atkSessionManager::atkPrevLevel(), NULL); // deleting modes
+        Atk_SessionManager::sessionStore("atklng_" . $node->m_type . "_" . Atk_SessionManager::atkPrevLevel(), NULL); // deleting modes
     }
 
     /**
      * Adds language condition
      *
-     * @param atkQuery $query
-     * @param atkNode $node
+     * @param Atk_Query $query
+     * @param Atk_Node $node
      * @param string $mode
      * @param string $joinalias
      */
@@ -219,9 +219,9 @@ class Atk_mlsplitter
     /**
      * merges multiple multilanguage records to one record with fields containing arrays needed by mlattributes
      *
-     * @param atkNode $node
+     * @param Atk_Node $node
      * @param array $recordset
-     * @param atkQuery $query
+     * @param Atk_Query $query
      */
     function combineMlRecordSet(&$node, &$recordset, $query)
     {
@@ -232,7 +232,7 @@ class Atk_mlsplitter
         }
         $this->mergeMlRecords($node, $recordset);
 
-        atkSessionManager::sessionStore("atklng_" . $node->m_type . "_" . atkSessionManager::atkLevel(), $recordset[0]["atklngrecordmodes"]);
+        Atk_SessionManager::sessionStore("atklng_" . $node->m_type . "_" . Atk_SessionManager::atkLevel(), $recordset[0]["atklngrecordmodes"]);
     }
 
     /**
@@ -240,7 +240,7 @@ class Atk_mlsplitter
      * we need these relation because the recordlist will have them included
      * when editting a record we have to combine these records
      *
-     * @param atkNode $node
+     * @param Atk_Node $node
      * @return array Array with relationnames
      */
     function getMlNodes(&$node)
@@ -261,7 +261,7 @@ class Atk_mlsplitter
     /**
      * Has language record?
      *
-     * @param atkNode $node
+     * @param Atk_Node $node
      * @param array $recordset
      * @param string $lng
      * @param int $index
@@ -281,7 +281,7 @@ class Atk_mlsplitter
     /**
      * Add language records
      *
-     * @param atkNode $node
+     * @param Atk_Node $node
      * @param array $recordset
      * @return array Array with records to add
      */
@@ -289,7 +289,7 @@ class Atk_mlsplitter
     {
         $newrecordset = Array();
         $languages = $this->getLanguages($node);
-        atkTools::atkdebug("atkmlsplitter adding missings lngrecord for " . $node->m_type . "!");
+        Atk_Tools::atkdebug("atkmlsplitter adding missings lngrecord for " . $node->m_type . "!");
         for ($i = 0, $max = count($languages); $i < $max; $i++) {
             $index = NULL;
             if (!$this->hasLngRecord($node, $recordset, $languages[$i], $index)) {
@@ -310,7 +310,7 @@ class Atk_mlsplitter
     /**
      * Merge multilanguage records
      *
-     * @param atkNode $node
+     * @param Atk_Node $node
      * @param array $recordset
      */
     function mergeMlRecords(&$node, &$recordset)

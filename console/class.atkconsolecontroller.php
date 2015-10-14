@@ -124,8 +124,8 @@ class Atk_ConsoleController
         if (preg_match("!class.([^.]+).inc$!", $class, $matches)) { // user supplied path relative to script
             include_once($class);
             $controller = new $matches[1]();
-        } else if (atkTools::atkimport($class)) { // user supplied ATK class path
-            $controller = atkTools::atknew($class);
+        } else if (Atk_Tools::atkimport($class)) { // user supplied ATK class path
+            $controller = Atk_Tools::atknew($class);
         } else {
             die('Unknown console controller "' . $class . '".' . "\n");
         }
@@ -217,7 +217,7 @@ class Atk_ConsoleController
             }
         }
 
-        atkTools::atkimport('atk.utils.atktmpfile');
+        Atk_Tools::atkimport('atk.utils.atktmpfile');
         $file = new Atk_TmpFile($filename);
         $file->appendToFile($lines);
 

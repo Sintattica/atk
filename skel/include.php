@@ -29,10 +29,10 @@
 $config_atkroot = "./";
 include_once("atk.php");
 
-atkSessionManager::atksession();
+Atk_SessionManager::atksession();
 atksecure();
 
 $file = $ATK_VARS["file"];
-$allowed = atkConfig::getGlobal("allowed_includes");
-if (atkTools::atk_in_array($file, $allowed))
-    include_once(atkConfig::getGlobal("atkroot") . $file);
+$allowed = Atk_Config::getGlobal("allowed_includes");
+if (Atk_Tools::atk_in_array($file, $allowed))
+    include_once(Atk_Config::getGlobal("atkroot") . $file);

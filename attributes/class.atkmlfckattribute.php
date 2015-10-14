@@ -9,7 +9,7 @@
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  * *
  * The atkMlFckAttribute class represents an multilanguage FCK-attribute of an
- * atkNode, and will show different FCK editors for the various languages
+ * Atk_Node, and will show different FCK editors for the various languages
  * configured.
  *
  * @author Harrie Verveer <harrie@ibuildings.nl>
@@ -35,7 +35,7 @@ class Atk_MlFckAttribute extends Atk_MlTextAttribute
      */
     public function __construct($name, $flags = 0, $size = 0, Array $opt = array())
     {
-        $config_fck = atkConfig::getGlobal('fck');
+        $config_fck = Atk_Config::getGlobal('fck');
 
         if (is_array($config_fck)) {
             $this->fck_opt = array_merge($this->fck_opt, $config_fck);
@@ -45,7 +45,7 @@ class Atk_MlFckAttribute extends Atk_MlTextAttribute
             $this->fck_opt = array_merge($this->fck_opt, $opt);
         }
 
-        $this->fck_opt["Language"] = atkConfig::getGlobal("language");
+        $this->fck_opt["Language"] = Atk_Config::getGlobal("language");
         $this->atkMlTextAttribute($name, $flags, $size);
     }
 
@@ -62,7 +62,7 @@ class Atk_MlFckAttribute extends Atk_MlTextAttribute
      */
     public function edit($record = "", $prefix = "", $mode = "")
     {
-        include_once(atkConfig::getGlobal('atkroot') . "atk/attributes/fck/fckeditor.php");
+        include_once(Atk_Config::getGlobal('atkroot') . "atk/attributes/fck/fckeditor.php");
 
         $languages = $this->getLanguages();
         $resultHtml = '';
@@ -104,7 +104,7 @@ class Atk_MlFckAttribute extends Atk_MlTextAttribute
             $entry["label"] = $this->label($defaults) .
                 ' (<label id="' . $fieldprefix . $this->formName() . '_label_ ' .
                 strtolower($curlng) . '">' .
-                atkTools::atktext("language_" . strtolower($curlng)) .
+                Atk_Tools::atktext("language_" . strtolower($curlng)) .
                 '</label>)';
 
             $entry["id"] = $this->getHtmlId($fieldprefix);
@@ -148,7 +148,7 @@ class Atk_MlFckAttribute extends Atk_MlTextAttribute
         $this->registerKeyListener($id, KB_CTRLCURSOR);
 
         $oFCKeditor = new FCKeditor($fieldprefix . $fieldname);
-        $oFCKeditor->BasePath = atkConfig::getGlobal("atkroot") . "atk/attributes/fck/";
+        $oFCKeditor->BasePath = Atk_Config::getGlobal("atkroot") . "atk/attributes/fck/";
 
         $oFCKeditor->Value = $value;
         $oFCKeditor->ToolbarSet = $this->fck_opt['ToolbarSet'];

@@ -70,7 +70,7 @@ class Atk_ParserAttribute extends Atk_Attribute
      */
     function display($record)
     {
-        atkTools::atkimport("atk.utils.atkstringparser");
+        Atk_Tools::atkimport("atk.utils.atkstringparser");
         $stringparser = new Atk_StringParser($this->m_text);
         return $stringparser->parse($record);
     }
@@ -78,7 +78,7 @@ class Atk_ParserAttribute extends Atk_Attribute
     /**
      * No function, but is neccesary
      * 
-     * @param atkDb $db The database object
+     * @param Atk_Db $db The database object
      * @param array $record The record
      * @param string $mode 
      */
@@ -90,7 +90,7 @@ class Atk_ParserAttribute extends Atk_Attribute
     /**
      * No function, but is neccesary
      * 
-     * @param atkQuery $query The SQL query object
+     * @param Atk_Query $query The SQL query object
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.

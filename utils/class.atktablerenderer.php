@@ -66,7 +66,7 @@ class Atk_TableRenderer
      * @param string $style style class to set for the table
      * @param string $module module to register style with
      */
-    function atkTableRenderer($flags = 0, $style = '', $module = '')
+    function __construct($flags = 0, $style = '', $module = '')
     {
         $this->m_flags = $flags;
 
@@ -227,8 +227,8 @@ class Atk_TableRenderer
      */
     function registerStyle($style, $module = "")
     {
-        $theme = &atkTools::atkinstance("atk.ui.atktheme");
-        $page = &atkPage::getInstance();
+        $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
+        $page = &Atk_Page::getInstance();
         $page->register_style($theme->stylePath($style . ".css", $module));
     }
 
@@ -281,7 +281,7 @@ class Atk_TableRenderer
      *
      * <b>Example:</b>
      * <code>
-     *  $tbl = &atkTools::atknew("atk.utils.atktablerenderer");
+     *  $tbl = &Atk_Tools::atknew("atk.utils.atktablerenderer");
      *  $tbl->render($data, TBL_HEADER|TBL_ALTERNATE, "recordlist");
      * </code>
      *
@@ -367,14 +367,14 @@ class Atk_TableRenderer
         $output = "\n<table {$class}>";
 
         // should render a header?
-        if (atkTools::hasFlag($this->m_flags, TBL_HEADER)) {
+        if (Atk_Tools::hasFlag($this->m_flags, TBL_HEADER)) {
             $header = $data[0];
             $rowOffset = 1;
             $output .= $this->_renderHeader($header, 0);
         }
 
         // should render a footer
-        if (atkTools::hasFlag($this->m_flags, TBL_FOOTER)) {
+        if (Atk_Tools::hasFlag($this->m_flags, TBL_FOOTER)) {
             $footer_row = count($data) - 1;
             $footer = array_pop($data);
 
@@ -481,7 +481,7 @@ class Atk_TableRenderer
     {
         if (is_string($row)) {
             return 'class="' . $row . '"';
-        } else if (atkTools::hasFlag($this->m_flags, TBL_ALTERNATE) && ($row % 2) !== 0) {
+        } else if (Atk_Tools::hasFlag($this->m_flags, TBL_ALTERNATE) && ($row % 2) !== 0) {
             return 'class="row2"';
         } else {
             return 'class="row1"';
@@ -582,18 +582,18 @@ class Atk_TableRenderer
     function _alignmentStr($alignment)
     {
         $ret = '';
-        if (atkTools::hasFlag($alignment, TBL_LEFT))
+        if (Atk_Tools::hasFlag($alignment, TBL_LEFT))
             $ret.='align="left" ';
         elseif (hasFLag($alignment, TBL_RIGHT))
             $ret.='align="right" ';
-        elseif (atkTools::hasFlag($alignment, TBL_CENTER))
+        elseif (Atk_Tools::hasFlag($alignment, TBL_CENTER))
             $ret.='align="center" ';
 
-        if (atkTools::hasFlag($alignment, TBL_TOP))
+        if (Atk_Tools::hasFlag($alignment, TBL_TOP))
             $ret.='valign="top" ';
         elseif (hasFLag($alignment, TBL_BOTTOM))
             $ret.='valign="bottom" ';
-        elseif (atkTools::hasFlag($alignment, TBL_MIDDLE))
+        elseif (Atk_Tools::hasFlag($alignment, TBL_MIDDLE))
             $ret.='valign="middle" ';
 
         return $ret;

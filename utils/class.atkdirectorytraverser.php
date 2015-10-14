@@ -37,7 +37,7 @@ class Atk_DirectoryTraverser
     /**
      * Constructor
      */
-    function atkDirectoryTraverser()
+    function __construct()
     {
         
     }

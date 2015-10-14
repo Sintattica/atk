@@ -15,7 +15,7 @@
  * $Id$
  * 
  */
-atkTools::atkimport("atk.attributes.atkattribute");
+Atk_Tools::atkimport("atk.attributes.atkattribute");
 
 /**
  * With the atkCaptchaAttribute class you can easily add a captcha to a forum 
@@ -38,12 +38,12 @@ class Atk_CaptchaAttribute extends Atk_Attribute
      * @param int    $flags  The attribute flags
      * @return -
      */
-    function atkCaptchaAttribute($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
         // A Captcha attribute should not be searchable and sortable
         $flags |= AF_HIDE_SEARCH | AF_NO_SORT;
 
-        $this->atkAttribute($name, $flags); // base class constructor
+        parent::__construct($name, $flags); // base class constructor
     }
 
     /**
@@ -58,11 +58,11 @@ class Atk_CaptchaAttribute extends Atk_Attribute
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $target = "atk/ext/captcha/img/captcha.jpg.php";
-        $img = atkTools::session_url("include.php?file=" . $target);
+        $img = Atk_Tools::session_url("include.php?file=" . $target);
 
         $html = '<img src="' . $img . '"><br>';
         $html .= '<br>';
-        $html .= '<small>' . atkTools::atktext("captcha_explain", "atk") . '</small><br>';
+        $html .= '<small>' . Atk_Tools::atktext("captcha_explain", "atk") . '</small><br>';
         $html .= '<input type="text" name="' . $fieldprefix . $this->fieldName() . '">';
         return $html;
     }
@@ -98,7 +98,7 @@ class Atk_CaptchaAttribute extends Atk_Attribute
     {
         $sCaptchaCode = $record[$this->fieldName()];
         if (md5(strtoupper($sCaptchaCode)) != $_SESSION['php_captcha']) {
-            atkTools::triggerError($record, $this->fieldName(), 'error_captchafield');
+            Atk_Tools::triggerError($record, $this->fieldName(), 'error_captchafield');
         }
 
         // clear to prevent re-use

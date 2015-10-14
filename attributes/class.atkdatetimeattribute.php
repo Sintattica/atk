@@ -17,8 +17,8 @@
 /**
  * @internal Includes
  */
-atkTools::atkimport("atk.attributes.atkdateattribute");
-atkTools::atkimport("atk.attributes.atktimeattribute");
+Atk_Tools::atkimport("atk.attributes.atkdateattribute");
+Atk_Tools::atkimport("atk.attributes.atktimeattribute");
 
 /**
  * The atkDateTimeAttribute class can be used for date and time entry.
@@ -183,7 +183,7 @@ class Atk_DateTimeAttribute extends Atk_Attribute
         $date = substr($datetime, 0, 8);
         $time = substr($datetime, 8, 6);
         return array_merge(
-            atkDateAttribute::dateArray($date), atkTimeAttribute::timeArray($time)
+            Atk_DateAttribute::dateArray($date), Atk_TimeAttribute::timeArray($time)
         );
     }
 
@@ -372,7 +372,7 @@ class Atk_DateTimeAttribute extends Atk_Attribute
     /**
      * Adds this attribute to database queries.
      *
-     * @param atkQuery $query The SQL query object
+     * @param Atk_Query $query The SQL query object
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
@@ -403,7 +403,7 @@ class Atk_DateTimeAttribute extends Atk_Attribute
                 }
             }
         } else {
-            if (atkConfig::getGlobal('database') != 'oci9')
+            if (Atk_Config::getGlobal('database') != 'oci9')
                 $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES));
             else {
                 $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES), $mode, "DATETIME");
@@ -437,7 +437,7 @@ class Atk_DateTimeAttribute extends Atk_Attribute
      * Creates a search condition for a given search value, and adds it to the
      * query that will be used for performing the actual search.
      *
-     * @param atkQuery $query The query to which the condition will be added.
+     * @param Atk_Query $query The query to which the condition will be added.
      * @param String $table The name of the table in which this attribute
      *                      is stored
      * @param mixed $value The value the user has entered in the searchbox
@@ -502,7 +502,7 @@ class Atk_DateTimeAttribute extends Atk_Attribute
         $datetime = explode(" ", $stringvalue);
         $formatsdate = array("dd-mm-yyyy", "dd-mm-yy", "d-mm-yyyy", "dd-m-yyyy",
             "d-m-yyyy", "yyyy-mm-dd", "yyyy-mm-d", "yyyy-m-dd", "yyyy-m-d");
-        $retval = array_merge(atkDateAttribute::parseDate($datetime[0], $formatsdate), atkTimeAttribute::parseTime($datetime[1]));
+        $retval = array_merge(Atk_DateAttribute::parseDate($datetime[0], $formatsdate), Atk_TimeAttribute::parseTime($datetime[1]));
         return $retval;
     }
 
@@ -600,7 +600,7 @@ class Atk_DateTimeAttribute extends Atk_Attribute
                 }
             }
 
-            atkTools::atkdebug('WARNING: could not determine UTC offset for atkDateTimeAttribute "' . $this->fieldName() . '"!');
+            Atk_Tools::atkdebug('WARNING: could not determine UTC offset for atkDateTimeAttribute "' . $this->fieldName() . '"!');
             return 0;
         } else {
             return 0;

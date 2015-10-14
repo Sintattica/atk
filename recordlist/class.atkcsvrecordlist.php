@@ -15,7 +15,7 @@
  * $Id$
  */
 /** @internal include base class */
-atkTools::atkimport("atk.recordlist.atkcustomrecordlist");
+Atk_Tools::atkimport("atk.recordlist.atkcustomrecordlist");
 
 /**
  * CVS recordlist renderer.
@@ -31,7 +31,7 @@ class Atk_CSVRecordList extends Atk_CustomRecordList
 
     /**
      * Creates a special Recordlist that can be used for exporting to files or to make it printable
-     * @param atkNode $node       The node to use as definition for the columns.
+     * @param Atk_Node $node       The node to use as definition for the columns.
      * @param array $recordset    The records to render
      * @param string $compression        Compression technique (bzip / gzip)
      * @param array $suppressList List of attributes from $node that should be ignored

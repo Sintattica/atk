@@ -18,7 +18,7 @@
  * Imports
  * @access private
  */
-atkTools::atkimport('atk.utils.atkdataholder');
+Atk_Tools::atkimport('atk.utils.atkdataholder');
 
 /**
  * FrontEnd Controller base class.
@@ -134,8 +134,8 @@ class Atk_FrontController implements ArrayAccess
             $action = 'index';
 
         $importPath = "module.{$module}.controllers.{$name}controller";
-        if (atkTools::atkimport($importPath)) {
-            atkTools::atkdebug('Create ' . $importPath . ' controller instance');
+        if (Atk_Tools::atkimport($importPath)) {
+            Atk_Tools::atkdebug('Create ' . $importPath . ' controller instance');
             $class = "{$name}controller";
             return new $class($module, $name, $action, $parent);
         } else {
@@ -172,11 +172,11 @@ class Atk_FrontController implements ArrayAccess
      */
     protected static function createBridge()
     {
-        $class = atkConfig::getGlobal("frontcontroller_bridge", "atk.front.atkfrontcontrollerbridge");
+        $class = Atk_Config::getGlobal("frontcontroller_bridge", "atk.front.atkfrontcontrollerbridge");
 
         if (!isset(self::$s_bridges[$class])) {
-            atkTools::atkdebug('Create ' . $class . ' bridge instance');
-            self::$s_bridges[$class] = atkTools::atknew($class);
+            Atk_Tools::atkdebug('Create ' . $class . ' bridge instance');
+            self::$s_bridges[$class] = Atk_Tools::atknew($class);
         }
 
         return self::$s_bridges[$class];
@@ -343,7 +343,7 @@ class Atk_FrontController implements ArrayAccess
      */
     protected function getActionCacheFile()
     {
-        atkTools::atkimport('atk.utils.atktmpfile');
+        Atk_Tools::atkimport('atk.utils.atktmpfile');
         $path = 'frontcontrollers/' . $this->m_module . '/' . $this->m_name . '/' . $this->m_action;
         $filename = md5($this->getActionCacheKey()) . '.cache';
         $file = new Atk_TmpFile($path . '/' . $filename);
@@ -480,8 +480,8 @@ class Atk_FrontController implements ArrayAccess
                 echo $this->m_result;
 
                 if (!isset($this->m_contentType) || $this->m_contentType == 'text/html') {
-                    atkTools::atkimport("atk.utils.atkdebugger");
-                    echo atkDebugger::getInstance()->renderDebugAndErrorMessages();
+                    Atk_Tools::atkimport("atk.utils.atkdebugger");
+                    echo Atk_Debugger::getInstance()->renderDebugAndErrorMessages();
                 }
                 die;
             }
@@ -547,7 +547,7 @@ class Atk_FrontController implements ArrayAccess
     protected function handleException($exception)
     {
         if ($this->isRoot()) {
-            atkTools::atkerror($exception->__toString());
+            Atk_Tools::atkerror($exception->__toString());
             $this->renderContent('An unknown error occured.');
         } else {
             throw $exception;
@@ -568,7 +568,7 @@ class Atk_FrontController implements ArrayAccess
     protected function installPlugins()
     {
         /* @var $smarty Smarty */
-        $smarty = atkTools::atkinstance("atk.ui.atksmarty");
+        $smarty = Atk_Tools::atkinstance("atk.ui.atksmarty");
         $this->m_plugins = $smarty->_plugins;
         $smarty->register_function('_partial', array($this, 'partialFunctionTag'), false);
         $smarty->register_function('_url', array($this, 'urlFunctionTag'), false);
@@ -583,7 +583,7 @@ class Atk_FrontController implements ArrayAccess
     {
         if ($this->m_plugins == NULL)
             return;
-        $smarty = atkTools::atkinstance("atk.ui.atksmarty");
+        $smarty = Atk_Tools::atkinstance("atk.ui.atksmarty");
         $smarty->_plugins = $this->m_plugins;
         $this->m_plugins = NULL;
     }
@@ -1002,12 +1002,12 @@ class Atk_FrontController implements ArrayAccess
         if ($vars == NULL)
             $vars = $this->getVars();
 
-        if (!$partial && file_exists(atkModule::moduleDir($this->m_module) . "scripts/{$this->m_name}.js")) {
-            $this->registerScriptFile(atkModule::moduleDir($this->m_module) . "scripts/{$this->m_name}.js");
+        if (!$partial && file_exists(Atk_Module::moduleDir($this->m_module) . "scripts/{$this->m_name}.js")) {
+            $this->registerScriptFile(Atk_Module::moduleDir($this->m_module) . "scripts/{$this->m_name}.js");
         }
 
-        if (!$partial && file_exists(atkModule::moduleDir($this->m_module) . "styles/{$this->m_name}.js")) {
-            $this->registerStyleSheet(atkModule::moduleDir($this->m_module) . "styles/{$this->m_name}.js");
+        if (!$partial && file_exists(Atk_Module::moduleDir($this->m_module) . "styles/{$this->m_name}.js")) {
+            $this->registerStyleSheet(Atk_Module::moduleDir($this->m_module) . "styles/{$this->m_name}.js");
         }
 
 
@@ -1029,10 +1029,10 @@ class Atk_FrontController implements ArrayAccess
         $root = $this->m_bridge->getApplicationRoot();
         if (file_exists($root . "$directory/$template")) {
             return $root . "$directory/$template";
-        } else if (file_exists(atkModule::moduleDir($this->m_module) . "$directory/$template")) {
-            return atkModule::moduleDir($this->m_module) . "$directory/$template";
-        } else if (file_exists(atkModule::moduleDir($this->m_module) . "skel/$directory/$template")) {
-            return atkModule::moduleDir($this->m_module) . "skel/$directory/$template";
+        } else if (file_exists(Atk_Module::moduleDir($this->m_module) . "$directory/$template")) {
+            return Atk_Module::moduleDir($this->m_module) . "$directory/$template";
+        } else if (file_exists(Atk_Module::moduleDir($this->m_module) . "skel/$directory/$template")) {
+            return Atk_Module::moduleDir($this->m_module) . "skel/$directory/$template";
         } else {
             return null;
         }
@@ -1096,7 +1096,7 @@ class Atk_FrontController implements ArrayAccess
         $template = $this->getFileForTemplate($template, $vars, $partial);
 
         /* @var $smarty Smarty */
-        $smarty = atkTools::atkinstance('atk.ui.atksmarty');
+        $smarty = Atk_Tools::atkinstance('atk.ui.atksmarty');
 
         $oldVars = $smarty->get_template_vars();
         $oldSerials = $smarty->_cache_serials;
