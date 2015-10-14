@@ -61,7 +61,6 @@ class Atk_DGSummary extends Atk_DGComponent
             'pages' => $pages
         );
 
-        Atk_Tools::atkimport("atk.utils.atkstringparser");
         $parser = new Atk_StringParser($string);
         $result = $parser->parse($params);
 

@@ -14,11 +14,6 @@
  * @version $Revision: 6309 $
  * $Id$
  */
-/**
- * Imports
- * @access private
- */
-Atk_Tools::atkimport("atk.attributes.atknumberattribute");
 
 /**
  * Flags for atkWeekdayAttribute

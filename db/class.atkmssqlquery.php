@@ -14,10 +14,7 @@
  * @version $Revision: 6323 $
  * $Id$
  */
-/**
- * Base include
- */
-Atk_Tools::atkimport("atk.db.atkmysqlquery");
+
 
 /**
  * SQL Builder for MSSQL databases.

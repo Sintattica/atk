@@ -371,9 +371,8 @@ class Atk_SaveHandler extends Atk_ActionHandler
         $this->notify("save", $record);
         $this->clearCache();
 
-        $page = &$this->getPage();
+        $page = $this->getPage();
 
-        Atk_Tools::atkimport("atk.ui.atkdialog");
         $script = Atk_Dialog::getCloseCall();
 
         if ($attrRefreshUrl == null) {

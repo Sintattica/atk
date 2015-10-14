@@ -26,7 +26,6 @@
  * @subpackage handlers
  *
  */
-Atk_Tools::atkimport("atk.handlers.atkactionhandler");
 
 class Atk_AdminHandler extends Atk_ActionHandler
 {

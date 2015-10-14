@@ -17,7 +17,7 @@
  * @version $Revision: 6309 $
  * $Id$
  */
-Atk_Tools::atkimport("atk.cache.atkcache");
+
 Atk_Tools::useattrib('atkFileAttribute');
 
 class Atk_Cache_file extends Atk_Cache

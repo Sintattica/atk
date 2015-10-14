@@ -118,9 +118,8 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
             $this->preCopy($record, $this->m_node, $includes);
         }
 
-        Atk_Tools::atkimport("atk.ui.atkdialog");
-        $db = &$this->m_node->getDb();
-        $page = &$this->getPage();
+        $db = $this->m_node->getDb();
+        $page = $this->getPage();
 
         if ($this->m_node->copyDb($record)) {
             $db->commit();
@@ -161,8 +160,6 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
      */
     function handleAdd()
     {
-        Atk_Tools::atkimport("atk.ui.atkdialog");
-
         $script = Atk_Dialog::getCloseCall();
 
         if ($this->m_node->hasFlag(NF_ADD_DIALOG)) {

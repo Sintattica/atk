@@ -24,8 +24,6 @@ define("RL_MRPA", 32); // multi-record-priority-actions enabled
 define("RL_LOCK", 64); // records can be locked
 define("RL_EXT_SORT", 128); // extended sort feature
 
-Atk_Tools::atkimport("atk.utils.atkstringparser");
-
 /**
  * The recordlist class is used to render tables containing records.
  *
@@ -725,7 +723,6 @@ class Atk_RecordList
         }
 
         if (Atk_Tools::hasFlag($flags, RL_EXT_SORT) && $columnConfig->hasSubTotals()) {
-            Atk_Tools::atkimport("atk.recordlist.atktotalizer");
             $totalizer = new Atk_Totalizer($this->m_node, $columnConfig);
             $result["rows"] = $totalizer->totalize($result["rows"]);
         }

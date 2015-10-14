@@ -13,12 +13,6 @@
  *
  * @version $Revision: 7077 $
  */
-/**
- * some includes
- */
-Atk_Tools::atkimport("atk.attributes.atkattribute");
-Atk_Tools::atkimport("atk.atkcontroller");
-Atk_Tools::atkimport("atk.atkmodule");
 
 /**
  * Define some flags for nodes. Use the constructor of the Atk_Node
@@ -1760,7 +1754,6 @@ class Atk_Node
         if (is_array($this->m_sectionList[$mode])) {
             foreach ($this->m_sectionList[$mode] as $section) {
                 if (substr($section, 0, strlen($tab)) == $tab) {
-                    Atk_Tools::atkimport("atk.session.atkstate");
                     $sectionName = 'section_' . str_replace('.', '_', $section);
                     $key = array("nodetype" => $this->atknodetype(),
                         "section" => $sectionName);
@@ -3126,7 +3119,6 @@ class Atk_Node
                 $descriptordef = $this->descriptor_def();
 
             // parse fields from descriptordef
-            Atk_Tools::atkimport("atk.utils.atkstringparser");
             $parser = new Atk_StringParser($descriptordef);
             $fields = $parser->getFields();
 
@@ -3179,13 +3171,11 @@ class Atk_Node
 
         // Descriptor template is set?
         if ($this->m_descTemplate != NULL) {
-            Atk_Tools::atkimport("atk.utils.atkstringparser");
             $parser = new Atk_StringParser($this->m_descTemplate);
             return $parser->parse($rec);
         }
         // See if node has a custom descriptor definition.
         else if (method_exists($this, "descriptor_def")) {
-            Atk_Tools::atkimport("atk.utils.atkstringparser");
             $parser = new Atk_StringParser($this->descriptor_def());
             return $parser->parse($rec);
         } else {
@@ -4358,7 +4348,6 @@ class Atk_Node
     function &getHandler($action)
     {
         Atk_Tools::atkdebug("Atk_Node::getHandler(); action: " . $action);
-        Atk_Tools::atkimport("atk.handlers.atkactionhandler");
 
         // for backwards compatibility we first check if a handler exists without using the module name
         $handler = Atk_Module::atkGetNodeHandler($this->m_type, $action);
@@ -4712,8 +4701,7 @@ class Atk_Node
      */
     function &getColumnConfig($id = NULL, $forceNew = false)
     {
-        Atk_Tools::atkimport("atk.recordlist.atkcolumnconfig");
-        $columnConfig = &Atk_ColumnConfig::getConfig($this, $id, $forceNew);
+        $columnConfig = Atk_ColumnConfig::getConfig($this, $id, $forceNew);
         return $columnConfig;
     }
 

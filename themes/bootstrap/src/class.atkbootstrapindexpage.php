@@ -127,8 +127,7 @@ class Atk_BootstrapIndexPage
     {
         /* general menu stuff */
         /* load menu layout */
-        Atk_Tools::atkimport("atk.menu.atkmenu");
-        $menu = & Atk_Menu::getMenu();
+        $menu = Atk_Menu::getMenu();
 
         if (is_object($menu))
             $this->m_page->addContent($menu->getMenu());
@@ -148,8 +147,7 @@ class Atk_BootstrapIndexPage
         $this->m_page->register_style($this->m_theme->stylePath("top.css"));
 
         /* load menu layout */
-        Atk_Tools::atkimport("atk.menu.atkmenu");
-        $menuObj = & Atk_Menu::getMenu();
+        $menuObj = Atk_Menu::getMenu();
         $menu = null;
 
         if (is_object($menuObj)) {

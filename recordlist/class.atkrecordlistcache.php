@@ -194,7 +194,6 @@ class Atk_RecordlistCache
      */
     function clearCache()
     {
-        Atk_Tools::atkimport("atk.utils.atkdirectorytraverser");
         $cachedir = Atk_Config::getGlobal("atktempdir") . "rlcache/";
         $atkdirtrav = new Atk_DirectoryTraverser();
 

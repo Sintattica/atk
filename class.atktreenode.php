@@ -233,7 +233,6 @@ class Atk_TreeNode extends Atk_Node
     {
         // Load used classes (and globals? :( )
         global $g_maxlevel, $g_theme, $exp_index;
-        Atk_Tools::atkimport("atk.utils.atkstringparser");
 
         // Return
         if (count($this->m_tree) == 1)

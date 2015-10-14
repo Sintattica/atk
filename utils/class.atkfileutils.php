@@ -181,7 +181,6 @@ class Atk_FileUtils
      */
     function parseDirectoryName($template, $data)
     {
-        Atk_Tools::atkimport("atk.utils.atkstringparser");
         $stringparser = new Atk_StringParser($template);
         return $stringparser->parse($data);
     }

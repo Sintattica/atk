@@ -66,7 +66,6 @@ class Atk_AggregatedColumn extends Atk_Attribute
         parent::__construct($name, $flags | AF_HIDE_EDIT | AF_HIDE_ADD | AF_HIDE_VIEW); // base class constructor
         $this->m_template = $template;
 
-        Atk_Tools::atkimport("atk.utils.atkstringparser");
         $parser = new Atk_StringParser($template);
         $this->m_displayfields = $parser->getFields();
 
@@ -96,7 +95,6 @@ class Atk_AggregatedColumn extends Atk_Attribute
 
             $rec[$field] = $p_attrib->display($record[$this->fieldName()], $mode);
         }
-        Atk_Tools::atkimport("atk.utils.atkstringparser");
         $parser = new Atk_StringParser($this->m_template);
         return $parser->parse($rec);
     }
@@ -240,7 +238,6 @@ class Atk_AggregatedColumn extends Atk_Attribute
                     $data[$field] = $field;
             }
 
-            Atk_Tools::atkimport("atk.utils.atkstringparser");
             $parser = new Atk_StringParser($this->m_template);
             $concatFields = $parser->getAllParsedFieldsAsArray($data, true);
             $concatTags = $concatFields['tags'];

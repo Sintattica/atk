@@ -53,7 +53,6 @@ class Atk_ThemeCompiler
                 mkdir(Atk_Config::getGlobal("atktempdir") . "themes/");
             }
 
-            Atk_Tools::atkimport("atk.utils.atktmpfile");
             $tmpfile = new Atk_TmpFile("themes/$name.php");
             $tmpfile->writeAsPhp("theme", $data);
             return true;

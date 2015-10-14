@@ -14,7 +14,6 @@
  * @version $Revision: 6309 $
  * $Id$
  */
-Atk_Tools::atkimport("atk.attributes.atkattribute");
 
 /**
  * Flag(s) specific for atkPasswordAttribute

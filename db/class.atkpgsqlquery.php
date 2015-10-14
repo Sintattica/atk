@@ -14,10 +14,7 @@
  * @version $Revision: 6323 $
  * $Id$
  */
-/**
- * Base include
- */
-Atk_Tools::atkimport("atk.db.atkquery");
+
 
 /**
  * SQL query builder for PostgreSQL.

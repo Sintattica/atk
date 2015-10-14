@@ -14,8 +14,6 @@
  * @version $Revision: 6320 $
  * $Id$
  */
-/** @internal include base class */
-Atk_Tools::atkimport("atk.recordlist.atkrecordlist");
 
 /**
  * Recordlist implementation that renders a recordlist that is 

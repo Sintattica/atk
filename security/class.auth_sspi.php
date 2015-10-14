@@ -12,10 +12,7 @@
  * @license http://www.atkframework.com/licensing ATK Open Source License
  *
  */
-/**
- * @internal include
- */
-Atk_Tools::atkimport("atk.security.auth_db");
+
 
 /**
  * Driver for authentication and authorization using Microsoft's Security 

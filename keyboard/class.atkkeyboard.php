@@ -14,10 +14,7 @@
  * @version $Revision: 1640 $
  * $Id$
  */
-/**
- * Imports used by the class..
- */
-Atk_Tools::atkimport("atk.ui.atkpage");
+
 
 /**
  * Define some key shortcut constants. (mind you, these are not actual ascii key values)

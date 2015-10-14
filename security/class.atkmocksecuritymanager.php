@@ -14,8 +14,6 @@
  * @version $Revision: 6280 $
  * $Id$
  */
-/** @internal include */
-Atk_Tools::atkimport("atk.security.atksecuritymanager");
 
 /**
  * The atkMockSecurityManager class is an atkSecurityManager mock 

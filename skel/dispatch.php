@@ -59,7 +59,6 @@ if ($ATK_VARS["atknodetype"] == "" || $session["login"] != 1) {
 }
 else {
     atksecure();
-    Atk_Tools::atkimport("atk.ui.atkpage");
 
     $lockType = Atk_Config::getGlobal("lock_type");
     if (!empty($lockType))

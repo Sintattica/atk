@@ -1061,14 +1061,12 @@ class Atk_SessionManager
 
         // Escape check
         if (isset($_REQUEST["atkescape"]) && $_REQUEST["atkescape"] != "") {
-            Atk_Tools::atkimport("atk.atknode");
             Atk_Node::redirect(Atk_Tools::atkurldecode($_REQUEST["atkescape"]));
             Atk_Output::getInstance()->outputFlush();
             exit;
         }
         // Nested URL check
         else if (isset($_REQUEST["atknested"]) && $_REQUEST["atknested"] != "") {
-            Atk_Tools::atkimport("atk.atknode");
             Atk_Node::redirect(Atk_Tools::session_url($_REQUEST["atknested"], SESSION_NESTED));
             Atk_Output::getInstance()->outputFlush();
             exit;
@@ -1076,7 +1074,6 @@ class Atk_SessionManager
         // Back check
         else if (isset($ATK_VARS["atkback"]) && $ATK_VARS["atkback"] != "") {
             // When we go back, we go one level deeper than the level we came from.
-            Atk_Tools::atkimport("atk.atknode");
             Atk_Node::redirect(Atk_Tools::session_url(Atk_Tools::atkSelf() . "?atklevel=" . ($atkprevlevel - 1)));
             Atk_Output::getInstance()->outputFlush();
             exit;

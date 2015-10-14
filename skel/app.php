@@ -33,11 +33,9 @@ $output.="\n<html>\n <head>\n";
 $output.='  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=' . Atk_Tools::atkGetCharset() . '">';
 $output.="\n  <title>" . Atk_Tools::atktext('app_title') . "</title>\n </head>\n";
 
-Atk_Tools::atkimport("atk.menu.atkmenu");
-Atk_Tools::atkimport("atk.utils.atkframeset");
 
-$menu = &Atk_Menu::getMenu();
-$theme = &Atk_Tools::atkinstance('atk.ui.atktheme');
+$menu = Atk_Menu::getMenu();
+$theme = Atk_Tools::atkinstance('atk.ui.atktheme');
 
 $position = $menu->getPosition();
 $scrolling = ($menu->getScrollable() == MENU_SCROLLABLE ? FRAME_SCROLL_AUTO : FRAME_SCROLL_NO);

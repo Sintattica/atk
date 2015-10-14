@@ -23,7 +23,6 @@
  * @package atk
  * @subpackage handlers
  */
-Atk_Tools::atkimport("atk.handlers.atkabstractsearchhandler");
 
 class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
 {
@@ -594,10 +593,9 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
      */
     function smartSearchPage($name = "", $criteria = array())
     {
-        Atk_Tools::atkimport("atk.atklanguage");
-        $node = &$this->m_node;
-        $page = &$this->getPage();
-        $ui = &$this->getUi();
+        $node = $this->m_node;
+        $page = $this->getPage();
+        $ui = $this->getUi();
 
         $node->addStyle("style.css");
 

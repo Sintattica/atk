@@ -658,13 +658,12 @@ class Atk_Db
         Atk_Tools::atkimport('atk.db.statement.atkstatement');
 
         if (Atk_Tools::atkimport("atk.db.statement.atk" . $this->m_type . "statement")) {
-            $class = "Atk_" . $this->m_type . "statement";
+            $class = "atk" . $this->m_type . "statement";
         } else {
-            Atk_Tools::atkimport("atk.db.statement.atkcompatstatement");
-            $class = "Atk_CompatStatement";
+            $class = "atkCompatStatement";
         }
 
-        $stmt = new $class($this, $query);
+        $stmt = Atk_Tools::atknew($class, $this, $query);
         return $stmt;
     }
 

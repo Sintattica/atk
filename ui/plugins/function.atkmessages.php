@@ -14,7 +14,6 @@
  * @version $Revision: 5442 $
  * $Id$
  */
-Atk_Tools::atkimport("atk.utils.atkmessagequeue");
 
 /**
  * Implements the {atkmessages} plugin for use in templates.

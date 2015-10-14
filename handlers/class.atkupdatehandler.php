@@ -367,7 +367,6 @@ class Atk_Updatehandler extends Atk_ActionHandler
      */
     private function loadSuccessDialog($record, $extraParams)
     {
-        Atk_Tools::atkimport("atk.ui.atkdialog");
         $script = Atk_Dialog::getCloseCall();
 
         $page = $this->getPage();

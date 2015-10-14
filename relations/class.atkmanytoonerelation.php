@@ -1596,7 +1596,6 @@ class Atk_ManyToOneRelation extends Atk_Relation
     function createFilter($record)
     {
         if ($this->m_destinationFilter != "") {
-            Atk_Tools::atkimport("atk.utils.atkstringparser");
             $parser = new Atk_StringParser($this->m_destinationFilter);
             return $parser->parse($record);
         } else {
@@ -2340,7 +2339,6 @@ class Atk_ManyToOneRelation extends Atk_Relation
                     $descriptordef = $this->m_destInstance->descriptor();
                 }
 
-                Atk_Tools::atkimport("atk.utils.atkstringparser");
                 $parser = new Atk_StringParser($descriptordef);
                 $concatFields = $parser->getAllParsedFieldsAsArray($fields, true);
                 $concatTags = $concatFields['tags'];

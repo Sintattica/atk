@@ -142,9 +142,6 @@ class Atk_SecurityManager
     {
         Atk_Tools::atkdebug("creating securityManager (authenticationtype: $authentication_type, authorizationtype: $authorization_type, scheme: $securityscheme)");
 
-        // required interface;
-        Atk_Tools::atkimport("atk.security.auth_interface");
-
         $authentication = $this->_getAuthTypes($authentication_type);
         foreach ($authentication as $class) {
             if (!$obj = Atk_Tools::atknew($class)) {

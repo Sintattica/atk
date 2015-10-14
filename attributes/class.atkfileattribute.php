@@ -765,7 +765,6 @@ class Atk_FileAttribute extends Atk_Attribute
         if ($this->m_filenameTpl == "") {
             $filename = $default;
         } else {
-            Atk_Tools::atkimport("atk.utils.atkstringparser");
             $parser = new Atk_StringParser($this->m_filenameTpl);
             $includes = $parser->getAttributes();
             $record = $this->m_ownerInstance->updateRecord($rec, $includes, array($this->fieldname()));

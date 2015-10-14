@@ -181,7 +181,6 @@ class Atk_MysqlDb extends Atk_Db
             $query .= " LIMIT $offset, $limit";
 
         if (Atk_Config::getGlobal("debug") >= 0) {
-            Atk_Tools::atkimport("atk.utils.atkdebugger");
             Atk_Debugger::addQuery($query);
         }
 
@@ -310,7 +309,6 @@ class Atk_MysqlDb extends Atk_Db
             $query = "lock tables $table $mode";
 
             if (Atk_Config::getGlobal("debug") >= 0) {
-                Atk_Tools::atkimport("atk.utils.atkdebugger");
                 Atk_Debugger::addQuery($query);
             }
 
@@ -451,8 +449,7 @@ class Atk_MysqlDb extends Atk_Db
     {
         /* first connect */
         if ($this->connect("r") == DB_SUCCESS) {
-            Atk_Tools::atkimport("atk.db.atkddl");
-            $ddl = &Atk_DDL::create("mysql");
+            $ddl = Atk_DDL::create("mysql");
 
             /* list fields */
             Atk_Tools::atkdebug("Retrieving metadata for $table");

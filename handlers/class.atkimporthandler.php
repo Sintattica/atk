@@ -1079,8 +1079,6 @@ class Atk_ImportHandler extends Atk_ActionHandler
             Atk_Tools::atkdebug('setting atkcharset static!');
         }
 
-        Atk_Tools::atkimport("atk.utils.atkstringparser");
-
         //copy the csv in a record and add it to the db
         $fp = fopen($file, "r");
         if ($skipfirstrow == "1")

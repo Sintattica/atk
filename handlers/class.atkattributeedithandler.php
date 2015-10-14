@@ -16,7 +16,6 @@
  * @version $Revision: 6310 $
  * $Id$
  */
-Atk_Tools::atkimport("atk.handlers.atkactionhandler");
 
 /**
  * Some defines

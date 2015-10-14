@@ -480,7 +480,6 @@ class Atk_FrontController implements ArrayAccess
                 echo $this->m_result;
 
                 if (!isset($this->m_contentType) || $this->m_contentType == 'text/html') {
-                    Atk_Tools::atkimport("atk.utils.atkdebugger");
                     echo Atk_Debugger::getInstance()->renderDebugAndErrorMessages();
                 }
                 die;

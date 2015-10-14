@@ -656,8 +656,6 @@ class Atk_Attribute
 
         // default class
         $this->addCSSClass(get_class($this));
-
-        Atk_Tools::atkimport("atk.keyboard.atkkeyboard");
     }
 
     /**

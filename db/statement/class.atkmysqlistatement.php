@@ -161,7 +161,6 @@ class Atk_MySQLiStatement extends Atk_Statement
     protected function _execute($params)
     {
         if (Atk_Config::getGlobal("debug") >= 0) {
-            Atk_Tools::atkimport("atk.utils.atkdebugger");
             Atk_Debugger::addQuery($this->_getParsedQuery(), false);
         }
 

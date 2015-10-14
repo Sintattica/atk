@@ -136,7 +136,6 @@ class Atk_SelectHandler extends Atk_ActionHandler
 
             // There's only one record and the autoselect flag is set, so we
             // automatically go to the target.
-            Atk_Tools::atkimport("atk.utils.atkstringparser");
             $parser = new Atk_StringParser(rawurldecode(Atk_Tools::atkurldecode($grid->getPostvar('atktarget'))));
 
             // For backwardscompatibility reasons, we also support the '[pk]' var.

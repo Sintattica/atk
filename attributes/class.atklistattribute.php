@@ -14,7 +14,6 @@
  * @version $Revision: 6305 $
  * $Id: class.atklistattribute.inc 7126 2011-05-26 22:33:22Z ijansch $
  */
-Atk_Tools::atkimport("atk.attributes.atkattribute");
 
 /**
  * Do not translate the options

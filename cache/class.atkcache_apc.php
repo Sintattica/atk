@@ -17,7 +17,6 @@
  * @version $Revision: 5898 $
  * $Id$
  */
-Atk_Tools::atkimport("atk.cache.atkcache");
 
 class Atk_Cache_apc extends Atk_Cache
 {

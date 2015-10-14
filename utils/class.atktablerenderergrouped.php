@@ -15,11 +15,7 @@
  * @version $Revision: 6107 $
  * $Id $
  */
-/**
- * Imports
- * @access private
- */
-Atk_Tools::atkimport("atk.utils.atktablerenderer");
+
 
 /**
  * Renders table with row based groups. A grouped table is a table with some rows

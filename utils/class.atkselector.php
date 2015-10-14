@@ -457,7 +457,6 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
         }
 
         // fuzzy filters
-        Atk_Tools::atkimport("atk.utils.atkstringparser");
         foreach ($this->_getNode()->m_fuzzyFilters as $filter) {
             $parser = new Atk_StringParser($filter);
             $filter = $parser->parse(array('table' => $this->_getNode()->getTable()));

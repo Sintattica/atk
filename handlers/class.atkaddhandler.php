@@ -356,7 +356,6 @@ class Atk_AddHandler extends Atk_ActionHandler
      */
     function partial_sectionstate()
     {
-        Atk_Tools::atkimport("atk.session.atkstate");
         Atk_State::set(array("nodetype" => $this->m_node->atknodetype(), "section" => $this->m_postvars['atksectionname']), $this->m_postvars['atksectionstate']);
     }
 

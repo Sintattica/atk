@@ -34,8 +34,7 @@ $output = &Atk_Output::getInstance();
 
 /* general menu stuff */
 /* load menu layout */
-Atk_Tools::atkimport("atk.menu.atkmenu");
-$menu = &Atk_Menu::getMenu();
+$menu = Atk_Menu::getMenu();
 
 if (is_object($menu))
     $output->output($menu->render());

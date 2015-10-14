@@ -406,7 +406,6 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
         $parser = null;
         // Only import the stringparser once.
         if (isset($this->m_descriptor_tooltip_template)) {
-            Atk_Tools::atkimport("atk.utils.atkstringparser");
             $parser = new Atk_StringParser($this->m_descriptor_tooltip_template);
         }
 

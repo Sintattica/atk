@@ -26,8 +26,6 @@ define("MENU_UNSCROLLABLE", 2);
 define("MENU_MULTILEVEL", 1); //More then 2 levels supported
 define("MENU_NOMULTILEVEL", 2);
 
-Atk_Tools::atkimport("atk.menu.atkmenuinterface");
-
 /**
  * Menu utility class.
  *

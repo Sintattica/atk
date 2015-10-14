@@ -16,14 +16,6 @@
  * @version $Revision: 6309 $
  * $Id$
  */
-/**
- * Imports
- * @access private
- */
-Atk_Tools::atkimport("atk.handlers.atkactionhandler");
-Atk_Tools::atkimport("atk.handlers.atkaddhandler");
-Atk_Tools::atkimport("atk.handlers.atksavehandler");
-Atk_Tools::atkimport("atk.wizard.atkwizardcontroller");
 
 /**
  * atkWizardPanel button definitions.

@@ -33,8 +33,7 @@ class Atk_DocumentHandler extends Atk_ActionHandler
         Atk_Tools::atkdebug("Action document");
 
         // Load and instantiate the documentwriter
-        Atk_Tools::atkimport("atk.document.atkdocumentwriter");
-        $openDocumentWriter = &Atk_DocumentWriter::getInstance("opendocument");
+        $openDocumentWriter = Atk_DocumentWriter::getInstance("opendocument");
 
         // ATKSelector must be available to perform this action
         if ($this->m_postvars["atkselector"] == "") {

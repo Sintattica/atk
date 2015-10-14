@@ -15,7 +15,6 @@
  * $Id$
  * 
  */
-Atk_Tools::atkimport("atk.attributes.atkattribute");
 
 /**
  * With the atkCaptchaAttribute class you can easily add a captcha to a forum 

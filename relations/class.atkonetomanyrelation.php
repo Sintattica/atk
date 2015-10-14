@@ -609,9 +609,7 @@ class Atk_OneToManyRelation extends Atk_Relation
      */
     function _getDialogAddLink($record, $action, $params = array())
     {
-        Atk_Tools::atkimport("atk.ui.atkdialog");
-
-        $ui = &$this->m_ownerInstance->getUi();
+        $ui = $this->m_ownerInstance->getUi();
 
         $filter = $this->getAddFilterString($record);
         if (!empty($filter)) {
@@ -1376,7 +1374,6 @@ class Atk_OneToManyRelation extends Atk_Relation
         // or the destination instance NF_ADD_DIALOG flags has been set we either show the user an
         // add dialog or redirect him/her to the add page (using an atkSubmit)
         else {
-            Atk_Tools::atkimport("atk.ui.atkdialog");
 
             $script = Atk_Dialog::getCloseCall();
 

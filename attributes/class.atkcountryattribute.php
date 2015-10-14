@@ -14,8 +14,7 @@
  * @version $Revision: 6301 $
  * $Id$
  */
-/** @internal includes * */
-Atk_Tools::atkimport("atk.atklanguage");
+
 Atk_Tools::useattrib("atklistattribute");
 
 /**

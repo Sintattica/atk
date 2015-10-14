@@ -14,8 +14,7 @@
  * @version $Revision: 6323 $
  * $Id$
  */
-/** @internal include base class */
-Atk_Tools::atkimport("atk.recordlist.atkcustomrecordlist");
+
 
 /**
  * CVS for Excel recordlist renderer.

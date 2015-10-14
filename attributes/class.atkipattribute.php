@@ -127,7 +127,6 @@ class Atk_IpAttribute extends Atk_Attribute
             return Atk_Tools::atkArrayNvl($rec, $this->fieldName());
 
         // But if the AF_IP_STORENUMERIC flag is set, we store it as long integer
-        Atk_Tools::atkimport("atk.utils.atkiputils");
         return Atk_IpUtils::ipLongFormat(Atk_Tools::atkArrayNvl($rec, $this->fieldName()));
     }
 
@@ -144,7 +143,6 @@ class Atk_IpAttribute extends Atk_Attribute
             return Atk_Tools::atkArrayNvl($rec, $this->fieldName());
 
         // But if the AF_IP_STORENUMERIC flag is set, we load it as long integer
-        Atk_Tools::atkimport("atk.utils.atkiputils");
         return Atk_IpUtils::ipStringFormat(Atk_Tools::atkArrayNvl($rec, $this->fieldName()));
     }
 

@@ -12,7 +12,7 @@
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
  */
-Atk_Tools::atkimport("atk.security.encryption.atkencryption");
+
 Atk_Tools::userelation("atkonetoonerelation");
 
 /**

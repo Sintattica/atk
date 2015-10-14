@@ -14,10 +14,7 @@
  * @version $Revision: 6289 $
  * $Id: class.atkradioattribute.inc 6354 2009-04-15 02:41:21Z mvdam $
  */
-/**
- * @internal Include base class
- */
-Atk_Tools::atkimport("atk.attributes.atklistattribute");
+
 
 /**
  * Flag(s) specific for atkRadioAttribute

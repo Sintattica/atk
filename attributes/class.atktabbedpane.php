@@ -14,8 +14,6 @@
  * @version $Revision: 6309 $
  * $Id$
  */
-Atk_Tools::atkimport("atk.attributes.atkattribute");
-Atk_Tools::atkimport("atk.handlers.atkvieweditbase");
 
 /**
  * Custom flags

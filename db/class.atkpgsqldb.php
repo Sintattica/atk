@@ -294,8 +294,7 @@ class Atk_PgsqlDb extends Atk_Db
      */
     function metadata($table, $full = false)
     {
-        Atk_Tools::atkimport("atk.db.atkddl");
-        $ddl = &Atk_DDL::create("pgsql");
+        $ddl = Atk_DDL::create("pgsql");
 
         if (strpos($table, ".") <> false) {
             // there is a period in the table, so we split out the schema name.

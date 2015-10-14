@@ -15,7 +15,6 @@
  * @version $Revision: 6310 $
  * $Id$
  */
-Atk_Tools::atkimport("atk.handlers.atkactionhandler");
 
 /**
  * Handler class for the edit action of a node. The handler draws a
@@ -155,7 +154,6 @@ class Atk_ViewEditBase extends Atk_ActionHandler
         $initClass = "openedSection";
 
         //if the section is not active, we close it on load.
-        Atk_Tools::atkimport("atk.session.atkstate");
         $default = in_array($field["name"], $this->m_node->getActiveSections($tab, $mode))
                 ? 'opened' : 'closed';
         $sectionstate = Atk_State::get(array("nodetype" => $this->m_node->atknodetype(), "section" => $name), $default);
@@ -226,7 +224,6 @@ class Atk_ViewEditBase extends Atk_ActionHandler
      */
     function partial_sectionstate()
     {
-        Atk_Tools::atkimport("atk.session.atkstate");
         Atk_State::set(array("nodetype" => $this->m_node->atknodetype(), "section" => $this->m_postvars['atksectionname']), $this->m_postvars['atksectionstate']);
         die;
     }

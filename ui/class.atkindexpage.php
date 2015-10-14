@@ -121,10 +121,7 @@ class Atk_IndexPage
      */
     function atkGenerateMenu()
     {
-        /* general menu stuff */
-        /* load menu layout */
-        Atk_Tools::atkimport("atk.menu.atkmenu");
-        $menu = &Atk_Menu::getMenu();
+        $menu = Atk_Menu::getMenu();
 
         if (is_object($menu))
             $this->m_page->addContent($menu->getMenu());

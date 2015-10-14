@@ -373,7 +373,6 @@ class Atk_Relation extends Atk_Attribute
     function parseFilter($destFilter, $record)
     {
         if ($destFilter != "") {
-            Atk_Tools::atkimport("atk.utils.atkstringparser");
             $parser = new Atk_StringParser($destFilter);
             return $parser->parse($record);
         }

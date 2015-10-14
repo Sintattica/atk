@@ -24,7 +24,6 @@
  * @subpackage handlers
  *
  */
-Atk_Tools::atkimport("atk.handlers.atkadminhandler");
 
 class Atk_MultiSelectHandler extends Atk_AdminHandler
 {
@@ -84,7 +83,6 @@ class Atk_MultiSelectHandler extends Atk_AdminHandler
      */
     function parseString($string, $recordset)
     {
-        Atk_Tools::atkimport("atk.utils.atkstringparser");
         $parser = new Atk_StringParser($string);
 
         // for backwardscompatibility reasons, we also support the '[pk]' var.

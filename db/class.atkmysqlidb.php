@@ -203,7 +203,6 @@ class Atk_MysqliDb extends Atk_MysqlDb
     protected function _query($query, $isSystemQuery)
     {
         if (Atk_Config::getGlobal("debug") >= 0) {
-            Atk_Tools::atkimport("atk.utils.atkdebugger");
             Atk_Debugger::addQuery($query, $isSystemQuery);
         }
 
@@ -313,7 +312,6 @@ class Atk_MysqliDb extends Atk_MysqlDb
             $query = "LOCK TABLES $table $mode";
 
             if (Atk_Config::getGlobal("debug") >= 0) {
-                Atk_Tools::atkimport("atk.utils.atkdebugger");
                 Atk_Debugger::addQuery($query);
             }
 
@@ -469,8 +467,7 @@ class Atk_MysqliDb extends Atk_MysqlDb
     {
         /* first connect */
         if ($this->connect('r') == DB_SUCCESS) {
-            Atk_Tools::atkimport("atk.db.atkddl");
-            $ddl = &Atk_DDL::create("mysqli");
+            $ddl = Atk_DDL::create("mysqli");
 
             /* list fields */
             Atk_Tools::atkdebug("Retrieving metadata for $table");

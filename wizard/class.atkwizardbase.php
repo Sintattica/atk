@@ -15,7 +15,6 @@
  * @version $Revision: 6309 $
  * $Id$
  */
-Atk_Tools::atkimport("atk.atkcontroller");
 
 /**
  * atkWizard class which is capable of using atknodes

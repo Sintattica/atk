@@ -21,11 +21,6 @@ define("TA_ADD", 1); //When a none-existing tag was found, the tag is added to t
 define("TA_ERROR", 2); //When a none-existing tag was found, an error is triggered.
 define("TA_IGNORE", 3); //When a none-existing tag is found, the tag is ignored.
 
-/**
- * @internal base include
- */
-Atk_Tools::atkimport("atk.attributes.atkfuzzysearchattribute");
-Atk_Tools::atkimport("atk.attributes.atktextattribute");
 
 /**
  * This attribute is used for adding tags to a node

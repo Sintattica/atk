@@ -312,8 +312,7 @@ class Atk_MsSqlDb extends Atk_MysqlDb
     {
         /* first connect */
         if ($this->connect() == DB_SUCCESS) {
-            Atk_Tools::atkimport("atk.db.atkddl");
-            $ddl = &Atk_DDL::create("mssql");
+            $ddl = Atk_DDL::create("mssql");
 
             /* list fields */
             Atk_Tools::atkdebug("Retrieving metadata for $table");

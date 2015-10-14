@@ -15,7 +15,6 @@
  * @version $Revision: 6323 $
  * $Id$
  */
-Atk_Tools::atkimport("atk.relations.atkrelation");
 
 define('AF_MANYTOMANY_DETAILVIEW', AF_SPECIFIC_5);
 

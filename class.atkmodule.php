@@ -286,8 +286,6 @@ class Atk_Module
     {
         global $config_atkroot;
 
-        /* include the base file */
-        Atk_Tools::atkimport("atk.atknode");
 
         $corporate_base = Atk_Config::getGlobal("corporate_node_base");
         if ($corporate_base != "") {
@@ -297,7 +295,6 @@ class Atk_Module
         /* check for file */
         $file = $this->getNodeFile($node);
         if (!file_exists($file)) {
-            Atk_Tools::atkimport("atk.utils.atkclassloader");
             $res = Atk_ClassLoader::invokeFromString(Atk_Config::getGlobal("missing_class_handler"), array(array("node" => $node, "module" => $this->m_name)));
             if ($res !== false) {
                 return $res;
@@ -531,8 +528,6 @@ class Atk_Module
     {
         global $g_moduleRepository;
 
-        Atk_Tools::atkimport("atk.atknode");
-
         if (!isset($g_moduleRepository[$modname]) || !is_object($g_moduleRepository[$modname])) {
             $corporate_base = Atk_Config::getGlobal("corporate_module_base");
             if ($corporate_base != "") {
@@ -554,7 +549,6 @@ class Atk_Module
                 Atk_Tools::atkdebug("Warning: Deprecated use of short modulename '$modname'. Class in module.inc should be renamed to 'mod_$modname'.");
                 $mod = new $modname();
             } else {
-                Atk_Tools::atkimport("atk.utils.atkclassloader");
                 $mod = Atk_ClassLoader::invokeFromString(Atk_Config::getGlobal("missing_module_handler"), array(array("module" => $modname)));
                 if ($mod === false) {
                     // Changed by Ivo: This used to construct a dummy module, so

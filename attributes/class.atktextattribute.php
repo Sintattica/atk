@@ -18,7 +18,6 @@
  * include
  */
 include_once(Atk_Config::getGlobal("atkroot") . "atk/utils/class.atkbrowsertools.php");
-Atk_Tools::atkimport("atk.attributes.atkattribute");
 
 /**
  * The atkTextAttribute class represents an attribute of a node

@@ -28,11 +28,8 @@
  * @author Sandy Pleyte <sandy@achievo.org>
  * @package atk
  * @subpackage handlers
- * @todo The admin action handler is called when a search is performed. This
- *       should be customizable in the future.
  *
  */
-Atk_Tools::atkimport("atk.handlers.atkabstractsearchhandler");
 
 class Atk_SearchHandler extends Atk_AbstractSearchHandler
 {

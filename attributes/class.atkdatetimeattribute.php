@@ -14,11 +14,6 @@
  * @version $Revision: 6309 $
  * $Id: class.atkdatetimeattribute.inc 6720 2010-02-10 18:34:22Z mvdvelden $
  */
-/**
- * @internal Includes
- */
-Atk_Tools::atkimport("atk.attributes.atkdateattribute");
-Atk_Tools::atkimport("atk.attributes.atktimeattribute");
 
 /**
  * The atkDateTimeAttribute class can be used for date and time entry.

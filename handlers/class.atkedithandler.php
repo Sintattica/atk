@@ -15,7 +15,6 @@
  * @version $Revision: 6351 $
  * $Id$
  */
-Atk_Tools::atkimport("atk.handlers.atkvieweditbase");
 
 /**
  * Handler class for the edit action of a node. The handler draws a

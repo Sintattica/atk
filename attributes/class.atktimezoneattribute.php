@@ -12,8 +12,7 @@
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
  */
-/** @internal includes * */
-Atk_Tools::atkimport("atk.atklanguage");
+
 Atk_Tools::useattrib("atklistattribute");
 
 /**

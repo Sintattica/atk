@@ -16,13 +16,6 @@
  * @version $Revision: 6323 $
  * $Id$
  */
-/**
- * Imports
- * @access private
- */
-Atk_Tools::atkimport("atk.wizard.atkwizardbase");
-Atk_Tools::atkimport("atk.wizard.atkwizardactionloader");
-Atk_Tools::atkimport("atk.wizard.atkwizardpanel");
 
 /**
  * atkWizard modees

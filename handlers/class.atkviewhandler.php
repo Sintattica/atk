@@ -14,7 +14,6 @@
  * @version $Revision: 6310 $
  * $Id$
  */
-Atk_Tools::atkimport("atk.handlers.atkvieweditbase");
 
 /**
  * Handler class for a readonly view action. Similar to the edit handler,

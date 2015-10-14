@@ -14,7 +14,6 @@
  * @version $Revision: 6309 $
  * $Id$
  */
-Atk_Tools::atkimport("atk.attributes.atkattribute");
 
 /**
  * With the atkExpressionAttribute class you can select arbitrary SQL expressions

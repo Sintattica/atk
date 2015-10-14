@@ -260,7 +260,6 @@ class Atk_DocumentWriter
         if ($format == "opendocument") {
             if ($s_oo_instance == NULL) {
                 Atk_Tools::atkdebug("Creating a new atkOpenDocumentWriter instance");
-                Atk_Tools::atkimport("atk.document.atkopendocumentwriter");
                 $s_oo_instance = new Atk_OpenDocumentWriter();
             }
 
@@ -268,7 +267,6 @@ class Atk_DocumentWriter
         } else if ($format == "docx") {
             if ($s_docx_instance == NULL) {
                 Atk_Tools::atkdebug("Creating a new atkDocxWriter instance");
-                Atk_Tools::atkimport("atk.document.atkdocxwriter");
                 $s_docx_instance = new Atk_DocxWriter();
             }
 
