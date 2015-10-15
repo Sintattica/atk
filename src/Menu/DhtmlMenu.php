@@ -4,6 +4,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Ui\Page;
 
 /**
  * Implementation of the dhtml menu.
@@ -105,7 +106,7 @@ class DhtmlMenu extends menuinterface
         $divs .= '<div id="T1' . $tab . '" class="tab-body"><a class="tablink" href="index.php?atklogout=1" target="_top">' . Tools::atktext("logout",
                 "atk") . '</a></div>' . "\n";
 
-        $page = Tools::atknew("atk.ui.atkpage");
+        $page = new Page();
         $theme = Theme::getInstance();
         $page->register_style($theme->stylePath("style.css"));
         $page->register_style($theme->stylePath("dhtmlmenu.css"));

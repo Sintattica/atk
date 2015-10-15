@@ -1,5 +1,11 @@
 <?php namespace Sintattica\Atk\Menu;
 
+
+use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Ui\Theme;
+use Sintattica\Atk\Core\Config;
+
 /**
  * Implementation of the Dropdowntext menu.
  *

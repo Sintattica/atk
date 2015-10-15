@@ -62,7 +62,7 @@ $layout .= "</table>";
 $layout .= "</form>";
 
 //  Display's the picker in the current ATK style-template
-$page = Tools::atknew("atk.ui.atkpage");
+$page = new Page();;
 $theme = Theme::getInstance();
 $output = Output::getInstance();
 

@@ -1,19 +1,8 @@
 <?php namespace Sintattica\Atk\Menu;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage menu
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6347 $
- * $Id$
- */
+
+
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Security\SecurityManager;
 
 /**
  * Abstract baseclass (interface) for all menu implementations. Any menu
@@ -25,7 +14,7 @@
  * @package atk
  * @subpackage menu
  */
-class menuinterface
+class MenuInterface
 {
     var $m_height;
 
@@ -43,7 +32,7 @@ class menuinterface
      *
      * @param String $menuitem Menuitem to translate
      * @param String $modname Module to which the menuitem belongs
-     * @return Translation of the given menuitem
+     * @return string Translation of the given menuitem
      */
     function getMenuTranslation($menuitem, $modname = 'atk')
     {
@@ -124,7 +113,7 @@ class menuinterface
      * Recursively checks if a menuitem should be enabled or not.
      *
      * @param array $menuitem menuitem array
-     * @return enabled?
+     * @return bool enabled?
      */
     function isEnabled($menuitem)
     {

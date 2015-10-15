@@ -1,5 +1,12 @@
 <?php namespace Sintattica\Atk\Menu;
 
+
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Ui\Theme;
+use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Ui\Ui;
+
 /**
  * Implementation of the plaintext menu.
  *
@@ -8,14 +15,14 @@
  * @package atk
  * @subpackage menu
  */
-class PlainMenu extends menuinterface
+class PlainMenu extends MenuInterface
 {
     var $m_height;
 
     /**
      * Constructor
      *
-     * @return atkPlainMenu
+     * @return PlainMenu
      */
     function __construct()
     {
@@ -29,9 +36,7 @@ class PlainMenu extends menuinterface
     function render()
     {
         $page = Page::getInstance();
-        $theme = Theme::getInstance();
         $page->addContent($this->getMenu());
-
         return $page->render("Menu", true);
     }
 
@@ -44,8 +49,9 @@ class PlainMenu extends menuinterface
     {
         global $ATK_VARS, $g_menu, $g_menu_parent;
         $atkmenutop = Tools::atkArrayNvl($ATK_VARS, "atkmenutop", "main");
-        $theme = Tools::atkinstance('atk.ui.atktheme');
-        $page = Tools::atkinstance('atk.atkpage');
+        $theme = Theme::getInstance();
+        $page = Page::getInstance();
+        $delimiter = '';
 
         $menu = $this->getHeader($atkmenutop);
         if (is_array($g_menu[$atkmenutop])) {
