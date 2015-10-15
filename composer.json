@@ -4,5 +4,10 @@
     "homepage": "https://github.com/sintattica/atk",
     "type": "library",
     "license": "MIT",
-    "keywords": ["framework"]
+    "keywords": ["framework"],
+    "autoload": [
+        "psr-4": {
+            "Sintattica\\Atk\\": "src"
+        }
+    ]
 }
