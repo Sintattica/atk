@@ -58,7 +58,7 @@ class Atk_MlTextAttribute extends Atk_MlAttribute
         $id = $this->getHtmlId($prefix);
         $this->m_languages = $languages;
         /* register javascript */
-        $page = &Atk_Page::getInstance();
+        $page = Atk_Page::getInstance();
         $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atkmultilanguage.js.php");
         //$page->register_submitscript('submitSave(form);');
 

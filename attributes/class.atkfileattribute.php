@@ -681,7 +681,7 @@ class Atk_FileAttribute extends Atk_Attribute
                     } else {
                         $imagehw = Array("0" => "640", "1" => "480");
                     }
-                    $page = &Atk_Page::getInstance();
+                    $page = Atk_Page::getInstance();
                     $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/newwindow.js");
                     return '<a href="' . $this->m_url . $filename . '" alt="' . $filename . '" onclick="NewWindow(this.href,\'name\',\'' . ($imagehw[0] + 50) . '\',\'' . ($imagehw[1] + 50) . '\',\'yes\');return false;">' . $filename . '</a>';
                 }

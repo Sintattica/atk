@@ -48,7 +48,7 @@ class auth_sspi extends auth_db
         if (isset($ATK_VARS["atklogout"])) {
             if ($this->validateUser() == AUTH_SUCCESS) {
                 // On se reconnecte par defaut
-                $session = &Atk_SessionManager::getSession();
+                $session = Atk_SessionManager::getSession();
 
                 $session["relogin"] = 1;
             }
@@ -88,7 +88,7 @@ class auth_sspi extends auth_db
         $firstload = !isset($_SERVER["PHP_AUTH_USER"]);
         $_SERVER["PHP_AUTH_USER"] = "";
         $ATK_VARS["auth_user"] = "";
-        $db = &Atk_Tools::atkGetDb(Atk_Config::getGlobal("auth_database"));
+        $db = Atk_Tools::atkGetDb(Atk_Config::getGlobal("auth_database"));
         $query = $this->buildSelectUserQuery($user, Atk_Config::getGlobal("auth_usertable"), Atk_Config::getGlobal("auth_userfield"), Atk_Config::getGlobal("auth_sspi_accountfield"), Atk_Config::getGlobal("auth_accountdisablefield"), Atk_Config::getGlobal("auth_accountenableexpression"));
 
         $recs = $db->getrows($query);
@@ -127,7 +127,7 @@ class auth_sspi extends auth_db
         $groupfield = Atk_Config::getGlobal("auth_groupfield");
         $groupparentfield = Atk_Config::getGlobal("auth_groupparentfield");
 
-        $db = &Atk_Tools::atkGetDb(Atk_Config::getGlobal("auth_database"));
+        $db = Atk_Tools::atkGetDb(Atk_Config::getGlobal("auth_database"));
         if ($usertable == $leveltable || $leveltable == "") {
             // Level and userid are stored in the same table.
             // This means one user can only have one level.

@@ -62,7 +62,7 @@ class Atk_AddHandler extends Atk_ActionHandler
         $record = $this->getRejectInfo();
 
         $page = &$this->getPage();
-        $controller = &Atk_controller::getInstance();
+        $controller = Atk_controller::getInstance();
         $page->addContent($controller->renderActionPage("add", $this->invoke("addPage", $record)));
     }
 
@@ -201,7 +201,7 @@ class Atk_AddHandler extends Atk_ActionHandler
      */
     function getFormStart()
     {
-        $controller = &Atk_controller::getInstance();
+        $controller = Atk_controller::getInstance();
         $controller->setNode($this->m_node);
 
         $node = &$this->m_node;
@@ -292,7 +292,7 @@ class Atk_AddHandler extends Atk_ActionHandler
     function getFormButtons($record = null)
     {
         if ($this->m_partial == 'dialog') {
-            $controller = &Atk_Controller::getInstance();
+            $controller = Atk_Controller::getInstance();
             $result = array();
             $result[] = $controller->getDialogButton('save', null, $this->getDialogSaveUrl(), $this->getDialogSaveParams());
             $result[] = $controller->getDialogButton('cancel');

@@ -192,7 +192,7 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
     function getAddOrCopyPage()
     {
         $url = $this->getProcessUrl();
-        $controller = &Atk_Controller::getInstance();
+        $controller = Atk_Controller::getInstance();
 
         $params = array();
         $params["formstart"] = $this->getFormStart();
@@ -256,7 +256,7 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
      */
     function getFormStart()
     {
-        $controller = &Atk_Controller::getInstance();
+        $controller = Atk_Controller::getInstance();
         $formstart = '<form id="dialogform" name="dialogform" action="' . $controller->getPhpFile() . '?' . SID . '" method="post">';
         return $formstart;
     }

@@ -176,7 +176,7 @@ class Atk_CustomRecordList extends Atk_RecordList
 
         if ($this->m_exportcsv) {
             $ext = ($type == "0" ? "html" : "csv");
-            $exporter = &Atk_Tools::atknew("atk.utils.atkfileexport");
+            $exporter = Atk_Tools::atknew("atk.utils.atkfileexport");
             $exporter->export($output, $outputparams["filename"], $ext, $ext, $compression);
         } else {
             return $output;

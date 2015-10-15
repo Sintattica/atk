@@ -944,7 +944,7 @@ class Atk_DateAttribute extends Atk_Attribute
      */
     function _getDateArraySearchCondition($query, $table, $value)
     {
-        $db = &Atk_Tools::atkGetDb();
+        $db = Atk_Tools::atkGetDb();
         $fromvalue = $this->_MakeDateForCondition($value["from"]);
         $tovalue = $this->_MakeDateForCondition($value["to"]);
 

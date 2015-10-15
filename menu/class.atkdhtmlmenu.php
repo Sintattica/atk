@@ -112,8 +112,8 @@ class Atk_DhtmlMenu extends Atk_menuinterface
         $tabs .= '   rows[1][' . $tab . '] = "Opties"' . "\n";
         $divs .= '<div id="T1' . $tab . '" class="tab-body"><a class="tablink" href="index.php?atklogout=1" target="_top">' . Atk_Tools::atktext("logout", "atk") . '</a></div>' . "\n";
 
-        $page = &Atk_Tools::atknew("atk.ui.atkpage");
-        $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
+        $page = Atk_Tools::atknew("atk.ui.atkpage");
+        $theme = Atk_Tools::atkinstance("atk.ui.atktheme");
         $page->register_style($theme->stylePath("style.css"));
         $page->register_style($theme->stylePath("dhtmlmenu.css"));
         $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/atk_tabs.js");

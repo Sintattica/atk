@@ -59,9 +59,9 @@ $layout .= "</table>";
 $layout .= "</form>";
 
 //  Display's the picker in the current ATK style-template
-$page = &Atk_Tools::atknew("atk.ui.atkpage");
-$theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
-$output = &Atk_Output::getInstance();
+$page = Atk_Tools::atknew("atk.ui.atkpage");
+$theme = Atk_Tools::atkinstance("atk.ui.atktheme");
+$output = Atk_Output::getInstance();
 
 $page->register_style($theme->stylePath("style.css"));
 $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/colorpicker.js");

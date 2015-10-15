@@ -260,7 +260,7 @@ class Atk_Wizard extends Atk_WizardBase
                 if ($this->getReturnOutput())
                     return $finishOutput;
                 else {
-                    $output = &Atk_Output::getInstance();
+                    $output = Atk_Output::getInstance();
                     $output->output($finishOutput);
                     return "";
                 }

@@ -215,7 +215,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
         // hierarchic groups, only return actions of parent (if this record has a parent)
         $parentAttr = $this->m_parentAttrName;
         if (!empty($parentAttr) && is_numeric($record[$parentAttr])) {
-            $db = &Atk_Tools::atkGetDb();
+            $db = Atk_Tools::atkGetDb();
             $query = "SELECT DISTINCT node, action FROM " . Atk_Config::getGlobal("auth_accesstable") . " " .
                 "WHERE " . $this->m_accessField . " = " . $record[$parentAttr];
             $rows = $db->getRows($query);
@@ -280,7 +280,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
             $levels = "'" . implode("','", $user['level']) . "'";
 
         // retrieve editable actions by user's levels
-        $db = &Atk_Tools::atkGetDb();
+        $db = Atk_Tools::atkGetDb();
         $query = "SELECT DISTINCT node, action FROM " . Atk_Config::getGlobal("auth_accesstable") . " WHERE " . $this->m_accessField . " IN (" . $levels . ")";
         $rows = $db->getRows($query);
 
@@ -335,7 +335,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
     public function display($record)
     {
         $user = Atk_SecurityManager::atkGetUser();
-        $page = &Atk_Page::getInstance();
+        $page = Atk_Page::getInstance();
         $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atkprofileattribute.js.php");
         $this->_restoreDivStates($page);
 
@@ -435,7 +435,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $user = Atk_SecurityManager::atkGetUser();
-        $page = &Atk_Page::getInstance();
+        $page = Atk_Page::getInstance();
         $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atkprofileattribute.js.php");
 
         $this->_restoreDivStates($page);

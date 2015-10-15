@@ -90,7 +90,7 @@ class Atk_MlAttribute extends Atk_Attribute
     {
         $this->m_edited = true;
         /* register javascript */
-        $page = &Atk_Page::getInstance();
+        $page = Atk_Page::getInstance();
         $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atkmultilanguage.js.php");
 
         $languages = $this->getLanguages();

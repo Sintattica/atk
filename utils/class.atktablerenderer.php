@@ -227,8 +227,8 @@ class Atk_TableRenderer
      */
     function registerStyle($style, $module = "")
     {
-        $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
-        $page = &Atk_Page::getInstance();
+        $theme = Atk_Tools::atkinstance("atk.ui.atktheme");
+        $page = Atk_Page::getInstance();
         $page->register_style($theme->stylePath($style . ".css", $module));
     }
 
@@ -281,7 +281,7 @@ class Atk_TableRenderer
      *
      * <b>Example:</b>
      * <code>
-     *  $tbl = &Atk_Tools::atknew("atk.utils.atktablerenderer");
+     *  $tbl = Atk_Tools::atknew("atk.utils.atktablerenderer");
      *  $tbl->render($data, TBL_HEADER|TBL_ALTERNATE, "recordlist");
      * </code>
      *

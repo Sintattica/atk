@@ -463,7 +463,7 @@ class Atk_DDL
     function executeCreate()
     {
         if (!isset($this->m_db))
-            $this->m_db = &Atk_Tools::atkGetDb();
+            $this->m_db = Atk_Tools::atkGetDb();
 
         $query = $this->buildCreate();
         if ($query != "") {
@@ -488,7 +488,7 @@ class Atk_DDL
     function executeAlter()
     {
         if (!isset($this->m_db))
-            $this->m_db = &Atk_Tools::atkGetDb();
+            $this->m_db = Atk_Tools::atkGetDb();
 
         $queries = $this->buildAlter();
         if (count($queries) > 0) {
@@ -515,7 +515,7 @@ class Atk_DDL
     function executeDrop()
     {
         if (!isset($this->m_db))
-            $this->m_db = &Atk_Tools::atkGetDb();
+            $this->m_db = Atk_Tools::atkGetDb();
 
         $query = $this->buildDrop();
         if ($query != "") {
@@ -538,7 +538,7 @@ class Atk_DDL
     function executeCreateView($name, $select, $with_check_option)
     {
         if (!isset($this->m_db))
-            $this->m_db = &Atk_Tools::atkGetDb();
+            $this->m_db = Atk_Tools::atkGetDb();
 
         $query = $this->buildView($name, $select, $with_check_option);
         if ($query != "") {
@@ -573,7 +573,7 @@ class Atk_DDL
     function executeDropView($name)
     {
         if (!isset($this->m_db))
-            $this->m_db = &Atk_Tools::atkGetDb();
+            $this->m_db = Atk_Tools::atkGetDb();
 
         $query = $this->dropView($name);
         if ($query != "") {

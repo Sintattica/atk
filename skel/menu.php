@@ -30,7 +30,7 @@ include_once("atk.php");
 Atk_SessionManager::atksession();
 atksecure();
 
-$output = &Atk_Output::getInstance();
+$output = Atk_Output::getInstance();
 
 /* general menu stuff */
 /* load menu layout */

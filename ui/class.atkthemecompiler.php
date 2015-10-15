@@ -138,7 +138,7 @@ class Atk_ThemeCompiler
      */
     function scanThemePath($path, $abspath, &$data)
     {
-        $traverser = &Atk_Tools::atknew("atk.utils.atkdirectorytraverser");
+        $traverser = Atk_Tools::atknew("atk.utils.atkdirectorytraverser");
         $subitems = $traverser->getDirContents($abspath);
         foreach ($subitems as $name) {
             if (in_array($name, array("images", "styles", "templates"))) { // images, styles and templates are compiled the same
@@ -181,7 +181,7 @@ class Atk_ThemeCompiler
     {
         global $g_modules;
 
-        $traverser = &Atk_Tools::atknew("atk.utils.atkdirectorytraverser");
+        $traverser = Atk_Tools::atknew("atk.utils.atkdirectorytraverser");
         foreach ($g_modules as $module => $modpath) {
             $abspath = $modpath . "themes/" . $theme . "/";
 
@@ -216,7 +216,7 @@ class Atk_ThemeCompiler
     function _dirContents($path)
     {
         $files = array();
-        $traverser = &Atk_Tools::atknew("atk.utils.atkdirectorytraverser");
+        $traverser = Atk_Tools::atknew("atk.utils.atkdirectorytraverser");
         $traverser->addExclude('/^\.(.*)/'); // ignore everything starting with a '.'
         $traverser->addExclude('/^CVS$/');   // ignore CVS directories
         $files = $traverser->getDirContents($path);

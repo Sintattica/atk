@@ -235,7 +235,7 @@ class Atk_Dialog
 
         Atk_Tools::atkimport('atk.ui.atkpage');
 
-        $page = &Atk_Page::getInstance();
+        $page = Atk_Page::getInstance();
         $page->register_script(Atk_Config::getGlobal('atkroot') . 'atk/javascript/prototype-ui/window/window.packed.js');
         $page->register_script(Atk_Config::getGlobal('atkroot') . 'atk/javascript/prototype-ui-ext.js');
         $page->register_script(Atk_Config::getGlobal('atkroot') . 'atk/javascript/class.atkdialog.js');

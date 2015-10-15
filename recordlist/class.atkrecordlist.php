@@ -140,8 +140,8 @@ class Atk_RecordList
         $this->setNode($node);
         $this->m_flags = $flags;
 
-        $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
-        $page = &Atk_Page::getInstance();
+        $theme = Atk_Tools::atkinstance("atk.ui.atktheme");
+        $page = Atk_Page::getInstance();
         $page->register_style($theme->stylePath("recordlist.css", $this->m_node->m_module));
 
         $listName = "rl_" . getUniqueId("normalRecordList");
@@ -547,7 +547,7 @@ class Atk_RecordList
             }
 
             if (Atk_Config::getGlobal("use_keyboard_handler")) {
-                $kb = &Atk_Keyboard::getInstance();
+                $kb = Atk_Keyboard::getInstance();
                 $kb->addRecordListHandler($listName, $selectcolor, count($records));
             }
 

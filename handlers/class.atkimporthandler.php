@@ -99,7 +99,7 @@ class Atk_ImportHandler extends Atk_ActionHandler
      */
     function importPage($phase, $content)
     {
-        $controller = &Atk_Controller::getInstance();
+        $controller = Atk_Controller::getInstance();
         $action = $controller->getPhpFile() . '?' . SID;
 
         $formStart = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="' . $action . '" method="post">' .
@@ -223,7 +223,7 @@ class Atk_ImportHandler extends Atk_ActionHandler
      */
     function doAnalyze($fileid, $importerrors = array())
     {
-        $sessionMgr = &Atk_SessionManager::atkGetSessionManager();
+        $sessionMgr = Atk_SessionManager::atkGetSessionManager();
         $filename = $this->getTmpFileDestination($fileid);
 
         $rows = $this->getSampleRows($filename);
@@ -281,7 +281,7 @@ class Atk_ImportHandler extends Atk_ActionHandler
         </div>';
 
         $page = &$this->m_node->getPage();
-        $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
+        $theme = Atk_Tools::atkinstance("atk.ui.atktheme");
         $page->register_style($theme->stylePath("recordlist.css"));
         $this->invoke('importPage', 'analyze', $content);
     }
@@ -1018,7 +1018,7 @@ class Atk_ImportHandler extends Atk_ActionHandler
 
         // register message
         Atk_Tools::atkimport('atk.utils.atkmessagequeue');
-        $messageQueue = &Atk_MessageQueue::getInstance();
+        $messageQueue = Atk_MessageQueue::getInstance();
 
         $count = count((array) $validated['validatedrecs']['add']) + count((array) $validated['validatedrecs']['update']);
         if ($count == 0) {

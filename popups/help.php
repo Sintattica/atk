@@ -43,10 +43,10 @@ $data = '<div align="left">';
 $data .= implode("<br>", file($file));
 $data .='</div>';
 
-$page = &Atk_Tools::atknew("atk.ui.atkpage");
-$ui = &Atk_Tools::atkinstance("atk.ui.atkui");
+$page = Atk_Tools::atknew("atk.ui.atkpage");
+$ui = Atk_Tools::atkinstance("atk.ui.atkui");
 
-$output = &Atk_Output::getInstance();
+$output = Atk_Output::getInstance();
 
 $page->register_style($ui->stylePath("style.css"));
 

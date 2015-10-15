@@ -109,8 +109,8 @@ class Atk_RecordlistCache
         $this->_setCacheId();
 
         if (file_exists($this->m_cacheid) && filesize($this->m_cacheid) && !$this->noCaching()) {
-            $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
-            $page = &Atk_Page::getInstance();
+            $theme = Atk_Tools::atkinstance("atk.ui.atktheme");
+            $page = Atk_Page::getInstance();
 
             $page->register_style($theme->stylePath("recordlist.css"));
             $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/formselect.js");

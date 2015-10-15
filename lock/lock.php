@@ -24,7 +24,7 @@ global $ATK_VARS;
 $id = (int) $ATK_VARS["id"];
 $type = ($ATK_VARS["type"] == "xml") ? "xml" : "image";
 
-$lock = &Atk_Lock::getInstance();
+$lock = Atk_Lock::getInstance();
 
 /* extend lock lease */
 if ($lock->extend($id)) {

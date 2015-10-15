@@ -82,7 +82,7 @@ class Atk_TableRendererGrouped extends Atk_TableRenderer
         parent::__construct($flags, $style, $module);
         $this->setClass('groupheader', 0, 'firstcol');
         // Include tools.js for the toggleDisplay function
-        $page = &Atk_Page::getInstance();
+        $page = Atk_Page::getInstance();
         $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/tools.js");
     }
 

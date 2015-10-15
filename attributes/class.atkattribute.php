@@ -1045,7 +1045,7 @@ class Atk_Attribute
                 $spinnerCode = '';
             }
 
-            $page = &Atk_Tools::atkinstance("atk.ui.atkpage");
+            $page = Atk_Tools::atkinstance("atk.ui.atkpage");
             $page->register_scriptcode("
     function " . $this->getHtmlId($fieldprefix) . $elementNr . "_onChange(el)
     {
@@ -2469,7 +2469,7 @@ class Atk_Attribute
     function registerKeyListener($id, $navkeys = KB_CTRLCURSOR)
     {
         if (Atk_Config::getGlobal("use_keyboard_handler")) {
-            $kb = &Atk_Keyboard::getInstance();
+            $kb = Atk_Keyboard::getInstance();
             $kb->addFormElementHandler($id, $navkeys);
         }
 

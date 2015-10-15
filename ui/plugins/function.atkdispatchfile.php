@@ -23,6 +23,6 @@
  */
 function smarty_function_atkdispatchfile($params, &$smarty)
 {
-    $c = &Atk_Tools::atkinstance("atk.atkcontroller");
+    $c = Atk_Tools::atkinstance("atk.atkcontroller");
     return $c->getPhpFile();
 }

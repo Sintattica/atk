@@ -355,7 +355,7 @@ class Atk_ClassLoader
 
         list($class, $method) = explode("#", $str);
         if ($class != "" && $method != "") {
-            $handler = &Atk_Tools::atknew($class);
+            $handler = Atk_Tools::atknew($class);
             if (is_object($handler)) {
                 return call_user_func_array(array($handler, $method), $params);
             }

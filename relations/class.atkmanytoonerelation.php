@@ -961,7 +961,7 @@ class Atk_ManyToOneRelation extends Atk_Relation
     {
         $autolink = array();
         if ($this->hasFlag(AF_RELATION_AUTOLINK)) { // auto edit/view link
-            $page = &Atk_Page::getInstance();
+            $page = Atk_Page::getInstance();
             $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atkmanytoonerelation.js");
 
             if ($this->m_destInstance->allowed("edit")) {

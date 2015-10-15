@@ -71,10 +71,10 @@ class Atk_IndexPage
     function __construct()
     {
         global $ATK_VARS;
-        $this->m_page = &Atk_Tools::atkinstance("atk.ui.atkpage");
-        $this->m_ui = &Atk_Tools::atkinstance("atk.ui.atkui");
-        $this->m_theme = &Atk_Tools::atkinstance('atk.ui.atktheme');
-        $this->m_output = &Atk_Tools::atkinstance('atk.ui.atkoutput');
+        $this->m_page = Atk_Tools::atkinstance("atk.ui.atkpage");
+        $this->m_ui = Atk_Tools::atkinstance("atk.ui.atkui");
+        $this->m_theme = Atk_Tools::atkinstance('atk.ui.atktheme');
+        $this->m_output = Atk_Tools::atkinstance('atk.ui.atkoutput');
         $this->m_user = Atk_SecurityManager::atkGetUser();
         $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL
                 : HTML_STRICT;
@@ -226,7 +226,7 @@ class Atk_IndexPage
     function atkGenerateDispatcher()
     {
         global $ATK_VARS;
-        $session = &Atk_SessionManager::getSession();
+        $session = Atk_SessionManager::getSession();
 
         if ($session["login"] != 1) {
             // no nodetype passed, or session expired
@@ -257,7 +257,7 @@ class Atk_IndexPage
                 $obj = Atk_Module::atkGetNode($ATK_VARS['atknodetype']);
 
                 if (is_object($obj)) {
-                    $controller = &Atk_Tools::atkinstance("atk.atkcontroller");
+                    $controller = Atk_Tools::atkinstance("atk.atkcontroller");
                     $controller->invoke("loadDispatchPage", $ATK_VARS);
                 } else {
                     Atk_Tools::atkdebug("No object created!!?!");
@@ -265,7 +265,7 @@ class Atk_IndexPage
             } else {
 
                 if (is_array($this->m_defaultDestination)) {
-                    $controller = &Atk_Tools::atkinstance("atk.atkcontroller");
+                    $controller = Atk_Tools::atkinstance("atk.atkcontroller");
                     $controller->invoke("loadDispatchPage", $this->m_defaultDestination);
                 } else {
                     $this->m_page->register_style($this->m_theme->stylePath("style.css"));

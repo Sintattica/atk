@@ -83,7 +83,7 @@ class Atk_FixtureManager
 
         if (!isset($this->m_loaders[$class])) {
             Atk_Tools::atkimport('atk.fixture.atkabstractfixtureloader');
-            $this->m_loaders[$class] = &Atk_Tools::atknew($class);
+            $this->m_loaders[$class] = Atk_Tools::atknew($class);
         }
 
         return $this->m_loaders[$class];
@@ -258,6 +258,6 @@ class Atk_FixtureManager
 }
 
 // register ATK default loaders
-$manager = &Atk_FixtureManager::getInstance();
+$manager = Atk_FixtureManager::getInstance();
 $manager->registerLoader('atk.fixture.atkyamlfixtureloader', array('yml', 'yaml'));
 $manager->registerLoader('atk.fixture.atkphpfixtureloader', array('php'));

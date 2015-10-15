@@ -35,7 +35,7 @@
  */
 function smarty_function_atkstyle($params, &$smarty)
 {
-    $page = &Atk_Page::getInstance();
+    $page = Atk_Page::getInstance();
     $page->register_style($params["file"], $params["media"]);
     return "";
 }

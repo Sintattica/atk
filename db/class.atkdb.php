@@ -1174,7 +1174,7 @@ class Atk_Db
      */
     function &createQuery()
     {
-        $query = &Atk_Tools::atknew("atk.db.atk" . $this->m_type . "query");
+        $query = Atk_Tools::atknew("atk.db.atk" . $this->m_type . "query");
         $query->m_db = &$this;
         return $query;
     }
@@ -1253,7 +1253,7 @@ class Atk_Db
     function &createDDL()
     {
         Atk_Tools::atkimport("atk.db.atkddl");
-        $ddl = &Atk_DDL::create($this->m_type);
+        $ddl = Atk_DDL::create($this->m_type);
         $ddl->m_db = &$this;
         return $ddl;
     }

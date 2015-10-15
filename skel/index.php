@@ -29,17 +29,17 @@ include_once("atk.php");
 Atk_SessionManager::atksession();
 atksecure();
 
-$theme = &Atk_Tools::atkinstance('atk.ui.atktheme');
+$theme = Atk_Tools::atkinstance('atk.ui.atktheme');
 if (Atk_Config::getGlobal("fullscreen")) {
     // Fullscreen mode. Use index.php as launcher, and launch app.php fullscreen.
 
     Atk_SessionManager::atksession();
     atksecure();
 
-    $page = &Atk_Tools::atknew("atk.ui.atkpage");
-    $ui = &Atk_Tools::atkinstance("atk.ui.atkui");
-    $theme = &Atk_Theme::getInstance();
-    $output = &Atk_Output::getInstance();
+    $page = Atk_Tools::atknew("atk.ui.atkpage");
+    $ui = Atk_Tools::atkinstance("atk.ui.atkui");
+    $theme = Atk_Theme::getInstance();
+    $output = Atk_Output::getInstance();
 
     $page->register_style($theme->stylePath("style.css"));
     $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/launcher.js");
@@ -60,7 +60,7 @@ if (Atk_Config::getGlobal("fullscreen")) {
         // Regular mode. app.php can be included directly.
         include "app.php";
     } else {
-        $indexpage = &Atk_Tools::atknew('atk.ui.atkindexpage');
+        $indexpage = Atk_Tools::atknew('atk.ui.atkindexpage');
         $indexpage->generate();
     }
 }

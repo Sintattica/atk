@@ -313,7 +313,7 @@ class Atk_OneToOneRelation extends Atk_Relation
     {
         $classname = $this->m_destination;
         $cache_id = $this->m_owner . "." . $this->m_name;
-        $rel = &Atk_Module::atkGetNode($classname, true, $cache_id);
+        $rel = Atk_Module::atkGetNode($classname, true, $cache_id);
         Atk_Tools::atkdebug("O2O DELETE for $classname: " . $this->m_refKey . "=" . $record[$this->m_ownerInstance->primaryKeyField()]);
 
         if ($this->m_refKey != "") {

@@ -328,7 +328,7 @@ class Atk_ActionHandler
     {
         static $recordlistcache;
         if (!$recordlistcache) {
-            $recordlistcache = &Atk_Tools::atknew("atk.recordlist.atkrecordlistcache");
+            $recordlistcache = Atk_Tools::atknew("atk.recordlist.atkrecordlistcache");
             $recordlistcache->setNode($this->m_node);
             $recordlistcache->setPostvars($this->m_postvars);
         }
@@ -417,7 +417,7 @@ class Atk_ActionHandler
      */
     function _getAccessDeniedPage()
     {
-        $controller = &Atk_Controller::getInstance();
+        $controller = Atk_Controller::getInstance();
         $controller->setNode($this->m_node);
         return $controller->accessDeniedPage();
     }

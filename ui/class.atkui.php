@@ -149,7 +149,7 @@ class Atk_UI
     function renderTabs($vars, $module = "")
     {
         if ($this->m_theme->getAttribute("tabtype") == "dhtml") {
-            $page = &Atk_Page::getInstance();
+            $page = Atk_Page::getInstance();
             $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/tools.js");
         }
         return $this->render("tabs.tpl", $vars, $module);

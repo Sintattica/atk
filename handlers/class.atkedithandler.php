@@ -296,7 +296,7 @@ class Atk_EditHandler extends Atk_ViewEditBase
      */
     function getFormStart()
     {
-        $controller = &Atk_controller::getInstance();
+        $controller = Atk_controller::getInstance();
         $controller->setNode($this->m_node);
 
         $formIdentifier = ((isset($this->m_partial) && $this->m_partial != "")) ? "dialogform"
@@ -334,7 +334,7 @@ class Atk_EditHandler extends Atk_ViewEditBase
     function getFormButtons($record = null)
     {
         if ($this->m_partial == 'dialog' || $this->m_partial == 'editdialog') {
-            $controller = &Atk_Controller::getInstance();
+            $controller = Atk_Controller::getInstance();
             $result = array();
             $result[] = $controller->getDialogButton('save', null, $this->getDialogSaveUrl(), $this->getDialogSaveParams());
             $result[] = $controller->getDialogButton('cancel');
@@ -439,7 +439,7 @@ class Atk_EditHandler extends Atk_ViewEditBase
             /* obligatory indicator */
             if ($field["obligatory"]) {
                 // load images
-                $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
+                $theme = Atk_Tools::atkinstance("atk.ui.atktheme");
                 $reqimg = '<img align="top" src="' . $theme->imgPath("required_field.gif") . '" border="0"
                      alt="' . Atk_Tools::atktext("field_obligatory") . '" title="' . Atk_Tools::atktext("field_obligatory") . '">';
 
@@ -623,7 +623,7 @@ class Atk_EditHandler extends Atk_ViewEditBase
         if ($template) {
             $result .= $ui->render($template, $params);
         } else {
-            $theme = &Atk_Theme::getInstance();
+            $theme = Atk_Theme::getInstance();
             if ($theme->tplPath("editform_common.tpl") > "") {
                 $tabTpl = $this->_getTabTpl($node, $tabs, $mode, $record);
                 $params['fieldspart'] = $this->_renderTabs($fields, $tabTpl);

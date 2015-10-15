@@ -31,7 +31,7 @@ class Atk_Language
     /**
      * Instance.
      * 
-     * @var atkLanguage
+     * @var Atk_Language
      */
     private static $s_instance = null;
 
@@ -99,7 +99,7 @@ class Atk_Language
      * Using this function will ensure that only 1 instance ever exists
      * (singleton).
      *
-     * @return atkLanguage Instance of the atkLanguage class
+     * @return Atk_Language Instance of the atkLanguage class
      */
     public static function getInstance()
     {
@@ -220,7 +220,6 @@ class Atk_Language
             $lng = Atk_Language::getLanguage();
         $atklanguage = Atk_Language::getInstance();
 
-        $text = $atklanguage->_getStringFromFile($key, $module, $lng);
         $atklanguage->_includeLanguage($module, $lng);
 
         if (isset($atklanguage->m_cachedlang[$module]) && is_array($atklanguage->m_cachedlang[$module][$lng])) {
@@ -267,14 +266,12 @@ class Atk_Language
      * fails, we return the default language.
      *
      * @static
-     * @return unknown
+     * @return string
      */
     public static function getUserLanguage()
     {
         $supported = Atk_Language::getSupportedLanguages();
-        $sessionmanager = null;
-        if (function_exists('atkGetSessionManager'))
-            $sessionmanager = &Atk_SessionManager::atkGetSessionManager();
+        $sessionmanager = Atk_SessionManager::atkGetSessionManager();
         if (!empty($sessionmanager)) {
             if (function_exists("getUser")) {
                 $userinfo = Atk_SecurityManager::atkGetUser();
@@ -303,6 +300,7 @@ class Atk_Language
      */
     public static function getLanguageFromHeaders()
     {
+        $autolng = null;
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             $langs = split('[,;]', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
             if ($langs[0] != "") {
@@ -333,9 +331,9 @@ class Atk_Language
     {
         $supportedlanguagesmodule = Atk_Config::getGlobal('supported_languages_module');
         if (self::$s_supportedLanguages == null && $supportedlanguagesmodule) {
-            $supportedlanguagesdir = Atk_Language::getInstance()->getLanguageDirForModule($supportedlanguagesmodule);
+            $supportedlanguagesdir = self::getInstance()->getLanguageDirForModule($supportedlanguagesmodule);
             Atk_Tools::atkimport('atk.utils.atkdirectorytraverser');
-            $supportedlanguagescollector = new getSupportedLanguagesCollector();
+            $supportedlanguagescollector = new ATK_GetSupportedLanguagesCollector();
             $traverser = new Atk_DirectoryTraverser();
             $traverser->addCallbackObject($supportedlanguagescollector);
             $traverser->traverse($supportedlanguagesdir);
@@ -510,7 +508,7 @@ class Atk_Language
      * @param string $key           the name which was given when the text function was called
      * @param string $module        the name of the module to which the text function belongs
      * @param string $lng           the current language
-     * @return var the true name by which the txt is called or "" if we can't find any entry
+     * @return string the true name by which the txt is called or "" if we can't find any entry
      */
     protected function _getStringFromFile($key, $module, $lng)
     {
@@ -543,7 +541,7 @@ class Atk_Language
  * @author Boy Baukema <boy@ibuildings.nl>
  * @package atk
  */
-class getSupportedLanguagesCollector
+class ATK_GetSupportedLanguagesCollector
 {
     var $m_languages = array();
 

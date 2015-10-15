@@ -26,10 +26,10 @@
 $config_atkroot = "./";
 include_once("atk.php");
 
-$page = &Atk_Tools::atknew("atk.ui.atkpage");
-$ui = &Atk_Tools::atkinstance("atk.ui.atkui");
-$theme = &Atk_Theme::getInstance();
-$output = &Atk_Output::getInstance();
+$page = Atk_Tools::atknew("atk.ui.atkpage");
+$ui = Atk_Tools::atkinstance("atk.ui.atkui");
+$theme = Atk_Theme::getInstance();
+$output = Atk_Output::getInstance();
 
 $page->register_style($theme->stylePath("style.css"));
 $box = $ui->renderBox(array("title" => Atk_Tools::atktext("app_shorttitle"),

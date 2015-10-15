@@ -222,7 +222,7 @@ class Atk_Config
      */
     function requestDebugEnabled($params)
     {
-        $session = &Atk_SessionManager::getSession();
+        $session = Atk_SessionManager::getSession();
 
         if (isset($_REQUEST["atkdebug"]["key"])) {
             $session["debug"]["key"] = $_REQUEST["atkdebug"]["key"];
@@ -244,7 +244,7 @@ class Atk_Config
      */
     function smartDebugLevel($default, $options = array())
     {
-        $session = &Atk_SessionManager::getSession();
+        $session = Atk_SessionManager::getSession();
 
         $enabled = $default > 0;
 

@@ -911,7 +911,7 @@ class Atk_Tools
     public static function &atkGetDb($conn = 'default', $reset = false, $mode = "r")
     {
         self::atkimport("atk.db.atkdb");
-        $db = &Atk_Db::getInstance($conn, $reset, $mode);
+        $db = Atk_Db::getInstance($conn, $reset, $mode);
         return $db;
     }
 
@@ -1427,7 +1427,7 @@ class Atk_Tools
      */
     public static function atkButton($text, $url = "", $sessionstatus = SESSION_DEFAULT, $embedded = true, $cssclass = "")
     {
-        $page = &Atk_Page::getInstance();
+        $page = Atk_Page::getInstance();
         $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/formsubmit.js");
         static $cnt = 0;
 

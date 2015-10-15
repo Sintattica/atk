@@ -229,7 +229,7 @@ class Atk_ColorPickerAttribute extends Atk_Attribute
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
-        $page = &Atk_Page::getInstance();
+        $page = Atk_Page::getInstance();
         $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/newwindow.js");
         $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/colorpicker.js");
 

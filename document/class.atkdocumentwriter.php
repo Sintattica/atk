@@ -35,7 +35,7 @@ class Atk_DocumentWriter
     /**
      * atkDocumentWriter Constructor.
      *
-     * Dont use this, use &Atk_DocumentWriter::getInstance($format) instead to get a singleton instance for any format used
+     * Dont use this, use Atk_DocumentWriter::getInstance($format) instead to get a singleton instance for any format used
      */
     function atkDocumentWriter()
     {
@@ -211,7 +211,7 @@ class Atk_DocumentWriter
             return false;
 
         // Assign the quotation owner to the document
-        $node = &Atk_Module::atkGetNode($nodename);
+        $node = Atk_Module::atkGetNode($nodename);
 
         // Get the record from the database
         $records = $node->selectDb($selector, "", "", "", "", "view");

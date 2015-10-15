@@ -59,8 +59,8 @@ class Atk_PlainMenu extends Atk_menuinterface
     {
         global $ATK_VARS, $g_menu, $g_menu_parent;
         $atkmenutop = Atk_Tools::atkArrayNvl($ATK_VARS, "atkmenutop", "main");
-        $theme = &Atk_Tools::atkinstance('atk.ui.atktheme');
-        $page = &Atk_Tools::atkinstance('atk.atkpage');
+        $theme = Atk_Tools::atkinstance('atk.ui.atktheme');
+        $page = Atk_Tools::atkinstance('atk.atkpage');
 
         $menu = $this->getHeader($atkmenutop);
         if (is_array($g_menu[$atkmenutop])) {
@@ -108,7 +108,7 @@ class Atk_PlainMenu extends Atk_menuinterface
         $menu.=$this->getFooter($atkmenutop);
         $page->register_style($theme->stylePath("style.css"));
         $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/menuload.js");
-        $ui = &Atk_Tools::atkinstance("atk.ui.atkui");
+        $ui = Atk_Tools::atkinstance("atk.ui.atkui");
 
         return $ui->renderBox(array("title" => $this->getMenuTranslation($atkmenutop, $modname),
                 "content" => $menu,

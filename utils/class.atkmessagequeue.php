@@ -69,7 +69,7 @@ class Atk_MessageQueue
      */
     function addMessage($txt, $type = AMQ_GENERAL)
     {
-        $instance = &Atk_MessageQueue::getInstance();
+        $instance = Atk_MessageQueue::getInstance();
         if (is_object($instance)) {
             return $instance->_addMessage($txt, $type);
         }
@@ -116,7 +116,7 @@ class Atk_MessageQueue
      */
     function getMessage()
     {
-        $instance = &Atk_MessageQueue::getInstance();
+        $instance = Atk_MessageQueue::getInstance();
         if (is_object($instance)) {
             return $instance->_getMessage();
         }
@@ -141,7 +141,7 @@ class Atk_MessageQueue
      */
     function getMessages()
     {
-        $instance = &Atk_MessageQueue::getInstance();
+        $instance = Atk_MessageQueue::getInstance();
         if (is_object($instance)) {
             return $instance->_getMessages();
         }
@@ -168,7 +168,7 @@ class Atk_MessageQueue
      */
     function &getQueue()
     {
-        $sessionmgr = &Atk_SessionManager::atkGetSessionManager();
+        $sessionmgr = Atk_SessionManager::atkGetSessionManager();
         $session = &$sessionmgr->getSession();
         if (!isset($session['atkmessagequeue'])) {
             $session['atkmessagequeue'] = array();

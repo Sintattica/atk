@@ -76,7 +76,7 @@ class Atk_DbLock extends Atk_Lock
         $this->storeLockList($atklockList);
 
         if (!isset($ATK_VARS['atkpartial']) && $this->m_id > 0) {
-            $page = &Atk_Tools::atkinstance("atk.ui.atkpage");
+            $page = Atk_Tools::atkinstance("atk.ui.atkpage");
             $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/xml.js");
             $page->register_script(Atk_Tools::session_url("include.php?file=atk/lock/lock.js.php&stack=" . Atk_SessionManager::atkStackID() . "&id=" . $this->m_id, SESSION_NEW));
         }
@@ -128,7 +128,7 @@ class Atk_DbLock extends Atk_Lock
         }
 
         /* lock the lock table :) */
-        $db = &Atk_Tools::atkGetDb();
+        $db = Atk_Tools::atkGetDb();
         $db->lock("db_lock");
 
         /* check if the item can be locked */
@@ -147,7 +147,7 @@ class Atk_DbLock extends Atk_Lock
         if ($mode == self::SHARED || $result[0]["count"] == 0) {
             if ($this->m_id <= 0) {
                 $this->m_id = $db->nextid("db_lock");
-                $page = &Atk_Page::getInstance();
+                $page = Atk_Page::getInstance();
                 $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/xml.js");
                 $page->register_script(Atk_Tools::session_url("include.php?file=atk/lock/lock.js.php&stack=" . Atk_SessionManager::atkStackID() . "&id=" . $this->m_id, SESSION_NEW));
             }
@@ -203,7 +203,7 @@ class Atk_DbLock extends Atk_Lock
      */
     function unlock($selector, $table)
     {
-        $db = &Atk_Tools::atkGetDb();
+        $db = Atk_Tools::atkGetDb();
 
         $user = Atk_SecurityManager::atkGetUser();
         if (is_array($user))
@@ -256,7 +256,7 @@ class Atk_DbLock extends Atk_Lock
             $user = $user['name'];
 
         /* lock the lock table :) */
-        $db = &Atk_Tools::atkGetDb();
+        $db = Atk_Tools::atkGetDb();
         $db->lock("db_lock");
 
         /* extend lock lease */
@@ -316,7 +316,7 @@ class Atk_DbLock extends Atk_Lock
 
         /* select all locks for the node table -> cache */
         if (!is_array($_cache[$table])) {
-            $db = &Atk_Tools::atkGetDb();
+            $db = Atk_Tools::atkGetDb();
             $query = &$db->createQuery();
             $query->addField("lock_id");
             $query->addField("lock_record");

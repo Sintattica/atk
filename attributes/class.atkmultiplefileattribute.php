@@ -157,7 +157,7 @@ class Atk_MultipleFileAttribute extends Atk_FileAttribute
                         $imagehw = Array("0" => "640", "1" => "480");
                     }
 
-                    $page = &Atk_Page::getInstance();
+                    $page = Atk_Page::getInstance();
                     $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/newwindow.js");
                     $r .= '<a href="' . $this->m_url . $files[$i] . '" alt="' . $files[$i] . '" onclick="NewWindow(this.href,\'name\',\'' . ($imagehw[0] + 50) . '\',\'' . ($imagehw[1] + 50) . '\',\'yes\');return false;">' . $files[$i] . '</a><br>';
                 } else {

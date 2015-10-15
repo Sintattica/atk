@@ -33,7 +33,7 @@ class Atk_XmlHandler extends Atk_ActionHandler
     {
         $recordset = $this->m_node->selectDb($this->m_postvars['atkselector'], "", "", "", "", "xml");
 
-        $output = &Atk_Output::getInstance();
+        $output = Atk_Output::getInstance();
 
         $document = '<?xml version="1.0"?>' . "\n";
 

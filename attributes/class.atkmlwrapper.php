@@ -207,7 +207,7 @@ class Atk_MlWrapper extends Atk_Attribute
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
         $defaultlng = $this->getDefaultLng();
-        $page = &Atk_Page::getInstance();
+        $page = Atk_Page::getInstance();
         $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/dhtml_formtools.js");
         $cnt = 0;
         foreach (array_keys($this->m_childList) as $lng) {

@@ -23,7 +23,7 @@ if (empty($config_identifier))
 
 if (Atk_Config::getGlobal('session_init', true) && Atk_SessionManager::atksession_init()) {
     // backwardscompatibility hacks. g_sessionData and g_sessionData are obsolete actually.
-    // You can use $session = &Atk_SessionManager::getSession() now, and you'll have a
+    // You can use $session = Atk_SessionManager::getSession() now, and you'll have a
     // session enabled, multi-app array in which you can store whatever you like.
     // There are old applications however that still use $g_sessionData, so I'll
     // leave it in place for now.
@@ -631,7 +631,7 @@ class Atk_SessionManager
     {
         global $g_sessionData;
 
-        $ui = &Atk_Tools::atkinstance("atk.ui.atkui");
+        $ui = Atk_Tools::atkinstance("atk.ui.atkui");
 
         $res = array();
         $stack = $g_sessionData[$this->m_namespace]["stack"][self::atkStackID()];
@@ -693,7 +693,7 @@ class Atk_SessionManager
                 }
 
                 if (is_object($node)) {
-                    $ui = &Atk_Tools::atkinstance("atk.ui.atkui");
+                    $ui = Atk_Tools::atkinstance("atk.ui.atkui");
                     $txt = $ui->title($module, $nodename);
                 } else {
                     $txt = Atk_Tools::atktext($nodename, $module);

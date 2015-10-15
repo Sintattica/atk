@@ -68,7 +68,7 @@ class Atk_MlSelectorAttribute extends Atk_MlAttribute
             for ($i = 0, $_i = count($languages); $i < $_i; $i++) {
                 $script.= "str_languages['" . $languages[$i] . "'] = '" . Atk_Tools::atktext('language_' . strtolower($languages[$i])) . "';\n";
             }
-            $page = &Atk_Page::getInstance();
+            $page = Atk_Page::getInstance();
             $page->register_scriptcode($script);
             $s_wroteStrings = true;
         }
@@ -101,7 +101,7 @@ class Atk_MlSelectorAttribute extends Atk_MlAttribute
     function edit($record = "", $prefix = "", $mode = "")
     {
         /* register javascript */
-        $page = &Atk_Page::getInstance();
+        $page = Atk_Page::getInstance();
         $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atkmultilanguage.js.php");
         $page->register_submitscript('mlPreSubmit(\'' . $prefix . '\', form);');
 

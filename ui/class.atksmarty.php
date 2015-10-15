@@ -113,7 +113,7 @@ class Atk_Smarty
      */
     function addPluginDir($path)
     {
-        $smarty = &Atk_Smarty::getInstance();
+        $smarty = Atk_Smarty::getInstance();
         $smarty->plugins_dir[] = $path;
     }
 

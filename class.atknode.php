@@ -1663,7 +1663,7 @@ class Atk_Node
         for ($i = 0, $_i = count($tablist); $i < $_i; $i ++) {
             if ($tablist[$i] == "" || $tablist[$i] == "default")
                 continue;
-            $secMgr = &Atk_SecurityManager::getInstance();
+            $secMgr = Atk_SecurityManager::getInstance();
 
             // load the $g_nodes array to find out what tabs are required
             if (!isset($g_nodes[$this->m_module][$this->m_module][$this->m_type])) {
@@ -1827,7 +1827,7 @@ class Atk_Node
      */
     function getFormButtons($mode, $record)
     {
-        $controller = &Atk_Tools::atkinstance('atk.atkcontroller');
+        $controller = Atk_Tools::atkinstance('atk.atkcontroller');
         $controller->setNode($this);
         return $controller->getFormButtons($mode, $record);
     }
@@ -1859,7 +1859,7 @@ class Atk_Node
      */
     function &getUi()
     {
-        $ui = &Atk_Tools::atkinstance("atk.ui.atkui");
+        $ui = Atk_Tools::atkinstance("atk.ui.atkui");
         return $ui;
     }
 
@@ -1975,7 +1975,7 @@ class Atk_Node
     {
         // check if an attribute needs to be read-only or
         // even hidden based on the current record
-        $secMgr = &Atk_SecurityManager::getInstance();
+        $secMgr = Atk_SecurityManager::getInstance();
         foreach (array_keys($this->m_attribList) as $attrName) {
             $attr = &$this->getAttribute($attrName);
 
@@ -2162,7 +2162,7 @@ class Atk_Node
                 }
 
                 /* sometimes a field is hidden although not specified by the field itself */
-                $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
+                $theme = Atk_Tools::atkinstance("atk.ui.atktheme");
                 if ($theme->getAttribute("tabtype") == "dhtml" || $ignoreTab) {
                     $notOnTab = FALSE;
                 } else {
@@ -2754,7 +2754,7 @@ class Atk_Node
 
         $lockType = Atk_Config::getGlobal("lock_type");
         if (!empty($lockType) && $this->hasFlag(NF_LOCK)) {
-            $this->m_lock = &Atk_Tools::atkinstance("atk.lock.atklock");
+            $this->m_lock = Atk_Tools::atkinstance("atk.lock.atklock");
         } else
             $this->removeFlag(NF_LOCK);
 
@@ -2788,7 +2788,7 @@ class Atk_Node
                     $this->addListener($listener);
                 } else {
                     if (is_string($listener)) {
-                        $listenerobj = &Atk_Tools::atknew($listener);
+                        $listenerobj = Atk_Tools::atknew($listener);
                         if (is_object($listenerobj)) {
                             $this->addListener($listenerobj);
                         } else
@@ -2839,7 +2839,7 @@ class Atk_Node
     function dispatch($postvars, $flags = NULL)
     {
         Atk_Tools::atkdebug("Atk_Node::dispatch()");
-        $controller = &Atk_controller::getInstance();
+        $controller = Atk_controller::getInstance();
         $controller->setNode($this);
         return $controller->handleRequest($postvars, $flags);
     }
@@ -2858,7 +2858,7 @@ class Atk_Node
      */
     function genericPage($title, $content)
     {
-        $controller = &Atk_controller::getInstance();
+        $controller = Atk_controller::getInstance();
         $controller->setNode($this);
         return $controller->genericPage($title, $content);
     }
@@ -2876,7 +2876,7 @@ class Atk_Node
      */
     function renderActionPage($action, $blocks = array())
     {
-        $controller = &Atk_controller::getInstance();
+        $controller = Atk_controller::getInstance();
         $controller->setNode($this);
         return $controller->renderActionPage($action, $blocks);
     }
@@ -2913,7 +2913,7 @@ class Atk_Node
      */
     function &getPage()
     {
-        $page = &Atk_Tools::atkinstance("atk.ui.atkpage");
+        $page = Atk_Tools::atkinstance("atk.ui.atkpage");
         return $page;
     }
 
@@ -2982,11 +2982,11 @@ class Atk_Node
 
         // The actual redirect.
         if (Atk_Config::getGlobal("debug") >= 2) {
-            $debugger = &Atk_Tools::atkinstance('atk.utils.atkdebugger');
+            $debugger = Atk_Tools::atkinstance('atk.utils.atkdebugger');
             $debugger->setRedirectUrl($location);
             Atk_Tools::atkdebug('Non-debug version would have redirected to <a href="' . $location . '">' . $location . '</a>');
             if ($exit) {
-                $output = &Atk_Output::getInstance();
+                $output = Atk_Output::getInstance();
                 $output->outputFlush();
                 exit();
             }
@@ -3220,7 +3220,7 @@ class Atk_Node
      */
     function validate(&$record, $mode, $ignoreList = array())
     {
-        $validateObj = &Atk_Tools::atknew($this->m_validate_class);
+        $validateObj = Atk_Tools::atknew($this->m_validate_class);
 
         $validateObj->setNode($this);
         $validateObj->setRecord($record);
@@ -3346,7 +3346,7 @@ class Atk_Node
             if ($this->hasFlag(NF_ML) && $record["atkmlsplit"] == "") {
                 $record["atkmlsplit"] = 1;
 
-                $mltool = &Atk_Tools::atkinstance("atk.utils.atkmlsplitter");
+                $mltool = Atk_Tools::atkinstance("atk.utils.atkmlsplitter");
                 $mltool->updateMlRecords($this, $record, "update", $excludes, $includes);
             }
 
@@ -3559,7 +3559,7 @@ class Atk_Node
         }
 
         if ($this->hasFlag(NF_ML)) {
-            $mltool = &Atk_Tools::atkinstance("atk.utils.atkmlsplitter");
+            $mltool = Atk_Tools::atkinstance("atk.utils.atkmlsplitter");
             $mltool->addMlCondition($query, $this, $mode, $alias);
         }
     }
@@ -3693,7 +3693,7 @@ class Atk_Node
 
         if ($this->hasFlag(NF_ML) && $record["atkmlsplit"] == "") {
             $record["atkmlsplit"] = 1;
-            $mltool = &Atk_Tools::atkinstance("atk.utils.atkmlsplitter");
+            $mltool = Atk_Tools::atkinstance("atk.utils.atkmlsplitter");
             $mltool->updateMlRecords($this, $record, $mode);
         }
 
@@ -4127,7 +4127,7 @@ class Atk_Node
      */
     function allowed($action, $record = "")
     {
-        $secMgr = &Atk_SecurityManager::getInstance();
+        $secMgr = Atk_SecurityManager::getInstance();
 
         $alias = $this->atkNodeType();
         $this->resolveNodeTypeAndAction($alias, $action);
@@ -4359,7 +4359,7 @@ class Atk_Node
 
         // The node handler might return a class, then we need to instantiate the handler
         if (is_string($handler) && !function_exists($handler) && Atk_Tools::atkimport($handler)) {
-            $handler = &Atk_Tools::atknew($handler);
+            $handler = Atk_Tools::atknew($handler);
         }
 
         // The node handler might return a function as nodehandler. We cannot
@@ -4373,7 +4373,7 @@ class Atk_Node
             $handler->setNode($this);
             $handler->setAction($action);
         } else {
-            $handler = &Atk_ActionHandler::getDefaultHandler($action);
+            $handler = Atk_ActionHandler::getDefaultHandler($action);
             $handler->setNode($this);
             $handler->setPostvars($this->m_postvars);
             $handler->setAction($action);
@@ -4493,7 +4493,7 @@ class Atk_Node
      */
     function feedbackUrl($action, $status, $record = "", $message = "", $levelskip = null)
     {
-        $controller = &Atk_controller::getInstance();
+        $controller = Atk_controller::getInstance();
         $controller->setNode($this);
         return $controller->feedbackUrl($action, $status, $record, $message, $levelskip);
     }
@@ -4583,7 +4583,7 @@ class Atk_Node
      */
     function addStyle($style)
     {
-        $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
+        $theme = Atk_Tools::atkinstance("atk.ui.atktheme");
         $page = &$this->getPage();
         $page->register_style($theme->stylePath($style));
     }

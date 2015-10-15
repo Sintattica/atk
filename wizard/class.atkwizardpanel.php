@@ -149,7 +149,7 @@ class Atk_WizardPanel
             }
 
             //All nodes should return the output and not try to fill the screen themselves
-            $controller = &Atk_Controller::getInstance();
+            $controller = Atk_Controller::getInstance();
             $controller->setNode($this->m_node);
 
             //Make session aware of the fact that we are rendering a node which has been

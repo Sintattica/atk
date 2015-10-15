@@ -137,7 +137,7 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
         $node = &$this->m_node;
 
         $node->addStyle("style.css");
-        $controller = &Atk_controller::getInstance();
+        $controller = Atk_controller::getInstance();
         $controller->setNode($this->m_node);
 
         $page = &$this->getPage();

@@ -29,15 +29,15 @@ include_once("atk.php");
 
 Atk_SessionManager::atksession();
 
-$session = &Atk_SessionManager::getSession();
-$output = &Atk_Output::getInstance();
+$session = Atk_SessionManager::getSession();
+$output = Atk_Output::getInstance();
 
 if ($ATK_VARS["atknodetype"] == "" || $session["login"] != 1) {
     // no nodetype passed, or session expired
 
-    $page = &Atk_Tools::atknew("atk.ui.atkpage");
-    $ui = &Atk_Tools::atkinstance("atk.ui.atkui");
-    $theme = &Atk_Theme::getInstance();
+    $page = Atk_Tools::atknew("atk.ui.atkpage");
+    $ui = Atk_Tools::atkinstance("atk.ui.atkui");
+    $theme = Atk_Theme::getInstance();
 
 
     $page->register_style($theme->stylePath("style.css"));
@@ -68,9 +68,9 @@ else {
 
     //Load controller   
     if ($ATK_VARS["atkcontroller"] == "")
-        $controller = &Atk_Tools::atkinstance("atk.atkcontroller");
+        $controller = Atk_Tools::atkinstance("atk.atkcontroller");
     else
-        $controller = &Atk_Tools::atkinstance($ATK_VARS["atkcontroller"]);
+        $controller = Atk_Tools::atkinstance($ATK_VARS["atkcontroller"]);
 
     //Handle http request  
     $controller->dispatch($ATK_VARS, $flags);

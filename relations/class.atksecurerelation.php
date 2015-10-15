@@ -151,7 +151,7 @@ class Atk_SecureRelation extends Atk_OneToOneRelation
         else {
             $query = "SELECT " . $linkfield . " as pass FROM " . $linktable . " WHERE " . Atk_Config::getGlobal("auth_userfield") . " = '" . $username . "'";
 
-            $db = &Atk_Tools::atkGetDb();
+            $db = Atk_Tools::atkGetDb();
             $rec = $db->getrows($query);
             if (count($rec) < 1)
                 return $linkpass;
@@ -329,7 +329,7 @@ class Atk_SecureRelation extends Atk_OneToOneRelation
                     else if ($this->m_destInstance->m_attribList[$field])
                         $cachetable = $this->m_destInstance->m_table;
 
-                    $db = &Atk_Tools::atkGetDb();
+                    $db = Atk_Tools::atkGetDb();
                     $db->query("UPDATE $cachetable
                               SET {$this->m_cachefield}='$cryptedlink'
                               WHERE " . $this->m_ownerInstance->primaryKeyField() . " = '" .
@@ -355,7 +355,7 @@ class Atk_SecureRelation extends Atk_OneToOneRelation
      */
     function newUser($id, $pass)
     {
-        $db = &Atk_Tools::atkGetDb();
+        $db = Atk_Tools::atkGetDb();
         $linkpass = $this->m_crypt->encryptKey($this->getLinkPassword($this->m_linktable, $this->m_linkfield), $pass);
         $query = "UPDATE $this->m_linktable SET $this->m_linkfield = '" . $linkpass . "' WHERE id = '$id'";
         $db->query($query);
@@ -367,7 +367,7 @@ class Atk_SecureRelation extends Atk_OneToOneRelation
      */
     function _getJoinCondition()
     {
-        $db = &Atk_Tools::atkGetDb();
+        $db = Atk_Tools::atkGetDb();
 
         // decrypt the encrypted keys to get the tables joined
         $temp_query = "SELECT " . $this->fieldName() . " FROM " . $this->m_ownerInstance->m_table;

@@ -257,7 +257,7 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
     function getAttributeEditPage()
     {
         $url = $this->getProcessUrl();
-        $controller = &Atk_Controller::getInstance();
+        $controller = Atk_Controller::getInstance();
 
         $this->registerExternalFiles();
 
@@ -488,7 +488,7 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
      */
     function getFormStart()
     {
-        $controller = &Atk_controller::getInstance();
+        $controller = Atk_controller::getInstance();
         $controller->setNode($this->m_node);
 
         $formstart = '<form id="dialogform" name="dialogform" action="' . $controller->getPhpFile() . '?' . SID . '" method="post">';

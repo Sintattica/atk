@@ -60,7 +60,7 @@ class auth_pop3 extends auth_interface
         if ($server == "[db]") {
             // if server is set to [db], that means we have a different server per
             // user. We lookup in the database what server we need to call.
-            $db = &Atk_Tools::atkGetDb();
+            $db = Atk_Tools::atkGetDb();
             $res = $db->getrows("SELECT auth_server
                                FROM " . Atk_Config::getGlobal("auth_usertable") . "
                               WHERE " . Atk_Config::getGlobal("auth_userfield") . "='" . $user . "'");
@@ -71,7 +71,7 @@ class auth_pop3 extends auth_interface
             $server = $res[0]["auth_server"];
         }
 
-        $secMgr = &Atk_SecurityManager::getInstance();
+        $secMgr = Atk_SecurityManager::getInstance();
 
         if ($server == "") {
             $secMgr->log(1, "pop3auth error: No server specified");

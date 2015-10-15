@@ -54,7 +54,7 @@ class Atk_EventLog extends Atk_ActionListener
      */
     function actionPerformed($action, $record)
     {
-        $user = &Atk_SecurityManager::atkGetUser();
+        $user = Atk_SecurityManager::atkGetUser();
         $userid = $user[Atk_Config::getGlobal("auth_userpk")];
         if ($userid == "")
             $userid = 0; // probably administrator

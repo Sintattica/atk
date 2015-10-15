@@ -55,7 +55,7 @@ class Atk_DirectoryTraverser
      * Both methods are optional. If an object does not implement either of
      * these methods, it will simply be ignored.
      *
-     * @param Object $callbackObject An object instance to be called back for
+     * @param Object|mixed $callbackObject An object instance to be called back for
      *                               each file/dir.
      */
     function addCallbackObject(&$callbackObject)

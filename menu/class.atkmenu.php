@@ -77,7 +77,7 @@ class Atk_Menu
         Atk_Tools::atkdebug("Configured menu layout class: $classname");
 
         // Check if the class is compatible with the current theme, if not use a compatible menu.
-        $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
+        $theme = Atk_Tools::atkinstance("atk.ui.atktheme");
         $compatiblemenus = $theme->getAttribute('compatible_menus');
         // If this attribute exists then retreive them
         if (is_array($compatiblemenus)) {
@@ -119,9 +119,9 @@ class Atk_Menu
             // Set the dispatchfile for this menu based on the theme setting, or to the default if not set.
             // This makes sure that all calls to dispatch_url will generate a url for the main frame and not
             // within the menu itself.
-            $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
+            $theme = Atk_Tools::atkinstance("atk.ui.atktheme");
             $dispatcher = $theme->getAttribute('dispatcher', Atk_Config::getGlobal("dispatcher", "dispatch.php")); // do not use atkSelf here!
-            $c = &Atk_Tools::atkinstance("atk.atkcontroller");
+            $c = Atk_Tools::atkinstance("atk.atkcontroller");
             $c->setPhpFile($dispatcher);
 
             Atk_Module::atkHarvestModules("getMenuItems");

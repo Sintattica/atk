@@ -69,7 +69,7 @@ class Atk_ManyBoolRelation extends Atk_ManyToManyRelation
         $recordset = $this->_getSelectableRecords($record, $mode);
         $total_records = count($recordset);
         if ($total_records > 0) {
-            $page = &Atk_Page::getInstance();
+            $page = Atk_Page::getInstance();
             $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atkprofileattribute.js.php");
 
             if (!$this->hasFlag(AF_MANYBOOL_NO_TOOLBAR)) {

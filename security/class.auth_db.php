@@ -73,7 +73,7 @@ class auth_db extends auth_interface
         if ($user == "")
             return AUTH_UNVERIFIED; // can't verify if we have no userid
 
-        $db = &Atk_Tools::atkGetDb(Atk_Config::getGlobal("auth_database"));
+        $db = Atk_Tools::atkGetDb(Atk_Config::getGlobal("auth_database"));
         $query = $this->buildSelectUserQuery($db->escapeSql($user), Atk_Config::getGlobal("auth_usertable"), Atk_Config::getGlobal("auth_userfield"), Atk_Config::getGlobal("auth_passwordfield"), Atk_Config::getGlobal("auth_accountdisablefield"), Atk_Config::getGlobal("auth_accountenableexpression"));
         $recs = $db->getrows($query);
         if (count($recs) > 0 && $this->isLocked($recs[0])) {
@@ -164,7 +164,7 @@ class auth_db extends auth_interface
         $groupparentfield = Atk_Config::getGlobal("auth_groupparentfield");
         $accountenableexpression = Atk_Config::getGlobal("auth_accountenableexpression");
 
-        $db = &Atk_Tools::atkGetDb(Atk_Config::getGlobal("auth_database"));
+        $db = Atk_Tools::atkGetDb(Atk_Config::getGlobal("auth_database"));
         if ($usertable == $leveltable || $leveltable == "") {
             // Level and userid are stored in the same table.
             // This means one user can only have one level.
@@ -201,7 +201,7 @@ class auth_db extends auth_interface
      */
     function getParentGroups($parents)
     {
-        $db = &Atk_Tools::atkGetDb(Atk_Config::getGlobal("auth_database"));
+        $db = Atk_Tools::atkGetDb(Atk_Config::getGlobal("auth_database"));
 
         $grouptable = Atk_Config::getGlobal("auth_grouptable");
         $groupfield = Atk_Config::getGlobal("auth_groupfield");
@@ -314,7 +314,7 @@ class auth_db extends auth_interface
      */
     function getEntity($node, $action)
     {
-        $db = &Atk_Tools::atkGetDb(Atk_Config::getGlobal("auth_database"));
+        $db = Atk_Tools::atkGetDb(Atk_Config::getGlobal("auth_database"));
 
         if (!isset($this->m_rightscache[$node]) || count($this->m_rightscache[$node]) == 0) {
             $query = "SELECT * FROM " . Atk_Config::getGlobal("auth_accesstable") . " WHERE node='$node'";
@@ -351,7 +351,7 @@ class auth_db extends auth_interface
      */
     function getAttribEntity($node, $attrib, $mode)
     {
-        $db = &Atk_Tools::atkGetDb(Atk_Config::getGlobal("auth_database"));
+        $db = Atk_Tools::atkGetDb(Atk_Config::getGlobal("auth_database"));
 
         $query = "SELECT * FROM attribaccess WHERE node='$node' AND attribute='$attrib' AND mode='$mode'";
 
@@ -390,7 +390,7 @@ class auth_db extends auth_interface
      */
     function getUserList()
     {
-        $db = &Atk_Tools::atkGetDb(Atk_Config::getGlobal("auth_database"));
+        $db = Atk_Tools::atkGetDb(Atk_Config::getGlobal("auth_database"));
         $query = "SELECT * FROM " . Atk_Config::getGlobal("auth_usertable");
 
         $accountdisablefield = Atk_Config::getGlobal("auth_accountdisablefield");
@@ -448,7 +448,7 @@ class auth_db extends auth_interface
     function gettingPassword($username)
     {
         // Query the database for user records having the given username and return if not found
-        $usernode = &Atk_Module::atkGetNode(Atk_Config::getGlobal("auth_usernode"));
+        $usernode = Atk_Module::atkGetNode(Atk_Config::getGlobal("auth_usernode"));
         $selector = sprintf("%s.%s = '%s'", Atk_Config::getGlobal("auth_usertable"), Atk_Config::getGlobal("auth_userfield"), $username);
         $userrecords = $usernode->selectDb($selector, "", "", "", array(Atk_Config::getGlobal("auth_userpk"), Atk_Config::getGlobal("auth_emailfield"), Atk_Config::getGlobal("auth_passwordfield")), "edit");
         if (count($userrecords) != 1) {

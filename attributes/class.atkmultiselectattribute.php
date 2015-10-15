@@ -176,7 +176,7 @@ class Atk_MultiSelectAttribute extends Atk_ListAttribute
 
         $id = $fieldprefix . $this->fieldName();
 
-        $page = &Atk_Page::getInstance();
+        $page = Atk_Page::getInstance();
         $page->register_script($config_atkroot . "atk/javascript/class.atkprofileattribute.js.php");
 
         $result = "";

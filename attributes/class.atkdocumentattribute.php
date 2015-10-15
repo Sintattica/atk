@@ -84,7 +84,7 @@ class Atk_DocumentAttribute extends Atk_DummyAttribute
     function getDocumentFiles($path, $record)
     {
         // Read the directory contents using the directorytraverser
-        $dirtrav = &Atk_Tools::atknew("atk.utils.atkdirectorytraverser");
+        $dirtrav = Atk_Tools::atknew("atk.utils.atkdirectorytraverser");
         return $dirtrav->getDirContents($path);
     }
 

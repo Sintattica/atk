@@ -130,7 +130,7 @@ class Atk_Controller
      */
     function &getInstance()
     {
-        $object = &Atk_controller::_instance();
+        $object = Atk_controller::_instance();
         return $object;
     }
 
@@ -150,7 +150,7 @@ class Atk_Controller
             $currentController->setReturnOutput(true);
 
         //Now create new controller
-        $controller = &Atk_Controller::_instance($controller, true);
+        $controller = Atk_Controller::_instance($controller, true);
         return $controller;
     }
 
@@ -194,7 +194,7 @@ class Atk_Controller
         }
 
         if (!$this->m_return_output) {
-            $output = &Atk_Output::getInstance();
+            $output = Atk_Output::getInstance();
             $output->output($screen);
         }
 
@@ -294,7 +294,7 @@ class Atk_Controller
         $page->setTitle(Atk_Tools::atktext('app_shorttitle') . " - " . $this->getUi()->title($node->m_module, $node->m_type, $node->m_action));
 
         if ($node->allowed($node->m_action)) {
-            $secMgr = &Atk_SecurityManager::getInstance();
+            $secMgr = Atk_SecurityManager::getInstance();
             $secMgr->logAction($node->m_type, $node->m_action);
             $node->callHandler($node->m_action);
 
@@ -703,7 +703,7 @@ class Atk_Controller
      */
     function getPhpFile()
     {
-        $theme = &Atk_Tools::atkinstance('atk.ui.atktheme');
+        $theme = Atk_Tools::atkinstance('atk.ui.atktheme');
 
         if ($this->m_php_file != "")
             return $this->m_php_file;
@@ -756,7 +756,7 @@ class Atk_Controller
      */
     function &getPage()
     {
-        $page = &Atk_Tools::atkinstance("atk.ui.atkpage");
+        $page = Atk_Tools::atkinstance("atk.ui.atkpage");
         return $page;
     }
 
@@ -767,7 +767,7 @@ class Atk_Controller
      */
     function &getUi()
     {
-        $ui = &Atk_Tools::atkinstance("atk.ui.atkui");
+        $ui = Atk_Tools::atkinstance("atk.ui.atkui");
         return $ui;
     }
 

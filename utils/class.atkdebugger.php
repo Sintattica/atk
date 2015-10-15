@@ -204,8 +204,8 @@ class Atk_Debugger
      */
     public function renderConsole()
     {
-        $page = &Atk_Tools::atkinstance("atk.ui.atkpage");
-        $theme = &Atk_Tools::atkinstance("atk.ui.atktheme");
+        $page = Atk_Tools::atkinstance("atk.ui.atkpage");
+        $theme = Atk_Tools::atkinstance("atk.ui.atktheme");
         $page->register_style($theme->stylePath("debugger.css"));
         $data = &$this->getDebuggerData(false, $_REQUEST['atkstackid']);
         $res = $this->consoleControls() . '<br/><br/>';
@@ -245,7 +245,7 @@ class Atk_Debugger
         $output = "<h1>Query</h1>";
         $query = $queries[$id]["query"];
         $output.= $this->highlightQuery($query);
-        $db = &Atk_Tools::atkGetDb();
+        $db = Atk_Tools::atkGetDb();
         if (strtolower(substr(trim($query), 0, 6)) == "select") {
             $output.= '<h1>Resultset</h1>';
             $result = $db->getrows($query);
@@ -537,7 +537,7 @@ class Atk_Debugger
             ATK.Debug.addContent(' . Atk_JSON::encode($block) . ');
            </script>';
         } else {
-            $ui = &Atk_Tools::atkinstance('atk.ui.atkui');
+            $ui = Atk_Tools::atkinstance('atk.ui.atkui');
             $stylesheet = $ui->stylePath('atkdebug.css');
             $script = Atk_Config::getGlobal('atkroot') . 'atk/javascript/class.atkdebug.js';
 

@@ -180,7 +180,7 @@ class Atk_SecurityManager
     function mailPassword($username)
     {
         // Query the database for user records having the given username and return if not found
-        $usernode = &Atk_Module::atkGetNode(Atk_Config::getGlobal("auth_usernode"));
+        $usernode = Atk_Module::atkGetNode(Atk_Config::getGlobal("auth_usernode"));
         $selector = sprintf("%s.%s = '%s'", Atk_Config::getGlobal("auth_usertable"), Atk_Config::getGlobal("auth_userfield"), $username);
         $userrecords = $usernode->selectDb($selector, "", "", "", array(Atk_Config::getGlobal("auth_userpk"), Atk_Config::getGlobal("auth_emailfield"), Atk_Config::getGlobal("auth_passwordfield")), "edit");
         if (count($userrecords) != 1) {
@@ -226,7 +226,7 @@ class Atk_SecurityManager
     function authenticate()
     {
         global $g_sessionManager, $ATK_VARS;
-        $session = &Atk_SessionManager::getSession();
+        $session = Atk_SessionManager::getSession();
 
         $response = AUTH_UNVERIFIED;
 
@@ -246,7 +246,7 @@ class Atk_SecurityManager
         // first check if we want to logout
         if (isset($ATK_VARS["atklogout"]) && (!isset($session["relogin"]) || $session["relogin"] != 1)) {
             $this->notifyListeners("preLogout", $auth_user);
-            $currentUser = &Atk_SecurityManager::atkGetUser();
+            $currentUser = Atk_SecurityManager::atkGetUser();
 
             // Let the authentication plugin know about logout too.
             foreach ($this->m_authentication as $auth) {
@@ -430,10 +430,10 @@ class Atk_SecurityManager
                 $location .= 'login=' . $auth_user . '&error=' . $response;
 
                 if (Atk_Config::getGlobal("debug") >= 2) {
-                    $debugger = &Atk_Tools::atkinstance('atk.utils.atkdebugger');
+                    $debugger = Atk_Tools::atkinstance('atk.utils.atkdebugger');
                     $debugger->setRedirectUrl($location);
                     Atk_Tools::atkdebug('Non-debug version would have redirected to <a href="' . $location . '">' . $location . '</a>');
-                    $output = &Atk_Output::getInstance();
+                    $output = Atk_Output::getInstance();
                     $output->outputFlush();
                     exit();
                 } else {
@@ -442,7 +442,7 @@ class Atk_SecurityManager
                 }
             } elseif (Atk_Config::getGlobal("auth_loginform")) {
                 $this->loginForm($auth_user, $response);
-                $output = &Atk_Output::getInstance();
+                $output = Atk_Output::getInstance();
                 $output->outputFlush();
                 exit();
             } else {
@@ -521,8 +521,8 @@ class Atk_SecurityManager
 
         Atk_Tools::atkdebug('LoginAttempts: ' . $loginattempts);
 
-        $page = &Atk_Tools::atkinstance("atk.ui.atkpage", true);
-        $ui = &Atk_Tools::atkinstance("atk.ui.atkui");
+        $page = Atk_Tools::atkinstance("atk.ui.atkpage", true);
+        $ui = Atk_Tools::atkinstance("atk.ui.atkui");
 
         $page->register_style($ui->stylePath("style.css"));
         $page->register_style($ui->stylePath("login.css"));
@@ -590,7 +590,7 @@ class Atk_SecurityManager
 
         $tplvars["content"] = $output;
         $page->addContent($ui->render("login.tpl", $tplvars));
-        $o = &Atk_Output::getInstance();
+        $o = Atk_Output::getInstance();
         $o->output($page->render(Atk_Tools::atktext("app_title"), HTML_STRICT, "", $ui->render("login_meta.tpl")));
     }
 
