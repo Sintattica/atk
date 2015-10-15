@@ -66,8 +66,9 @@ class Atk_MysqlDb extends Atk_Db
     {
         /* establish connection */
         if (empty($this->m_link_id)) {
-            if (!empty($port))
+            if (!empty($port)) {
                 $host = "$host:$port";
+            }
 
 
             $this->m_link_id = @mysql_connect($host, $user, $password, true /* ALWAYS NEW LINK */);
@@ -112,12 +113,17 @@ class Atk_MysqlDb extends Atk_Db
     {
         $this->_setErrorVariables();
         switch ($this->m_errno) {
-            case 0: return DB_SUCCESS;
-            case 1044: return DB_ACCESSDENIED_DB;  // todofixme: deze komt bij mysql pas na de eerste query.
-            case 1045: return DB_ACCESSDENIED_USER;
-            case 1049: return DB_UNKNOWNDATABASE;
+            case 0:
+                return DB_SUCCESS;
+            case 1044:
+                return DB_ACCESSDENIED_DB;  // todofixme: deze komt bij mysql pas na de eerste query.
+            case 1045:
+                return DB_ACCESSDENIED_USER;
+            case 1049:
+                return DB_UNKNOWNDATABASE;
             case 2004:
-            case 2005: return DB_UNKNOWNHOST;
+            case 2005:
+                return DB_UNKNOWNHOST;
             default:
                 Atk_Tools::atkdebug("mysqldb::translateError -> MySQL Error: " .
                     $this->m_errno . " -> " . $this->m_error);
@@ -177,8 +183,9 @@ class Atk_MysqlDb extends Atk_Db
     function query($query, $offset = -1, $limit = -1)
     {
         /* limit? */
-        if ($offset >= 0 && $limit > 0)
+        if ($offset >= 0 && $limit > 0) {
             $query .= " LIMIT $offset, $limit";
+        }
 
         if (Atk_Config::getGlobal("debug") >= 0) {
             Atk_Debugger::addQuery($query);
@@ -190,8 +197,9 @@ class Atk_MysqlDb extends Atk_Db
         if ($this->connect($mode) == DB_SUCCESS) {
             /* free old results */
             if ($this->m_query_id) {
-                if (is_resource($this->m_query_id))
+                if (is_resource($this->m_query_id)) {
                     mysql_free_result($this->m_query_id);
+                }
                 $this->m_query_id = 0;
             }
 
@@ -216,8 +224,9 @@ class Atk_MysqlDb extends Atk_Db
                 return false;
             }
 
-            if ($unlock_table)
+            if ($unlock_table) {
                 $this->unlock();
+            }
 
             /* return query id */
             return true;
@@ -245,8 +254,9 @@ class Atk_MysqlDb extends Atk_Db
             $table = $matches[1];
 
             if ($this->m_query_id) {
-                if (is_resource($this->m_query_id))
+                if (is_resource($this->m_query_id)) {
                     mysql_free_result($this->m_query_id);
+                }
                 $this->m_query_id = 0;
             }
             $this->m_affected_rows = 0;
@@ -290,10 +300,11 @@ class Atk_MysqlDb extends Atk_Db
     function seek($position = 0)
     {
         $result = @mysql_data_seek($this->m_query_id, $position);
-        if ($result)
+        if ($result) {
             $this->m_row = $position;
-        else
+        } else {
             $this->halt("seek($position) failed: result has " . $this->num_rows() . " rows");
+        }
     }
 
     /**
@@ -314,8 +325,9 @@ class Atk_MysqlDb extends Atk_Db
 
             /* lock */
             $result = @mysql_query($query, $this->m_link_id);
-            if (!$result)
+            if (!$result) {
                 $this->halt("$mode lock on $table failed.");
+            }
 
             /* return result */
             return $result;
@@ -333,8 +345,9 @@ class Atk_MysqlDb extends Atk_Db
         if ($this->connect("w") == DB_SUCCESS) {
             /* unlock */
             $result = @mysql_query("unlock tables", $this->m_link_id);
-            if (!$result)
+            if (!$result) {
                 $this->halt("unlock tables failed.");
+            }
 
             /* return result */
             return $result;
@@ -396,9 +409,7 @@ class Atk_MysqlDb extends Atk_Db
                     $id = @mysql_query($query, $this->m_link_id);
                     $this->unlock();
                     return 1;
-                }
-
-                /* enter next value */ else {
+                } /* enter next value */ else {
                     $nextid = $result[$this->m_seq_field] + 1;
                     $query = "UPDATE " . $this->m_seq_table . " SET " . $this->m_seq_field . " = '$nextid' WHERE " . $this->m_seq_namefield . " = '$sequence'";
 
@@ -408,9 +419,7 @@ class Atk_MysqlDb extends Atk_Db
                 }
             }
             return 0;
-        }
-
-        /* cannot connect */ else {
+        } /* cannot connect */ else {
             $this->halt("cannot connect to " . $this->m_host);
         }
     }
@@ -436,7 +445,7 @@ class Atk_MysqlDb extends Atk_Db
     function _getTableType($table)
     {
         list($status) = $this->getRows("SHOW TABLE STATUS LIKE '" . $table . "';");
-        return $status != NULL && isset($status['Engine']) ? $status['Engine'] : NULL;
+        return $status != null && isset($status['Engine']) ? $status['Engine'] : null;
     }
 
     /**
@@ -496,11 +505,11 @@ class Atk_MysqlDb extends Atk_Db
 
                 $result[$i]["flags"] = explode(' ', @mysql_field_flags($id, $i));
                 $result[$i]["flags"] = (in_array('primary_key', $result[$i]["flags"])
-                            ? MF_PRIMARY : 0) |
+                        ? MF_PRIMARY : 0) |
                     (in_array('unique_key', $result[$i]["flags"]) ? MF_UNIQUE : 0) |
                     (in_array('not_null', $result[$i]["flags"]) ? MF_NOT_NULL : 0) |
                     (in_array('auto_increment', $result[$i]["flags"]) ? MF_AUTO_INCREMENT
-                            : 0);
+                        : 0);
 
                 if ($full) {
                     $result["meta"][$result[$i]["name"]] = $i;
@@ -517,7 +526,7 @@ class Atk_MysqlDb extends Atk_Db
 
     /**
      * Mysql_field_len returns unusable results for decimal,float and double column types.
-     * This method returns a number format, e.g.: '6,2' or false in case of failure OR 
+     * This method returns a number format, e.g.: '6,2' or false in case of failure OR
      * if the field type does not support a floating point (e.g. for integer fields) so it can
      * fall back on mysql_field_len()
      *
@@ -601,7 +610,18 @@ class Atk_MysqlDb extends Atk_Db
      */
     function getSearchModes()
     {
-        return array("exact", "substring", "wildcard", "regexp", "soundex", "greaterthan", "greaterthanequal", "lessthan", "lessthanequal", "between");
+        return array(
+            "exact",
+            "substring",
+            "wildcard",
+            "regexp",
+            "soundex",
+            "greaterthan",
+            "greaterthanequal",
+            "lessthan",
+            "lessthanequal",
+            "between"
+        );
     }
 
     /**
@@ -620,8 +640,9 @@ class Atk_MysqlDb extends Atk_Db
      */
     function func_datetochar($fieldname, $format = "")
     {
-        if ($format == "")
+        if ($format == "") {
             $format = Atk_Config::getGlobal("date_to_char", "Y-m-d");
+        }
         return "DATE_FORMAT($fieldname, '" . $this->vendorDateFormat($format) . "')";
     }
 
@@ -646,7 +667,7 @@ class Atk_MysqlDb extends Atk_Db
      * Get TO_CHAR() equivalent for the current database.
      *
      * TODO/FIXME: add format parameter. Current format is always yyyy-mm-dd hh:mi.
-     * 
+     *
      * @param String $fieldname The field to generate the to_char for.
      * @return String Piece of sql query that converts a datetime field to char
      *                for the current database

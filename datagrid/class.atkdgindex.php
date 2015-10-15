@@ -9,7 +9,7 @@
  * @subpackage utils
  *
  * @copyright (c) 2000-2007 Ibuildings.nl BV
- * 
+ *
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
 Atk_Tools::atkimport('atk.datagrid.atkdgcomponent');
@@ -27,7 +27,7 @@ class Atk_DGIndex extends Atk_DGComponent
 
     /**
      * Returns the available indices.
-     * 
+     *
      * @return array available indices
      */
     protected function getAvailableIndices()
@@ -50,7 +50,12 @@ class Atk_DGIndex extends Atk_DGComponent
         foreach ($chars as $char) {
             $title = $char;
             $call = $grid->getUpdateCall(array('atkstartat' => 0, 'atkindex' => "{$char}*"));
-            $links[] = array('type' => 'index', 'title' => $title, 'call' => $call, 'current' => "{$char}*" == $current);
+            $links[] = array(
+                'type' => 'index',
+                'title' => $title,
+                'call' => $call,
+                'current' => "{$char}*" == $current
+            );
         }
 
         // view all

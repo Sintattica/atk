@@ -16,7 +16,7 @@ Atk_Tools::atkimport('atk.datagrid.atkdgevent');
 
 /**
  * The data grid listener can be implemented and registered for a data grid
- * to listen for data grid events. 
+ * to listen for data grid events.
  *
  * @author Peter C. Verhage <peter@achievo.org>
  * @package atk

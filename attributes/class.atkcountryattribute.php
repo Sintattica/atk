@@ -27,25 +27,296 @@ Atk_Tools::useattrib("atklistattribute");
 class Atk_CountryAttribute extends Atk_ListAttribute
 {
     var $m_countries = array();
-    var $m_europe_countries = array('AL', 'AT', 'BE', 'BA', 'BG', 'HR', 'CY', 'CZ', 'DK', 'DE', 'FI', 'FR', 'GB', 'GR', 'HU', 'IE', 'IT', 'LI',
-        'LU', 'MC', 'NL', 'NO', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'CH', 'TR');
+    var $m_europe_countries = array(
+        'AL',
+        'AT',
+        'BE',
+        'BA',
+        'BG',
+        'HR',
+        'CY',
+        'CZ',
+        'DK',
+        'DE',
+        'FI',
+        'FR',
+        'GB',
+        'GR',
+        'HU',
+        'IE',
+        'IT',
+        'LI',
+        'LU',
+        'MC',
+        'NL',
+        'NO',
+        'PL',
+        'PT',
+        'RO',
+        'SK',
+        'SI',
+        'ES',
+        'SE',
+        'CH',
+        'TR'
+    );
     var $m_benelux_countries = array('NL', 'BE', 'LU');
-    var $m_world_countries_shortlist = array('AT', 'BE', 'CA', 'DK', 'FI', 'FR', 'DE', 'GR', 'IE', 'IT', 'LU', 'NL', 'PT', 'ES', 'SE', 'GB', 'US');
-    var $m_world_countries = array('AF', 'AL', 'DZ', 'AS', 'AD', 'AO', 'AI', 'AQ', 'AG', 'AR', 'AM', 'AW', 'AU', 'AT', 'AZ',
-        'BS', 'BH', 'BD', 'BB', 'BY', 'BE', 'BZ', 'BJ', 'BM', 'BO', 'BA', 'BW', 'BV', 'BR', 'IO', 'BN',
-        'BG', 'BF', 'BI', 'BT', 'KH', 'CM', 'CA', 'CV', 'KY', 'CF', 'TD', 'CL', 'CN', 'CX', 'CC', 'CO',
-        'KM', 'CG', 'CK', 'CR', 'HR', 'CU', 'CY', 'CZ', 'DK', 'DE', 'DJ', 'DM', 'DO', 'TP', 'EC',
-        'EG', 'SV', 'GQ', 'EE', 'ET', 'FK', 'FO', 'FJ', 'FI', 'FR', 'FX', 'TF', 'GA', 'GM', 'GE', 'GH',
-        'GI', 'GB', 'GR', 'GL', 'GD', 'GP', 'GU', 'GT', 'GN', 'GW', 'GY', 'GF', 'HT', 'HM', 'HN', 'HK',
-        'HU', 'IS', 'IN', 'ID', 'IR', 'IQ', 'IE', 'IL', 'IT', 'CI', 'JM', 'JP', 'JO', 'KZ', 'KE', 'KG',
-        'KI', 'KP', 'KR', 'KW', 'LA', 'LV', 'LB', 'LS', 'LR', 'LY', 'LI', 'LT', 'LU', 'MO', 'MG', 'MW',
-        'MY', 'MV', 'ML', 'MT', 'MH', 'MQ', 'MR', 'MU', 'MX', 'FM', 'MD', 'MC', 'MN', 'MS', 'MA', 'MZ',
-        'MM', 'NA', 'NR', 'NL', 'AN', 'NP', 'NC', 'NZ', 'NI', 'NE', 'NG', 'NU', 'NF', 'MP', 'NO', 'OM',
-        'PK', 'PW', 'PA', 'PG', 'PY', 'PE', 'PH', 'PN', 'PL', 'PF', 'PT', 'PR', 'QA', 'RE', 'RO', 'RU',
-        'RW', 'LC', 'WS', 'SM', 'SA', 'SN', 'SC', 'SL', 'SG', 'SK', 'SI', 'SB', 'SO', 'ZA', 'ES',
-        'LK', 'SH', 'PM', 'ST', 'KN', 'VC', 'SD', 'SR', 'SJ', 'SZ', 'SE', 'CH', 'SY', 'TJ', 'TW', 'TZ',
-        'TH', 'TG', 'TK', 'TO', 'TT', 'TN', 'TR', 'TM', 'TC', 'TV', 'UM', 'UG', 'UA', 'AE', 'GB', 'US',
-        'UY', 'UZ', 'VU', 'VA', 'VE', 'VN', 'VG', 'VI', 'WF', 'EH', 'YE', 'ZR', 'ZM', 'ZW');
+    var $m_world_countries_shortlist = array(
+        'AT',
+        'BE',
+        'CA',
+        'DK',
+        'FI',
+        'FR',
+        'DE',
+        'GR',
+        'IE',
+        'IT',
+        'LU',
+        'NL',
+        'PT',
+        'ES',
+        'SE',
+        'GB',
+        'US'
+    );
+    var $m_world_countries = array(
+        'AF',
+        'AL',
+        'DZ',
+        'AS',
+        'AD',
+        'AO',
+        'AI',
+        'AQ',
+        'AG',
+        'AR',
+        'AM',
+        'AW',
+        'AU',
+        'AT',
+        'AZ',
+        'BS',
+        'BH',
+        'BD',
+        'BB',
+        'BY',
+        'BE',
+        'BZ',
+        'BJ',
+        'BM',
+        'BO',
+        'BA',
+        'BW',
+        'BV',
+        'BR',
+        'IO',
+        'BN',
+        'BG',
+        'BF',
+        'BI',
+        'BT',
+        'KH',
+        'CM',
+        'CA',
+        'CV',
+        'KY',
+        'CF',
+        'TD',
+        'CL',
+        'CN',
+        'CX',
+        'CC',
+        'CO',
+        'KM',
+        'CG',
+        'CK',
+        'CR',
+        'HR',
+        'CU',
+        'CY',
+        'CZ',
+        'DK',
+        'DE',
+        'DJ',
+        'DM',
+        'DO',
+        'TP',
+        'EC',
+        'EG',
+        'SV',
+        'GQ',
+        'EE',
+        'ET',
+        'FK',
+        'FO',
+        'FJ',
+        'FI',
+        'FR',
+        'FX',
+        'TF',
+        'GA',
+        'GM',
+        'GE',
+        'GH',
+        'GI',
+        'GB',
+        'GR',
+        'GL',
+        'GD',
+        'GP',
+        'GU',
+        'GT',
+        'GN',
+        'GW',
+        'GY',
+        'GF',
+        'HT',
+        'HM',
+        'HN',
+        'HK',
+        'HU',
+        'IS',
+        'IN',
+        'ID',
+        'IR',
+        'IQ',
+        'IE',
+        'IL',
+        'IT',
+        'CI',
+        'JM',
+        'JP',
+        'JO',
+        'KZ',
+        'KE',
+        'KG',
+        'KI',
+        'KP',
+        'KR',
+        'KW',
+        'LA',
+        'LV',
+        'LB',
+        'LS',
+        'LR',
+        'LY',
+        'LI',
+        'LT',
+        'LU',
+        'MO',
+        'MG',
+        'MW',
+        'MY',
+        'MV',
+        'ML',
+        'MT',
+        'MH',
+        'MQ',
+        'MR',
+        'MU',
+        'MX',
+        'FM',
+        'MD',
+        'MC',
+        'MN',
+        'MS',
+        'MA',
+        'MZ',
+        'MM',
+        'NA',
+        'NR',
+        'NL',
+        'AN',
+        'NP',
+        'NC',
+        'NZ',
+        'NI',
+        'NE',
+        'NG',
+        'NU',
+        'NF',
+        'MP',
+        'NO',
+        'OM',
+        'PK',
+        'PW',
+        'PA',
+        'PG',
+        'PY',
+        'PE',
+        'PH',
+        'PN',
+        'PL',
+        'PF',
+        'PT',
+        'PR',
+        'QA',
+        'RE',
+        'RO',
+        'RU',
+        'RW',
+        'LC',
+        'WS',
+        'SM',
+        'SA',
+        'SN',
+        'SC',
+        'SL',
+        'SG',
+        'SK',
+        'SI',
+        'SB',
+        'SO',
+        'ZA',
+        'ES',
+        'LK',
+        'SH',
+        'PM',
+        'ST',
+        'KN',
+        'VC',
+        'SD',
+        'SR',
+        'SJ',
+        'SZ',
+        'SE',
+        'CH',
+        'SY',
+        'TJ',
+        'TW',
+        'TZ',
+        'TH',
+        'TG',
+        'TK',
+        'TO',
+        'TT',
+        'TN',
+        'TR',
+        'TM',
+        'TC',
+        'TV',
+        'UM',
+        'UG',
+        'UA',
+        'AE',
+        'GB',
+        'US',
+        'UY',
+        'UZ',
+        'VU',
+        'VA',
+        'VE',
+        'VN',
+        'VG',
+        'VI',
+        'WF',
+        'EH',
+        'YE',
+        'ZR',
+        'ZM',
+        'ZW'
+    );
     var $m_custom_countries = array();
     var $m_defaulttocurrent = true;
 
@@ -56,16 +327,22 @@ class Atk_CountryAttribute extends Atk_ListAttribute
      *        $this->add(new atkCountryAttribute("zipcode","world","","",AF_OBLIGATORY));
      * @param string $name Name of the attribute
      * @param string $switch Can be "benelux", "europe", "world", "world_shortlist", "user"
-      If user, it will use the option and value Array.
+     * If user, it will use the option and value Array.
      * @param array $optionArray Array with options
      * @param array $valueArray Array with values. If you don't use this parameter,
      *                    values are assumed to be the same as the options.
      * @param int $flags Flags for the attribute
-     * @param bool $defaulttocurrent Set the default selected country to the 
+     * @param bool $defaulttocurrent Set the default selected country to the
      *                               current country based on the atk language
      */
-    function __construct($name, $switch = "world", $optionArray = "", $valueArray = "", $flags = 0, $defaulttocurrent = true)
-    {
+    function __construct(
+        $name,
+        $switch = "world",
+        $optionArray = "",
+        $valueArray = "",
+        $flags = 0,
+        $defaulttocurrent = true
+    ) {
         if (is_numeric($switch)) {
             $flags = $switch;
             $switch = "world";
@@ -75,8 +352,9 @@ class Atk_CountryAttribute extends Atk_ListAttribute
         Atk_Tools::atkdebug("CountryAttribute - $name - $switch");
         if ($switch != "user") {
             //we assume that the 3 param is flags
-            if (is_numeric($optionArray))
+            if (is_numeric($optionArray)) {
                 $flags = $optionArray;
+            }
 
             if ($switch != "world") {
                 $this->fillCountriesArray();
@@ -95,7 +373,7 @@ class Atk_CountryAttribute extends Atk_ListAttribute
      * With this function you can set the "custom" list with a array of country ISO codes
      * that are KNOWN to this class. (they should be in the world list atleast)
      *
-     * @param array $countries  CountryIso codes, like NL BE LU etc...
+     * @param array $countries CountryIso codes, like NL BE LU etc...
      * @return bool             It will return false when the resulting custom list is empty.
      */
     function setList($countries)
@@ -131,8 +409,9 @@ class Atk_CountryAttribute extends Atk_ListAttribute
      */
     function edit($record = "", $fieldprefix = "", $mode)
     {
-        if ($this->m_defaulttocurrent && !$record[$this->fieldName()])
+        if ($this->m_defaulttocurrent && !$record[$this->fieldName()]) {
             $record[$this->fieldName()] = strtoupper(Atk_Language::getLanguage());
+        }
         return parent::edit($record, $fieldprefix);
     }
 
@@ -146,23 +425,29 @@ class Atk_CountryAttribute extends Atk_ListAttribute
     {
         $tmp_array = array();
         if ($switch == "benelux") {
-            foreach ($this->m_benelux_countries as $iso)
+            foreach ($this->m_benelux_countries as $iso) {
                 $tmp_array[] = $this->getCountryOption($iso);
+            }
         } elseif ($switch == "europe") {
-            foreach ($this->m_europe_countries as $iso)
+            foreach ($this->m_europe_countries as $iso) {
                 $tmp_array[] = $this->getCountryOption($iso);
+            }
         } elseif ($switch == "world") {
-            foreach ($this->m_world_countries as $iso)
+            foreach ($this->m_world_countries as $iso) {
                 $tmp_array[] = $this->getCountryOption($iso);
+            }
         } elseif ($switch == "world_shortlist") {
-            foreach ($this->m_world_countries_shortlist as $iso)
+            foreach ($this->m_world_countries_shortlist as $iso) {
                 $tmp_array[] = $this->getCountryOption($iso);
+            }
         } elseif ($switch == "custom") {
-            foreach ($this->m_custom_countries as $iso)
+            foreach ($this->m_custom_countries as $iso) {
                 $tmp_array[] = $this->getCountryOption($iso);
+            }
         } else {
-            foreach ($this->m_country as $iso => $value)
+            foreach ($this->m_country as $iso => $value) {
                 $tmp_array[] = $value;
+            }
         }
         return $tmp_array;
     }
@@ -187,8 +472,9 @@ class Atk_CountryAttribute extends Atk_ListAttribute
             return $this->m_custom_countries;
         } else {
             $tmp_array = array();
-            foreach ($this->m_country as $iso => $value)
+            foreach ($this->m_country as $iso => $value) {
                 $tmp_array[] = $iso;
+            }
             return $tmp_array;
         }
     }
@@ -203,8 +489,9 @@ class Atk_CountryAttribute extends Atk_ListAttribute
     function getCountryOption($iso_code)
     {
         $lng = Atk_Language::getLanguage();
-        if (!array_key_exists($iso_code, $this->m_country))
+        if (!array_key_exists($iso_code, $this->m_country)) {
             Atk_Tools::atkdebug('UNKNOWN ISO CODE: ' . $iso_code);
+        }
         if (array_key_exists($lng, $this->m_country[$iso_code])) {
             return $this->m_country[$iso_code][$lng];
         } else {

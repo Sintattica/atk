@@ -23,7 +23,7 @@
  * and gives access to a special variable (default $navigation) which gives
  * access to the current's page properties.
  *
- * Params: 
+ * Params:
  * - name:      navigator name (name of the special variable inside the block)
  * - limit:     limit
  * - offset:    current offset
@@ -33,7 +33,7 @@
  * The special navigator variable which is available inside the block contains
  * information for the current page in the iteration and contains the following
  * properties:
- * 
+ *
  * - type:      preview / page / next
  * - page:      page number
  * - offset:    offset for this link
@@ -45,7 +45,7 @@
  * {atknavigator name='nav' limit=10 offset=0 count=500 max_pages=10}
  *   <a href="?offset={$nav.offset}">
  *     {if $nav.type == 'previous'}&lt;&lt;{/if}
- *     {if $nav.type == 'page'}{$nav.page}{/if} 
+ *     {if $nav.type == 'page'}{$nav.page}{/if}
  *     {if $nav.type == 'next'}&gt;&gt;{/if}
  *   </a>
  *   {if !$nav.isLast}|{/if}
@@ -65,11 +65,12 @@ function smarty_block_atknavigator($params, $content, &$smarty, &$repeat)
         $limit = $params['limit'];
         $count = $params['count'];
         $maxPages = isset($params['max_pages']) ? $params['max_pages'] : 10;
-        if (empty($maxP))
+        if (empty($maxP)) {
             if (!($limit > 0 && $count > $limit && ceil($count / $limit) > 1)) {
                 $repeat = false;
                 return;
             }
+        }
 
         // calculate number of pages, first, current and last page
         $pageCount = ceil($count / $limit);
@@ -126,20 +127,22 @@ function smarty_block_atknavigator($params, $content, &$smarty, &$repeat)
         $loopToggles[$name] = true;
         $repeat = true;
         return;
-    } else if ($loopToggles[$name]) {
-        $page = array_shift($loopPages[$name]);
-        $smarty->assign($name, $page);
-        $loopToggles[$name] = false;
-        $repeat = true;
     } else {
-        $loopToggles[$name] = true;
+        if ($loopToggles[$name]) {
+            $page = array_shift($loopPages[$name]);
+            $smarty->assign($name, $page);
+            $loopToggles[$name] = false;
+            $repeat = true;
+        } else {
+            $loopToggles[$name] = true;
 
-        $repeat = count($loopPages[$name]) > 0;
-        if (!$repeat) {
-            unset($loopPages[$name]);
-            unset($loopToggles[$name]);
+            $repeat = count($loopPages[$name]) > 0;
+            if (!$repeat) {
+                unset($loopPages[$name]);
+                unset($loopToggles[$name]);
+            }
+
+            return $content;
         }
-
-        return $content;
     }
 }

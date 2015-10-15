@@ -77,7 +77,8 @@ class Atk_FormatAttribute extends Atk_Attribute
         for ($i = 0, $j = 0, $_i = count($elems); $i < $_i; $i++) {
             if ($elems[$i]['type'] != '/') {
                 if (!$this->_checkString($elems[$i]['type'], $values[$j])) {
-                    Atk_Tools::triggerError($record, $this->fieldName(), 'err', $this->_formatErrorString(($j + 1), str_repeat($elems[$i]['type'], $elems[$i]['size'])));
+                    Atk_Tools::triggerError($record, $this->fieldName(), 'err',
+                        $this->_formatErrorString(($j + 1), str_repeat($elems[$i]['type'], $elems[$i]['size'])));
                 }
                 $j++;
             }
@@ -153,8 +154,9 @@ class Atk_FormatAttribute extends Atk_Attribute
     function _checkString($specifier, $string)
     {
         for ($i = 0, $_i = strlen($string); $i < $_i; $i++) {
-            if (!$this->_checkChar($specifier, $string[$i]))
+            if (!$this->_checkChar($specifier, $string[$i])) {
                 return false;
+            }
         }
         return true;
     }
@@ -170,9 +172,12 @@ class Atk_FormatAttribute extends Atk_Attribute
     function _checkChar($specifier, $char)
     {
         switch ($specifier) {
-            case "#": return (is_numeric($char) || (strtoupper($char) >= 'A' && strtoupper($char) <= 'Z'));
-            case "A": return (strtoupper($char) >= 'A' && strtoupper($char) <= 'Z');
-            case "9": return (is_numeric($char));
+            case "#":
+                return (is_numeric($char) || (strtoupper($char) >= 'A' && strtoupper($char) <= 'Z'));
+            case "A":
+                return (strtoupper($char) >= 'A' && strtoupper($char) <= 'Z');
+            case "9":
+                return (is_numeric($char));
         }
         return true;
     }
@@ -201,24 +206,29 @@ class Atk_FormatAttribute extends Atk_Attribute
                 $char = $this->m_format[$i];
                 if ($i == 0 || !$this->_equalSpecifiers($char, $last)) {
                     // add elem
-                    if ($i > 0)
+                    if ($i > 0) {
                         $elems[] = $elem;
+                    }
 
                     // create new
-                    $elem = array('size' => 1, 'type' => ($this->_isSpecifier($char)
-                                ? $char : '/'), 'mask' => $char);
-                }
-                else {
+                    $elem = array(
+                        'size' => 1,
+                        'type' => ($this->_isSpecifier($char)
+                            ? $char : '/'),
+                        'mask' => $char
+                    );
+                } else {
                     // increase elem
-                    $elem['size'] ++;
-                    $elem['mask'].=$char;
+                    $elem['size']++;
+                    $elem['mask'] .= $char;
                 }
                 $last = $char;
             }
 
             // leftover
-            if ($elem['size'] > 0)
+            if ($elem['size'] > 0) {
                 $elems[] = $elem;
+            }
 
             $this->m_breakdownCached = $elems;
         }
@@ -244,7 +254,7 @@ class Atk_FormatAttribute extends Atk_Attribute
             if ($elem['type'] != '/') {
                 $values[] = trim(substr($valuestr, $pos, $elem['size']));
             }
-            $pos+=$elem['size'];
+            $pos += $elem['size'];
         }
 
         return $values;
@@ -291,9 +301,9 @@ class Atk_FormatAttribute extends Atk_Attribute
 
         for ($i = 0, $_i = count($masks); $i < $_i; $i++) {
             if ($masks[$i]['type'] == '/') { // literal
-                $result.=$masks[$i]['mask'];
+                $result .= $masks[$i]['mask'];
             } else { // mask
-                $result.=$this->_pad($masks[$i]['type'], $masks[$i]['size'], $elems[$i]);
+                $result .= $this->_pad($masks[$i]['type'], $masks[$i]['size'], $elems[$i]);
             }
         }
         return $result;
@@ -328,8 +338,9 @@ class Atk_FormatAttribute extends Atk_Attribute
         $elems = $this->_breakDown();
         for ($i = 0, $_i = count($elems); $i < $_i; $i++) {
             if ($elems[$i]['type'] != '/') { // not a literal
-                if ($values[$i] != '')
+                if ($values[$i] != '') {
                     return false;
+                }
             }
         }
         return true;

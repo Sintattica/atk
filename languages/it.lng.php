@@ -139,8 +139,10 @@ $it = array(
     "export_config_explanation" => "Opzioni per l'export CSV",
     "export_generatetitlerow" => "Riga di intestazione",
     "export_selectcolumns" => "Campi da esportare",
-    "export_selections" => "Standard selections", // Missing string!!!
-    "export_selections_name" => "Standard selections name", // Missing string!!!
+    "export_selections" => "Standard selections",
+    // Missing string!!!
+    "export_selections_name" => "Standard selections name",
+    // Missing string!!!
     "feb" => "Feb",
     "february" => "Febbraio",
     "feedback" => "Messaggio",
@@ -168,7 +170,8 @@ $it = array(
     "friday" => "Venerdì",
     "fsa_pleasemakeselection" => "Trovati diversi elementi corrispondenti. Selezionare quello corretto.",
     "help" => "Aiuto",
-    "hours" => "h", // (usato in atkDurationAttribute)
+    "hours" => "h",
+    // (usato in atkDurationAttribute)
     "import" => "Import",
     "import_allfield" => "Usare il valore di default per uno degli attributi (es. se la colonna è assente nel file CSV)",
     "import_analyse" => "Analizzare di nuovo",
@@ -186,7 +189,8 @@ $it = array(
     "import_importedreminder" => "Il file è stato importato, tuttavia sono stati rilevati errori nelle seguenti righe (non importate)",
     "import_nonunique_identifier" => "Trovati record con identificatore '%s' non univoco",
     "import_onfalseidentifier" => "Inserisci e continua nel caso di più record con lo stesso identificatore",
-    "import_relation_value_failed" => "Of the field '%s' has been found, on line %s, the value '%s', however this is not a unique value for this relation", // Missing string!!!
+    "import_relation_value_failed" => "Of the field '%s' has been found, on line %s, the value '%s', however this is not a unique value for this relation",
+    // Missing string!!!
     "import_sample" => "Dati di es. dal file CSV",
     "import_skipfirstrow" => "Salta la prima riga (riga di intestazione)",
     "import_update_key" => "Campo da usare per identificare i record da aggiornare",
@@ -230,7 +234,8 @@ $it = array(
     "may" => "Maggio",
     "menu" => "Menù",
     "menu_main" => "Principale",
-    "minutes" => "m", // (usato in atkDurationAttribute)
+    "minutes" => "m",
+    // (usato in atkDurationAttribute)
     "mon" => "Lun",
     "monday" => "Lunedì",
     "multilanguage_choice" => "Lingua selezionata:",
@@ -324,32 +329,58 @@ $it = array(
     "thousands_separator" => ".",
     "thu" => "Gio",
     "thursday" => "Giovedì",
-    "timezone_utc_+0000" => "(UTC) Casablanca, Greenwich Mean Time, London", // Missing string!!!
-    "timezone_utc_+0100" => "(UTC+01:00) Amsterdam, Berlin, Rome, Paris", // Missing string!!!
-    "timezone_utc_+0200" => "(UTC+02:00) Athens, Beirut, Istanbul, Minsk", // Missing string!!!
-    "timezone_utc_+0300" => "(UTC+03:00) Baghdad, Kuwait, Riyadh, Moscow", // Missing string!!!
-    "timezone_utc_+0400" => "(UTC+04:00) Abu Dhabi, Kabul", // Missing string!!!
-    "timezone_utc_+0500" => "(UTC+05:00) New Delhi, Mumbai, Kathmandu", // Missing string!!!
-    "timezone_utc_+0600" => "(UTC+06:00) Novosibirsk, Dhaka, Sri Jayawardenepura", // Missing string!!!
-    "timezone_utc_+0700" => "(UTC+07:00) Bangkok, Hanoi, Jakarta, Krasnoyarsk", // Missing string!!!
-    "timezone_utc_+0800" => "(UTC+08:00) Beijing, Hong Kong, Ulaan Bataar", // Missing string!!!
-    "timezone_utc_+0900" => "(UTC+09:00) Osaka, Sapporo, Tokyo, Seoul", // Missing string!!!
-    "timezone_utc_+1000" => "(UTC+10:00) Brisbane, Melbourne, Sydney", // Missing string!!!
-    "timezone_utc_+1100" => "(UTC+11:00) Solomon Is., Magadan", // Missing string!!!
-    "timezone_utc_+1200" => "(UTC+12:00) Auckland, Wellington, Fiji", // Missing string!!!
-    "timezone_utc_+1300" => "(UTC+13:00) Nuku'alofa", // Missing string!!!
-    "timezone_utc_-0100" => "(UTC-01:00) Azores, Cape Verde Is.", // Missing string!!!
-    "timezone_utc_-0200" => "(UTC-02:00) Mid-Atlantic", // Missing string!!!
-    "timezone_utc_-0300" => "(UTC-03:00) Brasilia, Buenos Aires, Greenland", // Missing string!!!
-    "timezone_utc_-0400" => "(UTC-04:00) Atlantic Time (Canada), Santiago", // Missing string!!!
-    "timezone_utc_-0500" => "(UTC-05:00) Bogota, Lima, Quito, Eastern Time (US & Canada)", // Missing string!!!
-    "timezone_utc_-0600" => "(UTC-06:00) Central America, Central Time (US & Canada)", // Missing string!!!
-    "timezone_utc_-0700" => "(UTC-07:00) Arizona, Mountain Time (US & Canada)", // Missing string!!!
-    "timezone_utc_-0800" => "(UTC-08:00) Pacific Time (US & Canada); Tijuna", // Missing string!!!
-    "timezone_utc_-0900" => "(UTC-09:00) Alaska", // Missing string!!!
-    "timezone_utc_-1000" => "(UTC-10:00) Hawaii", // Missing string!!!
-    "timezone_utc_-1100" => "(UTC-11:00) Midway Island, Samoa", // Missing string!!!
-    "timezone_utc_-1200" => "(UTC-12:00) International Date Line West", // Missing string!!!
+    "timezone_utc_+0000" => "(UTC) Casablanca, Greenwich Mean Time, London",
+    // Missing string!!!
+    "timezone_utc_+0100" => "(UTC+01:00) Amsterdam, Berlin, Rome, Paris",
+    // Missing string!!!
+    "timezone_utc_+0200" => "(UTC+02:00) Athens, Beirut, Istanbul, Minsk",
+    // Missing string!!!
+    "timezone_utc_+0300" => "(UTC+03:00) Baghdad, Kuwait, Riyadh, Moscow",
+    // Missing string!!!
+    "timezone_utc_+0400" => "(UTC+04:00) Abu Dhabi, Kabul",
+    // Missing string!!!
+    "timezone_utc_+0500" => "(UTC+05:00) New Delhi, Mumbai, Kathmandu",
+    // Missing string!!!
+    "timezone_utc_+0600" => "(UTC+06:00) Novosibirsk, Dhaka, Sri Jayawardenepura",
+    // Missing string!!!
+    "timezone_utc_+0700" => "(UTC+07:00) Bangkok, Hanoi, Jakarta, Krasnoyarsk",
+    // Missing string!!!
+    "timezone_utc_+0800" => "(UTC+08:00) Beijing, Hong Kong, Ulaan Bataar",
+    // Missing string!!!
+    "timezone_utc_+0900" => "(UTC+09:00) Osaka, Sapporo, Tokyo, Seoul",
+    // Missing string!!!
+    "timezone_utc_+1000" => "(UTC+10:00) Brisbane, Melbourne, Sydney",
+    // Missing string!!!
+    "timezone_utc_+1100" => "(UTC+11:00) Solomon Is., Magadan",
+    // Missing string!!!
+    "timezone_utc_+1200" => "(UTC+12:00) Auckland, Wellington, Fiji",
+    // Missing string!!!
+    "timezone_utc_+1300" => "(UTC+13:00) Nuku'alofa",
+    // Missing string!!!
+    "timezone_utc_-0100" => "(UTC-01:00) Azores, Cape Verde Is.",
+    // Missing string!!!
+    "timezone_utc_-0200" => "(UTC-02:00) Mid-Atlantic",
+    // Missing string!!!
+    "timezone_utc_-0300" => "(UTC-03:00) Brasilia, Buenos Aires, Greenland",
+    // Missing string!!!
+    "timezone_utc_-0400" => "(UTC-04:00) Atlantic Time (Canada), Santiago",
+    // Missing string!!!
+    "timezone_utc_-0500" => "(UTC-05:00) Bogota, Lima, Quito, Eastern Time (US & Canada)",
+    // Missing string!!!
+    "timezone_utc_-0600" => "(UTC-06:00) Central America, Central Time (US & Canada)",
+    // Missing string!!!
+    "timezone_utc_-0700" => "(UTC-07:00) Arizona, Mountain Time (US & Canada)",
+    // Missing string!!!
+    "timezone_utc_-0800" => "(UTC-08:00) Pacific Time (US & Canada); Tijuna",
+    // Missing string!!!
+    "timezone_utc_-0900" => "(UTC-09:00) Alaska",
+    // Missing string!!!
+    "timezone_utc_-1000" => "(UTC-10:00) Hawaii",
+    // Missing string!!!
+    "timezone_utc_-1100" => "(UTC-11:00) Midway Island, Samoa",
+    // Missing string!!!
+    "timezone_utc_-1200" => "(UTC-12:00) International Date Line West",
+    // Missing string!!!
     "title_delete" => "Conferma eliminazione",
     "title_multiselect" => "Selezione multipla",
     "title_select" => "Seleziona",
@@ -362,7 +393,8 @@ $it = array(
     "unknown_error" => "Errore sconosciuto",
     "unselect" => "Deseleziona",
     "until" => "fino a",
-    "update" => "Aggiornare", // TODO corretto?
+    "update" => "Aggiornare",
+    // TODO corretto?
     "upperchars" => "caratteri maiuscoli",
     "username" => "Username",
     "view" => "Vedi",
@@ -384,10 +416,16 @@ $it = array(
     "wysiwyg_merge_cell" => "Unisci celle",
     "wysiwyg_split_cell" => "Dividi celle",
     "yes" => "Sì",
-    "btkdate_format_edit" => "DD MMMM YYYY", // momentJS format style
-    "btkdate_format_view" => "DD/MM/YYYY", // momentJS format style
-    "btktime_format_edit" => "HH:mm", // momentJS format style
-    "btktime_format_view" => "HH:mm", // momentJS format style
-    "btkdatetime_format_edit" => "DD MMMM YYYY HH:mm", // momentJS format style
-    "btkdatetime_format_view" => "DD/MM/YYYY HH:mm" // momentJS format style
+    "btkdate_format_edit" => "DD MMMM YYYY",
+    // momentJS format style
+    "btkdate_format_view" => "DD/MM/YYYY",
+    // momentJS format style
+    "btktime_format_edit" => "HH:mm",
+    // momentJS format style
+    "btktime_format_view" => "HH:mm",
+    // momentJS format style
+    "btkdatetime_format_edit" => "DD MMMM YYYY HH:mm",
+    // momentJS format style
+    "btkdatetime_format_view" => "DD/MM/YYYY HH:mm"
+    // momentJS format style
 );

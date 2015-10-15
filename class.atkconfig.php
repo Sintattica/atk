@@ -66,10 +66,12 @@ class Atk_Config
                 // If a key was previously defined, use that instead of the default value.
                 if (array_key_exists($key, $applicationConfig)) {
                     $$key = $applicationConfig[$key];
-                } else if (array_key_exists($key, $overrides)) {
-                    $$key = $overrides[$key];
                 } else {
-                    $$key = $value;
+                    if (array_key_exists($key, $overrides)) {
+                        $$key = $overrides[$key];
+                    } else {
+                        $$key = $value;
+                    }
                 }
             }
         }
@@ -90,9 +92,9 @@ class Atk_Config
 
     /**
      * Returns the value for a global configuration variable.
-     * 
-     * @param string $name    configuration variable name (without the config_ prefix)
-     * @param mixed  $default default (fallback) value
+     *
+     * @param string $name configuration variable name (without the config_ prefix)
+     * @param mixed $default default (fallback) value
      */
     public static function getGlobal($name, $default = null)
     {
@@ -106,11 +108,11 @@ class Atk_Config
 
     /**
      * Sets the value of a global configuration variable.
-     * 
+     *
      * Only works for configuration variables where no function for exists.
-     * 
-     * @param string $name  configuration variable name (without the config_ prefix)
-     * @param mixed  $value new value
+     *
+     * @param string $name configuration variable name (without the config_ prefix)
+     * @param mixed $value new value
      */
     public static function setGlobal($name, $value)
     {
@@ -130,8 +132,8 @@ class Atk_Config
      *        Atk_Config::get('color','mymodule','FF0000');
      *
      * @param string $section Section to check (typically a module)
-     * @param string $tag     Name of configuration to get
-     * @param mixed  $default Default to use if configuration value does not exist
+     * @param string $tag Name of configuration to get
+     * @param mixed $default Default to use if configuration value does not exist
      * @return mixed Configuration value
      */
     public static function get($section, $tag, $default = "")
@@ -183,7 +185,7 @@ class Atk_Config
      * Get all configuration values from all configuration files for
      * a specific directory and a specific section.
      *
-     * @param string $dir     Directory where the configuration files are
+     * @param string $dir Directory where the configuration files are
      * @param string $section Section to get configuration values for
      * @return array Configuration values
      */
@@ -226,8 +228,10 @@ class Atk_Config
 
         if (isset($_REQUEST["atkdebug"]["key"])) {
             $session["debug"]["key"] = $_REQUEST["atkdebug"]["key"];
-        } else if (isset($_COOKIE['ATKDEBUG_KEY']) && !empty($_COOKIE['ATKDEBUG_KEY'])) {
-            $session["debug"]["key"] = $_COOKIE['ATKDEBUG_KEY'];
+        } else {
+            if (isset($_COOKIE['ATKDEBUG_KEY']) && !empty($_COOKIE['ATKDEBUG_KEY'])) {
+                $session["debug"]["key"] = $_COOKIE['ATKDEBUG_KEY'];
+            }
         }
 
         return (isset($session["debug"]["key"]) && $session["debug"]["key"] == $params["key"]);
@@ -239,7 +243,7 @@ class Atk_Config
      * found returns the default level.
      *
      * @param int $default The default debug level
-     * @param array $options  
+     * @param array $options
      * @static
      */
     function smartDebugLevel($default, $options = array())
@@ -250,8 +254,9 @@ class Atk_Config
 
         foreach ($options as $option) {
             $method = $option["type"] . "DebugEnabled";
-            if (is_callable(array("atkconfig", $method)))
+            if (is_callable(array("atkconfig", $method))) {
                 $enabled = $enabled || Atk_config::$method($option);
+            }
         }
 
         global $config_debug_enabled;
@@ -260,14 +265,17 @@ class Atk_Config
         if ($enabled) {
             if (isset($_REQUEST["atkdebug"]["level"])) {
                 $session["debug"]["level"] = $_REQUEST["atkdebug"]["level"];
-            } else if (isset($_COOKIE['ATKDEBUG_LEVEL'])) {
-                $session["debug"]["level"] = $_COOKIE['ATKDEBUG_LEVEL'];
+            } else {
+                if (isset($_COOKIE['ATKDEBUG_LEVEL'])) {
+                    $session["debug"]["level"] = $_COOKIE['ATKDEBUG_LEVEL'];
+                }
             }
 
-            if (isset($session["debug"]["level"]))
+            if (isset($session["debug"]["level"])) {
                 return $session["debug"]["level"];
-            else
+            } else {
                 return max($default, 0);
+            }
         }
 
         return $default;

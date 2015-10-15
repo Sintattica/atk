@@ -34,7 +34,8 @@ class Atk_FeedbackHandler extends Atk_ActionHandler
     function action_feedback()
     {
         $page = &$this->getPage();
-        $output = $this->invoke("feedbackPage", $this->m_postvars["atkfbaction"], $this->m_postvars["atkactionstatus"], $this->m_postvars["atkfbmessage"]);
+        $output = $this->invoke("feedbackPage", $this->m_postvars["atkfbaction"], $this->m_postvars["atkactionstatus"],
+            $this->m_postvars["atkfbmessage"]);
         $page->addContent($this->m_node->renderActionPage("feedback", $output));
     }
 
@@ -55,7 +56,8 @@ class Atk_FeedbackHandler extends Atk_ActionHandler
 
         $node->addStyle("style.css");
 
-        $params["content"] = '<br>'.Atk_Tools::atktext('feedback_' . $action . '_' . Atk_Tools::atkActionStatus($actionstatus), $node->m_module, $node->m_type);
+        $params["content"] = '<br>' . Atk_Tools::atktext('feedback_' . $action . '_' . Atk_Tools::atkActionStatus($actionstatus),
+                $node->m_module, $node->m_type);
         if ($message) {
             $params["content"] .= ' <br>' . $message;
         }
@@ -68,8 +70,10 @@ class Atk_FeedbackHandler extends Atk_ActionHandler
 
         $output = $ui->renderAction($action, $params);
 
-        return $ui->renderBox(array("title" => $node->actionTitle($action),
-                "content" => $output));
+        return $ui->renderBox(array(
+            "title" => $node->actionTitle($action),
+            "content" => $output
+        ));
     }
 
 }

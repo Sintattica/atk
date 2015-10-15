@@ -51,7 +51,8 @@ class Atk_ViewHandler extends Atk_ViewEditBase
         $page = &$this->getPage();
         $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/formsubmit.js");
         $this->notify("view", $record);
-        $page->addContent($this->m_node->renderActionPage("admin", $this->invoke("viewPage", $record, $this->m_node, $renderbox)));
+        $page->addContent($this->m_node->renderActionPage("admin",
+            $this->invoke("viewPage", $record, $this->m_node, $renderbox)));
     }
 
     /**
@@ -59,7 +60,8 @@ class Atk_ViewHandler extends Atk_ViewEditBase
      */
     function getRecordFromDb()
     {
-        list($record) = $this->m_node->selectDb($this->m_postvars['atkselector'], $this->getNode()->getColumnConfig()->getOrderByStatement(), "", $this->m_node->m_viewExcludes, "", "view");
+        list($record) = $this->m_node->selectDb($this->m_postvars['atkselector'],
+            $this->getNode()->getColumnConfig()->getOrderByStatement(), "", $this->m_node->m_viewExcludes, "", "view");
         return $record;
     }
 
@@ -70,7 +72,7 @@ class Atk_ViewHandler extends Atk_ViewEditBase
      */
     public function getFormStart($record = null)
     {
-        $formstart = '<form name="entryform" id="entryform" action="' .  Atk_Tools::getDispatchFile() . '" method="get" onsubmit="return globalSubmit(this,false)">';
+        $formstart = '<form name="entryform" id="entryform" action="' . Atk_Tools::getDispatchFile() . '" method="get" onsubmit="return globalSubmit(this,false)">';
         $formstart .= Atk_Tools::session_form(SESSION_NESTED);
         $formstart .= '<input type="hidden" name="atkselector" value="' . $this->getNode()->primaryKey($record) . '">';
         $formstart .= '<input type="hidden" class="atksubmitaction" />';
@@ -110,7 +112,8 @@ class Atk_ViewHandler extends Atk_ViewEditBase
                 return $output;
             }
 
-            $this->getPage()->setTitle(Atk_Tools::atktext('app_shorttitle') . " - " . $node->actionTitle($this->m_action, $record));
+            $this->getPage()->setTitle(Atk_Tools::atktext('app_shorttitle') . " - " . $node->actionTitle($this->m_action,
+                    $record));
 
             $vars = array("title" => $node->actionTitle($this->m_action, $record), "content" => $output);
 
@@ -184,13 +187,19 @@ class Atk_ViewHandler extends Atk_ViewEditBase
             $classes = array();
             if ($field["sections"] == "*") {
                 $classes[] = "alltabs";
-            } else if ($field["html"] == "section") {
-                // section should only have the tab section classes
-                foreach ($field["tabs"] as $section)
-                    $classes[] = "section_" . str_replace('.', '_', $section);
-            } else if (is_array($field["sections"])) {
-                foreach ($field["sections"] as $section)
-                    $classes[] = "section_" . str_replace('.', '_', $section);
+            } else {
+                if ($field["html"] == "section") {
+                    // section should only have the tab section classes
+                    foreach ($field["tabs"] as $section) {
+                        $classes[] = "section_" . str_replace('.', '_', $section);
+                    }
+                } else {
+                    if (is_array($field["sections"])) {
+                        foreach ($field["sections"] as $section) {
+                            $classes[] = "section_" . str_replace('.', '_', $section);
+                        }
+                    }
+                }
             }
 
             $tplfield["class"] = implode(" ", $classes);
@@ -205,8 +214,9 @@ class Atk_ViewHandler extends Atk_ViewEditBase
                 (!is_array($field["sections"]) || count(array_intersect($field['sections'], $visibleSections)) > 0);
 
             // Give the row an id if it doesn't have one yet
-            if (!isset($field["id"]) || empty($field["id"]))
+            if (!isset($field["id"]) || empty($field["id"])) {
                 $field['id'] = Atk_Tools::getUniqueID("anonymousattribrows");
+            }
 
             // ar_ stands voor 'attribrow'.
             $tplfield["rowid"] = "ar_" . $field['id']; // The id of the containing row
@@ -214,17 +224,13 @@ class Atk_ViewHandler extends Atk_ViewEditBase
             /* check for separator */
             if ($field["html"] == "-" && $i > 0 && $data["fields"][$i - 1]["html"] != "-") {
                 $tplfield["line"] = "<hr>";
-            }
-            /* double separator, ignore */ elseif ($field["html"] == "-") {
-                
-            }
-            /* sections */ elseif ($field["html"] == "section") {
+            } /* double separator, ignore */ elseif ($field["html"] == "-") {
+
+            } /* sections */ elseif ($field["html"] == "section") {
                 $tplfield["line"] = $this->getSectionControl($field, $mode);
-            }
-            /* only full HTML */ elseif (isset($field["line"])) {
+            } /* only full HTML */ elseif (isset($field["line"])) {
                 $tplfield["line"] = $field["line"];
-            }
-            /* edit field */ else {
+            } /* edit field */ else {
                 if ($field["attribute"]->m_ownerInstance->getNumbering()) {
                     $this->_addNumbering($field, $tplfield, $i);
                 }
@@ -252,7 +258,7 @@ class Atk_ViewHandler extends Atk_ViewEditBase
                 $tooltip = $field["attribute"]->getToolTip();
                 if ($tooltip) {
                     $tplfield["tooltip"] = $tooltip;
-                    $editsrc.=$tooltip . "&nbsp;";
+                    $editsrc .= $tooltip . "&nbsp;";
                 }
 
                 $tplfield['id'] = str_replace('.', '_', $node->atknodetype() . '_' . $field["id"]);
@@ -277,7 +283,8 @@ class Atk_ViewHandler extends Atk_ViewEditBase
                 $tabForm = $this->_renderTabs($fields, $tabTpl);
                 $innerform = implode(null, $tabForm);
             } else {
-                $innerform = $ui->render($node->getTemplate("view", $record, $tab), array("fields" => $fields, 'attributes' => $attributes));
+                $innerform = $ui->render($node->getTemplate("view", $record, $tab),
+                    array("fields" => $fields, 'attributes' => $attributes));
             }
         }
         return $innerform;

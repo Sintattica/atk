@@ -21,7 +21,7 @@
  *
  * All db drivers should derive a class from this baseclass and implement
  * the necessary methods.
- * 
+ *
  * @todo add bind parameter support
  *
  * @author Ivo Jansch <ivo@achievo.org>
@@ -161,7 +161,7 @@ class Atk_Query
 
     /**
      * Sets the database instance.
-     * 
+     *
      * @var Atk_Db $db database instance
      */
     public function setDb($db)
@@ -171,7 +171,6 @@ class Atk_Query
 
     /**
      * Returns the database instance.
-
      * @return Atk_Db database instance
      */
     public function getDb()
@@ -197,18 +196,21 @@ class Atk_Query
      */
     function &addField($name, $value = "", $table = "", $fieldaliasprefix = "", $quote = true, $quotefield = false)
     {
-        if ($table != "")
+        if ($table != "") {
             $fieldname = $table . "." . $name;
-        else
+        } else {
             $fieldname = $name;
+        }
         $this->m_fields[] = $fieldname;
-        if ($quotefield)
+        if ($quotefield) {
             $this->m_quotedfields[] = $fieldname;
+        }
 
-        if ($quote && !is_null($value))
+        if ($quote && !is_null($value)) {
             $value = "'" . $value . "'";
-        elseif ($value === NULL || $value === '')
+        } elseif ($value === null || $value === '') {
             $value = 'NULL';
+        }
 
         $this->m_values[$fieldname] = $value;
 
@@ -224,13 +226,13 @@ class Atk_Query
 
     /**
      * Add's a sequence field to the query.
-     * 
+     *
      * @param string $fieldName field name
-     * @param int    $value     field to store the new sequence value in, note certain drivers
-     *                          might populate this field only after the insert query has been 
+     * @param int $value field to store the new sequence value in, note certain drivers
+     *                          might populate this field only after the insert query has been
      *                          executed
-     * @param string $seqName   sequence name (optional for certain drivers)
-     * 
+     * @param string $seqName sequence name (optional for certain drivers)
+     *
      * @return Atk_Query
      */
     public function addSequenceField($fieldName, &$value, $seqName = null)
@@ -263,16 +265,17 @@ class Atk_Query
     /**
      * Add's an expression to the select query
      *
-     * @param string $fieldName         expression field name
-     * @param string $expression        expression value
-     * @param string $fieldAliasPrefix  field alias prefix
-     * @param bool $quoteFieldName      wether or not to quote the expression field name
+     * @param string $fieldName expression field name
+     * @param string $expression expression value
+     * @param string $fieldAliasPrefix field alias prefix
+     * @param bool $quoteFieldName wether or not to quote the expression field name
      * @return Atk_Query The query object itself (for fluent usage)
      */
     function &addExpression($fieldName, $expression, $fieldAliasPrefix = "", $quoteFieldName = false)
     {
-        if ($quoteFieldName)
+        if ($quoteFieldName) {
             $this->m_quotedfields[] = $fieldName;
+        }
 
         $this->m_expressions[] = array('name' => $fieldAliasPrefix . $fieldName, 'expression' => $expression);
 
@@ -325,8 +328,9 @@ class Atk_Query
     function &addJoin($table, $alias, $condition, $outer = false)
     {
         $join = " " . ($outer ? "LEFT JOIN " : "JOIN ") . $this->quoteField($table) . " " . $this->quoteField($alias) . " ON (" . $condition . ") ";
-        if (!in_array($join, $this->m_joins))
+        if (!in_array($join, $this->m_joins)) {
             $this->m_joins[] = $join;
+        }
         return $this;
     }
 
@@ -356,7 +360,7 @@ class Atk_Query
 
     /**
      * Add a query condition (conditions are where-expressions that are AND-ed)
-     * 
+     *
      * @param string $condition Condition
      * @return Atk_Query The query object itself (for fluent usage)
      */
@@ -373,7 +377,7 @@ class Atk_Query
 
     /**
      * Sets this queries search method.
-     * 
+     *
      * @param string $searchMethod search method
      */
     public function setSearchMethod($searchMethod)
@@ -386,14 +390,15 @@ class Atk_Query
      * Add search condition to the query. Basically similar to addCondition, but
      * searchconditions make use of the searchmode setting to determine whether the
      * different searchconditions should be and'ed or or'ed.
-     * 
+     *
      * @param string $condition Condition
      * @return Atk_Query The query object itself (for fluent usage)
      */
     function &addSearchCondition($condition)
     {
-        if ($condition != "")
+        if ($condition != "") {
             $this->m_searchconditions[] = $condition;
+        }
         return $this;
     }
 
@@ -401,7 +406,7 @@ class Atk_Query
      * Set the 'distinct' mode for the query.
      * If set to true, a 'SELECT DISTINCT' will be performed. If set to false,
      * a regular 'SELECT' will be performed.
-     * 
+     *
      * @param Bool $distinct Set to true to perform a distinct select,
      *                          false for a regular select.
      * @return Atk_Query The query object itself (for fluent usage)
@@ -431,28 +436,32 @@ class Atk_Query
      * @param bool $distinct distinct records?
      * @return String a SQL Select Query
      */
-    function buildSelect($distinct = FALSE)
+    function buildSelect($distinct = false)
     {
-        if (count($this->m_fields) < 1 && count($this->m_expressions) < 1)
+        if (count($this->m_fields) < 1 && count($this->m_expressions) < 1) {
             return false;
+        }
         $result = "SELECT " . ($distinct || $this->m_distinct ? "DISTINCT " : "");
         for ($i = 0; $i < count($this->m_fields); $i++) {
-            $result.= $this->quoteField($this->m_fields[$i]);
+            $result .= $this->quoteField($this->m_fields[$i]);
             $fieldalias = (isset($this->m_fieldaliases[$this->m_fields[$i]]) ? $this->m_fieldaliases[$this->m_fields[$i]]
-                        : "");
-            if ($fieldalias != "")
-                $result.=" AS " . $fieldalias;
-            if ($i < count($this->m_fields) - 1)
-                $result.=", ";
+                : "");
+            if ($fieldalias != "") {
+                $result .= " AS " . $fieldalias;
+            }
+            if ($i < count($this->m_fields) - 1) {
+                $result .= ", ";
+            }
         }
 
         foreach ($this->m_expressions as $i => $entry) {
-            if (count($this->m_fields) > 0 || $i > 0)
+            if (count($this->m_fields) > 0 || $i > 0) {
                 $result .= ", ";
+            }
             $fieldName = $entry['name'];
             $expression = $entry['expression'];
             $fieldAlias = isset($this->m_fieldaliases[$fieldName]) ? $this->m_fieldaliases[$fieldName]
-                    : $this->quoteField($fieldName);
+                : $this->quoteField($fieldName);
             $result .= "($expression) AS $fieldAlias";
             $first = false;
         }
@@ -460,11 +469,11 @@ class Atk_Query
         $this->_addFrom($result);
 
         for ($i = 0; $i < count($this->m_joins); $i++) {
-            $result.=$this->m_joins[$i];
+            $result .= $this->m_joins[$i];
         }
 
         if (count($this->m_conditions) > 0) {
-            $result.= " WHERE (" . implode(") AND (", $this->m_conditions) . ")";
+            $result .= " WHERE (" . implode(") AND (", $this->m_conditions) . ")";
         }
 
         if (count($this->m_searchconditions) > 0) {
@@ -475,14 +484,14 @@ class Atk_Query
                 $prefix = " AND ";
             }
             if ($this->m_searchmethod == "" || $this->m_searchmethod == "AND") {
-                $result.= $prefix . "(" . implode(" AND ", $this->m_searchconditions) . ")";
+                $result .= $prefix . "(" . implode(" AND ", $this->m_searchconditions) . ")";
             } else {
-                $result.= $prefix . "(" . implode(" OR ", $this->m_searchconditions) . ")";
+                $result .= $prefix . "(" . implode(" OR ", $this->m_searchconditions) . ")";
             }
         }
 
         if (count($this->m_groupbys) > 0) {
-            $result.= " GROUP BY " . implode(", ", $this->m_groupbys);
+            $result .= " GROUP BY " . implode(", ", $this->m_groupbys);
         }
 
         if (count($this->m_orderbys) > 0) {
@@ -498,20 +507,22 @@ class Atk_Query
 
     /**
      * Add FROM clause to query.
-     * 
+     *
      * @param String $query The query
      */
     function _addFrom(&$query)
     {
-        $query.= " FROM ";
+        $query .= " FROM ";
         for ($i = 0; $i < count($this->m_tables); $i++) {
-            $query.= $this->quoteField($this->m_tables[$i]);
-            if ($this->m_aliases[$i] != "")
-                $query.=" " . $this->m_aliases[$i];
-            if ($i < count($this->m_tables) - 1)
-                $query.=", ";
+            $query .= $this->quoteField($this->m_tables[$i]);
+            if ($this->m_aliases[$i] != "") {
+                $query .= " " . $this->m_aliases[$i];
+            }
+            if ($i < count($this->m_tables) - 1) {
+                $query .= ", ";
+            }
         }
-        $query.= " ";
+        $query .= " ";
     }
 
     /**
@@ -520,7 +531,7 @@ class Atk_Query
      *                          false for a regular select.
      * @return array The set of records returned by the database.
      */
-    public function executeSelect($distinct = FALSE)
+    public function executeSelect($distinct = false)
     {
         $query = $this->buildSelect($distinct);
         return $this->getDb()->getrows($query);
@@ -529,7 +540,7 @@ class Atk_Query
     /**
      * Add limiting clauses to the query.
      * Default implementation: no limit supported. Derived classes should implement this.
-     * 
+     *
      * @param string $query The query to add the limiter to
      */
     function _addLimiter(&$query)
@@ -545,7 +556,7 @@ class Atk_Query
     function _addOrderBy(&$query)
     {
         if (count($this->m_orderbys) > 0) {
-            $query.= " ORDER BY " . implode(", ", $this->m_orderbys);
+            $query .= " ORDER BY " . implode(", ", $this->m_orderbys);
         }
     }
 
@@ -558,29 +569,32 @@ class Atk_Query
      *
      * @return String a SQL Select COUNT(*) Query
      */
-    function buildCount($distinct = FALSE)
+    function buildCount($distinct = false)
     {
         if (($distinct || $this->m_distinct) && count($this->m_fields) > 0) {
             $result = "SELECT COUNT(DISTINCT ";
-            $result.=implode($this->quoteFields($this->m_fields), ", ");
-            $result.=") as count FROM ";
-        } else
+            $result .= implode($this->quoteFields($this->m_fields), ", ");
+            $result .= ") as count FROM ";
+        } else {
             $result = "SELECT COUNT(*) AS count FROM ";
+        }
 
         for ($i = 0; $i < count($this->m_tables); $i++) {
-            $result.= $this->quoteField($this->m_tables[$i]);
-            if ($this->m_aliases[$i] != "")
-                $result.=" " . $this->m_aliases[$i];
-            if ($i < count($this->m_tables) - 1)
-                $result.=", ";
+            $result .= $this->quoteField($this->m_tables[$i]);
+            if ($this->m_aliases[$i] != "") {
+                $result .= " " . $this->m_aliases[$i];
+            }
+            if ($i < count($this->m_tables) - 1) {
+                $result .= ", ";
+            }
         }
 
         for ($i = 0; $i < count($this->m_joins); $i++) {
-            $result.=$this->m_joins[$i];
+            $result .= $this->m_joins[$i];
         }
 
         if (count($this->m_conditions) > 0) {
-            $result.= " WHERE (" . implode(") AND (", $this->m_conditions) . ")";
+            $result .= " WHERE (" . implode(") AND (", $this->m_conditions) . ")";
         }
 
         if (count($this->m_searchconditions) > 0) {
@@ -591,14 +605,14 @@ class Atk_Query
                 $prefix = " AND ";
             };
             if ($this->m_searchmethod == "" || $this->m_searchmethod == "AND") {
-                $result.= $prefix . "(" . implode(" AND ", $this->m_searchconditions) . ")";
+                $result .= $prefix . "(" . implode(" AND ", $this->m_searchconditions) . ")";
             } else {
-                $result.= $prefix . "(" . implode(" OR ", $this->m_searchconditions) . ")";
+                $result .= $prefix . "(" . implode(" OR ", $this->m_searchconditions) . ")";
             }
         }
 
         if (count($this->m_groupbys) > 0) {
-            $result.= " GROUP BY " . implode(", ", $this->m_groupbys);
+            $result .= " GROUP BY " . implode(", ", $this->m_groupbys);
         }
         return $result;
     }
@@ -612,12 +626,13 @@ class Atk_Query
         $result = "UPDATE " . $this->quoteField($this->m_tables[0]) . " SET ";
 
         for ($i = 0; $i < count($this->m_fields); $i++) {
-            $result.= $this->quoteField($this->m_fields[$i]) . "=" . $this->m_values[$this->m_fields[$i]];
-            if ($i < count($this->m_fields) - 1)
-                $result.=",";
+            $result .= $this->quoteField($this->m_fields[$i]) . "=" . $this->m_values[$this->m_fields[$i]];
+            if ($i < count($this->m_fields) - 1) {
+                $result .= ",";
+            }
         }
         if (count($this->m_conditions) > 0) {
-            $result.= " WHERE " . implode(" AND ", $this->m_conditions);
+            $result .= " WHERE " . implode(" AND ", $this->m_conditions);
         }
         return $result;
     }
@@ -650,20 +665,22 @@ class Atk_Query
         $result = "INSERT INTO " . $this->quoteField($this->m_tables[0]) . " (";
 
         for ($i = 0; $i < count($this->m_fields); $i++) {
-            $result.= $this->quoteField($this->m_fields[$i]);
-            if ($i < count($this->m_fields) - 1)
-                $result.=",";
+            $result .= $this->quoteField($this->m_fields[$i]);
+            if ($i < count($this->m_fields) - 1) {
+                $result .= ",";
+            }
         }
 
-        $result.=") VALUES (";
+        $result .= ") VALUES (";
 
         for ($i = 0; $i < count($this->m_fields); $i++) {
-            $result.= $this->m_values[$this->m_fields[$i]];
-            if ($i < count($this->m_fields) - 1)
-                $result.=",";
+            $result .= $this->m_values[$this->m_fields[$i]];
+            if ($i < count($this->m_fields) - 1) {
+                $result .= ",";
+            }
         }
 
-        $result.=")";
+        $result .= ")";
 
         return $result;
     }
@@ -677,7 +694,7 @@ class Atk_Query
         $result = "DELETE FROM " . $this->quoteField($this->m_tables[0]);
 
         if (count($this->m_conditions) > 0) {
-            $result.= " WHERE " . implode(" AND ", $this->m_conditions);
+            $result .= " WHERE " . implode(" AND ", $this->m_conditions);
         }
 
         return $result;
@@ -708,29 +725,31 @@ class Atk_Query
 
     /**
      * Generate a searchcondition that checks if the field is null.
-     * 
+     *
      * @param String $field
      * @param Bool $emptyStringIsNull
      */
     function nullCondition($field, $emptyStringIsNull = false)
     {
         $result = "$field IS NULL";
-        if ($emptyStringIsNull)
+        if ($emptyStringIsNull) {
             $result = "($result OR $field = '')";
+        }
         return $result;
     }
 
     /**
      * Generate a searchcondition that checks if the field is not null.
-     * 
+     *
      * @param String $field
      * @param Bool $emptyStringIsNull
      */
     function notNullCondition($field, $emptyStringIsNull = false)
     {
         $result = "$field IS NOT NULL";
-        if ($emptyStringIsNull)
+        if ($emptyStringIsNull) {
             $result = "($result AND $field <> '')";
+        }
         return $result;
     }
 
@@ -743,8 +762,9 @@ class Atk_Query
      */
     function exactCondition($field, $value, $dbFieldType = null)
     {
-        if (in_array($dbFieldType, array("decimal", "number")))
+        if (in_array($dbFieldType, array("decimal", "number"))) {
             return self::exactNumberCondition($field, $value);
+        }
 
         if ($value[0] == '!') {
             return "UPPER(" . $field . ")!=UPPER('" . substr($value, 1, Atk_Tools::atk_strlen($value)) . "')";
@@ -766,7 +786,7 @@ class Atk_Query
 
     /**
      * Generate a searchcondition that checks whether $field contains $value .
-     * 
+     *
      * @param String $field The field
      * @param String $value The value
      * @return String The substring condition
@@ -782,14 +802,15 @@ class Atk_Query
 
     /**
      * Generate a searchcondition that accepts '*' as wildcard character.
-     * 
+     *
      * @param String $field
      * @param String $value
      */
     function wildcardCondition($field, $value)
     {
         if ($value[0] == '!') {
-            return "UPPER(" . $field . ") NOT LIKE UPPER('" . str_replace("*", "%", substr($value, 1, Atk_Tools::atk_strlen($value))) . "')";
+            return "UPPER(" . $field . ") NOT LIKE UPPER('" . str_replace("*", "%",
+                substr($value, 1, Atk_Tools::atk_strlen($value))) . "')";
         } else {
             return "UPPER(" . $field . ") LIKE UPPER('" . str_replace("*", "%", $value) . "')";
         }
@@ -797,7 +818,7 @@ class Atk_Query
 
     /**
      * Generate searchcondition with greater than
-     * 
+     *
      * @param String $field The database field
      * @param String $value The value
      */
@@ -812,7 +833,7 @@ class Atk_Query
 
     /**
      * Generate searchcondition with greater than
-     * 
+     *
      * @param String $field The database field
      * @param String $value The value
      */
@@ -827,7 +848,7 @@ class Atk_Query
 
     /**
      * Generate searchcondition with less than
-     * 
+     *
      * @param String $field The database field
      * @param String $value The value
      */
@@ -842,7 +863,7 @@ class Atk_Query
 
     /**
      * Generate searchcondition with less than
-     * 
+     *
      * @param String $field The database field
      * @param String $value The value
      */
@@ -866,10 +887,11 @@ class Atk_Query
      */
     function betweenCondition($field, $value1, $value2, $quote = true)
     {
-        if ($quote)
+        if ($quote) {
             return $field . " BETWEEN '" . $value1 . "' AND '" . $value2 . "'";
-        else
+        } else {
             return $field . " BETWEEN " . $value1 . " AND " . $value2;
+        }
     }
 
     /**
@@ -896,17 +918,19 @@ class Atk_Query
     {
         $quotefield = false;
         if ((in_array($field, $this->m_quotedfields) ||
-            in_array($field, $this->m_tables)) &&
-            preg_match('/(^[\w\.]+)/', $field) . "'") {
+                in_array($field, $this->m_tables)) &&
+            preg_match('/(^[\w\.]+)/', $field) . "'"
+        ) {
             $quotefield = true;
         }
 
         $exploded = explode('.', $field);
         foreach ($exploded as $identifier) {
-            if ($quotefield || in_array($identifier, $this->m_reservedNames))
+            if ($quotefield || in_array($identifier, $this->m_reservedNames)) {
                 $identifiers[] = $this->m_fieldquote . $identifier . $this->m_fieldquote;
-            else
+            } else {
                 $identifiers[] = $identifier;
+            }
         }
         $field = implode('.', $identifiers);
         return $field;

@@ -15,6 +15,7 @@
  * @version $Revision: 6323 $
  * $Id$
  */
+
 /**
  * Smart search handler class.
  *
@@ -23,7 +24,6 @@
  * @package atk
  * @subpackage handlers
  */
-
 class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
 {
 
@@ -106,7 +106,7 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
      */
     function partialCriterium()
     {
-        $criterium = $this->getCriterium((int) $this->m_postvars['next_criterium_id']);
+        $criterium = $this->getCriterium((int)$this->m_postvars['next_criterium_id']);
         return $this->renderCriterium($criterium);
     }
 
@@ -127,7 +127,7 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
 
         if (count($path) > 0) {
             return $this->getCriteriumField($criterium_id, $path, $scriptCode) .
-                '<script language="javascript">' . implode("\n", $scriptCode) . '</script>';
+            '<script language="javascript">' . implode("\n", $scriptCode) . '</script>';
         } else {
             return '';
         }
@@ -178,21 +178,22 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
 
     /**
      * Redirect to search results based on the given criteria.
-     * 
+     *
      * @param Array $criteria
      */
     function redirectToResults($criteria)
     {
         for ($i = 0, $_i = count($criteria); $i < $_i; $i++) {
             $attrs = &$criteria[$i]['attrs'];
-            if ($attrs[count($attrs) - 1] == '.')
+            if ($attrs[count($attrs) - 1] == '.') {
                 array_pop($attrs);
+            }
         }
 
         $params = array('atksmartsearch' => $criteria);
         $url = Atk_Tools::dispatch_url($this->m_node->atkNodeType(), 'admin', $params, Atk_Tools::atkSelf());
         $this->m_node->redirect(Atk_Tools::session_url($url, Atk_SessionManager::atkLevel() == 0 ? SESSION_REPLACE
-                        : SESSION_BACK));
+            : SESSION_BACK));
     }
 
     /**
@@ -204,10 +205,21 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
      */
     function getLabels()
     {
-        $labels = array('criterium_field', 'criterium_value', 'criterium_mode', 'add_criterium', 'remove_criterium', 'load_criteria', 'save_criteria', 'forget_criteria', 'reset_criteria');
+        $labels = array(
+            'criterium_field',
+            'criterium_value',
+            'criterium_mode',
+            'add_criterium',
+            'remove_criterium',
+            'load_criteria',
+            'save_criteria',
+            'forget_criteria',
+            'reset_criteria'
+        );
         $result = array();
-        foreach ($labels as $label)
+        foreach ($labels as $label) {
             $result[$label] = htmlentities(Atk_Tools::atktext($label, 'atk'));
+        }
         return $result;
     }
 
@@ -221,17 +233,20 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
     function getTemplate($name)
     {
         $ui = &$this->getUi();
-        if ($name == 'form')
+        if ($name == 'form') {
             return $this->m_node->getTemplate('smartsearch');
-        else if ($name == 'criterium')
-            return $ui->templatePath('smartcriterium.tpl');
+        } else {
+            if ($name == 'criterium') {
+                return $ui->templatePath('smartcriterium.tpl');
+            }
+        }
     }
 
     /**
      * Get searchable attributes for the given node.
      *
-     * @param Atk_Node $node     reference to the node
-     * @param Array   $excludes attribute exclude list
+     * @param Atk_Node $node reference to the node
+     * @param Array $excludes attribute exclude list
      *
      * @return Array list of reference to searchable attributes
      */
@@ -244,8 +259,9 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
         $attrs = array();
         foreach ($attrNames as $attrName) {
             $attr = &$node->getAttribute($attrName);
-            if (!$attr->hasFlag(AF_HIDE_SEARCH))
+            if (!$attr->hasFlag(AF_HIDE_SEARCH)) {
                 $attrs[] = &$attr;
+            }
         }
 
         return $attrs;
@@ -255,7 +271,7 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
      * Returns a select element with searchable attributes for
      * a certain node.
      *
-     * @param Array  $entry
+     * @param Array $entry
      */
     function getAttributeList($entry)
     {
@@ -271,15 +287,15 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
         if ($entry['includeSelf']) {
             $result .=
                 '<option value="."' . ($entry['selectSelf'] ? ' selected="selected"'
-                        : '') . '>' . $this->m_node->text('self') . '</option>' .
+                    : '') . '>' . $this->m_node->text('self') . '</option>' .
                 '<option value=""></option>';
         }
 
         $current = &$entry['attr'];
         for ($i = 0, $_i = count($entry['attrs']); $i < $_i; $i++) {
             $attr = &$entry['attrs'][$i];
-            $selected = $current != NULL && $attr->fieldName() == $current->fieldName()
-                    ? ' selected="selected"' : '';
+            $selected = $current != null && $attr->fieldName() == $current->fieldName()
+                ? ' selected="selected"' : '';
             $label = htmlentities(strip_tags($attr->label()));
             $result .= '<option value="' . $attr->fieldName() . '"' . $selected . '>' . $label . '</option>';
         }
@@ -304,11 +320,11 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
      * This method will modify the $path, $includeSelf and $excludes parameters to prepare
      * them for the next call to this method.
      *
-     * @param Array   $path        reference to the current path
-     * @param Atk_Node $node        reference to the current node
-     * @param String  $attrName    currently selected attribute
+     * @param Array $path reference to the current path
+     * @param Atk_Node $node reference to the current node
+     * @param String $attrName currently selected attribute
      * @param Boolean $includeSelf should we include ourselves?
-     * @param Array   $excludes    attributes to exclude
+     * @param Array $excludes attributes to exclude
      *
      * @return Atk_Node next node
      */
@@ -325,7 +341,14 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
 
         $selectSelf = $includeSelf && $attrName == '.';
 
-        $entry = array('nr' => $nr, 'node' => &$node, 'attrs' => $attrs, 'attr' => &$attr, 'includeSelf' => $includeSelf, 'selectSelf' => $selectSelf);
+        $entry = array(
+            'nr' => $nr,
+            'node' => &$node,
+            'attrs' => $attrs,
+            'attr' => &$attr,
+            'includeSelf' => $includeSelf,
+            'selectSelf' => $selectSelf
+        );
         $path[] = &$entry;
 
         $includeSelf = is_a($attr, 'atkmanytoonerelation');
@@ -336,7 +359,7 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
             return $attr->m_destInstance;
         }
 
-        return NULL;
+        return null;
     }
 
     /**
@@ -354,16 +377,17 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
         $includeSelf = false;
         $excludes = array();
 
-        $entry = NULL;
+        $entry = null;
 
         foreach ($attrPath as $attrName) {
             $node = &$this->addNodeAndAttrEntry($path, $node, $attrName, $includeSelf, $excludes);
-            if ($node == NULL)
+            if ($node == null) {
                 break;
+            }
         }
 
-        while ($node != NULL) {
-            $node = &$this->addNodeAndAttrEntry($path, $node, NULL, $includeSelf, $excludes);
+        while ($node != null) {
+            $node = &$this->addNodeAndAttrEntry($path, $node, null, $includeSelf, $excludes);
         }
 
         return $path;
@@ -372,9 +396,9 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
     /**
      * Returns the criterium field for the given path.
      *
-     * @param Integer $id         criterium id
-     * @param Array   $path       criterium path
-     * @param Array   $scriptCode lines of JavaScript
+     * @param Integer $id criterium id
+     * @param Array $path criterium path
+     * @param Array $scriptCode lines of JavaScript
      *
      * @return String criterium field HTML
      */
@@ -399,9 +423,15 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
                 $valueName = "criterium_{$id}_value";
                 $modeName = "criterium_{$id}_mode";
 
-                $fieldUrl = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriumfield'), Atk_Tools::atkSelf()), SESSION_NEW);
-                $valueUrl = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriumvalue'), Atk_Tools::atkSelf()), SESSION_NEW);
-                $modeUrl = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriummode'), Atk_Tools::atkSelf()), SESSION_NEW);
+                $fieldUrl = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch',
+                    array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriumfield'),
+                    Atk_Tools::atkSelf()), SESSION_NEW);
+                $valueUrl = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch',
+                    array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriumvalue'),
+                    Atk_Tools::atkSelf()), SESSION_NEW);
+                $modeUrl = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch',
+                    array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriummode'),
+                    Atk_Tools::atkSelf()), SESSION_NEW);
 
                 $scriptCode[] = "ATK.SmartSearchHandler.registerCriteriumFieldListener('{$entry[name]}', '{$prefix}', '{$fieldName}', '{$fieldUrl}', '{$valueName}', '{$valueUrl}', '{$modeName}', '{$modeUrl}')";
             }
@@ -415,22 +445,23 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
     /**
      * Returns the criterium value or mode field for the given path.
      *
-     * @param Integer $id    criterium id
-     * @param Array   $path  criterium path
-     * @param Array   $value current search value
-     * @param Array   $mode  current search mode
-     * @param String  $type  return either 'value' or 'mode' field
+     * @param Integer $id criterium id
+     * @param Array $path criterium path
+     * @param Array $value current search value
+     * @param Array $mode current search mode
+     * @param String $type return either 'value' or 'mode' field
      *
      * @param String criterium value or mode field HTML
      */
     function _getCriteriumValueOrMode($id, $path, $value, $mode, $type)
     {
         $entry = array_pop($path);
-        if ($entry['selectSelf'])
+        if ($entry['selectSelf']) {
             $entry = array_pop($path);
+        }
         $attr = &$entry['attr'];
 
-        if ($attr == NULL) {
+        if ($attr == null) {
             $node = &$entry['node'];
             return $node->text('none');
         } else {
@@ -458,8 +489,8 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
 
             $prefix = "criteria_AE_{$id}_AE_";
 
-            $valueArray = $value == NULL ? NULL : array($attr->fieldName() => $value);
-            $modeArray = $mode == NULL ? NULL : array($attr->fieldName() => $mode);
+            $valueArray = $value == null ? null : array($attr->fieldName() => $value);
+            $modeArray = $mode == null ? null : array($attr->fieldName() => $mode);
             $attr->addToSearchFormFields($fields, $entry['node'], $valueArray, $prefix, $modeArray);
             $field = array_shift($fields); // we only support the first field returned
 
@@ -470,10 +501,10 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
     /**
      * Returns the criterium value field for the given path.
      *
-     * @param Integer $id    criterium id
-     * @param Array   $path  criterium path
-     * @param Array   $value current search value
-     * @param Array   $mode  current search mode
+     * @param Integer $id criterium id
+     * @param Array $path criterium path
+     * @param Array $value current search value
+     * @param Array $mode current search mode
      *
      * @param String criterium value field HTML
      */
@@ -485,10 +516,10 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
     /**
      * Returns the criterium mode field for the given path.
      *
-     * @param Integer $id    criterium id
-     * @param Array   $path  criterium path
-     * @param Array   $value current search value
-     * @param Array   $mode  current search mode
+     * @param Integer $id criterium id
+     * @param Array $path criterium path
+     * @param Array $value current search value
+     * @param Array $mode current search mode
      *
      * @param String criterium mode field HTML
      */
@@ -502,8 +533,8 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
      * structure contains the already known information about the currently
      * selected field and values (if any).
      *
-     * @param String $id   criterium identifier
-     * @param Array  $data criterium data
+     * @param String $id criterium identifier
+     * @param Array $data criterium data
      */
     function getCriterium($id, $data = array())
     {
@@ -514,7 +545,12 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
         $result = array();
 
         $result['id'] = $id;
-        $result['element'] = array('box' => "{$prefix}_box", 'field' => "{$prefix}_field", 'value' => "{$prefix}_value", 'mode' => "{$prefix}_mode");
+        $result['element'] = array(
+            'box' => "{$prefix}_box",
+            'field' => "{$prefix}_field",
+            'value' => "{$prefix}_value",
+            'mode' => "{$prefix}_mode"
+        );
         $result['field'] = $this->getCriteriumField($id, $path, $scriptCode);
         $result['value'] = $this->getCriteriumValue($id, $path, $data['value'], $data['mode']);
         $result['mode'] = $this->getCriteriumMode($id, $path, $data['value'], $data['mode']);
@@ -548,7 +584,8 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
      */
     function getResetCriteria()
     {
-        return Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), $this->m_action), SESSION_REPLACE);
+        return Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), $this->m_action),
+            SESSION_REPLACE);
     }
 
     /**
@@ -578,7 +615,8 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
             $params["criteria"][] = $this->getCriterium($i, $criterium);
         }
 
-        $url = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('atkpartial' => 'criterium'), Atk_Tools::atkSelf()), SESSION_NEW);
+        $url = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch',
+            array('atkpartial' => 'criterium'), Atk_Tools::atkSelf()), SESSION_NEW);
         $params["action_add"] = "ATK.SmartSearchHandler.addCriterium('" . addslashes($url) . "')";
 
         return $ui->render($this->getTemplate("form"), $params);
@@ -618,7 +656,8 @@ class Atk_SmartSearchHandler extends Atk_AbstractSearchHandler
 
         $params["content"] = $this->invoke("smartSearchForm", $name, $criteria);
 
-        $params["buttons"][] = '<input type="submit" class="btn btn-default btn_search" name="atkdosearch" value="' . Atk_Tools::atktext("search", "atk") . '">';
+        $params["buttons"][] = '<input type="submit" class="btn btn-default btn_search" name="atkdosearch" value="' . Atk_Tools::atktext("search",
+                "atk") . '">';
 
         $params["formend"] = '</form>';
 

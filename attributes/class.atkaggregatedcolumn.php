@@ -11,11 +11,8 @@
  * @copyright (c)2005 Ibuildings.nl BV
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
-
  * @version $Revision: 6309 $
-
  * $Id$
-
  */
 
 /**
@@ -55,10 +52,10 @@ class Atk_AggregatedColumn extends Atk_Attribute
 
     /**
      * Constructor
-     * @param String $name         Name of the attribute
-     * @param String $template     Display/sort template.
+     * @param String $name Name of the attribute
+     * @param String $template Display/sort template.
      * @param int $flags Flags for this attribute
-     * @param Array  $searchfields Array with fields, in which search will be perform
+     * @param Array $searchfields Array with fields, in which search will be perform
      *                             If ommited, fields from $template will be used
      */
     function __construct($name, $template, $flags = 0, $searchfields = "")
@@ -69,10 +66,11 @@ class Atk_AggregatedColumn extends Atk_Attribute
         $parser = new Atk_StringParser($template);
         $this->m_displayfields = $parser->getFields();
 
-        if (!is_array($searchfields))
+        if (!is_array($searchfields)) {
             $this->m_searchfields = $this->m_displayfields;
-        else
+        } else {
             $this->m_searchfields = $searchfields;
+        }
     }
 
     /**
@@ -103,10 +101,10 @@ class Atk_AggregatedColumn extends Atk_Attribute
      * Adds the attribute / field to the list header. This includes the column name and search field.
      *
      * @param String $action the action that is being performed on the node
-     * @param array  $arr reference to the the recordlist array
+     * @param array $arr reference to the the recordlist array
      * @param String $fieldprefix the fieldprefix
-     * @param int    $flags the recordlist flags
-     * @param array  $atksearch the current ATK search list (if not empty)
+     * @param int $flags the recordlist flags
+     * @param array $atksearch the current ATK search list (if not empty)
      * @param string $atkorderby Order by string
      * @see Atk_Node::listArray
      */
@@ -130,7 +128,7 @@ class Atk_AggregatedColumn extends Atk_Attribute
 
             if (!Atk_Tools::hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(AF_SEARCHABLE)) {
                 $arr["search"][$fieldprefix . $this->fieldName()] = $this->search($atksearch, false, $fieldprefix);
-                $arr["search"][$fieldprefix . $this->fieldName()].='<input type="hidden" name="atksearchmode[' . $this->formName() . ']" value="' . $this->getSearchMode(false) . '">';
+                $arr["search"][$fieldprefix . $this->fieldName()] .= '<input type="hidden" name="atksearchmode[' . $this->formName() . ']" value="' . $this->getSearchMode(false) . '">';
             }
         }
     }
@@ -139,7 +137,7 @@ class Atk_AggregatedColumn extends Atk_Attribute
      * We do not want this attribute to store anything in the database, so we implement an empty store function
      *
      * @param Atk_Db $db
-     * @param array $record 
+     * @param array $record
      * @param string $mode
      * @return boolean to indicate if store went succesfull
      */
@@ -195,8 +193,9 @@ class Atk_AggregatedColumn extends Atk_Attribute
     function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix = '')
     {
         $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '');
-        if (!empty($searchcondition))
+        if (!empty($searchcondition)) {
             $query->addSearchCondition($searchcondition);
+        }
     }
 
     /**
@@ -204,11 +203,11 @@ class Atk_AggregatedColumn extends Atk_Attribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param Atk_Query $query     The query object where the search condition should be placed on
-     * @param String $table       The name of the table in which this attribute
+     * @param Atk_Query $query The query object where the search condition should be placed on
+     * @param String $table The name of the table in which this attribute
      *                              is stored
-     * @param mixed $value        The value the user has entered in the searchbox
-     * @param String $searchmode  The searchmode to use. This can be any one
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param String $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      */
@@ -232,10 +231,11 @@ class Atk_AggregatedColumn extends Atk_Attribute
 
             $data = array();
             foreach ($this->m_searchfields as $field) {
-                if (strpos($field, '.') == false)
+                if (strpos($field, '.') == false) {
                     $data[$field] = $table . "." . $field;
-                else
+                } else {
                     $data[$field] = $field;
+                }
             }
 
             $parser = new Atk_StringParser($this->m_template);

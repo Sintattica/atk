@@ -33,14 +33,14 @@ class Atk_State
 
     /**
      * This method retrieves a state value. This value can either be retrieved
-     * from a cookie which is saved across sessions or from the current session, 
-     * depending where the original value was saved. So the method first looks 
+     * from a cookie which is saved across sessions or from the current session,
+     * depending where the original value was saved. So the method first looks
      * in the state cookie if the key exists, if not it looks in the session and
      * if it exists returns it's value. If not a value of NULL is returned.
-     * 
-     * @param Mixed $key     The key
+     *
+     * @param Mixed $key The key
      * @param Mixed $default default value fallback is the retrieved value === null
-     * 
+     *
      * @return mixed The retrieved value.
      */
     public static function get($key, $default = null)
@@ -97,7 +97,7 @@ class Atk_State
      * have to be a string (this is also true for the get method). This means that
      * if you get an array as key you probably have to flatten the key to something
      * useful because if you want to save a value in the session or in a cookie
-     * the key needs to be a simple string. You could use, for example 
+     * the key needs to be a simple string. You could use, for example
      * print_r($key, true) to get a nice string representation. For cookies it might
      * be even more safe to md5 this string so that they key doesn't say anything to
      * the user and doesn't get too big.

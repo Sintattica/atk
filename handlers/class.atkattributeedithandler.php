@@ -147,7 +147,8 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
             // If the validation succeeded, we will get here and try to perform the update.
             if (!$node->updateDb($rec, false, "", array($attributename))) {
                 $success = false;
-                Atk_Tools::triggerError($rec, $attributename, $node->getDb()->getErrorType(), $node->getDb()->getErrorMsg());
+                Atk_Tools::triggerError($rec, $attributename, $node->getDb()->getErrorType(),
+                    $node->getDb()->getErrorMsg());
                 break;
             }
         }
@@ -228,7 +229,7 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
         Atk_Tools::atkimport('atk.ui.atkdialog');
         $params = array();
         $params["content"] = "<b>" . $errortext . "</b><br />";
-        $params["content"].= $errormsg;
+        $params["content"] .= $errormsg;
         $params["buttons"][] = '<input type="button" class="btn btn-default btn_cancel" value="' . $this->m_node->text('close') . '" onClick="' . Atk_Dialog::getCloseCall() . '" />';
         $content = $ui->renderAction("attributeedit", $params);
 
@@ -241,7 +242,7 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
 
     /**
      * AttributeEdit page.
-     * 
+     *
      * @return String The attribute edit page
      */
     function attributeEditPage()
@@ -331,8 +332,9 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
     function _getDropDownAttributes($selectedAttribute = "")
     {
         $fieldprefix = $this->m_node->m_postvars['atkfieldprefix'];
-        if ($fieldprefix == '')
+        if ($fieldprefix == '') {
             $fieldprefix = $this->m_node->getEditFieldPrefix();
+        }
 
         $attributes = $this->getSupportedAttributes();
 
@@ -342,7 +344,7 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
         if ($selectedAttribute == "") {
             // select the first (if available)
             $record['attributename'] = isset($attributes[0]) ? $attributes[0]->fieldName()
-                    : null;
+                : null;
         } else {
             $record['attributename'] = $selectedAttribute;
         }
@@ -420,8 +422,9 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
             if (isset($supported_attributes) && is_array($supported_attributes)) {
                 foreach ($supported_attributes as $attribname) {
                     $attr = $this->m_node->getAttribute($attribname);
-                    if (is_object($attr))
+                    if (is_object($attr)) {
                         $supported[] = $attr;
+                    }
                 }
             }
 
@@ -434,25 +437,30 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
         // We do not need certain attributes.
         foreach ($attributes as $index => $attr) {
             // Attributes without labels will not be selectable.
-            if ($attr->hasFlag(AF_NO_LABEL) || $attr->hasFlag(AF_BLANK_LABEL))
+            if ($attr->hasFlag(AF_NO_LABEL) || $attr->hasFlag(AF_BLANK_LABEL)) {
                 continue;
+            }
 
             // Hidden attributes will not be selectable
-            if ($attr->hasFlag(AF_HIDE) || $attr->hasFlag(AF_HIDE_EDIT))
+            if ($attr->hasFlag(AF_HIDE) || $attr->hasFlag(AF_HIDE_EDIT)) {
                 continue;
+            }
 
             // You cannot give multiple records a value for a field that should be unique.
             $atkselector = $this->getSelector();
-            if (isset($atkselector) && count($atkselector) > 1 && $attr->hasFlag(AF_UNIQUE))
+            if (isset($atkselector) && count($atkselector) > 1 && $attr->hasFlag(AF_UNIQUE)) {
                 continue;
+            }
 
             // You cannot update readonly fields
-            if ($attr->hasFlag(AF_READONLY) || $attr->hasFlag(AF_READONLY_EDIT))
+            if ($attr->hasFlag(AF_READONLY) || $attr->hasFlag(AF_READONLY_EDIT)) {
                 continue;
+            }
 
             // We do not support manytomany relations (for now...).
-            if (is_a($attr, 'atkmanytomanyrelation'))
+            if (is_a($attr, 'atkmanytomanyrelation')) {
                 continue;
+            }
 
             $supported[] = $attr;
         }
@@ -496,7 +504,7 @@ class Atk_AttributeEditHandler extends Atk_ActionHandler
 
         if (isset($atkselector)) {
             foreach ($atkselector as &$selector) {
-                $formstart.= '<input type="hidden" id="atkselector[]" name="atkselector[]" value="' . $selector . '">';
+                $formstart .= '<input type="hidden" id="atkselector[]" name="atkselector[]" value="' . $selector . '">';
             }
         }
 

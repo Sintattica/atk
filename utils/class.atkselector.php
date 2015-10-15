@@ -70,7 +70,7 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
 
     /**
      * Current iterator instance (if iterator is used).
-     * 
+     *
      * @var atkSelectorIterator
      */
     private $m_iterator = null;
@@ -84,14 +84,14 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
 
     /**
      * Current query object (if iterator is used).
-     * 
+     *
      * @var Atk_Query
      */
     private $m_query = null;
 
     /**
      * Current attributes by load type (if iterator is used).
-     * 
+     *
      * @var array
      */
     private $m_attrsByLoadType = null;
@@ -130,7 +130,7 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
      * Adds a condition..
      *
      * @param string $condition where clause
-     * @param array  $params    bind parameters
+     * @param array $params bind parameters
      *
      * @return Atk_Selector
      */
@@ -231,7 +231,7 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
     /**
      * Limit the results bij the given limit (and from the optional offset).
      *
-     * @param int $limit  limit
+     * @param int $limit limit
      * @param int $offset offset
      * @return Atk_Selector
      */
@@ -252,8 +252,10 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
     {
         if ($includes == null) {
             $includes = null;
-        } else if (!is_array($includes)) {
-            $includes = func_get_args();
+        } else {
+            if (!is_array($includes)) {
+                $includes = func_get_args();
+            }
         }
 
         $this->m_includes = $includes;
@@ -270,8 +272,10 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
     {
         if ($excludes == null) {
             $excludes = null;
-        } else if (!is_array($excludes)) {
-            $excludes = func_get_args();
+        } else {
+            if (!is_array($excludes)) {
+                $excludes = func_get_args();
+            }
         }
 
         $this->m_excludes = $excludes;
@@ -289,12 +293,13 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
 
         $searchCriteria = Atk_Tools::atkArrayNvl($this->_getNode()->m_postvars, 'atksearch');
         $smartSearchCriteria = Atk_Tools::atkArrayNvl($this->_getNode()->m_postvars, 'atksmartsearch');
-        $indexValue = $this->_getNode()->m_index != '' ? Atk_Tools::atkArrayNvl($this->_getNode()->m_postvars, 'atkindex', '')
-                : '';
+        $indexValue = $this->_getNode()->m_index != '' ? Atk_Tools::atkArrayNvl($this->_getNode()->m_postvars,
+            'atkindex', '')
+            : '';
 
         return (is_array($searchCriteria) && count($searchCriteria) > 0) ||
-            (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0) ||
-            !empty($indexValue);
+        (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0) ||
+        !empty($indexValue);
     }
 
     /**
@@ -357,8 +362,8 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
     /**
      * Apply posted (normal) search criteria to query
      *
-     * @param Atk_Query $query           query object
-     * @param array    $attrsByLoadType attributes by load type
+     * @param Atk_Query $query query object
+     * @param array $attrsByLoadType attributes by load type
      */
     protected function _applyPostedSearchCriteriaToQuery(Atk_Query $query, array $attrsByLoadType)
     {
@@ -369,7 +374,9 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
 
         foreach ($searchCriteria as $key => $value) {
             if ($value === null || $value === '' ||
-                ($this->m_mode != 'admin' && $this->m_mode != 'export' && !array_key_exists($key, $attrsByLoadType[ADDTOQUERY]))) {
+                ($this->m_mode != 'admin' && $this->m_mode != 'export' && !array_key_exists($key,
+                        $attrsByLoadType[ADDTOQUERY]))
+            ) {
                 continue;
             }
 
@@ -391,7 +398,8 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
                 $attr->searchCondition($query, $this->_getNode()->getTable(), $value, $searchMode, '');
             } else {
                 Atk_Tools::atkdebug("Using default search method for $key");
-                $condition = "LOWER(" . $this->_getNode()->getTable() . "." . $key . ") LIKE LOWER('%" . $this->_getDb()->escapeSQL($value, true) . "%')";
+                $condition = "LOWER(" . $this->_getNode()->getTable() . "." . $key . ") LIKE LOWER('%" . $this->_getDb()->escapeSQL($value,
+                        true) . "%')";
                 $query->addSearchCondition($condition);
             }
         }
@@ -418,7 +426,8 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
             $attr = $this->_getNode()->getAttribute($attrName);
 
             if (is_object($attr)) {
-                $attr->smartSearchCondition($id, 0, $path, $query, $this->_getNode()->getTable(), $value, $this->m_mode, '');
+                $attr->smartSearchCondition($id, 0, $path, $query, $this->_getNode()->getTable(), $value, $this->m_mode,
+                    '');
             }
         }
     }
@@ -426,8 +435,8 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
     /**
      * Apply criteria that are part of the postvars (e.g. filter, index, search criteria)
      *
-     * @param Atk_Query $query           query
-     * @param array    $attrsByLoadType attributes by load type
+     * @param Atk_Query $query query
+     * @param array $attrsByLoadType attributes by load type
      */
     protected function _applyPostvarsToQuery(Atk_Query $query, array $attrsByLoadType)
     {
@@ -478,7 +487,9 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
         return
             (!$this->m_ignorePrimaryKey && in_array($attrName, $this->_getNode()->m_primaryKey)) ||
             (!$this->m_ignoreForceLoad && $attr->hasFlag(AF_FORCE_LOAD)) ||
-            (($this->m_includes != null && in_array($attrName, $this->m_includes)) || ($this->m_excludes != null && !in_array($attrName, $this->m_excludes))) ||
+            (($this->m_includes != null && in_array($attrName,
+                        $this->m_includes)) || ($this->m_excludes != null && !in_array($attrName,
+                        $this->m_excludes))) ||
             ($this->m_excludes == null && $this->m_includes == null);
     }
 
@@ -518,8 +529,8 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
     /**
      * Apply attributes to query, e.g. add columns etc.
      *
-     * @param Atk_Query $query           query object
-     * @param array    $attrsByLoadType attributes by load type
+     * @param Atk_Query $query query object
+     * @param array $attrsByLoadType attributes by load type
      */
     protected function _applyAttributesToQuery(Atk_Query $query, array $attrsByLoadType)
     {
@@ -607,9 +618,9 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
     /**
      * Transform raw database row to node compatible row.
      *
-     * @param array    $row             raw database row
-     * @param Atk_Query $query           query object
-     * @param array    $attrsByLoadType attributes by load type
+     * @param array $row raw database row
+     * @param Atk_Query $query query object
+     * @param array $attrsByLoadType attributes by load type
      *
      * @return array node compatible row
      */
@@ -637,9 +648,9 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
     /**
      * Transform raw database rows to node compatible rows.
      *
-     * @param array    $rows            raw database rows
-     * @param Atk_Query $query           query object
-     * @param array    $attrsByLoadType attributes by load type
+     * @param array $rows raw database rows
+     * @param Atk_Query $query query object
+     * @param array $attrsByLoadType attributes by load type
      *
      * @return array node compatible rows
      */
@@ -654,9 +665,9 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
 
     /**
      * Transform raw database row to node compatible row for the current iterator.
-     * 
+     *
      * @param array $row raw database row
-     * 
+     *
      * @return array node compatible row
      */
     public function transformRow($row)
@@ -729,8 +740,10 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
     {
         if ($this->_getNode()->m_index == null) {
             return array();
-        } else if ($this->m_indices != null) {
-            return $this->m_indices;
+        } else {
+            if ($this->m_indices != null) {
+                return $this->m_indices;
+            }
         }
 
         $attrsByLoadType = $this->_getAttributesByLoadType();
@@ -839,7 +852,7 @@ class Atk_Selector implements ArrayAccess, Countable, IteratorAggregate
 
     /**
      * Returns this selector's iterator.
-     * 
+     *
      * NOTE: if you call this method multiple times, the same iterator will
      *       be returned, unless you have closed the selector first
      */

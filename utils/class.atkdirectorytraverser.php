@@ -39,7 +39,7 @@ class Atk_DirectoryTraverser
      */
     function __construct()
     {
-        
+
     }
 
     /**
@@ -92,14 +92,15 @@ class Atk_DirectoryTraverser
             $filenames = $this->getDirContents($path);
             foreach ($filenames as $file) {
                 if ($file != ".." && $file != ".") {
-                    if (!$this->traverse($path . "/" . $file))
+                    if (!$this->traverse($path . "/" . $file)) {
                         return false;
+                    }
                 }
             }
             return true;
-        }
-        elseif (@is_link($path))
+        } elseif (@is_link($path)) {
             return true;
+        }
 
         return false;
     }
@@ -130,7 +131,7 @@ class Atk_DirectoryTraverser
     /**
      * Perform a callback on all callbackobjects.
      * @access private
-     * @param String $method  The name of the method to call.
+     * @param String $method The name of the method to call.
      * @param String $filename The filename that will be passed as parameter
      *                         to the callback.
      */

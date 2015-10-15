@@ -36,12 +36,13 @@ atksecure();
 $node = $_GET["node"];
 $title = Atk_Tools::atktext("title_$node", isset($_GET["module"]) ? $_GET["module"] : "");
 $helpbase = $config_atkroot;
-if (isset($_GET["module"]))
+if (isset($_GET["module"])) {
     $helpbase = Atk_Module::moduleDir($_GET["module"]);
+}
 $file = $helpbase . "help/" . Atk_Config::getGlobal('language') . "/help." . $node . ".php";
 $data = '<div align="left">';
 $data .= implode("<br>", file($file));
-$data .='</div>';
+$data .= '</div>';
 
 $page = Atk_Tools::atknew("atk.ui.atkpage");
 $ui = Atk_Tools::atkinstance("atk.ui.atkui");
@@ -50,9 +51,11 @@ $output = Atk_Output::getInstance();
 
 $page->register_style($ui->stylePath("style.css"));
 
-$res = $ui->renderBox(array("title" => $title,
-    "content" => $data));
-$res.='<br><div align="right"><a href="javascript:window.close();">' . Atk_Tools::atktext("close") . '</a></div>';
+$res = $ui->renderBox(array(
+    "title" => $title,
+    "content" => $data
+));
+$res .= '<br><div align="right"><a href="javascript:window.close();">' . Atk_Tools::atktext("close") . '</a></div>';
 
 $page->addContent($res);
 

@@ -35,7 +35,7 @@ class Atk_FlagAttribute extends Atk_MultiSelectAttribute
      *                    values are assumed to be the same as the options.
      * @param int $cols Number of columns
      * @param int $flags Flags for this attribute
-     * @param int $size  Size of the attribute.
+     * @param int $size Size of the attribute.
      */
     function atkFlagAttribute($name, $optionArray, $valueArray = "", $cols = "", $flags = 0, $size = "")
     {
@@ -58,8 +58,9 @@ class Atk_FlagAttribute extends Atk_MultiSelectAttribute
                 $flags |= $flag;
             }
             return $flags;
-        } else
+        } else {
             return 0;
+        }
     }
 
     /**
@@ -98,11 +99,11 @@ class Atk_FlagAttribute extends Atk_MultiSelectAttribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param Atk_Query $query     The query object where the search condition should be placed on
-     * @param String $table       The name of the table in which this attribute
+     * @param Atk_Query $query The query object where the search condition should be placed on
+     * @param String $table The name of the table in which this attribute
      *                              is stored
-     * @param mixed $value        The value the user has entered in the searchbox
-     * @param String $searchmode  The searchmode to use. This can be any one
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param String $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
@@ -143,8 +144,9 @@ class Atk_FlagAttribute extends Atk_MultiSelectAttribute
                 }
             }
             return $result;
-        } else
+        } else {
             return $vars;
+        }
     }
 
     /**
@@ -162,10 +164,12 @@ class Atk_FlagAttribute extends Atk_MultiSelectAttribute
         $values = 0;
         $name = $this->fieldName();
         if (is_array($record[$name])) {
-            foreach ($record[$name] as $var)
-                $values |=$var;
-        } else
+            foreach ($record[$name] as $var) {
+                $values |= $var;
+            }
+        } else {
             $values = $record[$name];
+        }
         return '<input type="hidden" name="' . $fieldprefix . $name . '"
                       value="' . $values . '">';
     }

@@ -40,8 +40,8 @@ abstract class Atk_DGComponent
     /**
      * Constructor.
      *
-     * @param Atk_DataGrid $grid    grid
-     * @param array       $options component options
+     * @param Atk_DataGrid $grid grid
+     * @param array $options component options
      */
     public function __construct($grid, $options = array())
     {
@@ -126,8 +126,8 @@ abstract class Atk_DGComponent
      * If you want NULL to be returned when no translation can be found then
      * leave the fallback empty and set $useDefault to false.
      *
-     * @param string  $string      string to translate
-     * @param string  $fallback    fallback in-case no translation can be found
+     * @param string $string string to translate
+     * @param string $fallback fallback in-case no translation can be found
      * @param boolean $useDefault use default ATK translation if no translation can be found?
      */
     protected function text($string, $fallback = '', $useDefault = true)

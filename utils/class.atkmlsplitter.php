@@ -45,7 +45,7 @@ class Atk_mlsplitter
      */
     function &getInstance()
     {
-        static $s_mlsplitter = NULL;
+        static $s_mlsplitter = null;
         if (!is_object($s_mlsplitter)) {
             $s_mlsplitter = new Atk_mlsplitter();
             Atk_Tools::atkdebug("Created a new atkmlsplitter instance");
@@ -65,8 +65,9 @@ class Atk_mlsplitter
             return $node->getLanguages();
         }
         $lngs = Atk_Config::getGlobal("supported_languages");
-        for ($i = 0, $_i = count($lngs); $i < $_i; $i++)
+        for ($i = 0, $_i = count($lngs); $i < $_i; $i++) {
             $lngs[$i] = strtoupper($lngs[$i]);
+        }
         return $lngs;
     }
 
@@ -108,7 +109,11 @@ class Atk_mlsplitter
                 // assume all onetomanyrelations are stored in the PRESTORE so we MUST NOT use addDb()
                 // on this node if its contains relations to others
                 // but for 1:n and n:1 we need to save the refkey
-                if ((is_a($node->m_attribList[$attribname], "atkManyToOneRelation") || is_a($node->m_attribList[$attribname], "atkOneToOneRelation")) && Atk_Tools::hasFlag($node->m_attribList[$attribname]->storageType(), ADDTOQUERY)) {
+                if ((is_a($node->m_attribList[$attribname],
+                            "atkManyToOneRelation") || is_a($node->m_attribList[$attribname],
+                            "atkOneToOneRelation")) && Atk_Tools::hasFlag($node->m_attribList[$attribname]->storageType(),
+                        ADDTOQUERY)
+                ) {
                     $relations[$attribname] = $node->m_attribList[$attribname];
 
                     $p_attrib = &$node->m_attribList[$attribname];
@@ -118,8 +123,9 @@ class Atk_mlsplitter
                     $p_attrib = new Atk_Attribute($attribname);
                     $p_attrib->m_ownerInstance = &$node;
                     $p_attrib->init();
-                } else
+                } else {
                     $excludelist[] = $attribname;
+                }
             }
         }
 
@@ -129,8 +135,9 @@ class Atk_mlsplitter
         $autoincrementflags = Array();
         foreach ($node->m_primaryKey as $primkey) {
             // Make sure we don't increment the primkey
-            if ($node->m_attribList[$primkey]->hasFlag(AF_AUTOINCREMENT))
+            if ($node->m_attribList[$primkey]->hasFlag(AF_AUTOINCREMENT)) {
                 $node->m_attribList[$primkey]->removeFlag(AF_AUTO_INCREMENT);
+            }
             $autoincrementflags[] = $primkey;
         }
 
@@ -138,11 +145,13 @@ class Atk_mlsplitter
             if ($atklngrecordmodes[$language]["mode"] == "updatelngfield") {
                 $this->updateLngField($node, $record);
             }
-            if ($language == $node->m_defaultlanguage)
+            if ($language == $node->m_defaultlanguage) {
                 continue;
+            }
             foreach ($node->m_attribList as $attribname => $attrib) {
-                if ($node->m_attribList[$attribname]->hasFlag(AF_ML))
+                if ($node->m_attribList[$attribname]->hasFlag(AF_ML)) {
                     $record[$attribname] = $language;
+                }
                 if ($node->m_attribList[$attribname]->m_mlattribute) {
                     // change the language of the attribute
                     $node->m_attribList[$attribname]->m_language = $language;
@@ -191,7 +200,8 @@ class Atk_mlsplitter
             // restore the relations
             $node->m_attribList[$attribname] = $relation;
         }
-        Atk_SessionManager::sessionStore("atklng_" . $node->m_type . "_" . Atk_SessionManager::atkPrevLevel(), NULL); // deleting modes
+        Atk_SessionManager::sessionStore("atklng_" . $node->m_type . "_" . Atk_SessionManager::atkPrevLevel(),
+            null); // deleting modes
     }
 
     /**
@@ -207,8 +217,9 @@ class Atk_mlsplitter
         global $ATK_VARS;
         $lng = (isset($ATK_VARS["atklng"]) ? $ATK_VARS["atklng"] : "");
 
-        if (!$lng)
+        if (!$lng) {
             $lng = $node->m_defaultlanguage;
+        }
 
         if ($node->hasFlag(NF_ML) && $mode != "edit" && $mode != "copy") {
             $fieldname = $joinalias . "." . $node->m_lngfield;
@@ -232,7 +243,8 @@ class Atk_mlsplitter
         }
         $this->mergeMlRecords($node, $recordset);
 
-        Atk_SessionManager::sessionStore("atklng_" . $node->m_type . "_" . Atk_SessionManager::atkLevel(), $recordset[0]["atklngrecordmodes"]);
+        Atk_SessionManager::sessionStore("atklng_" . $node->m_type . "_" . Atk_SessionManager::atkLevel(),
+            $recordset[0]["atklngrecordmodes"]);
     }
 
     /**
@@ -271,8 +283,9 @@ class Atk_mlsplitter
     {
         $index = 0;
         foreach ($recordset as $record) {
-            if ($record[$node->m_lngfield] == $lng)
+            if ($record[$node->m_lngfield] == $lng) {
                 return true;
+            }
             $index++;
         }
         return false;
@@ -291,18 +304,21 @@ class Atk_mlsplitter
         $languages = $this->getLanguages($node);
         Atk_Tools::atkdebug("atkmlsplitter adding missings lngrecord for " . $node->m_type . "!");
         for ($i = 0, $max = count($languages); $i < $max; $i++) {
-            $index = NULL;
+            $index = null;
             if (!$this->hasLngRecord($node, $recordset, $languages[$i], $index)) {
                 $recordcount = count($newrecordset);
                 $newrecordset[$recordcount] = $recordset[0]; // assume that the first record is OK.
                 $newrecordset[$recordcount][$node->m_lngfield] = $languages[$i];
 
                 if ($languages[$i] != $node->m_defaultlanguage) // saving atkaction
+                {
                     $newrecordset[$recordcount]["atklngrecordmodes"][$languages[$i]]["mode"] = "add";
-                else
+                } else {
                     $newrecordset[$recordcount]["atklngrecordmodes"][$languages[$i]]["mode"] = "updatelngfield";
-            } else
+                }
+            } else {
                 $newrecordset[] = $recordset[$index];
+            }
         }
         return $newrecordset;
     }
@@ -318,15 +334,19 @@ class Atk_mlsplitter
         $lngattribs = array();
         $lngattribvalues = array();
         foreach ($node->m_attribList as $attribname => $attrib) {
-            if ($node->m_attribList[$attribname]->m_mlattribute)
+            if ($node->m_attribList[$attribname]->m_mlattribute) {
                 $lngattribs[$attribname] = &$node->m_attribList[$attribname];
+            }
         }
         $i = $this->searchRecordDefaultLanguage($recordset, $node->m_defaultlanguage);
         $ml_record[0] = $recordset[$i]; // assume this is the record with the default language
         $ml_record[0]["atklngrecordmodes"] = Array();
         for ($i = 0, $max = count($recordset); $i < $max; $i++) {
             if (is_array($recordset[$i]["atklngrecordmodes"]))  // keep track off atkactions
-                $ml_record[0]["atklngrecordmodes"] = array_merge($ml_record[0]["atklngrecordmodes"], $recordset[$i]["atklngrecordmodes"]);
+            {
+                $ml_record[0]["atklngrecordmodes"] = array_merge($ml_record[0]["atklngrecordmodes"],
+                    $recordset[$i]["atklngrecordmodes"]);
+            }
             foreach ($lngattribs as $lngattribname => $lngattrib) {
                 $lngattribvalues[$lngattribname][strtoupper($recordset[$i][$node->m_lngfield])] = $recordset[$i][$lngattribname];
             }
@@ -347,8 +367,9 @@ class Atk_mlsplitter
     function searchRecordDefaultLanguage($recordset, $defaultlanguage)
     {
         for ($i = 0; $i < count($recordset); $i++) {
-            if ($recordset[$i]["lng"] == $defaultlanguage)
+            if ($recordset[$i]["lng"] == $defaultlanguage) {
                 return $i;
+            }
         }
         return 0;
     }

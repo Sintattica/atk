@@ -112,29 +112,31 @@ class Atk_ListAttribute extends Atk_Attribute
      * @param array $valueArray Array with values. If you don't use this parameter,
      *                    values are assumed to be the same as the options.
      * @param int $flags Flags for this attribute
-     * @param int $size  Size of the attribute.
+     * @param int $size Size of the attribute.
      */
     function atkListAttribute($name, $optionArray, $valueArray = "", $flags = 0, $size = 0)
     {
         if (!is_array($valueArray) || count($valueArray) == 0) {
-            if (is_numeric($valueArray))
+            if (is_numeric($valueArray)) {
                 $flags = $valueArray;
+            }
             $valueArray = $optionArray;
         }
 
         // If all values are numeric, we can use a numeric field to store the selected
         // value.
         $this->m_dbfieldtype = "number";
-        for ($i = 0, $_i = count($valueArray); $i < $_i && $this->m_dbfieldtype == "number"; $i ++) {
-            if (!is_numeric($valueArray[$i]))
+        for ($i = 0, $_i = count($valueArray); $i < $_i && $this->m_dbfieldtype == "number"; $i++) {
+            if (!is_numeric($valueArray[$i])) {
                 $this->m_dbfieldtype = "string";
+            }
             // if one of the values is not a number, the fieldtype must be string, and
             // the loop is stopped.
         }
 
         // If no size is specified, the max size we have is equal to the biggest value.
         if ($size == 0) {
-            for ($i = 0, $_i = count($valueArray); $i < $_i; $i ++) {
+            for ($i = 0, $_i = count($valueArray); $i < $_i; $i++) {
                 $size = max($size, Atk_Tools::atk_strlen($valueArray[$i]));
             }
         }
@@ -167,8 +169,9 @@ class Atk_ListAttribute extends Atk_Attribute
      */
     function getOptions($rec = null)
     {
-        if (!isset($this->m_types["options"]) || count($this->m_types["options"]) == 0)
+        if (!isset($this->m_types["options"]) || count($this->m_types["options"]) == 0) {
             return $this->m_options;
+        }
         return $this->_get("options", $rec);
     }
 
@@ -180,8 +183,9 @@ class Atk_ListAttribute extends Atk_Attribute
      */
     function getValues($rec = null)
     {
-        if (!isset($this->m_types["values"]) || count($this->m_types["values"]) == 0)
+        if (!isset($this->m_types["values"]) || count($this->m_types["values"]) == 0) {
             return $this->m_values;
+        }
         return $this->_get("values", $rec);
     }
 
@@ -193,8 +197,9 @@ class Atk_ListAttribute extends Atk_Attribute
      */
     function getLookup($rec = null)
     {
-        if (!isset($this->m_types["lookup"]) || count($this->m_types["lookup"]) == 0)
+        if (!isset($this->m_types["lookup"]) || count($this->m_types["lookup"]) == 0) {
             return $this->m_lookup;
+        }
         return $this->_get("lookup", $rec);
     }
 
@@ -251,10 +256,11 @@ class Atk_ListAttribute extends Atk_Attribute
         $lookup = $this->getLookup($rec);
         $res = "";
         if (isset($lookup[$value])) {
-            if ($this->hasFlag(AF_NO_TRANSLATION))
+            if ($this->hasFlag(AF_NO_TRANSLATION)) {
                 $res = $lookup[$value];
-            else
+            } else {
                 $res = $this->text($lookup[$value]);
+            }
         }
         return $res;
     }
@@ -282,26 +288,28 @@ class Atk_ListAttribute extends Atk_Attribute
         }
 
         $result = '<select id="' . $id . '" name="' . $id . '"  class="form-control atklistattribute" ' . $onchange . ($this->m_width
-                    ? " style='width: {$this->m_width}px'" : "") . '>';
+                ? " style='width: {$this->m_width}px'" : "") . '>';
 
-        $result.=$this->_addEmptyListOption();
+        $result .= $this->_addEmptyListOption();
 
         $values = $this->getValues($record);
         $recvalue = Atk_Tools::atkArrayNvl($record, $this->fieldName());
 
-        for ($i = 0; $i < count($values); $i ++) {
+        for ($i = 0; $i < count($values); $i++) {
             // If the current value is selected or occurs in the record
             if ((!is_null($this->m_selected) && $values[$i] == $this->m_selected) ||
-                ( is_null($this->m_selected) && $values[$i] == $recvalue && $recvalue !== "")) {
+                (is_null($this->m_selected) && $values[$i] == $recvalue && $recvalue !== "")
+            ) {
                 $sel = "selected";
             } else {
                 $sel = "";
             }
 
-            $result.= '<option value="' . $values[$i] . '" ' . $sel . '>' . $this->_translateValue($values[$i], $record);
+            $result .= '<option value="' . $values[$i] . '" ' . $sel . '>' . $this->_translateValue($values[$i],
+                    $record);
         }
 
-        $result.='</select>';
+        $result .= '</select>';
         $result .= $this->getSpinner();
 
         return $result;
@@ -321,15 +329,18 @@ class Atk_ListAttribute extends Atk_Attribute
 
         // use a different (more descriptive) text for obligatory items
         $text_key = $this->hasFlag(AF_OBLIGATORY) ? "list_null_value_obligatory"
-                : "list_null_value";
+            : "list_null_value";
 
         if (!$this->hasFlag(AF_LIST_NO_NULL_ITEM) ||
             ($this->hasFlag(AF_OBLIGATORY) &&
-            // CONFIG IS DEPRECATED
-            ((Atk_Config::getGlobal("list_obligatory_null_item") && !$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM)) ||
-            ($this->hasFlag(AF_LIST_OBLIGATORY_NULL_ITEM))))) {
+                // CONFIG IS DEPRECATED
+                ((Atk_Config::getGlobal("list_obligatory_null_item") && !$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM)) ||
+                    ($this->hasFlag(AF_LIST_OBLIGATORY_NULL_ITEM))))
+        ) {
             $ret = '<option value="' . $this->m_emptyvalue . '">' . htmlentities($this->text(array(
-                        $this->fieldName() . '_' . $text_key, $text_key))) . '</option>';
+                    $this->fieldName() . '_' . $text_key,
+                    $text_key
+                ))) . '</option>';
         }
         return $ret;
     }
@@ -370,7 +381,7 @@ class Atk_ListAttribute extends Atk_Attribute
         $values = $this->getValues($record);
         $result = '<select class="form-control" ';
         if ($extended || $this->getMultipleInSimpleSearch()) {
-            $result.='multiple size="' . min(5, count($values) + 1) . '"';
+            $result .= 'multiple size="' . min(5, count($values) + 1) . '"';
         }
 
         // if we use autosearch, register an onchange event that submits the grid
@@ -386,7 +397,9 @@ class Atk_ListAttribute extends Atk_Attribute
         $result .= 'name="' . $this->getSearchFieldName($fieldprefix) . '[]">';
 
         $selValues = $record[$this->fieldName()];
-        if ($this->getMultipleInSimpleSearch() && is_array($selValues) && count($selValues) == 1 && strpos($selValues[0], ',') !== false) {
+        if ($this->getMultipleInSimpleSearch() && is_array($selValues) && count($selValues) == 1 && strpos($selValues[0],
+                ',') !== false
+        ) {
             // in case of multiple select in simple search, we have the selected values into a single string (csv)
             $selValues = explode(',', $selValues[0]);
         }
@@ -407,16 +420,16 @@ class Atk_ListAttribute extends Atk_Attribute
 
         foreach ($values AS $value) {
 
-            if (Atk_Tools::atk_in_array(((string) $value), $selValues, true) && $selValues !== "") {
+            if (Atk_Tools::atk_in_array(((string)$value), $selValues, true) && $selValues !== "") {
                 $sel = "selected";
             } else {
                 $sel = "";
             }
 
-            $result.= '<option value="' . $value . '" ' . $sel . '>' . $this->_translateValue($value, $record);
+            $result .= '<option value="' . $value . '" ' . $sel . '>' . $this->_translateValue($value, $record);
         }
 
-        $result.='</select>';
+        $result .= '</select>';
         return $result;
     }
 
@@ -425,11 +438,11 @@ class Atk_ListAttribute extends Atk_Attribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param Atk_Query $query     The query object where the search condition should be placed on
-     * @param String $table       The name of the table in which this attribute
+     * @param Atk_Query $query The query object where the search condition should be placed on
+     * @param String $table The name of the table in which this attribute
      *                              is stored
-     * @param mixed $value        The value the user has entered in the searchbox
-     * @param String $searchmode  The searchmode to use. This can be any one
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param String $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
@@ -452,7 +465,8 @@ class Atk_ListAttribute extends Atk_Attribute
             }
 
             if (count($value) == 1) { // exactly one value
-                $searchcondition = $query->exactCondition($table . "." . $this->fieldName(), $this->escapeSQL($value[0]));
+                $searchcondition = $query->exactCondition($table . "." . $this->fieldName(),
+                    $this->escapeSQL($value[0]));
             } else { // search for more values using IN()
                 $searchcondition = $table . "." . $this->fieldName() . " IN ('" . implode("','", $value) . "')";
             }
@@ -499,7 +513,8 @@ class Atk_ListAttribute extends Atk_Attribute
         foreach ($valuearr as $value) {
             $conditions[] = "newvalue=='$value'";
         }
-        $this->addOnChangeHandler("if (" . implode('||', $conditions) . ") hideAttrib('$attrib'); else showAttrib('$attrib');");
+        $this->addOnChangeHandler("if (" . implode('||',
+                $conditions) . ") hideAttrib('$attrib'); else showAttrib('$attrib');");
     }
 
     /**
@@ -571,19 +586,23 @@ class Atk_ListAttribute extends Atk_Attribute
     function parseStringValue($stringvalue)
     {
         $values = $this->getValues();
-        foreach ($values as $value)
-            if (strtolower($stringvalue) == strtolower($value))
+        foreach ($values as $value) {
+            if (strtolower($stringvalue) == strtolower($value)) {
                 return $value;
+            }
+        }
 
         $i = 0;
         $options = $this->getOptions();
         foreach ($options as $option) {
-            if (strtolower($stringvalue) == strtolower($option))
+            if (strtolower($stringvalue) == strtolower($option)) {
                 return $values[$i];
+            }
 
-            if (strtolower(Atk_Tools::atktext($stringvalue)) == strtolower($option))
+            if (strtolower(Atk_Tools::atktext($stringvalue)) == strtolower($option)) {
                 return $values[$i];
-            $i ++;
+            }
+            $i++;
         }
 
         return $values[0];
@@ -615,8 +634,9 @@ class Atk_ListAttribute extends Atk_Attribute
      */
     function addOption($option, $value = "")
     {
-        if ($value != 0 && empty($value))
+        if ($value != 0 && empty($value)) {
             $value = $option;
+        }
         $currentOptions = $this->_get("options");
         $currentOptions[] = $option;
         $this->_set("options", $currentOptions);

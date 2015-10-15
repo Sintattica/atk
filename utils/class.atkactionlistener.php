@@ -43,7 +43,7 @@ class Atk_ActionListener
      * @access private
      * @var Atk_Node
      */
-    var $m_node = NULL;
+    var $m_node = null;
 
     /**
      * Base constructor
@@ -98,7 +98,7 @@ class Atk_ActionListener
      */
     function actionPerformed($action, $record)
     {
-        
+
     }
 
     /**
@@ -130,7 +130,7 @@ class Atk_ActionListener
      */
     function preActionPerformed($action, &$record)
     {
-        
+
     }
 
 }

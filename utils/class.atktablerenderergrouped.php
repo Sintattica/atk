@@ -176,14 +176,16 @@ class Atk_TableRendererGrouped extends Atk_TableRenderer
             $header = '<tr><th class="groupheader" colspan="' . $width . '">' .
                 $this->_renderValue($group['rows'][0][0]) .
                 '</th></tr>';
-        } else if (is_array($group['header'])) {
-            // draw as normal row
-            $header = $this->_renderRow($group['header'], 'groupheader', 'th');
         } else {
-            // render the value
-            $header = "<tr><th class=\"groupheader\" colspan=\"{$width}\">
+            if (is_array($group['header'])) {
+                // draw as normal row
+                $header = $this->_renderRow($group['header'], 'groupheader', 'th');
+            } else {
+                // render the value
+                $header = "<tr><th class=\"groupheader\" colspan=\"{$width}\">
             {$group['header']}
             </th></tr>";
+            }
         }
 
         $output .= $header;

@@ -30,14 +30,14 @@ class Atk_Language
 {
     /**
      * Instance.
-     * 
+     *
      * @var Atk_Language
      */
     private static $s_instance = null;
 
     /**
      * Supported languages.
-     * 
+     *
      * @var array
      */
     private static $s_supportedLanguages = null;
@@ -132,9 +132,9 @@ class Atk_Language
 
     /**
      * Calculate the list of fallbackmodules.
-     * 
+     *
      * @access protected
-     * @param bool $modulefallback  Wether or not to use all the modules of the application in the fallback,
+     * @param bool $modulefallback Wether or not to use all the modules of the application in the fallback,
      *                              when looking for strings
      * @return array Array of fallback modules
      */
@@ -164,41 +164,54 @@ class Atk_Language
      * Text function, retrieves a translation for a certain string.
      *
      * @static
-     * @param mixed $string           string or array of strings containing the name(s) of the string to return
+     * @param mixed $string string or array of strings containing the name(s) of the string to return
      *                                when an array of strings is passed, the second will be the fallback if
      *                                the first one isn't found, and so forth
-     * @param String $module          module in which the language file should be looked for,
+     * @param String $module module in which the language file should be looked for,
      *                                defaults to core module with fallback to ATK
-     * @param String $node            the node to which the string belongs
-     * @param String $lng             ISO 639-1 language code, defaults to config variable
-     * @param String $firstfallback   the first module to check as part of the fallback
-     * @param bool   $nodefaulttext   if true, then it doesn't returns false when it can't find a translation
-     * @param bool   $modulefallback  Wether or not to use all the modules of the application in the fallback,
+     * @param String $node the node to which the string belongs
+     * @param String $lng ISO 639-1 language code, defaults to config variable
+     * @param String $firstfallback the first module to check as part of the fallback
+     * @param bool $nodefaulttext if true, then it doesn't returns false when it can't find a translation
+     * @param bool $modulefallback Wether or not to use all the modules of the application in the fallback,
      *                                when looking for strings
      * @return String the string from the languagefile
      */
-    public static function text($string, $module, $node = "", $lng = "", $firstfallback = "", $nodefaulttext = false, $modulefallback = false)
-    {
+    public static function text(
+        $string,
+        $module,
+        $node = "",
+        $lng = "",
+        $firstfallback = "",
+        $nodefaulttext = false,
+        $modulefallback = false
+    ) {
         // We don't translate nothing
-        if ($string == '')
+        if ($string == '') {
             return '';
-        if ($lng == "")
+        }
+        if ($lng == "") {
             $lng = Atk_Language::getLanguage();
+        }
         $lng = strtolower($lng);
         $atklanguage = Atk_Language::getInstance();
 
         // If only one string given, process it immediatly
-        if (!is_array($string))
-            return $atklanguage->_getString($string, $module, $lng, $node, $nodefaulttext, $firstfallback, $modulefallback);
+        if (!is_array($string)) {
+            return $atklanguage->_getString($string, $module, $lng, $node, $nodefaulttext, $firstfallback,
+                $modulefallback);
+        }
 
         // If multiple strings given, iterate through all strings and return the translation if found
         for ($i = 0, $_i = count($string); $i < $_i; $i++) {
             // Try to get the translation
-            $translation = $atklanguage->_getString($string[$i], $module, $lng, $node, $nodefaulttext || ($i < ($_i - 1)), $firstfallback, $modulefallback);
+            $translation = $atklanguage->_getString($string[$i], $module, $lng, $node,
+                $nodefaulttext || ($i < ($_i - 1)), $firstfallback, $modulefallback);
 
             // Return the translation if found
-            if ($translation != "")
+            if ($translation != "") {
                 return $translation;
+            }
         }
         return "";
     }
@@ -206,18 +219,19 @@ class Atk_Language
     /**
      * Returns all strings for the given modulename.
      *
-     * The returned struct will contain key-value pairs for the translation 
+     * The returned struct will contain key-value pairs for the translation
      * keys, and their respective translation.
-     *  
-     * @param String $module  Module in which the language file should be 
-     * @param String $lng     ISO 639-1 language code, defaults to config 
-     * @return array Translations 
+     *
+     * @param String $module Module in which the language file should be
+     * @param String $lng ISO 639-1 language code, defaults to config
+     * @return array Translations
      */
     public static function getStringsForModule($module, $lng = "")
     {
 
-        if ($lng == "")
+        if ($lng == "") {
             $lng = Atk_Language::getLanguage();
+        }
         $atklanguage = Atk_Language::getInstance();
 
         $atklanguage->_includeLanguage($module, $lng);
@@ -238,7 +252,10 @@ class Atk_Language
     {
         global $ATK_VARS;
 
-        if (isset($ATK_VARS["atklng"]) && (in_array($ATK_VARS["atklng"], Atk_Language::getSupportedLanguages()) || in_array($ATK_VARS["atklng"], Atk_Config::getGlobal('supported_languages')))) {
+        if (isset($ATK_VARS["atklng"]) && (in_array($ATK_VARS["atklng"],
+                    Atk_Language::getSupportedLanguages()) || in_array($ATK_VARS["atklng"],
+                    Atk_Config::getGlobal('supported_languages')))
+        ) {
             $lng = $ATK_VARS["atklng"];
         } // we first check for an atklng variable
         else {
@@ -276,16 +293,18 @@ class Atk_Language
             if (function_exists("getUser")) {
                 $userinfo = Atk_SecurityManager::atkGetUser();
                 $fieldname = Atk_Config::getGlobal('auth_languagefield');
-                if (isset($userinfo[$fieldname]) && in_array($userinfo[$fieldname], $supported))
+                if (isset($userinfo[$fieldname]) && in_array($userinfo[$fieldname], $supported)) {
                     return $userinfo[$fieldname];
+                }
             }
         }
 
         // Otherwise we check the headers
         if (Atk_Config::getGlobal('use_browser_language', false)) {
             $headerlng = Atk_Language::getLanguageFromHeaders();
-            if ($headerlng && in_array($headerlng, $supported))
+            if ($headerlng && in_array($headerlng, $supported)) {
                 return $headerlng;
+            }
         }
 
         // We give up and just return the default language
@@ -313,7 +332,7 @@ class Atk_Language
 
     /**
      * Explicitly sets the supported languages.
-     * 
+     *
      * @param array $languages supported languages
      */
     public static function setSupportedLanguages(array $languages)
@@ -340,7 +359,7 @@ class Atk_Language
             self::$s_supportedLanguages = $supportedlanguagescollector->getLanguages();
         }
 
-        return (array) self::$s_supportedLanguages;
+        return (array)self::$s_supportedLanguages;
     }
 
     /**
@@ -358,10 +377,12 @@ class Atk_Language
     protected function _getModules($module, $firstfallback = "", $modulefallback = false)
     {
         $arr = array();
-        if ($module)
+        if ($module) {
             $arr[] = $module;
-        if ($firstfallback != "")
+        }
+        if ($firstfallback != "") {
             $arr[] = $firstfallback;
+        }
         if ($module == 'atk') {
             // overrides have precedence, then the passed module (finally the fallbacks)
             $modules = array_merge($this->m_overridemodules, $arr, $this->_getFallbackModules($modulefallback));
@@ -381,51 +402,63 @@ class Atk_Language
      * And if all that fails we look for a general string in the module.
      *
      * @access protected
-     * 
-     * @param string $key             the name of the string to return
-     * @param string $module          module in which the language file should be looked for,
+     *
+     * @param string $key the name of the string to return
+     * @param string $module module in which the language file should be looked for,
      *                                defaults to core module with fallback to ATK
-     * @param string $lng             ISO 639-1 language code, defaults to config variable
-     * @param string $node            the node to which the string belongs
-     * @param bool   $nodefaulttext   wether or not to pass a default text back
-     * @param string $firstfallback   the first module to check as part of the fallback
-     * @param bool   $modulefallback  Wether or not to use all the modules of the application in the fallback,
+     * @param string $lng ISO 639-1 language code, defaults to config variable
+     * @param string $node the node to which the string belongs
+     * @param bool $nodefaulttext wether or not to pass a default text back
+     * @param string $firstfallback the first module to check as part of the fallback
+     * @param bool $modulefallback Wether or not to use all the modules of the application in the fallback,
      *                                when looking for strings
      * @return string the name with which to call the string we want from the languagefile
      */
-    protected function _getString($key, $module, $lng, $node = "", $nodefaulttext = false, $firstfallback = "", $modulefallback = false)
-    {
+    protected function _getString(
+        $key,
+        $module,
+        $lng,
+        $node = "",
+        $nodefaulttext = false,
+        $firstfallback = "",
+        $modulefallback = false
+    ) {
         // First find node specific string.
         $modules = $this->_getModules($module, $firstfallback, $modulefallback);
 
         // Second check custom Strings
-        if (isset($this->m_customStrings[$lng]) && isset($this->m_customStrings[$lng][$key]))
+        if (isset($this->m_customStrings[$lng]) && isset($this->m_customStrings[$lng][$key])) {
             return $this->m_customStrings[$lng][$key];
+        }
 
         if ($node != "") {
             foreach ($modules as $modname) {
                 $text = $this->_getStringFromFile($module . "_" . $node . "_" . $key, $modname, $lng);
-                if ($text != "")
+                if ($text != "") {
                     return $text;
+                }
             }
 
             foreach ($modules as $modname) {
                 $text = $this->_getStringFromFile($node . "_" . $key, $modname, $lng);
-                if ($text != "")
+                if ($text != "") {
                     return $text;
+                }
             }
         }
 
         // find generic module string
         foreach ($modules as $modname) {
             $text = $this->_getStringFromFile($key, $modname, $lng);
-            if ($text != "")
+            if ($text != "") {
                 return $text;
+            }
         }
 
         if (!$nodefaulttext) {
-            if (Atk_Config::getGlobal("debug_translations", false))
+            if (Atk_Config::getGlobal("debug_translations", false)) {
                 Atk_Tools::atkdebug("atkLanguage: translation for '$key' with module: '$module' and node: '$node' and language: '$lng' not found, returning default text");
+            }
 
             // Still nothing found. return default string
             return $this->defaultText($key);
@@ -440,8 +473,8 @@ class Atk_Language
      * otherwise it sets it
      *
      * @access protected
-     * @param string $module  the module to import the language file from
-     * @param string $lng     language of file to import
+     * @param string $module the module to import the language file from
+     * @param string $lng language of file to import
      * @return bool true if everything went okay
      */
     protected function _includeLanguage($module, $lng)
@@ -479,12 +512,14 @@ class Atk_Language
     {
         if ($module == "atk") {
             $path = Atk_Config::getGlobal("atkroot") . "atk/" . (isset($this) ? $this->LANGDIR
-                        : 'languages/');
-        } else if ($module == "langoverrides") {
-            $path = Atk_Config::getGlobal("language_basedir", (isset($this) ? $this->LANGDIR
-                        : 'languages/'));
+                    : 'languages/');
         } else {
-            $path = Atk_Module::moduleDir($module) . (isset($this) ? $this->LANGDIR : 'languages/');
+            if ($module == "langoverrides") {
+                $path = Atk_Config::getGlobal("language_basedir", (isset($this) ? $this->LANGDIR
+                    : 'languages/'));
+            } else {
+                $path = Atk_Module::moduleDir($module) . (isset($this) ? $this->LANGDIR : 'languages/');
+            }
         }
         return $path;
     }
@@ -505,9 +540,9 @@ class Atk_Language
      * Gets the string from the languagefile or, if we failed, returns ""
      *
      * @access protected
-     * @param string $key           the name which was given when the text function was called
-     * @param string $module        the name of the module to which the text function belongs
-     * @param string $lng           the current language
+     * @param string $key the name which was given when the text function was called
+     * @param string $module the name of the module to which the text function belongs
+     * @param string $lng the current language
      * @return string the true name by which the txt is called or "" if we can't find any entry
      */
     protected function _getStringFromFile($key, $module, $lng)
@@ -529,8 +564,9 @@ class Atk_Language
      */
     public function setText($code, $text, $lng)
     {
-        if (!isset($this->m_customStrings[$lng]))
+        if (!isset($this->m_customStrings[$lng])) {
             $this->m_customStrings[$lng] = array();
+        }
         $this->m_customStrings[$lng][$code] = $text;
     }
 

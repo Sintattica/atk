@@ -2,9 +2,9 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
- * 
+ *
  * @package atk
  * @subpackage security
  *
@@ -17,7 +17,7 @@
  * Base class for all ATK encryption methods
  *
  * @todo Currently, 2 weak encryption implementations are available for
- *       testing purposes. Strong encryption using the mcrypt() php 
+ *       testing purposes. Strong encryption using the mcrypt() php
  *       extension is yet to be implemented.
  *
  * @author Mark Baaijens <mark@ibuildings.nl>
@@ -32,28 +32,30 @@ class Atk_Encryption
     /**
      * Get function for encryption
      *
-     * Gets a new instance of an encryption class with the type we passed 
+     * Gets a new instance of an encryption class with the type we passed
      * along
-     * @param string $type The type of encryption we want, 
+     * @param string $type The type of encryption we want,
      *                     defaults to $config)_encryption_defaultmethod
      * @return obj the node with which to encrypt or decrypt your data
      */
     function &getEncryption($type = "")
     {
-        if ($type == "")
+        if ($type == "") {
             $type = Atk_Config::getGlobal("encryption_defaultmethod");
+        }
         $encryptionclass = "atk" . strtolower($type) . "encryption";
 
         if (Atk_Tools::atkimport("atk.security.encryption." . $encryptionclass)) {
             return new $encryptionclass();
-        } else
+        } else {
             return $this;
+        }
     }
 
     /**
      * Encryptionmethod, encrypts your input with a key
-     * @param mixed $input  the data we want to encrypt
-     * @param mixed $key    the key we want to encrypt the data with
+     * @param mixed $input the data we want to encrypt
+     * @param mixed $key the key we want to encrypt the data with
      * @return mixed        the encrypted data
      */
     function encrypt($input, $key)
@@ -64,8 +66,8 @@ class Atk_Encryption
 
     /**
      * Decryptionmethod, decrypts your input with a key
-     * @param mixed $input  the encrypted data that we want to decrypt
-     * @param mixed $key    the key with which to decrypt the data
+     * @param mixed $input the encrypted data that we want to decrypt
+     * @param mixed $key the key with which to decrypt the data
      * @return mixed        the decrypted data
      */
     function decrypt($input, $key)
@@ -76,7 +78,7 @@ class Atk_Encryption
 
     /**
      * Decryptionmethod for a key. This implementation returns simple the input
-     * @param string $key  The encrypted key
+     * @param string $key The encrypted key
      * @param string $pass The password to decrypt de key
      * @return string      The decrypted key
      */
@@ -88,7 +90,7 @@ class Atk_Encryption
 
     /**
      * Encryptionmethod for a key. This implementation returns simple the input
-     * @param string $key  The decrypted key
+     * @param string $key The decrypted key
      * @param string $pass The password to encrypt de key
      * @return string      The encrypted key
      */
@@ -108,8 +110,9 @@ class Atk_Encryption
     {
         $str = md5(rand(1, 100));
 
-        if ($length > 32)
+        if ($length > 32) {
             return $str;
+        }
 
         $begin = rand(0, 32 - $length);
         return substr($str, $begin, $length);
@@ -118,7 +121,7 @@ class Atk_Encryption
     /**
      * Creates a random key for tableencryption
      * The default implementation of this function returns a string with 6 random characters
-     * @param string $pass   This implementation does nothing with this param
+     * @param string $pass This implementation does nothing with this param
      * @return string        A random key
      */
     function getRandomKey($pass)
@@ -130,7 +133,7 @@ class Atk_Encryption
      * For use of strimslashes function
      * This implementation does nothing
      *
-     * @param string $value   The original string
+     * @param string $value The original string
      * @return string         The original string
      * */
     function stripbackslashes($value)
@@ -142,7 +145,7 @@ class Atk_Encryption
      * For use of strimslashes function
      * This implementation does nothing
      *
-     * @param string $value   The original string
+     * @param string $value The original string
      * @return string         The original string
      * */
     function addbackslashes($value)

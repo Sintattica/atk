@@ -68,7 +68,7 @@ class Atk_JSON
             }
 
             $services[$assoc] = new Services_JSON($assoc ? SERVICES_JSON_LOOSE_TYPE
-                        : 0);
+                : 0);
         }
 
         return $services[$assoc];
@@ -109,20 +109,24 @@ class Atk_JSON
 
         if (is_string($data)) {
             return utf8_encode($data);
-        } else if (is_numeric) {
-            return $data;
-        } else if (is_array($data)) {
-            /* our return object */
-            $newArray = array();
-
-            foreach ($data as $key => $val) {
-                $newArray[$key] = self::_utf8json($val, $depth);
-            }
-
-            /* return utf8 encoded array */
-            return $newArray;
         } else {
-            throw new Exception("Unrecognized datatype for UTF-8 conversion in atkJSON");
+            if (is_numeric) {
+                return $data;
+            } else {
+                if (is_array($data)) {
+                    /* our return object */
+                    $newArray = array();
+
+                    foreach ($data as $key => $val) {
+                        $newArray[$key] = self::_utf8json($val, $depth);
+                    }
+
+                    /* return utf8 encoded array */
+                    return $newArray;
+                } else {
+                    throw new Exception("Unrecognized datatype for UTF-8 conversion in atkJSON");
+                }
+            }
         }
     }
 
@@ -135,8 +139,9 @@ class Atk_JSON
      */
     public static function decode($string, $assoc = false)
     {
-        if (function_exists('json_decode'))
+        if (function_exists('json_decode')) {
             return json_decode($string, $assoc);
+        }
         $service = Atk_JSON::_getJSONService($assoc);
         return $service->decode($string);
     }

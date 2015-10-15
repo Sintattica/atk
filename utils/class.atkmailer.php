@@ -69,13 +69,14 @@ class Atk_Mailer extends PHPMailer
     {
         if (Atk_Config::getGlobal("mail_enabled", true)) {
             // make sure Sender is set so the Return-Path header will have a decent value
-            if ($this->Sender == "")
+            if ($this->Sender == "") {
                 $this->Sender = $this->From;
+            }
 
             $mail_redirect = Atk_Config::getGlobal("mail_redirect");
             if (!empty($mail_redirect)) {
                 $n = (strpos(strtolower($this->ContentType), 'html') !== false ? "<br/>"
-                            : "\n");
+                    : "\n");
                 $bodyPrefix = "--" . $n .
                     "To: " . $this->recipientFieldToString($this->to) . $n .
                     "Cc: " . $this->recipientFieldToString($this->cc) . $n .
@@ -87,26 +88,29 @@ class Atk_Mailer extends PHPMailer
             }
 
             return parent::Send();
-        } else
+        } else {
             return true;
+        }
     }
 
     /**
      * Convert the recipient to a correct string
      *
      * @param string $field
-     * @return string 
+     * @return string
      */
     function recipientFieldToString($field)
     {
         $ishtml = (strpos(strtolower($this->ContentType), 'html') > 0);
         $str = '';
         foreach ($field as $i => $recipient) {
-            if ($i > 0)
+            if ($i > 0) {
                 $str .= ', ';
+            }
             $str .= ($ishtml ? htmlentities($recipient[0]) : $recipient[0]);
-            if (Atk_Tools::atk_strlen($recipient['1']) > 0)
+            if (Atk_Tools::atk_strlen($recipient['1']) > 0) {
                 $str .= ' (' . ($ishtml ? htmlentities($recipient[1]) : $recipient[1]) . ')';
+            }
         }
         return $str;
     }

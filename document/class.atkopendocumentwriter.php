@@ -44,8 +44,9 @@ class Atk_OpenDocumentWriter extends Atk_DocumentWriter
         $this->m_tbsooo = new clsTinyButStrongOOo;
         $this->m_tbsooo->VarPrefix = "documentvar_";
         $processdir = Atk_Config::getGlobal("atktempdir") . "documents";
-        if (!is_dir($processdir))
+        if (!is_dir($processdir)) {
             mkdir($processdir);
+        }
         $this->m_tbsooo->SetProcessDir($processdir);
         $this->m_tbsooo->SetDataCharset("UTF8");
     }
@@ -69,14 +70,16 @@ class Atk_OpenDocumentWriter extends Atk_DocumentWriter
         $this->m_tbsooo->NewDocFromTpl($tpl_file);
 
         // Extract content-file from the template document
-        if (!$this->m_tbsooo->LoadXmlFromDoc($content_file))
+        if (!$this->m_tbsooo->LoadXmlFromDoc($content_file)) {
             return false;
+        }
 
         // Merge template vars with the content.xml file
         foreach ($use_vars as $key => $value) {
             if (is_array($value)) {
-                foreach ($value as $key => &$txtval)
+                foreach ($value as $key => &$txtval) {
                     $txtval = Atk_Tools::atk_iconv(Atk_Tools::atkGetCharset(), "UTF-8", $txtval);
+                }
                 $this->m_tbsooo->MergeBlock($key, $value);
             } else {
                 $value = Atk_Tools::atk_iconv(Atk_Tools::atkGetCharset(), "UTF-8", $value);
@@ -87,13 +90,15 @@ class Atk_OpenDocumentWriter extends Atk_DocumentWriter
         // add own style to xml file (just before </office:automatic-styles>)
         // and use it for text that applies. This is only done on odt files
         $filenameparts = explode(".", $tpl_file);
-        if ($filenameparts[count($filenameparts) - 1] == "odt")
+        if ($filenameparts[count($filenameparts) - 1] == "odt") {
             $this->m_tbsooo->Source = $this->addAndApplyStyles($this->m_tbsooo->Source);
+        }
 
 
         // Save the content-file back to the copied document
-        if (!$this->m_tbsooo->SaveXmlToDoc())
+        if (!$this->m_tbsooo->SaveXmlToDoc()) {
             return false;
+        }
 
         return true;
     }
@@ -109,11 +114,12 @@ class Atk_OpenDocumentWriter extends Atk_DocumentWriter
     function display($tpl_file, $outputfilename, $tpl_vars = null, $forcedownload = false)
     {
         // Parse template
-        if (!$this->_parse($tpl_file, $tpl_vars))
+        if (!$this->_parse($tpl_file, $tpl_vars)) {
             return false;
+        }
 
         Atk_Tools::exportFile($this->m_tbsooo->GetPathnameDoc(), $outputfilename, ($forcedownload
-                    ? "application/octet-stream" : $this->m_tbsooo->GetMimetypeDoc()));
+            ? "application/octet-stream" : $this->m_tbsooo->GetMimetypeDoc()));
 
         // Remove the document from disk
         $this->m_tbsooo->RemoveDoc();
@@ -135,8 +141,9 @@ class Atk_OpenDocumentWriter extends Atk_DocumentWriter
     function store($tpl_file, $outputfilename, $tpl_vars = null, $create_non_existing_dir = false)
     {
         // Parse template
-        if (!$this->_parse($tpl_file, $tpl_vars))
+        if (!$this->_parse($tpl_file, $tpl_vars)) {
             return false;
+        }
 
         // Get the temporary (source) filename
         $tempfilename = $this->m_tbsooo->GetPathnameDoc();
@@ -174,7 +181,7 @@ class Atk_OpenDocumentWriter extends Atk_DocumentWriter
     /**
      * Add predefined text-styles to xml file
      * And replace html style tags by xml style-tags
-     * 
+     *
      * @param string $inputString
      */
     function addAndApplyStyles($inputString)
@@ -205,7 +212,8 @@ class Atk_OpenDocumentWriter extends Atk_DocumentWriter
         $xmlBoldItalic = '<style:style style:name="atkbolditalic" style:family="text"><style:text-properties fo:font-style="italic" fo:font-weight="bold" style:font-style-asian="italic" style:font-weight-asian="bold" style:font-style-complex="italic" style:font-weight-complex="bold"/></style:style>';
         $xmlUnderline = '<style:style style:name="atkunderline" style:family="text"><style:text-properties style:text-underline-style="solid" style:text-underline-width="auto" style:text-underline-color="font-color"/></style:style>';
 
-        $inputString = str_replace($xmlAutomaticStyleTag, $xmlBold . $xmlItalic . $xmlBoldItalic . $xmlUnderline . $xmlAutomaticStyleTag, $inputString);
+        $inputString = str_replace($xmlAutomaticStyleTag,
+            $xmlBold . $xmlItalic . $xmlBoldItalic . $xmlUnderline . $xmlAutomaticStyleTag, $inputString);
 
         return $inputString;
     }
@@ -235,27 +243,34 @@ class Atk_OpenDocumentWriter extends Atk_DocumentWriter
 
 
         // _underline_
-        $inputString = str_replace('&lt;span style="text-decoration: underline;"&gt;', '<text:span text:style-name="atkunderline">', $inputString);
+        $inputString = str_replace('&lt;span style="text-decoration: underline;"&gt;',
+            '<text:span text:style-name="atkunderline">', $inputString);
 
         // _underline_ - no combinations with other styles supported; remove from combinations with other styles to prevent xml-errors
         $inputString = str_replace('text-decoration: underline; ', '', $inputString);
         $inputString = str_replace(' text-decoration: underline;', '', $inputString);
 
         // Combination of *BOLD* and /italic/
-        $inputString = str_replace('&lt;span style="font-weight: bold; font-style: italic;"&gt;', '<text:span text:style-name="atkbolditalic">', $inputString);
-        $inputString = str_replace('&lt;span style="font-style: italic; font-weight: bold;"&gt;', '<text:span text:style-name="atkbolditalic">', $inputString);
+        $inputString = str_replace('&lt;span style="font-weight: bold; font-style: italic;"&gt;',
+            '<text:span text:style-name="atkbolditalic">', $inputString);
+        $inputString = str_replace('&lt;span style="font-style: italic; font-weight: bold;"&gt;',
+            '<text:span text:style-name="atkbolditalic">', $inputString);
 
         // *BOLD* inside <li> tag: <li style="font-weight: bold;">bold bullet</li>
-        $inputString = preg_replace("/&lt;li style=\"font-weight\: bold;\"&gt;(.*)&lt;\/li&gt;/iU", "&lt;li&gt;<text:span text:style-name=\"atkbold\">$1</text:span>", $inputString);
+        $inputString = preg_replace("/&lt;li style=\"font-weight\: bold;\"&gt;(.*)&lt;\/li&gt;/iU",
+            "&lt;li&gt;<text:span text:style-name=\"atkbold\">$1</text:span>", $inputString);
 
         // italic inside <li> tag: <li style="font-style: italic;">italic bullet</li>
-        $inputString = preg_replace("/&lt;li style=\"font-style\: italic;\"&gt;(.*)&lt;\/li&gt;/iU", "&lt;li&gt;<text:span text:style-name=\"atkitalic\">$1</text:span>", $inputString);
+        $inputString = preg_replace("/&lt;li style=\"font-style\: italic;\"&gt;(.*)&lt;\/li&gt;/iU",
+            "&lt;li&gt;<text:span text:style-name=\"atkitalic\">$1</text:span>", $inputString);
 
         // *BOLD*
-        $inputString = str_replace('&lt;span style="font-weight: bold;"&gt;', '<text:span text:style-name="atkbold">', $inputString);
+        $inputString = str_replace('&lt;span style="font-weight: bold;"&gt;', '<text:span text:style-name="atkbold">',
+            $inputString);
 
         // /italic/
-        $inputString = str_replace('&lt;span style="font-style: italic;"&gt;', '<text:span text:style-name="atkitalic">', $inputString);
+        $inputString = str_replace('&lt;span style="font-style: italic;"&gt;',
+            '<text:span text:style-name="atkitalic">', $inputString);
 
 
         // substitute html- by xml-'span' tags
@@ -319,12 +334,17 @@ class Atk_OpenDocumentWriter extends Atk_DocumentWriter
         // Convert all html bullets to an XML-tab + -
         // Only 1 level deep supported (deeper levels will be converted to level 1 in the generated document)
         $inputString = str_replace("\r", '', $inputString);
-        $inputString = str_replace("<text:line-break/><text:line-break/>&lt;ul&gt;<text:line-break/>", '', $inputString);                    // first <ul>
-        $inputString = str_replace("&lt;ul&gt;<text:line-break/><text:line-break/>", '', $inputString);                      //  sub <ul>'s
+        $inputString = str_replace("<text:line-break/><text:line-break/>&lt;ul&gt;<text:line-break/>", '',
+            $inputString);                    // first <ul>
+        $inputString = str_replace("&lt;ul&gt;<text:line-break/><text:line-break/>", '',
+            $inputString);                      //  sub <ul>'s
         $inputString = str_replace('&lt;li&gt;', '- ', $inputString);                      // use '-' as bullet
-        $inputString = str_replace('&lt;/li&gt;<text:line-break/>', '', $inputString);                      // end bullet
-        $inputString = str_replace('<text:line-break/>&lt;/ul&gt;<text:line-break/>', '', $inputString);                      // main closing </ul>
-        $inputString = str_replace('&lt;/ul&gt;<text:line-break/><text:line-break/>', '', $inputString);                      //  sub closing </ul>'s 
+        $inputString = str_replace('&lt;/li&gt;<text:line-break/>', '',
+            $inputString);                      // end bullet
+        $inputString = str_replace('<text:line-break/>&lt;/ul&gt;<text:line-break/>', '',
+            $inputString);                      // main closing </ul>
+        $inputString = str_replace('&lt;/ul&gt;<text:line-break/><text:line-break/>', '',
+            $inputString);                      //  sub closing </ul>'s
         $inputString = str_replace('&lt;/ul&gt;', '', $inputString);                      // remove remaining </ul>'s
         // tbsooo_class.php (LoadXmlFromDoc) converted apostrophe (&apos; -> \') from XML file for TBS functions
         // causes corrupt document: convert it back to &apos;

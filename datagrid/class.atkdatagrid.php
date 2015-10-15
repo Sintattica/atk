@@ -448,7 +448,8 @@ class Atk_DataGrid
     protected function initOnCreate()
     {
         $this->setFlags($this->convertNodeFlags($this->getNode()->getFlags()));
-        $this->setBaseUrl(Atk_Tools::partial_url($this->getNode()->atkNodeType(), $this->getNode()->m_action, 'datagrid'));
+        $this->setBaseUrl(Atk_Tools::partial_url($this->getNode()->atkNodeType(), $this->getNode()->m_action,
+            'datagrid'));
 
         $this->setDefaultLimit(Atk_Config::getGlobal('recordsperpage'));
         $this->setDefaultActions($this->getNode()->defaultActions("admin"));
@@ -473,7 +474,8 @@ class Atk_DataGrid
 
         $this->addComponent('list', 'atk.datagrid.atkdglist');
         $this->addComponent('summary', 'atk.datagrid.atkdgsummary');
-        $this->addComponent('limit', 'atk.datagrid.atkdglimit', array('showAll' => Atk_Config::getGlobal('enable_showall')));
+        $this->addComponent('limit', 'atk.datagrid.atkdglimit',
+            array('showAll' => Atk_Config::getGlobal('enable_showall')));
         $this->addComponent('norecordsfound', 'atk.datagrid.atkdgnorecordsfound');
         $this->addComponent('paginator', 'atk.datagrid.atkdgpaginator');
 
@@ -502,8 +504,9 @@ class Atk_DataGrid
      */
     public function __destruct()
     {
-        if ($this->isDestroyed())
+        if ($this->isDestroyed()) {
             return;
+        }
         $this->storePostvars();
         $this->storeSession();
     }
@@ -519,13 +522,15 @@ class Atk_DataGrid
 
         $sessions = &$GLOBALS['ATK_VARS']['atkdg'];
         unset($sessions[$this->getName()]);
-        if ($this->m_useSession)
+        if ($this->m_useSession) {
             $this->m_sessionMgr->pageVar('atkdg', $sessions);
+        }
 
         $sessions = &$GLOBALS['ATK_VARS']['atkdgsession'];
         unset($sessions[$this->getName()]);
-        if ($this->m_useSession)
+        if ($this->m_useSession) {
             $this->m_sessionMgr->pageVar('atkdgsession', $sessions);
+        }
 
         foreach ($this->m_componentInstances as $comp) {
             $comp->destroy();
@@ -554,14 +559,23 @@ class Atk_DataGrid
      */
     protected function registerGlobalOverrides()
     {
-        if ($this->isEmbedded())
+        if ($this->isEmbedded()) {
             return;
+        }
 
         $request = array_merge($_GET, $_POST);
         Atk_Tools::atkDataDecode($request);
 
-        $vars = array('atkstartat', 'atklimit', 'atksearch', 'atksmartsearch',
-            'atksearchmode', 'atkorderby', 'atkindex', 'atkcolcmd');
+        $vars = array(
+            'atkstartat',
+            'atklimit',
+            'atksearch',
+            'atksmartsearch',
+            'atksearchmode',
+            'atkorderby',
+            'atkindex',
+            'atkcolcmd'
+        );
 
         $sessions = &$GLOBALS['ATK_VARS']['atkdg'];
         if ($sessions == null) {
@@ -572,14 +586,17 @@ class Atk_DataGrid
             if (isset($request[$var])) {
                 $sessions[$this->getName()][$var] = $request[$var];
             } // fix grid searching problem after extended search
-            else if (isset($request['atkdg'][$this->getName()][$var])) {
-                $sessions[$this->getName()][$var] = $request['atkdg'][$this->getName()][$var];
+            else {
+                if (isset($request['atkdg'][$this->getName()][$var])) {
+                    $sessions[$this->getName()][$var] = $request['atkdg'][$this->getName()][$var];
+                }
             }
         }
 
         $this->getNode()->m_postvars['atkdg'] = $sessions;
-        if ($this->m_useSession)
+        if ($this->m_useSession) {
             $this->m_sessionMgr->pageVar('atkdg', $sessions);
+        }
     }
 
     /**
@@ -590,8 +607,16 @@ class Atk_DataGrid
     protected function storePostvars()
     {
         $sessions = &$GLOBALS['ATK_VARS']['atkdg'];
-        $vars = array('atkstartat', 'atklimit', 'atksearch', 'atksmartsearch',
-            'atksearchmode', 'atkorderby', 'atkindex', 'atkcolcmd');
+        $vars = array(
+            'atkstartat',
+            'atklimit',
+            'atksearch',
+            'atksmartsearch',
+            'atksearchmode',
+            'atkorderby',
+            'atkindex',
+            'atkcolcmd'
+        );
         foreach ($vars as $var) {
             if (isset($this->m_postvars[$var])) {
                 $sessions[$this->getName()][$var] = $this->m_postvars[$var];
@@ -599,8 +624,9 @@ class Atk_DataGrid
         }
 
         $this->getNode()->m_postvars['atkdg'] = $sessions;
-        if ($this->m_useSession)
+        if ($this->m_useSession) {
             $this->m_sessionMgr->pageVar('atkdg', $sessions);
+        }
     }
 
     /**
@@ -620,12 +646,25 @@ class Atk_DataGrid
     {
         $this->m_session['system'] = array();
 
-        $vars = array('flags', 'formName', 'embedded', 'baseUrl',
-            'components', 'excludes', 'defaultActions',
-            'defaultLimit', 'defaultOrderBy', 'template',
-            'actionSessionStatus', 'filters', 'mode',
-            'mraSelectionMode', 'countHandler', 'selectHandler',
-            'masterRecord');
+        $vars = array(
+            'flags',
+            'formName',
+            'embedded',
+            'baseUrl',
+            'components',
+            'excludes',
+            'defaultActions',
+            'defaultLimit',
+            'defaultOrderBy',
+            'template',
+            'actionSessionStatus',
+            'filters',
+            'mode',
+            'mraSelectionMode',
+            'countHandler',
+            'selectHandler',
+            'masterRecord'
+        );
 
         foreach ($vars as $var) {
             $fullVar = "m_{$var}";
@@ -634,8 +673,9 @@ class Atk_DataGrid
 
         $sessions = &$GLOBALS['ATK_VARS']['atkdgsession'];
         $sessions[$this->getName()] = $this->m_session;
-        if ($this->m_useSession)
+        if ($this->m_useSession) {
             $this->m_sessionMgr->pageVar('atkdgsession', $sessions);
+        }
     }
 
     /**
@@ -885,7 +925,7 @@ class Atk_DataGrid
      * @param mixed $fallback
      * @return mixed
      */
-    public function getPostvar($name, $fallback = NULL)
+    public function getPostvar($name, $fallback = null)
     {
         return isset($this->m_postvars[$name]) ? $this->m_postvars[$name] : $fallback;
     }
@@ -1029,8 +1069,9 @@ class Atk_DataGrid
         foreach ($this->getComponents() as $name => $info) {
             $comp = Atk_Tools::atknew($info['class'], $this, $info['options']);
             $this->m_componentInstances[$name] = $comp;
-            if ($comp instanceof Atk_DGListener)
+            if ($comp instanceof Atk_DGListener) {
                 $this->addListener($comp);
+            }
         }
     }
 
@@ -1291,8 +1332,9 @@ class Atk_DataGrid
      */
     public function addFilter($filter, $params = array())
     {
-        if (!empty($filter))
+        if (!empty($filter)) {
             $this->m_filters[] = array('filter' => $filter, 'params' => $params);
+        }
     }
 
     /**
@@ -1353,8 +1395,9 @@ class Atk_DataGrid
     public function getOrderBy()
     {
         $orderBy = $this->getNode()->getColumnConfig($this->getName())->getOrderByStatement();
-        if (empty($orderBy))
+        if (empty($orderBy)) {
             $orderBy = $this->getDefaultOrderBy();
+        }
         return $orderBy;
     }
 
@@ -1550,8 +1593,9 @@ class Atk_DataGrid
     public function loadRecords($force = false)
     {
         // records already loaded?
-        if ($this->m_recordsLoaded && !$force)
+        if ($this->m_recordsLoaded && !$force) {
             return;
+        }
 
         // load component instances, because they might be listeners
         $this->loadComponentInstances();
@@ -1568,9 +1612,11 @@ class Atk_DataGrid
             $records = $this->selectRecords();
             $this->setRecords($records);
         } // retrieve records using a custom select handler
-        else if ($force || $this->getRecords() === null) {
-            $records = call_user_func_array($this->getSelectHandler(), array($this));
-            $this->setRecords($records);
+        else {
+            if ($force || $this->getRecords() === null) {
+                $records = call_user_func_array($this->getSelectHandler(), array($this));
+                $this->setRecords($records);
+            }
         }
 
         // retrieve record count using the default implementation
@@ -1578,9 +1624,11 @@ class Atk_DataGrid
             $count = $this->countRecords();
             $this->setCount($count);
         } // retrieve record count using a custom cont handler
-        else if ($force || $this->getCount() === null) {
-            $count = call_user_func_array($this->getCountHandler(), array($this));
-            $this->setCount($count);
+        else {
+            if ($force || $this->getCount() === null) {
+                $count = call_user_func_array($this->getCountHandler(), array($this));
+                $this->setCount($count);
+            }
         }
 
         // restore previous postvars
@@ -1627,7 +1675,8 @@ class Atk_DataGrid
      */
     public function getSaveCall()
     {
-        $url = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->getNode()->atkNodeType(), 'multiupdate', array('output' => 'json')), SESSION_PARTIAL);
+        $url = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->getNode()->atkNodeType(), 'multiupdate',
+            array('output' => 'json')), SESSION_PARTIAL);
         Atk_Tools::atkimport('atk.utils.atkjson');
         return 'ATK.DataGrid.save(' . Atk_JSON::encode($this->getName()) . ', ' . Atk_JSON::encode($url) . ');';
     }

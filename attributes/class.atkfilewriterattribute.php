@@ -2,7 +2,7 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * @package atk
@@ -21,9 +21,9 @@ Atk_Tools::useattrib("atkTextAttribute");
 include_once(Atk_Config::getGlobal("atkroot") . "atk/utils/class.atkstringparser.php");
 
 /**
- * The atkFileWriterAttribute is an attribute that reads data from / saves 
+ * The atkFileWriterAttribute is an attribute that reads data from / saves
  * data to a file, instead of the database.
- *  
+ *
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk
  * @subpackage attributes
@@ -35,17 +35,17 @@ class Atk_FileWriterAttribute extends Atk_TextAttribute
 
     /**
      * Constructor
-     * @param String $name     Name of the attribute
-     * @param String $filename The name of the file to read/write. 
-     *                         Advanced use: This may be a template containing 
-     *                         fields from your class, for example: 
-     *                         "somedir/textfile_[id].txt". If a record has id '9', 
-     *                         this will read/write a file named 
+     * @param String $name Name of the attribute
+     * @param String $filename The name of the file to read/write.
+     *                         Advanced use: This may be a template containing
+     *                         fields from your class, for example:
+     *                         "somedir/textfile_[id].txt". If a record has id '9',
+     *                         this will read/write a file named
      *                         somedir/textfile_9.txt. Watch out when using fields
      *                         that can change; the attribute won't remove the old
      *                         files.
-     * @param int    $flags    Flags for this attribute
-     * @param mixed  $size     Size of the attribute
+     * @param int $flags Flags for this attribute
+     * @param mixed $size Size of the attribute
      */
     function atkFileWriterAttribute($name, $filename, $flags = 0, $size = 30)
     {

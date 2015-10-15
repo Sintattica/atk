@@ -44,10 +44,10 @@ class Atk_DDL
     var $m_db;
 
     /**
-     * Postfix for index names                                                      
-     *                                                                              
-     * @access private                                                              
-     * @var string                                                                  
+     * Postfix for index names
+     *
+     * @access private
+     * @var string
      */
     protected $m_idxnameFormat = "%s_idx";
 
@@ -56,7 +56,7 @@ class Atk_DDL
      */
     function __construct()
     {
-        
+
     }
 
     /**
@@ -67,10 +67,10 @@ class Atk_DDL
      * @param String $database The database driver to use
      * @return atkDDL instance of db specific DDL driver
      */
-    function &create($database = NULL)
+    function &create($database = null)
     {
         $db = Atk_Config::getGlobal("db");
-        $database = $database === NULL ? $db["default"]["driver"] : $database;
+        $database = $database === null ? $db["default"]["driver"] : $database;
 
         $filename = Atk_Config::getGlobal("atkroot") . "atk/db/class.atk" . $database . "ddl.php";
         if (file_exists($filename)) {
@@ -81,7 +81,7 @@ class Atk_DDL
         } else {
             Atk_Tools::atkerror("Atk_ddl::create: No support for $database!");
         }
-        return NULL;
+        return null;
     }
 
     /**
@@ -99,19 +99,19 @@ class Atk_DDL
     /**
      * Add a field to the table definition.
      *
-     * @param string $name        The name of the field
+     * @param string $name The name of the field
      * @param string $generictype The datatype of the field (should be one of the
      *                            generic types supported by ATK).
-     * @param int $size        The size of the field (if appropriate)
-     * @param int $flags       The DDL_ flags for this field.
-     * @param mixed $default   The default value to be used when inserting new
+     * @param int $size The size of the field (if appropriate)
+     * @param int $flags The DDL_ flags for this field.
+     * @param mixed $default The default value to be used when inserting new
      *                         rows.
      */
-    function addField($name, $generictype, $size = 0, $flags = 0, $default = NULL)
+    function addField($name, $generictype, $size = 0, $flags = 0, $default = null)
     {
         if (Atk_Tools::hasFlag($flags, DDL_PRIMARY)) {
             $this->m_primarykey[] = $name;
-            $flags|=DDL_NOTNULL; // primary keys may never be null.
+            $flags |= DDL_NOTNULL; // primary keys may never be null.
         }
 
         // Fix the size if the type is decimal
@@ -119,10 +119,12 @@ class Atk_DDL
             $size = $this->calculateDecimalFieldSize($size);
         }
 
-        $this->m_fields[$name] = array("type" => $generictype,
+        $this->m_fields[$name] = array(
+            "type" => $generictype,
             "size" => $size,
             "flags" => $flags,
-            "default" => $default);
+            "default" => $default
+        );
     }
 
     /**
@@ -136,7 +138,7 @@ class Atk_DDL
     function calculateDecimalFieldSize($size)
     {
         list($tmp_size, $decimals) = explode(",", $size);
-        $tmp_size+=intval($decimals); // we should add the decimals to the size, since
+        $tmp_size += intval($decimals); // we should add the decimals to the size, since
         // size is specified including the decimals.
         return sprintf('%d,%d', $tmp_size, $decimals);
     }
@@ -156,7 +158,7 @@ class Atk_DDL
      *
      * NOTE: defaults are not supported yet!
      *
-     * @param array $meta   The fields meta data.
+     * @param array $meta The fields meta data.
      */
     function addFields($meta)
     {
@@ -181,7 +183,7 @@ class Atk_DDL
      * If the database does not have a proper field type, consider using
      * a varchar or number to store the value.
      *
-     * @param string $generictype  The datatype to convert.
+     * @param string $generictype The datatype to convert.
      * @abstract
      */
     function getType($generictype)
@@ -195,7 +197,7 @@ class Atk_DDL
      * This function will be overrided by the database specific subclasses of
      * Atk_Db.
      *
-     * @param string $type  The database specific datatype to convert.
+     * @param string $type The database specific datatype to convert.
      * @abstract
      */
     function getGenericType($type)
@@ -206,7 +208,7 @@ class Atk_DDL
     /**
      * Set the name of the table.
      *
-     * @param string $tablename  The name of the table
+     * @param string $tablename The name of the table
      */
     function setTable($tablename)
     {
@@ -225,15 +227,15 @@ class Atk_DDL
             if ($fields != "") {
                 $q = "CREATE TABLE " . $this->m_table . "\n(";
 
-                $q.= $fields;
+                $q .= $fields;
 
                 $constraints = $this->buildConstraints();
 
                 if ($constraints != "") {
-                    $q.= ",\n" . $constraints;
+                    $q .= ",\n" . $constraints;
                 }
 
-                $q.= ")";
+                $q .= ")";
             }
             return $q;
         }
@@ -261,20 +263,20 @@ class Atk_DDL
                 $q = "ALTER TABLE " . $this->m_db->quoteIdentifier($this->m_table);
 
                 if ($this->m_remove_field) {
-                    $q.=" DROP\n " . $this->m_db->quoteIdentifier($this->m_remove_field);
+                    $q .= " DROP\n " . $this->m_db->quoteIdentifier($this->m_remove_field);
                 } else {
-                    $q.=" ADD\n (";
+                    $q .= " ADD\n (";
 
 
-                    $q.= $fields;
+                    $q .= $fields;
 
                     $constraints = $this->buildConstraints();
 
                     if ($constraints != "") {
-                        $q.= ",\n" . $constraints;
+                        $q .= ",\n" . $constraints;
                     }
 
-                    $q.= ")";
+                    $q .= ")";
                 }
                 return array($q);
             }
@@ -304,28 +306,28 @@ class Atk_DDL
      * number of databases. Databases that won't work with this syntax,
      * should override this method in the database specific ddl class.
      *
-     * @param string $name        The name of the field
+     * @param string $name The name of the field
      * @param string $generictype The datatype of the field (should be one of the
      *                            generic types supported by ATK).
-     * @param int $size        The size of the field (if appropriate)
-     * @param int $flags       The DDL_ flags for this field.
-     * @param mixed $default   The default value to be used when inserting new
+     * @param int $size The size of the field (if appropriate)
+     * @param int $flags The DDL_ flags for this field.
+     * @param mixed $default The default value to be used when inserting new
      *                         rows.
      */
-    function buildField($name, $generictype, $size = 0, $flags = 0, $default = NULL)
+    function buildField($name, $generictype, $size = 0, $flags = 0, $default = null)
     {
         $res = $this->m_db->quoteIdentifier($name) . " " . $this->getType($generictype);
         if ($size > 0 && $this->needsSize($generictype)) {
-            $res.="(" . $size . ")";
+            $res .= "(" . $size . ")";
         }
-        if ($default !== NULL) {
+        if ($default !== null) {
             if ($this->needsQuotes($generictype)) {
                 $default = "'" . $default . "'";
             }
-            $res.= " DEFAULT " . $default;
+            $res .= " DEFAULT " . $default;
         }
         if (Atk_Tools::hasFlag($flags, DDL_NOTNULL)) {
-            $res.= " NOT NULL";
+            $res .= " NOT NULL";
         }
 
         return $res;
@@ -338,7 +340,7 @@ class Atk_DDL
      * This function will be overrided by the database specific subclasses of
      * atkDDL.
      *
-     * @param array $fieldlist  An array of fields that define the primary key.
+     * @param array $fieldlist An array of fields that define the primary key.
      */
     function buildPrimaryKey($fieldlist = array())
     {
@@ -352,7 +354,7 @@ class Atk_DDL
      * Method to determine whether quotes are needed around the values
      * for a given generic datatype.
      *
-     * @param string $generictype  The type of field.
+     * @param string $generictype The type of field.
      * @return true  if quotes should be put around values for the given type
      *               of field.
      *         false if quotes should not be used.
@@ -401,7 +403,8 @@ class Atk_DDL
 
         foreach ($this->m_fields as $fieldname => $fieldconfig) {
             if ($fieldname != "" && $fieldconfig["type"] != "" && $this->getType($fieldconfig["type"]) != "") {
-                $fields[] = $this->buildField($fieldname, $fieldconfig["type"], $fieldconfig["size"], $fieldconfig["flags"], $fieldconfig["default"]);
+                $fields[] = $this->buildField($fieldname, $fieldconfig["type"], $fieldconfig["size"],
+                    $fieldconfig["flags"], $fieldconfig["default"]);
             }
         }
 
@@ -417,10 +420,11 @@ class Atk_DDL
     function buildFields()
     {
         $fields = $this->_buildFieldsArray();
-        if (count($fields) > 0)
+        if (count($fields) > 0) {
             return implode(",\n", $fields);
-        else
+        } else {
             return "";
+        }
     }
 
     /**
@@ -434,8 +438,9 @@ class Atk_DDL
     {
         $constraints = array();
         $pk = $this->buildPrimaryKey($this->m_primarykey);
-        if (!empty($pk))
+        if (!empty($pk)) {
             $constraints[] = $pk;
+        }
         return $constraints;
     }
 
@@ -448,10 +453,11 @@ class Atk_DDL
     function buildConstraints()
     {
         $constraints = $this->_buildConstraintsArray();
-        if (count($constraints) > 0)
+        if (count($constraints) > 0) {
             return implode(",\n", $constraints);
-        else
+        } else {
             return "";
+        }
     }
 
     /**
@@ -462,8 +468,9 @@ class Atk_DDL
      */
     function executeCreate()
     {
-        if (!isset($this->m_db))
+        if (!isset($this->m_db)) {
             $this->m_db = Atk_Tools::atkGetDb();
+        }
 
         $query = $this->buildCreate();
         if ($query != "") {
@@ -487,20 +494,21 @@ class Atk_DDL
      */
     function executeAlter()
     {
-        if (!isset($this->m_db))
+        if (!isset($this->m_db)) {
             $this->m_db = Atk_Tools::atkGetDb();
+        }
 
         $queries = $this->buildAlter();
         if (count($queries) > 0) {
             for ($i = 0, $_i = count($queries); $i < $_i; $i++) {
                 if ($queries[$i] != "") {
-                    if (!$this->m_db->query($queries[$i]))
+                    if (!$this->m_db->query($queries[$i])) {
                         return false;
+                    }
                 }
             }
             return true;
-        }
-        else {
+        } else {
             Atk_Tools::atkdebug("Atk_ddl::executeCreate: nothing to do!");
         }
         return false;
@@ -514,8 +522,9 @@ class Atk_DDL
      */
     function executeDrop()
     {
-        if (!isset($this->m_db))
+        if (!isset($this->m_db)) {
             $this->m_db = Atk_Tools::atkGetDb();
+        }
 
         $query = $this->buildDrop();
         if ($query != "") {
@@ -537,8 +546,9 @@ class Atk_DDL
      */
     function executeCreateView($name, $select, $with_check_option)
     {
-        if (!isset($this->m_db))
+        if (!isset($this->m_db)) {
             $this->m_db = Atk_Tools::atkGetDb();
+        }
 
         $query = $this->buildView($name, $select, $with_check_option);
         if ($query != "") {
@@ -572,8 +582,9 @@ class Atk_DDL
      */
     function executeDropView($name)
     {
-        if (!isset($this->m_db))
+        if (!isset($this->m_db)) {
             $this->m_db = Atk_Tools::atkGetDb();
+        }
 
         $query = $this->dropView($name);
         if ($query != "") {
@@ -597,19 +608,19 @@ class Atk_DDL
     }
 
     /**
-     * Create an index                                                                                                                        
-     *                                                                                                                                        
-     * @param string $name Index name                                                                                                         
-     * @param array $definition associative array that defines properties of the index to be created.                                         
-     *                                                                                                                                        
-     *                          example                                                                                                       
-     *                          array('fields' => array('user_id' => array('sorting' => 'ascending'                                           
-     *                                                                     'length' => 3                                                      
-     *                                                                      ),                                                                
-     *                                                  'lastname' => array()                                                                 
-     *                                                  )                                                                                     
-     *                               )                                                                                                        
-     * @return boolean                                                                                                                        
+     * Create an index
+     *
+     * @param string $name Index name
+     * @param array $definition associative array that defines properties of the index to be created.
+     *
+     *                          example
+     *                          array('fields' => array('user_id' => array('sorting' => 'ascending'
+     *                                                                     'length' => 3
+     *                                                                      ),
+     *                                                  'lastname' => array()
+     *                                                  )
+     *                               )
+     * @return boolean
      */
     function createIndex($name, $definition)
     {
@@ -630,10 +641,10 @@ class Atk_DDL
     }
 
     /**
-     * Drop an existing index                                                                                                                 
-     *                                                                                                                                        
-     * @param string $name Index name                                                                                                         
-     * @return boolean                                                                                                                        
+     * Drop an existing index
+     *
+     * @param string $name Index name
+     * @return boolean
      */
     function dropIndex($name)
     {

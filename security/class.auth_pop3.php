@@ -33,26 +33,28 @@ class auth_pop3 extends auth_interface
      * @param String $user the username
      * @param String $passwd the password
      * @return int AUTH_SUCCESS - Authentication succesful
-     *             AUTH_MISMATCH - Authentication failed, wrong 
+     *             AUTH_MISMATCH - Authentication failed, wrong
      *                             user/password combination
      *             AUTH_LOCKED - Account is locked, can not login
      *                           with current username.
-     *             AUTH_ERROR - Authentication failed due to some 
-     *                          error which cannot be solved by 
-     *                          just trying again. If you return 
-     *                          this value, you *must* also 
+     *             AUTH_ERROR - Authentication failed due to some
+     *                          error which cannot be solved by
+     *                          just trying again. If you return
+     *                          this value, you *must* also
      *                          fill the m_fatalError variable.
      */
     function validateUser($user, $passwd)
     {
-        if ($user == "")
-            return AUTH_UNVERIFIED; // can't verify if we have no userid
+        if ($user == "") {
+            return AUTH_UNVERIFIED;
+        } // can't verify if we have no userid
 
         global $g_pop3_responses;
 
         /* if it's a virtual mail server add @<domain> to the username */
-        if (Atk_Config::getGlobal("auth_mail_virtual") == true)
+        if (Atk_Config::getGlobal("auth_mail_virtual") == true) {
             $user = $user . "@" . Atk_Config::getGlobal("auth_mail_suffix");
+        }
 
         $server = Atk_Config::getGlobal("auth_mail_server");
 
@@ -112,10 +114,11 @@ class auth_pop3 extends auth_interface
         }
 
         /* login ok? */
-        if (!stristr($auth, "ERR"))
+        if (!stristr($auth, "ERR")) {
             return AUTH_SUCCESS;
-        else
+        } else {
             return AUTH_MISMATCH;
+        }
     }
 
     /**

@@ -2,7 +2,7 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * @package atk
@@ -53,7 +53,7 @@ class Atk_Keyboard
     function &getInstance()
     {
         static $s_kb;
-        if ($s_kb == NULL) {
+        if ($s_kb == null) {
             Atk_Tools::atkdebug("Creating atkKeyboard instance");
             $s_kb = new Atk_Keyboard();
         }
@@ -64,33 +64,35 @@ class Atk_Keyboard
     /**
      * Make a form element keyboard aware. Once added with this function, the
      * element will automatically respond to cursor key navigation.
-     * 
-     * @param String $id The HTML id of the form element for which keyboard 
+     *
+     * @param String $id The HTML id of the form element for which keyboard
      *                   navigation is added.
-     * @param int $navkeys A bitwise mask indicating which keys should be 
+     * @param int $navkeys A bitwise mask indicating which keys should be
      *                     supported for this element. Some elements, like
      *                     for example textarea's, use some cursor movements
-     *                     for their own navigation. In this case, pass a 
+     *                     for their own navigation. In this case, pass a
      *                     mask that uses different keys.
      */
     function addFormElementHandler($id, $navkeys)
     {
-        $params = array("'" . $id . "'",
+        $params = array(
+            "'" . $id . "'",
             Atk_Tools::hasFlag($navkeys, KB_UP) ? "1" : "0",
             Atk_Tools::hasFlag($navkeys, KB_DOWN) ? "1" : "0",
             Atk_Tools::hasFlag($navkeys, KB_LEFT) ? "1" : "0",
             Atk_Tools::hasFlag($navkeys, KB_RIGHT) ? "1" : "0",
-            Atk_Tools::hasFlag($navkeys, KB_CTRLCURSOR) ? "1" : "0");
+            Atk_Tools::hasFlag($navkeys, KB_CTRLCURSOR) ? "1" : "0"
+        );
 
         $this->addHandler("atkFEKeyListener", $params);
     }
 
     /**
-     * Make a recordlist keyboard aware. Once added with this function, the 
+     * Make a recordlist keyboard aware. Once added with this function, the
      * recordlist will automatically respond to keyboard navigation events.
      *
      * @param String $id The unique id of the recordlist.
-     * @param String $highlight The color used to highlight rows that are 
+     * @param String $highlight The color used to highlight rows that are
      *                          selected with cursorkeys.
      * @param String $reccount The number of records in the list. The
      *                         handler needs this to be able to determine

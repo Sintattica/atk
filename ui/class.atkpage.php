@@ -109,7 +109,7 @@ class Atk_Page
 
     /**
      * Page title.
-     * 
+     *
      * @var string
      */
     protected $m_title = '';
@@ -120,8 +120,8 @@ class Atk_Page
      */
     static public function &getInstance()
     {
-        static $s_page = NULL;
-        if ($s_page == NULL) {
+        static $s_page = null;
+        if ($s_page == null) {
             $s_page = new Atk_Page();
             Atk_Tools::atkdebug("Created a new atkPage instance");
         }
@@ -174,8 +174,9 @@ class Atk_Page
                     }
                     $result[] = $this->m_scriptfiles[$i];
                 }
-                if (!$injected)
-                    $result[] = $file; // inject at the end if dependency not found.
+                if (!$injected) {
+                    $result[] = $file;
+                } // inject at the end if dependency not found.
 
                 $this->m_scriptfiles = $result;
             }
@@ -199,16 +200,13 @@ class Atk_Page
     function unregister_script($name)
     {
         $removed = false;
-        for ($i=0, $_i=count($this->m_scriptfiles); $i<$_i; $i++)
-        {
-            if (stristr($this->m_scriptfiles[$i], $name)!==false)
-            {
+        for ($i = 0, $_i = count($this->m_scriptfiles); $i < $_i; $i++) {
+            if (stristr($this->m_scriptfiles[$i], $name) !== false) {
                 unset($this->m_scriptfiles[$i]);
                 $removed = true;
             }
         }
-        if ($removed)
-        {
+        if ($removed) {
             $this->m_scriptfiles = array_values($this->m_scriptfiles);
         }
     }
@@ -236,8 +234,9 @@ class Atk_Page
     function register_scriptcode($code, $before = false)
     {
         $element = ($before ? 'before' : 'after');
-        if (!in_array($code, $this->m_scriptcode[$element]))
+        if (!in_array($code, $this->m_scriptcode[$element])) {
             $this->m_scriptcode[$element][] = $code;
+        }
     }
 
     /**
@@ -249,8 +248,9 @@ class Atk_Page
      */
     function register_submitscript($code)
     {
-        if (!in_array($code, $this->m_submitscripts))
+        if (!in_array($code, $this->m_submitscripts)) {
             $this->m_submitscripts[] = $code;
+        }
     }
 
     /**
@@ -269,8 +269,10 @@ class Atk_Page
     {
         if (!in_array($code, $this->m_loadscripts) && $offset === null) {
             $this->m_loadscripts[] = $code;
-        } else if (!in_array($code, $this->m_loadscripts)) {
-            array_splice($this->m_loadscripts, $offset, 0, $code);
+        } else {
+            if (!in_array($code, $this->m_loadscripts)) {
+                array_splice($this->m_loadscripts, $offset, 0, $code);
+            }
         }
     }
 
@@ -294,7 +296,7 @@ class Atk_Page
      * This method has a duplicate check. Calling it with the same stylesheet
      * more than once, will still result in only one single include of the
      * stylesheet.
-     * @param String $file  The (relative path and) filename of the stylesheet.
+     * @param String $file The (relative path and) filename of the stylesheet.
      * @param String $media The stylesheet media (defaults to 'all').
      */
     function register_style($file, $media = 'all')
@@ -311,7 +313,7 @@ class Atk_Page
     /**
      * Unregister a Cascading Style Sheet.
      *
-     * @param String $file  The (relative path and) filename of the stylesheet.
+     * @param String $file The (relative path and) filename of the stylesheet.
      */
     function unregister_style($file)
     {
@@ -338,8 +340,9 @@ class Atk_Page
      */
     function register_stylecode($code)
     {
-        if (!in_array($code, $this->m_stylecode))
+        if (!in_array($code, $this->m_stylecode)) {
             $this->m_stylecode[] = $code;
+        }
     }
 
     /**
@@ -377,11 +380,12 @@ class Atk_Page
         $res = "<head>\n  <title>$title</title>\n";
 
         $version = Atk_Tools::atkversion();
-        $res.= '  <meta name="atkversion" content="' . $version . '" />' . "\n";
+        $res .= '  <meta name="atkversion" content="' . $version . '" />' . "\n";
 
-        $res.= '  <meta http-equiv="Content-Type" content="text/html; charset=' . Atk_Tools::atkGetCharset() . '" />' . "\n";
-        if ($extra_header != "")
-            $res.= $extra_header . "\n";
+        $res .= '  <meta http-equiv="Content-Type" content="text/html; charset=' . Atk_Tools::atkGetCharset() . '" />' . "\n";
+        if ($extra_header != "") {
+            $res .= $extra_header . "\n";
+        }
 
         $this->addMeta($res);
         $this->addScripts($res);
@@ -389,11 +393,11 @@ class Atk_Page
 
         $favico = Atk_Config::getGlobal("defaultfavico");
         if ($favico != "") {
-            $res.= '  <link rel="icon" href="' . $favico . '" type="image/x-icon" />' . "\n";
-            $res.= '  <link rel="shortcut icon" href="' . $favico . '" type="image/x-icon" />' . "\n";
+            $res .= '  <link rel="icon" href="' . $favico . '" type="image/x-icon" />' . "\n";
+            $res .= '  <link rel="shortcut icon" href="' . $favico . '" type="image/x-icon" />' . "\n";
         }
 
-        $res.="</head>\n";
+        $res .= "</head>\n";
         return $res;
     }
 
@@ -405,16 +409,19 @@ class Atk_Page
     function addScripts(&$res, $partial = false)
     {
         $count_scriptcode = count($this->m_scriptcode['before']);
-        if ($count_scriptcode > 0)
+        if ($count_scriptcode > 0) {
             $res .= '  <script type="text/javascript">' . "\n";
-        $res.= $this->renderScriptCode("before");
+        }
+        $res .= $this->renderScriptCode("before");
 
-        if ($count_scriptcode > 0)
+        if ($count_scriptcode > 0) {
             $res .= "  </script>\n";
+        }
 
         if (!$partial) {
-            for ($i = 0; $i < count($this->m_scriptfiles); $i++)
+            for ($i = 0; $i < count($this->m_scriptfiles); $i++) {
                 $res .= '  <script type="text/javascript" src="' . $this->m_scriptfiles[$i] . '"></script>' . "\n";
+            }
         } else {
             $files = '';
             for ($i = 0; $i < count($this->m_scriptfiles); $i++) {
@@ -430,10 +437,10 @@ class Atk_Page
         $res .= '  <script type="text/javascript">';
 
         // javascript code.
-        $res.=$this->renderScriptCode("after");
+        $res .= $this->renderScriptCode("after");
 
-        $res.=$this->_getGlobalSubmitScriptCode($partial);
-        $res.=$this->_getGlobalLoadScriptCode($partial);
+        $res .= $this->_getGlobalSubmitScriptCode($partial);
+        $res .= $this->_getGlobalLoadScriptCode($partial);
 
         $res .= "  </script>\n\n";
     }
@@ -444,13 +451,13 @@ class Atk_Page
      * at the end.
      *
      * @param string $position ("before" or "after")
-     * @return string 
+     * @return string
      */
     function renderScriptCode($position)
     {
         $res = "";
         for ($i = 0, $_i = count($this->m_scriptcode[$position]); $i < $_i; $i++) {
-            $res.= $this->m_scriptcode[$position][$i] . "\n";
+            $res .= $this->m_scriptcode[$position][$i] . "\n";
         }
         return $res;
     }
@@ -510,7 +517,7 @@ class Atk_Page
             }
 
             if (!$partial) {
-                $res.= "}\n";
+                $res .= "}\n";
                 $res .= "document.observe('dom:loaded', globalLoad);\n";
             }
         }
@@ -527,11 +534,12 @@ class Atk_Page
     {
         if (!$partial) {
             foreach ($this->m_stylesheets as $file => $media) {
-                $res.='  <link href="' . $file . '" rel="stylesheet" type="text/css" media="' . $media . '" />' . "\n";
+                $res .= '  <link href="' . $file . '" rel="stylesheet" type="text/css" media="' . $media . '" />' . "\n";
             }
 
-            for ($i = 0; $i < count($this->m_stylecode); $i++)
-                $res.= '<style type="text/css"> ' . $this->m_stylecode[$i] . ' </style>' . "\n";
+            for ($i = 0; $i < count($this->m_stylecode); $i++) {
+                $res .= '<style type="text/css"> ' . $this->m_stylecode[$i] . ' </style>' . "\n";
+            }
         } else {
             $files = '';
             foreach ($this->m_stylesheets as $file => $media) {
@@ -551,7 +559,7 @@ class Atk_Page
      */
     function addContent($content)
     {
-        $this->m_content.=$content;
+        $this->m_content .= $content;
     }
 
     /**
@@ -584,13 +592,13 @@ class Atk_Page
         global $ATK_VARS;
 
         $res = '<body ';
-        $res.= $extraprops . ">\n";
+        $res .= $extraprops . ">\n";
         return $res;
     }
 
     /**
      * Sets the page title.
-     * 
+     *
      * @param string $title page title
      */
     public function setTitle($title)
@@ -602,12 +610,12 @@ class Atk_Page
      * Render the complete page, including head and body.
      * @param String $title Title of the HTML page.
      * @param bool|int $flags (bool) Set to true to generate <body> tags. It is useful
-     *                      	to set this to false only when rendering content
-     *                      	that either already had its own <body></body>
-     *                      	statement, or content that needs no body
-     *                      	statements, like a frameset. (DEPRICATED !!)
-     * 											  (int) Flags for the render function
-     * @param string $extrabodyprops  Extra attributes to add to the <body> tag.
+     *                        to set this to false only when rendering content
+     *                        that either already had its own <body></body>
+     *                        statement, or content that needs no body
+     *                        statements, like a frameset. (DEPRICATED !!)
+     *                                              (int) Flags for the render function
+     * @param string $extrabodyprops Extra attributes to add to the <body> tag.
      * @param string $extra_header HTML code of extra headers to add to the head section
      * @return String The HTML page, including <html> and </html> tags.
      */
@@ -628,24 +636,29 @@ class Atk_Page
             return $this->renderPartial();
         }
 
-        if ($theme->tplPath('page.tpl'))
+        if ($theme->tplPath('page.tpl')) {
             $this->m_content = $ui->render('page.tpl', array('content' => $this->m_content));
+        }
 
         $page = '';
-        if (Atk_Tools::hasFlag($flags, HTML_DOCTYPE))
-            $page.=$theme->getAttribute('doctype', Atk_Config::getGlobal("doctype"));
-        $page.= "\n<html>\n";
+        if (Atk_Tools::hasFlag($flags, HTML_DOCTYPE)) {
+            $page .= $theme->getAttribute('doctype', Atk_Config::getGlobal("doctype"));
+        }
+        $page .= "\n<html>\n";
 
-        if (Atk_Tools::hasFlag($flags, HTML_HEADER))
-            $page.= $this->head($title, $extra_header);
-        if (Atk_Tools::hasFlag($flags, HTML_BODY))
-            $page.= $this->body($extrabodyprops);
+        if (Atk_Tools::hasFlag($flags, HTML_HEADER)) {
+            $page .= $this->head($title, $extra_header);
+        }
+        if (Atk_Tools::hasFlag($flags, HTML_BODY)) {
+            $page .= $this->body($extrabodyprops);
+        }
 
-        $page.=$this->m_content . "\n";
-        $page.= $this->renderHiddenVars();
-        if (Atk_Tools::hasFlag($flags, HTML_BODY))
-            $page.= "</body>\n";
-        $page.= "</html>\n";
+        $page .= $this->m_content . "\n";
+        $page .= $this->renderHiddenVars();
+        if (Atk_Tools::hasFlag($flags, HTML_BODY)) {
+            $page .= "</body>\n";
+        }
+        $page .= "</html>\n";
 
         return $page;
     }
@@ -671,11 +684,11 @@ class Atk_Page
     {
         $page = "";
         if ($this->m_hiddenvars) {
-            $page.= "\n" . '<div id="hiddenvars" style="display: none">';
+            $page .= "\n" . '<div id="hiddenvars" style="display: none">';
             foreach ($this->m_hiddenvars as $hiddenvarname => $hiddenvarvalue) {
-                $page.="\n <span id='$hiddenvarname'>$hiddenvarvalue</span>";
+                $page .= "\n <span id='$hiddenvarname'>$hiddenvarvalue</span>";
             }
-            $page.="\n</div>";
+            $page .= "\n</div>";
         }
         return $page;
     }
@@ -694,8 +707,8 @@ class Atk_Page
 
     /**
      * Add a meta tag to the page: <meta ... />
-     * 
-     * @param string $code 
+     *
+     * @param string $code
      */
     function register_metacode($code)
     {

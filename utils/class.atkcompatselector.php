@@ -44,13 +44,15 @@ class Atk_CompatSelector extends Atk_Selector
 
         if (count($this->m_conditions) == 1) {
             $selector = $this->m_conditions[0]['condition']; // can't support binds
-        } else if (count($this->m_conditions) > 1) {
-            $conditions = array(); // can't support binds
-            foreach ($this->m_conditions as $condition) {
-                $conditions[] = $condition['condition'];
-            }
+        } else {
+            if (count($this->m_conditions) > 1) {
+                $conditions = array(); // can't support binds
+                foreach ($this->m_conditions as $condition) {
+                    $conditions[] = $condition['condition'];
+                }
 
-            $selector = '(' . implode(') AND (', $conditions) . ')';
+                $selector = '(' . implode(') AND (', $conditions) . ')';
+            }
         }
 
         return $selector;
@@ -66,7 +68,9 @@ class Atk_CompatSelector extends Atk_Selector
         if ($this->m_rows === null) {
             Atk_Tools::atkwarning("Using deprecated selectDb override for node " . $this->_getNode()->atkNodeType());
             $selector = $this->_buildSelector();
-            $this->m_rows = $this->m_node->selectDb($selector, $this->m_order, array('limit' => $this->m_limit, 'offset' => $this->m_offset), $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct, $this->m_ignoreDefaultFilters);
+            $this->m_rows = $this->m_node->selectDb($selector, $this->m_order,
+                array('limit' => $this->m_limit, 'offset' => $this->m_offset), $this->m_excludes, $this->m_includes,
+                $this->m_mode, $this->m_distinct, $this->m_ignoreDefaultFilters);
         }
 
         return $this->m_rows;
@@ -82,7 +86,8 @@ class Atk_CompatSelector extends Atk_Selector
         if ($this->m_rowCount === null) {
             Atk_Tools::atkwarning("Using deprecated countDb override for node " . $this->_getNode()->atkNodeType());
             $selector = $this->_buildSelector();
-            $this->m_rowCount = (int)$this->m_node->countDb($selector, $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct, $this->m_ignoreDefaultFilters);
+            $this->m_rowCount = (int)$this->m_node->countDb($selector, $this->m_excludes, $this->m_includes,
+                $this->m_mode, $this->m_distinct, $this->m_ignoreDefaultFilters);
         }
 
         return $this->m_rowCount;

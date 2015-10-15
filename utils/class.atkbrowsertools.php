@@ -65,10 +65,12 @@ class Atk_BrowserInfo
             case "msie":
                 if ($this->major < 4) {
                     $this->family = "ie3";
-                } else if ($this->major >= 5) {
-                    $this->family = "ie5up";
                 } else {
-                    $this->family = "ie4up";
+                    if ($this->major >= 5) {
+                        $this->family = "ie5up";
+                    } else {
+                        $this->family = "ie4up";
+                    }
                 }
                 break;
 
@@ -100,14 +102,18 @@ class Atk_BrowserInfo
     {
         //MSIE
         $info = array();
-        if (eregi('MSIE ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Microsoft Internet Explorer ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
+        if (eregi('MSIE ([0-9].[0-9a-zA-Z]{1,4})', $this->ua,
+                $info) || eregi('Microsoft Internet Explorer ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)
+        ) {
             $this->full_version = $info[1];
             $this->browser = 'MSIE';
             $this->brName = "MS Internet Explorer";
             $this->hasGui = 1;
 
             // check for Opera faking MSIE
-            if (eregi('Opera ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Opera/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
+            if (eregi('Opera ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Opera/([0-9].[0-9a-zA-Z]{1,4})',
+                    $this->ua, $info)
+            ) {
                 $this->full_version = $info[1];
                 $this->browser = 'Opera';
                 $this->brName = "Opera";
@@ -133,19 +139,25 @@ class Atk_BrowserInfo
         }
 
         // Opera
-        if (eregi('Opera ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Opera/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
+        if (eregi('Opera ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Opera/([0-9].[0-9a-zA-Z]{1,4})',
+                $this->ua, $info)
+        ) {
             $this->full_version = $info[1];
             $this->browser = 'Opera';
             $this->brName = "Opera";
             $this->hasGui = 1;
         } // iCab
-        elseif (eregi('iCab ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('iCab/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
+        elseif (eregi('iCab ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('iCab/([0-9].[0-9a-zA-Z]{1,4})',
+                $this->ua, $info)
+        ) {
             $this->full_version = $info[1];
             $this->browser = 'iCab';
             $this->brName = "iCAB";
             $this->hasGui = 1;
         } // Lynx
-        elseif (eregi('Lynx ([0-9].[0-9a-zA-Z.]{1,9})', $this->ua, $info) || eregi('Lynx/([0-9].[0-9a-zA-Z.]{1,9})', $this->ua, $info)) {
+        elseif (eregi('Lynx ([0-9].[0-9a-zA-Z.]{1,9})', $this->ua, $info) || eregi('Lynx/([0-9].[0-9a-zA-Z.]{1,9})',
+                $this->ua, $info)
+        ) {
             $this->full_version = $info[1];
             $this->browser = 'Lynx';
             $this->platform = 'Unix';
@@ -172,7 +184,9 @@ class Atk_BrowserInfo
             $this->brName = "GetRight";
             $this->hasGui = 0;
         } // KDE Konqueror
-        elseif (eregi('Konqueror ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Konqueror/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
+        elseif (eregi('Konqueror ([0-9].[0-9a-zA-Z]{1,4})', $this->ua,
+                $info) || eregi('Konqueror/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)
+        ) {
             $this->full_version = $info[1];
             $this->browser = 'Konqueror';
             $this->platform = 'Unix';
@@ -323,8 +337,9 @@ class Atk_BrowserInfo
             if ($pos > 0) {
                 $this->major = substr($this->full_version, 0, $pos);
                 $this->minor = substr($this->full_version, $pos + 1, strlen($this->full_version));
-            } else
+            } else {
                 $this->major = $this->full_version;
+            }
         }
     }
 
@@ -359,34 +374,42 @@ class Atk_BrowserInfo
             $browser == "ALAV" || // yet another unknown UP based browser ?
             $browser == "Wapa"
         ) // another unknown browser ("Wapalyzer"?)
+        {
             return true;
-        else if (strstr($_SERVER["HTTP_USER_AGENT"], "Blazer")) { // Palm's browser
-            return true;
-        } else if (strstr($_SERVER["HTTP_USER_AGENT"], "Windows CE")) {
-            $extrainfo = substr($_SERVER["HTTP_USER_AGENT"], strpos($_SERVER["HTTP_USER_AGENT"], "("));
-            $seperated = explode(";", substr($extrainfo, 0, strlen($extrainfo) - 1));
-            foreach ($seperated as $key => $info) {
-                // We trim the whitespaces
-                $seperated[$key] = $info = trim($info);
+        } else {
+            if (strstr($_SERVER["HTTP_USER_AGENT"], "Blazer")) { // Palm's browser
+                return true;
+            } else {
+                if (strstr($_SERVER["HTTP_USER_AGENT"], "Windows CE")) {
+                    $extrainfo = substr($_SERVER["HTTP_USER_AGENT"], strpos($_SERVER["HTTP_USER_AGENT"], "("));
+                    $seperated = explode(";", substr($extrainfo, 0, strlen($extrainfo) - 1));
+                    foreach ($seperated as $key => $info) {
+                        // We trim the whitespaces
+                        $seperated[$key] = $info = trim($info);
 
-                // And check for size
-                $explodedinfo = explode("x", $info);
-                $size = array();
-                if ($explodedinfo[0] && is_numeric($explodedinfo[0]) && $explodedinfo[1] && is_numeric($explodedinfo[1])) {
-                    // We've got browser size
-                    $size["width"] = $explodedinfo[0];
-                    $size["height"] = $explodedinfo[1];
+                        // And check for size
+                        $explodedinfo = explode("x", $info);
+                        $size = array();
+                        if ($explodedinfo[0] && is_numeric($explodedinfo[0]) && $explodedinfo[1] && is_numeric($explodedinfo[1])) {
+                            // We've got browser size
+                            $size["width"] = $explodedinfo[0];
+                            $size["height"] = $explodedinfo[1];
+                        }
+                    }
+                    return $size;
+                } else {
+                    return false;
                 }
             }
-            return $size;
-        } else
-            return false;
+        }
     }
 
     function detectOS()
     {
         // Windows 3.x
-        if (eregi('Win16', $this->ua) || eregi('windows 3.1', $this->ua) || eregi('windows 16-bit', $this->ua) || eregi('16bit', $this->ua)) {
+        if (eregi('Win16', $this->ua) || eregi('windows 3.1', $this->ua) || eregi('windows 16-bit',
+                $this->ua) || eregi('16bit', $this->ua)
+        ) {
             $this->platform = "Win16";
             $this->os = "Win31";
             $this->osname = "Windows 3.x";
@@ -536,7 +559,9 @@ class Atk_BrowserInfo
         }
 
         // DEC
-        if (eregi('dec', $this->ua) || eregi('osfl', $this->ua) || eregi('alphaserver', $this->ua) || eregi('ultrix', $this->ua) || eregi('alphastation', $this->ua)) {
+        if (eregi('dec', $this->ua) || eregi('osfl', $this->ua) || eregi('alphaserver', $this->ua) || eregi('ultrix',
+                $this->ua) || eregi('alphastation', $this->ua)
+        ) {
             $this->platform = "Unix";
             $this->os = "DEC";
 

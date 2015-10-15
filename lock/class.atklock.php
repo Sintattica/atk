@@ -2,7 +2,7 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * @package atk
@@ -16,7 +16,7 @@
  */
 
 /**
- * This class is the abstract ATK lock base class (interface). 
+ * This class is the abstract ATK lock base class (interface).
  *
  * All subclasses should implement
  * the same API. The (static) getInstance() method of this class can be
@@ -32,7 +32,7 @@ class Atk_Lock
     const EXCLUSIVE = 'exclusive';
     const SHARED = 'shared';
 
-    var $m_id = NULL;
+    var $m_id = null;
 
     /**
      * Returns the *only* lock instance, based on the settings in the
@@ -42,9 +42,9 @@ class Atk_Lock
      */
     public static function getInstance()
     {
-        static $_instance = NULL;
+        static $_instance = null;
 
-        if ($_instance == NULL) {
+        if ($_instance == null) {
             $class = "atk" . Atk_Config::getGlobal("lock_type") . "Lock";
             $file = Atk_Config::getGlobal("atkroot") . "atk/lock/class." . strtolower($class) . ".php";
 
@@ -74,14 +74,14 @@ class Atk_Lock
      * record is already locked the method will fail!
      *
      * @param string $selector the ATK primary key / selector
-     * @param string $table    the (unique) table name
-     * @param string $mode 		 mode of the lock (self::EXCLUSIVE or self::SHARED)
+     * @param string $table the (unique) table name
+     * @param string $mode mode of the lock (self::EXCLUSIVE or self::SHARED)
      *
      * @return success / failure of operation
      */
     function lock($selector, $table, $mode = self::EXCLUSIVE)
     {
-        
+
     }
 
     /**
@@ -90,11 +90,11 @@ class Atk_Lock
      * to remove any old expired locks.
      *
      * @param string $selector the ATK primary key / selector
-     * @param string $table    the (unique) table name
+     * @param string $table the (unique) table name
      */
     function unlock($selector, $table)
     {
-        
+
     }
 
     /**
@@ -107,7 +107,7 @@ class Atk_Lock
      */
     function extend($identifier)
     {
-        
+
     }
 
     /**
@@ -115,20 +115,20 @@ class Atk_Lock
      * we return an array with lock information. If not we return NULL.
      *
      * @param string $selector the ATK primary key / selector
-     * @param string $table    the (unique) table name
+     * @param string $table the (unique) table name
      *
      * @return lock information
      */
     function isLocked($selector, $table)
     {
-        
+
     }
 
 }
 
 /**
  * Start / initialize the lock.
- * 
+ *
  * @return atkLock
  */
 function atklock()

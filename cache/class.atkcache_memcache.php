@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
@@ -17,7 +18,6 @@
  * @version $Revision: 5898 $
  * $Id$
  */
-
 class Atk_Cache_memcache extends Atk_Cache
 {
     public $m_memcache;
@@ -34,7 +34,8 @@ class Atk_Cache_memcache extends Atk_Cache
         }
         $this->m_memcache = new Memcache;
         $result = @$this->m_memcache->connect(
-                $this->getCacheCOnfig('host', 'localhost'), $this->getCacheConfig('port', 11211), $this->getCacheConfig('timeout', 1)
+            $this->getCacheCOnfig('host', 'localhost'), $this->getCacheConfig('port', 11211),
+            $this->getCacheConfig('timeout', 1)
         );
         if (!$result) {
             throw new Exception('Can\'t connect to the memcache server');
@@ -55,8 +56,9 @@ class Atk_Cache_memcache extends Atk_Cache
             return false;
         }
 
-        if ($lifetime === false)
+        if ($lifetime === false) {
             $lifetime = $this->m_lifetime;
+        }
         return $this->m_memcache->add($key, $data, null, $lifetime);
     }
 
@@ -74,8 +76,9 @@ class Atk_Cache_memcache extends Atk_Cache
             return false;
         }
 
-        if ($lifetime === false)
+        if ($lifetime === false) {
             $lifetime = $this->m_lifetime;
+        }
         return $this->m_memcache->set($key, $data, null, $lifetime);
     }
 

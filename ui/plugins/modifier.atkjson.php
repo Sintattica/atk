@@ -17,7 +17,7 @@
 
 /**
  * Modifier to encode a Smarty/PHP variable to JSON.
- * 
+ *
  * Example of usage:
  * {$var|@atkjson}
  *

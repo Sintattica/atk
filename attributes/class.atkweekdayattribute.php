@@ -42,7 +42,15 @@ define('WD_SUNDAY', 64);
  */
 class Atk_WeekdayAttribute extends Atk_NumberAttribute
 {
-    var $m_mapping = array(1 => 'monday', 2 => 'tuesday', 4 => 'wednesday', 8 => 'thursday', 16 => 'friday', 32 => 'saturday', 64 => 'sunday');
+    var $m_mapping = array(
+        1 => 'monday',
+        2 => 'tuesday',
+        4 => 'wednesday',
+        8 => 'thursday',
+        16 => 'friday',
+        32 => 'saturday',
+        64 => 'sunday'
+    );
     var $m_extra = array();
 
     /**
@@ -53,15 +61,16 @@ class Atk_WeekdayAttribute extends Atk_NumberAttribute
      *                     in the database where the stamp is stored.
      * @param int $extraOrFlags Flags for the attribute or array of extra options
      *                           these options will be numbered from 2^7 (128) to 2^x.
-     * @param int $flags        Flags for the attribute. Only used if no set in previous param.
+     * @param int $flags Flags for the attribute. Only used if no set in previous param.
      */
     function atkWeekdayAttribute($name, $extraOrFlags = 0, $flags = 0)
     {
 
-        if (is_numeric($extraOrFlags))
+        if (is_numeric($extraOrFlags)) {
             $flags = $extraOrFlags;
-        elseif (is_array($extraOrFlags))
+        } elseif (is_array($extraOrFlags)) {
             $this->m_extra = $extraOrFlags;
+        }
 
         $this->atkNumberAttribute($name, ($flags | AF_HIDE_SEARCH) ^ AF_SEARCHABLE);
     }
@@ -79,10 +88,11 @@ class Atk_WeekdayAttribute extends Atk_NumberAttribute
      */
     function fetchValue($postvars)
     {
-        if (!is_array($postvars) || !is_array($postvars[$this->fieldName()]))
+        if (!is_array($postvars) || !is_array($postvars[$this->fieldName()])) {
             return 0;
-        else
+        } else {
             return array_sum($postvars[$this->fieldName()]);
+        }
     }
 
     /**
@@ -100,29 +110,31 @@ class Atk_WeekdayAttribute extends Atk_NumberAttribute
         $result = '';
 
         $name = $fieldprefix . $this->fieldName();
-        $value = (int) $record[$this->fieldName()];
+        $value = (int)$record[$this->fieldName()];
 
         $separator = $this->hasFlag(AF_WEEKDAY_SMALL_EDIT) || $mode == 'list' ? '&nbsp;'
-                : '<br>';
+            : '<br>';
 
         $max = 7 + count($this->m_extra);
         for ($i = 1; $i <= $max; $i++) {
             $day = pow(2, $i - 1);
 
-            if ($i <= 7)
+            if ($i <= 7) {
                 $weekday = Atk_Tools::atktext($this->m_mapping[$day]);
-            else
+            } else {
                 $weekday = $this->m_extra[$i - 8];
+            }
 
             $weekday = ucfirst($weekday);
             $fullWeekday = $weekday;
-            if ($this->hasFlag(AF_WEEKDAY_SMALL_EDIT) || $mode == 'list')
+            if ($this->hasFlag(AF_WEEKDAY_SMALL_EDIT) || $mode == 'list') {
                 $weekday = substr($weekday, 0, 2);
+            }
 
             $checked = hasFlag($value, $day) ? ' checked' : '';
 
             $result .= '<span title="' . $fullWeekday . '"><input type="checkbox" id="' . $name . '" name="' . $name . '[' . $i . ']" ' . $this->getCSSClassAttribute("atkcheckbox") . ' value="' . $day . '" ' . $checked . '> ' . $weekday . '</span>' . ($i < $max
-                        ? $separator : '');
+                    ? $separator : '');
             $this->registerKeyListener($name . '[' . $i . ']', KB_CTRLCURSOR | KB_CURSOR);
         }
 
@@ -145,7 +157,7 @@ class Atk_WeekdayAttribute extends Atk_NumberAttribute
     function display($record, $mode = "list")
     {
         $result = '';
-        $value = (int) $record[$this->fieldName()];
+        $value = (int)$record[$this->fieldName()];
 
         $max = 7 + count($this->m_extra);
         for ($i = 1; $i <= $max; $i++) {
@@ -154,11 +166,11 @@ class Atk_WeekdayAttribute extends Atk_NumberAttribute
             if (Atk_Tools::hasFlag($value, $day)) {
                 if ($i <= 7) {
                     $weekday = $this->m_mapping[$day];
-                    if ($mode == 'list')
+                    if ($mode == 'list') {
                         $weekday = substr($weekday, 0, 3);
+                    }
                     $weekday = Atk_Tools::atktext($weekday);
-                }
-                else {
+                } else {
                     $weekday = $this->m_extra[$i - 8];
                 }
 
@@ -166,10 +178,11 @@ class Atk_WeekdayAttribute extends Atk_NumberAttribute
             }
         }
 
-        if (empty($result))
+        if (empty($result)) {
             return Atk_Tools::atktext('none');
-        else
+        } else {
             return $result;
+        }
     }
 
 }

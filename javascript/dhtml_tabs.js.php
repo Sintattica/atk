@@ -23,16 +23,14 @@ var closedSections = [];
  *
  * NOTE: this method does *not* close the section!
  */
-function addClosedSection(section)
-{
+function addClosedSection(section) {
     closedSections.push(section);
 }
 
 /**
  * Toggle section visibility.
  */
-function handleSectionToggle(element, expand, url)
-{
+function handleSectionToggle(element, expand, url) {
     element = $(element);
 
     // automatically determine if we need to expand or collapse
@@ -40,9 +38,9 @@ function handleSectionToggle(element, expand, url)
         expand = closedSections.indexOf(element.id) >= 0;
     }
 
-    $$('tr', 'div.atkSection', 'div.section-item').select(function(tr) {
+    $$('tr', 'div.atkSection', 'div.section-item').select(function (tr) {
         return $(tr).hasClassName(element.id);
-    }).each(function(tr) {
+    }).each(function (tr) {
         if (expand) {
             Element.show(tr);
             element.removeClassName('closedSection');
@@ -61,8 +59,10 @@ function handleSectionToggle(element, expand, url)
     else
         var param = 'closed'
 
-    new Ajax.Request(url, {method: 'get',
-        parameters: 'atksectionstate=' + param});
+    new Ajax.Request(url, {
+        method: 'get',
+        parameters: 'atksectionstate=' + param
+    });
 }
 
 function isAttributeTr(tr) {
@@ -72,21 +72,17 @@ function isAttributeTr(tr) {
 /**
  * Sets the current tab
  */
-function showTab(tab)
-{
+function showTab(tab) {
     // If we are called without a name, we check if the parent has a stored tab for our page
     // If so, then we go there, else we go to the first tab (most of the time the 'default' tab)
-    if (!tab)
-    {
+    if (!tab) {
         tab = getCurrentTab();
-        if (tab)
-        {
+        if (tab) {
             // However if for some reason this tab does not exist, we switch to the default tab
             if (!document.getElementById('tab_' + tab))
                 tab = tabs[0];
         }
-        else
-        {
+        else {
             tab = tabs[0];
         }
     }
@@ -96,12 +92,12 @@ function showTab(tab)
 
     var tabSectionName = 'section_' + tab;
 
-    $$('tr', 'div.atkSection', 'div.section-item').select(isAttributeTr).each(function(tr) {
+    $$('tr', 'div.atkSection', 'div.section-item').select(isAttributeTr).each(function (tr) {
         var visible =
-            $(tr).classNames().find(function(sectionName) {
-            return sectionName.substring(0, tabSectionName.length) == tabSectionName &&
-                closedSections.indexOf(sectionName) < 0;
-        }) != null;
+            $(tr).classNames().find(function (sectionName) {
+                return sectionName.substring(0, tabSectionName.length) == tabSectionName &&
+                    closedSections.indexOf(sectionName) < 0;
+            }) != null;
 
         if (visible) {
             Element.show(tr);
@@ -112,16 +108,12 @@ function showTab(tab)
     });
 
     // Then when set the colors or the tabs, the active tab gets a different color
-    for (j = 0; j < tabs.length; j++)
-    {
-        if (document.getElementById('tab_' + tabs[j]))
-        {
-            if (tabs[j] == tab)
-            {
+    for (j = 0; j < tabs.length; j++) {
+        if (document.getElementById('tab_' + tabs[j])) {
+            if (tabs[j] == tab) {
                 document.getElementById('tab_' + tabs[j]).className = 'activetab active';
             }
-            else
-            {
+            else {
                 document.getElementById('tab_' + tabs[j]).className = 'passivetab';
             }
         }
@@ -129,38 +121,31 @@ function showTab(tab)
 
     // make tabs visible (to avoid reload quirks, they load invisible from the html
     wrapper = document.getElementById('tabtable');
-    if (wrapper)
-    {
+    if (wrapper) {
         wrapper.style.display = '';
     }
 }
 
 
-function getCurrentTab()
-{
-    return <?php echo $_REQUEST['stateful'] ? 'getTab(getCurrentNodetype(), getCurrentSelector())' : ''; ?> ;
+function getCurrentTab() {
+    return <?php echo $_REQUEST['stateful'] ? 'getTab(getCurrentNodetype(), getCurrentSelector())' : ''; ?>;
 }
 
-function getTab(nodetype, selector)
-{
+function getTab(nodetype, selector) {
     _initTabArray(nodetype, selector);
     return parent.document.tab[nodetype][selector];
 }
 
-function setCurrentTab(value)
-{
+function setCurrentTab(value) {
     setTab(getCurrentNodetype(), getCurrentSelector(), value);
 
-    for (var i = 0; i < document.forms.length; i++)
-    {
+    for (var i = 0; i < document.forms.length; i++) {
         var form = document.forms[i];
-        if (form.atktab != null)
-        {
+        if (form.atktab != null) {
             form.atktab.value = value;
             form.atktab.defaultValue = value;
         }
-        else
-        {
+        else {
             var input = document.createElement('input');
             input.setAttribute('type', 'hidden');
             input.setAttribute('name', 'atktab');
@@ -171,8 +156,7 @@ function setCurrentTab(value)
     }
 }
 
-function setTab(nodetype, selector, value)
-{
+function setTab(nodetype, selector, value) {
     _initTabArray(nodetype, selector);
     parent.document.tab[nodetype][selector] = value;
 }
@@ -181,8 +165,7 @@ function setTab(nodetype, selector, value)
  * Makes sure we don't get any nasty JS errors by making sure
  * the arrays we use are always set before using them.
  */
-function _initTabArray(nodetype, selector)
-{
+function _initTabArray(nodetype, selector) {
     if (!parent.document.tab)
         parent.document.tab = Array();
     if (!parent.document.tab[nodetype])

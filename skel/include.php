@@ -2,13 +2,13 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * This file is the skeleton main include wrapper, which you can copy
- * to your application dir and modify if necessary. It is used to 
+ * to your application dir and modify if necessary. It is used to
  * include popups in a safe manner. Any popup loaded with this wrapper
- * has session support and login support. 
+ * has session support and login support.
  * Only files defined in the $config_allowed_includes array are allowed
  * to be included.
  *
@@ -34,5 +34,6 @@ atksecure();
 
 $file = $ATK_VARS["file"];
 $allowed = Atk_Config::getGlobal("allowed_includes");
-if (Atk_Tools::atk_in_array($file, $allowed))
+if (Atk_Tools::atk_in_array($file, $allowed)) {
     include_once(Atk_Config::getGlobal("atkroot") . $file);
+}

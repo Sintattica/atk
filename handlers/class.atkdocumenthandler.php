@@ -62,14 +62,16 @@ class Atk_DocumentHandler extends Atk_ActionHandler
         }
 
         // Assign the record variables to the OpenOffice.org DocumentWriter
-        if (method_exists($this->m_node, "assignDocumentVars"))
+        if (method_exists($this->m_node, "assignDocumentVars")) {
             $this->m_node->assignDocumentVars($openDocumentWriter, $this->m_postvars["atkselector"]);
-        else
+        } else {
             $this->assignDocumentVars($openDocumentWriter, $this->m_postvars["atkselector"]);
+        }
 
         // Send the document to the browser
-        if (!$openDocumentWriter->display($tpl_file, $this->m_postvars["atkdoctpl"]))
+        if (!$openDocumentWriter->display($tpl_file, $this->m_postvars["atkdoctpl"])) {
             return false;
+        }
 
         // Halt further execution to prevent atk rendering it's interface causing to corrupt the opendocument file
         exit;

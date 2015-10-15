@@ -90,8 +90,9 @@ class Atk_BoolAttribute extends Atk_Attribute
         $empty = parent::isEmpty($record);
 
         // if bool_obligatory flag is set the value must be true else we treat this record as empty
-        if ($this->hasFlag(AF_BOOL_OBLIGATORY) && !$record[$this->fieldName()])
+        if ($this->hasFlag(AF_BOOL_OBLIGATORY) && !$record[$this->fieldName()]) {
             $empty = true;
+        }
 
         return $empty;
     }
@@ -115,15 +116,18 @@ class Atk_BoolAttribute extends Atk_Attribute
             $this->_renderChangeHandler($fieldprefix);
         }
         $checked = "";
-        if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] > 0)
+        if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] > 0) {
             $checked = "checked";
+        }
         $this->registerKeyListener($id, KB_CTRLCURSOR | KB_CURSOR);
 
         $result = '<input type="checkbox" id="' . $id . '" name="' . $id . '" value="1" ' . $onchange . $checked . ' ' . $this->getCSSClassAttribute("atkcheckbox") . ' />';
 
         if ($this->hasFlag(AF_BOOL_INLINE_LABEL)) {
             $result .= '&nbsp;<label for="' . $id . '">' . $this->text(array(
-                    $this->fieldName() . '_label', parent::label($record))) . '</label>';
+                    $this->fieldName() . '_label',
+                    parent::label($record)
+                )) . '</label>';
         }
 
         $result .= $this->getSpinner();
@@ -138,8 +142,8 @@ class Atk_BoolAttribute extends Atk_Attribute
      */
     function value2db($rec)
     {
-        return (isset($rec[$this->fieldName()]) ? (int) $rec[$this->fieldName()]
-                    : 0);
+        return (isset($rec[$this->fieldName()]) ? (int)$rec[$this->fieldName()]
+            : 0);
     }
 
     /**
@@ -159,37 +163,41 @@ class Atk_BoolAttribute extends Atk_Attribute
     function search($record = "", $extended = false, $fieldprefix = "")
     {
         $result = '<select name="' . $this->getSearchFieldName($fieldprefix) . '" class="form-control">';
-        $result.= '<option value="">' . Atk_Tools::atktext("search_all", "atk") . '</option>';
-        $result.= '<option value="0" ';
-        if ($record[$this->fieldName()] === '0' && !empty($record))
-            $result.="selected";
-        $result.= '>' . Atk_Tools::atktext("no", "atk") . '</option>';
-        $result.= '<option value="1" ';
-        if ($record[$this->fieldName()] === '1')
-            $result.="selected";
-        $result.= '>' . Atk_Tools::atktext("yes", "atk") . '</option>';
-        $result.='</select>';
+        $result .= '<option value="">' . Atk_Tools::atktext("search_all", "atk") . '</option>';
+        $result .= '<option value="0" ';
+        if ($record[$this->fieldName()] === '0' && !empty($record)) {
+            $result .= "selected";
+        }
+        $result .= '>' . Atk_Tools::atktext("no", "atk") . '</option>';
+        $result .= '<option value="1" ';
+        if ($record[$this->fieldName()] === '1') {
+            $result .= "selected";
+        }
+        $result .= '>' . Atk_Tools::atktext("yes", "atk") . '</option>';
+        $result .= '</select>';
         return $result;
     }
 
     /**
      * Creates a searchcondition for the field
      *
-     * @param Atk_Query $query     The query object where the search condition should be placed on
-     * @param String $table       The name of the table in which this attribute
+     * @param Atk_Query $query The query object where the search condition should be placed on
+     * @param String $table The name of the table in which this attribute
      *                              is stored
-     * @param mixed $value        The value the user has entered in the searchbox
-     * @param String $searchmode  The searchmode to use. This can be any one
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param String $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
      */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
-        if (is_array($value))
+        if (is_array($value)) {
             $value = $value[$this->fieldName()];
-        if (isset($value))
+        }
+        if (isset($value)) {
             return $query->exactCondition($table . "." . $this->fieldName(), $this->escapeSQL($value));
+        }
     }
 
     /**
@@ -203,7 +211,7 @@ class Atk_BoolAttribute extends Atk_Attribute
             return '
     		  <div align="center">
     		    <input type="checkbox" disabled="disabled" ' . ($record[$this->fieldName()]
-                        ? 'checked="checked"' : '') . ' />
+                ? 'checked="checked"' : '') . ' />
     		  </div>
     		';
         } else {
@@ -301,8 +309,9 @@ class Atk_BoolAttribute extends Atk_Attribute
      */
     function parseStringValue($stringvalue)
     {
-        if (in_array(strtolower($stringvalue), array("y", "j", "yes", "on", "true", "1", "*")))
+        if (in_array(strtolower($stringvalue), array("y", "j", "yes", "on", "true", "1", "*"))) {
             return 1;
+        }
         return 0;
     }
 
@@ -321,14 +330,16 @@ class Atk_BoolAttribute extends Atk_Attribute
         // the next if-statement is a workaround for derived attributes which do
         // not override the hide() method properly. This will not give them a
         // working hide() functionality but at least it will not give error messages.
-        if ($record[$this->fieldName()] == "")
+        if ($record[$this->fieldName()] == "") {
             $record[$this->fieldName()] = "0";
+        }
         if (!is_array($record[$this->fieldName()])) {
             $result = '<input type="hidden" name="' . $fieldprefix . $this->formName() .
                 '" value="' . htmlspecialchars($record[$this->fieldName()]) . '">';
             return $result;
-        } else
+        } else {
             Atk_Tools::atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
+        }
     }
 
 }

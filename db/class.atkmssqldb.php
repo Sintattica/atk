@@ -21,7 +21,7 @@ require_once(Atk_Config::getGlobal("atkroot") . "atk/db/class.atkmysqldb.php");
  * Driver for MsSQL databases
  *
  * This driver is only supporting MS SQL partially at the moment
- * 
+ *
  * Succesfully tested:
  * - SELECT, INSERT, UPDATE, DELETE, LEFT JOIN, ORDER BY, LIKE
  * - atkAttribute
@@ -177,15 +177,18 @@ class Atk_MsSqlDb extends Atk_MysqlDb
      * Not specifying a position will set the pointer
      * at the beginning of the result set.
      * @param int $position the position
-     * @param bool $haltOnError 
+     * @param bool $haltOnError
      */
     function seek($position = 0, $haltOnError = true)
     {
         $result = @mssql_data_seek($this->m_query_id, $position);
-        if ($result)
+        if ($result) {
             $this->m_row = $position;
-        else if ($haltOnError)
-            $this->halt("seek($position) failed: result has " . $this->num_rows() . " rows");
+        } else {
+            if ($haltOnError) {
+                $this->halt("seek($position) failed: result has " . $this->num_rows() . " rows");
+            }
+        }
         return $result;
     }
 
@@ -201,8 +204,9 @@ class Atk_MsSqlDb extends Atk_MysqlDb
         if ($this->connect() == DB_SUCCESS) {
             /* lock */
             $result = @mssql_query("lock tables $table $mode", $this->m_link_id);
-            if (!$result)
+            if (!$result) {
                 $this->halt("$mode lock on $table failed.");
+            }
 
             /* return result */
             return $result;
@@ -220,8 +224,9 @@ class Atk_MsSqlDb extends Atk_MysqlDb
         if ($this->connect() == DB_SUCCESS) {
             /* unlock */
             $result = @mssql_query("unlock tables", $this->m_link_id);
-            if (!$result)
+            if (!$result) {
                 $this->halt("unlock tables failed.");
+            }
 
             /* return result */
             return $result;
@@ -283,9 +288,7 @@ class Atk_MsSqlDb extends Atk_MysqlDb
                     $id = @mssql_query($query, $this->m_link_id);
                     $this->unlock();
                     return 1;
-                }
-
-                /* enter next value */ else {
+                } /* enter next value */ else {
                     $nextid = $result[$this->m_seq_field] + 1;
                     $query = "UPDATE " . $this->m_seq_table . " SET " . $this->m_seq_field . " = '$nextid' WHERE " . $this->m_seq_namefield . " = '$sequence'";
 
@@ -295,9 +298,7 @@ class Atk_MsSqlDb extends Atk_MysqlDb
                 }
             }
             return 0;
-        }
-
-        /* cannot connect */ else {
+        } /* cannot connect */ else {
             $this->halt("cannot connect to  " . $this->m_host);
         }
     }
@@ -334,14 +335,15 @@ class Atk_MsSqlDb extends Atk_MysqlDb
                 $result[$i]["flags"] = array();
 
                 $result[$i]["flags"] = (in_array('primary_key', $result[$i]["flags"])
-                            ? MF_PRIMARY : 0) |
+                        ? MF_PRIMARY : 0) |
                     (in_array('unique_key', $result[$i]["flags"]) ? MF_UNIQUE : 0) |
                     (in_array('not_null', $result[$i]["flags"]) ? MF_NOT_NULL : 0) |
                     (in_array('auto_increment', $result[$i]["flags"]) ? MF_AUTO_INCREMENT
-                            : 0);
+                        : 0);
 
-                if ($full)
+                if ($full) {
                     $result["meta"][$result[$i]["name"]] = $i;
+                }
                 $i++;
             }
 
@@ -389,7 +391,7 @@ class Atk_MsSqlDb extends Atk_MysqlDb
 
     /**
      * Rollback the the current transaction.
-     * 
+     *
      * @return bool true
      */
     function rollback()
@@ -448,20 +450,22 @@ class Atk_MsSqlDb extends Atk_MysqlDb
 
         $this->query($query);
         if ($offset > 0) {
-            if (!$this->seek($offset, false))
+            if (!$this->seek($offset, false)) {
                 return array();
+            }
         }
 
         if ($limit > 0) {
             for ($i = 0; $i < $limit; $i++) {
-                if (!$this->next_record())
+                if (!$this->next_record()) {
                     break;
+                }
                 $result[] = $this->m_record;
             }
-        }
-        else {
-            while ($this->next_record())
+        } else {
+            while ($this->next_record()) {
                 $result[] = $this->m_record;
+            }
         }
 
         return $result;

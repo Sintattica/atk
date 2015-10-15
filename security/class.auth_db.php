@@ -38,50 +38,61 @@ class auth_db extends auth_interface
      * @param string $accountenbleexpression
      * @return string which contains the query
      */
-    function buildSelectUserQuery($user, $usertable, $userfield, $passwordfield, $accountdisablefield = null, $accountenbleexpression = null)
-    {
+    function buildSelectUserQuery(
+        $user,
+        $usertable,
+        $userfield,
+        $passwordfield,
+        $accountdisablefield = null,
+        $accountenbleexpression = null
+    ) {
         $disableexpr = "";
-        if ($accountdisablefield)
+        if ($accountdisablefield) {
             $disableexpr = ", $accountdisablefield";
+        }
         $query = "SELECT $passwordfield $disableexpr FROM $usertable WHERE $userfield ='$user'";
-        if ($accountenbleexpression)
+        if ($accountenbleexpression) {
             $query .= " AND $accountenbleexpression";
+        }
         return $query;
     }
 
     /**
-     * Authenticate a user. 
+     * Authenticate a user.
      *
      * @param String $user The login of the user to authenticate.
-     * @param String $passwd The password of the user. Note: if the canMd5 
-     *                       function of an implementation returns true,      
+     * @param String $passwd The password of the user. Note: if the canMd5
+     *                       function of an implementation returns true,
      *                       $passwd will be passed as an md5 string.
      *
      * @return int AUTH_SUCCESS - Authentication succesful
-     *             AUTH_MISMATCH - Authentication failed, wrong 
+     *             AUTH_MISMATCH - Authentication failed, wrong
      *                             user/password combination
      *             AUTH_LOCKED - Account is locked, can not login
      *                           with current username.
-     *             AUTH_ERROR - Authentication failed due to some 
-     *                          error which cannot be solved by 
-     *                          just trying again. If you return 
-     *                          this value, you *must* also 
+     *             AUTH_ERROR - Authentication failed due to some
+     *                          error which cannot be solved by
+     *                          just trying again. If you return
+     *                          this value, you *must* also
      *                          fill the m_fatalError variable.
      */
     function validateUser($user, $passwd)
     {
-        if ($user == "")
-            return AUTH_UNVERIFIED; // can't verify if we have no userid
+        if ($user == "") {
+            return AUTH_UNVERIFIED;
+        } // can't verify if we have no userid
 
         $db = Atk_Tools::atkGetDb(Atk_Config::getGlobal("auth_database"));
-        $query = $this->buildSelectUserQuery($db->escapeSql($user), Atk_Config::getGlobal("auth_usertable"), Atk_Config::getGlobal("auth_userfield"), Atk_Config::getGlobal("auth_passwordfield"), Atk_Config::getGlobal("auth_accountdisablefield"), Atk_Config::getGlobal("auth_accountenableexpression"));
+        $query = $this->buildSelectUserQuery($db->escapeSql($user), Atk_Config::getGlobal("auth_usertable"),
+            Atk_Config::getGlobal("auth_userfield"), Atk_Config::getGlobal("auth_passwordfield"),
+            Atk_Config::getGlobal("auth_accountdisablefield"), Atk_Config::getGlobal("auth_accountenableexpression"));
         $recs = $db->getrows($query);
         if (count($recs) > 0 && $this->isLocked($recs[0])) {
             return AUTH_LOCKED;
         }
 
         return ((count($recs) > 0 && $user != "" && $this->matchPasswords($this->getPassword($recs[0]), $passwd))
-                    ? AUTH_SUCCESS : AUTH_MISMATCH);
+            ? AUTH_SUCCESS : AUTH_MISMATCH);
     }
 
     /**
@@ -93,7 +104,7 @@ class auth_db extends auth_interface
     function getPassword($rec)
     {
         return (isset($rec[Atk_Config::getGlobal("auth_passwordfield")])) ? $rec[Atk_Config::getGlobal("auth_passwordfield")]
-                : false;
+            : false;
     }
 
     /**
@@ -114,7 +125,7 @@ class auth_db extends auth_interface
      * is true, they are only considered a match if $dbpassword is equal to the
      * crypt() of $userpasswd, where $dbpassword itself is used as the 'salt'.
      * (This method is used by Bugzilla, among other apps)
-     * 
+     *
      * @param string $dbpasswd The password from the database
      * @param string $userpasswd The password the user provided
      * @return boolean which indicates if the passwords are equal
@@ -187,14 +198,15 @@ class auth_db extends auth_interface
             $query = $qryobj->buildSelect();
         }
 
-        if ($accountenableexpression)
+        if ($accountenableexpression) {
             $query .= " AND $accountenableexpression";
+        }
         $recs = $db->getrows($query);
         return $recs;
     }
 
     /**
-     * Get the parent groups 
+     * Get the parent groups
      *
      * @param array $parents
      * @return array with records of the parent groups
@@ -211,14 +223,14 @@ class auth_db extends auth_interface
         $query->addField($groupparentfield);
         $query->addTable($grouptable);
         $query->addCondition("$grouptable.$groupfield IN (" . implode(',', $parents) . ")");
-        $recs = $db->getrows($query->buildSelect(TRUE));
+        $recs = $db->getrows($query->buildSelect(true));
         return $recs;
     }
 
     /**
      * This function returns information about a user in an associative
      * array with the following elements (minimal):
-     * "name" -> the userid (should normally be the same as the $user 
+     * "name" -> the userid (should normally be the same as the $user
      *           variable that gets passed to it.
      * "level" -> The level/group(s) to which this user belongs.
      * "groups" -> The groups this user belongs to
@@ -247,25 +259,29 @@ class auth_db extends auth_interface
                 $level[] = $recs[$i][Atk_Config::getGlobal("auth_levelfield")];
                 $groups[] = $recs[$i][Atk_Config::getGlobal("auth_levelfield")];
 
-                if (!empty($groupparentfield) && $recs[$i][$groupparentfield] != "")
+                if (!empty($groupparentfield) && $recs[$i][$groupparentfield] != "") {
                     $parents[] = $recs[$i][$groupparentfield];
+                }
             }
 
             $groups = array_merge($groups, $parents);
             while (count($parents) > 0) {
                 $precs = $this->getParentGroups($parents);
                 $parents = array();
-                foreach ($precs as $prec)
-                    if ($prec[$groupparentfield] != "")
+                foreach ($precs as $prec) {
+                    if ($prec[$groupparentfield] != "") {
                         $parents[] = $prec[$groupparentfield];
+                    }
+                }
 
                 $groups = array_merge($groups, $parents);
             }
 
             $groups = array_unique($groups);
         }
-        if (count($level) == 1)
+        if (count($level) == 1) {
             $level = $level[0];
+        }
 
         $userinfo = $recs[0];
         $userinfo["name"] = $user;
@@ -288,13 +304,14 @@ class auth_db extends auth_interface
         if (count($recs) > 1) {
             $access = array();
             for ($i = 0; $i < count($recs); $i++) {
-                if ($i == 0)
+                if ($i == 0) {
                     $access = $recs[$i][Atk_Config::getGlobal("auth_accesslevelfield")];
-                if ($recs[$i][Atk_Config::getGlobal("auth_accesslevelfield")] > $access)
+                }
+                if ($recs[$i][Atk_Config::getGlobal("auth_accesslevelfield")] > $access) {
                     $access = $recs[$i][Atk_Config::getGlobal("auth_accesslevelfield")];
+                }
             }
-        }
-        else {
+        } else {
             $access = "";
             if (isset($recs[0][Atk_Config::getGlobal("auth_accesslevelfield")])) {
                 $access = $recs[0][Atk_Config::getGlobal("auth_accesslevelfield")];
@@ -327,8 +344,9 @@ class auth_db extends auth_interface
         $rights = $this->m_rightscache[$node];
 
         $field = Atk_Config::getGlobal("auth_accessfield");
-        if (empty($field))
+        if (empty($field)) {
             $field = Atk_Config::getGlobal("auth_levelfield");
+        }
 
         for ($i = 0, $_i = count($rights); $i < $_i; $i++) {
             if ($rights[$i]['action'] == $action) {
@@ -340,14 +358,14 @@ class auth_db extends auth_interface
     }
 
     /**
-     * This function returns the level/group(s) that are allowed to 
+     * This function returns the level/group(s) that are allowed to
      * view/edit a certain attribute of a given node.
      * @param String $node The full nodename of the node for which to check
      *                     attribute access.
      * @param String $attrib The name of the attribute to check
      * @param String $mode "view" or "edit"
-     * @param mixed One (int) or more (array) entities that are allowed to 
-     *              view/edit the attribute. 
+     * @param mixed One (int) or more (array) entities that are allowed to
+     *              view/edit the attribute.
      */
     function getAttribEntity($node, $attrib, $mode)
     {
@@ -373,7 +391,7 @@ class auth_db extends auth_interface
      *
      * @param array $a
      * @param array $b
-     * @return boolean 
+     * @return boolean
      */
     function userListCompare($a, $b)
     {
@@ -384,7 +402,7 @@ class auth_db extends auth_interface
      * This function returns the list of users that may login. This can be
      * used to display a dropdown of users from which to choose.
      *
-     * @return array List of users as an associative array with the following 
+     * @return array List of users as an associative array with the following
      *               format: array of records, each record is an associative
      *               array with a userid and a username field.
      */
@@ -396,13 +414,14 @@ class auth_db extends auth_interface
         $accountdisablefield = Atk_Config::getGlobal("auth_accountdisablefield");
         $accountenableexpression = Atk_Config::getGlobal("auth_accountenableexpression");
         if ($accountenableexpression != "") {
-            $query.= " WHERE $accountenableexpression";
-            if ($accountdisablefield != "")
-                $query.= " AND $accountdisablefield = 0";
-        }
-        else {
-            if ($accountdisablefield != "")
-                $query.= " WHERE $accountdisablefield = 0";
+            $query .= " WHERE $accountenableexpression";
+            if ($accountdisablefield != "") {
+                $query .= " AND $accountdisablefield = 0";
+            }
+        } else {
+            if ($accountdisablefield != "") {
+                $query .= " WHERE $accountdisablefield = 0";
+            }
         }
 
         $recs = $db->getrows($query);
@@ -410,7 +429,10 @@ class auth_db extends auth_interface
         $userlist = array();
         $stringparser = new Atk_StringParser(Atk_Config::getGlobal("auth_userdescriptor"));
         for ($i = 0, $_i = count($recs); $i < $_i; $i++) {
-            $userlist[] = array("userid" => $recs[$i][Atk_Config::getGlobal("auth_userfield")], "username" => $stringparser->parse($recs[$i]));
+            $userlist[] = array(
+                "userid" => $recs[$i][Atk_Config::getGlobal("auth_userfield")],
+                "username" => $stringparser->parse($recs[$i])
+            );
         }
         usort($userlist, array("auth_db", "userListCompare"));
         return $userlist;
@@ -440,7 +462,7 @@ class auth_db extends auth_interface
 
     /**
      * This function returns password or false, if password can't be retrieve/recreate
-     * 
+     *
      * @param string $username User for which the password should be regenerated
      *
      * @return mixed string with password or false
@@ -449,8 +471,13 @@ class auth_db extends auth_interface
     {
         // Query the database for user records having the given username and return if not found
         $usernode = Atk_Module::atkGetNode(Atk_Config::getGlobal("auth_usernode"));
-        $selector = sprintf("%s.%s = '%s'", Atk_Config::getGlobal("auth_usertable"), Atk_Config::getGlobal("auth_userfield"), $username);
-        $userrecords = $usernode->selectDb($selector, "", "", "", array(Atk_Config::getGlobal("auth_userpk"), Atk_Config::getGlobal("auth_emailfield"), Atk_Config::getGlobal("auth_passwordfield")), "edit");
+        $selector = sprintf("%s.%s = '%s'", Atk_Config::getGlobal("auth_usertable"),
+            Atk_Config::getGlobal("auth_userfield"), $username);
+        $userrecords = $usernode->selectDb($selector, "", "", "", array(
+            Atk_Config::getGlobal("auth_userpk"),
+            Atk_Config::getGlobal("auth_emailfield"),
+            Atk_Config::getGlobal("auth_passwordfield")
+        ), "edit");
         if (count($userrecords) != 1) {
             Atk_Tools::atkdebug("User '$username' not found.");
             return false;

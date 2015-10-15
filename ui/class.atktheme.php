@@ -39,8 +39,8 @@ class Atk_Theme
      */
     function &getInstance($reset = false)
     {
-        static $s_instance = NULL;
-        if ($s_instance == NULL || $reset) {
+        static $s_instance = null;
+        if ($s_instance == null || $reset) {
             $s_instance = new self();
         }
         return $s_instance;
@@ -85,8 +85,10 @@ class Atk_Theme
 
         if (substr($relpath, 0, 4) === 'atk/') {
             $location = 'atk';
-        } else if (substr($relpath, 0, 7) === 'themes/') {
-            $location = 'app';
+        } else {
+            if (substr($relpath, 0, 7) === 'themes/') {
+                $location = 'app';
+            }
         }
 
         $return = ($location === 'app' ? Atk_Config::getGlobal('application_dir') : Atk_Config::getGlobal("atkroot")) . $relpath;
@@ -138,8 +140,10 @@ class Atk_Theme
     {
         if ($module != "" && isset($this->m_theme["modulefiles"][$module][$type][$name])) {
             return Atk_Module::moduleDir($module) . "themes/" . $this->m_theme["modulefiles"][$module][$type][$name];
-        } else if (isset($this->m_theme["files"][$type][$name])) {
-            return Atk_Theme::absPath($this->m_theme["files"][$type][$name]);
+        } else {
+            if (isset($this->m_theme["files"][$type][$name])) {
+                return Atk_Theme::absPath($this->m_theme["files"][$type][$name]);
+            }
         }
         return "";
     }
@@ -236,15 +240,17 @@ class Atk_Theme
      */
     function getIconFileFromModuleTheme($icon, $type, $ext = "")
     {
-        if (!isset($this->m_theme['modulefiles']))
+        if (!isset($this->m_theme['modulefiles'])) {
             return false;
+        }
         $modules = Atk_Module::atkGetModules();
         $modulenames = array_keys($modules);
         foreach ($modulenames as $modulename) {
             if (isset($this->m_theme['modulefiles'][$modulename])) {
                 $iconfile = $this->getIconFileFromTheme($icon, $type, $this->m_theme['modulefiles'][$modulename], $ext);
-                if ($iconfile)
+                if ($iconfile) {
                     return $iconfile;
+                }
             }
         }
         return false;
@@ -261,14 +267,16 @@ class Atk_Theme
      */
     function getIconFileFromTheme($iconname, $type, $theme, $ext = "")
     {
-        if ($ext)
+        if ($ext) {
             return $this->_getIconFileWithExtFromTheme($iconname, $ext, $type, $theme);
+        }
 
         $allowediconext = array('png', 'gif', 'jpg');
         foreach ($allowediconext as $ext) {
             $iconfile = $this->_getIconFileWithExtFromTheme($iconname, $ext, $type, $theme);
-            if ($iconfile)
+            if ($iconfile) {
                 return $iconfile;
+            }
         }
         return false;
     }
@@ -286,8 +294,9 @@ class Atk_Theme
     {
         if (isset($theme['icons'][$type][$iconname . "." . $ext])) {
             $iconfile = $theme['icons'][$type][$iconname . "." . $ext];
-            if ($iconfile)
+            if ($iconfile) {
                 return $iconfile;
+            }
         }
         return false;
     }
@@ -328,10 +337,14 @@ class Atk_Theme
         //CSS Icons
         if ($this->getAttribute('usecssicons')) {
             if ($label) {
-                if (!$attrs['title']) $attrs['title'] = $label;
+                if (!$attrs['title']) {
+                    $attrs['title'] = $label;
+                }
             }
             $icon = $this->cssIcon($icon, $type, $module, $useDefault);
-            if (!$icon) return false;
+            if (!$icon) {
+                return false;
+            }
             $ret = '<span class="' . $icon . '"';
             foreach ($attrs as $k => $v) {
                 $ret .= ' ' . $k . '="' . $v . '"';
@@ -342,11 +355,17 @@ class Atk_Theme
 
         //File Icons
         if ($label) {
-            if (!$attrs['title']) $attrs['title'] = $label;
-            if (!$attrs['alt']) $attrs['alt'] = $label;
+            if (!$attrs['title']) {
+                $attrs['title'] = $label;
+            }
+            if (!$attrs['alt']) {
+                $attrs['alt'] = $label;
+            }
         }
         $icon = $this->iconPath($icon, $type, $module, $ext, $useDefault);
-        if (!$icon) return false;
+        if (!$icon) {
+            return false;
+        }
         $ret = '<img src="' . $icon . '"';
         foreach ($attrs as $k => $v) {
             $ret .= ' ' . $k . '="' . $v . '"';

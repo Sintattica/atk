@@ -89,7 +89,7 @@ class auth_interface
         $cookie_params = session_get_cookie_params();
         $cookiepath = Atk_Config::getGlobal("application_root");
         $cookiedomain = (Atk_Config::getGlobal("cookiedomain") != "") ? Atk_Config::getGlobal("cookiedomain")
-            : NULL;
+            : null;
         session_set_cookie_params($cookie_params["lifetime"], $cookiepath, $cookiedomain);
         @session_start();
     }
@@ -148,31 +148,35 @@ class auth_interface
         if (($securityMgr->m_scheme == "none") || ($securityMgr->hasLevel(-1)) || (strtolower($securityMgr->m_user["name"]) == "administrator")) {
             $allowed = true;
         } // user is guest? (guests may do nothing)
-        else if (($securityMgr->hasLevel(-2)) || (strtolower($securityMgr->m_user["name"]) == "guest")) {
-            $allowed = false;
-        } // other
         else {
-            $required = $this->getEntity($node, $privilege);
+            if (($securityMgr->hasLevel(-2)) || (strtolower($securityMgr->m_user["name"]) == "guest")) {
+                $allowed = false;
+            } // other
+            else {
+                $required = $this->getEntity($node, $privilege);
 
-            if (count($required) == 0) {
-                // No access restrictions found..
-                // so either nobody or anybody can perform this
-                // operation, depending on the configuration.
-                $allowed = !Atk_Config::getGlobal("restrictive");
-            } else {
-                if ($securityMgr->m_scheme == "level") {
-                    // in level based security, only one level is specified for each node/action combination.
-                    $allowed = ($securityMgr->m_user["level"] >= $required[0]);
-                } else if ($securityMgr->m_scheme == "group") {
-                    // user may have more then one level
-                    if (is_array($securityMgr->m_user["level"])) {
-                        $allowed = (count(array_intersect($securityMgr->m_user["level"], $required)) > 0);
+                if (count($required) == 0) {
+                    // No access restrictions found..
+                    // so either nobody or anybody can perform this
+                    // operation, depending on the configuration.
+                    $allowed = !Atk_Config::getGlobal("restrictive");
+                } else {
+                    if ($securityMgr->m_scheme == "level") {
+                        // in level based security, only one level is specified for each node/action combination.
+                        $allowed = ($securityMgr->m_user["level"] >= $required[0]);
                     } else {
-                        // user has only one level
-                        $allowed = in_array($securityMgr->m_user["level"], $required);
+                        if ($securityMgr->m_scheme == "group") {
+                            // user may have more then one level
+                            if (is_array($securityMgr->m_user["level"])) {
+                                $allowed = (count(array_intersect($securityMgr->m_user["level"], $required)) > 0);
+                            } else {
+                                // user has only one level
+                                $allowed = in_array($securityMgr->m_user["level"], $required);
+                            }
+                        } else { // unknown scheme??
+                            $allowed = false;
+                        }
                     }
-                } else { // unknown scheme??
-                    $allowed = false;
                 }
             }
         }
@@ -191,7 +195,7 @@ class auth_interface
      *
      * @return boolean true if access is granted, false if not.
      */
-    function attribAllowed(&$securityMgr, &$attr, $mode, $record = NULL)
+    function attribAllowed(&$securityMgr, &$attr, $mode, $record = null)
     {
         $node = $attr->m_ownerInstance->atkNodeType();
         $attribute = $attr->fieldName();
@@ -200,28 +204,32 @@ class auth_interface
         if (($securityMgr->m_scheme == "none") || (!Atk_Config::getGlobal("security_attributes")) || ($securityMgr->hasLevel(-1)) || (strtolower($securityMgr->m_user["name"]) == "administrator")) {
             $allowed = true;
         } // user is guest? (guests may do nothing)
-        else if (($securityMgr->hasLevel(-2)) || (strtolower($securityMgr->m_user["name"]) == "guest")) {
-            $allowed = false;
-        } // other
         else {
-            // all other situations
-            $required = $this->getAttribEntity($node, $attribute, $mode);
+            if (($securityMgr->hasLevel(-2)) || (strtolower($securityMgr->m_user["name"]) == "guest")) {
+                $allowed = false;
+            } // other
+            else {
+                // all other situations
+                $required = $this->getAttribEntity($node, $attribute, $mode);
 
-            if ($required == -1) {
-                // No access restrictions found..
-                $allowed = true;
-            } else {
-                if ($securityMgr->m_scheme == "level") {
-                    $allowed = ($securityMgr->m_user["level"] >= $required);
-                } else if ($securityMgr->m_scheme == "group") {
-                    $level = is_array($securityMgr->m_user["level"]) ? $securityMgr->m_user["level"] : [$securityMgr->m_user["level"]];
-                    $required = is_array($required) ? $required : [$required];
-                    $allowed = array_intersect($level, $required) ? true : false;
-                    if (Atk_Config::getGlobal("reverse_attributeaccess_logic", false)) {
-                        $allowed = !$allowed;
+                if ($required == -1) {
+                    // No access restrictions found..
+                    $allowed = true;
+                } else {
+                    if ($securityMgr->m_scheme == "level") {
+                        $allowed = ($securityMgr->m_user["level"] >= $required);
+                    } else {
+                        if ($securityMgr->m_scheme == "group") {
+                            $level = is_array($securityMgr->m_user["level"]) ? $securityMgr->m_user["level"] : [$securityMgr->m_user["level"]];
+                            $required = is_array($required) ? $required : [$required];
+                            $allowed = array_intersect($level, $required) ? true : false;
+                            if (Atk_Config::getGlobal("reverse_attributeaccess_logic", false)) {
+                                $allowed = !$allowed;
+                            }
+                        } else { // unknown scheme??
+                            $allowed = false;
+                        }
                     }
-                } else { // unknown scheme??
-                    $allowed = false;
                 }
             }
         }

@@ -45,29 +45,36 @@ class Atk_DateTimeAttribute extends Atk_Attribute
         $sec = 0;
         $dateValid = true;
 
-        if (!empty($dateArray["hours"]))
+        if (!empty($dateArray["hours"])) {
             $hour = $dateArray["hours"];
-        if (!empty($dateArray["minutes"]))
+        }
+        if (!empty($dateArray["minutes"])) {
             $min = $dateArray["minutes"];
-        if (!empty($dateArray["seconds"]))
+        }
+        if (!empty($dateArray["seconds"])) {
             $sec = $dateArray["seconds"];
-        if (!empty($dateArray["day"]))
+        }
+        if (!empty($dateArray["day"])) {
             $day = $dateArray["day"];
-        else
+        } else {
             $dateValid = false;
-        if (!empty($dateArray["month"]))
+        }
+        if (!empty($dateArray["month"])) {
             $month = $dateArray["month"];
-        else
+        } else {
             $dateValid = false;
-        if (!empty($dateArray["year"]))
+        }
+        if (!empty($dateArray["year"])) {
             $year = $dateArray["year"];
-        else
+        } else {
             $dateValid = false;
+        }
 
-        if ($dateValid)
+        if ($dateValid) {
             return adodb_mktime($hour, $min, $sec, $month, $day, $year);
-        else
+        } else {
             return adodb_mktime(0, 0, 0);
+        }
     }
 
     /**
@@ -80,15 +87,15 @@ class Atk_DateTimeAttribute extends Atk_Attribute
      *       But can we keep this backwards compatible somehow? At least now we
      *       are certain it doesn't work. ;) (PCV)
      *
-     * @param string $name        Name of the attribute
-     * @param string|int $default_date   start date
-     * @param string $default_time     start time
+     * @param string $name Name of the attribute
+     * @param string|int $default_date start date
+     * @param string $default_time start time
      * @param int $flags Flags for this attribute
      */
     function atkDateTimeAttribute($name, $default_date = "", $default_time = "", $flags = 0)
     {
         $default_steps = array();
-        for ($i = 0; $i < 60; $i ++) {
+        for ($i = 0; $i < 60; $i++) {
             $default_steps[$i] = $i;
         }
 
@@ -171,10 +178,11 @@ class Atk_DateTimeAttribute extends Atk_Attribute
      * @param string $datetime the time string
      * @return array with 6 fields (day, month, year, hours, minutes, seconds)
      */
-    static function datetimeArray($datetime = NULL)
+    static function datetimeArray($datetime = null)
     {
-        if ($datetime == NULL)
+        if ($datetime == null) {
             $datetime = date("YmdHis");
+        }
         $date = substr($datetime, 0, 8);
         $time = substr($datetime, 8, 6);
         return array_merge(
@@ -224,10 +232,11 @@ class Atk_DateTimeAttribute extends Atk_Attribute
     {
         $date = $this->m_date->display($record, $mode);
         $time = $this->m_time->display($record, $mode);
-        if ($date != '' && $time != '')
+        if ($date != '' && $time != '') {
             return $date . (($mode == "csv" || $mode == "plain") ? " " : "&nbsp;") . $time;
-        else
+        } else {
             return "";
+        }
     }
 
     /**
@@ -244,12 +253,14 @@ class Atk_DateTimeAttribute extends Atk_Attribute
     function fetchValue($postvars)
     {
         $date = $this->m_date->fetchValue($postvars);
-        if ($date == NULL)
-            return NULL;
+        if ($date == null) {
+            return null;
+        }
 
         $time = $this->m_time->fetchValue($postvars);
-        if ($time == NULL)
+        if ($time == null) {
             $time = array('hours' => '00', 'minutes' => '00', 'seconds' => '00');
+        }
 
         return array_merge($date, $time);
     }
@@ -309,15 +320,17 @@ class Atk_DateTimeAttribute extends Atk_Attribute
             $date = $this->m_date->value2db($rec);
             $time = $this->m_time->value2db($rec);
 
-            if ($date != NULL && $time != NULL)
+            if ($date != null && $time != null) {
                 return $date . " " . $time;
+            }
+        } else {
+            if (!empty($rec[$this->fieldName()])) {
+                $stamp = strtotime($rec[$this->fieldName()]);
+                $stamp = $this->toUTC($stamp, $rec);
+                return date('Y-m-d H:i:s', $stamp);
+            }
         }
-        else if (!empty($rec[$this->fieldName()])) {
-            $stamp = strtotime($rec[$this->fieldName()]);
-            $stamp = $this->toUTC($stamp, $rec);
-            return date('Y-m-d H:i:s', $stamp);
-        }
-        return NULL;
+        return null;
     }
 
     /**
@@ -327,7 +340,7 @@ class Atk_DateTimeAttribute extends Atk_Attribute
      */
     function db2value($rec)
     {
-        if (isset($rec[$this->fieldName()]) && $rec[$this->fieldName()] != NULL) {
+        if (isset($rec[$this->fieldName()]) && $rec[$this->fieldName()] != null) {
             /**
              * @todo Fix handling of 0 and NULL db values in the date, time and datetime attributes
              * Currently the date attribute gives an empty string when parsing 0000-00-00,
@@ -345,22 +358,22 @@ class Atk_DateTimeAttribute extends Atk_Attribute
             $tmp_rec = $rec;
             $tmp_rec[$this->fieldname()] = $datetime[0];
             $result_date = $this->m_date->db2value($tmp_rec);
-            if ($result_date == NULL) {
-                return NULL;
+            if ($result_date == null) {
+                return null;
             }
 
             $tmp_rec = $rec;
             $tmp_rec[$this->fieldname()] = isset($datetime[1]) ? $datetime[1] : null;
             $result_time = $this->m_time->db2value($tmp_rec);
-            if ($result_time == NULL) {
+            if ($result_time == null) {
                 $result_time = array('hours' => '00', 'minutes' => '00', 'seconds' => '00');
             }
 
-            $value = array_merge((array) $result_date, (array) $result_time);
+            $value = array_merge((array)$result_date, (array)$result_time);
             $value = $this->fromUTC($value, $tmp_rec);
             return $value;
         } else {
-            return NULL;
+            return null;
         }
     }
 
@@ -386,22 +399,24 @@ class Atk_DateTimeAttribute extends Atk_Attribute
     function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
     {
         if ($mode == "add" || $mode == "update") {
-            if ($this->value2db($rec) == NULL) {
+            if ($this->value2db($rec) == null) {
                 $query->addField($this->fieldName(), 'NULL', '', '', false);
             } else {
                 $db = &$this->m_ownerInstance->getDb();
-                if ($db->getType() != 'oci9')
+                if ($db->getType() != 'oci9') {
                     $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(AF_NO_QUOTES));
-                else {
+                } else {
                     $value = $this->value2db($rec);
-                    $query->addField($this->fieldName(), $value, "", "", !$this->hasFlag(AF_NO_QUOTES), $mode, "DATETIME");
+                    $query->addField($this->fieldName(), $value, "", "", !$this->hasFlag(AF_NO_QUOTES), $mode,
+                        "DATETIME");
                 }
             }
         } else {
-            if (Atk_Config::getGlobal('database') != 'oci9')
+            if (Atk_Config::getGlobal('database') != 'oci9') {
                 $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES));
-            else {
-                $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES), $mode, "DATETIME");
+            } else {
+                $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES),
+                    $mode, "DATETIME");
             }
         }
     }
@@ -495,9 +510,19 @@ class Atk_DateTimeAttribute extends Atk_Attribute
     function parseStringValue($stringvalue)
     {
         $datetime = explode(" ", $stringvalue);
-        $formatsdate = array("dd-mm-yyyy", "dd-mm-yy", "d-mm-yyyy", "dd-m-yyyy",
-            "d-m-yyyy", "yyyy-mm-dd", "yyyy-mm-d", "yyyy-m-dd", "yyyy-m-d");
-        $retval = array_merge(Atk_DateAttribute::parseDate($datetime[0], $formatsdate), Atk_TimeAttribute::parseTime($datetime[1]));
+        $formatsdate = array(
+            "dd-mm-yyyy",
+            "dd-mm-yy",
+            "d-mm-yyyy",
+            "dd-m-yyyy",
+            "d-m-yyyy",
+            "yyyy-mm-dd",
+            "yyyy-mm-d",
+            "yyyy-m-dd",
+            "yyyy-m-d"
+        );
+        $retval = array_merge(Atk_DateAttribute::parseDate($datetime[0], $formatsdate),
+            Atk_TimeAttribute::parseTime($datetime[1]));
         return $retval;
     }
 
@@ -566,39 +591,39 @@ class Atk_DateTimeAttribute extends Atk_Attribute
     {
         if ($this->m_utcOffset !== null) {
             return $this->m_utcOffset;
-        } else if ($this->m_timezoneAttribute !== null) {
-            $parts = explode('.', $this->m_timezoneAttribute);
-            $node = $this->getOwnerInstance();
-
-            while (count($parts) > 0) {
-                $part = array_shift($parts);
-                $attr = $node->getAttribute($part);
-
-                // relation, prepare for next iteration
-                if (is_a($attr, 'atkManyToOneRelation')) {
-                    if (count($parts) > 0 && !isset($record[$part][$parts[0]])) {
-                        $attr->populate($record, array($parts[0]));
-                    }
-
-                    $record = $record[$attr->fieldName()];
-                    $node = $attr->m_destInstance;
-                }
-
-                // timezone attribute, calculate and return offset
-                else if (is_a($attr, 'atkTimezoneAttribute')) {
-                    return $attr->getUTCOffset($record[$attr->fieldName()], $stamp);
-                }
-
-                // assume the attribute in question already has the offset saved in seconds
-                else {
-                    return (int) $record[$attr->fieldName()];
-                }
-            }
-
-            Atk_Tools::atkdebug('WARNING: could not determine UTC offset for atkDateTimeAttribute "' . $this->fieldName() . '"!');
-            return 0;
         } else {
-            return 0;
+            if ($this->m_timezoneAttribute !== null) {
+                $parts = explode('.', $this->m_timezoneAttribute);
+                $node = $this->getOwnerInstance();
+
+                while (count($parts) > 0) {
+                    $part = array_shift($parts);
+                    $attr = $node->getAttribute($part);
+
+                    // relation, prepare for next iteration
+                    if (is_a($attr, 'atkManyToOneRelation')) {
+                        if (count($parts) > 0 && !isset($record[$part][$parts[0]])) {
+                            $attr->populate($record, array($parts[0]));
+                        }
+
+                        $record = $record[$attr->fieldName()];
+                        $node = $attr->m_destInstance;
+                    } // timezone attribute, calculate and return offset
+                    else {
+                        if (is_a($attr, 'atkTimezoneAttribute')) {
+                            return $attr->getUTCOffset($record[$attr->fieldName()], $stamp);
+                        } // assume the attribute in question already has the offset saved in seconds
+                        else {
+                            return (int)$record[$attr->fieldName()];
+                        }
+                    }
+                }
+
+                Atk_Tools::atkdebug('WARNING: could not determine UTC offset for atkDateTimeAttribute "' . $this->fieldName() . '"!');
+                return 0;
+            } else {
+                return 0;
+            }
         }
     }
 

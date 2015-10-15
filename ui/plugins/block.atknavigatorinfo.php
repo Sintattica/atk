@@ -21,7 +21,7 @@
  * The navigator info plug-in can be used to easily generate a information about
  * pagination through page results (e.g. "item 10 - 20 of 40").
  *
- * Params: 
+ * Params:
  * - name:      navigatorinfo name (name of the special variable inside the block)
  * - limit:     limit
  * - offset:    current offset
@@ -29,7 +29,7 @@
  *
  * The special navigatorinfo variable which is available inside the block contains
  * information about the current pagination and contains the following properties:
- * 
+ *
  * - page_count: total number of pages with results
  * - page:       current page number
  * - start:      index of first item on this page

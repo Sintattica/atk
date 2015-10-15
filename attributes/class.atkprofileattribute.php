@@ -49,8 +49,9 @@ class Atk_ProfileAttribute extends Atk_Attribute
         $this->m_parentAttrName = $parentAttrName;
 
         $this->m_accessField = Atk_Config::getGlobal('auth_accessfield');
-        if (empty($this->m_accessField))
+        if (empty($this->m_accessField)) {
             $this->m_accessField = Atk_Config::getGlobal('auth_levelfield');
+        }
     }
 
     /**
@@ -84,8 +85,9 @@ class Atk_ProfileAttribute extends Atk_Attribute
     function getChildGroups(&$db, $id)
     {
         $result = array();
-        if (!is_numeric($id))
+        if (!is_numeric($id)) {
             return $result;
+        }
 
         $query = "SELECT " . $this->m_ownerInstance->primaryKeyField() . " " .
             "FROM " . $this->m_ownerInstance->m_table . " " .
@@ -126,8 +128,9 @@ class Atk_ProfileAttribute extends Atk_Attribute
             $checked = $record[$this->fieldName()];
 
             $children = array();
-            if (!empty($this->m_parentAttrName))
+            if (!empty($this->m_parentAttrName)) {
                 $children = $this->getChildGroups($db, $record[$this->m_ownerInstance->primaryKeyField()]);
+            }
 
             foreach ($checked as $node => $actions) {
                 $actions = array_unique($actions);
@@ -137,18 +140,20 @@ class Atk_ProfileAttribute extends Atk_Attribute
 
                 $validActions = array();
 
-                if (is_array($allActions[$nodeModule][$nodeType]))
+                if (is_array($allActions[$nodeModule][$nodeType])) {
                     $validActions = array_intersect($actions, $allActions[$nodeModule][$nodeType]);
+                }
 
                 // If you're not an admin, leave out all actions which are not editable (none if no editable actions available)
-                if (!$isAdmin)
+                if (!$isAdmin) {
                     $validActions = isset($editableActions[$nodeModule][$nodeType])
-                            ? array_intersect($validActions, $editableActions[$nodeModule][$nodeType])
-                            : array();
+                        ? array_intersect($validActions, $editableActions[$nodeModule][$nodeType])
+                        : array();
+                }
 
                 foreach ($validActions as $action) {
                     $query = "INSERT INTO " . Atk_Config::getGlobal("auth_accesstable") . " (node, action, " . $this->m_accessField . ") ";
-                    $query.= "VALUES ('" . $db->escapeSQL($node) . "','" . $db->escapeSQL($action) . "','" . $record[$this->m_ownerInstance->primaryKeyField()] . "')";
+                    $query .= "VALUES ('" . $db->escapeSQL($node) . "','" . $db->escapeSQL($action) . "','" . $record[$this->m_ownerInstance->primaryKeyField()] . "')";
 
                     if (!$db->query($query)) {
                         // error.
@@ -202,7 +207,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
 
     /**
      * Retrieve all possible module/node actions.
-     * 
+     *
      * @param array $record The record
      * @return array Array with actions
      */
@@ -225,20 +230,20 @@ class Atk_ProfileAttribute extends Atk_Attribute
                 $node = Atk_Module::getNodeType($row['node']);
                 $result[$module][$module][$node][] = $row['action'];
             }
-        }
-
-        // non-hierarchic groups, or root
+        } // non-hierarchic groups, or root
         else {
             // include node information
-            if (file_exists("config.nodes.php"))
+            if (file_exists("config.nodes.php")) {
                 include_once("config.nodes.php");
+            }
 
             // get nodes for each module
             foreach (array_keys($g_modules) as $module) {
                 if (!isset($g_moduleflags[$module]) || !Atk_Tools::hasFlag($g_moduleflags[$module], MF_NORIGHTS)) {
                     $instance = Atk_Module::atkGetModule($module);
-                    if (method_exists($instance, "getNodes"))
+                    if (method_exists($instance, "getNodes")) {
                         $instance->getNodes();
+                    }
                 }
             }
 
@@ -266,7 +271,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
 
     /**
      * Returns a list of actions that should be edittable by the user.
-     * 
+     *
      * @param array $record The record
      * @return array Array with editable actions
      */
@@ -274,10 +279,11 @@ class Atk_ProfileAttribute extends Atk_Attribute
     {
         $user = Atk_SecurityManager::atkGetUser();
         $levels = "";
-        if (!is_array($user['level']))
+        if (!is_array($user['level'])) {
             $levels = "'" . $user['level'] . "'";
-        else
+        } else {
             $levels = "'" . implode("','", $user['level']) . "'";
+        }
 
         // retrieve editable actions by user's levels
         $db = Atk_Tools::atkGetDb();
@@ -306,7 +312,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
 
     /**
      * Returns the currently selected actions.
-     * 
+     *
      * @param array $record The record
      * @return array array with selected actions
      */
@@ -356,7 +362,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
 
             foreach ($nodes as $node => $actions) {
                 $showBox = $isAdmin || count(array_intersect($actions, (is_array($editableActions[$module][$node])
-                                    ? $editableActions[$module][$node] : array()))) > 0;
+                        ? $editableActions[$module][$node] : array()))) > 0;
                 $display_node_str = false;
                 $display_tabs_str = false;
                 $node_result = '';
@@ -364,7 +370,8 @@ class Atk_ProfileAttribute extends Atk_Attribute
                 $tab_permissions_string = '';
 
                 foreach ($actions as $action) {
-                    $isSelected = isset($selectedActions[$module][$node]) && in_array($action, $selectedActions[$module][$node]);
+                    $isSelected = isset($selectedActions[$module][$node]) && in_array($action,
+                            $selectedActions[$module][$node]);
 
                     // If the action of a node is selected for this user we will show the node,
                     // otherwise we won't
@@ -372,9 +379,11 @@ class Atk_ProfileAttribute extends Atk_Attribute
                         $display_node_str = true;
                         if (substr($action, 0, 4) == "tab_") {
                             $display_tabs_str = true;
-                            $tab_permissions_string .= $this->permissionName($action, $node, $module) . '&nbsp;&nbsp;&nbsp;';
+                            $tab_permissions_string .= $this->permissionName($action, $node,
+                                    $module) . '&nbsp;&nbsp;&nbsp;';
                         } else {
-                            $permissions_string .= $this->permissionName($action, $node, $module) . '&nbsp;&nbsp;&nbsp;';
+                            $permissions_string .= $this->permissionName($action, $node,
+                                    $module) . '&nbsp;&nbsp;&nbsp;';
                         }
                     }
                 }
@@ -386,7 +395,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
                         $node_result .= "<br>Tabs:&nbsp;" . $tab_permissions_string;
                     }
                     $node_result .= "<br /><br />\n";
-                }else {
+                } else {
                     $node_result .= $permissions_string;
                     if ($display_tabs_str) {
                         $node_result .= "<br>Tabs:&nbsp;" . $tab_permissions_string;
@@ -458,10 +467,13 @@ class Atk_ProfileAttribute extends Atk_Attribute
         foreach ($allActions as $section => $modules) {
             if ($showSection) {
                 $result .= "</div><br>";
-                $result .= "<span  onclick=\"profile_swapProfileDiv('div_$section','" . Atk_Config::getGlobal("atkroot") . "');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\"><img src=\"" . Atk_Config::getGlobal("atkroot") . "atk/images/plus.gif\" border=\"0\" id=\"img_div_$section\">&nbsp;" . Atk_Tools::atktext(array("title_$section", $section), $section) . "</span><br/>";
+                $result .= "<span  onclick=\"profile_swapProfileDiv('div_$section','" . Atk_Config::getGlobal("atkroot") . "');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\"><img src=\"" . Atk_Config::getGlobal("atkroot") . "atk/images/plus.gif\" border=\"0\" id=\"img_div_$section\">&nbsp;" . Atk_Tools::atktext(array(
+                        "title_$section",
+                        $section
+                    ), $section) . "</span><br/>";
                 $result .= "<div id='div_$section' name='div_$section' style='display: none; padding-left: 15px'>";
                 $result .= "<input type='hidden' name=\"divstate['div_$section']\" id=\"divstate['div_$section']\" value='closed' />";
-                $result.='<div style="font-size: 80%; margin-top: 4px; margin-bottom: 4px" >
+                $result .= '<div style="font-size: 80%; margin-top: 4px; margin-bottom: 4px" >
                   [<a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkAllByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' .
                     Atk_Tools::atktext("check_all", "atk") .
                     '</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkNoneByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' .
@@ -474,10 +486,11 @@ class Atk_ProfileAttribute extends Atk_Attribute
             foreach ($modules as $module => $nodes) {
                 foreach ($nodes as $node => $actions) {
                     $showBox = $isAdmin || count(array_intersect($actions, (is_array($editableActions[$module][$node])
-                                        ? $editableActions[$module][$node] : array()))) > 0;
+                            ? $editableActions[$module][$node] : array()))) > 0;
 
-                    if ($showBox)
+                    if ($showBox) {
                         $result .= "<b>" . Atk_Tools::atktext($node, $module) . "</b><br>";
+                    }
 
                     $tabs_str = "";
                     $display_tabs_str = false;
@@ -487,30 +500,35 @@ class Atk_ProfileAttribute extends Atk_Attribute
                         $temp_str = "";
 
                         $isEditable = $isAdmin || Atk_Tools::atk_in_array($action, $editableActions[$module][$node]);
-                        $isSelected = isset($selectedActions[$module][$node]) && in_array($action, $selectedActions[$module][$node]);
+                        $isSelected = isset($selectedActions[$module][$node]) && in_array($action,
+                                $selectedActions[$module][$node]);
 
                         if ($isEditable) {
-                            if (substr($action, 0, 4) == "tab_")
+                            if (substr($action, 0, 4) == "tab_") {
                                 $display_tabs_str = true;
+                            }
 
                             $temp_str .= '<input type="checkbox" name="' . $this->formName() . '[]" ' . $this->getCSSClassAttribute("atkcheckbox") . ' value="' . $section . "." . $module . "." . $node . "." . $action . '" ';
                             $temp_str .= ($isSelected ? ' checked="checked"' : '') . '></input> ';
                             $temp_str .= $this->permissionName($action, $node, $module) . '&nbsp;&nbsp;&nbsp;';
                         }
 
-                        if (substr($action, 0, 4) == "tab_")
+                        if (substr($action, 0, 4) == "tab_") {
                             $tabs_str .= $temp_str;
-                        else
+                        } else {
                             $result .= $temp_str;
+                        }
                     }
 
-                    if ($display_tabs_str)
+                    if ($display_tabs_str) {
                         $result .= "<br>Tabs:&nbsp;";
+                    }
 
                     $result .= $tabs_str;
 
-                    if ($showBox)
+                    if ($showBox) {
                         $result .= "<br /><br />\n";
+                    }
                 }
             }
         }
@@ -522,7 +540,7 @@ class Atk_ProfileAttribute extends Atk_Attribute
 
     /**
      * Return the translated name of a permission.
-     * 
+     *
      * @param string $action The name of the action
      * @param string $nodename The name of the node
      * @param string $modulename The name of the module
@@ -570,12 +588,14 @@ class Atk_ProfileAttribute extends Atk_Attribute
             if (count($elems) == 4) {
                 $node = $elems[1] . "." . $elems[2];
                 $action = $elems[3];
-            } else if (count($elems) == 3) {
-                $node = $elems[1];
-                $action = $elems[2];
             } else {
-                // never happens..
-                Atk_Tools::atkdebug("profileattribute encountered incomplete combination");
+                if (count($elems) == 3) {
+                    $node = $elems[1];
+                    $action = $elems[2];
+                } else {
+                    // never happens..
+                    Atk_Tools::atkdebug("profileattribute encountered incomplete combination");
+                }
             }
             $actions[$node][] = $action;
         }
@@ -649,16 +669,18 @@ class Atk_ProfileAttribute extends Atk_Attribute
     function _restoreDivStates(&$page)
     {
         $postvars = &$this->m_ownerInstance->m_postvars;
-        if (!isset($postvars['divstate']) || !is_array($postvars['divstate']) || sizeof($postvars['divstate']) == 0)
+        if (!isset($postvars['divstate']) || !is_array($postvars['divstate']) || sizeof($postvars['divstate']) == 0) {
             return;
+        }
 
         $divstate = $postvars['divstate'];
         $onLoadScript = "";
 
         foreach ($divstate as $key => $value) {
             $key = substr($key, 2, -2);
-            if ($value == "opened")
+            if ($value == "opened") {
                 $onLoadScript .= "profile_swapProfileDiv('$key','" . Atk_Config::getGlobal("atkroot") . "');";
+            }
         }
         $page->register_loadscript($onLoadScript);
     }

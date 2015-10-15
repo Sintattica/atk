@@ -17,7 +17,7 @@
 
 /**
  * Function for getting a configuration variable and set this in a variable in smarty.
- * 
+ *
  * @author Lineke Kerckhoffs-Willems <lineke@ibuildings.nl>
  */
 function smarty_function_atkconfig($params, &$smarty)

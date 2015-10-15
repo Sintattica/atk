@@ -41,9 +41,9 @@ class Atk_Dialog
      * Constructor.
      *
      * @param string $nodeType node type
-     * @param string $action   node action
-     * @param string $partial  partial name
-     * @param array  $params   url parameters
+     * @param string $action node action
+     * @param string $partial partial name
+     * @param array $params url parameters
      *
      * @return atkDialog
      */
@@ -87,7 +87,7 @@ class Atk_Dialog
 
     /**
      * Returns the dialog partial.
-     * 
+     *
      * @return string partial
      */
     public function getPartial()
@@ -112,7 +112,7 @@ class Atk_Dialog
      */
     public function setSessionStatus($sessionStatus)
     {
-        $this->m_sessionStatus = (int) $sessionStatus;
+        $this->m_sessionStatus = (int)$sessionStatus;
     }
 
     /**
@@ -128,7 +128,7 @@ class Atk_Dialog
     /**
      * Sets the theme to use.
      *
-     * @param string  $name theme name
+     * @param string $name theme name
      * @param boolean $load load theme?
      */
     function setTheme($name, $load = true)
@@ -191,7 +191,7 @@ class Atk_Dialog
 
     /**
      * Returns the modifier object.
-     * 
+     *
      * @return mixed modifier object
      */
     public function getModifierObject()
@@ -202,7 +202,7 @@ class Atk_Dialog
     /**
      * Sets an object which modifyObject method will be called (if exists) just
      * before showing the dialog. This method is allowed to alter the dialog.
-     * 
+     *
      * @see Atk_Dialog::getCall
      *
      * @param mixed $object modifier object
@@ -225,7 +225,7 @@ class Atk_Dialog
      *
      * @param string|boolean $theme uses the given window theme, by default checks the current ATK theme
      *                              which window theme should be used, if set explicitly to false no
-     *                              theme will be loaded 
+     *                              theme will be loaded
      */
     public static function loadScriptsAndStyles($theme = null)
     {
@@ -255,7 +255,8 @@ class Atk_Dialog
      */
     function getUrl()
     {
-        return Atk_Tools::partial_url($this->getNodeType(), $this->m_action, $this->m_partial, $this->m_params, $this->m_sessionStatus);
+        return Atk_Tools::partial_url($this->getNodeType(), $this->m_action, $this->m_partial, $this->m_params,
+            $this->m_sessionStatus);
     }
 
     /**
@@ -268,12 +269,15 @@ class Atk_Dialog
     {
         $options = array();
 
-        if ($this->m_width !== null)
+        if ($this->m_width !== null) {
             $options['width'] = $this->m_width;
-        if ($this->m_height !== null)
+        }
+        if ($this->m_height !== null) {
             $options['height'] = $this->m_height;
-        if ($this->m_serializeForm != null)
+        }
+        if ($this->m_serializeForm != null) {
             $options['serializeForm'] = $this->m_serializeForm;
+        }
 
         return $options;
     }
@@ -287,19 +291,20 @@ class Atk_Dialog
      */
     protected function getWindowOptions()
     {
-        if (Atk_Theme::getInstance()->getAttribute('dialog_window_options', null) != null)
+        if (Atk_Theme::getInstance()->getAttribute('dialog_window_options', null) != null) {
             return Atk_Theme::getInstance()->getAttribute('dialog_window_options');
-        else
+        } else {
             return '{}';
+        }
     }
 
     /**
      * Returns the JavaScript call to open the dialog.
      *
-     * @param boolean $load         load JavaScript and stylesheets needed to show this dialog?
-     * @param boolean $encode       encode using htmlentities (needed to use in links etc.)
+     * @param boolean $load load JavaScript and stylesheets needed to show this dialog?
+     * @param boolean $encode encode using htmlentities (needed to use in links etc.)
      * @param boolean $callModifier call node's dialog modifier (modifyDialog method)?
-     * @param boolean $lateParamBinding 
+     * @param boolean $lateParamBinding
      *
      * @return string JavaScript call for opening the dialog
      */
@@ -312,7 +317,8 @@ class Atk_Dialog
         if ($callModifier) {
             $method = 'modifyDialog';
             if ($this->getModifierObject() != null &&
-                method_exists($this->getModifierObject(), $method)) {
+                method_exists($this->getModifierObject(), $method)
+            ) {
                 $this->getModifierObject()->$method($this);
             }
         }
@@ -339,11 +345,11 @@ class Atk_Dialog
      * Returns JavaScript code to save the contents of the current
      * active ATK dialog.
      *
-     * @param string $url        save URL
-     * @param string $formName   form name (will be serialized)
+     * @param string $url save URL
+     * @param string $formName form name (will be serialized)
      * @param array $extraParams key/value array with URL parameters that need to be send
      *                           the parameters will override form element with the same name!
-     * @param boolean $encode    encode using htmlentities (needed to use in links etc.)
+     * @param boolean $encode encode using htmlentities (needed to use in links etc.)
      *
      * @return string JavaScript call for saving the current dialog
      */
@@ -376,11 +382,11 @@ class Atk_Dialog
      * Returns JavaScript code to save the contents of the current
      * active ATK dialog and close it immediately.
      *
-     * @param string $url        save URL
-     * @param string $formName   form name (will be serialized)
+     * @param string $url save URL
+     * @param string $formName form name (will be serialized)
      * @param array $extraParams key/value array with URL parameters that need to be send
      *                           the parameters will override form element with the same name!
-     * @param boolean $encode    encode using htmlentities (needed to use in links etc.)
+     * @param boolean $encode encode using htmlentities (needed to use in links etc.)
      *
      * @return string JavaScript call for saving the current dialog and closing it immediately
      */

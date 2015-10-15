@@ -7,7 +7,7 @@
  * included in the distribution.
  *
  * String class for multibyte (utf-8) character support
- * 
+ *
  * @package atk
  * @subpackage utils
  *
@@ -21,7 +21,7 @@
 class Atk_String
 {
     /**
-     * Do we have multibyte support 
+     * Do we have multibyte support
      * @var boolean
      */
     static $s_hasMultiByteSupport = null;
@@ -30,10 +30,34 @@ class Atk_String
      * Accepted charsets for htmlentities and html_entity_decode
      * @var array
      */
-    static $s_acceptedCharsets = array('iso-8859-1', 'iso-8859-15', 'utf-8', 'cp866', 'ibm866', '866',
-        'cp1251', 'windows-1251', 'win-1251', '1251', 'cp1252', 'windows-1252', '1252',
-        'koi8-r', 'koi8-ru', 'koi8r', 'big5', '950', 'gb2312', '936', 'big5-hkscs',
-        'shift_jis', 'sjis', '932', 'euc-jp', 'eucjp');
+    static $s_acceptedCharsets = array(
+        'iso-8859-1',
+        'iso-8859-15',
+        'utf-8',
+        'cp866',
+        'ibm866',
+        '866',
+        'cp1251',
+        'windows-1251',
+        'win-1251',
+        '1251',
+        'cp1252',
+        'windows-1252',
+        '1252',
+        'koi8-r',
+        'koi8-ru',
+        'koi8r',
+        'big5',
+        '950',
+        'gb2312',
+        '936',
+        'big5-hkscs',
+        'shift_jis',
+        'sjis',
+        '932',
+        'euc-jp',
+        'eucjp'
+    );
 
     /**
      * Check if the system has multibyte support
@@ -72,9 +96,9 @@ class Atk_String
 
     /**
      * Get part of string
-     * @param string $str The string being checked. 
-     * @param int $start The first position used in $str 
-     * @param int $length[optional] The maximum length of the returned string
+     * @param string $str The string being checked.
+     * @param int $start The first position used in $str
+     * @param int $length [optional] The maximum length of the returned string
      * @return string
      */
     public static function substr($str, $start, $length = '')
@@ -99,9 +123,9 @@ class Atk_String
 
     /**
      *  Find position of first occurrence of string in a string
-     * @param object $haystack The string being checked. 
-     * @param object $needle The position counted from the beginning of haystack . 
-     * @param object $offset[optional] The search offset. If it is not specified, 0 is used. 
+     * @param object $haystack The string being checked.
+     * @param object $needle The position counted from the beginning of haystack .
+     * @param object $offset [optional] The search offset. If it is not specified, 0 is used.
      * @return int|boolean
      */
     public static function strpos($haystack, $needle, $offset = 0)
@@ -115,8 +139,8 @@ class Atk_String
 
     /**
      * Make a string lowercase
-     * @param string $str The string being lowercased. 
-     * @return string 
+     * @param string $str The string being lowercased.
+     * @return string
      */
     public static function strtolower($str)
     {
@@ -129,8 +153,8 @@ class Atk_String
 
     /**
      * Make a string uppercase
-     * @param string $str The string being uppercased. 
-     * @return string 
+     * @param string $str The string being uppercased.
+     * @return string
      */
     public static function strtoupper($str)
     {
@@ -147,20 +171,22 @@ class Atk_String
      * configured charset instead of PHP's default charset, if no
      * charset is given.
      *
-     * @param String $str    string to convert
-     * @param int $quote_style  quote style (defaults to ENT_COMPAT)
-     * @param String $charset   character set to use (default to Atk_Tools::atktext('charset', 'atk'))
+     * @param String $str string to convert
+     * @param int $quote_style quote style (defaults to ENT_COMPAT)
+     * @param String $charset character set to use (default to Atk_Tools::atktext('charset', 'atk'))
      *
      * @return String encoded string
      */
     public static function html_entity_decode($str, $quote_style = ENT_COMPAT, $charset = null)
     {
-        if ($charset === null)
+        if ($charset === null) {
             $charset = Atk_Tools::atkGetCharset();
+        }
 
         // check if charset is allowed, else use default charset for this function
-        if (!in_array(strtolower($charset), self::$s_acceptedCharsets))
+        if (!in_array(strtolower($charset), self::$s_acceptedCharsets)) {
             $charset = 'iso-8859-1';
+        }
 
         return html_entity_decode($str, $quote_style, $charset);
     }
@@ -170,20 +196,22 @@ class Atk_String
      * htmlentities function, but falls back to Atk_Tools::atkGetCharset() instead of
      * PHP's default charset, if no charset is given.
      *
-     * @param String $str       string to convert
-     * @param int $quote_style  quote style (defaults to ENT_COMPAT)
-     * @param String $charset   character set to use (default to Atk_Tools::atkGetCharset())
+     * @param String $str string to convert
+     * @param int $quote_style quote style (defaults to ENT_COMPAT)
+     * @param String $charset character set to use (default to Atk_Tools::atkGetCharset())
      *
      * @return String encoded string
      */
     public static function htmlentities($str, $quote_style = ENT_COMPAT, $charset = null)
     {
-        if ($charset === null)
+        if ($charset === null) {
             $charset = Atk_Tools::atkGetCharset();
+        }
 
         // check if charset is allowed, else use default charset for this function
-        if (!in_array(strtolower($charset), self::$s_acceptedCharsets))
+        if (!in_array(strtolower($charset), self::$s_acceptedCharsets)) {
             $charset = 'iso-8859-1';
+        }
 
         return htmlentities($str, $quote_style, $charset);
     }
@@ -211,9 +239,9 @@ class Atk_String
     /**
      * ATK version of the Smarty truncate function, multibyte safe.
      *
-     * @param  string  $string text to truncate
+     * @param  string $string text to truncate
      * @param  integer $max Maximum length of the total result string
-     * @param  string  $replace text to append to the end of the truncated string 
+     * @param  string $replace text to append to the end of the truncated string
      * @return string  truncated sting
      *
      */

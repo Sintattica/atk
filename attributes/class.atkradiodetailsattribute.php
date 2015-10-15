@@ -51,12 +51,12 @@ class Atk_RadioDetailsAttribute extends Atk_Attribute
      * value of another attribute which renders the detail selection for the
      * given option.
      *
-     * @param string $name    attribute name
+     * @param string $name attribute name
      * @param string $options can either be an array of values or a key/value
      *                        array in which case the key is used for the
      *                        translation and value is the value which is saved
      *                        in the database
-     * @param array $details  allows you to specify attributes that should be
+     * @param array $details allows you to specify attributes that should be
      *                        used for the detail selection for certain options
      *                        the key should be the option value and the value
      *                        should be the attribute name
@@ -67,11 +67,11 @@ class Atk_RadioDetailsAttribute extends Atk_Attribute
         parent::__construct($name, $flags);
 
         $this->m_options = isset($options[0]) ? array_combine($options, $options)
-                : $options;
+            : $options;
 
         // Cast single detail attributes to arrays
         foreach ($details as $value => $detail) {
-            $this->m_details[$value] = (array) $detail;
+            $this->m_details[$value] = (array)$detail;
         }
     }
 
@@ -94,7 +94,7 @@ class Atk_RadioDetailsAttribute extends Atk_Attribute
     /**
      * Edit.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      */
@@ -112,7 +112,9 @@ class Atk_RadioDetailsAttribute extends Atk_Attribute
             $attrNames = @$this->m_details[$value];
 
             if ($attrNames != null) {
-                $url = Atk_Tools::partial_url($this->getOwnerInstance()->atkNodeType(), $mode, 'attribute.' . $this->fieldName() . '.details', array('value' => $value, 'fieldprefix' => $fieldprefix));
+                $url = Atk_Tools::partial_url($this->getOwnerInstance()->atkNodeType(), $mode,
+                    'attribute.' . $this->fieldName() . '.details',
+                    array('value' => $value, 'fieldprefix' => $fieldprefix));
                 $onChange = "ATK.RadioDetailsAttribute.select(this, '{$url}');";
             } else {
                 $onChange = "ATK.RadioDetailsAttribute.select(this);";
@@ -129,10 +131,12 @@ class Atk_RadioDetailsAttribute extends Atk_Attribute
                 if ($isSelected) {
                     foreach ($attrNames as $attrName) {
                         $attr = $this->getOwnerInstance()->getAttribute($attrName);
-                        if (is_null($attr))
+                        if (is_null($attr)) {
                             continue;
+                        }
 
-                        $result .= '<blockquote>' . $attr->edit($record, $fieldprefix, $mode) . '&nbsp;' . htmlentities($attr->getLabel($record, $mode)) . '</blockquote>';
+                        $result .= '<blockquote>' . $attr->edit($record, $fieldprefix,
+                                $mode) . '&nbsp;' . htmlentities($attr->getLabel($record, $mode)) . '</blockquote>';
                     }
                 }
                 $result .= '</div>';
@@ -146,7 +150,7 @@ class Atk_RadioDetailsAttribute extends Atk_Attribute
 
     /**
      * Display.
-     * 
+     *
      * @param array $record The record that holds the value for this attribute
      * @param String $mode The display mode ("view" for viewpages, or "list"
      *                     for displaying in recordlists, "edit" for
@@ -166,8 +170,9 @@ class Atk_RadioDetailsAttribute extends Atk_Attribute
             if ($attrNames != null) {
                 foreach ($attrNames as $attrName) {
                     $attr = $this->getOwnerInstance()->getAttribute($attrName);
-                    if (is_null($attr))
+                    if (is_null($attr)) {
                         continue;
+                    }
 
                     $label = $attr->getLabel($record, $mode);
                     $result .= '
@@ -194,16 +199,19 @@ class Atk_RadioDetailsAttribute extends Atk_Attribute
         $value = $this->getOwnerInstance()->m_postvars['value'];
 
         $attrNames = $this->m_details[$value];
-        if (is_null($attrNames))
+        if (is_null($attrNames)) {
             return '';
+        }
 
         $result = '';
         foreach ($attrNames as $attrName) {
             $attr = $this->getOwnerInstance()->getAttribute($attrName);
-            if (is_null($attr))
+            if (is_null($attr)) {
                 continue;
+            }
 
-            $result .= '<blockquote>' . $attr->edit(array(), $fieldprefix, $mode) . '&nbsp;' . $attr->getLabel(array(), $mode) . '</blockquote>';
+            $result .= '<blockquote>' . $attr->edit(array(), $fieldprefix, $mode) . '&nbsp;' . $attr->getLabel(array(),
+                    $mode) . '</blockquote>';
         }
 
         return $result;

@@ -67,8 +67,8 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
     /**
      * Constructs a new many-to-many select relation.
      *
-     * @param string $name        The name of the relation
-     * @param string $link         The full name of the node that is used as
+     * @param string $name The name of the relation
+     * @param string $link The full name of the node that is used as
      *                            intermediairy node. The intermediairy node is
      *                            assumed to have 2 attributes that are named
      *                            after the nodes at both ends of the relation.
@@ -80,13 +80,14 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
      *                            and setRemoteKey()
      * @param string $destination The full name of the node that is the other
      *                            end of the relation.
-     * @param int $flags          Flags for the relation.
+     * @param int $flags Flags for the relation.
      */
     public function __construct($name, $link, $destination, $flags = 0)
     {
         parent::__construct($name, $link, $destination, $flags);
 
-        $relation = new Atk_ManyToOneRelation($this->fieldName() . '_m2msr_add', $this->m_destination, AF_MANYTOONE_AUTOCOMPLETE | AF_HIDE);
+        $relation = new Atk_ManyToOneRelation($this->fieldName() . '_m2msr_add', $this->m_destination,
+            AF_MANYTOONE_AUTOCOMPLETE | AF_HIDE);
         $relation->setDisabledModes(DISABLED_VIEW | DISABLED_EDIT);
         $relation->setLoadType(NOLOAD);
         $relation->setStorageType(NOSTORE);
@@ -132,7 +133,7 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
      * this if the position attribute has been set.
      *
      * @param array $selectedRecords selected records
-     * @param array $selectedKey     selected keys
+     * @param array $selectedKey selected keys
      */
     private function orderSelectedRecords(&$selectedRecords, $selectedKeys)
     {
@@ -205,8 +206,10 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
                 $result .= '<li class="atkmanytomanyselectrelation-addition">' . $addField . '</li>';
             }
             $result .= '</ul>';
-        } else if (!$addLink) {
-            $result .= '<i>' . $this->text('none') .'</i>';
+        } else {
+            if (!$addLink) {
+                $result .= '<i>' . $this->text('none') . '</i>';
+            }
         }
 
         if ($addLink) {
@@ -227,7 +230,7 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
      *
      * @param array $record The record that holds the value for this attribute.
      * @param String $id is the html id of the relation
-     * @param int $uniqueFilter is the type of array_unique filter to use on 
+     * @param int $uniqueFilter is the type of array_unique filter to use on
      *            the results. Use boolean false to dissable
      *
      * @return array of selected keys in the order they were submitted
@@ -258,9 +261,9 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
     /**
      * Load function.
      *
-     * @param Atk_Db  $db     database instance.
-     * @param array  $record record
-     * @param string $mode   load mode
+     * @param Atk_Db $db database instance.
+     * @param array $record record
+     * @param string $mode load mode
      */
     public function load(Atk_Db $db, $record, $mode)
     {
@@ -324,7 +327,7 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
     /**
      * Render selected record.
      *
-     * @param array  $record      selected record
+     * @param array $record selected record
      * @param string $fieldprefix field prefix
      */
     protected function renderSelectedRecord($record, $fieldprefix)
@@ -380,8 +383,9 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
         $actionLinks = array();
         foreach ($actions as $action) {
             $actionLink = $this->getActionLink($action, $record);
-            if ($actionLink != null)
+            if ($actionLink != null) {
                 $actionLinks[] = $actionLink;
+            }
         }
 
         $htmlActionLinks = '';
@@ -412,8 +416,10 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
     protected function getAddActionLink($record, $fieldprefix, $params = array())
     {
         $filter = $this->parseFilter($this->getManyToOneRelation()->m_destinationFilter, $record);
-        $params = array_merge($params, array('atkfilter' => $filter, "atkpkret" => $this->getHtmlId($fieldprefix) . "_newsel"));
-        $link = Atk_Tools::atkHref(Atk_Tools::dispatch_url($this->m_destination, "add", $params), $this->getAddLabel(), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
+        $params = array_merge($params,
+            array('atkfilter' => $filter, "atkpkret" => $this->getHtmlId($fieldprefix) . "_newsel"));
+        $link = Atk_Tools::atkHref(Atk_Tools::dispatch_url($this->m_destination, "add", $params), $this->getAddLabel(),
+            SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
         return $link;
     }
 
@@ -425,7 +431,9 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
      */
     protected function getEditActionLink($record)
     {
-        return Atk_Tools::atkHref(Atk_Tools::dispatch_url($this->getdestination()->atknodetype(), 'edit', array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
+        return Atk_Tools::atkHref(Atk_Tools::dispatch_url($this->getdestination()->atknodetype(), 'edit',
+            array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SESSION_NESTED,
+            true, 'class="atkmanytomanyselectrelation-link"');
     }
 
     /**
@@ -436,7 +444,9 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
      */
     protected function getViewActionLink($record)
     {
-        return Atk_Tools::atkHref(Atk_Tools::dispatch_url($this->getdestination()->atknodetype(), 'view', array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('view'), SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
+        return Atk_Tools::atkHref(Atk_Tools::dispatch_url($this->getdestination()->atknodetype(), 'view',
+            array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('view'), SESSION_NESTED,
+            true, 'class="atkmanytomanyselectrelation-link"');
     }
 
     /**
@@ -461,7 +471,7 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
      */
     function recordActions($record, &$actions)
     {
-        
+
     }
 
     /**
@@ -476,7 +486,8 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
             return '';
         }
 
-        $url = Atk_Tools::partial_url($this->getOwnerInstance()->atkNodeType(), $mode, 'attribute.' . $this->fieldName() . '.selectedrecord', array('fieldprefix' => $fieldprefix));
+        $url = Atk_Tools::partial_url($this->getOwnerInstance()->atkNodeType(), $mode,
+            'attribute.' . $this->fieldName() . '.selectedrecord', array('fieldprefix' => $fieldprefix));
 
         $relation = $this->getManyToOneRelation();
 
@@ -503,8 +514,9 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
         $fieldprefix = $this->getOwnerInstance()->m_postvars['fieldprefix'];
         $selector = $this->getOwnerInstance()->m_postvars['selector'];
 
-        if (empty($selector))
+        if (empty($selector)) {
             return '';
+        }
 
         $record = $this->getDestination()->select($selector)->includes($this->getDestination()->descriptorFields())->firstRow();
 
@@ -578,7 +590,7 @@ class Atk_ManyToManySelectRelation extends Atk_ManyToManyRelation
      * in the join table that denotes the position of the item in the set.
      *
      * @param string $attr the position attribute/column name of the join
-     * @param string $htmlIdentifier is the html string to add to the end of the label. 
+     * @param string $htmlIdentifier is the html string to add to the end of the label.
      *        Defaults to an up down image.
      * @return void
      */

@@ -50,8 +50,7 @@ class MomentFromVo
     {
         $value = round($value, 2);
 
-        if ($this->getDirection() === 'future')
-        {
+        if ($this->getDirection() === 'future') {
             $value = '-' . $value;
         }
 

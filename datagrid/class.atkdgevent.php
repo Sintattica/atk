@@ -15,10 +15,10 @@
 
 /**
  * Grid event.
- * 
+ *
  * @see Atk_DGListener
  * @see Atk_DataGrid
- * 
+ *
  * @author Peter C. Verhage <peter@achievo.org>
  * @package atk
  * @subpackage datagrid
@@ -38,27 +38,27 @@ class Atk_DGEvent
     const POST_RENDER = "postRender";
 
     /**
-     * Event will be triggered at the start of the call to 
+     * Event will be triggered at the start of the call to
      * Atk_DataGrid::loadRecords, before the records are loaded.
      */
     const PRE_LOAD = "preLoad";
 
     /**
-     * Event will be triggered at the end of the call to 
+     * Event will be triggered at the end of the call to
      * Atk_DataGrid::loadRecords, after the records are loaded.
      */
     const POST_LOAD = "postLoad";
 
     /**
      * Grid.
-     * 
+     *
      * @var Atk_DataGrid
      */
     private $m_grid;
 
     /**
      * Event identifier.
-     * 
+     *
      * @var int
      */
     private $m_event;
@@ -66,8 +66,8 @@ class Atk_DGEvent
     /**
      * Constructs a new event
      *
-     * @param Atk_DataGrid $grid  grid
-     * @param string      $event event identifier
+     * @param Atk_DataGrid $grid grid
+     * @param string $event event identifier
      */
     public function __construct(Atk_DataGrid $grid, $event)
     {

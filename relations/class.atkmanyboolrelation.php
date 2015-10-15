@@ -73,7 +73,7 @@ class Atk_ManyBoolRelation extends Atk_ManyToManyRelation
             $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atkprofileattribute.js.php");
 
             if (!$this->hasFlag(AF_MANYBOOL_NO_TOOLBAR)) {
-                $result .='<div align="left"><font size="-2">
+                $result .= '<div align="left"><font size="-2">
                       [<a href="javascript:void(0)" onclick="profile_checkAll(\'' . $this->getHtmlId($fieldprefix) . '\'); return false;">' .
                     Atk_Tools::atktext("check_all", "atk") .
                     '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\'' . $this->getHtmlId($fieldprefix) . '\'); return false;">' .
@@ -82,8 +82,8 @@ class Atk_ManyBoolRelation extends Atk_ManyToManyRelation
                     Atk_Tools::atktext("invert_selection", "atk") . '</a>]</font></div>';
             }
 
-            $result.= '<table border="0"><tr>';
-            for ($i = 0; $i < $total_records; $i ++) {
+            $result .= '<table border="0"><tr>';
+            for ($i = 0; $i < $total_records; $i++) {
                 $detaillink = "&nbsp;";
                 $selector = "";
                 if (in_array($this->m_destInstance->primaryKey($recordset[$i]), $selectedPk)) {
@@ -101,7 +101,9 @@ class Atk_ManyBoolRelation extends Atk_ManyToManyRelation
                             ' AND ' . $this->m_linkInstance->m_table . '.' . $this->getRemoteKey() .
                             "='" . $remoteValue . "'";
                         // Create link to details.
-                        $detaillink = Atk_Tools::href(Atk_Tools::dispatch_url($this->m_link, "edit", array("atkselector" => $selector)), "[" . Atk_Tools::atktext("details", "atk") . "]", SESSION_NESTED, true);
+                        $detaillink = Atk_Tools::href(Atk_Tools::dispatch_url($this->m_link, "edit",
+                            array("atkselector" => $selector)), "[" . Atk_Tools::atktext("details", "atk") . "]",
+                            SESSION_NESTED, true);
                     }
                 } else {
                     $sel = "";
@@ -116,7 +118,7 @@ class Atk_ManyBoolRelation extends Atk_ManyToManyRelation
                     $onchange = '';
                 }
 
-                $result.= '<td class="table"><input type="checkbox" id="' . $inputId . '" name="' .
+                $result .= '<td class="table"><input type="checkbox" id="' . $inputId . '" name="' .
                     $this->getHtmlId($fieldprefix) .
                     '[][' . $this->getRemoteKey() .
                     ']" value="' .
@@ -124,20 +126,21 @@ class Atk_ManyBoolRelation extends Atk_ManyToManyRelation
                     '" ' . $this->getCSSClassAttribute("atkcheckbox") . ' ' . $sel . $onchange . '></td><td class="table">' .
                     '<label for="' . $inputId . '">' . $this->m_destInstance->descriptor($recordset[$i]) . '</label>' .
                     '</td><td class="table">' . $detaillink . '</td>';
-                if ($i % $cols == $modcols)
-                    $result .="</tr><tr>\n";
+                if ($i % $cols == $modcols) {
+                    $result .= "</tr><tr>\n";
+                }
             }
-            $result.="</tr></table>\n";
-        }
-        else {
+            $result .= "</tr></table>\n";
+        } else {
             $nodename = $this->m_destInstance->m_type;
-            $modulename = $this->m_destInstance->m_module;
-            ;
+            $modulename = $this->m_destInstance->m_module;;
             $result .= Atk_Tools::atktext('select_none', $modulename, $nodename) . " ";
         }
         // Add the add link if AF_MANYBOOL_AUTOLINK used
-        if (($this->hasFlag(AF_MANYBOOL_AUTOLINK)) && ($this->m_destInstance->allowed("add")))
-            $result.= Atk_Tools::href(Atk_Tools::dispatch_url($this->m_destination, "add"), $this->getAddLabel(), SESSION_NESTED) . "\n";
+        if (($this->hasFlag(AF_MANYBOOL_AUTOLINK)) && ($this->m_destInstance->allowed("add"))) {
+            $result .= Atk_Tools::href(Atk_Tools::dispatch_url($this->m_destination, "add"), $this->getAddLabel(),
+                    SESSION_NESTED) . "\n";
+        }
 
         return $result;
     }

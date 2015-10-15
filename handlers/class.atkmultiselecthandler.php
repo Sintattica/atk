@@ -14,6 +14,7 @@
  * @version $Revision: 6310 $
  * $Id$
  */
+
 /**
  * Handler class for the select action of a node. The handler draws a
  * generic select form for searching through the records and selecting
@@ -24,7 +25,6 @@
  * @subpackage handlers
  *
  */
-
 class Atk_MultiSelectHandler extends Atk_AdminHandler
 {
 
@@ -40,8 +40,9 @@ class Atk_MultiSelectHandler extends Atk_AdminHandler
 
         if (isset($this->m_postvars['atkselector'])) {
             $output = $this->invoke("handleMultiselect");
-        } else
+        } else {
             $output = $this->invoke("multiSelectPage");
+        }
 
         if ($output != "") {
             $page = &$this->getPage();
@@ -57,7 +58,8 @@ class Atk_MultiSelectHandler extends Atk_AdminHandler
     {
         $node = &$this->getNode();
         $columnConfig = &$node->getColumnConfig();
-        $recordset = $node->selectDb(implode(' OR ', $this->m_postvars['atkselector']), $columnConfig->getOrderByStatement(), "", $node->m_listExcludes, "", "multiselect");
+        $recordset = $node->selectDb(implode(' OR ', $this->m_postvars['atkselector']),
+            $columnConfig->getOrderByStatement(), "", $node->m_listExcludes, "", "multiselect");
 
         // loop recordset to parse atktargetvar
         $atktarget = Atk_Tools::atkurldecode($node->m_postvars['atktarget']);
@@ -65,11 +67,12 @@ class Atk_MultiSelectHandler extends Atk_AdminHandler
         $atktargettpl = $node->m_postvars['atktargetvartpl'];
 
         for ($i = 0; $i < count($recordset); $i++) {
-            if ($i == 0 && strpos($atktarget, '&') === false)
-                $atktarget.= '?';
-            else
+            if ($i == 0 && strpos($atktarget, '&') === false) {
+                $atktarget .= '?';
+            } else {
                 $atktarget .= '&';
-            $atktarget.= $atktargetvar . '[]=' . $this->parseString($atktargettpl, $recordset[$i]);
+            }
+            $atktarget .= $atktargetvar . '[]=' . $this->parseString($atktargettpl, $recordset[$i]);
         }
         $node->redirect($atktarget);
     }
@@ -111,7 +114,8 @@ class Atk_MultiSelectHandler extends Atk_AdminHandler
 
         $this->getNode()->addStyle("style.css");
 
-        $params["header"] = Atk_Tools::atktext("title_multiselect", $this->getNode()->m_module, $this->getNode()->m_type);
+        $params["header"] = Atk_Tools::atktext("title_multiselect", $this->getNode()->m_module,
+            $this->getNode()->m_type);
 
         $actions['actions'] = array();
         $actions['mra'][] = 'multiselect';
@@ -140,8 +144,10 @@ class Atk_MultiSelectHandler extends Atk_AdminHandler
 
         $output = $this->getUi()->renderList("multiselect", $params);
 
-        return $this->getUi()->renderBox(array("title" => $this->getNode()->actionTitle('multiselect'),
-                "content" => $output));
+        return $this->getUi()->renderBox(array(
+            "title" => $this->getNode()->actionTitle('multiselect'),
+            "content" => $output
+        ));
     }
 
 }

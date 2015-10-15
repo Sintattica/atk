@@ -131,7 +131,7 @@ class Atk_WizardPanel
             $this->m_node = Atk_Module::atkGetNode($this->m_nodeName);
             if (!is_object($this->m_node)) {
                 Atk_Tools::atkerror("Atk_WizardPanel::getPanelNode() Node could not be created. Node name: " . $this->m_nodeName);
-                return NULL;
+                return null;
             }
 
             //Add listeners to node
@@ -155,7 +155,7 @@ class Atk_WizardPanel
             //Make session aware of the fact that we are rendering a node which has been
             //created by a wizard panel and is not posted as a variable
             global $g_sessionManager;
-            /* @var $g_sessionManager atkSessionManager  */
+            /* @var $g_sessionManager atkSessionManager */
             $g_sessionManager->stackVar("atknodetype", $this->m_nodeName);
             $g_sessionManager->stackVar("atkaction", $this->m_defaultAction);
 
@@ -210,10 +210,11 @@ class Atk_WizardPanel
     function dispatchForm()
     {
         $node = &$this->getPanelNode();
-        if (!is_object($node))
+        if (!is_object($node)) {
             return "";
+        }
 
-        /* @var $g_sessionManager atkSessionManager  */
+        /* @var $g_sessionManager atkSessionManager */
         global $ATK_VARS, $g_sessionManager;
 
         if (!isset($ATK_VARS['atkaction']) || $ATK_VARS['atkaction'] == "") {
@@ -229,24 +230,26 @@ class Atk_WizardPanel
         //Load some smarty vars
         if ($ATK_VARS['atkaction'] == 'add' || $ATK_VARS['atkaction'] == 'edit' || $ATK_VARS['atkaction'] == 'admin') {
             $this->loadRenderBoxVars($ATK_VARS['atkaction']);
-            if ($ATK_VARS['atkaction'] == 'admin')
+            if ($ATK_VARS['atkaction'] == 'admin') {
                 $this->loadRenderBoxVars("add");
+            }
         }
     }
 
     /**
      * We are saving a newly added record. On success or failure ATK will redirect.
-     * On failure the session stack of the previous level is loaded to show the 
+     * On failure the session stack of the previous level is loaded to show the
      * same wizardpanel again (now with error message). On succes we need to set
-     * some redirect vars to make sure we go to the next wizardpanel.     
+     * some redirect vars to make sure we go to the next wizardpanel.
      *
      * @return bool on successfully executing this function
      */
     function save()
     {
         $node = &$this->getPanelNode();
-        if (!is_object($node))
+        if (!is_object($node)) {
             return;
+        }
 
         //Little dirty, we have to do this to make sure that in case
         //of an error the paneltitle and intro text are known
@@ -295,8 +298,9 @@ class Atk_WizardPanel
         $panelNode = $this->getPanelNode();
         $text = Atk_Tools::atktext($key, $panelNode->m_module, "", "", "", true);
 
-        if ($text != "")
+        if ($text != "") {
             return $text;
+        }
 
         return Atk_Tools::atktext($fallbackKey, $panelNode->m_module, "", "", "", true);
     }
@@ -309,8 +313,10 @@ class Atk_WizardPanel
     function loadRenderBoxVars($action)
     {
         $handler = &$this->m_node->getHandler($action);
-        $handler->addRenderBoxVar("paneltitle", $this->_getText($this->getPanelName() . "_" . $action, $this->getPanelName()));
-        $handler->addRenderBoxVar("intro", $this->_getText($this->getPanelName() . "_" . $action . "_intro", $this->getPanelName() . "_intro"));
+        $handler->addRenderBoxVar("paneltitle",
+            $this->_getText($this->getPanelName() . "_" . $action, $this->getPanelName()));
+        $handler->addRenderBoxVar("intro",
+            $this->_getText($this->getPanelName() . "_" . $action . "_intro", $this->getPanelName() . "_intro"));
         Atk_Tools::atkdebug("loadRenderBoxVars actionhandler: " . get_class($handler) . " action: " . $action);
     }
 

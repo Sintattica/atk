@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
@@ -17,7 +18,6 @@
  * @version $Revision: 6309 $
  * $Id$
  */
-
 class Atk_Cache_var extends Atk_Cache
 {
     /**
@@ -54,8 +54,9 @@ class Atk_Cache_var extends Atk_Cache
             return false;
         }
 
-        if ($lifetime === false)
+        if ($lifetime === false) {
             $lifetime = $this->m_lifetime;
+        }
         $this->m_entry[$this->getRealKey($key)] = $data;
         $this->m_expires[$this->getRealKey($key)] = time() + $lifetime;
         return true;

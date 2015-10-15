@@ -25,8 +25,8 @@
  */
 class Atk_Totalizer
 {
-    var $m_node = NULL;
-    var $m_columnConfig = NULL;
+    var $m_node = null;
+    var $m_columnConfig = null;
 
     /**
      * Constructor
@@ -130,10 +130,12 @@ class Atk_Totalizer
         foreach ($row["data"] as $col => $value) {
             if ($col == $fieldname) {
                 $row["data"][$col] = Atk_Tools::atktext("subtotal");
-            } else if (isset($subtotalcolumns[$col])) {
-                $row["data"][$col] = $subtotalcolumns[$col];
             } else {
-                $row["data"][$col] = "";
+                if (isset($subtotalcolumns[$col])) {
+                    $row["data"][$col] = $subtotalcolumns[$col];
+                } else {
+                    $row["data"][$col] = "";
+                }
             }
         }
         return $row;

@@ -24,12 +24,12 @@ define("WIZARD_MODE_ADD", 1);
 define("WIZARD_MODE_EDIT", 2);
 
 /**
- * atkWizard class which is capable of using atknodes as 
+ * atkWizard class which is capable of using atknodes as
  * wizardpanels.
  *
  * This class makes the distinction between update/save and
  * navigation actions from the wizard and respondis correspondingly.
- * 
+ *
  * atkWizard's highest baseclass is atkController. When an atkWizard
  * is created and becomes the controller of the atkapp, it will stay
  * the controller untill we take a non wizard specific action.
@@ -53,7 +53,7 @@ class Atk_Wizard extends Atk_WizardBase
     /**
      * Key/value array containing panel name as key and
      * index as value
-     * 
+     *
      * @access private
      * @var array key/value panel name / index
      */
@@ -94,7 +94,7 @@ class Atk_Wizard extends Atk_WizardBase
 
     /**
      * Value needed by atkPage to render the content of a page. Default
-     * we need to render a complete html page, but it might be necesary to only 
+     * we need to render a complete html page, but it might be necesary to only
      * render the content part.
      *
      * @var int define value
@@ -111,7 +111,7 @@ class Atk_Wizard extends Atk_WizardBase
     var $m_self;
 
     /**
-     * Action to perform in the wizard. Actions can be: next, finish, saveandnext, 
+     * Action to perform in the wizard. Actions can be: next, finish, saveandnext,
      * saveandaddnew.
      *
      * @var string
@@ -120,7 +120,7 @@ class Atk_Wizard extends Atk_WizardBase
 
     /**
      * It can com in handy to know if we are at the start of the wizard and have
-     * not performed any wizard actions. 
+     * not performed any wizard actions.
      *
      * @var bool
      */
@@ -147,12 +147,12 @@ class Atk_Wizard extends Atk_WizardBase
 
     /**
      * This function is called from the constructor to check if the wizard
-     * goes through the initialisation. This means that the first panel is 
+     * goes through the initialisation. This means that the first panel is
      * shown and no wizard actions have been taken.
-     * 
-     * We check this by saving searching the sessing for the var 
+     *
+     * We check this by saving searching the sessing for the var
      * 'wizard_initiation_level'. If it does not exist we fill it with the
-     * current atkLevel. 
+     * current atkLevel.
      *
      */
     private function checkWizardInitiationStatus()
@@ -170,7 +170,7 @@ class Atk_Wizard extends Atk_WizardBase
     }
 
     /**
-     * This function is called from the constructor. Its basic function is 
+     * This function is called from the constructor. Its basic function is
      * to collect wizard information from the session stack. To run the wizard
      * we need to be able to use atk's session stack. Default it is turned on,
      * but it might be turned off explicitly.
@@ -184,8 +184,9 @@ class Atk_Wizard extends Atk_WizardBase
         $this->m_wizardAction = AtkWizardActionLoader::getWizardAction($g_sessionManager->stackVar("atkwizardaction"));
 
         $this->m_currentPanelIndex = $g_sessionManager->stackVar("atkwizardpanelindex");
-        if ($this->m_currentPanelIndex == "")
+        if ($this->m_currentPanelIndex == "") {
             $this->m_currentPanelIndex = 0;
+        }
 
         global $g_sessionData;
         Atk_Tools::atk_var_dump($g_sessionData["default"]["stack"][Atk_SessionManager::atkStackID()], "SESSION DATA");
@@ -227,7 +228,7 @@ class Atk_Wizard extends Atk_WizardBase
 
     /**
      * Main execution function (start of the wizard). Every page load will go through
-     * this function. This function overrides Atk_Controller::handleRequest but it always 
+     * this function. This function overrides Atk_Controller::handleRequest but it always
      * calls its parent in the end.
      *
      * @return String The html output
@@ -243,7 +244,7 @@ class Atk_Wizard extends Atk_WizardBase
             //on an admin screen. Set the wizard mode to NULL to prevent showing a wizard
             //specific form. We do not use the wizard dispatcher but call the standard
             //handleRequest of atkController.
-            $this->setMode(NULL);
+            $this->setMode(null);
         } else {
 
             // get our node
@@ -257,9 +258,9 @@ class Atk_Wizard extends Atk_WizardBase
             } elseif ($this->m_wizardAction == 'finish') {
                 //finish wizard
                 $finishOutput = $this->finish();
-                if ($this->getReturnOutput())
+                if ($this->getReturnOutput()) {
                     return $finishOutput;
-                else {
+                } else {
                     $output = Atk_Output::getInstance();
                     $output->output($finishOutput);
                     return "";
@@ -312,9 +313,9 @@ class Atk_Wizard extends Atk_WizardBase
 
     /**
      * We are saving a newly added record. On success or failure ATK will redirect.
-     * On failure the session stack of the previous level is loaded to show the 
+     * On failure the session stack of the previous level is loaded to show the
      * same wizardpanel again (now with error message). On succes we need to set
-     * some redirect vars to make sure we go to the next wizardpanel.     
+     * some redirect vars to make sure we go to the next wizardpanel.
      *
      * @param string $atkwizardaction The wizard action for redirecting
      * @return bool on successfully executing this function
@@ -327,8 +328,9 @@ class Atk_Wizard extends Atk_WizardBase
         //Save redirect params as hidden vars in the controller.
         //TODO/Fixme Why the distinction between hiddenvars and redirect params.
         if (count($this->m_redirectParams)) {
-            foreach ($this->m_redirectParams as $hiddenVarName => $hiddenVarValue)
+            foreach ($this->m_redirectParams as $hiddenVarName => $hiddenVarValue) {
                 $this->setHiddenVar($hiddenVarName, $hiddenVarValue);
+            }
         }
 
         $currentWizardPanel = $this->getCurrentPanel();
@@ -358,7 +360,7 @@ class Atk_Wizard extends Atk_WizardBase
     }
 
     /**
-     * Collect the variables which should be set as hidden input fields in forms. 
+     * Collect the variables which should be set as hidden input fields in forms.
      * Save them in a key/value array.
      *
      * @param string $key
@@ -380,7 +382,7 @@ class Atk_Wizard extends Atk_WizardBase
     }
 
     /**
-     * Collect the variables which should be added to the redirect url. 
+     * Collect the variables which should be added to the redirect url.
      * Save them in a key/value array.
      *
      * @param string $key
@@ -392,7 +394,7 @@ class Atk_Wizard extends Atk_WizardBase
     }
 
     /**
-     * Return the current active panel object. 
+     * Return the current active panel object.
      *
      * @return object of type atkWizardPanel
      */
@@ -400,7 +402,7 @@ class Atk_Wizard extends Atk_WizardBase
     {
         if (!is_object($this->m_panelList[$this->m_currentPanelIndex])) {
             Atk_Tools::atkerror("Panel could not be crated. Non existing panel index: " . $this->m_currentPanelIndex);
-            return NULL;
+            return null;
         }
         return $this->m_panelList[$this->m_currentPanelIndex];
     }
@@ -415,14 +417,15 @@ class Atk_Wizard extends Atk_WizardBase
     {
         $count = count($this->m_panelList);
 
-        if (!isset($this->m_panelIndex[$name]))
+        if (!isset($this->m_panelIndex[$name])) {
             return false;
+        }
         return (($count - 1) == $this->m_panelIndex[$name]);
     }
 
     /**
      * Set a defined value needed by atkPage to render the content of a page. Default
-     * we need to render a complete html (HTML_ALL) page, but it might be necesary to only 
+     * we need to render a complete html (HTML_ALL) page, but it might be necesary to only
      * render the content part.
      *
      * @param define $flag
@@ -434,7 +437,7 @@ class Atk_Wizard extends Atk_WizardBase
 
     /**
      * Set the value of the html meta tag. This is an override of the Atk_controller::setHtmlTitle.
-     * We now want to show the wizard name, wizard panel and which step we are at. 
+     * We now want to show the wizard name, wizard panel and which step we are at.
      *
      */
     public function setHtmlTitle()
@@ -446,7 +449,7 @@ class Atk_Wizard extends Atk_WizardBase
 
     /**
      * Return the title to be show on top of an Action Page. This is an override of the Atk_Controller::actionPageTitle function.
-     * We now want to show the wizard name, wizard panel and which step we are at. 
+     * We now want to show the wizard name, wizard panel and which step we are at.
      *
      * @return string The title
      */

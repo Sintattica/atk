@@ -31,9 +31,9 @@ class Atk_FieldSet extends Atk_Attribute
     /**
      * Constructor.
      *
-     * @param string $name     fieldset name
+     * @param string $name fieldset name
      * @param string $template template string
-     * @param int    $flags    flags
+     * @param int $flags flags
      */
     public function __construct($name, $template, $flags = 0)
     {
@@ -133,9 +133,9 @@ class Atk_FieldSet extends Atk_Attribute
     /**
      * Renders the fieldset.
      *
-     * @param string $type        edit or display
-     * @param array $record       record
-     * @param string $mode        mode
+     * @param string $type edit or display
+     * @param array $record record
+     * @param string $mode mode
      * @param string $fieldprefix fieldprefix
      *
      * @return string rendered HTML
@@ -156,11 +156,13 @@ class Atk_FieldSet extends Atk_Attribute
                 } else {
                     $field = $attr->getEdit($mode, $record, $fieldprefix);
                 }
-            } else if ($type == 'display') {
-                if (($mode == 'view' && $attr->hasFlag(AF_HIDE_VIEW))) {
-                    $field = '';
-                } else {
-                    $field = $attr->getView($mode, $record);
+            } else {
+                if ($type == 'display') {
+                    if (($mode == 'view' && $attr->hasFlag(AF_HIDE_VIEW))) {
+                        $field = '';
+                    } else {
+                        $field = $attr->getView($mode, $record);
+                    }
                 }
             }
 
@@ -174,7 +176,8 @@ class Atk_FieldSet extends Atk_Attribute
 
                 // wrap in a div with appropriate id in order to properly handle a refreshAttribute (v. atkEditFormModifier)
                 $html = sprintf('%s<div id="%s_%s_%s">%s</div>',
-                    $label, $this->getOwnerInstance()->getModule(), $this->getOwnerInstance()->getType(), $attrName, $field
+                    $label, $this->getOwnerInstance()->getModule(), $this->getOwnerInstance()->getType(), $attrName,
+                    $field
                 );
 
                 $replacements[$attrName] = $html;
@@ -190,7 +193,7 @@ class Atk_FieldSet extends Atk_Attribute
     /**
      * Edit fieldset.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *

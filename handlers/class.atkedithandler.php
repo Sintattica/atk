@@ -112,7 +112,7 @@ class Atk_EditHandler extends Atk_ViewEditBase
      */
     function mergeWithPostvars($record)
     {
-        $fetchedRecord = $this->m_node->updateRecord('', NULL, NULL, true);
+        $fetchedRecord = $this->m_node->updateRecord('', null, null, true);
 
         /*
          * If any of the attributes is set to need a reload, we don't merge
@@ -156,12 +156,13 @@ class Atk_EditHandler extends Atk_ViewEditBase
      *                        current user.
      * @return String HTML code for the edit page
      */
-    function editPage($record, $locked = FALSE)
+    function editPage($record, $locked = false)
     {
         $result = $this->getEditPage($record, $locked);
 
-        if ($result !== false)
+        if ($result !== false) {
             return $result;
+        }
     }
 
     /**
@@ -172,7 +173,7 @@ class Atk_EditHandler extends Atk_ViewEditBase
      *                        current user.
      * @return Array Array with parameters
      */
-    function getEditParams($record, $locked = FALSE)
+    function getEditParams($record, $locked = false)
     {
         $node = &$this->m_node;
         $ui = &$node->getUi();
@@ -200,14 +201,15 @@ class Atk_EditHandler extends Atk_ViewEditBase
      *                        current user.
      * @return String The rendered page as a string.
      */
-    function getEditPage($record, $locked = FALSE)
+    function getEditPage($record, $locked = false)
     {
         $this->registerExternalFiles();
 
         $params = $this->getEditParams($record, $locked);
 
-        if ($params === false)
+        if ($params === false) {
             return false;
+        }
 
         return $this->renderEditPage($record, $params);
     }
@@ -250,7 +252,8 @@ class Atk_EditHandler extends Atk_ViewEditBase
         $ui = &$node->getUi();
 
         if (is_object($ui)) {
-            $this->getPage()->setTitle(Atk_Tools::atktext('app_shorttitle') . " - " . $node->actionTitle('edit', $record));
+            $this->getPage()->setTitle(Atk_Tools::atktext('app_shorttitle') . " - " . $node->actionTitle('edit',
+                    $record));
 
             $output = $ui->renderAction("edit", $params, $node->m_module);
             $this->addRenderBoxVar("title", $node->actionTitle('edit', $record));
@@ -300,7 +303,7 @@ class Atk_EditHandler extends Atk_ViewEditBase
         $controller->setNode($this->m_node);
 
         $formIdentifier = ((isset($this->m_partial) && $this->m_partial != "")) ? "dialogform"
-                : "entryform";
+            : "entryform";
         $formstart = '<form id="' . $formIdentifier . '" name="' . $formIdentifier . '" enctype="multipart/form-data" action="' . $controller->getPhpFile() . '?' . SID . '"' .
             ' method="post" onsubmit="return globalSubmit(this,false)" class="form-horizontal" role="form">' .
             Atk_Tools::session_form($this->getUpdateSessionStatus());
@@ -336,7 +339,8 @@ class Atk_EditHandler extends Atk_ViewEditBase
         if ($this->m_partial == 'dialog' || $this->m_partial == 'editdialog') {
             $controller = Atk_Controller::getInstance();
             $result = array();
-            $result[] = $controller->getDialogButton('save', null, $this->getDialogSaveUrl(), $this->getDialogSaveParams());
+            $result[] = $controller->getDialogButton('save', null, $this->getDialogSaveUrl(),
+                $this->getDialogSaveParams());
             $result[] = $controller->getDialogButton('cancel');
             return $result;
         }
@@ -352,10 +356,10 @@ class Atk_EditHandler extends Atk_ViewEditBase
     /**
      * Create template field array for the given edit field.
      *
-     * @param array  $fields all fields
-     * @param int    $index  field index
-     * @param string $mode   mode (add/edit)
-     * @param string $tab    active tab
+     * @param array $fields all fields
+     * @param int $index field index
+     * @param string $mode mode (add/edit)
+     * @param string $tab active tab
      *
      * @return array template field
      */
@@ -372,16 +376,22 @@ class Atk_EditHandler extends Atk_ViewEditBase
         $classes = isset($field['class']) ? explode(" ", $field['class']) : array();
         if ($field["sections"] == "*") {
             $classes[] = "alltabs";
-        } else if ($field["html"] == "section") {
-            // section should only have the tab section classes
-            foreach ($field["tabs"] as $section)
-                $classes[] = "section_" . str_replace('.', '_', $section);
-            if ($this->isSectionInitialHidden($field['name'], $fields))
-                $classes[] = "atkAttrRowHidden";
-        }
-        else if (is_array($field["sections"])) {
-            foreach ($field["sections"] as $section)
-                $classes[] = "section_" . str_replace('.', '_', $section);
+        } else {
+            if ($field["html"] == "section") {
+                // section should only have the tab section classes
+                foreach ($field["tabs"] as $section) {
+                    $classes[] = "section_" . str_replace('.', '_', $section);
+                }
+                if ($this->isSectionInitialHidden($field['name'], $fields)) {
+                    $classes[] = "atkAttrRowHidden";
+                }
+            } else {
+                if (is_array($field["sections"])) {
+                    foreach ($field["sections"] as $section) {
+                        $classes[] = "section_" . str_replace('.', '_', $section);
+                    }
+                }
+            }
         }
 
         if (isset($field["initial_hidden"]) && $field["initial_hidden"]) {
@@ -401,21 +411,17 @@ class Atk_EditHandler extends Atk_ViewEditBase
         if ($field["html"] == "-" && $index > 0 && $fields[$index - 1]["html"] != "-") {
             $tplfield["type"] = "line";
             $tplfield["line"] = "<hr>";
-        }
-        /* double separator, ignore */ elseif ($field["html"] == "-") {
-            
-        }
-        /* sections */ elseif ($field["html"] == "section") {
+        } /* double separator, ignore */ elseif ($field["html"] == "-") {
+
+        } /* sections */ elseif ($field["html"] == "section") {
             $tplfield["type"] = "section";
             list($tab, $section) = explode('.', $field["name"]);
             $tplfield["section_name"] = "section_{$tab}_{$section}";
             $tplfield["line"] = $this->getSectionControl($field, $mode);
-        }
-        /* only full HTML */ elseif (isset($field["line"])) {
+        } /* only full HTML */ elseif (isset($field["line"])) {
             $tplfield["type"] = "custom";
             $tplfield["line"] = $field["line"];
-        }
-        /* edit field */ else {
+        } /* edit field */ else {
             $tplfield["type"] = "attribute";
 
             if ($field["attribute"]->m_ownerInstance->getNumbering()) {
@@ -459,7 +465,7 @@ class Atk_EditHandler extends Atk_ViewEditBase
             $tooltip = $field["attribute"]->getToolTip();
             if ($tooltip) {
                 $tplfield["tooltip"] = $tooltip;
-                $editsrc.=$tooltip . "&nbsp;";
+                $editsrc .= $tooltip . "&nbsp;";
             }
 
             $tplfield['id'] = str_replace('.', '_', $this->m_node->atknodetype() . '_' . $field["id"]);
@@ -485,21 +491,28 @@ class Atk_EditHandler extends Atk_ViewEditBase
     /**
      * Function returns a generic html form for editing a record.
      *
-     * @param String $mode         The edit mode ("add" or "edit").
-     * @param array $record        The record to edit.
-     * @param array $forceList     A key-value array used to preset certain
+     * @param String $mode The edit mode ("add" or "edit").
+     * @param array $record The record to edit.
+     * @param array $forceList A key-value array used to preset certain
      *                             fields to a certain value.
-     * @param array $suppressList  An array of fields that will be hidden.
-     * @param String $fieldprefix  If set, each form element is prefixed with
+     * @param array $suppressList An array of fields that will be hidden.
+     * @param String $fieldprefix If set, each form element is prefixed with
      *                             the specified prefix (used in embedded
      *                             forms)
-     * @param String $template		 The template to use for the edit form
-     * @param boolean $ignoreTab   Ignore the tabs an attribute should be shown on.
+     * @param String $template The template to use for the edit form
+     * @param boolean $ignoreTab Ignore the tabs an attribute should be shown on.
      *
      * @return String the edit form as a string
      */
-    function editForm($mode = "add", $record = NULL, $forceList = "", $suppressList = "", $fieldprefix = "", $template = "", $ignoreTab = false)
-    {
+    function editForm(
+        $mode = "add",
+        $record = null,
+        $forceList = "",
+        $suppressList = "",
+        $fieldprefix = "",
+        $template = "",
+        $ignoreTab = false
+    ) {
         $node = &$this->m_node;
 
         /* get data, transform into form, return */
@@ -532,17 +545,21 @@ class Atk_EditHandler extends Atk_ViewEditBase
 
                     if (is_array($error['label'])) {
                         $label = implode(', ', $error['label']);
-                    } else if (!empty($error['label'])) {
-                        $label = $error['label'];
-                    } else if (!is_array($error['attrib_name'])) {
-                        $label = $node->text($error['attrib_name']);
                     } else {
-                        $label = array();
-                        foreach ($error['attrib_name'] as $attrib) {
-                            $label[] = $node->text($attrib);
-                        }
+                        if (!empty($error['label'])) {
+                            $label = $error['label'];
+                        } else {
+                            if (!is_array($error['attrib_name'])) {
+                                $label = $node->text($error['attrib_name']);
+                            } else {
+                                $label = array();
+                                foreach ($error['attrib_name'] as $attrib) {
+                                    $label[] = $node->text($attrib);
+                                }
 
-                        $label = implode(", ", $label);
+                                $label = implode(", ", $label);
+                            }
+                        }
                     }
 
                     /* Error messages should be rendered in templates using message, label and the link to the tab. */
@@ -560,8 +577,9 @@ class Atk_EditHandler extends Atk_ViewEditBase
             if (count($pk_err_attrib) > 0) { // Make primary key error message
                 for ($i = 0; $i < count($pk_err_attrib); $i++) {
                     $pk_err_msg .= Atk_Tools::atktext($pk_err_attrib[$i], $node->m_module);
-                    if (($i + 1) < count($pk_err_attrib))
+                    if (($i + 1) < count($pk_err_attrib)) {
                         $pk_err_msg .= ", ";
+                    }
                 }
                 $errors[] = array("label" => Atk_Tools::atktext("error_primarykey_exists"), "message" => $pk_err_msg);
             }
@@ -580,8 +598,9 @@ class Atk_EditHandler extends Atk_ViewEditBase
             $params[$field["name"]] = $tplfield; // make field available in associative array
             $attributes[$field["name"]] = $tplfield; // make field available in associative array
 
-            if ($field['error'])
+            if ($field['error']) {
                 $errorFields[] = $field['id'];
+            }
         }
 
         $ui = &$this->getUi();
@@ -598,7 +617,8 @@ class Atk_EditHandler extends Atk_ViewEditBase
             // the form has been changed, so we always warn the user when leaving the page.
             $isChanged = 'false';
             if ((isset($record['atkerror']) && count($record['atkerror']) > 0) ||
-                (isset($this->m_node->m_postvars['__atkunloadhelper']) && $this->m_node->m_postvars['__atkunloadhelper'])) {
+                (isset($this->m_node->m_postvars['__atkunloadhelper']) && $this->m_node->m_postvars['__atkunloadhelper'])
+            ) {
                 $isChanged = 'true';
             }
 
@@ -610,7 +630,7 @@ class Atk_EditHandler extends Atk_ViewEditBase
         $result = "";
 
         foreach ($data["hide"] as $hidden) {
-            $result.= $hidden;
+            $result .= $hidden;
         }
 
         $params["activeTab"] = $tab;
@@ -645,9 +665,11 @@ class Atk_EditHandler extends Atk_ViewEditBase
      */
     function getTabLink(&$node, $error)
     {
-        if (count($node->getTabs($node->m_action)) < 2)
+        if (count($node->getTabs($node->m_action)) < 2) {
             return '';
-        return '<a href="javascript:void(0)" onclick="showTab(\'' . $error["tab"] . '\'); return false;">' . $this->getTabLabel($node, $error["tab"]) . '</a>';
+        }
+        return '<a href="javascript:void(0)" onclick="showTab(\'' . $error["tab"] . '\'); return false;">' . $this->getTabLabel($node,
+            $error["tab"]) . '</a>';
     }
 
     /**

@@ -98,26 +98,32 @@ class Atk_Tools
         if ($errtype == E_STRICT) {
             // ignore strict notices for now, there is too much stuff that needs to be fixed
             return;
-        } else if ($errtype == E_NOTICE) {
-            // Just show notices
-            self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", DEBUG_NOTICE);
-            return;
-        } else if (defined('E_DEPRECATED') && ($errtype & (E_DEPRECATED | E_USER_DEPRECATED)) > 0) {
-            // Just show deprecation warnings in the debug log, but don't influence the program flow
-            self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", DEBUG_NOTICE);
-            return;
-        } else if (($errtype & (E_WARNING | E_USER_WARNING)) > 0) {
-            // This is something we should pay attention to, but we don't need to die.
-            self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
-            return;
         } else {
-            self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
+            if ($errtype == E_NOTICE) {
+                // Just show notices
+                self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", DEBUG_NOTICE);
+                return;
+            } else {
+                if (defined('E_DEPRECATED') && ($errtype & (E_DEPRECATED | E_USER_DEPRECATED)) > 0) {
+                    // Just show deprecation warnings in the debug log, but don't influence the program flow
+                    self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", DEBUG_NOTICE);
+                    return;
+                } else {
+                    if (($errtype & (E_WARNING | E_USER_WARNING)) > 0) {
+                        // This is something we should pay attention to, but we don't need to die.
+                        self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
+                        return;
+                    } else {
+                        self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
 
-            // we must die. we can't even output anything anymore..
-            // we can do something with the info though.
-            self::handleError();
-            Atk_Output::getInstance()->outputFlush();
-            die;
+                        // we must die. we can't even output anything anymore..
+                        // we can do something with the info though.
+                        self::handleError();
+                        Atk_Output::getInstance()->outputFlush();
+                        die;
+                    }
+                }
+            }
         }
     }
 
@@ -156,7 +162,8 @@ class Atk_Tools
             } else {
                 $res = "<html>";
                 $res .= '<body bgcolor="#ffffff" color="#000000">';
-                $res .= "<font color=\"$level_color\"><b>" . self::atktext($level, "atk") . "</b></font>: $msg.<br />\n";
+                $res .= "<font color=\"$level_color\"><b>" . self::atktext($level,
+                        "atk") . "</b></font>: $msg.<br />\n";
             }
 
             Atk_Output::getInstance()->output($res);
@@ -202,10 +209,12 @@ class Atk_Tools
         global $g_debug_msg;
         $level = Atk_Config::getGlobal("debug");
         if ($level >= 0) {
-            if (self::hasFlag($flags, DEBUG_HTML))
+            if (self::hasFlag($flags, DEBUG_HTML)) {
                 $txt = htmlentities($txt);
-            if (self::hasFlag($flags, DEBUG_WARNING))
+            }
+            if (self::hasFlag($flags, DEBUG_WARNING)) {
                 $txt = "<b>" . $txt . "</b>";
+            }
 
             $line = self::atkGetTimingInfo() . $txt;
             self::atkWriteLog($line);
@@ -219,12 +228,16 @@ class Atk_Tools
                 if (!Atk_Debugger::addStatement($line)) {
                     $g_debug_msg[] = $line;
                 }
-            } else if (!self::hasFlag($flags, DEBUG_NOTICE)) {
-                $g_debug_msg[] = $line;
+            } else {
+                if (!self::hasFlag($flags, DEBUG_NOTICE)) {
+                    $g_debug_msg[] = $line;
+                }
             }
-        } else if ($level > -1) { // at 0 we still collect the info so we
-            // have it in error reports. At -1, we don't collect
-            $g_debug_msg[] = $txt;
+        } else {
+            if ($level > -1) { // at 0 we still collect the info so we
+                // have it in error reports. At -1, we don't collect
+                $g_debug_msg[] = $txt;
+            }
         }
     }
 
@@ -287,8 +300,10 @@ class Atk_Tools
 
         if (Atk_Config::getGlobal('throw_exception_on_error') && $error instanceof Exception) {
             throw $error;
-        } else if (Atk_Config::getGlobal('throw_exception_on_error')) {
-            throw new Exception($error);
+        } else {
+            if (Atk_Config::getGlobal('throw_exception_on_error')) {
+                throw new Exception($error);
+            }
         }
     }
 
@@ -301,8 +316,9 @@ class Atk_Tools
     public static function atkGetTrace($format = "html")
     {
         // Return if the debug_backtrace function doesn't exist
-        if (!function_exists("debug_backtrace"))
+        if (!function_exists("debug_backtrace")) {
             return "Incorrect php-version for self::atk_get_trace()";
+        }
 
         // Get the debug backtrace
         $traceArr = debug_backtrace();
@@ -319,25 +335,30 @@ class Atk_Tools
         for ($i = 0, $_i = count($traceArr); $i < $_i; $i++) {
             //for($i=count($traceArr)-1; $i >= 0; $i--)
             // Skip this item in the backtrace if empty
-            if (empty($traceArr[$i]))
+            if (empty($traceArr[$i])) {
                 continue;
+            }
 
             // Don't display an self::atkerror statement itself.
-            if ($traceArr[$i]["function"] == "self::atkerror")
+            if ($traceArr[$i]["function"] == "self::atkerror") {
                 continue;
+            }
 
             // Read the source location
-            if (isset($traceArr[$i]["file"]))
-                $location = $traceArr[$i]["file"] . (isset($traceArr[$i]["line"]) ? sprintf(", line %d", $traceArr[$i]["line"])
+            if (isset($traceArr[$i]["file"])) {
+                $location = $traceArr[$i]["file"] . (isset($traceArr[$i]["line"]) ? sprintf(", line %d",
+                        $traceArr[$i]["line"])
                         : "[Unknown line]");
-            else
+            } else {
                 $location = "[PHP KERNEL]";
+            }
 
             // Read the statement
             if (isset($traceArr[$i]["class"])) {
                 $statement = $traceArr[$i]["class"];
-                if (isset($traceArr[$i]["type"]))
+                if (isset($traceArr[$i]["type"])) {
                     $statement .= $traceArr[$i]["type"];
+                }
             } else {
                 $statement = "";
             }
@@ -352,27 +373,35 @@ class Atk_Tools
                     if (is_array($val)) {
                         $valArr = array();
                         foreach ($val as $name => $value) {
-                            if (is_numeric($name))
+                            if (is_numeric($name)) {
                                 $valArr[] = $name;
-                            else {
-                                if (is_object($value))
+                            } else {
+                                if (is_object($value)) {
                                     $valArr[] = sprintf("%s=Object(%s)", $name, get_class($value));
-                                else
+                                } else {
                                     $valArr[] = $name . "=" . @json_encode($value);
+                                }
                             }
                         }
                         $stringval = "array(" . implode(", ", $valArr) . ")";
-                    } else if (is_null($val))
-                        $stringval = 'null';
-                    else if (is_object($val))
-                        $stringval = sprintf("Object(%s)", get_class($val));
-                    else if (is_bool($val))
-                        $stringval = $val ? 'true' : 'false';
-                    else {
-                        if (strlen($val . $theSpacer) > 103)
-                            $stringval = '"' . substr($val, 0, 100 - strlen($theSpacer)) . '"...';
-                        else
-                            $stringval = '"' . $val . '"';
+                    } else {
+                        if (is_null($val)) {
+                            $stringval = 'null';
+                        } else {
+                            if (is_object($val)) {
+                                $stringval = sprintf("Object(%s)", get_class($val));
+                            } else {
+                                if (is_bool($val)) {
+                                    $stringval = $val ? 'true' : 'false';
+                                } else {
+                                    if (strlen($val . $theSpacer) > 103) {
+                                        $stringval = '"' . substr($val, 0, 100 - strlen($theSpacer)) . '"...';
+                                    } else {
+                                        $stringval = '"' . $val . '"';
+                                    }
+                                }
+                            }
+                        }
                     }
                     $functionParamArr[] = $theSpacer . "  " . $stringval;
                 }
@@ -389,8 +418,9 @@ class Atk_Tools
         }
 
         // If html format should be used, replace the html special chars with html entities and put the backtrace within preformat tags.
-        if ($format == "html")
+        if ($format == "html") {
             $ret = "<pre>" . htmlspecialchars($ret) . "</pre>";
+        }
 
         // Return the generated trace
         return $ret;
@@ -451,8 +481,15 @@ class Atk_Tools
      *                                when looking for strings
      * @return String the string from the languagefile
      */
-    public static function atktext($string, $module = "", $node = "", $lng = "", $firstfallback = "", $nodefaulttext = false, $modulefallback = false)
-    {
+    public static function atktext(
+        $string,
+        $module = "",
+        $node = "",
+        $lng = "",
+        $firstfallback = "",
+        $nodefaulttext = false,
+        $modulefallback = false
+    ) {
         self::atkimport("atk.atklanguage");
         return Atk_Language::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext, $modulefallback);
     }
@@ -485,8 +522,13 @@ class Atk_Tools
     /**
      * @deprecated use self::atkHref or Atk_SessionManager::href instead.
      */
-    public static function  href($url, $name = "", $sessionstatus = SESSION_DEFAULT, $saveform = false, $extraprops = "")
-    {
+    public static function  href(
+        $url,
+        $name = "",
+        $sessionstatus = SESSION_DEFAULT,
+        $saveform = false,
+        $extraprops = ""
+    ) {
         return Atk_SessionManager::href($url, $name, $sessionstatus, $saveform, $extraprops);
     }
 
@@ -494,8 +536,13 @@ class Atk_Tools
      * Convenience wrapper for Atk_SessionManager::href().
      * @see Atk_SessionManager::href
      */
-    public static function atkHref($url, $name = "", $sessionstatus = SESSION_DEFAULT, $saveform = false, $extraprops = "")
-    {
+    public static function atkHref(
+        $url,
+        $name = "",
+        $sessionstatus = SESSION_DEFAULT,
+        $saveform = false,
+        $extraprops = ""
+    ) {
         return Atk_SessionManager::href($url, $name, $sessionstatus, $saveform, $extraprops);
     }
 
@@ -591,8 +638,9 @@ class Atk_Tools
     public static function dataSetContains($set, $key, $value)
     {
         for ($i = 0; $i < count($set); $i++) {
-            if ($set[$i][$key] == $value)
+            if ($set[$i][$key] == $value) {
                 return true;
+            }
         }
         return false;
     }
@@ -606,10 +654,12 @@ class Atk_Tools
     public static function stripQuotes($string)
     {
         $temp = trim($string);
-        if (substr($temp, 0, 1) == "'" && substr($temp, -1) == "'")
+        if (substr($temp, 0, 1) == "'" && substr($temp, -1) == "'") {
             return substr($temp, 1, -1);
-        if (substr($temp, 0, 1) == '"' && substr($temp, -1) == '"')
+        }
+        if (substr($temp, 0, 1) == '"' && substr($temp, -1) == '"') {
             return substr($temp, 1, -1);
+        }
         return $string;
     }
 
@@ -652,7 +702,7 @@ class Atk_Tools
                 $result[trim($key)] = self::stripQuotes($value);
             } elseif (stristr($items[$i], 'IS NULL') !== false) {
                 list($key) = preg_split('/IS NULL/i', $items[$i]);
-                $result[trim($key)] = NULL;
+                $result[trim($key)] = null;
             }
         }
         return $result;
@@ -704,12 +754,15 @@ class Atk_Tools
             $value = &$vars[$varname];
             // We must strip all slashes from the input, since php puts slashes
             // in front of quotes that are passed by the url. (magic_quotes_gpc)
-            if ($value !== NULL && $magicQuotes)
+            if ($value !== null && $magicQuotes) {
                 self::atk_stripslashes($value);
+            }
 
             self::AE_decode($vars, $varname);
 
-            if (strpos(strtoupper($varname), '_AMDAE_') > 0) { // Now I *know* that strpos could return 0 if _AMDAE_ *is* found
+            if (strpos(strtoupper($varname),
+                    '_AMDAE_') > 0
+            ) { // Now I *know* that strpos could return 0 if _AMDAE_ *is* found
                 // at the beginning of the string.. but since that's not a valid
                 // encoded var, we do nothing with it.
                 // This string is encoded.
@@ -739,8 +792,9 @@ class Atk_Tools
     public static function AE_decode(&$dest, $var)
     {
         $items = explode("_AE_", $var);
-        if (count($items) <= 1)
+        if (count($items) <= 1) {
             return;
+        }
 
         $current = &$dest;
         foreach ($items as $key) {
@@ -771,11 +825,14 @@ class Atk_Tools
                 $adding = false;
                 $fields[] = $tmp;
                 $tmp = "";
-            } else if ($string[$i] == "[") {
-                $adding = true;
             } else {
-                if ($adding)
-                    $tmp .= $string[$i];
+                if ($string[$i] == "[") {
+                    $adding = true;
+                } else {
+                    if ($adding) {
+                        $tmp .= $string[$i];
+                    }
+                }
             }
         }
 
@@ -838,9 +895,9 @@ class Atk_Tools
 
     public static function atkurldecode($string)
     {
-        if (substr($string, 0, 2) != "__")
+        if (substr($string, 0, 2) != "__") {
             return $string;
-        else {
+        } else {
             $string = str_replace("_1", "%", substr($string, 2));
             for ($i = 1; $i <= 8; $i++) {
                 $string = str_replace("_" . ($i + 1), "_" . $i, $string);
@@ -871,10 +928,12 @@ class Atk_Tools
     {
         global $g_error_msg, $g_debug_msg;
         include_once(Atk_Config::getGlobal('atkroot') . 'atk/errors/class.atkerrorhandlerbase.php');
-        $errorHandlers = Atk_Config::getGlobal('error_handlers', array('mail' => array('mailto' => Atk_Config::getGlobal('mailreport'))));
+        $errorHandlers = Atk_Config::getGlobal('error_handlers',
+            array('mail' => array('mailto' => Atk_Config::getGlobal('mailreport'))));
         foreach ($errorHandlers as $key => $value) {
-            if (is_numeric($key))
+            if (is_numeric($key)) {
                 $key = $value;
+            }
             $errorHandlerObject = Atk_ErrorHandlerBase::get($key, $value);
             $errorHandlerObject->handle($g_error_msg, $g_debug_msg);
         }
@@ -946,7 +1005,13 @@ class Atk_Tools
         if ($msg == "") {
             $msg = self::atktext($err, $module);
         }
-        $rec['atkerror'][] = array("attrib_name" => $attrib, "err" => $err, "msg" => $msg, "tab" => $tab, "label" => $label);
+        $rec['atkerror'][] = array(
+            "attrib_name" => $attrib,
+            "err" => $err,
+            "msg" => $msg,
+            "tab" => $tab,
+            "label" => $label
+        );
     }
 
     /**
@@ -1014,29 +1079,36 @@ class Atk_Tools
         if (preg_match("/ie/i", $browser["browser"])) {
             $mime = "application/octetstream";
             $disp = 'inline';
-        } else if (preg_match("/opera/i", $browser["browser"])) {
-            $mime = "application/octetstream";
-            $disp = 'attachment';
         } else {
-            $mime = "application/octet-stream";
-            $disp = 'attachment';
+            if (preg_match("/opera/i", $browser["browser"])) {
+                $mime = "application/octetstream";
+                $disp = 'attachment';
+            } else {
+                $mime = "application/octet-stream";
+                $disp = 'attachment';
+            }
         }
 
         if ($compression == "bzip") {
             $mime = 'application/x-bzip';
             $filename .= ".bz2";
-        } else if ($compression == "gzip") {
-            $mime = 'application/x-gzip';
-            $filename .= ".gz";
-        } else if ($compression == "zip") {
-            $mime = 'application/x-zip';
-            $filename .= ".zip";
+        } else {
+            if ($compression == "gzip") {
+                $mime = 'application/x-gzip';
+                $filename .= ".gz";
+            } else {
+                if ($compression == "zip") {
+                    $mime = 'application/x-zip';
+                    $filename .= ".zip";
+                }
+            }
         }
 
         header('Content-Type: ' . $mime);
         header('Content-Disposition:  ' . $disp . '; filename="' . $filename . '"');
-        if (preg_match("/ie/i", $browser["browser"]))
+        if (preg_match("/ie/i", $browser["browser"])) {
             header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        }
         header('Pragma: no-cache');
         header('Expires: 0');
 
@@ -1046,17 +1118,21 @@ class Atk_Tools
                 echo bzcompress($data);
             }
         } // 2. as a gzipped file
-        else if ($compression == 'gzip') {
-            if (@function_exists('gzencode')) {
-                echo gzencode($data);
-            }
-        } else if ($compression == 'zip') {
-            if (@function_exists('gzcompress')) {
-                echo gzcompress($data);
-            }
-        } // 3. on screen
         else {
-            echo $data;
+            if ($compression == 'gzip') {
+                if (@function_exists('gzencode')) {
+                    echo gzencode($data);
+                }
+            } else {
+                if ($compression == 'zip') {
+                    if (@function_exists('gzcompress')) {
+                        echo gzcompress($data);
+                    }
+                } // 3. on screen
+                else {
+                    echo $data;
+                }
+            }
         }
         exit;
     }
@@ -1076,26 +1152,34 @@ class Atk_Tools
         if (preg_match("/ie/i", $browser["browser"])) {
             $mime = "application/octetstream";
             $disp = 'attachment';
-        } else if (preg_match("/opera/i", $browser["browser"])) {
-            $mime = "application/octetstream";
-            $disp = 'inline';
         } else {
-            $mime = "application/octet-stream";
-            $disp = 'attachment';
+            if (preg_match("/opera/i", $browser["browser"])) {
+                $mime = "application/octetstream";
+                $disp = 'inline';
+            } else {
+                $mime = "application/octet-stream";
+                $disp = 'attachment';
+            }
         }
-        if ($mimetype != "")
+        if ($mimetype != "") {
             $mime = $mimetype;
-        else if ($mimetype == "" && $detectmime && function_exists('mime_content_type'))
-            $mime = mime_content_type($file);
+        } else {
+            if ($mimetype == "" && $detectmime && function_exists('mime_content_type')) {
+                $mime = mime_content_type($file);
+            }
+        }
 
         $fp = @fopen($file, "rb");
-        if ($fp != NULL) {
+        if ($fp != null) {
             header('Content-Type: ' . $mime);
             header("Content-Length: " . filesize($file));
             header('Content-Disposition:  ' . $disp . '; filename="' . $filename . '"');
-            if (preg_match("/ie/i", $browser["browser"]))
+            if (preg_match("/ie/i", $browser["browser"])) {
                 header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-            if (($_SERVER["SERVER_PORT"] == "443" || $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') && preg_match("/msie/i", $_SERVER["HTTP_USER_AGENT"])) {
+            }
+            if (($_SERVER["SERVER_PORT"] == "443" || $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') && preg_match("/msie/i",
+                    $_SERVER["HTTP_USER_AGENT"])
+            ) {
                 header('Pragma: public');
             } else {
                 header('Pragma: no-cache');
@@ -1151,10 +1235,11 @@ class Atk_Tools
     {
         global $config_atkroot;
         $a = explode(".", $name);
-        if (count($a) == 2)
+        if (count($a) == 2) {
             $include = Atk_Module::moduleDir(strtolower($a[0])) . $type . "s/class." . strtolower($a[1]) . ".php";
-        else
+        } else {
             $include = $config_atkroot . "atk/" . $type . "s/class." . strtolower($name) . ".php";
+        }
         return $include;
     }
 
@@ -1305,11 +1390,13 @@ class Atk_Tools
         $query = "";
 
         foreach ($params as $key => $value) {
-            if (!empty($query))
+            if (!empty($query)) {
                 $query .= '&';
+            }
 
-            if (!empty($parent))
+            if (!empty($parent)) {
                 $key = "{$parent}[{$key}]";
+            }
 
             if (!is_array($value)) {
                 $query .= "$key=" . rawurlencode($value);
@@ -1337,18 +1424,22 @@ class Atk_Tools
     public static function dispatch_url($node, $action, $params = array(), $phpfile = '')
     {
         $c = self::atkinstance("atk.atkcontroller");
-        if (!$phpfile)
+        if (!$phpfile) {
             $phpfile = $c->getPhpFile();
+        }
         $url = $phpfile;
         $atkparams = array();
-        if ($node != "")
+        if ($node != "") {
             $atkparams["atknodetype"] = $node;
-        if ($action != "")
+        }
+        if ($action != "") {
             $atkparams["atkaction"] = $action;
+        }
         $params = array_merge($atkparams, $params);
 
-        if ($params != "" && is_array($params) && count($params) > 0)
+        if ($params != "" && is_array($params) && count($params) > 0) {
             $url .= '?' . self::buildQueryString($params);
+        }
 
         return $url;
     }
@@ -1374,8 +1465,9 @@ class Atk_Tools
      */
     public static function partial_url($node, $action, $partial, $params = array(), $sessionStatus = SESSION_PARTIAL)
     {
-        if (!is_array($params))
+        if (!is_array($params)) {
             $params = array();
+        }
         $params['atkpartial'] = $partial;
 
         return self::session_url(self::dispatch_url($node, $action, $params), $sessionStatus);
@@ -1425,14 +1517,20 @@ class Atk_Tools
      * @param string $cssclass the css class the button should get
      * @param bool $embeded wether or not it's an embedded button
      */
-    public static function atkButton($text, $url = "", $sessionstatus = SESSION_DEFAULT, $embedded = true, $cssclass = "")
-    {
+    public static function atkButton(
+        $text,
+        $url = "",
+        $sessionstatus = SESSION_DEFAULT,
+        $embedded = true,
+        $cssclass = ""
+    ) {
         $page = Atk_Page::getInstance();
         $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/formsubmit.js");
         static $cnt = 0;
 
-        if ($cssclass == "")
+        if ($cssclass == "") {
             $cssclass = "btn";
+        }
 
         $cssclass = ' class="' . $cssclass . '"';
         $script = 'atkSubmit("' . self::atkurlencode(self::session_url($url, $sessionstatus)) . '")';
@@ -1577,7 +1675,7 @@ class Atk_Tools
                     $difference[$key] = $value;
                 } else {
                     $new_diff = self::atkArrayDiff($value, $array2[$key]);
-                    if ($new_diff != FALSE) {
+                    if ($new_diff != false) {
                         $difference[$key] = $new_diff;
                     }
                 }
@@ -1606,10 +1704,14 @@ class Atk_Tools
         if (is_array($array) && !empty($array)) {
             foreach ($array as $key => $value) {
                 if (is_array($value)) {
-                    if (self::atk_value_in_array($value))
+                    if (self::atk_value_in_array($value)) {
                         return true;
-                } else if ($value)
-                    return true;
+                    }
+                } else {
+                    if ($value) {
+                        return true;
+                    }
+                }
             }
         }
         return false;
@@ -1629,11 +1731,14 @@ class Atk_Tools
     public static function atk_in_array_recursive($needle, $haystack)
     {
         foreach ($haystack as $key => $value) {
-            if ($value == $needle)
+            if ($value == $needle) {
                 return true;
-            else if (is_array($value)) {
-                if (self::atk_in_array_recursive($needle, $value))
-                    return true;
+            } else {
+                if (is_array($value)) {
+                    if (self::atk_in_array_recursive($needle, $value)) {
+                        return true;
+                    }
+                }
             }
         }
         return false;
@@ -1654,8 +1759,9 @@ class Atk_Tools
         $escapechars = array("/", "?", '"', "(", ")", "'", "*", ".", "[", "]");
         for ($counter = 0; $counter < strlen($pattern); $counter++) {
             $curchar = substr($pattern, $counter, 1);
-            if (in_array($curchar, $escapechars))
+            if (in_array($curchar, $escapechars)) {
                 $escaped .= "\\";
+            }
             $escaped .= $curchar;
         }
         return $escaped;
@@ -1671,8 +1777,9 @@ class Atk_Tools
         if (empty($key) || $key == "") {
             return $_REQUEST;
         } else {
-            if (array_key_exists($key, $_REQUEST) && $_REQUEST[$key] != "")
+            if (array_key_exists($key, $_REQUEST) && $_REQUEST[$key] != "") {
                 return $_REQUEST[$key];
+            }
             return "";
         }
     }
@@ -1812,18 +1919,19 @@ class Atk_Tools
      */
     public static function atkGetClientIp()
     {
-        static $s_ip = NULL;
+        static $s_ip = null;
 
-        if ($s_ip === NULL) {
-            if (getenv("HTTP_CLIENT_IP"))
+        if ($s_ip === null) {
+            if (getenv("HTTP_CLIENT_IP")) {
                 $s_ip = getenv("HTTP_CLIENT_IP");
-            elseif (getenv("HTTP_X_FORWARDED_FOR")) {
+            } elseif (getenv("HTTP_X_FORWARDED_FOR")) {
                 $ipArray = explode(",", getenv("HTTP_X_FORWARDED_FOR"));
                 $s_ip = $ipArray[0];
-            } elseif (getenv("REMOTE_ADDR"))
+            } elseif (getenv("REMOTE_ADDR")) {
                 $s_ip = getenv("REMOTE_ADDR");
-            else
+            } else {
                 $s_ip = 'x.x.x.x';
+            }
         }
 
         return $s_ip;
@@ -1838,10 +1946,11 @@ class Atk_Tools
      */
     public static function atkClone($attribute)
     {
-        if (intval(substr(phpversion(), 0, 1)) < 5)
+        if (intval(substr(phpversion(), 0, 1)) < 5) {
             $attr = $attribute;
-        else
+        } else {
             $attr = clone($attribute);
+        }
 
         return $attr;
     }
@@ -1855,8 +1964,9 @@ class Atk_Tools
     public static function atkSelf()
     {
         $self = $_SERVER['PHP_SELF'];
-        if (strpos($self, '"') !== false)
-            $self = substr($self, 0, strpos($self, '"')); //XSS attempt
+        if (strpos($self, '"') !== false) {
+            $self = substr($self, 0, strpos($self, '"'));
+        } //XSS attempt
         return htmlentities(strip_tags($self)); // just in case..
     }
 
@@ -1927,7 +2037,7 @@ class Atk_Tools
         $format = str_replace("D", "%&%", $format);
         $format = str_replace("l", "%*%", $format);
 
-        if ($weekday && strpos($format, '%&%') === FALSE && strpos($format, '%*%') === FALSE) {
+        if ($weekday && strpos($format, '%&%') === false && strpos($format, '%*%') === false) {
             $format = str_replace("d", "%*% d", $format);
             $format = str_replace("j", "%*% j", $format);
         }
@@ -1983,13 +2093,16 @@ class Atk_Tools
         $type = Atk_Module::getNodeType($node);
 
         // prefix tabs with tab_
-        for ($i = 0, $_i = count($tabs); $i < $_i; $i++)
+        for ($i = 0, $_i = count($tabs); $i < $_i; $i++) {
             $tabs[$i] = "tab_" . $tabs[$i];
+        }
 
-        if ($module == "")
+        if ($module == "") {
             $module = "main";
-        if ($section == null)
+        }
+        if ($section == null) {
             $section = $module;
+        }
         $g_nodes[$section][$module][$type] = array_merge($action, $tabs);
     }
 
@@ -2066,14 +2179,16 @@ class Atk_Tools
         static $order_value = 100, $s_dupelookup = array();
         if ($order == 0) {
             $order = $order_value;
-            $order_value+=100;
+            $order_value += 100;
         }
 
-        $item = array("name" => $name,
+        $item = array(
+            "name" => $name,
             "url" => $url,
             "enable" => $enable,
             "order" => $order,
-            "module" => $module);
+            "module" => $module
+        );
 
         if (isset($s_dupelookup[$parent][$name]) && ($name != "-")) {
             $g_menu[$parent][$s_dupelookup[$parent][$name]] = $item;
@@ -2094,12 +2209,14 @@ class Atk_Tools
      */
     public static function menuitems($menu)
     {
-        while (list($parent, $items) = each($menu))
+        while (list($parent, $items) = each($menu)) {
             for ($i = 0; $i < count($items); $i++) {
                 $GLOBALS["g_menu"][$parent][] = $items[$i];
-                if (empty($items[$i]["url"]))
+                if (empty($items[$i]["url"])) {
                     $GLOBALS["g_menu_parent"][$items[$i]["name"]] = $parent;
+                }
             }
+        }
     }
 
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPMailer language file.  
+ * PHPMailer language file.
  * Romanian Version
  * @package PHPMailer
  * @author Catalin Constantin <catalin@dazoot.ro>

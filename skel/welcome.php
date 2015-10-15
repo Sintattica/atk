@@ -32,8 +32,10 @@ $theme = Atk_Theme::getInstance();
 $output = Atk_Output::getInstance();
 
 $page->register_style($theme->stylePath("style.css"));
-$box = $ui->renderBox(array("title" => Atk_Tools::atktext("app_shorttitle"),
-    "content" => "<br><br>" . Atk_Tools::atktext("app_description") . "<br><br>"));
+$box = $ui->renderBox(array(
+    "title" => Atk_Tools::atktext("app_shorttitle"),
+    "content" => "<br><br>" . Atk_Tools::atktext("app_description") . "<br><br>"
+));
 
 $page->addContent($box);
 $output->output($page->render(Atk_Tools::atktext('app_shorttitle'), true));

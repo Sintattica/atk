@@ -36,9 +36,10 @@ $output = Atk_Output::getInstance();
 /* load menu layout */
 $menu = Atk_Menu::getMenu();
 
-if (is_object($menu))
+if (is_object($menu)) {
     $output->output($menu->render());
-else
-    Atk_Tools::atkerror("no menu object created!");;
+} else {
+    Atk_Tools::atkerror("no menu object created!");
+};
 
 $output->outputFlush();

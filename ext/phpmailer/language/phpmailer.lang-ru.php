@@ -1,46 +1,41 @@
 <?php
 
 /**
-
- * PHPMailer language file.  
-
+ * PHPMailer language file.
  * Russian Version
-
  */
-
 
 
 $PHPMAILER_LANG = array();
 
 
+$PHPMAILER_LANG["provide_address"] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ Email' .
 
-$PHPMAILER_LANG["provide_address"] = 'Пожалуйста введите минимум один Email' .
+    'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.';
 
-                                     'получателя.';
+$PHPMAILER_LANG["mailer_not_supported"] = ' mailer пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.';
 
-$PHPMAILER_LANG["mailer_not_supported"] = ' mailer не поддерживается.';
+$PHPMAILER_LANG["execute"] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ: ';
 
-$PHPMAILER_LANG["execute"] = 'Невозможно выполнить эту команду: ';
+$PHPMAILER_LANG["instantiate"] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Mail пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.';
 
-$PHPMAILER_LANG["instantiate"] = 'Произошла ошибка при инициализации Mail функции.';
+$PHPMAILER_LANG["authenticate"] = 'SMTP пїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.';
 
-$PHPMAILER_LANG["authenticate"] = 'SMTP ошибка: ошибка авторизации.';
+$PHPMAILER_LANG["from_failed"] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: ';
 
-$PHPMAILER_LANG["from_failed"] = 'Неверный адрес отправителя: ';
+$PHPMAILER_LANG["recipients_failed"] = 'SMTP пїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ' .
 
-$PHPMAILER_LANG["recipients_failed"] = 'SMTP ошибка: Следующие ' .
+    'пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ: ';
 
-                                       'адреса получателей неверны: ';
+$PHPMAILER_LANG["data_not_accepted"] = 'SMTP пїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.';
 
-$PHPMAILER_LANG["data_not_accepted"] = 'SMTP ошибка: Данные не были приняты.';
+$PHPMAILER_LANG["connect_host"] = 'SMTP пїЅпїЅпїЅпїЅпїЅпїЅ: SMTP-Host пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.';
 
-$PHPMAILER_LANG["connect_host"] = 'SMTP ошибка: SMTP-Host недоступен.';
+$PHPMAILER_LANG["file_access"] = 'пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: ';
 
-$PHPMAILER_LANG["file_access"] = 'В доступе к следующему файлу было отказано: ';
+$PHPMAILER_LANG["file_open"] = 'пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ: ';
 
-$PHPMAILER_LANG["file_open"] = 'Не могу открыть файл: ';
-
-$PHPMAILER_LANG["encoding"] = 'Неизвестный формат кодировки: ';
+$PHPMAILER_LANG["encoding"] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: ';
 
 ?>
 

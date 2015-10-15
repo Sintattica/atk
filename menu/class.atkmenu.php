@@ -51,14 +51,10 @@ class Atk_Menu
         // Check if the menu config is one of the default atk menus (deprecated)
         if (in_array($layout, array("plain", "frames", "outlook", "dhtml", "modern", "cook", "dropdown"))) {
             $classname = "atk.menu.atk" . $layout . "menu";
-        }
-
-        // Application root menu directory (deprecated)
-        elseif (strpos($layout, '.') === FALSE) {
+        } // Application root menu directory (deprecated)
+        elseif (strpos($layout, '.') === false) {
             $classname = "menu." . $layout;
-        }
-
-        // Full class name with packages.
+        } // Full class name with packages.
         else {
             $classname = $layout;
         }
@@ -81,8 +77,9 @@ class Atk_Menu
         $compatiblemenus = $theme->getAttribute('compatible_menus');
         // If this attribute exists then retreive them
         if (is_array($compatiblemenus)) {
-            for ($i = 0, $_i = count($compatiblemenus); $i < $_i; $i++)
+            for ($i = 0, $_i = count($compatiblemenus); $i < $_i; $i++) {
                 $compatiblemenus[$i] = Atk_Menu::layoutToClass($compatiblemenus[$i]);
+            }
         }
 
         if (!empty($compatiblemenus) && is_array($compatiblemenus) && !in_array($classname, $compatiblemenus)) {
@@ -101,16 +98,16 @@ class Atk_Menu
      */
     function &getMenu()
     {
-        static $s_instance = NULL;
-        if ($s_instance == NULL) {
+        static $s_instance = null;
+        if ($s_instance == null) {
             Atk_Tools::atkdebug("Creating a new menu instance");
             $classname = Atk_Menu::getMenuClass();
 
 
             $filename = Atk_Tools::getClassPath($classname);
-            if (file_exists($filename))
+            if (file_exists($filename)) {
                 $s_instance = Atk_Tools::atknew($classname);
-            else {
+            } else {
                 Atk_Tools::atkerror('Failed to get menu object (' . $filename . ' / ' . $classname . ')!');
                 Atk_Tools::atkwarning('Please check your compatible_menus in themedef.inc and config_menu_layout in config.inc.php.');
                 $s_instance = Atk_Tools::atknew('atk.menu.atkplainmenu');
@@ -120,7 +117,8 @@ class Atk_Menu
             // This makes sure that all calls to dispatch_url will generate a url for the main frame and not
             // within the menu itself.
             $theme = Atk_Tools::atkinstance("atk.ui.atktheme");
-            $dispatcher = $theme->getAttribute('dispatcher', Atk_Config::getGlobal("dispatcher", "dispatch.php")); // do not use atkSelf here!
+            $dispatcher = $theme->getAttribute('dispatcher',
+                Atk_Config::getGlobal("dispatcher", "dispatch.php")); // do not use atkSelf here!
             $c = Atk_Tools::atkinstance("atk.atkcontroller");
             $c->setPhpFile($dispatcher);
 

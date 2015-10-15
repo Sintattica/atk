@@ -2,10 +2,10 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
- * @package atk   
+ * @package atk
  * @todo The atktreetools should be moved to the utils subpackage.
  *
  * @copyright (c)2000-2004 Ibuildings.nl BV
@@ -19,7 +19,7 @@
  * Node class, represents a node in a tree.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk   
+ * @package atk
  */
 class Atk_TreeToolsNode
 {

@@ -57,7 +57,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
      * @var int
      * @access private
      */
-    var $m_searchnodeInstance = NULL;
+    var $m_searchnodeInstance = null;
 
     /**
      * @var String Filter for destination records.
@@ -74,15 +74,15 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
      * - select           make the user select
      * - selectperkeyword make the user select for every keyword
      * - multiselect      ?
-     * @param String $name       The name of the attribute
+     * @param String $name The name of the attribute
      * @param String $searchnode The node to search on
-     * @param String $callback   The function of the owner node to call
+     * @param String $callback The function of the owner node to call
      *                           with the record to store and the results of the search
      *                           Has to return a status (true or false)
-     * @param String $mode       The mode of the search (all(default)|first|firstperkeyword|
+     * @param String $mode The mode of the search (all(default)|first|firstperkeyword|
      *                                                   select|selectperkeyword|multiselect)
-     * @param int    $flags      The flags of the attribute
-     * @param int    $size       The size of the search field
+     * @param int $flags The flags of the attribute
+     * @param int $size The size of the search field
      */
     function atkFuzzySearchAttribute($name, $searchnode, $callback, $mode = "all", $flags = 0, $size = 0)
     {
@@ -99,7 +99,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
     /**
      * Creates an instance of the node we are searching on and stores it
      * in a member variable ($this->m_searchnodeInstance)
-     * 
+     *
      * @return boolean
      */
     function createSearchNodeInstance()
@@ -117,7 +117,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
      * Note that obligatory and unique fields are checked by the
      * atkNodeValidator, and not by the validate() method itself.
      *
-     * @param array $rec    The record that holds the value for this
+     * @param array $rec The record that holds the value for this
      *                      attribute. If an error occurs, the error will
      *                      be stored in the 'atkerror' field of the record.
      * @param String $mode The mode for which should be validated ("add" or
@@ -143,14 +143,16 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
                         break;
                     }
                 }
-            } else if ($this->m_mode == "select") {
-                // In single select mode, we show the selector if they all return
-                // just one match together.
-                $total = 0;
-                foreach ($this->m_matches as $keyword => $res) {
-                    $total+=count($res);
+            } else {
+                if ($this->m_mode == "select") {
+                    // In single select mode, we show the selector if they all return
+                    // just one match together.
+                    $total = 0;
+                    foreach ($this->m_matches as $keyword => $res) {
+                        $total += count($res);
+                    }
+                    $mustselect = ($total > 1);
                 }
-                $mustselect = ($total > 1);
             }
 
             if ($mustselect) {
@@ -182,8 +184,9 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
 
         if (isset($rec['atkerror'])) {
             foreach ($rec['atkerror'] as $error) {
-                if ($error['attrib_name'] === $this->fieldName())
+                if ($error['attrib_name'] === $this->fieldName()) {
                     $select = true;
+                }
             }
         }
 
@@ -201,8 +204,9 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
                         continue;
                     }
                 }
-                if (!$notempty)
+                if (!$notempty) {
                     return Atk_Tools::atktext("no_results_found");
+                }
             }
 
             if ($this->m_mode == "multiselect" && count($this->m_matches > 1)) {
@@ -216,37 +220,42 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
                     }
                 }
 
-                $attrib = new Atk_MultiSelectAttribute($this->m_name, $optionArray, $valueArray, 1, AF_NO_LABEL | AF_CHECK_ALL | AF_LINKS_BOTTOM);
-                $res.= $attrib->edit();
-            } else if ($this->m_mode == "select" || ($this->m_mode == "multiselect" && count($this->m_matches) == 1)) {
-                // Select one record from all matches.
-                $res.= '<SELECT NAME="' . $prefix . $this->fieldName() . '[]" class="form-control">';
-                $res.= '<OPTION VALUE="">' . Atk_Tools::atktext('select_none');
-                $selects = array();
-                foreach ($this->m_matches as $keyword => $matches) {
-                    for ($i = 0, $_i = count($matches); $i < $_i; $i++) {
-                        $item = '<OPTION VALUE="' . $this->m_searchnodeInstance->primaryKey($matches[$i]) . '">' . $this->m_searchnodeInstance->descriptor($matches[$i]);
-                        if (!in_array($item, $selects)) {
-                            $selects[] = $item;
-                        }
-                    }
-                    $res .= implode("\n", $selects);
-                }
-                $res.= '</SELECT>';
-            } else if ($this->m_mode == "selectperkeyword") {
-                // Select one record per keyword.
-                $res = '<table border="0">';
-                foreach ($this->m_matches as $keyword => $matches) {
-                    if (count($matches) > 0) {
-                        $res.= '<tr><td>\'' . $keyword . '\': </td><td><SELECT NAME="' . $prefix . $this->fieldName() . '[]" class="form-control">';
-                        $res.= '<OPTION VALUE="">' . Atk_Tools::atktext('select_none');
+                $attrib = new Atk_MultiSelectAttribute($this->m_name, $optionArray, $valueArray, 1,
+                    AF_NO_LABEL | AF_CHECK_ALL | AF_LINKS_BOTTOM);
+                $res .= $attrib->edit();
+            } else {
+                if ($this->m_mode == "select" || ($this->m_mode == "multiselect" && count($this->m_matches) == 1)) {
+                    // Select one record from all matches.
+                    $res .= '<SELECT NAME="' . $prefix . $this->fieldName() . '[]" class="form-control">';
+                    $res .= '<OPTION VALUE="">' . Atk_Tools::atktext('select_none');
+                    $selects = array();
+                    foreach ($this->m_matches as $keyword => $matches) {
                         for ($i = 0, $_i = count($matches); $i < $_i; $i++) {
-                            $res.= '<OPTION VALUE="' . $this->m_searchnodeInstance->primaryKey($matches[$i]) . '">' . $this->m_searchnodeInstance->descriptor($matches[$i]);
+                            $item = '<OPTION VALUE="' . $this->m_searchnodeInstance->primaryKey($matches[$i]) . '">' . $this->m_searchnodeInstance->descriptor($matches[$i]);
+                            if (!in_array($item, $selects)) {
+                                $selects[] = $item;
+                            }
                         }
-                        $res.= '</SELECT></td></tr>';
+                        $res .= implode("\n", $selects);
+                    }
+                    $res .= '</SELECT>';
+                } else {
+                    if ($this->m_mode == "selectperkeyword") {
+                        // Select one record per keyword.
+                        $res = '<table border="0">';
+                        foreach ($this->m_matches as $keyword => $matches) {
+                            if (count($matches) > 0) {
+                                $res .= '<tr><td>\'' . $keyword . '\': </td><td><SELECT NAME="' . $prefix . $this->fieldName() . '[]" class="form-control">';
+                                $res .= '<OPTION VALUE="">' . Atk_Tools::atktext('select_none');
+                                for ($i = 0, $_i = count($matches); $i < $_i; $i++) {
+                                    $res .= '<OPTION VALUE="' . $this->m_searchnodeInstance->primaryKey($matches[$i]) . '">' . $this->m_searchnodeInstance->descriptor($matches[$i]);
+                                }
+                                $res .= '</SELECT></td></tr>';
+                            }
+                        }
+                        $res .= '</table>';
                     }
                 }
-                $res.='</table>';
             }
             return $res;
         } else {
@@ -296,55 +305,64 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
             $wheres = array();
             $matches = $rec[$this->fieldName()];
             for ($i = 0, $_i = count($matches); $i < $_i; $i++) {
-                if ($matches[$i] != "")
+                if ($matches[$i] != "") {
                     $wheres[] = $matches[$i];
+                }
             }
             if (count($wheres) && $this->createSearchNodeInstance()) {
                 $whereclause = "((" . implode(") OR (", $wheres) . "))";
 
-                $resultset = $this->m_searchnodeInstance->selectDb($whereclause, $this->m_searchnodeInstance->m_defaultOrder, "", $this->m_searchnodeInstance->m_listExcludes, "", "admin");
+                $resultset = $this->m_searchnodeInstance->selectDb($whereclause,
+                    $this->m_searchnodeInstance->m_defaultOrder, "", $this->m_searchnodeInstance->m_listExcludes, "",
+                    "admin");
             }
-        } else if (count($this->m_matches) > 0) {
-            // We didn't come from a select, but we found something anyway.
-            // Depending on our mode parameter, we either pass all records to
-            // the callback, or the first for every keyword, or the very first.
-            if ($this->m_mode == "all") {
-                // Pass all matches.
-                foreach ($this->m_matches as $keyword => $matches) {
-                    for ($i = 0, $_i = count($matches); $i < $_i; $i++) {
-                        // Make sure there are no duplicates
-                        if (!in_array($matches[$i], $resultset)) {
-                            $resultset[] = $matches[$i];
+        } else {
+            if (count($this->m_matches) > 0) {
+                // We didn't come from a select, but we found something anyway.
+                // Depending on our mode parameter, we either pass all records to
+                // the callback, or the first for every keyword, or the very first.
+                if ($this->m_mode == "all") {
+                    // Pass all matches.
+                    foreach ($this->m_matches as $keyword => $matches) {
+                        for ($i = 0, $_i = count($matches); $i < $_i; $i++) {
+                            // Make sure there are no duplicates
+                            if (!in_array($matches[$i], $resultset)) {
+                                $resultset[] = $matches[$i];
+                            }
                         }
                     }
-                }
-            } else if ($this->m_mode == "firstperkeyword") {
-                // Pass first matches of all keywords.
-                foreach ($this->m_matches as $keyword => $matches) {
-                    if (count($matches)) {
-                        $resultset[] = $matches[0];
-                    }
-                }
-            } else if ($this->m_mode == "first") {
-                // Pass only the first record of the first match.
-                if (count($this->m_matches)) {
-                    $first = reset($this->m_matches);
-                    if (count($first)) {
-                        $resultset[] = $first[0];
-                    }
-                }
-            } else {
-                // We get here if one of the SELECT modes is active, but no
-                // selection was made. Getting here means that the validate()
-                // method above decided that presenting a selector was not
-                // necessary. We trust that judgement, and pass all records
-                // that were found.
+                } else {
+                    if ($this->m_mode == "firstperkeyword") {
+                        // Pass first matches of all keywords.
+                        foreach ($this->m_matches as $keyword => $matches) {
+                            if (count($matches)) {
+                                $resultset[] = $matches[0];
+                            }
+                        }
+                    } else {
+                        if ($this->m_mode == "first") {
+                            // Pass only the first record of the first match.
+                            if (count($this->m_matches)) {
+                                $first = reset($this->m_matches);
+                                if (count($first)) {
+                                    $resultset[] = $first[0];
+                                }
+                            }
+                        } else {
+                            // We get here if one of the SELECT modes is active, but no
+                            // selection was made. Getting here means that the validate()
+                            // method above decided that presenting a selector was not
+                            // necessary. We trust that judgement, and pass all records
+                            // that were found.
 
-                foreach ($this->m_matches as $keyword => $matches) {
-                    for ($i = 0, $_i = count($matches); $i < $_i; $i++) {
-                        // Make sure there are no duplicates
-                        if (!in_array($matches[$i], $resultset)) {
-                            $resultset[] = $matches[$i];
+                            foreach ($this->m_matches as $keyword => $matches) {
+                                for ($i = 0, $_i = count($matches); $i < $_i; $i++) {
+                                    // Make sure there are no duplicates
+                                    if (!in_array($matches[$i], $resultset)) {
+                                        $resultset[] = $matches[$i];
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -366,7 +384,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
      */
     function load()
     {
-        
+
     }
 
     /**
@@ -374,7 +392,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
      */
     function addToQuery()
     {
-        
+
     }
 
     /**
@@ -382,7 +400,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
      */
     function hide()
     {
-        
+
     }
 
     /**
@@ -390,7 +408,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
      */
     function search()
     {
-        
+
     }
 
     /**
@@ -407,7 +425,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
      */
     function searchCondition()
     {
-        
+
     }
 
     /**
@@ -415,7 +433,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
      */
     function getSearchCondition()
     {
-        
+
     }
 
     /**
@@ -423,7 +441,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
      */
     function fetchMeta()
     {
-        
+
     }
 
     /**
@@ -431,7 +449,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
      */
     function dbFieldSize()
     {
-        
+
     }
 
     /**
@@ -439,7 +457,7 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
      */
     function dbFieldType()
     {
-        
+
     }
 
     /**
@@ -451,8 +469,9 @@ class Atk_FuzzySearchAttribute extends Atk_Attribute
      */
     function addSearchFilter($filter, $value = "")
     {
-        if (!$this->m_searchnodeInstance)
+        if (!$this->m_searchnodeInstance) {
             $this->createSearchNodeInstance();
+        }
         $this->m_searchnodeInstance->addFilter($filter, $value);
     }
 

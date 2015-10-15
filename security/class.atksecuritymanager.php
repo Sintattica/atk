@@ -87,8 +87,9 @@ class Atk_SecurityManager
      */
     function notifyListeners($event, $username)
     {
-        for ($i = 0, $_i = count($this->m_listeners); $i < $_i; $i++)
+        for ($i = 0, $_i = count($this->m_listeners); $i < $_i; $i++) {
             $this->m_listeners[$i]->handleEvent($event, $username);
+        }
     }
 
     /**
@@ -102,8 +103,9 @@ class Atk_SecurityManager
         // assume that when a type includes a dot, the fullclassname is used.
         if (!stristr($type, ".")) {
             $cls = "atk.security.auth_$type";
-        } else
+        } else {
             $cls = $type;
+        }
         return $cls;
     }
 
@@ -146,8 +148,9 @@ class Atk_SecurityManager
         foreach ($authentication as $class) {
             if (!$obj = Atk_Tools::atknew($class)) {
                 Atk_Tools::atkdebug("atkSecurityManager() unsupported authentication type or type no found for $class");
-            } else
+            } else {
                 $this->m_authentication[$class] = $obj;
+            }
         }
 
         /* authorization class */
@@ -181,8 +184,13 @@ class Atk_SecurityManager
     {
         // Query the database for user records having the given username and return if not found
         $usernode = Atk_Module::atkGetNode(Atk_Config::getGlobal("auth_usernode"));
-        $selector = sprintf("%s.%s = '%s'", Atk_Config::getGlobal("auth_usertable"), Atk_Config::getGlobal("auth_userfield"), $username);
-        $userrecords = $usernode->selectDb($selector, "", "", "", array(Atk_Config::getGlobal("auth_userpk"), Atk_Config::getGlobal("auth_emailfield"), Atk_Config::getGlobal("auth_passwordfield")), "edit");
+        $selector = sprintf("%s.%s = '%s'", Atk_Config::getGlobal("auth_usertable"),
+            Atk_Config::getGlobal("auth_userfield"), $username);
+        $userrecords = $usernode->selectDb($selector, "", "", "", array(
+            Atk_Config::getGlobal("auth_userpk"),
+            Atk_Config::getGlobal("auth_emailfield"),
+            Atk_Config::getGlobal("auth_passwordfield")
+        ), "edit");
         if (count($userrecords) != 1) {
             Atk_Tools::atkdebug("User '$username' not found.");
             return false;
@@ -258,8 +266,9 @@ class Atk_SecurityManager
             // destroy cookie
             if (Atk_Config::getGlobal("authentication_cookie") && $auth_user != "administrator") {
                 $cookiename = $this->_getAuthCookieName();
-                if (!empty($_COOKIE[$cookiename]))
+                if (!empty($_COOKIE[$cookiename])) {
                     setcookie($cookiename, "", 0);
+                }
             }
 
             $this->notifyListeners("postLogout", $auth_user);
@@ -269,152 +278,173 @@ class Atk_SecurityManager
                 exit;
             }
         } // do we need to login?
-        else if ((!isset($session["login"])) || ($session["login"] != 1)) {
-            // authenticated?
-            $authenticated = false;
+        else {
+            if ((!isset($session["login"])) || ($session["login"] != 1)) {
+                // authenticated?
+                $authenticated = false;
 
-            // sometimes we manually have to set the PHP_AUTH vars
-            // old style http_authorization
-            if (empty($auth_user) && empty($auth_pw) && array_key_exists("HTTP_AUTHORIZATION", $_SERVER) && ereg("^Basic ", $_SERVER["HTTP_AUTHORIZATION"])) {
-                list($auth_user, $auth_pw) = explode(":", base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6)));
-            } // external authentication
-            elseif (empty($auth_user) && empty($auth_pw) && !empty($_SERVER["PHP_AUTH_USER"])) {
-                $auth_user = $_SERVER["PHP_AUTH_USER"];
-                $auth_pw = $_SERVER["PHP_AUTH_PW"];
-            }
-
-            // check previous sessions..
-            if (Atk_Config::getGlobal("authentication_cookie")) {
-                // Cookiename is based on the app_title, for there may be more than 1 atk app running,
-                // each with their own cookie..
-                $cookiename = $this->_getAuthCookieName();
-                list($enc, $user, $passwd) = explode(".", base64_decode(Atk_Tools::atkArrayNvl($_COOKIE, $cookiename, "Li4=")));
-
-                // for security reasons administrator will never be cookied..
-                if ($auth_user == "" && $user != "" && $user != "administrator") {
-                    Atk_Tools::atkdebug("Using cookie to retrieve previously used userid/password");
-                    $auth_user = $user;
-                    $auth_pw = $passwd;
-                    $md5 = ($enc == "MD5"); // cookie may already be md5;
+                // sometimes we manually have to set the PHP_AUTH vars
+                // old style http_authorization
+                if (empty($auth_user) && empty($auth_pw) && array_key_exists("HTTP_AUTHORIZATION",
+                        $_SERVER) && ereg("^Basic ", $_SERVER["HTTP_AUTHORIZATION"])
+                ) {
+                    list($auth_user, $auth_pw) = explode(":", base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6)));
+                } // external authentication
+                elseif (empty($auth_user) && empty($auth_pw) && !empty($_SERVER["PHP_AUTH_USER"])) {
+                    $auth_user = $_SERVER["PHP_AUTH_USER"];
+                    $auth_pw = $_SERVER["PHP_AUTH_PW"];
                 }
-            }
 
-            $authenticated = false;
+                // check previous sessions..
+                if (Atk_Config::getGlobal("authentication_cookie")) {
+                    // Cookiename is based on the app_title, for there may be more than 1 atk app running,
+                    // each with their own cookie..
+                    $cookiename = $this->_getAuthCookieName();
+                    list($enc, $user, $passwd) = explode(".",
+                        base64_decode(Atk_Tools::atkArrayNvl($_COOKIE, $cookiename, "Li4=")));
 
-            // Check if a username was entered
-            if ((Atk_Tools::atkArrayNvl($ATK_VARS, "login", "") != "") && empty($auth_user) && !strstr(Atk_Config::getGlobal("authentication"), "none")) {
-                $response = AUTH_MISSINGUSERNAME;
-            } // Email password if password forgotten and passwordmailer enabled
-            else if ((!empty($auth_user)) && (Atk_Config::getGlobal("auth_loginform") == true) && $this->get_enablepasswordmailer() && (Atk_Tools::atkArrayNvl($ATK_VARS, "login", "") == Atk_Tools::atktext('password_forgotten'))) {
-                $this->mailPassword($auth_user);
-                $response = AUTH_PASSWORDSENT;
-            } else {
-                $throwPostLoginEvent = true;
-                $this->notifyListeners("preLogin", $auth_user);
-
-                // check administrator and guest user
-                if ($auth_user == "administrator" || $auth_user == "guest") {
-                    $config_pw = Atk_Config::getGlobal($auth_user . "password");
-                    if (!empty($config_pw) && (($auth_pw == $config_pw) || (Atk_Config::getGlobal("authentication_md5") && (md5($auth_pw) == strtolower($config_pw))))) {
-                        $authenticated = true;
-                        $response = AUTH_SUCCESS;
-                        if ($auth_user == "administrator")
-                            $this->m_user = array("name" => "administrator", "level" => -1, "access_level" => 9999999);
-                        else
-                            $this->m_user = array("name" => "guest", "level" => -2, "access_level" => 0);
-                    } else {
-                        $response = AUTH_MISMATCH;
+                    // for security reasons administrator will never be cookied..
+                    if ($auth_user == "" && $user != "" && $user != "administrator") {
+                        Atk_Tools::atkdebug("Using cookie to retrieve previously used userid/password");
+                        $auth_user = $user;
+                        $auth_pw = $passwd;
+                        $md5 = ($enc == "MD5"); // cookie may already be md5;
                     }
                 }
 
-                // other users
-                // we must first explicitly check that we are not trying to login as administrator or guest.
-                // these accounts have been validated above. If we don't check this, an account could be
-                // created in the database that provides administrator access.
-                else if ($auth_user != "administrator" && $auth_user != "guest") {
-                    if (is_array($this->m_authentication)) {
-                        // We have a username, which we must now validate against several
-                        // checks. If all of these fail, we have a status of AUTH_MISMATCH.
-                        foreach ($this->m_authentication as $name => $obj) {
-                            $obj->canMd5() && !$md5 ? $tmp_pw = md5($auth_pw) : $tmp_pw = $auth_pw;
-                            $response = $obj->validateUser($auth_user, $tmp_pw);
-                            if ($response == AUTH_SUCCESS) {
-                                Atk_Tools::atkdebug("Atk_SecurityManager::authenticate() using $name authentication");
-                                $authname = $name;
-                                break;
+                $authenticated = false;
+
+                // Check if a username was entered
+                if ((Atk_Tools::atkArrayNvl($ATK_VARS, "login",
+                            "") != "") && empty($auth_user) && !strstr(Atk_Config::getGlobal("authentication"), "none")
+                ) {
+                    $response = AUTH_MISSINGUSERNAME;
+                } // Email password if password forgotten and passwordmailer enabled
+                else {
+                    if ((!empty($auth_user)) && (Atk_Config::getGlobal("auth_loginform") == true) && $this->get_enablepasswordmailer() && (Atk_Tools::atkArrayNvl($ATK_VARS,
+                                "login", "") == Atk_Tools::atktext('password_forgotten'))
+                    ) {
+                        $this->mailPassword($auth_user);
+                        $response = AUTH_PASSWORDSENT;
+                    } else {
+                        $throwPostLoginEvent = true;
+                        $this->notifyListeners("preLogin", $auth_user);
+
+                        // check administrator and guest user
+                        if ($auth_user == "administrator" || $auth_user == "guest") {
+                            $config_pw = Atk_Config::getGlobal($auth_user . "password");
+                            if (!empty($config_pw) && (($auth_pw == $config_pw) || (Atk_Config::getGlobal("authentication_md5") && (md5($auth_pw) == strtolower($config_pw))))) {
+                                $authenticated = true;
+                                $response = AUTH_SUCCESS;
+                                if ($auth_user == "administrator") {
+                                    $this->m_user = array(
+                                        "name" => "administrator",
+                                        "level" => -1,
+                                        "access_level" => 9999999
+                                    );
+                                } else {
+                                    $this->m_user = array("name" => "guest", "level" => -2, "access_level" => 0);
+                                }
+                            } else {
+                                $response = AUTH_MISMATCH;
                             }
                         }
-                    }
-                    if ($response == AUTH_SUCCESS) { // succesful login
-                        // We store the username + securitylevel of the logged in user.
-                        $this->m_user = $this->m_authorization->getUser($auth_user);
-                        $this->m_user['AUTH'] = $authname; // something to see wich auth scheme is used
-                        if (Atk_Config::getGlobal("enable_ssl_encryption"))
-                            $this->m_user['PASS'] = $auth_pw; // used by aktsecurerelation to decrypt an linkpass
+
+                        // other users
+                        // we must first explicitly check that we are not trying to login as administrator or guest.
+                        // these accounts have been validated above. If we don't check this, an account could be
+                        // created in the database that provides administrator access.
+                        else {
+                            if ($auth_user != "administrator" && $auth_user != "guest") {
+                                if (is_array($this->m_authentication)) {
+                                    // We have a username, which we must now validate against several
+                                    // checks. If all of these fail, we have a status of AUTH_MISMATCH.
+                                    foreach ($this->m_authentication as $name => $obj) {
+                                        $obj->canMd5() && !$md5 ? $tmp_pw = md5($auth_pw) : $tmp_pw = $auth_pw;
+                                        $response = $obj->validateUser($auth_user, $tmp_pw);
+                                        if ($response == AUTH_SUCCESS) {
+                                            Atk_Tools::atkdebug("Atk_SecurityManager::authenticate() using $name authentication");
+                                            $authname = $name;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if ($response == AUTH_SUCCESS) { // succesful login
+                                    // We store the username + securitylevel of the logged in user.
+                                    $this->m_user = $this->m_authorization->getUser($auth_user);
+                                    $this->m_user['AUTH'] = $authname; // something to see wich auth scheme is used
+                                    if (Atk_Config::getGlobal("enable_ssl_encryption")) {
+                                        $this->m_user['PASS'] = $auth_pw;
+                                    } // used by aktsecurerelation to decrypt an linkpass
 
 
 // for convenience, we also store the user as a global variable.
-                        (is_array($this->m_user['level'])) ? $dbg = implode(",", $this->m_user['level'])
-                            : $dbg = $this->m_user['level'];
-                        Atk_Tools::atkdebug("Logged in user: " . $this->m_user["name"] . " (level: " . $dbg . ")");
-                        $authenticated = true;
+                                    (is_array($this->m_user['level'])) ? $dbg = implode(",", $this->m_user['level'])
+                                        : $dbg = $this->m_user['level'];
+                                    Atk_Tools::atkdebug("Logged in user: " . $this->m_user["name"] . " (level: " . $dbg . ")");
+                                    $authenticated = true;
 
-                        // Remember that we are logged in..
-                        //$g_sessionManager->globalVar("authentication",array("authenticated"=>1, "user"=>$this->m_user), true);
-                        // write cookie
-                        if (Atk_Config::getGlobal("authentication_cookie") && $auth_user != "administrator") {
-                            // if the authentication scheme supports md5 passwords, we can safely store
-                            // the password as md5 in the cookie.
-                            if ($md5) { // Password is already md5 encoded
-                                $tmppw = $auth_pw;
-                                $enc = "MD5";
-                            } else { // password is not md5 encoded
-                                if ($this->m_authentication[$authname]->canMd5()) { // we can encode it
-                                    $tmppw = md5($auth_pw);
-                                    $enc = "MD5";
-                                } else { // authentication scheme does not support md5 encoding.
-                                    // our only choice is to store the password plain text
-                                    // :-(
-                                    // NOTE: If you use a non-md5 enabled authentication
-                                    // scheme then, for security reasons, you shouldn't use
-                                    // $config_authentication_cookie at all.
-                                    $tmppw = $auth_pw;
-                                    $enc = "PLAIN";
+                                    // Remember that we are logged in..
+                                    //$g_sessionManager->globalVar("authentication",array("authenticated"=>1, "user"=>$this->m_user), true);
+                                    // write cookie
+                                    if (Atk_Config::getGlobal("authentication_cookie") && $auth_user != "administrator") {
+                                        // if the authentication scheme supports md5 passwords, we can safely store
+                                        // the password as md5 in the cookie.
+                                        if ($md5) { // Password is already md5 encoded
+                                            $tmppw = $auth_pw;
+                                            $enc = "MD5";
+                                        } else { // password is not md5 encoded
+                                            if ($this->m_authentication[$authname]->canMd5()) { // we can encode it
+                                                $tmppw = md5($auth_pw);
+                                                $enc = "MD5";
+                                            } else { // authentication scheme does not support md5 encoding.
+                                                // our only choice is to store the password plain text
+                                                // :-(
+                                                // NOTE: If you use a non-md5 enabled authentication
+                                                // scheme then, for security reasons, you shouldn't use
+                                                // $config_authentication_cookie at all.
+                                                $tmppw = $auth_pw;
+                                                $enc = "PLAIN";
+                                            }
+                                        }
+                                        setcookie($cookiename, base64_encode($enc . "." . $auth_user . "." . $tmppw),
+                                            time() + 60 * (Atk_Config::getGlobal("authentication_cookie_expire")));
+                                    }
+                                } else {
+                                    // login was incorrect. Either the supplied username/password combination is
+                                    // incorrect (we just try again) or there was an error (we display an error
+                                    // message)
+                                    if ($response == AUTH_ERROR) {
+                                        $this->m_fatalError = $this->m_authentication->m_fatalError;
+                                    }
+                                    $authenticated = false;
                                 }
                             }
-                            setcookie($cookiename, base64_encode($enc . "." . $auth_user . "." . $tmppw), time() + 60 * (Atk_Config::getGlobal("authentication_cookie_expire")));
                         }
-                    } else {
-                        // login was incorrect. Either the supplied username/password combination is
-                        // incorrect (we just try again) or there was an error (we display an error
-                        // message)
-                        if ($response == AUTH_ERROR) {
-                            $this->m_fatalError = $this->m_authentication->m_fatalError;
+
+                        // we are logged in
+                        if ($authenticated) {
+                            $session["login"] = 1;
                         }
-                        $authenticated = false;
                     }
                 }
-
-                // we are logged in
-                if ($authenticated)
-                    $session["login"] = 1;
-            }
-        } else {
-            // using session for authentication, because "login" was registered.
-            // but we double check with some more data from the session to see
-            // if the login is really valid.
-            $session_auth = $g_sessionManager->getValue("authentication", "globals");
-
-            if (Atk_Config::getGlobal("authentication_session") &&
-                $session["login"] == 1 &&
-                $session_auth["authenticated"] == 1 &&
-                !empty($session_auth["user"])
-            ) {
-                $this->m_user = $session_auth["user"];
-                Atk_Tools::atkdebug("Using session for authentication / user = " . $this->m_user["name"]);
             } else {
-                // Invalid session
-                $authenticated = false;
+                // using session for authentication, because "login" was registered.
+                // but we double check with some more data from the session to see
+                // if the login is really valid.
+                $session_auth = $g_sessionManager->getValue("authentication", "globals");
+
+                if (Atk_Config::getGlobal("authentication_session") &&
+                    $session["login"] == 1 &&
+                    $session_auth["authenticated"] == 1 &&
+                    !empty($session_auth["user"])
+                ) {
+                    $this->m_user = $session_auth["user"];
+                    Atk_Tools::atkdebug("Using session for authentication / user = " . $this->m_user["name"]);
+                } else {
+                    // Invalid session
+                    $authenticated = false;
+                }
             }
         }
 
@@ -446,21 +476,27 @@ class Atk_SecurityManager
                 $output->outputFlush();
                 exit();
             } else {
-                header('WWW-Authenticate: Basic realm="' . Atk_Tools::atktext("app_title") . (Atk_Config::getGlobal("auth_changerealm", true)
+                header('WWW-Authenticate: Basic realm="' . Atk_Tools::atktext("app_title") . (Atk_Config::getGlobal("auth_changerealm",
+                        true)
                         ? ' - ' . strftime("%c", time()) : "") . '"');
-                if (ereg("Microsoft", $_SERVER['SERVER_SOFTWARE']))
+                if (ereg("Microsoft", $_SERVER['SERVER_SOFTWARE'])) {
                     header("Status: 401 Unauthorized");
-                else
+                } else {
                     header("HTTP/1.0 401 Unauthorized");
+                }
                 return false;
             }
         } // we are authenticated, but atklogout is still active, let's get rid of it!
-        else if (isset($ATK_VARS["atklogout"]))
-            header("Location: " . Atk_Tools::atkSelf() . "?");
-
-        // we keep the relogin state until the atklogout variable isn't set anymore
-        else if (!isset($ATK_VARS["atklogout"]) && isset($session["relogin"]) && $session["relogin"] == 1)
-            $session["relogin"] = 0;
+        else {
+            if (isset($ATK_VARS["atklogout"])) {
+                header("Location: " . Atk_Tools::atkSelf() . "?");
+            } // we keep the relogin state until the atklogout variable isn't set anymore
+            else {
+                if (!isset($ATK_VARS["atklogout"]) && isset($session["relogin"]) && $session["relogin"] == 1) {
+                    $session["relogin"] = 0;
+                }
+            }
+        }
 
         // return
         // g_user always lowercase
@@ -472,8 +508,9 @@ class Atk_SecurityManager
         $g_sessionManager->globalVar("authentication", array("authenticated" => 1, "user" => $this->m_user), true);
         Atk_SessionManager::sessionStore('loginattempts', ''); //reset maxloginattempts
 
-        if ($throwPostLoginEvent)
+        if ($throwPostLoginEvent) {
             $this->notifyListeners("postLogin", $auth_user);
+        }
 
         return true;
     }
@@ -508,8 +545,9 @@ class Atk_SecurityManager
     function loginForm($defaultname, $lastresponse)
     {
         $loginattempts = Atk_SessionManager::sessionLoad('loginattempts'); // Note: not actually how many authentication attempts, but how many times the login form has been displayed.
-        if ($loginattempts == "")
+        if ($loginattempts == "") {
             $loginattempts = 0;
+        }
 
         if ($loginattempts == "") {
             $loginattempts = 1;
@@ -559,17 +597,23 @@ class Atk_SecurityManager
                 $output .= "<tr><td colspan=3 class=error>" . Atk_Tools::atktext('auth_account_locked') . "<br><br></td></tr>";
                 $tplvars["auth_account_locked"] = Atk_Tools::atktext('auth_account_locked');
                 $tplvars["error"] = Atk_Tools::atktext('auth_account_locked');
-            } else if ($lastresponse == AUTH_MISMATCH) {
-                $output .= '<tr><td colspan=3 class=error>' . Atk_Tools::atktext('auth_mismatch') . '<br><br></td></tr>';
-                $tplvars["auth_mismatch"] = Atk_Tools::atktext('auth_mismatch');
-                $tplvars["error"] = Atk_Tools::atktext('auth_mismatch');
-            } else if ($lastresponse == AUTH_MISSINGUSERNAME) {
-                $output .= '<tr><td colspan="3" class=error>' . Atk_Tools::atktext('auth_missingusername') . '<br /><br /></td></tr>';
-                $tplvars["auth_mismatch"] = Atk_Tools::atktext('auth_missingusername');
-                $tplvars["error"] = Atk_Tools::atktext('auth_missingusername');
-            } else if ($lastresponse == AUTH_PASSWORDSENT) {
-                $output .= '<tr><td colspan="3">' . Atk_Tools::atktext('auth_passwordmail_sent') . '<br /><br /></td></tr>';
-                $tplvars["auth_mismatch"] = Atk_Tools::atktext('auth_passwordmail_sent');
+            } else {
+                if ($lastresponse == AUTH_MISMATCH) {
+                    $output .= '<tr><td colspan=3 class=error>' . Atk_Tools::atktext('auth_mismatch') . '<br><br></td></tr>';
+                    $tplvars["auth_mismatch"] = Atk_Tools::atktext('auth_mismatch');
+                    $tplvars["error"] = Atk_Tools::atktext('auth_mismatch');
+                } else {
+                    if ($lastresponse == AUTH_MISSINGUSERNAME) {
+                        $output .= '<tr><td colspan="3" class=error>' . Atk_Tools::atktext('auth_missingusername') . '<br /><br /></td></tr>';
+                        $tplvars["auth_mismatch"] = Atk_Tools::atktext('auth_missingusername');
+                        $tplvars["error"] = Atk_Tools::atktext('auth_missingusername');
+                    } else {
+                        if ($lastresponse == AUTH_PASSWORDSENT) {
+                            $output .= '<tr><td colspan="3">' . Atk_Tools::atktext('auth_passwordmail_sent') . '<br /><br /></td></tr>';
+                            $tplvars["auth_mismatch"] = Atk_Tools::atktext('auth_passwordmail_sent');
+                        }
+                    }
+                }
             }
 
             // generate the form
@@ -666,7 +710,7 @@ class Atk_SecurityManager
      *
      * @return boolean true if access is granted, false if not.
      */
-    function attribAllowed(&$attr, $mode, $record = NULL)
+    function attribAllowed(&$attr, $mode, $record = null)
     {
         return $this->m_authorization->attribAllowed($this, $attr, $mode, $record);
     }
@@ -783,12 +827,14 @@ class Atk_SecurityManager
             !empty($session_auth["user"])
         ) {
             $user = $session_auth["user"];
-            if (!isset($user["access_level"]) || empty($user["access_level"]))
+            if (!isset($user["access_level"]) || empty($user["access_level"])) {
                 $user["access_level"] = 0;
+            }
         }
 
-        if ($key)
+        if ($key) {
             return $user[$key];
+        }
         return $user;
     }
 
@@ -804,8 +850,9 @@ class Atk_SecurityManager
         // check if logged in || logged in as administrator
         if ($user == "" || $userpk == "" ||
             (is_array($user) && !isset($user[$userpk]))
-        )
+        ) {
             return 0;
+        }
 
         return $user[$userpk];
     }

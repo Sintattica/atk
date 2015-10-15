@@ -21,17 +21,19 @@ class Atk_MlFckAttribute extends Atk_MlTextAttribute
 {
     var $m_editorname = "";
     var $m_urlpath = "";
-    var $fck_opt = array('ToolbarSet' => 'Default',
+    var $fck_opt = array(
+        'ToolbarSet' => 'Default',
         'Width' => '100%',
-        'Height' => '300px');
+        'Height' => '300px'
+    );
 
     /**
      * Create a new instance of the atkMlFckAttribute
      *
-     * @param string $name  the name of our attribute
-     * @param int    $size  the size for this attribute
-     * @param int    $flags the flags for this attribute
-     * @param array  $opt   the options to pass to the FCK editor
+     * @param string $name the name of our attribute
+     * @param int $size the size for this attribute
+     * @param int $flags the flags for this attribute
+     * @param array $opt the options to pass to the FCK editor
      */
     public function __construct($name, $flags = 0, $size = 0, Array $opt = array())
     {
@@ -54,10 +56,10 @@ class Atk_MlFckAttribute extends Atk_MlTextAttribute
      * this particular occassion we will include the FCK library and setup the
      * right parameters for this particular set of editors.
      *
-     * @param array     $record     array with fields
-     * @param string    $prefix     The fieldprefix to put in front of the name
+     * @param array $record array with fields
+     * @param string $prefix The fieldprefix to put in front of the name
      *                              of any html form element for this attribute.
-     * @param string    $mode       The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      * @return string piece of html code with a textarea
      */
     public function edit($record = "", $prefix = "", $mode = "")
@@ -80,11 +82,11 @@ class Atk_MlFckAttribute extends Atk_MlTextAttribute
      * This method is called by the node if it wants the data needed to create
      * an edit form.
      *
-     * @param String $mode     the edit mode ("add" or "edit")
-     * @param array  $arr      pointer to the edit array
-     * @param array  $defaults pointer to the default values array
-     * @param array  $error    pointer to the error array
-     * @param String $fieldprefix   the fieldprefix
+     * @param String $mode the edit mode ("add" or "edit")
+     * @param array $arr pointer to the edit array
+     * @param array $defaults pointer to the default values array
+     * @param array $error pointer to the error array
+     * @param String $fieldprefix the fieldprefix
      */
     public function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
@@ -95,11 +97,13 @@ class Atk_MlFckAttribute extends Atk_MlTextAttribute
         $languages = $this->getLanguages();
         $langCount = count($languages);
 
-        for ($i = 1; $i < $langCount; $i ++) {
+        for ($i = 1; $i < $langCount; $i++) {
             $curlng = $languages[$i];
-            $entry = array("name" => $this->m_name . "_ml",
+            $entry = array(
+                "name" => $this->m_name . "_ml",
                 "obligatory" => $this->hasFlag(AF_OBLIGATORY),
-                "attribute" => $this);
+                "attribute" => $this
+            );
 
             $entry["label"] = $this->label($defaults) .
                 ' (<label id="' . $fieldprefix . $this->formName() . '_label_ ' .
@@ -179,7 +183,7 @@ class Atk_MlFckAttribute extends Atk_MlTextAttribute
             return $dbval;
         }
 
-        return NULL;
+        return null;
     }
 
 }

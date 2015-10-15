@@ -30,21 +30,24 @@
  */
 function smarty_function_atktext($params, &$smarty)
 {
-    if (!isset($params["id"]))
+    if (!isset($params["id"])) {
         $params["id"] = $params[0];
+    }
     switch (substr_count($params["id"], ".")) {
         case 1: {
-                list($module, $id) = explode(".", $params["id"]);
-                $str = Atk_Tools::atktext($id, $module, isset($params["node"]) ? $params["node"]
-                            : '' );
-                break;
-            }
+            list($module, $id) = explode(".", $params["id"]);
+            $str = Atk_Tools::atktext($id, $module, isset($params["node"]) ? $params["node"]
+                : '');
+            break;
+        }
         case 2: {
-                list($module, $node, $id) = explode(".", $params["id"]);
-                $str = Atk_Tools::atktext($id, $module, $node);
-                break;
-            }
-        default: $str = Atk_Tools::atktext($params["id"], Atk_Tools::atkArrayNvl($params, "module", ""), Atk_Tools::atkArrayNvl($params, "node", ""), Atk_Tools::atkArrayNvl($params, "lng", ""));
+            list($module, $node, $id) = explode(".", $params["id"]);
+            $str = Atk_Tools::atktext($id, $module, $node);
+            break;
+        }
+        default:
+            $str = Atk_Tools::atktext($params["id"], Atk_Tools::atkArrayNvl($params, "module", ""),
+                Atk_Tools::atkArrayNvl($params, "node", ""), Atk_Tools::atkArrayNvl($params, "lng", ""));
     }
 
     if (isset($params["filter"])) {

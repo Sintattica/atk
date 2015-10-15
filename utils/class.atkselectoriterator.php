@@ -35,7 +35,7 @@ class Atk_SelectorIterator extends IteratorIterator
     /**
      * Constructor.
      *
-     * @param Iterator    $iterator iterator
+     * @param Iterator $iterator iterator
      * @param Atk_Selector $selector selector
      */
     public function __construct(Iterator $iterator, Atk_Selector $selector)

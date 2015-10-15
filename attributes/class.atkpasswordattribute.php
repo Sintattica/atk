@@ -70,11 +70,11 @@ class Atk_PasswordAttribute extends Atk_Attribute
      * @param string $name Name of the attribute
      * @param bool $generate Generate password (boolean)
      * @param integer $flags Flags for this attribute
-     * @param mixed $size  The size(s) of the attribute. See the $size
+     * @param mixed $size The size(s) of the attribute. See the $size
      *                     parameter of the setAttribSize() method for more
      *                     information on the possible values of this
      *                     parameter.
-     * @param array $restrictions  
+     * @param array $restrictions
      */
     function atkPasswordAttribute($name, $generate, $flags = 0, $size = 0, $restrictions = "")
     {
@@ -83,7 +83,7 @@ class Atk_PasswordAttribute extends Atk_Attribute
             $this->m_generate = $generate;
         } else {
             $flags = $generate;
-            $this->m_generate = FALSE;
+            $this->m_generate = false;
         }
 
         // Call the parent constructor
@@ -111,13 +111,28 @@ class Atk_PasswordAttribute extends Atk_Attribute
      */
     function setRestrictions($restrictions)
     {
-        $this->m_restrictions = array("minsize" => 0, "minupperchars" => 0, "minlowerchars" => 0, "minalphabeticchars" => 0, "minnumbers" => 0, "minspecialchars" => 0);
+        $this->m_restrictions = array(
+            "minsize" => 0,
+            "minupperchars" => 0,
+            "minlowerchars" => 0,
+            "minalphabeticchars" => 0,
+            "minnumbers" => 0,
+            "minspecialchars" => 0
+        );
         if (is_array($restrictions)) {
             foreach ($restrictions as $name => $value) {
-                if (in_array(strtolower($name), array("minsize", "minupperchars", "minlowerchars", "minalphabeticchars", "minnumbers", "minspecialchars"))) {
+                if (in_array(strtolower($name), array(
+                    "minsize",
+                    "minupperchars",
+                    "minlowerchars",
+                    "minalphabeticchars",
+                    "minnumbers",
+                    "minspecialchars"
+                ))) {
                     $this->m_restrictions[strtolower($name)] = $value;
                 } else {
-                    Atk_Tools::atkdebug("atkPasswordAttribute->setRestrictions(): Unknown restriction: \"$name\"=\"$value\"", DEBUG_WARNING);
+                    Atk_Tools::atkdebug("atkPasswordAttribute->setRestrictions(): Unknown restriction: \"$name\"=\"$value\"",
+                        DEBUG_WARNING);
                 }
             }
         }
@@ -152,27 +167,25 @@ class Atk_PasswordAttribute extends Atk_Attribute
                 $result = Atk_Tools::atktext("password_new", "atk") . ':<br>' .
                     '<input autocomplete="off" type="password" id="' . $id . '[new]" name="' . $id . '[new]"' .
                     ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"'
-                            : '') .
+                        : '') .
                     ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . "><br><br>" .
                     Atk_Tools::atktext("password_again", "atk") . ':<br>' .
                     '<input autocomplete="off" type="password" id="' . $id . '[again]" name="' . $id . '[again]"' .
                     ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"'
-                            : '') .
+                        : '') .
                     ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . ">";
             } else {
-                $password = $this->generatePassword(8, TRUE);
+                $password = $this->generatePassword(8, true);
                 $this->registerKeyListener($id . '[new]', KB_CTRLCURSOR | KB_UPDOWN);
                 $this->registerKeyListener($id . '[again]', KB_CTRLCURSOR | KB_UPDOWN);
                 $result = '<input type="hidden" id="' . $id . '[again]" name="' . $id . '[again]"' .
                     ' value ="' . $password . '">' .
                     '<input type="text" id="' . $id . '[new]" name="' . $id . '[new]"' .
                     ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"'
-                            : '') .
+                        : '') .
                     ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . ' value ="' . $password . '" onchange="this.form.elements[\'' . $fieldprefix . $this->fieldName() . '[again]\'].value=this.value">';
             }
-        }
-
-        /* edit */ else {
+        } /* edit */ else {
             $result = '<input type="hidden" name="' . $id . '[hash]"' .
                 ' value="' . $record[$this->fieldName()]["hash"] . '">';
 
@@ -182,7 +195,7 @@ class Atk_PasswordAttribute extends Atk_Attribute
                 $result .= Atk_Tools::atktext("password_current", "atk") . ':<br>' .
                     '<input autocomplete="off" type="password" id="' . $id . '[current]" name="' . $id . '[current]"' .
                     ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"'
-                            : '') .
+                        : '') .
                     ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . '><br><br>';
             }
             $this->registerKeyListener($id . '[new]', KB_CTRLCURSOR | KB_UPDOWN);
@@ -228,7 +241,7 @@ class Atk_PasswordAttribute extends Atk_Attribute
     function db2value($rec)
     {
         $value = isset($rec[$this->fieldName()]) ? stripslashes($rec[$this->fieldName()])
-                : null;
+            : null;
         return array("hash" => $value);
     }
 
@@ -243,8 +256,9 @@ class Atk_PasswordAttribute extends Atk_Attribute
     {
         $count = 0;
         for ($i = 0, $_i = strlen($password); $i < $_i; $i++) {
-            if (strpos($chars, substr($password, $i, 1)) !== false)
+            if (strpos($chars, substr($password, $i, 1)) !== false) {
                 $count++;
+            }
         }
         return $count;
     }
@@ -265,17 +279,23 @@ class Atk_PasswordAttribute extends Atk_Attribute
             // Get the number of actual characters that should be checked against this restriction
             $actual = 0;
             switch ($name) {
-                case "minsize": $actual = strlen($password);
+                case "minsize":
+                    $actual = strlen($password);
                     break;
-                case "minupperchars": $actual = $this->_countCharMatches($password, UPPERCHARS);
+                case "minupperchars":
+                    $actual = $this->_countCharMatches($password, UPPERCHARS);
                     break;
-                case "minlowerchars": $actual = $this->_countCharMatches($password, LOWERCHARS);
+                case "minlowerchars":
+                    $actual = $this->_countCharMatches($password, LOWERCHARS);
                     break;
-                case "minalphabeticchars":$actual = $this->_countCharMatches($password, ALPHABETICCHARS);
+                case "minalphabeticchars":
+                    $actual = $this->_countCharMatches($password, ALPHABETICCHARS);
                     break;
-                case "minnumbers": $actual = $this->_countCharMatches($password, NUMBERS);
+                case "minnumbers":
+                    $actual = $this->_countCharMatches($password, NUMBERS);
                     break;
-                case "minspecialchars": $actual = strlen($password) - $this->_countCharMatches($password, ALPHABETICCHARS . NUMBERS);
+                case "minspecialchars":
+                    $actual = strlen($password) - $this->_countCharMatches($password, ALPHABETICCHARS . NUMBERS);
                     break;
             }
 
@@ -307,10 +327,13 @@ class Atk_PasswordAttribute extends Atk_Attribute
         foreach ($this->m_restrictions as $name => $value) {
             // Add a human readable form of the current restriction to the text string and append a linebreak
             if ($value > 0) {
-                if ($name == "minsize")
-                    $text .= sprintf(Atk_Tools::atktext("the_password_should_be_at_least_%d_characters_long", "atk"), $value);
-                else
-                    $text .= sprintf(Atk_Tools::atktext("the_password_should_at_least_contain_%d_%s", "atk"), $value, Atk_Tools::atktext(substr($name, 3), "atk"));
+                if ($name == "minsize") {
+                    $text .= sprintf(Atk_Tools::atktext("the_password_should_be_at_least_%d_characters_long", "atk"),
+                        $value);
+                } else {
+                    $text .= sprintf(Atk_Tools::atktext("the_password_should_at_least_contain_%d_%s", "atk"), $value,
+                        Atk_Tools::atktext(substr($name, 3), "atk"));
+                }
                 $text .= "<br />\n";
             }
         }
@@ -327,46 +350,47 @@ class Atk_PasswordAttribute extends Atk_Attribute
      */
     function validate(&$record, $mode)
     {
-        $error = FALSE;
+        $error = false;
         $value = $record[$this->fieldName()];
 
         if ($mode == 'update' && (Atk_Tools::atk_strlen($value["new"]) > 0 || Atk_Tools::atk_strlen($value["again"]) > 0) && !$this->hasFlag(AF_PASSWORD_NOVALIDATE) && $value["current"] != $value["hash"]) {
-            $error = TRUE;
+            $error = true;
             Atk_Tools::triggerError($record, $this->fieldName(), 'error_password_incorrect');
         }
 
         if ($value["new"] != $value["again"]) {
-            $error = TRUE;
+            $error = true;
             Atk_Tools::triggerError($record, $this->fieldName(), 'error_password_nomatch');
         }
 
         if ($mode == "add" && $this->hasFlag(AF_OBLIGATORY) && Atk_Tools::atk_strlen($value["new"]) == 0) {
-            $error = TRUE;
+            $error = true;
             Atk_Tools::triggerError($record, $this->fieldName(), 'error_obligatoryfield');
         }
 
         // Check if the password meets the restrictions. If not, set error to true and
         // triger an error with the human readable form of the restrictions as message.
         if ((Atk_Tools::atk_strlen($value["new"]) > 0) && (!$this->validateRestrictions($value["newplain"]))) {
-            $error = TRUE;
+            $error = true;
             Atk_Tools::triggerError($record, $this->fieldName(), $this->getRestrictionsText());
         }
 
         // new password?
-        if (!$error && Atk_Tools::atk_strlen($value["new"]) > 0)
+        if (!$error && Atk_Tools::atk_strlen($value["new"]) > 0) {
             $record[$this->fieldName()]["hash"] = $record[$this->fieldName()]["new"];
+        }
     }
 
     /**
      * Check if the attribute is empty
-     * 
+     *
      * @param array $record The record that holds this attribute's value.
      * @return true if it's empty
      */
     function isEmpty($record)
     {
         /* unfortunately we cannot check this here */
-        return FALSE;
+        return false;
     }
 
     /**
@@ -415,7 +439,7 @@ class Atk_PasswordAttribute extends Atk_Attribute
         $charset = is_array($chars) ? $chars : array($chars);
 
         // Seed the random generator using microseconds
-        mt_srand((double) microtime() * 1000000);
+        mt_srand((double)microtime() * 1000000);
 
         // Start with an empty result
         $randomchars = "";
@@ -447,16 +471,16 @@ class Atk_PasswordAttribute extends Atk_Attribute
 
         // Compose a string that meets the character-specific minimum restrictions
         $tmp = $this->getRandomChars(LOWERCHARS, $r["minlowerchars"]);
-        $tmp.= $this->getRandomChars(UPPERCHARS, $r["minupperchars"]);
+        $tmp .= $this->getRandomChars(UPPERCHARS, $r["minupperchars"]);
         $alphabeticchars = ($r["minalphabeticchars"] > strlen($tmp)) ? ($r["minalphabeticchars"] - strlen($tmp))
-                : 0;
-        $tmp.= $this->getRandomChars(LOWERCHARS . UPPERCHARS, $alphabeticchars);
-        $tmp.= $this->getRandomChars(NUMBERS, $r["minnumbers"]);
-        $tmp.= $this->getRandomChars(SPECIALCHARS, $r["minspecialchars"]);
+            : 0;
+        $tmp .= $this->getRandomChars(LOWERCHARS . UPPERCHARS, $alphabeticchars);
+        $tmp .= $this->getRandomChars(NUMBERS, $r["minnumbers"]);
+        $tmp .= $this->getRandomChars(SPECIALCHARS, $r["minspecialchars"]);
 
         // Determine how many characters we still need to add to meet the overall minimum length
         $remainingchars = max($r["minsize"], $length) > strlen($tmp) ? (max($r["minsize"], $length) - strlen($tmp))
-                : 0;
+            : 0;
 
         // At this point we have gathered the characters we need to meet the
         // charactertype-specific restrictions. From now we can split ways to
@@ -468,10 +492,10 @@ class Atk_PasswordAttribute extends Atk_Attribute
             // Add the characters that make this password meet the restrictions
             // at the end of the password, so we keep at least the most of it
             // easy to remember.
-            $out.= $tmp;
+            $out .= $tmp;
         } else {
             // Add random characters to the string to fill up until the minimum size or passed length
-            $tmp.= $this->getRandomChars(LOWERCHARS . UPPERCHARS . NUMBERS . SPECIALCHARS, $remainingchars);
+            $tmp .= $this->getRandomChars(LOWERCHARS . UPPERCHARS . NUMBERS . SPECIALCHARS, $remainingchars);
 
             // The output should be a shuffled to make it really random
             $out = str_shuffle($tmp);
@@ -501,7 +525,7 @@ class Atk_PasswordAttribute extends Atk_Attribute
 
     /**
      * Overwriting the fetchValue to ensure all passwords are hashed
-     * 
+     *
      * @param array $rec The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
      */
@@ -525,7 +549,7 @@ class Atk_PasswordAttribute extends Atk_Attribute
      *
      * Added a "dynamic" needsUpdate to cancel updates if no password fields where used
      * to alter the password. This overcomes the overwriting with an empty password.
-     * 
+     *
      * @param array $record The record that contains this attribute's value
      */
     function needsUpdate($record)
@@ -548,7 +572,7 @@ class Atk_PasswordAttribute extends Atk_Attribute
      */
     public function setSalt($salt)
     {
-        $this->m_salt = (string) $salt;
+        $this->m_salt = (string)$salt;
     }
 
     /**

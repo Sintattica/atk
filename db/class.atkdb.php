@@ -298,7 +298,7 @@ class Atk_Db
      */
     function clearMapping()
     {
-        Atk_Db::_getOrUseMapping(NULL);
+        Atk_Db::_getOrUseMapping(null);
     }
 
     /**
@@ -314,7 +314,7 @@ class Atk_Db
     static public function getTranslatedDatabaseName($name)
     {
         $mapping = Atk_Db::getMapping();
-        return $mapping === NULL || !isset($mapping[$name]) ? $name : $mapping[$name];
+        return $mapping === null || !isset($mapping[$name]) ? $name : $mapping[$name];
     }
 
     /**
@@ -326,11 +326,12 @@ class Atk_Db
      */
     static protected function _getOrUseMapping($mapping = "get")
     {
-        static $s_mapping = NULL;
-        if ($mapping !== "get")
+        static $s_mapping = null;
+        if ($mapping !== "get") {
             $s_mapping = $mapping;
-        else
+        } else {
             return $s_mapping;
+        }
     }
 
     /**
@@ -429,10 +430,11 @@ class Atk_Db
         $query = strtolower($query);
 
         $regexes = array('^\\s*select(?!\\s+into)', '^\\s*show');
-        foreach ($regexes as $regex)
+        foreach ($regexes as $regex) {
             if (preg_match("/$regex/", $query)) {
                 return 'r';
             }
+        }
 
         Atk_Tools::atknotice('Query mode not detected! Using write mode.');
 
@@ -478,10 +480,12 @@ class Atk_Db
             $tmp_error = '';
             switch ($errno) {
                 case DB_ACCESSDENIED_DB:
-                    $tmp_error = sprintf(Atk_Tools::atktext("db_access_denied_database", "atk"), $this->m_user, $this->m_database);
+                    $tmp_error = sprintf(Atk_Tools::atktext("db_access_denied_database", "atk"), $this->m_user,
+                        $this->m_database);
                     break;
                 case DB_ACCESSDENIED_USER:
-                    $tmp_error = sprintf(Atk_Tools::atktext("db_access_denied_user", "atk"), $this->m_user, $this->m_database);
+                    $tmp_error = sprintf(Atk_Tools::atktext("db_access_denied_user", "atk"), $this->m_user,
+                        $this->m_database);
                     break;
                 case DB_UNKNOWNDATABASE:
                     $tmp_error = sprintf(Atk_Tools::atktext("db_unknown_database", "atk"), $this->m_database);
@@ -507,8 +511,9 @@ class Atk_Db
         if ($this->m_haltonerror) {
             if ($this->getErrorType() === "system") {
                 Atk_Tools::atkdebug(__CLASS__ . "::halt() on system error");
-                if (!in_array($this->m_errno, $this->m_user_error))
+                if (!in_array($this->m_errno, $this->m_user_error)) {
                     $level = 'critical';
+                }
                 Atk_Tools::atkerror($this->getErrorMsg());
                 Atk_Tools::atkhalt($this->getErrorMsg(), $level);
             } else {
@@ -565,9 +570,10 @@ class Atk_Db
      */
     function connect($mode = "rw")
     {
-        if ($this->m_link_id == NULL) {
+        if ($this->m_link_id == null) {
             Atk_Tools::atkdebug("Atk_db::connect -> Don't switch use current db");
-            return $this->doConnect($this->m_host, $this->m_user, $this->m_password, $this->m_database, $this->m_port, $this->m_charset);
+            return $this->doConnect($this->m_host, $this->m_user, $this->m_password, $this->m_database, $this->m_port,
+                $this->m_charset);
         }
         return DB_SUCCESS;
     }
@@ -864,10 +870,12 @@ class Atk_Db
         for ($i = 0; $this->next_record(); $i++) {
             if ($keyColumn === null) {
                 $key = $i;
-            } else if (is_numeric($keyColumn)) {
-                $key = Atk_Tools::atkArrayNvl(array_values($this->m_record), $keyColumn);
             } else {
-                $key = $this->m_record[$keyColumn];
+                if (is_numeric($keyColumn)) {
+                    $key = Atk_Tools::atkArrayNvl(array_values($this->m_record), $keyColumn);
+                } else {
+                    $key = $this->m_record[$keyColumn];
+                }
             }
 
             $result[$key] = $this->m_record;
@@ -892,10 +900,12 @@ class Atk_Db
 
         if ($row == null) {
             return $default;
-        } else if (is_numeric($valueColumn)) {
-            return Atk_Tools::atkArrayNvl(array_values($row), $valueColumn);
         } else {
-            return $row[$valueColumn];
+            if (is_numeric($valueColumn)) {
+                return Atk_Tools::atkArrayNvl(array_values($row), $valueColumn);
+            } else {
+                return $row[$valueColumn];
+            }
         }
     }
 
@@ -961,7 +971,16 @@ class Atk_Db
         // exact match and substring search should be supported by any database.
         // (the LIKE function is ANSI standard SQL, and both substring and wildcard
         // searches can be implemented using LIKE)
-        return array("exact", "substring", "wildcard", "greaterthan", "greaterthanequal", "lessthan", "lessthanequal", "between");
+        return array(
+            "exact",
+            "substring",
+            "wildcard",
+            "greaterthan",
+            "greaterthanequal",
+            "lessthan",
+            "lessthanequal",
+            "between"
+        );
     }
 
     /**
@@ -1065,8 +1084,9 @@ class Atk_Db
      */
     function func_datetochar($fieldname, $format = "")
     {
-        if ($format == "")
+        if ($format == "") {
             $format = Atk_Config::getGlobal("date_to_char", "Y-m-d");
+        }
         return "TO_CHAR($fieldname, '" . $this->vendorDateFormat($format) . "')";
     }
 
@@ -1078,10 +1098,11 @@ class Atk_Db
      */
     function func_concat($fields)
     {
-        if (count($fields) == 0 or !is_array($fields))
+        if (count($fields) == 0 or !is_array($fields)) {
             return '';
-        elseif (count($fields) == 1)
+        } elseif (count($fields) == 1) {
             return $fields[0];
+        }
         return "CONCAT(" . implode(',', $fields) . ")";
     }
 
@@ -1096,10 +1117,11 @@ class Atk_Db
      */
     function func_concat_ws($fields, $separator, $remove_all_spaces = false)
     {
-        if (count($fields) == 0 or !is_array($fields))
+        if (count($fields) == 0 or !is_array($fields)) {
             return '';
-        elseif (count($fields) == 1)
+        } elseif (count($fields) == 1) {
             return $fields[0];
+        }
 
         if ($remove_all_spaces) {
             return "REPLACE ( CONCAT_WS('$separator', " . implode(',', $fields) . "), ' ', '') ";
@@ -1163,8 +1185,9 @@ class Atk_Db
     {
         $result = str_replace("'", "''", $string);
         $result = str_replace("\\", "\\\\", $result);
-        if ($wildcard == true)
+        if ($wildcard == true) {
             $result = str_replace("%", "%%", $result);
+        }
         return $result;
     }
 
@@ -1283,14 +1306,18 @@ class Atk_Db
 
             if (!empty($dbconfig[$conn]["driver"]) && strpos($dbconfig[$conn]["driver"], '.') !== false) {
                 $driver = $dbconfig[$conn]["driver"];
-            } else if (!empty($dbconfig[$conn]["driver"])) {
-                $driver = "atk.db.atk{$dbconfig[$conn]["driver"]}db";
-            } else if (!empty($dbconfig[$conn]["driver"])) {
-                Atk_Tools::atkhalt("Driver {$dbconfig[$conn]["driver"]} not found for connection '$conn'!");
-                return null;
             } else {
-                Atk_Tools::atkhalt("Driver not specified for connection '$conn'!");
-                return null;
+                if (!empty($dbconfig[$conn]["driver"])) {
+                    $driver = "atk.db.atk{$dbconfig[$conn]["driver"]}db";
+                } else {
+                    if (!empty($dbconfig[$conn]["driver"])) {
+                        Atk_Tools::atkhalt("Driver {$dbconfig[$conn]["driver"]} not found for connection '$conn'!");
+                        return null;
+                    } else {
+                        Atk_Tools::atkhalt("Driver not specified for connection '$conn'!");
+                        return null;
+                    }
+                }
             }
 
             Atk_Tools::atkdebug("Creating new database instance with '{$driver}' driver");
@@ -1321,12 +1348,15 @@ class Atk_Db
             $this->m_user = $config[$connectionname]["user"];
             $this->m_password = $config[$connectionname]["password"];
             $this->m_host = $config[$connectionname]["host"];
-            if (isset($config[$connectionname]["port"]))
+            if (isset($config[$connectionname]["port"])) {
                 $this->m_port = $config[$connectionname]["port"];
-            if (isset($config[$connectionname]["charset"]))
+            }
+            if (isset($config[$connectionname]["charset"])) {
                 $this->m_charset = $config[$connectionname]["charset"];
-            if (isset($config[$connectionname]["collate"]))
+            }
+            if (isset($config[$connectionname]["collate"])) {
                 $this->m_collate = $config[$connectionname]["collate"];
+            }
         }
         return $this;
     }
@@ -1420,7 +1450,8 @@ class Atk_Db
      */
     function quoteIdentifier($str)
     {
-        $str = str_replace($this->m_identifierQuoting['end'], $this->m_identifierQuoting['escape'] . $this->m_identifierQuoting['end'], $str);
+        $str = str_replace($this->m_identifierQuoting['end'],
+            $this->m_identifierQuoting['escape'] . $this->m_identifierQuoting['end'], $str);
         return $this->m_identifierQuoting['start'] . $str . $this->m_identifierQuoting['end'];
     }
 

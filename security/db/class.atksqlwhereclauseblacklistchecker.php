@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * A blacklist checker that blacklists certain SQL parts,
  * given that it always operates on an SQL where clause
@@ -27,10 +26,21 @@ class Atk_SqlWhereclauseBlacklistChecker
      *
      * @var array
      */
-    private $_disallowed = array('/*', ' --', '#', // Comment syntax
-        'ALTER ', 'DELETE FROM', 'SHOW ', 'DROP ', // DDL statements
-        'UNION ', 'UNION(', ';', // other
-        '0x3a', 'information_schema', 'row(1,1)', 'floor(rand(', // common patterns for Blind SQL injection
+    private $_disallowed = array(
+        '/*',
+        ' --',
+        '#', // Comment syntax
+        'ALTER ',
+        'DELETE FROM',
+        'SHOW ',
+        'DROP ', // DDL statements
+        'UNION ',
+        'UNION(',
+        ';', // other
+        '0x3a',
+        'information_schema',
+        'row(1,1)',
+        'floor(rand(', // common patterns for Blind SQL injection
     );
 
     /**
@@ -64,23 +74,26 @@ class Atk_SqlWhereclauseBlacklistChecker
              * accordingly.
              */
             if ($this->_whereclause[$i] === "'" && $this->_whereclause[$i - 1] !== "\\") {
-                if (!$single_quote_mode)
+                if (!$single_quote_mode) {
                     $single_quote_mode = true;
-                else
+                } else {
                     $single_quote_mode = false;
+                }
             }
 
             if ($this->_whereclause[$i] === "'" && $this->_whereclause[$i - 1] !== "\\") {
-                if (!$double_quote_mode)
+                if (!$double_quote_mode) {
                     $double_quote_mode = true;
-                else
+                } else {
                     $double_quote_mode = false;
+                }
             }
 
             // No need to check for blacklisted SQL when we're
             // in 'string' mode
-            if ($single_quote_mode || $double_quote_mode)
+            if ($single_quote_mode || $double_quote_mode) {
                 continue;
+            }
 
             /**
              * Look back at the string we have and check for disallowed SQL.
@@ -108,7 +121,7 @@ class Atk_SqlWhereclauseBlacklistChecker
     static public function filter_request_where_clause($variable)
     {
         if (isset($_REQUEST[$variable])) {
-            $values = (array) $_REQUEST[$variable];
+            $values = (array)$_REQUEST[$variable];
             foreach ($values as $value) {
                 $checker = new self($value);
                 if (!$checker->isSafe()) {

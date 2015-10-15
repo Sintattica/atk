@@ -32,14 +32,14 @@ class Atk_MysqliQuery extends Atk_MysqlQuery
     /**
      * Reference to the field where the new sequence
      * value should be stored.
-     * 
+     *
      * @var int
      */
     protected $m_seqValue;
 
     /**
      * Sequence field name.
-     * 
+     *
      * @var string
      */
     protected $m_seqField;
@@ -47,7 +47,7 @@ class Atk_MysqliQuery extends Atk_MysqlQuery
     /**
      * Should we return a sequence value by setting
      * $this->m_seqValue?
-     * 
+     *
      * @var boolean
      */
     protected $m_returnSeqValue = false;
@@ -62,15 +62,17 @@ class Atk_MysqliQuery extends Atk_MysqlQuery
      */
     function _addFrom(&$query)
     {
-        $query.= " FROM (";
+        $query .= " FROM (";
         for ($i = 0; $i < count($this->m_tables); $i++) {
-            $query.= $this->quoteField($this->m_tables[$i]);
-            if ($this->m_aliases[$i] != "")
-                $query.=" " . $this->m_aliases[$i];
-            if ($i < count($this->m_tables) - 1)
-                $query.=", ";
+            $query .= $this->quoteField($this->m_tables[$i]);
+            if ($this->m_aliases[$i] != "") {
+                $query .= " " . $this->m_aliases[$i];
+            }
+            if ($i < count($this->m_tables) - 1) {
+                $query .= ", ";
+            }
         }
-        $query.= ") ";
+        $query .= ") ";
     }
 
     /**
@@ -83,38 +85,40 @@ class Atk_MysqliQuery extends Atk_MysqlQuery
         $result = "INSERT INTO " . $this->quoteField($this->m_tables[0]) . " (";
 
         for ($i = 0; $i < count($this->m_fields); $i++) {
-            $result.= $this->quoteField($this->m_fields[$i]);
-            if ($i < count($this->m_fields) - 1)
-                $result.=",";
+            $result .= $this->quoteField($this->m_fields[$i]);
+            if ($i < count($this->m_fields) - 1) {
+                $result .= ",";
+            }
         }
 
-        $result.=") VALUES (";
+        $result .= ") VALUES (";
 
         for ($i = 0; $i < count($this->m_fields); $i++) {
             if (($this->m_values[$this->m_fields[$i]] === "''") and ($this->m_db->m_tableMeta[$this->m_tables[0]][$this->m_fields[$i]]["type"] == "int")) {
                 Atk_Tools::atkdebug("Atk_MysqliQuery::buildInsert() : '' transformed in '0' for MySQL5 compatibility in field '" . $this->m_fields[$i] . "'");
-                $result.= "'0'";
+                $result .= "'0'";
             } else {
-                $result.= $this->m_values[$this->m_fields[$i]];
+                $result .= $this->m_values[$this->m_fields[$i]];
             }
-            if ($i < count($this->m_fields) - 1)
-                $result.=",";
+            if ($i < count($this->m_fields) - 1) {
+                $result .= ",";
+            }
         }
 
-        $result.=")";
+        $result .= ")";
 
         return $result;
     }
 
     /**
      * Add's a sequence field to the query.
-     * 
+     *
      * @param string $fieldName field name
-     * @param int    $value     field to store the new sequence value in, note certain drivers
-     *                          might populate this field only after the insert query has been 
+     * @param int $value field to store the new sequence value in, note certain drivers
+     *                          might populate this field only after the insert query has been
      *                          executed
-     * @param string $seqName   sequence name (optional for certain drivers)
-     * 
+     * @param string $seqName sequence name (optional for certain drivers)
+     *
      * @return Atk_Query
      */
     public function addSequenceField($fieldName, &$value, $seqName = null)

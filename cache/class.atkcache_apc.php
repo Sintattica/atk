@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
@@ -17,7 +18,6 @@
  * @version $Revision: 5898 $
  * $Id$
  */
-
 class Atk_Cache_apc extends Atk_Cache
 {
 
@@ -27,7 +27,7 @@ class Atk_Cache_apc extends Atk_Cache
     public function __construct()
     {
         // make sure we have apc available
-        if (!( extension_loaded('apc') && ini_get('apc.enabled') )) {
+        if (!(extension_loaded('apc') && ini_get('apc.enabled'))) {
             throw new Exception('The APC extension is not loaded or disabled');
         }
         $this->m_namespace = Atk_Config::getGlobal('cache_namespace', "default");
@@ -47,8 +47,9 @@ class Atk_Cache_apc extends Atk_Cache
             return false;
         }
 
-        if ($lifetime === false)
+        if ($lifetime === false) {
             $lifetime = $this->m_lifetime;
+        }
         return apc_add($this->getRealKey($key), serialize($data), $lifetime);
     }
 
@@ -66,8 +67,9 @@ class Atk_Cache_apc extends Atk_Cache
             return false;
         }
 
-        if ($lifetime === false)
+        if ($lifetime === false) {
             $lifetime = $this->m_lifetime;
+        }
         return apc_store($this->getRealKey($key), serialize($data), $lifetime);
     }
 

@@ -35,7 +35,7 @@ define("RL_SORT_DESC", 2);
 class Atk_ColumnConfig
 {
     var $m_colcfg = array();
-    var $m_node = NULL;
+    var $m_node = null;
     var $m_orderbyindex = 0;
     var $m_custom_atkorderby;
 
@@ -46,7 +46,7 @@ class Atk_ColumnConfig
      */
     function __construct()
     {
-        
+
     }
 
     /**
@@ -75,7 +75,7 @@ class Atk_ColumnConfig
      * @param Atk_Node $node
      * @param string $id
      * @param boolean $forceNew force new instance?
-     * 
+     *
      * @return atkColumnConfig An instance of the columnconfig class
      */
     function &getConfig(&$node, $id = null, $forceNew = false)
@@ -83,15 +83,16 @@ class Atk_ColumnConfig
         global $g_sessionManager;
         static $s_instances = array();
 
-        if ($id == null)
+        if ($id == null) {
             $id = $node->atkNodeType();
+        }
 
         if (!isset($s_instances[$id]) || $forceNew) {
             $s_instances[$id] = new Atk_ColumnConfig();
             $s_instances[$id]->setNode($node);
 
             $colcfg = $g_sessionManager != null ? $g_sessionManager->pageVar("atkcolcfg_" . $id)
-                    : null;
+                : null;
 
             if (!is_array($colcfg) || $forceNew) {
                 // create new
@@ -107,8 +108,9 @@ class Atk_ColumnConfig
             $s_instances[$id]->doUrlCommands();
         }
 
-        if ($g_sessionManager != null)
+        if ($g_sessionManager != null) {
             $g_sessionManager->pageVar("atkcolcfg_" . $id, $s_instances[$id]->m_colcfg);
+        }
 
         return $s_instances[$id];
     }
@@ -167,8 +169,9 @@ class Atk_ColumnConfig
             }
         }
 
-        if ($this->m_node->getOrder() != "")
+        if ($this->m_node->getOrder() != "") {
             $this->_addOrderByStatement($this->m_node->getOrder());
+        }
     }
 
     /**
@@ -225,17 +228,17 @@ class Atk_ColumnConfig
      * @param string $extra
      * @param string $sortorder
      */
-    function addOrderByField($field, $direction, $extra = "", $sortorder = NULL)
+    function addOrderByField($field, $direction, $extra = "", $sortorder = null)
     {
         if (is_null($sortorder) && $this->getMinSort() <= 1) {
             foreach ($this->m_colcfg as $fld => $config) {
                 if (Atk_Tools::atkArrayNvl($config, "sortorder") > 0) {
-                    $this->m_colcfg[$fld]["sortorder"] = (int) ($this->m_colcfg[$fld]["sortorder"]) + 1;
+                    $this->m_colcfg[$fld]["sortorder"] = (int)($this->m_colcfg[$fld]["sortorder"]) + 1;
                 }
             }
         }
 
-        $this->m_colcfg[$field]["sortorder"] = $sortorder === NULL ? 1 : $sortorder;
+        $this->m_colcfg[$field]["sortorder"] = $sortorder === null ? 1 : $sortorder;
         $this->m_colcfg[$field]["direction"] = strtolower($direction);
         $this->m_colcfg[$field]["extra"] = $extra;
     }
@@ -286,8 +289,9 @@ class Atk_ColumnConfig
             if (Atk_Tools::atkArrayNvl($config, "sortorder", 0) > 0 && is_object($this->m_node->m_attribList[$field])) {
                 $direction = $config["direction"] == "desc" ? "DESC" : "ASC";
                 $res = $this->m_node->m_attribList[$field]->getOrderByStatement($config['extra'], '', $direction);
-                if ($res)
+                if ($res) {
                     $result[] = $res;
+                }
             }
         }
         return implode(", ", $result);
@@ -354,17 +358,21 @@ class Atk_ColumnConfig
         if (is_array($cmd)) {
             foreach ($cmd as $command => $param) {
                 switch ($command) {
-                    case "asc": $this->setSortDirection($param, "asc");
+                    case "asc":
+                        $this->setSortDirection($param, "asc");
                         break;
-                    case "desc": $this->setSortDirection($param, "desc");
+                    case "desc":
+                        $this->setSortDirection($param, "desc");
                         break;
                     case "setorder":
                         list($attrib, $value) = each($param);
                         $this->setSortOrder($attrib, $value);
                         break;
-                    case "subtotal": $this->setSubTotal($param, true);
+                    case "subtotal":
+                        $this->setSubTotal($param, true);
                         break;
-                    case "unsubtotal": $this->setSubTotal($param, false);
+                    case "unsubtotal":
+                        $this->setSubTotal($param, false);
                         break;
                 }
             }
@@ -381,13 +389,15 @@ class Atk_ColumnConfig
             foreach ($this->m_node->m_postvars["atkcolcmd"] as $command) {
                 $this->doUrlCommand($command);
             }
-        } else if (isset($this->m_node->m_postvars["atkorderby"]) && ($this->m_node->m_postvars["atkorderby"] != "")) {
-            $this->clearOrder(); // clear existing order
-            // oldfashioned order by.
-            $this->m_custom_atkorderby = $this->m_node->m_postvars["atkorderby"];
+        } else {
+            if (isset($this->m_node->m_postvars["atkorderby"]) && ($this->m_node->m_postvars["atkorderby"] != "")) {
+                $this->clearOrder(); // clear existing order
+                // oldfashioned order by.
+                $this->m_custom_atkorderby = $this->m_node->m_postvars["atkorderby"];
 
-            // try to parse..
-            $this->_addOrderByStatement($this->m_node->m_postvars["atkorderby"]);
+                // try to parse..
+                $this->_addOrderByStatement($this->m_node->m_postvars["atkorderby"]);
+            }
         }
 
         // Cleanup structure
@@ -403,7 +413,7 @@ class Atk_ColumnConfig
     function getOrder($attribute)
     {
         return isset($this->m_colcfg[$attribute]["sortorder"]) ? $this->m_colcfg[$attribute]["sortorder"]
-                : 0;
+            : 0;
     }
 
     /**
@@ -415,7 +425,7 @@ class Atk_ColumnConfig
     function getDirection($attribute)
     {
         return (array_key_exists("direction", $this->m_colcfg[$attribute]) ? $this->m_colcfg[$attribute]["direction"]
-                    : "desc");
+            : "desc");
     }
 
     /**
@@ -443,8 +453,9 @@ class Atk_ColumnConfig
     {
         $total = 0;
         foreach ($this->m_colcfg as $attrib => $info) {
-            if (Atk_Tools::atkArrayNvl($info, "sortorder", 0) > 0)
+            if (Atk_Tools::atkArrayNvl($info, "sortorder", 0) > 0) {
                 $total++;
+            }
         }
         return $total;
     }
@@ -458,8 +469,9 @@ class Atk_ColumnConfig
     function getDirectionByOrder($order)
     {
         foreach ($this->m_colcfg as $attrib => $info) {
-            if (Atk_Tools::atkArrayNvl($info, "sortorder", 0) == $order)
+            if (Atk_Tools::atkArrayNvl($info, "sortorder", 0) == $order) {
                 return $this->getDirection($attrib);
+            }
         }
         return "asc";
     }
@@ -481,8 +493,9 @@ class Atk_ColumnConfig
     function hasSubTotals()
     {
         foreach (array_keys($this->m_colcfg) as $attribute) {
-            if ($this->hasSubTotal($attribute))
+            if ($this->hasSubTotal($attribute)) {
                 return true;
+            }
         }
         return false;
     }
@@ -496,7 +509,7 @@ class Atk_ColumnConfig
     function hasSubTotal($attribute)
     {
         return ((isset($this->m_colcfg[$attribute]["subtotal"]) ? $this->m_colcfg[$attribute]["subtotal"]
-                    : 0) == 1);
+                : 0) == 1);
     }
 
     /**
@@ -508,8 +521,9 @@ class Atk_ColumnConfig
     function hasSubTotalByOrder($order)
     {
         foreach ($this->m_colcfg as $attrib => $info) {
-            if (Atk_Tools::atkArrayNvl($info, "sortorder", 0) == $order)
+            if (Atk_Tools::atkArrayNvl($info, "sortorder", 0) == $order) {
                 return $this->hasSubTotal($attrib);
+            }
         }
         return false;
     }
@@ -535,7 +549,7 @@ class Atk_ColumnConfig
     function _compareSortAttrs($a, $b)
     {
         return (Atk_Tools::atkArrayNvl($a, "sortorder", 0) <= Atk_Tools::atkArrayNvl($b, "sortorder", 0)
-                    ? -1 : 1);
+            ? -1 : 1);
     }
 
     /**
@@ -547,8 +561,9 @@ class Atk_ColumnConfig
     {
         foreach (array_keys($this->m_node->m_attribList) as $attribname) {
             $p_attrib = &$this->m_node->m_attribList[$attribname];
-            if ($p_attrib->hasFlag(AF_TOTAL))
+            if ($p_attrib->hasFlag(AF_TOTAL)) {
                 return true;
+            }
         }
         return false;
     }
@@ -563,8 +578,9 @@ class Atk_ColumnConfig
         $result = array();
         foreach (array_keys($this->m_node->m_attribList) as $attribname) {
             $p_attrib = &$this->m_node->m_attribList[$attribname];
-            if ($p_attrib->hasFlag(AF_TOTAL))
+            if ($p_attrib->hasFlag(AF_TOTAL)) {
                 $result[] = $attribname;
+            }
         }
         return $result;
     }
@@ -578,8 +594,9 @@ class Atk_ColumnConfig
     {
         $result = array();
         foreach (array_keys($this->m_colcfg) as $attribute) {
-            if ($this->hasSubTotal($attribute))
+            if ($this->hasSubTotal($attribute)) {
                 $result[] = $attribute;
+            }
         }
         return $result;
     }
@@ -619,11 +636,13 @@ class Atk_ColumnConfig
 
             if ($this->getNode()->getAttribute($part1) != null) {
                 $this->addOrderByField($part1, $direction, $part2, ++$i);
-            } else if ($part1 == $this->getNode()->getTable() && $this->getNode()->getAttribute($part2) != null) {
-                $this->addOrderByField($part2, $direction, null, ++$i);
             } else {
-                // custom order by
-                $this->addOrderByField($column, $direction, "", ++$i);
+                if ($part1 == $this->getNode()->getTable() && $this->getNode()->getAttribute($part2) != null) {
+                    $this->addOrderByField($part2, $direction, null, ++$i);
+                } else {
+                    // custom order by
+                    $this->addOrderByField($column, $direction, "", ++$i);
+                }
             }
         }
     }

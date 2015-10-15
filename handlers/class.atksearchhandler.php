@@ -15,6 +15,7 @@
  * @version $Revision: 6327 $
  * $Id$
  */
+
 /**
  * Handler class for the search action of a node. The handler draws a
  * generic search form for the given node.
@@ -30,7 +31,6 @@
  * @subpackage handlers
  *
  */
-
 class Atk_SearchHandler extends Atk_AbstractSearchHandler
 {
 
@@ -80,7 +80,8 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
      */
     function redirectToResults()
     {
-        $url = Atk_Tools::dispatch_url($this->getPreviousNode(), $this->getPreviousAction(), $this->fetchCriteria(), Atk_Tools::atkSelf());
+        $url = Atk_Tools::dispatch_url($this->getPreviousNode(), $this->getPreviousAction(), $this->fetchCriteria(),
+            Atk_Tools::atkSelf());
         $url = Atk_Tools::session_url($url, Atk_SessionManager::atkLevel() > 0 ? SESSION_BACK : SESSION_REPLACE);
 
         $this->m_node->redirect($url);
@@ -93,8 +94,9 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
      */
     function getPreviousNode()
     {
-        return Atk_SessionManager::atkLevel() > 0 ? Atk_SessionManager::atkGetSessionManager()->stackVar('atknodetype', '', Atk_SessionManager::atkLevel() - 1)
-                : $this->m_node->atkNodeType();
+        return Atk_SessionManager::atkLevel() > 0 ? Atk_SessionManager::atkGetSessionManager()->stackVar('atknodetype',
+            '', Atk_SessionManager::atkLevel() - 1)
+            : $this->m_node->atkNodeType();
     }
 
     /**
@@ -104,8 +106,9 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
      */
     function getPreviousAction()
     {
-        return Atk_SessionManager::atkLevel() > 0 ? Atk_SessionManager::atkGetSessionManager()->stackVar('atkaction', '', Atk_SessionManager::atkLevel() - 1)
-                : 'admin';
+        return Atk_SessionManager::atkLevel() > 0 ? Atk_SessionManager::atkGetSessionManager()->stackVar('atkaction',
+            '', Atk_SessionManager::atkLevel() - 1)
+            : 'admin';
     }
 
     /**
@@ -118,7 +121,7 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
         list($type, $attribute, $partial) = explode('.', $partial);
 
         $attr = &$this->m_node->getAttribute($attribute);
-        if ($attr == NULL) {
+        if ($attr == null) {
             Atk_Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
             return '';
         }
@@ -132,7 +135,7 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
      *                      entered in the searchform.
      * @return String The html search page.
      */
-    function searchPage($record = NULL)
+    function searchPage($record = null)
     {
         $node = &$this->m_node;
 
@@ -149,11 +152,11 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
             $params = array();
             $params["formstart"] = '<form name="entryform" action="' . $controller->getPhpFile() . '?' . SID . '" method="post">';
 
-            $params["formstart"].= Atk_Tools::session_form(SESSION_REPLACE);
-            $params["formstart"].='<input type="hidden" name="atkaction" value="search">';
+            $params["formstart"] .= Atk_Tools::session_form(SESSION_REPLACE);
+            $params["formstart"] .= '<input type="hidden" name="atkaction" value="search">';
 
-            $params["formstart"].='<input type="hidden" name="atknodetype" value="' . $node->atknodetype() . '">';
-            $params["formstart"].='<input type="hidden" name="atkstartat" value="0">'; // start at first page after new search
+            $params["formstart"] .= '<input type="hidden" name="atknodetype" value="' . $node->atknodetype() . '">';
+            $params["formstart"] .= '<input type="hidden" name="atkstartat" value="0">'; // start at first page after new search
 
             $params["content"] = $this->invoke("searchForm", $record);
 
@@ -163,8 +166,10 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
 
             $output = $ui->renderAction("search", $params);
 
-            $total = $ui->renderBox(array("title" => $node->actionTitle('search'),
-                "content" => $output));
+            $total = $ui->renderBox(array(
+                "title" => $node->actionTitle('search'),
+                "content" => $output
+            ));
 
             return $total;
         } else {
@@ -179,7 +184,7 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
      *                      the search fields.
      * @return String The searchform in html form.
      */
-    function searchForm($record = NULL)
+    function searchForm($record = null)
     {
         $node = &$this->m_node;
         $ui = &$this->getUi();
@@ -192,8 +197,10 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
 
             $params = array();
             $params['searchmode_title'] = Atk_Tools::atktext("search_mode", "atk");
-            $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="AND" checked>' . Atk_Tools::atktext("search_and", "atk");
-            $params['searchmode_or'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="OR">' . Atk_Tools::atktext("search_or", "atk");
+            $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="AND" checked>' . Atk_Tools::atktext("search_and",
+                    "atk");
+            $params['searchmode_or'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="OR">' . Atk_Tools::atktext("search_or",
+                    "atk");
             $params['saved_criteria'] = $this->getSavedCriteria($name);
 
             $params["fields"] = array();
@@ -202,12 +209,14 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
                 $p_attrib = &$node->m_attribList[$attribname];
 
                 if (!$p_attrib->hasFlag(AF_HIDE_SEARCH)) {
-                    $p_attrib->addToSearchformFields($params["fields"], $node, $record, "", $this->m_postvars['atksearchmode']);
+                    $p_attrib->addToSearchformFields($params["fields"], $node, $record, "",
+                        $this->m_postvars['atksearchmode']);
                 }
             }
             return $ui->render($node->getTemplate("search", $record), $params);
-        } else
+        } else {
             Atk_Tools::atkerror("ui object error");
+        }
     }
 
     /**
@@ -217,12 +226,14 @@ class Atk_SearchHandler extends Atk_AbstractSearchHandler
      */
     function fetchCriteria()
     {
-        return array('atksearchmethod' => array_key_exists('atksearchmethod', $this->m_postvars)
-                    ? $this->m_postvars['atksearchmethod'] : '',
+        return array(
+            'atksearchmethod' => array_key_exists('atksearchmethod', $this->m_postvars)
+                ? $this->m_postvars['atksearchmethod'] : '',
             'atksearch' => array_key_exists('atksearch', $this->m_postvars) ? $this->m_postvars['atksearch']
-                    : '',
+                : '',
             'atksearchmode' => array_key_exists('atksearchmode', $this->m_postvars)
-                    ? $this->m_postvars['atksearchmode'] : '');
+                ? $this->m_postvars['atksearchmode'] : ''
+        );
     }
 
 }

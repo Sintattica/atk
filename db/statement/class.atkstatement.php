@@ -19,18 +19,18 @@ Atk_Tools::atkimport('atk.db.statement.atkstatementparser');
 
 /**
  * A statement can be used to execute a query.
- * 
+ *
  * The query can be re-used, e.g. executed multiple times, and may contain bind
  * parameters. Both named and anonymous bind parameters are supported, but
  * can't be mixed together. Named bind parameters are in the form of ":name",
  * anonymous bind parameters are simply represented by a "?".
- * 
- * When fetching rows for a given query you can either use an iterator 
+ *
+ * When fetching rows for a given query you can either use an iterator
  * (efficient one-by-one retrieval of rows) or one of the convenience methods
  * (e.g. getFirstRow, getAllRows, ...).
- * 
+ *
  * To create an instance please use the Atk_Db::prepare($query) method.
- * 
+ *
  * Example:
  * $stmt = Atk_Tools::atkGetDb()->prepare("SELECT COUNT(*) FROM people WHERE birthday > :birthday");
  * $stmt->execute(array('birthday' => '1985-09-20'));
@@ -39,7 +39,7 @@ Atk_Tools::atkimport('atk.db.statement.atkstatementparser');
  *   echo "{$person['firstname']} {$person['lastname'}\n";
  * }
  * $stmt->close();
- * 
+ *
  * @author Peter C. Verhage <peter@achievo.org>
  *
  * @package atk
@@ -49,43 +49,43 @@ abstract class Atk_Statement implements IteratorAggregate
 {
     /**
      * (Original) SQL query.
-     * 
+     *
      * @var string query
      */
     private $m_query;
 
     /**
      * Parsed SQL query.
-     * 
+     *
      * @var string
      */
     private $m_parsedQuery;
 
     /**
      * Positions of bind parameters.
-     * 
+     *
      * @var array
      */
     private $m_bindPositions;
 
     /**
      * Current row offset position.
-     * 
+     *
      * @var int
      */
     private $m_position = false;
 
     /**
      * Latest parameters supplied to the execute() method.
-     * 
+     *
      * @var array
      */
     private $m_latestParams = array();
 
     /**
      * Constructs a new statement for the given query.
-     * 
-     * @param Atk_Db  $db    database instance
+     *
+     * @param Atk_Db $db database instance
      * @param string $query SQL query
      */
     public function __construct(Atk_Db $db, $query)
@@ -118,7 +118,7 @@ abstract class Atk_Statement implements IteratorAggregate
 
     /**
      * Returns the database instance.
-     * 
+     *
      * @return Atk_Db database instance
      */
     public function getDb()
@@ -128,7 +128,7 @@ abstract class Atk_Statement implements IteratorAggregate
 
     /**
      * Returns the query on which this statement is based.
-     * 
+     *
      * @return string query
      */
     public function getQuery()
@@ -139,7 +139,7 @@ abstract class Atk_Statement implements IteratorAggregate
     /**
      * Returns the parsed query for this statement (e.g. named bind parameters
      * are replaced by anonymous bind parameters).
-     * 
+     *
      * @return string
      */
     protected function _getParsedQuery()
@@ -149,10 +149,10 @@ abstract class Atk_Statement implements IteratorAggregate
 
     /**
      * Returns the positions for the bind parameters in the query.
-     * 
-     * The key of the array contains the character position, the value 
+     *
+     * The key of the array contains the character position, the value
      * contains the bind parameter name or offset.
-     * 
+     *
      * @return array bind positions
      */
     protected function _getBindPositions()
@@ -162,7 +162,7 @@ abstract class Atk_Statement implements IteratorAggregate
 
     /**
      * Get latest execution parameters.
-     * 
+     *
      * @return array execution parameters
      */
     protected function _getLatestParams()
@@ -177,14 +177,14 @@ abstract class Atk_Statement implements IteratorAggregate
 
     /**
      * Executes the statement using the given bind parameters.
-     * 
+     *
      * @param array $params bind parameters
      */
     protected abstract function _execute($params);
 
     /**
      * Fetches the next row from the result set.
-     * 
+     *
      * @return array next row from the result set (false if no other rows exist)
      */
     protected abstract function _fetch();
@@ -201,7 +201,7 @@ abstract class Atk_Statement implements IteratorAggregate
     protected abstract function _close();
 
     /**
-     * Returns the number of affected rows in case of an INSERT, UPDATE 
+     * Returns the number of affected rows in case of an INSERT, UPDATE
      * or DELETE query. Called immediatly after Atk_Statement::_execute().
      */
     protected abstract function _getAffectedRowCount();
@@ -218,7 +218,7 @@ abstract class Atk_Statement implements IteratorAggregate
 
     /**
      * Close this statement.
-     * 
+     *
      * Frees all resources after which this statement cannot be used anymore.
      * If you want to re-use the statement, use the Atk_Statement::reset() method.
      */
@@ -232,7 +232,7 @@ abstract class Atk_Statement implements IteratorAggregate
 
     /**
      * Moves the cursor back to the beginning of the result set.
-     * 
+     *
      * NOTE:
      * Depending on the database driver, using this method might result in the
      * query to be executed again.
@@ -240,7 +240,8 @@ abstract class Atk_Statement implements IteratorAggregate
     public function rewind()
     {
         if ($this->_getLatestParams() === null) {
-            throw new Atk_StatementException("Statement has not been executed yet.", Atk_StatementException::STATEMENT_NOT_EXECUTED);
+            throw new Atk_StatementException("Statement has not been executed yet.",
+                Atk_StatementException::STATEMENT_NOT_EXECUTED);
         }
 
         if ($this->m_position !== false) {
@@ -251,7 +252,7 @@ abstract class Atk_Statement implements IteratorAggregate
 
     /**
      * Validates if all bind parameters are supplied.
-     * 
+     *
      * @param array $params bind parameters
      */
     protected function _validateParams($params)
@@ -266,7 +267,7 @@ abstract class Atk_Statement implements IteratorAggregate
 
     /**
      * Executes the statement.
-     * 
+     *
      * @param array $params bind parameters
      */
     public function execute(array $params = array())
@@ -280,20 +281,21 @@ abstract class Atk_Statement implements IteratorAggregate
 
     /**
      * Fetches the next row from the result set.
-     * 
+     *
      * @return mixed next row or false if there are no more rows
      */
     public function fetch()
     {
         if ($this->_getLatestParams() === null) {
-            throw new Atk_StatementException("Statement has not been executed yet.", Atk_StatementException::STATEMENT_NOT_EXECUTED);
+            throw new Atk_StatementException("Statement has not been executed yet.",
+                Atk_StatementException::STATEMENT_NOT_EXECUTED);
         }
 
         $result = $this->_fetch();
 
         if ($result) {
             $this->m_position = $this->m_position !== false ? $this->m_position + 1
-                    : 0;
+                : 0;
         }
 
         return $result;
@@ -301,11 +303,11 @@ abstract class Atk_Statement implements IteratorAggregate
 
     /**
      * Returns an iterator for iterating over the result rows for this statement.
-     * 
+     *
      * NOTE:
      * Depending on the database driver, using this method multiple times might
      * result in the query to be executed multiple times.
-     * 
+     *
      * @return atkStatementIterator iterator
      */
     public function getIterator()
@@ -318,11 +320,11 @@ abstract class Atk_Statement implements IteratorAggregate
 
     /**
      * Returns the first row.
-     * 
+     *
      * NOTE:
      * Depending on the database driver, using this method multiple times might
      * result in the query to be executed multiple times.
-     * 
+     *
      * @return array row
      */
     public function getFirstRow()
@@ -339,12 +341,12 @@ abstract class Atk_Statement implements IteratorAggregate
     /**
      * Get all rows for the given query.
      *
-     * NOTE: 
+     * NOTE:
      * This is not an efficient way to retrieve records, as this will load all
-     * records into an array in memory. If you retrieve a lot of records, you 
+     * records into an array in memory. If you retrieve a lot of records, you
      * are better of using Atk_Statement::getIterator which only retrieves one
      * row at a time.
-     * 
+     *
      * Depending on the database driver, using this method multiple times might
      * result in the query to be executed multiple times.
      *
@@ -357,18 +359,18 @@ abstract class Atk_Statement implements IteratorAggregate
 
     /**
      * Get rows in an associative array with the given column used as key for the rows.
-     * 
-     * NOTE: 
+     *
+     * NOTE:
      * This is not an efficient way to retrieve records, as this will load all
-     * records into an array in memory. If you retrieve a lot of records, you 
+     * records into an array in memory. If you retrieve a lot of records, you
      * are better of using Atk_Statement::getIterator which only retrieves one
      * row at a time.
-     * 
+     *
      * Depending on the database driver, using this method multiple times might
      * result in the query to be executed multiple times.
      *
      * @param int|string $keyColumn column index / name (default first column) to be used as key
-     * 
+     *
      * @return array rows
      */
     public function getAllRowsAssoc($keyColumn = 0)
@@ -380,10 +382,12 @@ abstract class Atk_Statement implements IteratorAggregate
         for ($i = 0; $row = $this->fetch(); $i++) {
             if ($keyColumn === null) {
                 $key = $i;
-            } else if (is_numeric($keyColumn)) {
-                $key = Atk_Tools::atkArrayNvl(array_values($row), $keyColumn);
             } else {
-                $key = $row[$keyColumn];
+                if (is_numeric($keyColumn)) {
+                    $key = Atk_Tools::atkArrayNvl(array_values($row), $keyColumn);
+                } else {
+                    $key = $row[$keyColumn];
+                }
             }
 
             $result[$key] = $row;
@@ -400,8 +404,8 @@ abstract class Atk_Statement implements IteratorAggregate
      * result in the query to be executed multiple times.
      *
      * @param int|string $valueColumn column index / name (default first column) to be used as value
-     * @param mixed      $fallback    fallback value if no result
-     * 
+     * @param mixed $fallback fallback value if no result
+     *
      * @return mixed first value
      */
     public function getFirstValue($valueColumn = 0, $fallback = null)
@@ -410,27 +414,29 @@ abstract class Atk_Statement implements IteratorAggregate
 
         if ($row == null) {
             return $fallback;
-        } else if (is_numeric($valueColumn)) {
-            return Atk_Tools::atkArrayNvl(array_values($row), $valueColumn);
         } else {
-            return $row[$valueColumn];
+            if (is_numeric($valueColumn)) {
+                return Atk_Tools::atkArrayNvl(array_values($row), $valueColumn);
+            } else {
+                return $row[$valueColumn];
+            }
         }
     }
 
     /**
      * Get an array with all the values in the specified column.
      *
-     * NOTE: 
+     * NOTE:
      * This is not an efficient way to retrieve records, as this will load all
-     * records into an array in memory. If you retrieve a lot of records, you 
+     * records into an array in memory. If you retrieve a lot of records, you
      * are better of using Atk_Statement::getIterator which only retrieves one
      * row at a time.
-     * 
+     *
      * Depending on the database driver, using this method multiple times might
      * result in the query to be executed multiple times.
      *
      * @param int|string $valueColumn column index / name (default first column) to be used as value
-     * 
+     *
      * @return array with values
      */
     public function getAllValues($valueColumn = 0)
@@ -441,19 +447,19 @@ abstract class Atk_Statement implements IteratorAggregate
     /**
      * Get rows in an associative array with the given key column used as
      * key and the given value column used as value.
-     * 
-     * NOTE: 
+     *
+     * NOTE:
      * This is not an efficient way to retrieve records, as this will load all
-     * records into an array in memory. If you retrieve a lot of records, you 
+     * records into an array in memory. If you retrieve a lot of records, you
      * are better of using Atk_Statement::getIterator which only retrieves one
      * row at a time.
-     * 
+     *
      * Depending on the database driver, using this method multiple times might
      * result in the query to be executed multiple times.
-     * 
-     * @param int|string $keyColumn   column index / name (default first column) to be used as key
+     *
+     * @param int|string $keyColumn column index / name (default first column) to be used as key
      * @param int|string $valueColumn column index / name (default first column) to be used as value
-     * 
+     *
      * @return array rows
      */
     public function getAllValuesAssoc($keyColumn = 0, $valueColumn = 1)
@@ -471,13 +477,14 @@ abstract class Atk_Statement implements IteratorAggregate
     }
 
     /**
-     * Returns the number of affected rows in case of an INSERT, UPDATE 
+     * Returns the number of affected rows in case of an INSERT, UPDATE
      * or DELETE query.
      */
     public function getAffectedRowCount()
     {
         if ($this->_getLatestParams() === null) {
-            throw new Atk_StatementException("Statement has not been executed yet.", Atk_StatementException::STATEMENT_NOT_EXECUTED);
+            throw new Atk_StatementException("Statement has not been executed yet.",
+                Atk_StatementException::STATEMENT_NOT_EXECUTED);
         }
 
         return $this->m_affectedRowCount;

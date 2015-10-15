@@ -91,17 +91,20 @@ class Atk_MssqlQuery extends Atk_MysqlQuery
      */
     function &addField($name, $value = "", $table = "", $fieldaliasprefix = "", $quote = true)
     {
-        if (strstr($name, " "))
+        if (strstr($name, " ")) {
             $name = "[$name]";
+        }
 
-        if ($table != "")
+        if ($table != "") {
             $fieldname = $table . "." . $name;
-        else
+        } else {
             $fieldname = $name;
+        }
         $this->m_fields[] = $fieldname;
 
-        if ($quote || $value == "")
+        if ($quote || $value == "") {
             $value = "'" . $value . "'";
+        }
 
         $this->m_values[$fieldname] = $value;
 

@@ -20,7 +20,7 @@
  *
  * Implements some custom functionality and defines some methods that
  * derived classes should override.
- * 
+ *
  * Datatypes are meant as lightweight, easy and fluent to use PHP5 objects
  * for converting one format into another and doing simple operations
  * on various datatypes.
@@ -36,7 +36,7 @@ abstract class Atk_DataType
     /**
      * Factory method, creates a new atkDatatype object.
      * Override this where possible!
-     * 
+     *
      * @param array $arguments
      * @return atkDataType
      */
@@ -59,7 +59,7 @@ abstract class Atk_DataType
     }
 
     /**
-     * Returns the raw data from the datatype. 
+     * Returns the raw data from the datatype.
      * For internal use only (dumping, etc.)!
      *
      * @return atkDataType

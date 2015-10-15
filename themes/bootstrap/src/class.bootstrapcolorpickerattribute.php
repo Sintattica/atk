@@ -62,8 +62,9 @@ class bootstrapColorPickerAttribute extends Atk_Attribute
         $this->registerJavaScriptObservers($id);
 
         $size = $this->m_size;
-        if ($mode == 'list' && $size > 20)
+        if ($mode == 'list' && $size > 20) {
             $size = 20;
+        }
 
         $value = (isset($record[$this->fieldName()]) && !is_array($record[$this->fieldName()])
             ? htmlspecialchars($record[$this->fieldName()]) : "");

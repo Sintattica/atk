@@ -41,14 +41,14 @@ class Atk_Controller
      *
      * @var unknown_type
      */
-    var $m_node = NULL;
+    var $m_node = null;
 
     /**
      * The postvars in this pageload
      *
      * @var array Key/value
      */
-    var $m_postvars = NULL;
+    var $m_postvars = null;
 
     /**
      * The file to use when creating url's
@@ -102,13 +102,15 @@ class Atk_Controller
      */
     function &_instance($class = "", $replace = false)
     {
-        static $s_object = NULL;
+        static $s_object = null;
         if (!is_object($s_object) || $replace) {
             global $ATK_VARS;
-            if (empty($class) && isset($ATK_VARS['atkcontroller']))
+            if (empty($class) && isset($ATK_VARS['atkcontroller'])) {
                 $class = $ATK_VARS['atkcontroller'];
-            if (empty($class))
+            }
+            if (empty($class)) {
                 $class = "atk.atkcontroller";
+            }
 
             //We save the controller in stack, so the controller constructor
             //can store the Controller name and module. It is also saved for other
@@ -146,8 +148,9 @@ class Atk_Controller
         //First check if another controller is active. If so make sure this
         //controller will use atkOutput to return output
         $currentController = Atk_Controller::getInstance();
-        if (is_object($currentController))
+        if (is_object($currentController)) {
             $currentController->setReturnOutput(true);
+        }
 
         //Now create new controller
         $controller = Atk_Controller::_instance($controller, true);
@@ -165,20 +168,21 @@ class Atk_Controller
      * @param string $flags Render flags (see class Atk_Page).
      *
      */
-    function handleRequest($postvars, $flags = NULL)
+    function handleRequest($postvars, $flags = null)
     {
         // we set the m_postvars variable of the controller for backwards compatibility reasons (when using $obj->dispatch in the dispatch.php)
         $this->m_postvars = $postvars;
 
         $node = &$this->getNode();
         $node->m_postvars = $postvars;
-        if (!is_object($node) || !method_exists($node, 'getUi'))
+        if (!is_object($node) || !method_exists($node, 'getUi')) {
             return "";
+        }
 
         $page = &$node->getPage();
 
         // backwards compatibility mode
-        if ($flags == NULL) {
+        if ($flags == null) {
             $flags = array_key_exists("atkpartial", $postvars) ? HTML_PARTIAL : HTML_STRICT;
         } elseif (is_bool($flags)) {
             $flags = $flags ? HTML_STRICT : HTML_HEADER | HTML_DOCTYPE;
@@ -189,7 +193,9 @@ class Atk_Controller
         $this->invoke("loadDispatchPage", $postvars);
 
         $screen = '';
-        if (!$page->isEmpty() || Atk_Tools::hasFlag($flags, HTML_PARTIAL)) { // Only output an html output if there is anything to output.
+        if (!$page->isEmpty() || Atk_Tools::hasFlag($flags,
+                HTML_PARTIAL)
+        ) { // Only output an html output if there is anything to output.
             $screen = $page->render(null, $flags);
         }
 
@@ -201,8 +207,9 @@ class Atk_Controller
         // This is the end of all things for this page..
         // so we clean up some resources..
         $db = &$node->getDb();
-        if (is_object($db))
+        if (is_object($db)) {
             $db->disconnect();
+        }
         Atk_Tools::atkdebug("disconnected from the database");
 
         if ($this->m_return_output) {
@@ -218,7 +225,8 @@ class Atk_Controller
     {
         $node = &$this->getNode();
         $ui = &$node->getUi();
-        return Atk_Tools::atktext('app_shorttitle') . " - " . $ui->title($node->m_module, $node->m_type, $node->m_postvars['atkaction']);
+        return Atk_Tools::atktext('app_shorttitle') . " - " . $ui->title($node->m_module, $node->m_type,
+            $node->m_postvars['atkaction']);
     }
 
     /**
@@ -229,7 +237,7 @@ class Atk_Controller
      * @param array $postvars
      * @param integer $flags
      */
-    function dispatch($postvars, $flags = NULL)
+    function dispatch($postvars, $flags = null)
     {
         $this->m_postvars = $postvars;
         $node = &$this->getNode();
@@ -268,7 +276,7 @@ class Atk_Controller
                 }
             }
         }
-        $res = NULL;
+        $res = null;
         return $res; // prevent notice
     }
 
@@ -281,8 +289,9 @@ class Atk_Controller
     {
         $this->m_postvars = $postvars;
         $node = &$this->getNode();
-        if (!is_object($node))
+        if (!is_object($node)) {
             return;
+        }
 
         $node->m_postvars = $postvars;
         $node->m_action = $postvars['atkaction'];
@@ -291,7 +300,8 @@ class Atk_Controller
         }
 
         $page = &$node->getPage();
-        $page->setTitle(Atk_Tools::atktext('app_shorttitle') . " - " . $this->getUi()->title($node->m_module, $node->m_type, $node->m_action));
+        $page->setTitle(Atk_Tools::atktext('app_shorttitle') . " - " . $this->getUi()->title($node->m_module,
+                $node->m_type, $node->m_action));
 
         if ($node->allowed($node->m_action)) {
             $secMgr = Atk_SecurityManager::getInstance();
@@ -309,8 +319,10 @@ class Atk_Controller
             } else {
                 list($selector, $id) = explode("=", 'Atk_Tools::atkArrayNvl($node->m_postvars, "atkselector", "=")');
             }
-            $page->register_hiddenvars(array("atknodetype" => $node->m_module . "." . $node->m_type,
-                "atkselector" => str_replace("'", "", $id)));
+            $page->register_hiddenvars(array(
+                "atknodetype" => $node->m_module . "." . $node->m_type,
+                "atkselector" => str_replace("'", "", $id)
+            ));
         } else {
             $page->addContent($this->accessDeniedPage());
         }
@@ -325,11 +337,13 @@ class Atk_Controller
     {
         $node = &$this->getNode();
 
-        $content = "<br><br>" . Atk_Tools::atktext("error_node_action_access_denied", "", $node->m_type) . "<br><br><br>";
+        $content = "<br><br>" . Atk_Tools::atktext("error_node_action_access_denied", "",
+                $node->m_type) . "<br><br><br>";
 
         // Add a cancel button to an error page if it is a dialog.
-        if ($node->m_partial == 'dialog')
-            $content.= $this->getDialogButton('cancel', 'close');
+        if ($node->m_partial == 'dialog') {
+            $content .= $this->getDialogButton('cancel', 'close');
+        }
 
         return $this->genericPage(Atk_Tools::atktext('access_denied'), $content);
     }
@@ -351,16 +365,22 @@ class Atk_Controller
         $node = &$this->getNode();
         $ui = &$node->getUi();
         $node->addStyle("style.css");
-        if (!is_array($content))
+        if (!is_array($content)) {
             $content = array($title => $content);
+        }
         $blocks = array();
         foreach ($content as $itemtitle => $itemcontent) {
-            if ($node->m_partial == 'dialog')
-                $blocks[] = $ui->renderDialog(array("title" => $itemtitle,
-                    "content" => $itemcontent));
-            else
-                $blocks[] = $ui->renderBox(array("title" => $itemtitle,
-                    "content" => $itemcontent), 'dispatch');
+            if ($node->m_partial == 'dialog') {
+                $blocks[] = $ui->renderDialog(array(
+                    "title" => $itemtitle,
+                    "content" => $itemcontent
+                ));
+            } else {
+                $blocks[] = $ui->renderBox(array(
+                    "title" => $itemtitle,
+                    "content" => $itemcontent
+                ), 'dispatch');
+            }
         }
 
         /**
@@ -392,8 +412,10 @@ class Atk_Controller
         $ui = &$node->getUi();
 
         // todo: overridable action templates
-        return $ui->render("actionpage.tpl", array("blocks" => $blocks,
-                "title" => $this->actionPageTitle()));
+        return $ui->render("actionpage.tpl", array(
+            "blocks" => $blocks,
+            "title" => $this->actionPageTitle()
+        ));
     }
 
     /**
@@ -431,9 +453,15 @@ class Atk_Controller
     function feedbackUrl($action, $status, $record = "", $message = "", $levelskip = null)
     {
         $node = &$this->getNode();
-        if ((isset($node->m_feedback[$action]) && Atk_Tools::hasFlag($node->m_feedback[$action], $status)) || $status == ACTION_FAILED) {
-            $vars = array("atkaction" => "feedback", "atkfbaction" => $action,
-                "atkactionstatus" => $status, "atkfbmessage" => $message);
+        if ((isset($node->m_feedback[$action]) && Atk_Tools::hasFlag($node->m_feedback[$action],
+                    $status)) || $status == ACTION_FAILED
+        ) {
+            $vars = array(
+                "atkaction" => "feedback",
+                "atkfbaction" => $action,
+                "atkactionstatus" => $status,
+                "atkfbmessage" => $message
+            );
             $atkNodeType = $node->atkNodeType();
             $sessionStatus = SESSION_REPLACE;
 
@@ -455,23 +483,26 @@ class Atk_Controller
     /**
      * Generate a dispatch menu URL for use with nodes
      * and their specific actions.
-     * @param string $params: A key/value array with extra options for the url
+     * @param string $params : A key/value array with extra options for the url
      * @param string $atknodetype The atknodetype (modulename.nodename)
      * @param string $file The php file to use for dispatching, defaults to dispatch.php
      * @return string url for the node with the action
      */
     function dispatchUrl($params = array(), $atknodetype = "", $file = "")
     {
-        if (!is_array($params))
+        if (!is_array($params)) {
             $params = array();
+        }
         $vars = array_merge($params, $this->m_hidden_vars);
-        if ($file != "")
+        if ($file != "") {
             $phpfile = $file;
-        else
+        } else {
             $phpfile = $this->getPhpFile();
+        }
 
         // When $atknodetype is empty this means that we use the atknodetype from session
-        $dispatch_url = Atk_Tools::dispatch_url($atknodetype, Atk_Tools::atkArrayNvl($vars, "atkaction", ""), $vars, $phpfile);
+        $dispatch_url = Atk_Tools::dispatch_url($atknodetype, Atk_Tools::atkArrayNvl($vars, "atkaction", ""), $vars,
+            $phpfile);
 
         return $dispatch_url;
     }
@@ -494,7 +525,9 @@ class Atk_Controller
 
         // edit mode
         if ($mode == "edit") {
-            if (Atk_SessionManager::atkLevel() > 0 || Atk_Tools::hasFlag(Atk_Tools::atkArrayNvl($node->m_feedback, "update", 0), ACTION_SUCCESS)) {
+            if (Atk_SessionManager::atkLevel() > 0 || Atk_Tools::hasFlag(Atk_Tools::atkArrayNvl($node->m_feedback,
+                    "update", 0), ACTION_SUCCESS)
+            ) {
                 $result[] = $this->getButton('saveandclose', true);
             }
 
@@ -503,15 +536,17 @@ class Atk_Controller
             // if atklevel is 0 or less, we are at the bottom of the session stack,
             // which means that 'saveandclose' doesn't close anyway, so we leave out
             // the 'saveandclose' and 'cancel' button. Unless, a feedback screen is configured.
-            if (Atk_SessionManager::atkLevel() > 0 || Atk_Tools::hasFlag(Atk_Tools::atkArrayNvl($node->m_feedback, "update", 0), ACTION_CANCELLED)) {
+            if (Atk_SessionManager::atkLevel() > 0 || Atk_Tools::hasFlag(Atk_Tools::atkArrayNvl($node->m_feedback,
+                    "update", 0), ACTION_CANCELLED)
+            ) {
                 $result[] = $this->getButton('cancel');
             }
 
 
         } elseif ($mode == "add") {
 
-            if ($node->hasFlag(NF_EDITAFTERADD) === true){
-                if($node->allowed('edit')){
+            if ($node->hasFlag(NF_EDITAFTERADD) === true) {
+                if ($node->allowed('edit')) {
                     $result[] = $this->getButton('saveandedit', true);
                 } else {
                     Atk_Tools::atkwarning("NF_EDITAFTERADD found but no 'edit' privilege.");
@@ -525,12 +560,13 @@ class Atk_Controller
             }
 
 
-            if (Atk_SessionManager::atkLevel() >0 || Atk_Tools::hasFlag(Atk_Tools::atkArrayNvl($node->m_feedback, "save", 0), ACTION_CANCELLED)) {
+            if (Atk_SessionManager::atkLevel() > 0 || Atk_Tools::hasFlag(Atk_Tools::atkArrayNvl($node->m_feedback,
+                    "save", 0), ACTION_CANCELLED)
+            ) {
                 $result[] = $this->getButton('cancel');
             }
 
-        }
-        elseif ($mode == "view") {
+        } elseif ($mode == "view") {
             // if appropriate, display an edit button.
             if (!$node->hasFlag(NF_NO_EDIT) && $node->allowed("edit", $record)) {
                 $result[] = '<input type="hidden" name="atkaction" value="edit">' .
@@ -605,13 +641,15 @@ class Atk_Controller
                 $class = "atkbutton";
         }
 
-        if (!isset($value))
+        if (!isset($value)) {
             $value = $this->m_node->text($action);
-        if (isset($label))
+        }
+        if (isset($label)) {
             $value = $label;
+        }
         $value = htmlentities($value);
 
-        $class = trim('btn '.$class);
+        $class = trim('btn ' . $class);
 
         if ($default) {
             $class .= (!empty($class) ? ' ' : '') . 'atkdefaultbutton btn-primary';
@@ -619,14 +657,17 @@ class Atk_Controller
             $class .= (!empty($class) ? ' ' : '') . 'btn-default';
         }
 
-        if ($class != "")
+        if ($class != "") {
             $class = "class=\"$class\" ";
+        }
 
-        if ($value != "")
+        if ($value != "") {
             $valueAttribute = "value=\"{$value}\" ";
+        }
 
-        if ($name != "")
+        if ($name != "") {
             $name = "name=\"" . $this->m_node->getEditFieldPrefix() . "{$name}\" ";
+        }
 
         return '<button type="submit" ' . $class . $name . $valueAttribute . '>' . $value . '</button>';
     }
@@ -637,7 +678,7 @@ class Atk_Controller
      * @param String $action The action ('save' or 'cancel')
      * @param String $label The label for this button
      * @param String $url
-     * @param array  $extraParams
+     * @param array $extraParams
      * @return HTML
      */
     function getDialogButton($action, $label = null, $url = null, $extraParams = array())
@@ -650,11 +691,11 @@ class Atk_Controller
         switch ($action) {
             case "save":
                 $class = "btn_save";
-                $onClick.= Atk_Dialog::getSaveCall($url, 'dialogform', $extraParams);
+                $onClick .= Atk_Dialog::getSaveCall($url, 'dialogform', $extraParams);
                 break;
             case "cancel":
                 $class = "btn_cancel";
-                $onClick.= Atk_Dialog::getCloseCall();
+                $onClick .= Atk_Dialog::getCloseCall();
                 break;
             default:
                 return "";
@@ -705,8 +746,9 @@ class Atk_Controller
     {
         $theme = Atk_Tools::atkinstance('atk.ui.atktheme');
 
-        if ($this->m_php_file != "")
+        if ($this->m_php_file != "") {
             return $this->m_php_file;
+        }
         return $theme->getAttribute('dispatcher', Atk_Config::getGlobal("dispatcher", Atk_Tools::atkSelf()));
     }
 
@@ -810,14 +852,16 @@ class Atk_Controller
         // the first argument is $methodname, which we already defined by name.
         array_shift($arguments);
         $node = &$this->getNode();
-        if ($node !== NULL && method_exists($node, $methodname)) {
+        if ($node !== null && method_exists($node, $methodname)) {
             Atk_Tools::atkdebug("Atk_controller::invoke() Invoking '$methodname' override on node");
             // We pass the original object as last parameter to the override.
             array_push($arguments, $this);
             return call_user_func_array(array(&$node, $methodname), $arguments);
-        } else if (method_exists($this, $methodname)) {
-            Atk_Tools::atkdebug("Atk_controller::invoke() Invoking '$methodname' on controller");
-            return call_user_func_array(array(&$this, $methodname), $arguments);
+        } else {
+            if (method_exists($this, $methodname)) {
+                Atk_Tools::atkdebug("Atk_controller::invoke() Invoking '$methodname' on controller");
+                return call_user_func_array(array(&$this, $methodname), $arguments);
+            }
         }
         Atk_Tools::atkerror("Atk_controller::invoke() Undefined method '$methodname' in atkController");
     }

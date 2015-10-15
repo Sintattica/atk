@@ -2,7 +2,7 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * @package atk
@@ -16,7 +16,7 @@
  */
 
 /**
- * PostgreSQL ddl driver. 
+ * PostgreSQL ddl driver.
  *
  * @author Peter C. Verhage <peter@ibuildings.nl>
  * @package atk
@@ -39,7 +39,7 @@ class Atk_PgsqlDDL extends Atk_DDL
     /**
      * Convert an ATK generic datatype to a database specific type.
      *
-     * @param string $generictype  The datatype to convert.
+     * @param string $generictype The datatype to convert.
      */
     function getType($generictype)
     {
@@ -67,7 +67,7 @@ class Atk_PgsqlDDL extends Atk_DDL
     /**
      * Convert an database specific type to an ATK generic datatype.
      *
-     * @param string $type  The database specific datatype to convert.
+     * @param string $type The database specific datatype to convert.
      */
     function getGenericType($type)
     {
@@ -143,21 +143,26 @@ class Atk_PgsqlDDL extends Atk_DDL
             // statement is needed.
             foreach ($this->m_fields as $fieldname => $fieldconfig) {
                 if ($fieldname != "" && $fieldconfig["type"] != "" && $this->getType($fieldconfig["type"]) != "") {
-                    $fields[] = $this->buildField($fieldname, $fieldconfig["type"], $fieldconfig["size"], $fieldconfig["flags"] & ~DDL_NOTNULL, $fieldconfig["default"]);
-                    if (Atk_Tools::hasFlag($fieldconfig["flags"], DDL_NOTNULL))
+                    $fields[] = $this->buildField($fieldname, $fieldconfig["type"], $fieldconfig["size"],
+                        $fieldconfig["flags"] & ~DDL_NOTNULL, $fieldconfig["default"]);
+                    if (Atk_Tools::hasFlag($fieldconfig["flags"], DDL_NOTNULL)) {
                         $notNullFields[] = $fieldname;
+                    }
                 }
             }
 
-            foreach ($fields as $field)
+            foreach ($fields as $field) {
                 $result[] = "ALTER TABLE " . $this->m_table . " ADD " . $field;
+            }
 
-            foreach ($notNullFields as $field)
+            foreach ($notNullFields as $field) {
                 $result[] = "ALTER TABLE " . $this->m_table . " ALTER COLUMN " . $field . " SET NOT NULL";
+            }
 
             $constraints = $this->_buildConstraintsArray();
-            foreach ($constraints as $constraint)
+            foreach ($constraints as $constraint) {
                 $result[] = "ALTER TABLE " . $this->m_table . " ADD " . $constraint;
+            }
         }
 
         return count($result) > 0 ? $result : "";

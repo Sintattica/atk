@@ -41,14 +41,14 @@ class Atk_MatrixRelation extends Atk_Relation
 
     /**
      * Constructor
-     * @param string $name            Name of the matrix table
-     * @param string $name1           row field name
-     * @param string $destination1    row table
-     * @param string $fk1             foreignkey in row table
-     * @param string $name2           colum field name
-     * @param string $destination2    colum table
-     * @param string $fk2             foreignkey in colum table
-     * @param int    $flags           AF_MATRIX_ACYCLIC if input must be acyclic
+     * @param string $name Name of the matrix table
+     * @param string $name1 row field name
+     * @param string $destination1 row table
+     * @param string $fk1 foreignkey in row table
+     * @param string $name2 colum field name
+     * @param string $destination2 colum table
+     * @param string $fk2 foreignkey in colum table
+     * @param int $flags AF_MATRIX_ACYCLIC if input must be acyclic
      */
     function __construct($name, $name1, $destination1, $fk1, $name2, $destination2, $fk2, $flags = 0)
     {
@@ -69,7 +69,7 @@ class Atk_MatrixRelation extends Atk_Relation
      */
     function display($record)
     {
-        
+
     }
 
     /**
@@ -114,12 +114,14 @@ class Atk_MatrixRelation extends Atk_Relation
         $this->m_destInstance = "";
         $this->createDestination();
 
-        if ($this->m_fk1 != "")
+        if ($this->m_fk1 != "") {
             $where = $this->m_fk1 . "=" . $record[$pkfield];
-        else
+        } else {
             $where = "";
+        }
 
-        $recordset = $this->m_destInstance->selectDb($where, "", "", "", Atk_Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+        $recordset = $this->m_destInstance->selectDb($where, "", "", "",
+            Atk_Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
 
         for ($i = 0; $i < count($recordset); $i++) {
             $matrix_fields_row[$i] = $this->m_destInstance->descriptor($recordset[$i]);
@@ -132,12 +134,14 @@ class Atk_MatrixRelation extends Atk_Relation
         $this->m_destInstance = "";
         $this->createDestination();
 
-        if ($this->m_fk2 != "")
+        if ($this->m_fk2 != "") {
             $where = $this->m_fk2 . "=" . $record[$pkfield];
-        else
+        } else {
             $where = "";
+        }
 
-        $recordset = $this->m_destInstance->selectDb($where, "", "", "", Atk_Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+        $recordset = $this->m_destInstance->selectDb($where, "", "", "",
+            Atk_Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
 
         for ($i = 0; $i < count($recordset); $i++) {
             $matrix_fields_col[$i] = $this->m_destInstance->descriptor($recordset[$i]);
@@ -166,10 +170,11 @@ class Atk_MatrixRelation extends Atk_Relation
                 $form .= '</b></td>';
                 for ($j = 0; $j < count($matrix_fields_col); $j++) {
                     $key = $matrix_values_row[$i] . '_' . $matrix_values_col[$j];
-                    if ($checkedArray[$key] == 'on')
+                    if ($checkedArray[$key] == 'on') {
                         $check = 'CHECKED';
-                    else
+                    } else {
                         $check = '';
+                    }
 
                     $form .= '<td align="center">&nbsp;';
                     $form .= '<input type="checkbox" name="' . $this->formName() . '_AMDAE_' . $matrix_values_row[$i] . '_' . $matrix_values_col[$j] . '" ' . $this->getCSSClassAttribute("atkcheckbox") . ' ' . $check . '>';
@@ -178,8 +183,7 @@ class Atk_MatrixRelation extends Atk_Relation
                 $form .= '</tr>';
             }
             $form .= '</table><br>';
-        }
-        elseif (count($matrix_fields_row) > 1) { //many bool
+        } elseif (count($matrix_fields_row) > 1) { //many bool
             $form = '<table border=0 cellspacing=0 cellpadding=0>';
 
             $counter = 0;
@@ -187,10 +191,11 @@ class Atk_MatrixRelation extends Atk_Relation
                 $form .= '<tr>';
                 for ($j = 0; $j < count($matrix_fields_col); $j++) {
                     $key = $matrix_values_row[$i] . '_' . $matrix_values_col[$j];
-                    if ($checkedArray[$key] == 'on')
+                    if ($checkedArray[$key] == 'on') {
                         $check = 'CHECKED';
-                    else
+                    } else {
                         $check = '';
+                    }
 
                     $form .= '<td align="center">&nbsp;';
                     $form .= '<input type="checkbox" name="' . $this->formName() . '_AMDAE_' . $matrix_values_row[$i] . '_' . $matrix_values_col[$j] . '" ' . $this->getCSSClassAttribute("atkcheckbox") . ' ' . $check . '>';
@@ -200,8 +205,7 @@ class Atk_MatrixRelation extends Atk_Relation
                 $form .= '</tr>';
             }
             $form .= '</table><br>';
-        }
-        else {   //one or none bool
+        } else {   //one or none bool
             $form = '';
         }
 
@@ -254,12 +258,15 @@ class Atk_MatrixRelation extends Atk_Relation
             $this->m_destInstance = "";
             $this->createDestination();
 
-            if ($this->m_fk1 != "")
+            if ($this->m_fk1 != "") {
                 $where = $this->m_fk1 . "=" . $record[$pkfield];
-            else
+            } else {
                 $where = "";
+            }
 
-            $recordset = $this->m_destInstance->selectDb($where, "", "", "", Atk_Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+            $recordset = $this->m_destInstance->selectDb($where, "", "", "",
+                Atk_Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
+                    $this->m_destInstance->m_primaryKey));
 
             for ($i = 0; $i < count($recordset); $i++) {
                 $primaryKeyValue = explode("'", $this->m_destInstance->primaryKey($recordset[$i]));

@@ -18,7 +18,7 @@ Atk_Tools::atkimport('atk.db.statement.atkstatement');
 
 /**
  * MySQLi statement implementation.
- * 
+ *
  * @author Peter C. Verhage <peter@achievo.org>
  *
  * @package atk
@@ -28,21 +28,21 @@ class Atk_MySQLiStatement extends Atk_Statement
 {
     /**
      * MySQLi statement.
-     * 
+     *
      * @var MySQLi_Statement
      */
     private $m_stmt;
 
     /**
      * Column names.
-     * 
+     *
      * @var array
      */
     private $m_columnNames = null;
 
     /**
      * Row value bindings.
-     * 
+     *
      * @var array
      */
     private $m_values = null;
@@ -53,20 +53,22 @@ class Atk_MySQLiStatement extends Atk_Statement
     protected function _prepare()
     {
         if ($this->getDb()->connect() != DB_SUCCESS) {
-            throw new Atk_StatementException("Cannot connect to database.", Atk_StatementException::NO_DATABASE_CONNECTION);
+            throw new Atk_StatementException("Cannot connect to database.",
+                Atk_StatementException::NO_DATABASE_CONNECTION);
         }
 
         $conn = $this->getDb()->link_id();
         Atk_Tools::atkdebug("Prepare query: " . $this->_getParsedQuery());
         $this->m_stmt = $conn->prepare($this->_getParsedQuery());
         if (!$this->m_stmt || $conn->errno) {
-            throw new Atk_StatementException("Cannot prepare statement (ERROR: {$conn->errno} - {$conn->error}).", Atk_StatementException::PREPARE_STATEMENT_ERROR);
+            throw new Atk_StatementException("Cannot prepare statement (ERROR: {$conn->errno} - {$conn->error}).",
+                Atk_StatementException::PREPARE_STATEMENT_ERROR);
         }
     }
 
     /**
      * Moves the cursor back to the beginning of the result set.
-     * 
+     *
      * NOTE:
      * Depending on the database driver, using this method might result in the
      * query to be executed again.
@@ -74,7 +76,8 @@ class Atk_MySQLiStatement extends Atk_Statement
     public function rewind()
     {
         if ($this->_getLatestParams() === null) {
-            throw new Atk_StatementException("Statement has not been executed yet.", Atk_StatementException::STATEMENT_NOT_EXECUTED);
+            throw new Atk_StatementException("Statement has not been executed yet.",
+                Atk_StatementException::STATEMENT_NOT_EXECUTED);
         }
 
         $this->m_stmt->data_seek(0);
@@ -82,7 +85,7 @@ class Atk_MySQLiStatement extends Atk_Statement
 
     /**
      * Bind statement parameters.
-     * 
+     *
      * @param array $params parameters
      */
     private function _bindParams($params)
@@ -115,7 +118,8 @@ class Atk_MySQLiStatement extends Atk_Statement
 
         $metadata = $this->m_stmt->result_metadata();
         if ($this->m_stmt->errno) {
-            throw new Atk_StatementException("Cannot retrieve metadata (ERROR: {$this->m_stmt->errno} - {$this->m_stmt->error}).", Atk_StatementException::OTHER_ERROR);
+            throw new Atk_StatementException("Cannot retrieve metadata (ERROR: {$this->m_stmt->errno} - {$this->m_stmt->error}).",
+                Atk_StatementException::OTHER_ERROR);
         }
 
         if (!$metadata) {
@@ -155,7 +159,7 @@ class Atk_MySQLiStatement extends Atk_Statement
 
     /**
      * Executes the statement using the given bind parameters.
-     * 
+     *
      * @param array $params bind parameters
      */
     protected function _execute($params)
@@ -167,7 +171,8 @@ class Atk_MySQLiStatement extends Atk_Statement
         $this->_bindParams($params);
 
         if (!$this->m_stmt->execute()) {
-            throw new Atk_StatementException("Cannot execute statement: {$this->m_stmt->error}", Atk_StatementException::STATEMENT_ERROR);
+            throw new Atk_StatementException("Cannot execute statement: {$this->m_stmt->error}",
+                Atk_StatementException::STATEMENT_ERROR);
         }
 
         $this->m_insertId = $this->getDb()->link_id()->insert_id;
@@ -181,7 +186,7 @@ class Atk_MySQLiStatement extends Atk_Statement
 
     /**
      * Fetches the next row from the result set.
-     * 
+     *
      * @return array next row from the result set (false if no other rows exist)
      */
     protected function _fetch()
@@ -218,7 +223,7 @@ class Atk_MySQLiStatement extends Atk_Statement
     }
 
     /**
-     * Returns the number of affected rows in case of an INSERT, UPDATE 
+     * Returns the number of affected rows in case of an INSERT, UPDATE
      * or DELETE query. Called immediatly after Atk_Statement::_execute().
      */
     protected function _getAffectedRowCount()
@@ -228,7 +233,7 @@ class Atk_MySQLiStatement extends Atk_Statement
 
     /**
      * Returns the auto-generated id used in the last query.
-     * 
+     *
      * @return int auto-generated id
      */
     public function getInsertId()

@@ -59,7 +59,8 @@ class Atk_Cache_file extends Atk_Cache
      */
     protected function setCachePath()
     {
-        $this->m_path = $this->getCacheConfig('path', Atk_Config::getGlobal('atktempdir') . "cache/") . $this->getFileSafeNamespace() . '/';
+        $this->m_path = $this->getCacheConfig('path',
+                Atk_Config::getGlobal('atktempdir') . "cache/") . $this->getFileSafeNamespace() . '/';
         Atk_FileAttribute::mkdir($this->m_path);
     }
 
@@ -106,8 +107,9 @@ class Atk_Cache_file extends Atk_Cache
 
         // if the file has expired, key is available
 
-        if ($lifetime === false)
+        if ($lifetime === false) {
             $lifetime = $this->m_lifetime;
+        }
         $expire_time = filemtime($file) + $lifetime;
         if (time() > $expire_time) {
             return $this->set($key, $data, $lifetime);
@@ -131,8 +133,9 @@ class Atk_Cache_file extends Atk_Cache
             return false;
         }
 
-        if ($lifetime === false)
+        if ($lifetime === false) {
             $lifetime = $this->m_lifetime;
+        }
 
         // serialize all non-scalar data
         if (!is_scalar($data)) {
@@ -242,7 +245,7 @@ class Atk_Cache_file extends Atk_Cache
 
     /**
      * Deletes all cache entries
-     * 
+     *
      * @param string $key Entry ID
      * @return boolean Succes
      */
@@ -270,13 +273,14 @@ class Atk_Cache_file extends Atk_Cache
             return false;
         }
 
-        $list = (array) @scandir($this->m_path, null, $this->m_context);
+        $list = (array)@scandir($this->m_path, null, $this->m_context);
 
         // delete each file
         foreach ($list as $file) {
             // Skip files that start with a dot
-            if ($file[0] == '.')
+            if ($file[0] == '.') {
                 continue;
+            }
             @unlink($this->m_path . $file, $this->m_context);
         }
         return true;

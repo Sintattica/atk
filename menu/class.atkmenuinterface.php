@@ -35,7 +35,7 @@ class Atk_menuinterface
      */
     function render()
     {
-        
+
     }
 
     /**
@@ -56,24 +56,24 @@ class Atk_menuinterface
 
     /**
      * Return the menu header
-     * 
+     *
      * @param string $atkmenutop
      * @return string The menu header
      */
     function getHeader($atkmenutop)
     {
-        
+
     }
 
     /**
      * Return the menu footer
-     * 
+     *
      * @param string $atkmenutop
      * @return string The menu footer
      */
     function getFooter($atkmenutop)
     {
-        
+
     }
 
     /**
@@ -85,7 +85,7 @@ class Atk_menuinterface
      */
     function getHeight()
     {
-        
+
     }
 
     /**
@@ -97,7 +97,7 @@ class Atk_menuinterface
      */
     function getPosition()
     {
-        
+
     }
 
     /**
@@ -106,7 +106,7 @@ class Atk_menuinterface
      */
     function getScrollable()
     {
-        
+
     }
 
     /**
@@ -117,7 +117,7 @@ class Atk_menuinterface
      */
     function getMultilevel()
     {
-        
+
     }
 
     /**
@@ -132,19 +132,25 @@ class Atk_menuinterface
 
         $enable = $menuitem['enable'];
         if ((is_string($enable) || (is_array($enable) && count($enable) == 2 && is_object(@$enable[0]))) &&
-            is_callable($enable)) {
+            is_callable($enable)
+        ) {
             $enable = call_user_func($enable);
-        } else if (is_array($enable)) {
-            $enabled = false;
-            for ($j = 0; $j < (count($enable) / 2); $j++) {
-                $enabled = $enabled || Atk_SecurityManager::is_allowed($enable[(2 * $j)], $enable[(2 * $j) + 1]);
+        } else {
+            if (is_array($enable)) {
+                $enabled = false;
+                for ($j = 0; $j < (count($enable) / 2); $j++) {
+                    $enabled = $enabled || Atk_SecurityManager::is_allowed($enable[(2 * $j)], $enable[(2 * $j) + 1]);
+                }
+                $enable = $enabled;
+            } else {
+                if (array_key_exists($menuitem['name'], $g_menu) && is_array($g_menu[$menuitem['name']])) {
+                    $enabled = false;
+                    foreach ($g_menu[$menuitem['name']] as $item) {
+                        $enabled = $enabled || $this->isEnabled($item);
+                    }
+                    $enable = $enabled;
+                }
             }
-            $enable = $enabled;
-        } else if (array_key_exists($menuitem['name'], $g_menu) && is_array($g_menu[$menuitem['name']])) {
-            $enabled = false;
-            foreach ($g_menu[$menuitem['name']] as $item)
-                $enabled = $enabled || $this->isEnabled($item);
-            $enable = $enabled;
         }
 
         return $enable;

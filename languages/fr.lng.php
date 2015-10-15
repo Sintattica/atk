@@ -52,12 +52,14 @@ $fr = array(
     "autocomplete_no_results_contains" => "Pas de r�sultats trouv�s contenant la valeur de recherche indiqu�.",
     "autocomplete_no_results_exact" => "Pas de r�sultats trouv�s contenant exactement la valeur de recherche indiqu�.",
     "autocomplete_no_results_startswith" => "Pas de r�sultats trouv�s d�butant par la valeur de recherche indiqu�.",
-    "available" => "Available", // Missing string!!!
+    "available" => "Available",
+    // Missing string!!!
     "back" => "Retour",
     "back_to" => "Retour �",
     "below_minimum_value" => "Au-dessous de la valeur minimale autoris�e",
     "cancel" => "Annuler",
-    "cancel_edit" => "Cancel edit", // Missing string!!!
+    "cancel_edit" => "Cancel edit",
+    // Missing string!!!
     "cannot create directory" => "Impossible de cr�er le r�pertoire: ",
     "cannot make file" => "Impossible de cr�er le fichier: ",
     "cannot_remove_file" => "Impossible de modifier le fichier!",
@@ -79,15 +81,19 @@ $fr = array(
     "column_unsubtotal" => "Pas de sous-total",
     "confirm_delete" => "Confirmer la suppression de cette information!",
     "confirm_delete_multi" => "Voulez-vous vraiment supprimer ces informations?",
-    "content_wizard_finished" => "Wizard was finished successfully!", // Missing string!!!
+    "content_wizard_finished" => "Wizard was finished successfully!",
+    // Missing string!!!
     "copy" => "Copier",
     "criterium_field" => "Champ",
     "criterium_mode" => "Mode",
     "criterium_value" => "Valeur",
     "critical" => "Critique",
-    "datagrid_norecordsfound_general" => "No records found.", // Missing string!!!
-    "datagrid_norecordsfound_search" => "No results found for the current search query.", // Missing string!!!
-    "datagrid_summary" => "(Records [start] - [end] of [count])", // Missing string!!!
+    "datagrid_norecordsfound_general" => "No records found.",
+    // Missing string!!!
+    "datagrid_norecordsfound_search" => "No results found for the current search query.",
+    // Missing string!!!
+    "datagrid_summary" => "(Records [start] - [end] of [count])",
+    // Missing string!!!
     "date_format_edit" => "j F Y",
     "date_format_view" => "j F Y",
     "db_access_denied_database" => "L'utilisateur '%s' ne poss�de pas de droits sur la base de donn�es '%s'",
@@ -106,20 +112,24 @@ $fr = array(
     "email" => "Email",
     "enclosure" => "Pi�ce jointe",
     "error" => "Erreur",
-    "error_attributeedit_default" => "An unknown error has occurred.", // Missing string!!!
+    "error_attributeedit_default" => "An unknown error has occurred.",
+    // Missing string!!!
     "error_attributeedit_noselectorset" => "S'il vous pla�t choisir les dossiers que vous souhaitez modifier.",
     "error_attributeedit_update" => "Une erreur est survenue lors de la mise a jour du champ s�lectionn�.",
-    "error_attributeedit_validationfailed" => "This value is not allowed.", // Missing string!!!
+    "error_attributeedit_validationfailed" => "This value is not allowed.",
+    // Missing string!!!
     "error_captchafield" => "Le code donn� est invalide, s'il vous pla�t essayez de nouveau",
     "error_copy_record" => "Erreur inconnue lors de la copie de l'enregistrement",
     "error_date_invalid" => "Date invalide",
     "error_fileexists" => "Ce nom de fichier existe deja. Donner un autre nom au fichier.",
-    "error_file_mime_type" => "Unsupported file uploaded please check your filetype or extension", // Missing string!!!
+    "error_file_mime_type" => "Unsupported file uploaded please check your filetype or extension",
+    // Missing string!!!
     "error_file_size" => "Le fichier est trop gros",
     "error_file_unknown" => "Erreur inconnue lors de l'upload de fichier",
     "error_format_mismatch" => "L'�l�ment de la position  %d ne correspond pas au format voulu",
     "error_formdataerror" => "L'enregistrement a �choue pour la raison suivante: ",
-    "error_iconv_not_install" => "iconv module don't install in your system, but it needs for right functionality", // Missing string!!!
+    "error_iconv_not_install" => "iconv module don't install in your system, but it needs for right functionality",
+    // Missing string!!!
     "error_invalid_email" => "Addresse e-mail invalide",
     "error_node_action_access_denied" => "D�sol�, vous n'�tes pas autoris�(e) � mener cette action.",
     "error_notnumeric" => "La valeur n'est pas un nombre",
@@ -130,7 +140,8 @@ $fr = array(
     "error_password_nomatch" => "Le mot de passe utilis� ne correspond pas.",
     "error_primarykey_exists" => "n enregistrement avec cette clef existe deja.",
     "error_tab" => "Voir",
-    "error_tag_illegalvalue" => "A tag may not contain HTML or linefeeds.", // Missing string!!!
+    "error_tag_illegalvalue" => "A tag may not contain HTML or linefeeds.",
+    // Missing string!!!
     "error_uniquefield" => "La valeur de ce champ doit etre unique",
     "error_uniquefieldset" => "Chaque valeur � combiner pour ce champ doit �tre unique",
     "error_unkown_domain" => "Domaine inconnu",
@@ -139,8 +150,10 @@ $fr = array(
     "export_config_explanation" => "S'il vous pla�t s�lectionnez les options pour l'exportation en CSV.",
     "export_generatetitlerow" => "Inclure un titre de ligne",
     "export_selectcolumns" => "S�lectionnez les colonnes pour l'exportation",
-    "export_selections" => "Standard selections", // Missing string!!!
-    "export_selections_name" => "Standard selections name", // Missing string!!!
+    "export_selections" => "Standard selections",
+    // Missing string!!!
+    "export_selections_name" => "Standard selections name",
+    // Missing string!!!
     "feb" => "Feb",
     "february" => "Fevrier",
     "feedback" => "Feedback",
@@ -195,7 +208,8 @@ $fr = array(
     "invalid_relative_url" => "Invalid URL relative, s'il vous pla�t utiliser ce format: '/mysite/guestbook'",
     "invalid_url_anchor" => "URL incorrecte l'ancre, s'il vous pla�t utiliser ce format: '#internal_bookmark'",
     "invert_selection" => "Selection invers�e",
-    "in_use_by" => "In use by", // Missing string!!!
+    "in_use_by" => "In use by",
+    // Missing string!!!
     "jan" => "Jan",
     "january" => "Janvier",
     "jul" => "Jul",
@@ -206,15 +220,18 @@ $fr = array(
     "language_en" => "Anglais",
     "language_fr" => "Fran�ais",
     "language_nl" => "Flamand",
-    "language_pl" => "Polish", // Missing string!!!
-    "language_sp" => "Spanish", // Missing string!!!
+    "language_pl" => "Polish",
+    // Missing string!!!
+    "language_sp" => "Spanish",
+    // Missing string!!!
     "list_null_value" => "Sans donn�es",
     "list_null_value_obligatory" => "(S�lectionnez une valeur...)",
     "load_criteria" => "Charger sauvegarder chercher",
     "lock_expired" => "Les informations que vous avez ouvert n'ont plus votre exclusivit�. Cela peut avoir plusieurs causes,
                      la plus courante est l'oubli de sauvegarde. Vous pouvez essayer de sauvegarder votre travail,
                      mais il est possible que les informations soient verrouille�es par un autre utilisateur.",
-    "lock_info_line" => "[user_id] (ip: [user_ip]) since [lock_date]", // Missing string!!!
+    "lock_info_line" => "[user_id] (ip: [user_ip]) since [lock_date]",
+    // Missing string!!!
     "lock_locked" => "Les informations selectionn�es ne sont pas accessibles parce que verrouill�s par un autre utilisateur.",
     "logged_in_as" => "Connecter en tant que :",
     "login" => "Connexion",
@@ -274,7 +291,8 @@ $fr = array(
     "saveandedit" => "Enregistrer et �diter",
     "saveandnext" => "Enregistrer et prochain",
     "save_criteria" => "Sauver la recherche comme",
-    "save_export_selection" => "Save selection", // Missing string!!!
+    "save_export_selection" => "Save selection",
+    // Missing string!!!
     "search" => "Chercher",
     "search_all" => "Chercher tous",
     "search_and" => "Correspondance avec tous les crit�res",
@@ -293,7 +311,8 @@ $fr = array(
     "search_substring" => "Chercher une partie de la suite de caract�res ",
     "search_wildcard" => "Chercher avec des caract�res inconnus (*)",
     "select" => "Selectionner",
-    "selected" => "Selected", // Missing string!!!
+    "selected" => "Selected",
+    // Missing string!!!
     "selection" => "Selection",
     "select_a" => "s�lectionner un",
     "select_all" => "Selectionner tous",
@@ -349,7 +368,8 @@ $fr = array(
     "title_multiselect" => "S�lection multiple",
     "title_select" => "Selection",
     "title_session_expired" => "Session expir�e",
-    "title_wizard_finished" => "Wizard finished", // Missing string!!!
+    "title_wizard_finished" => "Wizard finished",
+    // Missing string!!!
     "today" => "Aujourd'hui",
     "tue" => "Mar",
     "tuesday" => "Mardi",

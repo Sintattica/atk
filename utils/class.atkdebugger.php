@@ -38,10 +38,11 @@ class Atk_Debugger
      */
     public static function getInstance()
     {
-        static $s_instance = NULL;
-        if ($s_instance == NULL) {
-            if (!Atk_SessionManager::atkGetSessionManager())
+        static $s_instance = null;
+        if ($s_instance == null) {
+            if (!Atk_SessionManager::atkGetSessionManager()) {
                 Atk_Tools::atkwarning("Instantiating debugger without sessionmanager, debugger will not do anything until session is started. Also, the debugging info already in the session will not be cleaned, this could lead to monster sessions over time!");
+            }
             $s_instance = new Atk_Debugger();
         }
         return $s_instance;
@@ -83,14 +84,14 @@ class Atk_Debugger
     /**
      * Add a query string to the debugger
      *
-     * @param string  $query
+     * @param string $query
      * @param boolean $system is system query? (e.g. for retrieving metadata, warnings, setting locks etc.)
-     * 
+     *
      * @return bool Indication if query is added
      */
     public static function addQuery($query, $isSystemQuery = false)
     {
-        self::$s_queryCount +=!$isSystemQuery ? 1 : 0;
+        self::$s_queryCount += !$isSystemQuery ? 1 : 0;
         self::$s_systemQueryCount += $isSystemQuery ? 1 : 0;
 
         if (Atk_Config::getGlobal('debug') > 2) {
@@ -140,7 +141,8 @@ class Atk_Debugger
 
             $data["queries"][] = array("query" => $query, "trace" => Atk_Tools::atkGetTrace());
 
-            Atk_Tools::atkdebug("[" . $this->consoleLink("query&nbsp;details", "query", array("query_id" => count($data["queries"]) - 1), true) . "] " . htmlentities($query));
+            Atk_Tools::atkdebug("[" . $this->consoleLink("query&nbsp;details", "query",
+                    array("query_id" => count($data["queries"]) - 1), true) . "] " . htmlentities($query));
 
             return true;
         }
@@ -157,9 +159,9 @@ class Atk_Debugger
      * @param int $stackId The stack id
      * @return string HTML code with the console link
      */
-    public function consoleLink($text, $action = "", $params = array(), $popup = false, $stackId = NULL)
+    public function consoleLink($text, $action = "", $params = array(), $popup = false, $stackId = null)
     {
-        if ($stackId == NULL) {
+        if ($stackId == null) {
             $stackId = Atk_SessionManager::atkStackID();
         }
 
@@ -169,12 +171,12 @@ class Atk_Debugger
 
         if ($popup) {
             if ($s_first) {
-                $res.= '<script type="text/javascript" language="JavaScript" src="' . Atk_Config::getGlobal("atkroot") . 'atk/javascript/newwindow.js"></script>';
+                $res .= '<script type="text/javascript" language="JavaScript" src="' . Atk_Config::getGlobal("atkroot") . 'atk/javascript/newwindow.js"></script>';
                 $s_first = false;
             }
-            $res.= '<a href="javascript:NewWindow(\'' . $url . '\', \'atkconsole\', 800, 600, \'yes\', \'yes\')">' . $text . '</a>';
+            $res .= '<a href="javascript:NewWindow(\'' . $url . '\', \'atkconsole\', 800, 600, \'yes\', \'yes\')">' . $text . '</a>';
         } else {
-            $res.= '<a href="' . $url . '">' . $text . '</a>';
+            $res .= '<a href="' . $url . '">' . $text . '</a>';
         }
         return $res;
     }
@@ -190,7 +192,7 @@ class Atk_Debugger
         if (count($params)) {
             $res = "";
             foreach ($params as $key => $value) {
-                $res.='&' . $key . "=" . rawurlencode($value);
+                $res .= '&' . $key . "=" . rawurlencode($value);
             }
             return $res;
         }
@@ -210,14 +212,16 @@ class Atk_Debugger
         $data = &$this->getDebuggerData(false, $_REQUEST['atkstackid']);
         $res = $this->consoleControls() . '<br/><br/>';
         switch ($_REQUEST["action"]) {
-            case "query": $res.= $this->queryDetails($data["queries"], $_REQUEST["query_id"]);
+            case "query":
+                $res .= $this->queryDetails($data["queries"], $_REQUEST["query_id"]);
                 break;
-            case "statement": $res.= $this->statementDetails($data["statements"], $_REQUEST["stmt_id"]);
+            case "statement":
+                $res .= $this->statementDetails($data["statements"], $_REQUEST["stmt_id"]);
                 break;
             default: {
-                    $res.= $this->renderQueryList($data["queries"]);
-                    $res.= $this->renderStatementList($data["statements"]);
-                }
+                $res .= $this->renderQueryList($data["queries"]);
+                $res .= $this->renderStatementList($data["statements"]);
+            }
         }
         $page->addContent($res);
         return $page->render('Console');
@@ -230,7 +234,9 @@ class Atk_Debugger
      */
     public function consoleControls()
     {
-        return '<div id="console"><table width="100%" border="0"><tr><td align="left">ATK Debug Console</td><td align="right">' . $this->consoleLink('Console index', '', array(), false, $_REQUEST['atkstackid']) . ' | <a href="javascript:window.close()">Close console</a></td></tr></table></div>';
+        return '<div id="console"><table width="100%" border="0"><tr><td align="left">ATK Debug Console</td><td align="right">' . $this->consoleLink('Console index',
+            '', array(), false,
+            $_REQUEST['atkstackid']) . ' | <a href="javascript:window.close()">Close console</a></td></tr></table></div>';
     }
 
     /**
@@ -244,23 +250,23 @@ class Atk_Debugger
     {
         $output = "<h1>Query</h1>";
         $query = $queries[$id]["query"];
-        $output.= $this->highlightQuery($query);
+        $output .= $this->highlightQuery($query);
         $db = Atk_Tools::atkGetDb();
         if (strtolower(substr(trim($query), 0, 6)) == "select") {
-            $output.= '<h1>Resultset</h1>';
+            $output .= '<h1>Resultset</h1>';
             $result = $db->getrows($query);
             if (count($result)) {
-                $output.=$this->arrToTable($result, $_REQUEST["full"], $id);
+                $output .= $this->arrToTable($result, $_REQUEST["full"], $id);
             } else {
-                $output.= "Query returned no rows";
+                $output .= "Query returned no rows";
             }
-            $output.= '<h1>Explain plan</h1>';
+            $output .= '<h1>Explain plan</h1>';
             $result = $db->getrows("EXPLAIN " . $query);
-            $output.=$this->arrToTable($result);
+            $output .= $this->arrToTable($result);
         }
         if ($queries[$id]["trace"] != "") {
-            $output.= '<h1>Backtrace</h1>';
-            $output.=$queries[$id]["trace"];
+            $output .= '<h1>Backtrace</h1>';
+            $output .= $queries[$id]["trace"];
         }
         return $output;
     }
@@ -276,11 +282,11 @@ class Atk_Debugger
     {
         $output = "<h1>Debug Statement</h1>";
         $stmt = $stmts[$id]["statement"];
-        $output.= "<b>" . $stmt . "</b>";
+        $output .= "<b>" . $stmt . "</b>";
 
         if ($stmts[$id]["trace"] != "") {
-            $output.= '<h1>Backtrace</h1>';
-            $output.=$stmts[$id]["trace"];
+            $output .= '<h1>Backtrace</h1>';
+            $output .= $stmts[$id]["trace"];
         }
         return $output;
     }
@@ -299,15 +305,16 @@ class Atk_Debugger
             $cols = array_keys($result[0]);
             $data = '<table border="1"><tr>';
             foreach ($cols as $col) {
-                $data.= '<th>' . $col . '</th>';
+                $data .= '<th>' . $col . '</th>';
             }
-            $data.= '</tr>';
+            $data .= '</tr>';
             for ($i = 0, $_i = count($result); $i < $_i && ($i < 10 || $full); $i++) {
-                $data.= '<tr><td>' . implode('</td><td>', $result[$i]) . '</td></tr>';
+                $data .= '<tr><td>' . implode('</td><td>', $result[$i]) . '</td></tr>';
             }
-            $data.= '</table>';
+            $data .= '</table>';
             if ($i != $_i) {
-                $data.= ($_i - $i) . ' more results. ' . $this->consoleLink('Full result', 'query', array('query_id' => $id, 'full' => 1));
+                $data .= ($_i - $i) . ' more results. ' . $this->consoleLink('Full result', 'query',
+                        array('query_id' => $id, 'full' => 1));
             }
             return $data;
         }
@@ -344,17 +351,18 @@ class Atk_Debugger
      * @param int $stackId
      * @return array Array with data
      */
-    public function &getDebuggerData($clean = false, $stackId = NULL)
+    public function &getDebuggerData($clean = false, $stackId = null)
     {
-        if ($stackId == NULL) {
+        if ($stackId == null) {
             $stackId = Atk_SessionManager::atkStackID();
         }
 
         $sessionmanager = Atk_SessionManager::atkGetSessionManager();
         if (is_object($sessionmanager)) {
             $session = &$sessionmanager->getSession();
-            if ($clean)
+            if ($clean) {
                 $session['debugger'] = array();
+            }
             $var = &$session["debugger"][$stackId];
             return $var;
         }
@@ -372,7 +380,7 @@ class Atk_Debugger
     {
         $output = 'Number of queries performed: ' . count($queries);
         if (count($queries)) {
-            $output.= '<table border="1" width="100%"><tr><th>#</th><th>Details</th><th>Query</th></tr>';
+            $output .= '<table border="1" width="100%"><tr><th>#</th><th>Details</th><th>Query</th></tr>';
 
             for ($i = 0, $_i = count($queries); $i < $_i; $i++) {
                 $query = $queries[$i]["query"];
@@ -381,10 +389,10 @@ class Atk_Debugger
                 } else {
                     $detaillink = $this->consoleLink("details", "query", array("query_id" => $i));
                 }
-                $output.= '<tr><td valign="top">' . ($i + 1) . '</td><td>' . $detaillink . '</td><td>' . $this->highlightQuery($query) . '</td></tr>';
+                $output .= '<tr><td valign="top">' . ($i + 1) . '</td><td>' . $detaillink . '</td><td>' . $this->highlightQuery($query) . '</td></tr>';
             }
 
-            $output.= '</table>';
+            $output .= '</table>';
             return $output;
         }
     }
@@ -399,15 +407,15 @@ class Atk_Debugger
     {
         $output = 'Number of debug statements: ' . count($statements);
         if (count($statements)) {
-            $output.= '<table border="1" width="100%"><tr><th>#</th><th>Details</th><th>Statement</th></tr>';
+            $output .= '<table border="1" width="100%"><tr><th>#</th><th>Details</th><th>Statement</th></tr>';
 
             for ($i = 0, $_i = count($statements); $i < $_i; $i++) {
 
                 $detaillink = $this->consoleLink("details", "statement", array("stmt_id" => $i));
-                $output.= '<tr><td valign="top">' . ($i + 1) . '</td><td>' . $detaillink . '</td><td>' . $statements[$i]["statement"] . '</td></tr>';
+                $output .= '<tr><td valign="top">' . ($i + 1) . '</td><td>' . $detaillink . '</td><td>' . $statements[$i]["statement"] . '</td></tr>';
             }
 
-            $output.= '</table>';
+            $output .= '</table>';
             return $output;
         }
     }
@@ -425,7 +433,8 @@ class Atk_Debugger
         if (php_sapi_name() == 'cli') {
             $output = "error: " . implode("\nerror: ", $g_error_msg) . "\n";
         } else {
-            $output = '<br><div style="font-family: monospace; font-size: 11px; color: #FF0000" align="left">error: ' . implode("<br>\nerror: ", $g_error_msg) . '</div>';
+            $output = '<br><div style="font-family: monospace; font-size: 11px; color: #FF0000" align="left">error: ' . implode("<br>\nerror: ",
+                    $g_error_msg) . '</div>';
         }
 
         return $output;
@@ -445,24 +454,25 @@ class Atk_Debugger
         $time = strftime("%H:%M:%S", $g_startTime);
         $duration = sprintf("%02.05f", Atk_Debugger::getMicroTime() - $g_startTime);
         $usage = function_exists("memory_get_usage") ? sprintf("%02.02f", (memory_get_usage() / 1024 / 1024))
-                : "? ";
+            : "? ";
         $method = $_SERVER['REQUEST_METHOD'];
         $protocol = empty($_SERVER['HTTPS']) || strtolower($_SERVER['HTTPS']) == 'off'
-                ? 'http' : 'https';
+            ? 'http' : 'https';
         $url = $protocol . '://' . $_SERVER['HTTP_HOST'] . ($_SERVER['SERVER_PORT'] != 80
-                    ? ':' . $_SERVER['SERVER_PORT'] : '') . $_SERVER['REQUEST_URI'];
+                ? ':' . $_SERVER['SERVER_PORT'] : '') . $_SERVER['REQUEST_URI'];
 
         $label = "[{$time}h / {$duration}s / {$usage}MB / " . self::$s_queryCount . " Queries / " . self::$s_systemQueryCount . " System Queries] $method $url";
 
         $output = '
         <div class="atkDebugBlock' . (count($g_error_msg) > 0 ? " atkDebugBlockContainsErrors"
-                    : "") . ' atkDebug' . ($expanded ? 'Expanded' : 'Collapsed') . '">
+                : "") . ' atkDebug' . ($expanded ? 'Expanded' : 'Collapsed') . '">
           <div class="atkDebugToggle" onclick="ATK.Debug.toggle(this)">
            ' . $label . '
           </div>
           <div class="atkDebugData">
-            ' . (count($g_debug_msg) > 0 ? '<div class="atkDebugLine">' . implode($g_debug_msg, '</div><div class="atkDebugLine">') . '</div>'
-                    : '') . '
+            ' . (count($g_debug_msg) > 0 ? '<div class="atkDebugLine">' . implode($g_debug_msg,
+                    '</div><div class="atkDebugLine">') . '</div>'
+                : '') . '
           </div>
         </div>';
 
@@ -471,7 +481,7 @@ class Atk_Debugger
 
     /**
      * Set redirect URL.
-     * 
+     *
      * @param string $url The redirect url
      * @param bool $force Force to set this redirect url
      */
@@ -489,8 +499,9 @@ class Atk_Debugger
      */
     public function renderRedirectLink()
     {
-        if ($this->m_redirectUrl == null)
+        if ($this->m_redirectUrl == null) {
             return '';
+        }
 
         $output = '
         <div class="atkDebugRedirect">
@@ -515,11 +526,11 @@ class Atk_Debugger
         // only display error messages
         if (count($g_error_msg) > 0 && Atk_Config::getGlobal('display_errors') && Atk_Config::getGlobal('debug') <= 0 && !$isPartial) {
             return $this->renderPlainErrorMessages();
-        }
-
-        // no debug messages or error messages to output
-        else if (Atk_Config::getGlobal('debug') <= 0 || (count($g_debug_msg) == 0 && count($g_error_msg) == 0)) {
-            return '';
+        } // no debug messages or error messages to output
+        else {
+            if (Atk_Config::getGlobal('debug') <= 0 || (count($g_debug_msg) == 0 && count($g_error_msg) == 0)) {
+                return '';
+            }
         }
 
         $expanded = !$isPartial;
@@ -565,11 +576,11 @@ class Atk_Debugger
     public static function getMicroTime()
     {
         list($usec, $sec) = explode(" ", microtime());
-        return ((float) $usec + (float) $sec);
+        return ((float)$usec + (float)$sec);
     }
 
     /**
-     * Gets the elapsed time 
+     * Gets the elapsed time
      *
      * @return string The elapsed time
      */

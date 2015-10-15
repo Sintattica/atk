@@ -48,8 +48,9 @@ class Atk_Zip
         $this->m_zipmode = Atk_Config::getGlobal("zipmode", "auto");
         $this->m_zip_bin = Atk_Config::getGlobal("ziplocation", "zip");
         $this->m_unzip_bin = Atk_Config::getGlobal("unziplocation", "unzip");
-        if (!$this->test())
+        if (!$this->test()) {
             Atk_Tools::atkerror("atkZip: Error while testing");
+        }
     }
 
     /**
@@ -61,12 +62,15 @@ class Atk_Zip
      */
     function getInfozipCommand($type, $params)
     {
-        if ($type == ATKZIP_ZIP)
+        if ($type == ATKZIP_ZIP) {
             $command = $this->m_zip_bin;
-        if ($type == ATKZIP_UNZIP)
+        }
+        if ($type == ATKZIP_UNZIP) {
             $command = $this->m_unzip_bin;
-        if ($params !== "")
+        }
+        if ($params !== "") {
             $command .= " " . $params;
+        }
         return $command;
     }
 
@@ -82,7 +86,7 @@ class Atk_Zip
         $command = $this->getInfozipCommand($type, $params);
         $output = array();
         Atk_Tools::atkdebug("atkZip->runInfozipCommand: Executing command: $command");
-        $returncode = NULL; //var for catching returncode fro exec.
+        $returncode = null; //var for catching returncode fro exec.
         exec($command, $output, $returncode);
         Atk_Tools::atkdebug("atkZip->runInfozipCommand: Return code was: " . $returncode);
         Atk_Tools::atk_var_dump($output, "atkZip->runInfozipCommand: Console output");
@@ -148,8 +152,9 @@ class Atk_Zip
      */
     function test()
     {
-        if ($this->m_testok)
+        if ($this->m_testok) {
             return true;
+        }
 
         Atk_Tools::atkdebug("atkZip->test: Testing systems zip abilities");
         Atk_Tools::atkdebug("atkZip->test: Zipmode = " . $this->m_zipmode);
@@ -162,11 +167,12 @@ class Atk_Zip
             $zipextensionloaded = @extension_loaded("zip");
             Atk_Tools::atkdebug("atkZip->test: PHP Version = " . $phpversion);
             Atk_Tools::atkdebug("atkZip->test: extension_loaded('zip') = " . ($zipextensionloaded
-                        ? "true" : "false"));
+                    ? "true" : "false"));
             if (version_compare($phpversion, '5.2') > 0 && $zipextensionloaded) {
                 Atk_Tools::atkdebug("atkZip->test: PHP 5.2 or newer and the ZIP extension are present, TEST SUCCESFULL!");
-                if ($this->m_zipmode == "auto")
+                if ($this->m_zipmode == "auto") {
                     $this->m_zipmode = "internal";
+                }
                 $this->m_testok = true;
                 return true;
             }
@@ -180,8 +186,9 @@ class Atk_Zip
             Atk_Tools::atkdebug("atkZip->test: php 5.2 or zip extension not found, now testing for infozip binaries");
             if ((strlen($zipoutput) > 0) && (strlen($unzipoutput) > 0)) {
                 Atk_Tools::atkdebug("atkZip->test: zip and unzip command responded, TEST SUCCESFULL!");
-                if ($this->m_zipmode == "auto")
+                if ($this->m_zipmode == "auto") {
                     $this->m_zipmode = "infozip";
+                }
                 $this->m_testok = true;
                 return true;
             }
@@ -202,13 +209,14 @@ class Atk_Zip
      */
     function extract($archive, $destination, $entries = null)
     {
-        if (!$this->test())
+        if (!$this->test()) {
             Atk_Tools::atkerror("atkZip->extract: Could not extract, system is not capable of extracting from a ZIP archive");
+        }
 
         if ($this->m_zipmode == "internal") {
             $zip = new ZipArchive;
-            if ($zip->open($archive) === TRUE) {
-                if ($entries === NULL) {
+            if ($zip->open($archive) === true) {
+                if ($entries === null) {
                     $zip->extractTo($destination);
                 } else {
                     $zip->extractTo($destination, $entries);
@@ -228,7 +236,8 @@ class Atk_Zip
             if ($returncode <= 0) {
                 return true;
             } else {
-                Atk_Tools::atkerror(sprintf("atkZip->extract: Infozip returned an error: %s (return code %d)", $this->getInfozipError(ATKZIP_UNZIP, $returncode), $returncode));
+                Atk_Tools::atkerror(sprintf("atkZip->extract: Infozip returned an error: %s (return code %d)",
+                    $this->getInfozipError(ATKZIP_UNZIP, $returncode), $returncode));
                 return false;
             }
         }
@@ -246,12 +255,13 @@ class Atk_Zip
      */
     function add($archive, $filename, $filepath = "")
     {
-        if (!$this->test())
+        if (!$this->test()) {
             Atk_Tools::atkerror("atkZip->add: Could not add, system is not capable of add to a ZIP archive");
+        }
 
         if ($this->m_zipmode == "internal") {
             $zip = new ZipArchive;
-            if ($zip->open($archive) === TRUE) {
+            if ($zip->open($archive) === true) {
                 Atk_Tools::atkdebug("AtkZip::add|adding " . $filepath . basename($filename) . " to $archive");
                 $zip->addFile($filename, $filepath . basename($filename));
                 $zip->close();
@@ -268,7 +278,8 @@ class Atk_Zip
             if ($returncode <= 0) {
                 return true;
             } else {
-                Atk_Tools::atkerror(sprintf("atkZip->add: Infozip returned an error: %s (return code %d)", $this->getInfozipError(ATKZIP_ZIP, $returncode), $returncode));
+                Atk_Tools::atkerror(sprintf("atkZip->add: Infozip returned an error: %s (return code %d)",
+                    $this->getInfozipError(ATKZIP_ZIP, $returncode), $returncode));
                 return false;
             }
         }

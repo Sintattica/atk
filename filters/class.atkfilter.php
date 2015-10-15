@@ -2,7 +2,7 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * @package atk
@@ -17,7 +17,7 @@
 
 /**
  * Abstract base class for atkFilters.
- * 
+ *
  * @author Ivo Jansch <ivo@ibuildings.nl>
  * @author Kees van Dieren <kees@ibuildings.nl>
  * @package atk
@@ -60,7 +60,7 @@ class Atk_Filter extends Atk_Attribute
      */
     function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
     {
-        
+
     }
 
 }

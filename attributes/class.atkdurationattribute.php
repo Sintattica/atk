@@ -48,19 +48,21 @@ class Atk_DurationAttribute extends Atk_Attribute
         $hms = substr($resolution, -1);
         $resolution = substr($resolution, 0, -1);
 
-        if (strtoupper($hms) == "H")
+        if (strtoupper($hms) == "H") {
             $factor = 60;
-        else
+        } else {
             $factor = 1;
+        }
 
         $this->m_resolution_min = $resolution * $factor;
 
         $hms = substr($maxtime, -1);
         $maxtime = substr($maxtime, 0, -1);
-        if (strtoupper($hms) == "H")
+        if (strtoupper($hms) == "H") {
             $factor = 60;
-        else
+        } else {
             $factor = 1;
+        }
 
         $this->m_maxtime_min = $maxtime * $factor;
     }
@@ -104,9 +106,10 @@ class Atk_DurationAttribute extends Atk_Attribute
                 $this->registerKeyListener($id . '_hours', KB_CTRLCURSOR | KB_LEFTRIGHT);
                 for ($h = 0; $h <= $this->m_maxtime_min / 60;) {
                     $result .= '<option value="' . $h . '" ';
-                    if ($curhours == $h)
-                        $result.= "selected";
-                    $result .='>' . $h . ' ' . Atk_Tools::atktext('hours', 'atk');
+                    if ($curhours == $h) {
+                        $result .= "selected";
+                    }
+                    $result .= '>' . $h . ' ' . Atk_Tools::atktext('hours', 'atk');
                     if ($this->m_resolution_min <= 60) {
                         $h++;
                     } else {
@@ -121,9 +124,10 @@ class Atk_DurationAttribute extends Atk_Attribute
                 $result .= '&nbsp;<select id="' . $id . '_minutes" name="' . $fieldprefix . $this->formName() . '[minutes]" class="form-control">';
                 for ($m = 0; $m < 60 || ($this->m_maxtime_min < 60 && $m < $this->m_maxtime_min);) {
                     $result .= '<option value="' . $m . '" ';
-                    if ($curminutes == $m)
-                        $result.= "selected";
-                    $result .='>' . $m . ' ' . Atk_Tools::atktext('minutes', 'atk');
+                    if ($curminutes == $m) {
+                        $result .= "selected";
+                    }
+                    $result .= '>' . $m . ' ' . Atk_Tools::atktext('minutes', 'atk');
                     if ($this->m_resolution_min <= 1) {
                         $m++;
                     } else {
@@ -157,7 +161,7 @@ class Atk_DurationAttribute extends Atk_Attribute
      * The regular atkAttribute uses PHP's nl2br() and htmlspecialchars()
      * methods to prepare a value for display, unless $mode is "cvs".
      *
-     * @param array $rec   The record that holds the value for this attribute
+     * @param array $rec The record that holds the value for this attribute
      * @param String $mode The display mode ("view" for viewpages, or "list"
      *                     for displaying in recordlists, "edit" for
      *                     displaying in editscreens, "add" for displaying in
@@ -202,11 +206,11 @@ class Atk_DurationAttribute extends Atk_Attribute
         if (strpos($value, ':') === false) {
             // decimal format
             $tmp = explode('.', $value);
-            if (strlen($tmp[1]) == 1)
+            if (strlen($tmp[1]) == 1) {
                 $tmp[1] = $tmp[1] * 10;
+            }
             return $tmp[0] * 60 + $tmp[1] * (60 / 100);
-        }
-        else {
+        } else {
             // hh:mm format
             $tmp = explode(':', $value);
             return $tmp[0] * 60 + $tmp[1];

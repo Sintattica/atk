@@ -2,7 +2,7 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * @package atk
@@ -20,7 +20,7 @@
  *
  * The atkloadscript plugin registers a javascript code in the current page
  * to be used in the onLoad of the body.
- * 
+ *
  * Params:
  * 0/code The javascript code to load.
  *

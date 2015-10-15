@@ -16,12 +16,12 @@
  */
 
 /**
- * Wrapper for turning any attribute into a multilanguage enabled 
+ * Wrapper for turning any attribute into a multilanguage enabled
  * attribute.
  *
- * This attribute implements the 'decorator' pattern. It takes an 
+ * This attribute implements the 'decorator' pattern. It takes an
  * attribute as constructor parameter, and turns that attribute into
- * an internationalised attribute, compatible with the existing 
+ * an internationalised attribute, compatible with the existing
  * atkMl*Attributes.
  *
  * <i>Example usages</i>
@@ -60,7 +60,7 @@ class Atk_MlWrapper extends Atk_Attribute
 
     /**
      * Return possible languages
-     * 
+     *
      * @return array with supported languages
      */
     function getLanguages()
@@ -140,7 +140,7 @@ class Atk_MlWrapper extends Atk_Attribute
 
     /**
      * Register a piece of script to execute upon language change
-     * 
+     *
      * @return string with script code
      */
     function getMlSwitchCode()
@@ -163,7 +163,7 @@ class Atk_MlWrapper extends Atk_Attribute
         $output = "";
         foreach (array_keys($this->m_childList) as $lng) {
             $attr = &$this->m_childList[$lng];
-            $output.= $attr->hide($this->getRecordForLng($lng), $fieldprefix);
+            $output .= $attr->hide($this->getRecordForLng($lng), $fieldprefix);
         }
 
         return $output;
@@ -198,11 +198,11 @@ class Atk_MlWrapper extends Atk_Attribute
      * This method is called by the node if it wants the data needed to create
      * an edit form.
      *
-     * @param String $mode     the edit mode ("add" or "edit")
-     * @param array  $arr      pointer to the edit array
-     * @param array  $defaults pointer to the default values array
-     * @param array  $error    pointer to the error array
-     * @param String $fieldprefix   the fieldprefix
+     * @param String $mode the edit mode ("add" or "edit")
+     * @param array $arr pointer to the edit array
+     * @param array $defaults pointer to the default values array
+     * @param array $error pointer to the error array
+     * @param String $fieldprefix the fieldprefix
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
@@ -242,8 +242,9 @@ class Atk_MlWrapper extends Atk_Attribute
      */
     function getRecordForLng($masterrecord, $lng)
     {
-        if (empty($masterrecord))
+        if (empty($masterrecord)) {
             return array();
+        }
         return array($this->m_childList[$lng]->m_name => $masterrecord[$this->fieldName()][$lng]);
     }
 
@@ -458,11 +459,11 @@ class Atk_MlWrapper extends Atk_Attribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param Atk_Query $query     The query object where the search condition should be placed on
-     * @param String $table       The name of the table in which this attribute
+     * @param Atk_Query $query The query object where the search condition should be placed on
+     * @param String $table The name of the table in which this attribute
      *                              is stored
-     * @param mixed $value        The value the user has entered in the searchbox
-     * @param String $searchmode  The searchmode to use. This can be any one
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param String $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.

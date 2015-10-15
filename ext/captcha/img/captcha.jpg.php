@@ -1,23 +1,27 @@
 <?php
 
-  /**
-   * Captcha wrapper for displaying a captcha image and storing the displayed code
-   * in the user session
-   */
-  
-  // captcha directory
-  $captchaDir = Atk_Config::getGlobal("atkroot")."atk/ext/captcha/";
+/**
+ * Captcha wrapper for displaying a captcha image and storing the displayed code
+ * in the user session
+ */
 
-  // include captcha class 
-  require($captchaDir."php-captcha.inc.php");
-  //require("php-captcha.inc.php");
+// captcha directory
+$captchaDir = Atk_Config::getGlobal("atkroot") . "atk/ext/captcha/";
 
-  // define fonts 
-  $aFonts = array($captchaDir . 'captcha_fonts/VeraBd.ttf', $captchaDir. 'captcha_fonts/VeraIt.ttf', $captchaDir . 'captcha_fonts/Vera.ttf'); 
+// include captcha class
+require($captchaDir . "php-captcha.inc.php");
+//require("php-captcha.inc.php");
 
-  // create new image 
-  $oPhpCaptcha = new PhpCaptcha($aFonts, 200, 50); 
-  $oPhpCaptcha->SetBackgroundImage($captchaDir . 'img/captcha.jpg'); 
-  
-  $oPhpCaptcha->Create();
+// define fonts
+$aFonts = array(
+    $captchaDir . 'captcha_fonts/VeraBd.ttf',
+    $captchaDir . 'captcha_fonts/VeraIt.ttf',
+    $captchaDir . 'captcha_fonts/Vera.ttf'
+);
+
+// create new image
+$oPhpCaptcha = new PhpCaptcha($aFonts, 200, 50);
+$oPhpCaptcha->SetBackgroundImage($captchaDir . 'img/captcha.jpg');
+
+$oPhpCaptcha->Create();
 ?>

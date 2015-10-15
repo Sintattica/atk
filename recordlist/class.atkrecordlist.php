@@ -34,10 +34,10 @@ define("RL_EXT_SORT", 128); // extended sort feature
  */
 class Atk_RecordList
 {
-    var $m_node = NULL;
+    var $m_node = null;
     var $m_flags = 0;
     var $m_actionloader;
-    var $m_masternode = NULL;
+    var $m_masternode = null;
     var $m_hasActionColumn = 0;
     var $m_actionSessionStatus = SESSION_NESTED;
 
@@ -84,7 +84,7 @@ class Atk_RecordList
         $result |= Atk_Tools::hasFlag($flags, NF_LOCK) ? RL_LOCK : 0;
         $result |= Atk_Tools::hasFlag($flags, NF_NO_SEARCH) ? RL_NO_SEARCH : 0;
         $result |= Atk_Tools::hasFlag($flags, NF_NO_EXTENDED_SEARCH) ? RL_NO_EXTENDED_SEARCH
-                : 0;
+            : 0;
         $result |= Atk_Tools::hasFlag($flags, NF_EXT_SORT) ? RL_EXT_SORT : 0;
         return $result;
     }
@@ -92,21 +92,31 @@ class Atk_RecordList
     /**
      * Render the recordlist
      *
-     * @param Atk_Node $node         the node
-     * @param Array   $recordset    the list of records
-     * @param Array   $actions      the default actions array
-     * @param Integer $flags        recordlist flags (see the top of this file)
-     * @param Array   $suppressList fields we don't display
-     * @param String  $formName     if embedded the form name in which we are embedded
-     * @param Array   $navigation   Navigation links
-     * @param String  $embedprefix  The prefix for embeded fields
+     * @param Atk_Node $node the node
+     * @param Array $recordset the list of records
+     * @param Array $actions the default actions array
+     * @param Integer $flags recordlist flags (see the top of this file)
+     * @param Array $suppressList fields we don't display
+     * @param String $formName if embedded the form name in which we are embedded
+     * @param Array $navigation Navigation links
+     * @param String $embedprefix The prefix for embeded fields
      * @return String The rendered recordlist
      */
-    function render(&$node, $recordset, $actions, $flags = 0, $suppressList = "", $formName = "", $navigation = array(), $embedprefix = "")
-    {
-        $data = $this->getRecordlistData($node, $recordset, $actions, $flags, $suppressList, $formName, $navigation, $embedprefix);
+    function render(
+        &$node,
+        $recordset,
+        $actions,
+        $flags = 0,
+        $suppressList = "",
+        $formName = "",
+        $navigation = array(),
+        $embedprefix = ""
+    ) {
+        $data = $this->getRecordlistData($node, $recordset, $actions, $flags, $suppressList, $formName, $navigation,
+            $embedprefix);
         $ui = &$this->m_node->getUi();
-        $res = $ui->render($node->getTemplate("admin"), array("vorientation" => $data["vorientation"],
+        $res = $ui->render($node->getTemplate("admin"), array(
+            "vorientation" => $data["vorientation"],
             "rows" => $data["rows"],
             "header" => $data["header"],
             "search" => $data["search"],
@@ -119,24 +129,33 @@ class Atk_RecordList
             "liststart" => $data["liststart"],
             "listend" => $data["listend"],
             "listid" => $data["listid"],
-            "mra" => $data["mra"]), $this->m_node->m_module);
+            "mra" => $data["mra"]
+        ), $this->m_node->m_module);
         return $res;
     }
 
     /**
      * Get records for a recordlist without actually rendering the recordlist.
-     * @param Atk_Node $node         the node
-     * @param Array   $recordset    the list of records
-     * @param Array   $actions      the default actions array
-     * @param Integer $flags        recordlist flags (see the top of this file)
-     * @param Array   $suppressList fields we don't display
-     * @param String  $formName     if embedded the form name in which we are embedded
-     * @param Array   $navigation   Navigation links
-     * @param String  $embedprefix  The prefix for embeded fields
+     * @param Atk_Node $node the node
+     * @param Array $recordset the list of records
+     * @param Array $actions the default actions array
+     * @param Integer $flags recordlist flags (see the top of this file)
+     * @param Array $suppressList fields we don't display
+     * @param String $formName if embedded the form name in which we are embedded
+     * @param Array $navigation Navigation links
+     * @param String $embedprefix The prefix for embeded fields
      * @return String The rendered recordlist
      */
-    function getRecordlistData(&$node, $recordset, $actions, $flags = 0, $suppressList = "", $formName = "", $navigation = array(), $embedprefix = "")
-    {
+    function getRecordlistData(
+        &$node,
+        $recordset,
+        $actions,
+        $flags = 0,
+        $suppressList = "",
+        $formName = "",
+        $navigation = array(),
+        $embedprefix = ""
+    ) {
         $this->setNode($node);
         $this->m_flags = $flags;
 
@@ -154,20 +173,26 @@ class Atk_RecordList
         $list = $this->listArray($recordset, $flags, "", $actions, $suppressList, $embedprefix);
 
         /* Check if some flags are still valid or not... */
-        if (Atk_Tools::hasFlag($flags, RL_MRA) && (count($list["mra"]) == 0 || count($list["rows"]) == 0))
+        if (Atk_Tools::hasFlag($flags, RL_MRA) && (count($list["mra"]) == 0 || count($list["rows"]) == 0)) {
             $flags ^= RL_MRA;
-        if (!Atk_Tools::hasFlag($flags, RL_NO_SEARCH) && count($list["search"]) == 0)
+        }
+        if (!Atk_Tools::hasFlag($flags, RL_NO_SEARCH) && count($list["search"]) == 0) {
             $flags |= RL_NO_SEARCH;
-        if (Atk_Tools::hasFlag($flags, RL_MRPA) && (count($this->m_node->m_priority_actions) == 0 || count($list["rows"]) == 0))
+        }
+        if (Atk_Tools::hasFlag($flags,
+                RL_MRPA) && (count($this->m_node->m_priority_actions) == 0 || count($list["rows"]) == 0)
+        ) {
             $flags ^= RL_MRPA;
-        elseif (Atk_Tools::hasFlag($flags, RL_MRPA)) {
-            $flags = ($flags | RL_MRA | RL_MRPA ) ^ RL_MRA;
-            if ($this->m_node->m_priority_max == 0)
+        } elseif (Atk_Tools::hasFlag($flags, RL_MRPA)) {
+            $flags = ($flags | RL_MRA | RL_MRPA) ^ RL_MRA;
+            if ($this->m_node->m_priority_max == 0) {
                 $this->m_node->m_priority_max = $this->m_node->m_priority_min + count($list["rows"]) - 1;
+            }
         }
 
         $orientation = Atk_Config::getGlobal('recordlist_orientation', $theme->getAttribute("recordlist_orientation"));
-        $vorientation = trim(Atk_Config::getGlobal('recordlist_vorientation', $theme->getAttribute("recordlist_vorientation")));
+        $vorientation = trim(Atk_Config::getGlobal('recordlist_vorientation',
+            $theme->getAttribute("recordlist_vorientation")));
 
         $ui = &$this->m_node->getUi();
 
@@ -250,8 +275,9 @@ class Atk_RecordList
                     '<input type="hidden" name="atkstartat" value="0">'; // reset atkstartat to first page after a new sort
 
                 foreach (array_keys($list["heading"]) as $key) {
-                    if (isset($list["sort"][$key]))
+                    if (isset($list["sort"][$key])) {
                         $sortcols[] = array("content" => $list["sort"][$key]);
+                    }
                 }
 
                 $sortend = '</form>';
@@ -270,14 +296,17 @@ class Atk_RecordList
             $searchend = "";
             if (!Atk_Tools::hasFlag($flags, RL_NO_SEARCH)) {
                 $button = '<input type="submit" class="btn btn-default btn_search" value="' . Atk_Tools::atktext("search") . '">';
-                if (!Atk_Tools::hasFlag($flags, RL_NO_EXTENDED_SEARCH) && !$this->m_node->hasFlag(NF_NO_EXTENDED_SEARCH)) {
-                    $button .= '<br>' . Atk_Tools::href(Atk_Tools::atkSelf() . "?atknodetype=" . $this->getMasterNodeType() . "&atkaction=" . $node->getExtendedSearchAction(), "(" . Atk_Tools::atktext("search_extended") . ")", SESSION_NESTED);
+                if (!Atk_Tools::hasFlag($flags,
+                        RL_NO_EXTENDED_SEARCH) && !$this->m_node->hasFlag(NF_NO_EXTENDED_SEARCH)
+                ) {
+                    $button .= '<br>' . Atk_Tools::href(Atk_Tools::atkSelf() . "?atknodetype=" . $this->getMasterNodeType() . "&atkaction=" . $node->getExtendedSearchAction(),
+                            "(" . Atk_Tools::atktext("search_extended") . ")", SESSION_NESTED);
                 }
 
                 $searchstart = '<a name="searchform"></a>';
                 if (!Atk_Tools::hasFlag($this->m_flags, RL_EMBED)) {
-                    $searchstart.='<form action="' . Atk_Tools::atkSelf() . '?' . SID . '" method="get">' . Atk_Tools::session_form();
-                    $searchstart.= '<input type="hidden" name="atknodetype" value="' . $this->getMasterNodeType() . '">' .
+                    $searchstart .= '<form action="' . Atk_Tools::atkSelf() . '?' . SID . '" method="get">' . Atk_Tools::session_form();
+                    $searchstart .= '<input type="hidden" name="atknodetype" value="' . $this->getMasterNodeType() . '">' .
                         '<input type="hidden" name="atkaction" value="' . $this->m_node->m_action . '">' . '<input type="hidden" name="atksmartsearch" value="clear">' .
                         '<input type="hidden" name="atkstartat" value="0">'; // reset atkstartat to first page after a new search;
                 }
@@ -304,8 +333,9 @@ class Atk_RecordList
                 }
 
                 $searchend = "";
-                if (!Atk_Tools::hasFlag($this->m_flags, RL_EMBED))
+                if (!Atk_Tools::hasFlag($this->m_flags, RL_EMBED)) {
                     $searchend = '</form>';
+                }
             }
 
             /*             * **************************************** */
@@ -317,8 +347,9 @@ class Atk_RecordList
                 $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/formselect.js");
 
                 if (!Atk_Tools::hasFlag($flags, RL_EMBED)) {
-                    if (empty($formName))
+                    if (empty($formName)) {
                         $formName = $listName;
+                    }
                     $liststart = '<form id="' . $formName . '" name="' . $formName . '" method="post">' .
                         Atk_Tools::session_form(SESSION_DEFAULT) .
                         '<input type="hidden" name="atknodetype" value="' . $this->getMasterNodeType() . '">' .
@@ -327,7 +358,7 @@ class Atk_RecordList
                 }
 
                 if (Atk_Tools::hasFlag($flags, RL_MRA)) {
-                    $liststart.= '<script language="javascript" type="text/javascript">var ' . $listName . ' = new Object();</script>';
+                    $liststart .= '<script language="javascript" type="text/javascript">var ' . $listName . ' = new Object();</script>';
                 }
             }
 
@@ -339,15 +370,16 @@ class Atk_RecordList
             $keys = array_keys($actions);
             $actionurl = (count($actions) > 0) ? $actions[$keys[0]] : '';
             $actionloader = "rl_a['" . $listName . "'] = {};";
-            $actionloader.= "\nrl_a['" . $listName . "']['base'] = '" . Atk_Tools::session_vars($this->m_actionSessionStatus, 1, $actionurl) . "';";
-            $actionloader.= "\nrl_a['" . $listName . "']['embed'] = " . (Atk_Tools::hasFlag($flags, RL_EMBED)
-                        ? 'true' : 'false') . ";";
+            $actionloader .= "\nrl_a['" . $listName . "']['base'] = '" . Atk_Tools::session_vars($this->m_actionSessionStatus,
+                    1, $actionurl) . "';";
+            $actionloader .= "\nrl_a['" . $listName . "']['embed'] = " . (Atk_Tools::hasFlag($flags, RL_EMBED)
+                    ? 'true' : 'false') . ";";
 
             if (isset($navigation["next"]) && isset($navigation["next"]["url"])) {
-                $actionloader.="\nrl_a['" . $listName . "']['next'] = '" . $navigation["next"]["url"] . "';";
+                $actionloader .= "\nrl_a['" . $listName . "']['next'] = '" . $navigation["next"]["url"] . "';";
             }
             if (isset($navigation["previous"]) && isset($navigation["previous"]["url"])) {
-                $actionloader.="\nrl_a['" . $listName . "']['previous'] = '" . $navigation["previous"]["url"] . "';";
+                $actionloader .= "\nrl_a['" . $listName . "']['previous'] = '" . $navigation["previous"]["url"] . "';";
             }
 
             for ($i = 0, $_i = count($list["rows"]); $i < $_i; $i++) {
@@ -363,8 +395,9 @@ class Atk_RecordList
                 $bgh = $defaulthighlight;
                 if (method_exists($this->m_node, $method)) {
                     $bgn = $this->m_node->$method($recordset[$i], $i);
-                    if (is_array($bgn))
+                    if (is_array($bgn)) {
                         list($bgn, $bgh) = $bgn;
+                    }
                 }
 
 
@@ -379,80 +412,94 @@ class Atk_RecordList
                 if (Atk_Tools::hasFlag($flags, RL_MRPA)) {
                     $select = '<select name="' . $listName . '_atkselector[]">' .
                         '<option value="' . rawurlencode($list["rows"][$i]["selector"]) . '"></option>';
-                    for ($j = $this->m_node->m_priority_min; $j <= $this->m_node->m_priority_max; $j++)
+                    for ($j = $this->m_node->m_priority_min; $j <= $this->m_node->m_priority_max; $j++) {
                         $select .= '<option value="' . $j . '">' . $j . '</option>';
+                    }
                     $select .= '</select>';
                     $record["cols"][] = array("content" => $select, "type" => "mrpa");
-                }
-
-                /* multi-record-actions -> checkbox */ elseif (Atk_Tools::hasFlag($flags, RL_MRA)) {
-                    if (count($list["rows"][$i]["mra"]) > 0)
+                } /* multi-record-actions -> checkbox */ elseif (Atk_Tools::hasFlag($flags, RL_MRA)) {
+                    if (count($list["rows"][$i]["mra"]) > 0) {
                         $record["cols"][] = array(
                             "content" => '<input type="checkbox" name="' . $listName . '_atkselector[]" value="' . htmlentities($list["rows"][$i]["selector"]) . '" class="atkcheckbox" onclick="if (this.disabled) this.checked = false">' .
-                            '<script language="javascript"  type="text/javascript">' . $listName . '["' . htmlentities($list["rows"][$i]["selector"]) . '"] = new Array("' . implode($list["rows"][$i]["mra"], '","') . '");</script>',
-                            "type" => "mra");
-                    else
+                                '<script language="javascript"  type="text/javascript">' . $listName . '["' . htmlentities($list["rows"][$i]["selector"]) . '"] = new Array("' . implode($list["rows"][$i]["mra"],
+                                    '","') . '");</script>',
+                            "type" => "mra"
+                        );
+                    } else {
                         $record["cols"][] = array("content" => "");
+                    }
                 }
 
                 /* locked? */
                 if (Atk_Tools::hasFlag($flags, RL_LOCK)) {
                     if (is_array($list["rows"][$i]["lock"])) {
                         $alt = $list["rows"][$i]["lock"]["user_id"] . " / " . $list["rows"][$i]["lock"]["user_ip"];
-                        $record["cols"][] = array("content" => '<img src="' . Atk_Config::getGlobal("atkroot") . 'atk/images/lock.gif" alt="' . $alt . '" title="' . $alt . '" border="0">', "type" => "lock");
-                    } else
+                        $record["cols"][] = array(
+                            "content" => '<img src="' . Atk_Config::getGlobal("atkroot") . 'atk/images/lock.gif" alt="' . $alt . '" title="' . $alt . '" border="0">',
+                            "type" => "lock"
+                        );
+                    } else {
                         $record["cols"][] = array("content" => "");
+                    }
                 }
 
                 $str_actions = "<span class=\"actions\">";
-                $actionloader.="\nrl_a['" . $listName . "'][" . $i . "] = {};";
-                $icons = (Atk_Config::getGlobal('recordlist_icons', $theme->getAttribute("recordlist_icons")) === false ||
-                    Atk_Config::getGlobal('recordlist_icons', $theme->getAttribute("recordlist_icons")) === 'false'
-                            ? false : true);
+                $actionloader .= "\nrl_a['" . $listName . "'][" . $i . "] = {};";
+                $icons = (Atk_Config::getGlobal('recordlist_icons',
+                    $theme->getAttribute("recordlist_icons")) === false ||
+                Atk_Config::getGlobal('recordlist_icons', $theme->getAttribute("recordlist_icons")) === 'false'
+                    ? false : true);
 
                 foreach ($list["rows"][$i]["actions"] as $name => $url) {
                     if (substr($url, 0, 11) == 'javascript:') {
                         $call = substr($url, 11);
-                        $actionloader.="\nrl_a['{$listName}'][{$i}]['{$name}'] = function() { $call; };";
+                        $actionloader .= "\nrl_a['{$listName}'][{$i}]['{$name}'] = function() { $call; };";
                     } else {
-                        $actionloader.="\nrl_a['{$listName}'][{$i}]['{$name}'] = '$url';";
+                        $actionloader .= "\nrl_a['{$listName}'][{$i}]['{$name}'] = '$url';";
                     }
 
                     $link = $name;
 
                     if ($icons == true) {
                         $icon = $theme->iconPath(strtolower($name), "recordlist", $this->m_node->m_module);
-                        $link = sprintf('<img class="recordlist" border="0" src="%1$s" alt="%2$s" title="%2$s">', $icon, Atk_Tools::atktext($name, $this->m_node->m_module, $this->m_node->m_type));
+                        $link = sprintf('<img class="recordlist" border="0" src="%1$s" alt="%2$s" title="%2$s">', $icon,
+                            Atk_Tools::atktext($name, $this->m_node->m_module, $this->m_node->m_type));
                     } else {
                         $link = Atk_Tools::atktext($name, $this->m_node->m_module, $this->m_node->m_type);
                     }
 
                     $confirmtext = "false";
-                    if (Atk_Config::getGlobal("recordlist_javascript_delete") && $name == "delete")
+                    if (Atk_Config::getGlobal("recordlist_javascript_delete") && $name == "delete") {
                         $confirmtext = "'" . $this->m_node->confirmActionText($name) . "'";
-                    $str_actions.='<a href="' . "javascript:rl_do('$listName',$i,'$name',$confirmtext);" . '">' . $link . '</a>&nbsp;';
+                    }
+                    $str_actions .= '<a href="' . "javascript:rl_do('$listName',$i,'$name',$confirmtext);" . '">' . $link . '</a>&nbsp;';
                 }
 
-                $str_actions.="</span>";
+                $str_actions .= "</span>";
                 /* actions (left) */
                 if ($orientation == "left" || $orientation == "both") {
                     if (!empty($list["rows"][$i]["actions"])) {
                         $record["cols"][] = array("content" => $str_actions, "type" => "actions");
-                    } else if ($this->_hasActionColumn($list)) {
-                        $record["cols"][] = array("content" => "");
+                    } else {
+                        if ($this->_hasActionColumn($list)) {
+                            $record["cols"][] = array("content" => "");
+                        }
                     }
                 }
 
                 /* columns */
-                foreach ($list["rows"][$i]["data"] as $html)
+                foreach ($list["rows"][$i]["data"] as $html) {
                     $record["cols"][] = array("content" => $html, "type" => "data");
+                }
 
                 /* actions (right) */
                 if ($orientation == "right" || $orientation == "both") {
-                    if (!empty($list["rows"][$i]["actions"]))
+                    if (!empty($list["rows"][$i]["actions"])) {
                         $record["cols"][] = array("content" => $str_actions, "type" => "actions");
-                    else if ($this->_hasActionColumn($list)) {
-                        $record["cols"][] = array("content" => "");
+                    } else {
+                        if ($this->_hasActionColumn($list)) {
+                            $record["cols"][] = array("content" => "");
+                        }
                     }
                 }
 
@@ -468,20 +515,26 @@ class Atk_RecordList
             $totalcols = array();
 
             if (count($list["total"]) > 0) {
-                if (Atk_Tools::hasFlag($flags, RL_MRA) || Atk_Tools::hasFlag($flags, RL_MRPA))
+                if (Atk_Tools::hasFlag($flags, RL_MRA) || Atk_Tools::hasFlag($flags, RL_MRPA)) {
                     $totalcols[] = array("content" => "");
-                if (Atk_Tools::hasFlag($flags, RL_LOCK))
+                }
+                if (Atk_Tools::hasFlag($flags, RL_LOCK)) {
                     $totalcols[] = array("content" => "");
-                if (($orientation == "left" || $orientation == "both") && ($this->_hasActionColumn($list) && count($list["rows"]) > 0))
+                }
+                if (($orientation == "left" || $orientation == "both") && ($this->_hasActionColumn($list) && count($list["rows"]) > 0)) {
                     $totalcols[] = array("content" => "");
-
-                foreach (array_keys($list["heading"]) as $key) {
-                    $totalcols[] = array("content" => (isset($list["total"][$key])
-                                ? $list["total"][$key] : ""));
                 }
 
-                if (($orientation == "right" || $orientation == "both") && ($this->_hasActionColumn($list) && count($list["rows"]) > 0))
+                foreach (array_keys($list["heading"]) as $key) {
+                    $totalcols[] = array(
+                        "content" => (isset($list["total"][$key])
+                            ? $list["total"][$key] : "")
+                    );
+                }
+
+                if (($orientation == "right" || $orientation == "both") && ($this->_hasActionColumn($list) && count($list["rows"]) > 0)) {
                     $totalcols[] = array("content" => "");
+                }
             }
 
             /*             * ********************************************** */
@@ -489,21 +542,21 @@ class Atk_RecordList
             /*             * ********************************************** */
             $mra = "";
             if (Atk_Tools::hasFlag($flags, RL_MRPA)) {
-                $target = Atk_Tools::session_url(Atk_Tools::atkSelf() . '?atknodetype=' . $this->getMasterNodeType(), SESSION_NESTED);
+                $target = Atk_Tools::session_url(Atk_Tools::atkSelf() . '?atknodetype=' . $this->getMasterNodeType(),
+                    SESSION_NESTED);
 
                 /* multiple actions -> dropdown */
                 if (count($this->m_node->m_priority_actions) > 1) {
                     $mra = '<select name="' . $listName . '_atkaction">' .
                         '<option value="">' . Atk_Tools::atktext("with_selected") . ':</option>';
 
-                    foreach ($this->m_node->m_priority_actions as $name)
+                    foreach ($this->m_node->m_priority_actions as $name) {
                         $mra .= '<option value="' . $name . '">' . Atk_Tools::atktext($name) . '</option>';
+                    }
 
                     $mra .= '</select>&nbsp;' . $this->getCustomMraHtml() .
                         '<input type="button" class="btn" value="' . Atk_Tools::atktext("submit") . '" onclick="atkSubmitMRPA(\'' . $listName . '\', this.form, \'' . $target . '\')">';
-                }
-
-                /* one action -> only the submit button */ else {
+                } /* one action -> only the submit button */ else {
                     $mra = $this->getCustomMraHtml() . '<input type="hidden" name="' . $listName . '_atkaction" value="' . $this->m_node->m_priority_actions[0] . '">' .
                         '<input type="button" class="btn" value="' . Atk_Tools::atktext($this->m_node->m_priority_actions[0]) . '" onclick="atkSubmitMRPA(\'' . $listName . '\', this.form, \'' . $target . '\')">';
                 }
@@ -513,14 +566,15 @@ class Atk_RecordList
             /*             * ************************************* */
             /* MULTI-RECORD-ACTION FORM (CONTINUED) */
             /*             * ************************************* */ elseif (Atk_Tools::hasFlag($flags, RL_MRA)) {
-                $target = Atk_Tools::session_url(Atk_Tools::atkSelf() . '?atknodetype=' . $this->m_node->atkNodeType() . '&atktarget=' . $this->m_node->m_postvars['atktarget'] . '&atktargetvar=' . $this->m_node->m_postvars['atktargetvar'] . '&atktargetvartpl=' . $this->m_node->m_postvars['atktargetvartpl'], SESSION_NESTED);
+                $target = Atk_Tools::session_url(Atk_Tools::atkSelf() . '?atknodetype=' . $this->m_node->atkNodeType() . '&atktarget=' . $this->m_node->m_postvars['atktarget'] . '&atktargetvar=' . $this->m_node->m_postvars['atktargetvar'] . '&atktargetvartpl=' . $this->m_node->m_postvars['atktargetvartpl'],
+                    SESSION_NESTED);
 
                 $mra = (count($list["rows"]) > 1 ?
-                        '<a href="javascript:updateSelection(\'' . $listName . '\', document.forms[\'' . $formName . '\'], \'all\')">' . Atk_Tools::atktext("select_all") . '</a> / ' .
-                        '<a href="javascript:updateSelection(\'' . $listName . '\', document.forms[\'' . $formName . '\'], \'none\')">' . Atk_Tools::atktext("deselect_all") . '</a> / ' .
-                        '<a href="javascript:updateSelection(\'' . $listName . '\', document.forms[\'' . $formName . '\'], \'invert\')">' . Atk_Tools::atktext("select_invert") . '</a> '
-                            :
-                        '');
+                    '<a href="javascript:updateSelection(\'' . $listName . '\', document.forms[\'' . $formName . '\'], \'all\')">' . Atk_Tools::atktext("select_all") . '</a> / ' .
+                    '<a href="javascript:updateSelection(\'' . $listName . '\', document.forms[\'' . $formName . '\'], \'none\')">' . Atk_Tools::atktext("deselect_all") . '</a> / ' .
+                    '<a href="javascript:updateSelection(\'' . $listName . '\', document.forms[\'' . $formName . '\'], \'invert\')">' . Atk_Tools::atktext("select_invert") . '</a> '
+                    :
+                    '');
 
                 /* multiple actions -> dropdown */
                 if (count($list["mra"]) > 1) {
@@ -529,19 +583,20 @@ class Atk_RecordList
 
                     foreach ($list["mra"] as $name) {
                         if ($this->m_node->allowed($name)) {
-                            $mra .= '<option value="' . $name . '">' . Atk_Tools::atktext($name, $this->m_node->m_module, $this->m_node->m_type) . '</option>';
+                            $mra .= '<option value="' . $name . '">' . Atk_Tools::atktext($name,
+                                    $this->m_node->m_module, $this->m_node->m_type) . '</option>';
                         }
                     }
 
                     $mra .= '</select>&nbsp;' . $this->getCustomMraHtml() .
                         '<input type="button" class="btn" value="' . Atk_Tools::atktext("submit") . '" onclick="atkSubmitMRA(\'' . $listName . '\', this.form, \'' . $target . '\')">';
-                }
-
-                /* one action -> only the submit button */ else {
+                } /* one action -> only the submit button */ else {
                     if ($this->m_node->allowed($list["mra"][0])) {
                         $mra .= '&nbsp; <input type="hidden" name="' . $listName . '_atkaction" value="' . $list["mra"][0] . '">' .
                             $this->getCustomMraHtml() .
-                            '<input type="button" class="btn" value="' . Atk_Tools::atktext($list["mra"][0], $this->m_node->m_module, $this->m_node->m_type) . '" onclick="atkSubmitMRA(\'' . $listName . '\', this.form, \'' . $target . '\')">';
+                            '<input type="button" class="btn" value="' . Atk_Tools::atktext($list["mra"][0],
+                                $this->m_node->m_module,
+                                $this->m_node->m_type) . '" onclick="atkSubmitMRA(\'' . $listName . '\', this.form, \'' . $target . '\')">';
                     }
                 }
             }
@@ -551,7 +606,8 @@ class Atk_RecordList
                 $kb->addRecordListHandler($listName, $selectcolor, count($records));
             }
 
-            $recordListData = array("vorientation" => $vorientation,
+            $recordListData = array(
+                "vorientation" => $vorientation,
                 "rows" => $records,
                 "header" => $headercols,
                 "search" => $searchcols,
@@ -564,7 +620,8 @@ class Atk_RecordList
                 "liststart" => $liststart,
                 "listend" => $listend,
                 "listid" => $listName,
-                "mra" => $mra);
+                "mra" => $mra
+            );
 
             return $recordListData;
         }
@@ -583,18 +640,19 @@ class Atk_RecordList
             // when there's a search bar, we always need an extra column (for the button)
             if (!Atk_Tools::hasFlag($this->m_flags, RL_NO_SEARCH)) {
                 $this->m_hasActionColumn = true;
-            }
-            // when there's an extended sort bar, we also need the column (for the sort button)
-            else if (Atk_Tools::hasFlag($this->m_flags, RL_EXT_SORT)) {
-                $this->m_hasActionColumn = true;
-            } else {
-                // otherwise, it depends on whether one of the records has actions defined.
-                $this->m_hasActionColumn = false;
+            } // when there's an extended sort bar, we also need the column (for the sort button)
+            else {
+                if (Atk_Tools::hasFlag($this->m_flags, RL_EXT_SORT)) {
+                    $this->m_hasActionColumn = true;
+                } else {
+                    // otherwise, it depends on whether one of the records has actions defined.
+                    $this->m_hasActionColumn = false;
 
-                foreach ($list["rows"] as $record) {
-                    if (!empty($record['actions'])) {
-                        $this->m_hasActionColumn = true;
-                        break;
+                    foreach ($list["rows"] as $record) {
+                        if (!empty($record['actions'])) {
+                            $this->m_hasActionColumn = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -618,12 +676,12 @@ class Atk_RecordList
     /**
      * Function outputs an array with all information necessary to output a recordlist.
      *
-     * @param Array   $recordset    List of records that need to be displayed
-     * @param Integer $flags        Recordlist flags
-     * @param String  $prefix       Prefix for each column name (used for subcalls)
-     * @param Array   $actions      List of default actions for each record
-     * @param Array   $suppress     An array of fields that you want to hide
-     * @param String  $embedprefix  The prefix for embeded fields
+     * @param Array $recordset List of records that need to be displayed
+     * @param Integer $flags Recordlist flags
+     * @param String $prefix Prefix for each column name (used for subcalls)
+     * @param Array $actions List of default actions for each record
+     * @param Array $suppress An array of fields that you want to hide
+     * @param String $embedprefix The prefix for embeded fields
      *
      * The result array contains the following information:
      *  "heading"  => for each visible column an array containing: "title" {, "url"}
@@ -635,12 +693,25 @@ class Atk_RecordList
      *
      * @return see above
      */
-    function listArray(&$recordset, $flags = 0, $prefix = "", $actions = array(), $suppress = array(), $embedprefix = "")
-    {
-        if (!is_array($suppress))
+    function listArray(
+        &$recordset,
+        $flags = 0,
+        $prefix = "",
+        $actions = array(),
+        $suppress = array(),
+        $embedprefix = ""
+    ) {
+        if (!is_array($suppress)) {
             $suppress = array();
-        $result = array("heading" => array(), "search" => array(), "rows" => array(),
-            "totalraw" => array(), "total" => array(), "mra" => array());
+        }
+        $result = array(
+            "heading" => array(),
+            "search" => array(),
+            "rows" => array(),
+            "totalraw" => array(),
+            "total" => array(),
+            "mra" => array()
+        );
 
         if (Atk_Tools::hasFlag($this->m_flags, RL_EMBED) && $embedprefix) {
             $prefix = $embedprefix . "][";
@@ -650,14 +721,16 @@ class Atk_RecordList
 
         /* get the heading and search columns */
         $atksearchpostvar = isset($this->m_node->m_postvars["atksearch"]) ? $this->m_node->m_postvars["atksearch"]
-                : null;
-        if (!Atk_Tools::hasFlag($flags, RL_NO_SEARCH))
+            : null;
+        if (!Atk_Tools::hasFlag($flags, RL_NO_SEARCH)) {
             $this->m_node->setAttribSizes();
+        }
         foreach (array_keys($this->m_node->m_attribIndexList) as $r) {
             $name = $this->m_node->m_attribIndexList[$r]["name"];
             if (!in_array($name, $suppress)) {
                 $attribute = &$this->m_node->m_attribList[$name];
-                $attribute->addToListArrayHeader($this->m_node->m_action, $result, $prefix, $flags, $atksearchpostvar, $columnConfig);
+                $attribute->addToListArrayHeader($this->m_node->m_action, $result, $prefix, $flags, $atksearchpostvar,
+                    $columnConfig);
             }
         }
 
@@ -665,19 +738,27 @@ class Atk_RecordList
         if (count($actions) == 2 && count(array_diff(array_keys($actions), array("actions", "mra"))) == 0) {
             $mra = $actions["mra"];
             $actions = $actions["actions"];
-        } else
+        } else {
             $mra = $this->m_node->hasFlag(NF_NO_DELETE) ? array() : array("delete");
+        }
 
         /* get the rows */
         for ($i = 0, $_i = count($recordset); $i < $_i; $i++) {
-            $result["rows"][$i] = array("columns" => array(), "actions" => $actions, "mra" => $mra, "record" => &$recordset[$i], "data" => array());
+            $result["rows"][$i] = array(
+                "columns" => array(),
+                "actions" => $actions,
+                "mra" => $mra,
+                "record" => &$recordset[$i],
+                "data" => array()
+            );
             $result["rows"][$i]["selector"] = $this->m_node->primaryKey($recordset[$i]);
             $result["rows"][$i]["type"] = "data";
             $row = &$result["rows"][$i];
 
             /* locked */
             if (Atk_Tools::hasFlag($flags, RL_LOCK)) {
-                $result["rows"][$i]["lock"] = $this->m_node->m_lock->isLocked($result["rows"][$i]["selector"], $this->m_node->m_table);
+                $result["rows"][$i]["lock"] = $this->m_node->m_lock->isLocked($result["rows"][$i]["selector"],
+                    $this->m_node->m_table);
                 if (is_array($result["rows"][$i]["lock"])) {
                     unset($row["actions"]["edit"]);
                     unset($row["actions"]["delete"]);
@@ -698,16 +779,17 @@ class Atk_RecordList
                     $url = str_replace("_1" . "5B", "[", $url);
                     $url = str_replace("_1" . "5D", "]", $url);
 
-                    if ($atkencoded)
-                        $url = str_replace('[pk]', Atk_Tools::atkurlencode(rawurlencode($row["selector"]), false), $url);
-                    else
+                    if ($atkencoded) {
+                        $url = str_replace('[pk]', Atk_Tools::atkurlencode(rawurlencode($row["selector"]), false),
+                            $url);
+                    } else {
                         $url = str_replace('[pk]', rawurlencode($row["selector"]), $url);
+                    }
 
                     $parser = new Atk_StringParser($url);
                     $url = $parser->parse($row["record"], true);
                     $row["actions"][$name] = $url;
-                }
-                else {
+                } else {
                     unset($row["actions"][$name]);
                 }
             }
@@ -727,8 +809,9 @@ class Atk_RecordList
             $result["rows"] = $totalizer->totalize($result["rows"]);
         }
 
-        if (Atk_Tools::hasFlag($flags, RL_MRA))
+        if (Atk_Tools::hasFlag($flags, RL_MRA)) {
             $result["mra"] = array_values(array_unique($result["mra"]));
+        }
 
         return $result;
     }
@@ -740,8 +823,9 @@ class Atk_RecordList
      */
     function getMasterNode()
     {
-        if (is_object($this->m_masternode))
+        if (is_object($this->m_masternode)) {
             return $this->m_masternode;
+        }
         return $this->m_node; // treat rendered node as master
     }
 

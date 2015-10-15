@@ -124,8 +124,9 @@ class Atk_TmpFile
         if ($this->exists()) {
             if (function_exists("file_get_contents")) {
                 return file_get_contents($this->getPath());
-            } else
+            } else {
                 return implode(null, $this->read());
+            }
         }
         return false;
     }
@@ -165,14 +166,14 @@ class Atk_TmpFile
      * Exports a PHP variable to a file, makes the file a PHP file.
      *
      * @param string $varname Name of the variable
-     * @param string $data    Variable data
+     * @param string $data Variable data
      * @return bool Wether the action succeeded
      */
     public function writeAsPhp($varname, $data)
     {
         $res = "<?php\n";
-        $res.= "\$" . $varname . " = " . var_export($data, true);
-        $res.= ";";
+        $res .= "\$" . $varname . " = " . var_export($data, true);
+        $res .= ";";
 
         return $this->writeFile($res);
     }
@@ -224,8 +225,9 @@ class Atk_TmpFile
      */
     public function filecTime()
     {
-        if ($this->exists())
+        if ($this->exists()) {
             return filectime($this->getPath());
+        }
         return false;
     }
 
@@ -237,8 +239,9 @@ class Atk_TmpFile
     public function fileAge()
     {
         $filectime = $this->filectime();
-        if ($filectime != false)
+        if ($filectime != false) {
             return (time() - $filectime);
+        }
         return false;
     }
 

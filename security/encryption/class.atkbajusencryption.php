@@ -2,9 +2,9 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
- * 
+ *
  * @package atk
  * @subpackage security
  *
@@ -27,11 +27,11 @@ class Atk_BajusEncryption extends Atk_Encryption
 
     /**
      * The encryption method for encrypting data with the bajus algorithm
-     * 
+     *
      * This isn't strong encryption, it is meant mainly for testing
      * purposes.
-     * @param mixed $input  the data we want to encrypt
-     * @param mixed $key    the key we want to encrypt the data with
+     * @param mixed $input the data we want to encrypt
+     * @param mixed $key the key we want to encrypt the data with
      * @return mixed        the encrypted data
      */
     function encrypt($input, $key)
@@ -42,8 +42,9 @@ class Atk_BajusEncryption extends Atk_Encryption
             $char = substr($input, $i, 1);
             $keychar = substr($key, $i, 1);
             $charvalue = ord($char) + ord($keychar);
-            if ($charvalue > 255)
+            if ($charvalue > 255) {
                 $charvalue -= 255;
+            }
             $output .= chr($charvalue);
         }
 
@@ -52,8 +53,8 @@ class Atk_BajusEncryption extends Atk_Encryption
 
     /**
      * The decryption method for decrypting data with the bajus algorithm
-     * @param mixed $input  the data we want to encrypt
-     * @param mixed $key    the key we want to encrypt the data with
+     * @param mixed $input the data we want to encrypt
+     * @param mixed $key the key we want to encrypt the data with
      * @return mixed        the encrypted data
      */
     function decrypt($input, $key)
@@ -64,8 +65,9 @@ class Atk_BajusEncryption extends Atk_Encryption
             $char = substr($input, $i, 1);
             $keychar = substr($key, $i, 1);
             $charvalue = ord($char) - ord($keychar);
-            if ($charvalue < 0)
+            if ($charvalue < 0) {
                 $charvalue += 255;
+            }
             $output .= chr($charvalue);
         }
 
@@ -74,7 +76,7 @@ class Atk_BajusEncryption extends Atk_Encryption
 
     /**
      * Decryptionmethod for a key. This implementation decrypt the key with de bajus algoritm
-     * @param string $key  The encrypted key
+     * @param string $key The encrypted key
      * @param string $pass The password to decrypt de key
      * @return string      The decrypted key
      */
@@ -85,7 +87,7 @@ class Atk_BajusEncryption extends Atk_Encryption
 
     /**
      * Encryptionmethod for a key. This implementation encrypt the key with de bajus algoritm
-     * @param string $key  The decrypted key
+     * @param string $key The decrypted key
      * @param string $pass The password to encrypt de key
      * @return string      The encrypted key
      */

@@ -52,8 +52,9 @@ class Atk_MlNumberAttribute extends Atk_MlAttribute
         $value = $record[$this->fieldName()];
 
         foreach ($languages as $language) {
-            if (!is_numeric($value[$language]) && $value[$language] != "")
+            if (!is_numeric($value[$language]) && $value[$language] != "") {
                 Atk_Tools::triggerError($record, $this->fieldName(), 'error_notnumeric');
+            }
         }
     }
 

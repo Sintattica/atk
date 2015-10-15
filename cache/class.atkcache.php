@@ -7,7 +7,7 @@
  * included in the distribution.
  *
  * Base class for all caching systems that atk supports
- * 
+ *
  * @package atk
  * @subpackage cache
  *
@@ -45,30 +45,32 @@ abstract class Atk_Cache implements ArrayAccess
     protected $m_namespace = "default";
 
     /**
-     * Private Constructor so we can only have 
+     * Private Constructor so we can only have
      * once instance of each cache
      */
     private function __construct()
     {
-        
+
     }
 
     /**
      * Get atkCache instance, default when no type
      * is configured it will use var cache.
      *
-     * @param string  $types    Cache type
+     * @param string $types Cache type
      * @param boolean $fallback fallback to var cache if all types fail?
-     * @param boolean $force    force new instance
-     * 
+     * @param boolean $force force new instance
+     *
      * @return object atkCache object of the request type
      */
     public static function getInstance($types = "", $fallback = true, $force = false)
     {
-        if ($types == '')
+        if ($types == '') {
             $types = Atk_Config::getGlobal("cache_method", array());
-        if (!is_array($types))
+        }
+        if (!is_array($types)) {
             $types = array($types);
+        }
 
         foreach ($types as $type) {
             $classname = self::getClassname($type);
@@ -113,7 +115,8 @@ abstract class Atk_Cache implements ArrayAccess
         $type = $this->getType();
 
         if (array_key_exists($type, $cacheConfig) &&
-            array_key_exists($key, $cacheConfig[$type])) {
+            array_key_exists($key, $cacheConfig[$type])
+        ) {
             return $cacheConfig[$type][$key];
         } else {
             return $default;
@@ -142,7 +145,7 @@ abstract class Atk_Cache implements ArrayAccess
      */
     public function setActive($flag)
     {
-        $this->m_active = (bool) $flag;
+        $this->m_active = (bool)$flag;
     }
 
     /**
@@ -182,7 +185,7 @@ abstract class Atk_Cache implements ArrayAccess
      */
     public function setLifetime($lifetime)
     {
-        $this->m_lifetime = (int) $lifetime;
+        $this->m_lifetime = (int)$lifetime;
     }
 
     /**

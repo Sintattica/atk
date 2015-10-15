@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
@@ -17,7 +18,6 @@
  * @version $Revision: 6309 $
  * $Id$
  */
-
 class Atk_Cache_eaccelerator extends Atk_Cache
 {
 
@@ -49,8 +49,9 @@ class Atk_Cache_eaccelerator extends Atk_Cache
             return false;
         }
 
-        if ($lifetime === false)
+        if ($lifetime === false) {
             $lifetime = $this->m_lifetime;
+        }
         return eaccelerator_put($this->getRealKey($key), serialize($data), $lifetime);
     }
 
@@ -68,8 +69,9 @@ class Atk_Cache_eaccelerator extends Atk_Cache
             return false;
         }
 
-        if ($lifetime === false)
+        if ($lifetime === false) {
             $lifetime = $this->m_lifetime;
+        }
         return eaccelerator_put($this->getRealKey($key), serialize($data), $lifetime);
     }
 

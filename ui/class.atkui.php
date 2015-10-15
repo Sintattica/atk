@@ -29,14 +29,14 @@ class Atk_UI
      * @access private
      * @var Smarty
      */
-    var $m_smarty = NULL;
+    var $m_smarty = null;
 
     /**
      * atkTheme instance, initialised by constructor
      * @access private
      * @var atkTheme
      */
-    var $m_theme = NULL;
+    var $m_theme = null;
 
     /**
      * atkUi constructor, initialises Smarty and atkTheme instance
@@ -54,9 +54,9 @@ class Atk_UI
      */
     static public function &getInstance()
     {
-        static $s_instance = NULL;
+        static $s_instance = null;
 
-        if ($s_instance == NULL) {
+        if ($s_instance == null) {
             Atk_Tools::atkdebug("Creating a new atkUI instance");
             $s_instance = new self();
         }
@@ -293,8 +293,9 @@ class Atk_UI
      */
     function title($module, $nodetype, $action = null, $actiononly = false)
     {
-        if ($module == NULL || $nodetype == NULL)
+        if ($module == null || $nodetype == null) {
             return "";
+        }
         return $this->nodeTitle(Atk_Module::atkGetNode($module . '.' . $nodetype), $action, $actiononly);
     }
 
@@ -308,20 +309,23 @@ class Atk_UI
      *                          if we couldn't find a specific title
      * @return String the title for the action
      */
-    function nodeTitle($node, $action = NULL, $actiononly = false)
+    function nodeTitle($node, $action = null, $actiononly = false)
     {
-        if ($node == NULL)
+        if ($node == null) {
             return "";
+        }
 
         $nodetype = $node->m_type;
         $module = $node->m_module;
 
-        if ($action != NULL) {
-            $keys = array('title_' . $module . '_' . $nodetype . '_' . $action,
+        if ($action != null) {
+            $keys = array(
+                'title_' . $module . '_' . $nodetype . '_' . $action,
                 'title_' . $nodetype . '_' . $action,
-                'title_' . $action);
+                'title_' . $action
+            );
 
-            $label = $node->text($keys, NULL, "", "", true);
+            $label = $node->text($keys, null, "", "", true);
         } else {
             $label = "";
         }
@@ -339,8 +343,9 @@ class Atk_UI
             } else {
                 $keys = array('title_' . $module . '_' . $nodetype, 'title_' . $nodetype, $nodetype);
                 $label = $node->text($keys);
-                if ($action != NULL)
+                if ($action != null) {
                     $label .= " - " . $node->text($actionKeys);
+                }
             }
         }
         return $label;
@@ -355,28 +360,34 @@ class Atk_UI
      * @param String $action the atk action that we are trying execute in the panel
      * @return String the title for this wizardpanel
      */
-    function getWizardTitle($wizard, $panel, $action = NULL)
+    function getWizardTitle($wizard, $panel, $action = null)
     {
-        if ($wizard == NULL)
+        if ($wizard == null) {
             return "";
+        }
 
         $module = $wizard->getModuleName();
         $wizardName = $wizard->getName();
         $panelName = $panel->getPanelName();
 
-        $keys = array('title_' . $module . '_' . $wizardName,
-            'title_' . $wizardName);
-        $wizardTitle = Atk_Tools::atktext($keys, NULL, "", "", true);
+        $keys = array(
+            'title_' . $module . '_' . $wizardName,
+            'title_' . $wizardName
+        );
+        $wizardTitle = Atk_Tools::atktext($keys, null, "", "", true);
 
-        $keys = array('title_' . $module . '_' . $panelName . '_' . $action,
-            'title_' . $panelName . '_' . $action);
+        $keys = array(
+            'title_' . $module . '_' . $panelName . '_' . $action,
+            'title_' . $panelName . '_' . $action
+        );
 
-        $panelTitle = Atk_Tools::atktext($keys, NULL, "", "", true);
+        $panelTitle = Atk_Tools::atktext($keys, null, "", "", true);
 
-        if ($wizard->getWizardAction() !== 'finish')
+        if ($wizard->getWizardAction() !== 'finish') {
             $status = Atk_Tools::atktext("Step") . " " . ($wizard->m_currentPanelIndex + 1) . " " . Atk_Tools::atktext("of") . " " . count($wizard->m_panelList);
-        else
+        } else {
             $status = Atk_Tools::atktext("finished");
+        }
         $label .= $wizardTitle . " - " . $panelTitle . " - " . $status;
 
         return $label;

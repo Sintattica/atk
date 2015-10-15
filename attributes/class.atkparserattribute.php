@@ -42,7 +42,7 @@ class Atk_ParserAttribute extends Atk_Attribute
 
     /**
      * Parses a record
-     * 
+     *
      * @param array $record The record that holds the value for this attribute.
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
@@ -65,7 +65,7 @@ class Atk_ParserAttribute extends Atk_Attribute
 
     /**
      * Parses a record
-     * @param array $record  Array with fields
+     * @param array $record Array with fields
      * @return Parsed string
      */
     function display($record)
@@ -76,10 +76,10 @@ class Atk_ParserAttribute extends Atk_Attribute
 
     /**
      * No function, but is neccesary
-     * 
+     *
      * @param Atk_Db $db The database object
      * @param array $record The record
-     * @param string $mode 
+     * @param string $mode
      */
     function store($db, $record, $mode)
     {
@@ -88,7 +88,7 @@ class Atk_ParserAttribute extends Atk_Attribute
 
     /**
      * No function, but is neccesary
-     * 
+     *
      * @param Atk_Query $query The SQL query object
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
@@ -107,12 +107,12 @@ class Atk_ParserAttribute extends Atk_Attribute
      */
     function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec, $level, $mode)
     {
-        
+
     }
 
     /**
      * Dummy implementation
-     * 
+     *
      * @return Empty string
      */
     function dbFieldType()

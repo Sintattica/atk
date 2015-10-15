@@ -15,6 +15,7 @@
  * @version $Revision: 6310 $
  * $Id$
  */
+
 /**
  * Handler for the 'admin' action of a node. It displays a recordlist with
  * existing records, and links to view/edit/delete them (or custom actions
@@ -26,7 +27,6 @@
  * @subpackage handlers
  *
  */
-
 class Atk_AdminHandler extends Atk_ActionHandler
 {
     var $m_actionSessionStatus = SESSION_NESTED;
@@ -86,7 +86,7 @@ class Atk_AdminHandler extends Atk_ActionHandler
      * @param array $record The record
      * @return String A box containing the add page.
      */
-    function addPage($record = NULL)
+    function addPage($record = null)
     {
         // Reuse the atkAddHandler for the addPage.
         $node = Atk_Module::atkGetNode($this->invoke('getAddNodeType'));
@@ -112,8 +112,10 @@ class Atk_AdminHandler extends Atk_ActionHandler
     {
         $ui = &$this->getUi();
 
-        $vars = array("title" => $this->m_node->actionTitle($this->getNode()->m_action),
-            "content" => $this->renderAdminList());
+        $vars = array(
+            "title" => $this->m_node->actionTitle($this->getNode()->m_action),
+            "content" => $this->renderAdminList()
+        );
 
         if ($this->getRenderMode() == 'dialog') {
             $output = $ui->renderDialog($vars);
@@ -213,7 +215,8 @@ class Atk_AdminHandler extends Atk_ActionHandler
             // reset search so we can back to the normal admin screen if we want
             $grid->setPostvar('atksearch', array());
 
-            $url = Atk_Tools::session_url(Atk_Tools::dispatch_url($node->atkNodeType(), $action, array('atkselector' => $node->primaryKey($records[0]))), SESSION_NESTED);
+            $url = Atk_Tools::session_url(Atk_Tools::dispatch_url($node->atkNodeType(), $action,
+                array('atkselector' => $node->primaryKey($records[0]))), SESSION_NESTED);
 
             if ($grid->isUpdate()) {
                 Atk_Tools::atkimport('atk.utils.atkjson');
@@ -266,7 +269,8 @@ class Atk_AdminHandler extends Atk_ActionHandler
     {
         $link = "";
         if ($this->m_node->allowed("add") && !$this->m_node->hasFlag(NF_READONLY) && $this->m_node->hasFlag(NF_IMPORT)) {
-            $link.= Atk_Tools::href(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), "import"), Atk_Tools::atktext("import", "atk", $this->m_node->m_type), SESSION_NESTED);
+            $link .= Atk_Tools::href(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), "import"),
+                Atk_Tools::atktext("import", "atk", $this->m_node->m_type), SESSION_NESTED);
         }
         return $link;
     }
@@ -282,10 +286,13 @@ class Atk_AdminHandler extends Atk_ActionHandler
         if ($this->m_node->allowed("view") && $this->m_node->allowed("export") && $this->m_node->hasFlag(NF_EXPORT)) {
             $filter = '';
             if (count($this->m_node->m_fuzzyFilters) > 0) {
-                $filter = implode(' AND ', str_replace('[table]', $this->m_node->getTable(), $this->m_node->m_fuzzyFilters));
+                $filter = implode(' AND ',
+                    str_replace('[table]', $this->m_node->getTable(), $this->m_node->m_fuzzyFilters));
             }
 
-            $link.= Atk_Tools::href(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), "export", array('atkfilter' => $filter)), Atk_Tools::atktext("export", "atk", $this->m_node->m_type), SESSION_NESTED);
+            $link .= Atk_Tools::href(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), "export",
+                array('atkfilter' => $filter)), Atk_Tools::atktext("export", "atk", $this->m_node->m_type),
+                SESSION_NESTED);
         }
         return $link;
     }
@@ -366,14 +373,17 @@ class Atk_AdminHandler extends Atk_ActionHandler
     {
         $links = array();
         $addlink = $this->getAddLink();
-        if ($addlink != "")
+        if ($addlink != "") {
             $links[] = $addlink;
+        }
         $importlink = $this->getImportLink();
-        if ($importlink != "")
+        if ($importlink != "") {
             $links[] = $importlink;
+        }
         $exportlink = $this->getExportLink();
-        if ($exportlink != "")
+        if ($exportlink != "") {
             $links[] = $exportlink;
+        }
         $result = implode(" | ", $links);
 
         if (strlen(trim($result)) > 0) {
@@ -403,7 +413,7 @@ class Atk_AdminHandler extends Atk_ActionHandler
         list($type, $attribute, $partial) = explode('.', $partial);
 
         $attr = &$this->m_node->getAttribute($attribute);
-        if ($attr == NULL) {
+        if ($attr == null) {
             Atk_Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
             return '';
         }

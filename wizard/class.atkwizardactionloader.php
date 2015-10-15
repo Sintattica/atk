@@ -36,10 +36,11 @@ class AtkWizardActionLoader
      */
     function getWizardAction($wizardAction)
     {
-        if (is_array($wizardAction))
+        if (is_array($wizardAction)) {
             return key($wizardAction);
-        else
+        } else {
             return $wizardAction;
+        }
     }
 
 }

@@ -27,10 +27,10 @@ class Atk_DocxWriter extends Atk_OpenDocumentWriter
      * Parse the given template file
      *
      * @param string $tpl_file Template file to parse
-     * @param mixed $tpl_vars Array of template variables to merge into the 
-     * 												template or null if you want to use the template 
-     * 												vars set by calling Assign (which is default 
-     * 												behaviour).
+     * @param mixed $tpl_vars Array of template variables to merge into the
+     *                                                template or null if you want to use the template
+     *                                                vars set by calling Assign (which is default
+     *                                                behaviour).
      * @return bool Indication if parsing was succesfull
      */
     function _parse($tpl_file, $tpl_vars = null)

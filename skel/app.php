@@ -29,9 +29,9 @@ include_once("atk.php");
 Atk_SessionManager::atksession();
 atksecure();
 $output = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">';
-$output.="\n<html>\n <head>\n";
-$output.='  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=' . Atk_Tools::atkGetCharset() . '">';
-$output.="\n  <title>" . Atk_Tools::atktext('app_title') . "</title>\n </head>\n";
+$output .= "\n<html>\n <head>\n";
+$output .= '  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=' . Atk_Tools::atkGetCharset() . '">';
+$output .= "\n  <title>" . Atk_Tools::atktext('app_title') . "</title>\n </head>\n";
 
 
 $menu = Atk_Menu::getMenu();
@@ -41,10 +41,10 @@ $position = $menu->getPosition();
 $scrolling = ($menu->getScrollable() == MENU_SCROLLABLE ? FRAME_SCROLL_AUTO : FRAME_SCROLL_NO);
 if (isset($ATK_VARS["atknodetype"]) && isset($ATK_VARS["atkaction"])) {
     $destination = "dispatch.php?atknodetype=" . $ATK_VARS["atknodetype"] . "&atkaction=" . $ATK_VARS["atkaction"];
-    if (isset($ATK_VARS["atkselector"]))
-        $destination.="&atkselector=" . $ATK_VARS["atkselector"];
-}
-else {
+    if (isset($ATK_VARS["atkselector"])) {
+        $destination .= "&atkselector=" . $ATK_VARS["atkselector"];
+    }
+} else {
     $destination = "welcome.php";
 }
 
@@ -53,7 +53,7 @@ $frame_menu_width = $theme->getAttribute('frame_menu_width');
 $topframe = new Atk_Frame($frame_top_height ? $frame_top_height : "75", "top", "top.php", FRAME_SCROLL_NO, true);
 $mainframe = new Atk_Frame("*", "main", $destination, FRAME_SCROLL_AUTO, true);
 $menuframe = new Atk_Frame(($position == MENU_LEFT || $position == MENU_RIGHT ? ($frame_menu_width
-                ? $frame_menu_width : 190) : $menu->getHeight()), "menu", "menu.php", $scrolling);
+    ? $frame_menu_width : 190) : $menu->getHeight()), "menu", "menu.php", $scrolling);
 $noframes = '<p>Your browser doesnt support frames, but this is required to run ' . Atk_Tools::atktext('app_title') . "</p>\n";
 
 $root = new Atk_RootFrameset();
@@ -67,7 +67,7 @@ if (Atk_Config::getGlobal("top_frame")) {
 }
 
 $orientation = ($position == MENU_TOP || $position == MENU_BOTTOM ? FRAMESET_VERTICAL
-            : FRAMESET_HORIZONTAL);
+    : FRAMESET_HORIZONTAL);
 
 $wrapper = new Atk_FrameSet("*", $orientation);
 
@@ -81,6 +81,6 @@ if ($position == MENU_TOP || $position == MENU_LEFT) {
 
 $outer->addChild($wrapper);
 
-$output.= $root->render();
-$output.= "</html>";
+$output .= $root->render();
+$output .= "</html>";
 echo $output;

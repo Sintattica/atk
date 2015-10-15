@@ -39,12 +39,13 @@ function drawTD($field, $color, $colHeight, $colWidth, $extern = 0)
 {
     $row = "<td width='" . $colWidth . "' bgcolor='$color'>";
     if ($extern != 0) {
-        $row .='<A href ="javascript:remotePicker';
+        $row .= '<A href ="javascript:remotePicker';
     } else {
-        $row .='<A href ="javascript:picker';
+        $row .= '<A href ="javascript:picker';
     }
-    $row .="('" . $field . "','" . $color . "')";
-    $row .='" title="' . Atk_Tools::atktext("color", "atk") . ': ' . $color . '"><IMG SRC="' . Atk_Config::getGlobal('atkroot') . 'atk/images/dummy.gif" border=0 width=' . $colWidth . ' height=' . $colHeight . ' alt="-X-"></a></td>';
+    $row .= "('" . $field . "','" . $color . "')";
+    $row .= '" title="' . Atk_Tools::atktext("color",
+            "atk") . ': ' . $color . '"><IMG SRC="' . Atk_Config::getGlobal('atkroot') . 'atk/images/dummy.gif" border=0 width=' . $colWidth . ' height=' . $colHeight . ' alt="-X-"></a></td>';
     $row .= "\n";
 
     return $row;
@@ -57,7 +58,20 @@ function drawTD($field, $color, $colHeight, $colWidth, $extern = 0)
 function colorMatrix($colHeight, $colWidth, $field, $extern = 0, $userColors)
 {
     $webColors = array("00", "11", "22", "33", "44", "55", "66", "77", "88", "99", "AA", "BB", "CC", "DD", "EE", "FF");
-    $stdColors = array("000000", "A4358E", "C79476", "6699cc", "cc6699", "669933", "ff9900", "cccc99", "663399", "5dabdd", "cafe00", "ffcc33"); // standard favorite colors
+    $stdColors = array(
+        "000000",
+        "A4358E",
+        "C79476",
+        "6699cc",
+        "cc6699",
+        "669933",
+        "ff9900",
+        "cccc99",
+        "663399",
+        "5dabdd",
+        "cafe00",
+        "ffcc33"
+    ); // standard favorite colors
     $nrColors = count($webColors);
 
     // Mix RED / BLUE (16x16 = 256 items)
@@ -106,7 +120,8 @@ function colorMatrix($colHeight, $colWidth, $field, $extern = 0, $userColors)
         $matrix_red .= drawTD($field, "#" . $webColors[$i] . "0000", $colHeight, $colWidth, $extern);
         $matrix_green .= drawTD($field, "#00" . $webColors[$i] . "00", $colHeight, $colWidth, $extern);
         $matrix_blue .= drawTD($field, "#0000" . $webColors[$i], $colHeight, $colWidth, $extern);
-        $matrix_grey .= drawTD($field, "#" . $webColors[$i] . $webColors[$i] . $webColors[$i], $colHeight, $colWidth, $extern);
+        $matrix_grey .= drawTD($field, "#" . $webColors[$i] . $webColors[$i] . $webColors[$i], $colHeight, $colWidth,
+            $extern);
     }
 
     $matrix_red .= '</tr></table>';
@@ -131,7 +146,16 @@ function colorMatrix($colHeight, $colWidth, $field, $extern = 0, $userColors)
         $matrix_user = '';
     }
 
-    return array($matrix_rb, $matrix_rg, $matrix_gb, $matrix_red, $matrix_green, $matrix_blue, $matrix_grey, $matrix_user);
+    return array(
+        $matrix_rb,
+        $matrix_rg,
+        $matrix_gb,
+        $matrix_red,
+        $matrix_green,
+        $matrix_blue,
+        $matrix_grey,
+        $matrix_user
+    );
 }
 
 /**
@@ -199,12 +223,13 @@ class Atk_ColorPickerAttribute extends Atk_Attribute
      *
      * @param String $mode
      */
-    function setColorMode($mode = NULL)
+    function setColorMode($mode = null)
     {
-        if ($mode === NULL)
+        if ($mode === null) {
             $this->m_colorMode = CP_COLORMODE_DEFAULT;
-        else
+        } else {
             $this->m_colorMode = $mode;
+        }
     }
 
     /**
@@ -265,7 +290,9 @@ class Atk_ColorPickerAttribute extends Atk_Attribute
             $urlColor = $this->m_currentColor;
         }
 
-        $url = Atk_Tools::atkPopup('atk/popups/colorpicker.php', 'field=' . $fieldprefix . $this->fieldName() . '&activecolor=' . $urlColor . '&usercol=' . $userCol, 'colorPicker', 315, 1000, 'no', 'no');
+        $url = Atk_Tools::atkPopup('atk/popups/colorpicker.php',
+            'field=' . $fieldprefix . $this->fieldName() . '&activecolor=' . $urlColor . '&usercol=' . $userCol,
+            'colorPicker', 315, 1000, 'no', 'no');
         $text = '<a href="javascript:void(0);" onclick="' . $url . '; return false;"><img name="img_' . $fieldprefix . $this->fieldName() . '" id="img_' . $fieldprefix . $this->fieldName() . '" src="' . $selectImg . '" border="0" alt="' . $alt . '" style="background-color: ' . $alt . ';"></a>' . $colorField;
         $result = '<table cellpadding="0" cellspacing="0" border="0" width="35" height="21" align="left"><tr><td id="example_' . $fieldprefix . $this->fieldName() . '" name="example_' . $fieldprefix . $this->fieldName() . '" style="padding:0px;" valign="top" align="left" bgcolor="' . $this->m_currentColor . '">' . $text . '</td></tr></table>';
 
@@ -284,8 +311,9 @@ class Atk_ColorPickerAttribute extends Atk_Attribute
     function validate(&$record, $mode)
     {
         $color = $record[$this->fieldName()];
-        if (!$this->check_color($color))
+        if (!$this->check_color($color)) {
             Atk_Tools::triggerError($record, $this, 'error_invalid_color');
+        }
     }
 
     /**
@@ -299,14 +327,16 @@ class Atk_ColorPickerAttribute extends Atk_Attribute
     function check_color()
     {
         $numargs = func_num_args();
-        if (!$this->checkNumArgs($numargs))
+        if (!$this->checkNumArgs($numargs)) {
             return false;
+        }
 
         $colors = func_get_arg(0);
         $type = ($numargs == 2) ? func_get_arg(1) : 'hex';
 
-        if (!is_string($colors) || !$this->checkTypeAndMode($type))
+        if (!is_string($colors) || !$this->checkTypeAndMode($type)) {
             return false;
+        }
 
         // color types -
         //          hex - hexidecimal value in form of #XXX, XXX, #XXXXXX, or XXXXXX
@@ -398,13 +428,15 @@ class Atk_ColorPickerAttribute extends Atk_Attribute
     {
         // For hex types, the colormode must be default or hex6
         if (($type == 'hex') &&
-            in_array($this->getColorMode(), array(CP_COLORMODE_DEFAULT, CP_COLORMODE_HEX6))) {
+            in_array($this->getColorMode(), array(CP_COLORMODE_DEFAULT, CP_COLORMODE_HEX6))
+        ) {
             return true;
         }
 
         // For rgb types, the colormode must be default.
         if (($type == 'rgb') &&
-            ($this->getColorMode() == CP_COLORMODE_DEFAULT)) {
+            ($this->getColorMode() == CP_COLORMODE_DEFAULT)
+        ) {
             return true;
         }
 

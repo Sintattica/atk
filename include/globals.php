@@ -22,7 +22,7 @@ list($usec, $sec) = explode(" ", microtime());
  * Current microtime, to see when exactly this request started.
  * @var float
  */
-$GLOBALS['g_startTime'] = (float) $usec + (float) $sec; // can't use getmicrotime here because it isn't available yet
+$GLOBALS['g_startTime'] = (float)$usec + (float)$sec; // can't use getmicrotime here because it isn't available yet
 
 /**
  * Global theme variable, containing theme data

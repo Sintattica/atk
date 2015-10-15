@@ -5,8 +5,9 @@ include_once $config_atkroot . './atk.php';
 Atk_Tools::atkimport('atk.utils.atkyaml');
 
 $table = @$_SERVER['argv'][1];
-if ($table == null)
+if ($table == null) {
     die("Please specify a table name!\n");
+}
 
 $table = strtolower($table);
 

@@ -9,14 +9,14 @@
  * @subpackage utils
  *
  * @copyright (c) 2000-2007 Ibuildings.nl BV
- * 
+ *
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
 Atk_Tools::atkimport('atk.datagrid.atkdgcomponent');
 
 /**
- * The data grid no records found message. Can be used to render a 
- * simple message underneath the grid stating there are no records 
+ * The data grid no records found message. Can be used to render a
+ * simple message underneath the grid stating there are no records
  * found in the database.
  *
  * @author Peter C. Verhage <peter@achievo.org>
@@ -35,7 +35,8 @@ class Atk_DGEditControl extends Atk_DGComponent
     public function render()
     {
         if (count($this->getGrid()->getRecords()) == 0 ||
-            count($this->getNode()->m_editableListAttributes) == 0) {
+            count($this->getNode()->m_editableListAttributes) == 0
+        ) {
             return null;
         }
 

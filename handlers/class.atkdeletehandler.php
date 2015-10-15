@@ -41,21 +41,24 @@ class Atk_DeleteHandler extends Atk_ActionHandler
         }
 
         if ((!empty($this->m_postvars['confirm']) || !empty($this->m_postvars['cancel'])) &&
-            !$this->isValidCSRFToken($this->m_postvars['atkcsrftoken'])) {
+            !$this->isValidCSRFToken($this->m_postvars['atkcsrftoken'])
+        ) {
             $this->renderAccessDeniedPage();
             return;
         }
 
-        if (!empty($this->m_postvars['confirm']))
+        if (!empty($this->m_postvars['confirm'])) {
             $this->_doDelete();
-        elseif (empty($this->m_node->m_postvars['cancel'])) {
+        } elseif (empty($this->m_node->m_postvars['cancel'])) {
             // Confirmation page was not displayed
             // First we check if the item is locked
-            if ($this->_checkLocked())
+            if ($this->_checkLocked()) {
                 return;
+            }
 
-            if (!$this->checkAttributes())
+            if (!$this->checkAttributes()) {
                 return;
+            }
 
             // Clear the atkfilter postvar, if we don't it will hold filters from previous actions and it will break stuff.
             unset($this->m_postvars['atkfilter']);
@@ -63,9 +66,10 @@ class Atk_DeleteHandler extends Atk_ActionHandler
             // If we got here, then the node is not locked and we haven't displayed the
             // confirmation page yet, so we display it
             $page = &$this->getPage();
-            $page->addContent($this->m_node->renderActionPage("delete", $this->m_node->confirmAction($this->m_postvars['atkselector'], "delete", false, TRUE, true, $this->getCSRFToken())));
-        }
-        else {
+            $page->addContent($this->m_node->renderActionPage("delete",
+                $this->m_node->confirmAction($this->m_postvars['atkselector'], "delete", false, true, true,
+                    $this->getCSRFToken())));
+        } else {
             $this->_handleCancelAction();
         }
     }
@@ -85,10 +89,11 @@ class Atk_DeleteHandler extends Atk_ActionHandler
     function _checkAllowed()
     {
         $atkselector = $this->m_postvars['atkselector'];
-        if (is_array($atkselector))
+        if (is_array($atkselector)) {
             $atkselector_str = '((' . implode($atkselector, ') OR (') . '))';
-        else
+        } else {
             $atkselector_str = $atkselector;
+        }
 
         $recordset = $this->m_node->selectDb($atkselector_str, "", "", "", "", "delete");
         foreach ($recordset as $record) {
@@ -109,19 +114,23 @@ class Atk_DeleteHandler extends Atk_ActionHandler
     {
         $atkstoretype = "";
         $sessionmanager = Atk_SessionManager::atkGetSessionManager();
-        if ($sessionmanager)
+        if ($sessionmanager) {
             $atkstoretype = $sessionmanager->stackVar('atkstore');
+        }
         switch ($atkstoretype) {
-            case 'session': $result = $this->_doDeleteSession();
+            case 'session':
+                $result = $this->_doDeleteSession();
                 break;
-            default: $result = $this->_doDeleteDb();
+            default:
+                $result = $this->_doDeleteDb();
                 break;
         }
 
-        if ($result === true)
+        if ($result === true) {
             $location = $this->m_node->feedbackUrl("delete", ACTION_SUCCESS);
-        else
+        } else {
             $location = $this->m_node->feedbackUrl("delete", ACTION_FAILED, null, $result);
+        }
 
         $this->m_node->redirect($location);
     }
@@ -162,18 +171,22 @@ class Atk_DeleteHandler extends Atk_ActionHandler
      */
     function _checkLocked()
     {
-        $locked = FALSE;
+        $locked = false;
 
         if ($this->m_node->hasFlag(NF_LOCK)) {
             // We assume that the node is locked, unless proven otherwise
-            $locked = TRUE;
+            $locked = true;
             if (is_array($this->m_postvars['atkselector'])) {
-                foreach ($this->m_postvars['atkselector'] as $selector)
-                    if (!$this->m_node->m_lock->lock($selector, $this->m_node->m_table, $this->m_node->getLockMode()))
-                        $locked = FALSE;
+                foreach ($this->m_postvars['atkselector'] as $selector) {
+                    if (!$this->m_node->m_lock->lock($selector, $this->m_node->m_table, $this->m_node->getLockMode())) {
+                        $locked = false;
+                    }
+                }
+            } elseif (!$this->m_node->m_lock->lock($this->m_postvars['atkselector'], $this->m_node->m_table,
+                $this->m_node->getLockMode())
+            ) {
+                $locked = false;
             }
-            elseif (!$this->m_node->m_lock->lock($this->m_postvars['atkselector'], $this->m_node->m_table, $this->m_node->getLockMode()))
-                $locked = FALSE;
 
             // If the node is locked, we proceed to display the 'locked' page
             if (!$locked) {
@@ -196,7 +209,9 @@ class Atk_DeleteHandler extends Atk_ActionHandler
             if ($attrib->deleteAllowed() !== true) {
                 $db = &$this->m_node->getDb();
                 $db->rollback();
-                $location = $this->m_node->feedbackUrl("delete", ACTION_FAILED, null, sprintf(Atk_Tools::atktext("attrib_delete_not_allowed"), Atk_Tools::atktext($attrib->m_name, $this->m_node->m_module, $this->m_node->m_type), $allowed));
+                $location = $this->m_node->feedbackUrl("delete", ACTION_FAILED, null,
+                    sprintf(Atk_Tools::atktext("attrib_delete_not_allowed"),
+                        Atk_Tools::atktext($attrib->m_name, $this->m_node->m_module, $this->m_node->m_type), $allowed));
                 $this->m_node->redirect($location);
                 return;
             }

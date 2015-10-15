@@ -22,7 +22,7 @@
  * Attribute for editing email fields.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @author Maurice Maas 
+ * @author Maurice Maas
  * @package atk
  * @subpackage attributes
  *
@@ -66,8 +66,9 @@ class Atk_EmailAttribute extends Atk_Attribute
      */
     function display($record, $mode = "")
     {
-        if ($mode == "csv")
+        if ($mode == "csv") {
             return parent::display($record, $mode);
+        }
 
         if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] != "") {
             return '<a href="mailto:' . $record[$this->fieldName()] . '">' . $record[$this->fieldName()] . '</a>';
@@ -93,7 +94,8 @@ class Atk_EmailAttribute extends Atk_Attribute
                 //now check if domain exists, searches DNS for MX records
                 list($username, $domain) = explode('@', $email, 2);
                 if (!(Atk_EmailAttribute::validateAddressDomain($domain, false))) {
-                    Atk_Tools::triggerError($record, $this->fieldName(), 'error_unkown_domain', text('error_unkown_domain') . " " . $domain);
+                    Atk_Tools::triggerError($record, $this->fieldName(), 'error_unkown_domain',
+                        text('error_unkown_domain') . " " . $domain);
                 }
             }
         }
@@ -109,7 +111,8 @@ class Atk_EmailAttribute extends Atk_Attribute
     function validateAddressSyntax($email)
     {
         $email = strtolower($email); // to allow uppercase
-        if (preg_match("/^[-_a-zA-Z0-9+]+(\.[-_a-zA-Z0-9+]+)*@([0-9a-z-]+\.)*([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,}$/", $email)) {
+        if (preg_match("/^[-_a-zA-Z0-9+]+(\.[-_a-zA-Z0-9+]+)*@([0-9a-z-]+\.)*([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,}$/",
+            $email)) {
             return true;
         } else {
             return false;

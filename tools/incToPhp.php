@@ -1,7 +1,7 @@
 <?php
 
 
-$path = realpath(__DIR__.'/../');
+$path = realpath(__DIR__ . '/../');
 
 $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::SELF_FIRST);
 
@@ -9,12 +9,12 @@ $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), 
  * @var string $name
  * @var SplFileInfo $object
  */
-foreach($objects as $name => $object){
-    if($object->isFile() && $object->getExtension()==='inc') {
+foreach ($objects as $name => $object) {
+    if ($object->isFile() && $object->getExtension() === 'inc') {
         $src = $object->getRealPath();
-        $dst = substr($src, 0, -3).'php';
-        $command =  "git mv $src $dst";
-        echo $command."\n";
+        $dst = substr($src, 0, -3) . 'php';
+        $command = "git mv $src $dst";
+        echo $command . "\n";
         exec($command);
     }
 }

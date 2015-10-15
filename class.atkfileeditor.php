@@ -73,12 +73,14 @@ class Atk_FileEditor extends Atk_Node
         parent::__construct($name, $flags | NF_ADD_LINK);
         $this->m_dir = $dir;
         $this->m_basedir = $dir;
-        if ($dir == "")
+        if ($dir == "") {
             $this->m_dir = "./";
+        }
 
         // dir must have a trailing slash.
-        if (substr($this->m_dir, -1) != "/")
-            $this->m_dir.="/";
+        if (substr($this->m_dir, -1) != "/") {
+            $this->m_dir .= "/";
+        }
 
         $this->m_filefilter = $filter;
         $this->m_showdirs = true;
@@ -166,7 +168,8 @@ class Atk_FileEditor extends Atk_Node
     {
         $this->m_dir = $this->stripDir($this->m_dir);
         if (is_dir($this->m_dir . "/" . $record["filename"])) {
-            $actions['view'] = Atk_Tools::dispatch_url($this->atkNodeType(), "dirchange", array('atkselector' => $this->m_dir . $record["filename"]));
+            $actions['view'] = Atk_Tools::dispatch_url($this->atkNodeType(), "dirchange",
+                array('atkselector' => $this->m_dir . $record["filename"]));
             unset($actions["edit"]);
             unset($actions["delete"]);
             return;
@@ -262,8 +265,10 @@ class Atk_FileEditor extends Atk_Node
     {
         if (!ereg($this->m_filefilter, $rec['filename'])) {
             Atk_Tools::triggerError($rec, "filename", "filename_invalid");
-        } else if ($mode == "add" && file_exists($this->m_dir . $rec['filename'])) {
-            Atk_Tools::triggerError($rec, "filename", "file_exists");
+        } else {
+            if ($mode == "add" && file_exists($this->m_dir . $rec['filename'])) {
+                Atk_Tools::triggerError($rec, "filename", "file_exists");
+            }
         }
     }
 
@@ -274,7 +279,8 @@ class Atk_FileEditor extends Atk_Node
      */
     function adminHeader()
     {
-        return "<p><b>" . $this->text('current_dir') . ": " . substr_replace($this->m_dir, '', 0, strlen($this->m_basedir)) . "</b></p>";
+        return "<p><b>" . $this->text('current_dir') . ": " . substr_replace($this->m_dir, '', 0,
+            strlen($this->m_basedir)) . "</b></p>";
     }
 
     /**
@@ -289,7 +295,7 @@ class Atk_FileEditor extends Atk_Node
         $sessmngr = Atk_SessionManager::atkGetSessionManager();
         $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
         $fp = @fopen($this->m_dir . $record['filename'], "wb");
-        if ($fp == NULL) {
+        if ($fp == null) {
             Atk_Tools::atkerror("Unable to open file " . $record['filename'] . " for writing. (Is directory '" . $this->m_dir . "' readable by webserver?");
             return false;
         } else {
@@ -326,7 +332,7 @@ class Atk_FileEditor extends Atk_Node
                 Atk_Tools::atkdebug("Filename changed. Deleted original '$filename'.");
             }
             $fp = @fopen($this->m_dir . $record['filename'], "wb");
-            if ($fp == NULL) {
+            if ($fp == null) {
                 Atk_Tools::atkerror("Unable to open file " . $record['filename'] . " for writing. (Is directory '" . $this->m_dir . "' readable by webserver?");
             } else {
                 fwrite($fp, $record['filecontent']);
@@ -415,7 +421,8 @@ class Atk_FileEditor extends Atk_Node
     {
         // normalizes the given string to a relative dir that should always start with the base directory
         if (strpos(realpath($dirname), realpath($this->m_basedir)) === 0) {
-            $resultdir = rtrim(str_replace(realpath($this->m_basedir), $this->m_basedir, realpath($dirname)), '/') . '/';
+            $resultdir = rtrim(str_replace(realpath($this->m_basedir), $this->m_basedir, realpath($dirname)),
+                    '/') . '/';
             if ($resultdir == '' || !is_dir($resultdir)) {
                 $resultdir = rtrim($this->m_basedir, '/') . '/';
             }
@@ -432,7 +439,7 @@ class Atk_FileEditor extends Atk_Node
      */
     function showDirs($bool)
     {
-        $this->m_showdirs = (bool) $bool;
+        $this->m_showdirs = (bool)$bool;
     }
 
 }

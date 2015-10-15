@@ -66,13 +66,15 @@ abstract class Atk_AbstractSearchHandler extends Atk_ActionHandler
      */
     protected function tableExist()
     {
-        if ($this->m_table_exists !== null)
+        if ($this->m_table_exists !== null) {
             return $this->m_table_exists;
+        }
 
         $db = $this->m_node->getDb();
         $this->m_table_exists = $db->tableExists($this->m_table);
 
-        Atk_Tools::atkdebug('tableExists checking table: ' . $this->m_table . ' exists : ' . print_r($this->m_table_exists, true));
+        Atk_Tools::atkdebug('tableExists checking table: ' . $this->m_table . ' exists : ' . print_r($this->m_table_exists,
+                true));
 
         return $this->m_table_exists;
     }
@@ -84,16 +86,18 @@ abstract class Atk_AbstractSearchHandler extends Atk_ActionHandler
      */
     function listCriteria()
     {
-        if (!$this->tableExist())
+        if (!$this->tableExist()) {
             return array();
+        }
 
         $db = &$this->m_node->getDb();
         $query = "SELECT c.name FROM {$this->m_table} c WHERE c.nodetype = '%s' ORDER BY UPPER(c.name) AND handlertype = '%s'";
         $rows = $db->getRows(sprintf($query, $this->m_node->atkNodeType(), $this->getSearchHandlerType()));
 
         $result = array();
-        foreach ($rows as $row)
+        foreach ($rows as $row) {
             $result[] = $row['name'];
+        }
 
         return $result;
     }
@@ -105,13 +109,15 @@ abstract class Atk_AbstractSearchHandler extends Atk_ActionHandler
      */
     function forgetCriteria($name)
     {
-        if (!$this->tableExist())
+        if (!$this->tableExist()) {
             return false;
+        }
 
         $db = &$this->m_node->getDb();
         $query = "DELETE FROM {$this->m_table} WHERE nodetype = '%s' AND UPPER(name) = UPPER('%s') AND handlertype = '%s'";
 
-        $db->query(sprintf($query, $this->m_node->atkNodeType(), Atk_Tools::escapeSQL($name), $this->getSearchHandlerType()));
+        $db->query(sprintf($query, $this->m_node->atkNodeType(), Atk_Tools::escapeSQL($name),
+            $this->getSearchHandlerType()));
         $db->commit();
     }
 
@@ -121,18 +127,20 @@ abstract class Atk_AbstractSearchHandler extends Atk_ActionHandler
      * NOTE:
      * This method will overwrite existing criteria with the same name.
      *
-     * @param String $name     name for the search criteria
-     * @param Array  $criteria search criteria data
+     * @param String $name name for the search criteria
+     * @param Array $criteria search criteria data
      */
     function saveCriteria($name, $criteria)
     {
-        if (!$this->tableExist())
+        if (!$this->tableExist()) {
             return false;
+        }
 
         $this->forgetCriteria($name);
         $db = &$this->m_node->getDb();
         $query = "INSERT INTO {$this->m_table} (nodetype, name, criteria, handlertype) VALUES('%s', '%s', '%s', '%s')";
-        $db->query(sprintf($query, $this->m_node->atkNodeType(), Atk_Tools::escapeSQL($name), Atk_Tools::escapeSQL(serialize($criteria)), $this->getSearchHandlerType()));
+        $db->query(sprintf($query, $this->m_node->atkNodeType(), Atk_Tools::escapeSQL($name),
+            Atk_Tools::escapeSQL(serialize($criteria)), $this->getSearchHandlerType()));
         $db->commit();
     }
 
@@ -144,16 +152,19 @@ abstract class Atk_AbstractSearchHandler extends Atk_ActionHandler
      */
     function loadCriteria($name)
     {
-        if (!$this->tableExist())
+        if (!$this->tableExist()) {
             return array();
+        }
 
         $db = &$this->m_node->getDb();
         $query = "SELECT c.criteria FROM {$this->m_table} c WHERE c.nodetype = '%s' AND UPPER(c.name) = UPPER('%s') AND handlertype = '%s'";
 
-        Atk_Tools::atk_var_dump(sprintf($query, $this->m_node->atkNodeType(), Atk_Tools::escapeSQL($name), $this->getSearchHandlerType()), 'loadCriteria query');
+        Atk_Tools::atk_var_dump(sprintf($query, $this->m_node->atkNodeType(), Atk_Tools::escapeSQL($name),
+            $this->getSearchHandlerType()), 'loadCriteria query');
 
-        list($row) = $db->getRows(sprintf($query, $this->m_node->atkNodeType(), Atk_Tools::escapeSQL($name), $this->getSearchHandlerType()));
-        $criteria = $row == NULL ? NULL : unserialize($row['criteria']);
+        list($row) = $db->getRows(sprintf($query, $this->m_node->atkNodeType(), Atk_Tools::escapeSQL($name),
+            $this->getSearchHandlerType()));
+        $criteria = $row == null ? null : unserialize($row['criteria']);
 
         Atk_Tools::atk_var_dump($criteria, 'loadCriteria criteria');
         return $criteria;
@@ -179,16 +190,18 @@ abstract class Atk_AbstractSearchHandler extends Atk_ActionHandler
     function getLoadCriteria($current)
     {
         $criteria = $this->listCriteria();
-        if (count($criteria) == 0)
-            return NULL;
+        if (count($criteria) == 0) {
+            return null;
+        }
 
         $result = '
       <select name="load_criteria" onchange="this.form.submit();" class="form-control">
         <option value=""></option>';
 
-        foreach ($criteria as $name)
+        foreach ($criteria as $name) {
             $result .= '<option value="' . htmlentities($name) . '"' . ($name == $current
-                        ? ' selected' : '') . '>' . htmlentities($name) . '</option>';
+                    ? ' selected' : '') . '>' . htmlentities($name) . '</option>';
+        }
 
         $result .= '</select>';
         return $result;
@@ -205,15 +218,17 @@ abstract class Atk_AbstractSearchHandler extends Atk_ActionHandler
     function handleSavedCriteria($criteria)
     {
         $name = array_key_exists('load_criteria', $this->m_postvars) ? $this->m_postvars['load_criteria']
-                : '';
+            : '';
         if (!empty($this->m_postvars['forget_criteria'])) {
             $forget = $this->m_postvars['forget_criteria'];
             $this->forgetCriteria($forget);
-            $name = NULL;
-        } else if (!empty($this->m_postvars['save_criteria'])) {
-            $save = $this->m_postvars['save_criteria'];
-            $this->saveCriteria($save, $criteria);
-            $name = $save;
+            $name = null;
+        } else {
+            if (!empty($this->m_postvars['save_criteria'])) {
+                $save = $this->m_postvars['save_criteria'];
+                $this->saveCriteria($save, $criteria);
+                $name = $save;
+            }
         }
         return $name;
     }
@@ -229,16 +244,19 @@ abstract class Atk_AbstractSearchHandler extends Atk_ActionHandler
     function getSavedCriteria($current)
     {
         // check if table is present
-        if (!$this->tableExist())
+        if (!$this->tableExist()) {
             return array();
+        }
 
-        return array('load_criteria' => $this->getLoadCriteria($current),
+        return array(
+            'load_criteria' => $this->getLoadCriteria($current),
             'forget_criteria' => $this->getForgetCriteria($current),
             'toggle_save_criteria' => $this->getToggleSaveCriteria(),
             'save_criteria' => $this->getSaveCriteria($current),
             'label_load_criteria' => htmlentities(Atk_Tools::atktext('load_criteria', 'atk')),
             'label_forget_criteria' => htmlentities(Atk_Tools::atktext('forget_criteria', 'atk')),
-            'label_save_criteria' => '<label for="toggle_save_criteria">' . htmlentities(Atk_Tools::atktext('save_criteria', 'atk')) . '</label>',
+            'label_save_criteria' => '<label for="toggle_save_criteria">' . htmlentities(Atk_Tools::atktext('save_criteria',
+                    'atk')) . '</label>',
             'text_save_criteria' => htmlentities(Atk_Tools::atktext('save_criteria', 'atk'))
         );
     }
@@ -252,10 +270,12 @@ abstract class Atk_AbstractSearchHandler extends Atk_ActionHandler
      */
     function getForgetCriteria($current)
     {
-        if (empty($current) || $this->loadCriteria($current) == NULL)
-            return NULL;
-        else
-            return Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), $this->m_action, array('forget_criteria' => $current)), SESSION_REPLACE);
+        if (empty($current) || $this->loadCriteria($current) == null) {
+            return null;
+        } else {
+            return Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), $this->m_action,
+                array('forget_criteria' => $current)), SESSION_REPLACE);
+        }
     }
 
     /**

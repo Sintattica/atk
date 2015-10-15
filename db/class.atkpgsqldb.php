@@ -46,16 +46,19 @@ class Atk_PgsqlDb extends Atk_Db
         if (empty($this->m_link_id)) {
             /* connection string */
             $connection_str = "dbname=" . $this->m_database;
-            if (!empty($this->m_host))
+            if (!empty($this->m_host)) {
                 $connection_str .= " host=" . $this->m_host;
-            if (!empty($this->m_user))
+            }
+            if (!empty($this->m_user)) {
                 $connection_str .= " user=" . $this->m_user;
-            if (!empty($this->m_password))
+            }
+            if (!empty($this->m_password)) {
                 $connection_str .= " password=" . $this->m_password;
+            }
 
             /* establish connection */
             $this->m_link_id = pg_connect($connection_str);
-            if ($this->m_link_id === FALSE) {
+            if ($this->m_link_id === false) {
                 $this->halt("connect using " . $this->m_database . ", " . $this->m_host . ", " . $this->m_user . ", ***** failed.");
 
                 // We can't use pg_result_error, since we need a resource
@@ -75,7 +78,7 @@ class Atk_PgsqlDb extends Atk_Db
     /**
      * TODO FIXME: I don't know what errormessges postgresql gives,
      * so this function only returns DB_UNKNOWNERROR for now.
-     * 
+     *
      * @param mixed $error
      * @return int The ATK error code
      */
@@ -90,7 +93,7 @@ class Atk_PgsqlDb extends Atk_Db
      */
     function disconnect()
     {
-        
+
     }
 
     /**
@@ -102,8 +105,9 @@ class Atk_PgsqlDb extends Atk_Db
     function query($query, $offset = -1, $limit = -1)
     {
         /* limit? */
-        if ($offset >= 0 && $limit >= 0)
+        if ($offset >= 0 && $limit >= 0) {
             $query .= " LIMIT $limit OFFSET $offset";
+        }
         Atk_Tools::atkdebug("atkpgsqldb.query(): " . $query);
 
         /* connect to database */
@@ -121,8 +125,9 @@ class Atk_PgsqlDb extends Atk_Db
             $this->m_row = 0;
 
             $this->m_error = pg_last_error();
-            if ($error)
+            if ($error) {
                 $this->halt("Invalid SQL query: $query");
+            }
 
             if ($this->m_query_id) {
                 /* return query id */
@@ -139,7 +144,8 @@ class Atk_PgsqlDb extends Atk_Db
     function next_record()
     {
         /* goto next record */
-        $this->m_record = @pg_fetch_array($this->m_query_id, $this->m_row, PGSQL_ASSOC | Atk_Config::getGlobal("pgsqlfetchmode"));
+        $this->m_record = @pg_fetch_array($this->m_query_id, $this->m_row,
+            PGSQL_ASSOC | Atk_Config::getGlobal("pgsqlfetchmode"));
         $this->m_row++;
 
         /* are we there? */
@@ -175,10 +181,11 @@ class Atk_PgsqlDb extends Atk_Db
         /* connect first */
         if ($this->connect() == DB_SUCCESS) {
             /* lock */
-            if ($mode == "write")
+            if ($mode == "write") {
                 $result = @pg_query($this->m_link_id, "lock table $table") or $this->halt("cannot lock table $table");
-            else
+            } else {
                 $result = 1;
+            }
 
             /* return result */
             return $result;
@@ -270,11 +277,13 @@ class Atk_PgsqlDb extends Atk_Db
                 /* try again */
                 $query = "SELECT nextval('" . $sequencename . "') AS nextid";
 
-                $id = @pg_query($this->m_link_id, $query) or $this->halt("cannot get nextval() of sequence '$sequencename'");
+                $id = @pg_query($this->m_link_id,
+                    $query) or $this->halt("cannot get nextval() of sequence '$sequencename'");
 
                 /* empty? */
-                if (empty($id))
+                if (empty($id)) {
                     return 0;
+                }
             }
 
             /* get nextid */
@@ -364,34 +373,43 @@ class Atk_PgsqlDb extends Atk_Db
                 ($row['is_not_null'] == 1 ? MF_NOT_NULL : 0) |
                 ($row['is_auto_inc'] == 1 ? MF_AUTO_INCREMENT : 0);
 
-            if ($row['is_auto_inc'] == 1)
+            if ($row['is_auto_inc'] == 1) {
                 $meta[$i]['sequence'] = $row['sequence'];
-
-            else if (Atk_Tools::atk_strlen($row['default']) > 0) {
-                // date/time/datetime
-                if (strtolower($row['default']) == "now" && in_array($meta[$i]['gentype'], array("date", "time", "datetime")))
-                    $meta[$i]['default'] = "NOW";
-
-                // numbers
-                else if (in_array($meta[$i]['gentype'], array("number", "decimal")))
-                    $meta[$i]['default'] = $row['default'];
-
-                // strings
-                else if (in_array($meta[$i]['gentype'], array("string", "text")))
-                    $meta[$i]['default'] = $row['default'];
-
-                // boolean
-                else if ($meta[$i]['gentype'] == "boolean")
-                    $meta[$i]['default'] = strtolower($row['default']) == "t" ? 1
-                            : 0;
+            } else {
+                if (Atk_Tools::atk_strlen($row['default']) > 0) {
+                    // date/time/datetime
+                    if (strtolower($row['default']) == "now" && in_array($meta[$i]['gentype'],
+                            array("date", "time", "datetime"))
+                    ) {
+                        $meta[$i]['default'] = "NOW";
+                    } // numbers
+                    else {
+                        if (in_array($meta[$i]['gentype'], array("number", "decimal"))) {
+                            $meta[$i]['default'] = $row['default'];
+                        } // strings
+                        else {
+                            if (in_array($meta[$i]['gentype'], array("string", "text"))) {
+                                $meta[$i]['default'] = $row['default'];
+                            } // boolean
+                            else {
+                                if ($meta[$i]['gentype'] == "boolean") {
+                                    $meta[$i]['default'] = strtolower($row['default']) == "t" ? 1
+                                        : 0;
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
-            if ($full)
+            if ($full) {
                 $meta["meta"][$row['name']] = &$meta[$i];
+            }
         }
 
-        if ($full)
+        if ($full) {
             $meta['num_fields'] = count($rows);
+        }
 
         return $meta;
     }
@@ -419,7 +437,7 @@ class Atk_PgsqlDb extends Atk_Db
 
     /**
      * Check if table exists.
-     * 
+     *
      * @param string $table the table to find
      * @return bool true if found, false if not found
      */
@@ -435,7 +453,17 @@ class Atk_PgsqlDb extends Atk_Db
      */
     function getSearchModes()
     {
-        return array("exact", "substring", "wildcard", "regexp", "greaterthan", "greaterthanequal", "lessthan", "lessthanequal", "between");
+        return array(
+            "exact",
+            "substring",
+            "wildcard",
+            "regexp",
+            "greaterthan",
+            "greaterthanequal",
+            "lessthan",
+            "lessthanequal",
+            "between"
+        );
     }
 
 }

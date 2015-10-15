@@ -26,25 +26,26 @@ class Atk_CKAttribute extends Atk_TextAttribute
     private $ckOptions = [
         // the toolbar groups arrangement
         'toolbarGroups' => [
-		    ['name' => 'clipboard', 'groups' => [ 'clipboard', 'undo', 'document']],
+            ['name' => 'clipboard', 'groups' => ['clipboard', 'undo', 'document']],
             ['name' => 'editing', 'groups' => ['find', 'selection', 'spellchecker']],
             ['name' => 'links'],
             ['name' => 'insert'],
             '/',
-		    ['name' => 'basicstyles', 'groups' => ['basicstyles', 'cleanup']],
-		    ['name' => 'paragraph', 'groups' => ['list', 'indent', 'align']],
-		    ['name' => 'styles'],
-		    ['name' => 'colors']
+            ['name' => 'basicstyles', 'groups' => ['basicstyles', 'cleanup']],
+            ['name' => 'paragraph', 'groups' => ['list', 'indent', 'align']],
+            ['name' => 'styles'],
+            ['name' => 'colors']
         ],
         // remove some buttons
         'removeButtons' => 'Save,NewPage,Preview,Anchor,Flash,Smiley,PageBreak,Iframe,Subscript,Superscript,Font,Styles',
         // remove display of html tags on bottom bar
         'removePlugins' => 'elementspath',
         // simplify the dialog windows
-	    'removeDialogTabs' => 'image:advanced;link:advanced',
+        'removeDialogTabs' => 'image:advanced;link:advanced',
         // set the size
-        'width' => 800, 'height' => 250
-	];
+        'width' => 800,
+        'height' => 250
+    ];
 
     /**
      * Constructor
@@ -97,7 +98,7 @@ class Atk_CKAttribute extends Atk_TextAttribute
             $dbval = $this->escapeSQL(preg_replace("/\&quot;/Ui", "\"", $rec[$this->fieldName()]));
             return $dbval;
         }
-        return NULL;
+        return null;
     }
 
     /**

@@ -22,8 +22,8 @@
  * class for custom trigger listeners. Extend this class and implement
  * postUpdate, preDelete etc. functions that will automatically be called
  * when such a trigger occurs. For more flexibility, override only
- * the notify($trigger, $record) method which catches every trigger. 
- * Using Atk_Node::addListener you can add listeners that catch evens such as 
+ * the notify($trigger, $record) method which catches every trigger.
+ * Using Atk_Node::addListener you can add listeners that catch evens such as
  * records updates and additions.
  * This is much like the classic atk postUpdate/postAdd triggers, only much
  * more flexible.
@@ -40,16 +40,16 @@ class Atk_TriggerListener
      * @access private
      * @var Atk_Node
      */
-    var $m_node = NULL;
+    var $m_node = null;
 
     /**
      * Base constructor.
-     * 
+     *
      * @return Atk_TriggerListener
      */
     function __construct()
     {
-        
+
     }
 
     /**
@@ -77,7 +77,7 @@ class Atk_TriggerListener
      * @param string $mode The mode (add/update)
      * @return boolean Result of operation.
      */
-    function notify($trigger, &$record, $mode = NULL)
+    function notify($trigger, &$record, $mode = null)
     {
         if (method_exists($this, $trigger)) {
             Atk_Tools::atkdebug("Call listener " . get_class($this) . " for trigger $trigger on " . $this->m_node->atkNodeType() . " (" . $this->m_node->primaryKey($record) . ")");

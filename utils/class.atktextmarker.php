@@ -57,7 +57,8 @@ class Atk_TextMarker
      */
     function hide($position, $length)
     {
-        $this->m_editedtext = substr($this->m_editedtext, 0, $position) . substr($this->m_editedtext, $position + $length);
+        $this->m_editedtext = substr($this->m_editedtext, 0, $position) . substr($this->m_editedtext,
+                $position + $length);
         $orgpos = $this->getOriginalPosition($position);
         $this->m_cutpoints[$orgpos] = $length;
     }
@@ -92,8 +93,9 @@ class Atk_TextMarker
     {
         $newval = $position;
         foreach ($this->m_cutpoints as $pos => $len) {
-            if ($pos <= $position)
-                $newval+=$len;
+            if ($pos <= $position) {
+                $newval += $len;
+            }
         }
         return $newval;
     }

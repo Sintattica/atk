@@ -36,7 +36,7 @@ class Atk_MysqliDDL extends Atk_MysqlDDL
     /**
      * Convert an database specific type to an ATK generic datatype.
      *
-     * @param string $type  The database specific datatype to convert.
+     * @param string $type The database specific datatype to convert.
      */
     function getGenericType($type)
     {
@@ -89,7 +89,7 @@ class Atk_MysqliDDL extends Atk_MysqlDDL
     function buildView($name, $select, $with_check_option)
     {
         return "CREATE VIEW $name AS " . $select . ($with_check_option ? " WITH CHECK OPTION"
-                    : "");
+            : "");
     }
 
     /**

@@ -35,7 +35,8 @@ class Atk_DGLimit extends Atk_DGComponent
         $defaultLimit = $this->getGrid()->getDefaultLimit();
         $limit = $this->getGrid()->getLimit();
         //$values = array(5, 10, 15, 20, 25, 30, 40, 50, 100, $defaultLimit, $limit);
-        $values = Atk_Config::getGlobal("recordsperpage_options", array(5, 10, 15, 20, 25, 30, 40, 50, 100, $defaultLimit, $limit));
+        $values = Atk_Config::getGlobal("recordsperpage_options",
+            array(5, 10, 15, 20, 25, 30, 40, 50, 100, $defaultLimit, $limit));
         $values = array_diff($values, array(-1));
         $values = array_unique($values);
         sort($values);
@@ -63,8 +64,11 @@ class Atk_DGLimit extends Atk_DGComponent
         //Add 'show all' option.
         //if ($this -> getOption('showAll', false))
         if (Atk_Config::getGlobal("enable_showall", false)) {
-            $options[] = array('title' => $this->text('all'), 'value' => -1,
-                'current' => $limit == -1);
+            $options[] = array(
+                'title' => $this->text('all'),
+                'value' => -1,
+                'current' => $limit == -1
+            );
         }
 
         return $options;

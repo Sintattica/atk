@@ -50,7 +50,7 @@ class Atk_NodeValidator
      */
     function atkNodeValidator()
     {
-        
+
     }
 
     /**
@@ -101,11 +101,13 @@ class Atk_NodeValidator
     function validate($mode = "", $ignoreList = array())
     {
         // check overrides
-        if (count($ignoreList))
+        if (count($ignoreList)) {
             $this->setIgnoreList($ignoreList);
+        }
 
-        if ($mode != "")
+        if ($mode != "") {
             $this->setMode($mode);
+        }
 
         Atk_Tools::atkdebug("validate() with mode " . $this->m_mode . " for node " . $this->m_nodeObj->atkNodeType());
 
@@ -142,34 +144,37 @@ class Atk_NodeValidator
                 // validate obligatory fields (but not the auto_increment ones, because they don't have a value yet)
                 if ($p_attrib->hasFlag(AF_OBLIGATORY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT) && $p_attrib->isEmpty($record)) {
                     Atk_Tools::atkTriggerError($record, $p_attrib, 'error_obligatoryfield');
-                }
-                // if flag is primary
-                else if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) && !$p_attrib->isEmpty($record)) {
-                    $condition = $this->m_nodeObj->getTable() . ".$attribname='" . $db->escapeSQL($p_attrib->value2db($record)) . "'";
-                    if ($this->m_mode != 'add') {
-                        $condition .= " AND NOT (" . $this->m_nodeObj->primaryKey($record) . ")";
-                    }
-                    $cnt = $this->m_nodeObj->select($condition)
-                        ->ignoreDefaultFilters(true)
-                        ->ignorePostvars(true)
-                        ->getRowCount();
-                    if ($cnt > 0) {
-                        Atk_Tools::atkTriggerError($record, $p_attrib, 'error_uniquefield');
+                } // if flag is primary
+                else {
+                    if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) && !$p_attrib->isEmpty($record)) {
+                        $condition = $this->m_nodeObj->getTable() . ".$attribname='" . $db->escapeSQL($p_attrib->value2db($record)) . "'";
+                        if ($this->m_mode != 'add') {
+                            $condition .= " AND NOT (" . $this->m_nodeObj->primaryKey($record) . ")";
+                        }
+                        $cnt = $this->m_nodeObj->select($condition)
+                            ->ignoreDefaultFilters(true)
+                            ->ignorePostvars(true)
+                            ->getRowCount();
+                        if ($cnt > 0) {
+                            Atk_Tools::atkTriggerError($record, $p_attrib, 'error_uniquefield');
+                        }
                     }
                 }
             }
         }
 
         if (isset($record['atkerror']) && count($record['atkerror']) > 0) {
-            for ($i = 0, $_i = count($record["atkerror"]); $i < $_i; $i++)
+            for ($i = 0, $_i = count($record["atkerror"]); $i < $_i; $i++) {
                 $record["atkerror"][$i]["node"] = $this->m_nodeObj->m_type;
+            }
         }
 
         $this->validateUniqueFieldSets($record);
 
         if (isset($record['atkerror'])) {
-            for ($i = 0, $_i = count($record["atkerror"]); $i < $_i; $i++)
+            for ($i = 0, $_i = count($record["atkerror"]); $i < $_i; $i++) {
                 $record["atkerror"][$i]["node"] = $this->m_nodeObj->m_type;
+            }
             return false;
         }
 
@@ -178,9 +183,9 @@ class Atk_NodeValidator
 
     /**
      * Validate attribute value.
-     * 
+     *
      * @param atkAttribute $p_attrib pointer to the attribute
-     * @param array        $record   record
+     * @param array $record record
      */
     function validateAttributeValue(&$p_attrib, &$record)
     {
@@ -196,8 +201,8 @@ class Atk_NodeValidator
 
     /**
      * @deprecated
-     * 
-     * @param array $record 
+     *
+     * @param array $record
      */
     function validateAttributes(&$record)
     {
@@ -237,13 +242,16 @@ class Atk_NodeValidator
                         foreach ($attrib->m_refKey as $refkey) {
                             $query->addCondition($query->quoteField($refkey) . " = '" . $db->escapeSQL($record[$attrib->fieldName()][$refkey]) . "'");
                         }
-                    } else if (!$attrib->isNotNullInDb() && $attrib->isEmpty($record)) {
-                        $query->addCondition($query->quoteField($field) . " IS NULL");
                     } else {
-                        $query->addCondition($query->quoteField($field) . " = '" . $attrib->value2db($record) . "'");
+                        if (!$attrib->isNotNullInDb() && $attrib->isEmpty($record)) {
+                            $query->addCondition($query->quoteField($field) . " IS NULL");
+                        } else {
+                            $query->addCondition($query->quoteField($field) . " = '" . $attrib->value2db($record) . "'");
+                        }
                     }
-                } else
+                } else {
                     Atk_Tools::atkerror("Field $field is mentioned in uniquefieldset but does not exist in " . $this->m_nodeObj->atknodetype());
+                }
             }
 
             if ($this->m_mode != 'add') {

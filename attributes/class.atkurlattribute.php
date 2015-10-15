@@ -71,7 +71,7 @@ class Atk_UrlAttribute extends Atk_Attribute
      *                     for most attributes, corresponds to a field in
      *                     the database.
      * @param int $flags Flags for the attribute.
-     * @param mixed $size  The size(s) of the attribute. See the $size
+     * @param mixed $size The size(s) of the attribute. See the $size
      *                     parameter of the setAttribSize() method for more
      *                     information on the possible values of this
      *                     parameter.
@@ -81,17 +81,17 @@ class Atk_UrlAttribute extends Atk_Attribute
     {
         if (AF_POPUP === ($flags & AF_POPUP)) {
             $this->m_newWindow = true;
-            $flags &= (~ AF_POPUP);
+            $flags &= (~AF_POPUP);
         }
 
         if (AF_URL_ALLOWWRAP === ($flags & AF_URL_ALLOWWRAP)) {
             $this->m_allowWrap = true;
-            $flags &= (~ AF_URL_ALLOWWRAP);
+            $flags &= (~AF_URL_ALLOWWRAP);
         }
 
         if (AF_URL_STRIPHTTP === ($flags & AF_URL_STRIPHTTP)) {
             $this->m_stripHttp = true;
-            $flags &= (~ AF_URL_STRIPHTTP);
+            $flags &= (~AF_URL_STRIPHTTP);
         }
 
         $this->atkAttribute($name, $flags, $size);
@@ -222,8 +222,9 @@ class Atk_UrlAttribute extends Atk_Attribute
          * or:      ftp://www2-dev.test_url.com/index.php?/feeds/index.rss2
          */
         if (($this->m_accepts_url_flag & ABSOLUTE) == ABSOLUTE) {
-            $absolute_result = preg_match("/^" . $base_url_regex . $relative_url_regex . "*$/Ui", $record[$this->fieldName()])
-                    ? true : false;
+            $absolute_result = preg_match("/^" . $base_url_regex . $relative_url_regex . "*$/Ui",
+                $record[$this->fieldName()])
+                ? true : false;
 
             $result = $result || $absolute_result;
         }
@@ -235,7 +236,7 @@ class Atk_UrlAttribute extends Atk_Attribute
          */
         if (($this->m_accepts_url_flag & ANCHOR) == ANCHOR) {
             $anchor_result = preg_match("/^#" . $relative_url_regex . "*$/Ui", $record[$this->fieldName()])
-                    ? true : false;
+                ? true : false;
 
             $result = $result || $anchor_result;
         }
@@ -248,8 +249,9 @@ class Atk_UrlAttribute extends Atk_Attribute
          * or:      https://www2-dev.test_url.com/index.php?/history.html#bookmark
          */
         if ((($this->m_accepts_url_flag & ABSOLUTE) == ABSOLUTE) && (($this->m_accepts_url_flag & ANCHOR) == ANCHOR)) {
-            $absolute_anchor_result = preg_match("/^" . $base_url_regex . $relative_url_regex_with_anchor . "*$/Ui", $record[$this->fieldName()])
-                    ? true : false;
+            $absolute_anchor_result = preg_match("/^" . $base_url_regex . $relative_url_regex_with_anchor . "*$/Ui",
+                $record[$this->fieldName()])
+                ? true : false;
 
             $result = $result || $absolute_anchor_result;
         }
@@ -261,7 +263,7 @@ class Atk_UrlAttribute extends Atk_Attribute
          */
         if (($this->m_accepts_url_flag & RELATIVE) == RELATIVE) {
             $relative_result = preg_match("/^" . $relative_url_regex_with_anchor . "+$/Ui", $record[$this->fieldName()])
-                    ? true : false;
+                ? true : false;
 
             $result = $result || $relative_result;
         }
@@ -272,14 +274,22 @@ class Atk_UrlAttribute extends Atk_Attribute
          */
         if (!$result && $show_error) {
             // if result of all validations is false, display error-messages
-            if ($absolute_result === false)
-                Atk_Tools::triggerError($record, $this->fieldName(), 'invalid_absolute_no_anchor_url', Atk_Tools::atktext('invalid_absolute_no_anchor_url'));
-            if ($anchor_result === false)
-                Atk_Tools::triggerError($record, $this->fieldName(), 'invalid_url_anchor', Atk_Tools::atktext('invalid_url_anchor'));
-            if ($absolute_anchor_result === false)
-                Atk_Tools::triggerError($record, $this->fieldName(), 'invalid_absolute_url', Atk_Tools::atktext('invalid_absolute_url'));
-            if ($relative_result === false)
-                Atk_Tools::triggerError($record, $this->fieldName(), 'invalid_relative_url', Atk_Tools::atktext('invalid_relative_url'));
+            if ($absolute_result === false) {
+                Atk_Tools::triggerError($record, $this->fieldName(), 'invalid_absolute_no_anchor_url',
+                    Atk_Tools::atktext('invalid_absolute_no_anchor_url'));
+            }
+            if ($anchor_result === false) {
+                Atk_Tools::triggerError($record, $this->fieldName(), 'invalid_url_anchor',
+                    Atk_Tools::atktext('invalid_url_anchor'));
+            }
+            if ($absolute_anchor_result === false) {
+                Atk_Tools::triggerError($record, $this->fieldName(), 'invalid_absolute_url',
+                    Atk_Tools::atktext('invalid_absolute_url'));
+            }
+            if ($relative_result === false) {
+                Atk_Tools::triggerError($record, $this->fieldName(), 'invalid_relative_url',
+                    Atk_Tools::atktext('invalid_relative_url'));
+            }
         }
         return ($result || parent::validate($record, $mode));
     }

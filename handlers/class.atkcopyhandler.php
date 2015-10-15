@@ -2,7 +2,7 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * @package atk
@@ -29,7 +29,7 @@ class Atk_CopyHandler extends Atk_ActionHandler
 
     /**
      * The action handler.
-     * 
+     *
      * @param Bool $redirect
      */
     function action_copy($redirect = true)

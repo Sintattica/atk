@@ -95,11 +95,12 @@ class Atk_AddHandler extends Atk_ActionHandler
      *                      add-form.
      * @return String HTML A String containing a box with an add form.
      */
-    function addPage($record = NULL)
+    function addPage($record = null)
     {
         $result = $this->getAddPage($record);
-        if ($result !== false)
+        if ($result !== false) {
             return $result;
+        }
     }
 
     /**
@@ -109,20 +110,21 @@ class Atk_AddHandler extends Atk_ActionHandler
      *                      add-form.
      * @return String HTML A String containing a box with an add form.
      */
-    function getAddPage($record = NULL)
+    function getAddPage($record = null)
     {
         // check if there are postvars set for filling the record, this
         // can happen when a new selection is made using the select handler etc.
-        if ($record == NULL) {
-            $record = $this->m_node->updateRecord('', NULL, NULL, true);
+        if ($record == null) {
+            $record = $this->m_node->updateRecord('', null, null, true);
         }
 
         $this->registerExternalFiles();
 
         $params = $this->getAddParams($record);
 
-        if ($params === false)
+        if ($params === false) {
             return false;
+        }
 
         return $this->renderAddPage($params);
     }
@@ -161,7 +163,7 @@ class Atk_AddHandler extends Atk_ActionHandler
      * @return Array An array containing the elements used in a template for
      *               add pages.
      */
-    function getAddParams($record = NULL)
+    function getAddParams($record = null)
     {
         $node = &$this->m_node;
         $ui = &$node->getUi();
@@ -207,7 +209,7 @@ class Atk_AddHandler extends Atk_ActionHandler
         $node = &$this->m_node;
 
         $formIdentifier = ((isset($this->m_partial) && $this->m_partial != "")) ? "dialogform"
-                : "entryform";
+            : "entryform";
         $formstart = '<form id="' . $formIdentifier . '" name="' . $formIdentifier . '" enctype="multipart/form-data" action="' . $controller->getPhpFile() . '?' . SID . '"' .
             ' method="post" onsubmit="return globalSubmit(this,false)">';
 
@@ -258,15 +260,17 @@ class Atk_AddHandler extends Atk_ActionHandler
         $node = &$this->m_node;
         $forceList = array();
         $filterList = (isset($node->m_postvars['atkfilter'])) ? Atk_Tools::decodeKeyValueSet($node->m_postvars['atkfilter'])
-                : array();
+            : array();
         foreach ($filterList as $field => $value) {
             list($table, $column) = explode('.', $field);
             if ($column == null) {
                 $forceList[$table] = $value;
-            } else if ($table == $this->getNode()->getTable()) {
-                $forceList[$column] = $value;
             } else {
-                $forceList[$table][$column] = $value;
+                if ($table == $this->getNode()->getTable()) {
+                    $forceList[$column] = $value;
+                } else {
+                    $forceList[$table][$column] = $value;
+                }
             }
         }
         return $forceList;
@@ -294,7 +298,8 @@ class Atk_AddHandler extends Atk_ActionHandler
         if ($this->m_partial == 'dialog') {
             $controller = Atk_Controller::getInstance();
             $result = array();
-            $result[] = $controller->getDialogButton('save', null, $this->getDialogSaveUrl(), $this->getDialogSaveParams());
+            $result[] = $controller->getDialogButton('save', null, $this->getDialogSaveUrl(),
+                $this->getDialogSaveParams());
             $result[] = $controller->getDialogButton('cancel');
             return $result;
         }
@@ -343,7 +348,7 @@ class Atk_AddHandler extends Atk_ActionHandler
         list($type, $attribute, $partial) = explode('.', $partial);
 
         $attr = &$this->m_node->getAttribute($attribute);
-        if ($attr == NULL) {
+        if ($attr == null) {
             Atk_Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
             return '';
         }
@@ -356,7 +361,10 @@ class Atk_AddHandler extends Atk_ActionHandler
      */
     function partial_sectionstate()
     {
-        Atk_State::set(array("nodetype" => $this->m_node->atknodetype(), "section" => $this->m_postvars['atksectionname']), $this->m_postvars['atksectionstate']);
+        Atk_State::set(array(
+            "nodetype" => $this->m_node->atknodetype(),
+            "section" => $this->m_postvars['atksectionname']
+        ), $this->m_postvars['atksectionstate']);
     }
 
     /**

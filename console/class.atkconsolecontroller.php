@@ -18,7 +18,7 @@
  * ATK console controller base class. Useful for creating command line
  * scripts. Has out of the box support for key/value parameters and
  * supports multiple actions that can be handled by a single controller.
- * 
+ *
  * @package atk
  * @subpackage console
  */
@@ -33,7 +33,7 @@ class Atk_ConsoleController
 
     /**
      * Debug enabled?
-     * 
+     *
      * @var bool
      */
     private $m_debug = false;
@@ -56,7 +56,7 @@ class Atk_ConsoleController
 
     /**
      * Enabled/disable debug mode.
-     * 
+     *
      * @param bool $enable enable debug mode?
      */
     protected function setDebugEnabled($enable)
@@ -66,7 +66,7 @@ class Atk_ConsoleController
 
     /**
      * Is debugging enabled?
-     * 
+     *
      * @return bool debugging enabled?
      */
     protected function isDebugEnabled()
@@ -124,10 +124,12 @@ class Atk_ConsoleController
         if (preg_match("!class.([^.]+).inc$!", $class, $matches)) { // user supplied path relative to script
             include_once($class);
             $controller = new $matches[1]();
-        } else if (Atk_Tools::atkimport($class)) { // user supplied ATK class path
-            $controller = Atk_Tools::atknew($class);
         } else {
-            die('Unknown console controller "' . $class . '".' . "\n");
+            if (Atk_Tools::atkimport($class)) { // user supplied ATK class path
+                $controller = Atk_Tools::atknew($class);
+            } else {
+                die('Unknown console controller "' . $class . '".' . "\n");
+            }
         }
 
         $controller->executeAction($action, $params);
@@ -137,7 +139,7 @@ class Atk_ConsoleController
      * Tries to execute the given action.
      *
      * @param string $action action name
-     * @param array  $params action parameters
+     * @param array $params action parameters
      */
     protected function executeAction($action, $params)
     {
@@ -153,9 +155,9 @@ class Atk_ConsoleController
     }
 
     /**
-     * Useful method for outputting log data to a log file. 
-     * 
-     * Log files are be placed in the ATK temp directory in a subdirectory 
+     * Useful method for outputting log data to a log file.
+     *
+     * Log files are be placed in the ATK temp directory in a subdirectory
      * called console/. Each file uses the naming convention <controller>_<yyyymmdd>.log.
      * The controller part is replaced by a lower case version of the controller class name
      * and the yyyymmdd part is replaced by the current date.
@@ -164,7 +166,7 @@ class Atk_ConsoleController
      * created automatically.
      *
      * @param string $message info message
-     * @param mixed  $data    data that should be logged (optional)
+     * @param mixed $data data that should be logged (optional)
      */
     public function info($message, $data = null)
     {
@@ -172,9 +174,9 @@ class Atk_ConsoleController
     }
 
     /**
-     * Useful method for outputting error data to a log file. 
-     * 
-     * Log files are be placed in the ATK temp directory in a subdirectory 
+     * Useful method for outputting error data to a log file.
+     *
+     * Log files are be placed in the ATK temp directory in a subdirectory
      * called console/. Each file uses the naming convention <controller>_<yyyymmdd>.log.
      * The controller part is replaced by a lower case version of the controller class name
      * and the yyyymmdd part is replaced by the current date.
@@ -183,7 +185,7 @@ class Atk_ConsoleController
      * created automatically.
      *
      * @param string $message error message
-     * @param mixed  $data    data that should be logged (optional)
+     * @param mixed $data data that should be logged (optional)
      */
     public function error($message, $data = null)
     {
@@ -192,16 +194,16 @@ class Atk_ConsoleController
 
     /**
      * Internal logging method.
-     * 
-     * Log files are be placed in the ATK temp directory in a subdirectory 
+     *
+     * Log files are be placed in the ATK temp directory in a subdirectory
      * called console/. Each file uses the naming convention <controller>_<yyyymmdd>_<type>.log.
      * The controller part is replaced by a lower case version of the controller class name, the
      * yyyymmdd part is replaced by the current date and the type is replaced by the value of
      * the $type parameter.
      *
-     * @param string $type    type (max 5 chars)
+     * @param string $type type (max 5 chars)
      * @param string $message message
-     * @param mixed  $data    optional data
+     * @param mixed $data optional data
      */
     protected function log($type, $message, $data)
     {
@@ -239,8 +241,9 @@ class Atk_ConsoleController
         foreach ($ref->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             if (preg_match("/(.+?)Action/i", $method->getName(), $matches)) {
                 $action = $matches[1];
-                if (substr($action, 0, 2) == '__')
+                if (substr($action, 0, 2) == '__') {
                     continue;
+                }
                 $comment = $method->getDocComment();
 
                 echo "$action:\n";
@@ -266,7 +269,7 @@ class Atk_ConsoleController
      * Executes the action with logging on the console. You can access this
      * method by using --debug as the console controller action followed by the
      * normal action name (or none if default) and parameters.
-     * 
+     *
      * @param array $params
      */
     public function __debugAction($params)

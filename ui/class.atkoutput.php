@@ -55,8 +55,8 @@ class Atk_Output
      */
     public static function &getInstance()
     {
-        static $s_instance = NULL;
-        if ($s_instance == NULL) {
+        static $s_instance = null;
+        if ($s_instance == null) {
             Atk_Tools::atkdebug("Created a new atkOutput instance");
             $s_instance = new self();
         }
@@ -89,14 +89,17 @@ class Atk_Output
         // the pages, unless $nocache was set to true.
         if ($nocache) {
             self::sendNoCacheHeaders();
-        } else if ($lastmodificationstamp != 0) {
-            $_last_modified_date = @substr($_SERVER['HTTP_IF_MODIFIED_SINCE'], 0, strpos($_SERVER['HTTP_IF_MODIFIED_SINCE'], 'GMT') + 3);
-            $_gmt_mtime = gmdate('D, d M Y H:i:s', $lastmodificationstamp) . ' GMT';
-            if ($_last_modified_date == $_gmt_mtime) {
-                self::header("HTTP/1.0 304 Not Modified");
-                return;
-            } else {
-                self::header("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastmodificationstamp) . " GMT");
+        } else {
+            if ($lastmodificationstamp != 0) {
+                $_last_modified_date = @substr($_SERVER['HTTP_IF_MODIFIED_SINCE'], 0,
+                    strpos($_SERVER['HTTP_IF_MODIFIED_SINCE'], 'GMT') + 3);
+                $_gmt_mtime = gmdate('D, d M Y H:i:s', $lastmodificationstamp) . ' GMT';
+                if ($_last_modified_date == $_gmt_mtime) {
+                    self::header("HTTP/1.0 304 Not Modified");
+                    return;
+                } else {
+                    self::header("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastmodificationstamp) . " GMT");
+                }
             }
         }
     }
@@ -174,7 +177,8 @@ class Atk_Output
     {
         global $g_debug_msg;
         if (Atk_Config::getGlobal("debug") > 0) {
-            $output = '<br><div style="font-family: monospace; font-size: 11px;" align="left" id="atk_debugging_div">' . implode("<br>\n ", $g_debug_msg) . '</div>';
+            $output = '<br><div style="font-family: monospace; font-size: 11px;" align="left" id="atk_debugging_div">' . implode("<br>\n ",
+                    $g_debug_msg) . '</div>';
             return $output;
         }
         return "";

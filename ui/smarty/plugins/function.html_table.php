@@ -58,7 +58,7 @@ function smarty_function_html_table($params, &$smarty)
         return;
     }
 
-    foreach ($params as $_key=>$_value) {
+    foreach ($params as $_key => $_value) {
         switch ($_key) {
             case 'loop':
                 $$_key = (array)$_value;
@@ -87,28 +87,28 @@ function smarty_function_html_table($params, &$smarty)
     $loop_count = count($loop);
     if (empty($params['rows'])) {
         /* no rows specified */
-        $rows = ceil($loop_count/$cols);
+        $rows = ceil($loop_count / $cols);
     } elseif (empty($params['cols'])) {
         if (!empty($params['rows'])) {
             /* no cols specified, but rows */
-            $cols = ceil($loop_count/$rows);
+            $cols = ceil($loop_count / $rows);
         }
     }
 
     $output = "<table $table_attr>\n";
 
-    for ($r=0; $r<$rows; $r++) {
+    for ($r = 0; $r < $rows; $r++) {
         $output .= "<tr" . smarty_function_html_table_cycle('tr', $tr_attr, $r) . ">\n";
-        $rx =  ($vdir == 'down') ? $r*$cols : ($rows-1-$r)*$cols;
+        $rx = ($vdir == 'down') ? $r * $cols : ($rows - 1 - $r) * $cols;
 
-        for ($c=0; $c<$cols; $c++) {
-            $x =  ($hdir == 'right') ? $rx+$c : $rx+$cols-1-$c;
-            if ($inner!='cols') {
+        for ($c = 0; $c < $cols; $c++) {
+            $x = ($hdir == 'right') ? $rx + $c : $rx + $cols - 1 - $c;
+            if ($inner != 'cols') {
                 /* shuffle x to loop over rows*/
-                $x = floor($x/$cols) + ($x%$cols)*$rows;
+                $x = floor($x / $cols) + ($x % $cols) * $rows;
             }
 
-            if ($x<$loop_count) {
+            if ($x < $loop_count) {
                 $output .= "<td" . smarty_function_html_table_cycle('td', $td_attr, $c) . ">" . $loop[$x] . "</td>\n";
             } else {
                 $output .= "<td" . smarty_function_html_table_cycle('td', $td_attr, $c) . ">$trailpad</td>\n";
@@ -117,18 +117,19 @@ function smarty_function_html_table($params, &$smarty)
         $output .= "</tr>\n";
     }
     $output .= "</table>\n";
-    
+
     return $output;
 }
 
-function smarty_function_html_table_cycle($name, $var, $no) {
-    if(!is_array($var)) {
+function smarty_function_html_table_cycle($name, $var, $no)
+{
+    if (!is_array($var)) {
         $ret = $var;
     } else {
         $ret = $var[$no % count($var)];
     }
-    
-    return ($ret) ? ' '.$ret : '';
+
+    return ($ret) ? ' ' . $ret : '';
 }
 
 

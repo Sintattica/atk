@@ -9,7 +9,7 @@
  * @subpackage handlers
  *
  * @copyright (c) 2000-2009 Ibuildings.nl BV
- * 
+ *
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
  * @version $Revision$

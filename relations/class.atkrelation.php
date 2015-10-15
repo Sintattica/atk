@@ -45,13 +45,13 @@ class Atk_Relation extends Atk_Attribute
      * Descriptor template for destination node.
      * @var String
      */
-    var $m_descTemplate = NULL;
+    var $m_descTemplate = null;
 
     /**
      * Descriptor handler.
      * @var Object
      */
-    var $m_descHandler = NULL;
+    var $m_descHandler = null;
 
     /**
      * Constructor
@@ -113,8 +113,9 @@ class Atk_Relation extends Atk_Attribute
 
             // not between quotes
             if (!($currentChar === ' ' && $lastChar === ' ' && sizeof($quoteStack) == 0)) {
-                if ($currentChar != "\n")
+                if ($currentChar != "\n") {
                     $result .= $currentChar;
+                }
             }
             $lastChar = $currentChar;
         }
@@ -128,10 +129,11 @@ class Atk_Relation extends Atk_Attribute
     function addDestinationFilter($filter)
     {
         $filter = $this->_cleanupDestinationFilter($filter);
-        if ($this->m_destinationFilter != "")
+        if ($this->m_destinationFilter != "") {
             $this->m_destinationFilter = "({$this->m_destinationFilter}) AND ({$filter})";
-        else
+        } else {
             $this->m_destinationFilter = $filter;
+        }
         return $this;
     }
 
@@ -182,10 +184,11 @@ class Atk_Relation extends Atk_Attribute
     function descriptor($record, &$node)
     {
         $method = $this->m_name . "_descriptor";
-        if (method_exists($this->m_descHandler, $method))
+        if (method_exists($this->m_descHandler, $method)) {
             return $this->m_descHandler->$method($record, $node);
-        else
+        } else {
             return $this->m_descHandler->descriptor($record, $node);
+        }
     }
 
     /**
@@ -204,17 +207,20 @@ class Atk_Relation extends Atk_Attribute
             // Validate if destination was created succesfully
             if (!is_object($this->m_destInstance)) {
                 Atk_Tools::atkerror("Relation with unknown nodetype '" . $this->m_destination . "' (in node '" . $this->m_owner . "')");
-                $this->m_destInstance = NULL;
+                $this->m_destInstance = null;
                 return false;
             }
 
-            if ($this->hasFlag(AF_NO_FILTER))
+            if ($this->hasFlag(AF_NO_FILTER)) {
                 $this->m_destInstance->m_flags |= NF_NO_FILTER;
+            }
 
             foreach (array_keys($this->m_destInstance->m_attribList) as $key) {
                 $attribute = &$this->m_destInstance->m_attribList[$key];
 
-                if (is_subclass_of($attribute, "atkrelation") && is_object($this->m_ownerInstance) && $attribute->m_destination == $this->m_ownerInstance->atkNodeType()) {
+                if (is_subclass_of($attribute,
+                        "atkrelation") && is_object($this->m_ownerInstance) && $attribute->m_destination == $this->m_ownerInstance->atkNodeType()
+                ) {
                     $attribute->m_destInstance = &$this->m_ownerInstance;
 
                     if (count($attribute->m_tabs) == 1 && $attribute->m_tabs[0] == "default") {
@@ -223,11 +229,13 @@ class Atk_Relation extends Atk_Attribute
                 }
             }
 
-            if (!empty($this->m_descHandler))
+            if (!empty($this->m_descHandler)) {
                 $this->m_destInstance->setDescriptorHandler($this);
+            }
 
-            if (!empty($this->m_descTemplate))
+            if (!empty($this->m_descTemplate)) {
                 $this->m_destInstance->setDescriptorTemplate($this->m_descTemplate);
+            }
         }
         return true;
     }
@@ -255,7 +263,7 @@ class Atk_Relation extends Atk_Attribute
      */
     function validate(&$record, $mode)
     {
-        
+
     }
 
     /**
@@ -267,8 +275,10 @@ class Atk_Relation extends Atk_Attribute
     {
         if ($this->createDestination() && isset($record[$this->fieldName()][$this->m_destInstance->primaryKeyField()])) {
             return empty($record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]);
-        } else if ($this->createDestination() && isset($record[$this->fieldName()])) {
-            return empty($record[$this->fieldName()]);
+        } else {
+            if ($this->createDestination() && isset($record[$this->fieldName()])) {
+                return empty($record[$this->fieldName()]);
+            }
         }
         return true; // always empty if error.
     }
@@ -291,13 +301,14 @@ class Atk_Relation extends Atk_Attribute
      * Get the searchmode for nested/child attributes.
      *
      * @param string|array $searchmode searchmode
-     * @param string       $childname  the child attribute's name
+     * @param string $childname the child attribute's name
      * @return string|array the child searchmode
      */
     protected function getChildSearchMode($searchmode, $childname)
     {
-        if (is_array($searchmode) && isset($searchmode[$childname]))
+        if (is_array($searchmode) && isset($searchmode[$childname])) {
             return $searchmode[$childname];
+        }
         return $searchmode;
     }
 
@@ -338,7 +349,7 @@ class Atk_Relation extends Atk_Attribute
         if ($this->createDestination()) {
             return $this->m_destInstance;
         }
-        return NULL;
+        return null;
     }
 
     /**
@@ -349,7 +360,8 @@ class Atk_Relation extends Atk_Attribute
     function getAddLabel()
     {
         $key = "link_" . $this->fieldName() . "_add";
-        $label = Atk_Tools::atktext($key, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type, "", "", true);
+        $label = Atk_Tools::atktext($key, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type, "", "",
+            true);
         if ($label == "") {
             $label = Atk_Tools::atktext($key, $this->m_destInstance->m_module, "", "", "", true);
             if ($label == "") {

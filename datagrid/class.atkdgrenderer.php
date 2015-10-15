@@ -9,14 +9,14 @@
  * @subpackage utils
  *
  * @copyright (c) 2000-2007 Ibuildings.nl BV
- * 
+ *
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
 
 /**
- * The grid renderer is responsible for rendering the grid components and 
+ * The grid renderer is responsible for rendering the grid components and
  * ofcourse the grid itself.
- * 
+ *
  * @author Peter C. Verhage <peter@achievo.org>
  * @package atk
  * @subpackage datagrid
@@ -29,7 +29,7 @@ class Atk_DGRenderer extends Atk_DGComponent
      * first time (e.g. if this is not an update of the grid contents).
      *
      * @param string $result grid HTML
-     * 
+     *
      * @return string grid HTML
      */
     protected function renderContainer($result)
@@ -47,8 +47,8 @@ class Atk_DGRenderer extends Atk_DGComponent
      * Surrounds the grid by a form if needed.
      *
      * @param string $result grid HTML
-     * 
-     * @return sting grid HTML 
+     *
+     * @return sting grid HTML
      */
     protected function renderForm($result)
     {
@@ -84,8 +84,9 @@ class Atk_DGRenderer extends Atk_DGComponent
      */
     protected function registerScript()
     {
-        if ($this->getGrid()->isUpdate())
+        if ($this->getGrid()->isUpdate()) {
             return;
+        }
 
         Atk_Tools::atkimport('atk.utils.atkjson');
 

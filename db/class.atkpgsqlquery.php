@@ -48,7 +48,7 @@ class Atk_PgsqlQuery extends Atk_Query
     /**
      * Add limiting clauses to the query.
      * Default implementation: no limit supported. Derived classes should implement this.
-     * 
+     *
      * @param string $query The query to add the limiter to
      */
     function _addLimiter(&$query)
@@ -67,7 +67,7 @@ class Atk_PgsqlQuery extends Atk_Query
      *
      * @return String a SQL Select COUNT(*) Query
      */
-    function buildCount($distinct = FALSE)
+    function buildCount($distinct = false)
     {
         $query = "SELECT COUNT(*) AS count FROM (" . $this->buildSelect($distinct) . ") x";
         return $query;

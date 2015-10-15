@@ -2,7 +2,7 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * @package atk
@@ -71,9 +71,9 @@ class Atk_MlTextAttribute extends Atk_MlAttribute
         }
 
         /* default language */
-        $result.= '<textarea name="' . $prefix . $this->formName() . '[' . $languages[0] . ']"' .
+        $result .= '<textarea name="' . $prefix . $this->formName() . '[' . $languages[0] . ']"' .
             ' rows="10" wrap="virtual"' . ($this->m_size > 0 ? ' cols="' . $this->m_size . '"'
-                    : '') . '>' .
+                : '') . '>' .
             htmlspecialchars($record[$this->fieldName()][$languages[0]]) .
             '</textarea>';
 
@@ -86,11 +86,11 @@ class Atk_MlTextAttribute extends Atk_MlAttribute
      * This method is called by the node if it wants the data needed to create
      * an edit form.
      *
-     * @param String $mode     the edit mode ("add" or "edit")
-     * @param array  $arr      pointer to the edit array
-     * @param array  $defaults pointer to the default values array
-     * @param array  $error    pointer to the error array
-     * @param String $fieldprefix   the fieldprefix
+     * @param String $mode the edit mode ("add" or "edit")
+     * @param array $arr pointer to the edit array
+     * @param array $defaults pointer to the default values array
+     * @param array $error pointer to the error array
+     * @param String $fieldprefix the fieldprefix
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
@@ -99,7 +99,11 @@ class Atk_MlTextAttribute extends Atk_MlAttribute
         if ($this->m_edited) { // if we edited this attrib, we also need to add the
             $key = array_search($this->m_ownerInstance->m_postvars['atkeditlng'], $this->m_languages);
             $curlng = $this->m_languages[($key !== false ? $key : 1)];
-            $entry = array("name" => $this->m_name . "_ml", "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
+            $entry = array(
+                "name" => $this->m_name . "_ml",
+                "obligatory" => $this->hasFlag(AF_OBLIGATORY),
+                "attribute" => &$this
+            );
 
             /* label? */
             $entry["label"] = $this->label($defaults) . ' (<label id="' . $fieldprefix . $this->formName() . '_label">' . Atk_Tools::atktext("language_" . strtolower($curlng)) . '</label>)';
@@ -109,9 +113,9 @@ class Atk_MlTextAttribute extends Atk_MlAttribute
 
             /* first language of other languages */
             $entry["html"] = '<textarea name="' . $fieldprefix . $this->formName() . '[' . (count($this->m_languages) == 2
-                        ? $curlng : "multilanguage") . ']"' .
+                    ? $curlng : "multilanguage") . ']"' .
                 ' rows="10" wrap="virtual"' . ($this->m_size > 0 ? ' cols="' . $this->m_size . '"'
-                        : '') . ' >' . htmlspecialchars($defaults[$this->fieldName()][$curlng]) .
+                    : '') . ' >' . htmlspecialchars($defaults[$this->fieldName()][$curlng]) .
                 '</textarea>';
 
             $arr["fields"][] = $entry;

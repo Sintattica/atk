@@ -27,7 +27,7 @@
  */
 class Atk_MysqlDDL extends Atk_DDL
 {
-    var $m_table_type = NULL;
+    var $m_table_type = null;
 
     /**
      * Constructor
@@ -42,13 +42,14 @@ class Atk_MysqlDDL extends Atk_DDL
     /**
      * Convert an ATK generic datatype to a database specific type.
      *
-     * @param string $generictype  The datatype to convert.
+     * @param string $generictype The datatype to convert.
      */
     function getType($generictype)
     {
         $config = Atk_Config::getGlobal('db_mysql_default_' . $generictype . '_columntype');
-        if ($config)
+        if ($config) {
             return $config;
+        }
 
         switch ($generictype) {
             case "number":
@@ -74,7 +75,7 @@ class Atk_MysqlDDL extends Atk_DDL
     /**
      * Convert an database specific type to an ATK generic datatype.
      *
-     * @param string $type  The database specific datatype to convert.
+     * @param string $type The database specific datatype to convert.
      */
     function getGenericType($type)
     {
@@ -111,25 +112,27 @@ class Atk_MysqlDDL extends Atk_DDL
      * number of databases. Databases that won't work with this syntax,
      * should override this method in the database specific ddl class.
      *
-     * @param string $name        The name of the field
+     * @param string $name The name of the field
      * @param string $generictype The datatype of the field (should be one of the
      *                            generic types supported by ATK).
-     * @param int $size        The size of the field (if appropriate)
-     * @param int $flags       The DDL_ flags for this field.
-     * @param mixed $default   The default value to be used when inserting new
+     * @param int $size The size of the field (if appropriate)
+     * @param int $flags The DDL_ flags for this field.
+     * @param mixed $default The default value to be used when inserting new
      *                         rows.
      */
-    function buildField($name, $generictype, $size = 0, $flags = 0, $default = NULL)
+    function buildField($name, $generictype, $size = 0, $flags = 0, $default = null)
     {
-        if ($generictype == "string" && $size > 255)
+        if ($generictype == "string" && $size > 255) {
             $generictype = "text";
+        }
 
         $result = parent::buildField($name, $generictype, $size, $flags, $default);
 
         // add binary option after varchar declaration to make sure field
         // values are compared in case-sensitive fashion
-        if ($generictype == "string")
+        if ($generictype == "string") {
             $result = preg_replace('/VARCHAR\(([0-9]+)\)/i', 'VARCHAR(\1) BINARY', $result);
+        }
 
         return $result;
     }
@@ -167,9 +170,9 @@ class Atk_MysqlDDL extends Atk_DDL
         $query = parent::buildCreate();
 
         if (!empty($this->m_db->m_charset)) {
-            $query.= ' DEFAULT CHARACTER SET ' . $this->m_db->m_charset;
+            $query .= ' DEFAULT CHARACTER SET ' . $this->m_db->m_charset;
             if (!empty($this->m_db->m_collate)) {
-                $query.= ' COLLATE ' . $this->m_db->m_collate;
+                $query .= ' COLLATE ' . $this->m_db->m_collate;
             }
         }
 

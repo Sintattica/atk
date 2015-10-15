@@ -41,8 +41,8 @@ class Atk_MessageQueue
      */
     function &getInstance()
     {
-        static $s_instance = NULL;
-        if ($s_instance == NULL) {
+        static $s_instance = null;
+        if ($s_instance == null) {
             global $g_sessionManager;
             if (is_object($g_sessionManager)) { // don't bother to create if session has not yet been initialised
                 $s_instance = new Atk_MessageQueue();
@@ -56,7 +56,7 @@ class Atk_MessageQueue
      */
     function __construct()
     {
-        
+
     }
 
     /**
@@ -64,7 +64,7 @@ class Atk_MessageQueue
      *
      * @static
      * @param string $txt
-     * @param int $type 
+     * @param int $type
      * @return boolean Success
      */
     function addMessage($txt, $type = AMQ_GENERAL)
@@ -84,14 +84,19 @@ class Atk_MessageQueue
      */
     function _getTypeName($type)
     {
-        if ($type == AMQ_SUCCESS)
+        if ($type == AMQ_SUCCESS) {
             return 'success';
-        else if ($type == AMQ_FAILURE)
-            return 'failure';
-        else if ($type == AMQ_WARNING)
-            return 'warning';
-        else
-            return 'general';
+        } else {
+            if ($type == AMQ_FAILURE) {
+                return 'failure';
+            } else {
+                if ($type == AMQ_WARNING) {
+                    return 'warning';
+                } else {
+                    return 'general';
+                }
+            }
+        }
     }
 
     /**

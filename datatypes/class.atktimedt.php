@@ -63,11 +63,14 @@ class Atk_Time extends Atk_DataType
         $this->setTemplate('[hours]:[minutes]:[seconds]');
         if (is_array($time)) {
             $this->m_time = gmmktime($time['hours'], $time['minutes'], $time['seconds'], 1, 1, 1970);
-        } else if (is_numeric($time))
-            $this->m_time = $time;
-        else
-            Atk_Tools::atkerror("Unknown time format! Called with: " .
-                "new atkTime($time)");
+        } else {
+            if (is_numeric($time)) {
+                $this->m_time = $time;
+            } else {
+                Atk_Tools::atkerror("Unknown time format! Called with: " .
+                    "new atkTime($time)");
+            }
+        }
     }
 
     /**
@@ -101,7 +104,7 @@ class Atk_Time extends Atk_DataType
      */
     public function add(atkTime $add)
     {
-        $this->m_time+=$add->getTotalSeconds();
+        $this->m_time += $add->getTotalSeconds();
         return $this;
     }
 
@@ -113,7 +116,7 @@ class Atk_Time extends Atk_DataType
      */
     public function subtract(atkTime $subtract)
     {
-        $this->m_time-=$subtract->getTotalSeconds();
+        $this->m_time -= $subtract->getTotalSeconds();
         return $this;
     }
 
@@ -158,9 +161,11 @@ class Atk_Time extends Atk_DataType
      */
     public function getTimeArray($leadingzero = true)
     {
-        return array('hours' => $this->getHours($leadingzero),
+        return array(
+            'hours' => $this->getHours($leadingzero),
             'minutes' => $this->getMinutes($leadingzero),
-            'seconds' => $this->getSeconds($leadingzero));
+            'seconds' => $this->getSeconds($leadingzero)
+        );
     }
 
     /**
@@ -175,9 +180,10 @@ class Atk_Time extends Atk_DataType
      */
     public function getHours($leadingzero = false)
     {
-        $hours = (int) ($this->m_time / 3600);
-        if ($leadingzero && $hours < 10)
+        $hours = (int)($this->m_time / 3600);
+        if ($leadingzero && $hours < 10) {
             $hours = "0$hours";
+        }
         return $hours;
     }
 
@@ -193,9 +199,10 @@ class Atk_Time extends Atk_DataType
      */
     public function getMinutes($leadingzero = false)
     {
-        $minutes = (int) (($this->m_time - ($this->getHours() * 3600)) / 60);
-        if ($leadingzero && $minutes < 10)
+        $minutes = (int)(($this->m_time - ($this->getHours() * 3600)) / 60);
+        if ($leadingzero && $minutes < 10) {
             $minutes = "0$minutes";
+        }
         return $minutes;
     }
 
@@ -211,10 +218,11 @@ class Atk_Time extends Atk_DataType
      */
     public function getSeconds($leadingzero = false)
     {
-        $seconds = (int) ($this->m_time - ($this->getHours() * 3600) -
+        $seconds = (int)($this->m_time - ($this->getHours() * 3600) -
             ($this->getMinutes() * 60));
-        if ($leadingzero && $seconds < 10)
+        if ($leadingzero && $seconds < 10) {
             $seconds = "0$seconds";
+        }
         return $seconds;
     }
 
@@ -227,7 +235,7 @@ class Atk_Time extends Atk_DataType
      */
     public function getTotalMinutes()
     {
-        return (int) ($this->m_time / 60);
+        return (int)($this->m_time / 60);
     }
 
     /**
@@ -239,7 +247,7 @@ class Atk_Time extends Atk_DataType
      */
     public function getTotalSeconds()
     {
-        return (int) $this->m_time;
+        return (int)$this->m_time;
     }
 
     /**
@@ -256,7 +264,7 @@ class Atk_Time extends Atk_DataType
     public function getDescription($template = '')
     {
         return $this->m_template->parse($this->getTimeArray())
-                ->getString();
+            ->getString();
     }
 
     /**
@@ -288,7 +296,7 @@ class Atk_Time extends Atk_DataType
      */
     public function getDiff(atkTime $compare)
     {
-        return new atkTime((int) ($this->m_time -
+        return new atkTime((int)($this->m_time -
             $compare->getTotalSeconds()));
     }
 

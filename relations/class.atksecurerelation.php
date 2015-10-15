@@ -2,9 +2,9 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
- * 
+ *
  * @package atk
  * @subpackage relations
  *
@@ -18,7 +18,7 @@ Atk_Tools::userelation("atkonetoonerelation");
 /**
  * Relationship that can link 2 tables based on a secure link
  * that can not be decrypted when not logged in through an atk
- * application. 
+ * application.
  * This effectively secures the database so that data in two
  * tables can not be correlated by mischievous access to the database.
  *
@@ -30,7 +30,7 @@ Atk_Tools::userelation("atkonetoonerelation");
  */
 class Atk_SecureRelation extends Atk_OneToOneRelation
 {
-    var $m_crypt = NULL;
+    var $m_crypt = null;
     var $m_linktable;
     var $m_linkfield;
     var $m_linkuserfield = "username";
@@ -46,28 +46,37 @@ class Atk_SecureRelation extends Atk_OneToOneRelation
     var $m_cachefield;
 
     /**
-     * Creates an atkSecureRelation, 
+     * Creates an atkSecureRelation,
      * similar to an atkOneToOne relation only encrypted
      *
-     * @param string $name        The unique name of the attribute. In slave 
-     *                            mode, this corresponds to the foreign key 
-     *                            field in the database table. 
+     * @param string $name The unique name of the attribute. In slave
+     *                            mode, this corresponds to the foreign key
+     *                            field in the database table.
      * @param string $destination The destination node (in module.nodename
      *                            notation)
-     * @param string $linktable   The table we link to
-     * @param string $linkfield   The field we link to
-     * @param string $linkbackfield  
-     * @param int $keylength      The length of the encryption key
-     * @param string $refKey=""   In master mode, this specifies the foreign 
-     *                            key field from the destination node that 
-     *                            points to the master record. In slave mode, 
+     * @param string $linktable The table we link to
+     * @param string $linkfield The field we link to
+     * @param string $linkbackfield
+     * @param int $keylength The length of the encryption key
+     * @param string $refKey =""   In master mode, this specifies the foreign
+     *                            key field from the destination node that
+     *                            points to the master record. In slave mode,
      *                            this parameter should be empty.
-     * @param string $encryption  The encryption to use
-     * @param int $flags          Attribute flags that influence this 
-     *                            attributes' behavior.     
+     * @param string $encryption The encryption to use
+     * @param int $flags Attribute flags that influence this
+     *                            attributes' behavior.
      */
-    function __construct($name, $destination, $linktable, $linkfield, $linkbackfield, $keylength, $refKey = "", $encryption, $flags = 0)
-    {
+    function __construct(
+        $name,
+        $destination,
+        $linktable,
+        $linkfield,
+        $linkbackfield,
+        $keylength,
+        $refKey = "",
+        $encryption,
+        $flags = 0
+    ) {
         parent::__construct($name, $destination, $refKey, $flags | AF_ONETOONE_ERROR);
         $this->createDestination();
         $this->m_crypt = Atk_Encryption::getEncryption($encryption);
@@ -94,10 +103,10 @@ class Atk_SecureRelation extends Atk_OneToOneRelation
      * Framework method. It should not be necessary to call this method directly.
      *
      * @param String $action the action that is being performed on the node
-     * @param array  $arr reference to the the recordlist array
+     * @param array $arr reference to the the recordlist array
      * @param String $fieldprefix the fieldprefix
-     * @param int    $flags the recordlist flags
-     * @param array  $atksearch the current ATK search list (if not empty)
+     * @param int $flags the recordlist flags
+     * @param array $atksearch the current ATK search list (if not empty)
      * @param String $atkorderby the current ATK orderby string (if not empty)
      */
     function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
@@ -125,36 +134,41 @@ class Atk_SecureRelation extends Atk_OneToOneRelation
      */
     function getLinkPassword($linktable, $linkfield, $encryption = "")
     {
-        if ($this->m_linkpass)
+        if ($this->m_linkpass) {
             return $this->m_linkpass;
-        if (!$linktable)
+        }
+        if (!$linktable) {
             $linktable = $this->m_linktable;
-        if (!$linkfield)
+        }
+        if (!$linkfield) {
             $linkfield = $this->m_linkfield;
+        }
 
         $user = Atk_SecurityManager::atkGetUser();
         $username = $user['name'];
         $password = $user['PASS'];
 
-        if ($encryption)
+        if ($encryption) {
             $crypt = Atk_Encryption::getEncryption($encryption);
-        else
+        } else {
             $crypt = $this->m_crypt;
+        }
 
         if ($username == "administrator") {
             //if the administrator asks for a  password we generate one
             //because the administrator only makes the first person
             global $linkpass;
-            if (!$linkpass)
+            if (!$linkpass) {
                 $linkpass = $crypt->getRandomKey($password);
-        }
-        else {
+            }
+        } else {
             $query = "SELECT " . $linkfield . " as pass FROM " . $linktable . " WHERE " . Atk_Config::getGlobal("auth_userfield") . " = '" . $username . "'";
 
             $db = Atk_Tools::atkGetDb();
             $rec = $db->getrows($query);
-            if (count($rec) < 1)
+            if (count($rec) < 1) {
                 return $linkpass;
+            }
 
             $encryptedpass = array_pop($rec);
 
@@ -166,10 +180,10 @@ class Atk_SecureRelation extends Atk_OneToOneRelation
 
     /**
      * This function in the atkOneToOneRelation store the record of the parentnode in the DB
-     * with the reference key of the other table. 
+     * with the reference key of the other table.
      * So we encrypt the reference key before we call the method.
      * For more documentation see the atkOneToOneRelation
-     * 
+     *
      * @param Atk_Query $query The SQL query object
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
@@ -193,7 +207,8 @@ class Atk_SecureRelation extends Atk_OneToOneRelation
         if (count($records) == 0 && !$this->m_searching) {
             if (is_array($rec)) {
                 $link = $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]];
-                $cryptedlink = $this->m_crypt->encrypt($link, $this->getLinkPassword($this->m_linktable, $this->m_linkfield));
+                $cryptedlink = $this->m_crypt->encrypt($link,
+                    $this->getLinkPassword($this->m_linktable, $this->m_linkfield));
                 $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]] = addslashes($cryptedlink);
             }
 
@@ -205,18 +220,20 @@ class Atk_SecureRelation extends Atk_OneToOneRelation
                 $where[] = $decryptedlink;
             }
 
-            if ($tablename)
+            if ($tablename) {
                 $tablename .= ".";
-            $query->addSearchCondition($tablename . $this->m_ownerInstance->primaryKeyField() . " IN ('" . implode("','", $where) . "')");
+            }
+            $query->addSearchCondition($tablename . $this->m_ownerInstance->primaryKeyField() . " IN ('" . implode("','",
+                    $where) . "')");
         }
     }
 
     /**
      * This function in the atkOneToOneRelation loads the record of the childnode from the DB
-     * with the the id from de reference key in childnode. 
-     * So we decrypt the reference key before we call the method. 
+     * with the the id from de reference key in childnode.
+     * So we decrypt the reference key before we call the method.
      * For more documentation see the atkOneToOneRelation
-     * 
+     *
      * @param Atk_Db $db The database object
      * @param array $record The record
      * @param string $mode The mode we're in ("add", "edit", "copy")
@@ -233,14 +250,16 @@ class Atk_SecureRelation extends Atk_OneToOneRelation
                     $this->m_searcharray = $this->m_ownerInstance->m_postvars["atksearch"][$this->fieldName()];
 
                     //if al search values are equal, then make it an OR search
-                    if (count(array_unique(array_values($this->m_searcharray))) == 1)
+                    if (count(array_unique(array_values($this->m_searcharray))) == 1) {
                         $this->m_destInstance->m_postvars['atksearchmethod'] = "OR";
+                    }
 
                     $oldsearcharray = $this->m_searcharray;
                     // check wether mentioned fields are actually in the node
                     foreach ($this->m_searcharray as $searchfield => $searchvalue) {
-                        if (!is_object($this->m_destInstance->m_attribList[$searchfield]))
+                        if (!is_object($this->m_destInstance->m_attribList[$searchfield])) {
                             unset($this->m_searcharray[$searchfield]);
+                        }
                     }
                     $this->m_destInstance->m_postvars["atksearch"] = $this->m_searcharray;
                     $this->m_destInstance->m_postvars["atksearchmode"] = $this->m_ownerInstance->m_postvars["atksearchmode"];
@@ -255,7 +274,8 @@ class Atk_SecureRelation extends Atk_OneToOneRelation
                         $decryptedlink = $this->decrypt($records[$i], $this->m_linkbackfield);
 
                         if (!$decryptedlink && $errorconfig) {
-                            Atk_Tools::atkdebug("Unable to decrypt link: " . $link . "for record: " . var_export($records[$i], true) . " with linkbackfield: " . $this->m_linkbackfield);
+                            Atk_Tools::atkdebug("Unable to decrypt link: " . $link . "for record: " . var_export($records[$i],
+                                    true) . " with linkbackfield: " . $this->m_linkbackfield);
                             $decrypterror = true;
                         } else {
                             $this->m_keylookup[$decryptedlink] = $i;
@@ -263,23 +283,25 @@ class Atk_SecureRelation extends Atk_OneToOneRelation
                         }
                     }
                     if ($decrypterror) {
-                        if ($errorconfig == 2)
+                        if ($errorconfig == 2) {
                             Atk_Tools::atkerror("There were errors decrypting the secured links, see debuginfo");
-                        else if ($errorconfig == 1)
-                            Atk_Tools::mailreport();
+                        } else {
+                            if ($errorconfig == 1) {
+                                Atk_Tools::mailreport();
+                            }
+                        }
                     }
                     return $this->m_records;
                 }
-            }
-            else { // lookup table present, postload stage
+            } else { // lookup table present, postload stage
                 $this->m_searching = false;
                 return $this->m_records[$this->m_keylookup[$record[$this->m_ownerInstance->primaryKeyField()]]];
             }
         } else {
             if (!$record[$this->fieldName()] || (!$record[$this->m_cachefield] && $this->m_cachefield)) {
                 $query = "SELECT " . $this->fieldName();
-                $query.= ($this->m_cachefield ? ",{$this->m_cachefield}" : "");
-                $query.=" FROM " . $this->m_ownerInstance->m_table . " WHERE " . $this->m_ownerInstance->m_table . "." . $this->m_ownerInstance->primaryKeyField() . "='" . $record[$this->m_ownerInstance->primaryKeyField()] . "'";
+                $query .= ($this->m_cachefield ? ",{$this->m_cachefield}" : "");
+                $query .= " FROM " . $this->m_ownerInstance->m_table . " WHERE " . $this->m_ownerInstance->m_table . "." . $this->m_ownerInstance->primaryKeyField() . "='" . $record[$this->m_ownerInstance->primaryKeyField()] . "'";
                 $result = $db->getrows($query);
             } else {
                 $result[0] = $record;
@@ -317,27 +339,32 @@ class Atk_SecureRelation extends Atk_OneToOneRelation
     {
         global $g_encryption;
 
-        if (!$this->m_linkpass)
+        if (!$this->m_linkpass) {
             $this->getLinkPassword($this->m_linktable, $this->m_linkfield, $g_encryption);
+        }
 
         if (!$this->m_cachefield || !$record[$this->m_cachefield]) {
             $cryptedlink = $this->m_crypt->decrypt($record[$field], $this->m_linkpass);
             if ($this->m_ownerInstance) {
                 if ($this->m_cachefield && is_numeric($cryptedlink) && $cryptedlink && $record[$this->m_ownerInstance->primaryKeyField()] && $this->createDestination()) {
-                    if ($this->m_ownerInstance->m_attribList[$field])
+                    if ($this->m_ownerInstance->m_attribList[$field]) {
                         $cachetable = $this->m_ownerInstance->m_table;
-                    else if ($this->m_destInstance->m_attribList[$field])
-                        $cachetable = $this->m_destInstance->m_table;
+                    } else {
+                        if ($this->m_destInstance->m_attribList[$field]) {
+                            $cachetable = $this->m_destInstance->m_table;
+                        }
+                    }
 
                     $db = Atk_Tools::atkGetDb();
                     $db->query("UPDATE $cachetable
                               SET {$this->m_cachefield}='$cryptedlink'
                               WHERE " . $this->m_ownerInstance->primaryKeyField() . " = '" .
                         $record[$this->m_ownerInstance->primaryKeyField()] . "'");
-                }
-                else if (!$cryptedlink || !is_numeric($cryptedlink)) {
-                    Atk_Tools::atkdebug("decrypt($record, $field) failed! and yielded: $cryptedlink");
-                    return NULL;
+                } else {
+                    if (!$cryptedlink || !is_numeric($cryptedlink)) {
+                        Atk_Tools::atkdebug("decrypt($record, $field) failed! and yielded: $cryptedlink");
+                        return null;
+                    }
                 }
             } else {
                 Atk_Tools::atkhalt("no ownerinstance found for the secure relation");
@@ -377,10 +404,11 @@ class Atk_SecureRelation extends Atk_OneToOneRelation
         foreach ($result as $recordArray) {
             $record = $recordArray[$this->fieldName()];
             $decrypted_record = $this->decrypt($recordArray, $this->fieldName());
-            if ($condition == "")
+            if ($condition == "") {
                 $whereOrAnd = "(";
-            else
+            } else {
                 $whereOrAnd = "OR";
+            }
 
             $condition .= $whereOrAnd . " (" . $this->m_destInstance->m_table . "." . $this->m_destInstance->primaryKeyField() . "='" . $decrypted_record . "' ";
             $condition .= "AND " . $this->m_ownerInstance->m_table . "." . $this->fieldName() . "=\"" . addslashes($record) . "\") ";
@@ -433,11 +461,11 @@ class Atk_SecureRelation extends Atk_OneToOneRelation
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param Atk_Query $query     The query object where the search condition should be placed on
-     * @param String $table       The name of the table in which this attribute
+     * @param Atk_Query $query The query object where the search condition should be placed on
+     * @param String $table The name of the table in which this attribute
      *                              is stored
-     * @param mixed $value        The value the user has entered in the searchbox
-     * @param String $searchmode  The searchmode to use. This can be any one
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param String $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
@@ -462,10 +490,12 @@ class Atk_SecureRelation extends Atk_OneToOneRelation
                         $itsTable = $p_attrib->m_ownerInstance->m_table;
                     }
 
-                    if (is_array($searchmode))
+                    if (is_array($searchmode)) {
                         $searchmode = $searchmode[$this->fieldName()];
-                    if (!$searchmode)
+                    }
+                    if (!$searchmode) {
                         $searchmode = Atk_Config::getGlobal("search_defaultmode");
+                    }
                     // checking for the getSearchCondition
                     // for backwards compatibility
                     if (method_exists($p_attrib, "getSearchCondition")) {
@@ -487,19 +517,25 @@ class Atk_SecureRelation extends Atk_OneToOneRelation
 
         foreach ($this->m_destsearch[$value] as $result) {
             $destresult = $this->decrypt($result, $this->m_linkbackfield);
-            if ($destresult)
+            if ($destresult) {
                 $destresults[] = $destresult;
+            }
         }
 
-        if ($query->m_joinaliases[$this->m_ownerInstance->m_table . "*" . $this->m_ownerInstance->primaryKeyField()])
+        if ($query->m_joinaliases[$this->m_ownerInstance->m_table . "*" . $this->m_ownerInstance->primaryKeyField()]) {
             $table = $query->m_joinaliases[$this->m_ownerInstance->m_table . "*" . $this->m_ownerInstance->primaryKeyField()];
-        else if (in_array($this->m_ownerInstance->m_table, $query->m_tables))
-            $table = $this->m_ownerInstance->m_table;
-        else
-            $table = null;
+        } else {
+            if (in_array($this->m_ownerInstance->m_table, $query->m_tables)) {
+                $table = $this->m_ownerInstance->m_table;
+            } else {
+                $table = null;
+            }
+        }
 
-        if (!empty($destresults) && $table)
-            return $table . "." . $this->m_ownerInstance->primaryKeyField() . " IN (" . implode(",", $destresults) . ")";
+        if (!empty($destresults) && $table) {
+            return $table . "." . $this->m_ownerInstance->primaryKeyField() . " IN (" . implode(",",
+                $destresults) . ")";
+        }
     }
 
 }

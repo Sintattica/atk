@@ -37,14 +37,16 @@ $output = &atkInstance("atk.ui.atkoutput");
 $page->register_style($theme->stylePath("style.css"));
 $page->register_style($theme->stylePath("top.css"));
 
-$vars = array("logintext" => Atk_Tools::atktext("logged_in_as", "atk"),
+$vars = array(
+    "logintext" => Atk_Tools::atktext("logged_in_as", "atk"),
     "logouttext" => ucfirst(Atk_Tools::atktext("logout", "atk")),
     "logoutlink" => "app.php?atklogout=1",
     "logouttarget" => "_top",
     "centerpiece" => "",
     "searchpiece" => "",
     "title" => Atk_Tools::atktext("app_title"),
-    "user" => Atk_Tools::atkArrayNvl(Atk_SecurityManager::atkGetUser(), "name"));
+    "user" => Atk_Tools::atkArrayNvl(Atk_SecurityManager::atkGetUser(), "name")
+);
 
 // Backwards compatible $vars[content], that is what will render when the
 // box.tpl is used instead of a top.tpl. This happens in old themes.

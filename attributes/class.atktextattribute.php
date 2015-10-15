@@ -43,8 +43,8 @@ class Atk_TextAttribute extends Atk_Attribute
      * parameters and the second one is not an array, the attribute assumes
      * the second parameters is the $flags param, not the $size param.
      *
-     * @param string $name  Name of the attribute
-     * @param int|array $size  Can be an array with cols and rows key for size and
+     * @param string $name Name of the attribute
+     * @param int|array $size Can be an array with cols and rows key for size and
      *               an autoadjust value or just the rows size (in which case
      *               $flags is mandatory).
      * @param int $flags Flags for this attribute
@@ -54,16 +54,19 @@ class Atk_TextAttribute extends Atk_Attribute
         // compatiblity with old versions (old apps expect a 2 param call to be $name, $flags)
         if (func_num_args() == 3 || is_array($size)) {
             if (is_array($size)) {
-                if (isset($size['rows']) != '')
+                if (isset($size['rows']) != '') {
                     $this->m_rows = $size['rows'];
-                if (isset($size['cols']) != '')
+                }
+                if (isset($size['cols']) != '') {
                     $this->m_cols = $size['cols'];
-                if (isset($size['autoadjust']))
+                }
+                if (isset($size['autoadjust'])) {
                     $this->m_autoadjust = $size['autoadjust'];
-            } else
+                }
+            } else {
                 $this->m_rows = $size;
-        }
-        else {
+            }
+        } else {
             $flags = $size;
         }
 
@@ -72,7 +75,7 @@ class Atk_TextAttribute extends Atk_Attribute
 
     /**
      * Returns the current wrap mode.
-     * 
+     *
      * @return string wrap mode
      */
     public function getWrapMode()
@@ -137,7 +140,7 @@ class Atk_TextAttribute extends Atk_Attribute
 
 
         (isset($record[$this->fieldName()])) ? $text = $record[$this->fieldName()]
-                    : $text = "";
+            : $text = "";
 
         if ($this->m_cols != 0) {
             $cols = $this->m_cols;
@@ -147,8 +150,9 @@ class Atk_TextAttribute extends Atk_Attribute
         $rows = $this->m_rows;
         $id = $fieldprefix . $this->fieldName();
         $this->registerKeyListener($id, KB_CTRLCURSOR);
-        if ($rows == "" || $rows == 0)
+        if ($rows == "" || $rows == 0) {
             $rows = 10;
+        }
         // watch out, $maxsize isn't supported for a textarea.
 
         if ($this->m_autoadjust) {
@@ -158,12 +162,14 @@ class Atk_TextAttribute extends Atk_Attribute
         $this->registerJavaScriptObservers($id);
 
         $result = "<textarea id='$id' name='$id' wrap='" . $this->getWrapMode() . "' ";
-        if ($rows)
-            $result.= "rows='$rows' ";
-        if ($cols)
-            $result.= "cols='$cols' ";
-        $result.=$this->getCSSClassAttribute(array('form-control'));
-        $result.=">\n" . htmlspecialchars($text) . "</textarea>";
+        if ($rows) {
+            $result .= "rows='$rows' ";
+        }
+        if ($cols) {
+            $result .= "cols='$cols' ";
+        }
+        $result .= $this->getCSSClassAttribute(array('form-control'));
+        $result .= ">\n" . htmlspecialchars($text) . "</textarea>";
         return $result;
     }
 
@@ -192,9 +198,11 @@ class Atk_TextAttribute extends Atk_Attribute
     function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
     {
         if ($mode == "add" || $mode == "update") {
-            $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(AF_NO_QUOTES), $mode, $this->dbFieldType());
+            $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(AF_NO_QUOTES), $mode,
+                $this->dbFieldType());
         } else {
-            $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES), $mode, $this->dbFieldType());
+            $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES),
+                $mode, $this->dbFieldType());
         }
     }
 
@@ -206,10 +214,11 @@ class Atk_TextAttribute extends Atk_Attribute
     function value2db($rec)
     {
         $db = &$this->getDb();
-        if ($db->getType() != "oci9" || $this->dbFieldType() != 'text')
+        if ($db->getType() != "oci9" || $this->dbFieldType() != 'text') {
             return $db->escapeSQL($rec[$this->fieldName()]);
-        else
-            return $rec[$this->fieldName()]; //CLOB in oci9 don't need quotes to be escaped EVIL HACK! THIS IS NOT ATKTEXTATTRIBUTE's PROBLEM!
+        } else {
+            return $rec[$this->fieldName()];
+        } //CLOB in oci9 don't need quotes to be escaped EVIL HACK! THIS IS NOT ATKTEXTATTRIBUTE's PROBLEM!
     }
 
     /**
@@ -222,7 +231,7 @@ class Atk_TextAttribute extends Atk_Attribute
         if (isset($rec[$this->fieldName()])) {
             return $rec[$this->fieldName()];
         }
-        return NULL;
+        return null;
     }
 
     /**
@@ -234,8 +243,9 @@ class Atk_TextAttribute extends Atk_Attribute
     function dbFieldType()
     {
         // make sure our metadata is set
-        if (is_object($this->m_ownerInstance))
+        if (is_object($this->m_ownerInstance)) {
             $this->m_ownerInstance->setAttribSizes();
+        }
 
         if ($this->m_dbfieldtype == "") {
             return "text";
@@ -258,9 +268,9 @@ class Atk_TextAttribute extends Atk_Attribute
     /**
      * Parses the data that we are going to display in the textfield
      * and adjust rows to ensure that all the data is actually displayed
-     * @param string $data	Data we want to display
-     * @param int 	 $rows	Rows of the textarea
-     * @param int		 $cols	Columns of the textarea
+     * @param string $data Data we want to display
+     * @param int $rows Rows of the textarea
+     * @param int $cols Columns of the textarea
      */
     function doAutoAdjust($data, &$rows, &$cols)
     {
@@ -273,8 +283,9 @@ class Atk_TextAttribute extends Atk_Attribute
             // If we encounter a newline character or the number of characters
             // equals the number of columns we have (with IE)...
             if ($character == chr(13) || ($linecharacters == $cols && $browser->browser == "MSIE")) {
-                if ($linecharacters > $maxlinechars)
+                if ($linecharacters > $maxlinechars) {
                     $maxlinechars = $linecharacters;
+                }
                 // We start another line
                 $linecharacters = 0;
                 // But need another row
@@ -282,12 +293,14 @@ class Atk_TextAttribute extends Atk_Attribute
             }
         }
         // If we need more rows, we set them
-        if ($rowsrequired > $rows)
+        if ($rowsrequired > $rows) {
             $rows = $rowsrequired;
+        }
         // IE wraps characters, other don't, so if we're not dealing with IE
         // we need more columns
-        if ($maxlinechars > $cols && $browser->browser !== "MSIE")
+        if ($maxlinechars > $cols && $browser->browser !== "MSIE") {
             $cols = $maxlinechars;
+        }
     }
 
 }

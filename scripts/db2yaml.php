@@ -3,8 +3,9 @@ $config_atkroot = "../../";
 include_once $config_atkroot . './atk.php';
 
 $dir = @$_SERVER['argv'][1];
-if ($dir == null)
+if ($dir == null) {
     die("Please specify a directory name where you want to store the YAML files!\n");
+}
 
 $db = Atk_Tools::atkGetDb();
 foreach ($db->table_names() as $table) {

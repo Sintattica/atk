@@ -51,7 +51,7 @@ class Atk_MultiSelectAttribute extends Atk_ListAttribute
      *                    values are assumed to be the same as the options.
      * @param int $cols Number of columns
      * @param int $flags Flags for this attribute
-     * @param int $size  Size of the attribute.
+     * @param int $size Size of the attribute.
      */
     function atkMultiSelectAttribute($name, $optionArray, $valueArray = "", $cols = "", $flags = 0, $size = "")
     {
@@ -62,7 +62,7 @@ class Atk_MultiSelectAttribute extends Atk_ListAttribute
         if ($size == "") {
             $size = 0;
             for ($i = 0, $_i = count($valueArray); $i < $_i; $i++) {
-                $size+=(Atk_Tools::atk_strlen($valueArray[$i]) + 1); // 1 extra for the '|' symbol
+                $size += (Atk_Tools::atk_strlen($valueArray[$i]) + 1); // 1 extra for the '|' symbol
             }
         }
         $this->atkListAttribute($name, $optionArray, $valueArray, $flags, $size); // base class constructor
@@ -84,12 +84,14 @@ class Atk_MultiSelectAttribute extends Atk_ListAttribute
         if (is_array($record[$this->fieldName()])) {
             $values = $this->getValues($record);
             for ($i = 0; $i < count($values); $i++) {
-                if (in_array($values[$i], $record[$this->fieldName()]))
+                if (in_array($values[$i], $record[$this->fieldName()])) {
                     $result .= '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '[]"
                       value="' . $values[$i] . '">';
+                }
             }
-        } else
+        } else {
             parent::hide($record, $fieldprefix);
+        }
         return $result;
     }
 
@@ -105,8 +107,9 @@ class Atk_MultiSelectAttribute extends Atk_ListAttribute
         //Atk_Tools::atkdebug("multiselectattribute::value2db()");
         if (is_array($rec[$this->fieldName()]) && count($rec[$this->fieldName()] >= 1)) {
             return $this->escapeSQL(implode($this->m_fieldSeparator, $rec[$this->fieldName()]));
-        } else
+        } else {
             return "";
+        }
     }
 
     /**
@@ -117,10 +120,11 @@ class Atk_MultiSelectAttribute extends Atk_ListAttribute
      */
     function db2value($rec)
     {
-        if (isset($rec[$this->fieldName()]) && $rec[$this->fieldName()] !== '')
+        if (isset($rec[$this->fieldName()]) && $rec[$this->fieldName()] !== '') {
             return explode($this->m_fieldSeparator, $rec[$this->fieldName()]);
-        else
+        } else {
             return array();
+        }
     }
 
     /**
@@ -180,16 +184,18 @@ class Atk_MultiSelectAttribute extends Atk_ListAttribute
         $page->register_script($config_atkroot . "atk/javascript/class.atkprofileattribute.js.php");
 
         $result = "";
-        if (!$this->hasFlag(AF_LINKS_BOTTOM))
-            $result.=$this->_addLinks($fieldprefix);
+        if (!$this->hasFlag(AF_LINKS_BOTTOM)) {
+            $result .= $this->_addLinks($fieldprefix);
+        }
 
-        $result .="\n<table><tr>\n";
+        $result .= "\n<table><tr>\n";
 
         $values = $this->getValues($record);
-        if (!is_array($record[$this->fieldname()]))
+        if (!is_array($record[$this->fieldname()])) {
             $recordvalue = $this->db2value($record);
-        else
+        } else {
             $recordvalue = $record[$this->fieldName()];
+        }
 
         for ($i = 0; $i < count($values); $i++) {
             if (!$this->hasFlag(AF_CHECK_ALL)) {
@@ -198,15 +204,18 @@ class Atk_MultiSelectAttribute extends Atk_ListAttribute
                 $sel = "checked";
             }
 
-            $result .= '<td class="table" valign="top"><input type="checkbox" id="' . $id . '_' . $i . '" ' . $this->getCSSClassAttribute("atkcheckbox") . ' name="' . $fieldprefix . $this->fieldName() . '[]" value="' . $values[$i] . '" ' . $sel . '>' . $this->_translateValue($values[$i], $record) . '</td>';
+            $result .= '<td class="table" valign="top"><input type="checkbox" id="' . $id . '_' . $i . '" ' . $this->getCSSClassAttribute("atkcheckbox") . ' name="' . $fieldprefix . $this->fieldName() . '[]" value="' . $values[$i] . '" ' . $sel . '>' . $this->_translateValue($values[$i],
+                    $record) . '</td>';
             $this->registerKeyListener($id . '_' . $i, KB_CTRLCURSOR | KB_UPDOWN);
 
-            if ($i % $cols == $modcols)
-                $result .="</tr><tr>\n";
+            if ($i % $cols == $modcols) {
+                $result .= "</tr><tr>\n";
+            }
         }
-        $result.="</tr></table>\n";
-        if ($this->hasFlag(AF_LINKS_BOTTOM))
-            $result.=$this->_addLinks($fieldprefix);
+        $result .= "</tr></table>\n";
+        if ($this->hasFlag(AF_LINKS_BOTTOM)) {
+            $result .= $this->_addLinks($fieldprefix);
+        }
 
         return $result;
     }
@@ -227,10 +236,12 @@ class Atk_MultiSelectAttribute extends Atk_ListAttribute
 
         if (is_array($value) && $value[0] != "" && count($value) > 0) {
             if (count($value) == 1) {
-                $searchcondition = $query->substringCondition($table . "." . $this->fieldName(), $this->escapeSQL($value[0]));
+                $searchcondition = $query->substringCondition($table . "." . $this->fieldName(),
+                    $this->escapeSQL($value[0]));
             } else {
                 foreach ($value as $str) {
-                    $searchcondition = $query->substringCondition($table . "." . $this->fieldName(), $this->escapeSQL($str));
+                    $searchcondition = $query->substringCondition($table . "." . $this->fieldName(),
+                        $this->escapeSQL($str));
                 }
             }
         }
@@ -274,11 +285,11 @@ class Atk_MultiSelectAttribute extends Atk_ListAttribute
         if (count($this->m_values) > 4 && !Atk_Tools::hasFlag($this->m_flags, AF_NO_TOGGLELINKS)) {
             return '<div align="left"><font size="-2">
                   [<a href="javascript:void(0)" onclick="profile_checkAll(\'' . $fieldprefix . $this->fieldName() . '\'); return false;">' .
-                Atk_Tools::atktext("check_all") .
-                '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\'' . $fieldprefix . $this->fieldName() . '\'); return false;">' .
-                Atk_Tools::atktext("check_none") .
-                '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\'' . $fieldprefix . $this->fieldName() . '\'); return false;">' .
-                Atk_Tools::atktext("invert_selection") . '</a>]</font></div>';
+            Atk_Tools::atktext("check_all") .
+            '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\'' . $fieldprefix . $this->fieldName() . '\'); return false;">' .
+            Atk_Tools::atktext("check_none") .
+            '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\'' . $fieldprefix . $this->fieldName() . '\'); return false;">' .
+            Atk_Tools::atktext("invert_selection") . '</a>]</font></div>';
         }
     }
 

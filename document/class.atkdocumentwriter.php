@@ -39,7 +39,7 @@ class Atk_DocumentWriter
      */
     function atkDocumentWriter()
     {
-        
+
     }
 
     /**
@@ -57,8 +57,9 @@ class Atk_DocumentWriter
                 }
             }
         } else {
-            if ($tpl_var != '')
+            if ($tpl_var != '') {
                 $this->m_tpl_vars[$tpl_var] = $value;
+            }
         }
     }
 
@@ -80,10 +81,11 @@ class Atk_DocumentWriter
             $p_attrib = &$node->m_attribList[$key];
 
             // Get the Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
-            if ($p_attrib->hasFlag(AF_NOLABEL) || $p_attrib->hasFlag(AF_BLANKLABEL))
+            if ($p_attrib->hasFlag(AF_NOLABEL) || $p_attrib->hasFlag(AF_BLANKLABEL)) {
                 $result[$key] = "";
-            else
+            } else {
                 $result[$key] = $p_attrib->label(array());
+            }
         }
 
         // Return the array containing attributename=>label pairs
@@ -113,10 +115,11 @@ class Atk_DocumentWriter
             // class to display an attribute. If it exists we will use that method
             // else we will just use the attribute's display method.
             $funcname = $p_attrib->m_name . "_display";
-            if (method_exists($node, $funcname))
+            if (method_exists($node, $funcname)) {
                 $result[$key] = $node->$funcname($record, "plain");
-            else
+            } else {
                 $result[$key] = $p_attrib->display($record, "plain");
+            }
         }
 
         // Return the array containing attributename=>displayvalue pairs
@@ -135,8 +138,9 @@ class Atk_DocumentWriter
         $labels = $this->getRecordLabels($node);
 
         // Assign all labels to the documentwriter
-        foreach ($labels as $key => $label)
+        foreach ($labels as $key => $label) {
             $this->Assign($prefix . $key . "_label", $label);
+        }
     }
 
     /**
@@ -155,16 +159,19 @@ class Atk_DocumentWriter
         $displayvalues = array();
 
         // Loop through all records and add the displayvalues to the array
-        foreach ($records as $record)
+        foreach ($records as $record) {
             $displayvalues[] = $this->getRecordDisplayValues($node, $record);
+        }
 
         // Assign the displayvalues array to the documentwriter
         $this->Assign($prefix . $node->m_type, $displayvalues);
 
         // Register the taglist
-        $this->m_taglist .= sprintf("%s codes (all prefixed by %s%s.)\n", $node->text($node->m_type), $prefix, $node->m_type);
-        foreach (array_keys($node->m_attribList) as $key)
+        $this->m_taglist .= sprintf("%s codes (all prefixed by %s%s.)\n", $node->text($node->m_type), $prefix,
+            $node->m_type);
+        foreach (array_keys($node->m_attribList) as $key) {
             $this->m_taglist .= "[$prefix{$node->m_type}.$key]\n";
+        }
         $this->m_taglist .= "You can use these tags in a table. More info: http://www.achievo.org/wiki/AtkDocumentWriter\n";
         $this->m_taglist .= "\n";
     }
@@ -185,14 +192,16 @@ class Atk_DocumentWriter
         $displayvalues = $this->getRecordDisplayValues($node, $record);
 
         // Loop through all display values and assign them to the documentwriter
-        foreach ($displayvalues as $key => $displayvalue)
+        foreach ($displayvalues as $key => $displayvalue) {
             $this->Assign($prefix . $key, $displayvalue);
+        }
 
         // Register the taglist
         $this->m_taglist .= sprintf("%s codes%s\n", $node->text($node->m_type), empty($prefix)
-                    ? "" : " (all prefixed by $prefix)");
-        foreach (array_keys($node->m_attribList) as $key)
+            ? "" : " (all prefixed by $prefix)");
+        foreach (array_keys($node->m_attribList) as $key) {
             $this->m_taglist .= "[$prefix$key]\n";
+        }
         $this->m_taglist .= "\n";
     }
 
@@ -207,8 +216,9 @@ class Atk_DocumentWriter
     function assignRecordByNodeAndSelector($nodename, $selector, $prefix = "")
     {
         // Do not continue and return false if no selector given
-        if ($selector == "")
+        if ($selector == "") {
             return false;
+        }
 
         // Assign the quotation owner to the document
         $node = Atk_Module::atkGetNode($nodename);
@@ -217,8 +227,9 @@ class Atk_DocumentWriter
         $records = $node->selectDb($selector, "", "", "", "", "view");
 
         // Do not continue and return false if no records were found
-        if (count($records) == 0)
+        if (count($records) == 0) {
             return false;
+        }
 
         // Assign the record to the document.
         $this->assignDocumentSingleRecord($node, $records[0], $prefix);
@@ -254,25 +265,28 @@ class Atk_DocumentWriter
      */
     function &getInstance($format = "opendocument")
     {
-        static $s_oo_instance = NULL;
-        static $s_docx_instance = NULL;
+        static $s_oo_instance = null;
+        static $s_docx_instance = null;
 
         if ($format == "opendocument") {
-            if ($s_oo_instance == NULL) {
+            if ($s_oo_instance == null) {
                 Atk_Tools::atkdebug("Creating a new atkOpenDocumentWriter instance");
                 $s_oo_instance = new Atk_OpenDocumentWriter();
             }
 
             return $s_oo_instance;
-        } else if ($format == "docx") {
-            if ($s_docx_instance == NULL) {
-                Atk_Tools::atkdebug("Creating a new atkDocxWriter instance");
-                $s_docx_instance = new Atk_DocxWriter();
-            }
-
-            return $s_docx_instance;
         } else {
-            Atk_Tools::atkdebug(sprintf("Failed to create atkDocumentWriter instance (unknown format: %s)", $format));
+            if ($format == "docx") {
+                if ($s_docx_instance == null) {
+                    Atk_Tools::atkdebug("Creating a new atkDocxWriter instance");
+                    $s_docx_instance = new Atk_DocxWriter();
+                }
+
+                return $s_docx_instance;
+            } else {
+                Atk_Tools::atkdebug(sprintf("Failed to create atkDocumentWriter instance (unknown format: %s)",
+                    $format));
+            }
         }
     }
 

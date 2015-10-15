@@ -39,8 +39,8 @@ class Atk_Server
      */
     public function getInstance()
     {
-        static $s_instance = NULL;
-        if ($s_instance == NULL) {
+        static $s_instance = null;
+        if ($s_instance == null) {
             $s_instance = new Atk_Server();
         }
         return $s_instance;
@@ -80,7 +80,7 @@ class Atk_Server
     public function getProtocol()
     {
         return isset($this->m_protocol) && $this->m_protocol != "" ? $this->m_protocol
-                : $this->getDefaultProtocol();
+            : $this->getDefaultProtocol();
     }
 
     /**

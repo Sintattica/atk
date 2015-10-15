@@ -183,15 +183,16 @@ class Atk_FileAttribute extends Atk_Attribute
 
         while ($item = $dirHandle->read()) {
             if (count($this->m_allowedFileTypes) == 0) {
-                if (is_file($this->m_dir . $item))
+                if (is_file($this->m_dir . $item)) {
                     $file_arr[] = $item;
-            }
-            else {
+                }
+            } else {
                 $extension = $this->getFileExtension($item);
 
                 if (in_array($extension, $this->m_allowedFileTypes)) {
-                    if (is_file($this->m_dir . $item))
+                    if (is_file($this->m_dir . $item)) {
                         $file_arr[] = $item;
+                    }
                 }
             }
         }
@@ -227,11 +228,11 @@ class Atk_FileAttribute extends Atk_Attribute
         $id = $fieldprefix . $this->fieldName();
 
         if ($result != "") {
-            $result.="<br>";
-            $result.='<input type="hidden" name="' . $id . '_orgfilename" value="' . $record[$this->fieldName()]['orgfilename'] . '">';
+            $result .= "<br>";
+            $result .= '<input type="hidden" name="' . $id . '_orgfilename" value="' . $record[$this->fieldName()]['orgfilename'] . '">';
         }
 
-        $result.='<input type="hidden" name="' . $id . '_postfileskey" value="' . $id . '">';
+        $result .= '<input type="hidden" name="' . $id . '_postfileskey" value="' . $id . '">';
 
         $onchange = '';
         if (count($this->m_onchangecode)) {
@@ -255,20 +256,23 @@ class Atk_FileAttribute extends Atk_Attribute
                 $result .= "<option value=\"\" selected>" . Atk_Tools::atktext('selection', 'atk');
                 while (list ($key, $val) = each($file_arr)) {
                     (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename'] == $val)
-                                ? $selected = "selected" : $selected = '';
-                    if (is_file($this->m_dir . $val))
+                        ? $selected = "selected" : $selected = '';
+                    if (is_file($this->m_dir . $val)) {
                         $result .= "<option value=\"" . $val . "\" $selected>" . $val;
+                    }
                 }
                 $result .= "</select>";
             }
-        }
-        else if (isset($record[$this->fieldName()]['filename']) && !empty($record[$this->fieldName()]['filename'])) {
-            $result .= '<input type="hidden" name="' . $id . '[select]" value="' . $record[$this->fieldName()]['filename'] . '">';
+        } else {
+            if (isset($record[$this->fieldName()]['filename']) && !empty($record[$this->fieldName()]['filename'])) {
+                $result .= '<input type="hidden" name="' . $id . '[select]" value="' . $record[$this->fieldName()]['filename'] . '">';
+            }
         }
 
         if (!$this->hasFlag(AF_FILE_NO_DELETE) && isset($record[$this->fieldname()]['orgfilename']) && $record[$this->fieldname()]['orgfilename'] != '') {
             $this->registerKeyListener($id . '_del', KB_CTRLCURSOR | KB_CURSOR);
-            $result .= '<br class="atkFileAttributeCheckboxSeparator"><input id="' . $id . '_del" type="checkbox" name="' . $id . '[del]" ' . $this->getCSSClassAttribute("atkcheckbox") . '>&nbsp;' . Atk_Tools::atktext("remove_current_file", "atk");
+            $result .= '<br class="atkFileAttributeCheckboxSeparator"><input id="' . $id . '_del" type="checkbox" name="' . $id . '[del]" ' . $this->getCSSClassAttribute("atkcheckbox") . '>&nbsp;' . Atk_Tools::atktext("remove_current_file",
+                    "atk");
         }
         return $result;
     }
@@ -281,13 +285,14 @@ class Atk_FileAttribute extends Atk_Attribute
     function value2db($rec)
     {
         $del = (isset($rec[$this->fieldName()]['postdel'])) ? $rec[$this->fieldName()]['postdel']
-                : null;
+            : null;
 
         if ($rec[$this->fieldName()]["tmpfile"] == "" && $rec[$this->fieldName()]["filename"] != "" && (!isset($del) || $del != $rec[$this->fieldName()]['filename'])) {
             return $this->escapeSQL($rec[$this->fieldName()]["filename"]);
         }
-        if ($this->hasFlag(AF_FILE_NO_DELETE))
-            unset($del);  // Make sure if flag is set $del unset!
+        if ($this->hasFlag(AF_FILE_NO_DELETE)) {
+            unset($del);
+        }  // Make sure if flag is set $del unset!
 
         if (isset($del)) {
             if ($this->hasFlag(AF_FILE_PHYSICAL_DELETE)) {
@@ -295,20 +300,22 @@ class Atk_FileAttribute extends Atk_Attribute
                 if (isset($rec[$this->fieldName()]["postdel"]) && $rec[$this->fieldName()]["postdel"] != "") {
                     Atk_Tools::atkdebug("postdel set");
                     $file = $rec[$this->fieldName()]["postdel"];
-                } else if (isset($rec[$this->fieldName()]["orgfilename"])) {
-                    Atk_Tools::atkdebug("postdel not set");
-                    $file = $rec[$this->fieldName()]["orgfilename"];
+                } else {
+                    if (isset($rec[$this->fieldName()]["orgfilename"])) {
+                        Atk_Tools::atkdebug("postdel not set");
+                        $file = $rec[$this->fieldName()]["orgfilename"];
+                    }
                 }
                 Atk_Tools::atkdebug("file is now " . $file);
                 if ($file != "" && file_exists($this->m_dir . $file)) {
                     unlink($this->m_dir . $file);
-                } else
+                } else {
                     Atk_Tools::atkdebug("File doesn't exist anymore.");
+                }
             }
 //        echo ':::::return leeg::::';
             return '';
-        }
-        else {
+        } else {
             $filename = $rec[$this->fieldName()]["filename"];
             // why copy if the files are the same?
 
@@ -352,8 +359,9 @@ class Atk_FileAttribute extends Atk_Attribute
         $path = "";
         foreach ($dirs as $element) {
             $path .= $element . "/";
-            if (!is_dir($path) && !mkdir($path))
+            if (!is_dir($path) && !mkdir($path)) {
                 return false;
+            }
         }
 
         return true;
@@ -371,18 +379,20 @@ class Atk_FileAttribute extends Atk_Attribute
      */
     function rmdir($dir)
     {
-        if (!($handle = @opendir($dir)))
+        if (!($handle = @opendir($dir))) {
             return false;
+        }
 
         while (false !== ($item = readdir($handle))) {
             if ($item != "." && $item != "..") {
                 if (is_dir("$dir/$item")) {
-                    if (!Atk_FileAttribute::rmdir("$dir/$item"))
+                    if (!Atk_FileAttribute::rmdir("$dir/$item")) {
                         return false;
-                }
-                else {
-                    if (!@unlink("$dir/$item"))
+                    }
+                } else {
+                    if (!@unlink("$dir/$item")) {
                         return false;
+                    }
                 }
             }
         }
@@ -402,7 +412,7 @@ class Atk_FileAttribute extends Atk_Attribute
      */
     function processFile($filepath, $filename)
     {
-        
+
     }
 
     /**
@@ -437,8 +447,9 @@ class Atk_FileAttribute extends Atk_Attribute
      */
     function isAllowedFileType(&$rec)
     {
-        if (count($this->m_allowedFileTypes) == 0)
+        if (count($this->m_allowedFileTypes) == 0) {
             return true;
+        }
 
         // detect whether the file is uploaded or is an existing file.
         $filename = (!empty($rec[$this->fieldName()]['tmpfile'])) ?
@@ -556,7 +567,7 @@ class Atk_FileAttribute extends Atk_Attribute
     function fetchValue($rec)
     {
         $del = (isset($rec[$this->fieldName()]['del'])) ? $rec[$this->fieldName()]['del']
-                : null;
+            : null;
 
         $postfiles_basename = $rec[$this->fieldName() . "_postfileskey"];
 
@@ -571,9 +582,7 @@ class Atk_FileAttribute extends Atk_Attribute
                     'filename' => $_FILES[$this->fieldName()]['name'],
                     'error' => $_FILES[$this->fieldName()]['error']
                 );
-            }
-
-            // if no new file has been uploaded..
+            } // if no new file has been uploaded..
             elseif (count($_FILES) == 0 || $_FILES[$postfiles_basename]["tmp_name"] == "none" || $_FILES[$postfiles_basename]["tmp_name"] == "") {
                 // No file to upload, then check if the select box is filled
                 if ($fileselected) {
@@ -586,28 +595,32 @@ class Atk_FileAttribute extends Atk_Attribute
                         $orgfilename = '';
                         $postdel = $rec[$this->fieldName()]["select"];
                     }
-                    $result = array("tmpfile" => "",
+                    $result = array(
+                        "tmpfile" => "",
                         "filename" => $filename,
                         "filesize" => 0,
                         "orgfilename" => $orgfilename,
-                        "postdel" => $postdel);
+                        "postdel" => $postdel
+                    );
                 }  // maybe we atk restored data from session
                 elseif (isset($rec[$this->fieldName()]["filename"]) && $rec[$this->fieldName()]["filename"] != "") {
                     $result = $rec[$this->fieldName()];
                 } else {
                     $filename = (isset($rec[$basename . "_orgfilename"])) ? $rec[$basename . "_orgfilename"]
-                            : "";
+                        : "";
 
                     if (isset($del) && $del == "on") {
                         $filename = '';
                     }
 
                     // Note: without file_exists() check, calling filesize() generates an error message:
-                    $result = array("tmpfile" => $filename == '' ? '' : $this->m_dir . $filename,
+                    $result = array(
+                        "tmpfile" => $filename == '' ? '' : $this->m_dir . $filename,
                         "filename" => $filename,
                         "filesize" => (is_file($this->m_dir . $filename) ? filesize($this->m_dir . $filename)
-                                : 0),
-                        "orgfilename" => $filename);
+                            : 0),
+                        "orgfilename" => $filename
+                    );
                 }
             } else {
                 $realname = $this->_filenameMangle($rec, $_FILES[$postfiles_basename]["name"]);
@@ -616,10 +629,12 @@ class Atk_FileAttribute extends Atk_Attribute
                     $realname = $this->_filenameUnique($rec, $realname);
                 }
 
-                $result = array("tmpfile" => $_FILES[$postfiles_basename]["tmp_name"],
+                $result = array(
+                    "tmpfile" => $_FILES[$postfiles_basename]["tmp_name"],
                     "filename" => $realname,
                     "filesize" => $_FILES[$postfiles_basename]["size"],
-                    "orgfilename" => $realname);
+                    "orgfilename" => $realname
+                );
             }
 
             return $result;
@@ -665,15 +680,26 @@ class Atk_FileAttribute extends Atk_Attribute
         $randval = mt_rand();
 
         $filename = isset($record[$this->fieldName()]["filename"]) ? $record[$this->fieldName()]["filename"]
-                : null;
+            : null;
         Atk_Tools::atkdebug($this->fieldname() . " - File: $filename");
-        $prev_type = Array("jpg", "jpeg", "gif", "tif", "png", "bmp", "htm",
-            "html", "txt");  // file types for preview
+        $prev_type = Array(
+            "jpg",
+            "jpeg",
+            "gif",
+            "tif",
+            "png",
+            "bmp",
+            "htm",
+            "html",
+            "txt"
+        );  // file types for preview
         $imgtype_prev = Array("jpg", "jpeg", "gif", "png");  // types which are supported by GetImageSize
         if ($filename != "") {
             if (is_file($this->m_dir . $filename)) {
                 $ext = $this->getFileExtension($filename);
-                if ((in_array($ext, $prev_type) && $this->hasFlag(AF_FILE_NO_AUTOPREVIEW)) || (!in_array($ext, $prev_type))) {
+                if ((in_array($ext, $prev_type) && $this->hasFlag(AF_FILE_NO_AUTOPREVIEW)) || (!in_array($ext,
+                        $prev_type))
+                ) {
                     return "<a href=\"" . $this->m_url . "$filename\" target=\"_blank\">$filename</a>";
                 } elseif (in_array($ext, $prev_type) && $this->hasFlag(AF_FILE_POPUP)) {
                     if (in_array($ext, $imgtype_prev)) {
@@ -687,7 +713,8 @@ class Atk_FileAttribute extends Atk_Attribute
                 }
                 return '<img src="' . $this->m_url . $filename . '?b=' . $randval . '" alt="' . $filename . '">';
             } else {
-                return $filename . "(<font color=\"#ff0000\">" . Atk_Tools::atktext("file_not_exist", "atk") . "</font>)";
+                return $filename . "(<font color=\"#ff0000\">" . Atk_Tools::atktext("file_not_exist",
+                    "atk") . "</font>)";
             }
         }
     }
@@ -747,10 +774,11 @@ class Atk_FileAttribute extends Atk_Attribute
     function _filenameMangle($rec, $default)
     {
         $method = $this->fieldName() . '_filename';
-        if (method_exists($this->m_ownerInstance, $method))
+        if (method_exists($this->m_ownerInstance, $method)) {
             return $this->m_ownerInstance->$method($rec, $default);
-        else
+        } else {
             return $this->filenameMangle($rec, $default);
+        }
     }
 
     /**
@@ -798,7 +826,7 @@ class Atk_FileAttribute extends Atk_Attribute
 
         $selector = "(" . $this->fieldName() . "='$filename' OR " . $this->fieldName() . " LIKE '$name-%$ext')";
         if ($rec[$this->m_ownerInstance->primaryKeyField()] != "") {
-            $selector.= " AND NOT (" . $this->m_ownerInstance->primaryKey($rec) . ")";
+            $selector .= " AND NOT (" . $this->m_ownerInstance->primaryKey($rec) . ")";
         }
 
         $records = $this->m_ownerInstance->selectDb("($selector)", "", array($this->fieldName()));
@@ -813,11 +841,13 @@ class Atk_FileAttribute extends Atk_Attribute
                     $number = substr($record[$this->fieldName()]["filename"], ($dashPos + 1), ($dotPos - $dashPos) - 1);
                 } elseif ($dotPos === false && $ext == "" && $dashPos !== false) {
                     $number = substr($record[$this->fieldName()]["filename"], ($dashPos + 1));
-                } else
+                } else {
                     continue;
+                }
 
-                if (intval($number) > $max_count)
+                if (intval($number) > $max_count) {
                     $max_count = $number;
+                }
             }
             // file name exists, so mangle it with a number.
             $filename = $name . "-" . ($max_count + 1) . $ext;
@@ -838,11 +868,13 @@ class Atk_FileAttribute extends Atk_Attribute
     {
         $field = $record[$this->fieldName()];
 
-        if (is_array($field))
-            foreach ($field as $key => $value)
+        if (is_array($field)) {
+            foreach ($field as $key => $value) {
                 $result .= '<input type="hidden" name="' . $fieldprefix . $this->formName() . '[' . $key . ']" ' . 'value="' . $value . '">';
-        else
+            }
+        } else {
             $result = '<input type="hidden" name="' . $fieldprefix . $this->formName() . '" value="' . $field . '">';
+        }
 
         return $result;
     }
@@ -864,10 +896,12 @@ class Atk_FileAttribute extends Atk_Attribute
             if (@empty($rec[$this->fieldName()]['postdel']) && $this->isEmpty($rec) && !$this->hasFlag(AF_OBLIGATORY) && !$this->isNotNullInDb()) {
                 $query->addField($this->fieldName(), 'NULL', "", "", false, true);
             } else {
-                $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(AF_NO_QUOTES), true);
+                $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(AF_NO_QUOTES),
+                    true);
             }
         } else {
-            $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES), true);
+            $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES),
+                true);
         }
     }
 }

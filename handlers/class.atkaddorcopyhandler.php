@@ -69,18 +69,19 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
     /**
      * Remove one-to-many relations which the user didn't explicitly select.
      *
-     * @param array $record   record
-     * @param Atk_Node $node   node reference
+     * @param array $record record
+     * @param Atk_Node $node node reference
      * @param array $includes include list
-     * @param string $prefix  current prefix
+     * @param string $prefix current prefix
      */
     function preCopy(&$record, &$node, $includes, $prefix = "")
     {
         foreach (array_keys($node->getAttributes()) as $name) {
             $attr = &$node->getAttribute($name);
 
-            if (!is_a($attr, 'atkonetomanyrelation'))
+            if (!is_a($attr, 'atkonetomanyrelation')) {
                 continue;
+            }
 
             $path = $prefix . $name;
             if (!in_array($path, $includes)) {
@@ -98,15 +99,16 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
     /**
      * Handle copy.
      *
-     * @param string $attrRefreshUrl  the attribute refresh url if not specified
+     * @param string $attrRefreshUrl the attribute refresh url if not specified
      *                                the entire page is refreshed
      */
     function handleCopy($attrRefreshUrl = null)
     {
         $selector = $this->m_postvars['selector'];
         $includes = $this->m_postvars['includes'];
-        if ($includes == null)
+        if ($includes == null) {
             $includes = array();
+        }
 
         list($record) = $this->m_node->selectDb($selector, "", 1, "", "", "copy");
         if ($record != null) {
@@ -167,7 +169,9 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
             $dialog->setSessionStatus(SESSION_PARTIAL);
             $script .= $dialog->getCall(true, false);
         } else {
-            $script .= sprintf("document.location.href = %s;", Atk_JSON::encode(Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), 'add'), SESSION_NESTED)));
+            $script .= sprintf("document.location.href = %s;",
+                Atk_JSON::encode(Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atkNodeType(), 'add'),
+                    SESSION_NESTED)));
         }
 
         $page = &$this->getPage();
@@ -274,11 +278,13 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
 
         $label = $this->m_node->text("{$action}_{$module}_{$node}", null, '', '', true);
 
-        if ($label == "")
+        if ($label == "") {
             $label = $this->m_node->text("{$action}_{$node}", null, '', '', true);
+        }
 
-        if ($label == "")
+        if ($label == "") {
             $label = $this->m_node->text($action) . " " . strtolower($this->m_node->text($this->m_node->m_type));
+        }
 
         return $label;
     }
@@ -319,7 +325,8 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
      */
     function getCopyOption()
     {
-        $records = $this->m_node->selectDb("", "", "", "", array_merge(array($this->m_node->primaryKeyField()), $this->m_node->descriptorFields()));
+        $records = $this->m_node->selectDb("", "", "", "",
+            array_merge(array($this->m_node->primaryKeyField()), $this->m_node->descriptorFields()));
 
         if (count($records) == 0) {
             $label = $this->getOptionLabel('copy') . ' (' . $this->m_node->text('no_copyable_records') . ')';
@@ -333,8 +340,8 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
             return '
           <input type="radio" id="addorcopy_copy" name="addorcopy" value="copy" />
           <label for="addorcopy_copy">' . $label . '</label>&nbsp;&nbsp;' .
-                $this->getCopyDropDown($records) . '<br />' .
-                $this->getCopyIncludes($this->m_node);
+            $this->getCopyDropDown($records) . '<br />' .
+            $this->getCopyIncludes($this->m_node);
         }
     }
 
@@ -359,7 +366,7 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
     /**
      * Returns a HTML fragment which allows the user to select nested
      * one-to-many relations he/she wants to include in the copy.
-     * 
+     *
      * @param Atk_Node $node The node to get the onetomany relations from
      * @param String $prefix The field prefix
      * @param Integer $level The level of the includes
@@ -371,14 +378,18 @@ class Atk_AddOrCopyHandler extends Atk_ActionHandler
         foreach (array_keys($node->getAttributes()) as $name) {
             $attr = &$node->getAttribute($name);
 
-            if (!is_a($attr, 'atkonetomanyrelation'))
+            if (!is_a($attr, 'atkonetomanyrelation')) {
                 continue;
-            if ($attr->hasFlag(AF_HIDE_EDIT))
+            }
+            if ($attr->hasFlag(AF_HIDE_EDIT)) {
                 continue;
-            if ($attr->hasFlag(AF_READONLY_EDIT))
+            }
+            if ($attr->hasFlag(AF_READONLY_EDIT)) {
                 continue;
-            if ($attr->createDestination() && $attr->m_destInstance->hasFlag(NF_READONLY))
+            }
+            if ($attr->createDestination() && $attr->m_destInstance->hasFlag(NF_READONLY)) {
                 continue;
+            }
 
             $path = $prefix . $name;
             $id = str_replace('.', '_', $path);

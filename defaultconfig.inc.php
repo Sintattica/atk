@@ -847,9 +847,13 @@ $config_enable_ie_extensions = false;
  * NOTE: this has nothing to do with useattrib and userelation etc.!
  * @var Array
  */
-$config_allowed_includes = array("atk/lock/lock.php", "atk/lock/lock.js.php",
-    "atk/popups/help.php", "atk/popups/colorpicker.php",
-    "atk/ext/captcha/img/captcha.jpg.php");
+$config_allowed_includes = array(
+    "atk/lock/lock.php",
+    "atk/lock/lock.js.php",
+    "atk/popups/help.php",
+    "atk/popups/colorpicker.php",
+    "atk/ext/captcha/img/captcha.jpg.php"
+);
 
 /**
  * Forces the themecompiler to recompile the theme all the time

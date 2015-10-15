@@ -19,12 +19,16 @@ $sv = array(
     "above_maximum_value" => "�ver max till�tet v�rde",
     "access_denied" => "Nekad �tkomst",
     "add" => "L�gg till",
-    "addorcopy" => "Add or copy", // Missing string!!!
-    "add_criterium" => "Add", // Missing string!!!
+    "addorcopy" => "Add or copy",
+    // Missing string!!!
+    "add_criterium" => "Add",
+    // Missing string!!!
     "admin" => "Administration",
     "administration_application" => "Applikationsadministration",
-    "all" => "All", // Missing string!!!
-    "alphabeticchars" => "alphabetic characters", // Missing string!!!
+    "all" => "All",
+    // Missing string!!!
+    "alphabeticchars" => "alphabetic characters",
+    // Missing string!!!
     "apply" => "Verkst�ll",
     "app_close" => "St�ng",
     "app_description" => "V�lkommer till denna ATK-applikation.",
@@ -34,34 +38,47 @@ $sv = array(
     "app_title" => "ATK-Applikation",
     "apr" => "Apr",
     "april" => "April",
-    "attributeedit" => "Update value", // Missing string!!!
+    "attributeedit" => "Update value",
+    // Missing string!!!
     "attrib_delete_not_allowed" => "F�ltet '%s' till�ter inte att posten raderas. '(%s)'",
     "aug" => "Aug",
     "august" => "Augusti",
     "auth_account_locked" => "Kontot har blivit l�st. Prova ett annat konto eller kontakta din systemadministrat�r.",
     "auth_max_loginattempts_exceeded" => "F�r m�nga f�rs�k. Inloggningen har st�ngs av. Kontakta din systemadministrat�r.",
     "auth_mismatch" => "Anv�ndarnamn och/eller l�senord �r fel. F�rs�k igen.",
-    "auth_missingusername" => "Please enter a username first.", // Missing string!!!
+    "auth_missingusername" => "Please enter a username first.",
+    // Missing string!!!
     "auth_no_server" => "Ingen server specificerad. Ingen autenticering �r m�jlig (kontakta systemadministrat�ren).",
-    "auth_passwordmail_explanation" => "You receive this e-mail because you used the password forgotten function. Below are your new login data:", // Missing string!!!
-    "auth_passwordmail_sent" => "If the given username exists, a new password is sent to the corresponding e-mail address.", // Missing string!!!
-    "auth_passwordmail_subjectnew_password" => "New password", // Missing string!!!
+    "auth_passwordmail_explanation" => "You receive this e-mail because you used the password forgotten function. Below are your new login data:",
+    // Missing string!!!
+    "auth_passwordmail_sent" => "If the given username exists, a new password is sent to the corresponding e-mail address.",
+    // Missing string!!!
+    "auth_passwordmail_subjectnew_password" => "New password",
+    // Missing string!!!
     "auth_unable_to_connect" => "Kunde inte kontakta server f�r autenticering (kontakta systemadministrat�ren).",
-    "autocomplete_minimum_chars" => "Enter a minimum of %d characters.", // Missing string!!!
-    "autocomplete_no_results" => "No results found for the given search value.", // Missing string!!!
-    "autocomplete_no_results_contains" => "No results found that contain the given search value.", // Missing string!!!
-    "autocomplete_no_results_exact" => "No results found that exactly match the given search value.", // Missing string!!!
-    "autocomplete_no_results_startswith" => "No results found that start with the given search value.", // Missing string!!!
-    "available" => "Available", // Missing string!!!
+    "autocomplete_minimum_chars" => "Enter a minimum of %d characters.",
+    // Missing string!!!
+    "autocomplete_no_results" => "No results found for the given search value.",
+    // Missing string!!!
+    "autocomplete_no_results_contains" => "No results found that contain the given search value.",
+    // Missing string!!!
+    "autocomplete_no_results_exact" => "No results found that exactly match the given search value.",
+    // Missing string!!!
+    "autocomplete_no_results_startswith" => "No results found that start with the given search value.",
+    // Missing string!!!
+    "available" => "Available",
+    // Missing string!!!
     "back" => "Tillbaka",
     "back_to" => "Tillbaka till",
     "below_minimum_value" => "Under minsta till�tna v�rde",
     "cancel" => "Avbryt",
-    "cancel_edit" => "Cancel edit", // Missing string!!!
+    "cancel_edit" => "Cancel edit",
+    // Missing string!!!
     "cannot create directory" => "Kan inte skapa katalog: ",
     "cannot make file" => "Kan inte skapa fil: ",
     "cannot_remove_file" => "Kan inte radera fil!",
-    "captcha_explain" => "Please fill in the displayed code", // Missing string!!!
+    "captcha_explain" => "Please fill in the displayed code",
+    // Missing string!!!
     "charset" => "iso-8859-15",
     "check rights to" => "Kolla att du r�tt r�ttigheter att ",
     "check_all" => "V�lj alla",
@@ -69,7 +86,8 @@ $sv = array(
     "clickheretoadd_postfix" => ".",
     "clickheretoadd_prefix" => "Klicka h�r f�r att l�gga till ny ",
     "close" => "St�ng",
-    "color" => "Color", // Missing string!!!
+    "color" => "Color",
+    // Missing string!!!
     "colorcode" => "F�rgkod",
     "colorpicker_selectcolor" => "V�lj en f�rg",
     "column" => "kolumn",
@@ -79,15 +97,22 @@ $sv = array(
     "column_unsubtotal" => "Ingen deltot.",
     "confirm_delete" => "Vill du verligen radera denna post?",
     "confirm_delete_multi" => "Vill du verkligen radera dessa poster?",
-    "content_wizard_finished" => "Wizard was finished successfully!", // Missing string!!!
+    "content_wizard_finished" => "Wizard was finished successfully!",
+    // Missing string!!!
     "copy" => "Kopiera",
-    "criterium_field" => "Field", // Missing string!!!
-    "criterium_mode" => "Mode", // Missing string!!!
-    "criterium_value" => "Value", // Missing string!!!
+    "criterium_field" => "Field",
+    // Missing string!!!
+    "criterium_mode" => "Mode",
+    // Missing string!!!
+    "criterium_value" => "Value",
+    // Missing string!!!
     "critical" => "Kritiska",
-    "datagrid_norecordsfound_general" => "No records found.", // Missing string!!!
-    "datagrid_norecordsfound_search" => "No results found for the current search query.", // Missing string!!!
-    "datagrid_summary" => "(Records [start] - [end] of [count])", // Missing string!!!
+    "datagrid_norecordsfound_general" => "No records found.",
+    // Missing string!!!
+    "datagrid_norecordsfound_search" => "No results found for the current search query.",
+    // Missing string!!!
+    "datagrid_summary" => "(Records [start] - [end] of [count])",
+    // Missing string!!!
     "date_format_edit" => "j F Y",
     "date_format_view" => "j F Y",
     "db_access_denied_database" => "Anv�ndare '%s' har inga r�ttigheter f�r databasen '%s'",
@@ -98,39 +123,53 @@ $sv = array(
     "december" => "December",
     "decimal_separator" => ".",
     "delete" => "Radera",
-    "delimiter" => "Delimiter", // Missing string!!!
+    "delimiter" => "Delimiter",
+    // Missing string!!!
     "deselect_all" => "Avmarkera allt",
-    "document" => "Open document", // Missing string!!!
+    "document" => "Open document",
+    // Missing string!!!
     "edit" => "�ndra",
     "editcopy" => "�ndra kopia",
-    "email" => "E-mail", // Missing string!!!
-    "enclosure" => "Enclosure", // Missing string!!!
+    "email" => "E-mail",
+    // Missing string!!!
+    "enclosure" => "Enclosure",
+    // Missing string!!!
     "error" => "Fel",
-    "error_attributeedit_default" => "An unknown error has occurred.", // Missing string!!!
-    "error_attributeedit_noselectorset" => "Please select the records you wish to edit.", // Missing string!!!
-    "error_attributeedit_update" => "An error occured when updating the selected records.", // Missing string!!!
-    "error_attributeedit_validationfailed" => "This value is not allowed.", // Missing string!!!
-    "error_captchafield" => "The given code is invalid, please try again", // Missing string!!!
-    "error_copy_record" => "Unknown error copying record", // Missing string!!!
+    "error_attributeedit_default" => "An unknown error has occurred.",
+    // Missing string!!!
+    "error_attributeedit_noselectorset" => "Please select the records you wish to edit.",
+    // Missing string!!!
+    "error_attributeedit_update" => "An error occured when updating the selected records.",
+    // Missing string!!!
+    "error_attributeedit_validationfailed" => "This value is not allowed.",
+    // Missing string!!!
+    "error_captchafield" => "The given code is invalid, please try again",
+    // Missing string!!!
+    "error_copy_record" => "Unknown error copying record",
+    // Missing string!!!
     "error_date_invalid" => "Felaktigt datum",
     "error_fileexists" => "Filen finns redan p� servern. Byt filnamn.",
-    "error_file_mime_type" => "Unsupported file uploaded please check your filetype or extension", // Missing string!!!
+    "error_file_mime_type" => "Unsupported file uploaded please check your filetype or extension",
+    // Missing string!!!
     "error_file_size" => "Filen �r f�r stor",
     "error_file_unknown" => "Ok�nt fel vid uppladdning av fil",
     "error_format_mismatch" => "Elementet vid position %d st�mmer inte med beg�rt format",
     "error_formdataerror" => "Sparandet misslyckades pga f�ljande fel: ",
-    "error_iconv_not_install" => "iconv module don't install in your system, but it needs for right functionality", // Missing string!!!
+    "error_iconv_not_install" => "iconv module don't install in your system, but it needs for right functionality",
+    // Missing string!!!
     "error_invalid_email" => "Felaktig epostadress",
     "error_node_action_access_denied" => "Ledsen, men du har inte r�ttigheter att g�ra detta.",
     "error_notnumeric" => "V�rdet �r inte numeriskt",
-    "error_not_a_valid_ip" => "This is not a valid IP address. An IP address consists of 4 numbers between 0 and 255.", // Missing string!!!
+    "error_not_a_valid_ip" => "This is not a valid IP address. An IP address consists of 4 numbers between 0 and 255.",
+    // Missing string!!!
     "error_obligatoryfield" => "Detta f�lt kr�vs",
     "error_password_incorrect" => "L�senordet du matade in �r fel!",
     "error_password_invalid" => "L�senordet du matade in �r inte ett korrekt l�senord!",
     "error_password_nomatch" => "Medskickat l�senord st�mmer inte.",
     "error_primarykey_exists" => "En post med denna nyckel finns redan",
     "error_tab" => "se",
-    "error_tag_illegalvalue" => "A tag may not contain HTML or linefeeds.", // Missing string!!!
+    "error_tag_illegalvalue" => "A tag may not contain HTML or linefeeds.",
+    // Missing string!!!
     "error_uniquefield" => "V�rdet i detta f�lt m�se vara unikt",
     "error_uniquefieldset" => "V�rdeskombinationen f�r dessa f�lt m�ste vara unik",
     "error_unkown_domain" => "Ok�nd dom�n",
@@ -139,15 +178,18 @@ $sv = array(
     "export_config_explanation" => "V�lj inst�llningar f�r CSV-exporten.",
     "export_generatetitlerow" => "Inkludera en titelrad",
     "export_selectcolumns" => "V�lj kolumner att exportera",
-    "export_selections" => "Standard selections", // Missing string!!!
-    "export_selections_name" => "Standard selections name", // Missing string!!!
+    "export_selections" => "Standard selections",
+    // Missing string!!!
+    "export_selections_name" => "Standard selections name",
+    // Missing string!!!
     "feb" => "Feb",
     "february" => "Februari",
     "feedback" => "Feedback",
     "feedback_delete_cancelled" => "Posten har inte raderats.",
     "feedback_delete_failed" => "Posten kunde inte raderas.",
     "feedback_delete_success" => "Posten har raderats.",
-    "feedback_edit_failed" => "Editing is not possible. Item doesn\'t exist (anymore).", // Missing string!!!
+    "feedback_edit_failed" => "Editing is not possible. Item doesn\'t exist (anymore).",
+    // Missing string!!!
     "feedback_import_failed" => "Filen kunde inte importeras",
     "feedback_save_cancelled" => "Posten har inte lagts till.",
     "feedback_save_failed" => "Posten har inte lagts till.",
@@ -161,8 +203,10 @@ $sv = array(
     "filename_invalid" => "Filnamnet �r felaktigt",
     "file_exists" => "En fil med detta namn finns redan",
     "file_not_exist" => "Filen finns inte",
-    "finish" => "Finish", // Missing string!!!
-    "forget_criteria" => "Remove selected search", // Missing string!!!
+    "finish" => "Finish",
+    // Missing string!!!
+    "forget_criteria" => "Remove selected search",
+    // Missing string!!!
     "fri" => "Fre",
     "friday" => "Fredag",
     "fsa_pleasemakeselection" => "Mer �n en tr�ff hittades. V�lj en.",
@@ -191,11 +235,15 @@ $sv = array(
     "import_upload" => "Ladda upp",
     "import_upload_explanation" => "Ladda upp en textfil med data f�r import till databas.",
     "import_validatefirst" => "Validera inte f�re import",
-    "intro_addorcopy" => "Do you want to create a new record or copy an existing record?", // Missing string!!!
-    "invalid_relative_url" => "Invalid relative URL, please use this format: '/mysite/guestbook'", // Missing string!!!
-    "invalid_url_anchor" => "Invalid URL anchor, please use this format: '#internal_bookmark'", // Missing string!!!
+    "intro_addorcopy" => "Do you want to create a new record or copy an existing record?",
+    // Missing string!!!
+    "invalid_relative_url" => "Invalid relative URL, please use this format: '/mysite/guestbook'",
+    // Missing string!!!
+    "invalid_url_anchor" => "Invalid URL anchor, please use this format: '#internal_bookmark'",
+    // Missing string!!!
     "invert_selection" => "Invertera markering",
-    "in_use_by" => "In use by", // Missing string!!!
+    "in_use_by" => "In use by",
+    // Missing string!!!
     "jan" => "Jan",
     "january" => "Januari",
     "jul" => "Jul",
@@ -206,21 +254,28 @@ $sv = array(
     "language_en" => "Engelska",
     "language_fr" => "Franska",
     "language_nl" => "Holl�ndska",
-    "language_pl" => "Polish", // Missing string!!!
-    "language_sp" => "Spanish", // Missing string!!!
+    "language_pl" => "Polish",
+    // Missing string!!!
+    "language_sp" => "Spanish",
+    // Missing string!!!
     "list_null_value" => "Inget v�rde",
-    "list_null_value_obligatory" => "(Select a value...)", // Missing string!!!
-    "load_criteria" => "Load saved search", // Missing string!!!
+    "list_null_value_obligatory" => "(Select a value...)",
+    // Missing string!!!
+    "load_criteria" => "Load saved search",
+    // Missing string!!!
     "lock_expired" => "Posterna du �ppnat �r inte l�ngre exklusivt �ppnade f�r dig. Detta kan ha flera orsaker, st�rst sannolikhet �r att du inte sparat p� l�ng tid. Du kan prova att spara, men det �r m�jligt att posterna �r l�sta av en annan anv�ndare.",
-    "lock_info_line" => "[user_id] (ip: [user_ip]) since [lock_date]", // Missing string!!!
+    "lock_info_line" => "[user_id] (ip: [user_ip]) since [lock_date]",
+    // Missing string!!!
     "lock_locked" => "De valda posterna �r inte n�bara f�r att en annan anv�ndare har l�st dom.",
     "logged_in_as" => "Inloggad som",
     "login" => "Logga in",
     "login_failed" => "Inloggning misslyckades",
     "login_form" => "Logga in",
     "logout" => "Logga ut",
-    "lose_changes_warning" => "If you navigate away from this page, all your changes will be lost.", // Missing string!!!
-    "lowerchars" => "lowercase characters", // Missing string!!!
+    "lose_changes_warning" => "If you navigate away from this page, all your changes will be lost.",
+    // Missing string!!!
+    "lowerchars" => "lowercase characters",
+    // Missing string!!!
     "mar" => "Mar",
     "march" => "Mars",
     "may" => "Maj",
@@ -230,49 +285,64 @@ $sv = array(
     "monday" => "M�ndag",
     "multilanguage_choice" => "Valt spr�k:",
     "multilanguage_select" => "V�lj ett spr�k:",
-    "multiselect" => "Multiselect", // Missing string!!!
+    "multiselect" => "Multiselect",
+    // Missing string!!!
     "new" => "Ny",
     "next" => "N�sta",
     "no" => "Nej",
     "none" => "Ingen",
     "nov" => "Nov",
     "november" => "November",
-    "no_color_selected" => "No color selected", // Missing string!!!
-    "no_copyable_records" => "no copyable records", // Missing string!!!
-    "no_records_to_import" => "No records found that needed to be imported.", // Missing string!!!
+    "no_color_selected" => "No color selected",
+    // Missing string!!!
+    "no_copyable_records" => "no copyable records",
+    // Missing string!!!
+    "no_records_to_import" => "No records found that needed to be imported.",
+    // Missing string!!!
     "no_results_found" => "Inga resultat hittades",
     "no_valid_directory" => "Det finns ingen giltig katalog",
-    "numbers" => "numbers", // Missing string!!!
+    "numbers" => "numbers",
+    // Missing string!!!
     "oct" => "Okt",
     "october" => "Oktober",
     "open" => "�ppna",
-    "or" => "Or", // Missing string!!!
+    "or" => "Or",
+    // Missing string!!!
     "password" => "L�senord",
     "password_again" => "Nytt l�senord igen",
     "password_current" => "Nuvarande l�senord",
-    "password_forgotten" => "Password forgotten", // Missing string!!!
+    "password_forgotten" => "Password forgotten",
+    // Missing string!!!
     "password_hidden" => "*****",
     "password_incorrect" => "L�senordet du skrev var inte korrekt!",
     "password_invalid" => "L�senordet du skrev var inte ett korrekt l�sernod.",
     "password_new" => "Nytt l�senord",
     "permission_denied" => "Ledsen, du har inte r�ttigheter att g�ra detta",
     "previous" => "F�reg�ende",
-    "recordlistsummary" => "Record [start]-[end] out of [count]", // Missing string!!!
+    "recordlistsummary" => "Record [start]-[end] out of [count]",
+    // Missing string!!!
     "relogin" => "Logga in igen",
-    "remove_criterium" => "Remove", // Missing string!!!
+    "remove_criterium" => "Remove",
+    // Missing string!!!
     "remove_current_file" => "Ta bort nuvarande fil",
-    "replace_by" => "Replace by", // Missing string!!!
-    "reset_criteria" => "New search", // Missing string!!!
+    "replace_by" => "Replace by",
+    // Missing string!!!
+    "reset_criteria" => "New search",
+    // Missing string!!!
     "restricted_delete_error" => "Det finns detaljinformation under denna post som m�ste raderas f�rst.",
     "sat" => "L�r",
     "saturday" => "L�rdag",
     "save" => "Spara",
-    "saveandaddnew" => "Save and add new", // Missing string!!!
+    "saveandaddnew" => "Save and add new",
+    // Missing string!!!
     "saveandclose" => "Spara och st�ng",
-    "saveandedit" => "Save and edit", // Missing string!!!
+    "saveandedit" => "Save and edit",
+    // Missing string!!!
     "saveandnext" => "Spara och n�sta",
-    "save_criteria" => "Save search as", // Missing string!!!
-    "save_export_selection" => "Save selection", // Missing string!!!
+    "save_criteria" => "Save search as",
+    // Missing string!!!
+    "save_export_selection" => "Save selection",
+    // Missing string!!!
     "search" => "S�k",
     "search_all" => "S�k alla",
     "search_and" => "Tr�ffa alla kriterier",
@@ -284,78 +354,119 @@ $sv = array(
     "search_lessthan" => "S�k efter ett v�rde mindre �n",
     "search_lessthanequal" => "S�k efter ett v�rde mindre eller lika med",
     "search_mode" => "S�kl�ge",
-    "search_none" => "Nothing selected", // Missing string!!!
+    "search_none" => "Nothing selected",
+    // Missing string!!!
     "search_or" => "Tr�ffa vilken kritera som helst",
     "search_regexp" => "S�k med regulj�ra uttryck (avancerat)",
     "search_soundex" => "S�k efter text som l�ter liknande",
     "search_substring" => "S�k efter en delstr�ng",
     "search_wildcard" => "S�k med wildcards (*)",
     "select" => "V�lj",
-    "selected" => "Selected", // Missing string!!!
+    "selected" => "Selected",
+    // Missing string!!!
     "selection" => "Val",
     "select_a" => "V�lj en",
     "select_all" => "V�lj alla",
     "select_invert" => "Invertera val",
     "select_none" => "Ingen",
-    "self" => "Self", // Missing string!!!
+    "self" => "Self",
+    // Missing string!!!
     "sep" => "Sep",
     "september" => "September",
     "settings" => "Inst�llningar",
-    "show" => "Show", // Missing string!!!
-    "smartsearch" => "Smart search", // Missing string!!!
+    "show" => "Show",
+    // Missing string!!!
+    "smartsearch" => "Smart search",
+    // Missing string!!!
     "sort" => "Sortera",
-    "specialchars" => "special characters", // Missing string!!!
-    "steelblue" => "SteelBlue", // Missing string!!!
+    "specialchars" => "special characters",
+    // Missing string!!!
+    "steelblue" => "SteelBlue",
+    // Missing string!!!
     "submit" => "Ok",
-    "successfully_imported_one_record" => "Successfully imported 1 record.", // Missing string!!!
-    "successfully_imported_x_records" => "Successfully imported %d records.", // Missing string!!!
+    "successfully_imported_one_record" => "Successfully imported 1 record.",
+    // Missing string!!!
+    "successfully_imported_x_records" => "Successfully imported %d records.",
+    // Missing string!!!
     "sun" => "S�n",
     "sunday" => "S�ndag",
     "tab_default" => "Generellt",
-    "the_password_should_at_least_contain_%d_%s" => "The password should at least contain %d %s.", // Missing string!!!
-    "the_password_should_be_at_least_%d_characters_long" => "The password should be at least %d characters long.", // Missing string!!!
+    "the_password_should_at_least_contain_%d_%s" => "The password should at least contain %d %s.",
+    // Missing string!!!
+    "the_password_should_be_at_least_%d_characters_long" => "The password should be at least %d characters long.",
+    // Missing string!!!
     "thousands_separator" => ",",
     "thu" => "Tor",
     "thursday" => "Torsdag",
-    "timezone_utc_+0000" => "(UTC) Casablanca, Greenwich Mean Time, London", // Missing string!!!
-    "timezone_utc_+0100" => "(UTC+01:00) Amsterdam, Berlin, Rome, Paris", // Missing string!!!
-    "timezone_utc_+0200" => "(UTC+02:00) Athens, Beirut, Istanbul, Minsk", // Missing string!!!
-    "timezone_utc_+0300" => "(UTC+03:00) Baghdad, Kuwait, Riyadh, Moscow", // Missing string!!!
-    "timezone_utc_+0400" => "(UTC+04:00) Abu Dhabi, Kabul", // Missing string!!!
-    "timezone_utc_+0500" => "(UTC+05:00) New Delhi, Mumbai, Kathmandu", // Missing string!!!
-    "timezone_utc_+0600" => "(UTC+06:00) Novosibirsk, Dhaka, Sri Jayawardenepura", // Missing string!!!
-    "timezone_utc_+0700" => "(UTC+07:00) Bangkok, Hanoi, Jakarta, Krasnoyarsk", // Missing string!!!
-    "timezone_utc_+0800" => "(UTC+08:00) Beijing, Hong Kong, Ulaan Bataar", // Missing string!!!
-    "timezone_utc_+0900" => "(UTC+09:00) Osaka, Sapporo, Tokyo, Seoul", // Missing string!!!
-    "timezone_utc_+1000" => "(UTC+10:00) Brisbane, Melbourne, Sydney", // Missing string!!!
-    "timezone_utc_+1100" => "(UTC+11:00) Solomon Is., Magadan", // Missing string!!!
-    "timezone_utc_+1200" => "(UTC+12:00) Auckland, Wellington, Fiji", // Missing string!!!
-    "timezone_utc_+1300" => "(UTC+13:00) Nuku'alofa", // Missing string!!!
-    "timezone_utc_-0100" => "(UTC-01:00) Azores, Cape Verde Is.", // Missing string!!!
-    "timezone_utc_-0200" => "(UTC-02:00) Mid-Atlantic", // Missing string!!!
-    "timezone_utc_-0300" => "(UTC-03:00) Brasilia, Buenos Aires, Greenland", // Missing string!!!
-    "timezone_utc_-0400" => "(UTC-04:00) Atlantic Time (Canada), Santiago", // Missing string!!!
-    "timezone_utc_-0500" => "(UTC-05:00) Bogota, Lima, Quito, Eastern Time (US & Canada)", // Missing string!!!
-    "timezone_utc_-0600" => "(UTC-06:00) Central America, Central Time (US & Canada)", // Missing string!!!
-    "timezone_utc_-0700" => "(UTC-07:00) Arizona, Mountain Time (US & Canada)", // Missing string!!!
-    "timezone_utc_-0800" => "(UTC-08:00) Pacific Time (US & Canada); Tijuna", // Missing string!!!
-    "timezone_utc_-0900" => "(UTC-09:00) Alaska", // Missing string!!!
-    "timezone_utc_-1000" => "(UTC-10:00) Hawaii", // Missing string!!!
-    "timezone_utc_-1100" => "(UTC-11:00) Midway Island, Samoa", // Missing string!!!
-    "timezone_utc_-1200" => "(UTC-12:00) International Date Line West", // Missing string!!!
+    "timezone_utc_+0000" => "(UTC) Casablanca, Greenwich Mean Time, London",
+    // Missing string!!!
+    "timezone_utc_+0100" => "(UTC+01:00) Amsterdam, Berlin, Rome, Paris",
+    // Missing string!!!
+    "timezone_utc_+0200" => "(UTC+02:00) Athens, Beirut, Istanbul, Minsk",
+    // Missing string!!!
+    "timezone_utc_+0300" => "(UTC+03:00) Baghdad, Kuwait, Riyadh, Moscow",
+    // Missing string!!!
+    "timezone_utc_+0400" => "(UTC+04:00) Abu Dhabi, Kabul",
+    // Missing string!!!
+    "timezone_utc_+0500" => "(UTC+05:00) New Delhi, Mumbai, Kathmandu",
+    // Missing string!!!
+    "timezone_utc_+0600" => "(UTC+06:00) Novosibirsk, Dhaka, Sri Jayawardenepura",
+    // Missing string!!!
+    "timezone_utc_+0700" => "(UTC+07:00) Bangkok, Hanoi, Jakarta, Krasnoyarsk",
+    // Missing string!!!
+    "timezone_utc_+0800" => "(UTC+08:00) Beijing, Hong Kong, Ulaan Bataar",
+    // Missing string!!!
+    "timezone_utc_+0900" => "(UTC+09:00) Osaka, Sapporo, Tokyo, Seoul",
+    // Missing string!!!
+    "timezone_utc_+1000" => "(UTC+10:00) Brisbane, Melbourne, Sydney",
+    // Missing string!!!
+    "timezone_utc_+1100" => "(UTC+11:00) Solomon Is., Magadan",
+    // Missing string!!!
+    "timezone_utc_+1200" => "(UTC+12:00) Auckland, Wellington, Fiji",
+    // Missing string!!!
+    "timezone_utc_+1300" => "(UTC+13:00) Nuku'alofa",
+    // Missing string!!!
+    "timezone_utc_-0100" => "(UTC-01:00) Azores, Cape Verde Is.",
+    // Missing string!!!
+    "timezone_utc_-0200" => "(UTC-02:00) Mid-Atlantic",
+    // Missing string!!!
+    "timezone_utc_-0300" => "(UTC-03:00) Brasilia, Buenos Aires, Greenland",
+    // Missing string!!!
+    "timezone_utc_-0400" => "(UTC-04:00) Atlantic Time (Canada), Santiago",
+    // Missing string!!!
+    "timezone_utc_-0500" => "(UTC-05:00) Bogota, Lima, Quito, Eastern Time (US & Canada)",
+    // Missing string!!!
+    "timezone_utc_-0600" => "(UTC-06:00) Central America, Central Time (US & Canada)",
+    // Missing string!!!
+    "timezone_utc_-0700" => "(UTC-07:00) Arizona, Mountain Time (US & Canada)",
+    // Missing string!!!
+    "timezone_utc_-0800" => "(UTC-08:00) Pacific Time (US & Canada); Tijuna",
+    // Missing string!!!
+    "timezone_utc_-0900" => "(UTC-09:00) Alaska",
+    // Missing string!!!
+    "timezone_utc_-1000" => "(UTC-10:00) Hawaii",
+    // Missing string!!!
+    "timezone_utc_-1100" => "(UTC-11:00) Midway Island, Samoa",
+    // Missing string!!!
+    "timezone_utc_-1200" => "(UTC-12:00) International Date Line West",
+    // Missing string!!!
     "title_delete" => "Godk�nn radering",
-    "title_multiselect" => "Multiselect", // Missing string!!!
+    "title_multiselect" => "Multiselect",
+    // Missing string!!!
     "title_select" => "V�lj",
     "title_session_expired" => "Sessionen f�fallit",
-    "title_wizard_finished" => "Wizard finished", // Missing string!!!
+    "title_wizard_finished" => "Wizard finished",
+    // Missing string!!!
     "today" => "Idag",
     "tue" => "Tis",
     "tuesday" => "Tisdag",
     "unknown_error" => "Ok�nt fel",
-    "unselect" => "Deselect", // Missing string!!!
+    "unselect" => "Deselect",
+    // Missing string!!!
     "until" => "tills",
     "update" => "Uppdatera",
-    "upperchars" => "uppercase characters", // Missing string!!!
+    "upperchars" => "uppercase characters",
+    // Missing string!!!
     "username" => "Anv�ndarnamn",
     "view" => "Vy",
     "view_all" => "Visa alla",

@@ -30,29 +30,31 @@ class Atk_ExpressionAttribute extends Atk_Attribute
 
     /**
      * Constructor.
-     * 
-     * @param string $name               The name of the attribute.
-     * @param string $expression         The SQL expression.
-     * @param mixed  $searchTypeOrFlags  The search type (string) or flags (numeric) for this attribute. At the moment
+     *
+     * @param string $name The name of the attribute.
+     * @param string $expression The SQL expression.
+     * @param mixed $searchTypeOrFlags The search type (string) or flags (numeric) for this attribute. At the moment
      *                                   only search types "string", "number" and "date" are supported.
-     * @param int    $flags              The flags for this attribute.
+     * @param int $flags The flags for this attribute.
      */
     function atkExpressionAttribute($name, $expression, $searchTypeOrFlags = 0, $flags = 0)
     {
-        if (is_numeric($searchTypeOrFlags))
+        if (is_numeric($searchTypeOrFlags)) {
             $flags = $searchTypeOrFlags;
+        }
 
         $this->atkAttribute($name, $flags | AF_HIDE_ADD | AF_READONLY_EDIT);
 
         $this->m_expression = $expression;
 
-        if (!is_numeric($searchTypeOrFlags))
+        if (!is_numeric($searchTypeOrFlags)) {
             $this->setSearchType($searchTypeOrFlags);
+        }
     }
 
     /**
      * No storage.
-     * 
+     *
      * @param string $mode The type of storage ("add" or "update")
      */
     function storageType($mode = '')
@@ -151,17 +153,20 @@ class Atk_ExpressionAttribute extends Atk_Attribute
      */
     function getSearchModes()
     {
-        if ($this->getSearchType() == "number")
+        if ($this->getSearchType() == "number") {
             return Atk_NumberAttribute::getSearchModes();
-        else if ($this->getSearchType() == "date")
-            return Atk_DateAttribute::getSearchModes();
-        else
-            return parent::getSearchModes();
+        } else {
+            if ($this->getSearchType() == "date") {
+                return Atk_DateAttribute::getSearchModes();
+            } else {
+                return parent::getSearchModes();
+            }
+        }
     }
 
     /**
      * Returns a piece of html code that can be used to search for an attribute's value.
-     * 
+     *
      * @param array $record Array with values
      * @param boolean $extended if set to false, a simple search input is
      *                          returned for use in the searchbar of the
@@ -178,23 +183,25 @@ class Atk_ExpressionAttribute extends Atk_Attribute
     {
         if ($this->getSearchType() == "number") {
             return Atk_NumberAttribute::search($record, $extended, $fieldprefix);
-        } else if ($this->getSearchType() == "date") {
-            $attr = new Atk_DateAttribute($this->fieldName());
-            $attr->m_searchsize = 10;
-            return $attr->search($record, $extended, $fieldprefix);
         } else {
-            return parent::search($record, $extended, $fieldprefix);
+            if ($this->getSearchType() == "date") {
+                $attr = new Atk_DateAttribute($this->fieldName());
+                $attr->m_searchsize = 10;
+                return $attr->search($record, $extended, $fieldprefix);
+            } else {
+                return parent::search($record, $extended, $fieldprefix);
+            }
         }
     }
 
     /**
      * Creates a search condition for this attribute.
-     * 
-     * @param Atk_Query $query     The query object where the search condition should be placed on
-     * @param String $table       The name of the table in which this attribute
+     *
+     * @param Atk_Query $query The query object where the search condition should be placed on
+     * @param String $table The name of the table in which this attribute
      *                              is stored
-     * @param mixed $value        The value the user has entered in the searchbox
-     * @param String $searchmode  The searchmode to use. This can be any one
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param String $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
@@ -203,8 +210,9 @@ class Atk_ExpressionAttribute extends Atk_Attribute
     {
         // If we are accidentally mistaken for a relation and passed an array
         // we only take our own attribute value from the array
-        if ($this->m_searchmode)
+        if ($this->m_searchmode) {
             $searchmode = $this->m_searchmode;
+        }
 
         $expression = "(" . str_replace("[table]", $table, $this->m_expression) . ")";
 
@@ -221,14 +229,16 @@ class Atk_ExpressionAttribute extends Atk_Attribute
             if ($this->getSearchType() == "number") {
                 if ($value['from'] != '') {
                     $value = $value['from'];
-                } else if ($value['to'] != '') {
-                    $value = $value['to'];
                 } else {
-                    return false;
+                    if ($value['to'] != '') {
+                        $value = $value['to'];
+                    } else {
+                        return false;
+                    }
                 }
             }
             $func = $searchmode . "Condition";
-            if (method_exists($query, $func) && $value !== "" && $value !== NULL) {
+            if (method_exists($query, $func) && $value !== "" && $value !== null) {
                 return $query->$func($expression, $this->escapeSQL($value));
             } else {
                 return false;

@@ -246,10 +246,9 @@ class Atk_TableRenderer
             foreach ($data as $row => $entry) {
                 foreach ($entry as $cell => $text) {
                     $colspan = isset($this->m_span[$row][$cell]['colspan']) ? $this->m_span[$row][$cell]['colspan']
-                            : 1;
+                        : 1;
                     $rowspan = isset($this->m_span[$row][$cell]['rowspan']) ? $this->m_span[$row][$cell]['rowspan']
-                            : 1;
-                    ;
+                        : 1;;
 
                     $x = $cell;
                     $y = $row;
@@ -285,7 +284,7 @@ class Atk_TableRenderer
      *  $tbl->render($data, TBL_HEADER|TBL_ALTERNATE, "recordlist");
      * </code>
      *
-     * @param array  $data   A multidimensional array containing the rows and
+     * @param array $data A multidimensional array containing the rows and
      *                       columns with data. The first dimension represents
      *                       the rows. The second dimension represents the
      *                       cols.
@@ -293,7 +292,7 @@ class Atk_TableRenderer
      *                       (compared to the other rows), the row is
      *                       automatically filled upon the right by a spacer
      *                       cell.
-     * @param int    $flags  (obsolete). Set flags in constructor or setFlag()
+     * @param int $flags (obsolete). Set flags in constructor or setFlag()
      *                       One or more bitwise flags that influence the way
      *                       the table is rendered.
      *                       Valid flags:
@@ -304,7 +303,7 @@ class Atk_TableRenderer
      *                       - TBL_ALTERNATE: The rows of the table should
      *                                        alternate in color.
      *                       - TBL_DATA: Alias for TBL_HEADER|TBL_ALTERNATE.
-     * @param string $style  (obsolete) Use the constructor parameter or setTableStyle()
+     * @param string $style (obsolete) Use the constructor parameter or setTableStyle()
      *                       The style to render the table in (without .css
      *                       extension).
      * @param string $module (obsolete) Use the constructor parameter or setTableStyle()
@@ -404,11 +403,11 @@ class Atk_TableRenderer
         $value = "";
         if (is_array($cell)) {
             // Use the value field, if available
-            if (isset($cell['value']))
+            if (isset($cell['value'])) {
                 $value = $cell['value'];
-        }
-        else {
-            $value = (string) $cell;
+            }
+        } else {
+            $value = (string)$cell;
             if ($value == '') {
                 $value = '&nbsp;';
             }
@@ -481,10 +480,12 @@ class Atk_TableRenderer
     {
         if (is_string($row)) {
             return 'class="' . $row . '"';
-        } else if (Atk_Tools::hasFlag($this->m_flags, TBL_ALTERNATE) && ($row % 2) !== 0) {
-            return 'class="row2"';
         } else {
-            return 'class="row1"';
+            if (Atk_Tools::hasFlag($this->m_flags, TBL_ALTERNATE) && ($row % 2) !== 0) {
+                return 'class="row2"';
+            } else {
+                return 'class="row1"';
+            }
         }
     }
 
@@ -543,8 +544,9 @@ class Atk_TableRenderer
     function _renderBody($data, $rowOffset = 0)
     {
         $rowCount = count($data);
-        if ($rowOffset >= $rowCount)
+        if ($rowOffset >= $rowCount) {
             return "";
+        }
 
         $output = '<tbody>';
 
@@ -582,19 +584,21 @@ class Atk_TableRenderer
     function _alignmentStr($alignment)
     {
         $ret = '';
-        if (Atk_Tools::hasFlag($alignment, TBL_LEFT))
-            $ret.='align="left" ';
-        elseif (hasFLag($alignment, TBL_RIGHT))
-            $ret.='align="right" ';
-        elseif (Atk_Tools::hasFlag($alignment, TBL_CENTER))
-            $ret.='align="center" ';
+        if (Atk_Tools::hasFlag($alignment, TBL_LEFT)) {
+            $ret .= 'align="left" ';
+        } elseif (hasFLag($alignment, TBL_RIGHT)) {
+            $ret .= 'align="right" ';
+        } elseif (Atk_Tools::hasFlag($alignment, TBL_CENTER)) {
+            $ret .= 'align="center" ';
+        }
 
-        if (Atk_Tools::hasFlag($alignment, TBL_TOP))
-            $ret.='valign="top" ';
-        elseif (hasFLag($alignment, TBL_BOTTOM))
-            $ret.='valign="bottom" ';
-        elseif (Atk_Tools::hasFlag($alignment, TBL_MIDDLE))
-            $ret.='valign="middle" ';
+        if (Atk_Tools::hasFlag($alignment, TBL_TOP)) {
+            $ret .= 'valign="top" ';
+        } elseif (hasFLag($alignment, TBL_BOTTOM)) {
+            $ret .= 'valign="bottom" ';
+        } elseif (Atk_Tools::hasFlag($alignment, TBL_MIDDLE)) {
+            $ret .= 'valign="middle" ';
+        }
 
         return $ret;
     }
@@ -607,8 +611,9 @@ class Atk_TableRenderer
      */
     function _spanStr($span)
     {
-        if ($span["rowspan"] == "" && $span["colspan"] == "")
+        if ($span["rowspan"] == "" && $span["colspan"] == "") {
             return '';
+        }
 
         if ($span["rowspan"] != "" && $span["colspan"] != "") {
             return 'rowspan="' . $span["rowspan"] . '" colspan="' . $span["colspan"] . '"';
@@ -628,10 +633,11 @@ class Atk_TableRenderer
      */
     function _classStr($class)
     {
-        if (empty($class))
+        if (empty($class)) {
             return "";
-        else
+        } else {
             return 'class="' . $class . '"';
+        }
     }
 
     /**
@@ -643,12 +649,17 @@ class Atk_TableRenderer
      */
     function getAlignment($row, $col)
     {
-        if (array_key_exists($row, $this->m_cellalignment) && array_key_exists($col, $this->m_cellalignment[$row]) && $this->m_cellalignment[$row][$col] != "")
+        if (array_key_exists($row, $this->m_cellalignment) && array_key_exists($col,
+                $this->m_cellalignment[$row]) && $this->m_cellalignment[$row][$col] != ""
+        ) {
             return $this->m_cellalignment[$row][$col];
-        if (array_key_exists($col, $this->m_colalignment) && $this->m_colalignment[$col] != "")
+        }
+        if (array_key_exists($col, $this->m_colalignment) && $this->m_colalignment[$col] != "") {
             return $this->m_colalignment[$col];
-        if (array_key_exists($row, $this->m_rowalignment) && $this->m_rowalignment[$row] != "")
+        }
+        if (array_key_exists($row, $this->m_rowalignment) && $this->m_rowalignment[$row] != "") {
             return $this->m_rowalignment[$row];
+        }
         return $this->m_defaultalignment;
     }
 
@@ -661,12 +672,17 @@ class Atk_TableRenderer
      */
     function getClass($row, $col)
     {
-        if (array_key_exists($row, $this->m_cellclass) && array_key_exists($col, $this->m_cellclass[$row]) && $this->m_cellclass[$row][$col] != "")
+        if (array_key_exists($row, $this->m_cellclass) && array_key_exists($col,
+                $this->m_cellclass[$row]) && $this->m_cellclass[$row][$col] != ""
+        ) {
             return $this->m_cellclass[$row][$col];
-        if (array_key_exists($col, $this->m_colclass) && $this->m_colclass[$col] != "")
+        }
+        if (array_key_exists($col, $this->m_colclass) && $this->m_colclass[$col] != "") {
             return $this->m_colclass[$col];
-        if (array_key_exists($row, $this->m_rowclass) && $this->m_rowclass[$row] != "")
+        }
+        if (array_key_exists($row, $this->m_rowclass) && $this->m_rowclass[$row] != "") {
             return $this->m_rowclass[$row];
+        }
         return $this->m_defaultclass;
     }
 
@@ -681,8 +697,10 @@ class Atk_TableRenderer
     {
         if (array_key_exists($row, $this->m_span) &&
             array_key_exists($col, $this->m_span[$row]) &&
-            is_array($this->m_span[$row][$col]))
+            is_array($this->m_span[$row][$col])
+        ) {
             return $this->m_span[$row][$col];
+        }
         return false;
     }
 

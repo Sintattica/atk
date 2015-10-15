@@ -16,15 +16,20 @@
 // Translation Tool.
 //
 $zh = array(
-    "above_maximum_value" => "Above the maximum allowed value", // Missing string!!!
+    "above_maximum_value" => "Above the maximum allowed value",
+    // Missing string!!!
     "access_denied" => "�v������",
     "add" => "�s�W",
-    "addorcopy" => "Add or copy", // Missing string!!!
-    "add_criterium" => "Add", // Missing string!!!
+    "addorcopy" => "Add or copy",
+    // Missing string!!!
+    "add_criterium" => "Add",
+    // Missing string!!!
     "admin" => "�޲z",
     "administration_application" => "�޲z���Ψt��",
-    "all" => "All", // Missing string!!!
-    "alphabeticchars" => "alphabetic characters", // Missing string!!!
+    "all" => "All",
+    // Missing string!!!
+    "alphabeticchars" => "alphabetic characters",
+    // Missing string!!!
     "apply" => "����",
     "app_close" => "����",
     "app_description" => "�w��i�J ATK ���Ψt��.",
@@ -32,44 +37,63 @@ $zh = array(
     "app_reopen" => "���s�Ұ�",
     "app_shorttitle" => "ATK����",
     "app_title" => "ATK ���Ψt��",
-    "apr" => "Apr", // Missing string!!!
+    "apr" => "Apr",
+    // Missing string!!!
     "april" => "�|��",
-    "attributeedit" => "Update value", // Missing string!!!
+    "attributeedit" => "Update value",
+    // Missing string!!!
     "attrib_delete_not_allowed" => "��� '%s' �T���ƧR��. (%s)'",
-    "aug" => "Aug", // Missing string!!!
-    "august" => "August", // Missing string!!!
+    "aug" => "Aug",
+    // Missing string!!!
+    "august" => "August",
+    // Missing string!!!
     "auth_account_locked" => "�o�ӱb���w�Q�t����w. �ШϥΨ�L�b���λP�t�κ޲z���p��.",
     "auth_max_loginattempts_exceeded" => "��~���ƶW�L. ���b������. �лP�t�κ޲z���p��.",
     "auth_mismatch" => "�b���αK�X��~. �Э��s�n�J.",
-    "auth_missingusername" => "Please enter a username first.", // Missing string!!!
+    "auth_missingusername" => "Please enter a username first.",
+    // Missing string!!!
     "auth_no_server" => "���]�w��A��. �L�k�i�樭���{�� (�лP�t�κ޲z���p��).",
-    "auth_passwordmail_explanation" => "You receive this e-mail because you used the password forgotten function. Below are your new login data:", // Missing string!!!
-    "auth_passwordmail_sent" => "If the given username exists, a new password is sent to the corresponding e-mail address.", // Missing string!!!
-    "auth_passwordmail_subjectnew_password" => "New password", // Missing string!!!
+    "auth_passwordmail_explanation" => "You receive this e-mail because you used the password forgotten function. Below are your new login data:",
+    // Missing string!!!
+    "auth_passwordmail_sent" => "If the given username exists, a new password is sent to the corresponding e-mail address.",
+    // Missing string!!!
+    "auth_passwordmail_subjectnew_password" => "New password",
+    // Missing string!!!
     "auth_unable_to_connect" => "�L�k�s�u���A���i�樭���{�� (�лP�t�κ޲z���p��).",
-    "autocomplete_minimum_chars" => "Enter a minimum of %d characters.", // Missing string!!!
-    "autocomplete_no_results" => "No results found for the given search value.", // Missing string!!!
-    "autocomplete_no_results_contains" => "No results found that contain the given search value.", // Missing string!!!
-    "autocomplete_no_results_exact" => "No results found that exactly match the given search value.", // Missing string!!!
-    "autocomplete_no_results_startswith" => "No results found that start with the given search value.", // Missing string!!!
-    "available" => "Available", // Missing string!!!
+    "autocomplete_minimum_chars" => "Enter a minimum of %d characters.",
+    // Missing string!!!
+    "autocomplete_no_results" => "No results found for the given search value.",
+    // Missing string!!!
+    "autocomplete_no_results_contains" => "No results found that contain the given search value.",
+    // Missing string!!!
+    "autocomplete_no_results_exact" => "No results found that exactly match the given search value.",
+    // Missing string!!!
+    "autocomplete_no_results_startswith" => "No results found that start with the given search value.",
+    // Missing string!!!
+    "available" => "Available",
+    // Missing string!!!
     "back" => "�^�W��",
     "back_to" => "�^��",
-    "below_minimum_value" => "Below the minimum allowed value", // Missing string!!!
+    "below_minimum_value" => "Below the minimum allowed value",
+    // Missing string!!!
     "cancel" => "���",
-    "cancel_edit" => "Cancel edit", // Missing string!!!
+    "cancel_edit" => "Cancel edit",
+    // Missing string!!!
     "cannot create directory" => "�L�k�إߥؿ�: ",
     "cannot make file" => "�L�k�إ��ɮ�: ",
     "cannot_remove_file" => "�L�k�R���ɮ�!",
-    "captcha_explain" => "Please fill in the displayed code", // Missing string!!!
-    "charset" => "UTF-8", // Missing string!!!
+    "captcha_explain" => "Please fill in the displayed code",
+    // Missing string!!!
+    "charset" => "UTF-8",
+    // Missing string!!!
     "check rights to" => "���ˬd�z�O�_���������v���i��",
     "check_all" => "����",
     "check_none" => "��@��",
     "clickheretoadd_postfix" => ".",
     "clickheretoadd_prefix" => "�I���H�s�W�@�� ",
     "close" => "����",
-    "color" => "Color", // Missing string!!!
+    "color" => "Color",
+    // Missing string!!!
     "colorcode" => "��X",
     "colorpicker_selectcolor" => "��ܤ@���C��",
     "column" => "��",
@@ -79,76 +103,110 @@ $zh = array(
     "column_unsubtotal" => "�L�k�[�`",
     "confirm_delete" => "�z�T�w�n�R���o�ӵ���ƶ�?",
     "confirm_delete_multi" => "�z�T�w�n�R���o�Ǹ�ƶ�?",
-    "content_wizard_finished" => "Wizard was finished successfully!", // Missing string!!!
+    "content_wizard_finished" => "Wizard was finished successfully!",
+    // Missing string!!!
     "copy" => "�ƻs",
-    "criterium_field" => "Field", // Missing string!!!
-    "criterium_mode" => "Mode", // Missing string!!!
-    "criterium_value" => "Value", // Missing string!!!
-    "critical" => "Critical", // Missing string!!!
-    "datagrid_norecordsfound_general" => "No records found.", // Missing string!!!
-    "datagrid_norecordsfound_search" => "No results found for the current search query.", // Missing string!!!
-    "datagrid_summary" => "(Records [start] - [end] of [count])", // Missing string!!!
+    "criterium_field" => "Field",
+    // Missing string!!!
+    "criterium_mode" => "Mode",
+    // Missing string!!!
+    "criterium_value" => "Value",
+    // Missing string!!!
+    "critical" => "Critical",
+    // Missing string!!!
+    "datagrid_norecordsfound_general" => "No records found.",
+    // Missing string!!!
+    "datagrid_norecordsfound_search" => "No results found for the current search query.",
+    // Missing string!!!
+    "datagrid_summary" => "(Records [start] - [end] of [count])",
+    // Missing string!!!
     "date_format_edit" => "Y/n/j",
     "date_format_view" => "Y/n/j",
     "db_access_denied_database" => "�Τ� '%s' �S����Ʈw '%s' �v��",
     "db_access_denied_user" => "�Τ� '%s' �L�k�s�u���Ʈw '%s'",
     "db_unknown_database" => "�L�k�s�u���Ʈw '%s'",
     "db_unknown_host" => "�D���W�� '%s' ���s�b",
-    "dec" => "Dec", // Missing string!!!
+    "dec" => "Dec",
+    // Missing string!!!
     "december" => "�Q�G��",
-    "decimal_separator" => ".", // Missing string!!!
+    "decimal_separator" => ".",
+    // Missing string!!!
     "delete" => "�R��",
-    "delimiter" => "Delimiter", // Missing string!!!
+    "delimiter" => "Delimiter",
+    // Missing string!!!
     "deselect_all" => "�M���������",
-    "document" => "Open document", // Missing string!!!
+    "document" => "Open document",
+    // Missing string!!!
     "edit" => "�s��",
     "editcopy" => "�s��ƻs",
-    "email" => "E-mail", // Missing string!!!
-    "enclosure" => "Enclosure", // Missing string!!!
+    "email" => "E-mail",
+    // Missing string!!!
+    "enclosure" => "Enclosure",
+    // Missing string!!!
     "error" => "��~",
-    "error_attributeedit_default" => "An unknown error has occurred.", // Missing string!!!
-    "error_attributeedit_noselectorset" => "Please select the records you wish to edit.", // Missing string!!!
-    "error_attributeedit_update" => "An error occured when updating the selected records.", // Missing string!!!
-    "error_attributeedit_validationfailed" => "This value is not allowed.", // Missing string!!!
-    "error_captchafield" => "The given code is invalid, please try again", // Missing string!!!
-    "error_copy_record" => "Unknown error copying record", // Missing string!!!
+    "error_attributeedit_default" => "An unknown error has occurred.",
+    // Missing string!!!
+    "error_attributeedit_noselectorset" => "Please select the records you wish to edit.",
+    // Missing string!!!
+    "error_attributeedit_update" => "An error occured when updating the selected records.",
+    // Missing string!!!
+    "error_attributeedit_validationfailed" => "This value is not allowed.",
+    // Missing string!!!
+    "error_captchafield" => "The given code is invalid, please try again",
+    // Missing string!!!
+    "error_copy_record" => "Unknown error copying record",
+    // Missing string!!!
     "error_date_invalid" => "��~���",
     "error_fileexists" => "�ɮפw�s�b��A����. �бN�ɮק�W.",
-    "error_file_mime_type" => "Unsupported file uploaded please check your filetype or extension", // Missing string!!!
-    "error_file_size" => "File is too big", // Missing string!!!
-    "error_file_unknown" => "Unknown error during upload of file", // Missing string!!!
+    "error_file_mime_type" => "Unsupported file uploaded please check your filetype or extension",
+    // Missing string!!!
+    "error_file_size" => "File is too big",
+    // Missing string!!!
+    "error_file_unknown" => "Unknown error during upload of file",
+    // Missing string!!!
     "error_format_mismatch" => "�b %d ��m���������ŦX�]�w�榡",
     "error_formdataerror" => "�]�U�C��]�x�s����: ",
-    "error_iconv_not_install" => "iconv module don't install in your system, but it needs for right functionality", // Missing string!!!
+    "error_iconv_not_install" => "iconv module don't install in your system, but it needs for right functionality",
+    // Missing string!!!
     "error_invalid_email" => "��~�� e-mail �a�}",
     "error_node_action_access_denied" => "��p, �z�S������o���@�~���v��.",
     "error_notnumeric" => "�п�J�Ʀr",
-    "error_not_a_valid_ip" => "This is not a valid IP address. An IP address consists of 4 numbers between 0 and 255.", // Missing string!!!
+    "error_not_a_valid_ip" => "This is not a valid IP address. An IP address consists of 4 numbers between 0 and 255.",
+    // Missing string!!!
     "error_obligatoryfield" => "�п�J�o�����",
     "error_password_incorrect" => "�K�X��~!",
     "error_password_invalid" => "�K�X��~!",
     "error_password_nomatch" => "�K�X�����T.",
     "error_primarykey_exists" => "������Ȫ���Ƥw�g�s�b",
     "error_tab" => "��",
-    "error_tag_illegalvalue" => "A tag may not contain HTML or linefeeds.", // Missing string!!!
+    "error_tag_illegalvalue" => "A tag may not contain HTML or linefeeds.",
+    // Missing string!!!
     "error_uniquefield" => "���ȥ����O�ߤ@��,���i����",
     "error_uniquefieldset" => "�o����쪺�զX�ȥ����O�ߤ@��,���i����",
     "error_unkown_domain" => "�S���o�Ӻ���",
     "explain_session_expired" => "�s�u���q�w�O��. �Э��s�n�J.",
     "export" => "��� Export",
-    "export_config_explanation" => "Please select the options for the CSV export.", // Missing string!!!
-    "export_generatetitlerow" => "Include a title row", // Missing string!!!
-    "export_selectcolumns" => "Select which columns to export", // Missing string!!!
-    "export_selections" => "Standard selections", // Missing string!!!
-    "export_selections_name" => "Standard selections name", // Missing string!!!
-    "feb" => "Feb", // Missing string!!!
+    "export_config_explanation" => "Please select the options for the CSV export.",
+    // Missing string!!!
+    "export_generatetitlerow" => "Include a title row",
+    // Missing string!!!
+    "export_selectcolumns" => "Select which columns to export",
+    // Missing string!!!
+    "export_selections" => "Standard selections",
+    // Missing string!!!
+    "export_selections_name" => "Standard selections name",
+    // Missing string!!!
+    "feb" => "Feb",
+    // Missing string!!!
     "february" => "�G��",
     "feedback" => "�Τ�N��",
     "feedback_delete_cancelled" => "��ƥ��R��.",
     "feedback_delete_failed" => "��ƵL�k�R��.",
     "feedback_delete_success" => "��ƧR�����\.",
-    "feedback_edit_failed" => "Editing is not possible. Item doesn\'t exist (anymore).", // Missing string!!!
-    "feedback_import_failed" => "File can not be imported", // Missing string!!!
+    "feedback_edit_failed" => "Editing is not possible. Item doesn\'t exist (anymore).",
+    // Missing string!!!
+    "feedback_import_failed" => "File can not be imported",
+    // Missing string!!!
     "feedback_save_cancelled" => "��ƥ��s�W.",
     "feedback_save_failed" => "��ƵL�k�s�W.",
     "feedback_save_success" => "��Ƥw�s�W.",
@@ -161,8 +219,10 @@ $zh = array(
     "filename_invalid" => "�ɦW���X�k",
     "file_exists" => "�t�Τ��w���o���ɦW�F",
     "file_not_exist" => "�ɮפ��s�b",
-    "finish" => "Finish", // Missing string!!!
-    "forget_criteria" => "Remove selected search", // Missing string!!!
+    "finish" => "Finish",
+    // Missing string!!!
+    "forget_criteria" => "Remove selected search",
+    // Missing string!!!
     "fri" => "�g��",
     "friday" => "�g��",
     "fsa_pleasemakeselection" => "�h����ƲŦX. �п��.",
@@ -171,7 +231,8 @@ $zh = array(
     "import_allfield" => "��J����ɤ����t��줺�w��",
     "import_analyse" => "�A���R�@��",
     "import_detectedcolumns" => "�˴�쪺����",
-    "import_detectedrows" => "Detected number of rows", // Missing string!!!
+    "import_detectedrows" => "Detected number of rows",
+    // Missing string!!!
     "import_doupdate" => "�����s�@�~��N�s�W�@�~",
     "import_error_allfieldnocorrectdata" => "The field for use in every record does not contain valid data",
     "import_error_fieldisobligatory" => "The next field is required and should contain data",
@@ -181,47 +242,66 @@ $zh = array(
     "import_field" => "���",
     "import_ignorecolumn" => "�����o�����",
     "import_import" => "��J�����",
-    "import_importedreminder" => "The file has already been imported, however there were errors detected in the following rows, these were not added/updated", // Missing string!!!
+    "import_importedreminder" => "The file has already been imported, however there were errors detected in the following rows, these were not added/updated",
+    // Missing string!!!
     "import_nonunique_identifier" => "�D�ߤ@�Ȫ�id�b��Ƥ�, id�Ȭ� %s",
     "import_onfalseidentifier" => "����~��id�� (�G����ƪ���ȬۦP) �s�W�åB�~�����",
-    "import_relation_value_failed" => "Of the field '%s' has been found, on line %s, the value '%s', however this is not a unique value for this relation", // Missing string!!!
+    "import_relation_value_failed" => "Of the field '%s' has been found, on line %s, the value '%s', however this is not a unique value for this relation",
+    // Missing string!!!
     "import_sample" => "�Ӧ� csv �ɪ��˥��ƾ�",
     "import_skipfirstrow" => "�O�_���L�Ĥ@����ƩO? (���Y�C)",
-    "import_update_key" => "When updating, use this field to identify which record to update", // Missing string!!!
+    "import_update_key" => "When updating, use this field to identify which record to update",
+    // Missing string!!!
     "import_upload" => "�W�Ǹ����",
     "import_upload_explanation" => "�W�Ǹ���ɨ��Ʈw��.",
-    "import_validatefirst" => "Do not validate before importing", // Missing string!!!
-    "intro_addorcopy" => "Do you want to create a new record or copy an existing record?", // Missing string!!!
-    "invalid_relative_url" => "Invalid relative URL, please use this format: '/mysite/guestbook'", // Missing string!!!
-    "invalid_url_anchor" => "Invalid URL anchor, please use this format: '#internal_bookmark'", // Missing string!!!
+    "import_validatefirst" => "Do not validate before importing",
+    // Missing string!!!
+    "intro_addorcopy" => "Do you want to create a new record or copy an existing record?",
+    // Missing string!!!
+    "invalid_relative_url" => "Invalid relative URL, please use this format: '/mysite/guestbook'",
+    // Missing string!!!
+    "invalid_url_anchor" => "Invalid URL anchor, please use this format: '#internal_bookmark'",
+    // Missing string!!!
     "invert_selection" => "�Ϭۿ��",
-    "in_use_by" => "In use by", // Missing string!!!
-    "jan" => "Jan", // Missing string!!!
+    "in_use_by" => "In use by",
+    // Missing string!!!
+    "jan" => "Jan",
+    // Missing string!!!
     "january" => "�@��",
-    "jul" => "Jul", // Missing string!!!
+    "jul" => "Jul",
+    // Missing string!!!
     "july" => "�C��",
-    "jun" => "Jun", // Missing string!!!
+    "jun" => "Jun",
+    // Missing string!!!
     "june" => "����",
     "language_de" => "�w��",
     "language_en" => "�^��",
     "language_fr" => "�k��",
     "language_nl" => "������",
-    "language_pl" => "Polish", // Missing string!!!
-    "language_sp" => "Spanish", // Missing string!!!
+    "language_pl" => "Polish",
+    // Missing string!!!
+    "language_sp" => "Spanish",
+    // Missing string!!!
     "list_null_value" => "�ťխ�",
-    "list_null_value_obligatory" => "(Select a value...)", // Missing string!!!
-    "load_criteria" => "Load saved search", // Missing string!!!
+    "list_null_value_obligatory" => "(Select a value...)",
+    // Missing string!!!
+    "load_criteria" => "Load saved search",
+    // Missing string!!!
     "lock_expired" => "�}�Ҫ���ƶ��w���A�ȴ��ѱz�s��. �i�઺��]���ƺ�, �`�����]�����z�O�ɩ|���x�s���. �A�i�H�յ��x�s, ���ƶ��i��w�Q��L�ϥΪ����.",
-    "lock_info_line" => "[user_id] (ip: [user_ip]) since [lock_date]", // Missing string!!!
+    "lock_info_line" => "[user_id] (ip: [user_ip]) since [lock_date]",
+    // Missing string!!!
     "lock_locked" => "�A��ܪ���ƶ��w�Q��L�ϥΪ����,�L�kŪ��.",
     "logged_in_as" => "�n�J��",
     "login" => "�n�J",
     "login_failed" => "�n�J����",
     "login_form" => "�n�J",
     "logout" => "�n�X",
-    "lose_changes_warning" => "If you navigate away from this page, all your changes will be lost.", // Missing string!!!
-    "lowerchars" => "lowercase characters", // Missing string!!!
-    "mar" => "Mar", // Missing string!!!
+    "lose_changes_warning" => "If you navigate away from this page, all your changes will be lost.",
+    // Missing string!!!
+    "lowerchars" => "lowercase characters",
+    // Missing string!!!
+    "mar" => "Mar",
+    // Missing string!!!
     "march" => "�T��",
     "may" => "����",
     "menu" => "���",
@@ -230,49 +310,69 @@ $zh = array(
     "monday" => "�g�@",
     "multilanguage_choice" => "�y��:",
     "multilanguage_select" => "��ܻy��:",
-    "multiselect" => "Multiselect", // Missing string!!!
+    "multiselect" => "Multiselect",
+    // Missing string!!!
     "new" => "�s�W",
     "next" => "�U�@��",
     "no" => "�_",
     "none" => "�S�����",
-    "nov" => "Nov", // Missing string!!!
+    "nov" => "Nov",
+    // Missing string!!!
     "november" => "�Q�@��",
-    "no_color_selected" => "No color selected", // Missing string!!!
-    "no_copyable_records" => "no copyable records", // Missing string!!!
-    "no_records_to_import" => "No records found that needed to be imported.", // Missing string!!!
+    "no_color_selected" => "No color selected",
+    // Missing string!!!
+    "no_copyable_records" => "no copyable records",
+    // Missing string!!!
+    "no_records_to_import" => "No records found that needed to be imported.",
+    // Missing string!!!
     "no_results_found" => "�S�����",
     "no_valid_directory" => "�S���X�k���ؿ�.",
-    "numbers" => "numbers", // Missing string!!!
-    "oct" => "Oct", // Missing string!!!
+    "numbers" => "numbers",
+    // Missing string!!!
+    "oct" => "Oct",
+    // Missing string!!!
     "october" => "�Q��",
-    "open" => "Open", // Missing string!!!
-    "or" => "Or", // Missing string!!!
+    "open" => "Open",
+    // Missing string!!!
+    "or" => "Or",
+    // Missing string!!!
     "password" => "�K�X",
     "password_again" => "�A��J�@��",
     "password_current" => "�ثe�]�w��",
-    "password_forgotten" => "Password forgotten", // Missing string!!!
+    "password_forgotten" => "Password forgotten",
+    // Missing string!!!
     "password_hidden" => "*****",
     "password_incorrect" => "�A��J���K�X�����T!",
     "password_invalid" => "�A��J���K�X�����T.",
     "password_new" => "�s���K�X",
     "permission_denied" => "��p, �A�S���o���@�~���v��",
     "previous" => "�e�@��",
-    "recordlistsummary" => "Record [start]-[end] out of [count]", // Missing string!!!
-    "relogin" => "Log in again", // Missing string!!!
-    "remove_criterium" => "Remove", // Missing string!!!
+    "recordlistsummary" => "Record [start]-[end] out of [count]",
+    // Missing string!!!
+    "relogin" => "Log in again",
+    // Missing string!!!
+    "remove_criterium" => "Remove",
+    // Missing string!!!
     "remove_current_file" => "�e���ثe�ɮ�",
-    "replace_by" => "Replace by", // Missing string!!!
-    "reset_criteria" => "New search", // Missing string!!!
+    "replace_by" => "Replace by",
+    // Missing string!!!
+    "reset_criteria" => "New search",
+    // Missing string!!!
     "restricted_delete_error" => "�o����ƤU�観����ݥ�R������T.",
     "sat" => "�g��",
     "saturday" => "�g��",
     "save" => "�x�s",
-    "saveandaddnew" => "Save and add new", // Missing string!!!
+    "saveandaddnew" => "Save and add new",
+    // Missing string!!!
     "saveandclose" => "�x�s�åB����",
-    "saveandedit" => "Save and edit", // Missing string!!!
-    "saveandnext" => "Save and next", // Missing string!!!
-    "save_criteria" => "Save search as", // Missing string!!!
-    "save_export_selection" => "Save selection", // Missing string!!!
+    "saveandedit" => "Save and edit",
+    // Missing string!!!
+    "saveandnext" => "Save and next",
+    // Missing string!!!
+    "save_criteria" => "Save search as",
+    // Missing string!!!
+    "save_export_selection" => "Save selection",
+    // Missing string!!!
     "search" => "�j�M",
     "search_all" => "�j�M����",
     "search_and" => "�j�M�ŦX�Ҧ�����",
@@ -284,81 +384,132 @@ $zh = array(
     "search_lessthan" => "�j�M�ȸ�p��",
     "search_lessthanequal" => "�j�M�ȸ�p�ά۵���",
     "search_mode" => "�j�M�Ҧ�",
-    "search_none" => "Nothing selected", // Missing string!!!
+    "search_none" => "Nothing selected",
+    // Missing string!!!
     "search_or" => "���@���ŦX",
     "search_regexp" => "�ϥ� regular expression (advanced) �j�M",
     "search_soundex" => "�j�M�o������",
     "search_substring" => "�j�M�l�r��",
     "search_wildcard" => "�ϥθU�Φr��(wildcard *)�j�M",
     "select" => "���",
-    "selected" => "Selected", // Missing string!!!
-    "selection" => "Selection", // Missing string!!!
-    "select_a" => "Select", // Missing string!!!
+    "selected" => "Selected",
+    // Missing string!!!
+    "selection" => "Selection",
+    // Missing string!!!
+    "select_a" => "Select",
+    // Missing string!!!
     "select_all" => "����",
     "select_invert" => "�Ϭۿ��",
     "select_none" => "�S�����",
-    "self" => "Self", // Missing string!!!
-    "sep" => "Sep", // Missing string!!!
+    "self" => "Self",
+    // Missing string!!!
+    "sep" => "Sep",
+    // Missing string!!!
     "september" => "�E��",
     "settings" => "�]�w",
-    "show" => "Show", // Missing string!!!
-    "smartsearch" => "Smart search", // Missing string!!!
+    "show" => "Show",
+    // Missing string!!!
+    "smartsearch" => "Smart search",
+    // Missing string!!!
     "sort" => "�Ƨ�",
-    "specialchars" => "special characters", // Missing string!!!
-    "steelblue" => "SteelBlue", // Missing string!!!
+    "specialchars" => "special characters",
+    // Missing string!!!
+    "steelblue" => "SteelBlue",
+    // Missing string!!!
     "submit" => "����",
-    "successfully_imported_one_record" => "Successfully imported 1 record.", // Missing string!!!
-    "successfully_imported_x_records" => "Successfully imported %d records.", // Missing string!!!
+    "successfully_imported_one_record" => "Successfully imported 1 record.",
+    // Missing string!!!
+    "successfully_imported_x_records" => "Successfully imported %d records.",
+    // Missing string!!!
     "sun" => "�g��",
     "sunday" => "�g��",
-    "tab_default" => "General", // Missing string!!!
-    "the_password_should_at_least_contain_%d_%s" => "The password should at least contain %d %s.", // Missing string!!!
-    "the_password_should_be_at_least_%d_characters_long" => "The password should be at least %d characters long.", // Missing string!!!
-    "thousands_separator" => ",", // Missing string!!!
+    "tab_default" => "General",
+    // Missing string!!!
+    "the_password_should_at_least_contain_%d_%s" => "The password should at least contain %d %s.",
+    // Missing string!!!
+    "the_password_should_be_at_least_%d_characters_long" => "The password should be at least %d characters long.",
+    // Missing string!!!
+    "thousands_separator" => ",",
+    // Missing string!!!
     "thu" => "�g�|",
     "thursday" => "�g�|",
-    "timezone_utc_+0000" => "(UTC) Casablanca, Greenwich Mean Time, London", // Missing string!!!
-    "timezone_utc_+0100" => "(UTC+01:00) Amsterdam, Berlin, Rome, Paris", // Missing string!!!
-    "timezone_utc_+0200" => "(UTC+02:00) Athens, Beirut, Istanbul, Minsk", // Missing string!!!
-    "timezone_utc_+0300" => "(UTC+03:00) Baghdad, Kuwait, Riyadh, Moscow", // Missing string!!!
-    "timezone_utc_+0400" => "(UTC+04:00) Abu Dhabi, Kabul", // Missing string!!!
-    "timezone_utc_+0500" => "(UTC+05:00) New Delhi, Mumbai, Kathmandu", // Missing string!!!
-    "timezone_utc_+0600" => "(UTC+06:00) Novosibirsk, Dhaka, Sri Jayawardenepura", // Missing string!!!
-    "timezone_utc_+0700" => "(UTC+07:00) Bangkok, Hanoi, Jakarta, Krasnoyarsk", // Missing string!!!
-    "timezone_utc_+0800" => "(UTC+08:00) Beijing, Hong Kong, Ulaan Bataar", // Missing string!!!
-    "timezone_utc_+0900" => "(UTC+09:00) Osaka, Sapporo, Tokyo, Seoul", // Missing string!!!
-    "timezone_utc_+1000" => "(UTC+10:00) Brisbane, Melbourne, Sydney", // Missing string!!!
-    "timezone_utc_+1100" => "(UTC+11:00) Solomon Is., Magadan", // Missing string!!!
-    "timezone_utc_+1200" => "(UTC+12:00) Auckland, Wellington, Fiji", // Missing string!!!
-    "timezone_utc_+1300" => "(UTC+13:00) Nuku'alofa", // Missing string!!!
-    "timezone_utc_-0100" => "(UTC-01:00) Azores, Cape Verde Is.", // Missing string!!!
-    "timezone_utc_-0200" => "(UTC-02:00) Mid-Atlantic", // Missing string!!!
-    "timezone_utc_-0300" => "(UTC-03:00) Brasilia, Buenos Aires, Greenland", // Missing string!!!
-    "timezone_utc_-0400" => "(UTC-04:00) Atlantic Time (Canada), Santiago", // Missing string!!!
-    "timezone_utc_-0500" => "(UTC-05:00) Bogota, Lima, Quito, Eastern Time (US & Canada)", // Missing string!!!
-    "timezone_utc_-0600" => "(UTC-06:00) Central America, Central Time (US & Canada)", // Missing string!!!
-    "timezone_utc_-0700" => "(UTC-07:00) Arizona, Mountain Time (US & Canada)", // Missing string!!!
-    "timezone_utc_-0800" => "(UTC-08:00) Pacific Time (US & Canada); Tijuna", // Missing string!!!
-    "timezone_utc_-0900" => "(UTC-09:00) Alaska", // Missing string!!!
-    "timezone_utc_-1000" => "(UTC-10:00) Hawaii", // Missing string!!!
-    "timezone_utc_-1100" => "(UTC-11:00) Midway Island, Samoa", // Missing string!!!
-    "timezone_utc_-1200" => "(UTC-12:00) International Date Line West", // Missing string!!!
+    "timezone_utc_+0000" => "(UTC) Casablanca, Greenwich Mean Time, London",
+    // Missing string!!!
+    "timezone_utc_+0100" => "(UTC+01:00) Amsterdam, Berlin, Rome, Paris",
+    // Missing string!!!
+    "timezone_utc_+0200" => "(UTC+02:00) Athens, Beirut, Istanbul, Minsk",
+    // Missing string!!!
+    "timezone_utc_+0300" => "(UTC+03:00) Baghdad, Kuwait, Riyadh, Moscow",
+    // Missing string!!!
+    "timezone_utc_+0400" => "(UTC+04:00) Abu Dhabi, Kabul",
+    // Missing string!!!
+    "timezone_utc_+0500" => "(UTC+05:00) New Delhi, Mumbai, Kathmandu",
+    // Missing string!!!
+    "timezone_utc_+0600" => "(UTC+06:00) Novosibirsk, Dhaka, Sri Jayawardenepura",
+    // Missing string!!!
+    "timezone_utc_+0700" => "(UTC+07:00) Bangkok, Hanoi, Jakarta, Krasnoyarsk",
+    // Missing string!!!
+    "timezone_utc_+0800" => "(UTC+08:00) Beijing, Hong Kong, Ulaan Bataar",
+    // Missing string!!!
+    "timezone_utc_+0900" => "(UTC+09:00) Osaka, Sapporo, Tokyo, Seoul",
+    // Missing string!!!
+    "timezone_utc_+1000" => "(UTC+10:00) Brisbane, Melbourne, Sydney",
+    // Missing string!!!
+    "timezone_utc_+1100" => "(UTC+11:00) Solomon Is., Magadan",
+    // Missing string!!!
+    "timezone_utc_+1200" => "(UTC+12:00) Auckland, Wellington, Fiji",
+    // Missing string!!!
+    "timezone_utc_+1300" => "(UTC+13:00) Nuku'alofa",
+    // Missing string!!!
+    "timezone_utc_-0100" => "(UTC-01:00) Azores, Cape Verde Is.",
+    // Missing string!!!
+    "timezone_utc_-0200" => "(UTC-02:00) Mid-Atlantic",
+    // Missing string!!!
+    "timezone_utc_-0300" => "(UTC-03:00) Brasilia, Buenos Aires, Greenland",
+    // Missing string!!!
+    "timezone_utc_-0400" => "(UTC-04:00) Atlantic Time (Canada), Santiago",
+    // Missing string!!!
+    "timezone_utc_-0500" => "(UTC-05:00) Bogota, Lima, Quito, Eastern Time (US & Canada)",
+    // Missing string!!!
+    "timezone_utc_-0600" => "(UTC-06:00) Central America, Central Time (US & Canada)",
+    // Missing string!!!
+    "timezone_utc_-0700" => "(UTC-07:00) Arizona, Mountain Time (US & Canada)",
+    // Missing string!!!
+    "timezone_utc_-0800" => "(UTC-08:00) Pacific Time (US & Canada); Tijuna",
+    // Missing string!!!
+    "timezone_utc_-0900" => "(UTC-09:00) Alaska",
+    // Missing string!!!
+    "timezone_utc_-1000" => "(UTC-10:00) Hawaii",
+    // Missing string!!!
+    "timezone_utc_-1100" => "(UTC-11:00) Midway Island, Samoa",
+    // Missing string!!!
+    "timezone_utc_-1200" => "(UTC-12:00) International Date Line West",
+    // Missing string!!!
     "title_delete" => "�T�{�R��",
-    "title_multiselect" => "Multiselect", // Missing string!!!
-    "title_select" => "Select", // Missing string!!!
+    "title_multiselect" => "Multiselect",
+    // Missing string!!!
+    "title_select" => "Select",
+    // Missing string!!!
     "title_session_expired" => "�s�u���q�w�O��",
-    "title_wizard_finished" => "Wizard finished", // Missing string!!!
-    "today" => "Today", // Missing string!!!
+    "title_wizard_finished" => "Wizard finished",
+    // Missing string!!!
+    "today" => "Today",
+    // Missing string!!!
     "tue" => "�g�G",
     "tuesday" => "�g�G",
-    "unknown_error" => "Unknown error", // Missing string!!!
-    "unselect" => "Deselect", // Missing string!!!
+    "unknown_error" => "Unknown error",
+    // Missing string!!!
+    "unselect" => "Deselect",
+    // Missing string!!!
     "until" => "����",
-    "update" => "Update", // Missing string!!!
-    "upperchars" => "uppercase characters", // Missing string!!!
+    "update" => "Update",
+    // Missing string!!!
+    "upperchars" => "uppercase characters",
+    // Missing string!!!
     "username" => "�b��",
     "view" => "�˵�",
-    "view_all" => "View all", // Missing string!!!
+    "view_all" => "View all",
+    // Missing string!!!
     "wed" => "�g�T",
     "wednesday" => "�g�T",
     "with_selected" => "�P�w��ܪ�",

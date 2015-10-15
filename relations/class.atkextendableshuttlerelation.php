@@ -114,20 +114,23 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
                 }
 
                 $limit = $control->getLimit();
-                if ($limit !== null)
+                if ($limit !== null) {
                     $this->m_limit = $limit;
+                }
             }
         }
 
         $res = "<script language=\"text/javascript\">";
         foreach ($this->m_controlsBySection[$record[$this->fieldName()]["section"]] as $control) {
             if ($control->needsRefresh('filter', $record)) {
-                $res .= "$('" . $control->getFormName($prefix) . "').innerHTML = " . Atk_JSON::encode($control->render($record, $mode, $prefix)) . ";";
+                $res .= "$('" . $control->getFormName($prefix) . "').innerHTML = " . Atk_JSON::encode($control->render($record,
+                        $mode, $prefix)) . ";";
             }
         }
 
         if ($redraw) {
-            $res .= "$('" . $this->getHtmlId($prefix) . "_" . $record[$this->fieldName()]["section"] . "').innerHTML = " . Atk_JSON::encode($this->renderSelectBoxes($record[$this->fieldName()]["section"], $record, $mode, $prefix)) . ";";
+            $res .= "$('" . $this->getHtmlId($prefix) . "_" . $record[$this->fieldName()]["section"] . "').innerHTML = " . Atk_JSON::encode($this->renderSelectBoxes($record[$this->fieldName()]["section"],
+                    $record, $mode, $prefix)) . ";";
         }
         $res .= "</script>";
 
@@ -205,12 +208,14 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
         $res = "<script language=\"text/javascript\">";
         foreach ($this->m_controlsBySection[Atk_ShuttleControl::AVAILABLE] as $control) {
             if ($control->needsRefresh('selection', $record)) {
-                $res .= "$('" . $control->getFormName($prefix) . "').innerHTML = " . Atk_JSON::encode($control->render($record, $mode, $prefix)) . ";";
+                $res .= "$('" . $control->getFormName($prefix) . "').innerHTML = " . Atk_JSON::encode($control->render($record,
+                        $mode, $prefix)) . ";";
             }
         }
         foreach ($this->m_controlsBySection[Atk_ShuttleControl::SELECTED] as $control) {
             if ($control->needsRefresh('selection', $record)) {
-                $res .= "$('" . $control->getFormName($prefix) . "').innerHTML = " . Atk_JSON::encode($control->render($record, $mode, $prefix)) . ";";
+                $res .= "$('" . $control->getFormName($prefix) . "').innerHTML = " . Atk_JSON::encode($control->render($record,
+                        $mode, $prefix)) . ";";
             }
         }
         $res .= "</script>";
@@ -232,7 +237,8 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
     {
         // Add onchange handler
         $mode == "add" ? "add" : "edit";
-        $url = addslashes(Atk_Tools::partial_url($this->m_ownerInstance->atkNodeType(), $mode, "attribute." . $this->getHtmlId($fieldprefix) . ".selection", array("atkfieldprefix" => $fieldprefix)));
+        $url = addslashes(Atk_Tools::partial_url($this->m_ownerInstance->atkNodeType(), $mode,
+            "attribute." . $this->getHtmlId($fieldprefix) . ".selection", array("atkfieldprefix" => $fieldprefix)));
         $this->addOnChangeHandler("shuttle_refresh('$url', '" . $this->getHtmlId($fieldprefix) . '[cselected][][' . $this->getRemoteKey() . ']' . "', '" . $prefix . $this->fieldName() . "[section]', el);");
         $this->_renderChangeHandler($fieldprefix);
 
@@ -246,19 +252,22 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
                     }
 
                     $limit = $control->getLimit();
-                    if ($limit !== null)
+                    if ($limit !== null) {
                         $this->m_limit = $limit;
+                    }
                 }
             }
         }
 
         $availableFilter = '';
-        if (count($filtersBySection[Atk_ShuttleControl::AVAILABLE]) > 0)
+        if (count($filtersBySection[Atk_ShuttleControl::AVAILABLE]) > 0) {
             $availableFilter = '(' . implode(') AND (', $filtersBySection[Atk_ShuttleControl::AVAILABLE]) . ')';
+        }
 
         $selectedFilter = '';
-        if (count($filtersBySection[Atk_ShuttleControl::SELECTED]) > 0)
+        if (count($filtersBySection[Atk_ShuttleControl::SELECTED]) > 0) {
             $selectedFilter = '(' . implode(') AND (', $filtersBySection[Atk_ShuttleControl::SELECTED]) . ')';
+        }
 
         // Get controls for 'available' side
         foreach ($this->m_controlsBySection[Atk_ShuttleControl::AVAILABLE] as $control) {
@@ -271,7 +280,8 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
         }
 
         // Get available records
-        $left = ($this->hasFlag(AF_SHUTTLERELATION_NO_AUTOLOAD)) ? array() : $this->getAvailableFields($record, $mode, $availableFilter);
+        $left = ($this->hasFlag(AF_SHUTTLERELATION_NO_AUTOLOAD)) ? array() : $this->getAvailableFields($record, $mode,
+            $availableFilter);
 
         for ($i = 0, $_i = count($left); $i < $_i; $i++) {
             $available_options[$left[$i][$this->m_destInstance->primaryKeyField()]] = $this->m_destInstance->descriptor($left[$i]);
@@ -292,8 +302,9 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
             $vals[] = $fld[$this->m_destInstance->primaryKeyField()];
         }
         $value = Atk_JSON::encode($vals);
-        if ($value == "null")
+        if ($value == "null") {
             $value = "[]";
+        }
 
         // on submit, we must select all items in the right selector, as unselected items will not be posted.
         $page = &$this->m_ownerInstance->getPage();
@@ -412,13 +423,13 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
         for ($i = 0, $_i = count($recordset); $i < $_i; $i++) {
             $title = $this->m_destInstance->descriptor($recordset[$i]);
             $ttip = isset($this->m_descriptor_tooltip_template) ? $parser->parse($recordset[$i])
-                    : $title;
+                : $title;
 
             $ttip = str_replace('\r\n', ' ', strip_tags($ttip));
 
-            $result.= '<option value="' . $recordset[$i][$this->m_destInstance->primaryKeyField()] . '" title="' . $ttip . '">' . htmlentities($title) . '</option>';
+            $result .= '<option value="' . $recordset[$i][$this->m_destInstance->primaryKeyField()] . '" title="' . $ttip . '">' . htmlentities($title) . '</option>';
         }
-        $result.= '</select>';
+        $result .= '</select>';
         return $result;
     }
 
@@ -446,10 +457,11 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
 
         if (isset($record[$this->m_name]["selected"]) && is_array($record[$this->m_name]["selected"])) {
             foreach ($record[$this->m_name]["selected"] as $rec) {
-                if (is_array($rec[$this->getRemoteKey()]))
+                if (is_array($rec[$this->getRemoteKey()])) {
                     $selectedPk[] = $this->m_destInstance->primaryKey($rec[$this->getRemoteKey()]);
-                else
+                } else {
                     $selectedPk[] = $this->m_destInstance->primaryKey(array($this->m_destInstance->primaryKeyField() => $rec[$this->getRemoteKey()]));
+                }
             }
         }
 
@@ -511,15 +523,15 @@ class Atk_ExtendableShuttleRelation extends Atk_ManyToManyRelation
         if ($availableFilter != $selectedFilter || empty($this->unfilteredAvailableRecords)) {
             /** fetch it from db * */
             if (count($selectedFields) > 0) {
-                if (empty($selectedFilter))
+                if (empty($selectedFilter)) {
                     $selectedFilter = " (" . implode(') OR (', $selectedFields) . ")  ";
+                }
 
                 $this->getDestination()->addFilter($selectedFilter);
                 $selectables = $this->_getSelectableRecords($record, $mode, true);
                 $this->getDestination()->removeFilter($selectedFilter);
             }
-        }
-        else {
+        } else {
             /** simply reuse the availables * */
             $selectables = $this->unfilteredAvailableRecords;
         }

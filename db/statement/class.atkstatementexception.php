@@ -17,7 +17,7 @@
 
 /**
  * Statement exception.
- * 
+ *
  * @author Peter C. Verhage <peter@achievo.org>
  *
  * @package atk

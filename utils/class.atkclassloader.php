@@ -34,7 +34,7 @@ class Atk_ClassLoader
 
     /**
      * Is re-indexed during this request?
-     * 
+     *
      * @var boolean
      */
     static $s_isReindexed = false;
@@ -42,9 +42,9 @@ class Atk_ClassLoader
     /**
      * Imports a file
      * @param string $fullclassname Name of class in atkformat (map1.map2.classfile)
-     * @param bool   $failsafe      If $failsafe is true (default), the class is required.  Otherwise, the
+     * @param bool $failsafe If $failsafe is true (default), the class is required.  Otherwise, the
      *                                class is included.
-     * @param bool   $path          Whether or not it is NOT an ATK classname
+     * @param bool $path Whether or not it is NOT an ATK classname
      *                                 ("map.class"), if true it will interpret classname
      *                                 as: "map/class.classname.php", default false.
      * @return bool whether the file we want to import was actually imported or not
@@ -88,8 +88,9 @@ class Atk_ClassLoader
         $result = array();
 
         $pathArray = explode('/', $path);
-        if (empty($pathArray[0]))
+        if (empty($pathArray[0])) {
             $result[] = '';
+        }
 
         foreach ($pathArray AS $key => $dir) {
             if ($dir == '..') {
@@ -101,8 +102,9 @@ class Atk_ClassLoader
             }
         }
 
-        if (!end($pathArray))
+        if (!end($pathArray)) {
             $result[] = '';
+        }
 
         return implode('/', $result);
     }
@@ -111,15 +113,15 @@ class Atk_ClassLoader
      * Mount a certain (class) path on a certain prefix. After this you can
      * simply load the classes on the given path using the prefix. This makes
      * it for example possible to load classes outside your atkroot.
-     *  
+     *
      * Note: at the moment only single element prefixes are allowed!
-     * 
+     *
      * Example:
      * Atk_ClassLoader::mountClassPath('frontend', Atk_Config::getGlobal('atkroot').'../frontend/');
      * Atk_ClassLoader::newInstance('frontend.helloworld');
      *
      * @param string $prefix prefix
-     * @param string $path   class path
+     * @param string $path class path
      */
     static function mountClassPath($prefix, $path)
     {
@@ -129,8 +131,8 @@ class Atk_ClassLoader
     /**
      * Converts an ATK classname ("map1.map2.classname")
      * to a pathname ("/map1/map2/class.classname.php")
-     * @param string $fullclassname  ATK classname to be converted
-     * @param bool $class            is the file a class? defaults to true
+     * @param string $fullclassname ATK classname to be converted
+     * @param bool $class is the file a class? defaults to true
      * @return string converted filename
      */
     static function getClassPath($fullclassname, $class = true)
@@ -139,11 +141,13 @@ class Atk_ClassLoader
         if ($elems[0] == "module") {
             array_shift($elems);
             $prefix = Atk_Module::moduleDir(array_shift($elems));
-        } else if (isset(self::$s_classPaths[$elems[0]])) {
-            $prefix = self::$s_classPaths[$elems[0]];
-            array_shift($elems);
         } else {
-            $prefix = Atk_Config::getGlobal("atkroot");
+            if (isset(self::$s_classPaths[$elems[0]])) {
+                $prefix = self::$s_classPaths[$elems[0]];
+                array_shift($elems);
+            } else {
+                $prefix = Atk_Config::getGlobal("atkroot");
+            }
         }
 
         $last = &$elems[count($elems) - 1];
@@ -160,7 +164,7 @@ class Atk_ClassLoader
      * Converts a pathname ("/map1/map2/class.classname.php")
      * to an ATK classname ("map1.map2.classname")
      * @param string $classpath pathname to be converted
-     * @param bool $class       is the file a class? defaults to true
+     * @param bool $class is the file a class? defaults to true
      * @return string converted filename
      */
     static function getClassName($classpath, $class = true)
@@ -187,11 +191,11 @@ class Atk_ClassLoader
 
     /**
      * Returns a new instance of a class
-     * 
+     *
      * @param string $fullclassname the ATK classname of the class ("map1.map2.classname")
-     * @param mixed  ...            all arguments after the class name will be passed to the
+     * @param mixed ...            all arguments after the class name will be passed to the
      *                              class constructor
-     * 
+     *
      * @return object instance of the class
      */
     static function newInstance($fullclassname)
@@ -204,10 +208,10 @@ class Atk_ClassLoader
 
     /**
      * Returns a new instance of a class
-     * 
+     *
      * @param string $fullclassname the ATK classname of the class ("map1.map2.classname")
-     * @param array  $args          arguments for the new instance
-     * 
+     * @param array $args arguments for the new instance
+     *
      * @return object instance of the class
      */
     static function newInstanceArgs($fullclassname, $args = array())
@@ -218,8 +222,8 @@ class Atk_ClassLoader
         $elems = explode(".", strtolower($fullclassname));
         $classname = $elems[count($elems) - 1];
 
-        if(strpos($classname, 'atk') === 0){
-            $classname = "Atk_".substr($classname, 3);
+        if (strpos($classname, 'atk') === 0) {
+            $classname = "Atk_" . substr($classname, 3);
         }
 
         if (class_exists($classname)) {
@@ -251,8 +255,8 @@ class Atk_ClassLoader
         if (!isset($s_instances[$fullclassname]) || $reset) {
             self::import($fullclassname);
             $classname = substr(strrchr('.' . $fullclassname, '.'), 1);
-            if(strpos($classname, 'atk') === 0){
-                $classname = "Atk_".substr($classname, 3);
+            if (strpos($classname, 'atk') === 0) {
+                $classname = "Atk_" . substr($classname, 3);
             }
             Atk_Tools::atkdebug("Getting singleton instance $fullclassname");
             $s_instances[$fullclassname] = call_user_func(array($classname, 'getInstance'), $reset);
@@ -342,7 +346,7 @@ class Atk_ClassLoader
      * @static
      *
      * @param String $str The "classname#method" to invoke.
-     * @param array  $params Any params to be passed to the invoked method.
+     * @param array $params Any params to be passed to the invoked method.
      *
      * @return boolean false if the call failed. In all other cases, it
      *                 returns the output of the invoked method. (be
@@ -350,8 +354,9 @@ class Atk_ClassLoader
      */
     public static function invokeFromString($str, $params = array())
     {
-        if (strpos($str, "#") === false)
+        if (strpos($str, "#") === false) {
             return false;
+        }
 
         list($class, $method) = explode("#", $str);
         if ($class != "" && $method != "") {
@@ -369,20 +374,19 @@ class Atk_ClassLoader
      * Finds a class in the current application.
      *
      * @param string $class The classname to find.
-     * 
+     *
      * @return string|bool   The classpath (Atk_Tools::atkimport( statement) of the class
      *                       if found, else false
      */
     function findClass($class)
     {
-        if(strpos($class, "Atk_") === 0) {
-            $class = "atk".substr($class,4);
+        if (strpos($class, "Atk_") === 0) {
+            $class = "atk" . substr($class, 4);
         }
 
         $classloader = new Atk_ClassLoader();
         $classes = $classloader->getAllClasses();
         $class = strtolower($class);
-
 
 
         if (!in_array($class, array_keys($classes))) {

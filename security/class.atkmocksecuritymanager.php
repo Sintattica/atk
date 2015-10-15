@@ -16,12 +16,12 @@
  */
 
 /**
- * The atkMockSecurityManager class is an atkSecurityManager mock 
+ * The atkMockSecurityManager class is an atkSecurityManager mock
  * object for testing purposes
- * 
- * The most important feature of the atkMockSecurityManager is the 
+ *
+ * The most important feature of the atkMockSecurityManager is the
  * ability to influence the result of each function call.
- * 
+ *
  * @todo mock every function call. This can't be done nicely until
  * we feature PHP5. For now, we add mock methods on a per-need basis
  *
@@ -32,7 +32,7 @@
 class Atk_MockSecurityManager extends Atk_SecurityManager
 {
     /**
-     * Set the nodepriviledges 
+     * Set the nodepriviledges
      *
      * @var array
      */
@@ -59,10 +59,12 @@ class Atk_MockSecurityManager extends Atk_SecurityManager
      */
     function allowed($node, $privilege)
     {
-        if (isset($this->m_resultallowed["all"]))
+        if (isset($this->m_resultallowed["all"])) {
             return $this->m_resultallowed["all"];
-        if (isset($this->m_resultallowed[$node . "." . $privilege]))
+        }
+        if (isset($this->m_resultallowed[$node . "." . $privilege])) {
             return $this->m_resultallowed[$node . "." . $privilege];
+        }
         return parent::allowed($node, $privilege);
     }
 

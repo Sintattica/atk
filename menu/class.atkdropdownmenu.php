@@ -66,27 +66,28 @@ class Atk_DropdownMenu extends Atk_PlainMenu
         $page->m_loadscripts[] = "new DHTMLListMenu('nav');";
 
         $atkmenutop = array_key_exists('atkmenutop', $ATK_VARS) ? $ATK_VARS["atkmenutop"]
-                : 'main';
-        if (!is_array($g_menu[$atkmenutop]))
+            : 'main';
+        if (!is_array($g_menu[$atkmenutop])) {
             $g_menu[$atkmenutop] = array();
+        }
         usort($g_menu[$atkmenutop], array("Atk_PlainMenu", "menu_cmp"));
 
         $menu = "<div id=\"nav\">\n";
-        $menu.=$this->getHeader($atkmenutop);
+        $menu .= $this->getHeader($atkmenutop);
 
-        $menu.="  <ul>\n";
+        $menu .= "  <ul>\n";
         foreach ($g_menu[$atkmenutop] as $menuitem) {
             $menu .= $this->getMenuItem($menuitem, "    ");
         }
 
         if (Atk_Config::getGlobal("menu_logout_link")) {
-            $menu.="    <li><a href=\"app.php?atklogout=1\">" . Atk_Tools::atktext('logout') . "</a></li>\n";
+            $menu .= "    <li><a href=\"app.php?atklogout=1\">" . Atk_Tools::atktext('logout') . "</a></li>\n";
         }
 
-        $menu.="  </ul>\n";
+        $menu .= "  </ul>\n";
 
-        $menu.=$this->getFooter($atkmenutop);
-        $menu.="</div>\n";
+        $menu .= $this->getFooter($atkmenutop);
+        $menu .= "</div>\n";
         return $menu;
     }
 
@@ -106,12 +107,13 @@ class Atk_DropdownMenu extends Atk_PlainMenu
             if (array_key_exists($menuitem['name'], $g_menu) && $g_menu[$menuitem['name']]) {
                 $submenu = $indentation . "<ul>\n";
                 foreach ($g_menu[$menuitem['name']] as $submenuitem) {
-                    $submenu.=$this->getMenuItem($submenuitem, $indentation . "  ", $submenuname = '', $menuitem['name']);
+                    $submenu .= $this->getMenuItem($submenuitem, $indentation . "  ", $submenuname = '',
+                        $menuitem['name']);
                 }
-                $submenu.=$indentation . "</ul>\n";
-                $menu.=$indentation . $this->getItemHtml($menuitem, "\n" . $submenu . $indentation);
+                $submenu .= $indentation . "</ul>\n";
+                $menu .= $indentation . $this->getItemHtml($menuitem, "\n" . $submenu . $indentation);
             } else {
-                $menu.=$indentation . $this->getItemHtml($menuitem);
+                $menu .= $indentation . $this->getItemHtml($menuitem);
             }
         }
         return $menu;
@@ -130,14 +132,20 @@ class Atk_DropdownMenu extends Atk_PlainMenu
         $delimiter = Atk_Config::getGlobal("menu_delimiter");
 
         $name = $this->getMenuTranslation($menuitem['name'], $menuitem['module']);
-        if ($menuitem['name'] == '-')
+        if ($menuitem['name'] == '-') {
             return "<li class=\"separator\"><div></div></li>\n";
+        }
         if ($menuitem['url'] && substr($menuitem['url'], 0, 11) == 'javascript:') {
-            $href = '<a href="javascript:void(0)" onclick="' . htmlentities($menuitem['url']) . '; return false;">' . htmlentities($this->getMenuTranslation($menuitem['name'], $menuitem['module'])) . '</a>';
-        } else if ($menuitem['url']) {
-            $href = Atk_Tools::href($menuitem['url'], $this->getMenuTranslation($menuitem['name'], $menuitem['module']), SESSION_NEW);
-        } else
-            $href = '<a href="#">' . $name . '</a>';
+            $href = '<a href="javascript:void(0)" onclick="' . htmlentities($menuitem['url']) . '; return false;">' . htmlentities($this->getMenuTranslation($menuitem['name'],
+                    $menuitem['module'])) . '</a>';
+        } else {
+            if ($menuitem['url']) {
+                $href = Atk_Tools::href($menuitem['url'],
+                    $this->getMenuTranslation($menuitem['name'], $menuitem['module']), SESSION_NEW);
+            } else {
+                $href = '<a href="#">' . $name . '</a>';
+            }
+        }
 
         return "<li id=\"{$menuitem['module']}.{$menuitem['name']}\" class=\"$submenuname\">" . $href . $delimiter . $submenu . "</li>\n";
     }

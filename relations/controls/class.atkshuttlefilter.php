@@ -33,7 +33,7 @@ abstract class Atk_ShuttleFilter extends Atk_ShuttleControl
      * Returns the change handler name.
      *
      * @param string $prefix
-     * 
+     *
      * @return string
      */
     protected function getChangeHandlerName($prefix)
@@ -50,7 +50,8 @@ abstract class Atk_ShuttleFilter extends Atk_ShuttleControl
     protected function registerChangeHandler($mode, $prefix)
     {
         $mode == "add" ? "add" : "edit";
-        $url = addslashes(Atk_Tools::partial_url($this->m_shuttle->m_ownerInstance->atkNodeType(), $mode, "attribute." . $this->m_shuttle->getHtmlId($prefix) . ".filter", array("atkfieldprefix" => $prefix)));
+        $url = addslashes(Atk_Tools::partial_url($this->m_shuttle->m_ownerInstance->atkNodeType(), $mode,
+            "attribute." . $this->m_shuttle->getHtmlId($prefix) . ".filter", array("atkfieldprefix" => $prefix)));
 
         $page = $this->m_shuttle->m_ownerInstance->getPage();
         $page->register_scriptcode("function " . $this->getChangeHandlerName($prefix) . "(el)
@@ -65,7 +66,7 @@ abstract class Atk_ShuttleFilter extends Atk_ShuttleControl
      * @param array $record
      * @param string $mode
      * @param string $prefix
-     * 
+     *
      * @return string control
      */
     public function render($record, $mode, $prefix)
@@ -75,10 +76,10 @@ abstract class Atk_ShuttleFilter extends Atk_ShuttleControl
     }
 
     /**
-     * This method gets called to set a hard limit to the amount of records that can 
+     * This method gets called to set a hard limit to the amount of records that can
      * get returned.
      *
-     * @return int 
+     * @return int
      */
     public function getLimit()
     {
@@ -87,16 +88,16 @@ abstract class Atk_ShuttleFilter extends Atk_ShuttleControl
 
     /**
      * Applies a filter clause to the destination node for this filter's current value.
-     * 
+     *
      * The current value can be retrieved from the record using $this->getValue(...).
      *
      * @param array $record full record
-     * 
+     *
      * @return string filter
      */
     public function getFilter(&$record)
     {
-        
+
     }
 
 }

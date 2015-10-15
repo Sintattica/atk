@@ -19,7 +19,8 @@ $bp = array(
     "above_maximum_value" => "Acima do valor m�ximo permitido",
     "access_denied" => "Acesso negado",
     "add" => "Adicionar",
-    "addorcopy" => "Add or copy", // Missing string!!!
+    "addorcopy" => "Add or copy",
+    // Missing string!!!
     "add_criterium" => "Adicionar",
     "admin" => "Administra��o",
     "administration_application" => "Aplicativo de Administra��o",
@@ -34,7 +35,8 @@ $bp = array(
     "app_title" => "Aplicativo ATK",
     "apr" => "Abr",
     "april" => "Abril",
-    "attributeedit" => "Update value", // Missing string!!!
+    "attributeedit" => "Update value",
+    // Missing string!!!
     "attrib_delete_not_allowed" => "O campo '%s' n�o permite que o registro seja deletado. (%s)'",
     "aug" => "Ago",
     "august" => "Agosto",
@@ -47,21 +49,29 @@ $bp = array(
     "auth_passwordmail_sent" => "Se o nome de usu�rio j� existir, uma nova senha ser&aacute; enviada para o e-mail correspondente.",
     "auth_passwordmail_subjectnew_password" => "Nova senha",
     "auth_unable_to_connect" => "N�o foi poss�vel conectar ao servidor para autentica��o (por favor consulte o administrador do sistema).",
-    "autocomplete_minimum_chars" => "Enter a minimum of %d characters.", // Missing string!!!
-    "autocomplete_no_results" => "No results found for the given search value.", // Missing string!!!
-    "autocomplete_no_results_contains" => "No results found that contain the given search value.", // Missing string!!!
-    "autocomplete_no_results_exact" => "No results found that exactly match the given search value.", // Missing string!!!
-    "autocomplete_no_results_startswith" => "No results found that start with the given search value.", // Missing string!!!
-    "available" => "Available", // Missing string!!!
+    "autocomplete_minimum_chars" => "Enter a minimum of %d characters.",
+    // Missing string!!!
+    "autocomplete_no_results" => "No results found for the given search value.",
+    // Missing string!!!
+    "autocomplete_no_results_contains" => "No results found that contain the given search value.",
+    // Missing string!!!
+    "autocomplete_no_results_exact" => "No results found that exactly match the given search value.",
+    // Missing string!!!
+    "autocomplete_no_results_startswith" => "No results found that start with the given search value.",
+    // Missing string!!!
+    "available" => "Available",
+    // Missing string!!!
     "back" => "Voltar",
     "back_to" => "Voltar para",
     "below_minimum_value" => "Abaixo do valor m�nimo permitido",
     "cancel" => "Cancelar",
-    "cancel_edit" => "Cancel edit", // Missing string!!!
+    "cancel_edit" => "Cancel edit",
+    // Missing string!!!
     "cannot create directory" => "N�o foi poss�vel criar diret�rio: ",
     "cannot make file" => "N�o foi poss�vel criar arquivo: ",
     "cannot_remove_file" => "N�o foi poss�vel remover arquivo!",
-    "captcha_explain" => "Please fill in the displayed code", // Missing string!!!
+    "captcha_explain" => "Please fill in the displayed code",
+    // Missing string!!!
     "charset" => "iso-8859-1",
     "check rights to" => "Por favor verifique se vo� tem os direitos apropriados para ",
     "check_all" => "Selecionar todos",
@@ -79,15 +89,19 @@ $bp = array(
     "column_unsubtotal" => "Sem Subtotal",
     "confirm_delete" => "Voc� est� certo de que quer remover este �tem?",
     "confirm_delete_multi" => "Voc� est� certo de que quer remover estes �tens?",
-    "content_wizard_finished" => "Wizard was finished successfully!", // Missing string!!!
+    "content_wizard_finished" => "Wizard was finished successfully!",
+    // Missing string!!!
     "copy" => "Copiar",
     "criterium_field" => "Campo",
     "criterium_mode" => "Modo",
     "criterium_value" => "Valor",
     "critical" => "Cr�tico",
-    "datagrid_norecordsfound_general" => "No records found.", // Missing string!!!
-    "datagrid_norecordsfound_search" => "No results found for the current search query.", // Missing string!!!
-    "datagrid_summary" => "(Records [start] - [end] of [count])", // Missing string!!!
+    "datagrid_norecordsfound_general" => "No records found.",
+    // Missing string!!!
+    "datagrid_norecordsfound_search" => "No results found for the current search query.",
+    // Missing string!!!
+    "datagrid_summary" => "(Records [start] - [end] of [count])",
+    // Missing string!!!
     "date_format_edit" => "j F Y",
     "date_format_view" => "j F Y",
     "db_access_denied_database" => "Usu�rio '%s' n�o tem direitos para o banco de dados '%s'",
@@ -106,31 +120,41 @@ $bp = array(
     "email" => "Email",
     "enclosure" => "Delimitado por",
     "error" => "Erro",
-    "error_attributeedit_default" => "An unknown error has occurred.", // Missing string!!!
-    "error_attributeedit_noselectorset" => "Please select the records you wish to edit.", // Missing string!!!
-    "error_attributeedit_update" => "An error occured when updating the selected records.", // Missing string!!!
-    "error_attributeedit_validationfailed" => "This value is not allowed.", // Missing string!!!
-    "error_captchafield" => "The given code is invalid, please try again", // Missing string!!!
-    "error_copy_record" => "Unknown error copying record", // Missing string!!!
+    "error_attributeedit_default" => "An unknown error has occurred.",
+    // Missing string!!!
+    "error_attributeedit_noselectorset" => "Please select the records you wish to edit.",
+    // Missing string!!!
+    "error_attributeedit_update" => "An error occured when updating the selected records.",
+    // Missing string!!!
+    "error_attributeedit_validationfailed" => "This value is not allowed.",
+    // Missing string!!!
+    "error_captchafield" => "The given code is invalid, please try again",
+    // Missing string!!!
+    "error_copy_record" => "Unknown error copying record",
+    // Missing string!!!
     "error_date_invalid" => "Data inv�lida",
     "error_fileexists" => "Arquivo j� existe no servidor. Por favor renomeie o arquivo.",
-    "error_file_mime_type" => "Unsupported file uploaded please check your filetype or extension", // Missing string!!!
+    "error_file_mime_type" => "Unsupported file uploaded please check your filetype or extension",
+    // Missing string!!!
     "error_file_size" => "Arquivo muito grande",
     "error_file_unknown" => "Erro desconhecido durante upload do arquivo",
     "error_format_mismatch" => "O elemento na posi��o %d n�o parece seguir o formato desejado",
     "error_formdataerror" => "Falha ao gravar pela seguinte raz�o: ",
-    "error_iconv_not_install" => "iconv module don't install in your system, but it needs for right functionality", // Missing string!!!
+    "error_iconv_not_install" => "iconv module don't install in your system, but it needs for right functionality",
+    // Missing string!!!
     "error_invalid_email" => "Endere�o de e-mail inv�lido",
     "error_node_action_access_denied" => "Desculpe, voc� n�o tem permiss�o para efetuar esta a��o.",
     "error_notnumeric" => "Valor n�o � um n�mero",
-    "error_not_a_valid_ip" => "This is not a valid IP address. An IP address consists of 4 numbers between 0 and 255.", // Missing string!!!
+    "error_not_a_valid_ip" => "This is not a valid IP address. An IP address consists of 4 numbers between 0 and 255.",
+    // Missing string!!!
     "error_obligatoryfield" => "Este campo � obrigat�rio",
     "error_password_incorrect" => "A senha que voc� digitou est� errada!",
     "error_password_invalid" => "A senha que voc� digitou n�o � uma senha v�lida!",
     "error_password_nomatch" => "As senhas fornecidas n�o parecem ser a mesm.",
     "error_primarykey_exists" => "J� existe um registro com esta chave",
     "error_tab" => "ver",
-    "error_tag_illegalvalue" => "A tag may not contain HTML or linefeeds.", // Missing string!!!
+    "error_tag_illegalvalue" => "A tag may not contain HTML or linefeeds.",
+    // Missing string!!!
     "error_uniquefield" => "O valor para este campo precisa ser �nico",
     "error_uniquefieldset" => "O valor para a combina��o desses campos deve ser �nico",
     "error_unkown_domain" => "Dom�nio desconhecido",
@@ -139,15 +163,18 @@ $bp = array(
     "export_config_explanation" => "Selecione as opcoes para exporta��o tipo CSV.",
     "export_generatetitlerow" => "Titulo da linha",
     "export_selectcolumns" => "Selecione as colunas a exportar",
-    "export_selections" => "Standard selections", // Missing string!!!
-    "export_selections_name" => "Standard selections name", // Missing string!!!
+    "export_selections" => "Standard selections",
+    // Missing string!!!
+    "export_selections_name" => "Standard selections name",
+    // Missing string!!!
     "feb" => "Fev",
     "february" => "Fevereiro",
     "feedback" => "Feedback",
     "feedback_delete_cancelled" => "O �tem n�o foi removido.",
     "feedback_delete_failed" => "O �tem n�o p�de ser removido.",
     "feedback_delete_success" => "O �tem foi removido com sucesso.",
-    "feedback_edit_failed" => "Editing is not possible. Item doesn\'t exist (anymore).", // Missing string!!!
+    "feedback_edit_failed" => "Editing is not possible. Item doesn\'t exist (anymore).",
+    // Missing string!!!
     "feedback_import_failed" => "O arquivo n�o p�de ser importado",
     "feedback_save_cancelled" => "O �tem n�o foi adicionado.",
     "feedback_save_failed" => "O �tem n�o p�de ser adicionado.",
@@ -161,7 +188,8 @@ $bp = array(
     "filename_invalid" => "Esse nome de arquivo n�o � v�lido",
     "file_exists" => "J� existe um arquivo com este nome",
     "file_not_exist" => "O arquivo n�o existe",
-    "finish" => "Finish", // Missing string!!!
+    "finish" => "Finish",
+    // Missing string!!!
     "forget_criteria" => "Remover a pesquisa selecionada",
     "fri" => "Sex",
     "friday" => "Sexta-feira",
@@ -191,11 +219,15 @@ $bp = array(
     "import_upload" => "Enviar arquivo",
     "import_upload_explanation" => "Enviar um arquivo de texto com dados a importar para o banco de dados.",
     "import_validatefirst" => "N�o validar antes de importar",
-    "intro_addorcopy" => "Do you want to create a new record or copy an existing record?", // Missing string!!!
-    "invalid_relative_url" => "Invalid relative URL, please use this format: '/mysite/guestbook'", // Missing string!!!
-    "invalid_url_anchor" => "Invalid URL anchor, please use this format: '#internal_bookmark'", // Missing string!!!
+    "intro_addorcopy" => "Do you want to create a new record or copy an existing record?",
+    // Missing string!!!
+    "invalid_relative_url" => "Invalid relative URL, please use this format: '/mysite/guestbook'",
+    // Missing string!!!
+    "invalid_url_anchor" => "Invalid URL anchor, please use this format: '#internal_bookmark'",
+    // Missing string!!!
     "invert_selection" => "Inverter sele��o",
-    "in_use_by" => "In use by", // Missing string!!!
+    "in_use_by" => "In use by",
+    // Missing string!!!
     "jan" => "Jan",
     "january" => "Janeiro",
     "jul" => "Jul",
@@ -206,20 +238,25 @@ $bp = array(
     "language_en" => "Ingl�s",
     "language_fr" => "Franc�s",
     "language_nl" => "Holand�s",
-    "language_pl" => "Polish", // Missing string!!!
-    "language_sp" => "Spanish", // Missing string!!!
+    "language_pl" => "Polish",
+    // Missing string!!!
+    "language_sp" => "Spanish",
+    // Missing string!!!
     "list_null_value" => "Vazio (sem valor)",
-    "list_null_value_obligatory" => "(Select a value...)", // Missing string!!!
+    "list_null_value_obligatory" => "(Select a value...)",
+    // Missing string!!!
     "load_criteria" => "Ler pesquisa gravada",
     "lock_expired" => "Os �tens que voc� abriu n�o est�o acess�veis por voc� exclusivamente. Isso pode ter v�rias raz�es, a mais comum � que voc� n�o o tenha salvo por um longo per�odo de tempo. Voc� pode salvar seu trabalho, mas � poss�vel que os �tens estejam atualmente bloqueados por um outro usu�rio.",
-    "lock_info_line" => "[user_id] (ip: [user_ip]) since [lock_date]", // Missing string!!!
+    "lock_info_line" => "[user_id] (ip: [user_ip]) since [lock_date]",
+    // Missing string!!!
     "lock_locked" => "Os �tens selecionados n�o est�o acess�veis porque outro usu�rio os bloqueou.",
     "logged_in_as" => "No sistema como",
     "login" => "Entrar",
     "login_failed" => "Entrada no sistema falhou",
     "login_form" => "Entrar no Sistema",
     "logout" => "Sair",
-    "lose_changes_warning" => "If you navigate away from this page, all your changes will be lost.", // Missing string!!!
+    "lose_changes_warning" => "If you navigate away from this page, all your changes will be lost.",
+    // Missing string!!!
     "lowerchars" => "caracteres min�sculos",
     "mar" => "Mar",
     "march" => "Mar�o",
@@ -230,7 +267,8 @@ $bp = array(
     "monday" => "Segunda-feira",
     "multilanguage_choice" => "Escolha o idioma:",
     "multilanguage_select" => "Escolha um idioma:",
-    "multiselect" => "Multiselect", // Missing string!!!
+    "multiselect" => "Multiselect",
+    // Missing string!!!
     "new" => "Novo",
     "next" => "Pr�ximo",
     "no" => "N�o",
@@ -238,8 +276,10 @@ $bp = array(
     "nov" => "Nov",
     "november" => "Novembro",
     "no_color_selected" => "Cor n�o selecionada",
-    "no_copyable_records" => "no copyable records", // Missing string!!!
-    "no_records_to_import" => "No records found that needed to be imported.", // Missing string!!!
+    "no_copyable_records" => "no copyable records",
+    // Missing string!!!
+    "no_records_to_import" => "No records found that needed to be imported.",
+    // Missing string!!!
     "no_results_found" => "Nenhum resultado encontrado",
     "no_valid_directory" => "Este n�o � um diret�rio v�lido",
     "numbers" => "n�meros",
@@ -257,7 +297,8 @@ $bp = array(
     "password_new" => "Nova",
     "permission_denied" => "Desculpe, Voc� n�o tem permiss�o para realizar esta a��o",
     "previous" => "Anterior",
-    "recordlistsummary" => "Record [start]-[end] out of [count]", // Missing string!!!
+    "recordlistsummary" => "Record [start]-[end] out of [count]",
+    // Missing string!!!
     "relogin" => "Entrar novamente",
     "remove_criterium" => "Remover",
     "remove_current_file" => "Remover arquivo atual",
@@ -267,12 +308,15 @@ $bp = array(
     "sat" => "S�b",
     "saturday" => "S�bado",
     "save" => "Gravar",
-    "saveandaddnew" => "Save and add new", // Missing string!!!
+    "saveandaddnew" => "Save and add new",
+    // Missing string!!!
     "saveandclose" => "Gravar e fechar",
-    "saveandedit" => "Save and edit", // Missing string!!!
+    "saveandedit" => "Save and edit",
+    // Missing string!!!
     "saveandnext" => "Gravar e Pr�ximo",
     "save_criteria" => "Salvar pesquisa como",
-    "save_export_selection" => "Save selection", // Missing string!!!
+    "save_export_selection" => "Save selection",
+    // Missing string!!!
     "search" => "Busca",
     "search_all" => "Buscar todos",
     "search_and" => "Com todos os crit�rios",
@@ -284,14 +328,16 @@ $bp = array(
     "search_lessthan" => "Busca por valores menores que",
     "search_lessthanequal" => "Busca por valores menores que ou iguais a",
     "search_mode" => "Modo de busca",
-    "search_none" => "Nothing selected", // Missing string!!!
+    "search_none" => "Nothing selected",
+    // Missing string!!!
     "search_or" => "Qualquer dos crit�rios",
     "search_regexp" => "Busca com express�o regular (avan�ado)",
     "search_soundex" => "Busca por um texto que soe familiar",
     "search_substring" => "Busca por um trecho de texto",
     "search_wildcard" => "Busca com curingas (*)",
     "select" => "Selecionar",
-    "selected" => "Selected", // Missing string!!!
+    "selected" => "Selected",
+    // Missing string!!!
     "selection" => "Sele��o",
     "select_a" => "Selecionar um",
     "select_all" => "Selecionar todos",
@@ -301,14 +347,18 @@ $bp = array(
     "sep" => "Set",
     "september" => "Setembro",
     "settings" => "Configura��o",
-    "show" => "Show", // Missing string!!!
+    "show" => "Show",
+    // Missing string!!!
     "smartsearch" => "Pesquisa inteligente",
     "sort" => "Ordem",
     "specialchars" => "caracteres especiais",
-    "steelblue" => "SteelBlue", // Missing string!!!
+    "steelblue" => "SteelBlue",
+    // Missing string!!!
     "submit" => "Enviar",
-    "successfully_imported_one_record" => "Successfully imported 1 record.", // Missing string!!!
-    "successfully_imported_x_records" => "Successfully imported %d records.", // Missing string!!!
+    "successfully_imported_one_record" => "Successfully imported 1 record.",
+    // Missing string!!!
+    "successfully_imported_x_records" => "Successfully imported %d records.",
+    // Missing string!!!
     "sun" => "Dom",
     "sunday" => "Domingo",
     "tab_default" => "Geral",
@@ -317,37 +367,65 @@ $bp = array(
     "thousands_separator" => ".",
     "thu" => "Qui",
     "thursday" => "Quinta-feira",
-    "timezone_utc_+0000" => "(UTC) Casablanca, Greenwich Mean Time, London", // Missing string!!!
-    "timezone_utc_+0100" => "(UTC+01:00) Amsterdam, Berlin, Rome, Paris", // Missing string!!!
-    "timezone_utc_+0200" => "(UTC+02:00) Athens, Beirut, Istanbul, Minsk", // Missing string!!!
-    "timezone_utc_+0300" => "(UTC+03:00) Baghdad, Kuwait, Riyadh, Moscow", // Missing string!!!
-    "timezone_utc_+0400" => "(UTC+04:00) Abu Dhabi, Kabul", // Missing string!!!
-    "timezone_utc_+0500" => "(UTC+05:00) New Delhi, Mumbai, Kathmandu", // Missing string!!!
-    "timezone_utc_+0600" => "(UTC+06:00) Novosibirsk, Dhaka, Sri Jayawardenepura", // Missing string!!!
-    "timezone_utc_+0700" => "(UTC+07:00) Bangkok, Hanoi, Jakarta, Krasnoyarsk", // Missing string!!!
-    "timezone_utc_+0800" => "(UTC+08:00) Beijing, Hong Kong, Ulaan Bataar", // Missing string!!!
-    "timezone_utc_+0900" => "(UTC+09:00) Osaka, Sapporo, Tokyo, Seoul", // Missing string!!!
-    "timezone_utc_+1000" => "(UTC+10:00) Brisbane, Melbourne, Sydney", // Missing string!!!
-    "timezone_utc_+1100" => "(UTC+11:00) Solomon Is., Magadan", // Missing string!!!
-    "timezone_utc_+1200" => "(UTC+12:00) Auckland, Wellington, Fiji", // Missing string!!!
-    "timezone_utc_+1300" => "(UTC+13:00) Nuku'alofa", // Missing string!!!
-    "timezone_utc_-0100" => "(UTC-01:00) Azores, Cape Verde Is.", // Missing string!!!
-    "timezone_utc_-0200" => "(UTC-02:00) Mid-Atlantic", // Missing string!!!
-    "timezone_utc_-0300" => "(UTC-03:00) Brasilia, Buenos Aires, Greenland", // Missing string!!!
-    "timezone_utc_-0400" => "(UTC-04:00) Atlantic Time (Canada), Santiago", // Missing string!!!
-    "timezone_utc_-0500" => "(UTC-05:00) Bogota, Lima, Quito, Eastern Time (US & Canada)", // Missing string!!!
-    "timezone_utc_-0600" => "(UTC-06:00) Central America, Central Time (US & Canada)", // Missing string!!!
-    "timezone_utc_-0700" => "(UTC-07:00) Arizona, Mountain Time (US & Canada)", // Missing string!!!
-    "timezone_utc_-0800" => "(UTC-08:00) Pacific Time (US & Canada); Tijuna", // Missing string!!!
-    "timezone_utc_-0900" => "(UTC-09:00) Alaska", // Missing string!!!
-    "timezone_utc_-1000" => "(UTC-10:00) Hawaii", // Missing string!!!
-    "timezone_utc_-1100" => "(UTC-11:00) Midway Island, Samoa", // Missing string!!!
-    "timezone_utc_-1200" => "(UTC-12:00) International Date Line West", // Missing string!!!
+    "timezone_utc_+0000" => "(UTC) Casablanca, Greenwich Mean Time, London",
+    // Missing string!!!
+    "timezone_utc_+0100" => "(UTC+01:00) Amsterdam, Berlin, Rome, Paris",
+    // Missing string!!!
+    "timezone_utc_+0200" => "(UTC+02:00) Athens, Beirut, Istanbul, Minsk",
+    // Missing string!!!
+    "timezone_utc_+0300" => "(UTC+03:00) Baghdad, Kuwait, Riyadh, Moscow",
+    // Missing string!!!
+    "timezone_utc_+0400" => "(UTC+04:00) Abu Dhabi, Kabul",
+    // Missing string!!!
+    "timezone_utc_+0500" => "(UTC+05:00) New Delhi, Mumbai, Kathmandu",
+    // Missing string!!!
+    "timezone_utc_+0600" => "(UTC+06:00) Novosibirsk, Dhaka, Sri Jayawardenepura",
+    // Missing string!!!
+    "timezone_utc_+0700" => "(UTC+07:00) Bangkok, Hanoi, Jakarta, Krasnoyarsk",
+    // Missing string!!!
+    "timezone_utc_+0800" => "(UTC+08:00) Beijing, Hong Kong, Ulaan Bataar",
+    // Missing string!!!
+    "timezone_utc_+0900" => "(UTC+09:00) Osaka, Sapporo, Tokyo, Seoul",
+    // Missing string!!!
+    "timezone_utc_+1000" => "(UTC+10:00) Brisbane, Melbourne, Sydney",
+    // Missing string!!!
+    "timezone_utc_+1100" => "(UTC+11:00) Solomon Is., Magadan",
+    // Missing string!!!
+    "timezone_utc_+1200" => "(UTC+12:00) Auckland, Wellington, Fiji",
+    // Missing string!!!
+    "timezone_utc_+1300" => "(UTC+13:00) Nuku'alofa",
+    // Missing string!!!
+    "timezone_utc_-0100" => "(UTC-01:00) Azores, Cape Verde Is.",
+    // Missing string!!!
+    "timezone_utc_-0200" => "(UTC-02:00) Mid-Atlantic",
+    // Missing string!!!
+    "timezone_utc_-0300" => "(UTC-03:00) Brasilia, Buenos Aires, Greenland",
+    // Missing string!!!
+    "timezone_utc_-0400" => "(UTC-04:00) Atlantic Time (Canada), Santiago",
+    // Missing string!!!
+    "timezone_utc_-0500" => "(UTC-05:00) Bogota, Lima, Quito, Eastern Time (US & Canada)",
+    // Missing string!!!
+    "timezone_utc_-0600" => "(UTC-06:00) Central America, Central Time (US & Canada)",
+    // Missing string!!!
+    "timezone_utc_-0700" => "(UTC-07:00) Arizona, Mountain Time (US & Canada)",
+    // Missing string!!!
+    "timezone_utc_-0800" => "(UTC-08:00) Pacific Time (US & Canada); Tijuna",
+    // Missing string!!!
+    "timezone_utc_-0900" => "(UTC-09:00) Alaska",
+    // Missing string!!!
+    "timezone_utc_-1000" => "(UTC-10:00) Hawaii",
+    // Missing string!!!
+    "timezone_utc_-1100" => "(UTC-11:00) Midway Island, Samoa",
+    // Missing string!!!
+    "timezone_utc_-1200" => "(UTC-12:00) International Date Line West",
+    // Missing string!!!
     "title_delete" => "Confirmar remo��o",
-    "title_multiselect" => "Multiselect", // Missing string!!!
+    "title_multiselect" => "Multiselect",
+    // Missing string!!!
     "title_select" => "Sele��o",
     "title_session_expired" => "Sess�o expirou",
-    "title_wizard_finished" => "Wizard finished", // Missing string!!!
+    "title_wizard_finished" => "Wizard finished",
+    // Missing string!!!
     "today" => "Hoje",
     "tue" => "Ter",
     "tuesday" => "Tur�a-feira",

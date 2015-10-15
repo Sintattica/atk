@@ -135,11 +135,12 @@ class Atk_RadioAttribute extends Atk_ListAttribute
         }
 
         $result = '<table class="table">';
-        if (!$this->hasFlag(AF_DISPLAY_VERT))
-            $result.='<tr>';
+        if (!$this->hasFlag(AF_DISPLAY_VERT)) {
+            $result .= '<tr>';
+        }
         $item_count = 0;
 
-        for ($i = 0; $i < $total_items; $i ++) {
+        for ($i = 0; $i < $total_items; $i++) {
             if ($values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()] !== "") {
                 $sel = "checked";
             } else {
@@ -147,8 +148,9 @@ class Atk_RadioAttribute extends Atk_ListAttribute
             }
 
             $labelID = $fieldprefix . $this->formName() . "_" . $values[$i];
-            if ($this->hasFlag(AF_DISPLAY_VERT))
-                $result.='<tr>';
+            if ($this->hasFlag(AF_DISPLAY_VERT)) {
+                $result .= '<tr>';
+            }
             $this->registerKeyListener($labelID, KB_CTRLCURSOR | KB_CURSOR);
             $id = $this->getHtmlId($fieldprefix);
 
@@ -161,8 +163,9 @@ class Atk_RadioAttribute extends Atk_ListAttribute
             $commenthtml = '<br/><div class="atkradio_comment">' . $this->m_comments[$i] . '</div>';
 
             $result .= '<td><input id="' . $labelID . '" type="radio" name="' . $fieldprefix . $this->formName() . '" ' . $this->getCSSClassAttribute("atkradio") . ' value="' . $values[$i] . '" ' . $onchange . $sel . '>
-        ' . $this->renderValue($labelID, $this->_translateValue($values[$i], $record)) . ($this->hasFlag(AF_DISPLAY_VERT) && $this->m_comments[$i] != ''
-                        ? $commenthtml : '') . '</td>';
+        ' . $this->renderValue($labelID, $this->_translateValue($values[$i],
+                    $record)) . ($this->hasFlag(AF_DISPLAY_VERT) && $this->m_comments[$i] != ''
+                    ? $commenthtml : '') . '</td>';
 
             if ($this->hasflag(AF_DISPLAY_VERT)) {
                 $tmp_items = $items;
@@ -180,28 +183,30 @@ class Atk_RadioAttribute extends Atk_ListAttribute
                     }
                     if ($values[$j] != "") {
                         $result .= '<td><input id="' . $labelID . '" type="radio" name="' . $fieldprefix . $this->formName() . '" ' . $this->getCSSClassAttribute("atkradio") . ' value="' . $values[$j] . '" ' . $onchange . $sel . '>
-              ' . $this->renderValue($labelID, $this->_translateValue($values[$j], $record)) . ($this->m_comments[$i] != ''
-                                    ? $commenthtml : '') . '</td>';
+              ' . $this->renderValue($labelID,
+                                $this->_translateValue($values[$j], $record)) . ($this->m_comments[$i] != ''
+                                ? $commenthtml : '') . '</td>';
                     } else {
-                        $result .='<td>&nbsp;</td>';
+                        $result .= '<td>&nbsp;</td>';
                     }
                 }
-                $result.='</tr>';
+                $result .= '</tr>';
             }
 
-            $item_count ++;
+            $item_count++;
             if ($item_count == $items && !$this->hasFlag(AF_DISPLAY_VERT)) {
-                $result.='</tr><tr>';
+                $result .= '</tr><tr>';
                 $item_count = 0;
             }
         }
         // Fill with empty boxes when we have a horizontal display
         if (!$this->hasFlag(AF_DISPLAY_VERT)) {
-            for ($i = 0; $i < ($items - $item_count); $i ++)
-                $result.='<td>&nbsp;</td>';
-            $result.='</tr>';
+            for ($i = 0; $i < ($items - $item_count); $i++) {
+                $result .= '<td>&nbsp;</td>';
+            }
+            $result .= '</tr>';
         }
-        $result.='</table>';
+        $result .= '</table>';
         return $result;
     }
 

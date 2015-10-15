@@ -16,7 +16,8 @@ class mod_test extends Atk_Module
     {
         // add menuitems
         $this->menuitem("test");
-        $this->menuitem("test_admin", Atk_Tools::dispatch_url("test.test", "admin"), "test", array("test.test", "admin"));
+        $this->menuitem("test_admin", Atk_Tools::dispatch_url("test.test", "admin"), "test",
+            array("test.test", "admin"));
     }
 
 }

@@ -9,13 +9,13 @@
  * @subpackage utils
  *
  * @copyright (c) 2000-2007 Ibuildings.nl BV
- * 
+ *
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
 Atk_Tools::atkimport('atk.datagrid.atkdgcomponent');
 
 /**
- * The data grid summary. Can be used to render a 
+ * The data grid summary. Can be used to render a
  * summary for an ATK data grid.
  *
  * @author Peter C. Verhage <peter@achievo.org>
@@ -64,7 +64,7 @@ class Atk_DGSummary extends Atk_DGComponent
         $parser = new Atk_StringParser($string);
         $result = $parser->parse($params);
 
-        return '<span class="dgridsummary">'.$result.'</span>';
+        return '<span class="dgridsummary">' . $result . '</span>';
     }
 
 }

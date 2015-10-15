@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
@@ -17,7 +18,6 @@
  * @version $Revision: 5898 $
  * $Id$
  */
-
 class Atk_Cache_zp_output extends Atk_Cache
 {
 
@@ -62,8 +62,9 @@ class Atk_Cache_zp_output extends Atk_Cache
             return false;
         }
 
-        if ($lifetime !== false)
+        if ($lifetime !== false) {
             Atk_Tools::atkwarning("Lifetime setting is not supported in this type of cache :" . $this->getType() . ". Instead default lifetime is used");
+        }
 
         if (output_cache_get($key, $this->m_lifetime) !== false) {
             return false;
@@ -87,8 +88,9 @@ class Atk_Cache_zp_output extends Atk_Cache
             return false;
         }
 
-        if ($lifetime !== false)
+        if ($lifetime !== false) {
             Atk_Tools::atkwarning("Lifetime setting is not supported in this type of cache :" . $this->getType() . ". Instead default lifetime is used");
+        }
 
         output_cache_put($key, serialize($data));
         return true;
@@ -133,7 +135,7 @@ class Atk_Cache_zp_output extends Atk_Cache
      */
     public function deleteAll()
     {
-        
+
     }
 
     /**

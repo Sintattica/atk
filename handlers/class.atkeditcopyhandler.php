@@ -2,7 +2,7 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * @package atk
@@ -28,7 +28,7 @@ class Atk_EditCopyHandler extends Atk_ActionHandler
 {
 
     /**
-     * The action method. 
+     * The action method.
      */
     function action_editcopy()
     {
@@ -49,13 +49,14 @@ class Atk_EditCopyHandler extends Atk_ActionHandler
         } else {
             $db->commit();
             $this->clearCache();
-            $location = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atknodetype(), "edit", array("atkselector" => $this->m_node->primaryKey($record))), SESSION_REPLACE);
+            $location = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atknodetype(), "edit",
+                array("atkselector" => $this->m_node->primaryKey($record))), SESSION_REPLACE);
             $this->m_node->redirect($location);
         }
     }
 
     /**
-     * Get the selected record from 
+     * Get the selected record from
      *
      * @return the record to be copied
      */

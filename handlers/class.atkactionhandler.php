@@ -46,13 +46,13 @@ class Atk_ActionHandler
      * @var Atk_Node
      * @access private
      */
-    var $m_node = NULL;
+    var $m_node = null;
 
     /** @access private */
     var $m_action = "";
 
     /** @access private */
-    var $m_partial = NULL;
+    var $m_partial = null;
 
     /** @access private */
     var $m_renderBoxVars = array();
@@ -79,10 +79,11 @@ class Atk_ActionHandler
      */
     function atkActionHandler()
     {
-        
+
     }
 
-    function __construct(){
+    function __construct()
+    {
 
     }
 
@@ -264,15 +265,17 @@ class Atk_ActionHandler
         // the first argument is $methodname, which we already defined by name.
         array_shift($arguments);
 
-        if ($this->m_node !== NULL && method_exists($this->m_node, $methodname)) {
+        if ($this->m_node !== null && method_exists($this->m_node, $methodname)) {
             Atk_Tools::atkdebug("Invoking '$methodname' override on node");
             // We pass the original object as first parameter to the override.
             array_unshift($arguments, $this);
             $arguments[0] = &$this; // reference copy workaround;
             return call_user_func_array(array(&$this->m_node, $methodname), $arguments);
-        } else if (method_exists($this, $methodname)) {
-            Atk_Tools::atkdebug("Invoking '$methodname' on actionhandler for action " . $this->m_action);
-            return call_user_func_array(array(&$this, $methodname), $arguments);
+        } else {
+            if (method_exists($this, $methodname)) {
+                Atk_Tools::atkdebug("Invoking '$methodname' on actionhandler for action " . $this->m_action);
+                return call_user_func_array(array(&$this, $methodname), $arguments);
+            }
         }
         Atk_Tools::atkerror("Undefined method '$methodname' in atkActionHandler");
     }
@@ -309,7 +312,7 @@ class Atk_ActionHandler
      * Modify grid.
      *
      * @param Atk_DataGrid $grid grid
-     * @param int         $mode CREATE or RESUME
+     * @param int $mode CREATE or RESUME
      */
     protected function modifyDataGrid(Atk_DataGrid $grid, $mode)
     {
@@ -343,8 +346,9 @@ class Atk_ActionHandler
     {
         if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST)) {
             $recordlistcache = $this->getRecordlistCache();
-            if ($recordlistcache)
+            if ($recordlistcache) {
                 $recordlistcache->clearCache($this->m_node->atkNodeType());
+            }
         }
     }
 
@@ -506,9 +510,9 @@ class Atk_ActionHandler
 
     /**
      * Get/generate CSRF token for the current session stack.
-     * 
+     *
      * http://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29_Prevention_Cheat_Sheet
-     * 
+     *
      * @return string CSRF token
      */
     public function getCSRFToken()
@@ -529,7 +533,7 @@ class Atk_ActionHandler
     /**
      * Checks whatever the given CSRF token matches the one stored in the
      * session stack.
-     * 
+     *
      * @return boolean is valid CSRF token?
      */
     protected function isValidCSRFToken($token)

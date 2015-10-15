@@ -22,60 +22,54 @@
  * Utility functions for the File Manager Connector for PHP.
  */
 
-function RemoveFromStart( $sourceString, $charToRemove )
+function RemoveFromStart($sourceString, $charToRemove)
 {
-	$sPattern = '|^' . $charToRemove . '+|' ;
-	return preg_replace( $sPattern, '', $sourceString ) ;
+    $sPattern = '|^' . $charToRemove . '+|';
+    return preg_replace($sPattern, '', $sourceString);
 }
 
-function RemoveFromEnd( $sourceString, $charToRemove )
+function RemoveFromEnd($sourceString, $charToRemove)
 {
-	$sPattern = '|' . $charToRemove . '+$|' ;
-	return preg_replace( $sPattern, '', $sourceString ) ;
+    $sPattern = '|' . $charToRemove . '+$|';
+    return preg_replace($sPattern, '', $sourceString);
 }
 
-function FindBadUtf8( $string )
+function FindBadUtf8($string)
 {
-	$regex =
-	'([\x00-\x7F]'.
-	'|[\xC2-\xDF][\x80-\xBF]'.
-	'|\xE0[\xA0-\xBF][\x80-\xBF]'.
-	'|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}'.
-	'|\xED[\x80-\x9F][\x80-\xBF]'.
-	'|\xF0[\x90-\xBF][\x80-\xBF]{2}'.
-	'|[\xF1-\xF3][\x80-\xBF]{3}'.
-	'|\xF4[\x80-\x8F][\x80-\xBF]{2}'.
-	'|(.{1}))';
+    $regex =
+        '([\x00-\x7F]' .
+        '|[\xC2-\xDF][\x80-\xBF]' .
+        '|\xE0[\xA0-\xBF][\x80-\xBF]' .
+        '|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}' .
+        '|\xED[\x80-\x9F][\x80-\xBF]' .
+        '|\xF0[\x90-\xBF][\x80-\xBF]{2}' .
+        '|[\xF1-\xF3][\x80-\xBF]{3}' .
+        '|\xF4[\x80-\x8F][\x80-\xBF]{2}' .
+        '|(.{1}))';
 
-	while (preg_match('/'.$regex.'/S', $string, $matches)) {
-		if ( isset($matches[2])) {
-			return true;
-		}
-		$string = substr($string, strlen($matches[0]));
-	}
+    while (preg_match('/' . $regex . '/S', $string, $matches)) {
+        if (isset($matches[2])) {
+            return true;
+        }
+        $string = substr($string, strlen($matches[0]));
+    }
 
-	return false;
+    return false;
 }
 
-function ConvertToXmlAttribute( $value )
+function ConvertToXmlAttribute($value)
 {
-	if ( defined( 'PHP_OS' ) )
-	{
-		$os = PHP_OS ;
-	}
-	else
-	{
-		$os = php_uname() ;
-	}
+    if (defined('PHP_OS')) {
+        $os = PHP_OS;
+    } else {
+        $os = php_uname();
+    }
 
-	if ( strtoupper( substr( $os, 0, 3 ) ) === 'WIN' || FindBadUtf8( $value ) )
-	{
-		return ( utf8_encode( htmlspecialchars( $value ) ) ) ;
-	}
-	else
-	{
-		return ( htmlspecialchars( $value ) ) ;
-	}
+    if (strtoupper(substr($os, 0, 3)) === 'WIN' || FindBadUtf8($value)) {
+        return (utf8_encode(htmlspecialchars($value)));
+    } else {
+        return (htmlspecialchars($value));
+    }
 }
 
 /**
@@ -85,18 +79,16 @@ function ConvertToXmlAttribute( $value )
  * @param array $htmlExtensions
  * @return boolean
  */
-function IsHtmlExtension( $ext, $htmlExtensions )
+function IsHtmlExtension($ext, $htmlExtensions)
 {
-	if ( !$htmlExtensions || !is_array( $htmlExtensions ) )
-	{
-		return false ;
-	}
-	$lcaseHtmlExtensions = array() ;
-	foreach ( $htmlExtensions as $key => $val )
-	{
-		$lcaseHtmlExtensions[$key] = strtolower( $val ) ;
-	}
-	return in_array( $ext, $lcaseHtmlExtensions ) ;
+    if (!$htmlExtensions || !is_array($htmlExtensions)) {
+        return false;
+    }
+    $lcaseHtmlExtensions = array();
+    foreach ($htmlExtensions as $key => $val) {
+        $lcaseHtmlExtensions[$key] = strtolower($val);
+    }
+    return in_array($ext, $lcaseHtmlExtensions);
 }
 
 /**
@@ -107,65 +99,57 @@ function IsHtmlExtension( $ext, $htmlExtensions )
  * @param string $filePath absolute path to file
  * @return boolean
  */
-function DetectHtml( $filePath )
+function DetectHtml($filePath)
 {
-	$fp = @fopen( $filePath, 'rb' ) ;
+    $fp = @fopen($filePath, 'rb');
 
-	//open_basedir restriction, see #1906
-	if ( $fp === false || !flock( $fp, LOCK_SH ) )
-	{
-		return -1 ;
-	}
+    //open_basedir restriction, see #1906
+    if ($fp === false || !flock($fp, LOCK_SH)) {
+        return -1;
+    }
 
-	$chunk = fread( $fp, 1024 ) ;
-	flock( $fp, LOCK_UN ) ;
-	fclose( $fp ) ;
+    $chunk = fread($fp, 1024);
+    flock($fp, LOCK_UN);
+    fclose($fp);
 
-	$chunk = strtolower( $chunk ) ;
+    $chunk = strtolower($chunk);
 
-	if (!$chunk)
-	{
-		return false ;
-	}
+    if (!$chunk) {
+        return false;
+    }
 
-	$chunk = trim( $chunk ) ;
+    $chunk = trim($chunk);
 
-	if ( preg_match( "/<!DOCTYPE\W*X?HTML/sim", $chunk ) )
-	{
-		return true;
-	}
+    if (preg_match("/<!DOCTYPE\W*X?HTML/sim", $chunk)) {
+        return true;
+    }
 
-	$tags = array( '<body', '<head', '<html', '<img', '<pre', '<script', '<table', '<title' ) ;
+    $tags = array('<body', '<head', '<html', '<img', '<pre', '<script', '<table', '<title');
 
-	foreach( $tags as $tag )
-	{
-		if( false !== strpos( $chunk, $tag ) )
-		{
-			return true ;
-		}
-	}
+    foreach ($tags as $tag) {
+        if (false !== strpos($chunk, $tag)) {
+            return true;
+        }
+    }
 
-	//type = javascript
-	if ( preg_match( '!type\s*=\s*[\'"]?\s*(?:\w*/)?(?:ecma|java)!sim', $chunk ) )
-	{
-		return true ;
-	}
+    //type = javascript
+    if (preg_match('!type\s*=\s*[\'"]?\s*(?:\w*/)?(?:ecma|java)!sim', $chunk)) {
+        return true;
+    }
 
-	//href = javascript
-	//src = javascript
-	//data = javascript
-	if ( preg_match( '!(?:href|src|data)\s*=\s*[\'"]?\s*(?:ecma|java)script:!sim', $chunk ) )
-	{
-		return true ;
-	}
+    //href = javascript
+    //src = javascript
+    //data = javascript
+    if (preg_match('!(?:href|src|data)\s*=\s*[\'"]?\s*(?:ecma|java)script:!sim', $chunk)) {
+        return true;
+    }
 
-	//url(javascript
-	if ( preg_match( '!url\s*\(\s*[\'"]?\s*(?:ecma|java)script:!sim', $chunk ) )
-	{
-		return true ;
-	}
+    //url(javascript
+    if (preg_match('!url\s*\(\s*[\'"]?\s*(?:ecma|java)script:!sim', $chunk)) {
+        return true;
+    }
 
-	return false ;
+    return false;
 }
 
 /**
@@ -178,43 +162,43 @@ function DetectHtml( $filePath )
  * @param integer $detectionLevel 0 = none, 1 = use getimagesize for images, 2 = use DetectHtml for images
  * @return boolean
  */
-function IsImageValid( $filePath, $extension )
+function IsImageValid($filePath, $extension)
 {
-	if (!@is_readable($filePath)) {
-		return -1;
-	}
+    if (!@is_readable($filePath)) {
+        return -1;
+    }
 
-	$imageCheckExtensions = array('gif', 'jpeg', 'jpg', 'png', 'swf', 'psd', 'bmp', 'iff');
+    $imageCheckExtensions = array('gif', 'jpeg', 'jpg', 'png', 'swf', 'psd', 'bmp', 'iff');
 
-	// version_compare is available since PHP4 >= 4.0.7
-	if ( function_exists( 'version_compare' ) ) {
-		$sCurrentVersion = phpversion();
-		if ( version_compare( $sCurrentVersion, "4.2.0" ) >= 0 ) {
-			$imageCheckExtensions[] = "tiff";
-			$imageCheckExtensions[] = "tif";
-		}
-		if ( version_compare( $sCurrentVersion, "4.3.0" ) >= 0 ) {
-			$imageCheckExtensions[] = "swc";
-		}
-		if ( version_compare( $sCurrentVersion, "4.3.2" ) >= 0 ) {
-			$imageCheckExtensions[] = "jpc";
-			$imageCheckExtensions[] = "jp2";
-			$imageCheckExtensions[] = "jpx";
-			$imageCheckExtensions[] = "jb2";
-			$imageCheckExtensions[] = "xbm";
-			$imageCheckExtensions[] = "wbmp";
-		}
-	}
+    // version_compare is available since PHP4 >= 4.0.7
+    if (function_exists('version_compare')) {
+        $sCurrentVersion = phpversion();
+        if (version_compare($sCurrentVersion, "4.2.0") >= 0) {
+            $imageCheckExtensions[] = "tiff";
+            $imageCheckExtensions[] = "tif";
+        }
+        if (version_compare($sCurrentVersion, "4.3.0") >= 0) {
+            $imageCheckExtensions[] = "swc";
+        }
+        if (version_compare($sCurrentVersion, "4.3.2") >= 0) {
+            $imageCheckExtensions[] = "jpc";
+            $imageCheckExtensions[] = "jp2";
+            $imageCheckExtensions[] = "jpx";
+            $imageCheckExtensions[] = "jb2";
+            $imageCheckExtensions[] = "xbm";
+            $imageCheckExtensions[] = "wbmp";
+        }
+    }
 
-	if ( !in_array( $extension, $imageCheckExtensions ) ) {
-		return true;
-	}
+    if (!in_array($extension, $imageCheckExtensions)) {
+        return true;
+    }
 
-	if ( @getimagesize( $filePath ) === false ) {
-		return false ;
-	}
+    if (@getimagesize($filePath) === false) {
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
 ?>

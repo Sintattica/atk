@@ -76,7 +76,7 @@ abstract class Atk_ShuttleControl
      */
     public function init()
     {
-        
+
     }
 
     /**
@@ -119,7 +119,7 @@ abstract class Atk_ShuttleControl
      * Called if a filter or selection event has occured. And allows the control to
      * state if it needs to be refreshed based on the filter or selection changes.
      *
-     * @param string $type  type of event ('filter' or 'selection'
+     * @param string $type type of event ('filter' or 'selection'
      * @param array $record full record (see partial_filter, partial_selection for more information)
      *
      * @return boolean needs refresh?

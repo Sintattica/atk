@@ -131,7 +131,7 @@ class Atk_ManyToOneRelation extends Atk_Relation
      * @access private
      * @var String
      */
-    var $m_noneLabel = NULL;
+    var $m_noneLabel = null;
 
     /**
      * Minimum number of character a user needs to enter before auto-completion kicks in.
@@ -246,15 +246,18 @@ class Atk_ManyToOneRelation extends Atk_Relation
      */
     function __construct($name, $destination, $flags = 0)
     {
-        if (Atk_Config::getGlobal("manytoone_autocomplete_default", false))
+        if (Atk_Config::getGlobal("manytoone_autocomplete_default", false)) {
             $flags |= AF_RELATION_AUTOCOMPLETE;
+        }
 
-        if (Atk_Config::getGlobal("manytoone_autocomplete_large", true) && Atk_Tools::hasFlag($flags, AF_LARGE))
+        if (Atk_Config::getGlobal("manytoone_autocomplete_large", true) && Atk_Tools::hasFlag($flags, AF_LARGE)) {
             $flags |= AF_RELATION_AUTOCOMPLETE;
+        }
 
         $this->m_autocomplete_minchars = Atk_Config::getGlobal("manytoone_autocomplete_minchars", 2);
         $this->m_autocomplete_searchmode = Atk_Config::getGlobal("manytoone_autocomplete_searchmode", "contains");
-        $this->m_autocomplete_search_case_sensitive = Atk_Config::getGlobal("manytoone_autocomplete_search_case_sensitive", false);
+        $this->m_autocomplete_search_case_sensitive = Atk_Config::getGlobal("manytoone_autocomplete_search_case_sensitive",
+            false);
         $this->m_autocomplete_size = Atk_Config::getGlobal("manytoone_autocomplete_size", 50);
 
         if (is_array($name)) {
@@ -288,8 +291,9 @@ class Atk_ManyToOneRelation extends Atk_Relation
     function addFlag($flag)
     {
         parent::addFlag($flag);
-        if (Atk_Config::getGlobal("manytoone_autocomplete_large", true) && Atk_Tools::hasFlag($flag, AF_LARGE))
+        if (Atk_Config::getGlobal("manytoone_autocomplete_large", true) && Atk_Tools::hasFlag($flag, AF_LARGE)) {
             $this->m_flags |= AF_RELATION_AUTOCOMPLETE;
+        }
         return $this;
     }
 
@@ -438,8 +442,9 @@ class Atk_ManyToOneRelation extends Atk_Relation
     function addListColumns()
     {
         $attrs = func_get_args();
-        foreach ($attrs as $attr)
+        foreach ($attrs as $attr) {
             $this->m_listColumns[] = $attr;
+        }
         return $this;
     }
 
@@ -480,8 +485,9 @@ class Atk_ManyToOneRelation extends Atk_Relation
     function setAlwaysShowListColumns($value)
     {
         $this->m_alwaysShowListColumns = $value;
-        if ($this->m_alwaysShowListColumns)
+        if ($this->m_alwaysShowListColumns) {
             $this->addFlag(AF_FORCE_LOAD);
+        }
         return $this;
     }
 
@@ -494,7 +500,7 @@ class Atk_ManyToOneRelation extends Atk_Relation
     {
         if ($this->isEmpty($rec)) {
             Atk_Tools::atkdebug($this->fieldName() . " IS EMPTY!");
-            return NULL;
+            return null;
         } else {
             if ($this->createDestination()) {
                 if (is_array($rec[$this->fieldName()])) {
@@ -551,7 +557,7 @@ class Atk_ManyToOneRelation extends Atk_Relation
 
             return $result;
         }
-        return NULL;
+        return null;
     }
 
     /**
@@ -566,8 +572,9 @@ class Atk_ManyToOneRelation extends Atk_Relation
         if (isset($rec[$this->fieldName()]) &&
             is_array($rec[$this->fieldName()]) &&
             (!isset($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]) ||
-            empty($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]))) {
-            return NULL;
+                empty($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]))
+        ) {
+            return null;
         }
 
         if (isset($rec[$this->fieldName()])) {
@@ -576,7 +583,7 @@ class Atk_ManyToOneRelation extends Atk_Relation
                 $result = array();
                 if ($this->createDestination()) {
                     foreach (array_keys($this->m_destInstance->m_attribList) as $attrName) {
-                        if ( isset($this->m_destInstance->m_attribList[$attrName]) ) {
+                        if (isset($this->m_destInstance->m_attribList[$attrName])) {
                             $attr = &$this->m_destInstance->m_attribList[$attrName];
                             $result[$attrName] = $attr->db2value($myrec);
                         } else {
@@ -589,8 +596,9 @@ class Atk_ManyToOneRelation extends Atk_Relation
             } else {
                 // if the record is not an array, probably only the value of the primary key was loaded.
                 // This workaround only works for single-field primary keys.
-                if ($this->createDestination())
+                if ($this->createDestination()) {
                     return array($this->m_destInstance->primaryKeyField() => $myrec);
+                }
             }
         }
     }
@@ -612,7 +620,7 @@ class Atk_ManyToOneRelation extends Atk_Relation
      */
     function getNoneLabel($mode = '')
     {
-        if ($this->m_noneLabel !== NULL) {
+        if ($this->m_noneLabel !== null) {
             return $this->m_noneLabel;
         }
 
@@ -621,16 +629,20 @@ class Atk_ManyToOneRelation extends Atk_Relation
             if ((($mode == 'add' && !$this->hasFlag(AF_READONLY_ADD)) || ($mode == 'edit' && !$this->hasFlag(AF_READONLY_EDIT)))) {
                 $text_key = 'select_none_obligatory';
             }
-        } else if ($mode == 'search') {
-            $text_key = 'search_none';
+        } else {
+            if ($mode == 'search') {
+                $text_key = 'search_none';
+            }
         }
 
         $nodename = $this->m_destInstance->m_type;
         $modulename = $this->m_destInstance->m_module;
         $ownermodulename = $this->m_ownerInstance->m_module;
-        $label = Atk_Tools::atktext($this->fieldName() . '_' . $text_key, $ownermodulename, $this->m_owner, "", "", true);
-        if ($label == "")
+        $label = Atk_Tools::atktext($this->fieldName() . '_' . $text_key, $ownermodulename, $this->m_owner, "", "",
+            true);
+        if ($label == "") {
             $label = Atk_Tools::atktext($text_key, $modulename, $nodename);
+        }
 
         return $label;
     }
@@ -649,19 +661,25 @@ class Atk_ManyToOneRelation extends Atk_Relation
     function display($record, $mode = 'list')
     {
         if ($this->createDestination()) {
-            if (count($record[$this->fieldName()]) == count($this->m_refKey))
+            if (count($record[$this->fieldName()]) == count($this->m_refKey)) {
                 $this->populate($record);
+            }
 
             if (!$this->isEmpty($record)) {
                 $result = $this->m_destInstance->descriptor($record[$this->fieldName()]);
-                if ($this->hasFlag(AF_RELATION_AUTOLINK) && (!in_array($mode, array("csv", "plain")))) { // create link to edit/view screen
+                if ($this->hasFlag(AF_RELATION_AUTOLINK) && (!in_array($mode,
+                        array("csv", "plain")))
+                ) { // create link to edit/view screen
                     if (($this->m_destInstance->allowed("view")) && !$this->m_destInstance->hasFlag(NF_NO_VIEW) && $result != "") {
                         $saveForm = $mode == 'add' || $mode == 'edit';
-                        $result = Atk_Tools::href(Atk_Tools::dispatch_url($this->m_destination, "view", array("atkselector" => $this->m_destInstance->primaryKey($record[$this->fieldName()]))), $result, SESSION_NESTED, $saveForm);
+                        $result = Atk_Tools::href(Atk_Tools::dispatch_url($this->m_destination, "view",
+                            array("atkselector" => $this->m_destInstance->primaryKey($record[$this->fieldName()]))),
+                            $result, SESSION_NESTED, $saveForm);
                     }
                 }
             } else {
-                $result = !in_array($mode, array("csv", "plain", "list")) ? $this->getNoneLabel($mode) : ''; // no record
+                $result = !in_array($mode,
+                    array("csv", "plain", "list")) ? $this->getNoneLabel($mode) : ''; // no record
             }
             return $result;
         } else {
@@ -673,23 +691,26 @@ class Atk_ManyToOneRelation extends Atk_Relation
     /**
      * Populate the record with the destination record data.
      *
-     * @param array $record        record
-     * @param mixed $fullOrFields  load all data, only the given fields or only the descriptor fields?
+     * @param array $record record
+     * @param mixed $fullOrFields load all data, only the given fields or only the descriptor fields?
      */
     public function populate(&$record, $fullOrFields = false)
     {
-        if (!is_array($record) || $record[$this->fieldName()] == "")
+        if (!is_array($record) || $record[$this->fieldName()] == "") {
             return;
+        }
 
         Atk_Tools::atkdebug("Delayed loading of " . ($fullOrFields || is_array($fullOrFields)
-                    ? "" : "descriptor ") . "fields for " . $this->m_name);
+                ? "" : "descriptor ") . "fields for " . $this->m_name);
         $this->createDestination();
 
         $includes = "";
         if (is_array($fullOrFields)) {
             $includes = array_merge($this->m_destInstance->m_primaryKey, $fullOrFields);
-        } else if (!$fullOrFields) {
-            $includes = $this->m_destInstance->descriptorFields();
+        } else {
+            if (!$fullOrFields) {
+                $includes = $this->m_destInstance->descriptorFields();
+            }
         }
 
         $result = $this->m_destInstance
@@ -719,14 +740,18 @@ class Atk_ManyToOneRelation extends Atk_Relation
         $links[] = $this->_getSelectLink($newsel, $filter);
         if ($this->hasFlag(AF_RELATION_AUTOLINK)) { // auto edit/view link
             if ($this->m_destInstance->allowed("add") && !$this->m_destInstance->hasFlag(NF_NO_ADD)) {
-                $links[] = Atk_Tools::href(Atk_Tools::dispatch_url($this->getAutoLinkDestination(), "add", array("atkpkret" => $id, "atkfilter" => ($filter != ""
-                            ? $filter : ""))), Atk_Tools::atktext("new"), SESSION_NESTED, true);
+                $links[] = Atk_Tools::href(Atk_Tools::dispatch_url($this->getAutoLinkDestination(), "add", array(
+                    "atkpkret" => $id,
+                    "atkfilter" => ($filter != ""
+                        ? $filter : "")
+                )), Atk_Tools::atktext("new"), SESSION_NESTED, true);
             }
 
-            if ($this->m_destInstance->allowed("edit") && !$this->m_destInstance->hasFlag(NF_NO_EDIT) && $record[$this->fieldName()] != NULL) {
+            if ($this->m_destInstance->allowed("edit") && !$this->m_destInstance->hasFlag(NF_NO_EDIT) && $record[$this->fieldName()] != null) {
                 //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
                 //de app crasht als er geen waarde is ingevuld.
-                $editUrl = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->getAutoLinkDestination(), "edit", array("atkselector" => "REPLACEME")), SESSION_NESTED);
+                $editUrl = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->getAutoLinkDestination(), "edit",
+                    array("atkselector" => "REPLACEME")), SESSION_NESTED);
                 $links[] = "<span id=\"" . $id . "_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"" . Atk_Tools::atkurlencode($editUrl) . "\", document.entryform." . $id . ".value), true)' class=\"atkmanytoonerelation\">" . Atk_Tools::atktext('edit') . "</a></span>";
             }
         }
@@ -762,9 +787,9 @@ class Atk_ManyToOneRelation extends Atk_Relation
      * loaded and update the record with the possible selection of the first
      * record.
      *
-     * @param array  $record      reference to the record
+     * @param array $record reference to the record
      * @param string $fieldPrefix field prefix
-     * @param string $mode        edit mode
+     * @param string $mode edit mode
      */
     public function preAddToEditArray(&$record, $fieldPrefix, $mode)
     {
@@ -774,26 +799,33 @@ class Atk_ManyToOneRelation extends Atk_Relation
             if (count($this->m_selectableRecords) > 0 &&
                 !$this->getConfigOptionObligatoryNullOption() &&
                 (($this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM)) ||
-                (!$this->hasFlag(AF_OBLIGATORY) && $this->hasFlag(AF_RELATION_NO_NULL_ITEM)))) {
+                    (!$this->hasFlag(AF_OBLIGATORY) && $this->hasFlag(AF_RELATION_NO_NULL_ITEM)))
+            ) {
                 if (!isset($record[$this->fieldName()]) || !is_array($record[$this->fieldName()])) {
                     $record[$this->fieldName()] = $this->m_selectableRecords[0];
-                } else if (!$this->_isSelectableRecord($record, $mode)) {
-                    $record[$this->fieldName()] = $this->m_selectableRecords[0];
                 } else {
-                    $current = $this->getDestination()->primaryKey($record[$this->fieldName()]);
-                    $record[$this->fieldName()] = null;
-                    foreach ($this->m_selectableRecords as $selectable) {
-                        if ($this->getDestination()->primaryKey($selectable) == $current) {
-                            $record[$this->fieldName()] = $selectable;
-                            break;
+                    if (!$this->_isSelectableRecord($record, $mode)) {
+                        $record[$this->fieldName()] = $this->m_selectableRecords[0];
+                    } else {
+                        $current = $this->getDestination()->primaryKey($record[$this->fieldName()]);
+                        $record[$this->fieldName()] = null;
+                        foreach ($this->m_selectableRecords as $selectable) {
+                            if ($this->getDestination()->primaryKey($selectable) == $current) {
+                                $record[$this->fieldName()] = $selectable;
+                                break;
+                            }
                         }
                     }
                 }
             }
-        } else if (is_array($record[$this->fieldName()]) && !$this->_isSelectableRecord($record, $mode)) {
-            $record[$this->fieldName()] = null;
-        } else if (is_array($record[$this->fieldName()])) {
-            $this->populate($record);
+        } else {
+            if (is_array($record[$this->fieldName()]) && !$this->_isSelectableRecord($record, $mode)) {
+                $record[$this->fieldName()] = null;
+            } else {
+                if (is_array($record[$this->fieldName()])) {
+                    $this->populate($record);
+                }
+            }
         }
     }
 
@@ -841,9 +873,9 @@ class Atk_ManyToOneRelation extends Atk_Relation
         $editflag = true;
 
         $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()]
-                : null;
+            : null;
         $currentPk = $value != null ? $this->getDestination()->primaryKey($value)
-                : null;
+            : null;
 
         if (!$this->hasFlag(AF_LARGE)) { // normal dropdown..
             // load records for bwc
@@ -877,14 +909,16 @@ class Atk_ManyToOneRelation extends Atk_Relation
                 // relation may be empty, so we must provide an empty selectable..
                 if ($this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
                     (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) ||
-                    ($this->getConfigOptionObligatoryNullOption() && !is_array($value))) {
-                    $result.= '<option value="">' . $this->getNoneLabel($mode) . '</option>';
+                    ($this->getConfigOptionObligatoryNullOption() && !is_array($value))
+                ) {
+                    $result .= '<option value="">' . $this->getNoneLabel($mode) . '</option>';
                 }
 
                 foreach ($recordset as $selectable) {
                     $pk = $this->getDestination()->primaryKey($selectable);
                     $sel = $pk == $currentPk ? 'selected="selected"' : '';
-                    $result .= '<option value="' . $pk . '" ' . $sel . '>' . str_replace(' ', '&nbsp;', htmlentities(strip_tags($this->m_destInstance->descriptor($selectable)))) . '</option>';
+                    $result .= '<option value="' . $pk . '" ' . $sel . '>' . str_replace(' ', '&nbsp;',
+                            htmlentities(strip_tags($this->m_destInstance->descriptor($selectable)))) . '</option>';
                 }
 
                 $result .= '</select>';
@@ -896,22 +930,23 @@ class Atk_ManyToOneRelation extends Atk_Relation
 
             $destrecord = $record[$this->fieldName()];
             if (is_array($destrecord)) {
-                $result = '<span id="'.$id.'_current" >';
+                $result = '<span id="' . $id . '_current" >';
 
                 if ($this->hasFlag(AF_RELATION_AUTOLINK) && $this->m_destInstance->allowed("view") && !$this->m_destInstance->hasFlag(NF_NO_VIEW)) {
-                    $result .= Atk_Tools::href(Atk_Tools::dispatch_url($this->m_destination, "view", array("atkselector"=>$this->m_destInstance->primaryKey($record[$this->fieldName()]))), $this->m_destInstance->descriptor($destrecord), SESSION_NESTED, true);
+                    $result .= Atk_Tools::href(Atk_Tools::dispatch_url($this->m_destination, "view",
+                        array("atkselector" => $this->m_destInstance->primaryKey($record[$this->fieldName()]))),
+                        $this->m_destInstance->descriptor($destrecord), SESSION_NESTED, true);
                 } else {
                     $result .= $this->m_destInstance->descriptor($destrecord);
                 }
 
                 $result .= "&nbsp;";
 
-                if (!$this->hasFlag(AF_OBLIGATORY))
-                {
-                    $result.= '<a href="#" onClick="document.getElementById(\''.
-                        $id.'\').value=\'\'; document.getElementById(\''.$id.'_current\').style.display=\'none\'" class="atkmanytoonerelation">'.Atk_Tools::atktext("unselect").'</a>&nbsp;';
+                if (!$this->hasFlag(AF_OBLIGATORY)) {
+                    $result .= '<a href="#" onClick="document.getElementById(\'' .
+                        $id . '\').value=\'\'; document.getElementById(\'' . $id . '_current\').style.display=\'none\'" class="atkmanytoonerelation">' . Atk_Tools::atktext("unselect") . '</a>&nbsp;';
                 }
-                $result.= '&nbsp;</span>';
+                $result .= '&nbsp;</span>';
             }
 
             $result .= $this->hide($record, $fieldprefix);
@@ -937,24 +972,33 @@ class Atk_ManyToOneRelation extends Atk_Relation
         $result = "";
         // we use the current level to automatically return to this page
         // when we come from the select..
-        $atktarget = Atk_Tools::atkurlencode( Atk_Tools::getDispatchFile() . "?atklevel=" . Atk_SessionManager::atkLevel() . "&" . $selname . "=[atkprimkey]");
-        $linkname = Atk_Tools::atktext("link_select_" . Atk_Module::getNodeType($this->m_destination), $this->getOwnerInstance()->getModule(), $this->getOwnerInstance()->getType(), '', '', true);
-        if (!$linkname)
-            $linkname = Atk_Tools::atktext("link_select_" . Atk_Module::getNodeType($this->m_destination), Atk_Module::getNodeModule($this->m_destination), Atk_Module::getNodeType($this->m_destination), '', '', true);
-        if (!$linkname)
-            $linkname = Atk_Tools::atktext("select_a"); // . ' ' . strtolower(Atk_Tools::atktext(Atk_Module::getNodeType($this->m_destination), Atk_Module::getNodeModule($this->m_destination), Atk_Module::getNodeType($this->m_destination)));
+        $atktarget = Atk_Tools::atkurlencode(Atk_Tools::getDispatchFile() . "?atklevel=" . Atk_SessionManager::atkLevel() . "&" . $selname . "=[atkprimkey]");
+        $linkname = Atk_Tools::atktext("link_select_" . Atk_Module::getNodeType($this->m_destination),
+            $this->getOwnerInstance()->getModule(), $this->getOwnerInstance()->getType(), '', '', true);
+        if (!$linkname) {
+            $linkname = Atk_Tools::atktext("link_select_" . Atk_Module::getNodeType($this->m_destination),
+                Atk_Module::getNodeModule($this->m_destination), Atk_Module::getNodeType($this->m_destination), '', '',
+                true);
+        }
+        if (!$linkname) {
+            $linkname = Atk_Tools::atktext("select_a");
+        } // . ' ' . strtolower(Atk_Tools::atktext(Atk_Module::getNodeType($this->m_destination), Atk_Module::getNodeModule($this->m_destination), Atk_Module::getNodeType($this->m_destination)));
         if ($this->m_destinationFilter != "") {
-            $result.= Atk_Tools::href(Atk_Tools::dispatch_url($this->m_destination, "select", array("atkfilter" => $filter, "atktarget" => $atktarget)), $linkname, SESSION_NESTED, $this->m_autocomplete_saveform, 'class="atkmanytoonerelation"');
+            $result .= Atk_Tools::href(Atk_Tools::dispatch_url($this->m_destination, "select",
+                array("atkfilter" => $filter, "atktarget" => $atktarget)), $linkname, SESSION_NESTED,
+                $this->m_autocomplete_saveform, 'class="atkmanytoonerelation"');
         } else {
-            $result.= Atk_Tools::href(Atk_Tools::dispatch_url($this->m_destination, "select", array("atktarget" => $atktarget)), $linkname, SESSION_NESTED, $this->m_autocomplete_saveform, 'class="atkmanytoonerelation"');
+            $result .= Atk_Tools::href(Atk_Tools::dispatch_url($this->m_destination, "select",
+                array("atktarget" => $atktarget)), $linkname, SESSION_NESTED, $this->m_autocomplete_saveform,
+                'class="atkmanytoonerelation"');
         }
         return $result;
     }
 
     /**
      * Creates and returns the auto edit/view links
-     * @param String $id          The field id
-     * @param String $filter      Filter that we want to apply on the destination node
+     * @param String $id The field id
+     * @param String $filter Filter that we want to apply on the destination node
      * @return array              The HTML code for the autolink links
      */
     function getRelationAutolink($id, $filter)
@@ -965,12 +1009,17 @@ class Atk_ManyToOneRelation extends Atk_Relation
             $page->register_script(Atk_Config::getGlobal("atkroot") . "atk/javascript/class.atkmanytoonerelation.js");
 
             if ($this->m_destInstance->allowed("edit")) {
-                $editlink = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->getAutoLinkDestination(), "edit", array("atkselector" => "REPLACEME")), SESSION_NESTED);
+                $editlink = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->getAutoLinkDestination(), "edit",
+                    array("atkselector" => "REPLACEME")), SESSION_NESTED);
                 $autolink['edit'] = "&nbsp;<a href='javascript:atkSubmit(mto_parse(\"" . Atk_Tools::atkurlencode($editlink) . "\", document.entryform." . $id . ".value),true)' class='atkmanytoonerelation'>" . Atk_Tools::atktext('edit') . "</a>";
             }
             if ($this->m_destInstance->allowed("add")) {
-                $autolink['add'] = "&nbsp;" . Atk_Tools::href(Atk_Tools::dispatch_url($this->getAutoLinkDestination(), "add", array("atkpkret" => $id, "atkfilter" => ($this->m_useFilterForAddLink && $filter != ""
-                                ? $filter : ""))), Atk_Tools::atktext("new"), SESSION_NESTED, true, 'class="atkmanytoonerelation"');
+                $autolink['add'] = "&nbsp;" . Atk_Tools::href(Atk_Tools::dispatch_url($this->getAutoLinkDestination(),
+                        "add", array(
+                            "atkpkret" => $id,
+                            "atkfilter" => ($this->m_useFilterForAddLink && $filter != ""
+                                ? $filter : "")
+                        )), Atk_Tools::atktext("new"), SESSION_NESTED, true, 'class="atkmanytoonerelation"');
             }
         }
         return $autolink;
@@ -988,8 +1037,9 @@ class Atk_ManyToOneRelation extends Atk_Relation
      */
     function hide($record = "", $fieldprefix = "")
     {
-        if (!$this->createDestination())
+        if (!$this->createDestination()) {
             return '';
+        }
 
         $currentPk = "";
         if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] != null) {
@@ -1015,7 +1065,8 @@ class Atk_ManyToOneRelation extends Atk_Relation
         if ($this->createDestination() &&
             isset($record[$this->fieldName()]) &&
             $record[$this->fieldName()] != null &&
-            !is_array($record[$this->fieldName()])) {
+            !is_array($record[$this->fieldName()])
+        ) {
             $record[$this->fieldName()] = array($this->m_destInstance->primaryKeyField() => $record[$this->fieldName()]);
         }
     }
@@ -1089,7 +1140,8 @@ class Atk_ManyToOneRelation extends Atk_Relation
      */
     function search($record = array(), $extended = false, $fieldprefix = "", Atk_DataGrid $grid = null)
     {
-        $useautocompletion = Atk_Config::getGlobal("manytoone_search_autocomplete", true) && $this->hasFlag(AF_RELATION_AUTOCOMPLETE);
+        $useautocompletion = Atk_Config::getGlobal("manytoone_search_autocomplete",
+                true) && $this->hasFlag(AF_RELATION_AUTOCOMPLETE);
         if (!$this->hasFlag(AF_LARGE) && !$useautocompletion) {
             if ($this->createDestination()) {
                 if ($this->m_destinationFilter != "") {
@@ -1100,10 +1152,12 @@ class Atk_ManyToOneRelation extends Atk_Relation
                             $filter = $filter['filter'];
                             $arr = $this->filterToArray($filter);
                             $arr = (isset($arr[$this->getOwnerInstance()->m_table]) && is_array($arr[$this->getOwnerInstance()->m_table]))
-                                    ? $arr[$this->getOwnerInstance()->m_table] : array();
+                                ? $arr[$this->getOwnerInstance()->m_table] : array();
                             foreach ($arr as $attrName => $value) {
                                 $attr = $this->getOwnerInstance()->getAttribute($attrName);
-                                if (!is_array($value) && is_a($attr, 'atkManyToOneRelation') && count($attr->m_refKey) == 1) {
+                                if (!is_array($value) && is_a($attr,
+                                        'atkManyToOneRelation') && count($attr->m_refKey) == 1
+                                ) {
                                     $attr->createDestination();
                                     $arr[$attrName] = array($attr->getDestination()->primaryKeyField() => $value);
                                 }
@@ -1114,17 +1168,18 @@ class Atk_ManyToOneRelation extends Atk_Relation
                     }
 
                     $record = array_merge($filterRecord, is_array($record) ? $record
-                                : array());
+                        : array());
                 }
 
                 $recordset = $this->_getSelectableRecords($record, 'search');
 
                 $result = '<select class="form-control ' . get_class($this) . '" ';
                 if ($extended) {
-                    $result.='multiple size="' . min(5, count($recordset) + 1) . '"';
+                    $result .= 'multiple size="' . min(5, count($recordset) + 1) . '"';
 
-                    if (isset($record[$this->fieldName()][$this->fieldName()]))
+                    if (isset($record[$this->fieldName()][$this->fieldName()])) {
                         $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
+                    }
                 }
 
                 // if we use autosearch, register an onchange event that submits the grid
@@ -1133,12 +1188,11 @@ class Atk_ManyToOneRelation extends Atk_Relation
                     $result .= '  id="' . $id . '" ';
                     $code = '$(\'' . $id . '\').observe(\'change\', function(event) { ' .
                         $grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractSearchOverrides') .
-                        ' return false; });'
-                    ;
+                        ' return false; });';
                     $this->getOwnerInstance()->getPage()->register_loadscript($code);
                 }
 
-                $result.='name="' . $this->getSearchFieldName($fieldprefix) . '[]">';
+                $result .= 'name="' . $this->getSearchFieldName($fieldprefix) . '[]">';
 
                 $pkfield = $this->m_destInstance->primaryKeyField();
 
@@ -1147,39 +1201,44 @@ class Atk_ManyToOneRelation extends Atk_Relation
                 }
 
                 if ((!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM))) {
-                    $result.= '<option value="__NONE__"'.(isset($record[$this->fieldName()]) && Atk_Tools::atk_in_array('__NONE__', $record[$this->fieldName()]) ? ' selected="selected"' : '').'>'.$this->getNoneLabel('search').'</option>';
+                    $result .= '<option value="__NONE__"' . (isset($record[$this->fieldName()]) && Atk_Tools::atk_in_array('__NONE__',
+                            $record[$this->fieldName()]) ? ' selected="selected"' : '') . '>' . $this->getNoneLabel('search') . '</option>';
                 }
 
-                for ($i = 0; $i < count($recordset); $i ++) {
+                for ($i = 0; $i < count($recordset); $i++) {
                     $pk = $recordset[$i][$pkfield];
 
                     if (is_array($record) && isset($record[$this->fieldName()]) &&
-                        Atk_Tools::atk_in_array($pk, $record[$this->fieldName()]))
+                        Atk_Tools::atk_in_array($pk, $record[$this->fieldName()])
+                    ) {
                         $sel = "selected";
-                    else
+                    } else {
                         $sel = "";
-                    $result.= '<option value="' . $pk . '" ' . $sel . '>' . str_replace(' ', '&nbsp;', htmlentities(strip_tags($this->m_destInstance->descriptor($recordset[$i])))) . '</option>';
+                    }
+                    $result .= '<option value="' . $pk . '" ' . $sel . '>' . str_replace(' ', '&nbsp;',
+                            htmlentities(strip_tags($this->m_destInstance->descriptor($recordset[$i])))) . '</option>';
                 }
-                $result.='</select>';
+                $result .= '</select>';
                 return $result;
             }
             return "";
-        }
-        else {
+        } else {
             $id = $this->getSearchFieldName($fieldprefix);
-            if (is_array($record[$this->fieldName()]) && isset($record[$this->fieldName()][$this->fieldName()]))
+            if (is_array($record[$this->fieldName()]) && isset($record[$this->fieldName()][$this->fieldName()])) {
                 $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
+            }
 
             $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
             $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . $record[$this->fieldName()] . '"' .
                 ($useautocompletion ? ' onchange=""' : '') .
                 ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"'
-                        : '') .
+                    : '') .
                 ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . '>';
 
             if ($useautocompletion) {
                 $page = &$this->m_ownerInstance->getPage();
-                $url = Atk_Tools::partial_url($this->m_ownerInstance->atkNodeType(), $this->m_ownerInstance->m_action, 'attribute.' . $this->fieldName() . '.autocomplete_search');
+                $url = Atk_Tools::partial_url($this->m_ownerInstance->atkNodeType(), $this->m_ownerInstance->m_action,
+                    'attribute.' . $this->fieldName() . '.autocomplete_search');
                 $code = "ATK.ManyToOneRelation.completeSearch('{$id}', '{$id}_result', '{$url}', {$this->m_autocomplete_minchars});";
                 $this->m_ownerInstance->addStyle("atkmanytoonerelation.css");
                 $page->register_script(Atk_Config::getGlobal('atkroot') . 'atk/javascript/class.atkmanytoonerelation.js');
@@ -1212,13 +1271,13 @@ class Atk_ManyToOneRelation extends Atk_Relation
      * Creates a smart search condition for a given search value, and adds it
      * to the query that will be used for performing the actual search.
      *
-     * @param Integer  $id         The unique smart search criterium identifier.
-     * @param Integer  $nr         The element number in the path.
-     * @param Array    $path       The remaining attribute path.
-     * @param Atk_Query $query      The query to which the condition will be added.
-     * @param String   $ownerAlias The owner table alias to use.
-     * @param Mixed    $value      The value the user has entered in the searchbox.
-     * @param String   $mode       The searchmode to use.
+     * @param Integer $id The unique smart search criterium identifier.
+     * @param Integer $nr The element number in the path.
+     * @param Array $path The remaining attribute path.
+     * @param Atk_Query $query The query to which the condition will be added.
+     * @param String $ownerAlias The owner table alias to use.
+     * @param Mixed $value The value the user has entered in the searchbox.
+     * @param String $mode The searchmode to use.
      */
     function smartSearchCondition($id, $nr, $path, &$query, $ownerAlias, $value, $mode)
     {
@@ -1228,7 +1287,8 @@ class Atk_ManyToOneRelation extends Atk_Relation
             $destAlias = "ss_{$id}_{$nr}_" . $this->fieldName();
 
             $query->addJoin(
-                $this->m_destInstance->m_table, $destAlias, $this->getJoinCondition($query, $ownerAlias, $destAlias), false
+                $this->m_destInstance->m_table, $destAlias, $this->getJoinCondition($query, $ownerAlias, $destAlias),
+                false
             );
 
             $attrName = array_shift($path);
@@ -1247,11 +1307,11 @@ class Atk_ManyToOneRelation extends Atk_Relation
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param Atk_Query $query     The query object where the search condition should be placed on
-     * @param String $table       The name of the table in which this attribute
+     * @param Atk_Query $query The query object where the search condition should be placed on
+     * @param String $table The name of the table in which this attribute
      *                              is stored
-     * @param mixed $value        The value the user has entered in the searchbox
-     * @param String $searchmode  The searchmode to use. This can be any one
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param String $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @param string $fieldaliasprefix The prefix for the field
@@ -1259,16 +1319,18 @@ class Atk_ManyToOneRelation extends Atk_Relation
      */
     function getSearchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix = '')
     {
-        if (!$this->createDestination())
+        if (!$this->createDestination()) {
             return;
+        }
 
         if (is_array($value)) {
             foreach ($this->m_listColumns as $attr) {
                 $attrValue = $value[$attr];
                 if (!empty($attrValue)) {
                     $p_attrib = &$this->m_destInstance->m_attribList[$attr];
-                    if (!$p_attrib == NULL) {
-                        $p_attrib->searchCondition($query, $this->fieldName(), $attrValue, $this->getChildSearchMode($searchmode, $p_attrib->formName()));
+                    if (!$p_attrib == null) {
+                        $p_attrib->searchCondition($query, $this->fieldName(), $attrValue,
+                            $this->getChildSearchMode($searchmode, $p_attrib->formName()));
                     }
                 }
             }
@@ -1280,34 +1342,37 @@ class Atk_ManyToOneRelation extends Atk_Relation
 
         if (empty($value)) {
             return '';
-        } else if (!$this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_RELATION_AUTOCOMPLETE)) {
-            // We only support 'exact' matches.
-            // But you can select more than one value, which we search using the IN() statement,
-            // which should work in any ansi compatible database.
-            if (!is_array($value)) { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
-                $value = array($value);
-            }
-
-            if (count($value) == 1) { // exactly one value
-                if ($value[0] == "__NONE__") {
-                    return $query->nullCondition($table . "." . $this->fieldName(), true);
-                } elseif ($value[0] != "") {
-                    return $query->exactCondition($table . "." . $this->fieldName(), $this->escapeSQL($value[0]));
+        } else {
+            if (!$this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_RELATION_AUTOCOMPLETE)) {
+                // We only support 'exact' matches.
+                // But you can select more than one value, which we search using the IN() statement,
+                // which should work in any ansi compatible database.
+                if (!is_array($value)) { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+                    $value = array($value);
                 }
-            } else { // search for more values using IN()
-                return $table . "." . $this->fieldName() . " IN ('" . implode("','", $value) . "')";
+
+                if (count($value) == 1) { // exactly one value
+                    if ($value[0] == "__NONE__") {
+                        return $query->nullCondition($table . "." . $this->fieldName(), true);
+                    } elseif ($value[0] != "") {
+                        return $query->exactCondition($table . "." . $this->fieldName(), $this->escapeSQL($value[0]));
+                    }
+                } else { // search for more values using IN()
+                    return $table . "." . $this->fieldName() . " IN ('" . implode("','", $value) . "')";
+                }
+            } else { // AF_LARGE || AF_RELATION_AUTOCOMPLETE
+                // If we have a descriptor with multiple fields, use CONCAT
+                $attribs = $this->m_destInstance->descriptorFields();
+                $alias = $fieldaliasprefix . $this->fieldName();
+                if (count($attribs) > 1) {
+                    $searchcondition = $this->getConcatFilter($value, $alias);
+                } else {
+                    // ask the destination node for it's search condition
+                    $searchcondition = $this->m_destInstance->getSearchCondition($query, $alias, $fieldaliasprefix,
+                        $value, $this->getChildSearchMode($searchmode, $this->formName()));
+                }
+                return $searchcondition;
             }
-        } else { // AF_LARGE || AF_RELATION_AUTOCOMPLETE
-            // If we have a descriptor with multiple fields, use CONCAT
-            $attribs = $this->m_destInstance->descriptorFields();
-            $alias = $fieldaliasprefix . $this->fieldName();
-            if (count($attribs) > 1) {
-                $searchcondition = $this->getConcatFilter($value, $alias);
-            } else {
-                // ask the destination node for it's search condition
-                $searchcondition = $this->m_destInstance->getSearchCondition($query, $alias, $fieldaliasprefix, $value, $this->getChildSearchMode($searchmode, $this->formName()));
-            }
-            return $searchcondition;
         }
     }
 
@@ -1343,11 +1408,12 @@ class Atk_ManyToOneRelation extends Atk_Relation
         if ($this->createDestination()) {
             if ($mode != "update" && $mode != "add") {
                 $alias = $fieldaliasprefix . $this->fieldName();
-                $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($query, $tablename, $alias), $this->m_leftjoin);
+                $query->addJoin($this->m_destInstance->m_table, $alias,
+                    $this->getJoinCondition($query, $tablename, $alias), $this->m_leftjoin);
                 $this->m_destInstance->addToQuery($query, $alias, $level + 1, false, $mode, $this->m_listColumns);
             } else {
-                for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i ++) {
-                    if ($rec[$this->fieldName()] === NULL) {
+                for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++) {
+                    if ($rec[$this->fieldName()] === null) {
                         $query->addField($this->m_refKey[$i], "NULL", "", "", false);
                     } else {
                         $value = $rec[$this->fieldName()];
@@ -1403,15 +1469,20 @@ class Atk_ManyToOneRelation extends Atk_Relation
      */
     function loadType($mode)
     {
-        if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null)
+        if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null) {
             return $this->m_loadType[$mode];
-        else if (isset($this->m_loadType[null]) && $this->m_loadType[null] !== null)
-            return $this->m_loadType[null];
-        // Default backwardscompatible behaviour:
-        else if ($this->hasFlag(AF_MANYTOONE_LAZY))
-            return POSTLOAD | ADDTOQUERY;
-        else
-            return ADDTOQUERY;
+        } else {
+            if (isset($this->m_loadType[null]) && $this->m_loadType[null] !== null) {
+                return $this->m_loadType[null];
+            } // Default backwardscompatible behaviour:
+            else {
+                if ($this->hasFlag(AF_MANYTOONE_LAZY)) {
+                    return POSTLOAD | ADDTOQUERY;
+                } else {
+                    return ADDTOQUERY;
+                }
+            }
+        }
     }
 
     /**
@@ -1423,8 +1494,9 @@ class Atk_ManyToOneRelation extends Atk_Relation
     function validate(&$record, $mode)
     {
         $sessionmanager = Atk_SessionManager::atkGetSessionManager();
-        if ($sessionmanager)
+        if ($sessionmanager) {
             $storetype = $sessionmanager->stackVar('atkstore');
+        }
         if ($storetype !== 'session' && !$this->_isSelectableRecord($record, $mode)) {
             Atk_Tools::triggerError($record, $this->fieldName(), 'error_integrity_violation');
         }
@@ -1441,7 +1513,7 @@ class Atk_ManyToOneRelation extends Atk_Relation
     {
         if ($this->createDestination()) {
             return (($recA[$this->fieldName()][$this->m_destInstance->primaryKeyField()] ==
-                $recB[$this->fieldName()][$this->m_destInstance->primaryKeyField()]) ||
+                    $recB[$this->fieldName()][$this->m_destInstance->primaryKeyField()]) ||
                 ($this->isEmpty($recA) && $this->isEmpty($recB)));
             // we must also check empty values, because empty values need not necessarily
             // be equal (can be "", NULL or 0.
@@ -1472,12 +1544,13 @@ class Atk_ManyToOneRelation extends Atk_Relation
         if ($this->createDestination()) {
             if (count($this->m_refKey) > 1) {
                 $keys = array();
-                for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i ++) {
+                for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++) {
                     $keys [] = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]]->dbFieldType();
                 }
                 return $keys;
-            } else
+            } else {
                 return $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()]->dbFieldType();
+            }
         }
         return "";
     }
@@ -1503,12 +1576,13 @@ class Atk_ManyToOneRelation extends Atk_Relation
         if ($this->createDestination()) {
             if (count($this->m_refKey) > 1) {
                 $keys = array();
-                for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i ++) {
+                for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++) {
                     $keys [] = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]]->dbFieldSize();
                 }
                 return $keys;
-            } else
+            } else {
                 return $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()]->dbFieldSize();
+            }
         }
         return 0;
     }
@@ -1524,10 +1598,11 @@ class Atk_ManyToOneRelation extends Atk_Relation
     function _getSelectedRecord($record = array(), $mode = "")
     {
         $method = $this->fieldName() . "_selected";
-        if (method_exists($this->m_ownerInstance, $method))
+        if (method_exists($this->m_ownerInstance, $method)) {
             return $this->m_ownerInstance->$method($record, $mode);
-        else
+        } else {
             return $this->getSelectedRecord($record, $mode);
+        }
     }
 
     /**
@@ -1564,10 +1639,11 @@ class Atk_ManyToOneRelation extends Atk_Relation
     function _getSelectableRecords($record = array(), $mode = "")
     {
         $method = $this->fieldName() . "_selection";
-        if (method_exists($this->m_ownerInstance, $method))
+        if (method_exists($this->m_ownerInstance, $method)) {
             return $this->m_ownerInstance->$method($record, $mode);
-        else
+        } else {
             return $this->getSelectableRecords($record, $mode);
+        }
     }
 
     /**
@@ -1581,10 +1657,11 @@ class Atk_ManyToOneRelation extends Atk_Relation
     function _isSelectableRecord($record = array(), $mode = "")
     {
         $method = $this->fieldName() . "_selectable";
-        if (method_exists($this->m_ownerInstance, $method))
+        if (method_exists($this->m_ownerInstance, $method)) {
             return $this->m_ownerInstance->$method($record, $mode);
-        else
+        } else {
             return $this->isSelectableRecord($record, $mode);
+        }
     }
 
     /**
@@ -1614,11 +1691,13 @@ class Atk_ManyToOneRelation extends Atk_Relation
      */
     function isSelectableRecord($record = array(), $mode = "")
     {
-        if ($record[$this->fieldName()] == NULL) {
+        if ($record[$this->fieldName()] == null) {
             return false;
         }
 
-        if (in_array($mode, array('edit', 'update')) && ($this->hasFlag(AF_READONLY_EDIT) || $this->hasFlag(AF_HIDE_EDIT))) { // || ($this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_MANYTOONE_AUTOCOMPLETE))
+        if (in_array($mode,
+                array('edit', 'update')) && ($this->hasFlag(AF_READONLY_EDIT) || $this->hasFlag(AF_HIDE_EDIT))
+        ) { // || ($this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_MANYTOONE_AUTOCOMPLETE))
             // in this case we want the current value is selectable, regardless the destination filters
             return true;
         }
@@ -1634,8 +1713,9 @@ class Atk_ManyToOneRelation extends Atk_Relation
         }
 
         $selectedKey = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
-        if ($selectedKey == NULL)
+        if ($selectedKey == null) {
             return false;
+        }
 
         // If custom selection method exists we use this one, although this is
         // way more inefficient, so if you create a selection override you should
@@ -1645,8 +1725,9 @@ class Atk_ManyToOneRelation extends Atk_Relation
             $rows = $this->m_ownerInstance->$method($record, $mode);
             foreach ($rows as $row) {
                 $key = $this->m_destInstance->primaryKey($row);
-                if ($key == $selectedKey)
+                if ($key == $selectedKey) {
                     return true;
+                }
             }
 
             return false;
@@ -1654,7 +1735,7 @@ class Atk_ManyToOneRelation extends Atk_Relation
 
         // No selection override exists, simply add the record key to the selector.
         $filter = $this->createFilter($record);
-        $selector = "($selectedKey)" . ($filter != NULL ? " AND ($filter)" : "");
+        $selector = "($selectedKey)" . ($filter != null ? " AND ($filter)" : "");
 
         return $this->m_destInstance->select($selector)->getRowCount() > 0;
     }
@@ -1676,7 +1757,8 @@ class Atk_ManyToOneRelation extends Atk_Relation
         $result = $this->m_destInstance
             ->select($selector)
             ->orderBy($this->getDestination()->getOrder())
-            ->includes(Atk_Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey))
+            ->includes(Atk_Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
+                $this->m_destInstance->m_primaryKey))
             ->allRows();
 
         return $result;
@@ -1687,23 +1769,25 @@ class Atk_ManyToOneRelation extends Atk_Relation
      * owner node with the parent node.
      *
      * @param Atk_Query $query The query object
-     * @param String $tablename  The tablename on which to join
+     * @param String $tablename The tablename on which to join
      * @param String $fieldalias The fieldalias
      * @return String SQL string for joining the owner with the destination.
      *                Returns false when impossible (f.e. attrib is not a relation).
      */
     function getJoinCondition(&$query, $tablename = "", $fieldalias = "")
     {
-        if (!$this->createDestination())
+        if (!$this->createDestination()) {
             return false;
+        }
 
-        if ($tablename != "")
+        if ($tablename != "") {
             $realtablename = $tablename;
-        else
+        } else {
             $realtablename = $this->m_ownerInstance->m_table;
+        }
         $joinconditions = array();
 
-        for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i ++) {
+        for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++) {
             $joinconditions[] = $realtablename . "." . $this->m_refKey[$i] .
                 "=" .
                 $fieldalias . "." . $this->m_destInstance->m_primaryKey[$i];
@@ -1712,8 +1796,11 @@ class Atk_ManyToOneRelation extends Atk_Relation
         if ($this->m_joinFilter != "") {
             Atk_Tools::atkimport('atk.utils.atkstringparser');
             $parser = new Atk_StringParser($this->m_joinFilter);
-            $filter = $parser->parse(array('table' => $realtablename,
-                'owner' => $realtablename, 'destination' => $fieldalias));
+            $filter = $parser->parse(array(
+                'table' => $realtablename,
+                'owner' => $realtablename,
+                'destination' => $fieldalias
+            ));
             $joinconditions[] = $filter;
         }
         return implode(" AND ", $joinconditions);
@@ -1737,11 +1824,11 @@ class Atk_ManyToOneRelation extends Atk_Relation
      *
      * This is a framework method, it should never be called directly.
      *
-     * @param String $mode     the edit mode ("add" or "edit")
-     * @param array  $arr      pointer to the edit array
-     * @param array  $defaults pointer to the default values array
-     * @param array  $error    pointer to the error array
-     * @param String $fieldprefix   the fieldprefix
+     * @param String $mode the edit mode ("add" or "edit")
+     * @param array $arr pointer to the edit array
+     * @param array $defaults pointer to the default values array
+     * @param array $error pointer to the error array
+     * @param String $fieldprefix the fieldprefix
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
@@ -1750,8 +1837,9 @@ class Atk_ManyToOneRelation extends Atk_Relation
             // only check if hidewhenempty is set to true
             if ($this->m_hidewhenempty) {
                 $recs = $this->_getSelectableRecords($defaults, $mode);
-                if (count($recs) == 0)
+                if (count($recs) == 0) {
                     return $this->hide($defaults, $fieldprefix);
+                }
             }
         }
         return parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
@@ -1768,8 +1856,9 @@ class Atk_ManyToOneRelation extends Atk_Relation
      */
     function getOrderByStatement($extra = '', $table = '', $direction = 'ASC')
     {
-        if (!$this->createDestination())
+        if (!$this->createDestination()) {
             return parent::getOrderByStatement();
+        }
 
         if (!empty($table)) {
             $table = $table . '_AE_' . $this->fieldName();
@@ -1806,7 +1895,8 @@ class Atk_ManyToOneRelation extends Atk_Relation
                     list(, $field) = explode('.', $field);
                 }
 
-                $newPart = $this->getDestination()->getAttribute($field)->getOrderByStatement('', $table, $fieldDirection);
+                $newPart = $this->getDestination()->getAttribute($field)->getOrderByStatement('', $table,
+                    $fieldDirection);
 
                 // realias if destination order contains the wrong tablename.
                 if (strpos($newPart, $this->m_destInstance->m_table . '.') !== false) {
@@ -1818,12 +1908,14 @@ class Atk_ManyToOneRelation extends Atk_Relation
             return implode(', ', $newParts);
         } else {
             $fields = $this->m_destInstance->descriptorFields();
-            if (count($fields) == 0)
+            if (count($fields) == 0) {
                 $fields = array($this->m_destInstance->primaryKeyField());
+            }
 
             $order = "";
-            foreach ($fields as $field)
+            foreach ($fields as $field) {
                 $order .= (empty($order) ? '' : ', ') . $table . "." . $field;
+            }
 
             return $order;
         }
@@ -1834,34 +1926,49 @@ class Atk_ManyToOneRelation extends Atk_Relation
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param String          $action       the action that is being performed on the node
-     * @param array           $arr          reference to the the recordlist array
-     * @param String          $fieldprefix  the fieldprefix
-     * @param int             $flags        the recordlist flags
-     * @param array           $atksearch    the current ATK search list (if not empty)
+     * @param String $action the action that is being performed on the node
+     * @param array $arr reference to the the recordlist array
+     * @param String $fieldprefix the fieldprefix
+     * @param int $flags the recordlist flags
+     * @param array $atksearch the current ATK search list (if not empty)
      * @param atkColumnConfig $columnConfig Column configuration object
-     * @param Atk_DataGrid     $grid         The Atk_DataGrid this attribute lives on.
-     * @param string          $column       child column (null for this attribute, * for this attribute and all childs)
+     * @param Atk_DataGrid $grid The Atk_DataGrid this attribute lives on.
+     * @param string $column child column (null for this attribute, * for this attribute and all childs)
      */
-    public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby, Atk_DataGrid $grid = null, $column = '*')
-    {
+    public function addToListArrayHeader(
+        $action,
+        &$arr,
+        $fieldprefix,
+        $flags,
+        $atksearch,
+        $atkorderby,
+        Atk_DataGrid $grid = null,
+        $column = '*'
+    ) {
         if ($column == null || $column == '*') {
             $prefix = $fieldprefix . $this->fieldName() . "_AE_";
-            parent::addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby, $grid, null);
+            parent::addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby,
+                $grid, null);
         }
 
         if ($column == '*') {
             // only add extra columns when needed
-            if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns)
+            if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) {
                 return;
-            if (!$this->createDestination() || count($this->m_listColumns) == 0)
+            }
+            if (!$this->createDestination() || count($this->m_listColumns) == 0) {
                 return;
+            }
 
             foreach ($this->m_listColumns as $column) {
-                $this->_addColumnToListArrayHeader($column, $action, $arr, $fieldprefix, $flags, $atksearch, $atkorderby, $grid);
+                $this->_addColumnToListArrayHeader($column, $action, $arr, $fieldprefix, $flags, $atksearch,
+                    $atkorderby, $grid);
             }
-        } else if ($column != null) {
-            $this->_addColumnToListArrayHeader($column, $action, $arr, $fieldprefix, $flags, $atksearch, $atkorderby, $grid);
+        } else {
+            if ($column != null) {
+                $this->_addColumnToListArrayHeader($column, $action, $arr, $fieldprefix, $flags, $atksearch,
+                    $atkorderby, $grid);
+            }
         }
     }
 
@@ -1870,17 +1977,25 @@ class Atk_ManyToOneRelation extends Atk_Relation
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param string      $column      child column (null for this attribute, * for this attribute and all childs)
-     * @param String      $action      the action that is being performed on the node
-     * @param array       $arr         reference to the the recordlist array
-     * @param String      $fieldprefix the fieldprefix
-     * @param int         $flags       the recordlist flags
-     * @param array       $atksearch   the current ATK search list (if not empty)
-     * @param string      $atkorderby  order by
-     * @param Atk_DataGrid $grid        The Atk_DataGrid this attribute lives on.
+     * @param string $column child column (null for this attribute, * for this attribute and all childs)
+     * @param String $action the action that is being performed on the node
+     * @param array $arr reference to the the recordlist array
+     * @param String $fieldprefix the fieldprefix
+     * @param int $flags the recordlist flags
+     * @param array $atksearch the current ATK search list (if not empty)
+     * @param string $atkorderby order by
+     * @param Atk_DataGrid $grid The Atk_DataGrid this attribute lives on.
      */
-    protected function _addColumnToListArrayHeader($column, $action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby, Atk_DataGrid $grid = null)
-    {
+    protected function _addColumnToListArrayHeader(
+        $column,
+        $action,
+        &$arr,
+        $fieldprefix,
+        $flags,
+        $atksearch,
+        $atkorderby,
+        Atk_DataGrid $grid = null
+    ) {
         $prefix = $fieldprefix . $this->fieldName() . "_AE_";
 
         $p_attrib = $this->m_destInstance->getAttribute($column);
@@ -1890,13 +2005,15 @@ class Atk_ManyToOneRelation extends Atk_Relation
 
         $p_attrib->m_flags |= AF_HIDE_LIST;
         $p_attrib->m_flags ^= AF_HIDE_LIST;
-        $p_attrib->addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby, $grid, null);
+        $p_attrib->addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby,
+            $grid, null);
 
         // fix order by clause
         $needle = $prefix . $column;
         foreach (array_keys($arr['heading']) as $key) {
-            if (strpos($key, $needle) !== 0)
+            if (strpos($key, $needle) !== 0) {
                 continue;
+            }
 
             if (empty($arr['heading'][$key]['order'])) {
                 continue;
@@ -1905,10 +2022,12 @@ class Atk_ManyToOneRelation extends Atk_Relation
             $order = $this->fieldName() . '.' . $arr['heading'][$key]['order'];
 
             if (is_object($atkorderby) &&
-                isset($atkorderby->m_colcfg[$this->fieldName()]) && isset($atkorderby->m_colcfg[$this->fieldName()]['extra']) && $atkorderby->m_colcfg[$this->fieldName()]['extra'] == $column) {
+                isset($atkorderby->m_colcfg[$this->fieldName()]) && isset($atkorderby->m_colcfg[$this->fieldName()]['extra']) && $atkorderby->m_colcfg[$this->fieldName()]['extra'] == $column
+            ) {
                 $direction = $atkorderby->getDirection($this->fieldName());
-                if ($direction == "asc")
-                    $order.=" desc";
+                if ($direction == "asc") {
+                    $order .= " desc";
+                }
             }
 
             $arr['heading'][$key]['order'] = $order;
@@ -1920,17 +2039,25 @@ class Atk_ManyToOneRelation extends Atk_Relation
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param String      $action      the action that is being performed on the node
-     * @param array       $arr         reference to the the recordlist array
-     * @param int         $nr          the current row number
-     * @param String      $fieldprefix the fieldprefix
-     * @param int         $flags       the recordlist flags
-     * @param boolean     $edit        editing?
-     * @param Atk_DataGrid $grid        data grid
-     * @param string      $column      child column (null for this attribute, * for this attribute and all childs)
+     * @param String $action the action that is being performed on the node
+     * @param array $arr reference to the the recordlist array
+     * @param int $nr the current row number
+     * @param String $fieldprefix the fieldprefix
+     * @param int $flags the recordlist flags
+     * @param boolean $edit editing?
+     * @param Atk_DataGrid $grid data grid
+     * @param string $column child column (null for this attribute, * for this attribute and all childs)
      */
-    public function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags, $edit = false, Atk_DataGrid $grid = null, $column = '*')
-    {
+    public function addToListArrayRow(
+        $action,
+        &$arr,
+        $nr,
+        $fieldprefix,
+        $flags,
+        $edit = false,
+        Atk_DataGrid $grid = null,
+        $column = '*'
+    ) {
         if ($column == null || $column == '*') {
             $prefix = $fieldprefix . $this->fieldName() . "_AE_";
             parent::addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit, $grid, null);
@@ -1938,33 +2065,45 @@ class Atk_ManyToOneRelation extends Atk_Relation
 
         if ($column == '*') {
             // only add extra columns when needed
-            if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns)
+            if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) {
                 return;
-            if (!$this->createDestination() || count($this->m_listColumns) == 0)
+            }
+            if (!$this->createDestination() || count($this->m_listColumns) == 0) {
                 return;
+            }
 
             foreach ($this->m_listColumns as $column) {
                 $this->_addColumnToListArrayRow($column, $action, $arr, $nr, $fieldprefix, $flags, $edit, $grid);
             }
-        } else if ($column != null) {
-            $this->_addColumnToListArrayRow($column, $action, $arr, $nr, $fieldprefix, $flags, $edit, $grid);
+        } else {
+            if ($column != null) {
+                $this->_addColumnToListArrayRow($column, $action, $arr, $nr, $fieldprefix, $flags, $edit, $grid);
+            }
         }
     }
 
     /**
      * Adds the child attribute / field to the list row.
      *
-     * @param string      $column      child attribute name
-     * @param String      $action      the action that is being performed on the node
-     * @param array       $arr         reference to the the recordlist array
-     * @param int         $nr          the current row number
-     * @param String      $fieldprefix the fieldprefix
-     * @param int         $flags       the recordlist flags
-     * @param boolean     $edit        editing?
-     * @param Atk_DataGrid $grid        data grid
+     * @param string $column child attribute name
+     * @param String $action the action that is being performed on the node
+     * @param array $arr reference to the the recordlist array
+     * @param int $nr the current row number
+     * @param String $fieldprefix the fieldprefix
+     * @param int $flags the recordlist flags
+     * @param boolean $edit editing?
+     * @param Atk_DataGrid $grid data grid
      */
-    protected function _addColumnToListArrayRow($column, $action, &$arr, $nr, $fieldprefix, $flags, $edit = false, Atk_DataGrid $grid = null)
-    {
+    protected function _addColumnToListArrayRow(
+        $column,
+        $action,
+        &$arr,
+        $nr,
+        $fieldprefix,
+        $flags,
+        $edit = false,
+        Atk_DataGrid $grid = null
+    ) {
         $prefix = $fieldprefix . $this->fieldName() . "_AE_";
 
         // small trick, the destination record is in a subarray. The destination
@@ -1993,12 +2132,12 @@ class Atk_ManyToOneRelation extends Atk_Relation
      * attributes hook themselves into the fieldlist instead of hooking the relation
      * in it.
      *
-     * @param array   $fields            The array containing fields to use in the
+     * @param array $fields The array containing fields to use in the
      *                                   extended search
-     * @param Atk_Node $node              The node where the field is in
-     * @param array   $record            A record containing default values to put
+     * @param Atk_Node $node The node where the field is in
+     * @param array $record A record containing default values to put
      *                                   into the search fields.
-     * @param array   $fieldprefix       search / mode field prefix
+     * @param array $fieldprefix search / mode field prefix
      */
     function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "")
     {
@@ -2007,10 +2146,12 @@ class Atk_ManyToOneRelation extends Atk_Relation
         parent::addToSearchformFields($fields, $node, $record, $prefix);
 
         // only add extra columns when needed
-        if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns)
+        if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) {
             return;
-        if (!$this->createDestination() || count($this->m_listColumns) == 0)
+        }
+        if (!$this->createDestination() || count($this->m_listColumns) == 0) {
             return;
+        }
 
         foreach ($this->m_listColumns as $attribname) {
             $p_attrib = &$this->m_destInstance->m_attribList[$attribname];
@@ -2039,8 +2180,9 @@ class Atk_ManyToOneRelation extends Atk_Relation
         // only add desc if not one of the listColumns is used for the sorting
         if (isset($columnConfig->m_colcfg[$order]) && empty($columnConfig->m_colcfg[$order]['extra'])) {
             $direction = $columnConfig->getDirection($order);
-            if ($direction == "asc")
-                $order.=" desc";
+            if ($direction == "asc") {
+                $order .= " desc";
+            }
         }
 
         return $order;
@@ -2101,7 +2243,7 @@ class Atk_ManyToOneRelation extends Atk_Relation
             $label = $this->m_destInstance->descriptor($record[$this->fieldName()]);
             $value = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
         } else {
-            $current = NULL;
+            $current = null;
             $label = '';
             $value = '';
         }
@@ -2117,7 +2259,8 @@ class Atk_ManyToOneRelation extends Atk_Relation
         $result .= $this->getSpinner(); // spinner for dependency execution
 
         // register JavaScript code that attaches the auto-complete behaviour to the search box
-        $url = Atk_Tools::partial_url($this->m_ownerInstance->atkNodeType(), $mode, 'attribute.' . $this->fieldName() . '.autocomplete');
+        $url = Atk_Tools::partial_url($this->m_ownerInstance->atkNodeType(), $mode,
+            'attribute.' . $this->fieldName() . '.autocomplete');
         $function = $this->createOnChangeCaller($id, $fieldPrefix);
         $code = "ATK.ManyToOneRelation.completeEdit('{$id}_search', '{$id}_result', '$id', '{$id}_spinner', '$url', $function, 1);";
         $page->register_loadscript($code);
@@ -2134,13 +2277,14 @@ class Atk_ManyToOneRelation extends Atk_Relation
     {
         $searchvalue = $this->m_ownerInstance->m_postvars['value'];
         if (Atk_Tools::atk_strlen($searchvalue) < $this->m_autocomplete_minchars) {
-            return '<ul><li class="minimum_chars">' . sprintf($this->text('autocomplete_minimum_chars'), $this->m_autocomplete_minchars) . '</li></ul>';
+            return '<ul><li class="minimum_chars">' . sprintf($this->text('autocomplete_minimum_chars'),
+                $this->m_autocomplete_minchars) . '</li></ul>';
         }
 
         $this->createDestination();
 
         $fieldprefix = (isset($this->m_ownerInstance->m_postvars['atkfieldprefix'])
-                    ? $this->m_ownerInstance->m_postvars['atkfieldprefix'] : "");
+            ? $this->m_ownerInstance->m_postvars['atkfieldprefix'] : "");
         $searchvalue = $this->escapeSQL($searchvalue);
         $record = $this->m_ownerInstance->updateRecord();
 
@@ -2150,10 +2294,11 @@ class Atk_ManyToOneRelation extends Atk_Relation
         $records = $this->_getSelectableRecords($record, $mode);
 
         if (count($records) == 0) {
-            if (in_array($this->m_autocomplete_searchmode, array("exact", "startswith", "contains")))
+            if (in_array($this->m_autocomplete_searchmode, array("exact", "startswith", "contains"))) {
                 $str = $this->text('autocomplete_no_results_' . $this->m_autocomplete_searchmode);
-            else
+            } else {
                 $str = $this->text('autocomplete_no_results');
+            }
 
             return '<ul><li class="no_results">' . $str . '</li></ul>';
         }
@@ -2177,7 +2322,8 @@ class Atk_ManyToOneRelation extends Atk_Relation
     function highlight_search_result_match($search_value, $result)
     {
         $escaped_searchvalue = str_replace('/', '\/', preg_quote($search_value));
-        return preg_replace('/(' . $escaped_searchvalue . ')/i', '<span class="atkmanytoone_highlite">\\1</span>', $result);
+        return preg_replace('/(' . $escaped_searchvalue . ')/i', '<span class="atkmanytoone_highlite">\\1</span>',
+            $result);
     }
 
     /**
@@ -2217,10 +2363,11 @@ class Atk_ManyToOneRelation extends Atk_Relation
      */
     function createSearchFilter($searchvalue)
     {
-        if ($this->m_autocomplete_searchfields == "")
+        if ($this->m_autocomplete_searchfields == "") {
             $searchfields = $this->m_destInstance->descriptorFields();
-        else
+        } else {
             $searchfields = $this->m_autocomplete_searchfields;
+        }
 
         $parts = preg_split('/\s+/', $searchvalue);
 
@@ -2228,59 +2375,67 @@ class Atk_ManyToOneRelation extends Atk_Relation
         foreach ($parts as $part) {
             $filter = array();
             foreach ($searchfields as $attribname) {
-                if (strstr($attribname, '.'))
+                if (strstr($attribname, '.')) {
                     $table = '';
-                else
+                } else {
                     $table = $this->m_destInstance->m_table . ".";
+                }
 
-                if (!$this->m_autocomplete_search_case_sensitive)
+                if (!$this->m_autocomplete_search_case_sensitive) {
                     $tmp = "LOWER(" . $table . $attribname . ")";
-                else
+                } else {
                     $tmp = $table . $attribname;
+                }
 
                 switch ($this->m_autocomplete_searchmode) {
                     case self::SEARCH_MODE_EXACT:
-                        if (!$this->m_autocomplete_search_case_sensitive)
-                            $tmp.= " = LOWER('{$part}')";
-                        else
-                            $tmp.= " = '{$part}'";
+                        if (!$this->m_autocomplete_search_case_sensitive) {
+                            $tmp .= " = LOWER('{$part}')";
+                        } else {
+                            $tmp .= " = '{$part}'";
+                        }
                         break;
                     case self::SEARCH_MODE_STARTSWITH:
-                        if (!$this->m_autocomplete_search_case_sensitive)
-                            $tmp.= " LIKE LOWER('{$part}%')";
-                        else
-                            $tmp.= " LIKE '{$part}%'";
+                        if (!$this->m_autocomplete_search_case_sensitive) {
+                            $tmp .= " LIKE LOWER('{$part}%')";
+                        } else {
+                            $tmp .= " LIKE '{$part}%'";
+                        }
                         break;
                     case self::SEARCH_MODE_CONTAINS:
-                        if (!$this->m_autocomplete_search_case_sensitive)
-                            $tmp.= " LIKE LOWER('%{$part}%')";
-                        else
-                            $tmp.= " LIKE '%{$part}%'";
+                        if (!$this->m_autocomplete_search_case_sensitive) {
+                            $tmp .= " LIKE LOWER('%{$part}%')";
+                        } else {
+                            $tmp .= " LIKE '%{$part}%'";
+                        }
                         break;
                     default:
-                        $tmp.= " = LOWER('{$part}')";
+                        $tmp .= " = LOWER('{$part}')";
                 }
 
                 $filter[] = $tmp;
             }
 
-            if (count($filter) > 0)
+            if (count($filter) > 0) {
                 $mainFilter[] = "(" . implode(") OR (", $filter) . ")";
+            }
         }
 
-        if (count($mainFilter) > 0)
+        if (count($mainFilter) > 0) {
             $searchFilter = "(" . implode(") AND (", $mainFilter) . ")";
-        else
+        } else {
             $searchFilter = "";
+        }
 
         // When no searchfields are specified and we use the CONTAINS mode
         // add a concat filter
         if ($this->m_autocomplete_searchmode == self::SEARCH_MODE_CONTAINS && $this->m_autocomplete_searchfields == "") {
             $filter = $this->getConcatFilter($searchvalue);
             if ($filter) {
-                if ($searchFilter != '')
-                    $searchFilter.= " OR ";
-                $searchFilter.= $filter;
+                if ($searchFilter != '') {
+                    $searchFilter .= " OR ";
+                }
+                $searchFilter .= $filter;
             }
         }
         return $searchFilter;
@@ -2302,17 +2457,18 @@ class Atk_ManyToOneRelation extends Atk_Relation
             foreach ($attribs as $attribname) {
                 $post = '';
                 if (strstr($attribname, '.')) {
-                    if ($fieldaliasprefix != '')
+                    if ($fieldaliasprefix != '') {
                         $table = $fieldaliasprefix . '_AE_';
-                    else
+                    } else {
                         $table = '';
+                    }
                     $post = substr($attribname, strpos($attribname, '.'));
                     $attribname = substr($attribname, 0, strpos($attribname, '.'));
-                }
-                elseif ($fieldaliasprefix != '')
+                } elseif ($fieldaliasprefix != '') {
                     $table = $fieldaliasprefix . ".";
-                else
+                } else {
                     $table = $this->m_destInstance->m_table . ".";
+                }
 
                 $p_attrib = $this->m_destInstance->m_attribList[$attribname];
                 $fields[$p_attrib->fieldName()] = $table . $p_attrib->fieldName() . $post;
@@ -2331,7 +2487,7 @@ class Atk_ManyToOneRelation extends Atk_Relation
                 $function = $this->getConcatDescriptorFunction();
                 if ($function != '' && method_exists($this->m_destInstance, $function)) {
                     $descriptordef = $this->m_destInstance->$function();
-                } elseif ($this->m_destInstance->m_descTemplate != NULL) {
+                } elseif ($this->m_destInstance->m_descTemplate != null) {
                     $descriptordef = $this->m_destInstance->m_descTemplate;
                 } elseif (method_exists($this->m_destInstance, "descriptor_def")) {
                     $descriptordef = $this->m_destInstance->descriptor_def();
@@ -2351,7 +2507,8 @@ class Atk_ManyToOneRelation extends Atk_Relation
                 }
 
                 $db = $this->getDb();
-                $searchcondition = "UPPER(" . $db->func_concat_ws($concatTags, "", true) . ") LIKE UPPER('%" . $value . "%')";
+                $searchcondition = "UPPER(" . $db->func_concat_ws($concatTags, "",
+                        true) . ") LIKE UPPER('%" . $value . "%')";
             }
             return $searchcondition;
         }

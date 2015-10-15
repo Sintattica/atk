@@ -49,7 +49,7 @@ class Atk_TabbedPane extends Atk_Attribute
     /**
      * Constructor
      * @param String $name The name of the attribute
-     * @param Array  $tabs The arrays looks like array("tabname1"=>("attribname1,"attribname2),"tabname1"=>(..),..)
+     * @param Array $tabs The arrays looks like array("tabname1"=>("attribname1,"attribname2),"tabname1"=>(..),..)
      * @param int $flags The flags for this attribute
      */
     function atkTabbedPane($name, $tabs = array(), $flags = 0)
@@ -66,12 +66,13 @@ class Atk_TabbedPane extends Atk_Attribute
     /**
      * Add attribute to tabbedpane
      * @param String $attrib The name of the attribute
-     * @param String  $tab The name of tab. If empty, attribute name used
+     * @param String $tab The name of tab. If empty, attribute name used
      */
     function add($attrib, $tab = "")
     {
-        if (empty($tab))
+        if (empty($tab)) {
             $tab = $attrib;
+        }
 
         if (!in_array($tab, $this->m_tabsList)) {
             $this->m_tabsList[] = $tab;
@@ -143,11 +144,11 @@ class Atk_TabbedPane extends Atk_Attribute
     /**
      * Adds the attribute's edit / hide HTML code to the edit array.
      *
-     * @param String $mode     the edit mode ("add" or "edit")
-     * @param array  $arr      pointer to the edit array
-     * @param array  $defaults pointer to the default values array
-     * @param array  $error    pointer to the error array
-     * @param String $fieldprefix   the fieldprefix
+     * @param String $mode the edit mode ("add" or "edit")
+     * @param array $arr pointer to the edit array
+     * @param array $defaults pointer to the default values array
+     * @param array $error pointer to the error array
+     * @param String $fieldprefix the fieldprefix
      */
     function _addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
@@ -161,13 +162,16 @@ class Atk_TabbedPane extends Atk_Attribute
                 /* hide - nothing to do with tabbedpane, must be render on higher level */
                 if (($mode == "edit" && $p_attrib->hasFlag(AF_HIDE_EDIT)) || ($mode == "add" && $p_attrib->hasFlag(AF_HIDE_ADD))) {
                     /* when adding, there's nothing to hide... */
-                    if ($mode == "edit" || ($mode == "add" && !$p_attrib->isEmpty($defaults)))
+                    if ($mode == "edit" || ($mode == "add" && !$p_attrib->isEmpty($defaults))) {
                         $arr["hide"][] = $p_attrib->hide($defaults, $fieldprefix, $mode);
-                }
-
-                /* edit */
+                    }
+                } /* edit */
                 else {
-                    $entry = array("name" => $p_attrib->m_name, "obligatory" => $p_attrib->hasFlag(AF_OBLIGATORY), "attribute" => &$p_attrib);
+                    $entry = array(
+                        "name" => $p_attrib->m_name,
+                        "obligatory" => $p_attrib->hasFlag(AF_OBLIGATORY),
+                        "attribute" => &$p_attrib
+                    );
                     $entry["id"] = $p_attrib->getHtmlId($fieldprefix);
 
                     /* label? */
@@ -281,23 +285,21 @@ class Atk_TabbedPane extends Atk_Attribute
             $tplfield["class"] = "tabbedPaneAttr tabbedPaneTab{$field['tabs']}";
 
             // Check if there are attributes initially hidden on this tabbedpane
-            if ($field["attribute"]->isInitialHidden($defaults))
-                $tplfield["class"].= " atkAttrRowHidden";
+            if ($field["attribute"]->isInitialHidden($defaults)) {
+                $tplfield["class"] .= " atkAttrRowHidden";
+            }
 
             $tplfield["rowid"] = "tabbedPaneAttr_" . ($field['id'] != '' ? $field['id']
-                        : Atk_Tools::getUniqueID("anonymousattribrows")); // The id of the containing row
+                    : Atk_Tools::getUniqueID("anonymousattribrows")); // The id of the containing row
 
             /* check for separator */
             if ($field["html"] == "-" && $i > 0 && $data["fields"][$i - 1]["html"] != "-") {
                 $tplfield["line"] = "<hr>";
-            }
-            /* double separator, ignore */ elseif ($field["html"] == "-") {
-                
-            }
-            /* only full HTML */ elseif (isset($field["line"])) {
+            } /* double separator, ignore */ elseif ($field["html"] == "-") {
+
+            } /* only full HTML */ elseif (isset($field["line"])) {
                 $tplfield["line"] = $field["line"];
-            }
-            /* edit field */ else {
+            } /* edit field */ else {
                 if ($field["attribute"]->m_ownerInstance->getNumbering()) {
                     Atk_ViewEditBase::_addNumbering($field, $tplfield, $i);
                 }
@@ -330,16 +332,19 @@ class Atk_TabbedPane extends Atk_Attribute
                 if (is_object($node->m_attribList[$field['name']])) {
                     $module = $node->m_attribList[$field['name']]->getModule();
                 }
-                if (!$module)
+                if (!$module) {
                     $module = "atk";
-                $ttip = Atk_Tools::atktext($node->m_type . "_" . $field["name"] . "_tooltip", $module, "", "", "", true);
+                }
+                $ttip = Atk_Tools::atktext($node->m_type . "_" . $field["name"] . "_tooltip", $module, "", "", "",
+                    true);
 
                 if ($ttip) {
                     $onelinetip = preg_replace('/([\r\n])/e', "", $ttip);
-                    $tooltip = '<img align="top" src="' . $tipimg . '" border="0" alt="' . $onelinetip . '" onClick="javascript:alert(\'' . str_replace("\n", '\n', addslashes($ttip)) .
+                    $tooltip = '<img align="top" src="' . $tipimg . '" border="0" alt="' . $onelinetip . '" onClick="javascript:alert(\'' . str_replace("\n",
+                            '\n', addslashes($ttip)) .
                         '\')" onMouseOver="javascript:window.status=\'' . addslashes($onelinetip) . '\';">';
                     $tplfield["tooltip"] = $tooltip;
-                    $editsrc.=$tooltip . "&nbsp;";
+                    $editsrc .= $tooltip . "&nbsp;";
                 }
 
                 $tplfield['id'] = str_replace('.', '_', $node->atknodetype() . '_' . $field["id"]);
@@ -356,7 +361,7 @@ class Atk_TabbedPane extends Atk_Attribute
         $result = "";
 
         foreach ($arr["hide"] as $hidden) {
-            $result.= $hidden;
+            $result .= $hidden;
         }
 
         $params["activeTab"] = $tab;
@@ -364,8 +369,9 @@ class Atk_TabbedPane extends Atk_Attribute
         $params["fields"] = $fields; // add all fields as an numeric array.
         $params["errortitle"] = $error_title;
         $params["errors"] = $errors; // Add the list of errors.
-        if (!$template)
+        if (!$template) {
             $template = $node->getTemplate($mode, $record, $tab);
+        }
         $result .= $ui->render("tabbededitform.tpl", $params);
 
         $content = $this->tabulate($mode, $result, $fieldprefix);
@@ -375,7 +381,7 @@ class Atk_TabbedPane extends Atk_Attribute
 
     /**
      * Display a tabbed pane with attributes
-     * @param array $record  Array with fields
+     * @param array $record Array with fields
      * @param string $mode The mode
      * @return html code
      */
@@ -408,15 +414,17 @@ class Atk_TabbedPane extends Atk_Attribute
                     // class to display an attribute. If it exists we will use that method
                     // else we will just use the attribute's display method.
                     $funcname = $p_attrib->m_name . "_display";
-                    if (method_exists($node, $funcname))
+                    if (method_exists($node, $funcname)) {
                         $editsrc = $node->$funcname($record, "view");
-                    else
+                    } else {
                         $editsrc = $p_attrib->display($record, "view");
+                    }
 
                     /* tooltip */
                     $module = $p_attrib->getModule();
-                    if (!$module)
+                    if (!$module) {
                         $module = "atk";
+                    }
                     $ttip = Atk_Tools::atktext($node->m_type . "_" . $name . "_tooltip", $module, "", "", "", true);
 
                     if ($ttip) {
@@ -424,10 +432,11 @@ class Atk_TabbedPane extends Atk_Attribute
                         $tipimg = $theme->imgPath("help.gif");
 
                         $onelinetip = preg_replace('/([\r\n])/e', "", $ttip);
-                        $tooltip = '<img align="top" src="' . $tipimg . '" border="0" alt="' . $onelinetip . '" onClick="javascript:alert(\'' . str_replace("\n", '\n', addslashes($ttip)) .
+                        $tooltip = '<img align="top" src="' . $tipimg . '" border="0" alt="' . $onelinetip . '" onClick="javascript:alert(\'' . str_replace("\n",
+                                '\n', addslashes($ttip)) .
                             '\')" onMouseOver="javascript:window.status=\'' . addslashes($onelinetip) . '\';">';
                         $tplfield["tooltip"] = $tooltip;
-                        $editsrc.=$tooltip . "&nbsp;";
+                        $editsrc .= $tooltip . "&nbsp;";
                     }
 
                     $tplfield["full"] = $editsrc;
@@ -478,10 +487,12 @@ class Atk_TabbedPane extends Atk_Attribute
 
             $ui = &$node->getUi();
             if (is_object($ui)) {
-                $content = $ui->renderBox(array("tabs" => $this->buildTabs($action, $fieldprefix),
+                $content = $ui->renderBox(array(
+                    "tabs" => $this->buildTabs($action, $fieldprefix),
                     "paneName" => "tabbedPane{$fieldprefix}{$this->m_name}",
                     "activeTabName" => $activeTabName,
-                    "content" => $content), "panetabs");
+                    "content" => $content
+                ), "panetabs");
             }
         }
 
@@ -525,7 +536,7 @@ class Atk_TabbedPane extends Atk_Attribute
      */
     function db2value($record)
     {
-        return NULL;
+        return null;
     }
 
     /**
@@ -553,7 +564,7 @@ class Atk_TabbedPane extends Atk_Attribute
      * Determine the load type of this attribute.
      *
      * @param String $mode The type of load (view,admin,edit etc)
-     * @param boolean $searching 
+     * @param boolean $searching
      *
      * @return int NOLOAD     - nor load(), nor addtoquery() should be
      *                          called (attribute can not be loaded from the

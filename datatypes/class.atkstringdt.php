@@ -37,7 +37,7 @@ class Atk_StringDt extends Atk_DataType
     /**
      * The 'string' datatype for easy manipulation of strings.
      *
-     * @param string $string 
+     * @param string $string
      */
     public function __construct($string)
     {

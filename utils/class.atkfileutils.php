@@ -34,18 +34,19 @@ class Atk_FileUtils
      *
      * @static
      * @staticvar $orgdest to     store the first original destination.
-     * @param string $source      path to the skell to copy
-     * @param string $dest        path to where the skell has to be copied to
-     * @param string $dirname     unique name for the first directory
-     * @param octal  $privileges  octal number for the rights of the written
+     * @param string $source path to the skell to copy
+     * @param string $dest path to where the skell has to be copied to
+     * @param string $dirname unique name for the first directory
+     * @param octal $privileges octal number for the rights of the written
      * @return bool returns true when skell is copied to the destination.
      */
     function copyDirRecursive($source, $dest, $dirname = '', $privileges = 0777)
     {
         static $orgdest = null;
 
-        if (is_null($orgdest))
+        if (is_null($orgdest)) {
             $orgdest = $dest;
+        }
 
         Atk_Tools::atkdebug("Checking write permission for " . $orgdest);
 
@@ -72,8 +73,9 @@ class Atk_FileUtils
 
         // Make destination directory
         if (!is_dir($dest)) {
-            if ($dest != $orgdest && !is_dir($orgdest . '/' . $dirname) && $dirname != '')
+            if ($dest != $orgdest && !is_dir($orgdest . '/' . $dirname) && $dirname != '') {
                 $dest = $orgdest . '/' . $dirname;
+            }
 
             $oldumask = umask(0);
 
@@ -87,12 +89,14 @@ class Atk_FileUtils
 
         while (false !== $entry = $dir->read()) {
             // Skip pointers
-            if ($entry == '.' || $entry == '..')
+            if ($entry == '.' || $entry == '..') {
                 continue;
+            }
 
             // Deep copy directories
-            if ($dest !== "$source/$entry")
+            if ($dest !== "$source/$entry") {
                 Atk_FileUtils::copyDirRecursive("$source/$entry", "$dest/$entry", $dirname, $privileges);
+            }
         }
 
         // Clean up
@@ -113,14 +117,15 @@ class Atk_FileUtils
     function is_writable($orgdest)
     {
         if ($orgdest{0} == '/') {
-            if (count($orgdest) == 1)
+            if (count($orgdest) == 1) {
                 $testdest = $orgdest;
-            else
+            } else {
                 $testdest = substr($orgdest, 0, strpos($orgdest, '/', 1));
-        }
-        else {
-            if ($orgdest{strlen($orgdest) - 1} != '/' && !is_file($orgdest))
+            }
+        } else {
+            if ($orgdest{strlen($orgdest) - 1} != '/' && !is_file($orgdest)) {
                 $orgdest .= '/';
+            }
 
             $testdest = $orgdest;
 
@@ -143,8 +148,8 @@ class Atk_FileUtils
      *
      * @static
      * @param string $dir the fullpath
-     * @param octal  $privileges  octal number for the rights of the written
-     * @param bool $recursive 
+     * @param octal $privileges octal number for the rights of the written
+     * @param bool $recursive
      * @return bool returns true if the destination is written.
      */
     function mkdirRecursive($dir, $privileges = 0777, $recursive = true)
@@ -159,15 +164,15 @@ class Atk_FileUtils
         Atk_Tools::atkdebug("Permission granted to write.");
 
         if (is_null($dir) || $dir === "") {
-            return FALSE;
+            return false;
         }
         if (is_dir($dir) || $dir === "/") {
-            return TRUE;
+            return true;
         }
         if (Atk_FileUtils::mkdirRecursive(dirname($dir), $privileges, $recursive)) {
             return mkdir($dir, $privileges);
         }
-        return FALSE;
+        return false;
     }
 
     /**
@@ -402,25 +407,25 @@ class Atk_FileUtils
     {
         if (!is_writable($dir)) {
             if (!@chmod($dir, 0777)) {
-                return FALSE;
+                return false;
             }
         }
 
         $d = dir($dir);
-        while (FALSE !== ( $entry = $d->read() )) {
+        while (false !== ($entry = $d->read())) {
             if ($entry == '.' || $entry == '..') {
                 continue;
             }
             $entry = $dir . '/' . $entry;
             if (is_dir($entry)) {
                 if (!Atk_FileUtils::rmdirRecursive($entry)) {
-                    return FALSE;
+                    return false;
                 }
                 continue;
             }
             if (!@unlink($entry)) {
                 $d->close();
-                return FALSE;
+                return false;
             }
         }
 
@@ -428,7 +433,7 @@ class Atk_FileUtils
 
         rmdir($dir);
 
-        return TRUE;
+        return true;
     }
 
 }

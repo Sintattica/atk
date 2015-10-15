@@ -32,7 +32,7 @@ class Atk_MlSelectorAttribute extends Atk_MlAttribute
 
     /**
      * Returns the language selector
-     * 
+     *
      * @param string $prefix
      * @return html select box ready for displaying
      */
@@ -43,22 +43,25 @@ class Atk_MlSelectorAttribute extends Atk_MlAttribute
         $languages = $this->getLanguages();
 
         /* check config */
-        if (!is_array($languages) || sizeof($languages) == 0)
-            return Atk_Tools::atktext("multilanguage_error_config", $this->m_ownerInstance->m_module, $this->m_ownerInstance->atknodetype());
+        if (!is_array($languages) || sizeof($languages) == 0) {
+            return Atk_Tools::atktext("multilanguage_error_config", $this->m_ownerInstance->m_module,
+                $this->m_ownerInstance->atknodetype());
+        }
 
         /* first selected other language */
         //$formname = $prefix.'[multilanguage_current]';
         $result = '<input id="' . $prefix . '_current" type="hidden" name="' . $formname . '" value="' . ($this->m_ownerInstance->m_postvars['atkeditlng']
-                    ? $this->m_ownerInstance->m_postvars['atkeditlng'] : $languages[1]) . '">';
+                ? $this->m_ownerInstance->m_postvars['atkeditlng'] : $languages[1]) . '">';
 
         /* build selection list */
         $result .= '<select id="' . $prefix . '_lgswitch" name="' . $prefix . '_lgswitch" onchange="changeLanguage(this, \'' . $prefix . '\', ' . (Atk_Config::getGlobal("multilanguage_linked")
-                    ? 'true' : 'false') . ')" class="form-control">';
+                ? 'true' : 'false') . ')" class="form-control">';
 
         /* options */
-        for ($i = 1; $i < sizeof($languages); $i++)
+        for ($i = 1; $i < sizeof($languages); $i++) {
             $result .= '<option value="' . $languages[$i] . '" ' . (strtolower($languages[$i]) == strtolower($this->m_ownerInstance->m_postvars['atkeditlng'])
-                        ? 'selected' : '') . '>' . Atk_Tools::atktext('language_' . strtolower($languages[$i])) . '</option>';
+                    ? 'selected' : '') . '>' . Atk_Tools::atktext('language_' . strtolower($languages[$i])) . '</option>';
+        }
 
         /* close */
         $result .= '</select>';
@@ -66,7 +69,7 @@ class Atk_MlSelectorAttribute extends Atk_MlAttribute
         if (!$s_wroteStrings) {
             $script = "str_languages = new Array();\n";
             for ($i = 0, $_i = count($languages); $i < $_i; $i++) {
-                $script.= "str_languages['" . $languages[$i] . "'] = '" . Atk_Tools::atktext('language_' . strtolower($languages[$i])) . "';\n";
+                $script .= "str_languages['" . $languages[$i] . "'] = '" . Atk_Tools::atktext('language_' . strtolower($languages[$i])) . "';\n";
             }
             $page = Atk_Page::getInstance();
             $page->register_scriptcode($script);
@@ -85,7 +88,7 @@ class Atk_MlSelectorAttribute extends Atk_MlAttribute
         global $config_atkroot;
         /* base class constructor */
         $this->atkMlAttribute("multilanguage_select", $flags | AF_HIDE_LIST);
-        $this->m_mlattribute = FALSE; // just a selector and not a real mlattribute
+        $this->m_mlattribute = false; // just a selector and not a real mlattribute
     }
 
     /**
@@ -112,11 +115,11 @@ class Atk_MlSelectorAttribute extends Atk_MlAttribute
         foreach (array_keys($this->m_ownerInstance->m_attribList) as $attrname) {
             $p_attrib = &$this->m_ownerInstance->getAttribute($attrname);
             if (method_exists($p_attrib, "getMlSwitchCode")) {
-                $code.= $p_attrib->getMlSwitchCode() . "\n";
+                $code .= $p_attrib->getMlSwitchCode() . "\n";
             }
         }
 
-        $code.= "}";
+        $code .= "}";
 
         $page->register_scriptcode($code);
 
@@ -157,7 +160,7 @@ class Atk_MlSelectorAttribute extends Atk_MlAttribute
      */
     function addToQuery()
     {
-        
+
     }
 
     /**
@@ -176,17 +179,18 @@ class Atk_MlSelectorAttribute extends Atk_MlAttribute
      *
      * This is a framework method, it should never be called directly.
      *
-     * @param String $mode     the edit mode ("add" or "edit")
-     * @param array  $arr      pointer to the edit array
-     * @param array  $defaults pointer to the default values array
-     * @param array  $error    pointer to the error array
-     * @param String $fieldprefix   the fieldprefix
+     * @param String $mode the edit mode ("add" or "edit")
+     * @param array $arr pointer to the edit array
+     * @param array $defaults pointer to the default values array
+     * @param array $error pointer to the error array
+     * @param String $fieldprefix the fieldprefix
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
         $lngs = $this->getLanguages();
-        if (count($lngs) <= 2)
+        if (count($lngs) <= 2) {
             $this->addFlag(AF_HIDE);
+        }
         return parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
     }
 

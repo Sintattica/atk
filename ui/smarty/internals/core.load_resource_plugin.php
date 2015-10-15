@@ -35,7 +35,8 @@ function smarty_core_load_resource_plugin($params, &$smarty)
         }
 
         if (!$_plugin[1]) {
-            $smarty->_trigger_fatal_error("[plugin] resource '" . $params['type'] . "' is not implemented", null, null, __FILE__, __LINE__);
+            $smarty->_trigger_fatal_error("[plugin] resource '" . $params['type'] . "' is not implemented", null, null,
+                __FILE__, __LINE__);
         }
 
         return;
@@ -58,7 +59,8 @@ function smarty_core_load_resource_plugin($params, &$smarty)
         foreach ($_resource_ops as $_op) {
             $_plugin_func = 'smarty_resource_' . $params['type'] . '_' . $_op;
             if (!function_exists($_plugin_func)) {
-                $smarty->_trigger_fatal_error("[plugin] function $_plugin_func() not found in $_plugin_file", null, null, __FILE__, __LINE__);
+                $smarty->_trigger_fatal_error("[plugin] function $_plugin_func() not found in $_plugin_file", null,
+                    null, __FILE__, __LINE__);
                 return;
             } else {
                 $_resource_funcs[] = $_plugin_func;

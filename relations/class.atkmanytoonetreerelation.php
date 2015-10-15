@@ -23,7 +23,7 @@ include_once(Atk_Config::getGlobal("atkroot") . "atk/class.atktreetoolstree.php"
 /**
  * Extension of the atkManyToOneRelation, that is aware of the treestructure
  * (parent/child relation) in the destination node, and renders items in the
- * dropdown accordingly. You need to set the AF_PARENT flag to the parent 
+ * dropdown accordingly. You need to set the AF_PARENT flag to the parent
  * column in the destination node in order to make the tree rendering work.
  *
  * @author Sandy Pleyte <sandy@ibuildings.nl>
@@ -50,7 +50,7 @@ class Atk_ManyToOneTreeRelation extends Atk_ManyToOneRelation
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
-     * 
+     *
      * @param array $record The record that holds the value for this attribute.
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
@@ -60,7 +60,8 @@ class Atk_ManyToOneTreeRelation extends Atk_ManyToOneRelation
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $this->createDestination();
-        $tmp1 = Atk_Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey);
+        $tmp1 = Atk_Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
+            $this->m_destInstance->m_primaryKey);
         $tmp2 = Atk_Tools::atk_array_merge($tmp1, array($this->m_destInstance->m_parent));
         if ($this->m_destinationFilter != "") {
             $this->m_destInstance->addFilter(Atk_Tools::stringparse($this->m_destinationFilter, $record));
@@ -71,10 +72,10 @@ class Atk_ManyToOneTreeRelation extends Atk_ManyToOneRelation
 
         if ($this->hasFlag(AF_OBLIGATORY) == false) {
             // Relation may be empty, so we must provide an empty selectable..
-            $result.= '<option value="0">' . Atk_Tools::atktext('select_none');
+            $result .= '<option value="0">' . Atk_Tools::atktext('select_none');
         }
-        $result.=$this->createdd($recordset);
-        $result.='</select>';
+        $result .= $this->createdd($recordset);
+        $result .= '</select>';
         return $result;
     }
 
@@ -89,15 +90,16 @@ class Atk_ManyToOneTreeRelation extends Atk_ManyToOneRelation
         if ($this->m_destinationFilter != "") {
             $this->m_destInstance->addFilter(Atk_Tools::stringparse($this->m_destinationFilter, $record));
         }
-        $recordset = $this->m_destInstance->selectDb("", "", "", "", Atk_Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+        $recordset = $this->m_destInstance->selectDb("", "", "", "",
+            Atk_Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
 
         $result = '<select class="form-control" name="atksearch[' . $this->fieldName() . ']">';
 
         $pkfield = $this->m_destInstance->primaryKeyField();
 
-        $result.= '<option value="">' . Atk_Tools::atktext("search_all", "atk");
-        $result.=$this->createdd($recordset);
-        $result.='</select>';
+        $result .= '<option value="">' . Atk_Tools::atktext("search_all", "atk");
+        $result .= $this->createdd($recordset);
+        $result .= '</select>';
         return $result;
     }
 
@@ -112,7 +114,9 @@ class Atk_ManyToOneTreeRelation extends Atk_ManyToOneRelation
         $t = new Atk_TreeToolsTree();
         for ($i = 0; $i < count($recordset); $i++) {
             $group = $recordset[$i];
-            $t->addNode($recordset[$i][$this->m_destInstance->m_primaryKey[0]], $this->m_destInstance->descriptor($group), $recordset[$i][$this->m_destInstance->m_parent][$this->m_destInstance->m_primaryKey[0]]);
+            $t->addNode($recordset[$i][$this->m_destInstance->m_primaryKey[0]],
+                $this->m_destInstance->descriptor($group),
+                $recordset[$i][$this->m_destInstance->m_parent][$this->m_destInstance->m_primaryKey[0]]);
         }
         $tmp = $this->render($t->m_tree);
         return $tmp;
@@ -139,10 +143,11 @@ class Atk_ManyToOneTreeRelation extends Atk_ManyToOneRelation
                 $sel = "SELECTED";
             }
 
-            $res.= '<option value="' . $this->m_destInstance->m_table . "." . $this->m_destInstance->m_primaryKey[0] . "='" . $objarr->m_id . "'" . '" ' . $sel . '>' . str_repeat("-", (2 * $level)) . " " . $objarr->m_label;
+            $res .= '<option value="' . $this->m_destInstance->m_table . "." . $this->m_destInstance->m_primaryKey[0] . "='" . $objarr->m_id . "'" . '" ' . $sel . '>' . str_repeat("-",
+                    (2 * $level)) . " " . $objarr->m_label;
 
             if (count($objarr->m_sub) > 0 && $sel == "") {
-                $res.=$this->render($objarr->m_sub, $level + 1);
+                $res .= $this->render($objarr->m_sub, $level + 1);
             }
         }
         $this->m_level = 0;

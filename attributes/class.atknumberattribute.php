@@ -179,8 +179,9 @@ class Atk_NumberAttribute extends Atk_Attribute
             $id = $id = $this->getHtmlId($fieldprefix);
             $result = '<input type="hidden" id="' . $id . '" name="' . $fieldprefix . $this->formName() . '" value="' . htmlspecialchars($this->formatNumber($record[$this->fieldName()])) . '">';
             return $result;
-        } else
+        } else {
             Atk_Tools::atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
+        }
     }
 
     /**
@@ -192,10 +193,12 @@ class Atk_NumberAttribute extends Atk_Attribute
      */
     function removeSeparators($number, $decimal_separator = "", $thousands_separator = "")
     {
-        if (empty($decimal_separator))
+        if (empty($decimal_separator)) {
             $decimal_separator = $this->m_decimalseparator;
-        if (empty($thousands_separator))
+        }
+        if (empty($thousands_separator)) {
             $thousands_separator = $this->m_thousandsseparator;
+        }
 
         if ($decimal_separator == $thousands_separator) {
             Atk_Tools::atkwarning('invalid thousandsseparator. identical to the decimal_separator');
@@ -204,8 +207,9 @@ class Atk_NumberAttribute extends Atk_Attribute
 
         if (strstr($number, $decimal_separator) !== false) {
             // check invalid input
-            if (substr_count($number, $decimal_separator) > 2)
+            if (substr_count($number, $decimal_separator) > 2) {
                 return $number;
+            }
 
             $number = str_replace($thousands_separator, '', $number);
             $number = str_replace($decimal_separator, self::DEFAULT_SEPARATOR, $number);
@@ -298,7 +302,8 @@ class Atk_NumberAttribute extends Atk_Attribute
         $decimalSeparator = $decimalSeparator == null ? $this->m_decimalseparator : $decimalSeparator;
         $thousandsSeparator = $thousandsSeparator == null ? $this->m_thousandsseparator : $thousandsSeparator;
         // (never shows the thousands separator in add/edit mode)
-        $thousandsSeparator = ($this->m_use_thousands_separator && !in_array($mode, array('add', 'edit'))) ? $thousandsSeparator : '';
+        $thousandsSeparator = ($this->m_use_thousands_separator && !in_array($mode,
+                array('add', 'edit'))) ? $thousandsSeparator : '';
 
         if ($decimalSeparator == $thousandsSeparator) {
             Atk_Tools::atkwarning('invalid thousandsseparator. identical to the decimal_separator');
@@ -346,12 +351,15 @@ class Atk_NumberAttribute extends Atk_Attribute
      */
     function validate(&$record, $mode)
     {
-        if (!is_numeric($record[$this->fieldName()]) && $record[$this->fieldName()] != "")
+        if (!is_numeric($record[$this->fieldName()]) && $record[$this->fieldName()] != "") {
             Atk_Tools::triggerError($record, $this->fieldName(), 'error_notnumeric');
-        if (($this->m_maxvalue !== false) && ($record[$this->fieldName()] > $this->m_maxvalue))
+        }
+        if (($this->m_maxvalue !== false) && ($record[$this->fieldName()] > $this->m_maxvalue)) {
             Atk_Tools::triggerError($record, $this->fieldName(), 'above_maximum_value');
-        if (($this->m_minvalue !== false) && ($record[$this->fieldName()] < $this->m_minvalue))
+        }
+        if (($this->m_minvalue !== false) && ($record[$this->fieldName()] < $this->m_minvalue)) {
             Atk_Tools::triggerError($record, $this->fieldName(), 'below_minimum_value');
+        }
     }
 
     /**
@@ -388,7 +396,7 @@ class Atk_NumberAttribute extends Atk_Attribute
     function value2db($rec)
     {
         if ((!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()]) == 0) && !$this->hasFlag(AF_OBLIGATORY)) {
-            return NULL;
+            return null;
         }
         if ($this->getDecimals() > 0) {
             return round((float)$rec[$this->fieldName()], $this->getDecimals());
@@ -577,12 +585,16 @@ class Atk_NumberAttribute extends Atk_Attribute
                 // TODO we would need to know the searchmode for better handling...
                 if ($value["from"] !== "" && $value["to"] !== "") {
                     $value = $value["from"] . "/" . $value["to"];
-                } else if ($value["from"] !== "") {
-                    $value = $value["from"];
-                } else if ($value["to"] !== "") {
-                    $value = $value["to"];
                 } else {
-                    $value = "";
+                    if ($value["from"] !== "") {
+                        $value = $value["from"];
+                    } else {
+                        if ($value["to"] !== "") {
+                            $value = $value["to"];
+                        } else {
+                            $value = "";
+                        }
+                    }
                 }
             }
 
@@ -673,11 +685,16 @@ class Atk_NumberAttribute extends Atk_Attribute
                 $value["from"] = $value["to"];
                 $value["to"] = $tmp;
             }
-            return $query->betweenCondition($fieldname, $this->escapeSQL($value["from"]), $this->escapeSQL($value["to"]));
-        } else if ($value["from"] !== "" && $value["to"] === "") {
-            return $query->greaterthanequalCondition($fieldname, $value["from"]);
-        } else if ($value["from"] === "" && $value["to"] !== "") {
-            return $query->lessthanequalCondition($fieldname, $value["to"]);
+            return $query->betweenCondition($fieldname, $this->escapeSQL($value["from"]),
+                $this->escapeSQL($value["to"]));
+        } else {
+            if ($value["from"] !== "" && $value["to"] === "") {
+                return $query->greaterthanequalCondition($fieldname, $value["from"]);
+            } else {
+                if ($value["from"] === "" && $value["to"] !== "") {
+                    return $query->lessthanequalCondition($fieldname, $value["to"]);
+                }
+            }
         }
 
         return false;
@@ -704,10 +721,12 @@ class Atk_NumberAttribute extends Atk_Attribute
         if ($searchmode != 'between') {
             if ($value['from'] !== '') {
                 $value = $value['from'];
-            } else if ($value['to'] !== '') {
-                $value = $value['to'];
             } else {
-                return false;
+                if ($value['to'] !== '') {
+                    $value = $value['to'];
+                } else {
+                    return false;
+                }
             }
             return parent::getSearchCondition($query, $table, $value, $searchmode);
         } else {

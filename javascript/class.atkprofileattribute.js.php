@@ -16,50 +16,37 @@
  */
 ?>
 
-function profile_getForm()
-{
+function profile_getForm() {
     if (document.dialogform)
         return document.dialogform;
     else
         return document.entryform;
 }
 
-function profile_checkAll(fieldname)
-{
-    with (profile_getForm())
-    {
-        for (i = 0; i < elements.length; i++)
-        {
-            if (elements[i].name.substr(0, fieldname.length) == fieldname)
-            {
+function profile_checkAll(fieldname) {
+    with (profile_getForm()) {
+        for (i = 0; i < elements.length; i++) {
+            if (elements[i].name.substr(0, fieldname.length) == fieldname) {
                 elements[i].checked = true;
             }
         }
     }
 }
 
-function profile_checkNone(fieldname)
-{
-    with (profile_getForm())
-    {
-        for (i = 0; i < elements.length; i++)
-        {
-            if (elements[i].name.substr(0, fieldname.length) == fieldname)
-            {
+function profile_checkNone(fieldname) {
+    with (profile_getForm()) {
+        for (i = 0; i < elements.length; i++) {
+            if (elements[i].name.substr(0, fieldname.length) == fieldname) {
                 elements[i].checked = false;
             }
         }
     }
 }
 
-function profile_checkInvert(fieldname)
-{
-    with (profile_getForm())
-    {
-        for (i = 0; i < elements.length; i++)
-        {
-            if (elements[i].name.substr(0, fieldname.length) == fieldname)
-            {
+function profile_checkInvert(fieldname) {
+    with (profile_getForm()) {
+        for (i = 0; i < elements.length; i++) {
+            if (elements[i].name.substr(0, fieldname.length) == fieldname) {
                 elements[i].checked = !elements[i].checked;
             }
         }
@@ -67,50 +54,37 @@ function profile_checkInvert(fieldname)
 }
 
 
-function profile_checkAllByValue(fieldname, fieldvalue)
-{
-    with (profile_getForm())
-    {
-        for (i = 0; i < elements.length; i++)
-        {
-            if (elements[i].name.substr(0, fieldname.length) == fieldname && elements[i].value.substr(0, fieldvalue.length) == fieldvalue)
-            {
+function profile_checkAllByValue(fieldname, fieldvalue) {
+    with (profile_getForm()) {
+        for (i = 0; i < elements.length; i++) {
+            if (elements[i].name.substr(0, fieldname.length) == fieldname && elements[i].value.substr(0, fieldvalue.length) == fieldvalue) {
                 elements[i].checked = true;
             }
         }
     }
 }
 
-function profile_checkNoneByValue(fieldname, fieldvalue)
-{
-    with (profile_getForm())
-    {
-        for (i = 0; i < elements.length; i++)
-        {
-            if (elements[i].name.substr(0, fieldname.length) == fieldname && elements[i].value.substr(0, fieldvalue.length) == fieldvalue)
-            {
+function profile_checkNoneByValue(fieldname, fieldvalue) {
+    with (profile_getForm()) {
+        for (i = 0; i < elements.length; i++) {
+            if (elements[i].name.substr(0, fieldname.length) == fieldname && elements[i].value.substr(0, fieldvalue.length) == fieldvalue) {
                 elements[i].checked = false;
             }
         }
     }
 }
 
-function profile_checkInvertByValue(fieldname, fieldvalue)
-{
-    with (profile_getForm())
-    {
-        for (i = 0; i < elements.length; i++)
-        {
-            if (elements[i].name.substr(0, fieldname.length) == fieldname && elements[i].value.substr(0, fieldvalue.length) == fieldvalue)
-            {
+function profile_checkInvertByValue(fieldname, fieldvalue) {
+    with (profile_getForm()) {
+        for (i = 0; i < elements.length; i++) {
+            if (elements[i].name.substr(0, fieldname.length) == fieldname && elements[i].value.substr(0, fieldvalue.length) == fieldvalue) {
                 elements[i].checked = !elements[i].checked;
             }
         }
     }
 }
 
-function profile_fixExpandImage(divName, atkRoot)
-{
+function profile_fixExpandImage(divName, atkRoot) {
     var image = get_object("img_" + divName);
     if (get_object(divName).style.display == 'none')
         image.src = atkRoot + 'atk/images/plus.gif';
@@ -118,8 +92,7 @@ function profile_fixExpandImage(divName, atkRoot)
         image.src = atkRoot + 'atk/images/minus.gif';
 }
 
-function profile_fixDivState(divName)
-{
+function profile_fixDivState(divName) {
     var divElement = get_object(divName);
     var inputElement = get_object("divstate['" + divName + "']");
 
@@ -129,8 +102,7 @@ function profile_fixDivState(divName)
         inputElement.value = 'opened';
 }
 
-function profile_swapProfileDiv(divName, atkRoot)
-{
+function profile_swapProfileDiv(divName, atkRoot) {
     toggleDisplay(divName, get_object(divName));
     profile_fixExpandImage(divName, atkRoot);
     profile_fixDivState(divName);

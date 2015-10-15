@@ -25,17 +25,33 @@ class bootstrapDateTimeAttribute extends Atk_Attribute
     function postInit()
     {
         if ($this->m_type == 'datetime') {
-            if (!$this->m_bootstrapdatetime_format_edit) $this->m_bootstrapdatetime_format_edit = Atk_Tools::atktext('btkdatetime_format_edit');
-            if (!$this->m_bootstrapdatetime_format_view) $this->m_bootstrapdatetime_format_view = Atk_Tools::atktext('btkdatetime_format_view');
+            if (!$this->m_bootstrapdatetime_format_edit) {
+                $this->m_bootstrapdatetime_format_edit = Atk_Tools::atktext('btkdatetime_format_edit');
+            }
+            if (!$this->m_bootstrapdatetime_format_view) {
+                $this->m_bootstrapdatetime_format_view = Atk_Tools::atktext('btkdatetime_format_view');
+            }
             $this->m_db_format = 'YYYY-MM-DD HH:mm:ss';
-        } else if ($this->m_type == 'date') {
-            if (!$this->m_bootstrapdatetime_format_edit) $this->m_bootstrapdatetime_format_edit = Atk_Tools::atktext('btkdate_format_edit');
-            if (!$this->m_bootstrapdatetime_format_view) $this->m_bootstrapdatetime_format_view = Atk_Tools::atktext('btkdate_format_view');
-            $this->m_db_format = 'YYYY-MM-DD';
-        } else if ($this->m_type == 'time') {
-            if (!$this->m_bootstrapdatetime_format_edit) $this->m_bootstrapdatetime_format_edit = Atk_Tools::atktext('btktime_format_edit');
-            if (!$this->m_bootstrapdatetime_format_view) $this->m_bootstrapdatetime_format_view = Atk_Tools::atktext('btktime_format_view');
-            $this->m_db_format = 'HH:mm:ss';
+        } else {
+            if ($this->m_type == 'date') {
+                if (!$this->m_bootstrapdatetime_format_edit) {
+                    $this->m_bootstrapdatetime_format_edit = Atk_Tools::atktext('btkdate_format_edit');
+                }
+                if (!$this->m_bootstrapdatetime_format_view) {
+                    $this->m_bootstrapdatetime_format_view = Atk_Tools::atktext('btkdate_format_view');
+                }
+                $this->m_db_format = 'YYYY-MM-DD';
+            } else {
+                if ($this->m_type == 'time') {
+                    if (!$this->m_bootstrapdatetime_format_edit) {
+                        $this->m_bootstrapdatetime_format_edit = Atk_Tools::atktext('btktime_format_edit');
+                    }
+                    if (!$this->m_bootstrapdatetime_format_view) {
+                        $this->m_bootstrapdatetime_format_view = Atk_Tools::atktext('btktime_format_view');
+                    }
+                    $this->m_db_format = 'HH:mm:ss';
+                }
+            }
         }
 
         if (!$this->m_db_format) {
@@ -166,7 +182,9 @@ class bootstrapDateTimeAttribute extends Atk_Attribute
     function display($record, $mode)
     {
         $value = $this->arrayToValue($record[$this->fieldName()]);
-        if (!$value) return null;
+        if (!$value) {
+            return null;
+        }
 
         $m = new \Moment\Moment($value);
         $result = $m->format($this->m_bootstrapdatetime_format_view, Atk_MomentphpProvider::getFormatInstance());
@@ -186,8 +204,9 @@ class bootstrapDateTimeAttribute extends Atk_Attribute
         $field = $record[$this->fieldName()];
 
         if (is_array($field)) {
-            foreach ($field as $key => $value)
+            foreach ($field as $key => $value) {
                 $result .= '<input type="hidden" name="' . $fieldprefix . $this->formName() . '[' . $key . ']" ' . 'value="' . $value . '">';
+            }
         } else {
             $result = '<input type="hidden" name="' . $fieldprefix . $this->formName() . '" value="' . $field . '">';
         }
@@ -219,8 +238,9 @@ class bootstrapDateTimeAttribute extends Atk_Attribute
         }
 
         // Set default values to null.
-        if (!isset($record[$this->fieldName()]) || empty($record[$this->fieldName()]))
-            $record[$this->fieldName()] = NULL;
+        if (!isset($record[$this->fieldName()]) || empty($record[$this->fieldName()])) {
+            $record[$this->fieldName()] = null;
+        }
 
         $rec = isset($record[$this->fieldName()]['from']) ? array($this->fieldName() => $record[$this->fieldName()]['from'])
             : $record;
@@ -248,7 +268,7 @@ class bootstrapDateTimeAttribute extends Atk_Attribute
      */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
-        $db = & $this->getDb();
+        $db = &$this->getDb();
 
         // If we search through datagrid we got no from/to values
         // Therefore we will simulate them
@@ -256,12 +276,16 @@ class bootstrapDateTimeAttribute extends Atk_Attribute
             if (substr_count($value, '/') == 1) {
                 list($from, $to) = explode('/', $value);
                 $value = array('from' => trim($from), 'to' => trim($to));
-            } else if (substr_count($value, '/') == 5) {
-                $parts = explode('/', $value);
-                $value = array('from' => trim($parts[0] . '/' . $parts[1] . '/' . $parts[2]),
-                    'to' => trim($parts[3] . '/' . $parts[4] . '/' . $parts[5]));
             } else {
-                $value = array('from' => $value, 'to' => $value);
+                if (substr_count($value, '/') == 5) {
+                    $parts = explode('/', $value);
+                    $value = array(
+                        'from' => trim($parts[0] . '/' . $parts[1] . '/' . $parts[2]),
+                        'to' => trim($parts[3] . '/' . $parts[4] . '/' . $parts[5])
+                    );
+                } else {
+                    $value = array('from' => $value, 'to' => $value);
+                }
             }
         }
 
@@ -273,36 +297,49 @@ class bootstrapDateTimeAttribute extends Atk_Attribute
 
         if ($this->m_type == 'datetime') {
             $field = $db->func_datetimetochar($table . "." . $this->fieldName());
-        } else if ($this->m_type == 'date') {
-            $field = $db->func_datetochar($table . "." . $this->fieldName());
-        } else if ($this->m_type == 'time') {
-            $field = $table . "." . $this->fieldName();
+        } else {
+            if ($this->m_type == 'date') {
+                $field = $db->func_datetochar($table . "." . $this->fieldName());
+            } else {
+                if ($this->m_type == 'time') {
+                    $field = $table . "." . $this->fieldName();
+                }
+            }
         }
 
 
-        if ($fromval == NULL && $toval == NULL)
-            ; // do nothing
-        else if ($fromval != NULL && $toval != NULL) {
-            if ($fromval > $toval) {
-                // User entered dates in wrong order. Let's put them in the right order.
-                $tmp = $fromval;
-                $fromval = $toval;
-                $toval = $tmp;
+        if ($fromval == null && $toval == null) {
+            ;
+        } // do nothing
+        else {
+            if ($fromval != null && $toval != null) {
+                if ($fromval > $toval) {
+                    // User entered dates in wrong order. Let's put them in the right order.
+                    $tmp = $fromval;
+                    $fromval = $toval;
+                    $toval = $tmp;
+                }
+                $searchcondition = $query->betweenCondition(
+                    $field, $fromval, $toval);
+            } else {
+                if ($fromval != null && $toval == null) {
+                    $searchcondition = $query->greaterthanequalCondition(
+                        $field, $fromval);
+                } else {
+                    if ($fromval == null && $toval != null) {
+                        $searchcondition = $query->lessthanequalCondition(
+                            $field, $toval);
+                    } else {
+                        if ((is_array($value["from"])) or (is_array($value["to"]))) {
+                            $searchcondition = $this->_getDateArraySearchCondition($query, $table, $value);
+                        } else {
+                            // plain text search condition
+                            $value = $this->_autoCompleteDateString($value);
+                            $searchcondition = $query->exactCondition($field, $value);
+                        }
+                    }
+                }
             }
-            $searchcondition = $query->betweenCondition(
-                $field, $fromval, $toval);
-        } else if ($fromval != NULL && $toval == NULL) {
-            $searchcondition = $query->greaterthanequalCondition(
-                $field, $fromval);
-        } else if ($fromval == NULL && $toval != NULL) {
-            $searchcondition = $query->lessthanequalCondition(
-                $field, $toval);
-        } else if ((is_array($value["from"])) or (is_array($value["to"]))) {
-            $searchcondition = $this->_getDateArraySearchCondition($query, $table, $value);
-        } else {
-            // plain text search condition
-            $value = $this->_autoCompleteDateString($value);
-            $searchcondition = $query->exactCondition($field, $value);
         }
 
         return $searchcondition;
@@ -367,24 +404,32 @@ class bootstrapDateTimeAttribute extends Atk_Attribute
     {
         $result = null;
         if ($this->m_type == 'datetime') {
-            if (empty($a['year']) || empty($a['month']) || empty($a['day']))
+            if (empty($a['year']) || empty($a['month']) || empty($a['day'])) {
                 return null;
-            if (empty($a['hours']) || empty($a['minutes']) || empty($a['seconds']))
+            }
+            if (empty($a['hours']) || empty($a['minutes']) || empty($a['seconds'])) {
                 return null;
+            }
 
             $date = sprintf('%04d-%02d-%02d', $a['year'], $a['month'], $a['day']);
             $time = sprintf('%02d:%02d:%02d', $a['hours'], $a['minutes'], $a['seconds']);
             $result = $date . ' ' . $time;
-        } else if ($this->m_type == 'date') {
-            if (empty($a['year']) || empty($a['month']) || empty($a['day']))
-                return null;
+        } else {
+            if ($this->m_type == 'date') {
+                if (empty($a['year']) || empty($a['month']) || empty($a['day'])) {
+                    return null;
+                }
 
-            $result = sprintf('%04d-%02d-%02d', $a['year'], $a['month'], $a['day']);
-        } else if ($this->m_type == 'time') {
-            if (empty($a['hours']) || empty($a['minutes']) || empty($a['seconds']))
-                return null;
+                $result = sprintf('%04d-%02d-%02d', $a['year'], $a['month'], $a['day']);
+            } else {
+                if ($this->m_type == 'time') {
+                    if (empty($a['hours']) || empty($a['minutes']) || empty($a['seconds'])) {
+                        return null;
+                    }
 
-            $result = sprintf('%02d:%02d:%02d', $a['hours'], $a['minutes'], $a['seconds']);
+                    $result = sprintf('%02d:%02d:%02d', $a['hours'], $a['minutes'], $a['seconds']);
+                }
+            }
         }
 
 
@@ -418,20 +463,26 @@ class bootstrapDateTimeAttribute extends Atk_Attribute
             if (is_string($val) && preg_match("/^function\:/", $val)) {
                 // The value is a string and begins with 'function:'. Do not encase it in quotes
                 $val = substr($val, 9);
-            } else if (is_int($val)) {
-                // The value is an integer
-                $val = (int)$val;
-            } else if (is_float($val)) {
-                // The value is a float
-                $val = (float)$val;
-            } else if (is_bool($val)) {
-                if ($val) {
-                    $val = 'true';
-                } else {
-                    $val = 'false';
-                }
             } else {
-                $val = is_array($val) ? self::json_stringify($val) : "\"$val\"";
+                if (is_int($val)) {
+                    // The value is an integer
+                    $val = (int)$val;
+                } else {
+                    if (is_float($val)) {
+                        // The value is a float
+                        $val = (float)$val;
+                    } else {
+                        if (is_bool($val)) {
+                            if ($val) {
+                                $val = 'true';
+                            } else {
+                                $val = 'false';
+                            }
+                        } else {
+                            $val = is_array($val) ? self::json_stringify($val) : "\"$val\"";
+                        }
+                    }
+                }
             }
             $inner[] = ($numericarray ? '' : "\"$key\":") . $val;
         }

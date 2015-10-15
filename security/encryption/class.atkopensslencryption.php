@@ -42,8 +42,8 @@ class Atk_OpenSSLEncryption extends Atk_Encryption
     /**
      * The encryption method for encrypting data with the openssl algorithm
      *
-     * @param mixed $input  the data we want to encrypt
-     * @param mixed $key    the key we want to encrypt the data with
+     * @param mixed $input the data we want to encrypt
+     * @param mixed $key the key we want to encrypt the data with
      * @return mixed        the encrypted data
      */
     function encrypt($input, $key)
@@ -51,18 +51,19 @@ class Atk_OpenSSLEncryption extends Atk_Encryption
         $keys = $this->getKeys($key);
         $key = openssl_get_publickey($keys['public']);
 
-        if ($key)
+        if ($key) {
             openssl_public_encrypt($input, $encrypted, $key);
-        else
+        } else {
             Atk_Tools::atkerror("Atk_OpenSSLEncryption::encrypt << not a valid key passed");
+        }
 
         return $this->stripbackslashes($encrypted);
     }
 
     /**
      * The decryption method for decrypting data with the bajus algorithm
-     * @param mixed $input  the data we want to encrypt
-     * @param mixed $key    the key we want to encrypt the data with
+     * @param mixed $input the data we want to encrypt
+     * @param mixed $key the key we want to encrypt the data with
      * @return mixed        the encrypted data
      */
     function decrypt($input, $key)
@@ -71,9 +72,9 @@ class Atk_OpenSSLEncryption extends Atk_Encryption
         $keys = $this->getKeys($key);
         $key = openssl_get_privatekey($keys['private']);
 
-        if ($key)
+        if ($key) {
             Atk_Tools::atkerror("Atk_OpenSSLEncryption::decrypt << not a valid key passed");
-        else {
+        } else {
             echo "decrypt for: input:$input, decrypted: $decrypted, key: $key";
             openssl_private_decrypt($input, $decrypted, $key);
         }
@@ -84,22 +85,26 @@ class Atk_OpenSSLEncryption extends Atk_Encryption
     /**
      * This function copies a private key with a new password
      *
-     * @param string $key             The private key which must be copied
-     * @param string $privkeypass     The passphrase of the key
-     * @param string $newprivkeypass  The passphrase of the new key
+     * @param string $key The private key which must be copied
+     * @param string $privkeypass The passphrase of the key
+     * @param string $newprivkeypass The passphrase of the new key
      * @return string                 The new key
      */
     function copyPrivateKey($key, $privkeypass, $newprivkeypass)
     {
-        if ($privkeypass != "")
+        if ($privkeypass != "") {
             $priv = openssl_get_privatekey($key, $privkeypass);
-        else
+        } else {
             $priv = openssl_get_privatekey($key);
+        }
 
-        if ($priv && $newprivkeypass != "")
+        if ($priv && $newprivkeypass != "") {
             openssl_pkey_export($priv, $newprivatekey, $newprivkeypass, $this->m_config_default);
-        else if ($priv)
-            openssl_pkey_export($priv, $newprivatekey, "", $this->m_config_nokey);
+        } else {
+            if ($priv) {
+                openssl_pkey_export($priv, $newprivatekey, "", $this->m_config_nokey);
+            }
+        }
 
         return $newprivatekey;
     }
@@ -143,7 +148,7 @@ class Atk_OpenSSLEncryption extends Atk_Encryption
     /**
      * Creates a random key for tableencryption
      * This implentation of this function returns a public and private key pair together in one string
-     * @param string $pass   This implementation does nothing with this param
+     * @param string $pass This implementation does nothing with this param
      * @return string        A random key
      */
     function getRandomKey($pass)
@@ -155,7 +160,7 @@ class Atk_OpenSSLEncryption extends Atk_Encryption
     /**
      * Decryptionmethod for a key.
      * This implementation get the private key with a password and export it without password
-     * @param string $key  The encrypted key
+     * @param string $key The encrypted key
      * @param string $pass The password to decrypt de key
      * @return string      The decrypted key
      */
@@ -169,7 +174,7 @@ class Atk_OpenSSLEncryption extends Atk_Encryption
     /**
      * Encryptionmethod for a key.
      * This implementation get the private key without a password and export is with a password
-     * @param string $key  The decrypted key
+     * @param string $key The decrypted key
      * @param string $pass The password to encrypt de key
      * @return string      The encrypted key
      */
@@ -213,7 +218,7 @@ class Atk_OpenSSLEncryption extends Atk_Encryption
     /**
      * Change every backslash in the backslashreplacestring
      *
-     * @param string $value   The original string
+     * @param string $value The original string
      * @return string         The original string, with for every backslash the backslashreplacestring
      * */
     function stripbackslashes($value)
@@ -225,7 +230,7 @@ class Atk_OpenSSLEncryption extends Atk_Encryption
     /**
      * Change every backslashreplacestring in a backslash
      *
-     * @param string $value   The original string
+     * @param string $value The original string
      * @return string         The original string, with for every backslashreplacestring a backslash
      * */
     function addbackslashes($value)

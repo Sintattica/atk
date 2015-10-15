@@ -17,8 +17,9 @@ abstract class Atk_ErrorHandlerBase
      */
     public function __construct($params)
     {
-        if (!is_array($params))
+        if (!is_array($params)) {
             $params = array($params);
+        }
         $this->params = $params;
     }
 

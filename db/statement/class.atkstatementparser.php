@@ -84,17 +84,23 @@ class Atk_StatementParser
             if (isset($quoteChars[$char])) {
                 if ($quoteChar == null) {
                     $quoteChar = $char;
-                } else if ($quoteChar == $char) {
-                    $quoteChar = null;
+                } else {
+                    if ($quoteChar == $char) {
+                        $quoteChar = null;
+                    }
                 }
-            } else if ($quoteChar == null && $char == '?') {
-                $bindPositions[$i] = $anonBindParams++;
-            } else if ($quoteChar == null && $char == ':') {
-                if (preg_match('/^:(\w+)/', substr($query, $i), $matches)) {
-                    $name = $matches[1];
-                    $bindPositions[$i] = $name;
-                    $query = substr($query, 0, $i) . '?' . substr($query, $i + strlen($name) + 1);
-                    $length = strlen($query);
+            } else {
+                if ($quoteChar == null && $char == '?') {
+                    $bindPositions[$i] = $anonBindParams++;
+                } else {
+                    if ($quoteChar == null && $char == ':') {
+                        if (preg_match('/^:(\w+)/', substr($query, $i), $matches)) {
+                            $name = $matches[1];
+                            $bindPositions[$i] = $name;
+                            $query = substr($query, 0, $i) . '?' . substr($query, $i + strlen($name) + 1);
+                            $length = strlen($query);
+                        }
+                    }
                 }
             }
         }

@@ -84,8 +84,9 @@ class Atk_ThemeCompiler
             include($abspath . "themedef.php");
 
             if (isset($theme)) {
-                foreach ($theme as $key => $value)
+                foreach ($theme as $key => $value) {
                     $data["attributes"][$key] = $value;
+                }
             }
 
             // Second scan all files in the theme path
@@ -115,12 +116,16 @@ class Atk_ThemeCompiler
                 $location = "module";
                 return "module/$module/themes/$name/";
             }
-        } else if ($location != "atk" && file_exists(Atk_Config::getGlobal("application_dir") . "themes/$name/themedef.php")) {
-            $location = "app";
-            return "themes/$name/";
-        } else if ($location != "app" && file_exists(Atk_Config::getGlobal("atkroot") . "atk/themes/$name/themedef.php")) {
-            $location = "atk";
-            return "atk/themes/$name/";
+        } else {
+            if ($location != "atk" && file_exists(Atk_Config::getGlobal("application_dir") . "themes/$name/themedef.php")) {
+                $location = "app";
+                return "themes/$name/";
+            } else {
+                if ($location != "app" && file_exists(Atk_Config::getGlobal("atkroot") . "atk/themes/$name/themedef.php")) {
+                    $location = "atk";
+                    return "atk/themes/$name/";
+                }
+            }
         }
         Atk_Tools::atkerror("Theme $name not found");
         $location = "";
@@ -141,7 +146,8 @@ class Atk_ThemeCompiler
         $traverser = Atk_Tools::atknew("atk.utils.atkdirectorytraverser");
         $subitems = $traverser->getDirContents($abspath);
         foreach ($subitems as $name) {
-            if (in_array($name, array("images", "styles", "templates"))) { // images, styles and templates are compiled the same
+            if (in_array($name,
+                array("images", "styles", "templates"))) { // images, styles and templates are compiled the same
                 $files = $this->_dirContents($abspath . $name);
                 foreach ($files as $file) {
                     $key = $file;
@@ -151,19 +157,24 @@ class Atk_ThemeCompiler
 
                     $data["files"][$name][$key] = $path . $name . "/" . $file;
                 }
-            } else if ($name == "icons") { // New ATK5 style icon theme dirs
-                $subs = $this->_dirContents($abspath . $name);
-                foreach ($subs as $type) {
-                    $files = $this->_dirContents($abspath . $name . "/" . $type);
-                    foreach ($files as $file) {
-                        $data["files"]["icons"][$type][$file] = $path . $name . "/" . $type . "/" . $file;
+            } else {
+                if ($name == "icons") { // New ATK5 style icon theme dirs
+                    $subs = $this->_dirContents($abspath . $name);
+                    foreach ($subs as $type) {
+                        $files = $this->_dirContents($abspath . $name . "/" . $type);
+                        foreach ($files as $file) {
+                            $data["files"]["icons"][$type][$file] = $path . $name . "/" . $type . "/" . $file;
+                        }
                     }
-                }
-            } else if (in_array($name, array("tree_icons", "recordlist_icons", "toolbar_icons"))) { // Old ATK5 style icon theme dirs
-                $type = substr($name, 0, -6);
-                $files = $this->_dirContents($abspath . $name);
-                foreach ($files as $file) {
-                    $data["files"]["icons"][$type][$file] = $path . $name . "/" . $file;
+                } else {
+                    if (in_array($name,
+                        array("tree_icons", "recordlist_icons", "toolbar_icons"))) { // Old ATK5 style icon theme dirs
+                        $type = substr($name, 0, -6);
+                        $files = $this->_dirContents($abspath . $name);
+                        foreach ($files as $file) {
+                            $data["files"]["icons"][$type][$file] = $path . $name . "/" . $file;
+                        }
+                    }
                 }
             }
         }
@@ -188,17 +199,20 @@ class Atk_ThemeCompiler
             if (is_dir($abspath)) {
                 $subitems = $traverser->getDirContents($abspath);
                 foreach ($subitems as $name) {
-                    if (in_array($name, array("images", "styles", "templates"))) { // images, styles and templates are compiled the same
+                    if (in_array($name,
+                        array("images", "styles", "templates"))) { // images, styles and templates are compiled the same
                         $files = $this->_dirContents($abspath . $name);
                         foreach ($files as $file) {
                             $data["modulefiles"][$module][$name][$file] = $theme . "/" . $name . "/" . $file;
                         }
-                    } else if ($name == "icons") { // New ATK5 style icon theme dirs
-                        $subs = $this->_dirContents($abspath . $name);
-                        foreach ($subs as $type) {
-                            $files = $this->_dirContents($abspath . $name . "/" . $type);
-                            foreach ($files as $file) {
-                                $data["modulefiles"][$module]["icons"][$type][$file] = $theme . "/" . $name . "/" . $type . "/" . $file;
+                    } else {
+                        if ($name == "icons") { // New ATK5 style icon theme dirs
+                            $subs = $this->_dirContents($abspath . $name);
+                            foreach ($subs as $type) {
+                                $files = $this->_dirContents($abspath . $name . "/" . $type);
+                                foreach ($files as $file) {
+                                    $data["modulefiles"][$module]["icons"][$type][$file] = $theme . "/" . $name . "/" . $type . "/" . $file;
+                                }
                             }
                         }
                     }

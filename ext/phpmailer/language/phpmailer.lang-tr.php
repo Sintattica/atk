@@ -1,25 +1,25 @@
 <?php
 /**
- * PHPMailer dil dosyasý.
- * Türkçe Versiyonu
- * ÝZYAZILIM - Elçin Özel - Can Yýlmaz - Mehmet Benlioðlu
+ * PHPMailer dil dosyasï¿½.
+ * Tï¿½rkï¿½e Versiyonu
+ * ï¿½ZYAZILIM - Elï¿½in ï¿½zel - Can Yï¿½lmaz - Mehmet Benlioï¿½lu
  */
 
 $PHPMAILER_LANG = array();
 
-$PHPMAILER_LANG["provide_address"] = 'En az bir tane mail adresi belirtmek zorundasýnýz ' .
-                                     'alýcýnýn email adresi.';
+$PHPMAILER_LANG["provide_address"] = 'En az bir tane mail adresi belirtmek zorundasï¿½nï¿½z ' .
+    'alï¿½cï¿½nï¿½n email adresi.';
 $PHPMAILER_LANG["mailer_not_supported"] = ' mailler desteklenmemektedir.';
-$PHPMAILER_LANG["execute"] = 'Çalýþtýrýlamýyor: ';
-$PHPMAILER_LANG["instantiate"] = 'Örnek mail fonksiyonu yaratýlamadý.';
-$PHPMAILER_LANG["authenticate"] = 'SMTP Hatasý: Doðrulanamýyor.';
-$PHPMAILER_LANG["from_failed"] = 'Baþarýsýz olan gönderici adresi: ';
-$PHPMAILER_LANG["recipients_failed"] = 'SMTP Hatasý:  ' .
-                                       'alýcýlara ulaþmadý: ';
-$PHPMAILER_LANG["data_not_accepted"] = 'SMTP Hatasý: Veri kabul edilmedi.';
-$PHPMAILER_LANG["connect_host"] = 'SMTP Hatasý: SMTP hosta baðlanýlamýyor.';
-$PHPMAILER_LANG["file_access"] = 'Dosyaya eriþilemiyor: ';
-$PHPMAILER_LANG["file_open"] = 'Dosya Hatasý: Dosya açýlamýyor: ';
-$PHPMAILER_LANG["encoding"] = 'Bilinmeyen þifreleme: ';
+$PHPMAILER_LANG["execute"] = 'ï¿½alï¿½ï¿½tï¿½rï¿½lamï¿½yor: ';
+$PHPMAILER_LANG["instantiate"] = 'ï¿½rnek mail fonksiyonu yaratï¿½lamadï¿½.';
+$PHPMAILER_LANG["authenticate"] = 'SMTP Hatasï¿½: Doï¿½rulanamï¿½yor.';
+$PHPMAILER_LANG["from_failed"] = 'Baï¿½arï¿½sï¿½z olan gï¿½nderici adresi: ';
+$PHPMAILER_LANG["recipients_failed"] = 'SMTP Hatasï¿½:  ' .
+    'alï¿½cï¿½lara ulaï¿½madï¿½: ';
+$PHPMAILER_LANG["data_not_accepted"] = 'SMTP Hatasï¿½: Veri kabul edilmedi.';
+$PHPMAILER_LANG["connect_host"] = 'SMTP Hatasï¿½: SMTP hosta baï¿½lanï¿½lamï¿½yor.';
+$PHPMAILER_LANG["file_access"] = 'Dosyaya eriï¿½ilemiyor: ';
+$PHPMAILER_LANG["file_open"] = 'Dosya Hatasï¿½: Dosya aï¿½ï¿½lamï¿½yor: ';
+$PHPMAILER_LANG["encoding"] = 'Bilinmeyen ï¿½ifreleme: ';
 
 ?>

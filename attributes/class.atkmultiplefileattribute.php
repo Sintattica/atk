@@ -2,7 +2,7 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * @package atk
@@ -17,7 +17,7 @@
 Atk_Tools::useattrib("atkFileAttribute");
 
 /**
- * This is an extend of the famous atkfileattribute :). Now its possible 
+ * This is an extend of the famous atkfileattribute :). Now its possible
  * to insert one or more files in one database field
  *
  * @author Martin Roest <martin@ibuildings.nl>
@@ -28,7 +28,7 @@ Atk_Tools::useattrib("atkFileAttribute");
 class Atk_MultipleFileAttribute extends Atk_FileAttribute
 {
     /**
-     * private vars  
+     * private vars
      */
     var $m_delimiter = ";";
 
@@ -59,8 +59,9 @@ class Atk_MultipleFileAttribute extends Atk_FileAttribute
      */
     function getFiles($str, $del = "")
     {
-        if ($del == "")
+        if ($del == "") {
             $del = $this->m_delimiter;
+        }
         return explode($del, $str);
     }
 
@@ -75,12 +76,12 @@ class Atk_MultipleFileAttribute extends Atk_FileAttribute
         if (is_dir($this->m_dir)) {
             $d = dir($this->m_dir);
             while ($item = $d->read()) {
-                if (is_file($this->m_dir . $item))
+                if (is_file($this->m_dir . $item)) {
                     $file_arr[] = $item;
+                }
             }
             $d->close();
-        }
-        else {
+        } else {
             return Atk_Tools::atktext("no_valid_directory");
         }
 
@@ -88,19 +89,22 @@ class Atk_MultipleFileAttribute extends Atk_FileAttribute
             $result .= "<select multiple size=\"3\" name=\"select_" . $this->fieldName() . "[]\" class=\"form-control\">";
             for ($i = 0; $i < count($file_arr); $i++) {
                 $sel = "";
-                if (in_array($file_arr[$i], $this->getFiles($record[$this->fieldName()][orgfilename])))
+                if (in_array($file_arr[$i], $this->getFiles($record[$this->fieldName()][orgfilename]))) {
                     $sel = "selected";
-                if (is_file($this->m_dir . $file_arr[$i]))
+                }
+                if (is_file($this->m_dir . $file_arr[$i])) {
                     $result .= "<option value=\"" . $file_arr[$i] . "\" " . $sel . ">" . $file_arr[$i];
+                }
             }
-            if (count($file_arr) > 0)
+            if (count($file_arr) > 0) {
                 $result .= "</select>";
-        }
-        else {
+            }
+        } else {
             $result = "No files found";
         }
-        if (!$this->hasFlag(AF_FILE_NO_UPLOAD))
+        if (!$this->hasFlag(AF_FILE_NO_UPLOAD)) {
             $result .= ' <input type="file" name="' . $this->fieldName() . '">';
+        }
         return $result;
     }
 
@@ -117,12 +121,14 @@ class Atk_MultipleFileAttribute extends Atk_FileAttribute
             $file = $this->fetchValue($_POST);
             $file[filename] = str_replace(' ', '_', $file["filename"]);
             if ($file[filename] != "") {
-                @copy($file["tmpfile"], $this->m_dir . $file[filename]) OR die("<br><br><center><b>Save failed!</b></center><br>");
+                @copy($file["tmpfile"],
+                    $this->m_dir . $file[filename]) OR die("<br><br><center><b>Save failed!</b></center><br>");
                 $r .= $file[filename] . ";";
             }
         }
-        if (is_array($$select))
+        if (is_array($$select)) {
             $r .= implode($this->m_delimiter, $$select);
+        }
         return $r;
     }
 
@@ -133,7 +139,11 @@ class Atk_MultipleFileAttribute extends Atk_FileAttribute
      */
     function db2value($rec)
     {
-        return Array("tmpfile" => $this->m_dir . $rec[$this->fieldName()], "orgfilename" => $rec[$this->fieldName()], "filesize" => "?");
+        return Array(
+            "tmpfile" => $this->m_dir . $rec[$this->fieldName()],
+            "orgfilename" => $rec[$this->fieldName()],
+            "filesize" => "?"
+        );
     }
 
     /**
@@ -164,8 +174,9 @@ class Atk_MultipleFileAttribute extends Atk_FileAttribute
                     $r .= "<a href=\"" . $this->m_url . "$files[$i]\" target=\"_new\">$files[$i]</a><br>";
                 }
             } else {
-                if (strlen($files[$i]) > 0)
+                if (strlen($files[$i]) > 0) {
                     $r .= $files[$i] . "(<font color=\"#ff0000\">" . Atk_Tools::atktext("file_not_exist") . "</font><br>)";
+                }
             }
         }
         return $r;
@@ -173,7 +184,7 @@ class Atk_MultipleFileAttribute extends Atk_FileAttribute
 
     /**
      * Return the database field type of the attribute.
-     * @return "string" which is the 'generic' type of the database field for 
+     * @return "string" which is the 'generic' type of the database field for
      *         this attribute.
      */
     function dbFieldType()

@@ -38,7 +38,7 @@ class Atk_XmlHandler extends Atk_ActionHandler
         $document = '<?xml version="1.0"?>' . "\n";
 
         for ($i = 0, $_i = count($recordset); $i < $_i; $i++) {
-            $document.=$this->invoke("xml", $recordset[$i]) . "\n";
+            $document .= $this->invoke("xml", $recordset[$i]) . "\n";
         }
         $output->output($document);
     }
@@ -64,10 +64,10 @@ class Atk_XmlHandler extends Atk_ActionHandler
             }
         }
         if (count($attrs)) {
-            $xml.=implode(" ", $attrs);
+            $xml .= implode(" ", $attrs);
         }
 
-        $xml.='/>';
+        $xml .= '/>';
 
         if (isset($node->m_postvars['tohtml']) && $node->m_postvars['tohtml'] == 1) {
             return htmlspecialchars($xml) . '<br>';

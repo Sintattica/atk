@@ -41,7 +41,8 @@ class Atk_FckAttribute extends Atk_TextAttribute
     var $fck_opt = array(
         'ToolbarSet' => 'Default',
         'Width' => '100%',
-        'Height' => '300px');
+        'Height' => '300px'
+    );
 
     /**
      * Constructor
@@ -142,8 +143,9 @@ class Atk_FckAttribute extends Atk_TextAttribute
 
         // Make it possible to load an additional configuration file where you can override some of the default
         // settings. Path must be relative to atkroot.
-        if (!empty($this->fck_opt['CustomConfigurationsPath']))
+        if (!empty($this->fck_opt['CustomConfigurationsPath'])) {
             $oFCKeditor->Config["CustomConfigurationsPath"] = "../../../../" . $this->fck_opt["CustomConfigurationsPath"];
+        }
 
         return $oFCKeditor->CreateHtml();
     }
@@ -161,15 +163,15 @@ class Atk_FckAttribute extends Atk_TextAttribute
             $dbval = $this->escapeSQL(preg_replace("/\&quot;/Ui", "\"", $rec[$this->fieldName()]));
             return $dbval;
         }
-        return NULL;
+        return null;
     }
 
     /**
      * Check if a record has an empty value for this attribute.
-     * 
+     *
      * If the record only contains tags or spaces, we consider it empty. We exclude the div
      * tag, since it is often used as (for instance) a placeholder for script results.
-     * 
+     *
      * @param array $record The record that holds this attribute's value.
      * @return boolean
      */

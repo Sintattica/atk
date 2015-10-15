@@ -53,14 +53,17 @@ class Atk_IpAttribute extends Atk_Attribute
      */
     function fetchValue($postvars)
     {
-        if ($this->hasFlag(AF_IP_SINGLEFIELD))
+        if ($this->hasFlag(AF_IP_SINGLEFIELD)) {
             return parent::fetchValue($postvars[$this->fieldName()]);
-        if (!$this->isPosted($postvars))
-            return NULL;
+        }
+        if (!$this->isPosted($postvars)) {
+            return null;
+        }
 
         $parts = array();
-        for ($i = 0; $i < 4; $i++)
+        for ($i = 0; $i < 4; $i++) {
             $parts[$i] = $postvars[$this->fieldName()][$i];
+        }
 
         return implode('.', $parts);
     }
@@ -75,11 +78,12 @@ class Atk_IpAttribute extends Atk_Attribute
      */
     function edit($record, $fieldprefix = "")
     {
-        if ($this->hasFlag(AF_IP_SINGLEFIELD))
+        if ($this->hasFlag(AF_IP_SINGLEFIELD)) {
             return parent::edit($record, $fieldprefix);
+        }
 
         $inputs = array();
-        $values = empty($record[$this->fieldName()]) ? NULL : explode('.', $record[$this->fieldName()]);
+        $values = empty($record[$this->fieldName()]) ? null : explode('.', $record[$this->fieldName()]);
 
         for ($i = 0; $i < 4; $i++) {
             $name = $fieldprefix . $this->fieldName() . '[' . $i . ']';
@@ -104,11 +108,13 @@ class Atk_IpAttribute extends Atk_Attribute
         // Check for valid ip string
         $strvalue = Atk_Tools::atkArrayNvl($record, $this->fieldName(), "");
         if (!empty($strvalue)) {
-            if ($this->hasFlag(AF_IP_ALLOW_WILDCARDS) && !$this->hasFlag(AF_IP_STORENUMERIC))
+            if ($this->hasFlag(AF_IP_ALLOW_WILDCARDS) && !$this->hasFlag(AF_IP_STORENUMERIC)) {
                 $strvalue = str_replace("*", "0", $strvalue);
+            }
             $num = '(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])';
-            if (preg_match("/^$num\\.$num\\.$num\\.$num$/", $strvalue, $matches) <= 0)
+            if (preg_match("/^$num\\.$num\\.$num\\.$num$/", $strvalue, $matches) <= 0) {
                 Atk_Tools::triggerError($record, $this->fieldName(), 'error_not_a_valid_ip');
+            }
         }
         parent::validate($record, $mode);
     }
@@ -123,8 +129,9 @@ class Atk_IpAttribute extends Atk_Attribute
     function value2db($rec)
     {
         // By default, return the plain ip number
-        if (!$this->hasFlag(AF_IP_STORENUMERIC))
+        if (!$this->hasFlag(AF_IP_STORENUMERIC)) {
             return Atk_Tools::atkArrayNvl($rec, $this->fieldName());
+        }
 
         // But if the AF_IP_STORENUMERIC flag is set, we store it as long integer
         return Atk_IpUtils::ipLongFormat(Atk_Tools::atkArrayNvl($rec, $this->fieldName()));
@@ -139,8 +146,9 @@ class Atk_IpAttribute extends Atk_Attribute
     function db2value($rec)
     {
         // By default, return the plain ip number
-        if (!$this->hasFlag(AF_IP_STORENUMERIC))
+        if (!$this->hasFlag(AF_IP_STORENUMERIC)) {
             return Atk_Tools::atkArrayNvl($rec, $this->fieldName());
+        }
 
         // But if the AF_IP_STORENUMERIC flag is set, we load it as long integer
         return Atk_IpUtils::ipStringFormat(Atk_Tools::atkArrayNvl($rec, $this->fieldName()));

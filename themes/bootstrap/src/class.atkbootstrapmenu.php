@@ -61,7 +61,7 @@ class Atk_BootstrapMenu extends Atk_PlainMenu
     function render()
     {
         /** @var atkPage $page */
-        $page = & Atk_Tools::atkinstance("atk.ui.atkpage");
+        $page = &Atk_Tools::atkinstance("atk.ui.atkpage");
         /** @var atkTheme $theme */
         $theme = Atk_Tools::atkinstance('atk.ui.atktheme');
         $page->register_style($theme->absPath("atk/themes/bootstrap/lib/bootstrap-submenu/css/bootstrap-submenu.min.css"));
@@ -89,7 +89,7 @@ class Atk_BootstrapMenu extends Atk_PlainMenu
     {
         global $g_menu;
         /** @var atkPage $page */
-        $page = & Atk_Tools::atkinstance("atk.ui.atkpage");
+        $page = &Atk_Tools::atkinstance("atk.ui.atkpage");
         /** @var atkTheme $theme */
         $theme = Atk_Tools::atkinstance('atk.ui.atktheme');
         $page->register_style($theme->absPath("atk/themes/bootstrap/lib/bootstrap-submenu/css/bootstrap-submenu.min.css"));
@@ -111,10 +111,11 @@ class Atk_BootstrapMenu extends Atk_PlainMenu
                 if ($this->_hasSubmenu($item)) {
                     $a_content = $this->_getMenuTitle($item);
                     $childHtml = $this->processMenu($item['submenu'], true);
-                    if($child)
-                        $html .= sprintf($this->format_submenuchild, $a_content, $childHtml );
-                    else
-                        $html .= sprintf($this->format_submenuparent, $a_content, $childHtml );
+                    if ($child) {
+                        $html .= sprintf($this->format_submenuchild, $a_content, $childHtml);
+                    } else {
+                        $html .= sprintf($this->format_submenuparent, $a_content, $childHtml);
+                    }
                 } else {
                     $a_content = $this->_getMenuTitle($item);
                     $html .= sprintf($this->format_single, $url, $a_content);

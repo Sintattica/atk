@@ -30,26 +30,41 @@ class Atk_CustomRecordList extends Atk_RecordList
 
     /**
      * Creates a special Recordlist that can be used for exporting to files or to make it printable
-     * @param Atk_Node $node       The node to use as definition for the columns.
-     * @param array $recordset    The records to render
-     * @param String $sol         String to use at start of each row
-     * @param String $sof         String to use at start of each field
-     * @param String $eof         String to use at end of each field
-     * @param String $eol         String to use at end of each row
-     * @param int $type           0=Render rows in simple html tabl; 1= raw export
-     * @param string $compression        Compression technique (bzip / gzip)
+     * @param Atk_Node $node The node to use as definition for the columns.
+     * @param array $recordset The records to render
+     * @param String $sol String to use at start of each row
+     * @param String $sof String to use at start of each field
+     * @param String $eof String to use at end of each field
+     * @param String $eol String to use at end of each row
+     * @param int $type 0=Render rows in simple html tabl; 1= raw export
+     * @param string $compression Compression technique (bzip / gzip)
      * @param array $suppressList List of attributes from $node that should be ignored
      * @param array $outputparams Key-Value parameters for output. Currently existing:
      *                               filename - the name of the file (without extension .csv)
-     * @param String $mode	      The mode that is passed to attributes' display() method
+     * @param String $mode The mode that is passed to attributes' display() method
      *                            (for overrides). Defaults to 'list'.
-     * @param Boolean $titlerow   Should titlerow be rendered or not
-     * @param Boolean $decode     Should data be decoded or not (for exports)
-     * @param String $fsep        String to use between fields
-     * @param String $rfeplace   String for replacing line feeds in recordset field values (null = do not replace)
+     * @param Boolean $titlerow Should titlerow be rendered or not
+     * @param Boolean $decode Should data be decoded or not (for exports)
+     * @param String $fsep String to use between fields
+     * @param String $rfeplace String for replacing line feeds in recordset field values (null = do not replace)
      */
-    function render(&$node, $recordset, $sol, $sof, $eof, $eol, $type = "0", $compression = "", $suppressList = "", $outputparams = array(), $mode = "list", $titlerow = true, $decode = false, $fsep = "", $rfeplace = null)
-    {
+    function render(
+        &$node,
+        $recordset,
+        $sol,
+        $sof,
+        $eof,
+        $eol,
+        $type = "0",
+        $compression = "",
+        $suppressList = "",
+        $outputparams = array(),
+        $mode = "list",
+        $titlerow = true,
+        $decode = false,
+        $fsep = "",
+        $rfeplace = null
+    ) {
         $this->setNode($node);
         $this->m_mode = $mode;
         // example      html         csv
@@ -78,9 +93,10 @@ class Atk_CustomRecordList extends Atk_RecordList
             // are totalisable collumns.
             foreach (array_keys($this->m_node->m_attribList) as $attribname) {
                 $p_attrib = &$this->m_node->m_attribList[$attribname];
-                $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname, $suppressList));
+                $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,
+                        $suppressList));
                 if (!$this->isHidden($p_attrib) && !$musthide) {
-                    $output.=$sof . $this->eolreplace($p_attrib->label(), $rfeplace) . $eof . $fsep;
+                    $output .= $sof . $this->eolreplace($p_attrib->label(), $rfeplace) . $eof . $fsep;
 
                     // the totalisable check..
                     if ($p_attrib->hasFlag(AF_TOTAL)) {
@@ -94,15 +110,16 @@ class Atk_CustomRecordList extends Atk_RecordList
                 $output = substr($output, 0, -strlen($fsep));
             }
 
-            $output.=$eol;
+            $output .= $eol;
         }
 
         // Display the values
         for ($i = 0, $_i = count($recordset); $i < $_i; $i++) {
-            $output.=$sol;
+            $output .= $sol;
             foreach (array_keys($this->m_node->m_attribList) as $attribname) {
                 $p_attrib = &$this->m_node->m_attribList[$attribname];
-                $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname, $suppressList));
+                $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,
+                        $suppressList));
 
                 if (!$this->isHidden($p_attrib) && !$musthide) {
                     // An <attributename>_display function may be provided in a derived
@@ -116,9 +133,10 @@ class Atk_CustomRecordList extends Atk_RecordList
                         // is called.
                         $value = $this->eolreplace($p_attrib->display($recordset[$i], $this->m_mode), $rfeplace);
                     }
-                    if (Atk_Tools::atkGetCharset() != "" && $decode)
+                    if (Atk_Tools::atkGetCharset() != "" && $decode) {
                         $value = Atk_Tools::atk_html_entity_decode(htmlentities($value, ENT_NOQUOTES), ENT_NOQUOTES);
-                    $output.=$sof . ($value == "" ? $empty : $value) . $eof . $fsep;
+                    }
+                    $output .= $sof . ($value == "" ? $empty : $value) . $eof . $fsep;
 
                     // Calculate totals..
                     if ($p_attrib->hasFlag(AF_TOTAL)) {
@@ -132,7 +150,7 @@ class Atk_CustomRecordList extends Atk_RecordList
                 $output = substr($output, 0, -strlen($fsep));
             }
 
-            $output.=$eol;
+            $output .= $eol;
         }
 
         // totalrow..
@@ -142,13 +160,14 @@ class Atk_CustomRecordList extends Atk_RecordList
             // Third loop.. this time for the totals row.
             foreach (array_keys($this->m_node->m_attribList) as $attribname) {
                 $p_attrib = &$this->m_node->m_attribList[$attribname];
-                $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname, $suppressList));
+                $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,
+                        $suppressList));
                 if (!$this->isHidden($p_attrib) && !$musthide) {
                     if ($p_attrib->hasFlag(AF_TOTAL)) {
                         $value = $this->eolreplace($p_attrib->display($totals[$attribname], $this->m_mode), $rfeplace);
-                        $totalRow.=$sof . ($value == "" ? $empty : $value) . $eof . $fsep;
+                        $totalRow .= $sof . ($value == "" ? $empty : $value) . $eof . $fsep;
                     } else {
-                        $totalRow.= $sof . $empty . $eof . $fsep;
+                        $totalRow .= $sof . $empty . $eof . $fsep;
                     }
                 }
             }
@@ -171,8 +190,9 @@ class Atk_CustomRecordList extends Atk_RecordList
         Atk_Tools::atkdebug(Atk_Tools::atk_html_entity_decode($output));
 
         // To a File
-        if (!array_key_exists("filename", $outputparams))
+        if (!array_key_exists("filename", $outputparams)) {
             $outputparams["filename"] = "achievo";
+        }
 
         if ($this->m_exportcsv) {
             $ext = ($type == "0" ? "html" : "csv");
@@ -191,12 +211,15 @@ class Atk_CustomRecordList extends Atk_RecordList
      */
     protected function isHidden(atkAttribute $attribute)
     {
-        if ($attribute->hasFlag(AF_HIDE))
+        if ($attribute->hasFlag(AF_HIDE)) {
             return true;
-        if ($attribute->hasFlag(AF_HIDE_SELECT) && $this->m_node->m_action === 'select')
+        }
+        if ($attribute->hasFlag(AF_HIDE_SELECT) && $this->m_node->m_action === 'select') {
             return true;
-        if ($attribute->hasFlag(AF_HIDE_LIST) && ($this->m_node->m_action === 'export' || $this->m_mode === 'export'))
+        }
+        if ($attribute->hasFlag(AF_HIDE_LIST) && ($this->m_node->m_action === 'export' || $this->m_mode === 'export')) {
             return true;
+        }
         return false;
     }
 
@@ -207,15 +230,16 @@ class Atk_CustomRecordList extends Atk_RecordList
      */
     function setExportingCSVToFile($export = true)
     {
-        if (is_bool($export))
+        if (is_bool($export)) {
             $this->m_exportcsv = $export;
+        }
     }
 
     /**
      * Replace any eol character(s) by something else
      *
-     * @param String $string        The string to process
-     * @param String $replacement   The replacement string for '\r\n', '\n' and/or '\r'
+     * @param String $string The string to process
+     * @param String $replacement The replacement string for '\r\n', '\n' and/or '\r'
      */
     function eolreplace($string, $replacement)
     {

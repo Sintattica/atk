@@ -26,7 +26,7 @@
 class Atk_MlAttribute extends Atk_Attribute
 {
     var $m_language = "";
-    var $m_mlattribute = TRUE;
+    var $m_mlattribute = true;
     var $m_edited = false;
     var $m_languages = array();
 
@@ -117,11 +117,11 @@ class Atk_MlAttribute extends Atk_Attribute
      * This method is called by the node if it wants the data needed to create
      * an edit form.
      *
-     * @param String $mode     the edit mode ("add" or "edit")
-     * @param array  $arr      pointer to the edit array
-     * @param array  $defaults pointer to the default values array
-     * @param array  $error    pointer to the error array
-     * @param String $fieldprefix   the fieldprefix
+     * @param String $mode the edit mode ("add" or "edit")
+     * @param array $arr pointer to the edit array
+     * @param array $defaults pointer to the default values array
+     * @param array $error pointer to the error array
+     * @param String $fieldprefix the fieldprefix
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
@@ -130,7 +130,11 @@ class Atk_MlAttribute extends Atk_Attribute
         if ($this->m_edited) { // if we edited this attrib, we also need to add the
             $key = array_search($this->m_ownerInstance->m_postvars['atkeditlng'], $this->m_languages);
             $curlng = $this->m_languages[($key !== false ? $key : 1)];
-            $entry = array("name" => $this->m_name . "_ml", "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
+            $entry = array(
+                "name" => $this->m_name . "_ml",
+                "obligatory" => $this->hasFlag(AF_OBLIGATORY),
+                "attribute" => &$this
+            );
 
             /* label? */
             $entry["label"] = $this->label($defaults) . ' (<label id="' . $fieldprefix . $this->formName() . '_label">' . Atk_Tools::atktext("language_" . strtolower($curlng)) . '</label>)';
@@ -140,7 +144,7 @@ class Atk_MlAttribute extends Atk_Attribute
 
             /* first language of other languages */
             $entry["html"] = '<input type="text" name="' . $fieldprefix . $this->formName() . '[' . (count($this->m_languages) == 2
-                        ? $curlng : "multilanguage") . ']"' .
+                    ? $curlng : "multilanguage") . ']"' .
                 ' value="' . htmlspecialchars($defaults[$this->fieldName()][$curlng]) . '"' .
                 ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') .
                 ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . '>';
@@ -169,11 +173,11 @@ class Atk_MlAttribute extends Atk_Attribute
         $languages = $this->getLanguages();
 
         $id = $this->getSearchFieldName($fieldprefix);
-        $id .=!$this->isMlNode() ? '_' . $languages[0] : '';
+        $id .= !$this->isMlNode() ? '_' . $languages[0] : '';
 
         $result = '<input type="text" name="' . $id . '"' .
             ' value="' . htmlentities($record[$this->fieldName() . (!$this->isMlNode()
-                        ? '_' . $languages[0] : '')]) . '"' .
+                ? '_' . $languages[0] : '')]) . '"' .
             ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"' : '') .
             ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . '>';
 
@@ -189,8 +193,9 @@ class Atk_MlAttribute extends Atk_Attribute
     {
         $languages = $this->getLanguages();
         for ($i = 0, $_i = count($languages); $i < $_i; $i++) {
-            if (isset($record[$this->fieldName()][$languages[$i]]))
+            if (isset($record[$this->fieldName()][$languages[$i]])) {
                 return 0;
+            }
         }
 
         return 1;
@@ -254,7 +259,7 @@ class Atk_MlAttribute extends Atk_Attribute
         $languages = $this->getLanguages();
         if ($this->isMlNode()) {
             if (!isset($rec[$this->fieldName()])) {
-                return NULL;
+                return null;
             }
 
             if (is_array($rec[$this->fieldName()])) {
@@ -320,11 +325,14 @@ class Atk_MlAttribute extends Atk_Attribute
         if (!$this->isMlNode()) {
             if ($mode == "add" || $mode == "update") {
                 for ($i = 0, $_i = count($languages); $i < $_i; $i++) {
-                    $query->addField($this->fieldName() . '_' . $languages[$i], $this->escapeSQL($rec[$this->fieldName()][$languages[$i]]), "", "", !$this->hasFlag(AF_NO_QUOTES));
+                    $query->addField($this->fieldName() . '_' . $languages[$i],
+                        $this->escapeSQL($rec[$this->fieldName()][$languages[$i]]), "", "",
+                        !$this->hasFlag(AF_NO_QUOTES));
                 }
             } else {
                 for ($i = 0, $_i = count($languages); $i < $_i; $i++) {
-                    $query->addField($this->fieldName() . '_' . $languages[$i], "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES));
+                    $query->addField($this->fieldName() . '_' . $languages[$i], "", $tablename, $fieldaliasprefix,
+                        !$this->hasFlag(AF_NO_QUOTES));
                 }
             }
         } else {
@@ -344,7 +352,7 @@ class Atk_MlAttribute extends Atk_Attribute
     {
         $languages = $this->getLanguages();
         $attribname = $this->fieldName() . (!$this->isMlNode() ? '_' . $languages[0]
-                    : '');
+                : '');
         $this->m_size = min($metadata[$attribname]['len'], $this->maxInputSize());
         $this->m_searchsize = min($metadata[$attribname]['len'], 20);
         $this->m_maxsize = $metadata[$attribname]['len'];
@@ -355,11 +363,11 @@ class Atk_MlAttribute extends Atk_Attribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param Atk_Query $query     The query object where the search condition should be placed on
-     * @param String $table       The name of the table in which this attribute
+     * @param Atk_Query $query The query object where the search condition should be placed on
+     * @param String $table The name of the table in which this attribute
      *                              is stored
-     * @param mixed $value        The value the user has entered in the searchbox
-     * @param String $searchmode  The searchmode to use. This can be any one
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param String $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
@@ -370,7 +378,7 @@ class Atk_MlAttribute extends Atk_Attribute
         $func = $searchmode . "Condition";
         if (method_exists($query, $func)) {
             $searchcondition = $query->$func($table . "." . $this->fieldName() . (!$this->isMlNode()
-                        ? '_' . $languages[0] : ''), $this->escapeSQL($value));
+                    ? '_' . $languages[0] : ''), $this->escapeSQL($value));
         } else {
             Atk_Tools::atkdebug("Database doesn't support searchmode '$searchmode' for " . $this->fieldName() . ", ignoring condition.");
         }

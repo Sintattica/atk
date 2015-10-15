@@ -2,7 +2,7 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * @package atk
@@ -22,7 +22,7 @@ usefilter("atkfilter");
  *
  * Use this filter, like you use an attribute, for example:
  * $this->add(new atkGroupByFilter("street_place", "street, place"));
- * 
+ *
  * @author Kees van Dieren <kees@ibuildings.nl>
  * @author Ivo Jansch <ivo@ibuildings.nl>
  * @package atk

@@ -2,7 +2,7 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * @package atk
@@ -25,13 +25,13 @@ include_once($config_atkroot . "atk/attributes/class.atkdummyattribute.php");
  *
  * This attribute only works in Internet Explorer 4 and up.
  *
- * The attribute has no database interaction and does not correspond to a 
+ * The attribute has no database interaction and does not correspond to a
  * database field.
  *
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk
  * @subpackage attributes
- *   
+ *
  */
 class Atk_Toolbar extends Atk_DummyAttribute
 {
@@ -65,14 +65,18 @@ class Atk_Toolbar extends Atk_DummyAttribute
         $page = Atk_Page::getInstance();
         $page->register_script($config_atkroot . "atk/javascript/newwindow.js");
         $page->register_script($config_atkroot . "atk/javascript/class.atktoolbar.js");
-        $res = '<a href="javascript:modifySelection(\'<b>\',\'</b>\');"><img src="' . $theme->iconPath("bold", "toolbar") . '" border="0" alt="Vet"></a> ';
-        $res .= '<a href="javascript:modifySelection(\'<i>\',\'</i>\');"><img src="' . $theme->iconPath("italic", "toolbar") . '" border="0" alt="Schuin"></a> ';
-        $res .= '<a href="javascript:modifySelection(\'<u>\',\'</u>\');"><img src="' . $theme->iconPath("underline", "toolbar") . '" border="0" alt="Onderstreept"></a>';
+        $res = '<a href="javascript:modifySelection(\'<b>\',\'</b>\');"><img src="' . $theme->iconPath("bold",
+                "toolbar") . '" border="0" alt="Vet"></a> ';
+        $res .= '<a href="javascript:modifySelection(\'<i>\',\'</i>\');"><img src="' . $theme->iconPath("italic",
+                "toolbar") . '" border="0" alt="Schuin"></a> ';
+        $res .= '<a href="javascript:modifySelection(\'<u>\',\'</u>\');"><img src="' . $theme->iconPath("underline",
+                "toolbar") . '" border="0" alt="Onderstreept"></a>';
 
         // TODO/FIXME:This is platform specific code and should not be here
         // I think is still needed for older platform version (M1, M2) 
         $res .= '&nbsp;<img src="' . $theme->iconPath("delimiter", "toolbar") . '" border="0">&nbsp;';
-        $res .= '<a href="javascript:popupSelection(\'pagesel.php\',\'pagesel\');" onmouseover="selectie=document.selection.createRange();"><img src="' . $theme->iconPath("link", "toolbar") . '" border="0" alt="Link"></a>';
+        $res .= '<a href="javascript:popupSelection(\'pagesel.php\',\'pagesel\');" onmouseover="selectie=document.selection.createRange();"><img src="' . $theme->iconPath("link",
+                "toolbar") . '" border="0" alt="Link"></a>';
 
         return $res;
     }

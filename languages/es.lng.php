@@ -52,12 +52,14 @@ $es = array(
     "autocomplete_no_results_contains" => "Ningún resultado encontrado que contenga el valor de búsqueda dado.",
     "autocomplete_no_results_exact" => "Ningún resultado encontrado que contenga exactamente el valor de búsqueda dado.",
     "autocomplete_no_results_startswith" => "Ningún resultado encontrado que empiece por el valor de búsqueda dado.",
-    "available" => "Available", // Missing string!!!
+    "available" => "Available",
+    // Missing string!!!
     "back" => "Volver",
     "back_to" => "Volver a",
     "below_minimum_value" => "Bajo el mínimo valor permitido",
     "cancel" => "Cancelar",
-    "cancel_edit" => "Cancel edit", // Missing string!!!
+    "cancel_edit" => "Cancel edit",
+    // Missing string!!!
     "cannot create directory" => "No se puede crear directorio: ",
     "cannot make file" => "No se puede crear archivo: ",
     "cannot_remove_file" => "No se ha podido borrar el fichero!",
@@ -119,7 +121,8 @@ $es = array(
     "error_file_unknown" => "Error desconocido al subir el fichero",
     "error_format_mismatch" => "El elemento en la posición %d no encaja con el formato deseado",
     "error_formdataerror" => "La acción de guardar ha fallado debido a la siguiente razón: ",
-    "error_iconv_not_install" => "iconv module don't install in your system, but it needs for right functionality", // Missing string!!!
+    "error_iconv_not_install" => "iconv module don't install in your system, but it needs for right functionality",
+    // Missing string!!!
     "error_invalid_email" => "Dirección de e-mail incorrecta",
     "error_node_action_access_denied" => "Lo sentimos, no tiene permisos para realizar esta acción.",
     "error_notnumeric" => "El valor no es un número",
@@ -139,15 +142,18 @@ $es = array(
     "export_config_explanation" => "Configurar Exportación",
     "export_generatetitlerow" => "Generar cabeceras",
     "export_selectcolumns" => "Seleccionar columnas",
-    "export_selections" => "Standard selections", // Missing string!!!
-    "export_selections_name" => "Standard selections name", // Missing string!!!
+    "export_selections" => "Standard selections",
+    // Missing string!!!
+    "export_selections_name" => "Standard selections name",
+    // Missing string!!!
     "feb" => "Feb",
     "february" => "Febrero",
     "feedback" => "Realimentación",
     "feedback_delete_cancelled" => "No se ha borrado el elemento.",
     "feedback_delete_failed" => "No se ha podido borrar el elemento.",
     "feedback_delete_success" => "Se ha borrado el elemento.",
-    "feedback_edit_failed" => "Editing is not possible. Item doesn\'t exist (anymore).", // Missing string!!!
+    "feedback_edit_failed" => "Editing is not possible. Item doesn\'t exist (anymore).",
+    // Missing string!!!
     "feedback_import_failed" => "Archivo no importado",
     "feedback_save_cancelled" => "No se ha añadido el elemento.",
     "feedback_save_failed" => "No se ha podido añadir el elemento.",
@@ -274,7 +280,8 @@ $es = array(
     "saveandedit" => "Guardar y editar",
     "saveandnext" => "Guardar y siguiente",
     "save_criteria" => "Guardar criterio",
-    "save_export_selection" => "Save selection", // Missing string!!!
+    "save_export_selection" => "Save selection",
+    // Missing string!!!
     "search" => "Buscar",
     "search_all" => "Buscar todo",
     "search_and" => "Coincidencia en todos los criterios",
@@ -325,26 +332,46 @@ $es = array(
     "timezone_utc_+0300" => "(UTC+03:00) Bagdad, Kuwait, Riyadh, Moscu",
     "timezone_utc_+0400" => "(UTC+04:00) Abu Dhabi, Kabul",
     "timezone_utc_+0500" => "(UTC+05:00) Nueva Delhi, Mumbai, Kathmandu",
-    "timezone_utc_+0600" => "(UTC+06:00) Novosibirsk, Dhaka, Sri Jayawardenepura", // Missing string!!!
-    "timezone_utc_+0700" => "(UTC+07:00) Bangkok, Hanoi, Jakarta, Krasnoyarsk", // Missing string!!!
-    "timezone_utc_+0800" => "(UTC+08:00) Beijing, Hong Kong, Ulaan Bataar", // Missing string!!!
-    "timezone_utc_+0900" => "(UTC+09:00) Osaka, Sapporo, Tokyo, Seoul", // Missing string!!!
-    "timezone_utc_+1000" => "(UTC+10:00) Brisbane, Melbourne, Sydney", // Missing string!!!
-    "timezone_utc_+1100" => "(UTC+11:00) Solomon Is., Magadan", // Missing string!!!
-    "timezone_utc_+1200" => "(UTC+12:00) Auckland, Wellington, Fiji", // Missing string!!!
-    "timezone_utc_+1300" => "(UTC+13:00) Nuku'alofa", // Missing string!!!
-    "timezone_utc_-0100" => "(UTC-01:00) Azores, Cape Verde Is.", // Missing string!!!
-    "timezone_utc_-0200" => "(UTC-02:00) Mid-Atlantic", // Missing string!!!
-    "timezone_utc_-0300" => "(UTC-03:00) Brasilia, Buenos Aires, Greenland", // Missing string!!!
-    "timezone_utc_-0400" => "(UTC-04:00) Atlantic Time (Canada), Santiago", // Missing string!!!
-    "timezone_utc_-0500" => "(UTC-05:00) Bogota, Lima, Quito, Eastern Time (US & Canada)", // Missing string!!!
-    "timezone_utc_-0600" => "(UTC-06:00) Central America, Central Time (US & Canada)", // Missing string!!!
-    "timezone_utc_-0700" => "(UTC-07:00) Arizona, Mountain Time (US & Canada)", // Missing string!!!
-    "timezone_utc_-0800" => "(UTC-08:00) Pacific Time (US & Canada); Tijuna", // Missing string!!!
-    "timezone_utc_-0900" => "(UTC-09:00) Alaska", // Missing string!!!
-    "timezone_utc_-1000" => "(UTC-10:00) Hawaii", // Missing string!!!
-    "timezone_utc_-1100" => "(UTC-11:00) Midway Island, Samoa", // Missing string!!!
-    "timezone_utc_-1200" => "(UTC-12:00) International Date Line West", // Missing string!!!
+    "timezone_utc_+0600" => "(UTC+06:00) Novosibirsk, Dhaka, Sri Jayawardenepura",
+    // Missing string!!!
+    "timezone_utc_+0700" => "(UTC+07:00) Bangkok, Hanoi, Jakarta, Krasnoyarsk",
+    // Missing string!!!
+    "timezone_utc_+0800" => "(UTC+08:00) Beijing, Hong Kong, Ulaan Bataar",
+    // Missing string!!!
+    "timezone_utc_+0900" => "(UTC+09:00) Osaka, Sapporo, Tokyo, Seoul",
+    // Missing string!!!
+    "timezone_utc_+1000" => "(UTC+10:00) Brisbane, Melbourne, Sydney",
+    // Missing string!!!
+    "timezone_utc_+1100" => "(UTC+11:00) Solomon Is., Magadan",
+    // Missing string!!!
+    "timezone_utc_+1200" => "(UTC+12:00) Auckland, Wellington, Fiji",
+    // Missing string!!!
+    "timezone_utc_+1300" => "(UTC+13:00) Nuku'alofa",
+    // Missing string!!!
+    "timezone_utc_-0100" => "(UTC-01:00) Azores, Cape Verde Is.",
+    // Missing string!!!
+    "timezone_utc_-0200" => "(UTC-02:00) Mid-Atlantic",
+    // Missing string!!!
+    "timezone_utc_-0300" => "(UTC-03:00) Brasilia, Buenos Aires, Greenland",
+    // Missing string!!!
+    "timezone_utc_-0400" => "(UTC-04:00) Atlantic Time (Canada), Santiago",
+    // Missing string!!!
+    "timezone_utc_-0500" => "(UTC-05:00) Bogota, Lima, Quito, Eastern Time (US & Canada)",
+    // Missing string!!!
+    "timezone_utc_-0600" => "(UTC-06:00) Central America, Central Time (US & Canada)",
+    // Missing string!!!
+    "timezone_utc_-0700" => "(UTC-07:00) Arizona, Mountain Time (US & Canada)",
+    // Missing string!!!
+    "timezone_utc_-0800" => "(UTC-08:00) Pacific Time (US & Canada); Tijuna",
+    // Missing string!!!
+    "timezone_utc_-0900" => "(UTC-09:00) Alaska",
+    // Missing string!!!
+    "timezone_utc_-1000" => "(UTC-10:00) Hawaii",
+    // Missing string!!!
+    "timezone_utc_-1100" => "(UTC-11:00) Midway Island, Samoa",
+    // Missing string!!!
+    "timezone_utc_-1200" => "(UTC-12:00) International Date Line West",
+    // Missing string!!!
     "title_delete" => "Confirmar borrado",
     "title_multiselect" => "Multiselección",
     "title_select" => "Selección",

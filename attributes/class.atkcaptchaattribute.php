@@ -13,11 +13,11 @@
  *
  * @version $Revision: 6309 $
  * $Id$
- * 
+ *
  */
 
 /**
- * With the atkCaptchaAttribute class you can easily add a captcha to a forum 
+ * With the atkCaptchaAttribute class you can easily add a captcha to a forum
  * or guestbook.
  *
  * Use the flag AF_NOLABEL if you want to start at the beginning of the
@@ -33,8 +33,8 @@ class Atk_CaptchaAttribute extends Atk_Attribute
 
     /**
      * Constructor
-     * @param string $name   The name of the attribute
-     * @param int    $flags  The attribute flags
+     * @param string $name The name of the attribute
+     * @param int $flags The attribute flags
      * @return -
      */
     function __construct($name, $flags = 0)
@@ -91,7 +91,7 @@ class Atk_CaptchaAttribute extends Atk_Attribute
      *
      * @param array $record The record that contains the value for this attribute
      * @param string $mode The mode for which should be validated ("add" or
-     *                     "update") 
+     *                     "update")
      */
     function validate(&$record, $mode)
     {

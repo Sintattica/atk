@@ -18,12 +18,12 @@ Atk_Tools::atkimport('atk.db.statement.atkstatement');
 
 /**
  * Base statement class used for database drivers which don't have their own
- * implementation. 
- * 
- * Bind parameters are replaced by their value before executing the query 
+ * implementation.
+ *
+ * Bind parameters are replaced by their value before executing the query
  * using the database driver. This means you can still use bind parameters but
  * you don't have the performance benefits or real prepared statement.
- * 
+ *
  * @author Peter C. Verhage <peter@achievo.org>
  *
  * @package atk
@@ -33,7 +33,7 @@ class Atk_CompatStatement extends Atk_Statement
 {
     /**
      * Query resource.
-     * 
+     *
      * @var mixed
      */
     private $m_resource;
@@ -44,7 +44,8 @@ class Atk_CompatStatement extends Atk_Statement
     protected function _prepare()
     {
         if ($this->getDb()->connect() != DB_SUCCESS) {
-            throw new Atk_StatementException("Cannot connect to database.", Atk_StatementException::NO_DATABASE_CONNECTION);
+            throw new Atk_StatementException("Cannot connect to database.",
+                Atk_StatementException::NO_DATABASE_CONNECTION);
         }
 
         Atk_Tools::atkdebug("Prepare query: " . $this->_getParsedQuery());
@@ -52,9 +53,9 @@ class Atk_CompatStatement extends Atk_Statement
 
     /**
      * Replace the bind parameters in the parsed query with their escaped values.
-     * 
+     *
      * @param array $params parameters
-     * 
+     *
      * @return string query
      */
     protected function _bindParams($params)
@@ -77,7 +78,7 @@ class Atk_CompatStatement extends Atk_Statement
 
     /**
      * Executes the statement using the given bind parameters.
-     * 
+     *
      * @param array $params bind parameters
      */
     protected function _execute($params)
@@ -104,13 +105,14 @@ class Atk_CompatStatement extends Atk_Statement
 
         if (!$result) {
             $this->m_resource = null;
-            throw new Atk_StatementException("Cannot execute statement: " . $query, Atk_StatementException::STATEMENT_ERROR);
+            throw new Atk_StatementException("Cannot execute statement: " . $query,
+                Atk_StatementException::STATEMENT_ERROR);
         }
     }
 
     /**
      * Fetches the next row from the result set.
-     * 
+     *
      * @return array next row from the result set (false if no other rows exist)
      */
     protected function _fetch()
@@ -154,7 +156,7 @@ class Atk_CompatStatement extends Atk_Statement
     }
 
     /**
-     * Returns the number of affected rows in case of an INSERT, UPDATE 
+     * Returns the number of affected rows in case of an INSERT, UPDATE
      * or DELETE query. Called immediatly after Atk_Statement::_execute().
      */
     protected function _getAffectedRowCount()

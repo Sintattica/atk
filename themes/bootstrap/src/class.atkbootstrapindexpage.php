@@ -112,8 +112,8 @@ class Atk_BootstrapIndexPage
         $this->m_output->output(
             $this->m_page->render(
                 $this->m_title != "" ? $this->m_title : null, $this->m_flags, $this->m_extrabodyprops != ""
-                    ? $this->m_extrabodyprops : null, $this->m_extraheaders != ""
-                    ? $this->m_extraheaders : null
+                ? $this->m_extrabodyprops : null, $this->m_extraheaders != ""
+                ? $this->m_extraheaders : null
             )
         );
         $this->m_output->outputFlush();
@@ -129,10 +129,11 @@ class Atk_BootstrapIndexPage
         /* load menu layout */
         $menu = Atk_Menu::getMenu();
 
-        if (is_object($menu))
+        if (is_object($menu)) {
             $this->m_page->addContent($menu->getMenu());
-        else
+        } else {
             Atk_Tools::atkerror("no menu object created!");
+        }
     }
 
     /**
@@ -237,7 +238,7 @@ class Atk_BootstrapIndexPage
     function atkGenerateDispatcher()
     {
         global $ATK_VARS;
-        $session = & Atk_SessionManager::getSession();
+        $session = &Atk_SessionManager::getSession();
 
 
         if ($session["login"] != 1) {
@@ -247,28 +248,32 @@ class Atk_BootstrapIndexPage
             $destination = "";
             if (isset($ATK_VARS["atknodetype"]) && isset($ATK_VARS["atkaction"])) {
                 $destination = "&atknodetype=" . $ATK_VARS["atknodetype"] . "&atkaction=" . $ATK_VARS["atkaction"];
-                if (isset($ATK_VARS["atkselector"]))
+                if (isset($ATK_VARS["atkselector"])) {
                     $destination .= "&atkselector=" . $ATK_VARS["atkselector"];
+                }
             }
 
-            $box = $this->m_ui->renderBox(array("title" => Atk_Tools::atktext("title_session_expired"),
+            $box = $this->m_ui->renderBox(array(
+                "title" => Atk_Tools::atktext("title_session_expired"),
                 "content" => '<br><br>' . Atk_Tools::atktext("explain_session_expired") . '<br><br><br><br>
-                                           <a href="index.php?atklogout=true' . $destination . '" target="_top">' . Atk_Tools::atktext("relogin") . '</a><br><br>'));
+                                           <a href="index.php?atklogout=true' . $destination . '" target="_top">' . Atk_Tools::atktext("relogin") . '</a><br><br>'
+            ));
 
             $this->m_page->addContent($box);
 
             $this->m_output->output($this->m_page->render(Atk_Tools::atktext("title_session_expired"), true));
         } else {
             $lockType = Atk_Config::getGlobal("lock_type");
-            if (!empty($lockType))
+            if (!empty($lockType)) {
                 atklock();
+            }
 
             // Create node
             if (isset($ATK_VARS['atknodetype'])) {
                 $obj = Atk_Module::atkGetNode($ATK_VARS['atknodetype']);
 
                 if (is_object($obj)) {
-                    $controller = & Atk_Tools::atkinstance("atk.atkcontroller");
+                    $controller = &Atk_Tools::atkinstance("atk.atkcontroller");
                     $controller->invoke("loadDispatchPage", $ATK_VARS);
                 } else {
                     Atk_Tools::atkdebug("No object created!!?!");
@@ -276,12 +281,14 @@ class Atk_BootstrapIndexPage
             } else {
 
                 if (is_array($this->m_defaultDestination)) {
-                    $controller = & Atk_Tools::atkinstance("atk.atkcontroller");
+                    $controller = &Atk_Tools::atkinstance("atk.atkcontroller");
                     $controller->invoke("loadDispatchPage", $this->m_defaultDestination);
                 } else {
                     $this->m_page->register_style($this->m_theme->stylePath("style.css"));
-                    $box = $this->m_ui->renderBox(array("title" => Atk_Tools::atktext("app_shorttitle"),
-                        "content" => Atk_Tools::atktext("app_description")));
+                    $box = $this->m_ui->renderBox(array(
+                        "title" => Atk_Tools::atktext("app_shorttitle"),
+                        "content" => Atk_Tools::atktext("app_description")
+                    ));
 
                     $box = '<div class="container-fluid">' . $box . '</div>';
 
@@ -298,8 +305,9 @@ class Atk_BootstrapIndexPage
      */
     function setDefaultDestination($destination)
     {
-        if (is_array($destination))
+        if (is_array($destination)) {
             $this->m_defaultDestination = $destination;
+        }
     }
 
 }

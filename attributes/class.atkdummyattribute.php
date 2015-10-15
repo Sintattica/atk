@@ -48,8 +48,9 @@ class Atk_DummyAttribute extends Atk_Attribute
         $flags |= AF_HIDE_SEARCH | AF_NO_SORT;
 
         // Add the AF_BLANKLABEL flag unless the AF_DUMMY_SHOW_LABEL flag wasn't present
-        if (!Atk_Tools::hasFlag($flags, AF_DUMMY_SHOW_LABEL))
+        if (!Atk_Tools::hasFlag($flags, AF_DUMMY_SHOW_LABEL)) {
             $flags |= AF_BLANKLABEL;
+        }
 
         $this->atkAttribute($name, $flags); // base class constructor
         $this->m_text = $text;
@@ -110,7 +111,7 @@ class Atk_DummyAttribute extends Atk_Attribute
     /**
      * Display a record
      * Here it will only return the text.
-     * @param array $record  Array with fields
+     * @param array $record Array with fields
      * @return Text
      */
     function display($record)
@@ -160,7 +161,7 @@ class Atk_DummyAttribute extends Atk_Attribute
      */
     function db2value($record)
     {
-        return NULL;
+        return null;
     }
 
     /**
@@ -185,7 +186,7 @@ class Atk_DummyAttribute extends Atk_Attribute
      */
     function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
     {
-        
+
     }
 
     /**

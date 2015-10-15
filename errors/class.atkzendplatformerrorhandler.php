@@ -2,8 +2,8 @@
 
 /**
  * Handles errors by sending them to Zend Platform
- * 
- * Params used: 
+ *
+ * Params used:
  * - none
  *
  * @author Harrie Verveer
@@ -23,10 +23,11 @@ class Atk_ZendPlatformErrorHandler extends Atk_ErrorHandlerBase
         if ($this->zendPlatformAvailable()) {
             // log in zend platform
             $errMsg = implode(' | ', is_array($errorMessage) ? $errorMessage : array());
-            if ($errMsg == '')
+            if ($errMsg == '') {
                 $errMsg = 'Something went terribly wrong, but there is no errormessage set...';
-            else
-                $errMsg = preg_replace('/\[\+.*s\]/', '', $errMsg); // get rid of timestamps because they will prevent ZP from finding duplicate errors
+            } else {
+                $errMsg = preg_replace('/\[\+.*s\]/', '', $errMsg);
+            } // get rid of timestamps because they will prevent ZP from finding duplicate errors
 
             monitor_custom_event(Atk_Tools::atktext("app_title"), $errMsg, true);
         }

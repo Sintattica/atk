@@ -63,7 +63,7 @@ class Atk_CalculatorAttribute extends Atk_Attribute
      * @access private
      * @var String
      */
-    var $m_calculation = NULL;
+    var $m_calculation = null;
 
     /**
      * Constructor
@@ -117,7 +117,7 @@ class Atk_CalculatorAttribute extends Atk_Attribute
 
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
-     * 
+     *
      * @access public
      * @param array $record The record that holds the value for this attribute
      * @param String $mode The display mode.

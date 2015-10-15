@@ -66,8 +66,9 @@ class Atk_MysqliDb extends Atk_MysqlDb
     {
         /* establish connection */
         if (empty($this->m_link_id)) {
-            if (empty($port))
-                $port = NULL;
+            if (empty($port)) {
+                $port = null;
+            }
             $this->m_link_id = @mysqli_connect($host, $user, $password, $database, $port);
             if (!$this->m_link_id) {
                 $this->halt($this->getErrorMsg());
@@ -81,7 +82,7 @@ class Atk_MysqliDb extends Atk_MysqlDb
             }
 
             /* set autoCommit to off */
-            mysqli_autocommit($this->m_link_id, FALSE);
+            mysqli_autocommit($this->m_link_id, false);
         }
 
 
@@ -142,16 +143,18 @@ class Atk_MysqliDb extends Atk_MysqlDb
     function query($query, $offset = -1, $limit = -1)
     {
         /* limit? */
-        if ($offset >= 0 && $limit > 0)
+        if ($offset >= 0 && $limit > 0) {
             $query .= " LIMIT $offset, $limit";
+        }
 
         /* connect to database */
         $mode = $this->getQueryMode($query);
         if ($this->connect($mode) == DB_SUCCESS) {
             /* free old results */
             if ($this->m_query_id) {
-                if (is_resource($this->m_query_id))
+                if (is_resource($this->m_query_id)) {
                     mysqli_free_result($this->m_query_id);
+                }
                 $this->m_query_id = 0;
             }
 
@@ -182,8 +185,9 @@ class Atk_MysqliDb extends Atk_MysqlDb
                 return false;
             }
 
-            if ($unlock_table)
+            if ($unlock_table) {
                 $this->unlock();
+            }
 
             if (Atk_Config::getGlobal('debug') >= 1) {
                 $this->debugWarnings();
@@ -196,9 +200,9 @@ class Atk_MysqliDb extends Atk_MysqlDb
 
     /**
      * Execute and log query.
-     * 
-     * @param string  $query          query
-     * @param boolean $isSystemQuery  is system query? (e.g. for retrieving metadata, warnings, setting locks etc.)
+     *
+     * @param string $query query
+     * @param boolean $isSystemQuery is system query? (e.g. for retrieving metadata, warnings, setting locks etc.)
      */
     protected function _query($query, $isSystemQuery)
     {
@@ -247,8 +251,9 @@ class Atk_MysqliDb extends Atk_MysqlDb
             $table = $matches[1];
 
             if ($this->m_query_id) {
-                if (is_resource($this->m_query_id))
+                if (is_resource($this->m_query_id)) {
                     mysqli_free_result($this->m_query_id);
+                }
                 $this->m_query_id = 0;
             }
             $this->m_affected_rows = 0;
@@ -267,7 +272,8 @@ class Atk_MysqliDb extends Atk_MysqlDb
     function next_record()
     {
         /* goto next record */
-        $this->m_record = @mysqli_fetch_array($this->m_query_id, MYSQLI_ASSOC | Atk_Config::getGlobal("mysqlfetchmode"));
+        $this->m_record = @mysqli_fetch_array($this->m_query_id,
+            MYSQLI_ASSOC | Atk_Config::getGlobal("mysqlfetchmode"));
         $this->m_row++;
         $this->m_errno = mysqli_errno($this->m_link_id);
         $this->m_error = mysqli_error($this->m_link_id);
@@ -292,10 +298,11 @@ class Atk_MysqliDb extends Atk_MysqlDb
     function seek($position = 0)
     {
         $result = @mysqli_data_seek($this->m_query_id, $position);
-        if ($result)
+        if ($result) {
             $this->m_row = $position;
-        else
+        } else {
             $this->halt("seek($position) failed: result has " . $this->num_rows() . " rows");
+        }
     }
 
     /**
@@ -316,8 +323,9 @@ class Atk_MysqliDb extends Atk_MysqlDb
             }
 
             $result = $this->_query($query, true);
-            if (!$result)
+            if (!$result) {
                 $this->halt("$mode lock on $table failed.");
+            }
 
             /* return result */
             return $result;
@@ -336,8 +344,9 @@ class Atk_MysqliDb extends Atk_MysqlDb
             /* unlock */
             Atk_Tools::atkdebug("unlock tables");
             $result = $this->_query("UNLOCK TABLES", true);
-            if (!$result)
+            if (!$result) {
                 $this->halt("unlock tables failed.");
+            }
 
             /* return result */
             return $result;
@@ -399,9 +408,7 @@ class Atk_MysqliDb extends Atk_MysqlDb
                     $id = $this->_query($query, true);
                     $this->unlock();
                     return 1;
-                }
-
-                /* enter next value */ else {
+                } /* enter next value */ else {
                     $nextid = $result[$this->m_seq_field] + 1;
                     $query = "UPDATE " . $this->m_seq_table . " SET " . $this->m_seq_field . " = '$nextid' WHERE " . $this->m_seq_namefield . " = '$sequence'";
 
@@ -411,9 +418,7 @@ class Atk_MysqliDb extends Atk_MysqlDb
                 }
             }
             return 0;
-        }
-
-        /* cannot connect */ else {
+        } /* cannot connect */ else {
             $this->halt("cannot connect to " . $this->m_host);
         }
     }
@@ -451,8 +456,8 @@ class Atk_MysqliDb extends Atk_MysqlDb
         $this->connect('r');
         $id = $this->_query("SHOW TABLE STATUS LIKE '" . $table . "'", true);
         $status = @mysqli_fetch_array($id, MYSQLI_ASSOC | Atk_Config::getGlobal("mysqlfetchmode"));
-        $result = $status != NULL && isset($status['Engine']) ? $status['Engine']
-                : NULL;
+        $result = $status != null && isset($status['Engine']) ? $status['Engine']
+            : null;
         Atk_Tools::atkdebug("Table type? $table => $result");
         return $result;
     }
@@ -507,29 +512,37 @@ class Atk_MysqliDb extends Atk_MysqlDb
                 // the real size in characters, so we divide the length by 3
                 if (strtoupper($this->m_charset) == 'UTF8' && ($result[$i]['gentype'] == 'string' || $result[$i]['gentype'] == 'text')) {
                     $result[$i]['len'] /= 3;
-                } else if ($result[$i]["gentype"] == "decimal") {
-                    // for a mysql type DECIMAL, the length is returned as M+2 (signed) or M+1 (unsigned)
-                    $offset = ($finfo->flags & MYSQLI_UNSIGNED_FLAG) ? 1 : 2;
-                    $result[$i]["len"] -= ($offset + $finfo->decimals);
-                    $result[$i]["len"] .= "," . $finfo->decimals;
-                    // TODO we should also save the "unsigned" flag in $result[$i]["flags"]
+                } else {
+                    if ($result[$i]["gentype"] == "decimal") {
+                        // for a mysql type DECIMAL, the length is returned as M+2 (signed) or M+1 (unsigned)
+                        $offset = ($finfo->flags & MYSQLI_UNSIGNED_FLAG) ? 1 : 2;
+                        $result[$i]["len"] -= ($offset + $finfo->decimals);
+                        $result[$i]["len"] .= "," . $finfo->decimals;
+                        // TODO we should also save the "unsigned" flag in $result[$i]["flags"]
+                    }
                 }
-                if ($finfo->flags & MYSQLI_PRI_KEY_FLAG)
-                    $result[$i]["flags"]|= MF_PRIMARY;
-                if ($finfo->flags & MYSQLI_UNIQUE_KEY_FLAG)
-                    $result[$i]["flags"]|= MF_UNIQUE;
-                if ($finfo->flags & MYSQLI_NOT_NULL_FLAG)
-                    $result[$i]["flags"]|= MF_NOT_NULL;
-                if ($finfo->flags & MYSQLI_AUTO_INCREMENT_FLAG)
-                    $result[$i]["flags"]|= MF_AUTO_INCREMENT;
+                if ($finfo->flags & MYSQLI_PRI_KEY_FLAG) {
+                    $result[$i]["flags"] |= MF_PRIMARY;
+                }
+                if ($finfo->flags & MYSQLI_UNIQUE_KEY_FLAG) {
+                    $result[$i]["flags"] |= MF_UNIQUE;
+                }
+                if ($finfo->flags & MYSQLI_NOT_NULL_FLAG) {
+                    $result[$i]["flags"] |= MF_NOT_NULL;
+                }
+                if ($finfo->flags & MYSQLI_AUTO_INCREMENT_FLAG) {
+                    $result[$i]["flags"] |= MF_AUTO_INCREMENT;
+                }
 
-                if ($full)
+                if ($full) {
                     $result["meta"][$result[$i]["name"]] = $i;
+                }
                 $i++;
             }
 
-            if ($full)
+            if ($full) {
                 $result["num_fields"] = $i;
+            }
 
             mysqli_free_result($id);
 
@@ -554,8 +567,9 @@ class Atk_MysqliDb extends Atk_MysqlDb
         $result = array();
         for ($i = 0; $info = mysqli_fetch_row($this->m_query_id); $i++) {
             // ignore views?
-            if (!$includeViews && strtoupper($info[1]) == 'VIEW')
+            if (!$includeViews && strtoupper($info[1]) == 'VIEW') {
                 continue;
+            }
 
             $result[$i]["table_name"] = $info[0];
             $result[$i]["tablespace_name"] = $this->m_database;

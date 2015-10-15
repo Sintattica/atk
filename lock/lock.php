@@ -2,7 +2,7 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * Class used by the application level record locking mechanism.
@@ -21,7 +21,7 @@
  */
 /** @internal includes, defines etc. */
 global $ATK_VARS;
-$id = (int) $ATK_VARS["id"];
+$id = (int)$ATK_VARS["id"];
 $type = ($ATK_VARS["type"] == "xml") ? "xml" : "image";
 
 $lock = Atk_Lock::getInstance();
@@ -32,21 +32,17 @@ if ($lock->extend($id)) {
     if ($type == "xml") {
         header("Content-type: text/xml");
         echo "<response><success/></response>";
-    }
-
-    // image
+    } // image
     else {
         header("Content-type: image/gif");
         readfile(Atk_Config::getGlobal("atkroot") . 'atk/images/dummy.gif');
     }
-}
-
-/* failure */ else {
+} /* failure */ else {
     // xml
-    if ($type == "xml")
+    if ($type == "xml") {
         echo "<response><failure/></response>";
-
-    // image
-    else
+    } // image
+    else {
         header("HTTP/1.0 404 Not Found");
+    }
 }

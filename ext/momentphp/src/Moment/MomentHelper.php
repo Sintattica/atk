@@ -14,8 +14,7 @@ class MomentHelper
      */
     public static function getQuarterPeriod($quarter, $year, $timeZoneString = 'UTC')
     {
-        switch ($quarter)
-        {
+        switch ($quarter) {
             case 1:
                 $startMonth = 1;
                 $endMonth = 3;

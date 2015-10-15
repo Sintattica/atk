@@ -41,9 +41,9 @@ class Atk_StringParser
     /**
      * Parse data into the string.
      *
-     * @param array $data                The data to parse in the string
-     * @param bool  $encode              Wether or not to do a rawurlencode
-     * @param bool  $ignoreUnknownFields Replace unknown fields with an empty string,
+     * @param array $data The data to parse in the string
+     * @param bool $encode Wether or not to do a rawurlencode
+     * @param bool $ignoreUnknownFields Replace unknown fields with an empty string,
      *                                   if set to false unknown fields will be left
      *                                   untouched.
      *
@@ -62,19 +62,23 @@ class Atk_StringParser
                 if (is_array($value) || $value instanceof ArrayAccess) {
                     if (isset($value[$el])) {
                         $value = $value[$el];
-                    } else if ($replaceUnknownFields) {
-                        Atk_Tools::atknotice("atkStringparser({$this->m_string})->parse(): Attempting to get element '{$el}', but {$elements[$i - 1]} is not an array!");
-                        $value = '';
-                        break;
                     } else {
+                        if ($replaceUnknownFields) {
+                            Atk_Tools::atknotice("atkStringparser({$this->m_string})->parse(): Attempting to get element '{$el}', but {$elements[$i - 1]} is not an array!");
+                            $value = '';
+                            break;
+                        } else {
+                            // field not found, continue with next field without
+                            // replacing the field in the template
+                            continue 2;
+                        }
+                    }
+                } else {
+                    if (!$replaceUnknownFields) {
                         // field not found, continue with next field without
                         // replacing the field in the template
                         continue 2;
                     }
-                } else if (!$replaceUnknownFields) {
-                    // field not found, continue with next field without
-                    // replacing the field in the template
-                    continue 2;
                 }
             }
 
@@ -101,12 +105,14 @@ class Atk_StringParser
             $databin = $data;
             for ($j = 0; $j < count($elements); $j++) {
                 $value = $databin[$elements[$j]];
-                if (!isset($value))
-                    return false; // Missing value.
+                if (!isset($value)) {
+                    return false;
+                } // Missing value.
                 $databin = $databin[$elements[$j]];
             }
-            if (!isset($value))
-                return false; // Missing value.
+            if (!isset($value)) {
+                return false;
+            } // Missing value.
         }
         return true;
     }
@@ -126,11 +132,14 @@ class Atk_StringParser
                     $adding = false;
                     $this->m_fields[] = $tmp;
                     $tmp = "";
-                } else if ($this->m_string[$i] == "[") {
-                    $adding = true;
                 } else {
-                    if ($adding)
-                        $tmp.=$this->m_string[$i];
+                    if ($this->m_string[$i] == "[") {
+                        $adding = true;
+                    } else {
+                        if ($adding) {
+                            $tmp .= $this->m_string[$i];
+                        }
+                    }
                 }
             }
         }
@@ -164,7 +173,7 @@ class Atk_StringParser
     {
         $matches = $this->getAllFieldsAsArray();
         Atk_Tools::atk_var_dump($matches, "MATCHES" . ($split_tags_and_fields ? " (split tags and separators)"
-                    : ""));
+                : ""));
 
         $fields = array();
         if (is_array($matches)) {

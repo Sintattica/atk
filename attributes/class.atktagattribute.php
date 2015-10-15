@@ -34,9 +34,9 @@ define("TA_IGNORE", 3); //When a none-existing tag is found, the tag is ignored.
 class Atk_TagAttribute extends Atk_FuzzySearchAttribute
 {
     var $m_link = "";
-    var $m_linkInstance = NULL;
+    var $m_linkInstance = null;
     var $m_destination = "";
-    var $m_destInstance = NULL;
+    var $m_destInstance = null;
     var $m_destinationfield = "";
     var $m_remoteKey = "";
     var $m_localKey = "";
@@ -74,9 +74,9 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
 
     /**
      * Fetch value.
-     * 
+     *
      * @param array $vars post vars
-     * 
+     *
      * @return string fetched value
      */
     public function fetchValue($vars)
@@ -127,18 +127,21 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
         $valid = true;
 
         // If coming from selectscreen, no search necessary anymore.
-        if (is_array($rec[$this->fieldName()]))
+        if (is_array($rec[$this->fieldName()])) {
             return true;
+        }
 
         $this->m_matches = $this->getMatches($rec[$this->fieldName()]);
         $this->m_nonematching = $this->getNoneMatching();
 
         foreach ($this->m_nonematching as $keyword) {
             if ($this->m_mode == TA_ERROR) {
-                Atk_Tools::triggerError($rec, $this, "notallowed_new_defaulttag", sprintf($this->text("notallowed_new_defaulttag"), $keyword));
+                Atk_Tools::triggerError($rec, $this, "notallowed_new_defaulttag",
+                    sprintf($this->text("notallowed_new_defaulttag"), $keyword));
                 $valid = false;
             } elseif ($this->m_mode == TA_ADD && !$this->isValidKeyWord($keyword)) {
-                Atk_Tools::triggerError($rec, $this, 'error_tag_illegalvalue', sprintf($this->text('error_tag_illegalvalue'), $keyword));
+                Atk_Tools::triggerError($rec, $this, 'error_tag_illegalvalue',
+                    sprintf($this->text('error_tag_illegalvalue'), $keyword));
                 $valid = false;
             }
         }
@@ -148,7 +151,7 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
 
     /**
      * A keyword field may not contain HTML or linefeeds
-     *     
+     *
      * @param String $keyword
      */
     function isValidKeyWord($keyword)
@@ -178,13 +181,13 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
             $html = $this->displayDefaultTags($prefix);
 
             //only refill the record, if we are not in TA_ERROR mode, and no errors are found.
-            if (!(count($this->m_nonematching) && $this->m_mode == TA_ERROR))
+            if (!(count($this->m_nonematching) && $this->m_mode == TA_ERROR)) {
                 $rec[$this->fieldName()] = $this->refillRecord($rec);
+            }
 
             $html .= Atk_TextAttribute::edit($rec, $prefix, $mode);
             return $html;
-        }
-        else {
+        } else {
             Atk_Tools::atkdebug("could not create destination instance");
             return false;
         }
@@ -205,23 +208,23 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
         $html = '<div id="' . $this->fieldName() . '_tags">';
 
         if (count($defaults)) {
-            $html.= $this->text("available_default_tags") . ": ";
+            $html .= $this->text("available_default_tags") . ": ";
             for ($i = 0, $_i = count($defaults); $i < $_i; $i++) {
                 $key = $defaults[$i][$this->m_destinationfield];
 
                 $jsclick = "ta_addTag('$id', '$key');";
 
-                $html.= "<a href=\"javascript:$jsclick\">$key</a>";
+                $html .= "<a href=\"javascript:$jsclick\">$key</a>";
 
-                if ($i < ($_i - 1))
-                    $html.= ", ";
+                if ($i < ($_i - 1)) {
+                    $html .= ", ";
+                }
             }
-        }
-        else {
+        } else {
             return '';
         }
 
-        $html.= "</div>";
+        $html .= "</div>";
         return $html;
     }
 
@@ -233,8 +236,9 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
      */
     function refillRecord($orgrec)
     {
-        if (!$this->createLink())
+        if (!$this->createLink()) {
             return "";
+        }
 
         $values = array();
 
@@ -248,8 +252,9 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
             $tagname = trim($tagname);
 
             //we do not want duplicates
-            if (!in_array($tagname, $values))
+            if (!in_array($tagname, $values)) {
                 $values[] = $tagname;
+            }
         }
 
         return implode(", ", $values);
@@ -325,7 +330,7 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
     }
 
     /**
-     * Get the keywords that did not match. 
+     * Get the keywords that did not match.
      *
      * @return array
      */
@@ -337,8 +342,9 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
         foreach ($this->m_matches as $keyword => $matches) {
             $cnt_matches = count($matches);
             //We remember the none-matching ones.
-            if (!$cnt_matches)
+            if (!$cnt_matches) {
                 $no_match[] = $keyword;
+            }
         }
         return $no_match;
     }
@@ -394,8 +400,9 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
             $cnt_matches = count($matches);
 
             //We remember the none-matching ones.
-            if (!$cnt_matches)
+            if (!$cnt_matches) {
                 $no_match[] = $keyword;
+            }
 
             for ($i = 0; $i < $cnt_matches; $i++) {
                 // Make sure there are no duplicates
@@ -413,7 +420,9 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
 
 
                 //if one keyword could not be added, stop adding them.
-                if (!$this->m_destInstance->validate($defaultsRec, 'add') || !$this->m_destInstance->addDb($defaultsRec)) {
+                if (!$this->m_destInstance->validate($defaultsRec,
+                        'add') || !$this->m_destInstance->addDb($defaultsRec)
+                ) {
                     Atk_Tools::atkdebug("could not add default keyword");
                     return false;
                 } else {
@@ -480,7 +489,7 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
      */
     function addToQuery()
     {
-        
+
     }
 
     /**
@@ -489,7 +498,7 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
      */
     function hide()
     {
-        
+
     }
 
     /**
@@ -498,7 +507,7 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
      */
     function search()
     {
-        
+
     }
 
     /**
@@ -516,7 +525,7 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
      */
     function searchCondition()
     {
-        
+
     }
 
     /**
@@ -525,7 +534,7 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
      */
     function getSearchCondition()
     {
-        
+
     }
 
     /**
@@ -534,7 +543,7 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
      */
     function fetchMeta()
     {
-        
+
     }
 
     /**
@@ -543,7 +552,7 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
      */
     function dbFieldSize()
     {
-        
+
     }
 
     /**
@@ -552,7 +561,7 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
      */
     function dbFieldType()
     {
-        
+
     }
 
     /**
@@ -564,8 +573,9 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
      */
     function addSearchFilter($filter, $value = "")
     {
-        if (!$this->m_destInstance)
+        if (!$this->m_destInstance) {
             $this->createdestinationInstance();
+        }
         $this->m_destInstance->addFilter($filter, $value);
     }
 
@@ -641,7 +651,7 @@ class Atk_TagAttribute extends Atk_FuzzySearchAttribute
 
     /**
      * Checks if a key is not an array
-     * @param array $key   field containing the key values
+     * @param array $key field containing the key values
      * @param string $field field to return if an array
      * @return mixed value of $field
      */

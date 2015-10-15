@@ -28,7 +28,7 @@ define("AF_ONETOONE_ADD", AF_SPECIFIC_1);
 define("AF_ONETOONE_ERROR", AF_SPECIFIC_2);
 
 /**
- * Invisibly integrate a onetoonerelation as if the fields where part of the current node.  
+ * Invisibly integrate a onetoonerelation as if the fields where part of the current node.
  * If the relation is integrated, no divider is drawn, and the section heading is suppressed.
  * (Integration does not affect the way data is stored or manipulated, only how it is displayed.)
  */
@@ -97,7 +97,7 @@ class Atk_OneToOneRelation extends Atk_Relation
      *
      * @param String $name The unique name of the attribute. In slave mode,
      *                     this corresponds to the foreign key field in the
-     *                     database table.  (The name is also used as the section 
+     *                     database table.  (The name is also used as the section
      *                     heading.)
      * @param String $destination the destination node (in module.nodename
      *                            notation)
@@ -110,8 +110,9 @@ class Atk_OneToOneRelation extends Atk_Relation
      */
     function __construct($name, $destination, $refKey = "", $flags = 0)
     {
-        if ($flags & AF_ONETOONE_ADD != AF_ONETOONE_ADD)
+        if ($flags & AF_ONETOONE_ADD != AF_ONETOONE_ADD) {
             $flags |= AF_NO_ADD;
+        }
         parent::__construct($name, $destination, $flags | AF_ONETOONE_LAZY);
         $this->m_refKey = $refKey;
     }
@@ -154,7 +155,7 @@ class Atk_OneToOneRelation extends Atk_Relation
      */
     function edit()
     {
-        
+
     }
 
     /**
@@ -164,8 +165,9 @@ class Atk_OneToOneRelation extends Atk_Relation
      */
     function initialValue()
     {
-        if ($this->m_initialValue !== null)
+        if ($this->m_initialValue !== null) {
             return parent::initialValue();
+        }
 
         if ($this->createDestination()) {
             return $this->m_destInstance->initial_values();
@@ -213,8 +215,9 @@ class Atk_OneToOneRelation extends Atk_Relation
                     }
                 }
 
-                if ($tablename != "")
-                    $tablename.=".";
+                if ($tablename != "") {
+                    $tablename .= ".";
+                }
 
                 if ($this->m_refKey != "") {
                     // Foreign key is in the destination node.
@@ -224,18 +227,21 @@ class Atk_OneToOneRelation extends Atk_Relation
                     $condition = $tablename . $this->fieldName() . "=" . $fieldaliasprefix . $this->fieldName() . "." . $this->m_destInstance->m_primaryKey[0];
                 }
 
-                $condition.= $this->getDestinationFilterCondition($fieldaliasprefix);
-                $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix . $this->fieldName(), $condition, true, $mode);
+                $condition .= $this->getDestinationFilterCondition($fieldaliasprefix);
+                $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix . $this->fieldName(), $condition,
+                    true, $mode);
 
                 // we pass true as the last param to addToQuery, because we need all fields..
-                $this->m_destInstance->addToQuery($query, $fieldaliasprefix . $this->fieldName(), $level + 1, true, $mode);
+                $this->m_destInstance->addToQuery($query, $fieldaliasprefix . $this->fieldName(), $level + 1, true,
+                    $mode);
             }
 
             // When storing, we don't add to the query.. we have our own store() method..
             // With one exception. If the foreign key is in the source node, we also need to update
             // the refkey value.
             if ($this->m_refKey == "" && $mode == "add") {
-                $query->addField($this->fieldName(), $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]], "", "", !$this->hasFlag(AF_NO_QUOTES));
+                $query->addField($this->fieldName(), $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]],
+                    "", "", !$this->hasFlag(AF_NO_QUOTES));
             }
         }
     }
@@ -290,10 +296,10 @@ class Atk_OneToOneRelation extends Atk_Relation
         $condition = "";
         if (is_array($this->m_destinationFilter)) {
             for ($i = 0, $_i = count($this->m_destinationFilter); $i < $_i; $i++) {
-                $condition.=" AND " . $fieldaliasprefix . $this->m_name . "." . $this->m_destinationFilter[$i];
+                $condition .= " AND " . $fieldaliasprefix . $this->m_name . "." . $this->m_destinationFilter[$i];
             }
         } elseif ($this->m_destinationFilter != "") {
-            $condition.=" AND " . $fieldaliasprefix . $this->m_name . "." . $this->m_destinationFilter;
+            $condition .= " AND " . $fieldaliasprefix . $this->m_name . "." . $this->m_destinationFilter;
         }
         return $condition;
     }
@@ -350,10 +356,10 @@ class Atk_OneToOneRelation extends Atk_Relation
 
         if ($this->createDestination()) {
             (isset($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]))
-                        ?
-                    $pkval = $rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]
-                        : $pkval = NULL;
-            if ($pkval != NULL && $pkval != "") { // If primary key is not filled, there was no record, so we
+                ?
+                $pkval = $rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]
+                : $pkval = null;
+            if ($pkval != null && $pkval != "") { // If primary key is not filled, there was no record, so we
                 // should return NULL.
                 foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
                     $p_attrib = &$this->m_destInstance->m_attribList[$attribname];
@@ -364,7 +370,7 @@ class Atk_OneToOneRelation extends Atk_Relation
                 return $rec[$this->fieldName()];
             }
         }
-        return NULL;
+        return null;
     }
 
     /**
@@ -394,7 +400,7 @@ class Atk_OneToOneRelation extends Atk_Relation
         // we need to pass all values to the destination node, so it can
         // run it's fetchValue stuff over it..
         if ($this->createDestination()) {
-            if ($postvars[$this->fieldName()] != NULL) {
+            if ($postvars[$this->fieldName()] != null) {
                 foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
                     $p_attrib = &$this->m_destInstance->m_attribList[$attribname];
                     $postvars[$this->fieldName()][$attribname] = $p_attrib->fetchValue($postvars[$this->fieldName()]);
@@ -425,23 +431,25 @@ class Atk_OneToOneRelation extends Atk_Relation
     function storageType($mode)
     {
         // Mode specific storage type.
-        if (isset($this->m_storageType[$mode]) && $this->m_storageType[$mode] !== null)
+        if (isset($this->m_storageType[$mode]) && $this->m_storageType[$mode] !== null) {
             return $this->m_storageType[$mode];
-
-        // Global storage type (key null is special!)
-        else if (isset($this->m_storageType[null]) && $this->m_storageType[null] !== null)
-            return $this->m_storageType[null];
-
-        else if ($this->m_refKey != "") {
-            // foreign key is in destination node, so we must store the
-            // destination AFTER we stored the master record.
-            return POSTSTORE;
-        } else {
-            // foreign key is in source node, so we must store the
-            // relation node first, so we can store the foreign key
-            // when we store the master record. To store the latter,
-            // we must also perform an addToQuery.
-            return PRESTORE | ADDTOQUERY;
+        } // Global storage type (key null is special!)
+        else {
+            if (isset($this->m_storageType[null]) && $this->m_storageType[null] !== null) {
+                return $this->m_storageType[null];
+            } else {
+                if ($this->m_refKey != "") {
+                    // foreign key is in destination node, so we must store the
+                    // destination AFTER we stored the master record.
+                    return POSTSTORE;
+                } else {
+                    // foreign key is in source node, so we must store the
+                    // relation node first, so we can store the foreign key
+                    // when we store the master record. To store the latter,
+                    // we must also perform an addToQuery.
+                    return PRESTORE | ADDTOQUERY;
+                }
+            }
         }
     }
 
@@ -465,14 +473,19 @@ class Atk_OneToOneRelation extends Atk_Relation
      */
     function loadType($mode)
     {
-        if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null)
+        if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null) {
             return $this->m_loadType[$mode];
-        else if (isset($this->m_loadType[null]) && $this->m_loadType[null] !== null)
-            return $this->m_loadType[null];
-        else if ($this->hasFlag(AF_ONETOONE_LAZY))
-            return POSTLOAD | ADDTOQUERY;
-        else
-            return ADDTOQUERY;
+        } else {
+            if (isset($this->m_loadType[null]) && $this->m_loadType[null] !== null) {
+                return $this->m_loadType[null];
+            } else {
+                if ($this->hasFlag(AF_ONETOONE_LAZY)) {
+                    return POSTLOAD | ADDTOQUERY;
+                } else {
+                    return ADDTOQUERY;
+                }
+            }
+        }
     }
 
     /**
@@ -528,7 +541,7 @@ class Atk_OneToOneRelation extends Atk_Relation
     function needsUpdate($record)
     {
         return $this->m_forceupdate ||
-            (parent::needsUpdate($record) &&
+        (parent::needsUpdate($record) &&
             $this->createDestination() &&
             !$this->m_destInstance->hasFlag(NF_READONLY));
     }
@@ -591,8 +604,9 @@ class Atk_OneToOneRelation extends Atk_Relation
                 // of the target node.
                 $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[0]];
             }
-            if (is_object($attrib) && strpos(get_class($attrib), "elation") !== false)
+            if (is_object($attrib) && strpos(get_class($attrib), "elation") !== false) {
                 return true;
+            }
         }
         return false;
     }
@@ -611,10 +625,10 @@ class Atk_OneToOneRelation extends Atk_Relation
     {
         Atk_Tools::atkdebug("hide called for " . $this->fieldName());
         if ($this->createDestination()) {
-            if ($record[$this->fieldName()] != NULL) {
+            if ($record[$this->fieldName()] != null) {
                 $myrecord = $record[$this->fieldName()];
 
-                if ($myrecord[$this->m_destInstance->primaryKeyField()] == NULL) {
+                if ($myrecord[$this->m_destInstance->primaryKeyField()] == null) {
                     // rec has no primkey yet, so we must add instead of update..
                     $mode = "add";
                 } else {
@@ -625,9 +639,10 @@ class Atk_OneToOneRelation extends Atk_Relation
                 $mode = "add";
             }
 
-            $output.='<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '[mode]" value="' . $mode . '">';
+            $output .= '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '[mode]" value="' . $mode . '">';
             $forceList = Atk_Tools::decodeKeyValueSet($this->getFilter());
-            $output.= $this->m_destInstance->hideform($mode, $myrecord, $forceList, $fieldprefix . $this->fieldName() . "_AE_");
+            $output .= $this->m_destInstance->hideform($mode, $myrecord, $forceList,
+                $fieldprefix . $this->fieldName() . "_AE_");
             return $output;
         }
         return "";
@@ -643,10 +658,10 @@ class Atk_OneToOneRelation extends Atk_Relation
      *
      * This is a framework method, it should never be called directly.
      *
-     * @param String $mode     		the edit mode ("add" or "edit")
-     * @param array  $arr     		pointer to the edit array
-     * @param array  $defaults 		pointer to the default values array
-     * @param array  $error    		pointer to the error array
+     * @param String $mode the edit mode ("add" or "edit")
+     * @param array $arr pointer to the edit array
+     * @param array $defaults pointer to the default values array
+     * @param array $error pointer to the error array
      * @param String $fieldprefix the fieldprefix
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
@@ -654,23 +669,22 @@ class Atk_OneToOneRelation extends Atk_Relation
         /* hide */
         if (($mode == "edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode == "add" && $this->hasFlag(AF_HIDE_ADD))) {
             /* when adding, there's nothing to hide... */
-            if ($mode == "edit" || ($mode == "add" && !$this->isEmpty($defaults)))
+            if ($mode == "edit" || ($mode == "add" && !$this->isEmpty($defaults))) {
                 $arr["hide"][] = $this->hide($defaults, $fieldprefix, $mode);
-        }
-
-        /* edit */
+            }
+        } /* edit */
         else {
             /* we first check if there is no edit override method, if there
              * is this method has the same behaviour as the atkAttribute's method
              */
             if (method_exists($this->m_ownerInstance, $this->m_name . "_edit") ||
-                $this->edit($defaults, $fieldprefix, $mode) !== NULL) {
+                $this->edit($defaults, $fieldprefix, $mode) !== null
+            ) {
                 Atk_Attribute::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
-            }
-
-            /* how we handle 1:1 relations normally */ else {
-                if (!$this->createDestination())
+            } /* how we handle 1:1 relations normally */ else {
+                if (!$this->createDestination()) {
                     return;
+                }
 
                 /* readonly */
                 if ($this->m_destInstance->hasFlag(NF_READONLY) || ($mode == "edit" && $this->hasFlag(AF_READONLY_EDIT)) || ($mode == "add" && $this->hasFlag(AF_READONLY_ADD))) {
@@ -689,14 +703,11 @@ class Atk_OneToOneRelation extends Atk_Relation
 
                     if (empty($myrecord[$this->m_destInstance->primaryKeyField()])) {
                         $mode = "add";
-                    }
-                    /* record exists! */ else {
+                    } /* record exists! */ else {
                         $mode = "edit";
                         $myrecord["atkprimkey"] = $this->m_destInstance->primaryKey($myrecord);
                     }
-                }
-
-                /* record does not exist */ else {
+                } /* record does not exist */ else {
                     $mode = "add";
                 }
 
@@ -715,7 +726,8 @@ class Atk_OneToOneRelation extends Atk_Relation
                     }
                 }
 
-                $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(), $fieldprefix . $this->fieldName() . "_AE_", false, false);
+                $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(),
+                    $fieldprefix . $this->fieldName() . "_AE_", false, false);
 
                 /* hidden fields */
                 $arr["hide"] = array_merge($arr["hide"], $a["hide"]);
@@ -724,13 +736,24 @@ class Atk_OneToOneRelation extends Atk_Relation
                  * same name as the relation we don't display a label
                  * TODO FIXME
                  */
-                if (!is_array($arr['fields']))
+                if (!is_array($arr['fields'])) {
                     $arr['fields'] = array();
+                }
                 if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name)) {
                     /* separator and name */
-                    if ($arr['fields'][count($arr['fields']) - 1]['html'] !== '-')
-                        $arr["fields"][] = array("html" => "-", "tabs" => $this->m_tabs, 'sections' => $this->getSections());
-                    $arr["fields"][] = array("line" => "<b>" . Atk_Tools::atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type) . "</b>", "tabs" => $this->m_tabs, 'sections' => $this->getSections());
+                    if ($arr['fields'][count($arr['fields']) - 1]['html'] !== '-') {
+                        $arr["fields"][] = array(
+                            "html" => "-",
+                            "tabs" => $this->m_tabs,
+                            'sections' => $this->getSections()
+                        );
+                    }
+                    $arr["fields"][] = array(
+                        "line" => "<b>" . Atk_Tools::atktext($this->m_name, $this->m_ownerInstance->m_module,
+                                $this->m_ownerInstance->m_type) . "</b>",
+                        "tabs" => $this->m_tabs,
+                        'sections' => $this->getSections()
+                    );
                 }
 
                 if (is_array($a["fields"])) {
@@ -747,7 +770,11 @@ class Atk_OneToOneRelation extends Atk_Relation
 
                 if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name)) {
                     /* separator */
-                    $arr["fields"][] = array("html" => "-", "tabs" => $this->m_tabs, 'sections' => $this->getSections());
+                    $arr["fields"][] = array(
+                        "html" => "-",
+                        "tabs" => $this->m_tabs,
+                        'sections' => $this->getSections()
+                    );
                 }
 
                 $fields = $arr['fields'];
@@ -766,26 +793,27 @@ class Atk_OneToOneRelation extends Atk_Relation
      *
      * This is a framework method, it should never be called directly.
      *
-     * @param String $mode     the mode ("view")
-     * @param array  $arr      pointer to the view array
-     * @param array  $defaults pointer to the default values array
+     * @param String $mode the mode ("view")
+     * @param array $arr pointer to the view array
+     * @param array $defaults pointer to the default values array
      */
     function addToViewArray($mode, &$arr, &$defaults)
     {
-        if ($this->hasFlag(AF_HIDE_VIEW))
+        if ($this->hasFlag(AF_HIDE_VIEW)) {
             return;
+        }
 
         /* we first check if there is no display override method, if there
          * is this method has the same behaviour as the atkAttribute's method
          */
         if (method_exists($this->m_ownerInstance, $this->m_name . "_display") ||
-            $this->display($defaults, 'view') !== NULL) {
+            $this->display($defaults, 'view') !== null
+        ) {
             Atk_Attribute::addToViewArray($mode, $arr, $defaults);
-        }
-
-        /* how we handle 1:1 relations normally */ else {
-            if (!$this->createDestination())
+        } /* how we handle 1:1 relations normally */ else {
+            if (!$this->createDestination()) {
                 return;
+            }
 
             $record = $defaults[$this->fieldName()];
             $a = $this->m_destInstance->viewArray($mode, $record, false);
@@ -794,13 +822,24 @@ class Atk_OneToOneRelation extends Atk_Relation
              * same name as the relation we don't display a label
              * TODO FIXME
              */
-            if (!is_array($arr['fields']))
+            if (!is_array($arr['fields'])) {
                 $arr['fields'] = array();
+            }
             if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name)) {
                 /* separator and name */
-                if ($arr['fields'][count($arr['fields']) - 1]['html'] !== '-')
-                    $arr["fields"][] = array("html" => "-", "tabs" => $this->m_tabs, 'sections' => $this->getSections());
-                $arr["fields"][] = array("line" => "<b>" . Atk_Tools::atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type) . "</b>", "tabs" => $this->m_tabs, 'sections' => $this->getSections());
+                if ($arr['fields'][count($arr['fields']) - 1]['html'] !== '-') {
+                    $arr["fields"][] = array(
+                        "html" => "-",
+                        "tabs" => $this->m_tabs,
+                        'sections' => $this->getSections()
+                    );
+                }
+                $arr["fields"][] = array(
+                    "line" => "<b>" . Atk_Tools::atktext($this->m_name, $this->m_ownerInstance->m_module,
+                            $this->m_ownerInstance->m_type) . "</b>",
+                    "tabs" => $this->m_tabs,
+                    'sections' => $this->getSections()
+                );
             }
 
             if (is_array($a["fields"])) {
@@ -850,7 +889,8 @@ class Atk_OneToOneRelation extends Atk_Relation
         // zitten AF_ONETOONE_ERROR en AF_OBLIGATORY elkaar soms in de weg
         if ($this->hasFlag(AF_ONETOONE_ERROR) &&
             ($mode != "add" || !$this->hasFlag(AF_HIDE_ADD)) &&
-            $this->createDestination()) {
+            $this->createDestination()
+        ) {
             $this->m_destInstance->validate($record[$this->fieldName()], $mode, array($this->m_refKey));
 
             // only add 'atkerror' record when 1:1 relation contains error
@@ -860,7 +900,7 @@ class Atk_OneToOneRelation extends Atk_Relation
 
             foreach ($record[$this->fieldName()]["atkerror"] as $error) {
                 $error['tab'] = $this->hasFlag(AF_ONETOONE_RESPECT_TABS) ? $this->m_tabs[0]
-                        : $error['tab'];
+                    : $error['tab'];
                 $record["atkerror"][] = $error;
             }
         }
@@ -875,13 +915,13 @@ class Atk_OneToOneRelation extends Atk_Relation
         if (is_array($filter)) {
             $tmp_filter = "";
             for ($i = 0, $_i = count($filter); $i < $_i; $i++) {
-                if ($tmp_filter != "")
-                    $tmp_filter.=" AND ";
-                $tmp_filter.=$filter[$i];
+                if ($tmp_filter != "") {
+                    $tmp_filter .= " AND ";
+                }
+                $tmp_filter .= $filter[$i];
             }
             return $tmp_filter;
-        }
-        else {
+        } else {
             return $filter;
         }
     }
@@ -924,8 +964,9 @@ class Atk_OneToOneRelation extends Atk_Relation
         if ($this->hasFlag(AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
             foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
                 $p_attrib = &$this->m_destInstance->m_attribList[$attribname];
-                if ($p_attrib->showOnTab($tab))
-                    return true; // If we have one match, we can return true.
+                if ($p_attrib->showOnTab($tab)) {
+                    return true;
+                } // If we have one match, we can return true.
             }
             // None of the destionation attributes wants to be displayed on the tab.
             // If the entire onetoone itself is on that tab however, we should put all attribs on
@@ -941,25 +982,36 @@ class Atk_OneToOneRelation extends Atk_Relation
      * Framework method. It should not be necessary to call this method directly.
      *
      * @param String $action the action that is being performed on the node
-     * @param array  $arr reference to the the recordlist array
+     * @param array $arr reference to the the recordlist array
      * @param String $fieldprefix the fieldprefix
-     * @param int    $flags the recordlist flags
-     * @param array  $atksearch the current ATK search list (if not empty)
+     * @param int $flags the recordlist flags
+     * @param array $atksearch the current ATK search list (if not empty)
      * @param String $atkorderby the current ATK orderby string (if not empty)
      * @see Atk_Node::listArray
      */
-    function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $columnConfig, Atk_DataGrid $grid = null, $column = '*')
-    {
+    function addToListArrayHeader(
+        $action,
+        &$arr,
+        $fieldprefix,
+        $flags,
+        $atksearch,
+        $columnConfig,
+        Atk_DataGrid $grid = null,
+        $column = '*'
+    ) {
         if ($this->hasFlag(AF_HIDE_LIST) || !$this->createDestination()) {
             return;
         }
 
         if ((!$this->hasFlag(AF_ONETOONE_INTEGRATE) && $column == '*') || $column == null) {
             // regular behaviour.
-            parent::addToListArrayHeader($action, $arr, $fieldprefix, $flags, $atksearch, $columnConfig, $grid, $column);
+            parent::addToListArrayHeader($action, $arr, $fieldprefix, $flags, $atksearch, $columnConfig, $grid,
+                $column);
             return;
-        } else if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) || ($column != '*' && $this->getDestination()->getAttribute($column) == null)) {
-            throw new Exception("Invalid list column {$column} for atkOneToOneRelation " . $this->getOwnerInstance()->atkNodeType() . '::' . $this->fieldName());
+        } else {
+            if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) || ($column != '*' && $this->getDestination()->getAttribute($column) == null)) {
+                throw new Exception("Invalid list column {$column} for atkOneToOneRelation " . $this->getOwnerInstance()->atkNodeType() . '::' . $this->fieldName());
+            }
         }
 
         // integrated version, don't add ourselves, but add all columns from the destination.
@@ -970,7 +1022,8 @@ class Atk_OneToOneRelation extends Atk_Relation
             }
 
             $p_attrib = &$this->m_destInstance->getAttribute($attribname);
-            $p_attrib->addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $columnConfig, $grid, null);
+            $p_attrib->addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()],
+                $columnConfig, $grid, null);
         }
     }
 
@@ -980,14 +1033,22 @@ class Atk_OneToOneRelation extends Atk_Relation
      * Framework method. It should not be necessary to call this method directly.
      *
      * @param String $action the action that is being performed on the node
-     * @param array  $arr reference to the the recordlist array
-     * @param int    $nr the current row number
+     * @param array $arr reference to the the recordlist array
+     * @param int $nr the current row number
      * @param String $fieldprefix the fieldprefix
-     * @param int    $flags the recordlist flags
+     * @param int $flags the recordlist flags
      * @see Atk_Node::listArray
      */
-    function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags, $edit = false, Atk_DataGrid $grid = null, $column = '*')
-    {
+    function addToListArrayRow(
+        $action,
+        &$arr,
+        $nr,
+        $fieldprefix,
+        $flags,
+        $edit = false,
+        Atk_DataGrid $grid = null,
+        $column = '*'
+    ) {
         if ($this->hasFlag(AF_HIDE_LIST) || !$this->createDestination()) {
             return;
         }
@@ -995,8 +1056,10 @@ class Atk_OneToOneRelation extends Atk_Relation
         if ((!$this->hasFlag(AF_ONETOONE_INTEGRATE) && $column == '*') || $column == null) {
             parent::addToListArrayRow($action, $arr, $nr, $fieldprefix, $flags, $edit, $grid, $column);
             return;
-        } else if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) || ($column != '*' && $this->getDestination()->getAttribute($column) == null)) {
-            throw new Exception("Invalid list column {$column} for atkOneToOneRelation " . $this->getOwnerInstance()->atkNodeType() . '::' . $this->fieldName());
+        } else {
+            if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) || ($column != '*' && $this->getDestination()->getAttribute($column) == null)) {
+                throw new Exception("Invalid list column {$column} for atkOneToOneRelation " . $this->getOwnerInstance()->atkNodeType() . '::' . $this->fieldName());
+            }
         }
 
 
@@ -1025,11 +1088,11 @@ class Atk_OneToOneRelation extends Atk_Relation
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param Atk_Query $query     The query object where the search condition should be placed on
-     * @param String $table       The name of the table in which this attribute
+     * @param Atk_Query $query The query object where the search condition should be placed on
+     * @param String $table The name of the table in which this attribute
      *                              is stored
-     * @param mixed $value        The value the user has entered in the searchbox
-     * @param String $searchmode  The searchmode to use. This can be any one
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param String $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
@@ -1042,8 +1105,9 @@ class Atk_OneToOneRelation extends Atk_Relation
             foreach ($value as $key => $val) {
                 // if we aren't searching for anything in this field, there is no need
                 // to look any further:
-                if ($val === "" || $val === null)
+                if ($val === "" || $val === null) {
                     continue;
+                }
 
                 $p_attrib = &$this->m_destInstance->m_attribList[$key];
 
@@ -1059,20 +1123,22 @@ class Atk_OneToOneRelation extends Atk_Relation
                         // (don't worry ATK won't add it when it's already there)
                         $query->addJoin($new_table, $new_table, ($this->getJoinCondition($query)), false);
                     }
-                    $p_attrib->searchCondition($query, $new_table, $val, $this->getChildSearchMode($searchmode, $p_attrib->formName()));
+                    $p_attrib->searchCondition($query, $new_table, $val,
+                        $this->getChildSearchMode($searchmode, $p_attrib->formName()));
                 } else {
                     // attribute not found in destination, so it should
                     // be in the owner (this is the case when extra fields
                     // are in the relation
                     $p_attrib = &$this->m_ownerInstance->m_attribList[$key];
                     if (is_object($p_attrib)) {
-                        $p_attrib->searchCondition($query, $p_attrib->getTable($key), $val, $this->getChildSearchMode($searchmode, $p_attrib->formName()));
-                    } else
+                        $p_attrib->searchCondition($query, $p_attrib->getTable($key), $val,
+                            $this->getChildSearchMode($searchmode, $p_attrib->formName()));
+                    } else {
                         Atk_Tools::atkdebug("Field $key was not found in this relation (this is very weird)");
+                    }
                 }
             }
-        }
-        else {
+        } else {
             // we were passed a value that is not an array, so appearantly the function calling us
             // does not know we are a relation, not just another attrib
             // so we assume that it is looking for something in the descriptor def of the destination
@@ -1102,7 +1168,7 @@ class Atk_OneToOneRelation extends Atk_Relation
     /**
      * Returns the condition which can be used when calling Atk_Query's addJoin() method
      * Joins the relation's owner with the destination
-     * 
+     *
      * @param Atk_Query $query The query object
      * @param string $tablename The name of the table
      * @param string $fieldalias The field alias
@@ -1121,19 +1187,20 @@ class Atk_OneToOneRelation extends Atk_Relation
      * attributes hook themselves into the fieldlist instead of hooking the relation
      * in it.
      * For original documentation for this method, please see the atkAttribute class
-     * 
-     * @param array   $fields            The array containing fields to use in the
+     *
+     * @param array $fields The array containing fields to use in the
      *                                   extended search
-     * @param Atk_Node $node              The node where the field is in
-     * @param array   $record            A record containing default values to put
+     * @param Atk_Node $node The node where the field is in
+     * @param array $record A record containing default values to put
      *                                   into the search fields.
-     * @param array   $fieldprefix       search / mode field prefix
-     * @param array   $currentSearchMode current search mode
+     * @param array $fieldprefix search / mode field prefix
+     * @param array $currentSearchMode current search mode
      */
     function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "", $currentSearchMode = array())
     {
-        if (!is_array($currentSearchMode))
+        if (!is_array($currentSearchMode)) {
             $currentSearchMode = array();
+        }
 
         if ($this->hasFlag(AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
             $prefix = $fieldprefix . $this->fieldName() . "_AE_";
@@ -1141,7 +1208,8 @@ class Atk_OneToOneRelation extends Atk_Relation
                 $p_attrib = &$this->m_destInstance->m_attribList[$attribname];
 
                 if (!$p_attrib->hasFlag(AF_HIDE_SEARCH)) {
-                    $p_attrib->addToSearchformFields($fields, $node, $record[$this->fieldName()], $prefix, $currentSearchMode[$this->fieldName()]);
+                    $p_attrib->addToSearchformFields($fields, $node, $record[$this->fieldName()], $prefix,
+                        $currentSearchMode[$this->fieldName()]);
                 }
             }
         } else {
@@ -1158,12 +1226,13 @@ class Atk_OneToOneRelation extends Atk_Relation
     function value2db($rec)
     {
         if (is_array($rec) && isset($rec[$this->fieldName()])) {
-            if (is_array($rec[$this->fieldName()]))
+            if (is_array($rec[$this->fieldName()])) {
                 return $this->escapeSQL($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]);
-            else
+            } else {
                 return $rec[$this->fieldName()];
+            }
         }
-        return NULL;
+        return null;
     }
 
 }

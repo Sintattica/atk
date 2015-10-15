@@ -2,11 +2,11 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * This file is the skeleton main include file, which you can copy
- * to your application dir and modify if necessary. By default, it 
+ * to your application dir and modify if necessary. By default, it
  * includes the atknode and sets the $config_atkroot. Any other
  * application global includes should be added to this file.
  *

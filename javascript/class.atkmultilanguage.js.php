@@ -65,25 +65,21 @@
  * the form gets submitted.
  * @param frm the form object
  */
-function mlPreSubmit(prefix, frm)
-{
+function mlPreSubmit(prefix, frm) {
     var curhid = document.getElementById(prefix + '_current');
     var oldlang = curhid.value;
 
     // Search for all non-hidden formelements that end with 'multilanguage'.
     // The value from these must be transfered to their corresponding hidden element
     // before submit.
-    for (var i = 0; i < frm.elements.length; i++)
-    {
+    for (var i = 0; i < frm.elements.length; i++) {
         var element = frm.elements[i];
 
-        if (element.name.substr(0, prefix.length) == prefix)
-        {
+        if (element.name.substr(0, prefix.length) == prefix) {
             // This element belongs to us..
             var endpos = element.name.lastIndexOf("[multilanguage]");
 
-            if (element.name.substr(endpos) == "[multilanguage]")
-            {
+            if (element.name.substr(endpos) == "[multilanguage]") {
                 // And this element is a multilanguage hidden dingske.
                 var basename = element.name.substr(0, endpos);
                 var hiddenCurrentEl = frm.elements[basename + '[' + oldlang + ']'];
@@ -101,29 +97,24 @@ function mlPreSubmit(prefix, frm)
  * @param switchfield the change language select box object
  * @param prefix
  */
-function changeLanguage(switchfield, prefix, all)
-{
+function changeLanguage(switchfield, prefix, all) {
     var frm = switchfield.form;
 
     var curhid = document.getElementById(prefix + '_current');
     var oldlang = curhid.value;
     var newlang = switchfield.options[switchfield.selectedIndex].value;
 
-    if (oldlang != newlang)
-    {
+    if (oldlang != newlang) {
 
         // old style notification
 
-        for (var i = 0; i < frm.elements.length; i++)
-        {
+        for (var i = 0; i < frm.elements.length; i++) {
             var element = frm.elements[i];
 
-            if (element.name.substr(0, prefix.length) == prefix || all)
-            {
+            if (element.name.substr(0, prefix.length) == prefix || all) {
                 // This element belongs to us..
                 var endpos = element.name.lastIndexOf("[multilanguage]");
-                if (element.name.substr(endpos) == "[multilanguage]")
-                {
+                if (element.name.substr(endpos) == "[multilanguage]") {
                     //alert(element.name);
                     // And this element is a multilanguage hidden dingske.
                     // So we must put it's current value in the hidden field that belongs to it
@@ -138,12 +129,10 @@ function changeLanguage(switchfield, prefix, all)
                     var label = document.getElementById(basename + '_label');
                     label.innerHTML = str_languages[newlang];
                 }
-                else
-                {
+                else {
                     // This might be a switchfield.
                     // We need to switch all switchfields if prefix=="*".
-                    if (all)
-                    {
+                    if (all) {
                         var endpos = element.name.lastIndexOf("_lgswitch");
                         //        alert(element.name);
                         if (element.name.substr(endpos) == "_lgswitch" && element.name != switchfield.name) // not the current one

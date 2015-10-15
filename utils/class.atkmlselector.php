@@ -57,9 +57,9 @@ class Atk_MLSelector extends Atk_Selector
     /**
      * Transform raw database rows to node compatible rows.
      *
-     * @param array    $rows            raw database rows
-     * @param Atk_Query $query           query object
-     * @param array    $attrsByLoadType attributes by load type
+     * @param array $rows raw database rows
+     * @param Atk_Query $query query object
+     * @param array $attrsByLoadType attributes by load type
      *
      * @return array node compatible rows
      */
@@ -93,12 +93,12 @@ class Atk_MLSelector extends Atk_Selector
                 $mlSplitter->combineMlRecordSet($this->_getNode(), $entry, $query);
                 $rows[] = $entry[0];
             }
-        }
-
-        // Combine multi-language records on edit.
-        else if ($this->m_mode == 'edit') {
-            $mlSplitter = Atk_Tools::atkinstance("atk.utils.atkmlsplitter");
-            $mlSplitter->combineMlRecordSet($this->_getNode(), $rows, $query);
+        } // Combine multi-language records on edit.
+        else {
+            if ($this->m_mode == 'edit') {
+                $mlSplitter = Atk_Tools::atkinstance("atk.utils.atkmlsplitter");
+                $mlSplitter->combineMlRecordSet($this->_getNode(), $rows, $query);
+            }
         }
 
         return parent::_transformRows($rows, $query, $attrsByLoadType);

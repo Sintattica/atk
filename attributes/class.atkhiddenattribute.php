@@ -20,7 +20,7 @@ Atk_Tools::useattrib("atkdummyattribute");
 /**
  * The atkHiddenAttribute behaves very similar to an atkDummyAttribute, but with the main difference
  * being that the attribute is always hidden, and the text passed to the attribute is not displayed
- * visibly but posted as a hidden form value. 
+ * visibly but posted as a hidden form value.
  *
  * @author Ivo Jansch <ivo@ibuildings.com>
  * @package atk
@@ -31,7 +31,7 @@ class Atk_HiddenAttribute extends Atk_DummyAttribute
 
     /**
      * The atkHiddenAttribute has a custom constructor. It's purpose is to force the AF_HIDE
-     * flag, regardless of flags passed. Its behaviour is identical to atkDummyAttribute's 
+     * flag, regardless of flags passed. Its behaviour is identical to atkDummyAttribute's
      * constructor in every other way.
      */
     public function __construct($name, $text = "", $flags = 0)
@@ -43,7 +43,7 @@ class Atk_HiddenAttribute extends Atk_DummyAttribute
     }
 
     /**
-     * This method is called by the framework whenever an attribute needs to be rendered within a hidden form. 
+     * This method is called by the framework whenever an attribute needs to be rendered within a hidden form.
      * In this case, the attribute renders a hidden input field using its text as its hidden value.
      */
     public function hide($record = "", $fieldprefix = "")

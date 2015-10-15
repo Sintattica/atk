@@ -122,8 +122,10 @@ class Atk_RecordlistCache
             getUniqueId("normalRecordList");
 
             $stackID = Atk_SessionManager::atkStackID();
-            $page->register_loadscript(str_replace("*|REPLACESTACKID|*", $stackID, file_get_contents($this->m_cacheid . "_actionloader")));
-            $output = str_replace("*|REPLACESTACKID|*", $stackID, file_get_contents(Atk_Config::getGlobal("atkroot") . $this->m_cacheid));
+            $page->register_loadscript(str_replace("*|REPLACESTACKID|*", $stackID,
+                file_get_contents($this->m_cacheid . "_actionloader")));
+            $output = str_replace("*|REPLACESTACKID|*", $stackID,
+                file_get_contents(Atk_Config::getGlobal("atkroot") . $this->m_cacheid));
         }
         return $output;
     }
@@ -137,13 +139,14 @@ class Atk_RecordlistCache
         $identifiers = $this->getIdentifiers();
         $this->m_cacheid = $this->m_cachedir . implode("_", $identifiers) . "_" . $this->m_postvars['atkstartat'];
 
-        if (!file_exists($this->m_cachedir) || !is_dir($this->m_cachedir))
+        if (!file_exists($this->m_cachedir) || !is_dir($this->m_cachedir)) {
             mkdir($this->m_cachedir, 0700);
+        }
     }
 
     /**
      * Writes a cached recordlist to the rlcache directory
-     * @param string $output       The HTML output of the recordlist
+     * @param string $output The HTML output of the recordlist
      * @param string $actionloader The actionloader js part of the recordlist
      */
     function writeCache($output, $actionloader)
@@ -153,8 +156,9 @@ class Atk_RecordlistCache
             $output = str_replace($stackID, "*|REPLACESTACKID|*", $output);
             $actionloader = str_replace($stackID, "*|REPLACESTACKID|*", $actionloader);
 
-            if (file_exists($this->m_cacheid))
+            if (file_exists($this->m_cacheid)) {
                 unlink($this->m_cacheid);
+            }
             $fp = &fopen($this->m_cacheid, "a+");
 
             if ($fp) {

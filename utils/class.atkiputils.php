@@ -65,10 +65,11 @@ class Atk_IpUtils
         $long = is_numeric($ip) ? $ip : Atk_IpUtils::ipLongFormat($ip);
         $string = "";
         for ($i = 3; $i >= 0; $i--) {
-            $string .= (int) ($long / pow(256, $i));
-            $long -= (int) ($long / pow(256, $i)) * pow(256, $i);
-            if ($i > 0)
+            $string .= (int)($long / pow(256, $i));
+            $long -= (int)($long / pow(256, $i)) * pow(256, $i);
+            if ($i > 0) {
                 $string .= ".";
+            }
         }
         return $string;
     }
@@ -89,8 +90,9 @@ class Atk_IpUtils
             Atk_Tools::atkdebug("Atk_IpUtils::ipLongFormat() Invalid ip given");
             return null;
         }
-        if (is_numeric($ip))
+        if (is_numeric($ip)) {
             return $ip;
+        }
         $array = explode(".", $ip);
         return $array[3] + 256 * $array[2] + 256 * 256 * $array[1] + 256 * 256 * 256 * $array[0];
     }

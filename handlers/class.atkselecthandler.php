@@ -113,7 +113,7 @@ class Atk_SelectHandler extends Atk_ActionHandler
      * return with the selected record.
      *
      * @param Atk_DataGrid $grid data grid
-     * 
+     *
      * @return boolean auto-select active?
      */
     protected function autoSelectRecord($grid)
@@ -128,7 +128,9 @@ class Atk_SelectHandler extends Atk_ActionHandler
             return false;
         }
 
-        if (Atk_SessionManager::atkLevel() > 0 && $grid->getPostvar('atkprevlevel', 0) > Atk_SessionManager::atkLevel()) {
+        if (Atk_SessionManager::atkLevel() > 0 && $grid->getPostvar('atkprevlevel',
+                0) > Atk_SessionManager::atkLevel()
+        ) {
             $backUrl = Atk_Tools::session_url(Atk_Tools::atkSelf() . '?atklevel=' . Atk_SessionManager::newLevel(SESSION_BACK));
             $node->redirect($backUrl);
         } else {

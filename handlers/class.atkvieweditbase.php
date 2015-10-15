@@ -55,12 +55,15 @@ class Atk_ViewEditBase extends Atk_ActionHandler
         if ($record == null) { // If reject info not set -  do select
             $atkstoretype = "";
             $sessionmanager = Atk_SessionManager::atkGetSessionManager();
-            if ($sessionmanager)
+            if ($sessionmanager) {
                 $atkstoretype = $sessionmanager->stackVar('atkstore');
+            }
             switch ($atkstoretype) {
-                case 'session': $record = $this->getRecordFromSession();
+                case 'session':
+                    $record = $this->getRecordFromSession();
                     break;
-                default: $record = $this->getRecordFromDb();
+                default:
+                    $record = $this->getRecordFromDb();
                     break;
             }
         }
@@ -147,7 +150,8 @@ class Atk_ViewEditBase extends Atk_ActionHandler
         list($tab, $section) = explode('.', $field["name"]);
         $name = "section_{$tab}_{$section}";
 
-        $url = Atk_Tools::partial_url($this->m_node->atknodetype(), $mode, "sectionstate", array("atksectionname" => $name));
+        $url = Atk_Tools::partial_url($this->m_node->atknodetype(), $mode, "sectionstate",
+            array("atksectionname" => $name));
 
         // create onclick statement.
         $onClick = " onClick=\"javascript:handleSectionToggle(this,null,'{$url}'); return false;\"";
@@ -155,7 +159,7 @@ class Atk_ViewEditBase extends Atk_ActionHandler
 
         //if the section is not active, we close it on load.
         $default = in_array($field["name"], $this->m_node->getActiveSections($tab, $mode))
-                ? 'opened' : 'closed';
+            ? 'opened' : 'closed';
         $sectionstate = Atk_State::get(array("nodetype" => $this->m_node->atknodetype(), "section" => $name), $default);
 
         if ($sectionstate == 'closed') {
@@ -179,7 +183,9 @@ class Atk_ViewEditBase extends Atk_ActionHandler
     function isSectionInitialHidden($section, $fields)
     {
         foreach ($fields as $field) {
-            if (is_array($field["sections"]) && in_array($section, $field['sections']) && (!isset($field['initial_hidden']) || !$field['initial_hidden'])) {
+            if (is_array($field["sections"]) && in_array($section,
+                    $field['sections']) && (!isset($field['initial_hidden']) || !$field['initial_hidden'])
+            ) {
                 return false;
             }
         }
@@ -190,16 +196,17 @@ class Atk_ViewEditBase extends Atk_ActionHandler
     /**
      * Adds numbering to the label of a field
      * @access private
-     * @param array $field    the currently handled attribute
+     * @param array $field the currently handled attribute
      * @param array $tplfield the template data for the current attribute
-     * @param int $i          the counter being used to loop the node for each attribute
+     * @param int $i the counter being used to loop the node for each attribute
      */
     function _addNumbering(&$field, &$tplfield, &$i)
     {
         static $number, $subnumber;
 
-        if (!$number && !$subnumber)
+        if (!$number && !$subnumber) {
             $number = $field["attribute"]->m_ownerInstance->getNumbering();
+        }
         if (!$subnumber) {
             if (strlen($number) == 1 || (floor($number) <= 9 && floor($number) >= -9 && floor($number) == $number)) {
                 $subnumber = $number;
@@ -211,10 +218,11 @@ class Atk_ViewEditBase extends Atk_ActionHandler
         }
 
         if ($field["label"]) {
-            if ($number)
+            if ($number) {
                 $tplfield["label"] = "$number.$subnumber. ";
-            else
+            } else {
                 $tplfield["label"] = "$subnumber. ";
+            }
             $subnumber++;
         }
     }
@@ -224,7 +232,10 @@ class Atk_ViewEditBase extends Atk_ActionHandler
      */
     function partial_sectionstate()
     {
-        Atk_State::set(array("nodetype" => $this->m_node->atknodetype(), "section" => $this->m_postvars['atksectionname']), $this->m_postvars['atksectionstate']);
+        Atk_State::set(array(
+            "nodetype" => $this->m_node->atknodetype(),
+            "section" => $this->m_postvars['atksectionname']
+        ), $this->m_postvars['atksectionstate']);
         die;
     }
 
@@ -262,10 +273,13 @@ class Atk_ViewEditBase extends Atk_ActionHandler
         $perTpl = array(); //per template array
 
         for ($i = 0, $_i = count($fields); $i < $_i; $i++) {
-            $allTabs = explode(' ', $fields[$i]["tab"]); // should not use "tab" here, because it actually contains the CSS class names and not only the tab names
-            $allMatchingTabs = array_values(array_intersect($allTabs, array_keys($tabTpl))); // because of the CSS thingee above we search for the first matching tab
-            if (count($allMatchingTabs) == 0)
-                $allMatchingTabs = array_keys($tabTpl); // again a workaround for this horribly broken method
+            $allTabs = explode(' ',
+                $fields[$i]["tab"]); // should not use "tab" here, because it actually contains the CSS class names and not only the tab names
+            $allMatchingTabs = array_values(array_intersect($allTabs,
+                array_keys($tabTpl))); // because of the CSS thingee above we search for the first matching tab
+            if (count($allMatchingTabs) == 0) {
+                $allMatchingTabs = array_keys($tabTpl);
+            } // again a workaround for this horribly broken method
             $tab = $allMatchingTabs[0]; // attributes can be part of one, more than one or all tabs, at the moment it seems only one or all are supported
             $perTpl[$tabTpl[$tab]]['fields'][] = $fields[$i]; //make field available in numeric array
             $perTpl[$tabTpl[$tab]][$fields[$i]["attribute"]] = $fields[$i]; //make field available in associative array
@@ -303,7 +317,7 @@ class Atk_ViewEditBase extends Atk_ActionHandler
         list(, $attribute, $partial) = explode('.', $partial);
 
         $attr = $this->m_node->getAttribute($attribute);
-        if ($attr == NULL) {
+        if ($attr == null) {
             Atk_Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
             return '';
         }

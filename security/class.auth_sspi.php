@@ -15,24 +15,24 @@
 
 
 /**
- * Driver for authentication and authorization using Microsoft's Security 
+ * Driver for authentication and authorization using Microsoft's Security
  * Support Provider Interface (SSPI).
  *
- * To use this authentication module, add a field to your user table that 
- * stores the user's SSPI account. Then add the following lines to your 
- * config.inc.php file: 
- * 
- * // The names of your SSPI trusted domains. 
+ * To use this authentication module, add a field to your user table that
+ * stores the user's SSPI account. Then add the following lines to your
+ * config.inc.php file:
+ *
+ * // The names of your SSPI trusted domains.
  * $config_auth_sspi_trusted_domains = Array ( "DOMAINNAME" );
- * 
+ *
  * // The field in the user table that stores the sspi account name
- * $config_auth_sspi_accountfield = "sspiaccountfield"; 
- * 
+ * $config_auth_sspi_accountfield = "sspiaccountfield";
+ *
  * Finally, change the following configuration values to enable SSPI.
- * 
+ *
  * $config_authentication = "sspi";
  * $config_authorization = "sspi";
- * 
+ *
  * @author Giroux
  * @package atk
  * @subpackage security
@@ -55,15 +55,23 @@ class auth_sspi extends auth_db
         }
     }
 
-    function buildSelectUserQuery($sspiaccount, $usertable, $userfield, $sspiaccountfield, $accountdisablefield = null, $accountenbleexpression = null)
-    {
+    function buildSelectUserQuery(
+        $sspiaccount,
+        $usertable,
+        $userfield,
+        $sspiaccountfield,
+        $accountdisablefield = null,
+        $accountenbleexpression = null
+    ) {
         // On recherche le compte sspi
         $disableexpr = "";
-        if ($accountdisablefield)
+        if ($accountdisablefield) {
             $disableexpr = ", $accountdisablefield";
+        }
         $query = "SELECT $userfield $disableexpr FROM $usertable WHERE $sspiaccountfield ='" . $sspiaccount . "'";
-        if ($accountenbleexpression)
+        if ($accountenbleexpression) {
             $query .= " AND $accountenbleexpression";
+        }
         return $query;
     }
 
@@ -74,13 +82,16 @@ class auth_sspi extends auth_db
         $position = strpos($sspipath, "\\");
         $domain = substr($sspipath, 0, $position);
         $user = substr($sspipath, $position + 1, strlen($sspipath) - $position);
-        if (!isset($sspipath) || ($sspipath == "") || !in_array($domain, Atk_Config::getGlobal("auth_sspi_trusted_domains")))
+        if (!isset($sspipath) || ($sspipath == "") || !in_array($domain,
+                Atk_Config::getGlobal("auth_sspi_trusted_domains"))
+        ) {
             return AUTH_UNVERIFIED;
+        }
 
         // Si on ne recharge pas chaque fois l'utilisateur et si l'utilisateur n'a pas change
         // @todo, what is auth_reloadusers? does not seem relevant to this piece of code, doesn't exist 
         // elsewhere in atk.
-        if (!Atk_Config::getGlobal("auth_reloadusers") && ( $user == $_SERVER["PHP_AUTH_USER"] )) {
+        if (!Atk_Config::getGlobal("auth_reloadusers") && ($user == $_SERVER["PHP_AUTH_USER"])) {
             // On autorise
             return AUTH_SUCCESS;
         }
@@ -89,7 +100,9 @@ class auth_sspi extends auth_db
         $_SERVER["PHP_AUTH_USER"] = "";
         $ATK_VARS["auth_user"] = "";
         $db = Atk_Tools::atkGetDb(Atk_Config::getGlobal("auth_database"));
-        $query = $this->buildSelectUserQuery($user, Atk_Config::getGlobal("auth_usertable"), Atk_Config::getGlobal("auth_userfield"), Atk_Config::getGlobal("auth_sspi_accountfield"), Atk_Config::getGlobal("auth_accountdisablefield"), Atk_Config::getGlobal("auth_accountenableexpression"));
+        $query = $this->buildSelectUserQuery($user, Atk_Config::getGlobal("auth_usertable"),
+            Atk_Config::getGlobal("auth_userfield"), Atk_Config::getGlobal("auth_sspi_accountfield"),
+            Atk_Config::getGlobal("auth_accountdisablefield"), Atk_Config::getGlobal("auth_accountenableexpression"));
 
         $recs = $db->getrows($query);
         if (count($recs) > 0 && $this->isLocked($recs[0])) {
@@ -172,25 +185,29 @@ class auth_sspi extends auth_db
                 $level[] = $recs[$i][Atk_Config::getGlobal("auth_levelfield")];
                 $groups[] = $recs[$i][$groupfield];
 
-                if (!empty($groupparentfield) && $recs[$i][$groupparentfield] != "")
+                if (!empty($groupparentfield) && $recs[$i][$groupparentfield] != "") {
                     $parents[] = $recs[$i][$groupparentfield];
+                }
             }
 
             $groups = array_merge($groups, $parents);
             while (count($parents) > 0) {
                 $precs = $this->getParentGroups($parents);
                 $parents = array();
-                foreach ($precs as $prec)
-                    if ($prec[$groupparentfield] != "")
+                foreach ($precs as $prec) {
+                    if ($prec[$groupparentfield] != "") {
                         $parents[] = $prec[$groupparentfield];
+                    }
+                }
 
                 $groups = array_merge($groups, $parents);
             }
 
             $groups = array_unique($groups);
         }
-        if (count($level) == 1)
+        if (count($level) == 1) {
             $level = $level[0];
+        }
 
         $userinfo = $recs[0];
         $userinfo["name"] = $user;

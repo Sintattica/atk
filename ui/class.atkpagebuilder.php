@@ -17,7 +17,7 @@
 
 /**
  * Page builder. Provides a fluent interface to create standardized ATK pages.
- * 
+ *
  * $node->createPageBuilder()
  *      ->title('...')
  *      ->beginActionBox()
@@ -62,9 +62,9 @@ class Atk_PageBuilder
 
     /**
      * Sets the action.
-     * 
+     *
      * @param string $action
-     * 
+     *
      * @return atkPageBuilder
      */
     public function action($action)
@@ -75,9 +75,9 @@ class Atk_PageBuilder
 
     /**
      * Sets the record (if applicable) for this action.
-     * 
+     *
      * @param array $record
-     * 
+     *
      * @return atkPageBuilder
      */
     public function record($record)
@@ -90,7 +90,7 @@ class Atk_PageBuilder
      * Sets the page title to the given string.
      *
      * @param string $title
-     * 
+     *
      * @return atkPage
      */
     public function title($title)
@@ -105,7 +105,7 @@ class Atk_PageBuilder
      * @param string $content
      * @param string $title
      * @param string $template
-     * 
+     *
      * @return atkPageBuilder
      */
     public function box($content, $title = null, $template = null)
@@ -117,10 +117,10 @@ class Atk_PageBuilder
     /**
      * Add action box.
      *
-     * @param array  $params
+     * @param array $params
      * @param string $title
-     * @param string $template  
-     * 
+     * @param string $template
+     *
      * @return atkPageBuilder
      */
     public function actionBox($params, $title = null, $template = null)
@@ -158,12 +158,14 @@ class Atk_PageBuilder
 
             if ($box['type'] == 'action') {
                 $params = array_merge(array('title' => $title), $box['params']);
-                $content = $this->getNode()->getUi()->renderAction($this->m_action, $params, $this->getNode()->getModule());
+                $content = $this->getNode()->getUi()->renderAction($this->m_action, $params,
+                    $this->getNode()->getModule());
             } else {
                 $content = $box['content'];
             }
 
-            $boxes[] = $this->getNode()->getUi()->renderBox(array('title' => $title, 'content' => $content), $box['template']);
+            $boxes[] = $this->getNode()->getUi()->renderBox(array('title' => $title, 'content' => $content),
+                $box['template']);
         }
 
         $this->getNode()->getPage()->setTitle(Atk_Tools::atktext('app_shorttitle') . " - " . $this->m_title);

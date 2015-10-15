@@ -55,7 +55,7 @@ class Atk_ManyToManyListRelation extends Atk_ManyToManyRelation
 
     /**
      * Get rows.
-     * 
+     *
      * @return int rows
      */
     public function getRows()
@@ -65,7 +65,7 @@ class Atk_ManyToManyListRelation extends Atk_ManyToManyRelation
 
     /**
      * Set rows.
-     * 
+     *
      * @param int $rows
      */
     public function setRows($rows)
@@ -75,7 +75,7 @@ class Atk_ManyToManyListRelation extends Atk_ManyToManyRelation
 
     /**
      * Get width (in pixels).
-     * 
+     *
      * @return int width in pixels
      */
     public function getWidth()
@@ -85,7 +85,7 @@ class Atk_ManyToManyListRelation extends Atk_ManyToManyRelation
 
     /**
      * Set (pixel) width.
-     * 
+     *
      * @param int $width width in pixels
      */
     public function setWidth($width)
@@ -95,12 +95,12 @@ class Atk_ManyToManyListRelation extends Atk_ManyToManyRelation
 
     /**
      * Return a piece of html code to edit the attribute.
-     * 
+     *
      * @param array $record The record that holds the value for this attribute.
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @param String $mode The mode we're in ('add' or 'edit')
-     * 
+     *
      * @return string piece of html code
      */
     public function edit($record = "", $fieldprefix = "", $mode = "")
@@ -119,7 +119,7 @@ class Atk_ManyToManyListRelation extends Atk_ManyToManyRelation
         $name = $fieldprefix . $this->fieldName();
 
         $size = $this->autoCalculateRows() ? min(count($selectable), $this->getRows())
-                : $this->getRows();
+            : $this->getRows();
         $result = '<select class="form-control" id="' . $id . '" name="' . $name . '[][' . $this->getRemoteKey() . ']" multiple="multiple" size="' . $size . '" style="width: ' . $this->getWidth() . 'px">';
 
         foreach ($selectable as $row) {
@@ -128,7 +128,7 @@ class Atk_ManyToManyListRelation extends Atk_ManyToManyRelation
             $selectedStr = in_array($key, $selected) ? ' selected="selected"' : '';
             $value = $row[$this->m_destInstance->primaryKeyField()];
 
-            $result.= '<option value="' . htmlentities($value) . '"' . $selectedStr . '>' . $label . '</option>';
+            $result .= '<option value="' . htmlentities($value) . '"' . $selectedStr . '>' . $label . '</option>';
         }
 
         $result .= '</select>';

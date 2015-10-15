@@ -14,6 +14,7 @@
  * @version $Revision: 4173 $
  * $Id$
  */
+
 /**
  * The atkRowCounter can be added to a node to have a column in listviews
  * that sequentially numbers records.
@@ -28,7 +29,6 @@
  * @subpackage attributes
  *
  */
-
 class Atk_RowCounter extends Atk_DummyAttribute
 {
 
@@ -50,7 +50,7 @@ class Atk_RowCounter extends Atk_DummyAttribute
     {
         static $s_counter = 0;
         $node = &$this->m_ownerInstance;
-        return $node->m_postvars["atkstartat"] + ( ++$s_counter);
+        return $node->m_postvars["atkstartat"] + (++$s_counter);
     }
 
 }

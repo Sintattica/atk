@@ -37,8 +37,8 @@ class Atk_Smarty
      */
     function &getInstance()
     {
-        static $s_smarty = NULL;
-        if ($s_smarty == NULL) {
+        static $s_smarty = null;
+        if ($s_smarty == null) {
             Atk_Tools::atkdebug("Creating Smarty instance");
             if (!class_exists("Smarty")) {
                 include_once(Atk_Config::getGlobal("atkroot") . "atk/ui/smarty/Smarty.class.php");
@@ -94,11 +94,14 @@ class Atk_Smarty
             $s_smarty->default_modifier = Atk_Config::getGlobal("defaultmodifier");
 
             // plugin dirs
-            $s_smarty->plugins_dir = array(Atk_Config::getGlobal("atkroot") . "atk/ui/smarty/plugins",
-                Atk_Config::getGlobal("atkroot") . "atk/ui/plugins");
+            $s_smarty->plugins_dir = array(
+                Atk_Config::getGlobal("atkroot") . "atk/ui/smarty/plugins",
+                Atk_Config::getGlobal("atkroot") . "atk/ui/plugins"
+            );
             $customplugindir = Atk_Config::getGlobal("tplplugindir");
-            if ($customplugindir != "")
+            if ($customplugindir != "") {
                 $s_smarty->plugins_dir[] = $customplugindir;
+            }
 
             //$s_smarty->register_compiler_function("tpl","tpl_include");
             Atk_Tools::atkdebug("Instantiated new Smarty");
@@ -123,8 +126,8 @@ class Atk_Smarty
      * with the given name and type.
      *
      * @param string $moduleOrPath module name or full ATK path (without plugin filename!)
-     * @param string $name         plug-in name
-     * @param string $type         plug-in type (function, block etc.)
+     * @param string $name plug-in name
+     * @param string $type plug-in type (function, block etc.)
      *
      * @return string full path to plug-in
      *
@@ -148,7 +151,7 @@ class Atk_Smarty
      *
      * NOTE: you should only use this function for
      *       tags with special names!
-     * 
+     *
      * @param string $moduleOrPath
      * @param string $tag
      * @param string $name
@@ -177,7 +180,7 @@ class Atk_Smarty
 
     /**
      * Register dynamic function / tag.
-     * 
+     *
      * @param string $moduleOrPath
      * @param string $tag
      * @param string $cache_attrs
@@ -192,7 +195,7 @@ class Atk_Smarty
      *
      * NOTE: you should only use this function for
      *       tags with special names!
-     * 
+     *
      * @param string $moduleOrPath
      * @param string $tag
      * @param string $name
@@ -223,7 +226,7 @@ class Atk_Smarty
      *
      * NOTE: you should only use this function for
      *       tags with special names!
-     * 
+     *
      * @param string $moduleOrPath
      * @param string $tag
      * @param string $name
@@ -251,7 +254,7 @@ class Atk_Smarty
 
     /**
      * Register dynamic function / tag.
-     * 
+     *
      * @param string $moduleOrPath
      * @param string $tag
      */
@@ -262,7 +265,7 @@ class Atk_Smarty
 
     /**
      * Register modifier
-     * 
+     *
      * @param string $moduleOrPath
      * @param string $tag
      * @param string $name

@@ -68,10 +68,11 @@ class Atk_DocumentAttribute extends Atk_DummyAttribute
      */
     function display($record, $mode)
     {
-        if (($mode != "csv") && ($mode != "plain"))
+        if (($mode != "csv") && ($mode != "plain")) {
             return $this->documentSelector($record, $mode);
-        else
+        } else {
             return "";
+        }
     }
 
     /**
@@ -128,7 +129,9 @@ class Atk_DocumentAttribute extends Atk_DummyAttribute
 
         // Add the button to the html
         $selector = $this->m_ownerInstance->primaryKey($record);
-        $onclickscript = 'window.location="' . Atk_Tools::session_url(Atk_Tools::dispatch_url($module . "." . $node, "document", array("atkselector" => $selector)), SESSION_DEFAULT) . '&atkdoctpl="+this.form.atkdoctpl.value;';
+        $onclickscript = 'window.location="' . Atk_Tools::session_url(Atk_Tools::dispatch_url($module . "." . $node,
+                "document", array("atkselector" => $selector)),
+                SESSION_DEFAULT) . '&atkdoctpl="+this.form.atkdoctpl.value;';
 
         $html .= '<input type="button" class="btn_doc_open" name="atkdocument" value="' . Atk_Tools::atktext("open") . '" onclick=\'' . $onclickscript . '\'>';
 

@@ -47,13 +47,13 @@ class Atk_DhtmlMenu extends Atk_menuinterface
 
         global $g_menu, $ATK_VARS;
         $atkmenutop = $ATK_VARS["atkmenutop"];
-        if ($atkmenutop == "")
+        if ($atkmenutop == "") {
             $atkmenutop = "main";
+        }
 
         $tabs = "";
         $divs = "";
         $tab = 1;
-
 
 
         while (list ($name) = each($g_menu)) {
@@ -84,19 +84,21 @@ class Atk_DhtmlMenu extends Atk_menuinterface
                 }
 
                 /* delimiter ? */
-                if ($g_menu[$atkmenutop][$i]["name"] == "-")
+                if ($g_menu[$atkmenutop][$i]["name"] == "-") {
                     $menu .= "";
+                } /* normal menu item */
+                else {
+                    if ($enable) {
+                        if ($g_menu[$atkmenutop][$i]["url"] != "") {
+                            $tabContent .= "<a target='main' class='tablink' href='$url'>" . Atk_Tools::atktext($name,
+                                    "", "menu") . "</a>";
 
-                /* normal menu item */
-                else if ($enable) {
-                    if ($g_menu[$atkmenutop][$i]["url"] != "") {
-                        $tabContent .= "<a target='main' class='tablink' href='$url'>" . Atk_Tools::atktext($name, "", "menu") . "</a>";
+                            if ($i < count($g_menu[$atkmenutop]) - 1) {
+                                $tabContent .= "&nbsp;|&nbsp;";
+                            }
 
-                        if ($i < count($g_menu[$atkmenutop]) - 1) {
-                            $tabContent .= "&nbsp;|&nbsp;";
+                            $items++;
                         }
-
-                        $items++;
                     }
                 }
             }
@@ -110,7 +112,8 @@ class Atk_DhtmlMenu extends Atk_menuinterface
 
         // add options tab containing logout
         $tabs .= '   rows[1][' . $tab . '] = "Opties"' . "\n";
-        $divs .= '<div id="T1' . $tab . '" class="tab-body"><a class="tablink" href="index.php?atklogout=1" target="_top">' . Atk_Tools::atktext("logout", "atk") . '</a></div>' . "\n";
+        $divs .= '<div id="T1' . $tab . '" class="tab-body"><a class="tablink" href="index.php?atklogout=1" target="_top">' . Atk_Tools::atktext("logout",
+                "atk") . '</a></div>' . "\n";
 
         $page = Atk_Tools::atknew("atk.ui.atkpage");
         $theme = Atk_Tools::atkinstance("atk.ui.atktheme");
@@ -120,7 +123,7 @@ class Atk_DhtmlMenu extends Atk_menuinterface
 
         $code = 'var tabSelectMode = "' . Atk_Config::getGlobal("tabselectMode") . '";' . "\n";
 
-        $code.= 'var rows     = new Array();
+        $code .= 'var rows     = new Array();
                var num_rows = 1;
                var top      = 0;
                var left     = 10;
@@ -129,9 +132,9 @@ class Atk_DhtmlMenu extends Atk_menuinterface
                var tab_on   = "#EEEEE0";
 
                rows[1]      = new Array;';
-        $code.="\n" . $tabs . "\n";
+        $code .= "\n" . $tabs . "\n";
 
-        $code.="\n" . 'generateTabs();' . "\n";
+        $code .= "\n" . 'generateTabs();' . "\n";
 
         $page->register_scriptcode($code);
 

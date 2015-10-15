@@ -27,7 +27,7 @@ include_once(Atk_Config::getGlobal("atkroot") . "atk/interface/interface.atkserv
  */
 class Atk_SoapServer implements Atk_ServerInterface
 {
-    private $m_server = NULL;
+    private $m_server = null;
 
     /**
      * Constructor

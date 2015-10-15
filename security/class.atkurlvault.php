@@ -55,8 +55,9 @@ class Atk_UrlVault
         Atk_Tools::atkdebug("Creating url vault");
         $sm = Atk_SessionManager::atkGetSessionManager();
         $session = $sm->getSession();
-        if (!isset($session["atkurlvault"]) || !is_array($session["atkurlvault"]))
+        if (!isset($session["atkurlvault"]) || !is_array($session["atkurlvault"])) {
             $session["atkurlvault"] = array();
+        }
         $this->m_vault = &$session["atkurlvault"];
     }
 
@@ -67,9 +68,9 @@ class Atk_UrlVault
      */
     function &getInstance()
     {
-        static $s_instance = NULL;
+        static $s_instance = null;
 
-        if ($s_instance == NULL) {
+        if ($s_instance == null) {
             $s_instance = new Atk_UrlVault();
         }
 

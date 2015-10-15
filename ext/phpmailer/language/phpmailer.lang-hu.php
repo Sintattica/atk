@@ -1,23 +1,23 @@
 <?php
 /**
- * PHPMailer language file.  
+ * PHPMailer language file.
  * Hungarian Version
  */
 
 $PHPMAILER_LANG = array();
 
-$PHPMAILER_LANG["provide_address"] = 'Meg kell adnod legalább egy ' .
-                                     'címzett email címet.';
-$PHPMAILER_LANG["mailer_not_supported"] = ' levelezõ nem támogatott.';
-$PHPMAILER_LANG["execute"] = 'Nem tudtam végrehajtani: ';
-$PHPMAILER_LANG["instantiate"] = 'Nem sikerült példányosítani a mail funkciót.';
-$PHPMAILER_LANG["authenticate"] = 'SMTP Hiba: Sikertelen autentikáció.';
-$PHPMAILER_LANG["from_failed"] = 'Az alábbi Feladó cím hibás: ';
-$PHPMAILER_LANG["recipients_failed"] = 'SMTP Hiba: Az alábbi ' .
-                                       'címzettek hibásak: ';
-$PHPMAILER_LANG["data_not_accepted"] = 'SMTP Hiba: Nem elfogadható adat.';
+$PHPMAILER_LANG["provide_address"] = 'Meg kell adnod legalï¿½bb egy ' .
+    'cï¿½mzett email cï¿½met.';
+$PHPMAILER_LANG["mailer_not_supported"] = ' levelezï¿½ nem tï¿½mogatott.';
+$PHPMAILER_LANG["execute"] = 'Nem tudtam vï¿½grehajtani: ';
+$PHPMAILER_LANG["instantiate"] = 'Nem sikerï¿½lt pï¿½ldï¿½nyosï¿½tani a mail funkciï¿½t.';
+$PHPMAILER_LANG["authenticate"] = 'SMTP Hiba: Sikertelen autentikï¿½ciï¿½.';
+$PHPMAILER_LANG["from_failed"] = 'Az alï¿½bbi Feladï¿½ cï¿½m hibï¿½s: ';
+$PHPMAILER_LANG["recipients_failed"] = 'SMTP Hiba: Az alï¿½bbi ' .
+    'cï¿½mzettek hibï¿½sak: ';
+$PHPMAILER_LANG["data_not_accepted"] = 'SMTP Hiba: Nem elfogadhatï¿½ adat.';
 $PHPMAILER_LANG["connect_host"] = 'SMTP Hiba: Nem tudtam csatlakozni az SMTP host-hoz.';
-$PHPMAILER_LANG["file_access"] = 'Nem sikerült elérni a következõ fájlt: ';
-$PHPMAILER_LANG["file_open"] = 'Fájl Hiba: Nem sikerült megnyitni a következõ fájlt: ';
-$PHPMAILER_LANG["encoding"] = 'Ismeretlen kódolás: ';
+$PHPMAILER_LANG["file_access"] = 'Nem sikerï¿½lt elï¿½rni a kï¿½vetkezï¿½ fï¿½jlt: ';
+$PHPMAILER_LANG["file_open"] = 'Fï¿½jl Hiba: Nem sikerï¿½lt megnyitni a kï¿½vetkezï¿½ fï¿½jlt: ';
+$PHPMAILER_LANG["encoding"] = 'Ismeretlen kï¿½dolï¿½s: ';
 ?>

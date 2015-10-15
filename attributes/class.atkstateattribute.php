@@ -30,11 +30,67 @@ Atk_Tools::useattrib("atklistattribute");
 class Atk_StateAttribute extends Atk_ListAttribute
 {
     var $m_states = array();
-    var $m_usa_states = array('AL', 'AK', 'AS', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FM', 'FL',
-        'GA', 'GU', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MH',
-        'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM',
-        'NY', 'NC', 'ND', 'MP', 'OH', 'OK', 'OR', 'PW', 'PA', 'PR', 'RI', 'SC',
-        'SD', 'TN', 'TX', 'UT', 'VT', 'VI', 'VA', 'WA', 'WV', 'WI', 'WY');
+    var $m_usa_states = array(
+        'AL',
+        'AK',
+        'AS',
+        'AZ',
+        'AR',
+        'CA',
+        'CO',
+        'CT',
+        'DE',
+        'DC',
+        'FM',
+        'FL',
+        'GA',
+        'GU',
+        'HI',
+        'ID',
+        'IL',
+        'IN',
+        'IA',
+        'KS',
+        'KY',
+        'LA',
+        'ME',
+        'MH',
+        'MD',
+        'MA',
+        'MI',
+        'MN',
+        'MS',
+        'MO',
+        'MT',
+        'NE',
+        'NV',
+        'NH',
+        'NJ',
+        'NM',
+        'NY',
+        'NC',
+        'ND',
+        'MP',
+        'OH',
+        'OK',
+        'OR',
+        'PW',
+        'PA',
+        'PR',
+        'RI',
+        'SC',
+        'SD',
+        'TN',
+        'TX',
+        'UT',
+        'VT',
+        'VI',
+        'VA',
+        'WA',
+        'WV',
+        'WI',
+        'WY'
+    );
     var $m_defaulttocurrent = true;
 
     /**
@@ -50,11 +106,17 @@ class Atk_StateAttribute extends Atk_ListAttribute
      * @param array $valueArray Array with values. If you don't use this parameter,
      *                    values are assumed to be the same as the options.
      * @param int $flags Flags for the attribute
-     * @param bool $defaulttocurrent Set the default selected state to the 
+     * @param bool $defaulttocurrent Set the default selected state to the
      *                               current state based on the atk language
      */
-    function atkStateAttribute($name, $switch = "usa", $optionArray = "", $valueArray = "", $flags = 0, $defaulttocurrent = true)
-    {
+    function atkStateAttribute(
+        $name,
+        $switch = "usa",
+        $optionArray = "",
+        $valueArray = "",
+        $flags = 0,
+        $defaulttocurrent = true
+    ) {
 
         if (is_numeric($switch)) {
             $flags = $switch;
@@ -84,8 +146,9 @@ class Atk_StateAttribute extends Atk_ListAttribute
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
-        if ($this->m_defaulttocurrent && !$record[$this->fieldName()])
+        if ($this->m_defaulttocurrent && !$record[$this->fieldName()]) {
             $record[$this->fieldName()] = strtoupper(Atk_Language::getLanguage());
+        }
         return parent::edit($record, $fieldprefix);
     }
 
@@ -168,8 +231,9 @@ class Atk_StateAttribute extends Atk_ListAttribute
             return $this->m_usa_states;
         } else {
             $tmp_array = array();
-            foreach ($this->m_state as $iso => $value)
+            foreach ($this->m_state as $iso => $value) {
                 $tmp_array[] = $iso;
+            }
             return $tmp_array;
         }
     }
@@ -184,11 +248,13 @@ class Atk_StateAttribute extends Atk_ListAttribute
     {
         $tmp_array = array();
         if ($switch == "usa") {
-            foreach ($this->m_usa_states as $iso)
+            foreach ($this->m_usa_states as $iso) {
                 $tmp_array[] = $this->getStateOption($iso);
+            }
         } else {
-            foreach ($this->m_state as $iso => $value)
+            foreach ($this->m_state as $iso => $value) {
                 $tmp_array[] = $value;
+            }
         }
         return $tmp_array;
     }

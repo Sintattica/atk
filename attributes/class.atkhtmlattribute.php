@@ -58,10 +58,11 @@ class Atk_HtmlAttribute extends Atk_TextAttribute
      */
     function display($record)
     {
-        if ($this->nl2br)
+        if ($this->nl2br) {
             return nl2br($record[$this->fieldName()]);
-        else
+        } else {
             return $record[$this->fieldName()];
+        }
     }
 
 }

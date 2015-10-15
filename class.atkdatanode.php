@@ -37,8 +37,8 @@ class Atk_DataNode extends Atk_Node
     /**
      * Constructor.
      *
-     * @param string $type  node type (by default the class name)
-     * @param int    $flags node flags
+     * @param string $type node type (by default the class name)
+     * @param int $flags node flags
      *
      * @return atkDataNode
      */
@@ -74,8 +74,8 @@ class Atk_DataNode extends Atk_Node
      * Select records using the given criteria.
      *
      * @param string $selector selector string
-     * @param string $order    order string
-     * @param array  $limit    limit array
+     * @param string $order order string
+     * @param array $limit limit array
      *
      * @return array selected records
      */
@@ -93,7 +93,7 @@ class Atk_DataNode extends Atk_Node
             'offset' => isset($limit['offset']) ? $limit['offset'] : 0,
             'limit' => isset($limit['limit']) ? $limit['limit'] : -1,
             'search' => isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch']
-                    : null
+                : null
         );
 
         $result = $this->findData($params);
@@ -113,7 +113,7 @@ class Atk_DataNode extends Atk_Node
         $params = array(
             'selector' => $selector,
             'search' => isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch']
-                    : null
+                : null
         );
 
         return $this->countData($params);
@@ -123,9 +123,9 @@ class Atk_DataNode extends Atk_Node
      * Count "rows".
      *
      * Supported parameters are: selector, limit, offset and order.
-     * 
+     *
      * @param array $params parameters
-     * 
+     *
      * @return int number of "records"
      */
     protected function countData($params = array())
@@ -231,14 +231,15 @@ class Atk_DataNode extends Atk_Node
 
                 if (strpos($column, '.') !== false) {
                     list($table, $column) = explode('.', $column);
-                    if ($table != $this->getTable())
+                    if ($table != $this->getTable()) {
                         continue;
+                    }
                 }
 
                 $value = stripslashes(Atk_Tools::stripQuotes($value));
 
                 if (isset($criteria[$column]) && $criteria[$column] != $value) {
-                    $criteria[$column] = array_merge((array) $criteria[$column], (array) $value);
+                    $criteria[$column] = array_merge((array)$criteria[$column], (array)$value);
                 } else {
                     $criteria[$column] = $value;
                 }
@@ -251,9 +252,9 @@ class Atk_DataNode extends Atk_Node
     /**
      * Filter data using the given selector.
      *
-     * @param array $data     data list
+     * @param array $data data list
      * @param array $criteria selector criteria list
-     * @param array $search   search fields / values 
+     * @param array $search search fields / values
      *
      * @return array filtered data
      */
@@ -273,22 +274,24 @@ class Atk_DataNode extends Atk_Node
     /**
      * Check if record is valid using the given selector criteria and search params.
      *
-     * @param array $record   record
+     * @param array $record record
      * @param array $criteria selector criteria list
-     * @param array $search   search fields / values 
+     * @param array $search search fields / values
      *
      * @return boolean is valid?
      */
     protected function isValidRecord($record, $criteria, $search)
     {
         foreach ($criteria as $key => $value) {
-            if ($record[$key] != $value)
+            if ($record[$key] != $value) {
                 return false;
+            }
         }
 
         foreach ($search as $key => $value) {
-            if (!empty($value) && stripos($record[$key], $value) === false)
+            if (!empty($value) && stripos($record[$key], $value) === false) {
                 return false;
+            }
         }
 
         return true;
@@ -303,8 +306,9 @@ class Atk_DataNode extends Atk_Node
      */
     protected function translateOrder($order)
     {
-        if (empty($order))
+        if (empty($order)) {
             return false;
+        }
 
         list($column, $direction) = preg_split('/[ ]+/', $order);
         if (strpos($column, '.') !== false) {
@@ -329,7 +333,7 @@ class Atk_DataNode extends Atk_Node
     /**
      * Sort data by the given order string.
      *
-     * @param array  $data  data list
+     * @param array $data data list
      * @param string $order order string
      *
      * @return array data list
@@ -342,9 +346,11 @@ class Atk_DataNode extends Atk_Node
             $attr = $this->getAttribute($column);
 
             if ($attr instanceof atkNumberAttribute) {
-                usort($data, create_function('$a, $b', 'return $a["' . $column . '"] == $b["' . $column . '"] ? 0 : ($a["' . $column . '"] < $b["' . $column . '"] ? -1 : 1);'));
+                usort($data, create_function('$a, $b',
+                    'return $a["' . $column . '"] == $b["' . $column . '"] ? 0 : ($a["' . $column . '"] < $b["' . $column . '"] ? -1 : 1);'));
             } else {
-                usort($data, create_function('$a, $b', 'return strcasecmp($a["' . $column . '"], $b["' . $column . '"]);'));
+                usort($data,
+                    create_function('$a, $b', 'return strcasecmp($a["' . $column . '"], $b["' . $column . '"]);'));
             }
 
             if (!$asc) {
@@ -358,9 +364,9 @@ class Atk_DataNode extends Atk_Node
     /**
      * Limit data using the given limit and offset.
      *
-     * @param array $data   data list
-     * @param int   $limit  limit
-     * @param int   $offset offset
+     * @param array $data data list
+     * @param int $limit limit
+     * @param int $offset offset
      *
      * @return array limitted data
      */
@@ -410,7 +416,7 @@ class Atk_DataNode extends Atk_Node
      */
     public function setAttribSizes()
     {
-        
+
     }
 
 }

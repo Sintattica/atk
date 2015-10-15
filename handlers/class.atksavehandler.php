@@ -115,10 +115,12 @@ class Atk_SaveHandler extends Atk_ActionHandler
             isset($this->m_postvars['atksaveandcontinue'])
         ) {
             $this->handleProcess($record);
-        } else if (isset($this->m_postvars['atkcancel'])) {
-            // Cancel was pressed
-            $location = $this->m_node->feedbackUrl("save", ACTION_CANCELLED, $record, "", $this->_getSkip());
-            $this->_handleRedirect($location);
+        } else {
+            if (isset($this->m_postvars['atkcancel'])) {
+                // Cancel was pressed
+                $location = $this->m_node->feedbackUrl("save", ACTION_CANCELLED, $record, "", $this->_getSkip());
+                $this->_handleRedirect($location);
+            }
         }
     }
 
@@ -136,8 +138,9 @@ class Atk_SaveHandler extends Atk_ActionHandler
 
         $this->validate($record);
 
-        if (!isset($record['atkerror']))
+        if (!isset($record['atkerror'])) {
             $record['atkerror'] = array();
+        }
 
         $error = count($record['atkerror']) > 0;
 
@@ -190,16 +193,18 @@ class Atk_SaveHandler extends Atk_ActionHandler
             $url .= '&atkaction=edit';
             $url .= '&atkselector=' . rawurlencode($this->m_node->primaryKey($record));
             $location = Atk_Tools::session_url($url . $extra, SESSION_REPLACE, $this->_getSkip() - 1);
-        } else if ($this->m_node->hasFlag(NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext'])) {
-            $filter = "";
-            if (isset($this->m_node->m_postvars['atkfilter'])) {
-                $filter = "&atkfilter=" . rawurlencode($this->m_node->m_postvars['atkfilter']);
-            }
-            $url = Atk_Tools::atkSelf() . '?atknodetype=' . $this->m_node->atknodetype() . '&atkaction=' . $this->getAddAction();
-            $location = Atk_Tools::session_url($url . $filter, SESSION_REPLACE, $this->_getSkip() - 1);
         } else {
-            // normal succesful save
-            $location = $this->m_node->feedbackUrl("save", ACTION_SUCCESS, $record, "", $this->_getSkip());
+            if ($this->m_node->hasFlag(NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext'])) {
+                $filter = "";
+                if (isset($this->m_node->m_postvars['atkfilter'])) {
+                    $filter = "&atkfilter=" . rawurlencode($this->m_node->m_postvars['atkfilter']);
+                }
+                $url = Atk_Tools::atkSelf() . '?atknodetype=' . $this->m_node->atknodetype() . '&atkaction=' . $this->getAddAction();
+                $location = Atk_Tools::session_url($url . $filter, SESSION_REPLACE, $this->_getSkip() - 1);
+            } else {
+                // normal succesful save
+                $location = $this->m_node->feedbackUrl("save", ACTION_SUCCESS, $record, "", $this->_getSkip());
+            }
         }
         return $location;
     }
@@ -214,8 +219,9 @@ class Atk_SaveHandler extends Atk_ActionHandler
     {
         $atkstoretype = "";
         $sessionmanager = Atk_SessionManager::atkGetSessionManager();
-        if ($sessionmanager)
+        if ($sessionmanager) {
             $atkstoretype = $sessionmanager->stackVar('atkstore');
+        }
         switch ($atkstoretype) {
             case 'session':
                 return $this->storeRecordInSession($record);
@@ -233,7 +239,8 @@ class Atk_SaveHandler extends Atk_ActionHandler
     protected function storeRecordInSession(&$record)
     {
         Atk_Tools::atkdebug("STORING RECORD IN SESSION");
-        $result = Atk_Tools::atkinstance('atk.session.atksessionstore')->addDataRow($record, $this->m_node->primaryKeyField());
+        $result = Atk_Tools::atkinstance('atk.session.atksessionstore')->addDataRow($record,
+            $this->m_node->primaryKeyField());
         return ($result !== false);
     }
 
@@ -245,8 +252,9 @@ class Atk_SaveHandler extends Atk_ActionHandler
      */
     protected function storeRecordInDb(&$record)
     {
-        if (!$this->m_node->addDb($record, true, "add"))
+        if (!$this->m_node->addDb($record, true, "add")) {
             return false;
+        }
 
         $this->m_node->getDb()->commit();
         $this->notify("save", $record);
@@ -312,13 +320,15 @@ class Atk_SaveHandler extends Atk_ActionHandler
     {
         $error = (!$this->m_node->validate($record, "add"));
 
-        if (!isset($record['atkerror']))
+        if (!isset($record['atkerror'])) {
             $record['atkerror'] = array();
+        }
 
         $error = $error || count($record['atkerror']) > 0;
 
         foreach (array_keys($record) as $key) {
-            $error = $error || (is_array($record[$key]) && array_key_exists('atkerror', $record[$key]) && count($record[$key]['atkerror']) > 0);
+            $error = $error || (is_array($record[$key]) && array_key_exists('atkerror',
+                        $record[$key]) && count($record[$key]['atkerror']) > 0);
         }
 
         return !$error;
@@ -359,8 +369,9 @@ class Atk_SaveHandler extends Atk_ActionHandler
             $handler = &$this->m_node->getHandler('add');
             $handler->m_partial = 'dialog';
             $handler->m_postvars = $this->m_postvars;
-            if ($this->m_dialogSaveUrl != null)
+            if ($this->m_dialogSaveUrl != null) {
                 $handler->setDialogSaveUrl($this->m_dialogSaveUrl);
+            }
             $content = $handler->renderAddDialog($record);
             $this->updateDialog($content);
             return;

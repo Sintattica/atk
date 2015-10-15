@@ -45,7 +45,7 @@ class Atk_FrontController implements ArrayAccess
     protected $m_session;
     protected $m_vars = array();
     protected $m_template = "";
-    protected $m_plugins = NULL;
+    protected $m_plugins = null;
     protected $m_partial = false;
     protected $m_result = "";
     protected $m_rendered = false;
@@ -80,7 +80,7 @@ class Atk_FrontController implements ArrayAccess
         // is set, if so we use this URI, else we fallback to the custom (default) URI. If
         // this is a nested controller, we should always respect the custom given URI.
         $uri = $parent == null && isset($_REQUEST[$uriParam]) ? $_REQUEST[$uriParam]
-                : $vars[$uriParam];
+            : $vars[$uriParam];
 
         if ($merge) {
             if (is_object($parent)) {
@@ -113,8 +113,9 @@ class Atk_FrontController implements ArrayAccess
      */
     protected static function uriParts($uri)
     {
-        if ($uri{0} == '/')
+        if ($uri{0} == '/') {
             $uri = substr($uri, 1);
+        }
 
         return explode('/', $uri);
     }
@@ -126,12 +127,13 @@ class Atk_FrontController implements ArrayAccess
      * @param atkFrontController $parent parent controller
      * @return atkFrontController the controller
      */
-    protected static function create($uri, $parent = NULL)
+    protected static function create($uri, $parent = null)
     {
         list($module, $name, $action) = self::uriParts($uri);
 
-        if ($action == NULL)
+        if ($action == null) {
             $action = 'index';
+        }
 
         $importPath = "module.{$module}.controllers.{$name}controller";
         if (Atk_Tools::atkimport($importPath)) {
@@ -186,11 +188,11 @@ class Atk_FrontController implements ArrayAccess
      * Constructor.
      *
      * @param string $module module name
-     * @param string $name   controller name
+     * @param string $name controller name
      * @param string $action
-     * @param atkFrontController $parent 
+     * @param atkFrontController $parent
      */
-    protected function __construct($module, $name, $action, $parent = NULL)
+    protected function __construct($module, $name, $action, $parent = null)
     {
         $this->m_module = $module;
         $this->m_name = $name;
@@ -225,7 +227,7 @@ class Atk_FrontController implements ArrayAccess
      */
     protected function isRoot()
     {
-        return $this->getParent() == NULL;
+        return $this->getParent() == null;
     }
 
     /**
@@ -235,10 +237,11 @@ class Atk_FrontController implements ArrayAccess
      */
     protected function getRoot()
     {
-        if ($this->isRoot())
+        if ($this->isRoot()) {
             return $this;
-        else
+        } else {
             return $this->getParent()->getRoot();
+        }
     }
 
     /**
@@ -295,7 +298,7 @@ class Atk_FrontController implements ArrayAccess
      * Add response header. (Will only be outputted when
      * renderPartial or renderContent is called for the
      * root controller).
-     * 
+     *
      * @param string $header The header to add
      */
     protected function addHeader($header)
@@ -323,8 +326,9 @@ class Atk_FrontController implements ArrayAccess
      */
     protected function setCacheableActions($actions)
     {
-        if (!is_array($actions))
+        if (!is_array($actions)) {
             $actions = func_get_args();
+        }
         $this->m_cacheableActions = $actions;
     }
 
@@ -356,8 +360,9 @@ class Atk_FrontController implements ArrayAccess
     protected function isActionCached()
     {
         // action is never cached
-        if (!in_array($this->m_action, $this->m_cacheableActions))
+        if (!in_array($this->m_action, $this->m_cacheableActions)) {
             return false;
+        }
 
         $file = $this->getActionCacheFile();
         return $file->exists();
@@ -386,8 +391,9 @@ class Atk_FrontController implements ArrayAccess
     protected function storeInActionCache()
     {
         // action is never cached
-        if (!in_array($this->m_action, $this->m_cacheableActions))
+        if (!in_array($this->m_action, $this->m_cacheableActions)) {
             return;
+        }
 
         $data = array(
             'result' => $this->m_result,
@@ -408,14 +414,18 @@ class Atk_FrontController implements ArrayAccess
      */
     protected function registerStylesAndScripts()
     {
-        foreach ($this->m_styleSheets as $entry)
+        foreach ($this->m_styleSheets as $entry) {
             $this->m_bridge->registerStyleSheet($entry['file'], $entry['media']);
-        foreach ($this->m_styleCodes as $entry)
+        }
+        foreach ($this->m_styleCodes as $entry) {
             $this->m_bridge->registerStyleCode($entry['code']);
-        foreach ($this->m_scriptFiles as $entry)
+        }
+        foreach ($this->m_scriptFiles as $entry) {
             $this->m_bridge->registerScriptFile($entry['file']);
-        foreach ($this->m_scriptCodes as $entry)
+        }
+        foreach ($this->m_scriptCodes as $entry) {
             $this->m_bridge->registerScriptCode($entry['code']);
+        }
     }
 
     /**
@@ -469,13 +479,17 @@ class Atk_FrontController implements ArrayAccess
             $this->postFilter();
 
             if ($this->m_partial && $this->isRoot()) {
-                while (@ob_end_clean());
+                while (@ob_end_clean()) {
+                    ;
+                }
 
-                foreach ($this->m_headers as $header)
+                foreach ($this->m_headers as $header) {
                     header($header);
+                }
 
-                if (isset($this->m_contentType))
+                if (isset($this->m_contentType)) {
                     header('Content-Type: ' . $this->m_contentType);
+                }
 
                 echo $this->m_result;
 
@@ -500,12 +514,14 @@ class Atk_FrontController implements ArrayAccess
     protected function getActionMethod()
     {
         $methodname = str_replace('_', '', $this->m_action) . 'Action';
-        if (!method_exists($this, $methodname))
+        if (!method_exists($this, $methodname)) {
             throw new Exception("Action method not found!");
+        }
 
         $method = new ReflectionMethod(get_class($this), $methodname);
-        if (!$method->isPublic())
+        if (!$method->isPublic()) {
             throw new Exception("Action method is not public!");
+        }
 
         return $method;
     }
@@ -516,7 +532,7 @@ class Atk_FrontController implements ArrayAccess
      */
     protected function preFilter()
     {
-        
+
     }
 
     /**
@@ -525,7 +541,7 @@ class Atk_FrontController implements ArrayAccess
      */
     protected function init()
     {
-        
+
     }
 
     /**
@@ -535,7 +551,7 @@ class Atk_FrontController implements ArrayAccess
      */
     protected function postFilter()
     {
-        
+
     }
 
     /**
@@ -580,11 +596,12 @@ class Atk_FrontController implements ArrayAccess
      */
     protected function uninstallPlugins()
     {
-        if ($this->m_plugins == NULL)
+        if ($this->m_plugins == null) {
             return;
+        }
         $smarty = Atk_Tools::atkinstance("atk.ui.atksmarty");
         $smarty->_plugins = $this->m_plugins;
-        $this->m_plugins = NULL;
+        $this->m_plugins = null;
     }
 
     /**
@@ -619,8 +636,8 @@ class Atk_FrontController implements ArrayAccess
 
     /**
      * Is template variable set?
-     * 
-     * @param string $name 
+     *
+     * @param string $name
      */
     public function __isset($name)
     {
@@ -675,7 +692,7 @@ class Atk_FrontController implements ArrayAccess
      * Sets the given offset with the given value
      *
      * @param mixed $offset offset
-     * @param mixed $value  value
+     * @param mixed $value value
      */
     public function offsetSet($offset, $value)
     {
@@ -704,18 +721,20 @@ class Atk_FrontController implements ArrayAccess
         if ($this->isRoot()) {
             $controller = str_replace('.', '/', $controller);
 
-            if ($controller != NULL && strpos($controller, '/') === FALSE) {
+            if ($controller != null && strpos($controller, '/') === false) {
                 $controller = "{$this->m_module}/{$controller}";
             }
 
-            if ($controller == NULL || $controller == "{$this->m_module}/{$this->m_name}") {
+            if ($controller == null || $controller == "{$this->m_module}/{$this->m_name}") {
                 $controller = "{$this->m_module}/{$this->m_name}";
 
-                if ($action == NULL)
+                if ($action == null) {
                     $action = $this->m_action;
-            }
-            else if ($action == NULL) {
-                $action = 'index';
+                }
+            } else {
+                if ($action == null) {
+                    $action = 'index';
+                }
             }
 
             return '/' . $controller . '/' . $action;
@@ -756,7 +775,7 @@ class Atk_FrontController implements ArrayAccess
      * @param array $vars request vars
      * @return string url
      */
-    protected function url($controller = NULL, $action = NULL, $vars = array())
+    protected function url($controller = null, $action = null, $vars = array())
     {
         $uri = $this->uri($controller, $action);
         return $this->buildUrl($uri, $vars);
@@ -771,8 +790,8 @@ class Atk_FrontController implements ArrayAccess
      */
     public function urlFunctionTag($params, $smarty)
     {
-        $controller = isset($params['controller']) ? $params['controller'] : NULL;
-        $action = isset($params['action']) ? $params['action'] : NULL;
+        $controller = isset($params['controller']) ? $params['controller'] : null;
+        $action = isset($params['action']) ? $params['action'] : null;
         $vars = isset($params['vars']) ? $params['vars'] : array();
 
         unset($params['controller']);
@@ -794,8 +813,8 @@ class Atk_FrontController implements ArrayAccess
      */
     public function formVarsFunctionTag($params, $smarty)
     {
-        $controller = isset($params['controller']) ? $params['controller'] : NULL;
-        $action = isset($params['action']) ? $params['action'] : NULL;
+        $controller = isset($params['controller']) ? $params['controller'] : null;
+        $action = isset($params['action']) ? $params['action'] : null;
         $vars = isset($params['vars']) ? $params['vars'] : array();
 
 
@@ -829,7 +848,7 @@ class Atk_FrontController implements ArrayAccess
             return '<a href="' . $this->urlFunctionTag($params, $smarty) . '">' . $content . '</a>';
         }
 
-        return NULL;
+        return null;
     }
 
     /**
@@ -865,7 +884,7 @@ class Atk_FrontController implements ArrayAccess
      * @param bool $force Force redirect?
      * @return string url
      */
-    protected function redirect($controller = NULL, $action = NULL, $vars = array(), $force = FALSE)
+    protected function redirect($controller = null, $action = null, $vars = array(), $force = false)
     {
         if ($this->isRoot() || $force) {
             $this->doRedirect($this->url($controller, $action, $vars));
@@ -906,10 +925,11 @@ class Atk_FrontController implements ArrayAccess
      */
     protected function registerStyleSheet($file, $media = 'all')
     {
-        if (is_object($this->m_parent))
+        if (is_object($this->m_parent)) {
             $this->m_parent->registerStyleSheet($file, $media);
-        else
+        } else {
             $this->m_styleSheets[] = array('file' => $file, 'media' => $media);
+        }
     }
 
     /**
@@ -919,10 +939,11 @@ class Atk_FrontController implements ArrayAccess
      */
     protected function registerStyleCode($code)
     {
-        if (is_object($this->m_parent))
+        if (is_object($this->m_parent)) {
             $this->m_parent->registerStyleCode($code);
-        else
+        } else {
             $this->m_styleCodes[] = array('code' => $code);
+        }
     }
 
     /**
@@ -932,10 +953,11 @@ class Atk_FrontController implements ArrayAccess
      */
     protected function registerScriptFile($file)
     {
-        if (is_object($this->m_parent))
+        if (is_object($this->m_parent)) {
             $this->m_parent->registerScriptFile($file);
-        else
+        } else {
             $this->m_scriptFiles[] = array('file' => $file);
+        }
     }
 
     /**
@@ -945,10 +967,11 @@ class Atk_FrontController implements ArrayAccess
      */
     protected function registerScriptCode($code)
     {
-        if (is_object($this->m_parent))
+        if (is_object($this->m_parent)) {
             $this->m_parent->registerScriptCode($code);
-        else
+        } else {
             $this->m_scriptCodes[] = array('code' => $code);
+        }
     }
 
     /**
@@ -960,7 +983,7 @@ class Atk_FrontController implements ArrayAccess
      * @param string $template template name
      * @param array $vars template variables
      */
-    protected function renderPartial($template = NULL, $vars = NULL)
+    protected function renderPartial($template = null, $vars = null)
     {
         $this->render($template, $vars, true);
     }
@@ -990,16 +1013,19 @@ class Atk_FrontController implements ArrayAccess
      * @param array $vars template variables
      * @param boolean $partial render partial?
      */
-    protected function render($template = NULL, $vars = NULL, $partial = false)
+    protected function render($template = null, $vars = null, $partial = false)
     {
-        if ($this->m_rendered)
+        if ($this->m_rendered) {
             return;
+        }
 
-        if ($template == NULL)
+        if ($template == null) {
             $template = $this->getTemplate();
+        }
 
-        if ($vars == NULL)
+        if ($vars == null) {
             $vars = $this->getVars();
+        }
 
         if (!$partial && file_exists(Atk_Module::moduleDir($this->m_module) . "scripts/{$this->m_name}.js")) {
             $this->registerScriptFile(Atk_Module::moduleDir($this->m_module) . "scripts/{$this->m_name}.js");
@@ -1018,7 +1044,7 @@ class Atk_FrontController implements ArrayAccess
     /**
      * Returns the template path for the given template.
      *
-     * @param string $template  template name
+     * @param string $template template name
      * @param string $directory the base template directory
      *
      * @return string template path
@@ -1028,12 +1054,16 @@ class Atk_FrontController implements ArrayAccess
         $root = $this->m_bridge->getApplicationRoot();
         if (file_exists($root . "$directory/$template")) {
             return $root . "$directory/$template";
-        } else if (file_exists(Atk_Module::moduleDir($this->m_module) . "$directory/$template")) {
-            return Atk_Module::moduleDir($this->m_module) . "$directory/$template";
-        } else if (file_exists(Atk_Module::moduleDir($this->m_module) . "skel/$directory/$template")) {
-            return Atk_Module::moduleDir($this->m_module) . "skel/$directory/$template";
         } else {
-            return null;
+            if (file_exists(Atk_Module::moduleDir($this->m_module) . "$directory/$template")) {
+                return Atk_Module::moduleDir($this->m_module) . "$directory/$template";
+            } else {
+                if (file_exists(Atk_Module::moduleDir($this->m_module) . "skel/$directory/$template")) {
+                    return Atk_Module::moduleDir($this->m_module) . "skel/$directory/$template";
+                } else {
+                    return null;
+                }
+            }
         }
     }
 
@@ -1043,16 +1073,19 @@ class Atk_FrontController implements ArrayAccess
     protected function getLayoutTemplatePath()
     {
         $path = $this->getTemplatePath($this->m_module . '/' . $this->m_name . '.tpl', 'layouts');
-        if ($path != null)
+        if ($path != null) {
             return $path;
+        }
 
         $path = $this->getTemplatePath($this->m_module . '/root.tpl', 'layouts');
-        if ($path != null)
+        if ($path != null) {
             return $path;
+        }
 
         $path = $this->getTemplatePath('root.tpl', 'layouts');
-        if ($path != null)
+        if ($path != null) {
             return $path;
+        }
 
         return $null;
     }
@@ -1064,18 +1097,18 @@ class Atk_FrontController implements ArrayAccess
      *
      * @param string $template
      * @param array $vars
-     * @param bool   $partial
+     * @param bool $partial
      * @return string Filename for the template
      */
     protected function getFileForTemplate($template, $vars, $partial = false)
     {
         if ($template{0} != '/') {
             $template = $this->m_module . '/' . $this->m_name . '/' . ($partial ? '_'
-                        : '') . $template;
+                    : '') . $template;
         } else {
             $parts = explode('/', $template);
             $template = implode('/', array_slice($parts, 0, count($parts) - 1)) . '/' . ($partial
-                        ? '_' : '') . $parts[count($parts) - 1];
+                    ? '_' : '') . $parts[count($parts) - 1];
         }
 
         return "{$template}.tpl";

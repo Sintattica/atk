@@ -11,9 +11,9 @@ class Atk_PHPView
 
     /**
      * Constructor.
-     * 
+     *
      * @param string $path template path
-     * @param array  $vars template variables (name/value)
+     * @param array $vars template variables (name/value)
      */
     public function __construct($path, $vars)
     {
@@ -34,9 +34,9 @@ class Atk_PHPView
 
     /**
      * Checks whatever the given template variable is set / exists.
-     * 
+     *
      * @param string $name template variable name
-     * 
+     *
      * @return boolean is variable set?
      */
     public function __isset($name)
@@ -46,7 +46,7 @@ class Atk_PHPView
 
     /**
      * Returns the template variable with the given name.
-     * 
+     *
      * @param string $name template variable name
      */
     public function __get($name)
@@ -56,10 +56,10 @@ class Atk_PHPView
 
     /**
      * Allows closures in the template variables to be called.
-     * 
+     *
      * @param string $name function name
-     * @param array  $args function arguments
-     * 
+     * @param array $args function arguments
+     *
      * @return mixed function result
      */
     public function __call($name, $args)

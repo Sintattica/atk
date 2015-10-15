@@ -2,7 +2,7 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * @package atk
@@ -17,7 +17,7 @@
 
 
 /**
- * SQL Builder for MySQL databases. 
+ * SQL Builder for MySQL databases.
  *
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk
@@ -34,8 +34,8 @@ class Atk_MysqlQuery extends Atk_Query
      * @param String $field The fieldname on which the regular expression
      *                      match will be performed.
      * @param String $value The regular expression to search for.
-     * @param boolean $inverse Set to false (default) to perform a normal 
-     *                         match. Set to true to generate a SQL string 
+     * @param boolean $inverse Set to false (default) to perform a normal
+     *                         match. Set to true to generate a SQL string
      *                         that searches for values dat do not match.
      * @return String A SQL regexp expression.
      */
@@ -51,25 +51,26 @@ class Atk_MysqlQuery extends Atk_Query
     /**
      * Generate an SQL searchcondition for a soundex match.
      *
-     * @param String $field The fieldname on which the soundex match will 
+     * @param String $field The fieldname on which the soundex match will
      *                      be performed.
      * @param String $value The value to search for.
-     * @param boolean $inverse Set to false (default) to perform a normal 
-     *                         match. Set to true to generate a SQL string 
+     * @param boolean $inverse Set to false (default) to perform a normal
+     *                         match. Set to true to generate a SQL string
      *                         that searches for values dat do not match.
      * @return String A SQL soundex expression.
      */
     function soundexCondition($field, $value, $inverse = false)
     {
         if ($value[0] == '!') {
-            return "soundex($field) NOT like concat('%',substring(soundex('" . substr($value, 1, Atk_Tools::atk_strlen($value)) . "') from 2),'%')";
+            return "soundex($field) NOT like concat('%',substring(soundex('" . substr($value, 1,
+                Atk_Tools::atk_strlen($value)) . "') from 2),'%')";
         } else {
             return "soundex($field) like concat('%',substring(soundex('$value') from 2),'%')";
         }
     }
 
     /**
-     * Prepare the query for a limit. 
+     * Prepare the query for a limit.
      * @access private
      * @param String $query The SQL query that is being constructed.
      */
@@ -89,32 +90,36 @@ class Atk_MysqlQuery extends Atk_Query
      *
      * @return String a SQL Select COUNT(*) Query
      */
-    function buildCount($distinct = FALSE)
+    function buildCount($distinct = false)
     {
         if (($distinct || $this->m_distinct) && count($this->m_fields) > 0) {
             $result = "SELECT COUNT(DISTINCT ";
             $fields = $this->quoteFields($this->m_fields);
-            for ($i = 0; $i < count($fields); $i++)
+            for ($i = 0; $i < count($fields); $i++) {
                 $fields[$i] = "COALESCE({$fields[$i]}, '###ATKNULL###')";
-            $result.=implode($this->quoteFields($fields), ", ");
-            $result.=") as count FROM ";
-        } else
+            }
+            $result .= implode($this->quoteFields($fields), ", ");
+            $result .= ") as count FROM ";
+        } else {
             $result = "SELECT COUNT(*) as count FROM ";
+        }
 
         for ($i = 0; $i < count($this->m_tables); $i++) {
-            $result.= $this->quoteField($this->m_tables[$i]);
-            if ($this->m_aliases[$i] != "")
-                $result.=" " . $this->m_aliases[$i];
-            if ($i < count($this->m_tables) - 1)
-                $result.=", ";
+            $result .= $this->quoteField($this->m_tables[$i]);
+            if ($this->m_aliases[$i] != "") {
+                $result .= " " . $this->m_aliases[$i];
+            }
+            if ($i < count($this->m_tables) - 1) {
+                $result .= ", ";
+            }
         }
 
         for ($i = 0; $i < count($this->m_joins); $i++) {
-            $result.=$this->m_joins[$i];
+            $result .= $this->m_joins[$i];
         }
 
         if (count($this->m_conditions) > 0) {
-            $result.= " WHERE (" . implode(") AND (", $this->m_conditions) . ")";
+            $result .= " WHERE (" . implode(") AND (", $this->m_conditions) . ")";
         }
 
         if (count($this->m_searchconditions) > 0) {
@@ -125,14 +130,14 @@ class Atk_MysqlQuery extends Atk_Query
                 $prefix = " AND ";
             };
             if ($this->m_searchmethod == "" || $this->m_searchmethod == "AND") {
-                $result.= $prefix . "(" . implode(" AND ", $this->m_searchconditions) . ")";
+                $result .= $prefix . "(" . implode(" AND ", $this->m_searchconditions) . ")";
             } else {
-                $result.= $prefix . "(" . implode(" OR ", $this->m_searchconditions) . ")";
+                $result .= $prefix . "(" . implode(" OR ", $this->m_searchconditions) . ")";
             }
         }
 
         if (count($this->m_groupbys) > 0) {
-            $result.= " GROUP BY " . implode(", ", $this->m_groupbys);
+            $result .= " GROUP BY " . implode(", ", $this->m_groupbys);
         }
         return $result;
     }

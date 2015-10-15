@@ -18,13 +18,13 @@
 /**
  * Action box builder. Provides a fluent interface to create standardized
  * ATK action boxes.
- * 
+ *
  * This class is used/exposed by the atkPageBuilder class.
  *
  * @author Peter C. Verhage <peter@achievo.org>
  * @package atk
  * @subpackage ui
- * 
+ *
  * @see atkPageBuilder
  */
 class Atk_ActionBoxBuilder
@@ -45,7 +45,7 @@ class Atk_ActionBoxBuilder
 
     /**
      * Box template.
-     * 
+     *
      * @var string
      */
     protected $m_template = null;
@@ -91,9 +91,9 @@ class Atk_ActionBoxBuilder
 
     /**
      * Sets the box title
-     * 
+     *
      * @param string $title title
-     * 
+     *
      * @return atkActionBoxBuilder
      */
     public function title($title)
@@ -106,7 +106,7 @@ class Atk_ActionBoxBuilder
      * Locked?
      *
      * @param boolean $locked locked
-     * 
+     *
      * @return atkActionBoxBuilder
      */
     public function locked($locked)
@@ -117,9 +117,9 @@ class Atk_ActionBoxBuilder
 
     /**
      * Set form start.
-     * 
+     *
      * @param string $formStart form start
-     * 
+     *
      * @return atkActionBoxBuilder
      */
     public function formStart($formStart)
@@ -130,13 +130,13 @@ class Atk_ActionBoxBuilder
 
     /**
      * Sets the session status.
-     * 
+     *
      * The default session status is SESSION_DEFAULT. If you don't want an
-     * automatically appended session form set the session status 
+     * automatically appended session form set the session status
      * explicitly to null!
      *
      * @param int $status session status
-     * 
+     *
      * @return atkActionBoxBuilder
      */
     public function sessionStatus($status)
@@ -147,9 +147,9 @@ class Atk_ActionBoxBuilder
 
     /**
      * Set form end.
-     * 
+     *
      * @param string $formEnd form end
-     * 
+     *
      * @return atkActionBoxBuilder
      */
     public function formEnd($formEnd)
@@ -160,9 +160,9 @@ class Atk_ActionBoxBuilder
 
     /**
      * Template.
-     * 
+     *
      * @param string $template template name
-     * 
+     *
      * @return atkActionBoxBuilder
      */
     public function template($template)
@@ -173,9 +173,9 @@ class Atk_ActionBoxBuilder
 
     /**
      * Set content.
-     * 
+     *
      * @param string $content content
-     * 
+     *
      * @return atkActionBoxBuilder
      */
     public function content($content)
@@ -186,9 +186,9 @@ class Atk_ActionBoxBuilder
 
     /**
      * Set form buttons.
-     * 
+     *
      * @param string $buttons form buttons
-     * 
+     *
      * @return atkActionBoxBuilder
      */
     public function buttons($buttons)
@@ -199,7 +199,7 @@ class Atk_ActionBoxBuilder
 
     /**
      * Stops building the action box and returns the page builder.
-     * 
+     *
      * @return atkPageBuilder
      */
     public function endActionBox()

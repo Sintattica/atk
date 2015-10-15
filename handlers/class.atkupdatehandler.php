@@ -100,7 +100,7 @@ class Atk_Updatehandler extends Atk_ActionHandler
         }
 
         $csrfToken = isset($this->m_postvars[$prefix . 'atkcsrftoken']) ? $this->m_postvars[$prefix . 'atkcsrftoken']
-                : null;
+            : null;
 
         // check for CSRF token
         if (!$this->isValidCSRFToken($csrfToken)) {
@@ -110,14 +110,21 @@ class Atk_Updatehandler extends Atk_ActionHandler
 
         if (isset($this->m_postvars['atknoclose']) ||
             isset($this->m_postvars['atksaveandclose']) ||
-            isset($this->m_postvars['atkwizardaction'])) {
+            isset($this->m_postvars['atkwizardaction'])
+        ) {
             $this->handleProcess($record);
-        } else if (isset($this->m_postvars['atkcancel'])) {
-            $this->invoke('handleCancel', $record);
         } else {
-            // something other than one of the three buttons was pressed. Let's just refresh.
-            $location = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record), "atktab" => $this->m_node->getActiveTab())), SESSION_REPLACE);
-            $this->m_node->redirect($location);
+            if (isset($this->m_postvars['atkcancel'])) {
+                $this->invoke('handleCancel', $record);
+            } else {
+                // something other than one of the three buttons was pressed. Let's just refresh.
+                $location = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atknodetype(),
+                    $this->getEditAction(), array(
+                        "atkselector" => $this->m_node->primaryKey($record),
+                        "atktab" => $this->m_node->getActiveTab()
+                    )), SESSION_REPLACE);
+                $this->m_node->redirect($location);
+            }
         }
     }
 
@@ -154,14 +161,18 @@ class Atk_Updatehandler extends Atk_ActionHandler
     /**
      * Process a record (preUpdate/validate/store)
      *
-     * @param array  $record         Record to store
-     * @param string $errorHandler   Error handler method to call on current handler
+     * @param array $record Record to store
+     * @param string $errorHandler Error handler method to call on current handler
      * @param string $successHandler Success handler method to call on current handler
-     * @param array  $extraParams   Extra params to pass along to error/success handler methods
+     * @param array $extraParams Extra params to pass along to error/success handler methods
      * @return bool Wether the process succeeded in storing the record
      */
-    public function handleProcess($record, $errorHandler = 'handleUpdateError', $successHandler = "handleUpdateSuccess", $extraParams = array())
-    {
+    public function handleProcess(
+        $record,
+        $errorHandler = 'handleUpdateError',
+        $successHandler = "handleUpdateSuccess",
+        $extraParams = array()
+    ) {
         // empty the postvars because we don't want to use these
         $postvars = $this->getNode()->m_postvars;
         $this->getNode()->m_postvars = array();
@@ -206,7 +217,8 @@ class Atk_Updatehandler extends Atk_ActionHandler
         if (isset($record['atkerror'])) {
             $error = count($record['atkerror']) > 0;
             foreach (array_keys($record) as $key) {
-                $error = $error || (is_array($record[$key]) && array_key_exists('atkerror', $record[$key]) && count($record[$key]['atkerror']) > 0);
+                $error = $error || (is_array($record[$key]) && array_key_exists('atkerror',
+                            $record[$key]) && count($record[$key]['atkerror']) > 0);
             }
         }
         return $error;
@@ -222,12 +234,15 @@ class Atk_Updatehandler extends Atk_ActionHandler
     {
         $atkstoretype = "";
         $sessionmanager = Atk_SessionManager::atkGetSessionManager();
-        if ($sessionmanager)
+        if ($sessionmanager) {
             $atkstoretype = $sessionmanager->stackVar('atkstore');
+        }
         switch ($atkstoretype) {
-            case 'session': $result = $this->updateRecordInSession($record);
+            case 'session':
+                $result = $this->updateRecordInSession($record);
                 break;
-            default: $result = $this->updateRecordInDb($record);
+            default:
+                $result = $this->updateRecordInDb($record);
                 break;
         }
         return $result;
@@ -267,7 +282,8 @@ class Atk_Updatehandler extends Atk_ActionHandler
     private function updateRecordInSession($record)
     {
         $selector = Atk_Tools::atkArrayNvl($this->m_postvars, 'atkselector', '');
-        return (Atk_Tools::atkinstance('atk.session.atksessionstore')->updateDataRowForSelector($selector, $record) !== false);
+        return (Atk_Tools::atkinstance('atk.session.atksessionstore')->updateDataRowForSelector($selector,
+                $record) !== false);
     }
 
     /**
@@ -277,8 +293,8 @@ class Atk_Updatehandler extends Atk_ActionHandler
      *
      * This method can be overriden inside your node.
      *
-     * @param array  $record the record
-     * @param string $error  error string (only on fatal errors)
+     * @param array $record the record
+     * @param string $error error string (only on fatal errors)
      *
      * @param array $record
      */
@@ -286,7 +302,8 @@ class Atk_Updatehandler extends Atk_ActionHandler
     {
         if ($this->hasError($record)) {
             $this->setRejectInfo($record);
-            $location = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record))), SESSION_BACK);
+            $location = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atknodetype(),
+                $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record))), SESSION_BACK);
             $this->m_node->redirect($location);
         } else {
             $location = $this->m_node->feedbackUrl("update", ACTION_FAILED, $record, $error);
@@ -307,8 +324,12 @@ class Atk_Updatehandler extends Atk_ActionHandler
     {
         if (isset($this->m_postvars['atknoclose'])) {
             // 'save' was clicked
-            $params = array("atkselector" => $this->m_node->primaryKey($record), "atktab" => $this->m_node->getActiveTab());
-            $location = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atknodetype(), $this->getEditAction(), $params), SESSION_REPLACE, 1);
+            $params = array(
+                "atkselector" => $this->m_node->primaryKey($record),
+                "atktab" => $this->m_node->getActiveTab()
+            );
+            $location = Atk_Tools::session_url(Atk_Tools::dispatch_url($this->m_node->atknodetype(),
+                $this->getEditAction(), $params), SESSION_REPLACE, 1);
         } else {
             // 'save and close' was clicked
             $location = $this->m_node->feedbackUrl("update", ACTION_SUCCESS, $record, "", 2);
@@ -353,7 +374,8 @@ class Atk_Updatehandler extends Atk_ActionHandler
             $content = $this->renderAccessedDeniedDialog();
             $this->updateDialog($content);
         } else {
-            $this->handleProcess($record, 'loadSuccessDialog', 'loadEditDialogWithErrors', array('attribute_refresh_url' => $attrRefreshUrl));
+            $this->handleProcess($record, 'loadSuccessDialog', 'loadEditDialogWithErrors',
+                array('attribute_refresh_url' => $attrRefreshUrl));
         }
     }
 

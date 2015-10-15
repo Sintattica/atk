@@ -7,28 +7,28 @@ class Atk_StatementIterator implements Iterator
 {
     /**
      * Current row.
-     * 
+     *
      * @var mixed
      */
     private $m_row = false;
 
     /**
      * Current position.
-     * 
+     *
      * @var int
      */
     private $m_position = false;
 
     /**
      * Statement object.
-     * 
+     *
      * @var atkStatement
      */
     private $m_statement;
 
     /**
      * Constructs a new statemen iterator.
-     * 
+     *
      * @param atkStatement $statement statement
      */
     public function __construct(atkStatement $statement)
@@ -38,7 +38,7 @@ class Atk_StatementIterator implements Iterator
 
     /**
      * Returns the statement for this iterator.
-     * 
+     *
      * @return atkStatement statement
      */
     public function getStatement()

@@ -2,7 +2,7 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * @package atk
@@ -50,17 +50,17 @@ class Atk_FrameSet extends Atk_AbstractFrame
      * @param int $dimension The height or width of this frameset within its
      *                       parent frameset. Whether you are specifying
      *                       height or width depends on the orientation of the
-     *                       parent frameset. 
+     *                       parent frameset.
      * @param int $orientation The orientation of child frames within this
      *                         frameset. Possible values: FRAMESET_VERTICAL,
      *                         FRAMESET_HORIZONTAL.
      * @param int $border The width in pixels of the border of the frameset.
      * @param String $noframes The text to display instead of the frameset if
-     *                         frames are not supported by the browser. This 
+     *                         frames are not supported by the browser. This
      *                         param needs to be specified only for the
-     *                         outmost frameset. It is ignored by inner 
+     *                         outmost frameset. It is ignored by inner
      *                         framesets.
-     *                        
+     *
      */
     function __construct($dimension = "*", $orientation = FRAMESET_VERTICAL, $border = 0, $noframes = '')
     {
@@ -85,7 +85,7 @@ class Atk_FrameSet extends Atk_AbstractFrame
 
     /**
      * Render the frameset to html
-     * 
+     *
      * @param boolean $embedded If set to true, the frameset is treated as the
      *                          outmost frameset, causing it to render the
      *                          noframes tag for frameless browsers.
@@ -94,14 +94,14 @@ class Atk_FrameSet extends Atk_AbstractFrame
     function render($embedded = false)
     {
         $res = '<frameset ' . ($this->m_id != '' ? 'id="' . $this->m_id . '"' : '') . ' ' . ($this->m_orientation == FRAMESET_VERTICAL
-                    ? 'rows' : 'cols') . '="' . $this->getDimensions() . '" frameborder="' . $this->m_border . '" border="' . $this->m_border . '">';
+                ? 'rows' : 'cols') . '="' . $this->getDimensions() . '" frameborder="' . $this->m_border . '" border="' . $this->m_border . '">';
         foreach ($this->m_childs as $abstractFrame) {
-            $res.= $abstractFrame->render(true);
+            $res .= $abstractFrame->render(true);
         }
         if (!$embedded && $this->m_noframes != "") {
-            $res.= "<noframes>\n" . $this->m_noframes . "</noframes>\n";
+            $res .= "<noframes>\n" . $this->m_noframes . "</noframes>\n";
         }
-        $res.= "</frameset>\n";
+        $res .= "</frameset>\n";
         return $res;
     }
 
@@ -142,16 +142,16 @@ class Atk_Frame extends Atk_AbstractFrame
      * @param int $dimension The height or width of this frame within its
      *                       parent frameset. Whether you are specifying
      *                       height or width depends on the orientation of the
-     *                       parent frameset. 
-     * @param String $name The name of the frame. 
+     *                       parent frameset.
+     * @param String $name The name of the frame.
      * @param String $src The url to load into the frame.
-     * @param String $scrolling The scrolling policy for this frame. Possible 
+     * @param String $scrolling The scrolling policy for this frame. Possible
      *                          values: FRAME_SCROLL_YES, FRAME_SCROLL_NO and
      *                          FRAME_SCROLL_AUTO.
      * @param boolean $resize When set to true, the frame is resizable by the
      *                        user. When set to false, it is not.
      * @param int $margin The margin (height and width) of the frame contents.
-     *                        
+     *
      */
     function atkFrame($dimension, $name, $src, $scrolling = FRAME_SCROLL_NO, $resize = false, $margin = 0)
     {
@@ -164,21 +164,21 @@ class Atk_Frame extends Atk_AbstractFrame
     }
 
     /**
-     * Render the frame to html     
+     * Render the frame to html
      * @return String
      */
     function render()
     {
         return '<frame name="' . $this->m_name . '" scrolling="' . $this->m_scrolling . '" ' . (!$this->m_resize
-                    ? "noresize" : "") .
-            ' src="' . $this->m_src . '" marginwidth="' . $this->m_margin . '" marginheight="' . $this->m_margin . '">' . "\n";
+            ? "noresize" : "") .
+        ' src="' . $this->m_src . '" marginwidth="' . $this->m_margin . '" marginheight="' . $this->m_margin . '">' . "\n";
     }
 
 }
 
 /**
  * Null frame to optionally hook the topmost frame into. This frame
- * has no html output, just the output of its child. 
+ * has no html output, just the output of its child.
  * The rootframeset should contain only one child frameset.
  *
  * @author Ivo Jansch <ivo@achievo.org>
@@ -196,7 +196,7 @@ class Atk_RootFrameset extends Atk_AbstractFrame
     {
         $res = "";
         foreach ($this->m_childs as $abstractframe) {
-            $res.=$abstractframe->render(false);
+            $res .= $abstractframe->render(false);
         }
         return $res;
     }
@@ -204,7 +204,7 @@ class Atk_RootFrameset extends Atk_AbstractFrame
 }
 
 /**
- * Abstract base class for frames and framesets. It defines common 
+ * Abstract base class for frames and framesets. It defines common
  * functionality that frames and framesets share.
  *
  * @author Ivo Jansch <ivo@achievo.org>
@@ -218,7 +218,7 @@ class Atk_AbstractFrame
 
     /**
      * Default constructor
-     * 
+     *
      * @param string $dimension
      */
     function __construct($dimension = "*")
@@ -228,7 +228,7 @@ class Atk_AbstractFrame
 
     /**
      * Add a child to the frameset.
-     * @param atkAbstractFrame $abstractframe The frame or frameset to add.     
+     * @param atkAbstractFrame $abstractframe The frame or frameset to add.
      */
     function addChild(&$abstractframe)
     {

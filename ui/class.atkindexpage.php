@@ -58,7 +58,7 @@ class Atk_IndexPage
 
     /**
      * Hide top / menu?
-     * 
+     *
      * @var boolean
      */
     private $m_noNav;
@@ -77,7 +77,7 @@ class Atk_IndexPage
         $this->m_output = Atk_Tools::atkinstance('atk.ui.atkoutput');
         $this->m_user = Atk_SecurityManager::atkGetUser();
         $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL
-                : HTML_STRICT;
+            : HTML_STRICT;
         $this->m_noNav = isset($ATK_VARS['atknonav']);
     }
 
@@ -108,8 +108,8 @@ class Atk_IndexPage
         $this->m_output->output(
             $this->m_page->render(
                 $this->m_title != "" ? $this->m_title : null, $this->m_flags, $this->m_extrabodyprops != ""
-                        ? $this->m_extrabodyprops : null, $this->m_extraheaders != ""
-                        ? $this->m_extraheaders : null
+                ? $this->m_extrabodyprops : null, $this->m_extraheaders != ""
+                ? $this->m_extraheaders : null
             )
         );
         $this->m_output->outputFlush();
@@ -123,10 +123,11 @@ class Atk_IndexPage
     {
         $menu = Atk_Menu::getMenu();
 
-        if (is_object($menu))
+        if (is_object($menu)) {
             $this->m_page->addContent($menu->getMenu());
-        else
+        } else {
             Atk_Tools::atkerror("no menu object created!");
+        }
     }
 
     /**
@@ -142,10 +143,11 @@ class Atk_IndexPage
 
         //Backwards compatible $content, that is what will render when the box.tpl is used instead of a top.tpl
         $loggedin = Atk_Tools::atktext("logged_in_as", "atk") . ": <b>" . ($this->m_user["name"]
-                    ? $this->m_user['name'] : 'administrator') . "</b>";
+                ? $this->m_user['name'] : 'administrator') . "</b>";
         $content = '<br />' . $loggedin . ' &nbsp; <a href="' . $logoutLink . '">' . ucfirst(Atk_Tools::atktext("logout")) . ' </a>&nbsp;<br /><br />';
 
-        $top = $this->m_ui->renderBox(array("content" => $content,
+        $top = $this->m_ui->renderBox(array(
+            "content" => $content,
             "logintext" => Atk_Tools::atktext("logged_in_as"),
             "logouttext" => ucfirst(Atk_Tools::atktext("logout", "atk")),
             "logoutlink" => $logoutLink,
@@ -155,7 +157,7 @@ class Atk_IndexPage
             "title" => ($this->m_title != "" ? $this->m_title : Atk_Tools::atktext("app_title")),
             "user" => ($this->m_username ? $this->m_username : $this->m_user["name"]),
             "fulluser" => $this->m_user
-            ), "top");
+        ), "top");
         $this->m_page->addContent($top);
     }
 
@@ -235,22 +237,25 @@ class Atk_IndexPage
             $destination = "";
             if (isset($ATK_VARS["atknodetype"]) && isset($ATK_VARS["atkaction"])) {
                 $destination = "&atknodetype=" . $ATK_VARS["atknodetype"] . "&atkaction=" . $ATK_VARS["atkaction"];
-                if (isset($ATK_VARS["atkselector"]))
-                    $destination.="&atkselector=" . $ATK_VARS["atkselector"];
+                if (isset($ATK_VARS["atkselector"])) {
+                    $destination .= "&atkselector=" . $ATK_VARS["atkselector"];
+                }
             }
 
-            $box = $this->m_ui->renderBox(array("title" => Atk_Tools::atktext("title_session_expired"),
+            $box = $this->m_ui->renderBox(array(
+                "title" => Atk_Tools::atktext("title_session_expired"),
                 "content" => '<br><br>' . Atk_Tools::atktext("explain_session_expired") . '<br><br><br><br>
-                                           <a href="index.php?atklogout=true' . $destination . '" target="_top">' . Atk_Tools::atktext("relogin") . '</a><br><br>'));
+                                           <a href="index.php?atklogout=true' . $destination . '" target="_top">' . Atk_Tools::atktext("relogin") . '</a><br><br>'
+            ));
 
             $this->m_page->addContent($box);
 
             $this->m_output->output($this->m_page->render(Atk_Tools::atktext("title_session_expired"), true));
-        }
-        else {
+        } else {
             $lockType = Atk_Config::getGlobal("lock_type");
-            if (!empty($lockType))
+            if (!empty($lockType)) {
                 atklock();
+            }
 
             // Create node
             if (isset($ATK_VARS['atknodetype'])) {
@@ -269,8 +274,10 @@ class Atk_IndexPage
                     $controller->invoke("loadDispatchPage", $this->m_defaultDestination);
                 } else {
                     $this->m_page->register_style($this->m_theme->stylePath("style.css"));
-                    $box = $this->m_ui->renderBox(array("title" => Atk_Tools::atktext("app_shorttitle"),
-                        "content" => "<br /><br />" . Atk_Tools::atktext("app_description") . "<br /><br />"));
+                    $box = $this->m_ui->renderBox(array(
+                        "title" => Atk_Tools::atktext("app_shorttitle"),
+                        "content" => "<br /><br />" . Atk_Tools::atktext("app_description") . "<br /><br />"
+                    ));
 
                     $this->m_page->addContent($box);
                 }
@@ -285,8 +292,9 @@ class Atk_IndexPage
      */
     function setDefaultDestination($destination)
     {
-        if (is_array($destination))
+        if (is_array($destination)) {
             $this->m_defaultDestination = $destination;
+        }
     }
 
 }

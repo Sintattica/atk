@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
@@ -17,7 +18,6 @@
  * @version $Revision: 5898 $
  * $Id$
  */
-
 class Atk_Cache_zp_disk extends Atk_Cache
 {
 
@@ -56,8 +56,9 @@ class Atk_Cache_zp_disk extends Atk_Cache
             return false;
         }
 
-        if ($lifetime === false)
+        if ($lifetime === false) {
             $lifetime = $this->m_lifetime;
+        }
         zend_disk_cache_store($this->getRealKey($key), serialize($data), $lifetime);
         return true;
     }
@@ -76,8 +77,9 @@ class Atk_Cache_zp_disk extends Atk_Cache
             return false;
         }
 
-        if ($lifetime === false)
+        if ($lifetime === false) {
             $lifetime = $this->m_lifetime;
+        }
         zend_disk_cache_store($this->getRealKey($key), serialize($data), $lifetime);
         return true;
     }

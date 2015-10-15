@@ -2,10 +2,10 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
- * @package atk   
+ * @package atk
  * @todo The atktreetools should be moved to the utils subpackage.
  *
  * @copyright (c)2000-2004 Ibuildings.nl BV
@@ -21,7 +21,7 @@ include_once(Atk_Config::getGlobal("atkroot") . "atk/class.atktreetoolsnode.php"
  * Tree class, used to build trees of nodes.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk   
+ * @package atk
  */
 class Atk_TreeToolsTree
 {
@@ -59,13 +59,14 @@ class Atk_TreeToolsTree
     function render($tree = "", $level = 0)
     {
         // First time: root tree..
-        if ($tree == "")
+        if ($tree == "") {
             $tree = $this->m_tree;
+        }
         $res = "";
         while (list($id, $objarr) = each($tree)) {
-            $res.= '<tr><td>' . str_repeat("-", (2 * $level)) . " " . $objarr->m_label . '</td></tr>';
+            $res .= '<tr><td>' . str_repeat("-", (2 * $level)) . " " . $objarr->m_label . '</td></tr>';
             if (count($objarr->m_sub) > 0) {
-                $res.=$this->render($objarr->m_sub, $level + 1);
+                $res .= $this->render($objarr->m_sub, $level + 1);
             }
         }
         return $res;

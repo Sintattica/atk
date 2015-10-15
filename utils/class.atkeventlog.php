@@ -56,8 +56,9 @@ class Atk_EventLog extends Atk_ActionListener
     {
         $user = Atk_SecurityManager::atkGetUser();
         $userid = $user[Atk_Config::getGlobal("auth_userpk")];
-        if ($userid == "")
-            $userid = 0; // probably administrator
+        if ($userid == "") {
+            $userid = 0;
+        } // probably administrator
         $node = $this->m_node->atkNodeType();
         $db = &$this->m_node->getDb();
         $primarykey = $db->escapeSQL($this->m_node->primaryKey($record));

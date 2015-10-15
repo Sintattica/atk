@@ -63,7 +63,7 @@ class Atk_UpdatedByAttribute extends Atk_ManyToOneRelation
     /**
      * This method is overriden to make sure that when a form is posted ('save' button), the
      * current record is refreshed so the output on screen is accurate.
-     * 
+     *
      * @return array Array with userinfo, or "" if no user is logged in.
      */
     function initialValue()

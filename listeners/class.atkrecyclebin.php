@@ -10,27 +10,27 @@
  *
  * @copyright (c)2010 Ibuildings
  * @license http://www.atk-framework.com/licensing ATK Open Source License
- * 
+ *
  * @version $Revision: 6263 $
  * $Id: class.atkdeletehandler.inc 6564 2009-11-12 10:32:52Z martijn $
  */
 
 /**
- * The atkRecycleBin is a generic recycle bin for records. You can add it 
+ * The atkRecycleBin is a generic recycle bin for records. You can add it
  * to any node and if a record from that node will get deleted,
  * atkRecycleBin will kick in and transfer the record to the recyclebin.
- * 
+ *
  * There are 2 modes of operation. You can build your own recyclebin node,
  * and atkRecycleBin will use that to store the deleted record.
- * 
+ *
  * Alternatively, you can skip creating a node, and just create a table
- * that is identical to the one you're deleting records from. 
+ * that is identical to the one you're deleting records from.
  * If you don't specify this table, atkRecycleBin will assume that
  * the table is called tablename_bin, where tablename is the tablename
- * from the node you're deleting records from. 
- * 
+ * from the node you're deleting records from.
+ *
  * Usage: $node->addListener(new atkRecycleBin());
- * 
+ *
  * @todo a third mode of operation might be one serialized recyclebin
  * for all the tables in the application.
  *

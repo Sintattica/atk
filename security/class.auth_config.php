@@ -53,8 +53,9 @@ class auth_config extends auth_interface
      */
     function validateUser($user, $passwd)
     {
-        if ($user == "")
-            return AUTH_UNVERIFIED; // can't verify if we have no userid
+        if ($user == "") {
+            return AUTH_UNVERIFIED;
+        } // can't verify if we have no userid
 
         global $config_user;
         if ($user != "" && $passwd != "" && $config_user[$user]["password"] == $passwd) {
@@ -176,8 +177,9 @@ class auth_config extends auth_interface
      */
     function getPassword($username)
     {
-        if (isset($config_user[$username]["password"]))
+        if (isset($config_user[$username]["password"])) {
             return $config_user[$username]["password"];
+        }
         return false;
     }
 
