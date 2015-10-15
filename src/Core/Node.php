@@ -437,16 +437,6 @@ class Node
     var $m_default_order = "";
 
     /**
-     * var used for tracking relation within this node.
-     * @todo Remove this member, it's using memory while it's used only in
-     *       the case of multilanguage node, and even then only on one
-     *       occasion.
-     * @access private
-     * @var array
-     */
-    var $m_relations = array();
-
-    /**
      * Bitwise mask of node flags (NF_* flags).
      * @var int
      */
@@ -626,13 +616,6 @@ class Node
      * @var array
      */
     var $m_feedback = array();
-
-    /**
-     * Default language used by Multilanguage Nodes.
-     * @access protected
-     * @var String
-     */
-    var $m_defaultlanguage = "";
 
     /**
      * Number to use with numbering
@@ -1050,9 +1033,6 @@ class Node
 
         // Order the tablist
         $this->m_attribList[$attribute->fieldName()] = &$attribute;
-        if (is_subclass_of($attribute, "Relation")) {
-            $this->m_relations[strtolower(get_class($attribute))][$attribute->fieldName()] = &$attribute;
-        }
         $attribute->setTabs($this->m_attributeTabs[$attribute->fieldName()]);
         $attribute->setSections($this->m_attribIndexList[$attribute->m_index]['sections']);
         $attribute->setColumn($column);
@@ -2854,7 +2834,6 @@ class Node
             $this->removeFlag(NF_LOCK);
         }
 
-        $this->m_defaultlanguage = strtoupper(Config::getGlobal("defaultlanguage"));
 
         $this->m_initialised = true;
 
