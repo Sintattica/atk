@@ -905,15 +905,15 @@ $config_recordlist_javascript_delete = false;
 $config_enable_ssl_encryption = false;
 
 /**
- * Enable / disable sending of e-mails (works only if the atk.utils.Atk_Mailer::Send
+ * Enable / disable sending of e-mails (works only if the atk.utils.Mailer::Send
  * function has been used for sending e-mails).
- * Note: atk.utils.Atk_Mail::mail is deprecated but is still enabled/disabled by this setting.
+ * Note: atk.utils.Mail::mail is deprecated but is still enabled/disabled by this setting.
  * @var boolean
  */
 $config_mail_enabled = true;
 
 /**
- * Redirect e-mails to a specified address (works only if the atk.utils.Atk_Mailer::Send
+ * Redirect e-mails to a specified address (works only if the atk.utils.Mailer::Send
  * function has been used for sending e-mails).
  * @var string
  */

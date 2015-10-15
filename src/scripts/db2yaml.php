@@ -7,7 +7,7 @@ if ($dir == null) {
     die("Please specify a directory name where you want to store the YAML files!\n");
 }
 
-$db = Atk_Tools::atkGetDb();
+$db = Tools::atkGetDb();
 foreach ($db->table_names() as $table) {
     $line = "Exporting table {$table['table_name']} to {$dir}/{$table['table_name']}.yml";
     echo $line;

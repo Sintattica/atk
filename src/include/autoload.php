@@ -21,7 +21,7 @@
  *
  * @param string $classname The name of the class PHP can't find
  */
-function Atk_Autoload($classname)
+function Autoload($classname)
 {
     /**
      * We exempt some external libraries from autoloading because
@@ -38,13 +38,13 @@ function Atk_Autoload($classname)
      * If anyone has a better way to prevent this, please be my guest...
      */
     if (!empty($classname) && !in_array($classname, array('Smarty', 'Services_JSON', 'pear', 'PEAR_Error'))) {
-        //Atk_Tools::atkwarning("Autoload triggered by {$classname}");
-        $classpath = Atk_ClassLoader::findClass($classname);
+        //Tools::atkwarning("Autoload triggered by {$classname}");
+        $classpath = ClassLoader::findClass($classname);
 
-        if ($classpath && Atk_Tools::atkimport($classpath)) {
-            Atk_Tools::atkdebug("Autoloaded: " . $classname);
+        if ($classpath && Tools::atkimport($classpath)) {
+            Tools::atkdebug("Autoloaded: " . $classname);
         }
     }
 }
 
-spl_autoload_register('Atk_Autoload');
+spl_autoload_register('Autoload');

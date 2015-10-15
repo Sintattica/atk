@@ -23,7 +23,7 @@ require_once($GLOBALS['config_atkroot'] . 'atk/include/configs.php');
 require_once($GLOBALS['config_atkroot'] . 'atk/utils/class.atkstring.php');
 
 
-$locale = Atk_Tools::atktext('locale', 'atk');
+$locale = Tools::atktext('locale', 'atk');
 if ($locale != null) {
     setlocale(LC_TIME, $locale);
 }

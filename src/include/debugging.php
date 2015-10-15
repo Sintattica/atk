@@ -14,8 +14,8 @@
  * @version $Revision: $
  * $Id$
  */
-if (Atk_Tools::atk_value_in_array($GLOBALS['config_smart_debug'])) {
-    $GLOBALS['config_debug'] = Atk_Config::smartDebugLevel($GLOBALS['config_debug'], $GLOBALS['config_smart_debug']);
+if (Tools::atk_value_in_array($GLOBALS['config_smart_debug'])) {
+    $GLOBALS['config_debug'] = Config::smartDebugLevel($GLOBALS['config_debug'], $GLOBALS['config_smart_debug']);
 }
 
 if ($GLOBALS['config_debug'] > 0) {
@@ -23,4 +23,4 @@ if ($GLOBALS['config_debug'] > 0) {
 }
 
 // show server info in debug (useful in clustered environments)
-Atk_Tools::atkdebug('Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')');
+Tools::atkdebug('Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')');

@@ -14,7 +14,7 @@
  * @version $Revision: $
  * $Id$
  */
-set_error_handler('Atk_Tools::atkErrorHandler');
+set_error_handler('Tools::atkErrorHandler');
 error_reporting(E_ALL);
 
-set_exception_handler('Atk_Tools::atkExceptionHandler');
+set_exception_handler('Tools::atkExceptionHandler');

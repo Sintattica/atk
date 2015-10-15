@@ -1,6 +1,6 @@
 <?php
-Atk_Page::getInstance()->register_script(Atk_Config::getGlobal('atkroot') . 'atk/javascript/overlibmws/overlibmws.js');
-$theme = Atk_Tools::atkinstance("atk.ui.atktheme");
+Page::getInstance()->register_script(Config::getGlobal('atkroot') . 'atk/javascript/overlibmws/overlibmws.js');
+$theme = Theme::getInstance();
 $image = $theme->imgPath("help");
 $tooltip = htmlentities(str_replace(array("\r\n", "\r", "\n"), ' ', $tooltip));
 ?>

@@ -1,20 +1,7 @@
 <?php
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage menu
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6347 $
- * $Id$
- */
-Atk_Tools::atkimport('atk.menu.atkplainmenu');
+
+use Sintattica\Atk\Menu\PlainMenu;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * Implementation of the Bootstrap menu.
@@ -23,7 +10,7 @@ Atk_Tools::atkimport('atk.menu.atkplainmenu');
  * @package atk
  * @subpackage menu
  */
-class Atk_BootstrapMenu extends Atk_PlainMenu
+class BootstrapMenu extends PlainMenu
 {
     private $format_submenuparent = '
             <li class="dropdown">
@@ -60,10 +47,10 @@ class Atk_BootstrapMenu extends Atk_PlainMenu
      */
     function render()
     {
-        /** @var atkPage $page */
-        $page = &Atk_Tools::atkinstance("atk.ui.atkpage");
-        /** @var atkTheme $theme */
-        $theme = Atk_Tools::atkinstance('atk.ui.atktheme');
+        /** @var Page $page */
+        $page = Page::getInstance();
+        /** @var Theme $theme */
+        $theme = Tools::atkinstance('atk.ui.atktheme');
         $page->register_style($theme->absPath("atk/themes/bootstrap/lib/bootstrap-submenu/css/bootstrap-submenu.min.css"));
         $menu = $this->load();
         $page->addContent($menu);
@@ -88,10 +75,10 @@ class Atk_BootstrapMenu extends Atk_PlainMenu
     function load()
     {
         global $g_menu;
-        /** @var atkPage $page */
-        $page = &Atk_Tools::atkinstance("atk.ui.atkpage");
+        /** @var Page $page */
+        $page = Page::getInstance();
         /** @var atkTheme $theme */
-        $theme = Atk_Tools::atkinstance('atk.ui.atktheme');
+        $theme = Tools::atkinstance('atk.ui.atktheme');
         $page->register_style($theme->absPath("atk/themes/bootstrap/lib/bootstrap-submenu/css/bootstrap-submenu.min.css"));
         $page->register_script($theme->absPath("atk/themes/bootstrap/lib/bootstrap-submenu/js/bootstrap-submenu.min.js"));
         $page->register_script($theme->absPath("atk/themes/bootstrap/js/menu.js"));

@@ -21,7 +21,7 @@
  * @package atk
  * @subpackage document
  */
-class Atk_DocumentWriter
+class DocumentWriter
 {
     /**
      * Template vars array
@@ -35,7 +35,7 @@ class Atk_DocumentWriter
     /**
      * atkDocumentWriter Constructor.
      *
-     * Dont use this, use Atk_DocumentWriter::getInstance($format) instead to get a singleton instance for any format used
+     * Dont use this, use DocumentWriter::getInstance($format) instead to get a singleton instance for any format used
      */
     function atkDocumentWriter()
     {
@@ -66,7 +66,7 @@ class Atk_DocumentWriter
     /**
      * Returns labels for all attributes of a node
      *
-     * @param Atk_Node $node Node for which the labels should be retrieved
+     * @param Node $node Node for which the labels should be retrieved
      * @return Array Associative array containing attributename=>label pairs
      */
     function getRecordLabels(&$node)
@@ -95,7 +95,7 @@ class Atk_DocumentWriter
     /**
      * Returns labels for all attributes of a node
      *
-     * @param Atk_Node $node Node for which the displayvalues should be retrieved
+     * @param Node $node Node for which the displayvalues should be retrieved
      * @param Array $record Record for which the display values should be determined
      * @return Array Associative array containing attributename=>displayvalue pairs
      */
@@ -129,7 +129,7 @@ class Atk_DocumentWriter
     /**
      * Assigns the labels for all attributes of a node to the documentWriter
      *
-     * @param Atk_Node $node Node for which the labels should be retrieved
+     * @param Node $node Node for which the labels should be retrieved
      * @param String $prefix Prefix to be used when assigning the variables (used to avoid conflicting names)
      */
     function _assignLabels(&$node, $prefix)
@@ -146,7 +146,7 @@ class Atk_DocumentWriter
     /**
      * Enter description here...
      *
-     * @param Atk_Node $node Node to be used when displaying the records
+     * @param Node $node Node to be used when displaying the records
      * @param Array $records Array of records that should be assigned to the documentwriter
      * @param String $prefix Prefix to be used when assigning the variables (used to avoid conflicting names)
      */
@@ -179,7 +179,7 @@ class Atk_DocumentWriter
     /**
      * Enter description here...
      *
-     * @param Atk_Node $node Node to be used when displaying the record
+     * @param Node $node Node to be used when displaying the record
      * @param Array $record Record that should be assigned to the documentwriter
      * @param String $prefix Prefix to be used when assigning the variables (used to avoid conflicting names)
      */
@@ -221,7 +221,7 @@ class Atk_DocumentWriter
         }
 
         // Assign the quotation owner to the document
-        $node = Atk_Module::atkGetNode($nodename);
+        $node = Module::atkGetNode($nodename);
 
         // Get the record from the database
         $records = $node->selectDb($selector, "", "", "", "", "view");
@@ -247,7 +247,7 @@ class Atk_DocumentWriter
     {
         // Get the current date and a reference to an atkDateAttribute in order to format the current date
         $date = adodb_getdate();
-        $dateattribute = new Atk_DateAttribute("dummy");
+        $dateattribute = new DateAttribute("dummy");
 
         // Assign the date in short and long format as [shortdate] and [longdate]
         $this->Assign($prefix . "shortdate", $dateattribute->formatDate($date, "d-m-Y", 0));
@@ -270,21 +270,21 @@ class Atk_DocumentWriter
 
         if ($format == "opendocument") {
             if ($s_oo_instance == null) {
-                Atk_Tools::atkdebug("Creating a new atkOpenDocumentWriter instance");
-                $s_oo_instance = new Atk_OpenDocumentWriter();
+                Tools::atkdebug("Creating a new atkOpenDocumentWriter instance");
+                $s_oo_instance = new OpenDocumentWriter();
             }
 
             return $s_oo_instance;
         } else {
             if ($format == "docx") {
                 if ($s_docx_instance == null) {
-                    Atk_Tools::atkdebug("Creating a new atkDocxWriter instance");
-                    $s_docx_instance = new Atk_DocxWriter();
+                    Tools::atkdebug("Creating a new atkDocxWriter instance");
+                    $s_docx_instance = new DocxWriter();
                 }
 
                 return $s_docx_instance;
             } else {
-                Atk_Tools::atkdebug(sprintf("Failed to create atkDocumentWriter instance (unknown format: %s)",
+                Tools::atkdebug(sprintf("Failed to create atkDocumentWriter instance (unknown format: %s)",
                     $format));
             }
         }

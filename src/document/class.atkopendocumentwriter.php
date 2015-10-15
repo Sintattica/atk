@@ -26,7 +26,7 @@ include_once('tbsooo/tbsooo_class.php');
  * @package atk
  * @subpackage document
  */
-class Atk_OpenDocumentWriter extends Atk_DocumentWriter
+class OpenDocumentWriter extends DocumentWriter
 {
     /**
      * TinyButStrong OpenOffice.org template parser instance
@@ -43,7 +43,7 @@ class Atk_OpenDocumentWriter extends Atk_DocumentWriter
     {
         $this->m_tbsooo = new clsTinyButStrongOOo;
         $this->m_tbsooo->VarPrefix = "documentvar_";
-        $processdir = Atk_Config::getGlobal("atktempdir") . "documents";
+        $processdir = Config::getGlobal("atktempdir") . "documents";
         if (!is_dir($processdir)) {
             mkdir($processdir);
         }
@@ -78,11 +78,11 @@ class Atk_OpenDocumentWriter extends Atk_DocumentWriter
         foreach ($use_vars as $key => $value) {
             if (is_array($value)) {
                 foreach ($value as $key => &$txtval) {
-                    $txtval = Atk_Tools::atk_iconv(Atk_Tools::atkGetCharset(), "UTF-8", $txtval);
+                    $txtval = Tools::atk_iconv(Tools::atkGetCharset(), "UTF-8", $txtval);
                 }
                 $this->m_tbsooo->MergeBlock($key, $value);
             } else {
-                $value = Atk_Tools::atk_iconv(Atk_Tools::atkGetCharset(), "UTF-8", $value);
+                $value = Tools::atk_iconv(Tools::atkGetCharset(), "UTF-8", $value);
                 $this->m_tbsooo->MergeField($key, $value);
             }
         }
@@ -118,7 +118,7 @@ class Atk_OpenDocumentWriter extends Atk_DocumentWriter
             return false;
         }
 
-        Atk_Tools::exportFile($this->m_tbsooo->GetPathnameDoc(), $outputfilename, ($forcedownload
+        Tools::exportFile($this->m_tbsooo->GetPathnameDoc(), $outputfilename, ($forcedownload
             ? "application/octet-stream" : $this->m_tbsooo->GetMimetypeDoc()));
 
         // Remove the document from disk
@@ -150,21 +150,21 @@ class Atk_OpenDocumentWriter extends Atk_DocumentWriter
 
         // Throw an error and abort if the source file does not exist
         if (!file_exists($tempfilename)) {
-            Atk_Tools::atkerror("atkOpenDocumentWriter->store: Temporary file '$tempfilename' could not be found. The document most likely failed to parse.");
+            Tools::atkerror("atkOpenDocumentWriter->store: Temporary file '$tempfilename' could not be found. The document most likely failed to parse.");
             return false;
         }
 
         // Throw an error and abort if the location of the destination file does not exist
         if (!file_exists(dirname($outputfilename))) {
             if ($create_non_existing_dir) {
-                Atk_Tools::atkdebug("atkOpenDocumentWriter->store: Trying to create output location '" . dirname($outputfilename) . "'");
+                Tools::atkdebug("atkOpenDocumentWriter->store: Trying to create output location '" . dirname($outputfilename) . "'");
 
                 if (!mkdir(dirname($outputfilename), 0755, true)) {
-                    Atk_Tools::atkerror("atkOpenDocumentWriter->store: Output location '" . dirname($outputfilename) . "' could not be created. The outputfile '$outputfilename' can not be stored.");
+                    Tools::atkerror("atkOpenDocumentWriter->store: Output location '" . dirname($outputfilename) . "' could not be created. The outputfile '$outputfilename' can not be stored.");
                     return false;
                 }
             } else {
-                Atk_Tools::atkerror("atkOpenDocumentWriter->store: Output location '" . dirname($outputfilename) . "' could not be found. The outputfile '$outputfilename' can not be stored.");
+                Tools::atkerror("atkOpenDocumentWriter->store: Output location '" . dirname($outputfilename) . "' could not be found. The outputfile '$outputfilename' can not be stored.");
                 return false;
             }
         }

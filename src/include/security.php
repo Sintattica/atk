@@ -18,8 +18,8 @@
  * Filter the atkselector REQUEST variable for blacklisted SQL (like UNIONs)
  */
 require_once $GLOBALS['config_atkroot'] . 'atk/security/db/class.atksqlwhereclauseblacklistchecker.php';
-Atk_SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkselector');
-Atk_SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkfilter');
+SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkselector');
+SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkfilter');
 
 // initialise g_ array.
 $GLOBALS['g_user'] = array();

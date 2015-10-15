@@ -426,7 +426,7 @@ class clsTbsDataSource
                 $this->RecSet = $this->SrcId->tbsdb_open($this->SrcId, $Query);
                 break;
             case 11: // ObjectRef
-                $this->RecSet = call_user_func_array($this->FctOpen, array(&$this->SrcId, &$Query));
+                $this->RecSet = call_user_func_array($this->FctOpen, array($this->SrcId, &$Query));
                 break;
         }
 
@@ -602,7 +602,7 @@ class clsTbsDataSource
                 $this->SrcId->tbsdb_close($this->RecSet);
                 break;
             case 11:
-                call_user_func_array($this->FctClose, array(&$this->RecSet));
+                call_user_func_array($this->FctClose, array($this->RecSet));
                 break;
         }
         if ($this->RecSaving) {

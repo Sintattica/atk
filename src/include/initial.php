@@ -17,10 +17,10 @@
 /** @internal includes */
 require_once($GLOBALS['config_atkroot'] . 'atk/include/basics.php');
 require_once($GLOBALS['config_atkroot'] . 'atk/include/compatibility.php');
-if (Atk_Config::getGlobal('autoload_classes', true)) {
+if (Config::getGlobal('autoload_classes', true)) {
     require_once($GLOBALS['config_atkroot'] . 'atk/include/autoload.php');
 }
-if (Atk_Config::getGlobal('use_atkerrorhandler', true)) {
+if (Config::getGlobal('use_atkerrorhandler', true)) {
     require_once($GLOBALS['config_atkroot'] . 'atk/include/errorhandler.php');
 }
 require_once($GLOBALS['config_atkroot'] . 'atk/ui/class.atkoutput.php');
@@ -28,8 +28,8 @@ require_once($GLOBALS['config_atkroot'] . 'atk/session/class.atksessionmanager.p
 require_once($GLOBALS['config_atkroot'] . "atk/utils/class.atkstring.php");
 require_once($GLOBALS['config_atkroot'] . 'atk/include/security.php');
 require_once($GLOBALS['config_atkroot'] . 'atk/include/debugging.php');
-if (Atk_Config::getGlobal('lock_type') !== "") {
+if (Config::getGlobal('lock_type') !== "") {
     require_once($GLOBALS['config_atkroot'] . 'atk/lock/class.atklock.php');
 }
-Atk_Module::atkPreloadModules();
+Module::atkPreloadModules();
 
