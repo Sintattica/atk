@@ -509,7 +509,7 @@ class Tools
     /**
      * @deprecated use self::atkHref or SessionManager::href instead.
      */
-    public static function  href(
+    public static function href(
         $url,
         $name = "",
         $sessionstatus = SESSION_DEFAULT,
@@ -1222,7 +1222,7 @@ class Tools
      * @param string $sequence the sequence name
      * @return int next unique ID for the given sequence
      */
-    public static function getUniqueID($sequence)
+    public static function getUniqueId($sequence)
     {
         static $unique = array();
         if (!isset($unique[$sequence])) {

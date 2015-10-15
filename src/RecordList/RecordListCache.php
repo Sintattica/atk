@@ -106,9 +106,9 @@ class RecordListCache
             $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/recordlist.js");
 
             /**
-             * RecordlistCache must call getUniqueId() too, or the counter will be off.
+             * RecordlistCache must call Tools::getUniqueId() too, or the counter will be off.
              */
-            getUniqueId("normalRecordList");
+            Tools::getUniqueId("normalRecordList");
 
             $stackID = SessionManager::atkStackID();
             $page->register_loadscript(str_replace("*|REPLACESTACKID|*", $stackID,

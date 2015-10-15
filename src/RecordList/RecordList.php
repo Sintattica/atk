@@ -1,5 +1,13 @@
 <?php namespace Sintattica\Atk\RecordList;
 
+
+use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Ui\Theme;
+use Sintattica\Atk\Ui\Page;
+
+
 /** recordlist flags */
 define("RL_NO_SORT", 1); // recordlist is not sortable
 define("RL_NO_SEARCH", 2); // recordlist is not searchable
@@ -20,7 +28,9 @@ define("RL_EXT_SORT", 128); // extended sort feature
  */
 class RecordList
 {
-    var $m_node = null;
+    /** @var Node $m_node */
+    var $m_node;
+
     var $m_flags = 0;
     var $m_actionloader;
     var $m_masternode = null;
@@ -149,7 +159,7 @@ class RecordList
         $page = Page::getInstance();
         $page->register_style($theme->stylePath("recordlist.css", $this->m_node->m_module));
 
-        $listName = "rl_" . getUniqueId("normalRecordList");
+        $listName = "rl_" . Tools::getUniqueId("normalRecordList");
         $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/recordlist.js");
 
         $defaulthighlight = $theme->getAttribute("highlight");
