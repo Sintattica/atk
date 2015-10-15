@@ -3,9 +3,11 @@
 
 use Sintattica\Atk\Utils\StringParser as StringParser;
 use Sintattica\Atk\Core\Tools as Tools;
+use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Security\Session\SessionManager;
 
 /**
- * The atkAggregatedColumn aggregates multiple attributes to one colunm in
+ * The AggregatedColumn aggregates multiple attributes to one colunm in
  * list view. The attribute displays and sorts according to the $template
  * parameter and searches in fields, indicated in $searchfields array
  * parameter.
@@ -47,7 +49,7 @@ class AggregatedColumn extends Attribute
      * @param Array $searchfields Array with fields, in which search will be perform
      *                             If ommited, fields from $template will be used
      */
-    function __construct($name, $template, $flags = 0, $searchfields = "")
+    function __construct($name, $template, $flags = 0, $searchfields = array())
     {
         parent::__construct($name, $flags | AF_HIDE_EDIT | AF_HIDE_ADD | AF_HIDE_VIEW); // base class constructor
         $this->m_template = $template;
@@ -112,12 +114,12 @@ class AggregatedColumn extends Attribute
                     $order = implode(" DESC,", $rec);
                     $order .= " DESC";
                 }
-                $arr["heading"][$fieldprefix . $this->fieldName()]["url"] = Tools::session_url(Tools::atkSelf() . '?atknodetype=' . $this->m_ownerInstance->atkNodeType() . '&atkaction=' . $action . '&atkorderby=' . rawurlencode($order));
+                $arr["heading"][$fieldprefix . $this->fieldName()]["url"] = SessionManager::sessionUrl(Tools::atkSelf() . '?atknodetype=' . $this->m_ownerInstance->atkNodeType() . '&atkaction=' . $action . '&atkorderby=' . rawurlencode($order));
             }
 
             if (!Tools::hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(AF_SEARCHABLE)) {
                 $arr["search"][$fieldprefix . $this->fieldName()] = $this->search($atksearch, false, $fieldprefix);
-                $arr["search"][$fieldprefix . $this->fieldName()] .= '<input type="hidden" name="atksearchmode[' . $this->formName() . ']" value="' . $this->getSearchMode(false) . '">';
+                $arr["search"][$fieldprefix . $this->fieldName()] .= '<input type="hidden" name="atksearchmode[' . $this->fieldName() . ']" value="' . $this->getSearchMode(false) . '">';
             }
         }
     }
@@ -125,12 +127,9 @@ class AggregatedColumn extends Attribute
     /**
      * We do not want this attribute to store anything in the database, so we implement an empty store function
      *
-     * @param Db $db
-     * @param array $record
-     * @param string $mode
      * @return boolean to indicate if store went succesfull
      */
-    function store($db, $record, $mode)
+    function store()
     {
         return true;
     }
@@ -154,12 +153,13 @@ class AggregatedColumn extends Attribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
+    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = array(), $level, $mode)
     {
         if ($mode !== 'add' && $mode != 'edit') {
             $allfields = Tools::atk_array_merge($this->m_displayfields, $this->m_searchfields);
             $alias = $fieldaliasprefix . $this->fieldName() . "_AE_";
             foreach ($allfields as $field) {
+                /** @var Attribute $p_attrib */
                 $p_attrib = $this->m_ownerInstance->m_attribList[$field];
                 $p_attrib->addToQuery($query, $tablename, $alias, $rec, $level, $mode);
             }
@@ -181,7 +181,7 @@ class AggregatedColumn extends Attribute
      */
     function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix = '')
     {
-        $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '');
+        $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode);
         if (!empty($searchcondition)) {
             $query->addSearchCondition($searchcondition);
         }
@@ -199,9 +199,11 @@ class AggregatedColumn extends Attribute
      * @param String $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
+     * @return String The search condition
      */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
+        $searchconditions = array();
         // Get search condition for all searchFields
         foreach ($this->m_searchfields as $field) {
             $p_attrib = $this->m_ownerInstance->getAttribute($field);

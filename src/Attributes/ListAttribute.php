@@ -114,7 +114,7 @@ class ListAttribute extends Attribute
      * @param int $flags Flags for this attribute
      * @param int $size Size of the attribute.
      */
-    function atkListAttribute($name, $optionArray, $valueArray = "", $flags = 0, $size = 0)
+    function __construct($name, $optionArray, $valueArray = "", $flags = 0, $size = 0)
     {
         if (!is_array($valueArray) || count($valueArray) == 0) {
             if (is_numeric($valueArray)) {
@@ -141,7 +141,7 @@ class ListAttribute extends Attribute
             }
         }
 
-        $this->atkAttribute($name, $flags, $size); // base class constructor
+        parent::__construct($name, $flags, $size); // base class constructor
 
         $this->setOptions($optionArray, $valueArray);
     }
@@ -369,7 +369,7 @@ class ListAttribute extends Attribute
      *                          returned for use in the searchbar of the
      *                          recordlist. If set to true, a more extended
      *                          search may be returned for the 'extended'
-     *                          search page. The atkAttribute does not
+     *                          search page. The Attribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.

@@ -37,13 +37,13 @@ class ExpressionAttribute extends Attribute
      *                                   only search types "string", "number" and "date" are supported.
      * @param int $flags The flags for this attribute.
      */
-    function atkExpressionAttribute($name, $expression, $searchTypeOrFlags = 0, $flags = 0)
+    function __construct($name, $expression, $searchTypeOrFlags = 0, $flags = 0)
     {
         if (is_numeric($searchTypeOrFlags)) {
             $flags = $searchTypeOrFlags;
         }
 
-        $this->atkAttribute($name, $flags | AF_HIDE_ADD | AF_READONLY_EDIT);
+        parent::__construct($name, $flags | AF_HIDE_ADD | AF_READONLY_EDIT);
 
         $this->m_expression = $expression;
 
@@ -172,7 +172,7 @@ class ExpressionAttribute extends Attribute
      *                          returned for use in the searchbar of the
      *                          recordlist. If set to true, a more extended
      *                          search may be returned for the 'extended'
-     *                          search page. The atkAttribute does not
+     *                          search page. The Attribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.

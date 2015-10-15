@@ -283,8 +283,6 @@ $el = array(
     "menu_main" => "�������� �����",
     "mon" => "���",
     "monday" => "�������",
-    "multilanguage_choice" => "���������� ������:",
-    "multilanguage_select" => "�������� ������:",
     "multiselect" => "Multiselect",
     // Missing string!!!
     "new" => "���",

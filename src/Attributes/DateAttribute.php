@@ -204,9 +204,9 @@ class DateAttribute extends Attribute
      * @param mixed $max the maximum date that may be selected (0 is unlimited)
      * @param integer $flags the attribute's flags
      *
-     * @see atkAttribute
+     * @see Attribute
      */
-    function atkDateAttribute($name, $format_edit = "", $format_view = "", $min = 0, $max = 0, $flags = 0)
+    function __construct($name, $format_edit = "", $format_view = "", $min = 0, $max = 0, $flags = 0)
     {
         /*         * ** API SUPPORT HACK ***
          * Because of backwards compatability and because of the number
@@ -229,7 +229,7 @@ class DateAttribute extends Attribute
         $this->setDateMax($max);
 
         /* base class constructor */
-        $this->atkAttribute($name, $flags);
+        parent::__construct($name, $flags);
     }
 
 
@@ -876,7 +876,7 @@ class DateAttribute extends Attribute
      *                          returned for use in the searchbar of the
      *                          recordlist. If set to true, a more extended
      *                          search may be returned for the 'extended'
-     *                          search page. The atkAttribute does not
+     *                          search page. The Attribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.

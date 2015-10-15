@@ -79,7 +79,7 @@ class CurrencyAttribute extends NumberAttribute
     /**
      * overrides the display function to put the currencysymbol in front of the input field
      *
-     * The regular atkAttribute uses PHP's nl2br() and htmlspecialchars()
+     * The regular Attribute uses PHP's nl2br() and htmlspecialchars()
      * methods to prepare a value for display, unless $mode is "cvs".
      *
      * @param array $record The record that holds the value for this attribute

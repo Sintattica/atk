@@ -18,7 +18,7 @@
 Tools::useattrib("atktextattribute");
 
 /**
- * The atkHtmlAttribute class is the same as a normal atkAttribute. It only
+ * The atkHtmlAttribute class is the same as a normal Attribute. It only
  * (has a different display function. For this attribute, the value is
  * rendered as-is, which means you can use html codes in the text.
  *
@@ -45,9 +45,9 @@ class HtmlAttribute extends TextAttribute
      * @param int $flags Flags of the attribute
      * @param bool $nl2br nl2br boolean
      */
-    function atkHtmlAttribute($name, $flags = 0, $nl2br = false)
+    function __construct($name, $flags = 0, $nl2br = false)
     {
-        $this->atkAttribute($name, $flags); // base class constructor
+        parent::__construct($name, $flags); // base class constructor
         $this->nl2br = $nl2br;
     }
 

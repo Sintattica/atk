@@ -75,9 +75,9 @@ class UrlAttribute extends Attribute
      *                     parameter of the setAttribSize() method for more
      *                     information on the possible values of this
      *                     parameter.
-     * @return atkUrlAttribute
+     * @return UrlAttribute
      */
-    function atkUrlAttribute($name, $flags = 0, $size = 0)
+    function __construct($name, $flags = 0, $size = 0)
     {
         if (AF_POPUP === ($flags & AF_POPUP)) {
             $this->m_newWindow = true;
@@ -94,7 +94,7 @@ class UrlAttribute extends Attribute
             $flags &= (~AF_URL_STRIPHTTP);
         }
 
-        $this->atkAttribute($name, $flags, $size);
+        parent::__construct($name, $flags, $size);
     }
 
     /**

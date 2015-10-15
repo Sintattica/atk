@@ -42,7 +42,7 @@ class DummyAttribute extends Attribute
      * @param String $text The text to display
      * @param int $flags The flags for this attribute
      */
-    function atkDummyAttribute($name, $text = "", $flags = 0)
+    function __construct($name, $text = "", $flags = 0)
     {
         // A Dummy attrikbute should not be searchable and sortable
         $flags |= AF_HIDE_SEARCH | AF_NO_SORT;
@@ -52,7 +52,7 @@ class DummyAttribute extends Attribute
             $flags |= AF_BLANKLABEL;
         }
 
-        $this->atkAttribute($name, $flags); // base class constructor
+        parent::__construct($name, $flags); // base class constructor
         $this->m_text = $text;
     }
 
@@ -96,7 +96,7 @@ class DummyAttribute extends Attribute
      *                          returned for use in the searchbar of the
      *                          recordlist. If set to true, a more extended
      *                          search may be returned for the 'extended'
-     *                          search page. The atkAttribute does not
+     *                          search page. The Attribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.

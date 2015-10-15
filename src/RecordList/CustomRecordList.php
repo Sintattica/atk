@@ -206,10 +206,10 @@ class CustomRecordList extends RecordList
     /**
      * Is this attribute hidden?
      *
-     * @param atkAttribute $attribute
+     * @param Attribute $attribute
      * @return bool Boolean to indicate if attribute is hidden or not
      */
-    protected function isHidden(atkAttribute $attribute)
+    protected function isHidden(Attribute $attribute)
     {
         if ($attribute->hasFlag(AF_HIDE)) {
             return true;

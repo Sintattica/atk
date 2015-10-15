@@ -62,7 +62,7 @@ class BoolAttribute extends Attribute
      * Adds the AF_OBLIGATORY flag to the attribute.
      *
      * @param int $flags The flag to add to the attribute
-     * @return atkAttribute The instance of this atkAttribute
+     * @return Attribute The instance of this Attribute
      */
     function addFlag($flags)
     {
@@ -154,7 +154,7 @@ class BoolAttribute extends Attribute
      *                          returned for use in the searchbar of the
      *                          recordlist. If set to true, a more extended
      *                          search may be returned for the 'extended'
-     *                          search page. The atkAttribute does not
+     *                          search page. The Attribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.

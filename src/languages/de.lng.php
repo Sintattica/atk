@@ -334,8 +334,6 @@ $de = array(
     "menu_main" => "Hauptmen&uuml;",
     "mon" => "Mon",
     "monday" => "Montag",
-    "multilanguage_choice" => "Ausgew&auml;hlte Sprache:",
-    "multilanguage_select" => "Sprache ausw&auml;hlen:",
     "multiselect" => "Multiselect",
     // Missing string!!!
     "new" => "Neu",

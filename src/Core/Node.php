@@ -299,7 +299,7 @@ class Node
 
     /**
      * The list of attributes of a node. These should be of the class
-     * atkAttribute or one of its derivatives.
+     * Attribute or one of its derivatives.
      * @access private
      * @var array
      */
@@ -384,14 +384,6 @@ class Node
      * @var String
      */
     var $m_seq;
-
-    /**
-     * Name of the attribute that contains the language of a record.
-     * Used with ATK's data internationalization feature.
-     * @access private
-     * @var String
-     */
-    var $m_lngfield;
 
     /**
      * List of names of the attributes that form this node's primary key.
@@ -957,9 +949,6 @@ class Node
             }
         }
 
-        if ($attribute->hasFlag(AF_MULTILANGUAGE)) {
-            $this->m_lngfield = $attribute->fieldName();
-        }
 
         $attribute->init();
 
@@ -1163,7 +1152,7 @@ class Node
     /**
      * Get an attribute by name.
      * @param String $name The name of the attribute to retrieve.
-     * @return atkAttribute The attribute.
+     * @return Attribute The attribute.
      */
     function &getAttribute($name)
     {
@@ -1199,7 +1188,7 @@ class Node
 
     /**
      * Gets all the attributes.
-     * @return array Array with the attributes.
+     * @return Attribute[] Array with the attributes.
      */
     function &getAttributes()
     {
@@ -3563,10 +3552,6 @@ class Node
 
         if (method_exists($this, 'selectDb') || method_exists($this, 'countDb')) {
             $class = 'atkcompatselector';
-        } else {
-            if ($this->hasFlag(NF_ML)) {
-                $class = 'atkmlselector';
-            }
         }
 
 
@@ -4822,7 +4807,7 @@ class Node
      * @param string $id optional column config id
      * @param boolean $forceNew force new instance?
      *
-     * @return atkColumnConfig
+     * @return ColumnConfig
      */
     function &getColumnConfig($id = null, $forceNew = false)
     {
@@ -4943,7 +4928,7 @@ class Node
             $distinct = array_key_exists(5, $params) ? $params[5] : false;
             $ignoreDefaultFilters = array_key_exists(6, $params) ? $params[6] : false;
 
-            $selector = Tools::atknew('atk.utils.atk' . ($this->hasFlag(NF_ML) ? 'ml' : '') . 'selector', $this);
+            $selector = Tools::atknew('atk.utils.atkselector', $this);
             $this->_initSelector($selector);
             $selector->where($condition);
             if ($order === false || $order != '') {
@@ -4973,8 +4958,7 @@ class Node
                 $distinct = array_key_exists(4, $params) ? $params[4] : false;
                 $ignoreDefaultFilters = array_key_exists(5, $params) ? $params[5] : false;
 
-                $selector = Tools::atknew('atk.utils.atk' . ($this->hasFlag(NF_ML) ? 'ml' : '') . 'selector',
-                    $this);
+                $selector = Tools::atknew('atk.utils.atkselector', $this);
                 $this->_initSelector($selector);
                 $selector->where($condition);
                 $selector->excludes($excludes);

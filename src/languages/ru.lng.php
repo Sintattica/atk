@@ -368,9 +368,6 @@ $ru = array(
     "menu_main" => "��������",
     "mon" => "���",
     "monday" => "Monday",
-    // Missing string!!!
-    "multilanguage_choice" => "��������� ����:",
-    "multilanguage_select" => "������ ����:",
     "multiselect" => "Multiselect",
     // Missing string!!!
     "new" => "New",

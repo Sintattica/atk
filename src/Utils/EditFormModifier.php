@@ -1,6 +1,7 @@
 <?php namespace Sintattica\Atk\Utils;
 
-use Sintattica\Atk\Utils\JSON;
+use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * Allows to make some modifications to the add/edit. Depending on which
@@ -35,14 +36,14 @@ class EditFormModifier
      *
      * @var string
      */
-    private $mode;
+    private $m_mode;
 
     /**
      * Field prefix.
      *
      * @var string
      */
-    private $fieldPrefix;
+    private $m_fieldPrefix;
 
     /**
      * Initial setup/modification of the edit form, e.g. when the form is
@@ -64,7 +65,7 @@ class EditFormModifier
     public function __construct(Node $node, &$record, $fieldPrefix, $mode, $initial)
     {
         $this->m_node = $node;
-        $this->m_record = &$record;
+        $this->m_record = $record;
         $this->m_fieldPrefix = $fieldPrefix;
         $this->m_mode = $mode;
         $this->m_initial = $initial;

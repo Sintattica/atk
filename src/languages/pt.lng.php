@@ -439,10 +439,6 @@ $pt = array(
     // Missing string!!!
     "monday" => "Monday",
     // Missing string!!!
-    "multilanguage_choice" => "Selected language:",
-    // Missing string!!!
-    "multilanguage_select" => "Select a language:",
-    // Missing string!!!
     "multiselect" => "Multiselect",
     // Missing string!!!
     "new" => "New",

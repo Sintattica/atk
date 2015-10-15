@@ -320,7 +320,7 @@ class OneToOneRelation extends Relation
      * Converts the internal attribute value to one that is understood by the
      * database.
      *
-     * For the regular atkAttribute, this means escaping things like
+     * For the regular Attribute, this means escaping things like
      * quotes and slashes. Derived attributes may reimplement this for their
      * own conversion.
      * This is the exact opposite of the db2value method.
@@ -569,7 +569,7 @@ class OneToOneRelation extends Relation
      * Determine the type of the attribute on the other side.
      *
      * On the other side of a oneToOneRelation (in the destination node),
-     * there may be a regular atkAttribute for the referential key, or an
+     * there may be a regular Attribute for the referential key, or an
      * atkOneToOneRelation pointing back at the source. This method discovers
      * which of the 2 cases we are dealing with.
      * @return boolean True if the attribute on the other side is a
@@ -634,7 +634,7 @@ class OneToOneRelation extends Relation
      * Adds the attribute's edit / hide HTML code to the edit array.
      *
      * This method is called by the node if it wants the data needed to create
-     * an edit form. The method is an override of atkAttribute's method,
+     * an edit form. The method is an override of Attribute's method,
      * because in the atkOneToOneRelation, we need to implement the
      * AF_ONETOONE_INTEGRATE feature.
      *
@@ -657,7 +657,7 @@ class OneToOneRelation extends Relation
         } /* edit */
         else {
             /* we first check if there is no edit override method, if there
-             * is this method has the same behaviour as the atkAttribute's method
+             * is this method has the same behaviour as the Attribute's method
              */
             if (method_exists($this->m_ownerInstance, $this->m_name . "_edit") ||
                 $this->edit($defaults, $fieldprefix, $mode) !== null
@@ -786,7 +786,7 @@ class OneToOneRelation extends Relation
         }
 
         /* we first check if there is no display override method, if there
-         * is this method has the same behaviour as the atkAttribute's method
+         * is this method has the same behaviour as the Attribute's method
          */
         if (method_exists($this->m_ownerInstance, $this->m_name . "_display") ||
             $this->display($defaults, 'view') !== null
@@ -1168,7 +1168,7 @@ class OneToOneRelation extends Relation
      * Overridden method; in the integrated version, we should let the destination
      * attributes hook themselves into the fieldlist instead of hooking the relation
      * in it.
-     * For original documentation for this method, please see the atkAttribute class
+     * For original documentation for this method, please see the Attribute class
      *
      * @param array $fields The array containing fields to use in the
      *                                   extended search

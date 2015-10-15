@@ -48,10 +48,10 @@ class EmailAttribute extends Attribute
      * @param int $flags Flags for the attribute
      * @param int $size The size of the field in characters
      */
-    function atkEmailAttribute($name, $search = false, $flags = 0, $size = 0)
+    function __construct($name, $search = false, $flags = 0, $size = 0)
     {
         $this->m_dnsSearch = $search;
-        $this->atkAttribute($name, $flags, $size);
+        parent::__construct($name, $flags, $size);
     }
 
     /**

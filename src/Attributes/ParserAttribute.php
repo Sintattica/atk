@@ -34,9 +34,9 @@ class ParserAttribute extends Attribute
      * @param string $text text field
      * @param int $flags Flags for this attribute
      */
-    function atkParserAttribute($name, $text, $flags = 0)
+    function __construct($name, $text, $flags = 0)
     {
-        $this->atkAttribute($name, $flags | AF_HIDE_SEARCH | AF_NO_SORT); // base class constructor
+        parent::__construct($name, $flags | AF_HIDE_SEARCH | AF_NO_SORT); // base class constructor
         $this->m_text = $text;
     }
 

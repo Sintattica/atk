@@ -79,7 +79,7 @@ class WeekdayAttribute extends NumberAttribute
      * Convert values from an HTML form posting to an internal value for
      * this attribute.
      *
-     * For the regular atkAttribute, this means getting the field with the
+     * For the regular Attribute, this means getting the field with the
      * same name as the attribute from the html posting.
      *
      * @param array $postvars The array with html posted values ($_POST, for
@@ -149,7 +149,7 @@ class WeekdayAttribute extends NumberAttribute
      * @param array $record The record that holds the value for this attribute
      * @param String $mode The display mode ("view" for viewpages, or "list"
      *                     for displaying in recordlists). The regular
-     *                     atkAttribute does not use this parameter, but
+     *                     Attribute does not use this parameter, but
      *                     derived attributes may use it to distinguish
      *                     between the two display modes.
      * @return String HTML String

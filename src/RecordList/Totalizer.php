@@ -17,7 +17,7 @@ class Totalizer
      * Constructor
      *
      * @param Node $node
-     * @param atkColumnConfig $columnConfig
+     * @param ColumnConfig $columnConfig
      * @return atkTotalizer
      */
     function __construct(&$node, &$columnConfig)

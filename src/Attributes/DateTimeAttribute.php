@@ -92,7 +92,7 @@ class DateTimeAttribute extends Attribute
      * @param string $default_time start time
      * @param int $flags Flags for this attribute
      */
-    function atkDateTimeAttribute($name, $default_date = "", $default_time = "", $flags = 0)
+    function __construct($name, $default_date = "", $default_time = "", $flags = 0)
     {
         $default_steps = array();
         for ($i = 0; $i < 60; $i++) {
@@ -116,7 +116,7 @@ class DateTimeAttribute extends Attribute
         $this->m_time = new Timeattribute($name, 0, 23, $default_steps, $default_time, $flags);
         $this->m_date = new Dateattribute($name, '', '', 0, 0, $flags);
 
-        $this->atkAttribute($name, $flags); // base class constructor
+        parent::__construct($name, $flags); // base class constructor
     }
 
     /**
@@ -243,7 +243,7 @@ class DateTimeAttribute extends Attribute
      * Convert values from an HTML form posting to an internal value for
      * this attribute.
      *
-     * For the regular atkAttribute, this means getting the field with the
+     * For the regular Attribute, this means getting the field with the
      * same name as the attribute from the html posting.
      *
      * @param array $postvars The array with html posted values ($_POST, for
@@ -430,7 +430,7 @@ class DateTimeAttribute extends Attribute
      *                          returned for use in the searchbar of the
      *                          recordlist. If set to true, a more extended
      *                          search may be returned for the 'extended'
-     *                          search page. The atkAttribute does not
+     *                          search page. The Attribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.

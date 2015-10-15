@@ -344,8 +344,6 @@ $ja = array(
     "mon" => "Mon",
     "monday" => "Monday",
     // Missing string!!!
-    "multilanguage_choice" => "Selected language:",
-    "multilanguage_select" => "Select a language:",
     "multiselect" => "Multiselect",
     // Missing string!!!
     "new" => "New",

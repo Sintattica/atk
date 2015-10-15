@@ -54,7 +54,7 @@ class TabbedPane extends Attribute
      * @param Array $tabs The arrays looks like array("tabname1"=>("attribname1,"attribname2),"tabname1"=>(..),..)
      * @param int $flags The flags for this attribute
      */
-    function atkTabbedPane($name, $tabs = array(), $flags = 0)
+    function __construct($name, $tabs = array(), $flags = 0)
     {
         foreach ($tabs as $tab => $attribs) {
             foreach ($attribs as $attrib) {
@@ -62,7 +62,7 @@ class TabbedPane extends Attribute
             }
         }
         // A atkTabbedPane attribute should be display only in edit/view mode
-        $this->atkAttribute($name, $flags | AF_HIDE_SEARCH | AF_HIDE_LIST | AF_HIDE_SELECT); // base class constructor
+        parent::__construct($name, $flags | AF_HIDE_SEARCH | AF_HIDE_LIST | AF_HIDE_SELECT); // base class constructor
     }
 
     /**

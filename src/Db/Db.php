@@ -1099,7 +1099,7 @@ class Db
      *
      * @return string $query_part
      */
-    function func_concat_ws($fields, $separator, $remove_all_spaces = false)
+    public function func_concat_ws($fields, $separator, $remove_all_spaces = false)
     {
         if (count($fields) == 0 or !is_array($fields)) {
             return '';

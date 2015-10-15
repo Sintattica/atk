@@ -25,7 +25,7 @@ define("RL_SORT_ASC", 1);
 define("RL_SORT_DESC", 2);
 
 /**
- * The atkColumnConfig class is used to add extended sorting and grouping
+ * The ColumnConfig class is used to add extended sorting and grouping
  * options to a recordlist.
  *
  * @author Ivo Jansch <ivo@achievo.org>
@@ -42,7 +42,7 @@ class ColumnConfig
     /**
      * Constructor
      *
-     * @return atkColumnConfig
+     * @return ColumnConfig
      */
     function __construct()
     {
@@ -76,7 +76,7 @@ class ColumnConfig
      * @param string $id
      * @param boolean $forceNew force new instance?
      *
-     * @return atkColumnConfig An instance of the columnconfig class
+     * @return ColumnConfig An instance of the columnconfig class
      */
     function &getConfig(&$node, $id = null, $forceNew = false)
     {
@@ -432,7 +432,7 @@ class ColumnConfig
      * Get attribute by order
      *
      * @param int $order
-     * @return atkAttribute
+     * @return Attribute
      */
     function getAttributeByOrder($order)
     {

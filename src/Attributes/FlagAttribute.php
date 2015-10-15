@@ -126,7 +126,7 @@ class FlagAttribute extends MultiSelectAttribute
      * Convert values from an HTML form posting to an internal value for
      * this attribute.
      *
-     * For the regular atkAttribute, this means getting the field with the
+     * For the regular Attribute, this means getting the field with the
      * same name as the attribute from the html posting.
      *
      * @param array $postvars The array with html posted values ($_POST, for

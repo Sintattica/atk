@@ -33,18 +33,18 @@ class DurationAttribute extends Attribute
     var $m_maxtime_min;
 
     /**
-     * Default Constructor, sets up atkAttribute
+     * Default Constructor, sets up Attribute
      *
      * @param string $name The name of this attribute
      * @param string $resolution
      * @param string $maxtime
      * @param int $flags The falgs of this attribute
      * @param int $size This attributes size
-     * @see atkAttribute
+     * @see Attribute
      */
-    function atkDurationAttribute($name, $resolution = "1m", $maxtime = "10h", $flags = 0, $size = 0)
+    function __construct($name, $resolution = "1m", $maxtime = "10h", $flags = 0, $size = 0)
     {
-        $this->atkAttribute($name, $flags, $size); // base class constructor
+        parent::__construct($name, $flags, $size); // base class constructor
         $hms = substr($resolution, -1);
         $resolution = substr($resolution, 0, -1);
 
@@ -158,7 +158,7 @@ class DurationAttribute extends Attribute
     /**
      * This function displays the time
      *
-     * The regular atkAttribute uses PHP's nl2br() and htmlspecialchars()
+     * The regular Attribute uses PHP's nl2br() and htmlspecialchars()
      * methods to prepare a value for display, unless $mode is "cvs".
      *
      * @param array $rec The record that holds the value for this attribute

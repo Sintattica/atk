@@ -386,8 +386,6 @@ $ca = array(
     "mon" => "Dil",
     "monday" => "Monday",
     // Missing string!!!
-    "multilanguage_choice" => "Idioma seleccionat:",
-    "multilanguage_select" => "Seleccioni un idioma:",
     "multiselect" => "Multiselect",
     // Missing string!!!
     "new" => "New",

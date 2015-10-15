@@ -382,8 +382,6 @@ $hu = array(
     "mon" => "H�tfo",
     "monday" => "Monday",
     // Missing string!!!
-    "multilanguage_choice" => "V�lasztott nyelv:",
-    "multilanguage_select" => "V�lasszon Nyelvet:",
     "multiselect" => "Multiselect",
     // Missing string!!!
     "new" => "New",

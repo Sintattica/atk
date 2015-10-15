@@ -463,7 +463,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Is attribute load required?
      *
-     * @param atkAttribute $attr attribute
+     * @param Attribute $attr attribute
      *
      * @return boolean load required?
      */

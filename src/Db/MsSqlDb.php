@@ -24,7 +24,7 @@ require_once(Config::getGlobal("atkroot") . "atk/db/class.atkmysqldb.php");
  *
  * Succesfully tested:
  * - SELECT, INSERT, UPDATE, DELETE, LEFT JOIN, ORDER BY, LIKE
- * - atkAttribute
+ * - Attribute
  * - atkNumberAttribute
  * - atkOneToManyRelation
  * - atkManyToOneRelation

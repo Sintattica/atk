@@ -1,9 +1,9 @@
-<?php
+<?php namespace Sintattica\Atk\Attributes;
 
 // https://github.com/Eonasdan/bootstrap-datetimepicker
-Tools::useattrib("atkattribute");
 
-Tools::atkimport('atk.utils.atkmomentphpprovider');
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
 
 class bootstrapDateTimeAttribute extends Attribute
 {
@@ -17,9 +17,9 @@ class bootstrapDateTimeAttribute extends Attribute
     var $m_maxDate;
     var $m_sideBySide = true;
 
-    function bootstrapDateTimeAttribute($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
-        $this->atkAttribute($name, $flags);
+        parent::__construct($name, $flags);
     }
 
     function postInit()
@@ -223,7 +223,7 @@ class bootstrapDateTimeAttribute extends Attribute
      *                          returned for use in the searchbar of the
      *                          recordlist. If set to true, a more extended
      *                          search may be returned for the 'extended'
-     *                          search page. The atkAttribute does not
+     *                          search page. The Attribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.

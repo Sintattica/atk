@@ -3,6 +3,7 @@
 
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Ui\Output;
+use Sintattica\Atk\Security\Session\SessionManager;
 
 /**
  * Converts applicable characters to html entities so they aren't
@@ -996,7 +997,7 @@ class Tools
      * is given the multi-language error string is used.
      *
      * @param array $record record
-     * @param atkAttribute|array $attrib attribute or array of attributes
+     * @param Attribute|array $attrib attribute or array of attributes
      * @param string $error multi-language error string
      * @param string $message error message (optional)
      */
@@ -1031,8 +1032,8 @@ class Tools
     /**
      * Does a var dump of an array. Makes use of self::atkdebug for displaying the values.
      *
-     * @param $a data to be displayed
-     * @param $d name of the data that's being displayed.
+     * @param $a array to be displayed
+     * @param $d string name of the data that's being displayed.
      */
     public static function atk_var_dump($a, $d = "")
     {
@@ -1233,7 +1234,7 @@ class Tools
     /**
      * Checks if the variable $var contains the given flag ($flag).
      * @param string $var the variable which might contain flags
-     * @param var $flag the flag you want to check for
+     * @param string $flag the flag you want to check for
      * @return bool result of check
      */
     public static function hasFlag($var, $flag)

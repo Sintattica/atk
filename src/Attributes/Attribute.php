@@ -5,7 +5,14 @@ use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\RecordList\ColumnConfig;
-
+use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Keyboard\Keyboard;
+use Sintattica\Atk\Utils\JSON;
+use Sintattica\Atk\Utils\EditFormModifier;
+use \Exception;
 
 /**
  * Attributeflags. The following flags can be used for attributes
@@ -228,19 +235,7 @@ define("AF_PARENT", 4194304); // parent field for parent child relations (treevi
  */
 define("AF_NO_QUOTES", 8388608); // no quotes are used when adding to database
 
-/**
- * Multi-language field
- *
- * miscellaneous processing flag
- */
-define("AF_ML", 16777216); // multi-language field
 
-/**
- * Alias for AF_ML (spelled out)
- *
- * miscellaneous processing flag
- */
-define("AF_MULTILANGUAGE", AF_ML);
 
 /**
  * Shortcut for hidden auto-incremented primary key
@@ -941,13 +936,14 @@ class Attribute
      *
      * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
-     * @return String The internal value
+     * @return String|null The internal value
      */
     function fetchValue($postvars)
     {
         if ($this->isPosted($postvars)) {
             return $postvars[$this->fieldName()];
         }
+        return null;
     }
 
     /**
@@ -1105,6 +1101,7 @@ class Attribute
         } else {
             Tools::atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
         }
+        return '';
     }
 
     /**
@@ -1152,9 +1149,9 @@ class Attribute
             $entry = array("name" => $this->m_name, "attribute" => &$this);
 
             /* label? */
-            $entry["label"] = $this->getLabel($defaults, $mode);
+            $entry["label"] = $this->getLabel();
             // on which tab?
-            $entry["tabs"] = $this->getTabs($mode);
+            $entry["tabs"] = $this->getTabs();
             //on which sections?
             $entry["sections"] = $this->getSections();
             /* the actual edit contents */
@@ -1223,18 +1220,18 @@ class Attribute
             $entry["id"] = $this->getHtmlId($fieldprefix);
 
             /* label? */
-            $entry["label"] = $this->getLabel($defaults, $mode);
+            $entry["label"] = $this->getLabel();
             /* error? */
             $entry["error"] = $this->getError($error) || (isset($ATK_VARS["atkerrorfields"]) && Tools::atk_in_array($entry['id'],
                         $ATK_VARS['atkerrorfields']));
             // on which tab?
-            $entry["tabs"] = $this->getTabs($mode);
+            $entry["tabs"] = $this->getTabs();
             //on which sections?
             $entry["sections"] = $this->getSections();
             // the actual edit contents
             $entry["html"] = $this->getEdit($mode, $defaults, $fieldprefix);
             // initially hidden
-            $entry["initial_hidden"] = $this->isInitialHidden($defaults);
+            $entry["initial_hidden"] = $this->isInitialHidden();
             $arr["fields"][] = $entry;
         }
     }
@@ -1261,10 +1258,9 @@ class Attribute
 
     /**
      * retrieve the tabs for this attribute.
-     * @param string $mode
      * @return array
      */
-    function getTabs($mode = "")
+    function getTabs()
     {
         return $this->m_tabs;
     }
@@ -1501,6 +1497,7 @@ class Attribute
      * @param ColumnConfig $columnConfig Column configuration object
      * @param DataGrid $grid The DataGrid this attribute lives on.
      * @param string $column child column (null for this attribute, * for this attribute and all childs)
+     * @throws Exception on invalid list column
      */
     public function addToListArrayHeader(
         $action,
@@ -1522,7 +1519,7 @@ class Attribute
             $arr["heading"][$key]["title"] = $this->label();
 
             if ($grid->hasFlag(DataGrid::SORT) && !$this->hasFlag(AF_NO_SORT)) {
-                $arr["heading"][$key]["order"] = $this->listHeaderSortOrder($columnConfig, $fieldprefix);
+                $arr["heading"][$key]["order"] = $this->listHeaderSortOrder($columnConfig);
             }
 
             if ($grid->hasFlag(DataGrid::EXTENDED_SORT)) {
@@ -1580,7 +1577,7 @@ class Attribute
 
             /* totalisable? */
             if ($this->hasFlag(AF_TOTAL)) {
-                $sum = $this->sum($arr["totalraw"], $arr["rows"][$nr]["record"], $fieldprefix);
+                $sum = $this->sum($arr["totalraw"], $arr["rows"][$nr]["record"]);
                 $arr["totalraw"][$this->fieldName()] = $sum[$this->fieldName()];
                 $arr["total"][$fieldprefix . $this->fieldName()] = $this->getView('list', $sum);
             }
@@ -1599,7 +1596,7 @@ class Attribute
      * @todo  find a better way to search on onetomanys that does not require
      *        something evil in Attribute
      * @param array $record Array with values
-     * @param boolean $extended if set to false, a simple search input is
+     * @param bool $extended if set to false, a simple search input is
      *                          returned for use in the searchbar of the
      *                          recordlist. If set to true, a more extended
      *                          search may be returned for the 'extended'
@@ -1643,7 +1640,7 @@ class Attribute
         $dbSearchModes = $this->getDb()->getSearchModes();
         $searchModes = array_values(array_intersect($searchModes, $dbSearchModes));
 
-        $searchMode = $this->getSearchMode($extended);
+        $searchMode = $this->getSearchMode();
         // Set current searchmode to first searchmode if not searching in extended form or no searchmode is set
         if (!$extended || empty($searchMode) || !in_array($searchMode, $searchModes)) {
             $searchMode = $searchModes[0];
@@ -1672,7 +1669,7 @@ class Attribute
      * @param boolean $extended Whether extended search is being used
      * @return String the default searchmode for this attribute.
      */
-    function getSearchMode($extended = false)
+    function getSearchMode()
     {
         $searchmode = $this->m_ownerInstance->getSearchMode();
 
@@ -1717,11 +1714,10 @@ class Attribute
      * @param String $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
-     * @param string $fieldaliasprefix optional prefix for the fieldalias in the table
      */
-    function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix = '')
+    function searchCondition(&$query, $table, $value, $searchmode)
     {
-        $searchCondition = $this->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
+        $searchCondition = $this->getSearchCondition($query, $table, $value, $searchmode);
         if ($searchCondition) {
             $query->addSearchCondition($searchCondition);
         }
@@ -1808,6 +1804,7 @@ class Attribute
             }
             return nl2br(htmlspecialchars($record[$this->fieldName()]));
         }
+        return "";
     }
 
     /**
@@ -1901,10 +1898,9 @@ class Attribute
      * Note, that the framework only calls this method if the attribute has
      * the AF_CASCADE_DELETE flag.
      *
-     * @param array $record The record that is deleted.
      * @return boolean true if cleanup was successful, false otherwise.
      */
-    function delete($record)
+    function delete()
     {
         // delete is only of interest for special attributes like relations, or file attributes.
         return true;
@@ -1921,11 +1917,9 @@ class Attribute
      *
      * @param array $rec1 The first record
      * @param array $rec2 The second record
-     * @param String $fieldprefix The prefix that values in $rec1
-     *                            and $rec2 have
      * @return array A record containing the sum of $rec1 and $rec2
      */
-    function sum($rec1, $rec2, $fieldprefix = "")
+    function sum($rec1, $rec2)
     {
         $value1 = (isset($rec1[$this->fieldName()]) ? $rec1[$this->fieldName()] : 0);
         $value2 = (isset($rec2[$this->fieldName()]) ? $rec2[$this->fieldName()] : 0);
@@ -2099,11 +2093,10 @@ class Attribute
      * AF_HIDE_EDIT are set, but derived attributes may override this
      * behavior.
      *
-     * @param array $record The record that is going to be saved.
      * @return boolean True if this attribute should participate in the update
      *                 query; false if not.
      */
-    function needsUpdate($record)
+    function needsUpdate()
     {
         return ((!$this->hasFlag(AF_READONLY_EDIT) && !$this->hasFlag(AF_HIDE_EDIT)) || $this->m_forceupdate);
     }
@@ -2113,10 +2106,9 @@ class Attribute
      * needs to be updated from the db regardless of the attribute being present
      * in the postvars/session
      *
-     * @param array $record The record that is going to be saved.
      * @return boolean True if this attribute should be reloaded; false if not.
      */
-    function needsReload($record)
+    function needsReload()
     {
         return $this->m_forcereload;
     }
@@ -2250,10 +2242,9 @@ class Attribute
      * The label is based on the attribute name, but is automatically
      * translated. Derived attributes may override this behavior.
      *
-     * @param array $record The record holding the value for this attribute.
      * @return String HTML compatible label for this attribute
      */
-    function label($record = array())
+    function label()
     {
         return ($this->m_label != "" ? $this->m_label : $this->text($this->fieldName()));
     }
@@ -2308,13 +2299,11 @@ class Attribute
      * returns the HTML label, while the getLabel() method is 'smart', by
      * taking the AF_NOLABEL and AF_BLANKLABEL flags into account.
      *
-     * @param array $record The record holding the value for this attribute.
-     * @param string $mode The mode ("add", "edit" or "view")
      * @return String The HTML compatible label for this attribute, or an
      *                empty string if the label should be blank, or NULL if no
      *                label at all should be displayed.
      */
-    function getLabel($record = array(), $mode = '')
+    function getLabel()
     {
         if ($this->hasFlag(AF_NOLABEL)) {
             return "AF_NO_LABEL";
@@ -2322,7 +2311,7 @@ class Attribute
             if ($this->hasFlag(AF_BLANKLABEL)) {
                 return null;
             } else {
-                return $this->label($record);
+                return $this->label();
             }
         }
     }
@@ -2436,8 +2425,6 @@ class Attribute
      * directly.
      *
      * @param String $mode The type of load (view,admin,edit etc)
-     * @param boolean $searching ???
-     * @todo add documentation about the searching argument. What does it do?
      *
      * @return int Bitmask containing information about load requirements.
      *             Note that since it is a bitmask, multiple load types
@@ -2453,7 +2440,7 @@ class Attribute
      *                          database)
      *
      */
-    function loadType($mode, $searching = false)
+    function loadType($mode)
     {
         if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null) {
             return $this->m_loadType[$mode];
@@ -2496,11 +2483,9 @@ class Attribute
      * called to retrieve the tabs. The regular Attribute has no
      * implementation for this method. Derived attributes may override this.
      *
-     * @param String $action The action for which additional tabs should be
-     *                       loaded.
      * @return array The list of tabs to add to the screen.
      */
-    function getAdditionalTabs($action)
+    function getAdditionalTabs()
     {
         return array();
     }
@@ -2582,11 +2567,10 @@ class Attribute
      * @param Node $node The node where the field is in
      * @param array $record A record containing default values to put
      *                                   into the search fields.
-     * @param array $fieldprefix search / mode field prefix
-     * @param array $currentSearchMode current search mode
+     * @param string $fieldprefix search / mode field prefix
      * @return Attribute The instance of this Attribute
      */
-    function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "", $currentSearchMode = array())
+    function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "")
     {
         $field = array();
         $defaults = $record;
@@ -2606,7 +2590,7 @@ class Attribute
         $field['searchmode'] = $this->searchmode(true, $fieldprefix);
 
         // set "label" value:
-        $field['label'] = $this->label($record);
+        $field['label'] = $this->label();
 
         // add $field to fields array
         $fields[] = $field;
@@ -2639,7 +2623,7 @@ class Attribute
     /**
      * Retrieves the sort options and sort order.
      *
-     * @param atkColumnConfig $columnConfig The config that contains options for
+     * @param ColumnConfig $columnConfig The config that contains options for
      *                                      extended sorting and grouping to a
      *                                      recordlist.
      * @param String $fieldprefix The prefix of the attribute
@@ -2657,7 +2641,7 @@ class Attribute
      * Retrieves the sort options for this attribute which is used in recordlists
      * and search actions.
      *
-     * @param atkColumnConfig $columnConfig The config that contains options for
+     * @param ColumnConfig $columnConfig The config that contains options for
      *                                      extended sorting and grouping to a
      *                                      recordlist.
      * @param String $fieldprefix The prefix of the attribute
@@ -2675,7 +2659,7 @@ class Attribute
                         $cmd), Tools::atktext("column_" . $cmd)) . ' ';
             } else {
                 $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($this->fieldName(), $cmd));
-                $return = '<a href="javascript:void(0)" onclick="' . htmlentities($call) . '">' . $this->text("column_" . $cmd) . '</a>';
+                return '<a href="javascript:void(0)" onclick="' . htmlentities($call) . '">' . $this->text("column_" . $cmd) . '</a>';
             }
         }
         return "";
@@ -2685,7 +2669,7 @@ class Attribute
      * Sets the sortorder options for this attribute which is used in recordlists
      * and search actions.
      *
-     * @param atkColumnConfig $columnConfig The config that contains options for
+     * @param ColumnConfig $columnConfig The config that contains options for
      *                                      extended sorting and grouping to a
      *                                      recordlist.
      * @param String $fieldprefix The prefix of the attribute on HTML forms
@@ -2723,9 +2707,9 @@ class Attribute
 
     /**
      * Retrieve the sortorder for the listheader based on the
-     * atkColumnConfig
+     * ColumnConfig
      *
-     * @param atkColumnConfig $columnConfig The config that contains options for
+     * @param ColumnConfig $columnConfig The config that contains options for
      *                                      extended sorting and grouping to a
      *                                      recordlist.
      * @return String Returns sort order ASC or DESC
@@ -2755,7 +2739,7 @@ class Attribute
      * @param String $direction Sorting direction (ASC or DESC)
      * @return String The ORDER BY statement for this attribute
      */
-    function getOrderByStatement($extra = '', $table = '', $direction = 'ASC')
+    function getOrderByStatement($extra = array(), $table = '', $direction = 'ASC')
     {
         if (empty($table)) {
             $table = $this->m_ownerInstance->m_table;
@@ -3040,11 +3024,9 @@ class Attribute
     /**
      * check whether initially hidden or not
      *
-     * @param array $record the record
-     *
-     * @return initially hidden
+     * @return bool initially hidden
      */
-    function isInitialHidden($record)
+    function isInitialHidden()
     {
         return $this->m_initial_hidden;
     }
@@ -3058,8 +3040,8 @@ class Attribute
      * "fieldId". To cancel an event you can use Prototype's event
      * mechanism for this.
      *
-     * @param string event JavaScript event name (e.g. 'change', 'click', etc.)
-     * @param string body  JavaScript body
+     * @param string $event JavaScript event name (e.g. 'change', 'click', etc.)
+     * @param string $body JavaScript body
      */
     public function observeJS($event, $body)
     {
@@ -3073,7 +3055,6 @@ class Attribute
      */
     function __toString()
     {
-        return $this->fieldName();
         return $this->m_ownerInstance->atkNodeType() . "::" . $this->fieldName();
     }
 

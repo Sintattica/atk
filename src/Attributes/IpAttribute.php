@@ -39,9 +39,9 @@ class IpAttribute extends Attribute
      * @param string $name attribute name
      * @param int $flags attribute flags.
      */
-    function atkIpAttribute($name, $flags)
+    function __construct($name, $flags)
     {
-        $this->atkAttribute($name, $flags, 15);
+        parent::__construct($name, $flags, 15);
     }
 
     /**

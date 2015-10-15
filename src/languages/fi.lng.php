@@ -381,8 +381,6 @@ $fi = array(
     "mon" => "Mon",
     "monday" => "Monday",
     // Missing string!!!
-    "multilanguage_choice" => "Valitse kieli:",
-    "multilanguage_select" => "Valitse kieli:",
     "multiselect" => "Multiselect",
     // Missing string!!!
     "new" => "New",

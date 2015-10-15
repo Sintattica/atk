@@ -277,8 +277,6 @@ $id = array(
     "menu_main" => "Utama",
     "mon" => "Sen",
     "monday" => "Senin",
-    "multilanguage_choice" => "Bahasa yang dipilih:",
-    "multilanguage_select" => "Pilih bahasa:",
     "multiselect" => "Multiselect",
     // Missing string!!!
     "new" => "Baru",

@@ -367,8 +367,6 @@ $pl = array(
     "mon" => "Pon",
     "monday" => "Monday",
     // Missing string!!!
-    "multilanguage_choice" => "Wybierz j�zyk:",
-    "multilanguage_select" => "Wybierz j�zyk:",
     "multiselect" => "Multiselect",
     // Missing string!!!
     "new" => "New",

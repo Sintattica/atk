@@ -48,7 +48,7 @@ class XmlHandler extends ActionHandler
      * @param array $record The record to convert to xml.
      * @return String XML document.
      * @todo This handler can only handle 'simple' key/value attributes
-     *       like atkAttribute. Relation support should be added.
+     *       like Attribute. Relation support should be added.
      *
      */
     function xml($record)

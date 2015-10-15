@@ -48,9 +48,9 @@ class NumberAttribute extends Attribute
      * @param int $decimals The number of decimals to use.
      *
      */
-    function atkNumberAttribute($name, $flags = 0, $size = 0, $decimals = null)
+    function __construct($name, $flags = 0, $size = 0, $decimals = null)
     {
-        $this->atkAttribute($name, $flags | AF_NO_QUOTES, $size); // base class constructor
+        parent::__construct($name, $flags | AF_NO_QUOTES, $size); // base class constructor
         $this->m_decimals = $decimals;
 
         $this->m_decimalseparator = Tools::atktext(self::SEPARATOR_DECIMAL, 'atk');
@@ -124,7 +124,7 @@ class NumberAttribute extends Attribute
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
-     * The regular atkAttribute uses PHP's nl2br() and htmlspecialchars()
+     * The regular Attribute uses PHP's nl2br() and htmlspecialchars()
      * methods to prepare a value for display, unless $mode is "cvs".
      *
      * @param array $record The record that holds the value for this attribute
@@ -385,7 +385,7 @@ class NumberAttribute extends Attribute
      * Converts the internal attribute value to one that is understood by the
      * database.
      *
-     * For the regular atkAttribute, this means escaping things like
+     * For the regular Attribute, this means escaping things like
      * quotes and slashes. Derived attributes may reimplement this for their
      * own conversion.
      * This is the exact opposite of the db2value method.
@@ -560,7 +560,7 @@ class NumberAttribute extends Attribute
      *                          returned for use in the searchbar of the
      *                          recordlist. If set to true, a more extended
      *                          search may be returned for the 'extended'
-     *                          search page. The atkAttribute does not
+     *                          search page. The Attribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.

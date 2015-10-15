@@ -283,8 +283,6 @@ $sv = array(
     "menu_main" => "Huvudmeny",
     "mon" => "M�n",
     "monday" => "M�ndag",
-    "multilanguage_choice" => "Valt spr�k:",
-    "multilanguage_select" => "V�lj ett spr�k:",
     "multiselect" => "Multiselect",
     // Missing string!!!
     "new" => "Ny",

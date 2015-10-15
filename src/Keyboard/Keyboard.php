@@ -1,19 +1,8 @@
 <?php namespace Sintattica\Atk\Keyboard;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage keyboard
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 1640 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Core\Config;
 
 
 /**
@@ -48,14 +37,14 @@ class Keyboard
 
     /**
      * Get the one and only (singleton) instance of the atkKeyboard class.
-     * @return atkKeyboard The singleton instance.
+     * @return Keyboard The singleton instance.
      */
-    function &getInstance()
+    public static function &getInstance()
     {
         static $s_kb;
         if ($s_kb == null) {
             Tools::atkdebug("Creating atkKeyboard instance");
-            $s_kb = new Keyboard();
+            $s_kb = new self();
         }
 
         return $s_kb;
@@ -102,7 +91,6 @@ class Keyboard
      */
     function addRecordListHandler($id, $highlight, $reccount)
     {
-        // TODO/FIXME: we can't handle a highlight color per row yet, because javascript
         // does not know the highlight color of each row.
         $params = array("'" . $id . "'", "'" . $highlight . "'", $reccount);
         $this->addHandler("atkRLKeyListener", $params);

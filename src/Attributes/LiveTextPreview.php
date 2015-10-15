@@ -27,7 +27,7 @@ define("AF_LIVETEXT_NL2BR", AF_SPECIFIC_2);
 
 /**
  * The atkLiveTextPreview adds a preview to the page that previews realtime
- * the content of any atkAttribute or atkTextAttribute while it is being
+ * the content of any Attribute or atkTextAttribute while it is being
  * edited.
  *
  * @author Ivo Jansch <ivo@achievo.org>

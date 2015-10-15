@@ -1219,7 +1219,7 @@ class OneToManyRelation extends Relation
      * Determine the type of the foreign key on the other side.
      *
      * On the other side of a oneToManyRelation (in the destination node),
-     * there may be a regular atkAttribute for the referential key, or an
+     * there may be a regular Attribute for the referential key, or an
      * atkManyToOneRelation pointing back at the source. This method discovers
      * which of the 2 cases we are dealing with.
      * @return boolean True if the foreign key on the other side is a

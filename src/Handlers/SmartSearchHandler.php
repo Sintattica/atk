@@ -473,7 +473,7 @@ class SmartSearchHandler extends AbstractSearchHandler
               ....
               $field = array_merge($field, array('value' => reset($criteriaValues[$id])));
 
-              See atkAttribute->getSearchFieldName()
+              See Attribute->getSearchFieldName()
               return 'atksearch_AE_'.$prefix.$this->formName();
 
               In fetchCriteria we expect the following:

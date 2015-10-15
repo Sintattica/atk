@@ -49,7 +49,7 @@ class TimeAttribute extends Attribute
      * @param string $default Start Time (exp: 20:30)
      * @param int $flags Flags for this attribute
      */
-    function atkTimeAttribute(
+    function __construct(
         $name,
         $beginTime = 0,
         $endTime = 23,
@@ -57,7 +57,7 @@ class TimeAttribute extends Attribute
         $default = "",
         $flags = 0
     ) {
-        $this->atkAttribute($name, $flags); // base class constructor
+        parent::__construct($name, $flags); // base class constructor
         $this->m_beginTime = $beginTime;
         $this->m_endTime = $endTime;
         if (is_array($steps)) {
@@ -122,7 +122,7 @@ class TimeAttribute extends Attribute
      * Convert values from an HTML form posting to an internal value for
      * this attribute.
      *
-     * For the regular atkAttribute, this means getting the field with the
+     * For the regular Attribute, this means getting the field with the
      * same name as the attribute from the html posting.
      *
      * @param array $postvars The array with html posted values ($_POST, for
@@ -358,7 +358,7 @@ class TimeAttribute extends Attribute
      *                          returned for use in the searchbar of the
      *                          recordlist. If set to true, a more extended
      *                          search may be returned for the 'extended'
-     *                          search page. The atkAttribute does not
+     *                          search page. The Attribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.

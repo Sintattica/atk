@@ -1112,7 +1112,7 @@ class ManyToOneRelation extends Relation
      *                          returned for use in the searchbar of the
      *                          recordlist. If set to true, a more extended
      *                          search may be returned for the 'extended'
-     *                          search page. The atkAttribute does not
+     *                          search page. The Attribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
@@ -1912,7 +1912,7 @@ class ManyToOneRelation extends Relation
      * @param String $fieldprefix the fieldprefix
      * @param int $flags the recordlist flags
      * @param array $atksearch the current ATK search list (if not empty)
-     * @param atkColumnConfig $columnConfig Column configuration object
+     * @param ColumnConfig $columnConfig Column configuration object
      * @param DataGrid $grid The DataGrid this attribute lives on.
      * @param string $column child column (null for this attribute, * for this attribute and all childs)
      */
@@ -2147,9 +2147,9 @@ class ManyToOneRelation extends Relation
 
     /**
      * Retrieve the sortorder for the listheader based on the
-     * atkColumnConfig
+     * ColumnConfig
      *
-     * @param atkColumnConfig $columnConfig The config that contains options for
+     * @param ColumnConfig $columnConfig The config that contains options for
      *                                      extended sorting and grouping to a
      *                                      recordlist.
      * @return String Returns sort order ASC or DESC

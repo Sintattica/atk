@@ -1,8 +1,9 @@
-<?php
+<?php namespace Sintattica\Atk\Attributes;
 
 
-Tools::useattrib("atkattribute");
-
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Ui\Theme;
+use Sintattica\Atk\Core\Config;
 
 class bootstrapColorPickerAttribute extends Attribute
 {
@@ -20,10 +21,10 @@ class bootstrapColorPickerAttribute extends Attribute
 
     protected $colorPickerOptions;
 
-    function bootstrapColorPickerAttribute($name, $colorPickerOptions = array(), $flags = 0, $size = 0)
+    function __construct($name, $colorPickerOptions = array(), $flags = 0, $size = 0)
     {
         $this->colorPickerOptions = $colorPickerOptions;
-        $this->atkAttribute($name, $flags, $size);
+        parent::__construct($name, $flags, $size);
     }
 
 

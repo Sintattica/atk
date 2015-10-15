@@ -308,8 +308,6 @@ $zh = array(
     "menu_main" => "�D���",
     "mon" => "�g�@",
     "monday" => "�g�@",
-    "multilanguage_choice" => "�y��:",
-    "multilanguage_select" => "��ܻy��:",
     "multiselect" => "Multiselect",
     // Missing string!!!
     "new" => "�s�W",

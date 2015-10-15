@@ -238,8 +238,6 @@ $it = array(
     // (usato in atkDurationAttribute)
     "mon" => "Lun",
     "monday" => "Lunedì",
-    "multilanguage_choice" => "Lingua selezionata:",
-    "multilanguage_select" => "Seleziona una lingua:",
     "multiselect" => "Selezione multipla",
     "new" => "Nuovo",
     "next" => "Successivo",

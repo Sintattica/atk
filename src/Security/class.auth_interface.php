@@ -189,7 +189,7 @@ class auth_interface
      * an attribute of a node.
      *
      * @param atkSecurityManager $securityMgr the security manager
-     * @param atkAttribute $attr attribute reference
+     * @param Attribute $attr attribute reference
      * @param string $mode mode (add, edit, view etc.)
      * @param array $record record data
      *

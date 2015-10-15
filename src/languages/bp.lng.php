@@ -265,8 +265,6 @@ $bp = array(
     "menu_main" => "Principal",
     "mon" => "Seg",
     "monday" => "Segunda-feira",
-    "multilanguage_choice" => "Escolha o idioma:",
-    "multilanguage_select" => "Escolha um idioma:",
     "multiselect" => "Multiselect",
     // Missing string!!!
     "new" => "Novo",

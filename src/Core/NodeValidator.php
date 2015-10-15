@@ -170,7 +170,7 @@ class NodeValidator
     /**
      * Validate attribute value.
      *
-     * @param atkAttribute $p_attrib pointer to the attribute
+     * @param Attribute $p_attrib pointer to the attribute
      * @param array $record record
      */
     function validateAttributeValue(&$p_attrib, &$record)

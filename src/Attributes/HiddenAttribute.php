@@ -46,7 +46,7 @@ class HiddenAttribute extends DummyAttribute
      * This method is called by the framework whenever an attribute needs to be rendered within a hidden form.
      * In this case, the attribute renders a hidden input field using its text as its hidden value.
      */
-    public function hide($record = "", $fieldprefix = "")
+    public function hide($record = "", $fieldprefix = "", $mode = "")
     {
         $id = $this->getHtmlId($fieldprefix);
         $result = '<input type="hidden" id="' . $id . '" name="' . $fieldprefix . $this->formName() . '" value="' .
