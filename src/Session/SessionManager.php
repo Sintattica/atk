@@ -1,5 +1,13 @@
 <?php namespace Sintattica\Atk\Security\Session;
 
+
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Ui\Output;
+use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Core\Config;
+use \Exception;
+
+
 /**
  * @internal initialization
  */
@@ -49,6 +57,7 @@ if (isset($_REQUEST["atkstackid"])) {
  */
 class SessionManager
 {
+
     /**
      * @access private
      * @var String
@@ -71,7 +80,7 @@ class SessionManager
     /**
      * Default constructor.
      * @param String $namespace If multiple scripts/applications are
-     *                          installed on thesame url, they can each use
+     *                          installed on the same url, they can each use
      *                          a different namespace to make sure they
      *                          don't share session data.
      * @param boolean $usestack Tell the sessionmanager to use the session
@@ -1243,6 +1252,15 @@ class SessionManager
         }
 
         return true;
+    }
+
+    /**
+     * @return SessionManager $g_sessionManager
+     */
+    static public function &getInstance()
+    {
+        global $g_sessionManager;
+        return $g_sessionManager;
     }
 
     /**

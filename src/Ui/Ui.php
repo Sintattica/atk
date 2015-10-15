@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Node;
 
 /**
  * Utility class for rendering boxes, lists, tabs or other templates.

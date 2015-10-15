@@ -1,5 +1,7 @@
 <?php namespace Sintattica\Atk\Core;
 
+use Sintattica\Atk\Attributes\NumberAttribute;
+
 /**
  * The ATK data node can be used to create nodes that don't retrieve their
  * data from the database.
@@ -13,11 +15,8 @@
  */
 class DataNode extends Node
 {
-    /**
-     * Data.
-     *
-     * @var array
-     */
+
+    /** @var array data array */
     private $m_data = array();
 
     /**
@@ -26,7 +25,7 @@ class DataNode extends Node
      * @param string $type node type (by default the class name)
      * @param int $flags node flags
      *
-     * @return atkDataNode
+     * @return DataNode
      */
     public function __construct($type = '', $flags = 0)
     {
@@ -47,11 +46,9 @@ class DataNode extends Node
     /**
      * Returns the internal data.
      *
-     * @param array $criteria criteria (can be ignored in which case filterData will filter the data)
-     *
-     * @return array data list
+     * @return Array data list
      */
-    protected function getData($criteria = null)
+    protected function getData()
     {
         return $this->m_data;
     }
@@ -138,7 +135,7 @@ class DataNode extends Node
         $selector = $this->getSelector($selector);
         $criteria = $this->getCriteria($selector);
 
-        $data = $this->getData($criteria);
+        $data = $this->getData();
         $data = $this->filterColumns($data);
         $data = $this->filterData($data, $criteria, $search);
         $data = $this->sortData($data, $order);
@@ -151,7 +148,7 @@ class DataNode extends Node
      *
      * @param array $data data
      *
-     * @return data
+     * @return array data
      */
     protected function filterColumns($data)
     {
@@ -331,7 +328,7 @@ class DataNode extends Node
         if ($column != false) {
             $attr = $this->getAttribute($column);
 
-            if ($attr instanceof atkNumberAttribute) {
+            if ($attr instanceof NumberAttribute) {
                 usort($data, create_function('$a, $b',
                     'return $a["' . $column . '"] == $b["' . $column . '"] ? 0 : ($a["' . $column . '"] < $b["' . $column . '"] ? -1 : 1);'));
             } else {
@@ -354,7 +351,7 @@ class DataNode extends Node
      * @param int $limit limit
      * @param int $offset offset
      *
-     * @return array limitted data
+     * @return array limited data
      */
     protected function limitData($data, $limit = -1, $offset = 0)
     {

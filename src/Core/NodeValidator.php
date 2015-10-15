@@ -1,5 +1,8 @@
 <?php namespace Sintattica\Atk\Core;
 
+use Sintattica\Atk\Attributes\Attribute;
+
+
 /**
  * Validator for records, based on node definition.
  *
@@ -29,6 +32,12 @@ class NodeValidator
      * @access private
      */
     var $m_mode = "";
+
+    /**
+     * @var array the list of fields which will get ignored
+     * @access private
+     */
+    var $m_ignoreList = array();
 
     /**
      * constructor

@@ -1,20 +1,10 @@
 <?php namespace Sintattica\Atk\Security;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage security
- *
- * @copyright (c)2000-2004 Ivo Jansch
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6301 $
- * $Id$
- */
+
+use Sintattica\Atk\Attributes\Attribute;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+
+
 /**
  * @internal includes and definitions
  */

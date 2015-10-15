@@ -201,7 +201,7 @@ class Module
      * @param string $node module/node string
      * @return string (overloader) module/node string
      */
-    function nodeOverloader($node)
+    public static function nodeOverloader($node)
     {
         global $g_overloaders;
 
@@ -223,7 +223,7 @@ class Module
      * @param string $node the node type
      * @return string node filename
      */
-    function getNodeFile($node)
+    public static function getNodeFile($node)
     {
         global $config_classroot, $config_module_path;
         $modules = self::atkGetModules();
@@ -257,7 +257,7 @@ class Module
      * @param string $fixture <module.fixture> string
      * @return string path to fixture without extension
      */
-    function getFixturePath($fixture)
+    public static function getFixturePath($fixture)
     {
         $module = self::getNodeModule($fixture);
         $fixture = self::getNodeType($fixture);
@@ -327,9 +327,8 @@ class Module
      * Set current module scope.
      *
      * @param string $module current module
-     * @static
      */
-    function setModuleScope($module)
+    public static function setModuleScope($module)
     {
         global $g_atkModuleScope;
         $g_atkModuleScope = $module;
@@ -339,9 +338,8 @@ class Module
      * Returns the current module scope.
      *
      * @return string current module
-     * @static
      */
-    function getModuleScope()
+    public static function getModuleScope()
     {
         global $g_atkModuleScope;
         return $g_atkModuleScope;
@@ -350,9 +348,8 @@ class Module
     /**
      * Resets the current module scope.
      *
-     * @static
      */
-    function resetModuleScope()
+    public static function resetModuleScope()
     {
         self::setModuleScope(null);
     }
@@ -508,7 +505,7 @@ class Module
      * Retrieve the atkModule with the given name.
      *
      * @param String $modname The name of the module
-     * @return atkModule An instance of the atkModule
+     * @return Module An instance of the atkModule
      */
     public static function &atkGetModule($modname)
     {
@@ -609,7 +606,7 @@ class Module
 
     /**
      * Return the physical directory of a module..
-     * @param String name of the module.
+     * @param String $module name of the module.
      * @return String The path to the module.
      */
     public static function moduleDir($module)
@@ -640,9 +637,9 @@ class Module
 
     /**
      * Returns a registered node action handler.
-     * @param Node $node the name of the node
-     * @param $action the node action
-     * @return ActionHandler  functionname or object (is_subclass_of ActionHandler) or
+     * @param String $node the name of the node
+     * @param String $action the node action
+     * @return ActionHandler functionname or object (is_subclass_of ActionHandler) or
      *         NULL if no handler exists for the specified action
      */
     public static function &atkGetNodeHandler($node, $action)
@@ -737,20 +734,20 @@ class Module
      * OLD setting (so you might reset it to the old value after you're
      * finished with the current node.
      *
-     * @param $newvalue New value of the readoptimizer. true turns the
+     * @param String $newValue the value of the readOptimizer. true turns the
      *                  optimizer on. Falls turns it off.
-     * @return boolean The old value of the optimizer setting, if a new
+     * @return bool The old value of the optimizer setting, if a new
      *                 setting was passed OR
      *                 The current value if no new setting was passed.
      */
-    public static function atkReadOptimizer($newvalue = null)
+    public static function atkReadOptimizer($newValue = null)
     {
         static $s_optimized = false;
 
-        if (!($newvalue === null)) { // New value was set
-            $oldvalue = $s_optimized;
-            $s_optimized = $newvalue;
-            return $oldvalue;
+        if (!($newValue === null)) { // New value was set
+            $oldValue = $s_optimized;
+            $s_optimized = $newValue;
+            return $oldValue;
         } else {
             return $s_optimized; // Return current value.
         }
@@ -825,11 +822,11 @@ class Module
      * load the modules.
      *
      * @param String $name The name of the module to load.
-     * @param String path The path where the module is located (relative or
+     * @param String $path The path where the module is located (relative or
      *                    absolute). If omitted, ATK assumes that the module is
      *                    installed in the default module dir (identified by
      *                    $config_module_path).
-     * @param int flags The module (MF_*) flags that influence how the module is
+     * @param int $flags The module (MF_*) flags that influence how the module is
      *                  loaded.
      */
     public static function module($name, $path = "", $flags = 0)

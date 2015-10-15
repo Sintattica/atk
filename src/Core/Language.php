@@ -1,5 +1,9 @@
 <?php namespace Sintattica\Atk\Core;
 
+use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Utils\DirectoryTraverser;
+
 /**
  * Class that handles userinterface internationalization.
  *
@@ -80,7 +84,7 @@ class Language
     }
 
     /**
-     * Gets an instance of the atkLanguage class
+     * Gets an instance of the Language class
      *
      * Using this function will ensure that only 1 instance ever exists
      * (singleton).

@@ -6,7 +6,8 @@ use Sintattica\Atk\Security\Session\SessionManager;
 use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Ui;
-
+use Sintattica\Atk\Ui\Output;
+use Sintattica\Atk\Ui\Dialog;
 
 
 /**
@@ -75,9 +76,10 @@ class Controller
      */
     function __construct()
     {
-        global $g_sessionManager;
-        if (is_object($g_sessionManager)) {
-            $ControllerClass = $g_sessionManager->stackVar("atkcontroller");
+        $sessionManager = SessionManager::getInstance();
+
+        if (is_object($sessionManager)) {
+            $ControllerClass = $sessionManager->stackVar("atkcontroller");
 
             //Its not so nice to use the getNodeModule and getNodeType functions,
             //because the name suggests they work with atkNodes. But they also do
@@ -110,9 +112,9 @@ class Controller
             //We save the controller in stack, so the controller constructor
             //can store the Controller name and module. It is also saved for other
             //atk levels if we move down the stack.
-            global $g_sessionManager;
-            if (is_object($g_sessionManager)) {
-                $g_sessionManager->stackVar("atkcontroller", $class);
+            $sessionManager = SessionManager::getInstance();
+            if (is_object($sessionManager)) {
+                $sessionManager->stackVar("atkcontroller", $class);
             }
 
             $s_object = Tools::atknew($class);
@@ -200,7 +202,7 @@ class Controller
 
         // This is the end of all things for this page..
         // so we clean up some resources..
-        $db = &$node->getDb();
+        $db = $node->getDb();
         if (is_object($db)) {
             $db->disconnect();
         }
@@ -251,7 +253,7 @@ class Controller
     /**
      * Get m_node variable or if not set make instance of Node class (determined by using the postvars)
      *
-     * @return reference to atknode
+     * @return Node reference to Node
      */
     function &getNode()
     {
@@ -293,7 +295,7 @@ class Controller
             $node->m_partial = $postvars["atkpartial"];
         }
 
-        $page = &$node->getPage();
+        $page = $node->getPage();
         $page->setTitle(Tools::atktext('app_shorttitle') . " - " . $this->getUi()->title($node->m_module,
                 $node->m_type, $node->m_action));
 
@@ -311,6 +313,7 @@ class Controller
                     $id = implode(',', $atkSelectorDecoded);
                 }
             } else {
+                //TODO: MICHELE, controllare la stringa dell'explode
                 list($selector, $id) = explode("=", 'Tools::atkArrayNvl($node->m_postvars, "atkselector", "=")');
             }
             $page->register_hiddenvars(array(
@@ -444,7 +447,7 @@ class Controller
      * @param integer $levelskip The number of levels to skip
      * @return String The feedback url.
      */
-    function feedbackUrl($action, $status, $record = "", $message = "", $levelskip = null)
+    function feedbackUrl($action, $status, $record = array(), $message = "", $levelskip = null)
     {
         $node = $this->getNode();
         if ((isset($node->m_feedback[$action]) && Tools::hasFlag($node->m_feedback[$action],
@@ -471,7 +474,7 @@ class Controller
             $atkNodeType = "";
             $sessionStatus = SESSION_BACK;
         }
-        return (Tools::session_url($this->dispatchUrl($vars, $atkNodeType), $sessionStatus, $levelskip));
+        return (SessionManager::sessionUrl($this->dispatchUrl($vars, $atkNodeType), $sessionStatus, $levelskip));
     }
 
     /**
@@ -589,12 +592,11 @@ class Controller
      *
      * @param String $action
      * @param Bool $default Add the atkdefaultbutton class?
-     * @return HTML
+     * @return String HTML
      */
     function getButton($action, $default = false, $label = null)
     {
-        $name = "";
-        $class = "";
+        $valueAttribute = "";
 
         switch ($action) {
             case "save":
@@ -672,8 +674,8 @@ class Controller
      * @param String $action The action ('save' or 'cancel')
      * @param String $label The label for this button
      * @param String $url
-     * @param array $extraParams
-     * @return HTML
+     * @param Array $extraParams
+     * @return String HTML
      */
     function getDialogButton($action, $label = null, $url = null, $extraParams = array())
     {
@@ -797,7 +799,7 @@ class Controller
     /**
      * Get the ui instance for drawing and templating purposes.
      *
-     * @return atkUi An atkUi instance for drawing and templating.
+     * @return Ui An atkUi instance for drawing and templating.
      */
     function &getUi()
     {
@@ -856,6 +858,7 @@ class Controller
             }
         }
         Tools::atkerror("Controller::invoke() Undefined method '$methodname' in Controller");
+        return false;
     }
 
     /**

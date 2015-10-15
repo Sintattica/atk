@@ -3,13 +3,22 @@
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Attributes\FieldSet;
 use Sintattica\Atk\Handlers\ActionHandler;
+use Sintattica\Atk\Security\Session\SessionManager;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Lock\Lock;
 use Sintattica\Atk\Ui\PageBuilder;
 use Sintattica\Atk\Ui\Output;
-use Sintattica\Atk\Utils\Debugger;
 use Sintattica\Atk\Ui\Theme;
+use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Utils\Selector;
+use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Security\Session\State;
+use Sintattica\Atk\Utils\ActionListener;
+use Sintattica\Atk\RecordList\ColumnConfig;
+use Sintattica\Atk\Relations\ManyToOneRelation;
+use Sintattica\Atk\Utils\StringParser;
+use \Exception;
 
 /**
  * Define some flags for nodes. Use the constructor of the Node
@@ -301,7 +310,7 @@ class Node
      * The list of attributes of a node. These should be of the class
      * Attribute or one of its derivatives.
      * @access private
-     * @var array
+     * @var Attribute[]
      */
     var $m_attribList = array();
 
@@ -750,7 +759,7 @@ class Node
      * before the dot.
      *
      * @param string $section section name
-     * @return resolved section name
+     * @return string resolved section name
      */
     function resolveSection($section)
     {
@@ -799,7 +808,7 @@ class Node
     /**
      * Set default column name.
      *
-     * @param string name default column name
+     * @param string $name default column name
      */
     public function setDefaultColumn($name)
     {
@@ -899,7 +908,7 @@ class Node
             $attribute->m_module = $this->m_modifier;
         }
 
-        if (!Module::ReadOptimizer()) {
+        if (!Module::atkReadOptimizer()) {
             $this->resolveSectionsTabsOrder($sections, $tabs, $column, $order);
 
             // check for parent fieldname (treeview)
@@ -968,7 +977,7 @@ class Node
                 $order = $this->m_attribOrder;
             }
 
-            if (!Module::ReadOptimizer()) {
+            if (!Module::atkReadOptimizer()) {
                 // add new tab(s) to the tab list ("*" isn't a tab!)
                 if ($tabs != "*") {
                     if (!$attribute->hasFlag(AF_HIDE_ADD)) {
@@ -1058,6 +1067,7 @@ class Node
      * Retrieve the tabnames from the sections string (tab.section).
      *
      * @param mixed $sections An array with sections or a section string
+     * @return array
      */
     function getTabsFromSections($sections)
     {
@@ -1068,7 +1078,6 @@ class Node
         $tabs = array();
 
         if (!isset($sections)) {
-            $section = array();
         } elseif (!is_array($sections)) {
             $sections = array($sections);
         }
@@ -1541,10 +1550,7 @@ class Node
     {
 
         $list = $this->m_tabList[$action];
-
         $disable = $this->checkTabRights($list);
-
-        $tabCode = "";
 
         if (!is_array($list)) {
             // fallback to view tabs.
@@ -1571,7 +1577,7 @@ class Node
             }
 
             if (is_object($p_attrib)) {
-                $additional = $p_attrib->getAdditionalTabs($action);
+                $additional = $p_attrib->getAdditionalTabs();
                 if (is_array($additional) && count($additional) > 0) {
                     $list = Tools::atk_array_merge($list, $additional);
                     $this->m_filledTabs = Tools::atk_array_merge($this->m_filledTabs, $additional);
@@ -1749,6 +1755,7 @@ class Node
      *
      * @param string $tab The currently active tab
      * @param string $mode The current mode ("edit", "add", etc.)
+     * @return array active Sections
      */
     function getActiveSections($tab, $mode)
     {
@@ -1843,7 +1850,8 @@ class Node
      */
     function lockPage()
     {
-        $output = $this->statusbar();
+        $total = null;
+        $output = ''; // $this->statusbar();
         $output .= '<img src="' . Config::getGlobal("atkroot") . 'atk/images/lock.gif"><br><br>' . Tools::atktext("lock_locked") . '<br>';
         $output .= '<br><form method="get">' . Tools::session_form(SESSION_BACK) .
             '<input type="submit" class="btn btn-default btn_cancel" value="&lt;&lt; ' . Tools::atktext('back') . '"></form>';
@@ -1865,8 +1873,7 @@ class Node
      */
     function &getUi()
     {
-        $ui = Ui::getInstance();
-        return $ui;
+        return Ui::getInstance();
     }
 
     /**
@@ -1881,16 +1888,16 @@ class Node
      */
     function actionTitle($action, $record = "")
     {
-        global $g_sessionManager;
+        $sm = SessionManager::getInstance();
         $ui = $this->getUi();
         $res = "";
 
         if ($record != "") {
             $descr = $this->descriptor($record);
-            $g_sessionManager->pageVar("descriptor", $descr);
+            $sm->pageVar("descriptor", $descr);
         }
 
-        $descriptortrace = $g_sessionManager->descriptorTrace();
+        $descriptortrace = $sm->descriptorTrace();
         $nomodule = false;
         if (!empty($descriptortrace)) {
             $nomodule = true;
@@ -2169,14 +2176,12 @@ class Node
         foreach (array_keys($this->m_attribIndexList) as $r) {
             $attribname = $this->m_attribIndexList[$r]["name"];
 
-            $field = array("name" => $attribname);
-
             $p_attrib = $this->m_attribList[$attribname];
             if ($p_attrib != null) {
                 if ($p_attrib->hasDisabledMode(DISABLED_EDIT)) {
                     continue;
                 }
-                $field = array("name" => $attribname);
+
                 /* fields that have not yet been initialised may be overriden in the url */
                 if (!array_key_exists($p_attrib->fieldName(), $defaults) && array_key_exists($p_attrib->fieldName(),
                         $this->m_postvars)
@@ -2206,7 +2211,7 @@ class Node
         }
 
         if ($injectSections) {
-            $this->injectSections($result['fields'], $mode);
+            $this->injectSections($result['fields']);
         }
 
         /* check for errors */
@@ -2242,8 +2247,6 @@ class Node
         // call preAddToViewArray for the node itself.
         $this->preAddToViewArray($record, $mode);
 
-        $tab = $this->getActiveTab();
-
         $result = array();
 
         foreach (array_keys($this->m_attribIndexList) as $r) {
@@ -2264,7 +2267,7 @@ class Node
 
         /* inject sections */
         if ($injectSections) {
-            $this->injectSections($result['fields'], $mode);
+            $this->injectSections($result['fields']);
         }
 
         /* return the result array */
@@ -2604,7 +2607,7 @@ class Node
     /**
      * Get extended search action.
      *
-     * @return extended search action
+     * @return string extended search action
      */
     function getExtendedSearchAction()
     {
@@ -3732,12 +3735,13 @@ class Node
     {
         if ($exectrigger) {
             if (!$this->executeTrigger("preAdd", $record, $mode)) {
-                return Tools::atkerror("preAdd() failed!");
+                Tools::atkerror("preAdd() failed!");
+                return false;
             }
         }
 
         $db = $this->getDb();
-        $query = &$db->createQuery();
+        $query = $db->createQuery();
 
         $storelist = array("pre" => array(), "post" => array(), "query" => array());
 
@@ -4303,34 +4307,7 @@ class Node
         }
     }
 
-    /**
-     * Display a statusbar with a stacktrace and a help button.
-     * @deprecated Use the {statusbar} tag in templates instead.
-     * @param boolean $locked is the currently displayed item locked?
-     */
-    function statusbar($locked = false)
-    {
-        Tools::atkdebug("Obsolete use of statusbar()");
-        if (!$this->m_statusbarDone) {
-            global $g_sessionManager;
-            $ui = $this->getUi();
 
-            $params = array();
-
-            $this->m_statusbarDone = true;
-            if (Config::getGlobal("stacktrace")) {
-                $params["stacktrace"] = $g_sessionManager->stackTrace();
-            }
-
-            $help = $this->getHelp();
-            $params = array_merge($params, $help);
-
-            $params["lockstatus"] = $this->getLockStatusIcon($locked);
-
-            return $ui->render("statusbar.tpl", $params);
-        }
-        return "";
-    }
 
     /**
      * Retrieve help link for the current node.
@@ -4430,7 +4407,7 @@ class Node
      * The default implementation returns a default handler for the action,
      * but derived classes may override this to return a custom handler.
      * @param String $action The action for which the handler is retrieved.
-     * @return atkActionHandler The action handler.
+     * @return ActionHandler The action handler.
      */
     function &getHandler($action)
     {
@@ -4627,14 +4604,14 @@ class Node
 
         // If the table isn't $this one
         if (strtolower(trim($targetTable)) !== strtolower($this->m_table) &&
-            !($this->getAttribute($targetTable) instanceof atkManyToOneRelation)
+            !($this->getAttribute($targetTable) instanceof ManyToOneRelation)
         ) {
             Tools::atkwarning($this->atkNodeType() . '->' . __FUNCTION__ . "($filter): Disallowed because " . strtolower(trim($targetTable)) . " !== " . strtolower($this->m_table) . ' and not a valid many-to-one relation.');
             return '';
         }
 
         // Or the column doesn't belong to $this
-        if (!($this->getAttribute($targetTable) instanceof atkManyToOneRelation) &&
+        if (!($this->getAttribute($targetTable) instanceof ManyToOneRelation) &&
             !in_array($targetColumn, array_keys($this->m_attribList))
         ) {
             Tools::atkwarning($this->atkNodeType() . '->' . __FUNCTION__ . "($filter): Disallowed because target column $targetColumn isn't in node");
@@ -4758,7 +4735,7 @@ class Node
     /**
      * Add an atkActionListener to the node.
      *
-     * @param atkActionListener $listener
+     * @param ActionListener $listener
      */
     function addListener(&$listener)
     {
@@ -4928,7 +4905,7 @@ class Node
             $distinct = array_key_exists(5, $params) ? $params[5] : false;
             $ignoreDefaultFilters = array_key_exists(6, $params) ? $params[6] : false;
 
-            $selector = Tools::atknew('atk.utils.atkselector', $this);
+            $selector = new Selector($this);
             $this->_initSelector($selector);
             $selector->where($condition);
             if ($order === false || $order != '') {
@@ -4958,7 +4935,7 @@ class Node
                 $distinct = array_key_exists(4, $params) ? $params[4] : false;
                 $ignoreDefaultFilters = array_key_exists(5, $params) ? $params[5] : false;
 
-                $selector = Tools::atknew('atk.utils.atkselector', $this);
+                $selector = new Selector($this);
                 $this->_initSelector($selector);
                 $selector->where($condition);
                 $selector->excludes($excludes);

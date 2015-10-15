@@ -1,19 +1,9 @@
 <?php namespace Sintattica\Atk\Menu;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage menu
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6320 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Ui\Theme;
+use Sintattica\Atk\Core\Config;
 
 /**
  * Implementation of the dhtml menu.
@@ -30,7 +20,7 @@ class DhtmlMenu extends menuinterface
     /**
      * Constructor
      *
-     * @return atkDhtmlMenu
+     * @return DhtmlMenu
      */
     function __construct()
     {

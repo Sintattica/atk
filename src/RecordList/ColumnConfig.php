@@ -1,19 +1,9 @@
 <?php namespace Sintattica\Atk\RecordList;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage recordlist
- *
- * @copyright (c)2003-2006 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6323 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Security\Session\SessionManager;
+
 /**
  * Sort ascending
  */
@@ -35,8 +25,12 @@ define("RL_SORT_DESC", 2);
 class ColumnConfig
 {
     var $m_colcfg = array();
-    var $m_node = null;
+
+    /** @var Node $m_node */
+    var $m_node;
+
     var $m_orderbyindex = 0;
+
     var $m_custom_atkorderby;
 
     /**
@@ -78,38 +72,41 @@ class ColumnConfig
      *
      * @return ColumnConfig An instance of the columnconfig class
      */
-    function &getConfig(&$node, $id = null, $forceNew = false)
+    public static function getConfig(&$node, $id = null, $forceNew = false)
     {
-        global $g_sessionManager;
+
         static $s_instances = array();
+
+        $sm = SessionManager::getInstance();
 
         if ($id == null) {
             $id = $node->atkNodeType();
         }
 
         if (!isset($s_instances[$id]) || $forceNew) {
-            $s_instances[$id] = new ColumnConfig();
-            $s_instances[$id]->setNode($node);
+            $cc = new ColumnConfig();
+            $s_instances[$id] = $cc;
+            $cc->setNode($node);
 
-            $colcfg = $g_sessionManager != null ? $g_sessionManager->pageVar("atkcolcfg_" . $id)
+            $colcfg = $sm != null ? $sm->pageVar("atkcolcfg_" . $id)
                 : null;
 
             if (!is_array($colcfg) || $forceNew) {
                 // create new
                 Tools::atkdebug("New colconfig initialising");
-                $s_instances[$id]->init();
+                $cc->init();
             } else {
                 // inherit old config from session.
                 Tools::atkdebug("Resuming colconfig from session");
-                $s_instances[$id]->m_colcfg = &$colcfg;
+                $cc->m_colcfg = &$colcfg;
             }
 
             // See if there are any url params which influence this colcfg.
-            $s_instances[$id]->doUrlCommands();
+            $cc->doUrlCommands();
         }
 
-        if ($g_sessionManager != null) {
-            $g_sessionManager->pageVar("atkcolcfg_" . $id, $s_instances[$id]->m_colcfg);
+        if ($sm != null) {
+            $sm->pageVar("atkcolcfg_" . $id, $s_instances[$id]->m_colcfg);
         }
 
         return $s_instances[$id];
@@ -249,7 +246,7 @@ class ColumnConfig
      */
     function flatten()
     {
-        $result = uasort($this->m_colcfg, array("ColumnConfig", "_compareSortAttrs"));
+        uasort($this->m_colcfg, array("ColumnConfig", "_compareSortAttrs"));
 
         $i = 1;
         foreach ($this->m_colcfg as $field => $config) {

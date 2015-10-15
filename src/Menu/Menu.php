@@ -4,6 +4,7 @@ use Sintattica\Atk\Core\Controller;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Module;
 
 /**
  * Some defines
