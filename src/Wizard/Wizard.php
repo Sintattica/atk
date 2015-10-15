@@ -1,5 +1,8 @@
 <?php namespace Sintattica\Atk\Wizard;
 
+
+use Sintattica\Atk\Core\Tools;
+
 /**
  * atkWizard modees
  */

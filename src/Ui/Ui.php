@@ -3,6 +3,9 @@
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Wizard\Wizard;
+use Sintattica\Atk\Wizard\WizardPanel;
 
 /**
  * Utility class for rendering boxes, lists, tabs or other templates.
@@ -23,7 +26,7 @@ class Ui
     /**
      * atkTheme instance, initialised by constructor
      * @access private
-     * @var atkTheme
+     * @var Theme
      */
     var $m_theme = null;
 
@@ -77,7 +80,7 @@ class Ui
      * @param array $vars the variables with which to parse the list template
      * @param string $module the name of the module requesting to render a template
      */
-    function renderList($action, $vars, $module = "")
+    function renderList($action = "", $vars, $module = "")
     {
         return $this->render("list.tpl", $vars, $module);
     }
@@ -343,12 +346,12 @@ class Ui
      * This function returns a suitable title text for an Wizardpanel.
      * Example: echo $ui->title("departmentwizard", "employee", "add"); might return:
      *          'Departmen wizard - Add employees - Step 2 of 3'
-     * @param String $wizard the wizard object
-     * @param String $panel the panel object
+     * @param Wizard $wizard the wizard object
+     * @param WizardPanel $panel the panel object
      * @param String $action the atk action that we are trying execute in the panel
      * @return String the title for this wizardpanel
      */
-    function getWizardTitle($wizard, $panel, $action = null)
+    function getWizardTitle(Wizard $wizard, WizardPanel $panel, $action = null)
     {
         if ($wizard == null) {
             return "";
@@ -376,7 +379,7 @@ class Ui
         } else {
             $status = Tools::atktext("finished");
         }
-        $label .= $wizardTitle . " - " . $panelTitle . " - " . $status;
+        $label = $wizardTitle . " - " . $panelTitle . " - " . $status;
 
         return $label;
     }

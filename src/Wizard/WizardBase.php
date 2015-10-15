@@ -1,5 +1,8 @@
 <?php namespace Sintattica\Atk\Wizard;
 
+
+use Sintattica\Atk\Core\Controller;
+
 /**
  * atkWizard class which is capable of using atknodes
  *

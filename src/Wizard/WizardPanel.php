@@ -1,5 +1,12 @@
 <?php namespace Sintattica\Atk\Wizard;
 
+use Sintattica\Atk\Utils\ActionListener;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Controller;
+use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Core\Node;
+
 /**
  * atkWizardPanel button definitions.
  */
@@ -42,7 +49,7 @@ class WizardPanel
     /**
      * Reference to the Node
      *
-     * @var object reference
+     * @var $m_node Node reference
      */
     var $m_node;
 
@@ -83,12 +90,12 @@ class WizardPanel
      * probably don't need the node in most pageloads because we only use one
      * wizardpanel at a time.
      *
-     * @param atkWizard $wizard The wizard
+     * @param Wizard $wizard The wizard
      * @param string $panelName The panelname
      * @param string $nodeName The nodename
      * @param string $defaultAction The default action
      * @param integer $finishButton The finish button to use
-     * @return atkWizardPanel
+     * @return WizardPanel
      */
     function atkWizardPanel(&$wizard, $panelName, $nodeName, $defaultAction = "", $finishButton = FINISH_BUTTON_DEFAULT)
     {
@@ -137,10 +144,9 @@ class WizardPanel
 
             //Make session aware of the fact that we are rendering a node which has been
             //created by a wizard panel and is not posted as a variable
-            global $g_sessionManager;
-            /* @var $g_sessionManager atkSessionManager */
-            $g_sessionManager->stackVar("atknodetype", $this->m_nodeName);
-            $g_sessionManager->stackVar("atkaction", $this->m_defaultAction);
+            $sm = SessionManager::getInstance();
+            $sm->stackVar("atknodetype", $this->m_nodeName);
+            $sm->stackVar("atkaction", $this->m_defaultAction);
 
             //We set how we want the atk page to be returned
             $this->m_wizard->setPageFlags(HTML_ALL);
@@ -151,7 +157,7 @@ class WizardPanel
     /**
      * Return the panel name
      *
-     * @return unknown
+     * @return string
      */
     public function getPanelName()
     {
@@ -164,7 +170,7 @@ class WizardPanel
      * Listeners are added to the Node when the
      * node is created.
      *
-     * @param atkActionListener $listener
+     * @param ActionListener $listener
      */
     function addListener(&$listener)
     {
@@ -187,8 +193,7 @@ class WizardPanel
 
     /**
      * Do some session manipulations
-     *
-     * @return unknown
+     * @return null
      */
     function dispatchForm()
     {
@@ -197,16 +202,17 @@ class WizardPanel
             return "";
         }
 
-        /* @var $g_sessionManager atkSessionManager */
-        global $ATK_VARS, $g_sessionManager;
+        global $ATK_VARS;
+
+        $sm = SessionManager::getInstance();
 
         if (!isset($ATK_VARS['atkaction']) || $ATK_VARS['atkaction'] == "") {
             if (!isset($this->m_defaultAction) || $this->m_defaultAction == "") {
                 $ATK_VARS['atkaction'] = "add";
-                $g_sessionManager->stackVar("atkaction", "add");
+                $sm->stackVar("atkaction", "add");
             } else {
                 $ATK_VARS['atkaction'] = $this->m_defaultAction;
-                $g_sessionManager->stackVar("atkaction", $this->m_defaultAction);
+                $sm->stackVar("atkaction", $this->m_defaultAction);
             }
         }
 
@@ -217,6 +223,8 @@ class WizardPanel
                 $this->loadRenderBoxVars("add");
             }
         }
+
+        return null;
     }
 
     /**
@@ -231,7 +239,7 @@ class WizardPanel
     {
         $node = $this->getPanelNode();
         if (!is_object($node)) {
-            return;
+            return false;
         }
 
         //Little dirty, we have to do this to make sure that in case
