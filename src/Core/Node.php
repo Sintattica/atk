@@ -10,7 +10,6 @@ use Sintattica\Atk\Ui\PageBuilder;
 use Sintattica\Atk\Ui\Output;
 use Sintattica\Atk\Utils\Debugger;
 use Sintattica\Atk\Ui\Theme;
-use Sintattica\Atk\Utils\MlSplitter;
 
 /**
  * Define some flags for nodes. Use the constructor of the Node
@@ -105,11 +104,6 @@ define("NF_MRPA", 16384);
 define("NF_LOCK", 32768);
 
 /**
- * Multi-language support
- */
-define("NF_ML", 65536);
-
-/**
  * Quick way to ensable the csv import feature
  */
 define("NF_IMPORT", 131072);
@@ -191,10 +185,6 @@ define("NF_EDITAFTERCOPY", 1073741824);
  */
 define("NF_MRA", NF_MULTI_RECORD_ACTIONS);
 
-/**
- * Alias for NF_ML flag (typed out)
- */
-define("NF_MULTILANGUAGE", NF_ML);
 
 /**
  * Aggregate flag to quickly create readonly nodes
@@ -3465,12 +3455,6 @@ class Node
                 return false;
             }
 
-            if ($this->hasFlag(NF_ML) && $record["atkmlsplit"] == "") {
-                $record["atkmlsplit"] = 1;
-
-                $mltool = Tools::atkinstance("atk.utils.atkmlsplitter");
-                $mltool->updateMlRecords($this, $record, "update", $excludes, $includes);
-            }
 
             if (!$this->_storeAttributes($storelist["post"], $record, "update")) {
                 return false;
@@ -3690,11 +3674,6 @@ class Node
                 Tools::atkdebug("$attribname is not an object?! Check your descriptor_def for non-existant fields");
             }
         }
-
-        if ($this->hasFlag(NF_ML)) {
-            $mltool = Tools::atkinstance("atk.utils.atkmlsplitter");
-            $mltool->addMlCondition($query, $this, $mode, $alias);
-        }
     }
 
     /**
@@ -3835,11 +3814,6 @@ class Node
         // new primary key
         $record["atkprimkey"] = $this->primaryKey($record);
 
-        if ($this->hasFlag(NF_ML) && $record["atkmlsplit"] == "") {
-            $record["atkmlsplit"] = 1;
-            $mltool = Tools::atkinstance("atk.utils.atkmlsplitter");
-            $mltool->updateMlRecords($this, $record, $mode);
-        }
 
         if (!$this->_storeAttributes($storelist["post"], $record, $mode)) {
             Tools::atkdebug("_storeAttributes failed..");
