@@ -4,6 +4,15 @@
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Ui\Output;
 use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Errors\ErrorHandlerBase;
+use Sintattica\Atk\Utils\Debugger;
+use Sintattica\Atk\Attributes\Attribute;
+use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Utils\ClassLoader;
+use Sintattica\Atk\Utils\String;
+use Sintattica\Atk\Utils\BrowserInfo;
+
+use \Exception;
 
 /**
  * Converts applicable characters to html entities so they aren't
@@ -148,9 +157,8 @@ class Tools
                 $res = self::atktext($level, "atk") . ': ' . $msg . "\n";
             } else {
                 $res = "<html>";
-                $res .= '<body bgcolor="#ffffff" color="#000000">';
-                $res .= "<font color=\"$level_color\"><b>" . self::atktext($level,
-                        "atk") . "</b></font>: $msg.<br />\n";
+                $res .= '<body style="background-color: #ffffff; color:#000000;">';
+                $res .= "<span style=\"color:$level_color;\"><b>" . self::atktext($level, "atk") . "</b></span>: $msg.<br />\n";
             }
 
             Output::getInstance()->output($res);
@@ -618,8 +626,8 @@ class Tools
      *
      * Checks if a value is in a Array
      * @param array $set the array
-     * @param var $key the key in the array as in $array[$key]
-     * @param var $value the value we are looking for
+     * @param mixed $key the key in the array as in $array[$key]
+     * @param mixed $value the value we are looking for
      * @return bool wether or not the value is in the array
      */
     public static function dataSetContains($set, $key, $value)
@@ -713,7 +721,7 @@ class Tools
     /**
      * Same as strip_slashes from php, but if the passed value is an array,
      * all elements of the array are stripped. Recursive function.
-     * @param var &$var the value/array to strip the slashes of
+     * @param $var string|array the value/array to strip the slashes of
      */
     public static function atk_stripslashes(&$var)
     {
@@ -901,7 +909,6 @@ class Tools
     public static function mailreport()
     {
         global $g_error_msg, $g_debug_msg;
-        include_once(Config::getGlobal('atkroot') . 'atk/errors/class.atkerrorhandlerbase.php');
         $errorHandlerObject = ErrorHandlerBase::get('mail', array('mailto' => Config::getGlobal('mailreport')));
         $errorHandlerObject->handle($g_error_msg, $g_debug_msg);
     }
@@ -914,7 +921,6 @@ class Tools
     public static function handleError()
     {
         global $g_error_msg, $g_debug_msg;
-        include_once(Config::getGlobal('atkroot') . 'atk/errors/class.atkerrorhandlerbase.php');
         $errorHandlers = Config::getGlobal('error_handlers',
             array('mail' => array('mailto' => Config::getGlobal('mailreport'))));
         foreach ($errorHandlers as $key => $value) {
@@ -974,9 +980,9 @@ class Tools
      * Adds new element to error array en $record. When
      * $msg is empty the multilange error string is used.
      * @param array &$rec var in which to add element to error array
-     * @param var $attrib attributename or an array with attribute names
+     * @param array|string $attrib attributename or an array with attribute names
      * @param string $err multilanguage error string
-     * @param string $msg optinal error string
+     * @param string $msg optional error string
      */
     public static function triggerError(&$rec, $attrib, $err, $msg = "", $tab = "", $label = '', $module = 'atk')
     {
@@ -997,7 +1003,7 @@ class Tools
      * is given the multi-language error string is used.
      *
      * @param array $record record
-     * @param Attribute|array $attrib attribute or array of attributes
+     * @param Attribute|Attribute[] $attrib attribute or array of attributes
      * @param string $error multi-language error string
      * @param string $message error message (optional)
      */
@@ -1125,7 +1131,6 @@ class Tools
      */
     public static function exportFile($file, $filename, $mimetype = "", $detectmime = true)
     {
-        include_once(Config::getGlobal("atkroot") . "atk/utils/class.atkbrowsertools.php");
         $browser = self::getBrowserInfo();
         if (preg_match("/ie/i", $browser["browser"])) {
             $mime = "application/octetstream";
@@ -1245,7 +1250,7 @@ class Tools
     /**
      * Makes an url from the target var and all postvars
      * @param string $target the path of the file to open
-     * @param string the url with the postvars
+     * @return string the url with the postvars
      */
     public static function makeUrlFromPostvars($target)
     {
@@ -1302,8 +1307,8 @@ class Tools
 
     /**
      * Returns a string representation of an action status.
-     * @param var $status status of the action
-     *                    (ACTION_FAILED|ACTION_SUCCESS|ACTION_CANCELLED)
+     * @param int $status status of the action (ACTION_FAILED|ACTION_SUCCESS|ACTION_CANCELLED)
+     * @return string String representation of an action status.
      */
     public static function atkActionStatus($status)
     {
@@ -1321,6 +1326,8 @@ class Tools
      * Build query string based on an array of parameters.
      *
      * @param array $params array of parameters
+     * @param string $parent
+     * @return string query string
      */
     public static function buildQueryString($params, $parent = "")
     {
@@ -1360,7 +1367,7 @@ class Tools
      */
     public static function dispatch_url($node, $action, $params = array(), $phpfile = '')
     {
-        $c = self::atkinstance("atk.atkcontroller");
+        $c = Controller::getInstance();
         if (!$phpfile) {
             $phpfile = $c->getPhpFile();
         }
@@ -1386,7 +1393,7 @@ class Tools
      */
     public static function getDispatchFile()
     {
-        $c = self::atkinstance("atk.atkcontroller");
+        $c = Controller::getInstance();
         return $c->getPhpFile();
     }
 
@@ -1448,11 +1455,12 @@ class Tools
      * Creates a session aware button
      * @param string $text the self::text to display on the button
      * @param string $url the url to use for the button
-     * @param var $sessionstatus the session flags
+     * @param int $sessionstatus the session flags
      *              (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
      *               SESSION_NESTED|SESSION_BACK)
      * @param string $cssclass the css class the button should get
      * @param bool $embeded wether or not it's an embedded button
+     * @return string html button
      */
     public static function atkButton(
         $text,
@@ -1495,36 +1503,15 @@ class Tools
      */
     public static function atkimport($fullclassname, $failsafe = true, $path = false)
     {
-        return ClassLoader::import($fullclassname, $failsafe, $path);
-    }
-
-    /**
-     * Imports a Zend Framework class.
-     * @param string $classname name of class in zend-format (starting with a Capital)
-     */
-    public static function zendimport($classname)
-    {
-        if (Config::getGlobal("zend_framework_path") == null) {
-            throw new Exception("Zend Framework path not set (" . Config::getGlobal('zend_framework_path') . ")!");
-        }
-
-        $current_path = getcwd();
-        chdir(Config::getGlobal('atkroot') . Config::getGlobal("zend_framework_path") . "/");
-
-        $filename = $classname . '.php';
-
-        if (file_exists($filename)) {
-            require_once $filename;
-        }
-
-        chdir($current_path);
+        die("CALL TO atkimport $fullclassname");
+        //return ClassLoader::import($fullclassname, $failsafe, $path);
     }
 
     /**
      * Clean-up the given path.
      *
      * @param string $path
-     * @return cleaned-up path
+     * @return string cleaned-up path
      *
      * @see http://nl2.php.net/manual/en/function.realpath.php (comment of 21st of September 2005)
      */
@@ -1560,7 +1547,7 @@ class Tools
     /**
      * Returns a new instance of a class
      * @param string $fullclassname the ATK classname of the class ("map1.map2.classname")
-     * @return obj instance of the class
+     * @return Object instance of the class
      */
     public static function atknew($fullclassname)
     {
@@ -1576,7 +1563,7 @@ class Tools
      * This works for all singletons that implement the getInstance() method.
      *
      * @param string $fullclassname the ATK classname of the class ("map1.map2.classname")
-     * @return obj instance of the class
+     * @return Object instance of the class
      * */
     public static function &atkinstance($fullclassname, $reset = false)
     {
@@ -1941,20 +1928,13 @@ class Tools
         return null;
     }
 
-    public static function atkEcho($message)
-    {
-        if (strpos(atkSelf(), "runcron")) {
-            echo $message;
-        }
-    }
-
     /**
      * Format date according to a format string, uses ATK's language files to translate
      * months, weekdays etc.
      *
-     * @param $date    timestamp or date array (gotten with getdate())
-     * @param $format  format string, compatible with PHP's date format functions
-     * @param $weekday always include day-of-week or not
+     * @param $date    mixed  timestamp or date array (gotten with getdate())
+     * @param $format  string format string, compatible with PHP's date format functions
+     * @param $weekday bool always include day-of-week or not
      *
      * @return string formatted date
      */
@@ -1980,7 +1960,6 @@ class Tools
         }
 
         /* get date string */
-        require_once(Config::getGlobal('atkroot') . "atk/utils/adodb-time.inc.php");
         $str_date = adodb_date($format, $date[0]);
 
         $month = $date['month'];

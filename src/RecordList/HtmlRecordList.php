@@ -1,5 +1,8 @@
 <?php namespace Sintattica\Atk\RecordList;
 
+
+use Sintattica\Atk\Core\Node;
+
 /**
  * HTML recordlist renderer.
  *
@@ -22,17 +25,18 @@ class HTMLRecordList extends CustomRecordList
      *                               filename - the name of the file (without extension .csv)
      * @param Boolean $titlerow Should titlerow be rendered or not
      * @param Boolean $decode Should data be decoded or not (for exports)
+     * @return string
      */
     function render(
         &$node,
         $recordset,
         $compression = "",
-        $suppressList = "",
+        $suppressList = array(),
         $outputparams = array(),
         $titlerow = true,
         $decode = false
     ) {
-        parent::render($node, $recordset, "<tr>", "<td>", "</td>", "<tr>\n", "0", $compression, $suppressList,
+        return parent::render($node, $recordset, "<tr>", "<td>", "</td>", "<tr>\n", "0", $compression, $suppressList,
             $outputparams, "list", $titlerow, $decode, "", "<br>");
     }
 

@@ -1,5 +1,12 @@
 <?php namespace Sintattica\Atk\RecordList;
 
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Ui\Theme;
+use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Utils\DirectoryTraverser;
+
 
 /**
  * RecordlistCaching class
@@ -154,7 +161,8 @@ class RecordListCache
                 fwrite($fp, $output);
                 fclose($fp);
             } else {
-                return Tools::atkerror("Couldn't open {$this->m_cacheid} for writing!");
+                Tools::atkerror("Couldn't open {$this->m_cacheid} for writing!");
+                return;
             }
 
             $fp = &fopen($this->m_cacheid . "_actionloader", "a+");
@@ -166,7 +174,6 @@ class RecordListCache
             }
             Tools::atkdebug("New cache created for {$this->m_node->m_module}.{$this->m_node->m_type} and written to: $this->m_cacheid");
         }
-        return;
     }
 
     /**

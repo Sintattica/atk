@@ -16,9 +16,6 @@ define("AF_DATE_DEFAULT_EMPTY", AF_SPECIFIC_7 | AF_DATE_EMPTYFIELD); // Always u
 
 // Include adodb workarounds for <1970 dates on windows.
 $config_atkroot = Config::getGlobal("atkroot");
-require_once($config_atkroot . "atk/utils/adodb-time.inc.php");
-// Include browsertools for PDA detection
-include_once($config_atkroot . "atk/utils/class.atkbrowsertools.php");
 
 /**
  * The atkDateAttribute class offers a date widget for date fields.

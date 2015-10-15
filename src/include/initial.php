@@ -1,35 +1,23 @@
 <?php
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage include
- *
- * @copyright (c)2005 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6301 $
- * $Id$
- */
+
 /** @internal includes */
-require_once($GLOBALS['config_atkroot'] . 'atk/include/basics.php');
-require_once($GLOBALS['config_atkroot'] . 'atk/include/compatibility.php');
+
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Module;
+
+require_once(__DIR__.'/adodb-time.php');
+
+require_once(__DIR__ . '/basics.php');
+require_once(__DIR__ . '/compatibility.php');
 if (Config::getGlobal('autoload_classes', true)) {
-    require_once($GLOBALS['config_atkroot'] . 'atk/include/autoload.php');
+    require_once(__DIR__ . '/autoload.php');
 }
 if (Config::getGlobal('use_atkerrorhandler', true)) {
-    require_once($GLOBALS['config_atkroot'] . 'atk/include/errorhandler.php');
+    require_once(__DIR__ . '/errorhandler.php');
 }
-require_once($GLOBALS['config_atkroot'] . 'atk/ui/class.atkoutput.php');
-require_once($GLOBALS['config_atkroot'] . 'atk/session/class.atksessionmanager.php');
-require_once($GLOBALS['config_atkroot'] . "atk/utils/class.atkstring.php");
-require_once($GLOBALS['config_atkroot'] . 'atk/include/security.php');
-require_once($GLOBALS['config_atkroot'] . 'atk/include/debugging.php');
-if (Config::getGlobal('lock_type') !== "") {
-    require_once($GLOBALS['config_atkroot'] . 'atk/lock/class.atklock.php');
-}
+
+require_once(__DIR__ . '/security.php');
+require_once(__DIR__ . '/debugging.php');
+
 Module::atkPreloadModules();
 

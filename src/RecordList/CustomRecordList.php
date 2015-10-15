@@ -1,19 +1,9 @@
 <?php namespace Sintattica\Atk\RecordList;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage recordlist
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6323 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Attributes\Attribute;
+use Sintattica\Atk\Utils\FileExport;
 
 /**
  * Custom recordlist renderer.
@@ -47,6 +37,7 @@ class CustomRecordList extends RecordList
      * @param Boolean $decode Should data be decoded or not (for exports)
      * @param String $fsep String to use between fields
      * @param String $rfeplace String for replacing line feeds in recordset field values (null = do not replace)
+     * @return String
      */
     function render(
         &$node,
@@ -77,11 +68,11 @@ class CustomRecordList extends RecordList
         // stuff for the totals row..
         $totalisable = false;
         $totals = array();
+        $output = "";
         if ($type == "0") {
             $empty = "&nbsp;";
         }
         if ($type == "1") {
-            $output = "";
             $empty = "";
         }
 
@@ -196,7 +187,7 @@ class CustomRecordList extends RecordList
 
         if ($this->m_exportcsv) {
             $ext = ($type == "0" ? "html" : "csv");
-            $exporter = Tools::atknew("atk.utils.atkfileexport");
+            $exporter = new FileExport();
             $exporter->export($output, $outputparams["filename"], $ext, $ext, $compression);
         } else {
             return $output;

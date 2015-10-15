@@ -1,5 +1,8 @@
 <?php namespace Sintattica\Atk\RecordList;
 
+use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Core\Tools;
+
 /**
  * The atkTotalizer is a utility class to handle totals and subtotals
  * in recordlists.
@@ -18,7 +21,7 @@ class Totalizer
      *
      * @param Node $node
      * @param ColumnConfig $columnConfig
-     * @return atkTotalizer
+     * @return Totalizer
      */
     function __construct(&$node, &$columnConfig)
     {
