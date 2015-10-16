@@ -74,7 +74,7 @@ class Config
      */
     static public function getApplicationConfig($path)
     {
-        require_once $path . 'config.inc.php';
+        require_once $path . 'config.php';
         return get_defined_vars();
     }
 
@@ -83,14 +83,11 @@ class Config
      *
      * @param string $name configuration variable name (without the config_ prefix)
      * @param mixed $default default (fallback) value
+     * @return mixed config value
      */
     public static function getGlobal($name, $default = null)
     {
         $fullName = 'config_' . $name;
-        if (function_exists($fullName)) {
-            return $fullName();
-        }
-
         return isset($GLOBALS[$fullName]) ? $GLOBALS[$fullName] : $default;
     }
 
