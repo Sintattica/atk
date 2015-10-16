@@ -1,4 +1,4 @@
-<?php namespace Sintattica\Atk\Security;
+<?php namespace Sintattica\Atk\Security\Auth;
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Attributes\Attribute;
@@ -33,7 +33,7 @@ define("PASSWORD_STATIC", 0);
  * @subpackage security
  * @abstract
  */
-class auth_interface
+class AuthInterface
 {
     /**
      * If authentication fails due to an error, instead of a wrong

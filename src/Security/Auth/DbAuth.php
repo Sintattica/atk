@@ -1,4 +1,4 @@
-<?php namespace Sintattica\Atk\Security;
+<?php namespace Sintattica\Atk\Security\Auth;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
@@ -13,7 +13,7 @@ use Sintattica\Atk\Core\Module;
  * @subpackage security
  *
  */
-class auth_db extends auth_interface
+class DbAuth extends AuthInterface
 {
     var $m_rightscache = array();
 

@@ -1,5 +1,7 @@
-<?php namespace Sintattica\Atk\Security\Db;
+<?php namespace Sintattica\Atk\Security;
 
+
+use Sintattica\Atk\Core\Tools;
 
 /**
  * A blacklist checker that blacklists certain SQL parts,
@@ -60,7 +62,7 @@ class SqlWhereclauseBlacklistChecker
      * blacklisted SQL.
      * Exception for when we're in 'quote' mode (entering a string).
      *
-     * @return unknown
+     * @return bool
      */
     public function isSafe()
     {

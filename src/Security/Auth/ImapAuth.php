@@ -1,30 +1,19 @@
-<?php namespace Sintattica\Atk\Security;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage security
- *
- * @copyright (c)2000-2004 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6280 $
- * $Id$
- */
+<?php namespace Sintattica\Atk\Security\Auth;
+
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
 
 /**
- * Dummy driver for non-authentication. When using 'none' as authentication
- * method, any loginname and any password will be accepted.
+ * Driver for authentication using an imap server.
  *
- * @author Ivo Jansch <ivo@achievo.org>
+ * Does not support authorization.
+ *
+ * @author Sandy Pleyte <sandy@ibuildings.nl>
  * @package atk
  * @subpackage security
  *
  */
-class auth_none extends auth_interface
+class ImapAuth extends AuthInterface
 {
 
     /**
@@ -49,15 +38,34 @@ class auth_none extends auth_interface
     function validateUser($user, $passwd)
     {
         if ($user == "") {
-            return AUTH_SUCCESS;
-        } else {
+            return AUTH_UNVERIFIED;
+        } // can't verify if we have no userid
+
+
+// if it's a virtual mail server add @<domain> to the username
+        if (Config::getGlobal("auth_mail_login_type") == "vmailmgr") {
+            $user = $user . "@" . Config::getGlobal("auth_mail_suffix");
+        }
+
+        if (Config::getGlobal("auth_mail_server") == "") {
+            $this->m_fatalError = Tools::atktext("auth_no_server");
+            return AUTH_ERROR;
+        }
+
+        $mailauth = @imap_open("{" . Config::getGlobal("auth_mail_server")
+            . ":" . Config::getGlobal("auth_mail_port") . "}", $user, $passwd);
+        // TODO/FIXME: return AUTH_ERROR when connection fails..
+        if ($mailauth == 0) {
             return AUTH_MISMATCH;
+        } else {
+            imap_close($mailauth);
+            return AUTH_SUCCESS;
         }
     }
 
     /**
-     * This authentication method does not support md5 storage of passwords
-     * since this method is not using passwords
+     * Does this authentication method support md5 encoding of passwords?
+     * Imap authentication cannot support md5 encoding of passwords
      *
      * @return boolean false
      */

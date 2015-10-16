@@ -1,4 +1,4 @@
-<?php namespace Sintattica\Atk\Security;
+<?php namespace Sintattica\Atk\Security\Auth;
 
 use Sintattica\Atk\Core\Config;
 
@@ -16,7 +16,7 @@ use Sintattica\Atk\Core\Config;
  * @subpackage security
  *
  */
-class auth_config extends auth_interface
+class ConfigAuth extends AuthInterface
 {
 
     /**
