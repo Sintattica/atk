@@ -1,5 +1,7 @@
 <?php namespace Sintattica\Atk\Core;
 
+use Sintattica\Atk\Security\Session\SessionManager;
+
 /**
  * Config class for loading config files and retrieving config options.
  * Also contains misc. methods for use in config files.
@@ -16,7 +18,7 @@ class Config
     public static function loadGlobals()
     {
         $overrides = array();
-        global $config_atkroot, $config_application_dir;
+        global $config_application_dir;
 
         // Put all "config_" globals as variables in the function scope
         foreach ($GLOBALS as $key => $value) {
@@ -32,7 +34,7 @@ class Config
         }
 
         // Include the defaults
-        require_once $config_atkroot . "atk/defaultconfig.inc.php";
+        require_once "defaultconfig.inc.php";
 
         // Get the application config, this is leading and will override all previously defined configuration values.
         $applicationConfig = self::getApplicationConfig($config_application_dir);
@@ -67,7 +69,7 @@ class Config
      * Get the application configuration.
      *
      * @static
-     * @param  $path The path to 'config.inc.php in the application directory
+     * @param  string $path The path to 'config.inc.php in the application directory
      * @return array
      */
     static public function getApplicationConfig($path)
@@ -230,9 +232,9 @@ class Config
      *
      * @param int $default The default debug level
      * @param array $options
-     * @static
+     * @return int
      */
-    function smartDebugLevel($default, $options = array())
+    static public function smartDebugLevel($default, $options = array())
     {
         $session = SessionManager::getSession();
 
