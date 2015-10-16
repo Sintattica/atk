@@ -3,7 +3,7 @@
 
 use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Core\Node;
-use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Utils\StringParser;

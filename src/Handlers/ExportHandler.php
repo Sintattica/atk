@@ -4,7 +4,7 @@ use Sintattica\Atk\RecordList\CustomRecordList;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Security\SecurityManager;
-use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Handler for the 'import' action of a node. The import action is a

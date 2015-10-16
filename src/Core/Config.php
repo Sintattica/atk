@@ -1,6 +1,6 @@
 <?php namespace Sintattica\Atk\Core;
 
-use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Config class for loading config files and retrieving config options.
@@ -18,7 +18,7 @@ class Config
     public static function loadGlobals()
     {
         $overrides = array();
-        global $config_application_dir;
+
 
         // Put all "config_" globals as variables in the function scope
         foreach ($GLOBALS as $key => $value) {
@@ -37,7 +37,7 @@ class Config
         require_once "defaultconfig.inc.php";
 
         // Get the application config, this is leading and will override all previously defined configuration values.
-        $applicationConfig = self::getApplicationConfig($config_application_dir);
+        $applicationConfig = self::getApplicationConfig();
 
         // Merge everything we got, including variables defined in our application config and configuration defined
         // prior to constructing atkConfig
@@ -72,9 +72,10 @@ class Config
      * @param  string $path The path to 'config.inc.php in the application directory
      * @return array
      */
-    static public function getApplicationConfig($path)
+    static public function getApplicationConfig()
     {
-        require_once $path . 'config.php';
+        global $config_application_config;
+        require_once $config_application_config;
         return get_defined_vars();
     }
 

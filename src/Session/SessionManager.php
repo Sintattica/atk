@@ -1,4 +1,4 @@
-<?php namespace Sintattica\Atk\Security\Session;
+<?php namespace Sintattica\Atk\Session;
 
 
 use Sintattica\Atk\Core\Tools;

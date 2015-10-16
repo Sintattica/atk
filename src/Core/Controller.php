@@ -2,7 +2,7 @@
 
 
 use Sintattica\Atk\Security\SecurityManager;
-use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Ui;

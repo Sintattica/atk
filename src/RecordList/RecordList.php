@@ -6,7 +6,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Ui\Page;
-use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Keyboard\Keyboard;
 use Sintattica\Atk\Utils\StringParser;
 

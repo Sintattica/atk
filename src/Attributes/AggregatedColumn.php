@@ -4,7 +4,7 @@
 use Sintattica\Atk\Utils\StringParser as StringParser;
 use Sintattica\Atk\Core\Tools as Tools;
 use Sintattica\Atk\Db\Query;
-use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * The AggregatedColumn aggregates multiple attributes to one colunm in

@@ -3,7 +3,7 @@
 
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Ui\Output;
-use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Errors\ErrorHandlerBase;
 use Sintattica\Atk\Utils\Debugger;
 use Sintattica\Atk\Attributes\Attribute;

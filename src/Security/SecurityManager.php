@@ -4,7 +4,7 @@ use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Module;
-use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Output;
 use Sintattica\Atk\Ui\Ui;
 

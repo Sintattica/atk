@@ -12,7 +12,10 @@
  */
 $config_application_root = "/";
 
-if ($config_atkroot == "" || (ini_get('register_globals') && isset($_REQUEST['config_atkroot']))) { // may not be passed in request (register_globals danger)
+
+$config_application_config = "";
+
+if ($config_atkroot == "" || (ini_get('register_globals'))) { // may not be passed in request (register_globals danger)
     /**
      * The root of the ATK application, where the atk/ directory resides
      * @var String The root
@@ -20,7 +23,7 @@ if ($config_atkroot == "" || (ini_get('register_globals') && isset($_REQUEST['co
     $config_atkroot = "./";
 }
 
-if (!isset($config_application_dir) || empty($config_application_dir) || (ini_get('register_globals') && isset($_REQUEST['config_application_dir']))) {
+if (!isset($config_application_dir) || empty($config_application_dir) || (ini_get('register_globals'))) {
     /**
      * Root directory of your application code (modules/themes/configuration files/etc)
      * relative to the script calling ATK.
@@ -59,24 +62,6 @@ $config_configdir = $config_application_dir . "configs/";
 $config_use_atkerrorhandler = true;
 
 /**
- * Use the given meta policy as the default meta policy.
- * @var String
- */
-$config_meta_policy = "atk.meta.atkmetapolicy";
-
-/**
- * Use the given meta grammar as the default meta grammar.
- * @var String
- */
-$config_meta_grammar = "atk.meta.grammar.atkmetagrammar";
-
-/**
- * Use the given meta compiler as the default meta compiler.
- * @var String
- */
-$config_meta_compiler = "atk.meta.compiler.atkmetacompiler";
-
-/**
  * Cache table meta data and compiled meta node code.
  *
  * On development environments this option should be set to false, but
@@ -91,7 +76,7 @@ $config_meta_caching = true;
 /**
  * Use the given class for creating datagrids.
  */
-$config_datagrid_class = "atk.datagrid.atkdatagrid";
+$config_datagrid_class = "\\Sintattica\\Atk\\DataGrid\\DataGrid";
 
 
 /**
@@ -140,15 +125,13 @@ $config_databasepersistent = true;
  * The databasetype.
  *
  * Currently supported are:
- *   mysql:   MySQL (3.X ?)
- *   mysqli:  MySQL > 4.1.3
- *   oci8:    Oracle 8i
- *   oci9:    Oracle 9i and 10g
- *   pgsql:   PostgreSQL
- *   mssql:   Microsoft SQL Server
+ *   MySql:   MySQL (3.X ?)
+ *   MySqli:  MySQL > 4.1.3
+ *   PgSql:   PostgreSQL
+ *   MsSql:   Microsoft SQL Server
  * @var String
  */
-$config_db["default"]["driver"] = "mysqli";
+$config_db["default"]["driver"] = "MySqli";
 
 /**
  * Test database mapping. Maps normal databases to their test database.

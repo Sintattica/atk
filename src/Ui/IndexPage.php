@@ -2,7 +2,7 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Security\SecurityManager;
-use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Menu\Menu;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Module;

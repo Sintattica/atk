@@ -3,7 +3,7 @@
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Attributes\FieldSet;
 use Sintattica\Atk\Handlers\ActionHandler;
-use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Lock\Lock;
@@ -13,7 +13,7 @@ use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Utils\Selector;
 use Sintattica\Atk\Security\SecurityManager;
-use Sintattica\Atk\Security\Session\State;
+use Sintattica\Atk\Session\State;
 use Sintattica\Atk\Utils\ActionListener;
 use Sintattica\Atk\RecordList\ColumnConfig;
 use Sintattica\Atk\Relations\ManyToOneRelation;

@@ -2,7 +2,7 @@
 
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Ui\Dialog;
 use Sintattica\Atk\Core\Controller;

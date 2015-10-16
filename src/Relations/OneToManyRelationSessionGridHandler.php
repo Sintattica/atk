@@ -1,7 +1,7 @@
 <?php namespace Sintattica\Atk\Relations;
 
 
-use Sintattica\Atk\Security\Session\SessionStore;
+use Sintattica\Atk\Session\SessionStore;
 use Sintattica\Atk\DataGrid\DataGrid;
 
 /**

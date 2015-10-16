@@ -1,6 +1,6 @@
 <?php namespace Sintattica\Atk\Core;
 
-use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Session\SessionManager;
 
 
 /**
