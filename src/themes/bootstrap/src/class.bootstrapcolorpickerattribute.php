@@ -2,7 +2,6 @@
 
 
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Core\Config;
 
 class bootstrapColorPickerAttribute extends Attribute
@@ -12,7 +11,6 @@ class bootstrapColorPickerAttribute extends Attribute
     /*
      * remember to import in your node:
      *
-     * Tools::atkimport("atk.themes.bootstrap.src.bootstrapcolorpickerattribute");
      *
      *
      * $colorPickerOptions: see http://mjolnic.com/bootstrap-colorpicker/
@@ -33,7 +31,6 @@ class bootstrapColorPickerAttribute extends Attribute
         $htmlId = $this->getHtmlId($fieldprefix) . '_group';
 
         $page = Tools::atkinstance('atk.ui.atkpage');
-        $theme = Theme::getInstance();
         $base = Config::getGlobal('atkroot') . 'atk/themes/bootstrap/lib/bootstrap-colorpicker/dist/';
 
         $page->register_script($base . 'js/bootstrap-colorpicker.min.js');
