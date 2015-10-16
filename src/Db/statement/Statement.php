@@ -1,6 +1,8 @@
 <?php namespace Sintattica\Atk\Db\Statement;
 
+use \IteratorAggregate;
 use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * A statement can be used to execute a query.
@@ -66,6 +68,12 @@ abstract class Statement implements IteratorAggregate
      * @var array
      */
     private $m_latestParams = array();
+
+
+    /**
+     * @var int $m_affectedRowCount
+     */
+    private $m_affectedRowCount = 0;
 
     /**
      * Constructs a new statement for the given query.
@@ -187,7 +195,7 @@ abstract class Statement implements IteratorAggregate
 
     /**
      * Returns the number of affected rows in case of an INSERT, UPDATE
-     * or DELETE query. Called immediatly after Statement::_execute().
+     * or DELETE query. Called immediately after Statement::_execute().
      */
     protected abstract function _getAffectedRowCount();
 
@@ -239,6 +247,7 @@ abstract class Statement implements IteratorAggregate
      * Validates if all bind parameters are supplied.
      *
      * @param array $params bind parameters
+     * @throws StatementException on Missing bind parameter
      */
     protected function _validateParams($params)
     {
@@ -267,6 +276,7 @@ abstract class Statement implements IteratorAggregate
     /**
      * Fetches the next row from the result set.
      *
+     * @throws StatementException
      * @return mixed next row or false if there are no more rows
      */
     public function fetch()

@@ -1,5 +1,7 @@
 <?php namespace Sintattica\Atk\Db\Statement;
 
+use \Iterator;
+
 /**
  * External iterator for a statement.
  */

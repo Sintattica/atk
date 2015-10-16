@@ -337,7 +337,7 @@ class Db
 
     /**
      * Get the current connection.
-     * @return Connection resource id
+     * @return Object Connection resource id
      */
     function link_id()
     {

@@ -1,6 +1,8 @@
 <?php namespace Sintattica\Atk\Db\Statement;
 
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Utils\Debugger;
 
 /**
  * MySQLi statement implementation.
@@ -15,7 +17,7 @@ class MySQLiStatement extends Statement
     /**
      * MySQLi statement.
      *
-     * @var MySQLi_Statement
+     * @var MySQLiStatement
      */
     private $m_stmt;
 

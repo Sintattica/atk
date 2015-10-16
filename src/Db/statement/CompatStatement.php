@@ -66,6 +66,7 @@ class CompatStatement extends Statement
      * Executes the statement using the given bind parameters.
      *
      * @param array $params bind parameters
+     * @throws StatementException
      */
     protected function _execute($params)
     {
@@ -143,7 +144,7 @@ class CompatStatement extends Statement
 
     /**
      * Returns the number of affected rows in case of an INSERT, UPDATE
-     * or DELETE query. Called immediatly after Statement::_execute().
+     * or DELETE query. Called immediately after Statement::_execute().
      */
     protected function _getAffectedRowCount()
     {

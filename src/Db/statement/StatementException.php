@@ -18,7 +18,8 @@ class StatementException extends \Exception
     const OTHER_ERROR = 6;
 
     /**
-     * Constructor.
+     * @param string $message
+     * @param int $code
      */
     public function __construct($message, $code)
     {
