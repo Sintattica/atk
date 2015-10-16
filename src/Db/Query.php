@@ -899,7 +899,7 @@ class Query
      * quote all the identifiers (db, table, column, etc...) in the field.
      *
      * @param String $field The field to add quotes too
-     * @return The quoted field, if we have a fieldquote
+     * @return string The quoted field, if we have a fieldquote
      */
     function quoteField($field)
     {

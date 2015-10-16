@@ -57,7 +57,7 @@ class Ddl
      * @param String $database The database driver to use
      * @return Ddl instance of db specific DDL driver
      */
-    function &create($database = null)
+    public static function &create($database = null)
     {
         $db = Config::getGlobal("db");
         $database = $database === null ? $db["default"]["driver"] : $database;

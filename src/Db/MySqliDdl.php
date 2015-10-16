@@ -20,6 +20,7 @@ class MySqliDdl extends MySqlDdl
      * Convert an database specific type to an ATK generic datatype.
      *
      * @param string $type The database specific datatype to convert.
+     * @return string
      */
     function getGenericType($type)
     {

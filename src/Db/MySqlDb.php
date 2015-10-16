@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Utils\Debugger;
 
 
 /**
@@ -259,7 +260,7 @@ class MySqlDb extends Db
 
     /**
      * Goto the next record in the result set
-     * @return result of going to the next record
+     * @return bool result of going to the next record
      */
     function next_record()
     {
@@ -300,7 +301,7 @@ class MySqlDb extends Db
      * Lock a certain table in the database
      * @param string $table the table name
      * @param string $mode the type of locking
-     * @return result of locking
+     * @return bool result of locking
      */
     function lock($table, $mode = "write")
     {
@@ -326,7 +327,7 @@ class MySqlDb extends Db
 
     /**
      * Unlock table(s) in the database
-     * @return result of unlocking
+     * @return bool result of unlocking
      */
     function unlock()
     {
@@ -347,7 +348,7 @@ class MySqlDb extends Db
     /**
      * Evaluate the result; which rows were
      * affected by the query.
-     * @return affected rows
+     * @return int affected rows
      */
     function affected_rows()
     {
@@ -365,20 +366,20 @@ class MySqlDb extends Db
     }
 
     /**
-     * Evaluatie the result; how many fields
+     * Evaluate the result; how many fields
      * where affected by the query.
-     * @return number of affected fields
+     * @return int number of affected fields
      */
     function num_fields()
     {
-        return @mysql_num_fields($this->m_query_idD);
+        return @mysql_num_fields($this->m_query_id);
     }
 
     /**
      * Get the next sequence number
      * of a certain sequence.
      * @param string $sequence the sequence name
-     * @return the next sequence id
+     * @return int the next sequence id
      */
     function nextid($sequence)
     {

@@ -192,14 +192,14 @@ class Db
     /**
      * The connection is stored in this variable.
      * @access private
-     * @var Resource
+     * @var mixed
      */
     var $m_link_id = 0;
 
     /**
      * The query statement is stored in this variable.
      * @access private
-     * @var Resource
+     * @var mixed
      */
     var $m_query_id = 0;
 
@@ -232,7 +232,7 @@ class Db
     /**
      * Indentifier Quoting
      *
-     * @var unknown_type
+     * @var array
      */
     protected $m_identifierQuoting = array('start' => '"', 'end' => '"', 'escape' => '"');
 
@@ -1436,6 +1436,17 @@ class Db
         $str = str_replace($this->m_identifierQuoting['end'],
             $this->m_identifierQuoting['escape'] . $this->m_identifierQuoting['end'], $str);
         return $this->m_identifierQuoting['start'] . $str . $this->m_identifierQuoting['end'];
+    }
+
+
+    /**
+     * Returns the last inserted auto increment value.
+     *
+     * @return int auto increment value of latest insert query
+     */
+    public function getInsertId()
+    {
+        return null;
     }
 
 }
