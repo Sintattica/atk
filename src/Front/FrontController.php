@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Ui\SmartyProvider;
 use \Exception;
 
 

@@ -7,6 +7,8 @@ use Sintattica\Atk\Menu\Menu;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Core\Controller;
+use Sintattica\Atk\Ui\Theme;
+use Sintattica\Atk\Ui\Output;
 
 /**
  * Class that generates an index page.
@@ -66,8 +68,8 @@ class IndexPage
         global $ATK_VARS;
         $this->m_page = Page::getInstance();
         $this->m_ui = Ui::getInstance();
-        $this->m_theme = Tools::atkinstance('atk.ui.atktheme');
-        $this->m_output = Tools::atkinstance('atk.ui.atkoutput');
+        $this->m_theme = Theme::getInstance();
+        $this->m_output =Output::getInstance();
         $this->m_user = SecurityManager::atkGetUser();
         $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL
             : HTML_STRICT;

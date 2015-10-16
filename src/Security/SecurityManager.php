@@ -7,6 +7,7 @@ use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Output;
 use Sintattica\Atk\Ui\Ui;
+use Sintattica\Atk\Utils\Debugger;
 
 
 /**
@@ -96,7 +97,7 @@ class SecurityManager
     {
         // assume that when a type includes a dot, the fullclassname is used.
         if (!stristr($type, ".")) {
-            $cls = "atk.security.auth_$type";
+            $cls = "Sintattica\\Atk\\Security\\Auth\\".ucfirst($type)."Auth";
         } else {
             $cls = $type;
         }
@@ -105,8 +106,8 @@ class SecurityManager
 
     /**
      * returns an array of authentication types
-     * authentication_type is a comma delimeted string with
-     * native atk auth types like 'db' or 'none' or it can be a
+     * authentication_type is a comma delimited string with
+     * native atk auth types like 'Db' or 'None' or it can be a
      * full classname like module.mymodule.myauthtype
      *
      * @param string $authentication_type
@@ -454,7 +455,7 @@ class SecurityManager
                 $location .= 'login=' . $auth_user . '&error=' . $response;
 
                 if (Config::getGlobal("debug") >= 2) {
-                    $debugger = Tools::atkinstance('atk.utils.atkdebugger');
+                    $debugger = Debugger::getInstance();
                     $debugger->setRedirectUrl($location);
                     Tools::atkdebug('Non-debug version would have redirected to <a href="' . $location . '">' . $location . '</a>');
                     $output = Output::getInstance();

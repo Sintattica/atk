@@ -2,6 +2,8 @@
 
 use Sintattica\Atk\Menu\PlainMenu;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Ui\Theme;
+use Sintattica\Atk\Ui\Page;
 
 /**
  * Implementation of the Bootstrap menu.
@@ -47,10 +49,8 @@ class BootstrapMenu extends PlainMenu
      */
     function render()
     {
-        /** @var Page $page */
         $page = Page::getInstance();
-        /** @var Theme $theme */
-        $theme = Tools::atkinstance('atk.ui.atktheme');
+        $theme = Theme::getInstance();
         $page->register_style($theme->absPath("atk/themes/bootstrap/lib/bootstrap-submenu/css/bootstrap-submenu.min.css"));
         $menu = $this->load();
         $page->addContent($menu);
@@ -75,10 +75,8 @@ class BootstrapMenu extends PlainMenu
     function load()
     {
         global $g_menu;
-        /** @var Page $page */
         $page = Page::getInstance();
-        /** @var Theme $theme */
-        $theme = Tools::atkinstance('atk.ui.atktheme');
+        $theme = Theme::getInstance();
         $page->register_style($theme->absPath("atk/themes/bootstrap/lib/bootstrap-submenu/css/bootstrap-submenu.min.css"));
         $page->register_script($theme->absPath("atk/themes/bootstrap/lib/bootstrap-submenu/js/bootstrap-submenu.min.js"));
         $page->register_script($theme->absPath("atk/themes/bootstrap/js/menu.js"));

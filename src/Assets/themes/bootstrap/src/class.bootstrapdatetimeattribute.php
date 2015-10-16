@@ -4,6 +4,7 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Ui\Page;
 
 class bootstrapDateTimeAttribute extends Attribute
 {
@@ -157,7 +158,7 @@ class bootstrapDateTimeAttribute extends Attribute
         }
         $js .= "});";
 
-        $page = Tools::atkinstance('atk.ui.atkpage');
+        $page = Page::getInstance();
         $srcPath = Config::getGlobal('atkroot') . 'atk/themes/bootstrap/lib/bootstrap-datetimepicker/build/';
         $page->register_script($srcPath . 'js/bootstrap-datetimepicker.min.js');
         $page->register_style($srcPath . 'css/bootstrap-datetimepicker.min.css');

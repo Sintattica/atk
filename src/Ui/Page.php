@@ -2,6 +2,8 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Ui\Ui;
+use Sintattica\Atk\Ui\Theme;
 
 /**
  * Rendering flags.
@@ -610,8 +612,8 @@ class Page
             $title = $this->m_title;
         }
 
-        $ui = Tools::atkinstance('atk.ui.atkui');
-        $theme = Tools::atkinstance('atk.ui.atktheme');
+        $ui = Ui::getInstance();
+        $theme = Theme::getInstance();
 
         if (is_bool($flags) && $flags == true) {
             $flags = HTML_STRICT;

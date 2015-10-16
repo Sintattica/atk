@@ -2,6 +2,10 @@
 
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Ui\Ui;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Ui\Theme;
 
 /**
  * This class implements the ATK debug console for analysing queries
@@ -534,7 +538,7 @@ class Debugger
             ATK.Debug.addContent(' . JSON::encode($block) . ');
            </script>';
         } else {
-            $ui = Tools::atkinstance('atk.ui.atkui');
+            $ui = Ui::getInstance();
             $stylesheet = $ui->stylePath('atkdebug.css');
             $script = Config::getGlobal('atkroot') . 'atk/javascript/class.atkdebug.js';
 

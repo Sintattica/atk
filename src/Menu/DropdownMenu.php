@@ -49,7 +49,7 @@ class DropdownMenu extends PlainMenu
     {
         global $ATK_VARS, $g_menu;
 
-        $page = Tools::atkinstance('atk.ui.atkpage');
+        $page = Page::getInstance();
         $theme = Theme::getInstance();
         $page->register_script(Config::getGlobal('atkroot') . 'atk/javascript/dropdown_menu.js');
         $page->register_style($theme->stylePath("atkdropdownmenu.css"));

@@ -4,6 +4,8 @@
 /**
  * Only allow deletion of master item when there are no child records
  */
+use Sintattica\Atk\Ui\Page;
+
 define("AF_RESTRICTED_DELETE", AF_SPECIFIC_1);
 
 /**
@@ -407,7 +409,7 @@ class OneToManyRelation extends Relation
      */
     public function edit($record = "", $fieldprefix = "", $mode = '')
     {
-        $page = Tools::atkinstance('atk.ui.atkpage');
+        $page = Page::getInstance();
         $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/tools.js");
         $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/class.atkonetomanyrelation.js");
 

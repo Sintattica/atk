@@ -1,19 +1,16 @@
 <?php
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage ui
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6309 $
- * $Id$
- */
+
+use Sintattica\Atk\Ui\Theme;
+use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Ui\Output;
+use Sintattica\Atk\Ui\Ui;
+use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Menu\Menu;
+use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Controller;
 
 /**
  * Class that generates a bootstrap index page.
@@ -65,15 +62,15 @@ class BootstrapIndexPage
     /**
      * Constructor
      *
-     * @return IndexPage
+     * @return BootstrapIndexPage
      */
     function __construct()
     {
         global $ATK_VARS;
         $this->m_page = Page::getInstance();
         $this->m_ui = Ui::getInstance();
-        $this->m_theme = Tools::atkinstance('atk.ui.atktheme');
-        $this->m_output = Tools::atkinstance('atk.ui.atkoutput');
+        $this->m_theme = Theme::getInstance();
+        $this->m_output = Output::getInstance();
         $this->m_user = SecurityManager::atkGetUser();
         $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL
             : HTML_STRICT;
@@ -82,8 +79,6 @@ class BootstrapIndexPage
 
         // Bootstrap
         $this->m_page->register_script(Config::getGlobal("atkroot") . "atk/themes/bootstrap/lib/bootstrap/js/bootstrap.js");
-
-
     }
 
     /**
@@ -238,7 +233,7 @@ class BootstrapIndexPage
     function atkGenerateDispatcher()
     {
         global $ATK_VARS;
-        $session = &SessionManager::getSession();
+        $session = SessionManager::getSession();
 
 
         if ($session["login"] != 1) {
@@ -269,7 +264,7 @@ class BootstrapIndexPage
                 $obj = Module::atkGetNode($ATK_VARS['atknodetype']);
 
                 if (is_object($obj)) {
-                    $controller = &Controller::getInstance();
+                    $controller = Controller::getInstance();
                     $controller->invoke("loadDispatchPage", $ATK_VARS);
                 } else {
                     Tools::atkdebug("No object created!!?!");

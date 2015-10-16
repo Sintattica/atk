@@ -18,6 +18,7 @@ use Sintattica\Atk\Utils\ActionListener;
 use Sintattica\Atk\RecordList\ColumnConfig;
 use Sintattica\Atk\Relations\ManyToOneRelation;
 use Sintattica\Atk\Utils\StringParser;
+use Sintattica\Atk\Utils\Debugger;
 use \Exception;
 
 /**
@@ -2821,7 +2822,7 @@ class Node
 
         $lockType = Config::getGlobal("lock_type");
         if (!empty($lockType) && $this->hasFlag(NF_LOCK)) {
-            $this->m_lock = Tools::atkinstance("atk.lock.atklock");
+            $this->m_lock = Lock::getInstance();
         } else {
             $this->removeFlag(NF_LOCK);
         }
@@ -3050,7 +3051,7 @@ class Node
 
         // The actual redirect.
         if (Config::getGlobal("debug") >= 2) {
-            $debugger = Tools::atkinstance('atk.utils.atkdebugger');
+            $debugger = Debugger::getInstance();
             $debugger->setRedirectUrl($location);
             Tools::atkdebug('Non-debug version would have redirected to <a href="' . $location . '">' . $location . '</a>');
             if ($exit) {

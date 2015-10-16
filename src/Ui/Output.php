@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Utils\Debugger;
 
 /**
  * Outputbuffering class.
@@ -140,7 +141,7 @@ class Output
                 Tools::mailreport();
             }
 
-            $debugger = Tools::atkinstance('atk.utils.atkdebugger');
+            $debugger = Debugger::getInstance();
             $res .= $debugger->renderDebugAndErrorMessages();
         }
 

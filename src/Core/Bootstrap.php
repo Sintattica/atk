@@ -2,7 +2,7 @@
 
 
 use Sintattica\Atk\Security\SqlWhereclauseBlacklistChecker;
-
+use Sintattica\Atk\Core\Tools;
 
 class Bootstrap
 {
@@ -92,9 +92,9 @@ class Bootstrap
     private static function setErrorHandler()
     {
         if (Config::getGlobal('use_atkerrorhandler', true)) {
-            set_error_handler('Tools::atkErrorHandler');
+            set_error_handler('Sintattica\Atk\Core\Tools::atkErrorHandler');
             error_reporting(E_ALL);
-            set_exception_handler('Tools::atkExceptionHandler');
+            set_exception_handler('Sintattica\Atk\Core\Tools::atkExceptionHandler');
         }
     }
 
