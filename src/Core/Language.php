@@ -341,7 +341,7 @@ class Language
         $supportedlanguagesmodule = Config::getGlobal('supported_languages_module');
         if (self::$s_supportedLanguages == null && $supportedlanguagesmodule) {
             $supportedlanguagesdir = self::getInstance()->getLanguageDirForModule($supportedlanguagesmodule);
-            $supportedlanguagescollector = new ATK_GetSupportedLanguagesCollector();
+            $supportedlanguagescollector = new GetSupportedLanguagesCollector();
             $traverser = new DirectoryTraverser();
             $traverser->addCallbackObject($supportedlanguagescollector);
             $traverser->traverse($supportedlanguagesdir);
@@ -500,14 +500,12 @@ class Language
     public function getLanguageDirForModule($module)
     {
         if ($module == "atk") {
-            $path = Config::getGlobal("atkroot") . "atk/" . (isset($this) ? $this->LANGDIR
-                    : 'languages/');
+            $path = __DIR__ . '/../' . $this->LANGDIR;
         } else {
             if ($module == "langoverrides") {
-                $path = Config::getGlobal("language_basedir", (isset($this) ? $this->LANGDIR
-                    : 'languages/'));
+                $path = Config::getGlobal("language_basedir", $this->LANGDIR);
             } else {
-                $path = Module::moduleDir($module) . (isset($this) ? $this->LANGDIR : 'languages/');
+                $path = Module::moduleDir($module) . $this->LANGDIR;
             }
         }
         return $path;
@@ -566,7 +564,7 @@ class Language
  * @author Boy Baukema <boy@ibuildings.nl>
  * @package atk
  */
-class ATK_GetSupportedLanguagesCollector
+class GetSupportedLanguagesCollector
 {
     var $m_languages = array();
 
