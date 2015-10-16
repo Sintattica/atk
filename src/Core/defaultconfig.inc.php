@@ -652,7 +652,7 @@ $config_defaultlanguage = "en";
  *
  * @var String
  */
-$config_language_basedir = "languages/";
+$config_language_basedir = "Languages/";
 
 /**
  * Use browser language to detect application language.
