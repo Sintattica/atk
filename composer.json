@@ -5,9 +5,9 @@
     "type": "library",
     "license": "MIT",
     "keywords": ["framework"],
-    "autoload": [
+    "autoload": {
         "psr-4": {
             "Sintattica\\Atk\\": "src"
         }
-    ]
+    }
 }
