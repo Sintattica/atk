@@ -19,7 +19,7 @@ class Ui
     /**
      * Smarty instance, initialised by constructor
      * @access private
-     * @var Smarty
+     * @var SmartyProvider
      */
     var $m_smarty = null;
 
@@ -36,7 +36,7 @@ class Ui
     function __construct()
     {
         $this->m_theme = Theme::getInstance();
-        $this->m_smarty = Tools::atkinstance("atk.ui.atksmarty");
+        $this->m_smarty = SmartyProvider::getInstance();
     }
 
     /**

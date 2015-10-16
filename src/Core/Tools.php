@@ -905,7 +905,7 @@ class Tools
     public static function mailreport()
     {
         global $g_error_msg, $g_debug_msg;
-        $errorHandlerObject = ErrorHandlerBase::get('mail', array('mailto' => Config::getGlobal('mailreport')));
+        $errorHandlerObject = ErrorHandlerBase::get('Mail', array('mailto' => Config::getGlobal('mailreport')));
         $errorHandlerObject->handle($g_error_msg, $g_debug_msg);
     }
 

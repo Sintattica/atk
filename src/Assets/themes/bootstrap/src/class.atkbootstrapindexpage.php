@@ -233,7 +233,7 @@ class BootstrapIndexPage
     function atkGenerateDispatcher()
     {
         global $ATK_VARS;
-        $session = SessionManager::getSession();
+        $session = &SessionManager::getSession();
 
 
         if ($session["login"] != 1) {

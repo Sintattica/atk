@@ -26,7 +26,7 @@ class SmartyProvider
      * @static
      * @return Smarty The one and only instance.
      */
-    function &getInstance()
+    public static function &getInstance()
     {
         static $s_smarty = null;
         if ($s_smarty == null) {
@@ -83,13 +83,9 @@ class SmartyProvider
 
             // plugin dirs
             $s_smarty->plugins_dir = array(
-                Config::getGlobal("atkroot") . "atk/ui/smarty/plugins",
-                Config::getGlobal("atkroot") . "atk/ui/plugins"
+                __DIR__.'/Smarty/plugins',
+                __DIR__.'/plugins'
             );
-            $customplugindir = Config::getGlobal("tplplugindir");
-            if ($customplugindir != "") {
-                $s_smarty->plugins_dir[] = $customplugindir;
-            }
 
             //$s_smarty->register_compiler_function("tpl","tpl_include");
             Tools::atkdebug("Instantiated new Smarty");
@@ -113,7 +109,7 @@ class SmartyProvider
      * given path (or inside the given module's plugins directory)
      * with the given name and type.
      *
-     * @param string $moduleOrPath module name or full ATK path (without plugin filename!)
+     * @param string $path ATK path (without plugin filename!)
      * @param string $name plug-in name
      * @param string $type plug-in type (function, block etc.)
      *
@@ -122,13 +118,8 @@ class SmartyProvider
      * @static
      * @private
      */
-    function getPathForPlugin($moduleOrPath, $name, $type)
+    function getPathForPlugin($path, $name, $type)
     {
-        if (Module::moduleExists($moduleOrPath)) {
-            $path = 'module.' . $moduleOrPath . '.plugins';
-        } else {
-            $path = $moduleOrPath;
-        }
 
         $fullPath = Tools::getClassPath($path, false) . '/' . $type . '.' . $name . '.php';
         return $fullPath;

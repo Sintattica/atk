@@ -32,8 +32,8 @@ abstract class ErrorHandlerBase
      */
     static public function get($handlerName, $params)
     {
-        $handlerClassName = $handlerName.'ErrorHandler';
-        return new $handlerClassName($params);
+        $class = "Sintattica\\Atk\\Errors\\"."$handlerName"."ErrorHandler";
+        return new $class($params);
     }
 
     /**

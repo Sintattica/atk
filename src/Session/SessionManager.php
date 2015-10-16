@@ -20,11 +20,11 @@ if (empty($config_identifier)) {
 
 if (Config::getGlobal('session_init', true) && SessionManager::atksession_init()) {
     // backwardscompatibility hacks. g_sessionData and g_sessionData are obsolete actually.
-    // You can use $session = SessionManager::getSession() now, and you'll have a
+    // You can use $session = &SessionManager::getSession() now, and you'll have a
     // session enabled, multi-app array in which you can store whatever you like.
     // There are old applications however that still use $g_sessionData, so I'll
     // leave it in place for now.
-    $GLOBALS['g_sessionData'] = &$_SESSION[Config::getGlobal('identifier')];
+    $GLOBALS['g_sessionData'] = $_SESSION[Config::getGlobal('identifier')];
 }
 
 define("SESSION_DEFAULT", 0); // stay at current stacklevel
@@ -134,6 +134,7 @@ class SessionManager
      *                              in the current namespace. If set to true,
      *                              the variable is available in all
      *                              namespaces.
+     * @return mixed value
      */
     public function globalVar($var, $value = "", $no_namespace = false)
     {
@@ -332,6 +333,7 @@ class SessionManager
             }
             return "";
         }
+        return null;
     }
 
     /**
@@ -1094,7 +1096,7 @@ class SessionManager
 
     /**
      * Store a variable in the current namespace.
-     * @deprecated Use SessionManager::getSession() instead, and store
+     * @deprecated Use &SessionManager::getSession() instead, and store
      *             the variable directly in the application session, or
      *             use globalVar() to store a variable in the current
      *             namespace.
@@ -1110,7 +1112,7 @@ class SessionManager
 
     /**
      * Load a variable from a namespace.
-     * @deprecated Use SessionManager::getSession() instead, and load
+     * @deprecated Use &SessionManager::getSession() instead, and load
      *             the variable directly from the application session, or
      *             use getValue() to retrieve a variable from a given namespace.
      */

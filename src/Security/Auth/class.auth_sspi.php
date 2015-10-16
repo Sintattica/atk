@@ -48,7 +48,7 @@ class auth_sspi extends auth_db
         if (isset($ATK_VARS["atklogout"])) {
             if ($this->validateUser() == AUTH_SUCCESS) {
                 // On se reconnecte par defaut
-                $session = SessionManager::getSession();
+                $session = &SessionManager::getSession();
 
                 $session["relogin"] = 1;
             }

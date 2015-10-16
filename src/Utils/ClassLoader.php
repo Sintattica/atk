@@ -1,5 +1,10 @@
 <?php namespace Sintattica\Atk\Utils;
 
+Use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Module;
+use \ReflectionClass;
+
 /**
  * Utility for importing and loading classes.
  *
@@ -64,7 +69,7 @@ class ClassLoader
      * Clean-up the given path.
      *
      * @param string $path
-     * @return cleaned-up path
+     * @return string cleaned-up path
      *
      * @see http://nl2.php.net/manual/en/function.realpath.php (comment of 21st of September 2005)
      */
@@ -231,7 +236,7 @@ class ClassLoader
      *
      * @param string $fullclassname the ATK classname of the class ("map1.map2.classname")
      * @param bool $reset Force resetting of the instance
-     * @return obj instance of the class
+     * @return Object instance of the class
      * */
     static function getSingletonInstance($fullclassname, $reset = false)
     {

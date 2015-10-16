@@ -229,7 +229,7 @@ class SecurityManager
     function authenticate()
     {
         global $g_sessionManager, $ATK_VARS;
-        $session = SessionManager::getSession();
+        $session = &SessionManager::getSession();
 
         $response = AUTH_UNVERIFIED;
 
@@ -492,7 +492,6 @@ class SecurityManager
                 }
             }
         }
-
         // return
         // g_user always lowercase
         $this->m_user["name"] = $this->m_user["name"];
@@ -500,6 +499,7 @@ class SecurityManager
         //This way we can always retrieve the user from apache logs
         header('user: ' . $this->m_user["name"]);
         $GLOBALS["g_user"] = $this->m_user;
+        $sm = SessionManager::getInstance();
         $g_sessionManager->globalVar("authentication", array("authenticated" => 1, "user" => $this->m_user), true);
         SessionManager::sessionStore('loginattempts', ''); //reset maxloginattempts
 
@@ -807,6 +807,7 @@ class SecurityManager
 
     /**
      * Retrieve all known information about the currently logged-in user.
+     * @param $key string
      * @return array Array with userinfo, or "" if no user is logged in.
      */
     public static function atkGetUser($key = '')
