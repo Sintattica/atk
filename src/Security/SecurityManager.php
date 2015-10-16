@@ -3,6 +3,10 @@
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Ui\Output;
+use Sintattica\Atk\Ui\Ui;
 
 
 /**
@@ -31,7 +35,7 @@ define("AUTH_ERROR", -1);
  */
 class SecurityManager
 {
-    var $m_authentication = "";
+    var $m_authentication = array();
     var $m_authorization = 0;
     var $m_scheme = "none";
     var $m_user = array();
@@ -62,7 +66,7 @@ class SecurityManager
     /**
      * Register a new listener.
      *
-     * @param atkSecurityListener $listener
+     * @param SecurityListener $listener
      */
     function addListener(&$listener)
     {
@@ -194,7 +198,7 @@ class SecurityManager
         }
 
         // Regenerate the password
-        $passwordattr = &$usernode->getAttribute(Config::getGlobal("auth_passwordfield"));
+        $passwordattr = $usernode->getAttribute(Config::getGlobal("auth_passwordfield"));
         $newpassword = $passwordattr->generatePassword();
 
         // Update the record in the database
@@ -765,7 +769,7 @@ class SecurityManager
      * If we are using cookies to store the login information this function will generate
      * the cookiename
      *
-     * @return cookiename based on the application title
+     * @return string cookiename based on the application title
      */
     function _getAuthCookieName()
     {
