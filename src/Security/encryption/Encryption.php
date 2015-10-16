@@ -34,9 +34,8 @@ class Encryption
         if ($type == "") {
             $type = Config::getGlobal("encryption_defaultmethod");
         }
-        $encryptionclass = "atk" . strtolower($type) . "encryption";
-
-        if (Tools::atkimport("atk.security.encryption." . $encryptionclass)) {
+        $encryptionclass = $type . "Encryption";
+        if (class_exists($encryptionclass)) {
             return new $encryptionclass();
         } else {
             return $this;

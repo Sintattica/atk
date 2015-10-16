@@ -1,7 +1,5 @@
 <?php namespace Sintattica\Atk\Utils;
 
-use Sintattica\Atk\Utils\TmpFile;
-
 /**
  * Utility for importing and loading classes.
  *

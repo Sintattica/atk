@@ -176,7 +176,6 @@ class Tools
      */
     public static function getmicrotime()
     {
-        self::atkimport("atk.utils.atkdebugger");
         return Debugger::getMicroTime();
     }
 
@@ -187,7 +186,6 @@ class Tools
      */
     public static function elapsed()
     {
-        self::atkimport("atk.utils.atkdebugger");
         return Debugger::elapsed();
     }
 
@@ -219,7 +217,6 @@ class Tools
             }
 
             if ($level > 2) {
-                self::atkimport("atk.utils.self::atkdebugger");
                 if (!Debugger::addStatement($line)) {
                     $g_debug_msg[] = $line;
                 }
@@ -485,7 +482,6 @@ class Tools
         $nodefaulttext = false,
         $modulefallback = false
     ) {
-        self::atkimport("atk.atklanguage");
         return Language::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext, $modulefallback);
     }
 
@@ -953,7 +949,6 @@ class Tools
      */
     public static function &atkGetDb($conn = 'default', $reset = false, $mode = "r")
     {
-        self::atkimport("atk.db.atkdb");
         $db = Db::getInstance($conn, $reset, $mode);
         return $db;
     }
@@ -1491,21 +1486,6 @@ class Tools
         }
     }
 
-    /**
-     * Imports a file
-     * @param string $fullclassname Name of class in atkformat (map1.map2.classfile)
-     * @param bool $failsafe If $failsafe is true (default), the class is required.  Otherwise, the
-     *                                class is included.
-     * @param bool $path Whether or not it is NOT an ATK classname
-     *                                 ("map.class"), if true it will interpret classname
-     *                                 as: "map/class.classname.php", default false.
-     * @return bool whether the file we want to import was actually imported or not
-     */
-    public static function atkimport($fullclassname, $failsafe = true, $path = false)
-    {
-        die("CALL TO atkimport $fullclassname");
-        //return ClassLoader::import($fullclassname, $failsafe, $path);
-    }
 
     /**
      * Clean-up the given path.
@@ -1832,7 +1812,6 @@ class Tools
      */
     public static function atkResolveClass($class)
     {
-        self::atkimport("atk.utils.atkclassloader");
         return ClassLoader::resolveClass($class);
     }
 

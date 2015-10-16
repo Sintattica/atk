@@ -4421,7 +4421,7 @@ class Node
         }
 
         // The node handler might return a class, then we need to instantiate the handler
-        if (is_string($handler) && !function_exists($handler) && Tools::atkimport($handler)) {
+        if (is_string($handler) && class_exists($handler)) {
             $handler = new $handler();
         }
 

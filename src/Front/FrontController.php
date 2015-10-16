@@ -120,10 +120,12 @@ class FrontController implements \ArrayAccess
             $action = 'index';
         }
 
+
         $importPath = "module.{$module}.controllers.{$name}controller";
-        if (Tools::atkimport($importPath)) {
+        $class = "{$name}controller";
+
+        if (class_exists($class)) {
             Tools::atkdebug('Create ' . $importPath . ' controller instance');
-            $class = "{$name}controller";
             return new $class($module, $name, $action, $parent);
         } else {
             throw new Exception("Can't find controller for: '$uri' expecting '$importPath'");
