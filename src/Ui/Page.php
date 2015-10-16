@@ -1,19 +1,8 @@
 <?php namespace Sintattica\Atk\Ui;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage ui
- *
- * @copyright (c)2000-2004 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6323 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+
 /**
  * Rendering flags.
  */
@@ -264,6 +253,7 @@ class Page
     /**
      * Register a javascript code statement that is executed on pageload.
      * @param String $code The javascript code fragment to execute on load.
+     * @param int $offset
      */
     function register_loadscript($code, $offset = null)
     {
@@ -586,8 +576,6 @@ class Page
      */
     function body($extraprops = "")
     {
-        global $ATK_VARS;
-
         $res = '<body ';
         $res .= $extraprops . ">\n";
         return $res;

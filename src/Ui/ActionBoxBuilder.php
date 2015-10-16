@@ -1,19 +1,9 @@
 <?php namespace Sintattica\Atk\Ui;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage ui
- *
- * @copyright (c) 2000-2008 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 5835 $
- * $Id$
- */
+
+
+
+use Sintattica\Atk\Core\Controller;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * Action box builder. Provides a fluent interface to create standardized
@@ -94,7 +84,7 @@ class ActionBoxBuilder
      *
      * @param string $title title
      *
-     * @return atkActionBoxBuilder
+     * @return ActionBoxBuilder
      */
     public function title($title)
     {
@@ -107,7 +97,7 @@ class ActionBoxBuilder
      *
      * @param boolean $locked locked
      *
-     * @return atkActionBoxBuilder
+     * @return ActionBoxBuilder
      */
     public function locked($locked)
     {
@@ -120,7 +110,7 @@ class ActionBoxBuilder
      *
      * @param string $formStart form start
      *
-     * @return atkActionBoxBuilder
+     * @return ActionBoxBuilder
      */
     public function formStart($formStart)
     {
@@ -137,7 +127,7 @@ class ActionBoxBuilder
      *
      * @param int $status session status
      *
-     * @return atkActionBoxBuilder
+     * @return ActionBoxBuilder
      */
     public function sessionStatus($status)
     {
@@ -150,7 +140,7 @@ class ActionBoxBuilder
      *
      * @param string $formEnd form end
      *
-     * @return atkActionBoxBuilder
+     * @return ActionBoxBuilder
      */
     public function formEnd($formEnd)
     {
@@ -163,7 +153,7 @@ class ActionBoxBuilder
      *
      * @param string $template template name
      *
-     * @return atkActionBoxBuilder
+     * @return ActionBoxBuilder
      */
     public function template($template)
     {
@@ -176,7 +166,7 @@ class ActionBoxBuilder
      *
      * @param string $content content
      *
-     * @return atkActionBoxBuilder
+     * @return ActionBoxBuilder
      */
     public function content($content)
     {
@@ -189,7 +179,7 @@ class ActionBoxBuilder
      *
      * @param string $buttons form buttons
      *
-     * @return atkActionBoxBuilder
+     * @return ActionBoxBuilder
      */
     public function buttons($buttons)
     {

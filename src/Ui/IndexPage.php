@@ -1,19 +1,12 @@
 <?php namespace Sintattica\Atk\Ui;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage ui
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6309 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Menu\Menu;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Controller;
 
 /**
  * Class that generates an index page.
@@ -29,7 +22,7 @@ class IndexPage
     var $m_page;
 
     /**
-     * @var atkTheme
+     * @var Theme
      */
     var $m_theme;
 
@@ -39,7 +32,7 @@ class IndexPage
     var $m_ui;
 
     /**
-     * @var atkOutput
+     * @var Output
      */
     var $m_output;
 
@@ -66,7 +59,7 @@ class IndexPage
     /**
      * Constructor
      *
-     * @return atkIndexPage
+     * @return IndexPage
      */
     function __construct()
     {
@@ -82,7 +75,7 @@ class IndexPage
     }
 
     /**
-     * Does the atkIndexPage has this flag?
+     * Does the IndexPage has this flag?
      *
      * @param integer $flag The flag
      * @return Boolean
@@ -252,10 +245,6 @@ class IndexPage
 
             $this->m_output->output($this->m_page->render(Tools::atktext("title_session_expired"), true));
         } else {
-            $lockType = Config::getGlobal("lock_type");
-            if (!empty($lockType)) {
-                atklock();
-            }
 
             // Create node
             if (isset($ATK_VARS['atknodetype'])) {

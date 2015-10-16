@@ -26,7 +26,7 @@ $GLOBALS['g_startTime'] = (float)$usec + (float)$sec; // can't use getmicrotime 
 
 /**
  * Global theme variable, containing theme data
- * @deprecated In favor of atkTheme class
+ * @deprecated In favor of Theme class
  * @var array
  */
 $GLOBALS['g_theme'] = array();

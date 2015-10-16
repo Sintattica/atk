@@ -404,5 +404,3 @@ class Config_File
     }
     /**#@-*/
 }
-
-?>

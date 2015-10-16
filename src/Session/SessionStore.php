@@ -1,5 +1,8 @@
 <?php namespace Sintattica\Atk\Security\Session;
 
+
+use Sintattica\Atk\Core\Tools;
+
 /**
  * Session storage singleton, given a key (or a key in the session)
  * stores records to the current session
@@ -25,7 +28,7 @@ class SessionStore
      *
      * @param mixed $key Key to use
      * @param bool $reset Wether to reset the singleton
-     * @return atkSessionStore Storage
+     * @return SessionStore Storage
      */
     public static function getInstance($key = false, $reset = false)
     {

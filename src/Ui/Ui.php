@@ -24,14 +24,14 @@ class Ui
     var $m_smarty = null;
 
     /**
-     * atkTheme instance, initialised by constructor
+     * Theme instance, initialised by constructor
      * @access private
      * @var Theme
      */
     var $m_theme = null;
 
     /**
-     * Ui constructor, initialises Smarty and atkTheme instance
+     * Ui constructor, initialises Smarty and Theme instance
      */
     function __construct()
     {
@@ -193,7 +193,7 @@ class Ui
      */
     private function renderPhp($path, $vars)
     {
-        $view = new PHPView($path, $vars);
+        $view = new PhpView($path, $vars);
         return (string)$view;
     }
 

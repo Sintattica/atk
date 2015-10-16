@@ -28,7 +28,7 @@ class BootstrapIndexPage
     var $m_page;
 
     /**
-     * @var atkTheme
+     * @var Theme
      */
     var $m_theme;
 
@@ -38,7 +38,7 @@ class BootstrapIndexPage
     var $m_ui;
 
     /**
-     * @var atkOutput
+     * @var Output
      */
     var $m_output;
 
@@ -65,7 +65,7 @@ class BootstrapIndexPage
     /**
      * Constructor
      *
-     * @return atkIndexPage
+     * @return IndexPage
      */
     function __construct()
     {
@@ -87,7 +87,7 @@ class BootstrapIndexPage
     }
 
     /**
-     * Does the atkIndexPage has this flag?
+     * Does the IndexPage has this flag?
      *
      * @param integer $flag The flag
      * @return Boolean
@@ -263,10 +263,6 @@ class BootstrapIndexPage
 
             $this->m_output->output($this->m_page->render(Tools::atktext("title_session_expired"), true));
         } else {
-            $lockType = Config::getGlobal("lock_type");
-            if (!empty($lockType)) {
-                atklock();
-            }
 
             // Create node
             if (isset($ATK_VARS['atknodetype'])) {

@@ -4,6 +4,7 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Utils\TmpFile;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Utils\DirectoryTraverser;
 
 /**
  * Compiles cache for current theme.
@@ -217,8 +218,7 @@ class ThemeCompiler
      */
     function _dirContents($path)
     {
-        $files = array();
-        $traverser = Tools::atknew("atk.utils.atkdirectorytraverser");
+        $traverser = new DirectoryTraverser();
         $traverser->addExclude('/^\.(.*)/'); // ignore everything starting with a '.'
         $traverser->addExclude('/^CVS$/');   // ignore CVS directories
         $files = $traverser->getDirContents($path);

@@ -1,6 +1,6 @@
 <?php
 
-include_once(Config::getGlobal("atkroot") . "atk/ui/smarty/Smarty.class.php");
+include_once(__DIR__ . "/Smarty.class.php");
 
 /**
  * Project:     Smarty: the PHP compiling template engine

@@ -1,4 +1,5 @@
-<?php
+<?php namespace Sintattica\Atk\Ui\Smarty;
+
 
 /**
  * Project:     Smarty: the PHP compiling template engine
@@ -2025,7 +2026,3 @@ class Smarty
     /**#@-*/
 
 }
-
-/* vim: set expandtab: */
-
-?>

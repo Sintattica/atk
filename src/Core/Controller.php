@@ -56,7 +56,7 @@ class Controller
     /**
      * By this property is determined if the output of the
      * handleRequest method should be returned as a string
-     * or the output should be outputted by atkOutput.
+     * or the output should be outputted by Output.
      *
      * @var Bool
      */
@@ -143,7 +143,7 @@ class Controller
     {
         Tools::atkdebug("Controller::createInstance() " . $controller);
         //First check if another controller is active. If so make sure this
-        //controller will use atkOutput to return output
+        //controller will use Output to return output
         $currentController = Controller::getInstance();
         if (is_object($currentController)) {
             $currentController->setReturnOutput(true);
@@ -765,7 +765,7 @@ class Controller
     }
 
     /**
-     * Configure if you want the html returned or leave it up to atkOutput.
+     * Configure if you want the html returned or leave it up to Output.
      *
      * @param bool $returnOutput
      */

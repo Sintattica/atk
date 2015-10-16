@@ -1,5 +1,7 @@
 <?php namespace Sintattica\Atk\Security\Encryption;
 
+use Sintattica\Atk\Core\Tools;
+
 /**
  * Class for encrypting and decrypting data with the openssl algorithm
  * This class uses the functions openssl_public_encrypt and openssl_private_decrypt

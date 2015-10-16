@@ -88,7 +88,7 @@ class Menu
      *
      * @return object Menu class object
      */
-    function &getMenu()
+    public static function &getMenu()
     {
         static $s_instance = null;
         if ($s_instance == null) {

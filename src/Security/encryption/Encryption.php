@@ -1,5 +1,9 @@
 <?php namespace Sintattica\Atk\Security\Encryption;
 
+
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
+
 /**
  * Base class for all ATK encryption methods
  *
@@ -23,7 +27,7 @@ class Encryption
      * along
      * @param string $type The type of encryption we want,
      *                     defaults to $config)_encryption_defaultmethod
-     * @return obj the node with which to encrypt or decrypt your data
+     * @return Encryption the node with which to encrypt or decrypt your data
      */
     function &getEncryption($type = "")
     {

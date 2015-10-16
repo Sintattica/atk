@@ -1,5 +1,8 @@
 <?php namespace Sintattica\Atk\Security\Session;
 
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+
 /**
  * The atkstate manager.
  *

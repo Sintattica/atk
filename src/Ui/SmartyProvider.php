@@ -1,19 +1,10 @@
 <?php namespace Sintattica\Atk\Ui;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage ui
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6309 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Ui\Smarty\Smarty;
+
 
 /**
  * Wrapper class for the Smarty template engine.
@@ -24,13 +15,13 @@
  * @subpackage ui
  *
  */
-class Smarty
+class SmartyProvider
 {
 
     /**
-     * Get the Smarty  instance.
+     * Get the Smarty instance.
      *
-     * atkSmarty is a singleton.
+     * SmartyProvider is a singleton.
      *
      * @static
      * @return Smarty The one and only instance.
@@ -40,9 +31,6 @@ class Smarty
         static $s_smarty = null;
         if ($s_smarty == null) {
             Tools::atkdebug("Creating Smarty instance");
-            if (!class_exists("Smarty")) {
-                include_once(Config::getGlobal("atkroot") . "atk/ui/smarty/Smarty.class.php");
-            }
 
             // Warning: you'd think that the next line should read
             // $s_smarty = & new Smarty();
@@ -116,7 +104,7 @@ class Smarty
      */
     function addPluginDir($path)
     {
-        $smarty = Smarty::getInstance();
+        $smarty = SmartyProvider::getInstance();
         $smarty->plugins_dir[] = $path;
     }
 
@@ -160,12 +148,12 @@ class Smarty
      */
     function addFunction($moduleOrPath, $tag, $name = "", $cacheable = true, $cache_attrs = null)
     {
-        $smarty = self::getInstance();
+        $smarty = SmartyProvider::getInstance();
 
         $name = empty($name) ? $tag : $name;
         $function = "__smarty_function_$name";
 
-        $path = self::getPathForPlugin($moduleOrPath, $name, 'function');
+        $path = SmartyProvider::getPathForPlugin($moduleOrPath, $name, 'function');
 
         eval('
       function ' . $function . '($params, &$smarty)
@@ -187,7 +175,7 @@ class Smarty
      */
     function addDynamicFunction($moduleOrPath, $tag, $cache_attrs = null)
     {
-        Smarty::addFunction($moduleOrPath, $tag, $tag, false, $cache_attrs);
+        SmartyProvider::addFunction($moduleOrPath, $tag, $tag, false, $cache_attrs);
     }
 
     /**
@@ -203,7 +191,7 @@ class Smarty
      */
     function addCompilerFunction($moduleOrPath, $tag, $name = "", $cacheable = true)
     {
-        $smarty = self::getInstance();
+        $smarty = SmartyProvider::getInstance();
 
         $name = empty($name) ? $tag : $name;
         $function = "__smarty_compiler_$name";
@@ -234,12 +222,12 @@ class Smarty
      */
     function addBlock($moduleOrPath, $tag, $name = "", $cacheable = true)
     {
-        $smarty = self::getInstance();
+        $smarty = SmartyProvider::getInstance();
 
         $name = empty($name) ? $tag : $name;
         $function = "__smarty_block_$name";
 
-        $path = Smarty::getPathForPlugin($moduleOrPath, $name, 'block');
+        $path = SmartyProvider::getPathForPlugin($moduleOrPath, $name, 'block');
 
         eval('
       function ' . $function . '($params, $content, &$smarty, &$repeat)
@@ -260,7 +248,7 @@ class Smarty
      */
     function addDynamicBlock($moduleOrPath, $tag)
     {
-        self::addBlock($moduleOrPath, $tag, $tag, false);
+        SmartyProvider::addBlock($moduleOrPath, $tag, $tag, false);
     }
 
     /**
@@ -272,12 +260,12 @@ class Smarty
      */
     function addModifier($moduleOrPath, $tag, $name = "")
     {
-        $smarty = self::getInstance();
+        $smarty = SmartyProvider::getInstance();
 
         $name = empty($name) ? $tag : $name;
         $function = "__smarty_modifier_$name";
 
-        $path = self::getPathForPlugin($moduleOrPath, $name, 'modifier');
+        $path = SmartyProvider::getPathForPlugin($moduleOrPath, $name, 'modifier');
 
         eval('
       function ' . $function . '($variable)
@@ -297,7 +285,7 @@ class Smarty
      */
     function addOutputFilter($function)
     {
-        $smarty = self::getInstance();
+        $smarty = SmartyProvider::getInstance();
         $smarty->register_outputfilter($function);
     }
 
@@ -309,4 +297,4 @@ class Smarty
  * on the plug-in's filename. Non-dynamic plug-ins should be placed in the plugins/ subdir,
  * but shouldn't be registered here (Smarty will detect them automatically).
  */
-Smarty::addDynamicFunction('atk.ui.plugins', 'atkfrontcontroller');
+SmartyProvider::addDynamicFunction('atk.ui.plugins', 'atkfrontcontroller');

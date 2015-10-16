@@ -77,7 +77,7 @@ class BootstrapMenu extends PlainMenu
         global $g_menu;
         /** @var Page $page */
         $page = Page::getInstance();
-        /** @var atkTheme $theme */
+        /** @var Theme $theme */
         $theme = Tools::atkinstance('atk.ui.atktheme');
         $page->register_style($theme->absPath("atk/themes/bootstrap/lib/bootstrap-submenu/css/bootstrap-submenu.min.css"));
         $page->register_script($theme->absPath("atk/themes/bootstrap/lib/bootstrap-submenu/js/bootstrap-submenu.min.js"));

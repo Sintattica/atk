@@ -118,7 +118,7 @@ class PageBuilder
     /**
      * Begins building a new action box.
      *
-     * @return atkActionBoxBuilder
+     * @return ActionBoxBuilder
      */
     public function beginActionBox()
     {

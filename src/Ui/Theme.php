@@ -19,7 +19,7 @@ class Theme
     var $m_theme = array();
 
     /**
-     * Function to get an Instance of the atkTheme class,
+     * Function to get an Instance of the Theme class,
      * ensures that there is never more than one instance (Singleton pattern)
      *
      * @param bool $reset Always reset and return a new instance
@@ -41,7 +41,7 @@ class Theme
     function __construct()
     {
         global $g_theme;
-        Tools::atkdebug("Created a new atkTheme instance");
+        Tools::atkdebug("Created a new Theme instance");
         if (isset($g_theme["Name"]) && $g_theme["Name"] != "") {
             $this->m_name = $g_theme["Name"];
         } else {
@@ -184,7 +184,7 @@ class Theme
      * @param string $type the icon type (example: "recordlist")
      * @param string $module the name of the module requesting the file
      * @param string $ext the extension of the file,
-     *                       if this is empty, atkTheme will check several
+     *                       if this is empty, Theme will check several
      *                       extensions.
      * @param boolean $useDefault use default icon fallback if not found?
      * @return string the full path of the icon file

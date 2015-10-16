@@ -1,6 +1,9 @@
 <?php namespace Sintattica\Atk\Ui;
 
 use Sintattica\Atk\Utils\JSON;
+use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * ATK dialog helper class.
@@ -32,7 +35,7 @@ class Dialog
      * @param string $partial partial name
      * @param array $params url parameters
      *
-     * @return atkDialog
+     * @return Dialog
      */
     function __construct($nodeType, $action, $partial = 'dialog', $params = array())
     {
@@ -271,7 +274,7 @@ class Dialog
      * by setting the special theme attribute 'dialog_window_options'. This
      * attribute should contain a JavaScript object with the window options.
      *
-     * @return unknown
+     * @return mixed
      */
     protected function getWindowOptions()
     {

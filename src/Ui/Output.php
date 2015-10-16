@@ -6,7 +6,7 @@ use Sintattica\Atk\Core\Config;
 /**
  * Outputbuffering class.
  *
- * Any output sent to the browser should be directed through the atkOutput
+ * Any output sent to the browser should be directed through the Output
  * class. Among other things, it buffers debugging output and errormessages,
  * and displays them below the actual output. If $config_output_gzip is set
  * to true, all output is sent gzipped to the browser (saves bandwith).
@@ -15,7 +15,7 @@ use Sintattica\Atk\Core\Config;
  * takes care of sending error reports to the email address, if any errors
  * occurred during script execution.
  *
- * The atkOutput class is a singleton. The one-and-only instance should be
+ * The Output class is a singleton. The one-and-only instance should be
  * retrieved with the getInstance() method.
  *
  * @author Ivo Jansch <ivo@achievo.org>
@@ -38,14 +38,14 @@ class Output
     var $m_content = "";
 
     /**
-     * Retrieve the one-and-only atkOutput instance.
+     * Retrieve the one-and-only Output instance.
      * @return Output The instance.
      */
     public static function &getInstance()
     {
         static $s_instance = null;
         if ($s_instance == null) {
-            Tools::atkdebug("Created a new atkOutput instance");
+            Tools::atkdebug("Created a new Output instance");
             $s_instance = new self();
         }
         return $s_instance;
@@ -68,7 +68,7 @@ class Output
     /**
      * Send the caching headers
      *
-     * @param int $lastmodificationstamp Timestamp of the last modification
+     * @param mixed $lastmodificationstamp Timestamp of the last modification
      * @param bool $nocache Send cache headers?
      */
     public function sendCachingHeaders($lastmodificationstamp = '', $nocache = true)
@@ -111,7 +111,7 @@ class Output
      * @param boolean $nocache If true, sends no-cache headers to the browser,
      *                         so the browser will not cache the output in its
      *                         browsercache.
-     * @param int $lastmodificationstamp Timestamp of last modification. If
+     * @param mixed $lastmodificationstamp Timestamp of last modification. If
      *                                   set, a last-modified header
      *                                   containing this stamp will be sent to
      *                                   the browser. If $nocache is true,
@@ -196,7 +196,7 @@ class Output
     /**
      * Gzip a piece of text.
      *
-     * Called internally by atkOutput when $config_output_gzip is set to true,
+     * Called internally by Output when $config_output_gzip is set to true,
      * but can be used by other scripts too, if they need to gzip some data.
      * @param String $contents The string to gzip.
      * @return String The gzipped string.

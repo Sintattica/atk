@@ -3022,7 +3022,7 @@ class Node
      * @param boolean $exit Exit script after redirect.
      * @param int $levelskip Number of levels to skip
      */
-    function redirect($location = "", $recordOrExit = array(), $exit = false, $levelskip = 1)
+    public function redirect($location = "", $recordOrExit = array(), $exit = false, $levelskip = 1)
     {
         global $g_returnurl;
 

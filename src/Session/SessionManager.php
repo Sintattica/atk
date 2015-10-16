@@ -5,6 +5,8 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Ui\Output;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Ui\Ui;
+use Sintattica\Atk\Core\Module;
 use \Exception;
 
 
@@ -738,6 +740,9 @@ class SessionManager
         $stackcount = count($stack);
         for ($i = 0; $i < $stackcount; $i++) {
             if (isset($stack[$i]["descriptor"]) || $i == ($stackcount - 1)) {
+                $node = null;
+                $module = null;
+                $nodename = null;
                 if ($stack[$i]["atknodetype"] != "") {
                     $node = Module::atkGetNode($stack[$i]["atknodetype"]);
                     $module = Module::getNodeModule($stack[$i]["atknodetype"]);
@@ -772,7 +777,7 @@ class SessionManager
      */
     protected function _verifyStackIntegrity()
     {
-        global $g_sessionData, $atklevel, $atkprevlevel;
+        global $g_sessionData, $atkprevlevel;
         $stack = "";
 
         if (isset($g_sessionData[$this->m_namespace]["stack"][self::atkStackID()])) {
@@ -841,7 +846,7 @@ class SessionManager
     /**
      * Calculate a new session level based on current level and
      * a passed sessionstatus.
-     * @param var $sessionstatus the session flags
+     * @param int $sessionstatus the session flags
      *            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
      *             SESSION_NESTED|SESSION_BACK)
      * @param int $levelskip how many levels to skip when we use SESSION_BACK,
@@ -852,8 +857,6 @@ class SessionManager
     static public function newLevel($sessionstatus = SESSION_DEFAULT, $levelskip = null)
     {
         $currentlevel = self::atkLevel();
-
-        $newlevel = -1;
 
         switch ($sessionstatus) {
             case SESSION_NEW: {
@@ -890,7 +893,7 @@ class SessionManager
     /**
      * Calculate old session level based on current level and
      * a passed sessionstatus.
-     * @param var $sessionstatus the session flags
+     * @param int $sessionstatus the session flags
      *            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
      *             SESSION_NESTED|SESSION_BACK)
      * @param int $levelskip how many levels to skip when we use SESSION_REPLACE,
@@ -953,7 +956,7 @@ class SessionManager
 
     /**
      * Gets the session vars
-     * @param var $sessionstatus the session flags
+     * @param int $sessionstatus the session flags
      *                           (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
      *                            SESSION_NESTED|SESSION_BACK)
      * @param int $levelskip the amount of levels to skip if we go back
@@ -994,7 +997,7 @@ class SessionManager
      * Makes a session-aware URL.
      *
      * @param string $url the url to make session-aware
-     * @param var $sessionstatus the session flags
+     * @param int $sessionstatus the session flags
      *                            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
      *                             SESSION_NESTED|SESSION_BACK)
      * @param int $levelskip the amount of levels to skip if we go back
@@ -1023,7 +1026,7 @@ class SessionManager
      *
      * @param string $url the url to make session aware
      * @param string $name the name to display (will not be escaped!)
-     * @param var $sessionstatus the session flags
+     * @param int $sessionstatus the session flags
      *                            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
      *                             SESSION_NESTED|SESSION_BACK)
      * @param bool $saveform wether or not to save the form
@@ -1088,61 +1091,6 @@ class SessionManager
         return false;
     }
 
-    /**
-     * Initializes the sessionmanager.
-     *
-     * After the session has been initialised with atksession(), the session
-     * manager can be used using the global variable $g_sessionManager.
-     * Call this function in every file that you want to use atk sessions.
-     *
-     * @param String $namespace If multiple scripts/applications are
-     *                          installed on thesame url, they can each use
-     *                          a different namespace to make sure they
-     *                          don't share session data.
-     * @param boolean $usestack Tell the sessionmanager to use the session
-     *                          stack manager (back/forth navigation in
-     *                          screens, remembering vars over multiple
-     *                          pages etc). This comes with a slight
-     *                          performance impact, so scripts not using
-     *                          the stack should pass false here.
-     */
-    static public function atksession($namespace = "default", $usestack = true)
-    {
-        global $ATK_VARS, $g_sessionManager, $g_sessionData, $atkprevlevel;
-
-        $g_sessionManager = Tools::atknew('atk.session.atksessionmanager', $namespace, $usestack);
-
-        Tools::atkDataDecode($_REQUEST);
-        $ATK_VARS = array_merge($_GET, $_POST);
-        Tools::atkDataDecode($ATK_VARS);
-        if (array_key_exists('atkfieldprefix', $ATK_VARS) && $ATK_VARS['atkfieldprefix'] != '') {
-            $ATK_VARS = $ATK_VARS[$ATK_VARS['atkfieldprefix']];
-        }
-
-        $g_sessionManager->session_read($ATK_VARS);
-
-        // Escape check
-        if (isset($_REQUEST["atkescape"]) && $_REQUEST["atkescape"] != "") {
-            Node::redirect(Tools::atkurldecode($_REQUEST["atkescape"]));
-            Output::getInstance()->outputFlush();
-            exit;
-        } // Nested URL check
-        else {
-            if (isset($_REQUEST["atknested"]) && $_REQUEST["atknested"] != "") {
-                Node::redirect(Tools::session_url($_REQUEST["atknested"], SESSION_NESTED));
-                Output::getInstance()->outputFlush();
-                exit;
-            } // Back check
-            else {
-                if (isset($ATK_VARS["atkback"]) && $ATK_VARS["atkback"] != "") {
-                    // When we go back, we go one level deeper than the level we came from.
-                    Node::redirect(Tools::session_url(Tools::atkSelf() . "?atklevel=" . ($atkprevlevel - 1)));
-                    Output::getInstance()->outputFlush();
-                    exit;
-                }
-            }
-        }
-    }
 
     /**
      * Store a variable in the current namespace.
@@ -1233,8 +1181,6 @@ class SessionManager
         if (empty($name)) {
             $name = Config::getGlobal("identifier");
         }
-
-        $sessionid = "";
         global ${$name};
 
         if (isset($_COOKIE[$name]) && $_COOKIE[$name]) {
@@ -1271,6 +1217,62 @@ class SessionManager
     {
         global $g_sessionManager;
         return $g_sessionManager;
+    }
+
+    /**
+     * Initializes the sessionmanager.
+     *
+     * After the session has been initialised with atksession(), the session
+     * manager can be used using the global variable $g_sessionManager.
+     * Call this function in every file that you want to use atk sessions.
+     *
+     * @param String $namespace If multiple scripts/applications are
+     *                          installed on thesame url, they can each use
+     *                          a different namespace to make sure they
+     *                          don't share session data.
+     * @param boolean $usestack Tell the sessionmanager to use the session
+     *                          stack manager (back/forth navigation in
+     *                          screens, remembering vars over multiple
+     *                          pages etc). This comes with a slight
+     *                          performance impact, so scripts not using
+     *                          the stack should pass false here.
+     */
+    static public function atksession($namespace = "default", $usestack = true)
+    {
+        global $ATK_VARS, $g_sessionManager, $atkprevlevel;
+
+        $g_sessionManager = new self($namespace, $usestack);
+
+        Tools::atkDataDecode($_REQUEST);
+        $ATK_VARS = array_merge($_GET, $_POST);
+        Tools::atkDataDecode($ATK_VARS);
+        if (array_key_exists('atkfieldprefix', $ATK_VARS) && $ATK_VARS['atkfieldprefix'] != '') {
+            $ATK_VARS = $ATK_VARS[$ATK_VARS['atkfieldprefix']];
+        }
+
+        $g_sessionManager->session_read($ATK_VARS);
+
+        // Escape check
+        if (isset($_REQUEST["atkescape"]) && $_REQUEST["atkescape"] != "") {
+            Node::redirect(Tools::atkurldecode($_REQUEST["atkescape"]));
+            Output::getInstance()->outputFlush();
+            exit;
+        } // Nested URL check
+        else {
+            if (isset($_REQUEST["atknested"]) && $_REQUEST["atknested"] != "") {
+                Node::redirect(Tools::session_url($_REQUEST["atknested"], SESSION_NESTED));
+                Output::getInstance()->outputFlush();
+                exit;
+            } // Back check
+            else {
+                if (isset($ATK_VARS["atkback"]) && $ATK_VARS["atkback"] != "") {
+                    // When we go back, we go one level deeper than the level we came from.
+                    Node::redirect(Tools::session_url(Tools::atkSelf() . "?atklevel=" . ($atkprevlevel - 1)));
+                    Output::getInstance()->outputFlush();
+                    exit;
+                }
+            }
+        }
     }
 
 }
