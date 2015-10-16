@@ -799,7 +799,7 @@ class Controller
     /**
      * Get the ui instance for drawing and templating purposes.
      *
-     * @return Ui An atkUi instance for drawing and templating.
+     * @return Ui An Ui instance for drawing and templating.
      */
     function &getUi()
     {

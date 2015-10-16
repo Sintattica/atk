@@ -33,7 +33,7 @@ class BootstrapIndexPage
     var $m_theme;
 
     /**
-     * @var atkUi
+     * @var Ui
      */
     var $m_ui;
 

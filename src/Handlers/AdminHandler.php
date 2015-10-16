@@ -1,20 +1,13 @@
 <?php namespace Sintattica\Atk\Handlers;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage handlers
- *
- * @copyright (c)2000-2004 Ivo Jansch
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6310 $
- * $Id$
- */
+
+
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Utils\JSON;
+use Sintattica\Atk\Ui\Dialog;
+use \Exception;
 
 /**
  * Handler for the 'admin' action of a node. It displays a recordlist with
@@ -108,7 +101,7 @@ class AdminHandler extends ActionHandler
      * @return String A box containing the admin page (without the add form,
      *                which is added later.
      */
-    function adminPage($actions = "")
+    function adminPage($actions = array())
     {
         $ui = $this->getUi();
 
@@ -402,6 +395,7 @@ class AdminHandler extends ActionHandler
      * Attribute handler.
      *
      * @param string $partial full partial
+     * @return string
      */
     function partial_attribute($partial)
     {

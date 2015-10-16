@@ -31,7 +31,7 @@ class Ui
     var $m_theme = null;
 
     /**
-     * atkUi constructor, initialises Smarty and atkTheme instance
+     * Ui constructor, initialises Smarty and atkTheme instance
      */
     function __construct()
     {
@@ -40,7 +40,7 @@ class Ui
     }
 
     /**
-     * get a singleton instance of the atkUi class.
+     * get a singleton instance of the Ui class.
      *
      * @return Ui
      */

@@ -7,6 +7,8 @@ use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Ui\Dialog;
 use Sintattica\Atk\Core\Controller;
 use Sintattica\Atk\RecordList\RecordListCache;
+use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Ui\Ui;
 
 
 /**
@@ -216,7 +218,7 @@ class ActionHandler
     /**
      * Get the ui instance for drawing and templating purposes.
      *
-     * @return atkUi An atkUi instance for drawing and templating.
+     * @return Ui An Ui instance for drawing and templating.
      */
     function &getUi()
     {
@@ -275,6 +277,7 @@ class ActionHandler
             }
         }
         Tools::atkerror("Undefined method '$methodname' in atkActionHandler");
+        return null;
     }
 
     /**
