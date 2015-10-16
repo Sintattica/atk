@@ -53,35 +53,6 @@ class Menu
         return $classname;
     }
 
-    /**
-     * Get the menu class
-     *
-     * @return string The menu classname
-     */
-    function getMenuClass()
-    {
-        // Get the configured layout class
-        $classname = Menu::layoutToClass(Config::getGlobal("menu_layout"));
-        Tools::atkdebug("Configured menu layout class: $classname");
-
-        // Check if the class is compatible with the current theme, if not use a compatible menu.
-        $theme = Theme::getInstance();
-        $compatiblemenus = $theme->getAttribute('compatible_menus');
-        // If this attribute exists then retreive them
-        if (is_array($compatiblemenus)) {
-            for ($i = 0, $_i = count($compatiblemenus); $i < $_i; $i++) {
-                $compatiblemenus[$i] = Menu::layoutToClass($compatiblemenus[$i]);
-            }
-        }
-
-        if (!empty($compatiblemenus) && is_array($compatiblemenus) && !in_array($classname, $compatiblemenus)) {
-            $classname = $compatiblemenus[0];
-            Tools::atkdebug("Falling back to menu layout class: $classname");
-        }
-
-        // Return the layout class name
-        return $classname;
-    }
 
     /**
      * Get new menu object
@@ -93,17 +64,7 @@ class Menu
         static $s_instance = null;
         if ($s_instance == null) {
             Tools::atkdebug("Creating a new menu instance");
-            $classname = Menu::getMenuClass();
-
-
-            $filename = Tools::getClassPath($classname);
-            if (file_exists($filename)) {
-                $s_instance = new $classname();
-            } else {
-                Tools::atkerror('Failed to get menu object (' . $filename . ' / ' . $classname . ')!');
-                Tools::atkwarning('Please check your compatible_menus in themedef.inc and config_menu_layout in config.inc.php.');
-                $s_instance = new PlainMenu();
-            }
+            $s_instance = new PlainMenu();
 
             // Set the dispatchfile for this menu based on the theme setting, or to the default if not set.
             // This makes sure that all calls to dispatch_url will generate a url for the main frame and not

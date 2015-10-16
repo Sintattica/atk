@@ -521,11 +521,6 @@ $config_menu_delimiter = "<br>";
  */
 $config_menu_pos = "left";
 
-/**
- *
- * @var String
- */
-$config_menu_layout = "plain";
 
 /**
  *
