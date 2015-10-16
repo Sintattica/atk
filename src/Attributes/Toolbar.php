@@ -1,23 +1,7 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 1648 $
- * $Id$
- */
-/**
- * @internal include base class
- */
-include_once($config_atkroot . "atk/attributes/class.atkdummyattribute.php");
+
+use Sintattica\Atk\Ui\Theme;
+use Sintattica\Atk\Ui\Page;
 
 /**
  * The atkToolbar displays a set of buttons that can be used
@@ -56,7 +40,7 @@ class Toolbar extends DummyAttribute
      *                            of any html form element for this attribute.
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record = "", $fieldprefix = "")
+    function edit($record = array(), $fieldprefix = "")
     {
         global $config_atkroot;
 

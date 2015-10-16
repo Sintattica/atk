@@ -1173,32 +1173,7 @@ class Tools
         return false;
     }
 
-    /**
-     * Returns the include file for an atk class (attribute, relation or filter)
-     * @param string $type the type of the class (attribute|relation|filter)
-     * @param string $name the name of the class
-     */
-    public static function atkgetinclude($type, $name)
-    {
-        global $config_atkroot;
-        $a = explode(".", $name);
-        if (count($a) == 2) {
-            $include = Module::moduleDir(strtolower($a[0])) . $type . "s/class." . strtolower($a[1]) . ".php";
-        } else {
-            $include = $config_atkroot . "atk/" . $type . "s/class." . strtolower($name) . ".php";
-        }
-        return $include;
-    }
 
-    /**
-     * Check if an atk class exists (attribute, relation or filter)
-     * @param string $type the type of the class (attribute|relation|filter)
-     * @param string $name the name of the class
-     */
-    public static function atkexists($type, $name)
-    {
-        return file_exists(self::atkgetinclude($type, $name));
-    }
 
     /**
      * Returns the (virtual) hostname of the server.

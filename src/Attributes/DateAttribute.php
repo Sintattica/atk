@@ -14,8 +14,6 @@ define("AF_DATE_EDIT_NO_DAY", AF_SPECIFIC_5); // Don't display the day of the we
 define("AF_CLEAR_TOUCH_BUTTONS", AF_SPECIFIC_6); // Display butons to clear and 'touch' date
 define("AF_DATE_DEFAULT_EMPTY", AF_SPECIFIC_7 | AF_DATE_EMPTYFIELD); // Always use the empty value on new record
 
-// Include adodb workarounds for <1970 dates on windows.
-$config_atkroot = Config::getGlobal("atkroot");
 
 /**
  * The atkDateAttribute class offers a date widget for date fields.

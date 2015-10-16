@@ -1,21 +1,8 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6305 $
- * $Id$
- */
-/** @internal Include base class */
-Tools::useattrib("atklistattribute");
+
+use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Db\Query;
 
 /** Defines */
 define("AF_NO_TOGGLELINKS", AF_SPECIFIC_2);
@@ -47,13 +34,13 @@ class MultiSelectAttribute extends ListAttribute
      * Constructor
      * @param string $name Name of the attribute
      * @param array $optionArray Array with options
-     * @param array $valueArray Array with values. If you don't use this parameter,
+     * @param $valueArray $value Array with values. If you don't use this parameter,
      *                    values are assumed to be the same as the options.
      * @param int $cols Number of columns
      * @param int $flags Flags for this attribute
      * @param int $size Size of the attribute.
      */
-    function atkMultiSelectAttribute($name, $optionArray, $valueArray = "", $cols = "", $flags = 0, $size = "")
+    function __construct($name, $optionArray, $valueArray = null, $cols = null, $flags = 0, $size = "")
     {
         if (!is_array($valueArray) || count($valueArray) == 0) {
             $valueArray = $optionArray;
@@ -65,7 +52,7 @@ class MultiSelectAttribute extends ListAttribute
                 $size += (Tools::atk_strlen($valueArray[$i]) + 1); // 1 extra for the '|' symbol
             }
         }
-        $this->atkListAttribute($name, $optionArray, $valueArray, $flags, $size); // base class constructor
+        parent::__construct($name, $optionArray, $valueArray, $flags, $size); // base class constructor
         ($cols < 1) ? $this->m_cols = 3 : $this->m_cols = $cols;
     }
 
@@ -81,6 +68,7 @@ class MultiSelectAttribute extends ListAttribute
      */
     function hide($record = "", $fieldprefix = "")
     {
+        $result = '';
         if (is_array($record[$this->fieldName()])) {
             $values = $this->getValues($record);
             for ($i = 0; $i < count($values); $i++) {
@@ -104,7 +92,6 @@ class MultiSelectAttribute extends ListAttribute
      */
     function value2db($rec)
     {
-        //Tools::atkdebug("multiselectattribute::value2db()");
         if (is_array($rec[$this->fieldName()]) && count($rec[$this->fieldName()] >= 1)) {
             return $this->escapeSQL(implode($this->m_fieldSeparator, $rec[$this->fieldName()]));
         } else {
@@ -169,7 +156,7 @@ class MultiSelectAttribute extends ListAttribute
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @param String $mode The mode we're in ('add' or 'edit')
-     * @return piece of html code with radioboxes
+     * @return string piece of html code with radioboxes
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
@@ -224,7 +211,7 @@ class MultiSelectAttribute extends ListAttribute
      * @todo code below can't possibly work.
      *  really needs to be fixed.
      *
-     * @param atkquery $query
+     * @param Query $query
      * @param string $table
      * @param mixed $value
      * @param string $searchmode
@@ -233,7 +220,7 @@ class MultiSelectAttribute extends ListAttribute
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
         // Multiselect attribute has only 1 searchmode, and that is substring.
-
+        $searchcondition = null;
         if (is_array($value) && $value[0] != "" && count($value) > 0) {
             if (count($value) == 1) {
                 $searchcondition = $query->substringCondition($table . "." . $this->fieldName(),
@@ -278,7 +265,7 @@ class MultiSelectAttribute extends ListAttribute
      * Add the checkall, checknone and checkinvert links
      *
      * @param string $fieldprefix The fieldprefix
-     * @return a piece of htmlcode with the links
+     * @return string a piece of htmlcode with the links
      */
     function _addLinks($fieldprefix)
     {
@@ -291,6 +278,7 @@ class MultiSelectAttribute extends ListAttribute
             '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\'' . $fieldprefix . $this->fieldName() . '\'); return false;">' .
             Tools::atktext("invert_selection") . '</a>]</font></div>';
         }
+        return '';
     }
 
     /**
