@@ -1,5 +1,9 @@
 <?php namespace Sintattica\Atk\Front;
 
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
+use \Exception;
+
 
 /**
  * FrontEnd Controller base class.
@@ -15,7 +19,7 @@ class FrontController implements \ArrayAccess
     private static $s_bridges = array();
 
     /**
-     * @var atkFrontControllerBridge
+     * @var FrontControllerBridge
      */
     protected $m_bridge;
     protected $m_module;
@@ -155,11 +159,11 @@ class FrontController implements \ArrayAccess
      */
     protected static function createBridge()
     {
-        $class = Config::getGlobal("frontcontroller_bridge", "atk.front.atkfrontcontrollerbridge");
+        $class = Config::getGlobal("frontcontroller_bridge", "FrontControllerBridge");
 
         if (!isset(self::$s_bridges[$class])) {
             Tools::atkdebug('Create ' . $class . ' bridge instance');
-            self::$s_bridges[$class] = Tools::atknew($class);
+            self::$s_bridges[$class] = new $class();
         }
 
         return self::$s_bridges[$class];

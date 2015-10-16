@@ -94,7 +94,7 @@ class Theme
         if (!count($this->m_theme)) {
             $filename = Config::getGlobal("atktempdir") . "themes/" . $this->m_name . ".php";
             if (!file_exists($filename) || Config::getGlobal("force_theme_recompile")) {
-                $compiler = Tools::atknew("atk.ui.atkthemecompiler");
+                $compiler = new ThemeCompiler();
                 $compiler->compile($this->m_name);
             }
             include($filename);

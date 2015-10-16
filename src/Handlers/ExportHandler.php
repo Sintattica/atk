@@ -1,20 +1,10 @@
 <?php namespace Sintattica\Atk\Handlers;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage handlers
- *
- * @copyright (c)2004 Ivo Jansch
- * @copyright (c)2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6323 $
- * $Id: class.atkexporthandler.inc 6460 2009-08-11 19:00:14Z peter $
- */
+
+use Sintattica\Atk\RecordList\CustomRecordList;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Security\Session\SessionManager;
 
 /**
  * Handler for the 'import' action of a node. The import action is a
@@ -564,7 +554,7 @@ class ExportHandler extends ActionHandler
         if (!is_array($actions)) {
             $actions = $node->defaultActions("export");
         }
-        $rl = Tools::atknew("atk.recordlist.atkcustomrecordlist");
+        $rl = new CustomRecordList();
         $flags = ($node_bk->hasFlag(NF_MRA) ? RL_MRA : 0) | ($node_bk->hasFlag(NF_MRPA)
                 ? RL_MRPA : 0) | ($node_bk->hasFlag(NF_LOCK) ? RL_LOCK : 0);
         $node_bk->m_postvars = $session_back;

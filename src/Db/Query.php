@@ -890,8 +890,8 @@ class Query
     function &create($basepath = "atk.db.")
     {
         $dbconfig = Config::getGlobal("db");
-        $name = "atk" . $dbconfig["default"]["driver"] . "query";
-        return Tools::atknew(($basepath ? $basepath . '.' : '') . $name);
+        $class = $dbconfig["default"]["driver"] . "Query";
+        return new $class();
     }
 
     /**

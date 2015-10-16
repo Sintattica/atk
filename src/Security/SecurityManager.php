@@ -140,16 +140,16 @@ class SecurityManager
 
         $authentication = $this->_getAuthTypes($authentication_type);
         foreach ($authentication as $class) {
-            if (!$obj = Tools::atknew($class)) {
+            if(!class_exists($class)){
                 Tools::atkdebug("atkSecurityManager() unsupported authentication type or type no found for $class");
-            } else {
-                $this->m_authentication[$class] = $obj;
+            }else {
+                $this->m_authentication[$class] = new $class();
             }
         }
 
         /* authorization class */
         $clsname = $this->_getclassname($authorization_type);
-        $this->m_authorization = Tools::atknew($clsname);
+        $this->m_authorization = new $clsname();
 
         /* security scheme */
         $this->m_scheme = $securityscheme;

@@ -325,7 +325,7 @@ class ActionHandler
     {
         static $recordlistcache;
         if (!$recordlistcache) {
-            $recordlistcache = Tools::atknew("atk.recordlist.atkrecordlistcache");
+            $recordlistcache = new RecordListCache();
             $recordlistcache->setNode($this->m_node);
             $recordlistcache->setPostvars($this->m_postvars);
         }

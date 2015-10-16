@@ -1181,8 +1181,9 @@ class Db
      */
     function &createQuery()
     {
-        $query = Tools::atknew("atk.db.atk" . $this->m_type . "query");
-        $query->m_db = &$this;
+        $class = $this->m_type."Query";
+        $query = new $class();
+        $query->m_db = $this;
         return $query;
     }
 

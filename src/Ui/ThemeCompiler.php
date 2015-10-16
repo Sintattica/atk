@@ -132,7 +132,7 @@ class ThemeCompiler
      */
     function scanThemePath($path, $abspath, &$data)
     {
-        $traverser = Tools::atknew("atk.utils.atkdirectorytraverser");
+        $traverser = new DirectoryTraverser();
         $subitems = $traverser->getDirContents($abspath);
         foreach ($subitems as $name) {
             if (in_array($name,
@@ -181,7 +181,7 @@ class ThemeCompiler
     {
         global $g_modules;
 
-        $traverser = Tools::atknew("atk.utils.atkdirectorytraverser");
+        $traverser = new DirectoryTraverser();
         foreach ($g_modules as $module => $modpath) {
             $abspath = $modpath . "themes/" . $theme . "/";
 

@@ -83,7 +83,7 @@ class FixtureManager
         $class = $this->m_loadersByExtension[$extension];
 
         if (!isset($this->m_loaders[$class])) {
-            $this->m_loaders[$class] = Tools::atknew($class);
+            $this->m_loaders[$class] = new $class();
         }
 
         return $this->m_loaders[$class];

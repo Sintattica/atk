@@ -347,7 +347,7 @@ class ClassLoader
 
         list($class, $method) = explode("#", $str);
         if ($class != "" && $method != "") {
-            $handler = Tools::atknew($class);
+            $handler = new $class();
             if (is_object($handler)) {
                 return call_user_func_array(array($handler, $method), $params);
             }
@@ -428,7 +428,7 @@ class ClassLoader
      */
     function findAllClasses()
     {
-        $traverser = Tools::atknew('atk.utils.atkdirectorytraverser');
+        $traverser = new DirectoryTraverser();
         $classfinder = new ClassFinder();
         $traverser->addCallbackObject($classfinder);
         $cwd = getcwd();

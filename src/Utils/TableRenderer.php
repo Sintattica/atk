@@ -1,19 +1,9 @@
 <?php namespace Sintattica\Atk\Utils;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage utils
- *
- * @copyright (c)2000-2004 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 5798 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Ui\Theme;
+use Sintattica\Atk\Ui\Page;
+
 /**
  * Some defines
  */
@@ -235,7 +225,8 @@ class TableRenderer
     /**
      * Gets the maximum number of columns in a row
      *
-     * @param aray $data table data
+     * @param array $data table data
+     * @param int|string $rownr
      * @return int max number of rows
      */
     function _getMaxCols($data, $rownr = '')
@@ -280,7 +271,7 @@ class TableRenderer
      *
      * <b>Example:</b>
      * <code>
-     *  $tbl = Tools::atknew("atk.utils.atktablerenderer");
+     *  $tbl = new TableRenderer();
      *  $tbl->render($data, TBL_HEADER|TBL_ALTERNATE, "recordlist");
      * </code>
      *
@@ -353,7 +344,7 @@ class TableRenderer
      * Renders the table.
      *
      * @param array $data
-     * @return html of the rendered table
+     * @return string html of the rendered table
      */
     function _renderTable($data)
     {
@@ -396,7 +387,7 @@ class TableRenderer
      * This method only extracts the value.
      *
      * @param array|string $cell
-     * @return unknown
+     * @return string
      */
     function _renderValue($cell)
     {
@@ -586,7 +577,7 @@ class TableRenderer
         $ret = '';
         if (Tools::hasFlag($alignment, TBL_LEFT)) {
             $ret .= 'align="left" ';
-        } elseif (hasFLag($alignment, TBL_RIGHT)) {
+        } elseif (Tools::hasFlag($alignment, TBL_RIGHT)) {
             $ret .= 'align="right" ';
         } elseif (Tools::hasFlag($alignment, TBL_CENTER)) {
             $ret .= 'align="center" ';
@@ -594,7 +585,7 @@ class TableRenderer
 
         if (Tools::hasFlag($alignment, TBL_TOP)) {
             $ret .= 'valign="top" ';
-        } elseif (hasFLag($alignment, TBL_BOTTOM)) {
+        } elseif (Tools::hasFlag($alignment, TBL_BOTTOM)) {
             $ret .= 'valign="bottom" ';
         } elseif (Tools::hasFlag($alignment, TBL_MIDDLE)) {
             $ret .= 'valign="middle" ';
@@ -622,6 +613,8 @@ class TableRenderer
         } elseif ($span["colspan"] != "") {
             return 'colspan="' . $span["colspan"] . '"';
         }
+
+        return '';
     }
 
     /**

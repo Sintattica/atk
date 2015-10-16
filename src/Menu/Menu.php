@@ -98,11 +98,11 @@ class Menu
 
             $filename = Tools::getClassPath($classname);
             if (file_exists($filename)) {
-                $s_instance = Tools::atknew($classname);
+                $s_instance = new $classname();
             } else {
                 Tools::atkerror('Failed to get menu object (' . $filename . ' / ' . $classname . ')!');
                 Tools::atkwarning('Please check your compatible_menus in themedef.inc and config_menu_layout in config.inc.php.');
-                $s_instance = Tools::atknew('atk.menu.atkplainmenu');
+                $s_instance = new PlainMenu();
             }
 
             // Set the dispatchfile for this menu based on the theme setting, or to the default if not set.
