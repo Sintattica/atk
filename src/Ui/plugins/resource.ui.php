@@ -1,19 +1,6 @@
 <?php
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage ui
- *
- * @copyright (c) 2008 Ibuildings.nl
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 5230 $
- * $Id$
- */
+
+use Sintattica\Atk\Ui\Ui;
 
 /**
  * Smarty resource plug-in for fetching templates from the ATK UI.

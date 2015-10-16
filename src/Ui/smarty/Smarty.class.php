@@ -1,5 +1,4 @@
-<?php namespace Sintattica\Atk\Ui\Smarty;
-
+<?php
 
 /**
  * Project:     Smarty: the PHP compiling template engine

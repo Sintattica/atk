@@ -1,22 +1,12 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6309 $
- * $Id: class.atkfileattribute.inc 7137 2011-10-18 06:41:06Z sandy $
- */
-Tools::useattrib("atkattribute");
 
-/** flag(s) specific for the atkFileAttribute */
+
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Utils\StringParser;
+
+    /** flag(s) specific for the atkFileAttribute */
 /**
  * Disable uploading of files
  */
@@ -351,7 +341,7 @@ class FileAttribute extends Attribute
      *
      * @static
      */
-    function mkdir($path)
+    public static function mkdir($path)
     {
         $path = preg_replace('/(\/){2,}|(\\\){1,}/', '/', $path); //only forward-slash
         $dirs = explode("/", $path);
@@ -671,6 +661,7 @@ class FileAttribute extends Attribute
     /**
      * Display values
      * @param array $record Array with fields
+     * @param string $mode
      * @return string Filename or Nothing
      */
     function display($record, $mode = "")
@@ -867,7 +858,7 @@ class FileAttribute extends Attribute
     function hide($record = "", $fieldprefix = "")
     {
         $field = $record[$this->fieldName()];
-
+        $result = '';
         if (is_array($field)) {
             foreach ($field as $key => $value) {
                 $result .= '<input type="hidden" name="' . $fieldprefix . $this->formName() . '[' . $key . ']" ' . 'value="' . $value . '">';

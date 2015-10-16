@@ -15,6 +15,8 @@
  * $Id$
  */
 
+use Sintattica\Atk\Core\Config;
+
 /**
  * Function for getting a configuration variable and set this in a variable in smarty.
  *

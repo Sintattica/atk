@@ -64,13 +64,12 @@ class ThemeCompiler
     {
         $data = array();
 
-        $path = $this->findTheme($name, $location);
-
-        $abspath = Theme::absPath($path, $location);
+        $path = Config::getGlobal('theme_url');
+        $abspath = Config::getGlobal('theme_dir');
 
         // First parse the themedef file for attributes
-        if ($path != "" && file_exists($abspath . "themedef.php")) {
-            include($abspath . "themedef.php");
+        if ($path != "" && file_exists($abspath . "/themedef.php")) {
+            include($abspath . "/themedef.php");
 
             if (isset($theme)) {
                 foreach ($theme as $key => $value) {
@@ -79,46 +78,12 @@ class ThemeCompiler
             }
 
             // Second scan all files in the theme path
-            $this->scanThemePath($path, $abspath, $data);
+            $this->scanThemePath($path, $abspath.'/', $data);
             $this->scanModulePath($name, $data);
 
             $data["attributes"]["basepath"] = $path;
         }
         return $data;
-    }
-
-    /**
-     * Find the location on disk of a theme with a certain name.
-     *
-     * @param String $name Name of the theme
-     * @param String $location The location of the theme ("atk", "app" or "auto")
-     *                         If set to auto, the method changes the $location
-     *                         value to the actual location.
-     * @return String The path relative to atk root, where the theme is located
-     */
-    function findTheme($name, &$location)
-    {
-        if (strpos($name, ".") !== false) {
-            list ($module, $name) = explode(".", $name);
-            $path = Module::moduleDir($module) . "themes/" . $name . "/";
-            if (file_exists($path . "themedef.php")) {
-                $location = "module";
-                return "module/$module/themes/$name/";
-            }
-        } else {
-            if ($location != "atk" && file_exists(Config::getGlobal("application_dir") . "themes/$name/themedef.php")) {
-                $location = "app";
-                return "themes/$name/";
-            } else {
-                if ($location != "app" && file_exists(Config::getGlobal("atkroot") . "atk/themes/$name/themedef.php")) {
-                    $location = "atk";
-                    return "atk/themes/$name/";
-                }
-            }
-        }
-        Tools::atkerror("Theme $name not found");
-        $location = "";
-        return "";
     }
 
     /**
@@ -137,7 +102,7 @@ class ThemeCompiler
         foreach ($subitems as $name) {
             if (in_array($name,
                 array("images", "styles", "templates"))) { // images, styles and templates are compiled the same
-                $files = $this->_dirContents($abspath . $name);
+                $files = $this->_dirContents($abspath . '/'. $name);
                 foreach ($files as $file) {
                     $key = $file;
                     if (substr($key, -8) == '.tpl.php') {

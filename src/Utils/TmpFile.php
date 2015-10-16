@@ -1,19 +1,7 @@
 <?php namespace Sintattica\Atk\Utils;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage utils
- *
- * @copyright (c)2005 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6065 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
 
 /**
  * Temporary file handler.
@@ -70,7 +58,6 @@ class TmpFile
      * Create a new temporary file handler.
      *
      * @param string $filename
-     * @return atkTmpFile
      */
     public function __construct($filename)
     {
@@ -83,8 +70,8 @@ class TmpFile
      * Factory method, allowing a shorter syntax.
      *
      * @param string $filename
-     * @param string $base directory for writing (default atktempdir)
-     * @return atkTmpFile
+     * @param string $baseDirectory directory for writing (default atktempdir)
+     * @return TmpFile
      */
     public function create($filename, $baseDirectory = null)
     {
@@ -262,7 +249,7 @@ class TmpFile
      * Set the base directory for writing
      * instead of the default atktmp dir
      *
-     * @param string base directory
+     * @param string $dir base directory
      * @return bool
      */
     public function setBasedir($dir)
@@ -354,8 +341,28 @@ class TmpFile
      */
     public function createDirectoryStructure()
     {
-        Tools::useattrib('atkfileattribute');
-        return FileAttribute::mkdir(dirname($this->getPath()));
+        return self::mkdir(dirname($this->getPath()));
+    }
+
+
+    /**
+     * @param $path string path to create
+     * @return bool true if success
+     */
+    public static function mkdir($path)
+    {
+        $path = preg_replace('/(\/){2,}|(\\\){1,}/', '/', $path); //only forward-slash
+        $dirs = explode("/", $path);
+
+        $path = "";
+        foreach ($dirs as $element) {
+            $path .= $element . "/";
+            if (!is_dir($path) && !mkdir($path)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }

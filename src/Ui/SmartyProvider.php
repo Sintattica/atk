@@ -37,7 +37,8 @@ class SmartyProvider
             // However, for some reason (php bug?) the static variable is no longer
             // static if we do that, and a new instance will be created on each
             // call.
-            $s_smarty = new Smarty();
+            require_once __DIR__ . '/Smarty/Smarty.class.php';
+            $s_smarty = new \Smarty();
 
             // Initialize..
 
@@ -83,8 +84,8 @@ class SmartyProvider
 
             // plugin dirs
             $s_smarty->plugins_dir = array(
-                __DIR__.'/Smarty/plugins',
-                __DIR__.'/plugins'
+                __DIR__ . '/Smarty/plugins',
+                __DIR__ . '/plugins'
             );
 
             //$s_smarty->register_compiler_function("tpl","tpl_include");

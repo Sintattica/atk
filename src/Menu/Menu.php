@@ -86,7 +86,7 @@ class Menu
     /**
      * Get new menu object
      *
-     * @return object Menu class object
+     * @return Menu class object
      */
     public static function &getMenu()
     {
