@@ -117,7 +117,7 @@ class Controller
                 $sessionManager->stackVar("atkcontroller", $class);
             }
 
-            $s_object = Tools::atknew($class);
+            $s_object = new $class();
         }
         return $s_object;
     }

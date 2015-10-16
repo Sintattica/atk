@@ -13,7 +13,7 @@
  * @package atk
  * @subpackage datatypes
  */
-class Time extends DataType
+class TimeDataType extends DataType
 {
     /**
      * @var atkString The template to display the time with
@@ -118,7 +118,7 @@ class Time extends DataType
      */
     public function setTemplate($template)
     {
-        $this->m_template = Tools::atknew('atk.datatypes.atkstringdt', $template);
+        $this->m_template =  new StringDt($template);
         return $this;
     }
 

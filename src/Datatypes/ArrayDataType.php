@@ -10,7 +10,7 @@
  * @package atk
  * @subpackage datatypes
  */
-class ArrayDt extends DataType
+class ArrayDataType extends DataType
 {
     /**
      * @var array The internal value of the current array object

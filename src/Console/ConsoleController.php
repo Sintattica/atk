@@ -114,7 +114,7 @@ class ConsoleController
             $controller = new $matches[1]();
         } else {
             if (Tools::atkimport($class)) { // user supplied ATK class path
-                $controller = Tools::atknew($class);
+                $controller = new $class();
             } else {
                 die('Unknown console controller "' . $class . '".' . "\n");
             }

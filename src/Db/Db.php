@@ -648,13 +648,12 @@ class Db
      */
     public function prepare($query)
     {
-        if (Tools::atkimport("atk.db.statement.atk" . $this->m_type . "statement")) {
-            $class = "atk" . $this->m_type . "statement";
-        } else {
-            $class = "atkCompatStatement";
+        $class = "\\Sintattica\\Atk\\Db\\Statement\\".ucfirst($this->m_type)."Statement";
+        if(!class_exists($class)){
+            $class = "\\Sintattica\\Atk\\Db\\Statement\\CompatStatement";
         }
 
-        $stmt = Tools::atknew($class, $this, $query);
+        $stmt = new $class($this, $query);
         return $stmt;
     }
 
@@ -671,6 +670,7 @@ class Db
      * @param int $limit Indicates how many rows to retrieve. Pass -1 to
      *                   retrieve all rows.
      * @abstract
+     * @return bool
      */
     function query($query, $offset = -1, $limit = -1)
     {

@@ -1,5 +1,7 @@
 <?php namespace Sintattica\Atk\DataTypes;
 
+use Sintattica\Atk\Utils\StringParser;
+use Sintattica\Atk\Utils\String;
 
 /**
  * The 'string' datatype.
@@ -10,7 +12,7 @@
  * @package atk
  * @subpackage datatypes
  */
-class StringDt extends DataType
+class StringDataType extends DataType
 {
     /**
      * @var string The internal value of the current string object
@@ -36,7 +38,7 @@ class StringDt extends DataType
      *
      * @param string|array $search What to search on
      * @param string|array $replace What to replace
-     * @return atkString The current string object
+     * @return String The current string object
      */
     public function replace($search, $replace)
     {
@@ -48,11 +50,12 @@ class StringDt extends DataType
      * Parse data into a string with the atkStringParser
      *
      * @param array $data The data to parse into the string
-     * @return atkString The current (modified) string object
+     * @return String The current (modified) string object
      */
     public function parse($data)
     {
-        $this->m_string = Tools::atknew('atk.utils.atkstringparser', $this->m_string)->parse($data);
+        $sp = new StringParser($this->m_string);
+        $this->m_string = $sp->parse($data);
         return $this;
     }
 

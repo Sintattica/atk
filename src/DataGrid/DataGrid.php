@@ -1065,7 +1065,7 @@ class DataGrid
         $this->m_componentInstances = array();
 
         foreach ($this->getComponents() as $name => $info) {
-            $comp = Tools::atknew($info['class'], $this, $info['options']);
+            $comp = new $info['class']($this, $info['options']);
             $this->m_componentInstances[$name] = $comp;
             if ($comp instanceof DataGridListener) {
                 $this->addListener($comp);

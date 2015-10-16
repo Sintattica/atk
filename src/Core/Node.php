@@ -2855,7 +2855,7 @@ class Node
                     $this->addListener($listener);
                 } else {
                     if (is_string($listener)) {
-                        $listenerobj = Tools::atknew($listener);
+                        $listenerobj = new $listener();
                         if (is_object($listenerobj)) {
                             $this->addListener($listenerobj);
                         } else {
@@ -3294,7 +3294,7 @@ class Node
      */
     function validate(&$record, $mode, $ignoreList = array())
     {
-        $validateObj = Tools::atknew($this->m_validate_class);
+        $validateObj = new $this->m_validate_class();
 
         $validateObj->setNode($this);
         $validateObj->setRecord($record);
@@ -3551,14 +3551,13 @@ class Node
      */
     public function select($condition = null, array $params = array())
     {
-        $class = 'atkselector';
+        $class = "Sintattica\\Atk\\Utils\\Selector";
 
         if (method_exists($this, 'selectDb') || method_exists($this, 'countDb')) {
-            $class = 'atkcompatselector';
+            $class = "Sintattica\\Atk\\Utils\\CompatSelector";
         }
 
-
-        $selector = Tools::atknew('atk.utils.' . $class, $this);
+        $selector = new $class($this);
         $this->_initSelector($selector, $condition, $params);
 
         return $selector;
@@ -4423,16 +4422,15 @@ class Node
 
         // The node handler might return a class, then we need to instantiate the handler
         if (is_string($handler) && !function_exists($handler) && Tools::atkimport($handler)) {
-            $handler = Tools::atknew($handler);
+            $handler = new $handler();
         }
 
         // The node handler might return a function as nodehandler. We cannot
         // return a function so we ignore this option.
-        // @todo why not implement a base atkfunctionactionhandler which just calls the given function?
         //       this would probably only work fine when using PHP5, but's better then nothing?
         //       or why support functions at all?!
         // handler object
-        if ($handler != null && is_subclass_of($handler, "atkActionHandler")) {
+        if ($handler != null && is_subclass_of($handler, "ActionHandler")) {
             Tools::atkdebug("Node::getHandler: Using existing atkActionHandler " . get_class($handler) . " class for '" . $action . "'");
             $handler->setNode($this);
             $handler->setAction($action);

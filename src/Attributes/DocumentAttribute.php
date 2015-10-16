@@ -1,25 +1,9 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- * atkDocumentAttribute class file
- *
- * @package atk
- * @subpackage attributes
- *
- * @author ivo <ivo@ibuildings.nl>
- * @author guido <guido@ibuildings.nl>
- *
- * @copyright (c) 2005 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing/ ATK open source license
- *
- * @version $Revision: 6309 $
- * $Id: class.atkdocumentattribute.inc 6354 2009-04-15 02:41:21Z mvdam $
- */
-// Use the atkdummyattribute to extend from
-Tools::useattrib("atkdummyattribute");
+
+
+use Sintattica\Atk\Utils\DirectoryTraverser;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * DocumentAttribute class for adding document generation functionality to a node
@@ -32,17 +16,17 @@ class DocumentAttribute extends DummyAttribute
 {
 
     /**
-     * atkDocumentAttribute constructor
+     * DocumentAttribute constructor
      *
      * @param string $name description
      * @param integer $flags description
      */
-    function atkDocumentAttribute($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
         // Call parent constructor with addition of the af_hide_add flag
         // because this attribute should not be used in add operations where
         // the recorddata is not yet present in the database.
-        $this->atkDummyAttribute($name, "", $flags | AF_HIDE_ADD | AF_DUMMY_SHOW_LABEL);
+        parent::__construct($name, "", $flags | AF_HIDE_ADD | AF_DUMMY_SHOW_LABEL);
     }
 
     /**
@@ -85,7 +69,7 @@ class DocumentAttribute extends DummyAttribute
     function getDocumentFiles($path, $record)
     {
         // Read the directory contents using the directorytraverser
-        $dirtrav = Tools::atknew("atk.utils.atkdirectorytraverser");
+        $dirtrav = new DirectoryTraverser();
         return $dirtrav->getDirContents($path);
     }
 
