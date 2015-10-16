@@ -10,8 +10,6 @@ use Sintattica\Atk\Core\Config;
 define("DDL_PRIMARY", 1);
 define("DDL_UNIQUE", 2);
 define("DDL_NOTNULL", 4);
-//define("DDL_AUTO_INCREMENT", 8); //not yet implemented..
-//define("DDL_AUTOINCREMENT" , 8);
 
 /**
  * The Data Definition Language abstract base class.
@@ -31,6 +29,8 @@ class Ddl
     var $m_remove_field;
     var $m_indexes = array(); // not yet implemented
     var $m_primarykey = array();
+
+    /** @var Db */
     var $m_db;
 
     /**
@@ -55,7 +55,7 @@ class Ddl
      * instantiate the correct DDL class.
      *
      * @param String $database The database driver to use
-     * @return atkDDL instance of db specific DDL driver
+     * @return Ddl instance of db specific DDL driver
      */
     function &create($database = null)
     {
@@ -166,6 +166,7 @@ class Ddl
      *
      * @param string $generictype The datatype to convert.
      * @abstract
+     * @return string
      */
     function getType($generictype)
     {
@@ -199,7 +200,7 @@ class Ddl
     /**
      * Build a CREATE TABLE query and return it as a string.
      *
-     * @return The CREATE TABLE query.
+     * @return string The CREATE TABLE query.
      */
     function buildCreate()
     {
@@ -233,7 +234,7 @@ class Ddl
      * function should be implemented in the appropriate atk<database>ddl
      * class.
      *
-     * @return An array of ALTER TABLE queries.
+     * @return array of ALTER TABLE queries.
      */
     function buildAlter()
     {
@@ -268,7 +269,7 @@ class Ddl
     /**
      * Build a DROP TABLE query and return it as a string.
      *
-     * @return The DROP TABLE query.
+     * @return string The DROP TABLE query.
      */
     function buildDrop()
     {
@@ -412,7 +413,7 @@ class Ddl
      * Convert all constraints to an array that can be used in a CREATE or
      * ALTER TABLE statement.
      *
-     * @return An array of constraints
+     * @return array of constraints
      * @access private
      */
     function _buildConstraintsArray()
