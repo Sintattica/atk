@@ -1,19 +1,9 @@
 <?php namespace Sintattica\Atk\Security;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage security
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6289 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Utils\StringParser;
+use Sintattica\Atk\Core\Module;
 
 /**
  * Driver for authentication and authorization using tables in the database.
@@ -243,17 +233,16 @@ class auth_db extends auth_interface
      */
     function getUser($user)
     {
-        $grouptable = Config::getGlobal("auth_grouptable");
-        $groupfield = Config::getGlobal("auth_groupfield");
         $groupparentfield = Config::getGlobal("auth_groupparentfield");
 
         $recs = $this->selectUser($user);
         $groups = array();
+        $level = array();
+        $parents = array();
 
         // We might have more then one level, so we loop the result.
         if (count($recs) > 0) {
-            $level = array();
-            $parents = array();
+
 
             for ($i = 0; $i < count($recs); $i++) {
                 $level[] = $recs[$i][Config::getGlobal("auth_levelfield")];
@@ -296,7 +285,7 @@ class auth_db extends auth_interface
      * Get the access level from the user
      *
      * @param array $recs The records that are returned by the selectUser function
-     * @return the access level
+     * @return int the access level
      */
     function getAccessLevel($recs)
     {
@@ -364,8 +353,7 @@ class auth_db extends auth_interface
      *                     attribute access.
      * @param String $attrib The name of the attribute to check
      * @param String $mode "view" or "edit"
-     * @param mixed One (int) or more (array) entities that are allowed to
-     *              view/edit the attribute.
+     * @return array
      */
     function getAttribEntity($node, $attrib, $mode)
     {
@@ -453,7 +441,7 @@ class auth_db extends auth_interface
     /**
      * This function returns "get password" policy for current auth method
      *
-     * @return const
+     * @return int const
      */
     function getPasswordPolicy()
     {
@@ -491,7 +479,7 @@ class auth_db extends auth_interface
         }
 
         // Regenerate the password
-        $passwordattr = &$usernode->getAttribute(Config::getGlobal("auth_passwordfield"));
+        $passwordattr = $usernode->getAttribute(Config::getGlobal("auth_passwordfield"));
         $newpassword = $passwordattr->generatePassword();
 
         // Update the record in the database

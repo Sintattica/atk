@@ -1,19 +1,8 @@
 <?php namespace Sintattica\Atk\Security;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage security
- *
- * @copyright (c)2000-2004 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6289 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Attributes\Attribute;
+
 /**
  * This authentication method supports retrieval of the current password
  * (alternative to current $config_.....)
@@ -136,7 +125,7 @@ class auth_interface
      * Check if the currently logged-in user has a certain privilege on a
      * node.
      *
-     * @param atkSecurityManager $securityMgr The security manager instance.
+     * @param SecurityManager $securityMgr The security manager instance.
      * @param String $node The full nodename of the node for which to check
      *                     access privileges. (modulename.nodename notation).
      * @param String $privilege The privilege to check (atkaction).
@@ -188,7 +177,7 @@ class auth_interface
      * Check if the currently logged-in user has the right to view, edit etc.
      * an attribute of a node.
      *
-     * @param atkSecurityManager $securityMgr the security manager
+     * @param SecurityManager $securityMgr the security manager
      * @param Attribute $attr attribute reference
      * @param string $mode mode (add, edit, view etc.)
      * @param array $record record data
@@ -258,8 +247,7 @@ class auth_interface
      *                     attribute access.
      * @param String $attrib The name of the attribute to check
      * @param String $mode "view" or "edit"
-     * @param mixed One (int) or more (array) entities that are allowed to
-     *              view/edit the attribute.
+     * @return array
      */
     function getAttribEntity($node, $attrib, $mode)
     {
@@ -285,7 +273,7 @@ class auth_interface
     /**
      * This function returns "get password" policy for current auth method
      *
-     * @return const
+     * @return int const
      */
     function getPasswordPolicy()
     {

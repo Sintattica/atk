@@ -1,19 +1,6 @@
 <?php namespace Sintattica\Atk\Security;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage security
- *
- * @copyright (c)2000-2004 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6289 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Config;
 
 /**
  * Driver for authentication and authorization using entries in the
@@ -133,8 +120,7 @@ class auth_config extends auth_interface
      *                     attribute access.
      * @param String $attrib The name of the attribute to check
      * @param String $mode "view" or "edit"
-     * @param mixed One (int) or more (array) entities that are allowed to
-     *              view/edit the attribute.
+     * @return array
      */
     function getAttribEntity($node, $attrib, $mode)
     {
@@ -161,7 +147,7 @@ class auth_config extends auth_interface
     /**
      * This function returns "get password" policy for current auth method
      *
-     * @return const
+     * @return int const
      */
     function getPasswordPolicy()
     {
