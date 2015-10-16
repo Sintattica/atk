@@ -3,6 +3,7 @@
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Attributes\Attribute;
 
 /**
  * Sort ascending
@@ -115,10 +116,9 @@ class ColumnConfig
     /**
      * Is this attribute last?
      *
-     * @param string $attribute
      * @return bool False
      */
-    function isLast($attribute)
+    function isLast()
     {
         return false;
     }
@@ -126,10 +126,9 @@ class ColumnConfig
     /**
      * Is this attribute first?
      *
-     * @param string $attribute
      * @return bool False
      */
-    function isFirst($attribute)
+    function isFirst()
     {
         return false;
     }
