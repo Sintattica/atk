@@ -1,6 +1,8 @@
 <?php namespace Sintattica\Atk\DataGrid;
 
 
+use Sintattica\Atk\Core\Config;
+
 /**
  * The data grid paginator. Can be used to render pagination
  * links for an ATK data grid.
@@ -76,7 +78,6 @@ class DataGridPaginator extends DataGridComponent
         // normal pagination links
         for ($i = $first; $i <= $last; $i++) {
             if ($i == $current) {
-                $title = $i;
                 $links[] = array('type' => 'page', 'title' => $i, 'current' => true);
             } else {
                 $title = $i;

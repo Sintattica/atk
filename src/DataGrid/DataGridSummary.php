@@ -1,5 +1,7 @@
 <?php namespace Sintattica\Atk\DataGrid;
 
+use Sintattica\Atk\Utils\StringParser;
+
 /**
  * The data grid summary. Can be used to render a
  * summary for an ATK data grid.

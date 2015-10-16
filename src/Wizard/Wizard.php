@@ -145,7 +145,7 @@ class Wizard extends WizardBase
     {
 
         global $g_sessionManager;
-        /* @var $g_sessionManager atkSessionManager */
+        /* @var $g_sessionManager SessionManager */
         $level = $g_sessionManager->getValue("wizard_initiation_level");
         if ($level === null) {
             $g_sessionManager->globalVar("wizard_initiation_level", SessionManager::atkLevel());

@@ -2,6 +2,8 @@
 
 
 use Sintattica\Atk\Utils\JSON;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
 
 /**
  * The grid renderer is responsible for rendering the grid components and
@@ -38,7 +40,7 @@ class DataGridRenderer extends DataGridComponent
      *
      * @param string $result grid HTML
      *
-     * @return sting grid HTML
+     * @return string grid HTML
      */
     protected function renderForm($result)
     {

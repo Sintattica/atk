@@ -4,7 +4,7 @@
 /**
  * Grid event.
  *
- * @see DGListener
+ * @see DataGridListener
  * @see DataGrid
  *
  * @author Peter C. Verhage <peter@achievo.org>

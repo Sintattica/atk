@@ -15,7 +15,7 @@ interface DataGridListener
     /**
      * Will be called for each data grid event.
      *
-     * @param atkDGEvent $event event
+     * @param DataGridEvent $event event
      */
     public function notify(DataGridEvent $event);
 }

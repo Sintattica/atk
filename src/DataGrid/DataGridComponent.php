@@ -1,17 +1,9 @@
 <?php namespace Sintattica\Atk\DataGrid;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage utils
- *
- * @copyright (c) 2000-2007 Ibuildings.nl BV
- *
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- */
+
+use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Ui\Ui;
+use Sintattica\Atk\Ui\Theme;
 
 /**
  * The data grid component base class. All data grid component extend this
@@ -61,6 +53,7 @@ abstract class DataGridComponent
      * Returns the value for the component option with the given name.
      *
      * @param string $name option name
+     * @param string $fallback
      *
      * @return mixed option value
      */
@@ -102,7 +95,7 @@ abstract class DataGridComponent
     /**
      * Returns the UI object.
      *
-     * @return atkUi ui
+     * @return Ui ui
      */
     protected function getUi()
     {
@@ -112,7 +105,7 @@ abstract class DataGridComponent
     /**
      * Return the theme object.
      *
-     * @return atkTheme theme
+     * @return Theme theme
      */
     protected function getTheme()
     {
@@ -129,6 +122,7 @@ abstract class DataGridComponent
      * @param string $string string to translate
      * @param string $fallback fallback in-case no translation can be found
      * @param boolean $useDefault use default ATK translation if no translation can be found?
+     * @return string translation
      */
     protected function text($string, $fallback = '', $useDefault = true)
     {

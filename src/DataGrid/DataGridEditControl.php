@@ -16,7 +16,6 @@ class DataGridEditControl extends DataGridComponent
     /**
      * Renders the no records found message for the given data grid.
      *
-     * @param DataGrid $grid the data grid
      * @return string rendered HTML
      */
     public function render()

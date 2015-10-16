@@ -1,5 +1,13 @@
 <?php namespace Sintattica\Atk\DataGrid;
 
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Utils\StringParser;
+use Sintattica\Atk\RecordList\Totalizer;
+use Sintattica\Atk\Ui\Theme;
+use Sintattica\Atk\Keyboard\Keyboard;
+use \stdClass;
+use \Exception;
 
 /**
  * The data grid list component renders the recordlist.
@@ -51,14 +59,12 @@ class DataGridList extends DataGridComponent
 
     /**
      * Get records for a recordlist without actually rendering the recordlist.
-     * @param Node $node the atknode of the grid
      * @param Array $recordset the list of records
      * @param Array $actions the default actions array
-     * @param Integer $flags recordlist flags (see the top of this file)
      * @param Array $suppressList fields we don't display
      * @return String The rendered recordlist
      */
-    private function getRecordlistData($recordset, $actions, $suppressList = "")
+    private function getRecordlistData($recordset, $actions, $suppressList = array())
     {
         $grid = $this->getGrid();
         $theme = $this->getTheme();
@@ -295,7 +301,6 @@ class DataGridList extends DataGridComponent
                 $record["cols"][] = array("content" => $select, "type" => "mrpa");
             } /* multi-record-actions -> checkbox */ elseif (!$edit && $hasMRA) {
                 if (count($list["rows"][$i]["mra"]) > 0) {
-                    $inputHTML = '';
 
                     switch ($grid->getMRASelectionMode()) {
                         case MRA_SINGLE_SELECT:
@@ -563,14 +568,13 @@ class DataGridList extends DataGridComponent
             }
         } else {
             if ($edit) {
-                $embedded = $this->getGrid()->isEmbedded() ? 'true' : 'false';
                 $mra = '<input type="button" class="btn" value="' . Tools::atktext('save') . '" onclick="' . htmlentities($this->getGrid()->getSaveCall()) . '">';
             }
         }
 
 
         if (Config::getGlobal("use_keyboard_handler")) {
-            $kb = &Keyboard::getInstance();
+            $kb = Keyboard::getInstance();
             $kb->addRecordListHandler($listName, $selectcolor, count($records));
         }
 
@@ -599,7 +603,7 @@ class DataGridList extends DataGridComponent
      * Returns the link for heading anchors
      *
      * @param string $onClickCall the value for in the onclick
-     * @param the title of the link $title
+     * @param string $title the title of the link $title
      * @return string
      */
     protected function _getHeadingAnchorHtml($onClickCall, $title)
@@ -615,6 +619,7 @@ class DataGridList extends DataGridComponent
      * @param string $i The row index to render the action for
      * @param string $name The action name
      * @param bool|string $confirmtext The text for the confirmation if set
+     * @return string the html link
      */
     protected function _renderRecordActionLink($url, $link, $listName, $i, $name, $confirmtext = "false")
     {
@@ -637,6 +642,7 @@ class DataGridList extends DataGridComponent
      *
      * @access private
      * @param Array $list The recordlist data
+     * @param bool $hasSearch
      * @return bool Wether the list should display an extra column to hold the actions
      */
     function _hasActionColumn($list, $hasSearch)
@@ -679,6 +685,7 @@ class DataGridList extends DataGridComponent
             $output = $grid->getNode()->getCustomMraHtml();
             return $output;
         }
+        return null;
     }
 
     /**
@@ -726,7 +733,7 @@ class DataGridList extends DataGridComponent
      *  "total"    => for each totalisable column the sum value (display)
      *  "mra"      => list of all multi-record actions
      *
-     * @return see above
+     * @return array see above
      */
     private function listArray(&$recordset, $prefix = "", $actions = array(), $suppress = array())
     {

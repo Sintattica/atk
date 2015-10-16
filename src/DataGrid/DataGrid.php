@@ -2,6 +2,12 @@
 
 
 use Sintattica\Atk\Utils\JSON;
+use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Security\Session\SessionManager;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Utils\StringParser;
+use \Exception;
 
 /**
  * The data grid is a component based record list container.
@@ -92,6 +98,13 @@ class DataGrid
     private $m_node;
 
     /**
+     * Master Node.
+     *
+     * @var Node
+     */
+    private $m_masterNode;
+
+    /**
      * Flags.
      *
      * @var int
@@ -143,7 +156,7 @@ class DataGrid
     /**
      * List of datagrid component instances.
      *
-     * @var array
+     * @var DataGridComponent[]
      */
     private $m_componentInstances = array();
 
@@ -300,7 +313,7 @@ class DataGrid
      * object instance variable to make sure we have access to it in the
      * destructor.
      *
-     * @var atkSessionManager
+     * @var SessionManager
      */
     private $m_sessionMgr;
 
@@ -347,7 +360,7 @@ class DataGrid
             SessionManager::getSessionManager()->pageVar('atkdgsession', $sessions);
         }
         $class = substr($class, strrpos($class, '.') + 1);
-        $grid = Tools::atknew($class, $node, $name, self::CREATE, $isEmbedded, $useSession);
+        $grid = new $class($node, $name, self::CREATE, $isEmbedded, $useSession);
         self::callModifiers($grid, self::CREATE);
         return $grid;
     }
@@ -380,7 +393,7 @@ class DataGrid
         $class = $session['class'];
 
         $class = substr($class, strrpos($class, '.') + 1);
-        $grid = Tools::atknew($class, $node, $name, self::RESUME);
+        $grid = new $class($node, $name, self::RESUME);
         self::callModifiers($grid, self::RESUME);
         return $grid;
     }
@@ -1054,7 +1067,7 @@ class DataGrid
         foreach ($this->getComponents() as $name => $info) {
             $comp = Tools::atknew($info['class'], $this, $info['options']);
             $this->m_componentInstances[$name] = $comp;
-            if ($comp instanceof DGListener) {
+            if ($comp instanceof DataGridListener) {
                 $this->addListener($comp);
             }
         }
@@ -1077,7 +1090,7 @@ class DataGrid
      *
      * @param string $name component name
      *
-     * @return atkDGComponent
+     * @return DataGridComponent
      */
     public function getComponentInstance($name)
     {
@@ -1544,7 +1557,7 @@ class DataGrid
      *
      * This method uses the grid node to retrieve a record count.
      *
-     * @return unknown
+     * @return int
      */
     protected function countRecords()
     {
@@ -1586,7 +1599,7 @@ class DataGrid
         $this->loadComponentInstances();
 
         // notify listeners
-        $this->notify(DGEvent::PRE_LOAD);
+        $this->notify(DataGridEvent::PRE_LOAD);
 
         // temporarily overwrite the node postvars so that selectDb and countDb
         // have access to the atksearch, atkfilter, atklimit etc. parameters
@@ -1623,7 +1636,7 @@ class DataGrid
         $this->m_recordsLoaded = true;
 
         // notify listeners
-        $this->notify(DGEvent::POST_LOAD);
+        $this->notify(DataGridEvent::POST_LOAD);
     }
 
     /**
@@ -1685,9 +1698,9 @@ class DataGrid
     /**
      * Add the given listener to this grid.
      *
-     * @param DGListener $listener
+     * @param DataGridListener $listener
      */
-    public function addListener(DGListener $listener)
+    public function addListener(DataGridListener $listener)
     {
         if (!array_key_exists(spl_object_hash($listener), $this->m_listeners)) {
             $this->m_listeners[spl_object_hash($listener)] = $listener;
@@ -1697,9 +1710,9 @@ class DataGrid
     /**
      * Removes the given listener from this grid.
      *
-     * @param DGListener $listener
+     * @param DataGridListener $listener
      */
-    public function removeListener(DGListener $listener)
+    public function removeListener(DataGridListener $listener)
     {
         unset($this->m_listeners[spl_object_hash($listener)]);
     }
@@ -1717,13 +1730,13 @@ class DataGrid
     /**
      * Notify listeners of the given event.
      *
-     * @see DGListener
+     * @see DataGridListener
      *
      * @param string $event identifier
      */
     protected function notify($event)
     {
-        $event = new DGEvent($this, $event);
+        $event = new DataGridEvent($this, $event);
 
         foreach ($this->getListeners() as $listener) {
             $listener->notify($event);
@@ -1771,7 +1784,7 @@ class DataGrid
         $this->loadComponentInstances();
 
         // notify listeners
-        $this->notify(DGEvent::PRE_RENDER);
+        $this->notify(DataGridEvent::PRE_RENDER);
 
         // if we are not embedded in an edit form we generate
         // the form name based on the grid name
@@ -1787,14 +1800,14 @@ class DataGrid
         $this->loadRecords();
 
         // render the grid
-        $renderer = new DGRenderer($this);
+        $renderer = new DataGridRenderer($this);
         $result = $renderer->render();
 
         // restore previous postvars
         $this->restoreNodePostvars();
 
         // notify listeners
-        $this->notify(DGEvent::POST_RENDER);
+        $this->notify(DataGridEvent::POST_RENDER);
 
         return $result;
     }

@@ -1,5 +1,6 @@
 <?php namespace Sintattica\Atk\DataGrid;
-/**
+
+use Sintattica\Atk\Core\Config;
 
 
 /**
