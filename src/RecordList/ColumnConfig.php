@@ -85,7 +85,7 @@ class ColumnConfig
         }
 
         if (!isset($s_instances[$id]) || $forceNew) {
-            $cc = new ColumnConfig();
+            $cc = new self();
             $s_instances[$id] = $cc;
             $cc->setNode($node);
 
@@ -245,7 +245,7 @@ class ColumnConfig
      */
     function flatten()
     {
-        uasort($this->m_colcfg, array("ColumnConfig", "_compareSortAttrs"));
+        uasort($this->m_colcfg, array(__CLASS__, "_compareSortAttrs"));
 
         $i = 1;
         foreach ($this->m_colcfg as $field => $config) {

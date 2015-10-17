@@ -55,7 +55,7 @@ class PlainMenu extends MenuInterface
 
         $menu = $this->getHeader($atkmenutop);
         if (is_array($g_menu[$atkmenutop])) {
-            usort($g_menu[$atkmenutop], array(__NAMESPACE__ . "\\PlainMenu", "menu_cmp"));
+            usort($g_menu[$atkmenutop], array(__CLASS__, "menu_cmp"));
             $menuitems = array();
             for ($i = 0; $i < count($g_menu[$atkmenutop]); $i++) {
                 if ($i == count($g_menu[$atkmenutop]) - 1) {
