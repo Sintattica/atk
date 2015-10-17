@@ -4,6 +4,7 @@ use Sintattica\Atk\Core\Controller;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Utils\MessageQueue;
 
 
 /**

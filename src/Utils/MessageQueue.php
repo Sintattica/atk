@@ -1,19 +1,7 @@
 <?php namespace Sintattica\Atk\Utils;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage utils
- *
- * @copyright (c)2006 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6320 $
- * $Id$
- */
+
+use Sintattica\Atk\Session\SessionManager;
+
 /**
  * Message queue flags.
  */
@@ -37,9 +25,9 @@ class MessageQueue
     /**
      * Retrieve the atkMessageQueue instance
      *
-     * @return atkMessageQueue The instance.
+     * @return MessageQueue The instance.
      */
-    function &getInstance()
+    public static function &getInstance()
     {
         static $s_instance = null;
         if ($s_instance == null) {
@@ -69,7 +57,7 @@ class MessageQueue
      */
     function addMessage($txt, $type = AMQ_GENERAL)
     {
-        $instance = MessageQueue::getInstance();
+        $instance = self::getInstance();
         if (is_object($instance)) {
             return $instance->_addMessage($txt, $type);
         }
@@ -119,9 +107,9 @@ class MessageQueue
      * @static
      * @return string message
      */
-    function getMessage()
+    public static function getMessage()
     {
-        $instance = MessageQueue::getInstance();
+        $instance = self::getInstance();
         if (is_object($instance)) {
             return $instance->_getMessage();
         }
@@ -135,7 +123,7 @@ class MessageQueue
      */
     function _getMessage()
     {
-        $q = $this->getQueue();
+        $q = &$this->getQueue();
         return array_shift($q);
     }
 
@@ -144,9 +132,9 @@ class MessageQueue
      *
      * @return array messages
      */
-    function getMessages()
+    public static function getMessages()
     {
-        $instance = MessageQueue::getInstance();
+        $instance = self::getInstance();
         if (is_object($instance)) {
             return $instance->_getMessages();
         }
@@ -160,7 +148,7 @@ class MessageQueue
      */
     function _getMessages()
     {
-        $q = $this->getQueue();
+        $q = &$this->getQueue();
         $queue_copy = $q;
         $q = array();
         return $queue_copy;
