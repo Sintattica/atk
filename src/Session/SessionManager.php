@@ -24,7 +24,7 @@ if (Config::getGlobal('session_init', true) && SessionManager::atksession_init()
     // session enabled, multi-app array in which you can store whatever you like.
     // There are old applications however that still use $g_sessionData, so I'll
     // leave it in place for now.
-    $GLOBALS['g_sessionData'] = $_SESSION[Config::getGlobal('identifier')];
+    $GLOBALS['g_sessionData'] = &$_SESSION[Config::getGlobal('identifier')];
 }
 
 define("SESSION_DEFAULT", 0); // stay at current stacklevel
@@ -217,7 +217,7 @@ class SessionManager
             $level = self::atkLevel();
         }
 
-        $sessionData = $this->getSession();
+        $sessionData = &$this->getSession();
         $currentitem = &$sessionData[$this->m_namespace]["stack"][self::atkStackID()][$level];
         if (!is_array($currentitem)) {
             return null;
@@ -266,7 +266,7 @@ class SessionManager
             return null;
         }
 
-        $sessionData = $this->getSession();
+        $sessionData = &$this->getSession();
         $top_stack_level = &$sessionData[$this->m_namespace]['globals']['#STACK#'][self::atkStackID()];
         if (!is_array($top_stack_level)) {
             $top_stack_level = array();
