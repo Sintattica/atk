@@ -390,7 +390,7 @@ class DataGrid
         }
         $session = $GLOBALS['ATK_VARS']['atkdgsession'][$name];
 
-        $class = $session['class'];
+        $class = &$session['class'];
 
         $class = substr($class, strrpos($class, '.') + 1);
         $grid = new $class($node, $name, self::RESUME);

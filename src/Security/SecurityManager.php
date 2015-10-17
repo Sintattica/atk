@@ -498,9 +498,9 @@ class SecurityManager
         //Send the username with the header
         //This way we can always retrieve the user from apache logs
         header('user: ' . $this->m_user["name"]);
-        $GLOBALS["g_user"] = $this->m_user;
+        $GLOBALS["g_user"] = &$this->m_user;
         $sm = SessionManager::getInstance();
-        $g_sessionManager->globalVar("authentication", array("authenticated" => 1, "user" => $this->m_user), true);
+        $sm->globalVar("authentication", array("authenticated" => 1, "user" => $this->m_user), true);
         SessionManager::sessionStore('loginattempts', ''); //reset maxloginattempts
 
         if ($throwPostLoginEvent) {
