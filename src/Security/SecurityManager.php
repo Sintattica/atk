@@ -97,7 +97,7 @@ class SecurityManager
     {
         // assume that when a type includes a dot, the fullclassname is used.
         if (!stristr($type, ".")) {
-            $cls = "Sintattica\\Atk\\Security\\Auth\\".ucfirst($type)."Auth";
+            $cls = __NAMESPACE__ . "\\Auth\\" . ucfirst($type) . "Auth";
         } else {
             $cls = $type;
         }
@@ -141,9 +141,9 @@ class SecurityManager
 
         $authentication = $this->_getAuthTypes($authentication_type);
         foreach ($authentication as $class) {
-            if(!class_exists($class)){
+            if (!class_exists($class)) {
                 Tools::atkdebug("atkSecurityManager() unsupported authentication type or type no found for $class");
-            }else {
+            } else {
                 $this->m_authentication[$class] = new $class();
             }
         }

@@ -648,9 +648,9 @@ class Db
      */
     public function prepare($query)
     {
-        $class = "\\Sintattica\\Atk\\Db\\Statement\\".$this->m_type."Statement";
-        if(!class_exists($class)){
-            $class = "\\Sintattica\\Atk\\Db\\Statement\\CompatStatement";
+        $class = __NAMESPACE__ . "\\Statement\\" . $this->m_type . "Statement";
+        if (!class_exists($class)) {
+            $class = __NAMESPACE__ . "\\Statement\\CompatStatement";
         }
 
         $stmt = new $class($this, $query);
@@ -1181,7 +1181,7 @@ class Db
      */
     function &createQuery()
     {
-        $class = "Sintattica\\Atk\\Db\\".$this->m_type."Query";
+        $class = __NAMESPACE__ . "\\" . $this->m_type . "Query";
         $query = new $class();
         $query->m_db = $this;
         return $query;
@@ -1288,7 +1288,7 @@ class Db
         if ($reset || !isset($g_dbinstances[$conn]) || !$g_dbinstances[$conn]->hasMode($mode)) {
             $dbconfig = Config::getGlobal("db");
 
-            $driver = "Sintattica\\Atk\\Db\\".$dbconfig[$conn]["driver"]."Db";
+            $driver = __NAMESPACE__ . "\\" . $dbconfig[$conn]["driver"] . "Db";
             Tools::atkdebug("Creating new database instance with '{$driver}' driver");
 
             /** @var Db $driverInstance */

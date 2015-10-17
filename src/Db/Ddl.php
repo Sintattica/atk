@@ -61,7 +61,7 @@ class Ddl
     {
         $db = Config::getGlobal("db");
         $database = $database === null ? $db["default"]["driver"] : $database;
-        $classname = "Sintattica\\Atk\\Db\\" . $database . "Ddl";
+        $classname = __NAMESPACE__ . "\\" . $database . "Ddl";
         return new $classname();
     }
 

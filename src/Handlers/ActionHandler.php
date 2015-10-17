@@ -73,13 +73,6 @@ class ActionHandler
      */
     var $m_renderMode = 'box';
 
-    /**
-     * Default constructor.
-     */
-    function atkActionHandler()
-    {
-
-    }
 
     function __construct()
     {
@@ -272,11 +265,11 @@ class ActionHandler
             return call_user_func_array(array($this->m_node, $methodname), $arguments);
         } else {
             if (method_exists($this, $methodname)) {
-                Tools::atkdebug("Invoking '$methodname' on actionhandler for action " . $this->m_action);
+                Tools::atkdebug("Invoking '$methodname' on ActionHandler for action " . $this->m_action);
                 return call_user_func_array(array(&$this, $methodname), $arguments);
             }
         }
-        Tools::atkerror("Undefined method '$methodname' in atkActionHandler");
+        Tools::atkerror("Undefined method '$methodname' in ActionHandler");
         return null;
     }
 
@@ -290,13 +283,12 @@ class ActionHandler
      * actionhandler's handle() mehod is called.
      * @static
      *
-     * @param String $action The action for which an action handler should be
-     *                       retrieved.
+     * @return ActionHandler
      */
     public static function getDefaultHandler($action)
     {
-        $class = ucfirst($action) . "Handler";
-        if(class_exists($class)){
+        $class = __NAMESPACE__ . "\\" . ucfirst($action) . "Handler";
+        if (class_exists($class)) {
             return new $class();
         }
         return new ActionHandler();

@@ -32,7 +32,7 @@ abstract class ErrorHandlerBase
      */
     static public function get($handlerName, $params)
     {
-        $class = "Sintattica\\Atk\\Errors\\"."$handlerName"."ErrorHandler";
+        $class = __NAMESPACE__ . "\\" . "$handlerName" . "ErrorHandler";
         return new $class($params);
     }
 

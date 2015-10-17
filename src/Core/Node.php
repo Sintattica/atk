@@ -4391,7 +4391,7 @@ class Node
             $handler($this, $action);
         } // handler object
         elseif ($handler != null && $handler instanceof ActionHandler) {
-            Tools::atkdebug("Node::callHandler:Using override/existing atkActionHandler " . get_class($handler) . " class for '" . $action . "'");
+            Tools::atkdebug("Node::callHandler:Using override/existing ActionHandler " . get_class($handler) . " class for '" . $action . "'");
             $handler->handle($this, $action, $this->m_postvars);
         } // no (valid) handler
         else {
@@ -4432,18 +4432,19 @@ class Node
         //       or why support functions at all?!
         // handler object
         if ($handler != null && is_subclass_of($handler, "ActionHandler")) {
-            Tools::atkdebug("Node::getHandler: Using existing atkActionHandler " . get_class($handler) . " class for '" . $action . "'");
+            Tools::atkdebug("Node::getHandler: Using existing ActionHandler " . get_class($handler) . " class for '" . $action . "'");
             $handler->setNode($this);
             $handler->setAction($action);
         } else {
             $handler = ActionHandler::getDefaultHandler($action);
+
             $handler->setNode($this);
             $handler->setPostvars($this->m_postvars);
             $handler->setAction($action);
 
             //If we use a default handler we need to register it to this node
             //because we might call it a second time.
-            Tools::atkdebug("Node::getHandler: Register default atkActionHandler for " . $this->m_type . " action: '" . $action . "'");
+            Tools::atkdebug("Node::getHandler: Register default ActionHandler for " . $this->m_type . " action: '" . $action . "'");
             Module::atkRegisterNodeHandler($this->m_type, $action, $handler);
         }
 

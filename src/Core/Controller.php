@@ -106,7 +106,7 @@ class Controller
                 $class = $ATK_VARS['atkcontroller'];
             }
             if (empty($class)) {
-                $class = "Sintattica\\Atk\\Core\\Controller";
+                $class = __CLASS__;
             }
 
             //We save the controller in stack, so the controller constructor
