@@ -648,7 +648,7 @@ class Db
      */
     public function prepare($query)
     {
-        $class = "\\Sintattica\\Atk\\Db\\Statement\\".ucfirst($this->m_type)."Statement";
+        $class = "\\Sintattica\\Atk\\Db\\Statement\\".$this->m_type."Statement";
         if(!class_exists($class)){
             $class = "\\Sintattica\\Atk\\Db\\Statement\\CompatStatement";
         }
@@ -1181,7 +1181,7 @@ class Db
      */
     function &createQuery()
     {
-        $class = $this->m_type."Query";
+        $class = "Sintattica\\Atk\\Db\\".$this->m_type."Query";
         $query = new $class();
         $query->m_db = $this;
         return $query;
@@ -1288,25 +1288,12 @@ class Db
         if ($reset || !isset($g_dbinstances[$conn]) || !$g_dbinstances[$conn]->hasMode($mode)) {
             $dbconfig = Config::getGlobal("db");
 
-            if (!empty($dbconfig[$conn]["driver"]) && strpos($dbconfig[$conn]["driver"], '.') !== false) {
-                $driver = $dbconfig[$conn]["driver"];
-            } else {
-                if (!empty($dbconfig[$conn]["driver"])) {
-                    $driver = "atk.db.atk{$dbconfig[$conn]["driver"]}db";
-                } else {
-                    if (!empty($dbconfig[$conn]["driver"])) {
-                        Tools::atkhalt("Driver {$dbconfig[$conn]["driver"]} not found for connection '$conn'!");
-                        return null;
-                    } else {
-                        Tools::atkhalt("Driver not specified for connection '$conn'!");
-                        return null;
-                    }
-                }
-            }
-
+            $driver = "Sintattica\\Atk\\Db\\".$dbconfig[$conn]["driver"]."Db";
             Tools::atkdebug("Creating new database instance with '{$driver}' driver");
-            $dbinstance = Tools::atknew($driver)->init($conn, $mode);
 
+            /** @var Db $driverInstance */
+            $driverInstance = new $driver();
+            $dbinstance = $driverInstance->init($conn, $mode);
             $g_dbinstances[$conn] = $dbinstance;
         }
         return $g_dbinstances[$conn];

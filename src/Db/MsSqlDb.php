@@ -1,21 +1,6 @@
 <?php namespace Sintattica\Atk\Db;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage db
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- */
-/**
- * @internal Include parent class
- */
-require_once(Config::getGlobal("atkroot") . "atk/db/class.atkmysqldb.php");
+
+use Sintattica\Atk\Core\Tools;
 
 /**
  * Driver for MsSQL databases
@@ -61,7 +46,7 @@ class MsSqlDb extends MySqlDb
 
     /**
      * Connect to the database
-     * @return connection status
+     * @return int connection status
      */
     function connect()
     {
