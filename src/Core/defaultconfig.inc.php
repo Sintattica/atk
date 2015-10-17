@@ -513,7 +513,7 @@ $config_doctype = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN
  *
  * @var String
  */
-$config_menu_delimiter = "<br>";
+$config_menu_delimiter = "<br />";
 
 /**
  *
@@ -535,6 +535,14 @@ $config_menu_align = "center";
  * @var Boolean
  */
 $config_menu_logout_link = false;
+
+
+/**
+ * Class to use to render the menu
+ *
+ * @var string
+ */
+$config_menu_class = "Sintattica\\Atk\\Menu\\DropdownMenu";
 
 /**
  * 0 = no   - 1 = yes

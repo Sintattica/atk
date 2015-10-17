@@ -31,47 +31,26 @@ define("MENU_NOMULTILEVEL", 2);
  */
 class Menu
 {
-
-    /**
-     * Convert the layout name to a classname
-     *
-     * @param string $layout The layout name
-     * @return string The classname
-     */
-    function layoutToClass($layout)
-    {
-        // Check if the menu config is one of the default atk menus (deprecated)
-        if (in_array($layout, array("plain", "frames", "outlook", "dhtml", "modern", "cook", "dropdown"))) {
-            $classname = "atk.menu.atk" . $layout . "menu";
-        } // Application root menu directory (deprecated)
-        elseif (strpos($layout, '.') === false) {
-            $classname = "menu." . $layout;
-        } // Full class name with packages.
-        else {
-            $classname = $layout;
-        }
-        return $classname;
-    }
-
-
     /**
      * Get new menu object
      *
-     * @return Menu class object
+     * @return MenuInterface class object
      */
     public static function &getMenu()
     {
         static $s_instance = null;
         if ($s_instance == null) {
+            $theme = Theme::getInstance();
             Tools::atkdebug("Creating a new menu instance");
-            $s_instance = new PlainMenu();
+            $class = $theme->getAttribute('menu_class', Config::getGlobal('menu_class'));
+            $s_instance = new $class();
 
             // Set the dispatchfile for this menu based on the theme setting, or to the default if not set.
             // This makes sure that all calls to dispatch_url will generate a url for the main frame and not
             // within the menu itself.
-            $theme = Theme::getInstance();
+
             $dispatcher = $theme->getAttribute('dispatcher',
-                Config::getGlobal("dispatcher", "dispatch.php")); // do not use atkSelf here!
+                Config::getGlobal("dispatcher", "index.php")); // do not use atkSelf here!
             $c = Controller::getInstance();
             $c->setPhpFile($dispatcher);
 
@@ -80,7 +59,6 @@ class Menu
 
         return $s_instance;
     }
-
 }
 
 
