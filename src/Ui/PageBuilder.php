@@ -1,5 +1,7 @@
 <?php namespace Sintattica\Atk\Ui;
 
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Node;
 
 /**
  * Page builder. Provides a fluent interface to create standardized ATK pages.

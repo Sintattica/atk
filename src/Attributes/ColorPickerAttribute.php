@@ -255,8 +255,8 @@ class ColorPickerAttribute extends Attribute
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $page = Page::getInstance();
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/newwindow.js");
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/colorpicker.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/newwindow.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/colorpicker.js");
 
         $colHeight = "11";
         $colWidth = "11";

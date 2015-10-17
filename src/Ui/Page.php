@@ -125,15 +125,16 @@ class Page
     public function __construct()
     {
         // register default scripts
-        $this->register_script(Config::getGlobal("atkroot") . "atk/javascript/jquery-2.1.1.min.js");
+        $assetsUrl = Config::getGlobal("assets_url");
+        $this->register_script($assetsUrl . "javascript/jquery-2.1.1.min.js");
         $this->register_scriptcode('jQuery.noConflict();');
-        $this->register_script(Config::getGlobal("atkroot") . "atk/javascript/prototype/prototype.js");
-        $this->register_script(Config::getGlobal("atkroot") . "atk/javascript/prototype-ext.js");
-        $this->register_script(Config::getGlobal("atkroot") . "atk/javascript/scriptaculous/scriptaculous.js");
-        $this->register_script(Config::getGlobal("atkroot") . "atk/javascript/scriptaculous-ext.js");
-        $this->register_script(Config::getGlobal("atkroot") . "atk/javascript/class.atktools.js");
-        $this->register_script(Config::getGlobal("atkroot") . "atk/javascript/atkbusy.js");
-        $this->register_script(Config::getGlobal("atkroot") . "atk/javascript/moment.min.js");
+        $this->register_script($assetsUrl . "javascript/prototype/prototype.js");
+        $this->register_script($assetsUrl . "javascript/prototype-ext.js");
+        $this->register_script($assetsUrl . "javascript/scriptaculous/scriptaculous.js");
+        $this->register_script($assetsUrl . "javascript/scriptaculous-ext.js");
+        $this->register_script($assetsUrl . "javascript/class.atktools.js");
+        $this->register_script($assetsUrl . "javascript/atkbusy.js");
+        $this->register_script($assetsUrl . "javascript/moment.min.js");
     }
 
     /**

@@ -4319,7 +4319,7 @@ class Node
         $res["helpurl"] = $this->helpUrl();
         if ($res["helpurl"] != "") {
             $page = $this->getPage();
-            $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/newwindow.js");
+            $page->register_script(Config::getGlobal("assets_url") . "javascript/newwindow.js");
             $res["helplabel"] = Tools::atktext("help");
             $res["helplink"] = '<a href="' . $res["helpurl"] . '">' . $res["helplabel"] . '</a>';
         }

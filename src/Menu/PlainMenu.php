@@ -55,7 +55,7 @@ class PlainMenu extends MenuInterface
 
         $menu = $this->getHeader($atkmenutop);
         if (is_array($g_menu[$atkmenutop])) {
-            usort($g_menu[$atkmenutop], array("atkplainmenu", "menu_cmp"));
+            usort($g_menu[$atkmenutop], array("Sintattica\\Atk\\Menu\\PlainMenu", "menu_cmp"));
             $menuitems = array();
             for ($i = 0; $i < count($g_menu[$atkmenutop]); $i++) {
                 if ($i == count($g_menu[$atkmenutop]) - 1) {
@@ -109,7 +109,7 @@ class PlainMenu extends MenuInterface
         }
         $menu .= $this->getFooter($atkmenutop);
         $page->register_style($theme->stylePath("style.css"));
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/menuload.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/menuload.js");
         $ui = Ui::getInstance();
 
         return $ui->renderBox(array(

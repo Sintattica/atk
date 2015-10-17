@@ -699,7 +699,7 @@ class FileAttribute extends Attribute
                         $imagehw = Array("0" => "640", "1" => "480");
                     }
                     $page = Page::getInstance();
-                    $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/newwindow.js");
+                    $page->register_script(Config::getGlobal("assets_url") . "javascript/newwindow.js");
                     return '<a href="' . $this->m_url . $filename . '" alt="' . $filename . '" onclick="NewWindow(this.href,\'name\',\'' . ($imagehw[0] + 50) . '\',\'' . ($imagehw[1] + 50) . '\',\'yes\');return false;">' . $filename . '</a>';
                 }
                 return '<img src="' . $this->m_url . $filename . '?b=' . $randval . '" alt="' . $filename . '">';
