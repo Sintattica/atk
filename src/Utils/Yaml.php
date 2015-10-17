@@ -20,7 +20,7 @@
  * Includes
  * @access private
  */
-include_once(Config::getGlobal("atkroot") . "atk/ext/spyc/spyc.php");
+include_once(Config::getGlobal("assets_url") . "ext/spyc/spyc.php");
 
 /**
  * ATK YAML wrapper.

@@ -17,7 +17,7 @@
 /**
  * include
  */
-include_once(Config::getGlobal("atkroot") . "atk/utils/class.atkbrowsertools.php");
+include_once(Config::getGlobal("assets_url") . "utils/class.atkbrowsertools.php");
 
 /**
  * The atkTextAttribute class represents an attribute of a node

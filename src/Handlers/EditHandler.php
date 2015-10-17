@@ -141,10 +141,10 @@ class EditHandler extends ViewEditBase
     {
         $page = $this->getPage();
         $ui = $this->getUi();
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/tools.js");
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/formfocus.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/formfocus.js");
         $page->register_loadscript("placeFocus();");
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/dhtml_formtools.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/dhtml_formtools.js");
         $page->register_style($ui->stylePath("style.css"));
     }
 
@@ -605,7 +605,7 @@ class EditHandler extends ViewEditBase
 
         $ui = $this->getUi();
         $page = $this->getPage();
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/formsubmit.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/formsubmit.js");
 
         // register fields that contain errornous values
         $page->register_scriptcode("var atkErrorFields = " . JSON::encode($errorFields) . ";");
@@ -622,7 +622,7 @@ class EditHandler extends ViewEditBase
             }
 
             $unloadText = addslashes($this->m_node->text('lose_changes_warning'));
-            $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/class.atkunloadhelper.js");
+            $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkunloadhelper.js");
             $page->register_loadscript("new ATK.UnloadHelper('entryform', '{$unloadText}', {$isChanged});");
         }
 

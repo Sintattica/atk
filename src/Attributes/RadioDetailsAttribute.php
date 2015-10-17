@@ -100,7 +100,7 @@ class RadioDetailsAttribute extends Attribute
      */
     public function edit($record, $fieldprefix, $mode = 'add')
     {
-        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('atkroot') . 'atk/javascript/class.' . strtolower(__CLASS__) . '.js');
+        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('assets_url') . 'javascript/class.' . strtolower(__CLASS__) . '.js');
 
         $name = $fieldprefix . $this->fieldName();
 

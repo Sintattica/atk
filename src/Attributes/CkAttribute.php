@@ -78,7 +78,7 @@ class CKAttribute extends TextAttribute
         $this->registerKeyListener($id, KB_CTRLCURSOR);
 
         // register CKEditor main script
-        $page->register_script(Config::getGlobal("atkroot") . 'atk/attributes/ckeditor/ckeditor.js');
+        $page->register_script(Config::getGlobal("assets_url") . 'ckeditor/ckeditor.js');
 
         // activate CKEditor
         $options = json_encode($this->ckOptions);

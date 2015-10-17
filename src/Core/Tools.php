@@ -1440,7 +1440,7 @@ class Tools
         $cssclass = ""
     ) {
         $page = Page::getInstance();
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/formsubmit.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/formsubmit.js");
         static $cnt = 0;
 
         if ($cssclass == "") {

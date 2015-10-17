@@ -144,8 +144,8 @@ class SearchHandler extends AbstractSearchHandler
         $controller->setNode($this->m_node);
 
         $page = $this->getPage();
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/tools.js");
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/formfocus.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/formfocus.js");
         $page->register_loadscript("placeFocus();");
         $ui = $this->getUi();
         if (is_object($ui)) {

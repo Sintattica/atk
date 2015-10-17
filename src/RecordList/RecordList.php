@@ -165,7 +165,7 @@ class RecordList
         $page->register_style($theme->stylePath("recordlist.css", $this->m_node->m_module));
 
         $listName = "rl_" . Tools::getUniqueId("normalRecordList");
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/recordlist.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/recordlist.js");
 
         $defaulthighlight = $theme->getAttribute("highlight");
         $selectcolor = $theme->getAttribute("select");
@@ -218,7 +218,7 @@ class RecordList
             $headercols[] = array("content" => ""); // Empty leader on top of mra action list.
         }
         if (Tools::hasFlag($flags, RL_LOCK)) {
-            $headercols[] = array("content" => '<img src="' . Config::getGlobal("atkroot") . 'atk/images/lock_head.gif">');
+            $headercols[] = array("content" => '<img src="' . Config::getGlobal("assets_url") . 'images/lock_head.gif">');
         }
         if (($orientation == "left" || $orientation == "both") && ($this->_hasActionColumn($list) && count($list["rows"]) > 0)) {
             $headercols[] = array("content" => "");
@@ -348,7 +348,7 @@ class RecordList
         $liststart = "";
         $listend = "";
         if (Tools::hasFlag($flags, RL_MRA) || Tools::hasFlag($flags, RL_MRPA)) {
-            $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/formselect.js");
+            $page->register_script(Config::getGlobal("assets_url") . "javascript/formselect.js");
 
             if (!Tools::hasFlag($flags, RL_EMBED)) {
                 if (empty($formName)) {
@@ -438,7 +438,7 @@ class RecordList
                 if (is_array($list["rows"][$i]["lock"])) {
                     $alt = $list["rows"][$i]["lock"]["user_id"] . " / " . $list["rows"][$i]["lock"]["user_ip"];
                     $record["cols"][] = array(
-                        "content" => '<img src="' . Config::getGlobal("atkroot") . 'atk/images/lock.gif" alt="' . $alt . '" title="' . $alt . '" border="0">',
+                        "content" => '<img src="' . Config::getGlobal("assets_url") . 'images/lock.gif" alt="' . $alt . '" title="' . $alt . '" border="0">',
                         "type" => "lock"
                     );
                 } else {

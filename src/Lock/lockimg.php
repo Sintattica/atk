@@ -35,7 +35,7 @@ if ($lock->extend($id)) {
     } // image
     else {
         header("Content-type: image/gif");
-        readfile(Config::getGlobal("atkroot") . 'atk/images/dummy.gif');
+        readfile(Config::getGlobal("assets_url") . 'images/dummy.gif');
     }
 } /* failure */ else {
     // xml

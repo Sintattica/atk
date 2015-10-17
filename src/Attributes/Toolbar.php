@@ -1,5 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Ui\Page;
 
@@ -47,8 +48,8 @@ class Toolbar extends DummyAttribute
         $theme = Theme::getInstance();
 
         $page = Page::getInstance();
-        $page->register_script($config_atkroot . "atk/javascript/newwindow.js");
-        $page->register_script($config_atkroot . "atk/javascript/class.atktoolbar.js");
+        $page->register_script(Config::getGlobal('assets_url') . "javascript/newwindow.js");
+        $page->register_script(Config::getGlobal('assets_url') . "javascript/class.atktoolbar.js");
         $res = '<a href="javascript:modifySelection(\'<b>\',\'</b>\');"><img src="' . $theme->iconPath("bold",
                 "toolbar") . '" border="0" alt="Vet"></a> ';
         $res .= '<a href="javascript:modifySelection(\'<i>\',\'</i>\');"><img src="' . $theme->iconPath("italic",

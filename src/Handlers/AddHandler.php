@@ -148,8 +148,8 @@ class AddHandler extends ActionHandler
     {
         $page = $this->getPage();
         $ui = $this->getUi();
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/tools.js");
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/formfocus.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/formfocus.js");
         $page->register_loadscript("placeFocus();");
         $page->register_style($ui->stylePath("style.css"));
     }

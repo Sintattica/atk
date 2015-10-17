@@ -34,7 +34,7 @@ class ViewHandler extends ViewEditBase
         }
 
         $page = $this->getPage();
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/formsubmit.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/formsubmit.js");
         $this->notify("view", $record);
         $page->addContent($this->m_node->renderActionPage("admin",
             $this->invoke("viewPage", $record, $this->m_node, $renderbox)));

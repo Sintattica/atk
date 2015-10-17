@@ -1,5 +1,5 @@
 <?php
-Page::getInstance()->register_script(Config::getGlobal('atkroot') . 'atk/javascript/overlibmws/overlibmws.js');
+Page::getInstance()->register_script(Config::getGlobal('assets_url') . 'javascript/overlibmws/overlibmws.js');
 $theme = Theme::getInstance();
 $image = $theme->imgPath("help");
 $tooltip = htmlentities(str_replace(array("\r\n", "\r", "\n"), ' ', $tooltip));

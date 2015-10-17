@@ -4,7 +4,7 @@
  * @internal includes..
  */
 
-include_once(Config::getGlobal("atkroot") . "atk/class.atktreetoolstree.php");
+include_once(Config::getGlobal("assets_url") . "class.atktreetoolstree.php");
 
 define("NF_TREE_NO_ROOT_DELETE", NF_SPECIFIC_1); // No root elements can be deleted
 define("NF_TREE_NO_ROOT_COPY", NF_SPECIFIC_2); // No root elements can be copied

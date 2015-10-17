@@ -17,7 +17,7 @@
 /**
  * @internal includes
  */
-include_once(Config::getGlobal("atkroot") . 'atk/ext/phpmailer/class.phpmailer.php');
+include_once(Config::getGlobal("assets_url") . 'ext/phpmailer/class.phpmailer.php');
 
 /**
  * ATK mailer class

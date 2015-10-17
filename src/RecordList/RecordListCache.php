@@ -109,8 +109,8 @@ class RecordListCache
             $page = Page::getInstance();
 
             $page->register_style($theme->stylePath("recordlist.css"));
-            $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/formselect.js");
-            $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/recordlist.js");
+            $page->register_script(Config::getGlobal("assets_url") . "javascript/formselect.js");
+            $page->register_script(Config::getGlobal("assets_url") . "javascript/recordlist.js");
 
             /**
              * RecordlistCache must call Tools::getUniqueId() too, or the counter will be off.

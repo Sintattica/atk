@@ -142,7 +142,7 @@ class Ui
     {
         if ($this->m_theme->getAttribute("tabtype") == "dhtml") {
             $page = Page::getInstance();
-            $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/tools.js");
+            $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
         }
         return $this->render("tabs.tpl", $vars, $module);
     }

@@ -1,5 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
@@ -168,7 +169,7 @@ class MultiSelectAttribute extends ListAttribute
         $id = $fieldprefix . $this->fieldName();
 
         $page = Page::getInstance();
-        $page->register_script($config_atkroot . "atk/javascript/class.atkprofileattribute.js.php");
+        $page->register_script(Config::getGlobal('assets_url') . "javascript/class.atkprofileattribute.js.php");
 
         $result = "";
         if (!$this->hasFlag(AF_LINKS_BOTTOM)) {

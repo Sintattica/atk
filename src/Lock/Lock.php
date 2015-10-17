@@ -31,7 +31,7 @@ class Lock
 
         if ($_instance == null) {
             $class = "atk" . Config::getGlobal("lock_type") . "Lock";
-            $file = Config::getGlobal("atkroot") . "atk/lock/class." . strtolower($class) . ".php";
+            $file = Config::getGlobal("assets_url") . "lock/class." . strtolower($class) . ".php";
 
             if (file_exists($file)) {
                 include_once($file);

@@ -83,7 +83,7 @@ class TableRendererGrouped extends TableRenderer
         $this->setClass('groupheader', 0, 'firstcol');
         // Include tools.js for the toggleDisplay function
         $page = Page::getInstance();
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/tools.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
     }
 
     /**

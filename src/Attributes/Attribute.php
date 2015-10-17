@@ -2929,7 +2929,7 @@ class Attribute
         $url = JSON::encode($url);
 
 
-        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('atkroot') . 'atk/javascript/class.atkattribute.js');
+        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('assets_url') . 'javascript/class.atkattribute.js');
         $code = "ATK.Attribute.callDependencies({$url}, el);";
         $this->addOnChangeHandler($code);
     }

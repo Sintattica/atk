@@ -84,7 +84,7 @@ class DbLock extends Lock
 
         if (!isset($ATK_VARS['atkpartial']) && $this->m_id > 0) {
             $page = Page::getInstance();
-            $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/xml.js");
+            $page->register_script(Config::getGlobal("assets_url") . "javascript/xml.js");
             $page->register_script(Tools::session_url("include.php?file=atk/lock/lock.js.php&stack=" . SessionManager::atkStackID() . "&id=" . $this->m_id,
                 SESSION_NEW));
         }
@@ -158,7 +158,7 @@ class DbLock extends Lock
             if ($this->m_id <= 0) {
                 $this->m_id = $db->nextid("db_lock");
                 $page = Page::getInstance();
-                $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/xml.js");
+                $page->register_script(Config::getGlobal("assets_url") . "javascript/xml.js");
                 $page->register_script(Tools::session_url("include.php?file=atk/lock/lock.js.php&stack=" . SessionManager::atkStackID() . "&id=" . $this->m_id,
                     SESSION_NEW));
             }

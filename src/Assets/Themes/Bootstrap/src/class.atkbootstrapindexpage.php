@@ -78,7 +78,7 @@ class BootstrapIndexPage
         $this->m_extraheaders = $this->m_ui->render('index_meta.tpl');
 
         // Bootstrap
-        $this->m_page->register_script(Config::getGlobal("atkroot") . "atk/themes/bootstrap/lib/bootstrap/js/bootstrap.js");
+        $this->m_page->register_script(Config::getGlobal("assets_url") . "themes/bootstrap/lib/bootstrap/js/bootstrap.js");
     }
 
     /**

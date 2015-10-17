@@ -120,7 +120,7 @@ class AddOrCopyHandler extends ActionHandler
             if ($attrRefreshUrl == null) {
                 $script .= "document.location.href = document.location.href;";
             } else {
-                $page->register_script(Config::getGlobal('atkroot') . 'atk/javascript/class.atkattribute.js');
+                $page->register_script(Config::getGlobal('assets_url') . 'javascript/class.atkattribute.js');
                 $script .= "ATK.Attribute.refresh('" . $attrRefreshUrl . "');";
             }
         } else {

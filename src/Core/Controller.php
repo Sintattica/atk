@@ -518,7 +518,7 @@ class Controller
         $result = array();
         $node = $this->getNode();
         $page = &$node->getPage();
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/tools.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
 
         // edit mode
         if ($mode == "edit") {

@@ -410,8 +410,8 @@ class OneToManyRelation extends Relation
     public function edit($record = "", $fieldprefix = "", $mode = '')
     {
         $page = Page::getInstance();
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/tools.js");
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/class.atkonetomanyrelation.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkonetomanyrelation.js");
 
         $grid = $this->createGrid($record, 'admin', $mode);
 

@@ -35,7 +35,7 @@ class AdminHandler extends ActionHandler
         }
 
         $page = $this->getPage();
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/formsubmit.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/formsubmit.js");
         $res = $this->renderAdminPage();
         $page->addContent($this->m_node->renderActionPage("admin", $res));
     }

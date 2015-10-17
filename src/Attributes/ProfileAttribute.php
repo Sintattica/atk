@@ -342,7 +342,7 @@ class ProfileAttribute extends Attribute
     {
         $user = SecurityManager::atkGetUser();
         $page = Page::getInstance();
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/class.atkprofileattribute.js.php");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkprofileattribute.js.php");
         $this->_restoreDivStates($page);
 
         $result = '';
@@ -445,7 +445,7 @@ class ProfileAttribute extends Attribute
     {
         $user = SecurityManager::atkGetUser();
         $page = Page::getInstance();
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/class.atkprofileattribute.js.php");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkprofileattribute.js.php");
 
         $this->_restoreDivStates($page);
 
@@ -467,7 +467,7 @@ class ProfileAttribute extends Attribute
         foreach ($allActions as $section => $modules) {
             if ($showSection) {
                 $result .= "</div><br>";
-                $result .= "<span  onclick=\"profile_swapProfileDiv('div_$section','" . Config::getGlobal("atkroot") . "');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\"><img src=\"" . Config::getGlobal("atkroot") . "atk/images/plus.gif\" border=\"0\" id=\"img_div_$section\">&nbsp;" . Tools::atktext(array(
+                $result .= "<span  onclick=\"profile_swapProfileDiv('div_$section','" . Config::getGlobal("atkroot") . "');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\"><img src=\"" . Config::getGlobal("assets_url") . "images/plus.gif\" border=\"0\" id=\"img_div_$section\">&nbsp;" . Tools::atktext(array(
                         "title_$section",
                         $section
                     ), $section) . "</span><br/>";

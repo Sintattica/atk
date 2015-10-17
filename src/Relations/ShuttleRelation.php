@@ -138,7 +138,7 @@ class ShuttleRelation extends ManyToManyRelation
         // on submit, we must select all items in the right selector, as unselected items
         // will not be posted.
         $page = $this->m_ownerInstance->getPage();
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/class.atkshuttlerelation.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkshuttlerelation.js");
         $page->register_submitscript("shuttle_selectAll('" . $rightname . "');");
 
         $result .= '</table>';

@@ -179,7 +179,7 @@ class TagAttribute extends FuzzySearchAttribute
         Tools::atkdebug("edit of attribute '$this->fieldName()'");
 
         $page = Page::getInstance();
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/class.atktagattribute.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atktagattribute.js");
 
         if ($this->createDestinationInstance()) {
             $html = $this->displayDefaultTags($prefix);

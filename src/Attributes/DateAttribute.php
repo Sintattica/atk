@@ -830,9 +830,9 @@ class DateAttribute extends Attribute
         }
 
         if ($useCalendar) {
-            $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/calendar/calendar.js");
-            $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/calendar/calendar-runner.js");
-            $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/calendar/lang/calendar-" . Config::getGlobal("language") . ".js");
+            $page->register_script(Config::getGlobal("assets_url") . "javascript/calendar/calendar.js");
+            $page->register_script(Config::getGlobal("assets_url") . "javascript/calendar/calendar-runner.js");
+            $page->register_script(Config::getGlobal("assets_url") . "javascript/calendar/lang/calendar-" . Config::getGlobal("language") . ".js");
 
             $theme = Theme::getInstance();
             $page->register_style($theme->stylePath("atkdateattribute.css"));

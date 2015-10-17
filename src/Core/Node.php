@@ -1853,7 +1853,7 @@ class Node
     {
         $total = null;
         $output = ''; // $this->statusbar();
-        $output .= '<img src="' . Config::getGlobal("atkroot") . 'atk/images/lock.gif"><br><br>' . Tools::atktext("lock_locked") . '<br>';
+        $output .= '<img src="' . Config::getGlobal("assets_url") . 'images/lock.gif"><br><br>' . Tools::atktext("lock_locked") . '<br>';
         $output .= '<br><form method="get">' . Tools::session_form(SESSION_BACK) .
             '<input type="submit" class="btn btn-default btn_cancel" value="&lt;&lt; ' . Tools::atktext('back') . '"></form>';
 
@@ -1938,7 +1938,7 @@ class Node
 
         if (count($sections) > 0 || $tabs > 1) {
             $page = $this->getPage();
-            $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/dhtml_tabs.js.php?stateful=" . (Config::getGlobal('dhtml_tabs_stateful')
+            $page->register_script(Config::getGlobal("assets_url") . "javascript/dhtml_tabs.js.php?stateful=" . (Config::getGlobal('dhtml_tabs_stateful')
                     ? 1 : 0));
 
             // Load default tab show script.

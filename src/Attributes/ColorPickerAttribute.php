@@ -276,10 +276,10 @@ class ColorPickerAttribute extends Attribute
         }
 
         if (trim($this->m_currentColor) == "") {
-            $selectImg = Config::getGlobal("atkroot") . "atk/images/select_color_off.gif";
+            $selectImg = Config::getGlobal("assets_url") . "images/select_color_off.gif";
             $alt = Tools::atktext("no_color_selected", "atk");
         } else {
-            $selectImg = Config::getGlobal("atkroot") . "atk/images/select_color_on.gif";
+            $selectImg = Config::getGlobal("assets_url") . "images/select_color_on.gif";
             $alt = $this->m_currentColor;
         }
 

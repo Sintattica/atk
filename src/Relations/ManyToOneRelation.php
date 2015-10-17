@@ -988,7 +988,7 @@ class ManyToOneRelation extends Relation
         $autolink = array();
         if ($this->hasFlag(AF_RELATION_AUTOLINK)) { // auto edit/view link
             $page = Page::getInstance();
-            $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/class.atkmanytoonerelation.js");
+            $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkmanytoonerelation.js");
 
             if ($this->m_destInstance->allowed("edit")) {
                 $editlink = Tools::session_url(Tools::dispatch_url($this->getAutoLinkDestination(), "edit",

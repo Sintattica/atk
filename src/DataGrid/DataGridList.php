@@ -73,7 +73,7 @@ class DataGridList extends DataGridComponent
         $edit = $grid->isEditing();
 
         $page->register_style($theme->stylePath("recordlist.css", $grid->getNode()->m_module));
-        $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/recordlist.js");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/recordlist.js");
 
         $listName = $grid->getName();
 
@@ -239,7 +239,7 @@ class DataGridList extends DataGridComponent
         $listend = "";
 
         if (!$edit && ($hasMRA || $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS))) {
-            $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/formselect.js");
+            $page->register_script(Config::getGlobal("assets_url") . "javascript/formselect.js");
 
             if ($hasMRA) {
                 $liststart .= '<script language="javascript" type="text/javascript">var ' . $listName . ' = new Object();</script>';
@@ -338,7 +338,7 @@ class DataGridList extends DataGridComponent
             /* locked? */
             if ($grid->hasFlag(DataGrid::LOCKING)) {
                 if (is_array($list["rows"][$i]["lock"])) {
-                    $this->getPage()->register_script(Config::getGlobal('atkroot') . 'atk/javascript/overlibmws/overlibmws.js');
+                    $this->getPage()->register_script(Config::getGlobal('assets_url') . 'javascript/overlibmws/overlibmws.js');
                     $lockIcon = Theme::getInstance()->getIcon('lock_' . $grid->getNode()->getLockMode(), 'lock',
                         $grid->getNode()->m_module);
                     $lockInfo = addslashes(str_replace(array("\r\n", "\r", "\n"), " ",

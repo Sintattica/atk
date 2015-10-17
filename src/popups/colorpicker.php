@@ -67,7 +67,7 @@ $theme = Theme::getInstance();
 $output = Output::getInstance();
 
 $page->register_style($theme->stylePath("style.css"));
-$page->register_script(Config::getGlobal("atkroot") . "atk/javascript/colorpicker.js");
+$page->register_script(Config::getGlobal("assets_url") . "javascript/colorpicker.js");
 $page->addContent($layout);
 $output->output($page->render(Tools::atktext("colorpicker_selectcolor", "atk"), true));
 
