@@ -1,20 +1,10 @@
 <?php namespace Sintattica\Atk\Handlers;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage handlers
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @copyright (c)2000-2004 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6351 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Controller;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Utils\JSON;
+use Sintattica\Atk\Ui\Theme;
 
 /**
  * Handler class for the edit action of a node. The handler draws a
@@ -176,7 +166,7 @@ class EditHandler extends ViewEditBase
     function getEditParams($record, $locked = false)
     {
         $node = $this->m_node;
-        $ui = &$node->getUi();
+        $ui = $node->getUi();
 
         if (!is_object($ui)) {
             Tools::atkerror("ui object failure");
@@ -574,6 +564,7 @@ class EditHandler extends ViewEditBase
                     $errors[] = $err;
                 }
             }
+            $pk_err_msg = '';
             if (count($pk_err_attrib) > 0) { // Make primary key error message
                 for ($i = 0; $i < count($pk_err_attrib); $i++) {
                     $pk_err_msg .= Tools::atktext($pk_err_attrib[$i], $node->m_module);

@@ -1,20 +1,9 @@
 <?php namespace Sintattica\Atk\Handlers;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage handlers
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @copyright (c)2000-2004 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6323 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Controller;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Session\State;
 
 /**
  * Handler for the 'add' action of a node. It draws a page where the user
@@ -40,7 +29,7 @@ class AddHandler extends ActionHandler
     /**
      * Constructor
      *
-     * @return atkAddHandler
+     * @return AddHandler
      */
     function __construct()
     {
@@ -101,6 +90,7 @@ class AddHandler extends ActionHandler
         if ($result !== false) {
             return $result;
         }
+        return null;
     }
 
     /**
@@ -336,12 +326,14 @@ class AddHandler extends ActionHandler
 
             return $total;
         }
+        return null;
     }
 
     /**
      * Handler for partial actions on an add page
      *
      * @param string $partial full partial name
+     * @return string
      */
     function partial_attribute($partial)
     {
