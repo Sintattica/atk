@@ -470,19 +470,19 @@ class DataGrid
             }
         }
 
-        $this->addComponent('list', 'atk.datagrid.atkdglist');
-        $this->addComponent('summary', 'atk.datagrid.atkdgsummary');
-        $this->addComponent('limit', 'atk.datagrid.atkdglimit',
+        $this->addComponent('list', __NAMESPACE__."\\DataGridList");
+        $this->addComponent('summary', __NAMESPACE__."\\DataGridSummary");
+        $this->addComponent('limit', __NAMESPACE__."\\DataGridLimit",
             array('showAll' => Config::getGlobal('enable_showall')));
-        $this->addComponent('norecordsfound', 'atk.datagrid.atkdgnorecordsfound');
-        $this->addComponent('paginator', 'atk.datagrid.atkdgpaginator');
+        $this->addComponent('norecordsfound', __NAMESPACE__."\\DataGridNoRecordsFound");
+        $this->addComponent('paginator', __NAMESPACE__."\\DataGridPaginator");
 
         if (!empty($this->getNode()->m_index)) {
             $this->addComponent('index', 'atk.datagrid.atkdgindex');
         }
 
         if (count($this->getNode()->m_editableListAttributes) > 0) {
-            $this->addComponent('editcontrol', 'atk.datagrid.atkdgeditcontrol');
+            $this->addComponent('editcontrol', __NAMESPACE__."\\DataGridEditControl");
         }
     }
 

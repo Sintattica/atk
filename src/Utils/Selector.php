@@ -1,6 +1,12 @@
 <?php namespace Sintattica\Atk\Utils;
 
+use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Db\Statement\Statement;
+use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\Db;
+use \Exception;
 
 /**
  * Fluent interface helper class for retrieving records from a node.
@@ -819,6 +825,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      *
      * @param string|int $key
      * @param mixed $value
+     * @return mixed
      */
     public function offsetSet($key, $value)
     {
