@@ -33,7 +33,7 @@ class MySqliDb extends MySqlDb
         parent::__construct();
 
         // set type
-        $this->m_type = "mysqli";
+        $this->m_type = "MySqli";
         $this->m_vendor = "mysql";
         $this->m_user_error = array(1451);
     }

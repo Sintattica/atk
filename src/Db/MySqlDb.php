@@ -36,7 +36,7 @@ class MySqlDb extends Db
         parent::__construct();
 
         // set the user error's
-        $this->m_type = "mysql";
+        $this->m_type = "MySql";
         $this->m_vendor = "mysql";
         $this->m_user_error = array(1451);
     }

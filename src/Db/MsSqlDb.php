@@ -39,7 +39,7 @@ class MsSqlDb extends MySqlDb
     {
         parent::__construct();
 
-        $this->m_type = "mssql";
+        $this->m_type = "MsSql";
         $this->m_vendor = "microsoft";
         $this->m_user_error = array();
     }

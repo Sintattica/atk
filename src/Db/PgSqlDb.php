@@ -14,7 +14,7 @@ use Sintattica\Atk\Core\Config;
 class PgSqlDb extends Db
 {
     /* identification */
-    var $m_type = "pgsql";
+    var $m_type = "PgSql";
     var $m_vendor = "postgresql";
 
     /**

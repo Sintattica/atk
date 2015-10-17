@@ -1,8 +1,8 @@
 <?php namespace Sintattica\Atk\Db\Statement;
 
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Utils\Debugger;
+use Sintattica\Atk\Core\Config;
 
 /**
  * MySQLi statement implementation.
@@ -41,8 +41,7 @@ class MySQLiStatement extends Statement
     protected function _prepare()
     {
         if ($this->getDb()->connect() != DB_SUCCESS) {
-            throw new StatementException("Cannot connect to database.",
-                StatementException::NO_DATABASE_CONNECTION);
+            throw new StatementException("Cannot connect to database.", StatementException::NO_DATABASE_CONNECTION);
         }
 
         $conn = $this->getDb()->link_id();
@@ -138,7 +137,7 @@ class MySQLiStatement extends Statement
 
         for ($i = 0; $i < count($this->m_columnNames); $i++) {
             $this->m_values[$i] = null;
-            $refs[$i] = $this->m_values[$i];
+            $refs[$i] = &$this->m_values[$i];
         }
 
         $this->m_stmt->store_result();
@@ -212,7 +211,7 @@ class MySQLiStatement extends Statement
 
     /**
      * Returns the number of affected rows in case of an INSERT, UPDATE
-     * or DELETE query. Called immediatly after Statement::_execute().
+     * or DELETE query. Called immediatly after atkStatement::_execute().
      */
     protected function _getAffectedRowCount()
     {
