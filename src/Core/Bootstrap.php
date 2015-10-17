@@ -2,7 +2,6 @@
 
 
 use Sintattica\Atk\Security\SqlWhereclauseBlacklistChecker;
-use Sintattica\Atk\Core\Tools;
 
 class Bootstrap
 {
