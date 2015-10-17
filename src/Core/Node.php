@@ -2765,7 +2765,7 @@ class Node
      * @param array $b The second attribute
      * @return int
      */
-    function attrib_cmp($a, $b)
+    private static function attrib_cmp($a, $b)
     {
         if ($a["order"] == $b["order"]) {
             return 0;
@@ -4477,7 +4477,7 @@ class Node
      */
     function attribSort()
     {
-        usort($this->m_attribIndexList, array("Node", "attrib_cmp"));
+        usort($this->m_attribIndexList, array("self", "attrib_cmp"));
 
         // after sorting we need to update the attribute indices
         $attrs = array();
