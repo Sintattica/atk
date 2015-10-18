@@ -1,10 +1,9 @@
 <?php namespace Sintattica\Atk\Relations;
 
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Db\Db;
 
-define('AF_MANYTOMANYSELECT_DETAILEDIT', AF_SPECIFIC_1);
-define('AF_MANYTOMANYSELECT_DETAILADD', AF_SPECIFIC_2);
-define('AF_MANYTOMANYSELECT_NO_AUTOCOMPLETE', AF_SPECIFIC_3);
-// (AF_MANYTOMANY_DETAILVIEW inherited from atkManyToManyRelation)
 
 /**
  * Many-to-many select relation.
@@ -21,6 +20,12 @@ define('AF_MANYTOMANYSELECT_NO_AUTOCOMPLETE', AF_SPECIFIC_3);
  */
 class ManyToManySelectRelation extends ManyToManyRelation
 {
+
+    const AF_MANYTOMANYSELECT_DETAILEDIT = self::AF_SPECIFIC_1;
+    const AF_MANYTOMANYSELECT_DETAILADD = self::AF_SPECIFIC_2;
+    const AF_MANYTOMANYSELECT_NO_AUTOCOMPLETE = self::AF_SPECIFIC_3;
+
+
     const SEARCH_MODE_EXACT = ManyToOneRelation::SEARCH_MODE_EXACT;
     const SEARCH_MODE_STARTSWITH = ManyToOneRelation::SEARCH_MODE_STARTSWITH;
     const SEARCH_MODE_CONTAINS = ManyToOneRelation::SEARCH_MODE_CONTAINS;
@@ -28,7 +33,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
     /**
      * The many-to-one relation.
      *
-     * @var atkManyToOneRelation
+     * @var ManyToOneRelation
      */
     private $m_manyToOneRelation = null;
 
@@ -70,10 +75,10 @@ class ManyToManySelectRelation extends ManyToManyRelation
         parent::__construct($name, $link, $destination, $flags);
 
         $relation = new ManyToOneRelation($this->fieldName() . '_m2msr_add', $this->m_destination,
-            AF_MANYTOONE_AUTOCOMPLETE | AF_HIDE);
-        $relation->setDisabledModes(DISABLED_VIEW | DISABLED_EDIT);
-        $relation->setLoadType(NOLOAD);
-        $relation->setStorageType(NOSTORE);
+            ManyToOneRelation::AF_MANYTOONE_AUTOCOMPLETE | self::AF_HIDE);
+        $relation->setDisabledModes(self::DISABLED_VIEW | self::DISABLED_EDIT);
+        $relation->setLoadType(self::NOLOAD);
+        $relation->setStorageType(self::NOSTORE);
         $this->m_manyToOneRelation = $relation;
     }
 
@@ -89,7 +94,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      * Return the many-to-one relation we will use for the selection
      * of new records etc.
      *
-     * @return atkManyToOneRelation
+     * @return ManyToOneRelation
      */
     protected function getManyToOneRelation()
     {
@@ -145,8 +150,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
      */
     public function edit($record, $fieldprefix = "", $mode = "")
     {
-        if ($this->hasFlag(AF_MANYTOMANYSELECT_NO_AUTOCOMPLETE)) {
-            $this->getManyToOneRelation()->removeFlag(AF_MANYTOONE_AUTOCOMPLETE);
+        if ($this->hasFlag(self::AF_MANYTOMANYSELECT_NO_AUTOCOMPLETE)) {
+            $this->getManyToOneRelation()->removeFlag(ManyToOneRelation::AF_MANYTOONE_AUTOCOMPLETE);
         }
 
         $this->createDestination();
@@ -172,7 +177,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $result = '<input type="hidden" name="' . $this->getHtmlId($fieldprefix) . '" value="" />' . // Post an empty value if none selected (instead of not posting anything)
             '<div class="atkmanytomanyselectrelation">';
 
-        if (($this->hasFlag(AF_MANYTOMANYSELECT_DETAILADD)) && ($this->m_destInstance->allowed("add"))) {
+        if (($this->hasFlag(self::AF_MANYTOMANYSELECT_DETAILADD)) && ($this->m_destInstance->allowed("add"))) {
             $addLink = ' ' . $this->getAddActionLink($record, $fieldprefix);
         }
 
@@ -348,11 +353,11 @@ class ManyToManySelectRelation extends ManyToManyRelation
     {
         $actions = array();
 
-        if ($this->hasFlag(AF_MANYTOMANY_DETAILVIEW) && !$this->hasFlag(AF_MANYTOMANYSELECT_DETAILEDIT) && $this->getDestination()->allowed("view")) {
+        if ($this->hasFlag(self::AF_MANYTOMANY_DETAILVIEW) && !$this->hasFlag(self::AF_MANYTOMANYSELECT_DETAILEDIT) && $this->getDestination()->allowed("view")) {
             $actions[] = 'view';
         }
 
-        if ($this->hasFlag(AF_MANYTOMANYSELECT_DETAILEDIT) && $this->getDestination()->allowed('edit', $record)) {
+        if ($this->hasFlag(self::AF_MANYTOMANYSELECT_DETAILEDIT) && $this->getDestination()->allowed('edit', $record)) {
             $actions[] = 'edit';
         }
 
@@ -610,7 +615,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      *
      * The difference with the label() method is that the label method always
      * returns the HTML label, while the getLabel() method is 'smart', by
-     * taking the AF_NOLABEL and AF_BLANKLABEL flags into account.
+     * taking the self::AF_NOLABEL and self::AF_BLANKLABEL flags into account.
      *
      * @param array $record The record holding the value for this attribute.
      * @param string $mode The mode ("add", "edit" or "view")

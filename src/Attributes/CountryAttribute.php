@@ -324,7 +324,7 @@ class CountryAttribute extends ListAttribute
      * Constructor
      *
      * <b>Example:</b>
-     *        $this->add(new atkCountryAttribute("zipcode","world","","",AF_OBLIGATORY));
+     *        $this->add(new atkCountryAttribute("zipcode","world","","",self::AF_OBLIGATORY));
      * @param string $name Name of the attribute
      * @param string $switch Can be "benelux", "europe", "world", "world_shortlist", "user"
      * If user, it will use the option and value Array.
@@ -366,7 +366,7 @@ class CountryAttribute extends ListAttribute
             $valueArray = $this->getCountryValueArray($switch);
         }
         $this->m_defaulttocurrent = $defaulttocurrent;
-        parent::__construct($name, $optionsArray, $valueArray, $flags | AF_NO_TRANSLATION, 0);
+        parent::__construct($name, $optionsArray, $valueArray, $flags | self::AF_NO_TRANSLATION, 0);
     }
 
     /**

@@ -80,8 +80,8 @@ class DocumentWriter
             // Get a reference to the attribute
             $p_attrib = &$node->m_attribList[$key];
 
-            // Get the Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
-            if ($p_attrib->hasFlag(AF_NOLABEL) || $p_attrib->hasFlag(AF_BLANKLABEL)) {
+            // Get the Label of the attribute (can be suppressed with Attribute::AF_NOLABEL or Attribute::AF_BLANKLABEL)
+            if ($p_attrib->hasFlag(Attribute::AF_NOLABEL) || $p_attrib->hasFlag(Attribute::AF_BLANKLABEL)) {
                 $result[$key] = "";
             } else {
                 $result[$key] = $p_attrib->label(array());

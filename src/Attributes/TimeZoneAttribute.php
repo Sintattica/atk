@@ -30,7 +30,7 @@ class TimeZoneAttribute extends ListAttribute
      * Constructor
      *
      * <b>Example:</b>
-     *        $this->add(new atkTimeZoneAttribute("timezone",AF_OBLIGATORY));
+     *        $this->add(new atkTimeZoneAttribute("timezone",self::AF_OBLIGATORY));
      * @param string $name Name of the attribute
      * @param int $flags Flags for the attribute
      */

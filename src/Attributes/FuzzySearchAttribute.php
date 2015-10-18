@@ -90,7 +90,7 @@ class FuzzySearchAttribute extends Attribute
             $size = $this->maxInputSize();
         }*/
 
-        parent::__construct($name, $flags | AF_HIDE_VIEW | AF_HIDE_LIST, $size);
+        parent::__construct($name, $flags | self::AF_HIDE_VIEW | self::AF_HIDE_LIST, $size);
         $this->m_searchnode = $searchnode;
         $this->m_callback = $callback;
         $this->m_mode = strtolower($mode);
@@ -221,7 +221,7 @@ class FuzzySearchAttribute extends Attribute
                 }
 
                 $attrib = new MultiSelectAttribute($this->m_name, $optionArray, $valueArray, 1,
-                    AF_NO_LABEL | AF_CHECK_ALL | AF_LINKS_BOTTOM);
+                    self::AF_NO_LABEL | self::AF_CHECK_ALL | self::AF_LINKS_BOTTOM);
                 $res .= $attrib->edit();
             } else {
                 if ($this->m_mode == "select" || ($this->m_mode == "multiselect" && count($this->m_matches) == 1)) {

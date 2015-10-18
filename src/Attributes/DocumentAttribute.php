@@ -26,7 +26,7 @@ class DocumentAttribute extends DummyAttribute
         // Call parent constructor with addition of the af_hide_add flag
         // because this attribute should not be used in add operations where
         // the recorddata is not yet present in the database.
-        parent::__construct($name, "", $flags | AF_HIDE_ADD | AF_DUMMY_SHOW_LABEL);
+        parent::__construct($name, "", $flags | self::AF_HIDE_ADD | self::AF_DUMMY_SHOW_LABEL);
     }
 
     /**

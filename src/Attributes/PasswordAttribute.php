@@ -18,9 +18,9 @@
 /**
  * Flag(s) specific for atkPasswordAttribute
  */
-define("AF_PASSWORD_NOVALIDATE", AF_SPECIFIC_1); // disables password check when editing password field
-define("AF_PASSWORD_NO_VALIDATE", AF_SPECIFIC_1); // disables password check when editing password field
-define("AF_PASSWORD_NO_ENCODE", AF_SPECIFIC_2);
+define("self::AF_PASSWORD_NOVALIDATE", self::AF_SPECIFIC_1); // disables password check when editing password field
+define("self::AF_PASSWORD_NO_VALIDATE", self::AF_SPECIFIC_1); // disables password check when editing password field
+define("self::AF_PASSWORD_NO_ENCODE", self::AF_SPECIFIC_2);
 
 /**
  * Categories of password character categories
@@ -38,7 +38,7 @@ define("EASYCONSONANTS", "aeuy");
  * that is a password field. It automatically encrypts passwords
  * with the MD5 method of PHP. To update a password a user has to
  * supply the old password first, unless you use the special created
- * AF_PASSWORD_NOVALIDATE flag, in which case the password just gets
+ * self::AF_PASSWORD_NOVALIDATE flag, in which case the password just gets
  * overwritten without any check.
  *
  * @author Peter Verhage <peter@ibuildings.nl>
@@ -87,21 +87,21 @@ class PasswordAttribute extends Attribute
         }
 
         // Call the parent constructor
-        parent::__construct($name, $flags | AF_HIDE_SEARCH, $size); // you can't search by password.
+        parent::__construct($name, $flags | self::AF_HIDE_SEARCH, $size); // you can't search by password.
         // Set the restrictions
         $this->setRestrictions($restrictions);
     }
 
     /**
      * Encodes the given value only if the
-     * AF_PASSWORD_NO_ENCODE flag is not set.
+     * self::AF_PASSWORD_NO_ENCODE flag is not set.
      *
      * @param string $value
      * @return string
      */
     function encode($value)
     {
-        return $this->hasFlag(AF_PASSWORD_NO_ENCODE) ? $value : md5($this->getSalt() . $value);
+        return $this->hasFlag(self::AF_PASSWORD_NO_ENCODE) ? $value : md5($this->getSalt() . $value);
     }
 
     /**
@@ -190,7 +190,7 @@ class PasswordAttribute extends Attribute
                 ' value="' . $record[$this->fieldName()]["hash"] . '">';
 
 
-            if (!$this->hasFlag(AF_PASSWORD_NOVALIDATE)) {
+            if (!$this->hasFlag(self::AF_PASSWORD_NOVALIDATE)) {
                 $this->registerKeyListener($id . '[current]', KB_CTRLCURSOR | KB_UPDOWN);
                 $result .= Tools::atktext("password_current", "atk") . ':<br>' .
                     '<input autocomplete="off" type="password" id="' . $id . '[current]" name="' . $id . '[current]"' .
@@ -353,7 +353,7 @@ class PasswordAttribute extends Attribute
         $error = false;
         $value = $record[$this->fieldName()];
 
-        if ($mode == 'update' && (Tools::atk_strlen($value["new"]) > 0 || Tools::atk_strlen($value["again"]) > 0) && !$this->hasFlag(AF_PASSWORD_NOVALIDATE) && $value["current"] != $value["hash"]) {
+        if ($mode == 'update' && (Tools::atk_strlen($value["new"]) > 0 || Tools::atk_strlen($value["again"]) > 0) && !$this->hasFlag(self::AF_PASSWORD_NOVALIDATE) && $value["current"] != $value["hash"]) {
             $error = true;
             Tools::triggerError($record, $this->fieldName(), 'error_password_incorrect');
         }
@@ -363,7 +363,7 @@ class PasswordAttribute extends Attribute
             Tools::triggerError($record, $this->fieldName(), 'error_password_nomatch');
         }
 
-        if ($mode == "add" && $this->hasFlag(AF_OBLIGATORY) && Tools::atk_strlen($value["new"]) == 0) {
+        if ($mode == "add" && $this->hasFlag(self::AF_OBLIGATORY) && Tools::atk_strlen($value["new"]) == 0) {
             $error = true;
             Tools::triggerError($record, $this->fieldName(), 'error_obligatoryfield');
         }

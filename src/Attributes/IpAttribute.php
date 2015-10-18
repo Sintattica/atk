@@ -17,9 +17,9 @@
 /**
  * Flags for the atkIpAttribute
  */
-define("AF_IP_ALLOW_WILDCARDS", AF_SPECIFIC_1);
-define("AF_IP_STORENUMERIC", AF_SPECIFIC_2);
-define("AF_IP_SINGLEFIELD", AF_SPECIFIC_3);
+define("self::AF_IP_ALLOW_WILDCARDS", self::AF_SPECIFIC_1);
+define("self::AF_IP_STORENUMERIC", self::AF_SPECIFIC_2);
+define("self::AF_IP_SINGLEFIELD", self::AF_SPECIFIC_3);
 
 /**
  * The atkIpAttribute can be used to let the user enter IP(v4) addresses.
@@ -53,7 +53,7 @@ class IpAttribute extends Attribute
      */
     function fetchValue($postvars)
     {
-        if ($this->hasFlag(AF_IP_SINGLEFIELD)) {
+        if ($this->hasFlag(self::AF_IP_SINGLEFIELD)) {
             return parent::fetchValue($postvars[$this->fieldName()]);
         }
         if (!$this->isPosted($postvars)) {
@@ -78,7 +78,7 @@ class IpAttribute extends Attribute
      */
     function edit($record, $fieldprefix = "")
     {
-        if ($this->hasFlag(AF_IP_SINGLEFIELD)) {
+        if ($this->hasFlag(self::AF_IP_SINGLEFIELD)) {
             return parent::edit($record, $fieldprefix);
         }
 
@@ -108,7 +108,7 @@ class IpAttribute extends Attribute
         // Check for valid ip string
         $strvalue = Tools::atkArrayNvl($record, $this->fieldName(), "");
         if (!empty($strvalue)) {
-            if ($this->hasFlag(AF_IP_ALLOW_WILDCARDS) && !$this->hasFlag(AF_IP_STORENUMERIC)) {
+            if ($this->hasFlag(self::AF_IP_ALLOW_WILDCARDS) && !$this->hasFlag(self::AF_IP_STORENUMERIC)) {
                 $strvalue = str_replace("*", "0", $strvalue);
             }
             $num = '(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])';
@@ -129,11 +129,11 @@ class IpAttribute extends Attribute
     function value2db($rec)
     {
         // By default, return the plain ip number
-        if (!$this->hasFlag(AF_IP_STORENUMERIC)) {
+        if (!$this->hasFlag(self::AF_IP_STORENUMERIC)) {
             return Tools::atkArrayNvl($rec, $this->fieldName());
         }
 
-        // But if the AF_IP_STORENUMERIC flag is set, we store it as long integer
+        // But if the self::AF_IP_STORENUMERIC flag is set, we store it as long integer
         return IpUtils::ipLongFormat(Tools::atkArrayNvl($rec, $this->fieldName()));
     }
 
@@ -146,11 +146,11 @@ class IpAttribute extends Attribute
     function db2value($rec)
     {
         // By default, return the plain ip number
-        if (!$this->hasFlag(AF_IP_STORENUMERIC)) {
+        if (!$this->hasFlag(self::AF_IP_STORENUMERIC)) {
             return Tools::atkArrayNvl($rec, $this->fieldName());
         }
 
-        // But if the AF_IP_STORENUMERIC flag is set, we load it as long integer
+        // But if the self::AF_IP_STORENUMERIC flag is set, we load it as long integer
         return IpUtils::ipStringFormat(Tools::atkArrayNvl($rec, $this->fieldName()));
     }
 
@@ -161,7 +161,7 @@ class IpAttribute extends Attribute
      */
     function dbFieldType()
     {
-        return $this->hasFlag(AF_IP_STORENUMERIC) ? "int" : "string";
+        return $this->hasFlag(self::AF_IP_STORENUMERIC) ? "int" : "string";
     }
 
     /**
@@ -171,7 +171,7 @@ class IpAttribute extends Attribute
      */
     function dbFieldSize()
     {
-        return $this->hasFlag(AF_IP_STORENUMERIC) ? 32 : 15;
+        return $this->hasFlag(self::AF_IP_STORENUMERIC) ? 32 : 15;
     }
 
 }

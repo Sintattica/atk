@@ -1,8 +1,7 @@
 <?php namespace Sintattica\Atk\Relations;
 
 
-/** flag(s) specific for atkMatrixRelation */
-define("AF_MATRIX_ACYCLIC", AF_SPECIFIC_1); // checks if a matrix is acyclic
+use Sintattica\Atk\Core\Tools;
 
 
 /**
@@ -17,6 +16,9 @@ define("AF_MATRIX_ACYCLIC", AF_SPECIFIC_1); // checks if a matrix is acyclic
  */
 class MatrixRelation extends Relation
 {
+    /** flag(s) specific for atkMatrixRelation */
+    const AF_MATRIX_ACYCLIC = self::AF_SPECIFIC_1;
+
     var $m_name1;
     var $m_destination1;
     var $m_fk1;
@@ -33,7 +35,7 @@ class MatrixRelation extends Relation
      * @param string $name2 colum field name
      * @param string $destination2 colum table
      * @param string $fk2 foreignkey in colum table
-     * @param int $flags AF_MATRIX_ACYCLIC if input must be acyclic
+     * @param int $flags self::AF_MATRIX_ACYCLIC if input must be acyclic
      */
     function __construct($name, $name1, $destination1, $fk1, $name2, $destination2, $fk2, $flags = 0)
     {
@@ -206,7 +208,7 @@ class MatrixRelation extends Relation
      */
     function validate(&$record, $mode)
     {
-        if ($this->hasFlag(AF_MATRIX_ACYCLIC)) {
+        if ($this->hasFlag(self::AF_MATRIX_ACYCLIC)) {
             // todo
         }
     }

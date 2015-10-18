@@ -25,7 +25,7 @@ class Filter extends Attribute
      */
     function __construct($name, $flags = 0)
     {
-        parent::__construct($name, $flags | AF_HIDE | AF_FORCE_LOAD);
+        parent::__construct($name, $flags | Attribute::AF_HIDE | Attribute::AF_FORCE_LOAD);
     }
 
     /**

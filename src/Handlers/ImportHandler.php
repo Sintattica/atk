@@ -28,7 +28,7 @@ class ImportHandler extends ActionHandler
     {
         global $ATK_VARS;
 
-        //need to keep the postdata after a AF_LARGE selection in the allfield
+        //need to keep the postdata after a Attribute::AF_LARGE selection in the allfield
         if (!isset($this->m_postvars["phase"]) && isset($ATK_VARS['atkformdata'])) {
             foreach ($ATK_VARS['atkformdata'] as $key => $value) {
                 $this->m_postvars[$key] = $value;
@@ -742,7 +742,7 @@ class ImportHandler extends ActionHandler
      */
     function _usableForImport($obligatoryOnly, &$attrib)
     {
-        return ((!$obligatoryOnly || $this->isObligatory($attrib)) && !$attrib->hasFlag(AF_AUTOINCREMENT) && !$this->isHide($attrib) && !is_a($attrib,
+        return ((!$obligatoryOnly || $this->isObligatory($attrib)) && !$attrib->hasFlag(Attribute::AF_AUTOINCREMENT) && !$this->isHide($attrib) && !is_a($attrib,
                 'atkdummyattribute'));
     }
 
@@ -764,7 +764,7 @@ class ImportHandler extends ActionHandler
      */
     function isObligatory($attr)
     {
-        return ($attr->hasFlag(AF_OBLIGATORY) && !$this->isHide($attr));
+        return ($attr->hasFlag(Attribute::AF_OBLIGATORY) && !$this->isHide($attr));
     }
 
     /**
@@ -774,23 +774,23 @@ class ImportHandler extends ActionHandler
      */
     function isHide($attr)
     {
-        return (($attr->hasFlag(AF_HIDE) || ($attr->hasFlag(AF_HIDE_ADD) && $attr->hasFlag(AF_HIDE_EDIT))) && !$attr->hasFlag(AF_FORCE_LOAD));
+        return (($attr->hasFlag(Attribute::AF_HIDE) || ($attr->hasFlag(Attribute::AF_HIDE_ADD) && $attr->hasFlag(Attribute::AF_HIDE_EDIT))) && !$attr->hasFlag(Attribute::AF_FORCE_LOAD));
     }
 
     /**
-     * Checks whether the attribute has the flag AF_ONETOONE_INTEGRATE
+     * Checks whether the attribute has the flag Attribute::AF_ONETOONE_INTEGRATE
      * @param Object $attr The attribute to check
      * @return boolean    The result of the check
      */
     function integrateAttribute($attr)
     {
         return in_array(get_class($attr),
-            array("atkonetoonerelation", "atksecurerelation")) && $attr->hasFlag(AF_ONETOONE_INTEGRATE);
+            array("atkonetoonerelation", "atksecurerelation")) && $attr->hasFlag(Attribute::AF_ONETOONE_INTEGRATE);
     }
 
     /**
-     * Get al attributes from the import node that have the flag AF_ONETOONE_INTEGRATE
-     * @return array  A list with all attributes from the import node that have the flag AF_ONETOONE_INTEGRATE
+     * Get al attributes from the import node that have the flag Attribute::AF_ONETOONE_INTEGRATE
+     * @return array  A list with all attributes from the import node that have the flag Attribute::AF_ONETOONE_INTEGRATE
      */
     function getIntegratedAttributes()
     {
@@ -1199,7 +1199,7 @@ class ImportHandler extends ActionHandler
                 $allFields)
         ) {
             $primaryKeyAttr = $attr->m_destInstance->getAttribute($attr->m_destInstance->primaryKeyField());
-            $isNumeric = $attr->hasFlag(AF_AUTO_INCREMENT) || is_a($primaryKeyAttr, 'atknumberattribute');
+            $isNumeric = $attr->hasFlag(Attribute::AF_AUTO_INCREMENT) || is_a($primaryKeyAttr, 'atknumberattribute');
 
             $relationselect = array();
 

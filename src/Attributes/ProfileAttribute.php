@@ -45,7 +45,7 @@ class ProfileAttribute extends Attribute
             $parentAttrName = "";
         }
 
-        parent::__construct($name, $flags | AF_HIDE_SEARCH | AF_HIDE_LIST);
+        parent::__construct($name, $flags | self::AF_HIDE_SEARCH | self::AF_HIDE_LIST);
         $this->m_parentAttrName = $parentAttrName;
 
         $this->m_accessField = Config::getGlobal('auth_accessfield');
@@ -631,7 +631,7 @@ class ProfileAttribute extends Attribute
      *
      * If the type was read from the table metadata, that value will
      * be used. Else, the attribute will analyze its flags to guess
-     * what type it should be. If AF_AUTO_INCREMENT is set, the field
+     * what type it should be. If self::AF_AUTO_INCREMENT is set, the field
      * is probaly "number". If not, it's probably "string".
      *
      * @return String The 'generic' type of the database field for this

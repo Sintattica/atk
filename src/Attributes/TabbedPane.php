@@ -22,7 +22,7 @@
  */
 use Sintattica\Atk\Ui\Theme;
 
-define("AF_TABBEDPANE_NO_AUTO_HIDE_LABEL", AF_SPECIFIC_1);
+define("self::AF_TABBEDPANE_NO_AUTO_HIDE_LABEL", self::AF_SPECIFIC_1);
 
 /**
  * atkTabbedPane place regular attribute to the additional tabbed pane
@@ -62,7 +62,7 @@ class TabbedPane extends Attribute
             }
         }
         // A atkTabbedPane attribute should be display only in edit/view mode
-        parent::__construct($name, $flags | AF_HIDE_SEARCH | AF_HIDE_LIST | AF_HIDE_SELECT); // base class constructor
+        parent::__construct($name, $flags | self::AF_HIDE_SEARCH | self::AF_HIDE_LIST | self::AF_HIDE_SELECT); // base class constructor
     }
 
     /**
@@ -83,7 +83,7 @@ class TabbedPane extends Attribute
         if (is_object($this->m_ownerInstance)) {
             $p_attr = $this->m_ownerInstance->getAttribute($attrib);
             if (is_object($p_attr)) {
-                $p_attr->addDisabledMode(DISABLED_VIEW | DISABLED_EDIT);
+                $p_attr->addDisabledMode(self::DISABLED_VIEW | self::DISABLED_EDIT);
                 $p_attr->setTabs($this->getTabs());
                 $p_attr->setSections($this->getSections());
             }
@@ -118,7 +118,7 @@ class TabbedPane extends Attribute
     {
         foreach (array_keys($this->m_attribsList) as $attrib) {
             $p_attr = $this->m_ownerInstance->getAttribute($attrib);
-            $p_attr->addDisabledMode(DISABLED_VIEW | DISABLED_EDIT);
+            $p_attr->addDisabledMode(self::DISABLED_VIEW | self::DISABLED_EDIT);
             $p_attr->setTabs($this->getTabs());
             $p_attr->setSections($this->getSections());
         }
@@ -128,14 +128,14 @@ class TabbedPane extends Attribute
      * Check if attribute is single on the tab
      * @param String $name The name of attribute
      * @return Bool  True if single.
-     * $todo Take into accout AF_HIDE_VIEW,AF_HIDE_EDIT flag of attribute -
+     * $todo Take into accout self::AF_HIDE_VIEW,self::AF_HIDE_EDIT flag of attribute -
      * attribute can be placed on tab, but only in edit action - 2 attribute when edit and 1  -if view
      */
     function isAttributeSingleOnTab($name)
     {
         $result = false;
 
-        if (!$this->hasFlag(AF_TABBEDPANE_NO_AUTO_HIDE_LABEL)) {
+        if (!$this->hasFlag(self::AF_TABBEDPANE_NO_AUTO_HIDE_LABEL)) {
             $tab = $this->m_attribsList[$name];
             $friquency = array_count_values(array_values($this->m_attribsList));
             $result = ($friquency[$tab] == 1);
@@ -162,7 +162,7 @@ class TabbedPane extends Attribute
             $p_attrib = &$node->getAttribute($name);
             if (is_object($p_attrib)) {
                 /* hide - nothing to do with tabbedpane, must be render on higher level */
-                if (($mode == "edit" && $p_attrib->hasFlag(AF_HIDE_EDIT)) || ($mode == "add" && $p_attrib->hasFlag(AF_HIDE_ADD))) {
+                if (($mode == "edit" && $p_attrib->hasFlag(self::AF_HIDE_EDIT)) || ($mode == "add" && $p_attrib->hasFlag(self::AF_HIDE_ADD))) {
                     /* when adding, there's nothing to hide... */
                     if ($mode == "edit" || ($mode == "add" && !$p_attrib->isEmpty($defaults))) {
                         $arr["hide"][] = $p_attrib->hide($defaults, $fieldprefix, $mode);
@@ -171,7 +171,7 @@ class TabbedPane extends Attribute
                 else {
                     $entry = array(
                         "name" => $p_attrib->m_name,
-                        "obligatory" => $p_attrib->hasFlag(AF_OBLIGATORY),
+                        "obligatory" => $p_attrib->hasFlag(self::AF_OBLIGATORY),
                         "attribute" => &$p_attrib
                     );
                     $entry["id"] = $p_attrib->getHtmlId($fieldprefix);
@@ -307,7 +307,7 @@ class TabbedPane extends Attribute
                 }
 
                 /* does the field have a label? */
-                if ((isset($field["label"]) && $field["label"] !== "AF_NO_LABEL") && !$this->isAttributeSingleOnTab($field['name']) || !isset($field["label"])) {
+                if ((isset($field["label"]) && $field["label"] !== "self::AF_NO_LABEL") && !$this->isAttributeSingleOnTab($field['name']) || !isset($field["label"])) {
                     if ($field["label"] == "") {
                         $tplfield["label"] = "";
                     } else {
@@ -317,7 +317,7 @@ class TabbedPane extends Attribute
                         }
                     }
                 } else {
-                    $tplfield["label"] = "AF_NO_LABEL";
+                    $tplfield["label"] = "self::AF_NO_LABEL";
                 }
 
                 /* obligatory indicator */
@@ -403,7 +403,7 @@ class TabbedPane extends Attribute
             $p_attrib = &$node->getAttribute($name);
             if (is_object($p_attrib)) {
                 $tplfield = array();
-                if (!$p_attrib->hasFlag(AF_HIDE_VIEW)) {
+                if (!$p_attrib->hasFlag(self::AF_HIDE_VIEW)) {
                     $fieldtab = $this->m_attribsList[$name];
 
                     $tplfield["class"] = "tabbedPaneAttr tabbedPaneTab{$fieldtab}";
@@ -443,10 +443,10 @@ class TabbedPane extends Attribute
 
                     $tplfield["full"] = $editsrc;
                     $tplfield["widget"] = $editsrc; // in view mode, widget and full are equal
-                    // The Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
+                    // The Label of the attribute (can be suppressed with self::AF_NOLABEL or self::AF_BLANKLABEL)
                     // For each attribute, a txt_<attributename> must be provided in the language files.
-                    if (!$p_attrib->hasFlag(AF_NOLABEL) && !$this->isAttributeSingleOnTab($name)) {
-                        if ($p_attrib->hasFlag(AF_BLANKLABEL)) {
+                    if (!$p_attrib->hasFlag(self::AF_NOLABEL) && !$this->isAttributeSingleOnTab($name)) {
+                        if ($p_attrib->hasFlag(self::AF_BLANKLABEL)) {
                             $tplfield["label"] = "";
                         } else {
                             $tplfield["label"] = $p_attrib->label($record);
@@ -575,7 +575,7 @@ class TabbedPane extends Attribute
      */
     function loadType($mode, $searching = false)
     {
-        return NOLOAD;
+        return self::NOLOAD;
     }
 
     /**
@@ -589,7 +589,7 @@ class TabbedPane extends Attribute
      */
     function storageType($mode)
     {
-        return NOSTORE;
+        return self::NOSTORE;
     }
 
 }

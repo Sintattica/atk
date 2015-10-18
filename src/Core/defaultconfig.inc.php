@@ -908,22 +908,22 @@ $config_mail_redirect = "";
 $config_extended_search_action = 'search';
 
 /**
- * Should all many-to-one relations have the AF_RELATION_AUTOCOMPLETE flag set?
+ * Should all many-to-one relations have the Attribute::AF_RELATION_AUTOCOMPLETE flag set?
  *
  * @var boolean
  */
 $config_manytoone_autocomplete_default = false;
 
 /**
- * Should all many-to-one relations that have the AF_LARGE flag set also
- * have the AF_RELATION_AUTOCOMPLETE flag set?
+ * Should all many-to-one relations that have the Attribute::AF_LARGE flag set also
+ * have the Attribute::AF_RELATION_AUTOCOMPLETE flag set?
  *
  * @var boolean
  */
 $config_manytoone_autocomplete_large = true;
 
 /**
- * Should manytoone relations having the AF_RELATION_AUTOCOMPLETE flag also
+ * Should manytoone relations having the Attribute::AF_RELATION_AUTOCOMPLETE flag also
  * use auto completion in search forms?
  *
  * @var boolean

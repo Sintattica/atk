@@ -41,7 +41,7 @@ class MultipleFileAttribute extends FileAttribute
      */
     function atkMultipleFileAttribute($name, $dir, $flags = 0, $size = 0)
     {
-        $this->atkFileAttribute($name, $flags | AF_CASCADE_DELETE, $size); // base class constructor
+        $this->atkFileAttribute($name, $flags | self::AF_CASCADE_DELETE, $size); // base class constructor
         if (is_array($dir)) {
             $this->m_dir = $this->AddSlash($dir[0]);
             $this->m_url = $this->AddSlash($dir[1]);
@@ -102,7 +102,7 @@ class MultipleFileAttribute extends FileAttribute
         } else {
             $result = "No files found";
         }
-        if (!$this->hasFlag(AF_FILE_NO_UPLOAD)) {
+        if (!$this->hasFlag(self::AF_FILE_NO_UPLOAD)) {
             $result .= ' <input type="file" name="' . $this->fieldName() . '">';
         }
         return $result;

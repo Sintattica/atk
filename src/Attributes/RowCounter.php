@@ -39,7 +39,7 @@ class RowCounter extends DummyAttribute
      */
     function atkRowCounter($name, $flags = 0)
     {
-        $this->atkDummyAttribute($name, '', $flags | AF_HIDE_VIEW | AF_HIDE_EDIT | AF_HIDE_ADD);
+        $this->atkDummyAttribute($name, '', $flags | self::AF_HIDE_VIEW | self::AF_HIDE_EDIT | self::AF_HIDE_ADD);
     }
 
     /**

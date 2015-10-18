@@ -1,15 +1,9 @@
 <?php namespace Sintattica\Atk\Relations;
 
+use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
 
-/**
- * Attribute flag. When used the atkManyBoolRelation shows add links to add records for the related table
- */
-define("AF_MANYBOOL_AUTOLINK", AF_SPECIFIC_1);
-
-/**
- * Hides the select all, select none and inverse links.
- */
-define("AF_MANYBOOL_NO_TOOLBAR", AF_SPECIFIC_2);
 
 /**
  * Many-to-many relation.
@@ -24,6 +18,18 @@ define("AF_MANYBOOL_NO_TOOLBAR", AF_SPECIFIC_2);
  */
 class ManyBoolRelation extends ManyToManyRelation
 {
+
+    /**
+     * Attribute flag. When used the atkManyBoolRelation shows add links to add records for the related table
+     */
+    const AF_MANYBOOL_AUTOLINK = self::AF_SPECIFIC_1;
+
+    /**
+     * Hides the select all, select none and inverse links.
+     */
+    const AF_MANYBOOL_NO_TOOLBAR = self::AF_SPECIFIC_2;
+
+
     var $m_cols = 3;
 
     /**
@@ -56,7 +62,7 @@ class ManyBoolRelation extends ManyToManyRelation
             $page = Page::getInstance();
             $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkprofileattribute.js.php");
 
-            if (!$this->hasFlag(AF_MANYBOOL_NO_TOOLBAR)) {
+            if (!$this->hasFlag(self::AF_MANYBOOL_NO_TOOLBAR)) {
                 $result .= '<div align="left"><font size="-2">
                       [<a href="javascript:void(0)" onclick="profile_checkAll(\'' . $this->getHtmlId($fieldprefix) . '\'); return false;">' .
                     Tools::atktext("check_all", "atk") .
@@ -120,8 +126,8 @@ class ManyBoolRelation extends ManyToManyRelation
             $modulename = $this->m_destInstance->m_module;;
             $result .= Tools::atktext('select_none', $modulename, $nodename) . " ";
         }
-        // Add the add link if AF_MANYBOOL_AUTOLINK used
-        if (($this->hasFlag(AF_MANYBOOL_AUTOLINK)) && ($this->m_destInstance->allowed("add"))) {
+        // Add the add link if self::AF_MANYBOOL_AUTOLINK used
+        if (($this->hasFlag(self::AF_MANYBOOL_AUTOLINK)) && ($this->m_destInstance->allowed("add"))) {
             $result .= Tools::href(Tools::dispatch_url($this->m_destination, "add"), $this->getAddLabel(),
                     SESSION_NESTED) . "\n";
         }
@@ -151,7 +157,7 @@ class ManyBoolRelation extends ManyToManyRelation
     /**
      * Set wether or not we should show the details link
      * @param boolean $status
-     * @return atkManyToManyRelation
+     * @return ManyToManyRelation
      */
     public function setShowDetailsLink($status)
     {

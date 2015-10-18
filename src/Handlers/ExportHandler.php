@@ -38,7 +38,7 @@ class ExportHandler extends ActionHandler
             }
         }
 
-        //need to keep the postdata after a AF_LARGE selection in the allfield
+        //need to keep the postdata after a Attribute::AF_LARGE selection in the allfield
         if (!isset($this->m_postvars["phase"]) && isset($ATK_VARS['atkformdata'])) {
             foreach ($ATK_VARS['atkformdata'] as $key => $value) {
                 $this->m_postvars[$key] = $value;
@@ -466,8 +466,8 @@ class ExportHandler extends ActionHandler
         foreach ($attriblist as $key => $value) {
             $flags = $value->m_flags;
             $class = strtolower(get_class($value));
-            if ($value->hasFlag(AF_AUTOKEY) ||
-                $value->hasFlag(AF_HIDE_VIEW) ||
+            if ($value->hasFlag(Attribute::AF_AUTOKEY) ||
+                $value->hasFlag(Attribute::AF_HIDE_VIEW) ||
                 !(strpos($class, "dummy") === false) ||
                 !(strpos($class, "image") === false) ||
                 !(strpos($class, 'tabbedpane') === false)
@@ -487,7 +487,7 @@ class ExportHandler extends ActionHandler
                 $atts[$group][] = array(
                     'name' => $key,
                     'text' => $value->label(),
-                    'checked' => $selected == true ? !$value->hasFlag(AF_HIDE_LIST)
+                    'checked' => $selected == true ? !$value->hasFlag(Attribute::AF_HIDE_LIST)
                         : false
                 );
             } // selected options based on a selection from DB
@@ -544,10 +544,10 @@ class ExportHandler extends ActionHandler
 
         foreach ($atts as $name => $object) {
             $att = &$node_bk->getAttribute($name);
-            if (in_array($name, $list_includes) && $att->hasFlag(AF_HIDE_LIST)) {
-                $att->removeFlag(AF_HIDE_LIST);
+            if (in_array($name, $list_includes) && $att->hasFlag(Attribute::AF_HIDE_LIST)) {
+                $att->removeFlag(Attribute::AF_HIDE_LIST);
             } elseif (!in_array($name, $list_includes)) {
-                $att->addFlag(AF_HIDE_LIST);
+                $att->addFlag(Attribute::AF_HIDE_LIST);
             }
         }
 

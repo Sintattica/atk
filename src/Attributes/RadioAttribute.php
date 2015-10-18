@@ -22,7 +22,7 @@
 /**
  * Displays the set of radio buttons vertically
  */
-define("AF_DISPLAY_VERT", AF_SPECIFIC_2);
+define("self::AF_DISPLAY_VERT", self::AF_SPECIFIC_2);
 
 /**
  * The atkRadioAttribute class represents an attribute of a node
@@ -75,7 +75,7 @@ class RadioAttribute extends ListAttribute
                 $this->m_amount = substr($size[1], 0, -1);
             } else {
                 // Default options
-                if ($this->hasFlag(AF_DISPLAY_VERT)) {
+                if ($this->hasFlag(self::AF_DISPLAY_VERT)) {
                     $this->m_rows = true;
                 } else {
                     $this->m_cols = true;
@@ -122,20 +122,20 @@ class RadioAttribute extends ListAttribute
         $values = $this->getValues($record);
 
         $total_items = count($values);
-        if ($this->m_cols && !$this->hasFlag(AF_DISPLAY_VERT)) {
+        if ($this->m_cols && !$this->hasFlag(self::AF_DISPLAY_VERT)) {
             $items = $this->m_amount;
-        } elseif ($this->m_rows && !$this->hasFlag(AF_DISPLAY_VERT)) {
+        } elseif ($this->m_rows && !$this->hasFlag(self::AF_DISPLAY_VERT)) {
             $items = ceil($total_items / $this->m_amount);
-        } elseif ($this->m_cols && $this->hasFlag(AF_DISPLAY_VERT)) {
+        } elseif ($this->m_cols && $this->hasFlag(self::AF_DISPLAY_VERT)) {
             $items = ceil($total_items / $this->m_amount);
             $total_items = $items;
-        } elseif ($this->m_rows && $this->hasFlag(AF_DISPLAY_VERT)) {
+        } elseif ($this->m_rows && $this->hasFlag(self::AF_DISPLAY_VERT)) {
             $items = $this->m_amount;
             $total_items = $this->m_amount;
         }
 
         $result = '<table class="table">';
-        if (!$this->hasFlag(AF_DISPLAY_VERT)) {
+        if (!$this->hasFlag(self::AF_DISPLAY_VERT)) {
             $result .= '<tr>';
         }
         $item_count = 0;
@@ -148,7 +148,7 @@ class RadioAttribute extends ListAttribute
             }
 
             $labelID = $fieldprefix . $this->formName() . "_" . $values[$i];
-            if ($this->hasFlag(AF_DISPLAY_VERT)) {
+            if ($this->hasFlag(self::AF_DISPLAY_VERT)) {
                 $result .= '<tr>';
             }
             $this->registerKeyListener($labelID, KB_CTRLCURSOR | KB_CURSOR);
@@ -164,12 +164,12 @@ class RadioAttribute extends ListAttribute
 
             $result .= '<td><input id="' . $labelID . '" type="radio" name="' . $fieldprefix . $this->formName() . '" ' . $this->getCSSClassAttribute("atkradio") . ' value="' . $values[$i] . '" ' . $onchange . $sel . '>
         ' . $this->renderValue($labelID, $this->_translateValue($values[$i],
-                    $record)) . ($this->hasFlag(AF_DISPLAY_VERT) && $this->m_comments[$i] != ''
+                    $record)) . ($this->hasFlag(self::AF_DISPLAY_VERT) && $this->m_comments[$i] != ''
                     ? $commenthtml : '') . '</td>';
 
-            if ($this->hasflag(AF_DISPLAY_VERT)) {
+            if ($this->hasflag(self::AF_DISPLAY_VERT)) {
                 $tmp_items = $items;
-                if ($this->hasFlag(AF_DISPLAY_VERT) && $this->m_rows) {
+                if ($this->hasFlag(self::AF_DISPLAY_VERT) && $this->m_rows) {
                     $tmp_items = count($values);
                 } else {
                     $tmp_items = $items * $this->m_amount;
@@ -194,13 +194,13 @@ class RadioAttribute extends ListAttribute
             }
 
             $item_count++;
-            if ($item_count == $items && !$this->hasFlag(AF_DISPLAY_VERT)) {
+            if ($item_count == $items && !$this->hasFlag(self::AF_DISPLAY_VERT)) {
                 $result .= '</tr><tr>';
                 $item_count = 0;
             }
         }
         // Fill with empty boxes when we have a horizontal display
-        if (!$this->hasFlag(AF_DISPLAY_VERT)) {
+        if (!$this->hasFlag(self::AF_DISPLAY_VERT)) {
             for ($i = 0; $i < ($items - $item_count); $i++) {
                 $result .= '<td>&nbsp;</td>';
             }

@@ -70,8 +70,8 @@ class FileEditor extends Node
         $this->m_filefilter = $filter;
         $this->m_showdirs = true;
 
-        $this->add(new Attribute("filename", AF_PRIMARY | AF_SEARCHABLE));
-        $this->add(new TextAttribute("filecontent", 30, AF_HIDE_LIST));
+        $this->add(new Attribute("filename", Attribute::AF_PRIMARY | Attribute::AF_SEARCHABLE));
+        $this->add(new TextAttribute("filecontent", 30, Attribute::AF_HIDE_LIST));
 
         $this->addSecurityMap('dirchange', 'admin');
 

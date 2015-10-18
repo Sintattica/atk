@@ -17,9 +17,9 @@
 /**
  * Flags for atkTimeAttribute
  */
-define("AF_TIME_SECONDS", AF_SPECIFIC_1); // Display seconds after hours & minutes
-define("AF_CLEAR_TOUCH_BUTTONS", AF_SPECIFIC_6); // Display butons to clear and 'touch' date
-define("AF_TIME_DEFAULT_EMPTY", AF_SPECIFIC_7); // Always use the empty value on new record
+define("self::AF_TIME_SECONDS", self::AF_SPECIFIC_1); // Display seconds after hours & minutes
+define("self::AF_CLEAR_TOUCH_BUTTONS", self::AF_SPECIFIC_6); // Display butons to clear and 'touch' date
+define("self::AF_TIME_DEFAULT_EMPTY", self::AF_SPECIFIC_7); // Always use the empty value on new record
 
 /**
  * The atkTimeAttribute class represents an attribute of a node
@@ -44,7 +44,7 @@ class TimeAttribute extends Attribute
      * @param int $endTime Time to end with (eg 24)
      * @param int|array $steps containing possible minute or seconds values (eg array("00","15","30","45"))
      *                          or the interval (eg 5 for 00,05,10,15, etc.)
-     *                          if the flag AF_TIME_SECONDS is set, this is for seconds, the minutes will be range(0, 59)
+     *                          if the flag self::AF_TIME_SECONDS is set, this is for seconds, the minutes will be range(0, 59)
      *                          else this is for the minutes and the seconds will not be displayed
      * @param string $default Start Time (exp: 20:30)
      * @param int $flags Flags for this attribute
@@ -112,7 +112,7 @@ class TimeAttribute extends Attribute
             return "";
         }
         $tmp_time = sprintf("%02d:%02d", $value["hours"], $value["minutes"]);
-        if ($value["seconds"] && $this->hasFlag(AF_TIME_SECONDS)) {
+        if ($value["seconds"] && $this->hasFlag(self::AF_TIME_SECONDS)) {
             $tmp_time .= sprintf(":%02d", $value["seconds"]);
         }
         return $tmp_time;
@@ -172,7 +172,7 @@ class TimeAttribute extends Attribute
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         if ((($this->m_default == "NOW" && $this->m_ownerInstance->m_action == "add") ||
-            ($this->m_default == "" && $this->hasFlag(AF_OBLIGATORY)) && !$this->hasFlag(AF_TIME_DEFAULT_EMPTY))
+            ($this->m_default == "" && $this->hasFlag(self::AF_OBLIGATORY)) && !$this->hasFlag(self::AF_TIME_DEFAULT_EMPTY))
         ) {
             $this->m_default = date("H:i:s");
         }
@@ -209,7 +209,7 @@ class TimeAttribute extends Attribute
 
         Tools::atkdebug("defhour=$m_defHour   defmin=$m_defMin");
         // generate hour dropdown
-        if (!$this->hasflag(AF_OBLIGATORY) || $this->hasFlag(AF_TIME_DEFAULT_EMPTY)) {
+        if (!$this->hasflag(self::AF_OBLIGATORY) || $this->hasFlag(self::AF_TIME_DEFAULT_EMPTY)) {
             $m_hourBox .= '<option value=""' . ($m_defHour === "" ? ' selected' : '') . '></option>';
         }
         for ($i = $this->m_beginTime; $i <= $this->m_endTime; $i++) {
@@ -223,11 +223,11 @@ class TimeAttribute extends Attribute
         $size_hourbox = $this->m_endTime - $this->m_beginTime + 1;
 
         // generate minute dropdown
-        if (!$this->hasflag(AF_OBLIGATORY) || $this->hasFlag(AF_TIME_DEFAULT_EMPTY)) {
+        if (!$this->hasflag(self::AF_OBLIGATORY) || $this->hasFlag(self::AF_TIME_DEFAULT_EMPTY)) {
             $m_minBox .= '<option value=""' . ($m_defMin === "" ? ' selected' : '') . '></option>';
         }
 
-        if ($this->hasFlag(AF_TIME_SECONDS)) {
+        if ($this->hasFlag(self::AF_TIME_SECONDS)) {
             $minute_steps = range(00, 59);
         } else {
             $minute_steps = $this->m_steps;
@@ -250,7 +250,7 @@ class TimeAttribute extends Attribute
         $size_minbox = count($minute_steps);
 
         // generate second dropdown
-        if (!$this->hasFlag(AF_OBLIGATORY) || $this->hasFlag(AF_TIME_DEFAULT_EMPTY)) {
+        if (!$this->hasFlag(self::AF_OBLIGATORY) || $this->hasFlag(self::AF_TIME_DEFAULT_EMPTY)) {
             $m_secBox .= '<option value""' . ($m_defSec === "" ? ' selected' : '') . '></option>';
         }
         for ($i = 0; $i <= count($this->m_steps) - 1; $i++) {
@@ -273,7 +273,7 @@ class TimeAttribute extends Attribute
         // close dropdown structures
         $m_hourBox .= "</select>";
         $m_minBox .= "</select>";
-        if ($this->hasFlag(AF_TIME_SECONDS)) {
+        if ($this->hasFlag(self::AF_TIME_SECONDS)) {
             $m_secBox .= "</select>";
             $m_secBox = ":" . $m_secBox;
         } else {
@@ -285,12 +285,12 @@ class TimeAttribute extends Attribute
         //return $m_hourBox . ":" . $m_minBox . $m_secBox;
         $timeedit = $m_hourBox . ":" . $m_minBox . $m_secBox;
 
-        if ($this->hasFlag(AF_CLEAR_TOUCH_BUTTONS)) {
+        if ($this->hasFlag(self::AF_CLEAR_TOUCH_BUTTONS)) {
             $tmp = $timeedit . "&nbsp;&nbsp;" .
                 ' <input type="button" onclick="
          $(\'' . $this->getAttributeHtmlId() . '[hours]\').selectedIndex=0;
          $(\'' . $this->getAttributeHtmlId() . '[minutes]\').selectedIndex=0;';
-            if ($this->hasFlag(AF_TIME_SECONDS)) {
+            if ($this->hasFlag(self::AF_TIME_SECONDS)) {
                 $tmp .= '$(\'' . $this->getAttributeHtmlId() . '[seconds]\').selectedIndex=0;';
             }
             $tmp .= '" value="&empty;" class="atkDateAttribute button atkbutton">
@@ -299,7 +299,7 @@ class TimeAttribute extends Attribute
          var mi = Math.round(d.getMinutes()/Math.round(60 / ' . $size_minbox . '));
          $(\'' . $this->getAttributeHtmlId() . '[hours]\').selectedIndex=d.getHours()+1;
          $(\'' . $this->getAttributeHtmlId() . '[minutes]\').selectedIndex=mi+1;';
-            if ($this->hasFlag(AF_TIME_SECONDS)) {
+            if ($this->hasFlag(self::AF_TIME_SECONDS)) {
                 $tmp .= 'var mi = Math.round(d.getSeconds()/Math.round(60 / ' . $size_secbox . '));
             $(\'' . $this->getAttributeHtmlId() . '[seconds]\').selectedIndex=mi+1;';
             }
@@ -323,7 +323,7 @@ class TimeAttribute extends Attribute
         $minutes = $rec[$this->fieldName()]["minutes"];
         $seconds = $rec[$this->fieldName()]["seconds"];
 
-        if ($hours == "" || $minutes == "" || ($this->hasFlag(AF_TIME_SECONDS) && $seconds == "")) {
+        if ($hours == "" || $minutes == "" || ($this->hasFlag(self::AF_TIME_SECONDS) && $seconds == "")) {
             return null;
         }
 
@@ -396,7 +396,7 @@ class TimeAttribute extends Attribute
     function validate(&$rec, $mode)
     {
         $value = $rec[$this->fieldName()];
-        if ($this->hasFlag(AF_OBLIGATORY) && ($value["hours"] == -1 || $value['minutes'] == -1)) {
+        if ($this->hasFlag(self::AF_OBLIGATORY) && ($value["hours"] == -1 || $value['minutes'] == -1)) {
             Tools::triggerError($rec, $this->fieldName(), 'error_obligatoryfield');
         }
     }
@@ -430,10 +430,10 @@ class TimeAttribute extends Attribute
             if ($value == null) {
                 $query->addField($this->fieldName(), 'NULL', "", "", false);
             } else {
-                $query->addField($this->fieldName(), $value, "", "", !$this->hasFlag(AF_NO_QUOTES));
+                $query->addField($this->fieldName(), $value, "", "", !$this->hasFlag(self::AF_NO_QUOTES));
             }
         } else {
-            $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES));
+            $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES));
         }
     }
 

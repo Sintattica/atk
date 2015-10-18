@@ -1,15 +1,10 @@
 <?php namespace Sintattica\Atk\Relations;
 
 use Sintattica\Atk\Ui\Ui;
+use Sintattica\Atk\Core\Tools;
 
 
-/**
- * Do not load the available records
- * Leave it to a partial update.
- * often used with the shuttlecontrols when editing
- * large tables
- */
-define("AF_SHUTTLERELATION_NO_AUTOLOAD", AF_SPECIFIC_1);
+
 
 /**
  * Shuttle relation with widget extensions.
@@ -19,6 +14,15 @@ define("AF_SHUTTLERELATION_NO_AUTOLOAD", AF_SPECIFIC_1);
  */
 class ExtendableShuttleRelation extends ManyToManyRelation
 {
+
+    /**
+     * Do not load the available records
+     * Leave it to a partial update.
+     * often used with the shuttlecontrols when editing
+     * large tables
+     */
+    const AF_SHUTTLERELATION_NO_AUTOLOAD = self::AF_SPECIFIC_1;
+
     protected $m_controlsBySection = array();
     protected $m_selectedFields = array();
     protected $m_availableFields = array();
@@ -77,6 +81,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
      */
     public function partial_filter()
     {
+        global $ATK_VARS;
         $redraw = false;
         $record = $this->getOwnerInstance()->updateRecord();
         $mode = $ATK_VARS["atkaction"];
@@ -180,6 +185,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
      */
     public function partial_selection()
     {
+        global $ATK_VARS;
         $record = $this->getOwnerInstance()->updateRecord();
         $mode = $ATK_VARS["atkaction"];
         $prefix = $this->getOwnerInstance()->m_postvars['atkfieldprefix'];
@@ -260,7 +266,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         }
 
         // Get available records
-        $left = ($this->hasFlag(AF_SHUTTLERELATION_NO_AUTOLOAD)) ? array() : $this->getAvailableFields($record, $mode,
+        $left = ($this->hasFlag(self::AF_SHUTTLERELATION_NO_AUTOLOAD)) ? array() : $this->getAvailableFields($record, $mode,
             $availableFilter);
 
         for ($i = 0, $_i = count($left); $i < $_i; $i++) {

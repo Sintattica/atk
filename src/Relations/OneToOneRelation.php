@@ -1,37 +1,7 @@
 <?php namespace Sintattica\Atk\Relations;
 
-/**
- * flags specific for atkOneToOneRelation
- */
-/**
- * Override the default no add flag
- */
-define("AF_ONETOONE_ADD", AF_SPECIFIC_1);
-
-/**
- * Enable error notifications / triggers
- */
-define("AF_ONETOONE_ERROR", AF_SPECIFIC_2);
-
-/**
- * Invisibly integrate a onetoonerelation as if the fields where part of the current node.
- * If the relation is integrated, no divider is drawn, and the section heading is suppressed.
- * (Integration does not affect the way data is stored or manipulated, only how it is displayed.)
- */
-define("AF_ONETOONE_INTEGRATE", AF_SPECIFIC_3);
-
-/**
- * Use lazy loading instead of query addition.
- */
-define("AF_ONETOONE_LAZY", AF_SPECIFIC_4);
-
-/**
- * Respects tab/sections that have been assigned to this attribute instead of using the
- * tabs assigned for the attributes in the destination node. This flag is only useful in
- * integration mode.
- */
-define("AF_ONETOONE_RESPECT_TABS", AF_SPECIFIC_5);
-
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\DataGrid\DataGrid;
 
 /**
  * Implementation of one-to-one relationships.
@@ -42,7 +12,7 @@ define("AF_ONETOONE_RESPECT_TABS", AF_SPECIFIC_5);
  *
  * When editing a one-to-one relation, the form for the destination record
  * is embedded in the form of the master record. When using the flag
- * AF_ONETOONE_INTEGRATE, this is done transparantly so the user does not
+ * self::AF_ONETOONE_INTEGRATE, this is done transparantly so the user does not
  * even notice that the data he's editing comes from 2 separate tables.
  *
  * @author Ivo Jansch <ivo@achievo.org>
@@ -52,6 +22,39 @@ define("AF_ONETOONE_RESPECT_TABS", AF_SPECIFIC_5);
  */
 class OneToOneRelation extends Relation
 {
+    /**
+     * flags specific for atkOneToOneRelation
+     */
+    /**
+     * Override the default no add flag
+     */
+    const AF_ONETOONE_ADD = self::AF_SPECIFIC_1;
+
+    /**
+     * Enable error notifications / triggers
+     */
+    const AF_ONETOONE_ERROR = self::AF_SPECIFIC_2;
+
+    /**
+     * Invisibly integrate a onetoonerelation as if the fields where part of the current node.
+     * If the relation is integrated, no divider is drawn, and the section heading is suppressed.
+     * (Integration does not affect the way data is stored or manipulated, only how it is displayed.)
+     */
+    const AF_ONETOONE_INTEGRATE = self::AF_SPECIFIC_3;
+
+    /**
+     * Use lazy loading instead of query addition.
+     */
+    const AF_ONETOONE_LAZY = self::AF_SPECIFIC_4;
+
+    /**
+     * Respects tab/sections that have been assigned to this attribute instead of using the
+     * tabs assigned for the attributes in the destination node. This flag is only useful in
+     * integration mode.
+     */
+    const AF_ONETOONE_RESPECT_TABS = self::AF_SPECIFIC_5;
+
+
     /**
      * The name of the referential key attribute in the target node.
      * @access private
@@ -92,10 +95,7 @@ class OneToOneRelation extends Relation
      */
     function __construct($name, $destination, $refKey = "", $flags = 0)
     {
-        if ($flags & AF_ONETOONE_ADD != AF_ONETOONE_ADD) {
-            $flags |= AF_NO_ADD;
-        }
-        parent::__construct($name, $destination, $flags | AF_ONETOONE_LAZY);
+        parent::__construct($name, $destination, $flags | self::AF_ONETOONE_LAZY);
         $this->m_refKey = $refKey;
     }
 
@@ -132,7 +132,7 @@ class OneToOneRelation extends Relation
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
-     * Because of the AF_INTEGRATE feature, the edit() method has a void
+     * Because of the self::AF_INTEGRATE feature, the edit() method has a void
      * implementation. The actual edit code is handled by addToEditArray().
      */
     function edit()
@@ -166,7 +166,7 @@ class OneToOneRelation extends Relation
      *
      * Framework method. It should not be necessary to call this method
      * directly. This implementation performs a join to retrieve the
-     * target records' data, unless AF_ONETOONE_LAZY is set, in which case
+     * target records' data, unless self::AF_ONETOONE_LAZY is set, in which case
      * loading is delayed and performed later using the load() method.
      * For update and insert queries, this method does nothing. These are
      * handled by the store() method.
@@ -191,7 +191,7 @@ class OneToOneRelation extends Relation
     {
         if ($this->createDestination()) {
             if ($mode != "update" && $mode != "add") {
-                if ($this->hasFlag(AF_ONETOONE_LAZY)) {
+                if ($this->hasFlag(self::AF_ONETOONE_LAZY)) {
                     if ($this->m_refKey == "") {
                         return parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
                     }
@@ -223,7 +223,7 @@ class OneToOneRelation extends Relation
             // the refkey value.
             if ($this->m_refKey == "" && $mode == "add") {
                 $query->addField($this->fieldName(), $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]],
-                    "", "", !$this->hasFlag(AF_NO_QUOTES));
+                    "", "", !$this->hasFlag(self::AF_NO_QUOTES));
             }
         }
     }
@@ -291,7 +291,7 @@ class OneToOneRelation extends Relation
      * that the master record is deleted.
      *
      * Note that the framework only calls the method when the
-     * AF_CASCADE_DELETE flag is set. When calling this method, the detail
+     * self::AF_CASCADE_DELETE flag is set. When calling this method, the detail
      * record belonging to the master record is deleted.
      *
      * @param array $record The record that is deleted.
@@ -332,7 +332,7 @@ class OneToOneRelation extends Relation
     {
         // we need to pass all values to the destination node, so it can
         // run it's db2value stuff over it..
-        if ($this->hasFlag(AF_ONETOONE_LAZY) && $this->m_refKey == "") {
+        if ($this->hasFlag(self::AF_ONETOONE_LAZY) && $this->m_refKey == "") {
             return parent::db2value($rec);
         }
 
@@ -360,7 +360,7 @@ class OneToOneRelation extends Relation
      */
     function fetchMeta()
     {
-        if ($this->hasFlag(AF_ONETOONE_INTEGRATE)) {
+        if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE)) {
             $this->createDestination();
             $this->getDestination()->setAttribSizes();
         }
@@ -407,8 +407,8 @@ class OneToOneRelation extends Relation
      * @param String $mode The type of storage ("add" or "update")
      *
      * @return int Bitmask containing information about storage requirements.
-     *             POSTSTORE  when in master mode.
-     *             PRESTORE|ADDTOQUERY when in slave mode.
+     *             self::POSTSTORE  when in master mode.
+     *             self::PRESTORE|self::ADDTOQUERY when in slave mode.
      */
     function storageType($mode)
     {
@@ -423,13 +423,13 @@ class OneToOneRelation extends Relation
                 if ($this->m_refKey != "") {
                     // foreign key is in destination node, so we must store the
                     // destination AFTER we stored the master record.
-                    return POSTSTORE;
+                    return self::POSTSTORE;
                 } else {
                     // foreign key is in source node, so we must store the
                     // relation node first, so we can store the foreign key
                     // when we store the master record. To store the latter,
                     // we must also perform an addToQuery.
-                    return PRESTORE | ADDTOQUERY;
+                    return self::PRESTORE | self::ADDTOQUERY;
                 }
             }
         }
@@ -442,7 +442,7 @@ class OneToOneRelation extends Relation
      * to be loaded in the main query (addToQuery) or whether the attribute
      * has its own load() implementation.
      * For the atkOneToOneRelation, this depends on the presence of the
-     * AF_ONETOONE_LAZY flag.
+     * self::AF_ONETOONE_LAZY flag.
      *
      * Framework method. It should not be necesary to call this method
      * directly.
@@ -450,8 +450,8 @@ class OneToOneRelation extends Relation
      * @param String $mode The type of load (view,admin,edit etc)
      *
      * @return int Bitmask containing information about load requirements.
-     *             POSTLOAD|ADDTOQUERY when AF_ONETOONE_LAZY is set.
-     *             ADDTOQUERY when AF_ONETOONE_LAZY is not set.
+     *             self::POSTLOAD|self::ADDTOQUERY when self::AF_ONETOONE_LAZY is set.
+     *             self::ADDTOQUERY when self::AF_ONETOONE_LAZY is not set.
      */
     function loadType($mode)
     {
@@ -461,10 +461,10 @@ class OneToOneRelation extends Relation
             if (isset($this->m_loadType[null]) && $this->m_loadType[null] !== null) {
                 return $this->m_loadType[null];
             } else {
-                if ($this->hasFlag(AF_ONETOONE_LAZY)) {
-                    return POSTLOAD | ADDTOQUERY;
+                if ($this->hasFlag(self::AF_ONETOONE_LAZY)) {
+                    return self::POSTLOAD | self::ADDTOQUERY;
                 } else {
-                    return ADDTOQUERY;
+                    return self::ADDTOQUERY;
                 }
             }
         }
@@ -621,7 +621,7 @@ class OneToOneRelation extends Relation
                 $mode = "add";
             }
 
-            $output .= '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '[mode]" value="' . $mode . '">';
+            $output = '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '[mode]" value="' . $mode . '">';
             $forceList = Tools::decodeKeyValueSet($this->getFilter());
             $output .= $this->m_destInstance->hideform($mode, $myrecord, $forceList,
                 $fieldprefix . $this->fieldName() . "_AE_");
@@ -636,7 +636,7 @@ class OneToOneRelation extends Relation
      * This method is called by the node if it wants the data needed to create
      * an edit form. The method is an override of Attribute's method,
      * because in the atkOneToOneRelation, we need to implement the
-     * AF_ONETOONE_INTEGRATE feature.
+     * self::AF_ONETOONE_INTEGRATE feature.
      *
      * This is a framework method, it should never be called directly.
      *
@@ -649,7 +649,7 @@ class OneToOneRelation extends Relation
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
         /* hide */
-        if (($mode == "edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode == "add" && $this->hasFlag(AF_HIDE_ADD))) {
+        if (($mode == "edit" && $this->hasFlag(self::AF_HIDE_EDIT)) || ($mode == "add" && $this->hasFlag(self::AF_HIDE_ADD))) {
             /* when adding, there's nothing to hide... */
             if ($mode == "edit" || ($mode == "add" && !$this->isEmpty($defaults))) {
                 $arr["hide"][] = $this->hide($defaults, $fieldprefix, $mode);
@@ -662,19 +662,19 @@ class OneToOneRelation extends Relation
             if (method_exists($this->m_ownerInstance, $this->m_name . "_edit") ||
                 $this->edit($defaults, $fieldprefix, $mode) !== null
             ) {
-                Attribute::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
+                self::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
             } /* how we handle 1:1 relations normally */ else {
                 if (!$this->createDestination()) {
                     return;
                 }
 
                 /* readonly */
-                if ($this->m_destInstance->hasFlag(NF_READONLY) || ($mode == "edit" && $this->hasFlag(AF_READONLY_EDIT)) || ($mode == "add" && $this->hasFlag(AF_READONLY_ADD))) {
+                if ($this->m_destInstance->hasFlag(NF_READONLY) || ($mode == "edit" && $this->hasFlag(self::AF_READONLY_EDIT)) || ($mode == "add" && $this->hasFlag(self::AF_READONLY_ADD))) {
                     $this->createDestination();
                     $attrNames = $this->m_destInstance->getAttributeNames();
                     foreach ($attrNames as $attrName) {
                         $attr = $this->m_destInstance->getAttribute($attrName);
-                        $attr->addFlag(AF_READONLY);
+                        $attr->addFlag(self::AF_READONLY);
                     }
                 }
 
@@ -714,14 +714,14 @@ class OneToOneRelation extends Relation
                 /* hidden fields */
                 $arr["hide"] = array_merge($arr["hide"], $a["hide"]);
 
-                /* editable fields, if AF_NOLABEL is specified or if there is just 1 field with the
+                /* editable fields, if self::AF_NOLABEL is specified or if there is just 1 field with the
                  * same name as the relation we don't display a label
                  * TODO FIXME
                  */
                 if (!is_array($arr['fields'])) {
                     $arr['fields'] = array();
                 }
-                if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name)) {
+                if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name)) {
                     /* separator and name */
                     if ($arr['fields'][count($arr['fields']) - 1]['html'] !== '-') {
                         $arr["fields"][] = array(
@@ -740,7 +740,7 @@ class OneToOneRelation extends Relation
 
                 if (is_array($a["fields"])) {
                     // in non-integration mode we move all the fields to the one-to-one relations tabs/sections
-                    if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) || $this->hasFlag(AF_ONETOONE_RESPECT_TABS)) {
+                    if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) || $this->hasFlag(self::AF_ONETOONE_RESPECT_TABS)) {
                         foreach (array_keys($a['fields']) as $key) {
                             $a['fields'][$key]['tabs'] = $this->m_tabs;
                             $a['fields'][$key]['sections'] = $this->getSections();
@@ -750,7 +750,7 @@ class OneToOneRelation extends Relation
                     $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
                 }
 
-                if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name)) {
+                if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name)) {
                     /* separator */
                     $arr["fields"][] = array(
                         "html" => "-",
@@ -781,7 +781,7 @@ class OneToOneRelation extends Relation
      */
     function addToViewArray($mode, &$arr, &$defaults)
     {
-        if ($this->hasFlag(AF_HIDE_VIEW)) {
+        if ($this->hasFlag(self::AF_HIDE_VIEW)) {
             return;
         }
 
@@ -791,7 +791,7 @@ class OneToOneRelation extends Relation
         if (method_exists($this->m_ownerInstance, $this->m_name . "_display") ||
             $this->display($defaults, 'view') !== null
         ) {
-            Attribute::addToViewArray($mode, $arr, $defaults);
+            $this->addToViewArray($mode, $arr, $defaults);
         } /* how we handle 1:1 relations normally */ else {
             if (!$this->createDestination()) {
                 return;
@@ -800,14 +800,14 @@ class OneToOneRelation extends Relation
             $record = $defaults[$this->fieldName()];
             $a = $this->m_destInstance->viewArray($mode, $record, false);
 
-            /* editable fields, if AF_NOLABEL is specified or if there is just 1 field with the
+            /* editable fields, if self::AF_NOLABEL is specified or if there is just 1 field with the
              * same name as the relation we don't display a label
              * TODO FIXME
              */
             if (!is_array($arr['fields'])) {
                 $arr['fields'] = array();
             }
-            if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name)) {
+            if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name)) {
                 /* separator and name */
                 if ($arr['fields'][count($arr['fields']) - 1]['html'] !== '-') {
                     $arr["fields"][] = array(
@@ -825,7 +825,7 @@ class OneToOneRelation extends Relation
             }
 
             if (is_array($a["fields"])) {
-                if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) || $this->hasFlag(AF_ONETOONE_RESPECT_TABS)) {
+                if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) || $this->hasFlag(self::AF_ONETOONE_RESPECT_TABS)) {
                     foreach (array_keys($a['fields']) as $key) {
 
                         $a['fields'][$key]['tabs'] = $this->m_tabs;
@@ -835,7 +835,7 @@ class OneToOneRelation extends Relation
                 $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
             }
 
-            if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name)) {
+            if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name)) {
                 /* separator */
                 $arr["fields"][] = array("html" => "-", "tabs" => $this->m_tabs, 'sections' => $this->getSections());
             }
@@ -868,9 +868,9 @@ class OneToOneRelation extends Relation
      */
     function validate(&$record, $mode)
     {
-        // zitten AF_ONETOONE_ERROR en AF_OBLIGATORY elkaar soms in de weg
-        if ($this->hasFlag(AF_ONETOONE_ERROR) &&
-            ($mode != "add" || !$this->hasFlag(AF_HIDE_ADD)) &&
+        // zitten self::AF_ONETOONE_ERROR en self::AF_OBLIGATORY elkaar soms in de weg
+        if ($this->hasFlag(self::AF_ONETOONE_ERROR) &&
+            ($mode != "add" || !$this->hasFlag(self::AF_HIDE_ADD)) &&
             $this->createDestination()
         ) {
             $this->m_destInstance->validate($record[$this->fieldName()], $mode, array($this->m_refKey));
@@ -881,7 +881,7 @@ class OneToOneRelation extends Relation
             }
 
             foreach ($record[$this->fieldName()]["atkerror"] as $error) {
-                $error['tab'] = $this->hasFlag(AF_ONETOONE_RESPECT_TABS) ? $this->m_tabs[0]
+                $error['tab'] = $this->hasFlag(self::AF_ONETOONE_RESPECT_TABS) ? $this->m_tabs[0]
                     : $error['tab'];
                 $record["atkerror"][] = $error;
             }
@@ -912,7 +912,7 @@ class OneToOneRelation extends Relation
      * Get list of additional tabs.
      *
      * Attributes can add new tabs to tabbed screens. This method will be
-     * called to retrieve the tabs. When AF_ONETOONE_INTEGRATE is set, the
+     * called to retrieve the tabs. When self::AF_ONETOONE_INTEGRATE is set, the
      * atkOneToOneRelation adds tabs from the destination node to the tab
      * screen, so the attributes are seamlessly integrated but still on their
      * own tabs.
@@ -923,7 +923,7 @@ class OneToOneRelation extends Relation
      */
     function getAdditionalTabs($action)
     {
-        if ($this->hasFlag(AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
+        if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
             $detailtabs = $this->m_destInstance->getTabs($action);
             if (count($detailtabs) == 1 && $detailtabs[0] == "default") {
                 // All elements in the relation are on the default tab. That means we should
@@ -943,7 +943,7 @@ class OneToOneRelation extends Relation
      */
     function showOnTab($tab)
     {
-        if ($this->hasFlag(AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
+        if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
             foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
                 $p_attrib = $this->m_destInstance->m_attribList[$attribname];
                 if ($p_attrib->showOnTab($tab)) {
@@ -981,17 +981,17 @@ class OneToOneRelation extends Relation
         DataGrid $grid = null,
         $column = '*'
     ) {
-        if ($this->hasFlag(AF_HIDE_LIST) || !$this->createDestination()) {
+        if ($this->hasFlag(self::AF_HIDE_LIST) || !$this->createDestination()) {
             return;
         }
 
-        if ((!$this->hasFlag(AF_ONETOONE_INTEGRATE) && $column == '*') || $column == null) {
+        if ((!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && $column == '*') || $column == null) {
             // regular behaviour.
             parent::addToListArrayHeader($action, $arr, $fieldprefix, $flags, $atksearch, $columnConfig, $grid,
                 $column);
             return;
         } else {
-            if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) || ($column != '*' && $this->getDestination()->getAttribute($column) == null)) {
+            if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) || ($column != '*' && $this->getDestination()->getAttribute($column) == null)) {
                 throw new Exception("Invalid list column {$column} for atkOneToOneRelation " . $this->getOwnerInstance()->atkNodeType() . '::' . $this->fieldName());
             }
         }
@@ -1031,15 +1031,15 @@ class OneToOneRelation extends Relation
         DataGrid $grid = null,
         $column = '*'
     ) {
-        if ($this->hasFlag(AF_HIDE_LIST) || !$this->createDestination()) {
+        if ($this->hasFlag(self::AF_HIDE_LIST) || !$this->createDestination()) {
             return;
         }
 
-        if ((!$this->hasFlag(AF_ONETOONE_INTEGRATE) && $column == '*') || $column == null) {
+        if ((!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && $column == '*') || $column == null) {
             parent::addToListArrayRow($action, $arr, $nr, $fieldprefix, $flags, $edit, $grid, $column);
             return;
         } else {
-            if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) || ($column != '*' && $this->getDestination()->getAttribute($column) == null)) {
+            if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) || ($column != '*' && $this->getDestination()->getAttribute($column) == null)) {
                 throw new Exception("Invalid list column {$column} for atkOneToOneRelation " . $this->getOwnerInstance()->atkNodeType() . '::' . $this->fieldName());
             }
         }
@@ -1184,12 +1184,12 @@ class OneToOneRelation extends Relation
             $currentSearchMode = array();
         }
 
-        if ($this->hasFlag(AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
+        if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
             $prefix = $fieldprefix . $this->fieldName() . "_AE_";
             foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
                 $p_attrib = $this->m_destInstance->m_attribList[$attribname];
 
-                if (!$p_attrib->hasFlag(AF_HIDE_SEARCH)) {
+                if (!$p_attrib->hasFlag(self::AF_HIDE_SEARCH)) {
                     $p_attrib->addToSearchformFields($fields, $node, $record[$this->fieldName()], $prefix,
                         $currentSearchMode[$this->fieldName()]);
                 }

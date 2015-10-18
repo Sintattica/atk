@@ -179,6 +179,7 @@ class Updatehandler extends ActionHandler
 
         $error = $this->hasError($record);
 
+
         if ($error) {
             $this->invoke($errorHandler, $record, null, $extraParams);
             return false;

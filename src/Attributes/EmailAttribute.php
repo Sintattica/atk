@@ -40,7 +40,7 @@ class EmailAttribute extends Attribute
      *
      * <b>Example:</b>
      * <code>
-     *   $this->add(new atkEmailAttribute("email", false, AF_OBLIGATORY));
+     *   $this->add(new atkEmailAttribute("email", false, self::AF_OBLIGATORY));
      * </code>
      *
      * @param String $name Name of the attribute

@@ -18,7 +18,7 @@
 /**
  * Flags for atkWeekdayAttribute
  */
-define('AF_WEEKDAY_SMALL_EDIT', AF_SPECIFIC_1);
+define('self::AF_WEEKDAY_SMALL_EDIT', self::AF_SPECIFIC_1);
 
 /**
  * Bitwise flags for weekdays.
@@ -72,7 +72,7 @@ class WeekdayAttribute extends NumberAttribute
             $this->m_extra = $extraOrFlags;
         }
 
-        $this->atkNumberAttribute($name, ($flags | AF_HIDE_SEARCH) ^ AF_SEARCHABLE);
+        $this->atkNumberAttribute($name, ($flags | self::AF_HIDE_SEARCH) ^ self::AF_SEARCHABLE);
     }
 
     /**
@@ -112,7 +112,7 @@ class WeekdayAttribute extends NumberAttribute
         $name = $fieldprefix . $this->fieldName();
         $value = (int)$record[$this->fieldName()];
 
-        $separator = $this->hasFlag(AF_WEEKDAY_SMALL_EDIT) || $mode == 'list' ? '&nbsp;'
+        $separator = $this->hasFlag(self::AF_WEEKDAY_SMALL_EDIT) || $mode == 'list' ? '&nbsp;'
             : '<br>';
 
         $max = 7 + count($this->m_extra);
@@ -127,7 +127,7 @@ class WeekdayAttribute extends NumberAttribute
 
             $weekday = ucfirst($weekday);
             $fullWeekday = $weekday;
-            if ($this->hasFlag(AF_WEEKDAY_SMALL_EDIT) || $mode == 'list') {
+            if ($this->hasFlag(self::AF_WEEKDAY_SMALL_EDIT) || $mode == 'list') {
                 $weekday = substr($weekday, 0, 2);
             }
 

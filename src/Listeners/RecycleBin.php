@@ -85,8 +85,8 @@ class RecycleBin extends TriggerListener
             foreach ($pkFields as $fieldName) {
 
                 // We need to make sure the record in the bin has the same primary key as the original
-                // record, so we remove AF_AUTOINCREMENT and setForceInsert.
-                $node->getAttribute($fieldName)->setForceInsert(true)->removeFlag(AF_AUTO_INCREMENT);
+                // record, so we remove Attribute::AF_AUTOINCREMENT and setForceInsert.
+                $node->getAttribute($fieldName)->setForceInsert(true)->removeFlag(Attribute::AF_AUTO_INCREMENT);
             }
 
             if (isset($this->_options["table"])) {

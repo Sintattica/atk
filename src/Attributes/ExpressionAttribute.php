@@ -43,7 +43,7 @@ class ExpressionAttribute extends Attribute
             $flags = $searchTypeOrFlags;
         }
 
-        parent::__construct($name, $flags | AF_HIDE_ADD | AF_READONLY_EDIT);
+        parent::__construct($name, $flags | self::AF_HIDE_ADD | self::AF_READONLY_EDIT);
 
         $this->m_expression = $expression;
 
@@ -59,7 +59,7 @@ class ExpressionAttribute extends Attribute
      */
     function storageType($mode = '')
     {
-        return NOSTORE;
+        return self::NOSTORE;
     }
 
     /**

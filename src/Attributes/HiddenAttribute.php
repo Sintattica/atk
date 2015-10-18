@@ -30,14 +30,14 @@ class HiddenAttribute extends DummyAttribute
 {
 
     /**
-     * The atkHiddenAttribute has a custom constructor. It's purpose is to force the AF_HIDE
+     * The atkHiddenAttribute has a custom constructor. It's purpose is to force the self::AF_HIDE
      * flag, regardless of flags passed. Its behaviour is identical to atkDummyAttribute's
      * constructor in every other way.
      */
     public function __construct($name, $text = "", $flags = 0)
     {
         // A hidden  attribute should be... HIDDEN! (srlsy?)
-        $flags |= AF_HIDE;
+        $flags |= self::AF_HIDE;
 
         parent::__construct($name, $text, $flags);
     }

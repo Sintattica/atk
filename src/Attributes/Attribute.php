@@ -14,342 +14,6 @@ use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Utils\EditFormModifier;
 use \Exception;
 
-/**
- * Attributeflags. The following flags can be used for attributes
- * @internal WARNING: flags may *not* exceed 2^31 (2147483648), because
- * that's the integer limit beyond which the bitwise operators won't
- * work anymore!
- */
-/**
- * Value must be entered
- *
- * "database-level" processing flag
- */
-define("AF_OBLIGATORY", 1);
-
-/**
- * Value must be unique
- *
- * "database-level" processing flag
- */
-define("AF_UNIQUE", 2);
-
-/**
- * Part of the primary-key node, also makes it obligatory
- *
- * "database-level" processing flag
- */
-define("AF_PRIMARY", 4 | AF_OBLIGATORY);
-
-/**
- * Auto-increment field
- *
- * "database-level" processing flag
- */
-define("AF_AUTO_INCREMENT", 8);
-
-/**
- * Alias for AF_AUTO_INCREMENT (auto-increment flag is often mistyped)
- *
- * "database-level" processing flag
- */
-define("AF_AUTOINCREMENT", AF_AUTO_INCREMENT);
-
-/**
- * Don't show in record lists
- *
- * hide flag
- */
-define("AF_HIDE_LIST", 16);
-
-/**
- * Don't show on add pages
- *
- * hide flag
- */
-define("AF_HIDE_ADD", 32);
-
-/**
- * Don't show on edit pages
- *
- * hide flag
- */
-define("AF_HIDE_EDIT", 64);
-
-/**
- * Don't show on select pages
- *
- * hide flag
- */
-define("AF_HIDE_SELECT", 128);
-
-/**
- * Don't show on view pages
- *
- * hide flag
- */
-define("AF_HIDE_VIEW", 256);
-
-/**
- * Not searchable in extended search
- *
- * hide flag
- */
-define("AF_HIDE_SEARCH", 512); // not searchable in extended search
-
-/**
- * Load always, even if not displayed anywhere
- *
- * hide flag
- */
-define("AF_FORCE_LOAD", 1024); // load always, even if not displayed anywhere
-
-/**
- * Attribute is totally hidden
- *
- * hide flag
- */
-define("AF_HIDE", AF_HIDE_EDIT | AF_HIDE_ADD | // attribute is totally hidden
-    AF_HIDE_LIST | AF_HIDE_SEARCH |
-    AF_HIDE_VIEW | AF_HIDE_SELECT);
-
-/**
- * Readonly in add
- *
- * readonly flag
- */
-define("AF_READONLY_ADD", 2048); // readonly in add
-
-/**
- * Readonly when edited
- *
- * readonly flag
- */
-define("AF_READONLY_EDIT", 4096); // readonly when edited
-
-/**
- * Always readonly
- *
- * readonly flag
- */
-define("AF_READONLY", AF_READONLY_EDIT |
-    AF_READONLY_ADD); // always readonly
-
-/**
- * No label in forms
- *
- * display-related processing flag
- */
-define("AF_NO_LABEL", 8192); // no label in forms
-
-/**
- * Alias for AF_NO_LABEL (mistyped)
- *
- * display-related processing flag
- */
-define("AF_NOLABEL", AF_NO_LABEL); // no label (mistyped)
-
-/**
- * Blank label in forms
- *
- * display-related processing flag
- */
-define("AF_BLANK_LABEL", 16384); // blank label in forms
-
-/**
- * Alias for AF_BLANK_LABEL (mistyped)
- *
- * display-related processing flag
- */
-define("AF_BLANKLABEL", AF_BLANK_LABEL); // blank label (mistyped)
-
-/**
- * Cannot be sorted in recordlists
- *
- * display-related processing flag
- */
-define("AF_NO_SORT", 32768); // cannot be sorted in recordlists.
-
-/**
- * Alias for AF_NO_SORT (mistyped)
- *
- * display-related processing flag
- */
-define("AF_NOSORT", AF_NO_SORT); // no-sort flag is often mistyped
-
-/**
- * Attribute is searchable in list views
- *
- * display-related processing flag
- */
-define("AF_SEARCHABLE", 65536); // Attribute is searchable in list views
-
-/**
- * The attribute will have a 'total' column in lists
- *
- * display-related processing flag
- */
-define("AF_TOTAL", 131072); // The attribute will have a 'total' column in lists.
-
-/**
- * If supported, use pop-up window
- *
- * display-related processing flag
- */
-define("AF_POPUP", 262144); // if supported, use pop-up window
-
-/**
- * Delete function is called when owning node is deleted
- *
- * miscellaneous processing flag
- */
-define("AF_CASCADE_DELETE", 524288); // delete function is called when owning node is deleted
-
-/**
- * Will have a large amount of recors (relation)
- *
- * Instead of showing a listbox with all the records it will show an add link to a select page
- *
- * miscellaneous processing flag
- */
-define("AF_LARGE", 1048576); // will have a large ammount of records (relation)
-
-/**
- * Ignore filters when selecting records (relation)
- *
- * miscellaneous processing flag
- */
-define("AF_NO_FILTER", 2097152); // ignore filters when selecting records (relation)
-
-/**
- * Parent field for parent child relations (treeview)
- *
- * miscellaneous processing flag
- */
-define("AF_PARENT", 4194304); // parent field for parent child relations (treeview)
-
-/**
- * No quotes are used when adding to the database
- *
- * miscellaneous processing flag
- */
-define("AF_NO_QUOTES", 8388608); // no quotes are used when adding to database
-
-
-
-/**
- * Shortcut for hidden auto-incremented primary key
- *
- * miscellaneous processing flag
- */
-define("AF_AUTOKEY", AF_PRIMARY | AF_HIDE | // shortcut for hidden auto-incremented primary-key
-    AF_AUTOINCREMENT);
-
-/*
- * flag (values) that can be used for attribute specific flags
- * NOTE: Attribute specific flags aren't good behaviour, but for
- * compatibility reasons we support them anyway. Newly derived attributes
- * should not use these specific flags, but work with extra parameters.
- */
-
-/**
- * Specific attribute flag 1
- */
-define("AF_SPECIFIC_1", 33554432); // specific attribute flag 1
-
-/**
- * Specific attribute flag 2
- */
-define("AF_SPECIFIC_2", 67108864); // specific attribute flag 2
-
-/**
- * Specific attribute flag 3
- */
-define("AF_SPECIFIC_3", 134217728); // specific attribute flag 3
-
-/**
- * Specific attribute flag 4
- */
-define("AF_SPECIFIC_4", 268435456); // specific attribute flag 4
-
-/**
- * Specific attribute flag 5
- */
-define("AF_SPECIFIC_5", 536870912); // specific attribute flag 5
-
-/**
- * Specific attribute flag 6
- */
-define("AF_SPECIFIC_6", 1073741824); // specific attribute flag 6
-
-/**
- * Specific attribute flag 7
- */
-define("AF_SPECIFIC_7", 2147483648); // specific attribute flag 7
-
-/**
- * Do not store this attribute
- *
- * Storage type flag, used by the storageType() and related methods
- */
-define("NOSTORE", 0);
-
-/**
- * Do not load this attribute
- *
- * Storage type flag, used by the storageType() and related methods
- */
-define("NOLOAD", 0);
-
-/**
- * Store before all other ('normal') attributes (?)
- *
- * Storage type flag, used by the storageType() and related methods
- */
-define("PRESTORE", 1);
-
-/**
- * Call load before selectDb()
- *
- * Storage type flag, used by the storageType() and related methods
- */
-define("PRELOAD", 1);
-
-/**
- * Store after all other ('normal') attributes (?)
- *
- * Storage type flag, used by the storageType() and related methods
- */
-define("POSTSTORE", 2);
-
-/**
- * Call load after selectDb()
- *
- * Storage type flag, used by the storageType() and related methods
- */
-define("POSTLOAD", 2);
-
-/**
- * Do addToQuery() of this attribute
- *
- * Storage type flag, used by the storageType() and related methods
- */
-define("ADDTOQUERY", 4);
-
-/**
- * Attribute is disable in view mode
- */
-define("DISABLED_VIEW", 1);
-
-/**
- * Attribute is disable in edit mode
- */
-define("DISABLED_EDIT", 2);
-
-/**
- * Attribute is disabled in view and edit mode
- */
-define("DISABLED_ALL", DISABLED_VIEW | DISABLED_EDIT);
 
 /**
  * The Attribute class represents an attribute of an Node.
@@ -363,6 +27,337 @@ define("DISABLED_ALL", DISABLED_VIEW | DISABLED_EDIT);
  */
 class Attribute
 {
+    /**
+     * Attributeflags. The following flags can be used for attributes
+     * @internal WARNING: flags may *not* exceed 2^31 (2147483648), because
+     * that's the integer limit beyond which the bitwise operators won't
+     * work anymore!
+     */
+    /**
+     * Value must be entered
+     *
+     * "database-level" processing flag
+     */
+    const AF_OBLIGATORY = 1;
+
+    /**
+     * Value must be unique
+     *
+     * "database-level" processing flag
+     */
+    const AF_UNIQUE = 2;
+
+    /**
+     * Part of the primary-key node, also makes it obligatory
+     *
+     * "database-level" processing flag
+     */
+    const AF_PRIMARY = 4 | self::AF_OBLIGATORY;
+
+    /**
+     * Auto-increment field
+     *
+     * "database-level" processing flag
+     */
+    const AF_AUTO_INCREMENT = 8;
+
+    /**
+     * Alias for self::AF_AUTO_INCREMENT (auto-increment flag is often mistyped)
+     *
+     * "database-level" processing flag
+     */
+    const AF_AUTOINCREMENT = self::AF_AUTO_INCREMENT;
+
+    /**
+     * Don't show in record lists
+     *
+     * hide flag
+     */
+    const AF_HIDE_LIST = 16;
+
+    /**
+     * Don't show on add pages
+     *
+     * hide flag
+     */
+    const AF_HIDE_ADD = 32;
+
+    /**
+     * Don't show on edit pages
+     *
+     * hide flag
+     */
+    const AF_HIDE_EDIT = 64;
+
+    /**
+     * Don't show on select pages
+     *
+     * hide flag
+     */
+    const AF_HIDE_SELECT = 128;
+
+    /**
+     * Don't show on view pages
+     *
+     * hide flag
+     */
+    const AF_HIDE_VIEW = 256;
+
+    /**
+     * Not searchable in extended search
+     *
+     * hide flag
+     */
+    const AF_HIDE_SEARCH = 512; // not searchable in extended search
+
+    /**
+     * Load always, even if not displayed anywhere
+     *
+     * hide flag
+     */
+    const AF_FORCE_LOAD = 1024; // load always, even if not displayed anywhere
+
+    /**
+     * Attribute is totally hidden
+     *
+     * hide flag
+     */
+    const AF_HIDE = self::AF_HIDE_EDIT | self::AF_HIDE_ADD | self::AF_HIDE_LIST | self::AF_HIDE_SEARCH | self::AF_HIDE_VIEW | self::AF_HIDE_SELECT;
+
+    /**
+     * Readonly in add
+     *
+     * readonly flag
+     */
+    const AF_READONLY_ADD = 2048;
+
+    /**
+     * Readonly when edited
+     *
+     * readonly flag
+     */
+    const AF_READONLY_EDIT = 4096;
+
+    /**
+     * Always readonly
+     *
+     * readonly flag
+     */
+    const AF_READONLY = self::AF_READONLY_EDIT | self::AF_READONLY_ADD;
+
+    /**
+     * No label in forms
+     *
+     * display-related processing flag
+     */
+    const AF_NO_LABEL = 8192;
+
+    /**
+     * Alias for self::AF_NO_LABEL (mistyped)
+     *
+     * display-related processing flag
+     */
+    const AF_NOLABEL = self::AF_NO_LABEL;
+
+    /**
+     * Blank label in forms
+     *
+     * display-related processing flag
+     */
+    const AF_BLANK_LABEL = 16384;
+
+    /**
+     * Alias for self::AF_BLANK_LABEL (mistyped)
+     *
+     * display-related processing flag
+     */
+    const AF_BLANKLABEL = self::AF_BLANK_LABEL;
+
+    /**
+     * Cannot be sorted in recordlists
+     *
+     * display-related processing flag
+     */
+    const AF_NO_SORT = 32768;
+
+    /**
+     * Alias for self::AF_NO_SORT (mistyped)
+     *
+     * display-related processing flag
+     */
+    const AF_NOSORT = self::AF_NO_SORT;
+
+    /**
+     * Attribute is searchable in list views
+     *
+     * display-related processing flag
+     */
+    const AF_SEARCHABLE = 65536;
+
+    /**
+     * The attribute will have a 'total' column in lists
+     *
+     * display-related processing flag
+     */
+    const AF_TOTAL = 131072;
+
+    /**
+     * If supported, use pop-up window
+     *
+     * display-related processing flag
+     */
+    const AF_POPUP = 262144;
+
+    /**
+     * Delete function is called when owning node is deleted
+     *
+     * miscellaneous processing flag
+     */
+    const AF_CASCADE_DELETE = 524288;
+
+    /**
+     * Will have a large amount of recors (relation)
+     *
+     * Instead of showing a listbox with all the records it will show an add link to a select page
+     *
+     * miscellaneous processing flag
+     */
+    const AF_LARGE = 1048576;
+
+    /**
+     * Ignore filters when selecting records (relation)
+     *
+     * miscellaneous processing flag
+     */
+    const AF_NO_FILTER = 2097152;
+
+    /**
+     * Parent field for parent child relations (treeview)
+     *
+     * miscellaneous processing flag
+     */
+    const AF_PARENT = 4194304;
+
+    /**
+     * No quotes are used when adding to the database
+     *
+     * miscellaneous processing flag
+     */
+    const AF_NO_QUOTES = 8388608;
+
+    /**
+     * Shortcut for hidden auto-incremented primary key
+     *
+     * miscellaneous processing flag
+     */
+    const AF_AUTOKEY = self::AF_PRIMARY | self::AF_HIDE | self::AF_AUTOINCREMENT;
+
+    /*
+     * flag (values) that can be used for attribute specific flags
+     * NOTE: Attribute specific flags aren't good behaviour, but for
+     * compatibility reasons we support them anyway. Newly derived attributes
+     * should not use these specific flags, but work with extra parameters.
+     */
+
+    /**
+     * Specific attribute flag 1
+     */
+    const AF_SPECIFIC_1 = 33554432;
+
+    /**
+     * Specific attribute flag 2
+     */
+    const AF_SPECIFIC_2 = 67108864;
+
+    /**
+     * Specific attribute flag 3
+     */
+    const AF_SPECIFIC_3 = 134217728;
+
+    /**
+     * Specific attribute flag 4
+     */
+    const AF_SPECIFIC_4 = 268435456;
+
+    /**
+     * Specific attribute flag 5
+     */
+    const AF_SPECIFIC_5 = 536870912;
+
+    /**
+     * Specific attribute flag 6
+     */
+    const AF_SPECIFIC_6 = 1073741824;
+
+    /**
+     * Specific attribute flag 7
+     */
+    const AF_SPECIFIC_7 = 2147483648;
+
+    /**
+     * Do not store this attribute
+     *
+     * Storage type flag, used by the storageType() and related methods
+     */
+    const NOSTORE = 0;
+
+    /**
+     * Do not load this attribute
+     *
+     * Storage type flag, used by the storageType() and related methods
+     */
+    const NOLOAD = 0;
+
+    /**
+     * Store before all other ('normal') attributes (?)
+     *
+     * Storage type flag, used by the storageType() and related methods
+     */
+    const PRESTORE = 1;
+
+    /**
+     * Call load before selectDb()
+     *
+     * Storage type flag, used by the storageType() and related methods
+     */
+    const PRELOAD = 1;
+
+    /**
+     * Store after all other ('normal') attributes (?)
+     *
+     * Storage type flag, used by the storageType() and related methods
+     */
+    const POSTSTORE = 2;
+
+    /**
+     * Call load after selectDb()
+     *
+     * Storage type flag, used by the storageType() and related methods
+     */
+    const POSTLOAD = 2;
+
+    /**
+     * Do addToQuery() of this attribute
+     *
+     * Storage type flag, used by the storageType() and related methods
+     */
+    const ADDTOQUERY = 4;
+
+    /**
+     * Attribute is disable in view mode
+     */
+    const DISABLED_VIEW = 1;
+
+    /**
+     * Attribute is disable in edit mode
+     */
+    const DISABLED_EDIT = 2;
+
+    /**
+     * Attribute is disabled in view and edit mode
+     */
+    const DISABLED_ALL = self::DISABLED_VIEW | self::DISABLED_EDIT;
+
     /**
      * The name of the attribute
      * @access private
@@ -617,7 +612,7 @@ class Attribute
      * Constructor
      *
      * <b>Example:</b>
-     *        $this->add(new Attribute("name",AF_OBLIGATORY, 30));
+     *        $this->add(new Attribute("name",self::AF_OBLIGATORY, 30));
      *
      * Note: If you want to use the db/ddl utility class to
      *       automatically generate the table, the $size parameter must be
@@ -696,14 +691,14 @@ class Attribute
     {
         $this->m_flags |= $flag;
 
-        if (!$this->hasFlag(AF_PRIMARY) && is_object($this->m_ownerInstance)) {
-            if (Tools::hasFlag($flag, AF_HIDE_LIST) && !in_array($this->fieldName(),
+        if (!$this->hasFlag(self::AF_PRIMARY) && is_object($this->m_ownerInstance)) {
+            if (Tools::hasFlag($flag, self::AF_HIDE_LIST) && !in_array($this->fieldName(),
                     $this->m_ownerInstance->m_listExcludes)
             ) {
                 $this->m_ownerInstance->m_listExcludes[] = $this->fieldName();
             }
 
-            if (Tools::hasFlag($flag, AF_HIDE_VIEW) && !in_array($this->fieldName(),
+            if (Tools::hasFlag($flag, self::AF_HIDE_VIEW) && !in_array($this->fieldName(),
                     $this->m_ownerInstance->m_viewExcludes)
             ) {
                 $this->m_ownerInstance->m_viewExcludes[] = $this->fieldName();
@@ -744,15 +739,15 @@ class Attribute
             $this->m_flags ^= $flag;
         }
 
-        if (!$this->hasFlag(AF_PRIMARY) && is_object($this->m_ownerInstance)) {
-            if (Tools::hasFlag($flag, AF_HIDE_LIST) && in_array($this->fieldName(),
+        if (!$this->hasFlag(self::AF_PRIMARY) && is_object($this->m_ownerInstance)) {
+            if (Tools::hasFlag($flag, self::AF_HIDE_LIST) && in_array($this->fieldName(),
                     $this->m_ownerInstance->m_listExcludes)
             ) {
                 $key = array_search($this->fieldName(), $this->m_ownerInstance->m_listExcludes);
                 unset($this->m_ownerInstance->m_listExcludes[$key]);
             }
 
-            if (Tools::hasFlag($flag, AF_HIDE_VIEW) && in_array($this->fieldName(),
+            if (Tools::hasFlag($flag, self::AF_HIDE_VIEW) && in_array($this->fieldName(),
                     $this->m_ownerInstance->m_viewExcludes)
             ) {
                 $key = array_search($this->fieldName(), $this->m_ownerInstance->m_viewExcludes);
@@ -1145,7 +1140,7 @@ class Attribute
      */
     function addToViewArray($mode, &$arr, &$defaults)
     {
-        if (!$this->hasFlag(AF_HIDE_VIEW)) {
+        if (!$this->hasFlag(self::AF_HIDE_VIEW)) {
             $entry = array("name" => $this->m_name, "attribute" => &$this);
 
             /* label? */
@@ -1204,7 +1199,7 @@ class Attribute
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
         /* hide */
-        if (($mode == "edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode == "add" && $this->hasFlag(AF_HIDE_ADD))) {
+        if (($mode == "edit" && $this->hasFlag(self::AF_HIDE_EDIT)) || ($mode == "add" && $this->hasFlag(self::AF_HIDE_ADD))) {
             /* when adding, there's nothing to hide, unless we're dealing with atkHiddenAttribute... */
             if ($mode == "edit" || ($mode == "add" && (!$this->isEmpty($defaults) || $this instanceof HiddenAttribute))) {
                 $arr["hide"][] = $this->hide($defaults, $fieldprefix, $mode);
@@ -1214,7 +1209,7 @@ class Attribute
 
             $entry = array(
                 "name" => $this->m_name,
-                "obligatory" => $this->hasFlag(AF_OBLIGATORY),
+                "obligatory" => $this->hasFlag(self::AF_OBLIGATORY),
                 "attribute" => &$this
             );
             $entry["id"] = $this->getHtmlId($fieldprefix);
@@ -1461,7 +1456,7 @@ class Attribute
 
     function isReadonlyEdit($mode)
     {
-        return ($mode == "edit" && $this->hasFlag(AF_READONLY_EDIT)) || ($mode == "add" && $this->hasFlag(AF_READONLY_ADD));
+        return ($mode == "edit" && $this->hasFlag(self::AF_READONLY_EDIT)) || ($mode == "add" && $this->hasFlag(self::AF_READONLY_ADD));
     }
 
     /**
@@ -1513,12 +1508,12 @@ class Attribute
             throw new Exception("Invalid list column {$column} for " . get_class($this) . " " . $this->getOwnerInstance()->atkNodeType() . '::' . $this->fieldName());
         }
 
-        if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select")) {
+        if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == "select")) {
             $key = $fieldprefix . $this->fieldName();
 
             $arr["heading"][$key]["title"] = $this->label();
 
-            if ($grid->hasFlag(DataGrid::SORT) && !$this->hasFlag(AF_NO_SORT)) {
+            if ($grid->hasFlag(DataGrid::SORT) && !$this->hasFlag(self::AF_NO_SORT)) {
                 $arr["heading"][$key]["order"] = $this->listHeaderSortOrder($columnConfig);
             }
 
@@ -1526,7 +1521,7 @@ class Attribute
                 $arr["sort"][$key] = $this->extendedSort($columnConfig, $fieldprefix, $grid);
             }
 
-            if ($grid->hasFlag(DataGrid::SEARCH) && $this->hasFlag(AF_SEARCHABLE)) {
+            if ($grid->hasFlag(DataGrid::SEARCH) && $this->hasFlag(self::AF_SEARCHABLE)) {
                 $fn = $this->fieldName() . "_search";
                 if (method_exists($this->m_ownerInstance, $fn)) {
                     $arr["search"][$key] = $this->m_ownerInstance->$fn($atksearch, false, $fieldprefix, $grid);
@@ -1566,7 +1561,7 @@ class Attribute
             throw new Exception("Invalid list column {$column} for " . get_class($this) . " " . $this->getOwnerInstance()->atkNodeType() . '::' . $this->fieldName());
         }
 
-        if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select")) {
+        if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == "select")) {
             if ($edit) {
                 $arr["rows"][$nr]["data"][$fieldprefix . $this->fieldName()] = $this->getEdit('list',
                     $arr["rows"][$nr]["record"], 'atkdatagriddata_AE_' . $nr . '_AE_');
@@ -1576,7 +1571,7 @@ class Attribute
             }
 
             /* totalisable? */
-            if ($this->hasFlag(AF_TOTAL)) {
+            if ($this->hasFlag(self::AF_TOTAL)) {
                 $sum = $this->sum($arr["totalraw"], $arr["rows"][$nr]["record"]);
                 $arr["totalraw"][$this->fieldName()] = $sum[$this->fieldName()];
                 $arr["total"][$fieldprefix . $this->fieldName()] = $this->getView('list', $sum);
@@ -1828,7 +1823,7 @@ class Attribute
 
     /**
      * Checks if this attribute is really not null in the database.
-     * This method does not look at the AF_OBLIGATORY flag, it only
+     * This method does not look at the self::AF_OBLIGATORY flag, it only
      * checks in the database if the attribute's column is really not null.
      *
      * @return boolean attribute's database column not null?
@@ -1870,20 +1865,20 @@ class Attribute
     public function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", &$rec = "", $level, $mode)
     {
         if ($mode == "add" || $mode == "update") {
-            if ($mode == 'add' && $this->hasFlag(AF_AUTO_INCREMENT)) {
+            if ($mode == 'add' && $this->hasFlag(self::AF_AUTO_INCREMENT)) {
                 $query->addSequenceField($this->fieldName(), $rec[$this->fieldName()],
                     $this->getOwnerInstance()->m_seq);
                 return;
             }
 
-            if ($this->isEmpty($rec) && !$this->hasFlag(AF_OBLIGATORY) && !$this->isNotNullInDb()) {
+            if ($this->isEmpty($rec) && !$this->hasFlag(self::AF_OBLIGATORY) && !$this->isNotNullInDb()) {
                 $query->addField($this->fieldName(), 'NULL', "", "", false, true);
             } else {
-                $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(AF_NO_QUOTES),
+                $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(self::AF_NO_QUOTES),
                     true);
             }
         } else {
-            $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES),
+            $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES),
                 true);
         }
     }
@@ -1896,7 +1891,7 @@ class Attribute
      * derived attributes may override this, to take care of cleanups, cascade
      * deletes etc.
      * Note, that the framework only calls this method if the attribute has
-     * the AF_CASCADE_DELETE flag.
+     * the self::AF_CASCADE_DELETE flag.
      *
      * @return boolean true if cleanup was successful, false otherwise.
      */
@@ -2064,7 +2059,7 @@ class Attribute
      * needs to be saved to the database in an addDb call.
      *
      * The regular Attribute returns false if the value is empty, or if
-     * AF_HIDE is set; true in other cases. Exception: when AF_AUTO_INCREMENT
+     * self::AF_HIDE is set; true in other cases. Exception: when self::AF_AUTO_INCREMENT
      * is set, the method always returns true. Derived attributes may override
      * this behavior.
      *
@@ -2074,8 +2069,8 @@ class Attribute
      */
     function needsInsert($record)
     {
-        return (!$this->hasFlag(AF_HIDE_ADD) ||
-            $this->hasFlag(AF_AUTO_INCREMENT) ||
+        return (!$this->hasFlag(self::AF_HIDE_ADD) ||
+            $this->hasFlag(self::AF_AUTO_INCREMENT) ||
             !$this->isEmpty($record) ||
             $this->m_forceinsert);
 
@@ -2089,8 +2084,8 @@ class Attribute
      * This function is called by the framework to determine if the attribute
      * needs to be saved to the database in an updateDb call.
      *
-     * The regular Attribute returns false if AF_READONLY_EDIT or
-     * AF_HIDE_EDIT are set, but derived attributes may override this
+     * The regular Attribute returns false if self::AF_READONLY_EDIT or
+     * self::AF_HIDE_EDIT are set, but derived attributes may override this
      * behavior.
      *
      * @return boolean True if this attribute should participate in the update
@@ -2098,7 +2093,7 @@ class Attribute
      */
     function needsUpdate()
     {
-        return ((!$this->hasFlag(AF_READONLY_EDIT) && !$this->hasFlag(AF_HIDE_EDIT)) || $this->m_forceupdate);
+        return ((!$this->hasFlag(self::AF_READONLY_EDIT) && !$this->hasFlag(self::AF_HIDE_EDIT)) || $this->m_forceupdate);
     }
 
     /**
@@ -2185,7 +2180,7 @@ class Attribute
      *
      * If the type was read from the table metadata, that value will
      * be used. Else, the attribute will analyze its flags to guess
-     * what type it should be. If AF_AUTO_INCREMENT is set, the field
+     * what type it should be. If self::AF_AUTO_INCREMENT is set, the field
      * is probaly "number". If not, it's probably "string".
      *
      * Note: Derived attributes should override this method if they
@@ -2199,7 +2194,7 @@ class Attribute
     function dbFieldType()
     {
         if ($this->m_dbfieldtype == "") {
-            $this->m_dbfieldtype = ($this->hasFlag(AF_AUTO_INCREMENT) ? "number"
+            $this->m_dbfieldtype = ($this->hasFlag(self::AF_AUTO_INCREMENT) ? "number"
                 : "string");
         }
         return $this->m_dbfieldtype;
@@ -2297,7 +2292,7 @@ class Attribute
      *
      * The difference with the label() method is that the label method always
      * returns the HTML label, while the getLabel() method is 'smart', by
-     * taking the AF_NOLABEL and AF_BLANKLABEL flags into account.
+     * taking the self::AF_NOLABEL and self::AF_BLANKLABEL flags into account.
      *
      * @return String The HTML compatible label for this attribute, or an
      *                empty string if the label should be blank, or NULL if no
@@ -2305,10 +2300,10 @@ class Attribute
      */
     function getLabel()
     {
-        if ($this->hasFlag(AF_NOLABEL)) {
-            return "AF_NO_LABEL";
+        if ($this->hasFlag(self::AF_NOLABEL)) {
+            return "self::AF_NO_LABEL";
         } else {
-            if ($this->hasFlag(AF_BLANKLABEL)) {
+            if ($this->hasFlag(self::AF_BLANKLABEL)) {
                 return null;
             } else {
                 return $this->label();
@@ -2331,7 +2326,7 @@ class Attribute
     {
         Tools::atkdebug("Deprecated use of hasStore");
         $storagetype = $this->storageType($mode);
-        return (Tools::hasFlag($storagetype, POSTSTORE) || Tools::hasFlag($storagetype, PRESTORE)
+        return (Tools::hasFlag($storagetype, self::POSTSTORE) || Tools::hasFlag($storagetype, self::PRESTORE)
         );
     }
 
@@ -2356,8 +2351,8 @@ class Attribute
      * With this method, the attribute tells the framework whether it wants
      * to be stored in the main query (addToQuery) or whether the attribute
      * has its own store() implementation. The regular Attribute checks if
-     * a store() method is present, and returns POSTSTORE in this case, or
-     * ADDTOQUERY otherwise. Derived attributes may override this behavior.
+     * a store() method is present, and returns self::POSTSTORE in this case, or
+     * self::ADDTOQUERY otherwise. Derived attributes may override this behavior.
      *
      * Framework method. It should not be necesary to call this method
      * directly.
@@ -2367,13 +2362,13 @@ class Attribute
      * @return int Bitmask containing information about storage requirements.
      *             Note that since it is a bitmask, multiple storage types
      *             could be returned at once.
-     *             POSTSTORE  - store() method must be called, after the
+     *             self::POSTSTORE  - store() method must be called, after the
      *                          master record is saved.
-     *             PRESTORE   - store() must be called, before the master
+     *             self::PRESTORE   - store() must be called, before the master
      *                          record is saved.
-     *             ADDTOQUERY - addtoquery() must be called, so the attribute
+     *             self::ADDTOQUERY - addtoquery() must be called, so the attribute
      *                          can nest itself in the master query.
-     *             NOSTORE    - nor store(), nor addtoquery() should be
+     *             self::NOSTORE    - nor store(), nor addtoquery() should be
      *                          called (attribute can not be stored in the
      *                          database)
      */
@@ -2389,9 +2384,9 @@ class Attribute
             } // Default backwardscompatible behaviour:
             else {
                 if (method_exists($this, "store")) {
-                    return POSTSTORE;
+                    return self::POSTSTORE;
                 } else {
-                    return ADDTOQUERY;
+                    return self::ADDTOQUERY;
                 }
             }
         }
@@ -2419,7 +2414,7 @@ class Attribute
      * to be loaded in the main query (addToQuery) or whether the attribute
      * has its own load() implementation. The regular Attribute checks if a
      * load() method is present, and returns POSTLOAD in this case, or
-     * ADDTOQUERY otherwise. Derived attributes may override this behavior.
+     * self::ADDTOQUERY otherwise. Derived attributes may override this behavior.
      *
      * Framework method. It should not be necesary to call this method
      * directly.
@@ -2429,13 +2424,13 @@ class Attribute
      * @return int Bitmask containing information about load requirements.
      *             Note that since it is a bitmask, multiple load types
      *             could be returned at once.
-     *             POSTLOAD   - load() method must be called, after the
+     *             self::POSTLOAD   - load() method must be called, after the
      *                          master record is loaded.
-     *             PRELOAD    - load() must be called, before the master
+     *             self::PRELOAD    - load() must be called, before the master
      *                          record is loaded.
-     *             ADDTOQUERY - addtoquery() must be called, so the attribute
+     *             self::ADDTOQUERY - addtoquery() must be called, so the attribute
      *                          can nest itself in the master query.
-     *             NOLOAD     - nor load(), nor addtoquery() should be
+     *             self::NOLOAD     - nor load(), nor addtoquery() should be
      *                          called (attribute can not be loaded from the
      *                          database)
      *
@@ -2450,9 +2445,9 @@ class Attribute
             } // Default backwardscompatible behaviour:
             else {
                 if (method_exists($this, "load")) {
-                    return POSTLOAD;
+                    return self::POSTLOAD;
                 } else {
-                    return ADDTOQUERY;
+                    return self::ADDTOQUERY;
                 }
             }
         }
@@ -2650,7 +2645,7 @@ class Attribute
      */
     function sortOptions(&$columnConfig, $fieldprefix = '', $grid = null)
     {
-        if (!$this->hasFlag(AF_TOTAL) && $columnConfig->totalizable()) {
+        if (!$this->hasFlag(self::AF_TOTAL) && $columnConfig->totalizable()) {
             // if we are not the sumcolumn itself, but there are totalcolumns present, we can perform subtotalling
             $cmd = ($columnConfig->hasSubTotal($this->fieldName()) ? "unsubtotal"
                 : "subtotal");

@@ -36,7 +36,7 @@ class ParserAttribute extends Attribute
      */
     function __construct($name, $text, $flags = 0)
     {
-        parent::__construct($name, $flags | AF_HIDE_SEARCH | AF_NO_SORT); // base class constructor
+        parent::__construct($name, $flags | self::AF_HIDE_SEARCH | self::AF_NO_SORT); // base class constructor
         $this->m_text = $text;
     }
 

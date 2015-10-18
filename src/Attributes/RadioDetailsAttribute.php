@@ -85,7 +85,7 @@ class RadioDetailsAttribute extends Attribute
             foreach ($attrNames as $attrName) {
                 if ($attrName != null) {
                     $attr = $this->getOwnerInstance()->getAttribute($attrName);
-                    $attr->addDisabledMode(DISABLED_VIEW | DISABLED_EDIT);
+                    $attr->addDisabledMode(self::DISABLED_VIEW | self::DISABLED_EDIT);
                 }
             }
         }

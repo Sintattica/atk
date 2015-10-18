@@ -1,43 +1,15 @@
 <?php namespace Sintattica\Atk\Relations;
 
-
-/**
- * Only allow deletion of master item when there are no child records
- */
 use Sintattica\Atk\Ui\Page;
-
-define("AF_RESTRICTED_DELETE", AF_SPECIFIC_1);
-
-/**
- * Use pop-up dialogs for adding records
- */
-define("AF_ONETOMANY_ADD_DIALOG", AF_SPECIFIC_2);
-
-/**
- * Use embedded forms for adding records
- * @deprecated Replaced by AF_ONETOMANY_ADD_DIALOG.
- */
-define("AF_ONETOMANY_EMBED", AF_ONETOMANY_ADD_DIALOG);
-
-/**
- * Use pop-up dialog for whatever a new record must be copied or must be added.
- */
-define("AF_ONETOMANY_ADDORCOPY_DIALOG", AF_SPECIFIC_3);
-
-/**
- * Show the OTM in add mode.
- * Warning! Not on by default because this only works in simple cases.
- *
- * What ATK does is, when you are in OTM add mode, it stores everything you add
- * in the session, then when you're actually saving, it persists everything to
- * the database.
- *
- * However, as you may guess, not having an id will lead to strange results for:
- * - Nodes that use the foreign key in their descriptor
- * - Nodes with unique records (AF_UNIQUE always just checks the database)
- * - Combined primary keys
- */
-define("AF_ONETOMANY_SHOW_ADD", AF_SPECIFIC_4);
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Handlers\AddOrCopyHandler;
+use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Ui\Dialog;
+use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Session\SessionStore;
+use Sintattica\Atk\Core\Module;
+use \Exception;
 
 /**
  * Implementation of one-to-many relationships.
@@ -53,6 +25,44 @@ define("AF_ONETOMANY_SHOW_ADD", AF_SPECIFIC_4);
  */
 class OneToManyRelation extends Relation
 {
+
+    /**
+     * Only allow deletion of master item when there are no child records
+     */
+    const AF_RESTRICTED_DELETE = self::AF_SPECIFIC_1;
+
+    /**
+     * Use pop-up dialogs for adding records
+     */
+    const AF_ONETOMANY_ADD_DIALOG = self::AF_SPECIFIC_2;
+
+    /**
+     * Use embedded forms for adding records
+     * @deprecated Replaced by self::AF_ONETOMANY_ADD_DIALOG.
+     */
+    const AF_ONETOMANY_EMBED = self::AF_ONETOMANY_ADD_DIALOG;
+
+    /**
+     * Use pop-up dialog for whatever a new record must be copied or must be added.
+     */
+    const AF_ONETOMANY_ADDORCOPY_DIALOG = self::AF_SPECIFIC_3;
+
+    /**
+     * Show the OTM in add mode.
+     * Warning! Not on by default because this only works in simple cases.
+     *
+     * What ATK does is, when you are in OTM add mode, it stores everything you add
+     * in the session, then when you're actually saving, it persists everything to
+     * the database.
+     *
+     * However, as you may guess, not having an id will lead to strange results for:
+     * - Nodes that use the foreign key in their descriptor
+     * - Nodes with unique records (self::AF_UNIQUE always just checks the database)
+     * - Combined primary keys
+     */
+    const AF_ONETOMANY_SHOW_ADD = self::AF_SPECIFIC_4;
+
+
     var $m_recordlist;
 
     /**
@@ -160,7 +170,7 @@ class OneToManyRelation extends Relation
      */
     function __construct($name, $destination, $refKey = "", $flags = 0)
     {
-        parent::__construct($name, $destination, $flags | AF_NO_SORT | AF_HIDE_ADD);
+        parent::__construct($name, $destination, $flags | self::AF_NO_SORT | self::AF_HIDE_ADD);
 
         if (is_array($refKey)) {
             $this->m_refKey = $refKey;
@@ -177,8 +187,8 @@ class OneToManyRelation extends Relation
     public function addFlag($flag)
     {
         $ret = parent::addFlag($flag);
-        if (Tools::hasFlag($this->m_flags, AF_ONETOMANY_SHOW_ADD)) {
-            $this->removeFlag(AF_HIDE_ADD);
+        if (Tools::hasFlag($this->m_flags, self::AF_ONETOMANY_SHOW_ADD)) {
+            $this->removeFlag(self::AF_HIDE_ADD);
         }
         return $ret;
     }
@@ -340,7 +350,7 @@ class OneToManyRelation extends Relation
     public function display($record, $mode = "list")
     {
         // for the view mode we use the datagrid and load the records ourselves
-        if ($mode == 'view' || ($mode == 'edit' && $this->hasFlag(AF_READONLY_EDIT))) {
+        if ($mode == 'view' || ($mode == 'edit' && $this->hasFlag(self::AF_READONLY_EDIT))) {
             $grid = $this->createGrid($record, 'admin', 'view');
             $grid->loadRecords(); // load records early
             $grid->setEmbedded(false);
@@ -497,7 +507,7 @@ class OneToManyRelation extends Relation
     function _getEmbeddedButtons()
     {
         $fname = $this->fieldName();
-        $output .= '<input type="submit" class="btn btn-default otm_add" name="' . $fname . '_save" value="' . Tools::atktext("add") . '">';
+        $output = '<input type="submit" class="btn btn-default otm_add" name="' . $fname . '_save" value="' . Tools::atktext("add") . '">';
         return $output . '<input type="button" onClick="toggleAddForm(\'' . $fname . "_integrated',
                                                                '" . $fname . "_integrated_link');\"
                                        class=\"btn btn-default otm_add\" name=\"" . $fname . "_cancel\" value=\"" . Tools::atktext("cancel") . '">';
@@ -522,7 +532,7 @@ class OneToManyRelation extends Relation
             $params['atkstore_key'] = $this->getSessionStoreKey();
         }
 
-        $is_addorcopy_mode = $this->hasFlag(AF_ONETOMANY_ADDORCOPY_DIALOG) ||
+        $is_addorcopy_mode = $this->hasFlag(self::AF_ONETOMANY_ADDORCOPY_DIALOG) ||
             $this->m_destInstance->hasFlag(NF_ADDORCOPY_DIALOG);
 
         if ($is_addorcopy_mode) {
@@ -535,7 +545,7 @@ class OneToManyRelation extends Relation
             }
         }
 
-        $is_dialog_mode = $this->hasFlag(AF_ONETOMANY_ADD_DIALOG) ||
+        $is_dialog_mode = $this->hasFlag(self::AF_ONETOMANY_ADD_DIALOG) ||
             $this->m_destInstance->hasFlag(NF_ADD_DIALOG);
 
         if ($is_dialog_mode) {
@@ -829,7 +839,7 @@ class OneToManyRelation extends Relation
         // we use the grid to load records because it makes things easier
         if (($mode != 'add' && $mode != 'edit' && $mode != 'view') ||
             ($mode == 'view' && method_exists($this->getOwnerInstance(), $this->fieldName() . "_display")) ||
-            ($mode == 'edit' && $this->hasFlag(AF_READONLY_EDIT) && method_exists($this->getOwnerInstance(),
+            ($mode == 'edit' && $this->hasFlag(self::AF_READONLY_EDIT) && method_exists($this->getOwnerInstance(),
                     $this->fieldName() . "_display"))
         ) {
             $grid = $this->createGrid($record, $mode == 'copy' ? 'copy' : 'admin', $mode, false);
@@ -867,7 +877,7 @@ class OneToManyRelation extends Relation
      * that the master record is deleted.
      *
      * Note that the framework only calls the method when the
-     * AF_CASCADE_DELETE flag is set. When calling this method, all detail
+     * self::AF_CASCADE_DELETE flag is set. When calling this method, all detail
      * records belonging to the master record are deleted.
      *
      * @param array $record The record that is deleted.
@@ -1222,7 +1232,7 @@ class OneToManyRelation extends Relation
      *
      * On the other side of a oneToManyRelation (in the destination node),
      * there may be a regular Attribute for the referential key, or an
-     * atkManyToOneRelation pointing back at the source. This method discovers
+     * ManyToOneRelation pointing back at the source. This method discovers
      * which of the 2 cases we are dealing with.
      * @return boolean True if the foreign key on the other side is a
      *                 relation, false if not.
@@ -1246,7 +1256,7 @@ class OneToManyRelation extends Relation
      */
     function deleteAllowed()
     {
-        if ($this->hasFlag(AF_RESTRICTED_DELETE)) {
+        if ($this->hasFlag(self::AF_RESTRICTED_DELETE)) {
             // Get the destination node
             $classname = $this->m_destination;
             $cache_id = $this->m_owner . "." . $this->m_name;
@@ -1404,14 +1414,14 @@ class OneToManyRelation extends Relation
                 'attribute.' . $this->fieldName() . '.refresh'));
         }
 
-        // user has choosen to add a new record, depending on whatever the AF_ONETOMANY_ADD_DIALOG
+        // user has choosen to add a new record, depending on whatever the self::AF_ONETOMANY_ADD_DIALOG
         // or the destination instance NF_ADD_DIALOG flags has been set we either show the user an
         // add dialog or redirect him/her to the add page (using an atkSubmit)
         else {
 
             $script = Dialog::getCloseCall();
 
-            if ($this->hasFlag(AF_ONETOMANY_ADD_DIALOG) || $this->m_destInstance->hasFlag(NF_ADD_DIALOG)) {
+            if ($this->hasFlag(self::AF_ONETOMANY_ADD_DIALOG) || $this->m_destInstance->hasFlag(NF_ADD_DIALOG)) {
                 $ui = $this->m_ownerInstance->getUi();
                 $filter = $this->m_ownerInstance->m_postvars['atkfilter'];
                 $dialog = new Dialog($this->m_ownerInstance->atkNodeType(), 'edit',

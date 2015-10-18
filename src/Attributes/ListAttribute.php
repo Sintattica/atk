@@ -18,22 +18,22 @@
 /**
  * Do not translate the options
  */
-define("AF_NO_TRANSLATION", AF_SPECIFIC_1);
+define("self::AF_NO_TRANSLATION", self::AF_SPECIFIC_1);
 
 /**
  * Do not add a default null option.
  */
-define("AF_LIST_NO_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_2);
+define("self::AF_LIST_NO_OBLIGATORY_NULL_ITEM", self::AF_SPECIFIC_2);
 
 /**
  * Do not add null option ever
  */
-define("AF_LIST_NO_NULL_ITEM", AF_SPECIFIC_3);
+define("self::AF_LIST_NO_NULL_ITEM", self::AF_SPECIFIC_3);
 
 /**
  * Add a default null option to obligatory items
  */
-define("AF_LIST_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_4);
+define("self::AF_LIST_OBLIGATORY_NULL_ITEM", self::AF_SPECIFIC_4);
 
 /**
  * The atkListAttribute class represents an attribute of a node
@@ -256,7 +256,7 @@ class ListAttribute extends Attribute
         $lookup = $this->getLookup($rec);
         $res = "";
         if (isset($lookup[$value])) {
-            if ($this->hasFlag(AF_NO_TRANSLATION)) {
+            if ($this->hasFlag(self::AF_NO_TRANSLATION)) {
                 $res = $lookup[$value];
             } else {
                 $res = $this->text($lookup[$value]);
@@ -318,8 +318,8 @@ class ListAttribute extends Attribute
     /**
      * If this attribute is NOT obligatory
      * Or if the attribute is obligatory and we set a config saying all obligatory lists should have a null item
-     * and we didn't add the flag AF_LIST_NO_OBLIGATORY_NULL_ITEM
-     * Or if the AF_LIST_OBLIGATORY_NULL_ITEM is set
+     * and we didn't add the flag self::AF_LIST_NO_OBLIGATORY_NULL_ITEM
+     * Or if the self::AF_LIST_OBLIGATORY_NULL_ITEM is set
      * ... we add an empty list option
      * @return The empty list option or an empty string
      */
@@ -328,14 +328,14 @@ class ListAttribute extends Attribute
         $ret = '';
 
         // use a different (more descriptive) text for obligatory items
-        $text_key = $this->hasFlag(AF_OBLIGATORY) ? "list_null_value_obligatory"
+        $text_key = $this->hasFlag(self::AF_OBLIGATORY) ? "list_null_value_obligatory"
             : "list_null_value";
 
-        if (!$this->hasFlag(AF_LIST_NO_NULL_ITEM) ||
-            ($this->hasFlag(AF_OBLIGATORY) &&
+        if (!$this->hasFlag(self::AF_LIST_NO_NULL_ITEM) ||
+            ($this->hasFlag(self::AF_OBLIGATORY) &&
                 // CONFIG IS DEPRECATED
-                ((Config::getGlobal("list_obligatory_null_item") && !$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM)) ||
-                    ($this->hasFlag(AF_LIST_OBLIGATORY_NULL_ITEM))))
+                ((Config::getGlobal("list_obligatory_null_item") && !$this->hasFlag(self::AF_LIST_NO_OBLIGATORY_NULL_ITEM)) ||
+                    ($this->hasFlag(self::AF_LIST_OBLIGATORY_NULL_ITEM))))
         ) {
             $ret = '<option value="' . $this->m_emptyvalue . '">' . htmlentities($this->text(array(
                     $this->fieldName() . '_' . $text_key,

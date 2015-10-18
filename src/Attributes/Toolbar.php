@@ -29,7 +29,7 @@ class Toolbar extends DummyAttribute
      */
     function __construct($name, $flags = 0)
     {
-        parent::__construct($name, $flags | AF_HIDE_LIST | AF_BLANKLABEL);
+        parent::__construct($name, $flags | self::AF_HIDE_LIST | self::AF_BLANKLABEL);
     }
 
     /**

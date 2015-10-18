@@ -32,7 +32,7 @@ class FormatAttribute extends Attribute
      *
      * <b>Example:</b>
      *        $this->add(new atkFormatAttribute("license", "AAA/##/##",
-     *                                                        AF_OBLIGATORY));
+     *                                                        self::AF_OBLIGATORY));
      *
      * @todo Support for other types of input, upper/lowercase support,
      *       escape possibility for using literal *'s.

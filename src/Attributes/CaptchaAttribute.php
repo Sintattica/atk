@@ -20,7 +20,7 @@
  * With the atkCaptchaAttribute class you can easily add a captcha to a forum
  * or guestbook.
  *
- * Use the flag AF_NOLABEL if you want to start at the beginning of the
+ * Use the flag self::AF_NOLABEL if you want to start at the beginning of the
  * line.
  *
  * @author Nico de Boer <nico@ibuildings.nl>
@@ -40,7 +40,7 @@ class CaptchaAttribute extends Attribute
     function __construct($name, $flags = 0)
     {
         // A Captcha attribute should not be searchable and sortable
-        $flags |= AF_HIDE_SEARCH | AF_NO_SORT;
+        $flags |= self::AF_HIDE_SEARCH | self::AF_NO_SORT;
 
         parent::__construct($name, $flags); // base class constructor
     }
@@ -73,7 +73,7 @@ class CaptchaAttribute extends Attribute
      */
     function storageType()
     {
-        return NOSTORE;
+        return self::NOSTORE;
     }
 
     /**
@@ -83,7 +83,7 @@ class CaptchaAttribute extends Attribute
      */
     function loadType()
     {
-        return NOLOAD;
+        return self::NOLOAD;
     }
 
     /**

@@ -107,7 +107,7 @@ class NodeValidator
         Tools::atkdebug("validate() with mode " . $this->m_mode . " for node " . $this->m_nodeObj->atkNodeType());
 
         // set the record
-        $record = $this->m_record;
+        $record = &$this->m_record;
 
         // Check flags and values
         $db = $this->m_nodeObj->getDb();
@@ -118,7 +118,7 @@ class NodeValidator
 
                 $this->validateAttributeValue($p_attrib, $record);
 
-                if ($p_attrib->hasFlag(AF_PRIMARY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT)) {
+                if ($p_attrib->hasFlag(Attribute::AF_PRIMARY) && !$p_attrib->hasFlag(Attribute::AF_AUTO_INCREMENT)) {
                     $atkorgkey = $record["atkprimkey"];
                     if ($atkorgkey == '' || $atkorgkey != $this->m_nodeObj->primaryKey($record)) {
                         $cnt = $this->m_nodeObj->select($this->m_nodeObj->primaryKey($record))
@@ -131,17 +131,18 @@ class NodeValidator
                     }
                 }
 
+
                 // if no root elements may be added to the tree, then every record needs to have a parent!
-                if ($p_attrib->hasFlag(AF_PARENT) && $this->m_nodeObj->hasFlag(NF_TREE_NO_ROOT_ADD) && $this->m_nodeObj->m_action == "save") {
-                    $p_attrib->m_flags |= AF_OBLIGATORY;
+                if ($p_attrib->hasFlag(Attribute::AF_PARENT) && $this->m_nodeObj->hasFlag(NF_TREE_NO_ROOT_ADD) && $this->m_nodeObj->m_action == "save") {
+                    $p_attrib->m_flags |= Attribute::AF_OBLIGATORY;
                 }
 
                 // validate obligatory fields (but not the auto_increment ones, because they don't have a value yet)
-                if ($p_attrib->hasFlag(AF_OBLIGATORY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT) && $p_attrib->isEmpty($record)) {
+                if ($p_attrib->hasFlag(Attribute::AF_OBLIGATORY) && !$p_attrib->hasFlag(Attribute::AF_AUTO_INCREMENT) && $p_attrib->isEmpty($record)) {
                     Tools::atkTriggerError($record, $p_attrib, 'error_obligatoryfield');
                 } // if flag is primary
                 else {
-                    if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) && !$p_attrib->isEmpty($record)) {
+                    if ($p_attrib->hasFlag(Attribute::AF_UNIQUE) && !$p_attrib->hasFlag(Attribute::AF_PRIMARY) && !$p_attrib->isEmpty($record)) {
                         $condition = $this->m_nodeObj->getTable() . ".$attribname='" . $db->escapeSQL($p_attrib->value2db($record)) . "'";
                         if ($this->m_mode != 'add') {
                             $condition .= " AND NOT (" . $this->m_nodeObj->primaryKey($record) . ")";
@@ -157,6 +158,7 @@ class NodeValidator
                 }
             }
         }
+
 
         if (isset($record['atkerror']) && count($record['atkerror']) > 0) {
             for ($i = 0, $_i = count($record["atkerror"]); $i < $_i; $i++) {

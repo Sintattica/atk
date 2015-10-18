@@ -6,7 +6,7 @@ use Sintattica\Atk\Core\Tools;
 /**
  * Handler for the 'delete' action of a node. It asks the user for
  * confirmation and upon actual confirmation, deletes the record (and for
- * any attribute that has AF_CASCADE_DELETE set, deletes any detail
+ * any attribute that has Attribute::AF_CASCADE_DELETE set, deletes any detail
  * information (if any) by calling the attributes' delete() method.
  *
  * @author Ivo Jansch <ivo@achievo.org>

@@ -284,7 +284,7 @@ class Node
      *
      * Indicates which field combinations should be unique.
      * It doesn't contain the unique fields which have been set by flag
-     * AF_UNIQUE.
+     * Attribute::AF_UNIQUE.
      *
      * @access private
      * @var array
@@ -913,22 +913,22 @@ class Node
             $this->resolveSectionsTabsOrder($sections, $tabs, $column, $order);
 
             // check for parent fieldname (treeview)
-            if ($attribute->hasFlag(AF_PARENT)) {
+            if ($attribute->hasFlag(Attribute::AF_PARENT)) {
                 $this->m_parent = $attribute->fieldName();
             }
 
             // check for cascading delete flag
-            if ($attribute->hasFlag(AF_CASCADE_DELETE)) {
+            if ($attribute->hasFlag(Attribute::AF_CASCADE_DELETE)) {
                 $this->m_cascadingAttribs[] = $attribute->fieldName();
             }
 
-            if ($attribute->hasFlag(AF_HIDE_LIST) && !$attribute->hasFlag(AF_PRIMARY)) {
+            if ($attribute->hasFlag(Attribute::AF_HIDE_LIST) && !$attribute->hasFlag(Attribute::AF_PRIMARY)) {
                 if (!in_array($attribute->fieldName(), $this->m_listExcludes)) {
                     $this->m_listExcludes[] = $attribute->fieldName();
                 }
             }
 
-            if ($attribute->hasFlag(AF_HIDE_VIEW) && !$attribute->hasFlag(AF_PRIMARY)) {
+            if ($attribute->hasFlag(Attribute::AF_HIDE_VIEW) && !$attribute->hasFlag(Attribute::AF_PRIMARY)) {
                 if (!in_array($attribute->fieldName(), $this->m_viewExcludes)) {
                     $this->m_viewExcludes[] = $attribute->fieldName();
                 }
@@ -953,7 +953,7 @@ class Node
         // soon as possible AFTER the constructor. (the dispatcher function)
         $attribute->setOwnerInstance($this);
 
-        if ($attribute->hasFlag(AF_PRIMARY)) {
+        if ($attribute->hasFlag(Attribute::AF_PRIMARY)) {
             if (!in_array($attribute->fieldName(), $this->m_primaryKey)) {
                 $this->m_primaryKey[] = $attribute->fieldName();
             }
@@ -981,17 +981,17 @@ class Node
             if (!Module::atkReadOptimizer()) {
                 // add new tab(s) to the tab list ("*" isn't a tab!)
                 if ($tabs != "*") {
-                    if (!$attribute->hasFlag(AF_HIDE_ADD)) {
+                    if (!$attribute->hasFlag(Attribute::AF_HIDE_ADD)) {
                         $this->m_tabList["add"] = isset($this->m_tabList["add"])
                             ? Tools::atk_array_merge($this->m_tabList["add"], $tabs)
                             : $tabs;
                     }
-                    if (!$attribute->hasFlag(AF_HIDE_EDIT)) {
+                    if (!$attribute->hasFlag(Attribute::AF_HIDE_EDIT)) {
                         $this->m_tabList["edit"] = isset($this->m_tabList["edit"])
                             ? Tools::atk_array_merge($this->m_tabList["edit"], $tabs)
                             : $tabs;
                     }
-                    if (!$attribute->hasFlag(AF_HIDE_VIEW)) {
+                    if (!$attribute->hasFlag(Attribute::AF_HIDE_VIEW)) {
                         $this->m_tabList["view"] = isset($this->m_tabList["view"])
                             ? Tools::atk_array_merge($this->m_tabList["view"], $tabs)
                             : $tabs;
@@ -999,17 +999,17 @@ class Node
                 }
 
                 if ($sections != "*") {
-                    if (!$attribute->hasFlag(AF_HIDE_ADD)) {
+                    if (!$attribute->hasFlag(Attribute::AF_HIDE_ADD)) {
                         $this->m_sectionList["add"] = isset($this->m_sectionList["add"])
                             ? Tools::atk_array_merge($this->m_sectionList["add"], $sections)
                             : $sections;
                     }
-                    if (!$attribute->hasFlag(AF_HIDE_EDIT)) {
+                    if (!$attribute->hasFlag(Attribute::AF_HIDE_EDIT)) {
                         $this->m_sectionList["edit"] = isset($this->m_sectionList['edit'])
                             ? Tools::atk_array_merge($this->m_sectionList["edit"], $sections)
                             : $sections;
                     }
-                    if (!$attribute->hasFlag(AF_HIDE_VIEW)) {
+                    if (!$attribute->hasFlag(Attribute::AF_HIDE_VIEW)) {
                         $this->m_sectionList["view"] = isset($this->m_sectionList['view'])
                             ? Tools::atk_array_merge($this->m_sectionList["view"], $sections)
                             : $sections;
@@ -1186,7 +1186,7 @@ class Node
 
         $postvars = Tools::atkGetPostVar();
         foreach ($this->m_attribList AS $name => $value) {
-            if (!$value->hasFlag(AF_HIDE_LIST)) {
+            if (!$value->hasFlag(Attribute::AF_HIDE_LIST)) {
                 if (!is_array($value->fetchValue($postvars)) && $value->fetchValue($postvars) !== "") {
                     return true;
                 }
@@ -1562,7 +1562,7 @@ class Node
         $this->m_filledTabs = array();
         foreach (array_keys($this->m_attribList) as $attribname) {
             $p_attrib = $this->m_attribList[$attribname];
-            if ($p_attrib->hasFlag(AF_HIDE)) {
+            if ($p_attrib->hasFlag(Attribute::AF_HIDE)) {
                 continue;
             } // attributes to which we don't have access are explicitly hidden
 
@@ -2000,10 +2000,10 @@ class Node
                 !$secMgr->attribAllowed($attr, $mode, $record) &&
                 $secMgr->attribAllowed($attr, "view", $record)
             ) {
-                $attr->addFlag(AF_READONLY);
+                $attr->addFlag(Attribute::AF_READONLY);
             } else {
                 if (!$secMgr->attribAllowed($attr, $mode, $record)) {
-                    $attr->addFlag(AF_HIDE);
+                    $attr->addFlag(Attribute::AF_HIDE);
                 }
             }
         }
@@ -2136,8 +2136,8 @@ class Node
                     if ($attribname != "") {
                         if (isset($this->m_attribList[$attribname])) {
                             $p_attrib = $this->m_attribList[$attribname];
-                            if (is_object($p_attrib) && (!$p_attrib->hasFlag(AF_NO_FILTER))) {
-                                $p_attrib->m_flags |= AF_READONLY | AF_HIDE_ADD;
+                            if (is_object($p_attrib) && (!$p_attrib->hasFlag(Attribute::AF_NO_FILTER))) {
+                                $p_attrib->m_flags |= Attribute::AF_READONLY | Attribute::AF_HIDE_ADD;
                             }
                         } else {
                             Tools::atkerror("Attribute '$attribname' doesn't exist in the attributelist");
@@ -2179,7 +2179,7 @@ class Node
 
             $p_attrib = $this->m_attribList[$attribname];
             if ($p_attrib != null) {
-                if ($p_attrib->hasDisabledMode(DISABLED_EDIT)) {
+                if ($p_attrib->hasDisabledMode(Attribute::DISABLED_EDIT)) {
                     continue;
                 }
 
@@ -2201,7 +2201,7 @@ class Node
                 if ((is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,
                             $suppressList)) || $notOnTab
                 ) {
-                    $p_attrib->m_flags |= ($mode == "add" ? AF_HIDE_ADD : AF_HIDE_EDIT);
+                    $p_attrib->m_flags |= ($mode == "add" ? Attribute::AF_HIDE_ADD : Attribute::AF_HIDE_EDIT);
                 }
 
                 /* we let the attribute add itself to the edit array */
@@ -2255,7 +2255,7 @@ class Node
 
             $p_attrib = $this->m_attribList[$attribname];
             if ($p_attrib != null) {
-                if ($p_attrib->hasDisabledMode(DISABLED_VIEW)) {
+                if ($p_attrib->hasDisabledMode(Attribute::DISABLED_VIEW)) {
                     continue;
                 }
 
@@ -2322,6 +2322,7 @@ class Node
     {
         $result = array();
         $sections = array();
+
 
         // first find sectionless fields and collect all sections
         foreach ($fields as $field) {
@@ -3296,12 +3297,10 @@ class Node
     function validate(&$record, $mode, $ignoreList = array())
     {
         $validateObj = new $this->m_validate_class();
-
         $validateObj->setNode($this);
         $validateObj->setRecord($record);
         $validateObj->setIgnoreList($ignoreList);
         $validateObj->setMode($mode);
-
         return $validateObj->validate();
     }
 
@@ -3401,13 +3400,13 @@ class Node
                     $p_attrib = $this->m_attribList[$attribname];
                     if ($p_attrib->needsUpdate($record) || Tools::atk_in_array($attribname, $includes)) {
                         $storemode = $p_attrib->storageType("update");
-                        if (Tools::hasFlag($storemode, PRESTORE)) {
+                        if (Tools::hasFlag($storemode, Attribute::PRESTORE)) {
                             $storelist["pre"][] = $attribname;
                         }
-                        if (Tools::hasFlag($storemode, POSTSTORE)) {
+                        if (Tools::hasFlag($storemode, Attribute::POSTSTORE)) {
                             $storelist["post"][] = $attribname;
                         }
-                        if (Tools::hasFlag($storemode, ADDTOQUERY)) {
+                        if (Tools::hasFlag($storemode, Attribute::ADDTOQUERY)) {
                             $storelist["query"][] = $attribname;
                         }
                     }
@@ -3616,7 +3615,7 @@ class Node
         } else {
             $usedFields = Tools::atk_array_merge($this->descriptorFields(), $this->m_primaryKey, $includes);
             foreach (array_keys($this->m_attribList) as $name) {
-                if (is_object($this->m_attribList[$name]) && $this->m_attribList[$name]->hasFlag(AF_FORCE_LOAD)) {
+                if (is_object($this->m_attribList[$name]) && $this->m_attribList[$name]->hasFlag(Attribute::AF_FORCE_LOAD)) {
                     $usedFields[] = $name;
                 }
             }
@@ -3629,7 +3628,7 @@ class Node
             if (is_object($p_attrib)) {
                 $loadmode = $p_attrib->loadType("");
 
-                if ($loadmode && Tools::hasFlag($loadmode, ADDTOQUERY)) {
+                if ($loadmode && Tools::hasFlag($loadmode, Attribute::ADDTOQUERY)) {
                     if ($usefieldalias) {
                         $fieldaliasprefix = $alias . "_AE_";
                     }
@@ -3753,13 +3752,13 @@ class Node
                     $excludelist) && ($mode != "add" || $p_attrib->needsInsert($record))
             ) {
                 $storemode = $p_attrib->storageType($mode);
-                if (Tools::hasFlag($storemode, PRESTORE)) {
+                if (Tools::hasFlag($storemode, Attribute::PRESTORE)) {
                     $storelist["pre"][] = $attribname;
                 }
-                if (Tools::hasFlag($storemode, POSTSTORE)) {
+                if (Tools::hasFlag($storemode, Attribute::POSTSTORE)) {
                     $storelist["post"][] = $attribname;
                 }
-                if (Tools::hasFlag($storemode, ADDTOQUERY)) {
+                if (Tools::hasFlag($storemode, Attribute::ADDTOQUERY)) {
                     $storelist["query"][] = $attribname;
                 }
             }
@@ -3851,7 +3850,7 @@ class Node
      * Delete record(s) from the database.
      *
      * After deletion, the postDel() trigger in the node method is called, and
-     * on any attribute that has the AF_CASCADE_DELETE flag set, the delete()
+     * on any attribute that has the Attribute::AF_CASCADE_DELETE flag set, the delete()
      * method is invoked.
      *
      * NOTE: Does not commit your transaction! If you are using a database that uses
@@ -4493,7 +4492,7 @@ class Node
     /**
      * Search all records for the occurance of a certain expression.
      *
-     * This function searches in all fields that are not AF_HIDE_SEARCH, for
+     * This function searches in all fields that are not Attribute::AF_HIDE_SEARCH, for
      * a certain expression (substring match). The search performed is an
      * 'or' search. If any of the fields contains the expression, the record
      * is added to the resultset.\
@@ -4520,8 +4519,8 @@ class Node
         foreach (array_keys($this->m_attribList) as $attribname) {
             $p_attrib = $this->m_attribList[$attribname];
             // Only search in fields that aren't explicitly hidden from search
-            if (!$p_attrib->hasFlag(AF_HIDE_SEARCH) && (in_array($p_attrib->dbFieldType(),
-                        array("string", "text")) || $p_attrib->hasFlag(AF_SEARCHABLE))
+            if (!$p_attrib->hasFlag(Attribute::AF_HIDE_SEARCH) && (in_array($p_attrib->dbFieldType(),
+                        array("string", "text")) || $p_attrib->hasFlag(Attribute::AF_SEARCHABLE))
             ) {
                 $this->m_postvars['atksearch'][$attribname] = $expression;
             }

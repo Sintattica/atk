@@ -50,7 +50,7 @@ class NumberAttribute extends Attribute
      */
     function __construct($name, $flags = 0, $size = 0, $decimals = null)
     {
-        parent::__construct($name, $flags | AF_NO_QUOTES, $size); // base class constructor
+        parent::__construct($name, $flags | self::AF_NO_QUOTES, $size); // base class constructor
         $this->m_decimals = $decimals;
 
         $this->m_decimalseparator = Tools::atktext(self::SEPARATOR_DECIMAL, 'atk');
@@ -395,7 +395,7 @@ class NumberAttribute extends Attribute
      */
     function value2db($rec)
     {
-        if ((!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()]) == 0) && !$this->hasFlag(AF_OBLIGATORY)) {
+        if ((!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()]) == 0) && !$this->hasFlag(self::AF_OBLIGATORY)) {
             return null;
         }
         if ($this->getDecimals() > 0) {

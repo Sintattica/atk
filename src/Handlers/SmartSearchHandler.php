@@ -259,7 +259,7 @@ class SmartSearchHandler extends AbstractSearchHandler
         $attrs = array();
         foreach ($attrNames as $attrName) {
             $attr = &$node->getAttribute($attrName);
-            if (!$attr->hasFlag(AF_HIDE_SEARCH)) {
+            if (!$attr->hasFlag(Attribute::AF_HIDE_SEARCH)) {
                 $attrs[] = &$attr;
             }
         }

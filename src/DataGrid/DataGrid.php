@@ -1099,7 +1099,7 @@ class DataGrid
 
     /**
      * Returns the attributes that should be excluded from the list
-     * next to the attributes that already have an AF_HIDE_LIST flag.
+     * next to the attributes that already have an Attribute::AF_HIDE_LIST flag.
      *
      * @return array excluded attributes
      */
@@ -1110,7 +1110,7 @@ class DataGrid
 
     /**
      * Sets the attributes that should be excluded from the list
-     * next to the attribute that already have an AF_HIDE_LIST flag.
+     * next to the attribute that already have an Attribute::AF_HIDE_LIST flag.
      *
      * @param array $excludes excluded attributes
      */

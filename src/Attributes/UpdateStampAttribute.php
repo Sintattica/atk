@@ -48,7 +48,7 @@ class UpdateStampAttribute extends DateTimeAttribute
      */
     function atkUpdateStampAttribute($name, $flags = 0)
     {
-        $this->atkDateTimeAttribute($name, date("Y-m-d"), date("H:i:s"), $flags | AF_READONLY | AF_HIDE_ADD);
+        $this->atkDateTimeAttribute($name, date("Y-m-d"), date("H:i:s"), $flags | self::AF_READONLY | self::AF_HIDE_ADD);
         $this->setForceInsert(true);
         $this->setForceUpdate(true);
         $this->setInitialValue(DateTimeAttribute::datetimeArray());

@@ -64,7 +64,7 @@ class TagAttribute extends FuzzySearchAttribute
             $size = $this->maxInputSize();
         }*/
 
-        parent::__construct($name, $flags | AF_NO_SORT, $size);
+        parent::__construct($name, $flags | self::AF_NO_SORT, $size);
         $this->m_destination = $destination;
         $this->m_destinationfield = $destinationfield;
         $this->m_link = $link;

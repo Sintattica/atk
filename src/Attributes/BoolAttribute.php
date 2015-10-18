@@ -15,22 +15,22 @@
  * $Id: class.atkboolattribute.inc 6943 2010-07-05 21:24:39Z sandy $
  */
 /**
- * Make bool attribute obligatory (normal AF_OBLIGATORY flag is always removed).
+ * Make bool attribute obligatory (normal self::AF_OBLIGATORY flag is always removed).
  */
-define("AF_BOOL_OBLIGATORY", AF_SPECIFIC_1);
+define("self::AF_BOOL_OBLIGATORY", self::AF_SPECIFIC_1);
 
 /**
  * Show an extra label right next to the checkbox. ATK searches the language
  * file for the following variants <attribute>_label, <attribute> (next to
- * the module/node prefixes). Don't forget to add the AF_BLANK_LABEL flag
+ * the module/node prefixes). Don't forget to add the self::AF_BLANK_LABEL flag
  * if you don't want to show the normal label.
  */
-define("AF_BOOL_INLINE_LABEL", AF_SPECIFIC_2);
+define("self::AF_BOOL_INLINE_LABEL", self::AF_SPECIFIC_2);
 
 /**
  * Display checkbox in view / list mode instead of "yes" or "no".
  */
-define("AF_BOOL_DISPLAY_CHECKBOX", AF_SPECIFIC_3);
+define("self::AF_BOOL_DISPLAY_CHECKBOX", self::AF_SPECIFIC_3);
 
 /**
  * The atkBoolAttribute class represents an attribute of a node
@@ -53,27 +53,27 @@ class BoolAttribute extends Attribute
     {
         // Call base class constructor. Size of boolean value is always 1.
         parent::__construct($name, $flags, 1);
-        if ($this->hasFlag(AF_BOOL_OBLIGATORY)) {
-            $this->addFlag(AF_OBLIGATORY);
+        if ($this->hasFlag(self::AF_BOOL_OBLIGATORY)) {
+            $this->addFlag(self::AF_OBLIGATORY);
         }
     }
 
     /**
-     * Adds the AF_OBLIGATORY flag to the attribute.
+     * Adds the self::AF_OBLIGATORY flag to the attribute.
      *
      * @param int $flags The flag to add to the attribute
      * @return Attribute The instance of this Attribute
      */
     function addFlag($flags)
     {
-        // setting AF_OBLIGATORY has no use, so prevent setting it.
-        if (Tools::hasFlag($flags, AF_OBLIGATORY)) {
-            $flags &= (~AF_OBLIGATORY);
+        // setting self::AF_OBLIGATORY has no use, so prevent setting it.
+        if (Tools::hasFlag($flags, self::AF_OBLIGATORY)) {
+            $flags &= (~self::AF_OBLIGATORY);
         }
 
         // except if someone really really really wants to show this attribute is obligatory
-        if (Tools::hasFlag($flags, AF_BOOL_OBLIGATORY)) {
-            $flags |= AF_OBLIGATORY;
+        if (Tools::hasFlag($flags, self::AF_BOOL_OBLIGATORY)) {
+            $flags |= self::AF_OBLIGATORY;
         }
 
         return parent::addFlag($flags);
@@ -90,7 +90,7 @@ class BoolAttribute extends Attribute
         $empty = parent::isEmpty($record);
 
         // if bool_obligatory flag is set the value must be true else we treat this record as empty
-        if ($this->hasFlag(AF_BOOL_OBLIGATORY) && !$record[$this->fieldName()]) {
+        if ($this->hasFlag(self::AF_BOOL_OBLIGATORY) && !$record[$this->fieldName()]) {
             $empty = true;
         }
 
@@ -123,7 +123,7 @@ class BoolAttribute extends Attribute
 
         $result = '<input type="checkbox" id="' . $id . '" name="' . $id . '" value="1" ' . $onchange . $checked . ' ' . $this->getCSSClassAttribute("atkcheckbox") . ' />';
 
-        if ($this->hasFlag(AF_BOOL_INLINE_LABEL)) {
+        if ($this->hasFlag(self::AF_BOOL_INLINE_LABEL)) {
             $result .= '&nbsp;<label for="' . $id . '">' . $this->text(array(
                     $this->fieldName() . '_label',
                     parent::label($record)
@@ -207,7 +207,7 @@ class BoolAttribute extends Attribute
      */
     function display($record)
     {
-        if ($this->hasFlag(AF_BOOL_DISPLAY_CHECKBOX)) {
+        if ($this->hasFlag(self::AF_BOOL_DISPLAY_CHECKBOX)) {
             return '
     		  <div align="center">
     		    <input type="checkbox" disabled="disabled" ' . ($record[$this->fieldName()]
@@ -224,7 +224,7 @@ class BoolAttribute extends Attribute
      *
      * The difference with the label() method is that the label method always
      * returns the HTML label, while the getLabel() method is 'smart', by
-     * taking the AF_NOLABEL and AF_BLANKLABEL flags into account.
+     * taking the self::AF_NOLABEL and self::AF_BLANKLABEL flags into account.
      *
      * @param array $record The record holding the value for this attribute.
      * @param string $mode The mode ("add", "edit" or "view")
@@ -234,7 +234,7 @@ class BoolAttribute extends Attribute
      */
     function getLabel($record = array(), $mode = '')
     {
-        if ($mode == 'view' && $this->hasFlag(AF_BLANK_LABEL | AF_BOOL_INLINE_LABEL)) {
+        if ($mode == 'view' && $this->hasFlag(self::AF_BLANK_LABEL | self::AF_BOOL_INLINE_LABEL)) {
             return $this->label($record);
         } else {
             return parent::getLabel($record);

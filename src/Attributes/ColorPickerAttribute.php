@@ -163,7 +163,7 @@ function colorMatrix($colHeight, $colWidth, $field, $extern = 0, $userColors)
  * An atkColorPickerAttribute shows a box with 10 user defined colors and 90 pre-defined colors
  * from wich the user can select a color or enter the hexcode in a textfield
  *
- * flags: AF_POPUP  opens a popup screen with colorpicker instead of drawing under the input field
+ * flags: self::AF_POPUP  opens a popup screen with colorpicker instead of drawing under the input field
  * @todo There are many global functions in the class file
  *       class.atkcolorpickerattribute.inc. These should be moved to private
  *       class methods.
@@ -182,7 +182,7 @@ class ColorPickerAttribute extends Attribute
      * Constructor
      *
      * <b>Example:</b>
-     * $this->add(new atkColorPickerAttribute("naam",Array,AF_OBLIGATORY|AF_POPUP));
+     * $this->add(new atkColorPickerAttribute("naam",Array,self::AF_OBLIGATORY|self::AF_POPUP));
      * @param string $name Name of the attribute
      * @param array $userColors Array with max. 12 user defined colors
      * @param int $flags Flags for the attribute
@@ -477,7 +477,7 @@ class ColorPickerAttribute extends Attribute
      *
      * If the type was read from the table metadata, that value will
      * be used. Else, the attribute will analyze its flags to guess
-     * what type it should be. If AF_AUTO_INCREMENT is set, the field
+     * what type it should be. If self::AF_AUTO_INCREMENT is set, the field
      * is probaly "number". If not, it's probably "string".
      *
      * @return String The 'generic' type of the database field for this

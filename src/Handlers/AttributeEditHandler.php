@@ -353,7 +353,7 @@ class AttributeEditHandler extends ActionHandler
         }
 
         $list = &new atkListAttribute('attributename', $options, $values);
-        $list->addFlag(AF_LIST_NO_NULL_ITEM);
+        $list->addFlag(Attribute::AF_LIST_NO_NULL_ITEM);
         $list->m_ownerInstance = $this->m_node;
         $list->addOnChangeHandler($this->onChange());
         return $list->edit($record, $fieldprefix);
@@ -434,23 +434,23 @@ class AttributeEditHandler extends ActionHandler
         // We do not need certain attributes.
         foreach ($attributes as $index => $attr) {
             // Attributes without labels will not be selectable.
-            if ($attr->hasFlag(AF_NO_LABEL) || $attr->hasFlag(AF_BLANK_LABEL)) {
+            if ($attr->hasFlag(Attribute::AF_NO_LABEL) || $attr->hasFlag(Attribute::AF_BLANK_LABEL)) {
                 continue;
             }
 
             // Hidden attributes will not be selectable
-            if ($attr->hasFlag(AF_HIDE) || $attr->hasFlag(AF_HIDE_EDIT)) {
+            if ($attr->hasFlag(Attribute::AF_HIDE) || $attr->hasFlag(Attribute::AF_HIDE_EDIT)) {
                 continue;
             }
 
             // You cannot give multiple records a value for a field that should be unique.
             $atkselector = $this->getSelector();
-            if (isset($atkselector) && count($atkselector) > 1 && $attr->hasFlag(AF_UNIQUE)) {
+            if (isset($atkselector) && count($atkselector) > 1 && $attr->hasFlag(Attribute::AF_UNIQUE)) {
                 continue;
             }
 
             // You cannot update readonly fields
-            if ($attr->hasFlag(AF_READONLY) || $attr->hasFlag(AF_READONLY_EDIT)) {
+            if ($attr->hasFlag(Attribute::AF_READONLY) || $attr->hasFlag(Attribute::AF_READONLY_EDIT)) {
                 continue;
             }
 

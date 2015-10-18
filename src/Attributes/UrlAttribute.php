@@ -17,12 +17,12 @@
 /**
  * Add one space after each "/", "?" and "&" to fit a (long) url into <td></td>.
  */
-define('AF_URL_ALLOWWRAP', AF_SPECIFIC_1);
+define('self::AF_URL_ALLOWWRAP', self::AF_SPECIFIC_1);
 
 /**
  * Don't display "http://". Link remains intact.
  */
-define('AF_URL_STRIPHTTP', AF_SPECIFIC_2);
+define('self::AF_URL_STRIPHTTP', self::AF_SPECIFIC_2);
 
 /**
  * Check if URL is a valid absolute URL
@@ -79,19 +79,19 @@ class UrlAttribute extends Attribute
      */
     function __construct($name, $flags = 0, $size = 0)
     {
-        if (AF_POPUP === ($flags & AF_POPUP)) {
+        if (self::AF_POPUP === ($flags & self::AF_POPUP)) {
             $this->m_newWindow = true;
-            $flags &= (~AF_POPUP);
+            $flags &= (~self::AF_POPUP);
         }
 
-        if (AF_URL_ALLOWWRAP === ($flags & AF_URL_ALLOWWRAP)) {
+        if (self::AF_URL_ALLOWWRAP === ($flags & self::AF_URL_ALLOWWRAP)) {
             $this->m_allowWrap = true;
-            $flags &= (~AF_URL_ALLOWWRAP);
+            $flags &= (~self::AF_URL_ALLOWWRAP);
         }
 
-        if (AF_URL_STRIPHTTP === ($flags & AF_URL_STRIPHTTP)) {
+        if (self::AF_URL_STRIPHTTP === ($flags & self::AF_URL_STRIPHTTP)) {
             $this->m_stripHttp = true;
-            $flags &= (~AF_URL_STRIPHTTP);
+            $flags &= (~self::AF_URL_STRIPHTTP);
         }
 
         parent::__construct($name, $flags, $size);

@@ -49,7 +49,7 @@
  * Note that if the calculation contains invalid php code, for example
  * unmatched brackets, a php parse error will be thrown.
  *
- * You can use AF_TOTAL to totalize the values in recordlists.
+ * You can use self::AF_TOTAL to totalize the values in recordlists.
  *
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk
@@ -74,7 +74,7 @@ class CalculatorAttribute extends Attribute
      */
     function __construct($name, $calculation, $flags = 0)
     {
-        parent::__construct($name, $flags | AF_NO_SORT | AF_HIDE_SEARCH | AF_READONLY);
+        parent::__construct($name, $flags | self::AF_NO_SORT | self::AF_HIDE_SEARCH | self::AF_READONLY);
 
         $this->m_calculation = $calculation;
     }
@@ -86,7 +86,7 @@ class CalculatorAttribute extends Attribute
      */
     function storageType()
     {
-        return NOSTORE;
+        return self::NOSTORE;
     }
 
     /**
@@ -96,7 +96,7 @@ class CalculatorAttribute extends Attribute
      */
     function loadType()
     {
-        return POSTLOAD;
+        return self::POSTLOAD;
     }
 
     /**

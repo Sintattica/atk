@@ -198,7 +198,7 @@ class SearchHandler extends AbstractSearchHandler
             foreach ($node->getAttributeNames() as $attribname) {
                 $p_attrib = &$node->m_attribList[$attribname];
 
-                if (!$p_attrib->hasFlag(AF_HIDE_SEARCH)) {
+                if (!$p_attrib->hasFlag(Attribute::AF_HIDE_SEARCH)) {
                     $p_attrib->addToSearchformFields($params["fields"], $node, $record, "",
                         $this->m_postvars['atksearchmode']);
                 }

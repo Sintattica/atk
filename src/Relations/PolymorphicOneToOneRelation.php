@@ -30,7 +30,7 @@ class PolymorphicOneToOneRelation extends OneToOneRelation
      * <b>Example:</b>
      * <code>
      *  $this->add(new atkPolymorphicOneToOneRelation("details","fruittype_id","table","poly.orange",
-     *               "poly","fruit_id",AF_CASCADE_DELETE ));
+     *               "poly","fruit_id",self::AF_CASCADE_DELETE ));
      * </code>
      *
      * @param String $name The unique name of the attribute.
@@ -48,7 +48,7 @@ class PolymorphicOneToOneRelation extends OneToOneRelation
      */
     function __construct($name, $typefk, $discriminatorfield, $defaultdest, $modulename, $refKey, $flags = 0)
     {
-        parent::__construct($name, "", $refKey, $flags | AF_HIDE_LIST);
+        parent::__construct($name, "", $refKey, $flags | self::AF_HIDE_LIST);
         $this->m_typefk = $typefk;
         $this->m_discriminatorfield = $discriminatorfield;
         $this->m_destination = $defaultdest;
@@ -57,7 +57,7 @@ class PolymorphicOneToOneRelation extends OneToOneRelation
 
     function loadType()
     {
-        return POSTLOAD;
+        return self::POSTLOAD;
     }
 
     /**

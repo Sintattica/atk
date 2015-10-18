@@ -1,22 +1,10 @@
 <?php namespace Sintattica\Atk\Relations;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage relations
- *
- * @copyright (c)2000-2005 Ibuildings.nl BV
- * @copyright (c)2000-2005 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6323 $
- * $Id$
- */
 
-define('AF_MANYTOMANY_DETAILVIEW', AF_SPECIFIC_5);
+
+use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Tools;
+
+
 
 /**
  * Many to many relation. Should not be used directly.
@@ -38,6 +26,9 @@ define('AF_MANYTOMANY_DETAILVIEW', AF_SPECIFIC_5);
  */
 class ManyToManyRelation extends Relation
 {
+
+    const AF_MANYTOMANY_DETAILVIEW = self::AF_SPECIFIC_5;
+
     var $m_localKey = "";
     var $m_remoteKey = "";
     var $m_link = "";
@@ -69,7 +60,7 @@ class ManyToManyRelation extends Relation
     function __construct($name, $link, $destination, $flags = 0)
     {
         $this->m_link = $link;
-        parent::__construct($name, $destination, $flags | AF_CASCADE_DELETE | AF_NO_SORT);
+        parent::__construct($name, $destination, $flags | self::AF_CASCADE_DELETE | self::AF_NO_SORT);
     }
 
     /**
@@ -383,7 +374,7 @@ class ManyToManyRelation extends Relation
                 } else {
                     $descr = $this->m_destInstance->descriptor($rec);
                 }
-                if ($this->hasFlag(AF_MANYTOMANY_DETAILVIEW) && $this->m_destInstance->allowed("view")) {
+                if ($this->hasFlag(self::AF_MANYTOMANY_DETAILVIEW) && $this->m_destInstance->allowed("view")) {
                     $descr = Tools::href(Tools::dispatch_url($this->m_destination, 'view',
                         array('atkselector' => $this->getdestination()->primarykey($rec))), $descr, SESSION_NESTED);
                 }
@@ -562,7 +553,7 @@ class ManyToManyRelation extends Relation
         $selector = $this->getLink()->primaryKey($record);
 
         if (empty($selector)) {
-            Tools::atkerror('primaryKey-selector for link node is empty. Did you add an AF_PRIMARY flag to the primary key field(s) of the intermediate node? Deleting records aborted to prevent dataloss.');
+            Tools::atkerror('primaryKey-selector for link node is empty. Did you add an self::AF_PRIMARY flag to the primary key field(s) of the intermediate node? Deleting records aborted to prevent dataloss.');
             return false;
         }
 

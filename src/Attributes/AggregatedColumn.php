@@ -51,7 +51,7 @@ class AggregatedColumn extends Attribute
      */
     function __construct($name, $template, $flags = 0, $searchfields = array())
     {
-        parent::__construct($name, $flags | AF_HIDE_EDIT | AF_HIDE_ADD | AF_HIDE_VIEW); // base class constructor
+        parent::__construct($name, $flags | self::AF_HIDE_EDIT | self::AF_HIDE_ADD | self::AF_HIDE_VIEW); // base class constructor
         $this->m_template = $template;
 
         $parser = new StringParser($template);
@@ -101,10 +101,10 @@ class AggregatedColumn extends Attribute
      */
     function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
     {
-        if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select")) {
+        if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == "select")) {
             $arr["heading"][$fieldprefix . $this->fieldName()]["title"] = $this->label();
 
-            if (!Tools::hasFlag($flags, RL_NO_SORT) && !$this->hasFlag(AF_NO_SORT)) {
+            if (!Tools::hasFlag($flags, RL_NO_SORT) && !$this->hasFlag(self::AF_NO_SORT)) {
                 $rec = array();
                 foreach ($this->m_displayfields as $field) {
                     $rec[] = $this->m_ownerInstance->m_table . "." . $field;
@@ -117,7 +117,7 @@ class AggregatedColumn extends Attribute
                 $arr["heading"][$fieldprefix . $this->fieldName()]["url"] = SessionManager::sessionUrl(Tools::atkSelf() . '?atknodetype=' . $this->m_ownerInstance->atkNodeType() . '&atkaction=' . $action . '&atkorderby=' . rawurlencode($order));
             }
 
-            if (!Tools::hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(AF_SEARCHABLE)) {
+            if (!Tools::hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(self::AF_SEARCHABLE)) {
                 $arr["search"][$fieldprefix . $this->fieldName()] = $this->search($atksearch, false, $fieldprefix);
                 $arr["search"][$fieldprefix . $this->fieldName()] .= '<input type="hidden" name="atksearchmode[' . $this->fieldName() . ']" value="' . $this->getSearchMode(false) . '">';
             }

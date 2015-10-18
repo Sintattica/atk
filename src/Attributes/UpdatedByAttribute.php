@@ -30,7 +30,7 @@ class UpdatedByAttribute extends ManyToOneRelation
      */
     function __construct($name, $flags = 0)
     {
-        parent::__construct($name, Config::getGlobal("auth_usernode"), $flags | AF_READONLY | AF_HIDE_ADD);
+        parent::__construct($name, Config::getGlobal("auth_usernode"), $flags | self::AF_READONLY | self::AF_HIDE_ADD);
         $this->setForceInsert(true);
         $this->setForceUpdate(true);
     }

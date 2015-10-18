@@ -6,9 +6,9 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
 
 /** Defines */
-define("AF_NO_TOGGLELINKS", AF_SPECIFIC_2);
-define("AF_CHECK_ALL", AF_SPECIFIC_3);
-define("AF_LINKS_BOTTOM", AF_SPECIFIC_4);
+define("self::AF_NO_TOGGLELINKS", self::AF_SPECIFIC_2);
+define("self::AF_CHECK_ALL", self::AF_SPECIFIC_3);
+define("self::AF_LINKS_BOTTOM", self::AF_SPECIFIC_4);
 
 /**
  * The atkMultiboolAttribute class represents an attribute of a node
@@ -172,7 +172,7 @@ class MultiSelectAttribute extends ListAttribute
         $page->register_script(Config::getGlobal('assets_url') . "javascript/class.atkprofileattribute.js.php");
 
         $result = "";
-        if (!$this->hasFlag(AF_LINKS_BOTTOM)) {
+        if (!$this->hasFlag(self::AF_LINKS_BOTTOM)) {
             $result .= $this->_addLinks($fieldprefix);
         }
 
@@ -186,7 +186,7 @@ class MultiSelectAttribute extends ListAttribute
         }
 
         for ($i = 0; $i < count($values); $i++) {
-            if (!$this->hasFlag(AF_CHECK_ALL)) {
+            if (!$this->hasFlag(self::AF_CHECK_ALL)) {
                 (Tools::atk_in_array($values[$i], $recordvalue)) ? $sel = "checked" : $sel = "";
             } else {
                 $sel = "checked";
@@ -201,7 +201,7 @@ class MultiSelectAttribute extends ListAttribute
             }
         }
         $result .= "</tr></table>\n";
-        if ($this->hasFlag(AF_LINKS_BOTTOM)) {
+        if ($this->hasFlag(self::AF_LINKS_BOTTOM)) {
             $result .= $this->_addLinks($fieldprefix);
         }
 
@@ -270,7 +270,7 @@ class MultiSelectAttribute extends ListAttribute
      */
     function _addLinks($fieldprefix)
     {
-        if (count($this->m_values) > 4 && !Tools::hasFlag($this->m_flags, AF_NO_TOGGLELINKS)) {
+        if (count($this->m_values) > 4 && !Tools::hasFlag($this->m_flags, self::AF_NO_TOGGLELINKS)) {
             return '<div align="left"><font size="-2">
                   [<a href="javascript:void(0)" onclick="profile_checkAll(\'' . $fieldprefix . $this->fieldName() . '\'); return false;">' .
             Tools::atktext("check_all") .

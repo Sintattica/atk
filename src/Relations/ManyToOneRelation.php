@@ -1,45 +1,11 @@
 <?php namespace Sintattica\Atk\Relations;
 
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Utils\StringParser;
+use Exception;
 
-/**
- * Create edit/view links for the items in a manytoonerelation dropdown.
- */
-define("AF_RELATION_AUTOLINK", AF_SPECIFIC_1);
-
-/**
- * Create edit/view links for the items in a manytoonerelation dropdown.
- */
-define("AF_MANYTOONE_AUTOLINK", AF_RELATION_AUTOLINK);
-
-/**
- * Do not add null option under any circumstance
- */
-define("AF_RELATION_NO_NULL_ITEM", AF_SPECIFIC_2);
-
-/**
- * Do not add null option ever
- */
-define("AF_MANYTOONE_NO_NULL_ITEM", AF_RELATION_NO_NULL_ITEM);
-
-/**
- * Use auto-completition instead of drop-down / selection page
- */
-define("AF_RELATION_AUTOCOMPLETE", AF_SPECIFIC_3);
-
-/**
- * Use auto-completition instead of drop-down / selection page
- */
-define("AF_MANYTOONE_AUTOCOMPLETE", AF_RELATION_AUTOCOMPLETE);
-
-/**
- * Lazy load
- */
-define("AF_MANYTOONE_LAZY", AF_SPECIFIC_4);
-
-/**
- * Add a default null option to obligatory relations
- */
-define("AF_MANYTOONE_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_5);
 
 
 /**
@@ -59,6 +25,48 @@ define("AF_MANYTOONE_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_5);
  */
 class ManyToOneRelation extends Relation
 {
+
+    /**
+     * Create edit/view links for the items in a manytoonerelation dropdown.
+     */
+    const AF_RELATION_AUTOLINK = self::AF_SPECIFIC_1;
+
+    /**
+     * Create edit/view links for the items in a manytoonerelation dropdown.
+     */
+    const AF_MANYTOONE_AUTOLINK = self::AF_RELATION_AUTOLINK;
+
+    /**
+     * Do not add null option under any circumstance
+     */
+    const AF_RELATION_NO_NULL_ITEM = self::AF_SPECIFIC_2;
+
+    /**
+     * Do not add null option ever
+     */
+    const AF_MANYTOONE_NO_NULL_ITEM = self::AF_RELATION_NO_NULL_ITEM;
+
+    /**
+     * Use auto-completition instead of drop-down / selection page
+     */
+    const AF_RELATION_AUTOCOMPLETE = self::AF_SPECIFIC_3;
+
+    /**
+     * Use auto-completition instead of drop-down / selection page
+     */
+    const AF_MANYTOONE_AUTOCOMPLETE = self::AF_RELATION_AUTOCOMPLETE;
+
+    /**
+     * Lazy load
+     */
+    const AF_MANYTOONE_LAZY = self::AF_SPECIFIC_4;
+
+    /**
+     * Add a default null option to obligatory relations
+     */
+    const AF_MANYTOONE_OBLIGATORY_NULL_ITEM = self::AF_SPECIFIC_5;
+
+
     const SEARCH_MODE_EXACT = "exact";
     const SEARCH_MODE_STARTSWITH = "startswith";
     const SEARCH_MODE_CONTAINS = "contains";
@@ -229,11 +237,11 @@ class ManyToOneRelation extends Relation
     function __construct($name, $destination, $flags = 0)
     {
         if (Config::getGlobal("manytoone_autocomplete_default", false)) {
-            $flags |= AF_RELATION_AUTOCOMPLETE;
+            $flags |= self::AF_RELATION_AUTOCOMPLETE;
         }
 
-        if (Config::getGlobal("manytoone_autocomplete_large", true) && Tools::hasFlag($flags, AF_LARGE)) {
-            $flags |= AF_RELATION_AUTOCOMPLETE;
+        if (Config::getGlobal("manytoone_autocomplete_large", true) && Tools::hasFlag($flags, self::AF_LARGE)) {
+            $flags |= self::AF_RELATION_AUTOCOMPLETE;
         }
 
         $this->m_autocomplete_minchars = Config::getGlobal("manytoone_autocomplete_minchars", 2);
@@ -256,8 +264,8 @@ class ManyToOneRelation extends Relation
             parent::__construct($name, $destination, $flags);
         }
 
-        if ($this->hasFlag(AF_MANYTOONE_LAZY) && (count($this->m_refKey) > 1 || $this->m_refKey[0] != $this->fieldName())) {
-            Tools::atkerror("AF_MANYTOONE_LAZY flag is not supported for multi-column reference key or a reference key that uses another column.");
+        if ($this->hasFlag(self::AF_MANYTOONE_LAZY) && (count($this->m_refKey) > 1 || $this->m_refKey[0] != $this->fieldName())) {
+            Tools::atkerror("self::AF_MANYTOONE_LAZY flag is not supported for multi-column reference key or a reference key that uses another column.");
         }
     }
 
@@ -268,13 +276,13 @@ class ManyToOneRelation extends Relation
      * constructor time.
      *
      * @param int $flag The flag to add to the attribute
-     * @return atkManyToOneRelation The instance of this atkManyToOneRelation
+     * @return ManyToOneRelation The instance of this ManyToOneRelation
      */
     function addFlag($flag)
     {
         parent::addFlag($flag);
-        if (Config::getGlobal("manytoone_autocomplete_large", true) && Tools::hasFlag($flag, AF_LARGE)) {
-            $this->m_flags |= AF_RELATION_AUTOCOMPLETE;
+        if (Config::getGlobal("manytoone_autocomplete_large", true) && Tools::hasFlag($flag, self::AF_LARGE)) {
+            $this->m_flags |= self::AF_RELATION_AUTOCOMPLETE;
         }
         return $this;
     }
@@ -408,7 +416,7 @@ class ManyToOneRelation extends Relation
      * that (only) will be displayed in the recordlist.
      *
      * @param string $attr The attribute to add to the listcolumn
-     * @return atkManyToOneRelation The instance of this atkManyToOneRelation
+     * @return ManyToOneRelation The instance of this ManyToOneRelation
      */
     function addListColumn($attr)
     {
@@ -419,7 +427,7 @@ class ManyToOneRelation extends Relation
     /**
      * Add multiple list columns. Attributes of the destination node
      * that (only) will be displayed in the recordlist.
-     * @return atkManyToOneRelation The instance of this atkManyToOneRelation
+     * @return ManyToOneRelation The instance of this ManyToOneRelation
      */
     function addListColumns()
     {
@@ -438,7 +446,7 @@ class ManyToOneRelation extends Relation
     /**
      * Reset the list columns and add multiple list columns. Attributes of the
      * destination node that (only) will be displayed in the recordlist.
-     * @return atkManyToOneRelation The instance of this atkManyToOneRelation
+     * @return ManyToOneRelation The instance of this ManyToOneRelation
      */
     public function setListColumns()
     {
@@ -462,13 +470,13 @@ class ManyToOneRelation extends Relation
      * even if the attribute itself is hidden?
      *
      * @param bool $value always show list columns?
-     * @return atkManyToOneRelation The instance of this atkManyToOneRelation
+     * @return ManyToOneRelation The instance of this ManyToOneRelation
      */
     function setAlwaysShowListColumns($value)
     {
         $this->m_alwaysShowListColumns = $value;
         if ($this->m_alwaysShowListColumns) {
-            $this->addFlag(AF_FORCE_LOAD);
+            $this->addFlag(self::AF_FORCE_LOAD);
         }
         return $this;
     }
@@ -607,8 +615,8 @@ class ManyToOneRelation extends Relation
         }
 
         $text_key = "select_none";
-        if (in_array($mode, array('add', 'edit')) && $this->hasFlag(AF_OBLIGATORY)) {
-            if ((($mode == 'add' && !$this->hasFlag(AF_READONLY_ADD)) || ($mode == 'edit' && !$this->hasFlag(AF_READONLY_EDIT)))) {
+        if (in_array($mode, array('add', 'edit')) && $this->hasFlag(self::AF_OBLIGATORY)) {
+            if ((($mode == 'add' && !$this->hasFlag(self::AF_READONLY_ADD)) || ($mode == 'edit' && !$this->hasFlag(self::AF_READONLY_EDIT)))) {
                 $text_key = 'select_none_obligatory';
             }
         } else {
@@ -649,7 +657,7 @@ class ManyToOneRelation extends Relation
 
             if (!$this->isEmpty($record)) {
                 $result = $this->m_destInstance->descriptor($record[$this->fieldName()]);
-                if ($this->hasFlag(AF_RELATION_AUTOLINK) && (!in_array($mode,
+                if ($this->hasFlag(self::AF_RELATION_AUTOLINK) && (!in_array($mode,
                         array("csv", "plain")))
                 ) { // create link to edit/view screen
                     if (($this->m_destInstance->allowed("view")) && !$this->m_destInstance->hasFlag(NF_NO_VIEW) && $result != "") {
@@ -720,7 +728,7 @@ class ManyToOneRelation extends Relation
         $newsel = $id;
         $filter = $this->parseFilter($this->m_destinationFilter, $record);
         $links[] = $this->_getSelectLink($newsel, $filter);
-        if ($this->hasFlag(AF_RELATION_AUTOLINK)) { // auto edit/view link
+        if ($this->hasFlag(self::AF_RELATION_AUTOLINK)) { // auto edit/view link
             if ($this->m_destInstance->allowed("add") && !$this->m_destInstance->hasFlag(NF_NO_ADD)) {
                 $links[] = Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), "add", array(
                     "atkpkret" => $id,
@@ -775,13 +783,13 @@ class ManyToOneRelation extends Relation
      */
     public function preAddToEditArray(&$record, $fieldPrefix, $mode)
     {
-        if ((!$this->hasFlag(AF_RELATION_AUTOCOMPLETE) && !$this->hasFlag(AF_LARGE)) || $this->m_autocomplete_minrecords > -1) {
+        if ((!$this->hasFlag(self::AF_RELATION_AUTOCOMPLETE) && !$this->hasFlag(self::AF_LARGE)) || $this->m_autocomplete_minrecords > -1) {
             $this->m_selectableRecords = $this->_getSelectableRecords($record, $mode);
 
             if (count($this->m_selectableRecords) > 0 &&
                 !$this->getConfigOptionObligatoryNullOption() &&
-                (($this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM)) ||
-                    (!$this->hasFlag(AF_OBLIGATORY) && $this->hasFlag(AF_RELATION_NO_NULL_ITEM)))
+                (($this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_MANYTOONE_OBLIGATORY_NULL_ITEM)) ||
+                    (!$this->hasFlag(self::AF_OBLIGATORY) && $this->hasFlag(self::AF_RELATION_NO_NULL_ITEM)))
             ) {
                 if (!isset($record[$this->fieldName()]) || !is_array($record[$this->fieldName()])) {
                     $record[$this->fieldName()] = $this->m_selectableRecords[0];
@@ -843,11 +851,11 @@ class ManyToOneRelation extends Relation
         $recordset = $this->m_selectableRecords;
 
         // load records for bwc
-        if ($recordset === null && $this->hasFlag(AF_RELATION_AUTOCOMPLETE) && $this->m_autocomplete_minrecords > -1) {
+        if ($recordset === null && $this->hasFlag(self::AF_RELATION_AUTOCOMPLETE) && $this->m_autocomplete_minrecords > -1) {
             $recordset = $this->_getSelectableRecords($record, $mode);
         }
 
-        if ($this->hasFlag(AF_RELATION_AUTOCOMPLETE) && (is_object($this->m_ownerInstance)) && ((is_array($recordset) && count($recordset) > $this->m_autocomplete_minrecords) || $this->m_autocomplete_minrecords == -1)) {
+        if ($this->hasFlag(self::AF_RELATION_AUTOCOMPLETE) && (is_object($this->m_ownerInstance)) && ((is_array($recordset) && count($recordset) > $this->m_autocomplete_minrecords) || $this->m_autocomplete_minrecords == -1)) {
             return $this->drawAutoCompleteBox($record, $fieldprefix, $mode);
         }
 
@@ -859,7 +867,7 @@ class ManyToOneRelation extends Relation
         $currentPk = $value != null ? $this->getDestination()->primaryKey($value)
             : null;
 
-        if (!$this->hasFlag(AF_LARGE)) { // normal dropdown..
+        if (!$this->hasFlag(self::AF_LARGE)) { // normal dropdown..
             // load records for bwc
             if ($recordset == null) {
                 $recordset = $this->_getSelectableRecords($record, $mode);
@@ -889,8 +897,8 @@ class ManyToOneRelation extends Relation
                 $result = '<select id="' . $id . '" name="' . $id . '" class="form-control atkmanytoonerelation" ' . $onchange . '>';
 
                 // relation may be empty, so we must provide an empty selectable..
-                if ($this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
-                    (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) ||
+                if ($this->hasFlag(self::AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
+                    (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_RELATION_NO_NULL_ITEM)) ||
                     ($this->getConfigOptionObligatoryNullOption() && !is_array($value))
                 ) {
                     $result .= '<option value="">' . $this->getNoneLabel($mode) . '</option>';
@@ -914,7 +922,7 @@ class ManyToOneRelation extends Relation
             if (is_array($destrecord)) {
                 $result = '<span id="' . $id . '_current" >';
 
-                if ($this->hasFlag(AF_RELATION_AUTOLINK) && $this->m_destInstance->allowed("view") && !$this->m_destInstance->hasFlag(NF_NO_VIEW)) {
+                if ($this->hasFlag(self::AF_RELATION_AUTOLINK) && $this->m_destInstance->allowed("view") && !$this->m_destInstance->hasFlag(NF_NO_VIEW)) {
                     $result .= Tools::href(Tools::dispatch_url($this->m_destination, "view",
                         array("atkselector" => $this->m_destInstance->primaryKey($record[$this->fieldName()]))),
                         $this->m_destInstance->descriptor($destrecord), SESSION_NESTED, true);
@@ -924,7 +932,7 @@ class ManyToOneRelation extends Relation
 
                 $result .= "&nbsp;";
 
-                if (!$this->hasFlag(AF_OBLIGATORY)) {
+                if (!$this->hasFlag(self::AF_OBLIGATORY)) {
                     $result .= '<a href="#" onClick="document.getElementById(\'' .
                         $id . '\').value=\'\'; document.getElementById(\'' . $id . '_current\').style.display=\'none\'" class="atkmanytoonerelation">' . Tools::atktext("unselect") . '</a>&nbsp;';
                 }
@@ -986,7 +994,7 @@ class ManyToOneRelation extends Relation
     function getRelationAutolink($id, $filter)
     {
         $autolink = array();
-        if ($this->hasFlag(AF_RELATION_AUTOLINK)) { // auto edit/view link
+        if ($this->hasFlag(self::AF_RELATION_AUTOLINK)) { // auto edit/view link
             $page = Page::getInstance();
             $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkmanytoonerelation.js");
 
@@ -1123,8 +1131,8 @@ class ManyToOneRelation extends Relation
     function search($record = array(), $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
         $useautocompletion = Config::getGlobal("manytoone_search_autocomplete",
-                true) && $this->hasFlag(AF_RELATION_AUTOCOMPLETE);
-        if (!$this->hasFlag(AF_LARGE) && !$useautocompletion) {
+                true) && $this->hasFlag(self::AF_RELATION_AUTOCOMPLETE);
+        if (!$this->hasFlag(self::AF_LARGE) && !$useautocompletion) {
             if ($this->createDestination()) {
                 if ($this->m_destinationFilter != "") {
                     $filterRecord = array();
@@ -1138,7 +1146,7 @@ class ManyToOneRelation extends Relation
                             foreach ($arr as $attrName => $value) {
                                 $attr = $this->getOwnerInstance()->getAttribute($attrName);
                                 if (!is_array($value) && is_a($attr,
-                                        'atkManyToOneRelation') && count($attr->m_refKey) == 1
+                                        'ManyToOneRelation') && count($attr->m_refKey) == 1
                                 ) {
                                     $attr->createDestination();
                                     $arr[$attrName] = array($attr->getDestination()->primaryKeyField() => $value);
@@ -1182,7 +1190,7 @@ class ManyToOneRelation extends Relation
                     $result .= '<option value="">' . Tools::atktext('search_all') . '</option>';
                 }
 
-                if ((!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM))) {
+                if ((!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_RELATION_NO_NULL_ITEM))) {
                     $result .= '<option value="__NONE__"' . (isset($record[$this->fieldName()]) && Tools::atk_in_array('__NONE__',
                             $record[$this->fieldName()]) ? ' selected="selected"' : '') . '>' . $this->getNoneLabel('search') . '</option>';
                 }
@@ -1243,7 +1251,7 @@ class ManyToOneRelation extends Relation
      */
     function getSearchModes()
     {
-        if ($this->hasFlag(AF_LARGE) || $this->hasFlag(AF_MANYTOONE_AUTOCOMPLETE)) {
+        if ($this->hasFlag(self::AF_LARGE) || $this->hasFlag(self::AF_MANYTOONE_AUTOCOMPLETE)) {
             return array("substring", "exact", "wildcard", "regex");
         }
         return array("exact"); // only support exact search when searching with dropdowns
@@ -1325,7 +1333,7 @@ class ManyToOneRelation extends Relation
         if (empty($value)) {
             return '';
         } else {
-            if (!$this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_RELATION_AUTOCOMPLETE)) {
+            if (!$this->hasFlag(self::AF_LARGE) && !$this->hasFlag(self::AF_RELATION_AUTOCOMPLETE)) {
                 // We only support 'exact' matches.
                 // But you can select more than one value, which we search using the IN() statement,
                 // which should work in any ansi compatible database.
@@ -1342,7 +1350,7 @@ class ManyToOneRelation extends Relation
                 } else { // search for more values using IN()
                     return $table . "." . $this->fieldName() . " IN ('" . implode("','", $value) . "')";
                 }
-            } else { // AF_LARGE || AF_RELATION_AUTOCOMPLETE
+            } else { // self::AF_LARGE || self::AF_RELATION_AUTOCOMPLETE
                 // If we have a descriptor with multiple fields, use CONCAT
                 $attribs = $this->m_destInstance->descriptorFields();
                 $alias = $fieldaliasprefix . $this->fieldName();
@@ -1382,7 +1390,7 @@ class ManyToOneRelation extends Relation
      */
     function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
     {
-        if ($this->hasFlag(AF_MANYTOONE_LAZY)) {
+        if ($this->hasFlag(self::AF_MANYTOONE_LAZY)) {
             parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
             return;
         }
@@ -1404,7 +1412,7 @@ class ManyToOneRelation extends Relation
                             $value = $fk->value2db($value);
                         }
 
-                        $query->addField($this->m_refKey[$i], $value, "", "", !$this->hasFlag(AF_NO_QUOTES));
+                        $query->addField($this->m_refKey[$i], $value, "", "", !$this->hasFlag(self::AF_NO_QUOTES));
                     }
                 }
             }
@@ -1438,7 +1446,7 @@ class ManyToOneRelation extends Relation
      * to be loaded in the main query (addToQuery) or whether the attribute
      * has its own load() implementation.
      * For the atkOneToOneRelation, this depends on the presence of the
-     * AF_ONETOONE_LAZY flag.
+     * self::AF_ONETOONE_LAZY flag.
      *
      * Framework method. It should not be necesary to call this method
      * directly.
@@ -1446,8 +1454,8 @@ class ManyToOneRelation extends Relation
      * @param String $mode The type of load (view,admin,edit etc)
      *
      * @return int Bitmask containing information about load requirements.
-     *             POSTLOAD|ADDTOQUERY when AF_ONETOONE_LAZY is set.
-     *             ADDTOQUERY when AF_ONETOONE_LAZY is not set.
+     *             self::POSTLOAD|self::ADDTOQUERY when self::AF_ONETOONE_LAZY is set.
+     *             self::ADDTOQUERY when self::AF_ONETOONE_LAZY is not set.
      */
     function loadType($mode)
     {
@@ -1458,10 +1466,10 @@ class ManyToOneRelation extends Relation
                 return $this->m_loadType[null];
             } // Default backwardscompatible behaviour:
             else {
-                if ($this->hasFlag(AF_MANYTOONE_LAZY)) {
-                    return POSTLOAD | ADDTOQUERY;
+                if ($this->hasFlag(self::AF_MANYTOONE_LAZY)) {
+                    return self::POSTLOAD | self::ADDTOQUERY;
                 } else {
-                    return ADDTOQUERY;
+                    return self::ADDTOQUERY;
                 }
             }
         }
@@ -1512,7 +1520,7 @@ class ManyToOneRelation extends Relation
      *
      * If the type was read from the table metadata, that value will
      * be used. Else, the attribute will analyze its flags to guess
-     * what type it should be. If AF_AUTO_INCREMENT is set, the field
+     * what type it should be. If self::AF_AUTO_INCREMENT is set, the field
      * is probaly "number". If not, it's probably "string".
      *
      * @return String The 'generic' type of the database field for this
@@ -1678,8 +1686,11 @@ class ManyToOneRelation extends Relation
         }
 
         if (in_array($mode,
-                array('edit', 'update')) && ($this->hasFlag(AF_READONLY_EDIT) || $this->hasFlag(AF_HIDE_EDIT))
-        ) { // || ($this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_MANYTOONE_AUTOCOMPLETE))
+                array(
+                    'edit',
+                    'update'
+                )) && ($this->hasFlag(self::AF_READONLY_EDIT) || $this->hasFlag(self::AF_HIDE_EDIT))
+        ) { // || ($this->hasFlag(self::AF_LARGE) && !$this->hasFlag(self::AF_MANYTOONE_AUTOCOMPLETE))
             // in this case we want the current value is selectable, regardless the destination filters
             return true;
         }
@@ -1934,7 +1945,7 @@ class ManyToOneRelation extends Relation
 
         if ($column == '*') {
             // only add extra columns when needed
-            if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) {
+            if ($this->hasFlag(self::AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) {
                 return;
             }
             if (!$this->createDestination() || count($this->m_listColumns) == 0) {
@@ -1981,11 +1992,11 @@ class ManyToOneRelation extends Relation
 
         $p_attrib = $this->m_destInstance->getAttribute($column);
         if ($p_attrib == null) {
-            throw new Exception("Invalid list column {$column} for atkManyToOneRelation " . $this->getOwnerInstance()->atkNodeType() . '::' . $this->fieldName());
+            throw new Exception("Invalid list column {$column} for ManyToOneRelation " . $this->getOwnerInstance()->atkNodeType() . '::' . $this->fieldName());
         }
 
-        $p_attrib->m_flags |= AF_HIDE_LIST;
-        $p_attrib->m_flags ^= AF_HIDE_LIST;
+        $p_attrib->m_flags |= self::AF_HIDE_LIST;
+        $p_attrib->m_flags ^= self::AF_HIDE_LIST;
         $p_attrib->addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby,
             $grid, null);
 
@@ -2046,7 +2057,7 @@ class ManyToOneRelation extends Relation
 
         if ($column == '*') {
             // only add extra columns when needed
-            if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) {
+            if ($this->hasFlag(self::AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) {
                 return;
             }
             if (!$this->createDestination() || count($this->m_listColumns) == 0) {
@@ -2095,11 +2106,11 @@ class ManyToOneRelation extends Relation
 
         $p_attrib = $this->m_destInstance->getAttribute($column);
         if ($p_attrib == null) {
-            throw new Exception("Invalid list column {$column} for atkManyToOneRelation " . $this->getOwnerInstance()->atkNodeType() . '::' . $this->fieldName());
+            throw new Exception("Invalid list column {$column} for ManyToOneRelation " . $this->getOwnerInstance()->atkNodeType() . '::' . $this->fieldName());
         }
 
-        $p_attrib->m_flags |= AF_HIDE_LIST;
-        $p_attrib->m_flags ^= AF_HIDE_LIST;
+        $p_attrib->m_flags |= self::AF_HIDE_LIST;
+        $p_attrib->m_flags ^= self::AF_HIDE_LIST;
 
         $p_attrib->addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit, $grid, null);
 
@@ -2127,7 +2138,7 @@ class ManyToOneRelation extends Relation
         parent::addToSearchformFields($fields, $node, $record, $prefix);
 
         // only add extra columns when needed
-        if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) {
+        if ($this->hasFlag(self::AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) {
             return;
         }
         if (!$this->createDestination() || count($this->m_listColumns) == 0) {
@@ -2136,10 +2147,10 @@ class ManyToOneRelation extends Relation
 
         foreach ($this->m_listColumns as $attribname) {
             $p_attrib = $this->m_destInstance->m_attribList[$attribname];
-            $p_attrib->m_flags |= AF_HIDE_LIST;
-            $p_attrib->m_flags ^= AF_HIDE_LIST;
+            $p_attrib->m_flags |= self::AF_HIDE_LIST;
+            $p_attrib->m_flags ^= self::AF_HIDE_LIST;
 
-            if (!$p_attrib->hasFlag(AF_HIDE_SEARCH)) {
+            if (!$p_attrib->hasFlag(self::AF_HIDE_SEARCH)) {
                 $p_attrib->addToSearchformFields($fields, $node, $record[$this->fieldName()], $prefix);
             }
         }

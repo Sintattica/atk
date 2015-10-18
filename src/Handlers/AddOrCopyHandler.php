@@ -373,10 +373,10 @@ class AddOrCopyHandler extends ActionHandler
             if (!is_a($attr, 'atkonetomanyrelation')) {
                 continue;
             }
-            if ($attr->hasFlag(AF_HIDE_EDIT)) {
+            if ($attr->hasFlag(Attribute::AF_HIDE_EDIT)) {
                 continue;
             }
-            if ($attr->hasFlag(AF_READONLY_EDIT)) {
+            if ($attr->hasFlag(Attribute::AF_READONLY_EDIT)) {
                 continue;
             }
             if ($attr->createDestination() && $attr->m_destInstance->hasFlag(NF_READONLY)) {

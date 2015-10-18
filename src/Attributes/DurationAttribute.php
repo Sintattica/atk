@@ -15,7 +15,7 @@
  * $Id$
  */
 /** flag(s) specific for atkDurationAttribute */
-define("AF_DURATION_STRING", AF_SPECIFIC_1); // date must be entered as an english date string (strtotime)
+define("self::AF_DURATION_STRING", self::AF_SPECIFIC_1); // date must be entered as an english date string (strtotime)
 define("DURATIONFORMAT_TIME", 0);
 define("DURATIONFORMAT_DECIMAL", 1);
 
@@ -97,7 +97,7 @@ class DurationAttribute extends Attribute
     {
         $id = $fieldprefix . $this->formName();
         $fieldvalue = Tools::atkArrayNvl($record, $this->fieldName(), "");
-        if (!$this->hasFlag(AF_DURATION_STRING)) {
+        if (!$this->hasFlag(self::AF_DURATION_STRING)) {
             $result = '';
             if ($this->m_maxtime_min >= 60) {
                 $curhours = $this->_getHourPart($fieldvalue);
@@ -276,7 +276,7 @@ class DurationAttribute extends Attribute
      */
     function fetchValue($rec)
     {
-        if ($this->hasFlag(AF_DURATION_STRING)) {
+        if ($this->hasFlag(self::AF_DURATION_STRING)) {
             return $this->_string2minutes($rec[$this->fieldName()]);
         } else {
             return $rec[$this->fieldName()]["hours"] * 60 + $rec[$this->fieldName()]["minutes"];

@@ -1,5 +1,6 @@
 <?php namespace Sintattica\Atk\Utils;
 
+use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
@@ -368,7 +369,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         foreach ($searchCriteria as $key => $value) {
             if ($value === null || $value === '' ||
                 ($this->m_mode != 'admin' && $this->m_mode != 'export' && !array_key_exists($key,
-                        $attrsByLoadType[ADDTOQUERY]))
+                        $attrsByLoadType[Attribute::ADDTOQUERY]))
             ) {
                 continue;
             }
@@ -479,7 +480,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
 
         return
             (!$this->m_ignorePrimaryKey && in_array($attrName, $this->_getNode()->m_primaryKey)) ||
-            (!$this->m_ignoreForceLoad && $attr->hasFlag(AF_FORCE_LOAD)) ||
+            (!$this->m_ignoreForceLoad && $attr->hasFlag(Attribute::AF_FORCE_LOAD)) ||
             (($this->m_includes != null && in_array($attrName,
                         $this->m_includes)) || ($this->m_excludes != null && !in_array($attrName,
                         $this->m_excludes))) ||
@@ -487,14 +488,14 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
-     * Returns the attributes for each load type (PRELOAD, ADDTOQUERY, POSTLOAD)
+     * Returns the attributes for each load type (Attribute::PRELOAD, Attribute::ADDTOQUERY, Attribute::POSTLOAD)
      *
      * @return array attributes by load type
      */
     protected function _getAttributesByLoadType()
     {
         $isSearching = $this->_isSearching();
-        $result = array(PRELOAD => array(), ADDTOQUERY => array(), POSTLOAD => array());
+        $result = array(Attribute::PRELOAD => array(), Attribute::ADDTOQUERY => array(), Attribute::POSTLOAD => array());
 
         foreach ($this->_getNode()->getAttributes() as $attr) {
             if (!$this->_isAttributeLoadRequired($attr)) {
@@ -503,16 +504,16 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
 
             $loadType = $attr->loadType($this->m_mode, $isSearching);
 
-            if (Tools::hasFlag($loadType, PRELOAD)) {
-                $result[PRELOAD][$attr->fieldName()] = $attr;
+            if (Tools::hasFlag($loadType, Attribute::PRELOAD)) {
+                $result[Attribute::PRELOAD][$attr->fieldName()] = $attr;
             }
 
-            if (Tools::hasFlag($loadType, ADDTOQUERY)) {
-                $result[ADDTOQUERY][$attr->fieldName()] = $attr;
+            if (Tools::hasFlag($loadType, Attribute::ADDTOQUERY)) {
+                $result[Attribute::ADDTOQUERY][$attr->fieldName()] = $attr;
             }
 
-            if (Tools::hasFlag($loadType, POSTLOAD)) {
-                $result[POSTLOAD][$attr->fieldName()] = $attr;
+            if (Tools::hasFlag($loadType, Attribute::POSTLOAD)) {
+                $result[Attribute::POSTLOAD][$attr->fieldName()] = $attr;
             }
         }
 
@@ -528,11 +529,11 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     protected function _applyAttributesToQuery(Query $query, array $attrsByLoadType)
     {
         $record = array();
-        foreach ($attrsByLoadType[PRELOAD] as $attr) {
+        foreach ($attrsByLoadType[Attribute::PRELOAD] as $attr) {
             $record[$attr->fieldName()] = $attr->load($this->_getDb(), $record, $this->m_mode);
         }
 
-        foreach ($attrsByLoadType[ADDTOQUERY] as $attr) {
+        foreach ($attrsByLoadType[Attribute::ADDTOQUERY] as $attr) {
             $attr->addToQuery($query, $this->_getNode()->getTable(), '', $record, 1, $this->m_mode);
         }
     }
@@ -623,7 +624,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         Tools::atkDataDecode($row);
 
         $result = array();
-        foreach ($attrsByLoadType[ADDTOQUERY] as $attr) {
+        foreach ($attrsByLoadType[Attribute::ADDTOQUERY] as $attr) {
             $result[$attr->fieldName()] = $attr->db2value($row);
         }
 
@@ -631,7 +632,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
             $result['atkprimkey'] = $this->_getNode()->primaryKey($result);
         }
 
-        foreach ($attrsByLoadType[POSTLOAD] as $attr) {
+        foreach ($attrsByLoadType[Attribute::POSTLOAD] as $attr) {
             $result[$attr->fieldName()] = $attr->load($this->_getDb(), $result, $this->m_mode);
         }
 

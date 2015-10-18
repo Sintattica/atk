@@ -18,13 +18,13 @@
 /**
  * Custom flags
  */
-define("AF_DUMMY_SHOW_LABEL", AF_SPECIFIC_1); // make the dummy label its fields
+define("self::AF_DUMMY_SHOW_LABEL", self::AF_SPECIFIC_1); // make the dummy label its fields
 
 /**
  * With the atkDummyAttribute class you can place comments between other
  * attributes.
  *
- * Use the flag AF_NOLABEL if you want to start at the beginning of the
+ * Use the flag self::AF_NOLABEL if you want to start at the beginning of the
  * line.
  *
  * @author Sandy Pleyte <sandy@ibuildings.nl>
@@ -45,11 +45,11 @@ class DummyAttribute extends Attribute
     function __construct($name, $text = "", $flags = 0)
     {
         // A Dummy attrikbute should not be searchable and sortable
-        $flags |= AF_HIDE_SEARCH | AF_NO_SORT;
+        $flags |= self::AF_HIDE_SEARCH | self::AF_NO_SORT;
 
-        // Add the AF_BLANKLABEL flag unless the AF_DUMMY_SHOW_LABEL flag wasn't present
-        if (!Tools::hasFlag($flags, AF_DUMMY_SHOW_LABEL)) {
-            $flags |= AF_BLANKLABEL;
+        // Add the self::AF_BLANKLABEL flag unless the self::AF_DUMMY_SHOW_LABEL flag wasn't present
+        if (!Tools::hasFlag($flags, self::AF_DUMMY_SHOW_LABEL)) {
+            $flags |= self::AF_BLANKLABEL;
         }
 
         parent::__construct($name, $flags); // base class constructor
@@ -65,8 +65,8 @@ class DummyAttribute extends Attribute
     {
         parent::addFlag($flag);
 
-        if ($this->hasFlag(AF_DUMMY_SHOW_LABEL)) {
-            $this->removeFlag(AF_BLANK_LABEL);
+        if ($this->hasFlag(self::AF_DUMMY_SHOW_LABEL)) {
+            $this->removeFlag(self::AF_BLANK_LABEL);
         }
     }
 

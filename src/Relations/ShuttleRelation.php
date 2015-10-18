@@ -1,5 +1,8 @@
 <?php namespace Sintattica\Atk\Relations;
 
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+
 /**
  * Many-to-many relation.
  *

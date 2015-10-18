@@ -1,5 +1,7 @@
 <?php namespace Sintattica\Atk\Relations;
 
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
 
 /**
  * Relationship that can link 2 tables based on a secure link
@@ -63,7 +65,7 @@ class SecureRelation extends OneToOneRelation
         $encryption,
         $flags = 0
     ) {
-        parent::__construct($name, $destination, $refKey, $flags | AF_ONETOONE_ERROR);
+        parent::__construct($name, $destination, $refKey, $flags | self::AF_ONETOONE_ERROR);
         $this->createDestination();
         $this->m_crypt = Encryption::getEncryption($encryption);
 
@@ -97,12 +99,12 @@ class SecureRelation extends OneToOneRelation
      */
     function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
     {
-        if ($this->hasFlag(AF_ONETOONE_INTEGRATE)) {
+        if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE)) {
             // integrated version, don't add ourselves, but add all columns from the destination.
             if ($this->createDestination()) {
                 foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
                     $p_attrib = $this->m_destInstance->getAttribute($attribname);
-                    $p_attrib->addFlag(AF_NO_SORT);
+                    $p_attrib->addFlag(self::AF_NO_SORT);
                 }
             }
         }
@@ -257,6 +259,8 @@ class SecureRelation extends OneToOneRelation
                     $this->m_searcharray = $oldsearcharray;
                     $errorconfig = Config::getGlobal("securerelation_decrypterror", null);
 
+                    $link = '';
+
                     // create lookup table for easy reference.            
                     for ($i = 0, $_i = count($records); $i < $_i; $i++) {
                         $decryptedlink = $this->decrypt($records[$i], $this->m_linkbackfield);
@@ -296,7 +300,7 @@ class SecureRelation extends OneToOneRelation
             }
             $cryptedlink = $this->decrypt($result[0], $this->fieldName());
             $records[0][$this->fieldName()] = $cryptedlink;
-
+            $link = '';
             if ($cryptedlink) {
 
                 $record[$this->fieldName()] = $cryptedlink;
@@ -413,14 +417,14 @@ class SecureRelation extends OneToOneRelation
      * @param bool $searching Is this a search?
      *
      * @return int Bitmask containing information about load requirements.
-     *             POSTLOAD|ADDTOQUERY when AF_ONETOONE_LAZY is set.
-     *             ADDTOQUERY when AF_ONETOONE_LAZY is not set.
+     *             POSTLOAD|ADDTOQUERY when self::AF_ONETOONE_LAZY is set.
+     *             ADDTOQUERY when self::AF_ONETOONE_LAZY is not set.
      */
     function loadType($mode, $searching = false)
     {
         if ($searching) {
             $this->m_searching = true;
-            return PRELOAD | ADDTOQUERY | POSTLOAD;
+            return self::PRELOAD | self::ADDTOQUERY | self::POSTLOAD;
         } else {
             return parent::loadType($mode, $searching);
         }

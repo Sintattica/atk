@@ -96,7 +96,7 @@ class StateAttribute extends ListAttribute
     /**
      * Constructor
      * <b>Example:</b>
-     * $this->add(new atkStateAttribute("state_abbrev", AF_OBLIGATORY | AF_SEARCHABLE));
+     * $this->add(new atkStateAttribute("state_abbrev", self::AF_OBLIGATORY | self::AF_SEARCHABLE));
      * state_abbrev is the database attribute that holds state abbrevation data as AK,CA,NY
      * It will display the full state name.
      *
@@ -131,7 +131,7 @@ class StateAttribute extends ListAttribute
         $optionsArray = $this->getStateOptionArray($switch);
 
         $this->m_defaulttocurrent = $defaulttocurrent;
-        $this->atkListAttribute($name, $optionsArray, $valueArray, $flags | AF_NO_TRANSLATION, 0);
+        $this->atkListAttribute($name, $optionsArray, $valueArray, $flags | self::AF_NO_TRANSLATION, 0);
     }
 
     /**

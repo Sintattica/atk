@@ -110,8 +110,8 @@ class DateTimeAttribute extends Attribute
         if ($default_time == "") {
             $default_time = "";
         }
-        if ($this->hasFlag(AF_CLEAR_TOUCH_BUTTONS)) {
-            $flags .= "|AF_CLEAR_TOUCH_BUTTONS";
+        if ($this->hasFlag(self::AF_CLEAR_TOUCH_BUTTONS)) {
+            $flags .= "|self::AF_CLEAR_TOUCH_BUTTONS";
         }
         $this->m_time = new Timeattribute($name, 0, 23, $default_steps, $default_time, $flags);
         $this->m_date = new Dateattribute($name, '', '', 0, 0, $flags);
@@ -404,18 +404,18 @@ class DateTimeAttribute extends Attribute
             } else {
                 $db = $this->m_ownerInstance->getDb();
                 if ($db->getType() != 'oci9') {
-                    $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(AF_NO_QUOTES));
+                    $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(self::AF_NO_QUOTES));
                 } else {
                     $value = $this->value2db($rec);
-                    $query->addField($this->fieldName(), $value, "", "", !$this->hasFlag(AF_NO_QUOTES), $mode,
+                    $query->addField($this->fieldName(), $value, "", "", !$this->hasFlag(self::AF_NO_QUOTES), $mode,
                         "DATETIME");
                 }
             }
         } else {
             if (Config::getGlobal('database') != 'oci9') {
-                $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES));
+                $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES));
             } else {
-                $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES),
+                $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES),
                     $mode, "DATETIME");
             }
         }
@@ -672,7 +672,7 @@ class DateTimeAttribute extends Attribute
             $node = $this->getOwnerInstance();
             $parts = explode('.', $this->m_timezoneAttribute);
             $attr = &$node->getAttribute($parts[0]);
-            $attr->addFlag(AF_FORCE_LOAD);
+            $attr->addFlag(self::AF_FORCE_LOAD);
         }
 
         $this->m_date->postInit();

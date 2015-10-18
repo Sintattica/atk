@@ -1,10 +1,12 @@
 <?php namespace Sintattica\Atk\Relations;
 
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\TreeToolsTree;
 
 /**
- * Extension of the atkManyToOneRelation, that is aware of the treestructure
+ * Extension of the ManyToOneRelation, that is aware of the treestructure
  * (parent/child relation) in the destination node, and renders items in the
- * dropdown accordingly. You need to set the AF_PARENT flag to the parent
+ * dropdown accordingly. You need to set the self::AF_PARENT flag to the parent
  * column in the destination node in order to make the tree rendering work.
  *
  * @author Sandy Pleyte <sandy@ibuildings.nl>
@@ -51,7 +53,7 @@ class ManyToOneTreeRelation extends ManyToOneRelation
         $this->m_current = $this->m_ownerInstance->primaryKey($record);
         $result = '<select class="form-control" name="' . $fieldprefix . $this->formName() . '">';
 
-        if ($this->hasFlag(AF_OBLIGATORY) == false) {
+        if ($this->hasFlag(self::AF_OBLIGATORY) == false) {
             // Relation may be empty, so we must provide an empty selectable..
             $result .= '<option value="0">' . Tools::atktext('select_none');
         }

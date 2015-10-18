@@ -37,10 +37,10 @@ class FieldSet extends Attribute
      */
     public function __construct($name, $template, $flags = 0)
     {
-        parent::__construct($name, $flags | AF_NO_SORT | AF_HIDE_SEARCH);
+        parent::__construct($name, $flags | self::AF_NO_SORT | self::AF_HIDE_SEARCH);
         $this->setTemplate($template);
-        $this->setLoadType(NOLOAD);
-        $this->setStorageType(NOSTORE);
+        $this->setLoadType(self::NOLOAD);
+        $this->setStorageType(self::NOSTORE);
     }
 
     /**
@@ -123,7 +123,7 @@ class FieldSet extends Attribute
         foreach ($fields as $field) {
             list($attrName) = explode('.', $field);
             $attr = $this->getOwnerInstance()->getAttribute($attrName);
-            $attr->addDisabledMode(DISABLED_VIEW | DISABLED_EDIT);
+            $attr->addDisabledMode(self::DISABLED_VIEW | self::DISABLED_EDIT);
             $attr->setTabs($this->getTabs());
             $attr->setSections($this->getSections());
         }
@@ -150,14 +150,14 @@ class FieldSet extends Attribute
 
             // render the field
             if ($type == 'edit') {
-                if (($mode == 'edit' && $attr->hasFlag(AF_HIDE_EDIT)) || ($mode == 'add' && $attr->hasFlag(AF_HIDE_ADD))) {
+                if (($mode == 'edit' && $attr->hasFlag(self::AF_HIDE_EDIT)) || ($mode == 'add' && $attr->hasFlag(self::AF_HIDE_ADD))) {
                     $field = '';
                 } else {
                     $field = $attr->getEdit($mode, $record, $fieldprefix);
                 }
             } else {
                 if ($type == 'display') {
-                    if (($mode == 'view' && $attr->hasFlag(AF_HIDE_VIEW))) {
+                    if (($mode == 'view' && $attr->hasFlag(self::AF_HIDE_VIEW))) {
                         $field = '';
                     } else {
                         $field = $attr->getView($mode, $record);
@@ -167,7 +167,7 @@ class FieldSet extends Attribute
 
             if ($field) {
                 // render the label
-                if (!$attr->hasFlag(AF_NO_LABEL)) {
+                if (!$attr->hasFlag(self::AF_NO_LABEL)) {
                     $label = $attr->getLabel($record, $mode) . ': ';
                 } else {
                     $label = '';

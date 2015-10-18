@@ -6,13 +6,13 @@ use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Theme;
 
 /** flag(s) specific for atkDateAttribute */
-define("AF_DATE_STRING", AF_SPECIFIC_1); // date must be entered as an english date string (strtotime), also checks edit format
-define("AF_DATE_EMPTYFIELD", AF_SPECIFIC_2); // Fields have one empty option
-define("AF_DATE_NO_CALENDAR", AF_SPECIFIC_3); // Do not append the popup calendar.
-define("AF_DATE_DISPLAY_DAY", AF_SPECIFIC_4); // Show the day of the week in the display
-define("AF_DATE_EDIT_NO_DAY", AF_SPECIFIC_5); // Don't display the day of the week in edit mode
-define("AF_CLEAR_TOUCH_BUTTONS", AF_SPECIFIC_6); // Display butons to clear and 'touch' date
-define("AF_DATE_DEFAULT_EMPTY", AF_SPECIFIC_7 | AF_DATE_EMPTYFIELD); // Always use the empty value on new record
+define("self::AF_DATE_STRING", self::AF_SPECIFIC_1); // date must be entered as an english date string (strtotime), also checks edit format
+define("self::AF_DATE_EMPTYFIELD", self::AF_SPECIFIC_2); // Fields have one empty option
+define("self::AF_DATE_NO_CALENDAR", self::AF_SPECIFIC_3); // Do not append the popup calendar.
+define("self::AF_DATE_DISPLAY_DAY", self::AF_SPECIFIC_4); // Show the day of the week in the display
+define("self::AF_DATE_EDIT_NO_DAY", self::AF_SPECIFIC_5); // Don't display the day of the week in edit mode
+define("self::AF_CLEAR_TOUCH_BUTTONS", self::AF_SPECIFIC_6); // Display butons to clear and 'touch' date
+define("self::AF_DATE_DEFAULT_EMPTY", self::AF_SPECIFIC_7 | self::AF_DATE_EMPTYFIELD); // Always use the empty value on new record
 
 
 /**
@@ -237,7 +237,7 @@ class DateAttribute extends Attribute
     {
         $txt_date_format_edit = Tools::atktext("date_format_edit", "atk", "", "", "", true);
 
-        if ($this->hasFlag(AF_DATE_STRING) && empty($format_edit)) {
+        if ($this->hasFlag(self::AF_DATE_STRING) && empty($format_edit)) {
             $this->m_date_format_edit = "Y-m-d";
         } elseif (!empty($format_edit)) {
             $this->m_date_format_edit = $format_edit;
@@ -321,7 +321,7 @@ class DateAttribute extends Attribute
     function postInit()
     {
         parent::postInit();
-        if ($this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_DATE_DEFAULT_EMPTY)) {
+        if ($this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_DATE_DEFAULT_EMPTY)) {
             $this->setInitialValue(DateAttribute::dateArray(date('Ymd')));
         }
     }
@@ -339,9 +339,9 @@ class DateAttribute extends Attribute
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         //return $this -> draw($record, $fieldprefix, "", $mode,
-        //    $this -> hasFlag(AF_OBLIGATORY));
-        $dateEdit = $this->draw($record, $fieldprefix, "", $mode, $this->hasFlag(AF_OBLIGATORY));
-        if ($this->hasFlag(AF_CLEAR_TOUCH_BUTTONS)) {
+        //    $this -> hasFlag(self::AF_OBLIGATORY));
+        $dateEdit = $this->draw($record, $fieldprefix, "", $mode, $this->hasFlag(self::AF_OBLIGATORY));
+        if ($this->hasFlag(self::AF_CLEAR_TOUCH_BUTTONS)) {
             return $dateEdit . "&nbsp;&nbsp;-&nbsp;&nbsp;" .
             ' <input type="button" onclick="
          $(\'' . $this->getAttributeHtmlId() . '[day]\').selectedIndex=0;
@@ -376,7 +376,7 @@ class DateAttribute extends Attribute
         if (!empty($current["y_max"]) && !empty($current["y_min"]) && $current["y_max"] - $current["y_min"] <= $this->m_maxyears) {
             $this->registerKeyListener($fieldname . '[year]', KB_CTRLCURSOR | KB_LEFTRIGHT);
             $result .= '<select id="' . $fieldname . '[year]" name="' . $fieldname . '[year]" class="atkdateattribute form-control" onChange="' . $str_script . '">';
-            if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD)) {
+            if (!$obligatory || $this->hasflag(self::AF_DATE_EMPTYFIELD)) {
                 $result .= '<option value="0"' . ($current === null ? ' selected'
                         : '') . '></option>';
             }
@@ -430,7 +430,7 @@ class DateAttribute extends Attribute
     {
         $this->registerKeyListener($fieldname . '[month]', KB_CTRLCURSOR | KB_LEFTRIGHT);
         $result = '<select id="' . $fieldname . '[month]" name="' . $fieldname . '[month]" class="atkdateattribute form-control" onChange="' . $str_script . '">';
-        if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD)) {
+        if (!$obligatory || $this->hasflag(self::AF_DATE_EMPTYFIELD)) {
             $result .= '<option value=""' . ($current === null ? ' selected' : '') . '></option>';
         }
         if (!$this->m_simplemode) {
@@ -465,7 +465,7 @@ class DateAttribute extends Attribute
     {
         $this->registerKeyListener($fieldname . '[day]', KB_CTRLCURSOR | KB_LEFTRIGHT);
         $result = '<select id="' . $fieldname . '[day]" name="' . $fieldname . '[day]" class="atkdateattribute form-control" onChange="' . $str_script . '">';
-        if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD)) {
+        if (!$obligatory || $this->hasflag(self::AF_DATE_EMPTYFIELD)) {
             $result .= '<option value=""' . ($current === null ? ' selected' : '') . '></option>';
         }
         if (!$this->m_simplemode) {
@@ -473,7 +473,7 @@ class DateAttribute extends Attribute
                 $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, $current["mon"], $j, $current["year"]));
                 if (($current['year'] != "") && ($current['mon'] != "")) {
                     $str_day = $this->formatDate($tmp_date, (empty($weekdayFormat)
-                        ? $format : "$weekdayFormat {$format}"), !$this->hasFlag(AF_DATE_EDIT_NO_DAY));
+                        ? $format : "$weekdayFormat {$format}"), !$this->hasFlag(self::AF_DATE_EDIT_NO_DAY));
                 } else {
                     $str_day = $this->formatDate($tmp_date, (empty($weekdayFormat)
                         ? $format : "$weekdayFormat {$format}"), 0);
@@ -516,13 +516,13 @@ class DateAttribute extends Attribute
         $this->m_yeardropdown = false;
 
         if (!$this->m_simplemode) {
-            self::registerScriptsAndStyles(!$this->hasFlag(AF_DATE_NO_CALENDAR));
+            self::registerScriptsAndStyles(!$this->hasFlag(self::AF_DATE_NO_CALENDAR));
         }
 
         $fieldname = $fieldprefix . $this->fieldName() . $postfix;
 
         /* text mode? */
-        if ($this->hasFlag(AF_DATE_STRING) || $mode == 'list') {
+        if ($this->hasFlag(self::AF_DATE_STRING) || $mode == 'list') {
             $value = &$record[$this->fieldName()];
 
             if (is_array($value)) {
@@ -538,7 +538,7 @@ class DateAttribute extends Attribute
             $this->registerKeyListener($fieldname, KB_CTRLCURSOR | KB_UPDOWN);
             $result = '<input type="text" id="' . $fieldname . '" class="atkdateattribute form-control" name="' . $fieldname . '" value="' . $value . '" size="10">';
 
-            if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && $mode != 'list') {
+            if (!$this->hasFlag(self::AF_DATE_NO_CALENDAR) && $mode != 'list') {
                 $format = str_replace(array("y", "Y", "m", "n", "j", "d"), array("yy", "y", "mm", "m", "d", "dd"),
                     $this->m_date_format_edit);
                 $mondayFirst = 'false';
@@ -637,14 +637,14 @@ class DateAttribute extends Attribute
                 $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, substr($i, 4, 2), substr($i, 6, 2), substr($i, 0, 4)));
                 $result .= '<option value="' . $i . '"' . ($current !== null && $tmp_date[0] == $current[0]
                         ? ' selected' : '') . '>' . $this->formatDate($tmp_date, $str_format,
-                        !$this->hasFlag(AF_DATE_EDIT_NO_DAY)) . '</option>';
+                        !$this->hasFlag(self::AF_DATE_EDIT_NO_DAY)) . '</option>';
             }
             $result .= '</select>';
             $result .= $this->getSpinner();
             return $result;
         }
 
-        if ($this->hasFlag(AF_DATE_EMPTYFIELD)) {
+        if ($this->hasFlag(self::AF_DATE_EMPTYFIELD)) {
             $emptyfield = true;
         } else {
             if (!$obligatory) {
@@ -659,7 +659,7 @@ class DateAttribute extends Attribute
             'min' => $str_min,
             'max' => $str_max,
             'emptyfield' => $emptyfield,
-            'weekday' => !$this->hasFlag(AF_DATE_EDIT_NO_DAY)
+            'weekday' => !$this->hasFlag(self::AF_DATE_EDIT_NO_DAY)
         );
 
         if (!$this->m_simplemode) {
@@ -695,7 +695,7 @@ class DateAttribute extends Attribute
             }
         }
 
-        if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && !$this->m_yeardropdown && !$this->m_simplemode && $mode != 'list') {
+        if (!$this->hasFlag(self::AF_DATE_NO_CALENDAR) && !$this->m_yeardropdown && !$this->m_simplemode && $mode != 'list') {
             $mondayFirst = 'false';
             if (is_bool(Tools::atktext("date_monday_first"))) {
                 $mondayFirst = Tools::atktext("date_monday_first") === true ? 'true' : $mondayFirst;
@@ -727,8 +727,8 @@ class DateAttribute extends Attribute
      */
     function getValidCurrentDate($current, $minimum, $maximum, $mode)
     {
-        if ($current === null && (!$this->hasFlag(AF_OBLIGATORY) || in_array($mode,
-                    array('add', 'search')) || $this->hasFlag(AF_DATE_DEFAULT_EMPTY))
+        if ($current === null && (!$this->hasFlag(self::AF_OBLIGATORY) || in_array($mode,
+                    array('add', 'search')) || $this->hasFlag(self::AF_DATE_DEFAULT_EMPTY))
         ) {
 
         } elseif (!empty($current) && !empty($minimum) && $current < $minimum) {
@@ -1194,7 +1194,7 @@ class DateAttribute extends Attribute
         }
 
         /* if not obligatory and one of the fields is null then the date will be saved as null */
-        if (!$this->hasFlag(AF_OBLIGATORY) && (empty($value["year"]) || empty($value["month"]) || empty($value["day"]))) {
+        if (!$this->hasFlag(self::AF_OBLIGATORY) && (empty($value["year"]) || empty($value["month"]) || empty($value["day"]))) {
             return;
         }
 
@@ -1210,7 +1210,7 @@ class DateAttribute extends Attribute
         }
 
         /* allright, if not obligatory, and we have come all this way, we'll bail out */
-        if (!$this->hasFlag(AF_OBLIGATORY)) {
+        if (!$this->hasFlag(self::AF_OBLIGATORY)) {
             return;
         } else {
             if ($value["year"] == '' || $value['month'] == 0 || $value['day'] == 0) {
@@ -1272,7 +1272,7 @@ class DateAttribute extends Attribute
         }
         $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));
         if (!empty($tmp_date)) {
-            $d = $this->formatDate($tmp_date, $this->m_date_format_view, $this->hasFlag(AF_DATE_DISPLAY_DAY));
+            $d = $this->formatDate($tmp_date, $this->m_date_format_view, $this->hasFlag(self::AF_DATE_DISPLAY_DAY));
             if ($mode == 'list') {
                 $d = str_replace(' ', '&nbsp;', $d);
             }
@@ -1324,10 +1324,10 @@ class DateAttribute extends Attribute
             if ($this->value2db($rec) == null) {
                 $query->addField($this->fieldName(), 'NULL', '', '', false);
             } else {
-                $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(AF_NO_QUOTES));
+                $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(self::AF_NO_QUOTES));
             }
         } else {
-            $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES));
+            $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES));
         }
     }
 
@@ -1489,7 +1489,7 @@ class DateAttribute extends Attribute
     public function setSimpleMode($simplemode)
     {
         $this->m_simplemode = (bool)$simplemode;
-        $this->addFlag(AF_DATE_EDIT_NO_DAY | AF_DATE_NO_CALENDAR | AF_DATE_EMPTYFIELD);
+        $this->addFlag(self::AF_DATE_EDIT_NO_DAY | self::AF_DATE_NO_CALENDAR | self::AF_DATE_EMPTYFIELD);
     }
 
     /**

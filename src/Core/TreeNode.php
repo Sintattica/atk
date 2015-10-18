@@ -659,7 +659,7 @@ class TreeNode extends Node
         for ($i = 0; $i < count($recordset); $i++) {
             foreach (array_keys($this->m_attribList) as $attribname) {
                 $p_attrib = $this->m_attribList[$attribname];
-                if ($p_attrib->hasFlag(AF_CASCADE_DELETE)) {
+                if ($p_attrib->hasFlag(Attribute::AF_CASCADE_DELETE)) {
                     $p_attrib->delete($recordset[$i]);
                 }
             }
@@ -702,7 +702,7 @@ class TreeNode extends Node
         for ($i = 0; $i < count($recordset); $i++) {
             foreach (array_keys($this->m_attribList) as $attribname) {
                 $p_attrib = $this->m_attribList[$attribname];
-                if ($p_attrib->hasFlag(AF_CASCADE_DELETE)) {
+                if ($p_attrib->hasFlag(Attribute::AF_CASCADE_DELETE)) {
                     $p_attrib->delete($recordset[$i]);
                 }
             }

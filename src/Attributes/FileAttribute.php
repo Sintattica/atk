@@ -10,32 +10,32 @@ use Sintattica\Atk\Utils\StringParser;
 /**
  * Disable uploading of files
  */
-define("AF_FILE_NO_UPLOAD", AF_SPECIFIC_1);
+define("self::AF_FILE_NO_UPLOAD", self::AF_SPECIFIC_1);
 
 /**
  * Disable selecting of files
  */
-define("AF_FILE_NO_SELECT", AF_SPECIFIC_2);
+define("self::AF_FILE_NO_SELECT", self::AF_SPECIFIC_2);
 
 /**
  * Disable deleting of files
  */
-define("AF_FILE_NO_DELETE", AF_SPECIFIC_3);
+define("self::AF_FILE_NO_DELETE", self::AF_SPECIFIC_3);
 
 /**
  * Don't try to detect the file type (shows only filename)
  */
-define("AF_FILE_NO_AUTOPREVIEW", AF_SPECIFIC_4);
+define("self::AF_FILE_NO_AUTOPREVIEW", self::AF_SPECIFIC_4);
 
 /**
  * Removed the files physically
  */
-define("AF_FILE_PHYSICAL_DELETE", AF_SPECIFIC_5);
+define("self::AF_FILE_PHYSICAL_DELETE", self::AF_SPECIFIC_5);
 
 /**
  * Show preview in popup instead of inline
  */
-define("AF_FILE_POPUP", AF_POPUP);
+define("self::AF_FILE_POPUP", self::AF_POPUP);
 
 /**
  * With this you can upload, select and remove files in a given directory.
@@ -104,7 +104,7 @@ class FileAttribute extends Attribute
         */
 
         // Call base class constructor.
-        parent::__construct($name, $flags | AF_CASCADE_DELETE, $size);
+        parent::__construct($name, $flags | self::AF_CASCADE_DELETE, $size);
         $this->setDir($dir);
     }
 
@@ -230,12 +230,12 @@ class FileAttribute extends Attribute
             $this->_renderChangeHandler($fieldprefix);
         }
 
-        if (!$this->hasFlag(AF_FILE_NO_UPLOAD)) {
+        if (!$this->hasFlag(self::AF_FILE_NO_UPLOAD)) {
             $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
             $result .= '<input type="file" id="' . $id . '" name="' . $id . '" ' . $onchange . '>';
         }
 
-        if (!$this->hasFlag(AF_FILE_NO_SELECT)) {
+        if (!$this->hasFlag(self::AF_FILE_NO_SELECT)) {
             $file_arr = $this->getFiles($this->m_dir);
             if (count($file_arr) > 0) {
                 natcasesort($file_arr);
@@ -259,7 +259,7 @@ class FileAttribute extends Attribute
             }
         }
 
-        if (!$this->hasFlag(AF_FILE_NO_DELETE) && isset($record[$this->fieldname()]['orgfilename']) && $record[$this->fieldname()]['orgfilename'] != '') {
+        if (!$this->hasFlag(self::AF_FILE_NO_DELETE) && isset($record[$this->fieldname()]['orgfilename']) && $record[$this->fieldname()]['orgfilename'] != '') {
             $this->registerKeyListener($id . '_del', KB_CTRLCURSOR | KB_CURSOR);
             $result .= '<br class="atkFileAttributeCheckboxSeparator"><input id="' . $id . '_del" type="checkbox" name="' . $id . '[del]" ' . $this->getCSSClassAttribute("atkcheckbox") . '>&nbsp;' . Tools::atktext("remove_current_file",
                     "atk");
@@ -280,12 +280,12 @@ class FileAttribute extends Attribute
         if ($rec[$this->fieldName()]["tmpfile"] == "" && $rec[$this->fieldName()]["filename"] != "" && (!isset($del) || $del != $rec[$this->fieldName()]['filename'])) {
             return $this->escapeSQL($rec[$this->fieldName()]["filename"]);
         }
-        if ($this->hasFlag(AF_FILE_NO_DELETE)) {
+        if ($this->hasFlag(self::AF_FILE_NO_DELETE)) {
             unset($del);
         }  // Make sure if flag is set $del unset!
 
         if (isset($del)) {
-            if ($this->hasFlag(AF_FILE_PHYSICAL_DELETE)) {
+            if ($this->hasFlag(self::AF_FILE_PHYSICAL_DELETE)) {
                 $file = "";
                 if (isset($rec[$this->fieldName()]["postdel"]) && $rec[$this->fieldName()]["postdel"] != "") {
                     Tools::atkdebug("postdel set");
@@ -567,7 +567,7 @@ class FileAttribute extends Attribute
             // if an error occured during the upload process
             // and the error is not 'no file' while the field isn't obligatory or a file was already selected
             $fileselected = isset($rec[$this->fieldName()]["select"]) && $rec[$this->fieldName()]["select"] != "";
-            if ($_FILES[$postfiles_basename]['error'] > 0 && !((!$this->hasFlag(AF_OBLIGATORY) || $fileselected) && $_FILES[$postfiles_basename]['error'] == UPLOAD_ERR_NO_FILE)) {
+            if ($_FILES[$postfiles_basename]['error'] > 0 && !((!$this->hasFlag(self::AF_OBLIGATORY) || $fileselected) && $_FILES[$postfiles_basename]['error'] == UPLOAD_ERR_NO_FILE)) {
                 return array(
                     'filename' => $_FILES[$this->fieldName()]['name'],
                     'error' => $_FILES[$this->fieldName()]['error']
@@ -650,7 +650,7 @@ class FileAttribute extends Attribute
      */
     function delete($record)
     {
-        if ($this->hasFlag(AF_FILE_PHYSICAL_DELETE) && ($record[$this->fieldname()]["orgfilename"] != "")) {
+        if ($this->hasFlag(self::AF_FILE_PHYSICAL_DELETE) && ($record[$this->fieldname()]["orgfilename"] != "")) {
             if (file_exists($this->m_dir . $record[$this->fieldName()]["orgfilename"]) && !@unlink($this->m_dir . $record[$this->fieldName()]["orgfilename"])) {
                 return false;
             }
@@ -688,11 +688,11 @@ class FileAttribute extends Attribute
         if ($filename != "") {
             if (is_file($this->m_dir . $filename)) {
                 $ext = $this->getFileExtension($filename);
-                if ((in_array($ext, $prev_type) && $this->hasFlag(AF_FILE_NO_AUTOPREVIEW)) || (!in_array($ext,
+                if ((in_array($ext, $prev_type) && $this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW)) || (!in_array($ext,
                         $prev_type))
                 ) {
                     return "<a href=\"" . $this->m_url . "$filename\" target=\"_blank\">$filename</a>";
-                } elseif (in_array($ext, $prev_type) && $this->hasFlag(AF_FILE_POPUP)) {
+                } elseif (in_array($ext, $prev_type) && $this->hasFlag(self::AF_FILE_POPUP)) {
                     if (in_array($ext, $imgtype_prev)) {
                         $imagehw = GetImageSize($this->m_dir . $filename);
                     } else {
@@ -884,14 +884,14 @@ class FileAttribute extends Attribute
     function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", &$rec = "", $level, $mode)
     {
         if ($mode == "add" || $mode == "update") {
-            if (@empty($rec[$this->fieldName()]['postdel']) && $this->isEmpty($rec) && !$this->hasFlag(AF_OBLIGATORY) && !$this->isNotNullInDb()) {
+            if (@empty($rec[$this->fieldName()]['postdel']) && $this->isEmpty($rec) && !$this->hasFlag(self::AF_OBLIGATORY) && !$this->isNotNullInDb()) {
                 $query->addField($this->fieldName(), 'NULL', "", "", false, true);
             } else {
-                $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(AF_NO_QUOTES),
+                $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(self::AF_NO_QUOTES),
                     true);
             }
         } else {
-            $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES),
+            $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES),
                 true);
         }
     }

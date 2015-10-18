@@ -22,8 +22,8 @@ Tools::useattrib("atkdummyattribute");
 /**
  * Custom flags
  */
-define("AF_LIVETEXT_SHOWLABEL", AF_DUMMY_SHOW_LABEL);
-define("AF_LIVETEXT_NL2BR", AF_SPECIFIC_2);
+define("self::AF_LIVETEXT_SHOWLABEL", self::AF_DUMMY_SHOW_LABEL);
+define("self::AF_LIVETEXT_NL2BR", self::AF_SPECIFIC_2);
 
 /**
  * The atkLiveTextPreview adds a preview to the page that previews realtime
@@ -43,9 +43,9 @@ class LiveTextPreview extends DummyAttribute
      * Constructor
      * @param String $name The name of the attribute
      * @param String $masterattribute The attribute that should be previewed.
-     * @param int $flags Flags for this attribute. Use AF_LIVETEXT_SHOWLABEL if the
+     * @param int $flags Flags for this attribute. Use self::AF_LIVETEXT_SHOWLABEL if the
      *                   preview should be labeled.
-     *                   Use AF_LIVETEXT_NL2BR if the data should be nl2br'd before
+     *                   Use self::AF_LIVETEXT_NL2BR if the data should be nl2br'd before
      *                   display.
      */
     function atkLiveTextPreview($name, $masterattribute, $flags = 0)
@@ -70,7 +70,7 @@ class LiveTextPreview extends DummyAttribute
                                   {
                                     var NewText = document.getElementById('{$master}').value;
                                     var DivElement = document.getElementById('{$id}_preview');
-                                    " . ($this->hasFlag(AF_LIVETEXT_NL2BR) ? "NewText = NewText.split(/\\n/).join('<br />');"
+                                    " . ($this->hasFlag(self::AF_LIVETEXT_NL2BR) ? "NewText = NewText.split(/\\n/).join('<br />');"
                 : "") . "
                                     DivElement.innerHTML = NewText;
                                   }                                                                    
