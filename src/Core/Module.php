@@ -252,20 +252,6 @@ class Module
     }
 
     /**
-     * Returns the fixture path for the given fixture.
-     *
-     * @param string $fixture <module.fixture> string
-     * @return string path to fixture without extension
-     */
-    public static function getFixturePath($fixture)
-    {
-        $module = self::getNodeModule($fixture);
-        $fixture = self::getNodeType($fixture);
-        $path = self::moduleDir($module) . 'testcases/fixtures/' . $fixture;
-        return $path;
-    }
-
-    /**
      * Construct a new node. A module can override this method for it's own nodes.
      * @param String $node the node type
      * @return Node new node object
