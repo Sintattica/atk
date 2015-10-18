@@ -10,12 +10,12 @@ class Bootstrap
     public static function run()
     {
         require_once('adodb-time.php');
-        self::requireGlobals();
+        self::initGlobals();
         Config::loadGlobals();
         self::setLocale();
         self::setErrorHandler();
 
-        if(Config::getGlobal('session_init', true)) {
+        if (Config::getGlobal('session_init', true)) {
             self::setSession();
         }
         self::setSecurity();
@@ -23,7 +23,7 @@ class Bootstrap
         Module::atkPreloadModules();
     }
 
-    private static function requireGlobals()
+    private static function initGlobals()
     {
         list($usec, $sec) = explode(" ", microtime());
 
@@ -130,7 +130,8 @@ class Bootstrap
         Tools::atkdebug('Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')');
     }
 
-    private static function setSession(){
+    private static function setSession()
+    {
         global $atklevel, $atkprevlevel, $atkstackid;
 
         if (SessionManager::atksession_init()) {
@@ -139,22 +140,18 @@ class Bootstrap
             // session enabled, multi-app array in which you can store whatever you like.
             // There are old applications however that still use $g_sessionData, so I'll
             // leave it in place for now.
-            $GLOBALS['g_sessionData'] = & $_SESSION[Config::getGlobal('identifier')];
+            $GLOBALS['g_sessionData'] = &$_SESSION[Config::getGlobal('identifier')];
         }
 
-        define("SESSION_DEFAULT", 0); // stay at current stacklevel
-        define("SESSION_NEW", 1);     // new stack
-        define("SESSION_NESTED", 2);  // new item on current stack
-        define("SESSION_BACK", 3);    // move one level down on stack
-        define("SESSION_REPLACE", 4); // replace current stacklevel
-        define("SESSION_PARTIAL", 5); // same as replace, but ignore atknodetype and atkaction
-
-        if (isset($_REQUEST["atklevel"]))
+        if (isset($_REQUEST["atklevel"])) {
             $atklevel = trim($_REQUEST["atklevel"]);
-        if (isset($_REQUEST["atkprevlevel"]))
+        }
+        if (isset($_REQUEST["atkprevlevel"])) {
             $atkprevlevel = trim($_REQUEST["atkprevlevel"]);
-        if (isset($_REQUEST["atkstackid"]))
+        }
+        if (isset($_REQUEST["atkstackid"])) {
             $atkstackid = trim($_REQUEST["atkstackid"]);
+        }
     }
 
 }

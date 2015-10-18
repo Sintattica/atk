@@ -9,6 +9,14 @@ use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Core\Module;
 
 
+define("SESSION_DEFAULT", 0); // stay at current stacklevel
+define("SESSION_NEW", 1);     // new stack
+define("SESSION_NESTED", 2);  // new item on current stack
+define("SESSION_BACK", 3);    // move one level down on stack
+define("SESSION_REPLACE", 4); // replace current stacklevel
+define("SESSION_PARTIAL", 5); // same as replace, but ignore atknodetype and atkaction
+
+
 
 /**
  * The atk session manager.
