@@ -1,6 +1,9 @@
 <?php namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Ui\Dialog;
+use Sintattica\Atk\Core\Config;
 
 /**
  * Handler class for the save action of a node. The action saves a
@@ -165,7 +168,6 @@ class SaveHandler extends ActionHandler
      */
     protected function getSuccessReturnURL($record)
     {
-        $location = "";
         if ($this->m_node->hasFlag(NF_EDITAFTERADD) && $this->m_node->allowed('edit')) {
             // forward atkpkret for newly added records
             $extra = "";
@@ -373,7 +375,7 @@ class SaveHandler extends ActionHandler
         if ($attrRefreshUrl == null) {
             $script .= "document.location.href = document.location.href;";
         } else {
-            $page->register_script(Config::getGlobal('atkroot') . 'atk/javascript/class.atkattribute.js');
+            $page->register_script(Config::getGlobal('assets_url') . 'javascript/class.atkattribute.js');
             $script .= "ATK.Attribute.refresh('" . $attrRefreshUrl . "');";
         }
 

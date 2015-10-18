@@ -277,7 +277,7 @@ class Node
      * @access private
      * @var String
      */
-    var $m_validate_class = "atk.atknodevalidator";
+    var $m_validate_class = __NAMESPACE__ . "\\NodeValidator";
 
     /**
      * Unique field sets of a certain node.
@@ -4306,7 +4306,6 @@ class Node
             $this->m_unsecuredActions[] = $action;
         }
     }
-
 
 
     /**

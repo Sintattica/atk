@@ -1,5 +1,9 @@
 <?php namespace Sintattica\Atk\Handlers;
 
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Core\Config;
+
 /**
  * Handler class for a readonly view action. Similar to the edit handler,
  * but all fields are displayed readonly.

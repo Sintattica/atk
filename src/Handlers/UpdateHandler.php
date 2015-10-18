@@ -1,20 +1,11 @@
 <?php namespace Sintattica\Atk\Handlers;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage handlers
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @copyright (c)2000-2004 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6310 $
- * $Id$
- */
+
+use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Ui\Dialog;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Session\State;
+use Sintattica\Atk\Core\Node;
 
 /**
  * Handler class for the update action of a node. The action saves an
@@ -385,9 +376,10 @@ class Updatehandler extends ActionHandler
      * action on a normal edit page. If you use the editdialog after that and you
      * save the dialog, the page will redirect to the index page of the application.
      *
-     * @param unknown_type $attrRefreshUrl
+     * @param array $record
+     * @param array $extra_params
      */
-    private function loadSuccessDialog($record, $extraParams)
+    private function loadSuccessDialog($record, $extra_params)
     {
         $script = Dialog::getCloseCall();
 
