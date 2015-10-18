@@ -837,7 +837,7 @@ class SessionManager
      * @param string $fieldprefix
      * @return string the HTML formcode with the session info
      */
-    public function formState($sessionstatus = SESSION_DEFAULT, $returnbehaviour = NULL, $fieldprefix = '')
+    static public function formState($sessionstatus = SESSION_DEFAULT, $returnbehaviour = NULL, $fieldprefix = '')
     {
         global $g_stickyurl;
 
