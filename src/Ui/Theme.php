@@ -15,7 +15,7 @@ use Sintattica\Atk\Core\Module;
  */
 class Theme
 {
-    var $m_name = "";
+    var $m_name = '';
     var $m_theme = array();
 
     /**
@@ -97,8 +97,9 @@ class Theme
                 $compiler = new ThemeCompiler();
                 $compiler->compile($this->m_name);
             }
+            $theme = array();
             include($filename);
-            $this->m_theme = $theme; // $theme is set by compiled file
+            $this->m_theme = $theme; // $theme is set by include($filename);
         }
     }
 
