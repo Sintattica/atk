@@ -1,20 +1,9 @@
 <?php namespace Sintattica\Atk\Handlers;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage handlers
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @copyright (c)2000-2004 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6327 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Core\Controller;
+use Sintattica\Atk\Core\Config;
 
 /**
  * Handler class for the search action of a node. The handler draws a
@@ -175,6 +164,7 @@ class SearchHandler extends AbstractSearchHandler
         } else {
             Tools::atkerror("ui object failure");
         }
+        return '';
     }
 
     /**

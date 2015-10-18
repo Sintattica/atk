@@ -1,18 +1,10 @@
 <?php namespace Sintattica\Atk\Handlers;
-/**
- * atkDocumentHandler class file
- *
- * @package atk
- * @subpackage handlers
- *
- * @author guido <guido@ibuildings.nl>
- *
- * @copyright (c) 2005 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing/ ATK open source license
- *
- * @version $Revision: 4296 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Document\DocumentWriter;
+use Sintattica\Atk\Core\Config;
+
+
 
 /**
  * Handler class for the document action
@@ -31,6 +23,8 @@ class DocumentHandler extends ActionHandler
     {
         // Add "Action document" to debug log to indicate this function is entered
         Tools::atkdebug("Action document");
+        $module = '';
+        $node = '';
 
         // Load and instantiate the documentwriter
         $openDocumentWriter = DocumentWriter::getInstance("opendocument");

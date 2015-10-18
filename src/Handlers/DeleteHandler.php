@@ -1,20 +1,7 @@
 <?php namespace Sintattica\Atk\Handlers;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage handlers
- *
- * @copyright (c)2000-2004 Ivo Jansch
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6263 $
- * $Id$
- */
+
+use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * Handler for the 'delete' action of a node. It asks the user for
@@ -171,8 +158,6 @@ class DeleteHandler extends ActionHandler
      */
     function _checkLocked()
     {
-        $locked = false;
-
         if ($this->m_node->hasFlag(NF_LOCK)) {
             // We assume that the node is locked, unless proven otherwise
             $locked = true;
@@ -195,6 +180,7 @@ class DeleteHandler extends ActionHandler
                 return true;
             }
         }
+        return false;
     }
 
     /**
@@ -211,9 +197,9 @@ class DeleteHandler extends ActionHandler
                 $db->rollback();
                 $location = $this->m_node->feedbackUrl("delete", ACTION_FAILED, null,
                     sprintf(Tools::atktext("attrib_delete_not_allowed"),
-                        Tools::atktext($attrib->m_name, $this->m_node->m_module, $this->m_node->m_type), $allowed));
+                        Tools::atktext($attrib->m_name, $this->m_node->m_module, $this->m_node->m_type), $attrib->fieldName()));
                 $this->m_node->redirect($location);
-                return;
+                return false;
             }
         }
         return true;

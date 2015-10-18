@@ -120,7 +120,7 @@ class SaveHandler extends ActionHandler
         // just before we validate the record we call the preAdd() to check if the record needs to be modified
         if (!$this->m_node->executeTrigger("preAdd", $record, "add")) {
             $this->handleAddError($record);
-            return;
+            return null;
         }
 
         $this->validate($record);
@@ -139,7 +139,7 @@ class SaveHandler extends ActionHandler
         } else {
             if (!$this->storeRecord($record)) {
                 $this->handleAddError($record);
-                return;
+                return null;
             } else {
                 $location = $this->invoke('getSuccessReturnURL', $record);
                 $this->_handleRedirect($location, $record);
@@ -385,7 +385,6 @@ class SaveHandler extends ActionHandler
     /**
      * The handler for the dialog partial call.
      *
-     * @return html
      */
     function partial_dialog()
     {

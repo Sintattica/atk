@@ -1,19 +1,7 @@
 <?php namespace Sintattica\Atk\Handlers;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage handlers
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 2972 $
- * $Id$
- */
+
+use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * Handler class for the feedback action of a node. The handler draws a
@@ -63,7 +51,7 @@ class FeedbackHandler extends ActionHandler
         }
 
         if (SessionManager::atkLevel() > 0) {
-            $params["formstart"] = '<form method="get">' . Tools::session_form(SESSION_BACK);
+            $params["formstart"] = '<form method="get">' . SessionManager::formState(SESSION_BACK);
             $params["buttons"][] = '<input type="submit" class="btn btn-default btn_cancel" value="&lt;&lt; ' . Tools::atktext('back') . '">';
             $params["formend"] = '</form>';
         }

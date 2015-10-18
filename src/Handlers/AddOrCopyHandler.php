@@ -1,6 +1,11 @@
 <?php namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Ui\Dialog;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Utils\JSON;
+use Sintattica\Atk\Core\Controller;
 
 /**
  * Handler for the 'editcopy' action of a node. It copies the selected
