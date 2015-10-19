@@ -376,7 +376,7 @@ class DateAttribute extends Attribute
         $emptyfield = null;
         /* date must be within specified (default: 25) years */
         if (!empty($current["y_max"]) && !empty($current["y_min"]) && $current["y_max"] - $current["y_min"] <= $this->m_maxyears) {
-            $this->registerKeyListener($fieldname . '[year]', KB_CTRLCURSOR | KB_LEFTRIGHT);
+            $this->registerKeyListener($fieldname . '[year]', Keyboard::KB_CTRLCURSOR | Keyboard::KB_LEFTRIGHT);
             $result .= '<select id="' . $fieldname . '[year]" name="' . $fieldname . '[year]" class="atkdateattribute form-control" onChange="' . $str_script . '">';
             if (!$obligatory || $this->hasflag(self::AF_DATE_EMPTYFIELD)) {
                 $result .= '<option value="0"' . ($current === null ? ' selected'
@@ -410,7 +410,7 @@ class DateAttribute extends Attribute
             $result .= '</select>';
             $this->m_yeardropdown = true;
         } /* normal input box */ else {
-            $this->registerKeyListener($fieldname . '[year]', KB_CTRLCURSOR | KB_UPDOWN);
+            $this->registerKeyListener($fieldname . '[year]', Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
             $result .= '<input type="text" id="' . $fieldname . '[year]" name="' . $fieldname . '[year]" class="atkdateattribute form-control" size="4" maxlength="4" onChange="' . $str_script . '" value="' . (isset($current["year"])
                     ? $current["year"] : "") . '">';
         }
@@ -430,7 +430,7 @@ class DateAttribute extends Attribute
      */
     protected function renderMonth($fieldname, $str_script, $current, $format, $obligatory)
     {
-        $this->registerKeyListener($fieldname . '[month]', KB_CTRLCURSOR | KB_LEFTRIGHT);
+        $this->registerKeyListener($fieldname . '[month]', Keyboard::KB_CTRLCURSOR | Keyboard::KB_LEFTRIGHT);
         $result = '<select id="' . $fieldname . '[month]" name="' . $fieldname . '[month]" class="atkdateattribute form-control" onChange="' . $str_script . '">';
         if (!$obligatory || $this->hasflag(self::AF_DATE_EMPTYFIELD)) {
             $result .= '<option value=""' . ($current === null ? ' selected' : '') . '></option>';
@@ -465,7 +465,7 @@ class DateAttribute extends Attribute
      * */
     protected function renderDay($fieldname, $str_script, $current, $format, $obligatory, $weekdayFormat)
     {
-        $this->registerKeyListener($fieldname . '[day]', KB_CTRLCURSOR | KB_LEFTRIGHT);
+        $this->registerKeyListener($fieldname . '[day]', Keyboard::KB_CTRLCURSOR | Keyboard::KB_LEFTRIGHT);
         $result = '<select id="' . $fieldname . '[day]" name="' . $fieldname . '[day]" class="atkdateattribute form-control" onChange="' . $str_script . '">';
         if (!$obligatory || $this->hasflag(self::AF_DATE_EMPTYFIELD)) {
             $result .= '<option value=""' . ($current === null ? ' selected' : '') . '></option>';
@@ -537,7 +537,7 @@ class DateAttribute extends Attribute
             }
 
             $fieldname = $fieldname . '[date]';
-            $this->registerKeyListener($fieldname, KB_CTRLCURSOR | KB_UPDOWN);
+            $this->registerKeyListener($fieldname, Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
             $result = '<input type="text" id="' . $fieldname . '" class="atkdateattribute form-control" name="' . $fieldname . '" value="' . $value . '" size="10">';
 
             if (!$this->hasFlag(self::AF_DATE_NO_CALENDAR) && $mode != 'list') {
@@ -633,7 +633,7 @@ class DateAttribute extends Attribute
                 $this->_renderChangeHandler($fieldprefix);
                 $str_script = $this->getHtmlId($fieldprefix) . '_onChange(this);';
             }
-            $this->registerKeyListener($fieldname, KB_CTRLCURSOR | KB_LEFTRIGHT);
+            $this->registerKeyListener($fieldname, Keyboard::KB_CTRLCURSOR | Keyboard::KB_LEFTRIGHT);
             $result = '<select id="' . $fieldname . '" name="' . $fieldname . '" onChange="' . $str_script . '">';
             for ($i = $str_min; $i <= $str_max; $i++) {
                 $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, substr($i, 4, 2), substr($i, 6, 2), substr($i, 0, 4)));

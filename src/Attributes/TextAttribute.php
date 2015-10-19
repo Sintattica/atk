@@ -149,7 +149,7 @@ class TextAttribute extends Attribute
         }
         $rows = $this->m_rows;
         $id = $fieldprefix . $this->fieldName();
-        $this->registerKeyListener($id, KB_CTRLCURSOR);
+        $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR);
         if ($rows == "" || $rows == 0) {
             $rows = 10;
         }

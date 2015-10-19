@@ -193,7 +193,7 @@ class MultiSelectAttribute extends ListAttribute
 
             $result .= '<td class="table" valign="top"><input type="checkbox" id="' . $id . '_' . $i . '" ' . $this->getCSSClassAttribute("atkcheckbox") . ' name="' . $fieldprefix . $this->fieldName() . '[]" value="' . $values[$i] . '" ' . $sel . '>' . $this->_translateValue($values[$i],
                     $record) . '</td>';
-            $this->registerKeyListener($id . '_' . $i, KB_CTRLCURSOR | KB_UPDOWN);
+            $this->registerKeyListener($id . '_' . $i, Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
 
             if ($i % $cols == $modcols) {
                 $result .= "</tr><tr>\n";

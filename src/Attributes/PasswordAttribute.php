@@ -149,8 +149,8 @@ class PasswordAttribute extends Attribute
         /* insert */
         if ($mode != 'edit' && $mode != 'update') {
             if (!$this->m_generate) {
-                $this->registerKeyListener($id . '[new]', KB_CTRLCURSOR | KB_UPDOWN);
-                $this->registerKeyListener($id . '[again]', KB_CTRLCURSOR | KB_UPDOWN);
+                $this->registerKeyListener($id . '[new]', Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
+                $this->registerKeyListener($id . '[again]', Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
                 $result = Tools::atktext("password_new", "atk") . ':<br>' .
                     '<input autocomplete="off" type="password" id="' . $id . '[new]" name="' . $id . '[new]"' .
                     ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"'
@@ -163,8 +163,8 @@ class PasswordAttribute extends Attribute
                     ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . ">";
             } else {
                 $password = $this->generatePassword(8, true);
-                $this->registerKeyListener($id . '[new]', KB_CTRLCURSOR | KB_UPDOWN);
-                $this->registerKeyListener($id . '[again]', KB_CTRLCURSOR | KB_UPDOWN);
+                $this->registerKeyListener($id . '[new]', Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
+                $this->registerKeyListener($id . '[again]', Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
                 $result = '<input type="hidden" id="' . $id . '[again]" name="' . $id . '[again]"' .
                     ' value ="' . $password . '">' .
                     '<input type="text" id="' . $id . '[new]" name="' . $id . '[new]"' .
@@ -178,15 +178,15 @@ class PasswordAttribute extends Attribute
 
 
             if (!$this->hasFlag(self::AF_PASSWORD_NO_VALIDATE)) {
-                $this->registerKeyListener($id . '[current]', KB_CTRLCURSOR | KB_UPDOWN);
+                $this->registerKeyListener($id . '[current]', Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
                 $result .= Tools::atktext("password_current", "atk") . ':<br>' .
                     '<input autocomplete="off" type="password" id="' . $id . '[current]" name="' . $id . '[current]"' .
                     ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"'
                         : '') .
                     ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . '><br><br>';
             }
-            $this->registerKeyListener($id . '[new]', KB_CTRLCURSOR | KB_UPDOWN);
-            $this->registerKeyListener($id . '[again]', KB_CTRLCURSOR | KB_UPDOWN);
+            $this->registerKeyListener($id . '[new]', Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
+            $this->registerKeyListener($id . '[again]', Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
             $result .= Tools::atktext("password_new", "atk") . ':<br>' .
                 '<input autocomplete="off" type="password" id="' . $id . '[new]" name="' . $id . '[new]"' .
                 ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') .

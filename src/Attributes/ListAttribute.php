@@ -266,7 +266,7 @@ class ListAttribute extends Attribute
     {
         // todo: configurable rows
         $id = $this->getHtmlId($fieldprefix);
-        $this->registerKeyListener($id, KB_CTRLCURSOR | KB_LEFTRIGHT);
+        $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_LEFTRIGHT);
         $this->registerJavaScriptObservers($id);
 
         $onchange = '';

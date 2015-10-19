@@ -122,7 +122,7 @@ class WeekdayAttribute extends NumberAttribute
 
             $result .= '<span title="' . $fullWeekday . '"><input type="checkbox" id="' . $name . '" name="' . $name . '[' . $i . ']" ' . $this->getCSSClassAttribute("atkcheckbox") . ' value="' . $day . '" ' . $checked . '> ' . $weekday . '</span>' . ($i < $max
                     ? $separator : '');
-            $this->registerKeyListener($name . '[' . $i . ']', KB_CTRLCURSOR | KB_CURSOR);
+            $this->registerKeyListener($name . '[' . $i . ']', Keyboard::KB_CTRLCURSOR | Keyboard::KB_CURSOR);
         }
 
         return $result;

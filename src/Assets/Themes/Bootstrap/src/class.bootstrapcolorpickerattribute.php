@@ -3,6 +3,7 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Keyboard\Keyboard;
 use Sintattica\Atk\Ui\Page;
 
 class bootstrapColorPickerAttribute extends Attribute
@@ -49,7 +50,7 @@ class bootstrapColorPickerAttribute extends Attribute
         $this->registerScriptsAndStyles($fieldprefix);
 
         $id = $this->getHtmlId($fieldprefix);
-        $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
+        $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
 
         if (count($this->m_onchangecode)) {
             $onchange = 'onChange="' . $id . '_onChange(this);"';

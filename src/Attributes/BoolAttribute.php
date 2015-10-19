@@ -107,7 +107,7 @@ class BoolAttribute extends Attribute
         if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] > 0) {
             $checked = "checked";
         }
-        $this->registerKeyListener($id, KB_CTRLCURSOR | KB_CURSOR);
+        $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_CURSOR);
 
         $result = '<input type="checkbox" id="' . $id . '" name="' . $id . '" value="1" ' . $onchange . $checked . ' ' . $this->getCSSClassAttribute("atkcheckbox") . ' />';
 

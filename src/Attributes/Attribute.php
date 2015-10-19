@@ -969,7 +969,7 @@ class Attribute
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $id = $this->getHtmlId($fieldprefix);
-        $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
+        $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
 
         if (count($this->m_onchangecode)) {
             $onchange = 'onChange="' . $id . '_onChange(this);"';
@@ -1611,7 +1611,7 @@ class Attribute
             $value = $record[$this->fieldName()];
         }
 
-        $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
+        $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
         $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . htmlentities($value) . '"' .
             ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"' : '') . '>';
 
@@ -2500,7 +2500,7 @@ class Attribute
      *                     navigation.
      * @return Attribute The instance of this Attribute
      */
-    function registerKeyListener($id, $navkeys = KB_CTRLCURSOR)
+    function registerKeyListener($id, $navkeys = Keyboard::KB_CTRLCURSOR)
     {
         if (Config::getGlobal("use_keyboard_handler")) {
             $kb = Keyboard::getInstance();

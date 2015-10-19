@@ -139,7 +139,7 @@ class FormatAttribute extends Attribute
     function _inputField($size, $elemnr, $fieldprefix, $value)
     {
         $id = $this->getHtmlId($fieldprefix) . '[' . $elemnr . ']';
-        $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN | KB_LEFTRIGHT);
+        $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN | Keyboard::KB_LEFTRIGHT);
         return '<input type="text" name="' . $id . '" id="' . $id . '" size="' . $size . '" maxlength="' . $size . '" value="' . $value . '">';
     }
 

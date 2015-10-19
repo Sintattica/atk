@@ -75,7 +75,7 @@ class CKAttribute extends TextAttribute
         $page = $this->getOwnerInstance()->getPage();
 
         $id = $this->getHtmlId($fieldprefix);
-        $this->registerKeyListener($id, KB_CTRLCURSOR);
+        $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR);
 
         // register CKEditor main script
         $page->register_script(Config::getGlobal("assets_url") . 'ckeditor/ckeditor.js');

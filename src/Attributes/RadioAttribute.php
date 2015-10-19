@@ -136,7 +136,7 @@ class RadioAttribute extends ListAttribute
             if ($this->hasFlag(self::AF_DISPLAY_VERT)) {
                 $result .= '<tr>';
             }
-            $this->registerKeyListener($labelID, KB_CTRLCURSOR | KB_CURSOR);
+            $this->registerKeyListener($labelID, Keyboard::KB_CTRLCURSOR | Keyboard::KB_CURSOR);
             $id = $this->getHtmlId($fieldprefix);
 
             $onchange = '';

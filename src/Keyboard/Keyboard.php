@@ -4,19 +4,6 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Config;
 
-
-/**
- * Define some key shortcut constants. (mind you, these are not actual ascii key values)
- */
-define("KB_UP", 1);
-define("KB_DOWN", 2);
-define("KB_LEFT", 4);
-define("KB_RIGHT", 8);
-define("KB_UPDOWN", KB_UP | KB_DOWN);
-define("KB_LEFTRIGHT", KB_LEFT | KB_RIGHT);
-define("KB_CURSOR", KB_UPDOWN | KB_LEFTRIGHT);
-define("KB_CTRLCURSOR", 16);
-
 /**
  * This class handles keyboard navigation. It is used to register keyboard
  * event handlers. This class is a singleton. Use getInstance() to retrieve
@@ -29,6 +16,18 @@ define("KB_CTRLCURSOR", 16);
  */
 class Keyboard
 {
+    /**
+     * Define some key shortcut constants. (mind you, these are not actual ascii key values)
+     */
+    const KB_UP = 1;
+    const KB_DOWN = 2;
+    const KB_LEFT = 4;
+    const KB_RIGHT = 8;
+    const KB_UPDOWN = self::KB_UP | self::KB_DOWN;
+    const KB_LEFTRIGHT = self::KB_LEFT | self::KB_RIGHT;
+    const KB_CURSOR = self::KB_UPDOWN | self::KB_LEFTRIGHT;
+    const KB_CTRLCURSOR = 16;
+
     /**
      * WORKAROUND: in php (4.3.1 at least) at least one member var must exist, to make it possible to create singletons.
      * @access private
@@ -66,11 +65,11 @@ class Keyboard
     {
         $params = array(
             "'" . $id . "'",
-            Tools::hasFlag($navkeys, KB_UP) ? "1" : "0",
-            Tools::hasFlag($navkeys, KB_DOWN) ? "1" : "0",
-            Tools::hasFlag($navkeys, KB_LEFT) ? "1" : "0",
-            Tools::hasFlag($navkeys, KB_RIGHT) ? "1" : "0",
-            Tools::hasFlag($navkeys, KB_CTRLCURSOR) ? "1" : "0"
+            Tools::hasFlag($navkeys, self::KB_UP) ? "1" : "0",
+            Tools::hasFlag($navkeys, self::KB_DOWN) ? "1" : "0",
+            Tools::hasFlag($navkeys, self::KB_LEFT) ? "1" : "0",
+            Tools::hasFlag($navkeys, self::KB_RIGHT) ? "1" : "0",
+            Tools::hasFlag($navkeys, self::KB_CTRLCURSOR) ? "1" : "0"
         );
 
         $this->addHandler("atkFEKeyListener", $params);

@@ -178,9 +178,9 @@ class TimeAttribute extends Attribute
         }
 
         // set vars for hour / minutes dropdowns
-        $this->registerKeyListener($id . '[hours]', KB_CTRLCURSOR | KB_LEFTRIGHT);
-        $this->registerKeyListener($id . '[minutes]', KB_CTRLCURSOR | KB_LEFTRIGHT);
-        $this->registerKeyListener($id . '[seconds]', KB_CTRLCURSOR | KB_LEFTRIGHT);
+        $this->registerKeyListener($id . '[hours]', Keyboard::KB_CTRLCURSOR | Keyboard::KB_LEFTRIGHT);
+        $this->registerKeyListener($id . '[minutes]', Keyboard::KB_CTRLCURSOR | Keyboard::KB_LEFTRIGHT);
+        $this->registerKeyListener($id . '[seconds]', Keyboard::KB_CTRLCURSOR | Keyboard::KB_LEFTRIGHT);
         $m_hourBox = '<select id="' . $id . '[hours]" name="' . $id . "[hours]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
         $m_minBox = '<select id="' . $id . '[minutes]" name="' . $id . "[minutes]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
         $m_secBox = '<select id="' . $id . '[seconds]" name="' . $id . "[seconds]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";

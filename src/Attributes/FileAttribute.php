@@ -230,7 +230,7 @@ class FileAttribute extends Attribute
         }
 
         if (!$this->hasFlag(self::AF_FILE_NO_UPLOAD)) {
-            $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
+            $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
             $result .= '<input type="file" id="' . $id . '" name="' . $id . '" ' . $onchange . '>';
         }
 
@@ -239,7 +239,7 @@ class FileAttribute extends Attribute
             if (count($file_arr) > 0) {
                 natcasesort($file_arr);
 
-                $this->registerKeyListener($id . '_select', KB_CTRLCURSOR | KB_LEFTRIGHT);
+                $this->registerKeyListener($id . '_select', Keyboard::KB_CTRLCURSOR | Keyboard::KB_LEFTRIGHT);
                 $result .= '<select id="' . $id . '_select" name="' . $id . '[select]" ' . $onchange . ' class="form-control">';
                 // Add default option with value NULL
                 $result .= "<option value=\"\" selected>" . Tools::atktext('selection', 'atk');
@@ -259,7 +259,7 @@ class FileAttribute extends Attribute
         }
 
         if (!$this->hasFlag(self::AF_FILE_NO_DELETE) && isset($record[$this->fieldname()]['orgfilename']) && $record[$this->fieldname()]['orgfilename'] != '') {
-            $this->registerKeyListener($id . '_del', KB_CTRLCURSOR | KB_CURSOR);
+            $this->registerKeyListener($id . '_del', Keyboard::KB_CTRLCURSOR | Keyboard::KB_CURSOR);
             $result .= '<br class="atkFileAttributeCheckboxSeparator"><input id="' . $id . '_del" type="checkbox" name="' . $id . '[del]" ' . $this->getCSSClassAttribute("atkcheckbox") . '>&nbsp;' . Tools::atktext("remove_current_file",
                     "atk");
         }
