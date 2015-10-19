@@ -1,28 +1,5 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6289 $
- * $Id: class.atkradioattribute.inc 6354 2009-04-15 02:41:21Z mvdam $
- */
 
-
-/**
- * Flag(s) specific for atkRadioAttribute
- */
-/**
- * Displays the set of radio buttons vertically
- */
-define("self::AF_DISPLAY_VERT", self::AF_SPECIFIC_2);
 
 /**
  * The atkRadioAttribute class represents an attribute of a node
@@ -38,6 +15,14 @@ define("self::AF_DISPLAY_VERT", self::AF_SPECIFIC_2);
  */
 class RadioAttribute extends ListAttribute
 {
+    /**
+     * Flag(s) specific for atkRadioAttribute
+     */
+    /**
+     * Displays the set of radio buttons vertically
+     */
+    const AF_DISPLAY_VERT = self::AF_SPECIFIC_2;
+
     // Default number of cols / rows
     var $m_amount = 1;
     var $m_cols = false;
@@ -63,7 +48,7 @@ class RadioAttribute extends ListAttribute
      * @param int $size database field size ($size[1] can be used for the amount of cols / rows to display, for example: 3c or 5r or just 4)
      *
      */
-    function atkRadioAttribute($name, $optionArray, $valueArray = "", $flags = 0, $size = 0)
+    function __construct($name, $optionArray, $valueArray = "", $flags = 0, $size = 0)
     {
         if (is_array($size) and count($size) > 1) {
             $lastchar = strtolower(substr($size[1], -1, 1));
@@ -83,7 +68,7 @@ class RadioAttribute extends ListAttribute
                 $this->m_amount = $size[1];
             }
         }
-        $this->atkListAttribute($name, $optionArray, $valueArray, $flags, $size); // base class constructor
+        parent::__construct($name, $optionArray, $valueArray, $flags, $size); // base class constructor
     }
 
     /**
