@@ -449,7 +449,7 @@ class Module
     }
 
     /**
-     * Retrieve the atkModule with the given name.
+     * Retrieve the Module with the given name.
      *
      * @param String $modname The name of the module
      * @return Module An instance of the atkModule
@@ -473,14 +473,14 @@ class Module
                 $mod = new $realmodname($modname);
             } else {
                 if (class_exists($modname)) {
-                    Tools::atkdebug("Warning: Deprecated use of short modulename '$modname'. Class in module.inc should be renamed to 'mod_$modname'.");
+                    Tools::atkdebug("Warning: Deprecated use of short modulename '$modname'. Class in module.php should be renamed to 'mod_$modname'.");
                     $mod = new $modname();
                 } else {
                     $mod = ClassLoader::invokeFromString(Config::getGlobal("missing_module_handler"),
                         array(array("module" => $modname)));
                     if ($mod === false) {
                         // Changed by Ivo: This used to construct a dummy module, so
-                        // modules could exist that didn't have a module.inc file.
+                        // modules could exist that didn't have a module.php file.
                         // We no longer support this (2003-01-11)
                         $mod = null;
                         Tools::atkdebug("Warning: module $modname does not exist");

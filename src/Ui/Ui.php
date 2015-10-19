@@ -79,6 +79,7 @@ class Ui
      * @param String $action not used (deprecated?)
      * @param array $vars the variables with which to parse the list template
      * @param string $module the name of the module requesting to render a template
+     * @return string rendered list
      */
     function renderList($action = "", $vars, $module = "")
     {
@@ -110,6 +111,7 @@ class Ui
      * @param array $vars the variables for the template
      * @param string $name The name of the template
      * @param string $module the name of the module requesting to render a template
+     * @return string rendered box
      */
     function renderBox($vars, $name = "", $module = "")
     {

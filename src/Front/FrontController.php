@@ -3,6 +3,10 @@
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Ui\SmartyProvider;
+use Sintattica\Atk\Utils\DataHolder;
+use Sintattica\Atk\Utils\TmpFile;
+use Sintattica\Atk\Utils\Debugger;
+use Sintattica\Atk\Core\Module;
 use \Exception;
 
 
@@ -110,8 +114,8 @@ class FrontController implements \ArrayAccess
      * Create controller based on the given URI.
      *
      * @param string $uri uri string
-     * @param atkFrontController $parent parent controller
-     * @return atkFrontController the controller
+     * @param FrontController $parent parent controller
+     * @return FrontController the controller
      */
     protected static function create($uri, $parent = null)
     {
@@ -137,7 +141,7 @@ class FrontController implements \ArrayAccess
      * Returns the current controller instance. This can either be the
      * root or a nested controller.
      *
-     * @return atkFrontController current controller instance
+     * @return FrontController current controller instance
      */
     protected static function getCurrent()
     {
@@ -147,7 +151,7 @@ class FrontController implements \ArrayAccess
     /**
      * Sets the current controller instance.
      *
-     * @param atkFrontController $controller current controller instance
+     * @param FrontController $controller current controller instance
      */
     protected static function setCurrent($controller)
     {
@@ -158,7 +162,7 @@ class FrontController implements \ArrayAccess
      * Bridge factory method. Returns the currently configured controller bridge.
      * If an instance already exists, re-uses it, else a new bridge will be created.
      *
-     * @return atkFrontControllerBridge front controller bridge
+     * @return FrontControllerBridge front controller bridge
      */
     protected static function createBridge()
     {
@@ -178,7 +182,7 @@ class FrontController implements \ArrayAccess
      * @param string $module module name
      * @param string $name controller name
      * @param string $action
-     * @param atkFrontController $parent
+     * @param FrontController $parent
      */
     protected function __construct($module, $name, $action, $parent = null)
     {
@@ -201,7 +205,7 @@ class FrontController implements \ArrayAccess
     /**
      * Returns the parent controller.
      *
-     * @return atkFrontController parent
+     * @return FrontController parent
      */
     protected function getParent()
     {
@@ -221,7 +225,7 @@ class FrontController implements \ArrayAccess
     /**
      * Returns the root controller.
      *
-     * @return atkFrontController root
+     * @return FrontController root
      */
     protected function getRoot()
     {
@@ -235,7 +239,7 @@ class FrontController implements \ArrayAccess
     /**
      * Returns the request parameters.
      *
-     * @return atkDataHolder request parameters
+     * @return DataHolder request parameters
      */
     protected function getRequest()
     {
@@ -245,7 +249,7 @@ class FrontController implements \ArrayAccess
     /**
      * Returns the session.
      *
-     * @return atkDataHolder session
+     * @return DataHolder session
      */
     protected function getSession()
     {
@@ -331,7 +335,7 @@ class FrontController implements \ArrayAccess
     /**
      * Get action cache file.
      *
-     * @return atkTmpFile
+     * @return TmpFile
      */
     protected function getActionCacheFile()
     {
@@ -361,7 +365,7 @@ class FrontController implements \ArrayAccess
     protected function loadFromActionCache()
     {
         $file = $this->getActionCacheFile();
-
+        $data = array();
         include($file->getPath());
 
         $this->m_result = $data['result'];
@@ -420,7 +424,7 @@ class FrontController implements \ArrayAccess
      *
      * @param array $request request variables
      *
-     * @return result of action
+     * @return mixed result of action
      */
     protected function handleRequest($request)
     {
@@ -496,18 +500,18 @@ class FrontController implements \ArrayAccess
     /**
      * Get the method to call for the current request.
      *
-     * @return ReflectionMethod The method.
+     * @return \ReflectionMethod The method.
      */
     protected function getActionMethod()
     {
         $methodname = str_replace('_', '', $this->m_action) . 'Action';
         if (!method_exists($this, $methodname)) {
-            throw new Exception("Action method not found!");
+            throw new \Exception("Action method not found!");
         }
 
-        $method = new ReflectionMethod(get_class($this), $methodname);
+        $method = new \ReflectionMethod(get_class($this), $methodname);
         if (!$method->isPublic()) {
-            throw new Exception("Action method is not public!");
+            throw new \Exception("Action method is not public!");
         }
 
         return $method;
@@ -561,7 +565,7 @@ class FrontController implements \ArrayAccess
      */
     protected function loadSession()
     {
-        return new atkDataHolder($_SESSION);
+        return new DataHolder($_SESSION);
     }
 
     /**
@@ -569,8 +573,7 @@ class FrontController implements \ArrayAccess
      */
     protected function installPlugins()
     {
-        /* @var $smarty Smarty */
-        $smarty = Tools::atkinstance("atk.ui.atksmarty");
+        $smarty = SmartyProvider::getInstance();
         $this->m_plugins = $smarty->_plugins;
         $smarty->register_function('_partial', array($this, 'partialFunctionTag'), false);
         $smarty->register_function('_url', array($this, 'urlFunctionTag'), false);
@@ -635,7 +638,7 @@ class FrontController implements \ArrayAccess
      * Template variable assignment.
      *
      * @param string $name variable name
-     * @param unknown $value variable value
+     * @param mixed $value variable value
      */
     public function __set($name, $value)
     {
@@ -646,7 +649,7 @@ class FrontController implements \ArrayAccess
      * Get template variable value.
      *
      * @param string $name variable name
-     * @return unknown
+     * @return mixed unknown
      */
     public function &__get($name)
     {
@@ -772,7 +775,7 @@ class FrontController implements \ArrayAccess
      * Smarty wrapper function for the url function.
      *
      * @param array $params parameters
-     * @param Smarty $smarty smarty reference
+     * @param \Smarty $smarty smarty reference
      * @return string url
      */
     public function urlFunctionTag($params, $smarty)
@@ -795,7 +798,7 @@ class FrontController implements \ArrayAccess
      * to hidden form vars.
      *
      * @param array $params parameters
-     * @param Smarty $smarty smarty reference
+     * @param \Smarty $smarty smarty reference
      * @return string hidden form vars html
      */
     public function formVarsFunctionTag($params, $smarty)
@@ -826,7 +829,7 @@ class FrontController implements \ArrayAccess
      *
      * @param array $params parameters
      * @param string $content content between link tags
-     * @param Smarty $smarty smarty reference
+     * @param \Smarty $smarty smarty reference
      * @param boolean $repeat true first time
      */
     public function linkBlockTag($params, $content, $smarty, &$repeat)
@@ -842,7 +845,7 @@ class FrontController implements \ArrayAccess
      * Smarty partial function, render partial template.
      *
      * @param array $params parameters
-     * @param Smarty $smarty smarty instance
+     * @param \Smarty $smarty smarty instance
      * @return string rendered partial
      */
     public function partialFunctionTag($params, $smarty)
@@ -1074,7 +1077,7 @@ class FrontController implements \ArrayAccess
             return $path;
         }
 
-        return $null;
+        return null;
     }
 
     /**
@@ -1114,8 +1117,7 @@ class FrontController implements \ArrayAccess
     {
         $template = $this->getFileForTemplate($template, $vars, $partial);
 
-        /* @var $smarty Smarty */
-        $smarty = Tools::atkinstance('atk.ui.atksmarty');
+        $smarty = SmartyProvider::getInstance();
 
         $oldVars = $smarty->get_template_vars();
         $oldSerials = $smarty->_cache_serials;

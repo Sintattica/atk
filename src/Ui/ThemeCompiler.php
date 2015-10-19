@@ -2,8 +2,6 @@
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Utils\TmpFile;
-use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Utils\DirectoryTraverser;
 
 /**
@@ -25,11 +23,11 @@ use Sintattica\Atk\Utils\DirectoryTraverser;
  */
 class ThemeCompiler
 {
-
     /**
      * Compile a theme file for a certain theme.
      *
      * @param String $name The name of the theme to compile.
+     * @return bool result
      */
     function compile($name)
     {

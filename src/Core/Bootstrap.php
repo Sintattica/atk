@@ -3,6 +3,7 @@
 
 use Sintattica\Atk\Security\SqlWhereclauseBlacklistChecker;
 use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Ui\SmartyProvider;
 
 class Bootstrap
 {
@@ -22,6 +23,10 @@ class Bootstrap
         self::setSecurity();
         self::setDebugging();
         Module::atkPreloadModules();
+
+        //non needed now, only for frontcontroller
+        //SmartyProvider::addFunction('atk.ui.plugins', 'atkfrontcontroller');
+
     }
 
     private static function initGlobals()

@@ -2,9 +2,6 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Core\Module;
-use Sintattica\Atk\Ui\Smarty\Smarty;
-
 
 /**
  * Wrapper class for the Smarty template engine.
@@ -17,14 +14,13 @@ use Sintattica\Atk\Ui\Smarty\Smarty;
  */
 class SmartyProvider
 {
-
     /**
      * Get the Smarty instance.
      *
      * SmartyProvider is a singleton.
      *
      * @static
-     * @return Smarty The one and only instance.
+     * @return \Smarty The one and only instance.
      */
     public static function &getInstance()
     {
@@ -138,7 +134,7 @@ class SmartyProvider
      * @param bool $cacheable
      * @param string $cache_attrs
      */
-    function addFunction($moduleOrPath, $tag, $name = "", $cacheable = true, $cache_attrs = null)
+    public static function addFunction($moduleOrPath, $tag, $name = "", $cacheable = true, $cache_attrs = null)
     {
         $smarty = SmartyProvider::getInstance();
 
@@ -282,11 +278,3 @@ class SmartyProvider
     }
 
 }
-
-/**
- * After this line, we register the base ATK dynamic Smarty plug-ins. Unfortunately
- * Smarty's plug-in system doesn't allow the detection of dynamic plug-ins based solely
- * on the plug-in's filename. Non-dynamic plug-ins should be placed in the plugins/ subdir,
- * but shouldn't be registered here (Smarty will detect them automatically).
- */
-SmartyProvider::addDynamicFunction('atk.ui.plugins', 'atkfrontcontroller');
