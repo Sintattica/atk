@@ -1,10 +1,5 @@
 <?php namespace Sintattica\Atk\Attributes;
 /**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
  * @todo The rgb color support in check_color() only works if another argument 'rgb'
  * is passed, which never  happens because only 1 argument is passed to that method from the
  * atkColorPickerAttribute.
@@ -25,8 +20,6 @@
  * @version $Revision: 6334 $
  * $Id$
  */
-/** @internal includes and defines * */
-Tools::useattrib("atkattribute");
 
 define("CP_COLORMODE_DEFAULT", 0);
 define("CP_COLORMODE_HEX6", 1);

@@ -1,44 +1,14 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6309 $
- * $Id$
- */
 
-/**
- * Flag(s) specific for atkPasswordAttribute
- */
-define("self::AF_PASSWORD_NOVALIDATE", self::AF_SPECIFIC_1); // disables password check when editing password field
-define("self::AF_PASSWORD_NO_VALIDATE", self::AF_SPECIFIC_1); // disables password check when editing password field
-define("self::AF_PASSWORD_NO_ENCODE", self::AF_SPECIFIC_2);
+use Sintattica\Atk\Core\Tools;
 
-/**
- * Categories of password character categories
- */
-define("UPPERCHARS", "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-define("LOWERCHARS", "abcdefghijklmnopqrstuvwxyz");
-define("ALPHABETICCHARS", UPPERCHARS . LOWERCHARS);
-define("NUMBERS", "0123456789");
-define("SPECIALCHARS", "!@#$%^&*()-+_=[]{}\|;:'\",.<>/?"); // <- only used when generating a password
-define("EASYVOWELS", "bcdfghjkmnpqrstvwxz");
-define("EASYCONSONANTS", "aeuy");
 
 /**
  * The atkPasswordAttribute class represents an attribute of a node
  * that is a password field. It automatically encrypts passwords
  * with the MD5 method of PHP. To update a password a user has to
  * supply the old password first, unless you use the special created
- * self::AF_PASSWORD_NOVALIDATE flag, in which case the password just gets
+ * self::AF_PASSWORD_NO_VALIDATE flag, in which case the password just gets
  * overwritten without any check.
  *
  * @author Peter Verhage <peter@ibuildings.nl>
@@ -48,6 +18,23 @@ define("EASYCONSONANTS", "aeuy");
  */
 class PasswordAttribute extends Attribute
 {
+    /**
+     * Flag(s) specific for atkPasswordAttribute
+     */
+    const AF_PASSWORD_NO_VALIDATE = self::AF_SPECIFIC_1; // disables password check when editing password field
+    const AF_PASSWORD_NO_ENCODE = self::AF_SPECIFIC_2;
+
+    /**
+     * Categories of password character categories
+     */
+    const UPPERCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const LOWERCHARS = "abcdefghijklmnopqrstuvwxyz";
+    const ALPHABETICCHARS = self::UPPERCHARS . self::LOWERCHARS;
+    const NUMBERS = "0123456789";
+    const SPECIALCHARS = "!@#$%^&*()-+_=[]{}\|;:'\",.<>/?"; // <- only used when generating a password
+    const EASYVOWELS = "bcdfghjkmnpqrstvwxz";
+    const EASYCONSONANTS = "aeuy";
+
     /* generate? */
     var $m_generate;
 
@@ -76,7 +63,7 @@ class PasswordAttribute extends Attribute
      *                     parameter.
      * @param array $restrictions
      */
-    function __construct($name, $generate, $flags = 0, $size = 0, $restrictions = "")
+    function __construct($name, $generate, $flags = 0, $size = 0, $restrictions = array())
     {
         // compatiblity with old versions
         if (func_num_args() >= 3) {
@@ -154,7 +141,7 @@ class PasswordAttribute extends Attribute
      * @param array $record array with fields
      * @param string $fieldprefix the field's prefix
      * @param string $mode the mode (add, edit etc.)
-     * @return piece of html code with a textarea
+     * @return string piece of html code with a textarea
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
@@ -190,7 +177,7 @@ class PasswordAttribute extends Attribute
                 ' value="' . $record[$this->fieldName()]["hash"] . '">';
 
 
-            if (!$this->hasFlag(self::AF_PASSWORD_NOVALIDATE)) {
+            if (!$this->hasFlag(self::AF_PASSWORD_NO_VALIDATE)) {
                 $this->registerKeyListener($id . '[current]', KB_CTRLCURSOR | KB_UPDOWN);
                 $result .= Tools::atktext("password_current", "atk") . ':<br>' .
                     '<input autocomplete="off" type="password" id="' . $id . '[current]" name="' . $id . '[current]"' .
@@ -216,7 +203,7 @@ class PasswordAttribute extends Attribute
     /**
      * We don't support searching for passwords!
      * @param array $record array with fields
-     * @return search field
+     * @return string search field
      */
     function search($record = "")
     {
@@ -283,19 +270,19 @@ class PasswordAttribute extends Attribute
                     $actual = strlen($password);
                     break;
                 case "minupperchars":
-                    $actual = $this->_countCharMatches($password, UPPERCHARS);
+                    $actual = $this->_countCharMatches($password, self::UPPERCHARS);
                     break;
                 case "minlowerchars":
-                    $actual = $this->_countCharMatches($password, LOWERCHARS);
+                    $actual = $this->_countCharMatches($password, self::LOWERCHARS);
                     break;
                 case "minalphabeticchars":
-                    $actual = $this->_countCharMatches($password, ALPHABETICCHARS);
+                    $actual = $this->_countCharMatches($password, self::ALPHABETICCHARS);
                     break;
                 case "minnumbers":
-                    $actual = $this->_countCharMatches($password, NUMBERS);
+                    $actual = $this->_countCharMatches($password, self::NUMBERS);
                     break;
                 case "minspecialchars":
-                    $actual = strlen($password) - $this->_countCharMatches($password, ALPHABETICCHARS . NUMBERS);
+                    $actual = strlen($password) - $this->_countCharMatches($password, self::ALPHABETICCHARS . self::NUMBERS);
                     break;
             }
 
@@ -353,7 +340,7 @@ class PasswordAttribute extends Attribute
         $error = false;
         $value = $record[$this->fieldName()];
 
-        if ($mode == 'update' && (Tools::atk_strlen($value["new"]) > 0 || Tools::atk_strlen($value["again"]) > 0) && !$this->hasFlag(self::AF_PASSWORD_NOVALIDATE) && $value["current"] != $value["hash"]) {
+        if ($mode == 'update' && (Tools::atk_strlen($value["new"]) > 0 || Tools::atk_strlen($value["again"]) > 0) && !$this->hasFlag(self::AF_PASSWORD_NO_VALIDATE) && $value["current"] != $value["hash"]) {
             $error = true;
             Tools::triggerError($record, $this->fieldName(), 'error_password_incorrect');
         }
@@ -399,7 +386,7 @@ class PasswordAttribute extends Attribute
      * @param array $record Array with values
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @return Piece of htmlcode
+     * @return string Piece of htmlcode
      */
     function hide($record = "", $fieldprefix = "")
     {
@@ -431,7 +418,7 @@ class PasswordAttribute extends Attribute
      *
      * @param string|array $chars String or array of strings containing the available characters to use
      * @param int $count Length of the resulting string
-     * @return Generated random string
+     * @return string Generated random string
      */
     function getRandomChars($chars, $count)
     {
@@ -470,13 +457,13 @@ class PasswordAttribute extends Attribute
         $r = $this->m_restrictions;
 
         // Compose a string that meets the character-specific minimum restrictions
-        $tmp = $this->getRandomChars(LOWERCHARS, $r["minlowerchars"]);
-        $tmp .= $this->getRandomChars(UPPERCHARS, $r["minupperchars"]);
+        $tmp = $this->getRandomChars(self::LOWERCHARS, $r["minlowerchars"]);
+        $tmp .= $this->getRandomChars(self::UPPERCHARS, $r["minupperchars"]);
         $alphabeticchars = ($r["minalphabeticchars"] > strlen($tmp)) ? ($r["minalphabeticchars"] - strlen($tmp))
             : 0;
-        $tmp .= $this->getRandomChars(LOWERCHARS . UPPERCHARS, $alphabeticchars);
-        $tmp .= $this->getRandomChars(NUMBERS, $r["minnumbers"]);
-        $tmp .= $this->getRandomChars(SPECIALCHARS, $r["minspecialchars"]);
+        $tmp .= $this->getRandomChars(self::LOWERCHARS . self::UPPERCHARS, $alphabeticchars);
+        $tmp .= $this->getRandomChars(self::NUMBERS, $r["minnumbers"]);
+        $tmp .= $this->getRandomChars(self::SPECIALCHARS, $r["minspecialchars"]);
 
         // Determine how many characters we still need to add to meet the overall minimum length
         $remainingchars = max($r["minsize"], $length) > strlen($tmp) ? (max($r["minsize"], $length) - strlen($tmp))
@@ -487,7 +474,7 @@ class PasswordAttribute extends Attribute
         // make the password either easy to remember or as random as possible.
         if ($easytoremember) {
             // Add random characters to the string to fill up until the minimum size or passed length
-            $out = $this->getRandomChars(array(EASYVOWELS, EASYCONSONANTS, EASYVOWELS), $remainingchars);
+            $out = $this->getRandomChars(array(self::EASYVOWELS, self::EASYCONSONANTS, self::EASYVOWELS), $remainingchars);
 
             // Add the characters that make this password meet the restrictions
             // at the end of the password, so we keep at least the most of it
@@ -495,7 +482,7 @@ class PasswordAttribute extends Attribute
             $out .= $tmp;
         } else {
             // Add random characters to the string to fill up until the minimum size or passed length
-            $tmp .= $this->getRandomChars(LOWERCHARS . UPPERCHARS . NUMBERS . SPECIALCHARS, $remainingchars);
+            $tmp .= $this->getRandomChars(self::LOWERCHARS . self::UPPERCHARS . self::NUMBERS . self::SPECIALCHARS, $remainingchars);
 
             // The output should be a shuffled to make it really random
             $out = str_shuffle($tmp);
@@ -520,7 +507,7 @@ class PasswordAttribute extends Attribute
 
         // Construct a new passwordattribute, generate the password and return it
         $passwordattribute = new PasswordAttribute("dummy", true);
-        return $passwordattribute->getRandomChars(array(EASYVOWELS, EASYCONSONANTS, EASYVOWELS), $times * 3);
+        return $passwordattribute->getRandomChars(array(self::EASYVOWELS, self::EASYCONSONANTS, self::EASYVOWELS), $times * 3);
     }
 
     /**
@@ -528,6 +515,7 @@ class PasswordAttribute extends Attribute
      *
      * @param array $rec The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
+     * @return string
      */
     function fetchValue($rec)
     {
@@ -551,6 +539,7 @@ class PasswordAttribute extends Attribute
      * to alter the password. This overcomes the overwriting with an empty password.
      *
      * @param array $record The record that contains this attribute's value
+     * @return bool
      */
     function needsUpdate($record)
     {
