@@ -1,46 +1,9 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2006 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 4200 $
- * $Id$
- */
-/**
- * Add one space after each "/", "?" and "&" to fit a (long) url into <td></td>.
- */
-define('self::AF_URL_ALLOWWRAP', self::AF_SPECIFIC_1);
+
+use Sintattica\Atk\Core\Tools;
 
 /**
- * Don't display "http://". Link remains intact.
- */
-define('self::AF_URL_STRIPHTTP', self::AF_SPECIFIC_2);
-
-/**
- * Check if URL is a valid absolute URL
- */
-define('ABSOLUTE', 1);
-
-/**
- * Check if URL is a valid relative URL
- */
-define('RELATIVE', 2);
-
-/**
- * Check if URL is a valid anchor
- */
-define('ANCHOR', 4);
-
-/**
- * The atkUrlAttribute class represents a field containing URLs.
+ * The UrlAttribute class represents a field containing URLs.
  *
  * @author Przemek Piotrowski <przemek.piotrowski@nic.com.pl>
  * @author Jeroen van Sluijs <jeroenvs@ibuildings.nl>
@@ -50,6 +13,31 @@ define('ANCHOR', 4);
  */
 class UrlAttribute extends Attribute
 {
+    /**
+     * Add one space after each "/", "?" and "&" to fit a (long) url into <td></td>.
+     */
+    const AF_URL_ALLOWWRAP = self::AF_SPECIFIC_1;
+
+    /**
+     * Don't display "http://". Link remains intact.
+     */
+    const AF_URL_STRIPHTTP = self::AF_SPECIFIC_2;
+
+    /**
+     * Check if URL is a valid absolute URL
+     */
+    const ABSOLUTE = 1;
+
+    /**
+     * Check if URL is a valid relative URL
+     */
+    const RELATIVE = 2;
+
+    /**
+     * Check if URL is a valid anchor
+     */
+    const ANCHOR = 4;
+
     var $m_accepts_url_flag = 0;
     var $m_newWindow = false;
     var $m_allowWrap = false;
@@ -125,7 +113,7 @@ class UrlAttribute extends Attribute
              * go to a custom domain. But only when you are using relative
              * urls.
              */
-            if (($this->getBaseUrl()) && (($this->m_accepts_url_flag & RELATIVE) == RELATIVE)) {
+            if (($this->getBaseUrl()) && (($this->m_accepts_url_flag & self::RELATIVE) == self::RELATIVE)) {
                 $base = $this->getBaseUrl();
                 $url = $base . $url;
             }
@@ -221,7 +209,7 @@ class UrlAttribute extends Attribute
          * Example: http://www2-dev.test_url.com
          * or:      ftp://www2-dev.test_url.com/index.php?/feeds/index.rss2
          */
-        if (($this->m_accepts_url_flag & ABSOLUTE) == ABSOLUTE) {
+        if (($this->m_accepts_url_flag & self::ABSOLUTE) == self::ABSOLUTE) {
             $absolute_result = preg_match("/^" . $base_url_regex . $relative_url_regex . "*$/Ui",
                 $record[$this->fieldName()])
                 ? true : false;
@@ -234,7 +222,7 @@ class UrlAttribute extends Attribute
          *
          * Example: #internal_bookmark
          */
-        if (($this->m_accepts_url_flag & ANCHOR) == ANCHOR) {
+        if (($this->m_accepts_url_flag & self::ANCHOR) == self::ANCHOR) {
             $anchor_result = preg_match("/^#" . $relative_url_regex . "*$/Ui", $record[$this->fieldName()])
                 ? true : false;
 
@@ -248,7 +236,7 @@ class UrlAttribute extends Attribute
          * or:      ftp://www2-dev.test_url.com/index.php?/feeds/index.rss2
          * or:      https://www2-dev.test_url.com/index.php?/history.html#bookmark
          */
-        if ((($this->m_accepts_url_flag & ABSOLUTE) == ABSOLUTE) && (($this->m_accepts_url_flag & ANCHOR) == ANCHOR)) {
+        if ((($this->m_accepts_url_flag & self::ABSOLUTE) == self::ABSOLUTE) && (($this->m_accepts_url_flag & self::ANCHOR) == self::ANCHOR)) {
             $absolute_anchor_result = preg_match("/^" . $base_url_regex . $relative_url_regex_with_anchor . "*$/Ui",
                 $record[$this->fieldName()])
                 ? true : false;
@@ -261,7 +249,7 @@ class UrlAttribute extends Attribute
          *
          * Example: /mysite/guestbook/index.html
          */
-        if (($this->m_accepts_url_flag & RELATIVE) == RELATIVE) {
+        if (($this->m_accepts_url_flag & self::RELATIVE) == self::RELATIVE) {
             $relative_result = preg_match("/^" . $relative_url_regex_with_anchor . "+$/Ui", $record[$this->fieldName()])
                 ? true : false;
 
