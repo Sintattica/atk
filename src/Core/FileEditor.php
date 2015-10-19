@@ -55,7 +55,7 @@ class FileEditor extends Node
      */
     function __construct($name, $dir = "", $filter = "", $flags = 0)
     {
-        parent::__construct($name, $flags | NF_ADD_LINK);
+        parent::__construct($name, $flags | Node::NF_ADD_LINK);
         $this->m_dir = $dir;
         $this->m_basedir = $dir;
         if ($dir == "") {

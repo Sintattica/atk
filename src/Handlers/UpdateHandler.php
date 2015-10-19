@@ -453,7 +453,7 @@ class Updatehandler extends ActionHandler
         //update succesful, pk value might be changed so update m_orgkey
         $record["atkprimkey"] = $this->m_node->primaryKey($record);
 
-        $locked = ($this->m_node->hasFlag(NF_LOCK));
+        $locked = ($this->m_node->hasFlag(Node::NF_LOCK));
 
         //$this->setOrgKeyValue($record);
         $this->m_node->m_action = "edit";

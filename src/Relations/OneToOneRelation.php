@@ -525,7 +525,7 @@ class OneToOneRelation extends Relation
         return $this->m_forceupdate ||
         (parent::needsUpdate($record) &&
             $this->createDestination() &&
-            !$this->m_destInstance->hasFlag(NF_READONLY));
+            !$this->m_destInstance->hasFlag(Node::NF_READONLY));
     }
 
     /**
@@ -669,7 +669,7 @@ class OneToOneRelation extends Relation
                 }
 
                 /* readonly */
-                if ($this->m_destInstance->hasFlag(NF_READONLY) || ($mode == "edit" && $this->hasFlag(self::AF_READONLY_EDIT)) || ($mode == "add" && $this->hasFlag(self::AF_READONLY_ADD))) {
+                if ($this->m_destInstance->hasFlag(Node::NF_READONLY) || ($mode == "edit" && $this->hasFlag(self::AF_READONLY_EDIT)) || ($mode == "add" && $this->hasFlag(self::AF_READONLY_ADD))) {
                     $this->createDestination();
                     $attrNames = $this->m_destInstance->getAttributeNames();
                     foreach ($attrNames as $attrName) {

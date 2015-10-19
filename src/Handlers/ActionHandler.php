@@ -330,7 +330,7 @@ class ActionHandler
      */
     function clearCache()
     {
-        if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST)) {
+        if ($this->m_node->hasFlag(Node::NF_CACHE_RECORDLIST)) {
             $recordlistcache = $this->getRecordlistCache();
             if ($recordlistcache) {
                 $recordlistcache->clearCache($this->m_node->atkNodeType());

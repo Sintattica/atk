@@ -542,16 +542,16 @@ class Controller
 
         } elseif ($mode == "add") {
 
-            if ($node->hasFlag(NF_EDITAFTERADD) === true) {
+            if ($node->hasFlag(Node::NF_EDITAFTERADD) === true) {
                 if ($node->allowed('edit')) {
                     $result[] = $this->getButton('saveandedit', true);
                 } else {
-                    Tools::atkwarning("NF_EDITAFTERADD found but no 'edit' privilege.");
+                    Tools::atkwarning("Node::NF_EDITAFTERADD found but no 'edit' privilege.");
                 }
             } else {
                 $result[] = $this->getButton('saveandclose', true);
 
-                if ($node->hasFlag(NF_ADDAFTERADD)) {
+                if ($node->hasFlag(Node::NF_ADDAFTERADD)) {
                     $result[] = $this->getButton('saveandnext', false);
                 }
             }
@@ -565,7 +565,7 @@ class Controller
 
         } elseif ($mode == "view") {
             // if appropriate, display an edit button.
-            if (!$node->hasFlag(NF_NO_EDIT) && $node->allowed("edit", $record)) {
+            if (!$node->hasFlag(Node::NF_NO_EDIT) && $node->allowed("edit", $record)) {
                 $result[] = '<input type="hidden" name="atkaction" value="edit">' .
                     '<input type="hidden" name="atknodetype" value="' . $node->atkNodeType() . '">' .
                     $this->getButton('edit');

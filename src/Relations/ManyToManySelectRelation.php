@@ -361,7 +361,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
             $actions[] = 'edit';
         }
 
-        if (!$this->getLink()->hasFlag(NF_NO_DELETE)) {
+        if (!$this->getLink()->hasFlag(Node::NF_NO_DELETE)) {
             $actions[] = 'delete';
         }
 
@@ -470,7 +470,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      */
     protected function renderAdditionField($record, $fieldprefix, $mode)
     {
-        if ($this->getLink()->hasFlag(NF_NO_ADD)) {
+        if ($this->getLink()->hasFlag(Node::NF_NO_ADD)) {
             return '';
         }
 

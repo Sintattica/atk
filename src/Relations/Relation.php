@@ -203,7 +203,7 @@ class Relation extends Attribute
             }
 
             if ($this->hasFlag(self::AF_NO_FILTER)) {
-                $this->m_destInstance->m_flags |= NF_NO_FILTER;
+                $this->m_destInstance->m_flags |= Node::NF_NO_FILTER;
             }
 
             foreach (array_keys($this->m_destInstance->m_attribList) as $key) {

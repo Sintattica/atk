@@ -13,7 +13,7 @@ use \Exception;
  * Handler for the 'admin' action of a node. It displays a recordlist with
  * existing records, and links to view/edit/delete them (or custom actions
  * if present), and an embedded addform or a link to an addpage (depending
- * on the presence of the NF_ADD_LINK or NF_ADD_DIALOG flag).
+ * on the presence of the Node::NF_ADD_LINK or Node::NF_ADD_DIALOG flag).
  *
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk
@@ -59,8 +59,8 @@ class AdminHandler extends ActionHandler
     function renderAdminPage()
     {
         $res = array();
-        if ($this->m_node->hasFlag(NF_NO_ADD) == false && $this->m_node->allowed("add")) {
-            if (!$this->m_node->hasFlag(NF_ADD_LINK) && !$this->m_node->hasFlag(NF_ADD_DIALOG)) { // otherwise, in adminPage, an add link will be added.
+        if ($this->m_node->hasFlag(Node::NF_NO_ADD) == false && $this->m_node->allowed("add")) {
+            if (!$this->m_node->hasFlag(Node::NF_ADD_LINK) && !$this->m_node->hasFlag(Node::NF_ADD_DIALOG)) { // otherwise, in adminPage, an add link will be added.
                 // we could get here because of a reject.
                 $record = $this->getRejectInfo();
 
@@ -258,7 +258,7 @@ class AdminHandler extends ActionHandler
     function getImportLink()
     {
         $link = "";
-        if ($this->m_node->allowed("add") && !$this->m_node->hasFlag(NF_READONLY) && $this->m_node->hasFlag(NF_IMPORT)) {
+        if ($this->m_node->allowed("add") && !$this->m_node->hasFlag(Node::NF_READONLY) && $this->m_node->hasFlag(Node::NF_IMPORT)) {
             $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeType(), "import"),
                 Tools::atktext("import", "atk", $this->m_node->m_type), SESSION_NESTED);
         }
@@ -273,7 +273,7 @@ class AdminHandler extends ActionHandler
     function getExportLink()
     {
         $link = "";
-        if ($this->m_node->allowed("view") && $this->m_node->allowed("export") && $this->m_node->hasFlag(NF_EXPORT)) {
+        if ($this->m_node->allowed("view") && $this->m_node->allowed("export") && $this->m_node->hasFlag(Node::NF_EXPORT)) {
             $filter = '';
             if (count($this->m_node->m_fuzzyFilters) > 0) {
                 $filter = implode(' AND ',
@@ -308,20 +308,20 @@ class AdminHandler extends ActionHandler
     {
         $node = Module::atkGetNode($this->invoke('getAddNodeType'));
 
-        if (!$node->hasFlag(NF_NO_ADD) && $node->allowed("add")) {
+        if (!$node->hasFlag(Node::NF_NO_ADD) && $node->allowed("add")) {
             $label = $node->text("link_" . $node->m_type . "_add", null, "", "", true);
             if (empty($label)) {
                 // generic text
                 $label = Tools::atktext("add", "atk");
             }
 
-            $add = $node->hasFlag(NF_ADD_DIALOG);
-            $addorcopy = $node->hasFlag(NF_ADDORCOPY_DIALOG) &&
+            $add = $node->hasFlag(Node::NF_ADD_DIALOG);
+            $addorcopy = $node->hasFlag(Node::NF_ADDORCOPY_DIALOG) &&
                 AddOrCopyHandler::hasCopyableRecords($node);
 
 
             if ($add || $addorcopy) {
-                $action = $node->hasFlag(NF_ADDORCOPY_DIALOG) ? 'addorcopy' : 'add';
+                $action = $node->hasFlag(Node::NF_ADDORCOPY_DIALOG) ? 'addorcopy' : 'add';
 
                 $dialog = new Dialog($node->atkNodeType(), $action, 'dialog');
                 $dialog->setModifierObject($node);
@@ -331,7 +331,7 @@ class AdminHandler extends ActionHandler
                 return '
 			      <a href="javascript:void(0)" onclick="' . $onClick . '; return false;" class="valignMiddle">' . $label . '</a>
 			    ';
-            } elseif ($node->hasFlag(NF_ADD_LINK)) {
+            } elseif ($node->hasFlag(Node::NF_ADD_LINK)) {
                 $addurl = $this->invoke('getAddUrl', $node);
                 return Tools::atkHref($addurl, $label, SESSION_NESTED);
             }

@@ -767,7 +767,7 @@ class DataGridList extends DataGridComponent
             $mra = $actions["mra"];
             $actions = $actions["actions"];
         } else {
-            $mra = $grid->getNode()->hasFlag(NF_NO_DELETE) ? array() : array("delete");
+            $mra = $grid->getNode()->hasFlag(Node::NF_NO_DELETE) ? array() : array("delete");
         }
 
         /* get the rows */

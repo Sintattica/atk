@@ -29,7 +29,7 @@ class DataNode extends Node
      */
     public function __construct($type = '', $flags = 0)
     {
-        parent::__construct($type, $flags | NF_NO_ADD | NF_NO_EDIT);
+        parent::__construct($type, $flags | self::NF_NO_ADD | self::NF_NO_EDIT);
         $this->setTable($this->m_type);
     }
 

@@ -1,22 +1,16 @@
 <?php namespace Sintattica\Atk\Core;
 
-/**
- * @internal includes..
- */
+use Sintattica\Atk\Attributes\Attribute;
+use Sintattica\Atk\Ui\Theme;
+use Sintattica\Atk\Handlers\ActionHandler;
 
-include_once(Config::getGlobal("assets_url") . "class.atktreetoolstree.php");
-
-define("NF_TREE_NO_ROOT_DELETE", NF_SPECIFIC_1); // No root elements can be deleted
-define("NF_TREE_NO_ROOT_COPY", NF_SPECIFIC_2); // No root elements can be copied
-define("NF_TREE_NO_ROOT_ADD", NF_SPECIFIC_3); // No root elements can be added
-define("NF_TREE_AUTO_EXPAND", NF_SPECIFIC_4); // The tree is initially fully expanded
 
 global $g_maxlevel;
 $g_maxlevel = 0;
 
 /**
  * Extension on the Node class. Here you will find all
- * functions for the tree view. If you want to use the treeview, you must define the atkTreeNode
+ * functions for the tree view. If you want to use the treeview, you must define the TreeNode
  * instead of Node.
  * <b>Example:</b>
  * <code>
@@ -35,6 +29,11 @@ $g_maxlevel = 0;
  */
 class TreeNode extends Node
 {
+    const NF_TREE_NO_ROOT_DELETE = self::NF_SPECIFIC_1; // No root elements can be deleted
+    const NF_TREE_NO_ROOT_COPY = self::NF_SPECIFIC_2; // No root elements can be copied
+    const NF_TREE_NO_ROOT_ADD = self::NF_SPECIFIC_3; // No root elements can be added
+    const NF_TREE_AUTO_EXPAND = self::NF_SPECIFIC_4; // The tree is initially fully expanded
+
     var $m_tree = array();
 
     /**
@@ -59,16 +58,16 @@ class TreeNode extends Node
 
     /**
      * Action "admin" handler method, we override this method because we don't want
-     * an add form when the flag NF_TREE_NO_ROOT_ADD. Because the add form is only
+     * an add form when the flag self::NF_TREE_NO_ROOT_ADD. Because the add form is only
      * used to add root elements.
      *
-     * @param atkActionHandler $handler
+     * @param ActionHandler $handler
      * @param array $record
      */
     function action_admin(&$handler, $record = "")
     {
-        if ($this->hasFlag(NF_TREE_NO_ROOT_ADD)) {
-            $this->m_flags |= NF_NO_ADD;
+        if ($this->hasFlag(self::NF_TREE_NO_ROOT_ADD)) {
+            $this->m_flags |= self::NF_NO_ADD;
         }
         return $handler->action_admin($record);
     }
@@ -76,7 +75,7 @@ class TreeNode extends Node
     /**
      * Build the tree
      *
-     * @return tree Tree object
+     * @return TreeToolsTree Tree object
      */
     function buildTree()
     {
@@ -97,7 +96,7 @@ class TreeNode extends Node
      * Admin page displays records and the actions that can be performed on
      * them (edit, delete) in a Treeview
      *
-     * @param atkActionHandler $handler The action handler object
+     * @param ActionHandler $handler The action handler object
      */
     function adminPage(&$handler)
     {
@@ -120,7 +119,7 @@ class TreeNode extends Node
 
         $this->m_tree[0]["level"] = 0;
         $this->m_tree[0]["id"] = '';
-        $this->m_tree[0]["expand"] = $this->hasFlag(NF_TREE_AUTO_EXPAND) ? 1 : 0;
+        $this->m_tree[0]["expand"] = $this->hasFlag(self::NF_TREE_AUTO_EXPAND) ? 1 : 0;
         $this->m_tree[0]["colapse"] = 0;
         $this->m_tree[0]["isleaf"] = 1;
         $this->m_tree[0]["label"] = "";
@@ -132,7 +131,7 @@ class TreeNode extends Node
         $width = ($g_maxlevel * 16) + 600;
         $content .= "<table border=\"0\" cellspacing=0 cellpadding=0 cols=" . ($g_maxlevel + 2) . " width=" . $width . ">\n";
 
-        if (!$this->hasFlag(NF_NO_ADD) && $this->hasFlag(NF_ADD_LINK) && $this->allowed("add")) {
+        if (!$this->hasFlag(self::NF_NO_ADD) && $this->hasFlag(self::NF_ADD_LINK) && $this->allowed("add")) {
             $addurl = Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=add&atkfilter=" . rawurlencode($this->m_parent . "." . $this->m_primaryKey[0] . "='0'");
             if (Tools::atktext("txt_link_" . Module::getNodeType($this->m_type) . "_add", $this->m_module, "",
                     "", "", true) != ""
@@ -216,7 +215,7 @@ class TreeNode extends Node
      */
     function getIcon($name)
     {
-        $theme = &atkInstance("atk.ui.atktheme");
+        $theme = Theme::getInstance();
         return $theme->iconPath("tree_$name", "tree", $this->m_module);
     }
 
@@ -537,17 +536,17 @@ class TreeNode extends Node
                     $res .= '<td nowrap> ';
                     $actions = array();
 
-                    if (!$this->hasFlag(NF_NO_ADD) && !($this->hasFlag(NF_TREE_NO_ROOT_ADD) && $this->m_tree[$cnt]["level"] == 0)) {
+                    if (!$this->hasFlag(self::NF_NO_ADD) && !($this->hasFlag(self::NF_TREE_NO_ROOT_ADD) && $this->m_tree[$cnt]["level"] == 0)) {
                         $actions["add"] = Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=add&atkfilter=" . $this->m_parent . "." . $this->m_primaryKey[0] . rawurlencode("='" . $this->m_tree[$cnt]["id"] . "'");
                     }
                     if ($cnt > 0) {
-                        if (!$this->hasFlag(NF_NO_EDIT)) {
+                        if (!$this->hasFlag(self::NF_NO_EDIT)) {
                             $actions["edit"] = Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=edit&atkselector=" . $this->m_table . '.' . $this->m_primaryKey[0] . '=' . $this->m_tree[$cnt]["id"];
                         }
-                        if (($this->hasFlag(NF_COPY) && $this->allowed("add") && !$this->hasflag(NF_TREE_NO_ROOT_COPY)) || ($this->m_tree[$cnt]["level"] != 1 && $this->hasFlag(NF_COPY) && $this->allowed("add"))) {
+                        if (($this->hasFlag(self::NF_COPY) && $this->allowed("add") && !$this->hasflag(self::NF_TREE_NO_ROOT_COPY)) || ($this->m_tree[$cnt]["level"] != 1 && $this->hasFlag(self::NF_COPY) && $this->allowed("add"))) {
                             $actions["copy"] = Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=copy&atkselector=" . $this->m_table . '.' . $this->m_primaryKey[0] . '=' . $this->m_tree[$cnt]["id"];
                         }
-                        if ($this->hasFlag(NF_NO_DELETE) || ($this->hasFlag(NF_TREE_NO_ROOT_DELETE) && $this->m_tree[$cnt]["level"] == 1)) {
+                        if ($this->hasFlag(self::NF_NO_DELETE) || ($this->hasFlag(self::NF_TREE_NO_ROOT_DELETE) && $this->m_tree[$cnt]["level"] == 1)) {
                             // Do nothing
                         } else {
                             $actions["delete"] = Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=delete&atkselector=" . $this->m_table . '.' . $this->m_primaryKey[0] . '=' . $this->m_tree[$cnt]["id"];

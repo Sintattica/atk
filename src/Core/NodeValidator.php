@@ -133,7 +133,7 @@ class NodeValidator
 
 
                 // if no root elements may be added to the tree, then every record needs to have a parent!
-                if ($p_attrib->hasFlag(Attribute::AF_PARENT) && $this->m_nodeObj->hasFlag(NF_TREE_NO_ROOT_ADD) && $this->m_nodeObj->m_action == "save") {
+                if ($p_attrib->hasFlag(Attribute::AF_PARENT) && $this->m_nodeObj->hasFlag(TreeNode::NF_TREE_NO_ROOT_ADD) && $this->m_nodeObj->m_action == "save") {
                     $p_attrib->m_flags |= Attribute::AF_OBLIGATORY;
                 }
 

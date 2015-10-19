@@ -156,7 +156,7 @@ class AddOrCopyHandler extends ActionHandler
     {
         $script = Dialog::getCloseCall();
 
-        if ($this->m_node->hasFlag(NF_ADD_DIALOG)) {
+        if ($this->m_node->hasFlag(Node::NF_ADD_DIALOG)) {
             $dialog = new Dialog($this->m_node->atkNodeType(), 'add', 'dialog');
             $dialog->setSessionStatus(SESSION_PARTIAL);
             $script .= $dialog->getCall(true, false);
@@ -379,7 +379,7 @@ class AddOrCopyHandler extends ActionHandler
             if ($attr->hasFlag(Attribute::AF_READONLY_EDIT)) {
                 continue;
             }
-            if ($attr->createDestination() && $attr->m_destInstance->hasFlag(NF_READONLY)) {
+            if ($attr->createDestination() && $attr->m_destInstance->hasFlag(Node::NF_READONLY)) {
                 continue;
             }
 

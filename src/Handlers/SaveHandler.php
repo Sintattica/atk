@@ -168,7 +168,7 @@ class SaveHandler extends ActionHandler
      */
     protected function getSuccessReturnURL($record)
     {
-        if ($this->m_node->hasFlag(NF_EDITAFTERADD) && $this->m_node->allowed('edit')) {
+        if ($this->m_node->hasFlag(Node::NF_EDITAFTERADD) && $this->m_node->allowed('edit')) {
             // forward atkpkret for newly added records
             $extra = "";
             if (isset($this->m_postvars["atkpkret"])) {
@@ -180,7 +180,7 @@ class SaveHandler extends ActionHandler
             $url .= '&atkselector=' . rawurlencode($this->m_node->primaryKey($record));
             $location = Tools::session_url($url . $extra, SESSION_REPLACE, $this->_getSkip() - 1);
         } else {
-            if ($this->m_node->hasFlag(NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext'])) {
+            if ($this->m_node->hasFlag(Node::NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext'])) {
                 $filter = "";
                 if (isset($this->m_node->m_postvars['atkfilter'])) {
                     $filter = "&atkfilter=" . rawurlencode($this->m_node->m_postvars['atkfilter']);

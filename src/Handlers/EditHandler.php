@@ -57,7 +57,7 @@ class EditHandler extends ViewEditBase
         $record = $this->mergeWithPostvars($record);
 
         $this->notify("edit", $record);
-        if ($node->hasFlag(NF_LOCK)) {
+        if ($node->hasFlag(Node::NF_LOCK)) {
             if ($node->m_lock->lock($node->primaryKey($record), $node->m_table, $node->getLockMode())) {
                 $res = $this->invoke("editPage", $record, true);
             } else {

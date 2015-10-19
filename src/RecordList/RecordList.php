@@ -78,13 +78,13 @@ class RecordList
      */
     function convertFlags($flags)
     {
-        $result = Tools::hasFlag($flags, NF_MRA) ? RL_MRA : 0;
-        $result |= Tools::hasFlag($flags, NF_MRPA) ? RL_MRPA : 0;
-        $result |= Tools::hasFlag($flags, NF_LOCK) ? RL_LOCK : 0;
-        $result |= Tools::hasFlag($flags, NF_NO_SEARCH) ? RL_NO_SEARCH : 0;
-        $result |= Tools::hasFlag($flags, NF_NO_EXTENDED_SEARCH) ? RL_NO_EXTENDED_SEARCH
+        $result = Tools::hasFlag($flags, Node::NF_MRA) ? RL_MRA : 0;
+        $result |= Tools::hasFlag($flags, Node::NF_MRPA) ? RL_MRPA : 0;
+        $result |= Tools::hasFlag($flags, Node::NF_LOCK) ? RL_LOCK : 0;
+        $result |= Tools::hasFlag($flags, Node::NF_NO_SEARCH) ? RL_NO_SEARCH : 0;
+        $result |= Tools::hasFlag($flags, Node::NF_NO_EXTENDED_SEARCH) ? RL_NO_EXTENDED_SEARCH
             : 0;
-        $result |= Tools::hasFlag($flags, NF_EXT_SORT) ? RL_EXT_SORT : 0;
+        $result |= Tools::hasFlag($flags, Node::NF_EXT_SORT) ? RL_EXT_SORT : 0;
         return $result;
     }
 
@@ -301,7 +301,7 @@ class RecordList
         if (!Tools::hasFlag($flags, RL_NO_SEARCH)) {
             $button = '<input type="submit" class="btn btn-default btn_search" value="' . Tools::atktext("search") . '">';
             if (!Tools::hasFlag($flags,
-                    RL_NO_EXTENDED_SEARCH) && !$this->m_node->hasFlag(NF_NO_EXTENDED_SEARCH)
+                    RL_NO_EXTENDED_SEARCH) && !$this->m_node->hasFlag(Node::NF_NO_EXTENDED_SEARCH)
             ) {
                 $button .= '<br>' . Tools::href(Tools::atkSelf() . "?atknodetype=" . $this->getMasterNodeType() . "&atkaction=" . $node->getExtendedSearchAction(),
                         "(" . Tools::atktext("search_extended") . ")", SESSION_NESTED);
@@ -742,7 +742,7 @@ class RecordList
             $mra = $actions["mra"];
             $actions = $actions["actions"];
         } else {
-            $mra = $this->m_node->hasFlag(NF_NO_DELETE) ? array() : array("delete");
+            $mra = $this->m_node->hasFlag(Node::NF_NO_DELETE) ? array() : array("delete");
         }
 
         /* get the rows */

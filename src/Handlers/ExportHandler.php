@@ -555,8 +555,8 @@ class ExportHandler extends ActionHandler
             $actions = $node->defaultActions("export");
         }
         $rl = new CustomRecordList();
-        $flags = ($node_bk->hasFlag(NF_MRA) ? RL_MRA : 0) | ($node_bk->hasFlag(NF_MRPA)
-                ? RL_MRPA : 0) | ($node_bk->hasFlag(NF_LOCK) ? RL_LOCK : 0);
+        $flags = ($node_bk->hasFlag(Node::NF_MRA) ? RL_MRA : 0) | ($node_bk->hasFlag(Node::NF_MRPA)
+                ? RL_MRPA : 0) | ($node_bk->hasFlag(Node::NF_LOCK) ? RL_LOCK : 0);
         $node_bk->m_postvars = $session_back;
 
         if (isset($session_back['atkdg']['admin']['atksearch'])) {

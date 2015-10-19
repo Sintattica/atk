@@ -22,186 +22,6 @@ use Sintattica\Atk\Utils\Debugger;
 use \Exception;
 
 /**
- * Define some flags for nodes. Use the constructor of the Node
- * class to set the flags. (concatenate multiple flags with '|')
- */
-/**
- * No new records may be added
- */
-define("NF_NO_ADD", 1);
-
-/**
- * Records may not be edited
- */
-define("NF_NO_EDIT", 2);
-
-/**
- * Records may not be deleted
- */
-define("NF_NO_DELETE", 4);
-
-/**
- * Immediately after you add a new record,
- * you get the editpage for that record
- */
-define("NF_EDITAFTERADD", 8);
-
-/**
- * Records may not be searched
- */
-define("NF_NO_SEARCH", 16);
-
-/**
- * Ignore addFilter filters
- */
-define("NF_NO_FILTER", 32);
-
-/**
- * Doesn't show an add form on the admin page
- * but a link to the form
- */
-define("NF_ADD_LINK", 64);
-
-/**
- * Records may not be viewed
- */
-define("NF_NO_VIEW", 128);
-
-/**
- * Records / trees may be copied
- */
-define("NF_COPY", 256);
-
-/**
- * If this flag is set and only one record is
- * present on a selectpage, atk automagically
- * selects it and moves on to the target
- */
-define("NF_AUTOSELECT", 512);
-
-/**
- * If set, atk stores the old values of
- * a record as ["atkorgrec"] in the $rec that
- * gets passed to the postUpdate
- */
-define("NF_TRACK_CHANGES", 1024);
-
-/**
- * Quick way to disable accessright checking
- * for an entire node. (Everybody may access this node)
- */
-define("NF_NO_SECURITY", 2048);
-
-/**
- * Extended search feature is turned off
- */
-define("NF_NO_EXTENDED_SEARCH", 4096);
-
-/**
- * Multi-selection of records is turned on
- */
-define("NF_MULTI_RECORD_ACTIONS", 8192);
-
-/**
- * Multi-priority-selection of records is turned on
- */
-define("NF_MRPA", 16384);
-
-/**
- * Add locking support to node, if one user is editing a record,
- * no one else may edit it.
- */
-define("NF_LOCK", 32768);
-
-/**
- * Quick way to ensable the csv import feature
- */
-define("NF_IMPORT", 131072);
-
-/**
- * Add CSV export ability to the node.
- */
-define("NF_EXPORT", 262144);
-
-
-/**
- * Disable csv import feature
- * @deprecated since ATK 5.2
- */
-define("NF_NO_IMPORT", 0);
-
-/**
- * Enable extended sorting (multicolumn sort)
- */
-define("NF_EXT_SORT", 524288);
-
-/**
- * Makes a node cache it's recordlist
- */
-define("NF_CACHE_RECORDLIST", 1048576);
-
-/**
- * After adding a new record add another one instantaniously.
- */
-define("NF_ADDAFTERADD", 2097152);
-
-/**
- * No sorting possible.
- */
-define("NF_NO_SORT", 4194304);
-
-/**
- * Use the dialog popup box when adding a new record for this node.
- */
-define("NF_ADD_DIALOG", 8388608);
-
-/**
- * Use the dialog add-or-copy popup box when adding a new record for this node.
- */
-define("NF_ADDORCOPY_DIALOG", 16777216);
-
-/**
- * Specific node flag 1
- */
-define("NF_SPECIFIC_1", 33554432);
-
-/**
- * Specific node flag 2
- */
-define("NF_SPECIFIC_2", 67108864);
-
-/**
- * Specific node flag 3
- */
-define("NF_SPECIFIC_3", 134217728);
-
-/**
- * Specific node flag 4
- */
-define("NF_SPECIFIC_4", 268435456);
-
-/**
- * Specific node flag 5
- */
-define("NF_SPECIFIC_5", 536870912);
-
-/**
- * Records may be copied and open for editing
- */
-define("NF_EDITAFTERCOPY", 1073741824);
-
-/**
- * Alias for NF_MULTI_RECORD_ACTIONS flag (shortcut)
- */
-define("NF_MRA", NF_MULTI_RECORD_ACTIONS);
-
-
-/**
- * Aggregate flag to quickly create readonly nodes
- */
-define("NF_READONLY", NF_NO_ADD | NF_NO_DELETE | NF_NO_EDIT);
-
-/**
  * action status flags
  * Note that these have binary numbers, even though an action could never have
  * two statusses at the same time.
@@ -270,6 +90,186 @@ define("MRA_NO_SELECT", 3);
  */
 class Node
 {
+    /**
+     * Define some flags for nodes. Use the constructor of the Node
+     * class to set the flags. (concatenate multiple flags with '|')
+     */
+    /**
+     * No new records may be added
+     */
+    const NF_NO_ADD = 1;
+
+    /**
+     * Records may not be edited
+     */
+    const NF_NO_EDIT = 2;
+
+    /**
+     * Records may not be deleted
+     */
+    const NF_NO_DELETE = 4;
+
+    /**
+     * Immediately after you add a new record,
+     * you get the editpage for that record
+     */
+    const NF_EDITAFTERADD = 8;
+
+    /**
+     * Records may not be searched
+     */
+    const NF_NO_SEARCH = 16;
+
+    /**
+     * Ignore addFilter filters
+     */
+    const NF_NO_FILTER = 32;
+
+    /**
+     * Doesn't show an add form on the admin page
+     * but a link to the form
+     */
+    const NF_ADD_LINK = 64;
+
+    /**
+     * Records may not be viewed
+     */
+    const NF_NO_VIEW = 128;
+
+    /**
+     * Records / trees may be copied
+     */
+    const NF_COPY = 256;
+
+    /**
+     * If this flag is set and only one record is
+     * present on a selectpage, atk automagically
+     * selects it and moves on to the target
+     */
+    const NF_AUTOSELECT = 512;
+
+    /**
+     * If set, atk stores the old values of
+     * a record as ["atkorgrec"] in the $rec that
+     * gets passed to the postUpdate
+     */
+    const NF_TRACK_CHANGES = 1024;
+
+    /**
+     * Quick way to disable accessright checking
+     * for an entire node. (Everybody may access this node)
+     */
+    const NF_NO_SECURITY = 2048;
+
+    /**
+     * Extended search feature is turned off
+     */
+    const NF_NO_EXTENDED_SEARCH = 4096;
+
+    /**
+     * Multi-selection of records is turned on
+     */
+    const NF_MULTI_RECORD_ACTIONS = 8192;
+
+    /**
+     * Multi-priority-selection of records is turned on
+     */
+    const NF_MRPA = 16384;
+
+    /**
+     * Add locking support to node, if one user is editing a record,
+     * no one else may edit it.
+     */
+    const NF_LOCK = 32768;
+
+    /**
+     * Quick way to ensable the csv import feature
+     */
+    const NF_IMPORT = 131072;
+
+    /**
+     * Add CSV export ability to the node.
+     */
+    const NF_EXPORT = 262144;
+
+
+    /**
+     * Disable csv import feature
+     * @deprecated since ATK 5.2
+     */
+    const NF_NO_IMPORT = 0;
+
+    /**
+     * Enable extended sorting (multicolumn sort)
+     */
+    const NF_EXT_SORT = 524288;
+
+    /**
+     * Makes a node cache it's recordlist
+     */
+    const NF_CACHE_RECORDLIST = 1048576;
+
+    /**
+     * After adding a new record add another one instantaniously.
+     */
+    const NF_ADDAFTERADD = 2097152;
+
+    /**
+     * No sorting possible.
+     */
+    const NF_NO_SORT = 4194304;
+
+    /**
+     * Use the dialog popup box when adding a new record for this node.
+     */
+    const NF_ADD_DIALOG = 8388608;
+
+    /**
+     * Use the dialog add-or-copy popup box when adding a new record for this node.
+     */
+    const NF_ADDORCOPY_DIALOG = 16777216;
+
+    /**
+     * Specific node flag 1
+     */
+    const NF_SPECIFIC_1 = 33554432;
+
+    /**
+     * Specific node flag 2
+     */
+    const NF_SPECIFIC_2 = 67108864;
+
+    /**
+     * Specific node flag 3
+     */
+    const NF_SPECIFIC_3 = 134217728;
+
+    /**
+     * Specific node flag 4
+     */
+    const NF_SPECIFIC_4 = 268435456;
+
+    /**
+     * Specific node flag 5
+     */
+    const NF_SPECIFIC_5 = 536870912;
+
+    /**
+     * Records may be copied and open for editing
+     */
+    const NF_EDITAFTERCOPY = 1073741824;
+
+    /**
+     * Alias for NF_MULTI_RECORD_ACTIONS flag (shortcut)
+     */
+    const NF_MRA = self::NF_MULTI_RECORD_ACTIONS;
+
+
+    /**
+     * Aggregate flag to quickly create readonly nodes
+     */
+    const NF_READONLY = self::NF_NO_ADD | self::NF_NO_DELETE | self::NF_NO_EDIT;
+
     /**
      * reference to the class which is used to validate atknodes
      * the validator is overridable by changing this variabele
@@ -439,7 +439,7 @@ class Node
     var $m_default_order = "";
 
     /**
-     * Bitwise mask of node flags (NF_* flags).
+     * Bitwise mask of node flags (self::NF_* flags).
      * @var int
      */
     var $m_flags;
@@ -737,9 +737,9 @@ class Node
      * base class.
      * <br>
      * <b>Example:</b>
-     * <code>$this->Node('test',NF_NO_EDIT);</code>
+     * <code>$this->Node('test',self::NF_NO_EDIT);</code>
      * @param String $type The nodetype (by default equal to the classname)
-     * @param int $flags Bitmask of node flags (NF_*).
+     * @param int $flags Bitmask of node flags (self::NF_*).
      */
     function __construct($type = "", $flags = 0)
     {
@@ -1503,7 +1503,7 @@ class Node
      */
     function setTabIndex($tabname, $index, $action = "")
     {
-        Tools::atkdebug("Node::setTabIndex($tabname,$index,$action)");
+        Tools::atkdebug("self::setTabIndex($tabname,$index,$action)");
         $actionList = array("add", "edit", "view");
         if ($action != "") {
             $actionList = array($action);
@@ -2555,22 +2555,22 @@ class Node
         }
 
         $actionbase = Tools::atkSelf() . '?atknodetype=' . $this->atknodetype() . '&atkselector=[pk]' . $postfix;
-        if (!$this->hasFlag(NF_NO_VIEW) && $this->allowed("view")) {
+        if (!$this->hasFlag(self::NF_NO_VIEW) && $this->allowed("view")) {
             $actions["view"] = $actionbase . '&atkaction=view';
         }
 
         if ($mode != "view") {
-            if (!$this->hasFlag(NF_NO_EDIT) && $this->allowed("edit")) {
+            if (!$this->hasFlag(self::NF_NO_EDIT) && $this->allowed("edit")) {
                 $actions["edit"] = $actionbase . '&atkaction=edit';
             }
 
-            if (!$this->hasFlag(NF_NO_DELETE) && $this->allowed("delete")) {
+            if (!$this->hasFlag(self::NF_NO_DELETE) && $this->allowed("delete")) {
                 $actions["delete"] = $actionbase . '&atkaction=delete';
             }
-            if ($this->hasFlag(NF_COPY) && $this->allowed("copy")) {
+            if ($this->hasFlag(self::NF_COPY) && $this->allowed("copy")) {
                 $actions["copy"] = $actionbase . '&atkaction=copy';
             }
-            if ($this->hasFlag(NF_EDITAFTERCOPY) && $this->allowed("editcopy")) {
+            if ($this->hasFlag(self::NF_EDITAFTERCOPY) && $this->allowed("editcopy")) {
                 $actions["editcopy"] = $actionbase . '&atkaction=editcopy';
             }
         }
@@ -2822,10 +2822,10 @@ class Node
         $this->setAttribSizes();
 
         $lockType = Config::getGlobal("lock_type");
-        if (!empty($lockType) && $this->hasFlag(NF_LOCK)) {
+        if (!empty($lockType) && $this->hasFlag(self::NF_LOCK)) {
             $this->m_lock = Lock::getInstance();
         } else {
-            $this->removeFlag(NF_LOCK);
+            $this->removeFlag(self::NF_LOCK);
         }
 
 
@@ -2908,7 +2908,7 @@ class Node
      */
     function dispatch($postvars, $flags = null)
     {
-        Tools::atkdebug("Node::dispatch()");
+        Tools::atkdebug("self::dispatch()");
         $controller = Controller::getInstance();
         $controller->setNode($this);
         return $controller->handleRequest($postvars, $flags);
@@ -3325,7 +3325,7 @@ class Node
 
     /**
      * Called by updateDb to load the original record inside the record if the
-     * NF_TRACK_CHANGES flag is set.
+     * self::NF_TRACK_CHANGES flag is set.
      *
      * NOTE: this method is made public because it's called from the update handler
      *
@@ -3335,14 +3335,14 @@ class Node
      */
     public function trackChangesIfNeeded(&$record, $excludes = '', $includes = '')
     {
-        if (!$this->hasFlag(NF_TRACK_CHANGES) || isset($record['atkorgrec'])) {
+        if (!$this->hasFlag(self::NF_TRACK_CHANGES) || isset($record['atkorgrec'])) {
             return;
         }
 
         // We need to add the NO_FILTER flag in case the new values would filter the record.
         $flags = $this->m_flags;
 
-        $this->addFlag(NF_NO_FILTER);
+        $this->addFlag(self::NF_NO_FILTER);
 
         $record["atkorgrec"] = $this->select()
             ->where($record['atkprimkey'])
@@ -3533,7 +3533,7 @@ class Node
     protected function _initSelector(Selector $selector, $condition = null, $params = array())
     {
         $selector->orderBy($this->getOrder());
-        $selector->ignoreDefaultFilters($this->hasFlag(NF_NO_FILTER));
+        $selector->ignoreDefaultFilters($this->hasFlag(self::NF_NO_FILTER));
         $selector->ignorePostvars(Module::atkReadOptimizer());
 
         if ($condition != null) {
@@ -3960,7 +3960,7 @@ class Node
      * derived classes if you want to do something special after the record is
      * updated.
      *
-     * If the NF_TRACK_CHANGES flag is present for the node, both the new
+     * If the self::NF_TRACK_CHANGES flag is present for the node, both the new
      * and the original record are passed to this method. The original
      * record is stored in the new record, in $record["atkorgrec"].
      *
@@ -4117,8 +4117,8 @@ class Node
      * This function is a framework method and should not be called directly.
      * It should not be overridden either.
      *
-     * To change the record actions, either override Node::recordActions() in you node,
-     * or call Node::registerRecordActionsCallback to register a callback.
+     * To change the record actions, either override self::recordActions() in you node,
+     * or call self::registerRecordActionsCallback to register a callback.
      *
      * @param array $record The record for which the actions need to be
      *                      determined.
@@ -4223,7 +4223,7 @@ class Node
         $alias = $this->atkNodeType();
         $this->resolveNodeTypeAndAction($alias, $action);
 
-        return ($this->hasFlag(NF_NO_SECURITY) || in_array($action,
+        return ($this->hasFlag(self::NF_NO_SECURITY) || in_array($action,
                 $this->m_unsecuredActions) || $secMgr->allowed($alias,
                 $action) || (isset($this->m_securityImplied[$action]) && $secMgr->allowed($alias,
                     $this->m_securityImplied[$action])));
@@ -4380,16 +4380,16 @@ class Node
      */
     function callHandler($action)
     {
-        Tools::atkdebug("Node::callHandler(); action: " . $action);
+        Tools::atkdebug("self::callHandler(); action: " . $action);
         $handler = Module::atkGetNodeHandler($this->m_type, $action);
 
         // handler function
         if ($handler != null && is_string($handler) && function_exists($handler)) {
-            Tools::atkdebug("Node::callHandler: Calling external handler function for '" . $action . "'");
+            Tools::atkdebug("self::callHandler: Calling external handler function for '" . $action . "'");
             $handler($this, $action);
         } // handler object
         elseif ($handler != null && $handler instanceof ActionHandler) {
-            Tools::atkdebug("Node::callHandler:Using override/existing ActionHandler " . get_class($handler) . " class for '" . $action . "'");
+            Tools::atkdebug("self::callHandler:Using override/existing ActionHandler " . get_class($handler) . " class for '" . $action . "'");
             $handler->handle($this, $action, $this->m_postvars);
         } // no (valid) handler
         else {
@@ -4409,7 +4409,7 @@ class Node
      */
     function &getHandler($action)
     {
-        Tools::atkdebug("Node::getHandler(); action: " . $action);
+        Tools::atkdebug("self::getHandler(); action: " . $action);
 
         // for backwards compatibility we first check if a handler exists without using the module name
         $handler = Module::atkGetNodeHandler($this->m_type, $action);
@@ -4430,7 +4430,7 @@ class Node
         //       or why support functions at all?!
         // handler object
         if ($handler != null && is_subclass_of($handler, "ActionHandler")) {
-            Tools::atkdebug("Node::getHandler: Using existing ActionHandler " . get_class($handler) . " class for '" . $action . "'");
+            Tools::atkdebug("self::getHandler: Using existing ActionHandler " . get_class($handler) . " class for '" . $action . "'");
             $handler->setNode($this);
             $handler->setAction($action);
         } else {
@@ -4442,7 +4442,7 @@ class Node
 
             //If we use a default handler we need to register it to this node
             //because we might call it a second time.
-            Tools::atkdebug("Node::getHandler: Register default ActionHandler for " . $this->m_type . " action: '" . $action . "'");
+            Tools::atkdebug("self::getHandler: Register default ActionHandler for " . $this->m_type . " action: '" . $action . "'");
             Module::atkRegisterNodeHandler($this->m_type, $action, $handler);
         }
 
@@ -4745,7 +4745,7 @@ class Node
             if (is_a($listener, 'atkTriggerListener')) {
                 $this->m_triggerListeners[] = &$listener;
             } else {
-                Tools::atkdebug('Node::addListener: Unknown listener base class ' . get_class($listener));
+                Tools::atkdebug('self::addListener: Unknown listener base class ' . get_class($listener));
             }
         }
     }

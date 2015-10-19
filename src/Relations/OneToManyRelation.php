@@ -365,7 +365,7 @@ class OneToManyRelation extends Relation
             }
 
             $actions = array();
-            if (!$this->m_destInstance->hasFlag(NF_NO_VIEW)) {
+            if (!$this->m_destInstance->hasFlag(Node::NF_NO_VIEW)) {
                 $actions['view'] = Tools::dispatch_url($this->m_destination, "view",
                     array("atkselector" => "[pk]", "atkfilter" => $this->m_destinationFilter));
             }
@@ -482,7 +482,7 @@ class OneToManyRelation extends Relation
     {
         $add_link = '';
 
-        if (!$this->getDestination()->hasFlag(NF_NO_ADD)) {
+        if (!$this->getDestination()->hasFlag(Node::NF_NO_ADD)) {
             $add_link = $this->_getAddLink(
                 $myrecords, $record, true, $mode, $fieldprefix
             );
@@ -533,7 +533,7 @@ class OneToManyRelation extends Relation
         }
 
         $is_addorcopy_mode = $this->hasFlag(self::AF_ONETOMANY_ADDORCOPY_DIALOG) ||
-            $this->m_destInstance->hasFlag(NF_ADDORCOPY_DIALOG);
+            $this->m_destInstance->hasFlag(Node::NF_ADDORCOPY_DIALOG);
 
         if ($is_addorcopy_mode) {
             $filter = $this->getAddFilterString($record);
@@ -546,7 +546,7 @@ class OneToManyRelation extends Relation
         }
 
         $is_dialog_mode = $this->hasFlag(self::AF_ONETOMANY_ADD_DIALOG) ||
-            $this->m_destInstance->hasFlag(NF_ADD_DIALOG);
+            $this->m_destInstance->hasFlag(Node::NF_ADD_DIALOG);
 
         if ($is_dialog_mode) {
             return $this->_getDialogAddLink($record, 'add', $params);
@@ -644,7 +644,7 @@ class OneToManyRelation extends Relation
         if (!$this->createDestination()) {
             return $url;
         }
-        if ($this->m_destInstance->hasFlag(NF_NO_ADD)) {
+        if ($this->m_destInstance->hasFlag(Node::NF_NO_ADD)) {
             return $url;
         }
 
@@ -1415,13 +1415,13 @@ class OneToManyRelation extends Relation
         }
 
         // user has choosen to add a new record, depending on whatever the self::AF_ONETOMANY_ADD_DIALOG
-        // or the destination instance NF_ADD_DIALOG flags has been set we either show the user an
+        // or the destination instance Node::NF_ADD_DIALOG flags has been set we either show the user an
         // add dialog or redirect him/her to the add page (using an atkSubmit)
         else {
 
             $script = Dialog::getCloseCall();
 
-            if ($this->hasFlag(self::AF_ONETOMANY_ADD_DIALOG) || $this->m_destInstance->hasFlag(NF_ADD_DIALOG)) {
+            if ($this->hasFlag(self::AF_ONETOMANY_ADD_DIALOG) || $this->m_destInstance->hasFlag(Node::NF_ADD_DIALOG)) {
                 $ui = $this->m_ownerInstance->getUi();
                 $filter = $this->m_ownerInstance->m_postvars['atkfilter'];
                 $dialog = new Dialog($this->m_ownerInstance->atkNodeType(), 'edit',

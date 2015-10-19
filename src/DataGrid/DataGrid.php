@@ -458,7 +458,7 @@ class DataGrid
         $this->setMode('admin');
         $this->setMRASelectionMode($this->getNode()->getMRASelectionMode());
 
-        if (!$this->getNode()->hasFlag(NF_NO_FILTER)) {
+        if (!$this->getNode()->hasFlag(Node::NF_NO_FILTER)) {
             foreach ($this->getNode()->m_filters as $key => $value) {
                 $this->addFilter($key . "='" . $value . "'");
             }
@@ -733,13 +733,13 @@ class DataGrid
      */
     protected function convertNodeFlags($nodeFlags)
     {
-        $flags = !Tools::hasFlag($nodeFlags, NF_NO_SORT) ? self::SORT : 0;
-        $flags |= Tools::hasFlag($nodeFlags, NF_EXT_SORT) ? self::EXTENDED_SORT : 0;
-        $flags |= !Tools::hasFlag($nodeFlags, NF_NO_SEARCH) ? self::SEARCH : 0;
-        $flags |= !Tools::hasFlag($nodeFlags, NF_NO_EXTENDED_SEARCH) ? self::EXTENDED_SEARCH : 0;
-        $flags |= Tools::hasFlag($nodeFlags, NF_MRA) ? self::MULTI_RECORD_ACTIONS : 0;
-        $flags |= Tools::hasFlag($nodeFlags, NF_MRPA) ? self::MULTI_RECORD_PRIORITY_ACTIONS : 0;
-        $flags |= Tools::hasFlag($nodeFlags, NF_LOCK) ? self::LOCKING : 0;
+        $flags = !Tools::hasFlag($nodeFlags, Node::NF_NO_SORT) ? self::SORT : 0;
+        $flags |= Tools::hasFlag($nodeFlags, Node::NF_EXT_SORT) ? self::EXTENDED_SORT : 0;
+        $flags |= !Tools::hasFlag($nodeFlags, Node::NF_NO_SEARCH) ? self::SEARCH : 0;
+        $flags |= !Tools::hasFlag($nodeFlags, Node::NF_NO_EXTENDED_SEARCH) ? self::EXTENDED_SEARCH : 0;
+        $flags |= Tools::hasFlag($nodeFlags, Node::NF_MRA) ? self::MULTI_RECORD_ACTIONS : 0;
+        $flags |= Tools::hasFlag($nodeFlags, Node::NF_MRPA) ? self::MULTI_RECORD_PRIORITY_ACTIONS : 0;
+        $flags |= Tools::hasFlag($nodeFlags, Node::NF_LOCK) ? self::LOCKING : 0;
 
         return $flags;
     }

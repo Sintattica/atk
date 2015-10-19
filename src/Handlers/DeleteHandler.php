@@ -158,7 +158,7 @@ class DeleteHandler extends ActionHandler
      */
     function _checkLocked()
     {
-        if ($this->m_node->hasFlag(NF_LOCK)) {
+        if ($this->m_node->hasFlag(Node::NF_LOCK)) {
             // We assume that the node is locked, unless proven otherwise
             $locked = true;
             if (is_array($this->m_postvars['atkselector'])) {

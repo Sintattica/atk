@@ -660,7 +660,7 @@ class ManyToOneRelation extends Relation
                 if ($this->hasFlag(self::AF_RELATION_AUTOLINK) && (!in_array($mode,
                         array("csv", "plain")))
                 ) { // create link to edit/view screen
-                    if (($this->m_destInstance->allowed("view")) && !$this->m_destInstance->hasFlag(NF_NO_VIEW) && $result != "") {
+                    if (($this->m_destInstance->allowed("view")) && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $result != "") {
                         $saveForm = $mode == 'add' || $mode == 'edit';
                         $result = Tools::href(Tools::dispatch_url($this->m_destination, "view",
                             array("atkselector" => $this->m_destInstance->primaryKey($record[$this->fieldName()]))),
@@ -729,7 +729,7 @@ class ManyToOneRelation extends Relation
         $filter = $this->parseFilter($this->m_destinationFilter, $record);
         $links[] = $this->_getSelectLink($newsel, $filter);
         if ($this->hasFlag(self::AF_RELATION_AUTOLINK)) { // auto edit/view link
-            if ($this->m_destInstance->allowed("add") && !$this->m_destInstance->hasFlag(NF_NO_ADD)) {
+            if ($this->m_destInstance->allowed("add") && !$this->m_destInstance->hasFlag(Node::NF_NO_ADD)) {
                 $links[] = Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), "add", array(
                     "atkpkret" => $id,
                     "atkfilter" => ($filter != ""
@@ -737,7 +737,7 @@ class ManyToOneRelation extends Relation
                 )), Tools::atktext("new"), SESSION_NESTED, true);
             }
 
-            if ($this->m_destInstance->allowed("edit") && !$this->m_destInstance->hasFlag(NF_NO_EDIT) && $record[$this->fieldName()] != null) {
+            if ($this->m_destInstance->allowed("edit") && !$this->m_destInstance->hasFlag(Node::NF_NO_EDIT) && $record[$this->fieldName()] != null) {
                 //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
                 //de app crasht als er geen waarde is ingevuld.
                 $editUrl = Tools::session_url(Tools::dispatch_url($this->getAutoLinkDestination(), "edit",
@@ -922,7 +922,7 @@ class ManyToOneRelation extends Relation
             if (is_array($destrecord)) {
                 $result = '<span id="' . $id . '_current" >';
 
-                if ($this->hasFlag(self::AF_RELATION_AUTOLINK) && $this->m_destInstance->allowed("view") && !$this->m_destInstance->hasFlag(NF_NO_VIEW)) {
+                if ($this->hasFlag(self::AF_RELATION_AUTOLINK) && $this->m_destInstance->allowed("view") && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW)) {
                     $result .= Tools::href(Tools::dispatch_url($this->m_destination, "view",
                         array("atkselector" => $this->m_destInstance->primaryKey($record[$this->fieldName()]))),
                         $this->m_destInstance->descriptor($destrecord), SESSION_NESTED, true);

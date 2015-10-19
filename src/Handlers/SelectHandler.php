@@ -108,7 +108,7 @@ class SelectHandler extends ActionHandler
     protected function autoSelectRecord($grid)
     {
         $node = $this->getNode();
-        if (!$node->hasFlag(NF_AUTOSELECT)) {
+        if (!$node->hasFlag(Node::NF_AUTOSELECT)) {
             return false;
         }
 
