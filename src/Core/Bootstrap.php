@@ -26,6 +26,13 @@ class Bootstrap
 
     private static function initGlobals()
     {
+        /**
+         * int $g_maxlevel treenode var
+         */
+        global $g_maxlevel;
+        $g_maxlevel = 0;
+
+
         list($usec, $sec) = explode(" ", microtime());
 
         /**
@@ -117,6 +124,7 @@ class Bootstrap
          * @var Array
          */
         $GLOBALS['g_nodeControllers'] = array();
+
     }
 
     private static function setLocale()

@@ -5,9 +5,6 @@ use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Session\SessionManager;
 
-global $g_maxlevel;
-$g_maxlevel = 0;
-
 /**
  * Extension on the Node class. Here you will find all
  * functions for the tree view. If you want to use the treeview, you must define the TreeNode
