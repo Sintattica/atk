@@ -6,6 +6,7 @@ use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\RecordList\Totalizer;
 use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Keyboard\Keyboard;
+use Sintattica\Atk\Core\Node;
 use \stdClass;
 use \Exception;
 
@@ -303,14 +304,14 @@ class DataGridList extends DataGridComponent
                 if (count($list["rows"][$i]["mra"]) > 0) {
 
                     switch ($grid->getMRASelectionMode()) {
-                        case MRA_SINGLE_SELECT:
+                        case Node::MRA_SINGLE_SELECT:
                             $inputHTML = '<input type="radio" name="' . $listName . '_atkselector[]" value="' . $list["rows"][$i]["selector"] . '" class="atkradiobutton" onclick="if (this.disabled) this.checked = false">';
                             break;
-                        case MRA_NO_SELECT:
+                        case Node::MRA_NO_SELECT:
                             $inputHTML = '<input type="checkbox" disabled="disabled" checked="checked">' .
                                 '<input type="hidden" name="' . $listName . '_atkselector[]" value="' . $list["rows"][$i]["selector"] . '">';
                             break;
-                        case MRA_MULTI_SELECT:
+                        case Node::MRA_MULTI_SELECT:
                         default:
                             $inputHTML = '<input type="checkbox" name="' . $listName . '_atkselector[' . $i . ']" value="' . $list["rows"][$i]["selector"] . '" class="atkcheckbox" onclick="if (this.disabled) this.checked = false">';
                     }
@@ -508,7 +509,7 @@ class DataGridList extends DataGridComponent
                 , SESSION_NESTED
             );
 
-            $mra = (count($list["rows"]) > 1 && $grid->getMRASelectionMode() == MRA_MULTI_SELECT
+            $mra = (count($list["rows"]) > 1 && $grid->getMRASelectionMode() == Node::MRA_MULTI_SELECT
                 ?
                 '<a href="javascript:void(0)" onclick="updateSelection(\'' . $listName . '\', $(this).up(\'form\'), \'all\')">' . Tools::atktext("select_all") . '</a> | ' .
                 '<a href="javascript:void(0)" onclick="updateSelection(\'' . $listName . '\', $(this).up(\'form\'), \'none\')">' . Tools::atktext("deselect_all") . '</a> | ' .

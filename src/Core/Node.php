@@ -21,26 +21,6 @@ use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\Utils\Debugger;
 use \Exception;
 
-
-/**
- * Multi-record-actions selection modes. These
- * modes are mutually exclusive.
- */
-/**
- * Multiple selections possible.
- */
-define("MRA_MULTI_SELECT", 1);
-
-/**
- * Only one selection possible.
- */
-define("MRA_SINGLE_SELECT", 2);
-
-/**
- * No selection possible (e.g. action is always for all (visible) records!).
- */
-define("MRA_NO_SELECT", 3);
-
 /**
  * The Node class represents a piece of information that is part of an
  * application. This class provides standard functionality for adding,
@@ -228,11 +208,29 @@ class Node
      */
     const NF_MRA = self::NF_MULTI_RECORD_ACTIONS;
 
-
     /**
      * Aggregate flag to quickly create readonly nodes
      */
     const NF_READONLY = self::NF_NO_ADD | self::NF_NO_DELETE | self::NF_NO_EDIT;
+
+    /**
+     * Multi-record-actions selection modes. These
+     * modes are mutually exclusive.
+     */
+    /**
+     * Multiple selections possible.
+     */
+    const MRA_MULTI_SELECT = 1;
+
+    /**
+     * Only one selection possible.
+     */
+    const MRA_SINGLE_SELECT = 2;
+
+    /**
+     * No selection possible (e.g. action is always for all (visible) records!).
+     */
+    const MRA_NO_SELECT = 3;
 
     /**
      * reference to the class which is used to validate atknodes
@@ -663,7 +661,7 @@ class Node
      * @access private
      * @var int
      */
-    var $m_mraSelectionMode = MRA_MULTI_SELECT;
+    var $m_mraSelectionMode = self::MRA_MULTI_SELECT;
 
     /**
      * The default edit fieldprefix to use for atk
@@ -1293,8 +1291,8 @@ class Node
 
     /**
      * Sets the multi-record-action selection mode. Can either be
-     * MRA_MULTI_SELECT (default), MRA_SINGLE_SELECT or
-     * MRA_NO_SELECT.
+     * Node::MRA_MULTI_SELECT (default), Node::MRA_SINGLE_SELECT or
+     * Node::MRA_NO_SELECT.
      *
      * @param string $mode selection mode
      */
