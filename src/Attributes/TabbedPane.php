@@ -1,19 +1,4 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2007 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6309 $
- * $Id$
- */
 
 /**
  * Custom flags
@@ -21,8 +6,8 @@
  * Do not hide attribute label when it is single on the tab
  */
 use Sintattica\Atk\Ui\Theme;
+use Sintattica\Atk\Core\Tools;
 
-define("self::AF_TABBEDPANE_NO_AUTO_HIDE_LABEL", self::AF_SPECIFIC_1);
 
 /**
  * atkTabbedPane place regular attribute to the additional tabbed pane
@@ -34,6 +19,8 @@ define("self::AF_TABBEDPANE_NO_AUTO_HIDE_LABEL", self::AF_SPECIFIC_1);
  */
 class TabbedPane extends Attribute
 {
+    const AF_TABBEDPANE_NO_AUTO_HIDE_LABEL = self::AF_SPECIFIC_1;
+
     /**
      * The tabs list
      * @var array
@@ -62,7 +49,8 @@ class TabbedPane extends Attribute
             }
         }
         // A atkTabbedPane attribute should be display only in edit/view mode
-        parent::__construct($name, $flags | self::AF_HIDE_SEARCH | self::AF_HIDE_LIST | self::AF_HIDE_SELECT); // base class constructor
+        parent::__construct($name,
+            $flags | self::AF_HIDE_SEARCH | self::AF_HIDE_LIST | self::AF_HIDE_SELECT); // base class constructor
     }
 
     /**
@@ -212,59 +200,6 @@ class TabbedPane extends Attribute
         //get data
         $data = $this->_addToEditArray($mode, $arr, $defaults, $defaults['atkerror'], $fieldprefix);
 
-        // Handle errors - need more testing for move to right tab
-        /* $errors = array();
-          if (count($data['error']) > 0)
-          {
-          $error_title = '<b>'.Tools::atktext('error_formdataerror').'</b>';
-
-          foreach ($data["error"] as $error)
-          {
-          if(in_array($error['attribname'],array_keys($this->m_attribsList)))
-          {
-          $error['tab'] = $this->m_attribsList[$error['attribname']];
-          }
-
-          if ($error['err'] == "error_primarykey_exists")
-          {
-          $pk_err_attrib[] = $error['attrib_name'];
-          }
-          else
-          {
-          $type = (empty($error["node"]) ? $node->m_type : $error["node"]);
-
-          if (count($node->getTabs($node->m_action)) > 1 && $error["tab"])
-          $error_tab = ' ('.Tools::atktext("error_tab").' '.'<a href="javascript:showTab(\''.$error["tab"].'\');">'.Tools::atktext(array("tab_".$error["tab"], $error["tab"]),$node->m_module, $node->m_type).'</a> )';
-          else $error_tab = "";
-
-          if(!is_array($error['attrib_name']))
-          {
-          $label = Tools::atktext($error['attrib_name'], $node->m_module, $type);
-          }
-          else
-          {
-          $label = array();
-          foreach($error['attrib_name'] as $attrib)
-          $label[] = Tools::atktext($attrib, $node->m_module, $type);
-
-          $label= implode(", ", $label);
-          }
-
-          $errors[] = array("msg"=>$error['msg'].$error_tab, "label"=>$label);
-          }
-          }
-          if (count($pk_err_attrib)>0) // Make primary key error message
-          {
-          for($i=0;$i<count($pk_err_attrib); $i++)
-          {
-          $pk_err_msg .= Tools::atktext($pk_err_attrib[$i], $node->m_module);
-          if (($i+1) < count($pk_err_attrib)) $pk_err_msg .= ", ";
-          }
-          $errors[] = array("label"=>Tools::atktext("error_primarykey_exists"),
-          "msg"=>$pk_err_msg);
-          }
-          } */
-
         // Handle fields
         // load images
         $theme = Theme::getInstance();
@@ -357,8 +292,7 @@ class TabbedPane extends Attribute
             $params[$field["name"]] = $tplfield; // make field available in associative array
         }
 
-        $ui = &$node->getUi();
-        $page = &$node->getPage();
+        $ui = $node->getUi();
 
         $result = "";
 
@@ -369,11 +303,7 @@ class TabbedPane extends Attribute
         $params["activeTab"] = $tab;
         $params["panename"] = $this->m_name;
         $params["fields"] = $fields; // add all fields as an numeric array.
-        $params["errortitle"] = $error_title;
-        $params["errors"] = $errors; // Add the list of errors.
-        if (!$template) {
-            $template = $node->getTemplate($mode, $record, $tab);
-        }
+
         $result .= $ui->render("tabbededitform.tpl", $params);
 
         $content = $this->tabulate($mode, $result, $fieldprefix);
@@ -385,7 +315,7 @@ class TabbedPane extends Attribute
      * Display a tabbed pane with attributes
      * @param array $record Array with fields
      * @param string $mode The mode
-     * @return html code
+     * @return string html code
      */
     function display($record, $mode = "")
     {

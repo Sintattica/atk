@@ -1,30 +1,9 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2006 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6305 $
- * $Id$
- */
-/**
- * Flags for use in atkTagAttribute constructor
- */
+
+use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Config;
-
-
-define("TA_ADD", 1); //When a none-existing tag was found, the tag is added to the defaults.
-define("TA_ERROR", 2); //When a none-existing tag was found, an error is triggered.
-define("TA_IGNORE", 3); //When a none-existing tag is found, the tag is ignored.
-
+use Sintattica\Atk\Core\Tools;
 
 /**
  * This attribute is used for adding tags to a node
@@ -37,6 +16,14 @@ define("TA_IGNORE", 3); //When a none-existing tag is found, the tag is ignored.
  */
 class TagAttribute extends FuzzySearchAttribute
 {
+
+    /**
+     * Flags for use in TagAttribute constructor
+     */
+    const TA_ADD = 1; //When a none-existing tag was found, the tag is added to the defaults.
+    const TA_ERROR = 2; //When a none-existing tag was found, an error is triggered.
+    const TA_IGNORE = 3; //When a none-existing tag is found, the tag is ignored.
+
     var $m_link = "";
     var $m_linkInstance = null;
     var $m_destination = "";
@@ -58,7 +45,7 @@ class TagAttribute extends FuzzySearchAttribute
      * @param int $size
      * @return TagAttribute
      */
-    function __construct($name, $destination, $destinationfield, $link, $mode = TA_ADD, $flags = 0, $size = 0)
+    function __construct($name, $destination, $destinationfield, $link, $mode = self::TA_ADD, $flags = 0, $size = 0)
     {
         /*if ($size == 0) {
             $size = $this->maxInputSize();
@@ -139,11 +126,11 @@ class TagAttribute extends FuzzySearchAttribute
         $this->m_nonematching = $this->getNoneMatching();
 
         foreach ($this->m_nonematching as $keyword) {
-            if ($this->m_mode == TA_ERROR) {
+            if ($this->m_mode == self::TA_ERROR) {
                 Tools::triggerError($rec, $this, "notallowed_new_defaulttag",
                     sprintf($this->text("notallowed_new_defaulttag"), $keyword));
                 $valid = false;
-            } elseif ($this->m_mode == TA_ADD && !$this->isValidKeyWord($keyword)) {
+            } elseif ($this->m_mode == self::TA_ADD && !$this->isValidKeyWord($keyword)) {
                 Tools::triggerError($rec, $this, 'error_tag_illegalvalue',
                     sprintf($this->text('error_tag_illegalvalue'), $keyword));
                 $valid = false;
@@ -176,7 +163,7 @@ class TagAttribute extends FuzzySearchAttribute
      */
     function edit($rec = "", $prefix = "", $mode = "")
     {
-        Tools::atkdebug("edit of attribute '$this->fieldName()'");
+        Tools::atkdebug("edit of attribute '".$this->fieldName()."'");
 
         $page = Page::getInstance();
         $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atktagattribute.js");
@@ -185,7 +172,7 @@ class TagAttribute extends FuzzySearchAttribute
             $html = $this->displayDefaultTags($prefix);
 
             //only refill the record, if we are not in TA_ERROR mode, and no errors are found.
-            if (!(count($this->m_nonematching) && $this->m_mode == TA_ERROR)) {
+            if (!(count($this->m_nonematching) && $this->m_mode == self::TA_ERROR)) {
                 $rec[$this->fieldName()] = $this->refillRecord($rec);
             }
 
@@ -417,7 +404,7 @@ class TagAttribute extends FuzzySearchAttribute
         }
 
         //if we are in the TA_ADD mode, we add the none-matching keywords.
-        if (count($no_match) && $this->m_mode == TA_ADD) {
+        if (count($no_match) && $this->m_mode == self::TA_ADD) {
             // add default keyword
             foreach ($no_match as $keyword) {
                 $defaultsRec[$this->m_destinationfield] = $keyword;

@@ -1,36 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6309 $
- * $Id$
- */
 
-/**
- * Flags for atkWeekdayAttribute
- */
-define('self::AF_WEEKDAY_SMALL_EDIT', self::AF_SPECIFIC_1);
-
-/**
- * Bitwise flags for weekdays.
- * @access private
- */
-define('WD_MONDAY', 1);
-define('WD_TUESDAY', 2);
-define('WD_WEDNESDAY', 4);
-define('WD_THURSDAY', 8);
-define('WD_FRIDAY', 16);
-define('WD_SATURDAY', 32);
-define('WD_SUNDAY', 64);
+use Sintattica\Atk\Core\Tools;
 
 /**
  * Attribute for selection the days of the week.
@@ -42,6 +12,23 @@ define('WD_SUNDAY', 64);
  */
 class WeekdayAttribute extends NumberAttribute
 {
+    /**
+     * Flags for atkWeekdayAttribute
+     */
+    const AF_WEEKDAY_SMALL_EDIT = self::AF_SPECIFIC_1;
+
+    /**
+     * Bitwise flags for weekdays.
+     * @access private
+     */
+    const WD_MONDAY = 1;
+    const WD_TUESDAY = 2;
+    const WD_WEDNESDAY = 4;
+    const WD_THURSDAY = 8;
+    const WD_FRIDAY = 16;
+    const WD_SATURDAY = 32;
+    const WD_SUNDAY = 64;
+
     var $m_mapping = array(
         1 => 'monday',
         2 => 'tuesday',
@@ -63,7 +50,7 @@ class WeekdayAttribute extends NumberAttribute
      *                           these options will be numbered from 2^7 (128) to 2^x.
      * @param int $flags Flags for the attribute. Only used if no set in previous param.
      */
-    function atkWeekdayAttribute($name, $extraOrFlags = 0, $flags = 0)
+    function __construct($name, $extraOrFlags = 0, $flags = 0)
     {
 
         if (is_numeric($extraOrFlags)) {
@@ -72,7 +59,7 @@ class WeekdayAttribute extends NumberAttribute
             $this->m_extra = $extraOrFlags;
         }
 
-        $this->atkNumberAttribute($name, ($flags | self::AF_HIDE_SEARCH) ^ self::AF_SEARCHABLE);
+        parent::__construct($name, ($flags | self::AF_HIDE_SEARCH) ^ self::AF_SEARCHABLE);
     }
 
     /**
@@ -105,7 +92,7 @@ class WeekdayAttribute extends NumberAttribute
      * @param String $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record = "", $fieldprefix = "", $mode = 'add')
+    function edit($record, $fieldprefix = '', $mode = 'add')
     {
         $result = '';
 
@@ -131,7 +118,7 @@ class WeekdayAttribute extends NumberAttribute
                 $weekday = substr($weekday, 0, 2);
             }
 
-            $checked = hasFlag($value, $day) ? ' checked' : '';
+            $checked = Tools::hasFlag($value, $day) ? ' checked' : '';
 
             $result .= '<span title="' . $fullWeekday . '"><input type="checkbox" id="' . $name . '" name="' . $name . '[' . $i . ']" ' . $this->getCSSClassAttribute("atkcheckbox") . ' value="' . $day . '" ' . $checked . '> ' . $weekday . '</span>' . ($i < $max
                     ? $separator : '');

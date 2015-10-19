@@ -1,17 +1,7 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- */
-Tools::useattrib("atkMultiSelectAttribute");
+
+use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * The atkFuzzySearchAttribute class represents an attribute of a node
@@ -221,7 +211,7 @@ class FuzzySearchAttribute extends Attribute
                 }
 
                 $attrib = new MultiSelectAttribute($this->m_name, $optionArray, $valueArray, 1,
-                    self::AF_NO_LABEL | self::AF_CHECK_ALL | self::AF_LINKS_BOTTOM);
+                    self::AF_NO_LABEL | MultiSelectAttribute::AF_CHECK_ALL | MultiSelectAttribute::AF_LINKS_BOTTOM);
                 $res .= $attrib->edit();
             } else {
                 if ($this->m_mode == "select" || ($this->m_mode == "multiselect" && count($this->m_matches) == 1)) {
