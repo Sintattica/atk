@@ -509,16 +509,16 @@ class MySqliDb extends MySqlDb
                     }
                 }
                 if ($finfo->flags & MYSQLI_PRI_KEY_FLAG) {
-                    $result[$i]["flags"] |= MF_PRIMARY;
+                    $result[$i]["flags"] |= Db::MF_PRIMARY;
                 }
                 if ($finfo->flags & MYSQLI_UNIQUE_KEY_FLAG) {
-                    $result[$i]["flags"] |= MF_UNIQUE;
+                    $result[$i]["flags"] |= Db::MF_UNIQUE;
                 }
                 if ($finfo->flags & MYSQLI_NOT_NULL_FLAG) {
-                    $result[$i]["flags"] |= MF_NOT_NULL;
+                    $result[$i]["flags"] |= Db::MF_NOT_NULL;
                 }
                 if ($finfo->flags & MYSQLI_AUTO_INCREMENT_FLAG) {
-                    $result[$i]["flags"] |= MF_AUTO_INCREMENT;
+                    $result[$i]["flags"] |= Db::MF_AUTO_INCREMENT;
                 }
 
                 if ($full) {

@@ -27,7 +27,7 @@ class PgSqlDb extends Db
 
     /**
      * Connect to the database
-     * @return connection identifier
+     * @return int connection identifier
      */
     function connect()
     {
@@ -356,10 +356,10 @@ class PgSqlDb extends Db
             $meta[$i]['gentype'] = $ddl->getGenericType($row['type']);
             $meta[$i]['name'] = $row['name'];
             $meta[$i]['len'] = $row['length'];
-            $meta[$i]['flags'] = ($row['is_primary'] == 1 ? MF_PRIMARY : 0) |
-                ($row['is_unique'] == 1 ? MF_UNIQUE : 0) |
-                ($row['is_not_null'] == 1 ? MF_NOT_NULL : 0) |
-                ($row['is_auto_inc'] == 1 ? MF_AUTO_INCREMENT : 0);
+            $meta[$i]['flags'] = ($row['is_primary'] == 1 ? Db::MF_PRIMARY : 0) |
+                ($row['is_unique'] == 1 ? Db::MF_UNIQUE : 0) |
+                ($row['is_not_null'] == 1 ? Db::MF_NOT_NULL : 0) |
+                ($row['is_auto_inc'] == 1 ? Db::MF_AUTO_INCREMENT : 0);
 
             if ($row['is_auto_inc'] == 1) {
                 $meta[$i]['sequence'] = $row['sequence'];

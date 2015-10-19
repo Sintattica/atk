@@ -108,7 +108,7 @@ class MySqliQuery extends MySqlQuery
     public function addSequenceField($fieldName, &$value, $seqName = null)
     {
         $meta = $this->getDb()->tableMeta($this->m_tables[0]);
-        if (!Tools::hasFlag($meta[$fieldName]['flags'], MF_AUTO_INCREMENT)) {
+        if (!Tools::hasFlag($meta[$fieldName]['flags'], Db::MF_AUTO_INCREMENT)) {
             return parent::addSequenceField($fieldName, $value, $seqName);
         }
 

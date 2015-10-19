@@ -10,16 +10,6 @@ if (!Config::getGlobal('meta_caching')) {
     Tools::atkwarning("Table metadata caching is disabled. Turn on \$config_meta_caching to improve your application's performance!");
 }
 
-
-/**
- * Meta flags.
- */
-define('MF_PRIMARY', 1);
-define('MF_UNIQUE', 2);
-define('MF_NOT_NULL', 4);
-define('MF_AUTO_INCREMENT', 8);
-
-
 /**
  * Global array containing database instances. Global is necessary because
  * PHP4 doesn't support static class members.
@@ -50,6 +40,15 @@ class Db
     const DB_UNKNOWNDATABASE = 3;
     const DB_ACCESSDENIED_USER = 4;
     const DB_ACCESSDENIED_DB = 5;
+
+
+    /**
+     * Meta flags.
+     */
+    const MF_PRIMARY = 1;
+    const MF_UNIQUE = 2;
+    const MF_NOT_NULL = 4;
+    const MF_AUTO_INCREMENT = 8;
 
     /**
      * The hostname/ip to connect to.

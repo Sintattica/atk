@@ -144,10 +144,9 @@ class Ddl
     function addFields($meta)
     {
         foreach ($meta as $field) {
-            $flags = Tools::hasFlag($field["flags"], MF_PRIMARY) ? DDL_PRIMARY : 0;
-            $flags |= Tools::hasFlag($field["flags"], MF_UNIQUE) ? DDL_UNIQUE : 0;
-            $flags |= Tools::hasFlag($field["flags"], MF_NOT_NULL) ? DDL_NOTNULL : 0;
-            // $flags |= hasFlag($field["flags"], MF_AUTO_INCREMENT) ? DDL_AUTO_INCREMENT : 0;
+            $flags = Tools::hasFlag($field["flags"], Db::MF_PRIMARY) ? DDL_PRIMARY : 0;
+            $flags |= Tools::hasFlag($field["flags"], Db::MF_UNIQUE) ? DDL_UNIQUE : 0;
+            $flags |= Tools::hasFlag($field["flags"], Db::MF_NOT_NULL) ? DDL_NOTNULL : 0;
 
             $this->addField($field["name"], $field["gentype"], $field["len"], $flags);
         }
