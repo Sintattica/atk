@@ -7,6 +7,7 @@ use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Ui\Dialog;
+use Sintattica\Atk\Core\Node;
 use \Exception;
 
 /**
