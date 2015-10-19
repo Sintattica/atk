@@ -1,19 +1,7 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6177 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * The atkProfileAttribute is an attribute to edit a security profile.
@@ -239,7 +227,7 @@ class ProfileAttribute extends Attribute
 
             // get nodes for each module
             foreach (array_keys($g_modules) as $module) {
-                if (!isset($g_moduleflags[$module]) || !Tools::hasFlag($g_moduleflags[$module], MF_NORIGHTS)) {
+                if (!isset($g_moduleflags[$module]) || !Tools::hasFlag($g_moduleflags[$module], Module::MF_NORIGHTS)) {
                     $instance = Module::atkGetModule($module);
                     if (method_exists($instance, "getNodes")) {
                         $instance->getNodes();

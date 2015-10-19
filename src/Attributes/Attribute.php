@@ -1833,7 +1833,7 @@ class Attribute
     {
         $db = $this->getDb();
         $meta = $db->tableMeta($this->m_ownerInstance->m_table);
-        return Tools::hasFlag($meta[$this->fieldName()]['flags'], MF_NOT_NULL);
+        return Tools::hasFlag($meta[$this->fieldName()]['flags'], Db::MF_NOT_NULL);
     }
 
     /**

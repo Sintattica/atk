@@ -42,26 +42,7 @@ $GLOBALS['g_nodeListeners'] = array();
 $GLOBALS['g_nodeControllers'] = array();
 
 
-define("MF_NOMENU", 1);
 
-/**
- * Don't use the rights of this module
- */
-define("MF_NORIGHTS", 2);
-
-/**
- * Use this module only as a reference
- */
-define("MF_REFERENCE", MF_NOMENU | MF_NORIGHTS);
-
-define("MF_SPECIFIC_1", 4);
-define("MF_SPECIFIC_2", 8);
-define("MF_SPECIFIC_3", 16);
-
-/**
- * Don't preload this module (module_preload.inc)
- */
-define("MF_NO_PRELOAD", 32);
 
 
 /**
@@ -77,6 +58,28 @@ define("MF_NO_PRELOAD", 32);
  */
 class Module
 {
+
+    const MF_NOMENU = 1;
+
+    /**
+     * Don't use the rights of this module
+     */
+    const MF_NORIGHTS = 2;
+
+    /**
+     * Use this module only as a reference
+     */
+    const MF_REFERENCE = self::MF_NOMENU | self::MF_NORIGHTS;
+
+    const MF_SPECIFIC_1 = 4;
+    const MF_SPECIFIC_2 = 8;
+    const MF_SPECIFIC_3 = 16;
+
+    /**
+     * Don't preload this module (module_preload.inc)
+     */
+    const MF_NO_PRELOAD = 32;
+
     /**
      * We keep track if the node currently being instantiated is an
      * overloader or not.
@@ -794,7 +797,7 @@ class Module
         $modules = self::atkGetModules();
 
         foreach ($modules as $modname => $modpath) {
-            if ((!isset($g_moduleflags[$modname])) || (!Tools::hasFlag($g_moduleflags[$modname], MF_NO_PRELOAD))) {
+            if ((!isset($g_moduleflags[$modname])) || (!Tools::hasFlag($g_moduleflags[$modname], self::MF_NO_PRELOAD))) {
                 self::atkPreloadModule($modname, $modpath);
             }
         }

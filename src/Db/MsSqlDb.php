@@ -320,7 +320,7 @@ class MsSqlDb extends MySqlDb
                 $result[$i]["flags"] = array();
 
                 $result[$i]["flags"] = (in_array('primary_key', $result[$i]["flags"])
-                        ? MF_PRIMARY : 0) |
+                        ? Db::MF_PRIMARY : 0) |
                     (in_array('unique_key', $result[$i]["flags"]) ? Db::MF_UNIQUE : 0) |
                     (in_array('not_null', $result[$i]["flags"]) ? Db::MF_NOT_NULL : 0) |
                     (in_array('auto_increment', $result[$i]["flags"]) ? Db::MF_AUTO_INCREMENT
