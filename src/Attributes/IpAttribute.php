@@ -4,7 +4,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\IpUtils;
 
 /**
- * The atkIpAttribute can be used to let the user enter IP(v4) addresses.
+ * The IpAttribute can be used to let the user enter IP(v4) addresses.
  * It's (optionally) possible to let the user enter wildcards.
  *
  * @author Peter C. Verhage <peter@ibuildings.nl>

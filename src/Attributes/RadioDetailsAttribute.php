@@ -1,19 +1,7 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c) 2007-2008 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6309 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * Displays radio buttons with options to choose from just like the

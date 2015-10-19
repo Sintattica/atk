@@ -1,24 +1,7 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6309 $
- * $Id$
- */
-/**
- * @internal include base class.
- */
-Tools::useattrib("atkTextAttribute");
-include_once(Config::getGlobal("assets_url") . "utils/class.atkstringparser.php");
+
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Utils\StringParser;
 
 /**
  * The atkFileWriterAttribute is an attribute that reads data from / saves
@@ -47,11 +30,11 @@ class FileWriterAttribute extends TextAttribute
      * @param int $flags Flags for this attribute
      * @param mixed $size Size of the attribute
      */
-    function atkFileWriterAttribute($name, $filename, $flags = 0, $size = 30)
+    function __construct($name, $filename, $flags = 0, $size = 30)
     {
         $this->m_filename = $filename;
 
-        $this->atkTextAttribute($name, $size, $flags); // base class constructor      
+        parent::__construct($name, $size, $flags); // base class constructor
     }
 
     /**
@@ -128,7 +111,7 @@ class FileWriterAttribute extends TextAttribute
     /**
      * This attribute does not support any search modes
      *
-     * @return empty array
+     * @return array empty array
      */
     function getSearchModes()
     {

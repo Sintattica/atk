@@ -1,22 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * The file contains the default values for most configuration
- * settings.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2010 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6309 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Tools;
 
 /**
  * Attribute for editing email fields.
@@ -95,7 +79,7 @@ class EmailAttribute extends Attribute
                 list($username, $domain) = explode('@', $email, 2);
                 if (!(EmailAttribute::validateAddressDomain($domain, false))) {
                     Tools::triggerError($record, $this->fieldName(), 'error_unkown_domain',
-                        text('error_unkown_domain') . " " . $domain);
+                        Tools::atktext('error_unkown_domain') . " " . $domain);
                 }
             }
         }

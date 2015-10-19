@@ -4,7 +4,7 @@ use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Core\Tools;
 
 /**
- * The atkDateTimeAttribute class can be used for date and time entry.
+ * The DateTimeAttribute class can be used for date and time entry.
  * It corresponds to a DATETIME field in the database.
  *
  * @author Sandy Pleyte <sandy@achievo.org>

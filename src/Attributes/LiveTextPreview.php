@@ -3,7 +3,7 @@
 use Sintattica\Atk\Ui\Page;
 
 /**
- * The atkLiveTextPreview adds a preview to the page that previews realtime
+ * The LiveTextPreview adds a preview to the page that previews realtime
  * the content of any Attribute or atkTextAttribute while it is being
  * edited.
  *

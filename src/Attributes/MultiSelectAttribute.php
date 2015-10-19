@@ -7,7 +7,7 @@ use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Keyboard\Keyboard;
 
 /**
- * The atkMultiboolAttribute class represents an attribute of a node
+ * The MultiSelectAttribute class represents an attribute of a node
  * that has a field with checkboxes, and stores the input seperated by a '|'
  *
  * @author Rene Bakx <rene@ibuildings.nl>

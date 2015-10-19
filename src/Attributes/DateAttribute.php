@@ -8,7 +8,7 @@ use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Keyboard\Keyboard;
 
 /**
- * The atkDateAttribute class offers a date widget for date fields.
+ * The DateAttribute class offers a date widget for date fields.
  * @author Peter C. Verhage <peter@achievo.org>
  * @author Tom Schenkenberg <tom@achievo.org>
  * @package atk

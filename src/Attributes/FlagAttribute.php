@@ -1,21 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6289 $
- * $Id$
- */
-/** @internal include base class. */
-Tools::useattrib("atkmultiselectattribute");
+
+use Sintattica\Atk\Core\Tools;
 
 /**
  * The atkFlagAttribute class offers an way to edit bitmask flags.
@@ -37,9 +22,9 @@ class FlagAttribute extends MultiSelectAttribute
      * @param int $flags Flags for this attribute
      * @param int $size Size of the attribute.
      */
-    function atkFlagAttribute($name, $optionArray, $valueArray = "", $cols = "", $flags = 0, $size = "")
+    function __construct($name, $optionArray, $valueArray = "", $cols = "", $flags = 0, $size = "")
     {
-        $this->atkMultiSelectAttribute($name, $optionArray, $valueArray, $cols, $flags, $size);
+        parent::__construct($name, $optionArray, $valueArray, $cols, $flags, $size);
         $this->m_dbfieldtype = "number";
     }
 

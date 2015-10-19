@@ -5,7 +5,7 @@ use Sintattica\Atk\Keyboard\Keyboard;
 
 
 /**
- * The atkPasswordAttribute class represents an attribute of a node
+ * The PasswordAttribute class represents an attribute of a node
  * that is a password field. It automatically encrypts passwords
  * with the MD5 method of PHP. To update a password a user has to
  * supply the old password first, unless you use the special created

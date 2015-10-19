@@ -5,7 +5,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Keyboard\Keyboard;
 
 /**
- * The atkDurationAttribute is an attribute for entering a length of time.
+ * The DurationAttribute is an attribute for entering a length of time.
  *
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk

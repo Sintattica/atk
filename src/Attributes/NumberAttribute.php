@@ -3,8 +3,9 @@
 use Sintattica\Atk\Keyboard\Keyboard;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
+
 /**
- * The atkNumberAttribute can be used for numeric values.
+ * The NumberAttribute can be used for numeric values.
  *
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk
@@ -503,7 +504,7 @@ class NumberAttribute extends Attribute
      * @param string $fieldprefix The attribute must use this to prefix its form elements (used for
      *                     embedded forms)
      * @param string $mode The mode we're in ('add' or 'edit')
-     * @return Piece of htmlcode
+     * @return string Piece of htmlcode
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
     {

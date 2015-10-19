@@ -3,7 +3,7 @@
 use Sintattica\Atk\Keyboard\Keyboard;
 
 /**
- * The atkRadioAttribute class represents an attribute of a node
+ * The RadioAttribute class represents an attribute of a node
  * that has a field with radio button  to select from predefined values.
  *
  * This attribute is almost identical to atkListAttribute,

@@ -8,7 +8,7 @@ use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Db\Db;
 
 /**
- * The atkProfileAttribute is an attribute to edit a security profile.
+ * The ProfileAttribute is an attribute to edit a security profile.
  * The best way to use it is inside the class where you edit your
  * profile or usergroup records.
  *

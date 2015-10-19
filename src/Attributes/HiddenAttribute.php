@@ -1,21 +1,4 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2010 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- */
-/**
- * @internal base class include
- */
-Tools::useattrib("atkdummyattribute");
 
 /**
  * The atkHiddenAttribute behaves very similar to an atkDummyAttribute, but with the main difference
@@ -33,6 +16,9 @@ class HiddenAttribute extends DummyAttribute
      * The atkHiddenAttribute has a custom constructor. It's purpose is to force the self::AF_HIDE
      * flag, regardless of flags passed. Its behaviour is identical to atkDummyAttribute's
      * constructor in every other way.
+     * @param string $name
+     * @param string $text
+     * @param int $flags
      */
     public function __construct($name, $text = "", $flags = 0)
     {
@@ -45,11 +31,15 @@ class HiddenAttribute extends DummyAttribute
     /**
      * This method is called by the framework whenever an attribute needs to be rendered within a hidden form.
      * In this case, the attribute renders a hidden input field using its text as its hidden value.
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     * @return string html
      */
-    public function hide($record = "", $fieldprefix = "", $mode = "")
+    public function hide($record = array(), $fieldprefix = "", $mode = "")
     {
         $id = $this->getHtmlId($fieldprefix);
-        $result = '<input type="hidden" id="' . $id . '" name="' . $fieldprefix . $this->formName() . '" value="' .
+        $result = '<input type="hidden" id="' . $id . '" name="' . $fieldprefix . $this->fieldName() . '" value="' .
             htmlspecialchars($this->m_text) . '">';
         return $result;
     }

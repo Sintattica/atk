@@ -1,23 +1,5 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2006 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6309 $
- * $Id$
- */
-/**
- * @internal include baseclass.
- */
-Tools::useattrib('atkUpdateStampAttribute');
+
 
 /**
  * Attribute for keeping track of record creation times.

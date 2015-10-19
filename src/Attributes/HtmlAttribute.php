@@ -1,24 +1,7 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 2854 $
- * $Id$
- */
-// Load used attribute class
-Tools::useattrib("atktextattribute");
 
 /**
- * The atkHtmlAttribute class is the same as a normal Attribute. It only
+ * The HtmlAttribute class is the same as a normal Attribute. It only
  * (has a different display function. For this attribute, the value is
  * rendered as-is, which means you can use html codes in the text.
  *
@@ -54,7 +37,7 @@ class HtmlAttribute extends TextAttribute
     /**
      * Returns a displayable string for this value.
      * @param array $record Array wit fields
-     * @return Formatted string
+     * @return string Formatted string
      */
     function display($record)
     {

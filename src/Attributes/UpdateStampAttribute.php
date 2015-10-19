@@ -1,23 +1,4 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6309 $
- * $Id$
- */
-/**
- * @internal include baseclass.
- */
-Tools::useattrib('atkDateTimeAttribute');
 
 /**
  * Attribute for keeping track of last-modification times.
@@ -46,19 +27,19 @@ class UpdateStampAttribute extends DateTimeAttribute
      *                     in the database where the stamp is stored.
      * @param int $flags Flags for the attribute.
      */
-    function atkUpdateStampAttribute($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
-        $this->atkDateTimeAttribute($name, date("Y-m-d"), date("H:i:s"), $flags | self::AF_READONLY | self::AF_HIDE_ADD);
+        parent::__construct($name, date("Y-m-d"), date("H:i:s"), $flags | self::AF_READONLY | self::AF_HIDE_ADD);
         $this->setForceInsert(true);
         $this->setForceUpdate(true);
-        $this->setInitialValue(DateTimeAttribute::datetimeArray());
+        $this->setInitialValue(self::datetimeArray());
     }
 
     /**
      * Value to DB.
      *
      * @param array $record The record
-     * @return The value to store in the database
+     * @return string The value to store in the database
      */
     function value2db($record)
     {
@@ -75,7 +56,7 @@ class UpdateStampAttribute extends DateTimeAttribute
      */
     function initialValue()
     {
-        return DateTimeAttribute::datetimeArray();
+        return self::datetimeArray();
     }
 
     /**
@@ -88,16 +69,16 @@ class UpdateStampAttribute extends DateTimeAttribute
      * @return String A piece of htmlcode with hidden form elements that post
      *                This attribute's value without showing it.
      */
-    function hide($record = "", $fieldprefix)
+    function hide($record = array(), $fieldprefix)
     {
         $field = $record[$this->fieldName()];
         $result = "";
         if (is_array($field)) {
             foreach ($field as $key => $value) {
-                $result .= '<input type="hidden" name="' . $fieldprefix . $this->formName() . '[' . $key . ']" ' . 'value="' . $value . '">';
+                $result .= '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '[' . $key . ']" ' . 'value="' . $value . '">';
             }
         } else {
-            $result = '<input type="hidden" name="' . $fieldprefix . $this->formName() . '" value="' . $field . '">';
+            $result = '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '" value="' . $field . '">';
         }
 
         return $result;
@@ -107,7 +88,7 @@ class UpdateStampAttribute extends DateTimeAttribute
      * We always have a value, even if we're not even in the record
      * @return boolean false
      * */
-    function isEmpty($record)
+    function isEmpty()
     {
         return false;
     }

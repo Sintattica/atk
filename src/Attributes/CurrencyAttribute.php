@@ -1,22 +1,9 @@
 <?php namespace Sintattica\Atk\Attributes;
-Tools::useattrib("atknumberattribute");
+
+use Sintattica\Atk\Core\Tools;
 
 /**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- */
-
-/**
- * The atkCurrencyAttribute can be used for money values.
+ * The CurrencyAttribute can be used for money values.
  *
  * @author Mark Baaijens <mark@ibuildings.nl>
  * @package atk
@@ -38,7 +25,7 @@ class CurrencyAttribute extends NumberAttribute
      * @param string $thousandsseparator The separator which is printed for the thousands.
      *
      */
-    function atkCurrencyAttribute(
+    function __construct(
         $name,
         $flags = 0,
         $size = 10,
@@ -47,7 +34,7 @@ class CurrencyAttribute extends NumberAttribute
         $decimalseparator = "",
         $thousandsseparator = ""
     ) {
-        $this->atkNumberAttribute($name, $flags, $size, $decimals); // base class constructor
+        parent::__construct($name, $flags, $size, $decimals); // base class constructor
 
         if ($currencysymbol == "") {
             $currencysymbol = Tools::atktext("currencysymbol", "atk", "", "", "", true);
@@ -71,7 +58,7 @@ class CurrencyAttribute extends NumberAttribute
      * @param String $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record = "", $fieldprefix = "", $mode = '')
+    function edit($record = array(), $fieldprefix = "", $mode = '')
     {
         return $this->getCurrencySymbolDisplay() . parent::edit($record, $fieldprefix, $mode);
     }

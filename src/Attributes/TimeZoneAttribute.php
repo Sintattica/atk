@@ -1,19 +1,5 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2006 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- */
 
-Tools::useattrib("atklistattribute");
 
 /**
  * The atkTimeZone class represents an attribute to handle timezones in a listbox.
@@ -34,7 +20,7 @@ class TimeZoneAttribute extends ListAttribute
      * @param string $name Name of the attribute
      * @param int $flags Flags for the attribute
      */
-    function atkTimeZoneAttribute($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
         $optionsArray = array(
             'timezone_utc_-1200',
@@ -94,7 +80,7 @@ class TimeZoneAttribute extends ListAttribute
             '+1300',
         );
 
-        $this->atkListAttribute($name, $optionsArray, $valuesArray, $flags, 0);
+        parent::__construct($name, $optionsArray, $valuesArray, $flags, 0);
     }
 
     /**

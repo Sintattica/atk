@@ -1,19 +1,4 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2006 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 4173 $
- * $Id$
- */
 
 /**
  * The atkRowCounter can be added to a node to have a column in listviews
@@ -37,9 +22,9 @@ class RowCounter extends DummyAttribute
      * @param String $name Name of the attribute
      * @param int $flags Flags for this attribute
      */
-    function atkRowCounter($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
-        $this->atkDummyAttribute($name, '', $flags | self::AF_HIDE_VIEW | self::AF_HIDE_EDIT | self::AF_HIDE_ADD);
+        parent::__construct($name, '', $flags | self::AF_HIDE_VIEW | self::AF_HIDE_EDIT | self::AF_HIDE_ADD);
     }
 
     /**
