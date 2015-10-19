@@ -1,42 +1,10 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6305 $
- * $Id: class.atklistattribute.inc 7126 2011-05-26 22:33:22Z ijansch $
- */
+
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
 
 /**
- * Do not translate the options
- */
-define("self::AF_NO_TRANSLATION", self::AF_SPECIFIC_1);
-
-/**
- * Do not add a default null option.
- */
-define("self::AF_LIST_NO_OBLIGATORY_NULL_ITEM", self::AF_SPECIFIC_2);
-
-/**
- * Do not add null option ever
- */
-define("self::AF_LIST_NO_NULL_ITEM", self::AF_SPECIFIC_3);
-
-/**
- * Add a default null option to obligatory items
- */
-define("self::AF_LIST_OBLIGATORY_NULL_ITEM", self::AF_SPECIFIC_4);
-
-/**
- * The atkListAttribute class represents an attribute of a node
+ * The ListAttribute class represents an attribute of a node
  * that has a selectbox to select from predefined values.
  *
  * @author Ivo Jansch <ivo@achievo.org>
@@ -46,6 +14,26 @@ define("self::AF_LIST_OBLIGATORY_NULL_ITEM", self::AF_SPECIFIC_4);
  */
 class ListAttribute extends Attribute
 {
+    /**
+     * Do not translate the options
+     */
+    const AF_NO_TRANSLATION = self::AF_SPECIFIC_1;
+
+    /**
+     * Do not add a default null option.
+     */
+    const AF_LIST_NO_OBLIGATORY_NULL_ITEM = self::AF_SPECIFIC_2;
+
+    /**
+     * Do not add null option ever
+     */
+    const AF_LIST_NO_NULL_ITEM = self::AF_SPECIFIC_3;
+
+    /**
+     * Add a default null option to obligatory items
+     */
+    const AF_LIST_OBLIGATORY_NULL_ITEM = self::AF_SPECIFIC_4;
+
     /**
      * Array with options for Listbox
      */
