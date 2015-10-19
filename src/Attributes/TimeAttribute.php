@@ -1,25 +1,7 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6185 $
- * $Id: class.atktimeattribute.inc 6478 2009-08-22 03:49:07Z marc $
- */
-/**
- * Flags for atkTimeAttribute
- */
-define("self::AF_TIME_SECONDS", self::AF_SPECIFIC_1); // Display seconds after hours & minutes
-define("self::AF_CLEAR_TOUCH_BUTTONS", self::AF_SPECIFIC_6); // Display butons to clear and 'touch' date
-define("self::AF_TIME_DEFAULT_EMPTY", self::AF_SPECIFIC_7); // Always use the empty value on new record
+
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Db\Query;
 
 /**
  * The atkTimeAttribute class represents an attribute of a node
@@ -32,6 +14,14 @@ define("self::AF_TIME_DEFAULT_EMPTY", self::AF_SPECIFIC_7); // Always use the em
  */
 class TimeAttribute extends Attribute
 {
+    /**
+     * Flags for atkTimeAttribute
+     */
+    const AF_TIME_SECONDS = self::AF_SPECIFIC_1; // Display seconds after hours & minutes
+    const AF_CLEAR_TOUCH_BUTTONS = DateAttribute::AF_CLEAR_TOUCH_BUTTONS; // Display butons to clear and 'touch' date
+    const AF_TIME_DEFAULT_EMPTY = self::AF_SPECIFIC_7; // Always use the empty value on new record
+
+
     var $m_beginTime = 0;
     var $m_endTime = 23;
     var $m_steps = array("0", "30");
@@ -362,7 +352,7 @@ class TimeAttribute extends Attribute
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
-     * @return piece of html code with a checkbox
+     * @return string piece of html code with a checkbox
      */
     function search($record = "", $extended = false, $fieldprefix = "")
     {
@@ -454,7 +444,7 @@ class TimeAttribute extends Attribute
      * @param array $record Array with values
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @return Piece of htmlcode
+     * @return string Piece of htmlcode
      */
     function hide($record = "", $fieldprefix)
     {
@@ -524,7 +514,7 @@ class TimeAttribute extends Attribute
      * @param string $stringvalue The time to parse
      * @return array array with hours, minutes and seconds
      */
-    function parseTime($stringvalue)
+    public static function parseTime($stringvalue)
     {
         //Assuming hh:mm:ss
         $retval = array(

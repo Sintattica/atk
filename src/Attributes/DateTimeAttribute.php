@@ -1,19 +1,7 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6309 $
- * $Id: class.atkdatetimeattribute.inc 6720 2010-02-10 18:34:22Z mvdvelden $
- */
+
+use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * The atkDateTimeAttribute class can be used for date and time entry.
@@ -110,8 +98,8 @@ class DateTimeAttribute extends Attribute
         if ($default_time == "") {
             $default_time = "";
         }
-        if ($this->hasFlag(self::AF_CLEAR_TOUCH_BUTTONS)) {
-            $flags .= "|self::AF_CLEAR_TOUCH_BUTTONS";
+        if ($this->hasFlag(Dateattribute::AF_CLEAR_TOUCH_BUTTONS)) {
+            $flags .= "|Dateattribute::AF_CLEAR_TOUCH_BUTTONS";
         }
         $this->m_time = new Timeattribute($name, 0, 23, $default_steps, $default_time, $flags);
         $this->m_date = new Dateattribute($name, '', '', 0, 0, $flags);
@@ -226,7 +214,7 @@ class DateTimeAttribute extends Attribute
      *                     displaying in editscreens, "add" for displaying in
      *                     add screens. "csv" for csv files. Applications can
      *                     use additional modes.
-     * @return text string of $record
+     * @return string text string of $record
      */
     function display($record, $mode = "")
     {

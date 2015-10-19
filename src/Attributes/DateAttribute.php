@@ -4,15 +4,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Theme;
-
-/** flag(s) specific for atkDateAttribute */
-define("self::AF_DATE_STRING", self::AF_SPECIFIC_1); // date must be entered as an english date string (strtotime), also checks edit format
-define("self::AF_DATE_EMPTYFIELD", self::AF_SPECIFIC_2); // Fields have one empty option
-define("self::AF_DATE_NO_CALENDAR", self::AF_SPECIFIC_3); // Do not append the popup calendar.
-define("self::AF_DATE_DISPLAY_DAY", self::AF_SPECIFIC_4); // Show the day of the week in the display
-define("self::AF_DATE_EDIT_NO_DAY", self::AF_SPECIFIC_5); // Don't display the day of the week in edit mode
-define("self::AF_CLEAR_TOUCH_BUTTONS", self::AF_SPECIFIC_6); // Display butons to clear and 'touch' date
-define("self::AF_DATE_DEFAULT_EMPTY", self::AF_SPECIFIC_7 | self::AF_DATE_EMPTYFIELD); // Always use the empty value on new record
+use Sintattica\Atk\Db\Query;
 
 
 /**
@@ -25,6 +17,15 @@ define("self::AF_DATE_DEFAULT_EMPTY", self::AF_SPECIFIC_7 | self::AF_DATE_EMPTYF
  */
 class DateAttribute extends Attribute
 {
+    /** flag(s) specific for atkDateAttribute */
+    const AF_DATE_STRING = self::AF_SPECIFIC_1; // date must be entered as an english date string (strtotime), also checks edit format
+    const AF_DATE_EMPTYFIELD = self::AF_SPECIFIC_2; // Fields have one empty option
+    const AF_DATE_NO_CALENDAR = self::AF_SPECIFIC_3; // Do not append the popup calendar.
+    const AF_DATE_DISPLAY_DAY = self::AF_SPECIFIC_4; // Show the day of the week in the display
+    const AF_DATE_EDIT_NO_DAY = self::AF_SPECIFIC_5; // Don't display the day of the week in edit mode
+    const AF_CLEAR_TOUCH_BUTTONS = self::AF_SPECIFIC_6; // Display butons to clear and 'touch' date
+    const AF_DATE_DEFAULT_EMPTY = self::AF_SPECIFIC_7 | self::AF_DATE_EMPTYFIELD; // Always use the empty value on new record
+
     /**
      * Possible values for sorting the year dropdown
      */
@@ -372,6 +373,7 @@ class DateAttribute extends Attribute
     protected function renderYear($fieldname, $str_script, $current, $format, $obligatory)
     {
         $result = "";
+        $emptyfield = null;
         /* date must be within specified (default: 25) years */
         if (!empty($current["y_max"]) && !empty($current["y_min"]) && $current["y_max"] - $current["y_min"] <= $this->m_maxyears) {
             $this->registerKeyListener($fieldname . '[year]', KB_CTRLCURSOR | KB_LEFTRIGHT);
@@ -1047,6 +1049,7 @@ class DateAttribute extends Attribute
      */
     function _MakeDateForCondition($value)
     {
+        $fromvalue = '';
         if ($value["year"] != "") {
             $fromvalue .= $value["year"];
         }
@@ -1064,6 +1067,7 @@ class DateAttribute extends Attribute
      */
     function _SetDateFormat($value)
     {
+        $format = '';
         if ($value["year"] != "") {
             $format = 'Y';
         }
@@ -1077,7 +1081,7 @@ class DateAttribute extends Attribute
      * Convert date array to database value
      * @param array $rec database record with a date attribute
      *             field $rec[{name of the date attribute}]
-     * @return database value for date
+     * @return string database value for date
      */
     function value2db($rec)
     {
@@ -1182,7 +1186,7 @@ class DateAttribute extends Attribute
      * @param array $record Record that contains value to be validated.
      *                 Errors are saved in this record
      * @param string $mode can be either "add" or "update"
-     * @return $record
+     * @return array $record
      */
     function validate(&$record, $mode)
     {
@@ -1262,7 +1266,7 @@ class DateAttribute extends Attribute
     /**
      * Function display's the date
      * @param array $record array with date
-     * @return formatted date string
+     * @return string formatted date string
      */
     function display($record, $mode = '')
     {
@@ -1353,7 +1357,7 @@ class DateAttribute extends Attribute
      * year separated
      *
      * @param String $stringvalue The value to parse.
-     * @return Internal value for a date
+     * @return array Internal value for a date
      */
     function parseStringValue($stringvalue)
     {
