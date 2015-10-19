@@ -1,5 +1,8 @@
 <?php namespace Sintattica\Atk\Utils;
 
+
+use \Exception;
+
 /**
  * ATK JSON wrapper.
  *
@@ -55,18 +58,21 @@ class JSON
     /**
      * Convert a mixed type variable to UTF-8
      * @param mixed $data PHP variable
+     * @param int $depth
+     * @return mixed
+     * @throws Exception
      */
     private function _utf8json($data, $depth = 0)
     {
         $depth++;
         if ($depth >= self::UTF8_CONVERSION_RECURSION_LIMIT) {
-            throw new Exception('atkJSON recustion limit reached on: ' . $value);
+            throw new Exception('atkJSON recustion limit reached');
         }
 
         if (is_string($data)) {
             return utf8_encode($data);
         } else {
-            if (is_numeric) {
+            if (is_numeric($data)) {
                 return $data;
             } else {
                 if (is_array($data)) {
