@@ -1,19 +1,4 @@
 <?php namespace Sintattica\Atk\Utils;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage utils
- *
- * @copyright (c)2007 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6320 $
- * $Id$
- */
 
 /**
  * ATK JSON wrapper.
@@ -48,31 +33,6 @@ class JSON
      */
     const UTF8_CONVERSION_RECURSION_LIMIT = 30;
 
-    /**
-     * Get JSON service object. This method should never
-     * be called directly!
-     *
-     * @param bool $assoc return as associative array (instead of objects)
-     * @return Services_JSON JSON service object
-     *
-     * @static
-     * @private
-     */
-    private static function &_getJSONService($assoc = false)
-    {
-        static $services = array();
-
-        if (!isset($services[$assoc])) {
-            if (!class_exists("Services_JSON")) {
-                include_once Config::getGlobal('atkroot') . 'atk/ext/json/json.php';
-            }
-
-            $services[$assoc] = new Services_JSON($assoc ? SERVICES_JSON_LOOSE_TYPE
-                : 0);
-        }
-
-        return $services[$assoc];
-    }
 
     /**
      * Encode to JSON.
@@ -82,18 +42,14 @@ class JSON
      */
     public static function encode($var)
     {
-        if (function_exists('json_encode')) {
-            $encoded = json_encode($var);
-            if ($encoded !== 'null' || $var === null) {
-                return $encoded;
-            } else {
-                // Variable may contain non-utf-8 characters (like binary data)
-                // format to UTF-8 and try again.
-                return json_encode(self::_utf8json($var));
-            }
+        $encoded = json_encode($var);
+        if ($encoded !== 'null' || $var === null) {
+            return $encoded;
+        } else {
+            // Variable may contain non-utf-8 characters (like binary data)
+            // format to UTF-8 and try again.
+            return json_encode(self::_utf8json($var));
         }
-        $service = JSON::_getJSONService();
-        return $service->encode($var);
     }
 
     /**
@@ -139,11 +95,7 @@ class JSON
      */
     public static function decode($string, $assoc = false)
     {
-        if (function_exists('json_decode')) {
-            return json_decode($string, $assoc);
-        }
-        $service = JSON::_getJSONService($assoc);
-        return $service->decode($string);
+        return json_decode($string, $assoc);
     }
 
 }
