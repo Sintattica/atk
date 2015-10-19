@@ -87,7 +87,7 @@ class AdminHandler extends ActionHandler
 
         $handler = $node->getHandler("add");
         $handler->setNode($node);
-        $handler->setReturnBehaviour(ATK_ACTION_STAY); // have the save action stay on the admin page
+        $handler->setReturnBehaviour(self::ATK_ACTION_STAY); // have the save action stay on the admin page
         return $handler->invoke("addPage", $record);
     }
 

@@ -34,7 +34,7 @@ class AddHandler extends ActionHandler
     function __construct()
     {
         parent::__construct();
-        $this->setReturnBehaviour(ATK_ACTION_BACK);
+        $this->setReturnBehaviour(self::ATK_ACTION_BACK);
     }
 
     /**

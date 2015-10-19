@@ -1,37 +1,22 @@
 <?php
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * Popup file used by the colorpicker attribute.
- *
- * @package atk
- * @subpackage popups
- * @access private
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 4362 $
- * $Id$
- */
-/**
- * @internal Includes etc.
- */
-include_once($config_atkroot . "atk.php");
+
+use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Attributes\ColorPickerAttribute;
+use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Ui\Theme;
+use Sintattica\Atk\Ui\Output;
+use Sintattica\Atk\Core\Config;
 
 SessionManager::atksession("admin");
 
-Tools::useattrib("atkcolorpickerattribute");
 
 // builds matrix
 
 $colHeight = "11"; // height of each color element
 $colWidth = "11";   // width of each color element
 $formRef = $_GET["field"];
-$matrix = colorMatrix($colHeight, $colWidth, $formRef, 0, $_GET["usercol"]);
+$matrix = ColorPickerAttribute::colorMatrix($colHeight, $colWidth, $formRef, 0, $_GET["usercol"]);
 $prefix = $config_atkroot . "atk/images/";
 
 $layout = "<form name='entryform'>";
@@ -62,7 +47,7 @@ $layout .= "</table>";
 $layout .= "</form>";
 
 //  Display's the picker in the current ATK style-template
-$page = new Page();;
+$page = new Page();
 $theme = Theme::getInstance();
 $output = Output::getInstance();
 

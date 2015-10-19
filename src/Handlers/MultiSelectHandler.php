@@ -1,19 +1,9 @@
 <?php namespace Sintattica\Atk\Handlers;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage handlers
- *
- * @copyright (c)2000-2004 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6310 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Utils\StringParser;
+use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Handler class for the select action of a node. The handler draws a

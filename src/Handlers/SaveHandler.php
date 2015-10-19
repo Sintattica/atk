@@ -4,6 +4,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Dialog;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Node;
 
 /**
  * Handler class for the save action of a node. The action saves a
@@ -279,7 +280,7 @@ class SaveHandler extends ActionHandler
     function _getSkip()
     {
         if (isset($this->m_postvars["atkreturnbehaviour"]) &&
-            $this->m_postvars["atkreturnbehaviour"] == ATK_ACTION_BACK
+            $this->m_postvars["atkreturnbehaviour"] == self::ATK_ACTION_BACK
         ) {
             return 2;
         }

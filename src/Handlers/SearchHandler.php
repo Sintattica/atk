@@ -4,6 +4,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Controller;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Attributes\Attribute;
 
 /**
  * Handler class for the search action of a node. The handler draws a

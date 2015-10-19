@@ -5,6 +5,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Ui\Theme;
+use Sintattica\Atk\Core\Node;
 
 /**
  * Handler class for the edit action of a node. The handler draws a

@@ -10,13 +10,6 @@ use Sintattica\Atk\RecordList\RecordListCache;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Ui;
 
-
-/**
- * Some defines for return behaviour
- */
-define("ATK_ACTION_STAY", 0);
-define("ATK_ACTION_BACK", 1);
-
 /**
  * Generic action handler base class.
  *
@@ -39,6 +32,12 @@ define("ATK_ACTION_BACK", 1);
  */
 class ActionHandler
 {
+    /**
+     * Some defines for return behaviour
+     */
+    const ATK_ACTION_STAY = 0;
+    const ATK_ACTION_BACK = 1;
+
     /**
      * action status flags
      * Note that these have binary numbers, even though an action could never have
@@ -86,7 +85,7 @@ class ActionHandler
     var $m_rejecting = false;
 
     /** @access private */
-    var $m_returnbehaviour = ATK_ACTION_STAY;
+    var $m_returnbehaviour = self::ATK_ACTION_STAY;
 
     var $m_postvars;
 
@@ -391,7 +390,7 @@ class ActionHandler
     /**
      * Set the returnbehaviour of this action
      *
-     * @param Integer $returnbehaviour The return behaviour (possible values: ATK_ACTION_BACK and ATK_ACTION_STAY)
+     * @param Integer $returnbehaviour The return behaviour (possible values: ActionHandler::ATK_ACTION_BACK and ActionHandler::ATK_ACTION_STAY)
      */
     function setReturnBehaviour($returnbehaviour)
     {
