@@ -14,6 +14,7 @@ class Bootstrap
         Config::loadGlobals();
         self::setLocale();
         self::setErrorHandler();
+        self::setDbGlobals();
 
         if (Config::getGlobal('session_init', true)) {
             self::setSession();
@@ -152,6 +153,19 @@ class Bootstrap
         if (isset($_REQUEST["atkstackid"])) {
             $atkstackid = trim($_REQUEST["atkstackid"]);
         }
+    }
+
+    private static function setDbGlobals(){
+        if (!Config::getGlobal('meta_caching')) {
+            Tools::atkwarning("Table metadata caching is disabled. Turn on \$config_meta_caching to improve your application's performance!");
+        }
+
+        /**
+         * Global array containing database instances. Global is necessary because
+         * PHP4 doesn't support static class members.
+         */
+        global $g_dbinstances;
+        $g_dbinstances = array();
     }
 
 }

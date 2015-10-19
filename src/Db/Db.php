@@ -5,18 +5,6 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\TmpFile;
 use Sintattica\Atk\Db\Statement\Statement;
 
-
-if (!Config::getGlobal('meta_caching')) {
-    Tools::atkwarning("Table metadata caching is disabled. Turn on \$config_meta_caching to improve your application's performance!");
-}
-
-/**
- * Global array containing database instances. Global is necessary because
- * PHP4 doesn't support static class members.
- */
-global $g_dbinstances;
-$g_dbinstances = array();
-
 /**
  * Abstract baseclass for ATK database drivers.
  *
