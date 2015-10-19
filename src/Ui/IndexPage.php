@@ -69,8 +69,8 @@ class IndexPage
         $this->m_theme = Theme::getInstance();
         $this->m_output = Output::getInstance();
         $this->m_user = SecurityManager::atkGetUser();
-        $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL
-            : HTML_STRICT;
+        $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? Page::HTML_PARTIAL
+            : Page::HTML_STRICT;
         $this->m_noNav = isset($ATK_VARS['atknonav']);
     }
 
@@ -91,7 +91,7 @@ class IndexPage
      */
     function generate()
     {
-        if (!$this->hasFlag(HTML_PARTIAL) && !$this->m_noNav) {
+        if (!$this->hasFlag(Page::HTML_PARTIAL) && !$this->m_noNav) {
             $this->atkGenerateTop();
             $this->atkGenerateMenu();
         }

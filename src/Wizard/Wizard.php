@@ -2,6 +2,7 @@
 
 
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Ui\Page;
 
 /**
  * atkWizard modees
@@ -85,7 +86,7 @@ class Wizard extends WizardBase
      *
      * @var int define value
      */
-    var $m_page_flags = HTML_ALL;
+    var $m_page_flags = Page::HTML_ALL;
 
     /**
      * We use a reference to ourselfs because we pass data to the wizardpanel
@@ -411,7 +412,7 @@ class Wizard extends WizardBase
 
     /**
      * Set a defined value needed by Page to render the content of a page. Default
-     * we need to render a complete html (HTML_ALL) page, but it might be necesary to only
+     * we need to render a complete html (Page::HTML_ALL) page, but it might be necesary to only
      * render the content part.
      *
      * @param define $flag

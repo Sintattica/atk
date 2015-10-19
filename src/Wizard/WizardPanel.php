@@ -6,6 +6,7 @@ use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Core\Controller;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Ui\Page;
 
 /**
  * atkWizardPanel button definitions.
@@ -149,7 +150,7 @@ class WizardPanel
             $sm->stackVar("atkaction", $this->m_defaultAction);
 
             //We set how we want the atk page to be returned
-            $this->m_wizard->setPageFlags(HTML_ALL);
+            $this->m_wizard->setPageFlags(Page::HTML_ALL);
         }
         return $this->m_node;
     }

@@ -2,18 +2,6 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Ui\Ui;
-use Sintattica\Atk\Ui\Theme;
-
-/**
- * Rendering flags.
- */
-define("HTML_BODY", 1);                        // Add body tags to page
-define("HTML_HEADER", 2);                      // Add header to page
-define("HTML_DOCTYPE", 4);                     // Add doctype to page
-define("HTML_ALL", HTML_BODY | HTML_HEADER);     // Shortcut
-define("HTML_STRICT", HTML_ALL | HTML_DOCTYPE);  // Shortcut
-define("HTML_PARTIAL", 8);                    // Partial (only content, this flag can't be ANDed!)
 
 /**
  * Page renderer.
@@ -23,7 +11,7 @@ define("HTML_PARTIAL", 8);                    // Partial (only content, this fla
  * Since any script will output exactly one page to the browser, this is
  * a singleton. Use getInstance() to retrieve the one-and-only instance.
  *
- * @todo This should actually not be a singleton. HTML file generation
+ * @todo This should actually not be a singleton. HTML file generation¬
  *       scripts may need an instance per page generated.
  *
  * @author Ivo Jansch <ivo@achievo.org>
@@ -33,6 +21,16 @@ define("HTML_PARTIAL", 8);                    // Partial (only content, this fla
  */
 class Page
 {
+    /**
+     * Rendering flags.
+     */
+    const HTML_BODY = 1;                        // Add body tags to page
+    const HTML_HEADER = 2;                      // Add header to page
+    const HTML_DOCTYPE = 4;                     // Add doctype to page
+    const HTML_ALL = self::HTML_BODY | self::HTML_HEADER;     // Shortcut
+    const HTML_STRICT = self::HTML_ALL | self::HTML_DOCTYPE;  // Shortcut
+    const HTML_PARTIAL = 8;                    // Partial (only content, this flag can't be ANDed!)
+
     /**
      * The list of javascript files to load.
      * @access private
@@ -607,7 +605,7 @@ class Page
      * @param string $extra_header HTML code of extra headers to add to the head section
      * @return String The HTML page, including <html> and </html> tags.
      */
-    function render($title = null, $flags = HTML_STRICT, $extrabodyprops = "", $extra_header = "")
+    function render($title = null, $flags = self::HTML_STRICT, $extrabodyprops = "", $extra_header = "")
     {
         if ($title == null) {
             $title = $this->m_title;
@@ -617,10 +615,10 @@ class Page
         $theme = Theme::getInstance();
 
         if (is_bool($flags) && $flags == true) {
-            $flags = HTML_STRICT;
+            $flags = self::HTML_STRICT;
         } elseif (is_bool($flags) && $flags == false) {
-            $flags = HTML_HEADER | HTML_DOCTYPE;
-        } elseif (Tools::hasFlag($flags, HTML_PARTIAL)) {
+            $flags = self::HTML_HEADER | self::HTML_DOCTYPE;
+        } elseif (Tools::hasFlag($flags, self::HTML_PARTIAL)) {
             return $this->renderPartial();
         }
 
@@ -629,21 +627,21 @@ class Page
         }
 
         $page = '';
-        if (Tools::hasFlag($flags, HTML_DOCTYPE)) {
+        if (Tools::hasFlag($flags, self::HTML_DOCTYPE)) {
             $page .= $theme->getAttribute('doctype', Config::getGlobal("doctype"));
         }
         $page .= "\n<html>\n";
 
-        if (Tools::hasFlag($flags, HTML_HEADER)) {
+        if (Tools::hasFlag($flags, self::HTML_HEADER)) {
             $page .= $this->head($title, $extra_header);
         }
-        if (Tools::hasFlag($flags, HTML_BODY)) {
+        if (Tools::hasFlag($flags, self::HTML_BODY)) {
             $page .= $this->body($extrabodyprops);
         }
 
         $page .= $this->m_content . "\n";
         $page .= $this->renderHiddenVars();
-        if (Tools::hasFlag($flags, HTML_BODY)) {
+        if (Tools::hasFlag($flags, self::HTML_BODY)) {
             $page .= "</body>\n";
         }
         $page .= "</html>\n";

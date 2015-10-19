@@ -181,9 +181,9 @@ class Controller
 
         // backwards compatibility mode
         if ($flags == null) {
-            $flags = array_key_exists("atkpartial", $postvars) ? HTML_PARTIAL : HTML_STRICT;
+            $flags = array_key_exists("atkpartial", $postvars) ? Page::HTML_PARTIAL : Page::HTML_STRICT;
         } elseif (is_bool($flags)) {
-            $flags = $flags ? HTML_STRICT : HTML_HEADER | HTML_DOCTYPE;
+            $flags = $flags ? Page::HTML_STRICT : Page::HTML_HEADER | Page::HTML_DOCTYPE;
         }
 
         // Use invoke to be backwards compatible with overrides
@@ -191,7 +191,7 @@ class Controller
         $this->invoke("loadDispatchPage", $postvars);
 
         $screen = '';
-        if (!$page->isEmpty() || Tools::hasFlag($flags, HTML_PARTIAL)
+        if (!$page->isEmpty() || Tools::hasFlag($flags, Page::HTML_PARTIAL)
         ) { // Only output an html output if there is anything to output.
             $screen = $page->render(null, $flags);
         }

@@ -9,6 +9,7 @@ use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Output;
 use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Utils\Debugger;
+use Sintattica\Atk\Ui\Page;
 
 
 /**
@@ -631,7 +632,7 @@ class SecurityManager
         $tplvars["content"] = $output;
         $page->addContent($ui->render("login.tpl", $tplvars));
         $o = Output::getInstance();
-        $o->output($page->render(Tools::atktext("app_title"), HTML_STRICT, "", $ui->render("login_meta.tpl")));
+        $o->output($page->render(Tools::atktext("app_title"), Page::HTML_STRICT, "", $ui->render("login_meta.tpl")));
     }
 
     /**
