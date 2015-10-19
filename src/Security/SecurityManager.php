@@ -4,6 +4,7 @@ use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Security\Auth\AuthInterface;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Output;
 use Sintattica\Atk\Ui\Ui;
@@ -163,7 +164,7 @@ class SecurityManager
          */
         if (Config::getGlobal("auth_enablepasswordmailer", false)) {
             foreach ($this->m_authentication as $auth) {
-                if (in_array($auth->getPasswordPolicy(), array(PASSWORD_RETRIEVABLE, PASSWORD_RECREATE))) {
+                if (in_array($auth->getPasswordPolicy(), array(AuthInterface::PASSWORD_RETRIEVABLE, AuthInterface::PASSWORD_RECREATE))) {
                     $this->m_enablepasswordmailer = true;
                 }
             }

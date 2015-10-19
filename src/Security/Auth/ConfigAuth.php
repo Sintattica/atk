@@ -151,7 +151,7 @@ class ConfigAuth extends AuthInterface
      */
     function getPasswordPolicy()
     {
-        return PASSWORD_RETRIEVABLE;
+        return self::PASSWORD_RETRIEVABLE;
     }
 
     /**

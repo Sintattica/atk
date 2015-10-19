@@ -4,26 +4,6 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Attributes\Attribute;
 
 /**
- * This authentication method supports retrieval of the current password
- * (alternative to current $config_.....)
- */
-define("PASSWORD_RETRIEVABLE", 2);
-
-/**
- * This authentication method supports generation of a new password for the user
- * (so password forgotten can work, even though password is encoded and not
- * retrievable). Clicking 'forgot password' results in an email with a new
- * password.
- */
-define("PASSWORD_RECREATE", 1);
-
-/**
- * This authentication method supports neither retrieve, nor recreation. E.g. when using
- * LDAP, this means that ATK will not provide password forgotten.
- */
-define("PASSWORD_STATIC", 0);
-
-/**
  * This class is the abstract baseclass (interface) for all auth_ classes.
  * All new authentication/authorization methods need to derive from this
  * class.
@@ -35,6 +15,26 @@ define("PASSWORD_STATIC", 0);
  */
 class AuthInterface
 {
+    /**
+     * This authentication method supports retrieval of the current password
+     * (alternative to current $config_.....)
+     */
+    const PASSWORD_RETRIEVABLE = 2;
+
+    /**
+     * This authentication method supports generation of a new password for the user
+     * (so password forgotten can work, even though password is encoded and not
+     * retrievable). Clicking 'forgot password' results in an email with a new
+     * password.
+     */
+    const PASSWORD_RECREATE = 1;
+
+    /**
+     * This authentication method supports neither retrieve, nor recreation. E.g. when using
+     * LDAP, this means that ATK will not provide password forgotten.
+     */
+    const PASSWORD_STATIC = 0;
+
     /**
      * If authentication fails due to an error, instead of a wrong
      * username/password combination, this variable must be filled
@@ -277,7 +277,7 @@ class AuthInterface
      */
     function getPasswordPolicy()
     {
-        return PASSWORD_STATIC;
+        return self::PASSWORD_STATIC;
     }
 
     /**
