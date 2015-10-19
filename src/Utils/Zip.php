@@ -1,27 +1,9 @@
 <?php namespace Sintattica\Atk\Utils;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage utils
- *
- * @author Guido van Biemen <guido@ibuildings.nl>
- *
- * @copyright (c) 2007 Ibuildings.nl BV
- * @license see doc/LICENSE
- *
- * @version $Revision: 6338 $
- * $Id$
- */
-/**
- * Some constants
- * @access private
- */
-define("ATKZIP_ZIP", 0);
-define("ATKZIP_UNZIP", 1);
+
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
+use \ZipArchive;
+
 
 /**
  * This class provide functions to extract from and add to ZIP archives
@@ -33,6 +15,13 @@ define("ATKZIP_UNZIP", 1);
  */
 class Zip
 {
+    /**
+     * Some constants
+     * @access private
+     */
+const ATKZIP_ZIP = 0;
+const ATKZIP_UNZIP = 1;
+
     var $m_zip_bin = "";
     var $m_unzip_bin = "";
     var $m_zipmode = "auto"; // can be auto, internal or infozip
@@ -41,7 +30,7 @@ class Zip
     /**
      * Constructor
      *
-     * @return atkZip
+     * @return Zip
      */
     function __construct()
     {
@@ -62,10 +51,11 @@ class Zip
      */
     function getInfozipCommand($type, $params)
     {
-        if ($type == ATKZIP_ZIP) {
+        $command = "";
+        if ($type == self::ATKZIP_ZIP) {
             $command = $this->m_zip_bin;
         }
-        if ($type == ATKZIP_UNZIP) {
+        if ($type == self::ATKZIP_UNZIP) {
             $command = $this->m_unzip_bin;
         }
         if ($params !== "") {
@@ -102,7 +92,8 @@ class Zip
      */
     function getInfozipError($type, $errorcode)
     {
-        if ($type == ATKZIP_UNZIP) {
+        $codes = array();
+        if ($type == self::ATKZIP_UNZIP) {
             $codes = array(
                 0 => "Normal; no errors or warnings detected. (There may still be errors in the archive, but if so, they weren't particularly relevant to UnZip's processing and are presumably quite minor.)",
                 1 => "One or more warning errors were encountered, but processing completed successfully anyway. This includes zipfiles where one or more files was skipped due to unsupported compression method or encryption with an unknown password.",
@@ -121,7 +112,7 @@ class Zip
                 81 => "Testing or extraction of one or more files failed due to unsupported compression methods or unsupported decryption.",
                 82 => "No files were found due to bad decryption password(s). (If even one file is successfully processed, however, the exit status is 1.)",
             );
-        } elseif ($type == ATKZIP_ZIP) {
+        } elseif ($type == self::ATKZIP_ZIP) {
             $codes = array(
                 0 => "Normal; no errors or warnings detected.",
                 2 => "The zipfile is either truncated or damaged in some way (e.g., bogus internal offsets) that makes it appear to be truncated.",
@@ -181,8 +172,8 @@ class Zip
         // If previous condition wasn't met, we can test the availability of the zip and unzip
         // commands
         if (in_array($this->m_zipmode, array("auto", "infozip"))) {
-            $zipoutput = shell_exec($this->getInfozipCommand(ATKZIP_ZIP, "-h"));
-            $unzipoutput = shell_exec($this->getInfozipCommand(ATKZIP_UNZIP, "-h"));
+            $zipoutput = shell_exec($this->getInfozipCommand(self::ATKZIP_ZIP, "-h"));
+            $unzipoutput = shell_exec($this->getInfozipCommand(self::ATKZIP_UNZIP, "-h"));
             Tools::atkdebug("atkZip->test: php 5.2 or zip extension not found, now testing for infozip binaries");
             if ((strlen($zipoutput) > 0) && (strlen($unzipoutput) > 0)) {
                 Tools::atkdebug("atkZip->test: zip and unzip command responded, TEST SUCCESFULL!");
@@ -232,12 +223,12 @@ class Zip
         if ($this->m_zipmode == "infozip") {
             $entriesstring = is_array($entries) ? implode(" ", $entries) : $entries;
             $params = "'$archive' $entriesstring -d '$destination'";
-            $returncode = $this->runInfozipCommand(ATKZIP_UNZIP, $params);
+            $returncode = $this->runInfozipCommand(self::ATKZIP_UNZIP, $params);
             if ($returncode <= 0) {
                 return true;
             } else {
                 Tools::atkerror(sprintf("atkZip->extract: Infozip returned an error: %s (return code %d)",
-                    $this->getInfozipError(ATKZIP_UNZIP, $returncode), $returncode));
+                    $this->getInfozipError(self::ATKZIP_UNZIP, $returncode), $returncode));
                 return false;
             }
         }
@@ -274,12 +265,12 @@ class Zip
 
         if ($this->m_zipmode == "infozip") {
             $params = " -j $archive $filename";
-            $returncode = $this->runInfozipCommand(ATKZIP_ZIP, $params);
+            $returncode = $this->runInfozipCommand(self::ATKZIP_ZIP, $params);
             if ($returncode <= 0) {
                 return true;
             } else {
                 Tools::atkerror(sprintf("atkZip->add: Infozip returned an error: %s (return code %d)",
-                    $this->getInfozipError(ATKZIP_ZIP, $returncode), $returncode));
+                    $this->getInfozipError(self::ATKZIP_ZIP, $returncode), $returncode));
                 return false;
             }
         }
