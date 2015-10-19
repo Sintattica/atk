@@ -120,7 +120,7 @@ class PasswordAttribute extends Attribute
                     $this->m_restrictions[strtolower($name)] = $value;
                 } else {
                     Tools::atkdebug("atkPasswordAttribute->setRestrictions(): Unknown restriction: \"$name\"=\"$value\"",
-                        DEBUG_WARNING);
+                        Tools::DEBUG_WARNING);
                 }
             }
         }

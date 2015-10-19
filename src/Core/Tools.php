@@ -15,33 +15,34 @@ use Sintattica\Atk\Handlers\ActionHandler;
 
 use \Exception;
 
-/**
- * Converts applicable characters to html entities so they aren't
- * interpreted by the browser.
- */
-define("DEBUG_HTML", 1);
-
-/**
- * Wraps the self::text into html bold tags in order to make warnings more
- * clearly visible.
- */
-define("DEBUG_WARNING", 2);
-
-/**
- * Hides the debug unless in level 2.
- * This should be used for debug you only really want to see if you
- * are developing (like deprecation warnings).
- */
-define("DEBUG_NOTICE", 4);
-
-/**
- * Error message.
- */
-define("DEBUG_ERROR", 8);
-
 
 class Tools
 {
+
+    /**
+     * Converts applicable characters to html entities so they aren't
+     * interpreted by the browser.
+     */
+    const DEBUG_HTML = 1;
+
+    /**
+     * Wraps the self::text into html bold tags in order to make warnings more
+     * clearly visible.
+     */
+    const DEBUG_WARNING = 2;
+
+    /**
+     * Hides the debug unless in level 2.
+     * This should be used for debug you only really want to see if you
+     * are developing (like deprecation warnings).
+     */
+    const DEBUG_NOTICE = 4;
+
+    /**
+     * Error message.
+     */
+    const DEBUG_ERROR = 8;
+
 
     /**
      * Function self::atkErrorHandler
@@ -98,12 +99,12 @@ class Tools
         } else {
             if ($errtype == E_NOTICE) {
                 // Just show notices
-                self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", DEBUG_NOTICE);
+                self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", Tools::DEBUG_NOTICE);
                 return;
             } else {
                 if (defined('E_DEPRECATED') && ($errtype & (E_DEPRECATED | E_USER_DEPRECATED)) > 0) {
                     // Just show deprecation warnings in the debug log, but don't influence the program flow
-                    self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", DEBUG_NOTICE);
+                    self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", Tools::DEBUG_NOTICE);
                     return;
                 } else {
                     if (($errtype & (E_WARNING | E_USER_WARNING)) > 0) {
@@ -131,8 +132,8 @@ class Tools
      */
     public static function atkExceptionHandler(Exception $exception)
     {
-        self::atkdebug($exception->getMessage(), DEBUG_ERROR);
-        self::atkdebug("Trace:<br/>" . nl2br($exception->getTraceAsString()), DEBUG_ERROR);
+        self::atkdebug($exception->getMessage(), Tools::DEBUG_ERROR);
+        self::atkdebug("Trace:<br/>" . nl2br($exception->getTraceAsString()), Tools::DEBUG_ERROR);
         self::atkhalt("Uncaught exception: " . $exception->getMessage(), 'critical');
     }
 
@@ -196,24 +197,24 @@ class Tools
      *
      * Adds debug self::text to the debug log
      * @param String $txt The self::text that will be added to the log
-     * @param Integer $flags An optional combination of DEBUG_ flags
+     * @param Integer $flags An optional combination of Tools::DEBUG_ flags
      */
     public static function atkdebug($txt, $flags = 0)
     {
         global $g_debug_msg;
         $level = Config::getGlobal("debug");
         if ($level >= 0) {
-            if (self::hasFlag($flags, DEBUG_HTML)) {
+            if (self::hasFlag($flags, Tools::DEBUG_HTML)) {
                 $txt = htmlentities($txt);
             }
-            if (self::hasFlag($flags, DEBUG_WARNING)) {
+            if (self::hasFlag($flags, Tools::DEBUG_WARNING)) {
                 $txt = "<b>" . $txt . "</b>";
             }
 
             $line = self::atkGetTimingInfo() . $txt;
             self::atkWriteLog($line);
 
-            if (self::hasFlag($flags, DEBUG_ERROR)) {
+            if (self::hasFlag($flags, Tools::DEBUG_ERROR)) {
                 $line = '<span class="atkDebugError">' . $line . '</span>';
             }
 
@@ -222,7 +223,7 @@ class Tools
                     $g_debug_msg[] = $line;
                 }
             } else {
-                if (!self::hasFlag($flags, DEBUG_NOTICE)) {
+                if (!self::hasFlag($flags, Tools::DEBUG_NOTICE)) {
                     $g_debug_msg[] = $line;
                 }
             }
@@ -242,7 +243,7 @@ class Tools
      */
     public static function atknotice($txt)
     {
-        self::atkdebug($txt, DEBUG_NOTICE);
+        self::atkdebug($txt, Tools::DEBUG_NOTICE);
     }
 
     /**
@@ -255,7 +256,7 @@ class Tools
      */
     public static function atkwarning($txt)
     {
-        self::atkdebug($txt, DEBUG_WARNING);
+        self::atkdebug($txt, Tools::DEBUG_WARNING);
     }
 
     public static function atkGetTimingInfo()
@@ -281,14 +282,14 @@ class Tools
 
         if ($error instanceof Exception) {
             $g_error_msg[] = "[" . self::elapsed() . "] " . $error->getMessage();
-            self::atkdebug(nl2br($error->getMessage() . "\n" . $error->getTraceAsString()), DEBUG_ERROR);
+            self::atkdebug(nl2br($error->getMessage() . "\n" . $error->getTraceAsString()), Tools::DEBUG_ERROR);
         } else {
             $g_error_msg[] = "[" . self::elapsed() . "] " . $error;
-            self::atkdebug($error, DEBUG_ERROR);
+            self::atkdebug($error, Tools::DEBUG_ERROR);
         }
 
         if (function_exists('debug_backtrace')) {
-            self::atkdebug("Trace:" . self::atk_get_trace(), DEBUG_ERROR);
+            self::atkdebug("Trace:" . self::atk_get_trace(), Tools::DEBUG_ERROR);
         }
 
         if (Config::getGlobal('throw_exception_on_error') && $error instanceof Exception) {

@@ -1157,7 +1157,7 @@ class SessionManager
         if (function_exists("session_cache_expire"))
             session_cache_expire(Config::getGlobal("session_cache_expire"));
         else
-            Tools::atkdebug("session_cache_expire function does not exist, please upgrade to the latest stable php version (at least 4.2.x)", DEBUG_WARNING);
+            Tools::atkdebug("session_cache_expire function does not exist, please upgrade to the latest stable php version (at least 4.2.x)", Tools::DEBUG_WARNING);
 
         // set the cache limiter (used for caching)
         session_cache_limiter(Config::getGlobal("session_cache_limiter"));

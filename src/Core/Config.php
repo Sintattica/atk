@@ -252,8 +252,8 @@ class Config
             if (isset($_REQUEST["atkdebug"]["level"])) {
                 $session["debug"]["level"] = $_REQUEST["atkdebug"]["level"];
             } else {
-                if (isset($_COOKIE['ATKDEBUG_LEVEL'])) {
-                    $session["debug"]["level"] = $_COOKIE['ATKDEBUG_LEVEL'];
+                if (isset($_COOKIE['ATKTools::DEBUG_LEVEL'])) {
+                    $session["debug"]["level"] = $_COOKIE['ATKTools::DEBUG_LEVEL'];
                 }
             }
 

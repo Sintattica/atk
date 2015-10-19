@@ -32,13 +32,13 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 
     function SetZipBinary($path_binary, $test = false)
     {
-        Tools::atkdebug('clsTinyButStrongOOo->SetZipBinary: This method is deprecated', DEBUG_WARNING);
+        Tools::atkdebug('clsTinyButStrongOOo->SetZipBinary: This method is deprecated', Tools::DEBUG_WARNING);
         return false;
     }
 
     function SetUnzipBinary($path_binary, $test = false)
     {
-        Tools::atkdebug('clsTinyButStrongOOo->SetUnzipBinary: This method is deprecated', DEBUG_WARNING);
+        Tools::atkdebug('clsTinyButStrongOOo->SetUnzipBinary: This method is deprecated', Tools::DEBUG_WARNING);
         return false;
     }
 

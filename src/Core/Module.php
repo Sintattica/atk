@@ -400,7 +400,7 @@ class Module
         // If none of the modifiers was found, add a warning to the debug log
         if ($appliedmodifiers == 0) {
             Tools::atkdebug(sprintf("Failed to apply modifier function %s from module %s to node %s; modifier function not found",
-                implode(" or ", $specificmodifiers), $this->m_name, $node->m_type), DEBUG_WARNING);
+                implode(" or ", $specificmodifiers), $this->m_name, $node->m_type), Tools::DEBUG_WARNING);
         }
     }
 

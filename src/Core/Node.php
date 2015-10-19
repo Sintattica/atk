@@ -3779,7 +3779,7 @@ class Node
 
             if ($return === null) {
                 Tools::atkdebug("Undefined return: " . $this->atkNodeType() . ".$trigger doesn't return anything, it should return a boolean!",
-                    DEBUG_WARNING);
+                    Tools::DEBUG_WARNING);
                 $return = true;
             }
 
@@ -3794,7 +3794,7 @@ class Node
 
                 if ($return === null) {
                     Tools::atkdebug("Undefined return: " . $this->atkNodeType() . ", " . get_class($listener) . ".notify('$trigger', ...) doesn't return anything, it should return a boolean!",
-                        DEBUG_WARNING);
+                        Tools::DEBUG_WARNING);
                     $return = true;
                 }
 
