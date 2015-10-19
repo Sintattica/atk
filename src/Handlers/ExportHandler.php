@@ -5,6 +5,9 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\RecordList\RecordList;
+use Sintattica\Atk\Attributes\Attribute;
+use Sintattica\Atk\Core\Node;
 
 /**
  * Handler for the 'import' action of a node. The import action is a
@@ -555,8 +558,8 @@ class ExportHandler extends ActionHandler
             $actions = $node->defaultActions("export");
         }
         $rl = new CustomRecordList();
-        $flags = ($node_bk->hasFlag(Node::NF_MRA) ? RL_MRA : 0) | ($node_bk->hasFlag(Node::NF_MRPA)
-                ? RL_MRPA : 0) | ($node_bk->hasFlag(Node::NF_LOCK) ? RL_LOCK : 0);
+        $flags = ($node_bk->hasFlag(Node::NF_MRA) ? RecordList::RL_MRA : 0) | ($node_bk->hasFlag(Node::NF_MRPA)
+                ? RecordList::RL_MRPA : 0) | ($node_bk->hasFlag(Node::NF_LOCK) ? RecordList::RL_LOCK : 0);
         $node_bk->m_postvars = $session_back;
 
         if (isset($session_back['atkdg']['admin']['atksearch'])) {

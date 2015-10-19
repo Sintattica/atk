@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\RecordList;
 
-
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
@@ -9,17 +8,6 @@ use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Keyboard\Keyboard;
 use Sintattica\Atk\Utils\StringParser;
-
-
-/** recordlist flags */
-define("RL_NO_SORT", 1); // recordlist is not sortable
-define("RL_NO_SEARCH", 2); // recordlist is not searchable
-define("RL_NO_EXTENDED_SEARCH", 4); // recordlist is not searchable
-define("RL_EMBED", 8); // recordlist is embedded
-define("RL_MRA", 16); // multi-record-actions enabled
-define("RL_MRPA", 32); // multi-record-priority-actions enabled
-define("RL_LOCK", 64); // records can be locked
-define("RL_EXT_SORT", 128); // extended sort feature
 
 /**
  * The recordlist class is used to render tables containing records.
@@ -31,6 +19,16 @@ define("RL_EXT_SORT", 128); // extended sort feature
  */
 class RecordList
 {
+    /** recordlist flags */
+    const RL_NO_SORT = 1; // recordlist is not sortable
+    const RL_NO_SEARCH = 2; // recordlist is not searchable
+    const RL_NO_EXTENDED_SEARCH = 4; // recordlist is not searchable
+    const RL_EMBED = 8; // recordlist is embedded
+    const RL_MRA = 16; // multi-record-actions enabled
+    const RL_MRPA = 32; // multi-record-priority-actions enabled
+    const RL_LOCK = 64; // records can be locked
+    const RL_EXT_SORT = 128; // extended sort feature
+
     /** @var Node $m_node */
     var $m_node;
 
@@ -78,13 +76,13 @@ class RecordList
      */
     function convertFlags($flags)
     {
-        $result = Tools::hasFlag($flags, Node::NF_MRA) ? RL_MRA : 0;
-        $result |= Tools::hasFlag($flags, Node::NF_MRPA) ? RL_MRPA : 0;
-        $result |= Tools::hasFlag($flags, Node::NF_LOCK) ? RL_LOCK : 0;
-        $result |= Tools::hasFlag($flags, Node::NF_NO_SEARCH) ? RL_NO_SEARCH : 0;
-        $result |= Tools::hasFlag($flags, Node::NF_NO_EXTENDED_SEARCH) ? RL_NO_EXTENDED_SEARCH
+        $result = Tools::hasFlag($flags, Node::NF_MRA) ? self::RL_MRA : 0;
+        $result |= Tools::hasFlag($flags, Node::NF_MRPA) ? self::RL_MRPA : 0;
+        $result |= Tools::hasFlag($flags, Node::NF_LOCK) ? self::RL_LOCK : 0;
+        $result |= Tools::hasFlag($flags, Node::NF_NO_SEARCH) ? self::RL_NO_SEARCH : 0;
+        $result |= Tools::hasFlag($flags, Node::NF_NO_EXTENDED_SEARCH) ? self::RL_NO_EXTENDED_SEARCH
             : 0;
-        $result |= Tools::hasFlag($flags, Node::NF_EXT_SORT) ? RL_EXT_SORT : 0;
+        $result |= Tools::hasFlag($flags, Node::NF_EXT_SORT) ? self::RL_EXT_SORT : 0;
         return $result;
     }
 
@@ -110,8 +108,7 @@ class RecordList
         $formName = "",
         $navigation = array(),
         $embedprefix = ""
-    )
-    {
+    ) {
         $data = $this->getRecordlistData($node, $recordset, $actions, $flags, $suppressList, $formName, $navigation,
             $embedprefix);
         $ui = $this->m_node->getUi();
@@ -155,8 +152,7 @@ class RecordList
         $formName = "",
         $navigation = array(),
         $embedprefix = ""
-    )
-    {
+    ) {
         $this->setNode($node);
         $this->m_flags = $flags;
 
@@ -174,18 +170,18 @@ class RecordList
         $list = $this->listArray($recordset, $flags, "", $actions, $suppressList, $embedprefix);
 
         /* Check if some flags are still valid or not... */
-        if (Tools::hasFlag($flags, RL_MRA) && (count($list["mra"]) == 0 || count($list["rows"]) == 0)) {
-            $flags ^= RL_MRA;
+        if (Tools::hasFlag($flags, self::RL_MRA) && (count($list["mra"]) == 0 || count($list["rows"]) == 0)) {
+            $flags ^= self::RL_MRA;
         }
-        if (!Tools::hasFlag($flags, RL_NO_SEARCH) && count($list["search"]) == 0) {
-            $flags |= RL_NO_SEARCH;
+        if (!Tools::hasFlag($flags, self::RL_NO_SEARCH) && count($list["search"]) == 0) {
+            $flags |= self::RL_NO_SEARCH;
         }
         if (Tools::hasFlag($flags,
-                RL_MRPA) && (count($this->m_node->m_priority_actions) == 0 || count($list["rows"]) == 0)
+                self::RL_MRPA) && (count($this->m_node->m_priority_actions) == 0 || count($list["rows"]) == 0)
         ) {
-            $flags ^= RL_MRPA;
-        } elseif (Tools::hasFlag($flags, RL_MRPA)) {
-            $flags = ($flags | RL_MRA | RL_MRPA) ^ RL_MRA;
+            $flags ^= self::RL_MRPA;
+        } elseif (Tools::hasFlag($flags, self::RL_MRPA)) {
+            $flags = ($flags | self::RL_MRA | self::RL_MRPA) ^ self::RL_MRA;
             if ($this->m_node->m_priority_max == 0) {
                 $this->m_node->m_priority_max = $this->m_node->m_priority_min + count($list["rows"]) - 1;
             }
@@ -214,16 +210,16 @@ class RecordList
                 $headercols[] = array("content" => "&nbsp;");
             }
         }
-        if (Tools::hasFlag($flags, RL_MRA) || Tools::hasFlag($flags, RL_MRPA)) {
+        if (Tools::hasFlag($flags, self::RL_MRA) || Tools::hasFlag($flags, self::RL_MRPA)) {
             $headercols[] = array("content" => ""); // Empty leader on top of mra action list.
         }
-        if (Tools::hasFlag($flags, RL_LOCK)) {
+        if (Tools::hasFlag($flags, self::RL_LOCK)) {
             $headercols[] = array("content" => '<img src="' . Config::getGlobal("assets_url") . 'images/lock_head.gif">');
         }
         if (($orientation == "left" || $orientation == "both") && ($this->_hasActionColumn($list) && count($list["rows"]) > 0)) {
             $headercols[] = array("content" => "");
         }
-        //Todo: For speedup we must move hasFlag($this->m_flags, RL_EMBED out of cycle or to listArray()
+        //Todo: For speedup we must move hasFlag($this->m_flags, self::RL_EMBED out of cycle or to listArray()
         foreach (array_values($list["heading"]) as $head) {
             // make old recordlist compatible with new order specification
             if (!empty($head["order"])) {
@@ -231,7 +227,7 @@ class RecordList
                 $head["url"] = SessionManager::sessionUrl(Tools::atkSelf() . '?atknodetype=' . $ATK_VARS["atknodetype"] . '&atkaction=' . $ATK_VARS["atkaction"] . '&atkorderby=' . rawurlencode($head["order"]));
             }
 
-            if (Tools::hasFlag($this->m_flags, RL_EMBED) && !empty($head["url"])) {
+            if (Tools::hasFlag($this->m_flags, self::RL_EMBED) && !empty($head["url"])) {
                 $head["url"] = str_replace("atkorderby=", "atkorderby{$embedprefix}=", $head["url"]);
             }
 
@@ -261,12 +257,12 @@ class RecordList
         $sortcols = array();
         $sortstart = "";
         $sortend = "";
-        if (Tools::hasFlag($flags, RL_EXT_SORT)) {
+        if (Tools::hasFlag($flags, self::RL_EXT_SORT)) {
             $button = '<input type="submit" value="' . Tools::atktext("sort") . '">';
-            if (Tools::hasFlag($flags, RL_MRA) || Tools::hasFlag($flags, RL_MRPA)) {
+            if (Tools::hasFlag($flags, self::RL_MRA) || Tools::hasFlag($flags, self::RL_MRPA)) {
                 $sortcols[] = array("content" => ""); // Empty leader on top of mra action list.
             }
-            if (Tools::hasFlag($flags, RL_LOCK)) {
+            if (Tools::hasFlag($flags, self::RL_LOCK)) {
                 $sortcols[] = array("content" => "");
             }
             if ($orientation == "left" || $orientation == "both") {
@@ -298,27 +294,27 @@ class RecordList
         $searchcols = array();
         $searchstart = "";
         $searchend = "";
-        if (!Tools::hasFlag($flags, RL_NO_SEARCH)) {
+        if (!Tools::hasFlag($flags, self::RL_NO_SEARCH)) {
             $button = '<input type="submit" class="btn btn-default btn_search" value="' . Tools::atktext("search") . '">';
             if (!Tools::hasFlag($flags,
-                    RL_NO_EXTENDED_SEARCH) && !$this->m_node->hasFlag(Node::NF_NO_EXTENDED_SEARCH)
+                    self::RL_NO_EXTENDED_SEARCH) && !$this->m_node->hasFlag(Node::NF_NO_EXTENDED_SEARCH)
             ) {
                 $button .= '<br>' . Tools::href(Tools::atkSelf() . "?atknodetype=" . $this->getMasterNodeType() . "&atkaction=" . $node->getExtendedSearchAction(),
                         "(" . Tools::atktext("search_extended") . ")", SESSION_NESTED);
             }
 
             $searchstart = '<a name="searchform"></a>';
-            if (!Tools::hasFlag($this->m_flags, RL_EMBED)) {
+            if (!Tools::hasFlag($this->m_flags, self::RL_EMBED)) {
                 $searchstart .= '<form action="' . Tools::atkSelf() . '?' . SID . '" method="get">' . Tools::session_form();
                 $searchstart .= '<input type="hidden" name="atknodetype" value="' . $this->getMasterNodeType() . '">' .
                     '<input type="hidden" name="atkaction" value="' . $this->m_node->m_action . '">' . '<input type="hidden" name="atksmartsearch" value="clear">' .
                     '<input type="hidden" name="atkstartat" value="0">'; // reset atkstartat to first page after a new search;
             }
 
-            if (Tools::hasFlag($flags, RL_MRA) || Tools::hasFlag($flags, RL_MRPA)) {
+            if (Tools::hasFlag($flags, self::RL_MRA) || Tools::hasFlag($flags, self::RL_MRPA)) {
                 $searchcols[] = array("content" => "");
             }
-            if (Tools::hasFlag($flags, RL_LOCK)) {
+            if (Tools::hasFlag($flags, self::RL_LOCK)) {
                 $searchcols[] = array("content" => "");
             }
             if ($orientation == "left" || $orientation == "both") {
@@ -337,7 +333,7 @@ class RecordList
             }
 
             $searchend = "";
-            if (!Tools::hasFlag($this->m_flags, RL_EMBED)) {
+            if (!Tools::hasFlag($this->m_flags, self::RL_EMBED)) {
                 $searchend = '</form>';
             }
         }
@@ -347,10 +343,10 @@ class RecordList
         /*             * **************************************** */
         $liststart = "";
         $listend = "";
-        if (Tools::hasFlag($flags, RL_MRA) || Tools::hasFlag($flags, RL_MRPA)) {
+        if (Tools::hasFlag($flags, self::RL_MRA) || Tools::hasFlag($flags, self::RL_MRPA)) {
             $page->register_script(Config::getGlobal("assets_url") . "javascript/formselect.js");
 
-            if (!Tools::hasFlag($flags, RL_EMBED)) {
+            if (!Tools::hasFlag($flags, self::RL_EMBED)) {
                 if (empty($formName)) {
                     $formName = $listName;
                 }
@@ -361,7 +357,7 @@ class RecordList
                 $listend = '</form>';
             }
 
-            if (Tools::hasFlag($flags, RL_MRA)) {
+            if (Tools::hasFlag($flags, self::RL_MRA)) {
                 $liststart .= '<script language="javascript" type="text/javascript">var ' . $listName . ' = new Object();</script>';
             }
         }
@@ -375,7 +371,7 @@ class RecordList
         $actionloader = "rl_a['" . $listName . "'] = {};";
         $actionloader .= "\nrl_a['" . $listName . "']['base'] = '" . Tools::session_vars($this->m_actionSessionStatus,
                 1, $actionurl) . "';";
-        $actionloader .= "\nrl_a['" . $listName . "']['embed'] = " . (Tools::hasFlag($flags, RL_EMBED)
+        $actionloader .= "\nrl_a['" . $listName . "']['embed'] = " . (Tools::hasFlag($flags, self::RL_EMBED)
                 ? 'true' : 'false') . ";";
 
         if (isset($navigation["next"]) && isset($navigation["next"]["url"])) {
@@ -412,7 +408,7 @@ class RecordList
             $record["type"] = $list["rows"][$i]["type"];
 
             /* multi-record-priority-actions -> priority selection */
-            if (Tools::hasFlag($flags, RL_MRPA)) {
+            if (Tools::hasFlag($flags, self::RL_MRPA)) {
                 $select = '<select name="' . $listName . '_atkselector[]">' .
                     '<option value="' . rawurlencode($list["rows"][$i]["selector"]) . '"></option>';
                 for ($j = $this->m_node->m_priority_min; $j <= $this->m_node->m_priority_max; $j++) {
@@ -420,7 +416,7 @@ class RecordList
                 }
                 $select .= '</select>';
                 $record["cols"][] = array("content" => $select, "type" => "mrpa");
-            } /* multi-record-actions -> checkbox */ elseif (Tools::hasFlag($flags, RL_MRA)) {
+            } /* multi-record-actions -> checkbox */ elseif (Tools::hasFlag($flags, self::RL_MRA)) {
                 if (count($list["rows"][$i]["mra"]) > 0) {
                     $record["cols"][] = array(
                         "content" => '<input type="checkbox" name="' . $listName . '_atkselector[]" value="' . htmlentities($list["rows"][$i]["selector"]) . '" class="atkcheckbox" onclick="if (this.disabled) this.checked = false">' .
@@ -434,7 +430,7 @@ class RecordList
             }
 
             /* locked? */
-            if (Tools::hasFlag($flags, RL_LOCK)) {
+            if (Tools::hasFlag($flags, self::RL_LOCK)) {
                 if (is_array($list["rows"][$i]["lock"])) {
                     $alt = $list["rows"][$i]["lock"]["user_id"] . " / " . $list["rows"][$i]["lock"]["user_ip"];
                     $record["cols"][] = array(
@@ -516,10 +512,10 @@ class RecordList
         $totalcols = array();
 
         if (count($list["total"]) > 0) {
-            if (Tools::hasFlag($flags, RL_MRA) || Tools::hasFlag($flags, RL_MRPA)) {
+            if (Tools::hasFlag($flags, self::RL_MRA) || Tools::hasFlag($flags, self::RL_MRPA)) {
                 $totalcols[] = array("content" => "");
             }
-            if (Tools::hasFlag($flags, RL_LOCK)) {
+            if (Tools::hasFlag($flags, self::RL_LOCK)) {
                 $totalcols[] = array("content" => "");
             }
             if (($orientation == "left" || $orientation == "both") && ($this->_hasActionColumn($list) && count($list["rows"]) > 0)) {
@@ -542,7 +538,7 @@ class RecordList
         /* MULTI-RECORD-PRIORITY-ACTION FORM (CONTINUED) */
         /*             * ********************************************** */
         $mra = "";
-        if (Tools::hasFlag($flags, RL_MRPA)) {
+        if (Tools::hasFlag($flags, self::RL_MRPA)) {
             $target = Tools::session_url(Tools::atkSelf() . '?atknodetype=' . $this->getMasterNodeType(),
                 SESSION_NESTED);
 
@@ -566,7 +562,7 @@ class RecordList
 
         /*             * ************************************* */
         /* MULTI-RECORD-ACTION FORM (CONTINUED) */
-        /*             * ************************************* */ elseif (Tools::hasFlag($flags, RL_MRA)) {
+        /*             * ************************************* */ elseif (Tools::hasFlag($flags, self::RL_MRA)) {
             $target = Tools::session_url(Tools::atkSelf() . '?atknodetype=' . $this->m_node->atkNodeType() . '&atktarget=' . $this->m_node->m_postvars['atktarget'] . '&atktargetvar=' . $this->m_node->m_postvars['atktargetvar'] . '&atktargetvartpl=' . $this->m_node->m_postvars['atktargetvartpl'],
                 SESSION_NESTED);
 
@@ -639,11 +635,11 @@ class RecordList
     {
         if ($this->m_hasActionColumn == 0) {
             // when there's a search bar, we always need an extra column (for the button)
-            if (!Tools::hasFlag($this->m_flags, RL_NO_SEARCH)) {
+            if (!Tools::hasFlag($this->m_flags, self::RL_NO_SEARCH)) {
                 $this->m_hasActionColumn = true;
             } // when there's an extended sort bar, we also need the column (for the sort button)
             else {
-                if (Tools::hasFlag($this->m_flags, RL_EXT_SORT)) {
+                if (Tools::hasFlag($this->m_flags, self::RL_EXT_SORT)) {
                     $this->m_hasActionColumn = true;
                 } else {
                     // otherwise, it depends on whether one of the records has actions defined.
@@ -702,8 +698,7 @@ class RecordList
         $actions = array(),
         $suppress = array(),
         $embedprefix = ""
-    )
-    {
+    ) {
         if (!is_array($suppress)) {
             $suppress = array();
         }
@@ -716,7 +711,7 @@ class RecordList
             "mra" => array()
         );
 
-        if (Tools::hasFlag($this->m_flags, RL_EMBED) && $embedprefix) {
+        if (Tools::hasFlag($this->m_flags, self::RL_EMBED) && $embedprefix) {
             $prefix = $embedprefix . "][";
         }
 
@@ -725,7 +720,7 @@ class RecordList
         /* get the heading and search columns */
         $atksearchpostvar = isset($this->m_node->m_postvars["atksearch"]) ? $this->m_node->m_postvars["atksearch"]
             : null;
-        if (!Tools::hasFlag($flags, RL_NO_SEARCH)) {
+        if (!Tools::hasFlag($flags, self::RL_NO_SEARCH)) {
             $this->m_node->setAttribSizes();
         }
         foreach (array_keys($this->m_node->m_attribIndexList) as $r) {
@@ -759,7 +754,7 @@ class RecordList
             $row = &$result["rows"][$i];
 
             /* locked */
-            if (Tools::hasFlag($flags, RL_LOCK)) {
+            if (Tools::hasFlag($flags, self::RL_LOCK)) {
                 $result["rows"][$i]["lock"] = $this->m_node->m_lock->isLocked($result["rows"][$i]["selector"],
                     $this->m_node->m_table);
                 if (is_array($result["rows"][$i]["lock"])) {
@@ -807,12 +802,12 @@ class RecordList
             }
         }
 
-        if (Tools::hasFlag($flags, RL_EXT_SORT) && $columnConfig->hasSubTotals()) {
+        if (Tools::hasFlag($flags, self::RL_EXT_SORT) && $columnConfig->hasSubTotals()) {
             $totalizer = new Totalizer($this->m_node, $columnConfig);
             $result["rows"] = $totalizer->totalize($result["rows"]);
         }
 
-        if (Tools::hasFlag($flags, RL_MRA)) {
+        if (Tools::hasFlag($flags, self::RL_MRA)) {
             $result["mra"] = array_values(array_unique($result["mra"]));
         }
 

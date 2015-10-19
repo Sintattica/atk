@@ -5,6 +5,7 @@ use Sintattica\Atk\Utils\StringParser as StringParser;
 use Sintattica\Atk\Core\Tools as Tools;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\RecordList\RecordList;
 
 /**
  * The AggregatedColumn aggregates multiple attributes to one colunm in
@@ -104,7 +105,7 @@ class AggregatedColumn extends Attribute
         if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == "select")) {
             $arr["heading"][$fieldprefix . $this->fieldName()]["title"] = $this->label();
 
-            if (!Tools::hasFlag($flags, RL_NO_SORT) && !$this->hasFlag(self::AF_NO_SORT)) {
+            if (!Tools::hasFlag($flags, RecordList::RL_NO_SORT) && !$this->hasFlag(self::AF_NO_SORT)) {
                 $rec = array();
                 foreach ($this->m_displayfields as $field) {
                     $rec[] = $this->m_ownerInstance->m_table . "." . $field;
@@ -117,7 +118,7 @@ class AggregatedColumn extends Attribute
                 $arr["heading"][$fieldprefix . $this->fieldName()]["url"] = SessionManager::sessionUrl(Tools::atkSelf() . '?atknodetype=' . $this->m_ownerInstance->atkNodeType() . '&atkaction=' . $action . '&atkorderby=' . rawurlencode($order));
             }
 
-            if (!Tools::hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(self::AF_SEARCHABLE)) {
+            if (!Tools::hasFlag($flags, RecordList::RL_NO_SEARCH) && $this->hasFlag(self::AF_SEARCHABLE)) {
                 $arr["search"][$fieldprefix . $this->fieldName()] = $this->search($atksearch, false, $fieldprefix);
                 $arr["search"][$fieldprefix . $this->fieldName()] .= '<input type="hidden" name="atksearchmode[' . $this->fieldName() . ']" value="' . $this->getSearchMode(false) . '">';
             }

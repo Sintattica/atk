@@ -7,6 +7,8 @@ use Sintattica\Atk\RecordList\Totalizer;
 use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Keyboard\Keyboard;
 use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\RecordList\RecordList;
+use Sintattica\Atk\Lock\Lock;
 use \stdClass;
 use \Exception;
 
@@ -702,18 +704,18 @@ class DataGridList extends DataGridComponent
         $grid = $this->getGrid();
 
         $result = !$grid->isEditing() && $grid->hasFlag(DataGrid::MULTI_RECORD_ACTIONS)
-            ? RL_MRA : 0;
+            ? RecordList::RL_MRA : 0;
         $result |= !$grid->isEditing() && $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS)
-            ? RL_MRPA : 0;
-        $result |= !$grid->isEditing() && $grid->hasFlag(DataGrid::LOCKING) ? RL_LOCK
+            ? RecordList::RL_MRPA : 0;
+        $result |= !$grid->isEditing() && $grid->hasFlag(DataGrid::LOCKING) ? RecordList::RL_LOCK
             : 0;
-        $result |= $grid->isEditing() || !$grid->hasFlag(DataGrid::SEARCH) ? RL_NO_SEARCH
+        $result |= $grid->isEditing() || !$grid->hasFlag(DataGrid::SEARCH) ? RecordList::RL_NO_SEARCH
             : 0;
         $result |= $grid->isEditing() || !$grid->hasFlag(DataGrid::EXTENDED_SEARCH)
-            ? RL_NO_EXTENDED_SEARCH : 0;
+            ? RecordList::RL_NO_EXTENDED_SEARCH : 0;
         $result |= !$grid->isEditing() && $grid->hasFlag(DataGrid::EXTENDED_SORT)
-            ? RL_EXT_SORT : 0;
-        $result |= $grid->isEditing() ? RL_NO_SORT : 0;
+            ? RecordList::RL_EXT_SORT : 0;
+        $result |= $grid->isEditing() ? RecordList::RL_NO_SORT : 0;
         return $result;
     }
 
@@ -757,7 +759,7 @@ class DataGridList extends DataGridComponent
 
         $columnConfig = &$grid->getNode()->getColumnConfig($grid->getName());
 
-        if (!Tools::hasFlag($flags, RL_NO_SEARCH) || $grid->isEditing()) {
+        if (!Tools::hasFlag($flags, RecordList::RL_NO_SEARCH) || $grid->isEditing()) {
             $grid->getNode()->setAttribSizes();
         }
 
@@ -841,12 +843,12 @@ class DataGridList extends DataGridComponent
             $this->_addListArrayRow($result, $prefix, $suppress, $flags, $i, $editAllowed);
         }
 
-        if (Tools::hasFlag($flags, RL_EXT_SORT) && $columnConfig->hasSubTotals()) {
+        if (Tools::hasFlag($flags, RecordList::RL_EXT_SORT) && $columnConfig->hasSubTotals()) {
             $totalizer = new Totalizer($grid->getNode(), $columnConfig);
             $result["rows"] = $totalizer->totalize($result["rows"]);
         }
 
-        if (Tools::hasFlag($flags, RL_MRA)) {
+        if (Tools::hasFlag($flags, RecordList::RL_MRA)) {
             $result["mra"] = array_values(array_unique($result["mra"]));
         }
 
