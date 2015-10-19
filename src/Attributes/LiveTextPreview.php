@@ -1,29 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2005 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 5798 $
- * $Id$
- */
-/**
- * Base class include
- */
-Tools::useattrib("atkdummyattribute");
 
-/**
- * Custom flags
- */
-define("self::AF_LIVETEXT_SHOWLABEL", self::AF_DUMMY_SHOW_LABEL);
-define("self::AF_LIVETEXT_NL2BR", self::AF_SPECIFIC_2);
+use Sintattica\Atk\Ui\Page;
 
 /**
  * The atkLiveTextPreview adds a preview to the page that previews realtime
@@ -37,6 +14,12 @@ define("self::AF_LIVETEXT_NL2BR", self::AF_SPECIFIC_2);
  */
 class LiveTextPreview extends DummyAttribute
 {
+    /**
+     * Custom flags
+     */
+    const AF_LIVETEXT_SHOWLABEL = DummyAttribute::AF_DUMMY_SHOW_LABEL;
+    const AF_LIVETEXT_NL2BR = self::AF_SPECIFIC_2;
+
     var $m_masterattribute = "";
 
     /**
@@ -48,9 +31,9 @@ class LiveTextPreview extends DummyAttribute
      *                   Use self::AF_LIVETEXT_NL2BR if the data should be nl2br'd before
      *                   display.
      */
-    function atkLiveTextPreview($name, $masterattribute, $flags = 0)
+    function __construct($name, $masterattribute, $flags = 0)
     {
-        $this->atkDummyAttribute($name, '', $flags);
+        parent::__construct($name, '', $flags);
         $this->m_masterattribute = $masterattribute;
     }
 

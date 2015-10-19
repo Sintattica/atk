@@ -1,24 +1,7 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6309 $
- * $Id$
- */
 
-/**
- * Custom flags
- */
-define("self::AF_DUMMY_SHOW_LABEL", self::AF_SPECIFIC_1); // make the dummy label its fields
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Db\Db;
 
 /**
  * With the atkDummyAttribute class you can place comments between other
@@ -34,6 +17,11 @@ define("self::AF_DUMMY_SHOW_LABEL", self::AF_SPECIFIC_1); // make the dummy labe
  */
 class DummyAttribute extends Attribute
 {
+    /**
+     * Custom flags
+     */
+    const AF_DUMMY_SHOW_LABEL = self::AF_SPECIFIC_1; // make the dummy label its fields
+
     var $m_text;
 
     /**
@@ -112,7 +100,7 @@ class DummyAttribute extends Attribute
      * Display a record
      * Here it will only return the text.
      * @param array $record Array with fields
-     * @return Text
+     * @return string Text
      */
     function display($record)
     {
@@ -147,7 +135,7 @@ class DummyAttribute extends Attribute
      * @param string $mode The mode
      * @return boolean to indicate if store went succesfully
      */
-    function store($db, $record, $mode)
+    function store(Db $db, $record, $mode)
     {
         return true;
     }
@@ -209,7 +197,7 @@ class DummyAttribute extends Attribute
      * Return the database field type of the attribute.
      * VOID implementation because dummy attributes are not stored in the database
      *
-     * @return empty string
+     * @return string empty string
      */
     function dbFieldType()
     {
