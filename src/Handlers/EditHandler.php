@@ -44,7 +44,7 @@ class EditHandler extends ViewEditBase
         $record = $this->getRecord();
 
         if ($record === null) {
-            $location = $node->feedbackUrl("edit", ACTION_FAILED, $record);
+            $location = $node->feedbackUrl("edit", self::ACTION_FAILED, $record);
             $node->redirect($location);
         }
 

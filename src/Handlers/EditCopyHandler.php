@@ -44,7 +44,7 @@ class EditCopyHandler extends ActionHandler
         $db = $this->m_node->getDb();
         if (!$this->m_node->copyDb($record)) {
             $db->rollback();
-            $location = $this->m_node->feedbackUrl("editcopy", ACTION_FAILED, $record, $db->getErrorMsg());
+            $location = $this->m_node->feedbackUrl("editcopy", self::ACTION_FAILED, $record, $db->getErrorMsg());
             $this->m_node->redirect($location);
         } else {
             $db->commit();

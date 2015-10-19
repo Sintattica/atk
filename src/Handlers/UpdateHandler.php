@@ -145,7 +145,7 @@ class Updatehandler extends ActionHandler
      */
     public function handleCancel($record)
     {
-        $location = $this->m_node->feedbackUrl("update", ACTION_CANCELLED, $record, '', 2);
+        $location = $this->m_node->feedbackUrl("update", self::ACTION_CANCELLED, $record, '', 2);
         $this->m_node->redirect($location);
     }
 
@@ -298,7 +298,7 @@ class Updatehandler extends ActionHandler
                 $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record))), SESSION_BACK);
             $this->m_node->redirect($location);
         } else {
-            $location = $this->m_node->feedbackUrl("update", ACTION_FAILED, $record, $error);
+            $location = $this->m_node->feedbackUrl("update", self::ACTION_FAILED, $record, $error);
             $this->m_node->redirect($location);
         }
     }
@@ -324,7 +324,7 @@ class Updatehandler extends ActionHandler
                 $this->getEditAction(), $params), SESSION_REPLACE, 1);
         } else {
             // 'save and close' was clicked
-            $location = $this->m_node->feedbackUrl("update", ACTION_SUCCESS, $record, "", 2);
+            $location = $this->m_node->feedbackUrl("update", self::ACTION_SUCCESS, $record, "", 2);
         }
 
         $this->m_node->redirect($location, $record);

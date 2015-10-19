@@ -55,7 +55,7 @@ class CopyHandler extends ActionHandler
             if (!$this->m_node->copyDb($recordset[0])) {
                 Tools::atkdebug("node::action_copy() -> Error");
                 $db->rollback();
-                $location = $this->m_node->feedbackUrl("save", ACTION_FAILED, $recordset[0], $db->getErrorMsg());
+                $location = $this->m_node->feedbackUrl("save", self::ACTION_FAILED, $recordset[0], $db->getErrorMsg());
                 Tools::atkdebug("node::action_copy() -> Redirect");
                 $this->m_node->redirect($location);
             } else {

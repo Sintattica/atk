@@ -21,33 +21,7 @@ use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\Utils\Debugger;
 use \Exception;
 
-/**
- * action status flags
- * Note that these have binary numbers, even though an action could never have
- * two statusses at the same time.
- * This is done however, so the flags can be used as a mask in the setFeedback
- * function.
- */
-/**
- * The action is cancelled
- *
- * action status flag
- */
-define("ACTION_CANCELLED", 1);
 
-/**
- * The action failed to accomplish it's goal
- *
- * action status flag
- */
-define("ACTION_FAILED", 2);
-
-/**
- * The action is a success
- *
- * action status flag
- */
-define("ACTION_SUCCESS", 4);
 
 /**
  * Trigger flags
@@ -2961,7 +2935,7 @@ class Node
      * @param mixed $action The action for which feedback is enabled. You can
      *                      either pass one action or an array of actions.
      * @param int $statusmask The status(ses) for which feedback is enabled.
-     *                        If for example this is set to ACTION_FAILED,
+     *                        If for example this is set to ActionHandler::ACTION_FAILED,
      *                        feedback is enabled only when the specified
      *                        action failed. It is possible to specify more
      *                        than one status by concatenating with '|'.

@@ -192,7 +192,7 @@ class ImportHandler extends ActionHandler
         $fileid = uniqid("file_");
         $filename = $this->getTmpFileDestination($fileid);
         if (!move_uploaded_file($_FILES['csvfile']['tmp_name'], $filename)) {
-            $this->m_node->redirect($this->m_node->feedbackUrl("import", ACTION_FAILED));
+            $this->m_node->redirect($this->m_node->feedbackUrl("import", self::ACTION_FAILED));
         } else {
             // file uploaded
             $this->doAnalyze($fileid);

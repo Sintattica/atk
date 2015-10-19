@@ -64,7 +64,7 @@ class DeleteHandler extends ActionHandler
     protected function _handleCancelAction()
     {
         // Confirmation page was displayed and 'no' was clicked
-        $location = $this->m_node->feedbackUrl("delete", ACTION_CANCELLED);
+        $location = $this->m_node->feedbackUrl("delete", self::ACTION_CANCELLED);
         $this->m_node->redirect($location);
     }
 
@@ -114,9 +114,9 @@ class DeleteHandler extends ActionHandler
         }
 
         if ($result === true) {
-            $location = $this->m_node->feedbackUrl("delete", ACTION_SUCCESS);
+            $location = $this->m_node->feedbackUrl("delete", self::ACTION_SUCCESS);
         } else {
-            $location = $this->m_node->feedbackUrl("delete", ACTION_FAILED, null, $result);
+            $location = $this->m_node->feedbackUrl("delete", self::ACTION_FAILED, null, $result);
         }
 
         $this->m_node->redirect($location);
@@ -195,7 +195,7 @@ class DeleteHandler extends ActionHandler
             if ($attrib->deleteAllowed() !== true) {
                 $db = $this->m_node->getDb();
                 $db->rollback();
-                $location = $this->m_node->feedbackUrl("delete", ACTION_FAILED, null,
+                $location = $this->m_node->feedbackUrl("delete", self::ACTION_FAILED, null,
                     sprintf(Tools::atktext("attrib_delete_not_allowed"),
                         Tools::atktext($attrib->m_name, $this->m_node->m_module, $this->m_node->m_type), $attrib->fieldName()));
                 $this->m_node->redirect($location);

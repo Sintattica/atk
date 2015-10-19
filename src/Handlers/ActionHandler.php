@@ -40,6 +40,34 @@ define("ATK_ACTION_BACK", 1);
 class ActionHandler
 {
     /**
+     * action status flags
+     * Note that these have binary numbers, even though an action could never have
+     * two statusses at the same time.
+     * This is done however, so the flags can be used as a mask in the setFeedback
+     * function.
+     */
+    /**
+     * The action is cancelled
+     *
+     * action status flag
+     */
+    const ACTION_CANCELLED = 1;
+
+    /**
+     * The action failed to accomplish it's goal
+     *
+     * action status flag
+     */
+    const ACTION_FAILED = 2;
+
+    /**
+     * The action is a success
+     *
+     * action status flag
+     */
+    const ACTION_SUCCESS = 4;
+
+    /**
      * @var Node
      * @access private
      */

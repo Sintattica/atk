@@ -11,6 +11,7 @@ use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Utils\ClassLoader;
 use Sintattica\Atk\Utils\String;
 use Sintattica\Atk\Utils\BrowserInfo;
+use Sintattica\Atk\Handlers\ActionHandler;
 
 use \Exception;
 
@@ -1277,17 +1278,17 @@ class Tools
 
     /**
      * Returns a string representation of an action status.
-     * @param int $status status of the action (ACTION_FAILED|ACTION_SUCCESS|ACTION_CANCELLED)
+     * @param int $status status of the action (ActionHandler::ACTION_FAILED|ActionHandler::ACTION_SUCCESS|ActionHandler::ACTION_CANCELLED)
      * @return string String representation of an action status.
      */
     public static function atkActionStatus($status)
     {
         switch ($status) {
-            case ACTION_CANCELLED:
+            case ActionHandler::ACTION_CANCELLED:
                 return "cancelled";
-            case ACTION_FAILED:
+            case ActionHandler::ACTION_FAILED:
                 return "failed";
-            case ACTION_SUCCESS:
+            case ActionHandler::ACTION_SUCCESS:
                 return "success";
         }
     }

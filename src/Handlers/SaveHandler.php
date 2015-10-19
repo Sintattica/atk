@@ -105,7 +105,7 @@ class SaveHandler extends ActionHandler
         } else {
             if (isset($this->m_postvars['atkcancel'])) {
                 // Cancel was pressed
-                $location = $this->m_node->feedbackUrl("save", ACTION_CANCELLED, $record, "", $this->_getSkip());
+                $location = $this->m_node->feedbackUrl("save", self::ACTION_CANCELLED, $record, "", $this->_getSkip());
                 $this->_handleRedirect($location);
             }
         }
@@ -189,7 +189,7 @@ class SaveHandler extends ActionHandler
                 $location = Tools::session_url($url . $filter, SESSION_REPLACE, $this->_getSkip() - 1);
             } else {
                 // normal succesful save
-                $location = $this->m_node->feedbackUrl("save", ACTION_SUCCESS, $record, "", $this->_getSkip());
+                $location = $this->m_node->feedbackUrl("save", self::ACTION_SUCCESS, $record, "", $this->_getSkip());
             }
         }
         return $location;
@@ -266,7 +266,7 @@ class SaveHandler extends ActionHandler
             // still an error, back to where we came from
             $this->goBack($record);
         } else {
-            $location = $this->m_node->feedbackUrl("save", ACTION_FAILED, $record, $db->getErrorMsg());
+            $location = $this->m_node->feedbackUrl("save", self::ACTION_FAILED, $record, $db->getErrorMsg());
             $this->_handleRedirect($location);
         }
     }

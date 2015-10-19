@@ -1,6 +1,7 @@
 <?php namespace Sintattica\Atk\Core;
 
 
+use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Theme;
@@ -451,7 +452,7 @@ class Controller
     {
         $node = $this->getNode();
         if ((isset($node->m_feedback[$action]) && Tools::hasFlag($node->m_feedback[$action],
-                    $status)) || $status == ACTION_FAILED
+                    $status)) || $status == ActionHandler::ACTION_FAILED
         ) {
             $vars = array(
                 "atkaction" => "feedback",
@@ -523,7 +524,7 @@ class Controller
         // edit mode
         if ($mode == "edit") {
             if (SessionManager::atkLevel() > 0 || Tools::hasFlag(Tools::atkArrayNvl($node->m_feedback,
-                    "update", 0), ACTION_SUCCESS)
+                    "update", 0), ActionHandler::ACTION_SUCCESS)
             ) {
                 $result[] = $this->getButton('saveandclose', true);
             }
@@ -534,7 +535,7 @@ class Controller
             // which means that 'saveandclose' doesn't close anyway, so we leave out
             // the 'saveandclose' and 'cancel' button. Unless, a feedback screen is configured.
             if (SessionManager::atkLevel() > 0 || Tools::hasFlag(Tools::atkArrayNvl($node->m_feedback,
-                    "update", 0), ACTION_CANCELLED)
+                    "update", 0), ActionHandler::ACTION_CANCELLED)
             ) {
                 $result[] = $this->getButton('cancel');
             }
@@ -558,7 +559,7 @@ class Controller
 
 
             if (SessionManager::atkLevel() > 0 || Tools::hasFlag(Tools::atkArrayNvl($node->m_feedback,
-                    "save", 0), ACTION_CANCELLED)
+                    "save", 0), ActionHandler::ACTION_CANCELLED)
             ) {
                 $result[] = $this->getButton('cancel');
             }
