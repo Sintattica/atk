@@ -1,23 +1,7 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6289 $
- * $Id$
- */
-/** flag(s) specific for atkDurationAttribute */
-define("self::AF_DURATION_STRING", self::AF_SPECIFIC_1); // date must be entered as an english date string (strtotime)
-define("DURATIONFORMAT_TIME", 0);
-define("DURATIONFORMAT_DECIMAL", 1);
+
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * The atkDurationAttribute is an attribute for entering a length of time.
@@ -28,6 +12,11 @@ define("DURATIONFORMAT_DECIMAL", 1);
  */
 class DurationAttribute extends Attribute
 {
+    /** flag(s) specific for atkDurationAttribute */
+    const AF_DURATION_STRING = self::AF_SPECIFIC_1; // date must be entered as an english date string (strtotime)
+    const DURATIONFORMAT_TIME = 0;
+    const DURATIONFORMAT_DECIMAL = 1;
+
     /** member vars * */
     var $m_resolution_min;
     var $m_maxtime_min;
@@ -231,10 +220,10 @@ class DurationAttribute extends Attribute
             $minutes = abs($minutes);
         }
 
-        if (Config::getGlobal("durationformat", 0) == DURATIONFORMAT_DECIMAL) {
+        if (Config::getGlobal("durationformat", 0) == self::DURATIONFORMAT_DECIMAL) {
             $decimalvalue = $this->_getHourPart($minutes) + (self::_getMinutePart($minutes) / 60);
             return $prefix . sprintf("%02.02f", $decimalvalue);
-        } elseif (Config::getGlobal("durationformat", 0) == DURATIONFORMAT_TIME) {
+        } elseif (Config::getGlobal("durationformat", 0) == self::DURATIONFORMAT_TIME) {
             return $prefix . sprintf("%d:%02d", self::_getHourPart($minutes), self::_getMinutePart($minutes));
         }
     }
