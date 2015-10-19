@@ -131,8 +131,8 @@ class PgSqlDdl extends Ddl
             foreach ($this->m_fields as $fieldname => $fieldconfig) {
                 if ($fieldname != "" && $fieldconfig["type"] != "" && $this->getType($fieldconfig["type"]) != "") {
                     $fields[] = $this->buildField($fieldname, $fieldconfig["type"], $fieldconfig["size"],
-                        $fieldconfig["flags"] & ~DDL_NOTNULL, $fieldconfig["default"]);
-                    if (Tools::hasFlag($fieldconfig["flags"], DDL_NOTNULL)) {
+                        $fieldconfig["flags"] & ~self::DDL_NOTNULL, $fieldconfig["default"]);
+                    if (Tools::hasFlag($fieldconfig["flags"], self::DDL_NOTNULL)) {
                         $notNullFields[] = $fieldname;
                     }
                 }

@@ -104,7 +104,7 @@ class MySqlDdl extends Ddl
      * @param string $generictype The datatype of the field (should be one of the
      *                            generic types supported by ATK).
      * @param int $size The size of the field (if appropriate)
-     * @param int $flags The DDL_ flags for this field.
+     * @param int $flags The self::DDL_ flags for this field.
      * @param mixed $default The default value to be used when inserting new
      *                         rows.
      */

@@ -1,15 +1,7 @@
 <?php namespace Sintattica\Atk\Db;
 
-
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
-
-/**
- * Some flags that can be used to configure database fields.
- */
-define("DDL_PRIMARY", 1);
-define("DDL_UNIQUE", 2);
-define("DDL_NOTNULL", 4);
 
 /**
  * The Data Definition Language abstract base class.
@@ -24,6 +16,13 @@ define("DDL_NOTNULL", 4);
  */
 class Ddl
 {
+    /**
+     * Some flags that can be used to configure database fields.
+     */
+    const DDL_PRIMARY = 1;
+    const DDL_UNIQUE = 2;
+    const DDL_NOTNULL = 4;
+
     var $m_table = array();
     var $m_fields = array();
     var $m_remove_field;
@@ -84,15 +83,15 @@ class Ddl
      * @param string $generictype The datatype of the field (should be one of the
      *                            generic types supported by ATK).
      * @param int $size The size of the field (if appropriate)
-     * @param int $flags The DDL_ flags for this field.
+     * @param int $flags The self::DDL_ flags for this field.
      * @param mixed $default The default value to be used when inserting new
      *                         rows.
      */
     function addField($name, $generictype, $size = 0, $flags = 0, $default = null)
     {
-        if (Tools::hasFlag($flags, DDL_PRIMARY)) {
+        if (Tools::hasFlag($flags, self::DDL_PRIMARY)) {
             $this->m_primarykey[] = $name;
-            $flags |= DDL_NOTNULL; // primary keys may never be null.
+            $flags |= self::DDL_NOTNULL; // primary keys may never be null.
         }
 
         // Fix the size if the type is decimal
@@ -144,9 +143,9 @@ class Ddl
     function addFields($meta)
     {
         foreach ($meta as $field) {
-            $flags = Tools::hasFlag($field["flags"], Db::MF_PRIMARY) ? DDL_PRIMARY : 0;
-            $flags |= Tools::hasFlag($field["flags"], Db::MF_UNIQUE) ? DDL_UNIQUE : 0;
-            $flags |= Tools::hasFlag($field["flags"], Db::MF_NOT_NULL) ? DDL_NOTNULL : 0;
+            $flags = Tools::hasFlag($field["flags"], Db::MF_PRIMARY) ? self::DDL_PRIMARY : 0;
+            $flags |= Tools::hasFlag($field["flags"], Db::MF_UNIQUE) ? self::DDL_UNIQUE : 0;
+            $flags |= Tools::hasFlag($field["flags"], Db::MF_NOT_NULL) ? self::DDL_NOTNULL : 0;
 
             $this->addField($field["name"], $field["gentype"], $field["len"], $flags);
         }
@@ -291,7 +290,7 @@ class Ddl
      * @param string $generictype The datatype of the field (should be one of the
      *                            generic types supported by ATK).
      * @param int $size The size of the field (if appropriate)
-     * @param int $flags The DDL_ flags for this field.
+     * @param int $flags The self::DDL_ flags for this field.
      * @param mixed $default The default value to be used when inserting new
      *                         rows.
      */
@@ -307,7 +306,7 @@ class Ddl
             }
             $res .= " DEFAULT " . $default;
         }
-        if (Tools::hasFlag($flags, DDL_NOTNULL)) {
+        if (Tools::hasFlag($flags, self::DDL_NOTNULL)) {
             $res .= " NOT NULL";
         }
 
