@@ -1,24 +1,10 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2006 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6301 $
- * $Id$
- */
 
-Tools::useattrib("atklistattribute");
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Language;
 
 /**
- * The atkCountry class represents an attribute to handle ISO Countries in a listbox.
+ * The CountryAttribute class represents an attribute to handle ISO Countries in a listbox.
  *
  * @author Sandy Pleyte <sandy@ibuildings.nl>
  * @package atk
@@ -26,6 +12,7 @@ Tools::useattrib("atklistattribute");
  */
 class CountryAttribute extends ListAttribute
 {
+    var $m_country = array();
     var $m_countries = array();
     var $m_europe_countries = array(
         'AL',
