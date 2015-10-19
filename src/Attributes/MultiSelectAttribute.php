@@ -5,11 +5,6 @@ use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
 
-/** Defines */
-define("self::AF_NO_TOGGLELINKS", self::AF_SPECIFIC_2);
-define("self::AF_CHECK_ALL", self::AF_SPECIFIC_3);
-define("self::AF_LINKS_BOTTOM", self::AF_SPECIFIC_4);
-
 /**
  * The atkMultiboolAttribute class represents an attribute of a node
  * that has a field with checkboxes, and stores the input seperated by a '|'
@@ -21,6 +16,11 @@ define("self::AF_LINKS_BOTTOM", self::AF_SPECIFIC_4);
  */
 class MultiSelectAttribute extends ListAttribute
 {
+    /** Defines */
+    const AF_NO_TOGGLELINKS = self::AF_SPECIFIC_2;
+    const AF_CHECK_ALL = self::AF_SPECIFIC_3;
+    const AF_LINKS_BOTTOM = self::AF_SPECIFIC_4;
+
     // number of cols
     public $m_cols;
 
@@ -161,7 +161,6 @@ class MultiSelectAttribute extends ListAttribute
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
-        global $config_atkroot;
         $this->m_record = $record;
         $cols = $this->m_cols;
         $modcols = $cols - 1;
