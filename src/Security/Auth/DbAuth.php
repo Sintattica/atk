@@ -4,6 +4,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Security\SecurityManager;
 
 /**
  * Driver for authentication and authorization using tables in the database.
@@ -55,12 +56,12 @@ class DbAuth extends AuthInterface
      *                       function of an implementation returns true,
      *                       $passwd will be passed as an md5 string.
      *
-     * @return int AUTH_SUCCESS - Authentication succesful
-     *             AUTH_MISMATCH - Authentication failed, wrong
+     * @return int SecurityManager::AUTH_SUCCESS - Authentication succesful
+     *             SecurityManager::AUTH_MISMATCH - Authentication failed, wrong
      *                             user/password combination
-     *             AUTH_LOCKED - Account is locked, can not login
+     *             SecurityManager::AUTH_LOCKED - Account is locked, can not login
      *                           with current username.
-     *             AUTH_ERROR - Authentication failed due to some
+     *             SecurityManager::AUTH_ERROR - Authentication failed due to some
      *                          error which cannot be solved by
      *                          just trying again. If you return
      *                          this value, you *must* also
@@ -69,7 +70,7 @@ class DbAuth extends AuthInterface
     function validateUser($user, $passwd)
     {
         if ($user == "") {
-            return AUTH_UNVERIFIED;
+            return SecurityManager::AUTH_UNVERIFIED;
         } // can't verify if we have no userid
 
         $db = Tools::atkGetDb(Config::getGlobal("auth_database"));
@@ -78,11 +79,11 @@ class DbAuth extends AuthInterface
             Config::getGlobal("auth_accountdisablefield"), Config::getGlobal("auth_accountenableexpression"));
         $recs = $db->getrows($query);
         if (count($recs) > 0 && $this->isLocked($recs[0])) {
-            return AUTH_LOCKED;
+            return SecurityManager::AUTH_LOCKED;
         }
 
         return ((count($recs) > 0 && $user != "" && $this->matchPasswords($this->getPassword($recs[0]), $passwd))
-            ? AUTH_SUCCESS : AUTH_MISMATCH);
+            ? SecurityManager::AUTH_SUCCESS : SecurityManager::AUTH_MISMATCH);
     }
 
     /**
@@ -479,6 +480,7 @@ class DbAuth extends AuthInterface
         }
 
         // Regenerate the password
+        /** @var \Sintattica\Atk\Attributes\PasswordAttribute $passwordattr */
         $passwordattr = $usernode->getAttribute(Config::getGlobal("auth_passwordfield"));
         $newpassword = $passwordattr->generatePassword();
 

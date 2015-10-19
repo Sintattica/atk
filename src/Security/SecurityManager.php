@@ -11,19 +11,6 @@ use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Utils\Debugger;
 use Sintattica\Atk\Ui\Page;
 
-
-/**
- * @internal includes and definitions
- */
-// Some result defines
-define("AUTH_UNVERIFIED", 0); // initial value.
-define("AUTH_SUCCESS", 1);
-define("AUTH_LOCKED", 2);
-define("AUTH_MISMATCH", 3);
-define("AUTH_PASSWORDSENT", 4);
-define("AUTH_MISSINGUSERNAME", 5);
-define("AUTH_ERROR", -1);
-
 /**
  * The security manager for ATK applications.
  *
@@ -38,6 +25,15 @@ define("AUTH_ERROR", -1);
  */
 class SecurityManager
 {
+    const AUTH_UNVERIFIED = 0; // initial value.
+    const AUTH_SUCCESS = 1;
+    const AUTH_LOCKED = 2;
+    const AUTH_MISMATCH = 3;
+    const AUTH_PASSWORDSENT = 4;
+    const AUTH_MISSINGUSERNAME = 5;
+    const AUTH_ERROR = -1;
+
+
     var $m_authentication = array();
     var $m_authorization = 0;
     var $m_scheme = "none";
@@ -165,7 +161,8 @@ class SecurityManager
          */
         if (Config::getGlobal("auth_enablepasswordmailer", false)) {
             foreach ($this->m_authentication as $auth) {
-                if (in_array($auth->getPasswordPolicy(), array(AuthInterface::PASSWORD_RETRIEVABLE, AuthInterface::PASSWORD_RECREATE))) {
+                if (in_array($auth->getPasswordPolicy(),
+                    array(AuthInterface::PASSWORD_RETRIEVABLE, AuthInterface::PASSWORD_RECREATE))) {
                     $this->m_enablepasswordmailer = true;
                 }
             }
@@ -233,7 +230,7 @@ class SecurityManager
         global $g_sessionManager, $ATK_VARS;
         $session = &SessionManager::getSession();
 
-        $response = AUTH_UNVERIFIED;
+        $response = SecurityManager::AUTH_UNVERIFIED;
 
         if (Config::getGlobal("auth_loginform") == true) { // form login
             $auth_user = isset($ATK_VARS["auth_user"]) ? $ATK_VARS["auth_user"] : null;
@@ -247,7 +244,7 @@ class SecurityManager
         // throw post login event?
         $throwPostLoginEvent = false;
 
-        $md5 = false; // PHP_AUTH_PW is plain text..
+        $md5 = false; // PHP_SecurityManager::AUTH_PW is plain text..
         // first check if we want to logout
         if (isset($ATK_VARS["atklogout"]) && (!isset($session["relogin"]) || $session["relogin"] != 1)) {
             $this->notifyListeners("preLogout", $auth_user);
@@ -315,14 +312,14 @@ class SecurityManager
                 if ((Tools::atkArrayNvl($ATK_VARS, "login",
                             "") != "") && empty($auth_user) && !strstr(Config::getGlobal("authentication"), "none")
                 ) {
-                    $response = AUTH_MISSINGUSERNAME;
+                    $response = SecurityManager::AUTH_MISSINGUSERNAME;
                 } // Email password if password forgotten and passwordmailer enabled
                 else {
                     if ((!empty($auth_user)) && (Config::getGlobal("auth_loginform") == true) && $this->get_enablepasswordmailer() && (Tools::atkArrayNvl($ATK_VARS,
                                 "login", "") == Tools::atktext('password_forgotten'))
                     ) {
                         $this->mailPassword($auth_user);
-                        $response = AUTH_PASSWORDSENT;
+                        $response = SecurityManager::AUTH_PASSWORDSENT;
                     } else {
                         $throwPostLoginEvent = true;
                         $this->notifyListeners("preLogin", $auth_user);
@@ -332,7 +329,7 @@ class SecurityManager
                             $config_pw = Config::getGlobal($auth_user . "password");
                             if (!empty($config_pw) && (($auth_pw == $config_pw) || (Config::getGlobal("authentication_md5") && (md5($auth_pw) == strtolower($config_pw))))) {
                                 $authenticated = true;
-                                $response = AUTH_SUCCESS;
+                                $response = SecurityManager::AUTH_SUCCESS;
                                 if ($auth_user == "administrator") {
                                     $this->m_user = array(
                                         "name" => "administrator",
@@ -343,7 +340,7 @@ class SecurityManager
                                     $this->m_user = array("name" => "guest", "level" => -2, "access_level" => 0);
                                 }
                             } else {
-                                $response = AUTH_MISMATCH;
+                                $response = SecurityManager::AUTH_MISMATCH;
                             }
                         }
 
@@ -355,18 +352,18 @@ class SecurityManager
                             if ($auth_user != "administrator" && $auth_user != "guest") {
                                 if (is_array($this->m_authentication)) {
                                     // We have a username, which we must now validate against several
-                                    // checks. If all of these fail, we have a status of AUTH_MISMATCH.
+                                    // checks. If all of these fail, we have a status of SecurityManager::AUTH_MISMATCH.
                                     foreach ($this->m_authentication as $name => $obj) {
                                         $obj->canMd5() && !$md5 ? $tmp_pw = md5($auth_pw) : $tmp_pw = $auth_pw;
                                         $response = $obj->validateUser($auth_user, $tmp_pw);
-                                        if ($response == AUTH_SUCCESS) {
+                                        if ($response == SecurityManager::AUTH_SUCCESS) {
                                             Tools::atkdebug("SecurityManager::authenticate() using $name authentication");
                                             $authname = $name;
                                             break;
                                         }
                                     }
                                 }
-                                if ($response == AUTH_SUCCESS) { // succesful login
+                                if ($response == SecurityManager::AUTH_SUCCESS) { // succesful login
                                     // We store the username + securitylevel of the logged in user.
                                     $this->m_user = $this->m_authorization->getUser($auth_user);
                                     $this->m_user['AUTH'] = $authname; // something to see wich auth scheme is used
@@ -411,7 +408,7 @@ class SecurityManager
                                     // login was incorrect. Either the supplied username/password combination is
                                     // incorrect (we just try again) or there was an error (we display an error
                                     // message)
-                                    if ($response == AUTH_ERROR) {
+                                    if ($response == SecurityManager::AUTH_ERROR) {
                                         $this->m_fatalError = $this->m_authentication->m_fatalError;
                                     }
                                     $authenticated = false;
@@ -537,7 +534,7 @@ class SecurityManager
      *
      * @param string $defaultname The username that might already be known
      * @param int $lastresponse The lastresponse when trying to login
-     *                              possible values: AUTH_MISMATCH, AUTH_LOCKED, AUTH_MISSINGUSERNAME, AUTH_PASSWORDSENT
+     *                              possible values: SecurityManager::AUTH_MISMATCH, SecurityManager::AUTH_LOCKED, SecurityManager::AUTH_MISSINGUSERNAME, SecurityManager::AUTH_PASSWORDSENT
      */
     function loginForm($defaultname, $lastresponse)
     {
@@ -590,22 +587,22 @@ class SecurityManager
             $tplvars["submitbutton"] = '<input name="login" class="button" type="submit" value="' . Tools::atktext('login') . '" />';
             $tplvars["title"] = Tools::atktext('login_form');
 
-            if ($lastresponse == AUTH_LOCKED) {
+            if ($lastresponse == SecurityManager::AUTH_LOCKED) {
                 $output .= "<tr><td colspan=3 class=error>" . Tools::atktext('auth_account_locked') . "<br><br></td></tr>";
                 $tplvars["auth_account_locked"] = Tools::atktext('auth_account_locked');
                 $tplvars["error"] = Tools::atktext('auth_account_locked');
             } else {
-                if ($lastresponse == AUTH_MISMATCH) {
+                if ($lastresponse == SecurityManager::AUTH_MISMATCH) {
                     $output .= '<tr><td colspan=3 class=error>' . Tools::atktext('auth_mismatch') . '<br><br></td></tr>';
                     $tplvars["auth_mismatch"] = Tools::atktext('auth_mismatch');
                     $tplvars["error"] = Tools::atktext('auth_mismatch');
                 } else {
-                    if ($lastresponse == AUTH_MISSINGUSERNAME) {
+                    if ($lastresponse == SecurityManager::AUTH_MISSINGUSERNAME) {
                         $output .= '<tr><td colspan="3" class=error>' . Tools::atktext('auth_missingusername') . '<br /><br /></td></tr>';
                         $tplvars["auth_mismatch"] = Tools::atktext('auth_missingusername');
                         $tplvars["error"] = Tools::atktext('auth_missingusername');
                     } else {
-                        if ($lastresponse == AUTH_PASSWORDSENT) {
+                        if ($lastresponse == SecurityManager::AUTH_PASSWORDSENT) {
                             $output .= '<tr><td colspan="3">' . Tools::atktext('auth_passwordmail_sent') . '<br /><br /></td></tr>';
                             $tplvars["auth_mismatch"] = Tools::atktext('auth_passwordmail_sent');
                         }

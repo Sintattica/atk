@@ -1,19 +1,8 @@
-<?php namespace Sintattica\Atk\Security;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage security
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6280 $
- * $Id$
- */
+<?php namespace Sintattica\Atk\Security\Auth;
+
+use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * Driver for authentication using pop3.
@@ -25,19 +14,19 @@
  * @subpackage security
  *
  */
-class auth_pop3 extends auth_interface
+class Pop3Auth extends AuthInterface
 {
 
     /**
      * Validate user.
      * @param String $user the username
      * @param String $passwd the password
-     * @return int AUTH_SUCCESS - Authentication succesful
-     *             AUTH_MISMATCH - Authentication failed, wrong
+     * @return int SecurityManager::AUTH_SUCCESS - Authentication succesful
+     *             SecurityManager::AUTH_MISMATCH - Authentication failed, wrong
      *                             user/password combination
-     *             AUTH_LOCKED - Account is locked, can not login
+     *             SecurityManager::AUTH_LOCKED - Account is locked, can not login
      *                           with current username.
-     *             AUTH_ERROR - Authentication failed due to some
+     *             SecurityManager::AUTH_ERROR - Authentication failed due to some
      *                          error which cannot be solved by
      *                          just trying again. If you return
      *                          this value, you *must* also
@@ -46,7 +35,7 @@ class auth_pop3 extends auth_interface
     function validateUser($user, $passwd)
     {
         if ($user == "") {
-            return AUTH_UNVERIFIED;
+            return SecurityManager::AUTH_UNVERIFIED;
         } // can't verify if we have no userid
 
         global $g_pop3_responses;
@@ -68,7 +57,7 @@ class auth_pop3 extends auth_interface
                               WHERE " . Config::getGlobal("auth_userfield") . "='" . $user . "'");
             if (count($res) == 0) {
                 // User not found.
-                return AUTH_MISMATCH;
+                return SecurityManager::AUTH_MISMATCH;
             }
             $server = $res[0]["auth_server"];
         }
@@ -79,7 +68,7 @@ class auth_pop3 extends auth_interface
             $secMgr->log(1, "pop3auth error: No server specified");
             Tools::atkdebug("pop3auth error: No server specified");
             $this->m_fatalError = Tools::atktext("auth_no_server");
-            return AUTH_ERROR;
+            return SecurityManager::AUTH_ERROR;
         }
 
         /* connect */
@@ -89,13 +78,13 @@ class auth_pop3 extends auth_interface
             $secMgr->log(1, "pop3auth serverconnect error $server: $errstr");
             Tools::atkdebug("Error connecting to server $server: $errstr");
             $this->m_fatalError = Tools::atktext("auth_unable_to_connect");
-            return AUTH_ERROR;
+            return SecurityManager::AUTH_ERROR;
         }
 
         /* authenticate */
-        $void = fgets($link_id, 1000);
+        fgets($link_id, 1000);
         fputs($link_id, "USER " . $user . "\r\n");
-        $void = fgets($link_id, 1000);
+        fgets($link_id, 1000);
         fputs($link_id, "PASS " . $passwd . "\r\n");
         $auth = fgets($link_id, 1000);
         fputs($link_id, "QUIT\r\n");
@@ -108,16 +97,16 @@ class auth_pop3 extends auth_interface
             foreach ($g_pop3_responses as $substring => $message) {
                 if (stristr($auth, $substring) != false) {
                     $this->m_fatalError = $message;
-                    return AUTH_ERROR;
+                    return SecurityManager::AUTH_ERROR;
                 }
             }
         }
 
         /* login ok? */
         if (!stristr($auth, "ERR")) {
-            return AUTH_SUCCESS;
+            return SecurityManager::AUTH_SUCCESS;
         } else {
-            return AUTH_MISMATCH;
+            return SecurityManager::AUTH_MISMATCH;
         }
     }
 

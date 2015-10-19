@@ -1,19 +1,9 @@
-<?php namespace Sintattica\Atk\Security;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage security
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6280 $
- * $Id$
- */
+<?php namespace Sintattica\Atk\Security\Auth;
+
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Security\SecurityManager;
+
 
 /**
  * Driver for authentication using an ldap server.
@@ -25,7 +15,7 @@
  * @subpackage security
  *
  */
-class auth_ldap extends auth_interface
+class LdapAuth extends AuthInterface
 {
 
     /**
@@ -36,12 +26,12 @@ class auth_ldap extends auth_interface
      *                       function of an implementation returns true,
      *                       $passwd will be passed as an md5 string.
      *
-     * @return int AUTH_SUCCESS - Authentication succesful
-     *             AUTH_MISMATCH - Authentication failed, wrong
+     * @return int SecurityManager::AUTH_SUCCESS - Authentication succesful
+     *             SecurityManager::AUTH_MISMATCH - Authentication failed, wrong
      *                             user/password combination
-     *             AUTH_LOCKED - Account is locked, can not login
+     *             SecurityManager::AUTH_LOCKED - Account is locked, can not login
      *                           with current username.
-     *             AUTH_ERROR - Authentication failed due to some
+     *             SecurityManager::AUTH_ERROR - Authentication failed due to some
      *                          error which cannot be solved by
      *                          just trying again. If you return
      *                          this value, you *must* also
@@ -50,7 +40,7 @@ class auth_ldap extends auth_interface
     function validateUser($user, $passwd)
     {
         if ($user == "") {
-            return AUTH_UNVERIFIED;
+            return SecurityManager::AUTH_UNVERIFIED;
         } // can't verify if we have no userid
 
         if ($ldap = ldap_connect(Config::getGlobal("auth_ldap_host"))) {
@@ -62,7 +52,7 @@ class auth_ldap extends auth_interface
                     Tools::atkdebug("Succesfully bound to " . Config::getGlobal("auth_ldap_bind_dn") . " with id: " . $bindID . " conn_id " . $ldap);
                 } else {
                     Tools::atkdebug("<b>Error binding to</b> " . Config::getGlobal("auth_ldap_bind_dn") . " " . Config::getGlobal("auth_ldap_bind_pw"));
-                    return AUTH_ERROR;
+                    return SecurityManager::AUTH_ERROR;
                 }
             }
 
@@ -97,7 +87,7 @@ class auth_ldap extends auth_interface
 
                         // try to bind as the user with user suplied password
                         if (@ldap_bind($ldap, $userDN, $passwd)) {
-                            return AUTH_SUCCESS;
+                            return SecurityManager::AUTH_SUCCESS;
                         }
                     }
                 }
@@ -105,9 +95,9 @@ class auth_ldap extends auth_interface
             Tools::atkdebug("LDAP did not successfully authenticate $user");
 
             // dn not found or password wrong TODO/FIXME: return -1 if dn not found
-            return AUTH_MISMATCH;
+            return SecurityManager::AUTH_MISMATCH;
         } else {
-            return AUTH_ERROR;
+            return SecurityManager::AUTH_ERROR;
         }
     }
 

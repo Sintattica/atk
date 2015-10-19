@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Attributes\Attribute;
+use Sintattica\Atk\Security\SecurityManager;
 
 /**
  * This class is the abstract baseclass (interface) for all auth_ classes.
@@ -50,12 +51,12 @@ class AuthInterface
      *                       function of an implementation returns true,
      *                       $passwd will be passed as an md5 string.
      *
-     * @return int AUTH_SUCCESS - Authentication succesful
-     *             AUTH_MISMATCH - Authentication failed, wrong
+     * @return int SecurityManager::AUTH_SUCCESS - Authentication succesful
+     *             SecurityManager::AUTH_MISMATCH - Authentication failed, wrong
      *                             user/password combination
-     *             AUTH_LOCKED - Account is locked, can not login
+     *             SecurityManager::AUTH_LOCKED - Account is locked, can not login
      *                           with current username.
-     *             AUTH_ERROR - Authentication failed due to some
+     *             SecurityManager::AUTH_ERROR - Authentication failed due to some
      *                          error which cannot be solved by
      *                          just trying again. If you return
      *                          this value, you *must* also
@@ -63,7 +64,7 @@ class AuthInterface
      */
     function validateUser($user, $passwd)
     {
-        return AUTH_ERROR; // dummy implementation. should not be used.
+        return SecurityManager::AUTH_ERROR; // dummy implementation. should not be used.
     }
 
     /**

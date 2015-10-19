@@ -1,5 +1,7 @@
 <?php namespace Sintattica\Atk\Security\Auth;
 
+use Sintattica\Atk\Security\SecurityManager;
+
 /**
  * Dummy driver for non-authentication. When using 'none' as authentication
  * method, any loginname and any password will be accepted.
@@ -20,12 +22,12 @@ class NoneAuth extends AuthInterface
      *                       function of an implementation returns true,
      *                       $passwd will be passed as an md5 string.
      *
-     * @return int AUTH_SUCCESS - Authentication succesful
-     *             AUTH_MISMATCH - Authentication failed, wrong
+     * @return int SecurityManager::AUTH_SUCCESS - Authentication succesful
+     *             SecurityManager::AUTH_MISMATCH - Authentication failed, wrong
      *                             user/password combination
-     *             AUTH_LOCKED - Account is locked, can not login
+     *             SecurityManager::AUTH_LOCKED - Account is locked, can not login
      *                           with current username.
-     *             AUTH_ERROR - Authentication failed due to some
+     *             SecurityManager::AUTH_ERROR - Authentication failed due to some
      *                          error which cannot be solved by
      *                          just trying again. If you return
      *                          this value, you *must* also
@@ -34,9 +36,9 @@ class NoneAuth extends AuthInterface
     function validateUser($user, $passwd)
     {
         if ($user == "") {
-            return AUTH_SUCCESS;
+            return SecurityManager::AUTH_SUCCESS;
         } else {
-            return AUTH_MISMATCH;
+            return SecurityManager::AUTH_MISMATCH;
         }
     }
 

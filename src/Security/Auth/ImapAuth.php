@@ -2,6 +2,8 @@
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Security\SecurityManager;
+
 
 /**
  * Driver for authentication using an imap server.
@@ -24,12 +26,12 @@ class ImapAuth extends AuthInterface
      *                       function of an implementation returns true,
      *                       $passwd will be passed as an md5 string.
      *
-     * @return int AUTH_SUCCESS - Authentication succesful
-     *             AUTH_MISMATCH - Authentication failed, wrong
+     * @return int SecurityManager::AUTH_SUCCESS - Authentication succesful
+     *             SecurityManager::AUTH_MISMATCH - Authentication failed, wrong
      *                             user/password combination
-     *             AUTH_LOCKED - Account is locked, can not login
+     *             SecurityManager::AUTH_LOCKED - Account is locked, can not login
      *                           with current username.
-     *             AUTH_ERROR - Authentication failed due to some
+     *             SecurityManager::AUTH_ERROR - Authentication failed due to some
      *                          error which cannot be solved by
      *                          just trying again. If you return
      *                          this value, you *must* also
@@ -38,7 +40,7 @@ class ImapAuth extends AuthInterface
     function validateUser($user, $passwd)
     {
         if ($user == "") {
-            return AUTH_UNVERIFIED;
+            return SecurityManager::AUTH_UNVERIFIED;
         } // can't verify if we have no userid
 
 
@@ -49,17 +51,17 @@ class ImapAuth extends AuthInterface
 
         if (Config::getGlobal("auth_mail_server") == "") {
             $this->m_fatalError = Tools::atktext("auth_no_server");
-            return AUTH_ERROR;
+            return SecurityManager::AUTH_ERROR;
         }
 
         $mailauth = @imap_open("{" . Config::getGlobal("auth_mail_server")
             . ":" . Config::getGlobal("auth_mail_port") . "}", $user, $passwd);
-        // TODO/FIXME: return AUTH_ERROR when connection fails..
+        // TODO/FIXME: return SecurityManager::AUTH_ERROR when connection fails..
         if ($mailauth == 0) {
-            return AUTH_MISMATCH;
+            return SecurityManager::AUTH_MISMATCH;
         } else {
             imap_close($mailauth);
-            return AUTH_SUCCESS;
+            return SecurityManager::AUTH_SUCCESS;
         }
     }
 

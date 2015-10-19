@@ -1,18 +1,9 @@
-<?php namespace Sintattica\Atk\Security;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage security
- *
- * @copyright (c)9 Ibuildings.nl BV
- * @license http://www.atkframework.com/licensing ATK Open Source License
- *
- */
+<?php namespace Sintattica\Atk\Security\Auth;
 
+use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * Driver for authentication and authorization using Microsoft's Security
@@ -38,7 +29,7 @@
  * @subpackage security
  *
  */
-class auth_sspi extends auth_db
+class SspiAuth extends DbAuth
 {
 
     function auth_sspi()
@@ -46,7 +37,7 @@ class auth_sspi extends auth_db
         global $ATK_VARS;
 
         if (isset($ATK_VARS["atklogout"])) {
-            if ($this->validateUser() == AUTH_SUCCESS) {
+            if ($this->validateUser() == SecurityManager::AUTH_SUCCESS) {
                 // On se reconnecte par defaut
                 $session = &SessionManager::getSession();
 
@@ -85,7 +76,7 @@ class auth_sspi extends auth_db
         if (!isset($sspipath) || ($sspipath == "") || !in_array($domain,
                 Config::getGlobal("auth_sspi_trusted_domains"))
         ) {
-            return AUTH_UNVERIFIED;
+            return SecurityManager::AUTH_UNVERIFIED;
         }
 
         // Si on ne recharge pas chaque fois l'utilisateur et si l'utilisateur n'a pas change
@@ -93,10 +84,9 @@ class auth_sspi extends auth_db
         // elsewhere in atk.
         if (!Config::getGlobal("auth_reloadusers") && ($user == $_SERVER["PHP_AUTH_USER"])) {
             // On autorise
-            return AUTH_SUCCESS;
+            return SecurityManager::AUTH_SUCCESS;
         }
 
-        $firstload = !isset($_SERVER["PHP_AUTH_USER"]);
         $_SERVER["PHP_AUTH_USER"] = "";
         $ATK_VARS["auth_user"] = "";
         $db = Tools::atkGetDb(Config::getGlobal("auth_database"));
@@ -106,13 +96,13 @@ class auth_sspi extends auth_db
 
         $recs = $db->getrows($query);
         if (count($recs) > 0 && $this->isLocked($recs[0])) {
-            return AUTH_LOCKED;
+            return SecurityManager::AUTH_LOCKED;
         }
         // Erreur : on affiche le domaine et l'utilisateur dans la fenetre de login
         if (count($recs) == 0) {
             $_SERVER["PHP_AUTH_USER"] = $domain . "." . $user;
             $ATK_VARS["auth_user"] = $domain . "." . $user;
-            return AUTH_MISMATCH;
+            return SecurityManager::AUTH_MISMATCH;
         }
 
         if ((count($recs) == 1)) {
@@ -122,9 +112,9 @@ class auth_sspi extends auth_db
             $_SERVER["PHP_AUTH_PW"] = $domain;
             $ATK_VARS["auth_pw"] = $domain;
 
-            return AUTH_SUCCESS;
+            return SecurityManager::AUTH_SUCCESS;
         } else {
-            return AUTH_MISMATCH;
+            return SecurityManager::AUTH_MISMATCH;
         }
     }
 
@@ -168,19 +158,17 @@ class auth_sspi extends auth_db
 
     function getUser(&$user)
     {
-        $grouptable = Config::getGlobal("auth_grouptable");
         $groupfield = Config::getGlobal("auth_groupfield");
         $groupparentfield = Config::getGlobal("auth_groupparentfield");
         $user = $_SERVER["PHP_AUTH_USER"];
 
         $recs = $this->selectUser($user);
         $groups = array();
+        $level = array();
+        $parents = array();
 
         // We might have more then one level, so we loop the result.
         if (count($recs) > 0) {
-            $level = array();
-            $parents = array();
-
             for ($i = 0; $i < count($recs); $i++) {
                 $level[] = $recs[$i][Config::getGlobal("auth_levelfield")];
                 $groups[] = $recs[$i][$groupfield];
