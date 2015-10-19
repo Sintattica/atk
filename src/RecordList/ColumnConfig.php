@@ -6,16 +6,6 @@ use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Attributes\Attribute;
 
 /**
- * Sort ascending
- */
-define("RL_SORT_ASC", 1);
-
-/**
- * Sort descending
- */
-define("RL_SORT_DESC", 2);
-
-/**
  * The ColumnConfig class is used to add extended sorting and grouping
  * options to a recordlist.
  *
