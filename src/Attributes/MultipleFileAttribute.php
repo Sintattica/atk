@@ -1,20 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6289 $
- * $Id$
- */
-Tools::useattrib("atkFileAttribute");
+
+use Sintattica\Atk\Core\Tools;
 
 /**
  * This is an extend of the famous atkfileattribute :). Now its possible
@@ -39,9 +25,9 @@ class MultipleFileAttribute extends FileAttribute
      * @param int $flags Flags for this attribute
      * @param int $size Filename size
      */
-    function atkMultipleFileAttribute($name, $dir, $flags = 0, $size = 0)
+    function __construct($name, $dir, $flags = 0, $size = 0)
     {
-        $this->atkFileAttribute($name, $flags | self::AF_CASCADE_DELETE, $size); // base class constructor
+        parent::__construct($name, array(), $flags | self::AF_CASCADE_DELETE, $size); // base class constructor
         if (is_array($dir)) {
             $this->m_dir = $this->AddSlash($dir[0]);
             $this->m_url = $this->AddSlash($dir[1]);
@@ -73,6 +59,7 @@ class MultipleFileAttribute extends FileAttribute
      */
     function edit($record = "")
     {
+        $file_arr = array();
         if (is_dir($this->m_dir)) {
             $d = dir($this->m_dir);
             while ($item = $d->read()) {
@@ -86,7 +73,7 @@ class MultipleFileAttribute extends FileAttribute
         }
 
         if (count($file_arr) > 0) {
-            $result .= "<select multiple size=\"3\" name=\"select_" . $this->fieldName() . "[]\" class=\"form-control\">";
+            $result = "<select multiple size=\"3\" name=\"select_" . $this->fieldName() . "[]\" class=\"form-control\">";
             for ($i = 0; $i < count($file_arr); $i++) {
                 $sel = "";
                 if (in_array($file_arr[$i], $this->getFiles($record[$this->fieldName()][orgfilename]))) {
@@ -111,12 +98,12 @@ class MultipleFileAttribute extends FileAttribute
     /**
      * Convert value to record for database
      * @param array $rec Array with Fields
-     * @return Nothing or Fieldname or Original filename
+     * @return mixed Nothing or Fieldname or Original filename
      */
     function value2db($rec)
     {
         $select = $_REQUEST["select_" . $this->fieldName()];
-
+        $r = '';
         if (!$this->isEmpty($_POST)) {
             $file = $this->fetchValue($_POST);
             $file[filename] = str_replace(' ', '_', $file["filename"]);
@@ -156,7 +143,7 @@ class MultipleFileAttribute extends FileAttribute
         $files = explode($this->m_delimiter, $record[$this->fieldName()][orgfilename]);
         $prev_type = Array("jpg", "jpeg", "gif", "tif", "png", "bmp", "htm", "html", "txt");  // file types for preview
         $imgtype_prev = Array("jpg", "jpeg", "gif", "png");  // types whitch are supported by GetImageSize
-
+        $r = '';
         for ($i = 0; $i < count($files); $i++) {
             if (is_file($this->m_dir . $files[$i])) {
                 $ext = strtolower(substr($files[$i], strrpos($files[$i], '.') + 1, strlen($files[$i])));
@@ -184,7 +171,7 @@ class MultipleFileAttribute extends FileAttribute
 
     /**
      * Return the database field type of the attribute.
-     * @return "string" which is the 'generic' type of the database field for
+     * @return string "string" which is the 'generic' type of the database field for
      *         this attribute.
      */
     function dbFieldType()

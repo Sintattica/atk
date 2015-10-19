@@ -1,41 +1,9 @@
 <?php namespace Sintattica\Atk\Attributes;
 
-
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Utils\StringParser;
-
-    /** flag(s) specific for the atkFileAttribute */
-/**
- * Disable uploading of files
- */
-define("self::AF_FILE_NO_UPLOAD", self::AF_SPECIFIC_1);
-
-/**
- * Disable selecting of files
- */
-define("self::AF_FILE_NO_SELECT", self::AF_SPECIFIC_2);
-
-/**
- * Disable deleting of files
- */
-define("self::AF_FILE_NO_DELETE", self::AF_SPECIFIC_3);
-
-/**
- * Don't try to detect the file type (shows only filename)
- */
-define("self::AF_FILE_NO_AUTOPREVIEW", self::AF_SPECIFIC_4);
-
-/**
- * Removed the files physically
- */
-define("self::AF_FILE_PHYSICAL_DELETE", self::AF_SPECIFIC_5);
-
-/**
- * Show preview in popup instead of inline
- */
-define("self::AF_FILE_POPUP", self::AF_POPUP);
 
 /**
  * With this you can upload, select and remove files in a given directory.
@@ -50,6 +18,37 @@ define("self::AF_FILE_POPUP", self::AF_POPUP);
  */
 class FileAttribute extends Attribute
 {
+    /** flag(s) specific for the atkFileAttribute */
+    /**
+     * Disable uploading of files
+     */
+    const AF_FILE_NO_UPLOAD = self::AF_SPECIFIC_1;
+
+    /**
+     * Disable selecting of files
+     */
+    const AF_FILE_NO_SELECT = self::AF_SPECIFIC_2;
+
+    /**
+     * Disable deleting of files
+     */
+    const AF_FILE_NO_DELETE = self::AF_SPECIFIC_3;
+
+    /**
+     * Don't try to detect the file type (shows only filename)
+     */
+    const AF_FILE_NO_AUTOPREVIEW = self::AF_SPECIFIC_4;
+
+    /**
+     * Removed the files physically
+     */
+    const AF_FILE_PHYSICAL_DELETE = self::AF_SPECIFIC_5;
+
+    /**
+     * Show preview in popup instead of inline
+     */
+    const AF_FILE_POPUP  = self::AF_POPUP;
+
     /**
      * Directory with images
      */
@@ -337,7 +336,7 @@ class FileAttribute extends Attribute
      * @see http://nl2.php.net/mkdir
      *
      * @param string $path path to create
-     * @return success/failure
+     * @return bool success/failure
      *
      * @static
      */
@@ -363,7 +362,7 @@ class FileAttribute extends Attribute
      * @see http://nl3.php.net/rmdir
      *
      * @param string $dir path to remove
-     * @return succes/failure
+     * @return bool succes/failure
      *
      * @static
      */
