@@ -8,12 +8,6 @@ use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Ui\Page;
 
-/**
- * atkWizardPanel button definitions.
- */
-define("FINISH_BUTTON_DEFAULT", 1);
-define("FINISH_BUTTON_SHOW", 2);
-define("FINISH_BUTTON_DONT_SHOW", 3);
 
 /**
  * Wizardpanel which binds to a atknode. This class makes
@@ -26,6 +20,15 @@ define("FINISH_BUTTON_DONT_SHOW", 3);
  */
 class WizardPanel
 {
+
+    /**
+     * atkWizardPanel button definitions.
+     */
+    const FINISH_BUTTON_DEFAULT = 1;
+    const FINISH_BUTTON_SHOW = 2;
+    const FINISH_BUTTON_DONT_SHOW = 3;
+
+
     /**
      * Reference to the parent wizard
      *
@@ -98,8 +101,13 @@ class WizardPanel
      * @param integer $finishButton The finish button to use
      * @return WizardPanel
      */
-    function atkWizardPanel(&$wizard, $panelName, $nodeName, $defaultAction = "", $finishButton = FINISH_BUTTON_DEFAULT)
-    {
+    function atkWizardPanel(
+        &$wizard,
+        $panelName,
+        $nodeName,
+        $defaultAction = "",
+        $finishButton = self::FINISH_BUTTON_DEFAULT
+    ) {
         $this->m_wizard = &$wizard;
         $this->m_panelName = $panelName;
         $this->m_nodeName = $nodeName;
@@ -258,9 +266,9 @@ class WizardPanel
      * default behaviour. Default behaviour is that the last
      * panel in the wizard will have a finish button.
      *
-     * @return int FINISH_BUTTON_DEFAULT
-     *             FINISH_BUTTON_SHOW
-     *             FINISH_BUTTON_DONT_SHOW
+     * @return int WizardPanel::FINISH_BUTTON_DEFAULT
+     *             WizardPanel::FINISH_BUTTON_SHOW
+     *             WizardPanel::FINISH_BUTTON_DONT_SHOW
      */
     function showFinishButton()
     {

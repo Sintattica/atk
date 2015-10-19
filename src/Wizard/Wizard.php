@@ -3,12 +3,9 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Session\SessionManager;
 
-/**
- * atkWizard modees
- */
-define("WIZARD_MODE_ADD", 1);
-define("WIZARD_MODE_EDIT", 2);
+
 
 /**
  * atkWizard class which is capable of using atknodes as
@@ -28,6 +25,14 @@ define("WIZARD_MODE_EDIT", 2);
  */
 class Wizard extends WizardBase
 {
+
+    /**
+     * atkWizard modees
+     */
+    const WIZARD_MODE_ADD = 1;
+    const WIZARD_MODE_EDIT = 2;
+
+
     /**
      * Array of panels
      * First item is first to show in wizard
@@ -53,7 +58,7 @@ class Wizard extends WizardBase
      * @access private
      * @var array
      */
-    var $m_mode = WIZARD_MODE_ADD;
+    var $m_mode = self::WIZARD_MODE_ADD;
 
     /**
      * Key-value array which will be added as hidden value in edit/add forms
@@ -168,7 +173,7 @@ class Wizard extends WizardBase
         //Get session vars
         global $g_sessionManager;
         return;
-        $this->m_wizardAction = AtkWizardActionLoader::getWizardAction($g_sessionManager->stackVar("atkwizardaction"));
+        $this->m_wizardAction = WizardActionLoader::getWizardAction($g_sessionManager->stackVar("atkwizardaction"));
 
         $this->m_currentPanelIndex = $g_sessionManager->stackVar("atkwizardpanelindex");
         if ($this->m_currentPanelIndex == "") {
@@ -180,11 +185,11 @@ class Wizard extends WizardBase
     }
 
     /**
-     * Set the wizard mode. Options: WIZARD_MODE_ADD (default), WIZARD_MODE_EDIT
+     * Set the wizard mode. Options: Wizard::WIZARD_MODE_ADD (default), Wizard::WIZARD_MODE_EDIT
      *
      * @param integer $mode
      */
-    public function setMode($mode = WIZARD_MODE_ADD)
+    public function setMode($mode = self::WIZARD_MODE_ADD)
     {
         $this->m_mode = $mode;
     }
@@ -192,7 +197,7 @@ class Wizard extends WizardBase
     /**
      * Get the wizard mode
      *
-     * @return define value
+     * @return int define value
      */
     public function getMode()
     {

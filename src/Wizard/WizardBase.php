@@ -43,14 +43,14 @@ class WizardBase extends Controller
     {
         $result = array();
 
-        if ($this->m_mode == WIZARD_MODE_ADD) {
+        if ($this->m_mode == Wizard::WIZARD_MODE_ADD) {
             $currentPanel = $this->getCurrentPanel();
             // We post the action as key value in de atkwizardaction var. Therefor
             // we have to convert the atkwizardaction value in Wizard::start().
             $node = $this->getNode();
             if ($node->m_action != 'admin') {
                 //if we explicitly don't want the finish button we set a hidden var to post the atkwizardaction          
-                if (($currentPanel->showFinishButton() == FINISH_BUTTON_DONT_SHOW) && $currentPanel->isFinishPanel()) {
+                if (($currentPanel->showFinishButton() == WizardPanel::FINISH_BUTTON_DONT_SHOW) && $currentPanel->isFinishPanel()) {
                     $atkwizardaction = "finish";
                 } else {
                     $atkwizardaction = "next";
@@ -65,7 +65,7 @@ class WizardBase extends Controller
                 }
             } else {
                 //if we explicitly don't want the finish button we set a hidden var to post the atkwizardaction
-                if ($currentPanel->showFinishButton() == FINISH_BUTTON_DONT_SHOW && $currentPanel->isFinishPanel()) {
+                if ($currentPanel->showFinishButton() == WizardPanel::FINISH_BUTTON_DONT_SHOW && $currentPanel->isFinishPanel()) {
                     $atkwizardaction = "finish";
                 } else {
                     $atkwizardaction = "saveandnext";
@@ -84,7 +84,7 @@ class WizardBase extends Controller
 
             $result[] = '<input type="submit" class="btn_cancel" name="atkwizardcancel" value="' . Tools::atktext("cancel",
                     "atk") . '">';
-        } elseif ($this->m_mode == WIZARD_MODE_EDIT) {
+        } elseif ($this->m_mode == Wizard::WIZARD_MODE_EDIT) {
             // We post the action as key value in de atkwizardaction var. Therefor
             // we have to convert the atkwizardaction value in Wizard::start().
             $result[] = '<input type="submit" class="btn_save" name="atknoclose" value="' . Tools::atktext("save",
@@ -108,8 +108,8 @@ class WizardBase extends Controller
     function showFinishButton()
     {
         $currentPanel = $this->getCurrentPanel();
-        return (($currentPanel->showFinishButton() == FINISH_BUTTON_SHOW) ||
-            ($currentPanel->showFinishButton() == FINISH_BUTTON_DEFAULT && $currentPanel->isFinishPanel()));
+        return (($currentPanel->showFinishButton() == WizardPanel::FINISH_BUTTON_SHOW) ||
+            ($currentPanel->showFinishButton() == WizardPanel::FINISH_BUTTON_DEFAULT && $currentPanel->isFinishPanel()));
     }
 
 }

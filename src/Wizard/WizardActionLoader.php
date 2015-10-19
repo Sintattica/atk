@@ -8,7 +8,7 @@
  * @subpackage wizard
  *
  */
-class AtkWizardActionLoader
+class WizardActionLoader
 {
 
     /**
