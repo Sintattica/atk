@@ -4,49 +4,7 @@ use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Utils\ClassLoader;
 
 /**
- * @internal Includes, global definitions etc.
- */
-/**
- * A repository of node instances..
- * @access private
- * @var Array
- */
-$GLOBALS['g_nodeRepository'] = array();
-
-/**
- * A repository of module instances..
- * @access private
- * @var Array
- */
-$GLOBALS['g_moduleRepository'] = array();
-
-/**
- * registered node action handlers
- * @access private
- * @var Array
- */
-$GLOBALS['g_nodeHandlers'] = array();
-
-/**
- * registered node listeners
- * @access private
- * @var Array
- */
-$GLOBALS['g_nodeListeners'] = array();
-
-/**
- * registered node controllers
- * @access private
- * @var Array
- */
-$GLOBALS['g_nodeControllers'] = array();
-
-
-
-
-
-/**
- * The atkModule abstract base class.
+ * The Module abstract base class.
  *
  * All modules in an ATK application should derive from this class, and
  * override the methods of this abstract class as they see fit.

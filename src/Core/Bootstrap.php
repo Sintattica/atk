@@ -78,6 +78,45 @@ class Bootstrap
          * Overloaders
          */
         $GLOBALS['g_overloaders'] = array();
+
+
+        /**
+         * Module globals
+         */
+        /**
+         * A repository of node instances..
+         * @access private
+         * @var Array
+         */
+        $GLOBALS['g_nodeRepository'] = array();
+
+        /**
+         * A repository of module instances..
+         * @access private
+         * @var Array
+         */
+        $GLOBALS['g_moduleRepository'] = array();
+
+        /**
+         * registered node action handlers
+         * @access private
+         * @var Array
+         */
+        $GLOBALS['g_nodeHandlers'] = array();
+
+        /**
+         * registered node listeners
+         * @access private
+         * @var Array
+         */
+        $GLOBALS['g_nodeListeners'] = array();
+
+        /**
+         * registered node controllers
+         * @access private
+         * @var Array
+         */
+        $GLOBALS['g_nodeControllers'] = array();
     }
 
     private static function setLocale()
