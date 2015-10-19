@@ -1,5 +1,8 @@
 <?php namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Language;
+
 /**
  * The atkStateAttribute class represents an attribute to handle United States in a listbox.
  * It extends ListAttribute.
@@ -10,6 +13,7 @@
  */
 class StateAttribute extends ListAttribute
 {
+    var $m_state = array();
     var $m_states = array();
     var $m_usa_states = array(
         'AL',
@@ -74,6 +78,7 @@ class StateAttribute extends ListAttribute
     );
     var $m_defaulttocurrent = true;
 
+
     /**
      * Constructor
      * <b>Example:</b>
@@ -90,7 +95,7 @@ class StateAttribute extends ListAttribute
      * @param bool $defaulttocurrent Set the default selected state to the
      *                               current state based on the atk language
      */
-    function atkStateAttribute(
+    function __construct(
         $name,
         $switch = "usa",
         $optionArray = "",
@@ -112,7 +117,7 @@ class StateAttribute extends ListAttribute
         $optionsArray = $this->getStateOptionArray($switch);
 
         $this->m_defaulttocurrent = $defaulttocurrent;
-        $this->atkListAttribute($name, $optionsArray, $valueArray, $flags | self::AF_NO_TRANSLATION, 0);
+        parent::__construct($name, $optionsArray, $valueArray, $flags | self::AF_NO_TRANSLATION, 0);
     }
 
     /**
