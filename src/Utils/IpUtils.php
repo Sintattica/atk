@@ -1,18 +1,6 @@
 <?php namespace Sintattica\Atk\Utils;
-/**
- * atkIpUtils class file
- *
- * @package atk
- * @subpackage utils
- *
- * @author guido <guido@ibuildings.nl>
- *
- * @copyright (c) 2006 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing/ ATK open source license
- *
- * @version $Revision: 4767 $
- * $Id$
- */
+
+Use Sintattica\Atk\Core\Tools;
 
 /**
  * atkIpUtils class. Contains static methods to allow numeric and string ip validation
@@ -56,7 +44,7 @@ class IpUtils
      * @param mixed $ip String or long numeric IP address.
      * @return boolean True if the ip is valid, False if not.
      */
-    function ipStringFormat($ip)
+    public static function ipStringFormat($ip)
     {
         if (!IpUtils::ipValidate($ip)) {
             Tools::atkdebug("IpUtils::ipStringFormat() Invalid ip given");
@@ -84,7 +72,7 @@ class IpUtils
      * @param mixed $ip String or long numeric IP address.
      * @return boolean True if the ip is valid, False if not.
      */
-    function ipLongFormat($ip)
+    public static function ipLongFormat($ip)
     {
         if (!IpUtils::ipValidate($ip)) {
             Tools::atkdebug("IpUtils::ipLongFormat() Invalid ip given");
