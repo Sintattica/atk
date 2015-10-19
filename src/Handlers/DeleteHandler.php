@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Node;
 
 /**
  * Handler for the 'delete' action of a node. It asks the user for

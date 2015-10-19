@@ -22,16 +22,6 @@ use Sintattica\Atk\Utils\Debugger;
 use \Exception;
 
 
-
-/**
- * Trigger flags
- */
-define("TRIGGER_NONE", 0);
-define("TRIGGER_AUTO", 1);
-define("TRIGGER_PRE", 2);
-define("TRIGGER_POST", 4);
-define("TRIGGER_ALL", TRIGGER_PRE | TRIGGER_POST);
-
 /**
  * Multi-record-actions selection modes. These
  * modes are mutually exclusive.
