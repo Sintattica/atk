@@ -1,23 +1,9 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6305 $
- * $Id$
- */
-/**
- * include
- */
-include_once(Config::getGlobal("assets_url") . "utils/class.atkbrowsertools.php");
+
+use Sintattica\Atk\Keyboard\Keyboard;
+use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Utils\BrowserInfo;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * The atkTextAttribute class represents an attribute of a node
@@ -100,7 +86,7 @@ class TextAttribute extends Attribute
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @param String $mode The mode we're in ('add' or 'edit')
-     * @return piece of html code with a textarea
+     * @return string piece of html code with a textarea
      */
     function edit($record = "", $fieldprefix = "", $mode = 'add')
     {
@@ -195,7 +181,7 @@ class TextAttribute extends Attribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
+    function addToQuery(Query &$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
     {
         if ($mode == "add" || $mode == "update") {
             $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(self::AF_NO_QUOTES), $mode,

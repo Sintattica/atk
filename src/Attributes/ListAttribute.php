@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Keyboard\Keyboard;
 
 /**
  * The ListAttribute class represents an attribute of a node

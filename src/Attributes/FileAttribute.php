@@ -4,6 +4,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Utils\StringParser;
+use Sintattica\Atk\Keyboard\Keyboard;
 
 /**
  * With this you can upload, select and remove files in a given directory.

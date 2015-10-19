@@ -4,7 +4,8 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Utils\StringParser;
-use Exception;
+use Sintattica\Atk\Keyboard\Keyboard;
+use \Exception;
 
 
 
@@ -891,7 +892,7 @@ class ManyToOneRelation extends Relation
             if (count($recordset) == 0) {
                 $result = $this->getNoneLabel();
             } else {
-                $this->registerKeyListener($id, KB_CTRLCURSOR | KB_LEFTRIGHT);
+                $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_LEFTRIGHT);
                 $this->registerJavaScriptObservers($id);
 
                 $result = '<select id="' . $id . '" name="' . $id . '" class="form-control atkmanytoonerelation" ' . $onchange . '>';
@@ -1218,7 +1219,7 @@ class ManyToOneRelation extends Relation
                 $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
             }
 
-            $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
+            $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
             $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . $record[$this->fieldName()] . '"' .
                 ($useautocompletion ? ' onchange=""' : '') .
                 ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"'

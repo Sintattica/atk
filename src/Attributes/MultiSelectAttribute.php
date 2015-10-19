@@ -4,6 +4,7 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Keyboard\Keyboard;
 
 /**
  * The atkMultiboolAttribute class represents an attribute of a node

@@ -1,5 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\Keyboard\Keyboard;
 
 /**
  * The atkRadioAttribute class represents an attribute of a node

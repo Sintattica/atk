@@ -1,6 +1,7 @@
 <?php namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Keyboard\Keyboard;
 
 /**
  * Attribute for selection the days of the week.

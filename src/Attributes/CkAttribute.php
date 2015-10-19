@@ -1,17 +1,9 @@
 <?php namespace Sintattica\Atk\Attributes;
 
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- */
-
-Tools::useattrib("atktextattribute");
+use Sintattica\Atk\Keyboard\Keyboard;
+use Sintattica\Atk\Core\Language;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * Attribute wrapper for CKEditor (the successor of FCK Editor)
