@@ -3,6 +3,7 @@
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\Debugger;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Db\Db;
 
 /**
  * MySQLi statement implementation.
@@ -40,7 +41,7 @@ class MySQLiStatement extends Statement
      */
     protected function _prepare()
     {
-        if ($this->getDb()->connect() != DB_SUCCESS) {
+        if ($this->getDb()->connect() != Db::DB_SUCCESS) {
             throw new StatementException("Cannot connect to database.", StatementException::NO_DATABASE_CONNECTION);
         }
 

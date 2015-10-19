@@ -74,7 +74,7 @@ class MySqliDb extends MySqlDb
 
 
         /* return link identifier */
-        return DB_SUCCESS;
+        return self::DB_SUCCESS;
     }
 
     /**
@@ -111,7 +111,7 @@ class MySqliDb extends MySqlDb
      */
     function escapeSQL($string, $wildcard = false)
     {
-        if ($this->connect('r') === DB_SUCCESS) {
+        if ($this->connect('r') === self::DB_SUCCESS) {
             if ($wildcard == true) {
                 $string = str_replace('%', '\%', $string);
             }
@@ -136,7 +136,7 @@ class MySqliDb extends MySqlDb
 
         /* connect to database */
         $mode = $this->getQueryMode($query);
-        if ($this->connect($mode) == DB_SUCCESS) {
+        if ($this->connect($mode) == self::DB_SUCCESS) {
             /* free old results */
             if ($this->m_query_id) {
                 if (is_resource($this->m_query_id)) {
@@ -301,7 +301,7 @@ class MySqliDb extends MySqlDb
     function lock($table, $mode = "write")
     {
         /* connect first */
-        if ($this->connect('w') == DB_SUCCESS) {
+        if ($this->connect('w') == self::DB_SUCCESS) {
             /* lock */
             $query = "LOCK TABLES $table $mode";
 
@@ -327,7 +327,7 @@ class MySqliDb extends MySqlDb
     function unlock()
     {
         /* connect first */
-        if ($this->connect('w') == DB_SUCCESS) {
+        if ($this->connect('w') == self::DB_SUCCESS) {
             /* unlock */
             Tools::atkdebug("unlock tables");
             $result = $this->_query("UNLOCK TABLES", true);
@@ -380,7 +380,7 @@ class MySqliDb extends MySqlDb
     function nextid($sequence)
     {
         /* first connect */
-        if ($this->connect('w') == DB_SUCCESS) {
+        if ($this->connect('w') == self::DB_SUCCESS) {
             /* lock sequence table */
             if ($this->lock($this->m_seq_table)) {
                 /* get sequence number (locked) and increment */
@@ -458,7 +458,7 @@ class MySqliDb extends MySqlDb
     function metadata($table, $full = false)
     {
         /* first connect */
-        if ($this->connect('r') == DB_SUCCESS) {
+        if ($this->connect('r') == self::DB_SUCCESS) {
             $ddl = Ddl::create("mysqli");
 
             /* list fields */

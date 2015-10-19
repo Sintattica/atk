@@ -10,15 +10,6 @@ if (!Config::getGlobal('meta_caching')) {
     Tools::atkwarning("Table metadata caching is disabled. Turn on \$config_meta_caching to improve your application's performance!");
 }
 
-/**
- * Some defines used for connection statusses, generic error messages, etc.
- */
-define("DB_SUCCESS", 0);
-define("DB_UNKNOWNERROR", 1);
-define("DB_UNKNOWNHOST", 2);
-define("DB_UNKNOWNDATABASE", 3);
-define("DB_ACCESSDENIED_USER", 4);
-define("DB_ACCESSDENIED_DB", 5);
 
 /**
  * Meta flags.
@@ -50,6 +41,16 @@ $g_dbinstances = array();
  */
 class Db
 {
+    /**
+     * Some defines used for connection statusses, generic error messages, etc.
+     */
+    const DB_SUCCESS = 0;
+    const DB_UNKNOWNERROR = 1;
+    const DB_UNKNOWNHOST = 2;
+    const DB_UNKNOWNDATABASE = 3;
+    const DB_ACCESSDENIED_USER = 4;
+    const DB_ACCESSDENIED_DB = 5;
+
     /**
      * The hostname/ip to connect to.
      * @access private
@@ -367,7 +368,7 @@ class Db
 
     /**
      * Get generic atk errorccode
-     * @return int One of the ATK DB_* codes.
+     * @return int One of the ATK self::DB_* codes.
      */
     function getAtkDbErrno()
     {
@@ -454,7 +455,7 @@ class Db
     function getErrorMsg()
     {
         $errno = $this->getAtkDbErrno();
-        if ($errno == DB_UNKNOWNERROR) {
+        if ($errno == self::DB_UNKNOWNERROR) {
             $errstr = $this->errorLookup($this->getDbErrno());
             if ($errstr == "") {
                 $this->m_error = Tools::atktext("unknown_error") . ": " . $this->getDbErrno() . " (" . $this->getDbError() . ")";
@@ -466,18 +467,18 @@ class Db
         } else {
             $tmp_error = '';
             switch ($errno) {
-                case DB_ACCESSDENIED_DB:
+                case self::DB_ACCESSDENIED_DB:
                     $tmp_error = sprintf(Tools::atktext("db_access_denied_database", "atk"), $this->m_user,
                         $this->m_database);
                     break;
-                case DB_ACCESSDENIED_USER:
+                case self::DB_ACCESSDENIED_USER:
                     $tmp_error = sprintf(Tools::atktext("db_access_denied_user", "atk"), $this->m_user,
                         $this->m_database);
                     break;
-                case DB_UNKNOWNDATABASE:
+                case self::DB_UNKNOWNDATABASE:
                     $tmp_error = sprintf(Tools::atktext("db_unknown_database", "atk"), $this->m_database);
                     break;
-                case DB_UNKNOWNHOST:
+                case self::DB_UNKNOWNHOST:
                     $tmp_error = sprintf(Tools::atktext("db_unknown_host", "atk"), $this->m_host);
                     break;
             }
@@ -562,7 +563,7 @@ class Db
             return $this->doConnect($this->m_host, $this->m_user, $this->m_password, $this->m_database, $this->m_port,
                 $this->m_charset);
         }
-        return DB_SUCCESS;
+        return self::DB_SUCCESS;
     }
 
     /**
@@ -592,7 +593,7 @@ class Db
      */
     function _translateError($errno)
     {
-        return DB_UNKNOWNERROR;
+        return self::DB_UNKNOWNERROR;
     }
 
     /**
@@ -1389,7 +1390,7 @@ class Db
     /**
      * Check if current db is present and acceptable for current user
      *
-     * @return DB_SUCCESS if
+     * @return self::DB_SUCCESS if
      */
     function getDbStatus()
     {
@@ -1400,8 +1401,8 @@ class Db
 
         $res = $this->connect();
 
-        if ($res === DB_SUCCESS && (strpos($this->m_type, "mysql") === 0)) {
-            // This can't be trusted. Mysql returns DB_SUCCESS even
+        if ($res === self::DB_SUCCESS && (strpos($this->m_type, "mysql") === 0)) {
+            // This can't be trusted. Mysql returns self::DB_SUCCESS even
             // if the user doesn't have access to the database. We only get an
             // error for this after we performed the first query.
             $this->table_names();  // this triggers a query

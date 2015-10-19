@@ -65,7 +65,7 @@ class MsSqlDb extends MySqlDb
             return $this->_translateError();
         }
 
-        return DB_SUCCESS;
+        return self::DB_SUCCESS;
     }
 
     /**
@@ -82,7 +82,7 @@ class MsSqlDb extends MySqlDb
         $this->m_errno = 1;
         $this->m_error = Tools::atktext('unknown_error');
 
-        return DB_UNKNOWNERROR;
+        return self::DB_UNKNOWNERROR;
     }
 
     /**
@@ -108,7 +108,7 @@ class MsSqlDb extends MySqlDb
         Tools::atkdebug("atkmssqldb.query(): " . $query);
 
         /* connect to database */
-        if ($this->connect() == DB_SUCCESS) {
+        if ($this->connect() == self::DB_SUCCESS) {
             /* free old results */
             if ($this->m_query_id) {
                 @mssql_free_result($this->m_query_id);
@@ -186,7 +186,7 @@ class MsSqlDb extends MySqlDb
     function lock($table, $mode = "write")
     {
         /* connect first */
-        if ($this->connect() == DB_SUCCESS) {
+        if ($this->connect() == self::DB_SUCCESS) {
             /* lock */
             $result = @mssql_query("lock tables $table $mode", $this->m_link_id);
             if (!$result) {
@@ -206,7 +206,7 @@ class MsSqlDb extends MySqlDb
     function unlock()
     {
         /* connect first */
-        if ($this->connect() == DB_SUCCESS) {
+        if ($this->connect() == self::DB_SUCCESS) {
             /* unlock */
             $result = @mssql_query("unlock tables", $this->m_link_id);
             if (!$result) {
@@ -258,7 +258,7 @@ class MsSqlDb extends MySqlDb
     function nextid($sequence)
     {
         /* first connect */
-        if ($this->connect() == DB_SUCCESS) {
+        if ($this->connect() == self::DB_SUCCESS) {
             /* lock sequence table */
             if ($this->lock($this->m_seq_table)) {
                 /* get sequence number (locked) and increment */
@@ -297,7 +297,7 @@ class MsSqlDb extends MySqlDb
     function metadata($table, $full = false)
     {
         /* first connect */
-        if ($this->connect() == DB_SUCCESS) {
+        if ($this->connect() == self::DB_SUCCESS) {
             $ddl = Ddl::create("mssql");
 
             /* list fields */

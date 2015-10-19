@@ -80,7 +80,7 @@ class MySqlDb extends Db
         }
 
         /* return link identifier */
-        return DB_SUCCESS;
+        return self::DB_SUCCESS;
     }
 
     /**
@@ -104,20 +104,20 @@ class MySqlDb extends Db
         $this->_setErrorVariables();
         switch ($this->m_errno) {
             case 0:
-                return DB_SUCCESS;
+                return self::DB_SUCCESS;
             case 1044:
-                return DB_ACCESSDENIED_DB;  // todofixme: deze komt bij mysql pas na de eerste query.
+                return self::DB_ACCESSDENIED_DB;  // todofixme: deze komt bij mysql pas na de eerste query.
             case 1045:
-                return DB_ACCESSDENIED_USER;
+                return self::DB_ACCESSDENIED_USER;
             case 1049:
-                return DB_UNKNOWNDATABASE;
+                return self::DB_UNKNOWNDATABASE;
             case 2004:
             case 2005:
-                return DB_UNKNOWNHOST;
+                return self::DB_UNKNOWNHOST;
             default:
                 Tools::atkdebug("mysqldb::translateError -> MySQL Error: " .
                     $this->m_errno . " -> " . $this->m_error);
-                return DB_UNKNOWNERROR;
+                return self::DB_UNKNOWNERROR;
         }
     }
 
@@ -155,7 +155,7 @@ class MySqlDb extends Db
      */
     function escapeSQL($string, $wildcard = false)
     {
-        if ($this->connect('r') === DB_SUCCESS) {
+        if ($this->connect('r') === self::DB_SUCCESS) {
             if ($wildcard == true) {
                 $string = str_replace('%', '\%', $string);
             }
@@ -184,7 +184,7 @@ class MySqlDb extends Db
         $mode = $this->getQueryMode($query);
 
         /* connect to database */
-        if ($this->connect($mode) == DB_SUCCESS) {
+        if ($this->connect($mode) == self::DB_SUCCESS) {
             /* free old results */
             if ($this->m_query_id) {
                 if (is_resource($this->m_query_id)) {
@@ -306,7 +306,7 @@ class MySqlDb extends Db
     function lock($table, $mode = "write")
     {
         /* connect first */
-        if ($this->connect("w") == DB_SUCCESS) {
+        if ($this->connect("w") == self::DB_SUCCESS) {
             $query = "lock tables $table $mode";
 
             if (Config::getGlobal("debug") >= 0) {
@@ -332,7 +332,7 @@ class MySqlDb extends Db
     function unlock()
     {
         /* connect first */
-        if ($this->connect("w") == DB_SUCCESS) {
+        if ($this->connect("w") == self::DB_SUCCESS) {
             /* unlock */
             $result = @mysql_query("unlock tables", $this->m_link_id);
             if (!$result) {
@@ -384,7 +384,7 @@ class MySqlDb extends Db
     function nextid($sequence)
     {
         /* first connect */
-        if ($this->connect("w") == DB_SUCCESS) {
+        if ($this->connect("w") == self::DB_SUCCESS) {
             /* lock sequence table */
             if ($this->lock($this->m_seq_table)) {
                 /* get sequence number (locked) and increment */
@@ -447,7 +447,7 @@ class MySqlDb extends Db
     function metadata($table, $full = false)
     {
         /* first connect */
-        if ($this->connect("r") == DB_SUCCESS) {
+        if ($this->connect("r") == self::DB_SUCCESS) {
             $ddl = Ddl::create("mysql");
 
             /* list fields */

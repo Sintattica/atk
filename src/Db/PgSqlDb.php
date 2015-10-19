@@ -55,24 +55,24 @@ class PgSqlDb extends Db
                 if (function_exists("pg_last_error")) { // only available since PHP 4.2.0.
                     return $this->_translateError(@pg_last_error());
                 } else {
-                    return DB_UNKNOWNERROR;
+                    return self::DB_UNKNOWNERROR;
                 }
             }
         }
 
-        return DB_SUCCESS;
+        return self::DB_SUCCESS;
     }
 
     /**
      * TODO FIXME: I don't know what errormessges postgresql gives,
-     * so this function only returns DB_UNKNOWNERROR for now.
+     * so this function only returns self::DB_UNKNOWNERROR for now.
      *
      * @param mixed $error
      * @return int The ATK error code
      */
     function _translateError($error = "")
     {
-        return DB_UNKNOWNERROR;
+        return self::DB_UNKNOWNERROR;
     }
 
     /**
@@ -99,7 +99,7 @@ class PgSqlDb extends Db
         Tools::atkdebug("atkpgsqldb.query(): " . $query);
 
         /* connect to database */
-        if ($this->connect() == DB_SUCCESS) {
+        if ($this->connect() == self::DB_SUCCESS) {
             /* free old results */
             if (!empty($this->m_query_id)) {
                 @pg_free_result($this->m_query_id);
@@ -167,7 +167,7 @@ class PgSqlDb extends Db
     function lock($table, $mode = "write")
     {
         /* connect first */
-        if ($this->connect() == DB_SUCCESS) {
+        if ($this->connect() == self::DB_SUCCESS) {
             /* lock */
             if ($mode == "write") {
                 $result = @pg_query($this->m_link_id, "lock table $table") or $this->halt("cannot lock table $table");
@@ -188,7 +188,7 @@ class PgSqlDb extends Db
     function unlock()
     {
         /* connect first */
-        if ($this->connect() == DB_SUCCESS) {
+        if ($this->connect() == self::DB_SUCCESS) {
             /* unlock */
             $result = @pg_query($this->m_link_id, "commit") or $this->halt("cannot unlock tables");
 
@@ -237,7 +237,7 @@ class PgSqlDb extends Db
     function nextid($sequence)
     {
         /* connect first */
-        if ($this->connect() == DB_SUCCESS) {
+        if ($this->connect() == self::DB_SUCCESS) {
             $sequencename = Config::getGlobal("database_sequenceprefix") . $sequence;
             /* get sequence number and increment */
             $query = "SELECT nextval('$sequencename') AS nextid";

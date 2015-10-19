@@ -1,6 +1,7 @@
 <?php namespace Sintattica\Atk\Db\Statement;
 
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Db\Db;
 
 /**
  * Base statement class used for database drivers which don't have their own
@@ -29,7 +30,7 @@ class CompatStatement extends Statement
      */
     protected function _prepare()
     {
-        if ($this->getDb()->connect() != DB_SUCCESS) {
+        if ($this->getDb()->connect() != Db::DB_SUCCESS) {
             throw new StatementException("Cannot connect to database.",
                 StatementException::NO_DATABASE_CONNECTION);
         }
