@@ -1,30 +1,13 @@
 <?php namespace Sintattica\Atk\Handlers;
-/**
- * This file is part of the Ibuildings E-business Platform.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage handlers
- *
- * @author Dennis Luitwieler <dennis@ibuildings.nl>
- *
- * @copyright (c) 2007 Ibuildings.nl BV
- * @license see doc/LICENSE
- *
- * @version $Revision: 6310 $
- * $Id$
- */
 
-/**
- * Some defines
- * @access private
- */
-define("ATTRIBUTEEDIT_ERROR_DEFAULT", 1);
-define("ATTRIBUTEEDIT_ERROR_UPDATE", 2);
-define("ATTRIBUTEEDIT_ERROR_NO_SELECTOR_SET", 4);
-define("ATTRIBUTEEDIT_ERROR_VALIDATE", 8);
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Ui\Dialog;
+use Sintattica\Atk\Core\Controller;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Attributes\ListAttribute;
+use Sintattica\Atk\Attributes\Attribute;
+use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Utils\JSON;
 
 /**
  * Handler for the 'attributeedit' action of a node. It shows a dialog for altering the value of
@@ -39,6 +22,16 @@ define("ATTRIBUTEEDIT_ERROR_VALIDATE", 8);
  */
 class AttributeEditHandler extends ActionHandler
 {
+
+    /**
+     * Some defines
+     * @access private
+     */
+    const ATTRIBUTEEDIT_ERROR_DEFAULT = 1;
+    const ATTRIBUTEEDIT_ERROR_UPDATE = 2;
+    const ATTRIBUTEEDIT_ERROR_NO_SELECTOR_SET = 4;
+    const ATTRIBUTEEDIT_ERROR_VALIDATE = 8;
+
     var $m_processUrl = null;
     var $m_masterNode = null;
 
@@ -47,7 +40,7 @@ class AttributeEditHandler extends ActionHandler
      *
      * @param Node $node The master node
      */
-    function setMasterNode($node)
+    function setMasterNode(Node $node)
     {
         $this->m_masterNode = $node;
     }
@@ -70,7 +63,7 @@ class AttributeEditHandler extends ActionHandler
         } else {
             $atkselector = $this->getSelector();
             if (!isset($atkselector) || $atkselector == "") {
-                $this->handleError(ATTRIBUTEEDIT_ERROR_NO_SELECTOR_SET, null, false);
+                $this->handleError(self::ATTRIBUTEEDIT_ERROR_NO_SELECTOR_SET, null, false);
             } else {
                 $this->handleDialog();
             }
@@ -113,7 +106,7 @@ class AttributeEditHandler extends ActionHandler
         $atkselector = $this->getSelector();
 
         if (!isset($atkselector) || count($atkselector) == 0) {
-            $this->handleError(ATTRIBUTEEDIT_ERROR_NO_SELECTOR_SET);
+            $this->handleError(self::ATTRIBUTEEDIT_ERROR_NO_SELECTOR_SET);
             return;
         }
 
@@ -123,7 +116,7 @@ class AttributeEditHandler extends ActionHandler
 
         /** check if input is correct ... */
         if (!is_object($attribute) || empty($attributename)) {
-            $this->handleError(ATTRIBUTEEDIT_ERROR_DEFAULT);
+            $this->handleError(self::ATTRIBUTEEDIT_ERROR_DEFAULT);
             return;
         }
 
@@ -163,13 +156,13 @@ class AttributeEditHandler extends ActionHandler
 
         // On validation error, show a validation error message.
         if (!$validate) {
-            $this->handleError(ATTRIBUTEEDIT_ERROR_VALIDATE, $rec, true);
+            $this->handleError(self::ATTRIBUTEEDIT_ERROR_VALIDATE, $rec, true);
             return;
         }
 
         // On failure, do a rollback (if the db supports it) and show an error page.
         $node->getDb()->rollback();
-        $this->handleError(ATTRIBUTEEDIT_ERROR_UPDATE, $rec, true);
+        $this->handleError(self::ATTRIBUTEEDIT_ERROR_UPDATE, $rec, true);
     }
 
     /**
@@ -205,14 +198,13 @@ class AttributeEditHandler extends ActionHandler
      */
     function getErrorPage($error, $record = null, $customerror = '')
     {
-        $errortext = '';
         if ($customerror != '') {
             $errortext = $customerror;
-        } elseif ($error == ATTRIBUTEEDIT_ERROR_UPDATE) {
+        } elseif ($error == self::ATTRIBUTEEDIT_ERROR_UPDATE) {
             $errortext = $this->m_node->text('error_attributeedit_update');
-        } elseif ($error == ATTRIBUTEEDIT_ERROR_NO_SELECTOR_SET) {
+        } elseif ($error == self::ATTRIBUTEEDIT_ERROR_NO_SELECTOR_SET) {
             $errortext = $this->m_node->text("error_attributeedit_noselectorset");
-        } elseif ($error == ATTRIBUTEEDIT_ERROR_VALIDATE) {
+        } elseif ($error == self::ATTRIBUTEEDIT_ERROR_VALIDATE) {
             $errortext = $this->m_node->text("error_attributeedit_validationfailed");
         } else {  // Other errors
             $errortext = $this->m_node->text('error_attributeedit_default');
@@ -278,7 +270,7 @@ class AttributeEditHandler extends ActionHandler
         $page = $this->getPage();
         $ui = $this->getUi();
         $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
-        $page->register_script(Config::getGlobal('atkroot') . 'atk/javascript/class.atkattributeedithandler.js');
+        $page->register_script(Config::getGlobal('assets_url') . 'javascript/class.atkattributeedithandler.js');
         $page->register_style($ui->stylePath("style.css"));
     }
 
@@ -352,8 +344,9 @@ class AttributeEditHandler extends ActionHandler
             $values[] = $attribute->fieldName();
         }
 
-        $list = &new atkListAttribute('attributename', $options, $values);
-        $list->addFlag(Attribute::AF_LIST_NO_NULL_ITEM);
+
+        $list = new ListAttribute('attributename', $options, $values);
+        $list->addFlag(ListAttribute::AF_LIST_NO_NULL_ITEM);
         $list->m_ownerInstance = $this->m_node;
         $list->addOnChangeHandler($this->onChange());
         return $list->edit($record, $fieldprefix);
