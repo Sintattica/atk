@@ -1,36 +1,7 @@
 <?php namespace Sintattica\Atk\Attributes;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage attributes
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6309 $
- * $Id: class.atkboolattribute.inc 6943 2010-07-05 21:24:39Z sandy $
- */
-/**
- * Make bool attribute obligatory (normal self::AF_OBLIGATORY flag is always removed).
- */
-define("self::AF_BOOL_OBLIGATORY", self::AF_SPECIFIC_1);
 
-/**
- * Show an extra label right next to the checkbox. ATK searches the language
- * file for the following variants <attribute>_label, <attribute> (next to
- * the module/node prefixes). Don't forget to add the self::AF_BLANK_LABEL flag
- * if you don't want to show the normal label.
- */
-define("self::AF_BOOL_INLINE_LABEL", self::AF_SPECIFIC_2);
+use Sintattica\Atk\Core\Tools;
 
-/**
- * Display checkbox in view / list mode instead of "yes" or "no".
- */
-define("self::AF_BOOL_DISPLAY_CHECKBOX", self::AF_SPECIFIC_3);
 
 /**
  * The atkBoolAttribute class represents an attribute of a node
@@ -43,6 +14,23 @@ define("self::AF_BOOL_DISPLAY_CHECKBOX", self::AF_SPECIFIC_3);
  */
 class BoolAttribute extends Attribute
 {
+    /**
+     * Make bool attribute obligatory (normal self::AF_OBLIGATORY flag is always removed).
+     */
+    const AF_BOOL_OBLIGATORY = self::AF_SPECIFIC_1;
+
+    /**
+     * Show an extra label right next to the checkbox. ATK searches the language
+     * file for the following variants <attribute>_label, <attribute> (next to
+     * the module/node prefixes). Don't forget to add the self::AF_BLANK_LABEL flag
+     * if you don't want to show the normal label.
+     */
+    const AF_BOOL_INLINE_LABEL = self::AF_SPECIFIC_2;
+
+    /**
+     * Display checkbox in view / list mode instead of "yes" or "no".
+     */
+    const AF_BOOL_DISPLAY_CHECKBOX = self::AF_SPECIFIC_3;
 
     /**
      * Constructor
