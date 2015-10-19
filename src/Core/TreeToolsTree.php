@@ -1,7 +1,5 @@
 <?php namespace Sintattica\Atk\Core;
 
-include_once(Config::getGlobal("assets_url") . "class.atktreetoolsnode.php");
-
 /**
  * Tree class, used to build trees of nodes.
  *
