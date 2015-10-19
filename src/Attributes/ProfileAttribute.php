@@ -2,6 +2,10 @@
 
 use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Db\Db;
 
 /**
  * The atkProfileAttribute is an attribute to edit a security profile.
@@ -24,7 +28,7 @@ class ProfileAttribute extends Attribute
      * @param string $name The name of the attribute
      * @param string $parentAttrName
      * @param int $flags The flags of this attribute
-     * @return atkProfileAttribute
+     * @return ProfileAttribute
      */
     function __construct($name, $parentAttrName = "", $flags = 0)
     {
@@ -220,10 +224,6 @@ class ProfileAttribute extends Attribute
             }
         } // non-hierarchic groups, or root
         else {
-            // include node information
-            if (file_exists("config.nodes.php")) {
-                include_once("config.nodes.php");
-            }
 
             // get nodes for each module
             foreach (array_keys($g_modules) as $module) {
