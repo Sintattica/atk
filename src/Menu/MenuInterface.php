@@ -16,6 +16,19 @@ use Sintattica\Atk\Security\SecurityManager;
  */
 class MenuInterface
 {
+    /**
+     * Some defines
+     */
+    const MENU_TOP = 1;
+    const MENU_LEFT = 2;
+    const MENU_BOTTOM = 3;
+    const MENU_RIGHT = 4;
+
+    const MENU_SCROLLABLE = 1;
+    const MENU_UNSCROLLABLE = 2;
+    const MENU_MULTILEVEL = 1; //More then 2 levels supported
+    const MENU_NOMULTILEVEL = 2;
+
     var $m_height;
 
     /**

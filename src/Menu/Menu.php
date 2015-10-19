@@ -7,18 +7,6 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Module;
 
 /**
- * Some defines
- */
-define("MENU_TOP", 1);
-define("MENU_LEFT", 2);
-define("MENU_BOTTOM", 3);
-define("MENU_RIGHT", 4);
-define("MENU_SCROLLABLE", 1);
-define("MENU_UNSCROLLABLE", 2);
-define("MENU_MULTILEVEL", 1); //More then 2 levels supported
-define("MENU_NOMULTILEVEL", 2);
-
-/**
  * Menu utility class.
  *
  * This class is used to retrieve the instance of an atkMenuInterface-based
@@ -31,6 +19,7 @@ define("MENU_NOMULTILEVEL", 2);
  */
 class Menu
 {
+
     /**
      * Get new menu object
      *

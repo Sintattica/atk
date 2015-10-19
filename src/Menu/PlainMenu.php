@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Menu;
 
-
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Theme;
@@ -147,19 +146,19 @@ class PlainMenu extends MenuInterface
     /**
      * Get the menu position
      *
-     * @return int The menu position (MENU_RIGHT, MENU_TOP, MENU_BOTTOM or MENU_LEFT)
+     * @return int The menu position (Menu::MENU_RIGHT, Menu::MENU_TOP, Menu::MENU_BOTTOM or Menu::MENU_LEFT)
      */
     function getPosition()
     {
         switch (Config::getGlobal("menu_pos", "left")) {
             case "right":
-                return MENU_RIGHT;
+                return self::MENU_RIGHT;
             case "top":
-                return MENU_TOP;
+                return self::MENU_TOP;
             case "bottom":
-                return MENU_BOTTOM;
+                return self::MENU_BOTTOM;
         }
-        return MENU_LEFT;
+        return self::MENU_LEFT;
     }
 
     /**
@@ -169,7 +168,7 @@ class PlainMenu extends MenuInterface
      */
     function getScrollable()
     {
-        return MENU_SCROLLABLE;
+        return self::MENU_SCROLLABLE;
     }
 
     /**
@@ -179,7 +178,7 @@ class PlainMenu extends MenuInterface
      */
     function getMultilevel()
     {
-        return MENU_MULTILEVEL;
+        return self::MENU_MULTILEVEL;
     }
 
 }
