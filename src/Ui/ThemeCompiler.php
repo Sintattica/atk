@@ -36,8 +36,8 @@ class ThemeCompiler
 
         // Write it to the compiled theme file
         if (count($data)) {
-            if (!file_exists(Config::getGlobal("atktempdir") . "themes/")) {
-                mkdir(Config::getGlobal("atktempdir") . "themes/");
+            if (!is_dir(Config::getGlobal("atktempdir") . "themes/")) {
+                mkdir(Config::getGlobal("atktempdir") . "themes", 0777, true);
             }
 
             $tmpfile = new TmpFile("themes/$name.php");
