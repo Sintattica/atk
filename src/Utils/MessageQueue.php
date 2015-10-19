@@ -3,14 +3,6 @@
 use Sintattica\Atk\Session\SessionManager;
 
 /**
- * Message queue flags.
- */
-define('AMQ_GENERAL', 0);
-define('AMQ_SUCCESS', 1);
-define('AMQ_WARNING', 2);
-define('AMQ_FAILURE', 3);
-
-/**
  * This class implements the ATK message queue for showing messages
  * at the top of a page.
  *
@@ -21,6 +13,14 @@ define('AMQ_FAILURE', 3);
  */
 class MessageQueue
 {
+
+    /**
+     * Message queue flags.
+     */
+    const AMQ_GENERAL = 0;
+    const AMQ_SUCCESS = 1;
+    const AMQ_WARNING = 2;
+    const AMQ_FAILURE = 3;
 
     /**
      * Retrieve the atkMessageQueue instance
@@ -55,7 +55,7 @@ class MessageQueue
      * @param int $type
      * @return boolean Success
      */
-    function addMessage($txt, $type = AMQ_GENERAL)
+    function addMessage($txt, $type = self::AMQ_GENERAL)
     {
         $instance = self::getInstance();
         if (is_object($instance)) {
@@ -72,13 +72,13 @@ class MessageQueue
      */
     function _getTypeName($type)
     {
-        if ($type == AMQ_SUCCESS) {
+        if ($type == self::AMQ_SUCCESS) {
             return 'success';
         } else {
-            if ($type == AMQ_FAILURE) {
+            if ($type == self::AMQ_FAILURE) {
                 return 'failure';
             } else {
-                if ($type == AMQ_WARNING) {
+                if ($type == self::AMQ_WARNING) {
                     return 'warning';
                 } else {
                     return 'general';

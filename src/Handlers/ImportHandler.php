@@ -1073,13 +1073,13 @@ class ImportHandler extends ActionHandler
 
         $count = count((array)$validated['validatedrecs']['add']) + count((array)$validated['validatedrecs']['update']);
         if ($count == 0) {
-            $messageQueue->addMessage(sprintf($this->m_node->text('no_records_to_import'), $count), AMQ_GENERAL);
+            $messageQueue->addMessage(sprintf($this->m_node->text('no_records_to_import'), $count), MessageQueue::AMQ_GENERAL);
         } else {
             if ($count == 1) {
-                $messageQueue->addMessage($this->m_node->text('successfully_imported_one_record'), AMQ_SUCCESS);
+                $messageQueue->addMessage($this->m_node->text('successfully_imported_one_record'),  MessageQueue::AMQ_SUCCESS);
             } else {
                 $messageQueue->addMessage(sprintf($this->m_node->text('successfully_imported_x_records'), $count),
-                    AMQ_SUCCESS);
+                    MessageQueue::AMQ_SUCCESS);
             }
         }
 
