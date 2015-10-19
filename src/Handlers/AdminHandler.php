@@ -8,6 +8,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Ui\Dialog;
 use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Session\SessionManager;
 use \Exception;
 
 /**
@@ -23,7 +24,7 @@ use \Exception;
  */
 class AdminHandler extends ActionHandler
 {
-    var $m_actionSessionStatus = SESSION_NESTED;
+    var $m_actionSessionStatus = SessionManager::SESSION_NESTED;
 
     /**
      * The action method
@@ -43,9 +44,9 @@ class AdminHandler extends ActionHandler
 
     /**
      * Sets the action session status for actions in the recordlist.
-     * (Defaults to SESSION_NESTED).
+     * (Defaults to SessionManager::SESSION_NESTED).
      *
-     * @param Integer $sessionStatus The sessionstatus (for example SESSION_REPLACE)
+     * @param Integer $sessionStatus The sessionstatus (for example SessionManager::SESSION_REPLACE)
      */
     function setActionSessionStatus($sessionStatus)
     {
@@ -208,7 +209,7 @@ class AdminHandler extends ActionHandler
             $grid->setPostvar('atksearch', array());
 
             $url = Tools::session_url(Tools::dispatch_url($node->atkNodeType(), $action,
-                array('atkselector' => $node->primaryKey($records[0]))), SESSION_NESTED);
+                array('atkselector' => $node->primaryKey($records[0]))), SessionManager::SESSION_NESTED);
 
             if ($grid->isUpdate()) {
                 $script = 'document.location.href = ' . JSON::encode($url) . ';';
@@ -261,7 +262,7 @@ class AdminHandler extends ActionHandler
         $link = "";
         if ($this->m_node->allowed("add") && !$this->m_node->hasFlag(Node::NF_READONLY) && $this->m_node->hasFlag(Node::NF_IMPORT)) {
             $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeType(), "import"),
-                Tools::atktext("import", "atk", $this->m_node->m_type), SESSION_NESTED);
+                Tools::atktext("import", "atk", $this->m_node->m_type), SessionManager::SESSION_NESTED);
         }
         return $link;
     }
@@ -283,7 +284,7 @@ class AdminHandler extends ActionHandler
 
             $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeType(), "export",
                 array('atkfilter' => $filter)), Tools::atktext("export", "atk", $this->m_node->m_type),
-                SESSION_NESTED);
+                SessionManager::SESSION_NESTED);
         }
         return $link;
     }
@@ -326,7 +327,7 @@ class AdminHandler extends ActionHandler
 
                 $dialog = new Dialog($node->atkNodeType(), $action, 'dialog');
                 $dialog->setModifierObject($node);
-                $dialog->setSessionStatus(SESSION_PARTIAL);
+                $dialog->setSessionStatus(SessionManager::SESSION_PARTIAL);
                 $onClick = $dialog->getCall();
 
                 return '
@@ -334,7 +335,7 @@ class AdminHandler extends ActionHandler
 			    ';
             } elseif ($node->hasFlag(Node::NF_ADD_LINK)) {
                 $addurl = $this->invoke('getAddUrl', $node);
-                return Tools::atkHref($addurl, $label, SESSION_NESTED);
+                return Tools::atkHref($addurl, $label, SessionManager::SESSION_NESTED);
             }
         }
 

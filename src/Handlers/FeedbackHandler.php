@@ -51,7 +51,7 @@ class FeedbackHandler extends ActionHandler
         }
 
         if (SessionManager::atkLevel() > 0) {
-            $params["formstart"] = '<form method="get">' . SessionManager::formState(SESSION_BACK);
+            $params["formstart"] = '<form method="get">' . SessionManager::formState(SessionManager::SESSION_BACK);
             $params["buttons"][] = '<input type="submit" class="btn btn-default btn_cancel" value="&lt;&lt; ' . Tools::atktext('back') . '">';
             $params["formend"] = '</form>';
         }

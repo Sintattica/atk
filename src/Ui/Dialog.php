@@ -4,6 +4,7 @@ use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * ATK dialog helper class.
@@ -18,7 +19,7 @@ class Dialog
     protected $m_action;
     protected $m_partial;
     protected $m_params;
-    protected $m_sessionStatus = SESSION_NEW;
+    protected $m_sessionStatus = SessionManager::SESSION_NEW;
     protected $m_title;
     protected $m_themeName;
     protected $m_themeLoad;
@@ -87,7 +88,7 @@ class Dialog
     /**
      * Returns the dialog sessionStatus.
      *
-     * @return int sessionStatus (SESSION_BACK=3, SESSION_DEFAULT=0, SESSION_NESTED=2, SESSION_NEW=1, SESSION_PARTIAL=5, SESSION_REPLACE=4)
+     * @return int sessionStatus (SessionManager::SESSION_BACK=3, SessionManager::SESSION_DEFAULT=0, SessionManager::SESSION_NESTED=2, SessionManager::SESSION_NEW=1, SessionManager::SESSION_PARTIAL=5, SessionManager::SESSION_REPLACE=4)
      */
     public function getSessionStatus()
     {
@@ -97,7 +98,7 @@ class Dialog
     /**
      * Sets the dialog sessionStatus.
      *
-     * @param int $sessionStatus (SESSION_BACK=3, SESSION_DEFAULT=0, SESSION_NESTED=2, SESSION_NEW=1, SESSION_PARTIAL=5, SESSION_REPLACE=4)
+     * @param int $sessionStatus (SessionManager::SESSION_BACK=3, SessionManager::SESSION_DEFAULT=0, SessionManager::SESSION_NESTED=2, SessionManager::SESSION_NEW=1, SessionManager::SESSION_PARTIAL=5, SessionManager::SESSION_REPLACE=4)
      */
     public function setSessionStatus($sessionStatus)
     {

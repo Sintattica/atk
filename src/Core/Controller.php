@@ -461,19 +461,19 @@ class Controller
                 "atkfbmessage" => $message
             );
             $atkNodeType = $node->atkNodeType();
-            $sessionStatus = SESSION_REPLACE;
+            $sessionStatus = SessionManager::SESSION_REPLACE;
 
             // The level skip given is based on where we should end up after the
             // feedback action is shown to the user. This means that the feedback
             // action should be shown one level higher in the stack, hence the -1.
             // Default the feedback action is shown on the current level, so in that
-            // case we have a simple SESSION_REPLACE with a level skip of null.
+            // case we have a simple SessionManager::SESSION_REPLACE with a level skip of null.
             $levelskip = $levelskip == null ? null : $levelskip - 1;
         } else {
             // Default we leave atkNodeType empty because the sessionmanager will determine which is de atkNodeType
             $vars = array();
             $atkNodeType = "";
-            $sessionStatus = SESSION_BACK;
+            $sessionStatus = SessionManager::SESSION_BACK;
         }
         return (SessionManager::sessionUrl($this->dispatchUrl($vars, $atkNodeType), $sessionStatus, $levelskip));
     }

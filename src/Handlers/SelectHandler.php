@@ -67,7 +67,7 @@ class SelectHandler extends ActionHandler
         $params["footer"] = "";
 
         if (SessionManager::atkLevel() > 0) {
-            $backUrl = SessionManager::sessionUrl(Tools::atkSelf() . '?atklevel=' . SessionManager::newLevel(SESSION_BACK));
+            $backUrl = SessionManager::sessionUrl(Tools::atkSelf() . '?atklevel=' . SessionManager::newLevel(SessionManager::SESSION_BACK));
             $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backUrl . '\';" value="' . $this->getNode()->text('cancel') . '"></div>';
         }
 
@@ -121,7 +121,7 @@ class SelectHandler extends ActionHandler
         if (SessionManager::atkLevel() > 0 && $grid->getPostvar('atkprevlevel',
                 0) > SessionManager::atkLevel()
         ) {
-            $backUrl = SessionManager::sessionUrl(Tools::atkSelf() . '?atklevel=' . SessionManager::newLevel(SESSION_BACK));
+            $backUrl = SessionManager::sessionUrl(Tools::atkSelf() . '?atklevel=' . SessionManager::newLevel(SessionManager::SESSION_BACK));
             $node->redirect($backUrl);
         } else {
             $records = $grid->getRecords();
@@ -134,7 +134,7 @@ class SelectHandler extends ActionHandler
             $records[0]['pk'] = $node->primaryKey($records[0]);
             $target = $parser->parse($records[0], true);
 
-            $node->redirect(SessionManager::sessionUrl($target, SESSION_NESTED));
+            $node->redirect(SessionManager::sessionUrl($target, SessionManager::SESSION_NESTED));
         }
 
         return true;

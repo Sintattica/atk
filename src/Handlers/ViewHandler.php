@@ -3,6 +3,7 @@
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Handler class for a readonly view action. Similar to the edit handler,
@@ -62,7 +63,7 @@ class ViewHandler extends ViewEditBase
     public function getFormStart($record = null)
     {
         $formstart = '<form name="entryform" id="entryform" action="' . Tools::getDispatchFile() . '" method="get" onsubmit="return globalSubmit(this,false)">';
-        $formstart .= Tools::session_form(SESSION_NESTED);
+        $formstart .= Tools::session_form(SessionManager::SESSION_NESTED);
         $formstart .= '<input type="hidden" name="atkselector" value="' . $this->getNode()->primaryKey($record) . '">';
         $formstart .= '<input type="hidden" class="atksubmitaction" />';
         return $formstart;

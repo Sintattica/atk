@@ -4,6 +4,7 @@
 use Sintattica\Atk\Utils\DirectoryTraverser;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * DocumentAttribute class for adding document generation functionality to a node
@@ -115,7 +116,7 @@ class DocumentAttribute extends DummyAttribute
         $selector = $this->m_ownerInstance->primaryKey($record);
         $onclickscript = 'window.location="' . Tools::session_url(Tools::dispatch_url($module . "." . $node,
                 "document", array("atkselector" => $selector)),
-                SESSION_DEFAULT) . '&atkdoctpl="+this.form.atkdoctpl.value;';
+                SessionManager::SESSION_DEFAULT) . '&atkdoctpl="+this.form.atkdoctpl.value;';
 
         $html .= '<input type="button" class="btn_doc_open" name="atkdocument" value="' . Tools::atktext("open") . '" onclick=\'' . $onclickscript . '\'>';
 

@@ -1,6 +1,7 @@
 <?php namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Abstract class for implementing an atkSearchHandler
@@ -261,7 +262,7 @@ abstract class AbstractSearchHandler extends ActionHandler
             return null;
         } else {
             return Tools::session_url(Tools::dispatch_url($this->m_node->atkNodeType(), $this->m_action,
-                array('forget_criteria' => $current)), SESSION_REPLACE);
+                array('forget_criteria' => $current)), SessionManager::SESSION_REPLACE);
         }
     }
 

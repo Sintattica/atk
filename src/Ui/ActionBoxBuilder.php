@@ -4,6 +4,7 @@
 
 use Sintattica\Atk\Core\Controller;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Action box builder. Provides a fluent interface to create standardized
@@ -52,7 +53,7 @@ class ActionBoxBuilder
      *
      * @var int
      */
-    protected $m_sessionStatus = SESSION_DEFAULT;
+    protected $m_sessionStatus = SessionManager::SESSION_DEFAULT;
 
     /**
      * Constructor.
@@ -121,7 +122,7 @@ class ActionBoxBuilder
     /**
      * Sets the session status.
      *
-     * The default session status is SESSION_DEFAULT. If you don't want an
+     * The default session status is SessionManager::SESSION_DEFAULT. If you don't want an
      * automatically appended session form set the session status
      * explicitly to null!
      *

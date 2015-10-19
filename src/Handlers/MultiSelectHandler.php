@@ -127,7 +127,7 @@ class MultiSelectHandler extends AdminHandler
         $params["list"] = $grid->render();
 
         if (SessionManager::atkLevel() > 0) {
-            $backlinkurl = SessionManager::sessionUrl(Tools::atkSelf() . '?atklevel=' . SessionManager::newLevel(SESSION_BACK));
+            $backlinkurl = SessionManager::sessionUrl(Tools::atkSelf() . '?atklevel=' . SessionManager::newLevel(SessionManager::SESSION_BACK));
             $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backlinkurl . '\';" value="' . Tools::atktext('cancel') . '"></div>';
         }
 

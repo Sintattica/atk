@@ -179,7 +179,7 @@ class SaveHandler extends ActionHandler
             $url = Tools::atkSelf() . '?atknodetype=' . $this->m_node->atknodetype();
             $url .= '&atkaction=edit';
             $url .= '&atkselector=' . rawurlencode($this->m_node->primaryKey($record));
-            $location = Tools::session_url($url . $extra, SESSION_REPLACE, $this->_getSkip() - 1);
+            $location = Tools::session_url($url . $extra, SessionManager::SESSION_REPLACE, $this->_getSkip() - 1);
         } else {
             if ($this->m_node->hasFlag(Node::NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext'])) {
                 $filter = "";
@@ -187,7 +187,7 @@ class SaveHandler extends ActionHandler
                     $filter = "&atkfilter=" . rawurlencode($this->m_node->m_postvars['atkfilter']);
                 }
                 $url = Tools::atkSelf() . '?atknodetype=' . $this->m_node->atknodetype() . '&atkaction=' . $this->getAddAction();
-                $location = Tools::session_url($url . $filter, SESSION_REPLACE, $this->_getSkip() - 1);
+                $location = Tools::session_url($url . $filter, SessionManager::SESSION_REPLACE, $this->_getSkip() - 1);
             } else {
                 // normal succesful save
                 $location = $this->m_node->feedbackUrl("save", self::ACTION_SUCCESS, $record, "", $this->_getSkip());

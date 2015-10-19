@@ -9,6 +9,7 @@ use Sintattica\Atk\Keyboard\Keyboard;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\RecordList\RecordList;
 use Sintattica\Atk\Lock\Lock;
+use Sintattica\Atk\Session\SessionManager;
 use \stdClass;
 use \Exception;
 
@@ -207,7 +208,7 @@ class DataGridList extends DataGridComponent
             $button = '<input type="' . $buttonType . '" class="btn btn-default btn_search" value="' . Tools::atktext("search") . '" onclick="' . $call . ' return false;">';
             if ($grid->hasFlag(DataGrid::EXTENDED_SEARCH)) {
                 $button .= '<br>' . Tools::href(Tools::atkSelf() . "?atknodetype=" . $grid->getActionNode()->atkNodeType() . "&atkaction=" . $grid->getActionNode()->getExtendedSearchAction(),
-                        "(" . Tools::atktext("search_extended") . ")", SESSION_NESTED);
+                        "(" . Tools::atktext("search_extended") . ")", SessionManager::SESSION_NESTED);
             }
 
             // $searchstart = '<a name="searchform"></a>';
@@ -475,7 +476,7 @@ class DataGridList extends DataGridComponent
         $mra = "";
         if (!$edit && $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS)) {
             $target = Tools::session_url(Tools::atkSelf() . '?atknodetype=' . $grid->getActionNode()->atkNodeType(),
-                SESSION_NESTED);
+                SessionManager::SESSION_NESTED);
 
             /* multiple actions -> dropdown */
             if (count($grid->getNode()->m_priority_actions) > 1) {
@@ -508,7 +509,7 @@ class DataGridList extends DataGridComponent
                     : '')
                 . '&atktargetvartpl=' . (!empty($postvars['atktargetvartpl']) ? $postvars['atktargetvartpl']
                     : '')
-                , SESSION_NESTED
+                , SessionManager::SESSION_NESTED
             );
 
             $mra = (count($list["rows"]) > 1 && $grid->getMRASelectionMode() == Node::MRA_MULTI_SELECT

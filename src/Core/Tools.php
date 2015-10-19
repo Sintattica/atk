@@ -491,7 +491,7 @@ class Tools
     /**
      * @deprecated Use SessionManager::formState instead.
      */
-    public static function session_form($sessionstatus = SESSION_DEFAULT, $returnbehaviour = null, $fieldprefix = '')
+    public static function session_form($sessionstatus = SessionManager::SESSION_DEFAULT, $returnbehaviour = null, $fieldprefix = '')
     {
         return SessionManager::formState($sessionstatus, $returnbehaviour, $fieldprefix);
     }
@@ -499,7 +499,7 @@ class Tools
     /**
      * @deprecated Use SessionManager::sessionVars() instead.
      */
-    public static function session_vars($sessionstatus = SESSION_DEFAULT, $levelskip = null, $url = "")
+    public static function session_vars($sessionstatus = SessionManager::SESSION_DEFAULT, $levelskip = null, $url = "")
     {
         return SessionManager::sessionVars($sessionstatus, $levelskip, $url);
     }
@@ -507,7 +507,7 @@ class Tools
     /**
      * @deprecated use SessionManager::sessionUrl() instead.
      */
-    public static function session_url($url, $sessionstatus = SESSION_DEFAULT, $levelskip = null)
+    public static function session_url($url, $sessionstatus = SessionManager::SESSION_DEFAULT, $levelskip = null)
     {
         return SessionManager::sessionUrl($url, $sessionstatus, $levelskip);
     }
@@ -518,7 +518,7 @@ class Tools
     public static function href(
         $url,
         $name = "",
-        $sessionstatus = SESSION_DEFAULT,
+        $sessionstatus = SessionManager::SESSION_DEFAULT,
         $saveform = false,
         $extraprops = ""
     ) {
@@ -532,7 +532,7 @@ class Tools
     public static function atkHref(
         $url,
         $name = "",
-        $sessionstatus = SESSION_DEFAULT,
+        $sessionstatus = SessionManager::SESSION_DEFAULT,
         $saveform = false,
         $extraprops = ""
     ) {
@@ -968,7 +968,7 @@ class Tools
      */
     public static function atkPopup($target, $params, $winName, $width, $height, $scroll = 'no', $resize = 'no')
     {
-        $url = self::session_url("include.php?file=" . $target . "&" . $params, SESSION_NESTED);
+        $url = self::session_url("include.php?file=" . $target . "&" . $params, SessionManager::SESSION_NESTED);
         $popupurl = "javascript:NewWindow('" . $url . "','" . $winName . "'," . $height . "," . $width . ",'" . $scroll . "','" . $resize . "')";
         return $popupurl;
     }
@@ -1376,10 +1376,10 @@ class Tools
      * @param string $action the atkaction
      * @param string $partial the partial name
      * @param array $params a key/value array with extra params
-     * @param int $sessionStatus session status (default SESSION_PARTIAL)
+     * @param int $sessionStatus session status (default SessionManager::SESSION_PARTIAL)
      * @return string url for the partial action
      */
-    public static function partial_url($node, $action, $partial, $params = array(), $sessionStatus = SESSION_PARTIAL)
+    public static function partial_url($node, $action, $partial, $params = array(), $sessionStatus = SessionManager::SESSION_PARTIAL)
     {
         if (!is_array($params)) {
             $params = array();
@@ -1428,8 +1428,8 @@ class Tools
      * @param string $text the self::text to display on the button
      * @param string $url the url to use for the button
      * @param int $sessionstatus the session flags
-     *              (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
-     *               SESSION_NESTED|SESSION_BACK)
+     *              (SessionManager::SESSION_DEFAULT (default)|SessionManager::SESSION_NEW|SessionManager::SESSION_REPLACE|
+     *               SessionManager::SESSION_NESTED|SessionManager::SESSION_BACK)
      * @param string $cssclass the css class the button should get
      * @param bool $embeded wether or not it's an embedded button
      * @return string html button
@@ -1437,7 +1437,7 @@ class Tools
     public static function atkButton(
         $text,
         $url = "",
-        $sessionstatus = SESSION_DEFAULT,
+        $sessionstatus = SessionManager::SESSION_DEFAULT,
         $embedded = true,
         $cssclass = ""
     ) {

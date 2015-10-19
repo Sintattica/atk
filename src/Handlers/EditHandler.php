@@ -6,6 +6,7 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Handler class for the edit action of a node. The handler draws a
@@ -28,7 +29,7 @@ class EditHandler extends ViewEditBase
      * @var string
      */
     private $m_updateAction = 'update';
-    private $m_updateSessionStatus = SESSION_NESTED;
+    private $m_updateSessionStatus = SessionManager::SESSION_NESTED;
 
     /**
      * The action handler method.
@@ -276,7 +277,7 @@ class EditHandler extends ViewEditBase
      * Sets the session status in which the update action gets executed.
      * By default the update action is called nested in the session stack.
      *
-     * @param int $sessionStatus session status (e.g. SESSION_NESTED, SESSION_DEFAULT etc.)
+     * @param int $sessionStatus session status (e.g. SessionManager::SESSION_NESTED, SessionManager::SESSION_DEFAULT etc.)
      */
     public function setUpdateSessionStatus($sessionStatus)
     {

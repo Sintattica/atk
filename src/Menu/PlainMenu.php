@@ -5,6 +5,7 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Ui;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Implementation of the plaintext menu.
@@ -79,13 +80,13 @@ class PlainMenu extends MenuInterface
                         $url = $theme->getAttribute('menufile',
                                 Config::getGlobal("menufile", 'menu.php')) . '?atkmenutop=' . $name;
                         $menu .= Tools::href($url, $this->getMenuTranslation($name, $modname),
-                                SESSION_DEFAULT) . $delimiter;
+                                SessionManager::SESSION_DEFAULT) . $delimiter;
                     } else {
                         if (empty($url) && !$enable) {
                             //$menu .=text("menu_$name").$config_menu_delimiter;
                         } /* normal menu item */ else {
                             if ($enable) {
-                                $menu .= Tools::href($url, $this->getMenuTranslation($name, $modname), SESSION_NEW,
+                                $menu .= Tools::href($url, $this->getMenuTranslation($name, $modname), SessionManager::SESSION_NEW,
                                         false, $theme->getAttribute('menu_params',
                                             Config::getGlobal('menu_params', 'target="main"'))) . $delimiter;
                             } else {
@@ -104,7 +105,7 @@ class PlainMenu extends MenuInterface
             $menu .= Tools::href($theme->getAttribute('menufile',
                         Config::getGlobal("menufile", 'menu.php')) . '?atkmenutop=' . $parent,
                     Tools::atktext("back_to", "atk") . ' ' . $this->getMenuTranslation($parent, $modname),
-                    SESSION_DEFAULT) . $delimiter;
+                    SessionManager::SESSION_DEFAULT) . $delimiter;
         }
         $menu .= $this->getFooter($atkmenutop);
         $page->register_style($theme->stylePath("style.css"));

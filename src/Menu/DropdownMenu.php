@@ -4,6 +4,7 @@ use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Implementation of the Dropdowntext menu.
@@ -130,7 +131,7 @@ class DropdownMenu extends PlainMenu
         } else {
             if ($menuitem['url']) {
                 $href = Tools::href($menuitem['url'], $this->getMenuTranslation($menuitem['name'], $menuitem['module']),
-                    SESSION_NEW);
+                    SessionManager::SESSION_NEW);
             } else {
                 $href = '<a href="#">' . $name . '</a>';
             }

@@ -7,6 +7,7 @@ use Sintattica\Atk\Handlers\AddOrCopyHandler;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Ui\Dialog;
 use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Session\SessionStore;
 use Sintattica\Atk\Core\Module;
 use \Exception;
@@ -621,7 +622,7 @@ class OneToManyRelation extends Relation
         $title = $ui->title($this->m_destInstance->m_module, $this->m_destInstance->m_type, $action);
         $dialog->setTitle($title);
         $dialog->setModifierObject($this->m_destInstance);
-        $dialog->setSessionStatus(SESSION_PARTIAL);
+        $dialog->setSessionStatus(SessionManager::SESSION_PARTIAL);
         $onClick = $dialog->getCall();
 
         return '<a href="javascript:void(0)" onclick="' . $onClick . '" class="valignMiddle">' . $this->getAddLabel() . '</a>';
@@ -662,7 +663,7 @@ class OneToManyRelation extends Relation
         $add_url = $this->getAddURL($params);
         $label = $this->getAddLabel();
 
-        return Tools::href($add_url, $label, SESSION_NESTED, $saveform,
+        return Tools::href($add_url, $label, SessionManager::SESSION_NESTED, $saveform,
             $onchange . ' class="atkonetomanyrelation"');
     }
 
@@ -1428,12 +1429,12 @@ class OneToManyRelation extends Relation
                     'attribute.' . $this->fieldName() . '.add_dialog', array('atkfilter' => $filter));
                 $title = $ui->title($this->m_destInstance->m_module, $this->m_destInstance->m_type, 'add');
                 $dialog->setTitle($title);
-                $dialog->setSessionStatus(SESSION_PARTIAL);
+                $dialog->setSessionStatus(SessionManager::SESSION_PARTIAL);
                 $script .= $dialog->getCall(true, false);
             } else {
                 $url = Tools::dispatch_url($this->m_destInstance->atkNodeType(), 'add');
                 $script .= "atkSubmit('" . Tools::atkurlencode(Tools::session_url($url,
-                        SESSION_NESTED)) . "', true);";
+                        SessionManager::SESSION_NESTED)) . "', true);";
             }
 
             $page = $this->m_ownerInstance->getPage();

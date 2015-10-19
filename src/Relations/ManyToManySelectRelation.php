@@ -3,7 +3,7 @@
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Db;
-
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Many-to-many select relation.
@@ -407,7 +407,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $params = array_merge($params,
             array('atkfilter' => $filter, "atkpkret" => $this->getHtmlId($fieldprefix) . "_newsel"));
         $link = Tools::atkHref(Tools::dispatch_url($this->m_destination, "add", $params), $this->getAddLabel(),
-            SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
+            SessionManager::SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
         return $link;
     }
 
@@ -420,7 +420,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
     protected function getEditActionLink($record)
     {
         return Tools::atkHref(Tools::dispatch_url($this->getdestination()->atknodetype(), 'edit',
-            array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SESSION_NESTED,
+            array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SessionManager::SESSION_NESTED,
             true, 'class="atkmanytomanyselectrelation-link"');
     }
 
@@ -433,7 +433,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
     protected function getViewActionLink($record)
     {
         return Tools::atkHref(Tools::dispatch_url($this->getdestination()->atknodetype(), 'view',
-            array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('view'), SESSION_NESTED,
+            array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('view'), SessionManager::SESSION_NESTED,
             true, 'class="atkmanytomanyselectrelation-link"');
     }
 

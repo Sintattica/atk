@@ -101,7 +101,7 @@ class ImportHandler extends ActionHandler
         $action = $controller->getPhpFile() . '?' . SID;
 
         $formStart = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="' . $action . '" method="post">' .
-            Tools::session_form(SessionManager::atkLevel() == 0 ? SESSION_NESTED : SESSION_REPLACE) .
+            Tools::session_form(SessionManager::atkLevel() == 0 ? SessionManager::SESSION_NESTED : SessionManager::SESSION_REPLACE) .
             '<input type="hidden" name="atknodetype" value="' . $this->m_node->atkNodeType() . '" />' .
             '<input type="hidden" name="atkaction" value="' . $this->m_node->m_action . '" />' .
             $controller->getHiddenVarsString();
@@ -149,7 +149,7 @@ class ImportHandler extends ActionHandler
         $result = array();
 
         if (SessionManager::atkLevel() > 0) {
-            $result[] = Tools::atkButton($this->m_node->text("cancel", "atk"), "", SESSION_BACK, true);
+            $result[] = Tools::atkButton($this->m_node->text("cancel", "atk"), "", SessionManager::SESSION_BACK, true);
         }
         if ($phase == 'init') {
             $result[] = '<input class="btn" type="submit" value="' . $this->m_node->text("import_upload") . '">';

@@ -4,6 +4,7 @@ use Sintattica\Atk\Core\Controller;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Session\State;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Handler for the 'add' action of a node. It draws a page where the user
@@ -204,7 +205,7 @@ class AddHandler extends ActionHandler
             ' method="post" onsubmit="return globalSubmit(this,false)">';
 
 
-        $formstart .= Tools::session_form(SESSION_NESTED, $this->getReturnBehaviour(), $node->getEditFieldPrefix());
+        $formstart .= Tools::session_form(SessionManager::SESSION_NESTED, $this->getReturnBehaviour(), $node->getEditFieldPrefix());
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkaction" value="' . $this->getSaveAction() . '" />';
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkprevaction" value="' . $this->getNode()->m_action . '" />';
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkcsrftoken" value="' . $this->getCSRFToken() . '" />';

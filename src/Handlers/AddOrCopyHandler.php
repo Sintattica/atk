@@ -6,6 +6,7 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Core\Controller;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Handler for the 'editcopy' action of a node. It copies the selected
@@ -158,12 +159,12 @@ class AddOrCopyHandler extends ActionHandler
 
         if ($this->m_node->hasFlag(Node::NF_ADD_DIALOG)) {
             $dialog = new Dialog($this->m_node->atkNodeType(), 'add', 'dialog');
-            $dialog->setSessionStatus(SESSION_PARTIAL);
+            $dialog->setSessionStatus(SessionManager::SESSION_PARTIAL);
             $script .= $dialog->getCall(true, false);
         } else {
             $script .= sprintf("document.location.href = %s;",
                 JSON::encode(Tools::session_url(Tools::dispatch_url($this->m_node->atkNodeType(), 'add'),
-                    SESSION_NESTED)));
+                    SessionManager::SESSION_NESTED)));
         }
 
         $page = $this->getPage();

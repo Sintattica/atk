@@ -1,19 +1,7 @@
 <?php namespace Sintattica\Atk\Handlers;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage handlers
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6095 $
- * $Id$
- */
+
+use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * Handler for the 'editcopy' action of a node. It copies the selected
@@ -36,7 +24,7 @@ class EditCopyHandler extends ActionHandler
 
         $record = $this->getCopyRecord();
         // allowed to editcopy record?
-        if (!$this->allowed($recordset)) {
+        if (!$this->allowed($record)) {
             $this->renderAccessDeniedPage();
             return;
         }
@@ -50,7 +38,7 @@ class EditCopyHandler extends ActionHandler
             $db->commit();
             $this->clearCache();
             $location = Tools::session_url(Tools::dispatch_url($this->m_node->atknodetype(), "edit",
-                array("atkselector" => $this->m_node->primaryKey($record))), SESSION_REPLACE);
+                array("atkselector" => $this->m_node->primaryKey($record))), SessionManager::SESSION_REPLACE);
             $this->m_node->redirect($location);
         }
     }

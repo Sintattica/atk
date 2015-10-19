@@ -3,7 +3,7 @@
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Handlers\ActionHandler;
-
+use Sintattica\Atk\Session\SessionManager;
 
 global $g_maxlevel;
 $g_maxlevel = 0;
@@ -143,7 +143,7 @@ class TreeNode extends Node
                 $label = Tools::atktext(Module::getNodeType($this->m_type),
                         $this->m_module) . " " . Tools::atktext("add", "atk");
             }
-            $content .= Tools::href($addurl, $label, SESSION_NESTED) . '<br><br>';
+            $content .= Tools::href($addurl, $label, SessionManager::SESSION_NESTED) . '<br><br>';
         }
 
         $content .= $this->GraphTreeRender();
@@ -579,7 +579,7 @@ class TreeNode extends Node
                             $stringparser = new StringParser($url);
                             $url = $stringparser->parse($this->m_tree[$cnt]["label"], true);
 
-                            $res .= Tools::href($url, Tools::atktext($name), SESSION_NESTED) . "&nbsp;";
+                            $res .= Tools::href($url, Tools::atktext($name), SessionManager::SESSION_NESTED) . "&nbsp;";
                         }
                     }
 

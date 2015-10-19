@@ -1816,7 +1816,7 @@ class Node
         $total = null;
         $output = ''; // $this->statusbar();
         $output .= '<img src="' . Config::getGlobal("assets_url") . 'images/lock.gif"><br><br>' . Tools::atktext("lock_locked") . '<br>';
-        $output .= '<br><form method="get">' . Tools::session_form(SESSION_BACK) .
+        $output .= '<br><form method="get">' . Tools::session_form(SessionManager::SESSION_BACK) .
             '<input type="submit" class="btn btn-default btn_cancel" value="&lt;&lt; ' . Tools::atktext('back') . '"></form>';
 
         $ui = $this->getUi();
@@ -2468,10 +2468,10 @@ class Node
                 $newtab["tab"] = $t;
                 $url = Tools::atkSelf() . "?atknodetype=" . $this->atkNodeType() . "&atkaction=" . $this->m_action . "&atktab=" . $t;
                 if ($this->m_action == "view") {
-                    $newtab["link"] = SessionManager::sessionUrl($url, SESSION_DEFAULT);
+                    $newtab["link"] = SessionManager::sessionUrl($url, SessionManager::SESSION_DEFAULT);
                 } else {
                     $newtab["link"] = "javascript:atkSubmit('" . Tools::atkurlencode(SessionManager::sessionUrl($url,
-                            SESSION_DEFAULT)) . "')";
+                            SessionManager::SESSION_DEFAULT)) . "')";
                 }
                 $newtab["selected"] = ($t == $tab);
                 $result[] = $newtab;
@@ -3003,7 +3003,7 @@ class Node
         }
 
         if ($location == "") {
-            $location = SessionManager::sessionUrl(Tools::atkSelf(), SESSION_BACK, $levelskip);
+            $location = SessionManager::sessionUrl(Tools::atkSelf(), SessionManager::SESSION_BACK, $levelskip);
         }
 
         if (count($record)) {

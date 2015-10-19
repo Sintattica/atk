@@ -454,7 +454,7 @@ class DataGrid
         $this->setDefaultActions($this->getNode()->defaultActions("admin"));
         $this->setDefaultOrderBy($this->getNode()->getOrder());
         $this->setTemplate('datagrid.tpl');
-        $this->setActionSessionStatus(SESSION_NESTED);
+        $this->setActionSessionStatus(SessionManager::SESSION_NESTED);
         $this->setMode('admin');
         $this->setMRASelectionMode($this->getNode()->getMRASelectionMode());
 
@@ -1281,7 +1281,7 @@ class DataGrid
      *
      * Normally record actions are nested.
      *
-     * @param int $status session status (e.g. SESSION_NESTED etc.)
+     * @param int $status session status (e.g. SessionManager::SESSION_NESTED etc.)
      */
     public function setActionSessionStatus($status)
     {
@@ -1673,7 +1673,7 @@ class DataGrid
     public function getSaveCall()
     {
         $url = Tools::session_url(Tools::dispatch_url($this->getNode()->atkNodeType(), 'multiupdate',
-            array('output' => 'json')), SESSION_PARTIAL);
+            array('output' => 'json')), SessionManager::SESSION_PARTIAL);
         return 'ATK.DataGrid.save(' . JSON::encode($this->getName()) . ', ' . JSON::encode($url) . ');';
     }
 

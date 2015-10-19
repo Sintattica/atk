@@ -4,7 +4,6 @@ use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Ui\Dialog;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Session\State;
 use Sintattica\Atk\Core\Node;
 
 /**
@@ -113,7 +112,7 @@ class Updatehandler extends ActionHandler
                     $this->getEditAction(), array(
                         "atkselector" => $this->m_node->primaryKey($record),
                         "atktab" => $this->m_node->getActiveTab()
-                    )), SESSION_REPLACE);
+                    )), SessionManager::SESSION_REPLACE);
                 $this->m_node->redirect($location);
             }
         }
@@ -295,7 +294,7 @@ class Updatehandler extends ActionHandler
         if ($this->hasError($record)) {
             $this->setRejectInfo($record);
             $location = Tools::session_url(Tools::dispatch_url($this->m_node->atknodetype(),
-                $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record))), SESSION_BACK);
+                $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record))), SessionManager::SESSION_BACK);
             $this->m_node->redirect($location);
         } else {
             $location = $this->m_node->feedbackUrl("update", self::ACTION_FAILED, $record, $error);
@@ -321,7 +320,7 @@ class Updatehandler extends ActionHandler
                 "atktab" => $this->m_node->getActiveTab()
             );
             $location = Tools::session_url(Tools::dispatch_url($this->m_node->atknodetype(),
-                $this->getEditAction(), $params), SESSION_REPLACE, 1);
+                $this->getEditAction(), $params), SessionManager::SESSION_REPLACE, 1);
         } else {
             // 'save and close' was clicked
             $location = $this->m_node->feedbackUrl("update", self::ACTION_SUCCESS, $record, "", 2);

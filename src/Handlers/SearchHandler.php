@@ -45,7 +45,7 @@ class SearchHandler extends AbstractSearchHandler
             return;
         } elseif (!empty($this->m_postvars['atkcancel'])) {
             $url = Tools::dispatch_url($this->getPreviousNode(), $this->getPreviousAction());
-            $url = Tools::session_url($url, SessionManager::atkLevel() > 0 ? SESSION_BACK : SESSION_REPLACE);
+            $url = Tools::session_url($url, SessionManager::atkLevel() > 0 ? SessionManager::SESSION_BACK : SessionManager::SESSION_REPLACE);
 
             $this->m_node->redirect($url);
         }
@@ -72,7 +72,7 @@ class SearchHandler extends AbstractSearchHandler
     {
         $url = Tools::dispatch_url($this->getPreviousNode(), $this->getPreviousAction(), $this->fetchCriteria(),
             Tools::atkSelf());
-        $url = Tools::session_url($url, SessionManager::atkLevel() > 0 ? SESSION_BACK : SESSION_REPLACE);
+        $url = Tools::session_url($url, SessionManager::atkLevel() > 0 ? SessionManager::SESSION_BACK : SessionManager::SESSION_REPLACE);
 
         $this->m_node->redirect($url);
     }
@@ -142,7 +142,7 @@ class SearchHandler extends AbstractSearchHandler
             $params = array();
             $params["formstart"] = '<form name="entryform" action="' . $controller->getPhpFile() . '?' . SID . '" method="post">';
 
-            $params["formstart"] .= Tools::session_form(SESSION_REPLACE);
+            $params["formstart"] .= Tools::session_form(SessionManager::SESSION_REPLACE);
             $params["formstart"] .= '<input type="hidden" name="atkaction" value="search">';
 
             $params["formstart"] .= '<input type="hidden" name="atknodetype" value="' . $node->atknodetype() . '">';

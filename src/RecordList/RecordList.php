@@ -36,7 +36,7 @@ class RecordList
     var $m_actionloader;
     var $m_masternode = null;
     var $m_hasActionColumn = 0;
-    var $m_actionSessionStatus = SESSION_NESTED;
+    var $m_actionSessionStatus = SessionManager::SESSION_NESTED;
 
     /**
      * @access private
@@ -49,9 +49,9 @@ class RecordList
 
     /**
      * Sets the action session status for actions in the recordlist.
-     * (Defaults to SESSION_NESTED).
+     * (Defaults to SessionManager::SESSION_NESTED).
      *
-     * @param int $sessionStatus The session status (one of the SESSION_* constants)
+     * @param int $sessionStatus The session status (one of the SessionManager::SESSION_* constants)
      */
     function setActionSessionStatus($sessionStatus)
     {
@@ -300,7 +300,7 @@ class RecordList
                     self::RL_NO_EXTENDED_SEARCH) && !$this->m_node->hasFlag(Node::NF_NO_EXTENDED_SEARCH)
             ) {
                 $button .= '<br>' . Tools::href(Tools::atkSelf() . "?atknodetype=" . $this->getMasterNodeType() . "&atkaction=" . $node->getExtendedSearchAction(),
-                        "(" . Tools::atktext("search_extended") . ")", SESSION_NESTED);
+                        "(" . Tools::atktext("search_extended") . ")", SessionManager::SESSION_NESTED);
             }
 
             $searchstart = '<a name="searchform"></a>';
@@ -351,7 +351,7 @@ class RecordList
                     $formName = $listName;
                 }
                 $liststart = '<form id="' . $formName . '" name="' . $formName . '" method="post">' .
-                    Tools::session_form(SESSION_DEFAULT) .
+                    Tools::session_form(SessionManager::SESSION_DEFAULT) .
                     '<input type="hidden" name="atknodetype" value="' . $this->getMasterNodeType() . '">' .
                     '<input type="hidden" name="atkaction" value="' . $this->m_node->m_action . '">';
                 $listend = '</form>';
@@ -540,7 +540,7 @@ class RecordList
         $mra = "";
         if (Tools::hasFlag($flags, self::RL_MRPA)) {
             $target = Tools::session_url(Tools::atkSelf() . '?atknodetype=' . $this->getMasterNodeType(),
-                SESSION_NESTED);
+                SessionManager::SESSION_NESTED);
 
             /* multiple actions -> dropdown */
             if (count($this->m_node->m_priority_actions) > 1) {
@@ -564,7 +564,7 @@ class RecordList
         /* MULTI-RECORD-ACTION FORM (CONTINUED) */
         /*             * ************************************* */ elseif (Tools::hasFlag($flags, self::RL_MRA)) {
             $target = Tools::session_url(Tools::atkSelf() . '?atknodetype=' . $this->m_node->atkNodeType() . '&atktarget=' . $this->m_node->m_postvars['atktarget'] . '&atktargetvar=' . $this->m_node->m_postvars['atktargetvar'] . '&atktargetvartpl=' . $this->m_node->m_postvars['atktargetvartpl'],
-                SESSION_NESTED);
+                SessionManager::SESSION_NESTED);
 
             $mra = (count($list["rows"]) > 1 ?
                 '<a href="javascript:updateSelection(\'' . $listName . '\', document.forms[\'' . $formName . '\'], \'all\')">' . Tools::atktext("select_all") . '</a> / ' .

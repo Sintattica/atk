@@ -1,19 +1,6 @@
 <?php namespace Sintattica\Atk\Lock;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage lock
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6323 $
- * $Id$
- */
+
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Locking driver that used a database table to store the locks.
@@ -86,7 +73,7 @@ class DbLock extends Lock
             $page = Page::getInstance();
             $page->register_script(Config::getGlobal("assets_url") . "javascript/xml.js");
             $page->register_script(Tools::session_url("include.php?file=atk/lock/lock.js.php&stack=" . SessionManager::atkStackID() . "&id=" . $this->m_id,
-                SESSION_NEW));
+                SessionManager::SESSION_NEW));
         }
     }
 
@@ -160,7 +147,7 @@ class DbLock extends Lock
                 $page = Page::getInstance();
                 $page->register_script(Config::getGlobal("assets_url") . "javascript/xml.js");
                 $page->register_script(Tools::session_url("include.php?file=atk/lock/lock.js.php&stack=" . SessionManager::atkStackID() . "&id=" . $this->m_id,
-                    SESSION_NEW));
+                    SessionManager::SESSION_NEW));
             }
 
             $user = SecurityManager::atkGetUser();

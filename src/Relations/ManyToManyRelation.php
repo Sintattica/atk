@@ -3,6 +3,7 @@
 
 use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Session\SessionManager;
 
 
 
@@ -376,7 +377,7 @@ class ManyToManyRelation extends Relation
                 }
                 if ($this->hasFlag(self::AF_MANYTOMANY_DETAILVIEW) && $this->m_destInstance->allowed("view")) {
                     $descr = Tools::href(Tools::dispatch_url($this->m_destination, 'view',
-                        array('atkselector' => $this->getdestination()->primarykey($rec))), $descr, SESSION_NESTED);
+                        array('atkselector' => $this->getdestination()->primarykey($rec))), $descr, SessionManager::SESSION_NESTED);
                 }
                 $recordset[] = $descr;
             }

@@ -3,6 +3,7 @@
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Session\SessionManager;
 
 
 /**
@@ -93,7 +94,7 @@ class ManyBoolRelation extends ManyToManyRelation
                         // Create link to details.
                         $detaillink = Tools::href(Tools::dispatch_url($this->m_link, "edit",
                             array("atkselector" => $selector)), "[" . Tools::atktext("details", "atk") . "]",
-                            SESSION_NESTED, true);
+                            SessionManager::SESSION_NESTED, true);
                     }
                 } else {
                     $sel = "";
@@ -129,7 +130,7 @@ class ManyBoolRelation extends ManyToManyRelation
         // Add the add link if self::AF_MANYBOOL_AUTOLINK used
         if (($this->hasFlag(self::AF_MANYBOOL_AUTOLINK)) && ($this->m_destInstance->allowed("add"))) {
             $result .= Tools::href(Tools::dispatch_url($this->m_destination, "add"), $this->getAddLabel(),
-                    SESSION_NESTED) . "\n";
+                    SessionManager::SESSION_NESTED) . "\n";
         }
 
         return $result;
