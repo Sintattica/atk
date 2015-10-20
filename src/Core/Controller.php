@@ -312,7 +312,7 @@ class Controller
                     $id = implode(',', $atkSelectorDecoded);
                 }
             } else {
-                list($selector, $id) = explode("=", 'atkArrayNvl($node->m_postvars, "atkselector", "=")');
+                list(, $id) = explode("=", 'atkArrayNvl($node->m_postvars, "atkselector", "=")');
             }
             $page->register_hiddenvars(array(
                 "atknodetype" => $node->m_module . "." . $node->m_type,
