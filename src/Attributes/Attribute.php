@@ -825,17 +825,6 @@ class Attribute
     }
 
     /**
-     * Retrieve the name of the attribute in HTML forms.
-     * @deprecated HTML formname and fieldname are equal, use fieldName
-     *                  instead.
-     * @return String Name of the attribute in HTML forms
-     */
-    function formName()
-    {
-        return $this->m_name;
-    }
-
-    /**
      * Check if a record has an empty value for this attribute.
      * @param array $record The record that holds this attribute's value.
      * @return boolean
@@ -1091,7 +1080,7 @@ class Attribute
         // working hide() functionality but at least it will not give error messages.
         if (!is_array($record[$this->fieldName()])) {
             $id = $id = $this->getHtmlId($fieldprefix);
-            $result = '<input type="hidden" id="' . $id . '" name="' . $fieldprefix . $this->formName() . '" value="' . htmlspecialchars($record[$this->fieldName()]) . '">';
+            $result = '<input type="hidden" id="' . $id . '" name="' . $fieldprefix . $this->fieldName() . '" value="' . htmlspecialchars($record[$this->fieldName()]) . '">';
             return $result;
         } else {
             Tools::atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
@@ -2601,7 +2590,7 @@ class Attribute
      */
     function getSearchFieldName($prefix)
     {
-        return 'atksearch_AE_' . $prefix . $this->formName();
+        return 'atksearch_AE_' . $prefix . $this->fieldName();
     }
 
     /**
@@ -2612,7 +2601,7 @@ class Attribute
      */
     function getSearchModeFieldname($prefix)
     {
-        return 'atksearchmode_AE_' . $prefix . $this->formName();
+        return 'atksearchmode_AE_' . $prefix . $this->fieldName();
     }
 
     /**

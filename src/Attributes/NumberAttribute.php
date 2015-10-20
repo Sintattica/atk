@@ -166,7 +166,7 @@ class NumberAttribute extends Attribute
         // working hide() functionality but at least it will not give error messages.
         if (!is_array($record[$this->fieldName()])) {
             $id = $id = $this->getHtmlId($fieldprefix);
-            $result = '<input type="hidden" id="' . $id . '" name="' . $fieldprefix . $this->formName() . '" value="' . htmlspecialchars($this->formatNumber($record[$this->fieldName()])) . '">';
+            $result = '<input type="hidden" id="' . $id . '" name="' . $fieldprefix . $this->fieldName() . '" value="' . htmlspecialchars($this->formatNumber($record[$this->fieldName()])) . '">';
             return $result;
         } else {
             Tools::atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");

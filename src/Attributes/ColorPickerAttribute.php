@@ -115,7 +115,7 @@ class ColorPickerAttribute extends Attribute
             $this->m_currentColor = Tools::atkArrayNvl($record, $this->fieldName(), "");
         }
 
-        $colorField = '<input type="hidden" name="' . $fieldprefix . $this->formName() . '" id="' . $fieldprefix . $this->formName() . '" value="' . $this->m_currentColor . '" size="7" maxlength="7">';
+        $colorField = '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '" id="' . $fieldprefix . $this->fieldName() . '" value="' . $this->m_currentColor . '" size="7" maxlength="7">';
 
         if ($this->m_userColors != "") {
             $temp = $this->m_userColors;

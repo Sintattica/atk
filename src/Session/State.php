@@ -4,7 +4,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 
 /**
- * The atkstate manager.
+ * The State manager.
  *
  * This class is used to save and retrieve the state of the sections, but
  * in the future probably also for other stuff (I want to move the tab state

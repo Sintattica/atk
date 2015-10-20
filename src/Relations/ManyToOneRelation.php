@@ -1038,8 +1038,8 @@ class ManyToOneRelation extends Relation
             $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
         }
 
-        $result = '<input type="hidden" id="' . $fieldprefix . $this->formName() . '"
-                name="' . $fieldprefix . $this->formName() . '"
+        $result = '<input type="hidden" id="' . $fieldprefix . $this->fieldName() . '"
+                name="' . $fieldprefix . $this->fieldName() . '"
                 value="' . $currentPk . '">';
 
         return $result;
@@ -1321,7 +1321,7 @@ class ManyToOneRelation extends Relation
                     $p_attrib = $this->m_destInstance->m_attribList[$attr];
                     if (!$p_attrib == null) {
                         $p_attrib->searchCondition($query, $this->fieldName(), $attrValue,
-                            $this->getChildSearchMode($searchmode, $p_attrib->formName()));
+                            $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
                     }
                 }
             }
@@ -1360,7 +1360,7 @@ class ManyToOneRelation extends Relation
                 } else {
                     // ask the destination node for it's search condition
                     $searchcondition = $this->m_destInstance->getSearchCondition($query, $alias, $fieldaliasprefix,
-                        $value, $this->getChildSearchMode($searchmode, $this->formName()));
+                        $value, $this->getChildSearchMode($searchmode, $this->fieldName()));
                 }
                 return $searchcondition;
             }

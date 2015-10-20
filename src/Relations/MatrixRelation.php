@@ -164,7 +164,7 @@ class MatrixRelation extends Relation
                     }
 
                     $form .= '<td align="center">&nbsp;';
-                    $form .= '<input type="checkbox" name="' . $this->formName() . '_AMDAE_' . $matrix_values_row[$i] . '_' . $matrix_values_col[$j] . '" ' . $this->getCSSClassAttribute("atkcheckbox") . ' ' . $check . '>';
+                    $form .= '<input type="checkbox" name="' . $this->fieldName() . '_AMDAE_' . $matrix_values_row[$i] . '_' . $matrix_values_col[$j] . '" ' . $this->getCSSClassAttribute("atkcheckbox") . ' ' . $check . '>';
                     $form .= '&nbsp;</td>';
                 }
                 $form .= '</tr>';
@@ -185,7 +185,7 @@ class MatrixRelation extends Relation
                     }
 
                     $form .= '<td align="center">&nbsp;';
-                    $form .= '<input type="checkbox" name="' . $this->formName() . '_AMDAE_' . $matrix_values_row[$i] . '_' . $matrix_values_col[$j] . '" ' . $this->getCSSClassAttribute("atkcheckbox") . ' ' . $check . '>';
+                    $form .= '<input type="checkbox" name="' . $this->fieldName() . '_AMDAE_' . $matrix_values_row[$i] . '_' . $matrix_values_col[$j] . '" ' . $this->getCSSClassAttribute("atkcheckbox") . ' ' . $check . '>';
                     $form .= '&nbsp;</td>';
                     $form .= '<td>' . $matrix_fields_row[$i] . '</td>';
                 }

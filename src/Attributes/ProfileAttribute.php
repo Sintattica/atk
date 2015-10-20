@@ -496,7 +496,7 @@ class ProfileAttribute extends Attribute
                                 $display_tabs_str = true;
                             }
 
-                            $temp_str .= '<input type="checkbox" name="' . $this->formName() . '[]" ' . $this->getCSSClassAttribute("atkcheckbox") . ' value="' . $section . "." . $module . "." . $node . "." . $action . '" ';
+                            $temp_str .= '<input type="checkbox" name="' . $this->fieldName() . '[]" ' . $this->getCSSClassAttribute("atkcheckbox") . ' value="' . $section . "." . $module . "." . $node . "." . $action . '" ';
                             $temp_str .= ($isSelected ? ' checked="checked"' : '') . '></input> ';
                             $temp_str .= $this->permissionName($action, $node, $module) . '&nbsp;&nbsp;&nbsp;';
                         }

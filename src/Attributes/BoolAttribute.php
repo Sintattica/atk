@@ -323,7 +323,7 @@ class BoolAttribute extends Attribute
             $record[$this->fieldName()] = "0";
         }
         if (!is_array($record[$this->fieldName()])) {
-            $result = '<input type="hidden" name="' . $fieldprefix . $this->formName() .
+            $result = '<input type="hidden" name="' . $fieldprefix . $this->fieldName() .
                 '" value="' . htmlspecialchars($record[$this->fieldName()]) . '">';
             return $result;
         } else {

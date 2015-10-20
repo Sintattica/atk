@@ -85,14 +85,14 @@ class DurationAttribute extends Attribute
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
-        $id = $fieldprefix . $this->formName();
+        $id = $fieldprefix . $this->fieldName();
         $fieldvalue = Tools::atkArrayNvl($record, $this->fieldName(), "");
         if (!$this->hasFlag(self::AF_DURATION_STRING)) {
             $result = '';
             if ($this->m_maxtime_min >= 60) {
                 $curhours = $this->_getHourPart($fieldvalue);
                 $curminutes = $this->_getMinutePart($fieldvalue);
-                $result .= '<select id="' . $id . '_hours" name="' . $fieldprefix . $this->formName() . '[hours]" class="form-control">';
+                $result .= '<select id="' . $id . '_hours" name="' . $fieldprefix . $this->fieldName() . '[hours]" class="form-control">';
                 $this->registerKeyListener($id . '_hours', Keyboard::KB_CTRLCURSOR | Keyboard::KB_LEFTRIGHT);
                 for ($h = 0; $h <= $this->m_maxtime_min / 60;) {
                     $result .= '<option value="' . $h . '" ';
@@ -111,7 +111,7 @@ class DurationAttribute extends Attribute
 
             if ($this->m_maxtime_min >= 1 && $this->m_resolution_min < 60) {
                 $this->registerKeyListener($id . '_minutes', Keyboard::KB_CTRLCURSOR | Keyboard::KB_LEFTRIGHT);
-                $result .= '&nbsp;<select id="' . $id . '_minutes" name="' . $fieldprefix . $this->formName() . '[minutes]" class="form-control">';
+                $result .= '&nbsp;<select id="' . $id . '_minutes" name="' . $fieldprefix . $this->fieldName() . '[minutes]" class="form-control">';
                 for ($m = 0; $m < 60 || ($this->m_maxtime_min < 60 && $m < $this->m_maxtime_min);) {
                     $result .= '<option value="' . $m . '" ';
                     if ($curminutes == $m) {
@@ -128,7 +128,7 @@ class DurationAttribute extends Attribute
             }
         } else {
             $curval = ($fieldvalue > 0) ? $this->_minutes2string($fieldvalue) : '';
-            $result = '<input type="text" name="' . $fieldprefix . $this->formName() .
+            $result = '<input type="text" name="' . $fieldprefix . $this->fieldName() .
                 '" value="' . $curval . '"' .
                 ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . '>';
         }

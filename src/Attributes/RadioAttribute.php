@@ -133,7 +133,7 @@ class RadioAttribute extends ListAttribute
                 $sel = "";
             }
 
-            $labelID = $fieldprefix . $this->formName() . "_" . $values[$i];
+            $labelID = $fieldprefix . $this->fieldName() . "_" . $values[$i];
             if ($this->hasFlag(self::AF_DISPLAY_VERT)) {
                 $result .= '<tr>';
             }
@@ -148,7 +148,7 @@ class RadioAttribute extends ListAttribute
 
             $commenthtml = '<br/><div class="atkradio_comment">' . $this->m_comments[$i] . '</div>';
 
-            $result .= '<td><input id="' . $labelID . '" type="radio" name="' . $fieldprefix . $this->formName() . '" ' . $this->getCSSClassAttribute("atkradio") . ' value="' . $values[$i] . '" ' . $onchange . $sel . '>
+            $result .= '<td><input id="' . $labelID . '" type="radio" name="' . $fieldprefix . $this->fieldName() . '" ' . $this->getCSSClassAttribute("atkradio") . ' value="' . $values[$i] . '" ' . $onchange . $sel . '>
         ' . $this->renderValue($labelID, $this->_translateValue($values[$i],
                     $record)) . ($this->hasFlag(self::AF_DISPLAY_VERT) && $this->m_comments[$i] != ''
                     ? $commenthtml : '') . '</td>';
@@ -168,7 +168,7 @@ class RadioAttribute extends ListAttribute
                         $sel = "";
                     }
                     if ($values[$j] != "") {
-                        $result .= '<td><input id="' . $labelID . '" type="radio" name="' . $fieldprefix . $this->formName() . '" ' . $this->getCSSClassAttribute("atkradio") . ' value="' . $values[$j] . '" ' . $onchange . $sel . '>
+                        $result .= '<td><input id="' . $labelID . '" type="radio" name="' . $fieldprefix . $this->fieldName() . '" ' . $this->getCSSClassAttribute("atkradio") . ' value="' . $values[$j] . '" ' . $onchange . $sel . '>
               ' . $this->renderValue($labelID,
                                 $this->_translateValue($values[$j], $record)) . ($this->m_comments[$i] != ''
                                 ? $commenthtml : '') . '</td>';

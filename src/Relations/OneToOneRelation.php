@@ -1106,7 +1106,7 @@ class OneToOneRelation extends Relation
                         $query->addJoin($new_table, $new_table, ($this->getJoinCondition($query)), false);
                     }
                     $p_attrib->searchCondition($query, $new_table, $val,
-                        $this->getChildSearchMode($searchmode, $p_attrib->formName()));
+                        $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
                 } else {
                     // attribute not found in destination, so it should
                     // be in the owner (this is the case when extra fields
@@ -1114,7 +1114,7 @@ class OneToOneRelation extends Relation
                     $p_attrib = $this->m_ownerInstance->m_attribList[$key];
                     if (is_object($p_attrib)) {
                         $p_attrib->searchCondition($query, $p_attrib->getTable($key), $val,
-                            $this->getChildSearchMode($searchmode, $p_attrib->formName()));
+                            $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
                     } else {
                         Tools::atkdebug("Field $key was not found in this relation (this is very weird)");
                     }
