@@ -336,7 +336,6 @@ class NumberAttribute extends Attribute
      * @param array $record Record that contains value to be validated.
      *                 Errors are saved in this record
      * @param string $mode can be either "add" or "update"
-     * @return $record
      */
     function validate(&$record, $mode)
     {

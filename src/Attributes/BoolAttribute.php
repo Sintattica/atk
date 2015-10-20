@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Keyboard\Keyboard;
+use Sintattica\Atk\Db\Query;
 
 /**
  * The atkBoolAttribute class represents an attribute of a node
@@ -93,7 +94,7 @@ class BoolAttribute extends Attribute
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @param String $mode The mode we're in ('add' or 'edit')
-     * @return piece of html code with a checkbox
+     * @return string piece of html code with a checkbox
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
@@ -146,7 +147,7 @@ class BoolAttribute extends Attribute
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
-     * @return piece of html code with a checkbox
+     * @return string piece of html code with a checkbox
      */
     function search($record = "", $extended = false, $fieldprefix = "")
     {
@@ -178,7 +179,7 @@ class BoolAttribute extends Attribute
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
      */
-    function getSearchCondition(&$query, $table, $value, $searchmode)
+    function getSearchCondition(Query &$query, $table, $value, $searchmode)
     {
         if (is_array($value)) {
             $value = $value[$this->fieldName()];

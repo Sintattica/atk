@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Core;
 
-
 use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
@@ -9,7 +8,6 @@ use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Ui\Output;
 use Sintattica\Atk\Ui\Dialog;
-
 
 /**
  * The Controller class
@@ -164,7 +162,7 @@ class Controller
      *
      * @param array $postvars The request variables for the node.
      * @param string $flags Render flags (see class Page).
-     *
+     * @return string
      */
     function handleRequest($postvars, $flags = null)
     {
@@ -314,8 +312,7 @@ class Controller
                     $id = implode(',', $atkSelectorDecoded);
                 }
             } else {
-                //TODO: MICHELE, controllare la stringa dell'explode
-                list($selector, $id) = explode("=", 'Tools::atkArrayNvl($node->m_postvars, "atkselector", "=")');
+                list($selector, $id) = explode("=", 'atkArrayNvl($node->m_postvars, "atkselector", "=")');
             }
             $page->register_hiddenvars(array(
                 "atknodetype" => $node->m_module . "." . $node->m_type,
@@ -513,8 +510,9 @@ class Controller
      * @param array $record The record currently displayed/edited in the form.
      *                      This param can be used to define record specific
      *                      buttons.
+     * @return array
      */
-    function getFormButtons($mode, $record = '')
+    function getFormButtons($mode, $record = array())
     {
         $result = array();
         $node = $this->getNode();
@@ -681,7 +679,7 @@ class Controller
     function getDialogButton($action, $label = null, $url = null, $extraParams = array())
     {
         // Disable the button when clicked to prevent javascript errors.
-        $onClick = 'this.disabled=\'true\';';
+        $onClick = "this.disabled='true';";
 
         switch ($action) {
             case "save":
@@ -881,7 +879,4 @@ class Controller
     {
         return $this->m_name;
     }
-
 }
-
-

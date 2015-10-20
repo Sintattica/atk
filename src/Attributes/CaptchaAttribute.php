@@ -1,5 +1,8 @@
 <?php namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Core\Tools;
+
 /**
  * With the atkCaptchaAttribute class you can easily add a captcha to a forum
  * or guestbook.
@@ -19,7 +22,6 @@ class CaptchaAttribute extends Attribute
      * Constructor
      * @param string $name The name of the attribute
      * @param int $flags The attribute flags
-     * @return -
      */
     function __construct($name, $flags = 0)
     {
@@ -36,12 +38,12 @@ class CaptchaAttribute extends Attribute
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @param String $mode The mode we're in ('add' or 'edit')
-     * @return Parsed string
+     * @return string Parsed string
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $target = "atk/ext/captcha/img/captcha.jpg.php";
-        $img = Tools::session_url("include.php?file=" . $target);
+        $img = SessionManager::sessionUrl("include.php?file=" . $target);
 
         $html = '<img src="' . $img . '"><br>';
         $html .= '<br>';
@@ -74,8 +76,7 @@ class CaptchaAttribute extends Attribute
      * Validate the value fo this attribute
      *
      * @param array $record The record that contains the value for this attribute
-     * @param string $mode The mode for which should be validated ("add" or
-     *                     "update")
+     * @param string $mode The mode for which should be validated ("add" or "update")
      */
     function validate(&$record, $mode)
     {

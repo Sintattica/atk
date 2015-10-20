@@ -1815,11 +1815,10 @@ class Attribute
      *                      be stored in the 'atkerror' field of the record.
      * @param String $mode The mode for which should be validated ("add" or
      *                     "update")
-     * @return bool
      */
     function validate(&$record, $mode)
     {
-        return true;
+
     }
 
     /**
