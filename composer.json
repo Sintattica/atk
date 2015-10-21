@@ -9,5 +9,8 @@
   ],
   "autoload": {
     "psr-4": {"Sintattica\\Atk\\": "src/"}
+  },
+  "require": {
+    "fightbulc/moment": "^1.13"
   }
 }

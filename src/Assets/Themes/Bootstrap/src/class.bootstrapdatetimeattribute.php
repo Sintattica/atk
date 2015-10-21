@@ -5,6 +5,9 @@
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Page;
+use Moment\Moment;
+use Moment\CustomFormats\MomentJs;
+use Moment\MomentException;
 
 class bootstrapDateTimeAttribute extends Attribute
 {
@@ -187,8 +190,8 @@ class bootstrapDateTimeAttribute extends Attribute
             return null;
         }
 
-        $m = new \Moment\Moment($value);
-        $result = $m->format($this->m_bootstrapdatetime_format_view, MomentphpProvider::getFormatInstance());
+        $m = new Moment($value);
+        $result = $m->format($this->m_bootstrapdatetime_format_view, new MomentJs());
         return $result;
     }
 
@@ -197,7 +200,7 @@ class bootstrapDateTimeAttribute extends Attribute
      * hidden values for this attribute.
      * @param array $record Array with values
      * @param string $fieldprefix The fieldprefix
-     * @return Piece of htmlcode
+     * @return string Piece of htmlcode
      */
     function hide($record = '', $fieldprefix = '')
     {
@@ -228,7 +231,7 @@ class bootstrapDateTimeAttribute extends Attribute
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
-     * @return piece of HTML code
+     * @return string piece of HTML code
      */
     function search($record = "", $extended = false, $fieldprefix = "")
     {
@@ -270,7 +273,7 @@ class bootstrapDateTimeAttribute extends Attribute
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
         $db = $this->getDb();
-
+        $searchcondition = '';
         // If we search through datagrid we got no from/to values
         // Therefore we will simulate them
         if (!is_array($value)) {
@@ -373,8 +376,8 @@ class bootstrapDateTimeAttribute extends Attribute
         }
 
         try {
-            $m = new \Moment\Moment($rec[$this->fieldName()]);
-            $format = MomentphpProvider::getFormatInstance();
+            $m = new Moment($rec[$this->fieldName()]);
+            $format = new MomentJs();
 
             $result = array();
             if ($this->m_type == 'datetime' || $this->m_type == 'date') {
@@ -390,7 +393,7 @@ class bootstrapDateTimeAttribute extends Attribute
             }
 
             return $result;
-        } catch (\Moment\MomentException $e) {
+        } catch (MomentException $e) {
 
         }
         return null;
