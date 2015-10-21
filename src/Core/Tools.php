@@ -1502,19 +1502,6 @@ class Tools
     }
 
     /**
-     * Returns a new instance of a class
-     * @param string $fullclassname the ATK classname of the class ("map1.map2.classname")
-     * @return Object instance of the class
-     */
-    public static function atknew($fullclassname)
-    {
-        $args = func_get_args();
-        array_shift($args);
-        $args = array_values($args);
-        return ClassLoader::newInstanceArgs($fullclassname, $args);
-    }
-
-    /**
      * Compares two assosiative multi dimensonal array's
      * if arrays differ, return true, otherwise it returns false
      * @param array $array1 original array
