@@ -157,6 +157,7 @@ class MailErrorHandler extends ErrorHandlerBase
                             1)) . "\n";
             }
 
+            //TODO: replace with some mailer object
             mail($this->params['mailto'], $subject, $body, "From: $from");
         }
     }

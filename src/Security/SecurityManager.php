@@ -213,6 +213,7 @@ class SecurityManager
         $body = Tools::atktext("auth_passwordmail_explanation", "atk") . "\n\n";
         $body .= Tools::atktext(Config::getGlobal("auth_userfield")) . ": " . $username . "\n";
         $body .= Tools::atktext(Config::getGlobal("auth_passwordfield")) . ": " . $newpassword . "\n";
+        //TODO: replace with some mailer object
         mail($email, $subject, $body);
 
         // Return true
