@@ -135,7 +135,7 @@ class DummyAttribute extends Attribute
      * @param string $mode The mode
      * @return boolean to indicate if store went succesfully
      */
-    function store(Db $db, $record, $mode)
+    function store($db, $record, $mode)
     {
         return true;
     }

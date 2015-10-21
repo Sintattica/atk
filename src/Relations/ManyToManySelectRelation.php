@@ -4,6 +4,7 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Core\Node;
 
 /**
  * Many-to-many select relation.
@@ -253,7 +254,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      * @param array $record record
      * @param string $mode load mode
      */
-    public function load(Db $db, $record, $mode)
+    public function load($db, $record, $mode)
     {
         if (!$this->hasPositionAttribute()) {
             return parent::load($db, $record, $mode);

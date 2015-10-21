@@ -1,22 +1,7 @@
 <?php namespace Sintattica\Atk\Utils;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage utils
- *
- * @copyright (c)2006 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6320 $
- * $Id$
- */
 
 /**
- * The atkTextMarker class
+ * The TextMarker class
  *
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk
@@ -32,7 +17,7 @@ class TextMarker
      * Constructor
      *
      * @param string $text
-     * @return atkTextMarker
+     * @return TextMarker
      */
     function __construct($text = "")
     {

@@ -10,6 +10,7 @@ use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Session\SessionStore;
 use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Node;
 use \Exception;
 
 /**
@@ -917,7 +918,7 @@ class OneToManyRelation extends Relation
      * @param string $mode The mode we're in ("add", "edit", "copy")
      * @return boolean true if store was successful, false otherwise.
      */
-    function store(Db $db, $record, $mode)
+    function store($db, $record, $mode)
     {
         switch ($mode) {
             case 'add' :
@@ -937,7 +938,7 @@ class OneToManyRelation extends Relation
      * @param string $mode
      * @return bool
      */
-    private function storeAdd(Db $db, $record, $mode)
+    private function storeAdd($db, $record, $mode)
     {
         if (!$this->createDestination()) {
             return false;
@@ -986,7 +987,7 @@ class OneToManyRelation extends Relation
      * @param string $mode Mode ('copy')
      * @return bool
      */
-    private function storeCopy(Db $db, $record, $mode)
+    private function storeCopy($db, $record, $mode)
     {
         $onetomanyrecs = $record[$this->fieldName()];
         if (!is_array($onetomanyrecs) || count($onetomanyrecs) <= 0) {

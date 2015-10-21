@@ -4,7 +4,7 @@ use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
-
+use Sintattica\Atk\Core\Node;
 
 /**
  * Many-to-many relation.

@@ -180,4 +180,3 @@ class ShuttleRelation extends ManyToManyRelation
     }
 
 }
-

@@ -4,7 +4,7 @@ use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 
 /**
- * The atkActionListener baseclass for handling ATK events.
+ * The ActionListener baseclass for handling ATK events.
  *
  * The most useful purpose of the atkActionListener is to serve as a base
  * class for custom action listeners. Extend this class and override only

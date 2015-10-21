@@ -1,19 +1,7 @@
 <?php namespace Sintattica\Atk\Utils;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage utils
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6320 $
- * $Id$
- */
+
+use Sintattica\Atk\Core\Tools;
+use \ArrayAccess;
 
 /**
  * Generic string parser.
@@ -43,7 +31,7 @@ class StringParser
      *
      * @param array $data The data to parse in the string
      * @param bool $encode Wether or not to do a rawurlencode
-     * @param bool $ignoreUnknownFields Replace unknown fields with an empty string,
+     * @param bool $replaceUnknownFields Replace unknown fields with an empty string,
      *                                   if set to false unknown fields will be left
      *                                   untouched.
      *
@@ -96,6 +84,7 @@ class StringParser
      * Does the data contains everything needed to be parsed into the string?
      *
      * @param array $data
+     * @return bool
      */
     function isComplete($data)
     {

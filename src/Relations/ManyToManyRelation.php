@@ -4,6 +4,7 @@
 use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Core\Node;
 
 
 
@@ -502,7 +503,7 @@ class ManyToManyRelation extends Relation
      * @param array $record record
      * @param string $mode mode
      */
-    protected function _getExistingRecordsByKey(Db $db, $record, $mode)
+    protected function _getExistingRecordsByKey($db, $record, $mode)
     {
         $existingRecords = $this->load($db, $record, $mode);
         $existingRecordsByKey = array();

@@ -81,7 +81,7 @@ abstract class Statement implements IteratorAggregate
      * @param Db $db database instance
      * @param string $query SQL query
      */
-    public function __construct(Db $db, $query)
+    public function __construct($db, $query)
     {
         $this->m_db = $db;
         $this->m_query = $query;

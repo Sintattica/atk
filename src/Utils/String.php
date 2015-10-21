@@ -1,23 +1,9 @@
 <?php namespace Sintattica\Atk\Utils;
 
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * String class for multibyte (utf-8) character support
- *
- * @package atk
- * @subpackage utils
- *
- * @copyright (c)2009 Ibuildings
- * @author Sandy Pleyte <sandy@achievo.org>
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision$
- * $Id$
- */
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
+
+
 class String
 {
     /**
