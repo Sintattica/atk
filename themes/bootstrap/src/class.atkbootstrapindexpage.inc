@@ -81,7 +81,7 @@ class atkBootstrapIndexPage
         $this->m_extraheaders = $this->m_ui->render('index_meta.tpl');
 
         // Bootstrap
-        $this->m_page->register_script(atkconfig("atkroot") . "atk/themes/bootstrap/lib/bootstrap/js/bootstrap.js");
+        $this->m_page->register_script(atkconfig("atkroot") . "atk/themes/bootstrap/lib/bootstrap/js/bootstrap.min.js");
 
 
     }
