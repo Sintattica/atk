@@ -5,7 +5,7 @@ use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Dialog;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
-
+use Sintattica\Atk\Session\SessionStore;
 /**
  * Handler class for the save action of a node. The action saves a
  * new record to the database. The data is retrieved from the postvars.
@@ -226,7 +226,7 @@ class SaveHandler extends ActionHandler
     protected function storeRecordInSession(&$record)
     {
         Tools::atkdebug("STORING RECORD IN SESSION");
-        $result = Tools::atkinstance('atk.session.atksessionstore')->addDataRow($record,
+        $result = SessionStore::getInstance()->addDataRow($record,
             $this->m_node->primaryKeyField());
         return ($result !== false);
     }

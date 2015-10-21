@@ -5,6 +5,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Ui\Dialog;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Session\SessionStore;
 
 /**
  * Handler class for the update action of a node. The action saves an
@@ -273,7 +274,7 @@ class Updatehandler extends ActionHandler
     private function updateRecordInSession($record)
     {
         $selector = Tools::atkArrayNvl($this->m_postvars, 'atkselector', '');
-        return (Tools::atkinstance('atk.session.atksessionstore')->updateDataRowForSelector($selector,
+        return (SessionStore::getInstance()->updateDataRowForSelector($selector,
                 $record) !== false);
     }
 

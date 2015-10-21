@@ -230,32 +230,6 @@ class ClassLoader
     }
 
     /**
-     * Return a singleton instance of the specified class.
-     *
-     * This works for all singletons that implement the getInstance() method.
-     *
-     * @param string $fullclassname the ATK classname of the class ("map1.map2.classname")
-     * @param bool $reset Force resetting of the instance
-     * @return Object instance of the class
-     * */
-    static function getSingletonInstance($fullclassname, $reset = false)
-    {
-        static $s_instances = array();
-        $fullclassname = self::resolveClass($fullclassname);
-        if (!isset($s_instances[$fullclassname]) || $reset) {
-            self::import($fullclassname);
-            $classname = substr(strrchr('.' . $fullclassname, '.'), 1);
-            if (strpos($classname, 'atk') === 0) {
-                $classname = "" . substr($classname, 3);
-            }
-            Tools::atkdebug("Getting singleton instance $fullclassname");
-            $s_instances[$fullclassname] = call_user_func(array($classname, 'getInstance'), $reset);
-        }
-
-        return $s_instances[$fullclassname];
-    }
-
-    /**
      * Resolve a classname to its final classname.
      *
      * An application can overload a class with a custom version. This

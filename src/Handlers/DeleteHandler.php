@@ -3,6 +3,7 @@
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Session\SessionStore;
 
 /**
  * Handler for the 'delete' action of a node. It asks the user for
@@ -149,7 +150,7 @@ class DeleteHandler extends ActionHandler
     protected function _doDeleteSession()
     {
         $selector = Tools::atkArrayNvl($this->m_postvars, 'atkselector', '');
-        return Tools::atkinstance('atk.session.atksessionstore')->deleteDataRowForSelector($selector);
+        return SessionStore::getInstance()->deleteDataRowForSelector($selector);
     }
 
     /**

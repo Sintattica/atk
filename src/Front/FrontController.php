@@ -589,7 +589,7 @@ class FrontController implements \ArrayAccess
         if ($this->m_plugins == null) {
             return;
         }
-        $smarty = Tools::atkinstance("atk.ui.atksmarty");
+        $smarty = SmartyProvider::getInstance();
         $smarty->_plugins = $this->m_plugins;
         $this->m_plugins = null;
     }

@@ -554,7 +554,7 @@ class SecurityManager
 
         Tools::atkdebug('LoginAttempts: ' . $loginattempts);
 
-        $page = Tools::atkinstance("atk.ui.atkpage", true);
+        $page = Page::getInstance();
         $ui = Ui::getInstance();
 
         $page->register_style($ui->stylePath("style.css"));

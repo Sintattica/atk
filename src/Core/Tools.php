@@ -1515,19 +1515,6 @@ class Tools
     }
 
     /**
-     * Return a singleton instance of the specified class.
-     *
-     * This works for all singletons that implement the getInstance() method.
-     *
-     * @param string $fullclassname the ATK classname of the class ("map1.map2.classname")
-     * @return Object instance of the class
-     * */
-    public static function &atkinstance($fullclassname, $reset = false)
-    {
-        return ClassLoader::getSingletonInstance($fullclassname, $reset);
-    }
-
-    /**
      * Compares two assosiative multi dimensonal array's
      * if arrays differ, return true, otherwise it returns false
      * @param array $array1 original array

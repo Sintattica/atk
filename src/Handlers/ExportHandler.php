@@ -8,6 +8,8 @@ use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\RecordList\RecordList;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Ui\Theme;
+use Sintattica\Atk\Ui\Ui;
 
 /**
  * Handler for the 'import' action of a node. The import action is a
@@ -181,7 +183,7 @@ class ExportHandler extends ActionHandler
         $selected = array_key_exists('exportvalue', $this->m_postvars) ? $this->m_postvars['exportvalue']
             : null;
 
-        $theme = Tools::atkinstance('atk.ui.atktheme');
+        $theme = Theme::getInstance();
 
         $img_delete = $theme->iconPath('delete', 'recordlist');
         $url_delete = Tools::dispatch_url($this->m_node->m_module . '.' . $this->m_node->m_type, 'export',
@@ -214,7 +216,7 @@ class ExportHandler extends ActionHandler
         $params["content"] .= $this->_getOptions();
         $params["formend"] = '</form>';
 
-        return atkInstance("atk.ui.atkui")->renderAction("export", $params, $this->m_node->m_module);
+        return Ui::getInstance()->renderAction("export", $params, $this->m_node->m_module);
     }
 
     /**

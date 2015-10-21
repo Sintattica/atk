@@ -1,6 +1,6 @@
 <?php
 
-use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Ui\Page;
 
 
 /**
@@ -23,7 +23,7 @@ use Sintattica\Atk\Core\Tools;
  */
 function smarty_function_atkscript($params, &$smarty)
 {
-    $page = Tools::atkinstance('atk.ui.atkpage');
+    $page = Page::getInstance();
     $page->register_script($params["prefix"] . $params["file"]);
     return "";
 }

@@ -1,6 +1,6 @@
 <?php
 
-use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Ui\Page;
 
 /**
  * Implements the {atkloadscript} plugin for use in templates.
@@ -18,6 +18,6 @@ use Sintattica\Atk\Core\Tools;
  */
 function smarty_function_atkloadscript($params)
 {
-    $page = Tools::atkinstance('atk.ui.atkpage');
+    $page = Page::getInstance();
     $page->register_loadscript($params[0] ? $params[0] : $params['code']);
 }

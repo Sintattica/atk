@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Ui\Page;
 
 /**
  * Front-end controller bridge. This bridge can be (re-)implemented to
@@ -45,7 +46,7 @@ class FrontControllerBridge
      */
     public function registerStyleSheet($file, $media = 'all')
     {
-        Tools::atkinstance('atk.ui.atkpage')->register_style($file, $media);
+        Page::getInstance()->register_style($file, $media);
     }
 
     /**
@@ -55,7 +56,7 @@ class FrontControllerBridge
      */
     public function registerStyleCode($code)
     {
-        Tools::atkinstance('atk.ui.atkpage')->register_stylecode($code);
+        Page::getInstance()->register_stylecode($code);
     }
 
     /**
@@ -65,7 +66,7 @@ class FrontControllerBridge
      */
     public function registerScriptFile($file)
     {
-        Tools::atkinstance('atk.ui.atkpage')->register_script($file);
+        Page::getInstance()->register_script($file);
     }
 
     /**
@@ -75,7 +76,7 @@ class FrontControllerBridge
      */
     public function registerScriptCode($code)
     {
-        Tools::atkinstance('atk.ui.atkpage')->register_scriptcode($code);
+        Page::getInstance()->register_scriptcode($code);
     }
 
     /**
