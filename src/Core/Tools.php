@@ -2015,7 +2015,7 @@ class Tools
      *                   to the menu, with steps of 100. So, if you have a menu
      *                   with default ordering and you want to place a new
      *                   menuitem at the third position, pass 250 for $order.
-     * @param $module The name of the module that added this menuitem. It is usually
+     * @param $module string The name of the module that added this menuitem. It is usually
      *                not necessary to pass this parameter, but is present for
      *                backwardscompatibility reasons.
      */
@@ -2045,24 +2045,4 @@ class Tools
         }
         $g_menu_parent[$name] = $parent;
     }
-
-    /**
-     * Creates multiple (sub)menu items and/or submenu(s) at once.
-     * @param array $menu Array with menu/submenu items, in the following
-     *                    format: array($parent=>array(0=>
-     *                                              array("url"=>$url,
-     *                                                    "name"=>$name)))
-     */
-    public static function menuitems($menu)
-    {
-        while (list($parent, $items) = each($menu)) {
-            for ($i = 0; $i < count($items); $i++) {
-                $GLOBALS["g_menu"][$parent][] = $items[$i];
-                if (empty($items[$i]["url"])) {
-                    $GLOBALS["g_menu_parent"][$items[$i]["name"]] = $parent;
-                }
-            }
-        }
-    }
-
 }
