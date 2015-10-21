@@ -186,20 +186,6 @@ class Ui
     }
 
     /**
-     * Render PHP-based template.
-     *
-     * @param string $path template path
-     * @param array $vars template variables
-     *
-     * @return string rendered template
-     */
-    private function renderPhp($path, $vars)
-    {
-        $view = new PhpView($path, $vars);
-        return (string)$view;
-    }
-
-    /**
      * Render Smarty-based template.
      *
      * @param string $path template path
