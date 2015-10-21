@@ -507,19 +507,6 @@ class ListAttribute extends Attribute
     }
 
     /**
-     * Sets the selected listitem
-     *
-     * @param string $selected the listitem you want to have selected
-     *
-     * @deprecated
-     * @see Node::initial_values
-     */
-    function setSelected($selected)
-    {
-        $this->m_selected = $selected;
-    }
-
-    /**
      * When autosearch is set to true, this attribute will automatically submit
      * the search form onchange. This will only happen in the admin action.
      * @param bool $auto
@@ -528,19 +515,6 @@ class ListAttribute extends Attribute
     public function setAutoSearch($auto = false)
     {
         $this->m_autoSearch = $auto;
-    }
-
-    /**
-     * Gets the selected listattribute
-     *
-     * @return string the selected listitem
-     *
-     * @deprecated
-     * @see Node::initial_values
-     */
-    function getSelected()
-    {
-        return $this->m_selected;
     }
 
     /**

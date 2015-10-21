@@ -136,13 +136,6 @@ class Node
      */
     const NF_EXPORT = 262144;
 
-
-    /**
-     * Disable csv import feature
-     * @deprecated since ATK 5.2
-     */
-    const NF_NO_IMPORT = 0;
-
     /**
      * Enable extended sorting (multicolumn sort)
      */
@@ -525,16 +518,6 @@ class Node
      * @var array
      */
     var $m_unsecuredActions = array("select", "multiselect", "feedback");
-
-    /*
-     *
-     * Boolean that is set to true when the stacktrace is displayed, so it
-     * is displayed only once.
-     * @deprecated This member is as deprecated as the statusbar() method.
-     * @access private
-     * @var boolean
-     */
-    var $m_statusbarDone = false;
 
     /**
      * Auto search-actions; action that will be performed if only one record

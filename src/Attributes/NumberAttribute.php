@@ -132,19 +132,6 @@ class NumberAttribute extends Attribute
         return "";
     }
 
-    /**
-     * Replace decimal separator (from the language file "decimal_separator")
-     * with the standard separator ('.') so, for instance,  99,95 would become
-     * 99.95 when language is set to 'nl'.
-     * @static
-     * @deprecated
-     * @param String $number The number that needs to be converted
-     * @return String The converted number
-     */
-    function standardiseSeparator($number)
-    {
-        return str_replace(Tools::atktext("decimal_separator"), ".", $number);
-    }
 
     /**
      * Returns a piece of html code for hiding this attribute in an HTML form,
@@ -315,20 +302,6 @@ class NumberAttribute extends Attribute
             $r = '-' . $r;
         }
         return $r;
-    }
-
-    /**
-     * Replace standard decimal separator ('.') with the one from the language
-     * file so, for instance, 99.95 would be converted to 99,95 when language
-     * is set to 'nl'.
-     * @static
-     * @deprecated
-     * @param String $number The number that needs to be converted
-     * @return String The converted number
-     */
-    function translateSeparator($number)
-    {
-        return str_replace(".", Tools::atktext("decimal_separator"), $number);
     }
 
     /**

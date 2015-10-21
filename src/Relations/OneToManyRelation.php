@@ -38,12 +38,6 @@ class OneToManyRelation extends Relation
     const AF_ONETOMANY_ADD_DIALOG = self::AF_SPECIFIC_2;
 
     /**
-     * Use embedded forms for adding records
-     * @deprecated Replaced by self::AF_ONETOMANY_ADD_DIALOG.
-     */
-    const AF_ONETOMANY_EMBED = self::AF_ONETOMANY_ADD_DIALOG;
-
-    /**
      * Use pop-up dialog for whatever a new record must be copied or must be added.
      */
     const AF_ONETOMANY_ADDORCOPY_DIALOG = self::AF_SPECIFIC_3;

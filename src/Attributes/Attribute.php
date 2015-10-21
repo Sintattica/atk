@@ -2300,24 +2300,6 @@ class Attribute
         }
     }
 
-    /**
-     * This function is used to check whether a attribute has a store function
-     * or not.
-     *
-     * It can be overridden to determine when to use store() and when not to
-     * use it.
-     * @param string $mode The storage mode ("add", "update" or null for all)
-     * @return boolean true if it has a store method or false if it hasn't.
-     * @deprecated Use storageType($mode) instead, which has more detailed
-     *             information about storage.
-     */
-    function hasStore($mode)
-    {
-        Tools::atkdebug("Deprecated use of hasStore");
-        $storagetype = $this->storageType($mode);
-        return (Tools::hasFlag($storagetype, self::POSTSTORE) || Tools::hasFlag($storagetype, self::PRESTORE)
-        );
-    }
 
     /**
      * Sets the storage type.
@@ -2836,27 +2818,6 @@ class Attribute
         }
 
         return '<script type="text/javascript">' . $script . '</script>';
-    }
-
-    /**
-     * Add a depended attribute for this attribute, which means the depended
-     * attribute will be refreshed (using Ajax) if the value for this attribute
-     * changes.
-     *
-     * This method is deprecated, use Attribute::addDependency instead!
-     *
-     * @deprecated
-     * @see Attribute::addDependency
-     *
-     * @param string $attribute attribute name
-     *
-     * @return Attribute attribute instance.
-     */
-    public function addDependee($attribute)
-    {
-        $callback = create_function('$modifier', '$modifier->refreshAttribute("' . $attribute . '");');
-        $this->addDependency($callback);
-        return $this;
     }
 
     /**

@@ -196,20 +196,6 @@ class NodeValidator
         }
     }
 
-    /**
-     * @deprecated
-     *
-     * @param array $record
-     */
-    function validateAttributes(&$record)
-    {
-        foreach (array_keys($this->m_nodeObj->m_attribList) as $attribname) {
-            if (!Tools::atk_in_array($attribname, $this->m_ignoreList)) {
-                $p_attrib = $this->m_nodeObj->m_attribList[$attribname];
-                $this->validateAttributeValue($p_attrib, $record);
-            }
-        }
-    }
 
     /**
      * Check unique field combinations.

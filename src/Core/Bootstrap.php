@@ -47,13 +47,6 @@ class Bootstrap
         $GLOBALS['g_startTime'] = (float)$usec + (float)$sec; // can't use getmicrotime here because it isn't available yet
 
         /**
-         * Global theme variable, containing theme data
-         * @deprecated In favor of Theme class
-         * @var array
-         */
-        $GLOBALS['g_theme'] = array();
-
-        /**
          * Global node list
          */
         $GLOBALS['g_nodes'] = array();

@@ -428,18 +428,6 @@ class DbAuth extends AuthInterface
     }
 
     /**
-     * This function returns a boolean that is true when the class allows the
-     * resetting of the password of a user.
-     * @deprecated Seems like this function is not used anymore
-     *
-     * @return true
-     */
-    function setPasswordAllowed()
-    {
-        return true;
-    }
-
-    /**
      * This function returns "get password" policy for current auth method
      *
      * @return int const
