@@ -94,7 +94,7 @@ class TimeAttribute extends Attribute
     /**
      * Display's text version of Record
      * @param array $record
-     * @return text string of $record
+     * @return string text string of $record
      */
     function display($record)
     {
@@ -211,7 +211,6 @@ class TimeAttribute extends Attribute
             }
             $m_hourBox .= sprintf("<option value='%02d'%s>%02d</option>\n", $i, $sel, $i);
         }
-        $size_hourbox = $this->m_endTime - $this->m_beginTime + 1;
 
         // generate minute dropdown
         if (!$this->hasflag(self::AF_OBLIGATORY) || $this->hasFlag(self::AF_TIME_DEFAULT_EMPTY)) {
@@ -268,7 +267,6 @@ class TimeAttribute extends Attribute
             $m_secBox .= "</select>";
             $m_secBox = ":" . $m_secBox;
         } else {
-            //$m_secBox = "<input type=\"hidden\" name=\"".$fieldprefix.$this -> fieldName()."[seconds]\" value=\"00\">\n";
             $m_secBox = "<input type=\"hidden\" id=\"" . $fieldprefix . $this->fieldName() . "[seconds]\" name=\"" . $fieldprefix . $this->fieldName() . "[seconds]\" value=\"00\">\n";
         }
 

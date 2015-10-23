@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
 
 /**
  * The DateTimeAttribute class can be used for date and time entry.
@@ -32,6 +33,7 @@ class DateTimeAttribute extends Attribute
         $min = 0;
         $sec = 0;
         $dateValid = true;
+        $month = $day = $year = null;
 
         if (!empty($dateArray["hours"])) {
             $hour = $dateArray["hours"];
@@ -89,15 +91,8 @@ class DateTimeAttribute extends Attribute
 
         if (is_numeric($default_date)) {
             $flags = $default_date;
-            $default_date = "";
         }
 
-        if ($default_date == "") {
-            $default_date = "";
-        }
-        if ($default_time == "") {
-            $default_time = "";
-        }
         if ($this->hasFlag(Dateattribute::AF_CLEAR_TOUCH_BUTTONS)) {
             $flags .= "|Dateattribute::AF_CLEAR_TOUCH_BUTTONS";
         }
@@ -219,7 +214,7 @@ class DateTimeAttribute extends Attribute
     function display($record, $mode = "")
     {
         $date = $this->m_date->display($record, $mode);
-        $time = $this->m_time->display($record, $mode);
+        $time = $this->m_time->display($record);
         if ($date != '' && $time != '') {
             return $date . (($mode == "csv" || $mode == "plain") ? " " : "&nbsp;") . $time;
         } else {

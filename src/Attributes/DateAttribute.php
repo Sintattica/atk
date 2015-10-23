@@ -6,6 +6,8 @@ use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Keyboard\Keyboard;
+use Sintattica\Atk\Utils\BrowserInfo;
+use Sintattica\Atk\Utils\JSON;
 
 /**
  * The DateAttribute class offers a date widget for date fields.
@@ -828,7 +830,7 @@ class DateAttribute extends Attribute
           var m_weekdays_short = Array("' . implode('","', $m_weekdays_short) . '");
         ', true);
 
-            $page->register_script(Config::getGlobal('atkroot') . 'atk/javascript/class.atkdateattribute.js');
+            $page->register_script(Config::getGlobal('assets_url') . 'javascript/class.atkdateattribute.js');
         }
 
         if ($useCalendar) {
