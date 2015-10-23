@@ -1,30 +1,39 @@
-<?php namespace Sintattica\Atk\Menu;
+<?php namespace Sintattica\Atk\Core;
 
-use Sintattica\Atk\Ui\Page;
+
 use Sintattica\Atk\Ui\Theme;
-use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Security\SecurityManager;
 
 /**
- * Implementation of the Dropdowntext menu.
+ * Menu class.
  *
  * @author Ber Dohmen <ber@ibuildings.nl>
  * @author Sandy Pleyte <sandy@ibuildings.nl>
  * @package atk
  * @subpackage menu
  */
-class DropdownMenu
+class Menu
 {
-    /**
-     * Constructor
-     *
-     * @return DropdownMenu
-     */
-    function __construct()
-    {
 
+    /**
+     * Get new menu object
+     *
+     * @return Menu class object
+     */
+    public static function &getInstance()
+    {
+        static $s_instance = null;
+        if ($s_instance == null) {
+            Tools::atkdebug("Creating a new menu instance");
+            $s_instance = new self();
+            Module::atkHarvestModules("getMenuItems");
+        }
+
+        return $s_instance;
     }
+
 
     /**
      * Translates a menuitem with the menu_ prefix, or if not found without
@@ -85,7 +94,7 @@ class DropdownMenu
         if (!is_array($g_menu[$atkmenutop])) {
             $g_menu[$atkmenutop] = array();
         }
-        usort($g_menu[$atkmenutop], array(__NAMESPACE__ . "\\DropdownMenu", "menu_cmp"));
+        usort($g_menu[$atkmenutop], array($this, "menu_cmp"));
 
         $menu = "<div id=\"nav\">\n";
 
@@ -95,7 +104,7 @@ class DropdownMenu
         }
 
         if (Config::getGlobal("menu_logout_link")) {
-            $menu .= "    <li><a href=\"./?atklogout=1\">" . Tools::atktext('logout') . "</a></li>\n";
+            $menu .= ">" . Tools::atktext('logout') . "</a></li>\n";
         }
 
         $menu .= "  </ul>\n";
@@ -120,8 +129,7 @@ class DropdownMenu
             if (array_key_exists($menuitem['name'], $g_menu) && $g_menu[$menuitem['name']]) {
                 $submenu = $indentation . "<ul>\n";
                 foreach ($g_menu[$menuitem['name']] as $submenuitem) {
-                    $submenu .= $this->getMenuItem($submenuitem, $indentation . "  ", $submenuname = '',
-                        $menuitem['name']);
+                    $submenu .= $this->getMenuItem($submenuitem, $indentation);
                 }
                 $submenu .= $indentation . "</ul>\n";
                 $menu .= $indentation . $this->getItemHtml($menuitem, "\n" . $submenu . $indentation);
@@ -153,7 +161,7 @@ class DropdownMenu
                     $menuitem['module'])) . '</a>';
         } else {
             if ($menuitem['url']) {
-                $href = Tools::href($menuitem['url'], $this->getMenuTranslation($menuitem['name'], $menuitem['module']),
+                $href = Tools::atkHref($menuitem['url'], $this->getMenuTranslation($menuitem['name'], $menuitem['module']),
                     SessionManager::SESSION_NEW);
             } else {
                 $href = '<a href="#">' . $name . '</a>';
@@ -189,6 +197,7 @@ class DropdownMenu
     function isEnabled($menuitem)
     {
         global $g_menu;
+        $secManager = SecurityManager::getInstance();
 
         $enable = $menuitem['enable'];
         if ((is_string($enable) || (is_array($enable) && count($enable) == 2 && is_object(@$enable[0]))) &&
@@ -199,7 +208,7 @@ class DropdownMenu
             if (is_array($enable)) {
                 $enabled = false;
                 for ($j = 0; $j < (count($enable) / 2); $j++) {
-                    $enabled = $enabled || SecurityManager::is_allowed($enable[(2 * $j)], $enable[(2 * $j) + 1]);
+                    $enabled = $enabled || $secManager->allowed($enable[(2 * $j)], $enable[(2 * $j) + 1]);
                 }
                 $enable = $enabled;
             } else {
@@ -215,5 +224,6 @@ class DropdownMenu
 
         return $enable;
     }
-
 }
+
+

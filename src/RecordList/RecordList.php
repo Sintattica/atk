@@ -163,8 +163,6 @@ class RecordList
         $listName = "rl_" . Tools::getUniqueId("normalRecordList");
         $page->register_script(Config::getGlobal("assets_url") . "javascript/recordlist.js");
 
-        $defaulthighlight = $theme->getAttribute("highlight");
-        $selectcolor = $theme->getAttribute("select");
 
         /* retrieve list array */
         $list = $this->listArray($recordset, $flags, "", $actions, $suppressList, $embedprefix);
@@ -391,7 +389,7 @@ class RecordList
              */
             $method = "rowColor";
             $bgn = "";
-            $bgh = $defaulthighlight;
+            $bgh = "";
             if (method_exists($this->m_node, $method)) {
                 $bgn = $this->m_node->$method($recordset[$i], $i);
                 if (is_array($bgn)) {
@@ -600,7 +598,7 @@ class RecordList
 
         if (Config::getGlobal("use_keyboard_handler")) {
             $kb = Keyboard::getInstance();
-            $kb->addRecordListHandler($listName, $selectcolor, count($records));
+            $kb->addRecordListHandler($listName, '', count($records));
         }
 
         $recordListData = array(

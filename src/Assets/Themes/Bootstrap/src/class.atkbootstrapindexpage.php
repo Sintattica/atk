@@ -7,7 +7,7 @@ use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Menu\Menu;
+use Sintattica\Atk\Core\Menu;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Core\Controller;
@@ -122,7 +122,7 @@ class BootstrapIndexPage
     {
         /* general menu stuff */
         /* load menu layout */
-        $menu = Menu::getMenu();
+        $menu = Menu::getInstance();
 
         if (is_object($menu)) {
             $this->m_page->addContent($menu->getMenu());
@@ -143,7 +143,7 @@ class BootstrapIndexPage
         $this->m_page->register_style($this->m_theme->stylePath("top.css"));
 
         /* load menu layout */
-        $menuObj = Menu::getMenu();
+        $menuObj = Menu::getInstance();
         $menu = null;
 
         if (is_object($menuObj)) {

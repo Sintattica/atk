@@ -19,19 +19,10 @@
  */
 
 $theme["recordlist_orientation"] = 'right';
-$theme['frame_top_height'] = 149;
-$theme['frame_menu_width'] = 210;
 $theme['dialog_theme_name'] = 'atkdialog';
 $theme['dialog_theme_load'] = false;
 
 $theme["doctype"] = '<!DOCTYPE html>';
-$theme['compatible_menus'] = array('atk.themes.bootstrap.src.atkBootstrapMenu');
-$theme["highlight"] = "";
-$theme["select"] = "";
-$theme['useframes'] = false;
-$theme['dispatcher'] = 'index.php';
-$theme['menufile'] = 'index.php';
-$theme['menu_params'] = "class='menulink'";
 $theme["tabtype"] = "dhtml";
 
 

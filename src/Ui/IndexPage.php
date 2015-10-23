@@ -3,10 +3,12 @@
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
-use Sintattica\Atk\Menu\Menu;
+use Sintattica\Atk\Core\Menu;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Core\Controller;
+
+
 
 /**
  * Class that generates an index page.
@@ -114,7 +116,7 @@ class IndexPage
      */
     function atkGenerateMenu()
     {
-        $menu = Menu::getMenu();
+        $menu = Menu::getInstance();
 
         if (is_object($menu)) {
             $this->m_page->addContent($menu->getMenu());
