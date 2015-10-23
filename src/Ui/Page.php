@@ -362,19 +362,11 @@ class Page
     /**
      * Generate the HTML header (<head></head>) statement for the page,
      * including all scripts and styles.
-     * @param String $title Title of the html page.
-     * @param String $extra_header HTML code of extra headers to add to the head section
      * @return String The HTML pageheader, including <head> and </head> tags.
      */
-    function head($title, $extra_header = "")
+    function head()
     {
-        $res = "<head>\n  <title>$title</title>\n";
-
-        $res .= '  <meta http-equiv="Content-Type" content="text/html; charset=' . Tools::atkGetCharset() . '" />' . "\n";
-        if ($extra_header != "") {
-            $res .= $extra_header . "\n";
-        }
-
+        $res = '';
         $this->addMeta($res);
         $this->addScripts($res);
         $this->addStyles($res);
@@ -385,7 +377,6 @@ class Page
             $res .= '  <link rel="shortcut icon" href="' . $favico . '" type="image/x-icon" />' . "\n";
         }
 
-        $res .= "</head>\n";
         return $res;
     }
 
@@ -571,18 +562,6 @@ class Page
     }
 
     /**
-     * Generate the HTML body (<body></body>) statement for the page.
-     * @param String $extraprops Extra attributes to add to the <body> tag.
-     * @return String The HTML body, including <body> and </body> tags.
-     */
-    function body($extraprops = "")
-    {
-        $res = '<body ';
-        $res .= $extraprops . ">\n";
-        return $res;
-    }
-
-    /**
      * Sets the page title.
      *
      * @param string $title page title
@@ -626,27 +605,19 @@ class Page
             $this->m_content = $ui->render('page.tpl', array('content' => $this->m_content));
         }
 
-        $page = '';
-        if (Tools::hasFlag($flags, self::HTML_DOCTYPE)) {
-            $page .= Config::getGlobal("doctype");
-        }
-        $page .= "\n<html>\n";
-
+        $layout = array();
+        $layout['title'] = $title;
         if (Tools::hasFlag($flags, self::HTML_HEADER)) {
-            $page .= $this->head($title, $extra_header);
+            $layout['head'] = $this->head().$extra_header;
         }
         if (Tools::hasFlag($flags, self::HTML_BODY)) {
-            $page .= $this->body($extrabodyprops);
+            $layout['extrabodyprops'] = $extrabodyprops;
+            $layout['body'] = $this->m_content . "\n";
         }
 
-        $page .= $this->m_content . "\n";
-        $page .= $this->renderHiddenVars();
-        if (Tools::hasFlag($flags, self::HTML_BODY)) {
-            $page .= "</body>\n";
-        }
-        $page .= "</html>\n";
+        $layout['hiddenvars'] = $this->hiddenVars();
 
-        return $page;
+        return $ui->render('layout.tpl', $layout);
     }
 
     /**
@@ -666,17 +637,15 @@ class Page
      * that we want to make accessible to client side scripts
      * @return string a hidden div with the selected ATK variabels
      */
-    function renderHiddenVars()
+    function hiddenVars()
     {
-        $page = "";
+        $res = '';
         if ($this->m_hiddenvars) {
-            $page .= "\n" . '<div id="hiddenvars" style="display: none">';
             foreach ($this->m_hiddenvars as $hiddenvarname => $hiddenvarvalue) {
-                $page .= "\n <span id='$hiddenvarname'>$hiddenvarvalue</span>";
+                $res .= "\n <span id='$hiddenvarname'>$hiddenvarvalue</span>";
             }
-            $page .= "\n</div>";
         }
-        return $page;
+        return $res;
     }
 
     /**
