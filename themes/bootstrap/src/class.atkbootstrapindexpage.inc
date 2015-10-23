@@ -278,8 +278,17 @@ class atkBootstrapIndexPage
             } else {
 
                 if (is_array($this->m_defaultDestination)) {
-                    $controller = & atkinstance("atk.atkcontroller");
-                    $controller->invoke("loadDispatchPage", $this->m_defaultDestination);
+                    // using dispatch_url to redirect to the node
+                    $isIndexed = array_values($this->m_defaultDestination) === $this->m_defaultDestination;
+                    if ($isIndexed) {
+                        $destination = dispatch_url($this->m_defaultDestination[0], $this->m_defaultDestination[1],
+                            $this->m_defaultDestination[2] ? $this->m_defaultDestination[2] : array());
+                    } else {
+                        $destination = dispatch_url($this->m_defaultDestination["atknodetype"], $this->m_defaultDestination["atkaction"],
+                            $this->m_defaultDestination[0] ? $this->m_defaultDestination[0] : array());
+                    }
+                    header('Location: ' . $destination);
+                    exit;
                 } else {
                     $this->m_page->register_style($this->m_theme->stylePath("style.css"));
                     $box = $this->m_ui->renderBox(array("title" => atkText("app_shorttitle"),

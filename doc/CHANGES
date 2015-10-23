@@ -15,6 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
+* Fix dispatch to default destination in index page [giorgio]
 * Using minified bootstrap files [giorgio]
 * Fix html entities in bootstrap menu [giorgio]
 
