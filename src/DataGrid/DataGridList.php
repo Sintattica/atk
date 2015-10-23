@@ -112,8 +112,6 @@ class DataGridList extends DataGridComponent
         $hasActionCol = $this->_hasActionColumn($list, $hasSearch);
 
         $orientation = Config::getGlobal('recordlist_orientation', $theme->getAttribute("recordlist_orientation"));
-        $vorientation = trim(Config::getGlobal('recordlist_vorientation',
-            $theme->getAttribute("recordlist_vorientation")));
 
         /*         * *********** */
         /* HEADER ROW */
@@ -583,7 +581,6 @@ class DataGridList extends DataGridComponent
         }
 
         $recordListData = array(
-            "vorientation" => $vorientation,
             "rows" => $records,
             "header" => $headercols,
             "search" => $searchcols,

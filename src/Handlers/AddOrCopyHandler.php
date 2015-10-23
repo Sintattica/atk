@@ -7,6 +7,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Core\Controller;
 use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Attributes\Attribute;
 
 /**
  * Handler for the 'editcopy' action of a node. It copies the selected

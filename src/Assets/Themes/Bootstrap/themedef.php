@@ -19,12 +19,7 @@
  */
 
 $theme["recordlist_orientation"] = 'right';
-$theme['dialog_theme_name'] = 'atkdialog';
-$theme['dialog_theme_load'] = false;
-
 $theme["doctype"] = '<!DOCTYPE html>';
-$theme["tabtype"] = "dhtml";
-
 
 $theme['usecssicons'] = true;
 $theme['cssicons']['recordlist']['view'] = 'glyphicon glyphicon-eye-open';

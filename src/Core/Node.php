@@ -2137,7 +2137,7 @@ class Node
 
                 /* sometimes a field is hidden although not specified by the field itself */
                 $theme = Theme::getInstance();
-                if ($theme->getAttribute("tabtype") == "dhtml" || $ignoreTab) {
+                if ($ignoreTab) {
                     $notOnTab = false;
                 } else {
                     $notOnTab = !$p_attrib->showOnTab($tab);

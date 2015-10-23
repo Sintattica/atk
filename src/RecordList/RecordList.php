@@ -113,7 +113,6 @@ class RecordList
             $embedprefix);
         $ui = $this->m_node->getUi();
         $res = $ui->render($node->getTemplate("admin"), array(
-            "vorientation" => $data["vorientation"],
             "rows" => $data["rows"],
             "header" => $data["header"],
             "search" => $data["search"],
@@ -186,8 +185,6 @@ class RecordList
         }
 
         $orientation = Config::getGlobal('recordlist_orientation', $theme->getAttribute("recordlist_orientation"));
-        $vorientation = trim(Config::getGlobal('recordlist_vorientation',
-            $theme->getAttribute("recordlist_vorientation")));
 
         $ui = $this->m_node->getUi();
 
@@ -602,7 +599,6 @@ class RecordList
         }
 
         $recordListData = array(
-            "vorientation" => $vorientation,
             "rows" => $records,
             "header" => $headercols,
             "search" => $searchcols,

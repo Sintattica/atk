@@ -18,12 +18,5 @@
  * Theme definition
  */
 $theme["doctype"] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"' . "\n" . '"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">';
-
-$theme["tabtype"] = "dhtml";
-
-
 $theme["recordlist_orientation"] = 'right';
-$theme['dialog_theme_name'] = 'atkdialog';
-$theme['dialog_theme_load'] = false;
-$theme["recordlist_vorientation"] = 'top';
 $theme['recordlist_icons'] = true;

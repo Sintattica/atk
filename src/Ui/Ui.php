@@ -81,7 +81,7 @@ class Ui
      * @param string $module the name of the module requesting to render a template
      * @return string rendered list
      */
-    function renderList($action = "", $vars, $module = "")
+    function renderList($action = '', $vars, $module = "")
     {
         return $this->render("list.tpl", $vars, $module);
     }
@@ -135,17 +135,15 @@ class Ui
 
     /**
      * Renders a tabulated template
-     * Registers some scriptcode too when the tabtype is set to dhtml
+     * Registers some scriptcode for dhtml tab
      * @param array $vars the variables with which to render the template
      * @param string $module the name of the module requesting to render a template
      * @return String the rendered template
      */
     function renderTabs($vars, $module = "")
     {
-        if ($this->m_theme->getAttribute("tabtype") == "dhtml") {
-            $page = Page::getInstance();
-            $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
-        }
+        $page = Page::getInstance();
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
         return $this->render("tabs.tpl", $vars, $module);
     }
 
@@ -165,16 +163,7 @@ class Ui
     public function render($name, $vars = array(), $module = "")
     {
         $path = $this->templatePath($name, $module);
-
-        if (substr($path, -4) != '.php' && file_exists($path . '.php')) {
-            $path .= '.php';
-        }
-
-        if (substr($path, -4) == '.php') {
-            $result = $this->renderPhp($path, $vars);
-        } else {
-            $result = $this->renderSmarty($path, $vars);
-        }
+        $result = $this->renderSmarty($path, $vars);
 
         if (Config::getGlobal('debug') >= 3) {
             $result = "\n<!-- START [{$path}] -->\n" .

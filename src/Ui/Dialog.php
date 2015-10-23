@@ -22,7 +22,6 @@ class Dialog
     protected $m_sessionStatus = SessionManager::SESSION_NEW;
     protected $m_title;
     protected $m_themeName;
-    protected $m_themeLoad;
     protected $m_width = null;
     protected $m_height = null;
     protected $m_serializeForm = null;
@@ -49,10 +48,7 @@ class Dialog
         $module = Module::getNodeModule($nodeType);
         $type = Module::getNodeType($nodeType);
         $this->m_title = $ui->title($module, $type, $action);
-
-        $theme = Theme::getInstance();
-        $this->m_themeName = $theme->getAttribute('dialog_theme_name', 'alphacube');
-        $this->m_themeLoad = $theme->getAttribute('dialog_theme_load', true);
+        $this->m_themeName = 'atkdialog';
     }
 
     /**
@@ -113,18 +109,6 @@ class Dialog
     function setTitle($title)
     {
         $this->m_title = $title;
-    }
-
-    /**
-     * Sets the theme to use.
-     *
-     * @param string $name theme name
-     * @param boolean $load load theme?
-     */
-    function setTheme($name, $load = true)
-    {
-        $this->m_themeName = $name;
-        $this->m_themeLoad = $load;
     }
 
     /**
@@ -207,32 +191,12 @@ class Dialog
      */
     function load()
     {
-        self::loadScriptsAndStyles($this->m_themeLoad ? $this->m_themeName : false);
-    }
-
-    /**
-     * Load JavaScript and stylesheets.
-     *
-     * @param string|boolean $theme uses the given window theme, by default checks the current ATK theme
-     *                              which window theme should be used, if set explicitly to false no
-     *                              theme will be loaded
-     */
-    public static function loadScriptsAndStyles($theme = null)
-    {
-        if ($theme === null && Theme::getInstance()->getAttribute('dialog_theme_load', true)) {
-            $theme = Theme::getInstance()->getAttribute('dialog_theme_name', 'alphacube');
-        }
-
         $page = Page::getInstance();
-        $page->register_script(Config::getGlobal('atkroot') . 'atk/javascript/prototype-ui/window/window.packed.js');
-        $page->register_script(Config::getGlobal('atkroot') . 'atk/javascript/prototype-ui-ext.js');
-        $page->register_script(Config::getGlobal('atkroot') . 'atk/javascript/class.atkdialog.js');
-        $page->register_style(Config::getGlobal('atkroot') . 'atk/javascript/prototype-ui/window/themes/window/window.css');
-        $page->register_style(Config::getGlobal('atkroot') . 'atk/javascript/prototype-ui/window/themes/shadow/mac_shadow.css');
-
-        if ($theme) {
-            $page->register_style(Config::getGlobal('atkroot') . 'atk/javascript/prototype-ui/window/themes/window/' . $theme . '.css');
-        }
+        $page->register_script(Config::getGlobal('assets_url') . 'javascript/prototype-ui/window/window.packed.js');
+        $page->register_script(Config::getGlobal('assets_url') . 'javascript/prototype-ui-ext.js');
+        $page->register_script(Config::getGlobal('assets_url') . 'javascript/class.atkdialog.js');
+        $page->register_style(Config::getGlobal('assets_url') . 'javascript/prototype-ui/window/themes/window/window.css');
+        $page->register_style(Config::getGlobal('assets_url') . 'javascript/prototype-ui/window/themes/shadow/mac_shadow.css');
     }
 
     /**
