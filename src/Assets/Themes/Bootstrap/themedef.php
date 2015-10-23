@@ -17,10 +17,6 @@
 /**
  * Theme definition
  */
-
-$theme["recordlist_orientation"] = 'right';
-$theme["doctype"] = '<!DOCTYPE html>';
-
 $theme['usecssicons'] = true;
 $theme['cssicons']['recordlist']['view'] = 'glyphicon glyphicon-eye-open';
 $theme['cssicons']['recordlist']['edit'] = 'glyphicon glyphicon-pencil';

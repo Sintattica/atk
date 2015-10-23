@@ -628,7 +628,7 @@ class Page
 
         $page = '';
         if (Tools::hasFlag($flags, self::HTML_DOCTYPE)) {
-            $page .= $theme->getAttribute('doctype', Config::getGlobal("doctype"));
+            $page .= Config::getGlobal("doctype");
         }
         $page .= "\n<html>\n";
 

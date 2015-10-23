@@ -184,7 +184,7 @@ class RecordList
             }
         }
 
-        $orientation = Config::getGlobal('recordlist_orientation', $theme->getAttribute("recordlist_orientation"));
+        $orientation = Config::getGlobal('recordlist_orientation');
 
         $ui = $this->m_node->getUi();
 

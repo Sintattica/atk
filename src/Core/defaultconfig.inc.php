@@ -508,6 +508,7 @@ $config_debug_translations = false;
  */
 $config_doctype = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">';
+//$config_doctype = '<!DOCTYPE html>';
 
 /**
  *
@@ -1029,3 +1030,9 @@ $config_reverse_attributeaccess_logic = false;
  * atkCKAttribute configuration options override
  */
 $config_ck_options = array();
+
+
+/**
+ * recordlist orientation (left or right)
+ */
+$config_recordlist_orientation = "left";

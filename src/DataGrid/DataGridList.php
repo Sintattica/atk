@@ -111,7 +111,7 @@ class DataGridList extends DataGridComponent
 
         $hasActionCol = $this->_hasActionColumn($list, $hasSearch);
 
-        $orientation = Config::getGlobal('recordlist_orientation', $theme->getAttribute("recordlist_orientation"));
+        $orientation = Config::getGlobal('recordlist_orientation');
 
         /*         * *********** */
         /* HEADER ROW */

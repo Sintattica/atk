@@ -17,6 +17,4 @@
 /**
  * Theme definition
  */
-$theme["doctype"] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"' . "\n" . '"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">';
-$theme["recordlist_orientation"] = 'right';
 $theme['recordlist_icons'] = true;
