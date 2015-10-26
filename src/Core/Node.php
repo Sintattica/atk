@@ -3294,7 +3294,7 @@ class Node
             ->excludes($excludes)
             ->includes($includes)
             ->mode('edit')
-            ->firstRow();
+            ->getFirstRow();
 
         // Need to restore the NO_FILTER bit back to its original value.
         $this->m_flags = $flags;
@@ -3517,7 +3517,7 @@ class Node
      */
     public function fetchByPk($pk)
     {
-        return $this->select($this->getTable() . "." . $this->primaryKeyField() . '= ?', array($pk))->firstRow();
+        return $this->select($this->getTable() . "." . $this->primaryKeyField() . '= ?', array($pk))->getFirstRow();
     }
 
     /**

@@ -263,7 +263,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $this->createLink();
         $where = $this->_getLoadWhereClause($record);
         $link = $this->getLink();
-        return $link->select()->where($where)->orderBy($link->getTable() . '.' . $this->getPositionAttribute())->allRows();
+        return $link->select()->where($where)->orderBy($link->getTable() . '.' . $this->getPositionAttribute())->getAllRows();
     }
 
     /**
@@ -507,7 +507,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
             return '';
         }
 
-        $record = $this->getDestination()->select($selector)->includes($this->getDestination()->descriptorFields())->firstRow();
+        $record = $this->getDestination()->select($selector)->includes($this->getDestination()->descriptorFields())->getFirstRow();
 
         return $this->renderSelectedRecord($record, $fieldprefix);
     }

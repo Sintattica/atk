@@ -765,39 +765,6 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
-     * Deprecated alias for Selector::getFirstRow().
-     *
-     * @see Selector::getFirstRow
-     * @deprecated
-     */
-    public function firstRow()
-    {
-        return $this->getFirstRow();
-    }
-
-    /**
-     * Deprecated alias for Selector::getAllRows().
-     *
-     * @see Selector::getAllRows
-     * @deprecated
-     */
-    public function allRows()
-    {
-        return $this->getAllRows();
-    }
-
-    /**
-     * Deprecated alias for Selector::getRowCount().
-     *
-     * @see Selector::getRowCount
-     * @deprecated
-     */
-    public function rowCount()
-    {
-        return $this->getRowCount();
-    }
-
-    /**
      * Does the given offset exist?
      *
      * @param string|int $key key
@@ -891,7 +858,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Returns the row count (used when calling count on an Selector object,
      * don't use this if you want to efficiently retrieve the row count using
-     * a count() select statement, use rowCount instead!
+     * a count() select statement, use getRowCount instead!
      *
      * @return int row count
      */

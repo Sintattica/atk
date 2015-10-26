@@ -710,7 +710,7 @@ class ManyToOneRelation extends Relation
             ->select($this->m_destInstance->primaryKey($record[$this->fieldName()]))
             ->orderBy($this->m_destInstance->getColumnConfig()->getOrderByStatement())
             ->includes($includes)
-            ->firstRow();
+            ->getFirstRow();
 
         if ($result != null) {
             $record[$this->fieldName()] = $result;
@@ -1755,7 +1755,7 @@ class ManyToOneRelation extends Relation
             ->orderBy($this->getDestination()->getOrder())
             ->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
                 $this->m_destInstance->m_primaryKey))
-            ->allRows();
+            ->getAllRows();
 
         return $result;
     }
