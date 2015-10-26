@@ -364,7 +364,7 @@ class RecordList
         $keys = array_keys($actions);
         $actionurl = (count($actions) > 0) ? $actions[$keys[0]] : '';
         $actionloader = "rl_a['" . $listName . "'] = {};";
-        $actionloader .= "\nrl_a['" . $listName . "']['base'] = '" . Tools::session_vars($this->m_actionSessionStatus,
+        $actionloader .= "\nrl_a['" . $listName . "']['base'] = '" . SessionManager::sessionVars($this->m_actionSessionStatus,
                 1, $actionurl) . "';";
         $actionloader .= "\nrl_a['" . $listName . "']['embed'] = " . (Tools::hasFlag($flags, self::RL_EMBED)
                 ? 'true' : 'false') . ";";

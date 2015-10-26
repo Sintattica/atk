@@ -256,7 +256,7 @@ class DataGridList extends DataGridComponent
         $keys = array_keys($actions);
         $actionurl = (count($actions) > 0) ? $actions[$keys[0]] : '';
         $actionloader = "rl_a['" . $listName . "'] = {};";
-        $actionloader .= "\nrl_a['" . $listName . "']['base'] = '" . Tools::session_vars($grid->getActionSessionStatus(),
+        $actionloader .= "\nrl_a['" . $listName . "']['base'] = '" . SessionManager::sessionVars($grid->getActionSessionStatus(),
                 1, $actionurl) . "';";
         $actionloader .= "\nrl_a['" . $listName . "']['embed'] = " . ($grid->isEmbedded()
                 ? 'true' : 'false') . ";";

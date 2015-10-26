@@ -487,14 +487,6 @@ class Tools
         return Language::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext, $modulefallback);
     }
 
-    /**
-     * @deprecated Use SessionManager::sessionVars() instead.
-     */
-    public static function session_vars($sessionstatus = SessionManager::SESSION_DEFAULT, $levelskip = null, $url = "")
-    {
-        return SessionManager::sessionVars($sessionstatus, $levelskip, $url);
-    }
-
 
     /**
      * @deprecated use self::atkHref or SessionManager::href instead.
