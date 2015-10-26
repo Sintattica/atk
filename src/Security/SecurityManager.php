@@ -501,7 +501,7 @@ class SecurityManager
         $GLOBALS["g_user"] = &$this->m_user;
         $sm = SessionManager::getInstance();
         $sm->globalVar("authentication", array("authenticated" => 1, "user" => $this->m_user), true);
-        SessionManager::sessionStore('loginattempts', ''); //reset maxloginattempts
+        $sm->globalVar('loginattempts', '');
 
         if ($throwPostLoginEvent) {
             $this->notifyListeners("postLogin", $auth_user);
@@ -539,7 +539,9 @@ class SecurityManager
      */
     function loginForm($defaultname, $lastresponse)
     {
-        $loginattempts = SessionManager::sessionLoad('loginattempts'); // Note: not actually how many authentication attempts, but how many times the login form has been displayed.
+        $sm = SessionManager::getInstance();
+
+        $loginattempts = $sm->getValue('loginattempts'); // Note: not actually how many authentication attempts, but how many times the login form has been displayed.
         if ($loginattempts == "") {
             $loginattempts = 0;
         }
@@ -550,8 +552,7 @@ class SecurityManager
             $loginattempts++;
         }
 
-        SessionManager::sessionStore('loginattempts', $loginattempts);
-
+        $sm->globalVar('loginattempts', $loginattempts);
         Tools::atkdebug('LoginAttempts: ' . $loginattempts);
 
         $page = Page::getInstance();

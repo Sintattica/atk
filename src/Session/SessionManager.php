@@ -1099,30 +1099,6 @@ class SessionManager
         }
     }
 
-
-    /**
-     * Store a variable in the current namespace.
-     * @deprecated Use SessionManager::getSession() instead, and store
-     *             the variable directly in the application session, or
-     *             use globalVar() to store a variable in the current
-     *             namespace.
-     */
-    function sessionStore($var, $value)
-    {
-        self::globalVar($var, $value);
-    }
-
-    /**
-     * Load a variable from a namespace.
-     * @deprecated Use SessionManager::getSession() instead, and load
-     *             the variable directly from the application session, or
-     *             use getValue() to retrieve a variable from a given namespace.
-     */
-    function sessionLoad($var, $namespace = "")
-    {
-        return self::getValue($var, $namespace);
-    }
-
     /**
      * Checks wether or not the sessionid that was passed along is valid
      * A session id can become invalid because of tampering and would otherwise

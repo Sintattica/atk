@@ -1,5 +1,7 @@
 <?php namespace Sintattica\Atk\Core;
 
+use Sintattica\Atk\Session\SessionManager;
+
 /**
  * Tree class, used to build trees of nodes.
  *
@@ -62,9 +64,10 @@ class TreeToolsTree
     {
         global $ATK_VARS;
         $postTree = $ATK_VARS["atktree"];
-        $sessionTree = SessionManager::sessionLoad("atktree");
+        $sm = SessionManager::getInstance();
+        $sessionTree = $sm->getValue("atktree");
         if ($postTree != "" && $sessionTree != $postTree) {
-            SessionManager::sessionStore("atktree", $postTree); // new in the session
+            $sm->globalVar("atktree", $postTree);
             $realTree = $postTree;
         } else {
             $realTree = $sessionTree; // use the last known tree
