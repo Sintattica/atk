@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Core;
 
-
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Ui\Output;
 use Sintattica\Atk\Session\SessionManager;
@@ -12,9 +11,7 @@ use Sintattica\Atk\Utils\ClassLoader;
 use Sintattica\Atk\Utils\String;
 use Sintattica\Atk\Utils\BrowserInfo;
 use Sintattica\Atk\Handlers\ActionHandler;
-
 use \Exception;
-
 
 class Tools
 {
@@ -918,7 +915,7 @@ class Tools
      */
     public static function atkPopup($target, $params, $winName, $width, $height, $scroll = 'no', $resize = 'no')
     {
-        $url = self::session_url("include.php?file=" . $target . "&" . $params, SessionManager::SESSION_NESTED);
+        $url = SessionManager::sessionUrl("include.php?file=" . $target . "&" . $params, SessionManager::SESSION_NESTED);
         $popupurl = "javascript:NewWindow('" . $url . "','" . $winName . "'," . $height . "," . $width . ",'" . $scroll . "','" . $resize . "')";
         return $popupurl;
     }
@@ -1336,7 +1333,7 @@ class Tools
         }
         $params['atkpartial'] = $partial;
 
-        return self::session_url(self::dispatch_url($node, $action, $params), $sessionStatus);
+        return SessionManager::sessionUrl(self::dispatch_url($node, $action, $params), $sessionStatus);
     }
 
     /**
@@ -1400,7 +1397,7 @@ class Tools
         }
 
         $cssclass = ' class="' . $cssclass . '"';
-        $script = 'atkSubmit("' . self::atkurlencode(self::session_url($url, $sessionstatus)) . '")';
+        $script = 'atkSubmit("' . self::atkurlencode(SessionManager::sessionUrl($url, $sessionstatus)) . '")';
         $button = '<input type="button" name="atkbtn' . (++$cnt) . '" value="' . $text . '" onClick=\'' . $script . '\'' . $cssclass . '>';
 
         if (!$embedded) {
