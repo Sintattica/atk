@@ -106,7 +106,7 @@ class atkMysqlDb extends atkDb
      *
      * @return int Flag of the error
      */
-    function _translateError()
+    function _translateError($errno = null)
     {
         $this->_setErrorVariables();
         switch ($this->m_errno) {
@@ -566,7 +566,7 @@ class atkMysqlDb extends atkDb
      * Return the available table names
      * @return array with table names etc.
      */
-    function table_names()
+    function table_names($includeViews = true)
     {
         /* query */
         $this->query("SHOW TABLES");
