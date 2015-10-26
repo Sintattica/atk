@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\TreeToolsTree;
+use Sintattica\Atk\Utils\StringParser;
 
 /**
  * Extension of the ManyToOneRelation, that is aware of the treestructure
@@ -47,7 +48,8 @@ class ManyToOneTreeRelation extends ManyToOneRelation
             $this->m_destInstance->m_primaryKey);
         $tmp2 = Tools::atk_array_merge($tmp1, array($this->m_destInstance->m_parent));
         if ($this->m_destinationFilter != "") {
-            $this->m_destInstance->addFilter(Tools::stringparse($this->m_destinationFilter, $record));
+            $sp = new StringParser($this->m_destinationFilter);
+            $this->m_destInstance->addFilter($sp->parse($record));
         }
         $recordset = $this->m_destInstance->selectDb("", $this->m_destInstance->m_primaryKey[0], "", "", $tmp2);
         $this->m_current = $this->m_ownerInstance->primaryKey($record);
@@ -65,13 +67,14 @@ class ManyToOneTreeRelation extends ManyToOneRelation
     /**
      * Returns a piece of html code that can be used in a form to search
      * @param array $record Record
-     * @return Piece of html code that can  be used in a form to edit this
+     * @return string Piece of html code that can  be used in a form to edit this
      */
     function search($record = "")
     {
         $this->createDestination();
         if ($this->m_destinationFilter != "") {
-            $this->m_destInstance->addFilter(Tools::stringparse($this->m_destinationFilter, $record));
+            $sp = new StringParser($this->m_destinationFilter);
+            $this->m_destInstance->addFilter($sp->parse($record));
         }
         $recordset = $this->m_destInstance->selectDb("", "", "", "",
             Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));

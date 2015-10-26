@@ -731,60 +731,6 @@ class Tools
         unset($dest[$var]);
     }
 
-    /**
-     * Get the [ ] Fields out of a String
-     * @deprecated please use the atkStringParser class
-     */
-    public static function stringfields($string)
-    {
-        self::atkdebug("Warning: deprecated use of self::stringfields(). Use atkStringParser class instead");
-        $tmp = "";
-        $adding = false;
-        $fields = array();
-        for ($i = 0; $i < strlen($string); $i++) {
-            if ($string[$i] == "]") {
-                $adding = false;
-                $fields[] = $tmp;
-                $tmp = "";
-            } else {
-                if ($string[$i] == "[") {
-                    $adding = true;
-                } else {
-                    if ($adding) {
-                        $tmp .= $string[$i];
-                    }
-                }
-            }
-        }
-
-        return $fields;
-    }
-
-    /**
-     * Parse strings
-     * @deprecated please use the atkStringParser class
-     */
-    public static function stringparse($string, $data, $encode = false)
-    {
-        self::atkdebug("Warning: deprecated use of stringparse(). Use atkStringParser class instead");
-        $fields = self::stringfields($string);
-        for ($i = 0; $i < count($fields); $i++) {
-            $elements = explode(".", $fields[$i]);
-            $databin = $data;
-            for ($j = 0; $j < count($elements); $j++) {
-                if (array_key_exists($elements[$j], $databin)) {
-                    $value = $databin[$elements[$j]];
-                    $databin = $databin[$elements[$j]];
-                }
-            }
-            if ($encode) {
-                $string = str_replace("[" . $fields[$i] . "]", rawurlencode($value), $string);
-            } else {
-                $string = str_replace("[" . $fields[$i] . "]", $value, $string);
-            }
-        }
-        return $string;
-    }
 
     /**
      * Safe urlencode function. Note, you can reencode already encoded strings, but
