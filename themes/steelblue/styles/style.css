@@ -734,6 +734,6 @@ div.atkbusy {
 #action-buttons .spinner {
     visibility: hidden;
     display: inline-block;
-    margin: 2px 0 0 5px;
+    margin: 0 0 0 5px;
     position: absolute;
 }

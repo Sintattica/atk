@@ -1142,9 +1142,9 @@ class atkManyToOneRelation extends atkRelation
 
                 $pkfield = $this->m_destInstance->primaryKeyField();
 
-                if (!$extended) {
-                    $result .= '<option value="">' . atktext('search_all') . '</option>';
-                }
+                //if (!$extended) {
+                $result .= sprintf('<option value=""%s>%s</option>', $extended ? ' selected="selected"' : '', atktext('search_all'));
+                //}
 
                 if ((!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM))) {
                     $result.= '<option value="__NONE__"'.(isset($record[$this->fieldName()]) && atk_in_array('__NONE__', $record[$this->fieldName()]) ? ' selected="selected"' : '').'>'.$this->getNoneLabel('search').'</option>';

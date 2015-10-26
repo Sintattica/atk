@@ -15,6 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
+* Various minor fixing [luca]
 * Fix dispatch to default destination in index page [giorgio]
 * Using minified bootstrap files [giorgio]
 * Fix html entities in bootstrap menu [giorgio]
@@ -28,7 +29,7 @@ Changes in ATK 8.2.1 (2015-10-08)
 * Fix multiple Shuttle relations on node save action [michele]
 
 
-Changes in ATK 8.2.0 (2015-09-02)
+Changes in ATK 8.2.0 (2015-10-02)
 ---------------------------------
 * Changed package name [luca,michele]
 * Fix icon lock [michele]

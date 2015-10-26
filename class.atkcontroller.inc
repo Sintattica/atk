@@ -543,8 +543,8 @@ class atkController
             }
 
         } elseif ($mode == "delete") {
-            $result[] = '<input name="confirm" type="submit" class="btn btn-default btn_ok" value="' . $node->text('yes') . '">';
             $result[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel" value="' . $node->text('no') . '">';
+            $result[] = '<input name="confirm" type="submit" class="btn btn-default btn_ok" value="' . $node->text('yes') . '">';
         } elseif ($mode == "search") {
             // (don't change the order of button)
             $result[] = $this->getButton('search', true);
