@@ -2,6 +2,8 @@
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
+use \ArrayAccess;
+use \Exception;
 
 /**
  * This file is part of the ATK distribution on GitHub.
@@ -25,7 +27,7 @@ abstract class Cache implements ArrayAccess
 {
     /**
      * All cache instances
-     * @var array
+     * @var Cache[]
      */
     private static $m_instances = array();
 
@@ -154,7 +156,7 @@ abstract class Cache implements ArrayAccess
     /**
      * is cache active
      *
-     * @return unknown
+     * @return bool
      */
     public function isActive()
     {
@@ -174,7 +176,7 @@ abstract class Cache implements ArrayAccess
     /**
      * Return current namespace that the cache is using
      *
-     * @return unknown
+     * @return string
      */
     public function getNamespace()
     {

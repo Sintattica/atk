@@ -1,26 +1,9 @@
 <?php namespace Sintattica\Atk\Cache;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * Cache class for filebases caching based on file cache of the Solar framework.
- *
- * @package atk
- * @subpackage cache
- *
- * @copyright (c)2008 Sandy Pleyte
- * @author Sandy Pleyte <sandy@achievo.org>
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6309 $
- * $Id$
- */
 
-Tools::useattrib('atkFileAttribute');
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Attributes\FileAttribute;
 
-class Cache_file extends Cache
+class FileCache extends Cache
 {
     /**
      * Path where the cache files are saved
@@ -89,7 +72,7 @@ class Cache_file extends Cache
      *
      * @param string $key The entry ID.
      * @param mixed $data The data to write into the entry.
-     * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
+     * @param int|bool $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
      * @return bool True on success, false on failure.
      */
     public function add($key, $data, $lifetime = false)
@@ -124,7 +107,7 @@ class Cache_file extends Cache
      *
      * @param string $key The entry ID.
      * @param mixed $data The data to write into the entry.
-     * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
+     * @param int|bool $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
      * @return bool True on success, false on failure.
      */
     public function set($key, $data, $lifetime = false)
@@ -196,7 +179,7 @@ class Cache_file extends Cache
         // make sure the file exists and is readable,
         if (file_exists($file) && is_readable($file)) {
             // get the lifetime of the entry
-            $lifetime = file_get_contents($file . ".lifetime");
+            $lifetime = intval(file_get_contents($file . ".lifetime"));
 
             // has the file expired?
             $expire_time = filemtime($file) + $lifetime;

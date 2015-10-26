@@ -1,24 +1,10 @@
 <?php namespace Sintattica\Atk\Cache;
 
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * Cache class for apc (http://pecl.php.net/package/APC)
- *
- * @package atk
- * @subpackage cache
- *
- * @copyright (c)2008 Sandy Pleyte
- * @author Sandy Pleyte <sandy@achievo.org>
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 5898 $
- * $Id$
- */
-class Cache_apc extends Cache
+use Sintattica\Atk\Core\Config;
+use \Exception;
+
+
+class ApcCache extends Cache
 {
 
     /**
@@ -38,7 +24,7 @@ class Cache_apc extends Cache
      *
      * @param string $key The entry ID.
      * @param mixed $data The data to write into the entry.
-     * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
+     * @param int|bool $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
      * @return bool True on success, false on failure.
      */
     public function add($key, $data, $lifetime = false)
@@ -58,7 +44,7 @@ class Cache_apc extends Cache
      *
      * @param string $key The entry ID.
      * @param mixed $data The data to write into the entry.
-     * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
+     * @param int|bool $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
      * @return bool True on success, false on failure.
      */
     public function set($key, $data, $lifetime = false)
@@ -96,7 +82,7 @@ class Cache_apc extends Cache
      * Deletes a cache entry.
      *
      * @param string $key The entry ID.
-     * @return boolean Succes
+     * @return boolean Success
      */
     public function delete($key)
     {
@@ -110,7 +96,7 @@ class Cache_apc extends Cache
     /**
      * Removes all cache entries.
      *
-     * @return boolean Succes
+     * @return boolean Success
      */
     public function deleteAll()
     {

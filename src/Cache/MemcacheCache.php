@@ -1,24 +1,7 @@
 <?php namespace Sintattica\Atk\Cache;
 
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * Cache class for memcached (http://www.danga.com/memcached/)
- *
- * @package atk
- * @subpackage cache
- *
- * @copyright (c)2008 Sandy Pleyte
- * @author Sandy Pleyte <sandy@achievo.org>
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 5898 $
- * $Id$
- */
-class Cache_memcache extends Cache
+
+class MemcacheCache extends Cache
 {
     public $m_memcache;
 
@@ -30,15 +13,15 @@ class Cache_memcache extends Cache
     public function __construct()
     {
         if (!extension_loaded('memcache')) {
-            throw new Exception('The memcache extension is not loaded');
+            throw new \Exception('The memcache extension is not loaded');
         }
-        $this->m_memcache = new Memcache;
+        $this->m_memcache = new \Memcache;
         $result = @$this->m_memcache->connect(
             $this->getCacheCOnfig('host', 'localhost'), $this->getCacheConfig('port', 11211),
             $this->getCacheConfig('timeout', 1)
         );
         if (!$result) {
-            throw new Exception('Can\'t connect to the memcache server');
+            throw new \Exception('Can\'t connect to the memcache server');
         }
     }
 
@@ -47,7 +30,7 @@ class Cache_memcache extends Cache
      *
      * @param string $key The entry ID.
      * @param mixed $data The data to write into the entry.
-     * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
+     * @param int|bool $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
      * @return bool True on success, false on failure.
      */
     public function add($key, $data, $lifetime = false)
@@ -67,7 +50,7 @@ class Cache_memcache extends Cache
      *
      * @param string $key The entry ID.
      * @param mixed $data The data to write into the entry.
-     * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
+     * @param int|bool $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
      * @return bool True on success, false on failure.
      */
     public function set($key, $data, $lifetime = false)
@@ -100,7 +83,7 @@ class Cache_memcache extends Cache
      * Deletes a cache entry.
      *
      * @param string $key The entry ID.
-     * @return boolean Succes
+     * @return boolean Success
      */
     public function delete($key)
     {
@@ -114,7 +97,7 @@ class Cache_memcache extends Cache
     /**
      * Removes all cache entries.
      *
-     * @return boolean Succes
+     * @return boolean Success
      */
     public function deleteAll()
     {
@@ -128,7 +111,7 @@ class Cache_memcache extends Cache
     /**
      * Get the current cache type
      *
-     * @return string atkConfig type
+     * @return string Config type
      */
     public function getType()
     {
