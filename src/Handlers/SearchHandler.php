@@ -142,7 +142,7 @@ class SearchHandler extends AbstractSearchHandler
             $params = array();
             $params["formstart"] = '<form name="entryform" action="' . $controller->getPhpFile() . '?' . SID . '" method="post">';
 
-            $params["formstart"] .= Tools::session_form(SessionManager::SESSION_REPLACE);
+            $params["formstart"] .= SessionManager::formState(SessionManager::SESSION_REPLACE);
             $params["formstart"] .= '<input type="hidden" name="atkaction" value="search">';
 
             $params["formstart"] .= '<input type="hidden" name="atknodetype" value="' . $node->atknodetype() . '">';

@@ -640,7 +640,7 @@ class SmartSearchHandler extends AbstractSearchHandler
         $params = array();
 
         $params["formstart"] = '<form name="entryform" action="' . Tools::atkSelf() . '?' . SID . '" method="post" class="form">'
-            . Tools::session_form(SessionManager::SESSION_REPLACE)
+            . SessionManager::formState(SessionManager::SESSION_REPLACE)
             . '<input type="hidden" name="atkaction" value="smartsearch">'
             . '<input type="hidden" name="atknodetype" value="' . $node->atkNodeType() . '">';
 

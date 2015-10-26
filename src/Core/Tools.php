@@ -487,15 +487,6 @@ class Tools
         return Language::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext, $modulefallback);
     }
 
-
-    /**
-     * @deprecated Use SessionManager::formState instead.
-     */
-    public static function session_form($sessionstatus = SessionManager::SESSION_DEFAULT, $returnbehaviour = null, $fieldprefix = '')
-    {
-        return SessionManager::formState($sessionstatus, $returnbehaviour, $fieldprefix);
-    }
-
     /**
      * @deprecated Use SessionManager::sessionVars() instead.
      */
@@ -1448,7 +1439,7 @@ class Tools
 
         if (!$embedded) {
             $res = '<form name="entryform">';
-            $res .= self::session_form();
+            $res .= SessionManager::formState();
             $res .= $button . '</form>';
             return $res;
         } else {

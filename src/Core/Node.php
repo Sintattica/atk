@@ -1799,7 +1799,7 @@ class Node
         $total = null;
         $output = ''; // $this->statusbar();
         $output .= '<img src="' . Config::getGlobal("assets_url") . 'images/lock.gif"><br><br>' . Tools::atktext("lock_locked") . '<br>';
-        $output .= '<br><form method="get">' . Tools::session_form(SessionManager::SESSION_BACK) .
+        $output .= '<br><form method="get">' . SessionManager::formState(SessionManager::SESSION_BACK) .
             '<input type="submit" class="btn btn-default btn_cancel" value="&lt;&lt; ' . Tools::atktext('back') . '"></form>';
 
         $ui = $this->getUi();
@@ -2621,7 +2621,7 @@ class Node
         }
 
         $formstart = '<form action="' . Tools::atkSelf() . '?"' . SID . ' method="post">';
-        $formstart .= Tools::session_form();
+        $formstart .= SessionManager::formState();
         $formstart .= '<input type="hidden" name="atkaction" value="' . $action . '">';
         $formstart .= '<input type="hidden" name="atknodetype" value="' . $this->atknodetype() . '">';
 

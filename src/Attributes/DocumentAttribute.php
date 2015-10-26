@@ -123,7 +123,7 @@ class DocumentAttribute extends DummyAttribute
         // Wrap the input elements in a unique session form when no form is present yet (in list and view mode)
         if ((($mode == "list") || ($mode == "view")) && $addForm) {
             static $documentSelectorFormCounter = 0;
-            $html = '<form name="documentSelectorForm' . ++$documentSelectorFormCounter . '">' . Tools::session_form() . $html . '</form>';
+            $html = '<form name="documentSelectorForm' . ++$documentSelectorFormCounter . '">' . SessionManager::formState() . $html . '</form>';
         }
 
         // Return the generated html

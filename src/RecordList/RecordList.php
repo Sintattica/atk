@@ -266,7 +266,7 @@ class RecordList
 
             $sortstart = '<a name="sortform"></a>' .
                 '<form action="' . Tools::atkSelf() . '?' . SID . '" method="get">' .
-                Tools::session_form() .
+                SessionManager::formState() .
                 '<input type="hidden" name="atkstartat" value="0">'; // reset atkstartat to first page after a new sort
 
             foreach (array_keys($list["heading"]) as $key) {
@@ -300,7 +300,7 @@ class RecordList
 
             $searchstart = '<a name="searchform"></a>';
             if (!Tools::hasFlag($this->m_flags, self::RL_EMBED)) {
-                $searchstart .= '<form action="' . Tools::atkSelf() . '?' . SID . '" method="get">' . Tools::session_form();
+                $searchstart .= '<form action="' . Tools::atkSelf() . '?' . SID . '" method="get">' . SessionManager::formState();
                 $searchstart .= '<input type="hidden" name="atknodetype" value="' . $this->getMasterNodeType() . '">' .
                     '<input type="hidden" name="atkaction" value="' . $this->m_node->m_action . '">' . '<input type="hidden" name="atksmartsearch" value="clear">' .
                     '<input type="hidden" name="atkstartat" value="0">'; // reset atkstartat to first page after a new search;
@@ -346,7 +346,7 @@ class RecordList
                     $formName = $listName;
                 }
                 $liststart = '<form id="' . $formName . '" name="' . $formName . '" method="post">' .
-                    Tools::session_form(SessionManager::SESSION_DEFAULT) .
+                    SessionManager::formState(SessionManager::SESSION_DEFAULT) .
                     '<input type="hidden" name="atknodetype" value="' . $this->getMasterNodeType() . '">' .
                     '<input type="hidden" name="atkaction" value="' . $this->m_node->m_action . '">';
                 $listend = '</form>';

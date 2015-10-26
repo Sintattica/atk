@@ -4,6 +4,7 @@
 use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * The grid renderer is responsible for rendering the grid components and
@@ -46,7 +47,7 @@ class DataGridRenderer extends DataGridComponent
     {
         if (!$this->getGrid()->isUpdate() && !$this->getGrid()->isEmbedded()) {
             $result = '<form id="' . $this->getGrid()->getFormName() . '" name="' . $this->getGrid()->getFormName() . '" method="post" action="' . Tools::atkSelf() . '">' .
-                Tools::session_form() .
+                SessionManager::formState() .
                 $result .
                 '</form>';
         }

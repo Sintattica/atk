@@ -205,7 +205,7 @@ class ExportHandler extends ActionHandler
 
         $params = array();
         $params["formstart"] = '<form name="entryform" enctype="multipart/form-data" action="' . $action . '" method="post">';
-        $params["formstart"] .= Tools::session_form();
+        $params["formstart"] .= SessionManager::formState();
         $params["formstart"] .= '<input type="hidden" name="phase" value="process"/>';
         $params["buttons"][] = Tools::atkButton(Tools::atktext("cancel", "atk"), "", SessionManager::SESSION_BACK, true);
         $params["buttons"][] = '<input class="btn" type="submit" value="' . Tools::atktext("export", "atk") . '"/>';

@@ -1,7 +1,6 @@
 <?php namespace Sintattica\Atk\Ui;
 
 use Sintattica\Atk\Core\Controller;
-use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
 
 /**
@@ -194,7 +193,7 @@ class ActionBoxBuilder
     public function endActionBox()
     {
         if ($this->m_sessionStatus !== null) {
-            $this->m_params['formend'] = Tools::session_form($this->m_sessionStatus) .
+            $this->m_params['formend'] = SessionManager::formState($this->m_sessionStatus) .
                 $this->m_params['formend'];
         }
 

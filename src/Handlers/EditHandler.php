@@ -298,7 +298,7 @@ class EditHandler extends ViewEditBase
             : "entryform";
         $formstart = '<form id="' . $formIdentifier . '" name="' . $formIdentifier . '" enctype="multipart/form-data" action="' . $controller->getPhpFile() . '?' . SID . '"' .
             ' method="post" onsubmit="return globalSubmit(this,false)" class="form-horizontal" role="form">' .
-            Tools::session_form($this->getUpdateSessionStatus());
+            SessionManager::formState($this->getUpdateSessionStatus());
 
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkaction" value="' . $this->getUpdateAction() . '" />';
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkprevaction" value="' . $this->getNode()->m_action . '" />';
