@@ -1222,15 +1222,6 @@ class Tools
     }
 
     /**
-     * @deprecated Use Controller::getPhpFile() instead.
-     */
-    public static function getDispatchFile()
-    {
-        $c = Controller::getInstance();
-        return $c->getPhpFile();
-    }
-
-    /**
      * Generate a partial url.
      *
      * @param string $node the (module.)node name

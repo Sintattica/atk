@@ -6,6 +6,7 @@ use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Ui\Output;
 use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Controller;
 
 /**
  * The atk session manager.
@@ -681,7 +682,7 @@ class SessionManager
             );
 
             if ($i < count($stack) - 1) {
-                $entry['url'] = SessionManager::sessionUrl(Tools::getDispatchFile() . '?atklevel=' . $i);
+                $entry['url'] = SessionManager::sessionUrl(Controller::getInstance()->getPhpFile() . '?atklevel=' . $i);
             }
 
             $res[] = $entry;

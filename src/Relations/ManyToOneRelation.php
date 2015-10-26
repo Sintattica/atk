@@ -7,6 +7,8 @@ use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\Keyboard\Keyboard;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Core\Controller;
+use Sintattica\Atk\Core\Module;
 use \Exception;
 
 
@@ -965,7 +967,7 @@ class ManyToOneRelation extends Relation
         $result = "";
         // we use the current level to automatically return to this page
         // when we come from the select..
-        $atktarget = Tools::atkurlencode(Tools::getDispatchFile() . "?atklevel=" . SessionManager::atkLevel() . "&" . $selname . "=[atkprimkey]");
+        $atktarget = Tools::atkurlencode(Controller::getInstance()->getPhpFile() . "?atklevel=" . SessionManager::atkLevel() . "&" . $selname . "=[atkprimkey]");
         $linkname = Tools::atktext("link_select_" . Module::getNodeType($this->m_destination),
             $this->getOwnerInstance()->getModule(), $this->getOwnerInstance()->getType(), '', '', true);
         if (!$linkname) {

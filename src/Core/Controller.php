@@ -3,7 +3,6 @@
 use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
-use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Ui\Output;
@@ -731,18 +730,13 @@ class Controller
     }
 
     /**
-     * Return php_file. If not set, returns theme-level dispatchfile, if not set either, return (sanitized) PHP_SELF
+     * Return php_file.
      *
      * @return string The name of the file to which subsequent requests should be posted.
      */
     function getPhpFile()
     {
-        $theme = Theme::getInstance();
-
-        if ($this->m_php_file != "") {
-            return $this->m_php_file;
-        }
-        return $theme->getAttribute('dispatcher', Config::getGlobal("dispatcher", Tools::atkSelf()));
+        return $this->m_php_file;
     }
 
     /**
