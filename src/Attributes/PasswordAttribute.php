@@ -494,24 +494,6 @@ class PasswordAttribute extends Attribute
     }
 
     /**
-     * Generates a random password which isn't to bad to remember.
-     * @deprecated The object-function generatePassword should be used instead of this static function.
-     * @static Some applications still call this method statically, so to keep this function
-     *         backwards compatible it has to remain static.
-     * @param int $times Number of syllables (password length will be $times * 3)
-     * @return string Generated password
-     */
-    function makePassword($times = 2)
-    {
-        // Show a debugmessage about this function being deprecated
-        Tools::atkdebug("PasswordAttribute::makePassword() is deprecated, use generatePassword() on a PasswordAttribute instead.");
-
-        // Construct a new passwordattribute, generate the password and return it
-        $passwordattribute = new PasswordAttribute("dummy", true);
-        return $passwordattribute->getRandomChars(array(self::EASYVOWELS, self::EASYCONSONANTS, self::EASYVOWELS), $times * 3);
-    }
-
-    /**
      * Overwriting the fetchValue to ensure all passwords are hashed
      *
      * @param array $rec The array with html posted values ($_POST, for
