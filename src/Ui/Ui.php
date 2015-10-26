@@ -87,19 +87,6 @@ class Ui
     }
 
     /**
-     * Renders top template
-     * @deprecated Use renderBox($vars, "top") instead
-     * @param array $vars the variables for the template
-     * @param string $module the name of the module requesting to render a template
-     * @return String with the rendered box
-     */
-    function renderTop($vars, $module = "")
-    {
-        Tools::atkdebug("Using deprecated renderTop function, please install newer top.php from the atk/skel");
-        return $this->renderBox($vars, "top", $module);
-    }
-
-    /**
      * Renders a box with Smarty template.
      * Call with a $name variable to provide a
      * better default than "box.tpl".
