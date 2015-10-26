@@ -46,7 +46,7 @@ class EditCopyHandler extends ActionHandler
     /**
      * Get the selected record from
      *
-     * @return the record to be copied
+     * @return array the record to be copied
      */
     protected function getCopyRecord()
     {
@@ -58,6 +58,7 @@ class EditCopyHandler extends ActionHandler
             Tools::atkdebug("Geen records gevonden met selector: $selector");
             $this->m_node->redirect();
         }
+        return null;
     }
 
 }

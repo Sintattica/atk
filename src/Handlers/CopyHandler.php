@@ -18,9 +18,8 @@ class CopyHandler extends ActionHandler
     /**
      * The action handler.
      *
-     * @param Bool $redirect
      */
-    function action_copy($redirect = true)
+    function action_copy()
     {
         $this->invoke("nodeCopy");
     }

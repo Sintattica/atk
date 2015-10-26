@@ -55,10 +55,9 @@ class ThemeCompiler
      * exact location of all themable files.
      *
      * @param String $name The name of the theme
-     * @param String $location The location of the theme ("atk", "app" or "auto")
      * @return array Theme dData structure
      */
-    function readStructure($name, $location = "auto")
+    function readStructure($name)
     {
         $data = array();
 
@@ -76,7 +75,7 @@ class ThemeCompiler
             }
 
             // Second scan all files in the theme path
-            $this->scanThemePath($path, $abspath.'/', $data);
+            $this->scanThemePath($path, $abspath . '/', $data);
             $this->scanModulePath($name, $data);
 
             $data["attributes"]["basepath"] = $path;
@@ -100,7 +99,7 @@ class ThemeCompiler
         foreach ($subitems as $name) {
             if (in_array($name,
                 array("images", "styles", "templates"))) { // images, styles and templates are compiled the same
-                $files = $this->_dirContents($abspath . '/'. $name);
+                $files = $this->_dirContents($abspath . '/' . $name);
                 foreach ($files as $file) {
                     $key = $file;
                     if (substr($key, -8) == '.tpl.php') {
@@ -109,23 +108,12 @@ class ThemeCompiler
 
                     $data["files"][$name][$key] = $path . $name . "/" . $file;
                 }
-            } else {
-                if ($name == "icons") { // New ATK5 style icon theme dirs
-                    $subs = $this->_dirContents($abspath . $name);
-                    foreach ($subs as $type) {
-                        $files = $this->_dirContents($abspath . $name . "/" . $type);
-                        foreach ($files as $file) {
-                            $data["files"]["icons"][$type][$file] = $path . $name . "/" . $type . "/" . $file;
-                        }
-                    }
-                } else {
-                    if (in_array($name,
-                        array("tree_icons", "recordlist_icons", "toolbar_icons"))) { // Old ATK5 style icon theme dirs
-                        $type = substr($name, 0, -6);
-                        $files = $this->_dirContents($abspath . $name);
-                        foreach ($files as $file) {
-                            $data["files"]["icons"][$type][$file] = $path . $name . "/" . $file;
-                        }
+            } else if ($name == "icons") { // New ATK5 style icon theme dirs
+                $subs = $this->_dirContents($abspath . $name);
+                foreach ($subs as $type) {
+                    $files = $this->_dirContents($abspath . $name . "/" . $type);
+                    foreach ($files as $file) {
+                        $data["files"]["icons"][$type][$file] = $path . $name . "/" . $type . "/" . $file;
                     }
                 }
             }
@@ -157,14 +145,12 @@ class ThemeCompiler
                         foreach ($files as $file) {
                             $data["modulefiles"][$module][$name][$file] = $theme . "/" . $name . "/" . $file;
                         }
-                    } else {
-                        if ($name == "icons") { // New ATK5 style icon theme dirs
-                            $subs = $this->_dirContents($abspath . $name);
-                            foreach ($subs as $type) {
-                                $files = $this->_dirContents($abspath . $name . "/" . $type);
-                                foreach ($files as $file) {
-                                    $data["modulefiles"][$module]["icons"][$type][$file] = $theme . "/" . $name . "/" . $type . "/" . $file;
-                                }
+                    } else if ($name == "icons") { // New ATK5 style icon theme dirs
+                        $subs = $this->_dirContents($abspath . $name);
+                        foreach ($subs as $type) {
+                            $files = $this->_dirContents($abspath . $name . "/" . $type);
+                            foreach ($files as $file) {
+                                $data["modulefiles"][$module]["icons"][$type][$file] = $theme . "/" . $name . "/" . $type . "/" . $file;
                             }
                         }
                     }
@@ -183,7 +169,6 @@ class ThemeCompiler
     {
         $traverser = new DirectoryTraverser();
         $traverser->addExclude('/^\.(.*)/'); // ignore everything starting with a '.'
-        $traverser->addExclude('/^CVS$/');   // ignore CVS directories
         $files = $traverser->getDirContents($path);
         return $files;
     }
