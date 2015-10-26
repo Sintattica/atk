@@ -853,24 +853,6 @@ class SecurityManager
 
         return $user[$userpk];
     }
-
-    /**
-     * Check if the currently logged-in user has a certain privilege.
-     *
-     * @deprecated Use the allowed method of the security manager instead.
-     * @param String $node The full name of the node for which to check access.
-     * @param String $privilege The privilege to check.
-     * @return boolean True if access is granted, false if not.
-     */
-    public static function is_allowed($node, $privilege)
-    {
-        $secMgr = self::getInstance();
-        if (!is_object($secMgr)) {
-            return 1;
-        }
-        return $secMgr->allowed($node, $privilege);
-    }
-
 }
 
 
