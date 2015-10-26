@@ -501,19 +501,6 @@ class Tools
         return SessionManager::href($url, $name, $sessionstatus, $saveform, $extraprops);
     }
 
-    /**
-     * Convenience wrapper for SessionManager::href().
-     * @see SessionManager::href
-     */
-    public static function atkHref(
-        $url,
-        $name = "",
-        $sessionstatus = SessionManager::SESSION_DEFAULT,
-        $saveform = false,
-        $extraprops = ""
-    ) {
-        return SessionManager::href($url, $name, $sessionstatus, $saveform, $extraprops);
-    }
 
     /**
      * array_merge without duplicates

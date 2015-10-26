@@ -407,7 +407,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $filter = $this->parseFilter($this->getManyToOneRelation()->m_destinationFilter, $record);
         $params = array_merge($params,
             array('atkfilter' => $filter, "atkpkret" => $this->getHtmlId($fieldprefix) . "_newsel"));
-        $link = Tools::atkHref(Tools::dispatch_url($this->m_destination, "add", $params), $this->getAddLabel(),
+        $link = SessionManager::href(Tools::dispatch_url($this->m_destination, "add", $params), $this->getAddLabel(),
             SessionManager::SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
         return $link;
     }
@@ -420,7 +420,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      */
     protected function getEditActionLink($record)
     {
-        return Tools::atkHref(Tools::dispatch_url($this->getdestination()->atknodetype(), 'edit',
+        return SessionManager::href(Tools::dispatch_url($this->getdestination()->atknodetype(), 'edit',
             array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SessionManager::SESSION_NESTED,
             true, 'class="atkmanytomanyselectrelation-link"');
     }
@@ -433,7 +433,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      */
     protected function getViewActionLink($record)
     {
-        return Tools::atkHref(Tools::dispatch_url($this->getdestination()->atknodetype(), 'view',
+        return SessionManager::href(Tools::dispatch_url($this->getdestination()->atknodetype(), 'view',
             array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('view'), SessionManager::SESSION_NESTED,
             true, 'class="atkmanytomanyselectrelation-link"');
     }

@@ -444,7 +444,7 @@ class TreeNode extends Node
                             if ($this->m_tree[$cnt]["isleaf"] == 1) {
                                 if ($cnt != 0) {
                                     if ($foldable) {
-                                        $res .= "<td>" . Tools::atkHref(Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params,
+                                        $res .= "<td>" . SessionManager::href(Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params,
                                                 "<img src=\"" . $img_end_minus . "\" border=0>") . "</td>\n";
                                     } else {
                                         $res .= "<td><img src=\"" . $img_end . "\" border=0></td>\n";
@@ -453,7 +453,7 @@ class TreeNode extends Node
                             } else {
                                 if ($cnt != 0) {
                                     if ($foldable) {
-                                        $res .= "<td>" . Tools::atkHref(Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params,
+                                        $res .= "<td>" . SessionManager::href(Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params,
                                                 "<img src=\"" . $img_minus . "\" border=0>") . "</td>\n";
                                     } else {
                                         $res .= "<td><img src=\"" . $img_split . "\" border=0></td>\n";
@@ -492,10 +492,10 @@ class TreeNode extends Node
                             $params = $params . $this->extraparams;
                         }
                         if ($expand[$cnt] == 0) {
-                            $res .= "<td>" . Tools::atkHref(Tools::atkSelf() . "?" . $params,
+                            $res .= "<td>" . SessionManager::href(Tools::atkSelf() . "?" . $params,
                                     "<img src=\"" . $img_expand . "\" border=0>") . "</td>\n";
                         } else {
-                            $res .= "<td>" . Tools::atkHref(Tools::atkSelf() . "?" . $params,
+                            $res .= "<td>" . SessionManager::href(Tools::atkSelf() . "?" . $params,
                                     "<img src=\"" . $img_collapse . "\" border=0>") . "</td>\n";
                         }
                     } else {

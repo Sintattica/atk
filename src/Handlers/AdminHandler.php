@@ -335,7 +335,7 @@ class AdminHandler extends ActionHandler
 			    ';
             } elseif ($node->hasFlag(Node::NF_ADD_LINK)) {
                 $addurl = $this->invoke('getAddUrl', $node);
-                return Tools::atkHref($addurl, $label, SessionManager::SESSION_NESTED);
+                return SessionManager::href($addurl, $label, SessionManager::SESSION_NESTED);
             }
         }
 
