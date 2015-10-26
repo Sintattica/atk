@@ -103,10 +103,6 @@ class Menu
             $menu .= $this->getMenuItem($menuitem, "    ");
         }
 
-        if (Config::getGlobal("menu_logout_link")) {
-            $menu .= ">" . Tools::atktext('logout') . "</a></li>\n";
-        }
-
         $menu .= "  </ul>\n";
 
         $menu .= "</div>\n";
@@ -150,7 +146,7 @@ class Menu
      */
     function getItemHtml($menuitem, $submenu = '', $submenuname = '')
     {
-        $delimiter = Config::getGlobal('menu_delimiter');
+        $delimiter = '<br />';
 
         $name = $this->getMenuTranslation($menuitem['name'], $menuitem['module']);
         if ($menuitem['name'] == '-') {

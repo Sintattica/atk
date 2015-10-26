@@ -510,46 +510,6 @@ $config_doctype = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN
         "http://www.w3.org/TR/html4/loose.dtd">';
 //$config_doctype = '<!DOCTYPE html>';
 
-/**
- *
- * @var String
- */
-$config_menu_delimiter = "<br />";
-
-/**
- *
- * @var String
- */
-$config_menu_pos = "left";
-
-
-/**
- *
- * @var String
- */
-$config_menu_align = "center";
-
-/**
- * Auto-include logout link in menu? (only supported for atkDropDownMenu
- * at the moment).
- *
- * @var Boolean
- */
-$config_menu_logout_link = false;
-
-
-/**
- * Class to use to render the menu
- *
- * @var string
- */
-$config_menu_class = "Sintattica\\Atk\\Menu\\DropdownMenu";
-
-/**
- * 0 = no   - 1 = yes
- * @var int
- */
-$config_top_frame = 0;
 
 /**
  *
@@ -557,11 +517,6 @@ $config_top_frame = 0;
  */
 $config_defaulttheme = "stillblue";
 
-/**
- * Fullscreen mode (IE only)
- * @var String
- */
-$config_fullscreen = false;
 
 /**
  * Whatever tabs are enabled or not
@@ -883,20 +838,6 @@ $config_recordlist_javascript_delete = false;
  */
 $config_enable_ssl_encryption = false;
 
-/**
- * Enable / disable sending of e-mails (works only if the atk.utils.Mailer::Send
- * function has been used for sending e-mails).
- * Note: atk.utils.Mail::mail is deprecated but is still enabled/disabled by this setting.
- * @var boolean
- */
-$config_mail_enabled = true;
-
-/**
- * Redirect e-mails to a specified address (works only if the atk.utils.Mailer::Send
- * function has been used for sending e-mails).
- * @var string
- */
-$config_mail_redirect = "";
 
 /**
  * Default extended search action. This action can always be overriden
