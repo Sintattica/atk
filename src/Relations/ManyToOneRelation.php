@@ -743,7 +743,7 @@ class ManyToOneRelation extends Relation
             if ($this->m_destInstance->allowed("edit") && !$this->m_destInstance->hasFlag(Node::NF_NO_EDIT) && $record[$this->fieldName()] != null) {
                 //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
                 //de app crasht als er geen waarde is ingevuld.
-                $editUrl = Tools::session_url(Tools::dispatch_url($this->getAutoLinkDestination(), "edit",
+                $editUrl = SessionManager::sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), "edit",
                     array("atkselector" => "REPLACEME")), SessionManager::SESSION_NESTED);
                 $links[] = "<span id=\"" . $id . "_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"" . Tools::atkurlencode($editUrl) . "\", document.entryform." . $id . ".value), true)' class=\"atkmanytoonerelation\">" . Tools::atktext('edit') . "</a></span>";
             }
@@ -1002,7 +1002,7 @@ class ManyToOneRelation extends Relation
             $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkmanytoonerelation.js");
 
             if ($this->m_destInstance->allowed("edit")) {
-                $editlink = Tools::session_url(Tools::dispatch_url($this->getAutoLinkDestination(), "edit",
+                $editlink = SessionManager::sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), "edit",
                     array("atkselector" => "REPLACEME")), SessionManager::SESSION_NESTED);
                 $autolink['edit'] = "&nbsp;<a href='javascript:atkSubmit(mto_parse(\"" . Tools::atkurlencode($editlink) . "\", document.entryform." . $id . ".value),true)' class='atkmanytoonerelation'>" . Tools::atktext('edit') . "</a>";
             }

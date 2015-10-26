@@ -45,7 +45,7 @@ class SearchHandler extends AbstractSearchHandler
             return;
         } elseif (!empty($this->m_postvars['atkcancel'])) {
             $url = Tools::dispatch_url($this->getPreviousNode(), $this->getPreviousAction());
-            $url = Tools::session_url($url, SessionManager::atkLevel() > 0 ? SessionManager::SESSION_BACK : SessionManager::SESSION_REPLACE);
+            $url = SessionManager::sessionUrl($url, SessionManager::atkLevel() > 0 ? SessionManager::SESSION_BACK : SessionManager::SESSION_REPLACE);
 
             $this->m_node->redirect($url);
         }
@@ -72,7 +72,7 @@ class SearchHandler extends AbstractSearchHandler
     {
         $url = Tools::dispatch_url($this->getPreviousNode(), $this->getPreviousAction(), $this->fetchCriteria(),
             Tools::atkSelf());
-        $url = Tools::session_url($url, SessionManager::atkLevel() > 0 ? SessionManager::SESSION_BACK : SessionManager::SESSION_REPLACE);
+        $url = SessionManager::sessionUrl($url, SessionManager::atkLevel() > 0 ? SessionManager::SESSION_BACK : SessionManager::SESSION_REPLACE);
 
         $this->m_node->redirect($url);
     }

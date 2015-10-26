@@ -681,7 +681,7 @@ class SessionManager
             );
 
             if ($i < count($stack) - 1) {
-                $entry['url'] = Tools::session_url(Tools::getDispatchFile() . '?atklevel=' . $i);
+                $entry['url'] = SessionManager::sessionUrl(Tools::getDispatchFile() . '?atklevel=' . $i);
             }
 
             $res[] = $entry;
@@ -1083,14 +1083,14 @@ class SessionManager
         } // Nested URL check
         else {
             if (isset($_REQUEST["atknested"]) && $_REQUEST["atknested"] != "") {
-                Node::redirect(Tools::session_url($_REQUEST["atknested"], SessionManager::SESSION_NESTED));
+                Node::redirect(SessionManager::sessionUrl($_REQUEST["atknested"], SessionManager::SESSION_NESTED));
                 Output::getInstance()->outputFlush();
                 exit;
             } // Back check
             else {
                 if (isset($ATK_VARS["atkback"]) && $ATK_VARS["atkback"] != "") {
                     // When we go back, we go one level deeper than the level we came from.
-                    Node::redirect(Tools::session_url(Tools::atkSelf() . "?atklevel=" . ($atkprevlevel - 1)));
+                    Node::redirect(SessionManager::sessionUrl(Tools::atkSelf() . "?atklevel=" . ($atkprevlevel - 1)));
                     Output::getInstance()->outputFlush();
                     exit;
                 }

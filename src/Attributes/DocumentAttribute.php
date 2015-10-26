@@ -114,7 +114,7 @@ class DocumentAttribute extends DummyAttribute
 
         // Add the button to the html
         $selector = $this->m_ownerInstance->primaryKey($record);
-        $onclickscript = 'window.location="' . Tools::session_url(Tools::dispatch_url($module . "." . $node,
+        $onclickscript = 'window.location="' . SessionManager::sessionUrl(Tools::dispatch_url($module . "." . $node,
                 "document", array("atkselector" => $selector)),
                 SessionManager::SESSION_DEFAULT) . '&atkdoctpl="+this.form.atkdoctpl.value;';
 

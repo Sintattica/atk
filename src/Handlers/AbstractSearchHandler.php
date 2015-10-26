@@ -261,7 +261,7 @@ abstract class AbstractSearchHandler extends ActionHandler
         if (empty($current) || $this->loadCriteria($current) == null) {
             return null;
         } else {
-            return Tools::session_url(Tools::dispatch_url($this->m_node->atkNodeType(), $this->m_action,
+            return SessionManager::sessionUrl(Tools::dispatch_url($this->m_node->atkNodeType(), $this->m_action,
                 array('forget_criteria' => $current)), SessionManager::SESSION_REPLACE);
         }
     }

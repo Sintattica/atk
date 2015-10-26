@@ -164,7 +164,7 @@ class AddOrCopyHandler extends ActionHandler
             $script .= $dialog->getCall(true, false);
         } else {
             $script .= sprintf("document.location.href = %s;",
-                JSON::encode(Tools::session_url(Tools::dispatch_url($this->m_node->atkNodeType(), 'add'),
+                JSON::encode(SessionManager::sessionUrl(Tools::dispatch_url($this->m_node->atkNodeType(), 'add'),
                     SessionManager::SESSION_NESTED)));
         }
 

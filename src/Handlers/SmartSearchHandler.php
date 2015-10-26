@@ -1,6 +1,8 @@
 <?php namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Attributes\Attribute;
 
 /**
  * Smart search handler class.
@@ -178,7 +180,7 @@ class SmartSearchHandler extends AbstractSearchHandler
 
         $params = array('atksmartsearch' => $criteria);
         $url = Tools::dispatch_url($this->m_node->atkNodeType(), 'admin', $params, Tools::atkSelf());
-        $this->m_node->redirect(Tools::session_url($url, SessionManager::atkLevel() == 0 ? SessionManager::SESSION_REPLACE
+        $this->m_node->redirect(SessionManager::sessionUrl($url, SessionManager::atkLevel() == 0 ? SessionManager::SESSION_REPLACE
             : SessionManager::SESSION_BACK));
     }
 
@@ -409,13 +411,13 @@ class SmartSearchHandler extends AbstractSearchHandler
                 $valueName = "criterium_{$id}_value";
                 $modeName = "criterium_{$id}_mode";
 
-                $fieldUrl = Tools::session_url(Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch',
+                $fieldUrl = SessionManager::sessionUrl(Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch',
                     array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriumfield'),
                     Tools::atkSelf()), SessionManager::SESSION_NEW);
-                $valueUrl = Tools::session_url(Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch',
+                $valueUrl = SessionManager::sessionUrl(Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch',
                     array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriumvalue'),
                     Tools::atkSelf()), SessionManager::SESSION_NEW);
-                $modeUrl = Tools::session_url(Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch',
+                $modeUrl = SessionManager::sessionUrl(Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch',
                     array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriummode'),
                     Tools::atkSelf()), SessionManager::SESSION_NEW);
 
@@ -445,6 +447,8 @@ class SmartSearchHandler extends AbstractSearchHandler
         if ($entry['selectSelf']) {
             $entry = array_pop($path);
         }
+
+        /** @var Attribute $attr */
         $attr = &$entry['attr'];
 
         if ($attr == null) {
@@ -570,7 +574,7 @@ class SmartSearchHandler extends AbstractSearchHandler
      */
     function getResetCriteria()
     {
-        return Tools::session_url(Tools::dispatch_url($this->m_node->atkNodeType(), $this->m_action),
+        return SessionManager::sessionUrl(Tools::dispatch_url($this->m_node->atkNodeType(), $this->m_action),
             SessionManager::SESSION_REPLACE);
     }
 
@@ -601,7 +605,7 @@ class SmartSearchHandler extends AbstractSearchHandler
             $params["criteria"][] = $this->getCriterium($i, $criterium);
         }
 
-        $url = Tools::session_url(Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch',
+        $url = SessionManager::sessionUrl(Tools::dispatch_url($this->m_node->atkNodeType(), 'smartsearch',
             array('atkpartial' => 'criterium'), Tools::atkSelf()), SessionManager::SESSION_NEW);
         $params["action_add"] = "ATK.SmartSearchHandler.addCriterium('" . addslashes($url) . "')";
 

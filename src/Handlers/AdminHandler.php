@@ -208,7 +208,7 @@ class AdminHandler extends ActionHandler
             // reset search so we can back to the normal admin screen if we want
             $grid->setPostvar('atksearch', array());
 
-            $url = Tools::session_url(Tools::dispatch_url($node->atkNodeType(), $action,
+            $url = SessionManager::sessionUrl(Tools::dispatch_url($node->atkNodeType(), $action,
                 array('atkselector' => $node->primaryKey($records[0]))), SessionManager::SESSION_NESTED);
 
             if ($grid->isUpdate()) {

@@ -1428,7 +1428,7 @@ class OneToManyRelation extends Relation
                 $script .= $dialog->getCall(true, false);
             } else {
                 $url = Tools::dispatch_url($this->m_destInstance->atkNodeType(), 'add');
-                $script .= "atkSubmit('" . Tools::atkurlencode(Tools::session_url($url,
+                $script .= "atkSubmit('" . Tools::atkurlencode(SessionManager::sessionUrl($url,
                         SessionManager::SESSION_NESTED)) . "', true);";
             }
 

@@ -473,7 +473,7 @@ class DataGridList extends DataGridComponent
         /*         * ********************************************** */
         $mra = "";
         if (!$edit && $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS)) {
-            $target = Tools::session_url(Tools::atkSelf() . '?atknodetype=' . $grid->getActionNode()->atkNodeType(),
+            $target = SessionManager::sessionUrl(Tools::atkSelf() . '?atknodetype=' . $grid->getActionNode()->atkNodeType(),
                 SessionManager::SESSION_NESTED);
 
             /* multiple actions -> dropdown */
@@ -499,7 +499,7 @@ class DataGridList extends DataGridComponent
         /*         * ************************************* */ elseif (!$edit && $hasMRA) {
             $postvars = $grid->getNode()->m_postvars;
 
-            $target = Tools::session_url(
+            $target = SessionManager::sessionUrl(
                 Tools::atkSelf() . '?atknodetype=' . $grid->getNode()->atkNodeType()
                 . '&atktarget=' . (!empty($postvars['atktarget']) ? $postvars['atktarget']
                     : '')

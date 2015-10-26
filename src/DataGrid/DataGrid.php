@@ -1672,7 +1672,7 @@ class DataGrid
      */
     public function getSaveCall()
     {
-        $url = Tools::session_url(Tools::dispatch_url($this->getNode()->atkNodeType(), 'multiupdate',
+        $url = SessionManager::sessionUrl(Tools::dispatch_url($this->getNode()->atkNodeType(), 'multiupdate',
             array('output' => 'json')), SessionManager::SESSION_PARTIAL);
         return 'ATK.DataGrid.save(' . JSON::encode($this->getName()) . ', ' . JSON::encode($url) . ');';
     }

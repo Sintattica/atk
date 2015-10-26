@@ -534,7 +534,7 @@ class RecordList
         /*             * ********************************************** */
         $mra = "";
         if (Tools::hasFlag($flags, self::RL_MRPA)) {
-            $target = Tools::session_url(Tools::atkSelf() . '?atknodetype=' . $this->getMasterNodeType(),
+            $target = SessionManager::sessionUrl(Tools::atkSelf() . '?atknodetype=' . $this->getMasterNodeType(),
                 SessionManager::SESSION_NESTED);
 
             /* multiple actions -> dropdown */
@@ -558,7 +558,7 @@ class RecordList
         /*             * ************************************* */
         /* MULTI-RECORD-ACTION FORM (CONTINUED) */
         /*             * ************************************* */ elseif (Tools::hasFlag($flags, self::RL_MRA)) {
-            $target = Tools::session_url(Tools::atkSelf() . '?atknodetype=' . $this->m_node->atkNodeType() . '&atktarget=' . $this->m_node->m_postvars['atktarget'] . '&atktargetvar=' . $this->m_node->m_postvars['atktargetvar'] . '&atktargetvartpl=' . $this->m_node->m_postvars['atktargetvartpl'],
+            $target = SessionManager::sessionUrl(Tools::atkSelf() . '?atknodetype=' . $this->m_node->atkNodeType() . '&atktarget=' . $this->m_node->m_postvars['atktarget'] . '&atktargetvar=' . $this->m_node->m_postvars['atktargetvar'] . '&atktargetvartpl=' . $this->m_node->m_postvars['atktargetvartpl'],
                 SessionManager::SESSION_NESTED);
 
             $mra = (count($list["rows"]) > 1 ?

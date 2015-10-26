@@ -504,13 +504,6 @@ class Tools
         return SessionManager::sessionVars($sessionstatus, $levelskip, $url);
     }
 
-    /**
-     * @deprecated use SessionManager::sessionUrl() instead.
-     */
-    public static function session_url($url, $sessionstatus = SessionManager::SESSION_DEFAULT, $levelskip = null)
-    {
-        return SessionManager::sessionUrl($url, $sessionstatus, $levelskip);
-    }
 
     /**
      * @deprecated use self::atkHref or SessionManager::href instead.
