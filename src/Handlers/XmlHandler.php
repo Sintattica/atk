@@ -1,19 +1,6 @@
 <?php namespace Sintattica\Atk\Handlers;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage handlers
- *
- * @copyright (c)2000-2004 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 3582 $
- * $Id$
- */
+
+use Sintattica\Atk\Ui\Output;
 
 /**
  * Handler class for the exporting a record to an XML file.
@@ -31,7 +18,9 @@ class XmlHandler extends ActionHandler
      */
     function action_xml()
     {
-        $recordset = $this->m_node->selectDb($this->m_postvars['atkselector'], "", "", "", "", "xml");
+        $recordset = $this->m_node->select($this->m_postvars['atkselector'])
+            ->mode('xml')
+            ->getAllRows();
 
         $output = Output::getInstance();
 

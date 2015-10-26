@@ -8,6 +8,7 @@ use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Core\Controller;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Attributes\Attribute;
+use Sintattica\Atk\Utils\Selector;
 
 /**
  * Handler for the 'editcopy' action of a node. It copies the selected
@@ -104,7 +105,7 @@ class AddOrCopyHandler extends ActionHandler
             $includes = array();
         }
 
-        list($record) = $this->m_node->selectDb($selector, "", 1, "", "", "copy");
+        $record = $this->m_node->select($selector)->mode('copy')->getFirstRow();
         if ($record != null) {
             if (!$this->m_node->allowed('copy', $record)) {
                 $this->updateDialog($this->renderAccessDeniedDialog());
@@ -308,7 +309,7 @@ class AddOrCopyHandler extends ActionHandler
      */
     public static function hasCopyableRecords(&$node, $selector = '')
     {
-        $count = $node->countDb($selector);
+        $count = $node->select($selector)->getRowCount();
         return ($count > 0);
     }
 
@@ -319,8 +320,9 @@ class AddOrCopyHandler extends ActionHandler
      */
     function getCopyOption()
     {
-        $records = $this->m_node->selectDb("", "", "", "",
-            array_merge(array($this->m_node->primaryKeyField()), $this->m_node->descriptorFields()));
+        $records = $this->m_node->select()
+            ->includes(array_merge(array($this->m_node->primaryKeyField()), $this->m_node->descriptorFields()))
+            ->getAllRows();
 
         if (count($records) == 0) {
             $label = $this->getOptionLabel('copy') . ' (' . $this->m_node->text('no_copyable_records') . ')';

@@ -572,8 +572,11 @@ class ExportHandler extends ActionHandler
         }
 
         $atkfilter = Tools::atkArrayNvl($source, 'atkfilter', "");
-        $recordset = $node_bk->selectDb($session_back['atkselector'] . ($session_back['atkselector'] != '' && $atkfilter != ''
-                ? ' AND ' : '') . $atkfilter, $atkorderby, "", "", $list_includes, "export");
+
+        $condition = $session_back['atkselector'] . ($session_back['atkselector'] != '' && $atkfilter != ''
+                ? ' AND ' : '') . $atkfilter;
+        $recordset = $node_bk->select($condition)->orderBy($atkorderby)
+            ->includes($list_includes)->mode('export')->getAllRows();
         if (method_exists($this->m_node, "assignExportData")) {
             $this->m_node->assignExportData($list_includes, $recordset);
         }

@@ -60,8 +60,7 @@ class FileWriterAttribute extends TextAttribute
         if (!$parser->isComplete($record)) {
             // record does not contain all data. Let's lazy load.
             Tools::atkdebug("[atkfilewriter] Lazy loading rest of record to complete filename.");
-            $recs = $this->m_ownerInstance->selectDb($record["atkprimkey"]);
-            $record = $recs[0];
+            $record = $this->m_ownerInstance->select($record["atkprimkey"])->getFirstRow();
         }
 
         $filename = $parser->parse($record);

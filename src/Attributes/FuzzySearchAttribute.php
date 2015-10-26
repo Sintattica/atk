@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Node;
 
 /**
  * The atkFuzzySearchAttribute class represents an attribute of a node
@@ -44,7 +45,7 @@ class FuzzySearchAttribute extends Attribute
 
     /**
      * An instance of the node we are searching on
-     * @var int
+     * @var Node
      * @access private
      */
     var $m_searchnodeInstance = null;
@@ -302,9 +303,10 @@ class FuzzySearchAttribute extends Attribute
             if (count($wheres) && $this->createSearchNodeInstance()) {
                 $whereclause = "((" . implode(") OR (", $wheres) . "))";
 
-                $resultset = $this->m_searchnodeInstance->selectDb($whereclause,
-                    $this->m_searchnodeInstance->m_defaultOrder, "", $this->m_searchnodeInstance->m_listExcludes, "",
-                    "admin");
+                $resultset = $this->m_searchnodeInstance->select($whereclause)
+                    ->excludes($this->m_searchnodeInstance->m_listExcludes)
+                    ->mode('admin')
+                    ->getAllRows();
             }
         } else {
             if (count($this->m_matches) > 0) {

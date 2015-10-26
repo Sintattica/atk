@@ -1601,7 +1601,7 @@ class DataGrid
         // notify listeners
         $this->notify(DataGridEvent::PRE_LOAD);
 
-        // temporarily overwrite the node postvars so that selectDb and countDb
+        // temporarily overwrite the node postvars so that select and count
         // have access to the atksearch, atkfilter, atklimit etc. parameters
         $this->overrideNodePostvars();
 
@@ -1792,7 +1792,7 @@ class DataGrid
             $this->setFormName($this->getName() . '_form');
         }
 
-        // temporarily overwrite the node postvars so that selectDb and countDb
+        // temporarily overwrite the node postvars so that select and count
         // have access to the atksearch, atkfilter, atklimit etc. parameters
         $this->overrideNodePostvars();
 

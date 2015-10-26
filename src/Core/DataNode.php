@@ -62,9 +62,9 @@ class DataNode extends Node
      *
      * @return array selected records
      */
-    public function selectDb($selector = null, $order = null, $limit = null)
+    public function select($selector = null, $order = null, $limit = null)
     {
-        Tools::atkdebug(get_class($this) . '::selectDb(' . $selector . ')');
+        Tools::atkdebug(get_class($this) . '::select(' . $selector . ')');
 
         if ($order == null) {
             $order = $this->getOrder();
@@ -80,7 +80,7 @@ class DataNode extends Node
         );
 
         $result = $this->findData($params);
-        Tools::atkdebug('Result ' . get_class($this) . '::selectDb(' . $selector . ') => ' . count($result) . ' row(s)');
+        Tools::atkdebug('Result ' . get_class($this) . '::select(' . $selector . ') => ' . count($result) . ' row(s)');
         return $result;
     }
 
@@ -91,7 +91,7 @@ class DataNode extends Node
      *
      * @return int record count
      */
-    public function countDb($selector = null)
+    public function count($selector = null)
     {
         $params = array(
             'selector' => $selector,

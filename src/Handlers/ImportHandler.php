@@ -5,6 +5,8 @@ use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Utils\MessageQueue;
+use Sintattica\Atk\Attributes\Attribute;
+use Sintattica\Atk\Relations\Relation;
 
 
 /**
@@ -840,7 +842,7 @@ class ImportHandler extends ActionHandler
     /**
      * Get the real attribute (instance) by his name
      * @param String $name name of the attribute
-     * @return object         instance of the attribute
+     * @return Attribute|Relation object         instance of the attribute
      */
     function &getUsableAttribute($name)
     {
@@ -1205,7 +1207,9 @@ class ImportHandler extends ActionHandler
 
             // this check only works if either the primary key column is non-numeric or the given value is numeric
             if (!$isNumeric || is_numeric($value)) {
-                $relationselect = $attr->m_destInstance->selectDb($attr->m_destInstance->m_table . "." . $attr->m_destInstance->primaryKeyField() . ' = \'' . escapeSQL($value) . "'");
+                $db = $attr->m_destInstance->getDb();
+                $relationselect = $attr->m_destInstance->select($attr->m_destInstance->m_table . "." . $attr->m_destInstance->primaryKeyField() . ' = \'' . $db->escapeSQL($value) . "'")
+                    ->getAllRows();
             }
 
             if (count($relationselect) == 0 || count($relationselect) > 1) {

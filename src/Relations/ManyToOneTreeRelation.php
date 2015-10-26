@@ -51,7 +51,7 @@ class ManyToOneTreeRelation extends ManyToOneRelation
             $sp = new StringParser($this->m_destinationFilter);
             $this->m_destInstance->addFilter($sp->parse($record));
         }
-        $recordset = $this->m_destInstance->selectDb("", $this->m_destInstance->m_primaryKey[0], "", "", $tmp2);
+        $recordset = $this->m_destInstance->select($this->m_destInstance->m_primaryKey[0])->includes($tmp2)->getAllRows();
         $this->m_current = $this->m_ownerInstance->primaryKey($record);
         $result = '<select class="form-control" name="' . $fieldprefix . $this->fieldName() . '">';
 
@@ -69,20 +69,18 @@ class ManyToOneTreeRelation extends ManyToOneRelation
      * @param array $record Record
      * @return string Piece of html code that can  be used in a form to edit this
      */
-    function search($record = "")
+    function search($record)
     {
         $this->createDestination();
         if ($this->m_destinationFilter != "") {
             $sp = new StringParser($this->m_destinationFilter);
             $this->m_destInstance->addFilter($sp->parse($record));
         }
-        $recordset = $this->m_destInstance->selectDb("", "", "", "",
-            Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+        $recordset = $this->m_destInstance->select()
+            ->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey))
+            ->getAllRows();
 
         $result = '<select class="form-control" name="atksearch[' . $this->fieldName() . ']">';
-
-        $pkfield = $this->m_destInstance->primaryKeyField();
-
         $result .= '<option value="">' . Tools::atktext("search_all", "atk");
         $result .= $this->createdd($recordset);
         $result .= '</select>';

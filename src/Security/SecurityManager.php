@@ -180,11 +180,17 @@ class SecurityManager
         $usernode = Module::atkGetNode(Config::getGlobal("auth_usernode"));
         $selector = sprintf("%s.%s = '%s'", Config::getGlobal("auth_usertable"),
             Config::getGlobal("auth_userfield"), $username);
-        $userrecords = $usernode->selectDb($selector, "", "", "", array(
-            Config::getGlobal("auth_userpk"),
-            Config::getGlobal("auth_emailfield"),
-            Config::getGlobal("auth_passwordfield")
-        ), "edit");
+
+
+        $userrecords = $usernode->select($selector)
+            ->includes(array(
+                Config::getGlobal("auth_userpk"),
+                Config::getGlobal("auth_emailfield"),
+                Config::getGlobal("auth_passwordfield")
+            ))
+            ->mode('edit')
+            ->getAllRows();
+
         if (count($userrecords) != 1) {
             Tools::atkdebug("User '$username' not found.");
             return false;

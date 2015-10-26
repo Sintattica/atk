@@ -255,7 +255,7 @@ class SecureRelation extends OneToOneRelation
                     $this->m_destInstance->m_postvars["atksearchmode"] = $this->m_ownerInstance->m_postvars["atksearchmode"];
                     $this->m_destInstance->m_postvars["atksearchmethod"] = $this->m_ownerInstance->m_postvars["atksearchmethod"];
 
-                    $records = $this->m_destInstance->selectDb();
+                    $records = $this->m_destInstance->select()->getAllRows();
                     $this->m_searcharray = $oldsearcharray;
                     $errorconfig = Config::getGlobal("securerelation_decrypterror", null);
 
@@ -504,7 +504,7 @@ class SecureRelation extends OneToOneRelation
         }
 
         if (!$this->m_destsearch[$value] && $this->createDestination()) {
-            $this->m_destsearch[$value] = $this->m_destInstance->selectDb(implode(" OR ", $searchConditions));
+            $this->m_destsearch[$value] = $this->m_destInstance->select(implode(" OR ", $searchConditions))->getAllRows();
         }
 
         foreach ($this->m_destsearch[$value] as $result) {

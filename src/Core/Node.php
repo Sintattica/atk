@@ -2014,7 +2014,8 @@ class Node
         $fieldprefix = "",
         $ignoreTab = false,
         $injectSections = true
-    ) {
+    )
+    {
         // update visibility of some attributes based on the current record
         $this->checkAttributeSecurity($mode, $record);
 
@@ -2604,7 +2605,8 @@ class Node
         $checkoverride = true,
         $mergeSelectors = true,
         $csrfToken = null
-    ) {
+    )
+    {
         $method = 'confirm' . $action;
         if ($checkoverride && method_exists($this, $method)) {
             return $this->$method($atkselector, $locked);
@@ -2650,7 +2652,7 @@ class Node
         }
 
         $content = "";
-        $recs = $this->selectDb($atkselector_str, "", "", "", $this->descriptorFields());
+        $recs = $this->select($atkselector_str)->includes($this->descriptorFields())->getAllRows();
         if (count($recs) == 1) {
             // 1 record, put it in the page title (with the actionTitle call, a few lines below)
             $record = $recs[0];
@@ -3496,13 +3498,7 @@ class Node
      */
     public function select($condition = null, array $params = array())
     {
-        $class = "Sintattica\\Atk\\Utils\\Selector";
-
-        if (method_exists($this, 'selectDb') || method_exists($this, 'countDb')) {
-            $class = "Sintattica\\Atk\\Utils\\CompatSelector";
-        }
-
-        $selector = new $class($this);
+        $selector = new Selector($this);
         $this->_initSelector($selector, $condition, $params);
 
         return $selector;
@@ -3812,7 +3808,7 @@ class Node
      */
     function deleteDb($selector, $exectrigger = true, $failwhenempty = false)
     {
-        $recordset = $this->selectDb($selector, "", "", "", "", "delete");
+        $recordset = $this->select($selector)->mode('delete')->getAllRows();
 
         // nothing to delete, throw an error (determined by $failwhenempty)!
         if (count($recordset) == 0) {
@@ -4472,7 +4468,10 @@ class Node
         }
 
         // We load records in admin mode, se we are certain that all fields are added.
-        $recs = $this->selectDb("", "", "", $this->m_listExcludes, "", "admin");
+        $recs = $this->select()
+            ->excludes($this->m_listExcludes)
+            ->mode('admin')
+            ->getAllRows();
 
         // Restore original atksearch
         $this->m_postvars['atksearch'] = $orgsearch;
@@ -4817,80 +4816,6 @@ class Node
     public function rowClass($record, $nr)
     {
         return $nr % 2 == 0 ? 'row1' : 'row2';
-    }
-
-    /**
-     * Catch missing methods.
-     *
-     * @param string $method method name
-     * @param array $params method parameters
-     */
-    public function __call($method, $params)
-    {
-        // Catch use of deprecated selectDb and countDb methods. We implement
-        // this here instead of keeping wrapper methods because if someone has
-        // overridden these methods the atkCompatSelector will be used instead of
-        // the normal Selector which will call the overridden selectDb and/or
-        // countDb methods which might call parent::selectDb(...) which would
-        // call the select() method which would again instantiate an
-        // atkCompatSelector etc. This way we can make sure the atkCompatSelector is
-        // only instantiated on the first call after which we use a normal
-        // selector if a call to parent::selectDb(...) is made.
-        if (strtolower($method) == 'selectdb') {
-            Tools::atkwarning("Use of deprecated selectDb method on node " . $this->atkNodeType());
-
-            $condition = array_key_exists(0, $params) ? $params[0] : '';
-            $order = array_key_exists(1, $params) ? $params[1] : '';
-            $limit = array_key_exists(2, $params) ? $params[2] : '';
-            $excludes = array_key_exists(3, $params) ? $params[3] : '';
-            $includes = array_key_exists(4, $params) ? $params[4] : '';
-            $mode = array_key_exists(5, $params) ? $params[5] : '';
-            $distinct = array_key_exists(5, $params) ? $params[5] : false;
-            $ignoreDefaultFilters = array_key_exists(6, $params) ? $params[6] : false;
-
-            $selector = new Selector($this);
-            $this->_initSelector($selector);
-            $selector->where($condition);
-            if ($order === false || $order != '') {
-                $selector->orderBy($order);
-            }
-            if ($limit != null && !is_array($limit)) {
-                $selector->limit($limit, 0);
-            } else {
-                if ($limit != null) {
-                    $selector->limit($limit['limit'], $limit['offset']);
-                }
-            }
-            $selector->excludes($excludes);
-            $selector->includes($includes);
-            $selector->mode($mode);
-            $selector->distinct($distinct);
-            $selector->ignoreDefaultFilters($ignoreDefaultFilters);
-            return $selector->getAllRows();
-        } else {
-            if (strtolower($method) == 'countdb') {
-                Tools::atkwarning("Use of deprecated countDb method on node " . $this->atkNodeType());
-
-                $condition = array_key_exists(0, $params) ? $params[0] : '';
-                $excludes = array_key_exists(1, $params) ? $params[1] : '';
-                $includes = array_key_exists(2, $params) ? $params[2] : '';
-                $mode = array_key_exists(3, $params) ? $params[3] : '';
-                $distinct = array_key_exists(4, $params) ? $params[4] : false;
-                $ignoreDefaultFilters = array_key_exists(5, $params) ? $params[5] : false;
-
-                $selector = new Selector($this);
-                $this->_initSelector($selector);
-                $selector->where($condition);
-                $selector->excludes($excludes);
-                $selector->includes($includes);
-                $selector->mode($mode);
-                $selector->distinct($distinct);
-                $selector->ignoreDefaultFilters($ignoreDefaultFilters);
-                return $selector->getRowCount();
-            } else {
-                throw new Exception("Call to undefined method " . get_class($this) . "::{$method}()", E_USER_ERROR);
-            }
-        }
     }
 
     /**

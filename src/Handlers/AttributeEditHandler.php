@@ -124,8 +124,7 @@ class AttributeEditHandler extends ActionHandler
         $validate = true;
         $success = true;
         foreach ($atkselector as $selector) {
-            list($rec) = $node->selectDb($selector, "", "", "", array($attributename));
-
+            $rec = $node->select($selector)->includes(array($attributename))->getFirstRow();
             $rec[$attributename] = $attribute->fetchValue($node->m_postvars);
 
             // Get all the attributes we are NOT changing.

@@ -318,7 +318,7 @@ class Attribute
     const PRESTORE = 1;
 
     /**
-     * Call load before selectDb()
+     * Call load before select()
      *
      * Storage type flag, used by the storageType() and related methods
      */
@@ -332,7 +332,7 @@ class Attribute
     const POSTSTORE = 2;
 
     /**
-     * Call load after selectDb()
+     * Call load after select()
      *
      * Storage type flag, used by the storageType() and related methods
      */

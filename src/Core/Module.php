@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Utils\ClassLoader;
+use Sintattica\Atk\Core\Node;
 
 /**
  * The Module abstract base class.

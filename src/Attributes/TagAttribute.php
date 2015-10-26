@@ -4,6 +4,7 @@ use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Node;
 
 /**
  * This attribute is used for adding tags to a node
@@ -25,9 +26,14 @@ class TagAttribute extends FuzzySearchAttribute
     const TA_IGNORE = 3; //When a none-existing tag is found, the tag is ignored.
 
     var $m_link = "";
+
+    /** @var Node null  */
     var $m_linkInstance = null;
     var $m_destination = "";
+
+    /** @var Node null  */
     var $m_destInstance = null;
+
     var $m_destinationfield = "";
     var $m_remoteKey = "";
     var $m_localKey = "";
@@ -235,7 +241,7 @@ class TagAttribute extends FuzzySearchAttribute
 
         $objectid = $orgrec[$this->m_ownerInstance->primaryKeyField()]; //pageid or topicid
         $selector = $this->m_linkInstance->m_table . "." . $this->getLocalKey() . "='" . $objectid . "'";
-        $records = $this->m_linkInstance->selectDb($selector);
+        $records = $this->m_linkInstance->select($selector)->getAllRows();
 
         //loop through all the records
         foreach ($records as $r) {
@@ -317,7 +323,7 @@ class TagAttribute extends FuzzySearchAttribute
     function getDestinationRecords($token)
     {
         $selector = $this->m_destInstance->m_table . "." . $this->m_destinationfield . "='" . Tools::escapeSQL($token) . "'";
-        return $this->m_destInstance->selectDb($selector);
+        return $this->m_destInstance->select($selector)->getAllRows();
     }
 
     /**
@@ -348,7 +354,7 @@ class TagAttribute extends FuzzySearchAttribute
     function _getDefaultTags()
     {
         if ($this->createDestinationInstance()) {
-            return $this->m_destInstance->selectDb();
+            return $this->m_destInstance->select()->getAllRows();
         }
         return array();
     }
@@ -445,7 +451,11 @@ class TagAttribute extends FuzzySearchAttribute
                 " AND " . $this->m_linkInstance->m_table . '.' . $this->getRemoteKey() . "='" .
                 $remKey . "'";
 
-            $existing = $this->m_linkInstance->selectDb($where, "", "", "", $this->m_linkInstance->m_primaryKey);
+
+            $existing = $this->m_linkInstance
+                ->select($where)
+                ->includes($this->m_linkInstance->m_primaryKey)
+                ->getAllRows();
 
             if (!count($existing)) {
                 Tools::atkdebug("does not exist, adding new record.");
@@ -469,7 +479,9 @@ class TagAttribute extends FuzzySearchAttribute
     {
         Tools::atkdebug("calling load");
         if ($this->createLink()) {
-            return $this->m_linkInstance->selectDb($this->m_linkInstance->m_table . "." . $this->getLocalKey() . "='" . $record[$this->m_ownerInstance->primaryKeyField()] . "'");
+            return $this->m_linkInstance
+                ->select($this->m_linkInstance->m_table . "." . $this->getLocalKey() . "='" . $record[$this->m_ownerInstance->primaryKeyField()] . "'")
+                ->getAllRows();
         }
         return array();
     }

@@ -1,6 +1,10 @@
 <?php namespace Sintattica\Atk\Core;
 
 use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Attributes\Attribute;
+use Sintattica\Atk\Attributes\TextAttribute;
+use Sintattica\Atk\Handlers\EditHandler;
+use Sintattica\Atk\Handlers\DeleteHandler;
 
 
 /**
@@ -96,7 +100,7 @@ class FileEditor extends Node
      * @return array The array containing the directory and file names
      *               from the currently selected directory
      */
-    function countDb($selector)
+    function count($selector)
     {
         $d = dir($this->m_dir);
         $arr = array();
@@ -174,11 +178,12 @@ class FileEditor extends Node
      * @param String $selector Identifier for the selected item
      * @param String $orderby The list of items is ordered by the item type
      *                        mentioned in this variable
-     * @param unknown $limit
-     * @return unknown
+     * @param mixed $limit
+     * @return array
      */
-    function selectDb($selector = "", $orderby = "", $limit = "")
+    function select($selector = "", $orderby = "", $limit = "")
     {
+        $res = array();
         SessionManager::getSessionManager()->stackVar('dirname', $this->m_dir);
         if ($selector == "") {
             // no file selected, generate list..
@@ -362,9 +367,9 @@ class FileEditor extends Node
      * This function overrides the edit action to first set the directory
      * before actually editing a file.
      *
-     * @param atkActionHandler $handler
+     * @param EditHandler $handler
      */
-    function action_edit(atkEditHandler $handler)
+    function action_edit(EditHandler $handler)
     {
         $this->m_dir = SessionManager::getSessionManager()->stackVar('dirname');
         $handler->action_edit();
@@ -374,9 +379,9 @@ class FileEditor extends Node
      * This function overrides the delete action to set the directory
      * before actually deleting a file.
      *
-     * @param atkActionHandler $handler
+     * @param DeleteHandler $handler
      */
-    function action_delete(atkDeleteHandler $handler)
+    function action_delete(DeleteHandler $handler)
     {
         $this->m_dir = SessionManager::getSessionManager()->stackVar('dirname');
         $handler->action_delete();

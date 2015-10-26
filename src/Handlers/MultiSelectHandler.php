@@ -47,9 +47,12 @@ class MultiSelectHandler extends AdminHandler
     function handleMultiselect()
     {
         $node = $this->getNode();
-        $columnConfig = &$node->getColumnConfig();
-        $recordset = $node->selectDb(implode(' OR ', $this->m_postvars['atkselector']),
-            $columnConfig->getOrderByStatement(), "", $node->m_listExcludes, "", "multiselect");
+        $columnConfig = $node->getColumnConfig();
+        $recordset = $node->select(implode(' OR ', $this->m_postvars['atkselector']))
+            ->orderBy($columnConfig->getOrderByStatement())
+            ->excludes($node->m_listExcludes)
+            ->mode('multiselect')
+            ->getAllRows();
 
         // loop recordset to parse atktargetvar
         $atktarget = Tools::atkurldecode($node->m_postvars['atktarget']);

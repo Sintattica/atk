@@ -798,7 +798,7 @@ class FileAttribute extends Attribute
      * Give the file a uniquely numbered filename.
      *
      * @access private
-     * @param array $rec The record for thish the file was uploaded
+     * @param array $rec The record for which the file was uploaded
      * @param String $filename The name of the uploaded file
      * @return String The name of the uploaded file, renumbered if necessary
      */
@@ -820,7 +820,7 @@ class FileAttribute extends Attribute
             $selector .= " AND NOT (" . $this->m_ownerInstance->primaryKey($rec) . ")";
         }
 
-        $records = $this->m_ownerInstance->selectDb("($selector)", "", array($this->fieldName()));
+        $records = $this->m_ownerInstance->select("($selector)")->includes(array($this->fieldName()))->getAllRows();
 
         if (count($records) > 0) {
             // Check for the highest number

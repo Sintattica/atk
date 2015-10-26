@@ -84,7 +84,7 @@ class DeleteHandler extends ActionHandler
             $atkselector_str = $atkselector;
         }
 
-        $recordset = $this->m_node->selectDb($atkselector_str, "", "", "", "", "delete");
+        $recordset = $this->m_node->select($atkselector_str)->mode('delete')->getAllRows();
         foreach ($recordset as $record) {
             if (!$this->allowed($record)) {
                 return false;

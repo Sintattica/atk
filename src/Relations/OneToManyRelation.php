@@ -1260,7 +1260,7 @@ class OneToManyRelation extends Relation
             // Get the current atkselector
             $where = $this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']);
             if ($where) {
-                $childrecords = $rel->selectDb($where);
+                $childrecords = $rel->select($where)->getAllRows();
                 if (!empty($childrecords)) {
                     return Tools::atktext("restricted_delete_error");
                 }

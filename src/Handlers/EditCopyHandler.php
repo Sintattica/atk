@@ -51,7 +51,7 @@ class EditCopyHandler extends ActionHandler
     protected function getCopyRecord()
     {
         $selector = $this->m_postvars['atkselector'];
-        $recordset = $this->m_node->selectDb($selector, "", "", "", "", "copy");
+        $recordset = $this->m_node->select($selector)->mode('copy')->getAllRows();
         if (count($recordset) > 0) {
             return $recordset[0];
         } else {

@@ -25,7 +25,7 @@ use \Exception;
  * @package atk
  * @subpackage datagrid
  *
- * @todo At the moment the grid component is based on atkRecordList legacy code. This code
+ * @todo At the moment the grid component is based on RecordList legacy code. This code
  *       should be refactored / optimized but this also means that some backwards incompatible
  *       changes have to be made to the differen ATK attributes. For example, the component
  *       still uses the recordlist flags when calling attribute methods because the attributes

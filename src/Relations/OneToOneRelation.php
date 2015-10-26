@@ -261,8 +261,7 @@ class OneToOneRelation extends Relation
                     $condition .= " AND " . $this->m_destInstance->m_table . "." . $destfilter;
                 }
             }
-            $recs = $this->m_destInstance->selectDb($condition, "", "", "", "", $mode);
-            return isset($recs[0]) ? $recs[0] : null;
+            return $this->m_destInstance->select($condition)->mode($mode)->getFirstRow();
         }
     }
 

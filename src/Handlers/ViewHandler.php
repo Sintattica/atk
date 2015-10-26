@@ -51,9 +51,10 @@ class ViewHandler extends ViewEditBase
      */
     function getRecordFromDb()
     {
-        list($record) = $this->m_node->selectDb($this->m_postvars['atkselector'],
-            $this->getNode()->getColumnConfig()->getOrderByStatement(), "", $this->m_node->m_viewExcludes, "", "view");
-        return $record;
+        return $this->m_node->select($this->m_postvars['atkselector'])
+            ->excludes($this->m_node->m_viewExcludes)
+            ->mode('view')
+            ->getFirstRow();
     }
 
     /**

@@ -34,7 +34,10 @@ class ManyToManyRelation extends Relation
     var $m_localKey = "";
     var $m_remoteKey = "";
     var $m_link = "";
+
+    /** @var Node null  */
     var $m_linkInstance = null;
+
     var $m_store_deletion_filter = "";
     var $m_localFilter = null;
     protected $m_ownerFields = null;
@@ -370,8 +373,7 @@ class ManyToManyRelation extends Relation
                 $rec = $record[$this->fieldName()][$i][$remotekey];
                 if (!is_array($rec)) {
                     $selector = $this->m_destInstance->m_table . "." . $this->m_destInstance->primaryKeyField() . "= '$rec'";
-                    list($rec) = $this->m_destInstance->selectDb($selector, "", "", "",
-                        $this->m_destInstance->descriptorFields());
+                    $rec = $this->m_destInstance->select($selector)->includes($this->m_destInstance->descriptorFields())->getFirstRow();
                     $descr = $this->m_destInstance->descriptor($rec);
                 } else {
                     $descr = $this->m_destInstance->descriptor($rec);
@@ -434,7 +436,7 @@ class ManyToManyRelation extends Relation
 
     /**
      * load function
-     * @param Db $notused
+     * @param mixed $notused
      * @param array $record
      */
     function load($notused, $record)
@@ -442,7 +444,7 @@ class ManyToManyRelation extends Relation
         if ($this->createLink()) {
             $where = $this->_getLoadWhereClause($record);
             $rel = $this->m_linkInstance;
-            return $rel->selectDb($where);
+            return $rel->select($where)->getAllRows();
         }
         return array();
     }
@@ -735,8 +737,9 @@ class ManyToManyRelation extends Relation
         $this->createDestination();
 
         // now select all records
-        $recordset = $this->m_destInstance->selectDb("", "", "", "*",
-            Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+        $recordset = $this->m_destInstance->select()->excludes('*')
+            ->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey))
+            ->getAllRows();
         $result = '<select class="form-control"';
         if ($extended) {
             $result .= 'multiple="multiple" size="' . min(5, count($recordset) + 1) . '"';

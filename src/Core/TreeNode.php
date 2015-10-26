@@ -77,8 +77,10 @@ class TreeNode extends Node
     function buildTree()
     {
         Tools::atkdebug("treenode::buildtree() " . $this->m_parent);
-        $recordset = $this->selectDb(Tools::atkArrayNvl($this->m_postvars, "atkfilter", ""), "", "",
-            $this->m_listExcludes, "", "admin");
+        $recordset = $this->select(Tools::atkArrayNvl($this->m_postvars, "atkfilter", ""))
+            ->excludes($this->m_listExcludes)
+            ->mode('admin')
+            ->getAllRows();
 
         $treeobject = new TreeToolsTree();
         for ($i = 0; $i < count($recordset); $i++) {
@@ -622,7 +624,7 @@ class TreeNode extends Node
      */
     function copyChildren($selector, $parent = "", $mode = "copy")
     {
-        $recordset = $this->selectDb($selector, "", "", "", "", "copy");
+        $recordset = $this->select($selector)->mode($mode)->getAllRows();
 
         if (count($recordset) > 0) {
             for ($i = 0; $i < count($recordset); $i++) {
@@ -651,7 +653,7 @@ class TreeNode extends Node
     function deleteDb($selector)
     {
         Tools::atkdebug("Retrieve record");
-        $recordset = $this->selectDb($selector, "", "", "", "", "delete");
+        $recordset = $this->select($selector)->mode('delete')->getAllRows();
         for ($i = 0; $i < count($recordset); $i++) {
             foreach (array_keys($this->m_attribList) as $attribname) {
                 $p_attrib = $this->m_attribList[$attribname];
@@ -663,8 +665,9 @@ class TreeNode extends Node
         $parent = $recordset[0][$this->m_primaryKey[0]];
         if ($this->m_parent != "") {
             Tools::atkdebug("Check for child records");
-            $children = $this->selectDb($this->m_table . '.' . $this->m_parent . '=' . $parent, "", "", "", "",
-                "delete");
+            $children = $this->select($this->m_table . '.' . $this->m_parent . '=' . $parent)
+                ->mode('delete')
+                ->getAllRows();
 
             if (count($children) > 0) {
                 Tools::atkdebug('DeleteChildren(' . $this->m_table . '.' . $this->m_parent . '=' . $parent . ',' . $parent . ')');
@@ -694,7 +697,9 @@ class TreeNode extends Node
     function deleteChildren($selector, $parent)
     {
         Tools::atkdebug("Check for child records of the Child");
-        $recordset = $this->selectDb($this->m_table . '.' . $this->m_parent . '=' . $parent, "", "", "", "", "delete");
+        $recordset = $this->select($this->m_table . '.' . $this->m_parent . '=' . $parent)
+            ->mode('delete')
+            ->getAllRows();
         for ($i = 0; $i < count($recordset); $i++) {
             foreach (array_keys($this->m_attribList) as $attribname) {
                 $p_attrib = $this->m_attribList[$attribname];
