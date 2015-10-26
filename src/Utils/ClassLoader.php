@@ -36,7 +36,7 @@ class ClassLoader
      *                                class is included.
      * @param bool $path Whether or not it is NOT an ATK classname
      *                                 ("map.class"), if true it will interpret classname
-     *                                 as: "map/class.classname.php", default false.
+     *                                 as: "map/classname.php", default false.
      * @return bool whether the file we want to import was actually imported or not
      */
     static function import($fullclassname, $failsafe = true, $path = false)

@@ -2,7 +2,6 @@
 
 use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Utils\ClassLoader;
-use Sintattica\Atk\Core\Node;
 
 /**
  * The Module abstract base class.
@@ -18,17 +17,11 @@ use Sintattica\Atk\Core\Node;
 class Module
 {
 
-    const MF_NOMENU = 1;
-
     /**
      * Don't use the rights of this module
      */
     const MF_NORIGHTS = 2;
 
-    /**
-     * Use this module only as a reference
-     */
-    const MF_REFERENCE = self::MF_NOMENU | self::MF_NORIGHTS;
 
     const MF_SPECIFIC_1 = 4;
     const MF_SPECIFIC_2 = 8;
@@ -46,6 +39,7 @@ class Module
      * @var boolean
      */
     static $s_isOverloader = false;
+
     var $m_name;
 
     /**
@@ -187,28 +181,20 @@ class Module
      */
     public static function getNodeFile($node)
     {
-        global $config_classroot, $config_module_path;
+        global $config_module_path;
         $modules = self::atkGetModules();
-
-        /* module and type */
         $module = Module::getNodeModule($node);
         $type = Module::getNodeType($node);
-        $file = "class.$type.php";
 
-        /* filename */
-        if (empty($module)) {
-            $file = $config_classroot . "class.$type.php";
-        } else {
-            if (is_array($modules) && in_array($module, array_keys($modules))) {
-                if (file_exists("{$modules[$module]}/nodes/class.{$type}.php")) {
-                    $file = "{$modules[$module]}/nodes/class.{$type}.php";
-                } else {
-                    $file = "{$modules[$module]}/class.{$type}.php";
-                }
+        if (is_array($modules) && in_array($module, array_keys($modules))) {
+            if (file_exists("{$modules[$module]}/nodes/{$type}.php")) {
+                $file = "{$modules[$module]}/nodes/{$type}.php";
             } else {
-                Tools::atkdebug("Couldn't find node '$node' in module '$module'. Trying default module path.");
-                $file = $config_module_path . "/" . $module . "/class.$type.php";
+                $file = "{$modules[$module]}/{$type}.php";
             }
+        } else {
+            Tools::atkdebug("Couldn't find node '$node' in module '$module'. Trying default module path.");
+            $file = $config_module_path . "/" . $module . "/$type.php";
         }
         return $file;
     }
