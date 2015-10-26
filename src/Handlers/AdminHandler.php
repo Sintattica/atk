@@ -261,7 +261,7 @@ class AdminHandler extends ActionHandler
     {
         $link = "";
         if ($this->m_node->allowed("add") && !$this->m_node->hasFlag(Node::NF_READONLY) && $this->m_node->hasFlag(Node::NF_IMPORT)) {
-            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeType(), "import"),
+            $link .= SessionManager::href(Tools::dispatch_url($this->m_node->atkNodeType(), "import"),
                 Tools::atktext("import", "atk", $this->m_node->m_type), SessionManager::SESSION_NESTED);
         }
         return $link;
@@ -282,7 +282,7 @@ class AdminHandler extends ActionHandler
                     str_replace('[table]', $this->m_node->getTable(), $this->m_node->m_fuzzyFilters));
             }
 
-            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeType(), "export",
+            $link .= SessionManager::href(Tools::dispatch_url($this->m_node->atkNodeType(), "export",
                 array('atkfilter' => $filter)), Tools::atktext("export", "atk", $this->m_node->m_type),
                 SessionManager::SESSION_NESTED);
         }

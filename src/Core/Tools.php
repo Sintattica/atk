@@ -488,19 +488,6 @@ class Tools
     }
 
 
-    /**
-     * @deprecated use self::atkHref or SessionManager::href instead.
-     */
-    public static function href(
-        $url,
-        $name = "",
-        $sessionstatus = SessionManager::SESSION_DEFAULT,
-        $saveform = false,
-        $extraprops = ""
-    ) {
-        return SessionManager::href($url, $name, $sessionstatus, $saveform, $extraprops);
-    }
-
 
     /**
      * array_merge without duplicates

@@ -658,7 +658,7 @@ class OneToManyRelation extends Relation
         $add_url = $this->getAddURL($params);
         $label = $this->getAddLabel();
 
-        return Tools::href($add_url, $label, SessionManager::SESSION_NESTED, $saveform,
+        return SessionManager::href($add_url, $label, SessionManager::SESSION_NESTED, $saveform,
             $onchange . ' class="atkonetomanyrelation"');
     }
 

@@ -140,7 +140,7 @@ class TreeNode extends Node
                 $label = Tools::atktext(Module::getNodeType($this->m_type),
                         $this->m_module) . " " . Tools::atktext("add", "atk");
             }
-            $content .= Tools::href($addurl, $label, SessionManager::SESSION_NESTED) . '<br><br>';
+            $content .= SessionManager::href($addurl, $label, SessionManager::SESSION_NESTED) . '<br><br>';
         }
 
         $content .= $this->GraphTreeRender();
@@ -412,12 +412,12 @@ class TreeNode extends Node
 
                             if ($this->m_tree[$cnt]["isleaf"] == 1) {
                                 if ($cnt != 0) {
-                                    $res .= "<td>" . Tools::href(Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params,
+                                    $res .= "<td>" . SessionManager::href(Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params,
                                             "<img src=\"" . $img_end_plus . "\" border=0>") . "</td>\n";
                                 }
                             } else {
                                 if ($cnt != 0) {
-                                    $res .= "<td>" . Tools::href(Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params,
+                                    $res .= "<td>" . SessionManager::href(Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params,
                                             "<img src=\"" . $img_plus . "\" border=0>") . "</td>\n";
                                 }
                             }
@@ -576,7 +576,7 @@ class TreeNode extends Node
                             $stringparser = new StringParser($url);
                             $url = $stringparser->parse($this->m_tree[$cnt]["label"], true);
 
-                            $res .= Tools::href($url, Tools::atktext($name), SessionManager::SESSION_NESTED) . "&nbsp;";
+                            $res .= SessionManager::href($url, Tools::atktext($name), SessionManager::SESSION_NESTED) . "&nbsp;";
                         }
                     }
 

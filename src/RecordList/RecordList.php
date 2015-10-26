@@ -229,7 +229,7 @@ class RecordList
             if (empty($head["url"])) {
                 $headercols[] = array("content" => $head["title"]);
             } else {
-                $headercols[] = array("content" => Tools::href($head["url"], $head["title"]));
+                $headercols[] = array("content" => SessionManager::href($head["url"], $head["title"]));
             }
         }
 
@@ -294,7 +294,7 @@ class RecordList
             if (!Tools::hasFlag($flags,
                     self::RL_NO_EXTENDED_SEARCH) && !$this->m_node->hasFlag(Node::NF_NO_EXTENDED_SEARCH)
             ) {
-                $button .= '<br>' . Tools::href(Tools::atkSelf() . "?atknodetype=" . $this->getMasterNodeType() . "&atkaction=" . $node->getExtendedSearchAction(),
+                $button .= '<br>' . SessionManager::href(Tools::atkSelf() . "?atknodetype=" . $this->getMasterNodeType() . "&atkaction=" . $node->getExtendedSearchAction(),
                         "(" . Tools::atktext("search_extended") . ")", SessionManager::SESSION_NESTED);
             }
 

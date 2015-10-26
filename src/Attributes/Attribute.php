@@ -12,6 +12,7 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Keyboard\Keyboard;
 use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Utils\EditFormModifier;
+use Sintattica\Atk\Session\SessionManager;
 use \Exception;
 
 
@@ -2621,7 +2622,7 @@ class Attribute
             $cmd = ($columnConfig->hasSubTotal($this->fieldName()) ? "unsubtotal"
                 : "subtotal");
             if ($grid == null) {
-                return Tools::href(Tools::getDispatchFile() . '?' . $columnConfig->getUrlCommand($this->fieldName(),
+                return SessionManager::href(Tools::getDispatchFile() . '?' . $columnConfig->getUrlCommand($this->fieldName(),
                         $cmd), Tools::atktext("column_" . $cmd)) . ' ';
             } else {
                 $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($this->fieldName(), $cmd));
@@ -2652,7 +2653,7 @@ class Attribute
             $direction = ($columnConfig->getSortDirection($this->fieldName()) == "desc"
                 ? "asc" : "desc");
             if ($grid == null) {
-                $res = Tools::href(Tools::getDispatchFile() . '?' . $columnConfig->getUrlCommand($fieldname,
+                $res = SessionManager::href(Tools::getDispatchFile() . '?' . $columnConfig->getUrlCommand($fieldname,
                             $direction), Tools::atktext("column_" . $direction)) . ' ';
             } else {
                 $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($fieldname, $direction));

@@ -92,7 +92,7 @@ class ManyBoolRelation extends ManyToManyRelation
                             ' AND ' . $this->m_linkInstance->m_table . '.' . $this->getRemoteKey() .
                             "='" . $remoteValue . "'";
                         // Create link to details.
-                        $detaillink = Tools::href(Tools::dispatch_url($this->m_link, "edit",
+                        $detaillink = SessionManager::href(Tools::dispatch_url($this->m_link, "edit",
                             array("atkselector" => $selector)), "[" . Tools::atktext("details", "atk") . "]",
                             SessionManager::SESSION_NESTED, true);
                     }
@@ -129,7 +129,7 @@ class ManyBoolRelation extends ManyToManyRelation
         }
         // Add the add link if self::AF_MANYBOOL_AUTOLINK used
         if (($this->hasFlag(self::AF_MANYBOOL_AUTOLINK)) && ($this->m_destInstance->allowed("add"))) {
-            $result .= Tools::href(Tools::dispatch_url($this->m_destination, "add"), $this->getAddLabel(),
+            $result .= SessionManager::href(Tools::dispatch_url($this->m_destination, "add"), $this->getAddLabel(),
                     SessionManager::SESSION_NESTED) . "\n";
         }
 
