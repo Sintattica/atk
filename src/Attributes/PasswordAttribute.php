@@ -504,7 +504,7 @@ class PasswordAttribute extends Attribute
     function makePassword($times = 2)
     {
         // Show a debugmessage about this function being deprecated
-        Tools::atkdebug("PasswordAttribute::makePassword() is deprecated, use generatePassword() on an atkPasswordAttribute instead.");
+        Tools::atkdebug("PasswordAttribute::makePassword() is deprecated, use generatePassword() on a PasswordAttribute instead.");
 
         // Construct a new passwordattribute, generate the password and return it
         $passwordattribute = new PasswordAttribute("dummy", true);

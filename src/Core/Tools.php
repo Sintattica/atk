@@ -169,25 +169,6 @@ class Tools
         return false;
     }
 
-    /**
-     * @deprecated Use Debugger::getMicroTime()
-     * @return int the microtime
-     */
-    public static function getmicrotime()
-    {
-        return Debugger::getMicroTime();
-    }
-
-    /**
-     * @deprecated Use Debugger::elapsed();
-     *
-     * @return string elapsed time in microseconds
-     */
-    public static function elapsed()
-    {
-        return Debugger::elapsed();
-    }
-
 
     /**
      * Function atkdebug
@@ -258,7 +239,7 @@ class Tools
 
     public static function atkGetTimingInfo()
     {
-        return "[" . self::elapsed() . (Config::getGlobal('debug') > 0 && function_exists("memory_get_usage")
+        return "[" . Debugger::elapsed() . (Config::getGlobal('debug') > 0 && function_exists("memory_get_usage")
             ? " / " . sprintf("%02.02f", (memory_get_usage() / 1024 / 1024)) . "MB"
             : "") . "] ";
     }
@@ -278,10 +259,10 @@ class Tools
         global $g_error_msg;
 
         if ($error instanceof Exception) {
-            $g_error_msg[] = "[" . self::elapsed() . "] " . $error->getMessage();
+            $g_error_msg[] = "[" . Debugger::elapsed() . "] " . $error->getMessage();
             self::atkdebug(nl2br($error->getMessage() . "\n" . $error->getTraceAsString()), Tools::DEBUG_ERROR);
         } else {
-            $g_error_msg[] = "[" . self::elapsed() . "] " . $error;
+            $g_error_msg[] = "[" . Debugger::elapsed() . "] " . $error;
             self::atkdebug($error, Tools::DEBUG_ERROR);
         }
 
