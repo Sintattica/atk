@@ -1874,7 +1874,7 @@ class Tools
      *              Note that tabs that every user may see need not be
      *              registered.
      */
-    public static function registerNode($node, $action, $tabs = array(), $section = null)
+    public static function registerNode($node, $action, $tabs = array())
     {
         if (!is_array($tabs)) {
             $section = $tabs;
@@ -1893,10 +1893,7 @@ class Tools
         if ($module == "") {
             $module = "main";
         }
-        if ($section == null) {
-            $section = $module;
-        }
-        $g_nodes[$section][$module][$type] = array_merge($action, $tabs);
+        $g_nodes[$module][$type] = array_merge($action, $tabs);
     }
 
 

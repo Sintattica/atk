@@ -1616,14 +1616,14 @@ class Node
             $secMgr = SecurityManager::getInstance();
 
             // load the $g_nodes array to find out what tabs are required
-            if (!isset($g_nodes[$this->m_module][$this->m_module][$this->m_type])) {
+            if (!isset($g_nodes[$this->m_module][$this->m_type])) {
                 $module = Module::atkGetModule($this->m_module);
                 $module->getNodes();
             }
 
             $priv = "tab_" . $tablist[$i];
-            if (isset($g_nodes[$this->m_module][$this->m_module][$this->m_type]) && Tools::atk_in_array($priv,
-                    $g_nodes[$this->m_module][$this->m_module][$this->m_type])
+            if (isset($g_nodes[$this->m_module][$this->m_type]) && Tools::atk_in_array($priv,
+                    $g_nodes[$this->m_module][$this->m_type])
             ) {
                 // authorisation is required
                 if (!$secMgr->allowed($this->m_module . "." . $this->m_type, "tab_" . $tablist[$i])) {
