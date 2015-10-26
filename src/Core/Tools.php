@@ -267,7 +267,7 @@ class Tools
         }
 
         if (function_exists('debug_backtrace')) {
-            self::atkdebug("Trace:" . self::atk_get_trace(), Tools::DEBUG_ERROR);
+            self::atkdebug("Trace:" . self::atkGetTrace(), Tools::DEBUG_ERROR);
         }
 
         if (Config::getGlobal('throw_exception_on_error') && $error instanceof Exception) {
@@ -287,11 +287,6 @@ class Tools
      */
     public static function atkGetTrace($format = "html")
     {
-        // Return if the debug_backtrace function doesn't exist
-        if (!function_exists("debug_backtrace")) {
-            return "Incorrect php-version for self::atk_get_trace()";
-        }
-
         // Get the debug backtrace
         $traceArr = debug_backtrace();
 
@@ -396,14 +391,6 @@ class Tools
 
         // Return the generated trace
         return $ret;
-    }
-
-    /**
-     * @deprecated Use atkGetTrace instead
-     */
-    public static function atk_get_trace($format = "html")
-    {
-        return self::atkGetTrace($format);
     }
 
     /**
