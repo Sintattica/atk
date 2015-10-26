@@ -854,7 +854,3 @@ class SecurityManager
         return $user[$userpk];
     }
 }
-
-
-
-
