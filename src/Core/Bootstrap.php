@@ -22,7 +22,6 @@ class Bootstrap
         }
         self::setSecurity();
         self::setDebugging();
-        Module::atkPreloadModules();
 
         //non needed now, only for frontcontroller
         //SmartyProvider::addFunction('atk.ui.plugins', 'atkfrontcontroller');

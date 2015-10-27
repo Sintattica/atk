@@ -32,13 +32,6 @@ class Module
      */
     const MF_NO_PRELOAD = 32;
 
-    /**
-     * We keep track if the node currently being instantiated is an
-     * overloader or not.
-     *
-     * @var boolean
-     */
-    static $s_isOverloader = false;
 
     var $m_name;
 
@@ -151,27 +144,6 @@ class Module
 
     }
 
-    /**
-     * Returns the node overloader if it exists. Else it
-     * will just return the module/node name of the given node.
-     * @param string $node module/node string
-     * @return string (overloader) module/node string
-     */
-    public static function nodeOverloader($node)
-    {
-        global $g_overloaders;
-
-        /* overloader check */
-        if (!empty($g_overloaders[$node])) {
-            Tools::atkdebug("Using overloader '" . $g_overloaders[$node] . "' for class '" . $node . "'");
-            self::$s_isOverloader = true;
-            $node = self::newAtkNode($g_overloaders[$node], false);
-            self::$s_isOverloader = false;
-            return $node;
-        } /* no overloader */ else {
-            return null;
-        }
-    }
 
     /**
      * Returns the node file for the given node.
@@ -227,32 +199,15 @@ class Module
 
         // set the current module scope, this will be retrieved in Node
         // to set it's $this->m_module instance variable in an early stage
-        if (!self::$s_isOverloader) {
-            self::setModuleScope($module);
-        }
+        self::setModuleScope($module);
 
-        /* now that we have included the node source file, we check
-         * for overloaders (because overloaders might need the included file!)
-         */
-        $overloader = $this->nodeOverloader($node);
-        if ($overloader != null) {
-            $overloader->m_module = $module;
-
-            if (!self::$s_isOverloader) {
-                self::resetModuleScope();
-            }
-
-            return $overloader;
-        }
 
         /* initialize node and return */
         $type = self::getNodeType($node);
         $node = new $type();
         $node->m_module = $module;
 
-        if (!self::$s_isOverloader) {
-            self::resetModuleScope();
-        }
+        self::resetModuleScope();
 
         return $node;
     }
@@ -684,67 +639,6 @@ class Module
             return $oldValue;
         } else {
             return $s_optimized; // Return current value.
-        }
-    }
-
-    /**
-     * Preload the module
-     * @see atkPreloadModules()
-     * @param String $modname The modulename
-     * @param String $modpath The path to the module.
-     */
-    public static function atkPreloadModule($modname, $modpath)
-    {
-        global $g_modifiers, $g_overloaders, $g_nodeListeners;
-
-        $preload = "$modpath/module_preload.php";
-        $module = "$modpath/module.php";
-        $filename = file_exists($preload) ? $preload : $module;
-
-        // no module file exists
-        if (!file_exists($filename)) {
-            Tools::atkdebug("Couldn't find module_preload.php or module.php for module '$modname' in '$modpath'");
-            return;
-        }
-
-        if ($filename != $preload) {
-            Tools::atkdebug("Loading module - $modname");
-        }
-
-        // the include file may specify modifiers.
-        $modifiers = array();
-        $overloaders = array();
-        $listeners = array();
-        include_once($filename);
-
-        for ($i = 0, $_i = count($modifiers); $i < $_i; $i++) {
-            $g_modifiers[$modifiers[$i]][] = $modname;
-        }
-
-        if (count($overloaders) > 0) {
-            $g_overloaders = array_merge($g_overloaders, $overloaders);
-        }
-
-        if (count($listeners) > 0) {
-            $g_nodeListeners = array_merge_recursive($g_nodeListeners, $listeners);
-        }
-    }
-
-    /**
-     * Preloads all modules. If a module_preload.inc file exists in the
-     * module directory, this file will be included. If no module_preload.inc
-     * file exists in the module directory the module.inc file will be used
-     * instead (to remain backwards compatible).
-     */
-    public static function atkPreloadModules()
-    {
-        global $g_moduleflags;
-        $modules = self::atkGetModules();
-
-        foreach ($modules as $modname => $modpath) {
-            if ((!isset($g_moduleflags[$modname])) || (!Tools::hasFlag($g_moduleflags[$modname], self::MF_NO_PRELOAD))) {
-                self::atkPreloadModule($modname, $modpath);
-            }
         }
     }
 
