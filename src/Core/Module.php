@@ -54,15 +54,6 @@ class Module
 
     }
 
-    /**
-     * Returns an array with filenames of attributes that need to be included
-     * in order to let this module work properly.
-     * @return array with attribute filenames
-     */
-    function getAttributes()
-    {
-
-    }
 
     /**
      * This method returns an array with menu items that need to be available
@@ -120,28 +111,6 @@ class Module
             $parent = 'main';
         }
         Tools::menuitem($name, $url, $parent, $enable, $order, $this->m_name);
-    }
-
-    /**
-     * This method can be used to return an array similar to the menu array
-     * but with links to (a) preference(s) page(s) for this module. The items
-     * that will be returned have to be added with the preferencelink() method.
-     * @return array with preference links for this module
-     */
-    function getPreferenceLinks()
-    {
-
-    }
-
-    /**
-     * This method is similar to the getPreferenceLinks() method but instead
-     * will return links to (an) admin page(s) for this module. The array which
-     * will be returned have to be created with the adminlink() method.
-     * @return array with admin links for this module
-     */
-    function getAdminLinks()
-    {
-
     }
 
 
