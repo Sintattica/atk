@@ -637,6 +637,12 @@ $config_enable_showall = true;
 $config_pagelinks = 10;
 
 /**
+ * Show go to first page and go to last page links in recordlist
+ * @var bool
+ */
+$config_pagelinks_first_last = false;
+
+/**
  * Display a 'stack' of the user activities in the top right corner.
  * @var boolean
  */

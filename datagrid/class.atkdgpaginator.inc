@@ -9,13 +9,13 @@
  * @subpackage utils
  *
  * @copyright (c) 2000-2007 Ibuildings.nl BV
- * 
+ *
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
 atkimport('atk.datagrid.atkdgcomponent');
 
 /**
- * The data grid paginator. Can be used to render pagination 
+ * The data grid paginator. Can be used to render pagination
  * links for an ATK data grid.
  *
  * @author Peter C. Verhage <peter@achievo.org>
@@ -33,6 +33,12 @@ class atkDGPaginator extends atkDGComponent
     protected $m_maxLinks = 10;
 
     /**
+     * Show go to first and last page links
+     * @var bool
+     */
+    protected $m_goToFirstLast = false;
+
+    /**
      * Constructor.
      *
      * @param atkDataGrid $grid    grid
@@ -42,6 +48,7 @@ class atkDGPaginator extends atkDGComponent
     {
         parent::__construct($grid, $options);
         $this->m_maxLinks = atkConfig('pagelinks', 10);
+        $this->m_goToFirstLast = atkConfig('pagelinks_first_last', false);
     }
 
     /**
@@ -79,6 +86,15 @@ class atkDGPaginator extends atkDGComponent
             $last = $pages;
         }
 
+        if ($this->m_goToFirstLast) {
+            // go to first link
+            if ($current > 1 && $last > $this->m_maxLinks) {
+                $title = $grid->text('first');
+                $url = $grid->getUpdateCall(array('atkstartat' => 0));
+                $links[] = array('type' => 'first', 'call' => $url, 'title' => $title);
+            }
+        }
+
         // previous link
         if ($current > 1) {
             $title = $grid->text('previous');
@@ -103,6 +119,15 @@ class atkDGPaginator extends atkDGComponent
             $title = $grid->text('next');
             $url = $grid->getUpdateCall(array('atkstartat' => $offset + $limit));
             $links[] = array('type' => 'next', 'call' => $url, 'title' => $title);
+        }
+
+        if ($this->m_goToFirstLast) {
+            // go to last link
+            if ($current < $pages && $pages != $last) {
+                $title = $grid->text('last');
+                $url = $grid->getUpdateCall(array('atkstartat' => ($pages - 1) * $limit));
+                $links[] = array('type' => 'last', 'call' => $url, 'title' => $title);
+            }
         }
 
         return $links;
