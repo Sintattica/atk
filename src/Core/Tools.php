@@ -1781,12 +1781,13 @@ class Tools
      */
     public static function registerNode($node, $action, $tabs = array())
     {
+        global $g_nodes;
+
         if (!is_array($tabs)) {
             $section = $tabs;
             $tabs = array();
         }
 
-        global $g_nodes;
         $module = Module::getNodeModule($node);
         $type = Module::getNodeType($node);
 

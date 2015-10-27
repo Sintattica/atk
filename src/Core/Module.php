@@ -450,54 +450,6 @@ class Module
 
 
     /**
-     * Perform a member function on all active modules, and return the
-     * collective result.
-     *
-     * <b>Example:</b>
-     * <code>
-     *  $menuitems = atkHarvestModules("getStuff");
-     * </code>
-     * This will return the result of the getStuff calls for all modules in a
-     * single array.
-     *
-     * @param String $function The name of the module member function to be
-     *                         called. The function does not have to exist for
-     *                         all modules, as atkHarvestModules will check if
-     *                         it exists before it makes the call.
-     * @param mixed $param Parameter to be passed to all functions. It is only
-     *                     possible to pass zero or one parameter.
-     * @param boolean $associative If true, return is an associative array with
-     *                             the results indexed by modulename. If false,
-     *                             results are put together in one array.
-     * @return array The result of the harvest.
-     */
-    public static function atkHarvestModules($function, $param = "", $associative = false)
-    {
-        $modules = self::atkGetModules();
-        $modulekeys = array_keys($modules);
-        $total = array();
-
-        foreach ($modulekeys as $modname) {
-            $module = self::atkGetModule($modname);
-            if (is_object($module) && method_exists($module, $function)) {
-                $res = $module->$function($param);
-                if (!empty($res)) {
-                    if ($associative) {
-                        $total[$modname] = $res;
-                    } else {
-                        if (is_array($res)) {
-                            $total = array_merge($total, $res);
-                        } else {
-                            $total[] = $res;
-                        }
-                    }
-                }
-            }
-        }
-        return $total;
-    }
-
-    /**
      * Get/set the status of the readoptimizer.
      * If you need the dataread-functionality of Node but don't need
      * the ui stuff, or the data write stuff, you can turn on the read

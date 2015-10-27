@@ -28,7 +28,6 @@ class Menu
         if ($s_instance == null) {
             Tools::atkdebug("Creating a new menu instance");
             $s_instance = new self();
-            Module::atkHarvestModules("getMenuItems");
         }
 
         return $s_instance;
