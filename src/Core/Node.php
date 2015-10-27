@@ -615,15 +615,6 @@ class Node
     protected $m_rowClassCallback = array();
 
     /**
-     * Tracker variable to see if we are currently in 'modifier mode' (running inside
-     * the scope of a modname_nodename_modifier() method). The variable contains the
-     * name of the modifying module.
-     * @access private
-     * @var String
-     */
-    var $m_modifier = "";
-
-    /**
      * Extended search action. The action which is called if the user
      * wants to perform an extended search.
      *
@@ -848,11 +839,6 @@ class Node
 
         $attribute->m_owner = $this->m_type;
 
-        // If we're running inside modifier scope, we have to tell the attribute
-        // what module he originated from.
-        if ($this->m_modifier != "") {
-            $attribute->m_module = $this->m_modifier;
-        }
 
         if (!Module::atkReadOptimizer()) {
             $this->resolveSectionsTabsOrder($sections, $tabs, $column, $order);
@@ -2732,7 +2718,6 @@ class Node
     function init()
     {
         Tools::atkdebug("init for " . $this->m_type);
-        global $g_modifiers;
 
         // Check if initialisation is not already done.
         if ($this->m_initialised == true) {
@@ -2747,14 +2732,6 @@ class Node
             $p_attrib->setOwnerInstance($this);
         }
 
-        // See if there are modules active that modify this node, and apply the
-        // modifiers if found.
-        if (isset($g_modifiers[$this->atknodetype()])) {
-            foreach ($g_modifiers[$this->atknodetype()] as $modulename) {
-                $module = Module::atkGetModule($modulename);
-                $module->modifier($this);
-            }
-        }
 
         $this->_addListeners();
 

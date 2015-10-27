@@ -74,17 +74,6 @@ class Bootstrap
         $GLOBALS['g_stickyurl'] = array();
 
         /**
-         * Modifiers
-         */
-        $GLOBALS['g_modifiers'] = array();
-
-        /**
-         * Overloaders
-         */
-        $GLOBALS['g_overloaders'] = array();
-
-
-        /**
          * Module globals
          */
         /**

@@ -122,22 +122,10 @@ class Module
      */
     public static function getNodeFile($node)
     {
-        global $config_module_path;
         $modules = self::atkGetModules();
         $module = Module::getNodeModule($node);
         $type = Module::getNodeType($node);
-
-        if (is_array($modules) && in_array($module, array_keys($modules))) {
-            if (file_exists("{$modules[$module]}/nodes/{$type}.php")) {
-                $file = "{$modules[$module]}/nodes/{$type}.php";
-            } else {
-                $file = "{$modules[$module]}/{$type}.php";
-            }
-        } else {
-            Tools::atkdebug("Couldn't find node '$node' in module '$module'. Trying default module path.");
-            $file = $config_module_path . "/" . $module . "/$type.php";
-        }
-        return $file;
+        return "{$modules[$module]}{$type}.php";
     }
 
     /**
@@ -225,56 +213,6 @@ class Module
     }
 
     /**
-     * Get the modifier functions for this node
-     *
-     * @param Node $node
-     * @return array Array with modifier function names
-     */
-    function getModifierFunctions(&$node)
-    {
-        return array($node->m_type . "_modifier", str_replace(".", "_", $node->atknodetype()) . "_modifier");
-    }
-
-    /**
-     * Modifies the given node
-     *
-     * @param Node $node Node to be modified
-     */
-    function modifier(&$node)
-    {
-        // Determine the modifier name and existance for modifiers that modify any node having the this node's type in any module
-        $specificmodifiers = $this->getModifierFunctions($node);
-
-        // Set the number of applied modifiers to zero
-        $appliedmodifiers = 0;
-
-        // Loop through the possible modifiers and apply them if found
-        foreach ($specificmodifiers as $modifiername) {
-            // If the modifiers is found
-            if (method_exists($this, $modifiername)) {
-                // Add a debug line so we know, the modifier is applied
-                Tools::atkdebug(sprintf("Applying modifier %s from module %s to node %s", $modifiername,
-                    $this->m_name, $node->m_type));
-
-                // Apply the modifier
-                $node->m_modifier = $this->m_name;
-                $this->$modifiername($node);
-                $node->m_modifier = "";
-
-                // Increase the number of applied modifiers
-                $appliedmodifiers++;
-            }
-        }
-
-        // If none of the modifiers was found, add a warning to the debug log
-        if ($appliedmodifiers == 0) {
-            Tools::atkdebug(sprintf("Failed to apply modifier function %s from module %s to node %s; modifier function not found",
-                implode(" or ", $specificmodifiers), $this->m_name, $node->m_type), Tools::DEBUG_WARNING);
-        }
-    }
-
-
-    /**
      * Gets the node type of a node string
      * @param String $node the node name
      * @return String the node type
@@ -303,7 +241,6 @@ class Module
             return "";
         }
     }
-
 
     /**
      * Get an instance of a node. If an instance doesn't exist, it is created.  Note that nodes
