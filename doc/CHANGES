@@ -21,6 +21,9 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
+* Modified selection behavior in atkManyToOneRelation search [luca,giorgio]
++ Added "pagelinks_first_last" global configuration variable [giorgio]
++ Added bootstrapSwitchAttribute [giorgio]
 
 
 Changes in ATK 8.2.1 (2015-10-26)
