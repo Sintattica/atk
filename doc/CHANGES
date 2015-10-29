@@ -15,6 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
+* Modified selection behavior in atkManyToOneRelation search [luca,giorgio]
 + Added "pagelinks_first_last" global configuration variable [giorgio]
 + Added bootstrapSwitchAttribute [giorgio]
 

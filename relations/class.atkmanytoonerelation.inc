@@ -1092,9 +1092,10 @@ class atkManyToOneRelation extends atkRelation
         $useautocompletion = atkConfig("manytoone_search_autocomplete", true) && $this->hasFlag(AF_RELATION_AUTOCOMPLETE);
         if (!$this->hasFlag(AF_LARGE) && !$useautocompletion) {
             if ($this->createDestination()) {
-                if ($this->m_destinationFilter != "") {
-                    $filterRecord = array();
 
+                /* (it's not perfect... and no other attributes use this kind of pre-compilation...)
+                 if ($this->m_destinationFilter != "") {
+                    $filterRecord = array();
                     if ($grid != null) {
                         foreach ($grid->getFilters() as $filter) {
                             $filter = $filter['filter'];
@@ -1108,14 +1109,11 @@ class atkManyToOneRelation extends atkRelation
                                     $arr[$attrName] = array($attr->getDestination()->primaryKeyField() => $value);
                                 }
                             }
-
                             $filterRecord = array_merge($filterRecord, $arr);
                         }
                     }
-
-                    $record = array_merge($filterRecord, is_array($record) ? $record
-                                : array());
-                }
+                    $record = array_merge($filterRecord, is_array($record) ? $record : array());
+                }*/
 
                 $recordset = $this->_getSelectableRecords($record, 'search');
 
