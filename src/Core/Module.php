@@ -1,7 +1,6 @@
 <?php namespace Sintattica\Atk\Core;
 
 use Sintattica\Atk\Handlers\ActionHandler;
-use Sintattica\Atk\Utils\ClassLoader;
 
 /**
  * The Module abstract base class.
@@ -67,54 +66,6 @@ class Module
     }
 
     /**
-     * Create a new menu item, optionally configuring access control.  This
-     * function can also be used to create separators, submenus and submenu items.
-     *
-     * @param String $name The menuitem name. The name that is displayed in the
-     *                     userinterface can be influenced by putting
-     *                     "menu_something" in the language files, where 'something'
-     *                     is equal to the $name parameter.
-     *                     If "-" is specified as name, the item is a separator.
-     *                     In this case, the $url parameter should be empty.
-     * @param String $url The url to load in the main application area when the
-     *                    menuitem is clicked. If set to "", the menu is treated
-     *                    as a submenu (or a separator if $name equals "-").
-     *                    The dispatch_url() method is a useful function to
-     *                    pass as this parameter.
-     * @param String $parent The parent menu. If omitted or set to "main", the
-     *                       item is added to the main menu.
-     * @param mixed $enable This parameter supports the following options:
-     *                      1: menuitem is always enabled
-     *                      0: menuitem is always disabled
-     *                         (this is useful when you want to use a function
-     *                         call to determine when a menuitem should be
-     *                         enabled. If the function returns 1 or 0, it can
-     *                         directly be passed to this method in the $enable
-     *                         parameter.
-     *                      array: when an array is passed, it should have the
-     *                             following format:
-     *                             array("node","action","node","action",...)
-     *                             When an array is passed, the menu checks user
-     *                             privileges. If the user has any of the
-     *                             node/action privileges, the menuitem is
-     *                             enabled. Otherwise, it's disabled.
-     * @param int $order The order in which the menuitem appears. If omitted,
-     *                   the items appear in the order in which they are added
-     *                   to the menu, with steps of 100. So, if you have a menu
-     *                   with default ordering and you want to place a new
-     *                   menuitem at the third position, pass 250 for $order.
-     */
-    function menuitem($name = "", $url = "", $parent = "main", $enable = 1, $order = 0)
-    {
-        /* call basic menuitem */
-        if (empty($parent)) {
-            $parent = 'main';
-        }
-        Tools::menuitem($name, $url, $parent, $enable, $order, $this->m_name);
-    }
-
-
-    /**
      * Returns the node file for the given node.
      *
      * @param string $node the node type
@@ -123,8 +74,8 @@ class Module
     public static function getNodeFile($node)
     {
         $modules = self::atkGetModules();
-        $module = Module::getNodeModule($node);
-        $type = Module::getNodeType($node);
+        $module = self::getNodeModule($node);
+        $type = self::getNodeType($node);
         return "{$modules[$module]}{$type}.php";
     }
 
@@ -138,7 +89,7 @@ class Module
         /* check for file */
         $file = $this->getNodeFile($node);
         if (!file_exists($file)) {
-            $res = ClassLoader::invokeFromString(Config::getGlobal("missing_class_handler"),
+            $res = Tools::invokeFromString(Config::getGlobal("missing_class_handler"),
                 array(array("node" => $node, "module" => $this->m_name)));
             if ($res !== false) {
                 return $res;
@@ -213,6 +164,21 @@ class Module
     }
 
     /**
+     * Gets the module of the node
+     * @param String $node the node name
+     * @return String the node's module
+     */
+    public static function getNodeModule($node)
+    {
+        $arr = explode(".", $node);
+        if (count($arr) == 2) {
+            return $arr[0];
+        } else {
+            return "";
+        }
+    }
+
+    /**
      * Gets the node type of a node string
      * @param String $node the node name
      * @return String the node type
@@ -227,20 +193,7 @@ class Module
         }
     }
 
-    /**
-     * Gets the module of the node
-     * @param String $node the node name
-     * @return String the node's module
-     */
-    public static function getNodeModule($node)
-    {
-        $arr = explode(".", $node);
-        if (count($arr) == 2) {
-            return $arr[0];
-        } else {
-            return "";
-        }
-    }
+
 
     /**
      * Get an instance of a node. If an instance doesn't exist, it is created.  Note that nodes
@@ -304,7 +257,7 @@ class Module
                     Tools::atkdebug("Warning: Deprecated use of short modulename '$modname'. Class in module.php should be renamed to 'mod_$modname'.");
                     $mod = new $modname();
                 } else {
-                    $mod = ClassLoader::invokeFromString(Config::getGlobal("missing_module_handler"),
+                    $mod = Tools::invokeFromString(Config::getGlobal("missing_module_handler"),
                         array(array("module" => $modname)));
                     if ($mod === false) {
                         // Changed by Ivo: This used to construct a dummy module, so
@@ -322,7 +275,7 @@ class Module
 
     /**
      * Construct a new node
-     * @param String $node the node type
+     * @param String $node the node type (module.node)
      * @param bool $init initialize the node?
      * @return Node new node object
      */

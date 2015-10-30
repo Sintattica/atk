@@ -75,9 +75,9 @@ class Controller
     function __construct()
     {
         $sessionManager = SessionManager::getInstance();
-
         if (is_object($sessionManager)) {
             $ControllerClass = $sessionManager->stackVar("atkcontroller");
+
 
             //Its not so nice to use the getNodeModule and getNodeType functions,
             //because the name suggests they work with atkNodes. But they also do
@@ -88,7 +88,7 @@ class Controller
     }
 
     /**
-     * Create instance of controller (determined by class variable) if not yet created, return instance of atkcontroller
+     * Create instance of controller (determined by class variable) if not yet created, return instance of Controller
      *
      * @access private
      * @param string $class
@@ -106,6 +106,7 @@ class Controller
             if (empty($class)) {
                 $class = __CLASS__;
             }
+
 
             //We save the controller in stack, so the controller constructor
             //can store the Controller name and module. It is also saved for other
@@ -283,9 +284,12 @@ class Controller
     {
         $this->m_postvars = $postvars;
         $node = $this->getNode();
+
         if (!is_object($node)) {
             return;
         }
+
+
 
         $node->m_postvars = $postvars;
         $node->m_action = $postvars['atkaction'];

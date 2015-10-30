@@ -121,7 +121,7 @@ class Wizard extends WizardBase
     /**
      * Constructor
      *
-     * @return atkWizard
+     * @return Wizard
      */
     function __construct()
     {

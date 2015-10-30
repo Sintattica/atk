@@ -7,7 +7,6 @@ use Sintattica\Atk\Errors\ErrorHandlerBase;
 use Sintattica\Atk\Utils\Debugger;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Ui\Page;
-use Sintattica\Atk\Utils\ClassLoader;
 use Sintattica\Atk\Utils\String;
 use Sintattica\Atk\Utils\BrowserInfo;
 use Sintattica\Atk\Handlers\ActionHandler;
@@ -1195,7 +1194,7 @@ class Tools
      * @param string $node the (module.)node name
      * @param string $action the atk action the link will perform
      * @param string $params : A key/value array with extra options for the url
-     * @param string $phpfile The php file to use for dispatching, if not set we look at the theme for the dispatchfile
+     * @param string $phpfile The php file to use for dispatching
      * @return string url for the node with the action
      */
     public static function dispatch_url($node, $action, $params = array(), $phpfile = '')
@@ -1315,43 +1314,6 @@ class Tools
         }
     }
 
-
-    /**
-     * Clean-up the given path.
-     *
-     * @param string $path
-     * @return string cleaned-up path
-     *
-     * @see http://nl2.php.net/manual/en/function.realpath.php (comment of 21st of September 2005)
-     */
-    public static function atkCleanPath($path)
-    {
-        return ClassLoader::cleanPath($path);
-    }
-
-    /**
-     * Converts an ATK classname ("map1.map2.classname")
-     * to a pathname ("/map1/map2/class.classname.php")
-     * @param string $fullclassname ATK classname to be converted
-     * @param bool $class is the file a class? defaults to true
-     * @return string converted filename
-     */
-    public static function getClassPath($fullclassname, $class = true)
-    {
-        return ClassLoader::getClassPath($fullclassname, $class);
-    }
-
-    /**
-     * Converts a pathname ("/map1/map2/class.classname.php")
-     * to an ATK classname ("map1.map2.classname")
-     * @param string $classpath pathname to be converted
-     * @param bool $class is the file a class? defaults to true
-     * @return string converted filename
-     */
-    public static function getClassName($classpath, $class = true)
-    {
-        return ClassLoader::getClassName($classpath, $class);
-    }
 
     /**
      * Compares two assosiative multi dimensonal array's
@@ -1603,20 +1565,6 @@ class Tools
         return (isset($array[$key]) ? $array[$key] : $defaultvalue);
     }
 
-    /**
-     * Resolve a classname to its final classname.
-     *
-     * An application can overload a class with a custom version. This
-     * method resolves the initial classname to its overloaded version
-     * (if any).
-     *
-     * @param String $class The name of the class to resolve
-     * @return String The resolved classname
-     */
-    public static function atkResolveClass($class)
-    {
-        return ClassLoader::resolveClass($class);
-    }
 
     /**
      * Returns the IP of the remote client.
@@ -1825,6 +1773,37 @@ class Tools
         );
     }
 
+    /**
+     * Invoke a method on a class based on a string definition.
+     * The string must be in the format
+     * "packagename.subpackage.classname#methodname"
+     *
+     * @static
+     *
+     * @param String $str The "classname#method" to invoke.
+     * @param array $params Any params to be passed to the invoked method.
+     *
+     * @return boolean false if the call failed. In all other cases, it
+     *                 returns the output of the invoked method. (be
+     *                 careful with methods that return false).
+     */
+    public static function invokeFromString($str, $params = array())
+    {
+        if (strpos($str, "#") === false) {
+            return false;
+        }
+
+        list($class, $method) = explode("#", $str);
+        if ($class != "" && $method != "") {
+            $handler = new $class();
+            if (is_object($handler)) {
+                return call_user_func_array(array($handler, $method), $params);
+            }
+            return false;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Create a new menu item

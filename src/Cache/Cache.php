@@ -59,14 +59,15 @@ abstract class Cache implements ArrayAccess
     }
 
     /**
-     * Get atkCache instance, default when no type
+     * Get Cache instance, default when no type
      * is configured it will use var cache.
      *
      * @param string $types Cache type
      * @param boolean $fallback fallback to var cache if all types fail?
      * @param boolean $force force new instance
      *
-     * @return object atkCache object of the request type
+     * @return Cache object of the request type
+     * @throws Exception if $fallback is false and Cache type(s) not found
      */
     public static function getInstance($types = "", $fallback = true, $force = false)
     {
@@ -78,14 +79,12 @@ abstract class Cache implements ArrayAccess
         }
 
         foreach ($types as $type) {
-            $classname = self::getClassname($type);
-
             try {
                 if (!$force && array_key_exists($type, self::$m_instances) && is_object(self::$m_instances[$type])) {
-                    Tools::atkdebug("cache::getInstance -> Using cached instance of $type cache");
+                    Tools::atkdebug("cache::getInstance -> Using cached instance of $type");
                     return self::$m_instances[$type];
                 } else {
-                    self::$m_instances[$type] = new $classname();
+                    self::$m_instances[$type] = new $type();
                     self::$m_instances[$type]->setNamespace(Config::getGlobal('cache_namespace', 'default'));
                     self::$m_instances[$type]->setLifetime(self::$m_instances[$type]->getCacheConfig('lifetime', 3600));
                     self::$m_instances[$type]->setActive(Config::getGlobal('cache_active', true));
@@ -94,12 +93,12 @@ abstract class Cache implements ArrayAccess
                     return self::$m_instances[$type];
                 }
             } catch (Exception $e) {
-                Tools::atknotice("Can't instantatie atkCache class $classname: " . $e->getMessage());
+                Tools::atknotice("Can't instantatie atkCache class $type: " . $e->getMessage());
             }
         }
 
         if (!$fallback) {
-            throw new Exception("Cannot instantiate atkCache class of the following type(s): " . implode(', ', $types));
+            throw new Exception("Cannot instantiate Cache class of the following type(s): " . implode(', ', $types));
         }
 
         // Default return var cache
