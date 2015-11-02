@@ -162,6 +162,7 @@ $it = array(
     "filename_invalid" => "Il nome di questo file non è valido",
     "file_exists" => "Esiste già un file con questo nome",
     "file_not_exist" => "Il file non esiste",
+    "filter" => "Filtra",
     "finish" => "Fine",
     "first" => "Primo",
     "forget_criteria" => "Rimuovi la ricerca selezionata",

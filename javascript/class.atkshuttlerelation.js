@@ -26,13 +26,18 @@ function shuttle_move(id1, id2, name)
 
     for (var i = 0; i < el1.options.length; i++)
     {
-        if (el1.options[i].selected)
+        if (el1.options[i].selected &&
+            (window.getComputedStyle(el1.options[i])).display !== 'none') // move options only if not hidden because of filters
         {
             el2.options[el2.options.length] = new Option(el1.options[i].text, el1.options[i].value);
         }
         else
         {
             newel.options[newel.options.length] = new Option(el1.options[i].text, el1.options[i].value);
+            // remember if option is hidden or not
+            newel.options[newel.options.length - 1].setStyle({
+                display : (window.getComputedStyle(el1.options[i])).display !== 'none' ? 'block' : 'none'
+            });
         }
     }
 
@@ -40,6 +45,9 @@ function shuttle_move(id1, id2, name)
     for (i = 0; i < newel.options.length; i++)
     {
         el1.options[el1.options.length] = new Option(newel.options[i].text, newel.options[i].value);
+        el1.options[el1.options.length - 1].setStyle({
+            display: newel.options[i].getStyle('display')
+        });
     }
     shuttle_change(name);
 }
@@ -51,10 +59,14 @@ function shuttle_moveall(id1, id2, name)
 
     for (var i = 0; i < el1.options.length; i++)
     {
-        el2.options[el2.options.length] = new Option(el1.options[i].text, el1.options[i].value);
+        if((window.getComputedStyle(el1.options[i])).display !== 'none'){
+            // move options only if not hidden because of filters
+            el2.options[el2.options.length] = new Option(el1.options[i].text, el1.options[i].value);
+            el1.removeChild(el1.options[i]);
+            i--;
+        }
     }
 
-    el1.options.length = 0;
     shuttle_change(name);
 }
 

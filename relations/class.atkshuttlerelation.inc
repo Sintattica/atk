@@ -32,6 +32,8 @@ class atkShuttleRelation extends atkManyToManyRelation
 {
     var $m_maxlistwidth = null;
 
+    var $m_filterBox = false;
+
     /**
      * Renders the onchange code on the page.
      *
@@ -81,6 +83,15 @@ class atkShuttleRelation extends atkManyToManyRelation
         return $this->m_initialValue;
     }
 
+
+    /**
+     * Show an input field that can filter the option lists
+     */
+    function showFilterBox()
+    {
+        $this->m_filterBox = true;
+    }
+
     /**
      * Return a piece of html code to edit the attribute
      * @param array $record The record that holds the value for this attribute.
@@ -98,7 +109,7 @@ class atkShuttleRelation extends atkManyToManyRelation
 
         $selectedPk = array();
         // first the selected records..
-        for ($i = 0; $i < count($record[$this->m_name]); $i ++) {
+        for ($i = 0; $i < count($record[$this->m_name]); $i++) {
             if (is_array($record[$this->fieldName()][$i][$this->getRemoteKey()]))
                 $newselected = $this->m_destInstance->primaryKey($record[$this->m_name][$i][$this->getRemoteKey()]);
             else {
@@ -115,7 +126,7 @@ class atkShuttleRelation extends atkManyToManyRelation
         $width = 100;
 
 
-        for ($i = 0; $i < count($recordset); $i ++) {
+        for ($i = 0; $i < count($recordset); $i++) {
             if (in_array($this->m_destInstance->primaryKey($recordset[$i]), $selectedPk) || (in_array($recordset[$i][$this->m_destInstance->primaryKeyField()], $this->initialValue()) && $mode == 'add')) {
                 $right[] = $recordset[$i];
             } else {
@@ -135,26 +146,67 @@ class atkShuttleRelation extends atkManyToManyRelation
         $fieldname = $fieldprefix . $this->fieldName();
         $leftname = $fieldname . "_sel";
         $rightname = $fieldname . '[][' . $this->getRemoteKey() . ']';
-        $result.= $this->_renderSelect($leftname, $left, $width, $rightname, $fieldname);
 
-        $result.= '</td><td valign="center" align="center">';
+        if ($this->m_filterBox) {
+            // fix for selecting with jQuery
+            // css ids shouldn't contain characters like [ and ] : http://www.w3.org/TR/html5/dom.html#the-id-attribute
+            $rightname_clean = str_replace('[', '\\\\[', $rightname);
+            $rightname_clean = str_replace(']', '\\\\]', $rightname_clean);
 
-        $result.= '<input class="btn btn-default" type="button" value="&gt;" onClick="shuttle_move(\'' . $leftname . '\', \'' . $rightname . '\', \'' . $fieldname . '\');"><br/>';
-        $result.= '<input class="btn btn-default" type="button" value="&lt;" onClick="shuttle_move(\'' . $rightname . '\', \'' . $leftname . '\', \'' . $fieldname . '\');"><br/><br/>';
-        $result.= '<input class="btn btn-default" type="button" value="&gt;&gt;" onClick="shuttle_moveall(\'' . $leftname . '\', \'' . $rightname . '\', \'' . $fieldname . '\');"><br/>';
-        $result.= '<input class="btn btn-default" type="button" value="&lt;&lt;" onClick="shuttle_moveall(\'' . $rightname . '\', \'' . $leftname . '\', \'' . $fieldname . '\');">';
+            $filterbox_left = $fieldname . 'left_filter_box';
+            $filterbox_right = $fieldname . 'right_filter_box';
+        }
 
-        $result.= '</td><td>' . atktext('selected', 'atk') . ':<br/>';
+        $result .= $this->_renderSelect($leftname, $left, $width, $rightname, $fieldname, $filterbox_left);
 
-        $result.= $this->_renderSelect($rightname, $right, $width, $leftname, $fieldname);
+        $result .= '</td><td valign="center" align="center">';
+
+        if ($this->m_filterBox) {
+            // move buttons down a little if filter boxes are being displayed
+            $result .= '<br><br><br>';
+        }
+
+        $result .= '<input class="btn btn-default" type="button" value="&gt;" onClick="shuttle_move(\'' . $leftname . '\', \'' . $rightname . '\', \'' . $fieldname . '\');"><br/>';
+        $result .= '<input class="btn btn-default" type="button" value="&lt;" onClick="shuttle_move(\'' . $rightname . '\', \'' . $leftname . '\', \'' . $fieldname . '\');"><br/><br/>';
+        $result .= '<input class="btn btn-default" type="button" value="&gt;&gt;" onClick="shuttle_moveall(\'' . $leftname . '\', \'' . $rightname . '\', \'' . $fieldname . '\');"><br/>';
+        $result .= '<input class="btn btn-default" type="button" value="&lt;&lt;" onClick="shuttle_moveall(\'' . $rightname . '\', \'' . $leftname . '\', \'' . $fieldname . '\');">';
+
+        $result .= '</td><td>' . atktext('selected', 'atk') . ':<br/>';
+
+        $result .= $this->_renderSelect($rightname, $right, $width, $leftname, $fieldname, $filterbox_right);
 
         // on submit, we must select all items in the right selector, as unselected items
         // will not be posted.
         $page = &$this->m_ownerInstance->getPage();
         $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atkshuttlerelation.js");
+
+        if ($this->m_filterBox) {
+            // do the filtering
+            $page->register_scriptcode("
+                jQuery(function($){
+                    $('#$filterbox_left').on('input', function() {
+                        var val = this.value.toLowerCase();
+                        $('#$leftname > option').hide()
+                        .filter(function() {
+                            return this.text.toLowerCase().indexOf( val ) > -1;
+                        })
+                        .show();
+                    });
+
+                     $('#$filterbox_right').on('input', function() {
+                        var val = this.value.toLowerCase();
+                        $('#$rightname_clean > option').hide()
+                        .filter(function() {
+                            return this.text.toLowerCase().indexOf( val ) > -1;
+                        })
+                        .show();
+                    });
+                });
+            ");
+        }
         $page->register_submitscript("shuttle_selectAll('" . $rightname . "');");
 
-        $result.= '</table>';
+        $result .= '</table>';
 
         return $result;
     }
@@ -167,15 +219,21 @@ class atkShuttleRelation extends atkManyToManyRelation
      * @param int $width The width of the control in pixels
      * @param String $opposite The name of the list control connected to this list control for shuttle actions
      * @param String $fieldname The fieldname
+     * @param String $filterbox Filter box id (if present)
      * @return String piece of html code
      */
-    function _renderSelect($name, $recordset, $width, $opposite, $fieldname)
+    function _renderSelect($name, $recordset, $width, $opposite, $fieldname, $filterbox = false)
     {
-        $result = '<select class="form-control shuttle_select" id="' . $name . '" name="' . $name . '" multiple size="10" style="width: ' . $width . 'px;" onDblClick="shuttle_move(\'' . $name . '\', \'' . $opposite . '\', \'' . $fieldname . '\')">';
-        for ($i = 0, $_i = count($recordset); $i < $_i; $i ++) {
-            $result.= '<option value="' . $recordset[$i][$this->m_destInstance->primaryKeyField()] . '">' . $this->m_destInstance->descriptor($recordset[$i]);
+        $result = '';
+        if ($filterbox) {
+            $result .= '<input id="' . $filterbox . '" class="form-control input-sm" placeholder="'. $this->text('filter') .'..."
+                style="width: ' . ($width-10) . 'px; margin-bottom: 5px; max-width: 400px !important;"><div style="clear:both"></div>';
         }
-        $result.= '</select>';
+        $result .= '<select class="form-control shuttle_select" id="' . $name . '" name="' . $name . '" multiple size="10" style="width: ' . $width . 'px;" onDblClick="shuttle_move(\'' . $name . '\', \'' . $opposite . '\', \'' . $fieldname . '\')">';
+        for ($i = 0, $_i = count($recordset); $i < $_i; $i++) {
+            $result .= '<option value="' . $recordset[$i][$this->m_destInstance->primaryKeyField()] . '">' . $this->m_destInstance->descriptor($recordset[$i]);
+        }
+        $result .= '</select>';
         return $result;
     }
 
