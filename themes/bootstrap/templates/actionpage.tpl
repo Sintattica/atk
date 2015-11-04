@@ -12,11 +12,14 @@
         {if count($stacktrace) > 1}
             <ol class="breadcrumb">
                 {section name=i loop=$stacktrace}
-                    {if %i.index%>=%i.loop%-4}
+                    {if %i.index%>=%i.loop%-6}
                         {if %i.last%}
                             <li class="active">{$stacktrace[i].title}</li>
                         {else}
-                            <li><a href="{$stacktrace[i].url|atk_htmlentities}">{$stacktrace[i].title}</a></li>
+                            <li><a href="{$stacktrace[i].url|atk_htmlentities}"
+                                   data-toggle="tooltip"
+                                   data-placement="bottom"
+                                   title="{$stacktrace[i].descriptor}">{$stacktrace[i].title}</a></li>
                         {/if}
                     {else}
                         {if %i.index% == 0}...{/if}
@@ -29,3 +32,9 @@
         {/foreach}
     </div>
 </div>
+
+<script type="text/javascript">
+    {literal}
+        jQuery(function () { jQuery('[data-toggle="tooltip"]').tooltip()})
+    {/literal}
+</script>
