@@ -1117,10 +1117,9 @@ class atkManyToOneRelation extends atkRelation
 
                 $recordset = $this->_getSelectableRecords($record, 'search');
 
-                $result = '<select class="form-control ' . get_class($this) . '" ';
+                $result = '<select class="form-control ' . get_class($this) . '"';
                 if ($extended) {
-                    $result.='multiple size="' . min(5, count($recordset) + 1) . '"';
-
+                    $result .= ' multiple size="' . min(5, count($recordset) + 1) . '"';
                     if (isset($record[$this->fieldName()][$this->fieldName()]))
                         $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
                 }
@@ -1128,7 +1127,7 @@ class atkManyToOneRelation extends atkRelation
                 // if we use autosearch, register an onchange event that submits the grid
                 if (!is_null($grid) && !$extended && $this->m_autoSearch) {
                     $id = $this->getSearchFieldName($fieldprefix);
-                    $result .= '  id="' . $id . '" ';
+                    $result .= ' id="' . $id . '" ';
                     $code = '$(\'' . $id . '\').observe(\'change\', function(event) { ' .
                         $grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractSearchOverrides') .
                         ' return false; });'
@@ -1136,27 +1135,35 @@ class atkManyToOneRelation extends atkRelation
                     $this->getOwnerInstance()->getPage()->register_loadscript($code);
                 }
 
-                $result.='name="' . $this->getSearchFieldName($fieldprefix) . '[]">';
+                $result .= ' name="' . $this->getSearchFieldName($fieldprefix) . '[]">';
 
                 $pkfield = $this->m_destInstance->primaryKeyField();
 
-                //if (!$extended) {
-                $result .= sprintf('<option value=""%s>%s</option>', $extended ? ' selected="selected"' : '', atktext('search_all'));
-                //}
-
-                if ((!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM))) {
-                    $result.= '<option value="__NONE__"'.(isset($record[$this->fieldName()]) && atk_in_array('__NONE__', $record[$this->fieldName()]) ? ' selected="selected"' : '').'>'.$this->getNoneLabel('search').'</option>';
+                $selValues = $record[$this->fieldName()];
+                if (!is_array($selValues)) {
+                    $selValues = [$selValues];
                 }
 
+                // "search all" option
+                if ($selValues[0] == '') {
+                    $selValues = array(''); // has precedence (even if another options are selected together)
+                }
+                $result .= sprintf('<option value=""%s>%s</option>', $selValues[0] == '' ? ' selected="selected"' : '', atktext('search_all'));
+
+                // "none" option
+                if (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) {
+                    $result .= sprintf('<option value="__NONE__"%s>%s</option>',
+                        atk_in_array('__NONE__', $selValues) ? ' selected="selected"' : '' , $this->getNoneLabel('search'));
+                }
+
+                // normal options
                 for ($i = 0; $i < count($recordset); $i ++) {
                     $pk = $recordset[$i][$pkfield];
-
-                    if (is_array($record) && isset($record[$this->fieldName()]) &&
-                        atk_in_array($pk, $record[$this->fieldName()]))
-                        $sel = "selected";
-                    else
-                        $sel = "";
-                    $result.= '<option value="' . $pk . '" ' . $sel . '>' . str_replace(' ', '&nbsp;', atk_htmlentities(strip_tags($this->m_destInstance->descriptor($recordset[$i])))) . '</option>';
+                    $result .= sprintf('<option value="%s"%s>%s</option>',
+                        $pk,
+                        atk_in_array($pk, $selValues) ? ' selected="selected"' : '',
+                        str_replace(' ', '&nbsp;', atk_htmlentities(strip_tags($this->m_destInstance->descriptor($recordset[$i]))))
+                    );
                 }
                 $result.='</select>';
                 return $result;
@@ -1282,18 +1289,25 @@ class atkManyToOneRelation extends atkRelation
             // We only support 'exact' matches.
             // But you can select more than one value, which we search using the IN() statement,
             // which should work in any ansi compatible database.
-            if (!is_array($value)) { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+            if (!is_array($value)) {
                 $value = array($value);
             }
 
-            if (count($value) == 1) { // exactly one value
+            if (count($value) == 1 && $value[0]) { // exactly one value
                 if ($value[0] == "__NONE__") {
                     return $query->nullCondition($table . "." . $this->fieldName(), true);
-                } elseif ($value[0] != "") {
+                } else {
                     return $query->exactCondition($table . "." . $this->fieldName(), $this->escapeSQL($value[0]));
                 }
-            } else { // search for more values using IN()
-                return $table . "." . $this->fieldName() . " IN ('" . implode("','", $value) . "')";
+            } else if (count($value) > 1) { // search for more values
+                if (in_array('__NONE__', $value)) {
+                    unset($value[array_search('__NONE__', $value)]);
+                    return sprintf('(%s OR %s)',
+                        $query->nullCondition($table . "." . $this->fieldName(), true),
+                        $table . "." . $this->fieldName() . " IN ('" . implode("','", $value) . "')");
+                } else {
+                    return $table . "." . $this->fieldName() . " IN ('" . implode("','", $value) . "')";
+                }
             }
         } else { // AF_LARGE || AF_RELATION_AUTOCOMPLETE
             // If we have a descriptor with multiple fields, use CONCAT

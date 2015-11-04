@@ -255,7 +255,7 @@ class atkListAttribute extends atkAttribute
             if ($this->hasFlag(AF_NO_TRANSLATION))
                 $res = $lookup[$value];
             else
-                $res = $this->text($lookup[$value]);
+                $res = $this->text(array($this->fieldName() . '_' . $lookup[$value], $lookup[$value]));
         }
         return $res;
     }
@@ -285,7 +285,7 @@ class atkListAttribute extends atkAttribute
         $result = '<select id="' . $id . '" name="' . $id . '"  class="form-control atklistattribute" ' . $onchange . ($this->m_width
                     ? " style='width: {$this->m_width}px'" : "") . '>';
 
-        $result.=$this->_addEmptyListOption();
+        $result .= $this->_addEmptyListOption();
 
         $values = $this->getValues($record);
         $recvalue = atkArrayNvl($record, $this->fieldName());
@@ -321,14 +321,13 @@ class atkListAttribute extends atkAttribute
         $ret = '';
 
         // use a different (more descriptive) text for obligatory items
-        $text_key = $this->hasFlag(AF_OBLIGATORY) ? "list_null_value_obligatory"
-                : "list_null_value";
+        $text_key = $this->hasFlag(AF_OBLIGATORY) ? "list_null_value_obligatory" : "list_null_value";
 
         if (!$this->hasFlag(AF_LIST_NO_NULL_ITEM) ||
             ($this->hasFlag(AF_OBLIGATORY) &&
-            // CONFIG IS DEPRECATED
-            ((atkconfig("list_obligatory_null_item") && !$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM)) ||
-            ($this->hasFlag(AF_LIST_OBLIGATORY_NULL_ITEM))))) {
+                ((atkconfig("list_obligatory_null_item") && !$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM)) ||
+                    ($this->hasFlag(AF_LIST_OBLIGATORY_NULL_ITEM))))
+        ) {
             $ret = '<option value="' . $this->m_emptyvalue . '">' . atk_htmlentities($this->text(array(
                         $this->fieldName() . '_' . $text_key, $text_key))) . '</option>';
         }
@@ -369,55 +368,56 @@ class atkListAttribute extends atkAttribute
     function search($record = "", $extended = false, $fieldprefix = "", $grid = null, $notSelectFirst = false)
     {
         $values = $this->getValues($record);
-        $result = '<select class="form-control" ';
+        $result = '<select class="form-control"';
         if ($extended || $this->getMultipleInSimpleSearch()) {
-            $result.='multiple size="' . min(5, count($values) + 1) . '"';
+            $result .= ' multiple size="' . min(5, count($values) + 1) . '"';
         }
 
         // if we use autosearch, register an onchange event that submits the grid
         if (!is_null($grid) && !$extended && $this->m_autoSearch) {
             $id = $this->getSearchFieldName($fieldprefix);
-            $result .= '  id="' . $id . '" ';
+            $result .= ' id="' . $id . '" ';
             $code = '$(\'' . $id . '\').observe(\'change\', function(event) { ' .
                 $grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractSearchOverrides') .
                 ' return false; });';
             $this->getOwnerInstance()->getPage()->register_loadscript($code);
         }
 
-        $result .= 'name="' . $this->getSearchFieldName($fieldprefix) . '[]">';
+        $result .= ' name="' . $this->getSearchFieldName($fieldprefix) . '[]">';
 
         $selValues = $record[$this->fieldName()];
-        if ($this->getMultipleInSimpleSearch() && is_array($selValues) && count($selValues) == 1 && strpos($selValues[0], ',') !== false) {
+        if (!is_array($selValues)) {
+            $selValues = [$selValues];
+        }
+
+        if ($this->getMultipleInSimpleSearch() && count($selValues) == 1 && strpos($selValues[0], ',') !== false) {
             // in case of multiple select in simple search, we have the selected values into a single string (csv)
             $selValues = explode(',', $selValues[0]);
         }
 
-        // "search all" option has precedence (when another options are selected together)
+        // "search all" option
         if ($selValues[0] == '') {
-            $selValues = array('');
+            $selValues = array(''); // has precedence (even if another options are selected together)
+        }
+        $result .= sprintf('<option value=""%s>%s</option>',
+            (!$notSelectFirst && $selValues[0] == '') ? ' selected="selected"' : '',
+            atktext('search_all'));
+
+        // "none" option
+        if (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_LIST_NO_NULL_ITEM)) {
+            $result .= sprintf('<option value="__NONE__"%s>%s</option>',
+                atk_in_array('__NONE__', $selValues) ? ' selected="selected"' : '',
+                atktext('search_none'));
         }
 
-        if (!$notSelectFirst) {
-            if (!$selValues || (is_array($selValues) && count($selValues) == 1 && $selValues[0] == '')) {
-                $sel = "selected";
-            } else {
-                $sel = "";
-            }
-        }
-        $result .= '<option value="" ' . $sel . '>' . atktext('search_all');
-
+        // normal options
         foreach ($values AS $value) {
-
-            if (atk_in_array(((string) $value), $selValues, true) && $selValues !== "") {
-                $sel = "selected";
-            } else {
-                $sel = "";
-            }
-
-            $result.= '<option value="' . $value . '" ' . $sel . '>' . $this->_translateValue($value, $record);
+            $result .= sprintf('<option value="%s"%s>%s</option>', $value,
+                atk_in_array(((string) $value), $selValues, true) ? ' selected="selected"' : '',
+                $this->_translateValue($value, $record));
         }
 
-        $result.='</select>';
+        $result .= '</select>';
         return $result;
     }
 
@@ -452,10 +452,21 @@ class atkListAttribute extends atkAttribute
                 }
             }
 
-            if (count($value) == 1) { // exactly one value
-                $searchcondition = $query->exactCondition($table . "." . $this->fieldName(), $this->escapeSQL($value[0]));
-            } else { // search for more values using IN()
-                $searchcondition = $table . "." . $this->fieldName() . " IN ('" . implode("','", $value) . "')";
+            if (count($value) == 1 && $value[0]) { // exactly one value
+                if ($value[0] == "__NONE__") {
+                    return $query->nullCondition($table . "." . $this->fieldName(), true);
+                } else {
+                    return $query->exactCondition($table . "." . $this->fieldName(), $this->escapeSQL($value[0]));
+                }
+            } else if (count($value) > 1) { // search for more values
+                if (in_array('__NONE__', $value)) {
+                    unset($value[array_search('__NONE__', $value)]);
+                    return sprintf('(%s OR %s)',
+                        $query->nullCondition($table . "." . $this->fieldName(), true),
+                        $table . "." . $this->fieldName() . " IN ('" . implode("','", $value) . "')");
+                } else {
+                    return $table . "." . $this->fieldName() . " IN ('" . implode("','", $value) . "')";
+                }
             }
         }
         return $searchcondition;
