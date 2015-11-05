@@ -15,7 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
-* Refactoring of actionTitle and breadcrumb in bootstrap theme [giorgio]
+* Using bootstrap tooltip in breadcrumb [giorgio]
 * Search fixing in atkListAttribute and atkManyToOneRelation [luca]
 * Refactoring of actionTitle and breadcrumb [luca]
 + Added filter box to filter select options in atkShuttleRelation [giorgio]
