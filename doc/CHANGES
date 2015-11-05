@@ -15,6 +15,8 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
++ Added expandAsButtons function to atkListAttribute to display select as
+  a list of buttons and not as a dropdown [giorgio]
 * Using bootstrap tooltip in breadcrumb [giorgio]
 * Search fixing in atkListAttribute and atkManyToOneRelation [luca]
 * Refactoring of actionTitle and breadcrumb [luca]

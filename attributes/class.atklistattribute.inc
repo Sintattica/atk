@@ -100,6 +100,14 @@ class atkListAttribute extends atkAttribute
     private $m_multipleInSimpleSearch = false;
 
     /**
+     * Use quickselect plugin to expand the selection as a series of buttons
+     * Comes handy when there are only a few options
+     *
+     * @var bool|array
+     */
+    private $_expandAsButtons = false;
+
+    /**
      * Constructor.
      *
      * Warning: very old versions of this attribute supported passing the
@@ -305,7 +313,34 @@ class atkListAttribute extends atkAttribute
         $result.='</select>';
         $result .= $this->getSpinner();
 
+        if($this->_expandAsButtons) {
+            $page = $this->m_ownerInstance ? $this->m_ownerInstance->getPage() : atkinstance('atk.ui.atkpage');
+            $page->register_script(atkconfig("atkroot") . "atk/javascript/quickselect/jquery.quickselect.min.js");
+            $page->register_style(atkconfig("atkroot") . "atk/javascript/quickselect/quickselect.css");
+
+            $options = json_encode($this->_expandAsButtons);
+            $page->register_loadscript("
+                jQuery('#$id').quickselect($options);
+            ");
+        }
+
         return $result;
+    }
+
+    function expandAsButtons($options = null)
+    {
+        if (!$options || !is_array($options)) {
+            $options = array();
+        }
+        // options: http://eggboxio.github.io/quick-select/
+        $default_options = array(
+            'activeButtonClass' => 'btn-primary atkdefaultbutton active',
+            'buttonClass' => 'btn btn-default',
+            'breakOutAll' => true,
+            'wrapperClass' => 'btn-group'
+        );
+
+        $this->_expandAsButtons = array_merge($default_options, $options);
     }
 
     /**
@@ -595,7 +630,7 @@ class atkListAttribute extends atkAttribute
 
             if (strtolower(atktext($stringvalue)) == strtolower($option))
                 return $values[$i];
-            $i ++;
+            $i++;
         }
 
         return $values[0];
