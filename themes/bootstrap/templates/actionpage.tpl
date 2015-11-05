@@ -26,15 +26,16 @@
                     {/if}
                 {/section}
             </ol>
+
+            <script type="text/javascript">
+                {literal}
+                    // use tooltip only if breadcrumb is visible
+                    jQuery(function () { jQuery('.breadcrumb li a[data-toggle="tooltip"]').tooltip()});
+                {/literal}
+            </script>
         {/if}
         {foreach from=$blocks item=block}
             {$block}
         {/foreach}
     </div>
 </div>
-
-<script type="text/javascript">
-    {literal}
-        jQuery(function () { jQuery('[data-toggle="tooltip"]').tooltip()})
-    {/literal}
-</script>
