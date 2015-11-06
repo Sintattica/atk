@@ -2,7 +2,7 @@
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * @package atk
@@ -25,9 +25,9 @@
  * <b>Example:</b>
  * <code>
  *   {stacktrace}
- * 
+ *
  *   {foreach from=$stacktrace item=item}
- *     <a href="{$item.url}">{$item.title}</a> 
+ *     <a href="{$item.url}">{$item.title}</a>
  *   {/foreach}
  * </code>
  *
@@ -36,10 +36,12 @@
  */
 function smarty_function_stacktrace($params, &$smarty)
 {
-    global $g_sessionManager;
-    if (is_object($g_sessionManager)) {
-        $smarty->assign("stacktrace", $g_sessionManager->stackTrace());
-        return "";
+    if (atkConfig::getGlobal('stacktrace')) {
+        global $g_sessionManager;
+        if (is_object($g_sessionManager)) {
+            $smarty->assign("stacktrace", $g_sessionManager->stackTrace());
+            return "";
+        }
     }
     return "";
 }

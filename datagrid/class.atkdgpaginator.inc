@@ -33,6 +33,12 @@ class atkDGPaginator extends atkDGComponent
     protected $m_maxLinks = 10;
 
     /**
+     * Show go to previous and next page links
+     * @var bool
+     */
+    protected $m_goToPreviousNext = true;
+
+    /**
      * Show go to first and last page links
      * @var bool
      */
@@ -47,8 +53,9 @@ class atkDGPaginator extends atkDGComponent
     public function __construct($grid, $options = array())
     {
         parent::__construct($grid, $options);
-        $this->m_maxLinks = atkConfig('pagelinks', 10);
-        $this->m_goToFirstLast = atkConfig('pagelinks_first_last', false);
+        $this->m_maxLinks = atkConfig::getGlobal('pagelinks', 10);
+        $this->m_goToFirstLast = atkConfig::getGlobal('pagelinks_first_last', false);
+        $this->m_goToPreviousNext = atkConfig::getGlobal('pagelinks_previous_next', true);
     }
 
     /**
@@ -86,8 +93,8 @@ class atkDGPaginator extends atkDGComponent
             $last = $pages;
         }
 
+        // go to first link
         if ($this->m_goToFirstLast) {
-            // go to first link
             if ($current > 1 && $last > $this->m_maxLinks) {
                 $title = $grid->text('first');
                 $url = $grid->getUpdateCall(array('atkstartat' => 0));
@@ -96,10 +103,12 @@ class atkDGPaginator extends atkDGComponent
         }
 
         // previous link
-        if ($current > 1) {
-            $title = $grid->text('previous');
-            $url = $grid->getUpdateCall(array('atkstartat' => $offset - $limit));
-            $links[] = array('type' => 'previous', 'call' => $url, 'title' => $title);
+        if ($this->m_goToPreviousNext) {
+            if ($current > 1) {
+                $title = $grid->text('previous');
+                $url = $grid->getUpdateCall(array('atkstartat' => $offset - $limit));
+                $links[] = array('type' => 'previous', 'call' => $url, 'title' => $title);
+            }
         }
 
         // normal pagination links
@@ -115,14 +124,16 @@ class atkDGPaginator extends atkDGComponent
         }
 
         // next link
-        if ($current < $pages) {
-            $title = $grid->text('next');
-            $url = $grid->getUpdateCall(array('atkstartat' => $offset + $limit));
-            $links[] = array('type' => 'next', 'call' => $url, 'title' => $title);
+        if ($this->m_goToPreviousNext) {
+            if ($current < $pages) {
+                $title = $grid->text('next');
+                $url = $grid->getUpdateCall(array('atkstartat' => $offset + $limit));
+                $links[] = array('type' => 'next', 'call' => $url, 'title' => $title);
+            }
         }
 
+        // go to last link
         if ($this->m_goToFirstLast) {
-            // go to last link
             if ($current < $pages && $pages != $last) {
                 $title = $grid->text('last');
                 $url = $grid->getUpdateCall(array('atkstartat' => ($pages - 1) * $limit));

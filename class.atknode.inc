@@ -1892,6 +1892,10 @@ class atkNode
             $g_sessionManager->pageVar("descriptor", $descr);
         }
 
+        // we want to show only the action title of the current record, not the previous in the stack (in the past was 3);
+        // in the breadcrumb we now show the descriptor of the previous records as tooltip of hyperlinks (v. actionpage.tpl)
+        $maxel = 1;
+
         $descriptortrace = $g_sessionManager->descriptorTrace();
         $nomodule = false;
         if (!empty($descriptortrace)) {
@@ -1899,16 +1903,18 @@ class atkNode
             $descrtrace = "";
             // only show the last 3 elems
             $cnt = count($descriptortrace);
-            if ($cnt > 3)
+            if ($maxel > 1 && $cnt > $maxel) {
                 $descrtrace = "... - ";
-            for ($i = max(0, $cnt - 3), $_i = $cnt; $i < $_i; $i ++) {
+            }
+            for ($i = max(0, $cnt - $maxel), $_i = $cnt; $i < $_i; $i ++) {
                 $desc = $descriptortrace[$i];
-                $descrtrace.= atk_htmlentities($desc, ENT_COMPAT) . " - ";
+                $descrtrace .= atk_htmlentities($desc, ENT_COMPAT) . " - ";
             }
             $res = $descrtrace . $res;
         }
+
         if (is_object($ui)) {
-            $res.= $ui->nodeTitle($this, $action, $nomodule);
+            $res .= $ui->nodeTitle($this, $action, $nomodule);
         }
 
         return $res;

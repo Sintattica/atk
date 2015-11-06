@@ -637,6 +637,12 @@ $config_enable_showall = true;
 $config_pagelinks = 10;
 
 /**
+ * Show go to previous page and go to next page links in recordlist
+ * @var bool
+ */
+$config_pagelinks_previous_next = true;
+
+/**
  * Show go to first page and go to last page links in recordlist
  * @var bool
  */
