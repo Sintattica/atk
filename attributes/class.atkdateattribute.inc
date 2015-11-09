@@ -862,15 +862,18 @@ class atkDateAttribute extends atkAttribute
         // If we search through datagrid we got no from/to values
         // Therefore we will simulate them
         if (!is_array($value)) {
-            // exact: ex. "d/m/yyyy", "d/m/yy", "d/m" (use current year)
+            // exact: ex. "d/m/yyyy", "d/m/yy", "d/m" (use current year), "yyyy" (from 1/1 to 31/12)
             // between: two values divided by "-"
             // >=: one value followed by "-" // TODO using ">" and ">="
             // <=: one value preceded by "-" // TODO using "<" and "<="
+            $value = trim($value);
             if (strpos($value, '-') !== false) {
                 list($from, $to) = explode('-', $value);
                 $value = array('from' => trim($from), 'to' => trim($to));
+            } else if (strlen($value) == 4 && is_numeric($value)) {
+                $value = array('from' => "$value-01-01", 'to' => "$value-12-31");
             } else {
-                $value = array('from'=>$value, 'to'=>$value);
+                $value = array('from' => $value, 'to' => $value);
             }
             if (substr_count($value['from'], '/') == 1) {
                 $value['from'] .= '/' . date('Y');
