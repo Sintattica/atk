@@ -100,12 +100,13 @@ class atkListAttribute extends atkAttribute
     private $m_multipleInSimpleSearch = false;
 
     /**
-     * Use quickselect plugin to expand the selection as a series of buttons
-     * Comes handy when there are only a few options
+     * Use Quick[select] plugin (http://eggboxio.github.io/quick-select/) to expand the selection as a series of buttons.
+     * Comes handy when there are only a few options.
+     * (see expandAsButtons function)
      *
-     * @var bool|array
+     * @var bool|array False (disabled), True (enabled with default options), Array of options
      */
-    private $_expandAsButtons = false;
+    private $m_expandAsButtons = false;
 
     /**
      * Constructor.
@@ -313,12 +314,12 @@ class atkListAttribute extends atkAttribute
         $result.='</select>';
         $result .= $this->getSpinner();
 
-        if($this->_expandAsButtons) {
+        if ($this->m_expandAsButtons) {
+            // use Quick[select] plugin to expand the selection as a series of buttons
             $page = $this->m_ownerInstance ? $this->m_ownerInstance->getPage() : atkinstance('atk.ui.atkpage');
             $page->register_script(atkconfig("atkroot") . "atk/javascript/quickselect/jquery.quickselect.min.js");
             $page->register_style(atkconfig("atkroot") . "atk/javascript/quickselect/quickselect.css");
-
-            $options = json_encode($this->_expandAsButtons);
+            $options = json_encode($this->m_expandAsButtons);
             $page->register_loadscript("
                 jQuery('#$id').quickselect($options);
             ");
@@ -327,20 +328,24 @@ class atkListAttribute extends atkAttribute
         return $result;
     }
 
+    /**
+     * Enable Quick[select] plugin (http://eggboxio.github.io/quick-select/) to expand the selection as a series of buttons.
+     *
+     * @param array Quick[select] Options (or null for default options)
+     */
     function expandAsButtons($options = null)
     {
         if (!$options || !is_array($options)) {
             $options = array();
         }
-        // options: http://eggboxio.github.io/quick-select/
-        $default_options = array(
+        $defaultOptions = array(
             'activeButtonClass' => 'btn-primary atkdefaultbutton active',
             'buttonClass' => 'btn btn-default',
             'breakOutAll' => true,
             'wrapperClass' => 'btn-group'
         );
 
-        $this->_expandAsButtons = array_merge($default_options, $options);
+        $this->m_expandAsButtons = array_merge($defaultOptions, $options);
     }
 
     /**
