@@ -17,8 +17,7 @@ Changes in DEVELOP (WIP)
 ------------------------
 * Using bootstrap alert classes for form errors in bootstrap theme [giorgio]
 * Global variable "stacktrace" is now handled in template rendering [giorgio]
-+ Added expandAsButtons function to atkListAttribute to display select as
-  a list of buttons and not as a dropdown [giorgio]
++ Added expandAsButtons function to atkListAttribute to display select as a list of buttons [giorgio]
 * Using bootstrap tooltip in breadcrumb [giorgio]
 * Search fixing in atkListAttribute and atkManyToOneRelation [luca]
 * Refactoring of actionTitle and breadcrumb [luca]
