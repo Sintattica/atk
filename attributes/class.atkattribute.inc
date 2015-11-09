@@ -1363,8 +1363,10 @@ class atkAttribute
         } else if (method_exists($this->m_ownerInstance, $method)) {
             $ret = $this->m_ownerInstance->$method($defaults, $mode);
         } else {
-            $ret = $this->display($defaults, $mode) . (strlen($this->m_postfixlabel) > 0
-                        ? "&nbsp;" . $this->m_postfixlabel : "");
+            $ret = $this->display($defaults, $mode);
+            if ($ret && strlen($this->m_postfixlabel) > 0) {
+                $ret .= "&nbsp;" . $this->m_postfixlabel;
+            }
         }
 
         return $ret;
