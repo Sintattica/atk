@@ -22,7 +22,7 @@ atkimport("atk.attributes.atkattribute");
 define("AF_NO_TRANSLATION", AF_SPECIFIC_1);
 
 /**
- * Do not add a default null option.
+ * Do not add a null option although global config "list_obligatory_null_item"
  */
 define("AF_LIST_NO_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_2);
 
@@ -32,7 +32,7 @@ define("AF_LIST_NO_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_2);
 define("AF_LIST_NO_NULL_ITEM", AF_SPECIFIC_3);
 
 /**
- * Add a default null option to obligatory items
+ * Add a null option to obligatory items
  */
 define("AF_LIST_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_4);
 
@@ -349,11 +349,7 @@ class atkListAttribute extends atkAttribute
     }
 
     /**
-     * If this attribute is NOT obligatory
-     * Or if the attribute is obligatory and we set a config saying all obligatory lists should have a null item
-     * and we didn't add the flag AF_LIST_NO_OBLIGATORY_NULL_ITEM
-     * Or if the AF_LIST_OBLIGATORY_NULL_ITEM is set
-     * ... we add an empty list option
+     * Add an empty list option if appropriate.
      * @return The empty list option or an empty string
      */
     function _addEmptyListOption()
@@ -363,13 +359,15 @@ class atkListAttribute extends atkAttribute
         // use a different (more descriptive) text for obligatory items
         $text_key = $this->hasFlag(AF_OBLIGATORY) ? "list_null_value_obligatory" : "list_null_value";
 
-        if (!$this->hasFlag(AF_LIST_NO_NULL_ITEM) ||
-            ($this->hasFlag(AF_OBLIGATORY) &&
-                ((atkconfig("list_obligatory_null_item") && !$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM)) ||
-                    ($this->hasFlag(AF_LIST_OBLIGATORY_NULL_ITEM))))
-        ) {
-            $ret = '<option value="' . $this->m_emptyvalue . '">' . atk_htmlentities($this->text(array(
-                        $this->fieldName() . '_' . $text_key, $text_key))) . '</option>';
+        if (!$this->hasFlag(AF_LIST_NO_NULL_ITEM)) {
+            if (!$this->hasFlag(AF_OBLIGATORY) || (
+                    $this->hasFlag(AF_LIST_OBLIGATORY_NULL_ITEM) ||
+                    (atkconfig("list_obligatory_null_item") && !$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM))
+                )
+            ) {
+                $ret = '<option value="' . $this->m_emptyvalue . '">' . atk_htmlentities($this->text(array(
+                            $this->fieldName() . '_' . $text_key, $text_key))) . '</option>';
+            }
         }
         return $ret;
     }
@@ -410,7 +408,8 @@ class atkListAttribute extends atkAttribute
         $values = $this->getValues($record);
         $result = '<select class="form-control"';
         if ($extended || $this->getMultipleInSimpleSearch()) {
-            $result .= ' multiple size="' . min(5, count($values) + 1) . '"';
+            $cnt = count($values) + ((!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_LIST_NO_NULL_ITEM)) ? 2 : 1);
+            $result .= ' multiple size="' . min(5, $cnt) . '"';
         }
 
         // if we use autosearch, register an onchange event that submits the grid

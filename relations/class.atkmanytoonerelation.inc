@@ -772,7 +772,7 @@ class atkManyToOneRelation extends atkRelation
             $this->m_selectableRecords = $this->_getSelectableRecords($record, $mode);
 
             if (count($this->m_selectableRecords) > 0 &&
-                !$this->getConfigOptionObligatoryNullOption() &&
+                !atkconfig("list_obligatory_null_item") &&
                 (($this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM)) ||
                 (!$this->hasFlag(AF_OBLIGATORY) && $this->hasFlag(AF_RELATION_NO_NULL_ITEM)))) {
                 if (!isset($record[$this->fieldName()]) || !is_array($record[$this->fieldName()])) {
@@ -795,16 +795,6 @@ class atkManyToOneRelation extends atkRelation
         } else if (is_array($record[$this->fieldName()])) {
             $this->populate($record);
         }
-    }
-
-    /**
-     * Returns the configuration option called: list_obligatory_null_item, which is a
-     * boolean.
-     * @return boolean
-     */
-    public function getConfigOptionObligatoryNullOption()
-    {
-        return atkconfig("list_obligatory_null_item");
     }
 
     /**
@@ -877,7 +867,7 @@ class atkManyToOneRelation extends atkRelation
                 // relation may be empty, so we must provide an empty selectable..
                 if ($this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
                     (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) ||
-                    ($this->getConfigOptionObligatoryNullOption() && !is_array($value))) {
+                    (atkconfig("list_obligatory_null_item") && !is_array($value))) {
                     $result.= '<option value="">' . $this->getNoneLabel($mode) . '</option>';
                 }
 

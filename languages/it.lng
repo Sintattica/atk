@@ -120,6 +120,7 @@ $it = array(
     "error_format_mismatch" => "L'elemento in posizione %d non corrisponde al formato desiderato (%s)",
     "error_formdataerror" => "Il salvataggio è fallito per questa ragione: ",
     "error_iconv_not_install" => "Il modulo iconv non è installato",
+    "error_integrity_violation" => "Valore non trovato nella tabella relazionata",
     "error_invalid_email" => "Indirizzo email non valido",
     "error_node_action_access_denied" => "Non hai i diritti necessari per eseguire questa operazione.",
     "error_notnumeric" => "Valore numerico non valido",
