@@ -21,6 +21,7 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
+* Fixed _addEmptyListOption in atkListAttribute [luca]
 * Added searching by year in atkDateAttribute [luca]
 
 
