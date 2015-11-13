@@ -960,6 +960,17 @@ $config_mail_redirect = "";
 $config_extended_search_action = 'search';
 
 /**
+ * Lists that are obligatory, by default have no 'Select none' option.
+ * This leads to the user just selecting the first item since that is the default.
+ * If this is a problem set this config variable to true; this will add a 'Select none'
+ * option to obligatory lists so the user is forced to make a selection.
+ * Can be disabled per individual atkListAttribute with AF_LIST_NO_OBLIGATORY_NULL_ITEM.
+ *
+ * @var boolean
+ */
+$config_list_obligatory_null_item = false;
+
+/**
  * Should all many-to-one relations have the AF_RELATION_AUTOCOMPLETE flag set?
  *
  * @var boolean
@@ -1074,7 +1085,8 @@ $config_autoload_reindex_on_missing_class = false;
 $config_throw_exception_on_error = false;
 
 /**
- * Inverts check logic of attributes rights: default all allowed, the "attribaccess" table will store attributes modes not allowed
+ * Inverts check logic of attributes rights: default all allowed, the
+ * "attribaccess" table will store attributes modes not allowed
  */
 $config_reverse_attributeaccess_logic = false;
 
