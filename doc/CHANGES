@@ -22,6 +22,7 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
+* Fixed handling of readonly/hidden atkManyToOneRelation in edit mode [luca]
 * Fixed _addEmptyListOption in atkListAttribute [luca]
 * Added searching by year in atkDateAttribute [luca]
 
