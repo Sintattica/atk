@@ -576,8 +576,8 @@ class atkManyToOneRelation extends atkRelation
                 $result = array();
                 if ($this->createDestination()) {
                     foreach (array_keys($this->m_destInstance->m_attribList) as $attrName) {
-                        if ( isset($this->m_destInstance->m_attribList[$attrName]) ) {
-                            $attr = &$this->m_destInstance->m_attribList[$attrName];
+                        $attr = &$this->m_destInstance->m_attribList[$attrName];
+                        if ($attr) {
                             $result[$attrName] = $attr->db2value($myrec);
                         } else {
                             atkerror("m_attribList['{$attrName}'] not defined");
@@ -768,6 +768,11 @@ class atkManyToOneRelation extends atkRelation
      */
     public function preAddToEditArray(&$record, $fieldPrefix, $mode)
     {
+        if ($mode == 'edit' && ($this->hasFlag(AF_READONLY_EDIT) || $this->hasFlag(AF_HIDE_EDIT))) {
+            // in this case we don't want that the destination filters are activated
+            return;
+        }
+
         if ((!$this->hasFlag(AF_RELATION_AUTOCOMPLETE) && !$this->hasFlag(AF_LARGE)) || $this->m_autocomplete_minrecords > -1) {
             $this->m_selectableRecords = $this->_getSelectableRecords($record, $mode);
 
@@ -1621,7 +1626,7 @@ class atkManyToOneRelation extends atkRelation
             return false;
         }
 
-        if (in_array($mode, array('edit', 'update')) && ($this->hasFlag(AF_READONLY_EDIT) || $this->hasFlag(AF_HIDE_EDIT))) { // || ($this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_MANYTOONE_AUTOCOMPLETE))
+        if (in_array($mode, array('edit', 'update')) && ($this->hasFlag(AF_READONLY_EDIT) || $this->hasFlag(AF_HIDE_EDIT))) {
             // in this case we want the current value is selectable, regardless the destination filters
             return true;
         }
