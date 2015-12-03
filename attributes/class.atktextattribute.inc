@@ -137,8 +137,7 @@ class atkTextAttribute extends atkAttribute
         }
 
 
-        (isset($record[$this->fieldName()])) ? $text = $record[$this->fieldName()]
-                    : $text = "";
+        $text = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : "";
 
         if ($this->m_cols != 0) {
             $cols = $this->m_cols;
@@ -150,7 +149,6 @@ class atkTextAttribute extends atkAttribute
         $this->registerKeyListener($id, KB_CTRLCURSOR);
         if ($rows == "" || $rows == 0)
             $rows = 10;
-        // watch out, $maxsize isn't supported for a textarea.
 
         if ($this->m_autoadjust) {
             $this->doAutoAdjust(htmlspecialchars($text), $rows, $cols);
@@ -158,13 +156,19 @@ class atkTextAttribute extends atkAttribute
 
         $this->registerJavaScriptObservers($id);
 
-        $result = "<textarea id='$id' name='$id' wrap='" . $this->getWrapMode() . "' ";
-        if ($rows)
-            $result.= "rows='$rows' ";
-        if ($cols)
-            $result.= "cols='$cols' ";
-        $result.=$this->getCSSClassAttribute(array('form-control'));
-        $result.=">\n" . htmlspecialchars($text) . "</textarea>";
+        $result = sprintf('<textarea id="%s" name="%s" wrap="%s" ', $id, $id, $this->getWrapMode());
+        if ($rows) {
+            $result .= 'rows="' . $rows . '" ';
+        }
+        if ($cols) {
+            $result .= 'cols="' . $cols . '" ';
+        }
+        if ($this->m_maxsize > 0) {
+            $result .= 'maxlength="' . $this->m_maxsize . '" '; // now supported in HTML5
+        }
+        $result .= $this->getCSSClassAttribute(array('form-control'));
+        $result .= ">\n" . htmlspecialchars($text) . "</textarea>";
+
         return $result;
     }
 
@@ -254,6 +258,9 @@ class atkTextAttribute extends atkAttribute
     function fetchMeta($metadata)
     {
         $this->m_dbfieldtype = $metadata[$this->fieldName()]["gentype"];
+        if ($this->m_dbfieldtype == 'string') {
+            parent::fetchMeta($metadata);
+        }
     }
 
     /**
