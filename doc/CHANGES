@@ -15,6 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
+* Fixed add filter setting in atkOneToManyRelation [luca]
 * fetchMeta and maxlength in atkTextAttribute [luca]
 * Added setTrailingZeros function in atkNumberAttribute [luca]
 * Added search by month and year (m/yyyy) in atkDateAttribute [giorgio]

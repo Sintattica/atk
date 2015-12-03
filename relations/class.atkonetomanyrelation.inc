@@ -681,7 +681,7 @@ class atkOneToManyRelation extends atkRelation
             for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i ++) {
                 $primkeyattr = &$this->m_ownerInstance->m_attribList[$ownerfields[$i]];
                 $value = $primkeyattr->value2db($record);
-                if (!$value)
+                if (!strlen($value))
                     continue;
 
                 $filterelems[] = $this->m_refKey[0] . "." . $ownerfields[$i] . "='" . $this->escapeSQL($value) . "'";
@@ -690,7 +690,7 @@ class atkOneToManyRelation extends atkRelation
         else {
             for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i ++) {
                 $value = $record[$ownerfields[$i]];
-                if (!$value)
+                if (!strlen($value))
                     continue;
 
                 $filterelems[] = $this->_addTablePrefix($this->m_refKey[$i]) . "='" . $this->escapeSQL($value) . "'";
