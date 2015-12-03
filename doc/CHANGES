@@ -26,6 +26,10 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
+* Fixed add filter setting in atkOneToManyRelation [luca]
+* fetchMeta and maxlength in atkTextAttribute [luca]
+* Added setTrailingZeros function in atkNumberAttribute [luca]
+* Added search by month and year (m/yyyy) in atkDateAttribute [giorgio]
 * Fixed handling of readonly/hidden atkManyToOneRelation in edit mode [luca]
 * Fixed _addEmptyListOption in atkListAttribute [luca]
 * Added searching by year in atkDateAttribute [luca]
