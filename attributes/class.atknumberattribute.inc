@@ -33,6 +33,7 @@ class atkNumberAttribute extends atkAttribute
     var $m_use_thousands_separator = false; // use the thousands separator when formatting a number
     var $m_decimalseparator;
     var $m_thousandsseparator;
+    var $m_trailingzeros = false; // Show trailing zeros
 
     // ids of separators in atk language file
     const SEPARATOR_DECIMAL = 'decimal_separator';
@@ -285,6 +286,16 @@ class atkNumberAttribute extends atkAttribute
     }
 
     /**
+     * Set showing/hiding of trailing zeros
+     *
+     * @param bool $value
+     */
+    public function setTrailingZeros($value)
+    {
+        $this->m_trailingzeros = $value;
+    }
+
+    /**
      * Formats the number based on setting in the language file
      *
      * @param float $number number
@@ -320,6 +331,15 @@ class atkNumberAttribute extends atkAttribute
         if ($number < 0) {
             $r = '-' . $r;
         }
+
+        if (!$this->m_trailingzeros) {
+            // remove trailing zeros
+            if (strpos($r, $decimalSeparator)) {
+                $r = rtrim($r, '0');
+                $r = rtrim($r, $decimalSeparator);
+            }
+        }
+
         return $r;
     }
 
