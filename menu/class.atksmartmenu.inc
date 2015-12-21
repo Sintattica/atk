@@ -84,14 +84,17 @@ class atkSmartMenu extends atkDropdownMenu
             $g_menu[$atkmenutop] = array();
         usort($g_menu[$atkmenutop], array("atkplainmenu", "menu_cmp"));
 
+        $logo = $theme->getAttribute("sm_logo");
+        $logo = $theme->getAttribute("basepath") . "$logo";
 
-        $menu = "<div id='nav'> <a href='#' id='collapse-menu-button' class='collapsed'><i class='fa fa-bars'></i>&nbsp;&nbsp;Menu</a>";
+        $menu = "<div id='nav'>
+            <div id='collapse-menu-wrapper'>
+            <a href='index.php' id='collapse-menu-logo' class='collapsed'><img src='$logo' style='height:24px; padding: 0; margin:0;'></a>
+            <a href='#' id='collapse-menu-button' class='collapsed'><i class='fa fa-bars'></i>&nbsp;&nbsp;Menu</a></div>";
         $menu .= $this->getHeader($atkmenutop);
         $menu .= "<ul id='sm-menu' class='sm sm-$type collapsed'>";
-        // add logo
-        $logo = $theme->getAttribute("sm_logo");
+
         if ($logo) {
-            $logo = $theme->getAttribute("basepath") . "$logo";
             $menu .= "<li id='smartmenu-logo'>
                         <a href='index.php' style='top:-4px; padding-bottom:0; margin-bottom: 0'>
                             <img src='$logo' style='height:24px; padding: 0; margin:0;'>
@@ -104,8 +107,8 @@ class atkSmartMenu extends atkDropdownMenu
         }
         // add logout link and view profile link
         $user = atkGetUser();
-        $userLink = $usersLink = '';
-        $userNode = '';
+        $userLink = '#';
+        $userNode = $usersLink = '';
         if ($theme->getAttribute('sm_atk_user_node')) {
             $userNode = atkGetNode($theme->getAttribute('sm_atk_user_node'));
         } else if (atkconfig('auth_usernode')) {
