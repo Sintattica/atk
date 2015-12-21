@@ -18,7 +18,7 @@
  * Theme definition
  */
 $theme["doctype"] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"' . "\n" . '"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">';
-$theme['compatible_menus'] = array('atk.menu.atkDropdownMenu');
+$theme['compatible_menus'] = array('atk.menu.atkDropdownMenu', 'atk.menu.atkSmartMenu');
 $theme["highlight"] = "";
 $theme["select"] = "";
 $theme["basetheme"] = "steelblue";
