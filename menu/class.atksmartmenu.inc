@@ -148,6 +148,36 @@ class atkSmartMenu extends atkDropdownMenu
     }
 
     /**
+     * Get a menu item
+     *
+     * @param string $menuitem
+     * @param string $indentation
+     * @return string The menu item
+     */
+    function getMenuItem($menuitem, $indentation = "")
+    {
+        global $g_menu;
+        $enable = $this->isEnabled($menuitem);
+        $menu = '';
+        if ($enable) {
+            if (array_key_exists($menuitem['name'], $g_menu) && $g_menu[$menuitem['name']]) {
+                $submenu = "<ul>";
+                foreach ($g_menu[$menuitem['name']] as $submenuitem) {
+                    $submenu .= $this->getMenuItem($submenuitem, '', $submenuname = '', $menuitem['name']);
+                }
+                $submenu .= "</ul>";
+                if (strlen(preg_replace('/\s+/', '', htmlentities($submenu))) > 25) {
+                    // TODO find a better IF expression
+                    $menu .= $this->getItemHtml($menuitem, "" . $submenu . $indentation);
+                }
+            } else {
+                $menu .= $this->getItemHtml($menuitem);
+            }
+        }
+        return $menu;
+    }
+
+    /**
      * Get the HTML for a menu item
      *
      * @param string $menuitem
