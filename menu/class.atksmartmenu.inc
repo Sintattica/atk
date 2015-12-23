@@ -116,8 +116,10 @@ class atkSmartMenu extends atkDropdownMenu
         }
         if (atkGetUserId()) {
             if ($userNode) {
-                $username = $userNode->descriptor($user);
-                if ($userNode->allowed('view')) {
+                $username = $userNode->descriptor($user, 'menu');
+                if ($userNode->allowed('edit')) {
+                    $userLink = dispatch_url($userNode, 'edit', ['atkselector' => $userNode->primaryKey($user)]);
+                } else if ($userNode->allowed('view')) {
                     $userLink = dispatch_url($userNode, 'view', ['atkselector' => $userNode->primaryKey($user)]);
                 }
             } else {
