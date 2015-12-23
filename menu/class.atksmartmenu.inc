@@ -169,6 +169,8 @@ class atkSmartMenu extends atkDropdownMenu
                 if (strlen(preg_replace('/\s+/', '', htmlentities($submenu))) > 25) {
                     // TODO find a better IF expression
                     $menu .= $this->getItemHtml($menuitem, "" . $submenu . $indentation);
+                } else {
+                    $menu .= $this->getItemHtml($menuitem);
                 }
             } else {
                 $menu .= $this->getItemHtml($menuitem);
