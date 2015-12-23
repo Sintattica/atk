@@ -85,6 +85,7 @@ $it = array(
     "criterium_mode" => "Modalità",
     "criterium_value" => "Valore",
     "critical" => "Critico",
+    "currencysymbol" => '€',
     "datagrid_norecordsfound_general" => "Nessun record presente.",
     "datagrid_norecordsfound_search" => "Nessun record trovato.",
     "datagrid_summary" => "([start]-[end] di [count])",
