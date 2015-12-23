@@ -75,8 +75,7 @@ class atkSmartMenu extends atkDropdownMenu
         ";
 
         // enable smartmenu
-        $page->m_loadscripts[] = "jQuery('#sm-menu').smartmenus({hideOnClick: false});";
-
+        $page->m_loadscripts[] = "jQuery('#sm-menu').smartmenus({showTimeout: 0});";
 
         $atkmenutop = array_key_exists('atkmenutop', $ATK_VARS) ? $ATK_VARS["atkmenutop"]
             : 'main';
