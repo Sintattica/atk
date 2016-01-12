@@ -5,7 +5,7 @@
  * In themedef, you can optionally define:
  * - sm_style: one of the four styles available (mint, blue, simple, clean)
  * - sm_logo: the logo for this menu, e.g. 'images/logo.png'
- * - sm_options: an array of options; see http://www.smartmenus.org/docs#options
+ * - sm_options: a json string of options; see http://www.smartmenus.org/docs#options
  * - sm_atk_user_node: node to be used instead of the default auth_usernode for the links and the usernames
  *                      that are genereated in the menu
  * @package atk
@@ -77,14 +77,10 @@ class atkSmartMenu extends atkDropdownMenu
         ";
 
         // set smart menu options
-        $defaultSMOptions = [];
-        $customSMOptions = $theme->getAttribute('sm_options');
-        if ($customSMOptions) {
-            $customSMOptions = array_merge($defaultSMOptions, $customSMOptions);
-            $customSMOptions = json_encode($customSMOptions);
-        }
+        $options = $theme->getAttribute('sm_options');
+
         // enable smartmenu
-        $page->m_loadscripts[] = "jQuery('#sm-menu').smartmenus($customSMOptions);";
+        $page->m_loadscripts[] = "jQuery('#sm-menu').smartmenus($options);";
 
         $atkmenutop = array_key_exists('atkmenutop', $ATK_VARS) ? $ATK_VARS["atkmenutop"]
             : 'main';
@@ -213,5 +209,3 @@ class atkSmartMenu extends atkDropdownMenu
         return "<li id=\"{$menuitem['module']}.{$menuitem['name']}\" class=\"$submenuname\">" . $href . $delimiter . $submenu . "</li>";
     }
 }
-
-?>
