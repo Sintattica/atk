@@ -1,11 +1,12 @@
-/*!
- * SmartMenus jQuery Plugin - v1.0.0-beta1 - June 1, 2015
+/*
+ * SmartMenus jQuery v1.0.0-beta1+
  * http://www.smartmenus.org/
  *
  * Copyright 2015 Vasil Dinkov, Vadikom Web Ltd.
- * http://vadikom.com
+ * http://vadikom.com/
  *
- * Licensed MIT
+ * Released under the MIT license:
+ * http://www.opensource.org/licenses/MIT
  */
 
 (function($) {
@@ -29,7 +30,7 @@
 					if (lastMove) {
 						var deltaX = Math.abs(lastMove.x - thisMove.x),
 							deltaY = Math.abs(lastMove.y - thisMove.y);
-	 					if ((deltaX > 0 || deltaY > 0) && deltaX <= 2 && deltaY <= 2 && thisMove.timeStamp - lastMove.timeStamp <= 300) {
+						if ((deltaX > 0 || deltaY > 0) && deltaX <= 2 && deltaY <= 2 && thisMove.timeStamp - lastMove.timeStamp <= 300) {
 							mouse = true;
 							// if this is the first check after page load, check if we are not over some item by chance and call the mouseenter handler if yes
 							if (firstTime) {
@@ -238,7 +239,7 @@
 							}
 							$this.css({ zIndex: '', top: '', left: '', marginLeft: '', marginTop: '', display: '' });
 						}
-						if ($this.attr('id').indexOf(self.accessIdPrefix) == 0) {
+						if (($this.attr('id') || '').indexOf(self.accessIdPrefix) == 0) {
 							$this.removeAttr('id');
 						}
 					})
@@ -430,7 +431,7 @@
 				return $(this.getClosestMenu($a[0])).hasClass('mega-menu');
 			},
 			isTouchMode: function() {
-				return !mouse || this.isCollapsible();
+				return !mouse || this.opts.noMouseOver || this.isCollapsible();
 			},
 			itemActivate: function($a, focus) {
 				var $ul = $a.closest('ul'),
@@ -549,6 +550,7 @@
 					return;
 				}
 				if (!this.isTouchMode()) {
+					$a[0].blur();
 					if (this.showTimeout) {
 						clearTimeout(this.showTimeout);
 						this.showTimeout = 0;
@@ -725,7 +727,7 @@
 					winY = $win.scrollTop(),
 					winW = this.getViewportWidth(),
 					winH = this.getViewportHeight(),
-					horizontalParent = $ul.hasClass('sm') && !$ul.hasClass('sm-vertical'),
+					horizontalParent = $ul.parent().is('[data-sm-horizontal-sub]') || level == 2 && !$ul.hasClass('sm-vertical'),
 					rightToLeft = this.opts.rightToLeftSubMenus && !$li.is('[data-sm-reverse]') || !this.opts.rightToLeftSubMenus && $li.is('[data-sm-reverse]'),
 					subOffsetX = level == 2 ? this.opts.mainMenuSubOffsetX : this.opts.subMenusSubOffsetX,
 					subOffsetY = level == 2 ? this.opts.mainMenuSubOffsetY : this.opts.subMenusSubOffsetY,
@@ -787,7 +789,7 @@
 								['mousewheel DOMMouseScroll', function(e) { self.menuScrollMousewheel($sub, e); }]
 							], eNS))
 							.dataSM('scroll-arrows').css({ top: 'auto', left: '0', marginLeft: x + (parseInt($sub.css('border-left-width')) || 0), width: subW - (parseInt($sub.css('border-left-width')) || 0) - (parseInt($sub.css('border-right-width')) || 0), zIndex: $sub.css('z-index') })
-								.eq(horizontalParent && this.opts.bottomToTopSubMenus ? 0 : 1).show();
+							.eq(horizontalParent && this.opts.bottomToTopSubMenus ? 0 : 1).show();
 						// when a menu tree is fixed positioned we allow scrolling via touch too
 						// since there is no other way to access such long sub menus if no mouse is present
 						if (this.isFixed()) {
@@ -975,11 +977,11 @@
 						if (this.opts.subMenusMinWidth || this.opts.subMenusMaxWidth) {
 							$sub.css({ width: 'auto', minWidth: '', maxWidth: '' }).addClass('sm-nowrap');
 							if (this.opts.subMenusMinWidth) {
-							 	$sub.css('min-width', this.opts.subMenusMinWidth);
+								$sub.css('min-width', this.opts.subMenusMinWidth);
 							}
 							if (this.opts.subMenusMaxWidth) {
-							 	var noMaxWidth = this.getWidth($sub);
-							 	$sub.css('max-width', this.opts.subMenusMaxWidth);
+								var noMaxWidth = this.getWidth($sub);
+								$sub.css('max-width', this.opts.subMenusMaxWidth);
 								if (noMaxWidth > this.getWidth($sub)) {
 									$sub.removeClass('sm-nowrap').css('width', this.opts.subMenusMaxWidth);
 								}
@@ -1120,7 +1122,7 @@
 					// we still need to resize the disable overlay if it's visible
 					if (this.$disableOverlay) {
 						var pos = this.$root.offset();
-	 					this.$disableOverlay.css({
+						this.$disableOverlay.css({
 							top: pos.top,
 							left: pos.left,
 							width: this.$root.outerWidth(),
@@ -1133,7 +1135,7 @@
 				if (!('onorientationchange' in window) || e.type == 'orientationchange') {
 					var isCollapsible = this.isCollapsible();
 					// if it was collapsible before resize and still is, don't do it
-					if (!(this.wasCollapsible && isCollapsible)) { 
+					if (!(this.wasCollapsible && isCollapsible)) {
 						if (this.activatedItems.length) {
 							this.activatedItems[this.activatedItems.length - 1][0].blur();
 						}
@@ -1193,20 +1195,21 @@
 		hideTimeout:		500,		// timeout before hiding the sub menus
 		showDuration:		0,		// duration for show animation - set to 0 for no animation - matters only if showFunction:null
 		showFunction:		null,		// custom function to use when showing a sub menu (the default is the jQuery 'show')
-							// don't forget to call complete() at the end of whatever you do
-							// e.g.: function($ul, complete) { $ul.fadeIn(250, complete); }
+		// don't forget to call complete() at the end of whatever you do
+		// e.g.: function($ul, complete) { $ul.fadeIn(250, complete); }
 		hideDuration:		0,		// duration for hide animation - set to 0 for no animation - matters only if hideFunction:null
 		hideFunction:		function($ul, complete) { $ul.fadeOut(200, complete); },	// custom function to use when hiding a sub menu (the default is the jQuery 'hide')
-							// don't forget to call complete() at the end of whatever you do
-							// e.g.: function($ul, complete) { $ul.fadeOut(250, complete); }
+		// don't forget to call complete() at the end of whatever you do
+		// e.g.: function($ul, complete) { $ul.fadeOut(250, complete); }
 		collapsibleShowDuration:0,		// duration for show animation for collapsible sub menus - matters only if collapsibleShowFunction:null
 		collapsibleShowFunction:function($ul, complete) { $ul.slideDown(200, complete); },	// custom function to use when showing a collapsible sub menu
-							// (i.e. when mobile styles are used to make the sub menus collapsible)
+		// (i.e. when mobile styles are used to make the sub menus collapsible)
 		collapsibleHideDuration:0,		// duration for hide animation for collapsible sub menus - matters only if collapsibleHideFunction:null
 		collapsibleHideFunction:function($ul, complete) { $ul.slideUp(200, complete); },	// custom function to use when hiding a collapsible sub menu
-							// (i.e. when mobile styles are used to make the sub menus collapsible)
-		showOnClick:		false,		// show the first-level sub menus onclick instead of onmouseover (matters only for mouse input)
+		// (i.e. when mobile styles are used to make the sub menus collapsible)
+		showOnClick:		false,		// show the first-level sub menus onclick instead of onmouseover (i.e. mimic desktop app menus) (matters only for mouse input)
 		hideOnClick:		true,		// hide the sub menus on click/tap anywhere on the page
+		noMouseOver:		false,		// disable sub menus activation onmouseover (i.e. behave like in touch mode - use just mouse clicks) (matters only for mouse input)
 		keepInViewport:		true,		// reposition the sub menus if needed to make sure they always appear inside the viewport
 		keepHighlighted:	true,		// keep all ancestor items of the current sub menu highlighted (adds the 'highlighted' class to the A's)
 		markCurrentItem:	false,		// automatically add the 'current' class to the A element of the item linking to the current URL
