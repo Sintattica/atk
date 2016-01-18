@@ -1,7 +1,9 @@
-/*
- * CUSTOM BUTTON FOR COLLAPSABLE MENU
- */
-#sm-menu{
+
+#banner {
+    display: none;
+}
+
+#sm-menu {
     position: fixed;
     top: 41px;
     left: 0;
@@ -11,13 +13,14 @@
     max-height: 350px;
 }
 
-#collapse-menu-wrapper{
+#collapse-menu-wrapper {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 10;
 }
+
 #collapse-menu-logo {
     display: block;
     padding-top: 8px;
@@ -25,9 +28,10 @@
     margin-right: 22px;
     float: left;
     z-index: 20;
-    max-height:31px;
-    height:31px;
+    max-height: 31px;
+    height: 31px;
 }
+
 #collapse-menu-button {
     z-index: 15;
     display: block;
@@ -40,19 +44,39 @@
     padding-bottom: 2px;
     padding-left: 25px;
     vertical-align: middle;
-    max-height:31px;
-    height:31px;
-    color: rgb(85,85,85);
+    max-height: 31px;
+    height: 31px;
+    color: rgb(85, 85, 85);
 }
 
-#sm-menu.collapsed, #smartmenu-logo {
+#sm-menu.collapsed, #sm-logo {
     display: none;
 }
-#sm-menu #logout-link, #sm-menu #user-link, #sm-menu #users-link {
-    display: block;
+
+#sm-menu, #collapse-menu-button {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
-@media (min-width: 768px) {
-    /* hide the button in desktop view */
+
+.sm-clean a span.sub-arrow {
+    left: 12px;
+    background: transparent;
+}
+.sm-clean a, .sm-clean a:hover, .sm-clean a:focus, .sm-clean a:active {
+    padding-left: 52px;
+}
+
+#sm-right-links {
+    text-align: right;
+}
+
+#sm-right-links a {
+    display: inline-block;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+@media (min-width: 768px) { /* desktop view */
+
     #collapse-menu-button, #collapse-menu-logo {
         display: none;
     }
@@ -63,28 +87,23 @@
         overflow-y: visible;
     }
 
-    #sm-menu.collapsed, #smartmenu-logo{
+    #sm-menu.collapsed, #sm-logo {
         display: block;
     }
 
-    #sm-menu #logout-link, #sm-menu #user-link, #sm-menu #users-link {
+    .sm-clean ul a.has-submenu {
+        padding-right: 30px;
+    }
+
+    .sm-clean a span.sub-arrow {
+        left: auto;
+    }
+
+    .sm-clean a, .sm-clean a:hover, .sm-clean a:focus, .sm-clean a:active {
+        padding-left: 12px;
+    }
+
+    #sm-right-links {
         float: right;
     }
-}
-
-#sm-menu, #collapse-menu-button {
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-}
-
-#smartmenu-logo >a >img, #collapse-menu-logo >img{
-    /* Trick for IE */
-    border-width: 0;
-}
-
-.sm-clean ul a.has-submenu {
-    padding-right: 30px;
-}
-
-#banner{
-    display: none !important;
 }

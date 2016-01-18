@@ -1,13 +1,14 @@
 <?php
 
 /**
- * Implementation of "SmartMenus" jQuery menu plugin (http://www.smartmenus.org)
+ * Implementation of SmartMenus jQuery menu plugin (http://www.smartmenus.org).
  *
  * In themedef, you can optionally define:
- * - sm_theme: one of the four SmartMenus themes available ('clean' (dafault), 'blue', 'mint', 'simple')
- * - sm_logo: the logo for this menu, e.g. 'images/logo.png'
+ * - sm_logo: the logo for this menu (default: "images/logo.png")
  * - sm_options: a json string of SmartMenus options (see http://www.smartmenus.org/docs#options)
- * - sm_atk_usernode: node to be used (instead of the default auth_usernode) for the user/s links in the menu
+ * - sm_atk_usernode: node to be used for the user/s links in the menu (default: "auth_usernode" atk config.)
+ *
+ * We have used SmartMenus' "clean" theme, with customization. You can write optional "atksmartmenu.css" in your atk theme.
  *
  * @package atk
  * @subpackage menu
@@ -34,12 +35,12 @@ class atkSmartMenu extends atkDropdownMenu
         // SmartMenus options
         $smOptions = $theme->getAttribute('sm_options');
 
-        // SmartMenus theme (default: 'clean')
-        $smTheme = $theme->getAttribute('sm_style');
-        $smTheme = $smTheme && in_array($smTheme, ['clean', 'blue', 'mint', 'simple']) ? $smTheme : 'clean';
-
         // logo
-        $logo = $theme->getAttribute('basepath') . $theme->getAttribute('sm_logo');
+        $logo = $theme->getAttribute('sm_logo');
+        if (!$logo) {
+            $logo = 'images/logo.png';
+        }
+        $logo = $theme->getAttribute('basepath') . $logo;
 
         // usernode
         if ($theme->getAttribute('sm_atk_usernode')) {
@@ -52,12 +53,12 @@ class atkSmartMenu extends atkDropdownMenu
         /** STYLES */
 
         // SmartMenus core style
-        $page->register_style(atkconfig('atkroot') . 'atk/menu/smartmenus/css/sm-core-css.css');
+        $page->register_style(atkconfig('atkroot') . 'atk/menu/smartmenus/css/sm-core.css');
 
-        // SmartMenus theme style
-        $page->register_style(atkconfig('atkroot') . "atk/menu/smartmenus/css/sm-$smTheme/sm-$smTheme.css");
+        // SmartMenus "clean" theme style
+        $page->register_style(atkconfig('atkroot') . 'atk/menu/smartmenus/css/sm-clean.css');
 
-        // SmartMenus custom style
+        // our custom overrides
         $page->register_style(atkconfig('atkroot') . 'atk/menu/smartmenus/css/sm-custom.css');
 
         // ovverridable style in atk theme
@@ -72,7 +73,7 @@ class atkSmartMenu extends atkDropdownMenu
         // SmartMenus core
         $page->register_script(atkconfig('atkroot') . 'atk/menu/smartmenus/jquery.smartmenus.min.js');
 
-        // script for collapsable menu
+        // script for collapsible menu (see http://www.smartmenus.org/docs/#menu-toggle-button)
         $page->register_loadscript("
         jQuery('#collapse-menu-button').click(function (e) {
             var item = jQuery(this),
@@ -127,11 +128,11 @@ class atkSmartMenu extends atkDropdownMenu
 
         // menu
         $menu .= "
-            <ul id=\"sm-menu\" class=\"sm sm-$smTheme collapsed\">";
+            <ul id=\"sm-menu\" class=\"sm sm-clean collapsed\">";
 
         if ($logo) { // logo in desktop mode
             $menu .= '
-                <li id="smartmenu-logo">
+                <li id="sm-logo">
                     <a href="index.php" style="top:-4px; padding-bottom:0; margin-bottom: 0">
                         <img src="' . $logo . '" style="height:24px; padding: 0; margin:0;">
                     </a>
@@ -143,10 +144,14 @@ class atkSmartMenu extends atkDropdownMenu
             $menu .= $this->getMenuItem($menuitem);
         }
 
-        // add logout link
-        $menu .= '<li id="logout-link"><a href="index.php?atklogout=1"><i class="fa fa-sign-out fa-lg"></i></a></li>';
-
-        // add current user name and view/edit profile link
+        // add service links (on right)
+        $menu .= '<li id="sm-right-links">';
+        // users list link
+        if ($userNode && $userNode->allowed('admin')) {
+            $usersLink = dispatch_url($userNode, 'admin');
+            $menu .= '<a href="' . $usersLink . '"><i class="fa fa-users fa-lg"></i></a>';
+        }
+        // current user name and view/edit profile link
         $user = atkGetUser();
         $userName = $user['name'];
         $userLink = '#';
@@ -158,13 +163,10 @@ class atkSmartMenu extends atkDropdownMenu
                 $userLink = dispatch_url($userNode, 'view', ['atkselector' => $userNode->primaryKey($user)]);
             }
         }
-        $menu .= '<li id="user-link"><a href="' . $userLink . '"><i class="fa fa-user fa-lg"></i> ' . $userName . '</a></li>';
-
-        // add users list link
-        if ($userNode && $userNode->allowed('admin')) {
-            $usersLink = dispatch_url($userNode, 'admin');
-            $menu .= '<li id="users-link"><a href="' . $usersLink . '"><i class="fa fa-users fa-lg"></i></a></li>';
-        }
+        $menu .= '<a href="' . $userLink . '"><i class="fa fa-user fa-lg"></i> ' . $userName . '</a>';
+        // logout link
+        $menu .= '<a href="index.php?atklogout=1"><i class="fa fa-sign-out fa-lg"></i></a>';
+        $menu .= '</li>';
 
         $menu .= '</ul>';
 
