@@ -122,7 +122,7 @@ class atkSmartMenu extends atkDropdownMenu
         // logo and menu header in collapsed mode
         $menu .= '
             <div id="collapse-menu-wrapper">
-                <a href="index.php" id="collapse-menu-logo" class="collapsed"><img src="' . $logo . '" style="height:24px; padding: 0; margin:0;"></a>
+                <a href="index.php" id="collapse-menu-logo" class="collapsed"><img src="' . $logo . '"></a>
                 <a href="#" id="collapse-menu-button" class="collapsed"><i class="fa fa-bars"></i>&nbsp;&nbsp;Menu</a>
             </div>';
 
@@ -131,12 +131,7 @@ class atkSmartMenu extends atkDropdownMenu
             <ul id=\"sm-menu\" class=\"sm sm-clean collapsed\">";
 
         if ($logo) { // logo in desktop mode
-            $menu .= '
-                <li id="sm-logo">
-                    <a href="index.php" style="top:-4px; padding-bottom:0; margin-bottom: 0">
-                        <img src="' . $logo . '" style="height:24px; padding: 0; margin:0;">
-                    </a>
-                </li>';
+            $menu .= '<li id="sm-logo"><a href="index.php"><img src="' . $logo . '"></a></li>';
         }
 
         // add menu items
