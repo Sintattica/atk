@@ -595,11 +595,11 @@ class atkNumberAttribute extends atkAttribute
         if (!$extended) {
             if (is_array($value)) { // values entered in the extended search
                 // TODO we would need to know the searchmode for better handling...
-                if ($value["from"] !== "" && $value["to"] !== "") {
+                if ($value["from"] != "" && $value["to"] != "") {
                     $value = $value["from"] . "/" . $value["to"];
-                } else if ($value["from"] !== "") {
+                } else if ($value["from"] != "") {
                     $value = $value["from"];
-                } else if ($value["to"] !== "") {
+                } else if ($value["to"] != "") {
                     $value = $value["to"];
                 } else {
                     $value = "";
@@ -654,14 +654,14 @@ class atkNumberAttribute extends atkAttribute
                 list($from, $to) = explode('/', $value);
                 $from = self::removeSeparators(trim($from));
                 $to = self::removeSeparators(trim($to));
-                $from = is_numeric($from) ? (float)$from : '';
-                $to = is_numeric($to) ? (float)$to : '';
+                $from = is_numeric($from) ? $from : '';
+                $to = is_numeric($to) ? $to : '';
                 $processed = array('from' => $from, 'to' => $to);
                 $searchmode = 'between';
             } else { // single value
                 $value = self::removeSeparators($value);
                 if (is_numeric($value)) {
-                    $processed['from'] = (float)$value;
+                    $processed['from'] = $value;
                 } else {
                     $processed = array();
                 }
@@ -669,7 +669,8 @@ class atkNumberAttribute extends atkAttribute
         } else {
             // assumes array('from'=><intval>, 'to'=><intval>)
             foreach ($value as $key => $search) {
-                $processed[$key] = self::removeSeparators($search);
+                $v = self::removeSeparators($search);
+                $processed[$key] = is_numeric($v) ? $v : '';
             }
         }
 
@@ -686,7 +687,7 @@ class atkNumberAttribute extends atkAttribute
      */
     function getBetweenCondition(&$query, $fieldname, $value)
     {
-        if ($value["from"] !== "" && $value["to"] !== "") {
+        if ($value["from"] != "" && $value["to"] != "") {
             if ($value["from"] > $value["to"]) {
                 // User entered fields in wrong order. Let's fix that.
                 $tmp = $value["from"];
@@ -694,9 +695,9 @@ class atkNumberAttribute extends atkAttribute
                 $value["to"] = $tmp;
             }
             return $query->betweenCondition($fieldname, $this->escapeSQL($value["from"]), $this->escapeSQL($value["to"]));
-        } else if ($value["from"] !== "" && $value["to"] === "") {
+        } else if ($value["from"] != "" && $value["to"] == "") {
             return $query->greaterthanequalCondition($fieldname, $value["from"]);
-        } else if ($value["from"] === "" && $value["to"] !== "") {
+        } else if ($value["from"] == "" && $value["to"] != "") {
             return $query->lessthanequalCondition($fieldname, $value["to"]);
         }
 
@@ -722,9 +723,9 @@ class atkNumberAttribute extends atkAttribute
         $value = $this->processSearchValue($value, $searchmode);
 
         if ($searchmode != 'between') {
-            if ($value['from'] !== '') {
+            if ($value['from'] != '') {
                 $value = $value['from'];
-            } else if ($value['to'] !== '') {
+            } else if ($value['to'] != '') {
                 $value = $value['to'];
             } else {
                 return false;
