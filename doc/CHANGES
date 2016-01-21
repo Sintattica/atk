@@ -15,6 +15,9 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
+* Fixed search in atkNumberAttribute [Luca]
++ Added atkSmartMenu responsive menu style for non-bootstrap themes based on the smartmenus plugin [giorgio,luca]
+* Fixed bootstrap layout when navbar expands to more than one line [giorgio]
 * Fixed add filter setting in atkOneToManyRelation [luca]
 * fetchMeta and maxlength in atkTextAttribute [luca]
 * Added setTrailingZeros function in atkNumberAttribute [luca]

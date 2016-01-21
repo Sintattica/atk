@@ -380,6 +380,8 @@ class atkPage
         $res.= '  <meta name="atkversion" content="' . $version . '" />' . "\n";
 
         $res.= '  <meta http-equiv="Content-Type" content="text/html; charset=' . atkGetCharset() . '" />' . "\n";
+        $res.= '  <meta name="viewport" content="width=device-width, initial-scale=1">';
+        $res.= '  <meta http-equiv="X-UA-Compatible" content="IE=edge">';
         if ($extra_header != "")
             $res.= $extra_header . "\n";
 

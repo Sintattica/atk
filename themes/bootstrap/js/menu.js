@@ -31,4 +31,13 @@
             }
         });
     });
+
+    // push page content to bottom on window resize if navbar expands to more than one line
+    jQuery(window).on('resize', function() {
+        var navHeight = jQuery('.navbar').height();
+        if(navHeight){
+            jQuery('.actionpageWrapper').css('margin-top', navHeight - 50);
+        }
+    }).resize();
+
 })();
