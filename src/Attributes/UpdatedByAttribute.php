@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Relations\ManyToOneRelation;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Security\SecurityManager;
 
 /**
  * This attribute can be used to automatically store the user that inserted
