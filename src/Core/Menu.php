@@ -17,6 +17,8 @@ use Sintattica\Atk\Security\SecurityManager;
 class Menu
 {
 
+    protected $menuItems = array();
+
     /**
      * Get new menu object
      *
@@ -80,7 +82,7 @@ class Menu
      */
     function load()
     {
-        global $ATK_VARS, $g_menu;
+        global $ATK_VARS;
 
         $page = Page::getInstance();
         $theme = Theme::getInstance();
@@ -90,15 +92,15 @@ class Menu
 
         $atkmenutop = array_key_exists('atkmenutop', $ATK_VARS) ? $ATK_VARS["atkmenutop"]
             : 'main';
-        if (!is_array($g_menu[$atkmenutop])) {
-            $g_menu[$atkmenutop] = array();
+        if (!is_array($this->menuItems[$atkmenutop])) {
+            $this->menuItems[$atkmenutop] = array();
         }
-        usort($g_menu[$atkmenutop], array($this, "menu_cmp"));
+        usort($this->menuItems[$atkmenutop], array($this, "menu_cmp"));
 
         $menu = "<div id=\"nav\">\n";
 
         $menu .= "  <ul>\n";
-        foreach ($g_menu[$atkmenutop] as $menuitem) {
+        foreach ($this->menuItems[$atkmenutop] as $menuitem) {
             $menu .= $this->getMenuItem($menuitem, "    ");
         }
 
@@ -117,13 +119,12 @@ class Menu
      */
     function getMenuItem($menuitem, $indentation = "")
     {
-        global $g_menu;
         $enable = $this->isEnabled($menuitem);
         $menu = '';
         if ($enable) {
-            if (array_key_exists($menuitem['name'], $g_menu) && $g_menu[$menuitem['name']]) {
+            if (array_key_exists($menuitem['name'], $this->menuItems) && $this->menuItems[$menuitem['name']]) {
                 $submenu = $indentation . "<ul>\n";
-                foreach ($g_menu[$menuitem['name']] as $submenuitem) {
+                foreach ($this->menuItems[$menuitem['name']] as $submenuitem) {
                     $submenu .= $this->getMenuItem($submenuitem, $indentation);
                 }
                 $submenu .= $indentation . "</ul>\n";
@@ -191,7 +192,6 @@ class Menu
      */
     function isEnabled($menuitem)
     {
-        global $g_menu;
         $secManager = SecurityManager::getInstance();
 
         $enable = $menuitem['enable'];
@@ -207,9 +207,9 @@ class Menu
                 }
                 $enable = $enabled;
             } else {
-                if (array_key_exists($menuitem['name'], $g_menu) && is_array($g_menu[$menuitem['name']])) {
+                if (array_key_exists($menuitem['name'], $this->menuItems) && is_array($this->menuItems[$menuitem['name']])) {
                     $enabled = false;
-                    foreach ($g_menu[$menuitem['name']] as $item) {
+                    foreach ($this->menuItems[$menuitem['name']] as $item) {
                         $enabled = $enabled || $this->isEnabled($item);
                     }
                     $enable = $enabled;
@@ -218,6 +218,76 @@ class Menu
         }
 
         return $enable;
+    }
+
+
+    /**
+     * Create a new menu item
+     *
+     * Both main menu items, separators, submenus or submenu items can be
+     * created, depending on the parameters passed.
+     *
+     * @param String $name The menuitem name. The name that is displayed in the
+     *                     userinterface can be influenced by putting
+     *                     "menu_something" in the language files, where 'something'
+     *                     is equal to the $name parameter.
+     *                     If "-" is specified as name, the item is a separator.
+     *                     In this case, the $url parameter should be empty.
+     * @param String $url The url to load in the main application area when the
+     *                    menuitem is clicked. If set to "", the menu is treated
+     *                    as a submenu (or a separator if $name equals "-").
+     *                    The dispatch_url() method is a useful function to
+     *                    pass as this parameter.
+     * @param String $parent The parent menu. If omitted or set to "main", the
+     *                       item is added to the main menu.
+     * @param mixed $enable This parameter supports the following options:
+     *                      1: menuitem is always enabled
+     *                      0: menuitem is always disabled
+     *                         (this is useful when you want to use a function
+     *                         call to determine when a menuitem should be
+     *                         enabled. If the function returns 1 or 0, it can
+     *                         directly be passed to this method in the $enable
+     *                         parameter.
+     *                      array: when an array is passed, it should have the
+     *                             following format:
+     *                             array("node","action","node","action",...)
+     *                             When an array is passed, the menu checks user
+     *                             privileges. If the user has any of the
+     *                             node/action privileges, the menuitem is
+     *                             enabled. Otherwise, it's disabled.
+     * @param int $order The order in which the menuitem appears. If omitted,
+     *                   the items appear in the order in which they are added
+     *                   to the menu, with steps of 100. So, if you have a menu
+     *                   with default ordering and you want to place a new
+     *                   menuitem at the third position, pass 250 for $order.
+     * @param $module string The name of the module that added this menuitem. It is usually
+     *                not necessary to pass this parameter, but is present for
+     *                backwardscompatibility reasons.
+     */
+    public function addMenuItem($name = "", $url = "", $parent = "main", $enable = 1, $order = 0, $module = "")
+    {
+
+        static $order_value = 100, $s_dupelookup = array();
+        if ($order == 0) {
+            $order = $order_value;
+            $order_value += 100;
+        }
+
+        $item = array(
+            "name" => $name,
+            "url" => $url,
+            "enable" => $enable,
+            "order" => $order,
+            "module" => $module
+        );
+
+        if (isset($s_dupelookup[$parent][$name]) && ($name != "-")) {
+            $this->menuItems[$parent][$s_dupelookup[$parent][$name]] = $item;
+        } else {
+            $s_dupelookup[$parent][$name] = isset($this->menuItems[$parent]) ? count($this->menuItems[$parent])
+                : 0;
+            $this->menuItems[$parent][] = $item;
+        }
     }
 }
 

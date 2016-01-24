@@ -1,7 +1,6 @@
 <?php
 
-use Sintattica\Atk\Menu\PlainMenu;
-use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Menu;
 use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Ui\Page;
 
@@ -12,7 +11,7 @@ use Sintattica\Atk\Ui\Page;
  * @package atk
  * @subpackage menu
  */
-class BootstrapMenu extends PlainMenu
+class BootstrapMenu extends Menu
 {
     private $format_submenuparent = '
             <li class="dropdown">
@@ -74,14 +73,13 @@ class BootstrapMenu extends PlainMenu
      */
     function load()
     {
-        global $g_menu;
         $page = Page::getInstance();
         $theme = Theme::getInstance();
         $page->register_style($theme->absPath("atk/themes/bootstrap/lib/bootstrap-submenu/css/bootstrap-submenu.min.css"));
         $page->register_script($theme->absPath("atk/themes/bootstrap/lib/bootstrap-submenu/js/bootstrap-submenu.min.js"));
         $page->register_script($theme->absPath("atk/themes/bootstrap/js/menu.js"));
 
-        $html_items = $this->parseItems($g_menu['main']);
+        $html_items = $this->parseItems($this->menuItems['main']);
         $html_menu = $this->processMenu($html_items);
         return sprintf($this->format_menu, $html_menu);
     }
@@ -121,9 +119,8 @@ class BootstrapMenu extends PlainMenu
 
     private function parseItem(&$item)
     {
-        global $g_menu;
-        if ($item['enable'] && array_key_exists($item['name'], $g_menu)) {
-            $item['submenu'] = $this->parseItems($g_menu[$item['name']]);
+        if ($item['enable'] && array_key_exists($item['name'], $this->menuItems)) {
+            $item['submenu'] = $this->parseItems($this->menuItems[$item['name']]);
             return $item;
         }
     }

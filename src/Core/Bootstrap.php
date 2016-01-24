@@ -50,10 +50,6 @@ class Bootstrap
          */
         $GLOBALS['g_modules'] = array();
 
-        /**
-         * Global menu
-         */
-        $GLOBALS['g_menu'] = array();
 
         /**
          * Global moduleflags per module
