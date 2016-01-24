@@ -48,7 +48,6 @@ class SessionManager
      */
     private $m_usestack = true; // should we use a session stack
 
-
     /**
      * Default constructor.
      * @param String $namespace If multiple scripts/applications are
@@ -62,13 +61,119 @@ class SessionManager
      *                          performance impact, so scripts not using
      *                          the stack should pass false here.
      */
-    public function __construct($namespace, $usestack = true)
+    public function __construct($namespace = 'default', $usestack = true)
     {
         $this->m_namespace = $namespace;
         $this->m_usestack = $usestack;
         // added in 5.3 but not working
         // session_regenerate_id();
         Tools::atkdebug("creating sessionManager (namespace: $namespace)");
+    }
+
+    /**
+     * Initializes the sessionmanager.
+     *
+     * After the session has been initialised with atksession(), the session
+     * manager can be used using the global variable $g_sessionManager.
+     * Call this function in every file that you want to use atk sessions.
+     * @return bool
+     */
+    public function start()
+    {
+        global $ATK_VARS, $atkprevlevel;
+
+        if (php_sapi_name() == 'cli') {
+            return false; // command-line
+        }
+
+        //session init
+        $cookie_params = session_get_cookie_params();
+        $cookiepath = Config::getGlobal("application_root");
+        $cookiedomain = (Config::getGlobal("cookiedomain") != "") ? Config::getGlobal("cookiedomain")
+            : null;
+        session_set_cookie_params($cookie_params["lifetime"], $cookiepath, $cookiedomain);
+
+        // set cache expire (if function exists, or show upgrade hint if not)
+        if (function_exists("session_cache_expire")) {
+            session_cache_expire(Config::getGlobal("session_cache_expire"));
+        } else {
+            Tools::atkdebug("session_cache_expire function does not exist, please upgrade to the latest stable php version (at least 4.2.x)",
+                Tools::DEBUG_WARNING);
+        }
+
+        // set the cache limiter (used for caching)
+        session_cache_limiter(Config::getGlobal("session_cache_limiter"));
+
+        // If somehow the sessionid is unclean (searchengine bots have been known to mangle sessionids)
+        // we don't have a session...
+        if (SessionManager::isValidSessionId()) {
+            $sessionname = Config::getGlobal("session_name");
+            if (!$sessionname) {
+                $sessionname = Config::getGlobal('identifier');
+            }
+            session_name($sessionname);
+            session_start();
+
+            $GLOBALS['g_sessionData'] = &self::getSession();
+        } else {
+            Tools::atkwarning("Not a valid session!");
+            return false;
+        }
+
+
+        //decode data
+        Tools::atkDataDecode($_REQUEST);
+        $ATK_VARS = array_merge($_GET, $_POST);
+        Tools::atkDataDecode($ATK_VARS);
+        if (array_key_exists('atkfieldprefix', $ATK_VARS) && $ATK_VARS['atkfieldprefix'] != '') {
+            $ATK_VARS = $ATK_VARS[$ATK_VARS['atkfieldprefix']];
+        }
+
+        $this->session_read($ATK_VARS);
+
+        // Escape check
+        if (isset($_REQUEST["atkescape"]) && $_REQUEST["atkescape"] != "") {
+            Node::redirect(Tools::atkurldecode($_REQUEST["atkescape"]));
+            Output::getInstance()->outputFlush();
+            exit;
+        } // Nested URL check
+        else {
+            if (isset($_REQUEST["atknested"]) && $_REQUEST["atknested"] != "") {
+                Node::redirect(SessionManager::sessionUrl($_REQUEST["atknested"], SessionManager::SESSION_NESTED));
+                Output::getInstance()->outputFlush();
+                exit;
+            } // Back check
+            else {
+                if (isset($ATK_VARS["atkback"]) && $ATK_VARS["atkback"] != "") {
+                    // When we go back, we go one level deeper than the level we came from.
+                    Node::redirect(SessionManager::sessionUrl(Tools::atkSelf() . "?atklevel=" . ($atkprevlevel - 1)));
+                    Output::getInstance()->outputFlush();
+                    exit;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Get direct access to the php session.
+     *
+     * The advantage of using SessionManager::getSession over php's
+     * $_SESSION directly, is that this method is application aware.
+     * If multiple applications are stored on the same server, and each has
+     * a unique $config_identifier set, the session returned by this method
+     * is specific to only the current application, whereas php's $_SESSION
+     * is global on the url where the session cookie was set.
+     * @static
+     * @return array The application aware php session.
+     */
+    static public function &getSession()
+    {
+        if (!isset($_SESSION[Config::getGlobal("identifier")]) || !is_array($_SESSION[Config::getGlobal("identifier")])) {
+            $_SESSION[Config::getGlobal("identifier")] = array();
+        }
+        return $_SESSION[Config::getGlobal("identifier")];
     }
 
     /**
@@ -793,26 +898,6 @@ class SessionManager
     }
 
     /**
-     * Get direct access to the php session.
-     *
-     * The advantage of using SessionManager::getSession over php's
-     * $_SESSION directly, is that this method is application aware.
-     * If multiple applications are stored on the same server, and each has
-     * a unique $config_identifier set, the session returned by this method
-     * is specific to only the current application, whereas php's $_SESSION
-     * is global on the url where the session cookie was set.
-     * @static
-     * @return array The application aware php session.
-     */
-    static public function &getSession()
-    {
-        if (!isset($_SESSION[Config::getGlobal("identifier")]) || !is_array($_SESSION[Config::getGlobal("identifier")])) {
-            $_SESSION[Config::getGlobal("identifier")] = array();
-        }
-        return $_SESSION[Config::getGlobal("identifier")];
-    }
-
-    /**
      * Calculate a new session level based on current level and
      * a passed sessionstatus.
      * @param int $sessionstatus the session flags
@@ -1041,106 +1126,6 @@ class SessionManager
     {
         global $g_sessionManager;
         return $g_sessionManager;
-    }
-
-
-    /**
-     * Initializes the sessionmanager.
-     *
-     * After the session has been initialised with atksession(), the session
-     * manager can be used using the global variable $g_sessionManager.
-     * Call this function in every file that you want to use atk sessions.
-     *
-     * @param String $namespace If multiple scripts/applications are
-     *                          installed on thesame url, they can each use
-     *                          a different namespace to make sure they
-     *                          don't share session data.
-     * @param boolean $usestack Tell the sessionmanager to use the session
-     *                          stack manager (back/forth navigation in
-     *                          screens, remembering vars over multiple
-     *                          pages etc). This comes with a slight
-     *                          performance impact, so scripts not using
-     *                          the stack should pass false here.
-     * @return bool
-     */
-    public function start($namespace = "default", $usestack = true)
-    {
-        global $g_sessionManager, $ATK_VARS, $atkprevlevel;
-
-        $g_sessionManager = new SessionManager($namespace, $usestack);
-
-        if (php_sapi_name() == 'cli') {
-            return false; // command-line
-        }
-
-        //session init
-        $cookie_params = session_get_cookie_params();
-        $cookiepath = Config::getGlobal("application_root");
-        $cookiedomain = (Config::getGlobal("cookiedomain") != "") ? Config::getGlobal("cookiedomain")
-            : null;
-        session_set_cookie_params($cookie_params["lifetime"], $cookiepath, $cookiedomain);
-
-        // set cache expire (if function exists, or show upgrade hint if not)
-        if (function_exists("session_cache_expire")) {
-            session_cache_expire(Config::getGlobal("session_cache_expire"));
-        } else {
-            Tools::atkdebug("session_cache_expire function does not exist, please upgrade to the latest stable php version (at least 4.2.x)",
-                Tools::DEBUG_WARNING);
-        }
-
-        // set the cache limiter (used for caching)
-        session_cache_limiter(Config::getGlobal("session_cache_limiter"));
-
-        // If somehow the sessionid is unclean (searchengine bots have been known to mangle sessionids)
-        // we don't have a session...
-        if (SessionManager::isValidSessionId()) {
-            $sessionname = Config::getGlobal("session_name");
-            if (!$sessionname) {
-                $sessionname = Config::getGlobal('identifier');
-            }
-            session_name($sessionname);
-            session_start();
-
-            $GLOBALS['g_sessionData'] = &$_SESSION[Config::getGlobal('identifier')];
-        } else {
-            Tools::atkwarning("Not a valid session!");
-            return false;
-        }
-
-
-        //decode data
-        Tools::atkDataDecode($_REQUEST);
-        $ATK_VARS = array_merge($_GET, $_POST);
-        Tools::atkDataDecode($ATK_VARS);
-        if (array_key_exists('atkfieldprefix', $ATK_VARS) && $ATK_VARS['atkfieldprefix'] != '') {
-            $ATK_VARS = $ATK_VARS[$ATK_VARS['atkfieldprefix']];
-        }
-
-        $this->session_read($ATK_VARS);
-
-        // Escape check
-        if (isset($_REQUEST["atkescape"]) && $_REQUEST["atkescape"] != "") {
-            Node::redirect(Tools::atkurldecode($_REQUEST["atkescape"]));
-            Output::getInstance()->outputFlush();
-            exit;
-        } // Nested URL check
-        else {
-            if (isset($_REQUEST["atknested"]) && $_REQUEST["atknested"] != "") {
-                Node::redirect(SessionManager::sessionUrl($_REQUEST["atknested"], SessionManager::SESSION_NESTED));
-                Output::getInstance()->outputFlush();
-                exit;
-            } // Back check
-            else {
-                if (isset($ATK_VARS["atkback"]) && $ATK_VARS["atkback"] != "") {
-                    // When we go back, we go one level deeper than the level we came from.
-                    Node::redirect(SessionManager::sessionUrl(Tools::atkSelf() . "?atklevel=" . ($atkprevlevel - 1)));
-                    Output::getInstance()->outputFlush();
-                    exit;
-                }
-            }
-        }
-
-        return true;
     }
 
 
