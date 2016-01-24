@@ -642,9 +642,11 @@ class ProfileAttribute extends Attribute
         $privilege_setting = Config::getGlobal("auth_grantall_privilege");
 
         if ($privilege_setting != "") {
-            global $g_securityManager;
+
+            $securityManager = SecurityManager::getInstance();
+
             list($mod, $node, $priv) = explode(".", $privilege_setting);
-            return $g_securityManager->allowed($mod . "." . $node, $priv);
+            return $securityManager->allowed($mod . "." . $node, $priv);
         }
         return false;
     }

@@ -48,18 +48,17 @@ class SecurityManager
      */
     protected $m_enablepasswordmailer = false;
 
-
     static public function &getInstance()
     {
-        global $g_securityManager;
-        if (!is_object($g_securityManager)) {
-            // The one and only security manager.
+        static $s_instance = null;
+        if ($s_instance == null) {
+            Tools::atkdebug("Created a new SecurityManager instance");
             $authentication = Config::getGlobal("authentication", "none");
             $authorization = Config::getGlobal("authorization", $authentication);
             $scheme = Config::getGlobal("securityscheme", "none");
-            $g_securityManager = new SecurityManager($authentication, $authorization, $scheme);
+            $s_instance = new self($authentication, $authorization, $scheme);
         }
-        return $g_securityManager;
+        return $s_instance;
     }
 
     /**
@@ -521,7 +520,7 @@ class SecurityManager
      * This method should be called if userdata, for example name or other
      * fields, have been updated for the currently logged in user.
      *
-     * The method will make sure that $g_securityManager->m_user, $g_user and
+     * The method will make sure that $SsecurityManager->m_user, $g_user and
      * the authenticated user in the session are refreshed.
      */
     function reloadUser()
