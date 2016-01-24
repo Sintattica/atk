@@ -156,7 +156,8 @@ class Tools
             } else {
                 $res = "<html>";
                 $res .= '<body style="background-color: #ffffff; color:#000000;">';
-                $res .= "<span style=\"color:$level_color;\"><b>" . self::atktext($level, "atk") . "</b></span>: $msg.<br />\n";
+                $res .= "<span style=\"color:$level_color;\"><b>" . self::atktext($level,
+                        "atk") . "</b></span>: $msg.<br />\n";
             }
 
             Output::getInstance()->output($res);
@@ -452,7 +453,6 @@ class Tools
     }
 
 
-
     /**
      * array_merge without duplicates
      * Supports unlimited number of arrays as arguments.
@@ -524,7 +524,7 @@ class Tools
      * doesn't get an error message.
      *
      * @param mixed $needle The value to search for.
-     * @param Array $haystack The array to search.
+     * @param array $haystack The array to search.
      * @param boolean $strict If true, type must match.
      * @return bool wether or not the value is in the array
      */
@@ -822,7 +822,8 @@ class Tools
      */
     public static function atkPopup($target, $params, $winName, $width, $height, $scroll = 'no', $resize = 'no')
     {
-        $url = SessionManager::sessionUrl("include.php?file=" . $target . "&" . $params, SessionManager::SESSION_NESTED);
+        $sm = SessionManager::getInstance();
+        $url = $sm->sessionUrl("include.php?file=" . $target . "&" . $params, SessionManager::SESSION_NESTED);
         $popupurl = "javascript:NewWindow('" . $url . "','" . $winName . "'," . $height . "," . $width . ",'" . $scroll . "','" . $resize . "')";
         return $popupurl;
     }
@@ -1030,7 +1031,6 @@ class Tools
     }
 
 
-
     /**
      * Returns the (virtual) hostname of the server.
      * @return string the hostname of the server
@@ -1224,14 +1224,20 @@ class Tools
      * @param int $sessionStatus session status (default SessionManager::SESSION_PARTIAL)
      * @return string url for the partial action
      */
-    public static function partial_url($node, $action, $partial, $params = array(), $sessionStatus = SessionManager::SESSION_PARTIAL)
-    {
+    public static function partial_url(
+        $node,
+        $action,
+        $partial,
+        $params = array(),
+        $sessionStatus = SessionManager::SESSION_PARTIAL
+    ) {
         if (!is_array($params)) {
             $params = array();
         }
         $params['atkpartial'] = $partial;
+        $sm = SessionManager::getInstance();
 
-        return SessionManager::sessionUrl(self::dispatch_url($node, $action, $params), $sessionStatus);
+        return $sm->sessionUrl(self::dispatch_url($node, $action, $params), $sessionStatus);
     }
 
     /**
@@ -1286,6 +1292,7 @@ class Tools
         $embedded = true,
         $cssclass = ""
     ) {
+        $sm = SessionManager::getInstance();
         $page = Page::getInstance();
         $page->register_script(Config::getGlobal("assets_url") . "javascript/formsubmit.js");
         static $cnt = 0;
@@ -1295,12 +1302,12 @@ class Tools
         }
 
         $cssclass = ' class="' . $cssclass . '"';
-        $script = 'atkSubmit("' . self::atkurlencode(SessionManager::sessionUrl($url, $sessionstatus)) . '")';
+        $script = 'atkSubmit("' . self::atkurlencode($sm->sessionUrl($url, $sessionstatus)) . '")';
         $button = '<input type="button" name="atkbtn' . (++$cnt) . '" value="' . $text . '" onClick=\'' . $script . '\'' . $cssclass . '>';
 
         if (!$embedded) {
             $res = '<form name="entryform">';
-            $res .= SessionManager::formState();
+            $res .= $sm->formState();
             $res .= $button . '</form>';
             return $res;
         } else {
@@ -1796,6 +1803,39 @@ class Tools
             return false;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Makes a session-aware href url.
+     * When using hrefs in the editform, you can set saveform to true. This will save your
+     * form variables in the session and restore them whenever you come back.
+     *
+     * @param string $url the url to make session aware
+     * @param string $name the name to display (will not be escaped!)
+     * @param int $sessionstatus the session flags
+     *                            (SessionManager::SESSION_DEFAULT (default)|SessionManager::SESSION_NEW|SessionManager::SESSION_REPLACE|
+     *                             SessionManager::SESSION_NESTED|SessionManager::SESSION_BACK)
+     * @param bool $saveform wether or not to save the form
+     * @param string $extraprops extra props you can add in the link such as
+     *                            'onChange="doSomething()"'
+     * @static
+     * @return string the HTML link for the session aware URI
+     */
+    static public function href(
+        $url,
+        $name = "",
+        $sessionstatus = SessionManager::SESSION_DEFAULT,
+        $saveform = false,
+        $extraprops = ""
+    ) {
+        $sm = SessionManager::getInstance();
+        if ($saveform) {
+            $str = 'atkSubmit("' . Tools::atkurlencode($sm->sessionUrl($url, $sessionstatus)) . '", true);';
+            return "<a href=\"javascript:void(0)\" onclick=\"" . htmlentities($str) . "\" " . $extraprops . ">" . $name . "</a>";
+        } else {
+            $str = $sm->sessionUrl($url, $sessionstatus);
+            return "<a href=\"" . htmlentities($str) . "\" " . $extraprops . ">" . $name . "</a>";
         }
     }
 

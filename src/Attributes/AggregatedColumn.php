@@ -115,7 +115,8 @@ class AggregatedColumn extends Attribute
                     $order = implode(" DESC,", $rec);
                     $order .= " DESC";
                 }
-                $arr["heading"][$fieldprefix . $this->fieldName()]["url"] = SessionManager::sessionUrl(Tools::atkSelf() . '?atknodetype=' . $this->m_ownerInstance->atkNodeType() . '&atkaction=' . $action . '&atkorderby=' . rawurlencode($order));
+                $sm = SessionManager::getInstance();
+                $arr["heading"][$fieldprefix . $this->fieldName()]["url"] = $sm->sessionUrl(Tools::atkSelf() . '?atknodetype=' . $this->m_ownerInstance->atkNodeType() . '&atkaction=' . $action . '&atkorderby=' . rawurlencode($order));
             }
 
             if (!Tools::hasFlag($flags, RecordList::RL_NO_SEARCH) && $this->hasFlag(self::AF_SEARCHABLE)) {

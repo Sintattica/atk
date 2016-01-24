@@ -12,7 +12,6 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Keyboard\Keyboard;
 use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Utils\EditFormModifier;
-use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Controller;
 use \Exception;
 
@@ -518,7 +517,7 @@ class Attribute
     /**
      * Array for containing onchange javascript code
      * @access private
-     * @var Array
+     * @var array
      */
     var $m_onchangecode = array();
 
@@ -1671,7 +1670,7 @@ class Attribute
      *
      * @param Integer $id The unique smart search criterium identifier.
      * @param Integer $nr The element number in the path.
-     * @param Array $path The remaining attribute path.
+     * @param array $path The remaining attribute path.
      * @param Query $query The query to which the condition will be added.
      * @param String $ownerAlias The owner table alias to use.
      * @param Mixed $value The value the user has entered in the searchbox.
@@ -1841,7 +1840,7 @@ class Attribute
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
-     * @param Array $rec The record that contains the value of this attribute.
+     * @param array $rec The record that contains the value of this attribute.
      * @param int $level Recursion level if relations point to eachother, an
      *                   endless loop could occur if they keep loading
      *                   eachothers data. The $level is used to detect this
@@ -2623,7 +2622,7 @@ class Attribute
             $cmd = ($columnConfig->hasSubTotal($this->fieldName()) ? "unsubtotal"
                 : "subtotal");
             if ($grid == null) {
-                return SessionManager::href(Controller::getInstance()->getPhpFile() . '?' . $columnConfig->getUrlCommand($this->fieldName(),
+                return Tools::href(Controller::getInstance()->getPhpFile() . '?' . $columnConfig->getUrlCommand($this->fieldName(),
                         $cmd), Tools::atktext("column_" . $cmd)) . ' ';
             } else {
                 $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($this->fieldName(), $cmd));
@@ -2654,7 +2653,7 @@ class Attribute
             $direction = ($columnConfig->getSortDirection($this->fieldName()) == "desc"
                 ? "asc" : "desc");
             if ($grid == null) {
-                $res = SessionManager::href(Controller::getInstance()->getPhpFile() . '?' . $columnConfig->getUrlCommand($fieldname,
+                $res = Tools::href(Controller::getInstance()->getPhpFile() . '?' . $columnConfig->getUrlCommand($fieldname,
                             $direction), Tools::atktext("column_" . $direction)) . ' ';
             } else {
                 $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($fieldname, $direction));
@@ -2701,7 +2700,7 @@ class Attribute
      * Derived attributes may override this functionality to implement other
      * ordering statements using the given parameters.
      *
-     * @param Array $extra A list of attribute names to add to the order by
+     * @param array $extra A list of attribute names to add to the order by
      *                     statement
      * @param String $table The table name (if not given uses the owner node's table name)
      * @param String $direction Sorting direction (ASC or DESC)
@@ -2921,7 +2920,7 @@ class Attribute
     /**
      * Retrieve the CSS classes that were registered for this attribute
      *
-     * @return Array A list of css classes
+     * @return array A list of css classes
      */
     function getCSSClasses()
     {

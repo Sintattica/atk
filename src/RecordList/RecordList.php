@@ -90,12 +90,12 @@ class RecordList
      * Render the recordlist
      *
      * @param Node $node the node
-     * @param Array $recordset the list of records
-     * @param Array $actions the default actions array
+     * @param array $recordset the list of records
+     * @param array $actions the default actions array
      * @param Integer $flags recordlist flags (see the top of this file)
-     * @param Array $suppressList fields we don't display
+     * @param array $suppressList fields we don't display
      * @param String $formName if embedded the form name in which we are embedded
-     * @param Array $navigation Navigation links
+     * @param array $navigation Navigation links
      * @param String $embedprefix The prefix for embeded fields
      * @return String The rendered recordlist
      */
@@ -133,12 +133,12 @@ class RecordList
     /**
      * Get records for a recordlist without actually rendering the recordlist.
      * @param Node $node the node
-     * @param Array $recordset the list of records
-     * @param Array $actions the default actions array
+     * @param array $recordset the list of records
+     * @param array $actions the default actions array
      * @param Integer $flags recordlist flags (see the top of this file)
-     * @param Array $suppressList fields we don't display
+     * @param array $suppressList fields we don't display
      * @param String $formName if embedded the form name in which we are embedded
-     * @param Array $navigation Navigation links
+     * @param array $navigation Navigation links
      * @param String $embedprefix The prefix for embeded fields
      * @return String The rendered recordlist
      */
@@ -156,6 +156,7 @@ class RecordList
         $this->m_flags = $flags;
 
         $theme = Theme::getInstance();
+        $sm = SessionManager::getInstance();
         $page = Page::getInstance();
         $page->register_style($theme->stylePath("recordlist.css", $this->m_node->m_module));
 
@@ -219,7 +220,7 @@ class RecordList
             // make old recordlist compatible with new order specification
             if (!empty($head["order"])) {
                 global $ATK_VARS;
-                $head["url"] = SessionManager::sessionUrl(Tools::atkSelf() . '?atknodetype=' . $ATK_VARS["atknodetype"] . '&atkaction=' . $ATK_VARS["atkaction"] . '&atkorderby=' . rawurlencode($head["order"]));
+                $head["url"] = $sm->sessionUrl(Tools::atkSelf() . '?atknodetype=' . $ATK_VARS["atknodetype"] . '&atkaction=' . $ATK_VARS["atkaction"] . '&atkorderby=' . rawurlencode($head["order"]));
             }
 
             if (Tools::hasFlag($this->m_flags, self::RL_EMBED) && !empty($head["url"])) {
@@ -229,7 +230,7 @@ class RecordList
             if (empty($head["url"])) {
                 $headercols[] = array("content" => $head["title"]);
             } else {
-                $headercols[] = array("content" => SessionManager::href($head["url"], $head["title"]));
+                $headercols[] = array("content" => Tools::href($head["url"], $head["title"]));
             }
         }
 
@@ -266,7 +267,7 @@ class RecordList
 
             $sortstart = '<a name="sortform"></a>' .
                 '<form action="' . Tools::atkSelf() . '?' . SID . '" method="get">' .
-                SessionManager::formState() .
+                $sm->formState() .
                 '<input type="hidden" name="atkstartat" value="0">'; // reset atkstartat to first page after a new sort
 
             foreach (array_keys($list["heading"]) as $key) {
@@ -294,13 +295,13 @@ class RecordList
             if (!Tools::hasFlag($flags,
                     self::RL_NO_EXTENDED_SEARCH) && !$this->m_node->hasFlag(Node::NF_NO_EXTENDED_SEARCH)
             ) {
-                $button .= '<br>' . SessionManager::href(Tools::atkSelf() . "?atknodetype=" . $this->getMasterNodeType() . "&atkaction=" . $node->getExtendedSearchAction(),
+                $button .= '<br>' . Tools::href(Tools::atkSelf() . "?atknodetype=" . $this->getMasterNodeType() . "&atkaction=" . $node->getExtendedSearchAction(),
                         "(" . Tools::atktext("search_extended") . ")", SessionManager::SESSION_NESTED);
             }
 
             $searchstart = '<a name="searchform"></a>';
             if (!Tools::hasFlag($this->m_flags, self::RL_EMBED)) {
-                $searchstart .= '<form action="' . Tools::atkSelf() . '?' . SID . '" method="get">' . SessionManager::formState();
+                $searchstart .= '<form action="' . Tools::atkSelf() . '?' . SID . '" method="get">' . $sm->formState();
                 $searchstart .= '<input type="hidden" name="atknodetype" value="' . $this->getMasterNodeType() . '">' .
                     '<input type="hidden" name="atkaction" value="' . $this->m_node->m_action . '">' . '<input type="hidden" name="atksmartsearch" value="clear">' .
                     '<input type="hidden" name="atkstartat" value="0">'; // reset atkstartat to first page after a new search;
@@ -346,7 +347,7 @@ class RecordList
                     $formName = $listName;
                 }
                 $liststart = '<form id="' . $formName . '" name="' . $formName . '" method="post">' .
-                    SessionManager::formState(SessionManager::SESSION_DEFAULT) .
+                    $sm->formState(SessionManager::SESSION_DEFAULT) .
                     '<input type="hidden" name="atknodetype" value="' . $this->getMasterNodeType() . '">' .
                     '<input type="hidden" name="atkaction" value="' . $this->m_node->m_action . '">';
                 $listend = '</form>';
@@ -364,7 +365,7 @@ class RecordList
         $keys = array_keys($actions);
         $actionurl = (count($actions) > 0) ? $actions[$keys[0]] : '';
         $actionloader = "rl_a['" . $listName . "'] = {};";
-        $actionloader .= "\nrl_a['" . $listName . "']['base'] = '" . SessionManager::sessionVars($this->m_actionSessionStatus,
+        $actionloader .= "\nrl_a['" . $listName . "']['base'] = '" . $sm->sessionVars($this->m_actionSessionStatus,
                 1, $actionurl) . "';";
         $actionloader .= "\nrl_a['" . $listName . "']['embed'] = " . (Tools::hasFlag($flags, self::RL_EMBED)
                 ? 'true' : 'false') . ";";
@@ -534,7 +535,7 @@ class RecordList
         /*             * ********************************************** */
         $mra = "";
         if (Tools::hasFlag($flags, self::RL_MRPA)) {
-            $target = SessionManager::sessionUrl(Tools::atkSelf() . '?atknodetype=' . $this->getMasterNodeType(),
+            $target = $sm->sessionUrl(Tools::atkSelf() . '?atknodetype=' . $this->getMasterNodeType(),
                 SessionManager::SESSION_NESTED);
 
             /* multiple actions -> dropdown */
@@ -558,7 +559,7 @@ class RecordList
         /*             * ************************************* */
         /* MULTI-RECORD-ACTION FORM (CONTINUED) */
         /*             * ************************************* */ elseif (Tools::hasFlag($flags, self::RL_MRA)) {
-            $target = SessionManager::sessionUrl(Tools::atkSelf() . '?atknodetype=' . $this->m_node->atkNodeType() . '&atktarget=' . $this->m_node->m_postvars['atktarget'] . '&atktargetvar=' . $this->m_node->m_postvars['atktargetvar'] . '&atktargetvartpl=' . $this->m_node->m_postvars['atktargetvartpl'],
+            $target = $sm->sessionUrl(Tools::atkSelf() . '?atknodetype=' . $this->m_node->atkNodeType() . '&atktarget=' . $this->m_node->m_postvars['atktarget'] . '&atktargetvar=' . $this->m_node->m_postvars['atktargetvar'] . '&atktargetvartpl=' . $this->m_node->m_postvars['atktargetvartpl'],
                 SessionManager::SESSION_NESTED);
 
             $mra = (count($list["rows"]) > 1 ?
@@ -622,7 +623,7 @@ class RecordList
      * Checks wether the recordlist should display a column which holds the actions.
      *
      * @access private
-     * @param Array $list The recordlist data
+     * @param array $list The recordlist data
      * @return bool Wether the list should display an extra column to hold the actions
      */
     function _hasActionColumn($list)
@@ -668,11 +669,11 @@ class RecordList
     /**
      * Function outputs an array with all information necessary to output a recordlist.
      *
-     * @param Array $recordset List of records that need to be displayed
+     * @param array $recordset List of records that need to be displayed
      * @param Integer $flags Recordlist flags
      * @param String $prefix Prefix for each column name (used for subcalls)
-     * @param Array $actions List of default actions for each record
-     * @param Array $suppress An array of fields that you want to hide
+     * @param array $actions List of default actions for each record
+     * @param array $suppress An array of fields that you want to hide
      * @param String $embedprefix The prefix for embeded fields
      *
      * The result array contains the following information:

@@ -156,7 +156,7 @@ class Menu
                     $menuitem['module'])) . '</a>';
         } else {
             if ($menuitem['url']) {
-                $href = SessionManager::href($menuitem['url'], $this->getMenuTranslation($menuitem['name'], $menuitem['module']),
+                $href = Tools::href($menuitem['url'], $this->getMenuTranslation($menuitem['name'], $menuitem['module']),
                     SessionManager::SESSION_NEW);
             } else {
                 $href = '<a href="#">' . $name . '</a>';

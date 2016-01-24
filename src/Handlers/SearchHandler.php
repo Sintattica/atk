@@ -44,8 +44,9 @@ class SearchHandler extends AbstractSearchHandler
             $this->redirectToResults();
             return;
         } elseif (!empty($this->m_postvars['atkcancel'])) {
+            $sm = SessionManager::getInstance();
             $url = Tools::dispatch_url($this->getPreviousNode(), $this->getPreviousAction());
-            $url = SessionManager::sessionUrl($url, SessionManager::atkLevel() > 0 ? SessionManager::SESSION_BACK : SessionManager::SESSION_REPLACE);
+            $url = $sm->sessionUrl($url, $sm->atkLevel() > 0 ? SessionManager::SESSION_BACK : SessionManager::SESSION_REPLACE);
 
             $this->m_node->redirect($url);
         }
@@ -70,9 +71,10 @@ class SearchHandler extends AbstractSearchHandler
      */
     function redirectToResults()
     {
+        $sm = SessionManager::getInstance();
         $url = Tools::dispatch_url($this->getPreviousNode(), $this->getPreviousAction(), $this->fetchCriteria(),
             Tools::atkSelf());
-        $url = SessionManager::sessionUrl($url, SessionManager::atkLevel() > 0 ? SessionManager::SESSION_BACK : SessionManager::SESSION_REPLACE);
+        $url = $sm->sessionUrl($url, $sm->atkLevel() > 0 ? SessionManager::SESSION_BACK : SessionManager::SESSION_REPLACE);
 
         $this->m_node->redirect($url);
     }
@@ -84,9 +86,8 @@ class SearchHandler extends AbstractSearchHandler
      */
     function getPreviousNode()
     {
-        return SessionManager::atkLevel() > 0 ? SessionManager::getInstance()->stackVar('atknodetype',
-            '', SessionManager::atkLevel() - 1)
-            : $this->m_node->atkNodeType();
+        $sm = SessionManager::getInstance();
+        return $sm->atkLevel() > 0 ? $sm->stackVar('atknodetype', '', $sm->atkLevel() - 1) : $this->m_node->atkNodeType();
     }
 
     /**
@@ -96,15 +97,15 @@ class SearchHandler extends AbstractSearchHandler
      */
     function getPreviousAction()
     {
-        return SessionManager::atkLevel() > 0 ? SessionManager::getInstance()->stackVar('atkaction',
-            '', SessionManager::atkLevel() - 1)
-            : 'admin';
+        $sm = SessionManager::getInstance();
+        return $sm->atkLevel() > 0 ? $sm->stackVar('atkaction', '', $sm->atkLevel() - 1) : 'admin';
     }
 
     /**
      * Attribute handler.
      *
      * @param string $partial full partial
+     * @return string
      */
     function partial_attribute($partial)
     {
@@ -139,10 +140,11 @@ class SearchHandler extends AbstractSearchHandler
         $page->register_loadscript("placeFocus();");
         $ui = $this->getUi();
         if (is_object($ui)) {
+            $sm = SessionManager::getInstance();
             $params = array();
             $params["formstart"] = '<form name="entryform" action="' . $controller->getPhpFile() . '?' . SID . '" method="post">';
 
-            $params["formstart"] .= SessionManager::formState(SessionManager::SESSION_REPLACE);
+            $params["formstart"] .= $sm->formState(SessionManager::SESSION_REPLACE);
             $params["formstart"] .= '<input type="hidden" name="atkaction" value="search">';
 
             $params["formstart"] .= '<input type="hidden" name="atknodetype" value="' . $node->atknodetype() . '">';

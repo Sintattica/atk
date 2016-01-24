@@ -108,8 +108,9 @@ class Updatehandler extends ActionHandler
             if (isset($this->m_postvars['atkcancel'])) {
                 $this->invoke('handleCancel', $record);
             } else {
+                $sm = SessionManager::getInstance();
                 // something other than one of the three buttons was pressed. Let's just refresh.
-                $location = SessionManager::sessionUrl(Tools::dispatch_url($this->m_node->atknodetype(),
+                $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atknodetype(),
                     $this->getEditAction(), array(
                         "atkselector" => $this->m_node->primaryKey($record),
                         "atktab" => $this->m_node->getActiveTab()
@@ -294,7 +295,8 @@ class Updatehandler extends ActionHandler
     {
         if ($this->hasError($record)) {
             $this->setRejectInfo($record);
-            $location = SessionManager::sessionUrl(Tools::dispatch_url($this->m_node->atknodetype(),
+            $sm = SessionManager::getInstance();
+            $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atknodetype(),
                 $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record))), SessionManager::SESSION_BACK);
             $this->m_node->redirect($location);
         } else {
@@ -320,7 +322,8 @@ class Updatehandler extends ActionHandler
                 "atkselector" => $this->m_node->primaryKey($record),
                 "atktab" => $this->m_node->getActiveTab()
             );
-            $location = SessionManager::sessionUrl(Tools::dispatch_url($this->m_node->atknodetype(),
+            $sm = SessionManager::getInstance();
+            $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atknodetype(),
                 $this->getEditAction(), $params), SessionManager::SESSION_REPLACE, 1);
         } else {
             // 'save and close' was clicked

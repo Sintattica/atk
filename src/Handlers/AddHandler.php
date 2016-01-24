@@ -196,6 +196,7 @@ class AddHandler extends ActionHandler
     {
         $controller = Controller::getInstance();
         $controller->setNode($this->m_node);
+        $sm = SessionManager::getInstance();
 
         $node = $this->m_node;
 
@@ -205,7 +206,7 @@ class AddHandler extends ActionHandler
             ' method="post" onsubmit="return globalSubmit(this,false)">';
 
 
-        $formstart .= SessionManager::formState(SessionManager::SESSION_NESTED, $this->getReturnBehaviour(), $node->getEditFieldPrefix());
+        $formstart .= $sm->formState(SessionManager::SESSION_NESTED, $this->getReturnBehaviour(), $node->getEditFieldPrefix());
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkaction" value="' . $this->getSaveAction() . '" />';
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkprevaction" value="' . $this->getNode()->m_action . '" />';
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkcsrftoken" value="' . $this->getCSRFToken() . '" />';

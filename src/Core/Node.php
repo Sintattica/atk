@@ -1782,10 +1782,11 @@ class Node
      */
     function lockPage()
     {
+        $sm = SessionManager::getInstance();
         $total = null;
         $output = ''; // $this->statusbar();
         $output .= '<img src="' . Config::getGlobal("assets_url") . 'images/lock.gif"><br><br>' . Tools::atktext("lock_locked") . '<br>';
-        $output .= '<br><form method="get">' . SessionManager::formState(SessionManager::SESSION_BACK) .
+        $output .= '<br><form method="get">' . $sm->formState(SessionManager::SESSION_BACK) .
             '<input type="submit" class="btn btn-default btn_cancel" value="&lt;&lt; ' . Tools::atktext('back') . '"></form>';
 
         $ui = $this->getUi();
@@ -2432,16 +2433,16 @@ class Node
 
 
         if (is_array($list)) {
+            $sm = SessionManager::getInstance();
             $newtab["total"] = count($list);
             foreach ($list as $t) {
                 $newtab["title"] = $this->text(array("tab_$t", $t));
                 $newtab["tab"] = $t;
                 $url = Tools::atkSelf() . "?atknodetype=" . $this->atkNodeType() . "&atkaction=" . $this->m_action . "&atktab=" . $t;
                 if ($this->m_action == "view") {
-                    $newtab["link"] = SessionManager::sessionUrl($url, SessionManager::SESSION_DEFAULT);
+                    $newtab["link"] = $sm->sessionUrl($url, SessionManager::SESSION_DEFAULT);
                 } else {
-                    $newtab["link"] = "javascript:atkSubmit('" . Tools::atkurlencode(SessionManager::sessionUrl($url,
-                            SessionManager::SESSION_DEFAULT)) . "')";
+                    $newtab["link"] = "javascript:atkSubmit('" . Tools::atkurlencode($sm->sessionUrl($url, SessionManager::SESSION_DEFAULT)) . "')";
                 }
                 $newtab["selected"] = ($t == $tab);
                 $result[] = $newtab;
@@ -2608,8 +2609,10 @@ class Node
             $atkselector_str = $atkselector;
         }
 
+        $sm = SessionManager::getInstance();
+
         $formstart = '<form action="' . Tools::atkSelf() . '?"' . SID . ' method="post">';
-        $formstart .= SessionManager::formState();
+        $formstart .= $sm->formState();
         $formstart .= '<input type="hidden" name="atkaction" value="' . $action . '">';
         $formstart .= '<input type="hidden" name="atknodetype" value="' . $this->atknodetype() . '">';
 
@@ -2965,7 +2968,8 @@ class Node
         }
 
         if ($location == "") {
-            $location = SessionManager::sessionUrl(Tools::atkSelf(), SessionManager::SESSION_BACK, $levelskip);
+            $sm = SessionManager::getInstance();
+            $location = $sm->sessionUrl(Tools::atkSelf(), SessionManager::SESSION_BACK, $levelskip);
         }
 
         if (count($record)) {

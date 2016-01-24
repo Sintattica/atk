@@ -658,7 +658,7 @@ class OneToManyRelation extends Relation
         $add_url = $this->getAddURL($params);
         $label = $this->getAddLabel();
 
-        return SessionManager::href($add_url, $label, SessionManager::SESSION_NESTED, $saveform,
+        return Tools::href($add_url, $label, SessionManager::SESSION_NESTED, $saveform,
             $onchange . ' class="atkonetomanyrelation"');
     }
 
@@ -1427,9 +1427,9 @@ class OneToManyRelation extends Relation
                 $dialog->setSessionStatus(SessionManager::SESSION_PARTIAL);
                 $script .= $dialog->getCall(true, false);
             } else {
+                $sm = SessionManager::getInstance();
                 $url = Tools::dispatch_url($this->m_destInstance->atkNodeType(), 'add');
-                $script .= "atkSubmit('" . Tools::atkurlencode(SessionManager::sessionUrl($url,
-                        SessionManager::SESSION_NESTED)) . "', true);";
+                $script .= "atkSubmit('" . Tools::atkurlencode($sm->sessionUrl($url, SessionManager::SESSION_NESTED)) . "', true);";
             }
 
             $page = $this->m_ownerInstance->getPage();

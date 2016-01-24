@@ -90,6 +90,7 @@ class DocumentAttribute extends DummyAttribute
         $module = $this->m_ownerInstance->m_module;
         $node = $this->m_owner;
         $path = $basepath . $module . "/" . $node;
+        $sm = SessionManager::getInstance();
 
         // Only continue if the path is valid and exists
         if (!is_dir($path)) {
@@ -114,7 +115,7 @@ class DocumentAttribute extends DummyAttribute
 
         // Add the button to the html
         $selector = $this->m_ownerInstance->primaryKey($record);
-        $onclickscript = 'window.location="' . SessionManager::sessionUrl(Tools::dispatch_url($module . "." . $node,
+        $onclickscript = 'window.location="' . $sm->sessionUrl(Tools::dispatch_url($module . "." . $node,
                 "document", array("atkselector" => $selector)),
                 SessionManager::SESSION_DEFAULT) . '&atkdoctpl="+this.form.atkdoctpl.value;';
 
@@ -123,7 +124,8 @@ class DocumentAttribute extends DummyAttribute
         // Wrap the input elements in a unique session form when no form is present yet (in list and view mode)
         if ((($mode == "list") || ($mode == "view")) && $addForm) {
             static $documentSelectorFormCounter = 0;
-            $html = '<form name="documentSelectorForm' . ++$documentSelectorFormCounter . '">' . SessionManager::formState() . $html . '</form>';
+
+            $html = '<form name="documentSelectorForm' . ++$documentSelectorFormCounter . '">' . $sm->formState() . $html . '</form>';
         }
 
         // Return the generated html

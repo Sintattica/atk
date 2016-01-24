@@ -169,6 +169,7 @@ class SaveHandler extends ActionHandler
      */
     protected function getSuccessReturnURL($record)
     {
+        $sm = SessionManager::getInstance();
         if ($this->m_node->hasFlag(Node::NF_EDITAFTERADD) && $this->m_node->allowed('edit')) {
             // forward atkpkret for newly added records
             $extra = "";
@@ -179,7 +180,7 @@ class SaveHandler extends ActionHandler
             $url = Tools::atkSelf() . '?atknodetype=' . $this->m_node->atknodetype();
             $url .= '&atkaction=edit';
             $url .= '&atkselector=' . rawurlencode($this->m_node->primaryKey($record));
-            $location = SessionManager::sessionUrl($url . $extra, SessionManager::SESSION_REPLACE, $this->_getSkip() - 1);
+            $location = $sm->sessionUrl($url . $extra, SessionManager::SESSION_REPLACE, $this->_getSkip() - 1);
         } else {
             if ($this->m_node->hasFlag(Node::NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext'])) {
                 $filter = "";
@@ -187,7 +188,7 @@ class SaveHandler extends ActionHandler
                     $filter = "&atkfilter=" . rawurlencode($this->m_node->m_postvars['atkfilter']);
                 }
                 $url = Tools::atkSelf() . '?atknodetype=' . $this->m_node->atknodetype() . '&atkaction=' . $this->getAddAction();
-                $location = SessionManager::sessionUrl($url . $filter, SessionManager::SESSION_REPLACE, $this->_getSkip() - 1);
+                $location = $sm->sessionUrl($url . $filter, SessionManager::SESSION_REPLACE, $this->_getSkip() - 1);
             } else {
                 // normal succesful save
                 $location = $this->m_node->feedbackUrl("save", self::ACTION_SUCCESS, $record, "", $this->_getSkip());

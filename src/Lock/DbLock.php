@@ -30,15 +30,17 @@ class DbLock extends Lock
             $atklockList = array();
         }
 
+        $sm = SessionManager::getInstance();
+
         /* first time (session or stack)! */
-        if (!is_array($atklockList[SessionManager::atkStackID()]) || count($atklockList[SessionManager::atkStackID()]["stack"]) == 0) {
-            $atklockList[SessionManager::atkStackID()] = array("id" => 0, "stack" => array());
-            $atklock = &$atklockList[SessionManager::atkStackID()];
+        if (!is_array($atklockList[$sm->atkStackID()]) || count($atklockList[$sm->atkStackID()]["stack"]) == 0) {
+            $atklockList[$sm->atkStackID()] = array("id" => 0, "stack" => array());
+            $atklock = &$atklockList[$sm->atkStackID()];
         } /* check if some locks need to be removed */ else {
-            $atklock = &$atklockList[SessionManager::atkStackID()];
+            $atklock = &$atklockList[$sm->atkStackID()];
             $this->m_id = (int)$atklock["id"];
 
-            for ($i = 0, $_i = count($atklock["stack"]) - SessionManager::atkLevel(); $i < $_i; $i++) {
+            for ($i = 0, $_i = count($atklock["stack"]) - $sm->atkLevel(); $i < $_i; $i++) {
                 $selectorList = array_pop($atklock["stack"]);
                 if (is_array($selectorList)) {
                     foreach ($selectorList as $selector => $table) {
@@ -67,7 +69,7 @@ class DbLock extends Lock
             }
         }
 
-        for ($i = count($atklock["stack"]); $i < SessionManager::atkLevel(); $i++) {
+        for ($i = count($atklock["stack"]); $i < $sm->atkLevel(); $i++) {
             $atklock["stack"][] = array();
         }
         $this->m_id = (int)$atklock["id"];
@@ -76,7 +78,7 @@ class DbLock extends Lock
         if (!isset($ATK_VARS['atkpartial']) && $this->m_id > 0) {
             $page = Page::getInstance();
             $page->register_script(Config::getGlobal("assets_url") . "javascript/xml.js");
-            $page->register_script(SessionManager::sessionUrl("include.php?file=atk/lock/lock.js.php&stack=" . SessionManager::atkStackID() . "&id=" . $this->m_id,
+            $page->register_script($sm->sessionUrl("include.php?file=atk/lock/lock.js.php&stack=" . $sm->atkStackID() . "&id=" . $this->m_id,
                 SessionManager::SESSION_NEW));
         }
     }
@@ -117,11 +119,13 @@ class DbLock extends Lock
     {
         $success = false;
 
+        $sm = SessionManager::getInstance();
+
         /* first check if we haven't locked the item already */
         $atklockList = $this->loadLockList();
         if (is_array($atklockList)) {
-            $atklock = $atklockList[SessionManager::atkStackID()];
-            for ($i = SessionManager::atkLevel() - 1, $_i = count($atklock["stack"]); $i < $_i; $i++) {
+            $atklock = $atklockList[$sm->atkStackID()];
+            for ($i = $sm->atkLevel() - 1, $_i = count($atklock["stack"]); $i < $_i; $i++) {
                 if (is_array($atklock["stack"][$i]) && in_array($selector, array_keys($atklock["stack"][$i]))) {
                     return true;
                 }
@@ -150,7 +154,7 @@ class DbLock extends Lock
                 $this->m_id = $db->nextid("db_lock");
                 $page = Page::getInstance();
                 $page->register_script(Config::getGlobal("assets_url") . "javascript/xml.js");
-                $page->register_script(SessionManager::sessionUrl("include.php?file=atk/lock/lock.js.php&stack=" . SessionManager::atkStackID() . "&id=" . $this->m_id,
+                $page->register_script($sm->sessionUrl("include.php?file=atk/lock/lock.js.php&stack=" . $sm->atkStackID() . "&id=" . $this->m_id,
                     SessionManager::SESSION_NEW));
             }
 
@@ -178,7 +182,7 @@ class DbLock extends Lock
             $query->executeInsert();
 
             $atklockList = $this->loadLockList();
-            $atklock = &$atklockList[SessionManager::atkStackID()];
+            $atklock = &$atklockList[$sm->atkStackID()];
             $atklock["id"] = (int)$this->m_id;
             $selectorList = array_pop($atklock["stack"]);
             $selectorList[$selector] = $table;
@@ -245,16 +249,18 @@ class DbLock extends Lock
      *
      * @param int $identifier the unique lock ID
      *
-     * @return success / failure of operation
+     * @return bool success / failure of operation
      */
     function extend($identifier)
     {
         global $ATK_VARS;
 
+        $sm = SessionManager::getInstance();
+
         if (!empty($ATK_VARS["stack"])) {
             $atkstackid = $ATK_VARS["stack"];
         } else {
-            $atkstackid = SessionManager::atkStackID();
+            $atkstackid = $sm->atkStackID();
         }
 
         $user = SecurityManager::atkGetUser();
@@ -314,11 +320,13 @@ class DbLock extends Lock
     {
         static $_cache = array();
 
+        $sm = SessionManager::getInstance();
+
         /* first check if we haven't locked the item ourselves already */
         $atklockList = $this->loadLockList();
         if (is_array($atklockList)) {
-            $atklock = $atklockList[SessionManager::atkStackID()];
-            for ($i = SessionManager::atkLevel() - 1, $_i = count($atklock["stack"]); $i < $_i; $i++) {
+            $atklock = $atklockList[$sm->atkStackID()];
+            for ($i = $sm->atkLevel() - 1, $_i = count($atklock["stack"]); $i < $_i; $i++) {
                 if (is_array($atklock["stack"][$i]) && in_array($selector, array_keys($atklock["stack"][$i]))) {
                     return null;
                 }

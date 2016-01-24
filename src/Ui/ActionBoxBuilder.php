@@ -193,7 +193,8 @@ class ActionBoxBuilder
     public function endActionBox()
     {
         if ($this->m_sessionStatus !== null) {
-            $this->m_params['formend'] = SessionManager::formState($this->m_sessionStatus) .
+            $sm = SessionManager::getInstance();
+            $this->m_params['formend'] = $sm->formState($this->m_sessionStatus) .
                 $this->m_params['formend'];
         }
 

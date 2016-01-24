@@ -98,6 +98,7 @@ class MultiSelectHandler extends AdminHandler
     {
         // add the postvars to the form
         global $g_stickyurl;
+        $sm = SessionManager::getInstance();
         $g_stickyurl[] = 'atktarget';
         $g_stickyurl[] = 'atktargetvar';
         $g_stickyurl[] = 'atktargetvartpl';
@@ -129,8 +130,8 @@ class MultiSelectHandler extends AdminHandler
         $grid->addFlag(DataGrid::MULTI_RECORD_ACTIONS);
         $params["list"] = $grid->render();
 
-        if (SessionManager::atkLevel() > 0) {
-            $backlinkurl = SessionManager::sessionUrl(Tools::atkSelf() . '?atklevel=' . SessionManager::newLevel(SessionManager::SESSION_BACK));
+        if ($sm->atkLevel() > 0) {
+            $backlinkurl = $sm->sessionUrl(Tools::atkSelf() . '?atklevel=' . $sm->newLevel(SessionManager::SESSION_BACK));
             $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backlinkurl . '\';" value="' . Tools::atktext('cancel') . '"></div>';
         }
 

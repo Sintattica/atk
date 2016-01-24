@@ -451,9 +451,8 @@ class Controller
     function feedbackUrl($action, $status, $record = array(), $message = "", $levelskip = null)
     {
         $node = $this->getNode();
-        if ((isset($node->m_feedback[$action]) && Tools::hasFlag($node->m_feedback[$action],
-                    $status)) || $status == ActionHandler::ACTION_FAILED
-        ) {
+        $sm = SessionManager::getInstance();
+        if ((isset($node->m_feedback[$action]) && Tools::hasFlag($node->m_feedback[$action], $status)) || $status == ActionHandler::ACTION_FAILED) {
             $vars = array(
                 "atkaction" => "feedback",
                 "atkfbaction" => $action,
@@ -475,7 +474,7 @@ class Controller
             $atkNodeType = "";
             $sessionStatus = SessionManager::SESSION_BACK;
         }
-        return (SessionManager::sessionUrl($this->dispatchUrl($vars, $atkNodeType), $sessionStatus, $levelskip));
+        return ($sm->sessionUrl($this->dispatchUrl($vars, $atkNodeType), $sessionStatus, $levelskip));
     }
 
     /**
@@ -521,10 +520,11 @@ class Controller
         $node = $this->getNode();
         $page = &$node->getPage();
         $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
+        $sm = SessionManager::getInstance();
 
         // edit mode
         if ($mode == "edit") {
-            if (SessionManager::atkLevel() > 0 || Tools::hasFlag(Tools::atkArrayNvl($node->m_feedback,
+            if ($sm->atkLevel() > 0 || Tools::hasFlag(Tools::atkArrayNvl($node->m_feedback,
                     "update", 0), ActionHandler::ACTION_SUCCESS)
             ) {
                 $result[] = $this->getButton('saveandclose', true);
@@ -535,7 +535,7 @@ class Controller
             // if atklevel is 0 or less, we are at the bottom of the session stack,
             // which means that 'saveandclose' doesn't close anyway, so we leave out
             // the 'saveandclose' and 'cancel' button. Unless, a feedback screen is configured.
-            if (SessionManager::atkLevel() > 0 || Tools::hasFlag(Tools::atkArrayNvl($node->m_feedback,
+            if ($sm->atkLevel() > 0 || Tools::hasFlag(Tools::atkArrayNvl($node->m_feedback,
                     "update", 0), ActionHandler::ACTION_CANCELLED)
             ) {
                 $result[] = $this->getButton('cancel');
@@ -559,7 +559,7 @@ class Controller
             }
 
 
-            if (SessionManager::atkLevel() > 0 || Tools::hasFlag(Tools::atkArrayNvl($node->m_feedback,
+            if ($sm->atkLevel() > 0 || Tools::hasFlag(Tools::atkArrayNvl($node->m_feedback,
                     "save", 0), ActionHandler::ACTION_CANCELLED)
             ) {
                 $result[] = $this->getButton('cancel');
@@ -573,7 +573,7 @@ class Controller
                     $this->getButton('edit');
             }
 
-            if (SessionManager::atkLevel() > 0) {
+            if ($sm->atkLevel() > 0) {
                 $result[] = $this->getButton('back', false, Tools::atktext('cancel'));
             }
 

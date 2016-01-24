@@ -15,10 +15,6 @@ class Bootstrap
         Config::loadGlobals();
         self::setLocale();
         self::setErrorHandler();
-
-        if (Config::getGlobal('session_init', true)) {
-            self::setSession();
-        }
         self::setSecurity();
         self::setDebugging();
 
@@ -161,20 +157,5 @@ class Bootstrap
 
         // show server info in debug (useful in clustered environments)
         Tools::atkdebug('Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')');
-    }
-
-    private static function setSession()
-    {
-        global $atklevel, $atkprevlevel, $atkstackid;
-
-        if (isset($_REQUEST["atklevel"])) {
-            $atklevel = trim($_REQUEST["atklevel"]);
-        }
-        if (isset($_REQUEST["atkprevlevel"])) {
-            $atkprevlevel = trim($_REQUEST["atkprevlevel"]);
-        }
-        if (isset($_REQUEST["atkstackid"])) {
-            $atkstackid = trim($_REQUEST["atkstackid"]);
-        }
     }
 }

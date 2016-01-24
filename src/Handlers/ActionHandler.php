@@ -155,7 +155,8 @@ class ActionHandler
      */
     function getRejectInfo()
     {
-        return SessionManager::getInstance()->stackVar('atkreject');
+        $sm = SessionManager::getInstance();
+        return $sm->stackVar('atkreject');
     }
 
     /**
@@ -167,7 +168,8 @@ class ActionHandler
      */
     function setRejectInfo($data)
     {
-        SessionManager::getInstance()->stackVar('atkreject', $data, SessionManager::atkPrevLevel());
+        $sm = SessionManager::getInstance();
+        $sm->stackVar('atkreject', $data, $sm->atkPrevLevel());
         $this->m_rejecting = true;
     }
 

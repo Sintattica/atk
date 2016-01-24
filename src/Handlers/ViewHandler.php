@@ -64,8 +64,9 @@ class ViewHandler extends ViewEditBase
      */
     public function getFormStart($record = null)
     {
+        $sm = SessionManager::getInstance();
         $formstart = '<form name="entryform" id="entryform" action="' . Controller::getInstance()->getPhpFile() . '" method="get" onsubmit="return globalSubmit(this,false)">';
-        $formstart .= SessionManager::formState(SessionManager::SESSION_NESTED);
+        $formstart .= $sm->formState(SessionManager::SESSION_NESTED);
         $formstart .= '<input type="hidden" name="atkselector" value="' . $this->getNode()->primaryKey($record) . '">';
         $formstart .= '<input type="hidden" class="atksubmitaction" />';
         return $formstart;

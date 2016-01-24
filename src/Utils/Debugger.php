@@ -154,12 +154,13 @@ class Debugger
     public function consoleLink($text, $action = "", $params = array(), $popup = false, $stackId = null)
     {
         if ($stackId == null) {
-            $stackId = SessionManager::atkStackID();
+            $sm = SessionManager::getInstance();
+            $stackId = $sm->atkStackID();
         }
 
         static $s_first = true;
         $res = "";
-        $url = Config::getGlobal("application_dir") . 'debugger.php?atkstackid=' . $stackId . '&action=' . $action . '&atkprevlevel=' . SessionManager::atkLevel() . $this->urlParams($params);
+        $url = Config::getGlobal("application_dir") . 'debugger.php?atkstackid=' . $stackId . '&action=' . $action . '&atkprevlevel=' . $sm->atkLevel() . $this->urlParams($params);
 
         if ($popup) {
             if ($s_first) {
@@ -345,13 +346,14 @@ class Debugger
      */
     public function &getDebuggerData($clean = false, $stackId = null)
     {
+        $sm = SessionManager::getInstance();
+
         if ($stackId == null) {
-            $stackId = SessionManager::atkStackID();
+            $stackId = $sm->atkStackID();
         }
 
-        $sessionmanager = SessionManager::getInstance();
-        if (is_object($sessionmanager)) {
-            $session = &$sessionmanager->getSession();
+        if (is_object($sm)) {
+            $session = &$sm->getSession();
             if ($clean) {
                 $session['debugger'] = array();
             }

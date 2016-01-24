@@ -117,7 +117,9 @@ class RecordListCache
              */
             Tools::getUniqueId("normalRecordList");
 
-            $stackID = SessionManager::atkStackID();
+            $sm = SessionManager::getInstance();
+
+            $stackID = $sm->atkStackID();
             $page->register_loadscript(str_replace("*|REPLACESTACKID|*", $stackID,
                 file_get_contents($this->m_cacheid . "_actionloader")));
             $output = str_replace("*|REPLACESTACKID|*", $stackID,
@@ -148,7 +150,8 @@ class RecordListCache
     function writeCache($output, $actionloader)
     {
         if (!$this->noCaching()) {
-            $stackID = SessionManager::atkStackID();
+            $sm = SessionManager::getInstance();
+            $stackID = $sm->atkStackID();
             $output = str_replace($stackID, "*|REPLACESTACKID|*", $output);
             $actionloader = str_replace($stackID, "*|REPLACESTACKID|*", $actionloader);
 

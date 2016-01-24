@@ -202,10 +202,11 @@ class ExportHandler extends ActionHandler
     function _getInitHtml()
     {
         $action = Tools::dispatch_url($this->m_node->m_module . '.' . $this->m_node->m_type, "export");
+        $sm = SessionManager::getInstance();
 
         $params = array();
         $params["formstart"] = '<form name="entryform" enctype="multipart/form-data" action="' . $action . '" method="post">';
-        $params["formstart"] .= SessionManager::formState();
+        $params["formstart"] .= $sm->formState();
         $params["formstart"] .= '<input type="hidden" name="phase" value="process"/>';
         $params["buttons"][] = Tools::atkButton(Tools::atktext("cancel", "atk"), "", SessionManager::SESSION_BACK, true);
         $params["buttons"][] = '<input class="btn" type="submit" value="' . Tools::atktext("export", "atk") . '"/>';
@@ -538,8 +539,9 @@ class ExportHandler extends ActionHandler
                 $list_includes[] = substr($name, strlen('export_'));
             }
         }
+        $sm = SessionManager::getInstance();
         $sessionData = &SessionManager::getSession();
-        $session_back = $sessionData["default"]["stack"][SessionManager::atkStackID()][SessionManager::atkLevel() - 1];
+        $session_back = $sessionData["default"]["stack"][$sm->atkStackID()][$sm->atkLevel() - 1];
         $atkorderby = $session_back['atkorderby'];
 
         $node = $this->m_node;

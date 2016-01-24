@@ -49,6 +49,7 @@ class SelectHandler extends ActionHandler
         $node = $this->getNode();
         $node->addStyle("style.css");
 
+
         $grid = DataGrid::create($node, 'select');
         $actions = array('select' => Tools::atkurldecode($grid->getPostvar('atktarget')));
         $grid->removeFlag(DataGrid::MULTI_RECORD_ACTIONS);
@@ -61,13 +62,15 @@ class SelectHandler extends ActionHandler
             return '';
         }
 
+        $sm = SessionManager::getInstance();
+
         $params = array();
         $params["header"] = $node->text("title_select");
         $params["list"] = $grid->render();
         $params["footer"] = "";
 
-        if (SessionManager::atkLevel() > 0) {
-            $backUrl = SessionManager::sessionUrl(Tools::atkSelf() . '?atklevel=' . SessionManager::newLevel(SessionManager::SESSION_BACK));
+        if ($sm->atkLevel() > 0) {
+            $backUrl = $sm->sessionUrl(Tools::atkSelf() . '?atklevel=' . $sm->newLevel(SessionManager::SESSION_BACK));
             $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backUrl . '\';" value="' . $this->getNode()->text('cancel') . '"></div>';
         }
 
@@ -118,10 +121,10 @@ class SelectHandler extends ActionHandler
             return false;
         }
 
-        if (SessionManager::atkLevel() > 0 && $grid->getPostvar('atkprevlevel',
-                0) > SessionManager::atkLevel()
-        ) {
-            $backUrl = SessionManager::sessionUrl(Tools::atkSelf() . '?atklevel=' . SessionManager::newLevel(SessionManager::SESSION_BACK));
+        $sm = SessionManager::getInstance();
+
+        if ($sm->atkLevel() > 0 && $grid->getPostvar('atkprevlevel', 0) > $sm->atkLevel()) {
+            $backUrl = $sm->sessionUrl(Tools::atkSelf() . '?atklevel=' . $sm->newLevel(SessionManager::SESSION_BACK));
             $node->redirect($backUrl);
         } else {
             $records = $grid->getRecords();
@@ -134,7 +137,7 @@ class SelectHandler extends ActionHandler
             $records[0]['pk'] = $node->primaryKey($records[0]);
             $target = $parser->parse($records[0], true);
 
-            $node->redirect(SessionManager::sessionUrl($target, SessionManager::SESSION_NESTED));
+            $node->redirect($sm->sessionUrl($target, SessionManager::SESSION_NESTED));
         }
 
         return true;

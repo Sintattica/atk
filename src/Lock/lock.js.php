@@ -92,7 +92,7 @@ function atkLockCheckResponse(XMLdocument) {
  * the lock lease has expired triggers an error.
  */
 function atkLockCheck() {
-    var sURI = '<?php echo SessionManager::sessionUrl('include.php?file=atk/lock/lockimg.php&type=xml&stack=' . $stack); ?>&id=' + atkLock.theIdentifier + '&sequence=' + atkLock.theSequence;
+    var sURI = '<?php echo SessionManager::getInstance()->sessionUrl('include.php?file=atk/lock/lockimg.php&type=xml&stack=' . $stack); ?>&id=' + atkLock.theIdentifier + '&sequence=' + atkLock.theSequence;
 
     if (atkLock.type == 'xml') {
         var xmlHttp = XmlHttp.create();
@@ -109,7 +109,7 @@ function atkLockCheck() {
     else {
         var image = new Image();
         image.onerror = atkLockUnlock;
-        image.src = '<?php echo SessionManager::sessionUrl('include.php?file=atk/lock/lockimg.php&type=image&stack=' . $stack); ?>&id=' + atkLock.theIdentifier + '&sequence=' + atkLock.theSequence;
+        image.src = '<?php echo SessionManager::getInstance()->sessionUrl('include.php?file=atk/lock/lockimg.php&type=image&stack=' . $stack); ?>&id=' + atkLock.theIdentifier + '&sequence=' + atkLock.theSequence;
     }
 }
 

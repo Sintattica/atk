@@ -73,6 +73,7 @@ class DataGridList extends DataGridComponent
         $grid = $this->getGrid();
         $theme = $this->getTheme();
         $page = $this->getPage();
+        $sm = SessionManager::getInstance();
 
         $edit = $grid->isEditing();
 
@@ -205,7 +206,7 @@ class DataGridList extends DataGridComponent
             $buttonType = $grid->isEmbedded() ? "button" : "submit";
             $button = '<input type="' . $buttonType . '" class="btn btn-default btn_search" value="' . Tools::atktext("search") . '" onclick="' . $call . ' return false;">';
             if ($grid->hasFlag(DataGrid::EXTENDED_SEARCH)) {
-                $button .= '<br>' . SessionManager::href(Tools::atkSelf() . "?atknodetype=" . $grid->getActionNode()->atkNodeType() . "&atkaction=" . $grid->getActionNode()->getExtendedSearchAction(),
+                $button .= '<br>' . Tools::href(Tools::atkSelf() . "?atknodetype=" . $grid->getActionNode()->atkNodeType() . "&atkaction=" . $grid->getActionNode()->getExtendedSearchAction(),
                         "(" . Tools::atktext("search_extended") . ")", SessionManager::SESSION_NESTED);
             }
 
@@ -256,7 +257,7 @@ class DataGridList extends DataGridComponent
         $keys = array_keys($actions);
         $actionurl = (count($actions) > 0) ? $actions[$keys[0]] : '';
         $actionloader = "rl_a['" . $listName . "'] = {};";
-        $actionloader .= "\nrl_a['" . $listName . "']['base'] = '" . SessionManager::sessionVars($grid->getActionSessionStatus(),
+        $actionloader .= "\nrl_a['" . $listName . "']['base'] = '" . $sm->sessionVars($grid->getActionSessionStatus(),
                 1, $actionurl) . "';";
         $actionloader .= "\nrl_a['" . $listName . "']['embed'] = " . ($grid->isEmbedded()
                 ? 'true' : 'false') . ";";
@@ -473,7 +474,7 @@ class DataGridList extends DataGridComponent
         /*         * ********************************************** */
         $mra = "";
         if (!$edit && $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS)) {
-            $target = SessionManager::sessionUrl(Tools::atkSelf() . '?atknodetype=' . $grid->getActionNode()->atkNodeType(),
+            $target = $sm->sessionUrl(Tools::atkSelf() . '?atknodetype=' . $grid->getActionNode()->atkNodeType(),
                 SessionManager::SESSION_NESTED);
 
             /* multiple actions -> dropdown */
@@ -499,7 +500,7 @@ class DataGridList extends DataGridComponent
         /*         * ************************************* */ elseif (!$edit && $hasMRA) {
             $postvars = $grid->getNode()->m_postvars;
 
-            $target = SessionManager::sessionUrl(
+            $target = $sm->sessionUrl(
                 Tools::atkSelf() . '?atknodetype=' . $grid->getNode()->atkNodeType()
                 . '&atktarget=' . (!empty($postvars['atktarget']) ? $postvars['atktarget']
                     : '')

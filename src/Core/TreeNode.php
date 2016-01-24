@@ -142,7 +142,7 @@ class TreeNode extends Node
                 $label = Tools::atktext(Module::getNodeType($this->m_type),
                         $this->m_module) . " " . Tools::atktext("add", "atk");
             }
-            $content .= SessionManager::href($addurl, $label, SessionManager::SESSION_NESTED) . '<br><br>';
+            $content .= Tools::href($addurl, $label, SessionManager::SESSION_NESTED) . '<br><br>';
         }
 
         $content .= $this->GraphTreeRender();
@@ -414,12 +414,12 @@ class TreeNode extends Node
 
                             if ($this->m_tree[$cnt]["isleaf"] == 1) {
                                 if ($cnt != 0) {
-                                    $res .= "<td>" . SessionManager::href(Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params,
+                                    $res .= "<td>" . Tools::href(Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params,
                                             "<img src=\"" . $img_end_plus . "\" border=0>") . "</td>\n";
                                 }
                             } else {
                                 if ($cnt != 0) {
-                                    $res .= "<td>" . SessionManager::href(Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params,
+                                    $res .= "<td>" . Tools::href(Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params,
                                             "<img src=\"" . $img_plus . "\" border=0>") . "</td>\n";
                                 }
                             }
@@ -446,7 +446,7 @@ class TreeNode extends Node
                             if ($this->m_tree[$cnt]["isleaf"] == 1) {
                                 if ($cnt != 0) {
                                     if ($foldable) {
-                                        $res .= "<td>" . SessionManager::href(Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params,
+                                        $res .= "<td>" . Tools::href(Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params,
                                                 "<img src=\"" . $img_end_minus . "\" border=0>") . "</td>\n";
                                     } else {
                                         $res .= "<td><img src=\"" . $img_end . "\" border=0></td>\n";
@@ -455,7 +455,7 @@ class TreeNode extends Node
                             } else {
                                 if ($cnt != 0) {
                                     if ($foldable) {
-                                        $res .= "<td>" . SessionManager::href(Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params,
+                                        $res .= "<td>" . Tools::href(Tools::atkSelf() . "?atknodetype=" . $this->atknodetype() . "&atkaction=" . $this->m_action . "&" . $params,
                                                 "<img src=\"" . $img_minus . "\" border=0>") . "</td>\n";
                                     } else {
                                         $res .= "<td><img src=\"" . $img_split . "\" border=0></td>\n";
@@ -494,10 +494,10 @@ class TreeNode extends Node
                             $params = $params . $this->extraparams;
                         }
                         if ($expand[$cnt] == 0) {
-                            $res .= "<td>" . SessionManager::href(Tools::atkSelf() . "?" . $params,
+                            $res .= "<td>" . Tools::href(Tools::atkSelf() . "?" . $params,
                                     "<img src=\"" . $img_expand . "\" border=0>") . "</td>\n";
                         } else {
-                            $res .= "<td>" . SessionManager::href(Tools::atkSelf() . "?" . $params,
+                            $res .= "<td>" . Tools::href(Tools::atkSelf() . "?" . $params,
                                     "<img src=\"" . $img_collapse . "\" border=0>") . "</td>\n";
                         }
                     } else {
@@ -578,7 +578,7 @@ class TreeNode extends Node
                             $stringparser = new StringParser($url);
                             $url = $stringparser->parse($this->m_tree[$cnt]["label"], true);
 
-                            $res .= SessionManager::href($url, Tools::atktext($name), SessionManager::SESSION_NESTED) . "&nbsp;";
+                            $res .= Tools::href($url, Tools::atktext($name), SessionManager::SESSION_NESTED) . "&nbsp;";
                         }
                     }
 

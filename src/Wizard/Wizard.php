@@ -152,10 +152,10 @@ class Wizard extends WizardBase
         $sessionManager = SessionManager::getInstance();
         $level = $sessionManager->getValue("wizard_initiation_level");
         if ($level === null) {
-            $sessionManager->globalVar("wizard_initiation_level", SessionManager::atkLevel());
+            $sessionManager->globalVar("wizard_initiation_level", $sessionManager->atkLevel());
             $this->m_isWizardInitiated = true;
         } else {
-            $this->m_isWizardInitiated = ($level === SessionManager::atkLevel());
+            $this->m_isWizardInitiated = ($level === $sessionManager->atkLevel());
         }
     }
 
@@ -170,6 +170,7 @@ class Wizard extends WizardBase
     {
         //Get session vars
         return;
+        /*
         $sessionManager = SessionManager::getInstance();
         $this->m_wizardAction = WizardActionLoader::getWizardAction($sessionManager->stackVar("atkwizardaction"));
 
@@ -179,7 +180,8 @@ class Wizard extends WizardBase
         }
 
         $sessionData = &SessionManager::getSession();
-        Tools::atk_var_dump($sessionData["default"]["stack"][SessionManager::atkStackID()], "SESSION DATA");
+        Tools::atk_var_dump($sessionData["default"]["stack"][$sessionManager->atkStackID()], "SESSION DATA");
+        */
     }
 
     /**

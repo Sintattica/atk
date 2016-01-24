@@ -293,12 +293,13 @@ class EditHandler extends ViewEditBase
     {
         $controller = Controller::getInstance();
         $controller->setNode($this->m_node);
+        $sm = SessionManager::getInstance();
 
         $formIdentifier = ((isset($this->m_partial) && $this->m_partial != "")) ? "dialogform"
             : "entryform";
         $formstart = '<form id="' . $formIdentifier . '" name="' . $formIdentifier . '" enctype="multipart/form-data" action="' . $controller->getPhpFile() . '?' . SID . '"' .
             ' method="post" onsubmit="return globalSubmit(this,false)" class="form-horizontal" role="form">' .
-            SessionManager::formState($this->getUpdateSessionStatus());
+            $sm->formState($this->getUpdateSessionStatus());
 
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkaction" value="' . $this->getUpdateAction() . '" />';
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkprevaction" value="' . $this->getNode()->m_action . '" />';

@@ -100,10 +100,11 @@ class ImportHandler extends ActionHandler
     function importPage($phase, $content)
     {
         $controller = Controller::getInstance();
+        $sm = SessionManager::getInstance();
         $action = $controller->getPhpFile() . '?' . SID;
 
         $formStart = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="' . $action . '" method="post">' .
-            SessionManager::formState(SessionManager::atkLevel() == 0 ? SessionManager::SESSION_NESTED : SessionManager::SESSION_REPLACE) .
+            $sm->formState($sm->atkLevel() == 0 ? SessionManager::SESSION_NESTED : SessionManager::SESSION_REPLACE) .
             '<input type="hidden" name="atknodetype" value="' . $this->m_node->atkNodeType() . '" />' .
             '<input type="hidden" name="atkaction" value="' . $this->m_node->m_action . '" />' .
             $controller->getHiddenVarsString();
@@ -149,8 +150,9 @@ class ImportHandler extends ActionHandler
     function getImportButtons($phase)
     {
         $result = array();
+        $sm = SessionManager::getInstance();
 
-        if (SessionManager::atkLevel() > 0) {
+        if ($sm->atkLevel() > 0) {
             $result[] = Tools::atkButton($this->m_node->text("cancel", "atk"), "", SessionManager::SESSION_BACK, true);
         }
         if ($phase == 'init') {

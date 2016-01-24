@@ -207,8 +207,9 @@ class AdminHandler extends ActionHandler
 
             // reset search so we can back to the normal admin screen if we want
             $grid->setPostvar('atksearch', array());
+            $sm = SessionManager::getInstance();
 
-            $url = SessionManager::sessionUrl(Tools::dispatch_url($node->atkNodeType(), $action,
+            $url = $sm->sessionUrl(Tools::dispatch_url($node->atkNodeType(), $action,
                 array('atkselector' => $node->primaryKey($records[0]))), SessionManager::SESSION_NESTED);
 
             if ($grid->isUpdate()) {
@@ -261,7 +262,7 @@ class AdminHandler extends ActionHandler
     {
         $link = "";
         if ($this->m_node->allowed("add") && !$this->m_node->hasFlag(Node::NF_READONLY) && $this->m_node->hasFlag(Node::NF_IMPORT)) {
-            $link .= SessionManager::href(Tools::dispatch_url($this->m_node->atkNodeType(), "import"),
+            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeType(), "import"),
                 Tools::atktext("import", "atk", $this->m_node->m_type), SessionManager::SESSION_NESTED);
         }
         return $link;
@@ -282,7 +283,7 @@ class AdminHandler extends ActionHandler
                     str_replace('[table]', $this->m_node->getTable(), $this->m_node->m_fuzzyFilters));
             }
 
-            $link .= SessionManager::href(Tools::dispatch_url($this->m_node->atkNodeType(), "export",
+            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeType(), "export",
                 array('atkfilter' => $filter)), Tools::atktext("export", "atk", $this->m_node->m_type),
                 SessionManager::SESSION_NESTED);
         }
@@ -335,7 +336,7 @@ class AdminHandler extends ActionHandler
 			    ';
             } elseif ($node->hasFlag(Node::NF_ADD_LINK)) {
                 $addurl = $this->invoke('getAddUrl', $node);
-                return SessionManager::href($addurl, $label, SessionManager::SESSION_NESTED);
+                return Tools::href($addurl, $label, SessionManager::SESSION_NESTED);
             }
         }
 
