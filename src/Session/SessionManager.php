@@ -113,8 +113,7 @@ class SessionManager
             }
             session_name($sessionname);
             session_start();
-
-            $GLOBALS['g_sessionData'] = &self::getSession();
+            
         } else {
             Tools::atkwarning("Not a valid session!");
             return false;
@@ -212,16 +211,17 @@ class SessionManager
      */
     public function globalVar($var, $value = "", $no_namespace = false)
     {
-        global $g_sessionData;
+
+        $sessionData = &self::getSession();
 
         if ($value == "" && isset($_REQUEST[$var])) {
             $value = $_REQUEST[$var];
         }
 
         if ($no_namespace) {
-            $g_sessionData["globals"][$var] = $value;
+            $sessionData["globals"][$var] = $value;
         } else {
-            $g_sessionData[$this->m_namespace]["globals"][$var] = $value;
+            $sessionData[$this->m_namespace]["globals"][$var] = $value;
         }
 
         return $value;
@@ -238,16 +238,17 @@ class SessionManager
      */
     public function getValue($var, $namespace = "")
     {
-        global $g_sessionData;
+        $sessionData = &self::getSession();
+
         if ($namespace == "globals") {
-            return isset($g_sessionData["globals"][$var]) ? $g_sessionData["globals"][$var]
+            return isset($sessionData["globals"][$var]) ? $sessionData["globals"][$var]
                 : null;
         } else {
             if ($namespace != "") {
-                return isset($g_sessionData[$namespace]["globals"][$var]) ? $g_sessionData[$namespace]["globals"][$var]
+                return isset($sessionData[$namespace]["globals"][$var]) ? $sessionData[$namespace]["globals"][$var]
                     : null;
             } else {
-                return isset($g_sessionData[$this->m_namespace]["globals"][$var]) ? $g_sessionData[$this->m_namespace]["globals"][$var]
+                return isset($sessionData[$this->m_namespace]["globals"][$var]) ? $sessionData[$this->m_namespace]["globals"][$var]
                     : null;
             }
         }
@@ -384,9 +385,9 @@ class SessionManager
     public function pageVar($var, $value = "")
     {
         if (!$this->m_escapemode) {
-            global $g_sessionData;
+            $sessionData = &self::getSession();
 
-            $currentitem = &$g_sessionData[$this->m_namespace]["stack"][self::atkStackID()][self::atkLevel()];
+            $currentitem = &$sessionData[$this->m_namespace]["stack"][self::atkStackID()][self::atkLevel()];
 
             if ($value == "") {
                 if (isset($_REQUEST[$var])) {
@@ -417,9 +418,9 @@ class SessionManager
      */
     protected function _globalscope(&$postvars)
     {
-        global $g_sessionData;
+        $sessionData = &self::getSession();
 
-        $current = &$g_sessionData[$this->m_namespace]["globals"];
+        $current = &$sessionData[$this->m_namespace]["globals"];
         if (!is_array($current)) {
             $current = array();
         }
@@ -441,8 +442,8 @@ class SessionManager
      */
     protected function _touchCurrentStack()
     {
-        global $g_sessionData;
-        $g_sessionData[$this->m_namespace]["stack_stamp"][self::atkStackID()] = time();
+        $sessionData = &self::getSession();
+        $sessionData[$this->m_namespace]["stack_stamp"][self::atkStackID()] = time();
     }
 
     /**
@@ -451,7 +452,7 @@ class SessionManager
      */
     protected function _removeExpiredStacks()
     {
-        global $g_sessionData;
+        $sessionData = &self::getSession();
 
         $maxAge = Config::getGlobal('session_max_stack_inactivity_period', 0);
         if ($maxAge <= 0) {
@@ -460,8 +461,8 @@ class SessionManager
         }
 
         $now = time();
-        $stacks = &$g_sessionData[$this->m_namespace]['stack'];
-        $stackStamps = $g_sessionData[$this->m_namespace]["stack_stamp"];
+        $stacks = &$sessionData[$this->m_namespace]['stack'];
+        $stackStamps = $sessionData[$this->m_namespace]["stack_stamp"];
         $stackIds = array_keys($stacks);
         $removed = false;
 
@@ -494,7 +495,9 @@ class SessionManager
      */
     protected function _stackscope(&$postvars)
     {
-        global $g_sessionData, $atklevel;
+        global $atklevel;
+
+        $sessionData = &self::getSession();
 
         // session vars are valid until they are set to something else. if you go a session level higher,
         // the next level will still contain these vars (unless overriden in the url)
@@ -552,7 +555,7 @@ class SessionManager
             $stackid = self::atkStackID();
         }
 
-        $stack = &$g_sessionData[$this->m_namespace]["stack"][$stackid];
+        $stack = &$sessionData[$this->m_namespace]["stack"][$stackid];
 
         // garbage collect
         $this->_touchCurrentStack();
@@ -757,12 +760,12 @@ class SessionManager
      */
     public function stackTrace()
     {
-        global $g_sessionData;
+        $sessionData = &self::getSession();
 
         $ui = Ui::getInstance();
 
         $res = array();
-        $stack = $g_sessionData[$this->m_namespace]["stack"][self::atkStackID()];
+        $stack = $sessionData[$this->m_namespace]["stack"][self::atkStackID()];
 
         for ($i = 0; $i < count($stack); $i++) {
             if (!isset($stack[$i]["atknodetype"])) {
@@ -807,9 +810,9 @@ class SessionManager
      */
     public function descriptorTrace()
     {
-        global $g_sessionData;
+        $sessionData = &self::getSession();
 
-        $stack = $g_sessionData[$this->m_namespace]["stack"][self::atkStackID()];
+        $stack = $sessionData[$this->m_namespace]["stack"][self::atkStackID()];
         $res = array();
         $node = null;
         $module = null;
@@ -851,11 +854,13 @@ class SessionManager
      */
     protected function _verifyStackIntegrity()
     {
-        global $g_sessionData, $atkprevlevel;
-        $stack = "";
+        global $atkprevlevel;
 
-        if (isset($g_sessionData[$this->m_namespace]["stack"][self::atkStackID()])) {
-            $stack = $g_sessionData[$this->m_namespace]["stack"][self::atkStackID()];
+        $stack = "";
+        $sessionData = &self::getSession();
+
+        if (isset($sessionData[$this->m_namespace]["stack"][self::atkStackID()])) {
+            $stack = $sessionData[$this->m_namespace]["stack"][self::atkStackID()];
         }
         if (!is_array($stack)) {
             $prevlevelfromstack = 0;
@@ -884,11 +889,11 @@ class SessionManager
                 array_pop($stack);
             }
 
-            $g_sessionData[$this->m_namespace]["stack"][$newid] = $stack;
+            $sessionData[$this->m_namespace]["stack"][$newid] = $stack;
 
             // Copy the global stackvars for the stack too.
-            if (isset($g_sessionData[$this->m_namespace]['globals']['#STACK#'][$oldStackId])) {
-                $g_sessionData[$this->m_namespace]['globals']['#STACK#'][$newid] = $g_sessionData[$this->m_namespace]['globals']['#STACK#'][$oldStackId];
+            if (isset($sessionData[$this->m_namespace]['globals']['#STACK#'][$oldStackId])) {
+                $sessionData[$this->m_namespace]['globals']['#STACK#'][$newid] = $sessionData[$this->m_namespace]['globals']['#STACK#'][$oldStackId];
             }
 
             return false;

@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Handles errors by sending them to a specified email address
@@ -27,7 +28,10 @@ class MailErrorHandler extends ErrorHandlerBase
      */
     public function handle($errorMessage, $debugMessage)
     {
-        global $g_sessionManager, $g_sessionData, $g_user, $g_modules;
+        global $g_sessionManager, $g_user, $g_modules;
+
+        $sessionData = &SessionManager::getSession();
+
         $txt_app_title = Tools::atktext("app_title");
 
         if ($this->params['mailto'] != "") { // only if enabled..
@@ -115,8 +119,8 @@ class MailErrorHandler extends ErrorHandlerBase
             if (is_object($g_sessionManager)) {
                 $body .= "\n\nATK SESSION\n" . str_repeat("-", 70);
                 $body .= "\nNamespace: " . $g_sessionManager->getNameSpace() . "\n";
-                if (isset($g_sessionData[$g_sessionManager->getNameSpace()]["stack"])) {
-                    $stack = $g_sessionData[$g_sessionManager->getNameSpace()]["stack"];
+                if (isset($sessionData[$g_sessionManager->getNameSpace()]["stack"])) {
+                    $stack = $sessionData[$g_sessionManager->getNameSpace()]["stack"];
                     for ($i = 0; $i < count($stack); $i++) {
                         $body .= "\nStack level $i:\n";
                         $item = isset($stack[$i]) ? $stack[$i] : null;
@@ -128,8 +132,8 @@ class MailErrorHandler extends ErrorHandlerBase
                         }
                     }
                 }
-                if (isset($g_sessionData[$g_sessionManager->getNameSpace()]["globals"])) {
-                    $ns_globals = $g_sessionData[$g_sessionManager->getNameSpace()]["globals"];
+                if (isset($sessionData[$g_sessionManager->getNameSpace()]["globals"])) {
+                    $ns_globals = $sessionData[$g_sessionManager->getNameSpace()]["globals"];
                     if (count($ns_globals) > 0) {
                         $body .= "\nNamespace globals:\n";
                         foreach ($ns_globals as $key => $value) {
@@ -138,8 +142,8 @@ class MailErrorHandler extends ErrorHandlerBase
                         }
                     }
                 }
-                if (isset($g_sessionData["globals"])) {
-                    $globals = $g_sessionData["globals"];
+                if (isset($sessionData["globals"])) {
+                    $globals = $sessionData["globals"];
                     if (count($globals) > 0) {
                         $body .= "\nGlobals:\n";
                         foreach ($globals as $key => $value) {

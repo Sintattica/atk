@@ -180,8 +180,8 @@ class Wizard extends WizardBase
             $this->m_currentPanelIndex = 0;
         }
 
-        global $g_sessionData;
-        Tools::atk_var_dump($g_sessionData["default"]["stack"][SessionManager::atkStackID()], "SESSION DATA");
+        $sessionData = &SessionManager::getSession();
+        Tools::atk_var_dump($sessionData["default"]["stack"][SessionManager::atkStackID()], "SESSION DATA");
     }
 
     /**

@@ -538,8 +538,8 @@ class ExportHandler extends ActionHandler
                 $list_includes[] = substr($name, strlen('export_'));
             }
         }
-        global $g_sessionData;
-        $session_back = $g_sessionData["default"]["stack"][SessionManager::atkStackID()][SessionManager::atkLevel() - 1];
+        $sessionData = &SessionManager::getSession();
+        $session_back = $sessionData["default"]["stack"][SessionManager::atkStackID()][SessionManager::atkLevel() - 1];
         $atkorderby = $session_back['atkorderby'];
 
         $node = $this->m_node;
