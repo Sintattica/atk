@@ -31,8 +31,8 @@ class MessageQueue
     {
         static $s_instance = null;
         if ($s_instance == null) {
-            global $g_sessionManager;
-            if (is_object($g_sessionManager)) { // don't bother to create if session has not yet been initialised
+            $sessionManager = SessionManager::getInstance();
+            if (is_object($sessionManager)) { // don't bother to create if session has not yet been initialised
                 $s_instance = new MessageQueue();
             }
         }
@@ -161,7 +161,7 @@ class MessageQueue
      */
     function &getQueue()
     {
-        $sessionmgr = SessionManager::getSessionManager();
+        $sessionmgr = SessionManager::getInstance();
         $session = &$sessionmgr->getSession();
         if (!isset($session['atkmessagequeue'])) {
             $session['atkmessagequeue'] = array();

@@ -10,16 +10,6 @@ use Sintattica\Atk\Core\Controller;
 
 /**
  * The atk session manager.
- *
- * Any file that wants to make use of ATK sessions, should have a call to
- * atksession() in the top php file (all ATK default files already have
- * this).
- * After the session has been initialised with atksession(), the session
- * manager can be used using the global variable $g_sessionManager.
- *
- * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage session
  */
 class SessionManager
 {
@@ -73,9 +63,6 @@ class SessionManager
     /**
      * Initializes the sessionmanager.
      *
-     * After the session has been initialised with atksession(), the session
-     * manager can be used using the global variable $g_sessionManager.
-     * Call this function in every file that you want to use atk sessions.
      * @return bool
      */
     public function start()
@@ -263,7 +250,7 @@ class SessionManager
      * If a value gets passed in a url, the following statement is useful:
      *
      * <code>
-     *   $view = $g_sessionManager->stackVar("view");
+     *   $view = SessionManager::getInstance()->stackVar("view");
      * </code>
      *
      * This statement makes sure that $view is always filled. If view is passed
@@ -371,7 +358,7 @@ class SessionManager
      * The method can be used to transparantly both store and retrieve the value.
      * If a value gets passed in a url, the following statement is useful:
      * <code>
-     *   $view = $g_sessionManager->pageVar("view");
+     *   $view = SessionManager::getInstance()->pageVar("view");
      * </code>
      * This statement makes sure that $view is always filled. If view is passed
      * in the url, it is stored as the new default stack value. If it's not
@@ -1117,20 +1104,14 @@ class SessionManager
      * Returns the sessionmanager.
      * @return SessionManager Session manager
      */
-    public static function &getSessionManager()
-    {
-        global $g_sessionManager;
-        return $g_sessionManager;
-    }
-
-    /**
-     * Returns the sessionmanager.
-     * @return SessionManager Session manager
-     */
     public static function &getInstance()
     {
-        global $g_sessionManager;
-        return $g_sessionManager;
+        static $s_instance = null;
+        if ($s_instance == null) {
+            Tools::atkdebug("Created a new SessionManager instance");
+            $s_instance = new self();
+        }
+        return $s_instance;
     }
 
 

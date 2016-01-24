@@ -48,7 +48,7 @@ class SessionStore
      */
     private static function getKeyFromSession()
     {
-        $sessionmanager = self::getSessionManager();
+        $sessionmanager = self::getInstance();
         if (!$sessionmanager) {
             return false;
         } else {
@@ -188,9 +188,9 @@ class SessionStore
      *
      * @return mixed Sessionmanager or false if we don't have a session
      */
-    protected static function getSessionManager()
+    protected static function getInstance()
     {
-        $sessionmanager = SessionManager::getSessionManager();
+        $sessionmanager = SessionManager::getInstance();
         if (!$sessionmanager) {
             return false;
         } else {
@@ -209,7 +209,7 @@ class SessionStore
             return false;
         }
 
-        $sessionmanager = self::getSessionManager();
+        $sessionmanager = self::getInstance();
         if (!$sessionmanager) {
             return false;
         }
@@ -233,7 +233,7 @@ class SessionStore
             return false;
         }
 
-        $sessionmanager = self::getSessionManager();
+        $sessionmanager = self::getInstance();
         if (!$sessionmanager) {
             return false;
         }

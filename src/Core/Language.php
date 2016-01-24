@@ -278,7 +278,7 @@ class Language
     public static function getUserLanguage()
     {
         $supported = Language::getSupportedLanguages();
-        $sessionmanager = SessionManager::getSessionManager();
+        $sessionmanager = SessionManager::getInstance();
         if (!empty($sessionmanager)) {
             if (function_exists("getUser")) {
                 $userinfo = SecurityManager::atkGetUser();

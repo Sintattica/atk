@@ -205,7 +205,7 @@ class SaveHandler extends ActionHandler
     public function storeRecord(&$record)
     {
         $atkstoretype = "";
-        $sessionmanager = SessionManager::getSessionManager();
+        $sessionmanager = SessionManager::getInstance();
         if ($sessionmanager) {
             $atkstoretype = $sessionmanager->stackVar('atkstore');
         }

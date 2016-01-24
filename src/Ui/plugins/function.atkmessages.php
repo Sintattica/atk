@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\MessageQueue;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Implements the {atkmessages} plugin for use in templates.
@@ -24,8 +25,8 @@ use Sintattica\Atk\Utils\MessageQueue;
  */
 function smarty_function_atkmessages($params, &$smarty)
 {
-    global $g_sessionManager;
-    if (is_object($g_sessionManager)) {
+    $sessionManager = SessionManager::getInstance();
+    if (is_object($sessionManager)) {
         $msgs = MessageQueue::getMessages();
         $smarty->assign("atkmessages", $msgs);
         if (empty($msgs)) {

@@ -225,7 +225,7 @@ class Updatehandler extends ActionHandler
     private function updateRecord(&$record)
     {
         $atkstoretype = "";
-        $sessionmanager = SessionManager::getSessionManager();
+        $sessionmanager = SessionManager::getInstance();
         if ($sessionmanager) {
             $atkstoretype = $sessionmanager->stackVar('atkstore');
         }

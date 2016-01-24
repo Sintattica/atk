@@ -28,7 +28,9 @@ class MailErrorHandler extends ErrorHandlerBase
      */
     public function handle($errorMessage, $debugMessage)
     {
-        global $g_sessionManager, $g_user, $g_modules;
+        global $g_user, $g_modules;
+
+        $sessionManager = SessionManager::getInstance();
 
         $sessionData = &SessionManager::getSession();
 
@@ -116,11 +118,11 @@ class MailErrorHandler extends ErrorHandlerBase
                 $body .= "Not known\n";
             }
 
-            if (is_object($g_sessionManager)) {
+            if (is_object($sessionManager)) {
                 $body .= "\n\nATK SESSION\n" . str_repeat("-", 70);
-                $body .= "\nNamespace: " . $g_sessionManager->getNameSpace() . "\n";
-                if (isset($sessionData[$g_sessionManager->getNameSpace()]["stack"])) {
-                    $stack = $sessionData[$g_sessionManager->getNameSpace()]["stack"];
+                $body .= "\nNamespace: " . $sessionManager->getNameSpace() . "\n";
+                if (isset($sessionData[$sessionManager->getNameSpace()]["stack"])) {
+                    $stack = $sessionData[$sessionManager->getNameSpace()]["stack"];
                     for ($i = 0; $i < count($stack); $i++) {
                         $body .= "\nStack level $i:\n";
                         $item = isset($stack[$i]) ? $stack[$i] : null;
@@ -132,8 +134,8 @@ class MailErrorHandler extends ErrorHandlerBase
                         }
                     }
                 }
-                if (isset($sessionData[$g_sessionManager->getNameSpace()]["globals"])) {
-                    $ns_globals = $sessionData[$g_sessionManager->getNameSpace()]["globals"];
+                if (isset($sessionData[$sessionManager->getNameSpace()]["globals"])) {
+                    $ns_globals = $sessionData[$sessionManager->getNameSpace()]["globals"];
                     if (count($ns_globals) > 0) {
                         $body .= "\nNamespace globals:\n";
                         foreach ($ns_globals as $key => $value) {

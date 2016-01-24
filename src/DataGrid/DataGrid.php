@@ -351,13 +351,13 @@ class DataGrid
      */
     public static function create(Node $node, $name = null, $class = null, $isEmbedded = false, $useSession = true)
     {
-        $useSession = $useSession && SessionManager::getSessionManager() != null;
+        $useSession = $useSession && SessionManager::getInstance() != null;
         $name = $name == null ? uniqid('atkdatagrid') : $name;
         $class = $class == null ? Config::getGlobal('datagrid_class') : $class;
         $sessions = &$GLOBALS['ATK_VARS']['atkdgsession'];
         $sessions[$name] = array('class' => $class, 'custom' => array(), 'system' => array());
         if ($useSession) {
-            SessionManager::getSessionManager()->pageVar('atkdgsession', $sessions);
+            SessionManager::getInstance()->pageVar('atkdgsession', $sessions);
         }
         $class = substr($class, strrpos($class, '.') + 1);
         $grid = new $class($node, $name, self::CREATE, $isEmbedded, $useSession);
@@ -415,7 +415,7 @@ class DataGrid
         $this->setEmbedded($isEmbedded);
 
         $this->m_useSession = $useSession;
-        $this->m_sessionMgr = $useSession ? SessionManager::getSessionManager() : null;
+        $this->m_sessionMgr = $useSession ? SessionManager::getInstance() : null;
 
         $this->registerGlobalOverrides();
         $this->setUpdate($mode == self::RESUME);

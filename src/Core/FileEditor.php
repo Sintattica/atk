@@ -184,7 +184,7 @@ class FileEditor extends Node
     function select($selector = "", $orderby = "", $limit = "")
     {
         $res = array();
-        SessionManager::getSessionManager()->stackVar('dirname', $this->m_dir);
+        SessionManager::getInstance()->stackVar('dirname', $this->m_dir);
         if ($selector == "") {
             // no file selected, generate list..
             $start = 0;
@@ -282,7 +282,7 @@ class FileEditor extends Node
      */
     function addDb($record)
     {
-        $sessmngr = SessionManager::getSessionManager();
+        $sessmngr = SessionManager::getInstance();
         $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
         $fp = @fopen($this->m_dir . $record['filename'], "wb");
         if ($fp == null) {
@@ -310,7 +310,7 @@ class FileEditor extends Node
         // (not by atkselector, since the primary key might have
         // changed, so we use the atkorgkey, which is the value before
         // any update happened.)
-        $sessmngr = SessionManager::getSessionManager();
+        $sessmngr = SessionManager::getInstance();
         $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
 
         if ($record['atkprimkey'] != "") {
@@ -346,7 +346,7 @@ class FileEditor extends Node
      */
     function deleteDb($selector)
     {
-        $sessmngr = SessionManager::getSessionManager();
+        $sessmngr = SessionManager::getInstance();
         $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
         $decodedselector = Tools::decodeKeyValuePair($selector);
         $filename = $decodedselector["dummy.filename"];
@@ -371,7 +371,7 @@ class FileEditor extends Node
      */
     function action_edit(EditHandler $handler)
     {
-        $this->m_dir = SessionManager::getSessionManager()->stackVar('dirname');
+        $this->m_dir = SessionManager::getInstance()->stackVar('dirname');
         $handler->action_edit();
     }
 
@@ -383,7 +383,7 @@ class FileEditor extends Node
      */
     function action_delete(DeleteHandler $handler)
     {
-        $this->m_dir = SessionManager::getSessionManager()->stackVar('dirname');
+        $this->m_dir = SessionManager::getInstance()->stackVar('dirname');
         $handler->action_delete();
     }
 
@@ -395,7 +395,7 @@ class FileEditor extends Node
     function action_dirchange()
     {
         $selectedDir = $this->stripDir($this->m_postvars['atkselector']);
-        SessionManager::getSessionManager()->stackVar('dirname', $selectedDir);
+        SessionManager::getInstance()->stackVar('dirname', $selectedDir);
 
         $this->m_dir = $selectedDir;
         $this->callHandler('admin');

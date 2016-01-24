@@ -234,8 +234,9 @@ class SecurityManager
      */
     function authenticate()
     {
-        global $g_sessionManager, $ATK_VARS;
+        global $ATK_VARS;
         $session = &SessionManager::getSession();
+        $sessionManager = SessionManager::getInstance();
 
         $response = SecurityManager::AUTH_UNVERIFIED;
 
@@ -386,7 +387,6 @@ class SecurityManager
                                     $authenticated = true;
 
                                     // Remember that we are logged in..
-                                    //$g_sessionManager->globalVar("authentication",array("authenticated"=>1, "user"=>$this->m_user), true);
                                     // write cookie
                                     if (Config::getGlobal("authentication_cookie") && $auth_user != "administrator") {
                                         // if the authentication scheme supports md5 passwords, we can safely store
@@ -433,7 +433,7 @@ class SecurityManager
                 // using session for authentication, because "login" was registered.
                 // but we double check with some more data from the session to see
                 // if the login is really valid.
-                $session_auth = $g_sessionManager->getValue("authentication", "globals");
+                $session_auth = $sessionManager->getValue("authentication", "globals");
 
                 if (Config::getGlobal("authentication_session") &&
                     $session["login"] == 1 &&
@@ -526,13 +526,14 @@ class SecurityManager
      */
     function reloadUser()
     {
-        global $g_user, $g_sessionManager;
+        global $g_user;
+        $sessionManager = SessionManager::getInstance();
         $user = SecurityManager::atkGetUser();
         $this->m_user = $this->m_authorization->getUser($user[Config::getGlobal('auth_userfield')]);
         $g_user = $this->m_user;
-        $old_auth = $g_sessionManager->getValue("authentication", "globals");
+        $old_auth = $sessionManager->getValue("authentication", "globals");
         $old_auth["user"] = $g_user;
-        $g_sessionManager->globalVar("authentication", $old_auth, true);
+        $sessionManager->globalVar("authentication", $old_auth, true);
     }
 
     /**
@@ -819,7 +820,7 @@ class SecurityManager
      */
     public static function atkGetUser($key = '')
     {
-        $sessionmanager = SessionManager::getSessionManager();
+        $sessionmanager = SessionManager::getInstance();
         $session = SessionManager::getSession();
         $user = "";
         $session_auth = is_object($sessionmanager) ? $sessionmanager->getValue("authentication", "globals")

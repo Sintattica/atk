@@ -1,19 +1,6 @@
 <?php
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage ui
- *
- * @copyright (c)2000-2004 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 1684 $
- * $Id$
- */
+
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Implements the {stacktrace} plugin for use in templates.
@@ -36,9 +23,9 @@
  */
 function smarty_function_stacktrace($params, &$smarty)
 {
-    global $g_sessionManager;
-    if (is_object($g_sessionManager)) {
-        $smarty->assign("stacktrace", $g_sessionManager->stackTrace());
+    $sessionManager = SessionManager::getInstance();
+    if (is_object($sessionManager)) {
+        $smarty->assign("stacktrace", $sessionManager->stackTrace());
         return "";
     }
     return "";

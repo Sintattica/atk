@@ -225,7 +225,7 @@ class ImportHandler extends ActionHandler
      */
     function doAnalyze($fileid, $importerrors = array())
     {
-        $sessionMgr = SessionManager::getSessionManager();
+        $sessionMgr = SessionManager::getInstance();
         $filename = $this->getTmpFileDestination($fileid);
 
         $rows = $this->getSampleRows($filename);
@@ -1537,11 +1537,11 @@ class ImportHandler extends ActionHandler
      */
     function prepareUpdateRecord(&$record)
     {
-        global $g_sessionManager;
+        $sessionManager = SessionManager::getInstance();
         // The keys to update the record on
         $updatekey1 = $this->m_postvars['updatekey1'];
         $updatekey1val = $this->getValueFromRecord($record, $updatekey1);
-        $allFields = $g_sessionManager->pageVar("allFields");
+        $allFields = $sessionManager->pageVar("allFields");
         foreach ($allFields as $allField) {
             $allFieldsValues[$allField] = $this->m_postvars[$allField];
         }

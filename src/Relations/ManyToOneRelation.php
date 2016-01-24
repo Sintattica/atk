@@ -1488,7 +1488,7 @@ class ManyToOneRelation extends Relation
      */
     function validate(&$record, $mode)
     {
-        $sessionmanager = SessionManager::getSessionManager();
+        $sessionmanager = SessionManager::getInstance();
         if ($sessionmanager) {
             $storetype = $sessionmanager->stackVar('atkstore');
         }

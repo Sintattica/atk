@@ -43,7 +43,7 @@ class ViewEditBase extends ActionHandler
 
         if ($record == null) { // If reject info not set -  do select
             $atkstoretype = "";
-            $sessionmanager = SessionManager::getSessionManager();
+            $sessionmanager = SessionManager::getInstance();
             if ($sessionmanager) {
                 $atkstoretype = $sessionmanager->stackVar('atkstore');
             }

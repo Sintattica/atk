@@ -32,7 +32,7 @@ class Debugger
     {
         static $s_instance = null;
         if ($s_instance == null) {
-            if (!SessionManager::getSessionManager()) {
+            if (!SessionManager::getInstance()) {
                 Tools::atkwarning("Instantiating debugger without sessionmanager, debugger will not do anything until session is started. Also, the debugging info already in the session will not be cleaned, this could lead to monster sessions over time!");
             }
             $s_instance = new Debugger();
@@ -64,7 +64,7 @@ class Debugger
      */
     public static function addStatement($txt)
     {
-        if (function_exists('getSessionManager') && SessionManager::getSessionManager()) {
+        if (SessionManager::getInstance()) {
             $instance = Debugger::getInstance();
             if (is_object($instance)) {
                 return $instance->_addStatement($txt);
@@ -87,7 +87,7 @@ class Debugger
         self::$s_systemQueryCount += $isSystemQuery ? 1 : 0;
 
         if (Config::getGlobal('debug') > 2) {
-            if (SessionManager::getSessionManager()) {
+            if (SessionManager::getInstance()) {
                 $instance = Debugger::getInstance();
                 if (is_object($instance)) {
                     return $instance->_addQuery($query);
@@ -349,7 +349,7 @@ class Debugger
             $stackId = SessionManager::atkStackID();
         }
 
-        $sessionmanager = SessionManager::getSessionManager();
+        $sessionmanager = SessionManager::getInstance();
         if (is_object($sessionmanager)) {
             $session = &$sessionmanager->getSession();
             if ($clean) {

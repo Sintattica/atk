@@ -149,12 +149,10 @@ class Wizard extends WizardBase
      */
     private function checkWizardInitiationStatus()
     {
-
-        global $g_sessionManager;
-        /* @var $g_sessionManager SessionManager */
-        $level = $g_sessionManager->getValue("wizard_initiation_level");
+        $sessionManager = SessionManager::getInstance();
+        $level = $sessionManager->getValue("wizard_initiation_level");
         if ($level === null) {
-            $g_sessionManager->globalVar("wizard_initiation_level", SessionManager::atkLevel());
+            $sessionManager->globalVar("wizard_initiation_level", SessionManager::atkLevel());
             $this->m_isWizardInitiated = true;
         } else {
             $this->m_isWizardInitiated = ($level === SessionManager::atkLevel());
@@ -171,11 +169,11 @@ class Wizard extends WizardBase
     private function collectWizardSessionData()
     {
         //Get session vars
-        global $g_sessionManager;
         return;
-        $this->m_wizardAction = WizardActionLoader::getWizardAction($g_sessionManager->stackVar("atkwizardaction"));
+        $sessionManager = SessionManager::getInstance();
+        $this->m_wizardAction = WizardActionLoader::getWizardAction($sessionManager->stackVar("atkwizardaction"));
 
-        $this->m_currentPanelIndex = $g_sessionManager->stackVar("atkwizardpanelindex");
+        $this->m_currentPanelIndex = $sessionManager->stackVar("atkwizardpanelindex");
         if ($this->m_currentPanelIndex == "") {
             $this->m_currentPanelIndex = 0;
         }
@@ -229,7 +227,7 @@ class Wizard extends WizardBase
     {
         Tools::atkdebug("wizard::handleRequest()");
 
-        global $g_sessionManager, $ATK_VARS;
+        global $ATK_VARS;
 
         if (!$this->m_isWizardInitiated && Tools::atkGetPostVar("atkaction") !== "" && Tools::atkGetPostVar("atkwizardaction") === "") {
             //A not wizard related action as initiated, like an edit action

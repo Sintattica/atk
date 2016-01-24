@@ -84,7 +84,7 @@ class SearchHandler extends AbstractSearchHandler
      */
     function getPreviousNode()
     {
-        return SessionManager::atkLevel() > 0 ? SessionManager::getSessionManager()->stackVar('atknodetype',
+        return SessionManager::atkLevel() > 0 ? SessionManager::getInstance()->stackVar('atknodetype',
             '', SessionManager::atkLevel() - 1)
             : $this->m_node->atkNodeType();
     }
@@ -96,7 +96,7 @@ class SearchHandler extends AbstractSearchHandler
      */
     function getPreviousAction()
     {
-        return SessionManager::atkLevel() > 0 ? SessionManager::getSessionManager()->stackVar('atkaction',
+        return SessionManager::atkLevel() > 0 ? SessionManager::getInstance()->stackVar('atkaction',
             '', SessionManager::atkLevel() - 1)
             : 'admin';
     }

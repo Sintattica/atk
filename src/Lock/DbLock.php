@@ -1,6 +1,10 @@
 <?php namespace Sintattica\Atk\Lock;
 
 use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Ui\Page;
 
 /**
  * Locking driver that used a database table to store the locks.
@@ -82,8 +86,9 @@ class DbLock extends Lock
      */
     function loadLockList()
     {
-        global $g_sessionManager;
-        $atklockList = $g_sessionManager->getValue("atklock", "globals");
+        $sessionManager = SessionManager::getInstance();
+
+        $atklockList = $sessionManager->getValue("atklock", "globals");
         return $atklockList;
     }
 
@@ -94,8 +99,8 @@ class DbLock extends Lock
      */
     function storeLockList($list)
     {
-        global $g_sessionManager;
-        $g_sessionManager->globalVar("atklock", $list, true);
+        $sessionManager = SessionManager::getInstance();
+        $sessionManager->globalVar("atklock", $list, true);
     }
 
     /**
@@ -110,7 +115,6 @@ class DbLock extends Lock
      */
     function lock($selector, $table, $mode = self::EXCLUSIVE)
     {
-        global $g_sessionManager;
         $success = false;
 
         /* first check if we haven't locked the item already */

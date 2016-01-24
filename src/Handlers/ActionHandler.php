@@ -155,7 +155,7 @@ class ActionHandler
      */
     function getRejectInfo()
     {
-        return SessionManager::getSessionManager()->stackVar('atkreject');
+        return SessionManager::getInstance()->stackVar('atkreject');
     }
 
     /**
@@ -167,7 +167,7 @@ class ActionHandler
      */
     function setRejectInfo($data)
     {
-        SessionManager::getSessionManager()->stackVar('atkreject', $data, SessionManager::atkPrevLevel());
+        SessionManager::getInstance()->stackVar('atkreject', $data, SessionManager::atkPrevLevel());
         $this->m_rejecting = true;
     }
 
@@ -528,14 +528,14 @@ class ActionHandler
     public function getCSRFToken()
     {
         // retrieve earlier generated token from the session stack
-        $token = SessionManager::getSessionManager()->globalStackVar('ATK_CSRF_TOKEN');
+        $token = SessionManager::getInstance()->globalStackVar('ATK_CSRF_TOKEN');
         if ($token != null) {
             return $token;
         }
 
         // generate and store token in sesion stack
         $token = md5(uniqid(rand(), true));
-        SessionManager::getSessionManager()->globalStackVar('ATK_CSRF_TOKEN', $token);
+        SessionManager::getInstance()->globalStackVar('ATK_CSRF_TOKEN', $token);
 
         return $token;
     }
