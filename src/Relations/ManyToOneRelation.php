@@ -110,7 +110,7 @@ class ManyToOneRelation extends Relation
     /**
      * List columns.
      * @access private
-     * @var Array
+     * @var array
      */
     var $m_listColumns = array();
 

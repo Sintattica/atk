@@ -472,7 +472,7 @@ $config_debuglog = "";
 
 /**
  *
- * @var Array
+ * @var array
  */
 $config_smart_debug = array();
 
@@ -757,7 +757,7 @@ $config_enable_ie_extensions = false;
 /**
  * Files that are allowed to be included by the include wrapper script
  * NOTE: this has nothing to do with useattrib and userelation etc.!
- * @var Array
+ * @var array
  */
 $config_allowed_includes = array(
     "atk/lock/lock.php",

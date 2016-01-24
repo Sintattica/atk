@@ -8,7 +8,6 @@ use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Lock\Lock;
 use Sintattica\Atk\Ui\PageBuilder;
-use Sintattica\Atk\Ui\Output;
 use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Utils\Selector;
@@ -18,8 +17,7 @@ use Sintattica\Atk\Utils\ActionListener;
 use Sintattica\Atk\RecordList\ColumnConfig;
 use Sintattica\Atk\Relations\ManyToOneRelation;
 use Sintattica\Atk\Utils\StringParser;
-use Sintattica\Atk\Utils\Debugger;
-use \Exception;
+use Sintattica\Atk\Db\Query;
 
 /**
  * The Node class represents a piece of information that is part of an
@@ -588,14 +586,14 @@ class Node
     /**
      * List of action listeners
      * @access protected
-     * @var Array
+     * @var array
      */
     var $m_actionListeners = array();
 
     /**
      * List of trigger listeners
      * @access protected
-     * @var Array
+     * @var array
      */
     var $m_triggerListeners = array();
 
@@ -626,7 +624,7 @@ class Node
     /**
      * List of editable list attributes.
      * @access private
-     * @var Array
+     * @var array
      */
     var $m_editableListAttributes = array();
 
@@ -2124,7 +2122,6 @@ class Node
                 }
 
                 /* sometimes a field is hidden although not specified by the field itself */
-                $theme = Theme::getInstance();
                 if ($ignoreTab) {
                     $notOnTab = false;
                 } else {
@@ -2832,6 +2829,7 @@ class Node
      *
      * @param array $postvars The request variables for the node.
      * @param int $flags Render flags (see class Page).
+     * @return string
      */
     function dispatch($postvars, $flags = null)
     {
@@ -3832,6 +3830,7 @@ class Node
      * be saved.
      *
      * @param array $record The record that will be saved to the database.
+     * @return boolean
      */
     function preAdd(&$record)
     {
@@ -3889,6 +3888,7 @@ class Node
      * If this function returns false the delete action will not continue.
      *
      * @param array $record The record that will be deleted.
+     * @return boolean True if succesful, false if not.
      */
     function preDelete($record)
     {
@@ -3900,7 +3900,7 @@ class Node
      * right after a record has been deleted.
      * Please use postDelete() instead.
      * @param array $record The record that has just been deleted.
-     * @return bool Wether or not we succeeded in what we wanted to do.
+     * @return boolean Wether or not we succeeded in what we wanted to do.
      */
     function postDel($record)
     {
@@ -4103,7 +4103,7 @@ class Node
      *
      * @return boolean True if the action may be performed, false if not.
      */
-    function allowed($action, $record = "")
+    function allowed($action, $record = array())
     {
         $secMgr = SecurityManager::getInstance();
 

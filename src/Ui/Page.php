@@ -92,7 +92,7 @@ class Page
     /**
      * The hidden variables for the page
      * @access private
-     * @var Array
+     * @var array
      */
     var $m_hiddenvars = array();
 

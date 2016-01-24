@@ -42,7 +42,7 @@ class PasswordAttribute extends Attribute
     /**
      * Restrictions to apply when changing/setting the password
      *
-     * @var Array
+     * @var array
      */
     var $m_restrictions;
 

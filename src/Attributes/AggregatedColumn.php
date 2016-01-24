@@ -30,14 +30,14 @@ class AggregatedColumn extends Attribute
 
     /**
      * The array with searchs fileds
-     * @var Array
+     * @var array
      * @access private
      */
     var $m_searchfields = array();
 
     /**
      * The array with displays fileds
-     * @var Array
+     * @var array
      * @access private
      */
     var $m_displayfields = array();

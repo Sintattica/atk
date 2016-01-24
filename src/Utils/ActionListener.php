@@ -22,7 +22,7 @@ class ActionListener
     /**
      * The list of actions the action listener should listen to.
      * @access private
-     * @var Array
+     * @var array
      */
     var $m_actionfilter = array();
 

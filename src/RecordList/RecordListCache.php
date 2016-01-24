@@ -44,7 +44,7 @@ class RecordListCache
 
     /**
      * The postvars for the recordlist
-     * @var Array
+     * @var array
      * @access private
      */
     var $m_postvars;
@@ -59,7 +59,7 @@ class RecordListCache
     /**
      * The cache identifiers
      * These are the variables that make a cacheid unique
-     * @var Array
+     * @var array
      * @access private
      */
     var $m_cacheidentifiers;

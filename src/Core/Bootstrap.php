@@ -74,35 +74,35 @@ class Bootstrap
         /**
          * A repository of node instances..
          * @access private
-         * @var Array
+         * @var array
          */
         $GLOBALS['g_nodeRepository'] = array();
 
         /**
          * A repository of module instances..
          * @access private
-         * @var Array
+         * @var array
          */
         $GLOBALS['g_moduleRepository'] = array();
 
         /**
          * registered node action handlers
          * @access private
-         * @var Array
+         * @var array
          */
         $GLOBALS['g_nodeHandlers'] = array();
 
         /**
          * registered node listeners
          * @access private
-         * @var Array
+         * @var array
          */
         $GLOBALS['g_nodeListeners'] = array();
 
         /**
          * registered node controllers
          * @access private
-         * @var Array
+         * @var array
          */
         $GLOBALS['g_nodeControllers'] = array();
 

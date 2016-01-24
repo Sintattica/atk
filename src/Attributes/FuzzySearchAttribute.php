@@ -38,7 +38,7 @@ class FuzzySearchAttribute extends Attribute
 
     /**
      * The matches we got from the search
-     * @var Array
+     * @var array
      * @access private
      */
     var $m_matches = array();

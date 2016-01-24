@@ -106,7 +106,7 @@ class Query
     /**
      * Wether or not a field should be quoted in a query
      *
-     * @var Array
+     * @var array
      * @access private
      */
     var $m_quotedfields = array();
@@ -116,7 +116,7 @@ class Query
      * if any of these are used ATK MUST quote the fieldname
      * or the database engine will not be able to make any sense of the queries.
      *
-     * @var Array
+     * @var array
      * @access private
      */
     var $m_reservedNames = array('from', 'select', 'order', 'group', 'release', 'index', 'table');

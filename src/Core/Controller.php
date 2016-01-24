@@ -63,7 +63,7 @@ class Controller
     /**
      * Key/value Array containing which are be send als post or get vars
      * @access private
-     * @var Array
+     * @var array
      */
     var $m_hidden_vars = array();
 
