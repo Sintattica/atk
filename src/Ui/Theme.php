@@ -40,13 +40,8 @@ class Theme
      */
     function __construct()
     {
-        global $g_theme;
         Tools::atkdebug("Created a new Theme instance");
-        if (isset($g_theme["Name"]) && $g_theme["Name"] != "") {
-            $this->m_name = $g_theme["Name"];
-        } else {
-            $this->m_name = Config::getGlobal("defaulttheme");
-        }
+        $this->m_name = Config::getGlobal("defaulttheme");
         $this->_loadTheme();
     }
 

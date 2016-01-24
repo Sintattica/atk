@@ -227,8 +227,7 @@ class TreeNode extends Node
      */
     function GraphTreeRender($showactions = true, $expandAll = false, $foldable = true)
     {
-        // Load used classes (and globals? :( )
-        global $g_maxlevel, $g_theme, $exp_index;
+        global $g_maxlevel, $exp_index;
 
         // Return
         if (count($this->m_tree) == 1) {
