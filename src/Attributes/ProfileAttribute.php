@@ -105,10 +105,10 @@ class ProfileAttribute extends Attribute
      */
     function store(&$db, $record, $mode)
     {
-        global $g_user;
 
         // Read the current actions available/editable and user rights before changing them
-        $isAdmin = ($g_user['name'] == 'administrator' || $this->canGrantAll());
+        $user = SecurityManager::atkGetUser();
+        $isAdmin = ($user['name'] == 'administrator' || $this->canGrantAll());
         $allActions = $this->getAllActions($record, false);
         $editableActions = $this->getEditableActions($record);
 

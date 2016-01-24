@@ -520,18 +520,16 @@ class SecurityManager
      * This method should be called if userdata, for example name or other
      * fields, have been updated for the currently logged in user.
      *
-     * The method will make sure that $SsecurityManager->m_user, $g_user and
+     * The method will make sure that $SsecurityManager->m_user and
      * the authenticated user in the session are refreshed.
      */
     function reloadUser()
     {
-        global $g_user;
         $sessionManager = SessionManager::getInstance();
         $user = SecurityManager::atkGetUser();
         $this->m_user = $this->m_authorization->getUser($user[Config::getGlobal('auth_userfield')]);
-        $g_user = $this->m_user;
         $old_auth = $sessionManager->getValue("authentication", "globals");
-        $old_auth["user"] = $g_user;
+        $old_auth["user"] = $this->m_user;
         $sessionManager->globalVar("authentication", $old_auth, true);
     }
 

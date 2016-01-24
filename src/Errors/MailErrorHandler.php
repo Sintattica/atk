@@ -3,6 +3,7 @@
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Security\SecurityManager;
 
 /**
  * Handles errors by sending them to a specified email address
@@ -28,7 +29,7 @@ class MailErrorHandler extends ErrorHandlerBase
      */
     public function handle($errorMessage, $debugMessage)
     {
-        global $g_user, $g_modules;
+        global $g_modules;
 
         $sessionManager = SessionManager::getInstance();
 
@@ -109,8 +110,9 @@ class MailErrorHandler extends ErrorHandlerBase
             }
 
             $body .= "\n\nCurrent User:\n" . str_repeat("-", 70) . "\n";
-            if (is_array($g_user) && count($g_user)) {
-                foreach ($g_user as $key => $value) {
+            $user = SecurityManager::atkGetUser();
+            if (is_array($user) && count($user)) {
+                foreach ($user as $key => $value) {
                     $body .= $this->_wordwrap($key . str_repeat(" ",
                                 max(1, 30 - strlen($key))) . " = " . var_export($value, 1)) . "\n";
                 }
