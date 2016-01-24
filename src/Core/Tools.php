@@ -655,15 +655,9 @@ class Tools
      */
     public static function atkDataDecode(&$vars)
     {
-        $magicQuotes = get_magic_quotes_gpc();
 
         foreach (array_keys($vars) as $varname) {
             $value = &$vars[$varname];
-            // We must strip all slashes from the input, since php puts slashes
-            // in front of quotes that are passed by the url. (magic_quotes_gpc)
-            if ($value !== null && $magicQuotes) {
-                self::atk_stripslashes($value);
-            }
 
             self::AE_decode($vars, $varname);
 
