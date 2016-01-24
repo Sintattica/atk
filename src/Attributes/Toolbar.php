@@ -43,8 +43,6 @@ class Toolbar extends DummyAttribute
      */
     function edit($record = array(), $fieldprefix = "")
     {
-        global $config_atkroot;
-
         $theme = Theme::getInstance();
 
         $page = Page::getInstance();
