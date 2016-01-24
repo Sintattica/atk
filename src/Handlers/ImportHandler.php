@@ -747,7 +747,7 @@ class ImportHandler extends ActionHandler
     function _usableForImport($obligatoryOnly, &$attrib)
     {
         return ((!$obligatoryOnly || $this->isObligatory($attrib)) && !$attrib->hasFlag(Attribute::AF_AUTOINCREMENT) && !$this->isHide($attrib) && !is_a($attrib,
-                'atkdummyattribute'));
+                'DummyAttribute'));
     }
 
     /**
@@ -1203,7 +1203,7 @@ class ImportHandler extends ActionHandler
                 $allFields)
         ) {
             $primaryKeyAttr = $attr->m_destInstance->getAttribute($attr->m_destInstance->primaryKeyField());
-            $isNumeric = $attr->hasFlag(Attribute::AF_AUTO_INCREMENT) || is_a($primaryKeyAttr, 'atknumberattribute');
+            $isNumeric = $attr->hasFlag(Attribute::AF_AUTO_INCREMENT) || is_a($primaryKeyAttr, 'NumberAttribute');
 
             $relationselect = array();
 

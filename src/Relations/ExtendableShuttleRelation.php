@@ -92,7 +92,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         $prefix = $this->getOwnerInstance()->m_postvars['atkfieldprefix'];
 
         foreach ($this->m_controlsBySection[$record[$this->fieldName()]["section"]] as $control) {
-            if (is_a($control, 'atkShuttleFilter')) {
+            if (is_a($control, 'ShuttleFilter')) {
                 $redraw = true;
 
                 $filter = $control->getFilter($record);
@@ -235,7 +235,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         $filtersBySection = array();
         foreach (array(ShuttleControl::AVAILABLE, ShuttleControl::SELECTED) as $section) {
             foreach ($this->m_controlsBySection[$section] as $control) {
-                if (is_a($control, 'atkShuttleFilter')) {
+                if (is_a($control, 'ShuttleFilter')) {
                     $filter = $control->getFilter($record);
                     if (!empty($filter)) {
                         $filtersBySection[$section][] = $filter;

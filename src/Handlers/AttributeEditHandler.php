@@ -447,7 +447,7 @@ class AttributeEditHandler extends ActionHandler
             }
 
             // We do not support manytomany relations (for now...).
-            if (is_a($attr, 'atkmanytomanyrelation')) {
+            if (is_a($attr, 'ManyToManyRelation')) {
                 continue;
             }
 

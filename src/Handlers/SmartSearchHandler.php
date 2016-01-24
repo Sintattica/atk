@@ -268,7 +268,7 @@ class SmartSearchHandler extends AbstractSearchHandler
     {
         if (count($entry['attrs']) == 1 && !$entry['includeSelf']) {
             $attr = &$entry['attrs'][0];
-            $label = is_a($attr, 'atkmanytoonerelation') ? '' : htmlentities(strip_tags($attr->label()));
+            $label = is_a($attr, 'ManyToOneRelation') ? '' : htmlentities(strip_tags($attr->label()));
             return $label . '<input type="hidden" name="' . $entry['name'] . '" value="' . $attr->fieldName() . '">';
         }
 
@@ -342,10 +342,10 @@ class SmartSearchHandler extends AbstractSearchHandler
         );
         $path[] = &$entry;
 
-        $includeSelf = is_a($attr, 'atkmanytoonerelation');
-        $excludes = is_a($attr, 'atkonetomanyrelation') ? $attr->m_refKey : array();
+        $includeSelf = is_a($attr, 'ManyToOneRelation');
+        $excludes = is_a($attr, 'OneToManyRelation') ? $attr->m_refKey : array();
 
-        if (is_a($attr, 'atkrelation')) {
+        if (is_a($attr, 'Relation')) {
             $attr->createDestination();
             return $attr->m_destInstance;
         }
@@ -409,7 +409,7 @@ class SmartSearchHandler extends AbstractSearchHandler
             $entry = &$path[$i];
             $fieldName = "criterium_{$id}_{$entry[nr]}_other";
             $readOnly = count($entry['attrs']) == 1 && !$entry['includeSelf'];
-            $hasLabel = !$readOnly || !is_a($entry['attr'], 'atkmanytoonerelation');
+            $hasLabel = !$readOnly || !is_a($entry['attr'], 'ManyToOneRelation');
 
             if (!$readOnly) {
                 $valueName = "criterium_{$id}_value";

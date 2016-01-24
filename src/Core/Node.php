@@ -4629,10 +4629,10 @@ class Node
     {
         $listener->setNode($this);
 
-        if (is_a($listener, 'atkActionListener')) {
+        if (is_a($listener, 'ActionListener')) {
             $this->m_actionListeners[] = &$listener;
         } else {
-            if (is_a($listener, 'atkTriggerListener')) {
+            if (is_a($listener, 'TriggerListener')) {
                 $this->m_triggerListeners[] = &$listener;
             } else {
                 Tools::atkdebug('self::addListener: Unknown listener base class ' . get_class($listener));

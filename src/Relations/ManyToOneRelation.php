@@ -1155,8 +1155,7 @@ class ManyToOneRelation extends Relation
                                 ? $arr[$this->getOwnerInstance()->m_table] : array();
                             foreach ($arr as $attrName => $value) {
                                 $attr = $this->getOwnerInstance()->getAttribute($attrName);
-                                if (!is_array($value) && is_a($attr,
-                                        'ManyToOneRelation') && count($attr->m_refKey) == 1
+                                if (!is_array($value) && is_a($attr, 'ManyToOneRelation') && count($attr->m_refKey) == 1
                                 ) {
                                     $attr->createDestination();
                                     $arr[$attrName] = array($attr->getDestination()->primaryKeyField() => $value);

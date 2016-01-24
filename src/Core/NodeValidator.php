@@ -219,7 +219,7 @@ class NodeValidator
                 if ($attrib) {
                     $attribs[] = &$attrib;
 
-                    if (is_a($attrib, 'atkmanytoonerelation') && count($attrib->m_refKey) > 1) {
+                    if (is_a($attrib, 'ManyToOneRelation') && count($attrib->m_refKey) > 1) {
                         $attrib->createDestination();
                         foreach ($attrib->m_refKey as $refkey) {
                             $query->addCondition($query->quoteField($refkey) . " = '" . $db->escapeSQL($record[$attrib->fieldName()][$refkey]) . "'");

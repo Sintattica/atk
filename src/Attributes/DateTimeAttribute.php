@@ -584,7 +584,7 @@ class DateTimeAttribute extends Attribute
                     $attr = $node->getAttribute($part);
 
                     // relation, prepare for next iteration
-                    if (is_a($attr, 'atkManyToOneRelation')) {
+                    if (is_a($attr, 'ManyToOneRelation')) {
                         if (count($parts) > 0 && !isset($record[$part][$parts[0]])) {
                             $attr->populate($record, array($parts[0]));
                         }
@@ -593,7 +593,7 @@ class DateTimeAttribute extends Attribute
                         $node = $attr->m_destInstance;
                     } // timezone attribute, calculate and return offset
                     else {
-                        if (is_a($attr, 'atkTimezoneAttribute')) {
+                        if (is_a($attr, 'TimezoneAttribute')) {
                             return $attr->getUTCOffset($record[$attr->fieldName()], $stamp);
                         } // assume the attribute in question already has the offset saved in seconds
                         else {

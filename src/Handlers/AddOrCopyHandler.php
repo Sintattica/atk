@@ -74,7 +74,7 @@ class AddOrCopyHandler extends ActionHandler
         foreach (array_keys($node->getAttributes()) as $name) {
             $attr = &$node->getAttribute($name);
 
-            if (!is_a($attr, 'atkonetomanyrelation')) {
+            if (!is_a($attr, 'OneToManyRelation')) {
                 continue;
             }
 
@@ -375,7 +375,7 @@ class AddOrCopyHandler extends ActionHandler
         foreach (array_keys($node->getAttributes()) as $name) {
             $attr = &$node->getAttribute($name);
 
-            if (!is_a($attr, 'atkonetomanyrelation')) {
+            if (!is_a($attr, 'OneToManyRelation')) {
                 continue;
             }
             if ($attr->hasFlag(Attribute::AF_HIDE_EDIT)) {
