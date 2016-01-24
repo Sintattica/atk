@@ -1131,8 +1131,6 @@ class SessionManager
             $name = Config::getGlobal("identifier");
         }
 
-        global ${$name};
-
         if (isset($_COOKIE[$name]) && $_COOKIE[$name]) {
             $sessionid = $_COOKIE[$name];
         } else {
