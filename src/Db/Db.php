@@ -1268,23 +1268,34 @@ class Db
      */
     static public function &getInstance($conn = "default", $reset = false, $mode = "rw")
     {
-        global $g_dbinstances;
+
+        static $s_dbInstances = null;
+        if ($s_dbInstances == null) {
+            $s_dbInstances = array();
+            if (!Config::getGlobal('meta_caching')) {
+                Tools::atkwarning("Table metadata caching is disabled. Turn on \$config_meta_caching to improve your application's performance!");
+            }
+        }
 
         // Resolve any potential aliases
         $conn = self::getTranslatedDatabaseName($conn);
 
-        if ($reset || !isset($g_dbinstances[$conn]) || !$g_dbinstances[$conn]->hasMode($mode)) {
+        $dbInstance = $s_dbInstances[$conn];
+
+        if ($reset || !$dbInstance || !$dbInstance->hasMode($mode)) {
             $dbconfig = Config::getGlobal("db");
 
             $driver = __NAMESPACE__ . "\\" . $dbconfig[$conn]["driver"] . "Db";
+
+
             Tools::atkdebug("Creating new database instance with '{$driver}' driver");
 
             /** @var Db $driverInstance */
             $driverInstance = new $driver();
-            $dbinstance = $driverInstance->init($conn, $mode);
-            $g_dbinstances[$conn] = $dbinstance;
+            $dbInstance = $driverInstance->init($conn, $mode);
+            $s_dbInstances[$conn] = $dbInstance;
         }
-        return $g_dbinstances[$conn];
+        return $dbInstance;
     }
 
     /**
@@ -1332,26 +1343,6 @@ class Db
             return true;
         }
         return false;
-    }
-
-    /**
-     * Replace the current instance of a named connection at runtime with a
-     * different connection. This is useful for example for replacing a
-     * named database instance with a mock object for testing purposes.
-     *
-     * @param string $name
-     * @param object $db
-     */
-    function &setInstance($name, &$db)
-    {
-        global $g_dbinstances;
-
-        // translate connection name
-        $name = Db::getTranslatedDatabaseName($name);
-
-        $olddb = &$g_dbinstances[$name];
-        $g_dbinstances[$name] = &$db;
-        return $olddb;
     }
 
     /**
