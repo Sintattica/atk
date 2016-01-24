@@ -45,8 +45,10 @@ class ConfigAuth extends AuthInterface
             return SecurityManager::AUTH_UNVERIFIED;
         } // can't verify if we have no userid
 
-        global $config_user;
-        if ($user != "" && $passwd != "" && $config_user[$user]["password"] == $passwd) {
+
+        $configUser = Config::getGlobal('user');
+
+        if ($user != "" && $passwd != "" && $configUser[$user]["password"] == $passwd) {
             return SecurityManager::AUTH_SUCCESS;
         } else {
             return SecurityManager::AUTH_MISMATCH;
@@ -81,8 +83,8 @@ class ConfigAuth extends AuthInterface
      */
     function getUser($user)
     {
-        global $config_user;
-        return Array("name" => $user, "level" => $config_user[$user]["level"]);
+        $configUser = Config::getGlobal('user');
+        return Array("name" => $user, "level" => $configUser[$user]["level"]);
     }
 
     /**
@@ -152,8 +154,9 @@ class ConfigAuth extends AuthInterface
      */
     function getPassword($username)
     {
-        if (isset($config_user[$username]["password"])) {
-            return $config_user[$username]["password"];
+        $configUser = Config::getGlobal('user');
+        if (isset($configUser[$username]["password"])) {
+            return $configUser[$username]["password"];
         }
         return false;
     }
