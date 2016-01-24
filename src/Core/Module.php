@@ -450,10 +450,11 @@ class Module
      */
     public static function module($name, $path = "", $flags = 0)
     {
-        global $g_modules, $config_module_path, $g_moduleflags;
+        global $g_modules, $g_moduleflags;
         if ($path == "") {
-            $path = $config_module_path . "/" . $name . "/";
+            $path = Config::getGlobal('module_path') . "/" . $name . "/";
         }
+
         $g_modules[$name] = $path;
         if ($flags > 0) {
             $g_moduleflags[$name] = $flags;
