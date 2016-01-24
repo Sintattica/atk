@@ -26,7 +26,7 @@ class ThemeCompiler
     /**
      * Compile a theme file for a certain theme.
      *
-     * @param String $name The name of the theme to compile.
+     * @param string $name The name of the theme to compile.
      * @return bool result
      */
     function compile($name)
@@ -54,7 +54,7 @@ class ThemeCompiler
      * converts it to a dataset containing all theme attributes and the
      * exact location of all themable files.
      *
-     * @param String $name The name of the theme
+     * @param string $name The name of the theme
      * @return array Theme dData structure
      */
     function readStructure($name)
@@ -88,9 +88,9 @@ class ThemeCompiler
      *
      * Traverses the theme path and remembers the physical location of all theme files.
      *
-     * @param String $path The path of the theme, relative to atkroot.
-     * @param String $abspath The absolute path of the theme
-     * @param String $data Reference to the data array in which to report the file locations
+     * @param string $path The path of the theme, relative to atkroot.
+     * @param string $abspath The absolute path of the theme
+     * @param string $data Reference to the data array in which to report the file locations
      */
     function scanThemePath($path, $abspath, &$data)
     {
@@ -125,8 +125,8 @@ class ThemeCompiler
      *
      * Traverses the module path and remembers the physical location of all theme files.
      *
-     * @param String $theme The name of the theme
-     * @param String $data Reference to the data array in which to report the file locations
+     * @param string $theme The name of the theme
+     * @param string $data Reference to the data array in which to report the file locations
      */
     function scanModulePath($theme, &$data)
     {
@@ -163,7 +163,7 @@ class ThemeCompiler
      * Get files for a directory
      *
      * @param string $path The directory to traverse
-     * @return Array with files from the traversed directory
+     * @return array with files from the traversed directory
      */
     function _dirContents($path)
     {

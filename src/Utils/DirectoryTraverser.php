@@ -78,7 +78,7 @@ class DirectoryTraverser
      * This method recursively traverses the specified path. Make sure you
      * pass the path without trailing '/'.
      *
-     * @param String $path The path to traverse
+     * @param string $path The path to traverse
      * @return boolean true if succesful, false if the path does not exist or is
      *                 not readable.
      */
@@ -107,7 +107,7 @@ class DirectoryTraverser
 
     /**
      * Read all the entries of a directory.
-     * @param String $path The path to read the contents from.
+     * @param string $path The path to read the contents from.
      * @return array Array containing the contents of the directory.
      */
     function getDirContents($path)
@@ -131,8 +131,8 @@ class DirectoryTraverser
     /**
      * Perform a callback on all callbackobjects.
      * @access private
-     * @param String $method The name of the method to call.
-     * @param String $filename The filename that will be passed as parameter
+     * @param string $method The name of the method to call.
+     * @param string $filename The filename that will be passed as parameter
      *                         to the callback.
      */
     function _callback($method, $filename)

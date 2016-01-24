@@ -46,8 +46,8 @@ class AuthInterface
     /**
      * Authenticate a user.
      *
-     * @param String $user The login of the user to authenticate.
-     * @param String $passwd The password of the user. Note: if the canMd5
+     * @param string $user The login of the user to authenticate.
+     * @param string $passwd The password of the user. Note: if the canMd5
      *                       function of an implementation returns true,
      *                       $passwd will be passed as an md5 string.
      *
@@ -114,7 +114,7 @@ class AuthInterface
      * Specific implementations of the method may add more information if
      * necessary.
      *
-     * @param String $user The login of the user to retrieve.
+     * @param string $user The login of the user to retrieve.
      * @return array Information about a user.
      */
     function getUser($user)
@@ -127,9 +127,9 @@ class AuthInterface
      * node.
      *
      * @param SecurityManager $securityMgr The security manager instance.
-     * @param String $node The full nodename of the node for which to check
+     * @param string $node The full nodename of the node for which to check
      *                     access privileges. (modulename.nodename notation).
-     * @param String $privilege The privilege to check (atkaction).
+     * @param string $privilege The privilege to check (atkaction).
      * @return boolean True if the user has the privilege, false if not.
      */
     function allowed(&$securityMgr, $node, $privilege)
@@ -230,9 +230,9 @@ class AuthInterface
     /**
      * This function returns the level/group(s) that are allowed to perform
      * the given action on a node.
-     * @param String $node The full nodename of the node for which to check
+     * @param string $node The full nodename of the node for which to check
      *                     the privilege. (modulename.nodename)
-     * @param String $action The privilege to check.
+     * @param string $action The privilege to check.
      * @return mixed One (int) or more (array) entities that are allowed to
      *               perform the action.
      */
@@ -244,10 +244,10 @@ class AuthInterface
     /**
      * This function returns the level/group(s) that are allowed to
      * view/edit a certain attribute of a given node.
-     * @param String $node The full nodename of the node for which to check
+     * @param string $node The full nodename of the node for which to check
      *                     attribute access.
-     * @param String $attrib The name of the attribute to check
-     * @param String $mode "view" or "edit"
+     * @param string $attrib The name of the attribute to check
+     * @param string $mode "view" or "edit"
      * @return array
      */
     function getAttribEntity($node, $attrib, $mode)

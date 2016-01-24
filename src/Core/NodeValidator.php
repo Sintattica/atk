@@ -59,7 +59,7 @@ class NodeValidator
 
     /**
      * set the mode in which to validate
-     * @param String $mode The mode ("edit"/"add")
+     * @param string $mode The mode ("edit"/"add")
      */
     function setMode($mode)
     {

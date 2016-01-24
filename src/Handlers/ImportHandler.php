@@ -300,7 +300,7 @@ class ImportHandler extends ActionHandler
      *
      * @todo make this use templates
      *
-     * @param Array $importerrors A special array with arrays in it
+     * @param array $importerrors A special array with arrays in it
      *                            $importerrors[0] are general errors, other than that
      *                            the numbers stand for recordnumbers
      * @return String HTML table with the errors
@@ -348,10 +348,10 @@ class ImportHandler extends ActionHandler
 
     /**
      * Returns the HTML header for the 'analyse' mode of the import handler
-     * @param String $fileid The 'id' (name) of the file we are importing
-     * @param String $columncount The number of columns we have
-     * @param String $delimiter The delimiter in the file
-     * @param String $enclosure The enclosure in the file
+     * @param string $fileid The 'id' (name) of the file we are importing
+     * @param string $columncount The number of columns we have
+     * @param string $delimiter The delimiter in the file
+     * @param string $enclosure The enclosure in the file
      * @param int $rowcount The number of rows in the CSV file
      * @return String The HTML header
      */
@@ -371,10 +371,10 @@ class ImportHandler extends ActionHandler
 
     /**
      * Returns a sample of the analysis
-     * @param String $columncount The number of columns we have
-     * @param String $col_map A mapping of the column
-     * @param String $csv_data The CSV data
-     * @param String $skipfirstrow Wether or not to skip the first row
+     * @param string $columncount The number of columns we have
+     * @param string $col_map A mapping of the column
+     * @param string $csv_data The CSV data
+     * @param string $skipfirstrow Wether or not to skip the first row
      */
     function _getAnalyseSample($columncount, $col_map, $csv_data, $skipfirstrow)
     {
@@ -438,8 +438,8 @@ class ImportHandler extends ActionHandler
 
     /**
      * Gets the displayable value for the attribute
-     * @param String $attributename The name of the attribute
-     * @param String $value The value of the attribute
+     * @param string $attributename The name of the attribute
+     * @param string $value The value of the attribute
      * @return String The displayable value for the attribute
      */
     function _getSampleValue($attributename, $value)
@@ -469,11 +469,11 @@ class ImportHandler extends ActionHandler
 
     /**
      * Returns the extra options of the importhandler
-     * @param String $skipfirstrow Wether or not to skip the first row
-     * @param String $doupdate Wether or not to do an update
-     * @param String $updatekey1 The key to update on
-     * @param String $onfalseidentifier What to do on a false identifier
-     * @param String $allFields The fields to import
+     * @param string $skipfirstrow Wether or not to skip the first row
+     * @param string $doupdate Wether or not to do an update
+     * @param string $updatekey1 The key to update on
+     * @param string $onfalseidentifier What to do on a false identifier
+     * @param string $allFields The fields to import
      * @param Bool $novalidatefirst Validate before the import
      * @return String The HTML with the extra options
      */
@@ -547,11 +547,11 @@ class ImportHandler extends ActionHandler
 
     /**
      * Get data from each line
-     * @param Array $arr An array with the lines from the CSV file
+     * @param array $arr An array with the lines from the CSV file
      * @param int $columncount The number of columns in the file
-     * @param String $delimiterChar The delimeter character
-     * @param String $enclosureChar The enclosure character
-     * @return Array An array with the CSV data
+     * @param string $delimiterChar The delimeter character
+     * @param string $enclosureChar The enclosure character
+     * @return array An array with the CSV data
      */
     function fgetcsvfromarray($arr, $columncount, $delimiterChar = ',', $enclosureChar = '"')
     {
@@ -564,7 +564,7 @@ class ImportHandler extends ActionHandler
 
     /**
      * Gets the char which is used for enclosure in the csv-file
-     * @param Array $rows The rows from the csv-file
+     * @param array $rows The rows from the csv-file
      * @return String     The enclosure
      */
     function estimateDelimiter($rows)
@@ -587,7 +587,7 @@ class ImportHandler extends ActionHandler
 
     /**
      * Gets the char which is used for enclosure in the csv-file
-     * @param Array $rows The rows from the csv-file
+     * @param array $rows The rows from the csv-file
      * @return String     The enclosure
      */
     function estimateEnclosure($rows)
@@ -603,8 +603,8 @@ class ImportHandler extends ActionHandler
 
     /**
      * Counts the number of columns in the first row
-     * @param Array $rows The rows from the csv-file
-     * @param String $delimiter The char which seperate the fields
+     * @param array $rows The rows from the csv-file
+     * @param string $delimiter The char which seperate the fields
      * @return int  The number of columns
      */
     function estimateColumnCount($rows, $delimiter)
@@ -620,8 +620,8 @@ class ImportHandler extends ActionHandler
 
     /**
      * Get the first 5 lines from the csv-file
-     * @param String $file The path to the csv-file
-     * @return Array   The 5 lines from the csv file
+     * @param string $file The path to the csv-file
+     * @return array   The 5 lines from the csv file
      */
     function getSampleRows($file)
     {
@@ -712,7 +712,7 @@ class ImportHandler extends ActionHandler
      * Gives all the attributes that can be used for the import
      * @param bool $obligatoryOnly if false then give all attributes, if true then give only the obligatory ones
      *                                defaults to false
-     * @return Array the attributes
+     * @return array the attributes
      */
     function getUsableAttributes($obligatoryOnly = false)
     {
@@ -754,7 +754,7 @@ class ImportHandler extends ActionHandler
      * Gives all obligatory attributes
      *
      * Same as getUsableAttributes with parameter true
-     * @return Array An array with all the obligatory attributes
+     * @return array An array with all the obligatory attributes
      */
     function getObligatoryAttributes()
     {
@@ -811,7 +811,7 @@ class ImportHandler extends ActionHandler
 
     /**
      * Check whether the attribute is part of a relation
-     * @param String $attrname name of the attribute
+     * @param string $attrname name of the attribute
      * @return mixed            false if not, relation name if yes
      */
     function isRelationAttribute($attrname)
@@ -832,7 +832,7 @@ class ImportHandler extends ActionHandler
 
     /**
      * Check whether the attribute has a relation (only manytoonerelations)
-     * @param String $attrname name of the attribute
+     * @param string $attrname name of the attribute
      * @return boolean          result of the check
      */
     function hasRelationAttribute($attrname)
@@ -843,7 +843,7 @@ class ImportHandler extends ActionHandler
 
     /**
      * Get the real attribute (instance) by his name
-     * @param String $name name of the attribute
+     * @param string $name name of the attribute
      * @return Attribute|Relation object         instance of the attribute
      */
     function &getUsableAttribute($name)
@@ -864,9 +864,9 @@ class ImportHandler extends ActionHandler
 
     /**
      * Add one value to the record
-     * @param Array $record the record wich will be changed
-     * @param String $attrname the name of the attribute
-     * @param String $value the value of that attribute
+     * @param array $record the record wich will be changed
+     * @param string $attrname the name of the attribute
+     * @param string $value the value of that attribute
      */
     function addToRecord(&$record, $attrname, $value)
     {
@@ -888,8 +888,8 @@ class ImportHandler extends ActionHandler
     /**
      * Returns a dropdownlist with all possible field in the importnode
      * @param int $index the number of the column
-     * @param String $value the name of the attribute that is selected in the list (if empty then select the last one)
-     * @param String $othername if set, use a other name for the dropdown, else use the name "col_map[index]"
+     * @param string $value the name of the attribute that is selected in the list (if empty then select the last one)
+     * @param string $othername if set, use a other name for the dropdown, else use the name "col_map[index]"
      * @param int $emptycol mode for empty column (0 = no empty column, 1= empty column, 2= an 'ignore this column' (default))
      * @return String            the html-code for the dropdownlist (<select>...</sekect>)
      */
@@ -934,7 +934,7 @@ class ImportHandler extends ActionHandler
     /**
      * The same als the php function array_search, but now much better.
      * This function is not case sensitive
-     * @param Array $array The array to search through
+     * @param array $array The array to search through
      * @param mixed $value The value to search for
      * @return mixed The key if it is in the array, else false
      */
@@ -956,8 +956,8 @@ class ImportHandler extends ActionHandler
 
     /**
      * Make a record of translations of the given attributes
-     * @param Array $attributes The attributes to translate
-     * @return Array The result of the translation
+     * @param array $attributes The attributes to translate
+     * @return array The result of the translation
      */
     function getAttributesTranslation($attributes)
     {
@@ -974,9 +974,9 @@ class ImportHandler extends ActionHandler
 
     /**
      * Tries to make a default col_map with the first record of the csv-file
-     * @param Array $firstRecord The first record of the CSV file
+     * @param array $firstRecord The first record of the CSV file
      * @param Bool &$matchFound Found a match?
-     * @return Array The default col_map
+     * @return array The default col_map
      */
     function initColmap($firstRecord, &$matchFound)
     {
@@ -1012,7 +1012,7 @@ class ImportHandler extends ActionHandler
     /**
      * Add the allField to the col_map array
      * but only if a valid field is selected
-     * @param Array $col_map The map of columns (!stub)
+     * @param array $col_map The map of columns (!stub)
      * @return mixed The value for the field to use with all records
      */
     function getAllFieldsValues(&$col_map)
@@ -1093,8 +1093,8 @@ class ImportHandler extends ActionHandler
     /**
      * Get the validated records
      *
-     * @param String $file The import csv file
-     * @return Array with importerrors and validatedrecs
+     * @param string $file The import csv file
+     * @return array with importerrors and validatedrecs
      */
     function getValidatedRecords($file)
     {
@@ -1185,12 +1185,12 @@ class ImportHandler extends ActionHandler
     /**
      * Gets the ATK value of the attribute
      *
-     * @param String $attributename The name of the attribute
-     * @param Array $allFields Array with all the fields
+     * @param string $attributename The name of the attribute
+     * @param array $allFields Array with all the fields
      * @param mixed $value The value from the CSV file
-     * @param Array &$importerrors Any import errors which may occur or may have occured
+     * @param array &$importerrors Any import errors which may occur or may have occured
      * @param Integer $counter The counter of the validatedrecords
-     * @param Array $rec The record
+     * @param array $rec The record
      *
      * @return mixed The ATK value of the field
      */
@@ -1253,8 +1253,8 @@ class ImportHandler extends ActionHandler
 
     /**
      * Determines wether or not errors occurred and shows the analyze screen if errors occurred.
-     * @param Array $importerrors An array with the errors that occurred
-     * @param Array $extraerror An extra error, if we found errors
+     * @param array $importerrors An array with the errors that occurred
+     * @param array $extraerror An extra error, if we found errors
      * @return bool Wether or not errors occurred
      */
     function showErrors($importerrors, $extraerror = null)
@@ -1276,8 +1276,8 @@ class ImportHandler extends ActionHandler
     /**
      * Adds the validated records but checks for errors first
      *
-     * @param Array $importerrors Errors that occurred during validation of importfile
-     * @param Array $validatedrecs Records that were validated
+     * @param array $importerrors Errors that occurred during validation of importfile
+     * @param array $validatedrecs Records that were validated
      */
     function addRecords(&$importerrors, &$validatedrecs)
     {
@@ -1306,7 +1306,7 @@ class ImportHandler extends ActionHandler
 
     /**
      * Add a valid record to the db
-     * @param Array $record The record to add
+     * @param array $record The record to add
      * @return bool Wether or not there were errors
      */
     function add(&$record)
@@ -1328,7 +1328,7 @@ class ImportHandler extends ActionHandler
 
     /**
      * Update a record in the db
-     * @param Array $record the record to update
+     * @param array $record the record to update
      * @return bool Wether or not there were errors
      */
     function update(&$record)
@@ -1399,10 +1399,10 @@ class ImportHandler extends ActionHandler
 
     /**
      * Checks if there are errors and if there are then it adds it to the collection
-     * @param Array $errors The errors to check
-     * @param String $singleerror The language code to use for a single error
-     * @param String $doubleerror The language code to use for multiple errors
-     * @param Array &$collection The collection of errors thus far
+     * @param array $errors The errors to check
+     * @param string $singleerror The language code to use for a single error
+     * @param string $doubleerror The language code to use for multiple errors
+     * @param array &$collection The collection of errors thus far
      */
     function _returnErrors($errors, $singleerror, $doubleerror, &$collection)
     {
@@ -1418,8 +1418,8 @@ class ImportHandler extends ActionHandler
 
     /**
      * Array with columns
-     * @param Array $array The array the columns to check
-     * @return Array The duplicate columns
+     * @param array $array The array the columns to check
+     * @return array The duplicate columns
      */
     function _getDuplicateColumns($array)
     {
@@ -1435,9 +1435,9 @@ class ImportHandler extends ActionHandler
 
     /**
      * Checks the allfield for correct data
-     * @param Array $fields The fields
-     * @param Array &$values The values of the fields
-     * @return Array An array with an error message, if an error occurred
+     * @param array $fields The fields
+     * @param array &$values The values of the fields
+     * @return array An array with an error message, if an error occurred
      */
     function checkAllFields($fields, &$values)
     {
@@ -1470,9 +1470,9 @@ class ImportHandler extends ActionHandler
 
     /**
      * Validates a record
-     * @param Array &$rec The record to validate
-     * @param Array &$validatedrecs The records thus far validated
-     * @param Array &$importerrors The errors so far in the import process
+     * @param array &$rec The record to validate
+     * @param array &$validatedrecs The records thus far validated
+     * @param array &$importerrors The errors so far in the import process
      * @param int $counter The number that the record is
      */
     function validateRecord(&$rec, &$validatedrecs, &$importerrors, $counter)
@@ -1534,7 +1534,7 @@ class ImportHandler extends ActionHandler
     /**
      * Here we prepare our record for updating or return false,
      * indicating that we need to insert the record instead of updating it
-     * @param Array &$record The record to prepare
+     * @param array &$record The record to prepare
      * @return bool If the record wasn't prepared we return false, otherwise true
      */
     function prepareUpdateRecord(&$record)
@@ -1563,8 +1563,8 @@ class ImportHandler extends ActionHandler
 
     /**
      * Gets a raw value from a record with ATK values for a specific attribute
-     * @param String $fieldname The name of the attribute to get the value for
-     * @param Array $record The record to search through
+     * @param string $fieldname The name of the attribute to get the value for
+     * @param array $record The record to search through
      * @return mixed The value
      */
     function getValueFromRecord($record, $fieldname)

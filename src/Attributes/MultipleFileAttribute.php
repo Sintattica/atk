@@ -122,7 +122,7 @@ class MultipleFileAttribute extends FileAttribute
     /**
      * Convert value to string
      * @param array $rec Array with fields
-     * @return Array with tmpfile, orgfilename,filesize
+     * @return array with tmpfile, orgfilename,filesize
      */
     function db2value($rec)
     {

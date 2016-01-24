@@ -8,6 +8,7 @@ use Sintattica\Atk\Ui\Page;
 use Moment\Moment;
 use Moment\CustomFormats\MomentJs;
 use Moment\MomentException;
+use Sintattica\Atk\Db\Query;
 
 class bootstrapDateTimeAttribute extends Attribute
 {
@@ -89,7 +90,7 @@ class bootstrapDateTimeAttribute extends Attribute
     /**
      * Set the format for the boxes in view mode.
      *
-     * @param String $format_view The format (see format for momentJs function)
+     * @param string $format_view The format (see format for momentJs function)
      */
     function setFormatView($format_view)
     {
@@ -100,7 +101,7 @@ class bootstrapDateTimeAttribute extends Attribute
     /**
      * Set the format for the boxes in edit mode.
      *
-     * @param String $format_view The format (see format for momentJs function)
+     * @param string $format_view The format (see format for momentJs function)
      */
     function setFormatEdit($format_edit)
     {
@@ -262,10 +263,10 @@ class bootstrapDateTimeAttribute extends Attribute
      * searchcondition() also immediately adds the search condition.
      *
      * @param Query $query The query object where the search condition should be placed on
-     * @param String $table The name of the table in which this attribute
+     * @param string $table The name of the table in which this attribute
      *                              is stored
      * @param mixed $value The value the user has entered in the searchbox
-     * @param String $searchmode The searchmode to use. This can be any one
+     * @param string $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.

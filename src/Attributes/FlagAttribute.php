@@ -85,10 +85,10 @@ class FlagAttribute extends MultiSelectAttribute
      * searchcondition() also immediately adds the search condition.
      *
      * @param Query $query The query object where the search condition should be placed on
-     * @param String $table The name of the table in which this attribute
+     * @param string $table The name of the table in which this attribute
      *                              is stored
      * @param mixed $value The value the user has entered in the searchbox
-     * @param String $searchmode The searchmode to use. This can be any one
+     * @param string $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
@@ -139,7 +139,7 @@ class FlagAttribute extends MultiSelectAttribute
      * while still posting its value. (<input type="hidden">)
      *
      * @param array $record The record that holds the value for this attribute
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @return String A piece of htmlcode with hidden form elements that post
      *                this attribute's value without showing it.

@@ -22,21 +22,21 @@ class CustomRecordList extends RecordList
      * Creates a special Recordlist that can be used for exporting to files or to make it printable
      * @param Node $node The node to use as definition for the columns.
      * @param array $recordset The records to render
-     * @param String $sol String to use at start of each row
-     * @param String $sof String to use at start of each field
-     * @param String $eof String to use at end of each field
-     * @param String $eol String to use at end of each row
+     * @param string $sol String to use at start of each row
+     * @param string $sof String to use at start of each field
+     * @param string $eof String to use at end of each field
+     * @param string $eol String to use at end of each row
      * @param int $type 0=Render rows in simple html tabl; 1= raw export
      * @param string $compression Compression technique (bzip / gzip)
      * @param array $suppressList List of attributes from $node that should be ignored
      * @param array $outputparams Key-Value parameters for output. Currently existing:
      *                               filename - the name of the file (without extension .csv)
-     * @param String $mode The mode that is passed to attributes' display() method
+     * @param string $mode The mode that is passed to attributes' display() method
      *                            (for overrides). Defaults to 'list'.
      * @param Boolean $titlerow Should titlerow be rendered or not
      * @param Boolean $decode Should data be decoded or not (for exports)
-     * @param String $fsep String to use between fields
-     * @param String $rfeplace String for replacing line feeds in recordset field values (null = do not replace)
+     * @param string $fsep String to use between fields
+     * @param string $rfeplace String for replacing line feeds in recordset field values (null = do not replace)
      * @return String
      */
     function render(
@@ -229,8 +229,8 @@ class CustomRecordList extends RecordList
     /**
      * Replace any eol character(s) by something else
      *
-     * @param String $string The string to process
-     * @param String $replacement The replacement string for '\r\n', '\n' and/or '\r'
+     * @param string $string The string to process
+     * @param string $replacement The replacement string for '\r\n', '\n' and/or '\r'
      */
     function eolreplace($string, $replacement)
     {

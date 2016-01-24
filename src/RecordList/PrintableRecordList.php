@@ -26,8 +26,8 @@ class PrintableRecordList extends RecordList
      * obsolete by specialRecordList
      *
      * @param Node $node the node
-     * @param Array $recordset the list of records
-     * @param Array $suppressList fields we don't display
+     * @param array $recordset the list of records
+     * @param array $suppressList fields we don't display
      * @param int $flags The prefix for embeded fields
      * @return String The rendered recordlist
      */

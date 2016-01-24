@@ -94,9 +94,9 @@ class RecordList
      * @param array $actions the default actions array
      * @param Integer $flags recordlist flags (see the top of this file)
      * @param array $suppressList fields we don't display
-     * @param String $formName if embedded the form name in which we are embedded
+     * @param string $formName if embedded the form name in which we are embedded
      * @param array $navigation Navigation links
-     * @param String $embedprefix The prefix for embeded fields
+     * @param string $embedprefix The prefix for embeded fields
      * @return String The rendered recordlist
      */
     function render(
@@ -137,9 +137,9 @@ class RecordList
      * @param array $actions the default actions array
      * @param Integer $flags recordlist flags (see the top of this file)
      * @param array $suppressList fields we don't display
-     * @param String $formName if embedded the form name in which we are embedded
+     * @param string $formName if embedded the form name in which we are embedded
      * @param array $navigation Navigation links
-     * @param String $embedprefix The prefix for embeded fields
+     * @param string $embedprefix The prefix for embeded fields
      * @return String The rendered recordlist
      */
     function getRecordlistData(
@@ -671,10 +671,10 @@ class RecordList
      *
      * @param array $recordset List of records that need to be displayed
      * @param Integer $flags Recordlist flags
-     * @param String $prefix Prefix for each column name (used for subcalls)
+     * @param string $prefix Prefix for each column name (used for subcalls)
      * @param array $actions List of default actions for each record
      * @param array $suppress An array of fields that you want to hide
-     * @param String $embedprefix The prefix for embeded fields
+     * @param string $embedprefix The prefix for embeded fields
      *
      * The result array contains the following information:
      *  "heading"  => for each visible column an array containing: "title" {, "url"}

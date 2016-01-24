@@ -29,10 +29,10 @@ class FeedbackHandler extends ActionHandler
 
     /**
      * The method returns a complete html page containing the feedback info.
-     * @param String $action The action for which feedback is provided
+     * @param string $action The action for which feedback is provided
      * @param int $actionstatus The status of the action for which feedback is
      *                          provided
-     * @param String $message An optional message to display in addition to the
+     * @param string $message An optional message to display in addition to the
      *                        default feedback information message.
      *
      * @return String The feedback page as an html String.

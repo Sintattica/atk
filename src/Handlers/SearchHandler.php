@@ -215,7 +215,7 @@ class SearchHandler extends AbstractSearchHandler
     /**
      * Fetch posted criteria.
      *
-     * @return Array fetched criteria
+     * @return array fetched criteria
      */
     function fetchCriteria()
     {

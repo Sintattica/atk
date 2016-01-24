@@ -195,7 +195,7 @@ class FileAttribute extends Attribute
      * attribute's value.
      * @param array $record Record
      * @param string $fieldprefix Field prefix
-     * @param String $mode The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      * @return string piece of html code with a browsebox
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
@@ -397,8 +397,8 @@ class FileAttribute extends Attribute
      * after it is uploaded, you can create a derived attribute that
      * implements the processFile($filepath) method.
      * The default implementation does not do any processing.
-     * @param String $filepath The path of the uploaded file.
-     * @param String $filename The name of the uploaded file.
+     * @param string $filepath The path of the uploaded file.
+     * @param string $filename The name of the uploaded file.
      */
     function processFile($filepath, $filename)
     {
@@ -508,7 +508,7 @@ class FileAttribute extends Attribute
      * @param array $record The record that holds the value for this
      *                      attribute. If an error occurs, the error will
      *                      be stored in the 'atkerror' field of the record.
-     * @param String $mode The mode for which should be validated ("add" or
+     * @param string $mode The mode for which should be validated ("add" or
      *                     "update")
      */
     function validate(&$record, $mode)
@@ -799,7 +799,7 @@ class FileAttribute extends Attribute
      *
      * @access private
      * @param array $rec The record for which the file was uploaded
-     * @param String $filename The name of the uploaded file
+     * @param string $filename The name of the uploaded file
      * @return String The name of the uploaded file, renumbered if necessary
      */
     function _filenameUnique($rec, $filename)
@@ -851,7 +851,7 @@ class FileAttribute extends Attribute
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
      * @param array $record Array with values
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @return string Piece of htmlcode
      */

@@ -36,9 +36,9 @@ class ManyToOneTreeRelation extends ManyToOneRelation
      * attribute's value.
      *
      * @param array $record The record that holds the value for this attribute.
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param String $mode The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      * @return Piece of html code that can  be used in a form to edit this
      */
     function edit($record = "", $fieldprefix = "", $mode = "")

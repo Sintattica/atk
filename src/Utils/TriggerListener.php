@@ -72,7 +72,7 @@ class TriggerListener
      * node. Depending on the actionfilter passed in the constructor, the
      * call is forwarded to the actionPerformed($action, $record) method.
      *
-     * @param String $trigger The trigger being performed
+     * @param string $trigger The trigger being performed
      * @param array $record The record on which the trigger is performed
      * @param string $mode The mode (add/update)
      * @return boolean Result of operation.

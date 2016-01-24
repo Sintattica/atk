@@ -24,7 +24,7 @@ class Toolbar extends DummyAttribute
     /**
      * Default constructor.
      *
-     * @param String $name Name of the attribute (unique within a node)
+     * @param string $name Name of the attribute (unique within a node)
      * @param int $flags Flags for the attribute.
      */
     function __construct($name, $flags = 0)
@@ -37,7 +37,7 @@ class Toolbar extends DummyAttribute
      * attribute in an HTML form.
      *
      * @param array $record The record that is currently being edited.
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @return String A piece of htmlcode for editing this attribute
      */

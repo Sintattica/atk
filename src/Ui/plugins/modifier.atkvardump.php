@@ -10,7 +10,7 @@ use Sintattica\Atk\Core\Tools;
  * @author Boy Baukema <boy@ibuildings.nl>
  *
  * @param mixed $data
- * @param String $name Label for the dump
+ * @param string $name Label for the dump
  * @return String
  */
 function smarty_modifier_atkvardump($data, $name = '')

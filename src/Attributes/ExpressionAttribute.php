@@ -52,16 +52,16 @@ class ExpressionAttribute extends Attribute
      * Adds this attribute to database queries.
      *
      * @param Query $query The SQL query object
-     * @param String $tablename The name of the table of this attribute
-     * @param String $fieldaliasprefix Prefix to use in front of the alias
+     * @param string $tablename The name of the table of this attribute
+     * @param string $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
-     * @param Array $rec The record that contains the value of this attribute.
+     * @param array $rec The record that contains the value of this attribute.
      * @param int $level Recursion level if relations point to eachother, an
      *                   endless loop could occur if they keep loading
      *                   eachothers data. The $level is used to detect this
      *                   loop. If overriden in a derived class, any subcall to
      *                   an addToQuery method should pass the $level+1.
-     * @param String $mode Indicates what kind of query is being processing:
+     * @param string $mode Indicates what kind of query is being processing:
      *                     This can be any action performed on a node (edit,
      *                     add, etc) Mind you that "add" and "update" are the
      *                     actions that store something in the database,
@@ -76,10 +76,10 @@ class ExpressionAttribute extends Attribute
     /**
      * Returns the order by statement for this attribute.
      *
-     * @param Array $extra A list of attribute names to add to the order by
+     * @param array $extra A list of attribute names to add to the order by
      *                     statement
-     * @param String $table The table name (if not given uses the owner node's table name)
-     * @param String $direction Sorting direction (ASC or DESC)
+     * @param string $table The table name (if not given uses the owner node's table name)
+     * @param string $direction Sorting direction (ASC or DESC)
      * @return string order by statement
      */
     function getOrderByStatement($extra = '', $table = '', $direction = 'ASC')
@@ -184,10 +184,10 @@ class ExpressionAttribute extends Attribute
      * Creates a search condition for this attribute.
      *
      * @param Query $query The query object where the search condition should be placed on
-     * @param String $table The name of the table in which this attribute
+     * @param string $table The name of the table in which this attribute
      *                              is stored
      * @param mixed $value The value the user has entered in the searchbox
-     * @param String $searchmode The searchmode to use. This can be any one
+     * @param string $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.

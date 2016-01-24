@@ -18,8 +18,8 @@ class FileWriterAttribute extends TextAttribute
 
     /**
      * Constructor
-     * @param String $name Name of the attribute
-     * @param String $filename The name of the file to read/write.
+     * @param string $name Name of the attribute
+     * @param string $filename The name of the file to read/write.
      *                         Advanced use: This may be a template containing
      *                         fields from your class, for example:
      *                         "somedir/textfile_[id].txt". If a record has id '9',

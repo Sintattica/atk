@@ -24,8 +24,8 @@ class LiveTextPreview extends DummyAttribute
 
     /**
      * Constructor
-     * @param String $name The name of the attribute
-     * @param String $masterattribute The attribute that should be previewed.
+     * @param string $name The name of the attribute
+     * @param string $masterattribute The attribute that should be previewed.
      * @param int $flags Flags for this attribute. Use self::AF_LIVETEXT_SHOWLABEL if the
      *                   preview should be labeled.
      *                   Use self::AF_LIVETEXT_NL2BR if the data should be nl2br'd before
@@ -41,7 +41,7 @@ class LiveTextPreview extends DummyAttribute
      * Edit record
      * Thie method will display a live preview.
      * @param array $record Array with fields
-     * @param String $fieldprefix Fieldprefix for embedded forms.
+     * @param string $fieldprefix Fieldprefix for embedded forms.
      * @return String Parsed string
      */
     function edit($record, $fieldprefix = "")

@@ -53,8 +53,8 @@ class Theme
      * actually installed.
      *
      * @static
-     * @param String $relpath The relative path to convert
-     * @param String $location
+     * @param string $relpath The relative path to convert
+     * @param string $location
      * @return String The absolute path
      */
     public static function absPath($relpath, $location = '')

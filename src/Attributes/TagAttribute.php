@@ -115,8 +115,8 @@ class TagAttribute extends FuzzySearchAttribute
     /**
      * Validate the input based on the current mode.
      *
-     * @param Array $rec The record which holds the values to validate
-     * @param String $mode The mode we're in
+     * @param array $rec The record which holds the values to validate
+     * @param string $mode The mode we're in
      * @return True on validation, False otherwise.
      */
     function validate(&$rec, $mode)
@@ -149,7 +149,7 @@ class TagAttribute extends FuzzySearchAttribute
     /**
      * A keyword field may not contain HTML or linefeeds
      *
-     * @param String $keyword
+     * @param string $keyword
      */
     function isValidKeyWord($keyword)
     {
@@ -162,9 +162,9 @@ class TagAttribute extends FuzzySearchAttribute
      * attribute's value.
      *
      * @param array $rec The record that holds the value for this attribute.
-     * @param String $prefix The fieldprefix to put in front of the name
+     * @param string $prefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param String $mode The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
     function edit($rec = "", $prefix = "", $mode = "")
@@ -261,7 +261,7 @@ class TagAttribute extends FuzzySearchAttribute
      * Returns a displayable string for this value, to be used in HTML pages.
      *
      * @param array $record The record that holds the value for this attribute
-     * @param String $mode The display mode ("view" for viewpages, or "list"
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                     for displaying in recordlists, "edit" for
      *                     displaying in editscreens, "add" for displaying in
      *                     add screens. "csv" for csv files. Applications can
@@ -294,8 +294,8 @@ class TagAttribute extends FuzzySearchAttribute
 
     /**
      * The actual function that does the searching
-     * @param String $searchstring The string to search for
-     * @return Array The matches
+     * @param string $searchstring The string to search for
+     * @return array The matches
      */
     function getMatches($searchstring)
     {
@@ -569,9 +569,9 @@ class TagAttribute extends FuzzySearchAttribute
 
     /**
      * Adds a filter on the instance of the destination
-     * @param String $filter The fieldname you want to filter OR a SQL where
+     * @param string $filter The fieldname you want to filter OR a SQL where
      *                       clause expression.
-     * @param String $value Required value. (Ommit this parameter if you pass
+     * @param string $value Required value. (Ommit this parameter if you pass
      *                      an SQL expression for $filter.)
      */
     function addSearchFilter($filter, $value = "")
@@ -598,7 +598,7 @@ class TagAttribute extends FuzzySearchAttribute
     /**
      * Change the name of the attribute of the intermediairy node that points
      * to the master node.
-     * @param String $attributename The name of the attribute.
+     * @param string $attributename The name of the attribute.
      */
     function setLocalKey($attributename)
     {
@@ -622,7 +622,7 @@ class TagAttribute extends FuzzySearchAttribute
     /**
      * Change the name of the attribute of the intermediairy node that points
      * to the node on the other side of the relation.
-     * @param String $attributename The name of the attribute.
+     * @param string $attributename The name of the attribute.
      */
     function setRemoteKey($attributename)
     {
@@ -633,7 +633,7 @@ class TagAttribute extends FuzzySearchAttribute
      * Determine the name of the foreign key based on the name of the
      *  relation.
      *
-     * @param String $name the name of the relation
+     * @param string $name the name of the relation
      * @return the probable name of the foreign key
      */
     function determineKeyName($name)

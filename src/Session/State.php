@@ -90,8 +90,8 @@ class State
      * be even more safe to md5 this string so that they key doesn't say anything to
      * the user and doesn't get too big.
      * @param mixed $key The key name
-     * @param String $value The value of key
-     * @param String $type The namespace from which to retrieve the value
+     * @param string $value The value of key
+     * @param string $type The namespace from which to retrieve the value
      * @return mixed The storage method type.
      */
     public static function set($key, $value, $type = 'cookie')

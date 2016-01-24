@@ -30,11 +30,11 @@ class WizardBase extends Controller
      * Returns the form buttons for a certain page.
      *
      * Can be overridden by derived classes to define custom buttons.
-     * @param String $action The action for which the buttons are retrieved.
+     * @param string $action The action for which the buttons are retrieved.
      * @param array $record The record currently displayed/edited in the form.
      *                      This param can be used to define record specific
      *                      buttons.
-     * @return Array with html code elements with buttons
+     * @return array with html code elements with buttons
      *
      * ToDo/Fixme this function has been refactored in Controller.
      * It should be refactored in the same way.

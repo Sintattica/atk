@@ -19,7 +19,7 @@ class RowCounter extends DummyAttribute
 
     /**
      * Constructor
-     * @param String $name Name of the attribute
+     * @param string $name Name of the attribute
      * @param int $flags Flags for this attribute
      */
     function __construct($name, $flags = 0)

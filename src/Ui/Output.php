@@ -178,7 +178,7 @@ class Output
      * all regular output is suppressed and the contents of the rawoutput
      * is passed as-is to the browser when outputFlush() is called.
      *
-     * @param String $txt The text to output.
+     * @param string $txt The text to output.
      */
     public function rawoutput($txt)
     {
@@ -187,7 +187,7 @@ class Output
 
     /**
      * Output regular text to the browser.
-     * @param String $txt The text to output.
+     * @param string $txt The text to output.
      */
     public function output($txt)
     {
@@ -199,7 +199,7 @@ class Output
      *
      * Called internally by Output when $config_output_gzip is set to true,
      * but can be used by other scripts too, if they need to gzip some data.
-     * @param String $contents The string to gzip.
+     * @param string $contents The string to gzip.
      * @return String The gzipped string.
      */
     public function gzip($contents)

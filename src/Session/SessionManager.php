@@ -46,7 +46,7 @@ class SessionManager
 
     /**
      * Default constructor.
-     * @param String $namespace If multiple scripts/applications are
+     * @param string $namespace If multiple scripts/applications are
      *                          installed on thesame url, they can each use
      *                          a different namespace to make sure they
      *                          don't share session data.
@@ -199,7 +199,7 @@ class SessionManager
      * Register a global variable.
      *
      * Saves a value in the current namespace.
-     * @param String $var The name of the variable to save.
+     * @param string $var The name of the variable to save.
      * @param mixed $value The value of the variable to save. If omitted,
      *                     the value is retrieved from the http request.
      * @param boolean $no_namespace If set to false, the variable is saved
@@ -229,8 +229,8 @@ class SessionManager
     /**
      * Retrieve the value of a session variable.
      *
-     * @param String $var The name of the variable to retrieve.
-     * @param String $namespace The namespace from which to retrieve the
+     * @param string $var The name of the variable to retrieve.
+     * @param string $namespace The namespace from which to retrieve the
      *                          variable, or "globals" if the global value
      *                          needs to be retrieved.
      * @return mixed The retrieved value.
@@ -273,7 +273,7 @@ class SessionManager
      * reset it to B, when you return to level 0, the stackvar will still be A.
      * However for level 1 and deeper it will be B.
      *
-     * @param String $var The name of the variable to store.
+     * @param string $var The name of the variable to store.
      * @param mixed $value The value to store. If omitted, the session manager
      *                      tries to read the value from the http request.
      * @param int $level Get/Set var on this level, will be current level by
@@ -376,7 +376,7 @@ class SessionManager
      * in the url, it is stored as the new default stack value. If it's not
      * passed in the url, the last known value is retrieved from the session.
      *
-     * @param String $var The name of the variable to store.
+     * @param string $var The name of the variable to store.
      * @param mixed $value The value to store. If omitted, the session manager
      *                     tries to read the value from the http request.
      * @return mixed The current value in the session stack.

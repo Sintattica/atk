@@ -440,7 +440,7 @@ class MySqlDb extends Db
 
     /**
      * Return the meta data of a certain table
-     * @param String $table the table name (optionally in 'database.tablename' format)
+     * @param string $table the table name (optionally in 'database.tablename' format)
      * @param boolean $full all meta data or not
      * @return array with meta data
      */
@@ -585,7 +585,7 @@ class MySqlDb extends Db
      * This function checks the database for a table with
      * the provide name
      *
-     * @param String $table the table to find
+     * @param string $table the table to find
      * @return boolean true if found, false if not found
      */
     function tableExists($table)
@@ -619,8 +619,8 @@ class MySqlDb extends Db
      * Each database driver should override this method to perform vendor
      * specific conversion.
      *
-     * @param String $fieldname The field to generate the to_char for.
-     * @param String $format Format specifier. The format is compatible with
+     * @param string $fieldname The field to generate the to_char for.
+     * @param string $format Format specifier. The format is compatible with
      *                       php's date() function (http://www.php.net/date)
      *                       The default is what's specified by
      *                       $config_date_to_char, or "Y-m-d" if not
@@ -642,7 +642,7 @@ class MySqlDb extends Db
      *
      * Note that currently, only the common specifiers Y, m, d, H, h, i and
      * s are supported.
-     * @param String $format Format specifier. The format is compatible with
+     * @param string $format Format specifier. The format is compatible with
      *                       php's date() function (http://www.php.net/date)
      * @return String Mysql specific format specifier.
      */
@@ -658,7 +658,7 @@ class MySqlDb extends Db
      *
      * TODO/FIXME: add format parameter. Current format is always yyyy-mm-dd hh:mi.
      *
-     * @param String $fieldname The field to generate the to_char for.
+     * @param string $fieldname The field to generate the to_char for.
      * @return String Piece of sql query that converts a datetime field to char
      *                for the current database
      */

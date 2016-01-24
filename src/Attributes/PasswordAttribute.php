@@ -95,7 +95,7 @@ class PasswordAttribute extends Attribute
     /**
      * Sets the restrictions on passwords
      *
-     * @param Array $restrictions Restrictions that should apply to this attribute
+     * @param array $restrictions Restrictions that should apply to this attribute
      */
     function setRestrictions($restrictions)
     {
@@ -129,7 +129,7 @@ class PasswordAttribute extends Attribute
     /**
      * Returns the password restrictions that apply to this password
      *
-     * @return Array Restrictions that should apply to this attribute
+     * @return array Restrictions that should apply to this attribute
      */
     function getRestrictions()
     {
@@ -385,7 +385,7 @@ class PasswordAttribute extends Attribute
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
      * @param array $record Array with values
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @return string Piece of htmlcode
      */

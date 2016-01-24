@@ -155,9 +155,9 @@ class TimeAttribute extends Attribute
      * attribute's value.
      *
      * @param array $record The record that holds the value for this attribute.
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param String $mode The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
@@ -379,7 +379,7 @@ class TimeAttribute extends Attribute
      * @param array $rec The record that holds the value for this
      *                      attribute. If an error occurs, the error will
      *                      be stored in the 'atkerror' field of the record.
-     * @param String $mode The mode for which should be validated ("add" or
+     * @param string $mode The mode for which should be validated ("add" or
      *                     "update")
      */
     function validate(&$rec, $mode)
@@ -397,16 +397,16 @@ class TimeAttribute extends Attribute
      * so the attribute can 'hook' itself into the query.
      *
      * @param Query $query The SQL query object
-     * @param String $tablename The name of the table of this attribute
-     * @param String $fieldaliasprefix Prefix to use in front of the alias
+     * @param string $tablename The name of the table of this attribute
+     * @param string $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
-     * @param Array $rec The record that contains the value of this attribute.
+     * @param array $rec The record that contains the value of this attribute.
      * @param int $level Recursion level if relations point to eachother, an
      *                   endless loop could occur if they keep loading
      *                   eachothers data. The $level is used to detect this
      *                   loop. If overriden in a derived class, any subcall to
      *                   an addToQuery method should pass the $level+1.
-     * @param String $mode Indicates what kind of query is being processing:
+     * @param string $mode Indicates what kind of query is being processing:
      *                     This can be any action performed on a node (edit,
      *                     add, etc) Mind you that "add" and "update" are the
      *                     actions that store something in the database,
@@ -441,7 +441,7 @@ class TimeAttribute extends Attribute
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
      * @param array $record Array with values
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @return string Piece of htmlcode
      */
@@ -466,10 +466,10 @@ class TimeAttribute extends Attribute
      * searchcondition() also immediately adds the search condition.
      *
      * @param Query $query The query object where the search condition should be placed on
-     * @param String $table The name of the table in which this attribute
+     * @param string $table The name of the table in which this attribute
      *                              is stored
      * @param mixed $value The value the user has entered in the searchbox
-     * @param String $searchmode The searchmode to use. This can be any one
+     * @param string $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.

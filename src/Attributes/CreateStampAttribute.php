@@ -25,7 +25,7 @@ class CreateStampAttribute extends UpdateStampAttribute
     /**
      * Constructor
      *
-     * @param String $name Name of the attribute (unique within a node, and
+     * @param string $name Name of the attribute (unique within a node, and
      *                     corresponds to the name of the datetime field
      *                     in the database where the stamp is stored.
      * @param int $flags Flags for the attribute.

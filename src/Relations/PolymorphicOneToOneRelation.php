@@ -33,14 +33,14 @@ class PolymorphicOneToOneRelation extends OneToOneRelation
      *               "poly","fruit_id",self::AF_CASCADE_DELETE ));
      * </code>
      *
-     * @param String $name The unique name of the attribute.
-     * @param String $typefk The name of the foreign key field in the master node to the type table .
-     * @param String $discriminatorfield The name of the field in the type table wich stores the type tablename
+     * @param string $name The unique name of the attribute.
+     * @param string $typefk The name of the foreign key field in the master node to the type table .
+     * @param string $discriminatorfield The name of the field in the type table wich stores the type tablename
      * (a node with the same name must be created).
-     * @param String $defaultdest The default destination node (in module.nodename
+     * @param string $defaultdest The default destination node (in module.nodename
      *                            notation)
-     * @param String $modulename The module name
-     * @param String $refKey Specifies the foreign key
+     * @param string $modulename The module name
+     * @param string $refKey Specifies the foreign key
      *                       field from the destination node that points to
      *                       the master record.
      * @param int $flags Attribute flags that influence this attributes'
@@ -67,7 +67,7 @@ class PolymorphicOneToOneRelation extends OneToOneRelation
      *
      * @param Db $db The database used by the node.
      * @param array $record The master record
-     * @param String $mode The mode for loading (admin, select, copy, etc)
+     * @param string $mode The mode for loading (admin, select, copy, etc)
      *
      * @return array Sets the destination from the record and
      *                       return the atkonetoone load function

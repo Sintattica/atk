@@ -324,7 +324,7 @@ class Query
     /**
      * Add a group-by statement
      *
-     * @param String $element Group by expression
+     * @param string $element Group by expression
      * @return Query The query object itself (for fluent usage)
      */
     function &addGroupBy($element)
@@ -336,7 +336,7 @@ class Query
     /**
      * Add order-by statement
      *
-     * @param String $element Order by expression
+     * @param string $element Order by expression
      * @return Query The query object itself (for fluent usage)
      */
     function &addOrderBy($element)
@@ -495,7 +495,7 @@ class Query
     /**
      * Add FROM clause to query.
      *
-     * @param String $query The query
+     * @param string $query The query
      */
     function _addFrom(&$query)
     {
@@ -538,7 +538,7 @@ class Query
     /**
      * Add the ORDER BY clause
      *
-     * @param String $query The query
+     * @param string $query The query
      */
     function _addOrderBy(&$query)
     {
@@ -713,7 +713,7 @@ class Query
     /**
      * Generate a searchcondition that checks if the field is null.
      *
-     * @param String $field
+     * @param string $field
      * @param Bool $emptyStringIsNull
      */
     function nullCondition($field, $emptyStringIsNull = false)
@@ -728,7 +728,7 @@ class Query
     /**
      * Generate a searchcondition that checks if the field is not null.
      *
-     * @param String $field
+     * @param string $field
      * @param Bool $emptyStringIsNull
      */
     function notNullCondition($field, $emptyStringIsNull = false)
@@ -774,8 +774,8 @@ class Query
     /**
      * Generate a searchcondition that checks whether $field contains $value .
      *
-     * @param String $field The field
-     * @param String $value The value
+     * @param string $field The field
+     * @param string $value The value
      * @return String The substring condition
      */
     function substringCondition($field, $value)
@@ -790,8 +790,8 @@ class Query
     /**
      * Generate a searchcondition that accepts '*' as wildcard character.
      *
-     * @param String $field
-     * @param String $value
+     * @param string $field
+     * @param string $value
      */
     function wildcardCondition($field, $value)
     {
@@ -806,8 +806,8 @@ class Query
     /**
      * Generate searchcondition with greater than
      *
-     * @param String $field The database field
-     * @param String $value The value
+     * @param string $field The database field
+     * @param string $value The value
      */
     function greaterthanCondition($field, $value)
     {
@@ -821,8 +821,8 @@ class Query
     /**
      * Generate searchcondition with greater than
      *
-     * @param String $field The database field
-     * @param String $value The value
+     * @param string $field The database field
+     * @param string $value The value
      */
     function greaterthanequalCondition($field, $value)
     {
@@ -836,8 +836,8 @@ class Query
     /**
      * Generate searchcondition with less than
      *
-     * @param String $field The database field
-     * @param String $value The value
+     * @param string $field The database field
+     * @param string $value The value
      */
     function lessthanCondition($field, $value)
     {
@@ -851,8 +851,8 @@ class Query
     /**
      * Generate searchcondition with less than
      *
-     * @param String $field The database field
-     * @param String $value The value
+     * @param string $field The database field
+     * @param string $value The value
      */
     function lessthanequalCondition($field, $value)
     {
@@ -866,7 +866,7 @@ class Query
     /**
      * Get the between condition
      *
-     * @param String $field The database field
+     * @param string $field The database field
      * @param Mixed $value1 The first value
      * @param Mixed $value2 The second value
      * @param Bool $quote Add quotes?
@@ -898,7 +898,7 @@ class Query
      * If we set a m_fieldquote you can pass a field to this function and it will
      * quote all the identifiers (db, table, column, etc...) in the field.
      *
-     * @param String $field The field to add quotes too
+     * @param string $field The field to add quotes too
      * @return string The quoted field, if we have a fieldquote
      */
     function quoteField($field)
@@ -927,8 +927,8 @@ class Query
      * Quote an array of fields if m_fieldquote is set.
      * Uses $this->quoteField($field)
      *
-     * @param Array $fields The fields to add quotes to
-     * @return Array The quoted fields
+     * @param array $fields The fields to add quotes to
+     * @return array The quoted fields
      */
     function quoteFields($fields)
     {

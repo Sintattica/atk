@@ -62,7 +62,7 @@ class DurationAttribute extends Attribute
      * while still posting its value. (<input type="hidden">)
      *
      * @param array $record The record that holds the value for this attribute
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @return String A piece of htmlcode with hidden form elements that post
      *                this attribute's value without showing it.
@@ -78,9 +78,9 @@ class DurationAttribute extends Attribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value. (hours, minutes and seconds will be a dropdownbox)
      * @param array $record The record that holds the value for this attribute.
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param String $mode The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      * @return String Piece a of HTML Code
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
@@ -152,7 +152,7 @@ class DurationAttribute extends Attribute
      * methods to prepare a value for display, unless $mode is "cvs".
      *
      * @param array $rec The record that holds the value for this attribute
-     * @param String $mode The display mode ("view" for viewpages, or "list"
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                     for displaying in recordlists, "edit" for
      *                     displaying in editscreens, "add" for displaying in
      *                     add screens. "csv" for csv files. Applications can

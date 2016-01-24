@@ -149,13 +149,13 @@ class OneToManyRelation extends Relation
      * $this->add(new atkOneToManyRelation("employees", "mymod.employee", "department_id"));
      * </code>
      *
-     * @param String $name The unique name of this relation within a node.
+     * @param string $name The unique name of this relation within a node.
      *                     In contrast with most other attributes, the name
      *                     does not correspond to a database field. (Because
      *                     in one2many relations, the databasefield that
      *                     stores the link, is in the destination node and not
      *                     in the owner node).
-     * @param String $destination The node to which the relationship is made
+     * @param string $destination The node to which the relationship is made
      *                            (in module.nodename notation).
      * @param mixed $refKey For regular oneToMany relationships, $refKey is
      *                      name of the referential key in the destination
@@ -339,7 +339,7 @@ class OneToManyRelation extends Relation
      * list of detail record descriptors is displayed.
      *
      * @param array $record The record that holds the value for this attribute
-     * @param String $mode The display mode ("view" for viewpages, or "list"
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                     for displaying in recordlists)
      * @return String HTML String
      */
@@ -407,9 +407,9 @@ class OneToManyRelation extends Relation
      * detail records can be removed, added and edited.
      *
      * @param array $record The record that holds the value for this attribute.
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param String $mode The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return String A piece of htmlcode for editing this attribute
      */
@@ -470,8 +470,8 @@ class OneToManyRelation extends Relation
     /**
      * Adds the 'add' option to the onetomany, either integrated or as a link
      *
-     * @param String $output The HTML output of the edit function
-     * @param Array $myrecords The records that are loaded into the recordlist
+     * @param string $output The HTML output of the edit function
+     * @param array $myrecords The records that are loaded into the recordlist
      * @param array $record The master record that is being edited.
      */
     function _addAddToEditOutput(&$output, $myrecords, $record, $mode = "", $fieldprefix = "")
@@ -511,8 +511,8 @@ class OneToManyRelation extends Relation
 
     /**
      * Internal function to get the add link for a atkOneToManyRelation
-     * @param Array $myrecords The load of all attributes (see comment in edit() code)
-     * @param Array $record The record that holds the value for this attribute.
+     * @param array $myrecords The load of all attributes (see comment in edit() code)
+     * @param array $record The record that holds the value for this attribute.
      * @param bool $saveform Save the form values?
      * @return String  The link to add records to the onetomany
      */
@@ -626,8 +626,8 @@ class OneToManyRelation extends Relation
     /**
      * Internal function to get the add link for a atkOneToManyRelation.
      *
-     * @param Array $myrecords The load of all attributes (see comment in edit() code)
-     * @param Array $record The record that holds the value for this attribute.
+     * @param array $myrecords The load of all attributes (see comment in edit() code)
+     * @param array $record The record that holds the value for this attribute.
      * @param bool $saveform Save the values of the form?
      * @return String  The link to add records to the onetomany
      */
@@ -818,7 +818,7 @@ class OneToManyRelation extends Relation
      *
      * @param Db $db The database used by the node.
      * @param array $record The master record
-     * @param String $mode The mode for loading (admin, select, copy, etc)
+     * @param string $mode The mode for loading (admin, select, copy, etc)
      * @param bool $paging divide the result records on multiple pages ($config_recordsperpage)
      *
      * @return array Recordset containing detailrecords, or NULL if no detail
@@ -1058,8 +1058,8 @@ class OneToManyRelation extends Relation
      * node with the destination node of the atkOneToManyRelation.
      *
      * @param Query $query The query object.
-     * @param String $ownerAlias The owner table alias.
-     * @param String $destAlias The destination table alias.
+     * @param string $ownerAlias The owner table alias.
+     * @param string $destAlias The destination table alias.
      *
      * @return String SQL string for joining the owner with the destination.
      */
@@ -1090,11 +1090,11 @@ class OneToManyRelation extends Relation
      *
      * @param Integer $id The unique smart search criterium identifier.
      * @param Integer $nr The element number in the path.
-     * @param Array $path The remaining attribute path.
+     * @param array $path The remaining attribute path.
      * @param Query $query The query to which the condition will be added.
-     * @param String $ownerAlias The owner table alias to use.
+     * @param string $ownerAlias The owner table alias to use.
      * @param Mixed $value The value the user has entered in the searchbox.
-     * @param String $mode The searchmode to use.
+     * @param string $mode The searchmode to use.
      */
     function smartSearchCondition($id, $nr, $path, &$query, $ownerAlias, $value, $mode)
     {
@@ -1126,10 +1126,10 @@ class OneToManyRelation extends Relation
      * Adds a search condition for a given search value
      *
      * @param Query $query The query to which the condition will be added.
-     * @param String $table The name of the table in which this attribute
+     * @param string $table The name of the table in which this attribute
      *                      is stored
      * @param mixed $value The value the user has entered in the searchbox
-     * @param String $searchmode The searchmode to use. This can be any one
+     * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
      * @param string $fieldaliasprefix optional prefix for the fieldalias in the table
@@ -1158,10 +1158,10 @@ class OneToManyRelation extends Relation
      * searchcondition() also immediately adds the search condition.
      *
      * @param Query $query The query object where the search condition should be placed on
-     * @param String $table The name of the table in which this attribute
+     * @param string $table The name of the table in which this attribute
      *                              is stored
      * @param mixed $value The value the user has entered in the searchbox
-     * @param String $searchmode The searchmode to use. This can be any one
+     * @param string $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
@@ -1205,11 +1205,11 @@ class OneToManyRelation extends Relation
      * Calls searchCondition on an attribute in the destination
      * To hook the destination attribute on the query
      * @param Query &$query The query object
-     * @param String $table The table to search on
+     * @param string $table The table to search on
      * @param mixed $value The value to search
      * @param mixed $searchmode The mode used when searching
-     * @param String $field The name of the attribute
-     * @param String $reftable
+     * @param string $field The name of the attribute
+     * @param string $reftable
      */
     function _callSearchConditionOnDestField(&$query, $table, $value, $searchmode, $field, $reftable)
     {
@@ -1479,7 +1479,7 @@ class OneToManyRelation extends Relation
 
     /**
      * Set header generation function name.
-     * @param String $name The header generation function name.
+     * @param string $name The header generation function name.
      */
     function setHeader($name)
     {
@@ -1488,7 +1488,7 @@ class OneToManyRelation extends Relation
 
     /**
      * Set footer generation function name.
-     * @param String $name The footder generation function name.
+     * @param string $name The footder generation function name.
      */
     function setFooter($name)
     {

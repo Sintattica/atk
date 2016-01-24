@@ -25,11 +25,11 @@ class FileExport
      * at present ie 5 on mac gives wrong filename and NS 6+ gives wrong filename.
      *
      * @todo Currently supports only csv/excel mimetypes.
-     * @param String $data The content
-     * @param String $fileName Filename for the download
-     * @param String $type The type (csv / excel / xml)
-     * @param String $ext Extension of the file
-     * @param String $compression Compression method (bzip / gzip)
+     * @param string $data The content
+     * @param string $fileName Filename for the download
+     * @param string $type The type (csv / excel / xml)
+     * @param string $ext Extension of the file
+     * @param string $compression Compression method (bzip / gzip)
      */
     function export($data, $fileName, $type, $ext = "", $compression = "")
     {

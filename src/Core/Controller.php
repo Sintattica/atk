@@ -348,7 +348,7 @@ class Controller
 
     /**
      * Render a generic page, with a box, title, stacktrace etc.
-     * @param String $title The pagetitle and if $content is a string, also
+     * @param string $title The pagetitle and if $content is a string, also
      *                      the boxtitle.
      * @param mixed $content The content to display on the page. This can be:
      *                       - A string which will be the content of a single
@@ -395,7 +395,7 @@ class Controller
      *
      * Renders actionpage.tpl for the desired action. This includes the
      * given block(s) and a pagetrial, but not a box.
-     * @param String $action The action for which the page is rendered.
+     * @param string $action The action for which the page is rendered.
      * @param mixed $blocks Pieces of html content to be rendered. Can be a
      *                      single string with content, or an array with
      *                      multiple content blocks.
@@ -439,10 +439,10 @@ class Controller
      * The $record parameter is ignored by the default implementation, but
      * derived classes may override this method to perform record-specific
      * feedback.
-     * @param String $action The action that was performed
+     * @param string $action The action that was performed
      * @param int $status The status of the action.
      * @param array $record The record on which the action was performed.
-     * @param String $message An optional message to pass to the feedbackpage,
+     * @param string $message An optional message to pass to the feedbackpage,
      *                        for example to explain the reason why an action
      *                        failed.
      * @param integer $levelskip The number of levels to skip
@@ -508,7 +508,7 @@ class Controller
      * Returns the form buttons for a certain page.
      *
      * Can be overridden by derived classes to define custom buttons.
-     * @param String $mode The action for which the buttons are retrieved.
+     * @param string $mode The action for which the buttons are retrieved.
      * @param array $record The record currently displayed/edited in the form.
      *                      This param can be used to define record specific
      *                      buttons.
@@ -592,7 +592,7 @@ class Controller
     /**
      * Create a button.
      *
-     * @param String $action
+     * @param string $action
      * @param Bool $default Add the atkdefaultbutton class?
      * @return String HTML
      */
@@ -673,10 +673,10 @@ class Controller
     /**
      * Create a dialog button.
      *
-     * @param String $action The action ('save' or 'cancel')
-     * @param String $label The label for this button
-     * @param String $url
-     * @param Array $extraParams
+     * @param string $action The action ('save' or 'cancel')
+     * @param string $label The label for this button
+     * @param string $url
+     * @param array $extraParams
      * @return String HTML
      */
     function getDialogButton($action, $label = null, $url = null, $extraParams = array())
@@ -833,7 +833,7 @@ class Controller
      * if present, or dispatch($postvars, $flags) in the handler if the node has
      * no override.
      *
-     * @param String $methodname The name of the method to call.
+     * @param string $methodname The name of the method to call.
      * @return mixed The method returns the return value of the invoked
      *               method.
      */

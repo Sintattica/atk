@@ -151,7 +151,7 @@ class AddHandler extends ActionHandler
      *
      * @param array $record The record which contains default values for the
      *                      add-form.
-     * @return Array An array containing the elements used in a template for
+     * @return array An array containing the elements used in a template for
      *               add pages.
      */
     function getAddParams($record = null)
@@ -245,7 +245,7 @@ class AddHandler extends ActionHandler
      * Based on information provided in the url (atkfilter), this function creates an array with
      * field values that are used as the initial values of a record in an add page.
      *
-     * @return Array Values of the newly created record.
+     * @return array Values of the newly created record.
      */
     function createForceList()
     {
@@ -283,7 +283,7 @@ class AddHandler extends ActionHandler
      *
      * @param array $record The record which contains default values for the
      *                      add-form.
-     * @return Array a list of HTML buttons.
+     * @return array a list of HTML buttons.
      */
     function getFormButtons($record = null)
     {
@@ -307,7 +307,7 @@ class AddHandler extends ActionHandler
     /**
      * Renders a complete add page including title and content
      *
-     * @param Array $params Parameters needed in templates for the add page
+     * @param array $params Parameters needed in templates for the add page
      * @return String HTML the add page.
      */
     function renderAddPage($params)
@@ -403,7 +403,7 @@ class AddHandler extends ActionHandler
      * Returns the dialog save params. These are the same params that are part of the
      * dialog save url, but they will be appended at the end of the query string to
      * override any form variables with the same name!
-     * @return Array paramaters
+     * @return array paramaters
      */
     function getDialogSaveParams()
     {

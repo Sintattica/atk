@@ -143,7 +143,7 @@ class EditHandler extends ViewEditBase
     /**
      * Render the edit page
      *
-     * @param Array $record The record to edit
+     * @param array $record The record to edit
      * @param Bool $locked Indicates whether the record is locked by the
      *                        current user.
      * @return String HTML code for the edit page
@@ -160,10 +160,10 @@ class EditHandler extends ViewEditBase
     /**
      * Get the params for the edit page
      *
-     * @param Array $record The record to edit
+     * @param array $record The record to edit
      * @param Bool $locked Indicates whether the record is locked by the
      *                        current user.
-     * @return Array Array with parameters
+     * @return array Array with parameters
      */
     function getEditParams($record, $locked = false)
     {
@@ -209,7 +209,7 @@ class EditHandler extends ViewEditBase
     /**
      * Get the content
      *
-     * @param Array $record
+     * @param array $record
      * @return String The content
      */
     function getContent($record)
@@ -234,8 +234,8 @@ class EditHandler extends ViewEditBase
     /**
      * Render the edit page
      *
-     * @param Array $record
-     * @param Array $params
+     * @param array $record
+     * @param array $params
      * @return String The rendered edit page
      */
     function renderEditPage($record, $params)
@@ -484,15 +484,15 @@ class EditHandler extends ViewEditBase
     /**
      * Function returns a generic html form for editing a record.
      *
-     * @param String $mode The edit mode ("add" or "edit").
+     * @param string $mode The edit mode ("add" or "edit").
      * @param array $record The record to edit.
      * @param array $forceList A key-value array used to preset certain
      *                             fields to a certain value.
      * @param array $suppressList An array of fields that will be hidden.
-     * @param String $fieldprefix If set, each form element is prefixed with
+     * @param string $fieldprefix If set, each form element is prefixed with
      *                             the specified prefix (used in embedded
      *                             forms)
-     * @param String $template The template to use for the edit form
+     * @param string $template The template to use for the edit form
      * @param boolean $ignoreTab Ignore the tabs an attribute should be shown on.
      *
      * @return String the edit form as a string
@@ -653,7 +653,7 @@ class EditHandler extends ViewEditBase
      * Get the link fo a tab
      *
      * @param Node $node The node
-     * @param Array $error
+     * @param array $error
      * @return String HTML code with link
      */
     function getTabLink(&$node, $error)

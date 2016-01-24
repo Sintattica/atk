@@ -683,9 +683,9 @@ class SecurityManager
     /**
      * Check if the currently logged-in user has a certain privilege on a
      * node.
-     * @param String $node The full nodename of the node for which to check
+     * @param string $node The full nodename of the node for which to check
      *                     access privileges. (modulename.nodename notation).
-     * @param String $privilege The privilege to check (atkaction).
+     * @param string $privilege The privilege to check (atkaction).
      * @return boolean True if the user has the privilege, false if not.
      */
     function allowed($node, $privilege)
@@ -739,8 +739,8 @@ class SecurityManager
 
     /**
      * Write an access entry in the logfile.
-     * @param String $node The full name of the node that is being accessed.
-     * @param String $action The action that has been performed.
+     * @param string $node The full name of the node that is being accessed.
+     * @param string $action The action that has been performed.
      */
     function logAction($node, $action)
     {
@@ -754,7 +754,7 @@ class SecurityManager
      *
      * @todo Logging should be moved to a separate atkLogger class.
      * @param int $level The loglevel.
-     * @param String $message The message to log.
+     * @param string $message The message to log.
      */
     function log($level, $message)
     {

@@ -103,7 +103,7 @@ class Language
     /**
      * Add a module that serves as an override for language strings.
      *
-     * @param String $module Name of the module to add.
+     * @param string $module Name of the module to add.
      */
     public function addOverrideModule($module)
     {
@@ -113,7 +113,7 @@ class Language
     /**
      * Add a module that servers as a fallback for language strings.
      *
-     * @param String $module Name of the module to add.
+     * @param string $module Name of the module to add.
      */
     public function addFallbackModule($module)
     {
@@ -157,11 +157,11 @@ class Language
      * @param mixed $string string or array of strings containing the name(s) of the string to return
      *                                when an array of strings is passed, the second will be the fallback if
      *                                the first one isn't found, and so forth
-     * @param String $module module in which the language file should be looked for,
+     * @param string $module module in which the language file should be looked for,
      *                                defaults to core module with fallback to ATK
-     * @param String $node the node to which the string belongs
-     * @param String $lng ISO 639-1 language code, defaults to config variable
-     * @param String $firstfallback the first module to check as part of the fallback
+     * @param string $node the node to which the string belongs
+     * @param string $lng ISO 639-1 language code, defaults to config variable
+     * @param string $firstfallback the first module to check as part of the fallback
      * @param bool $nodefaulttext if true, then it doesn't returns false when it can't find a translation
      * @param bool $modulefallback Wether or not to use all the modules of the application in the fallback,
      *                                when looking for strings
@@ -212,8 +212,8 @@ class Language
      * The returned struct will contain key-value pairs for the translation
      * keys, and their respective translation.
      *
-     * @param String $module Module in which the language file should be
-     * @param String $lng ISO 639-1 language code, defaults to config
+     * @param string $module Module in which the language file should be
+     * @param string $lng ISO 639-1 language code, defaults to config
      * @return array Translations
      */
     public static function getStringsForModule($module, $lng = "")
@@ -259,7 +259,7 @@ class Language
      * Note that his only remains set for the current request, it's not
      * session based.
      * @static
-     * @param String $lng The language to set
+     * @param string $lng The language to set
      */
     public static function setLanguage($lng)
     {
@@ -334,7 +334,7 @@ class Language
      * Get the languages supported by the application
      *
      * @static
-     * @return Array An array with the languages supported by the application.
+     * @return array An array with the languages supported by the application.
      */
     public static function getSupportedLanguages()
     {
@@ -356,8 +356,8 @@ class Language
      * language strings.
      *
      * @access protected
-     * @param String $module manually passed module
-     * @param String $firstfallback an additional module in which the
+     * @param string $module manually passed module
+     * @param string $firstfallback an additional module in which the
      *        translation will be searched first, if not found in the
      *        module itself.
      * @param Boolean $modulefallback If true, *all* modules are checked.
@@ -494,7 +494,7 @@ class Language
      * Special method in that it can run both in static and non-static
      * mode.
      *
-     * @param String $module The module to get the languagedir for
+     * @param string $module The module to get the languagedir for
      * @return String The relative path to the languagedir
      */
     public function getLanguageDirForModule($module)

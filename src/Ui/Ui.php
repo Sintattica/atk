@@ -59,7 +59,7 @@ class Ui
     /**
      * Renders action templates
      * Currently only the view action is implemented
-     * @param String $action the action for which to render the template
+     * @param string $action the action for which to render the template
      * @param array $vars the template variables
      * @param string $module the name of the module requesting to render a template
      * @return String the rendered template
@@ -76,7 +76,7 @@ class Ui
 
     /**
      * Renders a list template
-     * @param String $action not used (deprecated?)
+     * @param string $action not used (deprecated?)
      * @param array $vars the variables with which to parse the list template
      * @param string $module the name of the module requesting to render a template
      * @return string rendered list
@@ -141,9 +141,9 @@ class Ui
      * the name ends with ".tpl" and a file with the extension ".tpl.php" exists
      * PHP will be used, otherwise Smarty will be used to render the template.
      *
-     * @param String $name the name of the template to render
+     * @param string $name the name of the template to render
      * @param array $vars the variables with which to render the template
-     * @param String $module the name of the module requesting to render a template
+     * @param string $module the name of the module requesting to render a template
      *
      * @return String rendered template
      */
@@ -206,9 +206,9 @@ class Ui
      * we assume the full template path is already given and we simply
      * return it.
      *
-     * @param String $template The filename (without path) of the template
+     * @param string $template The filename (without path) of the template
      *                          for which you want to complete the path.
-     * @param String $module The name of the module requesting to render a template
+     * @param string $module The name of the module requesting to render a template
      * @return String the template path
      */
     function templatePath($template, $module = "")
@@ -226,9 +226,9 @@ class Ui
      * This is a convenience method, which calls the stylePath method on
      * the theme instance.
      *
-     * @param String $style The filename (without path) of the stylesheet for
+     * @param string $style The filename (without path) of the stylesheet for
      *                      which you want to complete the path.
-     * @param String $module the name of the module requesting the style path
+     * @param string $module the name of the module requesting the style path
      * @return String the path of the style
      */
     function stylePath($style, $module = "")
@@ -239,9 +239,9 @@ class Ui
     /**
      * Return the title to render
      *
-     * @param String $module the module in which to look
-     * @param String $nodetype the nodetype of the action
-     * @param String $action the action that we are trying to find a title for
+     * @param string $module the module in which to look
+     * @param string $nodetype the nodetype of the action
+     * @param string $action the action that we are trying to find a title for
      * @param bool $actiononly wether or not to return a name of the node
      *                          if we couldn't find a specific title
      * @return String the title for the action
@@ -259,7 +259,7 @@ class Ui
      * Example: echo $ui->title("users", "employee", "edit"); might return:
      *          'Edit an existing employee'
      * @param Node $node the node to get the title from
-     * @param String $action the action that we are trying to find a title for
+     * @param string $action the action that we are trying to find a title for
      * @param bool $actiononly wether or not to return a name of the node
      *                          if we couldn't find a specific title
      * @return String the title for the action
@@ -312,7 +312,7 @@ class Ui
      *          'Departmen wizard - Add employees - Step 2 of 3'
      * @param Wizard $wizard the wizard object
      * @param WizardPanel $panel the panel object
-     * @param String $action the atk action that we are trying execute in the panel
+     * @param string $action the atk action that we are trying execute in the panel
      * @return String the title for this wizardpanel
      */
     function getWizardTitle(Wizard $wizard, WizardPanel $panel, $action = null)

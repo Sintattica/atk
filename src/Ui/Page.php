@@ -139,9 +139,9 @@ class Page
      * Register a javascript file to be included.
      *
      * If called twice for the same filename, the file is loaded only once.
-     * @param String $file The (relative path and) filename of the javascript
+     * @param string $file The (relative path and) filename of the javascript
      *                     file.
-     * @param String $before The (partial) name of a script that this script
+     * @param string $before The (partial) name of a script that this script
      *                       should be loaded in front of. This can be used
      *                       to inject a script before another script, or to
      *                       avoid conflicts. Usually, this parameter is not
@@ -185,7 +185,7 @@ class Page
     /**
      * Unregister a javascript file
      *
-     * @param String $name The (partial) name of the script to remove
+     * @param string $name The (partial) name of the script to remove
      */
     function unregister_script($name)
     {
@@ -218,7 +218,7 @@ class Page
      * The method has a duplicate check. Registering the exact same statement
      * twice, will result in the statement only being rendered and executed
      * once.
-     * @param String $code The javascript code to place in the header.
+     * @param string $code The javascript code to place in the header.
      * @param Boolean $before Include the script before the javascript files
      */
     function register_scriptcode($code, $before = false)
@@ -234,7 +234,7 @@ class Page
      * the page is submitted.
      * @todo This is inconsequent, if multiple forms are present, each should
      *       have its own submitscripts. Should be moved to an atkForm class.
-     * @param String $code The javascript code fragment to execute on submit.
+     * @param string $code The javascript code fragment to execute on submit.
      */
     function register_submitscript($code)
     {
@@ -253,7 +253,7 @@ class Page
 
     /**
      * Register a javascript code statement that is executed on pageload.
-     * @param String $code The javascript code fragment to execute on load.
+     * @param string $code The javascript code fragment to execute on load.
      * @param int $offset
      */
     function register_loadscript($code, $offset = null)
@@ -287,8 +287,8 @@ class Page
      * This method has a duplicate check. Calling it with the same stylesheet
      * more than once, will still result in only one single include of the
      * stylesheet.
-     * @param String $file The (relative path and) filename of the stylesheet.
-     * @param String $media The stylesheet media (defaults to 'all').
+     * @param string $file The (relative path and) filename of the stylesheet.
+     * @param string $media The stylesheet media (defaults to 'all').
      */
     function register_style($file, $media = 'all')
     {
@@ -304,7 +304,7 @@ class Page
     /**
      * Unregister a Cascading Style Sheet.
      *
-     * @param String $file The (relative path and) filename of the stylesheet.
+     * @param string $file The (relative path and) filename of the stylesheet.
      */
     function unregister_style($file)
     {
@@ -326,7 +326,7 @@ class Page
     /**
      * Register Cascading Style Sheet fragment that will be included in the
      * page header.
-     * @param String $code The Cascading Style Sheet code fragment to place in
+     * @param string $code The Cascading Style Sheet code fragment to place in
      *                     the header.
      */
     function register_stylecode($code)
@@ -382,7 +382,7 @@ class Page
 
     /**
      * Adds javascripts from the member variables to HTML output
-     * @param String $res Reference to the HTML output
+     * @param string $res Reference to the HTML output
      * @param Bool $partial Is this a partial request or a complete request
      */
     function addScripts(&$res, $partial = false)
@@ -506,7 +506,7 @@ class Page
     /**
      * Add stylesheets and stylecodes to the HMTL output
      *
-     * @param String $res Reference to the HTML output
+     * @param string $res Reference to the HTML output
      * @param Bool $partial Is this a partial request or a complete request
      */
     function addStyles(&$res, $partial = false)
@@ -534,7 +534,7 @@ class Page
 
     /**
      * Add content to the page.
-     * @param String $content The content to add to the page.
+     * @param string $content The content to add to the page.
      */
     function addContent($content)
     {
@@ -573,7 +573,7 @@ class Page
 
     /**
      * Render the complete page, including head and body.
-     * @param String $title Title of the HTML page.
+     * @param string $title Title of the HTML page.
      * @param bool|int $flags (bool) Set to true to generate <body> tags. It is useful
      *                        to set this to false only when rendering content
      *                        that either already had its own <body></body>
@@ -672,7 +672,7 @@ class Page
 
     /**
      * Adds meta lines from the member variables to HTML output
-     * @param String $res Reference to the HTML output
+     * @param string $res Reference to the HTML output
      * @param Bool $partial Is this a partial request or a complete request
      */
     function addMeta(&$res, $partial = false)

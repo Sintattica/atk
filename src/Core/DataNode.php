@@ -46,7 +46,7 @@ class DataNode extends Node
     /**
      * Returns the internal data.
      *
-     * @return Array data list
+     * @return array data list
      */
     protected function getData()
     {

@@ -3,6 +3,7 @@
 use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Db;
 
 /**
  * The atkFuzzySearchAttribute class represents an attribute of a node
@@ -65,12 +66,12 @@ class FuzzySearchAttribute extends Attribute
      * - select           make the user select
      * - selectperkeyword make the user select for every keyword
      * - multiselect      ?
-     * @param String $name The name of the attribute
-     * @param String $searchnode The node to search on
-     * @param String $callback The function of the owner node to call
+     * @param string $name The name of the attribute
+     * @param string $searchnode The node to search on
+     * @param string $callback The function of the owner node to call
      *                           with the record to store and the results of the search
      *                           Has to return a status (true or false)
-     * @param String $mode The mode of the search (all(default)|first|firstperkeyword|
+     * @param string $mode The mode of the search (all(default)|first|firstperkeyword|
      *                                                   select|selectperkeyword|multiselect)
      * @param int $flags The flags of the attribute
      * @param int $size The size of the search field
@@ -111,7 +112,7 @@ class FuzzySearchAttribute extends Attribute
      * @param array $rec The record that holds the value for this
      *                      attribute. If an error occurs, the error will
      *                      be stored in the 'atkerror' field of the record.
-     * @param String $mode The mode for which should be validated ("add" or
+     * @param string $mode The mode for which should be validated ("add" or
      *                     "update")
      */
     function validate(&$rec, $mode)
@@ -159,9 +160,9 @@ class FuzzySearchAttribute extends Attribute
      * attribute's value.
      *
      * @param array $rec The record that holds the value for this attribute.
-     * @param String $prefix The fieldprefix to put in front of the name
+     * @param string $prefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param String $mode The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
     function edit($rec = "", $prefix = "", $mode = "")
@@ -200,7 +201,7 @@ class FuzzySearchAttribute extends Attribute
                 }
             }
 
-            if ($this->m_mode == "multiselect" && count($this->m_matches > 1)) {
+            if ($this->m_mode == "multiselect" && count($this->m_matches) > 1) {
                 // Select multiple records from all matches
                 $checkboxes = array();
 
@@ -258,8 +259,8 @@ class FuzzySearchAttribute extends Attribute
 
     /**
      * The actual function that does the searching
-     * @param String $searchstring The string to search for
-     * @return Array The matches
+     * @param string $searchstring The string to search for
+     * @return array The matches
      */
     function getMatches($searchstring)
     {
@@ -405,7 +406,7 @@ class FuzzySearchAttribute extends Attribute
 
     /**
      * Dummy method to prevent loading/storing of data.
-     * @return Array empty array
+     * @return array empty array
      */
     function getSearchModes()
     {
@@ -454,9 +455,9 @@ class FuzzySearchAttribute extends Attribute
 
     /**
      * Adds a filter on the instance of the searchnode
-     * @param String $filter The fieldname you want to filter OR a SQL where
+     * @param string $filter The fieldname you want to filter OR a SQL where
      *                       clause expression.
-     * @param String $value Required value. (Ommit this parameter if you pass
+     * @param string $value Required value. (Ommit this parameter if you pass
      *                      an SQL expression for $filter.)
      */
     function addSearchFilter($filter, $value = "")
@@ -478,7 +479,7 @@ class FuzzySearchAttribute extends Attribute
 
     /**
      * Sets the destination filter.
-     * @param String $filter The destination filter.
+     * @param string $filter The destination filter.
      */
     function setDestinationFilter($filter)
     {

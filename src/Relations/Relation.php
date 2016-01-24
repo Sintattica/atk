@@ -5,6 +5,7 @@ use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Utils\StringParser;
+use Sintattica\Atk\Db\Query;
 
 /**
  * The atkRelation class defines a relation to another node.
@@ -46,8 +47,8 @@ class Relation extends Attribute
 
     /**
      * Constructor
-     * @param String $name The name of the relation.
-     * @param String $destination The destination node (in module.name notation)
+     * @param string $name The name of the relation.
+     * @param string $destination The destination node (in module.name notation)
      * @param int $flags Flags for the relation
      */
     function __construct($name, $destination, $flags = 0)
@@ -67,7 +68,7 @@ class Relation extends Attribute
 
     /**
      * Sets the destination filter.
-     * @param String $filter The destination filter.
+     * @param string $filter The destination filter.
      */
     function setDestinationFilter($filter)
     {
@@ -115,7 +116,7 @@ class Relation extends Attribute
 
     /**
      * Adds a filter value to the destination filter.
-     * @param String $filter Filter to be added to the destination filter.
+     * @param string $filter Filter to be added to the destination filter.
      */
     function addDestinationFilter($filter)
     {
@@ -157,7 +158,7 @@ class Relation extends Attribute
 
     /**
      * Sets the descriptor template for the destination node.
-     * @param String $template The descriptor template.
+     * @param string $template The descriptor template.
      */
     function setDescriptorTemplate($template)
     {
@@ -249,7 +250,7 @@ class Relation extends Attribute
      * @param array $record The record that holds the value for this
      *                      attribute. If an error occurs, the error will
      *                      be stored in the 'atkerror' field of the record.
-     * @param String $mode The mode for which should be validated ("add" or
+     * @param string $mode The mode for which should be validated ("add" or
      *                     "update")
      */
     function validate(&$record, $mode)

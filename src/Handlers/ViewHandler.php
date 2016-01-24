@@ -150,9 +150,9 @@ class ViewHandler extends ViewEditBase
     /**
      * Get the view page
      *
-     * @param Array $record The record
-     * @param String $mode The mode we're in (defaults to "view")
-     * @param String $template The template to use for the view form
+     * @param array $record The record
+     * @param string $mode The mode we're in (defaults to "view")
+     * @param string $template The template to use for the view form
      * @return String HTML code of the page
      */
     function viewForm($record, $mode = "view", $template = "")

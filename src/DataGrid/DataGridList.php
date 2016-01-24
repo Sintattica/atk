@@ -63,9 +63,9 @@ class DataGridList extends DataGridComponent
 
     /**
      * Get records for a recordlist without actually rendering the recordlist.
-     * @param Array $recordset the list of records
-     * @param Array $actions the default actions array
-     * @param Array $suppressList fields we don't display
+     * @param array $recordset the list of records
+     * @param array $actions the default actions array
+     * @param array $suppressList fields we don't display
      * @return String The rendered recordlist
      */
     private function getRecordlistData($recordset, $actions, $suppressList = array())
@@ -643,7 +643,7 @@ class DataGridList extends DataGridComponent
      * Checks wether the recordlist should display a column which holds the actions.
      *
      * @access private
-     * @param Array $list The recordlist data
+     * @param array $list The recordlist data
      * @param bool $hasSearch
      * @return bool Wether the list should display an extra column to hold the actions
      */
@@ -721,10 +721,10 @@ class DataGridList extends DataGridComponent
     /**
      * Function outputs an array with all information necessary to output a recordlist.
      *
-     * @param Array $recordset List of records that need to be displayed
-     * @param String $prefix Prefix for each column name (used for subcalls)
-     * @param Array $actions List of default actions for each record
-     * @param Array $suppress An array of fields that you want to hide
+     * @param array $recordset List of records that need to be displayed
+     * @param string $prefix Prefix for each column name (used for subcalls)
+     * @param array $actions List of default actions for each record
+     * @param array $suppress An array of fields that you want to hide
      *
      * The result array contains the following information:
      *  "name"     => the name of the recordlist

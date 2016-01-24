@@ -37,9 +37,9 @@ class MockSecurityManager extends SecurityManager
     /**
      * Check if the currently logged-in user has a certain privilege on a
      * node.
-     * @param String $node The full nodename of the node for which to check
+     * @param string $node The full nodename of the node for which to check
      *                     access privileges. (modulename.nodename notation).
-     * @param String $privilege The privilege to check (atkaction).
+     * @param string $privilege The privilege to check (atkaction).
      * @return boolean True if the user has the privilege, false if not.
      */
     function allowed($node, $privilege)

@@ -27,7 +27,7 @@ class EmailAttribute extends Attribute
      *   $this->add(new atkEmailAttribute("email", false, self::AF_OBLIGATORY));
      * </code>
      *
-     * @param String $name Name of the attribute
+     * @param string $name Name of the attribute
      * @param boolean $search Search DNS for MX records in validate function
      * @param int $flags Flags for the attribute
      * @param int $size The size of the field in characters
@@ -41,7 +41,7 @@ class EmailAttribute extends Attribute
     /**
      * Returns a displayable string for this value.
      * @param array $record The record to display
-     * @param String $mode The display mode ("view" for viewpages, or "list"
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                     for displaying in recordlists, "edit" for
      *                     displaying in editscreens, "add" for displaying in
      *                     add screens. "csv" for csv files. Applications can
@@ -65,7 +65,7 @@ class EmailAttribute extends Attribute
      * @param array $record Record that contains value to be validated.
      *                      Errors are saved in this record, in the 'atkerror'
      *                      field.
-     * @param String $mode Validation mode. Can be either "add" or "update"
+     * @param string $mode Validation mode. Can be either "add" or "update"
      */
     function validate(&$record, $mode)
     {

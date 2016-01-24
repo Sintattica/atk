@@ -38,13 +38,13 @@ class FileEditor extends Node
      *
      * This function is called when a new atkFileEditor is instantiated.
      *
-     * @param String $name The name of the node.
-     * @param String $dir The directory that the fileeditor lists. If you
+     * @param string $name The name of the node.
+     * @param string $dir The directory that the fileeditor lists. If you
      *                    want to enable addition of new files, make sure
      *                    that the webserver has write access to this dir.
      *                    Only regular files (not subdirs or special files)
      *                    are listed.
-     * @param String $filter A regular expression that is used to filter which
+     * @param string $filter A regular expression that is used to filter which
      *                       files will be shown. Example: '.txt$' lists only
      *                       txt files in the directory.
      *                       Note: This parameter is also used to validate the
@@ -86,7 +86,7 @@ class FileEditor extends Node
     /**
      * This function is used to change the node directory
      *
-     * @param String $dir The name of the dir to change to
+     * @param string $dir The name of the dir to change to
      */
     function setDir($dir)
     {
@@ -96,7 +96,7 @@ class FileEditor extends Node
     /**
      * This function reads the contents of the directory
      *
-     * @param String $selector The selected item in the directory list
+     * @param string $selector The selected item in the directory list
      * @return array The array containing the directory and file names
      *               from the currently selected directory
      */
@@ -114,7 +114,7 @@ class FileEditor extends Node
     /**
      * This function adds a file or directory to the list in the node
      *
-     * @param String $entry The directory that is added to the list
+     * @param string $entry The directory that is added to the list
      * @param array $arr The array containing the result of the
      *                   added item
      */
@@ -149,7 +149,7 @@ class FileEditor extends Node
     /**
      * This function sets the actions of the items in the list
      *
-     * @param String $record Identifier for the record
+     * @param string $record Identifier for the record
      * @param  array $actions Result array containing the options
      * @param  unknow $mraactions
      */
@@ -175,8 +175,8 @@ class FileEditor extends Node
      * This function loops through the items in a directory and
      * and calls functions to print the results
      *
-     * @param String $selector Identifier for the selected item
-     * @param String $orderby The list of items is ordered by the item type
+     * @param string $selector Identifier for the selected item
+     * @param string $orderby The list of items is ordered by the item type
      *                        mentioned in this variable
      * @param mixed $limit
      * @return array
@@ -248,7 +248,7 @@ class FileEditor extends Node
     /**
      * This function controls actions on the selected file is allowed
      *
-     * @param Array $rec Array that contains the identifier of the record
+     * @param array $rec Array that contains the identifier of the record
      * @param string $mode The mode we're in
      */
     function validate(&$rec, $mode)
@@ -277,7 +277,7 @@ class FileEditor extends Node
      * This function overrides the addDb function to add
      * a file to the selected directory
      *
-     * @param Array $record Array that contains the name of the new file
+     * @param array $record Array that contains the name of the new file
      * @return Boolean The result of the file addition
      */
     function addDb($record)
@@ -341,7 +341,7 @@ class FileEditor extends Node
      * This function overrides the deleteDb function to delete a file
      * from the selected directory
      *
-     * @param String $selector The identifier of the file that should be deleted
+     * @param string $selector The identifier of the file that should be deleted
      * @return boolean The result of the file deletion
      */
     function deleteDb($selector)
@@ -404,7 +404,7 @@ class FileEditor extends Node
     /**
      * This function strips a given directory to a valid relative path
      *
-     * @param String $dirname Path of the dir to change to
+     * @param string $dirname Path of the dir to change to
      * @return String Stripped directory path
      */
     function stripDir($dirname)

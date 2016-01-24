@@ -73,8 +73,8 @@ class MultiSelectHandler extends AdminHandler
     /**
      * Parse the target string
      *
-     * @param String $string The string to parse
-     * @param Array $recordset The recordset to use for parsing the string
+     * @param string $string The string to parse
+     * @param array $recordset The recordset to use for parsing the string
      * @return String The parsed string
      */
     function parseString($string, $recordset)

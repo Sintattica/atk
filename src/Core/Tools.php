@@ -174,7 +174,7 @@ class Tools
      * Function atkdebug
      *
      * Adds debug self::text to the debug log
-     * @param String $txt The self::text that will be added to the log
+     * @param string $txt The self::text that will be added to the log
      * @param Integer $flags An optional combination of Tools::DEBUG_ flags
      */
     public static function atkdebug($txt, $flags = 0)
@@ -217,7 +217,7 @@ class Tools
      * Send a notice to the debug log.
      * A notice doesn't get show unless your debug level is 3 or higher.
      *
-     * @param String $txt The self::text that will be added to the log
+     * @param string $txt The self::text that will be added to the log
      */
     public static function atknotice($txt)
     {
@@ -396,8 +396,8 @@ class Tools
     /**
      * Writes info to a given file.
      * Useful for writing to any log files.
-     * @param String $text self::text to write to the logfile
-     * @param String $file the file name
+     * @param string $text self::text to write to the logfile
+     * @param string $file the file name
      */
     public static function atkWriteToFile($text, $file = "")
     {
@@ -413,7 +413,7 @@ class Tools
      * Please notice this feature will heavily decrease the performance
      * and should therefore only be used for debugging and development
      * purposes.
-     * @param String $text self::text to write to the logfile
+     * @param string $text self::text to write to the logfile
      */
     public static function atkWriteLog($text)
     {
@@ -429,11 +429,11 @@ class Tools
      * @param mixed $string string or array of strings containing the name(s) of the string to return
      *                                when an array of strings is passed, the second will be the fallback if
      *                                the first one isn't found, and so forth
-     * @param String $module module in which the language file should be looked for,
+     * @param string $module module in which the language file should be looked for,
      *                                defaults to core module with fallback to ATK
-     * @param String $node the node to which the string belongs
-     * @param String $lng ISO 639-1 language code, defaults to config variable
-     * @param String $firstfallback the first module to check as part of the fallback
+     * @param string $node the node to which the string belongs
+     * @param string $lng ISO 639-1 language code, defaults to config variable
+     * @param string $firstfallback the first module to check as part of the fallback
      * @param boolean $nodefaulttext if true, then it doesn't return a default self::text
      *                                when it can't find a translation
      * @param boolean $modulefallback Wether or not to use all the modules of the application in the fallback,
@@ -462,7 +462,7 @@ class Tools
      * </p>
      * @param array $array2 [optional]
      * @param array $_ [optional]
-     * @return Array The result of the merge between $array1 and $array2
+     * @return array The result of the merge between $array1 and $array2
      */
     public static function atk_array_merge(array $array1, array $array2 = null, array $_ = null)
     {
@@ -502,8 +502,8 @@ class Tools
      * association in case of numerical indexes. Supports unlimited number
      * of arrays as arguments.
      *
-     * @param Array $array unlimited number of arrays
-     * @return Array The result of the merge between the given arrays
+     * @param array $array unlimited number of arrays
+     * @return array The result of the merge between the given arrays
      */
     public static function atk_array_merge_keys()
     {
@@ -786,7 +786,7 @@ class Tools
 
     /**
      * Wrapper for escapeSQL function
-     * @param String $string The string to escape.
+     * @param string $string The string to escape.
      * @param boolean $wildcard Set to true to convert wildcard chars ('%').
      *                          False (default) will leave them unescaped.
      * @return String A SQL compatible version of the input string.
@@ -800,7 +800,7 @@ class Tools
 
     /**
      * Convenience wrapper for Db::getInstance()
-     * @param String $conn The name of the connection to retrieve
+     * @param string $conn The name of the connection to retrieve
      * @return Db Database connection instance
      */
     public static function &atkGetDb($conn = 'default', $reset = false, $mode = "r")
@@ -1366,7 +1366,7 @@ class Tools
      * and if you have a value linking back to it's self in one way or another,
      * you may spend a loooong time waiting on your application
      *
-     * @param Array $array The array that
+     * @param array $array The array that
      * @return bool Wether or not we found anything
      */
     public static function atk_value_in_array($array)
@@ -1394,8 +1394,8 @@ class Tools
      * and if you have a value linking back to it's self in one way or another,
      * you may spend a loooong time waiting on your application
      *
-     * @param String $needle The value which will be searched in the haystack
-     * @param Array $haystack Array with values
+     * @param string $needle The value which will be searched in the haystack
+     * @param array $haystack Array with values
      * @return Boolean True if needle exists in haystack
      */
     public static function atk_in_array_recursive($needle, $haystack)
@@ -1420,7 +1420,7 @@ class Tools
      * When there are predefined characters used this function will escape them
      * and returns right pattern.
      *
-     * @param String $pattern Raw string to be escaped
+     * @param string $pattern Raw string to be escaped
      * @return String Returns a pattern with the predefined pattern escaped
      */
     public static function escapeForRegex($pattern)
@@ -1459,9 +1459,9 @@ class Tools
      * htmlentities function, but falls back to atkGetCharset() instead of
      * PHP's default charset, if no charset is given.
      *
-     * @param String $string string to convert
+     * @param string $string string to convert
      * @param int $quote_style quote style (defaults to ENT_COMPAT)
-     * @param String $charset character set to use (default to atkGetCharset())
+     * @param string $charset character set to use (default to atkGetCharset())
      *
      * @return String encoded string
      */
@@ -1475,9 +1475,9 @@ class Tools
      * html_entity_decode function, but falls back to atkGetCharset() instead of
      * PHP's default charset, if no charset is given.
      *
-     * @param String $string string to convert
+     * @param string $string string to convert
      * @param int $quote_style quote style (defaults to ENT_COMPAT)
-     * @param String $charset character set to use (default to atkGetCharset())
+     * @param string $charset character set to use (default to atkGetCharset())
      *
      * @return String encoded string
      */
@@ -1781,7 +1781,7 @@ class Tools
      *
      * @static
      *
-     * @param String $str The "classname#method" to invoke.
+     * @param string $str The "classname#method" to invoke.
      * @param array $params Any params to be passed to the invoked method.
      *
      * @return boolean false if the call failed. In all other cases, it

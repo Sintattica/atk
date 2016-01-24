@@ -19,8 +19,8 @@ class Pop3Auth extends AuthInterface
 
     /**
      * Validate user.
-     * @param String $user the username
-     * @param String $passwd the password
+     * @param string $user the username
+     * @param string $passwd the password
      * @return int SecurityManager::AUTH_SUCCESS - Authentication succesful
      *             SecurityManager::AUTH_MISMATCH - Authentication failed, wrong
      *                             user/password combination

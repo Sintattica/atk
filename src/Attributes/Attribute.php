@@ -621,7 +621,7 @@ class Attribute
      *       field length. (Derived classes might have reasonable default
      *        values, but the standard Attribute doesn't.)
      *
-     * @param String $name Name of the attribute (unique within a node, and
+     * @param string $name Name of the attribute (unique within a node, and
      *                     for most attributes, corresponds to a field in
      *                     the database.
      * @param int $flags Flags for the attribute.
@@ -951,9 +951,9 @@ class Attribute
      * attribute's value.
      *
      * @param array $record The record that holds the value for this attribute.
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param String $mode The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
@@ -1005,8 +1005,8 @@ class Attribute
      * Renders the onchange code on the page.
      *
      * @access private
-     * @param String $fieldprefix The prefix to the field
-     * @param String $elementNr The number of the element when attribute contains multiple options
+     * @param string $fieldprefix The prefix to the field
+     * @param string $elementNr The number of the element when attribute contains multiple options
      */
     function _renderChangeHandler($fieldprefix, $elementNr = "")
     {
@@ -1069,7 +1069,7 @@ class Attribute
      * while still posting its value. (<input type="hidden">)
      *
      * @param array $record The record that holds the value for this attribute
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @return String A piece of htmlcode with hidden form elements that post
      *                this attribute's value without showing it.
@@ -1092,7 +1092,7 @@ class Attribute
     /**
      * Return the html identifier (id="") of the attribute. (unique within a
      * page)
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @return String the HTML identifier.
      */
@@ -1124,7 +1124,7 @@ class Attribute
      *
      * This is a framework method, it should never be called directly.
      *
-     * @param String $mode the mode ("view")
+     * @param string $mode the mode ("view")
      * @param array $arr pointer to the view array
      * @param array $defaults pointer to the default values array
      */
@@ -1180,11 +1180,11 @@ class Attribute
      *
      * This is a framework method, it should never be called directly.
      *
-     * @param String $mode the edit mode ("add" or "edit")
+     * @param string $mode the edit mode ("add" or "edit")
      * @param array $arr pointer to the edit array
      * @param array $defaults pointer to the default values array
      * @param array $error pointer to the error array
-     * @param String $fieldprefix the fieldprefix
+     * @param string $fieldprefix the fieldprefix
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
@@ -1335,7 +1335,7 @@ class Attribute
      * Framework method, it should not be necessary to call this method
      * directly.
      *
-     * @param String $mode The mode ("view")
+     * @param string $mode The mode ("view")
      * @param array $defaults The record holding the values for this attribute
      *
      * @return String the HTML code for this attribute that can be used in a
@@ -1413,9 +1413,9 @@ class Attribute
      * Framework method, it should not be necessary to call this method
      * directly.
      *
-     * @param String $mode The edit mode ("add" or "edit")
+     * @param string $mode The edit mode ("add" or "edit")
      * @param array $defaults The record holding the values for this attribute
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @return String the HTML code for this attribute that can be used in an
      *                editpage.
@@ -1474,9 +1474,9 @@ class Attribute
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param String $action the action that is being performed on the node
+     * @param string $action the action that is being performed on the node
      * @param array $arr reference to the the recordlist array
-     * @param String $fieldprefix the fieldprefix
+     * @param string $fieldprefix the fieldprefix
      * @param int $flags the recordlist flags
      * @param array $atksearch the current ATK search list (if not empty)
      * @param ColumnConfig $columnConfig Column configuration object
@@ -1528,10 +1528,10 @@ class Attribute
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param String $action the action that is being performed on the node
+     * @param string $action the action that is being performed on the node
      * @param array $arr reference to the the recordlist array
      * @param int $nr the current row number
-     * @param String $fieldprefix the fieldprefix
+     * @param string $fieldprefix the fieldprefix
      * @param int $flags the recordlist flags
      * @param boolean $edit editing?
      * @param DataGrid $grid data grid
@@ -1672,9 +1672,9 @@ class Attribute
      * @param Integer $nr The element number in the path.
      * @param array $path The remaining attribute path.
      * @param Query $query The query to which the condition will be added.
-     * @param String $ownerAlias The owner table alias to use.
+     * @param string $ownerAlias The owner table alias to use.
      * @param Mixed $value The value the user has entered in the searchbox.
-     * @param String $mode The searchmode to use.
+     * @param string $mode The searchmode to use.
      */
     function smartSearchCondition($id, $nr, $path, &$query, $ownerAlias, $value, $mode)
     {
@@ -1693,10 +1693,10 @@ class Attribute
      * query that will be used for performing the actual search.
      *
      * @param Query $query The query to which the condition will be added.
-     * @param String $table The name of the table in which this attribute
+     * @param string $table The name of the table in which this attribute
      *                      is stored
      * @param mixed $value The value the user has entered in the searchbox
-     * @param String $searchmode The searchmode to use. This can be any one
+     * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
      */
@@ -1714,10 +1714,10 @@ class Attribute
      * searchcondition() also immediately adds the search condition.
      *
      * @param Query $query The query object where the search condition should be placed on
-     * @param String $table The name of the table in which this attribute
+     * @param string $table The name of the table in which this attribute
      *                              is stored
      * @param mixed $value The value the user has entered in the searchbox
-     * @param String $searchmode The searchmode to use. This can be any one
+     * @param string $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
@@ -1754,7 +1754,7 @@ class Attribute
      * This will cause attributes that respect this
      * to use the attributes searchmode for that particulair attribute
      * instead of the general searchmode.
-     * @param String $searchmode The searchmode we want to set on the attribute
+     * @param string $searchmode The searchmode we want to set on the attribute
      * @return Attribute The instance of this Attribute
      */
     function setAttributeSearchmode($searchmode)
@@ -1770,7 +1770,7 @@ class Attribute
      * methods to prepare a value for display, unless $mode is "cvs".
      *
      * @param array $record The record that holds the value for this attribute
-     * @param String $mode The display mode ("view" for viewpages, or "list"
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                     for displaying in recordlists, "edit" for
      *                     displaying in editscreens, "add" for displaying in
      *                     add screens. "csv" for csv files. Applications can
@@ -1803,7 +1803,7 @@ class Attribute
      * @param array $record The record that holds the value for this
      *                      attribute. If an error occurs, the error will
      *                      be stored in the 'atkerror' field of the record.
-     * @param String $mode The mode for which should be validated ("add" or
+     * @param string $mode The mode for which should be validated ("add" or
      *                     "update")
      */
     function validate(&$record, $mode)
@@ -1837,8 +1837,8 @@ class Attribute
      * this method.
      *
      * @param Query $query The SQL query object
-     * @param String $tablename The name of the table of this attribute
-     * @param String $fieldaliasprefix Prefix to use in front of the alias
+     * @param string $tablename The name of the table of this attribute
+     * @param string $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
      * @param array $rec The record that contains the value of this attribute.
      * @param int $level Recursion level if relations point to eachother, an
@@ -1846,7 +1846,7 @@ class Attribute
      *                   eachothers data. The $level is used to detect this
      *                   loop. If overriden in a derived class, any subcall to
      *                   an addToQuery method should pass the $level+1.
-     * @param String $mode Indicates what kind of query is being processing:
+     * @param string $mode Indicates what kind of query is being processing:
      *                     This can be any action performed on a node (edit,
      *                     add, etc) Mind you that "add" and "update" are the
      *                     actions that store something in the database,
@@ -2329,7 +2329,7 @@ class Attribute
      * Framework method. It should not be necesary to call this method
      * directly.
      *
-     * @param String $mode The type of storage ("add" or "update")
+     * @param string $mode The type of storage ("add" or "update")
      *
      * @return int Bitmask containing information about storage requirements.
      *             Note that since it is a bitmask, multiple storage types
@@ -2391,7 +2391,7 @@ class Attribute
      * Framework method. It should not be necesary to call this method
      * directly.
      *
-     * @param String $mode The type of load (view,admin,edit etc)
+     * @param string $mode The type of load (view,admin,edit etc)
      *
      * @return int Bitmask containing information about load requirements.
      *             Note that since it is a bitmask, multiple load types
@@ -2465,7 +2465,7 @@ class Attribute
      * calls this method once for its default text input box. Derived classes
      * may call this for any input box or control they have.
      *
-     * @param String $id The unique HTML id of the form element to which
+     * @param string $id The unique HTML id of the form element to which
      *                   navigation is added.
      * @param int $navkeys The mask indicating which keys to support for
      *                     navigation.
@@ -2484,7 +2484,7 @@ class Attribute
     /**
      * Check if the attribute wants to be shown on a certain tab.
      *
-     * @param String $tab The name of the tab to check.
+     * @param string $tab The name of the tab to check.
      * @return boolean
      */
     function showOnTab($tab)
@@ -2517,7 +2517,7 @@ class Attribute
      * The default implementation returns the string unmodified, but derived
      * classes may override this method to alter that behaviour.
      *
-     * @param String $stringvalue The value to parse.
+     * @param string $stringvalue The value to parse.
      * @return mixed Internal value
      */
     function parseStringValue($stringvalue)
@@ -2568,7 +2568,7 @@ class Attribute
     /**
      * Retrieve the fieldname of the attribute in an atksearch form.
      *
-     * @param String $prefix The prefix
+     * @param string $prefix The prefix
      * @return String Name of the attribute in an atksearch
      */
     function getSearchFieldName($prefix)
@@ -2579,7 +2579,7 @@ class Attribute
     /**
      * Retrieve the searchmode name of the attribute in an atksearch form.
      *
-     * @param String $prefix The prefix
+     * @param string $prefix The prefix
      * @return String Name of the attribute in an atksearch
      */
     function getSearchModeFieldname($prefix)
@@ -2593,7 +2593,7 @@ class Attribute
      * @param ColumnConfig $columnConfig The config that contains options for
      *                                      extended sorting and grouping to a
      *                                      recordlist.
-     * @param String $fieldprefix The prefix of the attribute
+     * @param string $fieldprefix The prefix of the attribute
      * @param DataGrid $grid The grid that this attribute lives on.
      * @return String HTML
      */
@@ -2611,7 +2611,7 @@ class Attribute
      * @param ColumnConfig $columnConfig The config that contains options for
      *                                      extended sorting and grouping to a
      *                                      recordlist.
-     * @param String $fieldprefix The prefix of the attribute
+     * @param string $fieldprefix The prefix of the attribute
      * @param DataGrid $grid The grid that this attribute lives on.
      * @return String HTML
      */
@@ -2639,7 +2639,7 @@ class Attribute
      * @param ColumnConfig $columnConfig The config that contains options for
      *                                      extended sorting and grouping to a
      *                                      recordlist.
-     * @param String $fieldprefix The prefix of the attribute on HTML forms
+     * @param string $fieldprefix The prefix of the attribute on HTML forms
      * @param DataGrid $grid The grid that this attribute lives on.
      * @return String HTML
      */
@@ -2702,8 +2702,8 @@ class Attribute
      *
      * @param array $extra A list of attribute names to add to the order by
      *                     statement
-     * @param String $table The table name (if not given uses the owner node's table name)
-     * @param String $direction Sorting direction (ASC or DESC)
+     * @param string $table The table name (if not given uses the owner node's table name)
+     * @param string $direction Sorting direction (ASC or DESC)
      * @return String The ORDER BY statement for this attribute
      */
     function getOrderByStatement($extra = array(), $table = '', $direction = 'ASC')
@@ -2732,7 +2732,7 @@ class Attribute
     /**
      * Translate using the owner instance's module and type.
      *
-     * @param String $string The string to be translated
+     * @param string $string The string to be translated
      * @return String The translated string.
      */
     public function text($string, $fallback = true)
@@ -2777,8 +2777,8 @@ class Attribute
      * Handle a partial request for this attribute, different attributes
      * support different partials.
      *
-     * @param String $partial The name of the partial (i.e. refresh)
-     * @param String $mode The current add/edit mode
+     * @param string $partial The name of the partial (i.e. refresh)
+     * @param string $mode The current add/edit mode
      * @return String HTML Returns the result of the call to the partial
      *                     handling method
      */
@@ -2796,7 +2796,7 @@ class Attribute
     /**
      * Partial method to refresh  the add/edit field for this attribute.
      *
-     * @param String $mode add/edit mode
+     * @param string $mode add/edit mode
      * @return String HTML the output needed to refresh the attribute.
      */
     function partial_refresh($mode)
@@ -2930,7 +2930,7 @@ class Attribute
     /**
      * Add a CSS class for this attribute on an HTML form.
      *
-     * @param String $classname The name of a class.
+     * @param string $classname The name of a class.
      * @return Attribute The instance of this Attribute
      */
     function addCSSClass($classname)

@@ -273,7 +273,7 @@ class Wizard extends WizardBase
      * Determine the wizardPanel to load and let the wizardpanel
      * do some dispatching too.
      *
-     * @param String $atkWizardaction
+     * @param string $atkWizardaction
      */
     protected function wizardDispatch($atkWizardaction)
     {

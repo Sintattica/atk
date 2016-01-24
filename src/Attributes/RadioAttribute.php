@@ -41,7 +41,7 @@ class RadioAttribute extends ListAttribute
     /**
      * Constructor
      *
-     * @param String $name Name of the attribute
+     * @param string $name Name of the attribute
      * @param array $optionArray Array with options
      * @param array $valueArray Array with values. If you don't use this parameter,
      *                    values are assumed to be the same as the options.
@@ -98,9 +98,9 @@ class RadioAttribute extends ListAttribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      * @param array $record Array with fields
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param String $mode The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      * @return String piece of html code with radioboxes
      */
     function edit($record = "", $fieldprefix = "", $mode = "")

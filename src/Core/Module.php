@@ -37,7 +37,7 @@ class Module
     /**
      * Constructor. The module needs to register it's nodes
      * overhere, create its menuitems etc.
-     * @param String $name The name of the module.
+     * @param string $name The name of the module.
      */
     function __construct($name = "")
     {
@@ -81,7 +81,7 @@ class Module
 
     /**
      * Construct a new node. A module can override this method for it's own nodes.
-     * @param String $node the node type
+     * @param string $node the node type
      * @return Node new node object
      */
     function &newNode($node)
@@ -165,7 +165,7 @@ class Module
 
     /**
      * Gets the module of the node
-     * @param String $node the node name
+     * @param string $node the node name
      * @return String the node's module
      */
     public static function getNodeModule($node)
@@ -180,7 +180,7 @@ class Module
 
     /**
      * Gets the node type of a node string
-     * @param String $node the node name
+     * @param string $node the node name
      * @return String the node type
      */
     public static function getNodeType($node)
@@ -200,9 +200,9 @@ class Module
      * are cached (unless $reset is true); multiple requests for the same node will return exactly
      * the same node object.
      *
-     * @param String $node The node string
+     * @param string $node The node string
      * @param bool $init Initialize the node?
-     * @param String $cache_id The cache id in the node repository
+     * @param string $cache_id The cache id in the node repository
      * @param bool $reset Whether or not to reset the particular node in the repository
      * @return Node the node
      */
@@ -221,7 +221,7 @@ class Module
     /**
      * Retrieves all the registered atkModules
      *
-     * @return Array with modules
+     * @return array with modules
      */
     public static function atkGetModules()
     {
@@ -232,7 +232,7 @@ class Module
     /**
      * Retrieve the Module with the given name.
      *
-     * @param String $modname The name of the module
+     * @param string $modname The name of the module
      * @return Module An instance of the atkModule
      */
     public static function &atkGetModule($modname)
@@ -275,7 +275,7 @@ class Module
 
     /**
      * Construct a new node
-     * @param String $node the node type (module.node)
+     * @param string $node the node type (module.node)
      * @param bool $init initialize the node?
      * @return Node new node object
      */
@@ -308,7 +308,7 @@ class Module
 
     /**
      * Checks if a certain node exists.
-     * @param String $node the node type
+     * @param string $node the node type
      * @return bool node exists?
      */
     public static function atkNodeExists($node)
@@ -334,7 +334,7 @@ class Module
 
     /**
      * Return the physical directory of a module..
-     * @param String $module name of the module.
+     * @param string $module name of the module.
      * @return String The path to the module.
      */
     public static function moduleDir($module)
@@ -353,7 +353,7 @@ class Module
 
     /**
      * Check wether a module is installed
-     * @param String $module The modulename.
+     * @param string $module The modulename.
      * @return bool True if it is, false otherwise
      */
     public static function moduleExists($module)
@@ -365,8 +365,8 @@ class Module
 
     /**
      * Returns a registered node action handler.
-     * @param String $node the name of the node
-     * @param String $action the node action
+     * @param string $node the name of the node
+     * @param string $action the node action
      * @return ActionHandler functionname or object (is_subclass_of ActionHandler) or
      *         NULL if no handler exists for the specified action
      */
@@ -385,9 +385,9 @@ class Module
 
     /**
      * Registers a new node action handler.
-     * @param String $node the name of the node (* matches all)
-     * @param String $action the node action
-     * @param String /atkActionHandler $handler handler functionname or object (is_subclass_of atkActionHandler)
+     * @param string $node the name of the node (* matches all)
+     * @param string $action the node action
+     * @param string /atkActionHandler $handler handler functionname or object (is_subclass_of atkActionHandler)
      * @return bool true if there is no known handler
      */
     public static function atkRegisterNodeHandler($node, $action, $handler)
@@ -414,7 +414,7 @@ class Module
      * OLD setting (so you might reset it to the old value after you're
      * finished with the current node.
      *
-     * @param String $newValue the value of the readOptimizer. true turns the
+     * @param string $newValue the value of the readOptimizer. true turns the
      *                  optimizer on. Falls turns it off.
      * @return bool The old value of the optimizer setting, if a new
      *                 setting was passed OR
@@ -440,8 +440,8 @@ class Module
      * This method is used in the config.inc.php or config.modules.php file to
      * load the modules.
      *
-     * @param String $name The name of the module to load.
-     * @param String $path The path where the module is located (relative or
+     * @param string $name The name of the module to load.
+     * @param string $path The path where the module is located (relative or
      *                    absolute). If omitted, ATK assumes that the module is
      *                    installed in the default module dir (identified by
      *                    $config_module_path).

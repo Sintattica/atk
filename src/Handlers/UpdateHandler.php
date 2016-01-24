@@ -123,7 +123,7 @@ class Updatehandler extends ActionHandler
     /**
      * Get the record for updating
      *
-     * @return Array The record to update
+     * @return array The record to update
      */
     public function getRecord()
     {
@@ -338,7 +338,7 @@ class Updatehandler extends ActionHandler
     /**
      * Handle the dialog partial
      *
-     * @param String $mode The current mode
+     * @param string $mode The current mode
      */
     function partial_dialog($mode)
     {
@@ -358,7 +358,7 @@ class Updatehandler extends ActionHandler
     /**
      * Handle the update of a dialog.
      *
-     * @param String $attrRefreshUrl
+     * @param string $attrRefreshUrl
      */
     public function handleUpdate($attrRefreshUrl = null)
     {

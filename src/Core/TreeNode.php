@@ -45,7 +45,7 @@ class TreeNode extends Node
 
     /**
      * Constructor
-     * @param String $name Node name
+     * @param string $name Node name
      * @param int $flags Node flags
      */
     function __construct($name, $flags = 0)

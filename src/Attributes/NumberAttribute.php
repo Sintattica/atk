@@ -83,10 +83,10 @@ class NumberAttribute extends Attribute
      * Derived attributes may override this functionality to implement other
      * ordering statements using the given parameters.
      *
-     * @param Array $extra A list of attribute names to add to the order by
+     * @param array $extra A list of attribute names to add to the order by
      *                     statement
-     * @param String $table The table name (if not given uses the owner node's table name)
-     * @param String $direction Sorting direction (ASC or DESC)
+     * @param string $table The table name (if not given uses the owner node's table name)
+     * @param string $direction Sorting direction (ASC or DESC)
      * @return String The ORDER BY statement for this attribute
      */
     function getOrderByStatement($extra = '', $table = '', $direction = 'ASC')
@@ -117,7 +117,7 @@ class NumberAttribute extends Attribute
      * methods to prepare a value for display, unless $mode is "cvs".
      *
      * @param array $record The record that holds the value for this attribute
-     * @param String $mode The display mode ("view" for viewpages, or "list"
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                     for displaying in recordlists, "edit" for
      *                     displaying in editscreens, "add" for displaying in
      *                     add screens. "csv" for csv files. Applications can
@@ -141,7 +141,7 @@ class NumberAttribute extends Attribute
      * Otherwise the value will be corrupted by removeSeparators
      *
      * @param array $record The record that holds the value for this attribute
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @return String A piece of htmlcode with hidden form elements that post
      *                this attribute's value without showing it.
@@ -162,9 +162,9 @@ class NumberAttribute extends Attribute
 
     /**
      * convert a formatted number to a real number
-     * @param String $number The number that needs to be converted
-     * @param String $decimal_separator override decimal separator
-     * @param String $thousands_separator override thousands separator
+     * @param string $number The number that needs to be converted
+     * @param string $decimal_separator override decimal separator
+     * @param string $thousands_separator override thousands separator
      * @return String The converted number
      */
     function removeSeparators($number, $decimal_separator = "", $thousands_separator = "")
@@ -667,10 +667,10 @@ class NumberAttribute extends Attribute
      * searchcondition() also immediately adds the search condition.
      *
      * @param Query $query The query object where the search condition should be placed on
-     * @param String $table The name of the table in which this attribute
+     * @param string $table The name of the table in which this attribute
      *                              is stored
      * @param mixed $value The value the user has entered in the searchbox
-     * @param String $searchmode The searchmode to use. This can be any one
+     * @param string $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.

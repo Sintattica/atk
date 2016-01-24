@@ -116,7 +116,7 @@ class ActionHandler
      * instead let the partial method handle the action.
      *
      * @param Node $node The node on which the action should be performed.
-     * @param String $action The action that is being performed.
+     * @param string $action The action that is being performed.
      * @param array $postvars Any variables from the request
      *
      */
@@ -151,7 +151,7 @@ class ActionHandler
      * This is used by the atkAddHandler and atkEditHandler to
      * show the validation errors
      *
-     * @return Array The reject info
+     * @return array The reject info
      */
     function getRejectInfo()
     {
@@ -276,7 +276,7 @@ class ActionHandler
      * if present, or editPage($record, $mode) in the handler if the node has
      * no override.
      *
-     * @param String $methodname The name of the method to call.
+     * @param string $methodname The name of the method to call.
      * @return mixed The method returns the return value of the invoked
      *               method.
      */
@@ -458,7 +458,7 @@ class ActionHandler
     /**
      * Render message dialog contents.
      *
-     * @param String $message The message to render in a dialog
+     * @param string $message The message to render in a dialog
      * @return String The message dialog
      */
     function renderMessageDialog($message)

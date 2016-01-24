@@ -80,13 +80,13 @@ class OneToOneRelation extends Relation
      * $this->add(new atkOneToOneRelation("child", "mymod.childnode", "parent_id"));
      * </code>
      *
-     * @param String $name The unique name of the attribute. In slave mode,
+     * @param string $name The unique name of the attribute. In slave mode,
      *                     this corresponds to the foreign key field in the
      *                     database table.  (The name is also used as the section
      *                     heading.)
-     * @param String $destination the destination node (in module.nodename
+     * @param string $destination the destination node (in module.nodename
      *                            notation)
-     * @param String $refKey In master mode, this specifies the foreign key
+     * @param string $refKey In master mode, this specifies the foreign key
      *                       field from the destination node that points to
      *                       the master record. In slave mode, this parameter
      *                       should be empty.
@@ -107,7 +107,7 @@ class OneToOneRelation extends Relation
      * target record is displayed.
      *
      * @param array $record The record that holds the value for this attribute
-     * @param String $mode The display mode ("view" for viewpages, or "list"
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                     for displaying in recordlists)
      * @return String HTML String
      */
@@ -172,16 +172,16 @@ class OneToOneRelation extends Relation
      * handled by the store() method.
      *
      * @param Query $query The SQL query object
-     * @param String $tablename The name of the table of this attribute
-     * @param String $fieldaliasprefix Prefix to use in front of the alias
+     * @param string $tablename The name of the table of this attribute
+     * @param string $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
-     * @param Array $rec The record that contains the value of this attribute.
+     * @param array $rec The record that contains the value of this attribute.
      * @param int $level Recursion level if relations point to eachother, an
      *                   endless loop could occur if they keep loading
      *                   eachothers data. The $level is used to detect this
      *                   loop. If overriden in a derived class, any subcall to
      *                   an addToQuery method should pass the $level+1.
-     * @param String $mode Indicates what kind of query is being processing:
+     * @param string $mode Indicates what kind of query is being processing:
      *                     This can be any action performed on a node (edit,
      *                     add, etc) Mind you that "add" and "update" are the
      *                     actions that store something in the database,
@@ -235,7 +235,7 @@ class OneToOneRelation extends Relation
      *
      * @param Db $db The database used by the node.
      * @param array $record The master record
-     * @param String $mode The mode for loading (admin, select, copy, etc)
+     * @param string $mode The mode for loading (admin, select, copy, etc)
      *
      * @return array Recordset containing detailrecords, or NULL if no detail
      *               records are present. Note: when $mode is edit, this
@@ -403,7 +403,7 @@ class OneToOneRelation extends Relation
      * Framework method. It should not be necesary to call this method
      * directly.
      *
-     * @param String $mode The type of storage ("add" or "update")
+     * @param string $mode The type of storage ("add" or "update")
      *
      * @return int Bitmask containing information about storage requirements.
      *             self::POSTSTORE  when in master mode.
@@ -446,7 +446,7 @@ class OneToOneRelation extends Relation
      * Framework method. It should not be necesary to call this method
      * directly.
      *
-     * @param String $mode The type of load (view,admin,edit etc)
+     * @param string $mode The type of load (view,admin,edit etc)
      *
      * @return int Bitmask containing information about load requirements.
      *             self::POSTLOAD|self::ADDTOQUERY when self::AF_ONETOONE_LAZY is set.
@@ -530,7 +530,7 @@ class OneToOneRelation extends Relation
     /**
      * Gets the value to store for the onetoonerelation
      *
-     * @param Array &$record The record to get the value from
+     * @param array &$record The record to get the value from
      * @return mixed The value to store
      */
     function &_getStoreValue(&$record)
@@ -597,7 +597,7 @@ class OneToOneRelation extends Relation
      * while still posting its values. (<input type="hidden">)
      *
      * @param array $record The record that holds the value for this attribute
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @return String A piece of htmlcode with hidden form elements that post
      *                This attribute's value without showing it.
@@ -639,11 +639,11 @@ class OneToOneRelation extends Relation
      *
      * This is a framework method, it should never be called directly.
      *
-     * @param String $mode the edit mode ("add" or "edit")
+     * @param string $mode the edit mode ("add" or "edit")
      * @param array $arr pointer to the edit array
      * @param array $defaults pointer to the default values array
      * @param array $error pointer to the error array
-     * @param String $fieldprefix the fieldprefix
+     * @param string $fieldprefix the fieldprefix
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
@@ -774,7 +774,7 @@ class OneToOneRelation extends Relation
      *
      * This is a framework method, it should never be called directly.
      *
-     * @param String $mode the mode ("view")
+     * @param string $mode the mode ("view")
      * @param array $arr pointer to the view array
      * @param array $defaults pointer to the default values array
      */
@@ -862,7 +862,7 @@ class OneToOneRelation extends Relation
      * @param array $record The record that holds the value for this
      *                      attribute. If an error occurs, the error will
      *                      be stored in the 'atkerror' field of the record.
-     * @param String $mode The mode for which should be validated ("add" or
+     * @param string $mode The mode for which should be validated ("add" or
      *                     "update")
      */
     function validate(&$record, $mode)
@@ -916,7 +916,7 @@ class OneToOneRelation extends Relation
      * screen, so the attributes are seamlessly integrated but still on their
      * own tabs.
      *
-     * @param String $action The action for which additional tabs should be
+     * @param string $action The action for which additional tabs should be
      *                       loaded.
      * @return array The list of tabs to add to the screen.
      */
@@ -937,7 +937,7 @@ class OneToOneRelation extends Relation
     /**
      * Check if the attribute wants to be shown on a certain tab.
      *
-     * @param String $tab The name of the tab to check.
+     * @param string $tab The name of the tab to check.
      * @return boolean
      */
     function showOnTab($tab)
@@ -962,12 +962,12 @@ class OneToOneRelation extends Relation
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param String $action the action that is being performed on the node
+     * @param string $action the action that is being performed on the node
      * @param array $arr reference to the the recordlist array
-     * @param String $fieldprefix the fieldprefix
+     * @param string $fieldprefix the fieldprefix
      * @param int $flags the recordlist flags
      * @param array $atksearch the current ATK search list (if not empty)
-     * @param String $atkorderby the current ATK orderby string (if not empty)
+     * @param string $atkorderby the current ATK orderby string (if not empty)
      * @see Node::listArray
      */
     function addToListArrayHeader(
@@ -1013,10 +1013,10 @@ class OneToOneRelation extends Relation
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param String $action the action that is being performed on the node
+     * @param string $action the action that is being performed on the node
      * @param array $arr reference to the the recordlist array
      * @param int $nr the current row number
-     * @param String $fieldprefix the fieldprefix
+     * @param string $fieldprefix the fieldprefix
      * @param int $flags the recordlist flags
      * @see Node::listArray
      */
@@ -1070,10 +1070,10 @@ class OneToOneRelation extends Relation
      * searchcondition() also immediately adds the search condition.
      *
      * @param Query $query The query object where the search condition should be placed on
-     * @param String $table The name of the table in which this attribute
+     * @param string $table The name of the table in which this attribute
      *                              is stored
      * @param mixed $value The value the user has entered in the searchbox
-     * @param String $searchmode The searchmode to use. This can be any one
+     * @param string $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.

@@ -53,7 +53,7 @@ class Keyboard
      * Make a form element keyboard aware. Once added with this function, the
      * element will automatically respond to cursor key navigation.
      *
-     * @param String $id The HTML id of the form element for which keyboard
+     * @param string $id The HTML id of the form element for which keyboard
      *                   navigation is added.
      * @param int $navkeys A bitwise mask indicating which keys should be
      *                     supported for this element. Some elements, like
@@ -79,10 +79,10 @@ class Keyboard
      * Make a recordlist keyboard aware. Once added with this function, the
      * recordlist will automatically respond to keyboard navigation events.
      *
-     * @param String $id The unique id of the recordlist.
-     * @param String $highlight The color used to highlight rows that are
+     * @param string $id The unique id of the recordlist.
+     * @param string $highlight The color used to highlight rows that are
      *                          selected with cursorkeys.
-     * @param String $reccount The number of records in the list. The
+     * @param string $reccount The number of records in the list. The
      *                         handler needs this to be able to determine
      *                         when it's at the end of the list, so it
      *                         can wrap around when the cursor is moved
@@ -104,7 +104,7 @@ class Keyboard
      * by other atkKeyboard members, but can also be used to add a custom
      * keyboard handler to the page.
      *
-     * @param String $handlertype The name of the javascript class used for
+     * @param string $handlertype The name of the javascript class used for
      *                            keyboard traps.
      * @param array $params Any param you may want to pass to the handler.
      *                      The params you need to pass depend completely on

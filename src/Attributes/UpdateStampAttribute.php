@@ -22,7 +22,7 @@ class UpdateStampAttribute extends DateTimeAttribute
     /**
      * Constructor
      *
-     * @param String $name Name of the attribute (unique within a node, and
+     * @param string $name Name of the attribute (unique within a node, and
      *                     corresponds to the name of the datetime field
      *                     in the database where the stamp is stored.
      * @param int $flags Flags for the attribute.
@@ -52,7 +52,7 @@ class UpdateStampAttribute extends DateTimeAttribute
     /**
      * Override the initial value
      *
-     * @return Array
+     * @return array
      */
     function initialValue()
     {
@@ -64,7 +64,7 @@ class UpdateStampAttribute extends DateTimeAttribute
      * while still posting its value. (<input type="hidden">)
      *
      * @param array $record The record that holds the value for this attribute
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @return String A piece of htmlcode with hidden form elements that post
      *                This attribute's value without showing it.

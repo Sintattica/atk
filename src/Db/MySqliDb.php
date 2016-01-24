@@ -414,7 +414,7 @@ class MySqliDb extends MySqlDb
      * This function checks the database for a table with
      * the provide name
      *
-     * @param String $table the table to find
+     * @param string $table the table to find
      * @return boolean true if found, false if not found
      */
     function tableExists($table)

@@ -68,8 +68,8 @@ class CalculatorAttribute extends Attribute
     /**
      * Constructor
      *
-     * @param String $name Unique name of this attribute within the node.
-     * @param String $calculation The calculation to perform. Must be a valid php expression.
+     * @param string $name Unique name of this attribute within the node.
+     * @param string $calculation The calculation to perform. Must be a valid php expression.
      * @param int $flags Flags of the attribute.
      */
     function __construct($name, $calculation, $flags = 0)
@@ -120,7 +120,7 @@ class CalculatorAttribute extends Attribute
      *
      * @access public
      * @param array $record The record that holds the value for this attribute
-     * @param String $mode The display mode.
+     * @param string $mode The display mode.
      * @return String HTML String
      */
     function display($record, $mode = "")

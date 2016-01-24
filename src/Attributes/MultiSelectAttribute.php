@@ -63,7 +63,7 @@ class MultiSelectAttribute extends ListAttribute
      * while still posting its value. (<input type="hidden">)
      *
      * @param array $record The record that holds the value for this attribute
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @return String A piece of htmlcode with hidden form elements that post
      *                this attribute's value without showing it.
@@ -134,7 +134,7 @@ class MultiSelectAttribute extends ListAttribute
      * Returns a displayable string for this value, to be used in HTML pages.
      *
      * @param array $record The record that holds the value for this attribute
-     * @param String $mode The display mode ("view" for viewpages, or "list"
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                     for displaying in recordlists, "edit" for
      *                     displaying in editscreens, "add" for displaying in
      *                     add screens. "csv" for csv files. Applications can
@@ -155,9 +155,9 @@ class MultiSelectAttribute extends ListAttribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      * @param array $record Array with fields
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param String $mode The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      * @return string piece of html code with radioboxes
      */
     function edit($record = "", $fieldprefix = "", $mode = "")

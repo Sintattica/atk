@@ -1,9 +1,11 @@
 <?php namespace Sintattica\Atk\Relations;
 
+use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Core\Tools;
-
-
+use Sintattica\Atk\Utils\JSON;
+use ShuttleControl;
+use Sintattica\Atk\Utils\StringParser;
 
 
 /**
@@ -32,8 +34,8 @@ class ExtendableShuttleRelation extends ManyToManyRelation
 
     /**
      * Constructor
-     * @param String $name The name of the relation
-     * @param String $link The full name of the node that is used as
+     * @param string $name The name of the relation
+     * @param string $link The full name of the node that is used as
      *                     intermediairy node. The intermediairy node is
      *                     assumed to have 2 attributes that are named
      *                     after the nodes at both ends of the relation.
@@ -43,7 +45,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
      *                     named 'project' and one that is named 'activity'.
      *                     You can set your own keys by calling setLocalKey()
      *                     and setRemoteKey()
-     * @param String $destination The full name of the node that is the other
+     * @param string $destination The full name of the node that is the other
      *                            end of the relation.
      * @param int $flags Flags for the relation.
      */
@@ -57,7 +59,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     /**
      * Add control
      *
-     * @param atkShuttleControl $control
+     * @param ShuttleControl $control
      * @param string $section
      */
     public function addControl($control, $section)
@@ -84,6 +86,8 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         global $ATK_VARS;
         $redraw = false;
         $record = $this->getOwnerInstance()->updateRecord();
+
+
         $mode = $ATK_VARS["atkaction"];
         $prefix = $this->getOwnerInstance()->m_postvars['atkfieldprefix'];
 
@@ -214,9 +218,9 @@ class ExtendableShuttleRelation extends ManyToManyRelation
      * attribute's value.
      *
      * @param array $record The record that holds the value for this attribute.
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param String $mode The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
     public function edit($record, $fieldprefix = "", $mode = "")
@@ -225,7 +229,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         $mode == "add" ? "add" : "edit";
         $url = addslashes(Tools::partial_url($this->m_ownerInstance->atkNodeType(), $mode,
             "attribute." . $this->getHtmlId($fieldprefix) . ".selection", array("atkfieldprefix" => $fieldprefix)));
-        $this->addOnChangeHandler("shuttle_refresh('$url', '" . $this->getHtmlId($fieldprefix) . '[cselected][][' . $this->getRemoteKey() . ']' . "', '" . $prefix . $this->fieldName() . "[section]', el);");
+        $this->addOnChangeHandler("shuttle_refresh('$url', '" . $this->getHtmlId($fieldprefix) . '[cselected][][' . $this->getRemoteKey() . ']' . "', '" . $fieldprefix . $this->fieldName() . "[section]', el);");
         $this->_renderChangeHandler($fieldprefix);
 
         $filtersBySection = array();
@@ -380,10 +384,10 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     /**
      * Render the multiselect list control
      * @access private
-     * @param String $name The name of the list control
+     * @param string $name The name of the list control
      * @param array $recordset The list of records to render in the control
-     * @param String $opposite The name of the list control connected to this list control for shuttle actions
-     * @param String $prefix The prefix which is needed for determining the correct JS name
+     * @param string $opposite The name of the list control connected to this list control for shuttle actions
+     * @param string $prefix The prefix which is needed for determining the correct JS name
      * @param bool $isSelected Whether or not this is the selectbox with the selectedItems (needed for onchangecode)
      * @return String piece of html code
      */
@@ -397,7 +401,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
             $action = "add";
         }
 
-        $valName = $this->getHtmlId($fieldprefix) . '[selected][][' . $this->getRemoteKey() . ']';
+        $valName = $this->getHtmlId($prefix) . '[selected][][' . $this->getRemoteKey() . ']';
         $result = '<select class="shuttle_select" id="' . $name . '" name="' . $name . '" multiple size="10" onDblClick="shuttle_move(\'' . $name . '\', \'' . $opposite . '\',\'' . $action . '\',\'' . $valName . '\');' . $onchangecode . '">';
 
         $parser = null;
@@ -536,7 +540,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     /**
      * Get array with all selected fields
      * @param array $record The record with the currently selected fields
-     * @param String $mode for which mode we are rendering
+     * @param string $mode for which mode we are rendering
      * @return array selected records
      */
     public function getSelectedFields($record, $mode = 'add', $selectedFilter = '', $availableFilter = '')
@@ -551,7 +555,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     /**
      * Get array with all available fields (which are not already selected)
      * @param array $record The record with the currently selected fields
-     * @param String $mode for which mode we are rendering
+     * @param string $mode for which mode we are rendering
      * @return array available records
      */
     public function getAvailableFields($record, $mode = 'add', $availableFilter = '')

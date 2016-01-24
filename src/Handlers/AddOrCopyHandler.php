@@ -345,7 +345,7 @@ class AddOrCopyHandler extends ActionHandler
     /**
      * Creates a drop-down with copyable records.
      *
-     * @param Array $records Array with records
+     * @param array $records Array with records
      * @return string copyable records drop-down
      */
     function getCopyDropDown($records)
@@ -365,7 +365,7 @@ class AddOrCopyHandler extends ActionHandler
      * one-to-many relations he/she wants to include in the copy.
      *
      * @param Node $node The node to get the onetomany relations from
-     * @param String $prefix The field prefix
+     * @param string $prefix The field prefix
      * @param Integer $level The level of the includes
      */
     function getCopyIncludes($node, $prefix = '', $level = 0)

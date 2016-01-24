@@ -479,7 +479,7 @@ class Db
      * place the error in atkdebug and continue.
      * @access protected
      *
-     * @param String $message
+     * @param string $message
      */
     function halt($message = "")
     {
@@ -539,7 +539,7 @@ class Db
     /**
      * Connect to the database.
      *
-     * @param String $mode The mode to connect
+     * @param string $mode The mode to connect
      * @return int Connection status
      * @abstract
      */
@@ -651,7 +651,7 @@ class Db
      * If the query is a select query, the rows can be retrieved using the
      * next_record() method.
      *
-     * @param String $query The SQL query to execute
+     * @param string $query The SQL query to execute
      * @param int $offset Retrieve the results starting at the specified
      *                    record number. Pass -1 or 0 to start at the first
      *                    record.
@@ -679,8 +679,8 @@ class Db
     /**
      * Lock a table in the database.
      *
-     * @param String $table The name of the table to lock.
-     * @param String $mode The lock type.
+     * @param string $table The name of the table to lock.
+     * @param string $mode The lock type.
      * @return boolean True if succesful, false if not.
      * @abstract
      */
@@ -1031,7 +1031,7 @@ class Db
     /**
      * get SUBSTRING() equivalent for the current database.
      *
-     * @param String $fieldname The database fieldname
+     * @param string $fieldname The database fieldname
      * @param Integer $startat The position to start from
      * @param Integer $length The number of characters
      */
@@ -1045,8 +1045,8 @@ class Db
      * Each database driver should override this method to perform vendor
      * specific conversion.
      *
-     * @param String $fieldname The field to generate the to_char for.
-     * @param String $format Format specifier. The format is compatible with
+     * @param string $fieldname The field to generate the to_char for.
+     * @param string $format Format specifier. The format is compatible with
      *                       php's date() function (http://www.php.net/date)
      *                       The default is what's specified by
      *                       $config_date_to_char, or "Y-m-d" if not
@@ -1111,7 +1111,7 @@ class Db
      *
      * Note that currently, only the common specifiers Y, m, d, H, h, i and
      * s are supported.
-     * @param String $format Format specifier. The format is compatible with
+     * @param string $format Format specifier. The format is compatible with
      *                       php's date() function (http://www.php.net/date)
      * @return String Vendor specific format specifier.
      */
@@ -1127,7 +1127,7 @@ class Db
      *
      * TODO/FIXME: add format parameter. Current format is always yyyy-mm-dd hh:mi.
      *
-     * @param String $fieldname The field to generate the to_char for.
+     * @param string $fieldname The field to generate the to_char for.
      * @return String Piece of sql query that converts a datetime field to char
      *                for the current database
      */
@@ -1149,7 +1149,7 @@ class Db
     /**
      * escapes quotes for use in SQL: ' -> '' (and sometimes % -> %%)
      *
-     * @param String $string The string to escape
+     * @param string $string The string to escape
      * @param Bool $wildcard Use wildcards?
      * @return String The escaped SQL string
      */
@@ -1260,10 +1260,10 @@ class Db
      * database instance, depending on the configuration.
      *
      * @static
-     * @param String $conn The name of the connection as defined in the
+     * @param string $conn The name of the connection as defined in the
      *                     config.inc.php file (defaults to 'default')
      * @param Bool $reset Reset the instance to force the creation of a new instance
-     * @param String $mode The mode to connect with the database
+     * @param string $mode The mode to connect with the database
      * @return Db Instance of the database class.
      */
     static public function &getInstance($conn = "default", $reset = false, $mode = "rw")
@@ -1301,8 +1301,8 @@ class Db
     /**
      * (Re)Initialise a database driver with a connection
      *
-     * @param String $connectionName The connectionName
-     * @param String $mode The mode to connect with
+     * @param string $connectionName The connectionName
+     * @param string $mode The mode to connect with
      * @return Db
      */
     public function init($connectionName = 'default', $mode = 'r')

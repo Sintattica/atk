@@ -258,9 +258,9 @@ class ListAttribute extends Attribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      * @param array $record Array with fields
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param String $mode The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      * @return piece of html code with a checkbox
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
@@ -428,10 +428,10 @@ class ListAttribute extends Attribute
      * searchcondition() also immediately adds the search condition.
      *
      * @param Query $query The query object where the search condition should be placed on
-     * @param String $table The name of the table in which this attribute
+     * @param string $table The name of the table in which this attribute
      *                              is stored
      * @param mixed $value The value the user has entered in the searchbox
-     * @param String $searchmode The searchmode to use. This can be any one
+     * @param string $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
@@ -543,7 +543,7 @@ class ListAttribute extends Attribute
      * This implementation search for the value first in the valueArray, then in the optionArray
      * All other values are converted to the first of the valueArray
      *
-     * @param String $stringvalue The value to parse.
+     * @param string $stringvalue The value to parse.
      * @return Internal value (from valueArray)
      */
     function parseStringValue($stringvalue)

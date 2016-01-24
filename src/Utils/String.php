@@ -157,9 +157,9 @@ class String
      * configured charset instead of PHP's default charset, if no
      * charset is given.
      *
-     * @param String $str string to convert
+     * @param string $str string to convert
      * @param int $quote_style quote style (defaults to ENT_COMPAT)
-     * @param String $charset character set to use (default to Tools::atktext('charset', 'atk'))
+     * @param string $charset character set to use (default to Tools::atktext('charset', 'atk'))
      *
      * @return String encoded string
      */
@@ -182,9 +182,9 @@ class String
      * htmlentities function, but falls back to Tools::atkGetCharset() instead of
      * PHP's default charset, if no charset is given.
      *
-     * @param String $str string to convert
+     * @param string $str string to convert
      * @param int $quote_style quote style (defaults to ENT_COMPAT)
-     * @param String $charset character set to use (default to Tools::atkGetCharset())
+     * @param string $charset character set to use (default to Tools::atkGetCharset())
      *
      * @return String encoded string
      */

@@ -229,7 +229,7 @@ class ManyToOneRelation extends Relation
 
     /**
      * Constructor.
-     * @param String $name The name of the attribute. This is the name of the
+     * @param string $name The name of the attribute. This is the name of the
      *                     field that is the referential key to the
      *                     destination.
      *                     For relations with more than one field in the
@@ -237,7 +237,7 @@ class ManyToOneRelation extends Relation
      *                     referential key fields. The order of the fields
      *                     must match the order of the primary key attributes
      *                     in the destination node.
-     * @param String $destination The node we have a relationship with.
+     * @param string $destination The node we have a relationship with.
      * @param int $flags Flags for the relation
      */
     function __construct($name, $destination, $flags = 0)
@@ -647,7 +647,7 @@ class ManyToOneRelation extends Relation
      * Returns a displayable string for this value.
      *
      * @param array $record The record that holds the value for this attribute
-     * @param String $mode The display mode ("view" for viewpages, or "list"
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                     for displaying in recordlists, "edit" for
      *                     displaying in editscreens, "add" for displaying in
      *                     add screens. "csv" for csv files. Applications can
@@ -841,9 +841,9 @@ class ManyToOneRelation extends Relation
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      * @param array $record The record that holds the value for this attribute.
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param String $mode The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      * @return Piece of html code that can be used in a form to edit this
      */
     function edit($record, $fieldprefix = "", $mode = "edit")
@@ -996,8 +996,8 @@ class ManyToOneRelation extends Relation
 
     /**
      * Creates and returns the auto edit/view links
-     * @param String $id The field id
-     * @param String $filter Filter that we want to apply on the destination node
+     * @param string $id The field id
+     * @param string $filter Filter that we want to apply on the destination node
      * @return array              The HTML code for the autolink links
      */
     function getRelationAutolink($id, $filter)
@@ -1030,7 +1030,7 @@ class ManyToOneRelation extends Relation
      * while still posting its value. (<input type="hidden">)
      *
      * @param array $record The record that holds the value for this attribute
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @return String A piece of htmlcode with hidden form elements that post
      *                this attribute's value without showing it.
@@ -1083,9 +1083,9 @@ class ManyToOneRelation extends Relation
      * Framework method, it should not be necessary to call this method
      * directly.
      *
-     * @param String $mode The edit mode ("add" or "edit")
+     * @param string $mode The edit mode ("add" or "edit")
      * @param array $record The record holding the values for this attribute
-     * @param String $fieldprefix The fieldprefix to put in front of the name
+     * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @return String the HTML code for this attribute that can be used in an
      *                editpage.
@@ -1273,11 +1273,11 @@ class ManyToOneRelation extends Relation
      *
      * @param Integer $id The unique smart search criterium identifier.
      * @param Integer $nr The element number in the path.
-     * @param Array $path The remaining attribute path.
+     * @param array $path The remaining attribute path.
      * @param Query $query The query to which the condition will be added.
-     * @param String $ownerAlias The owner table alias to use.
+     * @param string $ownerAlias The owner table alias to use.
      * @param Mixed $value The value the user has entered in the searchbox.
-     * @param String $mode The searchmode to use.
+     * @param string $mode The searchmode to use.
      */
     function smartSearchCondition($id, $nr, $path, &$query, $ownerAlias, $value, $mode)
     {
@@ -1308,10 +1308,10 @@ class ManyToOneRelation extends Relation
      * searchcondition() also immediately adds the search condition.
      *
      * @param Query $query The query object where the search condition should be placed on
-     * @param String $table The name of the table in which this attribute
+     * @param string $table The name of the table in which this attribute
      *                              is stored
      * @param mixed $value The value the user has entered in the searchbox
-     * @param String $searchmode The searchmode to use. This can be any one
+     * @param string $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      * @param string $fieldaliasprefix The prefix for the field
@@ -1383,16 +1383,16 @@ class ManyToOneRelation extends Relation
      * so the attribute can 'hook' itself into the query.
      *
      * @param Query $query The SQL query object
-     * @param String $tablename The name of the table of this attribute
-     * @param String $fieldaliasprefix Prefix to use in front of the alias
+     * @param string $tablename The name of the table of this attribute
+     * @param string $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
-     * @param Array $rec The record that contains the value of this attribute.
+     * @param array $rec The record that contains the value of this attribute.
      * @param int $level Recursion level if relations point to eachother, an
      *                   endless loop could occur if they keep loading
      *                   eachothers data. The $level is used to detect this
      *                   loop. If overriden in a derived class, any subcall to
      *                   an addToQuery method should pass the $level+1.
-     * @param String $mode Indicates what kind of query is being processing:
+     * @param string $mode Indicates what kind of query is being processing:
      *                     This can be any action performed on a node (edit,
      *                     add, etc) Mind you that "add" and "update" are the
      *                     actions that store something in the database,
@@ -1436,7 +1436,7 @@ class ManyToOneRelation extends Relation
      *
      * @param Db $db The database used by the node.
      * @param array $record The master record
-     * @param String $mode The mode for loading (admin, select, copy, etc)
+     * @param string $mode The mode for loading (admin, select, copy, etc)
      *
      * @return array Recordset containing detailrecords, or NULL if no detail
      *               records are present. Note: when $mode is edit, this
@@ -1461,7 +1461,7 @@ class ManyToOneRelation extends Relation
      * Framework method. It should not be necesary to call this method
      * directly.
      *
-     * @param String $mode The type of load (view,admin,edit etc)
+     * @param string $mode The type of load (view,admin,edit etc)
      *
      * @return int Bitmask containing information about load requirements.
      *             self::POSTLOAD|self::ADDTOQUERY when self::AF_ONETOONE_LAZY is set.
@@ -1593,7 +1593,7 @@ class ManyToOneRelation extends Relation
      *
      * @param array $record The record
      * @param string $mode The mode we're in
-     * @return Array with the selected record
+     * @return array with the selected record
      */
     function _getSelectedRecord($record = array(), $mode = "")
     {
@@ -1610,7 +1610,7 @@ class ManyToOneRelation extends Relation
      *
      * @param array $record The record
      * @param string $mode The mode we're in
-     * @return Array with the selected record
+     * @return array with the selected record
      */
     function getSelectedRecord($record = array(), $mode = "")
     {
@@ -1634,7 +1634,7 @@ class ManyToOneRelation extends Relation
      *
      * @param array $record The record
      * @param string $mode The mode we're in
-     * @return Array with the selectable records
+     * @return array with the selectable records
      */
     function _getSelectableRecords($record = array(), $mode = "")
     {
@@ -1750,7 +1750,7 @@ class ManyToOneRelation extends Relation
      *
      * @param array $record The record
      * @param string $mode The mode we're in
-     * @return Array with the selectable records
+     * @return array with the selectable records
      */
     function getSelectableRecords($record = array(), $mode = "")
     {
@@ -1772,8 +1772,8 @@ class ManyToOneRelation extends Relation
      * owner node with the parent node.
      *
      * @param Query $query The query object
-     * @param String $tablename The tablename on which to join
-     * @param String $fieldalias The fieldalias
+     * @param string $tablename The tablename on which to join
+     * @param string $fieldalias The fieldalias
      * @return String SQL string for joining the owner with the destination.
      *                Returns false when impossible (f.e. attrib is not a relation).
      */
@@ -1826,11 +1826,11 @@ class ManyToOneRelation extends Relation
      *
      * This is a framework method, it should never be called directly.
      *
-     * @param String $mode the edit mode ("add" or "edit")
+     * @param string $mode the edit mode ("add" or "edit")
      * @param array $arr pointer to the edit array
      * @param array $defaults pointer to the default values array
      * @param array $error pointer to the error array
-     * @param String $fieldprefix the fieldprefix
+     * @param string $fieldprefix the fieldprefix
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
@@ -1850,10 +1850,10 @@ class ManyToOneRelation extends Relation
     /**
      * Retrieves the ORDER BY statement for the relation.
      *
-     * @param Array $extra A list of attribute names to add to the order by
+     * @param array $extra A list of attribute names to add to the order by
      *                     statement
-     * @param String $table The table name (if not given uses the owner node's table name)
-     * @param String $direction Sorting direction (ASC or DESC)
+     * @param string $table The table name (if not given uses the owner node's table name)
+     * @param string $direction Sorting direction (ASC or DESC)
      * @return String The ORDER BY statement for this attribute
      */
     function getOrderByStatement($extra = '', $table = '', $direction = 'ASC')
@@ -1928,9 +1928,9 @@ class ManyToOneRelation extends Relation
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param String $action the action that is being performed on the node
+     * @param string $action the action that is being performed on the node
      * @param array $arr reference to the the recordlist array
-     * @param String $fieldprefix the fieldprefix
+     * @param string $fieldprefix the fieldprefix
      * @param int $flags the recordlist flags
      * @param array $atksearch the current ATK search list (if not empty)
      * @param ColumnConfig $columnConfig Column configuration object
@@ -1980,9 +1980,9 @@ class ManyToOneRelation extends Relation
      * Framework method. It should not be necessary to call this method directly.
      *
      * @param string $column child column (null for this attribute, * for this attribute and all childs)
-     * @param String $action the action that is being performed on the node
+     * @param string $action the action that is being performed on the node
      * @param array $arr reference to the the recordlist array
-     * @param String $fieldprefix the fieldprefix
+     * @param string $fieldprefix the fieldprefix
      * @param int $flags the recordlist flags
      * @param array $atksearch the current ATK search list (if not empty)
      * @param string $atkorderby order by
@@ -2041,10 +2041,10 @@ class ManyToOneRelation extends Relation
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param String $action the action that is being performed on the node
+     * @param string $action the action that is being performed on the node
      * @param array $arr reference to the the recordlist array
      * @param int $nr the current row number
-     * @param String $fieldprefix the fieldprefix
+     * @param string $fieldprefix the fieldprefix
      * @param int $flags the recordlist flags
      * @param boolean $edit editing?
      * @param DataGrid $grid data grid
@@ -2088,10 +2088,10 @@ class ManyToOneRelation extends Relation
      * Adds the child attribute / field to the list row.
      *
      * @param string $column child attribute name
-     * @param String $action the action that is being performed on the node
+     * @param string $action the action that is being performed on the node
      * @param array $arr reference to the the recordlist array
      * @param int $nr the current row number
-     * @param String $fieldprefix the fieldprefix
+     * @param string $fieldprefix the fieldprefix
      * @param int $flags the recordlist flags
      * @param boolean $edit editing?
      * @param DataGrid $grid data grid
@@ -2360,7 +2360,7 @@ class ManyToOneRelation extends Relation
      * Creates a search filter with the given search value on the given
      * descriptor fields
      *
-     * @param String $searchvalue A searchstring
+     * @param string $searchvalue A searchstring
      * @return String a search string (WHERE clause)
      */
     function createSearchFilter($searchvalue)
