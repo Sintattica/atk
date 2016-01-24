@@ -1,4 +1,10 @@
 <?php namespace Sintattica\Atk\Listeners;
+
+use Sintattica\Atk\Utils\TriggerListener;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Attributes\Attribute;
+
 /**
  * This file is part of the ATK Framework distribution.
  * Detailed copyright and licensing information can be found
@@ -58,8 +64,6 @@ class RecycleBin extends TriggerListener
      */
     public function __construct($options = array())
     {
-        parent::__construct(array("delete"));
-
         $this->_options = $options;
     }
 
@@ -80,6 +84,7 @@ class RecycleBin extends TriggerListener
         } else {
 
             $node = clone($this->m_node);
+
 
             $pkFields = $node->m_primaryKey;
             foreach ($pkFields as $fieldName) {
