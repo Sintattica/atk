@@ -2953,18 +2953,12 @@ class Node
      */
     public function redirect($location = "", $recordOrExit = array(), $exit = false, $levelskip = 1)
     {
-        global $g_returnurl;
-
         Tools::atkdebug("node::redirect()");
 
         $record = $recordOrExit;
         if (is_bool($recordOrExit)) {
             $record = array();
             $exit = $recordOrExit;
-        }
-
-        if ($g_returnurl != "") {
-            $location = $g_returnurl;
         }
 
         if ($location == "") {
