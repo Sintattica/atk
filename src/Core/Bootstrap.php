@@ -168,15 +168,6 @@ class Bootstrap
     {
         global $atklevel, $atkprevlevel, $atkstackid;
 
-        if (SessionManager::atksession_init()) {
-            // backwardscompatibility hacks. g_sessionData and g_sessionData are obsolete actually.
-            // You can use $session = &SessionManager::getSession() now, and you'll have a
-            // session enabled, multi-app array in which you can store whatever you like.
-            // There are old applications however that still use $g_sessionData, so I'll
-            // leave it in place for now.
-            $GLOBALS['g_sessionData'] = &$_SESSION[Config::getGlobal('identifier')];
-        }
-
         if (isset($_REQUEST["atklevel"])) {
             $atklevel = trim($_REQUEST["atklevel"]);
         }

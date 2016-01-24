@@ -62,7 +62,7 @@ class SessionManager
      *                          performance impact, so scripts not using
      *                          the stack should pass false here.
      */
-    public function SessionManager($namespace, $usestack = true)
+    public function __construct($namespace, $usestack = true)
     {
         $this->m_namespace = $namespace;
         $this->m_usestack = $usestack;
@@ -1043,6 +1043,7 @@ class SessionManager
         return $g_sessionManager;
     }
 
+
     /**
      * Initializes the sessionmanager.
      *
@@ -1060,13 +1061,54 @@ class SessionManager
      *                          pages etc). This comes with a slight
      *                          performance impact, so scripts not using
      *                          the stack should pass false here.
+     * @return bool
      */
-    static public function atksession($namespace = "default", $usestack = true)
+    public function start($namespace = "default", $usestack = true)
     {
-        global $ATK_VARS, $g_sessionManager, $atkprevlevel;
+        global $g_sessionManager, $ATK_VARS, $atkprevlevel;
 
         $g_sessionManager = new SessionManager($namespace, $usestack);
 
+        if (php_sapi_name() == 'cli') {
+            return false; // command-line
+        }
+
+        //session init
+        $cookie_params = session_get_cookie_params();
+        $cookiepath = Config::getGlobal("application_root");
+        $cookiedomain = (Config::getGlobal("cookiedomain") != "") ? Config::getGlobal("cookiedomain")
+            : null;
+        session_set_cookie_params($cookie_params["lifetime"], $cookiepath, $cookiedomain);
+
+        // set cache expire (if function exists, or show upgrade hint if not)
+        if (function_exists("session_cache_expire")) {
+            session_cache_expire(Config::getGlobal("session_cache_expire"));
+        } else {
+            Tools::atkdebug("session_cache_expire function does not exist, please upgrade to the latest stable php version (at least 4.2.x)",
+                Tools::DEBUG_WARNING);
+        }
+
+        // set the cache limiter (used for caching)
+        session_cache_limiter(Config::getGlobal("session_cache_limiter"));
+
+        // If somehow the sessionid is unclean (searchengine bots have been known to mangle sessionids)
+        // we don't have a session...
+        if (SessionManager::isValidSessionId()) {
+            $sessionname = Config::getGlobal("session_name");
+            if (!$sessionname) {
+                $sessionname = Config::getGlobal('identifier');
+            }
+            session_name($sessionname);
+            session_start();
+
+            $GLOBALS['g_sessionData'] = &$_SESSION[Config::getGlobal('identifier')];
+        } else {
+            Tools::atkwarning("Not a valid session!");
+            return false;
+        }
+
+
+        //decode data
         Tools::atkDataDecode($_REQUEST);
         $ATK_VARS = array_merge($_GET, $_POST);
         Tools::atkDataDecode($ATK_VARS);
@@ -1074,7 +1116,7 @@ class SessionManager
             $ATK_VARS = $ATK_VARS[$ATK_VARS['atkfieldprefix']];
         }
 
-        $g_sessionManager->session_read($ATK_VARS);
+        $this->session_read($ATK_VARS);
 
         // Escape check
         if (isset($_REQUEST["atkescape"]) && $_REQUEST["atkescape"] != "") {
@@ -1097,7 +1139,10 @@ class SessionManager
                 }
             }
         }
+
+        return true;
     }
+
 
     /**
      * Checks wether or not the sessionid that was passed along is valid
@@ -1176,51 +1221,6 @@ class SessionManager
         }
         return $atkprevlevel;
     }
-
-
-    /**
-     * Initialize and start a PHP session.
-     * Without this smart debugging and the securitymanager will not function correctly.
-     */
-    static public function atksession_init()
-    {
-        if (php_sapi_name() == 'cli') {
-            return false; // command-line
-        }
-
-        $cookie_params = session_get_cookie_params();
-        $cookiepath = Config::getGlobal("application_root");
-        $cookiedomain = (Config::getGlobal("cookiedomain") != "") ? Config::getGlobal("cookiedomain")
-            : null;
-        session_set_cookie_params($cookie_params["lifetime"], $cookiepath, $cookiedomain);
-
-        // set cache expire (if function exists, or show upgrade hint if not)
-        if (function_exists("session_cache_expire")) {
-            session_cache_expire(Config::getGlobal("session_cache_expire"));
-        } else {
-            Tools::atkdebug("session_cache_expire function does not exist, please upgrade to the latest stable php version (at least 4.2.x)",
-                Tools::DEBUG_WARNING);
-        }
-
-        // set the cache limiter (used for caching)
-        session_cache_limiter(Config::getGlobal("session_cache_limiter"));
-
-        // If somehow the sessionid is unclean (searchengine bots have been known to mangle sessionids)
-        // we don't have a session...
-        if (SessionManager::isValidSessionId()) {
-            $sessionname = Config::getGlobal("session_name");
-            if (!$sessionname) {
-                $sessionname = Config::getGlobal('identifier');
-            }
-            session_name($sessionname);
-            session_start();
-            return true;
-        } else {
-            Tools::atkwarning("Not a valid session!");
-        }
-        return false;
-    }
-
 }
 
 
