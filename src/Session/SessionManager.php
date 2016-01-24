@@ -7,6 +7,7 @@ use Sintattica\Atk\Ui\Output;
 use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Core\Controller;
+use Sintattica\Atk\Utils\Debugger;
 
 /**
  * The atk session manager.
@@ -135,22 +136,16 @@ class SessionManager
 
         // Escape check
         if (isset($_REQUEST["atkescape"]) && $_REQUEST["atkescape"] != "") {
-            Node::redirect(Tools::atkurldecode($_REQUEST["atkescape"]));
-            Output::getInstance()->outputFlush();
-            exit;
+            Tools::redirect(Tools::atkurldecode($_REQUEST["atkescape"]));
         } // Nested URL check
         else {
             if (isset($_REQUEST["atknested"]) && $_REQUEST["atknested"] != "") {
-                Node::redirect($this->sessionUrl($_REQUEST["atknested"], SessionManager::SESSION_NESTED));
-                Output::getInstance()->outputFlush();
-                exit;
+                Tools::redirect($this->sessionUrl($_REQUEST["atknested"], SessionManager::SESSION_NESTED));
             } // Back check
             else {
                 if (isset($ATK_VARS["atkback"]) && $ATK_VARS["atkback"] != "") {
                     // When we go back, we go one level deeper than the level we came from.
-                    Node::redirect($this->sessionUrl(Tools::atkSelf() . "?atklevel=" . ($this->atkprevlevel - 1)));
-                    Output::getInstance()->outputFlush();
-                    exit;
+                    Tools::redirect($this->sessionUrl(Tools::atkSelf() . "?atklevel=" . ($this->atkprevlevel - 1)));
                 }
             }
         }

@@ -1839,6 +1839,39 @@ class Tools
         }
     }
 
+    static public function redirect($location, $exit = true){
+        // The actual redirect.
+        if (Config::getGlobal("debug") >= 2) {
+            $debugger = Debugger::getInstance();
+            $debugger->setRedirectUrl($location);
+            Tools::atkdebug('Non-debug version would have redirected to <a href="' . $location . '">' . $location . '</a>');
+            if ($exit) {
+                $output = Output::getInstance();
+                $output->outputFlush();
+                exit();
+            }
+        } else {
+            Tools::atkdebug('redirecting to: ' . $location);
+
+            if (substr($location, -1) == "&") {
+                $location = substr($location, 0, -1);
+            }
+            if (substr($location, -1) == "?") {
+                $location = substr($location, 0, -1);
+            }
+
+            global $g_error_msg;
+            if (count($g_error_msg) > 0) {
+                Tools::mailreport();
+            }
+
+            header('Location: ' . $location);
+            if ($exit) {
+                exit();
+            }
+        }
+    }
+
     /**
      * Create a new menu item
      *
