@@ -360,7 +360,6 @@ function atkGetTrace($format = "html")
                         else {
                             if (is_object($value))
                                 $valArr[] = sprintf("%s=Object(%s)", $name, get_class($value));
-                            /* AGX: manage non object situations */
                             else if (is_array($value))
                                 $valArr[] = sprintf("%s=Array(%s)", $name, count($value));
                             else
@@ -1019,7 +1018,6 @@ function atkTriggerError(&$record, $attrib, $error, $message = '')
             $message = $attrib[0]->text($error);
         }
     } else {
-        /* AGX: manage non object situations */
         if (is_object($attrib)) {
             $attribName = $attrib->fieldName();
             $label = $attrib->label($record);

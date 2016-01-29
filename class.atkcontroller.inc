@@ -509,7 +509,6 @@ class atkController
 
 
         } elseif ($mode == "add") {
-            /* AGX: ported patch from 3thy party to allow both flags to coexist */
             $defaultButtonSet = false;
             if ($node->hasFlag(NF_EDITAFTERADD) === true){
                 if($node->allowed('edit')){
