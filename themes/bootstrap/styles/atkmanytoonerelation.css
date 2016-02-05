@@ -15,7 +15,7 @@ div.atkmanytoonerelation_result {
     padding: 0px;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
-    background-color: Menu;
+    /*background-color: Menu;*/
     z-index: 1000;
 }
 
@@ -50,8 +50,8 @@ div.atkmanytoonerelation_result li {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 11px;
     line-height: 13px;
-    background-color: Menu;
-    color: MenuText;
+    background-color: #ededed; /*Menu*/
+    /*color: MenuText;*/
 }
 
 div.atkmanytoonerelation_result {
