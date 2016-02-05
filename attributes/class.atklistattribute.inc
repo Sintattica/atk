@@ -408,8 +408,10 @@ class atkListAttribute extends atkAttribute
         $values = $this->getValues($record);
         $result = '<select class="form-control"';
         if ($extended || $this->getMultipleInSimpleSearch()) {
-            $cnt = count($values) + ((!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_LIST_NO_NULL_ITEM)) ? 2 : 1);
-            $result .= ' multiple size="' . min(5, $cnt) . '"';
+            if (count($values) > 2) {
+                $cnt = count($values) + ((!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_LIST_NO_NULL_ITEM)) ? 2 : 1);
+                $result .= ' multiple size="' . min(5, $cnt) . '"';
+            }
         }
 
         // if we use autosearch, register an onchange event that submits the grid
