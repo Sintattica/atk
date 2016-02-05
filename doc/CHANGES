@@ -30,6 +30,7 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
+* Removed CSS system colors [luca,giorgio]
 * Fixed search in atkNumberAttribute [luca]
 + Added atkSmartMenu responsive menu style for non-bootstrap themes based on the smartmenus plugin [giorgio,luca]
 * Fixed bootstrap layout when navbar expands to more than one line [giorgio]
