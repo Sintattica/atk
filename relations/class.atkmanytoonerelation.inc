@@ -54,6 +54,12 @@ define("AF_MANYTOONE_LAZY", AF_SPECIFIC_4);
  * Add a default null option to obligatory relations
  */
 define("AF_MANYTOONE_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_5);
+/**
+ * In dropdown search -
+ * TRUE don't split string on spaces do search
+ * NULL or FALSE split and do OR search (default action)
+ */
+define("AF_DONT_SPLIT", AF_SPECIFIC_6);
 
 /**
  * @internal include base class
@@ -2230,7 +2236,12 @@ class atkManyToOneRelation extends atkRelation
         else
             $searchfields = $this->m_autocomplete_searchfields;
 
-        $parts = preg_split('/\s+/', $searchvalue);
+		if ($this->hasFlag(AF_DONT_SPLIT)) {
+			$parts = array($searchvalue);
+		}
+		else {
+			$parts = preg_split('/\s+/', $searchvalue);
+		}
 
         $mainFilter = array();
         foreach ($parts as $part) {
