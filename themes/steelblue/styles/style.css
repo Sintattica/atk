@@ -168,10 +168,13 @@ ul, ol, li
 {
     margin: 0px;
     padding: 0px;
-    list-style-position: inside;
+    /*list-style-position: inside;*/
 }
 
-
+ul
+{
+    padding-left: 15px;
+}
 
 /* BOX */
 /* ------------------------------------------------------------------ */

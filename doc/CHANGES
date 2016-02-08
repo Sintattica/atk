@@ -15,20 +15,16 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
-* Fixed search in atkNumberAttribute [luca]
-+ Added atkSmartMenu responsive menu style for non-bootstrap themes based on the smartmenus plugin [giorgio,luca]
-* Fixed bootstrap layout when navbar expands to more than one line [giorgio]
-* Fixed add filter setting in atkOneToManyRelation [luca]
-* fetchMeta and maxlength in atkTextAttribute [luca]
-* Added setTrailingZeros function in atkNumberAttribute [luca]
-* Added search by month and year (m/yyyy) in atkDateAttribute [giorgio]
-* Fixed handling of readonly/hidden atkManyToOneRelation in edit mode [luca]
-* Fixed _addEmptyListOption in atkListAttribute [luca]
-* Added searching by year in atkDateAttribute [luca]
 
 
 Changes in MASTER (WIP)
 ------------------------
+
+
+
+Changes in ATK 8.2.3 (2016-02-05)
+---------------------------------
+* Removed CSS system colors [luca,giorgio]
 * Fixed search in atkNumberAttribute [luca]
 + Added atkSmartMenu responsive menu style for non-bootstrap themes based on the smartmenus plugin [giorgio,luca]
 * Fixed bootstrap layout when navbar expands to more than one line [giorgio]

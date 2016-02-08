@@ -559,8 +559,9 @@ class atkEditHandler extends atkViewEditBase
                 }
             }
             if (count($pk_err_attrib) > 0) { // Make primary key error message
+                $pk_err_msg = '';
                 for ($i = 0; $i < count($pk_err_attrib); $i++) {
-                    $pk_err_msg .= atktext($pk_err_attrib[$i], $node->m_module);
+                    $pk_err_msg .= atktext($pk_err_attrib[$i], $node->m_module, $node->m_type);
                     if (($i + 1) < count($pk_err_attrib))
                         $pk_err_msg .= ", ";
                 }
