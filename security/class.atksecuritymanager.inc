@@ -428,6 +428,23 @@ class atkSecurityManager
             }
         }
 
+        // NOTIFY SECURITY LISTENERS
+		// Output user agent data so we can use Fail2Ban to block brute force attack
+        $ip = filter_input(INPUT_SERVER, 'REMOTE_ADDR', FILTER_VALIDATE_IP);
+        $user = filter_var($auth_user, FILTER_SANITIZE_STRING);
+        $web = filter_input(INPUT_SERVER, 'HTTP_HOST', FILTER_SANITIZE_STRING);
+        $ua = filter_input(INPUT_SERVER, 'HTTP_USER_AGENT');
+        if ($response == AUTH_SUCCESS) {
+            $this->log(1, 'successfull Login "' . $user . '" from "' . $ip . '" for "' . $web . '"');
+            $this->notifyListeners("successfullLogin", $auth_user);
+        } else {
+            // Skip if Username is empty (when user press CTRL+R or reload in the browser)
+            if ($user != '') {
+                $this->log(1, 'failed Login "' . $user . '" from "' . $ip . '" for "' . $web . '" with "' . $ua . '"');
+                $this->notifyListeners("failedLogin", $auth_user);
+            }
+        }
+
         // if there was an error, drop out.
         if ($this->m_fatalError != "") {
             return false;
