@@ -349,8 +349,9 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
      */
     protected function _applyPostedSearchMethodToQuery(atkQuery $query)
     {
-        if (isset($this->m_postvars['atksearchmethod'])) {
-            $query->setSearchMethod($this->m_postvars['atksearchmethod']);
+        // fix missing _getNode() since $this does noe have any m_postvars method itself
+        if (isset($this->_getNode()->m_postvars['atksearchmethod'])) {
+            $query->setSearchMethod($this->_getNode()->m_postvars['atksearchmethod']);
         }
     }
 
