@@ -23,7 +23,7 @@ class atkCKAttribute extends atkTextAttribute
     /**
      * @var array CKEditor configuration (default)
      */
-    private $ckOptions = [
+    protected $ckOptions = [
         // the toolbar groups arrangement
         'toolbarGroups' => [
 		    ['name' => 'clipboard', 'groups' => [ 'clipboard', 'undo', 'document']],
