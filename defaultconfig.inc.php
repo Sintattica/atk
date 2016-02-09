@@ -309,6 +309,14 @@ $config_logging = 0;
 $config_logfile = "/tmp/atk-security.log";
 
 /**
+ * @var string  - name of security listener name in ATK import format
+ * or
+ * @var array   - array of security listener names
+ */
+//$config_security_listeners = "atk.security.atksecuritylistener";
+
+
+/**
  * Password Restrictions if required
  *
  * 0 => ignore restriction

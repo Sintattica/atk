@@ -354,7 +354,7 @@ class atkAttributeEditHandler extends atkActionHandler
             $values[] = $attribute->fieldName();
         }
 
-        $list = &new atkListAttribute('attributename', $options, $values);
+        $list = new atkListAttribute('attributename', $options, $values);
         $list->addFlag(AF_LIST_NO_NULL_ITEM);
         $list->m_ownerInstance = &$this->m_node;
         $list->addOnChangeHandler($this->onChange());
