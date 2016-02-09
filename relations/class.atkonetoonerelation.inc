@@ -1166,6 +1166,94 @@ class atkOneToOneRelation extends atkRelation
         return NULL;
     }
 
-}
+	/* AGX */
+  /**
+   * Retrieves the ORDER BY statement for the relation.
+   *
+   * @param Array $extra A list of attribute names to add to the order by
+   *                     statement
+   * @param String $table The table name (if not given uses the owner node's table name)
+   * @param String $direction Sorting direction (ASC or DESC)
+   * @return String The ORDER BY statement for this attribute
+   */
+  function getOrderByStatement($extra='', $table='', $direction='ASC')
+  {
+    if (!$this->createDestination())
+    return parent::getOrderByStatement();
+
+    if (!empty($table))
+    {
+      $table = $table.'_AE_'.$this->fieldName();
+    }
+    else
+    {
+      $table = $this->fieldName();
+    }
+
+	/* AGX: ADV Commented out this, why?
+    if (!empty($extra) && in_array($extra, $this->m_listColumns))
+    {
+	*/
+      return $this->getDestination()->getAttribute($extra)->getOrderByStatement('', $table, $direction);
+	/*
+    }
+	*/
+	/* END */
+
+    $order = $this->m_destInstance->getOrder();
+    if (!empty($order))
+    {
+      $newParts = array();
+      $parts = explode(',', $order);
+
+      foreach ($parts as $part)
+      {
+        $split = preg_split('/\s+/', trim($part));
+        $field = isset($split[0]) ? $split[0] : null;
+        $fieldDirection = empty($split[1]) ? 'ASC' : strtoupper($split[1]);
+
+        // if our default direction is DESC (the opposite of the default ASC)
+        // we always have to switch the given direction to be the opposite, e.g.
+        // DESC => ASC and ASC => DESC, this way we respect the default ordering
+        // in the destination node even if the default is descending
+        if ($fieldDirection == 'DESC')
+        {
+          $fieldDirection = $direction == 'DESC' ? 'ASC' : 'DESC';
+        }
+        else
+        {
+          $fieldDirection = $direction;
+        }
+
+        if (strpos($field, '.') !== false)
+        {
+          list(,$field) = explode('.', $field);
+        }
+
+        $newPart = $this->getDestination()->getAttribute($field)->getOrderByStatement('', $table, $fieldDirection);
+
+        // realias if destination order contains the wrong tablename.
+        if (strpos($newPart, $this->m_destInstance->m_table.'.') !== false)
+        {
+          $newPart= str_replace($this->m_destInstance->m_table.'.', $table.'.', $newPart);
+        }
+        $newParts[] = $newPart;
+      }
+      return implode(', ', $newParts);
+    }
+    else
+    {
+      $fields = $this->m_destInstance->descriptorFields();
+      if (count($fields) == 0)
+      $fields = array($this->m_destInstance->primaryKeyField());
+      $order = "";
+      foreach ($fields as $field)
+      $order .= (empty($order) ? '' : ', ').$table.".".$field;
+      return $order;
+    }
+  }
+	/* END */
+
+  }
 
 ?>
