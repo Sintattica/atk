@@ -1170,17 +1170,23 @@ class PHPMailer
 
       $maxlen = 75 - 7 - strlen($this->CharSet);
       // Try to select the encoding which should produce the shortest output
+	  /* AGX */
+	  /* NOTE: Q is Broken, Force B for utf-8
       if (strlen($str)/3 < $x) {
+	  */
         $encoding = 'B';
         $encoded = base64_encode($str);
         $maxlen -= $maxlen % 4;
         $encoded = trim(chunk_split($encoded, $maxlen, "\n"));
+	  /*
       } else {
         $encoding = 'Q';
         $encoded = $this->EncodeQ($str, $position);
         $encoded = $this->WrapText($encoded, $maxlen, true);
         $encoded = str_replace("=".$this->LE, "\n", trim($encoded));
       }
+	  */
+	  /* END */
 
       $encoded = preg_replace('/^(.*)$/m', " =?".$this->CharSet."?$encoding?\\1?=", $encoded);
       $encoded = trim(str_replace("\n", $this->LE, $encoded));

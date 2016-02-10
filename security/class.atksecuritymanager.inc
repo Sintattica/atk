@@ -71,10 +71,10 @@ class atkSecurityManager
      * @param string $event name
      * @param string $username (might be null)
      */
-    function notifyListeners($event, $username)
+    function notifyListeners($event, $username, $message = "")
     {
         for ($i = 0, $_i = count($this->m_listeners); $i < $_i; $i++)
-            $this->m_listeners[$i]->handleEvent($event, $username);
+                $this->m_listeners[$i]->handleEvent($event, $username, $message);
     }
 
     /**
@@ -130,6 +130,16 @@ class atkSecurityManager
 
         // required interface;
         atkimport("atk.security.auth_interface");
+
+        $tmp_listeners = atkconfig("security_listeners", "atk.security.atksecuritylistener");
+        if (is_array($tmp_listeners) && (count($tmp_listeners) > 0)) {
+            foreach ($tmp_listeners as $listener_name) {
+                $this->addListener(atknew($listener_name));
+            }
+        }
+        else {
+            $this->addListener(atknew($tmp_listeners));
+        }
 
         $authentication = $this->_getAuthTypes($authentication_type);
         foreach ($authentication as $class) {
@@ -234,8 +244,9 @@ class atkSecurityManager
         $md5 = false; // PHP_AUTH_PW is plain text..
         // first check if we want to logout
         if (isset($ATK_VARS["atklogout"]) && (!isset($session["relogin"]) || $session["relogin"] != 1)) {
-            $this->notifyListeners("preLogout", $auth_user);
             $currentUser = &atkGetUser();
+			// FIX refresh problem with currentUser not existing
+            $this->notifyListeners("preLogout", isset($currentUser['name']) ? $currentUser['name'] : $auth_user );
 
             // Let the authentication plugin know about logout too.
             foreach ($this->m_authentication as $auth) {
@@ -251,7 +262,7 @@ class atkSecurityManager
                     setcookie($cookiename, "", 0);
             }
 
-            $this->notifyListeners("postLogout", $auth_user);
+            $this->notifyListeners("postLogout", isset($currentUser['name']) ? $currentUser['name'] : $auth_user );
 
             if ($ATK_VARS["atklogout"] > 1) {
                 header("Location: logout.php");
@@ -408,6 +419,23 @@ class atkSecurityManager
             } else {
                 // Invalid session
                 $authenticated = false;
+            }
+        }
+
+        // NOTIFY SECURITY LISTENERS
+		// Output user agent data so we can use Fail2Ban to block brute force attack
+        $ip = filter_input(INPUT_SERVER, 'REMOTE_ADDR', FILTER_VALIDATE_IP);
+        $user = filter_var($auth_user, FILTER_SANITIZE_STRING);
+        $web = filter_input(INPUT_SERVER, 'HTTP_HOST', FILTER_SANITIZE_STRING);
+        $ua = filter_input(INPUT_SERVER, 'HTTP_USER_AGENT');
+        if ($response == AUTH_SUCCESS) {
+            $this->log(1, 'successfull Login "' . $user . '" from "' . $ip . '" for "' . $web . '"');
+            $this->notifyListeners("successfullLogin", $auth_user);
+        } else {
+            // Skip if Username is empty (when user press CTRL+R or reload in the browser)
+            if ($user != '') {
+                $this->log(1, 'failed Login "' . $user . '" from "' . $ip . '" for "' . $web . '" with "' . $ua . '"');
+                $this->notifyListeners("failedLogin", $auth_user);
             }
         }
 
@@ -696,6 +724,8 @@ class atkSecurityManager
     function logAction($node, $action)
     {
         $this->log(2, "Performing $node.$action");
+        $currentUser = &atkGetUser();
+        $this->notifyListeners("performed", $currentUser['name'], $node . "." . $action);
     }
 
     /**

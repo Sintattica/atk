@@ -360,6 +360,8 @@ function atkGetTrace($format = "html")
                         else {
                             if (is_object($value))
                                 $valArr[] = sprintf("%s=Object(%s)", $name, get_class($value));
+                            else if (is_array($value))
+                                $valArr[] = sprintf("%s=Array(%s)", $name, count($value));
                             else
                                 $valArr[] = $name . "=" . @json_encode($value);
                         }
@@ -1016,11 +1018,18 @@ function atkTriggerError(&$record, $attrib, $error, $message = '')
             $message = $attrib[0]->text($error);
         }
     } else {
-        $attribName = $attrib->fieldName();
-        $label = $attrib->label($record);
-        $tab = $attrib->m_tabs[0];
-        if (!$message) {
-            $message = $attrib->text($error);
+        if (is_object($attrib)) {
+            $attribName = $attrib->fieldName();
+            $label = $attrib->label($record);
+            $tab = $attrib->m_tabs[0];
+            if (!$message) {
+                $message = $attrib->text($error);
+            }
+        } else {
+            $attribName = 'unknown';
+            $label = 'unknown';
+            $tab = 'unknown';
+            $message = 'unknown';
         }
     }
 

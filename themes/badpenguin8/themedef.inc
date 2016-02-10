@@ -1,0 +1,3 @@
+<?php
+  $theme["basetheme"] = 'bootstrap';
+?>

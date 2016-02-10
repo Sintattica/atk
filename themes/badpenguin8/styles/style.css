@@ -1,0 +1,95 @@
+@import '../../bootstrap/styles/style.css';
+
+BODY {
+	font-size: 12px;
+	font-family: Lucida Sans,Lucida Sans Unicode,Tahoma,Trebuchet MS,Arial,Verdana;
+	color: #414141;
+}
+
+.navbar-default {
+	background-color: #749ABE;
+	color: #fff;
+}
+.navbar-default .navbar-brand {
+	color: #fff;
+}
+.navbar-default .navbar-nav > li > a {
+	color: #fff;
+}
+
+
+.atkfieldset div {
+	vertical-align: bottom;
+}
+
+.form-control {
+	font-size: 12px;
+	padding: 0 6px;
+}
+
+/*
+.btn_save, .btn_saveandclose {
+	background-color: #0f9d58;
+	border-color: #ccc;
+	color: #ccc;
+}
+.btn_save.atkdefaultbutton, .btn_saveandclose.atkdefaultbutton {
+	color: #fff;
+}
+
+.btn_save:hover, .btn_saveandclose:hover {
+	background-color: #1fad68;
+	border-color: #aaa;
+	color: #fff;
+}
+*/
+
+.btn_save, .btn_saveandclose {
+	background-color: #428BCA;
+	border-color: #ccc;
+	color: #fff;
+}
+
+.btn.atkdefaultbutton {
+	color: #fff;
+	background-color: #0f9d58;
+	border-color: #ccc;
+}
+
+.btn.atkdefaultbutton:hover {
+	background-color: #1fad68;
+	border-color: #aaa;
+	color: #fff;
+}
+
+
+
+a.atkonetomanyrelation 
+{
+	display: inline-block;
+	padding: 6px 12px;
+	margin-bottom: 0px;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.42857;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	cursor: pointer;
+	-moz-user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+
+	/*background-color: #3071A9;*/
+	background-color: #428BCA;
+	color: #fff;
+	border-color: #ccc;
+}
+
+a.atkonetomanyrelation:hover {
+	text-decoration: none;
+	background-color: #529BDA;
+	border-color: #aaa;
+}
+

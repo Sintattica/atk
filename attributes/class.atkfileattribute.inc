@@ -344,18 +344,25 @@ class atkFileAttribute extends atkAttribute
      *
      * @static
      */
+	 /* PATCHED BY AGX FOR open_basedir restrictions */
     function mkdir($path)
     {
         $path = preg_replace('/(\/){2,}|(\\\){1,}/', '/', $path); //only forward-slash
+	    // AGX
+	    $oldpath = $path;
         $dirs = explode("/", $path);
 
         $path = "";
         foreach ($dirs as $element) {
             $path .= $element . "/";
-            if (!is_dir($path) && !mkdir($path))
-                return false;
+			/* AGX */
+        	if(!@is_dir($path)) {
+				@mkdir($path);
+			}
+			/* END */
         }
-
+	    // AGX
+	    if (!is_dir($oldpath)) return false;
         return true;
     }
 
