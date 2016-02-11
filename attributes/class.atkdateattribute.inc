@@ -610,7 +610,7 @@ class atkDateAttribute extends atkAttribute
                 $str_script = $this->getHtmlId($fieldprefix).'_onChange(this);';
             }
             $this->registerKeyListener($fieldname, KB_CTRLCURSOR | KB_LEFTRIGHT);
-            $result = '<select id="' . $fieldname . '" name="' . $fieldname . '" onChange="' . $str_script . '">';
+            $result = '<select id="' . $fieldname . '" name="' . $fieldname . '" onChange="' . $str_script . '" class="form-control">';
             for ($i = $str_min; $i <= $str_max; $i ++) {
                 $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, substr($i, 4, 2), substr($i, 6, 2), substr($i, 0, 4)));
                 $result .= '<option value="' . $i . '"' . ($current !== NULL && $tmp_date[0] == $current[0]

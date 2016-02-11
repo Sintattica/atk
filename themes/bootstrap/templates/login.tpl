@@ -29,7 +29,7 @@
                                 <input class="form-control" type="password" id="auth_pw" name="auth_pw" value="">
                             </div>
 
-                            <button type="submit" name="login" class="btn btn-primary center-block" value="{atktext login}">Submit</button>
+                            <button type="submit" name="login" class="btn btn-primary center-block" value="{atktext login}">{atktext login}</button>
 
                             {if $auth_enablepasswordmailer}<input name="login" class="btn btn-default" type="submit" value="{atktext password_forgotten}">{/if}
                         </form>
