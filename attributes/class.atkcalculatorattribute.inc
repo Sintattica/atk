@@ -110,7 +110,7 @@ class atkCalculatorAttribute extends atkAttribute
     function load(&$db, $record)
     {
         atkimport("atk.utils.atkstringparser");
-        $parser = &new atkStringParser($this->m_calculation);
+        $parser = new atkStringParser($this->m_calculation);
         eval("\$result = " . $parser->parse($record) . ";");
         return $result;
     }

@@ -99,6 +99,8 @@ class atkTimeAttribute extends atkAttribute
     function display($record)
     {
         $value = $record[$this->fieldName()];
+        if (!is_array($value))
+            return "";
         if ($value["hours"] === "")
             return "";
         $tmp_time = sprintf("%02d:%02d", $value["hours"], $value["minutes"]);

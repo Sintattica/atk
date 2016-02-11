@@ -566,15 +566,15 @@ class atkDateAttribute extends atkAttribute
         }
 
         /* minimum date */
-        $minimum = $this->m_date_min;
-        if ($minimum != 0 && $mode != 'search')
+        $minimum = $mode != 'search' ? $this->m_date_min : 0;
+        if ($minimum != 0)
             $str_min = adodb_date("Ymd", $minimum);
         else
             $str_min = 0;
 
         /* maximum date */
-        $maximum = $this->m_date_max;
-        if ($maximum != 0 && $mode != 'search')
+        $maximum = $mode != 'search' ? $this->m_date_max : 0;
+        if ($maximum != 0)
             $str_max = adodb_date("Ymd", $maximum);
         else
             $str_max = 0;

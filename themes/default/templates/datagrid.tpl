@@ -12,7 +12,7 @@
             {if !empty($editcontrol)}{$editcontrol}{/if} {if !empty($index)}{$index}{/if}
         </td>
     </tr>
-{elseif !empty($paginator) || !empty($limit)}
+{elseif !empty($paginator) || !empty($limit) || !empty($summary)}
     <tr>
         <td align="left" valign="middle">
         {if !empty($editcontrol)}{$editcontrol}{/if} {if !empty($paginator)}{$paginator}{/if}
