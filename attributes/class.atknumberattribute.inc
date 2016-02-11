@@ -527,7 +527,7 @@ class atkNumberAttribute extends atkAttribute
      * @param string $fieldprefix The attribute must use this to prefix its form elements (used for
      *                     embedded forms)
      * @param string $mode The mode we're in ('add' or 'edit')
-     * @return Piece of htmlcode
+     * @return string Piece of htmlcode
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
     {

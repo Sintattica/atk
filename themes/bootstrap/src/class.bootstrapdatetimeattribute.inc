@@ -5,6 +5,14 @@ useattrib("atkattribute");
 
 atkimport('atk.utils.atkmomentphpprovider');
 
+/**
+ * Class bootstrapDateTimeAttribute
+ *
+ * @todo m_type: use dbFieldType? add it to constructor?
+ * @todo check localization
+ * @todo make input text read-only
+ * @todo unlock exact search mode in grid
+ */
 class bootstrapDateTimeAttribute extends atkAttribute
 {
     var $m_bootstrapdatetime_format_edit;
@@ -17,7 +25,7 @@ class bootstrapDateTimeAttribute extends atkAttribute
     var $m_maxDate;
     var $m_sideBySide = true;
 
-    function bootstrapDateTimeAttribute($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
         $this->atkAttribute($name, $flags);
     }

@@ -96,7 +96,7 @@ class atkDurationAttribute extends atkAttribute
         $id = $fieldprefix . $this->formName();
         $fieldvalue = atkArrayNvl($record, $this->fieldName(), "");
         if (!$this->hasFlag(AF_DURATION_STRING)) {
-            $result = '';
+            $result = '<div class="form-inline">';
             if ($this->m_maxtime_min >= 60) {
                 $curhours = $this->_getHourPart($fieldvalue);
                 $curminutes = $this->_getMinutePart($fieldvalue);
@@ -115,7 +115,6 @@ class atkDurationAttribute extends atkAttribute
                 }
                 $result .= '</select>';
             }
-
             if ($this->m_maxtime_min >= 1 && $this->m_resolution_min < 60) {
                 $this->registerKeyListener($id . '_minutes', KB_CTRLCURSOR | KB_LEFTRIGHT);
                 $result .= '&nbsp;<select id="' . $id . '_minutes" name="' . $fieldprefix . $this->formName() . '[minutes]" class="form-control">';
@@ -132,6 +131,7 @@ class atkDurationAttribute extends atkAttribute
                 }
                 $result .= '</select>';
             }
+            $result .= '</div>';
         } else {
             $curval = ($fieldvalue > 0) ? $this->_minutes2string($fieldvalue) : '';
             $result = '<input type="text" name="' . $fieldprefix . $this->formName() .

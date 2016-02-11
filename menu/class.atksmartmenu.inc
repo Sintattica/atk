@@ -4,9 +4,9 @@
  * Implementation of SmartMenus jQuery menu plugin (http://www.smartmenus.org).
  *
  * In themedef, you can optionally define:
- * - sm_logo: the logo for this menu (default: "images/logo.png")
  * - sm_options: a json string of SmartMenus options (see http://www.smartmenus.org/docs#options)
- * - sm_atk_usernode: node to be used for the user/s links in the menu (default: "auth_usernode" atk config.)
+ * - sm_atk_usernode: node to be used for the user/s links in the menu (default: "auth_usernode" atk config. setting)
+ * For the logo, it uses "logo.jpg" (in theme images) or "theme_logo" atk config. setting.
  *
  * We have used SmartMenus' "clean" theme, with customization. You can write optional "atksmartmenu.css" in your atk theme.
  *
@@ -36,11 +36,10 @@ class atkSmartMenu extends atkDropdownMenu
         $smOptions = $theme->getAttribute('sm_options');
 
         // logo
-        $logo = $theme->getAttribute('sm_logo');
+        $logo = atkConfig::getGlobal('theme_logo');
         if (!$logo) {
-            $logo = 'images/logo.png';
+            $logo = $theme->imgPath('logo.jpg');
         }
-        $logo = $theme->getAttribute('basepath') . $logo;
 
         // usernode
         if ($theme->getAttribute('sm_atk_usernode')) {
@@ -130,9 +129,8 @@ class atkSmartMenu extends atkDropdownMenu
         $menu .= "
             <ul id=\"sm-menu\" class=\"sm sm-clean collapsed\">";
 
-        if ($logo) { // logo in desktop mode
-            $menu .= '<li id="sm-logo"><a href="index.php"><img src="' . $logo . '"></a></li>';
-        }
+        // logo in desktop mode
+        $menu .= '<li id="sm-logo"><a href="index.php"><img src="' . $logo . '"></a></li>';
 
         // add menu items
         foreach ($g_menu[$atkmenutop] as $menuitem) {

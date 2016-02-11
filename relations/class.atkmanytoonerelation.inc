@@ -815,7 +815,7 @@ class atkManyToOneRelation extends atkRelation
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @param String $mode The mode we're in ('add' or 'edit')
-     * @return Piece of html code that can be used in a form to edit this
+     * @return String Piece of html code that can be used in a form to edit this
      */
     function edit($record, $fieldprefix = "", $mode = "edit")
     {
@@ -1557,7 +1557,7 @@ class atkManyToOneRelation extends atkRelation
         $condition = $this->m_destInstance->m_table . '.' . $this->m_destInstance->primaryKeyField() .
             "='" . $record[$this->fieldName()][$this->m_destInstance->primaryKeyField()] . "'";
 
-        $filter = $this->createFilter($record);
+        $filter = $this->createFilter($record, $mode);
         if (!empty($filter)) {
             $condition = $condition . ' AND ' . $filter;
         }
@@ -1604,9 +1604,10 @@ class atkManyToOneRelation extends atkRelation
      * Create the destination filter for the given record.
      *
      * @param array $record
+     * @param string $mode (not used here, but usable in derived classes)
      * @return string filter
      */
-    function createFilter($record)
+    function createFilter($record, $mode)
     {
         if ($this->m_destinationFilter != "") {
             atkimport("atk.utils.atkstringparser");
@@ -1667,7 +1668,7 @@ class atkManyToOneRelation extends atkRelation
         }
 
         // No selection override exists, simply add the record key to the selector.
-        $filter = $this->createFilter($record);
+        $filter = $this->createFilter($record, $mode);
         $selector = "($selectedKey)" . ($filter != NULL ? " AND ($filter)" : "");
 
         return $this->m_destInstance->select($selector)->getRowCount() > 0;
@@ -1686,7 +1687,7 @@ class atkManyToOneRelation extends atkRelation
     {
         $this->createDestination();
 
-        $selector = $this->createFilter($record);
+        $selector = $this->createFilter($record, $mode);
         $result = $this->m_destInstance
             ->select($selector)
             ->orderBy($this->getDestination()->getOrder())

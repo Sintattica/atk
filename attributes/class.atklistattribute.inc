@@ -350,7 +350,7 @@ class atkListAttribute extends atkAttribute
 
     /**
      * Add an empty list option if appropriate.
-     * @return The empty list option or an empty string
+     * @return String The empty list option or an empty string
      */
     function _addEmptyListOption()
     {

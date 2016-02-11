@@ -23,7 +23,7 @@
             <ul class="nav navbar-nav navbar-right">
                 {if $user}
                     <li id="top-logout">
-                    <a href="index.php?atklogout=1" target="{$logouttarget}">{atktext logout} {$user}</a>
+                        <a href="index.php?atklogout=1" target="{$logouttarget}">{$user}&nbsp;&nbsp;<span class="glyphicon glyphicon-log-out"></span></a>
                     </li>{/if}
                 {if $searchpiece}
                     <li id="top-search">{$searchpiece}</li>

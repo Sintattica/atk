@@ -616,8 +616,7 @@ class atkPage
     function render($title = null, $flags = HTML_STRICT, $extrabodyprops = "", $extra_header = "")
     {
         if ($title == null) {
-			// fix empty title for homepage/dashboard
-            $title = $this->m_title != "" ? $this->m_title : atkText('app_title');
+            $title = $this->m_title != '' ? $this->m_title : atkText('app_title');
         }
 
         $ui = &atkinstance('atk.ui.atkui');

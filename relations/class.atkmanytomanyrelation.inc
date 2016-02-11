@@ -363,7 +363,7 @@ class atkManyToManyRelation extends atkRelation
      *                     displaying in editscreens, "add" for displaying in
      *                     add screens. "csv" for csv files. Applications can
      *                     use additional modes.
-     * @return a displayable string for this value
+     * @return String a displayable string for this value
      */
     function display($record, $mode = "")
     {

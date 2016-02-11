@@ -566,15 +566,15 @@ class atkDateAttribute extends atkAttribute
         }
 
         /* minimum date */
-        $minimum = $this->m_date_min;
-        if ($minimum != 0 && $mode != 'search')
+        $minimum = $mode != 'search' ? $this->m_date_min : 0;
+        if ($minimum != 0)
             $str_min = adodb_date("Ymd", $minimum);
         else
             $str_min = 0;
 
         /* maximum date */
-        $maximum = $this->m_date_max;
-        if ($maximum != 0 && $mode != 'search')
+        $maximum = $mode != 'search' ? $this->m_date_max : 0;
+        if ($maximum != 0)
             $str_max = adodb_date("Ymd", $maximum);
         else
             $str_max = 0;
@@ -610,7 +610,7 @@ class atkDateAttribute extends atkAttribute
                 $str_script = $this->getHtmlId($fieldprefix).'_onChange(this);';
             }
             $this->registerKeyListener($fieldname, KB_CTRLCURSOR | KB_LEFTRIGHT);
-            $result = '<select id="' . $fieldname . '" name="' . $fieldname . '" onChange="' . $str_script . '">';
+            $result = '<select id="' . $fieldname . '" name="' . $fieldname . '" onChange="' . $str_script . '" class="form-control">';
             for ($i = $str_min; $i <= $str_max; $i ++) {
                 $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, substr($i, 4, 2), substr($i, 6, 2), substr($i, 0, 4)));
                 $result .= '<option value="' . $i . '"' . ($current !== NULL && $tmp_date[0] == $current[0]
