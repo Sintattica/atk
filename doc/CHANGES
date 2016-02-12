@@ -24,6 +24,8 @@ Changes in DEVELOP (WIP)
 
 Changes in MASTER (WIP)
 ------------------------
+* Added autocomplete html attribute in add/edit form [luca]
+* Fix empty username in logout event in atkSecurityManager [luca]
 * Various minor fixing [luca]
 * Minor fixing for Bootstrap theme [luca]
 * Changed logo handling in atkSmartMenu [luca]
