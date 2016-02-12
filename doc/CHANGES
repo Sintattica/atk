@@ -20,15 +20,12 @@ Changes in DEVELOP (WIP)
 * Fixing for Bootstrap theme [luca]
 * Changed logo handling in atkSmartMenu [luca]
 
-
 Changes in MASTER (WIP)
 ------------------------
-* Added autocomplete html attribute in add/edit form [luca]
-* Fix empty username in logout event in atkSecurityManager [luca]
 * Various minor fixing [luca]
-* Minor fixing for Bootstrap theme [luca]
+* Fix empty username in logout event in atkSecurityManager [luca]
+* Fixing for Bootstrap theme [luca]
 * Changed logo handling in atkSmartMenu [luca]
-
 
 
 Changes in ATK 8.2.3 (2016-02-05)
@@ -44,7 +41,6 @@ Changes in ATK 8.2.3 (2016-02-05)
 * Fixed handling of readonly/hidden atkManyToOneRelation in edit mode [luca]
 * Fixed _addEmptyListOption in atkListAttribute [luca]
 * Added searching by year in atkDateAttribute [luca]
-
 
 Changes in ATK 8.2.2 (2015-11-09)
 ---------------------------------
