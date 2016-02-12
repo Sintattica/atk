@@ -15,11 +15,10 @@
                     {if isset($auth_max_loginattempts_exceeded)}
                         {$auth_max_loginattempts_exceeded}
                     {else}
-                        {$atksessionformvars}
                         {if isset($auth_mismatch)}<div class="alert alert-danger">{$auth_mismatch}</div>{/if}
                         {if isset($auth_account_locked)}<div class="alert alert-danger">{$auth_account_locked}</div>{/if}
-
                         <form action="{$formurl}" method="post" role="form">
+                            {$atksessionformvars}
                             <div class="form-group">
                                 <label for="auth_user">{atktext username}</label>
                                 {$userfield}
@@ -28,9 +27,7 @@
                                 <label for="auth_pw">{atktext password}</label>
                                 <input class="form-control" type="password" id="auth_pw" name="auth_pw" value="">
                             </div>
-
                             <button type="submit" name="login" class="btn btn-primary center-block" value="{atktext login}">{atktext login}</button>
-
                             {if $auth_enablepasswordmailer}<input name="login" class="btn btn-default" type="submit" value="{atktext password_forgotten}">{/if}
                         </form>
                     {/if}
