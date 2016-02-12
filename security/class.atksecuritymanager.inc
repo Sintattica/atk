@@ -234,8 +234,8 @@ class atkSecurityManager
         $md5 = false; // PHP_AUTH_PW is plain text..
         // first check if we want to logout
         if (isset($ATK_VARS["atklogout"]) && (!isset($session["relogin"]) || $session["relogin"] != 1)) {
-            $this->notifyListeners("preLogout", $auth_user);
             $currentUser = &atkGetUser();
+            $this->notifyListeners("preLogout", isset($currentUser['name']) ? $currentUser['name'] : $auth_user);
 
             // Let the authentication plugin know about logout too.
             foreach ($this->m_authentication as $auth) {
@@ -251,7 +251,7 @@ class atkSecurityManager
                     setcookie($cookiename, "", 0);
             }
 
-            $this->notifyListeners("postLogout", $auth_user);
+            $this->notifyListeners("postLogout", isset($currentUser['name']) ? $currentUser['name'] : $auth_user);
 
             if ($ATK_VARS["atklogout"] > 1) {
                 header("Location: logout.php");
@@ -345,7 +345,7 @@ class atkSecurityManager
                         if (atkconfig("enable_ssl_encryption"))
                             $this->m_user['PASS'] = $auth_pw; // used by aktsecurerelation to decrypt an linkpass
 
-                            
+
 // for convenience, we also store the user as a global variable.
                         (is_array($this->m_user['level'])) ? $dbg = implode(",", $this->m_user['level'])
                                     : $dbg = $this->m_user['level'];
