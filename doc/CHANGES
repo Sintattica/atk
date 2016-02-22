@@ -1408,7 +1408,7 @@ Changes in ATK 6.2.0
   [Yury]
 * Fixed support for searching number 0 in atkNumberAttribute (bug #726) [Yury]
 * Fixed display of obligatory fields in integrated form. (bug #845) [Yury]
-* Change hard coded "seq_" to atkConfig("database_sequenceprefix"). (bug #859)
+* Change hard coded "seq_" to atkConfig::getGlobal("database_sequenceprefix"). (bug #859)
   [Michele, Yury]
 * Fixed Ajax calls handling of special characters. (bug #880) [Yury]
 * Fixed SQL query error when going back from viewing role of team member.
@@ -2372,7 +2372,7 @@ Changed in ATK 6.0.0
   atkOpenDocumentWriter. [Guido]
 * the atkPopup target should be passed through session_url in case the
   sessionid is passed through urls. [Guido]
-* If $_SESSION[atkconfig("identifier")] is not an array, we assign an empty
+* If $_SESSION[atkConfig::getGlobal("identifier")] is not an array, we assign an empty
   array to it to prevent session initialisation errors. [Peter, Guido]
 * Fixed obligatory field checking for attributes of the atkOneToOnerelation's
   destination node by merging the validation errors from the destination
@@ -3207,9 +3207,9 @@ Changes in ATK 5.5.0
   [Harrie]
 + Added tab security. It is now possible to grant/prevent access to a single
   tab of a node. [Harrie]
-+ Added atkSetNode() counterpart for atkGetNode(), to set nodes to a different
++ Added atkSetNode() counterpart for atkModule::atkGetNode(), to set nodes to a different
   instance at runtime. [Ivo]
-+ Added atkSetSecurityManager() counterpart for atkGetSecurityManager(), to set
++ Added atkSetSecurityManager() counterpart for atkSecurityManager::getInstance(), to set
   the securitymanager to a different instance at runtime. [Ivo]
 + Added flag AF_RELATION_NO_NULL_ITEM for atkManyToOneRelation to hide the
   select_none option. [Dennis]

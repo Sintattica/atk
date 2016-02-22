@@ -1,9 +1,0 @@
-@import '../../default/styles/atkmanytoonerelation.css';
-
-a.atkmanytoonerelation {
-    color: #ba0000;
-}
-
-div.atkmanytoonerelation_result li {
-    background-color: #f3f3f3;
-}

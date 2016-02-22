@@ -1,0 +1,176 @@
+<?php namespace Sintattica\Atk\Ui;
+
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Utils\TmpFile;
+use Sintattica\Atk\Utils\DirectoryTraverser;
+
+/**
+ * Compiles cache for current theme.
+ *
+ * The compiler scans the theme directory and file structure and builds a
+ * compiled file that contains the exact location of every themeable
+ * element.
+ *
+ * If a theme is derived from another theme, the compiled theme contains the
+ * sum of the parts, so a single compiled theme file contains every
+ * information that ATK needs about the theme.
+ *
+ * @author Boy Baukema <boy@ibuildings.nl>
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @package atk
+ * @subpackage ui
+ *
+ */
+class ThemeCompiler
+{
+    /**
+     * Compile a theme file for a certain theme.
+     *
+     * @param string $name The name of the theme to compile.
+     * @return bool result
+     */
+    function compile($name)
+    {
+        // Process theme directory structure into data array.
+        $data = $this->readStructure($name);
+
+        // Write it to the compiled theme file
+        if (count($data)) {
+            if (!is_dir(Config::getGlobal("atktempdir") . "themes/")) {
+                mkdir(Config::getGlobal("atktempdir") . "themes", 0777, true);
+            }
+
+            $tmpfile = new TmpFile("themes/$name.php");
+            $tmpfile->writeAsPhp("theme", $data);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Parse theme structure.
+     *
+     * This method parses the themes directory and file structure and
+     * converts it to a dataset containing all theme attributes and the
+     * exact location of all themable files.
+     *
+     * @param string $name The name of the theme
+     * @return array Theme dData structure
+     */
+    function readStructure($name)
+    {
+        $data = array();
+
+        $path = Config::getGlobal('theme_url');
+        $abspath = Config::getGlobal('theme_dir');
+
+        // First parse the themedef file for attributes
+        if ($path != "" && file_exists($abspath . "/themedef.php")) {
+            include($abspath . "/themedef.php");
+
+            if (isset($theme)) {
+                foreach ($theme as $key => $value) {
+                    $data["attributes"][$key] = $value;
+                }
+            }
+
+            // Second scan all files in the theme path
+            $this->scanThemePath($path, $abspath . '/', $data);
+            $this->scanModulePath($name, $data);
+
+            $data["attributes"]["basepath"] = $path;
+        }
+        return $data;
+    }
+
+    /**
+     * Traverse theme path.
+     *
+     * Traverses the theme path and remembers the physical location of all theme files.
+     *
+     * @param string $path The path of the theme, relative to atkroot.
+     * @param string $abspath The absolute path of the theme
+     * @param string $data Reference to the data array in which to report the file locations
+     */
+    function scanThemePath($path, $abspath, &$data)
+    {
+        $traverser = new DirectoryTraverser();
+        $subitems = $traverser->getDirContents($abspath);
+        foreach ($subitems as $name) {
+            if (in_array($name,
+                array("images", "styles", "templates"))) { // images, styles and templates are compiled the same
+                $files = $this->_dirContents($abspath . '/' . $name);
+                foreach ($files as $file) {
+                    $key = $file;
+                    if (substr($key, -8) == '.tpl.php') {
+                        $key = substr($key, 0, -4);
+                    }
+
+                    $data["files"][$name][$key] = $path . $name . "/" . $file;
+                }
+            } else if ($name == "icons") { // New ATK5 style icon theme dirs
+                $subs = $this->_dirContents($abspath . $name);
+                foreach ($subs as $type) {
+                    $files = $this->_dirContents($abspath . $name . "/" . $type);
+                    foreach ($files as $file) {
+                        $data["files"]["icons"][$type][$file] = $path . $name . "/" . $type . "/" . $file;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Traverse module path.
+     *
+     * Traverses the module path and remembers the physical location of all theme files.
+     *
+     * @param string $theme The name of the theme
+     * @param string $data Reference to the data array in which to report the file locations
+     */
+    function scanModulePath($theme, &$data)
+    {
+        global $g_modules;
+
+        $traverser = new DirectoryTraverser();
+        foreach ($g_modules as $module => $modpath) {
+            $abspath = $modpath . "themes/" . $theme . "/";
+
+            if (is_dir($abspath)) {
+                $subitems = $traverser->getDirContents($abspath);
+                foreach ($subitems as $name) {
+                    if (in_array($name,
+                        array("images", "styles", "templates"))) { // images, styles and templates are compiled the same
+                        $files = $this->_dirContents($abspath . $name);
+                        foreach ($files as $file) {
+                            $data["modulefiles"][$module][$name][$file] = $theme . "/" . $name . "/" . $file;
+                        }
+                    } else if ($name == "icons") { // New ATK5 style icon theme dirs
+                        $subs = $this->_dirContents($abspath . $name);
+                        foreach ($subs as $type) {
+                            $files = $this->_dirContents($abspath . $name . "/" . $type);
+                            foreach ($files as $file) {
+                                $data["modulefiles"][$module]["icons"][$type][$file] = $theme . "/" . $name . "/" . $type . "/" . $file;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Get files for a directory
+     *
+     * @param string $path The directory to traverse
+     * @return array with files from the traversed directory
+     */
+    function _dirContents($path)
+    {
+        $traverser = new DirectoryTraverser();
+        $traverser->addExclude('/^\.(.*)/'); // ignore everything starting with a '.'
+        $files = $traverser->getDirContents($path);
+        return $files;
+    }
+
+}
