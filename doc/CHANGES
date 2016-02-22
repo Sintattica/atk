@@ -15,12 +15,56 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
+* Various minor fixing [luca]
+* Fix empty username in logout event in atkSecurityManager [luca]
+* Fixing for Bootstrap theme [luca]
+* Changed logo handling in atkSmartMenu [luca]
 
 Changes in MASTER (WIP)
 ------------------------
+* Various minor fixing [luca]
+* Fix empty username in logout event in atkSecurityManager [luca]
+* Fixing for Bootstrap theme [luca]
+* Changed logo handling in atkSmartMenu [luca]
 
 
-Changes in ATK 8.2.0 (2015-09-02)
+Changes in ATK 8.2.3 (2016-02-05)
+---------------------------------
+* Removed CSS system colors [luca,giorgio]
+* Fixed search in atkNumberAttribute [luca]
++ Added atkSmartMenu responsive menu style for non-bootstrap themes based on the smartmenus plugin [giorgio,luca]
+* Fixed bootstrap layout when navbar expands to more than one line [giorgio]
+* Fixed add filter setting in atkOneToManyRelation [luca]
+* fetchMeta and maxlength in atkTextAttribute [luca]
+* Added setTrailingZeros function in atkNumberAttribute [luca]
+* Added search by month and year (m/yyyy) in atkDateAttribute [giorgio]
+* Fixed handling of readonly/hidden atkManyToOneRelation in edit mode [luca]
+* Fixed _addEmptyListOption in atkListAttribute [luca]
+* Added searching by year in atkDateAttribute [luca]
+
+Changes in ATK 8.2.2 (2015-11-09)
+---------------------------------
+* Using bootstrap alert classes for form errors in bootstrap theme [giorgio]
+* Global variable "stacktrace" is now handled in template rendering [giorgio]
++ Added expandAsButtons function to atkListAttribute to display select as a list of buttons [giorgio]
+* Using bootstrap tooltip in breadcrumb [giorgio]
+* Search fixing in atkListAttribute and atkManyToOneRelation [luca]
+* Refactoring of actionTitle and breadcrumb [luca]
++ Added filter box to filter select options in atkShuttleRelation [giorgio]
++ Added "pagelinks_previous_next" global configuration variable [giorgio]
+* Modified selection behavior in atkManyToOneRelation search [luca,giorgio]
++ Added "pagelinks_first_last" global configuration variable [giorgio]
++ Added bootstrapSwitchAttribute [giorgio]
+
+Changes in ATK 8.2.1 (2015-10-26)
+---------------------------------
+* Various minor fixing [luca]
+* Fix dispatch to default destination in index page [giorgio]
+* Using minified bootstrap files [giorgio]
+* Fix html entities in bootstrap menu [giorgio]
+* Fix multiple Shuttle relations on node save action [michele]
+
+Changes in ATK 8.2.0 (2015-10-02)
 ---------------------------------
 * Changed package name [luca,michele]
 * Fix icon lock [michele]

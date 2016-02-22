@@ -22,6 +22,18 @@ class DataGridPaginator extends DataGridComponent
     protected $m_maxLinks = 10;
 
     /**
+     * Show go to previous and next page links
+     * @var bool
+     */
+    protected $m_goToPreviousNext = true;
+
+    /**
+     * Show go to first and last page links
+     * @var bool
+     */
+    protected $m_goToFirstLast = false;
+
+    /**
      * Constructor.
      *
      * @param DataGrid $grid grid
@@ -31,6 +43,8 @@ class DataGridPaginator extends DataGridComponent
     {
         parent::__construct($grid, $options);
         $this->m_maxLinks = Config::getGlobal('pagelinks', 10);
+        $this->m_goToFirstLast = Config::getGlobal('pagelinks_first_last', false);
+        $this->m_goToPreviousNext = Config::getGlobal('pagelinks_previous_next', true);
     }
 
     /**
@@ -68,11 +82,22 @@ class DataGridPaginator extends DataGridComponent
             $last = $pages;
         }
 
+        // go to first link
+        if ($this->m_goToFirstLast) {
+            if ($current > 1 && $last > $this->m_maxLinks) {
+                $title = $grid->text('first');
+                $url = $grid->getUpdateCall(array('atkstartat' => 0));
+                $links[] = array('type' => 'first', 'call' => $url, 'title' => $title);
+            }
+        }
+
         // previous link
-        if ($current > 1) {
-            $title = $grid->text('previous');
-            $url = $grid->getUpdateCall(array('atkstartat' => $offset - $limit));
-            $links[] = array('type' => 'previous', 'call' => $url, 'title' => $title);
+        if ($this->m_goToPreviousNext) {
+            if ($current > 1) {
+                $title = $grid->text('previous');
+                $url = $grid->getUpdateCall(array('atkstartat' => $offset - $limit));
+                $links[] = array('type' => 'previous', 'call' => $url, 'title' => $title);
+            }
         }
 
         // normal pagination links
@@ -87,10 +112,21 @@ class DataGridPaginator extends DataGridComponent
         }
 
         // next link
-        if ($current < $pages) {
-            $title = $grid->text('next');
-            $url = $grid->getUpdateCall(array('atkstartat' => $offset + $limit));
-            $links[] = array('type' => 'next', 'call' => $url, 'title' => $title);
+        if ($this->m_goToPreviousNext) {
+            if ($current < $pages) {
+                $title = $grid->text('next');
+                $url = $grid->getUpdateCall(array('atkstartat' => $offset + $limit));
+                $links[] = array('type' => 'next', 'call' => $url, 'title' => $title);
+            }
+        }
+
+        // go to last link
+        if ($this->m_goToFirstLast) {
+            if ($current < $pages && $pages != $last) {
+                $title = $grid->text('last');
+                $url = $grid->getUpdateCall(array('atkstartat' => ($pages - 1) * $limit));
+                $links[] = array('type' => 'last', 'call' => $url, 'title' => $title);
+            }
         }
 
         return $links;

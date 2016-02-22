@@ -99,6 +99,9 @@ class TimeAttribute extends Attribute
     function display($record)
     {
         $value = $record[$this->fieldName()];
+        if (!is_array($value)) {
+            return "";
+        }
         if ($value["hours"] === "") {
             return "";
         }

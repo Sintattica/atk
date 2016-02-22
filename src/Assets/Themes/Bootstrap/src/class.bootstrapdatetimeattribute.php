@@ -10,6 +10,14 @@ use Moment\CustomFormats\MomentJs;
 use Moment\MomentException;
 use Sintattica\Atk\Db\Query;
 
+/**
+ * Class bootstrapDateTimeAttribute
+ *
+ * @todo m_type: use dbFieldType? add it to constructor?
+ * @todo check localization
+ * @todo make input text read-only
+ * @todo unlock exact search mode in grid
+ */
 class bootstrapDateTimeAttribute extends Attribute
 {
     var $m_bootstrapdatetime_format_edit;

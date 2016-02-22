@@ -348,8 +348,8 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     protected function _applyPostedSearchMethodToQuery(Query $query)
     {
-        if (isset($this->m_postvars['atksearchmethod'])) {
-            $query->setSearchMethod($this->m_postvars['atksearchmethod']);
+        if (isset($this->_getNode()->m_postvars['atksearchmethod'])) {
+            $query->setSearchMethod($this->_getNode()->m_postvars['atksearchmethod']);
         }
     }
 

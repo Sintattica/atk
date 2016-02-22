@@ -1490,13 +1490,11 @@ class Node
         // Attributes can also add tabs to the tablist.
         $this->m_filledTabs = array();
         foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = $this->m_attribList[$attribname];
-            if ($p_attrib->hasFlag(Attribute::AF_HIDE)) {
-                continue;
-            } // attributes to which we don't have access are explicitly hidden
+            $p_attrib = &$this->m_attribList[$attribname];
+            if ($p_attrib->hasFlag(Attribute::AF_HIDE))
+                continue; // attributes to which we don't have access are explicitly hidden
 
-
-// Only display the attribute if the attribute
+            // Only display the attribute if the attribute
             // resides on at least on visible tab
             for ($i = 0, $_i = sizeof($p_attrib->m_tabs); $i < $_i; $i++) {
                 if ((is_array($list) && in_array($p_attrib->m_tabs[$i],
@@ -1828,6 +1826,10 @@ class Node
             $sm->pageVar("descriptor", $descr);
         }
 
+        // we want to show only the action title of the current record, not the previous in the stack (in the past was 3);
+        // in the breadcrumb we now show the descriptor of the previous records as tooltip of hyperlinks (v. actionpage.tpl)
+        $maxel = 1;
+
         $descriptortrace = $sm->descriptorTrace();
         $nomodule = false;
         if (!empty($descriptortrace)) {
@@ -1835,15 +1837,16 @@ class Node
             $descrtrace = "";
             // only show the last 3 elems
             $cnt = count($descriptortrace);
-            if ($cnt > 3) {
+            if ($maxel > 1 && $cnt > $maxel) {
                 $descrtrace = "... - ";
             }
-            for ($i = max(0, $cnt - 3), $_i = $cnt; $i < $_i; $i++) {
+            for ($i = max(0, $cnt - $maxel), $_i = $cnt; $i < $_i; $i ++) {
                 $desc = $descriptortrace[$i];
                 $descrtrace .= htmlentities($desc, ENT_COMPAT) . " - ";
             }
             $res = $descrtrace . $res;
         }
+
         if (is_object($ui)) {
             $res .= $ui->nodeTitle($this, $action, $nomodule);
         }
@@ -4461,8 +4464,10 @@ class Node
      * Why isn't this used more often???
      *
      * @param string $filter The filter expression to validate
-     * @returns String Returns $filter if the filter is valid or a empty
-     *                 string if not.
+     * @returns string Returns $filter if the filter is valid or a empty string if not.
+     *
+     * @todo Fails with brackets in filter (check regex in getFirstTargetFieldFromFilterSql function)
+     * @todo For multiple conditions (in AND/OR), it validates only the first one
      */
     public function validateFilter($filter)
     {

@@ -3,6 +3,8 @@
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Keyboard\Keyboard;
+use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Db\Query;
 
 /**
  * The ListAttribute class represents an attribute of a node
@@ -86,6 +88,15 @@ class ListAttribute extends Attribute
      * @var bool
      */
     private $m_multipleInSimpleSearch = false;
+
+    /**
+     * Use Quick[select] plugin (http://eggboxio.github.io/quick-select/) to expand the selection as a series of buttons.
+     * Comes handy when there are only a few options.
+     * (see expandAsButtons function)
+     *
+     * @var bool|array False (disabled), True (enabled with default options), Array of options
+     */
+    private $m_expandAsButtons = false;
 
     /**
      * Constructor.
@@ -226,7 +237,7 @@ class ListAttribute extends Attribute
     /**
      * Display's text version of Record
      * @param array $record
-     * @return text string of $record
+     * @return string of $record
      */
     function display($record)
     {
@@ -247,8 +258,9 @@ class ListAttribute extends Attribute
         if (isset($lookup[$value])) {
             if ($this->hasFlag(self::AF_NO_TRANSLATION)) {
                 $res = $lookup[$value];
-            } else {
-                $res = $this->text($lookup[$value]);
+            }
+            else {
+                $res = $this->text(array($this->fieldName() . '_' . $lookup[$value], $lookup[$value]));
             }
         }
         return $res;
@@ -261,7 +273,7 @@ class ListAttribute extends Attribute
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @param string $mode The mode we're in ('add' or 'edit')
-     * @return piece of html code with a checkbox
+     * @return string piece of html code with a checkbox
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
@@ -301,35 +313,60 @@ class ListAttribute extends Attribute
         $result .= '</select>';
         $result .= $this->getSpinner();
 
+        if ($this->m_expandAsButtons) {
+            // use Quick[select] plugin to expand the selection as a series of buttons
+            $page = $this->m_ownerInstance ? $this->m_ownerInstance->getPage() : Page::getInstance();
+            $page->register_script(Config::getGlobal("atkroot") . "atk/javascript/quickselect/jquery.quickselect.min.js");
+            $page->register_style(Config::getGlobal("atkroot") . "atk/javascript/quickselect/quickselect.css");
+            $options = json_encode($this->m_expandAsButtons);
+            $page->register_loadscript("
+                jQuery('#$id').quickselect($options);
+            ");
+        }
+
         return $result;
     }
 
     /**
-     * If this attribute is NOT obligatory
-     * Or if the attribute is obligatory and we set a config saying all obligatory lists should have a null item
-     * and we didn't add the flag self::AF_LIST_NO_OBLIGATORY_NULL_ITEM
-     * Or if the self::AF_LIST_OBLIGATORY_NULL_ITEM is set
-     * ... we add an empty list option
-     * @return The empty list option or an empty string
+     * Enable Quick[select] plugin (http://eggboxio.github.io/quick-select/) to expand the selection as a series of buttons.
+     *
+     * @param array Quick[select] Options (or null for default options)
+     */
+    function expandAsButtons($options = null)
+    {
+        if (!$options || !is_array($options)) {
+            $options = array();
+        }
+        $defaultOptions = array(
+            'activeButtonClass' => 'btn-primary atkdefaultbutton active',
+            'buttonClass' => 'btn btn-default',
+            'breakOutAll' => true,
+            'wrapperClass' => 'btn-group'
+        );
+
+        $this->m_expandAsButtons = array_merge($defaultOptions, $options);
+    }
+
+    /**
+     * Add an empty list option if appropriate.
+     * @return String The empty list option or an empty string
      */
     function _addEmptyListOption()
     {
         $ret = '';
 
         // use a different (more descriptive) text for obligatory items
-        $text_key = $this->hasFlag(self::AF_OBLIGATORY) ? "list_null_value_obligatory"
-            : "list_null_value";
+        $text_key = $this->hasFlag(self::AF_OBLIGATORY) ? "list_null_value_obligatory" : "list_null_value";
 
-        if (!$this->hasFlag(self::AF_LIST_NO_NULL_ITEM) ||
-            ($this->hasFlag(self::AF_OBLIGATORY) &&
-                // CONFIG IS DEPRECATED
-                ((Config::getGlobal("list_obligatory_null_item") && !$this->hasFlag(self::AF_LIST_NO_OBLIGATORY_NULL_ITEM)) ||
-                    ($this->hasFlag(self::AF_LIST_OBLIGATORY_NULL_ITEM))))
-        ) {
-            $ret = '<option value="' . $this->m_emptyvalue . '">' . htmlentities($this->text(array(
-                    $this->fieldName() . '_' . $text_key,
-                    $text_key
-                ))) . '</option>';
+        if (!$this->hasFlag(self::AF_LIST_NO_NULL_ITEM)) {
+            if (!$this->hasFlag(self::AF_OBLIGATORY) || (
+                    $this->hasFlag(self::AF_LIST_OBLIGATORY_NULL_ITEM) ||
+                    (Config::getGlobal("list_obligatory_null_item") && !$this->hasFlag(self::AF_LIST_NO_OBLIGATORY_NULL_ITEM))
+                )
+            ) {
+                $ret = '<option value="' . $this->m_emptyvalue . '">' . htmlentities($this->text(array(
+                            $this->fieldName() . '_' . $text_key, $text_key))) . '</option>';
+            }
         }
         return $ret;
     }
@@ -368,54 +405,56 @@ class ListAttribute extends Attribute
     function search($record = "", $extended = false, $fieldprefix = "", $grid = null, $notSelectFirst = false)
     {
         $values = $this->getValues($record);
-        $result = '<select class="form-control" ';
+        $result = '<select class="form-control"';
         if ($extended || $this->getMultipleInSimpleSearch()) {
-            $result .= 'multiple size="' . min(5, count($values) + 1) . '"';
+            if (count($values) > 2) {
+                $cnt = count($values) + ((!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_LIST_NO_NULL_ITEM)) ? 2 : 1);
+                $result .= ' multiple size="' . min(5, $cnt) . '"';
+            }
         }
 
         // if we use autosearch, register an onchange event that submits the grid
         if (!is_null($grid) && !$extended && $this->m_autoSearch) {
             $id = $this->getSearchFieldName($fieldprefix);
-            $result .= '  id="' . $id . '" ';
+            $result .= ' id="' . $id . '" ';
             $code = '$(\'' . $id . '\').observe(\'change\', function(event) { ' .
                 $grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractSearchOverrides') .
                 ' return false; });';
             $this->getOwnerInstance()->getPage()->register_loadscript($code);
         }
 
-        $result .= 'name="' . $this->getSearchFieldName($fieldprefix) . '[]">';
+        $result .= ' name="' . $this->getSearchFieldName($fieldprefix) . '[]">';
 
         $selValues = $record[$this->fieldName()];
-        if ($this->getMultipleInSimpleSearch() && is_array($selValues) && count($selValues) == 1 && strpos($selValues[0],
-                ',') !== false
-        ) {
+        if (!is_array($selValues)) {
+            $selValues = [$selValues];
+        }
+
+        if ($this->getMultipleInSimpleSearch() && count($selValues) == 1 && strpos($selValues[0], ',') !== false) {
             // in case of multiple select in simple search, we have the selected values into a single string (csv)
             $selValues = explode(',', $selValues[0]);
         }
 
-        // "search all" option has precedence (when another options are selected together)
+        // "search all" option
         if ($selValues[0] == '') {
-            $selValues = array('');
+            $selValues = array(''); // has precedence (even if another options are selected together)
+        }
+        $result .= sprintf('<option value=""%s>%s</option>',
+            (!$notSelectFirst && $selValues[0] == '') ? ' selected="selected"' : '',
+            Tools::atktext('search_all'));
+
+        // "none" option
+        if (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_LIST_NO_NULL_ITEM)) {
+            $result .= sprintf('<option value="__NONE__"%s>%s</option>',
+                Tools::atk_in_array('__NONE__', $selValues) ? ' selected="selected"' : '',
+                Tools::atktext('search_none'));
         }
 
-        if (!$notSelectFirst) {
-            if (!$selValues || (is_array($selValues) && count($selValues) == 1 && $selValues[0] == '')) {
-                $sel = "selected";
-            } else {
-                $sel = "";
-            }
-        }
-        $result .= '<option value="" ' . $sel . '>' . Tools::atktext('search_all');
-
+        // normal options
         foreach ($values AS $value) {
-
-            if (Tools::atk_in_array(((string)$value), $selValues, true) && $selValues !== "") {
-                $sel = "selected";
-            } else {
-                $sel = "";
-            }
-
-            $result .= '<option value="' . $value . '" ' . $sel . '>' . $this->_translateValue($value, $record);
+            $result .= sprintf('<option value="%s"%s>%s</option>', $value,
+                Tools::atk_in_array(((string) $value), $selValues, true) ? ' selected="selected"' : '',
+                $this->_translateValue($value, $record));
         }
 
         $result .= '</select>';
@@ -453,11 +492,21 @@ class ListAttribute extends Attribute
                 }
             }
 
-            if (count($value) == 1) { // exactly one value
-                $searchcondition = $query->exactCondition($table . "." . $this->fieldName(),
-                    $this->escapeSQL($value[0]));
-            } else { // search for more values using IN()
-                $searchcondition = $table . "." . $this->fieldName() . " IN ('" . implode("','", $value) . "')";
+            if (count($value) == 1 && $value[0]) { // exactly one value
+                if ($value[0] == "__NONE__") {
+                    return $query->nullCondition($table . "." . $this->fieldName(), true);
+                } else {
+                    return $query->exactCondition($table . "." . $this->fieldName(), $this->escapeSQL($value[0]));
+                }
+            } else if (count($value) > 1) { // search for more values
+                if (in_array('__NONE__', $value)) {
+                    unset($value[array_search('__NONE__', $value)]);
+                    return sprintf('(%s OR %s)',
+                        $query->nullCondition($table . "." . $this->fieldName(), true),
+                        $table . "." . $this->fieldName() . " IN ('" . implode("','", $value) . "')");
+                } else {
+                    return $table . "." . $this->fieldName() . " IN ('" . implode("','", $value) . "')";
+                }
             }
         }
         return $searchcondition;
@@ -544,7 +593,7 @@ class ListAttribute extends Attribute
      * All other values are converted to the first of the valueArray
      *
      * @param string $stringvalue The value to parse.
-     * @return Internal value (from valueArray)
+     * @return mixed Internal value (from valueArray)
      */
     function parseStringValue($stringvalue)
     {

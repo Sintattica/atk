@@ -132,7 +132,7 @@ class BootstrapMenu extends Menu
 
     function _getMenuTitle($item, $append = "")
     {
-        return htmlentities($this->getMenuTranslation($item['name'], $item['module'])) . $append;
+        return (string)$this->getMenuTranslation($item['name'], $item['module']) . $append;
     }
 
 }

@@ -506,7 +506,7 @@ class DateAttribute extends Attribute
      * @param string $postfix
      * @param string $mode The mode ('add' or 'edit')
      * @param bool $obligatory Is this field obligatory or not
-     * @return Piece a of HTML Code
+     * @return string Piece a of HTML Code
      */
     function draw($record = "", $fieldprefix = "", $postfix = "", $mode = "", $obligatory = false)
     {
@@ -588,16 +588,16 @@ class DateAttribute extends Attribute
         }
 
         /* minimum date */
-        $minimum = $this->m_date_min;
-        if ($minimum != 0 && $mode != 'search') {
+        $minimum = $mode != 'search' ? $this->m_date_min : 0;
+        if ($minimum != 0) {
             $str_min = adodb_date("Ymd", $minimum);
         } else {
             $str_min = 0;
         }
 
         /* maximum date */
-        $maximum = $this->m_date_max;
-        if ($maximum != 0 && $mode != 'search') {
+        $maximum = $mode != 'search' ? $this->m_date_max : 0;
+        if ($maximum != 0) {
             $str_max = adodb_date("Ymd", $maximum);
         } else {
             $str_max = 0;
@@ -636,8 +636,8 @@ class DateAttribute extends Attribute
                 $str_script = $this->getHtmlId($fieldprefix) . '_onChange(this);';
             }
             $this->registerKeyListener($fieldname, Keyboard::KB_CTRLCURSOR | Keyboard::KB_LEFTRIGHT);
-            $result = '<select id="' . $fieldname . '" name="' . $fieldname . '" onChange="' . $str_script . '">';
-            for ($i = $str_min; $i <= $str_max; $i++) {
+            $result = '<select id="' . $fieldname . '" name="' . $fieldname . '" onChange="' . $str_script . '" class="form-control">';
+            for ($i = $str_min; $i <= $str_max; $i ++) {
                 $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, substr($i, 4, 2), substr($i, 6, 2), substr($i, 0, 4)));
                 $result .= '<option value="' . $i . '"' . ($current !== null && $tmp_date[0] == $current[0]
                         ? ' selected' : '') . '>' . $this->formatDate($tmp_date, $str_format,
@@ -879,7 +879,7 @@ class DateAttribute extends Attribute
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
-     * @return piece of HTML code
+     * @return string piece of HTML code
      */
     function search($record = "", $extended = false, $fieldprefix = "")
     {
@@ -933,13 +933,23 @@ class DateAttribute extends Attribute
         // If we search through datagrid we got no from/to values
         // Therefore we will simulate them
         if (!is_array($value)) {
-            // exact: ex. "d/m/yyyy", "d/m/yy", "d/m" (use current year)
+            // exact: ex. "d/m/yyyy", "d/m/yy", "d/m" (use current year), "m/yyyy" (from 1 to number of days in month), "yyyy" (from 1/1 to 31/12)
             // between: two values divided by "-"
             // >=: one value followed by "-" // TODO using ">" and ">="
             // <=: one value preceded by "-" // TODO using "<" and "<="
+            $value = trim($value);
             if (strpos($value, '-') !== false) {
                 list($from, $to) = explode('-', $value);
                 $value = array('from' => trim($from), 'to' => trim($to));
+            } else if (strlen($value) == 4 && is_numeric($value)) {
+                $value = array('from' => "$value-01-01", 'to' => "$value-12-31");
+            } else if (!is_numeric($value) && substr_count($value, '/') == 1 && (strlen($value) == 6 || strlen($value) == 7)) {
+                $value = explode('/', $value);
+                // if we always set the day to 31, the framework somewhere modifies the query for months with less than 31 days
+                // eg. '2015-09-31' becomes '2015-10-01'
+                $daysInMonth = self::daysInMonth($value[0], $value[1]);
+                $value = $value[1] . '-' . $value[0];
+                $value = array('from' => "$value-01", 'to' => "$value-$daysInMonth");
             } else {
                 $value = array('from' => $value, 'to' => $value);
             }
@@ -1528,6 +1538,23 @@ class DateAttribute extends Attribute
     public function getYearSorting()
     {
         return $this->m_year_sorting;
+    }
+
+    /**
+     * Returns the number of days in a given month and year
+     * see also http://php.net/manual/en/function.cal-days-in-month.php#38666
+     *
+     * @param int $month (1-12)
+     * @param int $year
+     * @return int the length in days of the selected month in the given calendar
+     */
+    static function daysInMonth($month, $year)
+    {
+        if (function_exists('cal_days_in_month')) {
+            // the php calendar extension is installed so we use it
+            return cal_days_in_month(CAL_GREGORIAN, $month, $year);
+        }
+        return $month == 2 ? ($year % 4 ? 28 : ($year % 100 ? 29 : ($year % 400 ? 28 : 29))) : (($month - 1) % 7 % 2 ? 30 : 31);
     }
 
 }

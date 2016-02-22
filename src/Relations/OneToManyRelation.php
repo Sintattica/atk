@@ -681,7 +681,7 @@ class OneToManyRelation extends Relation
             for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++) {
                 $primkeyattr = $this->m_ownerInstance->m_attribList[$ownerfields[$i]];
                 $value = $primkeyattr->value2db($record);
-                if (!$value) {
+                if (!strlen($value))
                     continue;
                 }
 
@@ -690,7 +690,7 @@ class OneToManyRelation extends Relation
         } else {
             for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++) {
                 $value = $record[$ownerfields[$i]];
-                if (!$value) {
+                if (!strlen($value))
                     continue;
                 }
 

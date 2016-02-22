@@ -22,6 +22,7 @@ class NumberAttribute extends Attribute
     var $m_use_thousands_separator = false; // use the thousands separator when formatting a number
     var $m_decimalseparator;
     var $m_thousandsseparator;
+    var $m_trailingzeros = false; // Show trailing zeros
 
     // ids of separators in atk language file
     const SEPARATOR_DECIMAL = 'decimal_separator';
@@ -265,6 +266,16 @@ class NumberAttribute extends Attribute
     }
 
     /**
+     * Set showing/hiding of trailing zeros
+     *
+     * @param bool $value
+     */
+    public function setTrailingZeros($value)
+    {
+        $this->m_trailingzeros = $value;
+    }
+
+    /**
      * Formats the number based on setting in the language file
      *
      * @param float $number number
@@ -301,6 +312,15 @@ class NumberAttribute extends Attribute
         if ($number < 0) {
             $r = '-' . $r;
         }
+
+        if (!$this->m_trailingzeros) {
+            // remove trailing zeros
+            if (strpos($r, $decimalSeparator)) {
+                $r = rtrim($r, '0');
+                $r = rtrim($r, $decimalSeparator);
+            }
+        }
+
         return $r;
     }
 
@@ -544,18 +564,14 @@ class NumberAttribute extends Attribute
         if (!$extended) {
             if (is_array($value)) { // values entered in the extended search
                 // TODO we would need to know the searchmode for better handling...
-                if ($value["from"] !== "" && $value["to"] !== "") {
+                if ($value["from"] != "" && $value["to"] != "") {
                     $value = $value["from"] . "/" . $value["to"];
+                } else if ($value["from"] != "") {
+                    $value = $value["from"];
+                } else if ($value["to"] != "") {
+                    $value = $value["to"];
                 } else {
-                    if ($value["from"] !== "") {
-                        $value = $value["from"];
-                    } else {
-                        if ($value["to"] !== "") {
-                            $value = $value["to"];
-                        } else {
-                            $value = "";
-                        }
-                    }
+                    $value = "";
                 }
             }
 
@@ -607,14 +623,14 @@ class NumberAttribute extends Attribute
                 list($from, $to) = explode('/', $value);
                 $from = self::removeSeparators(trim($from));
                 $to = self::removeSeparators(trim($to));
-                $from = is_numeric($from) ? (float)$from : '';
-                $to = is_numeric($to) ? (float)$to : '';
+                $from = is_numeric($from) ? $from : '';
+                $to = is_numeric($to) ? $to : '';
                 $processed = array('from' => $from, 'to' => $to);
                 $searchmode = 'between';
             } else { // single value
                 $value = self::removeSeparators($value);
                 if (is_numeric($value)) {
-                    $processed['from'] = (float)$value;
+                    $processed['from'] = $value;
                 } else {
                     $processed = array();
                 }
@@ -622,7 +638,8 @@ class NumberAttribute extends Attribute
         } else {
             // assumes array('from'=><intval>, 'to'=><intval>)
             foreach ($value as $key => $search) {
-                $processed[$key] = self::removeSeparators($search);
+                $v = self::removeSeparators($search);
+                $processed[$key] = is_numeric($v) ? $v : '';
             }
         }
 
@@ -639,23 +656,18 @@ class NumberAttribute extends Attribute
      */
     function getBetweenCondition(&$query, $fieldname, $value)
     {
-        if ($value["from"] !== "" && $value["to"] !== "") {
+        if ($value["from"] != "" && $value["to"] != "") {
             if ($value["from"] > $value["to"]) {
                 // User entered fields in wrong order. Let's fix that.
                 $tmp = $value["from"];
                 $value["from"] = $value["to"];
                 $value["to"] = $tmp;
             }
-            return $query->betweenCondition($fieldname, $this->escapeSQL($value["from"]),
-                $this->escapeSQL($value["to"]));
-        } else {
-            if ($value["from"] !== "" && $value["to"] === "") {
-                return $query->greaterthanequalCondition($fieldname, $value["from"]);
-            } else {
-                if ($value["from"] === "" && $value["to"] !== "") {
-                    return $query->lessthanequalCondition($fieldname, $value["to"]);
-                }
-            }
+            return $query->betweenCondition($fieldname, $this->escapeSQL($value["from"]), $this->escapeSQL($value["to"]));
+        } else if ($value["from"] != "" && $value["to"] == "") {
+            return $query->greaterthanequalCondition($fieldname, $value["from"]);
+        } else if ($value["from"] == "" && $value["to"] != "") {
+            return $query->lessthanequalCondition($fieldname, $value["to"]);
         }
 
         return false;
@@ -680,14 +692,12 @@ class NumberAttribute extends Attribute
         $value = $this->processSearchValue($value, $searchmode);
 
         if ($searchmode != 'between') {
-            if ($value['from'] !== '') {
+            if ($value['from'] != '') {
                 $value = $value['from'];
+            } else if ($value['to'] != '') {
+                $value = $value['to'];
             } else {
-                if ($value['to'] !== '') {
-                    $value = $value['to'];
-                } else {
-                    return false;
-                }
+                return false;
             }
             return parent::getSearchCondition($query, $table, $value, $searchmode);
         } else {

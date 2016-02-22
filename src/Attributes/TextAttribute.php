@@ -125,8 +125,7 @@ class TextAttribute extends Attribute
         }
 
 
-        (isset($record[$this->fieldName()])) ? $text = $record[$this->fieldName()]
-            : $text = "";
+        $text = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : "";
 
         if ($this->m_cols != 0) {
             $cols = $this->m_cols;
@@ -139,7 +138,6 @@ class TextAttribute extends Attribute
         if ($rows == "" || $rows == 0) {
             $rows = 10;
         }
-        // watch out, $maxsize isn't supported for a textarea.
 
         if ($this->m_autoadjust) {
             $this->doAutoAdjust(htmlspecialchars($text), $rows, $cols);
@@ -147,15 +145,19 @@ class TextAttribute extends Attribute
 
         $this->registerJavaScriptObservers($id);
 
-        $result = "<textarea id='$id' name='$id' wrap='" . $this->getWrapMode() . "' ";
+        $result = sprintf('<textarea id="%s" name="%s" wrap="%s" ', $id, $id, $this->getWrapMode());
         if ($rows) {
-            $result .= "rows='$rows' ";
+            $result .= 'rows="' . $rows . '" ';
         }
         if ($cols) {
-            $result .= "cols='$cols' ";
+            $result .= 'cols="' . $cols . '" ';
+        }
+        if ($this->m_maxsize > 0) {
+            $result .= 'maxlength="' . $this->m_maxsize . '" '; // now supported in HTML5
         }
         $result .= $this->getCSSClassAttribute(array('form-control'));
         $result .= ">\n" . htmlspecialchars($text) . "</textarea>";
+
         return $result;
     }
 
@@ -249,6 +251,9 @@ class TextAttribute extends Attribute
     function fetchMeta($metadata)
     {
         $this->m_dbfieldtype = $metadata[$this->fieldName()]["gentype"];
+        if ($this->m_dbfieldtype == 'string') {
+            parent::fetchMeta($metadata);
+        }
     }
 
     /**
@@ -288,7 +293,6 @@ class TextAttribute extends Attribute
             $cols = $maxlinechars;
         }
     }
-
 }
 
 

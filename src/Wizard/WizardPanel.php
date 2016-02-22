@@ -143,8 +143,8 @@ class WizardPanel
                 $handlerName = $this->m_actionHandlers[$i]['name'];
                 $handlerAction = $this->m_actionHandlers[$i]['action'];
 
-                $handler = &new $handlerName();
-                Module::atkRegisterNodeHandler($this->m_node->m_type, $handlerAction, $handler);
+                $handler = new $handlerName();
+                atkRegisterNodeHandler($this->m_node->m_type, $handlerAction, $handler);
             }
 
             //All nodes should return the output and not try to fill the screen themselves

@@ -366,7 +366,17 @@ class Page
      */
     function head()
     {
-        $res = '';
+        $res = "<head>\n  <title>$title</title>\n";
+
+        $version = atkversion();
+        $res.= '  <meta name="atkversion" content="' . $version . '" />' . "\n";
+
+        $res.= '  <meta http-equiv="Content-Type" content="text/html; charset="utf-8" />' . "\n";
+        $res.= '  <meta name="viewport" content="width=device-width, initial-scale=1">';
+        $res.= '  <meta http-equiv="X-UA-Compatible" content="IE=edge">';
+        if ($extra_header != "")
+            $res.= $extra_header . "\n";
+
         $this->addMeta($res);
         $this->addScripts($res);
         $this->addStyles($res);
@@ -461,8 +471,8 @@ class Page
 
         for ($i = 0, $_i = count($this->m_submitscripts); $i < $_i; $i++) {
             $res .= "      retval = " . $this->m_submitscripts[$i] . "\n";
-            $res .= "      if (retval!=true) {\n";
-            $res .= "        if(typeof(postGlobalSubmit) == 'function'){\n";
+            $res .= "      if (retval != true) {\n";
+            $res .= "        if (typeof(postGlobalSubmit) == 'function') {\n";
             $res .= "           return postGlobalSubmit(form, bag, retval, standardSubmit);\n";
             $res .= "        }\n";
             $res .= "        return false;\n";
@@ -587,7 +597,7 @@ class Page
     function render($title = null, $flags = self::HTML_STRICT, $extrabodyprops = "", $extra_header = "")
     {
         if ($title == null) {
-            $title = $this->m_title;
+            $title = $this->m_title != '' ? $this->m_title : atkText('app_title');
         }
 
         $ui = Ui::getInstance();

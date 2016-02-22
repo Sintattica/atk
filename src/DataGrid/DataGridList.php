@@ -389,8 +389,7 @@ class DataGridList extends DataGridComponent
                             $link);
                     }
                     if (!$icon) {
-                        $icon = $theme->getIcon(strtolower($name), "recordlist", $grid->getNode()->m_module, '', null,
-                            $link, array('test' => 'ciao'));
+                        $icon = $theme->getIcon(strtolower($name), "recordlist", $grid->getNode()->m_module, '', null, $link);
                     }
                     if ($icon) {
                         $link = $icon;

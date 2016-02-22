@@ -298,7 +298,7 @@ class EditHandler extends ViewEditBase
         $formIdentifier = ((isset($this->m_partial) && $this->m_partial != "")) ? "dialogform"
             : "entryform";
         $formstart = '<form id="' . $formIdentifier . '" name="' . $formIdentifier . '" enctype="multipart/form-data" action="' . $controller->getPhpFile() . '?' . SID . '"' .
-            ' method="post" onsubmit="return globalSubmit(this,false)" class="form-horizontal" role="form">' .
+            ' method="post" onsubmit="return globalSubmit(this,false)" class="form-horizontal" role="form" autocomplete="off">' .
             $sm->formState($this->getUpdateSessionStatus());
 
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkaction" value="' . $this->getUpdateAction() . '" />';
@@ -569,9 +569,10 @@ class EditHandler extends ViewEditBase
             }
             $pk_err_msg = '';
             if (count($pk_err_attrib) > 0) { // Make primary key error message
+                $pk_err_msg = '';
                 for ($i = 0; $i < count($pk_err_attrib); $i++) {
-                    $pk_err_msg .= Tools::atktext($pk_err_attrib[$i], $node->m_module);
-                    if (($i + 1) < count($pk_err_attrib)) {
+                    $pk_err_msg .= Tools::atktext($pk_err_attrib[$i], $node->m_module, $node->m_type);
+                    if (($i + 1) < count($pk_err_attrib)){
                         $pk_err_msg .= ", ";
                     }
                 }

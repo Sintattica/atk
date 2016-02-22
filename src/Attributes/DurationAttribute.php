@@ -85,10 +85,10 @@ class DurationAttribute extends Attribute
      */
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
-        $id = $fieldprefix . $this->fieldName();
+        $id = $fieldprefix . $this->formName();
         $fieldvalue = Tools::atkArrayNvl($record, $this->fieldName(), "");
         if (!$this->hasFlag(self::AF_DURATION_STRING)) {
-            $result = '';
+            $result = '<div class="form-inline">';
             if ($this->m_maxtime_min >= 60) {
                 $curhours = $this->_getHourPart($fieldvalue);
                 $curminutes = $this->_getMinutePart($fieldvalue);
@@ -108,7 +108,6 @@ class DurationAttribute extends Attribute
                 }
                 $result .= '</select>';
             }
-
             if ($this->m_maxtime_min >= 1 && $this->m_resolution_min < 60) {
                 $this->registerKeyListener($id . '_minutes', Keyboard::KB_CTRLCURSOR | Keyboard::KB_LEFTRIGHT);
                 $result .= '&nbsp;<select id="' . $id . '_minutes" name="' . $fieldprefix . $this->fieldName() . '[minutes]" class="form-control">';
@@ -126,6 +125,7 @@ class DurationAttribute extends Attribute
                 }
                 $result .= '</select>';
             }
+            $result .= '</div>';
         } else {
             $curval = ($fieldvalue > 0) ? $this->_minutes2string($fieldvalue) : '';
             $result = '<input type="text" name="' . $fieldprefix . $this->fieldName() .
@@ -266,7 +266,7 @@ class DurationAttribute extends Attribute
      */
     function fetchValue($rec)
     {
-        if ($this->hasFlag(self::AF_DURATION_STRING)) {
+        if ($this->hasFlag(self::AF_DURATION_STRING) || !is_array($rec[$this->fieldName()])) {
             return $this->_string2minutes($rec[$this->fieldName()]);
         } else {
             return $rec[$this->fieldName()]["hours"] * 60 + $rec[$this->fieldName()]["minutes"];
@@ -284,5 +284,3 @@ class DurationAttribute extends Attribute
     }
 
 }
-
-
