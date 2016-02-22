@@ -254,7 +254,7 @@ class SecurityManager
         $md5 = false; // PHP_SecurityManager::AUTH_PW is plain text..
         // first check if we want to logout
         if (isset($ATK_VARS["atklogout"]) && (!isset($session["relogin"]) || $session["relogin"] != 1)) {
-            $this->notifyListeners("preLogout", $auth_user);
+            $this->notifyListeners("preLogout", isset($currentUser['name']) ? $currentUser['name'] : $auth_user);
             $currentUser = SecurityManager::atkGetUser();
 
             // Let the authentication plugin know about logout too.
@@ -272,7 +272,7 @@ class SecurityManager
                 }
             }
 
-            $this->notifyListeners("postLogout", $auth_user);
+            $this->notifyListeners("postLogout", isset($currentUser['name']) ? $currentUser['name'] : $auth_user);
 
             if ($ATK_VARS["atklogout"] > 1) {
                 header("Location: logout.php");
