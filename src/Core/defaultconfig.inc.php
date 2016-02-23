@@ -628,7 +628,7 @@ $config_defaultlanguage = "en";
  *
  * @var String
  */
-$config_language_basedir = "Languages/";
+$config_language_basedir = "languages/";
 
 /**
  * Use browser language to detect application language.

@@ -1,18 +1,15 @@
 <?php namespace Sintattica\Atk\Ui;
 
-use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Security\SecurityManager;
-use Sintattica\Atk\Session\SessionManager;
-use Sintattica\Atk\Core\Menu;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Menu;
+use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Core\Controller;
 
-
-
 /**
  * Class that generates an index page.
- * @author Boy Baukema <boy@ibuildings.nl>
  * @package atk
  * @subpackage ui
  */
@@ -42,7 +39,6 @@ class IndexPage
      * @var array
      */
     var $m_user;
-
     var $m_topsearchpiece;
     var $m_topcenterpiecelinks;
     var $m_title;
@@ -72,8 +68,10 @@ class IndexPage
         $this->m_theme = Theme::getInstance();
         $this->m_output = Output::getInstance();
         $this->m_user = SecurityManager::atkGetUser();
-        $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? Page::HTML_PARTIAL : Page::HTML_STRICT;
+        $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? Page::HTML_PARTIAL
+            : Page::HTML_STRICT;
         $this->m_noNav = isset($ATK_VARS['atknonav']);
+        $this->m_extraheaders = $this->m_ui->render('index_meta.tpl');
     }
 
     /**
@@ -95,7 +93,6 @@ class IndexPage
     {
         if (!$this->hasFlag(Page::HTML_PARTIAL) && !$this->m_noNav) {
             $this->atkGenerateTop();
-            $this->atkGenerateMenu();
         }
 
         $this->atkGenerateDispatcher();
@@ -116,6 +113,8 @@ class IndexPage
      */
     function atkGenerateMenu()
     {
+        /* general menu stuff */
+        /* load menu layout */
         $menu = Menu::getInstance();
 
         if (is_object($menu)) {
@@ -136,13 +135,15 @@ class IndexPage
         $this->m_page->register_style($this->m_theme->stylePath("style.css"));
         $this->m_page->register_style($this->m_theme->stylePath("top.css"));
 
-        //Backwards compatible $content, that is what will render when the box.tpl is used instead of a top.tpl
-        $loggedin = Tools::atktext("logged_in_as", "atk") . ": <b>" . ($this->m_user["name"]
-                ? $this->m_user['name'] : 'administrator') . "</b>";
-        $content = '<br />' . $loggedin . ' &nbsp; <a href="' . $logoutLink . '">' . ucfirst(Tools::atktext("logout")) . ' </a>&nbsp;<br /><br />';
+        /* load menu layout */
+        $menuObj = Menu::getInstance();
+        $menu = null;
+
+        if (is_object($menuObj)) {
+            $menu = $menuObj->getMenu();
+        }
 
         $top = $this->m_ui->renderBox(array(
-            "content" => $content,
             "logintext" => Tools::atktext("logged_in_as"),
             "logouttext" => ucfirst(Tools::atktext("logout", "atk")),
             "logoutlink" => $logoutLink,
@@ -150,8 +151,10 @@ class IndexPage
             "centerpiece_links" => $this->m_topcenterpiecelinks,
             "searchpiece" => $this->m_topsearchpiece,
             "title" => ($this->m_title != "" ? $this->m_title : Tools::atktext("app_title")),
+            "app_title" => Tools::atktext("app_title"),
             "user" => ($this->m_username ? $this->m_username : $this->m_user["name"]),
-            "fulluser" => $this->m_user
+            "fulluser" => $this->m_user,
+            "menu" => $menu
         ), "top");
         $this->m_page->addContent($top);
     }
@@ -225,6 +228,7 @@ class IndexPage
         global $ATK_VARS;
         $session = &SessionManager::getSession();
 
+
         if ($session["login"] != 1) {
             // no nodetype passed, or session expired
             $this->m_page->register_style($this->m_theme->stylePath("style.css"));
@@ -264,10 +268,12 @@ class IndexPage
                     // using dispatch_url to redirect to the node
                     $isIndexed = array_values($this->m_defaultDestination) === $this->m_defaultDestination;
                     if ($isIndexed) {
-                        $destination = Tools::dispatch_url($this->m_defaultDestination[0], $this->m_defaultDestination[1],
+                        $destination = Tools::dispatch_url($this->m_defaultDestination[0],
+                            $this->m_defaultDestination[1],
                             $this->m_defaultDestination[2] ? $this->m_defaultDestination[2] : array());
                     } else {
-                        $destination = Tools::dispatch_url($this->m_defaultDestination["atknodetype"], $this->m_defaultDestination["atkaction"],
+                        $destination = Tools::dispatch_url($this->m_defaultDestination["atknodetype"],
+                            $this->m_defaultDestination["atkaction"],
                             $this->m_defaultDestination[0] ? $this->m_defaultDestination[0] : array());
                     }
                     header('Location: ' . $destination);
@@ -276,8 +282,10 @@ class IndexPage
                     $this->m_page->register_style($this->m_theme->stylePath("style.css"));
                     $box = $this->m_ui->renderBox(array(
                         "title" => Tools::atktext("app_shorttitle"),
-                        "content" => "<br /><br />" . Tools::atktext("app_description") . "<br /><br />"
+                        "content" => Tools::atktext("app_description")
                     ));
+
+                    $box = '<div class="container-fluid">' . $box . '</div>';
 
                     $this->m_page->addContent($box);
                 }
@@ -296,7 +304,4 @@ class IndexPage
             $this->m_defaultDestination = $destination;
         }
     }
-
 }
-
-

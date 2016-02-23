@@ -124,7 +124,8 @@ class Page
     {
         // register default scripts
         $assetsUrl = Config::getGlobal("assets_url");
-        $this->register_script($assetsUrl . "javascript/jquery-2.1.1.min.js");
+        $this->register_script($assetsUrl . "javascript/jquery/jquery.min.js");
+        $this->register_script($assetsUrl . "javascript/atk.min.js");
         $this->register_scriptcode('jQuery.noConflict();');
         $this->register_script($assetsUrl . "javascript/prototype/prototype.js");
         $this->register_script($assetsUrl . "javascript/prototype-ext.js");
@@ -362,21 +363,11 @@ class Page
     /**
      * Generate the HTML header (<head></head>) statement for the page,
      * including all scripts and styles.
-     * @return String The HTML pageheader, including <head> and </head> tags.
+     * @return string The HTML pageheader, including <head> and </head> tags.
      */
     function head()
     {
-        $res = "<head>\n  <title>$title</title>\n";
-
-        $version = atkversion();
-        $res.= '  <meta name="atkversion" content="' . $version . '" />' . "\n";
-
-        $res.= '  <meta http-equiv="Content-Type" content="text/html; charset="utf-8" />' . "\n";
-        $res.= '  <meta name="viewport" content="width=device-width, initial-scale=1">';
-        $res.= '  <meta http-equiv="X-UA-Compatible" content="IE=edge">';
-        if ($extra_header != "")
-            $res.= $extra_header . "\n";
-
+        $res = "";
         $this->addMeta($res);
         $this->addScripts($res);
         $this->addStyles($res);
@@ -597,7 +588,7 @@ class Page
     function render($title = null, $flags = self::HTML_STRICT, $extrabodyprops = "", $extra_header = "")
     {
         if ($title == null) {
-            $title = $this->m_title != '' ? $this->m_title : atkText('app_title');
+            $title = $this->m_title != '' ? $this->m_title : Tools::atkText('app_title');
         }
 
         $ui = Ui::getInstance();
@@ -618,7 +609,7 @@ class Page
         $layout = array();
         $layout['title'] = $title;
         if (Tools::hasFlag($flags, self::HTML_HEADER)) {
-            $layout['head'] = $this->head().$extra_header;
+            $layout['head'] = $this->head() . $extra_header;
         }
         if (Tools::hasFlag($flags, self::HTML_BODY)) {
             $layout['extrabodyprops'] = $extrabodyprops;

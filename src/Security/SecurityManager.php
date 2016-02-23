@@ -13,15 +13,6 @@ use Sintattica\Atk\Ui\Page;
 
 /**
  * The security manager for ATK applications.
- *
- * Don't instantiate this class yourself, use the global instance
- * that is returned by SecurityManager::getInstance() instead.
- *
- * @todo Make a real singleton with a getInstance class.
- *
- * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage security
  */
 class SecurityManager
 {
@@ -172,6 +163,7 @@ class SecurityManager
      * Regenerates a user password and sends it to his e-mail address
      *
      * @param string $username User for which the password should be regenerated
+     * @return bool
      */
     function mailPassword($username)
     {
@@ -210,7 +202,7 @@ class SecurityManager
         $userrecords[0][Config::getGlobal("auth_passwordfield")]["hash"] = md5($newpassword);
         $usernode->updateDb($userrecords[0], true, "", array(Config::getGlobal("auth_passwordfield")));
 
-        $db = &$usernode->getDB();
+        $db = $usernode->getDB();
         $db->commit();
 
         // Send an email containing the new password to user
@@ -218,6 +210,7 @@ class SecurityManager
         $body = Tools::atktext("auth_passwordmail_explanation", "atk") . "\n\n";
         $body .= Tools::atktext(Config::getGlobal("auth_userfield")) . ": " . $username . "\n";
         $body .= Tools::atktext(Config::getGlobal("auth_passwordfield")) . ": " . $newpassword . "\n";
+
         //TODO: replace with some mailer object
         mail($email, $subject, $body);
 

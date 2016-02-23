@@ -11,6 +11,7 @@ use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Session\SessionStore;
 use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Db\Query;
 use \Exception;
 
 /**
@@ -681,7 +682,7 @@ class OneToManyRelation extends Relation
             for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++) {
                 $primkeyattr = $this->m_ownerInstance->m_attribList[$ownerfields[$i]];
                 $value = $primkeyattr->value2db($record);
-                if (!strlen($value))
+                if (!strlen($value)) {
                     continue;
                 }
 
@@ -690,7 +691,7 @@ class OneToManyRelation extends Relation
         } else {
             for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++) {
                 $value = $record[$ownerfields[$i]];
-                if (!strlen($value))
+                if (!strlen($value)){
                     continue;
                 }
 
@@ -1210,6 +1211,7 @@ class OneToManyRelation extends Relation
      * @param mixed $searchmode The mode used when searching
      * @param string $field The name of the attribute
      * @param string $reftable
+     * @return string the search condition
      */
     function _callSearchConditionOnDestField(&$query, $table, $value, $searchmode, $field, $reftable)
     {
@@ -1221,6 +1223,7 @@ class OneToManyRelation extends Relation
 
             return $attr->getSearchCondition($query, $alias, $value, $searchmode);
         }
+        return '';
     }
 
     /**
@@ -1265,7 +1268,7 @@ class OneToManyRelation extends Relation
                     return Tools::atktext("restricted_delete_error");
                 }
             } else {
-                return;
+                return false;
             }
         }
         return true;

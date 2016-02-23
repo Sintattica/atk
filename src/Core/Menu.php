@@ -1,23 +1,30 @@
 <?php namespace Sintattica\Atk\Core;
 
-
-use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Ui\Page;
-use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Security\SecurityManager;
 
-/**
- * Menu class.
- *
- * @author Ber Dohmen <ber@ibuildings.nl>
- * @author Sandy Pleyte <sandy@ibuildings.nl>
- * @package atk
- * @subpackage menu
- */
 class Menu
 {
-
     protected $menuItems = array();
+
+    private $format_submenuparent = '
+            <li>
+                <a href="#">%s <span class="caret"></span></a>
+                <ul class="dropdown-menu">%s</ul>
+            <li>
+        ';
+
+
+    private $format_submenuchild = '
+            <li>
+                <a href="#">%s <span class="caret"></span></a>
+                <ul class="dropdown-menu">%s</ul>
+            <li>
+        ';
+
+    private $format_menu = '<ul class="nav navbar-nav">%s</ul>';
+
+    private $format_single = '<li><a href="%s">%s</a></li>';
 
     /**
      * Get new menu object
@@ -61,7 +68,6 @@ class Menu
         $page = Page::getInstance();
         $menu = $this->load();
         $page->addContent($menu);
-
         return $page->render("Menu", true);
     }
 
@@ -82,105 +88,33 @@ class Menu
      */
     function load()
     {
-        global $ATK_VARS;
-
-        $page = Page::getInstance();
-        $theme = Theme::getInstance();
-        $page->register_script(Config::getGlobal('assets_url') . 'javascript/dropdown_menu.js');
-        $page->register_style($theme->stylePath("atkdropdownmenu.css"));
-        $page->m_loadscripts[] = "new DHTMLListMenu('nav');";
-
-        $atkmenutop = array_key_exists('atkmenutop', $ATK_VARS) ? $ATK_VARS["atkmenutop"]
-            : 'main';
-        if (!is_array($this->menuItems[$atkmenutop])) {
-            $this->menuItems[$atkmenutop] = array();
-        }
-        usort($this->menuItems[$atkmenutop], array($this, "menu_cmp"));
-
-        $menu = "<div id=\"nav\">\n";
-
-        $menu .= "  <ul>\n";
-        foreach ($this->menuItems[$atkmenutop] as $menuitem) {
-            $menu .= $this->getMenuItem($menuitem, "    ");
-        }
-
-        $menu .= "  </ul>\n";
-
-        $menu .= "</div>\n";
-        return $menu;
+        $html_items = $this->parseItems($this->menuItems['main']);
+        $html_menu = $this->processMenu($html_items);
+        return sprintf($this->format_menu, $html_menu);
     }
 
-    /**
-     * Get a menu item
-     *
-     * @param string $menuitem
-     * @param string $indentation
-     * @return string The menu item
-     */
-    function getMenuItem($menuitem, $indentation = "")
+    private function processMenu($menu, $child = false)
     {
-        $enable = $this->isEnabled($menuitem);
-        $menu = '';
-        if ($enable) {
-            if (array_key_exists($menuitem['name'], $this->menuItems) && $this->menuItems[$menuitem['name']]) {
-                $submenu = $indentation . "<ul>\n";
-                foreach ($this->menuItems[$menuitem['name']] as $submenuitem) {
-                    $submenu .= $this->getMenuItem($submenuitem, $indentation);
+        $html = '';
+
+        foreach ($menu as $item) {
+            if ($this->isEnabled($item)) {
+                $url = $item['url'] ? $item['url'] : '#';
+                if ($this->_hasSubmenu($item)) {
+                    $a_content = $this->_getMenuTitle($item);
+                    $childHtml = $this->processMenu($item['submenu'], true);
+                    if ($child) {
+                        $html .= sprintf($this->format_submenuchild, $a_content, $childHtml);
+                    } else {
+                        $html .= sprintf($this->format_submenuparent, $a_content, $childHtml);
+                    }
+                } else {
+                    $a_content = $this->_getMenuTitle($item);
+                    $html .= sprintf($this->format_single, $url, $a_content);
                 }
-                $submenu .= $indentation . "</ul>\n";
-                $menu .= $indentation . $this->getItemHtml($menuitem, "\n" . $submenu . $indentation);
-            } else {
-                $menu .= $indentation . $this->getItemHtml($menuitem);
             }
         }
-        return $menu;
-    }
-
-    /**
-     * Get the HTML for a menu item
-     *
-     * @param string $menuitem
-     * @param string $submenu
-     * @param string $submenuname
-     * @return string The HTML for a menu item
-     */
-    function getItemHtml($menuitem, $submenu = '', $submenuname = '')
-    {
-        $delimiter = '<br />';
-
-        $name = $this->getMenuTranslation($menuitem['name'], $menuitem['module']);
-        if ($menuitem['name'] == '-') {
-            return "<li class=\"separator\"><div></div></li>\n";
-        }
-        if ($menuitem['url'] && substr($menuitem['url'], 0, 11) == 'javascript:') {
-            $href = '<a href="javascript:void(0)" onclick="' . htmlentities($menuitem['url']) . '; return false;">' . htmlentities($this->getMenuTranslation($menuitem['name'],
-                    $menuitem['module'])) . '</a>';
-        } else {
-            if ($menuitem['url']) {
-                $href = Tools::href($menuitem['url'], $this->getMenuTranslation($menuitem['name'], $menuitem['module']),
-                    SessionManager::SESSION_NEW);
-            } else {
-                $href = '<a href="#">' . $name . '</a>';
-            }
-        }
-
-        return "<li id=\"{$menuitem['module']}.{$menuitem['name']}\" class=\"$submenuname\">" . $href . $delimiter . $submenu . "</li>\n";
-    }
-
-
-    /**
-     * Compare two menuitems
-     *
-     * @param array $a
-     * @param array $b
-     * @return int
-     */
-    function menu_cmp($a, $b)
-    {
-        if ($a["order"] == $b["order"]) {
-            return 0;
-        }
-        return ($a["order"] < $b["order"]) ? -1 : 1;
+        return $html;
     }
 
 
@@ -207,7 +141,9 @@ class Menu
                 }
                 $enable = $enabled;
             } else {
-                if (array_key_exists($menuitem['name'], $this->menuItems) && is_array($this->menuItems[$menuitem['name']])) {
+                if (array_key_exists($menuitem['name'],
+                        $this->menuItems) && is_array($this->menuItems[$menuitem['name']])
+                ) {
                     $enabled = false;
                     foreach ($this->menuItems[$menuitem['name']] as $item) {
                         $enabled = $enabled || $this->isEnabled($item);
@@ -288,6 +224,32 @@ class Menu
                 : 0;
             $this->menuItems[$parent][] = $item;
         }
+    }
+
+    private function parseItems(&$items)
+    {
+        foreach ($items as &$item) {
+            $this->parseItem($item);
+        }
+        return $items;
+    }
+
+    private function parseItem(&$item)
+    {
+        if ($item['enable'] && array_key_exists($item['name'], $this->menuItems)) {
+            $item['submenu'] = $this->parseItems($this->menuItems[$item['name']]);
+            return $item;
+        }
+    }
+
+    function _hasSubmenu($item)
+    {
+        return isset($item['submenu']) && count($item['submenu']);
+    }
+
+    function _getMenuTitle($item, $append = "")
+    {
+        return (string)$this->getMenuTranslation($item['name'], $item['module']) . $append;
     }
 }
 

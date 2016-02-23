@@ -31,8 +31,10 @@ class ThemeCompiler
      */
     function compile($name)
     {
+
         // Process theme directory structure into data array.
         $data = $this->readStructure($name);
+
 
         // Write it to the compiled theme file
         if (count($data)) {
@@ -64,8 +66,10 @@ class ThemeCompiler
         $path = Config::getGlobal('theme_url');
         $abspath = Config::getGlobal('theme_dir');
 
+
         // First parse the themedef file for attributes
         if ($path != "" && file_exists($abspath . "/themedef.php")) {
+
             include($abspath . "/themedef.php");
 
             if (isset($theme)) {

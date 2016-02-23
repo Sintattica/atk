@@ -159,7 +159,7 @@ class PageBuilder
 
         $content = $this->getNode()->renderActionPage($this->m_title, $boxes);
 
-        $this->getNode()->addStyle('style.css');
+        $this->getNode()->addStyle("style.css");
         $this->getNode()->getPage()->addContent($content);
         return null;
     }

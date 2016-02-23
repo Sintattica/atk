@@ -90,9 +90,8 @@ class EmailAttribute extends Attribute
      *
      * @param  string $email e-mail address.
      * @return boolean e-mailaddress syntactically valid or not.
-     * @static
      */
-    function validateAddressSyntax($email)
+    static function validateAddressSyntax($email)
     {
         $email = strtolower($email); // to allow uppercase
         if (preg_match("/^[-_a-zA-Z0-9+]+(\.[-_a-zA-Z0-9+]+)*@([0-9a-z-]+\.)*([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,}$/",

@@ -1748,7 +1748,7 @@ class Tools
         if ($module == "") {
             $module = "main";
         }
-        $g_nodes[$module][$type] = array_merge($action, $tabs);
+        $g_nodes[$section][$module][$type] = array_merge($action, $tabs);
     }
 
 

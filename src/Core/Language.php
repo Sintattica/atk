@@ -37,7 +37,7 @@ class Language
      * @access private
      * @var String
      */
-    var $LANGDIR = "Languages/";
+    var $LANGDIR = "languages/";
 
     /**
      * Contains all currently loaded language strings.
@@ -500,7 +500,7 @@ class Language
     public function getLanguageDirForModule($module)
     {
         if ($module == "atk") {
-            $path = __DIR__ . '/../Assets/' . $this->LANGDIR;
+            $path = __DIR__ . '/../Resources/' . $this->LANGDIR;
         } else {
             if ($module == "langoverrides") {
                 $path = Config::getGlobal("language_basedir", $this->LANGDIR);

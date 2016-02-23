@@ -179,9 +179,9 @@ class Config
     {
         Tools::atkdebug("Loading config file for section $section");
         $config = array();
-        @include($dir . $section . ".inc.php");
+        @include($dir . $section . '.php');
 
-        $other = glob(Config::getGlobal("configdir") . "{$section}.*.inc.php");
+        $other = glob(Config::getGlobal("configdir") . "{$section}.*.php");
         if (is_array($other)) {
             foreach ($other as $file) {
                 include($file);
@@ -194,7 +194,7 @@ class Config
      * Is debugging enabled for client IP?
      *
      * @param array $params
-     * @static
+     * @return bool
      */
     function ipDebugEnabled($params)
     {
@@ -206,7 +206,7 @@ class Config
      * Is debugging enabled by special request variable?
      *
      * @param array $params
-     * @static
+     * @return bool
      */
     function requestDebugEnabled($params)
     {
