@@ -258,7 +258,7 @@ class ProfileAttribute extends Attribute
     }
 
     /**
-     * Returns a list of actions that should be edittable by the user.
+     * Returns a list of actions that should be editable by the user.
      *
      * @param array $record The record
      * @return array Array with editable actions
@@ -520,8 +520,6 @@ class ProfileAttribute extends Attribute
                 }
             }
         }
-
-        $result = '<div style="min-width: 700px">' . $result . '</div>';
 
         return $result;
     }

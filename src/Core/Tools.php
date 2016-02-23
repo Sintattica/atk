@@ -1728,7 +1728,7 @@ class Tools
      *              Note that tabs that every user may see need not be
      *              registered.
      */
-    public static function registerNode($node, $action, $tabs = array())
+    function registerNode($node, $action, $tabs = array(), $section = null)
     {
         global $g_nodes;
 
@@ -1748,6 +1748,10 @@ class Tools
         if ($module == "") {
             $module = "main";
         }
+        if ($section == null) {
+            $section = $module;
+        }
+
         $g_nodes[$section][$module][$type] = array_merge($action, $tabs);
     }
 
@@ -1839,7 +1843,8 @@ class Tools
         }
     }
 
-    static public function redirect($location, $exit = true){
+    static public function redirect($location, $exit = true)
+    {
         // The actual redirect.
         if (Config::getGlobal("debug") >= 2) {
             $debugger = Debugger::getInstance();

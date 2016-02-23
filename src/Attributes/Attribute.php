@@ -638,7 +638,14 @@ class Attribute
         $this->setAttribSize($size);
 
         // default class
-        $this->addCSSClass(get_class($this));
+        $this->addCSSClass($this->get_class_name());
+    }
+
+    function get_class_name()
+    {
+        $classname = get_class($this);
+        if ($pos = strrpos($classname, '\\')) return substr($classname, $pos + 1);
+        return $pos;
     }
 
     /**
