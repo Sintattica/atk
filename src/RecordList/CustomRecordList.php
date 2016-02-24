@@ -37,7 +37,7 @@ class CustomRecordList extends RecordList
      * @param Boolean $decode Should data be decoded or not (for exports)
      * @param string $fsep String to use between fields
      * @param string $rfeplace String for replacing line feeds in recordset field values (null = do not replace)
-     * @return String
+     * @return string|null
      */
     function render(
         &$node,
@@ -46,7 +46,7 @@ class CustomRecordList extends RecordList
         $sof,
         $eof,
         $eol,
-        $type = "0",
+        $type = 0,
         $compression = "",
         $suppressList = "",
         $outputparams = array(),
@@ -90,7 +90,7 @@ class CustomRecordList extends RecordList
                     $output .= $sof . $this->eolreplace($p_attrib->label(), $rfeplace) . $eof . $fsep;
 
                     // the totalisable check..
-                    if ($p_attrib->hasFlag(AF_TOTAL)) {
+                    if ($p_attrib->hasFlag(Attribute::AF_TOTAL)) {
                         $totalisable = true;
                     }
                 }
@@ -130,7 +130,7 @@ class CustomRecordList extends RecordList
                     $output .= $sof . ($value == "" ? $empty : $value) . $eof . $fsep;
 
                     // Calculate totals..
-                    if ($p_attrib->hasFlag(AF_TOTAL)) {
+                    if ($p_attrib->hasFlag(Attribute::AF_TOTAL)) {
                         $totals[$attribname] = $p_attrib->sum($totals[$attribname], $recordset[$i]);
                     }
                 }
@@ -154,7 +154,7 @@ class CustomRecordList extends RecordList
                 $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,
                         $suppressList));
                 if (!$this->isHidden($p_attrib) && !$musthide) {
-                    if ($p_attrib->hasFlag(AF_TOTAL)) {
+                    if ($p_attrib->hasFlag(Attribute::AF_TOTAL)) {
                         $value = $this->eolreplace($p_attrib->display($totals[$attribname], $this->m_mode), $rfeplace);
                         $totalRow .= $sof . ($value == "" ? $empty : $value) . $eof . $fsep;
                     } else {
@@ -192,6 +192,8 @@ class CustomRecordList extends RecordList
         } else {
             return $output;
         }
+
+        return null;
     }
 
     /**
@@ -202,13 +204,13 @@ class CustomRecordList extends RecordList
      */
     protected function isHidden(Attribute $attribute)
     {
-        if ($attribute->hasFlag(AF_HIDE)) {
+        if ($attribute->hasFlag(Attribute::AF_HIDE)) {
             return true;
         }
-        if ($attribute->hasFlag(AF_HIDE_SELECT) && $this->m_node->m_action === 'select') {
+        if ($attribute->hasFlag(Attribute::AF_HIDE_SELECT) && $this->m_node->m_action === 'select') {
             return true;
         }
-        if ($attribute->hasFlag(AF_HIDE_LIST) && ($this->m_node->m_action === 'export' || $this->m_mode === 'export')) {
+        if ($attribute->hasFlag(Attribute::AF_HIDE_LIST) && ($this->m_node->m_action === 'export' || $this->m_mode === 'export')) {
             return true;
         }
         return false;

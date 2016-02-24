@@ -1,5 +1,5 @@
 jQuery.noConflict();
-if (Prototype.BrowserFeatures.ElementExtensions) {
+if (Prototype && Prototype.BrowserFeatures.ElementExtensions) {
     var disablePrototypeJS = function (method, pluginsToDisable) {
             var handler = function (event) {
                 event.target[method] = undefined;

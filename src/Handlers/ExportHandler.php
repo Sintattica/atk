@@ -458,7 +458,7 @@ class ExportHandler extends ActionHandler
      */
     function getUsableAttributes()
     {
-        $selected = $value == 'new' ? false : true;
+        $selected = ($value == 'new') ? false : true;
 
         $criteria = array();
         if (!in_array($value, array('new', 'none', ''))) {
@@ -595,6 +595,7 @@ class ExportHandler extends ActionHandler
             }
             $recordset_new[] = $row;
         }
+
 
         $filename = 'export_' . strtolower(str_replace(' ', '_', $this->getUi()->nodeTitle($node)));
         $rl->render($node_bk, $recordset_new, "", $enclosure, $enclosure, "\r\n", 1, "", "",
