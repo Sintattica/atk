@@ -1,12 +1,14 @@
 <?php namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Core\Controller;
+use Sintattica\Atk\Relations\OneToOneRelation;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Utils\MessageQueue;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Relations\Relation;
+use Sintattica\Atk\Core\Config;
 
 
 /**
@@ -114,8 +116,6 @@ class ImportHandler extends ActionHandler
         $ui = $this->m_node->getUi();
         $page = $this->m_node->getPage();
 
-        $this->m_node->addStyle("style.css");
-
         $params = $this->m_node->getDefaultActionParams(false);
         $params['header'] = $this->invoke('importHeader', $phase);
         $params['formstart'] = $formStart;
@@ -169,7 +169,6 @@ class ImportHandler extends ActionHandler
 
     /**
      * This function shows a form to upload a .csv
-     * @param bool Always true
      */
     function doInit()
     {
@@ -289,9 +288,7 @@ class ImportHandler extends ActionHandler
                 $novalidatefirst) . '
         </div>';
 
-        $page = $this->m_node->getPage();
-        $theme = Theme::getInstance();
-        $page->register_style($theme->stylePath("recordlist.css"));
+
         $this->invoke('importPage', 'analyze', $content);
     }
 
@@ -322,7 +319,7 @@ class ImportHandler extends ActionHandler
                     $content .= "<tr><td colSpan=2>";
                     foreach ($errors as $error) {
                         if (!empty($error)) {
-                            $content .= "<span class=\"error\">" . text($error['msg']) . $error['spec'] . "</span><br />";
+                            $content .= "<span class=\"error\">" . Tools::atktext($error['msg']) . $error['spec'] . "</span><br />";
                         }
                     }
                     $content .= "</td></tr>";
@@ -361,8 +358,8 @@ class ImportHandler extends ActionHandler
         $content .= '<input type="hidden" name="fileid" value="' . $fileid . '">';
         $content .= '<input type="hidden" name="columncount" value="' . $columncount . '">';
         $content .= '<table border="0">';
-        $content .= '<tr><td>' . text("delimiter") . ': </td><td><input type="text" size="2" name="delimiter" value="' . htmlentities($delimiter) . '"></td></tr>';
-        $content .= '<tr><td>' . text("enclosure") . ': </td><td><input type="text" size="2" name="enclosure" value="' . htmlentities($enclosure) . '"></td></tr>';
+        $content .= '<tr><td>' . Tools::atktext("delimiter") . ': </td><td><input type="text" size="2" name="delimiter" value="' . htmlentities($delimiter) . '"></td></tr>';
+        $content .= '<tr><td>' . Tools::atktext("enclosure") . ': </td><td><input type="text" size="2" name="enclosure" value="' . htmlentities($enclosure) . '"></td></tr>';
         $content .= '<tr><td>' . Tools::atktext("import_detectedcolumns") . ': </td><td>' . $columncount . '</td></tr>';
         $content .= '<tr><td>' . Tools::atktext("import_detectedrows") . ': </td><td>' . $rowcount . '</td></tr>';
         $content .= '</table>';
@@ -782,14 +779,14 @@ class ImportHandler extends ActionHandler
     }
 
     /**
-     * Checks whether the attribute has the flag Attribute::AF_ONETOONE_INTEGRATE
+     * Checks whether the attribute has the flag OneToOneRelation::AF_ONETOONE_INTEGRATE
      * @param Object $attr The attribute to check
      * @return boolean    The result of the check
      */
     function integrateAttribute($attr)
     {
         return in_array(get_class($attr),
-            array("atkonetoonerelation", "atksecurerelation")) && $attr->hasFlag(Attribute::AF_ONETOONE_INTEGRATE);
+            array("atkonetoonerelation", "atksecurerelation")) && $attr->hasFlag(OneToOneRelation::AF_ONETOONE_INTEGRATE);
     }
 
     /**
@@ -1077,10 +1074,12 @@ class ImportHandler extends ActionHandler
 
         $count = count((array)$validated['validatedrecs']['add']) + count((array)$validated['validatedrecs']['update']);
         if ($count == 0) {
-            $messageQueue->addMessage(sprintf($this->m_node->text('no_records_to_import'), $count), MessageQueue::AMQ_GENERAL);
+            $messageQueue->addMessage(sprintf($this->m_node->text('no_records_to_import'), $count),
+                MessageQueue::AMQ_GENERAL);
         } else {
             if ($count == 1) {
-                $messageQueue->addMessage($this->m_node->text('successfully_imported_one_record'),  MessageQueue::AMQ_SUCCESS);
+                $messageQueue->addMessage($this->m_node->text('successfully_imported_one_record'),
+                    MessageQueue::AMQ_SUCCESS);
             } else {
                 $messageQueue->addMessage(sprintf($this->m_node->text('successfully_imported_x_records'), $count),
                     MessageQueue::AMQ_SUCCESS);
@@ -1364,7 +1363,7 @@ class ImportHandler extends ActionHandler
 
         foreach (array_keys($record) as $key) {
             $error = (is_array($record[$key]) && array_key_exists('atkerror',
-                        $record[$key]) && count($record[$key]['atkerror']) > 0);
+                    $record[$key]) && count($record[$key]['atkerror']) > 0);
         }
 
         if (isset($error)) {

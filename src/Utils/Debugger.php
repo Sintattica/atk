@@ -201,7 +201,6 @@ class Debugger
     {
         $page = Page::getInstance();
         $theme = Theme::getInstance();
-        $page->register_style($theme->stylePath("debugger.css"));
         $data = $this->getDebuggerData(false, $_REQUEST['atkstackid']);
         $res = $this->consoleControls() . '<br/><br/>';
         switch ($_REQUEST["action"]) {
@@ -541,16 +540,12 @@ class Debugger
            </script>';
         } else {
             $ui = Ui::getInstance();
-            $stylesheet = $ui->stylePath('atkdebug.css');
             $script = Config::getGlobal('assets_url') . 'javascript/class.atkdebug.js';
 
             $redirect = $this->renderRedirectLink();
 
             $output = '
           <script type="text/javascript" src="' . $script . '"></script>
-          <script type="text/javascript">
-            ATK.Debug.registerStylesheet("' . $stylesheet . '");
-          </script>
           <div id="atk_debugging_div">
             ' . $redirect . '
             ' . $block . '

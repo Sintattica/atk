@@ -17,6 +17,8 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap-sass": "^3.3.6"
+    "bootstrap-sass": "^3.3.6",
+    "moment": "momentjs#^2.11.2",
+    "font-awesome-sass": "^4.5.0"
   }
 }

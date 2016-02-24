@@ -270,7 +270,6 @@ class AttributeEditHandler extends ActionHandler
         $ui = $this->getUi();
         $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
         $page->register_script(Config::getGlobal('assets_url') . 'javascript/class.atkattributeedithandler.js');
-        $page->register_style($ui->stylePath("style.css"));
     }
 
     /**

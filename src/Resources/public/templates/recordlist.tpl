@@ -2,7 +2,7 @@
 {if isset($formstart)}{$formstart}{/if}
 
 <div class="recordListContainer">
-    <table id="{$listid}" class="table table-condensed recordList">
+    <table id="{$listid}" class="table table-bordered table-condensed recordList">
         <!-- header -->
         <tr>
             {section name=headerloop loop=$header}

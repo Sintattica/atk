@@ -555,9 +555,6 @@ class SecurityManager
         $page = Page::getInstance();
         $ui = Ui::getInstance();
 
-        $page->register_style($ui->stylePath("style.css"));
-        $page->register_style($ui->stylePath("login.css"));
-
         $page->register_script(Config::getGlobal('atkroot') . "atk/javascript/tools.js");
 
         $tplvars = Array();
@@ -582,7 +579,7 @@ class SecurityManager
             $tplvars["username"] = Tools::atktext("username");
             $tplvars["password"] = Tools::atktext("password");
             $tplvars["userfield"] = $userField;
-            $tplvars["passwordfield"] = '<input class="loginform" type="password" size="15" name="auth_pw" value="" />';
+            $tplvars["passwordfield"] = '<input class="loginform" type="password" size="20" name="auth_pw" value="" />';
             $tplvars["submitbutton"] = '<input name="login" class="button" type="submit" value="' . Tools::atktext('login') . '" />';
             $tplvars["title"] = Tools::atktext('login_form');
 
@@ -669,7 +666,7 @@ class SecurityManager
 
             return $userField;
         } else {
-            return '<input class="form-control loginform" type="text" size="15" id="auth_user" name="auth_user" value="' . htmlentities($defaultname) . '" />';
+            return '<input class="form-control loginform" type="text" size="20" id="auth_user" name="auth_user" value="' . htmlentities($defaultname) . '" />';
         }
     }
 

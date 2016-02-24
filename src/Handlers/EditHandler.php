@@ -137,7 +137,6 @@ class EditHandler extends ViewEditBase
         $page->register_script(Config::getGlobal("assets_url") . "javascript/formfocus.js");
         $page->register_loadscript("placeFocus();");
         $page->register_script(Config::getGlobal("assets_url") . "javascript/dhtml_formtools.js");
-        $page->register_style($ui->stylePath("style.css"));
     }
 
     /**

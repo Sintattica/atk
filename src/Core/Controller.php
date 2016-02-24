@@ -362,7 +362,6 @@ class Controller
     {
         $node = $this->getNode();
         $ui = &$node->getUi();
-        $node->addStyle("style.css");
         if (!is_array($content)) {
             $content = array($title => $content);
         }

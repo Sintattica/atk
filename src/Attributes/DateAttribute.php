@@ -667,7 +667,7 @@ class DateAttribute extends Attribute
         );
 
         if (!$this->m_simplemode) {
-            $result .= '<div class="form-inline"><script language="javascript">var atkdateattribute_' . $fieldname . ' = ' . JSON::encode($info) . ';</script>';
+            $result .= '<div class="'.$this->get_class_name().' form-inline"><script language="javascript">var atkdateattribute_' . $fieldname . ' = ' . JSON::encode($info) . ';</script>';
         }
 
         /* other date selections */
@@ -837,9 +837,6 @@ class DateAttribute extends Attribute
             $page->register_script(Config::getGlobal("assets_url") . "javascript/calendar/calendar.js");
             $page->register_script(Config::getGlobal("assets_url") . "javascript/calendar/calendar-runner.js");
             $page->register_script(Config::getGlobal("assets_url") . "javascript/calendar/lang/calendar-" . Config::getGlobal("language") . ".js");
-
-            $theme = Theme::getInstance();
-            $page->register_style($theme->stylePath("atkdateattribute.css"));
         }
     }
 

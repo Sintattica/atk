@@ -130,7 +130,6 @@ class SearchHandler extends AbstractSearchHandler
     {
         $node = $this->m_node;
 
-        $node->addStyle("style.css");
         $controller = Controller::getInstance();
         $controller->setNode($this->m_node);
 

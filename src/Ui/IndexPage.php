@@ -68,10 +68,12 @@ class IndexPage
         $this->m_theme = Theme::getInstance();
         $this->m_output = Output::getInstance();
         $this->m_user = SecurityManager::atkGetUser();
-        $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? Page::HTML_PARTIAL
-            : Page::HTML_STRICT;
+        $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? Page::HTML_PARTIAL : Page::HTML_STRICT;
         $this->m_noNav = isset($ATK_VARS['atknonav']);
         $this->m_extraheaders = $this->m_ui->render('index_meta.tpl');
+
+
+        $this->m_page->register_style($this->m_theme->stylePath("style.css"));
     }
 
     /**
@@ -132,8 +134,6 @@ class IndexPage
     {
         $logoutLink = Config::getGlobal('dispatcher') . '?atklogout=1';
 
-        $this->m_page->register_style($this->m_theme->stylePath("style.css"));
-        $this->m_page->register_style($this->m_theme->stylePath("top.css"));
 
         /* load menu layout */
         $menuObj = Menu::getInstance();
@@ -231,7 +231,6 @@ class IndexPage
 
         if ($session["login"] != 1) {
             // no nodetype passed, or session expired
-            $this->m_page->register_style($this->m_theme->stylePath("style.css"));
 
             $destination = "";
             if (isset($ATK_VARS["atknodetype"]) && isset($ATK_VARS["atkaction"])) {
@@ -279,7 +278,6 @@ class IndexPage
                     header('Location: ' . $destination);
                     exit;
                 } else {
-                    $this->m_page->register_style($this->m_theme->stylePath("style.css"));
                     $box = $this->m_ui->renderBox(array(
                         "title" => Tools::atktext("app_shorttitle"),
                         "content" => Tools::atktext("app_description")

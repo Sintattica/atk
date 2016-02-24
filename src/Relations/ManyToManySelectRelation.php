@@ -161,7 +161,6 @@ class ManyToManySelectRelation extends ManyToManyRelation
 
 
         $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('atkroot') . 'atk/javascript/class.' . strtolower(__CLASS__) . '.js');
-        $this->getOwnerInstance()->addStyle('atkmanytomanyselectrelation.css');
 
         $id = $this->getHtmlId($fieldprefix);
         $selectId = "{$id}_selection";

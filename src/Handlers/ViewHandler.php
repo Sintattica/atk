@@ -83,7 +83,6 @@ class ViewHandler extends ViewEditBase
     function viewPage($record, $node, $renderbox = true)
     {
         $ui = $this->getUi();
-        $node->addStyle("style.css");
 
         if (is_object($ui)) {
             $params = $node->getDefaultActionParams();

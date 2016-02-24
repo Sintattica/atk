@@ -101,7 +101,6 @@ class TreeNode extends Node
     {
         global $g_maxlevel;
 
-        $this->addStyle("style.css");
 
         $ui = $this->getUi();
 

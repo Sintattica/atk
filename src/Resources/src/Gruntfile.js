@@ -1,45 +1,9 @@
 module.exports = function (grunt) {
 
     grunt.initConfig({
-        sass: {
-            dist: {
-                options: {
-                    style: 'expanded'
-                },
-                files: {
-                    '.tmp/style.css': ['sass/style.scss']
-                }
-            }
-        },
-        concat: {
-            dist: {
-                src: ['.tmp/style.css', 'bower_components/smartmenus/src/addons/bootstrap/jquery.smartmenus.bootstrap.css'],
-                dest: '../public/styles/style.css'
-            }
-        },
-        uglify: {
-            dist: {
-                options: {
-                    beautify: false
-                },
-                files: {
-                    '../public/javascript/atk.min.js': [
-                        'bower_components/bootstrap-sass/assets/javascripts/bootstrap.js',
-                        'bower_components/smartmenus/src/jquery.smartmenus.js',
-                        'bower_components/smartmenus/src/addons/bootstrap/jquery.smartmenus.bootstrap.js'
-                    ]
-                }
-            }
-        },
         copy: {
             dist: {
                 files: [
-                    {
-                        expand: true,
-                        cwd: 'bower_components/jquery/dist/',
-                        src: ['**'],
-                        dest: '../public/javascript/jquery/'
-                    },
                     {
                         expand: true,
                         cwd: 'bower_components/bootstrap-sass/assets/fonts/',
@@ -48,21 +12,71 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
+                        cwd: 'bower_components/font-awesome-sass/assets/fonts/',
+                        src: ['**'],
+                        dest: '../public/fonts/'
+                    },
+                    {
+                        expand: true,
                         cwd: '.tmp/',
                         src: ['style.css.map'],
                         dest: '../public/styles/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/smartmenus/src/addons/bootstrap/',
+                        src: ['**/*.css'],
+                        dest: 'bower_components/smartmenus/scss/',
+                        rename: function (dest, src) {
+                            return dest + '_' + src.replace(/\.css$/, ".scss");
+                        }
                     }
                 ]
+            }
+        },
+        sass: {
+            dist: {
+                options: {
+                    sourceMap: true
+                },
+                files: {
+                    '../public/styles/style.css': 'sass/style.scss'
+                }
+            }
+        },
+        uglify: {
+            dist: {
+                options: {
+                    beautify: false,
+                    preserveComments: 'some'
+                },
+                files: {
+                    '../public/javascript/atk.min.js': [
+                        'bower_components/jquery/dist/jquery.js',
+                        'bower_components/bootstrap-sass/assets/javascripts/bootstrap.js',
+                        'bower_components/smartmenus/src/jquery.smartmenus.js',
+                        'bower_components/smartmenus/src/addons/bootstrap/jquery.smartmenus.bootstrap.js',
+                        'bower_components/moment/min/moment-with-locales.js',
+                        'js/compatibility.js'
+                    ]
+                }
+            }
+        },
+        watch: {
+            css: {
+                files: ['sass/*.scss'],
+                tasks: ['sass'],
+                options: {
+                    livereload: true
+                }
             }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-sass');
+    grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.registerTask('default', ['copy', 'sass', 'uglify']);
-
-    grunt.registerTask('css', ['sass', 'concat']);
 };

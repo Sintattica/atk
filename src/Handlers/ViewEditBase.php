@@ -185,7 +185,7 @@ class ViewEditBase extends ActionHandler
      * @param array $tplfield the template data for the current attribute
      * @param int $i the counter being used to loop the node for each attribute
      */
-    function _addNumbering(&$field, &$tplfield, &$i)
+    static function _addNumbering(&$field, &$tplfield, &$i)
     {
         static $number, $subnumber;
 

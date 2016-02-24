@@ -1863,8 +1863,6 @@ class Node
      */
     function tabulate($action, $content)
     {
-        $this->addStyle("sections.css");
-        $this->addStyle("tabs.css");
         $list = $this->getTabs($action);
         $sections = $this->getSections($action);
         $tabs = count($list);
@@ -2601,7 +2599,6 @@ class Node
 
         $ui = $this->getUi();
 
-        $this->addStyle("style.css");
 
         if (is_array($atkselector)) {
             $atkselector_str = '((' . implode($atkselector, ') OR (') . '))';

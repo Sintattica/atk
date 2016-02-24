@@ -1,0 +1,206 @@
+body {
+  padding-top: 70px;
+  background-color: #ededed;
+}
+
+
+.form-control {
+  width: unset;
+  max-width: 100%;
+  display: inline;
+}
+
+#action-buttons {
+  text-align: center;
+  position: relative;
+}
+
+.action-buttons-buttons {
+  display: inline-block;
+  margin: 0 auto;
+}
+
+.action-buttons-buttons button, .action-buttons-buttons input[type="submit"] {
+  float: right;
+  margin: 0 5px;
+}
+
+div.atkbusy {
+  display: none;
+}
+
+/* action buttons spinner */
+#action-buttons .spinner {
+  visibility: hidden;
+  display: inline-block;
+  margin: 2px 0 0 5px;
+  position: absolute;
+}
+
+
+
+span.form-control-static {
+  display: block;
+}
+
+// xs
+@media(min-width:768px){
+  .pagination, .dglimit {
+    text-align: right;
+  }
+
+  .dgridsummary {
+    margin-top: 10px;
+    display: block;
+    text-align: right;
+  }
+}
+
+// sm
+@media(max-width:767px){
+  span.form-control-static {
+    padding-top: 0px;
+  }
+
+  label.control-label {
+    margin-bottom: 0px;
+  }
+}
+
+
+.form-group.required .control-label:before {
+  content: "✲";
+  color: #c70000;
+  font-weight: bold;
+}
+
+.error {
+  color: #A94442;
+}
+
+
+.clickable {
+  cursor: pointer;
+}
+
+
+
+
+.atkmessages {
+  background-color: #EEEEEE;
+  color: #000000;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.atkmessages_general,
+.atkmessages_success,
+.atkmessages_failure,
+.atkmessages_warning {
+  margin-bottom: 1px;
+  padding: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.atkmessages_general {
+  background-color: yellow;
+  color: #000;
+}
+
+.atkmessages_success {
+  background-color: #339900;
+  color: #fff;
+}
+
+.atkmessages_warning {
+  background-color: orange;
+  color: #000;
+}
+
+.atkmessages_warning a {
+  color: #000;
+}
+
+.atkmessages_failure {
+  background-color: #ff0000;
+  color: #fff;
+  padding: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.red {
+  color: #9a1010;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+#action-helplink {
+  width: 100%;
+  text-align: right;
+  right: 20px;
+}
+
+.atkAttrRowHidden {
+  display: none !important;
+}
+
+.atkfieldset div {
+  display: inline-block;
+}
+
+div.panel-heading {
+  position: relative;
+}
+
+
+/* box spinner */
+#atkbusy {
+  visibility: hidden;
+  position: absolute;
+  right: 6px;
+  top: 5px;
+  color: #808080;
+}
+
+/* attributes spinner */
+div.atkbusy {
+  margin-left: 5px;
+  vertical-align: middle;
+  color: #808080;
+  font-size: $fa-font-size-base*1.1;
+}
+
+/* action buttons spinner */
+#action-buttons .spinner {
+  visibility: hidden;
+  display: inline-block;
+  margin-left: 5px;
+  vertical-align: middle;
+  color: #808080;
+}
+
+.navbar-brand {
+  img {
+    max-height: 50px;
+  }
+  &.has-logo {
+    padding: 0;
+  }
+}
+
+
+br.atkFileAttributeCheckboxSeparator {
+  display: none;
+}
+
+.checkbox label {
+  margin-right: 15px;
+}

@@ -158,7 +158,6 @@ class RecordList
         $theme = Theme::getInstance();
         $sm = SessionManager::getInstance();
         $page = Page::getInstance();
-        $page->register_style($theme->stylePath("recordlist.css", $this->m_node->m_module));
 
         $listName = "rl_" . Tools::getUniqueId("normalRecordList");
         $page->register_script(Config::getGlobal("assets_url") . "javascript/recordlist.js");

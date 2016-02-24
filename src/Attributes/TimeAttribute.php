@@ -299,7 +299,7 @@ class TimeAttribute extends Attribute
             return '<div class="form-inline">' . $tmp . '</div>' . $this->getSpinner();
         }
 
-        return '<div class="form-inline">' . $timeedit . '</div>' . $this->getSpinner();
+        return '<div class="'.$this->get_class_name().' form-inline">' . $timeedit . '</div>' . $this->getSpinner();
     }
 
     /**

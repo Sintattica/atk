@@ -1054,9 +1054,7 @@ class Attribute
     function getSpinner()
     {
         if (count($this->getDependencies()) && $this->m_showSpinner) {
-            $theme = Theme::getInstance();
-            $ret = sprintf('<div class="atkbusy"><img src="%s" alt="Busy"></div>', $theme->imgPath('spinner.gif'));
-            return $ret;
+            return '<div class="atkbusy spinner"><i class="fa fa-cog fa-spin"></i></div>';
         }
         return '';
     }
@@ -2298,7 +2296,7 @@ class Attribute
     function getLabel()
     {
         if ($this->hasFlag(self::AF_NOLABEL)) {
-            return "self::AF_NO_LABEL";
+            return '';
         } else {
             if ($this->hasFlag(self::AF_BLANKLABEL)) {
                 return null;

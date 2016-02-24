@@ -283,7 +283,7 @@ class DateTimeAttribute extends Attribute
     {
         $dateEdit = $this->m_date->edit($record, $fieldprefix);
         $timeEdit = $this->m_time->edit($record, $fieldprefix);
-        return $dateEdit . "&nbsp-&nbsp;" . $timeEdit;
+        return '<div class="'.$this->get_class_name().'">'. $dateEdit . "<span> - </span>" . $timeEdit .'</div>';
     }
 
     /**

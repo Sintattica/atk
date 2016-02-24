@@ -142,7 +142,6 @@ class AddHandler extends ActionHandler
         $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
         $page->register_script(Config::getGlobal("assets_url") . "javascript/formfocus.js");
         $page->register_loadscript("placeFocus();");
-        $page->register_style($ui->stylePath("style.css"));
     }
 
     /**

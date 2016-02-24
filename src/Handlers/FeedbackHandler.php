@@ -42,8 +42,6 @@ class FeedbackHandler extends ActionHandler
         $node = $this->m_node;
         $ui = $this->getUi();
 
-        $node->addStyle("style.css");
-
         $params["content"] = '<br>' . Tools::atktext('feedback_' . $action . '_' . Tools::atkActionStatus($actionstatus),
                 $node->m_module, $node->m_type);
         if ($message) {

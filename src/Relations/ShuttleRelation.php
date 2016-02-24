@@ -128,7 +128,7 @@ class ShuttleRelation extends ManyToManyRelation
             $width = min($this->m_maxlistwidth, $width);
         }
 
-        $result = '<table border="0"><tr><td>' . Tools::atktext('available', 'atk') . ':<br/>';
+        $result = '<table border="0" class="'.$this->get_class_name().'"><tr><td>' . Tools::atktext('available', 'atk') . ':<br/>';
 
         $fieldname = $fieldprefix . $this->fieldName();
         $leftname = $fieldname . "_sel";
@@ -146,17 +146,22 @@ class ShuttleRelation extends ManyToManyRelation
 
         $result .= $this->_renderSelect($leftname, $left, $width, $rightname, $fieldname, $filterbox_left);
 
-        $result .= '</td><td valign="center" align="center">';
+        $result .= '</td><td class="shuttle-controls">';
 
         if ($this->m_filterBox) {
             // move buttons down a little if filter boxes are being displayed
             $result .= '<br><br><br>';
         }
 
-        $result .= '<input class="btn btn-default" type="button" value="&gt;" onClick="shuttle_move(\'' . $leftname . '\', \'' . $rightname . '\', \'' . $fieldname . '\');"><br/>';
-        $result .= '<input class="btn btn-default" type="button" value="&lt;" onClick="shuttle_move(\'' . $rightname . '\', \'' . $leftname . '\', \'' . $fieldname . '\');"><br/><br/>';
-        $result .= '<input class="btn btn-default" type="button" value="&gt;&gt;" onClick="shuttle_moveall(\'' . $leftname . '\', \'' . $rightname . '\', \'' . $fieldname . '\');"><br/>';
-        $result .= '<input class="btn btn-default" type="button" value="&lt;&lt;" onClick="shuttle_moveall(\'' . $rightname . '\', \'' . $leftname . '\', \'' . $fieldname . '\');">';
+        $result .= '<div class="shuttle-controls-single">';
+        $result .= '<button class="btn btn-default" onClick="shuttle_move(\'' . $leftname . '\', \'' . $rightname . '\', \'' . $fieldname . '\');return false;"><i class="glyphicon glyphicon-triangle-right"></i></button>';
+        $result .= '<button class="btn btn-default" type="button" value="&lt;" onClick="shuttle_move(\'' . $rightname . '\', \'' . $leftname . '\', \'' . $fieldname . '\');return false;"><i class="glyphicon glyphicon-triangle-left"></i></button>';
+        $result .= '</div>';
+
+        $result .= '<div class="shuttle-controls-multiple">';
+        $result .= '<button class="btn btn-default" type="button" value="&gt;&gt;" onClick="shuttle_moveall(\'' . $leftname . '\', \'' . $rightname . '\', \'' . $fieldname . '\');return false;"><i class="glyphicon glyphicon-forward"></i></button>';
+        $result .= '<button class="btn btn-default" type="button" value="&lt;&lt;" onClick="shuttle_moveall(\'' . $rightname . '\', \'' . $leftname . '\', \'' . $fieldname . '\');return false;"><i class="glyphicon glyphicon-backward"></i></button>';
+        $result .= '</div>';
 
         $result .= '</td><td>' . Tools::atktext('selected', 'atk') . ':<br/>';
 

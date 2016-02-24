@@ -632,8 +632,6 @@ class SmartSearchHandler extends AbstractSearchHandler
         $ui = $this->getUi();
         $sm = SessionManager::getInstance();
 
-        $node->addStyle("style.css");
-
         $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
         $page->register_script(Config::getGlobal("assets_url") . "javascript/formfocus.js");
         $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atksmartsearchhandler.js");
@@ -641,8 +639,6 @@ class SmartSearchHandler extends AbstractSearchHandler
         Tools::useattrib('atkdateattribute');
         DateAttribute::registerScriptsAndStyles();
 
-        $theme = Theme::getInstance();
-        $page->register_style($theme->stylePath("atkdateattribute.css"));
 
         $params = array();
 

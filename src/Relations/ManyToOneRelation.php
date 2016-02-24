@@ -850,9 +850,6 @@ class ManyToOneRelation extends Relation
             return;
         }
 
-        if ($this->m_ownerInstance) {
-            $this->m_ownerInstance->addStyle("atkmanytoonerelation.css");
-        }
 
         $recordset = $this->m_selectableRecords;
 
@@ -900,7 +897,7 @@ class ManyToOneRelation extends Relation
                 $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_LEFTRIGHT);
                 $this->registerJavaScriptObservers($id);
 
-                $result = '<select id="' . $id . '" name="' . $id . '" class="form-control atkmanytoonerelation" ' . $onchange . '>';
+                $result = '<select id="' . $id . '" name="' . $id . '" class="form-control atkmanytoonerelation '.$this->get_class_name().'" ' . $onchange . '>';
 
                 // relation may be empty, so we must provide an empty selectable..
                 if ($this->hasFlag(self::AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
@@ -923,6 +920,7 @@ class ManyToOneRelation extends Relation
         } else {
             // TODO configurable?
             $editflag = false;
+            $result = '';
 
             $destrecord = $record[$this->fieldName()];
             if (is_array($destrecord)) {
@@ -1242,7 +1240,6 @@ class ManyToOneRelation extends Relation
                 $url = Tools::partial_url($this->m_ownerInstance->atkNodeType(), $this->m_ownerInstance->m_action,
                     'attribute.' . $this->fieldName() . '.autocomplete_search');
                 $code = "ATK.ManyToOneRelation.completeSearch('{$id}', '{$id}_result', '{$url}', {$this->m_autocomplete_minchars});";
-                $this->m_ownerInstance->addStyle("atkmanytoonerelation.css");
                 $page->register_script(Config::getGlobal('assets_url') . 'javascript/class.atkmanytoonerelation.js');
                 $page->register_loadscript($code);
                 $result .= '<div id="' . $id . '_result" style="display: none" class="atkmanytoonerelation_result"></div>';

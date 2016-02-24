@@ -450,26 +450,23 @@ class ProfileAttribute extends Attribute
         $editableActions = $this->getEditableActions($record);
         $selectedActions = $this->getSelectedActions($record);
 
-        $showSection = count($allActions) > 1;
 
         foreach ($allActions as $section => $modules) {
-            if ($showSection) {
-                $result .= "</div><br>";
-                $result .= "<span  onclick=\"profile_swapProfileDiv('div_$section','" . Config::getGlobal("atkroot") . "');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\"><img src=\"" . Config::getGlobal("assets_url") . "images/plus.gif\" border=\"0\" id=\"img_div_$section\">&nbsp;" . Tools::atktext(array(
-                        "title_$section",
-                        $section
-                    ), $section) . "</span><br/>";
-                $result .= "<div id='div_$section' name='div_$section' style='display: none; padding-left: 15px'>";
-                $result .= "<input type='hidden' name=\"divstate['div_$section']\" id=\"divstate['div_$section']\" value='closed' />";
-                $result .= '<div style="font-size: 80%; margin-top: 4px; margin-bottom: 4px" >
+            $result .= '<div class="profileSection">';
+
+            $result .= "<span onclick=\"profile_swapProfileDiv('div_$section','" . Config::getGlobal("atkroot") . "');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\"><img src=\"" . Config::getGlobal("assets_url") . "images/plus.gif\" border=\"0\" id=\"img_div_$section\">&nbsp;" . Tools::atktext(array("title_$section", $section), $section) . "</span><br/>";
+
+            $result .= "<div id='div_$section' name='div_$section' style='display: none; padding-left: 15px' class='checkbox'>";
+            $result .= "<input type='hidden' name=\"divstate['div_$section']\" id=\"divstate['div_$section']\" value='closed' />";
+            $result .= '<div style="font-size: 80%; margin-top: 4px; margin-bottom: 4px" >
                   [<a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkAllByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' .
-                    Tools::atktext("check_all", "atk") .
-                    '</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkNoneByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' .
-                    Tools::atktext("check_none", "atk") .
-                    '</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkInvertByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' .
-                    Tools::atktext("invert_selection", "atk") . '</a>]</div>';
-                $result .= "<br>";
-            }
+                Tools::atktext("check_all", "atk") .
+                '</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkNoneByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' .
+                Tools::atktext("check_none", "atk") .
+                '</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkInvertByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' .
+                Tools::atktext("invert_selection", "atk") . '</a>]</div>';
+            $result .= "<br>";
+
 
             foreach ($modules as $module => $nodes) {
                 foreach ($nodes as $node => $actions) {
@@ -496,9 +493,11 @@ class ProfileAttribute extends Attribute
                                 $display_tabs_str = true;
                             }
 
+                            $temp_str .= '<label>';
                             $temp_str .= '<input type="checkbox" name="' . $this->fieldName() . '[]" ' . $this->getCSSClassAttribute("atkcheckbox") . ' value="' . $section . "." . $module . "." . $node . "." . $action . '" ';
-                            $temp_str .= ($isSelected ? ' checked="checked"' : '') . '></input> ';
-                            $temp_str .= $this->permissionName($action, $node, $module) . '&nbsp;&nbsp;&nbsp;';
+                            $temp_str .= ($isSelected ? ' checked="checked"' : '') . '>';
+                            $temp_str .= ' '.$this->permissionName($action, $node, $module);
+                            $temp_str .= '</label>';
                         }
 
                         if (substr($action, 0, 4) == "tab_") {
@@ -519,6 +518,7 @@ class ProfileAttribute extends Attribute
                     }
                 }
             }
+            $result .= '</div>'; // end profileSection
         }
 
         return $result;

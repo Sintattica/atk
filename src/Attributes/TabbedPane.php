@@ -1,13 +1,10 @@
 <?php namespace Sintattica\Atk\Attributes;
 
-/**
- * Custom flags
- *
- * Do not hide attribute label when it is single on the tab
- */
+
 use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Core\Tools;
-
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Handlers\ViewEditBase;
 
 /**
  * atkTabbedPane place regular attribute to the additional tabbed pane
@@ -411,7 +408,6 @@ class TabbedPane extends Attribute
         $list = $this->getPaneTabs($action);
         if (count($list) > 0) {
             $node = $this->m_ownerInstance;
-            $node->addStyle("tabs.css");
 
             $page = &$node->getPage();
             $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atktabbedpane.js");

@@ -106,7 +106,6 @@ class MultiSelectHandler extends AdminHandler
         $GLOBALS['atktargetvar'] = $this->getNode()->m_postvars['atktargetvar'];
         $GLOBALS['atktargetvartpl'] = $this->getNode()->m_postvars['atktargetvartpl'];
 
-        $this->getNode()->addStyle("style.css");
 
         $params["header"] = Tools::atktext("title_multiselect", $this->getNode()->m_module,
             $this->getNode()->m_type);

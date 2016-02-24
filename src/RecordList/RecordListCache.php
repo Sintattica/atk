@@ -108,7 +108,6 @@ class RecordListCache
             $theme = Theme::getInstance();
             $page = Page::getInstance();
 
-            $page->register_style($theme->stylePath("recordlist.css"));
             $page->register_script(Config::getGlobal("assets_url") . "javascript/formselect.js");
             $page->register_script(Config::getGlobal("assets_url") . "javascript/recordlist.js");
 

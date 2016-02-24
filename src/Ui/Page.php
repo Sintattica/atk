@@ -124,16 +124,15 @@ class Page
     {
         // register default scripts
         $assetsUrl = Config::getGlobal("assets_url");
-        $this->register_script($assetsUrl . "javascript/jquery/jquery.min.js");
-        $this->register_script($assetsUrl . "javascript/atk.min.js");
-        $this->register_scriptcode('jQuery.noConflict();');
+
         $this->register_script($assetsUrl . "javascript/prototype/prototype.js");
         $this->register_script($assetsUrl . "javascript/prototype-ext.js");
         $this->register_script($assetsUrl . "javascript/scriptaculous/scriptaculous.js");
         $this->register_script($assetsUrl . "javascript/scriptaculous-ext.js");
         $this->register_script($assetsUrl . "javascript/class.atktools.js");
         $this->register_script($assetsUrl . "javascript/atkbusy.js");
-        $this->register_script($assetsUrl . "javascript/moment.min.js");
+
+        $this->register_script($assetsUrl . "javascript/atk.min.js");
     }
 
     /**

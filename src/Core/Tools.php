@@ -1728,7 +1728,7 @@ class Tools
      *              Note that tabs that every user may see need not be
      *              registered.
      */
-    function registerNode($node, $action, $tabs = array(), $section = null)
+    static function registerNode($node, $action, $tabs = array(), $section = null)
     {
         global $g_nodes;
 

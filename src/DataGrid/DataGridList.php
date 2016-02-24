@@ -77,7 +77,6 @@ class DataGridList extends DataGridComponent
 
         $edit = $grid->isEditing();
 
-        $page->register_style($theme->stylePath("recordlist.css", $grid->getNode()->m_module));
         $page->register_script(Config::getGlobal("assets_url") . "javascript/recordlist.js");
 
         $listName = $grid->getName();

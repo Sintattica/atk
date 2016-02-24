@@ -47,7 +47,6 @@ class SelectHandler extends ActionHandler
     public function selectPage()
     {
         $node = $this->getNode();
-        $node->addStyle("style.css");
 
 
         $grid = DataGrid::create($node, 'select');

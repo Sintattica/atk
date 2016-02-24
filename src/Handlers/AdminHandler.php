@@ -129,7 +129,6 @@ class AdminHandler extends ActionHandler
      */
     function renderAdminList($actions = "")
     {
-        $this->getNode()->addStyle("style.css");
 
         $grid = DataGrid::create($this->getNode(), 'admin');
 
