@@ -740,17 +740,3 @@ div.atkbusy {
     display: inline-block;
     margin: 0 0 0 5px;
 }
-
-/* recordlist font-awesome icons */
-.actions .fa {
-    color: #555;
-    background-color: white;
-    padding: 2px 3px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    font-size: 14px;
-}
-
-.actions .fa-trash-o {
-    color: #BF4B4B;
-}
