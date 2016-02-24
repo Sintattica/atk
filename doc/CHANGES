@@ -15,6 +15,8 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 Changes in DEVELOP (WIP)
 ------------------------
+* Added default cssicons definition and style in steelblue theme [luca,giorgio]
+* font-awesome upgraded and moved in ext folder [luca,giorgio]
 * Various minor fixing [luca]
 * Fix empty username in logout event in atkSecurityManager [luca]
 * Fixing for Bootstrap theme [luca]
