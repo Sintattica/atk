@@ -130,8 +130,7 @@ class DataGridList extends DataGridComponent
             $headercols[] = array("content" => ""); // Empty leader on top of mra action list.
         }
         if ($grid->hasFlag(DataGrid::LOCKING)) {
-            $lockHeadIcon = Theme::getInstance()->getIcon('lock_' . $grid->getNode()->getLockMode() . '_head',
-                'lock', $grid->getNode()->m_module);
+            $lockHeadIcon = 'lock';
             $headercols[] = array("content" => $lockHeadIcon);
         }
         if (($orientation == "left" || $orientation == "both") && ($hasActionCol && count($list["rows"]) > 0)) {
@@ -341,8 +340,7 @@ class DataGridList extends DataGridComponent
             if ($grid->hasFlag(DataGrid::LOCKING)) {
                 if (is_array($list["rows"][$i]["lock"])) {
                     $this->getPage()->register_script(Config::getGlobal('assets_url') . 'javascript/overlibmws/overlibmws.js');
-                    $lockIcon = Theme::getInstance()->getIcon('lock_' . $grid->getNode()->getLockMode(), 'lock',
-                        $grid->getNode()->m_module);
+                    $lockIcon = 'locked';
                     $lockInfo = addslashes(str_replace(array("\r\n", "\r", "\n"), " ",
                         htmlentities($this->getLockInfo($list["rows"][$i]["lock"]))));
                     $record["cols"][] = array(
@@ -378,25 +376,21 @@ class DataGridList extends DataGridComponent
                     $name
                 );
 
-                $link = htmlentities($this->text($actionKeys));
 
+                $link = htmlentities($this->text($actionKeys));
                 if ($icons == true) {
-                    $icon = $theme->getIcon($module . '_' . $nodetype . '_' . strtolower($name), "recordlist", $module,
-                        '', false, $link);
+                    $normalizedName = strtolower(str_replace('-', '_', $name));
+                    $icon = Config::get($module, 'icon_' . $nodetype . '_' . $normalizedName, false);
                     if (!$icon) {
-                        $icon = $theme->getIcon($module . '_' . strtolower($name), "recordlist", $module, '', false,
-                            $link);
+                        $icon = Config::getGlobal('icon_' . $nodetype . '_' . $normalizedName, false);
                     }
                     if (!$icon) {
-                        $icon = $theme->getIcon(strtolower($name), "recordlist", $grid->getNode()->m_module, '', null, $link);
+                        $icon = Config::getGlobal('icon_' . $normalizedName, false);
                     }
                     if ($icon) {
-                        $link = $icon;
-                    } else {
-                        Tools::atkwarning("Icon for action '$name' not found!");
+                        $link = '<i class="' . $icon . '" title="' . $link . '"></i>';
                     }
                 }
-
 
                 $confirmtext = "false";
                 if (Config::getGlobal("recordlist_javascript_delete") && $name == "delete") {
@@ -623,7 +617,7 @@ class DataGridList extends DataGridComponent
      */
     protected function _renderRecordActionLink($url, $link, $listName, $i, $name, $confirmtext = "false")
     {
-        return '<a href="' . "javascript:rl_do('$listName',$i,'$name',$confirmtext);" . '" class="btn btn-default">' . $link . '</a>&nbsp;';
+        return '<a href="' . "javascript:rl_do('$listName',$i,'$name',$confirmtext);" . '" class="btn btn-default">' . $link . '</a>';
     }
 
     /**

@@ -4214,13 +4214,12 @@ class Node
     /**
      * Get img tag for lock icon.
      * @param boolean $lockstatus True if the record is locked, false if not.
-     * @return String HTML image tag with the correct lock icon.
+     * @return String HTML with the correct lock icon.
      */
     function getLockStatusIcon($lockstatus)
     {
         if ($lockstatus) {
-            return Theme::getInstance()->getIcon('lock_' . $this->getLockMode(), 'lock', $this->m_module, '', null,
-                array('name' => '_lock_'));
+            return 'lock';
         }
         return '';
     }

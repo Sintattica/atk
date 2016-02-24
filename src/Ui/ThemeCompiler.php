@@ -68,9 +68,8 @@ class ThemeCompiler
 
 
         // First parse the themedef file for attributes
-        if ($path != "" && file_exists($abspath . "/themedef.php")) {
 
-            include($abspath . "/themedef.php");
+        if ($path != "") {
 
             if (isset($theme)) {
                 foreach ($theme as $key => $value) {

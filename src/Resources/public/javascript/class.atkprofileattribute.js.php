@@ -1,21 +1,3 @@
-<?php
- /**
- * This file is part of the Achievo ATK distribution.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage javascript
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6168 $
- * $Id$
- */
-?>
-
 function profile_getForm() {
     if (document.dialogform)
         return document.dialogform;
@@ -85,11 +67,11 @@ function profile_checkInvertByValue(fieldname, fieldvalue) {
 }
 
 function profile_fixExpandImage(divName, atkRoot) {
-    var image = get_object("img_" + divName);
+    var icon = get_object("img_" + divName);
     if (get_object(divName).style.display == 'none')
-        image.src = atkRoot+'bundles/atk/images/plus.gif';
+        icon.className = ATK_PROFILE_ICON_OPEN;
     else
-        image.src = atkRoot+'bundles/atk/images/minus.gif';
+        icon.className = ATK_PROFILE_ICON_CLOSE;
 }
 
 function profile_fixDivState(divName) {

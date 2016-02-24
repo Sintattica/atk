@@ -3551,7 +3551,7 @@ tbody.collapse.in {
     .nav > li > a {
       position: relative;
       display: block;
-      padding: 10px 15px; }
+      padding: 10px 10px; }
       .nav > li > a:hover, .nav > li > a:focus {
         text-decoration: none;
         background-color: #eeeeee; }
@@ -8259,14 +8259,8 @@ div.DateTimeAttribute div.TimeAttribute {
   margin-bottom: 10px;
   padding-left: 10px; }
 
-.atkDebugExpanded .atkDebugToggle {
-  background-image: url("../images/minus.gif"); }
-
 .atkDebugExpanded .atkDebugData {
   display: block; }
-
-.atkDebugCollapsed .atkDebugToggle {
-  background-image: url("../images/plus.gif"); }
 
 .atkDebugCollapsed .atkDebugData {
   display: none; }
@@ -8384,6 +8378,12 @@ table.recordList {
     display: block;
     white-space: nowrap;
     float: right; }
+    table.recordList tr td .actions .btn {
+      margin: 0 2px; }
+      table.recordList tr td .actions .btn:first-child {
+        margin-left: 0; }
+      table.recordList tr td .actions .btn:last-child {
+        margin-right: 0; }
 
 .recordListContainer {
   width: 100%;

@@ -1001,3 +1001,24 @@ $config_ck_options = array();
  * recordlist orientation (left or right)
  */
 $config_recordlist_orientation = "left";
+
+
+/**
+ * icons
+ */
+$config_icon_canceled = 'fa fa-times';
+$config_icon_copy = 'fa fa-files-o';
+$config_icon_default = 'fa fa-file-o';
+$config_icon_delete = 'fa fa-trash';
+$config_icon_document = 'fa fa-file-o';
+$config_icon_done = 'fa fa-check';
+$config_icon_edit = 'fa fa-pencil';
+$config_icon_editcopy = 'fa fa-files-o';
+$config_icon_export = 'fa fa-file-excel-o';
+$config_icon_preview = 'fa fa-file-o';
+$config_icon_select = 'fa fa-hand-pointer-o';
+$config_icon_view = 'fa fa-search';
+$config_icon_email = $config_icon_e_mail = 'fa fa-envelope-o';
+$config_icon_print = 'fa fa-print';
+$config_icon_plussquare = 'fa fa-plus-square-o';
+$config_icon_minussquare = 'fa fa-minus-square-o';

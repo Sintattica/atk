@@ -213,8 +213,7 @@ class TreeNode extends Node
      */
     function getIcon($name)
     {
-        $theme = Theme::getInstance();
-        return $theme->iconPath("tree_$name", "tree", $this->m_module);
+        return $name;
     }
 
     /**
@@ -223,6 +222,7 @@ class TreeNode extends Node
      * @param bool $showactions Show actions?
      * @param bool $expandAll Expand all leafs?
      * @param bool $foldable Is this tree foldable?
+     * @return string
      */
     function GraphTreeRender($showactions = true, $expandAll = false, $foldable = true)
     {

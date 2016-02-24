@@ -403,9 +403,10 @@ class ProfileAttribute extends Attribute
                     } else {
                         $result .= '</div><br>';
                     }
-                    $result .= sprintf("<b><a href=\"javascript:void(0)\" onclick=\"%s\"><img src=\"%s\" border=\"0\" id=\"img_div_$module\"></a>&nbsp;</b>%s<br>",
+
+                    $result .= sprintf("<b><a href=\"javascript:void(0)\" onclick=\"%s\"><i class=\"%s\" id=\"img_div_$module\"></i></a></b>%s<br>",
                         "profile_swapProfileDiv('div_$module', '" . Config::getGlobal('atkroot') . "'); return false;",
-                        Config::getGlobal('atkroot') . 'atk/images/plus.gif',
+                        Config::getGlobal('icon_plussquare'),
                         Tools::atktext(array("title_$module", $module), $module)
                     );
                     $result .= "<div id=\"div_$module\" name=\"div_$module\" style=\"display: none;\">";
@@ -433,6 +434,10 @@ class ProfileAttribute extends Attribute
     {
         $user = SecurityManager::atkGetUser();
         $page = Page::getInstance();
+
+        $icons = "var ATK_PROFILE_ICON_OPEN = '".Config::getGlobal("icon_plussquare")."';";
+        $icons .= "var ATK_PROFILE_ICON_CLOSE = '".Config::getGlobal("icon_minussquare")."';";
+        $page->register_scriptcode($icons);
         $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkprofileattribute.js.php");
 
         $this->_restoreDivStates($page);
@@ -454,7 +459,8 @@ class ProfileAttribute extends Attribute
         foreach ($allActions as $section => $modules) {
             $result .= '<div class="profileSection">';
 
-            $result .= "<span onclick=\"profile_swapProfileDiv('div_$section','" . Config::getGlobal("atkroot") . "');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\"><img src=\"" . Config::getGlobal("assets_url") . "images/plus.gif\" border=\"0\" id=\"img_div_$section\">&nbsp;" . Tools::atktext(array("title_$section", $section), $section) . "</span><br/>";
+            $result .= "<span onclick=\"profile_swapProfileDiv('div_$section','" . Config::getGlobal("atkroot") . "');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\">";
+            $result .= "<i class=\"" . Config::getGlobal("icon_plussquare") . "\" id=\"img_div_$section\"></i> " . Tools::atktext(array("title_$section", $section), $section) . "</span><br/>";
 
             $result .= "<div id='div_$section' name='div_$section' style='display: none; padding-left: 15px' class='checkbox'>";
             $result .= "<input type='hidden' name=\"divstate['div_$section']\" id=\"divstate['div_$section']\" value='closed' />";
