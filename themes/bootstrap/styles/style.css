@@ -1,5 +1,5 @@
 @import '../lib/bootstrap/css/bootstrap.min.css';
-@import '../lib/font-awesome-4.2.0/css/font-awesome.min.css';
+@import '../../../ext/font-awesome/css/font-awesome.min.css';
 body {
   padding-top: 70px;
   background-color: #ededed;
