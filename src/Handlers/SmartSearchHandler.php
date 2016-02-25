@@ -633,7 +633,6 @@ class SmartSearchHandler extends AbstractSearchHandler
         $sm = SessionManager::getInstance();
 
         $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/formfocus.js");
         $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atksmartsearchhandler.js");
 
         Tools::useattrib('atkdateattribute');

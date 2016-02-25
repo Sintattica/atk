@@ -131,8 +131,9 @@ class Page
         $this->register_script($assetsUrl . "javascript/scriptaculous-ext.js");
         $this->register_script($assetsUrl . "javascript/class.atktools.js");
         $this->register_script($assetsUrl . "javascript/atkbusy.js");
-
         $this->register_script($assetsUrl . "javascript/atk.min.js");
+
+        $this->register_style($assetsUrl . "styles/style.css");
     }
 
     /**

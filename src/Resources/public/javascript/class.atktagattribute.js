@@ -37,17 +37,7 @@ ATK.TagAttribute = {
 
         var params = queryComponents.join('&');
 
-        var func = null;
-        if (focusFirstFormEl) {
-            func = function() {
-                try {
-                    placeFocus();
-                } catch (ex) {
-                }
-            };
-        }
-
         new Ajax.Updater(field, url, {method: 'post', parameters: params,
-            evalScripts: true, asynchronous: true, onComplete: func});
+            evalScripts: true, asynchronous: true, onComplete: null});
     }
 };

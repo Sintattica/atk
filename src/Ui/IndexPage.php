@@ -71,9 +71,6 @@ class IndexPage
         $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? Page::HTML_PARTIAL : Page::HTML_STRICT;
         $this->m_noNav = isset($ATK_VARS['atknonav']);
         $this->m_extraheaders = $this->m_ui->render('index_meta.tpl');
-
-
-        $this->m_page->register_style($this->m_theme->stylePath("style.css"));
     }
 
     /**

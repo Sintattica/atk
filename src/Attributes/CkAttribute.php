@@ -10,7 +10,7 @@ use Sintattica\Atk\Core\Tools;
  * See http://ckeditor.com
  *
  */
-class CKAttribute extends TextAttribute
+class CkAttribute extends TextAttribute
 {
     /**
      * @var array CKEditor configuration (default)
@@ -51,8 +51,8 @@ class CKAttribute extends TextAttribute
         $this->ckOptions['language'] = Language::getLanguage();
         $this->ckOptions['wsc_lang'] = $this->ckOptions['scayt_sLang'] = $this->getSpellCheckerLang(Language::getLanguage());
         // global config override
-        if (is_array(config::getGlobal('ck_options'))) {
-            $this->ckOptions = array_merge($this->ckOptions, config::getGlobal('ck_options'));
+        if (is_array(Config::getGlobal('ck_options'))) {
+            $this->ckOptions = array_merge($this->ckOptions, Config::getGlobal('ck_options'));
         }
         // instance override
         if (is_array($options)) {

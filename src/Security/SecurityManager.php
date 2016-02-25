@@ -492,7 +492,7 @@ class SecurityManager
         }
         // return
         // g_user always lowercase
-        $this->m_user["name"] = $this->m_user["name"];
+       // $this->m_user["name"] = $this->m_user["name"];
         //Send the username with the header
         //This way we can always retrieve the user from apache logs
         header('user: ' . $this->m_user["name"]);
@@ -555,7 +555,7 @@ class SecurityManager
         $page = Page::getInstance();
         $ui = Ui::getInstance();
 
-        $page->register_script(Config::getGlobal('atkroot') . "atk/javascript/tools.js");
+        $page->register_script(Config::getGlobal('assets_url') . "javascript/tools.js");
 
         $tplvars = Array();
         $output = '<form action="' . Tools::atkSelf() . '" method="post">';
@@ -570,8 +570,7 @@ class SecurityManager
             $output .= "<tr><td class=table>" . Tools::atktext('auth_max_loginattempts_exceeded') . "<br><br></td></tr>";
             $tplvars["auth_max_loginattempts_exceeded"] = Tools::atktext('auth_max_loginattempts_exceeded');
         } else {
-            $page->register_script(Config::getGlobal('atkroot') . "atk/javascript/formfocus.js");
-            $page->register_loadscript("placeFocus(false);");
+
 
             // generate the username input field
             // based upon the config_authdropdown and auth. method

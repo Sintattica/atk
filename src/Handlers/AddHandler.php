@@ -138,10 +138,7 @@ class AddHandler extends ActionHandler
     function registerExternalFiles()
     {
         $page = $this->getPage();
-        $ui = $this->getUi();
         $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/formfocus.js");
-        $page->register_loadscript("placeFocus();");
     }
 
     /**

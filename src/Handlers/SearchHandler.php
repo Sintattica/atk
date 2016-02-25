@@ -135,8 +135,6 @@ class SearchHandler extends AbstractSearchHandler
 
         $page = $this->getPage();
         $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/formfocus.js");
-        $page->register_loadscript("placeFocus();");
         $ui = $this->getUi();
         if (is_object($ui)) {
             $sm = SessionManager::getInstance();

@@ -106,10 +106,6 @@ ATK.Attribute = {
         if (focusFirstFormEl) {
             func = function(transport) {
                 transport.responseText.evalScripts();
-                try {
-                    placeFocus();
-                } catch (ex) {
-                }
                 if (form == 'dialogform' && ATK.Dialog && ATK.Dialog.getCurrent() != null) {
                     ATK.Dialog.getCurrent().delayedResize();
                 }
