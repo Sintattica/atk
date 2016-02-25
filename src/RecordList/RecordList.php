@@ -294,9 +294,11 @@ class RecordList
             if (!Tools::hasFlag($flags,
                     self::RL_NO_EXTENDED_SEARCH) && !$this->m_node->hasFlag(Node::NF_NO_EXTENDED_SEARCH)
             ) {
-                $button .= '<br>' . Tools::href(Tools::atkSelf() . "?atknodetype=" . $this->getMasterNodeType() . "&atkaction=" . $node->getExtendedSearchAction(),
+                $button .= ' ' . Tools::href(Tools::atkSelf() . "?atknodetype=" . $this->getMasterNodeType() . "&atkaction=" . $node->getExtendedSearchAction(),
                         "(" . Tools::atktext("search_extended") . ")", SessionManager::SESSION_NESTED);
             }
+
+            $button = '<div class="search-buttons">'.$button.'</div>';
 
             $searchstart = '<a name="searchform"></a>';
             if (!Tools::hasFlag($this->m_flags, self::RL_EMBED)) {

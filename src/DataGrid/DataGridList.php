@@ -204,9 +204,12 @@ class DataGridList extends DataGridComponent
             $buttonType = $grid->isEmbedded() ? "button" : "submit";
             $button = '<input type="' . $buttonType . '" class="btn btn-default btn_search" value="' . Tools::atktext("search") . '" onclick="' . $call . ' return false;">';
             if ($grid->hasFlag(DataGrid::EXTENDED_SEARCH)) {
-                $button .= '<br>' . Tools::href(Tools::atkSelf() . "?atknodetype=" . $grid->getActionNode()->atkNodeType() . "&atkaction=" . $grid->getActionNode()->getExtendedSearchAction(),
+                $button .= ' ' . Tools::href(Tools::atkSelf() . "?atknodetype=" . $grid->getActionNode()->atkNodeType() . "&atkaction=" . $grid->getActionNode()->getExtendedSearchAction(),
                         "(" . Tools::atktext("search_extended") . ")", SessionManager::SESSION_NESTED);
             }
+
+
+            $button = '<div class="search-buttons">'.$button.'</div>';
 
             // $searchstart = '<a name="searchform"></a>';
             $searchstart = "";
