@@ -38,33 +38,8 @@ div.atkbusy {
 }
 
 
-
 span.form-control-static {
   display: block;
-}
-
-// xs
-@media(min-width:768px){
-  .pagination, .dglimit {
-    text-align: right;
-  }
-
-  .dgridsummary {
-    margin-top: 10px;
-    display: block;
-    text-align: right;
-  }
-}
-
-// sm
-@media(max-width:767px){
-  span.form-control-static {
-    padding-top: 0px;
-  }
-
-  label.control-label {
-    margin-bottom: 0px;
-  }
 }
 
 
@@ -82,8 +57,6 @@ span.form-control-static {
 .clickable {
   cursor: pointer;
 }
-
-
 
 
 .atkmessages {
@@ -219,3 +192,4 @@ select:not([multiple]) {
     width: 100%;
   }
 }
+

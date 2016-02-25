@@ -8393,8 +8393,18 @@ table.recordList {
   width: 100%;
   overflow: auto; }
 
-.pagination {
-  margin-top: 0; }
+.table {
+  margin-bottom: 10px; }
+
+ul.pagination {
+  margin-top: 0;
+  margin-bottom: 10px;
+  float: left; }
+
+.dglimit, .dgridsummary {
+  margin-bottom: 10px;
+  float: right;
+  display: block; }
 
 A.atksection {
   display: block;
@@ -8459,20 +8469,6 @@ div.atkbusy {
 
 span.form-control-static {
   display: block; }
-
-@media (min-width: 768px) {
-  .pagination, .dglimit {
-    text-align: right; }
-  .dgridsummary {
-    margin-top: 10px;
-    display: block;
-    text-align: right; } }
-
-@media (max-width: 767px) {
-  span.form-control-static {
-    padding-top: 0px; }
-  label.control-label {
-    margin-bottom: 0px; } }
 
 .form-group.required .control-label:before {
   content: "✲";
