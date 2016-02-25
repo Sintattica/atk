@@ -135,7 +135,7 @@ class ViewEditBase extends ActionHandler
         list($tab, $section) = explode('.', $field["name"]);
         $name = "section_{$tab}_{$section}";
 
-        $url = Tools::partial_url($this->m_node->atknodetype(), $mode, "sectionstate",
+        $url = Tools::partial_url($this->m_node->atkNodeUri(), $mode, "sectionstate",
             array("atksectionname" => $name));
 
         // create onclick statement.
@@ -145,7 +145,7 @@ class ViewEditBase extends ActionHandler
         //if the section is not active, we close it on load.
         $default = in_array($field["name"], $this->m_node->getActiveSections($tab, $mode))
             ? 'opened' : 'closed';
-        $sectionstate = State::get(array("nodetype" => $this->m_node->atknodetype(), "section" => $name), $default);
+        $sectionstate = State::get(array("nodetype" => $this->m_node->atkNodeUri(), "section" => $name), $default);
 
         if ($sectionstate == 'closed') {
             $initClass = "closedSection";
@@ -218,7 +218,7 @@ class ViewEditBase extends ActionHandler
     function partial_sectionstate()
     {
         State::set(array(
-            "nodetype" => $this->m_node->atknodetype(),
+            "nodetype" => $this->m_node->atkNodeUri(),
             "section" => $this->m_postvars['atksectionname']
         ), $this->m_postvars['atksectionstate']);
         die;
@@ -303,7 +303,7 @@ class ViewEditBase extends ActionHandler
 
         $attr = $this->m_node->getAttribute($attribute);
         if ($attr == null) {
-            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
+            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeUri() . "'");
             return '';
         }
 

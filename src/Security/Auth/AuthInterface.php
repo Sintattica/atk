@@ -187,7 +187,7 @@ class AuthInterface
      */
     function attribAllowed(&$securityMgr, &$attr, $mode, $record = null)
     {
-        $node = $attr->m_ownerInstance->atkNodeType();
+        $node = $attr->m_ownerInstance->atkNodeUri();
         $attribute = $attr->fieldName();
 
         // security disabled or user is superuser? (may do anything)

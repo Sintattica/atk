@@ -160,13 +160,13 @@ class AddOrCopyHandler extends ActionHandler
         $script = Dialog::getCloseCall();
 
         if ($this->m_node->hasFlag(Node::NF_ADD_DIALOG)) {
-            $dialog = new Dialog($this->m_node->atkNodeType(), 'add', 'dialog');
+            $dialog = new Dialog($this->m_node->atkNodeUri(), 'add', 'dialog');
             $dialog->setSessionStatus(SessionManager::SESSION_PARTIAL);
             $script .= $dialog->getCall(true, false);
         } else {
             $sm = SessionManager::getInstance();
             $script .= sprintf("document.location.href = %s;",
-                JSON::encode($sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeType(), 'add'),
+                JSON::encode($sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), 'add'),
                     SessionManager::SESSION_NESTED)));
         }
 
@@ -413,7 +413,7 @@ class AddOrCopyHandler extends ActionHandler
         if ($this->m_processUrl != null) {
             return $this->m_processUrl;
         } else {
-            return Tools::partial_url($this->m_node->atkNodeType(), 'addorcopy', 'process');
+            return Tools::partial_url($this->m_node->atkNodeUri(), 'addorcopy', 'process');
         }
     }
 

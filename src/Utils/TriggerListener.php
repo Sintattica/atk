@@ -80,7 +80,7 @@ class TriggerListener
     function notify($trigger, &$record, $mode = null)
     {
         if (method_exists($this, $trigger)) {
-            Tools::atkdebug("Call listener " . get_class($this) . " for trigger $trigger on " . $this->m_node->atkNodeType() . " (" . $this->m_node->primaryKey($record) . ")");
+            Tools::atkdebug("Call listener " . get_class($this) . " for trigger $trigger on " . $this->m_node->atkNodeUri() . " (" . $this->m_node->primaryKey($record) . ")");
             return $this->$trigger($record, $mode);
         } else {
             return true;

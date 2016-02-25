@@ -204,7 +204,7 @@ class DataGridList extends DataGridComponent
             $buttonType = $grid->isEmbedded() ? "button" : "submit";
             $button = '<input type="' . $buttonType . '" class="btn btn-default btn_search" value="' . Tools::atktext("search") . '" onclick="' . $call . ' return false;">';
             if ($grid->hasFlag(DataGrid::EXTENDED_SEARCH)) {
-                $button .= ' ' . Tools::href(Tools::atkSelf() . "?atknodetype=" . $grid->getActionNode()->atkNodeType() . "&atkaction=" . $grid->getActionNode()->getExtendedSearchAction(),
+                $button .= ' ' . Tools::href(Tools::atkSelf() . "?atknodeuri=" . $grid->getActionNode()->atkNodeUri() . "&atkaction=" . $grid->getActionNode()->getExtendedSearchAction(),
                         "(" . Tools::atktext("search_extended") . ")", SessionManager::SESSION_NESTED);
             }
 
@@ -469,7 +469,7 @@ class DataGridList extends DataGridComponent
         /*         * ********************************************** */
         $mra = "";
         if (!$edit && $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS)) {
-            $target = $sm->sessionUrl(Tools::atkSelf() . '?atknodetype=' . $grid->getActionNode()->atkNodeType(),
+            $target = $sm->sessionUrl(Tools::atkSelf() . '?atknodeuri=' . $grid->getActionNode()->atkNodeUri(),
                 SessionManager::SESSION_NESTED);
 
             /* multiple actions -> dropdown */
@@ -496,7 +496,7 @@ class DataGridList extends DataGridComponent
             $postvars = $grid->getNode()->m_postvars;
 
             $target = $sm->sessionUrl(
-                Tools::atkSelf() . '?atknodetype=' . $grid->getNode()->atkNodeType()
+                Tools::atkSelf() . '?atknodeuri=' . $grid->getNode()->atkNodeUri()
                 . '&atktarget=' . (!empty($postvars['atktarget']) ? $postvars['atktarget']
                     : '')
                 . '&atktargetvar=' . (!empty($postvars['atktargetvar']) ? $postvars['atktargetvar']
@@ -892,7 +892,7 @@ class DataGridList extends DataGridComponent
 
             $attr = $this->getNode()->getAttribute($column->attrName);
             if (!is_object($attr)) {
-                throw new Exception("Invalid attribute {$column->attrName} for node " . $this->getNode()->atkNodeType());
+                throw new Exception("Invalid attribute {$column->attrName} for node " . $this->getNode()->atkNodeUri());
             }
 
             $attr->addToListArrayHeader(
@@ -916,7 +916,7 @@ class DataGridList extends DataGridComponent
 
             $attr = $this->getNode()->getAttribute($column->attrName);
             if (!is_object($attr)) {
-                throw new Exception("Invalid attribute {$column->attrName} for node " . $this->getNode()->atkNodeType());
+                throw new Exception("Invalid attribute {$column->attrName} for node " . $this->getNode()->atkNodeUri());
             }
 
             $edit = $editAllowed && in_array($column->attrName, $this->getNode()->m_editableListAttributes);

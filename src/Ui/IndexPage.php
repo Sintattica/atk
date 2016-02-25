@@ -230,8 +230,8 @@ class IndexPage
             // no nodetype passed, or session expired
 
             $destination = "";
-            if (isset($ATK_VARS["atknodetype"]) && isset($ATK_VARS["atkaction"])) {
-                $destination = "&atknodetype=" . $ATK_VARS["atknodetype"] . "&atkaction=" . $ATK_VARS["atkaction"];
+            if (isset($ATK_VARS['atknodeuri']) && isset($ATK_VARS["atkaction"])) {
+                $destination = "&atknodeuri=" . $ATK_VARS['atknodeuri'] . "&atkaction=" . $ATK_VARS["atkaction"];
                 if (isset($ATK_VARS["atkselector"])) {
                     $destination .= "&atkselector=" . $ATK_VARS["atkselector"];
                 }
@@ -249,8 +249,8 @@ class IndexPage
         } else {
 
             // Create node
-            if (isset($ATK_VARS['atknodetype'])) {
-                $obj = Module::atkGetNode($ATK_VARS['atknodetype']);
+            if (isset($ATK_VARS['atknodeuri'])) {
+                $obj = Module::atkGetNode($ATK_VARS['atknodeuri']);
 
                 if (is_object($obj)) {
                     $controller = Controller::getInstance();
@@ -268,7 +268,7 @@ class IndexPage
                             $this->m_defaultDestination[1],
                             $this->m_defaultDestination[2] ? $this->m_defaultDestination[2] : array());
                     } else {
-                        $destination = Tools::dispatch_url($this->m_defaultDestination["atknodetype"],
+                        $destination = Tools::dispatch_url($this->m_defaultDestination["atknodeuri"],
                             $this->m_defaultDestination["atkaction"],
                             $this->m_defaultDestination[0] ? $this->m_defaultDestination[0] : array());
                     }

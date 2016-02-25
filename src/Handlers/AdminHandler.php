@@ -208,7 +208,7 @@ class AdminHandler extends ActionHandler
             $grid->setPostvar('atksearch', array());
             $sm = SessionManager::getInstance();
 
-            $url = $sm->sessionUrl(Tools::dispatch_url($node->atkNodeType(), $action,
+            $url = $sm->sessionUrl(Tools::dispatch_url($node->atkNodeUri(), $action,
                 array('atkselector' => $node->primaryKey($records[0]))), SessionManager::SESSION_NESTED);
 
             if ($grid->isUpdate()) {
@@ -261,7 +261,7 @@ class AdminHandler extends ActionHandler
     {
         $link = "";
         if ($this->m_node->allowed("add") && !$this->m_node->hasFlag(Node::NF_READONLY) && $this->m_node->hasFlag(Node::NF_IMPORT)) {
-            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeType(), "import"),
+            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeUri(), "import"),
                 Tools::atktext("import", "atk", $this->m_node->m_type), SessionManager::SESSION_NESTED);
         }
         return $link;
@@ -282,7 +282,7 @@ class AdminHandler extends ActionHandler
                     str_replace('[table]', $this->m_node->getTable(), $this->m_node->m_fuzzyFilters));
             }
 
-            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeType(), "export",
+            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeUri(), "export",
                 array('atkfilter' => $filter)), Tools::atktext("export", "atk", $this->m_node->m_type),
                 SessionManager::SESSION_NESTED);
         }
@@ -298,7 +298,7 @@ class AdminHandler extends ActionHandler
      */
     public function getAddNodeType()
     {
-        return $this->m_node->atkNodeType();
+        return $this->m_node->atkNodeUri();
     }
 
     /**
@@ -325,7 +325,7 @@ class AdminHandler extends ActionHandler
             if ($add || $addorcopy) {
                 $action = $node->hasFlag(Node::NF_ADDORCOPY_DIALOG) ? 'addorcopy' : 'add';
 
-                $dialog = new Dialog($node->atkNodeType(), $action, 'dialog');
+                $dialog = new Dialog($node->atkNodeUri(), $action, 'dialog');
                 $dialog->setModifierObject($node);
                 $dialog->setSessionStatus(SessionManager::SESSION_PARTIAL);
                 $onClick = $dialog->getCall();
@@ -351,7 +351,7 @@ class AdminHandler extends ActionHandler
     public function getAddUrl()
     {
         $node = Module::atkGetNode($this->invoke('getAddNodeType'));
-        return Tools::atkSelf() . '?atknodetype=' . $node->atkNodeType() . '&atkaction=add';
+        return Tools::atkSelf() . '?atknodeuri=' . $node->atkNodeUri() . '&atkaction=add';
     }
 
     /**
@@ -405,7 +405,7 @@ class AdminHandler extends ActionHandler
 
         $attr = $this->m_node->getAttribute($attribute);
         if ($attr == null) {
-            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
+            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeUri() . "'");
             return '';
         }
 

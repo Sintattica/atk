@@ -339,7 +339,7 @@ class AddHandler extends ActionHandler
 
         $attr = $this->m_node->getAttribute($attribute);
         if ($attr == null) {
-            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
+            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeUri() . "'");
             return '';
         }
 
@@ -352,7 +352,7 @@ class AddHandler extends ActionHandler
     function partial_sectionstate()
     {
         State::set(array(
-            "nodetype" => $this->m_node->atknodetype(),
+            "nodetype" => $this->m_node->atkNodeUri(),
             "section" => $this->m_postvars['atksectionname']
         ), $this->m_postvars['atksectionstate']);
     }
@@ -391,7 +391,7 @@ class AddHandler extends ActionHandler
         if ($this->m_dialogSaveUrl != null) {
             return $this->m_dialogSaveUrl;
         } else {
-            return Tools::partial_url($this->m_node->atkNodeType(), 'save', 'dialog');
+            return Tools::partial_url($this->m_node->atkNodeUri(), 'save', 'dialog');
         }
     }
 

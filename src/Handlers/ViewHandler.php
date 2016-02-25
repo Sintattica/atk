@@ -240,7 +240,7 @@ class ViewHandler extends ViewEditBase
 
                 // Make the attribute and node names available in the template.
                 $tplfield['attribute'] = $field["attribute"]->fieldName();
-                $tplfield['node'] = $field["attribute"]->m_ownerInstance->atkNodeType();
+                $tplfield['node'] = $field["attribute"]->m_ownerInstance->atkNodeUri();
 
                 /* html source */
                 $tplfield["widget"] = $field["html"];
@@ -253,7 +253,7 @@ class ViewHandler extends ViewEditBase
                     $editsrc .= $tooltip . "&nbsp;";
                 }
 
-                $tplfield['id'] = str_replace('.', '_', $node->atknodetype() . '_' . $field["id"]);
+                $tplfield['id'] = str_replace('.', '_', $node->atkNodeUri() . '_' . $field["id"]);
 
                 $tplfield["full"] = $editsrc;
 

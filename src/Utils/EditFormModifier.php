@@ -204,7 +204,7 @@ class EditFormModifier
 
         $scriptCode = '';
         foreach ($editArray['fields'] as $field) {
-            $element = str_replace('.', '_', $this->getNode()->atkNodeType() . '_' . $field['id']);
+            $element = str_replace('.', '_', $this->getNode()->atkNodeUri() . '_' . $field['id']);
             $value = JSON::encode(Tools::atk_iconv(Tools::atkGetCharset(), "UTF-8",
                 $field['html'])); // JSON::encode excepts string in UTF-8
             $scriptCode .= "if (\$('$element')) { \$('$element').update($value); } ";

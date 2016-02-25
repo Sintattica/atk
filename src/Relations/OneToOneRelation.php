@@ -991,7 +991,7 @@ class OneToOneRelation extends Relation
             return;
         } else {
             if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) || ($column != '*' && $this->getDestination()->getAttribute($column) == null)) {
-                throw new Exception("Invalid list column {$column} for atkOneToOneRelation " . $this->getOwnerInstance()->atkNodeType() . '::' . $this->fieldName());
+                throw new Exception("Invalid list column {$column} for atkOneToOneRelation " . $this->getOwnerInstance()->atkNodeUri() . '::' . $this->fieldName());
             }
         }
 
@@ -1039,7 +1039,7 @@ class OneToOneRelation extends Relation
             return;
         } else {
             if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) || ($column != '*' && $this->getDestination()->getAttribute($column) == null)) {
-                throw new Exception("Invalid list column {$column} for atkOneToOneRelation " . $this->getOwnerInstance()->atkNodeType() . '::' . $this->fieldName());
+                throw new Exception("Invalid list column {$column} for atkOneToOneRelation " . $this->getOwnerInstance()->atkNodeUri() . '::' . $this->fieldName());
             }
         }
 

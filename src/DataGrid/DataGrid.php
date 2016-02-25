@@ -447,7 +447,7 @@ class DataGrid
     protected function initOnCreate()
     {
         $this->setFlags($this->convertNodeFlags($this->getNode()->getFlags()));
-        $this->setBaseUrl(Tools::partial_url($this->getNode()->atkNodeType(), $this->getNode()->m_action,
+        $this->setBaseUrl(Tools::partial_url($this->getNode()->atkNodeUri(), $this->getNode()->m_action,
             'datagrid'));
 
         $this->setDefaultLimit(Config::getGlobal('recordsperpage'));
@@ -1673,7 +1673,7 @@ class DataGrid
     public function getSaveCall()
     {
         $sm = SessionManager::getInstance();
-        $url = $sm->sessionUrl(Tools::dispatch_url($this->getNode()->atkNodeType(), 'multiupdate',
+        $url = $sm->sessionUrl(Tools::dispatch_url($this->getNode()->atkNodeUri(), 'multiupdate',
             array('output' => 'json')), SessionManager::SESSION_PARTIAL);
         return 'ATK.DataGrid.save(' . JSON::encode($this->getName()) . ', ' . JSON::encode($url) . ');';
     }
@@ -1821,7 +1821,7 @@ class DataGrid
      */
     private static function callModifiers(DataGrid $grid, $mode)
     {
-        $keys = array('*', $grid->getNode()->atkNodeType());
+        $keys = array('*', $grid->getNode()->atkNodeUri());
 
         foreach ($keys as $key) {
             if (!isset(self::$s_modifiers[$key])) {

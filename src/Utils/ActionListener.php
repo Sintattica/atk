@@ -70,7 +70,7 @@ class ActionListener
     function notify($action, $record)
     {
         if (count($this->m_actionfilter) == 0 || Tools::atk_in_array($action, $this->m_actionfilter)) {
-            Tools::atkdebug("Action $action performed on " . $this->m_node->atkNodeType() . " (" . $this->m_node->primaryKey($record) . ")");
+            Tools::atkdebug("Action $action performed on " . $this->m_node->atkNodeUri() . " (" . $this->m_node->primaryKey($record) . ")");
             $this->actionPerformed($action, $record);
         }
     }
@@ -102,7 +102,7 @@ class ActionListener
     function preNotify($action, &$record)
     {
         if (count($this->m_actionfilter) == 0 || Tools::atk_in_array($action, $this->m_actionfilter)) {
-            Tools::atkdebug("Action $action to be performed on " . $this->m_node->atkNodeType() . " (" . $this->m_node->primaryKey($record) . ")");
+            Tools::atkdebug("Action $action to be performed on " . $this->m_node->atkNodeUri() . " (" . $this->m_node->primaryKey($record) . ")");
             $this->preActionPerformed($action, $record);
         }
     }

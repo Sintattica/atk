@@ -357,7 +357,7 @@ class AttributeEditHandler extends ActionHandler
      */
     function onChange()
     {
-        $url = Tools::partial_url($this->m_masterNode->atkNodeType(), 'attributeedit', 'refreshvaluefield');
+        $url = Tools::partial_url($this->m_masterNode->atkNodeUri(), 'attributeedit', 'refreshvaluefield');
         $script = "
         ATK.AttributeEditHandler.refreshvalues('$url');
       ";
@@ -528,7 +528,7 @@ class AttributeEditHandler extends ActionHandler
         if ($this->m_processUrl != null) {
             return $this->m_processUrl;
         } else {
-            return Tools::partial_url($this->m_masterNode->atkNodeType(), 'attributeedit', 'process');
+            return Tools::partial_url($this->m_masterNode->atkNodeUri(), 'attributeedit', 'process');
         }
     }
 

@@ -1023,7 +1023,7 @@ class Attribute
             if (count($this->getDependencies()) && $this->m_showSpinner) {
                 $id = $this->getHtmlId($fieldprefix);
                 if ($this->m_ownerInstance) {
-                    $id = str_replace('.', '_', $this->m_ownerInstance->atknodetype() . '_' . $id);
+                    $id = str_replace('.', '_', $this->m_ownerInstance->atkNodeUri() . '_' . $id);
                 }
                 $spinnerCode = "
       var spinner = $$('#$id .atkbusy');
@@ -1500,7 +1500,7 @@ class Attribute
         $column = '*'
     ) {
         if ($column != null && $column != '*') {
-            throw new Exception("Invalid list column {$column} for " . get_class($this) . " " . $this->getOwnerInstance()->atkNodeType() . '::' . $this->fieldName());
+            throw new Exception("Invalid list column {$column} for " . get_class($this) . " " . $this->getOwnerInstance()->atkNodeUri() . '::' . $this->fieldName());
         }
 
         if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == "select")) {
@@ -1553,7 +1553,7 @@ class Attribute
         $column = '*'
     ) {
         if ($column != null && $column != '*') {
-            throw new Exception("Invalid list column {$column} for " . get_class($this) . " " . $this->getOwnerInstance()->atkNodeType() . '::' . $this->fieldName());
+            throw new Exception("Invalid list column {$column} for " . get_class($this) . " " . $this->getOwnerInstance()->atkNodeUri() . '::' . $this->fieldName());
         }
 
         if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == "select")) {
@@ -1687,7 +1687,7 @@ class Attribute
         // should be overriden by relations etc. if they want to support this
         if (count($path) > 0) {
             Tools::atk_var_dump($path,
-                'Invalid search path for ' . $this->m_ownerInstance->atkNodeType() . '#' . $this->fieldName() . ', ignoring criterium!');
+                'Invalid search path for ' . $this->m_ownerInstance->atkNodeUri() . '#' . $this->fieldName() . ', ignoring criterium!');
         } else {
             $this->searchCondition($query, $ownerAlias, $value, $mode);
         }
@@ -2820,7 +2820,7 @@ class Attribute
             //JSON::encode expect string in in ASCII or UTF-8 format, so convert data to UTF-8
             $value = Tools::atk_iconv(Tools::atkGetCharset(), "UTF-8", $field['html']);
             $script .= "\$('" . str_replace('.', '_',
-                    $this->m_ownerInstance->atkNodeType() . '_' . $field['id']) . "').update(" . JSON::encode($value) . ");\r\n";
+                    $this->m_ownerInstance->atkNodeUri() . '_' . $field['id']) . "').update(" . JSON::encode($value) . ");\r\n";
         }
 
         return '<script type="text/javascript">' . $script . '</script>';
@@ -2874,7 +2874,7 @@ class Attribute
             $action = $mode == "add" ? "add" : "edit";
         }
 
-        $url = Tools::partial_url($this->getOwnerInstance()->atkNodeType(), $action,
+        $url = Tools::partial_url($this->getOwnerInstance()->atkNodeUri(), $action,
             "attribute." . $this->fieldName() . ".dependencies",
             array("atkdata" => array('fieldPrefix' => $fieldPrefix, 'mode' => $mode)));
         $url = JSON::encode($url);
@@ -3006,7 +3006,7 @@ class Attribute
      */
     function __toString()
     {
-        return $this->m_ownerInstance->atkNodeType() . "::" . $this->fieldName();
+        return $this->m_ownerInstance->atkNodeUri() . "::" . $this->fieldName();
     }
 
 }

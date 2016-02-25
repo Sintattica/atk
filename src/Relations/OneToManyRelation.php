@@ -263,7 +263,7 @@ class OneToManyRelation extends Relation
         $this->createDestination();
 
         $grid = DataGrid::create($this->m_destInstance,
-            str_replace('.', '_', $this->getOwnerInstance()->atkNodeType()) . '_' . $this->fieldName() . '_grid', null,
+            str_replace('.', '_', $this->getOwnerInstance()->atkNodeUri()) . '_' . $this->fieldName() . '_grid', null,
             true, $useSession);
 
         $grid->setMode($mode);
@@ -277,7 +277,7 @@ class OneToManyRelation extends Relation
             $grid->removeFlag(DataGrid::LOCKING);
         }
 
-        $grid->setBaseUrl(Tools::partial_url($this->getOwnerInstance()->atkNodeType(), $action,
+        $grid->setBaseUrl(Tools::partial_url($this->getOwnerInstance()->atkNodeUri(), $action,
             'attribute.' . $this->fieldName() . '.grid'));
 
         $grid->setExcludes($this->getGridExcludes());
@@ -577,7 +577,7 @@ class OneToManyRelation extends Relation
      */
     public function getSessionStoreKey()
     {
-        return $this->getOwnerInstance()->atkNodeType() . ':' . $this->fieldName();
+        return $this->getOwnerInstance()->atkNodeUri() . ':' . $this->fieldName();
     }
 
     /**
@@ -613,7 +613,7 @@ class OneToManyRelation extends Relation
             $params['atkfilter'] = $filter;
         }
 
-        $dialog = new Dialog($this->m_ownerInstance->atkNodeType(), 'edit',
+        $dialog = new Dialog($this->m_ownerInstance->atkNodeUri(), 'edit',
             'attribute.' . $this->fieldName() . '.' . $action . '_dialog', $params);
         $title = $ui->title($this->m_destInstance->m_module, $this->m_destInstance->m_type, $action);
         $dialog->setTitle($title);
@@ -1339,7 +1339,7 @@ class OneToManyRelation extends Relation
         // which point back to this ownerinstance and it doesn't need them anymore anyway.
         $this->m_ownerInstance->m_postvars = array();
 
-        $handler->setDialogSaveUrl(Tools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit',
+        $handler->setDialogSaveUrl(Tools::partial_url($this->m_ownerInstance->atkNodeUri(), 'edit',
             'attribute.' . $this->fieldName() . '.add_process'));
         $result = $handler->renderAddDialog();
         $page = $this->m_ownerInstance->getPage();
@@ -1359,7 +1359,7 @@ class OneToManyRelation extends Relation
         // which point back to this ownerinstance and it doesn't need them anymore anyway.
         $this->m_ownerInstance->m_postvars = array();
 
-        $handler->setDialogSaveUrl(Tools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit',
+        $handler->setDialogSaveUrl(Tools::partial_url($this->m_ownerInstance->atkNodeUri(), 'edit',
             'attribute.' . $this->fieldName() . '.add_process'));
         $handler->handleSave($this->getPartialSaveUrl());
     }
@@ -1371,7 +1371,7 @@ class OneToManyRelation extends Relation
     public function getPartialSaveUrl()
     {
         return Tools::partial_url(
-            $this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.' .
+            $this->m_ownerInstance->atkNodeUri(), 'edit', 'attribute.' .
             $this->fieldName() .
             '.refresh'
         );
@@ -1385,7 +1385,7 @@ class OneToManyRelation extends Relation
         $this->createDestination();
         $this->m_destInstance->addFilter($this->m_ownerInstance->m_postvars['atkfilter']);
         $handler = $this->m_destInstance->getHandler('addorcopy');
-        $handler->setProcessUrl(Tools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit',
+        $handler->setProcessUrl(Tools::partial_url($this->m_ownerInstance->atkNodeUri(), 'edit',
             'attribute.' . $this->fieldName() . '.addorcopy_process',
             array('atkfilter' => $this->m_ownerInstance->m_postvars['atkfilter'])));
         $handler->handleDialog();
@@ -1409,7 +1409,7 @@ class OneToManyRelation extends Relation
             // which point back to this ownerinstance and it doesn't need them anymore anyway.
             $this->m_ownerInstance->m_postvars = array();
 
-            $handler->handleCopy(Tools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit',
+            $handler->handleCopy(Tools::partial_url($this->m_ownerInstance->atkNodeUri(), 'edit',
                 'attribute.' . $this->fieldName() . '.refresh'));
         }
 
@@ -1423,7 +1423,7 @@ class OneToManyRelation extends Relation
             if ($this->hasFlag(self::AF_ONETOMANY_ADD_DIALOG) || $this->m_destInstance->hasFlag(Node::NF_ADD_DIALOG)) {
                 $ui = $this->m_ownerInstance->getUi();
                 $filter = $this->m_ownerInstance->m_postvars['atkfilter'];
-                $dialog = new Dialog($this->m_ownerInstance->atkNodeType(), 'edit',
+                $dialog = new Dialog($this->m_ownerInstance->atkNodeUri(), 'edit',
                     'attribute.' . $this->fieldName() . '.add_dialog', array('atkfilter' => $filter));
                 $title = $ui->title($this->m_destInstance->m_module, $this->m_destInstance->m_type, 'add');
                 $dialog->setTitle($title);
@@ -1431,7 +1431,7 @@ class OneToManyRelation extends Relation
                 $script .= $dialog->getCall(true, false);
             } else {
                 $sm = SessionManager::getInstance();
-                $url = Tools::dispatch_url($this->m_destInstance->atkNodeType(), 'add');
+                $url = Tools::dispatch_url($this->m_destInstance->atkNodeUri(), 'add');
                 $script .= "atkSubmit('" . Tools::atkurlencode($sm->sessionUrl($url, SessionManager::SESSION_NESTED)) . "', true);";
             }
 
@@ -1454,7 +1454,7 @@ class OneToManyRelation extends Relation
         // which point back to this ownerinstance and it doesn't need them anymore anyway.
         $this->m_ownerInstance->m_postvars = array();
 
-        $handler->setDialogSaveUrl(Tools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit',
+        $handler->setDialogSaveUrl(Tools::partial_url($this->m_ownerInstance->atkNodeUri(), 'edit',
             'attribute.' . $this->fieldName() . '.edit_process'));
         $result = $handler->renderEditDialog();
         $page = $this->m_ownerInstance->getPage();
@@ -1474,9 +1474,9 @@ class OneToManyRelation extends Relation
         // which point back to this ownerinstance and it doesn't need them anymore anyway.
         $this->m_ownerInstance->m_postvars = array();
 
-        $handler->setDialogSaveUrl(Tools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit',
+        $handler->setDialogSaveUrl(Tools::partial_url($this->m_ownerInstance->atkNodeUri(), 'edit',
             'attribute.' . $this->fieldName() . '.edit_process'));
-        $handler->handleUpdate(Tools::partial_url($this->m_ownerInstance->atkNodeType(), 'edit',
+        $handler->handleUpdate(Tools::partial_url($this->m_ownerInstance->atkNodeUri(), 'edit',
             'attribute.' . $this->fieldName() . '.refresh'));
     }
 

@@ -82,16 +82,16 @@ class ExportHandler extends ActionHandler
           {
             fieldval = $( 'export_selection_options' ).value;
           }
-          new Ajax.Updater('export_attributes', '" . Tools::partial_url($this->m_postvars['atknodetype'], 'export',
+          new Ajax.Updater('export_attributes', '" . Tools::partial_url($this->m_postvars['atknodeuri'], 'export',
                 'export') . "exportvalue='+fieldval+'&' );
 
           if( fieldval != 'none' )
           {
             if( fieldval != 'new' )
             {
-              new Ajax.Updater('selection_interact', '" . Tools::partial_url($this->m_postvars['atknodetype'],
+              new Ajax.Updater('selection_interact', '" . Tools::partial_url($this->m_postvars['atknodeuri'],
                 'export', 'selection_interact') . "exportvalue='+fieldval+'&' );
-              new Ajax.Updater('export_name', '" . Tools::partial_url($this->m_postvars['atknodetype'], 'export',
+              new Ajax.Updater('export_name', '" . Tools::partial_url($this->m_postvars['atknodeuri'], 'export',
                 'selection_name') . "exportvalue='+fieldval+'&' );
               $( 'selection_interact' ).style.display='';
               $( 'export_name' ).style.display='';
@@ -123,7 +123,7 @@ class ExportHandler extends ActionHandler
 
          if (where_to == true)
          {
-           window.location= \"" . Tools::dispatch_url($this->m_postvars['atknodetype'], 'export',
+           window.location= \"" . Tools::dispatch_url($this->m_postvars['atknodeuri'], 'export',
                 array('confirmed' => 'true')) . "&dodelete=\"+dodelete;
          }
         }");
@@ -326,7 +326,7 @@ class ExportHandler extends ActionHandler
 
         // first check if the combination of node, name and user_id doesn't already exist
         $rows = $db->getRows("SELECT id FROM atk_exportcriteria
-                            WHERE nodetype = '" . $this->m_postvars['atknodetype'] . "'
+                            WHERE nodetype = '" . $this->m_postvars['atknodeuri'] . "'
                             AND name = '" . $this->m_postvars['export_selection_name'] . "'
                             AND user_id = " . $user_id);
         if (count($rows)) {
@@ -334,7 +334,7 @@ class ExportHandler extends ActionHandler
         }
 
         $query = 'INSERT INTO atk_exportcriteria ( id, nodetype, name, criteria, user_id )
-                VALUES ( ' . $id . ', "' . $this->m_postvars['atknodetype'] . '", "' . $db->escapeSQL($this->m_postvars['export_selection_name']) . '",
+                VALUES ( ' . $id . ', "' . $this->m_postvars['atknodeuri'] . '", "' . $db->escapeSQL($this->m_postvars['export_selection_name']) . '",
                          "' . addslashes(serialize($this->m_postvars)) . '", ' . $user_id . ' )';
 
         $db->query($query);
@@ -359,7 +359,7 @@ class ExportHandler extends ActionHandler
 
         // first check if the combination of node, name and user_id doesn't already exist
         $rows = $db->getRows("SELECT id FROM atk_exportcriteria
-                            WHERE nodetype = '" . $this->m_postvars['atknodetype'] . "'
+                            WHERE nodetype = '" . $this->m_postvars['atknodeuri'] . "'
                             AND name = '" . $this->m_postvars['export_selection_name'] . "'
                             AND user_id = " . $user_id . "
                             AND id <> " . (int)$this->m_postvars['exportvalue']);
@@ -396,7 +396,7 @@ class ExportHandler extends ActionHandler
      */
     protected function getExportSelections()
     {
-        $where = ' nodetype = "' . $this->m_postvars['atknodetype'] . '"';
+        $where = ' nodetype = "' . $this->m_postvars['atknodeuri'] . '"';
         if ('none' !== strtolower(Config::getGlobal('authentication'))) {
             $user = SecurityManager::atkGetUser();
             if ('administrator' !== strtolower($user['name'])) {

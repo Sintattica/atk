@@ -224,7 +224,7 @@ class RecordListCache
     function getIdentifiers()
     {
         $identifiers = array();
-        $identifiers[] = $this->m_node->atkNodeType() . "cache";
+        $identifiers[] = $this->m_node->atkNodeUri() . "cache";
         if ($this->m_node->m_cacheidentifiers) {
             $this->_formatIdentifiers($this->m_node->m_cacheidentifiers, $identifiers);
         }

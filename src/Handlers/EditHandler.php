@@ -444,7 +444,7 @@ class EditHandler extends ViewEditBase
 
             // Make the attribute and node names available in the template.
             $tplfield['attribute'] = $field["attribute"]->fieldName();
-            $tplfield['node'] = $field["attribute"]->m_ownerInstance->atkNodeType();
+            $tplfield['node'] = $field["attribute"]->m_ownerInstance->atkNodeUri();
 
             /* html source */
             $tplfield["widget"] = $field["html"];
@@ -457,7 +457,7 @@ class EditHandler extends ViewEditBase
                 $editsrc .= $tooltip . "&nbsp;";
             }
 
-            $tplfield['id'] = str_replace('.', '_', $this->m_node->atknodetype() . '_' . $field["id"]);
+            $tplfield['id'] = str_replace('.', '_', $this->m_node->atkNodeUri() . '_' . $field["id"]);
 
             $tplfield["full"] = $editsrc;
 
@@ -718,7 +718,7 @@ class EditHandler extends ViewEditBase
         if ($this->m_dialogSaveUrl != null) {
             return $this->m_dialogSaveUrl;
         } else {
-            return Tools::partial_url($this->m_node->atkNodeType(), 'update', 'dialog');
+            return Tools::partial_url($this->m_node->atkNodeUri(), 'update', 'dialog');
         }
     }
 

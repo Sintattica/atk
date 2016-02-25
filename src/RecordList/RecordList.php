@@ -219,7 +219,7 @@ class RecordList
             // make old recordlist compatible with new order specification
             if (!empty($head["order"])) {
                 global $ATK_VARS;
-                $head["url"] = $sm->sessionUrl(Tools::atkSelf() . '?atknodetype=' . $ATK_VARS["atknodetype"] . '&atkaction=' . $ATK_VARS["atkaction"] . '&atkorderby=' . rawurlencode($head["order"]));
+                $head["url"] = $sm->sessionUrl(Tools::atkSelf() . '?atknodeuri=' . $ATK_VARS['atknodeuri'] . '&atkaction=' . $ATK_VARS["atkaction"] . '&atkorderby=' . rawurlencode($head["order"]));
             }
 
             if (Tools::hasFlag($this->m_flags, self::RL_EMBED) && !empty($head["url"])) {
@@ -294,7 +294,7 @@ class RecordList
             if (!Tools::hasFlag($flags,
                     self::RL_NO_EXTENDED_SEARCH) && !$this->m_node->hasFlag(Node::NF_NO_EXTENDED_SEARCH)
             ) {
-                $button .= ' ' . Tools::href(Tools::atkSelf() . "?atknodetype=" . $this->getMasterNodeType() . "&atkaction=" . $node->getExtendedSearchAction(),
+                $button .= ' ' . Tools::href(Tools::atkSelf() . "?atknodeuri=" . $this->getMasterNodeType() . "&atkaction=" . $node->getExtendedSearchAction(),
                         "(" . Tools::atktext("search_extended") . ")", SessionManager::SESSION_NESTED);
             }
 
@@ -303,7 +303,7 @@ class RecordList
             $searchstart = '<a name="searchform"></a>';
             if (!Tools::hasFlag($this->m_flags, self::RL_EMBED)) {
                 $searchstart .= '<form action="' . Tools::atkSelf() . '?' . SID . '" method="get">' . $sm->formState();
-                $searchstart .= '<input type="hidden" name="atknodetype" value="' . $this->getMasterNodeType() . '">' .
+                $searchstart .= '<input type="hidden" name="atknodeuri" value="' . $this->getMasterNodeType() . '">' .
                     '<input type="hidden" name="atkaction" value="' . $this->m_node->m_action . '">' . '<input type="hidden" name="atksmartsearch" value="clear">' .
                     '<input type="hidden" name="atkstartat" value="0">'; // reset atkstartat to first page after a new search;
             }
@@ -349,7 +349,7 @@ class RecordList
                 }
                 $liststart = '<form id="' . $formName . '" name="' . $formName . '" method="post">' .
                     $sm->formState(SessionManager::SESSION_DEFAULT) .
-                    '<input type="hidden" name="atknodetype" value="' . $this->getMasterNodeType() . '">' .
+                    '<input type="hidden" name="atknodeuri" value="' . $this->getMasterNodeType() . '">' .
                     '<input type="hidden" name="atkaction" value="' . $this->m_node->m_action . '">';
                 $listend = '</form>';
             }
@@ -536,7 +536,7 @@ class RecordList
         /*             * ********************************************** */
         $mra = "";
         if (Tools::hasFlag($flags, self::RL_MRPA)) {
-            $target = $sm->sessionUrl(Tools::atkSelf() . '?atknodetype=' . $this->getMasterNodeType(),
+            $target = $sm->sessionUrl(Tools::atkSelf() . '?atknodeuri=' . $this->getMasterNodeType(),
                 SessionManager::SESSION_NESTED);
 
             /* multiple actions -> dropdown */
@@ -560,7 +560,7 @@ class RecordList
         /*             * ************************************* */
         /* MULTI-RECORD-ACTION FORM (CONTINUED) */
         /*             * ************************************* */ elseif (Tools::hasFlag($flags, self::RL_MRA)) {
-            $target = $sm->sessionUrl(Tools::atkSelf() . '?atknodetype=' . $this->m_node->atkNodeType() . '&atktarget=' . $this->m_node->m_postvars['atktarget'] . '&atktargetvar=' . $this->m_node->m_postvars['atktargetvar'] . '&atktargetvartpl=' . $this->m_node->m_postvars['atktargetvartpl'],
+            $target = $sm->sessionUrl(Tools::atkSelf() . '?atknodeuri=' . $this->m_node->atkNodeUri() . '&atktarget=' . $this->m_node->m_postvars['atktarget'] . '&atktargetvar=' . $this->m_node->m_postvars['atktargetvar'] . '&atktargetvartpl=' . $this->m_node->m_postvars['atktargetvartpl'],
                 SessionManager::SESSION_NESTED);
 
             $mra = (count($list["rows"]) > 1 ?
@@ -831,7 +831,7 @@ class RecordList
     function getMasterNodeType()
     {
         $node = $this->getMasterNode();
-        return $node->atkNodeType();
+        return $node->atkNodeUri();
     }
 
 }

@@ -80,7 +80,7 @@ abstract class AbstractSearchHandler extends ActionHandler
 
         $db = $this->m_node->getDb();
         $query = "SELECT c.name FROM {$this->m_table} c WHERE c.nodetype = '%s' ORDER BY UPPER(c.name) AND handlertype = '%s'";
-        $rows = $db->getRows(sprintf($query, $this->m_node->atkNodeType(), $this->getSearchHandlerType()));
+        $rows = $db->getRows(sprintf($query, $this->m_node->atkNodeUri(), $this->getSearchHandlerType()));
 
         $result = array();
         foreach ($rows as $row) {
@@ -104,7 +104,7 @@ abstract class AbstractSearchHandler extends ActionHandler
         $db = $this->m_node->getDb();
         $query = "DELETE FROM {$this->m_table} WHERE nodetype = '%s' AND UPPER(name) = UPPER('%s') AND handlertype = '%s'";
 
-        $db->query(sprintf($query, $this->m_node->atkNodeType(), Tools::escapeSQL($name),
+        $db->query(sprintf($query, $this->m_node->atkNodeUri(), Tools::escapeSQL($name),
             $this->getSearchHandlerType()));
         $db->commit();
     }
@@ -127,7 +127,7 @@ abstract class AbstractSearchHandler extends ActionHandler
         $this->forgetCriteria($name);
         $db = $this->m_node->getDb();
         $query = "INSERT INTO {$this->m_table} (nodetype, name, criteria, handlertype) VALUES('%s', '%s', '%s', '%s')";
-        $db->query(sprintf($query, $this->m_node->atkNodeType(), Tools::escapeSQL($name),
+        $db->query(sprintf($query, $this->m_node->atkNodeUri(), Tools::escapeSQL($name),
             Tools::escapeSQL(serialize($criteria)), $this->getSearchHandlerType()));
         $db->commit();
     }
@@ -147,10 +147,10 @@ abstract class AbstractSearchHandler extends ActionHandler
         $db = $this->m_node->getDb();
         $query = "SELECT c.criteria FROM {$this->m_table} c WHERE c.nodetype = '%s' AND UPPER(c.name) = UPPER('%s') AND handlertype = '%s'";
 
-        Tools::atk_var_dump(sprintf($query, $this->m_node->atkNodeType(), Tools::escapeSQL($name),
+        Tools::atk_var_dump(sprintf($query, $this->m_node->atkNodeUri(), Tools::escapeSQL($name),
             $this->getSearchHandlerType()), 'loadCriteria query');
 
-        list($row) = $db->getRows(sprintf($query, $this->m_node->atkNodeType(), Tools::escapeSQL($name),
+        list($row) = $db->getRows(sprintf($query, $this->m_node->atkNodeUri(), Tools::escapeSQL($name),
             $this->getSearchHandlerType()));
         $criteria = $row == null ? null : unserialize($row['criteria']);
 
@@ -262,7 +262,7 @@ abstract class AbstractSearchHandler extends ActionHandler
             return null;
         } else {
             $sm = SessionManager::getInstance();
-            return $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeType(), $this->m_action,
+            return $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), $this->m_action,
                 array('forget_criteria' => $current)), SessionManager::SESSION_REPLACE);
         }
     }

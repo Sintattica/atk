@@ -419,7 +419,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      */
     protected function getEditActionLink($record)
     {
-        return Tools::href(Tools::dispatch_url($this->getdestination()->atknodetype(), 'edit',
+        return Tools::href(Tools::dispatch_url($this->getdestination()->atkNodeUri(), 'edit',
             array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SessionManager::SESSION_NESTED,
             true, 'class="atkmanytomanyselectrelation-link"');
     }
@@ -432,7 +432,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      */
     protected function getViewActionLink($record)
     {
-        return Tools::href(Tools::dispatch_url($this->getdestination()->atknodetype(), 'view',
+        return Tools::href(Tools::dispatch_url($this->getdestination()->atkNodeUri(), 'view',
             array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('view'), SessionManager::SESSION_NESTED,
             true, 'class="atkmanytomanyselectrelation-link"');
     }
@@ -474,7 +474,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
             return '';
         }
 
-        $url = Tools::partial_url($this->getOwnerInstance()->atkNodeType(), $mode,
+        $url = Tools::partial_url($this->getOwnerInstance()->atkNodeUri(), $mode,
             'attribute.' . $this->fieldName() . '.selectedrecord', array('fieldprefix' => $fieldprefix));
 
         $relation = $this->getManyToOneRelation();

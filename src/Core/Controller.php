@@ -260,14 +260,14 @@ class Controller
             return $this->m_node;
         } else {
             //if the object not yet exists, try to create it
-            $fullclassname = $this->m_postvars["atknodetype"];
+            $fullclassname = $this->m_postvars['atknodeuri'];
             if (isset($fullclassname) && $fullclassname != null) {
                 $this->m_node = Module::atkGetNode($fullclassname);
                 if (is_object($this->m_node)) {
                     return $this->m_node;
                 } else {
                     global $ATK_VARS;
-                    Tools::atkerror("No object '" . $ATK_VARS["atknodetype"] . "' created!!?!");
+                    Tools::atkerror("No object '" . $ATK_VARS['atknodeuri'] . "' created!!?!");
                 }
             }
         }
@@ -318,7 +318,7 @@ class Controller
                 list(, $id) = explode("=", 'atkArrayNvl($node->m_postvars, "atkselector", "=")');
             }
             $page->register_hiddenvars(array(
-                "atknodetype" => $node->m_module . "." . $node->m_type,
+                "atknodeuri" => $node->m_module . "." . $node->m_type,
                 "atkselector" => str_replace("'", "", $id)
             ));
         } else {
@@ -458,7 +458,7 @@ class Controller
                 "atkactionstatus" => $status,
                 "atkfbmessage" => $message
             );
-            $atkNodeType = $node->atkNodeType();
+            $atkNodeUri = $node->atkNodeUri();
             $sessionStatus = SessionManager::SESSION_REPLACE;
 
             // The level skip given is based on where we should end up after the
@@ -468,23 +468,23 @@ class Controller
             // case we have a simple SessionManager::SESSION_REPLACE with a level skip of null.
             $levelskip = $levelskip == null ? null : $levelskip - 1;
         } else {
-            // Default we leave atkNodeType empty because the sessionmanager will determine which is de atkNodeType
+            // Default we leave atkNodeUri empty because the sessionmanager will determine which is de atkNodeUri
             $vars = array();
-            $atkNodeType = "";
+            $atkNodeUri = "";
             $sessionStatus = SessionManager::SESSION_BACK;
         }
-        return ($sm->sessionUrl($this->dispatchUrl($vars, $atkNodeType), $sessionStatus, $levelskip));
+        return ($sm->sessionUrl($this->dispatchUrl($vars, $atkNodeUri), $sessionStatus, $levelskip));
     }
 
     /**
      * Generate a dispatch menu URL for use with nodes
      * and their specific actions.
      * @param string $params : A key/value array with extra options for the url
-     * @param string $atknodetype The atknodetype (modulename.nodename)
+     * @param string $atknodeuri The atknodeuri (modulename.nodename)
      * @param string $file The php file to use for dispatching, defaults to dispatch.php
      * @return string url for the node with the action
      */
-    function dispatchUrl($params = array(), $atknodetype = "", $file = "")
+    function dispatchUrl($params = array(), $atknodeuri = "", $file = "")
     {
         if (!is_array($params)) {
             $params = array();
@@ -496,8 +496,8 @@ class Controller
             $phpfile = $this->getPhpFile();
         }
 
-        // When $atknodetype is empty this means that we use the atknodetype from session
-        $dispatch_url = Tools::dispatch_url($atknodetype, Tools::atkArrayNvl($vars, "atkaction", ""), $vars,
+        // When $atknodeuri is empty this means that we use the atknodeuri from session
+        $dispatch_url = Tools::dispatch_url($atknodeuri, Tools::atkArrayNvl($vars, "atkaction", ""), $vars,
             $phpfile);
 
         return $dispatch_url;
@@ -568,7 +568,7 @@ class Controller
             // if appropriate, display an edit button.
             if (!$node->hasFlag(Node::NF_NO_EDIT) && $node->allowed("edit", $record)) {
                 $result[] = '<input type="hidden" name="atkaction" value="edit">' .
-                    '<input type="hidden" name="atknodetype" value="' . $node->atkNodeType() . '">' .
+                    '<input type="hidden" name="atknodeuri" value="' . $node->atkNodeUri() . '">' .
                     $this->getButton('edit');
             }
 

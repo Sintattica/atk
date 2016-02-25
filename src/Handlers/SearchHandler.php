@@ -87,7 +87,7 @@ class SearchHandler extends AbstractSearchHandler
     function getPreviousNode()
     {
         $sm = SessionManager::getInstance();
-        return $sm->atkLevel() > 0 ? $sm->stackVar('atknodetype', '', $sm->atkLevel() - 1) : $this->m_node->atkNodeType();
+        return $sm->atkLevel() > 0 ? $sm->stackVar('atknodeuri', '', $sm->atkLevel() - 1) : $this->m_node->atkNodeUri();
     }
 
     /**
@@ -113,7 +113,7 @@ class SearchHandler extends AbstractSearchHandler
 
         $attr = $this->m_node->getAttribute($attribute);
         if ($attr == null) {
-            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeType() . "'");
+            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeUri() . "'");
             return '';
         }
 
@@ -144,7 +144,7 @@ class SearchHandler extends AbstractSearchHandler
             $params["formstart"] .= $sm->formState(SessionManager::SESSION_REPLACE);
             $params["formstart"] .= '<input type="hidden" name="atkaction" value="search">';
 
-            $params["formstart"] .= '<input type="hidden" name="atknodetype" value="' . $node->atknodetype() . '">';
+            $params["formstart"] .= '<input type="hidden" name="atknodeuri" value="' . $node->atkNodeUri() . '">';
             $params["formstart"] .= '<input type="hidden" name="atkstartat" value="0">'; // start at first page after new search
 
             $params["content"] = $this->invoke("searchForm", $record);

@@ -362,7 +362,7 @@ class ActionHandler
         if ($this->m_node->hasFlag(Node::NF_CACHE_RECORDLIST)) {
             $recordlistcache = $this->getRecordlistCache();
             if ($recordlistcache) {
-                $recordlistcache->clearCache($this->m_node->atkNodeType());
+                $recordlistcache->clearCache($this->m_node->atkNodeUri());
             }
         }
     }

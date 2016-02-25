@@ -19,7 +19,7 @@ class SessionManager
     const SESSION_NESTED = 2;  // new item on current stack
     const SESSION_BACK = 3;    // move one level down on stack
     const SESSION_REPLACE = 4; // replace current stacklevel
-    const SESSION_PARTIAL = 5; // same as replace, but ignore atknodetype and atkaction
+    const SESSION_PARTIAL = 5; // same as replace, but ignore atknodeuri and atkaction
 
     /**
      * @access private
@@ -499,7 +499,7 @@ class SessionManager
         // session vars are valid until they are set to something else. if you go a session level higher,
         // the next level will still contain these vars (unless overriden in the url)
         $sessionVars = array(
-            "atknodetype",
+            "atknodeuri",
             "atkfilter",
             "atkaction",
             "atkpkret",
@@ -533,7 +533,7 @@ class SessionManager
 
         // lockedvars are session or page vars that will not be overwritten in partial mode
         // e.g., the values that are already known in the session will be used
-        $lockedVars = array('atknodetype', 'atkaction', 'atkselector');
+        $lockedVars = array('atknodeuri', 'atkaction', 'atkselector');
 
         // Mental note: We have an $this->atkLevel() function for retrieving the atklevel,
         // but we use the global var itself here, because it gets modified in
@@ -765,11 +765,11 @@ class SessionManager
         $stack = $sessionData[$this->m_namespace]["stack"][$this->atkStackID()];
 
         for ($i = 0; $i < count($stack); $i++) {
-            if (!isset($stack[$i]["atknodetype"])) {
+            if (!isset($stack[$i]["atknodeuri"])) {
                 continue;
             }
 
-            $node = $stack[$i]["atknodetype"];
+            $node = $stack[$i]["atknodeuri"];
             $module = Module::getNodeModule($node);
             $type = Module::getNodeType($node);
             $action = $stack[$i]["atkaction"];
@@ -817,10 +817,10 @@ class SessionManager
         $stackcount = count($stack);
         for ($i = 0; $i < $stackcount; $i++) {
             if (isset($stack[$i]["descriptor"]) || $i == ($stackcount - 1)) {
-                if ($stack[$i]["atknodetype"] != "") {
-                    $node = Module::atkGetNode($stack[$i]["atknodetype"]);
-                    $module = Module::getNodeModule($stack[$i]["atknodetype"]);
-                    $nodename = Module::getNodeType($stack[$i]["atknodetype"]);
+                if ($stack[$i]["atknodeuri"] != "") {
+                    $node = Module::atkGetNode($stack[$i]["atknodeuri"]);
+                    $module = Module::getNodeModule($stack[$i]["atknodeuri"]);
+                    $nodename = Module::getNodeType($stack[$i]["atknodeuri"]);
                 }
 
                 if (is_object($node)) {

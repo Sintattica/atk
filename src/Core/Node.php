@@ -314,7 +314,7 @@ class Node
     var $m_filledTabs = array();
 
     /**
-     * The nodetype.
+     * The type of the node.
      * @access protected
      * @var String
      */
@@ -667,7 +667,7 @@ class Node
      * Constructor.
      *
      * This initialises the node. Derived classes should always call their
-     * parent constructor ($this->Node($name, $flags), to initialize the
+     * parent constructor ($this->Node($nodeType, $flags), to initialize the
      * base class.
      * <br>
      * <b>Example:</b>
@@ -680,10 +680,11 @@ class Node
         if ($type == "") {
             $type = strtolower(get_class($this));
         }
+
         $this->m_type = $type;
         $this->m_flags = $flags;
         $this->m_module = Module::getModuleScope();
-        Tools::atkdebug("Creating a new node " . $this->m_module . ".$type");
+        Tools::atkdebug("Creating a new node " . $this->m_module . '.' . $type);
 
         $this->setEditFieldPrefix(Config::getGlobal('edit_fieldprefix', ''));
     }
@@ -1307,7 +1308,7 @@ class Node
     function primaryKeyField()
     {
         if (count($this->m_primaryKey) === 0) {
-            Tools::atkwarning($this->atkNodeType() . "::primaryKeyField() called, but there are no primary key fields defined!");
+            Tools::atkwarning($this->atkNodeUri() . "::primaryKeyField() called, but there are no primary key fields defined!");
             return null;
         }
 
@@ -1491,8 +1492,9 @@ class Node
         $this->m_filledTabs = array();
         foreach (array_keys($this->m_attribList) as $attribname) {
             $p_attrib = &$this->m_attribList[$attribname];
-            if ($p_attrib->hasFlag(Attribute::AF_HIDE))
-                continue; // attributes to which we don't have access are explicitly hidden
+            if ($p_attrib->hasFlag(Attribute::AF_HIDE)) {
+                continue;
+            } // attributes to which we don't have access are explicitly hidden
 
             // Only display the attribute if the attribute
             // resides on at least on visible tab
@@ -1693,7 +1695,7 @@ class Node
                 if (substr($section, 0, strlen($tab)) == $tab) {
                     $sectionName = 'section_' . str_replace('.', '_', $section);
                     $key = array(
-                        "nodetype" => $this->atknodetype(),
+                        "nodetype" => $this->atkNodeUri(),
                         "section" => $sectionName
                     );
                     $defaultOpen = in_array($section, $this->m_default_expanded_sections);
@@ -1840,7 +1842,7 @@ class Node
             if ($maxel > 1 && $cnt > $maxel) {
                 $descrtrace = "... - ";
             }
-            for ($i = max(0, $cnt - $maxel), $_i = $cnt; $i < $_i; $i ++) {
+            for ($i = max(0, $cnt - $maxel), $_i = $cnt; $i < $_i; $i++) {
                 $desc = $descriptortrace[$i];
                 $descrtrace .= htmlentities($desc, ENT_COMPAT) . " - ";
             }
@@ -2000,8 +2002,7 @@ class Node
         $fieldprefix = "",
         $ignoreTab = false,
         $injectSections = true
-    )
-    {
+    ) {
         // update visibility of some attributes based on the current record
         $this->checkAttributeSecurity($mode, $record);
 
@@ -2095,7 +2096,7 @@ class Node
 
         // extra submission data
         $result["hide"][] = '<input type="hidden" name="atkfieldprefix" value="' . $this->getEditFieldPrefix(false) . '">';
-        $result["hide"][] = '<input type="hidden" name="' . $fieldprefix . 'atknodetype" value="' . $this->atknodetype() . '">';
+        $result["hide"][] = '<input type="hidden" name="' . $fieldprefix . 'atknodeuri" value="' . $this->atkNodeUri() . '">';
         $result["hide"][] = '<input type="hidden" name="' . $fieldprefix . 'atkprimkey" value="' . Tools::atkArrayNvl($record,
                 "atkprimkey", "") . '">';
 
@@ -2436,11 +2437,12 @@ class Node
             foreach ($list as $t) {
                 $newtab["title"] = $this->text(array("tab_$t", $t));
                 $newtab["tab"] = $t;
-                $url = Tools::atkSelf() . "?atknodetype=" . $this->atkNodeType() . "&atkaction=" . $this->m_action . "&atktab=" . $t;
+                $url = Tools::atkSelf() . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=" . $this->m_action . "&atktab=" . $t;
                 if ($this->m_action == "view") {
                     $newtab["link"] = $sm->sessionUrl($url, SessionManager::SESSION_DEFAULT);
                 } else {
-                    $newtab["link"] = "javascript:atkSubmit('" . Tools::atkurlencode($sm->sessionUrl($url, SessionManager::SESSION_DEFAULT)) . "')";
+                    $newtab["link"] = "javascript:atkSubmit('" . Tools::atkurlencode($sm->sessionUrl($url,
+                            SessionManager::SESSION_DEFAULT)) . "')";
                 }
                 $newtab["selected"] = ($t == $tab);
                 $result[] = $newtab;
@@ -2485,7 +2487,7 @@ class Node
             }
         }
 
-        $actionbase = Tools::atkSelf() . '?atknodetype=' . $this->atknodetype() . '&atkselector=[pk]' . $postfix;
+        $actionbase = Tools::atkSelf() . '?atknodeuri=' . $this->atkNodeUri() . '&atkselector=[pk]' . $postfix;
         if (!$this->hasFlag(self::NF_NO_VIEW) && $this->allowed("view")) {
             $actions["view"] = $actionbase . '&atkaction=view';
         }
@@ -2590,8 +2592,7 @@ class Node
         $checkoverride = true,
         $mergeSelectors = true,
         $csrfToken = null
-    )
-    {
+    ) {
         $method = 'confirm' . $action;
         if ($checkoverride && method_exists($this, $method)) {
             return $this->$method($atkselector, $locked);
@@ -2611,7 +2612,7 @@ class Node
         $formstart = '<form action="' . Tools::atkSelf() . '?"' . SID . ' method="post">';
         $formstart .= $sm->formState();
         $formstart .= '<input type="hidden" name="atkaction" value="' . $action . '">';
-        $formstart .= '<input type="hidden" name="atknodetype" value="' . $this->atknodetype() . '">';
+        $formstart .= '<input type="hidden" name="atknodeuri" value="' . $this->atkNodeUri() . '">';
 
 
         if (isset($csrfToken)) {
@@ -2775,8 +2776,8 @@ class Node
     function _addListeners()
     {
         global $g_nodeListeners;
-        if (isset($g_nodeListeners[$this->atknodetype()])) {
-            foreach ($g_nodeListeners[$this->atknodetype()] as $listener) {
+        if (isset($g_nodeListeners[$this->atkNodeUri()])) {
+            foreach ($g_nodeListeners[$this->atkNodeUri()] as $listener) {
                 if (is_object($listener)) {
                     $this->addListener($listener);
                 } else {
@@ -3701,13 +3702,13 @@ class Node
             $return = $this->$trigger($record, $mode);
 
             if ($return === null) {
-                Tools::atkdebug("Undefined return: " . $this->atkNodeType() . ".$trigger doesn't return anything, it should return a boolean!",
+                Tools::atkdebug("Undefined return: " . $this->atkNodeUri() . ".$trigger doesn't return anything, it should return a boolean!",
                     Tools::DEBUG_WARNING);
                 $return = true;
             }
 
             if (!$return) {
-                Tools::atkdebug($this->atkNodeType() . ".$trigger failed!");
+                Tools::atkdebug($this->atkNodeUri() . ".$trigger failed!");
                 return false;
             }
 
@@ -3716,13 +3717,13 @@ class Node
                 $return = $listener->notify($trigger, $record, $mode);
 
                 if ($return === null) {
-                    Tools::atkdebug("Undefined return: " . $this->atkNodeType() . ", " . get_class($listener) . ".notify('$trigger', ...) doesn't return anything, it should return a boolean!",
+                    Tools::atkdebug("Undefined return: " . $this->atkNodeUri() . ", " . get_class($listener) . ".notify('$trigger', ...) doesn't return anything, it should return a boolean!",
                         Tools::DEBUG_WARNING);
                     $return = true;
                 }
 
                 if (!$return) {
-                    Tools::atkdebug($this->atkNodeType() . ", " . get_class($listener) . ".notify('$trigger', ...) failed!");
+                    Tools::atkdebug($this->atkNodeUri() . ", " . get_class($listener) . ".notify('$trigger', ...) failed!");
                     return false;
                 }
             }
@@ -3756,7 +3757,7 @@ class Node
 
         // nothing to delete, throw an error (determined by $failwhenempty)!
         if (count($recordset) == 0) {
-            Tools::atkwarning($this->atknodetype() . "->deleteDb($selector): 0 records found, not deleting anything.");
+            Tools::atkwarning($this->atkNodeUri() . "->deleteDb($selector): 0 records found, not deleting anything.");
             return !$failwhenempty;
         }
 
@@ -4046,7 +4047,7 @@ class Node
 
     /**
      * Returns the type of this node.  (This is *not* the full ATK node type;
-     * see atkNodeType() for the full node type.)
+     * see atkNodeUri() for the full node type.)
      *
      * @return string type
      */
@@ -4076,12 +4077,12 @@ class Node
     }
 
     /**
-     * Get the full atknodetype of this node (module.nodetype notation).  This is sometimes
+     * Get the full node Uri of this node (module.node notation).  This is sometimes
      * referred to as the node name (or nodename) or node string.
      *
-     * @return String The atknodetype of the node.
+     * @return String The nodeType of the node.
      */
-    function atkNodeType()
+    function atkNodeUri()
     {
         return (empty($this->m_module) ? "" : $this->m_module . ".") . $this->m_type;
     }
@@ -4107,7 +4108,7 @@ class Node
     {
         $secMgr = SecurityManager::getInstance();
 
-        $alias = $this->atkNodeType();
+        $alias = $this->atkNodeUri();
         $this->resolveNodeTypeAndAction($alias, $action);
 
         return ($this->hasFlag(self::NF_NO_SECURITY) || in_array($action,
@@ -4267,7 +4268,7 @@ class Node
     function callHandler($action)
     {
         Tools::atkdebug("self::callHandler(); action: " . $action);
-        $handler = Module::atkGetNodeHandler($this->m_type, $action);
+        $handler = Module::atkGetNodeHandler($this->atkNodeUri(), $action);
 
         // handler function
         if ($handler != null && is_string($handler) && function_exists($handler)) {
@@ -4297,13 +4298,8 @@ class Node
     {
         Tools::atkdebug("self::getHandler(); action: " . $action);
 
-        // for backwards compatibility we first check if a handler exists without using the module name
-        $handler = Module::atkGetNodeHandler($this->m_type, $action);
-
-        // then check if a handler exists registered including the module name
-        if ($handler == null) {
-            $handler = Module::atkGetNodeHandler($this->atkNodeType(), $action);
-        }
+        //check if a handler exists registered including the module name
+        $handler = Module::atkGetNodeHandler($this->atkNodeUri(), $action);
 
         // The node handler might return a class, then we need to instantiate the handler
         if (is_string($handler) && class_exists($handler)) {
@@ -4475,7 +4471,7 @@ class Node
 
         $targetField = $this->getFirstTargetFieldFromFilterSql($filter);
         if (!$targetField) {
-            Tools::atkwarning($this->atkNodeType() . '->' . __FUNCTION__ . "($filter): Disallowed because it has no target field");
+            Tools::atkwarning($this->atkNodeUri() . '->' . __FUNCTION__ . "($filter): Disallowed because it has no target field");
             // Don't allow the filter
             return '';
         }
@@ -4495,7 +4491,7 @@ class Node
         if (strtolower(trim($targetTable)) !== strtolower($this->m_table) &&
             !($this->getAttribute($targetTable) instanceof ManyToOneRelation)
         ) {
-            Tools::atkwarning($this->atkNodeType() . '->' . __FUNCTION__ . "($filter): Disallowed because " . strtolower(trim($targetTable)) . " !== " . strtolower($this->m_table) . ' and not a valid many-to-one relation.');
+            Tools::atkwarning($this->atkNodeUri() . '->' . __FUNCTION__ . "($filter): Disallowed because " . strtolower(trim($targetTable)) . " !== " . strtolower($this->m_table) . ' and not a valid many-to-one relation.');
             return '';
         }
 
@@ -4503,7 +4499,7 @@ class Node
         if (!($this->getAttribute($targetTable) instanceof ManyToOneRelation) &&
             !in_array($targetColumn, array_keys($this->m_attribList))
         ) {
-            Tools::atkwarning($this->atkNodeType() . '->' . __FUNCTION__ . "($filter): Disallowed because target column $targetColumn isn't in node");
+            Tools::atkwarning($this->atkNodeUri() . '->' . __FUNCTION__ . "($filter): Disallowed because target column $targetColumn isn't in node");
             return "";
         }
         return $filter;
@@ -4710,7 +4706,7 @@ class Node
      */
     function __toString()
     {
-        return $this->atkNodeType();
+        return $this->atkNodeUri();
     }
 
     /**

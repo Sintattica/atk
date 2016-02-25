@@ -211,7 +211,7 @@ class Relation extends Attribute
                 $attribute = $this->m_destInstance->m_attribList[$key];
 
                 if (is_subclass_of($attribute,
-                        "atkrelation") && is_object($this->m_ownerInstance) && $attribute->m_destination == $this->m_ownerInstance->atkNodeType()
+                        "atkrelation") && is_object($this->m_ownerInstance) && $attribute->m_destination == $this->m_ownerInstance->atkNodeUri()
                 ) {
                     $attribute->m_destInstance = $this->m_ownerInstance;
 

@@ -1237,7 +1237,7 @@ class ManyToOneRelation extends Relation
 
             if ($useautocompletion) {
                 $page = $this->m_ownerInstance->getPage();
-                $url = Tools::partial_url($this->m_ownerInstance->atkNodeType(), $this->m_ownerInstance->m_action,
+                $url = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $this->m_ownerInstance->m_action,
                     'attribute.' . $this->fieldName() . '.autocomplete_search');
                 $code = "ATK.ManyToOneRelation.completeSearch('{$id}', '{$id}_result', '{$url}', {$this->m_autocomplete_minchars});";
                 $page->register_script(Config::getGlobal('assets_url') . 'javascript/class.atkmanytoonerelation.js');
@@ -2002,7 +2002,7 @@ class ManyToOneRelation extends Relation
 
         $p_attrib = $this->m_destInstance->getAttribute($column);
         if ($p_attrib == null) {
-            throw new Exception("Invalid list column {$column} for ManyToOneRelation " . $this->getOwnerInstance()->atkNodeType() . '::' . $this->fieldName());
+            throw new Exception("Invalid list column {$column} for ManyToOneRelation " . $this->getOwnerInstance()->atkNodeUri() . '::' . $this->fieldName());
         }
 
         $p_attrib->m_flags |= self::AF_HIDE_LIST;
@@ -2116,7 +2116,7 @@ class ManyToOneRelation extends Relation
 
         $p_attrib = $this->m_destInstance->getAttribute($column);
         if ($p_attrib == null) {
-            throw new Exception("Invalid list column {$column} for ManyToOneRelation " . $this->getOwnerInstance()->atkNodeType() . '::' . $this->fieldName());
+            throw new Exception("Invalid list column {$column} for ManyToOneRelation " . $this->getOwnerInstance()->atkNodeUri() . '::' . $this->fieldName());
         }
 
         $p_attrib->m_flags |= self::AF_HIDE_LIST;
@@ -2266,7 +2266,7 @@ class ManyToOneRelation extends Relation
         $result .= $this->getSpinner(); // spinner for dependency execution
 
         // register JavaScript code that attaches the auto-complete behaviour to the search box
-        $url = Tools::partial_url($this->m_ownerInstance->atkNodeType(), $mode,
+        $url = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $mode,
             'attribute.' . $this->fieldName() . '.autocomplete');
         $function = $this->createOnChangeCaller($id, $fieldPrefix);
         $code = "ATK.ManyToOneRelation.completeEdit('{$id}_search', '{$id}_result', '$id', '{$id}_spinner', '$url', $function, 1);";

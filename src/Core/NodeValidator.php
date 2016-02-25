@@ -104,7 +104,7 @@ class NodeValidator
             $this->setMode($mode);
         }
 
-        Tools::atkdebug("validate() with mode " . $this->m_mode . " for node " . $this->m_nodeObj->atkNodeType());
+        Tools::atkdebug("validate() with mode " . $this->m_mode . " for node " . $this->m_nodeObj->atkNodeUri());
 
         // set the record
         $record = &$this->m_record;
@@ -232,7 +232,7 @@ class NodeValidator
                         }
                     }
                 } else {
-                    Tools::atkerror("Field $field is mentioned in uniquefieldset but does not exist in " . $this->m_nodeObj->atknodetype());
+                    Tools::atkerror("Field $field is mentioned in uniquefieldset but does not exist in " . $this->m_nodeObj->atkNodeUri());
                 }
             }
 

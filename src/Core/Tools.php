@@ -1200,7 +1200,7 @@ class Tools
         $url = $phpfile;
         $atkparams = array();
         if ($node != "") {
-            $atkparams["atknodetype"] = $node;
+            $atkparams["atknodeuri"] = $node;
         }
         if ($action != "") {
             $atkparams["atkaction"] = $action;
@@ -1753,6 +1753,7 @@ class Tools
         }
 
         $g_nodes[$section][$module][$type] = array_merge($action, $tabs);
+
     }
 
 

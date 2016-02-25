@@ -31,7 +31,7 @@ abstract class ShuttleFilter extends ShuttleControl
     protected function registerChangeHandler($mode, $prefix)
     {
         $mode == "add" ? "add" : "edit";
-        $url = addslashes(Tools::partial_url($this->m_shuttle->m_ownerInstance->atkNodeType(), $mode,
+        $url = addslashes(Tools::partial_url($this->m_shuttle->m_ownerInstance->atkNodeUri(), $mode,
             "attribute." . $this->m_shuttle->getHtmlId($prefix) . ".filter", array("atkfieldprefix" => $prefix)));
 
         $page = $this->m_shuttle->m_ownerInstance->getPage();

@@ -71,7 +71,7 @@ class ColumnConfig
         $sm = SessionManager::getInstance();
 
         if ($id == null) {
-            $id = $node->atkNodeType();
+            $id = $node->atkNodeUri();
         }
 
         if (!isset($s_instances[$id]) || $forceNew) {

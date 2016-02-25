@@ -107,7 +107,7 @@ class ImportHandler extends ActionHandler
 
         $formStart = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="' . $action . '" method="post">' .
             $sm->formState($sm->atkLevel() == 0 ? SessionManager::SESSION_NESTED : SessionManager::SESSION_REPLACE) .
-            '<input type="hidden" name="atknodetype" value="' . $this->m_node->atkNodeType() . '" />' .
+            '<input type="hidden" name="atknodeuri" value="' . $this->m_node->atkNodeUri() . '" />' .
             '<input type="hidden" name="atkaction" value="' . $this->m_node->m_action . '" />' .
             $controller->getHiddenVarsString();
 

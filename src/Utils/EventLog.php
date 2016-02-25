@@ -59,7 +59,7 @@ class EventLog extends ActionListener
         if ($userid == "") {
             $userid = 0;
         } // probably administrator
-        $node = $this->m_node->atkNodeType();
+        $node = $this->m_node->atkNodeUri();
         $db = $this->m_node->getDb();
         $primarykey = $db->escapeSQL($this->m_node->primaryKey($record));
 

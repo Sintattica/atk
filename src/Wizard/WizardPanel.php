@@ -118,7 +118,7 @@ class WizardPanel
     /**
      * Return the Node object for this panel. If it didn't exist yet, this method
      * will create it and add actionlistener or actionhandlers. The session will also
-     * be manipulated so that the controller knows which atknodetype to render.
+     * be manipulated so that the controller knows which atknodeuri to render.
      *
      * @return object of type atknode
      */
@@ -154,7 +154,7 @@ class WizardPanel
             //Make session aware of the fact that we are rendering a node which has been
             //created by a wizard panel and is not posted as a variable
             $sm = SessionManager::getInstance();
-            $sm->stackVar("atknodetype", $this->m_nodeName);
+            $sm->stackVar("atknodeuri", $this->m_nodeName);
             $sm->stackVar("atkaction", $this->m_defaultAction);
 
             //We set how we want the atk page to be returned

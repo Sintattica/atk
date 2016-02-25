@@ -157,7 +157,7 @@ class FileEditor extends Node
     {
         $this->m_dir = $this->stripDir($this->m_dir);
         if (is_dir($this->m_dir . "/" . $record["filename"])) {
-            $actions['view'] = Tools::dispatch_url($this->atkNodeType(), "dirchange",
+            $actions['view'] = Tools::dispatch_url($this->atkNodeUri(), "dirchange",
                 array('atkselector' => $this->m_dir . $record["filename"]));
             unset($actions["edit"]);
             unset($actions["delete"]);

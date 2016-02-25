@@ -68,29 +68,29 @@ class Module
     /**
      * Returns the node file for the given node.
      *
-     * @param string $node the node type
+     * @param string $nodeUri the node uri
      * @return string node filename
      */
-    public static function getNodeFile($node)
+    public static function getNodeFile($nodeUri)
     {
         $modules = self::atkGetModules();
-        $module = self::getNodeModule($node);
-        $type = self::getNodeType($node);
+        $module = self::getNodeModule($nodeUri);
+        $type = self::getNodeType($nodeUri);
         return "{$modules[$module]}{$type}.php";
     }
 
     /**
      * Construct a new node. A module can override this method for it's own nodes.
-     * @param string $node the node type
+     * @param string $nodeUri the node type
      * @return Node new node object
      */
-    function &newNode($node)
+    function &newNode($nodeUri)
     {
         /* check for file */
-        $file = $this->getNodeFile($node);
+        $file = $this->getNodeFile($nodeUri);
         if (!file_exists($file)) {
             $res = Tools::invokeFromString(Config::getGlobal("missing_class_handler"),
-                array(array("node" => $node, "module" => $this->m_name)));
+                array(array("node" => $nodeUri, "module" => $this->m_name)));
             if ($res !== false) {
                 return $res;
             } else {
@@ -103,7 +103,7 @@ class Module
         include_once($file);
 
         /* module */
-        $module = self::getNodeModule($node);
+        $module = self::getNodeModule($nodeUri);
 
         // set the current module scope, this will be retrieved in Node
         // to set it's $this->m_module instance variable in an early stage
@@ -111,7 +111,7 @@ class Module
 
 
         /* initialize node and return */
-        $type = self::getNodeType($node);
+        $type = self::getNodeType($nodeUri);
         $node = new $type();
         $node->m_module = $module;
 
@@ -153,24 +153,24 @@ class Module
 
     /**
      * Checks if a certain node exists for this module.
-     * @param string $node the node type
+     * @param string $nodeUri the node uri
      * @return node exists?
      */
-    function nodeExists($node)
+    function nodeExists($nodeUri)
     {
         // check for file
-        $file = $this->getNodeFile($node);
+        $file = $this->getNodeFile($nodeUri);
         return file_exists($file);
     }
 
     /**
      * Gets the module of the node
-     * @param string $node the node name
+     * @param string $nodeUri the node uri
      * @return String the node's module
      */
-    public static function getNodeModule($node)
+    public static function getNodeModule($nodeUri)
     {
-        $arr = explode(".", $node);
+        $arr = explode(".", $nodeUri);
         if (count($arr) == 2) {
             return $arr[0];
         } else {
@@ -180,19 +180,18 @@ class Module
 
     /**
      * Gets the node type of a node string
-     * @param string $node the node name
+     * @param string $nodeUri the node uri
      * @return String the node type
      */
-    public static function getNodeType($node)
+    public static function getNodeType($nodeUri)
     {
-        $arr = explode(".", $node);
+        $arr = explode(".", $nodeUri);
         if (count($arr) == 2) {
             return $arr[1];
         } else {
-            return $node;
+            return $nodeUri;
         }
     }
-
 
 
     /**
@@ -200,21 +199,21 @@ class Module
      * are cached (unless $reset is true); multiple requests for the same node will return exactly
      * the same node object.
      *
-     * @param string $node The node string
+     * @param string $nodeUri The node uri
      * @param bool $init Initialize the node?
      * @param string $cache_id The cache id in the node repository
      * @param bool $reset Whether or not to reset the particular node in the repository
      * @return Node the node
      */
-    public static function &atkGetNode($node, $init = true, $cache_id = "default", $reset = false)
+    public static function &atkGetNode($nodeUri, $init = true, $cache_id = "default", $reset = false)
     {
         global $g_nodeRepository;
-        $node = strtolower($node); // classes / directory names should always be in lower-case
-        if (!isset($g_nodeRepository[$cache_id][$node]) || !is_object($g_nodeRepository[$cache_id][$node]) || $reset) {
-            Tools::atkdebug("Constructing a new node $node ($cache_id)");
-            $g_nodeRepository[$cache_id][$node] = self::newAtkNode($node, $init);
+        $nodeUri = strtolower($nodeUri); // classes / directory names should always be in lower-case
+        if (!isset($g_nodeRepository[$cache_id][$nodeUri]) || !is_object($g_nodeRepository[$cache_id][$nodeUri]) || $reset) {
+            Tools::atkdebug("Constructing a new node $nodeUri ($cache_id)");
+            $g_nodeRepository[$cache_id][$nodeUri] = Module::newAtkNode($nodeUri, $init);
         }
-        return $g_nodeRepository[$cache_id][$node];
+        return $g_nodeRepository[$cache_id][$nodeUri];
     }
 
 
@@ -275,14 +274,14 @@ class Module
 
     /**
      * Construct a new node
-     * @param string $node the node type (module.node)
+     * @param string $nodeUri the node uri
      * @param bool $init initialize the node?
      * @return Node new node object
      */
-    public static function &newAtkNode($node, $init = true)
+    public static function &newAtkNode($nodeUri, $init = true)
     {
-        $node = strtolower($node); // classes / directory names should always be in lower-case
-        $module = self::getNodeModule($node);
+        $nodeUri = strtolower($nodeUri); // classes / directory names should always be in lower-case
+        $module = self::getNodeModule($nodeUri);
 
         if ($module == "") {
             // No module, use the default instance.
@@ -292,7 +291,7 @@ class Module
         }
         if (is_object($module_inst)) {
             if (method_exists($module_inst, 'newNode')) {
-                $node = $module_inst->newNode($node);
+                $node = $module_inst->newNode($nodeUri);
                 if ($init && $node != null) {
                     $node->init();
                 }
@@ -308,26 +307,26 @@ class Module
 
     /**
      * Checks if a certain node exists.
-     * @param string $node the node type
+     * @param string $nodeUri the node uri
      * @return bool node exists?
      */
-    public static function atkNodeExists($node)
+    public static function atkNodeExists($nodeUri)
     {
         static $existence = array();
-        if (array_key_exists($node, $existence)) {
-            return $existence[$node];
+        if (array_key_exists($nodeUri, $existence)) {
+            return $existence[$nodeUri];
         }
 
-        $module = self::getNodeModule($node);
+        $module = self::getNodeModule($nodeUri);
         if ($module == "") {
             $module = new Module();
         } else {
-            $module = self::atkGetModule(self::getNodeModule($node));
+            $module = self::atkGetModule(self::getNodeModule($nodeUri));
         }
 
-        $exists = is_object($module) && $module->nodeExists($node);
-        $existence[$node] = $exists;
-        Tools::atkdebug("Node $node exists? " . ($exists ? 'yes' : 'no'));
+        $exists = is_object($module) && $module->nodeExists($nodeUri);
+        $existence[$nodeUri] = $exists;
+        Tools::atkdebug("NodeUri $nodeUri exists? " . ($exists ? 'yes' : 'no'));
 
         return $exists;
     }
@@ -365,16 +364,16 @@ class Module
 
     /**
      * Returns a registered node action handler.
-     * @param string $node the name of the node
+     * @param string $nodeUri the uri of the node
      * @param string $action the node action
      * @return ActionHandler functionname or object (is_subclass_of ActionHandler) or
      *         NULL if no handler exists for the specified action
      */
-    public static function &atkGetNodeHandler($node, $action)
+    public static function &atkGetNodeHandler($nodeUri, $action)
     {
         global $g_nodeHandlers;
-        if (isset($g_nodeHandlers[$node][$action])) {
-            $handler = $g_nodeHandlers[$node][$action];
+        if (isset($g_nodeHandlers[$nodeUri][$action])) {
+            $handler = $g_nodeHandlers[$nodeUri][$action];
         } elseif (isset($g_nodeHandlers["*"][$action])) {
             $handler = $g_nodeHandlers["*"][$action];
         } else {
@@ -385,18 +384,18 @@ class Module
 
     /**
      * Registers a new node action handler.
-     * @param string $node the name of the node (* matches all)
+     * @param string $nodeUri the uri of the node (* matches all)
      * @param string $action the node action
      * @param string /atkActionHandler $handler handler functionname or object (is_subclass_of atkActionHandler)
      * @return bool true if there is no known handler
      */
-    public static function atkRegisterNodeHandler($node, $action, $handler)
+    public static function atkRegisterNodeHandler($nodeUri, $action, $handler)
     {
         global $g_nodeHandlers;
-        if (isset($g_nodeHandlers[$node][$action])) {
+        if (isset($g_nodeHandlers[$nodeUri][$action])) {
             return false;
         } else {
-            $g_nodeHandlers[$node][$action] = $handler;
+            $g_nodeHandlers[$nodeUri][$action] = $handler;
         }
         return true;
     }
@@ -414,7 +413,7 @@ class Module
      * OLD setting (so you might reset it to the old value after you're
      * finished with the current node.
      *
-     * @param string $newValue the value of the readOptimizer. true turns the
+     * @param bool $newValue the value of the readOptimizer. true turns the
      *                  optimizer on. Falls turns it off.
      * @return bool The old value of the optimizer setting, if a new
      *                 setting was passed OR
@@ -461,4 +460,3 @@ class Module
         }
     }
 }
-
