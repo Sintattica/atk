@@ -672,16 +672,19 @@ class Node
      * <br>
      * <b>Example:</b>
      * <code>$this->Node('test',self::NF_NO_EDIT);</code>
-     * @param string $type The nodetype (by default equal to the classname)
+     * @param string $type The nodetype (by default equal to the classname lowercased)
      * @param int $flags Bitmask of node flags (self::NF_*).
      */
     function __construct($type = "", $flags = 0)
     {
         if ($type == "") {
             $type = strtolower(get_class($this));
+            if ($pos = strrpos($type, '\\')) {
+                $type = substr($type, $pos + 1);
+            }
         }
 
-        $this->m_type = $type;
+        $this->m_type = strtolower($type);
         $this->m_flags = $flags;
         $this->m_module = Module::getModuleScope();
         Tools::atkdebug("Creating a new node " . $this->m_module . '.' . $type);
@@ -4077,10 +4080,10 @@ class Node
     }
 
     /**
-     * Get the full node Uri of this node (module.node notation).  This is sometimes
+     * Get the full node Uri of this node (module.type notation).  This is sometimes
      * referred to as the node name (or nodename) or node string.
      *
-     * @return String The nodeType of the node.
+     * @return String The nodeUri of the node.
      */
     function atkNodeUri()
     {

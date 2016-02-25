@@ -344,6 +344,8 @@ class ProfileAttribute extends Attribute
 
         $firstModule = true;
 
+
+
         foreach ($allActions as $module => $nodes) {
 
             $module_result = '';
@@ -456,6 +458,7 @@ class ProfileAttribute extends Attribute
         $selectedActions = $this->getSelectedActions($record);
 
 
+
         foreach ($allActions as $section => $modules) {
             $result .= '<div class="profileSection">';
 
@@ -475,6 +478,7 @@ class ProfileAttribute extends Attribute
 
 
             foreach ($modules as $module => $nodes) {
+
                 foreach ($nodes as $node => $actions) {
                     $showBox = $isAdmin || count(array_intersect($actions, (is_array($editableActions[$module][$node])
                             ? $editableActions[$module][$node] : array()))) > 0;

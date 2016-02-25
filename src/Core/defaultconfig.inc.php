@@ -37,14 +37,6 @@ if (!isset($config_application_dir) || empty($config_application_dir) || (ini_ge
 }
 
 /**
- * Module path (without trailing slash!) where the modules directory resides,
- * defaults to the atk root, so not IN the atk/ directory, but more likely in
- * the application root
- * @var String
- */
-$config_module_path = $config_application_dir . "modules";
-
-/**
  * The location of a directory that is writable to ATK and that ATK can
  * store it's temporary files in.
  * @var String

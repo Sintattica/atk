@@ -21,7 +21,6 @@ class Module
      */
     const MF_NORIGHTS = 2;
 
-
     const MF_SPECIFIC_1 = 4;
     const MF_SPECIFIC_2 = 8;
     const MF_SPECIFIC_3 = 16;
@@ -32,17 +31,9 @@ class Module
     const MF_NO_PRELOAD = 32;
 
 
-    var $m_name;
+    /** @var  array $nodeMap */
+    var $nodeMap;
 
-    /**
-     * Constructor. The module needs to register it's nodes
-     * overhere, create its menuitems etc.
-     * @param string $name The name of the module.
-     */
-    function __construct($name = "")
-    {
-        $this->m_name = $name;
-    }
 
     /**
      * Register nodes with their supported actions. Can be used
@@ -52,7 +43,6 @@ class Module
     {
 
     }
-
 
     /**
      * This method returns an array with menu items that need to be available
@@ -66,53 +56,22 @@ class Module
     }
 
     /**
-     * Returns the node file for the given node.
-     *
-     * @param string $nodeUri the node uri
-     * @return string node filename
-     */
-    public static function getNodeFile($nodeUri)
-    {
-        $modules = self::atkGetModules();
-        $module = self::getNodeModule($nodeUri);
-        $type = self::getNodeType($nodeUri);
-        return "{$modules[$module]}{$type}.php";
-    }
-
-    /**
      * Construct a new node. A module can override this method for it's own nodes.
      * @param string $nodeUri the node type
      * @return Node new node object
      */
     function &newNode($nodeUri)
     {
-        /* check for file */
-        $file = $this->getNodeFile($nodeUri);
-        if (!file_exists($file)) {
-            $res = Tools::invokeFromString(Config::getGlobal("missing_class_handler"),
-                array(array("node" => $nodeUri, "module" => $this->m_name)));
-            if ($res !== false) {
-                return $res;
-            } else {
-                Tools::atkerror("Cannot create node, because a required file ($file) does not exist!");
-                return null;
-            }
-        }
 
-        /* include file */
-        include_once($file);
-
-        /* module */
         $module = self::getNodeModule($nodeUri);
 
         // set the current module scope, this will be retrieved in Node
         // to set it's $this->m_module instance variable in an early stage
         self::setModuleScope($module);
 
-
-        /* initialize node and return */
         $type = self::getNodeType($nodeUri);
-        $node = new $type();
+        $nodeClass = $this->nodeMap[$type];
+        $node = new $nodeClass();
         $node->m_module = $module;
 
         self::resetModuleScope();
@@ -149,18 +108,6 @@ class Module
     public static function resetModuleScope()
     {
         self::setModuleScope(null);
-    }
-
-    /**
-     * Checks if a certain node exists for this module.
-     * @param string $nodeUri the node uri
-     * @return node exists?
-     */
-    function nodeExists($nodeUri)
-    {
-        // check for file
-        $file = $this->getNodeFile($nodeUri);
-        return file_exists($file);
     }
 
     /**
@@ -208,7 +155,7 @@ class Module
     public static function &atkGetNode($nodeUri, $init = true, $cache_id = "default", $reset = false)
     {
         global $g_nodeRepository;
-        $nodeUri = strtolower($nodeUri); // classes / directory names should always be in lower-case
+        //$nodeUri = strtolower($nodeUri); // classes / directory names should always be in lower-case
         if (!isset($g_nodeRepository[$cache_id][$nodeUri]) || !is_object($g_nodeRepository[$cache_id][$nodeUri]) || $reset) {
             Tools::atkdebug("Constructing a new node $nodeUri ($cache_id)");
             $g_nodeRepository[$cache_id][$nodeUri] = Module::newAtkNode($nodeUri, $init);
@@ -234,42 +181,19 @@ class Module
      * @param string $modname The name of the module
      * @return Module An instance of the atkModule
      */
-    public static function &atkGetModule($modname)
+    public static function &atkGetModule($moduleName)
     {
         global $g_moduleRepository;
 
-        if (!isset($g_moduleRepository[$modname]) || !is_object($g_moduleRepository[$modname])) {
 
-            $filename = self::moduleDir($modname) . "module.php";
-            if (file_exists($filename)) {
-                include_once($filename);
-            } else {
-                Tools::atkdebug("Couldn't find module.php for module '$modname' in '" . self::moduleDir($modname) . "'");
-            }
+        if (!isset($g_moduleRepository[$moduleName]) || !is_object($g_moduleRepository[$moduleName])) {
 
-            Tools::atkdebug("Constructing a new module - $modname");
-            if (class_exists("mod_" . $modname)) {
-                $realmodname = "mod_" . $modname;
-                $mod = new $realmodname($modname);
-            } else {
-                if (class_exists($modname)) {
-                    Tools::atkdebug("Warning: Deprecated use of short modulename '$modname'. Class in module.php should be renamed to 'mod_$modname'.");
-                    $mod = new $modname();
-                } else {
-                    $mod = Tools::invokeFromString(Config::getGlobal("missing_module_handler"),
-                        array(array("module" => $modname)));
-                    if ($mod === false) {
-                        // Changed by Ivo: This used to construct a dummy module, so
-                        // modules could exist that didn't have a module.php file.
-                        // We no longer support this (2003-01-11)
-                        $mod = null;
-                        Tools::atkdebug("Warning: module $modname does not exist");
-                    }
-                }
-            }
-            $g_moduleRepository[$modname] = $mod;
+            Tools::atkdebug("Constructing a new module - $moduleName");
+            $modules = self::atkGetModules();
+            $modClass = $modules[$moduleName];
+            $g_moduleRepository[$moduleName] = new $modClass();
         }
-        return $g_moduleRepository[$modname];
+        return $g_moduleRepository[$moduleName];
     }
 
     /**
@@ -280,8 +204,10 @@ class Module
      */
     public static function &newAtkNode($nodeUri, $init = true)
     {
+
         $nodeUri = strtolower($nodeUri); // classes / directory names should always be in lower-case
         $module = self::getNodeModule($nodeUri);
+
 
         if ($module == "") {
             // No module, use the default instance.
@@ -305,31 +231,6 @@ class Module
         return null;
     }
 
-    /**
-     * Checks if a certain node exists.
-     * @param string $nodeUri the node uri
-     * @return bool node exists?
-     */
-    public static function atkNodeExists($nodeUri)
-    {
-        static $existence = array();
-        if (array_key_exists($nodeUri, $existence)) {
-            return $existence[$nodeUri];
-        }
-
-        $module = self::getNodeModule($nodeUri);
-        if ($module == "") {
-            $module = new Module();
-        } else {
-            $module = self::atkGetModule(self::getNodeModule($nodeUri));
-        }
-
-        $exists = is_object($module) && $module->nodeExists($nodeUri);
-        $existence[$nodeUri] = $exists;
-        Tools::atkdebug("NodeUri $nodeUri exists? " . ($exists ? 'yes' : 'no'));
-
-        return $exists;
-    }
 
     /**
      * Return the physical directory of a module..
@@ -434,27 +335,33 @@ class Module
 
 
     /**
+     * @param array $nodeMap
+     */
+    protected function setNodeMap(array $nodeMap)
+    {
+        $this->nodeMap = $nodeMap;
+    }
+
+    /**
      * Load a module.
      *
-     * This method is used in the config.inc.php or config.modules.php file to
-     * load the modules.
+     * This method is used to load the modules.
      *
-     * @param string $name The name of the module to load.
-     * @param string $path The path where the module is located (relative or
-     *                    absolute). If omitted, ATK assumes that the module is
-     *                    installed in the default module dir (identified by
-     *                    $config_module_path).
+     * @param string $moduleClass The className of the module to load.
      * @param int $flags The module (MF_*) flags that influence how the module is
      *                  loaded.
      */
-    public static function module($name, $path = "", $flags = 0)
+    public static function module($moduleClass, $flags = 0)
     {
         global $g_modules, $g_moduleflags;
-        if ($path == "") {
-            $path = Config::getGlobal('module_path') . "/" . $name . "/";
-        }
 
-        $g_modules[$name] = $path;
+        $reflection = new \ReflectionClass($moduleClass);
+
+        $name = strtolower($reflection->getShortName());
+
+        /** @var Module $module */
+        $g_modules[$name] = $moduleClass;
+
         if ($flags > 0) {
             $g_moduleflags[$name] = $flags;
         }
