@@ -12,7 +12,6 @@
  */
 $config_application_root = "/";
 
-
 $config_application_config = "";
 
 if ($config_atkroot == "" || (ini_get('register_globals'))) { // may not be passed in request (register_globals danger)
@@ -22,6 +21,9 @@ if ($config_atkroot == "" || (ini_get('register_globals'))) { // may not be pass
      */
     $config_atkroot = "./";
 }
+
+$config_assets_url = $config_theme_url = '/bundles/atk/';
+
 
 if (!isset($config_application_dir) || empty($config_application_dir) || (ini_get('register_globals'))) {
     /**
@@ -1002,6 +1004,10 @@ $config_ck_options = array();
  */
 $config_recordlist_orientation = "left";
 
+/**
+ * logo
+ */
+$config_login_logo = $config_assets_url.'images/login_logo.jpg';
 
 /**
  * icons
