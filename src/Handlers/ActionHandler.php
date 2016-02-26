@@ -4,7 +4,6 @@ use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\DataGrid\DataGrid;
-use Sintattica\Atk\Ui\Dialog;
 use Sintattica\Atk\Core\Controller;
 use Sintattica\Atk\RecordList\RecordListCache;
 use Sintattica\Atk\Ui\Page;
@@ -93,7 +92,7 @@ class ActionHandler
     protected $m_boxTemplate = "box";
 
     /**
-     * Render mode, defaults to "box" but can be changed to "dialog".
+     * Render mode, defaults to "box"
      *
      * @var string
      * @access protected
@@ -202,15 +201,6 @@ class ActionHandler
         $this->m_postvars = &$postvars;
     }
 
-    /**
-     * Sets the render mode ("box" or "dialog").
-     *
-     * @param string $mode render mode
-     */
-    function setRenderMode($mode)
-    {
-        $this->m_renderMode = $mode;
-    }
 
     /**
      * Returns the render mode.
@@ -441,64 +431,8 @@ class ActionHandler
         return $controller->accessDeniedPage();
     }
 
-    /**
-     * Render access denied dialog contents.
-     *
-     * @return String The access denied page in a dialog
-     */
-    function renderAccessDeniedDialog()
-    {
-        $message = $this->m_node->text('access_denied') .
-            "<br><br>" .
-            $this->m_node->text("error_node_action_access_denied");
 
-        return $this->renderMessageDialog($message);
-    }
 
-    /**
-     * Render message dialog contents.
-     *
-     * @param string $message The message to render in a dialog
-     * @return String The message dialog
-     */
-    function renderMessageDialog($message)
-    {
-        $ui = $this->m_node->getUi();
-
-        $params = array();
-        $params["content"] = "<br />" . $message . "<br />";
-        $params["buttons"][] = '<input type="button" class="btn btn-default btn_cancel" value="' . $this->m_node->text('close') . '" onClick="' . Dialog::getCloseCall() . '" />';
-        $content = $ui->renderAction($this->m_action, $params);
-
-        $params = array();
-        $params["title"] = $this->m_node->actionTitle($this->m_action);
-        $params["content"] = $content;
-        $content = $ui->renderDialog($params);
-
-        return $content;
-    }
-
-    /**
-     * Outputs JavaScript for updating the existing dialog contents.
-     *
-     * @param string $content
-     */
-    function updateDialog($content)
-    {
-        $script = Dialog::getUpdateCall($content, false);
-        $page = $this->getPage();
-        $page->register_loadscript($script);
-    }
-
-    /**
-     * Output JavaScript to close the dialog.
-     */
-    function closeDialog()
-    {
-        $script = Dialog::getCloseCall();
-        $page = $this->getPage();
-        $page->register_loadscript($script);
-    }
 
     /**
      * Handle partial.

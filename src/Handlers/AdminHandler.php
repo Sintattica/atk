@@ -6,7 +6,6 @@ use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\JSON;
-use Sintattica\Atk\Ui\Dialog;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Session\SessionManager;
 use \Exception;
@@ -15,7 +14,7 @@ use \Exception;
  * Handler for the 'admin' action of a node. It displays a recordlist with
  * existing records, and links to view/edit/delete them (or custom actions
  * if present), and an embedded addform or a link to an addpage (depending
- * on the presence of the Node::NF_ADD_LINK or Node::NF_ADD_DIALOG flag).
+ * on the presence of the Node::NF_ADD_LINK).
  *
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk
@@ -62,7 +61,7 @@ class AdminHandler extends ActionHandler
     {
         $res = array();
         if ($this->m_node->hasFlag(Node::NF_NO_ADD) == false && $this->m_node->allowed("add")) {
-            if (!$this->m_node->hasFlag(Node::NF_ADD_LINK) && !$this->m_node->hasFlag(Node::NF_ADD_DIALOG)) { // otherwise, in adminPage, an add link will be added.
+            if (!$this->m_node->hasFlag(Node::NF_ADD_LINK)) { // otherwise, in adminPage, an add link will be added.
                 // we could get here because of a reject.
                 $record = $this->getRejectInfo();
 
@@ -112,11 +111,7 @@ class AdminHandler extends ActionHandler
             "content" => $this->renderAdminList()
         );
 
-        if ($this->getRenderMode() == 'dialog') {
-            $output = $ui->renderDialog($vars);
-        } else {
-            $output = $ui->renderBox($vars);
-        }
+        $output = $ui->renderBox($vars);
 
         return $output;
     }
@@ -317,23 +312,7 @@ class AdminHandler extends ActionHandler
                 $label = Tools::atktext("add", "atk");
             }
 
-            $add = $node->hasFlag(Node::NF_ADD_DIALOG);
-            $addorcopy = $node->hasFlag(Node::NF_ADDORCOPY_DIALOG) &&
-                AddOrCopyHandler::hasCopyableRecords($node);
-
-
-            if ($add || $addorcopy) {
-                $action = $node->hasFlag(Node::NF_ADDORCOPY_DIALOG) ? 'addorcopy' : 'add';
-
-                $dialog = new Dialog($node->atkNodeUri(), $action, 'dialog');
-                $dialog->setModifierObject($node);
-                $dialog->setSessionStatus(SessionManager::SESSION_PARTIAL);
-                $onClick = $dialog->getCall();
-
-                return '
-			      <a href="javascript:void(0)" onclick="' . $onClick . '; return false;" class="valignMiddle">' . $label . '</a>
-			    ';
-            } elseif ($node->hasFlag(Node::NF_ADD_LINK)) {
+            if ($node->hasFlag(Node::NF_ADD_LINK)) {
                 $addurl = $this->invoke('getAddUrl', $node);
                 return Tools::href($addurl, $label, SessionManager::SESSION_NESTED);
             }
@@ -383,15 +362,6 @@ class AdminHandler extends ActionHandler
         return $result;
     }
 
-    /**
-     * Dialog handler.
-     */
-    function partial_dialog()
-    {
-        $this->setRenderMode('dialog');
-        $result = $this->renderAdminPage();
-        return $this->m_node->renderActionPage("admin", $result);
-    }
 
     /**
      * Attribute handler.

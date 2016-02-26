@@ -97,18 +97,6 @@ class Ui
     }
 
     /**
-     * Renders the insides of a dialog.
-     *
-     * @param array $vars template variables
-     * @param string $module the name of the module requesting to render a template
-     * @return string rendered dialog
-     */
-    function renderDialog($vars, $module = "")
-    {
-        return $this->render("dialog.tpl", $vars, $module);
-    }
-
-    /**
      * Renders a tabulated template
      * Registers some scriptcode for dhtml tab
      * @param array $vars the variables with which to render the template

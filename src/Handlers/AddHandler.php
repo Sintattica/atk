@@ -18,7 +18,6 @@ use Sintattica\Atk\Session\SessionManager;
 class AddHandler extends ActionHandler
 {
     var $m_buttonsource = null;
-    var $m_dialogSaveUrl = null;
 
     /**
      * Save action.
@@ -196,9 +195,7 @@ class AddHandler extends ActionHandler
 
         $node = $this->m_node;
 
-        $formIdentifier = ((isset($this->m_partial) && $this->m_partial != "")) ? "dialogform"
-            : "entryform";
-        $formstart = '<form id="' . $formIdentifier . '" name="' . $formIdentifier . '" enctype="multipart/form-data" action="' . $controller->getPhpFile() . '?' . SID . '"' .
+        $formstart = '<form id="' . "entryform" . '" name="' . "entryform" . '" enctype="multipart/form-data" action="' . $controller->getPhpFile() . '?' . SID . '"' .
             ' method="post" onsubmit="return globalSubmit(this,false)" autocomplete="off">';
 
 
@@ -283,14 +280,7 @@ class AddHandler extends ActionHandler
      */
     function getFormButtons($record = null)
     {
-        if ($this->m_partial == 'dialog') {
-            $controller = Controller::getInstance();
-            $result = array();
-            $result[] = $controller->getDialogButton('save', null, $this->getDialogSaveUrl(),
-                $this->getDialogSaveParams());
-            $result[] = $controller->getDialogButton('cancel');
-            return $result;
-        }
+
 
         // If no custom button source is given, get the default Controller.
         if ($this->m_buttonsource === null) {
@@ -315,13 +305,7 @@ class AddHandler extends ActionHandler
             $output = $ui->renderAction("add", $params);
             $this->addRenderBoxVar("title", $node->actionTitle('add'));
             $this->addRenderBoxVar("content", $output);
-
-            if ($this->getRenderMode() == "dialog") {
-                $total = $ui->renderDialog($this->m_renderBoxVars);
-            } else {
-                $total = $ui->renderBox($this->m_renderBoxVars, $this->m_boxTemplate);
-            }
-
+            $total = $ui->renderBox($this->m_renderBoxVars, $this->m_boxTemplate);
             return $total;
         }
         return null;
@@ -356,71 +340,5 @@ class AddHandler extends ActionHandler
             "section" => $this->m_postvars['atksectionname']
         ), $this->m_postvars['atksectionstate']);
     }
-
-    /**
-     * Render add dialog.
-     *
-     * @param array $record The record which contains default values for the
-     *                      add-form.
-     * @return string html Add dialog
-     */
-    function renderAddDialog($record = null)
-    {
-        $this->setRenderMode('dialog');
-        $result = $this->m_node->renderActionPage("add", $this->invoke("addPage", $record));
-        return $result;
-    }
-
-    /**
-     * Handle the dialog partial.
-     *
-     * @return String HTML add dialog
-     */
-    function partial_dialog()
-    {
-        return $this->renderAddDialog();
-    }
-
-    /**
-     * Returns the dialog save URL.
-     *
-     * @return string dialog save URL
-     */
-    function getDialogSaveUrl()
-    {
-        if ($this->m_dialogSaveUrl != null) {
-            return $this->m_dialogSaveUrl;
-        } else {
-            return Tools::partial_url($this->m_node->atkNodeUri(), 'save', 'dialog');
-        }
-    }
-
-    /**
-     * Returns the dialog save params. These are the same params that are part of the
-     * dialog save url, but they will be appended at the end of the query string to
-     * override any form variables with the same name!
-     * @return array paramaters
-     */
-    function getDialogSaveParams()
-    {
-        $parts = parse_url($this->getDialogSaveUrl());
-        $query = $parts['query'];
-        $params = array();
-        parse_str($query, $params);
-        return $params;
-    }
-
-    /**
-     * Override the default dialog save URL.
-     * At default the save action of the current node ($this->m_node) is called
-     * as a partial. Here you can set it to a different url.
-     *
-     * @param string $url dialog save URL
-     */
-    function setDialogSaveUrl($url)
-    {
-        $this->m_dialogSaveUrl = $url;
-    }
-
 }
 

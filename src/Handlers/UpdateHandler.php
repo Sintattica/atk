@@ -2,8 +2,6 @@
 
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Ui\Dialog;
-use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Session\SessionStore;
 
@@ -22,8 +20,6 @@ use Sintattica\Atk\Session\SessionStore;
  */
 class Updatehandler extends ActionHandler
 {
-    public $m_dialogSaveUrl;
-
     /**
      * Edit action.
      *
@@ -331,89 +327,5 @@ class Updatehandler extends ActionHandler
         }
 
         $this->m_node->redirect($location, $record);
-    }
-
-    //=================== PARTIAL / DIALOG METHODS ===================\\
-
-    /**
-     * Handle the dialog partial
-     *
-     * @param string $mode The current mode
-     */
-    function partial_dialog($mode)
-    {
-        $this->handleUpdate();
-    }
-
-    /**
-     * Override the dialog save url
-     *
-     * @param string $url dialog save URL
-     */
-    function setDialogSaveUrl($url)
-    {
-        $this->m_dialogSaveUrl = $url;
-    }
-
-    /**
-     * Handle the update of a dialog.
-     *
-     * @param string $attrRefreshUrl
-     */
-    public function handleUpdate($attrRefreshUrl = null)
-    {
-        $record = $this->getRecord();
-
-        // allowed to update record?
-        if (!$this->allowed($record)) {
-            $content = $this->renderAccessedDeniedDialog();
-            $this->updateDialog($content);
-        } else {
-            $this->handleProcess($record, 'loadSuccessDialog', 'loadEditDialogWithErrors',
-                array('attribute_refresh_url' => $attrRefreshUrl));
-        }
-    }
-
-    /**
-     * @todo refresh only the recordlist not the full page.
-     * @todo document.location.href is problematic if you already clicked the save
-     * action on a normal edit page. If you use the editdialog after that and you
-     * save the dialog, the page will redirect to the index page of the application.
-     *
-     * @param array $record
-     * @param array $extra_params
-     */
-    private function loadSuccessDialog($record, $extra_params)
-    {
-        $script = Dialog::getCloseCall();
-
-        $page = $this->getPage();
-        if ($extra_params['attribute_refresh_url'] == null) {
-            $script .= "document.location.href = document.location.href;";
-        } else {
-            $page->register_script(Config::getGlobal('atkroot') . 'atk/javascript/class.atkattribute.js');
-            $script .= "ATK.Attribute.refresh('{$extra_params['attribute_refresh_url']}');";
-        }
-
-        $page->register_loadscript($script);
-    }
-
-    /**
-     * Update the edit dialog for a failed update
-     *
-     * @param array $record Record that failed update
-     */
-    private function loadEditDialogWithErrors($record)
-    {
-        // Re-render the edit dialog.
-        global $ATK_VARS;
-        $ATK_VARS["atkaction"] = "edit";
-        $this->m_node->m_action = "edit";
-
-        $edithandler = $this->m_node->getHandler("edit");
-        if ($this->m_dialogSaveUrl != null) {
-            $edithandler->setDialogSaveUrl($this->m_dialogSaveUrl);
-        }
-        $this->updateDialog($edithandler->renderEditDialog($record));
     }
 }

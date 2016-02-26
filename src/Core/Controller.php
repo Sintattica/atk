@@ -6,7 +6,6 @@ use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Ui\Output;
-use Sintattica\Atk\Ui\Dialog;
 
 /**
  * The Controller class
@@ -338,10 +337,6 @@ class Controller
         $content = "<br><br>" . Tools::atktext("error_node_action_access_denied", "",
                 $node->m_type) . "<br><br><br>";
 
-        // Add a cancel button to an error page if it is a dialog.
-        if ($node->m_partial == 'dialog') {
-            $content .= $this->getDialogButton('cancel', 'close');
-        }
 
         return $this->genericPage(Tools::atktext('access_denied'), $content);
     }
@@ -367,17 +362,10 @@ class Controller
         }
         $blocks = array();
         foreach ($content as $itemtitle => $itemcontent) {
-            if ($node->m_partial == 'dialog') {
-                $blocks[] = $ui->renderDialog(array(
-                    "title" => $itemtitle,
-                    "content" => $itemcontent
-                ));
-            } else {
-                $blocks[] = $ui->renderBox(array(
-                    "title" => $itemtitle,
-                    "content" => $itemcontent
-                ), 'dispatch');
-            }
+            $blocks[] = $ui->renderBox(array(
+                "title" => $itemtitle,
+                "content" => $itemcontent
+            ), 'dispatch');
         }
 
         /**
@@ -669,36 +657,6 @@ class Controller
         return '<button type="submit" ' . $class . $name . $valueAttribute . '>' . $value . '</button>';
     }
 
-    /**
-     * Create a dialog button.
-     *
-     * @param string $action The action ('save' or 'cancel')
-     * @param string $label The label for this button
-     * @param string $url
-     * @param array $extraParams
-     * @return String HTML
-     */
-    function getDialogButton($action, $label = null, $url = null, $extraParams = array())
-    {
-        // Disable the button when clicked to prevent javascript errors.
-        $onClick = "this.disabled='true';";
-
-        switch ($action) {
-            case "save":
-                $class = "btn_save";
-                $onClick .= Dialog::getSaveCall($url, 'dialogform', $extraParams);
-                break;
-            case "cancel":
-                $class = "btn_cancel";
-                $onClick .= Dialog::getCloseCall();
-                break;
-            default:
-                return "";
-        }
-
-        $label = $label == null ? Tools::atktext($action, 'atk') : $label;
-        return '<input type="button" class="' . $class . '" name="' . $label . '" value="' . $label . '" onClick="' . $onClick . '" />';
-    }
 
     /**
      * Set Key/value pair in m_hidden_vars array. Saved pairs are

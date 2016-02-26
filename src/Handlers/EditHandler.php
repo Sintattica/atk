@@ -19,7 +19,6 @@ use Sintattica\Atk\Session\SessionManager;
  */
 class EditHandler extends ViewEditBase
 {
-    var $m_dialogSaveUrl = null;
     var $m_buttonsource = null;
 
     /**
@@ -247,11 +246,8 @@ class EditHandler extends ViewEditBase
             $this->addRenderBoxVar("title", $node->actionTitle('edit', $record));
             $this->addRenderBoxVar("content", $output);
 
-            if ($this->getRenderMode() == "dialog") {
-                $total = $ui->renderDialog($this->m_renderBoxVars);
-            } else {
-                $total = $ui->renderBox($this->m_renderBoxVars, $this->m_boxTemplate);
-            }
+
+            $total = $ui->renderBox($this->m_renderBoxVars, $this->m_boxTemplate);
 
             return $total;
         }
@@ -292,9 +288,7 @@ class EditHandler extends ViewEditBase
         $controller->setNode($this->m_node);
         $sm = SessionManager::getInstance();
 
-        $formIdentifier = ((isset($this->m_partial) && $this->m_partial != "")) ? "dialogform"
-            : "entryform";
-        $formstart = '<form id="' . $formIdentifier . '" name="' . $formIdentifier . '" enctype="multipart/form-data" action="' . $controller->getPhpFile() . '?' . SID . '"' .
+        $formstart = '<form id="' . "entryform" . '" name="' . "entryform" . '" enctype="multipart/form-data" action="' . $controller->getPhpFile() . '?' . SID . '"' .
             ' method="post" onsubmit="return globalSubmit(this,false)" class="form-horizontal" role="form" autocomplete="off">' .
             $sm->formState($this->getUpdateSessionStatus());
 
@@ -326,15 +320,6 @@ class EditHandler extends ViewEditBase
      */
     function getFormButtons($record = null)
     {
-        if ($this->m_partial == 'dialog' || $this->m_partial == 'editdialog') {
-            $controller = Controller::getInstance();
-            $result = array();
-            $result[] = $controller->getDialogButton('save', null, $this->getDialogSaveUrl(),
-                $this->getDialogSaveParams());
-            $result[] = $controller->getDialogButton('cancel');
-            return $result;
-        }
-
         // If no custom button source is given, get the default Controller.
         if ($this->m_buttonsource === null) {
             $this->m_buttonsource = $this->m_node;
@@ -654,71 +639,6 @@ class EditHandler extends ViewEditBase
     function editHeader()
     {
         return "";
-    }
-
-    /**
-     * The edit dialog
-     *
-     * @return String The edit dialog
-     */
-    function partial_dialog()
-    {
-        return $this->renderEditDialog();
-    }
-
-    /**
-     * Render add dialog.
-     *
-     * @param array $record
-     * @return string html
-     */
-    function renderEditDialog($record = null)
-    {
-        if ($record == null) {
-            $record = $this->getRecord();
-        }
-
-        $this->setRenderMode('dialog');
-        $result = $this->m_node->renderActionPage("edit", $this->invoke("editPage", $record));
-        return $result;
-    }
-
-    /**
-     * Override the default dialog save URL.
-     *
-     * @param string $url dialog save URL
-     */
-    function setDialogSaveUrl($url)
-    {
-        $this->m_dialogSaveUrl = $url;
-    }
-
-    /**
-     * Returns the dialog save URL.
-     *
-     * @return string dialog save URL
-     */
-    function getDialogSaveUrl()
-    {
-        if ($this->m_dialogSaveUrl != null) {
-            return $this->m_dialogSaveUrl;
-        } else {
-            return Tools::partial_url($this->m_node->atkNodeUri(), 'update', 'dialog');
-        }
-    }
-
-    /**
-     * Returns the dialog save params. These are the same params that are part of the
-     * dialog save url, but they will be appended at the end of the query string to
-     * override any form variables with the same name!
-     */
-    function getDialogSaveParams()
-    {
-        $parts = parse_url($this->getDialogSaveUrl());
-        $query = $parts['query'];
-        $params = array();
-        parse_str($query, $params);
-        return $params;
     }
 
 }

@@ -109,11 +109,7 @@ class ViewHandler extends ViewEditBase
 
             $vars = array("title" => $node->actionTitle($this->m_action, $record), "content" => $output);
 
-            if ($this->getRenderMode() == "dialog") {
-                $total = $ui->renderDialog($vars);
-            } else {
-                $total = $ui->renderBox($vars, $this->m_boxTemplate);
-            }
+            $total = $ui->renderBox($vars, $this->m_boxTemplate);
 
             return $total;
         } else {
@@ -274,33 +270,5 @@ class ViewHandler extends ViewEditBase
         }
         return $innerform;
     }
-
-    /**
-     * The dialog partial
-     *
-     * @return String HTML code for the view dialog
-     */
-    function partial_dialog()
-    {
-        return $this->renderViewDialog();
-    }
-
-    /**
-     * Render view dialog.
-     *
-     * @param array $record
-     * @return string html
-     */
-    function renderViewDialog($record = null)
-    {
-        if ($record == null) {
-            $record = $this->getRecord();
-        }
-
-        $this->setRenderMode('dialog');
-        $result = $this->m_node->renderActionPage("view", $this->invoke("viewPage", $record, $this->m_node));
-        return $result;
-    }
-
 }
 

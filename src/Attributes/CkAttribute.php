@@ -32,7 +32,7 @@ class CkAttribute extends TextAttribute
         'removeButtons' => 'Save,NewPage,Preview,Anchor,Flash,Smiley,PageBreak,Iframe,Subscript,Superscript,Font,Styles',
         // remove display of html tags on bottom bar
         'removePlugins' => 'elementspath',
-        // simplify the dialog windows
+        // simplify the windows
         'removeDialogTabs' => 'image:advanced;link:advanced',
         // set the size
         'width' => 800,

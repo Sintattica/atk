@@ -52,9 +52,6 @@ ATK.Attribute = {
 
         var func = function(transport) {
             transport.responseText.evalScripts();
-            if (form == 'dialogform' && ATK.Dialog && ATK.Dialog.getCurrent() != null) {
-                ATK.Dialog.getCurrent().delayedResize();
-            }
         };
 
         new Ajax.Request(url, {method: 'post', parameters: params,
@@ -64,11 +61,7 @@ ATK.Attribute = {
      * Refresh the attribute input form using Ajax.
      */
     refresh: function(url, focusFirstFormEl) {
-        var form = $(ATK.Dialog && ATK.Dialog.getCurrent() != null
-            ? 'dialogform'
-            : 'entryform'); // TODO: find a better way to detect the correct form
-        if (form == null)
-            return;
+        var form = 'entryform';
 
         var elements = Form.getElements(form);
         var queryComponents = new Array();
@@ -99,16 +92,10 @@ ATK.Attribute = {
 
         var func = function(transport) {
             transport.responseText.evalScripts();
-            if (form == 'dialogform' && ATK.Dialog && ATK.Dialog.getCurrent() != null) {
-                ATK.Dialog.getCurrent().delayedResize();
-            }
         };
         if (focusFirstFormEl) {
             func = function(transport) {
                 transport.responseText.evalScripts();
-                if (form == 'dialogform' && ATK.Dialog && ATK.Dialog.getCurrent() != null) {
-                    ATK.Dialog.getCurrent().delayedResize();
-                }
             };
         }
 

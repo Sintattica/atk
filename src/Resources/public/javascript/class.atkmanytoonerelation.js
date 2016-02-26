@@ -47,22 +47,6 @@ ATK.ManyToOneRelation = {
             serializeForm: true,
             indicator: spinnerElement
         });
-    },
-    refreshEditDialogUrl: function(url) {
-        var params = Form.serialize('dialogform');
-        new Ajax.Request(url, {method: 'post', parameters: params,
-            onComplete: function(transport) {
-                transport.responseText.evalScripts();
-            }
-        });
-    },
-    refreshEditDialogAttribute: function(url) {
-        var params = Form.serialize('dialogform');
-        new Ajax.Request(url, {method: 'post', parameters: params,
-            onComplete: function(transport) {
-                transport.responseText.evalScripts();
-            }
-        });
     }
 };
 

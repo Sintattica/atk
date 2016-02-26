@@ -12,11 +12,7 @@ ATK.Form = {
      *                      is to eval scripts in the response text
      */
     ajaxSubmit: function(url, ignoreATKVars, onComplete) {
-        var form = $(ATK.Dialog && ATK.Dialog.getCurrent() != null
-            ? 'dialogform' : 'entryform');
-        if (form == null) {
-            return;
-        }
+        var form = 'entryform';
 
         if (typeof (ignoreATKVars) == 'undefined') {
             ignoreATKVars = true;

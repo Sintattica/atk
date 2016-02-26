@@ -2,8 +2,6 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
-use Sintattica\Atk\Ui\Dialog;
-use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Session\SessionStore;
 /**
@@ -21,8 +19,6 @@ use Sintattica\Atk\Session\SessionStore;
  */
 class SaveHandler extends ActionHandler
 {
-    var $m_dialogSaveUrl;
-
     /**
      * Add action.
      *
@@ -302,7 +298,8 @@ class SaveHandler extends ActionHandler
     /**
      * Validate record.
      *
-     * @param array &$record The record to validate
+     * @param array $record The record to validate
+     * @return bool
      */
     function validate(&$record)
     {
@@ -320,87 +317,6 @@ class SaveHandler extends ActionHandler
         }
 
         return !$error;
-    }
-
-    /**
-     * Handle save of dialog.
-     *
-     * @param string $attrRefreshUrl the attribute refresh url if not specified
-     *                                the entire page is refreshed
-     */
-    function handleSave($attrRefreshUrl = '')
-    {
-        $db = $this->m_node->getDb();
-        $record = $this->m_node->updateRecord();
-
-        // allowed to save record?
-        if (!$this->allowed($record)) {
-            $content = $this->renderAccessDeniedDialog();
-            $this->updateDialog($content);
-            return;
-        }
-
-        // just before we validate the record we call the preAdd() to check if the record needs to be modified
-        // if an error occurs in the preAdd or the validate we have to handle it properly
-        if (!$this->m_node->executeTrigger("preAdd", $record, "add") ||
-            !$this->validate($record) ||
-            !$this->m_node->addDb($record, true, "add")
-        ) {
-            // an error occured, rollback database
-            $db->rollback();
-
-            if ($db->hasError() && $db->getErrorType() != "user") {
-                Tools::triggerError($record, null, '', $db->getErrorMsg());
-            }
-
-            // re-render add dialog
-            $handler = $this->m_node->getHandler('add');
-            $handler->m_partial = 'dialog';
-            $handler->m_postvars = $this->m_postvars;
-            if ($this->m_dialogSaveUrl != null) {
-                $handler->setDialogSaveUrl($this->m_dialogSaveUrl);
-            }
-            $content = $handler->renderAddDialog($record);
-            $this->updateDialog($content);
-            return;
-        }
-
-        // addition succesfull, commit changes and close the dialog
-        $db->commit();
-        $this->notify("save", $record);
-        $this->clearCache();
-
-        $page = $this->getPage();
-
-        $script = Dialog::getCloseCall();
-
-        if ($attrRefreshUrl == null) {
-            $script .= "document.location.href = document.location.href;";
-        } else {
-            $page->register_script(Config::getGlobal('assets_url') . 'javascript/class.atkattribute.js');
-            $script .= "ATK.Attribute.refresh('" . $attrRefreshUrl . "');";
-        }
-
-        $page->register_loadscript($script);
-    }
-
-    /**
-     * The handler for the dialog partial call.
-     *
-     */
-    function partial_dialog()
-    {
-        $this->handleSave();
-    }
-
-    /**
-     * Override the dialog save url
-     *
-     * @param string $url dialog save URL
-     */
-    function setDialogSaveUrl($url)
-    {
-        $this->m_dialogSaveUrl = $url;
     }
 
 }

@@ -154,16 +154,6 @@ class Node
     const NF_NO_SORT = 4194304;
 
     /**
-     * Use the dialog popup box when adding a new record for this node.
-     */
-    const NF_ADD_DIALOG = 8388608;
-
-    /**
-     * Use the dialog add-or-copy popup box when adding a new record for this node.
-     */
-    const NF_ADDORCOPY_DIALOG = 16777216;
-
-    /**
      * Specific node flag 1
      */
     const NF_SPECIFIC_1 = 33554432;

@@ -1,8 +1,5 @@
 function profile_getForm() {
-    if (document.dialogform)
-        return document.dialogform;
-    else
-        return document.entryform;
+    return document.entryform;
 }
 
 function profile_checkAll(fieldname) {

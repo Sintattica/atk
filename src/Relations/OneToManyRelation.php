@@ -3,9 +3,7 @@
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Handlers\AddOrCopyHandler;
 use Sintattica\Atk\DataGrid\DataGrid;
-use Sintattica\Atk\Ui\Dialog;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Session\SessionStore;
@@ -34,15 +32,6 @@ class OneToManyRelation extends Relation
      */
     const AF_RESTRICTED_DELETE = self::AF_SPECIFIC_1;
 
-    /**
-     * Use pop-up dialogs for adding records
-     */
-    const AF_ONETOMANY_ADD_DIALOG = self::AF_SPECIFIC_2;
-
-    /**
-     * Use pop-up dialog for whatever a new record must be copied or must be added.
-     */
-    const AF_ONETOMANY_ADDORCOPY_DIALOG = self::AF_SPECIFIC_3;
 
     /**
      * Show the OTM in add mode.
@@ -529,27 +518,7 @@ class OneToManyRelation extends Relation
             $params['atkstore_key'] = $this->getSessionStoreKey();
         }
 
-        $is_addorcopy_mode = $this->hasFlag(self::AF_ONETOMANY_ADDORCOPY_DIALOG) ||
-            $this->m_destInstance->hasFlag(Node::NF_ADDORCOPY_DIALOG);
-
-        if ($is_addorcopy_mode) {
-            $filter = $this->getAddFilterString($record);
-
-            $showDialog = AddOrCopyHandler::hasCopyableRecords($this->m_destInstance, $filter);
-
-            if ($showDialog) {
-                return $this->_getDialogAddLink($record, 'addorcopy', $params);
-            }
-        }
-
-        $is_dialog_mode = $this->hasFlag(self::AF_ONETOMANY_ADD_DIALOG) ||
-            $this->m_destInstance->hasFlag(Node::NF_ADD_DIALOG);
-
-        if ($is_dialog_mode) {
-            return $this->_getDialogAddLink($record, 'add', $params);
-        } else {
-            return $this->_getNestedAddLink($myrecords, $record, $saveform, $fieldprefix, $params);
-        }
+        return $this->_getNestedAddLink($myrecords, $record, $saveform, $fieldprefix, $params);
     }
 
     /**
@@ -595,33 +564,6 @@ class OneToManyRelation extends Relation
         }
 
         return $strfilter;
-    }
-
-    /**
-     * Get the add link when using a dialog
-     *
-     * @param array $record
-     * @param string $action
-     * @return string The dialog add link html-code
-     */
-    function _getDialogAddLink($record, $action, $params = array())
-    {
-        $ui = $this->m_ownerInstance->getUi();
-
-        $filter = $this->getAddFilterString($record);
-        if (!empty($filter)) {
-            $params['atkfilter'] = $filter;
-        }
-
-        $dialog = new Dialog($this->m_ownerInstance->atkNodeUri(), 'edit',
-            'attribute.' . $this->fieldName() . '.' . $action . '_dialog', $params);
-        $title = $ui->title($this->m_destInstance->m_module, $this->m_destInstance->m_type, $action);
-        $dialog->setTitle($title);
-        $dialog->setModifierObject($this->m_destInstance);
-        $dialog->setSessionStatus(SessionManager::SESSION_PARTIAL);
-        $onClick = $dialog->getCall();
-
-        return '<a href="javascript:void(0)" onclick="' . $onClick . '" class="valignMiddle">' . $this->getAddLabel() . '</a>';
     }
 
     /**
@@ -1323,161 +1265,6 @@ class OneToManyRelation extends Relation
         }
         // We never found a value, something is wrong with the filter
         return "";
-    }
-
-    /**
-     * Add dialog.
-     */
-    function partial_add_dialog()
-    {
-        $this->createDestination();
-        $this->m_destInstance->m_partial = 'dialog';
-        $handler = $this->m_destInstance->getHandler('add');
-        $handler->m_postvars = $this->m_ownerInstance->m_postvars;
-
-        // Reset postvars of ownerinstance because it might interfere with relations
-        // which point back to this ownerinstance and it doesn't need them anymore anyway.
-        $this->m_ownerInstance->m_postvars = array();
-
-        $handler->setDialogSaveUrl(Tools::partial_url($this->m_ownerInstance->atkNodeUri(), 'edit',
-            'attribute.' . $this->fieldName() . '.add_process'));
-        $result = $handler->renderAddDialog();
-        $page = $this->m_ownerInstance->getPage();
-        $page->addContent($result);
-    }
-
-    /**
-     * Process add dialog save action.
-     */
-    function partial_add_process()
-    {
-        $this->createDestination();
-        $handler = $this->m_destInstance->getHandler('save');
-        $handler->m_postvars = $this->m_ownerInstance->m_postvars;
-
-        // Reset postvars of ownerinstance because it might interfere with relations
-        // which point back to this ownerinstance and it doesn't need them anymore anyway.
-        $this->m_ownerInstance->m_postvars = array();
-
-        $handler->setDialogSaveUrl(Tools::partial_url($this->m_ownerInstance->atkNodeUri(), 'edit',
-            'attribute.' . $this->fieldName() . '.add_process'));
-        $handler->handleSave($this->getPartialSaveUrl());
-    }
-
-    /**
-     * assamble the partial save handler url
-     * this allows dynamically updating the attribute
-     */
-    public function getPartialSaveUrl()
-    {
-        return Tools::partial_url(
-            $this->m_ownerInstance->atkNodeUri(), 'edit', 'attribute.' .
-            $this->fieldName() .
-            '.refresh'
-        );
-    }
-
-    /**
-     * Add or copy dialog.
-     */
-    function partial_addorcopy_dialog()
-    {
-        $this->createDestination();
-        $this->m_destInstance->addFilter($this->m_ownerInstance->m_postvars['atkfilter']);
-        $handler = $this->m_destInstance->getHandler('addorcopy');
-        $handler->setProcessUrl(Tools::partial_url($this->m_ownerInstance->atkNodeUri(), 'edit',
-            'attribute.' . $this->fieldName() . '.addorcopy_process',
-            array('atkfilter' => $this->m_ownerInstance->m_postvars['atkfilter'])));
-        $handler->handleDialog();
-    }
-
-    /**
-     * Process add or copy action.
-     */
-    function partial_addorcopy_process()
-    {
-        $this->createDestination();
-        $addOrCopy = $this->m_ownerInstance->m_postvars['addorcopy'];
-
-        // user has choosen to copy an existing record, let the copy action
-        // be handled by the normal addorcopy handler
-        if ($addOrCopy == 'copy') {
-            $handler = $this->m_destInstance->getHandler('addorcopy');
-            $handler->m_postvars = $this->m_ownerInstance->m_postvars;
-
-            // Reset postvars of ownerinstance because it might interfere with relations
-            // which point back to this ownerinstance and it doesn't need them anymore anyway.
-            $this->m_ownerInstance->m_postvars = array();
-
-            $handler->handleCopy(Tools::partial_url($this->m_ownerInstance->atkNodeUri(), 'edit',
-                'attribute.' . $this->fieldName() . '.refresh'));
-        }
-
-        // user has choosen to add a new record, depending on whatever the self::AF_ONETOMANY_ADD_DIALOG
-        // or the destination instance Node::NF_ADD_DIALOG flags has been set we either show the user an
-        // add dialog or redirect him/her to the add page (using an atkSubmit)
-        else {
-
-            $script = Dialog::getCloseCall();
-
-            if ($this->hasFlag(self::AF_ONETOMANY_ADD_DIALOG) || $this->m_destInstance->hasFlag(Node::NF_ADD_DIALOG)) {
-                $ui = $this->m_ownerInstance->getUi();
-                $filter = $this->m_ownerInstance->m_postvars['atkfilter'];
-                $dialog = new Dialog($this->m_ownerInstance->atkNodeUri(), 'edit',
-                    'attribute.' . $this->fieldName() . '.add_dialog', array('atkfilter' => $filter));
-                $title = $ui->title($this->m_destInstance->m_module, $this->m_destInstance->m_type, 'add');
-                $dialog->setTitle($title);
-                $dialog->setSessionStatus(SessionManager::SESSION_PARTIAL);
-                $script .= $dialog->getCall(true, false);
-            } else {
-                $sm = SessionManager::getInstance();
-                $url = Tools::dispatch_url($this->m_destInstance->atkNodeUri(), 'add');
-                $script .= "atkSubmit('" . Tools::atkurlencode($sm->sessionUrl($url, SessionManager::SESSION_NESTED)) . "', true);";
-            }
-
-            $page = $this->m_ownerInstance->getPage();
-            $page->register_loadscript($script);
-        }
-    }
-
-    /**
-     * Edit dialog.
-     */
-    function partial_edit_dialog()
-    {
-        $this->createDestination();
-        $this->m_destInstance->m_partial = 'dialog';
-        $handler = $this->m_destInstance->getHandler('edit');
-        $handler->m_postvars = $this->m_ownerInstance->m_postvars;
-
-        // Reset postvars of ownerinstance because it might interfere with relations
-        // which point back to this ownerinstance and it doesn't need them anymore anyway.
-        $this->m_ownerInstance->m_postvars = array();
-
-        $handler->setDialogSaveUrl(Tools::partial_url($this->m_ownerInstance->atkNodeUri(), 'edit',
-            'attribute.' . $this->fieldName() . '.edit_process'));
-        $result = $handler->renderEditDialog();
-        $page = $this->m_ownerInstance->getPage();
-        $page->addContent($result);
-    }
-
-    /**
-     * Process edit dialog update action.
-     */
-    function partial_edit_process()
-    {
-        $this->createDestination();
-        $handler = $this->m_destInstance->getHandler('update');
-        $handler->m_postvars = $this->m_ownerInstance->m_postvars;
-
-        // Reset postvars of ownerinstance because it might interfere with relations
-        // which point back to this ownerinstance and it doesn't need them anymore anyway.
-        $this->m_ownerInstance->m_postvars = array();
-
-        $handler->setDialogSaveUrl(Tools::partial_url($this->m_ownerInstance->atkNodeUri(), 'edit',
-            'attribute.' . $this->fieldName() . '.edit_process'));
-        $handler->handleUpdate(Tools::partial_url($this->m_ownerInstance->atkNodeUri(), 'edit',
-            'attribute.' . $this->fieldName() . '.refresh'));
     }
 
     /**
