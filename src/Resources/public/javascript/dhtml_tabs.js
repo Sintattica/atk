@@ -1,21 +1,3 @@
-<?php
- /**
- * This file is part of the Achievo ATK distribution.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage javascript
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6315 $
- * $Id$
- */
-?>
-
 var closedSections = [];
 
 /**
@@ -128,7 +110,14 @@ function showTab(tab) {
 
 
 function getCurrentTab() {
-    return <?php echo $_REQUEST['stateful'] ? 'getTab(getCurrentNodetype(), getCurrentSelector())' : ''; ?>;
+    var getUriParams = function (name) {
+        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
+    };
+    if (getUriParams('stateful') == '1') {
+        return 'getTab(getCurrentNodetype(), getCurrentSelector())';
+    }
+    return '';
+
 }
 
 function getTab(nodetype, selector) {

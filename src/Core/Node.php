@@ -1863,12 +1863,10 @@ class Node
 
         if (count($sections) > 0 || $tabs > 1) {
             $page = $this->getPage();
-            $page->register_script(Config::getGlobal("assets_url") . "javascript/dhtml_tabs.js.php?stateful=" . (Config::getGlobal('dhtml_tabs_stateful')
-                    ? 1 : 0));
+            $page->register_script(Config::getGlobal("assets_url") . "javascript/dhtml_tabs.js?stateful=" . (Config::getGlobal('dhtml_tabs_stateful') ? '1' : '0'));
 
             // Load default tab show script.
-            $page->register_loadscript('if ( window.showTab ) {showTab(\'' . (isset($this->m_postvars['atktab'])
-                    ? $this->m_postvars['atktab'] : '') . '\');}');
+            $page->register_loadscript('if ( window.showTab ) {showTab(\'' . (isset($this->m_postvars['atktab']) ? $this->m_postvars['atktab'] : '') . '\');}');
 
             $fulltabs = $this->buildTabs($action);
             $tabscript = "var tabs = new Array();\n";
