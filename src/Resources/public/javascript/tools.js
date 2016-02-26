@@ -89,7 +89,7 @@ function getCurrentSelector()
  */
 function getCurrentNodetype()
 {
-    var nodetypeobj = get_object("atknodetype");
+    var nodetypeobj = get_object("atknodeuri");
     if (nodetypeobj)
     {
         // IE works with .value, while the Gecko engine uses .innerHTML

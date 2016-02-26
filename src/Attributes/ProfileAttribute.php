@@ -330,7 +330,7 @@ class ProfileAttribute extends Attribute
     {
         $user = SecurityManager::atkGetUser();
         $page = Page::getInstance();
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkprofileattribute.js.php");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkprofileattribute.js");
         $this->_restoreDivStates($page);
 
         $result = '';
@@ -440,7 +440,7 @@ class ProfileAttribute extends Attribute
         $icons = "var ATK_PROFILE_ICON_OPEN = '".Config::getGlobal("icon_plussquare")."';";
         $icons .= "var ATK_PROFILE_ICON_CLOSE = '".Config::getGlobal("icon_minussquare")."';";
         $page->register_scriptcode($icons);
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkprofileattribute.js.php");
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkprofileattribute.js");
 
         $this->_restoreDivStates($page);
 

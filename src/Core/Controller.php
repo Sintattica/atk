@@ -712,6 +712,7 @@ class Controller
         }
 
         $varString = '';
+
         foreach ($this->m_hidden_vars as $hiddenVarName => $hiddenVarValue) {
             $varString .= '<input type="hidden" name="' . $hiddenVarName . '" value="' . $hiddenVarValue . '">';
         }

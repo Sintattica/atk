@@ -99,21 +99,6 @@ ATK.Attribute = {
             };
         }
 
-        /*
-         // disable form fields that are going to be replaced
-         $(field).getElementsBySelector('*').each(function(el) {
-         el.style.visibility = 'hidden';
-         });
-         
-         var span = document.createElement('span');
-         var img = document.createElement('img');
-         img.src = 'themes/achievo_modern/images/spinner.gif';
-         span.appendChild(img);
-         $(field).appendChild(span);
-         Position.absolutize(span);
-         Position.clone(field, span);
-         */
-
         new Ajax.Request(url, {method: 'post', parameters: params,
             evalScripts: true, onComplete: func});
     },

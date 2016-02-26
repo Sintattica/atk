@@ -169,7 +169,7 @@ class MultiSelectAttribute extends ListAttribute
         $id = $fieldprefix . $this->fieldName();
 
         $page = Page::getInstance();
-        $page->register_script(Config::getGlobal('assets_url') . "javascript/class.atkprofileattribute.js.php");
+        $page->register_script(Config::getGlobal('assets_url') . "javascript/class.atkprofileattribute.js");
 
         $result = "";
         if (!$this->hasFlag(self::AF_LINKS_BOTTOM)) {

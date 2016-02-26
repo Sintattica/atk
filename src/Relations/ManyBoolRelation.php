@@ -61,7 +61,7 @@ class ManyBoolRelation extends ManyToManyRelation
         $total_records = count($recordset);
         if ($total_records > 0) {
             $page = Page::getInstance();
-            $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkprofileattribute.js.php");
+            $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkprofileattribute.js");
 
             if (!$this->hasFlag(self::AF_MANYBOOL_NO_TOOLBAR)) {
                 $result .= '<div align="left"><font size="-2">
