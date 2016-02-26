@@ -340,12 +340,8 @@ class DataGridList extends DataGridComponent
             /* locked? */
             if ($grid->hasFlag(DataGrid::LOCKING)) {
                 if (is_array($list["rows"][$i]["lock"])) {
-                    $this->getPage()->register_script(Config::getGlobal('assets_url') . 'javascript/overlibmws/overlibmws.js');
-                    $lockIcon = 'locked';
-                    $lockInfo = addslashes(str_replace(array("\r\n", "\r", "\n"), " ",
-                        htmlentities($this->getLockInfo($list["rows"][$i]["lock"]))));
                     $record["cols"][] = array(
-                        "content" => '<span onmouseover="return overlib(\'' . $lockInfo . '\', NOFOLLOW, FULLHTML);" onmouseout="nd();">' . $lockIcon . '</span>',
+                        "content" => '<span>lock</span>',
                         "type" => "lock"
                     );
                 } else {
