@@ -22,8 +22,12 @@ if ($config_atkroot == "" || (ini_get('register_globals'))) { // may not be pass
     $config_atkroot = "./";
 }
 
+/**
+ * added by sintattica
+ */
 $config_assets_url = $config_theme_url = '/bundles/atk/';
-
+$config_template_dir =  __DIR__ . '/../Resources/public/templates/';
+$config_theme_dir = __DIR__ . '/../Resources/public/';
 
 if (!isset($config_application_dir) || empty($config_application_dir) || (ini_get('register_globals'))) {
     /**
@@ -496,21 +500,6 @@ $config_debug_translations = false;
 
 /* * ********************************** LAYOUT ****************************** */
 
-/**
- *
- * @var String
- */
-$config_doctype = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">';
-//$config_doctype = '<!DOCTYPE html>';
-
-
-/**
- *
- * @var String
- */
-$config_defaulttheme = "stillblue";
-
 
 /**
  * Whatever tabs are enabled or not
@@ -663,13 +652,6 @@ $config_supported_languages_module = '';
 /* * ******************* TEMPLATE ENGINE CONFIGURATION ********************** */
 
 /**
- * By default all templates are described by their relative
- * path, relative to the applications' root dir.
- * @var String
- */
-$config_tplroot = $config_application_dir;
-
-/**
  *
  * @var boolean
  */
@@ -702,6 +684,7 @@ $config_tplcompilecheck = "true";
  * Use subdirectories for compiled and cached templates
  */
 $config_tplusesubdirs = false;
+
 
 /* * **************** MISCELLANEOUS CONFIGURATION OPTIONS ******************* */
 
@@ -753,31 +736,6 @@ $config_encryption_defaultmethod = "base64";
  */
 $config_search_defaultmode = "substring";
 
-/**
- * Wether or not to enable Internet Explorer extensions
- * @var boolean
- * @todo update this bit of documentation as it doesn't really say much
- */
-$config_enable_ie_extensions = false;
-
-/**
- * Files that are allowed to be included by the include wrapper script
- * NOTE: this has nothing to do with useattrib and userelation etc.!
- * @var array
- */
-$config_allowed_includes = array(
-    "atk/lock/lock.php",
-    "atk/lock/lock.js.php",
-    "atk/popups/help.php",
-    "atk/popups/colorpicker.php"
-);
-
-/**
- * Forces the themecompiler to recompile the theme all the time
- * This can be handy when working on themes.
- * @var boolean
- */
-$config_force_theme_recompile = false;
 
 /**
  * Wether or not to use the keyboardhandler for attributes and the recordlist
@@ -1020,3 +978,4 @@ $config_icon_email = $config_icon_e_mail = 'fa fa-envelope-o';
 $config_icon_print = 'fa fa-print';
 $config_icon_plussquare = 'fa fa-plus-square-o';
 $config_icon_minussquare = 'fa fa-minus-square-o';
+

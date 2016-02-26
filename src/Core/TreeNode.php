@@ -1,7 +1,6 @@
 <?php namespace Sintattica\Atk\Core;
 
 use Sintattica\Atk\Attributes\Attribute;
-use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Session\SessionManager;
 

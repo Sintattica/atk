@@ -4,7 +4,6 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\RecordList\Totalizer;
-use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Keyboard\Keyboard;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\RecordList\RecordList;
@@ -71,7 +70,6 @@ class DataGridList extends DataGridComponent
     private function getRecordlistData($recordset, $actions, $suppressList = array())
     {
         $grid = $this->getGrid();
-        $theme = $this->getTheme();
         $page = $this->getPage();
         $sm = SessionManager::getInstance();
 
@@ -81,8 +79,8 @@ class DataGridList extends DataGridComponent
 
         $listName = $grid->getName();
 
-        $defaulthighlight = $theme->getAttribute("highlight");
-        $selectcolor = $theme->getAttribute("select");
+        $defaulthighlight = Config::getGlobal("highlight");
+        $selectcolor = Config::getGlobal("select");
 
         /* retrieve list array */
         $list = $this->listArray($recordset, "", $actions, $suppressList);
@@ -357,9 +355,7 @@ class DataGridList extends DataGridComponent
 
             $str_actions = "<span class=\"actions\">";
             $actionloader .= "\nrl_a['" . $listName . "'][" . $i . "] = {};";
-            $icons = (Config::getGlobal('recordlist_icons', $theme->getAttribute("recordlist_icons")) === false ||
-            Config::getGlobal('recordlist_icons', $theme->getAttribute("recordlist_icons")) === 'false'
-                ? false : true);
+            $icons = Config::getGlobal('recordlist_icons');
 
 
             foreach ($list["rows"][$i]["actions"] as $name => $url) {

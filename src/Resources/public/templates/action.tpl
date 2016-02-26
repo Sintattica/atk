@@ -1,6 +1,6 @@
 {atkmessages}
 {if isset($helplink)}
-    <div id="action-helplink" style="border: 0px solid red">
+    <div id="action-helplink">
         {$helplink}<br/>
     </div>
 {/if}
@@ -11,13 +11,13 @@
         {/foreach}
     </div>
 {/if}
-<div style="border:0px solid red;">{$header}</div>
+<div>{$header}</div>
 {$formstart}
 <div> <!-- div added to enable nested forms -->
-    <div id="action-content" style="border: 0px solid green;">
+    <div id="action-content">
         {$content}
     </div>
-    <div id="action-buttons" style="border: 0px solid blue;">
+    <div id="action-buttons">
         <div class="action-buttons-buttons">
             {foreach from=$buttons item=button}
                 {$button}

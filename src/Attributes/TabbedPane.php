@@ -1,13 +1,11 @@
 <?php namespace Sintattica\Atk\Attributes;
 
-
-use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Handlers\ViewEditBase;
 
 /**
- * atkTabbedPane place regular attribute to the additional tabbed pane
+ * TabbedPane place regular attribute to the additional tabbed pane
  *
  * @author Yury Golovnya <ygolovnya@gmail.com>
  * @package atk
@@ -199,10 +197,7 @@ class TabbedPane extends Attribute
 
         // Handle fields
         // load images
-        $theme = Theme::getInstance();
-        $tipimg = $theme->imgPath("help.gif");
-        $reqimg = '<img align="top" src="' . $theme->imgPath("required_field.gif") . '" border="0"
-                  alt="' . Tools::atktext("field_obligatory") . '" title="' . Tools::atktext("field_obligatory") . '">';
+        $reqimg = "<span class='required'></span>";
 
         /* display the edit fields */
         $fields = array();
@@ -239,7 +234,7 @@ class TabbedPane extends Attribute
                 }
 
                 /* does the field have a label? */
-                if ((isset($field["label"]) && $field["label"] !== "self::AF_NO_LABEL") && !$this->isAttributeSingleOnTab($field['name']) || !isset($field["label"])) {
+                if ((isset($field["label"]) && $field["label"] !== '') && !$this->isAttributeSingleOnTab($field['name']) || !isset($field["label"])) {
                     if ($field["label"] == "") {
                         $tplfield["label"] = "";
                     } else {
@@ -249,7 +244,7 @@ class TabbedPane extends Attribute
                         }
                     }
                 } else {
-                    $tplfield["label"] = "self::AF_NO_LABEL";
+                    $tplfield["label"] = "";
                 }
 
                 /* obligatory indicator */
@@ -262,23 +257,11 @@ class TabbedPane extends Attribute
                 $tplfield["widget"] = $field["html"];
                 $editsrc = $field["html"];
 
-                /* tooltip */
                 if (is_object($node->m_attribList[$field['name']])) {
                     $module = $node->m_attribList[$field['name']]->getModule();
                 }
                 if (!$module) {
                     $module = "atk";
-                }
-                $ttip = Tools::atktext($node->m_type . "_" . $field["name"] . "_tooltip", $module, "", "", "",
-                    true);
-
-                if ($ttip) {
-                    $onelinetip = preg_replace('/([\r\n])/e', "", $ttip);
-                    $tooltip = '<img align="top" src="' . $tipimg . '" border="0" alt="' . $onelinetip . '" onClick="javascript:alert(\'' . str_replace("\n",
-                            '\n', addslashes($ttip)) .
-                        '\')" onMouseOver="javascript:window.status=\'' . addslashes($onelinetip) . '\';">';
-                    $tplfield["tooltip"] = $tooltip;
-                    $editsrc .= $tooltip . "&nbsp;";
                 }
 
                 $tplfield['id'] = str_replace('.', '_', $node->atkNodeUri() . '_' . $field["id"]);
@@ -354,20 +337,6 @@ class TabbedPane extends Attribute
                     if (!$module) {
                         $module = "atk";
                     }
-                    $ttip = Tools::atktext($node->m_type . "_" . $name . "_tooltip", $module, "", "", "", true);
-
-                    if ($ttip) {
-                        $theme = Theme::getInstance();
-                        $tipimg = $theme->imgPath("help.gif");
-
-                        $onelinetip = preg_replace('/([\r\n])/e', "", $ttip);
-                        $tooltip = '<img align="top" src="' . $tipimg . '" border="0" alt="' . $onelinetip . '" onClick="javascript:alert(\'' . str_replace("\n",
-                                '\n', addslashes($ttip)) .
-                            '\')" onMouseOver="javascript:window.status=\'' . addslashes($onelinetip) . '\';">';
-                        $tplfield["tooltip"] = $tooltip;
-                        $editsrc .= $tooltip . "&nbsp;";
-                    }
-
                     $tplfield["full"] = $editsrc;
                     $tplfield["widget"] = $editsrc; // in view mode, widget and full are equal
                     // The Label of the attribute (can be suppressed with self::AF_NOLABEL or self::AF_BLANKLABEL)

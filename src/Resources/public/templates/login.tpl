@@ -3,7 +3,7 @@
 <div class="container">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title">{atktext login_form}</h3>
+            <h3 class="panel-title">{atktext id="login_form"}</h3>
         </div>
         <div class="panel-body">
             <div class="row">
@@ -19,15 +19,15 @@
                         <form action="{$formurl}" method="post" role="form" class="login-form">
                             {$atksessionformvars}
                             <div class="form-group">
-                                <label for="auth_user">{atktext username}</label>
+                                <label for="auth_user">{atktext id="username"}</label>
                                 {$userfield}
                             </div>
                             <div class="form-group">
-                                <label for="auth_pw">{atktext password}</label>
+                                <label for="auth_pw">{atktext id="password"}</label>
                                 <input class="form-control" size="20" type="password" id="auth_pw" name="auth_pw" value="">
                             </div>
-                            <button type="submit" name="login" class="btn btn-primary center-block" value="{atktext login}">{atktext login}</button>
-                            {if $auth_enablepasswordmailer}<input name="login" class="btn btn-default" type="submit" value="{atktext password_forgotten}">{/if}
+                            <button type="submit" name="login" class="btn btn-primary center-block" value="{atktext id="login"}">{atktext id="login"}</button>
+                            {if $auth_enablepasswordmailer}<input name="login" class="btn btn-default" type="submit" value="{atktext id="password_forgotten"}">{/if}
                         </form>
                     {/if}
                 </div>

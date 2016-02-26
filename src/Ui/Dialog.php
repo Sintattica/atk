@@ -243,11 +243,7 @@ class Dialog
      */
     protected function getWindowOptions()
     {
-        if (Theme::getInstance()->getAttribute('dialog_window_options', null) != null) {
-            return Theme::getInstance()->getAttribute('dialog_window_options');
-        } else {
-            return '{}';
-        }
+        return '{}';
     }
 
     /**

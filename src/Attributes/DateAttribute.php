@@ -3,7 +3,6 @@
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Page;
-use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Keyboard\Keyboard;
 use Sintattica\Atk\Utils\BrowserInfo;

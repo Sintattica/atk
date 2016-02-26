@@ -2,7 +2,6 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
-use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\RecordList\ColumnConfig;
 use Sintattica\Atk\Db\Query;
@@ -1028,7 +1027,7 @@ class Attribute
                 $spinnerCode = "
       var spinner = $$('#$id .atkbusy');
       if (spinner.length) {
-        spinner[spinner.length-1].style.display = 'inline-block';
+        spinner[spinner.length-1].style.visibility = 'visible';
       }
       ";
             } else {
@@ -1364,24 +1363,6 @@ class Attribute
         return $ret;
     }
 
-    /**
-     * Retrieve the html/javascript code for showing the tooltip for this attribute.
-     *
-     * @return String HTML
-     */
-    function getToolTip()
-    {
-        $tooltip = $this->text($this->fieldName() . '_tooltip', false);
-        if (!$tooltip) {
-            return '';
-        }
-
-        $template = Theme::getInstance()->tplPath('tooltip.tpl', $this->getModule());
-        $vars = array('tooltip' => $tooltip, 'attribute' => $this);
-
-        $result = $this->getOwnerInstance()->getUi()->render($template, $vars, $this->getModule());
-        return $result;
-    }
 
     /**
      * Returns the edit callback (if set).

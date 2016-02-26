@@ -8,7 +8,6 @@ use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Lock\Lock;
 use Sintattica\Atk\Ui\PageBuilder;
-use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Utils\Selector;
 use Sintattica\Atk\Security\SecurityManager;
@@ -4541,20 +4540,6 @@ class Node
         }
 
         return $matches[1];
-    }
-
-    /**
-     * Add a stylesheet to the page.
-     *
-     * The theme engine is used to determine the path, and load the correct
-     * stylesheet.
-     * @param string $style The filename of the stylesheet (without path).
-     */
-    function addStyle($style)
-    {
-        $theme = Theme::getInstance();
-        $page = $this->getPage();
-        $page->register_style($theme->stylePath($style));
     }
 
     /**

@@ -4,7 +4,6 @@ use Sintattica\Atk\Core\Controller;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Utils\JSON;
-use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Session\SessionManager;
 
@@ -151,6 +150,7 @@ class EditHandler extends ViewEditBase
         if ($result !== false) {
             return $result;
         }
+        return '';
     }
 
     /**
@@ -255,6 +255,7 @@ class EditHandler extends ViewEditBase
 
             return $total;
         }
+        return '';
     }
 
     /**
@@ -402,15 +403,18 @@ class EditHandler extends ViewEditBase
             $tplfield["line"] = "<hr>";
         } /* double separator, ignore */ elseif ($field["html"] == "-") {
 
-        } /* sections */ elseif ($field["html"] == "section") {
+        } /* sections */
+        elseif ($field["html"] == "section") {
             $tplfield["type"] = "section";
             list($tab, $section) = explode('.', $field["name"]);
             $tplfield["section_name"] = "section_{$tab}_{$section}";
             $tplfield["line"] = $this->getSectionControl($field, $mode);
-        } /* only full HTML */ elseif (isset($field["line"])) {
+        } /* only full HTML */
+        elseif (isset($field["line"])) {
             $tplfield["type"] = "custom";
             $tplfield["line"] = $field["line"];
-        } /* edit field */ else {
+        } /* edit field */
+        else {
             $tplfield["type"] = "attribute";
 
             if ($field["attribute"]->m_ownerInstance->getNumbering()) {
@@ -418,7 +422,7 @@ class EditHandler extends ViewEditBase
             }
 
             /* does the field have a label? */
-            if ((isset($field["label"]) && $field["label"] !== "Attribute::AF_NO_LABEL") || !isset($field["label"])) {
+            if ((isset($field["label"]) && $field["label"] !== "") || !isset($field["label"])) {
                 if (!isset($field["label"]) || empty($field["label"])) {
                     $tplfield["label"] = "";
                 } else {
@@ -428,18 +432,12 @@ class EditHandler extends ViewEditBase
                     }
                 }
             } else {
-                $tplfield["label"] = "Attribute::AF_NO_LABEL";
+                $tplfield["label"] = "";
             }
 
             /* obligatory indicator */
             if ($field["obligatory"]) {
-                // load images
-                $theme = Theme::getInstance();
-                $reqimg = '<img align="top" src="' . $theme->imgPath("required_field.gif") . '" border="0"
-                     alt="' . Tools::atktext("field_obligatory") . '" title="' . Tools::atktext("field_obligatory") . '">';
-
-                $tplfield["label"];
-                $tplfield["obligatory"] = $reqimg;
+                $tplfield["obligatory"] = true;
             }
 
             // Make the attribute and node names available in the template.
@@ -450,12 +448,6 @@ class EditHandler extends ViewEditBase
             $tplfield["widget"] = $field["html"];
             $editsrc = $field["html"];
 
-            /* tooltip */
-            $tooltip = $field["attribute"]->getToolTip();
-            if ($tooltip) {
-                $tplfield["tooltip"] = $tooltip;
-                $editsrc .= $tooltip . "&nbsp;";
-            }
 
             $tplfield['id'] = str_replace('.', '_', $this->m_node->atkNodeUri() . '_' . $field["id"]);
 
@@ -522,7 +514,6 @@ class EditHandler extends ViewEditBase
                 if ($error['err'] == "error_primarykey_exists") {
                     $pk_err_attrib[] = $error['attrib_name'];
                 } else {
-                    $type = (empty($error["node"]) ? $node->m_type : $error["node"]);
 
                     if (count($tabs) > 1 && $error["tab"]) {
                         $tabLink = $this->getTabLink($node, $error);
@@ -563,12 +554,12 @@ class EditHandler extends ViewEditBase
                     $errors[] = $err;
                 }
             }
-            $pk_err_msg = '';
+
             if (count($pk_err_attrib) > 0) { // Make primary key error message
                 $pk_err_msg = '';
                 for ($i = 0; $i < count($pk_err_attrib); $i++) {
                     $pk_err_msg .= Tools::atktext($pk_err_attrib[$i], $node->m_module, $node->m_type);
-                    if (($i + 1) < count($pk_err_attrib)){
+                    if (($i + 1) < count($pk_err_attrib)) {
                         $pk_err_msg .= ", ";
                     }
                 }
@@ -583,7 +574,6 @@ class EditHandler extends ViewEditBase
 
         for ($i = 0, $_i = count($data["fields"]); $i < $_i; $i++) {
             $field = &$data["fields"][$i];
-
             $tplfield = $this->createTplField($data["fields"], $i, $mode, $tab);
             $fields[] = $tplfield; // make field available in numeric array
             $params[$field["name"]] = $tplfield; // make field available in associative array
@@ -633,14 +623,9 @@ class EditHandler extends ViewEditBase
         if ($template) {
             $result .= $ui->render($template, $params);
         } else {
-            $theme = Theme::getInstance();
-            if ($theme->tplPath("editform_common.tpl") > "") {
-                $tabTpl = $this->_getTabTpl($node, $tabs, $mode, $record);
-                $params['fieldspart'] = $this->_renderTabs($fields, $tabTpl);
-                $result .= $ui->render("editform_common.tpl", $params);
-            } else {
-                $result .= $ui->render($node->getTemplate($mode, $record, $tab), $params);
-            }
+            $tabTpl = $this->_getTabTpl($node, $tabs, $mode, $record);
+            $params['fieldspart'] = $this->_renderTabs($fields, $tabTpl);
+            $result .= $ui->render("editform_common.tpl", $params);
         }
 
         return $result;

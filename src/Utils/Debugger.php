@@ -5,7 +5,6 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Page;
-use Sintattica\Atk\Ui\Theme;
 
 /**
  * This class implements the ATK debug console for analysing queries
@@ -200,7 +199,6 @@ class Debugger
     public function renderConsole()
     {
         $page = Page::getInstance();
-        $theme = Theme::getInstance();
         $data = $this->getDebuggerData(false, $_REQUEST['atkstackid']);
         $res = $this->consoleControls() . '<br/><br/>';
         switch ($_REQUEST["action"]) {

@@ -31,7 +31,7 @@ class Module
     const MF_NO_PRELOAD = 32;
 
 
-    /** @var  array $nodeMap */
+    /** @var array $nodeMap */
     var $nodeMap;
 
 
@@ -71,6 +71,7 @@ class Module
 
         $type = self::getNodeType($nodeUri);
         $nodeClass = $this->nodeMap[$type];
+
         $node = new $nodeClass();
         $node->m_module = $module;
 
@@ -165,7 +166,7 @@ class Module
 
 
     /**
-     * Retrieves all the registered atkModules
+     * Retrieves all the registered Modules
      *
      * @return array with modules
      */
@@ -184,7 +185,6 @@ class Module
     public static function &atkGetModule($moduleName)
     {
         global $g_moduleRepository;
-
 
         if (!isset($g_moduleRepository[$moduleName]) || !is_object($g_moduleRepository[$moduleName])) {
 

@@ -12,7 +12,6 @@ use Sintattica\Atk\Core\Module;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Db\Db;
-use Sintattica\Atk\Ui\Theme;
 use \Exception;
 
 
@@ -2252,18 +2251,13 @@ class ManyToOneRelation extends Relation
         }
 
         // create the widget
-        $links = $this->createSelectAndAutoLinks($id, $record);
-
-        $theme = Theme::getInstance();
-        $spinnerSrc = $theme->imgPath('spinner.gif');
-
-
-        $result = '<input type="hidden" id="' . $id . '" name="' . $id . '" value="' . $value . '" />
-         <input type="text" id="' . $id . '_search" value="' . htmlentities($label) . '" class="form-control atkmanytoonerelation_search" size="' . $this->m_autocomplete_size . '" onfocus="this.select()" />
-         <img id="' . $id . '_spinner" src="' . $spinnerSrc . '" style="vertical-align: middle; display: none"> ' . $links . '
-         <div id="' . $id . '_result" style="display: none" class="atkmanytoonerelation_result"></div>';
+        $result = '<input type="hidden" id="' . $id . '" name="' . $id . '" value="' . $value . '" />';
+        $result .= '<input type="text" id="' . $id . '_search" value="' . htmlentities($label) . '" class="form-control atkmanytoonerelation_search" size="' . $this->m_autocomplete_size . '" onfocus="this.select()" />';
+        $result .= ' '.$this->createSelectAndAutoLinks($id, $record);
+        $result .= '<div id="' . $id . '_result" style="display: none" class="atkmanytoonerelation_result"></div>';
 
         $result .= $this->getSpinner(); // spinner for dependency execution
+        $result .= $this->getSearchSpinner($id); //spinner for ajax search
 
         // register JavaScript code that attaches the auto-complete behaviour to the search box
         $url = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $mode,
@@ -2273,6 +2267,11 @@ class ManyToOneRelation extends Relation
         $page->register_loadscript($code);
 
         return $result;
+    }
+
+    function getSearchSpinner($id)
+    {
+        return '<div class="atkbusy" id="'.$id.'_spinner"><i class="fa fa-cog fa-spin"></i></div>';
     }
 
     /**

@@ -592,7 +592,6 @@ class Page
         }
 
         $ui = Ui::getInstance();
-        $theme = Theme::getInstance();
 
         if (is_bool($flags) && $flags == true) {
             $flags = self::HTML_STRICT;
@@ -602,9 +601,9 @@ class Page
             return $this->renderPartial();
         }
 
-        if ($theme->tplPath('page.tpl')) {
-            $this->m_content = $ui->render('page.tpl', array('content' => $this->m_content));
-        }
+
+        $this->m_content = $ui->render('page.tpl', array('content' => $this->m_content));
+
 
         $layout = array();
         $layout['title'] = $title;

@@ -179,13 +179,9 @@ class Config
     {
         Tools::atkdebug("Loading config file for section $section");
         $config = array();
-        @include($dir . $section . '.php');
-
-        $other = glob(Config::getGlobal("configdir") . "{$section}.*.php");
-        if (is_array($other)) {
-            foreach ($other as $file) {
-                include($file);
-            }
+        $file = $dir . $section . '.php';
+        if(file_exists($file)) {
+            include($file);
         }
         return $config;
     }

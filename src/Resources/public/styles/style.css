@@ -8456,9 +8456,6 @@ body {
   float: right;
   margin: 0 5px; }
 
-div.atkbusy {
-  display: none; }
-
 /* action buttons spinner */
 #action-buttons .spinner {
   visibility: hidden;
@@ -8469,7 +8466,7 @@ div.atkbusy {
 span.form-control-static {
   display: block; }
 
-.form-group.required .control-label:before {
+.form-group.required .control-label:before, span.required:before {
   content: "✲";
   color: #c70000;
   font-weight: bold; }
@@ -8540,6 +8537,9 @@ span.form-control-static {
 div.panel-heading {
   position: relative; }
 
+/*
+ * We show/hide the spinner with visibility, not display!
+*/
 /* box spinner */
 #atkbusy {
   visibility: hidden;
@@ -8550,6 +8550,8 @@ div.panel-heading {
 
 /* attributes spinner */
 div.atkbusy {
+  display: inline;
+  visibility: hidden;
   margin-left: 5px;
   vertical-align: middle;
   color: #808080;
@@ -8558,7 +8560,7 @@ div.atkbusy {
 /* action buttons spinner */
 #action-buttons .spinner {
   visibility: hidden;
-  display: inline-block;
+  display: inline;
   margin-left: 5px;
   vertical-align: middle;
   color: #808080; }
@@ -8586,6 +8588,9 @@ select:not([multiple]) {
 .login-form .form-control {
   display: block;
   width: 100%; }
+
+td.fieldlabel {
+  font-weight: bold; }
 
 .tabsContent {
   margin-top: 10px; }

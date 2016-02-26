@@ -21,11 +21,6 @@ class IndexPage
     var $m_page;
 
     /**
-     * @var Theme
-     */
-    var $m_theme;
-
-    /**
      * @var Ui
      */
     var $m_ui;
@@ -65,7 +60,6 @@ class IndexPage
         global $ATK_VARS;
         $this->m_page = Page::getInstance();
         $this->m_ui = Ui::getInstance();
-        $this->m_theme = Theme::getInstance();
         $this->m_output = Output::getInstance();
         $this->m_user = SecurityManager::atkGetUser();
         $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? Page::HTML_PARTIAL : Page::HTML_STRICT;

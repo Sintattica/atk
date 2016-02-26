@@ -2,7 +2,6 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Utils\DirectoryTraverser;
@@ -105,7 +104,6 @@ class RecordListCache
         $this->_setCacheId();
 
         if (file_exists($this->m_cacheid) && filesize($this->m_cacheid) && !$this->noCaching()) {
-            $theme = Theme::getInstance();
             $page = Page::getInstance();
 
             $page->register_script(Config::getGlobal("assets_url") . "javascript/formselect.js");

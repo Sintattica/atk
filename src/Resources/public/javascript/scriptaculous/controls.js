@@ -119,11 +119,15 @@ Autocompleter.Base = Class.create({
   },
 
   startIndicator: function() {
-    if(this.options.indicator) Element.show(this.options.indicator);
+    if(this.options.indicator){
+      $(this.options.indicator).style.visibility = 'visible';
+    }
   },
 
   stopIndicator: function() {
-    if(this.options.indicator) Element.hide(this.options.indicator);
+    if(this.options.indicator){
+      $(this.options.indicator).style.visibility = 'hidden';
+    }
   },
 
   onKeyPress: function(event) {

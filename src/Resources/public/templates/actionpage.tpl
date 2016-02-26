@@ -11,20 +11,13 @@
         {stacktrace}
         {if count($stacktrace) > 1}
             <ol class="breadcrumb">
-                {section name=i loop=$stacktrace}
-                    {if %i.index%>=%i.loop%-6}
-                        {if %i.last%}
-                            <li class="active">{$stacktrace[i].title}</li>
-                        {else}
-                            <li><a href="{$stacktrace[i].url|htmlentities}"
-                                   data-toggle="tooltip"
-                                   data-placement="bottom"
-                                   title="{$stacktrace[i].descriptor}">{$stacktrace[i].title}</a></li>
-                        {/if}
+                {foreach $stacktrace as $item}
+                    {if !$item@last}
+                        <li class="active"><a href="{$item.url}" data-toggle="tooltip" data-placement="bottom" title="{$item.descriptor}">{$item.title}</a></li>
                     {else}
-                        {if %i.index% == 0}...{/if}
+                        <li>{$item.title}</li>
                     {/if}
-                {/section}
+                {/foreach}
             </ol>
 
             <script type="text/javascript">

@@ -8,8 +8,7 @@
                 {$criterium.field}
             </td>
             <td rowspan="3" valign="top" align="right">
-                <a href="javascript:void(0)" onclick="{$criterium.remove_action}" title="{$label.remove_criterium}"><img
-                            class="recordlist" border="0" src="{atkthemeicon name='delete' type='recordlist'}"/></a>
+                <a href="javascript:void(0)" onclick="{$criterium.remove_action}" title="{$label.remove_criterium}">delete</a>
             </td>
         </tr>
         <tr>

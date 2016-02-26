@@ -22,7 +22,7 @@ Ajax.Responders.register({
             // hides attributes spinners
             var as = $$('.atkbusy');
             for (var i = 0; i < as.length; i++) {
-                as[i].style.display = 'none';
+                as[i].style.visibility = 'hidden';
             }
         }
     },

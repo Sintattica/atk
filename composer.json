@@ -11,6 +11,8 @@
     "psr-4": {"Sintattica\\Atk\\": "src/"}
   },
   "require": {
-    "fightbulc/moment": "^1.13"
+    "fightbulc/moment": "^1.13",
+    "league/container": "^2.0",
+    "smarty/smarty": "^3.1"
   }
 }

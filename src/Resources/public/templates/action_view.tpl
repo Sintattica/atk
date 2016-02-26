@@ -1,6 +1,6 @@
 {atkmessages}
 {if isset($helplink)}
-    <div id="action-helplink" style="border: 0px solid red">
+    <div id="action-helplink">
         {$helplink}<br/>
     </div>
 {/if}
@@ -13,7 +13,7 @@
     <br/>
 {/if}
 {$header}
-<div id="action-content" style="border: 0px solid green;">
+<div id="action-content">
     {$content}
 </div>
 {$formstart}

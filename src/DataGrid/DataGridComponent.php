@@ -3,7 +3,6 @@
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Ui;
-use Sintattica\Atk\Ui\Theme;
 
 /**
  * The data grid component base class. All data grid component extend this
@@ -100,16 +99,6 @@ abstract class DataGridComponent
     protected function getUi()
     {
         return $this->getNode()->getUi();
-    }
-
-    /**
-     * Return the theme object.
-     *
-     * @return Theme theme
-     */
-    protected function getTheme()
-    {
-        return Theme::getInstance();
     }
 
     /**

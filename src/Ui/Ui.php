@@ -23,19 +23,12 @@ class Ui
      */
     var $m_smarty = null;
 
-    /**
-     * Theme instance, initialised by constructor
-     * @access private
-     * @var Theme
-     */
-    var $m_theme = null;
 
     /**
      * Ui constructor, initialises Smarty and Theme instance
      */
     function __construct()
     {
-        $this->m_theme = Theme::getInstance();
         $this->m_smarty = SmartyProvider::getInstance();
     }
 
@@ -66,12 +59,7 @@ class Ui
      */
     function renderAction($action, $vars, $module = "")
     {
-        // todo.. action specific templates
-        $tpl = "action_$action.tpl";
-        if ($this->m_theme->tplPath($tpl) == "") { // no specific theme for this action
-            $tpl = "action.tpl";
-        }
-        return $this->render($tpl, $vars, $module);
+        return $this->render("action_$action.tpl", $vars, $module);
     }
 
     /**
@@ -102,7 +90,7 @@ class Ui
      */
     function renderBox($vars, $name = "", $module = "")
     {
-        if ($name && file_exists($this->m_theme->tplPath($name . ".tpl"))) {
+        if ($name) {
             return $this->render($name . ".tpl", $vars);
         }
         return $this->render("box.tpl", $vars, $module);
@@ -149,7 +137,7 @@ class Ui
      */
     public function render($name, $vars = array(), $module = "")
     {
-        $path = $this->templatePath($name, $module);
+        $path = Config::getGlobal('template_dir').$name;
         $result = $this->renderSmarty($path, $vars);
 
         if (Config::getGlobal('debug') >= 3) {
@@ -172,69 +160,13 @@ class Ui
     private function renderSmarty($path, $vars)
     {
         // First clear any existing smarty var.
-        $this->m_smarty->clear_all_assign();
-
-        // Then set some defaults that we need in all templates.
-        $this->m_smarty->assign("themedir", $this->m_theme->themeDir());
-
-        $this->m_smarty->assign("atkroot", Config::getGlobal("atkroot"));
-        $this->m_smarty->assign("application_dir", Config::getGlobal("application_dir"));
+        $this->m_smarty->clearAllAssign();
 
         $this->m_smarty->assign($vars);
-
-        // Smarty fetches templates relative from the template_dir setting.
-        // Since that is an application directory, and themes reside in
-        // a different directory, we have to hack the template_dir
-        // setting.
-        $old = $this->m_smarty->template_dir;
-
-        // disable smarty caching for ui purposes.
-        $old_caching = $this->m_smarty->caching;
-        $this->m_smarty->caching = false;
-        $this->m_smarty->template_dir = "./"; // current dir, because tplname already contains full relative path.
         $res = $this->m_smarty->fetch($path);
-        $this->m_smarty->template_dir = $old;
-        $this->m_smarty->caching = $old_caching;
-
         return $res;
     }
 
-    /**
-     * This function returns a complete themed path for a given template.
-     * This is a convenience method, which calls the tplPath method on
-     * the theme instance. However, if the template name contains a '/',
-     * we assume the full template path is already given and we simply
-     * return it.
-     *
-     * @param string $template The filename (without path) of the template
-     *                          for which you want to complete the path.
-     * @param string $module The name of the module requesting to render a template
-     * @return String the template path
-     */
-    function templatePath($template, $module = "")
-    {
-        if (strpos($template, "/") === false) {
-            // lookup template in theme.
-            $template = $this->m_theme->tplPath($template, $module);
-        }
-
-        return $template;
-    }
-
-    /**
-     * This function returns a complete themed path for a given stylesheet.
-     * This is a convenience method, which calls the stylePath method on
-     * the theme instance.
-     *
-     * @param string $style The filename (without path) of the stylesheet for
-     *                      which you want to complete the path.
-     * @param string $module the name of the module requesting the style path
-     * @return String the path of the style
-     */
-    function stylePath($style, $module = "")
-    {
-        return $this->m_theme->stylePath($style, $module);
-    }
 
     /**
      * Return the title to render

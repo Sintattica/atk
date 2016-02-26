@@ -246,13 +246,6 @@ class ViewHandler extends ViewEditBase
                 $tplfield["widget"] = $field["html"];
                 $editsrc = $field["html"];
 
-                /* tooltip */
-                $tooltip = $field["attribute"]->getToolTip();
-                if ($tooltip) {
-                    $tplfield["tooltip"] = $tooltip;
-                    $editsrc .= $tooltip . "&nbsp;";
-                }
-
                 $tplfield['id'] = str_replace('.', '_', $node->atkNodeUri() . '_' . $field["id"]);
 
                 $tplfield["full"] = $editsrc;

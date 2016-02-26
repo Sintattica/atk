@@ -8,7 +8,6 @@ use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\RecordList\RecordList;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Node;
-use Sintattica\Atk\Ui\Theme;
 use Sintattica\Atk\Ui\Ui;
 
 /**
@@ -180,17 +179,14 @@ class ExportHandler extends ActionHandler
      */
     public function partial_selection_interact()
     {
-        $selected = array_key_exists('exportvalue', $this->m_postvars) ? $this->m_postvars['exportvalue']
-            : null;
+        $selected = array_key_exists('exportvalue', $this->m_postvars) ? $this->m_postvars['exportvalue'] : null;
 
-        $theme = Theme::getInstance();
 
-        $img_delete = $theme->iconPath('delete', 'recordlist');
         $url_delete = Tools::dispatch_url($this->m_node->m_module . '.' . $this->m_node->m_type, 'export',
             array('dodelete' => $selected));
 
         if ($selected) {
-            $result = '<a href="' . $url_delete . '" title="' . Tools::atktext('delete_selection') . '" onclick="confirm_delete();"><img src="' . $img_delete . '" alt="' . Tools::atktext('delete_selection') . '" border="0" /></a>';
+            $result = '<a href="' . $url_delete . '" title="' . Tools::atktext('delete_selection') . '" onclick="confirm_delete();">'.Tools::atktext('delete_selection').'</a>';
             return $result;
         }
     }

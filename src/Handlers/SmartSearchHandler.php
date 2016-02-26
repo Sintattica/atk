@@ -5,7 +5,6 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Attributes\DateAttribute;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Ui\Theme;
 
 /**
  * Smart search handler class.
