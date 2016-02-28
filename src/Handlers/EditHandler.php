@@ -163,12 +163,6 @@ class EditHandler extends ViewEditBase
     function getEditParams($record, $locked = false)
     {
         $node = $this->m_node;
-        $ui = $node->getUi();
-
-        if (!is_object($ui)) {
-            Tools::atkerror("ui object failure");
-            return false;
-        }
 
         $params = $node->getDefaultActionParams($locked);
         $params['title'] = $node->actionTitle('edit', $record);
@@ -242,7 +236,7 @@ class EditHandler extends ViewEditBase
             $this->getPage()->setTitle(Tools::atktext('app_shorttitle') . " - " . $node->actionTitle('edit',
                     $record));
 
-            $output = $ui->renderAction("edit", $params, $node->m_module);
+            $output = $ui->render("action.tpl", $params, $node->m_module);
             $this->addRenderBoxVar("title", $node->actionTitle('edit', $record));
             $this->addRenderBoxVar("content", $output);
 

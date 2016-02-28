@@ -25,9 +25,9 @@ if ($config_atkroot == "" || (ini_get('register_globals'))) { // may not be pass
 /**
  * added by sintattica
  */
-$config_assets_url = $config_theme_url = '/bundles/atk/';
-$config_template_dir =  __DIR__ . '/../Resources/public/templates/';
-$config_theme_dir = __DIR__ . '/../Resources/public/';
+$config_assets_url = '/bundles/atk/';
+$config_template_dir =  __DIR__ . '/../Resources/templates/';
+
 
 if (!isset($config_application_dir) || empty($config_application_dir) || (ini_get('register_globals'))) {
     /**
