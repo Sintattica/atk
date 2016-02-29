@@ -552,7 +552,8 @@ class DateAttribute extends Attribute
                         "btn",
                         "btn-default",
                         "button",
-                        "atkbutton"
+                        "atkbutton",
+                        "form-control"
                     )) . ' type="button" value="..." onclick="return showCalendar(\'' . $fieldname . '\', \'' . $fieldname . '\', \'' . $format . '\', false, ' . $mondayFirst . ');">';
             }
             $result .= $this->getSpinner();
@@ -707,7 +708,8 @@ class DateAttribute extends Attribute
                     "button",
                     "atkbutton",
                     'btn',
-                    'btn-default'
+                    'btn-default',
+                    'form-control'
                 )) . ' type="reset" value="..." onclick="return showCalendar(\'' . $fieldname . '\', \'' . $fieldname . '[year]\', \'y-mm-dd\', true, ' . $mondayFirst . ');">';
         }
 

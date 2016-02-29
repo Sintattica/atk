@@ -8100,6 +8100,9 @@ button.close {
 .calendar tbody td.today {
   /* Cell showing today date */ }
 
+.calendar tbody .disabled {
+  color: #ccc; }
+
 .calendar tbody .emptycell {
   /* Empty cells (the best is to hide them) */
   visibility: hidden; }
