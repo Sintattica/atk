@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Handlers;
 
-use Sintattica\Atk\Core\Controller;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Utils\JSON;
@@ -278,11 +277,9 @@ class EditHandler extends ViewEditBase
      */
     function getFormStart()
     {
-        $controller = Controller::getInstance();
-        $controller->setNode($this->m_node);
         $sm = SessionManager::getInstance();
 
-        $formstart = '<form id="' . "entryform" . '" name="' . "entryform" . '" enctype="multipart/form-data" action="' . $controller->getPhpFile() . '?' . SID . '"' .
+        $formstart = '<form id="' . "entryform" . '" name="' . "entryform" . '" enctype="multipart/form-data" action="' . Config::getGlobal('dispatcher') . '?' . SID . '"' .
             ' method="post" onsubmit="return globalSubmit(this,false)" class="form-horizontal" role="form" autocomplete="off">' .
             $sm->formState($this->getUpdateSessionStatus());
 
@@ -290,8 +287,6 @@ class EditHandler extends ViewEditBase
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkprevaction" value="' . $this->getNode()->m_action . '" />';
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkcsrftoken" value="' . $this->getCSRFToken() . '" />';
         $formstart .= '<input type="hidden" class="atksubmitaction" />';
-
-        $formstart .= $controller->getHiddenVarsString();
 
         return $formstart;
     }
@@ -314,7 +309,7 @@ class EditHandler extends ViewEditBase
      */
     function getFormButtons($record = null)
     {
-        // If no custom button source is given, get the default Controller.
+        // If no custom button source is given, get the default
         if ($this->m_buttonsource === null) {
             $this->m_buttonsource = $this->m_node;
         }

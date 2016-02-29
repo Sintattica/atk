@@ -4,7 +4,6 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Session\SessionManager;
-use Sintattica\Atk\Core\Controller;
 
 /**
  * Handler class for a readonly view action. Similar to the edit handler,
@@ -65,7 +64,7 @@ class ViewHandler extends ViewEditBase
     public function getFormStart($record = null)
     {
         $sm = SessionManager::getInstance();
-        $formstart = '<form name="entryform" id="entryform" action="' . Controller::getInstance()->getPhpFile() . '" method="get" onsubmit="return globalSubmit(this,false)">';
+        $formstart = '<form name="entryform" id="entryform" action="' . Config::getGlobal('dispatcher') . '" method="get" onsubmit="return globalSubmit(this,false)">';
         $formstart .= $sm->formState(SessionManager::SESSION_NESTED);
         $formstart .= '<input type="hidden" name="atkselector" value="' . $this->getNode()->primaryKey($record) . '">';
         $formstart .= '<input type="hidden" class="atksubmitaction" />';
@@ -125,7 +124,7 @@ class ViewHandler extends ViewEditBase
      */
     public function getFormButtons($record = null)
     {
-        // If no custom button source is given, get the default Controller.
+        // If no custom button source is given, get the default
         if ($this->m_buttonsource === null) {
             $this->m_buttonsource = $this->m_node;
         }

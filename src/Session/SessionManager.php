@@ -3,11 +3,8 @@
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
-use Sintattica\Atk\Ui\Output;
 use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Core\Module;
-use Sintattica\Atk\Core\Controller;
-use Sintattica\Atk\Utils\Debugger;
 
 /**
  * The atk session manager.
@@ -503,9 +500,6 @@ class SessionManager
             "atkfilter",
             "atkaction",
             "atkpkret",
-            "atkcontroller",
-            "atkwizardpanelindex",
-            "atkwizardaction",
             'atkstore',
             'atkstore_key'
         );
@@ -787,7 +781,7 @@ class SessionManager
             );
 
             if ($i < count($stack) - 1) {
-                $entry['url'] = $this->sessionUrl(Controller::getInstance()->getPhpFile() . '?atklevel=' . $i);
+                $entry['url'] = $this->sessionUrl(Config::getGlobal('dispatcher') . '?atklevel=' . $i);
             }
 
             $res[] = $entry;

@@ -1,6 +1,6 @@
 <?php namespace Sintattica\Atk\Ui;
 
-use Sintattica\Atk\Core\Controller;
+use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Session\SessionManager;
 
 /**
@@ -62,19 +62,7 @@ class ActionBoxBuilder
         $this->m_pageBuilder = $pageBuilder;
         $this->m_params = $pageBuilder->getNode()->getDefaultActionParams(false);
 
-        $controller = Controller::getInstance();
-        $controller->setNode($pageBuilder->getNode());
-
-        $this->formStart('
-      <form 
-        id="entryform" 
-        name="entryform" 
-        enctype="multipart/form-data" 
-        action="' . $controller->getPhpFile() . '?' . SID . '" 
-        method="post" 
-        onsubmit="return globalSubmit(this,true)">' .
-            $controller->getHiddenVarsString()
-        );
+        $this->formStart('<form id="entryform" name="entryform" enctype="multipart/form-data" action="' . Config::getGlobal('dispatcher') . '?' . SID . '" method="post" onsubmit="return globalSubmit(this,true)">');
     }
 
     /**

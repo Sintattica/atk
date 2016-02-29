@@ -17,10 +17,6 @@ class Bootstrap
         self::setErrorHandler();
         self::setSecurity();
         self::setDebugging();
-
-        //non needed now, only for frontcontroller
-        //SmartyProvider::addFunction('atk.ui.plugins', 'atkfrontcontroller');
-
     }
 
     private static function initGlobals()
@@ -94,14 +90,6 @@ class Bootstrap
          * @var array
          */
         $GLOBALS['g_nodeListeners'] = array();
-
-        /**
-         * registered node controllers
-         * @access private
-         * @var array
-         */
-        $GLOBALS['g_nodeControllers'] = array();
-
     }
 
     private static function setLocale()

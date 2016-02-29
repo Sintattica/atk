@@ -4,7 +4,6 @@ use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\DataGrid\DataGrid;
-use Sintattica\Atk\Core\Controller;
 use Sintattica\Atk\RecordList\RecordListCache;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Ui;
@@ -426,12 +425,15 @@ class ActionHandler
      */
     function _getAccessDeniedPage()
     {
-        $controller = Controller::getInstance();
-        $controller->setNode($this->m_node);
-        return $controller->accessDeniedPage();
+        $content = "<br><br>" . Tools::atktext("error_node_action_access_denied", "", $this->m_node->getType()) . "<br><br><br>";
+        $blocks = [
+            $this->m_ui->renderBox(array(
+                "title" => Tools::atktext('access_denied'),
+                "content" => $content
+            ), 'dispatch')
+        ];
+        return $this->m_ui->render("action.tpl", array("blocks"=>$blocks, "title"=> Tools::atktext('access_denied')));
     }
-
-
 
 
     /**

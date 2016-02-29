@@ -4,8 +4,6 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Module;
-use Sintattica\Atk\Wizard\Wizard;
-use Sintattica\Atk\Wizard\WizardPanel;
 
 /**
  * Utility class for rendering boxes, lists, tabs or other templates.
@@ -125,7 +123,7 @@ class Ui
      */
     public function render($name, $vars = array(), $module = "")
     {
-        $path = Config::getGlobal('template_dir').$name;
+        $path = Config::getGlobal('template_dir') . $name;
         $result = $this->renderSmarty($path, $vars);
 
         if (Config::getGlobal('debug') >= 3) {
@@ -225,49 +223,6 @@ class Ui
         }
         return $label;
     }
-
-    /**
-     * This function returns a suitable title text for an Wizardpanel.
-     * Example: echo $ui->title("departmentwizard", "employee", "add"); might return:
-     *          'Departmen wizard - Add employees - Step 2 of 3'
-     * @param Wizard $wizard the wizard object
-     * @param WizardPanel $panel the panel object
-     * @param string $action the atk action that we are trying execute in the panel
-     * @return String the title for this wizardpanel
-     */
-    function getWizardTitle(Wizard $wizard, WizardPanel $panel, $action = null)
-    {
-        if ($wizard == null) {
-            return "";
-        }
-
-        $module = $wizard->getModuleName();
-        $wizardName = $wizard->getName();
-        $panelName = $panel->getPanelName();
-
-        $keys = array(
-            'title_' . $module . '_' . $wizardName,
-            'title_' . $wizardName
-        );
-        $wizardTitle = Tools::atktext($keys, null, "", "", true);
-
-        $keys = array(
-            'title_' . $module . '_' . $panelName . '_' . $action,
-            'title_' . $panelName . '_' . $action
-        );
-
-        $panelTitle = Tools::atktext($keys, null, "", "", true);
-
-        if ($wizard->getWizardAction() !== 'finish') {
-            $status = Tools::atktext("Step") . " " . ($wizard->m_currentPanelIndex + 1) . " " . Tools::atktext("of") . " " . count($wizard->m_panelList);
-        } else {
-            $status = Tools::atktext("finished");
-        }
-        $label = $wizardTitle . " - " . $panelTitle . " - " . $status;
-
-        return $label;
-    }
-
 }
 
 

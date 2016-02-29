@@ -2,7 +2,6 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
-use Sintattica\Atk\Core\Controller;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Attributes\Attribute;
 
@@ -130,8 +129,6 @@ class SearchHandler extends AbstractSearchHandler
     {
         $node = $this->m_node;
 
-        $controller = Controller::getInstance();
-        $controller->setNode($this->m_node);
 
         $page = $this->getPage();
         $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
@@ -139,7 +136,7 @@ class SearchHandler extends AbstractSearchHandler
         if (is_object($ui)) {
             $sm = SessionManager::getInstance();
             $params = array();
-            $params["formstart"] = '<form name="entryform" action="' . $controller->getPhpFile() . '?' . SID . '" method="post">';
+            $params["formstart"] = '<form name="entryform" action="' . Config::getGlobal('dispatcher') . '?' . SID . '" method="post">';
 
             $params["formstart"] .= $sm->formState(SessionManager::SESSION_REPLACE);
             $params["formstart"] .= '<input type="hidden" name="atkaction" value="search">';
@@ -149,7 +146,7 @@ class SearchHandler extends AbstractSearchHandler
 
             $params["content"] = $this->invoke("searchForm", $record);
 
-            $params["buttons"] = $controller->getFormButtons('search');
+            $params["buttons"] = $node->getFormButtons('search');
 
             $params["formend"] = '</form>';
 

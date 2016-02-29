@@ -448,7 +448,8 @@ class Tools
         $firstfallback = "",
         $nodefaulttext = false,
         $modulefallback = false
-    ) {
+    )
+    {
         return Language::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext, $modulefallback);
     }
 
@@ -1146,6 +1147,7 @@ class Tools
             case ActionHandler::ACTION_SUCCESS:
                 return "success";
         }
+        return '';
     }
 
     /**
@@ -1182,36 +1184,30 @@ class Tools
      * Generate a dispatch menu URL for use with nodes and their specific
      * actions.
      *
-     * Note that this does not necessarily create a link to the current php
-     * file (dispatch.php, index.php). It asks the controller which one to use.
      *
-     * @param string $node the (module.)node name
+     * @param string $nodeUri the $nodeUri
      * @param string $action the atk action the link will perform
-     * @param string $params : A key/value array with extra options for the url
+     * @param array $params A key/value array with extra options for the url
      * @param string $phpfile The php file to use for dispatching
      * @return string url for the node with the action
      */
-    public static function dispatch_url($node, $action, $params = array(), $phpfile = '')
+    public static function dispatch_url($nodeUri, $action, $params = array(), $phpfile = '')
     {
-        $c = Controller::getInstance();
-        if (!$phpfile) {
-            $phpfile = $c->getPhpFile();
+        $phpfile = ($phpfile != '') ?: Config::getGlobal('dispatcher');
+        $atkParams = array();
+        if ($nodeUri != '') {
+            $atkParams["atknodeuri"] = $nodeUri;
         }
-        $url = $phpfile;
-        $atkparams = array();
-        if ($node != "") {
-            $atkparams["atknodeuri"] = $node;
+        if ($action != '') {
+            $atkParams["atkaction"] = $action;
         }
-        if ($action != "") {
-            $atkparams["atkaction"] = $action;
-        }
-        $params = array_merge($atkparams, $params);
+        $params = array_merge($atkParams, $params);
 
-        if ($params != "" && is_array($params) && count($params) > 0) {
-            $url .= '?' . self::buildQueryString($params);
+        if ($params != '' && is_array($params) && count($params) > 0) {
+            $phpfile .= '?' . self::buildQueryString($params);
         }
 
-        return $url;
+        return $phpfile;
     }
 
     /**
@@ -1230,7 +1226,8 @@ class Tools
         $partial,
         $params = array(),
         $sessionStatus = SessionManager::SESSION_PARTIAL
-    ) {
+    )
+    {
         if (!is_array($params)) {
             $params = array();
         }
@@ -1291,7 +1288,8 @@ class Tools
         $sessionstatus = SessionManager::SESSION_DEFAULT,
         $embedded = true,
         $cssclass = ""
-    ) {
+    )
+    {
         $sm = SessionManager::getInstance();
         $page = Page::getInstance();
         $page->register_script(Config::getGlobal("assets_url") . "javascript/formsubmit.js");
@@ -1833,7 +1831,8 @@ class Tools
         $sessionstatus = SessionManager::SESSION_DEFAULT,
         $saveform = false,
         $extraprops = ""
-    ) {
+    )
+    {
         $sm = SessionManager::getInstance();
         if ($saveform) {
             $str = 'atkSubmit("' . Tools::atkurlencode($sm->sessionUrl($url, $sessionstatus)) . '", true);';

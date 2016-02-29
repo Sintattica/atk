@@ -1,12 +1,12 @@
 <?php namespace Sintattica\Atk\Ui;
 
+use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Menu;
 use Sintattica\Atk\Session\SessionManager;
-use Sintattica\Atk\Core\Module;
-use Sintattica\Atk\Core\Controller;
+use Sintattica\Atk\Core\Node;
 
 /**
  * Class that generates an index page.
@@ -23,7 +23,7 @@ class IndexPage
     /**
      * @var Ui
      */
-    var $m_ui;
+    var $_uim;
 
     /**
      * @var Output
@@ -43,6 +43,8 @@ class IndexPage
     var $m_defaultDestination;
     var $m_flags;
 
+    private $atk;
+
     /**
      * Hide top / menu?
      *
@@ -52,12 +54,13 @@ class IndexPage
 
     /**
      * Constructor
-     *
+     * $atk Atk
      * @return IndexPage
      */
-    function __construct()
+    function __construct(Atk $atk)
     {
         global $ATK_VARS;
+        $this->atk = $atk;
         $this->m_page = Page::getInstance();
         $this->m_ui = Ui::getInstance();
         $this->m_output = Output::getInstance();
@@ -234,7 +237,7 @@ class IndexPage
             $box = $this->m_ui->renderBox(array(
                 "title" => Tools::atktext("title_session_expired"),
                 "content" => '<br><br>' . Tools::atktext("explain_session_expired") . '<br><br><br><br>
-                                           <a href="index.php?atklogout=true' . $destination . '" target="_top">' . Tools::atktext("relogin") . '</a><br><br>'
+                                           <a href="' . Config::getGlobal('dispatcher') . '?atklogout=true' . $destination . '" target="_top">' . Tools::atktext("relogin") . '</a><br><br>'
             ));
 
             $this->m_page->addContent($box);
@@ -244,14 +247,9 @@ class IndexPage
 
             // Create node
             if (isset($ATK_VARS['atknodeuri'])) {
-                $obj = Module::atkGetNode($ATK_VARS['atknodeuri']);
+                $node = $this->atk->atkGetNode($ATK_VARS['atknodeuri']);
+                $this->loadDispatchPage($ATK_VARS, $node);
 
-                if (is_object($obj)) {
-                    $controller = Controller::getInstance();
-                    $controller->invoke("loadDispatchPage", $ATK_VARS);
-                } else {
-                    Tools::atkdebug("No object created!!?!");
-                }
             } else {
 
                 if (is_array($this->m_defaultDestination)) {
@@ -292,5 +290,71 @@ class IndexPage
         if (is_array($destination)) {
             $this->m_defaultDestination = $destination;
         }
+    }
+
+    /**
+     * Does the actual loading of the dispatch page
+     * And adds it to the page for the dispatch() method to render.
+     * @param array $postvars The request variables for the node.
+     * @param Node $node
+     */
+    function loadDispatchPage($postvars, Node $node)
+    {
+
+        $node->m_postvars = $postvars;
+        $node->m_action = $postvars['atkaction'];
+        if (isset($postvars["atkpartial"])) {
+            $node->m_partial = $postvars["atkpartial"];
+        }
+
+        $page = $node->getPage();
+        $page->setTitle(Tools::atktext('app_shorttitle') . " - " . $node->getUi()->title($node->m_module,
+                $node->m_type, $node->m_action));
+
+        if ($node->allowed($node->m_action)) {
+            $secMgr = SecurityManager::getInstance();
+            $secMgr->logAction($node->m_type, $node->m_action);
+            $node->callHandler($node->m_action);
+            $id = '';
+
+            if (isset($node->m_postvars["atkselector"]) && is_array($node->m_postvars["atkselector"])) {
+                $atkSelectorDecoded = array();
+
+                foreach ($node->m_postvars["atkselector"] as $rowIndex => $selector) {
+                    list($selector, $pk) = explode("=", $selector);
+                    $atkSelectorDecoded[] = $pk;
+                    $id = implode(',', $atkSelectorDecoded);
+                }
+            } else {
+                list(, $id) = explode("=", Tools::atkArrayNvl($node->m_postvars, "atkselector", "="));
+            }
+
+            $page->register_hiddenvars(array(
+                "atknodeuri" => $node->m_module . "." . $node->m_type,
+                "atkselector" => str_replace("'", "", $id)
+            ));
+        } else {
+            $page->addContent($this->accessDeniedPage($node->getType()));
+        }
+    }
+
+    /**
+     * Render a generic access denied page.
+     * @param string $nodeType
+     * @return string A complete html page with generic access denied message.
+     */
+    function accessDeniedPage($nodeType)
+    {
+
+        $content = "<br><br>" . Tools::atktext("error_node_action_access_denied", "", $nodeType) . "<br><br><br>";
+
+        $blocks = [
+            $this->m_ui->renderBox(array(
+                "title" => Tools::atktext('access_denied'),
+                "content" => $content
+            ), 'dispatch')
+        ];
+
+        return $this->m_ui->render("action.tpl", array("blocks"=>$blocks, "title"=> Tools::atktext('access_denied')));
     }
 }

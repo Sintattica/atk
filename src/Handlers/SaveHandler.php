@@ -94,7 +94,6 @@ class SaveHandler extends ActionHandler
         }
 
         if (isset($this->m_postvars['atksaveandclose']) ||
-            isset($this->m_postvars['atkwizardaction']) ||
             isset($this->m_postvars['atksaveandnext']) ||
             isset($this->m_postvars['atksaveandcontinue'])
         ) {

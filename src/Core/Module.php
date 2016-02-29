@@ -11,9 +11,8 @@ use Sintattica\Atk\Handlers\ActionHandler;
  * @author Peter C. Verhage <peter@ibuildings.nl>
  * @package atk
  * @subpackage modules
- * @abstract
  */
-class Module
+abstract class Module
 {
 
     /**
@@ -26,7 +25,7 @@ class Module
     const MF_SPECIFIC_3 = 16;
 
     /**
-     * Don't preload this module (module_preload.inc)
+     * Don't preload this module
      */
     const MF_NO_PRELOAD = 32;
 
@@ -34,33 +33,54 @@ class Module
     /** @var array $nodeMap */
     var $nodeMap;
 
+    /**
+     * @param array $nodeMap
+     */
+    protected function setNodeMap(array $nodeMap)
+    {
+        $this->nodeMap = $nodeMap;
+    }
+
 
     /**
-     * Register nodes with their supported actions. Can be used
-     * for security etc.
+     * Gets the module of the node
+     * @param string $nodeUri the node uri
+     * @return String the node's module
      */
-    function getNodes()
+    public static function getNodeModule($nodeUri)
     {
-
+        $arr = explode(".", $nodeUri);
+        if (count($arr) == 2) {
+            return $arr[0];
+        } else {
+            return "";
+        }
     }
 
     /**
-     * This method returns an array with menu items that need to be available
-     * in the main ATK menu. This function returns the array created with
-     * the menuitem() method, and does not have to be extended!
-     * @return array with menu items for this module
+     * Gets the node type of a node string
+     * @param string $nodeUri the node uri
+     * @return String the node type
      */
-    function getMenuItems()
+    public static function getNodeType($nodeUri)
     {
-
+        $arr = explode(".", $nodeUri);
+        if (count($arr) == 2) {
+            return $arr[1];
+        } else {
+            return $nodeUri;
+        }
     }
+
+
+    /***** FACTORY ******/
 
     /**
      * Construct a new node. A module can override this method for it's own nodes.
      * @param string $nodeUri the node type
      * @return Node new node object
      */
-    function &newNode($nodeUri)
+    function newNode($nodeUri)
     {
 
         $module = self::getNodeModule($nodeUri);
@@ -111,35 +131,15 @@ class Module
         self::setModuleScope(null);
     }
 
-    /**
-     * Gets the module of the node
-     * @param string $nodeUri the node uri
-     * @return String the node's module
-     */
-    public static function getNodeModule($nodeUri)
-    {
-        $arr = explode(".", $nodeUri);
-        if (count($arr) == 2) {
-            return $arr[0];
-        } else {
-            return "";
-        }
-    }
 
-    /**
-     * Gets the node type of a node string
-     * @param string $nodeUri the node uri
-     * @return String the node type
-     */
-    public static function getNodeType($nodeUri)
-    {
-        $arr = explode(".", $nodeUri);
-        if (count($arr) == 2) {
-            return $arr[1];
-        } else {
-            return $nodeUri;
-        }
-    }
+
+
+
+
+
+
+
+
 
 
     /**
@@ -153,13 +153,13 @@ class Module
      * @param bool $reset Whether or not to reset the particular node in the repository
      * @return Node the node
      */
-    public static function &atkGetNode($nodeUri, $init = true, $cache_id = "default", $reset = false)
+    public function atkGetNode($nodeUri, $init = true, $cache_id = "default", $reset = false)
     {
         global $g_nodeRepository;
-        //$nodeUri = strtolower($nodeUri); // classes / directory names should always be in lower-case
+        $nodeUri = strtolower($nodeUri);
         if (!isset($g_nodeRepository[$cache_id][$nodeUri]) || !is_object($g_nodeRepository[$cache_id][$nodeUri]) || $reset) {
             Tools::atkdebug("Constructing a new node $nodeUri ($cache_id)");
-            $g_nodeRepository[$cache_id][$nodeUri] = Module::newAtkNode($nodeUri, $init);
+            $g_nodeRepository[$cache_id][$nodeUri] = self::newAtkNode($nodeUri, $init);
         }
         return $g_nodeRepository[$cache_id][$nodeUri];
     }
@@ -182,7 +182,7 @@ class Module
      * @param string $modname The name of the module
      * @return Module An instance of the atkModule
      */
-    public static function &atkGetModule($moduleName)
+    public function atkGetModule($moduleName)
     {
         global $g_moduleRepository;
 
@@ -202,33 +202,17 @@ class Module
      * @param bool $init initialize the node?
      * @return Node new node object
      */
-    public static function &newAtkNode($nodeUri, $init = true)
+    function &newAtkNode($nodeUri, $init = true)
     {
+        $nodeUri = strtolower($nodeUri);
+        $module = Module::getNodeModule($nodeUri);
+        $module_inst = Module::atkGetModule($module);
 
-        $nodeUri = strtolower($nodeUri); // classes / directory names should always be in lower-case
-        $module = self::getNodeModule($nodeUri);
-
-
-        if ($module == "") {
-            // No module, use the default instance.
-            $module_inst = new Module();
-        } else {
-            $module_inst = self::atkGetModule($module);
+        $node = $module_inst->newNode($nodeUri);
+        if ($init && $node != null) {
+            $node->init();
         }
-        if (is_object($module_inst)) {
-            if (method_exists($module_inst, 'newNode')) {
-                $node = $module_inst->newNode($nodeUri);
-                if ($init && $node != null) {
-                    $node->init();
-                }
-                return $node;
-            } else {
-                Tools::atkerror("Module $module does not have newNode function (does it extend from Module?)");
-            }
-        } else {
-            Tools::atkerror("Module $module could not be instantiated.");
-        }
-        return null;
+        return $node;
     }
 
 
@@ -302,56 +286,10 @@ class Module
     }
 
 
-    /**
-     * Get/set the status of the readoptimizer.
-     * If you need the dataread-functionality of Node but don't need
-     * the ui stuff, or the data write stuff, you can turn on the read
-     * optimizer, so nodes load faster.
-     * If you call this function without parameters (or NULL as param)
-     * the optimizer value is not changed, and the function will just
-     * return the current setting.
-     * If you do specify a parameter, the function will return the
-     * OLD setting (so you might reset it to the old value after you're
-     * finished with the current node.
-     *
-     * @param bool $newValue the value of the readOptimizer. true turns the
-     *                  optimizer on. Falls turns it off.
-     * @return bool The old value of the optimizer setting, if a new
-     *                 setting was passed OR
-     *                 The current value if no new setting was passed.
-     */
-    public static function atkReadOptimizer($newValue = null)
-    {
-        static $s_optimized = false;
-
-        if (!($newValue === null)) { // New value was set
-            $oldValue = $s_optimized;
-            $s_optimized = $newValue;
-            return $oldValue;
-        } else {
-            return $s_optimized; // Return current value.
-        }
-    }
 
 
-    /**
-     * @param array $nodeMap
-     */
-    protected function setNodeMap(array $nodeMap)
-    {
-        $this->nodeMap = $nodeMap;
-    }
 
-    /**
-     * Load a module.
-     *
-     * This method is used to load the modules.
-     *
-     * @param string $moduleClass The className of the module to load.
-     * @param int $flags The module (MF_*) flags that influence how the module is
-     *                  loaded.
-     */
-    public static function module($moduleClass, $flags = 0)
+    public function registerModule($moduleClass, $flags = 0)
     {
         global $g_modules, $g_moduleflags;
 
@@ -365,5 +303,7 @@ class Module
         if ($flags > 0) {
             $g_moduleflags[$name] = $flags;
         }
+
     }
+
 }

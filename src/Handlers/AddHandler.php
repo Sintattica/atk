@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Handlers;
 
-use Sintattica\Atk\Core\Controller;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Session\State;
@@ -51,8 +50,7 @@ class AddHandler extends ActionHandler
         $record = $this->getRejectInfo();
 
         $page = $this->getPage();
-        $controller = Controller::getInstance();
-        $page->addContent($controller->renderActionPage("add", $this->invoke("addPage", $record)));
+        $page->addContent($this->m_node->renderActionPage("add", $this->invoke("addPage", $record)));
     }
 
     /**
@@ -189,13 +187,10 @@ class AddHandler extends ActionHandler
      */
     function getFormStart()
     {
-        $controller = Controller::getInstance();
-        $controller->setNode($this->m_node);
         $sm = SessionManager::getInstance();
-
         $node = $this->m_node;
 
-        $formstart = '<form id="' . "entryform" . '" name="' . "entryform" . '" enctype="multipart/form-data" action="' . $controller->getPhpFile() . '?' . SID . '"' .
+        $formstart = '<form id="' . "entryform" . '" name="' . "entryform" . '" enctype="multipart/form-data" action="' . Config::getGlobal('dispatcher') . '?' . SID . '"' .
             ' method="post" onsubmit="return globalSubmit(this,false)" autocomplete="off">';
 
 
@@ -204,8 +199,6 @@ class AddHandler extends ActionHandler
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkprevaction" value="' . $this->getNode()->m_action . '" />';
         $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkcsrftoken" value="' . $this->getCSRFToken() . '" />';
         $formstart .= '<input type="hidden" class="atksubmitaction" />';
-
-        $formstart .= $controller->getHiddenVarsString();
 
         if (isset($node->m_postvars['atkfilter'])) {
             $formstart .= '<input type="hidden" name="atkfilter" value="' . $node->m_postvars['atkfilter'] . '">';
@@ -280,9 +273,7 @@ class AddHandler extends ActionHandler
      */
     function getFormButtons($record = null)
     {
-
-
-        // If no custom button source is given, get the default Controller.
+        // If no custom button source is given, get the default
         if ($this->m_buttonsource === null) {
             $this->m_buttonsource = $this->m_node;
         }

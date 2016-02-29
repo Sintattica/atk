@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Handlers;
 
-use Sintattica\Atk\Core\Controller;
 use Sintattica\Atk\Relations\OneToOneRelation;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
@@ -101,15 +100,13 @@ class ImportHandler extends ActionHandler
      */
     function importPage($phase, $content)
     {
-        $controller = Controller::getInstance();
         $sm = SessionManager::getInstance();
-        $action = $controller->getPhpFile() . '?' . SID;
+        $action = Config::getGlobal('dispatcher');
 
         $formStart = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="' . $action . '" method="post">' .
             $sm->formState($sm->atkLevel() == 0 ? SessionManager::SESSION_NESTED : SessionManager::SESSION_REPLACE) .
             '<input type="hidden" name="atknodeuri" value="' . $this->m_node->atkNodeUri() . '" />' .
-            '<input type="hidden" name="atkaction" value="' . $this->m_node->m_action . '" />' .
-            $controller->getHiddenVarsString();
+            '<input type="hidden" name="atkaction" value="' . $this->m_node->m_action . '" />';
 
         $buttons = $this->invoke('getImportButtons', $phase);
 

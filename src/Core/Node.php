@@ -831,7 +831,7 @@ class Node
         $attribute->m_owner = $this->m_type;
 
 
-        if (!Module::atkReadOptimizer()) {
+        if (!$this->atkReadOptimizer()) {
             $this->resolveSectionsTabsOrder($sections, $tabs, $column, $order);
 
             // check for parent fieldname (treeview)
@@ -900,7 +900,7 @@ class Node
                 $order = $this->m_attribOrder;
             }
 
-            if (!Module::atkReadOptimizer()) {
+            if (!$this->atkReadOptimizer()) {
                 // add new tab(s) to the tab list ("*" isn't a tab!)
                 if ($tabs != "*") {
                     if (!$attribute->hasFlag(Attribute::AF_HIDE_ADD)) {
@@ -1758,11 +1758,160 @@ class Node
      *                      buttons.
      * @return array
      */
-    function getFormButtons($mode, $record)
+    function getFormButtons($mode, $record = array())
     {
-        $controller = Controller::getInstance();
-        $controller->setNode($this);
-        return $controller->getFormButtons($mode, $record);
+        $result = array();
+        $page = $this->getPage();
+
+        $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
+        $sm = SessionManager::getInstance();
+
+        // edit mode
+        if ($mode == "edit") {
+            if ($sm->atkLevel() > 0 || Tools::hasFlag(Tools::atkArrayNvl($this->m_feedback,
+                    "update", 0), ActionHandler::ACTION_SUCCESS)
+            ) {
+                $result[] = $this->getButton('saveandclose', true);
+            }
+
+            $result[] = $this->getButton('save');
+
+            // if atklevel is 0 or less, we are at the bottom of the session stack,
+            // which means that 'saveandclose' doesn't close anyway, so we leave out
+            // the 'saveandclose' and 'cancel' button. Unless, a feedback screen is configured.
+            if ($sm->atkLevel() > 0 || Tools::hasFlag(Tools::atkArrayNvl($this->m_feedback,
+                    "update", 0), ActionHandler::ACTION_CANCELLED)
+            ) {
+                $result[] = $this->getButton('cancel');
+            }
+
+
+        } elseif ($mode == "add") {
+
+            if ($this->hasFlag(self::NF_EDITAFTERADD) === true) {
+                if ($this->allowed('edit')) {
+                    $result[] = $this->getButton('saveandedit', true);
+                } else {
+                    Tools::atkwarning("Node::NF_EDITAFTERADD found but no 'edit' privilege.");
+                }
+            } else {
+                $result[] = $this->getButton('saveandclose', true);
+
+                if ($this->hasFlag(self::NF_ADDAFTERADD)) {
+                    $result[] = $this->getButton('saveandnext', false);
+                }
+            }
+
+
+            if ($sm->atkLevel() > 0 || Tools::hasFlag(Tools::atkArrayNvl($this->m_feedback,
+                    "save", 0), ActionHandler::ACTION_CANCELLED)
+            ) {
+                $result[] = $this->getButton('cancel');
+            }
+
+        } elseif ($mode == "view") {
+            // if appropriate, display an edit button.
+            if (!$this->hasFlag(self::NF_NO_EDIT) && $this->allowed("edit", $record)) {
+                $result[] = '<input type="hidden" name="atkaction" value="edit">' .
+                    '<input type="hidden" name="atknodeuri" value="' . $this->atkNodeUri() . '">' .
+                    $this->getButton('edit');
+            }
+
+            if ($sm->atkLevel() > 0) {
+                $result[] = $this->getButton('back', false, Tools::atktext('cancel'));
+            }
+
+        } elseif ($mode == "delete") {
+            $result[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel" value="' . $this->text('no') . '">';
+            $result[] = '<input name="confirm" type="submit" class="btn btn-default btn_ok" value="' . $this->text('yes') . '">';
+        } elseif ($mode == "search") {
+            // (don't change the order of button)
+            $result[] = $this->getButton('search', true);
+            $result[] = $this->getButton('cancel');
+        }
+
+        return $result;
+    }
+
+    /**
+     * Create a button.
+     *
+     * @param string $action
+     * @param Bool $default Add the atkdefaultbutton class?
+     * @return String HTML
+     */
+    function getButton($action, $default = false, $label = null)
+    {
+        $valueAttribute = "";
+
+        switch ($action) {
+            case "save":
+                $name = "atknoclose";
+                $class = "btn_save";
+                break;
+            case "saveandclose":
+                $name = "atksaveandclose";
+                $class = "btn_saveandclose";
+                break;
+            case "cancel":
+                $name = "atkcancel";
+                $class = "btn_cancel";
+                break;
+            case "saveandedit":
+                $name = "atksaveandcontinue";
+                $class = "btn_saveandcontinue";
+                break;
+            case "saveandnext":
+                $name = "atksaveandnext";
+                $class = "btn_saveandnext";
+                break;
+            case "back":
+                $name = "atkback";
+                $class = "btn_cancel";
+                $value = '<< ' . Tools::atktext($action, 'atk');
+                break;
+            case "edit":
+                $name = "atkedit";
+                $class = "btn_save";
+                break;
+            case "search":
+                $name = "atkdosearch";
+                $class = "btn_search";
+                break;
+            default:
+                $name = $action;
+                $class = "atkbutton";
+        }
+
+        if (!isset($value)) {
+            $value = $this->text($action);
+        }
+        if (isset($label)) {
+            $value = $label;
+        }
+        $value = htmlentities($value);
+
+        $class = trim('btn ' . $class);
+
+        if ($default) {
+            $class .= (!empty($class) ? ' ' : '') . 'atkdefaultbutton btn-primary';
+        } else {
+            $class .= (!empty($class) ? ' ' : '') . 'btn-default';
+        }
+
+        if ($class != "") {
+            $class = "class=\"$class\" ";
+        }
+
+        if ($value != "") {
+            $valueAttribute = "value=\"{$value}\" ";
+        }
+
+        if ($name != "") {
+            $name = "name=\"" . $this->getEditFieldPrefix() . "{$name}\" ";
+        }
+
+        return '<button type="submit" ' . $class . $name . $valueAttribute . '>' . $value . '</button>';
     }
 
     /**
@@ -1992,7 +2141,8 @@ class Node
         $fieldprefix = "",
         $ignoreTab = false,
         $injectSections = true
-    ) {
+    )
+    {
         // update visibility of some attributes based on the current record
         $this->checkAttributeSecurity($mode, $record);
 
@@ -2582,7 +2732,8 @@ class Node
         $checkoverride = true,
         $mergeSelectors = true,
         $csrfToken = null
-    ) {
+    )
+    {
         $method = 'confirm' . $action;
         if ($checkoverride && method_exists($this, $method)) {
             return $this->$method($atkselector, $locked);
@@ -2811,43 +2962,6 @@ class Node
         $this->m_attribsizesset = true;
     }
 
-    /**
-     * This is the wrapper method for all http requests on a node.
-     *
-     * The method looks at the atkaction from the postvars and determines what
-     * should be done. If possible, it instantiates actionHandlers for
-     * handling the actual action.
-     *
-     * @param array $postvars The request variables for the node.
-     * @param int $flags Render flags (see class Page).
-     * @return string
-     */
-    function dispatch($postvars, $flags = null)
-    {
-        Tools::atkdebug("self::dispatch()");
-        $controller = Controller::getInstance();
-        $controller->setNode($this);
-        return $controller->handleRequest($postvars, $flags);
-    }
-
-    /**
-     * Render a generic page, with a box, title, stacktrace etc.
-     * @param string $title The pagetitle and if $content is a string, also
-     *                      the boxtitle.
-     * @param mixed $content The content to display on the page. This can be:
-     *                       - A string which will be the content of a single
-     *                         box on the page.
-     *                       - An associative array of $boxtitle=>$boxcontent
-     *                         pairs. Each pair will be rendered as a seperate
-     *                         box.
-     * @return String A complete html page with the desired content.
-     */
-    function genericPage($title, $content)
-    {
-        $controller = Controller::getInstance();
-        $controller->setNode($this);
-        return $controller->genericPage($title, $content);
-    }
 
     /**
      * Render a generic action.
@@ -2862,9 +2976,17 @@ class Node
      */
     function renderActionPage($action, $blocks = array())
     {
-        $controller = Controller::getInstance();
-        $controller->setNode($this);
-        return $controller->renderActionPage($action, $blocks);
+        if (!is_array($blocks)) {
+            $blocks = ($blocks == "" ? array() : array($blocks));
+        }
+
+        $ui = $this->getUi();
+
+        // todo: overridable action templates
+        return $ui->render("actionpage.tpl", array(
+            "blocks" => $blocks,
+            "title" => $ui->title($this->m_module, $this->m_type)
+        ));
     }
 
     /**
@@ -3416,7 +3538,7 @@ class Node
     {
         $selector->orderBy($this->getOrder());
         $selector->ignoreDefaultFilters($this->hasFlag(self::NF_NO_FILTER));
-        $selector->ignorePostvars(Module::atkReadOptimizer());
+        $selector->ignorePostvars($this->atkReadOptimizer());
 
         if ($condition != null) {
             $selector->where($condition, $params);
@@ -4430,11 +4552,33 @@ class Node
      * @param int $levelskip Number of levels to skip
      * @return String The feedback url.
      */
-    function feedbackUrl($action, $status, $record = "", $message = "", $levelskip = null)
+    function feedbackUrl($action, $status, $record = array(), $message = "", $levelskip = null)
     {
-        $controller = Controller::getInstance();
-        $controller->setNode($this);
-        return $controller->feedbackUrl($action, $status, $record, $message, $levelskip);
+        $sm = SessionManager::getInstance();
+        $vars = array();
+        $atkNodeUri = "";
+        $sessionStatus = SessionManager::SESSION_BACK;
+
+        if ((isset($this->m_feedback[$action]) && Tools::hasFlag($this->m_feedback[$action], $status)) || $status == ActionHandler::ACTION_FAILED) {
+            $vars = array(
+                "atkaction" => "feedback",
+                "atkfbaction" => $action,
+                "atkactionstatus" => $status,
+                "atkfbmessage" => $message
+            );
+            $atkNodeUri = $this->atkNodeUri();
+            $sessionStatus = SessionManager::SESSION_REPLACE;
+
+            // The level skip given is based on where we should end up after the
+            // feedback action is shown to the user. This means that the feedback
+            // action should be shown one level higher in the stack, hence the -1.
+            // Default the feedback action is shown on the current level, so in that
+            // case we have a simple SessionManager::SESSION_REPLACE with a level skip of null.
+            $levelskip = $levelskip == null ? null : $levelskip - 1;
+        }
+
+        $dispatch_url = Tools::dispatch_url($atkNodeUri, Tools::atkArrayNvl($vars, "atkaction", ""), $vars);
+        return ($sm->sessionUrl($dispatch_url, $sessionStatus, $levelskip));
     }
 
     /**
@@ -4806,5 +4950,11 @@ class Node
                 $attr->removeFlag($flag);
             }
         }
+    }
+
+
+    public function atkReadOptimizer()
+    {
+        return false;
     }
 }

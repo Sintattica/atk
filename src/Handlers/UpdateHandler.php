@@ -96,8 +96,7 @@ class Updatehandler extends ActionHandler
         }
 
         if (isset($this->m_postvars['atknoclose']) ||
-            isset($this->m_postvars['atksaveandclose']) ||
-            isset($this->m_postvars['atkwizardaction'])
+            isset($this->m_postvars['atksaveandclose'])
         ) {
             $this->handleProcess($record);
         } else {
