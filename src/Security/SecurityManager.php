@@ -168,12 +168,12 @@ class SecurityManager
     function mailPassword($username)
     {
         // Query the database for user records having the given username and return if not found
-        $usernode = Module::atkGetNode(Config::getGlobal("auth_usernode"));
+        $userNode = Module::atkGetNode(Config::getGlobal("auth_usernode"));
         $selector = sprintf("%s.%s = '%s'", Config::getGlobal("auth_usertable"),
             Config::getGlobal("auth_userfield"), $username);
 
 
-        $userrecords = $usernode->select($selector)
+        $userrecords = $userNode->select($selector)
             ->includes(array(
                 Config::getGlobal("auth_userpk"),
                 Config::getGlobal("auth_emailfield"),
@@ -195,21 +195,21 @@ class SecurityManager
         }
 
         // Regenerate the password
-        $passwordattr = $usernode->getAttribute(Config::getGlobal("auth_passwordfield"));
-        $newpassword = $passwordattr->generatePassword();
+        $passwordAttr = $userNode->getAttribute(Config::getGlobal("auth_passwordfield"));
+        $newPassword = $passwordAttr->generatePassword();
 
         // Update the record in the database
-        $userrecords[0][Config::getGlobal("auth_passwordfield")]["hash"] = md5($newpassword);
-        $usernode->updateDb($userrecords[0], true, "", array(Config::getGlobal("auth_passwordfield")));
+        $userrecords[0][Config::getGlobal("auth_passwordfield")]["hash"] = md5($newPassword);
+        $userNode->updateDb($userrecords[0], true, "", array(Config::getGlobal("auth_passwordfield")));
 
-        $db = $usernode->getDB();
+        $db = $userNode->getDB();
         $db->commit();
 
         // Send an email containing the new password to user
         $subject = Tools::atktext("auth_passwordmail_subjectnew_password", "atk");
         $body = Tools::atktext("auth_passwordmail_explanation", "atk") . "\n\n";
         $body .= Tools::atktext(Config::getGlobal("auth_userfield")) . ": " . $username . "\n";
-        $body .= Tools::atktext(Config::getGlobal("auth_passwordfield")) . ": " . $newpassword . "\n";
+        $body .= Tools::atktext(Config::getGlobal("auth_passwordfield")) . ": " . $newPassword . "\n";
 
         //TODO: replace with some mailer object
         mail($email, $subject, $body);
@@ -220,9 +220,6 @@ class SecurityManager
 
     /**
      * Perform user authentication.
-     *
-     * Called by the framework, it should not be necessary to call this method
-     * directly.
      */
     function authenticate()
     {
@@ -274,8 +271,6 @@ class SecurityManager
         } // do we need to login?
         else {
             if ((!isset($session["login"])) || ($session["login"] != 1)) {
-                // authenticated?
-                $authenticated = false;
 
                 // sometimes we manually have to set the PHP_AUTH vars
                 // old style http_authorization
@@ -309,9 +304,7 @@ class SecurityManager
                 $authenticated = false;
 
                 // Check if a username was entered
-                if ((Tools::atkArrayNvl($ATK_VARS, "login",
-                            "") != "") && empty($auth_user) && !strstr(Config::getGlobal("authentication"), "none")
-                ) {
+                if ((Tools::atkArrayNvl($ATK_VARS, "login", "") != "") && empty($auth_user) && !strstr(Config::getGlobal("authentication"), "none")) {
                     $response = SecurityManager::AUTH_MISSINGUSERNAME;
                 } // Email password if password forgotten and passwordmailer enabled
                 else {
@@ -434,9 +427,6 @@ class SecurityManager
                 ) {
                     $this->m_user = $session_auth["user"];
                     Tools::atkdebug("Using session for authentication / user = " . $this->m_user["name"]);
-                } else {
-                    // Invalid session
-                    $authenticated = false;
                 }
             }
         }
@@ -492,14 +482,13 @@ class SecurityManager
         }
         // return
         // g_user always lowercase
-       // $this->m_user["name"] = $this->m_user["name"];
+        // $this->m_user["name"] = $this->m_user["name"];
         //Send the username with the header
         //This way we can always retrieve the user from apache logs
         header('user: ' . $this->m_user["name"]);
         $GLOBALS["g_user"] = &$this->m_user;
         $sm = SessionManager::getInstance();
         $sm->globalVar("authentication", array("authenticated" => 1, "user" => $this->m_user), true);
-        $sm->globalVar('loginattempts', '');
 
         if ($throwPostLoginEvent) {
             $this->notifyListeners("postLogin", $auth_user);
@@ -532,26 +521,14 @@ class SecurityManager
      *
      * @param string $defaultname The username that might already be known
      * @param int $lastresponse The lastresponse when trying to login
-     *                              possible values: SecurityManager::AUTH_MISMATCH, SecurityManager::AUTH_LOCKED, SecurityManager::AUTH_MISSINGUSERNAME, SecurityManager::AUTH_PASSWORDSENT
+     *                              possible values:
+     * SecurityManager::AUTH_MISMATCH,
+     * SecurityManager::AUTH_LOCKED,
+     * SecurityManager::AUTH_MISSINGUSERNAME,
+     * SecurityManager::AUTH_PASSWORDSENT
      */
     function loginForm($defaultname, $lastresponse)
     {
-        $sm = SessionManager::getInstance();
-
-        $loginattempts = $sm->getValue('loginattempts'); // Note: not actually how many authentication attempts, but how many times the login form has been displayed.
-        if ($loginattempts == "") {
-            $loginattempts = 0;
-        }
-
-        if ($loginattempts == "") {
-            $loginattempts = 1;
-        } else {
-            $loginattempts++;
-        }
-
-        $sm->globalVar('loginattempts', $loginattempts);
-        Tools::atkdebug('LoginAttempts: ' . $loginattempts);
-
         $page = Page::getInstance();
         $ui = Ui::getInstance();
 
@@ -559,65 +536,50 @@ class SecurityManager
 
         $tplvars = Array();
         $output = '<form action="' . Tools::atkSelf() . '" method="post">';
-        $output .= Tools::makeHiddenPostVars(array("atklogout", "loginattempts"));
+        $output .= Tools::makeHiddenPostVars(array("atklogout"));
         $output .= '<br><br><table border="0" cellspacing="2" cellpadding="0" align="center">';
 
-        $tplvars["atksessionformvars"] = Tools::makeHiddenPostVars(array("atklogout", "loginattempts"));
+        $tplvars["atksessionformvars"] = Tools::makeHiddenPostVars(array("atklogout"));
         $tplvars["formurl"] = Tools::atkSelf();
 
-        // max_loginattempts of 0 means no maximum.
-        if (Config::getGlobal('max_loginattempts') > 0 && $loginattempts > Config::getGlobal('max_loginattempts')) {
-            $output .= "<tr><td class=table>" . Tools::atktext('auth_max_loginattempts_exceeded') . "<br><br></td></tr>";
-            $tplvars["auth_max_loginattempts_exceeded"] = Tools::atktext('auth_max_loginattempts_exceeded');
-        } else {
+        $tplvars["username"] = Tools::atktext("username");
+        $tplvars["password"] = Tools::atktext("password");
+        $tplvars["userfield"] = '<input class="form-control loginform" type="text" size="20" id="auth_user" name="auth_user" value="' . htmlentities($defaultname) . '" />';
+        $tplvars["passwordfield"] = '<input class="loginform" type="password" size="20" name="auth_pw" value="" />';
+        $tplvars["submitbutton"] = '<input name="login" class="button" type="submit" value="' . Tools::atktext('login') . '" />';
+        $tplvars["title"] = Tools::atktext('login_form');
 
-
-            // generate the username input field
-            // based upon the config_authdropdown and auth. method
-            $userField = $this->auth_userField($defaultname);
-            $tplvars["username"] = Tools::atktext("username");
-            $tplvars["password"] = Tools::atktext("password");
-            $tplvars["userfield"] = $userField;
-            $tplvars["passwordfield"] = '<input class="loginform" type="password" size="20" name="auth_pw" value="" />';
-            $tplvars["submitbutton"] = '<input name="login" class="button" type="submit" value="' . Tools::atktext('login') . '" />';
-            $tplvars["title"] = Tools::atktext('login_form');
-
-            if ($lastresponse == SecurityManager::AUTH_LOCKED) {
-                $output .= "<tr><td colspan=3 class=error>" . Tools::atktext('auth_account_locked') . "<br><br></td></tr>";
-                $tplvars["auth_account_locked"] = Tools::atktext('auth_account_locked');
-                $tplvars["error"] = Tools::atktext('auth_account_locked');
-            } else {
-                if ($lastresponse == SecurityManager::AUTH_MISMATCH) {
-                    $output .= '<tr><td colspan=3 class=error>' . Tools::atktext('auth_mismatch') . '<br><br></td></tr>';
-                    $tplvars["auth_mismatch"] = Tools::atktext('auth_mismatch');
-                    $tplvars["error"] = Tools::atktext('auth_mismatch');
-                } else {
-                    if ($lastresponse == SecurityManager::AUTH_MISSINGUSERNAME) {
-                        $output .= '<tr><td colspan="3" class=error>' . Tools::atktext('auth_missingusername') . '<br /><br /></td></tr>';
-                        $tplvars["auth_mismatch"] = Tools::atktext('auth_missingusername');
-                        $tplvars["error"] = Tools::atktext('auth_missingusername');
-                    } else {
-                        if ($lastresponse == SecurityManager::AUTH_PASSWORDSENT) {
-                            $output .= '<tr><td colspan="3">' . Tools::atktext('auth_passwordmail_sent') . '<br /><br /></td></tr>';
-                            $tplvars["auth_mismatch"] = Tools::atktext('auth_passwordmail_sent');
-                        }
-                    }
-                }
-            }
-
-            // generate the form
-            $output .= "<tr><td valign=top>" . Tools::atktext('username') . "</td><td>:</td><td>" . $userField . "</td></tr>";
-            $output .= "<tr><td colspan=3 height=6></td></tr>";
-            $output .= "<tr><td valign=top>" . Tools::atktext('password') . "</td><td>:</td><td><input type=password size=15 name=auth_pw value='' /></td></tr>";
-            $output .= '<tr><td colspan="3" align="center" height="50" valign="middle">';
-            $output .= '<input name="login" class="button" type="submit" value="' . Tools::atktext('login') . '">';
-            $tplvars["auth_enablepasswordmailer"] = $this->get_enablepasswordmailer();
-            if ($this->get_enablepasswordmailer()) {
-                $output .= '&nbsp;&nbsp;<input name="login" class="button" type="submit" value="' . Tools::atktext('password_forgotten') . '">';
-                $tplvars["forgotpasswordbutton"] = '<input name="login" class="button" type="submit" value="' . Tools::atktext('password_forgotten') . '">';
-            }
-            $output .= '</td></tr>';
+        if ($lastresponse == SecurityManager::AUTH_LOCKED) {
+            $output .= "<tr><td colspan=3 class=error>" . Tools::atktext('auth_account_locked') . "<br><br></td></tr>";
+            $tplvars["auth_account_locked"] = Tools::atktext('auth_account_locked');
+            $tplvars["error"] = Tools::atktext('auth_account_locked');
+        } elseif ($lastresponse == SecurityManager::AUTH_MISMATCH) {
+            $output .= '<tr><td colspan=3 class=error>' . Tools::atktext('auth_mismatch') . '<br><br></td></tr>';
+            $tplvars["auth_mismatch"] = Tools::atktext('auth_mismatch');
+            $tplvars["error"] = Tools::atktext('auth_mismatch');
+        } elseif ($lastresponse == SecurityManager::AUTH_MISSINGUSERNAME) {
+            $output .= '<tr><td colspan="3" class=error>' . Tools::atktext('auth_missingusername') . '<br /><br /></td></tr>';
+            $tplvars["auth_mismatch"] = Tools::atktext('auth_missingusername');
+            $tplvars["error"] = Tools::atktext('auth_missingusername');
+        } elseif ($lastresponse == SecurityManager::AUTH_PASSWORDSENT) {
+            $output .= '<tr><td colspan="3">' . Tools::atktext('auth_passwordmail_sent') . '<br /><br /></td></tr>';
+            $tplvars["auth_mismatch"] = Tools::atktext('auth_passwordmail_sent');
         }
+
+
+        // generate the form
+        $output .= "<tr><td valign=top>" . Tools::atktext('username') . "</td><td>:</td><td>" . $tplvars["userfield"] . "</td></tr>";
+        $output .= "<tr><td colspan=3 height=6></td></tr>";
+        $output .= "<tr><td valign=top>" . Tools::atktext('password') . "</td><td>:</td><td><input type=password size=15 name=auth_pw value='' /></td></tr>";
+        $output .= '<tr><td colspan="3" align="center" height="50" valign="middle">';
+        $output .= '<input name="login" class="button" type="submit" value="' . Tools::atktext('login') . '">';
+        $tplvars["auth_enablepasswordmailer"] = $this->get_enablepasswordmailer();
+
+        if ($this->get_enablepasswordmailer()) {
+            $output .= '&nbsp;&nbsp;<input name="login" class="button" type="submit" value="' . Tools::atktext('password_forgotten') . '">';
+            $tplvars["forgotpasswordbutton"] = '<input name="login" class="button" type="submit" value="' . Tools::atktext('password_forgotten') . '">';
+        }
+        $output .= '</td></tr>';
 
         $output .= '</table></form>';
 
@@ -625,48 +587,6 @@ class SecurityManager
         $page->addContent($ui->render("login.tpl", $tplvars));
         $o = Output::getInstance();
         $o->output($page->render(Tools::atktext("app_title"), Page::HTML_STRICT, "", $ui->render("login_meta.tpl")));
-    }
-
-    /**
-     * Generate field for entering the username (dropdown or input box,
-     * depending on settings.
-     * @access private
-     *
-     * @param string $defaultname The username that might already be known
-     */
-    function auth_userField($defaultname)
-    {
-        if (Config::getGlobal("auth_dropdown") == true) {
-            $auth_types = $this->m_authentication;
-            $userlist = array();
-
-            // Administrator and guest user may be present.
-            if (Config::getGlobal("administratorpassword") != "") {
-                $userlist[] = array("userid" => "administrator", "username" => "Administrator");
-            }
-            if (Config::getGlobal("guestpassword") != "") {
-                $userlist[] = array("userid" => "guest", "username" => "Guest");
-            }
-
-            foreach ($auth_types as $type => $obj) {
-                $userlist = array_merge($userlist, $obj->getUserList());
-            }
-
-            $userField = '<select id="auth_user" name="auth_user" class="form-control">' . "\n";
-
-            for ($i = 0, $_i = count($userlist); $i < $_i; $i++) {
-                $selected = "";
-                if (trim(strtolower($defaultname)) == strtolower(trim($userlist[$i]["userid"]))) {
-                    $selected = " selected";
-                }
-                $userField .= "<option value='" . $userlist[$i]["userid"] . "'" . $selected . ">" . $userlist[$i]["username"] . "</option>\n";
-            }
-            $userField .= "</select>\n";
-
-            return $userField;
-        } else {
-            return '<input class="form-control loginform" type="text" size="20" id="auth_user" name="auth_user" value="' . htmlentities($defaultname) . '" />';
-        }
     }
 
     /**
@@ -782,35 +702,16 @@ class SecurityManager
     }
 
     /**
-     * Calling this function will invoke the login process. Call this function in
-     * every file that you want to have secured.
-     * (This is actually a small wrapper for $securityManager->authenticate(),
-     * so you can quickly secure an application.
-     */
-    public static function atksecure()
-    {
-        $securityMgr = self::getInstance();
-
-        if (!$securityMgr->authenticate()) {
-            echo '<b>' . Tools::atktext("login_failed", "atk") . '</b>';
-            echo '<br><br>' . $securityMgr->m_fatalError;
-            exit;
-        }
-    }
-
-
-    /**
      * Retrieve all known information about the currently logged-in user.
      * @param $key string
      * @return array Array with userinfo, or "" if no user is logged in.
      */
     public static function atkGetUser($key = '')
     {
-        $sessionmanager = SessionManager::getInstance();
+        $sm = SessionManager::getInstance();
         $session = SessionManager::getSession();
         $user = "";
-        $session_auth = is_object($sessionmanager) ? $sessionmanager->getValue("authentication", "globals")
-            : array();
+        $session_auth = is_object($sm) ? $sm->getValue("authentication", "globals") : array();
         if (Config::getGlobal("authentication_session") &&
             Tools::atkArrayNvl($session, "login", 0) == 1 &&
             $session_auth["authenticated"] == 1 &&

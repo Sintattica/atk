@@ -388,6 +388,10 @@ $config_auth_mail_virtual = false;
  */
 $config_auth_usecryptedpassword = false;
 
+// Setting this to true will make ATK use a loginform instead of a browser
+// popup.
+$config_auth_loginform = true;
+
 /**
  * When changerealm is true, the authentication realm is changed on every
  * login.
@@ -403,20 +407,7 @@ $config_auth_usecryptedpassword = false;
  * by default.
  * @var boolean
  */
-$config_auth_changerealm = true;
-
-/**
- * 0 = no maximum.
- * @var int
- */
-$config_max_loginattempts = 5;
-
-
-/**
- *
- * @var boolean
- */
-$config_auth_dropdown = false;
+$config_auth_changerealm = false;
 
 /**
  *
@@ -766,19 +757,6 @@ $config_session_cache_expire = 180;
  */
 $config_session_cache_limiter = "nocache";
 
-/**
- * Initialize sessions by default.
- *
- * When atksessionmanager is included, if this configuration value is true (by default),
- * ATK will configure and start a PHP session for you.
- * When you do not want this (in CLI environnements?) you can disable this in your script.
- *
- * DO NOT ENABLE IN THIS CONFIG or you won't be able to set it in your script.
- * Appears here for documentation purposes only.
- *
- * @var bool
- */
-//$config_session_init = true;
 
 /**
  * Default sequence prefix.
