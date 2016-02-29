@@ -153,7 +153,7 @@ abstract class Module
      * @param bool $reset Whether or not to reset the particular node in the repository
      * @return Node the node
      */
-    public function atkGetNode($nodeUri, $init = true, $cache_id = "default", $reset = false)
+    static public function atkGetNode($nodeUri, $init = true, $cache_id = "default", $reset = false)
     {
         global $g_nodeRepository;
         $nodeUri = strtolower($nodeUri);

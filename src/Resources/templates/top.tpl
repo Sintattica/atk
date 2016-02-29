@@ -24,9 +24,7 @@
                 {if $user}
                     <li id="top-logout">
                         <a href="./?atklogout=1" target="{$logouttarget}">{$user}&nbsp;&nbsp;<span class="glyphicon glyphicon-log-out"></span></a>
-                    </li>{/if}
-                {if $searchpiece}
-                    <li id="top-search">{$searchpiece}</li>
+                    </li>
                 {/if}
             </ul>
         </div>

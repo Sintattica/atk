@@ -23,7 +23,7 @@ class IndexPage
     /**
      * @var Ui
      */
-    var $_uim;
+    var $_ui;
 
     /**
      * @var Output
@@ -34,8 +34,7 @@ class IndexPage
      * @var array
      */
     var $m_user;
-    var $m_topsearchpiece;
-    var $m_topcenterpiecelinks;
+
     var $m_title;
     var $m_extrabodyprops;
     var $m_extraheaders;
@@ -45,12 +44,6 @@ class IndexPage
 
     private $atk;
 
-    /**
-     * Hide top / menu?
-     *
-     * @var boolean
-     */
-    private $m_noNav;
 
     /**
      * Constructor
@@ -66,8 +59,6 @@ class IndexPage
         $this->m_output = Output::getInstance();
         $this->m_user = SecurityManager::atkGetUser();
         $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? Page::HTML_PARTIAL : Page::HTML_STRICT;
-        $this->m_noNav = isset($ATK_VARS['atknonav']);
-        $this->m_extraheaders = $this->m_ui->render('index_meta.tpl');
     }
 
     /**
@@ -82,24 +73,35 @@ class IndexPage
     }
 
     /**
-     * Generate the indexpage
+     * Generate the page
      *
      */
     function generate()
     {
-        if (!$this->hasFlag(Page::HTML_PARTIAL) && !$this->m_noNav) {
-            $this->atkGenerateTop();
+        if (!$this->hasFlag(Page::HTML_PARTIAL)) {
+            $menuObj = Menu::getInstance();
+
+            $top = $this->m_ui->renderBox(array(
+                "logintext" => Tools::atktext("logged_in_as"),
+                "logouttext" => Tools::atktext("logout", "atk"),
+                "logoutlink" => Config::getGlobal('dispatcher') . '?atklogout=1',
+                "title" => ($this->m_title != '' ?: Tools::atktext("app_title")),
+                "app_title" => Tools::atktext("app_title"),
+                "user" => ($this->m_username ?: $this->m_user["name"]),
+                "fulluser" => $this->m_user,
+                "menu" => $menuObj->getMenu()
+            ), "top");
+            $this->m_page->addContent($top);
         }
 
         $this->atkGenerateDispatcher();
 
-        $this->m_output->output(
-            $this->m_page->render(
-                $this->m_title != "" ? $this->m_title : null, $this->m_flags, $this->m_extrabodyprops != ""
-                ? $this->m_extrabodyprops : null, $this->m_extraheaders != ""
-                ? $this->m_extraheaders : null
-            )
-        );
+        $title = $this->m_title != "" ? : null;
+        $bodyprops = $this->m_extrabodyprops != "" ? : null;
+        $headers = $this->m_extraheaders != "" ? : null;
+        $content = $this->m_page->render($title, $this->m_flags, $bodyprops, $headers);
+
+        $this->m_output->output($content);
         $this->m_output->outputFlush();
     }
 
@@ -120,58 +122,6 @@ class IndexPage
         }
     }
 
-    /**
-     * Generate the top with login text, logout link, etc.
-     *
-     */
-    function atkGenerateTop()
-    {
-        $logoutLink = Config::getGlobal('dispatcher') . '?atklogout=1';
-
-
-        /* load menu layout */
-        $menuObj = Menu::getInstance();
-        $menu = null;
-
-        if (is_object($menuObj)) {
-            $menu = $menuObj->getMenu();
-        }
-
-        $top = $this->m_ui->renderBox(array(
-            "logintext" => Tools::atktext("logged_in_as"),
-            "logouttext" => ucfirst(Tools::atktext("logout", "atk")),
-            "logoutlink" => $logoutLink,
-            "logouttarget" => "_top",
-            "centerpiece_links" => $this->m_topcenterpiecelinks,
-            "searchpiece" => $this->m_topsearchpiece,
-            "title" => ($this->m_title != "" ? $this->m_title : Tools::atktext("app_title")),
-            "app_title" => Tools::atktext("app_title"),
-            "user" => ($this->m_username ? $this->m_username : $this->m_user["name"]),
-            "fulluser" => $this->m_user,
-            "menu" => $menu
-        ), "top");
-        $this->m_page->addContent($top);
-    }
-
-    /**
-     * Set the top center piece links
-     *
-     * @param string $centerpiecelinks
-     */
-    function setTopCenterPieceLinks($centerpiecelinks)
-    {
-        $this->m_topcenterpiecelinks = $centerpiecelinks;
-    }
-
-    /**
-     * Set the top search piece
-     *
-     * @param string $searchpiece
-     */
-    function setTopSearchPiece($searchpiece)
-    {
-        $this->m_topsearchpiece = $searchpiece;
-    }
 
     /**
      * Set the title of the page
@@ -221,7 +171,6 @@ class IndexPage
     {
         global $ATK_VARS;
         $session = &SessionManager::getSession();
-
 
         if ($session["login"] != 1) {
             // no nodetype passed, or session expired
@@ -343,7 +292,7 @@ class IndexPage
      * @param string $nodeType
      * @return string A complete html page with generic access denied message.
      */
-    function accessDeniedPage($nodeType)
+    private function accessDeniedPage($nodeType)
     {
 
         $content = "<br><br>" . Tools::atktext("error_node_action_access_denied", "", $nodeType) . "<br><br><br>";
@@ -355,6 +304,6 @@ class IndexPage
             ), 'dispatch')
         ];
 
-        return $this->m_ui->render("action.tpl", array("blocks"=>$blocks, "title"=> Tools::atktext('access_denied')));
+        return $this->m_ui->render("action.tpl", array("blocks" => $blocks, "title" => Tools::atktext('access_denied')));
     }
 }
