@@ -87,6 +87,7 @@ Calendar.getAbsolutePos = function(el) {
 		r.x += tmp.x;
 		r.y += tmp.y;
 	}
+
 	return r;
 };
 
@@ -1059,7 +1060,7 @@ Calendar.prototype.showAt = function (x, y) {
 /** Shows the calendar near a given element. */
 Calendar.prototype.showAtElement = function (el) {
 	var p = Calendar.getAbsolutePos(el);
-	this.showAt(p.x, p.y + el.offsetHeight);
+	this.showAt(p.x-120, p.y + el.offsetHeight+5);
 };
 
 /** Customizes the date format. */
@@ -1143,6 +1144,7 @@ Calendar.prototype.parseDate = function (str, fmt) {
 };
 
 Calendar.prototype.hideShowCovered = function () {
+	return;
 	var tags = new Array("applet", "iframe", "select");
 	var el = this.element;
 
