@@ -35,7 +35,6 @@ class CkAttribute extends TextAttribute
         // simplify the windows
         'removeDialogTabs' => 'image:advanced;link:advanced',
         // set the size
-        'width' => 800,
         'height' => 250
     ];
 
@@ -49,7 +48,7 @@ class CkAttribute extends TextAttribute
     {
         /** update CKEditor configuration options */
         $this->ckOptions['language'] = Language::getLanguage();
-        $this->ckOptions['wsc_lang'] = $this->ckOptions['scayt_sLang'] = $this->getSpellCheckerLang(Language::getLanguage());
+        $this->ckOptions['wsc_lang'] = $this->ckOptions['scayt_sLang'] = Tools::atktext('locale');
         // global config override
         if (is_array(Config::getGlobal('ck_options'))) {
             $this->ckOptions = array_merge($this->ckOptions, Config::getGlobal('ck_options'));
