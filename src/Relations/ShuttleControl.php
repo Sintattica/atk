@@ -1,19 +1,4 @@
-<?php
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage relations
- *
- * @copyright (c)2007 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6320 $
- * $Id$
- */
+<?php namespace Sintattica\Atk\Relations;
 
 /**
  * Abstract baseclass for controls for the shuttle
@@ -43,7 +28,7 @@ abstract class ShuttleControl
     /**
      * Get the shuttle
      *
-     * @return atkShuttleControl
+     * @return ShuttleControl
      */
     public function getShuttle()
     {
@@ -53,7 +38,7 @@ abstract class ShuttleControl
     /**
      * Set the shuttle
      *
-     * @param atkShuttleControl $shuttle
+     * @param ShuttleControl $shuttle
      */
     public function setShuttle($shuttle)
     {

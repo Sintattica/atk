@@ -1,5 +1,6 @@
-<?php
+<?php namespace Sintattica\Atk\Relations;
 
+use Sintattica\Atk\Core\Tools;
 
 /**
  *
