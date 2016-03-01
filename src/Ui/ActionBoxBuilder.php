@@ -79,19 +79,6 @@ class ActionBoxBuilder
     }
 
     /**
-     * Locked?
-     *
-     * @param boolean $locked locked
-     *
-     * @return ActionBoxBuilder
-     */
-    public function locked($locked)
-    {
-        $this->m_params["lockstatus"] = $this->m_pageBuilder->getNode()->getLockStatusIcon($locked);
-        return $this;
-    }
-
-    /**
      * Set form start.
      *
      * @param string $formStart form start

@@ -14,7 +14,6 @@ abstract class RecordList
     const RL_EMBED = 8; // recordlist is embedded
     const RL_MRA = 16; // multi-record-actions enabled
     const RL_MRPA = 32; // multi-record-priority-actions enabled
-    const RL_LOCK = 64; // records can be locked
     const RL_EXT_SORT = 128; // extended sort feature
 
     /** @var Node $m_node */
@@ -68,7 +67,6 @@ abstract class RecordList
     {
         $result = Tools::hasFlag($flags, Node::NF_MRA) ? self::RL_MRA : 0;
         $result |= Tools::hasFlag($flags, Node::NF_MRPA) ? self::RL_MRPA : 0;
-        $result |= Tools::hasFlag($flags, Node::NF_LOCK) ? self::RL_LOCK : 0;
         $result |= Tools::hasFlag($flags, Node::NF_NO_SEARCH) ? self::RL_NO_SEARCH : 0;
         $result |= Tools::hasFlag($flags, Node::NF_NO_EXTENDED_SEARCH) ? self::RL_NO_EXTENDED_SEARCH
             : 0;

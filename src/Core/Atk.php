@@ -8,7 +8,6 @@ use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\IndexPage;
 use Sintattica\Atk\Handlers\ActionHandler;
 
-require_once('adodb-time.php');
 
 class Atk
 {
@@ -32,6 +31,8 @@ class Atk
 
     private function init()
     {
+
+        require_once('adodb-time.php');
 
         Config::loadGlobals();
 
@@ -262,10 +263,7 @@ class Atk
     public function registerModule($moduleClass)
     {
         $reflection = new \ReflectionClass($moduleClass);
-
         $name = strtolower($reflection->getStaticPropertyValue('module'));
-
-        /** @var Module $module */
         $this->g_modules[$name] = $moduleClass;
 
         return $this->atkGetModule($name);

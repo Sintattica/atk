@@ -263,7 +263,6 @@ class OneToManyRelation extends Relation
         if ($action == 'view') {
             $grid->removeFlag(DataGrid::MULTI_RECORD_ACTIONS);
             $grid->removeFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS);
-            $grid->removeFlag(DataGrid::LOCKING);
         }
 
         $grid->setBaseUrl(Tools::partial_url($this->getOwnerInstance()->atkNodeUri(), $action,

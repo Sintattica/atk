@@ -701,29 +701,19 @@ $config_session_max_stack_inactivity_period = 3600; // 1 hour
  * The application identifier.
  *
  * @var String
- * @todo update this bit of documentation as it doesn't really say much
  */
 $config_identifier = "default";
 
-/**
- * Lock type, only supported type at this time is "db".
- * If empty locking is disabled.
- * @var String
- * @todo update this bit of documentation as it doesn't really say much
- */
-$config_lock_type = "";
 
 /**
- * The default encryption method for atkEncryption
+ * The default encryption method for Encryption
  * @var String
- * @todo update this bit of documentation as it doesn't really say much
  */
 $config_encryption_defaultmethod = "base64";
 
 /**
  * The default searchmode
  * @var String
- * @todo update this bit of documentation as it doesn't really say much
  */
 $config_search_defaultmode = "substring";
 

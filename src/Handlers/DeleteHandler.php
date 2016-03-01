@@ -40,10 +40,6 @@ class DeleteHandler extends ActionHandler
             $this->_doDelete();
         } elseif (empty($this->m_node->m_postvars['cancel'])) {
             // Confirmation page was not displayed
-            // First we check if the item is locked
-            if ($this->_checkLocked()) {
-                return;
-            }
 
             if (!$this->checkAttributes()) {
                 return;
@@ -56,8 +52,7 @@ class DeleteHandler extends ActionHandler
             // confirmation page yet, so we display it
             $page = $this->getPage();
             $page->addContent($this->m_node->renderActionPage("delete",
-                $this->m_node->confirmAction($this->m_postvars['atkselector'], "delete", false, true, true,
-                    $this->getCSRFToken())));
+                $this->m_node->confirmAction($this->m_postvars['atkselector'], "delete", true, true, $this->getCSRFToken())));
         } else {
             $this->_handleCancelAction();
         }
@@ -153,37 +148,6 @@ class DeleteHandler extends ActionHandler
         return SessionStore::getInstance()->deleteDataRowForSelector($selector);
     }
 
-    /**
-     * We check if the node is locked, if it is, we display the locked page,
-     * if it's not but it uses the locking feature, we lock it
-     * @return bool wether or not we displayed the 'locked' page
-     */
-    function _checkLocked()
-    {
-        if ($this->m_node->hasFlag(Node::NF_LOCK)) {
-            // We assume that the node is locked, unless proven otherwise
-            $locked = true;
-            if (is_array($this->m_postvars['atkselector'])) {
-                foreach ($this->m_postvars['atkselector'] as $selector) {
-                    if (!$this->m_node->m_lock->lock($selector, $this->m_node->m_table, $this->m_node->getLockMode())) {
-                        $locked = false;
-                    }
-                }
-            } elseif (!$this->m_node->m_lock->lock($this->m_postvars['atkselector'], $this->m_node->m_table,
-                $this->m_node->getLockMode())
-            ) {
-                $locked = false;
-            }
-
-            // If the node is locked, we proceed to display the 'locked' page
-            if (!$locked) {
-                $page = $this->getPage();
-                $page->addContent($this->m_node->lockPage());
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * Checks with each of the attributes of the node whose record is about to be deleted

@@ -1121,7 +1121,7 @@ class SessionManager
     }
 
     /**
-     * Used by the session manager and atkLock to retrieve a unique id for the current atk stack.
+     * Used by the session manager to retrieve a unique id for the current atk stack.
      */
     public function atkStackID($new = false)
     {

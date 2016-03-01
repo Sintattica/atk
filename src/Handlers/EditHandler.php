@@ -56,15 +56,8 @@ class EditHandler extends ViewEditBase
         $record = $this->mergeWithPostvars($record);
 
         $this->notify("edit", $record);
-        if ($node->hasFlag(Node::NF_LOCK)) {
-            if ($node->m_lock->lock($node->primaryKey($record), $node->m_table, $node->getLockMode())) {
-                $res = $this->invoke("editPage", $record, true);
-            } else {
-                $res = $node->lockPage();
-            }
-        } else {
-            $res = $this->invoke("editPage", $record, false);
-        }
+        $res = $this->invoke("editPage", $record, false);
+
 
         $page = $this->getPage();
         $page->addContent($node->renderActionPage("edit", $res));
@@ -137,13 +130,12 @@ class EditHandler extends ViewEditBase
      * Render the edit page
      *
      * @param array $record The record to edit
-     * @param Bool $locked Indicates whether the record is locked by the
-     *                        current user.
+
      * @return String HTML code for the edit page
      */
-    function editPage($record, $locked = false)
+    function editPage($record)
     {
-        $result = $this->getEditPage($record, $locked);
+        $result = $this->getEditPage($record);
 
         if ($result !== false) {
             return $result;
@@ -155,15 +147,13 @@ class EditHandler extends ViewEditBase
      * Get the params for the edit page
      *
      * @param array $record The record to edit
-     * @param Bool $locked Indicates whether the record is locked by the
-     *                        current user.
      * @return array Array with parameters
      */
-    function getEditParams($record, $locked = false)
+    function getEditParams($record)
     {
         $node = $this->m_node;
 
-        $params = $node->getDefaultActionParams($locked);
+        $params = $node->getDefaultActionParams();
         $params['title'] = $node->actionTitle('edit', $record);
         $params["formstart"] = $this->getFormStart();
         $params["header"] = $this->invoke("editHeader", $record);
@@ -177,15 +167,13 @@ class EditHandler extends ViewEditBase
      * This method draws a generic edit-page for a given record.
      *
      * @param array $record The record to edit.
-     * @param boolean $locked Indicates whether the record is locked by the
-     *                        current user.
      * @return String The rendered page as a string.
      */
-    function getEditPage($record, $locked = false)
+    function getEditPage($record)
     {
         $this->registerExternalFiles();
 
-        $params = $this->getEditParams($record, $locked);
+        $params = $this->getEditParams($record);
 
         if ($params === false) {
             return false;

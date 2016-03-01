@@ -7,7 +7,6 @@ use Sintattica\Atk\RecordList\Totalizer;
 use Sintattica\Atk\Keyboard\Keyboard;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\RecordList\RecordList;
-use Sintattica\Atk\Lock\Lock;
 use Sintattica\Atk\Session\SessionManager;
 use \stdClass;
 use \Exception;
@@ -127,10 +126,7 @@ class DataGridList extends DataGridComponent
         if (!$edit && ($hasMRA || $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS))) {
             $headercols[] = array("content" => ""); // Empty leader on top of mra action list.
         }
-        if ($grid->hasFlag(DataGrid::LOCKING)) {
-            $lockHeadIcon = 'lock';
-            $headercols[] = array("content" => $lockHeadIcon);
-        }
+
         if (($orientation == "left" || $orientation == "both") && ($hasActionCol && count($list["rows"]) > 0)) {
             $headercols[] = array("content" => "");
         }
@@ -171,9 +167,7 @@ class DataGridList extends DataGridComponent
             if (!$edit && ($hasMRA || $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS))) {
                 $sortcols[] = array("content" => ""); // Empty leader on top of mra action list.
             }
-            if ($grid->hasFlag(DataGrid::LOCKING)) {
-                $sortcols[] = array("content" => "");
-            }
+
             if ($orientation == "left" || $orientation == "both") {
                 $sortcols[] = array("content" => $button);
             }
@@ -215,9 +209,7 @@ class DataGridList extends DataGridComponent
             if (!$edit && ($hasMRA || $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS))) {
                 $searchcols[] = array("content" => "");
             }
-            if ($grid->hasFlag(DataGrid::LOCKING)) {
-                $searchcols[] = array("content" => "");
-            }
+
             if ($orientation == "left" || $orientation == "both") {
                 $searchcols[] = array("content" => $button);
             }
@@ -337,17 +329,6 @@ class DataGridList extends DataGridComponent
                 }
             }
 
-            /* locked? */
-            if ($grid->hasFlag(DataGrid::LOCKING)) {
-                if (is_array($list["rows"][$i]["lock"])) {
-                    $record["cols"][] = array(
-                        "content" => '<span>lock</span>',
-                        "type" => "lock"
-                    );
-                } else {
-                    $record["cols"][] = array("content" => "");
-                }
-            }
 
             $str_actions = "<span class=\"actions\">";
             $actionloader .= "\nrl_a['" . $listName . "'][" . $i . "] = {};";
@@ -428,18 +409,16 @@ class DataGridList extends DataGridComponent
         $page->register_scriptcode($actionloader);
         $this->m_actionloader = $actionloader;
 
-        /*         * ********** */
+        /*************/
         /* TOTAL ROW */
-        /*         * ********** */
+        /*************/
         $totalcols = array();
 
         if (count($list["total"]) > 0) {
             if (!$edit && ($hasMRA || $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS))) {
                 $totalcols[] = array("content" => "");
             }
-            if ($grid->hasFlag(DataGrid::LOCKING)) {
-                $totalcols[] = array("content" => "");
-            }
+
             if (($orientation == "left" || $orientation == "both") && ($hasActionCol && count($list["rows"]) > 0)) {
                 $totalcols[] = array("content" => "");
             }
@@ -615,16 +594,6 @@ class DataGridList extends DataGridComponent
         return '<a href="' . "javascript:rl_do('$listName',$i,'$name',$confirmtext);" . '" class="btn btn-default">' . $link . '</a>';
     }
 
-    /**
-     * Returns an HTML snippet which is used to display information about locks
-     * on a certain record in a small popup.
-     *
-     * @param array $locks lock(s) array
-     */
-    protected function getLockInfo($locks)
-    {
-        return $this->getUi()->render('lockinfo.tpl', array('locks' => $locks), $this->getNode()->m_module);
-    }
 
     /**
      * Checks wether the recordlist should display a column which holds the actions.
@@ -693,8 +662,6 @@ class DataGridList extends DataGridComponent
             ? RecordList::RL_MRA : 0;
         $result |= !$grid->isEditing() && $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS)
             ? RecordList::RL_MRPA : 0;
-        $result |= !$grid->isEditing() && $grid->hasFlag(DataGrid::LOCKING) ? RecordList::RL_LOCK
-            : 0;
         $result |= $grid->isEditing() || !$grid->hasFlag(DataGrid::SEARCH) ? RecordList::RL_NO_SEARCH
             : 0;
         $result |= $grid->isEditing() || !$grid->hasFlag(DataGrid::EXTENDED_SEARCH)
@@ -772,16 +739,6 @@ class DataGridList extends DataGridComponent
             $result["rows"][$i]["type"] = "data";
             $row = &$result["rows"][$i];
 
-            /* locked */
-            if ($grid->hasFlag(DataGrid::LOCKING)) {
-                $result["rows"][$i]["lock"] = $grid->getNode()->m_lock->isLocked($result["rows"][$i]["selector"],
-                    $grid->getNode()->m_table, $grid->getNode()->getLockMode());
-                if (is_array($result["rows"][$i]["lock"]) && $grid->getNode()->getLockMode() == Lock::EXCLUSIVE) {
-                    unset($row["actions"]["edit"]);
-                    unset($row["actions"]["delete"]);
-                    $row["mra"] = array();
-                }
-            }
 
             /* actions / mra */
             $grid->getNode()->collectRecordActions($row["record"], $row["actions"], $row["mra"]);

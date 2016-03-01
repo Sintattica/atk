@@ -6,7 +6,6 @@ use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Ui;
-use Sintattica\Atk\Lock\Lock;
 use Sintattica\Atk\Ui\PageBuilder;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Utils\Selector;
@@ -116,12 +115,6 @@ class Node
      * Multi-priority-selection of records is turned on
      */
     const NF_MRPA = 16384;
-
-    /**
-     * Add locking support to node, if one user is editing a record,
-     * no one else may edit it.
-     */
-    const NF_LOCK = 32768;
 
     /**
      * Quick way to ensable the csv import feature
@@ -538,13 +531,6 @@ class Node
     var $m_priority_max = 0;
 
     /**
-     * The lock instance
-     * @access protected
-     * @var Lock
-     */
-    var $m_lock = null;
-
-    /**
      * List of actions that should give success/failure feedback
      * @access private
      * @var array
@@ -631,12 +617,6 @@ class Node
      */
     var $m_edit_fieldprefix = '';
 
-    /**
-     * Lock mode.
-     *
-     * @var int
-     */
-    private $m_lockMode = 'exclusive'; // Lock::EXCLUSIVE (would mean atkLock needs to be available!)
 
     /**
      * Default column name (null means across all columns)
@@ -1893,36 +1873,13 @@ class Node
         return '<button type="submit" ' . $class . $name . $valueAttribute . '>' . $value . '</button>';
     }
 
-    /**
-     * Generate a box displaying a message that the current record is locked.
-     * @return String The HTML fragment containing a box with the message and
-     *                a back-button.
-     */
-    function lockPage()
-    {
-        $sm = SessionManager::getInstance();
-        $total = null;
-        $output = ''; // $this->statusbar();
-        $output .= '<img src="' . Config::getGlobal("assets_url") . 'images/lock.gif"><br><br>' . Tools::atktext("lock_locked") . '<br>';
-        $output .= '<br><form method="get">' . $sm->formState(SessionManager::SESSION_BACK) .
-            '<input type="submit" class="btn btn-default btn_cancel" value="&lt;&lt; ' . Tools::atktext('back') . '"></form>';
-
-        $ui = $this->getUi();
-        if (is_object($ui)) {
-            $total = $ui->renderBox(array(
-                "title" => $this->actionTitle($this->m_action),
-                "content" => $output
-            ));
-        }
-        return $total;
-    }
 
     /**
      * Get the ui instance for drawing and templating purposes.
      *
      * @return Ui An Ui instance for drawing and templating.
      */
-    function &getUi()
+    function getUi()
     {
         return Ui::getInstance();
     }
@@ -2025,7 +1982,6 @@ class Node
     function getDefaultActionParams($locked = false)
     {
         $params = array();
-        $params["lockstatus"] = $this->getLockStatusIcon($locked);
         $params["formend"] = '</form>';
         return $params;
     }
@@ -2692,7 +2648,6 @@ class Node
      *                           selector(s) to display the current record(s)
      *                           in the confirmation page.
      * @param string $action The action for which confirmation is needed.
-     * @param boolean $locked Pass true if the current record is locked.
      * @param boolean $checkoverride If set to true, this method will try to
      *                               find a custom method named
      *                               "confirm".$action."()" (e.g.
@@ -2707,7 +2662,6 @@ class Node
     function confirmAction(
         $atkselector,
         $action,
-        $locked = false,
         $checkoverride = true,
         $mergeSelectors = true,
         $csrfToken = null
@@ -2715,7 +2669,7 @@ class Node
     {
         $method = 'confirm' . $action;
         if ($checkoverride && method_exists($this, $method)) {
-            return $this->$method($atkselector, $locked);
+            return $this->$method($atkselector);
         }
 
         $ui = $this->getUi();
@@ -2851,7 +2805,6 @@ class Node
             $p_attrib->setOwnerInstance($this);
         }
 
-
         $this->_addListeners();
 
         // We set the tabs for the attributes
@@ -2861,17 +2814,7 @@ class Node
         }
 
         $this->attribSort();
-
         $this->setAttribSizes();
-
-        $lockType = Config::getGlobal("lock_type");
-        if (!empty($lockType) && $this->hasFlag(self::NF_LOCK)) {
-            $this->m_lock = Lock::getInstance();
-        } else {
-            $this->removeFlag(self::NF_LOCK);
-        }
-
-
         $this->m_initialised = true;
 
         // Call the attributes postInit method to do some last time
@@ -3242,25 +3185,6 @@ class Node
         }
     }
 
-    /**
-     * Sets the lock mode.
-     *
-     * @param int $lockMode lock mode (Lock::EXCLUSIVE, Lock::SHARED)
-     */
-    public function setLockMode($lockMode)
-    {
-        $this->m_lockMode = $lockMode;
-    }
-
-    /**
-     * Returns the lock mode.
-     *
-     * @return int lock mode (Lock::EXCLUSIVE, Lock::SHARED)
-     */
-    public function getLockMode()
-    {
-        return $this->m_lockMode;
-    }
 
     /**
      * Validates a record.
@@ -4282,21 +4206,6 @@ class Node
             $this->m_unsecuredActions[] = $action;
         }
     }
-
-
-    /**
-     * Get img tag for lock icon.
-     * @param boolean $lockstatus True if the record is locked, false if not.
-     * @return String HTML with the correct lock icon.
-     */
-    function getLockStatusIcon($lockstatus)
-    {
-        if ($lockstatus) {
-            return 'lock';
-        }
-        return '';
-    }
-
 
     /**
      * Invoke the handler for an action.

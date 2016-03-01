@@ -559,7 +559,7 @@ class ExportHandler extends ActionHandler
         }
         $rl = new CustomRecordList();
         $flags = ($node_bk->hasFlag(Node::NF_MRA) ? RecordList::RL_MRA : 0) | ($node_bk->hasFlag(Node::NF_MRPA)
-                ? RecordList::RL_MRPA : 0) | ($node_bk->hasFlag(Node::NF_LOCK) ? RecordList::RL_LOCK : 0);
+                ? RecordList::RL_MRPA : 0);
         $node_bk->m_postvars = $session_back;
 
         if (isset($session_back['atkdg']['admin']['atksearch'])) {

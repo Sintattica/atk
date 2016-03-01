@@ -58,11 +58,6 @@ class DataGrid
     const MULTI_RECORD_PRIORITY_ACTIONS = 32;
 
     /**
-     * Enable record locking for the datagrid.
-     */
-    const LOCKING = 64;
-
-    /**
      * Create mode.
      *
      * @private
@@ -739,7 +734,6 @@ class DataGrid
         $flags |= !Tools::hasFlag($nodeFlags, Node::NF_NO_EXTENDED_SEARCH) ? self::EXTENDED_SEARCH : 0;
         $flags |= Tools::hasFlag($nodeFlags, Node::NF_MRA) ? self::MULTI_RECORD_ACTIONS : 0;
         $flags |= Tools::hasFlag($nodeFlags, Node::NF_MRPA) ? self::MULTI_RECORD_PRIORITY_ACTIONS : 0;
-        $flags |= Tools::hasFlag($nodeFlags, Node::NF_LOCK) ? self::LOCKING : 0;
 
         return $flags;
     }
