@@ -663,8 +663,6 @@ class Node
         list($this->m_module, $this->m_type) = explode('.', $nodeUri);
         $this->m_flags = $flags;
 
-        Tools::atkdebug("Creating a new node " . $nodeUri);
-
         $this->setEditFieldPrefix(Config::getGlobal('edit_fieldprefix', ''));
     }
 
@@ -1565,7 +1563,7 @@ class Node
      */
     function checkTabRights(&$tablist)
     {
-        global $g_nodes;
+        $atk = Atk::getInstance();
         $disable = array();
 
         if (empty($this->m_module)) {
@@ -1579,8 +1577,8 @@ class Node
             $secMgr = SecurityManager::getInstance();
 
             $priv = "tab_" . $tablist[$i];
-            if (isset($g_nodes[$this->m_module][$this->m_type]) && Tools::atk_in_array($priv,
-                    $g_nodes[$this->m_module][$this->m_type])
+            if (isset($atk->g_nodes[$this->m_module][$this->m_type]) && Tools::atk_in_array($priv,
+                    $atk->g_nodes[$this->m_module][$this->m_type])
             ) {
                 // authorisation is required
                 if (!$secMgr->allowed($this->m_module . "." . $this->m_type, "tab_" . $tablist[$i])) {
@@ -2895,9 +2893,9 @@ class Node
      */
     function _addListeners()
     {
-        global $g_nodeListeners;
-        if (isset($g_nodeListeners[$this->atkNodeUri()])) {
-            foreach ($g_nodeListeners[$this->atkNodeUri()] as $listener) {
+        $atk = Atk::getInstance();
+        if (isset($atk->g_nodeListeners[$this->atkNodeUri()])) {
+            foreach ($atk->g_nodeListeners[$this->atkNodeUri()] as $listener) {
                 if (is_object($listener)) {
                     $this->addListener($listener);
                 } else {
@@ -4286,7 +4284,6 @@ class Node
     }
 
 
-
     /**
      * Get img tag for lock icon.
      * @param boolean $lockstatus True if the record is locked, false if not.
@@ -4313,8 +4310,8 @@ class Node
     function callHandler($action)
     {
         Tools::atkdebug("self::callHandler(); action: " . $action);
-
-        $handler = Atk::atkGetNodeHandler($this->atkNodeUri(), $action);
+        $atk = Atk::getInstance();
+        $handler = $atk->atkGetNodeHandler($this->atkNodeUri(), $action);
 
         // handler function
         if ($handler != null && is_string($handler) && function_exists($handler)) {
@@ -4345,7 +4342,8 @@ class Node
         Tools::atkdebug("self::getHandler(); action: " . $action);
 
         //check if a handler exists registered including the module name
-        $handler = Atk::atkGetNodeHandler($this->atkNodeUri(), $action);
+        $atk = Atk::getInstance();
+        $handler = $atk->atkGetNodeHandler($this->atkNodeUri(), $action);
 
         // The node handler might return a class, then we need to instantiate the handler
         if (is_string($handler) && class_exists($handler)) {

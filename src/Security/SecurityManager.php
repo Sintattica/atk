@@ -167,8 +167,9 @@ class SecurityManager
      */
     function mailPassword($username)
     {
+        $atk = Atk::getInstance();
         // Query the database for user records having the given username and return if not found
-        $userNode = Atk::atkGetNode(Config::getGlobal("auth_usernode"));
+        $userNode = $atk->atkGetNode(Config::getGlobal("auth_usernode"));
         $selector = sprintf("%s.%s = '%s'", Config::getGlobal("auth_usertable"),
             Config::getGlobal("auth_userfield"), $username);
 

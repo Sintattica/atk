@@ -230,7 +230,8 @@ class ManyToManyRelation extends Relation
     function createLink()
     {
         if ($this->m_linkInstance == null) {
-            $this->m_linkInstance = Atk::newAtkNode($this->m_link);
+            $atk = Atk::getInstance();
+            $this->m_linkInstance = $atk->newAtkNode($this->m_link);
 
             // Validate if destination was created succesfully
             if (!is_object($this->m_linkInstance)) {

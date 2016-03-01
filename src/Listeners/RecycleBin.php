@@ -79,7 +79,8 @@ class RecycleBin extends TriggerListener
 
         if (isset($this->_options["node"])) {
 
-            $node = Atk::atkGetNode($this->_options["node"]);
+            $atk = Atk::getInstance();
+            $node = $atk->atkGetNode($this->_options["node"]);
             $node->addDb($record);
         } else {
 

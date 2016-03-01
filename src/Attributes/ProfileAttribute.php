@@ -205,7 +205,8 @@ class ProfileAttribute extends Attribute
      */
     function getAllActions($record, $splitPerSection = false)
     {
-        global $g_modules, $g_nodes;
+
+        $atk = Atk::getInstance();
 
         $result = array();
 
@@ -226,15 +227,15 @@ class ProfileAttribute extends Attribute
         else {
 
             // get nodes for each module
-            foreach (array_keys($g_modules) as $module) {
-                $instance = Atk::atkGetModule($module);
+            foreach (array_keys($atk->g_modules) as $module) {
+                $instance = $atk->atkGetModule($module);
                 if (method_exists($instance, "getNodes")) {
                     $instance->getNodes();
                 }
             }
 
             // retrieve all actions after we registered all actions
-            $result = $g_nodes;
+            $result = $atk->g_nodes;
         }
 
         if (!$splitPerSection) {

@@ -809,10 +809,11 @@ class SessionManager
         $module = null;
         $nodename = null;
         $stackcount = count($stack);
+        $atk = Atk::getInstance();
         for ($i = 0; $i < $stackcount; $i++) {
             if (isset($stack[$i]["descriptor"]) || $i == ($stackcount - 1)) {
                 if ($stack[$i]["atknodeuri"] != "") {
-                    $node = Atk::atkGetNode($stack[$i]["atknodeuri"]);
+                    $node = $atk->atkGetNode($stack[$i]["atknodeuri"]);
                     $module = Tools::getNodeModule($stack[$i]["atknodeuri"]);
                     $nodename = Tools::getNodeType($stack[$i]["atknodeuri"]);
                 }

@@ -824,9 +824,10 @@ class OneToManyRelation extends Relation
      */
     function delete($record)
     {
+        $atk = Atk::getInstance();
         $classname = $this->m_destination;
         $cache_id = $this->m_owner . "." . $this->m_name;
-        $rel = Atk::atkGetNode($classname, $cache_id);
+        $rel = $atk->atkGetNode($classname, $cache_id);
         $ownerfields = $this->getOwnerFields();
 
         for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++) {

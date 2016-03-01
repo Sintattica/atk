@@ -193,8 +193,9 @@ class Relation extends Attribute
     function createDestination()
     {
         if (!is_object($this->m_destInstance)) {
+            $atk = Atk::getInstance();
             $cache_id = $this->m_owner . "." . $this->m_name;
-            $this->m_destInstance = Atk::atkGetNode($this->m_destination, true, $cache_id);
+            $this->m_destInstance = $atk->atkGetNode($this->m_destination, true, $cache_id);
 
             // Validate if destination was created succesfully
             if (!is_object($this->m_destInstance)) {

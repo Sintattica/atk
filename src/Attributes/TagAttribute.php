@@ -90,7 +90,8 @@ class TagAttribute extends FuzzySearchAttribute
     function createDestinationInstance()
     {
         if (!is_object($this->m_destInstance)) {
-            $this->m_destInstance = Atk::atkGetNode($this->m_destination);
+            $atk = Atk::getInstance();
+            $this->m_destInstance = $atk->atkGetNode($this->m_destination);
             return is_object($this->m_destInstance);
         }
         return true;
@@ -106,7 +107,8 @@ class TagAttribute extends FuzzySearchAttribute
     function createLink()
     {
         if (!is_object($this->m_linkInstance)) {
-            $this->m_linkInstance = Atk::atkGetNode($this->m_link);
+            $atk = Atk::getInstance();
+            $this->m_linkInstance = $atk->atkGetNode($this->m_link);
             return is_object($this->m_linkInstance);
         }
         return true;

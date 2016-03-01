@@ -83,7 +83,8 @@ class AdminHandler extends ActionHandler
     function addPage($record = null)
     {
         // Reuse the atkAddHandler for the addPage.
-        $node = Atk::atkGetNode($this->invoke('getAddNodeType'));
+        $atk = Atk::getInstance();
+        $node = $atk->atkGetNode($this->invoke('getAddNodeType'));
 
         $handler = $node->getHandler("add");
         $handler->setNode($node);
@@ -303,7 +304,8 @@ class AdminHandler extends ActionHandler
      */
     function getAddLink()
     {
-        $node = Atk::atkGetNode($this->invoke('getAddNodeType'));
+        $atk = Atk::getInstance();
+        $node = $atk->atkGetNode($this->invoke('getAddNodeType'));
 
         if (!$node->hasFlag(Node::NF_NO_ADD) && $node->allowed("add")) {
             $label = $node->text("link_" . $node->m_type . "_add", null, "", "", true);
@@ -329,7 +331,8 @@ class AdminHandler extends ActionHandler
      */
     public function getAddUrl()
     {
-        $node = Atk::atkGetNode($this->invoke('getAddNodeType'));
+        $atk = Atk::getInstance();
+        $node = $atk->atkGetNode($this->invoke('getAddNodeType'));
         return Tools::atkSelf() . '?atknodeuri=' . $node->atkNodeUri() . '&atkaction=add';
     }
 

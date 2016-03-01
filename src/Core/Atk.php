@@ -2,18 +2,89 @@
 
 namespace Sintattica\Atk\Core;
 
-
+use Sintattica\Atk\Security\SqlWhereclauseBlacklistChecker;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\IndexPage;
 use Sintattica\Atk\Handlers\ActionHandler;
 
+require_once('adodb-time.php');
+
 class Atk
 {
+    var $g_nodes = [];
+    var $g_nodesClasses = [];
+    var $g_nodeRepository = [];
+    var $g_modules = [];
+    var $g_moduleRepository = [];
+    var $g_nodeHandlers = [];
+    var $g_nodeListeners = [];
+
 
     public function __construct()
     {
-        Bootstrap::run();
+        // do nothing fancy here, because Atk isn't ready yet
+        // (This is the framework, btw)
+
+        global $g_startTime;
+        $g_startTime = microtime(true);
+    }
+
+    private function init()
+    {
+
+        Config::loadGlobals();
+
+
+        if (Config::getGlobal('use_atkerrorhandler', true)) {
+            set_error_handler('Sintattica\Atk\Core\Tools::atkErrorHandler');
+            error_reporting(E_ALL);
+            set_exception_handler('Sintattica\Atk\Core\Tools::atkExceptionHandler');
+        }
+
+        /**
+         * Filter the atkselector REQUEST variable for blacklisted SQL (like UNIONs)
+         */
+        SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkselector');
+        SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkfilter');
+
+        if (Tools::atk_value_in_array($GLOBALS['config_smart_debug'])) {
+            $GLOBALS['config_debug'] = Config::smartDebugLevel($GLOBALS['config_debug'],
+                $GLOBALS['config_smart_debug']);
+        }
+
+        if ($GLOBALS['config_debug'] > 0) {
+            ini_set('display_errors', 1);
+        }
+
+        $locale = Tools::atktext('locale', 'atk');
+        if ($locale != null) {
+            setlocale(LC_TIME, $locale);
+        }
+
+        $locale = Tools::atktext('locale', 'atk');
+        if ($locale != null) {
+            setlocale(LC_TIME, $locale);
+        }
+
+        Tools::atkdebug('Created a new Atk instance: Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')');
+    }
+
+
+    /**
+     * Get new Atk object
+     *
+     * @return Atk class object
+     */
+    public static function &getInstance($time = null)
+    {
+        static $s_instance = null;
+        if ($s_instance == null) {
+            $s_instance = new Atk();
+            $s_instance->init();
+        }
+
+        return $s_instance;
     }
 
     /**
@@ -29,10 +100,8 @@ class Atk
      *              Note that tabs that every user may see need not be
      *              registered.
      */
-    public static function registerNode($nodeUri, $class, $actions = null, $tabs = array(), $section = null)
+    public function registerNode($nodeUri, $class, $actions = null, $tabs = array(), $section = null)
     {
-        global $g_nodes, $g_nodesClasses;
-
         if (!is_array($tabs)) {
             $section = $tabs;
             $tabs = array();
@@ -40,11 +109,9 @@ class Atk
 
         $module = Tools::getNodeModule($nodeUri);
         $type = Tools::getNodeType($nodeUri);
+        $this->g_nodesClasses[$nodeUri] = $class;
 
-
-        $g_nodesClasses[$nodeUri] = $class;
-
-        if($actions) {
+        if ($actions) {
             // prefix tabs with tab_
             for ($i = 0, $_i = count($tabs); $i < $_i; $i++) {
                 $tabs[$i] = "tab_" . $tabs[$i];
@@ -57,7 +124,7 @@ class Atk
                 $section = $module;
             }
 
-            $g_nodes[$section][$module][$type] = array_merge($actions, $tabs);
+            $this->g_nodes[$section][$module][$type] = array_merge($actions, $tabs);
         }
 
     }
@@ -88,27 +155,14 @@ class Atk
      * @param bool $reset Whether or not to reset the particular node in the repository
      * @return Node the node
      */
-    static public function atkGetNode($nodeUri, $init = true, $cache_id = "default", $reset = false)
+    public function atkGetNode($nodeUri, $init = true, $cache_id = "default", $reset = false)
     {
-        global $g_nodeRepository;
         $nodeUri = strtolower($nodeUri);
-        if (!isset($g_nodeRepository[$cache_id][$nodeUri]) || !is_object($g_nodeRepository[$cache_id][$nodeUri]) || $reset) {
+        if (!isset($this->g_nodeRepository[$cache_id][$nodeUri]) || !is_object($this->g_nodeRepository[$cache_id][$nodeUri]) || $reset) {
             Tools::atkdebug("Constructing a new node $nodeUri ($cache_id)");
-            $g_nodeRepository[$cache_id][$nodeUri] = self::newAtkNode($nodeUri, $init);
+            $this->g_nodeRepository[$cache_id][$nodeUri] = $this->newAtkNode($nodeUri, $init);
         }
-        return $g_nodeRepository[$cache_id][$nodeUri];
-    }
-
-
-    /**
-     * Retrieves all the registered Modules
-     *
-     * @return array with modules
-     */
-    public static function atkGetModules()
-    {
-        global $g_modules;
-        return $g_modules;
+        return $this->g_nodeRepository[$cache_id][$nodeUri];
     }
 
     /**
@@ -117,18 +171,15 @@ class Atk
      * @param string $moduleName The name of the module
      * @return Module An instance of the Module
      */
-    static public function atkGetModule($moduleName)
+    public function atkGetModule($moduleName)
     {
-        global $g_moduleRepository;
-
-        if (!isset($g_moduleRepository[$moduleName]) || !is_object($g_moduleRepository[$moduleName])) {
+        if (!isset($this->g_moduleRepository[$moduleName]) || !is_object($this->g_moduleRepository[$moduleName])) {
 
             Tools::atkdebug("Constructing a new module - $moduleName");
-            $modules = Atk::atkGetModules();
-            $modClass = $modules[$moduleName];
-            $g_moduleRepository[$moduleName] = new $modClass();
+            $modClass = $this->g_modules[$moduleName];
+            $this->g_moduleRepository[$moduleName] = new $modClass();
         }
-        return $g_moduleRepository[$moduleName];
+        return $this->g_moduleRepository[$moduleName];
     }
 
     /**
@@ -137,11 +188,11 @@ class Atk
      * @param bool $init initialize the node?
      * @return Node new node object
      */
-    static public function newAtkNode($nodeUri, $init = true)
+    public function newAtkNode($nodeUri, $init = true)
     {
-        global $g_nodesClasses;
+        $nodeClass = $this->g_nodesClasses[$nodeUri];
 
-        $nodeClass = $g_nodesClasses[$nodeUri];
+        Tools::atkdebug("Creating a new node: $nodeUri class: $nodeClass");
 
         /** @var Node $node */
         $node = new $nodeClass($nodeUri);
@@ -158,9 +209,9 @@ class Atk
      * @param string $module name of the module.
      * @return String The path to the module.
      */
-    public static function moduleDir($module)
+    public function moduleDir($module)
     {
-        $modules = Atk::atkGetModules();
+        $modules = $this->g_modules;
         if (isset($modules[$module])) {
             $class = $modules[$module];
 
@@ -182,13 +233,12 @@ class Atk
      * @return ActionHandler functionname or object (is_subclass_of ActionHandler) or
      *         NULL if no handler exists for the specified action
      */
-    public static function &atkGetNodeHandler($nodeUri, $action)
+    public function atkGetNodeHandler($nodeUri, $action)
     {
-        global $g_nodeHandlers;
-        if (isset($g_nodeHandlers[$nodeUri][$action])) {
-            $handler = $g_nodeHandlers[$nodeUri][$action];
-        } elseif (isset($g_nodeHandlers["*"][$action])) {
-            $handler = $g_nodeHandlers["*"][$action];
+        if (isset($this->g_nodeHandlers[$nodeUri][$action])) {
+            $handler = $this->g_nodeHandlers[$nodeUri][$action];
+        } elseif (isset($this->g_nodeHandlers["*"][$action])) {
+            $handler = $this->g_nodeHandlers["*"][$action];
         } else {
             $handler = null;
         }
@@ -202,31 +252,26 @@ class Atk
      * @param string /atkActionHandler $handler handler functionname or object (is_subclass_of atkActionHandler)
      * @return bool true if there is no known handler
      */
-    public static function atkRegisterNodeHandler($nodeUri, $action, $handler)
+    public function atkRegisterNodeHandler($nodeUri, $action, $handler)
     {
-        global $g_nodeHandlers;
-        if (isset($g_nodeHandlers[$nodeUri][$action])) {
+        if (isset($this->g_nodeHandlers[$nodeUri][$action])) {
             return false;
         } else {
-            $g_nodeHandlers[$nodeUri][$action] = $handler;
+            $this->g_nodeHandlers[$nodeUri][$action] = $handler;
         }
         return true;
     }
 
 
-
     public function registerModule($moduleClass)
     {
-        global $g_modules;
-
-
         $reflection = new \ReflectionClass($moduleClass);
 
         $name = strtolower($reflection->getStaticPropertyValue('module'));
 
         /** @var Module $module */
-        $g_modules[$name] = $moduleClass;
+        $this->g_modules[$name] = $moduleClass;
 
-        return self::atkGetModule($name);
+        return $this->atkGetModule($name);
     }
 }

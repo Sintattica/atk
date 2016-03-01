@@ -135,14 +135,16 @@ class Language
         $key = $modulefallback ? 1 : 0; // we can be called with true or false, cache both results
 
         if (!array_key_exists($key, $s_fallbackmodules)) {
-            global $g_modules;
 
             $modules = array();
-            if (is_array($g_modules) && ($modulefallback || Config::getGlobal("language_modulefallback", false))) {
-                foreach ($g_modules as $modname => $modpath) {
+
+            if ($modulefallback || Config::getGlobal("language_modulefallback", false)) {
+                $atk = Atk::getInstance();
+                foreach ($atk->g_modules as $modname => $modpath) {
                     $modules[] = $modname;
                 }
             }
+
             $modules[] = "atk";
 
             $s_fallbackmodules[$key] = array_merge($this->m_fallbackmodules, $modules);
@@ -506,7 +508,8 @@ class Language
             if ($moduleName == "langoverrides") {
                 $path = Config::getGlobal("language_basedir", $this->LANGDIR);
             } else {
-                $path = Atk::moduleDir($moduleName) . $this->LANGDIR;
+                $atk = Atk::getInstance();
+                $path = $atk->moduleDir($moduleName) . $this->LANGDIR;
             }
         }
 

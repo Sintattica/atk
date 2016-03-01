@@ -1,5 +1,6 @@
 <?php namespace Sintattica\Atk\Errors;
 
+use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
@@ -29,7 +30,7 @@ class MailErrorHandler extends ErrorHandlerBase
      */
     public function handle($errorMessage, $debugMessage)
     {
-        global $g_modules;
+
 
         $sessionManager = SessionManager::getInstance();
 
@@ -38,6 +39,9 @@ class MailErrorHandler extends ErrorHandlerBase
         $txt_app_title = Tools::atktext("app_title");
 
         if ($this->params['mailto'] != "") { // only if enabled..
+
+            $atk = Atk::getInstance();
+
             $subject = "[" . $_SERVER["SERVER_NAME"] . "] $txt_app_title error";
 
             $defaultfrom = sprintf("%s <%s@%s>", $txt_app_title, Config::getGlobal("identifier", "atk"),
@@ -103,7 +107,7 @@ class MailErrorHandler extends ErrorHandlerBase
             }
 
             $body .= "\n\nMODULE CONFIGURATION\n" . str_repeat("-", 70) . "\n";
-            foreach ($g_modules as $modname => $modpath) {
+            foreach ($atk->g_modules as $modname => $modpath) {
                 $modexists = file_exists($modpath) ? " (path exists)" : " (PATH DOES NOT EXIST!)";
                 $body .= $this->_wordwrap($modname . ":" . str_repeat(" ",
                             max(1, 20 - strlen($modname))) . var_export($modpath, 1) . $modexists) . "\n";

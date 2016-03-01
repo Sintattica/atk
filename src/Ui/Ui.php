@@ -169,7 +169,8 @@ class Ui
         if ($module == null || $nodetype == null) {
             return "";
         }
-        return $this->nodeTitle(Atk::atkGetNode($module . '.' . $nodetype), $action, $actiononly);
+        $atk = Atk::getInstance();
+        return $this->nodeTitle($atk->atkGetNode($module . '.' . $nodetype), $action, $actiononly);
     }
 
     /**
