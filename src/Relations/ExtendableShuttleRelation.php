@@ -23,7 +23,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
      * often used with the shuttlecontrols when editing
      * large tables
      */
-    const AF_SHUTTLERELATION_NO_AUTOLOAD = self::AF_SPECIFIC_1;
+    const AF_SHUTTLERELATION_NO_AUTOLOAD = 33554432;
 
     protected $m_controlsBySection = array();
     protected $m_selectedFields = array();

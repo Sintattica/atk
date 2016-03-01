@@ -3,7 +3,7 @@
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
-use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Atk;
 
 /**
  * Utility class for rendering boxes, lists, tabs or other templates.
@@ -169,7 +169,7 @@ class Ui
         if ($module == null || $nodetype == null) {
             return "";
         }
-        return $this->nodeTitle(Module::atkGetNode($module . '.' . $nodetype), $action, $actiononly);
+        return $this->nodeTitle(Atk::atkGetNode($module . '.' . $nodetype), $action, $actiononly);
     }
 
     /**

@@ -48,11 +48,6 @@ class Bootstrap
 
 
         /**
-         * Global moduleflags per module
-         */
-        $GLOBALS['g_moduleflags'] = array();
-
-        /**
          * Sticky global variables.
          * When you add 'key' to this, ATK will always pass 'key=$GLOBALS['key']'
          * in session urls and forms.

@@ -2,7 +2,7 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
-
+use Sintattica\Atk\Core\Atk;
 /**
  * Implementation of one-to-one relationships.
  *
@@ -28,31 +28,31 @@ class OneToOneRelation extends Relation
     /**
      * Override the default no add flag
      */
-    const AF_ONETOONE_ADD = self::AF_SPECIFIC_1;
+    const AF_ONETOONE_ADD = 33554432;
 
     /**
      * Enable error notifications / triggers
      */
-    const AF_ONETOONE_ERROR = self::AF_SPECIFIC_2;
+    const AF_ONETOONE_ERROR = 67108864;
 
     /**
      * Invisibly integrate a onetoonerelation as if the fields where part of the current node.
      * If the relation is integrated, no divider is drawn, and the section heading is suppressed.
      * (Integration does not affect the way data is stored or manipulated, only how it is displayed.)
      */
-    const AF_ONETOONE_INTEGRATE = self::AF_SPECIFIC_3;
+    const AF_ONETOONE_INTEGRATE = 134217728;
 
     /**
      * Use lazy loading instead of query addition.
      */
-    const AF_ONETOONE_LAZY = self::AF_SPECIFIC_4;
+    const AF_ONETOONE_LAZY = 268435456;
 
     /**
      * Respects tab/sections that have been assigned to this attribute instead of using the
      * tabs assigned for the attributes in the destination node. This flag is only useful in
      * integration mode.
      */
-    const AF_ONETOONE_RESPECT_TABS = self::AF_SPECIFIC_5;
+    const AF_ONETOONE_RESPECT_TABS = 536870912;
 
 
     /**
@@ -300,7 +300,7 @@ class OneToOneRelation extends Relation
     {
         $classname = $this->m_destination;
         $cache_id = $this->m_owner . "." . $this->m_name;
-        $rel = Module::atkGetNode($classname, true, $cache_id);
+        $rel = Atk::atkGetNode($classname, true, $cache_id);
         Tools::atkdebug("O2O DELETE for $classname: " . $this->m_refKey . "=" . $record[$this->m_ownerInstance->primaryKeyField()]);
 
         if ($this->m_refKey != "") {

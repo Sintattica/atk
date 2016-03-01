@@ -23,27 +23,27 @@ class FileAttribute extends Attribute
     /**
      * Disable uploading of files
      */
-    const AF_FILE_NO_UPLOAD = self::AF_SPECIFIC_1;
+    const AF_FILE_NO_UPLOAD = 33554432;
 
     /**
      * Disable selecting of files
      */
-    const AF_FILE_NO_SELECT = self::AF_SPECIFIC_2;
+    const AF_FILE_NO_SELECT = 67108864;
 
     /**
      * Disable deleting of files
      */
-    const AF_FILE_NO_DELETE = self::AF_SPECIFIC_3;
+    const AF_FILE_NO_DELETE = 134217728;
 
     /**
      * Don't try to detect the file type (shows only filename)
      */
-    const AF_FILE_NO_AUTOPREVIEW = self::AF_SPECIFIC_4;
+    const AF_FILE_NO_AUTOPREVIEW = 268435456;
 
     /**
      * Removed the files physically
      */
-    const AF_FILE_PHYSICAL_DELETE = self::AF_SPECIFIC_5;
+    const AF_FILE_PHYSICAL_DELETE = 536870912;
 
     /**
      * Show preview in popup instead of inline

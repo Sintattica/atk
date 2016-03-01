@@ -7,7 +7,7 @@ use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Session\SessionStore;
-use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Db\Query;
 use \Exception;
@@ -30,7 +30,7 @@ class OneToManyRelation extends Relation
     /**
      * Only allow deletion of master item when there are no child records
      */
-    const AF_RESTRICTED_DELETE = self::AF_SPECIFIC_1;
+    const AF_RESTRICTED_DELETE = 33554432;
 
 
     /**
@@ -46,7 +46,7 @@ class OneToManyRelation extends Relation
      * - Nodes with unique records (self::AF_UNIQUE always just checks the database)
      * - Combined primary keys
      */
-    const AF_ONETOMANY_SHOW_ADD = self::AF_SPECIFIC_4;
+    const AF_ONETOMANY_SHOW_ADD = 268435456;
 
 
     var $m_recordlist;
@@ -826,7 +826,7 @@ class OneToManyRelation extends Relation
     {
         $classname = $this->m_destination;
         $cache_id = $this->m_owner . "." . $this->m_name;
-        $rel = Module::atkGetNode($classname, $cache_id);
+        $rel = Atk::atkGetNode($classname, $cache_id);
         $ownerfields = $this->getOwnerFields();
 
         for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++) {
@@ -1201,7 +1201,7 @@ class OneToManyRelation extends Relation
             // Get the destination node
             $classname = $this->m_destination;
             $cache_id = $this->m_owner . "." . $this->m_name;
-            $rel = Module::atkGetNode($classname, $cache_id);
+            $rel = App::atkGetNode($classname, $cache_id);
             // Get the current atkselector
             $where = $this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']);
             if ($where) {

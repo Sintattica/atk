@@ -18,7 +18,7 @@ class BoolAttribute extends Attribute
     /**
      * Make bool attribute obligatory (normal self::AF_OBLIGATORY flag is always removed).
      */
-    const AF_BOOL_OBLIGATORY = self::AF_SPECIFIC_1;
+    const AF_BOOL_OBLIGATORY = 33554432;
 
     /**
      * Show an extra label right next to the checkbox. ATK searches the language
@@ -26,12 +26,12 @@ class BoolAttribute extends Attribute
      * the module/node prefixes). Don't forget to add the self::AF_BLANK_LABEL flag
      * if you don't want to show the normal label.
      */
-    const AF_BOOL_INLINE_LABEL = self::AF_SPECIFIC_2;
+    const AF_BOOL_INLINE_LABEL = 67108864;
 
     /**
      * Display checkbox in view / list mode instead of "yes" or "no".
      */
-    const AF_BOOL_DISPLAY_CHECKBOX = self::AF_SPECIFIC_3;
+    const AF_BOOL_DISPLAY_CHECKBOX = 134217728;
 
     /**
      * Constructor

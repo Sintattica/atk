@@ -20,22 +20,22 @@ class ListAttribute extends Attribute
     /**
      * Do not translate the options
      */
-    const AF_NO_TRANSLATION = self::AF_SPECIFIC_1;
+    const AF_NO_TRANSLATION = 33554432;
 
     /**
      * Do not add a default null option.
      */
-    const AF_LIST_NO_OBLIGATORY_NULL_ITEM = self::AF_SPECIFIC_2;
+    const AF_LIST_NO_OBLIGATORY_NULL_ITEM = 67108864;
 
     /**
      * Do not add null option ever
      */
-    const AF_LIST_NO_NULL_ITEM = self::AF_SPECIFIC_3;
+    const AF_LIST_NO_NULL_ITEM = 134217728;
 
     /**
      * Add a default null option to obligatory items
      */
-    const AF_LIST_OBLIGATORY_NULL_ITEM = self::AF_SPECIFIC_4;
+    const AF_LIST_OBLIGATORY_NULL_ITEM = 268435456;
 
     /**
      * Array with options for Listbox

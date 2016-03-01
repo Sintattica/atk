@@ -22,8 +22,8 @@ class PasswordAttribute extends Attribute
     /**
      * Flag(s) specific for atkPasswordAttribute
      */
-    const AF_PASSWORD_NO_VALIDATE = self::AF_SPECIFIC_1; // disables password check when editing password field
-    const AF_PASSWORD_NO_ENCODE = self::AF_SPECIFIC_2;
+    const AF_PASSWORD_NO_VALIDATE = 33554432; // disables password check when editing password field
+    const AF_PASSWORD_NO_ENCODE = 67108864;
 
     /**
      * Categories of password character categories

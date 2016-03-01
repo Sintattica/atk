@@ -19,13 +19,13 @@ use Sintattica\Atk\Utils\JSON;
 class DateAttribute extends Attribute
 {
     /** flag(s) specific for atkDateAttribute */
-    const AF_DATE_STRING = self::AF_SPECIFIC_1; // date must be entered as an english date string (strtotime), also checks edit format
-    const AF_DATE_EMPTYFIELD = self::AF_SPECIFIC_2; // Fields have one empty option
-    const AF_DATE_NO_CALENDAR = self::AF_SPECIFIC_3; // Do not append the popup calendar.
-    const AF_DATE_DISPLAY_DAY = self::AF_SPECIFIC_4; // Show the day of the week in the display
-    const AF_DATE_EDIT_NO_DAY = self::AF_SPECIFIC_5; // Don't display the day of the week in edit mode
-    const AF_CLEAR_TOUCH_BUTTONS = self::AF_SPECIFIC_6; // Display butons to clear and 'touch' date
-    const AF_DATE_DEFAULT_EMPTY = self::AF_SPECIFIC_7 | self::AF_DATE_EMPTYFIELD; // Always use the empty value on new record
+    const AF_DATE_STRING = 33554432; // date must be entered as an english date string (strtotime), also checks edit format
+    const AF_DATE_EMPTYFIELD = 67108864; // Fields have one empty option
+    const AF_DATE_NO_CALENDAR = 134217728; // Do not append the popup calendar.
+    const AF_DATE_DISPLAY_DAY = 268435456; // Show the day of the week in the display
+    const AF_DATE_EDIT_NO_DAY = 536870912; // Don't display the day of the week in edit mode
+    const AF_CLEAR_TOUCH_BUTTONS = 1073741824; // Display butons to clear and 'touch' date
+    const AF_DATE_DEFAULT_EMPTY = 2214592512; // Always use the empty value on new record
 
     /**
      * Possible values for sorting the year dropdown

@@ -2,7 +2,7 @@
 
 use Sintattica\Atk\Utils\TriggerListener;
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Attributes\Attribute;
 
 /**
@@ -79,7 +79,7 @@ class RecycleBin extends TriggerListener
 
         if (isset($this->_options["node"])) {
 
-            $node = Module::atkGetNode($this->_options["node"]);
+            $node = Atk::atkGetNode($this->_options["node"]);
             $node->addDb($record);
         } else {
 

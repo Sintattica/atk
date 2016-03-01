@@ -17,9 +17,9 @@ class IpAttribute extends Attribute
     /**
      * Flags for the atkIpAttribute
      */
-    const AF_IP_ALLOW_WILDCARDS = self::AF_SPECIFIC_1;
-    const AF_IP_STORENUMERIC = self::AF_SPECIFIC_2;
-    const AF_IP_SINGLEFIELD = self::AF_SPECIFIC_3;
+    const AF_IP_ALLOW_WILDCARDS = 33554432;
+    const AF_IP_STORENUMERIC = 67108864;
+    const AF_IP_SINGLEFIELD = 134217728;
 
     /**
      * Constructor.

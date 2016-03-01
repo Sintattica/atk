@@ -23,12 +23,12 @@ class ManyBoolRelation extends ManyToManyRelation
     /**
      * Attribute flag. When used the atkManyBoolRelation shows add links to add records for the related table
      */
-    const AF_MANYBOOL_AUTOLINK = self::AF_SPECIFIC_1;
+    const AF_MANYBOOL_AUTOLINK = 33554432;
 
     /**
      * Hides the select all, select none and inverse links.
      */
-    const AF_MANYBOOL_NO_TOOLBAR = self::AF_SPECIFIC_2;
+    const AF_MANYBOOL_NO_TOOLBAR = 67108864;
 
 
     var $m_cols = 3;

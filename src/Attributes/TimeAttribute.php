@@ -18,9 +18,9 @@ class TimeAttribute extends Attribute
     /**
      * Flags for atkTimeAttribute
      */
-    const AF_TIME_SECONDS = self::AF_SPECIFIC_1; // Display seconds after hours & minutes
+    const AF_TIME_SECONDS = 33554432; // Display seconds after hours & minutes
     const AF_CLEAR_TOUCH_BUTTONS = DateAttribute::AF_CLEAR_TOUCH_BUTTONS; // Display butons to clear and 'touch' date
-    const AF_TIME_DEFAULT_EMPTY = self::AF_SPECIFIC_7; // Always use the empty value on new record
+    const AF_TIME_DEFAULT_EMPTY = 2147483648; // Always use the empty value on new record
 
 
     var $m_beginTime = 0;

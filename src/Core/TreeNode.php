@@ -130,14 +130,14 @@ class TreeNode extends Node
 
         if (!$this->hasFlag(self::NF_NO_ADD) && $this->hasFlag(self::NF_ADD_LINK) && $this->allowed("add")) {
             $addurl = Tools::atkSelf() . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=add&atkfilter=" . rawurlencode($this->m_parent . "." . $this->m_primaryKey[0] . "='0'");
-            if (Tools::atktext("txt_link_" . Module::getNodeType($this->m_type) . "_add", $this->m_module, "",
+            if (Tools::atktext("txt_link_" . Tools::getNodeType($this->m_type) . "_add", $this->m_module, "",
                     "", "", true) != ""
             ) {
                 // specific text
-                $label = Tools::atktext("link_" . Module::getNodeType($this->m_type) . "_add", $this->m_module);
+                $label = Tools::atktext("link_" . Tools::getNodeType($this->m_type) . "_add", $this->m_module);
             } else {
                 // generic text
-                $label = Tools::atktext(Module::getNodeType($this->m_type),
+                $label = Tools::atktext(Tools::getNodeType($this->m_type),
                         $this->m_module) . " " . Tools::atktext("add", "atk");
             }
             $content .= Tools::href($addurl, $label, SessionManager::SESSION_NESTED) . '<br><br>';

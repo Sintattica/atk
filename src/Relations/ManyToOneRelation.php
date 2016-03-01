@@ -35,42 +35,42 @@ class ManyToOneRelation extends Relation
     /**
      * Create edit/view links for the items in a manytoonerelation dropdown.
      */
-    const AF_RELATION_AUTOLINK = self::AF_SPECIFIC_1;
+    const AF_RELATION_AUTOLINK = 33554432;
 
     /**
      * Create edit/view links for the items in a manytoonerelation dropdown.
      */
-    const AF_MANYTOONE_AUTOLINK = self::AF_RELATION_AUTOLINK;
+    const AF_MANYTOONE_AUTOLINK = 33554432;
 
     /**
      * Do not add null option under any circumstance
      */
-    const AF_RELATION_NO_NULL_ITEM = self::AF_SPECIFIC_2;
+    const AF_RELATION_NO_NULL_ITEM = 67108864;
 
     /**
      * Do not add null option ever
      */
-    const AF_MANYTOONE_NO_NULL_ITEM = self::AF_RELATION_NO_NULL_ITEM;
+    const AF_MANYTOONE_NO_NULL_ITEM = 67108864;
 
     /**
      * Use auto-completition instead of drop-down / selection page
      */
-    const AF_RELATION_AUTOCOMPLETE = self::AF_SPECIFIC_3;
+    const AF_RELATION_AUTOCOMPLETE = 134217728;
 
     /**
      * Use auto-completition instead of drop-down / selection page
      */
-    const AF_MANYTOONE_AUTOCOMPLETE = self::AF_RELATION_AUTOCOMPLETE;
+    const AF_MANYTOONE_AUTOCOMPLETE = 134217728;
 
     /**
      * Lazy load
      */
-    const AF_MANYTOONE_LAZY = self::AF_SPECIFIC_4;
+    const AF_MANYTOONE_LAZY = 268435456;
 
     /**
      * Add a default null option to obligatory relations
      */
-    const AF_MANYTOONE_OBLIGATORY_NULL_ITEM = self::AF_SPECIFIC_5;
+    const AF_MANYTOONE_OBLIGATORY_NULL_ITEM = 536870912;
 
 
     const SEARCH_MODE_EXACT = "exact";
@@ -966,11 +966,11 @@ class ManyToOneRelation extends Relation
         // when we come from the select..
         $sm = SessionManager::getInstance();
         $atktarget = Tools::atkurlencode(Config::getGlobal('dispatcher') . "?atklevel=" . $sm->atkLevel() . "&" . $selname . "=[atkprimkey]");
-        $linkname = Tools::atktext("link_select_" . Module::getNodeType($this->m_destination),
+        $linkname = Tools::atktext("link_select_" . Tools::getNodeType($this->m_destination),
             $this->getOwnerInstance()->getModule(), $this->getOwnerInstance()->getType(), '', '', true);
         if (!$linkname) {
-            $linkname = Tools::atktext("link_select_" . Module::getNodeType($this->m_destination),
-                Module::getNodeModule($this->m_destination), Module::getNodeType($this->m_destination), '', '',
+            $linkname = Tools::atktext("link_select_" . Tools::getNodeType($this->m_destination),
+                Tools::getNodeModule($this->m_destination), Tools::getNodeType($this->m_destination), '', '',
                 true);
         }
         if (!$linkname) {

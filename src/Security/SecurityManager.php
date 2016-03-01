@@ -3,7 +3,7 @@
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Security\Auth\AuthInterface;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Output;
@@ -168,7 +168,7 @@ class SecurityManager
     function mailPassword($username)
     {
         // Query the database for user records having the given username and return if not found
-        $userNode = Module::atkGetNode(Config::getGlobal("auth_usernode"));
+        $userNode = Atk::atkGetNode(Config::getGlobal("auth_usernode"));
         $selector = sprintf("%s.%s = '%s'", Config::getGlobal("auth_usertable"),
             Config::getGlobal("auth_userfield"), $username);
 

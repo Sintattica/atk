@@ -3,12 +3,13 @@
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Utils\DirectoryTraverser;
+use Sintattica\Atk\Core\Atk;
 
 /**
- * Class that handles userinterface internationalization.
+ * Class that handles user interface internationalization.
  *
  * This class is used to retrieve the proper translations for any string
- * displayed in the userinterface. It includes only those language files
+ * displayed in the user interface. It includes only those language files
  * that are actually used, and has several fallback systems to find
  * translations if they can be find in the correct module.
  *
@@ -494,20 +495,21 @@ class Language
      * Special method in that it can run both in static and non-static
      * mode.
      *
-     * @param string $module The module to get the languagedir for
+     * @param string $moduleName The module to get the languagedir for
      * @return String The relative path to the languagedir
      */
-    public function getLanguageDirForModule($module)
+    public function getLanguageDirForModule($moduleName)
     {
-        if ($module == "atk") {
+        if ($moduleName == "atk") {
             $path = __DIR__ . '/../Resources/' . $this->LANGDIR;
         } else {
-            if ($module == "langoverrides") {
+            if ($moduleName == "langoverrides") {
                 $path = Config::getGlobal("language_basedir", $this->LANGDIR);
             } else {
-                $path = Module::moduleDir($module) . $this->LANGDIR;
+                $path = Atk::moduleDir($moduleName) . $this->LANGDIR;
             }
         }
+
         return $path;
     }
 

@@ -16,12 +16,12 @@ class UrlAttribute extends Attribute
     /**
      * Add one space after each "/", "?" and "&" to fit a (long) url into <td></td>.
      */
-    const AF_URL_ALLOWWRAP = self::AF_SPECIFIC_1;
+    const AF_URL_ALLOWWRAP = 33554432;
 
     /**
      * Don't display "http://". Link remains intact.
      */
-    const AF_URL_STRIPHTTP = self::AF_SPECIFIC_2;
+    const AF_URL_STRIPHTTP = 67108864;
 
     /**
      * Check if URL is a valid absolute URL

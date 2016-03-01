@@ -18,9 +18,9 @@ use Sintattica\Atk\Keyboard\Keyboard;
 class MultiSelectAttribute extends ListAttribute
 {
     /** Defines */
-    const AF_NO_TOGGLELINKS = self::AF_SPECIFIC_2;
-    const AF_CHECK_ALL = self::AF_SPECIFIC_3;
-    const AF_LINKS_BOTTOM = self::AF_SPECIFIC_4;
+    const AF_NO_TOGGLELINKS = 67108864;
+    const AF_CHECK_ALL = 134217728;
+    const AF_LINKS_BOTTOM = 268435456;
 
     // number of cols
     public $m_cols;

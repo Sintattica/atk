@@ -22,7 +22,7 @@ class RadioAttribute extends ListAttribute
     /**
      * Displays the set of radio buttons vertically
      */
-    const AF_DISPLAY_VERT = self::AF_SPECIFIC_2;
+    const AF_DISPLAY_VERT = 67108864;
 
     // Default number of cols / rows
     var $m_amount = 1;

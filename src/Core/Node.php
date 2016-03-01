@@ -186,12 +186,12 @@ class Node
     /**
      * Alias for NF_MULTI_RECORD_ACTIONS flag (shortcut)
      */
-    const NF_MRA = self::NF_MULTI_RECORD_ACTIONS;
+    const NF_MRA = 8192;
 
     /**
      * Aggregate flag to quickly create readonly nodes
      */
-    const NF_READONLY = self::NF_NO_ADD | self::NF_NO_DELETE | self::NF_NO_EDIT;
+    const NF_READONLY = 7;
 
     /**
      * Multi-record-actions selection modes. These
@@ -219,7 +219,7 @@ class Node
      * @access private
      * @var String
      */
-    var $m_validate_class = __NAMESPACE__ . "\\NodeValidator";
+    var $m_validate_class = 'Sintattica\Atk\Core\NodeValidator';
 
     /**
      * Unique field sets of a certain node.
@@ -652,31 +652,18 @@ class Node
      */
     private $m_attribOrder = 0;
 
+
     /**
-     * Constructor.
-     *
-     * This initialises the node. Derived classes should always call their
-     * parent constructor ($this->Node($nodeType, $flags), to initialize the
-     * base class.
-     * <br>
-     * <b>Example:</b>
-     * <code>$this->Node('test',self::NF_NO_EDIT);</code>
-     * @param string $type The nodetype (by default equal to the classname lowercased)
+     * @param string $nodeUri The nodeuri
+     * @param Atk $atk
      * @param int $flags Bitmask of node flags (self::NF_*).
      */
-    function __construct($type = "", $flags = 0)
+    function __construct($nodeUri, $flags = 0)
     {
-        if ($type == "") {
-            $type = strtolower(get_class($this));
-            if ($pos = strrpos($type, '\\')) {
-                $type = substr($type, $pos + 1);
-            }
-        }
-
-        $this->m_type = strtolower($type);
+        list($this->m_module, $this->m_type) = explode('.', $nodeUri);
         $this->m_flags = $flags;
-        $this->m_module = Module::getModuleScope();
-        Tools::atkdebug("Creating a new node " . $this->m_module . '.' . $type);
+
+        Tools::atkdebug("Creating a new node " . $nodeUri);
 
         $this->setEditFieldPrefix(Config::getGlobal('edit_fieldprefix', ''));
     }
@@ -1591,12 +1578,6 @@ class Node
             }
             $secMgr = SecurityManager::getInstance();
 
-            // load the $g_nodes array to find out what tabs are required
-            if (!isset($g_nodes[$this->m_module][$this->m_type])) {
-                $module = Module::atkGetModule($this->m_module);
-                $module->getNodes();
-            }
-
             $priv = "tab_" . $tablist[$i];
             if (isset($g_nodes[$this->m_module][$this->m_type]) && Tools::atk_in_array($priv,
                     $g_nodes[$this->m_module][$this->m_type])
@@ -2045,7 +2026,7 @@ class Node
      */
     function getDefaultActionParams($locked = false)
     {
-        $params = $this->getHelp();
+        $params = array();
         $params["lockstatus"] = $this->getLockStatusIcon($locked);
         $params["formend"] = '</form>';
         return $params;
@@ -2853,9 +2834,7 @@ class Node
      * This function initialises certain elements of the node.
      *
      * This must be called right after the constructor. The function has a
-     * check to prevent it from being executed twice. If you construct a node
-     * using 'new', you have to call this method. If you construct it with the
-     * getNode or newNode method, you don't have to call this method.
+     * check to prevent it from being executed twice.
      */
     function init()
     {
@@ -4169,7 +4148,7 @@ class Node
     }
 
     /**
-     * Returns the module for this node.
+     * Returns the module name for this node.
      *
      * @return string node
      */
@@ -4307,22 +4286,6 @@ class Node
     }
 
 
-    /**
-     * Retrieve help link for the current node.
-     * @return String Complete html link, linking to the help popup.
-     */
-    function getHelp()
-    {
-        $res = array();
-        $res["helpurl"] = $this->helpUrl();
-        if ($res["helpurl"] != "") {
-            $page = $this->getPage();
-            $page->register_script(Config::getGlobal("assets_url") . "javascript/newwindow.js");
-            $res["helplabel"] = Tools::atktext("help");
-            $res["helplink"] = '<a href="' . $res["helpurl"] . '">' . $res["helplabel"] . '</a>';
-        }
-        return $res;
-    }
 
     /**
      * Get img tag for lock icon.
@@ -4337,36 +4300,6 @@ class Node
         return '';
     }
 
-    /**
-     * Get the help url for this node.
-     *
-     * Retrieves the url of the help popup, if there is help available for
-     * this node.
-     * @return String The help url, or an empty string if help is not
-     *                available.
-     */
-    function helpUrl()
-    {
-        $language = Config::getGlobal("language");
-        $node = $this->m_type;
-
-        $file = Module::moduleDir($this->m_module) . "help/" . $language . "/help." . $node . ".php";
-        $helpmodule = "";
-        if (file_exists($file)) {
-            $helpmodule = $this->m_module;
-        } else {
-            // bwc
-            $file = "help/" . $language . "/help." . $node . ".php";
-            if (!file_exists($file)) {
-                // no help available..
-                return "";
-            }
-        }
-
-        $name = Tools::atktext("help");
-        return Tools::atkPopup('atk/popups/help.php', 'node=' . $node . ($helpmodule != ""
-                ? "&module=" . $helpmodule : ""), $name, 650, 650, 'yes', 'no');
-    }
 
     /**
      * Invoke the handler for an action.
@@ -4380,7 +4313,8 @@ class Node
     function callHandler($action)
     {
         Tools::atkdebug("self::callHandler(); action: " . $action);
-        $handler = Module::atkGetNodeHandler($this->atkNodeUri(), $action);
+
+        $handler = Atk::atkGetNodeHandler($this->atkNodeUri(), $action);
 
         // handler function
         if ($handler != null && is_string($handler) && function_exists($handler)) {
@@ -4411,7 +4345,7 @@ class Node
         Tools::atkdebug("self::getHandler(); action: " . $action);
 
         //check if a handler exists registered including the module name
-        $handler = Module::atkGetNodeHandler($this->atkNodeUri(), $action);
+        $handler = Atk::atkGetNodeHandler($this->atkNodeUri(), $action);
 
         // The node handler might return a class, then we need to instantiate the handler
         if (is_string($handler) && class_exists($handler)) {
@@ -4437,7 +4371,7 @@ class Node
             //If we use a default handler we need to register it to this node
             //because we might call it a second time.
             Tools::atkdebug("self::getHandler: Register default ActionHandler for " . $this->m_type . " action: '" . $action . "'");
-            Module::atkRegisterNodeHandler($this->m_type, $action, $handler);
+            Atk::atkRegisterNodeHandler($this->m_type, $action, $handler);
         }
 
         return $handler;

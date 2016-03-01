@@ -16,7 +16,7 @@ class WeekdayAttribute extends NumberAttribute
     /**
      * Flags for atkWeekdayAttribute
      */
-    const AF_WEEKDAY_SMALL_EDIT = self::AF_SPECIFIC_1;
+    const AF_WEEKDAY_SMALL_EDIT = 33554432;
 
     /**
      * Bitwise flags for weekdays.

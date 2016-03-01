@@ -132,7 +132,7 @@ class Config
         }
 
         if (!isset($s_configs[$section])) {
-            $config = self::getConfigForSection($section);
+            $config =  self::getDirConfigForSection(Config::getGlobal('configdir'), $section);
             if (!is_array($config)) {
                 $config = array();
             }
@@ -144,27 +144,6 @@ class Config
         } else {
             return $default;
         }
-    }
-
-    /**
-     * Get the configuration values for a section and if the section
-     * turns out to be a module, try to get the module configs
-     * and merge them as fallbacks.
-     *
-     * @param string $section Name of the section to get configs for
-     * @return array Configuration values
-     */
-    public static function getConfigForSection($section)
-    {
-        $config = self::getDirConfigForSection(Config::getGlobal('configdir'), $section);
-        if (Module::moduleExists($section)) {
-            $dir = Module::moduleDir($section) . 'skel/configs/';
-            if (file_exists($dir)) {
-                $module_configs = self::getDirConfigForSection($dir, $section);
-                $config = array_merge($module_configs, $config);
-            }
-        }
-        return $config;
     }
 
     /**

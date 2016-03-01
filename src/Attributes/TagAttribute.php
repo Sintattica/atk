@@ -1,6 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
 
-use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
@@ -90,7 +90,7 @@ class TagAttribute extends FuzzySearchAttribute
     function createDestinationInstance()
     {
         if (!is_object($this->m_destInstance)) {
-            $this->m_destInstance = Module::atkGetNode($this->m_destination);
+            $this->m_destInstance = Atk::atkGetNode($this->m_destination);
             return is_object($this->m_destInstance);
         }
         return true;
@@ -106,7 +106,7 @@ class TagAttribute extends FuzzySearchAttribute
     function createLink()
     {
         if (!is_object($this->m_linkInstance)) {
-            $this->m_linkInstance = Module::atkGetNode($this->m_link);
+            $this->m_linkInstance = Atk::atkGetNode($this->m_link);
             return is_object($this->m_linkInstance);
         }
         return true;

@@ -1,6 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
 
-use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Db;
@@ -97,7 +97,7 @@ class FuzzySearchAttribute extends Attribute
     function createSearchNodeInstance()
     {
         if (!is_object($this->m_searchnodeInstance)) {
-            $this->m_searchnodeInstance = Module::atkGetNode($this->m_searchnode);
+            $this->m_searchnodeInstance = Atk::atkGetNode($this->m_searchnode);
             return is_object($this->m_searchnodeInstance);
         }
         return true;

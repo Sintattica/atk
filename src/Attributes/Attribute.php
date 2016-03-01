@@ -51,7 +51,7 @@ class Attribute
      *
      * "database-level" processing flag
      */
-    const AF_PRIMARY = 4 | self::AF_OBLIGATORY;
+    const AF_PRIMARY = 5;
 
     /**
      * Auto-increment field
@@ -65,7 +65,7 @@ class Attribute
      *
      * "database-level" processing flag
      */
-    const AF_AUTOINCREMENT = self::AF_AUTO_INCREMENT;
+    const AF_AUTOINCREMENT = 8;
 
     /**
      * Don't show in record lists
@@ -120,8 +120,9 @@ class Attribute
      * Attribute is totally hidden
      *
      * hide flag
+     * self::AF_HIDE_EDIT | self::AF_HIDE_ADD | self::AF_HIDE_LIST | self::AF_HIDE_SEARCH | self::AF_HIDE_VIEW | self::AF_HIDE_SELECT
      */
-    const AF_HIDE = self::AF_HIDE_EDIT | self::AF_HIDE_ADD | self::AF_HIDE_LIST | self::AF_HIDE_SEARCH | self::AF_HIDE_VIEW | self::AF_HIDE_SELECT;
+    const AF_HIDE = 1008;
 
     /**
      * Readonly in add
@@ -141,8 +142,9 @@ class Attribute
      * Always readonly
      *
      * readonly flag
+     * self::AF_READONLY_EDIT | self::AF_READONLY_ADD;
      */
-    const AF_READONLY = self::AF_READONLY_EDIT | self::AF_READONLY_ADD;
+    const AF_READONLY = 6144;
 
     /**
      * No label in forms
@@ -156,7 +158,7 @@ class Attribute
      *
      * display-related processing flag
      */
-    const AF_NOLABEL = self::AF_NO_LABEL;
+    const AF_NOLABEL = 8192;
 
     /**
      * Blank label in forms
@@ -170,7 +172,7 @@ class Attribute
      *
      * display-related processing flag
      */
-    const AF_BLANKLABEL = self::AF_BLANK_LABEL;
+    const AF_BLANKLABEL = 16384;
 
     /**
      * Cannot be sorted in recordlists
@@ -184,7 +186,7 @@ class Attribute
      *
      * display-related processing flag
      */
-    const AF_NOSORT = self::AF_NO_SORT;
+    const AF_NOSORT = 32768;
 
     /**
      * Attribute is searchable in list views
@@ -248,50 +250,9 @@ class Attribute
      * Shortcut for hidden auto-incremented primary key
      *
      * miscellaneous processing flag
+     * self::AF_PRIMARY | self::AF_HIDE | self::AF_AUTOINCREMENT;
      */
-    const AF_AUTOKEY = self::AF_PRIMARY | self::AF_HIDE | self::AF_AUTOINCREMENT;
-
-    /*
-     * flag (values) that can be used for attribute specific flags
-     * NOTE: Attribute specific flags aren't good behaviour, but for
-     * compatibility reasons we support them anyway. Newly derived attributes
-     * should not use these specific flags, but work with extra parameters.
-     */
-
-    /**
-     * Specific attribute flag 1
-     */
-    const AF_SPECIFIC_1 = 33554432;
-
-    /**
-     * Specific attribute flag 2
-     */
-    const AF_SPECIFIC_2 = 67108864;
-
-    /**
-     * Specific attribute flag 3
-     */
-    const AF_SPECIFIC_3 = 134217728;
-
-    /**
-     * Specific attribute flag 4
-     */
-    const AF_SPECIFIC_4 = 268435456;
-
-    /**
-     * Specific attribute flag 5
-     */
-    const AF_SPECIFIC_5 = 536870912;
-
-    /**
-     * Specific attribute flag 6
-     */
-    const AF_SPECIFIC_6 = 1073741824;
-
-    /**
-     * Specific attribute flag 7
-     */
-    const AF_SPECIFIC_7 = 2147483648;
+    const AF_AUTOKEY = 1021;
 
     /**
      * Do not store this attribute
@@ -354,8 +315,9 @@ class Attribute
 
     /**
      * Attribute is disabled in view and edit mode
+     * self::DISABLED_VIEW | self::DISABLED_EDIT;
      */
-    const DISABLED_ALL = self::DISABLED_VIEW | self::DISABLED_EDIT;
+    const DISABLED_ALL = 3;
 
     /**
      * The name of the attribute

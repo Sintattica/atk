@@ -18,7 +18,7 @@ class LiveTextPreview extends DummyAttribute
      * Custom flags
      */
     const AF_LIVETEXT_SHOWLABEL = DummyAttribute::AF_DUMMY_SHOW_LABEL;
-    const AF_LIVETEXT_NL2BR = self::AF_SPECIFIC_2;
+    const AF_LIVETEXT_NL2BR = 67108864;
 
     var $m_masterattribute = "";
 

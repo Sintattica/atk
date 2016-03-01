@@ -23,9 +23,9 @@ class Keyboard
     const KB_DOWN = 2;
     const KB_LEFT = 4;
     const KB_RIGHT = 8;
-    const KB_UPDOWN = self::KB_UP | self::KB_DOWN;
-    const KB_LEFTRIGHT = self::KB_LEFT | self::KB_RIGHT;
-    const KB_CURSOR = self::KB_UPDOWN | self::KB_LEFTRIGHT;
+    const KB_UPDOWN = 3;
+    const KB_LEFTRIGHT = 12;
+    const KB_CURSOR = 15;
     const KB_CTRLCURSOR = 16;
 
     /**

@@ -14,7 +14,7 @@ use Sintattica\Atk\Handlers\ViewEditBase;
  */
 class TabbedPane extends Attribute
 {
-    const AF_TABBEDPANE_NO_AUTO_HIDE_LABEL = self::AF_SPECIFIC_1;
+    const AF_TABBEDPANE_NO_AUTO_HIDE_LABEL = 33554432;
 
     /**
      * The tabs list

@@ -3,7 +3,7 @@
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\Db\Query;
 
@@ -194,7 +194,7 @@ class Relation extends Attribute
     {
         if (!is_object($this->m_destInstance)) {
             $cache_id = $this->m_owner . "." . $this->m_name;
-            $this->m_destInstance = Module::atkGetNode($this->m_destination, true, $cache_id);
+            $this->m_destInstance = Atk::atkGetNode($this->m_destination, true, $cache_id);
 
             // Validate if destination was created succesfully
             if (!is_object($this->m_destInstance)) {
@@ -357,7 +357,7 @@ class Relation extends Attribute
         if ($label == "") {
             $label = Tools::atktext($key, $this->m_destInstance->m_module, "", "", "", true);
             if ($label == "") {
-                $key = "link_" . Module::getNodeType($this->m_destination) . "_add";
+                $key = "link_" . Tools::getNodeType($this->m_destination) . "_add";
                 $label = Tools::atktext($key, $this->m_destInstance->m_module, "", "", "", true);
                 if ($label == "") {
                     $label = Tools::atktext("link_add", "atk");

@@ -1,6 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
 
-use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Security\SecurityManager;
@@ -127,8 +127,8 @@ class ProfileAttribute extends Attribute
             foreach ($checked as $node => $actions) {
                 $actions = array_unique($actions);
 
-                $nodeModule = Module::getNodeModule($node);
-                $nodeType = Module::getNodeType($node);
+                $nodeModule = Tools::getNodeModule($node);
+                $nodeType = Tools::getNodeType($node);
 
                 $validActions = array();
 
@@ -205,7 +205,7 @@ class ProfileAttribute extends Attribute
      */
     function getAllActions($record, $splitPerSection = false)
     {
-        global $g_modules, $g_moduleflags, $g_nodes;
+        global $g_modules, $g_nodes;
 
         $result = array();
 
@@ -218,8 +218,8 @@ class ProfileAttribute extends Attribute
             $rows = $db->getRows($query);
 
             foreach ($rows as $row) {
-                $module = Module::getNodeModule($row['node']);
-                $node = Module::getNodeType($row['node']);
+                $module = Tools::getNodeModule($row['node']);
+                $node = Tools::getNodeType($row['node']);
                 $result[$module][$module][$node][] = $row['action'];
             }
         } // non-hierarchic groups, or root
@@ -227,11 +227,9 @@ class ProfileAttribute extends Attribute
 
             // get nodes for each module
             foreach (array_keys($g_modules) as $module) {
-                if (!isset($g_moduleflags[$module]) || !Tools::hasFlag($g_moduleflags[$module], Module::MF_NORIGHTS)) {
-                    $instance = Module::atkGetModule($module);
-                    if (method_exists($instance, "getNodes")) {
-                        $instance->getNodes();
-                    }
+                $instance = Atk::atkGetModule($module);
+                if (method_exists($instance, "getNodes")) {
+                    $instance->getNodes();
                 }
             }
 
@@ -280,8 +278,8 @@ class ProfileAttribute extends Attribute
 
         $result = array();
         foreach ($rows as $row) {
-            $module = Module::getNodeModule($row['node']);
-            $node = Module::getNodeType($row['node']);
+            $module = Tools::getNodeModule($row['node']);
+            $node = Tools::getNodeType($row['node']);
             $result[$module][$node][] = $row['action'];
         }
 
@@ -310,8 +308,8 @@ class ProfileAttribute extends Attribute
 
         $result = array();
         foreach ($selected as $node => $actions) {
-            $module = Module::getNodeModule($node);
-            $node = Module::getNodeType($node);
+            $module = Tools::getNodeModule($node);
+            $node = Tools::getNodeType($node);
             $result[$module][$node] = $actions;
         }
 

@@ -27,8 +27,8 @@ class Page
     const HTML_BODY = 1;                        // Add body tags to page
     const HTML_HEADER = 2;                      // Add header to page
     const HTML_DOCTYPE = 4;                     // Add doctype to page
-    const HTML_ALL = self::HTML_BODY | self::HTML_HEADER;     // Shortcut
-    const HTML_STRICT = self::HTML_ALL | self::HTML_DOCTYPE;  // Shortcut
+    const HTML_ALL = 3;     // Shortcut
+    const HTML_STRICT = 7;  // Shortcut
     const HTML_PARTIAL = 8;                    // Partial (only content, this flag can't be ANDed!)
 
     /**

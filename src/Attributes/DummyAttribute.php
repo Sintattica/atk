@@ -20,7 +20,7 @@ class DummyAttribute extends Attribute
     /**
      * Custom flags
      */
-    const AF_DUMMY_SHOW_LABEL = self::AF_SPECIFIC_1; // make the dummy label its fields
+    const AF_DUMMY_SHOW_LABEL = 33554432; // make the dummy label its fields
 
     var $m_text;
 

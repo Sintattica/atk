@@ -1,7 +1,7 @@
 <?php namespace Sintattica\Atk\Relations;
 
 
-use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Node;
@@ -30,7 +30,7 @@ use Sintattica\Atk\Db\Query;
 class ManyToManyRelation extends Relation
 {
 
-    const AF_MANYTOMANY_DETAILVIEW = self::AF_SPECIFIC_5;
+    const AF_MANYTOMANY_DETAILVIEW = 536870912;
 
     var $m_localKey = "";
     var $m_remoteKey = "";
@@ -221,7 +221,7 @@ class ManyToManyRelation extends Relation
     }
 
     /**
-     * Create instance of the intermediairy link node.
+     * Create instance of the intermediary link node.
      *
      * If succesful, the instance is stored in the m_linkInstance member
      * variable.
@@ -230,7 +230,7 @@ class ManyToManyRelation extends Relation
     function createLink()
     {
         if ($this->m_linkInstance == null) {
-            $this->m_linkInstance = Module::newAtkNode($this->m_link);
+            $this->m_linkInstance = Atk::newAtkNode($this->m_link);
 
             // Validate if destination was created succesfully
             if (!is_object($this->m_linkInstance)) {
@@ -439,6 +439,7 @@ class ManyToManyRelation extends Relation
      * load function
      * @param mixed $notused
      * @param array $record
+     * @return array
      */
     function load($notused, $record)
     {
@@ -484,7 +485,8 @@ class ManyToManyRelation extends Relation
     /**
      * delete relational records..
      *
-     * @param array $record The record
+     * @param $record array $record The record
+     * @return bool
      */
     function delete($record)
     {
@@ -505,6 +507,7 @@ class ManyToManyRelation extends Relation
      * @param Db $db database instance
      * @param array $record record
      * @param string $mode mode
+     * @return array
      */
     protected function _getExistingRecordsByKey($db, $record, $mode)
     {
@@ -528,6 +531,7 @@ class ManyToManyRelation extends Relation
      * this relation and index them by their primary key selector string.
      *
      * @param array $record record
+     * @return array
      */
     protected function _extractSelectedRecordsByKey($record)
     {
@@ -552,6 +556,7 @@ class ManyToManyRelation extends Relation
      * Delete existing link record.
      *
      * @param array $record link record
+     * @return bool
      */
     protected function _deleteRecord($record)
     {
@@ -575,6 +580,7 @@ class ManyToManyRelation extends Relation
      *
      * @param array $record link record
      * @param int $index (new) index (0-based)
+     * @return bool
      */
     protected function _updateRecord($record, $index)
     {
@@ -619,6 +625,7 @@ class ManyToManyRelation extends Relation
      * @param array $record link record
      * @param int $index (new) index (0-based)
      * @param string $mode storage mode
+     * @return bool
      */
     protected function _addRecord($record, $index, $mode)
     {
@@ -631,6 +638,7 @@ class ManyToManyRelation extends Relation
      * @param Db $db database instance
      * @param array $record owner instance record
      * @param string $mode storage mode
+     * @return bool
      */
     function store($db, $record, $mode)
     {

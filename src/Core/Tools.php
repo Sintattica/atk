@@ -1714,47 +1714,6 @@ class Tools
     }
 
 
-    /**
-     * Tells ATK that a node exists, and what actions are available to
-     * perform on that node.  Note that registerNode() is not involved in
-     * deciding which users can do what, only in establishing the full set
-     * of actions that can potentially be performed on the node.
-     *
-     * @param string $node name of the node
-     * @param $action array with actions that can be performed on the node
-     * @param $tabs array of tabnames for which security should be handled.
-     *              Note that tabs that every user may see need not be
-     *              registered.
-     */
-    static function registerNode($node, $action, $tabs = array(), $section = null)
-    {
-        global $g_nodes;
-
-        if (!is_array($tabs)) {
-            $section = $tabs;
-            $tabs = array();
-        }
-
-        $module = Module::getNodeModule($node);
-        $type = Module::getNodeType($node);
-
-        // prefix tabs with tab_
-        for ($i = 0, $_i = count($tabs); $i < $_i; $i++) {
-            $tabs[$i] = "tab_" . $tabs[$i];
-        }
-
-        if ($module == "") {
-            $module = "main";
-        }
-        if ($section == null) {
-            $section = $module;
-        }
-
-        $g_nodes[$section][$module][$type] = array_merge($action, $tabs);
-
-    }
-
-
     public static function getBrowserInfo($useragent = "")
     {
         $tmp = new BrowserInfo($useragent);
@@ -1874,6 +1833,36 @@ class Tools
             if ($exit) {
                 exit();
             }
+        }
+    }
+
+    /**
+     * Gets the module of the node
+     * @param string $nodeUri the node uri
+     * @return String the node's module
+     */
+    public static function getNodeModule($nodeUri)
+    {
+        $arr = explode(".", $nodeUri);
+        if (count($arr) == 2) {
+            return $arr[0];
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * Gets the node type of a node string
+     * @param string $nodeUri the node uri
+     * @return String the node type
+     */
+    public static function getNodeType($nodeUri)
+    {
+        $arr = explode(".", $nodeUri);
+        if (count($arr) == 2) {
+            return $arr[1];
+        } else {
+            return $nodeUri;
         }
     }
 }

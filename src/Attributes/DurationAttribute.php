@@ -14,7 +14,7 @@ use Sintattica\Atk\Keyboard\Keyboard;
 class DurationAttribute extends Attribute
 {
     /** flag(s) specific for atkDurationAttribute */
-    const AF_DURATION_STRING = self::AF_SPECIFIC_1; // date must be entered as an english date string (strtotime)
+    const AF_DURATION_STRING = 33554432; // date must be entered as an english date string (strtotime)
     const DURATIONFORMAT_TIME = 0;
     const DURATIONFORMAT_DECIMAL = 1;
 

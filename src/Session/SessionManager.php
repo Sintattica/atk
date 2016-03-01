@@ -4,7 +4,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Ui\Ui;
-use Sintattica\Atk\Core\Module;
+use Sintattica\Atk\Core\Atk;
 
 /**
  * The atk session manager.
@@ -764,8 +764,8 @@ class SessionManager
             }
 
             $node = $stack[$i]["atknodeuri"];
-            $module = Module::getNodeModule($node);
-            $type = Module::getNodeType($node);
+            $module = Tools::getNodeModule($node);
+            $type = Tools::getNodeType($node);
             $action = $stack[$i]["atkaction"];
             $title = $ui->title($module, $type, $action);
             $descriptor = Tools::atkArrayNvl($stack[$i], "descriptor", "");
@@ -812,9 +812,9 @@ class SessionManager
         for ($i = 0; $i < $stackcount; $i++) {
             if (isset($stack[$i]["descriptor"]) || $i == ($stackcount - 1)) {
                 if ($stack[$i]["atknodeuri"] != "") {
-                    $node = Module::atkGetNode($stack[$i]["atknodeuri"]);
-                    $module = Module::getNodeModule($stack[$i]["atknodeuri"]);
-                    $nodename = Module::getNodeType($stack[$i]["atknodeuri"]);
+                    $node = Atk::atkGetNode($stack[$i]["atknodeuri"]);
+                    $module = Tools::getNodeModule($stack[$i]["atknodeuri"]);
+                    $nodename = Tools::getNodeType($stack[$i]["atknodeuri"]);
                 }
 
                 if (is_object($node)) {

@@ -22,14 +22,10 @@ use Sintattica\Atk\Core\Node;
 class ManyToManySelectRelation extends ManyToManyRelation
 {
 
-    const AF_MANYTOMANYSELECT_DETAILEDIT = self::AF_SPECIFIC_1;
-    const AF_MANYTOMANYSELECT_DETAILADD = self::AF_SPECIFIC_2;
-    const AF_MANYTOMANYSELECT_NO_AUTOCOMPLETE = self::AF_SPECIFIC_3;
+    const AF_MANYTOMANYSELECT_DETAILEDIT = 33554432;
+    const AF_MANYTOMANYSELECT_DETAILADD = 67108864;
+    const AF_MANYTOMANYSELECT_NO_AUTOCOMPLETE = 134217728;
 
-
-    const SEARCH_MODE_EXACT = ManyToOneRelation::SEARCH_MODE_EXACT;
-    const SEARCH_MODE_STARTSWITH = ManyToOneRelation::SEARCH_MODE_STARTSWITH;
-    const SEARCH_MODE_CONTAINS = ManyToOneRelation::SEARCH_MODE_CONTAINS;
 
     /**
      * The many-to-one relation.
