@@ -937,6 +937,7 @@ $config_recordlist_orientation = "left";
  */
 $config_login_logo = $config_assets_url . 'images/login_logo.jpg';
 
+
 /**
  * icons
  */

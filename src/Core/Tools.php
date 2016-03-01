@@ -434,8 +434,7 @@ class Tools
      * @param string $node the node to which the string belongs
      * @param string $lng ISO 639-1 language code, defaults to config variable
      * @param string $firstfallback the first module to check as part of the fallback
-     * @param boolean $nodefaulttext if true, then it doesn't return a default self::text
-     *                                when it can't find a translation
+     * @param boolean $nodefaulttext if true, then it doesn't return a default text when it can't find a translation
      * @param boolean $modulefallback Wether or not to use all the modules of the application in the fallback,
      *                                when looking for strings
      * @return String the string from the languagefile

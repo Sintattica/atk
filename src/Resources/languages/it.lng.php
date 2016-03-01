@@ -16,6 +16,7 @@
 // Translation Tool.
 //
 $it = array(
+    "locale" => 'it_IT',
     "above_maximum_value" => "Superiore al massimo valore consentito",
     "access_denied" => "Accesso negato",
     "add" => "Nuovo",

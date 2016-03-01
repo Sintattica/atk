@@ -16,6 +16,7 @@
 // Translation Tool.
 //
 $en = array(
+    "locale" => 'en_EN',
     "above_maximum_value" => "Above the maximum allowed value",
     "access_denied" => "Access denied",
     "add" => "New",

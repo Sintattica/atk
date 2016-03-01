@@ -57,15 +57,11 @@ class Atk
             ini_set('display_errors', 1);
         }
 
-        $locale = Tools::atktext('locale', 'atk');
-        if ($locale != null) {
+        $locale = Tools::atktext('locale', 'atk', '', '', true);
+        if ($locale) {
             setlocale(LC_TIME, $locale);
         }
 
-        $locale = Tools::atktext('locale', 'atk');
-        if ($locale != null) {
-            setlocale(LC_TIME, $locale);
-        }
 
         Tools::atkdebug('Created a new Atk instance: Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')');
     }
