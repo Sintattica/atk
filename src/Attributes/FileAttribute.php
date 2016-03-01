@@ -4,7 +4,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Utils\StringParser;
-use Sintattica\Atk\Keyboard\Keyboard;
+
 
 /**
  * With this you can upload, select and remove files in a given directory.
@@ -231,7 +231,7 @@ class FileAttribute extends Attribute
         }
 
         if (!$this->hasFlag(self::AF_FILE_NO_UPLOAD)) {
-            $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
+
             $result .= '<input type="file" id="' . $id . '" name="' . $id . '" ' . $onchange . '>';
         }
 
@@ -240,7 +240,6 @@ class FileAttribute extends Attribute
             if (count($file_arr) > 0) {
                 natcasesort($file_arr);
 
-                $this->registerKeyListener($id . '_select', Keyboard::KB_CTRLCURSOR | Keyboard::KB_LEFTRIGHT);
                 $result .= '<select id="' . $id . '_select" name="' . $id . '[select]" ' . $onchange . ' class="form-control">';
                 // Add default option with value NULL
                 $result .= "<option value=\"\" selected>" . Tools::atktext('selection', 'atk');
@@ -260,7 +259,7 @@ class FileAttribute extends Attribute
         }
 
         if (!$this->hasFlag(self::AF_FILE_NO_DELETE) && isset($record[$this->fieldname()]['orgfilename']) && $record[$this->fieldname()]['orgfilename'] != '') {
-            $this->registerKeyListener($id . '_del', Keyboard::KB_CTRLCURSOR | Keyboard::KB_CURSOR);
+
             $result .= '<br class="atkFileAttributeCheckboxSeparator"><input id="' . $id . '_del" type="checkbox" name="' . $id . '[del]" ' . $this->getCSSClassAttribute("atkcheckbox") . '>&nbsp;' . Tools::atktext("remove_current_file",
                     "atk");
         }

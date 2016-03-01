@@ -1,6 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
 
-use Sintattica\Atk\Keyboard\Keyboard;
+
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
 
@@ -524,7 +524,7 @@ class NumberAttribute extends Attribute
         }
 
         $id = $fieldprefix . $this->fieldName();
-        $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
+
         $result = '<input type="text" id="' . $id . '" ' . $this->getCSSClassAttribute(array('form-control')) . ' name="' . $id . '" value="' . $value . '"' .
             ($size > 0 ? ' size="' . $size . '"' : '') .
             ($maxsize > 0 ? ' maxlength="' . $maxsize . '"' : '') . ' ' . $onchange . ' />';
@@ -577,13 +577,13 @@ class NumberAttribute extends Attribute
 
             $id = $this->getSearchFieldName($fieldprefix);
 
-            $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
+
             $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . htmlentities($value) . '"' .
                 ($searchsize > 0 ? ' size="' . $searchsize . '"' : '') . '>';
 
         } else {
             $id = $this->getSearchFieldName($fieldprefix) . '[from]';
-            $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
+
 
             if (is_array($value)) {
                 $valueFrom = $value['from'];
@@ -596,7 +596,7 @@ class NumberAttribute extends Attribute
             $result .= '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . htmlentities($valueFrom) . '"' .
                 ($searchsize > 0 ? ' size="' . $searchsize . '"' : '') . '>';
             $id = $this->getSearchFieldName($fieldprefix) . '[to]';
-            $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
+
             $result .= " (" . Tools::atktext("until") . ' <input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . htmlentities($valueTo) . '"' .
                 ($searchsize > 0 ? ' size="' . $searchsize . '"' : '') . '>)';
             $result .= '</div>';

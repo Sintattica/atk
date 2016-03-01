@@ -1,6 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
 
-use Sintattica\Atk\Keyboard\Keyboard;
+
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Utils\BrowserInfo;
 use Sintattica\Atk\Core\Tools;
@@ -134,7 +134,6 @@ class TextAttribute extends Attribute
         }
         $rows = $this->m_rows;
         $id = $fieldprefix . $this->fieldName();
-        $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR);
         if ($rows == "" || $rows == 0) {
             $rows = 10;
         }

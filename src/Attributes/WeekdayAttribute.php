@@ -1,7 +1,7 @@
 <?php namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Keyboard\Keyboard;
+
 
 /**
  * Attribute for selection the days of the week.
@@ -123,7 +123,6 @@ class WeekdayAttribute extends NumberAttribute
 
             $result .= '<span title="' . $fullWeekday . '"><input type="checkbox" id="' . $name . '" name="' . $name . '[' . $i . ']" ' . $this->getCSSClassAttribute("atkcheckbox") . ' value="' . $day . '" ' . $checked . '> ' . $weekday . '</span>' . ($i < $max
                     ? $separator : '');
-            $this->registerKeyListener($name . '[' . $i . ']', Keyboard::KB_CTRLCURSOR | Keyboard::KB_CURSOR);
         }
 
         return $result;

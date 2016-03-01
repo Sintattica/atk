@@ -719,16 +719,6 @@ $config_search_defaultmode = "substring";
 
 
 /**
- * Wether or not to use the keyboardhandler for attributes and the recordlist
- * When set to true, arrow keys can be used to navigate through fields and
- * records, as well as shortcuts 'e' for edit, 'd' for delete, and left/right
- * cursor for paging. Note however, that using cursor keys to navigate
- * through fields is not standard web application behaviour.
- * @var int
- */
-$config_use_keyboard_handler = false;
-
-/**
  * Session cache expire (minutes)
  * @var int
  */

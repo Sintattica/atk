@@ -1,6 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
 
-use Sintattica\Atk\Keyboard\Keyboard;
+
 
 /**
  * The RadioAttribute class represents an attribute of a node
@@ -137,7 +137,6 @@ class RadioAttribute extends ListAttribute
             if ($this->hasFlag(self::AF_DISPLAY_VERT)) {
                 $result .= '<tr>';
             }
-            $this->registerKeyListener($labelID, Keyboard::KB_CTRLCURSOR | Keyboard::KB_CURSOR);
             $id = $this->getHtmlId($fieldprefix);
 
             $onchange = '';

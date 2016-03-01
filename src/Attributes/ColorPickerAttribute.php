@@ -2,7 +2,7 @@
 
 
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Keyboard\Keyboard;
+
 use Sintattica\Atk\Ui\Page;
 
 class ColorPickerAttribute extends Attribute
@@ -49,7 +49,7 @@ class ColorPickerAttribute extends Attribute
         $this->registerScriptsAndStyles($fieldprefix);
 
         $id = $this->getHtmlId($fieldprefix);
-        $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
+
 
         if (count($this->m_onchangecode)) {
             $onchange = 'onChange="' . $id . '_onChange(this);"';

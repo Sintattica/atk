@@ -4,7 +4,7 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\RecordList\Totalizer;
-use Sintattica\Atk\Keyboard\Keyboard;
+
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\RecordList\RecordList;
 use Sintattica\Atk\Session\SessionManager;
@@ -13,24 +13,6 @@ use \Exception;
 
 /**
  * The data grid list component renders the recordlist.
- *
- * Options:
- * - alwaysShowGrid: always show datagrid, even if there are no records?
- *                   by default the grid won't display the grid headers
- *                   in embedded mode when there are no existing records
- *
- * @author Peter C. Verhage <peter@achievo.org>
- * @package atk
- * @subpackage datagrid
- *
- * @todo At the moment the grid component is based on RecordList legacy code. This code
- *       should be refactored / optimized but this also means that some backwards incompatible
- *       changes have to be made to the differen ATK attributes. For example, the component
- *       still uses the recordlist flags when calling attribute methods because the attributes
- *       are not 100% aware yet of the new datagrid.
- *
- * @todo Keyboard navigation is at the moment broken because we don't supply the navigation array.
- *       However, this should be done in a different way anyhow.
  */
 class DataGridList extends DataGridComponent
 {
@@ -541,11 +523,6 @@ class DataGridList extends DataGridComponent
             }
         }
 
-
-        if (Config::getGlobal("use_keyboard_handler")) {
-            $kb = Keyboard::getInstance();
-            $kb->addRecordListHandler($listName, $selectcolor, count($records));
-        }
 
         $recordListData = array(
             "rows" => $records,

@@ -1,7 +1,7 @@
 <?php namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Keyboard\Keyboard;
+
 use Sintattica\Atk\Db\Query;
 
 /**
@@ -108,7 +108,7 @@ class BoolAttribute extends Attribute
         if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] > 0) {
             $checked = "checked";
         }
-        $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_CURSOR);
+
 
         $result = '<input type="checkbox" id="' . $id . '" name="' . $id . '" value="1" ' . $onchange . $checked . ' ' . $this->getCSSClassAttribute("atkcheckbox") . ' />';
 

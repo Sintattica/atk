@@ -2,7 +2,7 @@
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Keyboard\Keyboard;
+
 
 /**
  * The DurationAttribute is an attribute for entering a length of time.
@@ -93,7 +93,6 @@ class DurationAttribute extends Attribute
                 $curhours = $this->_getHourPart($fieldvalue);
                 $curminutes = $this->_getMinutePart($fieldvalue);
                 $result .= '<select id="' . $id . '_hours" name="' . $fieldprefix . $this->fieldName() . '[hours]" class="form-control">';
-                $this->registerKeyListener($id . '_hours', Keyboard::KB_CTRLCURSOR | Keyboard::KB_LEFTRIGHT);
                 for ($h = 0; $h <= $this->m_maxtime_min / 60;) {
                     $result .= '<option value="' . $h . '" ';
                     if ($curhours == $h) {
@@ -109,7 +108,6 @@ class DurationAttribute extends Attribute
                 $result .= '</select>';
             }
             if ($this->m_maxtime_min >= 1 && $this->m_resolution_min < 60) {
-                $this->registerKeyListener($id . '_minutes', Keyboard::KB_CTRLCURSOR | Keyboard::KB_LEFTRIGHT);
                 $result .= '&nbsp;<select id="' . $id . '_minutes" name="' . $fieldprefix . $this->fieldName() . '[minutes]" class="form-control">';
                 for ($m = 0; $m < 60 || ($this->m_maxtime_min < 60 && $m < $this->m_maxtime_min);) {
                     $result .= '<option value="' . $m . '" ';

@@ -8,7 +8,6 @@ use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Keyboard\Keyboard;
 use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Utils\EditFormModifier;
 use \Exception;
@@ -926,7 +925,7 @@ class Attribute
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $id = $this->getHtmlId($fieldprefix);
-        $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
+
 
         if (count($this->m_onchangecode)) {
             $onchange = 'onChange="' . $id . '_onChange(this);"';
@@ -1548,7 +1547,7 @@ class Attribute
             $value = $record[$this->fieldName()];
         }
 
-        $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
+
         $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . htmlentities($value) . '"' .
             ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"' : '') . '>';
 
@@ -2404,29 +2403,6 @@ class Attribute
         return array();
     }
 
-    /**
-     * Register keyboard navigation for this attribute.
-     *
-     * This method is called by the attribute itself to register the keyboard
-     * navigation, usually from its edit() method. The regular Attribute
-     * calls this method once for its default text input box. Derived classes
-     * may call this for any input box or control they have.
-     *
-     * @param string $id The unique HTML id of the form element to which
-     *                   navigation is added.
-     * @param int $navkeys The mask indicating which keys to support for
-     *                     navigation.
-     * @return Attribute The instance of this Attribute
-     */
-    function registerKeyListener($id, $navkeys = Keyboard::KB_CTRLCURSOR)
-    {
-        if (Config::getGlobal("use_keyboard_handler")) {
-            $kb = Keyboard::getInstance();
-            $kb->addFormElementHandler($id, $navkeys);
-        }
-
-        return $this;
-    }
 
     /**
      * Check if the attribute wants to be shown on a certain tab.

@@ -1,6 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
 
-use Sintattica\Atk\Keyboard\Keyboard;
+
 use Sintattica\Atk\Core\Language;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
@@ -67,7 +67,6 @@ class CkAttribute extends TextAttribute
         $page = $this->getOwnerInstance()->getPage();
 
         $id = $this->getHtmlId($fieldprefix);
-        $this->registerKeyListener($id, Keyboard::KB_CTRLCURSOR);
 
         // register CKEditor main script
         $page->register_script(Config::getGlobal("assets_url") . 'ckeditor/ckeditor.js');

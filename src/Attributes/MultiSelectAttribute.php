@@ -4,7 +4,7 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
-use Sintattica\Atk\Keyboard\Keyboard;
+
 
 /**
  * The MultiSelectAttribute class represents an attribute of a node
@@ -194,7 +194,6 @@ class MultiSelectAttribute extends ListAttribute
 
             $result .= '<td class="table" valign="top"><input type="checkbox" id="' . $id . '_' . $i . '" ' . $this->getCSSClassAttribute("atkcheckbox") . ' name="' . $fieldprefix . $this->fieldName() . '[]" value="' . $values[$i] . '" ' . $sel . '>' . $this->_translateValue($values[$i],
                     $record) . '</td>';
-            $this->registerKeyListener($id . '_' . $i, Keyboard::KB_CTRLCURSOR | Keyboard::KB_UPDOWN);
 
             if ($i % $cols == $modcols) {
                 $result .= "</tr><tr>\n";
