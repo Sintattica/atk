@@ -509,7 +509,8 @@ class Debugger
      */
     public function renderDebugAndErrorMessages()
     {
-        global $ATK_VARS, $g_debug_msg, $g_error_msg, $g_startTime;
+        global $ATK_VARS, $g_debug_msg, $g_error_msg;
+
 
         // check if this is an Ajax request
         $isPartial = isset($ATK_VARS['atkpartial']);
