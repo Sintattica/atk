@@ -136,9 +136,10 @@ class MultipleFileAttribute extends FileAttribute
     /**
      * Display values
      * @param array $record Array with fields
-     * @return Filename or Nothing
+     * @param string $mode
+     * @return string html
      */
-    function display($record)
+    function display($record, $mode = '')
     {
         $files = explode($this->m_delimiter, $record[$this->fieldName()][orgfilename]);
         $prev_type = Array("jpg", "jpeg", "gif", "tif", "png", "bmp", "htm", "html", "txt");  // file types for preview

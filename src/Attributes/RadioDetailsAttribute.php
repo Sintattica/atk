@@ -179,7 +179,7 @@ class RadioDetailsAttribute extends Attribute
      * Partial details
      *
      * @param string $mode
-     * @return html code
+     * @return string html code
      */
     public function partial_details($mode)
     {

@@ -94,9 +94,10 @@ class TimeAttribute extends Attribute
     /**
      * Display's text version of Record
      * @param array $record
+     * @param string $mode
      * @return string text string of $record
      */
-    function display($record)
+    function display($record, $mode = '')
     {
         $value = $record[$this->fieldName()];
         if (!is_array($value)) {

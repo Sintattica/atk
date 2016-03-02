@@ -237,9 +237,10 @@ class ListAttribute extends Attribute
     /**
      * Display's text version of Record
      * @param array $record
+     * @param string $mode
      * @return string of $record
      */
-    function display($record)
+    function display($record, $mode = '')
     {
         return $this->_translateValue($record[$this->fieldName()], $record);
     }

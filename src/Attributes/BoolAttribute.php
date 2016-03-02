@@ -194,7 +194,7 @@ class BoolAttribute extends Attribute
      * @param array $record Array with boolean field
      * @return yes or no
      */
-    function display($record)
+    function display($record, $mode = '')
     {
         if ($this->hasFlag(self::AF_BOOL_DISPLAY_CHECKBOX)) {
             return '

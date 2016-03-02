@@ -322,10 +322,11 @@ class ProfileAttribute extends Attribute
      * It will only display the rights & nodes that are selected for the user.
      *
      * @param array $record
+     * @param string $mode
      *
      * @return string Displayable string
      */
-    public function display($record)
+    public function display($record, $mode = '')
     {
         $user = SecurityManager::atkGetUser();
         $page = Page::getInstance();

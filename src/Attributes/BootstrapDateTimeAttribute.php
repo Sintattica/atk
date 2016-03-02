@@ -192,7 +192,7 @@ class BootstrapDateTimeAttribute extends Attribute
         return $dateEdit;
     }
 
-    function display($record, $mode)
+    function display($record, $mode = '')
     {
         $value = $this->arrayToValue($record[$this->fieldName()]);
         if (!$value) {
