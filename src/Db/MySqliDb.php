@@ -12,7 +12,7 @@ use Sintattica\Atk\Utils\Debugger;
  * @package atk
  * @subpackage db
  */
-class MySqliDb extends MySqlDb
+class MySqliDb extends Db
 {
     /**
      * The last insert id from the last query
@@ -20,6 +20,15 @@ class MySqliDb extends MySqlDb
      * @access protected
      */
     var $m_insert_id;
+
+    /* sequence table */
+    var $m_seq_table = "db_sequence";
+    // the field in the seq_table that contains the counter..
+    var $m_seq_field = "nextid";
+    // the field in the seq_table that countains the name of the sequence..
+    var $m_seq_namefield = "seq_name";
+    var $m_type = "mysql";
+    protected $m_identifierQuoting = array('start' => '`', 'end' => '`', 'escape' => '`');
 
     /**
      * Base constructor
@@ -75,6 +84,44 @@ class MySqliDb extends MySqlDb
 
         /* return link identifier */
         return self::DB_SUCCESS;
+    }
+
+    /**
+     * Determine whether an error that occurred is a recoverable (user) error
+     * or a system error.
+     * @return String "user" or "system"
+     */
+    function getErrorType()
+    {
+        $this->_setErrorVariables();
+        return parent::getErrorType();
+    }
+
+    /**
+     * Translates known database errors to developer-friendly messages
+     *
+     * @return int Flag of the error
+     */
+    function _translateError($errno = null)
+    {
+        $this->_setErrorVariables();
+        switch ($this->m_errno) {
+            case 0:
+                return self::DB_SUCCESS;
+            case 1044:
+                return self::DB_ACCESSDENIED_DB;  // todofixme: deze komt bij mysql pas na de eerste query.
+            case 1045:
+                return self::DB_ACCESSDENIED_USER;
+            case 1049:
+                return self::DB_UNKNOWNDATABASE;
+            case 2004:
+            case 2005:
+                return self::DB_UNKNOWNHOST;
+            default:
+                Tools::atkdebug("mysqldb::translateError -> MySQL Error: " .
+                    $this->m_errno . " -> " . $this->m_error);
+                return self::DB_UNKNOWNERROR;
+        }
     }
 
     /**
@@ -411,6 +458,18 @@ class MySqliDb extends MySqlDb
     }
 
     /**
+     * Drop all database tables.
+     */
+    function dropAll()
+    {
+        $tables = $this->table_names();
+        foreach ($tables as $table) {
+
+            $this->query("DROP TABLE `" . $table['table_name'] . "`");
+        }
+    }
+
+    /**
      * This function checks the database for a table with
      * the provide name
      *
@@ -431,6 +490,66 @@ class MySqliDb extends MySqlDb
         Tools::atkdebug("Table exists? $table => " . ($result ? 'yes' : 'no'));
         return $result;
     }
+
+    /**
+     * This function indicates what searchmodes the database supports.
+     * @return array with search modes
+     */
+    function getSearchModes()
+    {
+        return array(
+            "exact",
+            "substring",
+            "wildcard",
+            "regexp",
+            "soundex",
+            "greaterthan",
+            "greaterthanequal",
+            "lessthan",
+            "lessthanequal",
+            "between"
+        );
+    }
+
+    /**
+     * Get TO_CHAR() equivalent for the current database.
+     * Each database driver should override this method to perform vendor
+     * specific conversion.
+     *
+     * @param string $fieldname The field to generate the to_char for.
+     * @param string $format Format specifier. The format is compatible with
+     *                       php's date() function (http://www.php.net/date)
+     *                       The default is what's specified by
+     *                       $config_date_to_char, or "Y-m-d" if not
+     *                       set in the configuration.
+     * @return String Piece of sql query that converts a date field to char
+     *                for the current database
+     */
+    function func_datetochar($fieldname, $format = "")
+    {
+        if ($format == "") {
+            $format = Config::getGlobal("date_to_char", "Y-m-d");
+        }
+        return "DATE_FORMAT($fieldname, '" . $this->vendorDateFormat($format) . "')";
+    }
+
+    /**
+     * Convert a php date() format specifier to a mysql specific format
+     * specifier.
+     *
+     * Note that currently, only the common specifiers Y, m, d, H, h, i and
+     * s are supported.
+     * @param string $format Format specifier. The format is compatible with
+     *                       php's date() function (http://www.php.net/date)
+     * @return String Mysql specific format specifier.
+     */
+    function vendorDateFormat($format)
+    {
+        $php_fmt = array("Y", "m", "d", "H", "h", "i", "s");
+        $db_fmt = array("%Y", "%m", "%d", "%H", "%h", "%i", "%s");
+        return str_replace($php_fmt, $db_fmt, $format);
+    }
+
 
     /**
      * Returns the table type.
