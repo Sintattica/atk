@@ -4246,7 +4246,7 @@ class Node
      * @param string $action The action for which the handler is retrieved.
      * @return ActionHandler The action handler.
      */
-    function &getHandler($action)
+    function getHandler($action)
     {
         Tools::atkdebug("self::getHandler(); action: " . $action);
 
@@ -4278,7 +4278,7 @@ class Node
             //If we use a default handler we need to register it to this node
             //because we might call it a second time.
             Tools::atkdebug("self::getHandler: Register default ActionHandler for " . $this->m_type . " action: '" . $action . "'");
-            Atk::atkRegisterNodeHandler($this->m_type, $action, $handler);
+            $atk->atkRegisterNodeHandler($this->m_type, $action, $handler);
         }
 
         return $handler;

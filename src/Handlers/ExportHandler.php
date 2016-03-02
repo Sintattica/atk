@@ -286,7 +286,7 @@ class ExportHandler extends ActionHandler
     private function getExportSelectionDropdown()
     {
         $html = '
-        <select name="export_selection_options" id="export_selection_options" onchange="javascript:toggleSelectionName( );return false;" >
+        <select name="export_selection_options" id="export_selection_options" onchange="toggleSelectionName();return false;" >
           <option value="none">' . Tools::atktext('none', 'atk');
 
         $options = $this->getExportSelections();

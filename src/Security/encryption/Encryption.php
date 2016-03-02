@@ -2,7 +2,6 @@
 
 
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Core\Tools;
 
 /**
  * Base class for all ATK encryption methods

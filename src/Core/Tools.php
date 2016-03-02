@@ -162,7 +162,7 @@ class Tools
      *
      * @param Exception $exception uncaught exception
      */
-    public static function atkExceptionHandler(Exception $exception)
+    public static function atkExceptionHandler($exception)
     {
         self::atkdebug($exception->getMessage(), Tools::DEBUG_ERROR);
         self::atkdebug("Trace:<br/>" . nl2br($exception->getTraceAsString()), Tools::DEBUG_ERROR);

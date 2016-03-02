@@ -225,7 +225,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     public function edit($record, $fieldprefix = "", $mode = "")
     {
         // Add onchange handler
-        $mode == "add" ? "add" : "edit";
+        $mode = ($mode == "add") ?: "edit";
         $url = addslashes(Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $mode,
             "attribute." . $this->getHtmlId($fieldprefix) . ".selection", array("atkfieldprefix" => $fieldprefix)));
         $this->addOnChangeHandler("shuttle_refresh('$url', '" . $this->getHtmlId($fieldprefix) . '[cselected][][' . $this->getRemoteKey() . ']' . "', '" . $fieldprefix . $this->fieldName() . "[section]', el);");

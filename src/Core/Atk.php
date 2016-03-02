@@ -192,7 +192,9 @@ class Atk
         Tools::atkdebug("Creating a new node: $nodeUri class: $nodeClass");
 
         /** @var Node $node */
+
         $node = new $nodeClass($nodeUri);
+
 
         if ($init && $node != null) {
             $node->init();

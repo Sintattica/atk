@@ -3,7 +3,6 @@
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Utils\DirectoryTraverser;
-use Sintattica\Atk\Core\Atk;
 
 /**
  * Class that handles user interface internationalization.

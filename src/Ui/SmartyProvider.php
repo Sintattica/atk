@@ -31,7 +31,6 @@ class SmartyProvider
             Tools::atkdebug("Creating Smarty instance");
 
             // Warning: you'd think that the next line should read
-            // $s_smarty = & new Smarty();
             // However, for some reason (php bug?) the static variable is no longer
             // static if we do that, and a new instance will be created on each
             // call.
