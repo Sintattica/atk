@@ -922,7 +922,7 @@ class Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record = "", $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix = "", $mode = "")
     {
         $id = $this->getHtmlId($fieldprefix);
 
@@ -1031,14 +1031,12 @@ class Attribute
     /**
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">)
-     *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @return String A piece of htmlcode with hidden form elements that post
-     *                this attribute's value without showing it.
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     * @return string html
      */
-    function hide($record = "", $fieldprefix = "")
+    public function hide($record, $fieldprefix = '', $mode = '')
     {
         // the next if-statement is a workaround for derived attributes which do
         // not override the hide() method properly. This will not give them a
@@ -1538,7 +1536,7 @@ class Attribute
      *
      * @return String A piece of html-code
      */
-    public function search($record = array(), $extended = false, $fieldprefix = "", DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
         $id = $this->getSearchFieldName($fieldprefix);
 
@@ -1668,7 +1666,7 @@ class Attribute
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
      */
-    function getSearchCondition(&$query, $table, $value, $searchmode)
+    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         // If we are accidentally mistaken for a relation and passed an array
         // we only take our own attribute value from the array
@@ -1798,7 +1796,7 @@ class Attribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    public function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", &$rec = "", $level, $mode)
+    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
     {
         if ($mode == "add" || $mode == "update") {
             if ($mode == 'add' && $this->hasFlag(self::AF_AUTO_INCREMENT)) {
@@ -1831,7 +1829,7 @@ class Attribute
      *
      * @return boolean true if cleanup was successful, false otherwise.
      */
-    function delete()
+    function delete($record)
     {
         // delete is only of interest for special attributes like relations, or file attributes.
         return true;

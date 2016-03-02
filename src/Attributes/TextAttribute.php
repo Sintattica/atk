@@ -88,7 +88,7 @@ class TextAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string piece of html code with a textarea
      */
-    function edit($record = "", $fieldprefix = "", $mode = 'add')
+    function edit($record, $fieldprefix = "", $mode = 'add')
     {
         // list mode, show a small textarea, until it get's focus
         // and is inflated to a big textarea
@@ -182,7 +182,7 @@ class TextAttribute extends Attribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(Query &$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
+    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
     {
         if ($mode == "add" || $mode == "update") {
             $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(self::AF_NO_QUOTES), $mode,

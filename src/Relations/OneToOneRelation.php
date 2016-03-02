@@ -3,6 +3,8 @@
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Core\Atk;
+use Sintattica\Atk\Db\Query;
+
 /**
  * Implementation of one-to-one relationships.
  *
@@ -135,7 +137,7 @@ class OneToOneRelation extends Relation
      * Because of the self::AF_INTEGRATE feature, the edit() method has a void
      * implementation. The actual edit code is handled by addToEditArray().
      */
-    function edit()
+    function edit($record, $fieldprefix = "", $mode = "")
     {
 
     }
@@ -187,7 +189,7 @@ class OneToOneRelation extends Relation
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
+    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
     {
         if ($this->createDestination()) {
             if ($mode != "update" && $mode != "add") {
@@ -597,13 +599,12 @@ class OneToOneRelation extends Relation
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its values. (<input type="hidden">)
      *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @return String A piece of htmlcode with hidden form elements that post
-     *                This attribute's value without showing it.
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     * @return string html
      */
-    function hide($record = "", $fieldprefix = "")
+    public function hide($record, $fieldprefix = '', $mode = '')
     {
         Tools::atkdebug("hide called for " . $this->fieldName());
         if ($this->createDestination()) {
@@ -1079,7 +1080,7 @@ class OneToOneRelation extends Relation
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
      */
-    function getSearchCondition(&$query, $table, $value, $searchmode)
+    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         if ($this->createDestination() && is_array($value)) {
             // we are a relation, so instead of hooking ourselves into the

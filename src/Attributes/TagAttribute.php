@@ -1,6 +1,8 @@
 <?php namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Atk;
+use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
@@ -492,7 +494,19 @@ class TagAttribute extends FuzzySearchAttribute
      * Dummy implementation
      *
      */
-    function addToQuery()
+    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
+    {
+
+    }
+
+    /**
+     * Dummy implementation
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     * @return string html
+     */
+    public function hide($record, $fieldprefix = '', $mode = '')
     {
 
     }
@@ -501,16 +515,7 @@ class TagAttribute extends FuzzySearchAttribute
      * Dummy implementation
      *
      */
-    function hide()
-    {
-
-    }
-
-    /**
-     * Dummy implementation
-     *
-     */
-    function search()
+    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
 
     }
@@ -537,7 +542,7 @@ class TagAttribute extends FuzzySearchAttribute
      * Dummy implementation
      *
      */
-    function getSearchCondition()
+    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
 
     }

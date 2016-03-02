@@ -61,7 +61,7 @@ class CkAttribute extends TextAttribute
         parent::__construct($name, 0, $flags);
     }
 
-    function edit($record = "", $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix = "", $mode = "")
     {
         $page = $this->getOwnerInstance()->getPage();
 

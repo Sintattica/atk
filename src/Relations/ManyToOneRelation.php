@@ -1022,13 +1022,12 @@ class ManyToOneRelation extends Relation
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">)
      *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @return String A piece of htmlcode with hidden form elements that post
-     *                this attribute's value without showing it.
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     * @return string html
      */
-    function hide($record = "", $fieldprefix = "")
+    public function hide($record, $fieldprefix = '', $mode = '')
     {
         if (!$this->createDestination()) {
             return '';
@@ -1131,7 +1130,7 @@ class ManyToOneRelation extends Relation
      *
      * @return String A piece of html-code
      */
-    function search($record = array(), $extended = false, $fieldprefix = "", DataGrid $grid = null)
+    function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
         $useautocompletion = Config::getGlobal("manytoone_search_autocomplete",
                 true) && $this->hasFlag(self::AF_RELATION_AUTOCOMPLETE);
@@ -1311,7 +1310,7 @@ class ManyToOneRelation extends Relation
      * @param string $fieldaliasprefix The prefix for the field
      * @return String The searchcondition to use.
      */
-    function getSearchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix = '')
+    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         if (!$this->createDestination()) {
             return;
@@ -1392,7 +1391,7 @@ class ManyToOneRelation extends Relation
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
+    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
     {
         if ($this->hasFlag(self::AF_MANYTOONE_LAZY)) {
             parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);

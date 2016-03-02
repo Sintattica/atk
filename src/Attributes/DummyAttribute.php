@@ -1,6 +1,7 @@
 <?php namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Db;
 
 /**
@@ -69,7 +70,7 @@ class DummyAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record = "", $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix = "", $mode = "")
     {
         return "<div ID=\"$this->m_name\">" . $this->m_text . "</div>";
     }
@@ -91,7 +92,7 @@ class DummyAttribute extends Attribute
      *
      * @return String A piece of html-code
      */
-    public function search($record = array(), $extended = false, $fieldprefix = "")
+    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
         return "&nbsp;";
     }
@@ -172,7 +173,7 @@ class DummyAttribute extends Attribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
+    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
     {
 
     }

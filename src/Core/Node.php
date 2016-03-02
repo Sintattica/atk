@@ -3158,29 +3158,29 @@ class Node
      * Derived classes may override this method to implement custom descriptor
      * logic.
      *
-     * @param array $rec The record for which the descriptor is returned.
+     * @param array $record The record for which the descriptor is returned.
      * @return String The descriptor for the record.
      */
-    function descriptor($rec = "")
+    function descriptor($record)
     {
         // Descriptor handler is set?
         if ($this->m_descHandler != null) {
-            return $this->m_descHandler->descriptor($rec, $this);
+            return $this->m_descHandler->descriptor($record, $this);
         }
 
         // Descriptor template is set?
         if ($this->m_descTemplate != null) {
             $parser = new StringParser($this->m_descTemplate);
-            return $parser->parse($rec);
+            return $parser->parse($record);
         } // See if node has a custom descriptor definition.
         else {
             if (method_exists($this, "descriptor_def")) {
                 $parser = new StringParser($this->descriptor_def());
-                return $parser->parse($rec);
+                return $parser->parse($record);
             } else {
                 // default descriptor.. (default is first attribute of a node)
                 $keys = array_keys($this->m_attribList);
-                return $rec[$keys[0]];
+                return $record[$keys[0]];
             }
         }
     }

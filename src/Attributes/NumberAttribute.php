@@ -2,6 +2,7 @@
 
 
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
 
 /**
@@ -141,13 +142,12 @@ class NumberAttribute extends Attribute
      * We have to format the value, so it matches the display value
      * Otherwise the value will be corrupted by removeSeparators
      *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @return String A piece of htmlcode with hidden form elements that post
-     *                this attribute's value without showing it.
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     * @return string html
      */
-    function hide($record = "", $fieldprefix = "")
+    public function hide($record, $fieldprefix = '', $mode = '')
     {
         // the next if-statement is a workaround for derived attributes which do
         // not override the hide() method properly. This will not give them a
@@ -498,7 +498,7 @@ class NumberAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string Piece of htmlcode
      */
-    function edit($record = "", $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix = "", $mode = "")
     {
         $id = $this->getHtmlId($fieldprefix);
         if (count($this->m_onchangecode)) {
@@ -548,7 +548,7 @@ class NumberAttribute extends Attribute
      *
      * @return String A piece of html-code
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
         $value = "";
         if (isset($record[$this->fieldName()])) {
@@ -687,7 +687,7 @@ class NumberAttribute extends Attribute
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
      */
-    function getSearchCondition(&$query, $table, $value, $searchmode)
+    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         $value = $this->processSearchValue($value, $searchmode);
 

@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Core\Tools;
 
+use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
 
 /**
@@ -96,7 +97,7 @@ class BoolAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string piece of html code with a checkbox
      */
-    function edit($record = "", $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix = "", $mode = "")
     {
         $id = $this->getHtmlId($fieldprefix);
         $onchange = '';
@@ -149,7 +150,7 @@ class BoolAttribute extends Attribute
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return string piece of html code with a checkbox
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
         $result = '<select name="' . $this->getSearchFieldName($fieldprefix) . '" class="form-control">';
         $result .= '<option value="">' . Tools::atktext("search_all", "atk") . '</option>';
@@ -179,7 +180,7 @@ class BoolAttribute extends Attribute
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
      */
-    function getSearchCondition(Query &$query, $table, $value, $searchmode)
+    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         if (is_array($value)) {
             $value = $value[$this->fieldName()];
@@ -308,13 +309,12 @@ class BoolAttribute extends Attribute
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">)
      *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @return String A piece of htmlcode with hidden form elements that post
-     *                this attribute's value without showing it.
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     * @return string html
      */
-    function hide($record = "", $fieldprefix = "")
+    public function hide($record, $fieldprefix = '', $mode = '')
     {
         // the next if-statement is a workaround for derived attributes which do
         // not override the hide() method properly. This will not give them a

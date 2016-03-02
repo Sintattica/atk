@@ -3,6 +3,7 @@
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 
+use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Db\Query;
 
@@ -276,7 +277,7 @@ class ListAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string piece of html code with a checkbox
      */
-    function edit($record = "", $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix = "", $mode = "")
     {
         // todo: configurable rows
         $id = $this->getHtmlId($fieldprefix);
@@ -402,7 +403,7 @@ class ListAttribute extends Attribute
      *
      * @return String A piece of html-code with a checkbox
      */
-    function search($record = "", $extended = false, $fieldprefix = "", $grid = null, $notSelectFirst = false)
+    function search($record = "", $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
         $values = $this->getValues($record);
         $result = '<select class="form-control"';
@@ -439,6 +440,7 @@ class ListAttribute extends Attribute
         if ($selValues[0] == '') {
             $selValues = array(''); // has precedence (even if another options are selected together)
         }
+        $notSelectFirst = false;
         $result .= sprintf('<option value=""%s>%s</option>',
             (!$notSelectFirst && $selValues[0] == '') ? ' selected="selected"' : '',
             Tools::atktext('search_all'));
@@ -475,7 +477,7 @@ class ListAttribute extends Attribute
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
      */
-    function getSearchCondition(&$query, $table, $value, $searchmode)
+    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         // We only support 'exact' matches.
         // But you can select more than one value, which we search using the IN() statement,

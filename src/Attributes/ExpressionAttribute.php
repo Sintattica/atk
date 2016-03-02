@@ -1,4 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
+use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Db\Query;
 
 
 /**
@@ -67,7 +69,7 @@ class ExpressionAttribute extends Attribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
+    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
     {
         $expression = str_replace("[table]", $tablename, $this->m_expression);
         $query->addExpression($this->fieldName(), $expression, $fieldaliasprefix);
@@ -165,7 +167,7 @@ class ExpressionAttribute extends Attribute
      *
      * @return String A piece of html-code
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
         if ($this->getSearchType() == "number") {
             return NumberAttribute::search($record, $extended, $fieldprefix);
@@ -192,7 +194,7 @@ class ExpressionAttribute extends Attribute
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
      */
-    function getSearchCondition(&$query, $table, $value, $searchmode)
+    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         // If we are accidentally mistaken for a relation and passed an array
         // we only take our own attribute value from the array

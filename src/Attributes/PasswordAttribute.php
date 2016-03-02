@@ -1,7 +1,7 @@
 <?php namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
-
+use Sintattica\Atk\DataGrid\DataGrid;
 
 
 /**
@@ -144,7 +144,7 @@ class PasswordAttribute extends Attribute
      * @param string $mode the mode (add, edit etc.)
      * @return string piece of html code with a textarea
      */
-    function edit($record = "", $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix = "", $mode = "")
     {
         $id = $fieldprefix . $this->fieldName();
         /* insert */
@@ -199,7 +199,7 @@ class PasswordAttribute extends Attribute
      * @param array $record array with fields
      * @return string search field
      */
-    function search($record = "")
+    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
         return "&nbsp;";
     }
@@ -377,12 +377,12 @@ class PasswordAttribute extends Attribute
     /**
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
-     * @param array $record Array with values
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @return string Piece of htmlcode
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     * @return string html
      */
-    function hide($record = "", $fieldprefix = "")
+    public function hide($record, $fieldprefix = '', $mode = '')
     {
         $result = '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '[hash]"' .
             ' value="' . $record[$this->fieldName()]["hash"] . '">';

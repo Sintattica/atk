@@ -1,5 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
@@ -279,7 +280,7 @@ class DateTimeAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record = "", $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix = "", $mode = "")
     {
         $dateEdit = $this->m_date->edit($record, $fieldprefix);
         $timeEdit = $this->m_time->edit($record, $fieldprefix);
@@ -379,7 +380,7 @@ class DateTimeAttribute extends Attribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
+    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
     {
         if ($mode == "add" || $mode == "update") {
             if ($this->value2db($rec) == null) {
@@ -420,7 +421,7 @@ class DateTimeAttribute extends Attribute
      *
      * @return String A piece of html-code
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
         $this->m_date->m_searchsize = 10;
         return $this->m_date->search($record, $extended, $fieldprefix);
@@ -448,13 +449,12 @@ class DateTimeAttribute extends Attribute
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">)
      *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @return String A piece of htmlcode with hidden form elements that post
-     *                this attribute's value without showing it.
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     * @return string html
      */
-    function hide($record = "", $fieldprefix = "")
+    public function hide($record, $fieldprefix = '', $mode = '')
     {
         // we only need to return the date part, because the dateattribute also
         // hides the other (time) elements that are present in the record (is that

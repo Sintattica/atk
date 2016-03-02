@@ -44,7 +44,7 @@ class ColorPickerAttribute extends Attribute
             });");
     }
 
-    function edit($record = "", $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix = "", $mode = "")
     {
         $this->registerScriptsAndStyles($fieldprefix);
 

@@ -198,7 +198,7 @@ class FileAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string piece of html code with a browsebox
      */
-    function edit($record = "", $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix = "", $mode = "")
     {
         // When in add mode or we have errors, don't show the filename above the input.
         if ($mode != 'add' && $record[$this->fieldName()]['error'] == 0) {
@@ -849,12 +849,12 @@ class FileAttribute extends Attribute
     /**
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
-     * @param array $record Array with values
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @return string Piece of htmlcode
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     * @return string html
      */
-    function hide($record = "", $fieldprefix = "")
+    public function hide($record, $fieldprefix = '', $mode = '')
     {
         $field = $record[$this->fieldName()];
         $result = '';
@@ -880,7 +880,7 @@ class FileAttribute extends Attribute
     }
 
 
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", &$rec = "", $level, $mode)
+    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
     {
         if ($mode == "add" || $mode == "update") {
             if (@empty($rec[$this->fieldName()]['postdel']) && $this->isEmpty($rec) && !$this->hasFlag(self::AF_OBLIGATORY) && !$this->isNotNullInDb()) {

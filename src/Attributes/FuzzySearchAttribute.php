@@ -1,9 +1,12 @@
 <?php namespace Sintattica\Atk\Attributes;
 
+
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db;
+use Sintattica\Atk\Db\Query;
 
 /**
  * The atkFuzzySearchAttribute class represents an attribute of a node
@@ -384,7 +387,19 @@ class FuzzySearchAttribute extends Attribute
     /**
      * Dummy method to prevent loading/storing of data.
      */
-    function addToQuery()
+    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
+    {
+
+    }
+
+    /**
+     * Dummy method to prevent loading/storing of data.
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     * @return string html
+     */
+    public function hide($record, $fieldprefix = '', $mode = '')
     {
 
     }
@@ -392,15 +407,7 @@ class FuzzySearchAttribute extends Attribute
     /**
      * Dummy method to prevent loading/storing of data.
      */
-    function hide()
-    {
-
-    }
-
-    /**
-     * Dummy method to prevent loading/storing of data.
-     */
-    function search()
+    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
 
     }
@@ -425,7 +432,7 @@ class FuzzySearchAttribute extends Attribute
     /**
      * Dummy method to prevent loading/storing of data.
      */
-    function getSearchCondition()
+    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
 
     }

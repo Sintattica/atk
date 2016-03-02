@@ -103,7 +103,7 @@ class RadioAttribute extends ListAttribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String piece of html code with radioboxes
      */
-    function edit($record = "", $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix = "", $mode = "")
     {
         $values = $this->getValues($record);
 

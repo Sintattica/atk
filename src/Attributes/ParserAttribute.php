@@ -1,5 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Utils\StringParser;
 
 /**
@@ -36,7 +37,7 @@ class ParserAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string Parsed string
      */
-    function edit($record = "", $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix = "", $mode = "")
     {
         return $this->display($record);
     }
@@ -45,7 +46,7 @@ class ParserAttribute extends Attribute
      * VOID implementation.. parserAttribute has no data associated with it, so you can't search it.
      * @param array $record Array with fields
      */
-    function search($record = "")
+    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
         return "&nbsp;";
     }
@@ -93,7 +94,7 @@ class ParserAttribute extends Attribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec, $level, $mode)
+    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
     {
 
     }

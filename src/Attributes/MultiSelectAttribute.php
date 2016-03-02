@@ -62,13 +62,12 @@ class MultiSelectAttribute extends ListAttribute
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">)
      *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @return String A piece of htmlcode with hidden form elements that post
-     *                this attribute's value without showing it.
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     * @return string html
      */
-    function hide($record = "", $fieldprefix = "")
+    public function hide($record, $fieldprefix = '', $mode = '')
     {
         $result = '';
         if (is_array($record[$this->fieldName()])) {
@@ -160,7 +159,7 @@ class MultiSelectAttribute extends ListAttribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string piece of html code with radioboxes
      */
-    function edit($record = "", $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix = "", $mode = "")
     {
         $this->m_record = $record;
         $cols = $this->m_cols;
@@ -217,7 +216,7 @@ class MultiSelectAttribute extends ListAttribute
      * @param string $searchmode
      * @return string condition to use in a where clause
      */
-    function getSearchCondition(&$query, $table, $value, $searchmode)
+    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         // Multiselect attribute has only 1 searchmode, and that is substring.
         $searchcondition = null;

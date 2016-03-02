@@ -82,7 +82,7 @@ class FormatAttribute extends Attribute
      *                            of any html form element for this attribute.
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record = "", $fieldprefix = "")
+    function edit($record, $fieldprefix = "")
     {
         $elems = $this->_breakDown();
         $values = $this->_valueBreakdown($record[$this->fieldName()]);

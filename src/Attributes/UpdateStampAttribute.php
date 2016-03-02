@@ -63,13 +63,12 @@ class UpdateStampAttribute extends DateTimeAttribute
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">)
      *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @return String A piece of htmlcode with hidden form elements that post
-     *                This attribute's value without showing it.
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     * @return string html
      */
-    function hide($record = array(), $fieldprefix)
+    public function hide($record, $fieldprefix = '', $mode = '')
     {
         $field = $record[$this->fieldName()];
         $result = "";

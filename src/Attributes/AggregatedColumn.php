@@ -155,7 +155,7 @@ class AggregatedColumn extends Attribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = array(), $level, $mode)
+    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
     {
         if ($mode !== 'add' && $mode != 'edit') {
             $allfields = Tools::atk_array_merge($this->m_displayfields, $this->m_searchfields);
@@ -203,7 +203,7 @@ class AggregatedColumn extends Attribute
      *                              attribute's getSearchModes() method.
      * @return String The search condition
      */
-    function getSearchCondition(&$query, $table, $value, $searchmode)
+    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         $searchconditions = array();
         // Get search condition for all searchFields

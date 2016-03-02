@@ -1,6 +1,7 @@
 <?php namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
 
 
@@ -164,7 +165,7 @@ class TimeAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record = "", $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix = "", $mode = "")
     {
         if ((($this->m_default == "NOW" && $this->m_ownerInstance->m_action == "add") ||
             ($this->m_default == "" && $this->hasFlag(self::AF_OBLIGATORY)) && !$this->hasFlag(self::AF_TIME_DEFAULT_EMPTY))
@@ -354,7 +355,7 @@ class TimeAttribute extends Attribute
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return string piece of html code with a checkbox
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
         return parent::search($record, $extended, $fieldprefix);
     }
@@ -413,7 +414,7 @@ class TimeAttribute extends Attribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
+    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
     {
         if ($mode == "add" || $mode == "update") {
             $value = $this->value2db($rec);
@@ -441,12 +442,12 @@ class TimeAttribute extends Attribute
     /**
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
-     * @param array $record Array with values
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @return string Piece of htmlcode
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     * @return string html
      */
-    function hide($record = "", $fieldprefix)
+    public function hide($record, $fieldprefix = '', $mode = '')
     {
         $field = $record[$this->fieldName()];
         $result = "";
@@ -475,7 +476,7 @@ class TimeAttribute extends Attribute
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
      */
-    function getSearchCondition(&$query, $table, $value, $searchmode)
+    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         // When we get $value as a substring, we autocomplete the time
         // So 9 becomes 09:00:00 and 11:15 becomes 11:15:00

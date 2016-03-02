@@ -441,9 +441,10 @@ class TabbedPane extends Attribute
      *
      * @param array $record
      * @param string $fieldprefix
-     * @return empty string
+     * @param string $mode
+     * @return string html
      */
-    function hide($record = "", $fieldprefix = "")
+    public function hide($record, $fieldprefix = '', $mode = '')
     {
         return '';
     }

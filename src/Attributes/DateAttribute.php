@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Db\Query;
 
@@ -338,7 +339,7 @@ class DateAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record = "", $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix = "", $mode = "")
     {
         //return $this -> draw($record, $fieldprefix, "", $mode,
         //    $this -> hasFlag(self::AF_OBLIGATORY));
@@ -841,11 +842,12 @@ class DateAttribute extends Attribute
     /**
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
-     * @param array $record Array with values
-     * @param string $fieldprefix The fieldprefix
-     * @return string Piece of htmlcode
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     * @return string html
      */
-    function hide($record = "", $fieldprefix = "")
+    public function hide($record, $fieldprefix = '', $mode = '')
     {
         $result = "";
         $field = $record[$this->fieldName()];
@@ -876,7 +878,7 @@ class DateAttribute extends Attribute
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return string piece of HTML code
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
         if (!$extended) {
             // plain text search, check if we didn't come from extended search (then current value is an array)
@@ -921,7 +923,7 @@ class DateAttribute extends Attribute
      * @param string $fieldname The name of the field in the database (used by atkExpressionAttribute)
      * @return String The searchcondition to use.
      */
-    function getSearchCondition(&$query, $table, $value, $searchmode, $fieldname = '')
+    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         $db = $this->getDb();
 
@@ -1329,7 +1331,7 @@ class DateAttribute extends Attribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
+    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
     {
         if ($mode == "add" || $mode == "update") {
             if ($this->value2db($rec) == null) {

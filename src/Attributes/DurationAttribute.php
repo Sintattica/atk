@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\DataGrid\DataGrid;
 
 
 /**
@@ -61,13 +62,12 @@ class DurationAttribute extends Attribute
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">)
      *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @return String A piece of htmlcode with hidden form elements that post
-     *                this attribute's value without showing it.
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     * @return string html
      */
-    function hide($record, $fieldprefix = "")
+    public function hide($record, $fieldprefix = '', $mode = '')
     {
         // hide as a parseable string
         $record[$this->fieldName()] = $this->_minutes2string($record[$this->fieldName()]);
@@ -83,7 +83,7 @@ class DurationAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String Piece a of HTML Code
      */
-    function edit($record = "", $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix = "", $mode = "")
     {
         $id = $fieldprefix . $this->formName();
         $fieldvalue = Tools::atkArrayNvl($record, $this->fieldName(), "");
@@ -138,7 +138,7 @@ class DurationAttribute extends Attribute
      * @param array $record Array of records, with for each record 2 fields (hours, minutes)
      * @return String Piece a of HTML Code
      */
-    function search($record = "")
+    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
         return "&nbsp;"; // currently not searchable.
     }

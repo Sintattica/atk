@@ -26,7 +26,7 @@ class ShuttleRelation extends ManyToManyRelation
      * @access private
      * @param string $fieldprefix The prefix to the field
      */
-    function _renderChangeHandler($fieldprefix)
+    function _renderChangeHandler($fieldprefix, $elementNr = "")
     {
         if (count($this->m_onchangecode)) {
             $page = $this->m_ownerInstance->getPage();
@@ -86,7 +86,7 @@ class ShuttleRelation extends ManyToManyRelation
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String piece of html code
      */
-    function edit($record, $fieldprefix, $mode)
+    function edit($record, $fieldprefix = '', $mode = '')
     {
         $this->createDestination();
         $this->createLink();

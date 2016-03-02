@@ -36,7 +36,7 @@ class UpdatedByAttribute extends ManyToOneRelation
     /**
      * Adds this attribute to database queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
+    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
     {
         if ($mode == 'add' || $mode == 'update') {
             Attribute::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);

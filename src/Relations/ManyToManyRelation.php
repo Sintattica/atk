@@ -3,6 +3,7 @@
 
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Db\Query;
@@ -408,7 +409,7 @@ class ManyToManyRelation extends Relation
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record = "", $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix = "", $mode = "")
     {
 
     }
@@ -431,7 +432,7 @@ class ManyToManyRelation extends Relation
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec, $level, $mode)
+    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
     {
         // we don't add ourselves to the query;
     }
@@ -697,13 +698,12 @@ class ManyToManyRelation extends Relation
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">)
      *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @return String A piece of htmlcode with hidden form elements that post
-     *                This attribute's value without showing it.
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     * @return string html
      */
-    function hide($record = "", $fieldprefix = "")
+    public function hide($record, $fieldprefix = '', $mode = '')
     {
         $result = "";
         if (is_array(Tools::atkArrayNvl($record, $this->fieldName())) && $this->createDestination()) {
@@ -742,7 +742,7 @@ class ManyToManyRelation extends Relation
      *
      * @return string Piece of html code
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
         $this->createDestination();
 

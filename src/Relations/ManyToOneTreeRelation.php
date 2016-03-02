@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\TreeToolsTree;
+use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Utils\StringParser;
 
 /**
@@ -41,7 +42,7 @@ class ManyToOneTreeRelation extends ManyToOneRelation
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return Piece of html code that can  be used in a form to edit this
      */
-    function edit($record = "", $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix = "", $mode = "")
     {
         $this->createDestination();
         $tmp1 = Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
@@ -69,7 +70,7 @@ class ManyToOneTreeRelation extends ManyToOneRelation
      * @param array $record Record
      * @return string Piece of html code that can  be used in a form to edit this
      */
-    function search($record)
+    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
         $this->createDestination();
         if ($this->m_destinationFilter != "") {

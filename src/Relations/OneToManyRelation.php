@@ -402,7 +402,7 @@ class OneToManyRelation extends Relation
      *
      * @return String A piece of htmlcode for editing this attribute
      */
-    public function edit($record = "", $fieldprefix = "", $mode = '')
+    public function edit($record, $fieldprefix = "", $mode = '')
     {
         $page = Page::getInstance();
         $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
@@ -973,10 +973,12 @@ class OneToManyRelation extends Relation
      *
      * Because the oneToMany has nothing to hide, we override the default
      * hide() implementation with a dummy method.
-     *
-     * @return String An empty string.
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     * @return string html
      */
-    function hide($record = '', $fieldprefix = '')
+    public function hide($record, $fieldprefix = '', $mode = '')
     {
         //Nothing to hide..
         return "";
@@ -1109,7 +1111,7 @@ class OneToManyRelation extends Relation
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
      */
-    function getSearchCondition(&$query, $table, $value, $searchmode)
+    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         $usedfields = array();
         $searchconditions = array();
