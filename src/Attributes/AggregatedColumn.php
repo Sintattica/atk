@@ -6,6 +6,7 @@ use Sintattica\Atk\Core\Tools as Tools;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\RecordList\RecordList;
+use Sintattica\Atk\Core\Config;
 
 /**
  * The AggregatedColumn aggregates multiple attributes to one colunm in
@@ -116,7 +117,7 @@ class AggregatedColumn extends Attribute
                     $order .= " DESC";
                 }
                 $sm = SessionManager::getInstance();
-                $arr["heading"][$fieldprefix . $this->fieldName()]["url"] = $sm->sessionUrl(Tools::atkSelf() . '?atknodeuri=' . $this->m_ownerInstance->atkNodeUri() . '&atkaction=' . $action . '&atkorderby=' . rawurlencode($order));
+                $arr["heading"][$fieldprefix . $this->fieldName()]["url"] = $sm->sessionUrl(Config::getGlobal('dispatcher') . '?atknodeuri=' . $this->m_ownerInstance->atkNodeUri() . '&atkaction=' . $action . '&atkorderby=' . rawurlencode($order));
             }
 
             if (!Tools::hasFlag($flags, RecordList::RL_NO_SEARCH) && $this->hasFlag(self::AF_SEARCHABLE)) {

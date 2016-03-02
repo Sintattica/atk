@@ -129,7 +129,7 @@ class TreeNode extends Node
         $content .= "<table border=\"0\" cellspacing=0 cellpadding=0 cols=" . ($g_maxlevel + 2) . " width=" . $width . ">\n";
 
         if (!$this->hasFlag(self::NF_NO_ADD) && $this->hasFlag(self::NF_ADD_LINK) && $this->allowed("add")) {
-            $addurl = Tools::atkSelf() . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=add&atkfilter=" . rawurlencode($this->m_parent . "." . $this->m_primaryKey[0] . "='0'");
+            $addurl = Config::getGlobal('dispatcher') . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=add&atkfilter=" . rawurlencode($this->m_parent . "." . $this->m_primaryKey[0] . "='0'");
             if (Tools::atktext("txt_link_" . Tools::getNodeType($this->m_type) . "_add", $this->m_module, "",
                     "", "", true) != ""
             ) {
@@ -411,12 +411,12 @@ class TreeNode extends Node
 
                             if ($this->m_tree[$cnt]["isleaf"] == 1) {
                                 if ($cnt != 0) {
-                                    $res .= "<td>" . Tools::href(Tools::atkSelf() . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=" . $this->m_action . "&" . $params,
+                                    $res .= "<td>" . Tools::href(Config::getGlobal('dispatcher') . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=" . $this->m_action . "&" . $params,
                                             "<img src=\"" . $img_end_plus . "\" border=0>") . "</td>\n";
                                 }
                             } else {
                                 if ($cnt != 0) {
-                                    $res .= "<td>" . Tools::href(Tools::atkSelf() . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=" . $this->m_action . "&" . $params,
+                                    $res .= "<td>" . Tools::href(Config::getGlobal('dispatcher') . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=" . $this->m_action . "&" . $params,
                                             "<img src=\"" . $img_plus . "\" border=0>") . "</td>\n";
                                 }
                             }
@@ -443,7 +443,7 @@ class TreeNode extends Node
                             if ($this->m_tree[$cnt]["isleaf"] == 1) {
                                 if ($cnt != 0) {
                                     if ($foldable) {
-                                        $res .= "<td>" . Tools::href(Tools::atkSelf() . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=" . $this->m_action . "&" . $params,
+                                        $res .= "<td>" . Tools::href(Config::getGlobal('dispatcher') . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=" . $this->m_action . "&" . $params,
                                                 "<img src=\"" . $img_end_minus . "\" border=0>") . "</td>\n";
                                     } else {
                                         $res .= "<td><img src=\"" . $img_end . "\" border=0></td>\n";
@@ -452,7 +452,7 @@ class TreeNode extends Node
                             } else {
                                 if ($cnt != 0) {
                                     if ($foldable) {
-                                        $res .= "<td>" . Tools::href(Tools::atkSelf() . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=" . $this->m_action . "&" . $params,
+                                        $res .= "<td>" . Tools::href(Config::getGlobal('dispatcher') . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=" . $this->m_action . "&" . $params,
                                                 "<img src=\"" . $img_minus . "\" border=0>") . "</td>\n";
                                     } else {
                                         $res .= "<td><img src=\"" . $img_split . "\" border=0></td>\n";
@@ -491,10 +491,10 @@ class TreeNode extends Node
                             $params = $params . $this->extraparams;
                         }
                         if ($expand[$cnt] == 0) {
-                            $res .= "<td>" . Tools::href(Tools::atkSelf() . "?" . $params,
+                            $res .= "<td>" . Tools::href(Config::getGlobal('dispatcher') . "?" . $params,
                                     "<img src=\"" . $img_expand . "\" border=0>") . "</td>\n";
                         } else {
-                            $res .= "<td>" . Tools::href(Tools::atkSelf() . "?" . $params,
+                            $res .= "<td>" . Tools::href(Config::getGlobal('dispatcher') . "?" . $params,
                                     "<img src=\"" . $img_collapse . "\" border=0>") . "</td>\n";
                         }
                     } else {
@@ -533,19 +533,19 @@ class TreeNode extends Node
                     $actions = array();
 
                     if (!$this->hasFlag(self::NF_NO_ADD) && !($this->hasFlag(self::NF_TREE_NO_ROOT_ADD) && $this->m_tree[$cnt]["level"] == 0)) {
-                        $actions["add"] = Tools::atkSelf() . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=add&atkfilter=" . $this->m_parent . "." . $this->m_primaryKey[0] . rawurlencode("='" . $this->m_tree[$cnt]["id"] . "'");
+                        $actions["add"] = Config::getGlobal('dispatcher') . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=add&atkfilter=" . $this->m_parent . "." . $this->m_primaryKey[0] . rawurlencode("='" . $this->m_tree[$cnt]["id"] . "'");
                     }
                     if ($cnt > 0) {
                         if (!$this->hasFlag(self::NF_NO_EDIT)) {
-                            $actions["edit"] = Tools::atkSelf() . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=edit&atkselector=" . $this->m_table . '.' . $this->m_primaryKey[0] . '=' . $this->m_tree[$cnt]["id"];
+                            $actions["edit"] = Config::getGlobal('dispatcher') . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=edit&atkselector=" . $this->m_table . '.' . $this->m_primaryKey[0] . '=' . $this->m_tree[$cnt]["id"];
                         }
                         if (($this->hasFlag(self::NF_COPY) && $this->allowed("add") && !$this->hasflag(self::NF_TREE_NO_ROOT_COPY)) || ($this->m_tree[$cnt]["level"] != 1 && $this->hasFlag(self::NF_COPY) && $this->allowed("add"))) {
-                            $actions["copy"] = Tools::atkSelf() . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=copy&atkselector=" . $this->m_table . '.' . $this->m_primaryKey[0] . '=' . $this->m_tree[$cnt]["id"];
+                            $actions["copy"] = Config::getGlobal('dispatcher') . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=copy&atkselector=" . $this->m_table . '.' . $this->m_primaryKey[0] . '=' . $this->m_tree[$cnt]["id"];
                         }
                         if ($this->hasFlag(self::NF_NO_DELETE) || ($this->hasFlag(self::NF_TREE_NO_ROOT_DELETE) && $this->m_tree[$cnt]["level"] == 1)) {
                             // Do nothing
                         } else {
-                            $actions["delete"] = Tools::atkSelf() . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=delete&atkselector=" . $this->m_table . '.' . $this->m_primaryKey[0] . '=' . $this->m_tree[$cnt]["id"];
+                            $actions["delete"] = Config::getGlobal('dispatcher') . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=delete&atkselector=" . $this->m_table . '.' . $this->m_primaryKey[0] . '=' . $this->m_tree[$cnt]["id"];
                         }
                     }
 

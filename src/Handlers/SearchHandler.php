@@ -71,10 +71,8 @@ class SearchHandler extends AbstractSearchHandler
     function redirectToResults()
     {
         $sm = SessionManager::getInstance();
-        $url = Tools::dispatch_url($this->getPreviousNode(), $this->getPreviousAction(), $this->fetchCriteria(),
-            Tools::atkSelf());
+        $url = Tools::dispatch_url($this->getPreviousNode(), $this->getPreviousAction(), $this->fetchCriteria());
         $url = $sm->sessionUrl($url, $sm->atkLevel() > 0 ? SessionManager::SESSION_BACK : SessionManager::SESSION_REPLACE);
-
         $this->m_node->redirect($url);
     }
 

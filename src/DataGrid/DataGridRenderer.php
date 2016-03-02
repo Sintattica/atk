@@ -47,7 +47,7 @@ class DataGridRenderer extends DataGridComponent
     {
         if (!$this->getGrid()->isUpdate() && !$this->getGrid()->isEmbedded()) {
             $sm = SessionManager::getInstance();
-            $result = '<form id="' . $this->getGrid()->getFormName() . '" name="' . $this->getGrid()->getFormName() . '" method="post" action="' . Tools::atkSelf() . '">' .
+            $result = '<form id="' . $this->getGrid()->getFormName() . '" name="' . $this->getGrid()->getFormName() . '" method="post" action="' . Config::getGlobal('dispatcher') . '">' .
                 $sm->formState() .
                 $result .
                 '</form>';

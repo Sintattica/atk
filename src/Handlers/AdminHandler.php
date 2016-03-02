@@ -333,7 +333,7 @@ class AdminHandler extends ActionHandler
     {
         $atk = Atk::getInstance();
         $node = $atk->atkGetNode($this->invoke('getAddNodeType'));
-        return Tools::atkSelf() . '?atknodeuri=' . $node->atkNodeUri() . '&atkaction=add';
+        return Config::getGlobal('dispatcher') . '?atknodeuri=' . $node->atkNodeUri() . '&atkaction=add';
     }
 
     /**

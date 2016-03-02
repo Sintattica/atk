@@ -142,7 +142,7 @@ class SessionManager
             else {
                 if (isset($ATK_VARS["atkback"]) && $ATK_VARS["atkback"] != "") {
                     // When we go back, we go one level deeper than the level we came from.
-                    Tools::redirect($this->sessionUrl(Tools::atkSelf() . "?atklevel=" . ($this->atkprevlevel - 1)));
+                    Tools::redirect($this->sessionUrl(Config::getGlobal('dispatcher') . "?atklevel=" . ($this->atkprevlevel - 1)));
                 }
             }
         }

@@ -473,7 +473,7 @@ class SecurityManager
         } // we are authenticated, but atklogout is still active, let's get rid of it!
         else {
             if (isset($ATK_VARS["atklogout"])) {
-                header("Location: " . Tools::atkSelf() . "?");
+                header("Location: " . Config::getGlobal('dispatcher') . "?");
             } // we keep the relogin state until the atklogout variable isn't set anymore
             else {
                 if (!isset($ATK_VARS["atklogout"]) && isset($session["relogin"]) && $session["relogin"] == 1) {
@@ -536,12 +536,12 @@ class SecurityManager
         $page->register_script(Config::getGlobal('assets_url') . "javascript/tools.js");
 
         $tplvars = Array();
-        $output = '<form action="' . Tools::atkSelf() . '" method="post">';
+        $output = '<form action="' . Config::getGlobal('dispatcher') . '" method="post">';
         $output .= Tools::makeHiddenPostVars(array("atklogout"));
         $output .= '<br><br><table border="0" cellspacing="2" cellpadding="0" align="center">';
 
         $tplvars["atksessionformvars"] = Tools::makeHiddenPostVars(array("atklogout"));
-        $tplvars["formurl"] = Tools::atkSelf();
+        $tplvars["formurl"] = Config::getGlobal('dispatcher');
 
         $tplvars["username"] = Tools::atktext("username");
         $tplvars["password"] = Tools::atktext("password");

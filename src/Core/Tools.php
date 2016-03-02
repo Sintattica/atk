@@ -1609,20 +1609,6 @@ class Tools
         return $attr;
     }
 
-    /**
-     * Return the current script file. Like $_SERVER['PHP_SELF'], but
-     * sanitized for security reasons
-     *
-     * @return String
-     */
-    public static function atkSelf()
-    {
-        $self = $_SERVER['PHP_SELF'];
-        if (strpos($self, '"') !== false) {
-            $self = substr($self, 0, strpos($self, '"'));
-        } //XSS attempt
-        return htmlentities(strip_tags($self)); // just in case..
-    }
 
     /**
      * ATK wrapper of the PHP iconv function. Check if iconv function is present in

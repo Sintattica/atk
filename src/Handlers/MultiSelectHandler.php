@@ -4,6 +4,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Core\Config;
 
 /**
  * Handler class for the select action of a node. The handler draws a
@@ -130,7 +131,7 @@ class MultiSelectHandler extends AdminHandler
         $params["list"] = $grid->render();
 
         if ($sm->atkLevel() > 0) {
-            $backlinkurl = $sm->sessionUrl(Tools::atkSelf() . '?atklevel=' . $sm->newLevel(SessionManager::SESSION_BACK));
+            $backlinkurl = $sm->sessionUrl(Config::getGlobal('dispatcher') . '?atklevel=' . $sm->newLevel(SessionManager::SESSION_BACK));
             $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backlinkurl . '\';" value="' . Tools::atktext('cancel') . '"></div>';
         }
 

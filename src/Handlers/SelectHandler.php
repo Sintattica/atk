@@ -1,5 +1,6 @@
 <?php namespace Sintattica\Atk\Handlers;
 
+use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
@@ -69,7 +70,7 @@ class SelectHandler extends ActionHandler
         $params["footer"] = "";
 
         if ($sm->atkLevel() > 0) {
-            $backUrl = $sm->sessionUrl(Tools::atkSelf() . '?atklevel=' . $sm->newLevel(SessionManager::SESSION_BACK));
+            $backUrl = $sm->sessionUrl(Config::getGlobal('dispatcher') . '?atklevel=' . $sm->newLevel(SessionManager::SESSION_BACK));
             $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backUrl . '\';" value="' . $this->getNode()->text('cancel') . '"></div>';
         }
 
@@ -123,7 +124,7 @@ class SelectHandler extends ActionHandler
         $sm = SessionManager::getInstance();
 
         if ($sm->atkLevel() > 0 && $grid->getPostvar('atkprevlevel', 0) > $sm->atkLevel()) {
-            $backUrl = $sm->sessionUrl(Tools::atkSelf() . '?atklevel=' . $sm->newLevel(SessionManager::SESSION_BACK));
+            $backUrl = $sm->sessionUrl(Config::getGlobal('dispatcher') . '?atklevel=' . $sm->newLevel(SessionManager::SESSION_BACK));
             $node->redirect($backUrl);
         } else {
             $records = $grid->getRecords();

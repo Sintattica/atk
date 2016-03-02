@@ -4,6 +4,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Session\SessionStore;
+use Sintattica\Atk\Core\Config;
 /**
  * Handler class for the save action of a node. The action saves a
  * new record to the database. The data is retrieved from the postvars.
@@ -172,7 +173,7 @@ class SaveHandler extends ActionHandler
                 $extra = "&atkpkret=" . rawurlencode($this->m_postvars["atkpkret"]);
             }
 
-            $url = Tools::atkSelf() . '?atknodeuri=' . $this->m_node->atkNodeUri();
+            $url = Config::getGlobal('dispatcher') . '?atknodeuri=' . $this->m_node->atkNodeUri();
             $url .= '&atkaction=edit';
             $url .= '&atkselector=' . rawurlencode($this->m_node->primaryKey($record));
             $location = $sm->sessionUrl($url . $extra, SessionManager::SESSION_REPLACE, $this->_getSkip() - 1);
@@ -182,7 +183,7 @@ class SaveHandler extends ActionHandler
                 if (isset($this->m_node->m_postvars['atkfilter'])) {
                     $filter = "&atkfilter=" . rawurlencode($this->m_node->m_postvars['atkfilter']);
                 }
-                $url = Tools::atkSelf() . '?atknodeuri=' . $this->m_node->atkNodeUri() . '&atkaction=' . $this->getAddAction();
+                $url = Config::getGlobal('dispatcher') . '?atknodeuri=' . $this->m_node->atkNodeUri() . '&atkaction=' . $this->getAddAction();
                 $location = $sm->sessionUrl($url . $filter, SessionManager::SESSION_REPLACE, $this->_getSkip() - 1);
             } else {
                 // normal succesful save

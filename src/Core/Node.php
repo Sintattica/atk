@@ -2512,7 +2512,7 @@ class Node
             foreach ($list as $t) {
                 $newtab["title"] = $this->text(array("tab_$t", $t));
                 $newtab["tab"] = $t;
-                $url = Tools::atkSelf() . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=" . $this->m_action . "&atktab=" . $t;
+                $url = Config::getGlobal('dispatcher') . "?atknodeuri=" . $this->atkNodeUri() . "&atkaction=" . $this->m_action . "&atktab=" . $t;
                 if ($this->m_action == "view") {
                     $newtab["link"] = $sm->sessionUrl($url, SessionManager::SESSION_DEFAULT);
                 } else {
@@ -2562,7 +2562,7 @@ class Node
             }
         }
 
-        $actionbase = Tools::atkSelf() . '?atknodeuri=' . $this->atkNodeUri() . '&atkselector=[pk]' . $postfix;
+        $actionbase = Config::getGlobal('dispatcher') . '?atknodeuri=' . $this->atkNodeUri() . '&atkselector=[pk]' . $postfix;
         if (!$this->hasFlag(self::NF_NO_VIEW) && $this->allowed("view")) {
             $actions["view"] = $actionbase . '&atkaction=view';
         }
@@ -2683,7 +2683,7 @@ class Node
 
         $sm = SessionManager::getInstance();
 
-        $formstart = '<form action="' . Tools::atkSelf() . '?"' . SID . ' method="post">';
+        $formstart = '<form action="' . Config::getGlobal('dispatcher') . '?"' . SID . ' method="post">';
         $formstart .= $sm->formState();
         $formstart .= '<input type="hidden" name="atkaction" value="' . $action . '">';
         $formstart .= '<input type="hidden" name="atknodeuri" value="' . $this->atkNodeUri() . '">';
@@ -2994,7 +2994,7 @@ class Node
 
         if ($location == "") {
             $sm = SessionManager::getInstance();
-            $location = $sm->sessionUrl(Tools::atkSelf(), SessionManager::SESSION_BACK, $levelskip);
+            $location = $sm->sessionUrl(Config::getGlobal('dispatcher'), SessionManager::SESSION_BACK, $levelskip);
         }
 
         if (count($record)) {

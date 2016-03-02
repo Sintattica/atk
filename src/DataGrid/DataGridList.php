@@ -178,7 +178,7 @@ class DataGridList extends DataGridComponent
             $buttonType = $grid->isEmbedded() ? "button" : "submit";
             $button = '<input type="' . $buttonType . '" class="btn btn-default btn_search" value="' . Tools::atktext("search") . '" onclick="' . $call . ' return false;">';
             if ($grid->hasFlag(DataGrid::EXTENDED_SEARCH)) {
-                $button .= ' ' . Tools::href(Tools::atkSelf() . "?atknodeuri=" . $grid->getActionNode()->atkNodeUri() . "&atkaction=" . $grid->getActionNode()->getExtendedSearchAction(),
+                $button .= ' ' . Tools::href(Config::getGlobal('dispatcher') . "?atknodeuri=" . $grid->getActionNode()->atkNodeUri() . "&atkaction=" . $grid->getActionNode()->getExtendedSearchAction(),
                         "(" . Tools::atktext("search_extended") . ")", SessionManager::SESSION_NESTED);
             }
 
@@ -422,7 +422,7 @@ class DataGridList extends DataGridComponent
         /*         * ********************************************** */
         $mra = "";
         if (!$edit && $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS)) {
-            $target = $sm->sessionUrl(Tools::atkSelf() . '?atknodeuri=' . $grid->getActionNode()->atkNodeUri(),
+            $target = $sm->sessionUrl(Config::getGlobal('dispatcher') . '?atknodeuri=' . $grid->getActionNode()->atkNodeUri(),
                 SessionManager::SESSION_NESTED);
 
             /* multiple actions -> dropdown */
@@ -449,7 +449,7 @@ class DataGridList extends DataGridComponent
             $postvars = $grid->getNode()->m_postvars;
 
             $target = $sm->sessionUrl(
-                Tools::atkSelf() . '?atknodeuri=' . $grid->getNode()->atkNodeUri()
+                Config::getGlobal('dispatcher') . '?atknodeuri=' . $grid->getNode()->atkNodeUri()
                 . '&atktarget=' . (!empty($postvars['atktarget']) ? $postvars['atktarget']
                     : '')
                 . '&atktargetvar=' . (!empty($postvars['atktargetvar']) ? $postvars['atktargetvar']
