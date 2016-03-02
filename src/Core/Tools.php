@@ -7,7 +7,6 @@ use Sintattica\Atk\Errors\ErrorHandlerBase;
 use Sintattica\Atk\Utils\Debugger;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Ui\Page;
-use Sintattica\Atk\Utils\String;
 use Sintattica\Atk\Utils\BrowserInfo;
 use Sintattica\Atk\Handlers\ActionHandler;
 use \Exception;
@@ -38,6 +37,43 @@ class Tools
      * Error message.
      */
     const DEBUG_ERROR = 8;
+    /**
+     * Accepted charsets for htmlentities and html_entity_decode
+     * @var array
+     */
+    public static $s_acceptedCharsets = array(
+        'iso-8859-1',
+        'iso-8859-15',
+        'utf-8',
+        'cp866',
+        'ibm866',
+        '866',
+        'cp1251',
+        'windows-1251',
+        'win-1251',
+        '1251',
+        'cp1252',
+        'windows-1252',
+        '1252',
+        'koi8-r',
+        'koi8-ru',
+        'koi8r',
+        'big5',
+        '950',
+        'gb2312',
+        '936',
+        'big5-hkscs',
+        'shift_jis',
+        'sjis',
+        '932',
+        'euc-jp',
+        'eucjp'
+    );
+    /**
+     * Do we have multibyte support
+     * @var boolean
+     */
+    public static $s_hasMultiByteSupport = null;
 
 
     /**
@@ -1430,7 +1466,7 @@ class Tools
      */
     public static function atk_htmlentities($string, $quote_style = ENT_COMPAT, $charset = null)
     {
-        return String::htmlentities($string, $quote_style, $charset);
+        return self::htmlentities($string, $quote_style, $charset);
     }
 
     /**
@@ -1446,7 +1482,7 @@ class Tools
      */
     public static function atk_html_entity_decode($string, $quote_style = ENT_COMPAT, $charset = null)
     {
-        return String::html_entity_decode($string, $quote_style, $charset);
+        return self::html_entity_decode($string, $quote_style, $charset);
     }
 
     /**
@@ -1456,7 +1492,7 @@ class Tools
      */
     public static function atk_strlen($str)
     {
-        return String::strlen($str);
+        return self::strlen($str);
     }
 
     /**
@@ -1468,7 +1504,7 @@ class Tools
      */
     public static function atk_substr($str, $start, $length = '')
     {
-        return String::substr($str, $start, $length);
+        return self::substr($str, $start, $length);
     }
 
     /**
@@ -1480,7 +1516,7 @@ class Tools
      */
     public static function atk_strpos($haystack, $needle, $offset = 0)
     {
-        return String::strpos($haystack, $needle, $offset);
+        return self::strpos($haystack, $needle, $offset);
     }
 
     /**
@@ -1490,7 +1526,7 @@ class Tools
      */
     public static function atk_strtolower($str)
     {
-        return String::strtolower($str);
+        return self::strtolower($str);
     }
 
     /**
@@ -1501,7 +1537,7 @@ class Tools
      */
     public static function atk_strtoupper($str)
     {
-        return String::strtoupper($str);
+        return self::strtoupper($str);
     }
 
     /**
@@ -1601,7 +1637,7 @@ class Tools
      */
     public static function atk_iconv($in_charset, $out_charset, $str)
     {
-        return String::iconv($in_charset, $out_charset, $str);
+        return self::iconv($in_charset, $out_charset, $str);
     }
 
     /**
@@ -1828,6 +1864,202 @@ class Tools
             return $arr[1];
         } else {
             return $nodeUri;
+        }
+    }
+
+    /**
+     * Check if the system has multibyte support
+     * @return boolean
+     */
+    public static function hasMultiByteSupport()
+    {
+        if (self::$s_hasMultiByteSupport === null) {
+            if (function_exists('mb_strlen') && Config::getGlobal('use_mbstring', true)) {
+                mb_internal_encoding(Tools::atkGetCharset());
+                self::$s_hasMultiByteSupport = true;
+            } else {
+                self::$s_hasMultiByteSupport = false;
+            }
+        }
+        return self::$s_hasMultiByteSupport;
+    }
+
+    /**
+     * Get string length
+     * @param string $str The string being checked for length
+     * @return int
+     */
+    public static function strlen($str)
+    {
+        if (self::hasMultiByteSupport()) {
+            return mb_strlen($str);
+        } elseif (strtolower(Tools::atkGetCharset()) == 'utf-8') {
+            preg_match_all("/./su", $str, $matches);
+            $chars = $matches[0];
+            return count($chars);
+        } else {
+            return strlen($str);
+        }
+    }
+
+    /**
+     * Get part of string
+     * @param string $str The string being checked.
+     * @param int $start The first position used in $str
+     * @param int $length [optional] The maximum length of the returned string
+     * @return string
+     */
+    public static function substr($str, $start, $length = '')
+    {
+        if (self::hasMultiByteSupport()) {
+            return mb_substr($str, $start, $length);
+        } else {
+            return substr($str, $start, $length);
+        }
+    }
+
+    /**
+     * Return char on given position
+     * @param string $str The string being checked
+     * @param int $pos The position of the char
+     * @return string
+     */
+    public static function charAt($str, $pos)
+    {
+        return self::substr($str, $pos, 1);
+    }
+
+    /**
+     *  Find position of first occurrence of string in a string
+     * @param object $haystack The string being checked.
+     * @param object $needle The position counted from the beginning of haystack .
+     * @param object $offset [optional] The search offset. If it is not specified, 0 is used.
+     * @return int|boolean
+     */
+    public static function strpos($haystack, $needle, $offset = 0)
+    {
+        if (self::hasMultiByteSupport()) {
+            return mb_strpos($haystack, $needle, $offset);
+        } else {
+            return substr($haystack, $needle, $offset);
+        }
+    }
+
+    /**
+     * Make a string lowercase
+     * @param string $str The string being lowercased.
+     * @return string
+     */
+    public static function strtolower($str)
+    {
+        if (self::hasMultiByteSupport()) {
+            return mb_strtolower($str);
+        } else {
+            return strtolower($str);
+        }
+    }
+
+    /**
+     * Make a string uppercase
+     * @param string $str The string being uppercased.
+     * @return string
+     */
+    public static function strtoupper($str)
+    {
+        if (self::hasMultiByteSupport()) {
+            return mb_strtoupper($str);
+        } else {
+            return strtoupper($str);
+        }
+    }
+
+    /**
+     * ATK version of the PHP html_entity_decode function. Works just like PHP's
+     * html_entity_decode function, but falls back to the in the language file
+     * configured charset instead of PHP's default charset, if no
+     * charset is given.
+     *
+     * @param string $str string to convert
+     * @param int $quote_style quote style (defaults to ENT_COMPAT)
+     * @param string $charset character set to use (default to Tools::atktext('charset', 'atk'))
+     *
+     * @return String encoded string
+     */
+    public static function html_entity_decode($str, $quote_style = ENT_COMPAT, $charset = null)
+    {
+        if ($charset === null) {
+            $charset = Tools::atkGetCharset();
+        }
+
+        // check if charset is allowed, else use default charset for this function
+        if (!in_array(strtolower($charset), self::$s_acceptedCharsets)) {
+            $charset = 'iso-8859-1';
+        }
+
+        return html_entity_decode($str, $quote_style, $charset);
+    }
+
+    /**
+     * ATK version of the PHP htmlentities function. Works just like PHP's
+     * htmlentities function, but falls back to Tools::atkGetCharset() instead of
+     * PHP's default charset, if no charset is given.
+     *
+     * @param string $str string to convert
+     * @param int $quote_style quote style (defaults to ENT_COMPAT)
+     * @param string $charset character set to use (default to Tools::atkGetCharset())
+     *
+     * @return String encoded string
+     */
+    public static function htmlentities($str, $quote_style = ENT_COMPAT, $charset = null)
+    {
+        if ($charset === null) {
+            $charset = Tools::atkGetCharset();
+        }
+
+        // check if charset is allowed, else use default charset for this function
+        if (!in_array(strtolower($charset), self::$s_acceptedCharsets)) {
+            $charset = 'iso-8859-1';
+        }
+
+        return htmlentities($str, $quote_style, $charset);
+    }
+
+    /**
+     * ATK version of the PHP html_entity_decode function. Works just like PHP's
+     * html_entity_decode function, but falls back to Tools::atkGetCharset() instead of
+     * PHP's default charset, if no charset is given.
+     *
+     * @param string $in_charset The input charset
+     * @param string $out_charset The output charset
+     * @param string $str The string to convert
+     * @return String encoded string
+     */
+    public static function iconv($in_charset, $out_charset, $str)
+    {
+        if (function_exists("iconv")) {
+            $str = iconv($in_charset, $out_charset, $str);
+        } else {
+            Tools::atkwarning(Tools::atktext("error_iconv_not_install"));
+        }
+        return $str;
+    }
+
+    /**
+     * ATK version of the Smarty truncate function, multibyte safe.
+     *
+     * @param  string $string text to truncate
+     * @param  integer $max Maximum length of the total result string
+     * @param  string $replace text to append to the end of the truncated string
+     * @return string  truncated sting
+     *
+     */
+    public static function truncate($string, $max, $replace)
+    {
+        if (self::strlen($string) <= $max) {
+            return $string;
+        } else {
+            $length = $max - self::strlen($replace);
+            return self::substr($string, 0, $length) . $replace;
         }
     }
 }
