@@ -1781,8 +1781,8 @@ class Node
             }
 
         } elseif ($mode == "delete") {
-            $result[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel" value="' . $this->text('no') . '">';
             $result[] = '<input name="confirm" type="submit" class="btn btn-default btn_ok" value="' . $this->text('yes') . '">';
+            $result[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel" value="' . $this->text('no') . '">';
         } elseif ($mode == "search") {
             // (don't change the order of button)
             $result[] = $this->getButton('search', true);
