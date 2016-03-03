@@ -1,5 +1,6 @@
 <?php namespace Sintattica\Atk\Handlers;
 
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\RecordList\CustomRecordList;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
@@ -161,7 +162,7 @@ class ExportHandler extends ActionHandler
         $value = '';
 
         if ($selected) {
-            $db = Tools::atkGetDb();
+            $db = Db::getInstance();
             $rows = $db->getRows('SELECT name FROM atk_exportcriteria WHERE id = ' . (int)$selected);
             if (count($rows) == 1) {
                 $value = htmlentities($rows[0]['name']);
@@ -309,7 +310,7 @@ class ExportHandler extends ActionHandler
      */
     private function saveSelection()
     {
-        $db = Tools::atkGetDb();
+        $db = Db::getInstance();
         $id = $db->nextid('exportcriteria');
 
         $user_id = 0;
@@ -343,7 +344,7 @@ class ExportHandler extends ActionHandler
      */
     private function updateSelection()
     {
-        $db = Tools::atkGetDb();
+        $db = Db::getInstance();
 
         $user_id = 0;
         if ('none' !== strtolower(Config::getGlobal('authentication'))) {
@@ -381,7 +382,7 @@ class ExportHandler extends ActionHandler
      */
     private function deleteSelection($id)
     {
-        $db = Tools::atkGetDb();
+        $db = Db::getInstance();
         $db->query('DELETE FROM atk_exportcriteria WHERE id = ' . (int)$id);
     }
 
@@ -400,7 +401,7 @@ class ExportHandler extends ActionHandler
             }
         }
 
-        $db = Tools::atkGetDb();
+        $db = Db::getInstance();
         return $db->getRows($query = 'SELECT id, name FROM atk_exportcriteria WHERE ' . $where . ' ORDER BY name');
     }
 
@@ -458,7 +459,7 @@ class ExportHandler extends ActionHandler
 
         $criteria = array();
         if (!in_array($value, array('new', 'none', ''))) {
-            $db = Tools::atkGetDb();
+            $db = Db::getInstance();
             $rows = $db->getRows('SELECT * FROM atk_exportcriteria WHERE id = ' . (int)$value);
             $criteria = unserialize($rows[0]['criteria']);
         }

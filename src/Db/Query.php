@@ -163,7 +163,7 @@ class Query
     public function getDb()
     {
         if (!isset($this->m_db)) {
-            $this->m_db = Tools::atkGetDb();
+            $this->m_db = Db::getInstance();
         }
 
         return $this->m_db;

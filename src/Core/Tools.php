@@ -829,20 +829,8 @@ class Tools
      */
     public static function escapeSQL($string, $wildcard = false)
     {
-        $db = self::atkGetDb();
+        $db = Db::getInstance();
         return $db->escapeSQL($string, $wildcard);
-    }
-
-
-    /**
-     * Convenience wrapper for Db::getInstance()
-     * @param string $conn The name of the connection to retrieve
-     * @return Db Database connection instance
-     */
-    public static function &atkGetDb($conn = 'default', $reset = false, $mode = "r")
-    {
-        $db = Db::getInstance($conn, $reset, $mode);
-        return $db;
     }
 
     /**

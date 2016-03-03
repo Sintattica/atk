@@ -5,6 +5,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Db\Db;
 
 /**
  * This class implements the ATK debug console for analysing queries
@@ -241,7 +242,7 @@ class Debugger
         $output = "<h1>Query</h1>";
         $query = $queries[$id]["query"];
         $output .= $this->highlightQuery($query);
-        $db = Tools::atkGetDb();
+        $db = Db::getInstance();
         if (strtolower(substr(trim($query), 0, 6)) == "select") {
             $output .= '<h1>Resultset</h1>';
             $result = $db->getrows($query);

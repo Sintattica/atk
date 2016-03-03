@@ -2676,9 +2676,8 @@ class Attribute
     {
         if (is_object($this->getOwnerInstance())) {
             return $this->getOwnerInstance()->getDb();
-        } else {
-            return Tools::atkGetDb();
         }
+        return Db::getInstance();
     }
 
     /**

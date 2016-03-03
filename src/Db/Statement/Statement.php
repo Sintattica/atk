@@ -19,7 +19,7 @@ use Sintattica\Atk\Core\Tools;
  * To create an instance please use the Db::prepare($query) method.
  *
  * Example:
- * $stmt = Tools::atkGetDb()->prepare("SELECT COUNT(*) FROM people WHERE birthday > :birthday");
+ * $stmt = Db::getInstance()->prepare("SELECT COUNT(*) FROM people WHERE birthday > :birthday");
  * $stmt->execute(array('birthday' => '1985-09-20'));
  * foreach ($stmt as $person)
  * {

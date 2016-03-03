@@ -5,6 +5,7 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Db\Db;
 
 /**
  * Driver for authentication and authorization using tables in the database.
@@ -73,7 +74,7 @@ class DbAuth extends AuthInterface
             return SecurityManager::AUTH_UNVERIFIED;
         } // can't verify if we have no userid
 
-        $db = Tools::atkGetDb(Config::getGlobal("auth_database"));
+        $db = Db::getInstance(Config::getGlobal("auth_database"));
         $query = $this->buildSelectUserQuery($db->escapeSql($user), Config::getGlobal("auth_usertable"),
             Config::getGlobal("auth_userfield"), Config::getGlobal("auth_passwordfield"),
             Config::getGlobal("auth_accountdisablefield"), Config::getGlobal("auth_accountenableexpression"));
@@ -166,7 +167,7 @@ class DbAuth extends AuthInterface
         $groupparentfield = Config::getGlobal("auth_groupparentfield");
         $accountenableexpression = Config::getGlobal("auth_accountenableexpression");
 
-        $db = Tools::atkGetDb(Config::getGlobal("auth_database"));
+        $db = Db::getInstance(Config::getGlobal("auth_database"));
         if ($usertable == $leveltable || $leveltable == "") {
             // Level and userid are stored in the same table.
             // This means one user can only have one level.
@@ -175,7 +176,7 @@ class DbAuth extends AuthInterface
             // Level and userid are stored in two separate tables. This could
             // mean (but doesn't have to) that a user can have more than one
             // level.
-            $qryobj = &$db->createQuery();
+            $qryobj = $db->createQuery();
             $qryobj->addTable($usertable);
             $qryobj->addField("$usertable.*");
             $qryobj->addField("usergroup.*");
@@ -204,13 +205,13 @@ class DbAuth extends AuthInterface
      */
     function getParentGroups($parents)
     {
-        $db = Tools::atkGetDb(Config::getGlobal("auth_database"));
+        $db = Db::getInstance(Config::getGlobal("auth_database"));
 
         $grouptable = Config::getGlobal("auth_grouptable");
         $groupfield = Config::getGlobal("auth_groupfield");
         $groupparentfield = Config::getGlobal("auth_groupparentfield");
 
-        $query = &$db->createQuery();
+        $query = $db->createQuery();
         $query->addField($groupparentfield);
         $query->addTable($grouptable);
         $query->addCondition("$grouptable.$groupfield IN (" . implode(',', $parents) . ")");
@@ -321,7 +322,7 @@ class DbAuth extends AuthInterface
      */
     function getEntity($node, $action)
     {
-        $db = Tools::atkGetDb(Config::getGlobal("auth_database"));
+        $db = Db::getInstance(Config::getGlobal("auth_database"));
 
         if (!isset($this->m_rightscache[$node]) || count($this->m_rightscache[$node]) == 0) {
             $query = "SELECT * FROM " . Config::getGlobal("auth_accesstable") . " WHERE node='$node'";
@@ -358,7 +359,7 @@ class DbAuth extends AuthInterface
      */
     function getAttribEntity($node, $attrib, $mode)
     {
-        $db = Tools::atkGetDb(Config::getGlobal("auth_database"));
+        $db = Db::getInstance(Config::getGlobal("auth_database"));
 
         $query = "SELECT * FROM attribaccess WHERE node='$node' AND attribute='$attrib' AND mode='$mode'";
 
@@ -397,7 +398,7 @@ class DbAuth extends AuthInterface
      */
     function getUserList()
     {
-        $db = Tools::atkGetDb(Config::getGlobal("auth_database"));
+        $db = Db::getInstance(Config::getGlobal("auth_database"));
         $query = "SELECT * FROM " . Config::getGlobal("auth_usertable");
 
         $accountdisablefield = Config::getGlobal("auth_accountdisablefield");

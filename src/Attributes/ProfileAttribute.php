@@ -212,7 +212,7 @@ class ProfileAttribute extends Attribute
         // hierarchic groups, only return actions of parent (if this record has a parent)
         $parentAttr = $this->m_parentAttrName;
         if (!empty($parentAttr) && is_numeric($record[$parentAttr])) {
-            $db = Tools::atkGetDb();
+            $db = $this->getDb();
             $query = "SELECT DISTINCT node, action FROM " . Config::getGlobal("auth_accesstable") . " " .
                 "WHERE " . $this->m_accessField . " = " . $record[$parentAttr];
             $rows = $db->getRows($query);
@@ -272,7 +272,7 @@ class ProfileAttribute extends Attribute
         }
 
         // retrieve editable actions by user's levels
-        $db = Tools::atkGetDb();
+        $db = $this->getDb();
         $query = "SELECT DISTINCT node, action FROM " . Config::getGlobal("auth_accesstable") . " WHERE " . $this->m_accessField . " IN (" . $levels . ")";
         $rows = $db->getRows($query);
 

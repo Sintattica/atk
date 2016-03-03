@@ -3,7 +3,7 @@
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Db\Db;
 
 /**
  * Driver for authentication and authorization using Microsoft's Security
@@ -89,7 +89,7 @@ class SspiAuth extends DbAuth
 
         $_SERVER["PHP_AUTH_USER"] = "";
         $ATK_VARS["auth_user"] = "";
-        $db = Tools::atkGetDb(Config::getGlobal("auth_database"));
+        $db = Db::getInstance(Config::getGlobal("auth_database"));
         $query = $this->buildSelectUserQuery($user, Config::getGlobal("auth_usertable"),
             Config::getGlobal("auth_userfield"), Config::getGlobal("auth_sspi_accountfield"),
             Config::getGlobal("auth_accountdisablefield"), Config::getGlobal("auth_accountenableexpression"));
@@ -130,7 +130,7 @@ class SspiAuth extends DbAuth
         $groupfield = Config::getGlobal("auth_groupfield");
         $groupparentfield = Config::getGlobal("auth_groupparentfield");
 
-        $db = Tools::atkGetDb(Config::getGlobal("auth_database"));
+        $db = Db::getInstance(Config::getGlobal("auth_database"));
         if ($usertable == $leveltable || $leveltable == "") {
             // Level and userid are stored in the same table.
             // This means one user can only have one level.

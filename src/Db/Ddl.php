@@ -449,7 +449,7 @@ class Ddl
     function executeCreate()
     {
         if (!isset($this->m_db)) {
-            $this->m_db = Tools::atkGetDb();
+            $this->m_db = Db::getInstance();
         }
 
         $query = $this->buildCreate();
@@ -475,7 +475,7 @@ class Ddl
     function executeAlter()
     {
         if (!isset($this->m_db)) {
-            $this->m_db = Tools::atkGetDb();
+            $this->m_db = Db::getInstance();
         }
 
         $queries = $this->buildAlter();
@@ -503,7 +503,7 @@ class Ddl
     function executeDrop()
     {
         if (!isset($this->m_db)) {
-            $this->m_db = Tools::atkGetDb();
+            $this->m_db = Db::getInstance();
         }
 
         $query = $this->buildDrop();
@@ -527,7 +527,7 @@ class Ddl
     function executeCreateView($name, $select, $with_check_option)
     {
         if (!isset($this->m_db)) {
-            $this->m_db = Tools::atkGetDb();
+            $this->m_db = Db::getInstance();
         }
 
         $query = $this->buildView($name, $select, $with_check_option);
@@ -563,7 +563,7 @@ class Ddl
     function executeDropView($name)
     {
         if (!isset($this->m_db)) {
-            $this->m_db = Tools::atkGetDb();
+            $this->m_db = Db::getInstance();
         }
 
         $query = $this->dropView($name);

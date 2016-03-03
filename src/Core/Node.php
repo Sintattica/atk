@@ -1357,13 +1357,13 @@ class Node
     function getDb()
     {
         if ($this->m_db == null) {
-            return Tools::atkGetDb();
+            return Db::getInstance();
         } else {
             if (is_object($this->m_db)) {
                 return $this->m_db;
             } else {
                 // must be a named connection
-                return Tools::atkGetDb($this->m_db);
+                return Db::getInstance($this->m_db);
             }
         }
     }
@@ -3267,7 +3267,7 @@ class Node
      * fail.
      *
      * NOTE: Does not commit your transaction! If you are using a database that uses
-     * transactions you will need to call 'Tools::atkGetDb()->commit()' manually.
+     * transactions you will need to call 'Db::getInstance()->commit()' manually.
      *
      * @param array $record The record to update in the database.
      * @param bool $exectrigger wether to execute the pre/post update triggers
@@ -3619,7 +3619,7 @@ class Node
      * the call to addDb you can use access the primary key fields.
      *
      * NOTE: Does not commit your transaction! If you are using a database that uses
-     * transactions you will need to call 'Tools::atkGetDb()->commit()' manually.
+     * transactions you will need to call 'Db::getInstance()>commit()' manually.
      *
      * @param array $record The record to save.
      * @param boolean $exectrigger Indicates whether the postAdd trigger
@@ -3753,7 +3753,7 @@ class Node
      * method is invoked.
      *
      * NOTE: Does not commit your transaction! If you are using a database that uses
-     * transactions you will need to call 'Tools::atkGetDb()->commit()' manually.
+     * transactions you will need to call 'Db::getInstance()->commit()' manually.
      *
      * @todo There's a discrepancy between updateDb, addDb and deleteDb:
      *       There should be a deleteDb which accepts a record, instead

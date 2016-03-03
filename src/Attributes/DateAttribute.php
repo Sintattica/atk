@@ -5,7 +5,6 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Db\Query;
-
 use Sintattica\Atk\Utils\BrowserInfo;
 use Sintattica\Atk\Utils\JSON;
 
@@ -1031,7 +1030,7 @@ class DateAttribute extends Attribute
      */
     function _getDateArraySearchCondition($query, $table, $value)
     {
-        $db = Tools::atkGetDb();
+        $db = $this->getDb();
         $fromvalue = $this->_MakeDateForCondition($value["from"]);
         $tovalue = $this->_MakeDateForCondition($value["to"]);
 
