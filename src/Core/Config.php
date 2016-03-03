@@ -1,13 +1,7 @@
 <?php namespace Sintattica\Atk\Core;
 
-use Sintattica\Atk\Session\SessionManager;
-
 /**
  * Config class for loading config files and retrieving config options.
- * Also contains misc. methods for use in config files.
- *
- * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
  */
 class Config
 {
@@ -19,19 +13,36 @@ class Config
      */
     public static function init()
     {
+
         // Include the defaults
-        $defaultConfig = require_once __DIR__ . '/../Resources/config/atk.php';
+        $defaultConfig = self::getConfigValues(__DIR__ . '/../Resources/config/atk.php');
         foreach ($defaultConfig as $key => $value) {
             self::$s_globals[$key] = $value;
         }
 
-        // Get the application config, this is leading and will override all previously defined configuration values.
-        if (is_file(self::$s_globals['application_config'])) {
-            $applicationConfig = include(self::$s_globals['application_config']);
-            if (is_array($applicationConfig)) {
-                self::$s_globals = Tools::atk_array_merge_recursive(self::$s_globals, $applicationConfig);
+        // Get the application config
+        $applicationConfig = self::getConfigValues(self::$s_globals['application_config']);
+        if (is_array($applicationConfig) && count($applicationConfig)) {
+            self::$s_globals = Tools::atk_array_merge_recursive(self::$s_globals, $applicationConfig);
+        }
+    }
+
+    public static function env($key, $default = false) {
+        $value = getenv($key);
+        if($value === false && $default){
+            return $default;
+        }
+        return $value;
+    }
+
+    public static function getConfigValues($file) {
+        if(is_file($file)){
+            $values = include($file);
+            if(is_array($values)){
+                return $values;
             }
         }
+        return [];
     }
 
     /**
@@ -86,7 +97,7 @@ class Config
         }
 
         if (!isset($s_configs[$section])) {
-            $config = self::getConfigValuesForSection(self::getGlobal('application_config_dir'), $section);
+            $config = self::getConfigValues(self::getGlobal('application_config_dir') . $section . '.php');
             if (!is_array($config)) {
                 $config = array();
             }
@@ -110,39 +121,17 @@ class Config
      */
     public static function getConfigForSection($section)
     {
-        $config = self::getConfigValuesForSection(self::getGlobal('application_config_dir'), $section);
+        $config = self::getConfigValues(self::getGlobal('application_config_dir') . $section . '.php');
 
         $app = Atk::getInstance();
         if ($app->isModule($section)) {
             $dir = $app->moduleDir($section) . self::getGlobal('configdirname') . '/';
             if (is_dir($dir)) {
-                $module_configs = self::getConfigValuesForSection($dir, $section);
+                $module_configs = self::getConfigValues($dir . $section . '.php');
                 $config = array_merge($module_configs, $config);
             }
         }
         return $config;
-    }
-
-    /**
-     * Get all configuration values from all configuration files for
-     * a specific directory and a specific section.
-     *
-     * @param string $dir Directory where the configuration files are
-     * @param string $section Section to get configuration values for
-     * @return array Configuration values
-     */
-    protected static function getConfigValuesForSection($dir, $section)
-    {
-        Tools::atkdebug("Loading config file for section $section");
-
-        $file = $dir . $section . '.php';
-        if (file_exists($file)) {
-            $config = include($file);
-            if (is_array($config)) {
-                return $config;
-            }
-        }
-        return [];
     }
 
     /**

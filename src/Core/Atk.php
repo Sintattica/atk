@@ -7,6 +7,7 @@ use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\IndexPage;
 use Sintattica\Atk\Handlers\ActionHandler;
+use Dotenv\Dotenv;
 
 
 class Atk
@@ -19,6 +20,9 @@ class Atk
     var $g_nodeHandlers = [];
     var $g_nodeListeners = [];
 
+    /** @var $s_instance Atk */
+    static $s_instance = null;
+
 
     public function __construct()
     {
@@ -29,43 +33,63 @@ class Atk
         $g_startTime = microtime(true);
     }
 
-    private function init()
-    {
+    /**
+     * @param $environment string environment (dev, staging, prod)
+     * @param $basedir string basedir on server
+     * @return Atk
+     */
+    public static function create($environment, $basedir){
+        if (static::$s_instance == null) {
 
-        require_once('adodb-time.php');
-        Config::init();
-
-        if (Config::getGlobal('use_atkerrorhandler', true)) {
-            set_error_handler('Sintattica\Atk\Core\Tools::atkErrorHandler');
-            error_reporting(E_ALL);
-            set_exception_handler('Sintattica\Atk\Core\Tools::atkExceptionHandler');
-        }
-
-        /**
-         * Filter the atkselector REQUEST variable for blacklisted SQL (like UNIONs)
-         */
-        SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkselector');
-        SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkfilter');
-
-
-        if (Config::getGlobal('debug') > 0) {
-            ini_set('display_errors', 1);
-        }
-
-        $locale = Tools::atktext('locale', 'atk', '', '', true);
-        if ($locale) {
-            setlocale(LC_TIME, $locale);
-        }
-
-        Tools::atkdebug('Created a new Atk instance: Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')');
-
-        $modules = Config::getGlobal('modules');
-        if(is_array($modules)){
-            foreach($modules as $module) {
-                $this->registerModule($module);
+            //load .env variables only in development environment
+            if(in_array(strtolower($environment), ['dev', 'develop', 'development'])) {
+                $dotEnv = new Dotenv($basedir);
+                $dotEnv->load();
             }
-        }
 
+            static::$s_instance = new static();
+
+            require_once('adodb-time.php');
+
+            Config::init();
+
+            if (Config::getGlobal('debug') > 0) {
+                ini_set('display_errors', 1);
+            }
+
+            if (Config::getGlobal('use_atkerrorhandler', true)) {
+                set_error_handler('Sintattica\Atk\Core\Tools::atkErrorHandler');
+                error_reporting(E_ALL);
+                set_exception_handler('Sintattica\Atk\Core\Tools::atkExceptionHandler');
+            }
+
+            // Filter the atkselector REQUEST variable for blacklisted SQL (like UNIONs)
+            SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkselector');
+            SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkfilter');
+
+
+            // set locale
+            $locale = Tools::atktext('locale', 'atk', '', '', true);
+            if ($locale) {
+                setlocale(LC_TIME, $locale);
+            }
+
+            $debug = 'Created a new Atk instance: Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')';
+            $debug .= ' Environment: '.$environment;
+
+            Tools::atkdebug($debug);
+
+            //load modules
+            $modules = Config::getGlobal('modules');
+            if(is_array($modules)){
+                foreach($modules as $module) {
+                    static::$s_instance->registerModule($module);
+                }
+            }
+
+
+        }
+        return static::$s_instance;
     }
 
 
@@ -74,15 +98,24 @@ class Atk
      *
      * @return Atk class object
      */
-    public static function &getInstance($time = null)
+    public static function getInstance()
     {
-        static $s_instance = null;
-        if ($s_instance == null) {
-            $s_instance = new Atk();
-            $s_instance->init();
+        if(!is_object(static::$s_instance)){
+            throw new \RuntimeException('Atk instance must be created with create');
         }
+        return static::$s_instance;
+    }
 
-        return $s_instance;
+    public function run()
+    {
+        $sessionManager = SessionManager::getInstance();
+        $sessionManager->start();
+
+        $securityManager = SecurityManager::getInstance();
+        if ($securityManager->authenticate()) {
+            $indexPage = new IndexPage($this);
+            $indexPage->generate();
+        }
     }
 
     /**
@@ -127,19 +160,7 @@ class Atk
 
     }
 
-    public function run()
-    {
 
-        $sessionManager = SessionManager::getInstance();
-        $sessionManager->start();
-
-        $securityManager = SecurityManager::getInstance();
-        if ($securityManager->authenticate()) {
-            $indexPage = new IndexPage($this);
-            $indexPage->generate();
-        }
-
-    }
 
 
     /**

@@ -1,9 +1,12 @@
 <?php
 
+use Sintattica\Atk\Core\Config;
+
 $_configAppRoot = __DIR__ . '/../../../../../../';
 $_configTempDir = $_configAppRoot . 'var/atktmp/';
 $_configAssetsUrl = '/bundles/atk/';
 $_configDirName = 'config';
+
 
 return [
 
@@ -62,12 +65,12 @@ return [
 
     'db' => [
         'default' => [
-            'host' => 'localhost',
-            'db' => 'atk',
-            'user' => 'root',
-            'password' => '',
-            'charset' => 'utf8',
-            'driver' => 'MySqli'
+            'host' => Config::env('DB_HOST', 'localhost'),
+            'db' => Config::env('DB_NAME', 'atk'),
+            'user' => Config::env('DB_USER', 'root'),
+            'password' => Config::env('DB_PASSWORD', ''),
+            'charset' => Config::env('DB_CHARSET', 'utf8'),
+            'driver' => Config::env('DB_DRIVER', 'MySqli'),
         ]
     ],
 
