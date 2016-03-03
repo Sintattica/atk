@@ -122,7 +122,6 @@ return [
      * Currently supported are:
      * - "none": No authentication
      * - "db"  : the credentials are stored in the database.
-     * - "pop3": the passwords are validated against a pop3 server.
      * - "config": the credentials are stored in the configurationfile.
      * - "imap": the passwords are validated against an IMAP server.
      * - "ldap": the passwords are validated against an LDAP server.
@@ -310,12 +309,6 @@ return [
     'auth_groupparentfield' => "",
 
     /**
-     * Default pop3 port
-     * @var String
-     */
-    'auth_mail_port' => "110",
-
-    /**
      * No vmail.
      * @var boolean
      */
@@ -398,12 +391,6 @@ return [
      * @var String
      */
     'debuglog' => "",
-
-    /**
-     *
-     * @var array
-     */
-    'smart_debug' => [],
 
     /**
      *
@@ -619,6 +606,15 @@ return [
 
 
     /****************** MISCELLANEOUS CONFIGURATION OPTIONS ********************/
+
+
+    /**
+     * @var array List of enabled modules
+     * eg: [App\Modules\App\Module::class, App\Modules\Auth\Module::class,]
+     *
+     */
+    'modules' => [],
+
 
     /**
      * The cookie application root, used to set the cookiepath when using PHP sessions.

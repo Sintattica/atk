@@ -57,8 +57,15 @@ class Atk
             setlocale(LC_TIME, $locale);
         }
 
-
         Tools::atkdebug('Created a new Atk instance: Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')');
+
+        $modules = Config::getGlobal('modules');
+        if(is_array($modules)){
+            foreach($modules as $module) {
+                $this->registerModule($module);
+            }
+        }
+
     }
 
 
@@ -189,10 +196,7 @@ class Atk
         Tools::atkdebug("Creating a new node: $nodeUri class: $nodeClass");
 
         /** @var Node $node */
-
         $node = new $nodeClass($nodeUri);
-
-
         if ($init && $node != null) {
             $node->init();
         }
@@ -258,13 +262,11 @@ class Atk
         return true;
     }
 
-
     public function registerModule($moduleClass)
     {
         $reflection = new \ReflectionClass($moduleClass);
         $name = strtolower($reflection->getStaticPropertyValue('module'));
         $this->g_modules[$name] = $moduleClass;
-
         return $this->atkGetModule($name);
     }
 }
