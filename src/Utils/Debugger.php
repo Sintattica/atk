@@ -159,7 +159,7 @@ class Debugger
 
         static $s_first = true;
         $res = "";
-        $url = Config::getGlobal("application_dir") . 'debugger.php?atkstackid=' . $stackId . '&action=' . $action . '&atkprevlevel=' . $sm->atkLevel() . $this->urlParams($params);
+        $url = './debugger.php?atkstackid=' . $stackId . '&action=' . $action . '&atkprevlevel=' . $sm->atkLevel() . $this->urlParams($params);
 
         if ($popup) {
             if ($s_first) {

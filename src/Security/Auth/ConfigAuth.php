@@ -98,9 +98,8 @@ class ConfigAuth extends AuthInterface
      */
     function getEntity($node, $action)
     {
-        global $config_access;
-
-        $rights = $config_access[$node];
+        $access = Config::getGlobal('access');
+        $rights = $access[$node];
 
         $result = Array();
 
@@ -127,10 +126,10 @@ class ConfigAuth extends AuthInterface
      */
     function getAttribEntity($node, $attrib, $mode)
     {
-        global $config_attribrestrict;
+        $attribrestrict = Config::getGlobal('attribrestrict');
 
         // $entity is an array of entities that may do $mode on $node.$attrib.
-        $entity = $config_attribrestrict[$node][$attrib][$mode];
+        $entity = $attribrestrict[$node][$attrib][$mode];
 
         return $entity;
     }

@@ -132,8 +132,7 @@ class PgSqlDb extends Db
     function next_record()
     {
         /* goto next record */
-        $this->m_record = @pg_fetch_array($this->m_query_id, $this->m_row,
-            PGSQL_ASSOC | Config::getGlobal("pgsqlfetchmode"));
+        $this->m_record = @pg_fetch_array($this->m_query_id, $this->m_row, PGSQL_ASSOC);
         $this->m_row++;
 
         /* are we there? */

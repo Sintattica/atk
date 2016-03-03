@@ -89,7 +89,7 @@ class SessionManager
 
         //session init
         $cookie_params = session_get_cookie_params();
-        $cookiepath = Config::getGlobal("application_root");
+        $cookiepath = Config::getGlobal("cookie_path");
         $cookiedomain = (Config::getGlobal("cookiedomain") != "") ? Config::getGlobal("cookiedomain")
             : null;
         session_set_cookie_params($cookie_params["lifetime"], $cookiepath, $cookiedomain);

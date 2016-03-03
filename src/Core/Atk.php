@@ -33,9 +33,7 @@ class Atk
     {
 
         require_once('adodb-time.php');
-
-        Config::loadGlobals();
-
+        Config::init();
 
         if (Config::getGlobal('use_atkerrorhandler', true)) {
             set_error_handler('Sintattica\Atk\Core\Tools::atkErrorHandler');
@@ -49,12 +47,8 @@ class Atk
         SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkselector');
         SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkfilter');
 
-        if (Tools::atk_value_in_array($GLOBALS['config_smart_debug'])) {
-            $GLOBALS['config_debug'] = Config::smartDebugLevel($GLOBALS['config_debug'],
-                $GLOBALS['config_smart_debug']);
-        }
 
-        if ($GLOBALS['config_debug'] > 0) {
+        if (Config::getGlobal('debug') > 0) {
             ini_set('display_errors', 1);
         }
 
@@ -170,13 +164,16 @@ class Atk
      */
     public function atkGetModule($moduleName)
     {
-        if (!isset($this->g_moduleRepository[$moduleName]) || !is_object($this->g_moduleRepository[$moduleName])) {
-
+        if (!static::isModule($moduleName)) {
             Tools::atkdebug("Constructing a new module - $moduleName");
             $modClass = $this->g_modules[$moduleName];
             $this->g_moduleRepository[$moduleName] = new $modClass();
         }
         return $this->g_moduleRepository[$moduleName];
+    }
+
+    public function isModule($moduleName) {
+        return is_object($this->g_moduleRepository[$moduleName]);
     }
 
     /**
@@ -205,14 +202,14 @@ class Atk
 
     /**
      * Return the physical directory of a module.
-     * @param string $module name of the module.
+     * @param string $moduleName name of the module.
      * @return String The path to the module.
      */
-    public function moduleDir($module)
+    public function moduleDir($moduleName)
     {
         $modules = $this->g_modules;
-        if (isset($modules[$module])) {
-            $class = $modules[$module];
+        if (isset($modules[$moduleName])) {
+            $class = $modules[$moduleName];
 
             $reflection = new \ReflectionClass($class);
             $dir = dirname($reflection->getFileName());

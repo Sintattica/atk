@@ -12,71 +12,26 @@ use Sintattica\Atk\Session\SessionManager;
 class Config
 {
 
+    static $s_globals = [];
+
     /**
      * Load global configuration variables.
      */
-    public static function loadGlobals()
+    public static function init()
     {
-        $overrides = array();
-
-
-        // Put all "config_" globals as variables in the function scope
-        foreach ($GLOBALS as $key => $value) {
-            if (substr($key, 0, 7) === 'config_') {
-
-                $$key = $value;
-
-                // Store the current value, so that we can restore it later. Since our includes below here, depend on
-                // some of these variables, we can't simply change the ordering of this process. Also we can't use
-                // $GLOBALS, due to the use of the global keyword later on.
-                $overrides[$key] = $GLOBALS[$key];
-            }
-        }
-
         // Include the defaults
-        require_once "defaultconfig.inc.php";
+        $defaultConfig = require_once __DIR__ . '/../Resources/config/atk.php';
+        foreach ($defaultConfig as $key => $value) {
+            self::$s_globals[$key] = $value;
+        }
 
         // Get the application config, this is leading and will override all previously defined configuration values.
-        $applicationConfig = self::getApplicationConfig();
-
-        // Merge everything we got, including variables defined in our application config and configuration defined
-        // prior to constructing atkConfig
-        $allVars = array_merge(
-            get_defined_vars(), $applicationConfig
-        );
-
-        // Get all defined config variables, make then global and update their value
-        foreach ($allVars as $key => $value) {
-            if (substr($key, 0, 7) === 'config_') {
-                // Reference the variable to the global scope
-                global $$key;
-
-                // If a key was previously defined, use that instead of the default value.
-                if (array_key_exists($key, $applicationConfig)) {
-                    $$key = $applicationConfig[$key];
-                } else {
-                    if (array_key_exists($key, $overrides)) {
-                        $$key = $overrides[$key];
-                    } else {
-                        $$key = $value;
-                    }
-                }
+        if (is_file(self::$s_globals['application_config'])) {
+            $applicationConfig = include(self::$s_globals['application_config']);
+            if (is_array($applicationConfig)) {
+                self::$s_globals = Tools::atk_array_merge_recursive(self::$s_globals, $applicationConfig);
             }
         }
-    }
-
-    /**
-     * Get the application configuration.
-     *
-     * @static
-     * @param  string $path The path to 'config.inc.php in the application directory
-     * @return array
-     */
-    static public function getApplicationConfig()
-    {
-        global $config_application_config;
-        require_once $config_application_config;
-        return get_defined_vars();
     }
 
     /**
@@ -88,8 +43,7 @@ class Config
      */
     public static function getGlobal($name, $default = null)
     {
-        $fullName = 'config_' . $name;
-        return isset($GLOBALS[$fullName]) ? $GLOBALS[$fullName] : $default;
+        return isset(self::$s_globals[$name]) ? self::$s_globals[$name] : $default;
     }
 
     /**
@@ -102,16 +56,13 @@ class Config
      */
     public static function setGlobal($name, $value)
     {
-        $GLOBALS['config_' . $name] = $value;
+        self::$s_globals[$name] = $value;
     }
 
     /**
      * Get a configuration value for a section (typically a module)
      *
-     * Can be overridden with a global function config_$section_$tag.
-     * Relies on your configurations being in configs/ (or wherever $config_configdir says).
-     * Also gets $section.*.inc.php.
-     * If the section is a module and has a skel/configs/ it will get those configs too
+     * If the section is a module and has a config/config.php it will get those configs too
      * and use them as defaults.
      *
      * <b>Example:</b>
@@ -124,15 +75,18 @@ class Config
      */
     public static function get($section, $tag, $default = "")
     {
-        static $s_configs = array();
+        static $s_configs = [];
 
-        $fn = 'config_' . $section . '_' . $tag;
-        if (function_exists($fn)) {
-            return $fn();
+        if (!isset($s_configs[$section])) {
+            $config = self::getConfigForSection($section);
+            if (!is_array($config)) {
+                $config = array();
+            }
+            $s_configs[$section] = $config;
         }
 
         if (!isset($s_configs[$section])) {
-            $config =  self::getDirConfigForSection(Config::getGlobal('configdir'), $section);
+            $config = self::getConfigValuesForSection(self::getGlobal('application_config_dir'), $section);
             if (!is_array($config)) {
                 $config = array();
             }
@@ -147,6 +101,29 @@ class Config
     }
 
     /**
+     * Get the configuration values for a section and if the section
+     * turns out to be a module, try to get the module configs
+     * and merge them as fallbacks.
+     *
+     * @param string $section Name of the section to get configs for
+     * @return array Configuration values
+     */
+    public static function getConfigForSection($section)
+    {
+        $config = self::getConfigValuesForSection(self::getGlobal('application_config_dir'), $section);
+
+        $app = Atk::getInstance();
+        if ($app->isModule($section)) {
+            $dir = $app->moduleDir($section) . self::getGlobal('configdirname') . '/';
+            if (is_dir($dir)) {
+                $module_configs = self::getConfigValuesForSection($dir, $section);
+                $config = array_merge($module_configs, $config);
+            }
+        }
+        return $config;
+    }
+
+    /**
      * Get all configuration values from all configuration files for
      * a specific directory and a specific section.
      *
@@ -154,92 +131,18 @@ class Config
      * @param string $section Section to get configuration values for
      * @return array Configuration values
      */
-    protected static function getDirConfigForSection($dir, $section)
+    protected static function getConfigValuesForSection($dir, $section)
     {
         Tools::atkdebug("Loading config file for section $section");
-        $config = array();
+
         $file = $dir . $section . '.php';
-        if(file_exists($file)) {
-            include($file);
-        }
-        return $config;
-    }
-
-    /**
-     * Is debugging enabled for client IP?
-     *
-     * @param array $params
-     * @return bool
-     */
-    function ipDebugEnabled($params)
-    {
-        $ip = Tools::atkGetClientIp();
-        return in_array($ip, $params["list"]);
-    }
-
-    /**
-     * Is debugging enabled by special request variable?
-     *
-     * @param array $params
-     * @return bool
-     */
-    function requestDebugEnabled($params)
-    {
-        $session = &SessionManager::getSession();
-
-        if (isset($_REQUEST["atkdebug"]["key"])) {
-            $session["debug"]["key"] = $_REQUEST["atkdebug"]["key"];
-        } else {
-            if (isset($_COOKIE['ATKDEBUG_KEY']) && !empty($_COOKIE['ATKDEBUG_KEY'])) {
-                $session["debug"]["key"] = $_COOKIE['ATKDEBUG_KEY'];
+        if (file_exists($file)) {
+            $config = include($file);
+            if (is_array($config)) {
+                return $config;
             }
         }
-
-        return (isset($session["debug"]["key"]) && $session["debug"]["key"] == $params["key"]);
-    }
-
-    /**
-     * Returns a debug level based on the given options for
-     * dynamically checking/setting the debug level. If nothing
-     * found returns the default level.
-     *
-     * @param int $default The default debug level
-     * @param array $options
-     * @return int
-     */
-    static public function smartDebugLevel($default, $options = array())
-    {
-        $session = &SessionManager::getSession();
-
-        $enabled = $default > 0;
-
-        foreach ($options as $option) {
-            $method = $option["type"] . "DebugEnabled";
-            if (is_callable(array("atkconfig", $method))) {
-                $enabled = $enabled || config::$method($option);
-            }
-        }
-
-        global $config_debug_enabled;
-        $config_debug_enabled = $enabled;
-
-        if ($enabled) {
-            if (isset($_REQUEST["atkdebug"]["level"])) {
-                $session["debug"]["level"] = $_REQUEST["atkdebug"]["level"];
-            } else {
-                if (isset($_COOKIE['ATKTools::DEBUG_LEVEL'])) {
-                    $session["debug"]["level"] = $_COOKIE['ATKTools::DEBUG_LEVEL'];
-                }
-            }
-
-            if (isset($session["debug"]["level"])) {
-                return $session["debug"]["level"];
-            } else {
-                return max($default, 0);
-            }
-        }
-
-        return $default;
+        return [];
     }
 
     /**
@@ -262,7 +165,7 @@ class Config
      */
     function attribRestrict($node, $attrib, $mode, $entity)
     {
-        $GLOBALS["config_attribrestrict"][$node][$attrib][$mode] = $entity;
+        self::$s_globals["attribrestrict"][$node][$attrib][$mode] = $entity;
     }
 
     /**
@@ -278,27 +181,7 @@ class Config
      */
     function grant($node, $action, $entity)
     {
-        $GLOBALS["config_access"][$node][] = Array($action => $entity);
-    }
-
-    /**
-     * Translate pop3 server responses to user readable error messages.
-     *
-     * This function is only of use when using pop3 as authentication method.
-     * Some pop3 servers give specific error messages that may be of interest
-     * to the user. If you use this function (in the config file) and atk
-     * encounters the specified substring in a server response, the specified
-     * message is displayed.
-     *
-     * @param string $substring The substring to look for in the server
-     *                          response.
-     * @param string $message The message to display to the user upon encounter
-     *                        of the substring.
-     */
-    function addPop3Response($substring, $message)
-    {
-        global $g_pop3_responses;
-        $g_pop3_responses[$substring] = $message;
+        self::$s_globals["access"][$node][] = Array($action => $entity);
     }
 
     /**
@@ -318,8 +201,6 @@ class Config
      */
     public static function addUser($name, $password, $securitylevel = 0)
     {
-        $GLOBALS["config_user"][$name] = Array("password" => $password, "level" => $securitylevel);
+        self::$s_globals["user"][$name] = Array("password" => $password, "level" => $securitylevel);
     }
 }
-
-

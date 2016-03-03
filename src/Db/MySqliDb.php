@@ -561,7 +561,7 @@ class MySqliDb extends Db
     {
         $this->connect('r');
         $id = $this->_query("SHOW TABLE STATUS LIKE '" . $table . "'", true);
-        $status = @mysqli_fetch_array($id, MYSQLI_ASSOC | Config::getGlobal("mysqlfetchmode"));
+        $status = @mysqli_fetch_array($id, MYSQLI_ASSOC);
         $result = $status != null && isset($status['Engine']) ? $status['Engine']
             : null;
         Tools::atkdebug("Table type? $table => $result");
