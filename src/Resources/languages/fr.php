@@ -15,7 +15,7 @@
 // translations@achievo.org or request an account for the Achievo
 // Translation Tool.
 //
-$fr = array(
+return [
     "above_maximum_value" => "Au-dessus de la valeur maximale autoris�e",
     "access_denied" => "Acc�s refuse",
     "add" => "Ajouter",
@@ -396,4 +396,4 @@ $fr = array(
     "wysiwyg_merge_cell" => "Fusion des cellules",
     "wysiwyg_split_cell" => "Diviser cellulle",
     "yes" => "Oui",
-);
+];

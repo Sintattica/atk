@@ -15,7 +15,7 @@
 // translations@achievo.org or request an account for the Achievo
 // Translation Tool.
 //
-$id = array(
+return [
     "above_maximum_value" => "Diatas nilai maksimum yang diperbolehkan",
     "access_denied" => "Akses ditolak",
     "add" => "Tambah",
@@ -472,4 +472,4 @@ $id = array(
     "wysiwyg_merge_cell" => "Merge sel-sel",
     "wysiwyg_split_cell" => "Split sel-sel",
     "yes" => "Ya",
-);
+];

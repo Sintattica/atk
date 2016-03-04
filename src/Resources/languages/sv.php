@@ -15,7 +15,7 @@
 // translations@achievo.org or request an account for the Achievo
 // Translation Tool.
 //
-$sv = array(
+return [
     "above_maximum_value" => "�ver max till�tet v�rde",
     "access_denied" => "Nekad �tkomst",
     "add" => "L�gg till",
@@ -485,4 +485,4 @@ $sv = array(
     "wysiwyg_merge_cell" => "Sl� ihop celler",
     "wysiwyg_split_cell" => "Dela celler",
     "yes" => "Ja",
-);
+];

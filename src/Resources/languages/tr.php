@@ -15,7 +15,7 @@
 // translations@achievo.org or request an account for the Achievo
 // Translation Tool.
 //
-$tr = array(
+return [
     "above_maximum_value" => "�zin verilen en y�ksek de�erin �zerinde",
     "access_denied" => "Eri�im engellendi",
     "add" => "Ekle",
@@ -374,4 +374,4 @@ $tr = array(
     "wysiwyg_merge_cell" => "H�creleri birle�tir",
     "wysiwyg_split_cell" => "H�creleri ay�r",
     "yes" => "Evet",
-);
+];

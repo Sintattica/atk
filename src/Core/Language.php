@@ -474,16 +474,25 @@ class Language
             $this->m_cachedlangfiles[$module][$lng] = 1;
             $path = $this->getLanguageDirForModule($module);
 
-            $file = $path . $lng . ".lng.php";
+            $file = $path . $lng . '.php';
 
             if (file_exists($file)) {
-                include($file);
-                $this->m_cachedlang[$module][$lng] = $$lng;
+                $this->m_cachedlang[$module][$lng] = $this->getLanguageValues($file);
                 return true;
             }
             return false;
         }
         return true;
+    }
+
+    protected function getLanguageValues($file) {
+        if(is_file($file)){
+            $values = include($file);
+            if(is_array($values)){
+                return $values;
+            }
+        }
+        return [];
     }
 
     /**
@@ -574,7 +583,7 @@ class GetSupportedLanguagesCollector
 
     function visitFile($fullpath)
     {
-        if (substr($fullpath, strlen($fullpath) - 8) === '.lng.php') {
+        if (substr($fullpath, strlen($fullpath) - 8) === '.php') {
             $exploded = explode('/', $fullpath);
             $lng = array_pop($exploded);
             $this->m_languages[] = substr($lng, 0, 2);

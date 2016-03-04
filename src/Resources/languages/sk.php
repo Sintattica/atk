@@ -15,7 +15,7 @@
 // translations@achievo.org or request an account for the Achievo
 // Translation Tool.
 //
-$sk = array(
+return [
     "above_maximum_value" => "Nad maxim�lnou mo�nou hodnotou",
     "access_denied" => "Pr�stup zamietnut�",
     "add" => "Prida?",
@@ -374,4 +374,4 @@ $sk = array(
     "wysiwyg_merge_cell" => "Spoji? bunky",
     "wysiwyg_split_cell" => "Rozdeli? bunky",
     "yes" => "�no",
-);
+];

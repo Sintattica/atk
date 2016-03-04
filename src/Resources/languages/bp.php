@@ -15,7 +15,7 @@
 // translations@achievo.org or request an account for the Achievo
 // Translation Tool.
 //
-$bp = array(
+return [
     "above_maximum_value" => "Acima do valor m�ximo permitido",
     "access_denied" => "Acesso negado",
     "add" => "Adicionar",
@@ -452,4 +452,4 @@ $bp = array(
     "wysiwyg_merge_cell" => "Mesclar c�lulas",
     "wysiwyg_split_cell" => "Dividir c�lulas",
     "yes" => "Sim",
-);
+];

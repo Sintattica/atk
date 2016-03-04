@@ -15,7 +15,7 @@
 // translations@achievo.org or request an account for the Achievo
 // Translation Tool.
 //
-$el = array(
+return [
     "above_maximum_value" => "���� ��� ��� ������� ������������ ����",
     "access_denied" => "������ ���������",
     "add" => "����������",
@@ -485,4 +485,4 @@ $el = array(
     "wysiwyg_merge_cell" => "���������� ������",
     "wysiwyg_split_cell" => "����������� ������",
     "yes" => "���",
-);
+];

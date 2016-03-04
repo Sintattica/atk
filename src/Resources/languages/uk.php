@@ -7,7 +7,7 @@
 // Translated by:
 //   Mykhaylo Sorochan       <msorc@bigmir.net>
 
-$uk = array(
+return [
     "access_denied" => "������ ����������",
     "add" => "������",
     "addorcopy" => "������ ��� ��������",
@@ -359,4 +359,5 @@ $uk = array(
     "wysiwyg_merge_cell" => "��'������ ������",
     "wysiwyg_split_cell" => "�������� ������",
     "yes" => "���"
-);
+];
+

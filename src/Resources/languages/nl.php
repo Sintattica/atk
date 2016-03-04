@@ -15,7 +15,7 @@
 // translations@achievo.org or request an account for the Achievo
 // Translation Tool.
 //
-$nl = array(
+return [
     "above_maximum_value" => "Boven de maximum toegestane waarde",
     "access_denied" => "Toegang geweigerd",
     "add" => "Toevoegen",
@@ -374,4 +374,4 @@ $nl = array(
     "wysiwyg_merge_cell" => "Cellen samenvoegen",
     "wysiwyg_split_cell" => "Cellen splitsen",
     "yes" => "Ja",
-);
+];
