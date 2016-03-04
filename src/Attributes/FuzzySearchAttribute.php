@@ -384,10 +384,7 @@ class FuzzySearchAttribute extends Attribute
 
     }
 
-    /**
-     * Dummy method to prevent loading/storing of data.
-     */
-    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
+    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
 
     }

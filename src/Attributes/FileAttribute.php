@@ -880,18 +880,16 @@ class FileAttribute extends Attribute
     }
 
 
-    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
+    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         if ($mode == "add" || $mode == "update") {
-            if (@empty($rec[$this->fieldName()]['postdel']) && $this->isEmpty($rec) && !$this->hasFlag(self::AF_OBLIGATORY) && !$this->isNotNullInDb()) {
+            if (@empty($rec[$this->fieldName()]['postdel']) && $this->isEmpty($record) && !$this->hasFlag(self::AF_OBLIGATORY) && !$this->isNotNullInDb()) {
                 $query->addField($this->fieldName(), 'NULL', "", "", false, true);
             } else {
-                $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(self::AF_NO_QUOTES),
-                    true);
+                $query->addField($this->fieldName(), $this->value2db($record), "", "", !$this->hasFlag(self::AF_NO_QUOTES), true);
             }
         } else {
-            $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES),
-                true);
+            $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES), true);
         }
     }
 }

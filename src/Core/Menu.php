@@ -54,7 +54,7 @@ class Menu
     {
         $s = Tools::atktext("menu_$menuitem", $modname, '', '', '', true);
         if (!$s) {
-            $s = ucwords(Tools::atktext($menuitem, $modname));
+            $s = Tools::atktext($menuitem, $modname);
         }
         return $s;
     }
@@ -196,9 +196,7 @@ class Menu
      *                   to the menu, with steps of 100. So, if you have a menu
      *                   with default ordering and you want to place a new
      *                   menuitem at the third position, pass 250 for $order.
-     * @param $module string The name of the module that added this menuitem. It is usually
-     *                not necessary to pass this parameter, but is present for
-     *                backwardscompatibility reasons.
+     * @param string $module The module name. Used for translations
      */
     public function addMenuItem($name = "", $url = "", $parent = "main", $enable = 1, $order = 0, $module = "")
     {

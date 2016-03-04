@@ -33,15 +33,12 @@ class UpdatedByAttribute extends ManyToOneRelation
         $this->setForceUpdate(true);
     }
 
-    /**
-     * Adds this attribute to database queries.
-     */
-    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
+    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         if ($mode == 'add' || $mode == 'update') {
-            Attribute::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
+            Attribute::addToQuery($query, $tablename, $fieldaliasprefix, $record, $level, $mode);
         } else {
-            parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
+            parent::addToQuery($query, $tablename, $fieldaliasprefix, $record, $level, $mode);
         }
     }
 

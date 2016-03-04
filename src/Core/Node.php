@@ -3631,35 +3631,27 @@ class Node
      */
     function addDb(&$record, $exectrigger = true, $mode = "add", $excludelist = array())
     {
-        if ($exectrigger) {
-            if (!$this->executeTrigger("preAdd", $record, $mode)) {
-                Tools::atkerror("preAdd() failed!");
-                return false;
-            }
-        }
+        if ($exectrigger)
+            if (!$this->executeTrigger("preAdd", $record, $mode))
+                return Tools::atkerror("preAdd() failed!");
 
-        $db = $this->getDb();
-        $query = $db->createQuery();
+        $db = &$this->getDb();
+        $query = &$db->createQuery();
 
         $storelist = array("pre" => array(), "post" => array(), "query" => array());
 
         $query->addTable($this->m_table);
 
         foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = $this->m_attribList[$attribname];
-            if (!Tools::atk_in_array($attribname,
-                    $excludelist) && ($mode != "add" || $p_attrib->needsInsert($record))
-            ) {
+            $p_attrib = &$this->m_attribList[$attribname];
+            if (!Tools::atk_in_array($attribname, $excludelist) && ($mode != "add" || $p_attrib->needsInsert($record))) {
                 $storemode = $p_attrib->storageType($mode);
-                if (Tools::hasFlag($storemode, Attribute::PRESTORE)) {
+                if (Tools::hasFlag($storemode, Attribute::PRESTORE))
                     $storelist["pre"][] = $attribname;
-                }
-                if (Tools::hasFlag($storemode, Attribute::POSTSTORE)) {
+                if (Tools::hasFlag($storemode, Attribute::POSTSTORE))
                     $storelist["post"][] = $attribname;
-                }
-                if (Tools::hasFlag($storemode, Attribute::ADDTOQUERY)) {
+                if (Tools::hasFlag($storemode, Attribute::ADDTOQUERY))
                     $storelist["query"][] = $attribname;
-                }
             }
         }
 
@@ -3667,8 +3659,8 @@ class Node
             return false;
         }
 
-        for ($i = 0, $_i = count($storelist["query"]); $i < $_i; $i++) {
-            $p_attrib = $this->m_attribList[$storelist["query"][$i]];
+        for ($i = 0, $_i = count($storelist["query"]); $i < $_i; $i ++) {
+            $p_attrib = &$this->m_attribList[$storelist["query"][$i]];
             $p_attrib->addToQuery($query, $this->m_table, "", $record, 1, 'add'); // start at level 1
         }
 
@@ -3679,7 +3671,6 @@ class Node
 
         // new primary key
         $record["atkprimkey"] = $this->primaryKey($record);
-
 
         if (!$this->_storeAttributes($storelist["post"], $record, $mode)) {
             Tools::atkdebug("_storeAttributes failed..");

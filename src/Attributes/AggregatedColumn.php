@@ -137,26 +137,8 @@ class AggregatedColumn extends Attribute
         return true;
     }
 
-    /**
-     * Adds this attribute to database queries.
-     *
-     * @param Query $query The SQL query object
-     * @param string $tablename The name of the table of this attribute
-     * @param string $fieldaliasprefix Prefix to use in front of the alias
-     *                                 in the query.
-     * @param array $rec The record that contains the value of this attribute.
-     * @param int $level Recursion level if relations point to eachother, an
-     *                   endless loop could occur if they keep loading
-     *                   eachothers data. The $level is used to detect this
-     *                   loop. If overriden in a derived class, any subcall to
-     *                   an addToQuery method should pass the $level+1.
-     * @param string $mode Indicates what kind of query is being processing:
-     *                     This can be any action performed on a node (edit,
-     *                     add, etc) Mind you that "add" and "update" are the
-     *                     actions that store something in the database,
-     *                     whereas the rest are probably select queries.
-     */
-    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
+
+    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         if ($mode !== 'add' && $mode != 'edit') {
             $allfields = Tools::atk_array_merge($this->m_displayfields, $this->m_searchfields);
@@ -164,7 +146,7 @@ class AggregatedColumn extends Attribute
             foreach ($allfields as $field) {
                 /** @var Attribute $p_attrib */
                 $p_attrib = $this->m_ownerInstance->m_attribList[$field];
-                $p_attrib->addToQuery($query, $tablename, $alias, $rec, $level, $mode);
+                $p_attrib->addToQuery($query, $tablename, $alias, $record, $level, $mode);
             }
         }
     }

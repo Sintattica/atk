@@ -1784,7 +1784,7 @@ class Attribute
      * @param string $tablename The name of the table of this attribute
      * @param string $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
-     * @param array $rec The record that contains the value of this attribute.
+     * @param array $record The record that contains the value of this attribute.
      * @param int $level Recursion level if relations point to eachother, an
      *                   endless loop could occur if they keep loading
      *                   eachothers data. The $level is used to detect this
@@ -1796,24 +1796,21 @@ class Attribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
+    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
-        if ($mode == "add" || $mode == "update") {
+        if ($mode == 'add' || $mode == 'update') {
             if ($mode == 'add' && $this->hasFlag(self::AF_AUTO_INCREMENT)) {
-                $query->addSequenceField($this->fieldName(), $rec[$this->fieldName()],
-                    $this->getOwnerInstance()->m_seq);
+                $query->addSequenceField($this->fieldName(), $record[$this->fieldName()], $this->getOwnerInstance()->m_seq);
                 return;
             }
 
-            if ($this->isEmpty($rec) && !$this->hasFlag(self::AF_OBLIGATORY) && !$this->isNotNullInDb()) {
-                $query->addField($this->fieldName(), 'NULL', "", "", false, true);
+            if ($this->isEmpty($record) && !$this->hasFlag(self::AF_OBLIGATORY) && !$this->isNotNullInDb()) {
+                $query->addField($this->fieldName(), 'NULL', '', '', false, true);
             } else {
-                $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(self::AF_NO_QUOTES),
-                    true);
+                $query->addField($this->fieldName(), $this->value2db($record), '', '', !$this->hasFlag(self::AF_NO_QUOTES), true);
             }
         } else {
-            $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES),
-                true);
+            $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES), true);
         }
     }
 

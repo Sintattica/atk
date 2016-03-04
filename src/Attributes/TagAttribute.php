@@ -490,11 +490,8 @@ class TagAttribute extends FuzzySearchAttribute
         return array();
     }
 
-    /**
-     * Dummy implementation
-     *
-     */
-    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
+
+    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
 
     }

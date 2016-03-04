@@ -4,6 +4,8 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Core\Node;
 
 /**
  * Implementation of one-to-one relationships.
@@ -160,46 +162,18 @@ class OneToOneRelation extends Relation
         return null;
     }
 
-    /**
-     * Adds this attribute to database queries.
-     *
-     * Database queries (select, insert and update) are passed to this method
-     * so the attribute can 'hook' itself into the query.
-     *
-     * Framework method. It should not be necessary to call this method
-     * directly. This implementation performs a join to retrieve the
-     * target records' data, unless self::AF_ONETOONE_LAZY is set, in which case
-     * loading is delayed and performed later using the load() method.
-     * For update and insert queries, this method does nothing. These are
-     * handled by the store() method.
-     *
-     * @param Query $query The SQL query object
-     * @param string $tablename The name of the table of this attribute
-     * @param string $fieldaliasprefix Prefix to use in front of the alias
-     *                                 in the query.
-     * @param array $rec The record that contains the value of this attribute.
-     * @param int $level Recursion level if relations point to eachother, an
-     *                   endless loop could occur if they keep loading
-     *                   eachothers data. The $level is used to detect this
-     *                   loop. If overriden in a derived class, any subcall to
-     *                   an addToQuery method should pass the $level+1.
-     * @param string $mode Indicates what kind of query is being processing:
-     *                     This can be any action performed on a node (edit,
-     *                     add, etc) Mind you that "add" and "update" are the
-     *                     actions that store something in the database,
-     *                     whereas the rest are probably select queries.
-     */
-    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
+    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         if ($this->createDestination()) {
             if ($mode != "update" && $mode != "add") {
                 if ($this->hasFlag(self::AF_ONETOONE_LAZY)) {
                     if ($this->m_refKey == "") {
-                        return parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
+                        parent::addToQuery($query, $tablename, $fieldaliasprefix, $record, $level, $mode);
+                        return;
                     }
                 }
 
-                if ($tablename != "") {
+                if ($tablename != '') {
                     $tablename .= ".";
                 }
 
@@ -212,20 +186,17 @@ class OneToOneRelation extends Relation
                 }
 
                 $condition .= $this->getDestinationFilterCondition($fieldaliasprefix);
-                $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix . $this->fieldName(), $condition,
-                    true, $mode);
+                $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix . $this->fieldName(), $condition, true, $mode);
 
                 // we pass true as the last param to addToQuery, because we need all fields..
-                $this->m_destInstance->addToQuery($query, $fieldaliasprefix . $this->fieldName(), $level + 1, true,
-                    $mode);
+                $this->m_destInstance->addToQuery($query, $fieldaliasprefix . $this->fieldName(), $level + 1, true, $mode);
             }
 
             // When storing, we don't add to the query.. we have our own store() method..
             // With one exception. If the foreign key is in the source node, we also need to update
             // the refkey value.
             if ($this->m_refKey == "" && $mode == "add") {
-                $query->addField($this->fieldName(), $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]],
-                    "", "", !$this->hasFlag(self::AF_NO_QUOTES));
+                $query->addField($this->fieldName(), $record[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]], "", "", !$this->hasFlag(self::AF_NO_QUOTES));
             }
         }
     }
@@ -993,7 +964,7 @@ class OneToOneRelation extends Relation
             return;
         } else {
             if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) || ($column != '*' && $this->getDestination()->getAttribute($column) == null)) {
-                throw new Exception("Invalid list column {$column} for atkOneToOneRelation " . $this->getOwnerInstance()->atkNodeUri() . '::' . $this->fieldName());
+                throw new \Exception("Invalid list column {$column} for atkOneToOneRelation " . $this->getOwnerInstance()->atkNodeUri() . '::' . $this->fieldName());
             }
         }
 
@@ -1041,7 +1012,7 @@ class OneToOneRelation extends Relation
             return;
         } else {
             if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) || ($column != '*' && $this->getDestination()->getAttribute($column) == null)) {
-                throw new Exception("Invalid list column {$column} for atkOneToOneRelation " . $this->getOwnerInstance()->atkNodeUri() . '::' . $this->fieldName());
+                throw new \Exception("Invalid list column {$column} for atkOneToOneRelation " . $this->getOwnerInstance()->atkNodeUri() . '::' . $this->fieldName());
             }
         }
 

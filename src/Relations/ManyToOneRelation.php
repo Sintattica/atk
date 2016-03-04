@@ -252,7 +252,7 @@ class ManyToOneRelation extends Relation
         $this->m_autocomplete_searchmode = Config::getGlobal("manytoone_autocomplete_searchmode", "contains");
         $this->m_autocomplete_search_case_sensitive = Config::getGlobal("manytoone_autocomplete_search_case_sensitive",
             false);
-        $this->m_autocomplete_size = Config::getGlobal("manytoone_autocomplete_size", 50);
+        $this->m_autocomplete_size = Config::getGlobal("manytoone_autocomplete_size",50);
 
         if (is_array($name)) {
             $this->m_refKey = $name;
@@ -1369,32 +1369,10 @@ class ManyToOneRelation extends Relation
         }
     }
 
-    /**
-     * Adds this attribute to database queries.
-     *
-     * Database queries (select, insert and update) are passed to this method
-     * so the attribute can 'hook' itself into the query.
-     *
-     * @param Query $query The SQL query object
-     * @param string $tablename The name of the table of this attribute
-     * @param string $fieldaliasprefix Prefix to use in front of the alias
-     *                                 in the query.
-     * @param array $rec The record that contains the value of this attribute.
-     * @param int $level Recursion level if relations point to eachother, an
-     *                   endless loop could occur if they keep loading
-     *                   eachothers data. The $level is used to detect this
-     *                   loop. If overriden in a derived class, any subcall to
-     *                   an addToQuery method should pass the $level+1.
-     * @param string $mode Indicates what kind of query is being processing:
-     *                     This can be any action performed on a node (edit,
-     *                     add, etc) Mind you that "add" and "update" are the
-     *                     actions that store something in the database,
-     *                     whereas the rest are probably select queries.
-     */
-    function addToQuery($query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
+    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         if ($this->hasFlag(self::AF_MANYTOONE_LAZY)) {
-            parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
+            parent::addToQuery($query, $tablename, $fieldaliasprefix, $record, $level, $mode);
             return;
         }
 
@@ -1406,10 +1384,10 @@ class ManyToOneRelation extends Relation
                 $this->m_destInstance->addToQuery($query, $alias, $level + 1, false, $mode, $this->m_listColumns);
             } else {
                 for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++) {
-                    if ($rec[$this->fieldName()] === null) {
+                    if ($record[$this->fieldName()] === null) {
                         $query->addField($this->m_refKey[$i], "NULL", "", "", false);
                     } else {
-                        $value = $rec[$this->fieldName()];
+                        $value = $record[$this->fieldName()];
                         if (is_array($value)) {
                             $fk = $this->m_destInstance->getAttribute($this->m_destInstance->m_primaryKey[$i]);
                             $value = $fk->value2db($value);
