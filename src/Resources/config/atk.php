@@ -7,7 +7,6 @@ $_configTempDir = $_configAppRoot . 'var/atktmp/';
 $_configAssetsUrl = '/bundles/atk/';
 $_configDirName = 'config';
 
-
 return [
 
     /********************* FILE LOCATIONS & PATHS ******************************/
@@ -45,9 +44,10 @@ return [
      * this option and your table structure changes you should manually clear
      * the cache in the atktmp directory!
      *
-     * @var bool
+     *
+     * @var int
      */
-    'meta_caching' => true,
+    'meta_caching' => Config::env('META_CACHING', true),
 
     /**
      * Use the given class for creating datagrids.
@@ -85,23 +85,6 @@ return [
      */
     'databasepersistent' => true,
 
-    /**
-     * Test database mapping. Maps normal databases to their test database.
-     * Most of the applications only use one database in that case the default
-     * should be sufficient. But in case you use multiple database and also
-     * want to run tests on all these database you can override this mapping
-     * or add your own mappings.
-     *
-     * @var array
-     */
-    'test_db_mapping' => ['default' => 'test'],
-
-    /**
-     * Database Cluster nodes
-     * 'db_cluster["default"]' => array("master","slave","slave2"),
-     */
-    'db_cluster' => [],
-
 
     /********************************** SECURITY *******************************/
 
@@ -110,14 +93,14 @@ return [
      * An administrator password that is empty will *DISABLE* administrator login!
      * @var mixed
      */
-    'administratorpassword' => '',
+    'administratorpassword' => Config::env('ADMIN_PASSWORD', ''),
 
     /**
      * The password to use for guest login.
      * A guest password that is empty will *DISABLE* guest login!
      * @var String
      */
-    'guestpassword' => '',
+    'guestpassword' => Config::env('GUEST_PASSWORD', ''),
 
     /**
      * The method to use for user/password validation.
@@ -387,7 +370,7 @@ return [
      *
      * @var int
      */
-    'debug' => 0,
+    'debug' => Config::env('DEBUG_LEVEL', 0),
 
     /**
      *
@@ -571,45 +554,15 @@ return [
 //'supported_languages_module' => 'atkroot.'atk/languages/',
     'supported_languages_module' => '',
 
+
     /********************* TEMPLATE ENGINE CONFIGURATION ***********************/
 
-    /**
-     *
-     * @var boolean
-     */
-    'tplcaching' => false,
-
-    /**
-     * default one hour
-     * @var int
-     */
-    'tplcachelifetime' => 3600,
-    /**
-     *
-     * @var String
-     */
     'tplcompiledir' => $_configTempDir . "tpl/",
-
-    /**
-     *
-     * @var String
-     */
-    'tplcachedir' => $_configTempDir . "tplcache/",
-
-    /**
-     * Check templates to see if they changed
-     * @var String
-     */
-    'tplcompilecheck' => "true",
-
-    /**
-     * Use subdirectories for compiled and cached templates
-     */
-    'tplusesubdirs' => false,
+    'tplcompilecheck' => true,
+    'tplforcecompile' => false,
 
 
     /****************** MISCELLANEOUS CONFIGURATION OPTIONS ********************/
-
 
     /**
      * @var array List of enabled modules

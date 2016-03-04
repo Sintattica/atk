@@ -9,7 +9,6 @@ use Sintattica\Atk\Ui\IndexPage;
 use Sintattica\Atk\Handlers\ActionHandler;
 use Dotenv\Dotenv;
 
-
 class Atk
 {
     var $g_nodes = [];
@@ -23,75 +22,61 @@ class Atk
     /** @var $s_instance Atk */
     static $s_instance = null;
 
-
-    public function __construct()
+    public function __construct($environment, $basedir)
     {
-        // do nothing fancy here, because Atk isn't ready yet
-        // (This is the framework, btw)
-
         global $g_startTime;
         $g_startTime = microtime(true);
-    }
 
-    /**
-     * @param $environment string environment (dev, staging, prod)
-     * @param $basedir string basedir on server
-     * @return Atk
-     */
-    public static function create($environment, $basedir){
-        if (static::$s_instance == null) {
-
-            //load .env variables only in development environment
-            if(in_array(strtolower($environment), ['dev', 'develop', 'development'])) {
-                $dotEnv = new Dotenv($basedir);
-                $dotEnv->load();
-            }
-
-            static::$s_instance = new static();
-
-            require_once('adodb-time.php');
-
-            Config::init();
-
-            if (Config::getGlobal('debug') > 0) {
-                ini_set('display_errors', 1);
-            }
-
-            if (Config::getGlobal('use_atkerrorhandler', true)) {
-                set_error_handler('Sintattica\Atk\Core\Tools::atkErrorHandler');
-                error_reporting(E_ALL);
-                set_exception_handler('Sintattica\Atk\Core\Tools::atkExceptionHandler');
-            }
-
-            // Filter the atkselector REQUEST variable for blacklisted SQL (like UNIONs)
-            SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkselector');
-            SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkfilter');
-
-
-            // set locale
-            $locale = Tools::atktext('locale', 'atk', '', '', true);
-            if ($locale) {
-                setlocale(LC_TIME, $locale);
-            }
-
-            $debug = 'Created a new Atk instance: Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')';
-            $debug .= ' Environment: '.$environment;
-
-            Tools::atkdebug($debug);
-
-            //load modules
-            $modules = Config::getGlobal('modules');
-            if(is_array($modules)){
-                foreach($modules as $module) {
-                    static::$s_instance->registerModule($module);
-                }
-            }
-
-
+        if (static::$s_instance) {
+            throw new \RuntimeException('Only one Atk app can be created');
         }
-        return static::$s_instance;
-    }
 
+        static::$s_instance = $this;
+
+        //load .env variables only in development environment
+        if (!$environment || in_array(strtolower($environment), ['dev', 'develop', 'development'])) {
+            $dotEnv = new Dotenv($basedir);
+            $dotEnv->load();
+        }
+
+        require_once('adodb-time.php');
+
+        Config::init();
+
+        if (Config::getGlobal('debug') > 0) {
+            ini_set('display_errors', 1);
+        }
+
+        if (Config::getGlobal('use_atkerrorhandler', true)) {
+            set_error_handler('Sintattica\Atk\Core\Tools::atkErrorHandler');
+            error_reporting(E_ALL);
+            set_exception_handler('Sintattica\Atk\Core\Tools::atkExceptionHandler');
+        }
+
+        // Filter the atkselector REQUEST variable for blacklisted SQL (like UNIONs)
+        SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkselector');
+        SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkfilter');
+
+
+        // set locale
+        $locale = Tools::atktext('locale', 'atk', '', '', true);
+        if ($locale) {
+            setlocale(LC_TIME, $locale);
+        }
+
+        $debug = 'Created a new Atk instance: Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')';
+        $debug .= ' Environment: ' . $environment;
+
+        Tools::atkdebug($debug);
+
+        //load modules
+        $modules = Config::getGlobal('modules');
+        if (is_array($modules)) {
+            foreach ($modules as $module) {
+                static::$s_instance->registerModule($module);
+            }
+        }
+    }
 
     /**
      * Get new Atk object
@@ -100,8 +85,8 @@ class Atk
      */
     public static function getInstance()
     {
-        if(!is_object(static::$s_instance)){
-            throw new \RuntimeException('Atk instance must be created with create');
+        if (!is_object(static::$s_instance)) {
+            throw new \RuntimeException('Atk instance not available');
         }
         return static::$s_instance;
     }
@@ -161,8 +146,6 @@ class Atk
     }
 
 
-
-
     /**
      * Get an instance of a node. If an instance doesn't exist, it is created.  Note that nodes
      * are cached (unless $reset is true); multiple requests for the same node will return exactly
@@ -200,7 +183,8 @@ class Atk
         return $this->g_moduleRepository[$moduleName];
     }
 
-    public function isModule($moduleName) {
+    public function isModule($moduleName)
+    {
         return is_object($this->g_moduleRepository[$moduleName]);
     }
 
