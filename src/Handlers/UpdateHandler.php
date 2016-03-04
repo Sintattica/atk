@@ -18,7 +18,7 @@ use Sintattica\Atk\Session\SessionStore;
  * @subpackage handlers
  * @todo Add locking check for when an application calls an action_update on a locked node
  */
-class Updatehandler extends ActionHandler
+class UpdateHandler extends ActionHandler
 {
     /**
      * Edit action.

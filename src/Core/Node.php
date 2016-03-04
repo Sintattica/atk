@@ -3191,8 +3191,6 @@ class Node
      *
      * Validates unique fields, required fields, dataformat etc.
      *
-     * @internal This method instantiates the node's validator object, and
-     *           delegates validation to that object.
      *
      * @param array $record The record to validate
      * @param string $mode The mode for which validation is performed ('add' or 'update')

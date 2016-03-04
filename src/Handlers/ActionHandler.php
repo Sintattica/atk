@@ -299,7 +299,7 @@ class ActionHandler
      * handler is instantiated and returned. The default handler assumes that
      * the node has an action_.... method, that will be called when the
      * actionhandler's handle() mehod is called.
-     * @static
+     * @param string $action
      *
      * @return ActionHandler
      */
@@ -351,7 +351,7 @@ class ActionHandler
         if ($this->m_node->hasFlag(Node::NF_CACHE_RECORDLIST)) {
             $recordlistcache = $this->getRecordlistCache();
             if ($recordlistcache) {
-                $recordlistcache->clearCache($this->m_node->atkNodeUri());
+                $recordlistcache->clearCache();
             }
         }
     }
@@ -425,14 +425,15 @@ class ActionHandler
      */
     function _getAccessDeniedPage()
     {
+        $ui = $this->m_node->getUi();
         $content = "<br><br>" . Tools::atktext("error_node_action_access_denied", "", $this->m_node->getType()) . "<br><br><br>";
         $blocks = [
-            $this->m_ui->renderBox(array(
+            $ui->renderBox(array(
                 "title" => Tools::atktext('access_denied'),
                 "content" => $content
             ), 'dispatch')
         ];
-        return $this->m_ui->render("action.tpl", array("blocks"=>$blocks, "title"=> Tools::atktext('access_denied')));
+        return $ui->render("action.tpl", array("blocks"=>$blocks, "title"=> Tools::atktext('access_denied')));
     }
 
 
@@ -481,7 +482,7 @@ class ActionHandler
     /**
      * Checks whatever the given CSRF token matches the one stored in the
      * session stack.
-     *
+     * @param string $token
      * @return boolean is valid CSRF token?
      */
     protected function isValidCSRFToken($token)

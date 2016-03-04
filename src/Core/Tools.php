@@ -289,6 +289,8 @@ class Tools
      * send by e-mail.
      *
      * @param string|Exception $error the error self::text or exception to display
+     * @throws \Exception if throw_exception_on_error
+     * @return bool
      */
     public static function atkerror($error)
     {
@@ -313,6 +315,7 @@ class Tools
                 throw new Exception($error);
             }
         }
+        return;
     }
 
     /**

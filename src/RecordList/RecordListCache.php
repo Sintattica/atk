@@ -5,6 +5,7 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Utils\DirectoryTraverser;
+use Sintattica\Atk\Core\Node;
 
 
 /**
@@ -78,7 +79,7 @@ class RecordListCache
 
     /**
      * Setter for the node of the recordlistcache
-     * @param Object $node The node of the recordlist
+     * @param Node $node The node of the recordlist
      */
     function setNode($node)
     {

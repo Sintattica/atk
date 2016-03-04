@@ -218,8 +218,8 @@ class AddHandler extends ActionHandler
     {
         $node = $this->m_node;
 
-        // Utility.
-        $edithandler = &$node->getHandler("edit");
+        /** @var EditHandler $edithandler */
+        $edithandler = $node->getHandler("edit");
 
         $forceList = $this->invoke("createForceList");
         $form = $edithandler->editForm("add", $record, $forceList, '', $node->getEditFieldPrefix());

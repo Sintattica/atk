@@ -270,7 +270,7 @@ abstract class AbstractSearchHandler extends ActionHandler
     /**
      * Returns a checkbox for enabling/disabling the saving of criteria.
      *
-     * @return checkbox HTML
+     * @return string HTML
      */
     function getToggleSaveCriteria()
     {
@@ -281,7 +281,7 @@ abstract class AbstractSearchHandler extends ActionHandler
      * Returns a textfield for entering a name to save the search criteria as.
      *
      * @param string $current currently loaded criteria
-     * @param string textfield HTML
+     * @@return string HTML
      */
     function getSaveCriteria($current)
     {
