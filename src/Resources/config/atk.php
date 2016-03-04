@@ -47,7 +47,7 @@ return [
      *
      * @var int
      */
-    'meta_caching' => Config::env('META_CACHING', true),
+    'meta_caching' => Config::env('META_CACHING', 1),
 
     /**
      * Use the given class for creating datagrids.
@@ -558,8 +558,8 @@ return [
     /********************* TEMPLATE ENGINE CONFIGURATION ***********************/
 
     'tplcompiledir' => $_configTempDir . "tpl/",
-    'tplcompilecheck' => true,
-    'tplforcecompile' => false,
+    'tplcompilecheck' => Config::env('TPL_COMPILE_CHECK', 1),
+    'tplforcecompile' => Config::env('TPL_FORCE_COMPILE', 0),
 
 
     /****************** MISCELLANEOUS CONFIGURATION OPTIONS ********************/
