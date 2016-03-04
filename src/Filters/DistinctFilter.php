@@ -24,13 +24,8 @@ class DistinctFilter extends Filter
         parent::__construct("distinctfilter");
     }
 
-    /**
-     * add the distinct statement to the query
-     *
-     * @param Query $query The SQL query object
-     * @return void
-     */
-    function addToQuery(&$query)
+
+    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         $query->setDistinct(true);
     }

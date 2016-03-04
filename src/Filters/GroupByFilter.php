@@ -37,13 +37,8 @@ class GroupByFilter extends Filter
         parent::__construct($name, $flags);
     }
 
-    /**
-     * add the group by statement to the query
-     *
-     * @param Query $query The SQL query object
-     * @return void
-     */
-    function addToQuery(&$query)
+
+    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         $query->addGroupBy($this->m_groupbystmt);
     }
