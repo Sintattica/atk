@@ -39,7 +39,7 @@ class ParserAttribute extends Attribute
      */
     function edit($record, $fieldprefix, $mode)
     {
-        return $this->display($record);
+        return $this->display($record, $fieldprefix, $mode);
     }
 
     /**

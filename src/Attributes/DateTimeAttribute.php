@@ -215,7 +215,7 @@ class DateTimeAttribute extends Attribute
     function display($record, $mode)
     {
         $date = $this->m_date->display($record, $mode);
-        $time = $this->m_time->display($record);
+        $time = $this->m_time->display($record, $mode);
         if ($date != '' && $time != '') {
             return $date . (($mode == "csv" || $mode == "plain") ? " " : "&nbsp;") . $time;
         } else {
@@ -441,7 +441,7 @@ class DateTimeAttribute extends Attribute
         // we only need to return the date part, because the dateattribute also
         // hides the other (time) elements that are present in the record (is that
         // a bug of the dateattribute?)
-        return $this->m_date->hide($record, $fieldprefix);
+        return $this->m_date->hide($record, $fieldprefix, $mode);
     }
 
     /**

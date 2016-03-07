@@ -1369,7 +1369,7 @@ class Attribute
         // readonly
         if ($this->isReadonlyEdit($mode)) {
             return
-                $this->hide($defaults, $fieldprefix) .
+                $this->hide($defaults, $fieldprefix, $mode) .
                 $this->getView($mode, $defaults);
         }
 
