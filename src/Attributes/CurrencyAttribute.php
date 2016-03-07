@@ -77,7 +77,7 @@ class CurrencyAttribute extends NumberAttribute
      *                     use additional modes.
      * @return String HTML String
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         $result = empty($this->m_currencysymbol) ? "" : $this->getCurrencySymbolDisplay();
         $result .= parent::display($record, $mode);

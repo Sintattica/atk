@@ -1276,7 +1276,7 @@ class DateAttribute extends Attribute
      * @param array $record array with date
      * @return string formatted date string
      */
-    function display($record, $mode = '')
+    function display($record, $mode)
     {
         $value = $record[$this->fieldName()];
         if (!is_array($value) || empty($value["month"]) || empty($value["day"]) || empty($value["year"])) {

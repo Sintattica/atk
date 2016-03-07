@@ -652,7 +652,7 @@ class ManyToOneRelation extends Relation
      *                     use additional modes.
      * @return string a displayable string
      */
-    function display($record, $mode = 'list')
+    function display($record, $mode)
     {
         if ($this->createDestination()) {
             if (count($record[$this->fieldName()]) == count($this->m_refKey)) {

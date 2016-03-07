@@ -103,7 +103,7 @@ class DummyAttribute extends Attribute
      * @param array $record Array with fields
      * @return string Text
      */
-    function display($record, $mode = '')
+    function display($record, $mode)
     {
         return $this->m_text;
     }

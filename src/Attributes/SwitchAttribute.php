@@ -72,11 +72,11 @@ class SwitchAttribute extends BoolAttribute
         return $result;
     }
 
-    function display($record, $fieldprefix = "")
+    function display($record, $mode)
     {
-        $this->registerScriptsAndStyles($fieldprefix);
+        $this->registerScriptsAndStyles('');
 
-        $id = $this->getHtmlId($fieldprefix);
+        $id = $this->getHtmlId('');
 
         if ($this->hasFlag(self::AF_BOOL_DISPLAY_CHECKBOX)) {
             return '

@@ -263,7 +263,7 @@ class TagAttribute extends FuzzySearchAttribute
      *                     use additional modes.
      * @return String HTML String
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         if (is_array($record[$this->fieldName()])) {
             return $this->arrayToString($record[$this->fieldName()]);

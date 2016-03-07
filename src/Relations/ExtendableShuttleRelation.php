@@ -374,7 +374,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
      * @param string $mode
      * @return string piece of html code
      */
-    public function display($record, $mode = "")
+    public function display($record, $mode)
     {
         $record[$this->fieldName()] = $record[$this->fieldName()]['selected'];
         return parent::display($record, $mode);

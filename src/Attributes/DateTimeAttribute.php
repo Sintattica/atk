@@ -212,7 +212,7 @@ class DateTimeAttribute extends Attribute
      *                     use additional modes.
      * @return string text string of $record
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         $date = $this->m_date->display($record, $mode);
         $time = $this->m_time->display($record);

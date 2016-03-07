@@ -288,7 +288,7 @@ class TabbedPane extends Attribute
      * @param string $mode The mode
      * @return string html code
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         // get active tab
         $active_tab = $this->getDefaultTab();

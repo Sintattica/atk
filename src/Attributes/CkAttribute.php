@@ -77,7 +77,7 @@ class CkAttribute extends TextAttribute
         return parent::edit($record, $fieldprefix, $mode);
     }
 
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         return Tools::atkArrayNvl($record, $this->fieldName(), "");
     }

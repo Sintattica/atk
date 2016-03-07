@@ -103,19 +103,7 @@ class OneToOneRelation extends Relation
         $this->m_refKey = $refKey;
     }
 
-    /**
-     * Returns a displayable string for this value, to be used in HTML pages.
-     *
-     * The atkOneToOneRelation displays all values from the destination
-     * records in "view" mode. In "list" mode, the record descriptor of the
-     * target record is displayed.
-     *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $mode The display mode ("view" for viewpages, or "list"
-     *                     for displaying in recordlists)
-     * @return String HTML String
-     */
-    function display($record, $mode = "list")
+    function display($record, $mode)
     {
         if ($mode == 'view') {
             return null;

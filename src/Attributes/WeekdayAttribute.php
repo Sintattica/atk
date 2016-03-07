@@ -131,7 +131,7 @@ class WeekdayAttribute extends NumberAttribute
      *                     between the two display modes.
      * @return String HTML String
      */
-    function display($record, $mode = "list")
+    function display($record, $mode)
     {
         $result = '';
         $value = (int)$record[$this->fieldName()];

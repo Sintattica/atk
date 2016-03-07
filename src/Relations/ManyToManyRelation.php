@@ -366,7 +366,7 @@ class ManyToManyRelation extends Relation
      *                     use additional modes.
      * @return string a displayable string for this value
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         $result = '';
         if ($this->createDestination() && Tools::atk_value_in_array($record[$this->fieldName()])) {

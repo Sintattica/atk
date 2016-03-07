@@ -110,7 +110,7 @@ class CalculatorAttribute extends Attribute
      * @param string $mode The display mode.
      * @return String HTML String
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         if ($this->m_ownerInstance->m_partial == "attribute." . $this->fieldName() . ".refresh") {
             $record[$this->fieldName()] = $this->load($db, $record);

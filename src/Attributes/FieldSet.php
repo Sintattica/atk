@@ -198,7 +198,7 @@ class FieldSet extends Attribute
      *
      * @return string
      */
-    function display($record, $mode = '')
+    function display($record, $mode)
     {
         return $this->renderFieldSet('display', $record, $mode);
     }

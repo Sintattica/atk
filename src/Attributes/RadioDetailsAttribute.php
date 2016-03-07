@@ -140,7 +140,7 @@ class RadioDetailsAttribute extends Attribute
      *                     use additional modes.
      * @return String HTML String
      */
-    public function display($record, $mode = 'list')
+    function display($record, $mode)
     {
         $value = $record[$this->fieldName()];
         $options = array_flip($this->m_options);

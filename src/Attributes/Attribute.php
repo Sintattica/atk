@@ -1721,7 +1721,7 @@ class Attribute
      *                     use additional modes.
      * @return String HTML String
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         // the next if-statement is a workaround for derived attributes which do
         // not override the display() method properly. This will not give them a

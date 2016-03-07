@@ -140,7 +140,7 @@ class MultiSelectAttribute extends ListAttribute
      *                     use additional modes.
      * @return String HTML String
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         $values = $record[$this->fieldName()];
         $res = array();

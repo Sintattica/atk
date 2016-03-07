@@ -126,7 +126,7 @@ class NumberAttribute extends Attribute
      *                     use additional modes.
      * @return String HTML String
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] !== "") {
             return $this->formatNumber($record[$this->fieldName()]);

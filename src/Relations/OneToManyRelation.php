@@ -332,7 +332,7 @@ class OneToManyRelation extends Relation
      *                     for displaying in recordlists)
      * @return String HTML String
      */
-    public function display($record, $mode = "list")
+    public function display($record, $mode)
     {
         // for the view mode we use the datagrid and load the records ourselves
         if ($mode == 'view' || ($mode == 'edit' && $this->hasFlag(self::AF_READONLY_EDIT))) {

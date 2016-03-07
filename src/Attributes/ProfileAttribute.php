@@ -325,7 +325,7 @@ class ProfileAttribute extends Attribute
      *
      * @return string Displayable string
      */
-    public function display($record, $mode = '')
+    public function display($record, $mode)
     {
         $user = SecurityManager::atkGetUser();
         $page = Page::getInstance();
