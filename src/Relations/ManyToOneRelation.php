@@ -1018,7 +1018,7 @@ class ManyToOneRelation extends Relation
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         if (!$this->createDestination()) {
             return '';

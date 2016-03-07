@@ -67,7 +67,7 @@ class DurationAttribute extends Attribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         // hide as a parseable string
         $record[$this->fieldName()] = $this->_minutes2string($record[$this->fieldName()]);

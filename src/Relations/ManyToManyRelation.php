@@ -686,7 +686,7 @@ class ManyToManyRelation extends Relation
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         $result = "";
         if (is_array(Tools::atkArrayNvl($record, $this->fieldName())) && $this->createDestination()) {

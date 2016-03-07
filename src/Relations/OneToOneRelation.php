@@ -563,7 +563,7 @@ class OneToOneRelation extends Relation
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         Tools::atkdebug("hide called for " . $this->fieldName());
         if ($this->createDestination()) {

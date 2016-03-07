@@ -179,7 +179,7 @@ class ProfileAttribute extends Attribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         // get checks
         $checked = $record[$this->fieldName()];

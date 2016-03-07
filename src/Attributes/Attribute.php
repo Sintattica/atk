@@ -1036,7 +1036,7 @@ class Attribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         // the next if-statement is a workaround for derived attributes which do
         // not override the hide() method properly. This will not give them a

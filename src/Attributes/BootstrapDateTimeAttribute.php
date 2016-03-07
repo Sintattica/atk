@@ -213,7 +213,7 @@ class BootstrapDateTimeAttribute extends Attribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         $result = '';
         $field = $record[$this->fieldName()];

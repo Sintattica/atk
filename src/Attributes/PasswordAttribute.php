@@ -382,7 +382,7 @@ class PasswordAttribute extends Attribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         $result = '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '[hash]"' .
             ' value="' . $record[$this->fieldName()]["hash"] . '">';

@@ -436,7 +436,7 @@ class DateTimeAttribute extends Attribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         // we only need to return the date part, because the dateattribute also
         // hides the other (time) elements that are present in the record (is that

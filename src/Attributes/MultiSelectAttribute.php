@@ -67,7 +67,7 @@ class MultiSelectAttribute extends ListAttribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         $result = '';
         if (is_array($record[$this->fieldName()])) {
