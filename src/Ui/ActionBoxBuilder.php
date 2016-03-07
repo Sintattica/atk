@@ -62,7 +62,7 @@ class ActionBoxBuilder
         $this->m_pageBuilder = $pageBuilder;
         $this->m_params = $pageBuilder->getNode()->getDefaultActionParams(false);
 
-        $this->formStart('<form id="entryform" name="entryform" enctype="multipart/form-data" action="' . Config::getGlobal('dispatcher') . '?' . SID . '" method="post" onsubmit="return globalSubmit(this,true)">');
+        $this->formStart('<form id="entryform" name="entryform" enctype="multipart/form-data" action="' . Config::getGlobal('dispatcher') . '" method="post" onsubmit="return globalSubmit(this,true)">');
     }
 
     /**

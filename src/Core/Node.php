@@ -2683,7 +2683,7 @@ class Node
 
         $sm = SessionManager::getInstance();
 
-        $formstart = '<form action="' . Config::getGlobal('dispatcher') . '?"' . SID . ' method="post">';
+        $formstart = '<form action="' . Config::getGlobal('dispatcher') . ' method="post">';
         $formstart .= $sm->formState();
         $formstart .= '<input type="hidden" name="atkaction" value="' . $action . '">';
         $formstart .= '<input type="hidden" name="atknodeuri" value="' . $this->atkNodeUri() . '">';

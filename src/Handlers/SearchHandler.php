@@ -134,7 +134,7 @@ class SearchHandler extends AbstractSearchHandler
         if (is_object($ui)) {
             $sm = SessionManager::getInstance();
             $params = array();
-            $params["formstart"] = '<form name="entryform" action="' . Config::getGlobal('dispatcher') . '?' . SID . '" method="post">';
+            $params["formstart"] = '<form name="entryform" action="' . Config::getGlobal('dispatcher') . '" method="post">';
 
             $params["formstart"] .= $sm->formState(SessionManager::SESSION_REPLACE);
             $params["formstart"] .= '<input type="hidden" name="atkaction" value="search">';

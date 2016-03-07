@@ -893,7 +893,7 @@ class OneToOneRelation extends Relation
      *                       loaded.
      * @return array The list of tabs to add to the screen.
      */
-    function getAdditionalTabs($action)
+    function getAdditionalTabs($action = null)
     {
         if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
             $detailtabs = $this->m_destInstance->getTabs($action);
