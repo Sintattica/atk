@@ -280,7 +280,7 @@ class DateTimeAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $dateEdit = $this->m_date->edit($record, $fieldprefix);
         $timeEdit = $this->m_time->edit($record, $fieldprefix);

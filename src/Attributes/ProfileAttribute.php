@@ -431,7 +431,7 @@ class ProfileAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $user = SecurityManager::atkGetUser();
         $page = Page::getInstance();

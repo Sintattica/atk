@@ -139,7 +139,7 @@ class OneToOneRelation extends Relation
      * Because of the self::AF_INTEGRATE feature, the edit() method has a void
      * implementation. The actual edit code is handled by addToEditArray().
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
 
     }

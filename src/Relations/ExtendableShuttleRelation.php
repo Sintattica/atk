@@ -222,7 +222,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    public function edit($record, $fieldprefix = "", $mode = "")
+    public function edit($record, $fieldprefix, $mode)
     {
         // Add onchange handler
         $mode = ($mode == "add") ?: "edit";

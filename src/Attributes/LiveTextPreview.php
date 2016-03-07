@@ -37,14 +37,7 @@ class LiveTextPreview extends DummyAttribute
         $this->m_masterattribute = $masterattribute;
     }
 
-    /**
-     * Edit record
-     * Thie method will display a live preview.
-     * @param array $record Array with fields
-     * @param string $fieldprefix Fieldprefix for embedded forms.
-     * @return String Parsed string
-     */
-    function edit($record, $fieldprefix = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $page = Page::getInstance();
         $id = $fieldprefix . $this->fieldName();

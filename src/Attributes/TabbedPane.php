@@ -178,22 +178,13 @@ class TabbedPane extends Attribute
         return $fields;
     }
 
-    /**
-     * Returns a piece of html code that can be used in a form to edit this
-     * attribute's value.
-     *
-     * @param array $defaults The record that holds the value for this attribute.
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @param string $mode The mode we're in ('add' or 'edit')
-     * @return String A piece of htmlcode for editing this attribute
-     */
-    function edit($defaults = "", $fieldprefix = "", $mode = "")
+
+    function edit($record, $fieldprefix, $mode)
     {
         $node = $this->m_ownerInstance;
         $arr = array("hide" => array());
         //get data
-        $data = $this->_addToEditArray($mode, $arr, $defaults, $defaults['atkerror'], $fieldprefix);
+        $data = $this->_addToEditArray($mode, $arr, $record, $record['atkerror'], $fieldprefix);
 
         // Handle fields
         // load images
@@ -214,7 +205,7 @@ class TabbedPane extends Attribute
             $tplfield["class"] = "tabbedPaneAttr tabbedPaneTab{$field['tabs']}";
 
             // Check if there are attributes initially hidden on this tabbedpane
-            if ($field["attribute"]->isInitialHidden($defaults)) {
+            if ($field["attribute"]->isInitialHidden($record)) {
                 $tplfield["class"] .= " atkAttrRowHidden";
             }
 

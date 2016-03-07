@@ -185,7 +185,7 @@ class FieldSet extends Attribute
      *
      * @return string
      */
-    function edit($record, $fieldprefix = '', $mode = '')
+    function edit($record, $fieldprefix, $mode)
     {
         return $this->renderFieldSet('edit', $record, $mode, $fieldprefix);
     }

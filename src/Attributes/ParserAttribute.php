@@ -37,7 +37,7 @@ class ParserAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string Parsed string
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         return $this->display($record);
     }

@@ -78,15 +78,7 @@ class ShuttleRelation extends ManyToManyRelation
         $this->m_filterBox = true;
     }
 
-    /**
-     * Return a piece of html code to edit the attribute
-     * @param array $record The record that holds the value for this attribute.
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @param string $mode The mode we're in ('add' or 'edit')
-     * @return String piece of html code
-     */
-    function edit($record, $fieldprefix = '', $mode = '')
+    function edit($record, $fieldprefix, $mode)
     {
         $this->createDestination();
         $this->createLink();

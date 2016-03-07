@@ -79,16 +79,7 @@ class TextAttribute extends Attribute
         $this->m_wrapMode = $mode;
     }
 
-    /**
-     * Returns a piece of html code that can be used in a form to edit this
-     * attribute's value.
-     * @param array $record Array with fields
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @param string $mode The mode we're in ('add' or 'edit')
-     * @return string piece of html code with a textarea
-     */
-    function edit($record, $fieldprefix = "", $mode = 'add')
+    function edit($record, $fieldprefix, $mode)
     {
         // list mode, show a small textarea, until it get's focus
         // and is inflated to a big textarea

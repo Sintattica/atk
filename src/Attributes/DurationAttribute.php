@@ -83,7 +83,7 @@ class DurationAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String Piece a of HTML Code
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $id = $fieldprefix . $this->formName();
         $fieldvalue = Tools::atkArrayNvl($record, $this->fieldName(), "");

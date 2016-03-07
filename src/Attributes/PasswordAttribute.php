@@ -144,7 +144,7 @@ class PasswordAttribute extends Attribute
      * @param string $mode the mode (add, edit etc.)
      * @return string piece of html code with a textarea
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $id = $fieldprefix . $this->fieldName();
         /* insert */

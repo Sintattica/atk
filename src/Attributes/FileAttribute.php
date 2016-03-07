@@ -198,7 +198,7 @@ class FileAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string piece of html code with a browsebox
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         // When in add mode or we have errors, don't show the filename above the input.
         if ($mode != 'add' && $record[$this->fieldName()]['error'] == 0) {

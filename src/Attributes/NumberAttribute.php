@@ -498,7 +498,7 @@ class NumberAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string Piece of htmlcode
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $id = $this->getHtmlId($fieldprefix);
         if (count($this->m_onchangecode)) {

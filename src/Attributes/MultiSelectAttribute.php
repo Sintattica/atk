@@ -159,7 +159,7 @@ class MultiSelectAttribute extends ListAttribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string piece of html code with radioboxes
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $this->m_record = $record;
         $cols = $this->m_cols;

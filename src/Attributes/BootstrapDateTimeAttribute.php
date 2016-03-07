@@ -187,7 +187,7 @@ class BootstrapDateTimeAttribute extends Attribute
         return $result;
     }
 
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $dateEdit = $this->draw($record, $fieldprefix, '', $mode);
         return $dateEdit;

@@ -97,7 +97,7 @@ class BoolAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string piece of html code with a checkbox
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $id = $this->getHtmlId($fieldprefix);
         $onchange = '';

@@ -47,7 +47,7 @@ class ManyBoolRelation extends ManyToManyRelation
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String piece of html code
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $cols = $this->m_cols;
         $modcols = $cols - 1;

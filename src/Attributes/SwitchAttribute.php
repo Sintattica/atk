@@ -42,7 +42,7 @@ class SwitchAttribute extends BoolAttribute
             });");
     }
 
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $this->registerScriptsAndStyles($fieldprefix);
 

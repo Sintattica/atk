@@ -79,14 +79,7 @@ class RadioDetailsAttribute extends Attribute
         }
     }
 
-    /**
-     * Edit.
-     *
-     * @param array $record
-     * @param string $fieldprefix
-     * @param string $mode
-     */
-    public function edit($record, $fieldprefix, $mode = 'add')
+    public function edit($record, $fieldprefix, $mode)
     {
         $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('assets_url') . 'javascript/class.' . strtolower(__CLASS__) . '.js');
 
