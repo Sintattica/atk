@@ -2171,10 +2171,12 @@ class Node
         $result["hide"][] = '<input type="hidden" name="' . $fieldprefix . 'atknodeuri" value="' . $this->atkNodeUri() . '">';
         $result["hide"][] = '<input type="hidden" name="' . $fieldprefix . 'atkprimkey" value="' . Tools::atkArrayNvl($record, "atkprimkey", "") . '">';
 
+
+
         foreach (array_keys($this->m_attribIndexList) as $r) {
             $attribname = $this->m_attribIndexList[$r]["name"];
+            $p_attrib = &$this->m_attribList[$attribname];
 
-            $p_attrib = $this->m_attribList[$attribname];
             if ($p_attrib) {
                 if ($p_attrib->hasDisabledMode($p_attrib::DISABLED_EDIT)) {
                     continue;
@@ -2191,6 +2193,7 @@ class Node
 
                 /* we let the attribute add itself to the edit array */
                 $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
+
             } else {
                 Tools::atkerror("Attribute $attribname not found!");
             }
@@ -2994,7 +2997,7 @@ class Node
      * @param array $vars The request variables that were posted from a form.
      * @param array $includes Only fetch the value for these attributes.
      * @param array $excludes Don't fetch the value for these attributes.
-     * @param array $postedOnly Only fetch the value for attributes that have really been posted.
+     * @param array|bool $postedOnly Only fetch the value for attributes that have really been posted.
      * @return array A valid record.
      */
     function updateRecord($vars = "", $includes = null, $excludes = null, $postedOnly = false)

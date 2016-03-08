@@ -1189,7 +1189,8 @@ class OneToManyRelation extends Relation
             // Get the destination node
             $classname = $this->m_destination;
             $cache_id = $this->m_owner . "." . $this->m_name;
-            $rel = App::atkGetNode($classname, $cache_id);
+            $atk = Atk::getInstance();
+            $rel = $atk->atkGetNode($classname, $cache_id);
             // Get the current atkselector
             $where = $this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']);
             if ($where) {
