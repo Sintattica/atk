@@ -248,7 +248,7 @@ class FuzzySearchAttribute extends Attribute
         } else {
             $record = ""; // clear the record so we always start with an empty
             // searchbox.
-            return parent::edit($record, $fieldprefix);
+            return parent::edit($record, $fieldprefix, $mode);
         }
     }
 

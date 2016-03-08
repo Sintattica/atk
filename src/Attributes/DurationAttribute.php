@@ -71,7 +71,7 @@ class DurationAttribute extends Attribute
     {
         // hide as a parseable string
         $record[$this->fieldName()] = $this->_minutes2string($record[$this->fieldName()]);
-        return parent::hide($record, $fieldprefix);
+        return parent::hide($record, $fieldprefix, $mode);
     }
 
     /**
@@ -85,7 +85,7 @@ class DurationAttribute extends Attribute
      */
     function edit($record, $fieldprefix, $mode)
     {
-        $id = $fieldprefix . $this->formName();
+        $id = $this->getHtmlId($fieldprefix);
         $fieldvalue = Tools::atkArrayNvl($record, $this->fieldName(), "");
         if (!$this->hasFlag(self::AF_DURATION_STRING)) {
             $result = '<div class="form-inline">';

@@ -8,8 +8,8 @@ use Sintattica\Atk\Security\SecurityManager;
  * This attribute can be used to automatically store the user that inserted
  * or last modified a record.
  *
- * Note that this attribute relies on the config value $config_auth_usernode.
- * If you use this attribute, be sure to set it in your config.inc.php file.
+ * Note that this attribute relies on the config value auth_usernode.
+ * If you use this attribute, be sure to set it in your config file.
  *
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk
@@ -33,17 +33,19 @@ class UpdatedByAttribute extends ManyToOneRelation
         $this->setForceUpdate(true);
     }
 
+
     function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         if ($mode == 'add' || $mode == 'update') {
-            Attribute::addToQuery($query, $tablename, $fieldaliasprefix, $record, $level, $mode);
+            $query->addField($this->fieldName(), $this->value2db($record), '', '', !$this->hasFlag(self::AF_NO_QUOTES), true);
         } else {
             parent::addToQuery($query, $tablename, $fieldaliasprefix, $record, $level, $mode);
         }
     }
 
+
     /**
-     * This method is overriden to make sure that when a form is posted ('save' button), the
+     * This method is overridden to make sure that when a form is posted ('save' button), the
      * current record is refreshed so the output on screen is accurate.
      *
      * @return array Array with userinfo, or "" if no user is logged in.
@@ -55,13 +57,6 @@ class UpdatedByAttribute extends ManyToOneRelation
         return $fakeRecord[$this->fieldName()];
     }
 
-    /**
-     * Converts the internal attribute value to one that is understood by the
-     * database.
-     *
-     * @param array $record The record that holds this attribute's value.
-     * @return String The database compatible value
-     */
     function value2db($record)
     {
         $record[$this->fieldName()] = $this->initialValue();

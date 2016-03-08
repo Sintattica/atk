@@ -12,7 +12,7 @@ use Sintattica\Atk\Ui\Page;
  * @subpackage attributes
  *
  */
-class LiveTextPreview extends DummyAttribute
+class LiveTextPreviewAttribute extends DummyAttribute
 {
     /**
      * Custom flags
@@ -40,7 +40,7 @@ class LiveTextPreview extends DummyAttribute
     function edit($record, $fieldprefix, $mode)
     {
         $page = Page::getInstance();
-        $id = $fieldprefix . $this->fieldName();
+        $id = $this->getHtmlId($fieldprefix);
         $master = $fieldprefix . $this->m_masterattribute;
         $page->register_scriptcode("function {$id}_ReloadTextDiv()
                                   {

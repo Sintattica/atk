@@ -13,6 +13,8 @@ return [
 
     'configdirname' => $_configDirName,
 
+    'application_dir' => $_configAppRoot,
+
     'application_config_dir' => $_configAppRoot . $_configDirName . '/',
 
     'application_config' => $_configAppRoot . $_configDirName . '/atk.php',

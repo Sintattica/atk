@@ -267,20 +267,6 @@ class BootstrapDateTimeAttribute extends Attribute
         return $res;
     }
 
-    /**
-     * Creates a searchcondition for the field,
-     * was once part of searchCondition, however,
-     * searchcondition() also immediately adds the search condition.
-     *
-     * @param Query $query The query object where the search condition should be placed on
-     * @param string $table The name of the table in which this attribute
-     *                              is stored
-     * @param mixed $value The value the user has entered in the searchbox
-     * @param string $searchmode The searchmode to use. This can be any one
-     *                              of the supported modes, as returned by this
-     *                              attribute's getSearchModes() method.
-     * @return String The searchcondition to use.
-     */
     function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         $db = $this->getDb();

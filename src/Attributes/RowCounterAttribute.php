@@ -1,11 +1,8 @@
 <?php namespace Sintattica\Atk\Attributes;
 
 /**
- * The atkRowCounter can be added to a node to have a column in listviews
+ * The RowCounter can be added to a node to have a column in listviews
  * that sequentially numbers records.
- *
- * The attribute evolved from a discussion at http://achievo.org/forum/viewtopic.php?t=478
- * and was added to ATK based on suggestion and documentation by Jorge Garifuna.
  *
  * @author Przemek Piotrowski <przemek.piotrowski@nic.com.pl>
  * @author Ivo Jansch <ivo@achievo.org>
@@ -14,7 +11,7 @@
  * @subpackage attributes
  *
  */
-class RowCounter extends DummyAttribute
+class RowCounterAttribute extends DummyAttribute
 {
 
     /**

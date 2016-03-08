@@ -282,8 +282,8 @@ class DateTimeAttribute extends Attribute
      */
     function edit($record, $fieldprefix, $mode)
     {
-        $dateEdit = $this->m_date->edit($record, $fieldprefix);
-        $timeEdit = $this->m_time->edit($record, $fieldprefix);
+        $dateEdit = $this->m_date->edit($record, $fieldprefix, $mode);
+        $timeEdit = $this->m_time->edit($record, $fieldprefix, $mode);
         return '<div class="'.$this->get_class_name().'">'. $dateEdit . "<span> - </span>" . $timeEdit .'</div>';
     }
 

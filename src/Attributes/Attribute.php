@@ -1664,6 +1664,7 @@ class Attribute
      * @param string $searchmode The searchmode to use. This can be any one
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
+     * @param string $fieldname alias?
      * @return String The searchcondition to use.
      */
     function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')

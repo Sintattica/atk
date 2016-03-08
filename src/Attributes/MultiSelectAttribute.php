@@ -79,7 +79,7 @@ class MultiSelectAttribute extends ListAttribute
                 }
             }
         } else {
-            parent::hide($record, $fieldprefix);
+            parent::hide($record, $fieldprefix, $mode);
         }
         return $result;
     }

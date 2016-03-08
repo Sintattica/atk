@@ -115,7 +115,7 @@ class ListAttribute extends Attribute
      * @param int $flags Flags for this attribute
      * @param int $size Size of the attribute.
      */
-    function __construct($name, $optionArray, $valueArray = "", $flags = 0, $size = 0)
+    function __construct($name, $optionArray, $valueArray = null, $flags = 0, $size = 0)
     {
         if (!is_array($valueArray) || count($valueArray) == 0) {
             if (is_numeric($valueArray)) {

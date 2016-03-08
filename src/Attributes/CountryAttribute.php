@@ -399,7 +399,7 @@ class CountryAttribute extends ListAttribute
         if ($this->m_defaulttocurrent && !$record[$this->fieldName()]) {
             $record[$this->fieldName()] = strtoupper(Language::getLanguage());
         }
-        return parent::edit($record, $fieldprefix);
+        return parent::edit($record, $fieldprefix,$mode);
     }
 
     /**

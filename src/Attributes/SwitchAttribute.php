@@ -1,6 +1,5 @@
-<?php
+<?php namespace Sintattica\Atk\Attributes;
 
-use Sintattica\Atk\Attributes\BoolAttribute;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Config;
 
@@ -29,8 +28,7 @@ class SwitchAttribute extends BoolAttribute
         $htmlId = $this->getHtmlId($fieldprefix);
 
         $page = Page::getInstance();
-        //$theme = atkinstance("atk.ui.atktheme");
-        $base = Config::getGlobal('atkroot') . 'atk/themes/bootstrap/lib/bootstrap-switch/';
+        $base = Config::getGlobal('assets_url') . 'lib/bootstrap-switch/';
 
         $page->register_script($base . 'js/bootstrap-switch.min.js');
         $page->register_style($base . 'css/bootstrap3/bootstrap-switch.min.css');

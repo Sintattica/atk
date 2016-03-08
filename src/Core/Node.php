@@ -2085,11 +2085,10 @@ class Node
         $this->setAttribSizes();
 
         /* default values */
-        if (!empty($record)) {
+        if (!empty($record))
             $defaults = $record;
-        } else {
+        else
             $defaults = array();
-        }
 
         $result['hide'] = array();
         $result['fields'] = array();
@@ -2107,9 +2106,8 @@ class Node
                 $overrides = $this->initial_values();
                 if (is_array($overrides) && count($overrides) > 0) {
                     foreach ($overrides as $varname => $value) {
-                        if (!isset($defaults[$varname]) || $defaults[$varname] == "") {
+                        if (!isset($defaults[$varname]) || $defaults[$varname] == "")
                             $defaults[$varname] = $value;
-                        }
                     }
                 }
             }
@@ -2143,10 +2141,9 @@ class Node
 
                     if ($attribname != "") {
                         if (isset($this->m_attribList[$attribname])) {
-                            $p_attrib = $this->m_attribList[$attribname];
-                            if (is_object($p_attrib) && (!$p_attrib->hasFlag(Attribute::AF_NO_FILTER))) {
-                                $p_attrib->m_flags |= Attribute::AF_READONLY | Attribute::AF_HIDE_ADD;
-                            }
+                            $p_attrib = &$this->m_attribList[$attribname];
+                            if (is_object($p_attrib) && (!$p_attrib->hasFlag($p_attrib::AF_NO_FILTER)))
+                                $p_attrib->m_flags |= $p_attrib::AF_READONLY | $p_attrib::AF_HIDE_ADD;
                         } else {
                             Tools::atkerror("Attribute '$attribname' doesn't exist in the attributelist");
                         }
@@ -2172,43 +2169,24 @@ class Node
         // extra submission data
         $result["hide"][] = '<input type="hidden" name="atkfieldprefix" value="' . $this->getEditFieldPrefix(false) . '">';
         $result["hide"][] = '<input type="hidden" name="' . $fieldprefix . 'atknodeuri" value="' . $this->atkNodeUri() . '">';
-        $result["hide"][] = '<input type="hidden" name="' . $fieldprefix . 'atkprimkey" value="' . Tools::atkArrayNvl($record,
-                "atkprimkey", "") . '">';
-
-        /* For all attributes we use the edit() method to get HTML code for editting the
-         * attribute's data. If the attribute is hidden we use the hide() method method
-         * to get HTML code for hideing the attribute's data. You can override the attribute's
-         * edit() method by supplying an <attributename>_edit function in the derived classes.
-         */
-        $tab = $this->getActiveTab();
+        $result["hide"][] = '<input type="hidden" name="' . $fieldprefix . 'atkprimkey" value="' . Tools::atkArrayNvl($record, "atkprimkey", "") . '">';
 
         foreach (array_keys($this->m_attribIndexList) as $r) {
             $attribname = $this->m_attribIndexList[$r]["name"];
 
             $p_attrib = $this->m_attribList[$attribname];
-            if ($p_attrib != null) {
-                if ($p_attrib->hasDisabledMode(Attribute::DISABLED_EDIT)) {
+            if ($p_attrib) {
+                if ($p_attrib->hasDisabledMode($p_attrib::DISABLED_EDIT)) {
                     continue;
                 }
 
                 /* fields that have not yet been initialised may be overriden in the url */
-                if (!array_key_exists($p_attrib->fieldName(), $defaults) && array_key_exists($p_attrib->fieldName(),
-                        $this->m_postvars)
-                ) {
+                if (!array_key_exists($p_attrib->fieldName(), $defaults) && array_key_exists($p_attrib->fieldName(), $this->m_postvars)) {
                     $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
                 }
 
-                /* sometimes a field is hidden although not specified by the field itself */
-                if ($ignoreTab) {
-                    $notOnTab = false;
-                } else {
-                    $notOnTab = !$p_attrib->showOnTab($tab);
-                }
-
-                if ((is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,
-                            $suppressList)) || $notOnTab
-                ) {
-                    $p_attrib->m_flags |= ($mode == "add" ? Attribute::AF_HIDE_ADD : Attribute::AF_HIDE_EDIT);
+                if (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname, $suppressList)) {
+                    $p_attrib->m_flags |= ($mode == "add" ? $p_attrib::AF_HIDE_ADD : $p_attrib::AF_HIDE_EDIT);
                 }
 
                 /* we let the attribute add itself to the edit array */
@@ -3657,7 +3635,7 @@ class Node
             return false;
         }
 
-        for ($i = 0, $_i = count($storelist["query"]); $i < $_i; $i ++) {
+        for ($i = 0, $_i = count($storelist["query"]); $i < $_i; $i++) {
             $p_attrib = &$this->m_attribList[$storelist["query"][$i]];
             $p_attrib->addToQuery($query, $this->m_table, "", $record, 1, 'add'); // start at level 1
         }

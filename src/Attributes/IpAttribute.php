@@ -27,7 +27,7 @@ class IpAttribute extends Attribute
      * @param string $name attribute name
      * @param int $flags attribute flags.
      */
-    function __construct($name, $flags)
+    function __construct($name, $flags = 0)
     {
         parent::__construct($name, $flags, 15);
     }
@@ -59,7 +59,7 @@ class IpAttribute extends Attribute
     function edit($record, $fieldprefix, $mode)
     {
         if ($this->hasFlag(self::AF_IP_SINGLEFIELD)) {
-            return parent::edit($record, $fieldprefix);
+            return parent::edit($record, $fieldprefix, $mode);
         }
 
         $inputs = array();
@@ -87,7 +87,7 @@ class IpAttribute extends Attribute
     {
         // Check for valid ip string
         $strvalue = Tools::atkArrayNvl($record, $this->fieldName(), "");
-        if (!empty($strvalue)) {
+        if ($strvalue != '' && $strvalue != '...') {
             if ($this->hasFlag(self::AF_IP_ALLOW_WILDCARDS) && !$this->hasFlag(self::AF_IP_STORENUMERIC)) {
                 $strvalue = str_replace("*", "0", $strvalue);
             }

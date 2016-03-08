@@ -64,19 +64,9 @@ class PasswordAttribute extends Attribute
      *                     parameter.
      * @param array $restrictions
      */
-    function __construct($name, $generate, $flags = 0, $size = 0, $restrictions = array())
+    function __construct($name, $generate = false, $flags = 0, $size = 0, $restrictions = [])
     {
-        // compatiblity with old versions
-        if (func_num_args() >= 3) {
-            $this->m_generate = $generate;
-        } else {
-            $flags = $generate;
-            $this->m_generate = false;
-        }
-
-        // Call the parent constructor
-        parent::__construct($name, $flags | self::AF_HIDE_SEARCH, $size); // you can't search by password.
-        // Set the restrictions
+        parent::__construct($name, $flags | self::AF_HIDE_SEARCH, $size);
         $this->setRestrictions($restrictions);
     }
 

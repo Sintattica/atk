@@ -929,7 +929,7 @@ class ManyToOneRelation extends Relation
                 $result .= '&nbsp;</span>';
             }
 
-            $result .= $this->hide($record, $fieldprefix);
+            $result .= $this->hide($record, $fieldprefix, $mode);
             $result .= $this->_getSelectLink($id, $this->parseFilter($this->m_destinationFilter, $record));
         }
 
@@ -1286,21 +1286,7 @@ class ManyToOneRelation extends Relation
         }
     }
 
-    /**
-     * Creates a searchcondition for the field,
-     * was once part of searchCondition, however,
-     * searchcondition() also immediately adds the search condition.
-     *
-     * @param Query $query The query object where the search condition should be placed on
-     * @param string $table The name of the table in which this attribute
-     *                              is stored
-     * @param mixed $value The value the user has entered in the searchbox
-     * @param string $searchmode The searchmode to use. This can be any one
-     *                              of the supported modes, as returned by this
-     *                              attribute's getSearchModes() method.
-     * @param string $fieldaliasprefix The prefix for the field
-     * @return String The searchcondition to use.
-     */
+
     function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         if (!$this->createDestination()) {
@@ -1347,12 +1333,12 @@ class ManyToOneRelation extends Relation
             } else { // AF_LARGE || AF_RELATION_AUTOCOMPLETE
                 // If we have a descriptor with multiple fields, use CONCAT
                 $attribs = $this->m_destInstance->descriptorFields();
-                $alias = $fieldaliasprefix . $this->fieldName();
+                $alias = $fieldname . $this->fieldName();
                 if (count($attribs) > 1) {
                     $searchcondition = $this->getConcatFilter($value, $alias);
                 } else {
                     // ask the destination node for it's search condition
-                    $searchcondition = $this->m_destInstance->getSearchCondition($query, $alias, $fieldaliasprefix,
+                    $searchcondition = $this->m_destInstance->getSearchCondition($query, $alias, $fieldname,
                         $value, $this->getChildSearchMode($searchmode, $this->formName()));
                 }
                 return $searchcondition;
@@ -1803,7 +1789,7 @@ class ManyToOneRelation extends Relation
             if ($this->m_hidewhenempty) {
                 $recs = $this->_getSelectableRecords($defaults, $mode);
                 if (count($recs) == 0) {
-                    return $this->hide($defaults, $fieldprefix);
+                    return $this->hide($defaults, $fieldprefix, $mode);
                 }
             }
         }

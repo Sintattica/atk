@@ -4,7 +4,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Language;
 
 /**
- * The atkStateAttribute class represents an attribute to handle United States in a listbox.
+ * The StateAttribute class represents an attribute to handle United States in a listbox.
  * It extends ListAttribute.
  *
  * @author Kevin Lwinmoe <kevin.lwinmoe@gmail.com>
@@ -82,15 +82,12 @@ class StateAttribute extends ListAttribute
     /**
      * Constructor
      * <b>Example:</b>
-     * $this->add(new atkStateAttribute("state_abbrev", self::AF_OBLIGATORY | self::AF_SEARCHABLE));
+     * $this->add(new StateAttribute("state_abbrev", self::AF_OBLIGATORY | self::AF_SEARCHABLE));
      * state_abbrev is the database attribute that holds state abbrevation data as AK,CA,NY
      * It will display the full state name.
      *
      * @param string $name Name of the attribute
      * @param string $switch Choose usa for USA states
-     * @param array $optionArray Array with options
-     * @param array $valueArray Array with values. If you don't use this parameter,
-     *                    values are assumed to be the same as the options.
      * @param int $flags Flags for the attribute
      * @param bool $defaulttocurrent Set the default selected state to the
      *                               current state based on the atk language
@@ -98,8 +95,6 @@ class StateAttribute extends ListAttribute
     function __construct(
         $name,
         $switch = "usa",
-        $optionArray = "",
-        $valueArray = "",
         $flags = 0,
         $defaulttocurrent = true
     ) {
@@ -135,7 +130,7 @@ class StateAttribute extends ListAttribute
         if ($this->m_defaulttocurrent && !$record[$this->fieldName()]) {
             $record[$this->fieldName()] = strtoupper(Language::getLanguage());
         }
-        return parent::edit($record, $fieldprefix);
+        return parent::edit($record, $fieldprefix, $mode);
     }
 
     /**
@@ -246,14 +241,14 @@ class StateAttribute extends ListAttribute
     }
 
     /**
-     * Get the state option based on the language
+     * Get the state option
      *
      * @param string $iso_code
      * @return String The state option
      */
     function getStateOption($iso_code)
     {
-        return $this->m_state[$iso_code][Language::getLanguage()];
+        return $this->m_state[$iso_code]['en'];
     }
 
 }

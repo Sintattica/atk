@@ -154,6 +154,7 @@ class TagAttribute extends FuzzySearchAttribute
      * A keyword field may not contain HTML or linefeeds
      *
      * @param string $keyword
+     * @return bool
      */
     function isValidKeyWord($keyword)
     {
@@ -629,7 +630,7 @@ class TagAttribute extends FuzzySearchAttribute
      *  relation.
      *
      * @param string $name the name of the relation
-     * @return the probable name of the foreign key
+     * @return string the probable name of the foreign key
      */
     function determineKeyName($name)
     {

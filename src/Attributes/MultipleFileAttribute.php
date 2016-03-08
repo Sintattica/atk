@@ -1,6 +1,8 @@
 <?php namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Ui\Page;
 
 /**
  * This is an extend of the famous atkfileattribute :). Now its possible
@@ -70,7 +72,7 @@ class MultipleFileAttribute extends FileAttribute
             $result = "<select multiple size=\"3\" name=\"select_" . $this->fieldName() . "[]\" class=\"form-control\">";
             for ($i = 0; $i < count($file_arr); $i++) {
                 $sel = "";
-                if (in_array($file_arr[$i], $this->getFiles($record[$this->fieldName()][orgfilename]))) {
+                if (in_array($file_arr[$i], $this->getFiles($record[$this->fieldName()]['orgfilename']))) {
                     $sel = "selected";
                 }
                 if (is_file($this->m_dir . $file_arr[$i])) {
@@ -100,11 +102,11 @@ class MultipleFileAttribute extends FileAttribute
         $r = '';
         if (!$this->isEmpty($_POST)) {
             $file = $this->fetchValue($_POST);
-            $file[filename] = str_replace(' ', '_', $file["filename"]);
-            if ($file[filename] != "") {
-                @copy($file["tmpfile"],
-                    $this->m_dir . $file[filename]) OR die("<br><br><center><b>Save failed!</b></center><br>");
-                $r .= $file[filename] . ";";
+            $file['filename'] = str_replace(' ', '_', $file["filename"]);
+            if ($file['filename'] != "") {
+                @copy($file['tmpfile'],
+                    $this->m_dir . $file['filename']) OR die('Save failed!');
+                $r .= $file['filename'] . ";";
             }
         }
         if (is_array($$select)) {
@@ -135,7 +137,7 @@ class MultipleFileAttribute extends FileAttribute
      */
     function display($record, $mode)
     {
-        $files = explode($this->m_delimiter, $record[$this->fieldName()][orgfilename]);
+        $files = explode($this->m_delimiter, $record[$this->fieldName()]['orgfilename']);
         $prev_type = Array("jpg", "jpeg", "gif", "tif", "png", "bmp", "htm", "html", "txt");  // file types for preview
         $imgtype_prev = Array("jpg", "jpeg", "gif", "png");  // types whitch are supported by GetImageSize
         $r = '';
@@ -173,7 +175,4 @@ class MultipleFileAttribute extends FileAttribute
     {
         return "string";
     }
-
 }
-
-

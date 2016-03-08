@@ -5,7 +5,7 @@ use Sintattica\Atk\Core\Tools;
 
 /**
  * Displays radio buttons with options to choose from just like the
- * atkRadioAttribute but allows you to use other attributes for detail
+ * RadioAttribute but allows you to use other attributes for detail
  * selections once certain options are selected.
  *
  * @author Peter C. Verhage <peter@achievo.org>
@@ -54,8 +54,7 @@ class RadioDetailsAttribute extends Attribute
     {
         parent::__construct($name, $flags);
 
-        $this->m_options = isset($options[0]) ? array_combine($options, $options)
-            : $options;
+        $this->m_options = isset($options[0]) ? array_combine($options, $options) : $options;
 
         // Cast single detail attributes to arrays
         foreach ($details as $value => $detail) {
@@ -81,7 +80,7 @@ class RadioDetailsAttribute extends Attribute
 
     public function edit($record, $fieldprefix, $mode)
     {
-        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('assets_url') . 'javascript/class.' . strtolower(__CLASS__) . '.js');
+        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('assets_url') . 'javascript/class.atkradiodetailsattribute.js');
 
         $name = $fieldprefix . $this->fieldName();
 
@@ -116,8 +115,7 @@ class RadioDetailsAttribute extends Attribute
                             continue;
                         }
 
-                        $result .= '<blockquote>' . $attr->edit($record, $fieldprefix,
-                                $mode) . '&nbsp;' . htmlentities($attr->getLabel($record, $mode)) . '</blockquote>';
+                        $result .= '<blockquote>' . $attr->edit($record, $fieldprefix, $mode) . '&nbsp;' . htmlentities($attr->getLabel($record, $mode)) . '</blockquote>';
                     }
                 }
                 $result .= '</div>';
@@ -129,17 +127,6 @@ class RadioDetailsAttribute extends Attribute
         return $result;
     }
 
-    /**
-     * Display.
-     *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $mode The display mode ("view" for viewpages, or "list"
-     *                     for displaying in recordlists, "edit" for
-     *                     displaying in editscreens, "add" for displaying in
-     *                     add screens. "csv" for csv files. Applications can
-     *                     use additional modes.
-     * @return String HTML String
-     */
     function display($record, $mode)
     {
         $value = $record[$this->fieldName()];
