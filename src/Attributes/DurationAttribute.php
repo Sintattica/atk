@@ -67,7 +67,7 @@ class DurationAttribute extends Attribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         // hide as a parseable string
         $record[$this->fieldName()] = $this->_minutes2string($record[$this->fieldName()]);
@@ -83,7 +83,7 @@ class DurationAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String Piece a of HTML Code
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $id = $fieldprefix . $this->formName();
         $fieldvalue = Tools::atkArrayNvl($record, $this->fieldName(), "");
@@ -149,7 +149,7 @@ class DurationAttribute extends Attribute
      * The regular Attribute uses PHP's nl2br() and htmlspecialchars()
      * methods to prepare a value for display, unless $mode is "cvs".
      *
-     * @param array $rec The record that holds the value for this attribute
+     * @param array $record The record that holds the value for this attribute
      * @param string $mode The display mode ("view" for viewpages, or "list"
      *                     for displaying in recordlists, "edit" for
      *                     displaying in editscreens, "add" for displaying in
@@ -157,9 +157,9 @@ class DurationAttribute extends Attribute
      *                     use additional modes.
      * @return String with YYYY-MM-DD
      */
-    function display($rec, $mode = "")
+    function display($record, $mode)
     {
-        return $this->_minutes2string($rec[$this->fieldName()]);
+        return $this->_minutes2string($record[$this->fieldName()]);
     }
 
     /**

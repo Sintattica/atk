@@ -212,10 +212,10 @@ class DateTimeAttribute extends Attribute
      *                     use additional modes.
      * @return string text string of $record
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         $date = $this->m_date->display($record, $mode);
-        $time = $this->m_time->display($record);
+        $time = $this->m_time->display($record, $mode);
         if ($date != '' && $time != '') {
             return $date . (($mode == "csv" || $mode == "plain") ? " " : "&nbsp;") . $time;
         } else {
@@ -280,7 +280,7 @@ class DateTimeAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $dateEdit = $this->m_date->edit($record, $fieldprefix);
         $timeEdit = $this->m_time->edit($record, $fieldprefix);
@@ -436,12 +436,12 @@ class DateTimeAttribute extends Attribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         // we only need to return the date part, because the dateattribute also
         // hides the other (time) elements that are present in the record (is that
         // a bug of the dateattribute?)
-        return $this->m_date->hide($record, $fieldprefix);
+        return $this->m_date->hide($record, $fieldprefix, $mode);
     }
 
     /**

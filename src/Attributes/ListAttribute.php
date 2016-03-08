@@ -241,7 +241,7 @@ class ListAttribute extends Attribute
      * @param string $mode
      * @return string of $record
      */
-    function display($record, $mode = '')
+    function display($record, $mode)
     {
         return $this->_translateValue($record[$this->fieldName()], $record);
     }
@@ -277,7 +277,7 @@ class ListAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string piece of html code with a checkbox
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         // todo: configurable rows
         $id = $this->getHtmlId($fieldprefix);

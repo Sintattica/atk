@@ -366,7 +366,7 @@ class ManyToManyRelation extends Relation
      *                     use additional modes.
      * @return string a displayable string for this value
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         $result = '';
         if ($this->createDestination() && Tools::atk_value_in_array($record[$this->fieldName()])) {
@@ -409,7 +409,7 @@ class ManyToManyRelation extends Relation
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
 
     }
@@ -686,7 +686,7 @@ class ManyToManyRelation extends Relation
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         $result = "";
         if (is_array(Tools::atkArrayNvl($record, $this->fieldName())) && $this->createDestination()) {

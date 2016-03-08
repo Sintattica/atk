@@ -332,7 +332,7 @@ class OneToManyRelation extends Relation
      *                     for displaying in recordlists)
      * @return String HTML String
      */
-    public function display($record, $mode = "list")
+    public function display($record, $mode)
     {
         // for the view mode we use the datagrid and load the records ourselves
         if ($mode == 'view' || ($mode == 'edit' && $this->hasFlag(self::AF_READONLY_EDIT))) {
@@ -388,21 +388,7 @@ class OneToManyRelation extends Relation
         }
     }
 
-    /**
-     * Returns a piece of html code that can be used in a form to edit this
-     * attribute's value.
-     *
-     * The atkOneToManyRelation's edit method returns a recordlist in which
-     * detail records can be removed, added and edited.
-     *
-     * @param array $record The record that holds the value for this attribute.
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @param string $mode The mode we're in ('add' or 'edit')
-     *
-     * @return String A piece of htmlcode for editing this attribute
-     */
-    public function edit($record, $fieldprefix = "", $mode = '')
+    public function edit($record, $fieldprefix, $mode)
     {
         $page = Page::getInstance();
         $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
@@ -978,7 +964,7 @@ class OneToManyRelation extends Relation
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         //Nothing to hide..
         return "";

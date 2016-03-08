@@ -58,7 +58,7 @@ class CurrencyAttribute extends NumberAttribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record = array(), $fieldprefix = "", $mode = '')
+    function edit($record, $fieldprefix, $mode)
     {
         return $this->getCurrencySymbolDisplay() . parent::edit($record, $fieldprefix, $mode);
     }
@@ -77,7 +77,7 @@ class CurrencyAttribute extends NumberAttribute
      *                     use additional modes.
      * @return String HTML String
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         $result = empty($this->m_currencysymbol) ? "" : $this->getCurrencySymbolDisplay();
         $result .= parent::display($record, $mode);

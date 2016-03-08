@@ -338,7 +338,7 @@ class DateAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         //return $this -> draw($record, $fieldprefix, "", $mode,
         //    $this -> hasFlag(self::AF_OBLIGATORY));
@@ -846,7 +846,7 @@ class DateAttribute extends Attribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         $result = "";
         $field = $record[$this->fieldName()];
@@ -1276,7 +1276,7 @@ class DateAttribute extends Attribute
      * @param array $record array with date
      * @return string formatted date string
      */
-    function display($record, $mode = '')
+    function display($record, $mode)
     {
         $value = $record[$this->fieldName()];
         if (!is_array($value) || empty($value["month"]) || empty($value["day"]) || empty($value["year"])) {

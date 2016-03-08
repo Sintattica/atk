@@ -67,7 +67,7 @@ class MultiSelectAttribute extends ListAttribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         $result = '';
         if (is_array($record[$this->fieldName()])) {
@@ -140,7 +140,7 @@ class MultiSelectAttribute extends ListAttribute
      *                     use additional modes.
      * @return String HTML String
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         $values = $record[$this->fieldName()];
         $res = array();
@@ -159,7 +159,7 @@ class MultiSelectAttribute extends ListAttribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string piece of html code with radioboxes
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $this->m_record = $record;
         $cols = $this->m_cols;

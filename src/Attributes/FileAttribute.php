@@ -198,7 +198,7 @@ class FileAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string piece of html code with a browsebox
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         // When in add mode or we have errors, don't show the filename above the input.
         if ($mode != 'add' && $record[$this->fieldName()]['error'] == 0) {
@@ -663,7 +663,7 @@ class FileAttribute extends Attribute
      * @param string $mode
      * @return string Filename or Nothing
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         // Get random number to use as param when displaying images
         // while updating images was not allways visible due to caching
@@ -854,7 +854,7 @@ class FileAttribute extends Attribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         $field = $record[$this->fieldName()];
         $result = '';

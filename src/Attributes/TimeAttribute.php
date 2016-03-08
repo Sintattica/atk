@@ -98,7 +98,7 @@ class TimeAttribute extends Attribute
      * @param string $mode
      * @return string text string of $record
      */
-    function display($record, $mode = '')
+    function display($record, $mode)
     {
         $value = $record[$this->fieldName()];
         if (!is_array($value)) {
@@ -165,7 +165,7 @@ class TimeAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         if ((($this->m_default == "NOW" && $this->m_ownerInstance->m_action == "add") ||
             ($this->m_default == "" && $this->hasFlag(self::AF_OBLIGATORY)) && !$this->hasFlag(self::AF_TIME_DEFAULT_EMPTY))
@@ -425,7 +425,7 @@ class TimeAttribute extends Attribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         $field = $record[$this->fieldName()];
         $result = "";

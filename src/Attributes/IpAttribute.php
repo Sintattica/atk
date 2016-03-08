@@ -56,15 +56,7 @@ class IpAttribute extends Attribute
         return implode('.', $parts);
     }
 
-    /**
-     * Returns form fields to edit the ip address.
-     *
-     * @param array $record the record
-     * @param string $fieldprefix the field prefix
-     *
-     * @return string html string
-     */
-    function edit($record, $fieldprefix = "")
+    function edit($record, $fieldprefix, $mode)
     {
         if ($this->hasFlag(self::AF_IP_SINGLEFIELD)) {
             return parent::edit($record, $fieldprefix);

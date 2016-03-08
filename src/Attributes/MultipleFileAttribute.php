@@ -51,13 +51,7 @@ class MultipleFileAttribute extends FileAttribute
         return explode($del, $str);
     }
 
-    /**
-     * Returns a piece of html code that can be used in a form to edit this
-     * attribute's value.
-     * @param array $record Array with fields
-     * @return piece of html code with a browsebox
-     */
-    function edit($record = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $file_arr = array();
         if (is_dir($this->m_dir)) {
@@ -139,7 +133,7 @@ class MultipleFileAttribute extends FileAttribute
      * @param string $mode
      * @return string html
      */
-    function display($record, $mode = '')
+    function display($record, $mode)
     {
         $files = explode($this->m_delimiter, $record[$this->fieldName()][orgfilename]);
         $prev_type = Array("jpg", "jpeg", "gif", "tif", "png", "bmp", "htm", "html", "txt");  // file types for preview

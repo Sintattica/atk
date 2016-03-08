@@ -68,7 +68,7 @@ class UpdateStampAttribute extends DateTimeAttribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         $field = $record[$this->fieldName()];
         $result = "";

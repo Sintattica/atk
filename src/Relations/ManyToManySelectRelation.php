@@ -145,7 +145,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      *
      * @return string piece of html code
      */
-    public function edit($record, $fieldprefix = "", $mode = "")
+    public function edit($record, $fieldprefix, $mode)
     {
         if ($this->hasFlag(self::AF_MANYTOMANYSELECT_NO_AUTOCOMPLETE)) {
             $this->getManyToOneRelation()->removeFlag(ManyToOneRelation::AF_MANYTOONE_AUTOCOMPLETE);

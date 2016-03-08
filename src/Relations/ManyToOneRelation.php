@@ -652,7 +652,7 @@ class ManyToOneRelation extends Relation
      *                     use additional modes.
      * @return string a displayable string
      */
-    function display($record, $mode = 'list')
+    function display($record, $mode)
     {
         if ($this->createDestination()) {
             if (count($record[$this->fieldName()]) == count($this->m_refKey)) {
@@ -830,16 +830,7 @@ class ManyToOneRelation extends Relation
         }
     }
 
-    /**
-     * Returns a piece of html code that can be used in a form to edit this
-     * attribute's value.
-     * @param array $record The record that holds the value for this attribute.
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @param string $mode The mode we're in ('add' or 'edit')
-     * @return string Piece of html code that can be used in a form to edit this
-     */
-    function edit($record, $fieldprefix = "", $mode = "edit")
+    function edit($record, $fieldprefix, $mode)
     {
         if (!$this->createDestination()) {
             Tools::atkerror("Could not create destination for destination: $this -> m_destination!");
@@ -1027,7 +1018,7 @@ class ManyToOneRelation extends Relation
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         if (!$this->createDestination()) {
             return '';

@@ -97,7 +97,7 @@ class BoolAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string piece of html code with a checkbox
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $id = $this->getHtmlId($fieldprefix);
         $onchange = '';
@@ -195,7 +195,7 @@ class BoolAttribute extends Attribute
      * @param array $record Array with boolean field
      * @return yes or no
      */
-    function display($record, $mode = '')
+    function display($record, $mode)
     {
         if ($this->hasFlag(self::AF_BOOL_DISPLAY_CHECKBOX)) {
             return '
@@ -314,7 +314,7 @@ class BoolAttribute extends Attribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         // the next if-statement is a workaround for derived attributes which do
         // not override the hide() method properly. This will not give them a

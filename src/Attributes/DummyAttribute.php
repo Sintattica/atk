@@ -70,7 +70,7 @@ class DummyAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         return "<div ID=\"$this->m_name\">" . $this->m_text . "</div>";
     }
@@ -103,7 +103,7 @@ class DummyAttribute extends Attribute
      * @param array $record Array with fields
      * @return string Text
      */
-    function display($record, $mode = '')
+    function display($record, $mode)
     {
         return $this->m_text;
     }

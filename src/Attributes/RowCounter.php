@@ -33,7 +33,7 @@ class RowCounter extends DummyAttribute
      * @param string $mode
      * @return int Counter, starting at 1
      */
-    function display($record, $mode = '')
+    function display($record, $mode)
     {
         static $s_counter = 0;
         $node = $this->m_ownerInstance;

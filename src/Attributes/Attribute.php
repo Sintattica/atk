@@ -922,7 +922,7 @@ class Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $id = $this->getHtmlId($fieldprefix);
 
@@ -1036,7 +1036,7 @@ class Attribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         // the next if-statement is a workaround for derived attributes which do
         // not override the hide() method properly. This will not give them a
@@ -1369,7 +1369,7 @@ class Attribute
         // readonly
         if ($this->isReadonlyEdit($mode)) {
             return
-                $this->hide($defaults, $fieldprefix) .
+                $this->hide($defaults, $fieldprefix, $mode) .
                 $this->getView($mode, $defaults);
         }
 
@@ -1721,7 +1721,7 @@ class Attribute
      *                     use additional modes.
      * @return String HTML String
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         // the next if-statement is a workaround for derived attributes which do
         // not override the display() method properly. This will not give them a

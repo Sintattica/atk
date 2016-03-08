@@ -48,7 +48,7 @@ class EmailAttribute extends Attribute
      *                     use additional modes.
      * @return String
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         if ($mode == "csv") {
             return parent::display($record, $mode);

@@ -190,7 +190,7 @@ class AddHandler extends ActionHandler
         $sm = SessionManager::getInstance();
         $node = $this->m_node;
 
-        $formstart = '<form id="' . "entryform" . '" name="' . "entryform" . '" enctype="multipart/form-data" action="' . Config::getGlobal('dispatcher') . '?' . SID . '"' .
+        $formstart = '<form id="entryform" " name="entryform" enctype="multipart/form-data" action="' . Config::getGlobal('dispatcher') . '"' .
             ' method="post" onsubmit="return globalSubmit(this,false)" autocomplete="off">';
 
 

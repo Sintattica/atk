@@ -179,7 +179,7 @@ class ProfileAttribute extends Attribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         // get checks
         $checked = $record[$this->fieldName()];
@@ -325,7 +325,7 @@ class ProfileAttribute extends Attribute
      *
      * @return string Displayable string
      */
-    public function display($record, $mode = '')
+    public function display($record, $mode)
     {
         $user = SecurityManager::atkGetUser();
         $page = Page::getInstance();
@@ -431,7 +431,7 @@ class ProfileAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
 
         $user = SecurityManager::atkGetUser();

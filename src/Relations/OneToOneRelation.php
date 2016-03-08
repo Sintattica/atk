@@ -103,19 +103,7 @@ class OneToOneRelation extends Relation
         $this->m_refKey = $refKey;
     }
 
-    /**
-     * Returns a displayable string for this value, to be used in HTML pages.
-     *
-     * The atkOneToOneRelation displays all values from the destination
-     * records in "view" mode. In "list" mode, the record descriptor of the
-     * target record is displayed.
-     *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $mode The display mode ("view" for viewpages, or "list"
-     *                     for displaying in recordlists)
-     * @return String HTML String
-     */
-    function display($record, $mode = "list")
+    function display($record, $mode)
     {
         if ($mode == 'view') {
             return null;
@@ -139,7 +127,7 @@ class OneToOneRelation extends Relation
      * Because of the self::AF_INTEGRATE feature, the edit() method has a void
      * implementation. The actual edit code is handled by addToEditArray().
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
 
     }
@@ -575,7 +563,7 @@ class OneToOneRelation extends Relation
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         Tools::atkdebug("hide called for " . $this->fieldName());
         if ($this->createDestination()) {
@@ -893,7 +881,7 @@ class OneToOneRelation extends Relation
      *                       loaded.
      * @return array The list of tabs to add to the screen.
      */
-    function getAdditionalTabs($action)
+    function getAdditionalTabs($action = null)
     {
         if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
             $detailtabs = $this->m_destInstance->getTabs($action);

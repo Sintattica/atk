@@ -77,7 +77,7 @@ class AggregatedColumn extends Attribute
      *                     use additional modes.
      * @return string html code to display the value of this attribute
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         $rec = array();
         foreach ($this->m_displayfields as $field) {

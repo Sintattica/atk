@@ -267,7 +267,7 @@ class EditHandler extends ViewEditBase
     {
         $sm = SessionManager::getInstance();
 
-        $formstart = '<form id="' . "entryform" . '" name="' . "entryform" . '" enctype="multipart/form-data" action="' . Config::getGlobal('dispatcher') . '?' . SID . '"' .
+        $formstart = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="' . Config::getGlobal('dispatcher') . '"' .
             ' method="post" onsubmit="return globalSubmit(this,false)" class="form-horizontal" role="form" autocomplete="off">' .
             $sm->formState($this->getUpdateSessionStatus());
 

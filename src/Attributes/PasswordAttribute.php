@@ -144,7 +144,7 @@ class PasswordAttribute extends Attribute
      * @param string $mode the mode (add, edit etc.)
      * @return string piece of html code with a textarea
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $id = $fieldprefix . $this->fieldName();
         /* insert */
@@ -382,7 +382,7 @@ class PasswordAttribute extends Attribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         $result = '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '[hash]"' .
             ' value="' . $record[$this->fieldName()]["hash"] . '">';
@@ -395,7 +395,7 @@ class PasswordAttribute extends Attribute
      * @param string $mode
      * @return string with value to display
      */
-    function display($record, $mode = '')
+    function display($record, $mode)
     {
         return Tools::atktext("password_hidden", "atk");
     }

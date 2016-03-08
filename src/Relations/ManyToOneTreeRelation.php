@@ -42,7 +42,7 @@ class ManyToOneTreeRelation extends ManyToOneRelation
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return Piece of html code that can  be used in a form to edit this
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $this->createDestination();
         $tmp1 = Tools::atk_array_merge($this->m_destInstance->descriptorFields(),

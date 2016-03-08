@@ -1032,7 +1032,6 @@ class SessionManager
         if ($sessionstatus != SessionManager::SESSION_NEW) {
             $vars .= "&atkstackid=" . $this->atkStackID();
         }
-        $vars .= "&" . SID;
 
         for ($i = 0; $i < count($g_stickyurl); $i++) {
             $value = $GLOBALS[$g_stickyurl[$i]];

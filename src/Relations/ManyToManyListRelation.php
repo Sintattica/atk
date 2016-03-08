@@ -88,7 +88,7 @@ class ManyToManyListRelation extends ManyToManyRelation
      *
      * @return string piece of html code
      */
-    public function edit($record, $fieldprefix = "", $mode = "")
+    public function edit($record, $fieldprefix, $mode)
     {
         $this->createDestination();
         $this->createLink();

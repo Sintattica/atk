@@ -161,17 +161,8 @@ class TagAttribute extends FuzzySearchAttribute
         return (Tools::atk_strlen($keyword) == Tools::atk_strlen($replaced));
     }
 
-    /**
-     * Returns a piece of html code that can be used in a form to edit this
-     * attribute's value.
-     *
-     * @param array $rec The record that holds the value for this attribute.
-     * @param string $prefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @param string $mode The mode we're in ('add' or 'edit')
-     * @return String A piece of htmlcode for editing this attribute
-     */
-    function edit($rec = "", $prefix = "", $mode = "")
+
+    function edit($record, $fieldprefix, $mode)
     {
         Tools::atkdebug("edit of attribute '".$this->fieldName()."'");
 
@@ -179,14 +170,14 @@ class TagAttribute extends FuzzySearchAttribute
         $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atktagattribute.js");
 
         if ($this->createDestinationInstance()) {
-            $html = $this->displayDefaultTags($prefix);
+            $html = $this->displayDefaultTags($fieldprefix);
 
             //only refill the record, if we are not in TA_ERROR mode, and no errors are found.
             if (!(count($this->m_nonematching) && $this->m_mode == self::TA_ERROR)) {
-                $rec[$this->fieldName()] = $this->refillRecord($rec);
+                $record[$this->fieldName()] = $this->refillRecord($record);
             }
 
-            $html .= TextAttribute::edit($rec, $prefix, $mode);
+            $html .= TextAttribute::edit($record, $fieldprefix, $mode);
             return $html;
         } else {
             Tools::atkdebug("could not create destination instance");
@@ -272,7 +263,7 @@ class TagAttribute extends FuzzySearchAttribute
      *                     use additional modes.
      * @return String HTML String
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         if (is_array($record[$this->fieldName()])) {
             return $this->arrayToString($record[$this->fieldName()]);
@@ -503,7 +494,7 @@ class TagAttribute extends FuzzySearchAttribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
 
     }

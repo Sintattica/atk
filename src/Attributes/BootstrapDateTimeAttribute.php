@@ -187,13 +187,13 @@ class BootstrapDateTimeAttribute extends Attribute
         return $result;
     }
 
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $dateEdit = $this->draw($record, $fieldprefix, '', $mode);
         return $dateEdit;
     }
 
-    function display($record, $mode = '')
+    function display($record, $mode)
     {
         $value = $this->arrayToValue($record[$this->fieldName()]);
         if (!$value) {
@@ -213,7 +213,7 @@ class BootstrapDateTimeAttribute extends Attribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         $result = '';
         $field = $record[$this->fieldName()];

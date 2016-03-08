@@ -126,7 +126,7 @@ class NumberAttribute extends Attribute
      *                     use additional modes.
      * @return String HTML String
      */
-    function display($record, $mode = "")
+    function display($record, $mode)
     {
         if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] !== "") {
             return $this->formatNumber($record[$this->fieldName()]);
@@ -147,7 +147,7 @@ class NumberAttribute extends Attribute
      * @param string $mode
      * @return string html
      */
-    public function hide($record, $fieldprefix = '', $mode = '')
+    public function hide($record, $fieldprefix, $mode)
     {
         // the next if-statement is a workaround for derived attributes which do
         // not override the hide() method properly. This will not give them a
@@ -498,7 +498,7 @@ class NumberAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string Piece of htmlcode
      */
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $id = $this->getHtmlId($fieldprefix);
         if (count($this->m_onchangecode)) {
