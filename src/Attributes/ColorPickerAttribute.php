@@ -32,7 +32,7 @@ class ColorPickerAttribute extends Attribute
         $htmlId = $this->getHtmlId($fieldprefix) . '_group';
 
         $page = Page::getInstance();
-        $base = Config::getGlobal('atkroot') . 'atk/themes/bootstrap/lib/bootstrap-colorpicker/dist/';
+        $base = Config::getGlobal('assets_url') . 'lib/bootstrap-colorpicker/dist/';
 
         $page->register_script($base . 'js/bootstrap-colorpicker.min.js');
         $page->register_style($base . 'css/bootstrap-colorpicker.min.css');
@@ -44,7 +44,7 @@ class ColorPickerAttribute extends Attribute
             });");
     }
 
-    function edit($record, $fieldprefix = "", $mode = "")
+    function edit($record, $fieldprefix, $mode)
     {
         $this->registerScriptsAndStyles($fieldprefix);
 
@@ -68,7 +68,7 @@ class ColorPickerAttribute extends Attribute
         $value = (isset($record[$this->fieldName()]) && !is_array($record[$this->fieldName()])
             ? htmlspecialchars($record[$this->fieldName()]) : "");
 
-        $result = '<div class="input-group" id="' . $id . '_group">';
+        $result = '<div class="input-group ColorPickerAttribute_group" id="' . $id . '_group">';
         $result .= '<input type="text" id="' . $id . '" name="' . $id . '" ' . $this->getCSSClassAttribute(array('form-control')) .
             ' value="' . $value . '"' .
             ($size > 0 ? ' size="' . $size . '"' : '') .

@@ -68,7 +68,7 @@ class CkAttribute extends TextAttribute
         $id = $this->getHtmlId($fieldprefix);
 
         // register CKEditor main script
-        $page->register_script(Config::getGlobal("assets_url") . 'ckeditor/ckeditor.js');
+        $page->register_script(Config::getGlobal('assets_url') . 'lib/ckeditor/ckeditor.js');
 
         // activate CKEditor
         $options = json_encode($this->ckOptions);
