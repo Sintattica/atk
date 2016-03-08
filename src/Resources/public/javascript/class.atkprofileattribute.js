@@ -63,7 +63,7 @@ function profile_checkInvertByValue(fieldname, fieldvalue) {
     }
 }
 
-function profile_fixExpandImage(divName, atkRoot) {
+function profile_fixExpandImage(divName) {
     var icon = get_object("img_" + divName);
     if (get_object(divName).style.display == 'none')
         icon.className = ATK_PROFILE_ICON_OPEN;
@@ -81,8 +81,8 @@ function profile_fixDivState(divName) {
         inputElement.value = 'opened';
 }
 
-function profile_swapProfileDiv(divName, atkRoot) {
+function profile_swapProfileDiv(divName) {
     toggleDisplay(divName, get_object(divName));
-    profile_fixExpandImage(divName, atkRoot);
+    profile_fixExpandImage(divName);
     profile_fixDivState(divName);
 }

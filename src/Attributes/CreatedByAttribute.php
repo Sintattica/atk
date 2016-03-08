@@ -14,18 +14,6 @@ class CreatedByAttribute extends UpdatedByAttribute
 {
 
     /**
-     * Constructor.
-     *
-     * @param string $name Name of the field
-     * @param int $flags Flags for this attribute.
-     * @return CreatedByAttribute
-     */
-    function __construct($name, $flags = 0)
-    {
-        parent::__construct($name, $flags);
-    }
-
-    /**
      * needsUpdate always returns false for this attribute.
      * @return false
      */

@@ -433,6 +433,7 @@ class ProfileAttribute extends Attribute
      */
     function edit($record, $fieldprefix = "", $mode = "")
     {
+
         $user = SecurityManager::atkGetUser();
         $page = Page::getInstance();
 
@@ -461,19 +462,23 @@ class ProfileAttribute extends Attribute
         foreach ($allActions as $section => $modules) {
             $result .= '<div class="profileSection">';
 
-            $result .= "<span onclick=\"profile_swapProfileDiv('div_$section','" . Config::getGlobal("atkroot") . "');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\">";
-            $result .= "<i class=\"" . Config::getGlobal("icon_plussquare") . "\" id=\"img_div_$section\"></i> " . Tools::atktext(array("title_$section", $section), $section) . "</span><br/>";
+            $result .= "<span onclick=\"profile_swapProfileDiv('div_$section');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\">";
+            $result .= "  <i class=\"" . Config::getGlobal("icon_plussquare") . "\" id=\"img_div_$section\"></i> " . Tools::atktext(array("title_$section", $section), $section);
+            $result .= "</span><br/>";
 
             $result .= "<div id='div_$section' name='div_$section' style='display: none; padding-left: 15px' class='checkbox'>";
-            $result .= "<input type='hidden' name=\"divstate['div_$section']\" id=\"divstate['div_$section']\" value='closed' />";
-            $result .= '<div style="font-size: 80%; margin-top: 4px; margin-bottom: 4px" >
+
+            $result .= "  <input type='hidden' name=\"divstate['div_$section']\" id=\"divstate['div_$section']\" value='closed' />";
+
+            $result .= '  <div style="font-size: 80%; margin-top: 4px; margin-bottom: 4px" >
                   [<a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkAllByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' .
                 Tools::atktext("check_all", "atk") .
                 '</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkNoneByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' .
                 Tools::atktext("check_none", "atk") .
                 '</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkInvertByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' .
-                Tools::atktext("invert_selection", "atk") . '</a>]</div>';
-            $result .= "<br>";
+                Tools::atktext("invert_selection", "atk") . '</a>]';
+            $result .= "  </div>";
+            $result .= "  <br>";
 
 
             foreach ($modules as $module => $nodes) {
@@ -527,6 +532,7 @@ class ProfileAttribute extends Attribute
                     }
                 }
             }
+            $result .= '  </div>'; // end div_$section
             $result .= '</div>'; // end profileSection
         }
 
