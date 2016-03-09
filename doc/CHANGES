@@ -15,6 +15,10 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 WIP Changes
 -----------
+
+
+Changes in ATK 8.2.4 (2016-03-09)
+---------------------------------
 * Added default cssicons definition and style in steelblue theme [luca,giorgio]
 * font-awesome upgraded and moved in ext folder [luca,giorgio]
 * Various minor fixing [luca]
