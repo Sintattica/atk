@@ -11,6 +11,9 @@ use Dotenv\Dotenv;
 
 class Atk
 {
+
+    const VERSION = '9.0.0';
+
     var $g_nodes = [];
     var $g_nodesClasses = [];
     var $g_nodeRepository = [];

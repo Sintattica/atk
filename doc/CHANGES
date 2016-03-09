@@ -13,15 +13,19 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 * LATEST CHANGES GO ON TOP, different types of changes may be mixed.
 
 
-Changes in DEVELOP (WIP)
-------------------------
-* Various minor fixing [luca]
-* Fix empty username in logout event in atkSecurityManager [luca]
-* Fixing for Bootstrap theme [luca]
-* Changed logo handling in atkSmartMenu [luca]
+WIP Changes
+-----------
 
-Changes in MASTER (WIP)
-------------------------
+
+New Release ATK 9.0 (2016-03-09)
+---------------------------------
+Say welcome to Atk 9.0!
+
+
+Changes in ATK 8.2.4 (2016-03-09)
+---------------------------------
+* Added default cssicons definition and style in steelblue theme [luca,giorgio]
+* font-awesome upgraded and moved in ext folder [luca,giorgio]
 * Various minor fixing [luca]
 * Fix empty username in logout event in atkSecurityManager [luca]
 * Fixing for Bootstrap theme [luca]
