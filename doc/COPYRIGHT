@@ -1,4 +1,4 @@
-The ATK Framework is Copyright (c)2000-2012 by the original authors, including
+The ATK Framework is Copyright (c)2000-2016 by the original authors, including
 all related material (PHP, HTML, CSS, images, ...) 
 
 This program is free software; you can redistribute it and/or modify
@@ -24,11 +24,6 @@ https://github.com/atkphpframework/atk/wiki/Trademark-and-Logo-Policy
 The ATK Framework includes works under other copyright notices and distributed
 according to the terms of the GNU Lesser General Public License or a
 compatible license, including:
-
-    Smarty template engine by Ispi
-        http://www.smarty.net/
-        Copyright (c) 2001-2003 Ispi 
-        License: LGPL
         
     DHTML Calendar Widget by Mihai Bazon
         http://dynarch.com/mishoo/calendar.epl
@@ -45,30 +40,10 @@ compatible license, including:
         Copyright (c) 2003 John Lim
         License: BSD, LGPL
 
-    Simpletest Test Framework for unit testing (full version including
-            documentation available from homepage)
-        http://www.lastcraft.com/simple_test.php
-        Copyright (c)2003-2005 Marcus Baker (lastcraft.com)
-        License: Open Group Test Suite License (included with permission)
-
-    FCKeditor for wysiwyg editing (full version including documentation
-            available from homepage)
-        http://www.fckeditor.net/
-        Copyright (c)2003-2005 Frederico Caldeira Knabben
+    CKeditor for wysiwyg editing
+        http://www.ckeditor.com/
+        Copyright (c) 2003 - 2016 CKSource Sp. z o.o. sp.k.
         License: GPL, LGPL, MPL
-
-    TinyButStrong OOo for parsing OpenOffice.org and ODF template files
-            (full version including documentation and examples available
-            from homepage)
-        http://www.tinybutstrong.com/apps/tbsooo/
-        Copyright (c) 2005 Olivier LOYNET
-        License: LGPL
-
-    PHPMailer class for HTML email functionality (full version including
-            documentation and examples available from homepage).
-        http://phpmailer.sourceforge.net/
-        Copyright (c) 2001-2003 Brent R. Matzelle
-        License: LGPL
 
     Prototype JavaScript Framework for Ajax support
         http://prototypejs.org/
@@ -80,41 +55,15 @@ compatible license, including:
         Copyright (c) 2005 Thomas Fuchs
         License: MIT-Style
 
-    overLIB Javascript Library for tooltips
-        http://www.bosrup.com/web/overlib/
-        Copyright (c) 1998-2004 Erik Bosrup
-        License: Artistic license
-
     PHP-JSON library for JSON (de-)serialization
          http://mike.teczno.com/json.html
          Copyright (c) 2005 Michal Migurski
          License: BSD license
 
-    Rico JavaScript Library to enrich user experience
-        http://openrico.org/
-        Copyright (c) 2005 Sabre Airline Solutions
-        License: Apache 2.0
-
     prototype window Javascript Library for windows support
         http://prototype-window.xilinus.com/
-        Copyright (c) 2006 Sébastien Gruhier
+        Copyright (c) 2006 Sï¿½bastien Gruhier
         License: MIT-style
-
-    overlibmws Javascript Library for tooltips
-        http://www.macridesweb.com/oltest/
-        Copyright (c) 2002-2006 Foteos Macrides
-        License: Artistic license
-
-    Zend Framework (portions included in atk/ext/zend/) (full version
-            including documentation available from homepage)
-        http://framework.zend.com
-        Copyright (c) 2006, Zend Technologies USA, Inc.
-        License: BSD
-
-    Spyc library for handling YAML
-        http://spyc.sourceforge.net/
-        Copyright 2005-2006 Chris Wanstrath
-        License: MIT
 
     PhpCaptcha Class by Edward Eliot
         http://www.ejeliot.com/
@@ -125,18 +74,5 @@ compatible license, including:
         http://json.org/json.js
         Copyright 
         License: Public domain
-
-The following software are listed on the "ATK Extensions" page on the
-Achievo/ATK wiki, but may not currently be included in the ATK Framework.
-See http://www.achievo.org/wiki/Available_Open_Source_software_in_ATK
-
-    PEAR::Services_JSON
-        http://pear.php.net/pepr/pepr-proposal-show.php?id=198
-        http://pear.php.net/package/Services_JSON
-        License: BSD
-
-    Crossbrowser DHTML Functions JavaScript Library
-        http://www.wallner-software.com
-        License: ad hoc (BSD-style)
 
 ###
