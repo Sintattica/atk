@@ -15,6 +15,12 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 WIP Changes
 -----------
+
+
+Changes in ATK 9.0.1 (2016-03-09)
+---------------------------------
++ Module boot method
++ constant VERSION in Atk class
 * updated documentation
 
 

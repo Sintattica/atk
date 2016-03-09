@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Core;
 
+use App\Modules\App\Module;
 use Sintattica\Atk\Security\SqlWhereclauseBlacklistChecker;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
@@ -12,7 +13,7 @@ use Dotenv\Dotenv;
 class Atk
 {
 
-    const VERSION = '9.0.0';
+    const VERSION = '9.0.1';
 
     var $g_nodes = [];
     var $g_nodesClasses = [];
@@ -67,7 +68,7 @@ class Atk
             setlocale(LC_TIME, $locale);
         }
 
-        $debug = 'Created a new Atk instance: Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')';
+        $debug = 'Created a new Atk ('.self::VERSION.') instance: Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')';
         $debug .= ' Environment: ' . $environment;
 
         Tools::atkdebug($debug);
@@ -181,7 +182,12 @@ class Atk
         if (!static::isModule($moduleName)) {
             Tools::atkdebug("Constructing a new module - $moduleName");
             $modClass = $this->g_modules[$moduleName];
-            $this->g_moduleRepository[$moduleName] = new $modClass();
+
+            /** @var Module $module */
+            $menu = Menu::getInstance();
+            $module = new $modClass(static::$s_instance, $menu);
+            $this->g_moduleRepository[$moduleName] = $module;
+            $module->boot();
         }
         return $this->g_moduleRepository[$moduleName];
     }
