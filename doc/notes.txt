@@ -1,0 +1,6 @@
+module = the folder name of the module (eg: app, auth, sys... )
+type = the filename of the node (tickets, users, printers, ...).
+
+nodetype = module.type
+
+$ATK_VARS['atknodeuri'] = 'module.type'

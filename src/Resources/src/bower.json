@@ -1,0 +1,25 @@
+{
+  "name": "atk",
+  "homepage": "https://github.com/Sintattica/atk",
+  "authors": [
+    "michele.rota@sintattica.it"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-sass": "^3.3.6",
+    "moment": "momentjs#^2.11.2",
+    "font-awesome-sass": "^4.5.0",
+    "smartmenus": "^1.0.0"
+  }
+}

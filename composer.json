@@ -1,8 +1,18 @@
 {
-    "name": "sintattica/atk",
-    "description": "ATK business framework",
-    "homepage": "https://github.com/sintattica/atk",
-    "type": "library",
-    "license": "MIT",
-    "keywords": ["framework"]
+  "name": "sintattica/atk",
+  "description": "ATK business framework",
+  "homepage": "https://github.com/sintattica/atk",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "framework"
+  ],
+  "autoload": {
+    "psr-4": {"Sintattica\\Atk\\": "src/"}
+  },
+  "require": {
+    "fightbulc/moment": "^1.13",
+    "smarty/smarty": "^3.1",
+    "vlucas/phpdotenv": "^2.2"
+  }
 }

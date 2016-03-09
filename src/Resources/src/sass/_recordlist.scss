@@ -1,0 +1,101 @@
+table.recordList {
+
+  width: 100%;
+
+  td:first-child, th:first-child {
+    width: 1%;
+  }
+
+  th {
+    background-color: #428BCA;
+    color: #fff;
+    text-align: left;
+
+    a {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    &.recordListSearch {
+      background: #ddd;
+      border-left-color: #f2f2f2;
+      border-right-color: #f2f2f2;
+      font-weight: normal;
+
+      &:first-child {
+        border-left-color: inherit;
+      }
+
+      &:last-child {
+        border-right-color: inherit;
+      }
+
+      a {
+        color: #428BCA;
+      }
+
+      input[type="text"], select {
+        width: 100%;
+      }
+
+      .search-buttons {
+        display: block;
+        // white-space: nowrap;
+      }
+
+    }
+  }
+
+  tr {
+    .row1 {
+      background-color: #ffffff;
+    }
+    .row2 {
+      background-color: #F9F9F9;
+    }
+
+    td {
+      ul {
+        margin: 0;
+      }
+      .actions {
+        display: block;
+        white-space: nowrap;
+        float: right;
+
+        .btn {
+          margin: 0 2px;
+
+          &:first-child {
+            margin-left: 0;
+          }
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+      }
+
+    }
+  }
+}
+
+.recordListContainer {
+  width: 100%;
+  overflow: auto;
+}
+
+.table {
+  margin-bottom: $line-height-computed/2;
+}
+
+ul.pagination {
+  margin-top: 0;
+  margin-bottom: $line-height-computed/2;
+  float: left;
+}
+
+.dglimit, .dgridsummary {
+  margin-bottom: $line-height-computed/2;
+  float: right;
+  display: block;
+}
