@@ -13,17 +13,8 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 * LATEST CHANGES GO ON TOP, different types of changes may be mixed.
 
 
-Changes in DEVELOP (WIP)
-------------------------
-* Added default cssicons definition and style in steelblue theme [luca,giorgio]
-* font-awesome upgraded and moved in ext folder [luca,giorgio]
-* Various minor fixing [luca]
-* Fix empty username in logout event in atkSecurityManager [luca]
-* Fixing for Bootstrap theme [luca]
-* Changed logo handling in atkSmartMenu [luca]
-
-Changes in MASTER (WIP)
-------------------------
+WIP Changes
+-----------
 * Added default cssicons definition and style in steelblue theme [luca,giorgio]
 * font-awesome upgraded and moved in ext folder [luca,giorgio]
 * Various minor fixing [luca]
