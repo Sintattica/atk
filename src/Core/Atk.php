@@ -13,7 +13,7 @@ use Dotenv\Dotenv;
 class Atk
 {
 
-    const VERSION = '9.0.0';
+    const VERSION = '9.0.1';
 
     var $g_nodes = [];
     var $g_nodesClasses = [];
@@ -68,7 +68,7 @@ class Atk
             setlocale(LC_TIME, $locale);
         }
 
-        $debug = 'Created a new Atk instance: Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')';
+        $debug = 'Created a new Atk ('.self::VERSION.') instance: Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')';
         $debug .= ' Environment: ' . $environment;
 
         Tools::atkdebug($debug);
