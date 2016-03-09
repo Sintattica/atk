@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Core;
 
+use App\Modules\App\Module;
 use Sintattica\Atk\Security\SqlWhereclauseBlacklistChecker;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
@@ -181,7 +182,12 @@ class Atk
         if (!static::isModule($moduleName)) {
             Tools::atkdebug("Constructing a new module - $moduleName");
             $modClass = $this->g_modules[$moduleName];
-            $this->g_moduleRepository[$moduleName] = new $modClass();
+
+            /** @var Module $module */
+            $menu = Menu::getInstance();
+            $module = new $modClass(static::$s_instance, $menu);
+            $this->g_moduleRepository[$moduleName] = $module;
+            $module->boot();
         }
         return $this->g_moduleRepository[$moduleName];
     }
